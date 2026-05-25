@@ -1,0 +1,469 @@
+# RELIABILITY.md
+
+> `beauty` 的可靠性、错误处理、可观测性、性能预算和恢复策略。
+> 安全与隐私看 `SECURITY.md`，核心状态机看 `DESIGN.md`。
+
+## 1. Reliability Posture
+
+`beauty` 优先保证实时链路稳定、可降级、可诊断。效果质量不能以崩溃、卡主线程、内存持续上涨或隐性数据泄露为代价。
+
+Core rules:
+
+- 可恢复错误使用 `throws` 或 typed result，不使用 `fatalError`。
+- Release 构建不得因资源缺失、检测失败、渲染失败而 crash。
+- 实时相机链路失败时优先返回明确错误，由 App 显示原始帧或降级结果。
+- 图片与导出链路失败时返回明确错误，不能静默输出错误图像。
+- 每个 render pass、resource loader、detector 都必须声明失败模式。
+- 性能问题必须在架构和验收阶段暴露，不在功能堆完后补救。
+
+## 2. Reliability Invariants
+
+| ID | Invariant | Verification |
+| --- | --- | --- |
+| R1 | Realtime path never blocks the main thread. | Inspect call sites and run UI responsiveness checks. |
+| R2 | Realtime failure can fall back to original frame. | Simulate render error and verify preview survives. |
+| R3 | Public errors are typed as `BeautyError`. | API compile review and error mapping tests. |
+| R4 | Recoverable errors do not crash release builds. | Fault injection and release-mode smoke test. |
+| R5 | Logs and metrics are optional and can be disabled. | Config test for `BeautyLogLevel.none`. |
+| R6 | Performance metrics contain no image or face geometry payload. | Log/metrics redaction review. |
+| R7 | Caches are bounded and resettable. | Long-run memory test and `reset()` test. |
+| R8 | Empty or zero-strength passes are skipped. | RenderGraph unit test. |
+| R9 | Device quality mode changes degrade predictably. | Mode matrix test. |
+| R10 | `reset()` clears detection, smoothing, transient textures, and resource transient state. | State machine test. |
+
+## 3. Service-Level Targets
+
+Initial targets are engineering budgets, not marketing claims.
+
+| Scenario | Target |
+| --- | --- |
+| Realtime 720p preview | Stable 30 fps on supported devices. |
+| Realtime 1080p preview | Stable 30 fps on mid/high-end devices. |
+| Realtime 4K preview | Not a first-version target. |
+| Detection cadence | Async or throttled, around 10 to 15 detections per second when needed. |
+| Render total | Typical first-version budget 5 to 12 ms per processed frame, device-dependent. |
+| App launch impact | SDK initialization must not perform heavy resource decode on main thread. |
+| Long-run preview | 10 minutes without steady memory growth. |
+| Image processing | Large images may be slower, but must not crash or block main thread indefinitely. |
+
+Pass-level reference budgets:
+
+| Pass | Reference Budget |
+| --- | --- |
+| `FaceWarpPass` | 1.0 to 3.0 ms |
+| `SkinPass` | 2.0 to 6.0 ms |
+| `ColorPass` | 0.3 to 1.0 ms |
+| `LUTPass` | 0.5 to 1.5 ms |
+
+If a device cannot meet the target, the pipeline must degrade by mode rather than silently dropping into unstable behavior.
+
+## 4. Error Taxonomy
+
+Public errors should converge on a stable `BeautyError` surface:
+
+```swift
+public enum BeautyError: Error, Sendable {
+    case metalUnavailable
+    case commandQueueCreationFailed
+    case textureCreationFailed
+    case pixelBufferCreationFailed
+    case shaderFunctionNotFound(String)
+    case invalidInput
+    case unsupportedPixelFormat
+    case resourceNotFound(String)
+    case presetDecodeFailed(String)
+    case lutDecodeFailed(String)
+    case renderFailed(String)
+    case detectionFailed(String)
+}
+```
+
+Rules:
+
+- Internal framework errors are mapped to `BeautyError` before crossing the public API.
+- Error cases must be stable enough for host Apps to switch on them.
+- Error associated values must be short, redacted, and non-sensitive.
+- Do not expose raw `NSError`, `VNError`, `MTLCommandBuffer` internals, file paths, or image metadata in public errors.
+- Add a new error case only when callers can respond differently.
+
+## 5. Error Handling Policy
+
+| Failure | Realtime Policy | Image / Export Policy | Notes |
+| --- | --- | --- | --- |
+| Invalid input | Return typed error; App may show original frame. | Throw typed error. | Validate before work. |
+| Metal unavailable | Engine init fails. | Engine init fails. | No silent CPU fallback unless designed. |
+| Command queue creation failed | Engine init fails. | Engine init fails. | Recover only via reinit/reset if possible. |
+| Texture creation failed | Return typed render error; App fallback. | Throw typed error. | Track count in metrics. |
+| Pixel buffer creation failed | Return typed render error; App fallback. | Throw typed error. | Do not leak partial output. |
+| Shader function missing | Return typed error in release, assert in debug if developer mistake. | Same. | Build/test should catch. |
+| Pipeline state creation failed | Return typed render error. | Throw typed error. | Pipeline states must be cached after success. |
+| Detection failed transiently | Reuse recent landmarks or skip face effects. | Retry once or skip face effects. | Follow detection state machine. |
+| Low-confidence face | Disable strong geometry. | Disable strong geometry. | Return warning if debug result is enabled. |
+| Missing optional LUT | Disable filter and continue. | Disable filter or throw based on API contract. | Prefer visible disabled UI in Demo. |
+| Preset decode failed | Keep current parameters. | Throw typed preset error. | Never apply partial invalid preset silently. |
+| Resource package invalid | Reject resource and clear cache entry. | Throw typed resource error. | See `SECURITY.md`. |
+
+## 6. Degradation Matrix
+
+Degradation is expected behavior, not a hidden failure.
+
+| Condition | Required Degradation |
+| --- | --- |
+| No face detected | Skip face geometry and face-dependent makeup; keep color and LUT effects. |
+| Detection skipped for throttling | Reuse recent landmarks within allowed reuse window. |
+| Detection failed 1 to 3 frames | Reuse recent landmarks with caution. |
+| Detection stale | Disable strong geometry; allow weak non-geometric effects. |
+| Landmark group missing | Skip only effects requiring that group. |
+| Face too small | Lower geometry strength and skip high-detail effects. |
+| Large yaw / side face | Lower face, nose, and mouth geometry strength. |
+| Multiple faces exceed budget | Process deterministic subset, usually largest faces first. |
+| GPU overload | Drop frames, lower resolution, skip optional passes. |
+| Memory pressure | Clear optional caches and lower quality mode. |
+| Thermal pressure | Lower resolution, detection cadence, and optional effects. |
+
+Every degradation path that affects visible output should be visible in debug metrics or result warnings.
+
+## 7. Observability Model
+
+Use three layers:
+
+| Layer | Purpose | Tooling |
+| --- | --- | --- |
+| Logs | Discrete operational events and errors. | Swift `Logger` / OSLog. |
+| Signposts | Timing critical regions while profiling. | `OSSignposter` or os signposts. |
+| Metrics | Frame-level counters and performance summaries. | Internal `BeautyPerformanceMetrics`, optional MetricKit for app-level reports. |
+
+Official references:
+
+- [Logger](https://developer.apple.com/documentation/os/logger)
+- [OSSignposter](https://developer.apple.com/documentation/os/ossignposter)
+- [MetricKit](https://developer.apple.com/documentation/metrickit)
+
+Rules:
+
+- Observability is configurable and low overhead by default.
+- Release default log level is `error`.
+- Debug default can be `warning` or `info`.
+- Per-frame logging is disabled by default.
+- Signposts are allowed for profiling but must be easy to disable.
+- Metrics must be sampled, aggregated, or pulled through debug result APIs.
+- No logs or metrics include image bytes, file paths, landmarks, bounding boxes, user IDs, tokens, or raw JSON.
+
+## 8. Required Metrics
+
+Frame metrics:
+
+| Metric | Meaning |
+| --- | --- |
+| `totalFrameTime` | End-to-end processing time. |
+| `detectionTime` | Detection and landmark mapping time. |
+| `renderTime` | RenderGraph execution time. |
+| `faceWarpTime` | Face geometry pass time. |
+| `skinTime` | Skin pass time. |
+| `colorTime` | Color adjustment pass time. |
+| `lutTime` | LUT pass time. |
+| `outputTime` | Output conversion or presentation handoff time. |
+| `faceCount` | Faces used in this frame. |
+| `inputResolution` | Input size bucket, not user file path. |
+| `outputResolution` | Output size bucket. |
+| `frameIndex` | Session-local counter. |
+| `droppedFrames` | Frames dropped by backpressure. |
+| `qualityMode` | `performance`, `balanced`, or `quality`. |
+
+Memory metrics:
+
+- Texture pool count.
+- Pixel buffer pool count.
+- Resource cache size.
+- Current and peak memory if available.
+- Cache evictions.
+
+Error metrics:
+
+- Error code count.
+- Degradation reason count.
+- Consecutive render failures.
+- Consecutive detection failures.
+
+## 9. Logging Policy
+
+Log levels:
+
+```text
+none
+error
+warning
+info
+debug
+```
+
+Allowed logs:
+
+```text
+beauty.engine.init_failed code=metalUnavailable
+beauty.render.failed code=textureCreationFailed
+beauty.frame.dropped reason=backpressure
+beauty.resource.missing id=clean_01
+beauty.quality.changed from=balanced to=performance reason=thermal
+```
+
+Forbidden logs:
+
+```text
+imagePath=/private/var/mobile/Containers/...
+landmarks=[...]
+boundingBox=(...)
+rawPresetJson={...}
+userToken=...
+```
+
+Rules:
+
+- Logs must be event-shaped: subsystem, category, event, code, redacted context.
+- Avoid free-form multiline logs in frame processing.
+- Error logs must include a typed error code.
+- Warnings are for visible degradation or repeated recoverable failures.
+- Info logs are for lifecycle and configuration.
+- Debug logs are for development and must still obey `SECURITY.md`.
+
+## 10. Performance Modes
+
+```swift
+public enum BeautyRenderQuality: Sendable {
+    case performance
+    case balanced
+    case quality
+}
+```
+
+Mode matrix:
+
+| Mode | Resolution | Detection Cadence | Max Faces | Effects |
+| --- | --- | --- | --- | --- |
+| `performance` | Downscale to 720p target | Every 3 to 5 frames | 1 | Basic color, LUT, light geometry, no advanced makeup/background. |
+| `balanced` | 720p or 1080p by device | Around every 3 frames | 1 to 3 | MVP skin, face, facial features, LUT. |
+| `quality` | Higher resolution when safe | Every 1 to 2 frames | More only if budget allows | Higher-quality skin and more complex effects, suited to image/export. |
+
+Rules:
+
+- Mode changes must be explicit in metrics.
+- Automatic downgrade must be reversible when pressure ends.
+- Demo UI must not present disabled effects as active.
+- Export can use `quality` without inheriting realtime preview limits.
+
+## 11. Backpressure and Frame Dropping
+
+Realtime camera must prefer freshness over processing every frame.
+
+Rules:
+
+- Maintain a bounded in-flight frame count.
+- If GPU or detection falls behind, drop incoming frames before queues grow unbounded.
+- Do not process stale frames after newer frames are available for preview.
+- Completion handlers must release frame resources promptly.
+- Dropped frames increment `droppedFrames` metrics.
+- Backpressure must not mutate parameter snapshots out of order.
+
+Recommended first-version policy:
+
+```text
+inFlightRenderFrames <= 1 or 2
+latestFrameWins = true
+dropReason = backpressure
+```
+
+## 12. Memory Management
+
+Must reuse:
+
+- `MTLDevice`
+- `MTLCommandQueue`
+- `CIContext`
+- `CVMetalTextureCache`
+- Pipeline states
+- LUT textures
+- Makeup textures
+- Intermediate textures
+- `CVPixelBufferPool`
+- `MTLBuffer` where practical
+
+Forbidden in realtime paths:
+
+- Creating `MTLDevice` per frame.
+- Creating `MTLCommandQueue` per frame.
+- Creating `CIContext` per frame.
+- Creating pipeline state per frame.
+- Parsing LUT per frame.
+- Loading PNG resources per frame.
+- Converting realtime frames through `UIImage`.
+- Creating unbounded arrays, textures, buffers, or resource caches.
+
+Memory pressure policy:
+
+1. Release optional resource caches.
+2. Reduce quality mode.
+3. Lower processing resolution.
+4. Limit face count.
+5. Disable optional passes.
+6. Return typed error if required resources cannot be allocated.
+
+## 13. Render Pipeline Reliability
+
+Rules:
+
+- Usually one command buffer per processed frame.
+- Encode all active passes into the frame command buffer when possible.
+- Pipeline states are created up front or lazily once, then cached.
+- Intermediate textures use ping-pong reuse.
+- Passes declare whether they are required or optional.
+- Optional pass failure degrades output if safe.
+- Required pass failure returns typed render error.
+- Command buffer completion updates metrics and releases transient resources.
+- RenderGraph skips zero-strength or unsupported passes.
+
+Required pass contract:
+
+| Field | Required |
+| --- | --- |
+| `id` | Stable pass identifier. |
+| `inputs` | Texture and uniforms required. |
+| `outputs` | Output texture or buffer contract. |
+| `requirements` | Face, resources, pixel format, quality mode. |
+| `failureMode` | skip, degrade, or fail. |
+| `metricsKey` | Name used in performance metrics. |
+
+## 14. Detection Reliability
+
+Rules:
+
+- Detection must not block render every frame.
+- Detection can run at lower frequency than render.
+- Detection output is normalized before effects consume it.
+- A transient detection failure can reuse recent landmarks only inside the allowed window.
+- Consecutive failure beyond the threshold clears face state.
+- Low confidence faces disable strong geometry.
+- Missing landmark groups disable only dependent effects.
+- Detection errors are counted separately from render errors.
+
+First-version thresholds:
+
+```text
+reuseWindowFrames: 1...3
+staleAfterFrames: > 3
+lostAfterFrames: implementation-defined but must be deterministic
+```
+
+## 15. Resource Reliability
+
+Rules:
+
+- Required bundled resources fail fast at engine init or first use with typed error.
+- Optional resources fail soft by disabling their effect.
+- Resource cache has size and eviction rules.
+- Resource IDs are resolved through `BeautyResources`, not hardcoded paths.
+- LUT decode failures are typed as `lutDecodeFailed` or resource errors.
+- Preset decode failures keep current parameters unchanged.
+- Resource version incompatibility returns a typed error.
+
+Cache reset:
+
+`reset()` clears transient resource state. It does not delete valid bundled resources or user-selected persistent presets.
+
+## 16. Reset and Recovery
+
+`BeautyEngine.reset()` must clear:
+
+- Detection state.
+- Landmark smoothing state.
+- Face tracking state.
+- Consecutive failure counters.
+- Transient render resources.
+- In-flight frame bookkeeping after safe cancellation.
+- Optional debug metric windows.
+
+`reset()` must not clear:
+
+- Immutable configuration.
+- Valid compiled pipeline states unless memory pressure requires it.
+- User-owned `BeautyParameters`.
+- Persistent preset data.
+
+Recovery flow:
+
+```text
+error observed
+→ classify as recoverable or unrecoverable
+→ degrade or return typed error
+→ record metric
+→ reset affected state if needed
+→ continue or require engine reinitialization
+```
+
+## 17. Crash Policy
+
+Allowed debug assertions:
+
+- Test stubs.
+- Truly unreachable code during active development.
+- Internal invariant violation that must be fixed before release.
+
+Forbidden in submitted code:
+
+- `fatalError` for missing resource.
+- `fatalError` for invalid user input.
+- `fatalError` for unsupported pixel format.
+- Force unwraps on Metal, Vision, Core Image, JSON, or file loading paths.
+- Crashing because camera permission is denied.
+
+Release policy:
+
+- Return typed errors for recoverable or environmental failures.
+- Use assertions only for developer mistakes that tests should catch.
+- Never continue with corrupted output after required render failure.
+
+## 18. Reliability Test Matrix
+
+Minimum tests or manual checks:
+
+| Area | Check |
+| --- | --- |
+| Engine init | Metal unavailable or command queue failure maps to typed error. |
+| Pixel formats | Unsupported format returns `unsupportedPixelFormat`. |
+| Render | Texture and pixel buffer creation failure return typed error. |
+| Detection | 1 to 3 failed detections reuse landmarks, then clear state. |
+| No face | Color and LUT still work; face effects skip. |
+| Missing landmarks | Only dependent effects skip. |
+| Missing LUT | Filter disables or typed resource error per contract. |
+| Invalid preset | Current parameters remain unchanged. |
+| Backpressure | In-flight queue remains bounded and dropped frames count increments. |
+| Long run | 10 minutes preview has no steady memory growth. |
+| Reset | Detection, smoothing, and transient caches clear. |
+| Logs | `none` emits nothing; `debug` still redacts sensitive data. |
+| Quality modes | `performance`, `balanced`, `quality` change budgets predictably. |
+
+If automation does not exist yet, record the manual result in `PLANS.md`.
+
+## 19. Release Readiness Gates
+
+Before a release-like build:
+
+- Xcode build succeeds for `BeautyDemo`.
+- Default parameters produce near-copy output within render tolerance.
+- Realtime 720p preview meets target on at least one supported simulator/device setup.
+- Realtime path does not contain `UIImage` conversion.
+- Logs are redacted and release default is `error`.
+- Long-run preview does not show continuous memory growth.
+- All public errors map to documented `BeautyError` cases.
+- Missing optional resources degrade without crash.
+- Missing required resources return typed errors.
+- `reset()` behavior is verified.
+
+## 20. Reliability Decision Log
+
+| Date | Decision | Reason |
+| --- | --- | --- |
+| 2026-05-25 | Realtime errors fall back at App level to original frame where safe. | Preview continuity matters more than applying every effect. |
+| 2026-05-25 | First-version target is 720p stable 30 fps, with 1080p for mid/high-end devices. | Matches existing planning notes and avoids overpromising 4K realtime. |
+| 2026-05-25 | Detection cadence can be lower than render cadence. | Face landmarks do not need full frame-rate detection for stable preview. |
+| 2026-05-25 | Metrics are internal/debug-first before becoming a public API. | Avoid locking an immature observability contract too early. |
+
