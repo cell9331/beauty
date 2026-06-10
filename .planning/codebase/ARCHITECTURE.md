@@ -1,127 +1,145 @@
----
-last_mapped: 2026-06-03
-last_mapped_commit: 5e20ce8ea81763f47b5194a69f90ab43a2eab675
-focus: arch
-mapping_mode: inline sequential fallback
----
-
 # Architecture
 
-## Summary
+**Analysis Date:** 2026-06-10
 
-The current mainline architecture has two layers:
+## Pattern Overview
 
-1. A small implemented iOS SwiftUI demo app under `BeautyDemo/`.
-2. A much richer root documentation system that defines the intended SDK architecture.
+**Overall:** Documentation-led iOS SDK project with a minimal SwiftUI demo shell.
 
-There is no implemented `BeautySDK` package in the main worktree yet. Treat root docs as contracts and the Swift code as the current minimal executable shell.
+**Key Characteristics:**
+- The only buildable code in the main worktree is `BeautyDemo`, a single iOS app target.
+- Current runtime implementation is a generated SwiftUI app shell, not the SDK described by root contracts.
+- Root documents define a future `BeautySDK` Swift Package with multiple internal targets.
+- `.worktrees/sdk-foundation/` exists on disk but is ignored by `.gitignore`; it must not be treated as main worktree implementation.
 
-## Implemented Runtime Architecture
+## Layers
 
-The implemented runtime flow is:
+**Repository Guidance Layer:**
+- Purpose: Direct agents and define authoritative workflow/document routing.
+- Contains: `AGENTS.md`, `PLANS.md`, `QUALITY_SCORE.md`.
+- Depends on: Repository text and command output.
+- Used by: All future agent work.
 
-```text
-BeautyDemoApp
--> WindowGroup
--> ContentView
--> VStack
--> Image(systemName: "globe") + Text("Hello, world!")
-```
+**Root Contract Layer:**
+- Purpose: Define target SDK architecture, data models, UI boundaries, security, reliability, and product acceptance.
+- Contains: `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`.
+- Depends on: Current code/test facts when conflicts exist.
+- Used by: GSD planning, phase planning, implementation, and verification.
 
-Evidence:
+**Historical Planning Layer:**
+- Purpose: Provide background long-form plans and previous implementation design.
+- Contains: `docs/README.md`, `docs/01_product_feature_plan.md` through `docs/10_document_audit_report.md`, and `docs/superpowers/`.
+- Depends on: Root contracts for authority.
+- Used by: Research and implementation sequencing only after checking for drift.
 
-- `BeautyDemo/BeautyDemo/BeautyDemoApp.swift` declares `@main struct BeautyDemoApp: App`.
-- `BeautyDemo/BeautyDemo/BeautyDemoApp.swift` creates a `WindowGroup` containing `ContentView()`.
-- `BeautyDemo/BeautyDemo/ContentView.swift` defines `struct ContentView: View`.
-- `BeautyDemo/BeautyDemo/ContentView.swift` uses only local SwiftUI view composition.
+**Demo App Layer:**
+- Purpose: Current executable app and future SDK integration sample.
+- Contains: `BeautyDemo/BeautyDemo/BeautyDemoApp.swift`, `BeautyDemo/BeautyDemo/ContentView.swift`, `BeautyDemo/BeautyDemo/Assets.xcassets`, and `BeautyDemo/BeautyDemo.xcodeproj`.
+- Depends on: SwiftUI only today.
+- Used by: Xcode build/list verification and future SDK integration UI.
 
-There is no implemented camera, editor, SDK facade, detection pipeline, render graph, or parameter store in the main worktree.
+**Target SDK Layer (not implemented):**
+- Purpose: Future host-app-facing beauty SDK.
+- Expected location: `BeautySDK/Package.swift`, `BeautySDK/Sources/**`, `BeautySDK/Tests/**`.
+- Current status: Missing from main worktree.
+- Defined by: `ARCHITECTURE.md`, `DESIGN.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`.
 
-## Xcode Project Architecture
+## Data Flow
 
-`BeautyDemo/BeautyDemo.xcodeproj/project.pbxproj` defines:
+**Current Demo App Launch:**
 
-- One `PBXProject`.
-- One native target named `BeautyDemo`.
-- One product, `BeautyDemo.app`.
-- File-system synchronized root group for `BeautyDemo/BeautyDemo`.
-- Build phases for sources, frameworks, and resources.
-- Empty `packageProductDependencies`.
-- Debug and Release build configurations.
+1. iOS launches `BeautyDemo`.
+2. `BeautyDemo/BeautyDemo/BeautyDemoApp.swift` enters through `@main`.
+3. `WindowGroup` creates `ContentView()`.
+4. `BeautyDemo/BeautyDemo/ContentView.swift` renders a `VStack` with a system globe image and `Text("Hello, world!")`.
+5. No SDK, camera, image processing, external service, or persistence path runs.
 
-`xcodebuild -list -project BeautyDemo/BeautyDemo.xcodeproj` confirmed the single target and scheme `BeautyDemo`.
+**Current Documentation Flow:**
 
-## Intended SDK Architecture
+1. Agents read `AGENTS.md`.
+2. Agents read `PLANS.md` before changing code/docs.
+3. Task-specific root contracts route detailed constraints.
+4. `docs/` files are background and must yield to root contracts.
+5. GSD planning will consume `.planning/codebase/` before creating `.planning/PROJECT.md`.
 
-`ARCHITECTURE.md` defines the intended first-version package as one root Swift Package named `BeautySDK` with multiple targets:
+**Future Target SDK Flow (contract only):**
 
-- `BeautyCore`.
-- `BeautyDetection`.
-- `BeautyRender`.
-- `BeautyEffects`.
-- `BeautyResources`.
-- Facade target `BeautySDK`.
+1. Host app imports `BeautySDK`.
+2. Host creates `BeautyEngine` and `BeautyParameters`.
+3. Host passes image or frame input with explicit orientation.
+4. SDK validates input, runs detection/resources/render/effects internally.
+5. SDK returns output or typed `BeautyError`.
 
-The intended dependency direction is:
+**State Management:**
+- Current SwiftUI code uses no explicit state.
+- Future Demo state is specified in `FRONTEND.md` as enum-driven SwiftUI state and app-side stores.
+- Future SDK frame processing should use immutable per-frame parameter snapshots per `DESIGN.md`.
 
-```text
-BeautyCore
-    ^
-    |-- BeautyResources
-    |-- BeautyDetection
-    |-- BeautyRender
-           ^
-BeautyEffects uses detection models and render primitives
-    ^
-BeautySDK
-    ^
-BeautyDemo
-```
+## Key Abstractions
 
-That architecture is contractual but not implemented in the main worktree. Downstream planning should create `BeautySDK/Package.swift` before assuming these modules exist.
+**SwiftUI App:**
+- Purpose: Current entry point and app shell.
+- Examples: `BeautyDemoApp`, `ContentView`.
+- Pattern: Xcode-generated SwiftUI app.
 
-## Domain Boundaries
+**Xcode Target:**
+- Purpose: Build and package the current demo app.
+- Examples: target and scheme `BeautyDemo`.
+- Pattern: Single native app target with file-system-synchronized source group.
 
-Root contracts assign ownership as follows:
+**Root Contract:**
+- Purpose: Define intended behavior before implementation exists.
+- Examples: dependency invariants in `ARCHITECTURE.md`, parameter model in `DESIGN.md`, privacy rules in `SECURITY.md`.
+- Pattern: Agent-first documentation used as planning input.
 
-- `ARCHITECTURE.md` owns target boundaries and dependency direction.
-- `DESIGN.md` owns public data models, state machines, render graph, parameters, and coordinate systems.
-- `FRONTEND.md` owns Demo SwiftUI composition, camera/editor UI state, and presentation rules.
-- `SECURITY.md` owns input validation, privacy posture, resource trust boundaries, permissions, and logging redaction.
-- `RELIABILITY.md` owns typed errors, degradation, observability, frame dropping, reset, and performance budgets.
-- `PRODUCT_SENSE.md` owns user journeys and acceptance criteria.
-- `QUALITY_SCORE.md` owns quality gates and scan commands.
-- `PLANS.md` owns active, completed, and tech debt tracking.
+**GSD Planning Artifacts:**
+- Purpose: Capture brownfield map and later project/requirements/roadmap.
+- Examples: `.planning/codebase/*.md`; future `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`.
+- Pattern: Generated markdown references for downstream GSD workflows.
 
-`AGENTS.md` is only the navigation entry and explicitly says not to put deep business rules there.
+## Entry Points
 
-## Data Flow Status
+**App Entry:**
+- Location: `BeautyDemo/BeautyDemo/BeautyDemoApp.swift`.
+- Triggers: iOS app launch.
+- Responsibilities: Create the SwiftUI scene and show `ContentView`.
 
-Implemented data flow is only SwiftUI view rendering.
+**Main View:**
+- Location: `BeautyDemo/BeautyDemo/ContentView.swift`.
+- Triggers: Created by `BeautyDemoApp`.
+- Responsibilities: Render the default template UI.
 
-Planned but not implemented data flows are documented:
+**Build Entry:**
+- Location: `BeautyDemo/BeautyDemo.xcodeproj/project.pbxproj`.
+- Triggers: Xcode or `xcodebuild`.
+- Responsibilities: Define `BeautyDemo` target, Debug/Release configurations, generated Info.plist, asset catalogs, and Swift build settings.
 
-- Realtime camera path in `ARCHITECTURE.md` and `PRODUCT_SENSE.md`.
-- Offline image path in `ARCHITECTURE.md` and `PRODUCT_SENSE.md`.
-- Parameter path from Demo controls to `BeautyParameters` in `DESIGN.md` and `FRONTEND.md`.
-- Detection and frame-processing state machines in `DESIGN.md`.
+## Error Handling
 
-No current source file processes `CMSampleBuffer`, `CVPixelBuffer`, `CVMetalTexture`, `UIImage`, or `CGImage`.
+**Strategy:** No app-specific error handling exists yet.
 
-## Architectural Invariants To Preserve
+**Patterns:**
+- Current Swift code does not throw, catch, log, or map errors.
+- Future public SDK errors are specified in `RELIABILITY.md` as typed `BeautyError`.
+- Future protected-resource failures should be represented in Demo UI state per `SECURITY.md` and `FRONTEND.md`.
 
-Important invariants from the root contracts:
+## Cross-Cutting Concerns
 
-- SDK code must not contain UI pages.
-- Demo must depend on the public `BeautySDK` facade, not internal targets.
-- Realtime rendering must not use `UIImage` as an intermediate.
-- Detection and rendering must stay decoupled.
-- Geometry effects must merge into unified `WarpControlPoint` values and a single `FaceWarpPass`.
-- Public parameters must use normalized ranges.
-- Diagnostics start in `BeautyCore/Diagnostics`, not a separate package.
+**Logging:**
+- None implemented in current code.
+- Future local diagnostics are specified under `BeautyCore/Diagnostics`.
 
-These are not yet enforceable through code because the SDK package is absent. They should become compile-time and test-time checks as the package is created.
+**Validation:**
+- None implemented in current code.
+- Future validation requirements live in `SECURITY.md` and `DESIGN.md`.
 
-## Architectural Risk
+**Authentication:**
+- None.
 
-The repository has strong intended architecture but very little executable architecture. The main risk for planning is accidentally treating docs as implemented state. For code work, first establish the Swift Package skeleton and tests, then wire the Demo to the facade.
+**Privacy:**
+- Current app does not access camera/photos.
+- Future camera/photo access requires purpose strings and runtime authorization.
+
+---
+*Architecture analysis: 2026-06-10*
+*Update when `BeautySDK/Package.swift`, Demo integration, tests, or app capabilities are added.*

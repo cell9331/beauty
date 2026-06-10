@@ -1,103 +1,169 @@
----
-last_mapped: 2026-06-03
-last_mapped_commit: 5e20ce8ea81763f47b5194a69f90ab43a2eab675
-focus: quality
-mapping_mode: inline sequential fallback
----
+# Testing Patterns
 
-# Testing
+**Analysis Date:** 2026-06-10
 
-## Summary
+## Test Framework
 
-The main worktree currently has no test targets, no test files, and no CI configuration. Verification is mostly documentation scans plus Xcode project inspection until the SDK package and Demo test targets are created.
+**Runner:**
+- No test runner is configured in the main worktree.
+- `BeautyDemo/BeautyDemo.xcodeproj` has only one target: `BeautyDemo`.
+- No XCTest target, Swift Package test target, `.xctestplan`, or `Tests/` directory exists.
 
-## Existing Test Inventory
+**Assertion Library:**
+- None currently in code.
+- Future Swift Package tests should likely use XCTest unless a different framework is explicitly introduced.
 
-Current main worktree:
+**Run Commands:**
 
-- No `BeautySDK/Tests/` directory.
-- No `BeautyDemo/BeautyDemoTests/` directory.
-- No `BeautyDemo/BeautyDemoUITests/` directory.
-- No `XCTest` imports in implemented source.
-- No Swift Testing imports.
-- No CI workflow files observed in the main worktree scan.
+```bash
+xcodebuild -list -project BeautyDemo/BeautyDemo.xcodeproj
+```
 
-`BeautyDemo/BeautyDemo.xcodeproj/project.pbxproj` defines only one native app target, `BeautyDemo`; no test targets are present.
+The command above currently verifies target/scheme discovery only.
 
-## Verified During Mapping
+```bash
+xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' build
+```
 
-The following checks were run during this map:
+Use an explicit simulator destination for compile evidence. Generic build can select an incompatible `My Mac` destination locally.
 
-- `gsd-tools query init.new-project` to classify the repository as brownfield and needing a codebase map.
-- `gsd-tools query init.map-codebase` to initialize mapping context.
-- `xcodebuild -list -project BeautyDemo/BeautyDemo.xcodeproj` to list targets, configurations, and schemes.
-- File scans of root docs, `BeautyDemo` Swift files, asset catalogs, and Xcode project settings.
-
-`xcodebuild -list` exited successfully and printed:
-
-- Target: `BeautyDemo`.
-- Build configurations: `Debug`, `Release`.
-- Scheme: `BeautyDemo`.
-
-It also emitted simulator-service, cache, and log-permission warnings in the local environment. This map did not run a build or test command.
-
-## Documented Future Test Strategy
-
-`QUALITY_SCORE.md` defines required test areas:
-
-- Parameter tests.
-- Preset tests.
-- Coordinate tests.
-- Detection tests.
-- Render tests.
-- Effect fixture tests.
-- Performance tests.
-- Security tests.
-- UI tests.
-
-`docs/superpowers/plans/2026-05-25-sdk-foundation.md` contains a detailed future plan for:
-
-- `BeautySDK/Tests/BeautySDKTests/BeautySDKFacadeTests.swift`.
-- `BeautySDK/Tests/BeautyCoreTests/`.
-- `BeautySDK/Tests/BeautyDetectionTests/`.
-- `BeautySDK/Tests/BeautyRenderTests/`.
-- `BeautySDK/Tests/BeautyEffectsTests/`.
-- `BeautySDK/Tests/BeautyResourcesTests/`.
-
-Those files are not present in the main worktree.
-
-## Recommended First Verification Commands
-
-Once `BeautySDK/Package.swift` exists:
+Future SDK command from root planning docs:
 
 ```bash
 swift test --package-path BeautySDK
 ```
 
-Once Demo wiring exists:
+This command cannot run until `BeautySDK/Package.swift` exists.
 
-```bash
-xcodebuild -list -project BeautyDemo/BeautyDemo.xcodeproj
-xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo build
+## Test File Organization
+
+**Location:**
+- No current test files.
+- Future SDK tests should follow the target layout in `ARCHITECTURE.md`:
+  - `BeautySDK/Tests/BeautyCoreTests/`
+  - `BeautySDK/Tests/BeautyDetectionTests/`
+  - `BeautySDK/Tests/BeautyRenderTests/`
+  - `BeautySDK/Tests/BeautyEffectsTests/`
+  - `BeautySDK/Tests/BeautyResourcesTests/`
+
+**Naming:**
+- No current pattern.
+- Existing planning docs use names such as `BeautyConfigurationTests.swift`, `RenderGraphTests.swift`, and `PresetLoaderTests.swift` as future examples.
+
+**Structure:**
+
+```text
+Current:
+BeautyDemo/
+  BeautyDemo.xcodeproj/
+  BeautyDemo/
+    BeautyDemoApp.swift
+    ContentView.swift
+    Assets.xcassets/
+
+Expected future SDK:
+BeautySDK/
+  Tests/
+    BeautyCoreTests/
+    BeautyRenderTests/
+    BeautyDetectionTests/
+    BeautyEffectsTests/
+    BeautyResourcesTests/
 ```
 
-Architecture scans from `QUALITY_SCORE.md`:
+## Test Structure
 
-```bash
-rg -n "import BeautyCore|import BeautyRender|import BeautyDetection|import BeautyEffects" BeautyDemo
-rg -n "fatalError|try!|as!" BeautySDK/Sources BeautyDemo/BeautyDemo 2>/dev/null
-rg -n "UIImage" BeautySDK/Sources BeautyDemo/BeautyDemo 2>/dev/null
+**Suite Organization:**
+
+No implemented tests exist to infer concrete suite style.
+
+Recommended baseline for future XCTest files:
+
+```swift
+import XCTest
+@testable import BeautyCore
+
+final class BeautyParametersTests: XCTestCase {
+    func testDefaultsAreZeroEffect() {
+        let parameters = BeautyParameters()
+        XCTAssertEqual(parameters.skinSmoothing, 0)
+    }
+}
 ```
 
-Documentation scans from `QUALITY_SCORE.md` should remain part of doc-gardening before any major claim of readiness.
+**Patterns:**
+- Add tests alongside the first SDK implementation rather than after feature accumulation.
+- Use focused XCTest methods for model defaults, clamping, Codable round trips, reset behavior, and no-op processing.
+- Keep current Demo build verification separate from SDK unit tests.
 
-## Testing Risks
+## Mocking
 
-Testing is currently the biggest implementation gap:
+**Framework:**
+- None currently.
 
-- The root contracts are detailed, but none of the SDK behavior is executable yet.
-- Scores in `QUALITY_SCORE.md` correctly keep SDK layers and tests at 0 or 1.
-- There is no automated protection for the intended package dependency graph.
-- There is no runtime proof for privacy, error handling, rendering, or performance invariants.
+**Patterns:**
+- No current mocking pattern.
+- Future rendering/detection tests should avoid depending on camera hardware.
+- Use protocol seams from `ARCHITECTURE.md` and `DESIGN.md` for detector, resource, and render dependencies.
 
-The next code phase should create the package skeleton and the first failing tests before adding implementation.
+**What to Mock:**
+- Future detector outputs, resource lookup failures, render pass failures, and metrics sinks.
+
+**What NOT to Mock:**
+- Pure value-model behavior such as `BeautyParameters` defaults and Codable round trips.
+
+## Fixtures and Factories
+
+**Test Data:**
+- No fixtures exist.
+- Future fixture categories should include:
+  - Parameter presets.
+  - Invalid preset JSON.
+  - Pixel buffer/image edge cases.
+  - Face observations with missing landmarks.
+
+**Location:**
+- Future shared fixtures can live under `BeautySDK/Tests/<TargetName>Tests/Fixtures/` or a package test-support target if needed.
+
+## Coverage
+
+**Requirements:**
+- No enforced coverage target exists.
+- `QUALITY_SCORE.md` scores Tests as 0 and lists parameter, preset, coordinate, detection, render, effect fixture, performance, security, and UI test gaps.
+
+**Configuration:**
+- No coverage configuration exists.
+
+**View Coverage:**
+- No command exists yet.
+
+## Test Types
+
+**Unit Tests:**
+- Not present.
+- First priority should be SDK value models and no-op engine behavior.
+
+**Integration Tests:**
+- Not present.
+- Future Demo integration should verify that `BeautyDemo` imports only `BeautySDK` and can initialize the facade.
+
+**E2E/UI Tests:**
+- Not present.
+- Future UI smoke tests should cover launch, permission-denied state, slider mapping, preset sync, and compare toggle after those features exist.
+
+## Common Patterns
+
+**Async Testing:**
+- No current async code.
+- Future realtime pipeline tests should verify off-main-thread processing and in-flight/drop behavior once implemented.
+
+**Error Testing:**
+- No current error paths.
+- Future tests should assert typed `BeautyError`, not raw framework errors or release-path crashes.
+
+**Snapshot Testing:**
+- Not used.
+
+---
+*Testing analysis: 2026-06-10*
+*Update when XCTest targets, Swift Package tests, UI tests, or coverage tooling are added.*

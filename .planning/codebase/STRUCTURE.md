@@ -1,115 +1,151 @@
----
-last_mapped: 2026-06-03
-last_mapped_commit: 5e20ce8ea81763f47b5194a69f90ab43a2eab675
-focus: arch
-mapping_mode: inline sequential fallback
----
+# Codebase Structure
 
-# Structure
+**Analysis Date:** 2026-06-10
 
-## Summary
-
-The main worktree is organized around root contracts, a minimal `BeautyDemo` Xcode app, historical docs, and generated GSD map artifacts. There is no mainline `BeautySDK/` directory yet.
-
-## Main Directories
+## Directory Layout
 
 ```text
-.
+beauty/
+├── AGENTS.md                         # Agent entry and routing rules
+├── ARCHITECTURE.md                   # Target SDK package and dependency contracts
+├── DESIGN.md                         # Parameter, frame, result, detection, render design contracts
+├── FRONTEND.md                       # SwiftUI Demo app rules and future UI structure
+├── SECURITY.md                       # Privacy, validation, resources, logging constraints
+├── RELIABILITY.md                    # Error, diagnostics, performance, recovery contracts
+├── PRODUCT_SENSE.md                  # Product journeys and acceptance criteria
+├── QUALITY_SCORE.md                  # Quality scorecard and recurring scans
+├── PLANS.md                          # Work ledger
 ├── BeautyDemo/
-│   ├── BeautyDemo.xcodeproj/
+│   ├── BeautyDemo.xcodeproj/         # Only current Xcode project
 │   └── BeautyDemo/
-├── docs/
-│   ├── README.md
-│   ├── 01_product_feature_plan.md
-│   ├── ...
-│   ├── 10_document_audit_report.md
-│   ├── _source/
-│   └── superpowers/
-├── .planning/
-│   └── codebase/
-├── .worktrees/              ignored local worktrees
-├── .codex-backups/          ignored local backups
-└── root contract markdown files
+│       ├── BeautyDemoApp.swift       # Current SwiftUI app entry
+│       ├── ContentView.swift         # Current default "Hello, world!" view
+│       └── Assets.xcassets/          # App icon and accent color metadata
+├── docs/                             # Long-form and historical planning docs
+│   ├── README.md                     # Docs entry and authority notes
+│   └── superpowers/                  # Historical planning specs/plans
+└── .planning/
+    └── codebase/                     # Generated GSD codebase map
 ```
 
-## Root Contract Files
+Ignored but present on disk:
 
-The root-level documentation system is the primary current contract layer:
+```text
+.worktrees/                           # Ignored auxiliary worktrees
+.codex-backups/                       # Ignored historical backups
+.serena/                              # Local tool metadata
+```
 
-- `AGENTS.md` routes agents and defines read order.
-- `PLANS.md` records active, completed, and technical debt work.
-- `ARCHITECTURE.md` defines SDK target boundaries and dependency direction.
-- `DESIGN.md` defines data structures, parameters, coordinates, render graph, and state machines.
-- `FRONTEND.md` defines Demo SwiftUI and UI state rules.
-- `SECURITY.md` defines privacy, permissions, validation, resources, and logging boundaries.
-- `RELIABILITY.md` defines errors, degradation, metrics, performance, reset, and crash policy.
-- `PRODUCT_SENSE.md` defines product journeys and acceptance checks.
-- `QUALITY_SCORE.md` defines scorecards, scans, and release gates.
+## Directory Purposes
 
-`AGENTS.md` states the precedence order as code and tests, then `PLANS.md`, then root specialty docs, then `docs/` history.
+**BeautyDemo/**
+- Purpose: Current iOS demo app project.
+- Contains: Xcode project plus app source directory.
+- Key files: `BeautyDemo/BeautyDemo.xcodeproj/project.pbxproj`, `BeautyDemo/BeautyDemo/BeautyDemoApp.swift`, `BeautyDemo/BeautyDemo/ContentView.swift`.
+- Subdirectories: `BeautyDemo/BeautyDemo/Assets.xcassets` for generated asset metadata.
 
-## Demo App Structure
+**docs/**
+- Purpose: Long-form product, architecture, implementation, algorithm, and audit background.
+- Contains: `docs/01_product_feature_plan.md` through `docs/10_document_audit_report.md`.
+- Key files: `docs/README.md` documents authority and current repo-state notes.
+- Subdirectories: `docs/superpowers/` contains historical spec/plan artifacts.
 
-Implemented files:
+**.planning/codebase/**
+- Purpose: Generated GSD map of current repository state.
+- Contains: `STACK.md`, `INTEGRATIONS.md`, `ARCHITECTURE.md`, `STRUCTURE.md`, `CONVENTIONS.md`, `TESTING.md`, `CONCERNS.md`.
+- Key files: This directory is consumed by `$gsd-new-project` brownfield initialization.
+- Subdirectories: None.
 
-- `BeautyDemo/BeautyDemo/BeautyDemoApp.swift`.
-- `BeautyDemo/BeautyDemo/ContentView.swift`.
-- `BeautyDemo/BeautyDemo/Assets.xcassets/Contents.json`.
-- `BeautyDemo/BeautyDemo/Assets.xcassets/AccentColor.colorset/Contents.json`.
-- `BeautyDemo/BeautyDemo/Assets.xcassets/AppIcon.appiconset/Contents.json`.
-- `BeautyDemo/BeautyDemo.xcodeproj/project.pbxproj`.
-- `BeautyDemo/BeautyDemo.xcodeproj/project.xcworkspace/contents.xcworkspacedata`.
+**Root markdown files**
+- Purpose: Current authoritative contracts and work ledger.
+- Contains: Agent workflow, architecture, design, frontend, security, reliability, product, quality, and plan docs.
+- Key files: `AGENTS.md` and `PLANS.md` are required reading before changes.
 
-The app source directory has no subfolders for `App/`, `Camera/`, `Editor/`, `Panel/`, `State/`, `Debug/`, or `Support/` yet. Those directories are recommended by `FRONTEND.md` for future work.
+## Key File Locations
 
-## Historical Docs
+**Entry Points:**
+- `BeautyDemo/BeautyDemo/BeautyDemoApp.swift`: App `@main` entry.
+- `BeautyDemo/BeautyDemo/ContentView.swift`: Initial SwiftUI view.
 
-`docs/README.md` is the long-document index. It points to:
+**Configuration:**
+- `BeautyDemo/BeautyDemo.xcodeproj/project.pbxproj`: Project target, build phases, generated Info.plist, Swift settings.
+- `.gitignore`: Ignores `.worktrees/`, `.codex-backups/`, `.DS_Store`, and `*.xcuserstate`.
+- `BeautyDemo/BeautyDemo.xcodeproj/project.xcworkspace/contents.xcworkspacedata`: Xcode workspace metadata.
 
-- `docs/01_product_feature_plan.md`.
-- `docs/02_development_stages_full_plan.md`.
-- `docs/03_architecture_spm_skeleton.md`.
-- `docs/04_development_spec.md`.
-- `docs/05_public_api_design.md`.
-- `docs/06_beauty_parameters_spec.md`.
-- `docs/07_face_landmarks_coordinate_system.md`.
-- `docs/08_metal_render_pipeline_design.md`.
-- `docs/09_algorithm_effects_implementation.md`.
-- `docs/10_document_audit_report.md`.
+**Core Logic:**
+- No SDK core logic exists yet.
+- Future SDK code should go under `BeautySDK/Sources/**` according to `ARCHITECTURE.md`.
 
-`docs/_source/docs_total.json` is preserved only as an imported source, not a reading entry.
+**Testing:**
+- No test files or test targets exist yet.
+- Future SDK tests should go under `BeautySDK/Tests/**` according to `ARCHITECTURE.md`.
 
-## Superpowers Planning Docs
+**Documentation:**
+- `AGENTS.md`: Agent entry and task routing.
+- `PLANS.md`: Active/completed work ledger.
+- `QUALITY_SCORE.md`: Current quality snapshot and required scans.
+- `docs/README.md`: Long-form docs index and authority notes.
 
-Existing planning artifacts outside `.planning/`:
+## Naming Conventions
 
-- `docs/superpowers/specs/2026-05-25-sdk-foundation-design.md`.
-- `docs/superpowers/plans/2026-05-25-sdk-foundation.md`.
+**Files:**
+- Root contract docs use uppercase names: `ARCHITECTURE.md`, `DESIGN.md`, `SECURITY.md`.
+- Long-form docs use numbered snake_case markdown names: `docs/01_product_feature_plan.md`.
+- Swift files use PascalCase: `BeautyDemoApp.swift`, `ContentView.swift`.
+- Xcode asset metadata uses `Contents.json`.
 
-These describe a future SDK foundation implementation plan. They are useful for phase planning, but the implementation is not present in the main worktree.
+**Directories:**
+- App/project names use PascalCase: `BeautyDemo`.
+- Future SDK package should use PascalCase: `BeautySDK`.
+- Historical docs use lowercase collection names: `docs/superpowers/specs`, `docs/superpowers/plans`.
 
-## Ignored Local State
+**Special Patterns:**
+- GSD generated codebase-map files use uppercase document names in `.planning/codebase/`.
+- Xcode user UI state `*.xcuserstate` is ignored.
+- `.worktrees/` is ignored and must not be counted as current main worktree implementation.
 
-`.gitignore` currently ignores:
+## Where to Add New Code
 
-- `.DS_Store`.
-- `.codex-backups/`.
-- `.worktrees/`.
-- `*.xcuserstate`.
+**New SDK Package:**
+- Primary code: `BeautySDK/Sources/<TargetName>/`.
+- Tests: `BeautySDK/Tests/<TargetName>Tests/`.
+- Package manifest: `BeautySDK/Package.swift`.
+- Contract owners: `ARCHITECTURE.md`, `DESIGN.md`, `SECURITY.md`, `RELIABILITY.md`.
 
-Local ignored directories observed:
+**New Demo UI:**
+- Implementation: `BeautyDemo/BeautyDemo/`.
+- Suggested future organization: `App/`, `Camera/`, `Editor/`, `Panel/`, `State/`, `Debug/`, `Support/` from `FRONTEND.md`.
+- Tests: add Xcode test targets or UI test targets before claiming automated UI coverage.
 
-- `.codex-backups/BeautyDemo_git_before_root_init_20260525_190709`.
-- `.codex-backups/docs_zh_before_english_20260525_1830`.
-- `.worktrees/sdk-foundation`.
+**New Resources:**
+- App-only assets: `BeautyDemo/BeautyDemo/Assets.xcassets`.
+- Future SDK resources: `BeautySDK/Sources/BeautyResources/Resources/` or Swift Package resource declarations.
+- Resource security owner: `SECURITY.md`.
 
-`git worktree list` reports:
+**New Planning Work:**
+- GSD project context: `.planning/PROJECT.md`.
+- GSD requirements/roadmap/state: `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`.
+- Phase artifacts: `.planning/phases/`.
 
-- `/Users/yakangwang/codes/beauty` on branch `main`.
-- `/Users/yakangwang/codes/beauty/.worktrees/sdk-foundation` on branch `codex/sdk-foundation`.
+## Special Directories
 
-The ignored worktree contains a `BeautySDK/Package.swift`, but it is not part of the main worktree structure.
+**.worktrees/**
+- Purpose: Auxiliary worktree experiments, including `sdk-foundation`.
+- Source: Local ignored workspace.
+- Committed: No; ignored by `.gitignore`.
+- Caution: Do not treat implementation under `.worktrees/sdk-foundation/` as delivered in the main worktree.
 
-## Current Git State Caveat
+**.codex-backups/**
+- Purpose: Historical backups, including the old nested `BeautyDemo` git repository backup.
+- Source: Local backup from repository restructuring.
+- Committed: No; ignored by `.gitignore`.
 
-At mapping time, the main worktree was dirty before this task. Existing changes included root docs, renamed docs, deleted historical filenames, and untracked docs. This map adds `.planning/codebase/` and updates `PLANS.md`; it does not normalize or revert pre-existing changes.
+**docs/_source/**
+- Purpose: Imported source material only.
+- Source: Historical import.
+- Committed: Currently untracked in this working tree.
+- Caution: `AGENTS.md` says it is not a reading entry.
+
+---
+*Structure analysis: 2026-06-10*
+*Update when the SDK package, tests, CI, or Demo directory structure changes.*

@@ -30,6 +30,23 @@ No active plans.
 
 ## 4. Completed
 
+### C-2026-06-10-gsd-codebase-remap
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-10 |
+| Scope | 重新运行 `$gsd-map-codebase`，为后续 `$gsd-new-project` brownfield 初始化生成当前 `.planning/codebase/`。 |
+| Files | `.planning/codebase/STACK.md`, `.planning/codebase/INTEGRATIONS.md`, `.planning/codebase/ARCHITECTURE.md`, `.planning/codebase/STRUCTURE.md`, `.planning/codebase/CONVENTIONS.md`, `.planning/codebase/TESTING.md`, `.planning/codebase/CONCERNS.md`, `PLANS.md` |
+| Verification | `gsd-tools query init.map-codebase` 返回 `has_maps: false`、`codebase_dir_exists: false`、`date: 2026-06-10`；`wc -l .planning/codebase/*.md` 输出 145、136、117、99、97、151、169 行，合计 914 行；常见 secret/token `grep -E` 扫描输出 `SECRETS_FOUND=false`；未填模板标记扫描只命中 `CONVENTIONS.md` 中“当前源码没有 TODO/FIXME”的说明；`git diff --check -- .planning/codebase PLANS.md` 无输出。 |
+| Build | 未运行；原因是本次只生成 GSD codebase map 文档并更新计划账本，未改 Swift / Xcode 工程。 |
+
+Outcome:
+
+- `.planning/codebase/` 已重新包含 GSD 要求的 7 个映射文档。
+- 映射记录当前真实代码面：仓库内只有 `BeautyDemo` SwiftUI Demo 壳，目标 SDK package、测试 target、CI 与 privacy manifest 尚未落地。
+- 当前 runtime 无专用 `Agent` 工具；按 `$gsd-map-codebase` fallback 以顺序 inline mapping 完成。
+- 后续可继续重新运行 `$gsd-new-project`，进入 brownfield 项目初始化。
+
 ### C-2026-05-25-root-git-initialized
 
 | Field | Value |
