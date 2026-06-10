@@ -89,45 +89,45 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SDK-01 | TBD | Pending |
-| SDK-02 | TBD | Pending |
-| SDK-03 | TBD | Pending |
-| SDK-04 | TBD | Pending |
-| SDK-05 | TBD | Pending |
-| SDK-06 | TBD | Pending |
-| SDK-07 | TBD | Pending |
-| SDK-08 | TBD | Pending |
-| PIPE-01 | TBD | Pending |
-| PIPE-02 | TBD | Pending |
-| PIPE-03 | TBD | Pending |
-| PIPE-04 | TBD | Pending |
-| PIPE-05 | TBD | Pending |
-| PIPE-06 | TBD | Pending |
-| PIPE-07 | TBD | Pending |
-| PIPE-08 | TBD | Pending |
-| EFFECT-01 | TBD | Pending |
-| EFFECT-02 | TBD | Pending |
-| EFFECT-03 | TBD | Pending |
-| EFFECT-04 | TBD | Pending |
-| EFFECT-05 | TBD | Pending |
-| EFFECT-06 | TBD | Pending |
-| EFFECT-07 | TBD | Pending |
-| EFFECT-08 | TBD | Pending |
-| EFFECT-09 | TBD | Pending |
-| DEMO-01 | TBD | Pending |
-| DEMO-02 | TBD | Pending |
-| DEMO-03 | TBD | Pending |
-| DEMO-04 | TBD | Pending |
-| DEMO-05 | TBD | Pending |
-| DEMO-06 | TBD | Pending |
-| DEMO-07 | TBD | Pending |
-| DEMO-08 | TBD | Pending |
+| SDK-01 | Phase 1 | Pending |
+| SDK-02 | Phase 1 | Pending |
+| SDK-03 | Phase 1 | Pending |
+| SDK-04 | Phase 1 | Pending |
+| SDK-05 | Phase 1 | Pending |
+| SDK-06 | Phase 1 | Pending |
+| SDK-07 | Phase 1 | Pending |
+| SDK-08 | Phase 2 | Pending |
+| PIPE-01 | Phase 3 | Pending |
+| PIPE-02 | Phase 3 | Pending |
+| PIPE-03 | Phase 3 | Pending |
+| PIPE-04 | Phase 3 | Pending |
+| PIPE-05 | Phase 4 | Pending |
+| PIPE-06 | Phase 3 | Pending |
+| PIPE-07 | Phase 4 | Pending |
+| PIPE-08 | Phase 3 | Pending |
+| EFFECT-01 | Phase 6 | Pending |
+| EFFECT-02 | Phase 5 | Pending |
+| EFFECT-03 | Phase 5 | Pending |
+| EFFECT-04 | Phase 6 | Pending |
+| EFFECT-05 | Phase 6 | Pending |
+| EFFECT-06 | Phase 6 | Pending |
+| EFFECT-07 | Phase 6 | Pending |
+| EFFECT-08 | Phase 5 | Pending |
+| EFFECT-09 | Phase 6 | Pending |
+| DEMO-01 | Phase 3 | Pending |
+| DEMO-02 | Phase 2 | Pending |
+| DEMO-03 | Phase 2 | Pending |
+| DEMO-04 | Phase 2 | Pending |
+| DEMO-05 | Phase 2 | Pending |
+| DEMO-06 | Phase 7 | Pending |
+| DEMO-07 | Phase 7 | Pending |
+| DEMO-08 | Phase 2 | Pending |
 
 **Coverage:**
 - v1 requirements: 33 total
-- Mapped to phases: 0
-- Unmapped: 33 pending roadmap
+- Mapped to phases: 33
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-06-10*
-*Last updated: 2026-06-10 after initial definition*
+*Last updated: 2026-06-10 after roadmap traceability mapping*
