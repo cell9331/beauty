@@ -30,6 +30,23 @@ No active plans.
 
 ## 4. Completed
 
+### C-2026-06-10-gsd-new-project-init
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-10 |
+| Scope | 完成 `$gsd-new-project` brownfield 初始化：project context、workflow config、research、requirements、roadmap、state。 |
+| Files | `.planning/PROJECT.md`, `.planning/config.json`, `.planning/research/STACK.md`, `.planning/research/FEATURES.md`, `.planning/research/ARCHITECTURE.md`, `.planning/research/PITFALLS.md`, `.planning/research/SUMMARY.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `.planning/PROJECT.md` 103 行并提交 `0b3cc88`；`.planning/config.json` JSON parse 通过并提交 `af2bb73`；research 5 文件合计 920 行并提交 `39a0d34`；`.planning/REQUIREMENTS.md` 133 行、v1 33 条并提交 `c77745d`；roadmap/state/requirements traceability 提交 `d1e78d3`；`roadmap.get-phase 1` 返回 `found: true`、`mode: mvp`；coverage script 输出 `v1_ids: 33`、`traceability_rows: 33`、`roadmap_refs: 33`、无 missing / duplicate；secret scans 输出 `SECRETS_FOUND=false`；`git diff --check` 对 GSD artifacts 无输出。 |
+| Build | 未运行；原因是本次只生成 GSD planning artifacts，未改 Swift / Xcode 工程源码。 |
+
+Outcome:
+
+- 项目方向已固定为模块化 iOS 美颜 SDK，Demo 通过 `BeautySDK` public facade 展示类似美图秀秀/醒图的丰富能力。
+- v1 requirements 共 33 条，覆盖 SDK foundation、input pipelines、MVP effects 和 rich Demo；advanced makeup / segmentation / body / stickers / AI style / video export 已延后到 v2+。
+- Roadmap 共 7 个 `mvp` phase、27 个计划槽位；Phase 1 是 `SDK Foundation and Public Facade`。
+- `AGENTS.md` 未由 `generate-claude-md` 覆盖：预览会生成 284 行 GSD 内容，且当前 `AGENTS.md` 已有仓库定制与未提交变更；直接覆盖会违反本仓库入口文件约束。
+
 ### C-2026-06-10-gsd-codebase-remap
 
 | Field | Value |
