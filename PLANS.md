@@ -26,28 +26,28 @@
 
 ## 3. Active
 
-### P-2026-06-11-gsd-phase-2-demo-integration-shell
+No active plan.
+
+## 4. Completed
+
+### C-2026-06-11-gsd-phase-2-demo-integration-shell
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
-| Owner | Agent |
-| Started | 2026-06-11 |
-| Scope | Execute GSD Phase 2: wire `BeautyDemo` through the public `BeautySDK` facade, expose the rich editor category skeleton, and add deterministic Demo view-state tests. |
-| Source Request | `$gsd-execute-phase 2` |
-| Current Step | 02-02 completed; executing 02-03 next. |
-| Verification Policy | Run explicit iOS Simulator build/test for `BeautyDemo`, static forbidden internal-import scans, category/slider view-state tests, and `git diff --check` for touched paths. |
+| Completed | 2026-06-11 |
+| Scope | Executed GSD Phase 2: wired `BeautyDemo` through the public `BeautySDK` facade, rendered the editor shell/category skeleton, and added deterministic Demo view-state tests. |
+| Files | `BeautyDemo/BeautyDemo.xcodeproj/project.pbxproj`, `BeautyDemo/BeautyDemo/App/BeautyDemoApp.swift`, `BeautyDemo/BeautyDemo/Editor/EditorShellView.swift`, `BeautyDemo/BeautyDemo/Panel/*.swift`, `BeautyDemo/BeautyDemo/State/BeautyParameterStore.swift`, `BeautyDemo/BeautyDemo/Support/DemoFixtures.swift`, `BeautyDemo/BeautyDemoTests/*.swift`, `.planning/phases/02-demo-integration-shell/*-SUMMARY.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, `.planning/REQUIREMENTS.md`, `QUALITY_SCORE.md`, `PLANS.md` |
+| Verification | `swift test --package-path BeautySDK` passed with 20 XCTest cases; `xcodebuild -list -project BeautyDemo/BeautyDemo.xcodeproj` listed targets `BeautyDemo`, `BeautyDemoTests` and schemes `BeautyDemo`, `BeautySDK`; simulator `xcodebuild build` and `xcodebuild test` passed for `platform=iOS Simulator,name=iPhone 17,OS=26.5` with 22 Demo XCTest cases; forbidden internal import scan returned no matches; `Hello, world!` scan returned no matches; media/network scan returned no matches; requirement trace scan found `SDK-08`, `DEMO-02`, `DEMO-03`, `DEMO-04`, `DEMO-05`, and `DEMO-08`; `git diff --check` exited 0. |
+| Build | SDK package tests and Demo simulator build/test passed. |
 
-Checklist:
+Outcome:
 
-| Step | Status | Evidence |
-| --- | --- | --- |
-| 02-01 shell wiring | `completed` | Commits `fc5be8a`, `507f698`, `2302fa2`; `xcodebuild -list`, simulator build/test, forbidden internal import scan, `Hello, world!` scan, and `git diff --check` passed. |
-| 02-02 view models | `completed` | Commits `ed48397`, `bfec53b`, `0022d11`; simulator `xcodebuild test`, `build-for-testing`, category/subcategory scans, parameter/status/reset scans, no media/network scan, and `git diff --check` passed. |
-| 02-03 view-state tests | `planned` | Pending execution. |
-| Phase 2 final verification | `planned` | Pending after all Phase 2 plans complete. |
-
-## 4. Completed
+- Demo app/test target imports the public `BeautySDK` facade and no internal SDK targets.
+- Editor shell now uses feature directories for App, Editor, Panel, State, and Support.
+- Demo first screen renders a static preview fixture, disabled Camera/Photo entries, descriptor-driven category rail, active panel, sliders, reset controls, and honest disabled/future availability states.
+- Top-level categories and Facial Features subcategories are represented through deterministic descriptors and covered by tests.
+- App-side parameter display values clamp and normalize into public `BeautyParameters` snapshots, including single-reset and reset-all behavior.
+- Phase 2 requirement IDs `SDK-08`, `DEMO-02`, `DEMO-03`, `DEMO-04`, `DEMO-05`, and `DEMO-08` are complete in `.planning/REQUIREMENTS.md`.
 
 ### C-2026-06-11-gsd-phase-1-sdk-foundation
 

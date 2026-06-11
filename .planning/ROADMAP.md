@@ -14,7 +14,7 @@ Beauty v1 builds a modular iOS beauty SDK and a rich Demo app in vertical slices
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: SDK Foundation and Public Facade** - Host apps can import and exercise a no-op modular SDK. (completed 2026-06-11)
-- [ ] **Phase 2: Demo Integration Shell** - Demo uses only the public facade and exposes the rich category skeleton.
+- [x] **Phase 2: Demo Integration Shell** - Demo uses only the public facade and exposes the rich category skeleton. (completed 2026-06-11)
 - [ ] **Phase 3: Realtime and Still Input Slice** - Demo can send camera frames and still images through the SDK safely.
 - [ ] **Phase 4: Detection and Coordinate Safety** - SDK can reason about faces, orientation, mirroring, and safe degraded frames.
 - [ ] **Phase 5: Filters, Presets, and Resource Flow** - Users can apply safe color/filter controls and built-in presets.
@@ -69,7 +69,7 @@ Plans:
   4. Unimplemented v1 and v2 controls are disabled or clearly marked coming later.
   5. View-state or UI tests cover category visibility, disabled controls, slider normalization, and import boundaries.
 
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 Plans:
 **Wave 1**
 
@@ -81,7 +81,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 02-03: Add Demo view-state/import-boundary tests.
+- [x] 02-03: Add Demo view-state/import-boundary tests.
 
 ### Phase 3: Realtime and Still Input Slice
 
@@ -206,7 +206,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. SDK Foundation and Public Facade | 4/4 | Complete    | 2026-06-11 |
-| 2. Demo Integration Shell | 2/3 | In Progress|  |
+| 2. Demo Integration Shell | 3/3 | Complete    | 2026-06-11 |
 | 3. Realtime and Still Input Slice | 0/4 | Not started | - |
 | 4. Detection and Coordinate Safety | 0/4 | Not started | - |
 | 5. Filters, Presets, and Resource Flow | 0/4 | Not started | - |
