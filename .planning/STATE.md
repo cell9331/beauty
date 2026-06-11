@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to discuss Phase 02
+status: executing
 stopped_at: Phase 2 UI-SPEC approved
-last_updated: "2026-06-11T08:23:23.099Z"
-last_activity: 2026-06-11 -- Phase 02 planning complete
+last_updated: "2026-06-11T08:47:45.970Z"
+last_activity: 2026-06-11 -- Phase 02 execution started
 progress:
   total_phases: 7
   completed_phases: 1
-  total_plans: 4
-  completed_plans: 4
-  percent: 14
+  total_plans: 7
+  completed_plans: 5
+  percent: 71
 ---
 
 # Project State
@@ -21,22 +21,22 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-10)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 02 — Demo Integration Shell
+**Current focus:** Phase 02 — demo-integration-shell
 
 ## Current Position
 
-Phase: 2
-Plan: Not started
-Status: Ready to discuss Phase 02
-Last activity: 2026-06-11 -- Phase 02 planning complete
+Phase: 02 (demo-integration-shell) — EXECUTING
+Plan: 2 of 3
+Status: Ready to execute
+Last activity: 2026-06-11 -- Phase 02 plan 02-01 completed
 
-Progress: █░░░░░░░░░ 14%
+Progress: ███████░░░ 71%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 4
+- Total plans completed: 5
 - Average duration: N/A
 - Total execution time: 0.0 hours
 
@@ -45,12 +45,13 @@ Progress: █░░░░░░░░░ 14%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. SDK Foundation and Public Facade | 4/4 | N/A | N/A |
-| 2. Demo Integration Shell | 0/3 | N/A | N/A |
+| 2. Demo Integration Shell | 1/3 | N/A | N/A |
 | 3. Realtime and Still Input Slice | 0/4 | N/A | N/A |
 | 4. Detection and Coordinate Safety | 0/4 | N/A | N/A |
 | 5. Filters, Presets, and Resource Flow | 0/4 | N/A | N/A |
 | 6. Core Beauty Effects | 0/5 | N/A | N/A |
 | 7. Rich Demo QA Surface | 0/3 | N/A | N/A |
+| Phase 02 P02-01 | N/A | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -69,7 +70,6 @@ None yet.
 
 ### Blockers/Concerns
 
-- Current Demo is still the default SwiftUI template; Phase 2 must replace it with an SDK integration shell.
 - Current repository has unrelated uncommitted documentation changes outside `.planning`; future commits should keep file scopes explicit.
 - GSD `phase.complete` reported deferred v2 `ADV-*` IDs in `.planning/REQUIREMENTS.md` body but not in its Traceability table; tracked as `TD-007` in `PLANS.md`.
 
