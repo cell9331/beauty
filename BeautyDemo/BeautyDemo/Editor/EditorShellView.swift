@@ -2,14 +2,19 @@ import BeautySDK
 import SwiftUI
 
 struct EditorShellView: View {
-    @State private var parameters = BeautyParameters()
+    @StateObject private var parameterStore = BeautyParameterStore()
     @State private var selectedCategoryID: BeautyCategoryID = .beauty
+    @State private var selectedSubcategoryID: FacialFeatureSubcategoryID = .eyes
 
     var body: some View {
         VStack(spacing: 16) {
             modeHeader
             previewFixture
-            parameterPanel
+            BeautyPanelView(
+                selectedCategoryID: selectedCategoryID,
+                selectedSubcategoryID: $selectedSubcategoryID,
+                parameterStore: parameterStore
+            )
             BeautyCategoryRailView(selectedCategoryID: $selectedCategoryID)
         }
         .padding(16)
@@ -67,63 +72,6 @@ struct EditorShellView: View {
                 .offset(y: 40)
         }
         .accessibilityHidden(true)
-    }
-
-    private var parameterPanel: some View {
-        let selectedCategory = BeautyCategory.category(id: selectedCategoryID)
-
-        return VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text(selectedCategory.title)
-                    .font(.system(size: 20, weight: .semibold))
-                Spacer()
-                Text("Apply Parameters")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Color(red: 47 / 255, green: 107 / 255, blue: 255 / 255))
-            }
-
-            if selectedCategory.availability.isEnabled {
-                HStack(spacing: 8) {
-                    Circle()
-                        .fill(Color(red: 47 / 255, green: 107 / 255, blue: 255 / 255))
-                        .frame(width: 8, height: 8)
-                    Text("Parameters applied")
-                        .font(.system(size: 13))
-                    Text(DemoFixtures.visualPendingStatus)
-                        .font(.system(size: 13))
-                        .foregroundStyle(.secondary)
-                }
-
-                Text("Default SDK snapshot: \(parameters.skinSmoothing, specifier: "%.0f")")
-                    .font(.system(size: 13))
-                    .foregroundStyle(.secondary)
-            } else {
-                disabledMessage(for: selectedCategory.availability)
-            }
-        }
-        .padding(16)
-        .background(Color.white)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
-    }
-
-    private func disabledMessage(for availability: BeautyAvailability) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            if let badge = availability.badge {
-                Text(badge)
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Color(red: 47 / 255, green: 107 / 255, blue: 255 / 255))
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(Color(red: 238 / 255, green: 243 / 255, blue: 255 / 255))
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-            }
-
-            if let reason = availability.reason {
-                Text(reason)
-                    .font(.system(size: 13))
-                    .foregroundStyle(.secondary)
-            }
-        }
     }
 }
 
