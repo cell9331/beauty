@@ -46,8 +46,8 @@ Requirements for the initial SDK milestone. Each requirement must map to exactly
 - [ ] **DEMO-01**: Demo main flow offers camera mode and still-image editing mode.
 - [x] **DEMO-02**: Demo exposes bottom-level categories for Beauty, Face Shape, Facial Features, Makeup, Filters, Stickers, Background, and Style.
 - [x] **DEMO-03**: Demo shows v1-unimplemented categories or controls, including advanced makeup, stickers, background, and style, as disabled or coming-later states rather than active features.
-- [ ] **DEMO-04**: Demo exposes Facial Features subcategories for Eyes, Nose, Mouth, Eyebrows, Teeth, and Hairline, with v1-unimplemented items disabled.
-- [ ] **DEMO-05**: Demo sliders support `0...100` and `-100...100` display ranges and normalize values before passing parameters to the SDK.
+- [x] **DEMO-04**: Demo exposes Facial Features subcategories for Eyes, Nose, Mouth, Eyebrows, Teeth, and Hairline, with v1-unimplemented items disabled.
+- [x] **DEMO-05**: Demo sliders support `0...100` and `-100...100` display ranges and normalize values before passing parameters to the SDK.
 - [ ] **DEMO-06**: Demo supports preset selection, single-parameter reset, reset-all, and basic parameter JSON import/export.
 - [ ] **DEMO-07**: Demo provides before/after compare and debug overlay states for detection, degradation, and recoverable errors.
 - [x] **DEMO-08**: Automated Demo tests or view-state tests cover visible categories, disabled unavailable controls, slider normalization, and no internal SDK target imports.
@@ -117,8 +117,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DEMO-01 | Phase 3 | Pending |
 | DEMO-02 | Phase 2 | Complete |
 | DEMO-03 | Phase 2 | Complete |
-| DEMO-04 | Phase 2 | Pending |
-| DEMO-05 | Phase 2 | Pending |
+| DEMO-04 | Phase 2 | Complete |
+| DEMO-05 | Phase 2 | Complete |
 | DEMO-06 | Phase 7 | Pending |
 | DEMO-07 | Phase 7 | Pending |
 | DEMO-08 | Phase 2 | Complete |

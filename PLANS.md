@@ -35,7 +35,7 @@
 | Started | 2026-06-11 |
 | Scope | Execute GSD Phase 2: wire `BeautyDemo` through the public `BeautySDK` facade, expose the rich editor category skeleton, and add deterministic Demo view-state tests. |
 | Source Request | `$gsd-execute-phase 2` |
-| Current Step | 02-01 completed; executing 02-02 next. |
+| Current Step | 02-02 completed; executing 02-03 next. |
 | Verification Policy | Run explicit iOS Simulator build/test for `BeautyDemo`, static forbidden internal-import scans, category/slider view-state tests, and `git diff --check` for touched paths. |
 
 Checklist:
@@ -43,7 +43,7 @@ Checklist:
 | Step | Status | Evidence |
 | --- | --- | --- |
 | 02-01 shell wiring | `completed` | Commits `fc5be8a`, `507f698`, `2302fa2`; `xcodebuild -list`, simulator build/test, forbidden internal import scan, `Hello, world!` scan, and `git diff --check` passed. |
-| 02-02 view models | `planned` | Pending execution. |
+| 02-02 view models | `completed` | Commits `ed48397`, `bfec53b`, `0022d11`; simulator `xcodebuild test`, `build-for-testing`, category/subcategory scans, parameter/status/reset scans, no media/network scan, and `git diff --check` passed. |
 | 02-03 view-state tests | `planned` | Pending execution. |
 | Phase 2 final verification | `planned` | Pending after all Phase 2 plans complete. |
 
