@@ -22,6 +22,7 @@ enum BeautyControlID: String, CaseIterable, Hashable, Sendable {
     case mouthWidth
     case smile
     case lipColor
+    case filterId
     case filterIntensity
 }
 
@@ -47,6 +48,7 @@ enum BeautyParameterKey: String, Hashable, Sendable {
     case mouthWidth
     case smile
     case lipColor
+    case filterId
     case filterIntensity
 }
 
@@ -80,4 +82,226 @@ struct BeautyControlDescriptor: Identifiable, Equatable, Sendable {
     let availability: BeautyAvailability
 
     var defaultDisplayValue: Double { 0 }
+}
+
+extension BeautyControlDescriptor {
+    static let beautyControls: [BeautyControlDescriptor] = [
+        BeautyControlDescriptor(
+            id: .skinSmoothing,
+            label: "Skin Smoothing",
+            parameterKey: .skinSmoothing,
+            displayRange: .enhancement,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .skinWhitening,
+            label: "Skin Whitening",
+            parameterKey: .skinWhitening,
+            displayRange: .enhancement,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .skinRosy,
+            label: "Rosy Tone",
+            parameterKey: .skinRosy,
+            displayRange: .enhancement,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .skinSharpen,
+            label: "Skin Sharpen",
+            parameterKey: .skinSharpen,
+            displayRange: .enhancement,
+            availability: .available
+        )
+    ]
+
+    static let faceShapeControls: [BeautyControlDescriptor] = [
+        BeautyControlDescriptor(
+            id: .faceSlim,
+            label: "Face Slim",
+            parameterKey: .faceSlim,
+            displayRange: .enhancement,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .faceSmall,
+            label: "Small Face",
+            parameterKey: .faceSmall,
+            displayRange: .enhancement,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .faceVShape,
+            label: "V Shape",
+            parameterKey: .faceVShape,
+            displayRange: .enhancement,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .jawSlim,
+            label: "Jaw Slim",
+            parameterKey: .jawSlim,
+            displayRange: .enhancement,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .chinLength,
+            label: "Chin Length",
+            parameterKey: .chinLength,
+            displayRange: .bidirectional,
+            availability: .available
+        )
+    ]
+
+    static let eyesControls: [BeautyControlDescriptor] = [
+        BeautyControlDescriptor(
+            id: .eyeSize,
+            label: "Eye Size",
+            parameterKey: .eyeSize,
+            displayRange: .bidirectional,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .eyeDistance,
+            label: "Eye Distance",
+            parameterKey: .eyeDistance,
+            displayRange: .bidirectional,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .eyeYPosition,
+            label: "Eye Vertical Position",
+            parameterKey: .eyeYPosition,
+            displayRange: .bidirectional,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .eyeTailLift,
+            label: "Eye Tail Lift",
+            parameterKey: .eyeTailLift,
+            displayRange: .bidirectional,
+            availability: .available
+        )
+    ]
+
+    static let noseControls: [BeautyControlDescriptor] = [
+        BeautyControlDescriptor(
+            id: .noseSlim,
+            label: "Nose Slim",
+            parameterKey: .noseSlim,
+            displayRange: .enhancement,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .noseWingSlim,
+            label: "Nose Wing Slim",
+            parameterKey: .noseWingSlim,
+            displayRange: .enhancement,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .noseTipSize,
+            label: "Nose Tip Size",
+            parameterKey: .noseTipSize,
+            displayRange: .bidirectional,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .noseBridge,
+            label: "Nose Bridge",
+            parameterKey: .noseBridge,
+            displayRange: .enhancement,
+            availability: .available
+        )
+    ]
+
+    static let mouthControls: [BeautyControlDescriptor] = [
+        BeautyControlDescriptor(
+            id: .mouthSize,
+            label: "Mouth Size",
+            parameterKey: .mouthSize,
+            displayRange: .bidirectional,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .mouthWidth,
+            label: "Mouth Width",
+            parameterKey: .mouthWidth,
+            displayRange: .bidirectional,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .smile,
+            label: "Smile",
+            parameterKey: .smile,
+            displayRange: .enhancement,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .lipColor,
+            label: "Lip Color",
+            parameterKey: .lipColor,
+            displayRange: .enhancement,
+            availability: .available
+        )
+    ]
+
+    static let filterControls: [BeautyControlDescriptor] = [
+        BeautyControlDescriptor(
+            id: .filterId,
+            label: "Filter",
+            parameterKey: .filterId,
+            displayRange: .enhancement,
+            availability: .filtersPhaseFive
+        ),
+        BeautyControlDescriptor(
+            id: .filterIntensity,
+            label: "Filter Intensity",
+            parameterKey: .filterIntensity,
+            displayRange: .enhancement,
+            availability: .filtersPhaseFive
+        )
+    ]
+
+    static let all: [BeautyControlDescriptor] = beautyControls
+        + faceShapeControls
+        + eyesControls
+        + noseControls
+        + mouthControls
+        + filterControls
+
+    static let availableControls: [BeautyControlDescriptor] = all.filter(\.availability.isEnabled)
+
+    static func descriptor(id: BeautyControlID) -> BeautyControlDescriptor {
+        all.first { $0.id == id }!
+    }
+
+    static func controls(for categoryID: BeautyCategoryID) -> [BeautyControlDescriptor] {
+        switch categoryID {
+        case .beauty:
+            beautyControls
+        case .faceShape:
+            faceShapeControls
+        case .facialFeatures:
+            eyesControls
+        case .filters:
+            filterControls
+        case .makeup, .stickers, .background, .style:
+            []
+        }
+    }
+
+    static func controls(for subcategoryID: FacialFeatureSubcategoryID) -> [BeautyControlDescriptor] {
+        switch subcategoryID {
+        case .eyes:
+            eyesControls
+        case .nose:
+            noseControls
+        case .mouth:
+            mouthControls
+        case .eyebrows, .teeth, .hairline:
+            []
+        }
+    }
 }

@@ -18,6 +18,16 @@ struct BeautyAvailability: Equatable, Sendable {
             reason: reason
         )
     }
+
+    static let futureResourceSupport = BeautyAvailability.disabled(
+        badge: "Requires future resource support",
+        reason: "This control depends on future resource support."
+    )
+
+    static let filtersPhaseFive = BeautyAvailability.disabled(
+        badge: "Coming in Phase 5",
+        reason: "Filter resources and presets arrive in Phase 5."
+    )
 }
 
 enum BeautyPanelKind: String, Equatable, Sendable {
@@ -76,10 +86,7 @@ extension BeautyCategory {
         BeautyCategory(
             id: .filters,
             title: "Filters",
-            availability: .disabled(
-                badge: "Coming in Phase 5",
-                reason: "Filter resources and presets arrive in Phase 5."
-            ),
+            availability: .filtersPhaseFive,
             panelKind: .disabled
         ),
         BeautyCategory(
