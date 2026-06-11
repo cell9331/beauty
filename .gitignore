@@ -2,3 +2,4 @@
 .codex-backups/
 .worktrees/
 *.xcuserstate
+.build/
