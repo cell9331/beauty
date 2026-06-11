@@ -1,12 +1,17 @@
 ---
-gsd_state_version: '1.0'
-status: planning
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: Ready to discuss Phase 02
+stopped_at: Phase 2 context gathered
+last_updated: "2026-06-11T03:35:16.474Z"
+last_activity: 2026-06-11
 progress:
   total_phases: 7
-  completed_phases: 0
-  total_plans: 27
-  completed_plans: 0
-  percent: 0
+  completed_phases: 1
+  total_plans: 4
+  completed_plans: 4
+  percent: 14
 ---
 
 # Project State
@@ -16,21 +21,22 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-10)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 1: SDK Foundation and Public Facade
+**Current focus:** Phase 02 — Demo Integration Shell
 
 ## Current Position
 
-Phase: 1 of 7 (SDK Foundation and Public Facade)
-Plan: 0 of 4 in current phase
-Status: Ready to plan
-Last activity: 2026-06-10 — Phase 1 context gathered.
+Phase: 2
+Plan: Not started
+Status: Ready to discuss Phase 02
+Last activity: 2026-06-11
 
-Progress: ░░░░░░░░░░ 0%
+Progress: █░░░░░░░░░ 14%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
+
+- Total plans completed: 4
 - Average duration: N/A
 - Total execution time: 0.0 hours
 
@@ -38,7 +44,7 @@ Progress: ░░░░░░░░░░ 0%
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. SDK Foundation and Public Facade | 0/4 | N/A | N/A |
+| 1. SDK Foundation and Public Facade | 4/4 | N/A | N/A |
 | 2. Demo Integration Shell | 0/3 | N/A | N/A |
 | 3. Realtime and Still Input Slice | 0/4 | N/A | N/A |
 | 4. Detection and Coordinate Safety | 0/4 | N/A | N/A |
@@ -63,9 +69,9 @@ None yet.
 
 ### Blockers/Concerns
 
-- Current main worktree has no `BeautySDK/Package.swift`; Phase 1 must create SDK foundation before other phases can execute.
 - Current Demo is still the default SwiftUI template; Phase 2 must replace it with an SDK integration shell.
 - Current repository has unrelated uncommitted documentation changes outside `.planning`; future commits should keep file scopes explicit.
+- GSD `phase.complete` reported deferred v2 `ADV-*` IDs in `.planning/REQUIREMENTS.md` body but not in its Traceability table; tracked as `TD-007` in `PLANS.md`.
 
 ## Deferred Items
 
@@ -75,6 +81,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-10 21:04 +08:00
-Stopped at: Phase 1 context gathered
-Resume file: .planning/phases/01-sdk-foundation-and-public-facade/01-CONTEXT.md
+Last session: 2026-06-11T03:35:16.472Z
+Stopped at: Phase 2 context gathered
+Resume file: .planning/phases/02-demo-integration-shell/02-CONTEXT.md
