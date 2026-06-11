@@ -48,6 +48,7 @@ Outcome:
 - Top-level categories and Facial Features subcategories are represented through deterministic descriptors and covered by tests.
 - App-side parameter display values clamp and normalize into public `BeautyParameters` snapshots, including single-reset and reset-all behavior.
 - Phase 2 requirement IDs `SDK-08`, `DEMO-02`, `DEMO-03`, `DEMO-04`, `DEMO-05`, and `DEMO-08` are complete in `.planning/REQUIREMENTS.md`.
+- Reproducibility correction: commit `195f362` tracks the current `BeautySDK` package sources/tests on `main` and ignores SwiftPM `.build/` output; `swift test --package-path BeautySDK` passed with 20 XCTest cases after staging that file set.
 
 ### C-2026-06-11-gsd-phase-1-sdk-foundation
 
