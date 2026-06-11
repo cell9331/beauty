@@ -3,13 +3,14 @@ import SwiftUI
 
 struct EditorShellView: View {
     @State private var parameters = BeautyParameters()
+    @State private var selectedCategoryID: BeautyCategoryID = .beauty
 
     var body: some View {
         VStack(spacing: 16) {
             modeHeader
             previewFixture
             parameterPanel
-            categoryRail
+            BeautyCategoryRailView(selectedCategoryID: $selectedCategoryID)
         }
         .padding(16)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -19,22 +20,7 @@ struct EditorShellView: View {
     private var modeHeader: some View {
         HStack(spacing: 8) {
             ForEach(DemoFixtures.disabledModes) { mode in
-                Button {
-                } label: {
-                    HStack(spacing: 8) {
-                        Image(systemName: mode.title == "Camera" ? "camera" : "photo")
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(mode.title)
-                                .font(.system(size: 16, weight: .semibold))
-                            Text(mode.badge)
-                                .font(.system(size: 13))
-                        }
-                    }
-                    .frame(maxWidth: .infinity, minHeight: 44)
-                }
-                .buttonStyle(.bordered)
-                .disabled(true)
-                .accessibilityHint(mode.badge)
+                BeautyModeEntryView(mode: mode)
             }
         }
     }
@@ -84,9 +70,11 @@ struct EditorShellView: View {
     }
 
     private var parameterPanel: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        let selectedCategory = BeautyCategory.category(id: selectedCategoryID)
+
+        return VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text(DemoFixtures.activeCategoryTitle)
+                Text(selectedCategory.title)
                     .font(.system(size: 20, weight: .semibold))
                 Spacer()
                 Text("Apply Parameters")
@@ -94,39 +82,46 @@ struct EditorShellView: View {
                     .foregroundStyle(Color(red: 47 / 255, green: 107 / 255, blue: 255 / 255))
             }
 
-            HStack(spacing: 8) {
-                Circle()
-                    .fill(Color(red: 47 / 255, green: 107 / 255, blue: 255 / 255))
-                    .frame(width: 8, height: 8)
-                Text("Parameters applied")
-                    .font(.system(size: 13))
-                Text(DemoFixtures.visualPendingStatus)
+            if selectedCategory.availability.isEnabled {
+                HStack(spacing: 8) {
+                    Circle()
+                        .fill(Color(red: 47 / 255, green: 107 / 255, blue: 255 / 255))
+                        .frame(width: 8, height: 8)
+                    Text("Parameters applied")
+                        .font(.system(size: 13))
+                    Text(DemoFixtures.visualPendingStatus)
+                        .font(.system(size: 13))
+                        .foregroundStyle(.secondary)
+                }
+
+                Text("Default SDK snapshot: \(parameters.skinSmoothing, specifier: "%.0f")")
                     .font(.system(size: 13))
                     .foregroundStyle(.secondary)
+            } else {
+                disabledMessage(for: selectedCategory.availability)
             }
-
-            Text("Default SDK snapshot: \(parameters.skinSmoothing, specifier: "%.0f")")
-                .font(.system(size: 13))
-                .foregroundStyle(.secondary)
         }
         .padding(16)
         .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 
-    private var categoryRail: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(["Beauty", "Face Shape", "Facial Features", "Makeup", "Filters", "Stickers", "Background", "Style"], id: \.self) { category in
-                    Text(category)
-                        .font(.system(size: 13, weight: category == DemoFixtures.activeCategoryTitle ? .semibold : .regular))
-                        .foregroundStyle(category == DemoFixtures.activeCategoryTitle ? Color.white : Color.primary)
-                        .padding(.horizontal, 12)
-                        .frame(minHeight: 44)
-                        .background(category == DemoFixtures.activeCategoryTitle ? Color(red: 47 / 255, green: 107 / 255, blue: 255 / 255) : Color.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                        .accessibilityAddTraits(category == DemoFixtures.activeCategoryTitle ? .isSelected : [])
-                }
+    private func disabledMessage(for availability: BeautyAvailability) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if let badge = availability.badge {
+                Text(badge)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(Color(red: 47 / 255, green: 107 / 255, blue: 255 / 255))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(Color(red: 238 / 255, green: 243 / 255, blue: 255 / 255))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            }
+
+            if let reason = availability.reason {
+                Text(reason)
+                    .font(.system(size: 13))
+                    .foregroundStyle(.secondary)
             }
         }
     }
