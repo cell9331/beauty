@@ -58,4 +58,36 @@ final class BeautyParameterStoreTests: XCTestCase {
         XCTAssertEqual(store.status.primaryText, "Parameters applied")
         XCTAssertEqual(store.status.secondaryText, "Visual update pending Phase 6")
     }
+
+    func testSingleControlResetLeavesUnrelatedDisplayValuesUnchanged() {
+        let store = BeautyParameterStore()
+
+        store.setDisplayValue(80, for: .skinSmoothing)
+        store.setDisplayValue(30, for: .faceSlim)
+        store.reset(.skinSmoothing)
+
+        XCTAssertEqual(store.displayValue(for: .skinSmoothing), 0)
+        XCTAssertEqual(store.parametersSnapshot.skinSmoothing, 0, accuracy: 0.0001)
+        XCTAssertEqual(store.displayValue(for: .faceSlim), 30)
+        XCTAssertEqual(store.parametersSnapshot.faceSlim, 0.30, accuracy: 0.0001)
+    }
+
+    func testResetAllRestoresNumericDisplayValuesAndSDKSnapshotDefaults() {
+        let store = BeautyParameterStore()
+
+        store.setDisplayValue(90, for: .skinSmoothing)
+        store.setDisplayValue(40, for: .noseSlim)
+        store.setDisplayValue(-25, for: .mouthSize)
+        store.resetAll()
+
+        XCTAssertTrue(
+            BeautyControlDescriptor.availableControls.allSatisfy { store.displayValue(for: $0) == $0.defaultDisplayValue }
+        )
+        XCTAssertEqual(store.parametersSnapshot, BeautyParameters())
+    }
+
+    func testResetCopyIsStableForControlsAndAllParameters() {
+        XCTAssertEqual(BeautyControlDescriptor.descriptor(id: .eyeSize).resetLabel, "Reset Eye Size")
+        XCTAssertEqual(BeautyControlDescriptor.resetAllTitle, "Reset All Parameters")
+    }
 }

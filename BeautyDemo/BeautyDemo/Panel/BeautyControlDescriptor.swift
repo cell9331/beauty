@@ -82,9 +82,12 @@ struct BeautyControlDescriptor: Identifiable, Equatable, Sendable {
     let availability: BeautyAvailability
 
     var defaultDisplayValue: Double { 0 }
+    var resetLabel: String { "Reset \(label)" }
 }
 
 extension BeautyControlDescriptor {
+    static let resetAllTitle = "Reset All Parameters"
+
     static let beautyControls: [BeautyControlDescriptor] = [
         BeautyControlDescriptor(
             id: .skinSmoothing,

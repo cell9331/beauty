@@ -116,4 +116,24 @@ final class BeautyParameterStore: ObservableObject {
         status = .appliedPendingVisual
     }
 
+    func reset(_ controlID: BeautyControlID) {
+        reset(BeautyControlDescriptor.descriptor(id: controlID))
+    }
+
+    func reset(_ descriptor: BeautyControlDescriptor) {
+        guard descriptor.availability.isEnabled else {
+            return
+        }
+
+        displayValues[descriptor.id] = descriptor.defaultDisplayValue
+        status = .appliedPendingVisual
+    }
+
+    func resetAll() {
+        for descriptor in descriptors where descriptor.availability.isEnabled {
+            displayValues[descriptor.id] = descriptor.defaultDisplayValue
+        }
+
+        status = .appliedPendingVisual
+    }
 }
