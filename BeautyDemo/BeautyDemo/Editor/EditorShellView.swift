@@ -16,12 +16,28 @@ struct EditorPreviewViewState: Equatable {
     let heading: String
     let body: String
     let primaryActionTitle: String?
+    let statusText: String?
+
+    init(
+        kind: Kind,
+        heading: String,
+        body: String,
+        primaryActionTitle: String?,
+        statusText: String? = nil
+    ) {
+        self.kind = kind
+        self.heading = heading
+        self.body = body
+        self.primaryActionTitle = primaryActionTitle
+        self.statusText = statusText
+    }
 }
 
 struct EditorShellView: View {
     @Environment(\.openURL) private var openURL
     @StateObject private var parameterStore = BeautyParameterStore()
     @StateObject private var cameraSessionController: CameraSessionController
+    @StateObject private var cameraBeautyPipeline: CameraBeautyPipeline
     @State private var selectedCategoryID: BeautyCategoryID = .beauty
     @State private var selectedSubcategoryID: FacialFeatureSubcategoryID = .eyes
     @State private var selectedInputMode: EditorInputMode?
@@ -33,10 +49,12 @@ struct EditorShellView: View {
     @MainActor
     init(
         cameraPermissionClient: (any CameraPermissionClient)? = nil,
-        cameraSessionController: CameraSessionController? = nil
+        cameraSessionController: CameraSessionController? = nil,
+        cameraBeautyPipeline: CameraBeautyPipeline? = nil
     ) {
         self.cameraPermissionClient = cameraPermissionClient ?? SystemCameraPermissionClient()
         self._cameraSessionController = StateObject(wrappedValue: cameraSessionController ?? CameraSessionController())
+        self._cameraBeautyPipeline = StateObject(wrappedValue: cameraBeautyPipeline ?? CameraBeautyPipeline())
     }
 
     var body: some View {
@@ -69,7 +87,8 @@ struct EditorShellView: View {
         let state = Self.previewViewState(
             selectedMode: selectedInputMode,
             cameraPermissionState: cameraPermissionState,
-            cameraSessionState: cameraSessionController.state
+            cameraSessionState: cameraSessionController.state,
+            cameraProcessingState: cameraBeautyPipeline.state
         )
 
         return ZStack {
@@ -81,6 +100,12 @@ struct EditorShellView: View {
                 CameraPreviewLayerView(session: cameraSessionController.session)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     .accessibilityLabel("Live camera preview")
+
+                if let statusText = state.statusText {
+                    cameraStatusBanner(statusText)
+                        .padding(12)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                }
             } else {
                 previewMessage(for: state)
             }
@@ -88,6 +113,20 @@ struct EditorShellView: View {
         .frame(maxWidth: .infinity)
         .frame(minHeight: 320)
         .accessibilityElement(children: .combine)
+    }
+
+    private func cameraStatusBanner(_ text: String) -> some View {
+        Text(text)
+            .font(.system(size: 13, weight: .semibold))
+            .foregroundStyle(Color(red: 32 / 255, green: 47 / 255, blue: 77 / 255))
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(
+                Capsule()
+                    .fill(Color.white.opacity(0.92))
+                    .shadow(color: Color.black.opacity(0.08), radius: 8, y: 2)
+            )
+            .accessibilityLabel(text)
     }
 
     private func previewMessage(for state: EditorPreviewViewState) -> some View {
@@ -144,6 +183,7 @@ struct EditorShellView: View {
             }
         case .photo:
             cameraSessionController.stop()
+            cameraBeautyPipeline.reset()
         }
     }
 
@@ -174,6 +214,10 @@ struct EditorShellView: View {
 
         cameraSessionController.start { frame in
             latestCameraFrame = frame
+            cameraBeautyPipeline.enqueue(
+                frame: frame,
+                parameters: parameterStore.parametersSnapshot
+            )
         }
     }
 
@@ -184,7 +228,8 @@ struct EditorShellView: View {
     static func previewViewState(
         selectedMode: EditorInputMode?,
         cameraPermissionState: CameraPermissionState,
-        cameraSessionState: CameraSessionState
+        cameraSessionState: CameraSessionState,
+        cameraProcessingState: CameraProcessingState = .idle
     ) -> EditorPreviewViewState {
         switch selectedMode {
         case .none:
@@ -234,7 +279,8 @@ struct EditorShellView: View {
                     kind: .cameraRunning,
                     heading: "Camera",
                     body: "Live preview",
-                    primaryActionTitle: nil
+                    primaryActionTitle: nil,
+                    statusText: cameraProcessingState.statusText
                 )
             }
 

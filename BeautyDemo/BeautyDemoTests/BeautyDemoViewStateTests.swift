@@ -56,6 +56,25 @@ final class BeautyDemoViewStateTests: XCTestCase {
         XCTAssertEqual(BeautyCategoryRailView.viewState(selectedCategoryID: .beauty).filter(\.isSelected).map(\.id), [.beauty])
     }
 
+    func testCameraProcessingStatusUsesFriendlyCopyForD12AndD13() {
+        let previewState = EditorShellView.previewViewState(
+            selectedMode: .camera,
+            cameraPermissionState: .authorized,
+            cameraSessionState: .running,
+            cameraProcessingState: .paused(
+                lastSnapshot: nil,
+                droppedFrameCount: 0,
+                warning: CameraProcessingState.processingPausedMessage
+            )
+        )
+
+        // D-12 D-13
+        XCTAssertEqual(previewState.kind, .cameraRunning)
+        XCTAssertEqual(previewState.statusText, "Processing paused. Showing the last usable preview.")
+        XCTAssertFalse(previewState.statusText?.contains("NSError") == true)
+        XCTAssertFalse(previewState.statusText?.contains("/") == true)
+    }
+
     func testFacialFeaturePanelViewStateCoversDEMO04() {
         let state = BeautyPanelView.viewState(
             categoryID: .facialFeatures,
