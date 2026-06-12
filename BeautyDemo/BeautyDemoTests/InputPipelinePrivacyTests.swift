@@ -1,0 +1,169 @@
+import Foundation
+import XCTest
+
+final class InputPipelinePrivacyTests: XCTestCase {
+    func testPIPE08D09GeneratedInfoPlistPurposeStringsAreLocalFirst() throws {
+        let project = try readTextFile("BeautyDemo/BeautyDemo.xcodeproj/project.pbxproj")
+        let cameraPurpose = "Use the camera to preview beauty processing on this device."
+        let photoPurpose = "Select photos to preview beauty processing on this device."
+
+        XCTAssertEqual(occurrences(of: "INFOPLIST_KEY_NSCameraUsageDescription", in: project), 2)
+        XCTAssertEqual(occurrences(of: "INFOPLIST_KEY_NSPhotoLibraryUsageDescription", in: project), 2)
+        XCTAssertEqual(occurrences(of: cameraPurpose, in: project), 2)
+        XCTAssertEqual(occurrences(of: photoPurpose, in: project), 2)
+        XCTAssertFalse(project.localizedCaseInsensitiveContains("upload"))
+        XCTAssertFalse(project.localizedCaseInsensitiveContains("cloud"))
+    }
+
+    func testPIPE08D13LocalFirstInputSourcesRejectNetworkPersistenceAndRawErrorCopy() throws {
+        let files = try swiftFiles(in: [
+            "BeautyDemo/BeautyDemo/Camera",
+            "BeautyDemo/BeautyDemo/Editor",
+            "BeautyDemo/BeautyDemo/Support"
+        ])
+        let forbiddenTokens = [
+            "URLSession",
+            "http" + "://",
+            "https" + "://",
+            "up" + "load",
+            "/private" + "/var",
+            "NSError",
+            "AV" + "Error"
+        ]
+
+        let matches = try matches(for: forbiddenTokens, in: files)
+
+        XCTAssertTrue(matches.isEmpty, matches.joined(separator: "\n"))
+    }
+
+    func testPIPE02RealtimeCameraPathDoesNotUseUIImageConversion() throws {
+        let cameraFiles = try swiftFiles(in: ["BeautyDemo/BeautyDemo/Camera"])
+        let matches = try matches(for: ["UIImage"], in: cameraFiles)
+        let pipeline = try readTextFile("BeautyDemo/BeautyDemo/Camera/CameraBeautyPipeline.swift")
+
+        XCTAssertTrue(matches.isEmpty, matches.joined(separator: "\n"))
+        XCTAssertTrue(pipeline.contains("process("))
+        XCTAssertTrue(pipeline.contains("pixelBuffer:"))
+    }
+
+    func testPIPE08FacadeOnlyImportsCoverDemoAndTests() throws {
+        let files = try swiftFiles(in: [
+            "BeautyDemo/BeautyDemo",
+            "BeautyDemo/BeautyDemoTests"
+        ])
+        let internalImport = try NSRegularExpression(
+            pattern: #"(?m)^\s*import Beauty(Core|Render|Detection|Effects|Resources)\b"#
+        )
+        var matches: [String] = []
+        for file in files {
+            let text = try String(contentsOf: file, encoding: .utf8)
+            let range = NSRange(text.startIndex..<text.endIndex, in: text)
+            for match in internalImport.matches(in: text, range: range) {
+                matches.append("\(relativePath(file)):\(lineNumber(for: match.range.location, in: text))")
+            }
+        }
+
+        XCTAssertTrue(matches.isEmpty, matches.joined(separator: "\n"))
+    }
+
+    func testD13FriendlyInputCopyIsPresentAndRawCopyIsAbsent() throws {
+        let editorText = try readTextFile("BeautyDemo/BeautyDemo/Editor/EditorShellView.swift")
+        let imageModelsText = try readTextFile("BeautyDemo/BeautyDemo/Editor/ImageInputModels.swift")
+        let cameraText = try readTextFile("BeautyDemo/BeautyDemo/Camera/CameraBeautyPipeline.swift")
+
+        XCTAssertTrue(editorText.contains("Allow camera access to preview processing on this device. Photo mode is still available."))
+        XCTAssertTrue(editorText.contains("Select an image to process locally through BeautySDK."))
+        XCTAssertTrue(imageModelsText.contains("Processing photo..."))
+        XCTAssertTrue(imageModelsText.contains("Could not read that photo. Choose another image."))
+        XCTAssertTrue(cameraText.contains("Processing paused. Showing the last usable preview."))
+
+        let userFacingCopy = [editorText, imageModelsText, cameraText].joined(separator: "\n")
+        XCTAssertFalse(userFacingCopy.contains("NSError"))
+        XCTAssertFalse(userFacingCopy.contains("/private" + "/var"))
+        XCTAssertFalse(userFacingCopy.contains("AV" + "Error"))
+    }
+
+    private func repoRoot() throws -> URL {
+        var cursor = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
+
+        while cursor.path != "/" {
+            let projectPath = cursor.appendingPathComponent("BeautyDemo/BeautyDemo.xcodeproj/project.pbxproj")
+            if FileManager.default.fileExists(atPath: projectPath.path) {
+                return cursor
+            }
+            cursor.deleteLastPathComponent()
+        }
+
+        throw SourceScanError.missingRepoRoot
+    }
+
+    private func readTextFile(_ relativePath: String) throws -> String {
+        let file = try repoRoot().appendingPathComponent(relativePath)
+        return try String(contentsOf: file, encoding: .utf8)
+    }
+
+    private func swiftFiles(in relativeDirectories: [String]) throws -> [URL] {
+        let root = try repoRoot()
+        let manager = FileManager.default
+        var files: [URL] = []
+
+        for relativeDirectory in relativeDirectories {
+            let directory = root.appendingPathComponent(relativeDirectory)
+            guard let enumerator = manager.enumerator(at: directory, includingPropertiesForKeys: [.isRegularFileKey]) else {
+                throw SourceScanError.missingDirectory(relativeDirectory)
+            }
+
+            for item in enumerator {
+                guard let file = item as? URL, file.pathExtension == "swift" else {
+                    continue
+                }
+                let resourceValues = try file.resourceValues(forKeys: [.isRegularFileKey])
+                if resourceValues.isRegularFile == true {
+                    files.append(file)
+                }
+            }
+        }
+
+        return files.sorted { $0.path < $1.path }
+    }
+
+    private func matches(for tokens: [String], in files: [URL]) throws -> [String] {
+        var results: [String] = []
+
+        for file in files {
+            let text = try String(contentsOf: file, encoding: .utf8)
+            for token in tokens {
+                if text.contains(token) {
+                    results.append("\(relativePath(file)): contains \(token)")
+                }
+            }
+        }
+
+        return results
+    }
+
+    private func occurrences(of needle: String, in haystack: String) -> Int {
+        haystack.components(separatedBy: needle).count - 1
+    }
+
+    private func relativePath(_ file: URL) -> String {
+        guard let root = try? repoRoot().path else {
+            return file.path
+        }
+        return file.path.replacingOccurrences(of: root + "/", with: "")
+    }
+
+    private func lineNumber(for utf16Offset: Int, in text: String) -> Int {
+        let prefix = text.utf16.prefix(utf16Offset)
+        return String(decoding: prefix, as: UTF16.self).reduce(into: 1) { count, character in
+            if character == "\n" {
+                count += 1
+            }
+        }
+    }
+}
+
+private enum SourceScanError: Error {
+    case missingRepoRoot
+    case missingDirectory(String)
+}

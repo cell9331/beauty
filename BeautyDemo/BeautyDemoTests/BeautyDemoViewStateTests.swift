@@ -1,3 +1,4 @@
+import BeautySDK
 import XCTest
 @testable import BeautyDemo
 
@@ -105,6 +106,84 @@ final class BeautyDemoViewStateTests: XCTestCase {
         XCTAssertFalse(failedState.body.contains("/"))
     }
 
+    func testPhase3InputStateMatrixCoversPIPE01PIPE04PIPE06PIPE08AndDEMO01() throws {
+        let snapshot = try makeImageSnapshot()
+        let states = [
+            EditorShellView.previewViewState(
+                selectedMode: nil,
+                cameraPermissionState: .notDetermined,
+                cameraSessionState: .idle
+            ),
+            EditorShellView.previewViewState(
+                selectedMode: .camera,
+                cameraPermissionState: .requesting,
+                cameraSessionState: .idle
+            ),
+            EditorShellView.previewViewState(
+                selectedMode: .camera,
+                cameraPermissionState: .denied,
+                cameraSessionState: .idle
+            ),
+            EditorShellView.previewViewState(
+                selectedMode: .camera,
+                cameraPermissionState: .unavailable,
+                cameraSessionState: .idle
+            ),
+            EditorShellView.previewViewState(
+                selectedMode: .camera,
+                cameraPermissionState: .authorized,
+                cameraSessionState: .running
+            ),
+            EditorShellView.previewViewState(
+                selectedMode: .photo,
+                cameraPermissionState: .notDetermined,
+                cameraSessionState: .idle,
+                photoProcessingState: .empty
+            ),
+            EditorShellView.previewViewState(
+                selectedMode: .photo,
+                cameraPermissionState: .notDetermined,
+                cameraSessionState: .idle,
+                photoProcessingState: .loading(previousSnapshot: snapshot)
+            ),
+            EditorShellView.previewViewState(
+                selectedMode: .photo,
+                cameraPermissionState: .notDetermined,
+                cameraSessionState: .idle,
+                photoProcessingState: .loaded(snapshot)
+            ),
+            EditorShellView.previewViewState(
+                selectedMode: .photo,
+                cameraPermissionState: .notDetermined,
+                cameraSessionState: .idle,
+                photoProcessingState: .failed(previousSnapshot: snapshot, message: PhotoProcessingState.decodeFailureText)
+            )
+        ]
+
+        // PIPE-01 PIPE-04 PIPE-06 PIPE-08 DEMO-01
+        XCTAssertEqual(
+            states.map(\.kind),
+            [
+                .initial,
+                .cameraRequesting,
+                .cameraPermissionNeeded,
+                .cameraUnavailable,
+                .cameraRunning,
+                .photoEmpty,
+                .photoLoading,
+                .photoLoaded,
+                .photoFailed
+            ]
+        )
+        XCTAssertEqual(states[0].primaryActionTitle, "Choose Photo")
+        XCTAssertEqual(states[2].primaryActionTitle, "Open Settings")
+        XCTAssertEqual(states[3].primaryActionTitle, "Try Again")
+        XCTAssertEqual(states[6].statusText, "Processing photo...")
+        XCTAssertEqual(states[8].statusText, "Could not read that photo. Choose another image.")
+        XCTAssertTrue(EditorShellView.modeViewState(selectedMode: .camera).allSatisfy(\.isEnabled))
+        XCTAssertTrue(EditorShellView.modeViewState(selectedMode: .photo).allSatisfy(\.isEnabled))
+    }
+
     func testFacialFeaturePanelViewStateCoversDEMO04() {
         let state = BeautyPanelView.viewState(
             categoryID: .facialFeatures,
@@ -153,5 +232,22 @@ final class BeautyDemoViewStateTests: XCTestCase {
         XCTAssertEqual(BeautySliderView.displayValueText(32, range: .enhancement), "32")
         XCTAssertEqual(BeautySliderView.displayValueText(45, range: .bidirectional), "+45")
         XCTAssertEqual(BeautySliderView.accessibilityValueText(-20, range: .bidirectional), "-20 percent")
+    }
+
+    private func makeImageSnapshot() throws -> ImageProcessingSnapshot {
+        let renderer = ImageDisplayRenderer()
+        let image = DemoFixtures.photoFixtureImage()
+        let cgImage = try renderer.render(image)
+
+        return ImageProcessingSnapshot(
+            sourceKind: .fixture,
+            sourceID: "view-state",
+            inputImage: image,
+            outputImage: image,
+            inputCGImage: cgImage,
+            outputCGImage: cgImage,
+            orientation: .up,
+            parameters: BeautyParameters(skinSmoothing: 0.2)
+        )
     }
 }
