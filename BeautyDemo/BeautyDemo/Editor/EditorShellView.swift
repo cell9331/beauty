@@ -1,4 +1,5 @@
 import BeautySDK
+import PhotosUI
 import SwiftUI
 import UIKit
 
@@ -10,6 +11,9 @@ struct EditorPreviewViewState: Equatable {
         case cameraUnavailable
         case cameraRunning
         case photoEmpty
+        case photoLoading
+        case photoLoaded
+        case photoFailed
     }
 
     let kind: Kind
@@ -38,11 +42,14 @@ struct EditorShellView: View {
     @StateObject private var parameterStore = BeautyParameterStore()
     @StateObject private var cameraSessionController: CameraSessionController
     @StateObject private var cameraBeautyPipeline: CameraBeautyPipeline
+    @StateObject private var imageEditorPipeline: ImageEditorPipeline
     @State private var selectedCategoryID: BeautyCategoryID = .beauty
     @State private var selectedSubcategoryID: FacialFeatureSubcategoryID = .eyes
     @State private var selectedInputMode: EditorInputMode?
     @State private var cameraPermissionState: CameraPermissionState = .notDetermined
     @State private var latestCameraFrame: CameraPreviewFrame?
+    @State private var selectedPhotoItem: PhotosPickerItem?
+    @State private var compareState = CompareState()
 
     private let cameraPermissionClient: any CameraPermissionClient
 
@@ -50,11 +57,13 @@ struct EditorShellView: View {
     init(
         cameraPermissionClient: (any CameraPermissionClient)? = nil,
         cameraSessionController: CameraSessionController? = nil,
-        cameraBeautyPipeline: CameraBeautyPipeline? = nil
+        cameraBeautyPipeline: CameraBeautyPipeline? = nil,
+        imageEditorPipeline: ImageEditorPipeline? = nil
     ) {
         self.cameraPermissionClient = cameraPermissionClient ?? SystemCameraPermissionClient()
         self._cameraSessionController = StateObject(wrappedValue: cameraSessionController ?? CameraSessionController())
         self._cameraBeautyPipeline = StateObject(wrappedValue: cameraBeautyPipeline ?? CameraBeautyPipeline())
+        self._imageEditorPipeline = StateObject(wrappedValue: imageEditorPipeline ?? ImageEditorPipeline())
     }
 
     var body: some View {
@@ -71,6 +80,9 @@ struct EditorShellView: View {
         .padding(16)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(red: 247 / 255, green: 248 / 255, blue: 250 / 255))
+        .onChange(of: selectedPhotoItem) { _, item in
+            handlePhotoSelection(item)
+        }
     }
 
     private var modeHeader: some View {
@@ -88,7 +100,8 @@ struct EditorShellView: View {
             selectedMode: selectedInputMode,
             cameraPermissionState: cameraPermissionState,
             cameraSessionState: cameraSessionController.state,
-            cameraProcessingState: cameraBeautyPipeline.state
+            cameraProcessingState: cameraBeautyPipeline.state,
+            photoProcessingState: imageEditorPipeline.state
         )
 
         return ZStack {
@@ -96,23 +109,85 @@ struct EditorShellView: View {
                 .fill(Color.white)
                 .shadow(color: Color.black.opacity(0.06), radius: 12, y: 4)
 
-            if state.kind == .cameraRunning {
-                CameraPreviewLayerView(session: cameraSessionController.session)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                    .accessibilityLabel("Live camera preview")
-
-                if let statusText = state.statusText {
-                    cameraStatusBanner(statusText)
-                        .padding(12)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                }
-            } else {
-                previewMessage(for: state)
-            }
+            previewContent(for: state)
         }
         .frame(maxWidth: .infinity)
         .frame(minHeight: 320)
         .accessibilityElement(children: .combine)
+    }
+
+    @ViewBuilder
+    private func previewContent(for state: EditorPreviewViewState) -> some View {
+        switch state.kind {
+        case .cameraRunning:
+            cameraPreviewContent(for: state)
+        case .photoEmpty, .photoLoading, .photoLoaded, .photoFailed:
+            photoPreviewContent(for: state)
+        case .initial, .cameraRequesting, .cameraPermissionNeeded, .cameraUnavailable:
+            previewMessage(for: state)
+        }
+    }
+
+    private func cameraPreviewContent(for state: EditorPreviewViewState) -> some View {
+        ZStack {
+            CameraPreviewLayerView(session: cameraSessionController.session)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .accessibilityLabel("Live camera preview")
+
+            VStack {
+                Spacer()
+                if cameraBeautyPipeline.state.latestSnapshot != nil {
+                    compareButton
+                }
+                if let statusText = state.statusText {
+                    cameraStatusBanner(statusText)
+                }
+            }
+            .padding(12)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+        }
+    }
+
+    private func photoPreviewContent(for state: EditorPreviewViewState) -> some View {
+        ZStack {
+            if let snapshot = imageEditorPipeline.state.latestSnapshot {
+                Image(decorative: compareState.photoImage(from: snapshot), scale: 1)
+                    .resizable()
+                    .scaledToFit()
+                    .padding(16)
+                    .accessibilityLabel("Photo preview")
+            } else {
+                photoMessage(for: state)
+            }
+
+            VStack {
+                Spacer()
+                if imageEditorPipeline.state.latestSnapshot != nil, !imageEditorPipeline.state.isLoading {
+                    compareButton
+                }
+                if imageEditorPipeline.state.isLoading {
+                    cameraStatusBanner(PhotoProcessingState.loadingText)
+                } else if let statusText = state.statusText {
+                    cameraStatusBanner(statusText)
+                }
+                if !imageEditorPipeline.state.isLoading {
+                    photoPickerButton("Choose Photo")
+                }
+            }
+            .padding(12)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+        }
+    }
+
+    private var compareButton: some View {
+        Button(compareState.actionTitle) {
+            compareState.toggle()
+        }
+        .font(.system(size: 13, weight: .semibold))
+        .buttonStyle(.borderedProminent)
+        .accessibilityLabel(compareState.actionTitle)
+        .accessibilityValue(compareState.accessibilityValue)
+        .accessibilityHint("Switches between before and after without changing parameters.")
     }
 
     private func cameraStatusBanner(_ text: String) -> some View {
@@ -152,6 +227,32 @@ struct EditorShellView: View {
                 .accessibilityLabel(primaryActionTitle)
             }
         }
+    }
+
+    private func photoMessage(for state: EditorPreviewViewState) -> some View {
+        VStack(spacing: 16) {
+            portraitGlyph
+
+            VStack(spacing: 8) {
+                Text(state.heading)
+                    .font(.system(size: 20, weight: .semibold))
+                Text(state.body)
+                    .font(.system(size: 16))
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 24)
+            }
+        }
+    }
+
+    private func photoPickerButton(_ title: String) -> some View {
+        PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+            Text(title)
+                .font(.system(size: 13, weight: .semibold))
+        }
+        .buttonStyle(.borderedProminent)
+        .accessibilityLabel(title)
+        .accessibilityHint("Choose a local photo to process on this device.")
     }
 
     private var portraitGlyph: some View {
@@ -199,6 +300,28 @@ struct EditorShellView: View {
             selectMode(.camera)
         case .cameraRequesting, .cameraRunning:
             break
+        case .photoLoading, .photoLoaded, .photoFailed:
+            break
+        }
+    }
+
+    private func handlePhotoSelection(_ item: PhotosPickerItem?) {
+        guard let item else {
+            return
+        }
+
+        Task {
+            do {
+                if let data = try await item.loadTransferable(type: Data.self) {
+                    imageEditorPipeline.process(
+                        input: .photosPickerData(data),
+                        parameters: parameterStore.parametersSnapshot
+                    )
+                }
+            } catch {
+                imageEditorPipeline.recordSelectionFailure()
+            }
+            selectedPhotoItem = nil
         }
     }
 
@@ -229,7 +352,8 @@ struct EditorShellView: View {
         selectedMode: EditorInputMode?,
         cameraPermissionState: CameraPermissionState,
         cameraSessionState: CameraSessionState,
-        cameraProcessingState: CameraProcessingState = .idle
+        cameraProcessingState: CameraProcessingState = .idle,
+        photoProcessingState: PhotoProcessingState = .empty
     ) -> EditorPreviewViewState {
         switch selectedMode {
         case .none:
@@ -240,12 +364,38 @@ struct EditorShellView: View {
                 primaryActionTitle: "Choose Photo"
             )
         case .some(.photo):
-            return EditorPreviewViewState(
-                kind: .photoEmpty,
-                heading: "Choose a photo",
-                body: "Select an image to process locally through BeautySDK.",
-                primaryActionTitle: "Choose Photo"
-            )
+            switch photoProcessingState {
+            case .empty:
+                return EditorPreviewViewState(
+                    kind: .photoEmpty,
+                    heading: "Choose a photo",
+                    body: "Select an image to process locally through BeautySDK.",
+                    primaryActionTitle: "Choose Photo"
+                )
+            case .loading:
+                return EditorPreviewViewState(
+                    kind: .photoLoading,
+                    heading: "Choose a photo",
+                    body: PhotoProcessingState.loadingText,
+                    primaryActionTitle: nil,
+                    statusText: PhotoProcessingState.loadingText
+                )
+            case .loaded:
+                return EditorPreviewViewState(
+                    kind: .photoLoaded,
+                    heading: "Photo",
+                    body: "Processed image",
+                    primaryActionTitle: "Choose Photo"
+                )
+            case .failed(_, let message):
+                return EditorPreviewViewState(
+                    kind: .photoFailed,
+                    heading: "Choose a photo",
+                    body: message,
+                    primaryActionTitle: "Choose Photo",
+                    statusText: message
+                )
+            }
         case .some(.camera):
             if cameraPermissionState == .requesting {
                 return EditorPreviewViewState(

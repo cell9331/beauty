@@ -1,10 +1,16 @@
+import CoreImage
 import Foundation
 
-enum DemoFixtures {
+nonisolated enum DemoFixtures {
     static let previewTitle = "Choose Camera or Photo"
     static let previewBody = "Use Camera for live preview, or Photo to process a local image on this device."
     static let activeCategoryTitle = "Beauty"
     static let visualPendingStatus = "Visual update pending Phase 6"
+
+    static func photoFixtureImage() -> CIImage {
+        CIImage(color: CIColor(red: 0.22, green: 0.38, blue: 0.78, alpha: 1))
+            .cropped(to: CGRect(x: 0, y: 0, width: 12, height: 12))
+    }
 
     static func inputModeItems(selectedMode: EditorInputMode?) -> [BeautyModeItem] {
         EditorInputMode.allCases.map { mode in
@@ -20,7 +26,7 @@ enum DemoFixtures {
     }
 }
 
-enum EditorInputMode: String, CaseIterable, Identifiable, Equatable, Sendable {
+nonisolated enum EditorInputMode: String, CaseIterable, Identifiable, Equatable, Sendable {
     case camera
     case photo
 
@@ -54,7 +60,7 @@ enum EditorInputMode: String, CaseIterable, Identifiable, Equatable, Sendable {
     }
 }
 
-struct BeautyModeItem: Identifiable, Equatable {
+nonisolated struct BeautyModeItem: Identifiable, Equatable {
     let id: EditorInputMode
     let title: String
     let systemImageName: String

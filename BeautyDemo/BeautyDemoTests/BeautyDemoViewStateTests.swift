@@ -75,6 +75,36 @@ final class BeautyDemoViewStateTests: XCTestCase {
         XCTAssertFalse(previewState.statusText?.contains("/") == true)
     }
 
+    func testPhotoPreviewViewStateCoversD05D11AndD13Copy() {
+        let emptyState = EditorShellView.previewViewState(
+            selectedMode: .photo,
+            cameraPermissionState: .notDetermined,
+            cameraSessionState: .idle,
+            photoProcessingState: .empty
+        )
+        let loadingState = EditorShellView.previewViewState(
+            selectedMode: .photo,
+            cameraPermissionState: .notDetermined,
+            cameraSessionState: .idle,
+            photoProcessingState: .loading(previousSnapshot: nil)
+        )
+        let failedState = EditorShellView.previewViewState(
+            selectedMode: .photo,
+            cameraPermissionState: .notDetermined,
+            cameraSessionState: .idle,
+            photoProcessingState: .failed(previousSnapshot: nil, message: PhotoProcessingState.decodeFailureText)
+        )
+
+        // D-05 D-11 D-13
+        XCTAssertEqual(emptyState.heading, "Choose a photo")
+        XCTAssertEqual(emptyState.body, "Select an image to process locally through BeautySDK.")
+        XCTAssertEqual(emptyState.primaryActionTitle, "Choose Photo")
+        XCTAssertEqual(loadingState.statusText, "Processing photo...")
+        XCTAssertEqual(failedState.body, "Could not read that photo. Choose another image.")
+        XCTAssertFalse(failedState.body.contains("NSError"))
+        XCTAssertFalse(failedState.body.contains("/"))
+    }
+
     func testFacialFeaturePanelViewStateCoversDEMO04() {
         let state = BeautyPanelView.viewState(
             categoryID: .facialFeatures,
