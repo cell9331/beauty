@@ -98,7 +98,7 @@ Plans:
   5. Before/after comparison works without resetting parameters or changing crop/orientation.
   6. Camera/photo purpose strings and local-first privacy boundaries are present before protected-resource access.
 
-**Plans:** 1/4 plans executed
+**Plans:** 2/4 plans executed
 Plans:
 
 **Wave 1**
@@ -107,7 +107,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 03-02: Add bounded realtime SDK invocation without `UIImage` conversion.
+- [x] 03-02: Add bounded realtime SDK invocation without `UIImage` conversion.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -217,7 +217,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 |-------|----------------|--------|-----------|
 | 1. SDK Foundation and Public Facade | 4/4 | Complete    | 2026-06-11 |
 | 2. Demo Integration Shell | 3/3 | Complete    | 2026-06-11 |
-| 3. Realtime and Still Input Slice | 1/4 | In Progress|  |
+| 3. Realtime and Still Input Slice | 2/4 | In Progress|  |
 | 4. Detection and Coordinate Safety | 0/4 | Not started | - |
 | 5. Filters, Presets, and Resource Flow | 0/4 | Not started | - |
 | 6. Core Beauty Effects | 0/5 | Not started | - |
