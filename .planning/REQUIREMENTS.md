@@ -20,14 +20,14 @@ Requirements for the initial SDK milestone. Each requirement must map to exactly
 
 ### Input Pipelines
 
-- [ ] **PIPE-01**: Demo can request camera permission and receive realtime camera frames through AVFoundation.
+- [x] **PIPE-01**: Demo can request camera permission and receive realtime camera frames through AVFoundation.
 - [ ] **PIPE-02**: Realtime camera processing avoids `UIImage` as an intermediate format and passes sample-buffer, pixel-buffer, or texture-backed input to SDK code.
 - [ ] **PIPE-03**: Realtime processing uses bounded in-flight work and drops stale frames instead of allowing unbounded queue growth.
 - [ ] **PIPE-04**: Demo can select or provide a still image and process it through the SDK image path.
 - [ ] **PIPE-05**: SDK and Demo preserve image orientation and front-camera mirroring through explicit metadata and normalization.
 - [ ] **PIPE-06**: Demo provides before/after comparison for camera or still-image output without resetting parameters or shifting crop/orientation.
 - [ ] **PIPE-07**: Demo handles loading, processing errors, denied permission, no-face frames, and partial-face frames without crashing.
-- [ ] **PIPE-08**: Camera/photo features include required Info.plist purpose strings and conform to the local-first privacy boundary.
+- [x] **PIPE-08**: Camera/photo features include required Info.plist purpose strings and conform to the local-first privacy boundary.
 
 ### MVP Effects
 
@@ -43,7 +43,7 @@ Requirements for the initial SDK milestone. Each requirement must map to exactly
 
 ### Rich Demo
 
-- [ ] **DEMO-01**: Demo main flow offers camera mode and still-image editing mode.
+- [x] **DEMO-01**: Demo main flow offers camera mode and still-image editing mode.
 - [x] **DEMO-02**: Demo exposes bottom-level categories for Beauty, Face Shape, Facial Features, Makeup, Filters, Stickers, Background, and Style.
 - [x] **DEMO-03**: Demo shows v1-unimplemented categories or controls, including advanced makeup, stickers, background, and style, as disabled or coming-later states rather than active features.
 - [x] **DEMO-04**: Demo exposes Facial Features subcategories for Eyes, Nose, Mouth, Eyebrows, Teeth, and Hairline, with v1-unimplemented items disabled.
@@ -97,14 +97,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SDK-06 | Phase 1 | Complete |
 | SDK-07 | Phase 1 | Complete |
 | SDK-08 | Phase 2 | Complete |
-| PIPE-01 | Phase 3 | Pending |
+| PIPE-01 | Phase 3 | Complete |
 | PIPE-02 | Phase 3 | Pending |
 | PIPE-03 | Phase 3 | Pending |
 | PIPE-04 | Phase 3 | Pending |
 | PIPE-05 | Phase 4 | Pending |
 | PIPE-06 | Phase 3 | Pending |
 | PIPE-07 | Phase 4 | Pending |
-| PIPE-08 | Phase 3 | Pending |
+| PIPE-08 | Phase 3 | Complete |
 | EFFECT-01 | Phase 6 | Pending |
 | EFFECT-02 | Phase 5 | Pending |
 | EFFECT-03 | Phase 5 | Pending |
@@ -114,7 +114,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EFFECT-07 | Phase 6 | Pending |
 | EFFECT-08 | Phase 5 | Pending |
 | EFFECT-09 | Phase 6 | Pending |
-| DEMO-01 | Phase 3 | Pending |
+| DEMO-01 | Phase 3 | Complete |
 | DEMO-02 | Phase 2 | Complete |
 | DEMO-03 | Phase 2 | Complete |
 | DEMO-04 | Phase 2 | Complete |
