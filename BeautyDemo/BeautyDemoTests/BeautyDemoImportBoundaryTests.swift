@@ -3,10 +3,10 @@ import XCTest
 
 final class BeautyDemoImportBoundaryTests: XCTestCase {
     func testDemoTestTargetCanLoadEditorShellState() {
+        let modeItems = DemoFixtures.inputModeItems(selectedMode: nil)
+
         XCTAssertEqual(DemoFixtures.activeCategoryTitle, "Beauty")
-        XCTAssertEqual(
-            DemoFixtures.disabledModes.map(\.badge),
-            ["Coming in Phase 3", "Coming in Phase 3"]
-        )
+        XCTAssertEqual(modeItems.map(\.title), ["Camera", "Photo"])
+        XCTAssertTrue(modeItems.allSatisfy(\.isEnabled))
     }
 }

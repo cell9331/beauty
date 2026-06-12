@@ -23,11 +23,37 @@ final class BeautyDemoViewStateTests: XCTestCase {
         XCTAssertTrue(disabledItems.allSatisfy { $0.availability.reason?.isEmpty == false })
     }
 
-    func testFirstScreenFixtureCopyCoversDEMO08ShellState() {
-        // DEMO-08
-        XCTAssertEqual(DemoFixtures.previewTitle, "Preview fixture ready")
-        XCTAssertEqual(DemoFixtures.disabledModes.map(\.title), ["Camera", "Photo"])
-        XCTAssertEqual(DemoFixtures.disabledModes.map(\.badge), ["Coming in Phase 3", "Coming in Phase 3"])
+    func testFirstScreenModeSwitchesCoverDEMO01D01D02AndD03ShellState() {
+        let modes = EditorShellView.modeViewState(selectedMode: nil)
+        let previewState = EditorShellView.previewViewState(
+            selectedMode: nil,
+            cameraPermissionState: .notDetermined,
+            cameraSessionState: .idle
+        )
+
+        // DEMO-01 D-01 D-02 D-03
+        XCTAssertEqual(DemoFixtures.previewTitle, "Choose Camera or Photo")
+        XCTAssertEqual(modes.map(\.title), ["Camera", "Photo"])
+        XCTAssertTrue(modes.allSatisfy(\.isEnabled))
+        XCTAssertTrue(modes.filter(\.isSelected).isEmpty)
+        XCTAssertEqual(previewState.heading, "Choose Camera or Photo")
+        XCTAssertEqual(previewState.primaryActionTitle, "Choose Photo")
+    }
+
+    func testCameraSelectionPreservesShellControlsForD04AndD06() {
+        let modeItems = EditorShellView.modeViewState(selectedMode: .camera)
+        let deniedPreviewState = EditorShellView.previewViewState(
+            selectedMode: .camera,
+            cameraPermissionState: .denied,
+            cameraSessionState: .idle
+        )
+
+        // D-04 D-06
+        XCTAssertEqual(modeItems.filter(\.isSelected).map(\.id), [.camera])
+        XCTAssertTrue(modeItems.first { $0.id == .photo }?.isEnabled == true)
+        XCTAssertEqual(deniedPreviewState.heading, "Camera access needed")
+        XCTAssertEqual(BeautyPanelView.viewState(categoryID: .beauty, selectedSubcategoryID: .eyes, status: .idle).category.title, "Beauty")
+        XCTAssertEqual(BeautyCategoryRailView.viewState(selectedCategoryID: .beauty).filter(\.isSelected).map(\.id), [.beauty])
     }
 
     func testFacialFeaturePanelViewStateCoversDEMO04() {
