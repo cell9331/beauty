@@ -131,4 +131,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-06-10*
-*Last updated: 2026-06-10 after roadmap traceability mapping*
+*Last updated: 2026-06-12 after Phase 3 input-pipeline verification*

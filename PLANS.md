@@ -30,6 +30,26 @@ No active plan.
 
 ## 4. Completed
 
+### C-2026-06-12-gsd-phase-3-realtime-and-still-input-slice
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-12 |
+| Scope | Executed GSD Phase 3: enabled local-first Camera and Photo input in `BeautyDemo`, added bounded realtime processing, still-image processing, shared compare state, protected-resource purpose strings, privacy/static tests, and root contract evidence. |
+| Requirements | PIPE-01, PIPE-02, PIPE-03, PIPE-04, PIPE-06, PIPE-08, DEMO-01 |
+| Files | `BeautyDemo/BeautyDemo.xcodeproj/project.pbxproj`, `BeautyDemo/BeautyDemo/Camera/*.swift`, `BeautyDemo/BeautyDemo/Editor/*.swift`, `BeautyDemo/BeautyDemo/Panel/BeautyModeEntryView.swift`, `BeautyDemo/BeautyDemo/Support/DemoFixtures.swift`, `BeautyDemo/BeautyDemoTests/*.swift`, `.planning/phases/03-realtime-and-still-input-slice/*-SUMMARY.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, `.planning/REQUIREMENTS.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `QUALITY_SCORE.md`, `PLANS.md` |
+| Verification | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer /usr/bin/xcrun simctl list devices available` listed `iPhone 17` on iOS 26.5; focused `xcodebuild ... -only-testing:BeautyDemoTests/InputPipelinePrivacyTests -only-testing:BeautyDemoTests/BeautyDemoImportBoundaryTests -only-testing:BeautyDemoTests/BeautyDemoViewStateTests test` passed with 18 tests; full `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test` passed with 55 Demo XCTest cases; `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 20 XCTest cases; purpose-string `rg` found Debug and Release Camera/Photo strings; static scans for `UIImage`, internal SDK imports, and network/upload/raw path/error copy returned no matches. |
+| Build | Demo simulator tests and SDK SwiftPM tests passed. |
+
+Outcome:
+
+- Camera and Photo are enabled mode switches on the first editor screen; Camera permission is requested only after selecting Camera.
+- Camera preview setup uses BGRA sample-buffer pixel buffers, routes frames through `CameraBeautyPipeline`, bounds in-flight work, drops stale pending frames, and preserves the last usable preview on recoverable processing failure.
+- Photo input supports fixture and PhotosPicker-data paths through `ImageEditorPipeline`; cancellation is a no-op, loading overlays previous visuals, decode failures preserve previous output, and stale work is ignored.
+- Shared before/after compare toggles display only and does not reset mode, category, subcategory, or parameters.
+- `InputPipelinePrivacyTests` makes PIPE-08 machine-checkable: generated purpose strings are exact and local-first, Demo/Test imports stay on the public `BeautySDK` facade, input paths contain no network/upload/raw path/error copy, and realtime Camera source has no `UIImage` conversion.
+- Remaining risk: real hardware camera behavior, iOS Settings round-trip, real Photos picker user path, visual effect quality, performance budgets, and long-run memory remain future/manual gates.
+
 ### C-2026-06-11-gsd-phase-2-demo-integration-shell
 
 | Field | Value |

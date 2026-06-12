@@ -69,6 +69,13 @@ Rules:
 - The SDK privacy manifest must describe SDK behavior only; the host App remains responsible for its own App Store privacy answers.
 - If data is processed only on device and not collected, do not describe it as uploaded or retained in product docs.
 
+Phase 3 protected-resource evidence recorded 2026-06-12:
+
+- `BeautyDemo` generated Info.plist settings contain the exact Camera purpose string `Use the camera to preview beauty processing on this device.` in Debug and Release.
+- `BeautyDemo` generated Info.plist settings contain the exact Photo purpose string `Select photos to preview beauty processing on this device.` in Debug and Release.
+- `InputPipelinePrivacyTests` verifies the purpose strings and scans Camera, Editor, and Support input paths for network/upload calls, raw `/private/var` paths, and raw framework error copy.
+- Static scan `rg -n "URLSession|http://|https://|upload|/private/var|NSError|AVError" BeautyDemo/BeautyDemo/Camera BeautyDemo/BeautyDemo/Editor BeautyDemo/BeautyDemo/Support` returned no matches.
+
 ## 5. Permission Model
 
 Demo App permission states:

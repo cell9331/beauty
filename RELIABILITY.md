@@ -443,6 +443,12 @@ Minimum tests or manual checks:
 
 If automation does not exist yet, record the manual result in `PLANS.md`.
 
+Phase 3 input-pipeline evidence recorded 2026-06-12:
+
+- `CameraBeautyPipelineTests` verifies direct `CVPixelBuffer` processing, bounded in-flight work, stale pending-frame drops, latest parameter snapshots, and friendly pause copy.
+- `ImageEditorPipelineTests` verifies fixture and PhotosPicker-data processing, cancellation no-op, loading over the previous visual, decode failure preservation, and stale photo work ignored in favor of latest parameters.
+- `InputPipelinePrivacyTests` verifies realtime Camera source has no `UIImage` conversion and no raw input/error copy in Phase 3 input paths.
+
 ## 19. Release Readiness Gates
 
 Before a release-like build:

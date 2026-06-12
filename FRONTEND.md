@@ -337,6 +337,14 @@ Minimum testable contracts:
 
 If UI tests are not yet available, keep these as acceptance checks in `PLANS.md`.
 
+Phase 3 input evidence recorded 2026-06-12:
+
+- `EditorShellView` remains the first screen and exposes enabled Camera / Photo mode switches.
+- Camera state covers not-determined, requesting, denied/restricted, unavailable, and running preview states without hiding the parameter shell.
+- Photo state covers empty, loading, loaded, failed, and cancellation paths; loading and recoverable failures preserve the previous visual state.
+- Camera and Photo share display-only before/after compare labels: `Show After` and `Show Before`.
+- XCTest coverage: `BeautyDemoViewStateTests.testPhase3InputStateMatrixCoversPIPE01PIPE04PIPE06PIPE08AndDEMO01`, `CompareStateTests`, and `InputPipelinePrivacyTests`.
+
 ## 17. Implementation Checklist
 
 Before merging a Demo UI change:

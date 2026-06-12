@@ -283,6 +283,15 @@ Agent-verifiable checks:
 - Permission prompts are App-owned, not SDK-owned.
 - SDK has no network requirement by default.
 
+### 7.5 Phase 3 Input Evidence
+
+Recorded 2026-06-12:
+
+- Realtime Camera journey now has automated evidence for permission fallback, BGRA frame metadata, public `BeautyEngine.process(pixelBuffer:orientation:parameters:)` processing, no realtime `UIImage`, and bounded backpressure.
+- Still Image journey now has automated evidence for fixture input, PhotosPicker-data seam, loading state, decode failure preservation, stale-work handling, and before/after compare.
+- Respect-user-content acceptance is backed by purpose-string tests and static no-upload/no-network/raw-path scans in `InputPipelinePrivacyTests`.
+- Full Demo simulator suite passed with 55 XCTest cases for `platform=iOS Simulator,name=iPhone 17,OS=26.5`.
+
 ## 8. Preset Product Contract
 
 MVP built-in presets:

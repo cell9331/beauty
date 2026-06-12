@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: SDK Foundation and Public Facade** - Host apps can import and exercise a no-op modular SDK. (completed 2026-06-11)
 - [x] **Phase 2: Demo Integration Shell** - Demo uses only the public facade and exposes the rich category skeleton. (completed 2026-06-11)
-- [ ] **Phase 3: Realtime and Still Input Slice** - Demo can send camera frames and still images through the SDK safely.
+- [x] **Phase 3: Realtime and Still Input Slice** - Demo can send camera frames and still images through the SDK safely. (completed 2026-06-12)
 - [ ] **Phase 4: Detection and Coordinate Safety** - SDK can reason about faces, orientation, mirroring, and safe degraded frames.
 - [ ] **Phase 5: Filters, Presets, and Resource Flow** - Users can apply safe color/filter controls and built-in presets.
 - [ ] **Phase 6: Core Beauty Effects** - Users can tune skin, face, eye, nose, and mouth MVP controls with safety caps.
@@ -98,7 +98,7 @@ Plans:
   5. Before/after comparison works without resetting parameters or changing crop/orientation.
   6. Camera/photo purpose strings and local-first privacy boundaries are present before protected-resource access.
 
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 Plans:
 
 **Wave 1**
@@ -115,7 +115,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 03-04: Add purpose strings, privacy checks, and input pipeline tests.
+- [x] 03-04: Add purpose strings, privacy checks, and input pipeline tests.
 
 ### Phase 4: Detection and Coordinate Safety
 
@@ -217,7 +217,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 |-------|----------------|--------|-----------|
 | 1. SDK Foundation and Public Facade | 4/4 | Complete    | 2026-06-11 |
 | 2. Demo Integration Shell | 3/3 | Complete    | 2026-06-11 |
-| 3. Realtime and Still Input Slice | 3/4 | In Progress|  |
+| 3. Realtime and Still Input Slice | 4/4 | Complete    | 2026-06-12 |
 | 4. Detection and Coordinate Safety | 0/4 | Not started | - |
 | 5. Filters, Presets, and Resource Flow | 0/4 | Not started | - |
 | 6. Core Beauty Effects | 0/5 | Not started | - |
