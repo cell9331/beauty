@@ -495,22 +495,25 @@ let processed = try engine.process(
 
 All package names and APIs recommended for implementation are Apple frameworks or local repository modules verified from the installed SDK or repo files, not third-party package discoveries. [VERIFIED: Xcode SDK headers] [VERIFIED: BeautySDK/Package.swift]
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **What exact preview renderer should Phase 3 use for live `CVPixelBuffer` output?**
+1. **RESOLVED: What exact preview renderer should Phase 3 use for live `CVPixelBuffer` output?**
    - What we know: `FRONTEND.md` lists `MetalPreviewView`, but Phase 3 only needs the no-op path and stable live preview behavior. [VERIFIED: FRONTEND.md]
    - What's unclear: The repo has no existing `MetalPreviewView`, and building a real Metal display bridge may be more than the no-op input slice needs. [VERIFIED: rg --files BeautyDemo]
    - Recommendation: Plan a narrow preview adapter that can display current live input/output and can later be replaced by `MetalPreviewView`; avoid private SDK render internals. [VERIFIED: ARCHITECTURE.md]
+   - Resolution: Phase 3 will plan `CameraPreviewLayerView` or an equivalent thin AVFoundation-backed preview adapter inside `BeautyDemo`, scoped to the existing preview card. It must not create SDK-internal render dependencies; full Metal preview evolution remains later implementation discretion or Phase 4+ work. [VERIFIED: 03-01-PLAN.md]
 
-2. **Should the still-image user path request `NSPhotoLibraryUsageDescription` when using `PhotosPicker`?**
+2. **RESOLVED: Should the still-image user path request `NSPhotoLibraryUsageDescription` when using `PhotosPicker`?**
    - What we know: Phase decisions and UI spec explicitly require a photo purpose string, and security docs require one if Demo reads from the photo library. [VERIFIED: 03-CONTEXT.md] [VERIFIED: 03-UI-SPEC.md] [VERIFIED: SECURITY.md]
    - What's unclear: Apple PhotosUI picker flows can reduce direct photo-library permission needs, but the phase contract still locks the purpose string. [CITED: https://developer.apple.com/documentation/photosui/photospicker] [VERIFIED: 03-CONTEXT.md]
    - Recommendation: Honor the locked contract and add `NSPhotoLibraryUsageDescription`; do not rely on picker privacy semantics to skip it. [VERIFIED: 03-CONTEXT.md]
+   - Resolution: Phase 3 will add `INFOPLIST_KEY_NSPhotoLibraryUsageDescription = Select photos to preview beauty processing on this device.` in both app build configurations, alongside the camera purpose string, because D-09 and the UI contract require it. [VERIFIED: 03-04-PLAN.md]
 
-3. **Will full EXIF orientation preservation be implemented now or deferred?**
+3. **RESOLVED: Will full EXIF orientation preservation be implemented now or deferred?**
    - What we know: Phase 3 requires compare not to shift crop/orientation, but PIPE-05 full orientation/mirroring preservation is mapped to Phase 4. [VERIFIED: .planning/REQUIREMENTS.md] [VERIFIED: .planning/ROADMAP.md]
    - What's unclear: Still-image decoding may need enough orientation handling to avoid obvious compare shifts even before Phase 4. [VERIFIED: 03-CONTEXT.md]
    - Recommendation: Pass explicit `CGImagePropertyOrientation` through current SDK APIs and keep input/output display geometry identical; defer generalized orientation/mirroring mapper work to Phase 4. [VERIFIED: BeautySDK/Sources/BeautyCore/Engine/BeautyEngine.swift] [VERIFIED: .planning/ROADMAP.md]
+   - Resolution: Phase 3 will preserve input/output display geometry and pass explicit `CGImagePropertyOrientation` through the existing public SDK calls, but will not implement generalized orientation/mirroring mapping or face-coordinate preview transforms; those stay in Phase 4. [VERIFIED: 03-03-PLAN.md]
 
 ## Environment Availability
 

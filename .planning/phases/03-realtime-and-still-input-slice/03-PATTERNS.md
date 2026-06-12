@@ -1,8 +1,8 @@
 # Phase 03: Realtime and Still Input Slice - Pattern Map
 
 **Mapped:** 2026-06-12
-**Files analyzed:** 18 new/modified files inferred from `03-CONTEXT.md` and `03-RESEARCH.md`
-**Analogs found:** 18 / 18
+**Files analyzed:** 22 new/modified files inferred from `03-CONTEXT.md`, `03-RESEARCH.md`, and `03-*-PLAN.md`
+**Analogs found:** 22 / 22
 
 ## File Classification
 
@@ -16,6 +16,7 @@
 | `BeautyDemo/BeautyDemo/Editor/ImageEditorPipeline.swift` | service | file-I/O | `BeautySDK/Sources/BeautyCore/Engine/BeautyEngine.swift` | data-flow-match |
 | `BeautyDemo/BeautyDemo/Camera/CameraPermissionClient.swift` | service | request-response | `BeautyDemo/BeautyDemo/State/BeautyParameterStore.swift` | partial |
 | `BeautyDemo/BeautyDemo/Camera/CameraSessionController.swift` | service | streaming | `BeautySDK/Sources/BeautyCore/Models/BeautyFrame.swift` | data-flow-match |
+| `BeautyDemo/BeautyDemo/Camera/CameraPreviewLayerView.swift` | component | streaming | `BeautyDemo/BeautyDemo/Editor/EditorShellView.swift` | role-match |
 | `BeautyDemo/BeautyDemo/Camera/CameraBeautyPipeline.swift` | service | streaming | `BeautySDK/Sources/BeautyCore/Engine/BeautyEngine.swift` | data-flow-match |
 | `BeautyDemo/BeautyDemo/Camera/CameraPreviewModels.swift` | model | streaming | `BeautySDK/Sources/BeautyCore/Models/BeautyFrame.swift` | role-match |
 | `BeautyDemo/BeautyDemo/State/BeautyParameterStore.swift` | store | transform | `BeautyDemo/BeautyDemo/State/BeautyParameterStore.swift` | exact |
@@ -23,11 +24,25 @@
 | `BeautyDemo/BeautyDemoTests/BeautyDemoViewStateTests.swift` | test | transform | `BeautyDemo/BeautyDemoTests/BeautyDemoViewStateTests.swift` | exact |
 | `BeautyDemo/BeautyDemoTests/BeautyParameterStoreTests.swift` | test | transform | `BeautyDemo/BeautyDemoTests/BeautyParameterStoreTests.swift` | exact |
 | `BeautyDemo/BeautyDemoTests/CameraPermissionStateTests.swift` | test | request-response | `BeautyDemo/BeautyDemoTests/BeautyParameterStoreTests.swift` | role-match |
+| `BeautyDemo/BeautyDemoTests/CameraSessionControllerTests.swift` | test | streaming | `BeautySDK/Tests/BeautyCoreTests/BeautyEngineTests.swift` | role-match |
 | `BeautyDemo/BeautyDemoTests/CameraBeautyPipelineTests.swift` | test | streaming | `BeautySDK/Tests/BeautyCoreTests/BeautyEngineTests.swift` | role-match |
+| `BeautyDemo/BeautyDemoTests/CompareStateTests.swift` | test | transform | `BeautyDemo/BeautyDemoTests/BeautyParameterStoreTests.swift` | role-match |
 | `BeautyDemo/BeautyDemoTests/ImageEditorPipelineTests.swift` | test | file-I/O | `BeautySDK/Tests/BeautyCoreTests/BeautyEngineTests.swift` | role-match |
 | `BeautyDemo/BeautyDemoTests/BeautyDemoImportBoundaryTests.swift` | test | transform | `BeautyDemo/BeautyDemoTests/BeautyDemoImportBoundaryTests.swift` | exact |
+| `BeautyDemo/BeautyDemoTests/InputPipelinePrivacyTests.swift` | test | transform | `BeautyDemo/BeautyDemoTests/BeautyDemoImportBoundaryTests.swift` | role-match |
 
 ## Pattern Assignments
+
+## Additional Exact File Analogs
+
+The planner references four files that were added after the initial pattern-map pass. Their execution patterns are:
+
+| File | Apply This Analog |
+|------|-------------------|
+| `BeautyDemo/BeautyDemo/Camera/CameraPreviewLayerView.swift` | Follow `EditorShellView` preview-surface constraints: keep the white rounded preview card as the containing surface, expose SwiftUI accessibility at the shell level, and keep UIKit/AVFoundation bridge code thin and Demo-owned. |
+| `BeautyDemo/BeautyDemoTests/CameraSessionControllerTests.swift` | Follow `BeautyEngineTests` media-fixture style for pixel-buffer assertions and `BeautyDemoViewStateTests` deterministic state style; do not require real camera hardware for unit coverage. |
+| `BeautyDemo/BeautyDemoTests/CompareStateTests.swift` | Follow `BeautyParameterStoreTests` value-state assertions: deterministic inputs, no simulator UI automation, and explicit preservation checks for parameters and selection state. |
+| `BeautyDemo/BeautyDemoTests/InputPipelinePrivacyTests.swift` | Follow `BeautyDemoImportBoundaryTests` source-scan pattern: inspect repository files for forbidden imports/copy/network tokens and exact purpose-string evidence. |
 
 ### `BeautyDemo/BeautyDemo.xcodeproj/project.pbxproj` (config, request-response)
 

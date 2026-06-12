@@ -99,12 +99,22 @@ Plans:
   6. Camera/photo purpose strings and local-first privacy boundaries are present before protected-resource access.
 
 **Plans:** 4 plans
-
 Plans:
 
+**Wave 1**
+
 - [ ] 03-01: Add camera permission and AVFoundation frame capture shell.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 03-02: Add bounded realtime SDK invocation without `UIImage` conversion.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 03-03: Add still-image input, processing, loading, and compare states.
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 03-04: Add purpose strings, privacy checks, and input pipeline tests.
 
 ### Phase 4: Detection and Coordinate Safety
