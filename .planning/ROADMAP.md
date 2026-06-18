@@ -130,7 +130,7 @@ Plans:
   3. No-face and partial-face frames produce safe output and diagnosable state instead of crashes.
   4. Fixture tests cover orientation, mirroring, no-face, and missing-landmark scenarios.
 
-**Plans:** 3/5 plans executed
+**Plans:** 4/5 plans executed
 
 Plans:
 
@@ -148,7 +148,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 04-04: Add Demo metadata propagation and safe detection status/debug models.
+- [x] 04-04: Add Demo metadata propagation and safe detection status/debug models.
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
