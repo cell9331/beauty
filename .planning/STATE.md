@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-stopped_at: Phase 4 UI-SPEC approved
-last_updated: "2026-06-18T02:34:54.629Z"
+status: planned
+stopped_at: Phase 4 plans created
+last_updated: "2026-06-18T03:10:04.363Z"
 last_activity: 2026-06-12 -- Phase 03 execution completed
 progress:
   total_phases: 7
@@ -25,9 +25,9 @@ See: .planning/PROJECT.md (updated 2026-06-10)
 
 ## Current Position
 
-Phase: 04 (detection-and-coordinate-safety) — READY
-Plan: 1 of 4
-Status: Ready to plan or execute after Phase 4 preparation
+Phase: 04 (detection-and-coordinate-safety) — PLANNED
+Plan: 1 of 5
+Status: Ready to execute Phase 4 plan 04-01
 Last activity: 2026-06-12 -- Phase 03 execution completed
 
 Progress: ██████████ 100%
@@ -47,7 +47,7 @@ Progress: ██████████ 100%
 | 1. SDK Foundation and Public Facade | 4/4 | N/A | N/A |
 | 2. Demo Integration Shell | 3/3 | N/A | N/A |
 | 3. Realtime and Still Input Slice | 4/4 | N/A | N/A |
-| 4. Detection and Coordinate Safety | 0/4 | N/A | N/A |
+| 4. Detection and Coordinate Safety | 0/5 | N/A | N/A |
 | 5. Filters, Presets, and Resource Flow | 0/4 | N/A | N/A |
 | 6. Core Beauty Effects | 0/5 | N/A | N/A |
 | 7. Rich Demo QA Surface | 0/3 | N/A | N/A |
@@ -83,6 +83,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-18T02:34:54.624Z
-Stopped at: Phase 4 UI-SPEC approved
-Resume file: .planning/phases/04-detection-and-coordinate-safety/04-UI-SPEC.md
+Last session: 2026-06-18T03:10:04.363Z
+Stopped at: Phase 4 plans created
+Resume file: .planning/phases/04-detection-and-coordinate-safety/04-01-PLAN.md

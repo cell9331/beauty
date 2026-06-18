@@ -130,14 +130,29 @@ Plans:
   3. No-face and partial-face frames produce safe output and diagnosable state instead of crashes.
   4. Fixture tests cover orientation, mirroring, no-face, and missing-landmark scenarios.
 
-**Plans:** 4 plans
+**Plans:** 5 plans
 
 Plans:
 
-- [ ] 04-01: Implement face observation, landmark, and coordinate model foundations.
-- [ ] 04-02: Add Vision-backed detection adapter and fixture inputs.
-- [ ] 04-03: Add orientation/mirroring mappers for frame, texture, and preview spaces.
-- [ ] 04-04: Add degraded-state reporting and detection/coordinate tests.
+**Wave 1**
+
+- [ ] 04-01: Add public metadata/result contracts and BeautyEngine compatibility.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 04-02: Add internal detection models, face selection, and Vision adapter seams.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 04-03: Add canonical coordinate spaces and orientation/mirroring mappers.
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 04-04: Add Demo metadata propagation and safe detection status/debug models.
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 04-05: Add privacy scans, root contract updates, and final verification plan.
 
 ### Phase 5: Filters, Presets, and Resource Flow
 
