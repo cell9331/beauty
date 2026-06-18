@@ -125,6 +125,40 @@ final class CameraBeautyPipelineTests: XCTestCase {
         XCTAssertFalse(pipeline.state.statusText?.contains("/") == true)
     }
 
+    func testPIPE07CameraDetectionStatusDebouncesNoFaceUsableAndStaleSummaries() async throws {
+        let summaries = LockedQueue<BeautyDetectionSummary?>([
+            .noFace,
+            BeautyDetectionSummary(availability: .usable, faceCount: 1, usedFaceCount: 1),
+            BeautyDetectionSummary(availability: .usable, faceCount: 1, usedFaceCount: 1),
+            BeautyDetectionSummary(availability: .usable, faceCount: 1, usedFaceCount: 1),
+            BeautyDetectionSummary(availability: .stale, reasons: [.staleDetection], faceCount: 1, usedFaceCount: 1)
+        ])
+        let processor = CameraFrameProcessor { frame, _ in
+            BeautyResult(output: frame.pixelBuffer, detectionSummary: summaries.pop() ?? nil)
+        }
+        let pipeline = CameraBeautyPipeline(processor: processor)
+
+        pipeline.enqueue(frame: try makeFrame(timestamp: 1), parameters: .init())
+        await pipeline.waitUntilIdle()
+        XCTAssertEqual(pipeline.state.statusText, "No face detected. Face adjustments are paused.")
+
+        pipeline.enqueue(frame: try makeFrame(timestamp: 2), parameters: .init())
+        await pipeline.waitUntilIdle()
+        XCTAssertEqual(pipeline.state.statusText, "No face detected. Face adjustments are paused.")
+
+        pipeline.enqueue(frame: try makeFrame(timestamp: 3), parameters: .init())
+        await pipeline.waitUntilIdle()
+        XCTAssertEqual(pipeline.state.statusText, "No face detected. Face adjustments are paused.")
+
+        pipeline.enqueue(frame: try makeFrame(timestamp: 4), parameters: .init())
+        await pipeline.waitUntilIdle()
+        XCTAssertNil(pipeline.state.statusText)
+
+        pipeline.enqueue(frame: try makeFrame(timestamp: 5), parameters: .init())
+        await pipeline.waitUntilIdle()
+        XCTAssertEqual(pipeline.state.statusText, "Waiting for a fresh face reading. Showing the last usable preview.")
+    }
+
     private func makeFrame(timestamp: TimeInterval, pixelFormat: OSType = kCVPixelFormatType_32BGRA) throws -> CameraPreviewFrame {
         let pixelBuffer = try PixelBufferTestFixtures.makePixelBuffer(width: 4, height: 4, pixelFormat: pixelFormat)
         return CameraSessionController.makeFrame(
@@ -182,6 +216,24 @@ private final class LockedValues<Element>: @unchecked Sendable {
     func append(_ element: Element) {
         queue.sync {
             storage.append(element)
+        }
+    }
+}
+
+private final class LockedQueue<Element>: @unchecked Sendable {
+    private let queue = DispatchQueue(label: "beauty.demo.tests.locked-queue")
+    private var storage: [Element]
+
+    init(_ storage: [Element]) {
+        self.storage = storage
+    }
+
+    func pop() -> Element? {
+        queue.sync {
+            guard !storage.isEmpty else {
+                return nil
+            }
+            return storage.removeFirst()
         }
     }
 }

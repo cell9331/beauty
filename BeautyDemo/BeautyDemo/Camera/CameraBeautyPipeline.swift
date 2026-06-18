@@ -154,6 +154,7 @@ final class CameraBeautyPipeline: ObservableObject {
     private var pendingWork: CameraProcessingWork?
     private var latestSnapshot: CameraProcessingSnapshot?
     private var currentWarning: String?
+    private var detectionStatusDebouncer = DetectionStatusDebouncer()
     private var idleContinuations: [CheckedContinuation<Void, Never>] = []
     private var generation: UInt64 = 0
 
@@ -188,6 +189,7 @@ final class CameraBeautyPipeline: ObservableObject {
         pendingWork = nil
         latestSnapshot = nil
         currentWarning = nil
+        detectionStatusDebouncer.reset()
         inFlightCount = 0
         droppedFrameCount = 0
         lastDropReason = nil
@@ -242,8 +244,9 @@ final class CameraBeautyPipeline: ObservableObject {
                 detectionSummary: result.detectionSummary
             )
             latestSnapshot = snapshot
-            currentWarning = nil
-            state = .displaying(snapshot, droppedFrameCount: droppedFrameCount, warning: nil)
+            let presentation = detectionStatusDebouncer.update(with: result.detectionSummary)
+            currentWarning = presentation?.statusText
+            state = .displaying(snapshot, droppedFrameCount: droppedFrameCount, warning: currentWarning)
         case .failure:
             currentWarning = CameraProcessingState.processingPausedMessage
             state = .paused(

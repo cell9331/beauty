@@ -1,5 +1,7 @@
 import Foundation
 import XCTest
+import BeautySDK
+@testable import BeautyDemo
 
 final class InputPipelinePrivacyTests: XCTestCase {
     func testPIPE08D09GeneratedInfoPlistPurposeStringsAreLocalFirst() throws {
@@ -81,6 +83,97 @@ final class InputPipelinePrivacyTests: XCTestCase {
         XCTAssertFalse(userFacingCopy.contains("NSError"))
         XCTAssertFalse(userFacingCopy.contains("/private" + "/var"))
         XCTAssertFalse(userFacingCopy.contains("AV" + "Error"))
+    }
+
+    func testPIPE07DetectionStatusPresentationUsesUISpecCopy() {
+        let cases: [(BeautyDetectionSummary, String)] = [
+            (
+                .noFace,
+                "No face detected. Face adjustments are paused."
+            ),
+            (
+                BeautyDetectionSummary(
+                    availability: .partial,
+                    reasons: [.missingLandmarks],
+                    faceCount: 1,
+                    usedFaceCount: 0
+                ),
+                "Face partly visible. Some face adjustments are softened."
+            ),
+            (
+                BeautyDetectionSummary(
+                    availability: .lowConfidence,
+                    reasons: [.lowConfidenceFace],
+                    faceCount: 1,
+                    usedFaceCount: 0
+                ),
+                "Face detection is uncertain. Face adjustments are softened."
+            ),
+            (
+                BeautyDetectionSummary(
+                    availability: .stale,
+                    reasons: [.staleDetection],
+                    faceCount: 1,
+                    usedFaceCount: 1
+                ),
+                "Waiting for a fresh face reading. Showing the last usable preview."
+            )
+        ]
+
+        for (summary, expectedText) in cases {
+            XCTAssertEqual(DetectionStatusPresentation(summary: summary).statusText, expectedText)
+        }
+    }
+
+    func testPIPE07DetectionStatusAndDebugSummariesAvoidSensitivePayloads() {
+        let summaries = [
+            BeautyDetectionSummary.noFace,
+            BeautyDetectionSummary(
+                availability: .partial,
+                reasons: [.missingLandmarks, .mappingFailed],
+                faceCount: 1,
+                usedFaceCount: 0,
+                detectionDurationMs: 2.5,
+                mappingDurationMs: 1.25
+            ),
+            BeautyDetectionSummary(
+                availability: .lowConfidence,
+                reasons: [.lowConfidenceFace],
+                faceCount: 1,
+                usedFaceCount: 0
+            ),
+            BeautyDetectionSummary(
+                availability: .stale,
+                reasons: [.staleDetection],
+                faceCount: 1,
+                usedFaceCount: 1
+            )
+        ]
+
+        let rendered = summaries
+            .map { DetectionStatusPresentation(summary: $0) }
+            .flatMap { presentation in
+                [
+                    presentation.statusText,
+                    presentation.debugSummary.map(String.init(describing:))
+                ].compactMap { $0 }
+            }
+            .joined(separator: "\n")
+
+        let forbiddenTokens = [
+            "VNFaceObservation",
+            "boundingBox",
+            "CGPoint",
+            "CGRect",
+            "NSError",
+            "/private" + "/var",
+            "http" + "://",
+            "https" + "://"
+        ]
+
+        for token in forbiddenTokens {
+            XCTAssertFalse(rendered.contains(token), "Detection status leaked \(token): \(rendered)")
+        }
     }
 
     private func repoRoot() throws -> URL {

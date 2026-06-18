@@ -215,12 +215,20 @@ nonisolated enum PhotoProcessingState: Equatable, Sendable {
 
     var statusText: String? {
         switch self {
-        case .empty, .loaded:
+        case .empty:
             nil
+        case .loaded(let snapshot):
+            DetectionStatusPresentation(summary: snapshot.detectionSummary).statusText
         case .loading:
             Self.loadingText
         case .failed(_, let message):
             message
+        }
+    }
+
+    var detectionDebugSummary: DetectionDebugSummary? {
+        latestSnapshot.flatMap { snapshot in
+            DetectionStatusPresentation(summary: snapshot.detectionSummary).debugSummary
         }
     }
 }

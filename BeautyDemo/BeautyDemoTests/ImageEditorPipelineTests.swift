@@ -136,6 +136,45 @@ final class ImageEditorPipelineTests: XCTestCase {
         XCTAssertEqual(snapshot.parameters.skinSmoothing, 0.9)
     }
 
+    func testPIPE07PhotoDetectionStatusPersistsUntilNewProcessingResult() async throws {
+        let summaries = LockedPhotoQueue<BeautyDetectionSummary?>([
+            BeautyDetectionSummary(
+                availability: .partial,
+                reasons: [.missingLandmarks],
+                faceCount: 1,
+                usedFaceCount: 0
+            ),
+            BeautyDetectionSummary(
+                availability: .lowConfidence,
+                reasons: [.lowConfidenceFace],
+                faceCount: 1,
+                usedFaceCount: 0
+            )
+        ])
+        let processor = StillImageProcessor { image, _, _ in
+            BeautyResult(output: image, detectionSummary: summaries.pop() ?? nil)
+        }
+        let pipeline = ImageEditorPipeline(processor: processor)
+
+        pipeline.process(input: .fixture(id: "partial", image: Self.testImage(red: 0.2)), parameters: .init())
+        await pipeline.waitUntilIdle()
+
+        XCTAssertEqual(
+            pipeline.state.statusText,
+            "Face partly visible. Some face adjustments are softened."
+        )
+        XCTAssertEqual(pipeline.state.detectionDebugSummary?.reasonCodes, ["missingLandmarks"])
+
+        pipeline.process(input: .fixture(id: "low", image: Self.testImage(red: 0.4)), parameters: .init())
+        await pipeline.waitUntilIdle()
+
+        XCTAssertEqual(
+            pipeline.state.statusText,
+            "Face detection is uncertain. Face adjustments are softened."
+        )
+        XCTAssertEqual(pipeline.state.detectionDebugSummary?.reasonCodes, ["lowConfidenceFace"])
+    }
+
     nonisolated private static func testImage(red: CGFloat) -> CIImage {
         CIImage(color: CIColor(red: red, green: 0.3, blue: 0.6, alpha: 1))
             .cropped(to: CGRect(x: 0, y: 0, width: 2, height: 2))
@@ -165,6 +204,24 @@ nonisolated private final class LockedPhotoCounter: @unchecked Sendable {
         queue.sync {
             value += 1
             return value
+        }
+    }
+}
+
+nonisolated private final class LockedPhotoQueue<Element>: @unchecked Sendable {
+    private let queue = DispatchQueue(label: "beauty.demo.tests.locked-photo-queue")
+    private var storage: [Element]
+
+    init(_ storage: [Element]) {
+        self.storage = storage
+    }
+
+    func pop() -> Element? {
+        queue.sync {
+            guard !storage.isEmpty else {
+                return nil
+            }
+            return storage.removeFirst()
         }
     }
 }
