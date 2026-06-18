@@ -4,17 +4,20 @@ struct BeautyFaceObservation: Equatable, Sendable {
     let stableID: String?
     let confidence: Double
     let normalizedArea: Double
+    let imageBounds: CoordinateRect?
     let landmarks: BeautyFaceLandmarks
 
     init(
         stableID: String? = nil,
         confidence: Double = 1,
-        normalizedArea: Double,
+        normalizedArea: Double = 0,
+        imageBounds: CoordinateRect? = nil,
         landmarks: BeautyFaceLandmarks = .complete
     ) {
         self.stableID = stableID
         self.confidence = confidence
-        self.normalizedArea = max(0, normalizedArea)
+        self.normalizedArea = imageBounds?.area ?? max(0, normalizedArea)
+        self.imageBounds = imageBounds
         self.landmarks = landmarks
     }
 }
