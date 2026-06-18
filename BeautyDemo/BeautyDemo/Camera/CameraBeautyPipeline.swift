@@ -7,10 +7,34 @@ import ImageIO
 nonisolated struct CameraProcessingSnapshot: @unchecked Sendable, Equatable {
     let inputPixelBuffer: CVPixelBuffer
     let outputPixelBuffer: CVPixelBuffer
-    let orientation: CGImagePropertyOrientation
-    let timestamp: TimeInterval
+    let metadata: BeautyInputMetadata
     let parameters: BeautyParameters
     let extent: CGSize
+    let detectionSummary: BeautyDetectionSummary?
+
+    var orientation: CGImagePropertyOrientation {
+        metadata.orientation
+    }
+
+    var timestamp: TimeInterval {
+        metadata.timestamp ?? 0
+    }
+
+    init(
+        inputPixelBuffer: CVPixelBuffer,
+        outputPixelBuffer: CVPixelBuffer,
+        metadata: BeautyInputMetadata,
+        parameters: BeautyParameters,
+        extent: CGSize,
+        detectionSummary: BeautyDetectionSummary? = nil
+    ) {
+        self.inputPixelBuffer = inputPixelBuffer
+        self.outputPixelBuffer = outputPixelBuffer
+        self.metadata = metadata
+        self.parameters = parameters
+        self.extent = extent
+        self.detectionSummary = detectionSummary
+    }
 
     init(
         inputPixelBuffer: CVPixelBuffer,
@@ -18,23 +42,30 @@ nonisolated struct CameraProcessingSnapshot: @unchecked Sendable, Equatable {
         orientation: CGImagePropertyOrientation,
         timestamp: TimeInterval,
         parameters: BeautyParameters,
-        extent: CGSize
+        extent: CGSize,
+        detectionSummary: BeautyDetectionSummary? = nil
     ) {
-        self.inputPixelBuffer = inputPixelBuffer
-        self.outputPixelBuffer = outputPixelBuffer
-        self.orientation = orientation
-        self.timestamp = timestamp
-        self.parameters = parameters
-        self.extent = extent
+        self.init(
+            inputPixelBuffer: inputPixelBuffer,
+            outputPixelBuffer: outputPixelBuffer,
+            metadata: BeautyInputMetadata(
+                orientation: orientation,
+                source: .camera,
+                timestamp: timestamp
+            ),
+            parameters: parameters,
+            extent: extent,
+            detectionSummary: detectionSummary
+        )
     }
 
     static func == (lhs: CameraProcessingSnapshot, rhs: CameraProcessingSnapshot) -> Bool {
         lhs.inputPixelBuffer === rhs.inputPixelBuffer &&
             lhs.outputPixelBuffer === rhs.outputPixelBuffer &&
-            lhs.orientation == rhs.orientation &&
-            lhs.timestamp == rhs.timestamp &&
+            lhs.metadata == rhs.metadata &&
             lhs.parameters == rhs.parameters &&
-            lhs.extent == rhs.extent
+            lhs.extent == rhs.extent &&
+            lhs.detectionSummary == rhs.detectionSummary
     }
 }
 
@@ -87,9 +118,11 @@ nonisolated enum CameraProcessingState: Equatable, Sendable {
 }
 
 nonisolated struct CameraFrameProcessor: Sendable {
-    let process: @Sendable (CameraPreviewFrame, BeautyParameters) throws -> CVPixelBuffer
+    let process: @Sendable (CameraPreviewFrame, BeautyParameters) throws -> BeautyResult<CVPixelBuffer>
 
-    nonisolated init(process: @escaping @Sendable (CameraPreviewFrame, BeautyParameters) throws -> CVPixelBuffer) {
+    nonisolated init(
+        process: @escaping @Sendable (CameraPreviewFrame, BeautyParameters) throws -> BeautyResult<CVPixelBuffer>
+    ) {
         self.process = process
     }
 
@@ -199,14 +232,14 @@ final class CameraBeautyPipeline: ObservableObject {
         inFlightCount = max(0, inFlightCount - 1)
 
         switch result {
-        case .success(let output):
+        case .success(let result):
             let snapshot = CameraProcessingSnapshot(
                 inputPixelBuffer: work.frame.pixelBuffer,
-                outputPixelBuffer: output,
-                orientation: work.frame.orientation,
-                timestamp: work.frame.timestamp,
+                outputPixelBuffer: result.output,
+                metadata: work.frame.metadata,
                 parameters: work.parameters,
-                extent: work.frame.extent
+                extent: work.frame.extent,
+                detectionSummary: result.detectionSummary
             )
             latestSnapshot = snapshot
             currentWarning = nil
@@ -257,7 +290,7 @@ nonisolated private struct CameraProcessingWork: @unchecked Sendable {
 }
 
 nonisolated private enum CameraProcessingResult: @unchecked Sendable {
-    case success(CVPixelBuffer)
+    case success(BeautyResult<CVPixelBuffer>)
     case failure
 }
 
@@ -268,10 +301,10 @@ nonisolated private final class BeautyEnginePixelBufferProcessor: @unchecked Sen
         self.engine = try BeautyEngine(configuration: .default)
     }
 
-    func process(frame: CameraPreviewFrame, parameters: BeautyParameters) throws -> CVPixelBuffer {
-        try engine.process(
+    func process(frame: CameraPreviewFrame, parameters: BeautyParameters) throws -> BeautyResult<CVPixelBuffer> {
+        try engine.processResult(
             pixelBuffer: frame.pixelBuffer,
-            orientation: frame.orientation,
+            metadata: frame.metadata,
             parameters: parameters
         )
     }

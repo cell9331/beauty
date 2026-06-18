@@ -32,6 +32,25 @@ final class CameraSessionControllerTests: XCTestCase {
         XCTAssertEqual(frame.orientation, .right)
         XCTAssertEqual(frame.timestamp, 42)
         XCTAssertEqual(frame.source, .testFixture)
+        XCTAssertEqual(frame.metadata.orientation, .right)
+        XCTAssertEqual(frame.metadata.source, .testFixture)
+        XCTAssertEqual(frame.metadata.timestamp, 42)
+        XCTAssertFalse(frame.metadata.isInputMirrored)
+        XCTAssertFalse(frame.metadata.isPreviewMirrored)
+    }
+
+    func testPIPE05DefaultCameraFrameCarriesMirroringMetadata() throws {
+        let pixelBuffer = try makePixelBuffer(width: 32, height: 24)
+        let frame = CameraSessionController.makeFrame(
+            pixelBuffer: pixelBuffer,
+            timestamp: 43
+        )
+
+        XCTAssertEqual(frame.metadata.orientation, .right)
+        XCTAssertEqual(frame.metadata.source, .camera)
+        XCTAssertEqual(frame.metadata.timestamp, 43)
+        XCTAssertFalse(frame.metadata.isInputMirrored)
+        XCTAssertTrue(frame.metadata.isPreviewMirrored)
     }
 
     func testD07SetupFailureMapsToUnavailablePreviewState() {

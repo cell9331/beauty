@@ -20,21 +20,21 @@ nonisolated struct ImageInputDecoder: Sendable {
             guard let image = source.fixtureImage else {
                 throw BeautyError.invalidInput
             }
-            return DecodedImageInput(source: source, image: image, orientation: source.orientation)
+            return DecodedImageInput(source: source, image: image, metadata: source.metadata)
         case .photosPickerData:
             guard let data = source.data, let image = CIImage(data: data) else {
                 throw BeautyError.invalidInput
             }
-            return DecodedImageInput(source: source, image: image, orientation: source.orientation)
+            return DecodedImageInput(source: source, image: image, metadata: source.metadata)
         }
     }
 }
 
 nonisolated struct StillImageProcessor: Sendable {
-    let process: @Sendable (CIImage, CGImagePropertyOrientation, BeautyParameters) throws -> CIImage
+    let process: @Sendable (CIImage, BeautyInputMetadata, BeautyParameters) throws -> BeautyResult<CIImage>
 
     nonisolated init(
-        process: @escaping @Sendable (CIImage, CGImagePropertyOrientation, BeautyParameters) throws -> CIImage
+        process: @escaping @Sendable (CIImage, BeautyInputMetadata, BeautyParameters) throws -> BeautyResult<CIImage>
     ) {
         self.process = process
     }
@@ -42,8 +42,8 @@ nonisolated struct StillImageProcessor: Sendable {
     static func beautyEngine() -> StillImageProcessor {
         do {
             let processor = try BeautyEngineStillImageProcessor()
-            return StillImageProcessor { image, orientation, parameters in
-                try processor.process(image: image, orientation: orientation, parameters: parameters)
+            return StillImageProcessor { image, metadata, parameters in
+                try processor.process(image: image, metadata: metadata, parameters: parameters)
             }
         } catch {
             return StillImageProcessor { _, _, _ in
@@ -119,16 +119,17 @@ final class ImageEditorPipeline: ObservableObject {
                     return
                 }
 
-                let outputImage = try processor.process(decoded.image, decoded.orientation, work.parameters)
+                let processingResult = try processor.process(decoded.image, decoded.metadata, work.parameters)
                 let snapshot = ImageProcessingSnapshot(
                     sourceKind: decoded.source.kind,
                     sourceID: decoded.source.id,
                     inputImage: decoded.image,
-                    outputImage: outputImage,
+                    outputImage: processingResult.output,
                     inputCGImage: try renderer.render(decoded.image),
-                    outputCGImage: try renderer.render(outputImage),
-                    orientation: decoded.orientation,
-                    parameters: work.parameters
+                    outputCGImage: try renderer.render(processingResult.output),
+                    metadata: decoded.metadata,
+                    parameters: work.parameters,
+                    detectionSummary: processingResult.detectionSummary
                 )
                 result = .success(snapshot)
             } catch {
@@ -221,12 +222,12 @@ nonisolated private final class BeautyEngineStillImageProcessor: @unchecked Send
 
     func process(
         image: CIImage,
-        orientation: CGImagePropertyOrientation,
+        metadata: BeautyInputMetadata,
         parameters: BeautyParameters
-    ) throws -> CIImage {
-        try engine.process(
+    ) throws -> BeautyResult<CIImage> {
+        try engine.processResult(
             image: image,
-            orientation: orientation,
+            metadata: metadata,
             parameters: parameters
         )
     }

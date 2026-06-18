@@ -20,6 +20,10 @@ final class ImageEditorPipelineTests: XCTestCase {
         XCTAssertEqual(snapshot.sourceKind, .fixture)
         XCTAssertEqual(snapshot.sourceID, "fixture")
         XCTAssertEqual(snapshot.orientation, .up)
+        XCTAssertEqual(snapshot.metadata.source, .photo)
+        XCTAssertFalse(snapshot.metadata.isInputMirrored)
+        XCTAssertFalse(snapshot.metadata.isPreviewMirrored)
+        XCTAssertNil(snapshot.metadata.timestamp)
         XCTAssertEqual(snapshot.parameters, parameters)
         XCTAssertEqual(snapshot.outputImage.extent, snapshot.inputImage.extent)
         XCTAssertEqual(snapshot.outputCGImage.width, 2)
@@ -33,11 +37,11 @@ final class ImageEditorPipelineTests: XCTestCase {
             return DecodedImageInput(
                 source: source,
                 image: Self.testImage(red: 0.4),
-                orientation: source.orientation
+                metadata: source.metadata
             )
         }
         let processor = StillImageProcessor { image, _, _ in
-            image
+            BeautyResult(output: image, detectionSummary: .notRun)
         }
         let pipeline = ImageEditorPipeline(decoder: decoder, processor: processor)
 
@@ -51,6 +55,8 @@ final class ImageEditorPipelineTests: XCTestCase {
         XCTAssertEqual(records.values, [.photosPickerData])
         XCTAssertEqual(snapshot.sourceKind, .photosPickerData)
         XCTAssertEqual(snapshot.sourceID, "picker-data")
+        XCTAssertEqual(snapshot.metadata.source, .photo)
+        XCTAssertEqual(snapshot.detectionSummary, .notRun)
     }
 
     func testD08CancellationIsNoopAndShowsNoError() async throws {
@@ -91,7 +97,7 @@ final class ImageEditorPipelineTests: XCTestCase {
                 secondStarted.fulfill()
                 _ = releaseSecond.wait(timeout: .now() + 2)
             }
-            return image
+            return BeautyResult(output: image)
         }
         let pipeline = ImageEditorPipeline(processor: processor)
 
@@ -111,7 +117,7 @@ final class ImageEditorPipelineTests: XCTestCase {
 
     func testD14StalePhotoWorkIsIgnoredInFavorOfLatestParameters() async throws {
         let processor = StillImageProcessor { image, _, _ in
-            image
+            BeautyResult(output: image)
         }
         let pipeline = ImageEditorPipeline(processor: processor)
 

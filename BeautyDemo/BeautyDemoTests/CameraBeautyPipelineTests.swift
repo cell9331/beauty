@@ -11,18 +11,17 @@ final class CameraBeautyPipelineTests: XCTestCase {
         let frame = CameraSessionController.makeFrame(
             pixelBuffer: input,
             orientation: .right,
-            timestamp: 1,
-            source: .testFixture
+            timestamp: 1
         )
         let parameters = BeautyParameters(skinSmoothing: 0.42)
         let records = LockedValues<ProcessorRecord>()
         let processor = CameraFrameProcessor { frame, parameters in
             records.append(ProcessorRecord(
                 pixelBuffer: frame.pixelBuffer,
-                orientation: frame.orientation,
+                metadata: frame.metadata,
                 parameters: parameters
             ))
-            return frame.pixelBuffer
+            return BeautyResult(output: frame.pixelBuffer, detectionSummary: .notRun)
         }
         let pipeline = CameraBeautyPipeline(processor: processor)
 
@@ -31,9 +30,15 @@ final class CameraBeautyPipelineTests: XCTestCase {
 
         let record = try XCTUnwrap(records.values.first)
         XCTAssertTrue(record.pixelBuffer === input)
-        XCTAssertEqual(record.orientation, .right)
+        XCTAssertEqual(record.metadata.orientation, .right)
+        XCTAssertEqual(record.metadata.source, .camera)
+        XCTAssertFalse(record.metadata.isInputMirrored)
+        XCTAssertTrue(record.metadata.isPreviewMirrored)
+        XCTAssertEqual(record.metadata.timestamp, 1)
         XCTAssertEqual(record.parameters, parameters)
         XCTAssertEqual(pipeline.state.latestSnapshot?.parameters, parameters)
+        XCTAssertEqual(pipeline.state.latestSnapshot?.metadata, record.metadata)
+        XCTAssertEqual(pipeline.state.latestSnapshot?.detectionSummary, .notRun)
         XCTAssertTrue(pipeline.state.latestSnapshot?.inputPixelBuffer === input)
         XCTAssertTrue(pipeline.state.latestSnapshot?.outputPixelBuffer === input)
     }
@@ -48,7 +53,7 @@ final class CameraBeautyPipelineTests: XCTestCase {
                 firstStarted.fulfill()
                 _ = releaseFirst.wait(timeout: .now() + 2)
             }
-            return frame.pixelBuffer
+            return BeautyResult(output: frame.pixelBuffer)
         }
         let pipeline = CameraBeautyPipeline(maxInFlight: 1, processor: processor)
 
@@ -80,7 +85,7 @@ final class CameraBeautyPipelineTests: XCTestCase {
                 firstStarted.fulfill()
                 _ = releaseFirst.wait(timeout: .now() + 2)
             }
-            return frame.pixelBuffer
+            return BeautyResult(output: frame.pixelBuffer)
         }
         let pipeline = CameraBeautyPipeline(maxInFlight: 1, processor: processor)
 
@@ -101,7 +106,7 @@ final class CameraBeautyPipelineTests: XCTestCase {
             guard frame.pixelFormat == kCVPixelFormatType_32BGRA else {
                 throw BeautyError.unsupportedPixelFormat
             }
-            return frame.pixelBuffer
+            return BeautyResult(output: frame.pixelBuffer)
         }
         let pipeline = CameraBeautyPipeline(processor: processor)
 
@@ -133,7 +138,7 @@ final class CameraBeautyPipelineTests: XCTestCase {
 
 private struct ProcessorRecord {
     let pixelBuffer: CVPixelBuffer
-    let orientation: CGImagePropertyOrientation
+    let metadata: BeautyInputMetadata
     let parameters: BeautyParameters
 }
 

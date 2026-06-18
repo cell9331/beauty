@@ -15,7 +15,11 @@ nonisolated struct ImageInputSource: @unchecked Sendable {
     let id: String
     let data: Data?
     let fixtureImage: CIImage?
-    let orientation: CGImagePropertyOrientation
+    let metadata: BeautyInputMetadata
+
+    var orientation: CGImagePropertyOrientation {
+        metadata.orientation
+    }
 
     static func fixture(
         id: String = "demo-fixture",
@@ -27,7 +31,10 @@ nonisolated struct ImageInputSource: @unchecked Sendable {
             id: id,
             data: nil,
             fixtureImage: image,
-            orientation: orientation
+            metadata: BeautyInputMetadata(
+                orientation: orientation,
+                source: .photo
+            )
         )
     }
 
@@ -41,7 +48,10 @@ nonisolated struct ImageInputSource: @unchecked Sendable {
             id: id,
             data: data,
             fixtureImage: nil,
-            orientation: orientation
+            metadata: BeautyInputMetadata(
+                orientation: orientation,
+                source: .photo
+            )
         )
     }
 
@@ -50,14 +60,46 @@ nonisolated struct ImageInputSource: @unchecked Sendable {
         id: "cancelled",
         data: nil,
         fixtureImage: nil,
-        orientation: .up
+        metadata: BeautyInputMetadata(
+            orientation: .up,
+            source: .photo
+        )
     )
 }
 
 nonisolated struct DecodedImageInput: @unchecked Sendable {
     let source: ImageInputSource
     let image: CIImage
-    let orientation: CGImagePropertyOrientation
+    let metadata: BeautyInputMetadata
+
+    var orientation: CGImagePropertyOrientation {
+        metadata.orientation
+    }
+
+    init(
+        source: ImageInputSource,
+        image: CIImage,
+        metadata: BeautyInputMetadata
+    ) {
+        self.source = source
+        self.image = image
+        self.metadata = metadata
+    }
+
+    init(
+        source: ImageInputSource,
+        image: CIImage,
+        orientation: CGImagePropertyOrientation
+    ) {
+        self.init(
+            source: source,
+            image: image,
+            metadata: BeautyInputMetadata(
+                orientation: orientation,
+                source: .photo
+            )
+        )
+    }
 }
 
 nonisolated struct ImageProcessingSnapshot: @unchecked Sendable, Equatable {
@@ -67,11 +109,65 @@ nonisolated struct ImageProcessingSnapshot: @unchecked Sendable, Equatable {
     let outputImage: CIImage
     let inputCGImage: CGImage
     let outputCGImage: CGImage
-    let orientation: CGImagePropertyOrientation
+    let metadata: BeautyInputMetadata
     let parameters: BeautyParameters
+    let detectionSummary: BeautyDetectionSummary?
+
+    var orientation: CGImagePropertyOrientation {
+        metadata.orientation
+    }
 
     var extent: CGRect {
         outputImage.extent
+    }
+
+    init(
+        sourceKind: ImageInputKind,
+        sourceID: String,
+        inputImage: CIImage,
+        outputImage: CIImage,
+        inputCGImage: CGImage,
+        outputCGImage: CGImage,
+        metadata: BeautyInputMetadata,
+        parameters: BeautyParameters,
+        detectionSummary: BeautyDetectionSummary? = nil
+    ) {
+        self.sourceKind = sourceKind
+        self.sourceID = sourceID
+        self.inputImage = inputImage
+        self.outputImage = outputImage
+        self.inputCGImage = inputCGImage
+        self.outputCGImage = outputCGImage
+        self.metadata = metadata
+        self.parameters = parameters
+        self.detectionSummary = detectionSummary
+    }
+
+    init(
+        sourceKind: ImageInputKind,
+        sourceID: String,
+        inputImage: CIImage,
+        outputImage: CIImage,
+        inputCGImage: CGImage,
+        outputCGImage: CGImage,
+        orientation: CGImagePropertyOrientation,
+        parameters: BeautyParameters,
+        detectionSummary: BeautyDetectionSummary? = nil
+    ) {
+        self.init(
+            sourceKind: sourceKind,
+            sourceID: sourceID,
+            inputImage: inputImage,
+            outputImage: outputImage,
+            inputCGImage: inputCGImage,
+            outputCGImage: outputCGImage,
+            metadata: BeautyInputMetadata(
+                orientation: orientation,
+                source: .photo
+            ),
+            parameters: parameters,
+            detectionSummary: detectionSummary
+        )
     }
 
     static func == (lhs: ImageProcessingSnapshot, rhs: ImageProcessingSnapshot) -> Bool {
@@ -83,8 +179,9 @@ nonisolated struct ImageProcessingSnapshot: @unchecked Sendable, Equatable {
             lhs.inputCGImage.height == rhs.inputCGImage.height &&
             lhs.outputCGImage.width == rhs.outputCGImage.width &&
             lhs.outputCGImage.height == rhs.outputCGImage.height &&
-            lhs.orientation == rhs.orientation &&
-            lhs.parameters == rhs.parameters
+            lhs.metadata == rhs.metadata &&
+            lhs.parameters == rhs.parameters &&
+            lhs.detectionSummary == rhs.detectionSummary
     }
 }
 
