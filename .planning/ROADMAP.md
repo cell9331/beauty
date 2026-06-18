@@ -130,13 +130,13 @@ Plans:
   3. No-face and partial-face frames produce safe output and diagnosable state instead of crashes.
   4. Fixture tests cover orientation, mirroring, no-face, and missing-landmark scenarios.
 
-**Plans:** 5 plans
+**Plans:** 1/5 plans executed
 
 Plans:
 
 **Wave 1**
 
-- [ ] 04-01: Add public metadata/result contracts and BeautyEngine compatibility.
+- [x] 04-01: Add public metadata/result contracts and BeautyEngine compatibility.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -233,7 +233,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | 1. SDK Foundation and Public Facade | 4/4 | Complete    | 2026-06-11 |
 | 2. Demo Integration Shell | 3/3 | Complete    | 2026-06-11 |
 | 3. Realtime and Still Input Slice | 4/4 | Complete    | 2026-06-12 |
-| 4. Detection and Coordinate Safety | 0/4 | Not started | - |
+| 4. Detection and Coordinate Safety | 1/5 | In Progress|  |
 | 5. Filters, Presets, and Resource Flow | 0/4 | Not started | - |
 | 6. Core Beauty Effects | 0/5 | Not started | - |
 | 7. Rich Demo QA Surface | 0/3 | Not started | - |
