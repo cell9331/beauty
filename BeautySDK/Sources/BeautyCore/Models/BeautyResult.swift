@@ -1,4 +1,4 @@
-public struct BeautyResult<Output: Sendable>: Sendable {
+public struct BeautyResult<Output>: @unchecked Sendable {
     public let output: Output
     public let warnings: [BeautyValidationWarning]
     public let metrics: [String: Double]

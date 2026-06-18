@@ -18,10 +18,31 @@ public final class BeautyEngine {
         orientation: CGImagePropertyOrientation,
         parameters: BeautyParameters
     ) throws -> CVPixelBuffer {
-        _ = orientation
+        let metadata = BeautyInputMetadata(
+            orientation: orientation,
+            isInputMirrored: false,
+            isPreviewMirrored: false,
+            source: .camera
+        )
+        return try processResult(
+            pixelBuffer: pixelBuffer,
+            metadata: metadata,
+            parameters: parameters
+        ).output
+    }
+
+    public func processResult(
+        pixelBuffer: CVPixelBuffer,
+        metadata: BeautyInputMetadata,
+        parameters: BeautyParameters
+    ) throws -> BeautyResult<CVPixelBuffer> {
+        _ = metadata
         _ = parameters.normalized()
         try Self.validate(pixelBuffer: pixelBuffer)
-        return try Self.makeCopiedBGRAOutput(from: pixelBuffer)
+        return BeautyResult(
+            output: try Self.makeCopiedBGRAOutput(from: pixelBuffer),
+            detectionSummary: initialDetectionSummary
+        )
     }
 
     /// Returns an SDK-created image value that is readable for the current processing result lifecycle.
@@ -30,12 +51,33 @@ public final class BeautyEngine {
         orientation: CGImagePropertyOrientation,
         parameters: BeautyParameters
     ) throws -> CIImage {
-        _ = orientation
+        let metadata = BeautyInputMetadata(
+            orientation: orientation,
+            isInputMirrored: false,
+            isPreviewMirrored: false,
+            source: .photo
+        )
+        return try processResult(
+            image: image,
+            metadata: metadata,
+            parameters: parameters
+        ).output
+    }
+
+    public func processResult(
+        image: CIImage,
+        metadata: BeautyInputMetadata,
+        parameters: BeautyParameters
+    ) throws -> BeautyResult<CIImage> {
+        _ = metadata
         _ = parameters.normalized()
         guard image.extent.isFiniteAndNonEmpty else {
             throw BeautyError.invalidInput
         }
-        return image.cropped(to: image.extent)
+        return BeautyResult(
+            output: image.cropped(to: image.extent),
+            detectionSummary: initialDetectionSummary
+        )
     }
 
     public func reset() {
@@ -44,6 +86,10 @@ public final class BeautyEngine {
 
     public var resetCountForTesting: UInt64 {
         resetGeneration
+    }
+
+    private var initialDetectionSummary: BeautyDetectionSummary {
+        configuration.enableFaceTracking ? .notRun : .disabled
     }
 
     private static func validate(pixelBuffer: CVPixelBuffer) throws {
