@@ -130,7 +130,7 @@ Plans:
   3. No-face and partial-face frames produce safe output and diagnosable state instead of crashes.
   4. Fixture tests cover orientation, mirroring, no-face, and missing-landmark scenarios.
 
-**Plans:** 1/5 plans executed
+**Plans:** 2/5 plans executed
 
 Plans:
 
@@ -140,7 +140,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 04-02: Add internal detection models, face selection, and Vision adapter seams.
+- [x] 04-02: Add internal detection models, face selection, and Vision adapter seams.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
