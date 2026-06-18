@@ -130,7 +130,7 @@ Plans:
   3. No-face and partial-face frames produce safe output and diagnosable state instead of crashes.
   4. Fixture tests cover orientation, mirroring, no-face, and missing-landmark scenarios.
 
-**Plans:** 2/5 plans executed
+**Plans:** 3/5 plans executed
 
 Plans:
 
@@ -144,7 +144,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 04-03: Add canonical coordinate spaces and orientation/mirroring mappers.
+- [x] 04-03: Add canonical coordinate spaces and orientation/mirroring mappers.
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
