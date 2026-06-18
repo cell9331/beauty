@@ -292,6 +292,21 @@ Recorded 2026-06-12:
 - Respect-user-content acceptance is backed by purpose-string tests and static no-upload/no-network/raw-path scans in `InputPipelinePrivacyTests`.
 - Full Demo simulator suite passed with 55 XCTest cases for `platform=iOS Simulator,name=iPhone 17,OS=26.5`.
 
+### 7.6 Phase 4 Detection and Coordinate Acceptance
+
+Agent-verifiable checks:
+
+- Camera and Photo inputs preserve orientation and mirroring through `BeautyInputMetadata`.
+- Detector output is normalized to canonical `ImageNormalized` coordinates before it can influence effects.
+- No-face, partial-face, low-confidence, stale, skipped, reused, disabled, and not-run detection states keep output safe and non-crashing.
+- User-facing detection status copy matches `04-UI-SPEC.md` and does not expose geometry or raw framework details.
+- Demo and tests import only the public `BeautySDK` facade.
+
+Manual checks still required before release-like claims:
+
+- Real front-camera preview on device: confirm mirror behavior matches user expectation while processed output/crop stays stable.
+- Real Vision quality smoke: verify no-face, partial-face, and low-light faces produce the expected status copy and no crash.
+
 ## 8. Preset Product Contract
 
 MVP built-in presets:

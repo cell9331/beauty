@@ -128,6 +128,9 @@ BeautyDemo
 - 输出只能是 `BeautyCore` 中的模型。
 - 不直接触发 render pass。
 - 不把 Vision 坐标泄漏到 `BeautySDK` 对外 API。
+- `VisionFaceDetector`、`CoordinateMapper`、`BeautyFaceObservation`、landmark groups 和 Vision bounding boxes 都停留在 `BeautyDetection` 内部。
+- 对外只通过 `BeautySDK` facade 暴露 `BeautyInputMetadata` 与 geometry-free 的 `BeautyDetectionSummary`。
+- 坐标映射的规范出口是 image-normalized SDK 模型；preview / mirrored preview 只属于 App 展示层。
 
 ### 6.3 BeautyRender
 
@@ -190,6 +193,7 @@ import BeautySDK
 
 - 暴露 `BeautyEngine`。
 - 暴露稳定的配置、参数、错误和处理入口。
+- 暴露逐帧 `BeautyInputMetadata` 与不含人脸几何的 `BeautyDetectionSummary`。
 - 隐藏 Vision、Metal、Core Image、Target 拆分细节。
 - 把内部错误映射为稳定 SDK 错误。
 
@@ -208,6 +212,7 @@ import BeautySDK
 
 - Demo 不直接 import `BeautyCore`、`BeautyRender`、`BeautyDetection`、`BeautyEffects`。
 - Demo 不实现 SDK 私有算法。
+- Demo 对检测状态的展示只读取 `BeautyDetectionSummary`，不得读取 Vision observation、bounding box 或 landmark 坐标。
 - Demo 中发现的通用能力必须回流到 SDK，而不是停留在 UI 层。
 
 ## 7. 数据流
@@ -217,7 +222,7 @@ import BeautySDK
 ```text
 Camera CMSampleBuffer
 → BeautyDemo adapter
-→ BeautyEngine.processFrame
+→ BeautyEngine.processResult(pixelBuffer:metadata:parameters:)
 → BeautyDetection produces FaceObservation
 → BeautyEffects resolves active effects
 → BeautyRender executes RenderGraph
@@ -229,7 +234,7 @@ Camera CMSampleBuffer
 
 ```text
 Image input
-→ BeautyEngine.processImage
+→ BeautyEngine.processResult(image:metadata:parameters:)
 → normalize to SDK frame model
 → optional detection
 → effects and render graph
@@ -279,7 +284,7 @@ BeautyDemo sliders / presets
 - 依赖改动：检查 `Package.swift` 或 Xcode target 依赖无反向引用。
 - 公共 API 改动：新增或更新编译验证与接口说明。
 - 渲染链路改动：证明实时路径未引入 `UIImage` 中转。
-- 检测链路改动：证明输出仍为 `BeautyCore` 模型。
+- 检测链路改动：证明输出仍为 `BeautyCore` 模型，且 public/Demo 表面不暴露 point、rect、bounding box、landmark、raw Vision object、raw framework error 或本地路径。
 - Demo 集成改动：证明 Demo 只依赖 `BeautySDK` 门面。
 
 无法运行验证时，必须在 `PLANS.md` 记录原因、风险和下一步。

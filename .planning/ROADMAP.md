@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: SDK Foundation and Public Facade** - Host apps can import and exercise a no-op modular SDK. (completed 2026-06-11)
 - [x] **Phase 2: Demo Integration Shell** - Demo uses only the public facade and exposes the rich category skeleton. (completed 2026-06-11)
 - [x] **Phase 3: Realtime and Still Input Slice** - Demo can send camera frames and still images through the SDK safely. (completed 2026-06-12)
-- [ ] **Phase 4: Detection and Coordinate Safety** - SDK can reason about faces, orientation, mirroring, and safe degraded frames.
+- [x] **Phase 4: Detection and Coordinate Safety** - SDK can reason about faces, orientation, mirroring, and safe degraded frames. (completed 2026-06-18)
 - [ ] **Phase 5: Filters, Presets, and Resource Flow** - Users can apply safe color/filter controls and built-in presets.
 - [ ] **Phase 6: Core Beauty Effects** - Users can tune skin, face, eye, nose, and mouth MVP controls with safety caps.
 - [ ] **Phase 7: Rich Demo QA Surface** - Demo becomes a complete validation surface with compare, reset, debug, and tests.
@@ -130,7 +130,7 @@ Plans:
   3. No-face and partial-face frames produce safe output and diagnosable state instead of crashes.
   4. Fixture tests cover orientation, mirroring, no-face, and missing-landmark scenarios.
 
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans complete
 
 Plans:
 
@@ -152,7 +152,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 04-05: Add privacy scans, root contract updates, and final verification plan.
+- [x] 04-05: Add privacy scans, root contract updates, and final verification plan.
 
 ### Phase 5: Filters, Presets, and Resource Flow
 
@@ -233,7 +233,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | 1. SDK Foundation and Public Facade | 4/4 | Complete    | 2026-06-11 |
 | 2. Demo Integration Shell | 3/3 | Complete    | 2026-06-11 |
 | 3. Realtime and Still Input Slice | 4/4 | Complete    | 2026-06-12 |
-| 4. Detection and Coordinate Safety | 1/5 | In Progress|  |
+| 4. Detection and Coordinate Safety | 5/5 | Complete    | 2026-06-18 |
 | 5. Filters, Presets, and Resource Flow | 0/4 | Not started | - |
 | 6. Core Beauty Effects | 0/5 | Not started | - |
 | 7. Rich Demo QA Surface | 0/3 | Not started | - |

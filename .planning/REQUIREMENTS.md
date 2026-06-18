@@ -24,9 +24,9 @@ Requirements for the initial SDK milestone. Each requirement must map to exactly
 - [x] **PIPE-02**: Realtime camera processing avoids `UIImage` as an intermediate format and passes sample-buffer, pixel-buffer, or texture-backed input to SDK code.
 - [x] **PIPE-03**: Realtime processing uses bounded in-flight work and drops stale frames instead of allowing unbounded queue growth.
 - [x] **PIPE-04**: Demo can select or provide a still image and process it through the SDK image path.
-- [ ] **PIPE-05**: SDK and Demo preserve image orientation and front-camera mirroring through explicit metadata and normalization.
+- [x] **PIPE-05**: SDK and Demo preserve image orientation and front-camera mirroring through explicit metadata and normalization.
 - [x] **PIPE-06**: Demo provides before/after comparison for camera or still-image output without resetting parameters or shifting crop/orientation.
-- [ ] **PIPE-07**: Demo handles loading, processing errors, denied permission, no-face frames, and partial-face frames without crashing.
+- [x] **PIPE-07**: Demo handles loading, processing errors, denied permission, no-face frames, and partial-face frames without crashing.
 - [x] **PIPE-08**: Camera/photo features include required Info.plist purpose strings and conform to the local-first privacy boundary.
 
 ### MVP Effects
@@ -101,9 +101,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PIPE-02 | Phase 3 | Complete |
 | PIPE-03 | Phase 3 | Complete |
 | PIPE-04 | Phase 3 | Complete |
-| PIPE-05 | Phase 4 | Pending |
+| PIPE-05 | Phase 4 | Complete |
 | PIPE-06 | Phase 3 | Complete |
-| PIPE-07 | Phase 4 | Pending |
+| PIPE-07 | Phase 4 | Complete |
 | PIPE-08 | Phase 3 | Complete |
 | EFFECT-01 | Phase 6 | Pending |
 | EFFECT-02 | Phase 5 | Pending |
@@ -131,4 +131,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-06-10*
-*Last updated: 2026-06-12 after Phase 3 input-pipeline verification*
+*Last updated: 2026-06-18 after Phase 4 detection and coordinate safety verification*

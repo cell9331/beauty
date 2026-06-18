@@ -110,9 +110,13 @@ Degradation is expected behavior, not a hidden failure.
 | Condition | Required Degradation |
 | --- | --- |
 | No face detected | Skip face geometry and face-dependent makeup; keep color and LUT effects. |
+| Detection disabled | Return output with `.disabled` summary; do not treat as an error. |
+| Detection not run | Return output with `.notRun` summary for compatibility/no-op paths. |
 | Detection skipped for throttling | Reuse recent landmarks within allowed reuse window. |
 | Detection failed 1 to 3 frames | Reuse recent landmarks with caution. |
 | Detection stale | Disable strong geometry; allow weak non-geometric effects. |
+| Detection mapping failed | Return `.partial` with `.mappingFailed` and skip face-dependent work for that frame. |
+| Low-confidence face | Return `.lowConfidence`; disable strong geometry and keep safe color/LUT output. |
 | Landmark group missing | Skip only effects requiring that group. |
 | Face too small | Lower geometry strength and skip high-detail effects. |
 | Large yaw / side face | Lower face, nose, and mouth geometry strength. |
@@ -344,6 +348,9 @@ Rules:
 - Low confidence faces disable strong geometry.
 - Missing landmark groups disable only dependent effects.
 - Detection errors are counted separately from render errors.
+- Public `BeautyDetectionSummary` exposes only availability, redacted reason codes, counts, and timings.
+- Camera UI status is debounced for three processed frames; photo UI status persists with the processed image until the next image result.
+- `noFace`, `partial`, `lowConfidence`, `stale`, `skipped`, and `reused` are non-fatal states unless a required render dependency fails separately.
 
 First-version thresholds:
 
@@ -448,6 +455,13 @@ Phase 3 input-pipeline evidence recorded 2026-06-12:
 - `CameraBeautyPipelineTests` verifies direct `CVPixelBuffer` processing, bounded in-flight work, stale pending-frame drops, latest parameter snapshots, and friendly pause copy.
 - `ImageEditorPipelineTests` verifies fixture and PhotosPicker-data processing, cancellation no-op, loading over the previous visual, decode failure preservation, and stale photo work ignored in favor of latest parameters.
 - `InputPipelinePrivacyTests` verifies realtime Camera source has no `UIImage` conversion and no raw input/error copy in Phase 3 input paths.
+
+Phase 4 detection/coordinate evidence recorded 2026-06-18:
+
+- `BeautyDetectionTests` covers face selection, Vision adapter seams, unavailable detector degradation, coordinate mapping, and observation mapping failures.
+- `CameraBeautyPipelineTests` covers result-backed detection summaries and debounced camera warning replacement.
+- `ImageEditorPipelineTests` covers result-backed photo detection summaries and persisted no-face status copy.
+- `InputPipelinePrivacyTests` covers public detection summary/debug leakage scans.
 
 ## 19. Release Readiness Gates
 

@@ -222,6 +222,9 @@ Rules:
 - `MetalPreviewView` is a thin platform bridge for display only.
 - Dropping frames is acceptable under load; blocking the main thread is not.
 - Camera lifecycle must respond to app foreground/background transitions.
+- `CameraPreviewFrame` carries `BeautyInputMetadata`; camera defaults are source `.camera`, orientation `.right`, input mirrored false, and preview mirrored true for front-camera display.
+- `CameraProcessingSnapshot` carries `BeautyDetectionSummary?` from `BeautyResult`, not Vision observations or face geometry.
+- `DetectionStatusDebouncer` owns transient camera status copy and holds warning text for three processed frames before clearing or replacing it.
 
 ## 10. Image Editor
 
@@ -238,6 +241,8 @@ Rules:
 - Do not route still image editing through camera-only state.
 - Editor state is independent from camera session state.
 - Large image processing must show loading or progress state.
+- `ImageProcessingSnapshot` carries `BeautyInputMetadata` and `BeautyDetectionSummary?`; photo input defaults to source `.photo` and no mirroring unless the import path explicitly says otherwise.
+- Photo detection status persists with the processed image until the next successful image result replaces it.
 - Export behavior belongs to product and reliability docs before implementation.
 
 ## 11. Async and Concurrency
@@ -313,6 +318,9 @@ UI error categories:
 | Camera unavailable | Show non-camera editor path when possible. |
 | SDK initialization failed | Show retry/reset and diagnostic detail in debug mode. |
 | Processing failed for frame | Keep preview alive if possible and show non-blocking warning. |
+| No face detected | Keep controls enabled and show `No face detected. Face adjustments are paused.` |
+| Partial or low-confidence face | Keep output alive and show softened-adjustment copy. |
+| Stale face reading | Keep last usable preview and show waiting-for-fresh-reading copy. |
 | Resource missing | Disable affected preset/filter and show fallback. |
 
 Rules:
@@ -320,6 +328,7 @@ Rules:
 - Never crash the Demo for recoverable SDK errors.
 - Do not expose raw internal stack traces in user-facing UI.
 - Debug mode may show diagnostic details from `RELIABILITY.md`.
+- Detection debug UI may show availability, reason codes, counts, and timings only; it must not show bounding boxes, landmarks, raw Vision objects, raw errors, or local paths.
 
 ## 16. UI Testing Contracts
 
@@ -344,6 +353,12 @@ Phase 3 input evidence recorded 2026-06-12:
 - Photo state covers empty, loading, loaded, failed, and cancellation paths; loading and recoverable failures preserve the previous visual state.
 - Camera and Photo share display-only before/after compare labels: `Show After` and `Show Before`.
 - XCTest coverage: `BeautyDemoViewStateTests.testPhase3InputStateMatrixCoversPIPE01PIPE04PIPE06PIPE08AndDEMO01`, `CompareStateTests`, and `InputPipelinePrivacyTests`.
+
+Phase 4 detection/metadata evidence recorded 2026-06-18:
+
+- Camera and Photo snapshots pass `BeautyInputMetadata` through the public `BeautySDK` facade into metadata-aware `BeautyEngine.processResult(...)` calls.
+- Demo status copy is centralized in `DetectionStatusPresentation`; sliders remain enabled while face-dependent output degrades.
+- `InputPipelinePrivacyTests` scans Demo code and detection status/debug summaries for internal Target imports, raw Vision objects, public geometry, raw framework errors, and local paths.
 
 ## 17. Implementation Checklist
 

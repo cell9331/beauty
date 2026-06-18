@@ -27,6 +27,25 @@
 | Performance metrics | Operational data | Allowed if anonymized | Allowed if sampled | No image, path, face geometry, or device identifiers. |
 | Crash / error diagnostics | Operational data | Allowed if redacted | Allowed if redacted | No raw frames, paths, tokens, or facial data. |
 
+### 2.1 Detection Summary and Debug Privacy
+
+`BeautyDetectionSummary` and Demo `DetectionDebugSummary` are allowed to expose only:
+
+- Detection availability enum values.
+- Redacted degradation reason codes.
+- Face counts and used-face counts.
+- Detection and coordinate-mapping durations.
+
+They must never expose:
+
+- Bounding boxes, points, rectangles, or landmark coordinates.
+- Raw `VNFaceObservation`, Vision request objects, Core Image/Metal internals, or raw framework errors.
+- Raw `NSError` / `AVError` strings.
+- Local image paths such as `/private/var/...`.
+- Image bytes, thumbnails, or persisted debug textures.
+
+`InputPipelinePrivacyTests` owns the current automated guard for these public summary and Demo debug boundaries.
+
 ## 3. Trust Boundaries
 
 ```text

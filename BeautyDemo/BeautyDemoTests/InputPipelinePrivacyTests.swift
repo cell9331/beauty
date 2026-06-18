@@ -176,6 +176,25 @@ final class InputPipelinePrivacyTests: XCTestCase {
         }
     }
 
+    func testPIPE07PublicDetectionSourcesAvoidGeometryRawFrameworksAndPaths() throws {
+        let files = try swiftFiles(in: [
+            "BeautySDK/Sources/BeautyCore",
+            "BeautySDK/Sources/BeautySDK",
+            "BeautyDemo/BeautyDemo/Camera",
+            "BeautyDemo/BeautyDemo/Editor"
+        ])
+        let forbiddenPatterns = [
+            #"(?m)^\s*public\b[^\n]*(Point|Rect|bounding|landmark)"#,
+            #"\bVNFaceObservation\b"#,
+            #"\bNSError\b"#,
+            #"/private/var"#
+        ]
+
+        let matches = try matches(forRegexPatterns: forbiddenPatterns, in: files)
+
+        XCTAssertTrue(matches.isEmpty, matches.joined(separator: "\n"))
+    }
+
     private func repoRoot() throws -> URL {
         var cursor = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
 
@@ -228,6 +247,27 @@ final class InputPipelinePrivacyTests: XCTestCase {
             for token in tokens {
                 if text.contains(token) {
                     results.append("\(relativePath(file)): contains \(token)")
+                }
+            }
+        }
+
+        return results
+    }
+
+    private func matches(forRegexPatterns patterns: [String], in files: [URL]) throws -> [String] {
+        let expressions = try patterns.map {
+            try NSRegularExpression(pattern: $0)
+        }
+        var results: [String] = []
+
+        for file in files {
+            let text = try String(contentsOf: file, encoding: .utf8)
+            let range = NSRange(text.startIndex..<text.endIndex, in: text)
+            for expression in expressions {
+                for match in expression.matches(in: text, range: range) {
+                    let line = lineNumber(for: match.range.location, in: text)
+                    let matchedText = (text as NSString).substring(with: match.range)
+                    results.append("\(relativePath(file)):\(line) matched \(matchedText)")
                 }
             }
         }

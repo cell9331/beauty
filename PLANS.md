@@ -30,6 +30,25 @@ No active plan.
 
 ## 4. Completed
 
+### C-2026-06-18-gsd-phase-4-detection-and-coordinate-safety
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-18 |
+| Scope | Executed GSD Phase 4: added public input metadata and detection summaries, internal face selection and Vision detector seams, canonical coordinate mapping, Demo metadata propagation, safe detection status/debug models, privacy scans, root contract docs, and final verification evidence. |
+| Requirements | PIPE-05, PIPE-07 |
+| Files | `BeautySDK/Sources/BeautyCore/Models/BeautyInputMetadata.swift`, `BeautySDK/Sources/BeautyCore/Models/BeautyDetectionSummary.swift`, `BeautySDK/Sources/BeautyCore/Models/BeautyResult.swift`, `BeautySDK/Sources/BeautyCore/Engine/BeautyEngine.swift`, `BeautySDK/Sources/BeautyDetection/*.swift`, `BeautySDK/Tests/**/*.swift`, `BeautyDemo/BeautyDemo/Camera/*.swift`, `BeautyDemo/BeautyDemo/Editor/*.swift`, `BeautyDemo/BeautyDemoTests/*.swift`, `.planning/phases/04-detection-and-coordinate-safety/*-SUMMARY.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, `.planning/REQUIREMENTS.md`, `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `QUALITY_SCORE.md`, `PLANS.md` |
+| Verification | `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 55 XCTest cases; `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test` passed with 61 Demo XCTest cases; internal import scan returned no matches; public geometry/raw framework/path scan returned no matches. |
+| Build | SDK SwiftPM tests and Demo simulator tests passed. |
+
+Outcome:
+
+- `BeautyInputMetadata` now carries orientation, input mirroring, preview mirroring, source, and timestamp through camera and photo processing paths.
+- `BeautyDetectionSummary` exposes only availability, redacted reason codes, counts, and timings; public/Demo surfaces do not expose face geometry, raw Vision objects, raw framework errors, or local paths.
+- `BeautyDetection` contains internal face observation, landmark, selection, Vision adapter, and coordinate mapper contracts with deterministic XCTest coverage.
+- Demo camera and photo snapshots retain metadata and detection summaries through the public `BeautySDK` facade; status copy is nonblocking and privacy-safe.
+- Remaining manual risk: real-device front-camera mirroring and real Vision quality still need hardware smoke checks. Repro steps are tracked in `TD-008`.
+
 ### C-2026-06-12-gsd-phase-3-realtime-and-still-input-slice
 
 | Field | Value |
@@ -268,6 +287,7 @@ Outcome:
 | TD-005 | Privacy Manifest | 尚未创建 `PrivacyInfo.xcprivacy`。 | 未来分发 SDK 或使用 required-reason APIs 时会成为合规风险。 | SDK target 创建后按 `SECURITY.md` 评估并添加。 | `open` |
 | TD-006 | Historical Docs | `docs/` 下历史长文档与根级文档存在重叠。 | Agent 可能读取到旧结论。 | 已将 `docs/README.md` 设为长文档入口，并在 `QUALITY_SCORE.md` 中加入旧文件名、source import JSON、关键术语一致性扫描规则。 | `completed` |
 | TD-007 | GSD Traceability | v2 `ADV-01` through `ADV-10` appear in `.planning/REQUIREMENTS.md` body but not its Traceability table; `phase.complete` warns about them. | GSD audits may continue surfacing deferred v2 IDs even though v1 SDK traceability is complete. | Decide whether deferred v2 requirements should be added to Traceability as Deferred or moved to a separate backlog table. | `open` |
+| TD-008 | Manual Device QA | Phase 4 simulator/tests cannot prove real-device front-camera mirroring or real Vision quality. | Mirror/crop expectations and real detector behavior may differ from synthetic fixtures. | On a physical iPhone, run front-camera preview and confirm mirrored preview with stable processed crop; run no-face, partial-face, and low-light face checks and confirm expected status copy with no crash. | `open` |
 
 ## 6. Plan Template
 

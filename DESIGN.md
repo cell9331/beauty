@@ -138,7 +138,7 @@ Rules:
 
 ### 4.5 BeautyResult
 
-`BeautyResult` is the internal result envelope for processed media.
+`BeautyResult` is the result envelope for processed media. Public facade APIs may return a typed `BeautyResult<Output>` when callers need detection/degradation metadata in addition to the processed output.
 
 Recommended fields:
 
@@ -146,14 +146,54 @@ Recommended fields:
 | --- | --- |
 | `output` | Processed pixel buffer, texture-backed image, or CI image. |
 | `faces` | Face observations actually used by this frame. |
+| `detectionSummary` | Public, geometry-free summary of detection availability and degradation. |
 | `warnings` | Non-fatal degradation notes. |
 | `metrics` | Timings and pass-level counters when debug is enabled. |
 
 Rules:
 
-- Public APIs may expose a simpler result, but internal code should preserve metadata.
+- Public compatibility APIs may expose only the processed output, but metadata-aware APIs must preserve `BeautyInputMetadata` and `BeautyDetectionSummary`.
 - Warnings must not be logged as fatal errors.
-- Metrics must not include biometric or personally identifying image data.
+- Metrics and summaries must not include biometric or personally identifying image data, bounding boxes, landmark coordinates, raw Vision objects, raw framework errors, or local file paths.
+
+### 4.6 BeautyInputMetadata
+
+`BeautyInputMetadata` is the public per-input context passed with camera frames and still images.
+
+Required fields:
+
+| Field | Meaning |
+| --- | --- |
+| `orientation` | `CGImagePropertyOrientation` for capture or image asset normalization. |
+| `isInputMirrored` | Whether the source pixels are already mirrored before SDK coordinate interpretation. |
+| `isPreviewMirrored` | Whether the Demo/host preview mirrors the displayed result. |
+| `source` | Camera, photo, video, export, or test fixture. |
+| `timestamp` | Optional frame timestamp for smoothing and diagnostics. |
+
+Rules:
+
+- Orientation, input mirroring, and preview mirroring are explicit metadata, not inferred from UI state.
+- Metadata travels with the frame/image into `BeautyEngine.processResult(...)`.
+- Preview mirroring does not change the canonical detection model; it only affects display/overlay mapping.
+
+### 4.7 BeautyDetectionSummary
+
+`BeautyDetectionSummary` is the public, geometry-free detection state attached to metadata-aware results.
+
+Allowed public fields:
+
+| Field | Meaning |
+| --- | --- |
+| `availability` | `notRun`, `disabled`, `noFace`, `usable`, `partial`, `lowConfidence`, `skipped`, `reused`, or `stale`. |
+| `reasons` | Redacted reason codes such as no face, missing landmarks, face limit, mapping failure, or stale detection. |
+| `faceCount`, `usedFaceCount` | Counts only, never face identity or location. |
+| `detectionDurationMs`, `mappingDurationMs` | Optional timing values. |
+
+Rules:
+
+- The summary must not expose points, rects, bounding boxes, landmark coordinates, `VNFaceObservation`, raw framework errors, or local image paths.
+- `.mappingFailed` is a degraded state; output should still be possible when rendering can safely skip face-dependent work.
+- `.disabled` and `.notRun` are valid non-error states for configuration or first-version no-op paths.
 
 ## 5. Detection Models
 
@@ -246,6 +286,8 @@ Rules:
 - No ad hoc coordinate math in effects or UI.
 - All conversions go through `CoordinateMapper`.
 - Every conversion must include orientation and mirroring inputs.
+- The current implementation maps Vision-normalized detector rectangles into canonical `ImageNormalized` bounds before face selection and effect planning.
+- Input mirroring and preview mirroring are separate inputs; preview mirroring must not mutate stored face observations.
 - Coordinate tests must cover front/back camera, portrait/landscape, and image EXIF orientation.
 
 ## 7. Geometry Model
@@ -480,6 +522,7 @@ Rules:
 - `Stale` landmarks can drive only weak or non-geometric effects.
 - `Lost` disables face-dependent effects.
 - `reset()` clears all smoothing and tracking state.
+- Public summaries map these internal states to safe availability values: `usable`, `skipped`, `reused`, `stale`, `noFace`, `partial`, `lowConfidence`, `disabled`, and `notRun`.
 
 ## 14. Error and Degradation Design
 

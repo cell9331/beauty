@@ -34,19 +34,28 @@ Quality gate:
 
 ## 3. Current Snapshot
 
-Current repository state as of 2026-06-12:
+Current repository state as of 2026-06-18:
 
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
 | Root docs | 4 | `AGENTS.md`, `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `PLANS.md`, `QUALITY_SCORE.md` exist and separate current state from target architecture. | Keep root docs synced when `.planning/PROJECT.md`, `docs/10_document_audit_report.md`, or implementation contracts change. |
 | Historical docs | 3 | `docs/README.md` is the long-doc entry, lists current implementation status, and routes historical `docs/superpowers/` planning artifacts as background. | Continue conflict scans against root contracts and fresh command output. |
-| GSD planning | 4 | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, Phase 1/2/3 plan artifacts, and Phase 3 summaries exist. | Keep summaries, verification, and roadmap state synced as phases execute. |
-| SDK Package | 3 | `BeautySDK/Package.swift` exists with `BeautyCore`, `BeautyDetection`, `BeautyRender`, `BeautyEffects`, `BeautyResources`, and facade `BeautySDK` targets; `swift test --package-path BeautySDK` passes. | Broaden target-specific implementation beyond foundation no-op behavior in detection, resources, render, and effects. |
+| GSD planning | 4 | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, Phase 1/2/3/4 plan artifacts, and Phase 4 summaries exist. | Keep summaries, verification, and roadmap state synced as phases execute. |
+| SDK Package | 4 | `BeautySDK/Package.swift` exists with `BeautyCore`, `BeautyDetection`, `BeautyRender`, `BeautyEffects`, `BeautyResources`, and facade `BeautySDK` targets; `swift test --package-path BeautySDK` passes with 55 XCTest cases. | Broaden resources, effects, and visual render behavior beyond foundation/detection safety. |
 | Demo App | 4 | `BeautyDemo` imports `BeautySDK`, renders the editor shell, enabled Camera/Photo modes, camera permission/session states, bounded realtime pipeline, photo input pipeline, compare state, and deterministic view-state coverage for PIPE-01, PIPE-02, PIPE-03, PIPE-04, PIPE-06, PIPE-08, and DEMO-01. | Connect visual effects in Phase 6 and add simulator UI automation for OS-owned Camera/Photo flows when stable. |
-| Tests | 4 | `BeautySDK/Tests` has 20 passing XCTest cases; `BeautyDemoTests` has 55 passing XCTest cases covering import boundary, Camera, realtime pipeline, Photo, compare, privacy scans, panel state, and parameter state. | Add detection, resource, effect, UI automation, performance, and long-run coverage in later phases. |
-| Security | 4 | Parameter/preset validation tests plus Phase 3 purpose-string, no-upload/no-network, no raw path/error copy, and facade-only import tests pass; privacy manifest still absent. | Add resource/package validation and privacy manifest review when SDK distribution behavior exists. |
-| Reliability | 3 | `BeautyError`, no-op unsupported format mapping, SDK-created output, idempotent `reset()`, realtime backpressure, stale-frame drops, photo stale-work handling, and previous-visual preservation are tested; runtime metrics and long-run checks are still absent. | Add metrics, degradation, and long-run tests when render/detection pipelines mature. |
-| Product acceptance | 4 | `PRODUCT_SENSE.md` defines journeys and now records Phase 3 automated evidence for realtime Camera, still image editing, compare, and local-first privacy. | Attach real effect fixtures and manual/hardware smoke evidence to later MVP journeys. |
+| Tests | 4 | `BeautySDK/Tests` has 55 passing XCTest cases; `BeautyDemoTests` has 61 passing XCTest cases covering import boundary, Camera, realtime pipeline, Photo, compare, privacy scans, panel state, parameter state, metadata, coordinate, and detection degradation behavior. | Add resource, effect, UI automation, performance, and long-run coverage in later phases. |
+| Security | 4 | Parameter/preset validation tests plus purpose-string, no-upload/no-network, no raw path/error copy, facade-only import, and Phase 4 public geometry/raw framework leakage scans pass; privacy manifest still absent. | Add resource/package validation and privacy manifest review when SDK distribution behavior exists. |
+| Reliability | 4 | `BeautyError`, no-op unsupported format mapping, SDK-created output, idempotent `reset()`, realtime backpressure, stale-frame drops, photo stale-work handling, previous-visual preservation, coordinate mapping failures, no-face/partial/low-confidence summaries, and Demo warning debounce are tested; runtime metrics and long-run checks are still absent. | Add metrics, render/resource degradation, and long-run tests when render/effects pipelines mature. |
+| Product acceptance | 4 | `PRODUCT_SENSE.md` defines journeys and now records Phase 3 and Phase 4 automated evidence for realtime Camera, still image editing, compare, local-first privacy, metadata, coordinate mapping, and safe detection degradation. | Attach real effect fixtures and manual/hardware smoke evidence to later MVP journeys. |
+
+### 3.1 Phase 4 Final Verification
+
+Recorded 2026-06-18:
+
+- `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 55 XCTest cases.
+- `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test` passed with 61 Demo XCTest cases.
+- `rg -n "import BeautyCore|import BeautyRender|import BeautyDetection|import BeautyEffects|import BeautyResources" BeautyDemo/BeautyDemo BeautyDemo/BeautyDemoTests` returned no matches.
+- `rg -n "public .*Point|public .*Rect|public .*bounding|public .*landmark|VNFaceObservation|NSError|/private/var" BeautySDK/Sources/BeautyCore BeautySDK/Sources/BeautySDK BeautyDemo/BeautyDemo/Camera BeautyDemo/BeautyDemo/Editor` returned no matches.
 
 ## 4. Product Domain Scorecard
 
@@ -71,12 +80,12 @@ Current repository state as of 2026-06-12:
 
 | Layer | Target Score | Current | Required Evidence For 4+ |
 | --- | --- | --- | --- |
-| `BeautyCore` | 5 | 3 | Value models compile, `Sendable`, Codable tests, parameter normalization tests, typed errors, and no-op engine tests exist. |
-| `BeautyDetection` | 4 | 0 | Detector protocol, Vision adapter, coordinate tests, smoothing state tests. |
+| `BeautyCore` | 5 | 4 | Value models compile, `Sendable`, Codable tests, parameter normalization tests, typed errors, metadata/result summaries, and no-op engine tests exist. |
+| `BeautyDetection` | 4 | 4 | Detector protocol, Vision adapter seams, face selection, coordinate mapper, mapping failures, and safe public summaries are tested. |
 | `BeautyRender` | 5 | 2 | `RenderGraph`, `RenderPass`, `CopyRenderPass`, `PixelBufferFactory`, and `Warp.metal` placeholder exist with copy/pass-order tests. |
 | `BeautyEffects` | 4 | 0 | Effect requirements, provider tests, safety caps, degradation tests. |
 | `BeautyResources` | 4 | 0 | Bundle loading, manifest validation, missing/invalid resource tests. |
-| `BeautySDK` facade | 5 | 3 | Facade tests import only `BeautySDK` and access public foundation types; render test helpers are exposed only through testing SPI. |
+| `BeautySDK` facade | 5 | 4 | Facade tests import only `BeautySDK` and access public foundation, metadata, result, and detection summary types; render test helpers are exposed only through testing SPI. |
 | `BeautyDemo` | 4 | 4 | Demo shell, parameter panel, preview fixture, enabled Camera/Photo modes, Camera session/pipeline, Photo pipeline, compare state, privacy scans, import-boundary tests, and view-state tests exist. |
 
 ## 6. Test Coverage Scorecard
@@ -85,12 +94,12 @@ Current repository state as of 2026-06-12:
 | --- | --- | --- | --- |
 | Parameter tests | 5 | 3 | Defaults, 31 stored fields, ranges, NaN/infinity reset, Sendable, and Codable round trip. |
 | Preset tests | 4 | 3 | Decode, unknown fields, invalid ID, no built-in registry, and missing filter resource typed errors. |
-| Coordinate tests | 5 | 0 | Front/back, portrait/landscape, EXIF orientation, preview mirroring. |
-| Detection tests | 4 | 0 | No face, low confidence, missing landmarks, reuse window, reset. |
+| Coordinate tests | 5 | 4 | Front/back, portrait/landscape, EXIF orientation, input mirroring, preview mirroring, VisionNormalized, ImageNormalized, pixel, texture, and preview mapping tests exist. |
+| Detection tests | 4 | 4 | No face, low confidence, missing landmarks, mapping failure, face limit, selection stability, detector unavailable, timeout, and reset coverage exists. |
 | Render tests | 4 | 2 | Copy pass preserves BGRA bytes, unsupported copy input maps to `BeautyError`, and RenderGraph pass order is tested. |
 | Effect fixture tests | 4 | 0 | Naturalness fixtures, high-strength safety, no-face degradation. |
 | Performance tests | 4 | 0 | 720p frame budget, dropped frames, memory long-run, quality modes. |
-| Security tests | 4 | 3 | Invalid JSON and redacted typed errors are tested in SDK; Demo adds purpose strings, no-upload/no-network, no raw path/error copy, no realtime `UIImage`, and facade-only import scans. |
+| Security tests | 4 | 4 | Invalid JSON and redacted typed errors are tested in SDK; Demo adds purpose strings, no-upload/no-network, no raw path/error copy, no realtime `UIImage`, facade-only import scans, and public detection geometry/raw framework leakage scans. |
 | UI tests | 3 | 3 | View-state XCTest covers launch-shell data, enabled Camera/Photo modes, permission/unavailable/loading/error states, compare labels, categories, disabled controls, slider mapping, reset surface, and import boundary; UI automation remains future work. |
 
 ## 7. Documentation Scorecard
@@ -99,10 +108,10 @@ Current repository state as of 2026-06-12:
 | --- | --- | --- | --- |
 | `AGENTS.md` | 5 | 4 | Stays near 100 lines, routes every root doc, no business details. |
 | `ARCHITECTURE.md` | 5 | 4 | Matches actual Package targets, facade boundary, and dependency graph. |
-| `DESIGN.md` | 5 | 4 | Matches actual public models, direct process APIs, no-op semantics, and RenderGraph. |
+| `DESIGN.md` | 5 | 4 | Matches actual public models, metadata/result summaries, coordinate mapper semantics, direct process APIs, no-op semantics, and RenderGraph. |
 | `FRONTEND.md` | 4 | 4 | Matches actual Demo directories, state ownership, and UI tests. |
-| `SECURITY.md` | 5 | 3 | Matches validation code, privacy manifest, resource checks, log redaction tests. |
-| `RELIABILITY.md` | 5 | 3 | Matches error enums, metrics code, performance tests, reset behavior. |
+| `SECURITY.md` | 5 | 4 | Matches validation code and Phase 4 public summary/debug redaction tests; privacy manifest and resource checks remain future gates. |
+| `RELIABILITY.md` | 5 | 4 | Matches error enums, input pipeline recovery, detection degradation, coordinate mapping failure, and reset behavior; metrics and long-run performance remain future gates. |
 | `PRODUCT_SENSE.md` | 4 | 4 | Each MVP journey has automated or recorded manual acceptance. |
 | `PLANS.md` | 5 | 4 | Every active task is updated before and after work. |
 | `QUALITY_SCORE.md` | 5 | 2 | Scores are refreshed after each substantial implementation milestone. |
@@ -116,7 +125,7 @@ Current repository state as of 2026-06-12:
 | Permissions | 4 | 3 | Camera permission mapping and purpose strings are tested; real Settings round-trip remains manual. |
 | Resource validation | 5 | 1 | Manifest, checksum, size, type, traversal tests. |
 | Error typing | 5 | 3 | Public foundation failures map to `BeautyError`; broader render/detection/resource failures need later coverage. |
-| Degradation | 5 | 2 | No face, missing landmark, missing resource, GPU overload paths tested. |
+| Degradation | 5 | 4 | No face, partial/missing landmark, low-confidence, stale, skipped/reused, mapping failure, and Demo status debounce paths are tested; resource and GPU overload paths remain future work. |
 | Observability | 4 | 2 | Logger levels, metrics, signposts, disabled mode tested. |
 | Performance budgets | 4 | 2 | Bounded in-flight work and dropped-frame counters are tested; 720p timing and memory long-run remain future checks. |
 | Reset behavior | 4 | 3 | Phase 1 verifies idempotent engine `reset()` and user parameter immutability; Phase 2 verifies single-slider and reset-all Demo parameter state. Future detection/render transient state still needs coverage. |
@@ -276,7 +285,7 @@ SDK 1.0 readiness:
 
 | Priority | Item | Why |
 | --- | --- | --- |
-| 1 | Add detection/resource/effect implementations beyond foundation placeholders. | Raises code-layer scores beyond compile/no-op and input-pipeline evidence. |
+| 1 | Add resource/effect implementations beyond foundation and detection safety placeholders. | Raises code-layer scores beyond compile/no-op, input-pipeline, and detection-safety evidence. |
 | 2 | Connect real visual effect output and fixture regressions. | Raises product-domain scores for skin, face shape, facial features, and filters. |
 | 3 | Add resource validation and privacy manifest review. | Raises security gate before distribution-like SDK claims. |
 | 4 | Add performance, degradation, simulator UI automation, and long-run reliability tests. | Raises reliability and UI gates beyond unit/pipeline coverage. |
