@@ -24,6 +24,19 @@ final class BeautySDKFacadeTests: XCTestCase {
 
         let result = BeautyResult(output: "ok")
         XCTAssertEqual(result.output, "ok")
+        XCTAssertNil(result.detectionSummary)
+
+        let metadata = BeautyInputMetadata(
+            orientation: .right,
+            isInputMirrored: false,
+            isPreviewMirrored: true,
+            source: .camera,
+            timestamp: 1
+        )
+        XCTAssertEqual(metadata.source, .camera)
+
+        let detectionSummary = BeautyDetectionSummary.noFace
+        XCTAssertEqual(detectionSummary.availability, .noFace)
 
         let error = BeautyError.invalidInput
         XCTAssertEqual(error.code, "invalid_input")
