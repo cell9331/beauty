@@ -168,7 +168,7 @@ Plans:
   4. User can apply Natural, Clear, Refined, Male Natural, and ID Photo Natural presets.
   5. Preset and resource validation tests cover schema, missing resources, and slider sync.
 
-**Plans:** 2/4 plans executed
+**Plans:** 3/4 plans executed
 Plans:
 **Wave 1**
 
@@ -180,7 +180,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 05-03: Wire preset and filter controls into Demo through the facade.
+- [x] 05-03: Wire preset and filter controls into Demo through the facade.
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -243,6 +243,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | 2. Demo Integration Shell | 3/3 | Complete    | 2026-06-11 |
 | 3. Realtime and Still Input Slice | 4/4 | Complete    | 2026-06-12 |
 | 4. Detection and Coordinate Safety | 5/5 | Complete    | 2026-06-18 |
-| 5. Filters, Presets, and Resource Flow | 2/4 | In Progress|  |
+| 5. Filters, Presets, and Resource Flow | 3/4 | In Progress|  |
 | 6. Core Beauty Effects | 0/5 | Not started | - |
 | 7. Rich Demo QA Surface | 0/3 | Not started | - |
