@@ -41,7 +41,7 @@ Declared values (must be multiples of 4):
 | 2xl | 48px | Reserved for major section breaks only; do not add to Phase 5 panels |
 | 3xl | 64px | Not used in Phase 5 Demo shell |
 
-Exceptions: 12px is allowed for existing control-card padding, status banner padding, and bottom preview overlays. 44px is required as the minimum touch target height for mode, category, preset, filter, and reset controls.
+Spacing rules: use 8px for compact internal padding in status banners, bottom preview overlays, chip groups, and tight control rows. Use 16px for standard control-card and panel padding. 44px is required only as the minimum touch target height for mode, category, preset, filter, and reset controls; it is not a spacing token.
 
 ---
 
@@ -89,6 +89,10 @@ Rules:
 - Do not introduce a new palette for presets or filters in Phase 5.
 - Metadata-only filters must not use visual swatches that imply real LUT output. Use text chips only.
 - The UI must keep honest copy that color/filter visual output remains pending Phase 6.
+
+## Visual Hierarchy
+
+Primary visual anchor: the active in-panel picker row plus the current slider group. Selected chips and the status dot draw first attention through the reserved accent color; slider labels and values form the next scan layer. Preview copy remains secondary and must not compete with the active picker, slider group, selected chip state, or status indicator.
 
 ---
 
