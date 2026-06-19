@@ -169,12 +169,21 @@ Plans:
   5. Preset and resource validation tests cover schema, missing resources, and slider sync.
 
 **Plans:** 4 plans
-
 Plans:
+**Wave 1**
 
 - [ ] 05-01: Add resource manifest model and built-in preset resources.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 05-02: Add color/filter parameter mapping and render/resource placeholders.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 05-03: Wire preset and filter controls into Demo through the facade.
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 05-04: Add resource, preset, and missing-filter tests.
 
 ### Phase 6: Core Beauty Effects

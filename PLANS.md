@@ -30,6 +30,24 @@ No active plan.
 
 ## 4. Completed
 
+### C-2026-06-19-gsd-plan-phase-5-filters-presets-resource-flow
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-19 |
+| Scope | Ran `$gsd-plan-phase 5` inline for Phase 5 and produced the Phase 5 pattern map plus four executable plans covering resource manifest/preset resources, facade resource validation/no-op color contracts, Demo preset/filter/color UI wiring, and final verification/docs. |
+| Requirements | EFFECT-02, EFFECT-03, EFFECT-08 |
+| Files | `.planning/phases/05-filters-presets-and-resource-flow/05-PATTERNS.md`, `.planning/phases/05-filters-presets-and-resource-flow/05-01-PLAN.md`, `.planning/phases/05-filters-presets-and-resource-flow/05-02-PLAN.md`, `.planning/phases/05-filters-presets-and-resource-flow/05-03-PLAN.md`, `.planning/phases/05-filters-presets-and-resource-flow/05-04-PLAN.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.plan-phase 5` reports `phase_status: Planned`, `has_plans: true`, `plan_count: 4`, and `patterns_path` set; frontmatter scan passed for all four plans; requirement scan covered `EFFECT-02`, `EFFECT-03`, and `EFFECT-08`; `check.decision-coverage-plan` passed with 25/25 CONTEXT decisions covered; placeholder scan over Phase 5 pattern/plan files returned no matches; `git diff --check -- .planning/phases/05-filters-presets-and-resource-flow .planning/ROADMAP.md .planning/STATE.md PLANS.md` exited 0. |
+| Build | Not run; this was a GSD planning/documentation workflow with no Swift or Xcode source changes. |
+
+Outcome:
+
+- Phase 5 now has `05-PATTERNS.md` and four executable plans in waves 1 through 4.
+- `.planning/ROADMAP.md` now annotates Phase 5 wave dependencies.
+- `.planning/STATE.md` marks Phase 5 as planned and ready to execute.
+- Planning was performed inline because sub-agent spawning is available only when explicitly requested by the user in this Codex runtime.
+
 ### C-2026-06-19-gsd-ui-phase-5-filters-presets-resource-flow
 
 | Field | Value |
