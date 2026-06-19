@@ -32,6 +32,51 @@ final class BeautyEngineTests: XCTestCase {
         XCTAssertEqual(try PixelBufferFixtures.rgbaBytes(from: output), try PixelBufferFixtures.rgbaBytes(from: image))
     }
 
+    func testEFFECT02PixelBufferNoopAcceptsNonZeroColorAndFilterParameters() throws {
+        let input = try PixelBufferFixtures.makeBGRA(width: 1, height: 1, bytes: [10, 20, 30, 255])
+        let engine = try BeautyEngine(configuration: .default)
+        let parameters = BeautyParameters(
+            brightness: 0.2,
+            contrast: -0.1,
+            saturation: 0.3,
+            temperature: 0.15,
+            tint: -0.05,
+            exposure: 0.25,
+            highlight: -0.2,
+            shadow: 0.1,
+            filterId: "soft_clean",
+            filterIntensity: 0.35
+        )
+
+        let output = try engine.process(pixelBuffer: input, orientation: .up, parameters: parameters)
+
+        XCTAssertFalse(input === output)
+        XCTAssertEqual(try PixelBufferFixtures.bytes(from: output), try PixelBufferFixtures.bytes(from: input))
+    }
+
+    func testEFFECT02ImageNoopAcceptsNonZeroColorAndFilterParameters() throws {
+        let image = CIImage(color: CIColor(red: 0.2, green: 0.3, blue: 0.4, alpha: 1))
+            .cropped(to: CGRect(x: 0, y: 0, width: 1, height: 1))
+        let engine = try BeautyEngine(configuration: .default)
+        let parameters = BeautyParameters(
+            brightness: -0.2,
+            contrast: 0.1,
+            saturation: -0.3,
+            temperature: -0.15,
+            tint: 0.05,
+            exposure: -0.25,
+            highlight: 0.2,
+            shadow: -0.1,
+            filterId: "warm_light",
+            filterIntensity: 0.35
+        )
+
+        let output = try engine.process(image: image, orientation: .up, parameters: parameters)
+
+        XCTAssertEqual(output.extent, image.extent)
+        XCTAssertEqual(try PixelBufferFixtures.rgbaBytes(from: output), try PixelBufferFixtures.rgbaBytes(from: image))
+    }
+
     func testSDK06UnsupportedPixelFormatReturnsTypedError() throws {
         let input = try PixelBufferFixtures.makePixelBuffer(width: 2, height: 2, pixelFormat: kCVPixelFormatType_OneComponent8)
         let engine = try BeautyEngine(configuration: .default)

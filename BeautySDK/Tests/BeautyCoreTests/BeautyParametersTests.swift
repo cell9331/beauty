@@ -44,6 +44,13 @@ final class BeautyParametersTests: XCTestCase {
         let parameters = BeautyParameters(
             skinSmoothing: 2,
             brightness: -2,
+            contrast: 2,
+            saturation: -2,
+            temperature: 2,
+            tint: -2,
+            exposure: 2,
+            highlight: -2,
+            shadow: 2,
             chinLength: -2,
             eyeSize: .nan,
             noseTipSize: .infinity,
@@ -53,6 +60,13 @@ final class BeautyParametersTests: XCTestCase {
 
         XCTAssertEqual(parameters.skinSmoothing, 1)
         XCTAssertEqual(parameters.brightness, -1)
+        XCTAssertEqual(parameters.contrast, 1)
+        XCTAssertEqual(parameters.saturation, -1)
+        XCTAssertEqual(parameters.temperature, 1)
+        XCTAssertEqual(parameters.tint, -1)
+        XCTAssertEqual(parameters.exposure, 1)
+        XCTAssertEqual(parameters.highlight, -1)
+        XCTAssertEqual(parameters.shadow, 1)
         XCTAssertEqual(parameters.chinLength, -1)
         XCTAssertEqual(parameters.eyeSize, 0)
         XCTAssertEqual(parameters.noseTipSize, 0)
@@ -77,6 +91,42 @@ final class BeautyParametersTests: XCTestCase {
         XCTAssertEqual(partialDecoded.skinSmoothing, 0.4)
         XCTAssertEqual(partialDecoded.eyeSize, 0)
         XCTAssertNil(partialDecoded.filterId)
+    }
+
+    func testEFFECT02ColorAndFilterFieldsRoundTripThroughCodable() throws {
+        let parameters = BeautyParameters(
+            brightness: -0.25,
+            contrast: 0.15,
+            saturation: 0.2,
+            temperature: -0.1,
+            tint: 0.05,
+            exposure: 0.4,
+            highlight: -0.3,
+            shadow: 0.35,
+            filterId: "soft_clean",
+            filterIntensity: 0.35
+        )
+
+        let data = try JSONEncoder().encode(parameters)
+        let decoded = try JSONDecoder().decode(BeautyParameters.self, from: data)
+
+        XCTAssertEqual(decoded.brightness, -0.25)
+        XCTAssertEqual(decoded.contrast, 0.15)
+        XCTAssertEqual(decoded.saturation, 0.2)
+        XCTAssertEqual(decoded.temperature, -0.1)
+        XCTAssertEqual(decoded.tint, 0.05)
+        XCTAssertEqual(decoded.exposure, 0.4)
+        XCTAssertEqual(decoded.highlight, -0.3)
+        XCTAssertEqual(decoded.shadow, 0.35)
+        XCTAssertEqual(decoded.filterId, "soft_clean")
+        XCTAssertEqual(decoded.filterIntensity, 0.35)
+    }
+
+    func testEFFECT03FilterDefaultsRepresentNoFilterState() {
+        let parameters = BeautyParameters()
+
+        XCTAssertNil(parameters.filterId)
+        XCTAssertEqual(parameters.filterIntensity, 0)
     }
 
     func testBeautyParametersIsSendable() {

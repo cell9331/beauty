@@ -44,4 +44,40 @@ final class BeautySDKFacadeTests: XCTestCase {
         let engine = try BeautyEngine(configuration: .default)
         XCTAssertEqual(engine.configuration, configuration)
     }
+
+    func testEFFECT03FacadeExposesBuiltInFiltersThroughBeautySDKOnly() throws {
+        XCTAssertEqual(
+            try BeautySDKResources.availableFilters().map(\.id),
+            ["soft_clean", "warm_light"]
+        )
+    }
+
+    func testEFFECT08FacadeExposesBuiltInPresetsThroughBeautySDKOnly() throws {
+        XCTAssertEqual(
+            try BeautySDKResources.builtInPresets().map(\.displayName),
+            ["Natural", "Clear", "Refined", "Male Natural", "ID Photo Natural"]
+        )
+
+        let preset = try BeautySDKResources.preset(id: "clear")
+        XCTAssertEqual(preset.displayName, "Clear")
+        XCTAssertEqual(preset.parameters.filterId, "warm_light")
+    }
+
+    func testEFFECT03FacadeValidatesFilterReferences() throws {
+        let noFilter = try BeautySDKResources.validate(parameters: BeautyParameters(filterId: nil, filterIntensity: 0))
+        XCTAssertNil(noFilter.filterId)
+        XCTAssertEqual(noFilter.filterIntensity, 0)
+
+        let knownFilter = try BeautySDKResources.validate(
+            parameters: BeautyParameters(filterId: "soft_clean", filterIntensity: 0.35)
+        )
+        XCTAssertEqual(knownFilter.filterId, "soft_clean")
+        XCTAssertEqual(knownFilter.filterIntensity, 0.35, accuracy: 0.0001)
+
+        XCTAssertThrowsError(
+            try BeautySDKResources.validate(parameters: BeautyParameters(filterId: "missing_filter"))
+        ) { error in
+            XCTAssertEqual(error as? BeautyError, .resourceNotFound("missing_filter"))
+        }
+    }
 }
