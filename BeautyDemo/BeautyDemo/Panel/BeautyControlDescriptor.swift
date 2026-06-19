@@ -5,6 +5,14 @@ enum BeautyControlID: String, CaseIterable, Hashable, Sendable {
     case skinWhitening
     case skinRosy
     case skinSharpen
+    case brightness
+    case contrast
+    case saturation
+    case temperature
+    case tint
+    case exposure
+    case highlight
+    case shadow
     case faceSlim
     case faceSmall
     case faceVShape
@@ -31,6 +39,14 @@ enum BeautyParameterKey: String, Hashable, Sendable {
     case skinWhitening
     case skinRosy
     case skinSharpen
+    case brightness
+    case contrast
+    case saturation
+    case temperature
+    case tint
+    case exposure
+    case highlight
+    case shadow
     case faceSlim
     case faceSmall
     case faceVShape
@@ -88,7 +104,7 @@ struct BeautyControlDescriptor: Identifiable, Equatable, Sendable {
 extension BeautyControlDescriptor {
     static let resetAllTitle = "Reset All Parameters"
 
-    static let beautyControls: [BeautyControlDescriptor] = [
+    static let skinControls: [BeautyControlDescriptor] = [
         BeautyControlDescriptor(
             id: .skinSmoothing,
             label: "Skin Smoothing",
@@ -118,6 +134,67 @@ extension BeautyControlDescriptor {
             availability: .available
         )
     ]
+
+    static let colorControls: [BeautyControlDescriptor] = [
+        BeautyControlDescriptor(
+            id: .brightness,
+            label: "Brightness",
+            parameterKey: .brightness,
+            displayRange: .bidirectional,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .contrast,
+            label: "Contrast",
+            parameterKey: .contrast,
+            displayRange: .bidirectional,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .saturation,
+            label: "Saturation",
+            parameterKey: .saturation,
+            displayRange: .bidirectional,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .temperature,
+            label: "Temperature",
+            parameterKey: .temperature,
+            displayRange: .bidirectional,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .tint,
+            label: "Tint",
+            parameterKey: .tint,
+            displayRange: .bidirectional,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .exposure,
+            label: "Exposure",
+            parameterKey: .exposure,
+            displayRange: .bidirectional,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .highlight,
+            label: "Highlight",
+            parameterKey: .highlight,
+            displayRange: .bidirectional,
+            availability: .available
+        ),
+        BeautyControlDescriptor(
+            id: .shadow,
+            label: "Shadow",
+            parameterKey: .shadow,
+            displayRange: .bidirectional,
+            availability: .available
+        )
+    ]
+
+    static let beautyControls: [BeautyControlDescriptor] = skinControls + colorControls
 
     static let faceShapeControls: [BeautyControlDescriptor] = [
         BeautyControlDescriptor(
@@ -252,18 +329,11 @@ extension BeautyControlDescriptor {
 
     static let filterControls: [BeautyControlDescriptor] = [
         BeautyControlDescriptor(
-            id: .filterId,
-            label: "Filter",
-            parameterKey: .filterId,
-            displayRange: .enhancement,
-            availability: .filtersPhaseFive
-        ),
-        BeautyControlDescriptor(
             id: .filterIntensity,
             label: "Filter Intensity",
             parameterKey: .filterIntensity,
             displayRange: .enhancement,
-            availability: .filtersPhaseFive
+            availability: .available
         )
     ]
 

@@ -11,6 +11,9 @@ struct BeautyPanelViewState: Equatable {
     let category: BeautyCategory
     let activeAvailability: BeautyAvailability
     let subcategories: [BeautySubcategoryRailItem]
+    let presetPickerItems: [BeautyPresetPickerItem]
+    let filterPickerItems: [BeautyFilterPickerItem]
+    let resourceFailure: BeautyResourcePickerFailureState?
     let controls: [BeautyControlDescriptor]
     let disabledControls: [BeautyControlDescriptor]
     let showsResetAll: Bool
@@ -34,6 +37,18 @@ struct BeautyPanelView: View {
 
             if !state.subcategories.isEmpty {
                 subcategoryRail(state.subcategories)
+            }
+
+            if !state.presetPickerItems.isEmpty {
+                presetPicker(state.presetPickerItems)
+            }
+
+            if !state.filterPickerItems.isEmpty {
+                filterPicker(state.filterPickerItems)
+            }
+
+            if let resourceFailure = state.resourceFailure {
+                resourceFailureMessage(resourceFailure)
             }
 
             if state.activeAvailability.isEnabled {
@@ -72,10 +87,15 @@ struct BeautyPanelView: View {
         switch category.panelKind {
         case .controls:
             let controls = BeautyControlDescriptor.controls(for: categoryID)
+            let presetItems = categoryID == .beauty ? BeautyResourcePickerModels.presetItems() : []
+            let filterItems = categoryID == .filters ? BeautyResourcePickerModels.filterItems() : []
             return BeautyPanelViewState(
                 category: category,
                 activeAvailability: category.availability,
                 subcategories: [],
+                presetPickerItems: presetItems,
+                filterPickerItems: filterItems,
+                resourceFailure: categoryID == .beauty && presetItems.isEmpty ? .unavailable : nil,
                 controls: controls,
                 disabledControls: [],
                 showsResetAll: category.availability.isEnabled && !controls.isEmpty,
@@ -99,6 +119,9 @@ struct BeautyPanelView: View {
                 category: category,
                 activeAvailability: selectedSubcategory.availability,
                 subcategories: subcategories,
+                presetPickerItems: [],
+                filterPickerItems: [],
+                resourceFailure: nil,
                 controls: controls,
                 disabledControls: [],
                 showsResetAll: selectedSubcategory.availability.isEnabled && !controls.isEmpty,
@@ -109,12 +132,86 @@ struct BeautyPanelView: View {
                 category: category,
                 activeAvailability: category.availability,
                 subcategories: [],
+                presetPickerItems: [],
+                filterPickerItems: [],
+                resourceFailure: nil,
                 controls: [],
                 disabledControls: category.id == .filters ? BeautyControlDescriptor.filterControls : [],
                 showsResetAll: false,
                 status: status
             )
         }
+    }
+
+    private func presetPicker(_ items: [BeautyPresetPickerItem]) -> some View {
+        pickerSection(title: "Presets") {
+            ForEach(items) { item in
+                pickerButton(
+                    title: item.title,
+                    isSelected: parameterStore.selectedPresetId == item.id,
+                    accessibilityLabel: item.accessibilityLabel
+                ) {
+                    parameterStore.applyPreset(item.preset)
+                }
+            }
+        }
+    }
+
+    private func filterPicker(_ items: [BeautyFilterPickerItem]) -> some View {
+        pickerSection(title: "Filters") {
+            ForEach(items) { item in
+                pickerButton(
+                    title: item.title,
+                    isSelected: parameterStore.selectedFilterId == item.filterId,
+                    accessibilityLabel: item.accessibilityLabel
+                ) {
+                    parameterStore.selectFilter(id: item.filterId)
+                }
+                .disabled(!item.availability.isEnabled)
+                .accessibilityHint(item.availability.reason ?? "")
+            }
+        }
+    }
+
+    private func pickerSection<Content: View>(
+        title: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(.secondary)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    content()
+                }
+            }
+        }
+    }
+
+    private func pickerButton(
+        title: String,
+        isSelected: Bool,
+        accessibilityLabel: String,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
+                .foregroundStyle(isSelected ? .white : .primary)
+                .padding(.horizontal, 12)
+                .frame(minHeight: 44)
+                .background(
+                    isSelected
+                        ? Color(red: 47 / 255, green: 107 / 255, blue: 255 / 255)
+                        : Color(red: 247 / 255, green: 248 / 255, blue: 250 / 255)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
     private func header(for state: BeautyPanelViewState) -> some View {
@@ -193,6 +290,16 @@ struct BeautyPanelView: View {
         }
     }
 
+    private func resourceFailureMessage(_ state: BeautyResourcePickerFailureState) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(state.heading)
+                .font(.system(size: 13, weight: .semibold))
+            Text(state.body)
+                .font(.system(size: 13))
+                .foregroundStyle(.secondary)
+        }
+    }
+
     private func subcategoryForegroundColor(for item: BeautySubcategoryRailItem) -> Color {
         if item.isSelected {
             return .white
@@ -209,4 +316,3 @@ struct BeautyPanelView: View {
         return item.availability.isEnabled ? Color(red: 247 / 255, green: 248 / 255, blue: 250 / 255) : Color(red: 238 / 255, green: 240 / 255, blue: 243 / 255)
     }
 }
-

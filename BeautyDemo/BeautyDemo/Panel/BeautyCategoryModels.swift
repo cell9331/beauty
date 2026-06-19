@@ -24,9 +24,9 @@ struct BeautyAvailability: Equatable, Sendable {
         reason: "This control depends on future resource support."
     )
 
-    static let filtersPhaseFive = BeautyAvailability.disabled(
-        badge: "Coming in Phase 5",
-        reason: "Filter resources and presets arrive in Phase 5."
+    static let resourceUnavailable = BeautyAvailability.disabled(
+        badge: "Unavailable",
+        reason: "This resource is unavailable in this build."
     )
 }
 
@@ -86,8 +86,8 @@ extension BeautyCategory {
         BeautyCategory(
             id: .filters,
             title: "Filters",
-            availability: .filtersPhaseFive,
-            panelKind: .disabled
+            availability: .available,
+            panelKind: .controls
         ),
         BeautyCategory(
             id: .stickers,
