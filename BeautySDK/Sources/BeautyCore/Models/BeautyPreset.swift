@@ -23,7 +23,17 @@ public struct BeautyPreset: Codable, Equatable, Sendable {
         availableFilterIds: Set<String> = []
     ) throws -> BeautyPreset {
         do {
-            let preset = try JSONDecoder().decode(BeautyPreset.self, from: data)
+            let decoder = JSONDecoder()
+            let schema = try decoder.decode(PresetSchemaProbe.self, from: data)
+            let preset: BeautyPreset
+            if let schemaVersion = schema.schemaVersion {
+                guard schemaVersion == 1 else {
+                    throw BeautyError.presetDecodeFailed("unsupported_schema")
+                }
+                preset = try decoder.decode(BeautyPresetEnvelope.self, from: data).preset
+            } else {
+                preset = try decoder.decode(BeautyPreset.self, from: data)
+            }
             return try preset.validated(availableFilterIds: availableFilterIds)
         } catch let error as BeautyError {
             throw error
@@ -48,7 +58,7 @@ public struct BeautyPreset: Codable, Equatable, Sendable {
         return self
     }
 
-    private static func isValidIdentifier(_ id: String) -> Bool {
+    public static func isValidIdentifier(_ id: String) -> Bool {
         guard !id.isEmpty else {
             return false
         }
@@ -59,6 +69,26 @@ public struct BeautyPreset: Codable, Equatable, Sendable {
                 scalar == "." ||
                 scalar == "_" ||
                 scalar == "-"
-        }
+            }
+    }
+}
+
+private struct PresetSchemaProbe: Decodable {
+    let schemaVersion: Int?
+}
+
+private struct BeautyPresetEnvelope: Decodable {
+    let id: String
+    let version: Int
+    let displayName: String
+    let parameters: BeautyParameters
+
+    var preset: BeautyPreset {
+        BeautyPreset(
+            id: id,
+            version: version,
+            displayName: displayName,
+            parameters: parameters
+        )
     }
 }

@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "version": 1,
+  "minimumSDKVersion": "1.0",
+  "filters": [
+    {
+      "id": "soft_clean",
+      "displayName": "Soft Clean"
+    },
+    {
+      "id": "warm_light",
+      "displayName": "Warm Light"
+    }
+  ],
+  "presets": [
+    {
+      "id": "natural",
+      "resourceName": "natural"
+    },
+    {
+      "id": "clear",
+      "resourceName": "clear"
+    },
+    {
+      "id": "refined",
+      "resourceName": "refined"
+    },
+    {
+      "id": "male-natural",
+      "resourceName": "male-natural"
+    },
+    {
+      "id": "id-photo-natural",
+      "resourceName": "id-photo-natural"
+    }
+  ]
+}
