@@ -14,17 +14,18 @@ final class BeautyCategoryModelTests: XCTestCase {
 
         XCTAssertEqual(
             disabledCategories.map(\.title),
-            ["Makeup", "Filters", "Stickers", "Background", "Style"]
+            ["Makeup", "Stickers", "Background", "Style"]
         )
         XCTAssertTrue(disabledCategories.allSatisfy { $0.availability.badge?.isEmpty == false })
         XCTAssertTrue(disabledCategories.allSatisfy { $0.availability.reason?.isEmpty == false })
     }
 
-    func testFiltersStayDisabledForPhaseFive() {
+    func testFiltersAreEnabledForPhaseFive() {
         let filters = BeautyCategory.category(id: .filters)
 
-        XCTAssertFalse(filters.availability.isEnabled)
-        XCTAssertEqual(filters.availability.badge, "Coming in Phase 5")
+        XCTAssertTrue(filters.availability.isEnabled)
+        XCTAssertNil(filters.availability.badge)
+        XCTAssertEqual(filters.panelKind, .controls)
     }
 
     func testFacialFeatureSubcategoryOrderMatchesPhaseContract() {

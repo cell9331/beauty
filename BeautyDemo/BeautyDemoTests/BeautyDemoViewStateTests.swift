@@ -19,7 +19,7 @@ final class BeautyDemoViewStateTests: XCTestCase {
         let disabledItems = items.filter { !$0.availability.isEnabled }
 
         // DEMO-03
-        XCTAssertEqual(disabledItems.map(\.title), ["Makeup", "Filters", "Stickers", "Background", "Style"])
+        XCTAssertEqual(disabledItems.map(\.title), ["Makeup", "Stickers", "Background", "Style"])
         XCTAssertTrue(disabledItems.allSatisfy { $0.availability.badge?.isEmpty == false })
         XCTAssertTrue(disabledItems.allSatisfy { $0.availability.reason?.isEmpty == false })
     }
@@ -200,17 +200,17 @@ final class BeautyDemoViewStateTests: XCTestCase {
         XCTAssertEqual(state.controls.map(\.id), [.eyeSize, .eyeDistance, .eyeYPosition, .eyeTailLift])
     }
 
-    func testFilterPanelViewStateCoversDEMO03DisabledControls() {
+    func testEFFECT03FilterPanelViewStateShowsMetadataFilters() {
         let state = BeautyPanelView.viewState(
             categoryID: .filters,
             selectedSubcategoryID: .eyes,
             status: .idle
         )
 
-        // DEMO-03
-        XCTAssertFalse(state.activeAvailability.isEnabled)
-        XCTAssertEqual(state.activeAvailability.badge, "Coming in Phase 5")
-        XCTAssertEqual(state.disabledControls.map(\.id), [.filterId, .filterIntensity])
+        XCTAssertTrue(state.activeAvailability.isEnabled)
+        XCTAssertEqual(state.filterPickerItems.map(\.title), ["None", "Soft Clean", "Warm Light"])
+        XCTAssertEqual(state.filterPickerItems.map(\.accessibilityLabel), ["Select No Filter", "Select Soft Clean Filter", "Select Warm Light Filter"])
+        XCTAssertEqual(state.controls.map(\.id), [.filterIntensity])
     }
 
     func testBeautyPanelViewStateCoversDEMO05AndDEMO08ResetSurface() {
@@ -224,7 +224,43 @@ final class BeautyDemoViewStateTests: XCTestCase {
         XCTAssertTrue(state.showsResetAll)
         XCTAssertEqual(state.status.primaryText, "Parameters applied")
         XCTAssertEqual(state.status.secondaryText, "Visual update pending Phase 6")
-        XCTAssertEqual(state.controls.map(\.id), [.skinSmoothing, .skinWhitening, .skinRosy, .skinSharpen])
+        XCTAssertEqual(state.presetPickerItems.map(\.title), ["Natural", "Clear", "Refined", "Male Natural", "ID Photo Natural"])
+        XCTAssertEqual(state.presetPickerItems.map(\.accessibilityLabel), [
+            "Apply Natural Preset",
+            "Apply Clear Preset",
+            "Apply Refined Preset",
+            "Apply Male Natural Preset",
+            "Apply ID Photo Natural Preset"
+        ])
+        XCTAssertEqual(
+            state.controls.map(\.id),
+            [
+                .skinSmoothing,
+                .skinWhitening,
+                .skinRosy,
+                .skinSharpen,
+                .brightness,
+                .contrast,
+                .saturation,
+                .temperature,
+                .tint,
+                .exposure,
+                .highlight,
+                .shadow
+            ]
+        )
+    }
+
+    func testEFFECT03MissingResourceCopyIsFriendlyAndRedacted() {
+        let state = BeautyResourcePickerFailureState.unavailable
+
+        XCTAssertEqual(state.heading, "No presets or filters available")
+        XCTAssertEqual(state.body, "Built-in resources could not be loaded. Current parameters stay unchanged.")
+        XCTAssertEqual(state.recovery, "Some resources are unavailable. Choose another preset or filter.")
+        XCTAssertEqual(state.missingReason, "This resource is unavailable in this build.")
+        XCTAssertFalse([state.heading, state.body, state.recovery, state.missingReason].joined().contains("NSError"))
+        XCTAssertFalse([state.heading, state.body, state.recovery, state.missingReason].joined().contains("/"))
+        XCTAssertFalse([state.heading, state.body, state.recovery, state.missingReason].joined().contains("BeautyResources"))
     }
 
     func testSliderDisplayAndAccessibilityValuesCoverDEMO05() {
