@@ -45,6 +45,51 @@ final class BeautyPresetTests: XCTestCase {
         }
     }
 
+    func testEFFECT08SchemaVersionOnePresetDecodes() throws {
+        let data = Data(
+            #"""
+            {
+              "schemaVersion": 1,
+              "id": "natural",
+              "version": 2,
+              "displayName": "Natural",
+              "parameters": {
+                "skinSmoothing": 0.18,
+                "filterId": "soft_clean",
+                "filterIntensity": 0.25
+              }
+            }
+            """#.utf8
+        )
+
+        let preset = try BeautyPreset.decode(from: data, availableFilterIds: ["soft_clean"])
+
+        XCTAssertEqual(preset.id, "natural")
+        XCTAssertEqual(preset.version, 2)
+        XCTAssertEqual(preset.displayName, "Natural")
+        XCTAssertEqual(preset.parameters.skinSmoothing, 0.18, accuracy: 0.0001)
+        XCTAssertEqual(preset.parameters.filterId, "soft_clean")
+        XCTAssertEqual(preset.parameters.filterIntensity, 0.25, accuracy: 0.0001)
+    }
+
+    func testEFFECT08UnsupportedSchemaVersionReturnsTypedError() {
+        let data = Data(
+            #"""
+            {
+              "schemaVersion": 2,
+              "id": "natural",
+              "version": 1,
+              "displayName": "Natural",
+              "parameters": {}
+            }
+            """#.utf8
+        )
+
+        XCTAssertThrowsError(try BeautyPreset.decode(from: data)) { error in
+            XCTAssertEqual(error as? BeautyError, .presetDecodeFailed("unsupported_schema"))
+        }
+    }
+
     func testSDK06InvalidPresetSchemaReturnsRedactedTypedError() {
         let data = Data(
             #"""
@@ -65,7 +110,7 @@ final class BeautyPresetTests: XCTestCase {
         }
     }
 
-    func testD13Phase1DoesNotExposeBuiltInPresetRegistry() throws {
+    func testEFFECT08Phase5ExposesBuiltInPresetResourceContracts() throws {
         let sourceRoot = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent()
             .deletingLastPathComponent()
@@ -79,7 +124,7 @@ final class BeautyPresetTests: XCTestCase {
             .map { try String(contentsOf: sourceRoot.appendingPathComponent($0), encoding: .utf8) }
             .joined(separator: "\n")
 
-        XCTAssertFalse(combined.contains("builtInPresets"))
-        XCTAssertFalse(combined.contains("loadBuiltInPresets"))
+        XCTAssertTrue(combined.contains("builtInPresets"))
+        XCTAssertTrue(combined.contains("BeautyResourceCatalog"))
     }
 }

@@ -19,7 +19,11 @@ let package = Package(
             dependencies: ["BeautyCore"],
             resources: [.process("Shaders")]
         ),
-        .target(name: "BeautyResources", dependencies: ["BeautyCore"]),
+        .target(
+            name: "BeautyResources",
+            dependencies: ["BeautyCore"],
+            resources: [.process("Resources")]
+        ),
         .target(
             name: "BeautyEffects",
             dependencies: ["BeautyCore", "BeautyDetection", "BeautyRender", "BeautyResources"]
@@ -31,6 +35,7 @@ let package = Package(
         .testTarget(name: "BeautySDKTests", dependencies: ["BeautySDK"]),
         .testTarget(name: "BeautyCoreTests", dependencies: ["BeautyCore", "BeautySDK"]),
         .testTarget(name: "BeautyDetectionTests", dependencies: ["BeautyCore", "BeautyDetection"]),
-        .testTarget(name: "BeautyRenderTests", dependencies: ["BeautyCore", "BeautyRender"])
+        .testTarget(name: "BeautyRenderTests", dependencies: ["BeautyCore", "BeautyRender"]),
+        .testTarget(name: "BeautyResourcesTests", dependencies: ["BeautyCore", "BeautyResources"])
     ]
 )
