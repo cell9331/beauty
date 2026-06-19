@@ -33,12 +33,12 @@ Requirements for the initial SDK milestone. Each requirement must map to exactly
 
 - [ ] **EFFECT-01**: User can adjust skin smoothing, skin whitening, rosy tone, and skin sharpen controls through Demo sliders backed by SDK parameters.
 - [ ] **EFFECT-02**: User can adjust brightness, contrast, saturation, temperature, tint, exposure, highlight, and shadow controls through Demo sliders backed by SDK parameters.
-- [ ] **EFFECT-03**: User can apply a filter by `filterId` and adjust `filterIntensity`, with missing filter resources handled as typed errors or visibly disabled UI.
+- [x] **EFFECT-03**: User can apply a filter by `filterId` and adjust `filterIntensity`, with missing filter resources handled as typed errors or visibly disabled UI.
 - [ ] **EFFECT-04**: User can adjust face slim, small face, V shape, jaw/chin controls through SDK-backed parameters.
 - [ ] **EFFECT-05**: User can adjust eye size, eye distance, eye vertical position, and eye tail lift through SDK-backed parameters.
 - [ ] **EFFECT-06**: User can adjust nose slim, nose wing, nose tip, and nose bridge controls through SDK-backed parameters.
 - [ ] **EFFECT-07**: User can adjust mouth size, mouth width, smile, and lip color controls through SDK-backed parameters.
-- [ ] **EFFECT-08**: User can apply at least five built-in presets: Natural, Clear, Refined, Male Natural, and ID Photo Natural.
+- [x] **EFFECT-08**: User can apply at least five built-in presets: Natural, Clear, Refined, Male Natural, and ID Photo Natural.
 - [ ] **EFFECT-09**: Default parameters are no-op, natural presets are conservative, high-intensity values are safety-capped, and face-dependent effects safely degrade when face or landmarks are missing.
 
 ### Rich Demo
@@ -107,12 +107,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PIPE-08 | Phase 3 | Complete |
 | EFFECT-01 | Phase 6 | Pending |
 | EFFECT-02 | Phase 5 | Pending |
-| EFFECT-03 | Phase 5 | Pending |
+| EFFECT-03 | Phase 5 | Complete |
 | EFFECT-04 | Phase 6 | Pending |
 | EFFECT-05 | Phase 6 | Pending |
 | EFFECT-06 | Phase 6 | Pending |
 | EFFECT-07 | Phase 6 | Pending |
-| EFFECT-08 | Phase 5 | Pending |
+| EFFECT-08 | Phase 5 | Complete |
 | EFFECT-09 | Phase 6 | Pending |
 | DEMO-01 | Phase 3 | Complete |
 | DEMO-02 | Phase 2 | Complete |
