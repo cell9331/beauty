@@ -30,6 +30,23 @@ No active plan.
 
 ## 4. Completed
 
+### C-2026-06-19-gsd-ui-phase-5-filters-presets-resource-flow
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-19 |
+| Scope | Ran `$gsd-ui-phase 5` for Phase 5 and produced an approved SwiftUI UI design contract covering compact preset chips, color sliders, enabled Filters panel behavior, resource failure copy, spacing, typography, color, accessibility, and verification expectations. |
+| Requirements | EFFECT-02, EFFECT-03, EFFECT-08 |
+| Files | `.planning/phases/05-filters-presets-and-resource-flow/05-UI-SPEC.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `gsd-ui-checker` approved all six dimensions: Copywriting, Visuals, Color, Typography, Spacing, and Registry Safety. |
+| Build | Not run; this was a GSD UI contract/documentation workflow with no Swift or Xcode source changes. |
+
+Outcome:
+
+- Phase 5 now has an approved `05-UI-SPEC.md` for native SwiftUI implementation planning.
+- The initial spacing blocker was resolved by removing non-scale `12px` spacing and keeping `44px` only as a touch-target height.
+- Planner can proceed with `$gsd-plan-phase 5` using the UI contract as design context.
+
 ### C-2026-06-18-gsd-phase-4-detection-and-coordinate-safety
 
 | Field | Value |
