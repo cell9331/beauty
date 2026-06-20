@@ -30,6 +30,25 @@ No active plan.
 
 ## 4. Completed
 
+### C-2026-06-19-gsd-execute-phase-5-filters-presets-resource-flow
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-19 |
+| Scope | Executed GSD Phase 5: added bundled resource manifest/preset JSON, public resource facade APIs, schema-versioned preset decoding, metadata-only filters, color/filter parameter validation, Demo preset/filter chips, eight color controls, focused source guardrails, root contract docs, and Phase 5 evidence. |
+| Requirements | EFFECT-02, EFFECT-03, EFFECT-08 |
+| Files | `BeautySDK/Package.swift`, `BeautySDK/Sources/BeautyCore/Models/*`, `BeautySDK/Sources/BeautyResources/**`, `BeautySDK/Sources/BeautySDK/BeautySDKResources.swift`, `BeautySDK/Tests/**/*.swift`, `BeautyDemo/BeautyDemo/Panel/*.swift`, `BeautyDemo/BeautyDemo/State/BeautyParameterStore.swift`, `BeautyDemo/BeautyDemoTests/*.swift`, `.planning/phases/05-filters-presets-and-resource-flow/*-SUMMARY.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, `.planning/REQUIREMENTS.md`, `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `QUALITY_SCORE.md`, `PLANS.md` |
+| Verification | `swift test --package-path BeautySDK` passed with 71 XCTest cases; `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test` passed with 66 Demo XCTest cases; Demo internal import scan returned no matches; LUT/asset scope scan returned no matches; raw resource/path scan returned one intentional internal facade import at `BeautySDK/Sources/BeautySDK/BeautySDKResources.swift:2`, while Demo source/tests remained facade-only. |
+| Build | SDK SwiftPM tests and Demo simulator tests passed. |
+
+Outcome:
+
+- `BeautyResources` now loads a schema-versioned bundled manifest, five built-in preset JSON files, and two metadata-only filters: `soft_clean` and `warm_light`.
+- `BeautySDKResources` exposes filters, built-in presets, preset lookup, and parameter validation through the public `BeautySDK` facade.
+- Demo Beauty panel now includes five preset chips, eight color controls, enabled Filters with `None`, `Soft Clean`, `Warm Light`, and `Filter Intensity`, plus redacted friendly resource failure copy.
+- Source guardrails cover Demo facade-only imports, Demo panel/state resource leakage, resource traversal-like IDs, and accidental LUT/thumbnail/swatch scope creep.
+- Remaining product risk: Phase 5 proves parameter flow and resource contracts only; real visual quality for color/filter effects remains Phase 6+ render scope.
+
 ### C-2026-06-19-gsd-plan-phase-5-filters-presets-resource-flow
 
 | Field | Value |
@@ -323,6 +342,7 @@ Outcome:
 | TD-006 | Historical Docs | `docs/` 下历史长文档与根级文档存在重叠。 | Agent 可能读取到旧结论。 | 已将 `docs/README.md` 设为长文档入口，并在 `QUALITY_SCORE.md` 中加入旧文件名、source import JSON、关键术语一致性扫描规则。 | `completed` |
 | TD-007 | GSD Traceability | v2 `ADV-01` through `ADV-10` appear in `.planning/REQUIREMENTS.md` body but not its Traceability table; `phase.complete` warns about them. | GSD audits may continue surfacing deferred v2 IDs even though v1 SDK traceability is complete. | Decide whether deferred v2 requirements should be added to Traceability as Deferred or moved to a separate backlog table. | `open` |
 | TD-008 | Manual Device QA | Phase 4 simulator/tests cannot prove real-device front-camera mirroring or real Vision quality. | Mirror/crop expectations and real detector behavior may differ from synthetic fixtures. | On a physical iPhone, run front-camera preview and confirm mirrored preview with stable processed crop; run no-face, partial-face, and low-light face checks and confirm expected status copy with no crash. | `open` |
+| TD-009 | Manual Visual QA | Phase 5 view-state tests verify preset/filter chip labels, ordering, enabled state, and copy, but no simulator screenshot or human visual smoke was performed for actual layout. | Preset/filter chips could visually clip or feel crowded despite passing model-level tests. | Launch Demo, open Beauty and Filters panels, and confirm preset/filter chips plus color/filter sliders fit without clipping across the target simulator sizes. | `open` |
 
 ## 6. Plan Template
 

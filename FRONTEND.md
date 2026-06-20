@@ -195,6 +195,7 @@ First useful Demo should include:
 | Camera | start/stop, front/back camera, permission state, preview |
 | Preview | before/after compare, debug overlay toggle |
 | Skin | smoothing, whitening, rosy, sharpen |
+| Color | brightness, contrast, saturation, temperature, tint, exposure, highlight, shadow |
 | Face | slim face, small face, V shape, chin |
 | Eyes | eye size, distance, vertical position, tail lift |
 | Nose | nose slim, wing slim, tip size, bridge |
@@ -203,6 +204,14 @@ First useful Demo should include:
 | Preset | natural, clear, refined, male natural, ID photo natural |
 
 The list defines Demo expectations, not SDK implementation order. If a control maps to an unimplemented SDK parameter, it must be visibly disabled or hidden.
+
+Phase 5 current state:
+
+- Beauty panel exposes compact preset chips for `Natural`, `Clear`, `Refined`, `Male Natural`, and `ID Photo Natural`.
+- Color controls are visible in the Beauty panel and map to public `BeautyParameters`; Phase 5 remains no-op visually until render passes are implemented.
+- Filters is an enabled top-level panel with `None`, `Soft Clean`, `Warm Light`, and `Filter Intensity`.
+- Preset and filter data comes through `BeautySDKResources`; Demo source and tests must not import internal SDK targets.
+- Resource failures use fixed friendly copy and must not show raw paths, `NSError`, bundle details, or internal target names.
 
 ## 9. Camera Preview
 
@@ -213,14 +222,17 @@ Camera preview responsibilities:
 - Feed frames into `CameraBeautyPipeline`.
 - Display processed output in `MetalPreviewView` or equivalent.
 - Surface recoverable errors to the UI.
+- Provide the correct `CGImagePropertyOrientation` for each frame.
 
 Rules:
 
 - `CameraView` does not own `AVCaptureSession` details directly.
 - `CameraSessionController` owns capture session setup and teardown.
+- First version camera output should request `kCVPixelFormatType_32BGRA`.
 - `CameraBeautyPipeline` owns SDK invocation and frame backpressure policy.
 - `MetalPreviewView` is a thin platform bridge for display only.
 - Dropping frames is acceptable under load; blocking the main thread is not.
+- `AVCaptureVideoDataOutput.alwaysDiscardsLateVideoFrames` or an equivalent policy should be enabled for realtime preview.
 - Camera lifecycle must respond to app foreground/background transitions.
 - `CameraPreviewFrame` carries `BeautyInputMetadata`; camera defaults are source `.camera`, orientation `.right`, input mirrored false, and preview mirrored true for front-camera display.
 - `CameraProcessingSnapshot` carries `BeautyDetectionSummary?` from `BeautyResult`, not Vision observations or face geometry.
@@ -266,6 +278,7 @@ Rules:
 - View `body` must not create long-running work.
 - UI state updates happen on the main actor.
 - Pipeline and SDK work happen outside main actor unless the API explicitly requires main actor.
+- If the SDK call is synchronous, `CameraBeautyPipeline` still runs it on the capture/processing queue with bounded in-flight frames.
 
 ## 12. Performance Rules
 
@@ -372,4 +385,3 @@ Before merging a Demo UI change:
 - Previews or fixtures cover the main states.
 - Accessibility labels exist for new controls.
 - Build or equivalent compile verification is recorded.
-

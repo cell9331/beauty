@@ -10,7 +10,7 @@
 当前仓库状态：
 
 - 已存在 `BeautyDemo/` Xcode Demo App。
-- SDK Package 尚未落地。
+- 已存在 `BeautySDK/` Swift Package 骨架，包含 `BeautyCore`、`BeautyDetection`、`BeautyRender`、`BeautyEffects`、`BeautyResources` 和 public `BeautySDK` facade。
 - `docs/` 下存在历史规划资料，迁移后的根级文档优先级更高。
 
 ## 2. 顶层不变量
@@ -25,6 +25,7 @@
 | A6 | 参数模型统一归一化 | 对外强度使用稳定范围，内部算法不得各自发明公共参数格式。 |
 | A7 | 资源加载集中管理 | LUT、妆容贴图、模型文件、shader 资源由资源层统一定位和校验。 |
 | A8 | 依赖只能向内层流动 | 任何 Target 不得反向 import 上层 Target。 |
+| A9 | Diagnostics 随核心模型下沉 | 第一版日志、错误上下文、metrics 事件放在 `BeautyCore/Diagnostics`，不单独拆 Package。 |
 
 ## 3. 推荐包结构
 
@@ -35,8 +36,10 @@ BeautySDK/
 ├── Package.swift
 ├── Sources/
 │   ├── BeautyCore/
+│   │   └── Diagnostics/
 │   ├── BeautyDetection/
 │   ├── BeautyRender/
+│   │   └── Shaders/
 │   ├── BeautyEffects/
 │   ├── BeautyResources/
 │   └── BeautySDK/
@@ -70,7 +73,7 @@ BeautyDemo
 
 | Target | 可以依赖 | 禁止依赖 |
 | --- | --- | --- |
-| `BeautyCore` | Foundation、CoreGraphics、CoreMedia 等轻量基础库 | SwiftUI、UIKit 页面、Vision、Metal、Core Image、App 代码 |
+| `BeautyCore` | Foundation、CoreGraphics、CoreVideo、Core Image、ImageIO、OSLog 等基础公共输入库 | SwiftUI、UIKit 页面、Vision、Metal、App 代码 |
 | `BeautyResources` | `BeautyCore`、Foundation | SwiftUI、App 代码、业务 UI 状态 |
 | `BeautyDetection` | `BeautyCore`、Vision、Core ML 可选 | SwiftUI、Metal pass、App 代码 |
 | `BeautyRender` | `BeautyCore`、Metal、Core Image、MPS 可选 | SwiftUI、Vision 实现、App 代码 |
@@ -85,7 +88,8 @@ BeautyDemo
 | Domain | 所属 Target | 职责 | 非职责 |
 | --- | --- | --- | --- |
 | Public SDK Facade | `BeautySDK` | `BeautyEngine`、对外配置、图片/视频/实时帧入口 | UI、具体页面状态 |
-| Core Types | `BeautyCore` | 参数、错误、坐标、帧模型、协议、Sendable 值类型 | Vision/Metal 具体实现 |
+| Core Types | `BeautyCore` | 参数、错误、坐标、帧模型、Phase 1 no-op `BeautyEngine`、协议、Sendable 值类型 | Vision/Metal 具体实现 |
+| Diagnostics | `BeautyCore/Diagnostics` | `BeautyLogger`、`BeautyLogEvent`、sink、错误上下文、可关闭本地诊断 | 独立后端服务、上传、业务埋点 |
 | Detection | `BeautyDetection` | 人脸检测、关键点解析、方向处理、点位平滑、检测降频 | 渲染 pass、UI 绘制 |
 | Render | `BeautyRender` | Metal 上下文、纹理缓存、RenderGraph、shader pass、LUT/CI 桥接 | 检测算法、SwiftUI 状态 |
 | Effects | `BeautyEffects` | 美颜、滤镜、五官形变、妆容、分割效果的组合逻辑 | 独立 Package、UI 面板 |
@@ -101,17 +105,19 @@ BeautyDemo
 - `BeautyParameters`
 - `BeautyConfiguration`
 - `BeautyError`
+- `BeautyEngine` Phase 1 no-op foundation
 - `BeautyFrame`
 - `FaceObservation`
 - `FaceLandmarks`
 - `WarpControlPoint`
-- 坐标系、方向、质量等级、日志事件的值类型
+- 坐标系、方向、质量等级、日志事件、错误上下文的值类型
 
 规则：
 
 - 优先 `struct`、`enum`、`protocol`。
 - 可跨并发域传递的类型必须显式满足 `Sendable`。
 - 不持有 `MTLDevice`、`VNRequest`、SwiftUI 状态。
+- Diagnostics 默认只提供本地实现；上传、远端诊断和业务埋点必须经过 `SECURITY.md` 的网络与隐私设计。
 
 ### 6.2 BeautyDetection
 
@@ -142,6 +148,7 @@ BeautyDemo
 - `RenderPass`
 - `CopyRenderPass`
 - `FaceWarpPass`
+- `Shaders/Warp.metal`
 - LUT / Core Image 桥接
 
 规则：
@@ -149,6 +156,7 @@ BeautyDemo
 - 实时链路禁止 `UIImage` 中转。
 - Metal 资源由渲染层统一创建、复用和释放。
 - Render pass 必须明确输入纹理、输出纹理、参数和失败模式。
+- 核心几何 shader 文件名统一为 `Warp.metal`。
 
 ### 6.4 BeautyEffects
 
@@ -174,12 +182,15 @@ BeautyDemo
 - 妆容贴图与配置
 - Core ML 模型或分割模型
 - 默认预设
+- Phase 5 当前实现：`manifest.json`、五个内置 preset JSON、两个 metadata-only filter 定义。
+- 内置 filters 只声明稳定 ID 与展示名；Phase 5 不包含 `.cube`、缩略图、色卡或真实 LUT 资产。
 
 规则：
 
 - 资源路径不得散落在效果或 UI 层。
 - 外部导入资源必须经过 `SECURITY.md` 定义的校验。
 - 资源版本变化需要记录兼容性影响。
+- Bundle 资源由 `BeautyResourceCatalog` 解析；资源 ID 必须先通过保守 identifier 校验，不能被解释为路径。
 
 ### 6.6 BeautySDK
 
@@ -194,6 +205,7 @@ import BeautySDK
 - 暴露 `BeautyEngine`。
 - 暴露稳定的配置、参数、错误和处理入口。
 - 暴露逐帧 `BeautyInputMetadata` 与不含人脸几何的 `BeautyDetectionSummary`。
+- 暴露 `BeautySDKResources`，让 App 获取内置 filters、presets，并在提交参数前验证 filter 引用。
 - 隐藏 Vision、Metal、Core Image、Target 拆分细节。
 - 把内部错误映射为稳定 SDK 错误。
 
@@ -246,7 +258,7 @@ Image input
 ```text
 BeautyDemo sliders / presets
 → BeautyParameters
-→ BeautyEngine.updateParameters
+→ BeautyEngine.process(..., parameters:)
 → Effects read immutable snapshot
 → RenderGraph receives normalized uniforms
 ```
@@ -296,4 +308,3 @@ BeautyDemo sliders / presets
 | 2026-05-24 | 第一版采用一个 `BeautySDK` Swift Package，内部多 Target。 | 共享检测、坐标、Metal 上下文和形变系统，避免多 Package 重复依赖。 |
 | 2026-05-24 | UI 完全放在 `BeautyDemo` 或宿主 App。 | SDK 作为可集成能力，不绑定业务页面和交互样式。 |
 | 2026-05-24 | 五官几何形变统一进入一个形变 pass。 | 降低纹理读写次数，减少参数冲突，提高实时性能。 |
-

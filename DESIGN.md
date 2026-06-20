@@ -38,32 +38,37 @@
 | D5 | 预设只生成参数，不直接操作渲染链路。 | 预设可以序列化、测试、导入导出。 |
 | D6 | 渲染管线由 `RenderGraph` 组织。 | 效果顺序集中控制，避免每个功能私自插入 pass。 |
 | D7 | 内部状态只能由 Engine 拥有或由专门状态对象隔离。 | 检测缓存、点位平滑、纹理缓存不会散落在 UI 层。 |
+| D8 | `BeautyEngine.init` 使用 `throws`，`process` 第一版同步返回。 | 初始化失败可被 App 明确处理；实时调用必须在非主线程队列配合 in-flight 限制。 |
 
 ## 4. 公共数据模型
 
 ### 4.1 BeautyConfiguration
 
-`BeautyConfiguration` 是 Engine 创建时的不可变配置。
+`BeautyConfiguration` 是 Engine 创建时的运行策略配置，不是逐帧输入状态，也不是美颜参数。
 
 推荐字段：
 
 | Field | Type | Meaning |
 | --- | --- | --- |
+| `preferredProcessingSize` | `CGSize?` | 期望处理尺寸；`nil` 表示由 SDK 按模式选择。 |
+| `maximumFaceCount` | `Int` | 每帧最多处理的人脸数量。 |
+| `enableFaceTracking` | `Bool` | 是否启用跨帧跟踪和平滑。 |
+| `detectionFrameInterval` | `Int` | 检测降频间隔。 |
 | `renderQuality` | `BeautyRenderQuality` | 性能与质量等级。 |
-| `preferredFPS` | `Int` | 实时预览目标帧率。 |
-| `maxFaceCount` | `Int` | 每帧最多处理的人脸数量。 |
-| `isDebugEnabled` | `Bool` | 是否输出调试指标与中间信息。 |
-| `resourcePolicy` | `BeautyResourcePolicy` | 内置资源、外部资源、缓存策略。 |
+| `enablePerformanceLog` | `Bool` | 是否采样性能日志。 |
+| `enableDebugMode` | `Bool` | 是否输出调试指标与中间信息。 |
+| `logLevel` | `BeautyLogLevel` | SDK 日志等级；默认 release 使用 `error`。 |
 
 规则：
 
 - 初始化后不可变。
 - 必须满足 `Sendable`。
 - 不能包含 SwiftUI、UIKit 或宿主 App 状态。
+- 图像方向、输入镜像、预览镜像是逐帧输入状态，不放入全局 configuration。
 
 ### 4.2 BeautyParameters
 
-`BeautyParameters` 是所有可调效果的唯一公共参数模型。
+`BeautyParameters` 是所有可调效果的唯一公共参数模型。1.0 参数模型包含 31 个字段，覆盖基础皮肤、基础颜色、脸型、眼睛、鼻子、嘴巴和滤镜。
 
 最低协议：
 
@@ -71,19 +76,17 @@
 public struct BeautyParameters: Codable, Equatable, Sendable
 ```
 
-参数域：
+1.0 参数域：
 
-| Domain | Example | Range |
+| Domain | Fields | Range |
 | --- | --- | --- |
 | Skin | `skinSmoothing`, `skinWhitening`, `skinRosy`, `skinSharpen` | `0.0...1.0` |
-| Face Shape | `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim` | `0.0...1.0` |
-| Chin / Forehead | `chinLength`, `foreheadHeight` | `-1.0...1.0` |
+| Color | `brightness`, `contrast`, `saturation`, `temperature`, `tint`, `exposure`, `highlight`, `shadow` | mixed |
+| Face Shape | `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, `chinLength` | mixed |
 | Eyes | `eyeSize`, `eyeDistance`, `eyeYPosition`, `eyeTailLift` | mixed |
 | Nose | `noseSlim`, `noseWingSlim`, `noseTipSize`, `noseBridge` | mixed |
 | Mouth | `mouthSize`, `mouthWidth`, `smile`, `lipColor` | mixed |
-| Color | `brightness`, `contrast`, `saturation`, `temperature` | mixed |
 | Filter | `filterId`, `filterIntensity` | ID + `0.0...1.0` |
-| Makeup | `makeupId`, `makeupIntensity` | ID + `0.0...1.0` |
 
 Rules:
 
@@ -92,6 +95,7 @@ Rules:
 - All setters or initializers must clamp invalid values before rendering.
 - `process` must not mutate the caller's parameter value.
 - Adding a public parameter requires updating this file and `PRODUCT_SENSE.md` acceptance criteria.
+- Complete makeup, background segmentation, body shape, teeth whitening, eyebrows, and advanced eye/nose/mouth parameters are post-1.0 extensions.
 
 ### 4.3 BeautyPreset
 
@@ -112,8 +116,9 @@ Rules:
 
 - Applying a preset returns a complete `BeautyParameters` value.
 - Presets must not contain hidden code paths.
-- Preset JSON must be schema-versioned.
+- Bundled preset JSON uses `schemaVersion: 1`; legacy host preset JSON without `schemaVersion` remains accepted for source compatibility.
 - Invalid preset values are rejected or clamped before they reach rendering.
+- `filterId` values are data references and must be present in the resolved resource registry before parameters are applied.
 - User custom presets are product data; validation belongs to `SECURITY.md`.
 
 ### 4.4 BeautyFrame
@@ -126,6 +131,8 @@ Required meaning:
 | --- | --- |
 | `pixelBuffer` or image backing | Source image data without `UIImage` in realtime paths. |
 | `orientation` | Original capture or asset orientation. |
+| `isInputMirrored` | Whether capture data has already been mirrored when SDK interprets coordinates. |
+| `isPreviewMirrored` | Whether preview display mirrors the final image; used for overlay and future API extension. |
 | `timestamp` | Frame time for smoothing and metrics. |
 | `source` | Camera, photo, video, export, or test fixture. |
 | `extent` | Pixel size used for coordinate mapping. |
@@ -135,6 +142,7 @@ Rules:
 - Realtime camera frames must not be retained longer than needed.
 - Long-running pipelines must copy or convert frame data into owned buffers.
 - Orientation must be normalized before detection and rendering agree on coordinates.
+- First public API may expose only `CGImagePropertyOrientation`, but internal frame design must leave room for mirror flags.
 
 ### 4.5 BeautyResult
 
@@ -398,6 +406,7 @@ Input
 Design rules:
 
 - `FaceWarpPass` consumes merged `[WarpControlPoint]`.
+- `FaceWarpPass` uses the unified geometry shader `Warp.metal`.
 - `SkinPass` runs after geometry so skin treatment follows final face shape.
 - `ColorPass` runs before LUT so LUT can define final style.
 - `LUTPass` is late because it is a look transform.
@@ -564,6 +573,7 @@ Rules:
 - Detection may run on a detection queue or task.
 - Metal encoding runs on the render queue chosen by `BeautyRender`.
 - Realtime processing must avoid blocking the main thread.
+- Synchronous `process(pixelBuffer:)` does not permit unbounded GPU waiting in realtime paths; callers must use a camera queue, bounded in-flight frames, and a drop-or-fallback policy.
 
 ## 16. Serialization Design
 
@@ -573,7 +583,7 @@ Codable models:
 | --- | --- |
 | `BeautyParameters` | Save user adjustments and import/export parameter sets. |
 | `BeautyPreset` | Built-in and custom preset definitions. |
-| `BeautyResourceManifest` | Resource package identity, version, checksums. |
+| `BeautyResourceManifest` | Resource package schema, version, minimum SDK, metadata filters, and preset references. |
 
 Rules:
 
@@ -581,6 +591,7 @@ Rules:
 - Unknown fields should be ignored only when forward-compatible.
 - Invalid parameter values are clamped or rejected before render.
 - Resource IDs are data references, not executable behavior.
+- Phase 5 filters are metadata-only IDs: `soft_clean` and `warm_light`; real LUT/color-pass assets remain future render scope.
 
 ## 17. Testable Design Contracts
 
@@ -608,4 +619,3 @@ These are known future design areas, not current first-version requirements:
 | Body reshape model | Requires human landmarks, segmentation, and separate geometry safety policy. |
 | Streaming async API | Useful once realtime camera pipeline is formalized beyond per-frame `process`. |
 | Export-quality pipeline | Can use slower passes and higher precision than realtime preview. |
-

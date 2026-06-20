@@ -66,7 +66,7 @@ Journey:
 developer adds BeautySDK
 → initializes BeautyEngine
 → creates BeautyParameters
-→ processes camera frame or image
+→ processes camera frame or image with explicit orientation
 → handles output or BeautyError
 ```
 
@@ -99,6 +99,8 @@ Acceptance:
 | --- | --- |
 | Permission | Denied permission shows non-crashing UI fallback. |
 | Preview | Camera frames reach SDK without realtime `UIImage` conversion. |
+| Pixel Format | First-version camera path can provide BGRA pixel buffers. |
+| Orientation | App passes correct `CGImagePropertyOrientation`; preview owns visual mirroring. |
 | Responsiveness | UI remains responsive while frames process. |
 | Slider | UI value maps to expected normalized SDK parameter. |
 | Compare | Before/after compare toggles display without resetting parameters. |
@@ -224,6 +226,7 @@ MVP must demonstrate:
 | Image processing | Still image can process through SDK and display. |
 | Default no-op | Default parameters visually preserve input. |
 | Skin controls | Smoothing, whitening, rosy, sharpen are adjustable. |
+| Color controls | Brightness, contrast, saturation, temperature, tint, exposure, highlight, shadow are adjustable or explicitly hidden until implemented. |
 | Face controls | Face slim, small face, V shape, chin are adjustable. |
 | Eye controls | Eye size and at least one additional eye parameter are adjustable. |
 | Nose controls | Nose slim and at least one additional nose parameter are adjustable. |
@@ -327,6 +330,14 @@ Preset rules:
 - Presets must be named with stable IDs for tests.
 - Product copy must not promise identity-changing results.
 
+Phase 5 automated evidence:
+
+- `BeautySDKResources.builtInPresets()` exposes five built-in presets through the public facade only.
+- `BeautySDKResources.availableFilters()` exposes `soft_clean` / `Soft Clean` and `warm_light` / `Warm Light` as metadata-only filters.
+- Demo preset chips apply full parameter snapshots and synchronize visible skin, color, filter, and intensity controls.
+- Demo Filters panel supports `None`, `Soft Clean`, `Warm Light`, and `Filter Intensity`; missing resource copy is friendly and redacted.
+- Full visual effect quality remains Phase 6+ scope because current color/filter behavior is parameter-chain/no-op render behavior.
+
 ## 9. Scenario Matrix
 
 | Scenario | MVP | Later |
@@ -375,4 +386,3 @@ Before merging product-facing changes, verify:
 | 2026-05-25 | Naturalness is a product invariant, not a style preference. | Beauty SDK trust depends on avoiding obvious distortion. |
 | 2026-05-25 | Presets are complete parameter bundles. | Keeps one-tap UX deterministic and testable. |
 | 2026-05-25 | Later domains stay visible but not blocking: makeup, segmentation, body, video export. | Prevents scope creep while preserving architecture direction. |
-

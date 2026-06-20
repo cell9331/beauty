@@ -150,7 +150,7 @@ Required checks:
 - Clamp bidirectional parameters to `-1.0...1.0`.
 - Apply algorithm-level safety caps before generating geometry or color uniforms.
 - Treat unknown resource IDs as missing resources, not as file paths.
-- Reject NaN, infinity, and non-finite numeric values.
+- Reset NaN, infinity, and non-finite numeric values to documented no-op defaults before rendering.
 - Preserve default zero-effect behavior.
 
 Algorithm-level caps are visual-safety controls and must be kept separate from public API ranges.
@@ -162,6 +162,7 @@ Preset JSON is untrusted unless bundled and versioned by the SDK.
 Required fields:
 
 ```text
+schemaVersion
 id
 version
 parameters
@@ -169,6 +170,7 @@ parameters
 
 Validation rules:
 
+- Bundled preset `schemaVersion` must be compatible with the SDK; unsupported versions fail with a redacted typed error.
 - `id` must match a conservative ID pattern such as `^[A-Za-z0-9._-]+$`.
 - `version` must be parseable and compatible with the SDK.
 - Unknown fields may be ignored only if forward-compatible.
@@ -177,6 +179,7 @@ Validation rules:
 - Resource IDs referenced by presets must exist in the resolved resource registry.
 - JSON size must have a documented maximum.
 - Preset parsing errors return typed errors; they do not crash.
+- Preset decoding failures must map to `BeautyError.presetDecodeFailed` with a redacted reason.
 
 Forbidden:
 
@@ -202,6 +205,8 @@ Bundled resources:
 
 - Use `Bundle.module` for Swift Package resources.
 - Do not hardcode absolute file paths.
+- Manifest and preset references must pass conservative identifier validation before bundle lookup.
+- Phase 5 bundled filter resources are metadata-only IDs; `.cube`, thumbnails, swatches, and arbitrary relative paths are out of scope until an explicit render/resource security design exists.
 - Record resource `id`, `name`, `version`, `minimumSDKVersion`, and `items`.
 - Fail with a typed error when required bundled resources are missing.
 
@@ -243,6 +248,7 @@ Security rules:
 - Per-frame logs are disabled by default.
 - Performance logs are sampled or aggregated.
 - Debug result APIs must be gated by configuration and must not persist sensitive buffers.
+- File logging is disabled by default. If enabled by the host App, logs stay in the App sandbox, rotate by date or size, default to 7-day retention and 5 MB per file, and must be redacted before export or sharing.
 
 Allowed examples:
 
@@ -359,4 +365,3 @@ Before merging any change touching these areas, update `SECURITY.md` if needed:
 | 2026-05-25 | External resources are disabled until a resource manager with validation exists. | LUT, makeup, model, and texture packages cross a trust boundary. |
 | 2026-05-25 | Logs must never include image paths, image bytes, landmarks, or raw JSON. | Debuggability must not leak user content or biometric-adjacent data. |
 | 2026-05-25 | Distributed SDK builds must revisit `PrivacyInfo.xcprivacy`. | Apple requires privacy manifests for apps and third-party SDKs according to SDK behavior. |
-

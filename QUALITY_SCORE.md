@@ -34,19 +34,19 @@ Quality gate:
 
 ## 3. Current Snapshot
 
-Current repository state as of 2026-06-18:
+Current repository state as of 2026-06-19:
 
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
 | Root docs | 4 | `AGENTS.md`, `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `PLANS.md`, `QUALITY_SCORE.md` exist and separate current state from target architecture. | Keep root docs synced when `.planning/PROJECT.md`, `docs/10_document_audit_report.md`, or implementation contracts change. |
 | Historical docs | 3 | `docs/README.md` is the long-doc entry, lists current implementation status, and routes historical `docs/superpowers/` planning artifacts as background. | Continue conflict scans against root contracts and fresh command output. |
-| GSD planning | 4 | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, Phase 1/2/3/4 plan artifacts, and Phase 4 summaries exist. | Keep summaries, verification, and roadmap state synced as phases execute. |
-| SDK Package | 4 | `BeautySDK/Package.swift` exists with `BeautyCore`, `BeautyDetection`, `BeautyRender`, `BeautyEffects`, `BeautyResources`, and facade `BeautySDK` targets; `swift test --package-path BeautySDK` passes with 55 XCTest cases. | Broaden resources, effects, and visual render behavior beyond foundation/detection safety. |
-| Demo App | 4 | `BeautyDemo` imports `BeautySDK`, renders the editor shell, enabled Camera/Photo modes, camera permission/session states, bounded realtime pipeline, photo input pipeline, compare state, and deterministic view-state coverage for PIPE-01, PIPE-02, PIPE-03, PIPE-04, PIPE-06, PIPE-08, and DEMO-01. | Connect visual effects in Phase 6 and add simulator UI automation for OS-owned Camera/Photo flows when stable. |
-| Tests | 4 | `BeautySDK/Tests` has 55 passing XCTest cases; `BeautyDemoTests` has 61 passing XCTest cases covering import boundary, Camera, realtime pipeline, Photo, compare, privacy scans, panel state, parameter state, metadata, coordinate, and detection degradation behavior. | Add resource, effect, UI automation, performance, and long-run coverage in later phases. |
-| Security | 4 | Parameter/preset validation tests plus purpose-string, no-upload/no-network, no raw path/error copy, facade-only import, and Phase 4 public geometry/raw framework leakage scans pass; privacy manifest still absent. | Add resource/package validation and privacy manifest review when SDK distribution behavior exists. |
-| Reliability | 4 | `BeautyError`, no-op unsupported format mapping, SDK-created output, idempotent `reset()`, realtime backpressure, stale-frame drops, photo stale-work handling, previous-visual preservation, coordinate mapping failures, no-face/partial/low-confidence summaries, and Demo warning debounce are tested; runtime metrics and long-run checks are still absent. | Add metrics, render/resource degradation, and long-run tests when render/effects pipelines mature. |
-| Product acceptance | 4 | `PRODUCT_SENSE.md` defines journeys and now records Phase 3 and Phase 4 automated evidence for realtime Camera, still image editing, compare, local-first privacy, metadata, coordinate mapping, and safe detection degradation. | Attach real effect fixtures and manual/hardware smoke evidence to later MVP journeys. |
+| GSD planning | 4 | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, Phase 1/2/3/4/5 plan artifacts, and Phase 5 summaries exist. | Keep summaries, verification, and roadmap state synced as phases execute. |
+| SDK Package | 4 | `BeautySDK/Package.swift` exists with `BeautyCore`, `BeautyDetection`, `BeautyRender`, `BeautyEffects`, `BeautyResources`, and facade `BeautySDK` targets; `swift test --package-path BeautySDK` passes with 71 XCTest cases. | Broaden visual effects and render behavior beyond metadata-only resources. |
+| Demo App | 4 | `BeautyDemo` imports `BeautySDK`, renders the editor shell, enabled Camera/Photo modes, camera permission/session states, bounded realtime pipeline, photo input pipeline, compare state, preset/filter chips, color controls, and deterministic view-state coverage for PIPE-01, PIPE-02, PIPE-03, PIPE-04, PIPE-06, PIPE-08, DEMO-01, EFFECT-02, EFFECT-03, and EFFECT-08. | Connect visual effects in Phase 6 and add simulator UI automation for OS-owned Camera/Photo flows when stable. |
+| Tests | 4 | `BeautySDK/Tests` has 71 passing XCTest cases; `BeautyDemoTests` has 66 passing XCTest cases covering import boundary, Camera, realtime pipeline, Photo, compare, privacy scans, resources, presets, filters, panel state, parameter state, metadata, coordinate, and detection degradation behavior. | Add visual effect fixtures, UI automation, performance, and long-run coverage in later phases. |
+| Security | 4 | Parameter/preset/resource validation tests plus purpose-string, no-upload/no-network, no raw path/error copy, facade-only import, Demo resource-control source scans, and public geometry/raw framework leakage scans pass; privacy manifest still absent. | Add privacy manifest review when SDK distribution behavior exists. |
+| Reliability | 4 | `BeautyError`, no-op unsupported format mapping, SDK-created output, idempotent `reset()`, realtime backpressure, stale-frame drops, photo stale-work handling, previous-visual preservation, coordinate mapping failures, no-face/partial/low-confidence summaries, resource-not-found validation, and Demo warning/resource failure copy are tested; runtime metrics and long-run checks are still absent. | Add metrics, render-resource degradation, and long-run tests when render/effects pipelines mature. |
+| Product acceptance | 4 | `PRODUCT_SENSE.md` defines journeys and now records Phase 3, Phase 4, and Phase 5 automated evidence for realtime Camera, still image editing, compare, local-first privacy, metadata, coordinate mapping, safe detection degradation, built-in presets, metadata-only filters, and color/filter parameter flow. | Attach real effect fixtures and manual/hardware smoke evidence to later MVP journeys. |
 
 ### 3.1 Phase 4 Final Verification
 
@@ -57,6 +57,16 @@ Recorded 2026-06-18:
 - `rg -n "import BeautyCore|import BeautyRender|import BeautyDetection|import BeautyEffects|import BeautyResources" BeautyDemo/BeautyDemo BeautyDemo/BeautyDemoTests` returned no matches.
 - `rg -n "public .*Point|public .*Rect|public .*bounding|public .*landmark|VNFaceObservation|NSError|/private/var" BeautySDK/Sources/BeautyCore BeautySDK/Sources/BeautySDK BeautyDemo/BeautyDemo/Camera BeautyDemo/BeautyDemo/Editor` returned no matches.
 
+### 3.2 Phase 5 Final Verification
+
+Recorded 2026-06-19:
+
+- `swift test --package-path BeautySDK` passed with 71 XCTest cases.
+- `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test` passed with 66 Demo XCTest cases.
+- `rg -n "import BeautyCore|import BeautyRender|import BeautyDetection|import BeautyEffects|import BeautyResources" BeautyDemo/BeautyDemo BeautyDemo/BeautyDemoTests` returned no matches.
+- `rg -n "\.cube|LUTPass|ColorPass|thumbnail|swatch" BeautySDK/Sources/BeautyResources BeautyDemo/BeautyDemo/Panel` returned no matches.
+- `rg -n "/private/var|NSError|Bundle\.|rawPresetJson|BeautyResources|\.\./" BeautySDK/Sources/BeautyCore BeautySDK/Sources/BeautySDK BeautyDemo/BeautyDemo/Panel BeautyDemo/BeautyDemo/State` returned one intentional internal facade import: `BeautySDK/Sources/BeautySDK/BeautySDKResources.swift:2:import BeautyResources`. Demo source and tests remain facade-only.
+
 ## 4. Product Domain Scorecard
 
 | Domain | Target Score | Current | Required Evidence For 4+ |
@@ -64,13 +74,13 @@ Recorded 2026-06-18:
 | SDK Integration | 5 | 4 | App imports only `BeautySDK`; `BeautyEngine` init/process/reset compile and have typed errors. |
 | Realtime Camera | 5 | 3 | Camera frames process through SDK, no realtime `UIImage`, UI remains responsive in unit/pipeline tests, bounded backpressure is tested, and permission fallback state is covered. |
 | Still Image Editing | 4 | 3 | Fixed fixture and PhotosPicker-data seam process through SDK, loading/error preservation is tested, and compare state is covered. |
-| Presets | 4 | 2 | Built-in JSON presets decode, validate, apply deterministically, and sync UI controls. |
+| Presets | 4 | 4 | Built-in JSON presets decode, validate, apply deterministically, and sync UI controls. |
 | Skin Beauty | 4 | 1 | Default no-op, medium naturalness fixture, high-strength safety cap, render regression. |
 | Face Shape | 4 | 1 | Control points generated safely, background distortion checked, no-face skip tested. |
 | Eyes | 4 | 1 | Missing-eye landmarks skip effects; eye size and eye position remain plausible. |
 | Nose | 4 | 1 | Side-face and missing-nose cases degrade without distortion. |
 | Mouth | 4 | 1 | Smile/lip effects avoid tooth/lip stretching in fixtures. |
-| Filters | 4 | 1 | `filterId nil`, missing filter, intensity 0/1, LUT parse failure covered. |
+| Filters | 4 | 4 | `filterId nil`, missing filter, intensity 0/1, metadata filter IDs, and Demo filter selection are covered; real LUT decode remains Phase 6+ render scope. |
 | Makeup | 3 | 0 | Resource manifest, missing-resource behavior, landmark attachment tests. |
 | Background / Segmentation | 3 | 0 | Mask edge fixtures, no-person fallback, device downgrade behavior. |
 | Body Shape | 3 | 0 | Human landmark contract, half/full-body fixtures, safety caps. |
@@ -84,7 +94,7 @@ Recorded 2026-06-18:
 | `BeautyDetection` | 4 | 4 | Detector protocol, Vision adapter seams, face selection, coordinate mapper, mapping failures, and safe public summaries are tested. |
 | `BeautyRender` | 5 | 2 | `RenderGraph`, `RenderPass`, `CopyRenderPass`, `PixelBufferFactory`, and `Warp.metal` placeholder exist with copy/pass-order tests. |
 | `BeautyEffects` | 4 | 0 | Effect requirements, provider tests, safety caps, degradation tests. |
-| `BeautyResources` | 4 | 0 | Bundle loading, manifest validation, missing/invalid resource tests. |
+| `BeautyResources` | 4 | 4 | Bundle loading, schema-versioned manifest validation, metadata filters, preset lookup, missing/invalid resource tests, and traversal-like ID rejection are covered. |
 | `BeautySDK` facade | 5 | 4 | Facade tests import only `BeautySDK` and access public foundation, metadata, result, and detection summary types; render test helpers are exposed only through testing SPI. |
 | `BeautyDemo` | 4 | 4 | Demo shell, parameter panel, preview fixture, enabled Camera/Photo modes, Camera session/pipeline, Photo pipeline, compare state, privacy scans, import-boundary tests, and view-state tests exist. |
 
@@ -93,7 +103,7 @@ Recorded 2026-06-18:
 | Test Area | Target Score | Current | Minimum Coverage |
 | --- | --- | --- | --- |
 | Parameter tests | 5 | 3 | Defaults, 31 stored fields, ranges, NaN/infinity reset, Sendable, and Codable round trip. |
-| Preset tests | 4 | 3 | Decode, unknown fields, invalid ID, no built-in registry, and missing filter resource typed errors. |
+| Preset tests | 4 | 4 | Decode, unknown fields, invalid ID, schema version, built-in registry, and missing filter resource typed errors. |
 | Coordinate tests | 5 | 4 | Front/back, portrait/landscape, EXIF orientation, input mirroring, preview mirroring, VisionNormalized, ImageNormalized, pixel, texture, and preview mapping tests exist. |
 | Detection tests | 4 | 4 | No face, low confidence, missing landmarks, mapping failure, face limit, selection stability, detector unavailable, timeout, and reset coverage exists. |
 | Render tests | 4 | 2 | Copy pass preserves BGRA bytes, unsupported copy input maps to `BeautyError`, and RenderGraph pass order is tested. |
@@ -123,7 +133,7 @@ Recorded 2026-06-18:
 | --- | --- | --- | --- |
 | Privacy default | 5 | 4 | Phase 3 static scans show no upload/network path, no raw path/error copy, and no realtime `UIImage` in input paths; no frame/landmark persistence is introduced. |
 | Permissions | 4 | 3 | Camera permission mapping and purpose strings are tested; real Settings round-trip remains manual. |
-| Resource validation | 5 | 1 | Manifest, checksum, size, type, traversal tests. |
+| Resource validation | 5 | 4 | Manifest schema, metadata filter registry, built-in preset lookup, missing-resource typed errors, and traversal-like ID tests. Checksums and byte-size limits remain future work for real assets. |
 | Error typing | 5 | 3 | Public foundation failures map to `BeautyError`; broader render/detection/resource failures need later coverage. |
 | Degradation | 5 | 4 | No face, partial/missing landmark, low-confidence, stale, skipped/reused, mapping failure, and Demo status debounce paths are tested; resource and GPU overload paths remain future work. |
 | Observability | 4 | 2 | Logger levels, metrics, signposts, disabled mode tested. |

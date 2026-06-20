@@ -100,6 +100,7 @@ Rules:
 | Detection failed transiently | Reuse recent landmarks or skip face effects. | Retry once or skip face effects. | Follow detection state machine. |
 | Low-confidence face | Disable strong geometry. | Disable strong geometry. | Return warning if debug result is enabled. |
 | Missing optional LUT | Disable filter and continue. | Disable filter or throw based on API contract. | Prefer visible disabled UI in Demo. |
+| Unknown filter ID | Reject parameters with `resourceNotFound`. | Throw typed resource error. | Do not silently apply a missing filter. |
 | Preset decode failed | Keep current parameters. | Throw typed preset error. | Never apply partial invalid preset silently. |
 | Resource package invalid | Reject resource and clear cache entry. | Throw typed resource error. | See `SECURITY.md`. |
 
@@ -129,13 +130,22 @@ Every degradation path that affects visible output should be visible in debug me
 
 ## 7. Observability Model
 
-Use three layers:
+First-version diagnostics live in `BeautyCore/Diagnostics`; do not create a separate diagnostics package until another product actually shares it. Use three layers:
 
 | Layer | Purpose | Tooling |
 | --- | --- | --- |
 | Logs | Discrete operational events and errors. | Swift `Logger` / OSLog. |
 | Signposts | Timing critical regions while profiling. | `OSSignposter` or os signposts. |
 | Metrics | Frame-level counters and performance summaries. | Internal `BeautyPerformanceMetrics`, optional MetricKit for app-level reports. |
+
+Required local types:
+
+| Type | Purpose |
+| --- | --- |
+| `BeautyLogger` | Single SDK logger facade shared by SDK and Demo. |
+| `BeautyLogEvent` | Redacted event shape with timestamp, level, category, message, optional error code, and string metadata. |
+| `BeautyLogSink` | Pluggable sink protocol for OSLog or file output. |
+| `BeautyErrorContext` | Redacted internal context attached before public error mapping. |
 
 Official references:
 
@@ -149,6 +159,7 @@ Rules:
 - Release default log level is `error`.
 - Debug default can be `warning` or `info`.
 - Per-frame logging is disabled by default.
+- `BeautyConfiguration.logLevel` is the public log-level entry; do not define another top-level configuration type just for logging.
 - Signposts are allowed for profiling but must be easy to disable.
 - Metrics must be sampled, aggregated, or pulled through debug result APIs.
 - No logs or metrics include image bytes, file paths, landmarks, bounding boxes, user IDs, tokens, or raw JSON.
@@ -229,6 +240,7 @@ Rules:
 - Warnings are for visible degradation or repeated recoverable failures.
 - Info logs are for lifecycle and configuration.
 - Debug logs are for development and must still obey `SECURITY.md`.
+- Local file logging is off by default. If an App explicitly enables it, files stay inside the App sandbox, rotate by date, default to 7-day retention and 5 MB per file, and must be redacted before export.
 
 ## 10. Performance Modes
 
@@ -275,6 +287,8 @@ inFlightRenderFrames <= 1 or 2
 latestFrameWins = true
 dropReason = backpressure
 ```
+
+The first public `process(pixelBuffer:) throws -> CVPixelBuffer` API may be synchronous, but realtime callers must run it off the main thread and combine it with in-flight limiting, `AVCaptureVideoDataOutput.alwaysDiscardsLateVideoFrames`, or an equivalent drop/fallback policy.
 
 ## 12. Memory Management
 
@@ -324,6 +338,7 @@ Rules:
 - Required pass failure returns typed render error.
 - Command buffer completion updates metrics and releases transient resources.
 - RenderGraph skips zero-strength or unsupported passes.
+- Realtime paths must not use `waitUntilCompleted()` as the steady-state synchronization strategy; reserve blocking waits for minimal closed-loop demos, screenshots, exports, or other documented non-realtime reads.
 
 Required pass contract:
 
@@ -371,6 +386,8 @@ Rules:
 - LUT decode failures are typed as `lutDecodeFailed` or resource errors.
 - Preset decode failures keep current parameters unchanged.
 - Resource version incompatibility returns a typed error.
+- `BeautySDKResources.validate(parameters:)` normalizes numeric values and rejects unknown filter IDs before render work starts.
+- Phase 5 metadata-only filters do not create LUT decode work; real filter assets must add missing/decode degradation tests when introduced.
 
 Cache reset:
 
@@ -486,4 +503,3 @@ Before a release-like build:
 | 2026-05-25 | First-version target is 720p stable 30 fps, with 1080p for mid/high-end devices. | Matches existing planning notes and avoids overpromising 4K realtime. |
 | 2026-05-25 | Detection cadence can be lower than render cadence. | Face landmarks do not need full frame-rate detection for stable preview. |
 | 2026-05-25 | Metrics are internal/debug-first before becoming a public API. | Avoid locking an immature observability contract too early. |
-
