@@ -38,6 +38,27 @@ final class BeautyResourceCatalogTests: XCTestCase {
         XCTAssertEqual(preset.parameters.contrast, 0.03, accuracy: 0.0001)
     }
 
+    func testEFFECT03ManifestReferencesRemainMetadataOnly() throws {
+        let catalog = try BeautyResourceCatalog.bundled()
+        let forbiddenTokens = ["/", "..", ".cube", "thumbnail", "swatch"]
+
+        XCTAssertEqual(catalog.manifest.schemaVersion, 1)
+        XCTAssertEqual(catalog.manifest.filters.count, 2)
+
+        for filter in catalog.manifest.filters {
+            XCTAssertTrue(BeautyResourceManifest.isValidResourceIdentifier(filter.id))
+            XCTAssertFalse(filter.displayName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            XCTAssertTrue(forbiddenTokens.allSatisfy { !filter.id.contains($0) })
+        }
+
+        for preset in catalog.manifest.presets {
+            XCTAssertTrue(BeautyResourceManifest.isValidResourceIdentifier(preset.id))
+            XCTAssertTrue(BeautyResourceManifest.isValidResourceIdentifier(preset.resourceName))
+            XCTAssertTrue(forbiddenTokens.allSatisfy { !preset.id.contains($0) })
+            XCTAssertTrue(forbiddenTokens.allSatisfy { !preset.resourceName.contains($0) })
+        }
+    }
+
     func testEFFECT03MissingPresetAndFilterReferencesFailWithTypedErrors() throws {
         let catalog = try BeautyResourceCatalog.bundled()
 
@@ -66,9 +87,15 @@ final class BeautyResourceCatalogTests: XCTestCase {
     }
 
     func testEFFECT03TraversalLikeResourceIdsAreRejected() throws {
+        let catalog = try BeautyResourceCatalog.bundled()
+
         XCTAssertFalse(BeautyResourceManifest.isValidResourceIdentifier("../natural"))
         XCTAssertFalse(BeautyResourceManifest.isValidResourceIdentifier("Presets/natural"))
         XCTAssertFalse(BeautyResourceManifest.isValidResourceIdentifier("/private/var/natural"))
         XCTAssertTrue(BeautyResourceManifest.isValidResourceIdentifier("id-photo-natural"))
+
+        XCTAssertThrowsError(try catalog.preset(id: "/private/var/natural")) { error in
+            XCTAssertEqual(error as? BeautyError, .resourceNotFound("invalid_preset"))
+        }
     }
 }

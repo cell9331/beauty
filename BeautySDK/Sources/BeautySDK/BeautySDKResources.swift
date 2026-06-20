@@ -19,6 +19,9 @@ public enum BeautySDKResources {
         guard let filterId = normalized.filterId else {
             return normalized
         }
+        guard BeautyResourceManifest.isValidResourceIdentifier(filterId) else {
+            throw BeautyError.resourceNotFound("invalid_filter")
+        }
         guard try catalog().availableFilterIds.contains(filterId) else {
             throw BeautyError.resourceNotFound(filterId)
         }

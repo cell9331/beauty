@@ -52,8 +52,13 @@ public struct BeautyPreset: Codable, Equatable, Sendable {
         guard !displayName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             throw BeautyError.presetDecodeFailed("invalid_name")
         }
-        if let filterId = parameters.filterId, !availableFilterIds.contains(filterId) {
-            throw BeautyError.resourceNotFound(filterId)
+        if let filterId = parameters.filterId {
+            guard Self.isValidIdentifier(filterId), !filterId.contains("..") else {
+                throw BeautyError.resourceNotFound("invalid_filter")
+            }
+            guard availableFilterIds.contains(filterId) else {
+                throw BeautyError.resourceNotFound(filterId)
+            }
         }
         return self
     }

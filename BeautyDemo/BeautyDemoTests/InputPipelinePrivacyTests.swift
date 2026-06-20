@@ -68,6 +68,33 @@ final class InputPipelinePrivacyTests: XCTestCase {
         XCTAssertTrue(matches.isEmpty, matches.joined(separator: "\n"))
     }
 
+    func testEFFECT03DemoResourceControlsAvoidRawResourceImplementationDetails() throws {
+        let files = try swiftFiles(in: [
+            "BeautyDemo/BeautyDemo/Panel",
+            "BeautyDemo/BeautyDemo/State"
+        ])
+        let forbiddenTokens = [
+            "/private" + "/var",
+            "NSError",
+            "Bundle.",
+            "rawPresetJson",
+            "../",
+            ".cube",
+            "LUTPass",
+            "ColorPass",
+            "thumbnail",
+            "swatch"
+        ]
+        let forbiddenImports = [
+            #"(?m)^\s*import Beauty(Core|Render|Detection|Effects|Resources)\b"#
+        ]
+
+        let tokenMatches = try matches(for: forbiddenTokens, in: files)
+        let importMatches = try matches(forRegexPatterns: forbiddenImports, in: files)
+
+        XCTAssertTrue((tokenMatches + importMatches).isEmpty, (tokenMatches + importMatches).joined(separator: "\n"))
+    }
+
     func testD13FriendlyInputCopyIsPresentAndRawCopyIsAbsent() throws {
         let editorText = try readTextFile("BeautyDemo/BeautyDemo/Editor/EditorShellView.swift")
         let imageModelsText = try readTextFile("BeautyDemo/BeautyDemo/Editor/ImageInputModels.swift")

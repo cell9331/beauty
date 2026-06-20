@@ -79,5 +79,11 @@ final class BeautySDKFacadeTests: XCTestCase {
         ) { error in
             XCTAssertEqual(error as? BeautyError, .resourceNotFound("missing_filter"))
         }
+
+        XCTAssertThrowsError(
+            try BeautySDKResources.validate(parameters: BeautyParameters(filterId: "/private/var/filter"))
+        ) { error in
+            XCTAssertEqual(error as? BeautyError, .resourceNotFound("invalid_filter"))
+        }
     }
 }

@@ -45,6 +45,26 @@ final class BeautyPresetTests: XCTestCase {
         }
     }
 
+    func testSDK05InvalidFilterResourceReturnsRedactedTypedError() {
+        let data = Data(
+            #"""
+            {
+              "id": "natural_01",
+              "version": 1,
+              "displayName": "Natural",
+              "parameters": {
+                "filterId": "/private/var/filter",
+                "filterIntensity": 0.5
+              }
+            }
+            """#.utf8
+        )
+
+        XCTAssertThrowsError(try BeautyPreset.decode(from: data)) { error in
+            XCTAssertEqual(error as? BeautyError, .resourceNotFound("invalid_filter"))
+        }
+    }
+
     func testEFFECT08SchemaVersionOnePresetDecodes() throws {
         let data = Data(
             #"""

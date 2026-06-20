@@ -37,8 +37,10 @@ public struct BeautyResourceCatalog: Equatable, Sendable {
     }
 
     public func preset(id: String) throws -> BeautyPreset {
-        guard BeautyResourceManifest.isValidResourceIdentifier(id),
-              let reference = manifest.presets.first(where: { $0.id == id }) else {
+        guard BeautyResourceManifest.isValidResourceIdentifier(id) else {
+            throw BeautyError.resourceNotFound("invalid_preset")
+        }
+        guard let reference = manifest.presets.first(where: { $0.id == id }) else {
             throw BeautyError.resourceNotFound(id)
         }
         return try preset(reference: reference)
