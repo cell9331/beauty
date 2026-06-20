@@ -30,6 +30,24 @@ No active plan.
 
 ## 4. Completed
 
+### C-2026-06-20-gsd-discuss-phase-6-core-beauty-effects
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-20 |
+| Scope | Ran `$gsd-discuss-phase 6` in text mode and captured Phase 6 implementation decisions for visible MVP output, naturalness caps, missing-landmark degradation, preset behavior, Demo feedback, canonical refs, and code context. |
+| Requirements | EFFECT-01, EFFECT-04, EFFECT-05, EFFECT-06, EFFECT-07, EFFECT-09 |
+| Files | `.planning/phases/06-core-beauty-effects/06-CONTEXT.md`, `.planning/phases/06-core-beauty-effects/06-DISCUSSION-LOG.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `wc -l` reported 151 lines for `06-CONTEXT.md` and 227 lines for `06-DISCUSSION-LOG.md`; heading scan found the expected context/log structure; placeholder scan for `[X]`, `[Name]`, `[date]`, `{PHASE`, `TODO`, `TBD`, and `FIXME` returned no matches; checkpoint removal check printed `checkpoint_removed=yes`; `init.phase-op 6` returned `has_context: true` and `context_path: .planning/phases/06-core-beauty-effects/06-CONTEXT.md`; `.planning/STATE.md` records `Stopped at: Phase 6 context gathered` and the Phase 6 context resume file; `git diff --check -- .planning/phases/06-core-beauty-effects .planning/STATE.md` exited 0. |
+| Build | Not run; this was a GSD discussion/context documentation workflow with no Swift or Xcode source changes. |
+
+Outcome:
+
+- Phase 6 is ready for planning with locked decisions for fixture-visible but conservative output across skin/color, face shape, eyes, nose, mouth, lip color, filters, and presets.
+- Safety caps start from `docs/06_beauty_parameters_spec.md`, combined geometry strength must be weakened when controls compound, and cap events should be visible through result metadata rather than normal UI copy.
+- No-face and missing-landmark behavior is targeted and conservative: non-face effects may continue, affected face-dependent domains skip or weaken, and existing Demo detection status/debug surfaces remain the UI path.
+- Existing controls and categories stay unchanged; all five built-in presets should become conservative visible presets; focused Demo smoke must cover Beauty, Face Shape, Eyes, Nose, Mouth, Filters, and Presets panel paths.
+
 ### C-2026-06-19-gsd-execute-phase-5-filters-presets-resource-flow
 
 | Field | Value |
