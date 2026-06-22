@@ -108,11 +108,35 @@ extension FaceGeometry {
             SIMD2<Float>(0.61, 0.72),
             SIMD2<Float>(0.66, 0.55),
             SIMD2<Float>(0.69, 0.38)
+        ],
+        leftEye: [
+            SIMD2<Float>(0.39, 0.39),
+            SIMD2<Float>(0.43, 0.37),
+            SIMD2<Float>(0.46, 0.39)
+        ],
+        rightEye: [
+            SIMD2<Float>(0.54, 0.39),
+            SIMD2<Float>(0.57, 0.37),
+            SIMD2<Float>(0.61, 0.39)
+        ],
+        nose: [
+            SIMD2<Float>(0.48, 0.45),
+            SIMD2<Float>(0.50, 0.52),
+            SIMD2<Float>(0.46, 0.58),
+            SIMD2<Float>(0.54, 0.58)
         ]
     )
 
     static let missingContour = FaceGeometry(
         bounds: FaceBounds(x: 0.30, y: 0.20, width: 0.40, height: 0.60),
         faceContour: []
+    )
+
+    static let missingLeftEye = FaceGeometry(
+        bounds: fixture.bounds,
+        faceContour: fixture.faceContour,
+        leftEye: [],
+        rightEye: fixture.rightEye,
+        nose: fixture.nose
     )
 }
