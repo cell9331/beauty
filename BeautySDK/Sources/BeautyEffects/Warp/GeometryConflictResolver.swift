@@ -34,6 +34,9 @@ struct GeometryConflictResolver: Sendable {
         weakened.noseWingSlim *= scale
         weakened.noseTipSize *= scale
         weakened.noseBridge *= scale
+        weakened.mouthSize *= scale
+        weakened.mouthWidth *= scale
+        weakened.smile *= scale
 
         return GeometryConflictResolution(
             strengths: weakened,
@@ -63,7 +66,10 @@ struct GeometryConflictResolver: Sendable {
             strengths.noseSlim +
             strengths.noseWingSlim +
             abs(strengths.noseTipSize) +
-            strengths.noseBridge
+            strengths.noseBridge +
+            abs(strengths.mouthSize) +
+            abs(strengths.mouthWidth) +
+            strengths.smile
     }
 
     private func nonZeroFaceShapeFieldCount(_ strengths: BeautyEffectiveStrengths) -> Int {
@@ -80,7 +86,10 @@ struct GeometryConflictResolver: Sendable {
             strengths.noseSlim,
             strengths.noseWingSlim,
             abs(strengths.noseTipSize),
-            strengths.noseBridge
+            strengths.noseBridge,
+            abs(strengths.mouthSize),
+            abs(strengths.mouthWidth),
+            strengths.smile
         ].filter { $0 > Float.ulpOfOne }.count
     }
 }

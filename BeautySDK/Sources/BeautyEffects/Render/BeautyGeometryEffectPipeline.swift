@@ -1,6 +1,6 @@
 enum BeautyGeometryEffectPipeline {
     static func controlPoints(for plan: BeautyEffectPlan, face: FaceGeometry) -> [WarpControlPoint] {
-        guard !plan.activeDomains.isDisjoint(with: [.faceShape, .eyes, .nose]) else {
+        guard !plan.activeDomains.isDisjoint(with: [.faceShape, .eyes, .nose, .mouth]) else {
             return []
         }
 
@@ -11,7 +11,8 @@ enum BeautyGeometryEffectPipeline {
         FaceShapeWarpProvider().makeControlPoints(face: face, strengths: strengths).points +
             ChinWarpProvider().makeControlPoints(face: face, strengths: strengths).points +
             EyeWarpProvider().makeControlPoints(face: face, strengths: strengths).points +
-            NoseWarpProvider().makeControlPoints(face: face, strengths: strengths).points
+            NoseWarpProvider().makeControlPoints(face: face, strengths: strengths).points +
+            MouthWarpProvider().makeControlPoints(face: face, strengths: strengths).points
     }
 
     /// MVP fixture proxy until the production warp pass consumes control points directly.

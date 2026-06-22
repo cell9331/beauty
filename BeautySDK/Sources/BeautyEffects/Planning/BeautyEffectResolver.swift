@@ -66,7 +66,10 @@ public enum BeautyEffectResolver {
             strengths.noseSlim,
             strengths.noseWingSlim,
             strengths.noseTipSize,
-            strengths.noseBridge
+            strengths.noseBridge,
+            strengths.mouthSize,
+            strengths.mouthWidth,
+            strengths.smile
         )
 
         func appendStaleGeometryWarningIfNeeded() {
@@ -185,7 +188,30 @@ public enum BeautyEffectResolver {
             }
         }
         if anyNonZero(strengths.mouthSize, strengths.mouthWidth, strengths.smile) {
-            activeDomains.insert(.mouth)
+            if staleGeometry {
+                skippedDomains.insert(.mouth)
+                metrics["beauty.effects.skippedMouthDomains"] = 1
+                appendStaleGeometryWarningIfNeeded()
+            } else if let faceGeometry {
+                let conflict = GeometryConflictResolver().resolve(strengths: strengths)
+                strengths = conflict.strengths
+                extraWarnings.append(contentsOf: conflict.warnings)
+                metrics.merge(conflict.metrics) { _, new in new }
+
+                let result = MouthWarpProvider().makeControlPoints(face: faceGeometry, strengths: strengths)
+                if result.points.isEmpty {
+                    skippedDomains.insert(.mouth)
+                    metrics["beauty.effects.skippedMouthDomains"] = 1
+                    extraWarnings.append(Self.mouthSkippedWarning)
+                } else {
+                    activeDomains.insert(.mouth)
+                    geometryPointCount += result.points.count
+                }
+            } else {
+                skippedDomains.insert(.mouth)
+                metrics["beauty.effects.skippedMouthDomains"] = 1
+                extraWarnings.append(Self.mouthSkippedWarning)
+            }
         }
         if strengths.lipColor > 0 {
             activeDomains.insert(.lipColor)
@@ -248,6 +274,9 @@ public enum BeautyEffectResolver {
         strengths.noseWingSlim *= scale
         strengths.noseTipSize *= scale
         strengths.noseBridge *= scale
+        strengths.mouthSize *= scale
+        strengths.mouthWidth *= scale
+        strengths.smile *= scale
     }
 
     private static var faceShapeSkippedWarning: BeautyValidationWarning {
@@ -268,6 +297,13 @@ public enum BeautyEffectResolver {
         BeautyValidationWarning(
             code: "nose_landmarks_missing",
             message: "Nose geometry was skipped because required nose inputs were unavailable."
+        )
+    }
+
+    private static var mouthSkippedWarning: BeautyValidationWarning {
+        BeautyValidationWarning(
+            code: "mouth_landmarks_missing",
+            message: "Mouth geometry was skipped because required mouth inputs were unavailable."
         )
     }
 
