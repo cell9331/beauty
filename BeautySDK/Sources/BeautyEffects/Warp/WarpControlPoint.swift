@@ -21,25 +21,34 @@ struct FaceBounds: Equatable, Sendable {
     var center: SIMD2<Float> { SIMD2<Float>(midX, midY) }
 }
 
+enum LandmarkGeometryFreshness: Equatable, Sendable {
+    case fresh
+    case reused
+    case stale
+}
+
 struct FaceGeometry: Equatable, Sendable {
     let bounds: FaceBounds
     let faceContour: [SIMD2<Float>]
     let leftEye: [SIMD2<Float>]
     let rightEye: [SIMD2<Float>]
     let nose: [SIMD2<Float>]
+    let freshness: LandmarkGeometryFreshness
 
     init(
         bounds: FaceBounds,
         faceContour: [SIMD2<Float>],
         leftEye: [SIMD2<Float>] = [],
         rightEye: [SIMD2<Float>] = [],
-        nose: [SIMD2<Float>] = []
+        nose: [SIMD2<Float>] = [],
+        freshness: LandmarkGeometryFreshness = .fresh
     ) {
         self.bounds = bounds
         self.faceContour = faceContour
         self.leftEye = leftEye
         self.rightEye = rightEye
         self.nose = nose
+        self.freshness = freshness
     }
 
     var center: SIMD2<Float> {

@@ -50,6 +50,39 @@ public enum BeautyEffectResolver {
         strengths.smile = capUnit(normalized.smile, cap: BeautySafetyCaps.smile, cappedCount: &cappedCount)
         strengths.lipColor = capUnit(normalized.lipColor, cap: BeautySafetyCaps.lipColor, cappedCount: &cappedCount)
 
+        var extraWarnings: [BeautyValidationWarning] = []
+        var appendedStaleGeometryWarning = false
+        let staleGeometry = faceGeometry?.freshness == .stale
+        let hasGeometryValues = anyNonZero(
+            strengths.faceSlim,
+            strengths.faceSmall,
+            strengths.faceVShape,
+            strengths.jawSlim,
+            strengths.chinLength,
+            strengths.eyeSize,
+            strengths.eyeDistance,
+            strengths.eyeYPosition,
+            strengths.eyeTailLift,
+            strengths.noseSlim,
+            strengths.noseWingSlim,
+            strengths.noseTipSize,
+            strengths.noseBridge
+        )
+
+        func appendStaleGeometryWarningIfNeeded() {
+            guard !appendedStaleGeometryWarning else {
+                return
+            }
+            appendedStaleGeometryWarning = true
+            extraWarnings.append(Self.staleGeometryWarning)
+        }
+
+        if faceGeometry?.freshness == .reused, hasGeometryValues {
+            Self.scaleGeometryStrengths(&strengths, by: 0.5)
+            metrics["beauty.effects.reusedGeometryScale"] = 0.5
+            extraWarnings.append(Self.reusedGeometryWarning)
+        }
+
         if anyNonZero(strengths.skinSmoothing, strengths.skinWhitening, strengths.skinRosy, strengths.skinSharpen) {
             activeDomains.insert(.skin)
         }
@@ -81,10 +114,13 @@ public enum BeautyEffectResolver {
             strengths.jawSlim,
             strengths.chinLength
         )
-        var extraWarnings: [BeautyValidationWarning] = []
 
         if hasFaceShapeValues {
-            if let faceGeometry {
+            if staleGeometry {
+                skippedDomains.insert(.faceShape)
+                metrics["beauty.effects.skippedFaceDomains"] = 1
+                appendStaleGeometryWarningIfNeeded()
+            } else if let faceGeometry {
                 let conflict = GeometryConflictResolver().resolve(strengths: strengths)
                 strengths = conflict.strengths
                 extraWarnings.append(contentsOf: conflict.warnings)
@@ -107,7 +143,11 @@ public enum BeautyEffectResolver {
             }
         }
         if anyNonZero(strengths.eyeSize, strengths.eyeDistance, strengths.eyeYPosition, strengths.eyeTailLift) {
-            if let faceGeometry {
+            if staleGeometry {
+                skippedDomains.insert(.eyes)
+                metrics["beauty.effects.skippedEyeDomains"] = 1
+                appendStaleGeometryWarningIfNeeded()
+            } else if let faceGeometry {
                 let result = EyeWarpProvider().makeControlPoints(face: faceGeometry, strengths: strengths)
                 if result.points.isEmpty {
                     skippedDomains.insert(.eyes)
@@ -124,7 +164,11 @@ public enum BeautyEffectResolver {
             }
         }
         if anyNonZero(strengths.noseSlim, strengths.noseWingSlim, strengths.noseTipSize, strengths.noseBridge) {
-            if let faceGeometry {
+            if staleGeometry {
+                skippedDomains.insert(.nose)
+                metrics["beauty.effects.skippedNoseDomains"] = 1
+                appendStaleGeometryWarningIfNeeded()
+            } else if let faceGeometry {
                 let result = NoseWarpProvider().makeControlPoints(face: faceGeometry, strengths: strengths)
                 if result.points.isEmpty {
                     skippedDomains.insert(.nose)
@@ -190,6 +234,22 @@ public enum BeautyEffectResolver {
         values.contains { abs($0) > Float.ulpOfOne }
     }
 
+    private static func scaleGeometryStrengths(_ strengths: inout BeautyEffectiveStrengths, by scale: Float) {
+        strengths.faceSlim *= scale
+        strengths.faceSmall *= scale
+        strengths.faceVShape *= scale
+        strengths.jawSlim *= scale
+        strengths.chinLength *= scale
+        strengths.eyeSize *= scale
+        strengths.eyeDistance *= scale
+        strengths.eyeYPosition *= scale
+        strengths.eyeTailLift *= scale
+        strengths.noseSlim *= scale
+        strengths.noseWingSlim *= scale
+        strengths.noseTipSize *= scale
+        strengths.noseBridge *= scale
+    }
+
     private static var faceShapeSkippedWarning: BeautyValidationWarning {
         BeautyValidationWarning(
             code: "face_effects_skipped_no_face",
@@ -208,6 +268,20 @@ public enum BeautyEffectResolver {
         BeautyValidationWarning(
             code: "nose_landmarks_missing",
             message: "Nose geometry was skipped because required nose inputs were unavailable."
+        )
+    }
+
+    private static var reusedGeometryWarning: BeautyValidationWarning {
+        BeautyValidationWarning(
+            code: "geometry_stale_reduced",
+            message: "Reused face geometry reduced effective geometry strength."
+        )
+    }
+
+    private static var staleGeometryWarning: BeautyValidationWarning {
+        BeautyValidationWarning(
+            code: "geometry_stale_skipped",
+            message: "Stale face geometry skipped strong geometry output."
         )
     }
 }
