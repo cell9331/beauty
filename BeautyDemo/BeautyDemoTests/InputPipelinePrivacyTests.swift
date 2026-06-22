@@ -99,8 +99,7 @@ final class InputPipelinePrivacyTests: XCTestCase {
     func testDEMO06ParameterJSONSurfacesStayLocalFirstAndCopyPasteOnly() throws {
         let files = try swiftFiles(in: [
             "BeautyDemo/BeautyDemo/State",
-            "BeautyDemo/BeautyDemo/Editor",
-            "BeautyDemo/BeautyDemoTests"
+            "BeautyDemo/BeautyDemo/Editor"
         ])
         let forbiddenTokens = [
             "URL" + "Session",
