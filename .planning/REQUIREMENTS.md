@@ -37,7 +37,7 @@ Requirements for the initial SDK milestone. Each requirement must map to exactly
 - [x] **EFFECT-04**: User can adjust face slim, small face, V shape, jaw/chin controls through SDK-backed parameters.
 - [x] **EFFECT-05**: User can adjust eye size, eye distance, eye vertical position, and eye tail lift through SDK-backed parameters.
 - [x] **EFFECT-06**: User can adjust nose slim, nose wing, nose tip, and nose bridge controls through SDK-backed parameters.
-- [ ] **EFFECT-07**: User can adjust mouth size, mouth width, smile, and lip color controls through SDK-backed parameters.
+- [x] **EFFECT-07**: User can adjust mouth size, mouth width, smile, and lip color controls through SDK-backed parameters.
 - [x] **EFFECT-08**: User can apply at least five built-in presets: Natural, Clear, Refined, Male Natural, and ID Photo Natural.
 - [ ] **EFFECT-09**: Default parameters are no-op, natural presets are conservative, high-intensity values are safety-capped, and face-dependent effects safely degrade when face or landmarks are missing.
 
@@ -111,7 +111,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EFFECT-04 | Phase 6 | Complete |
 | EFFECT-05 | Phase 6 | Complete |
 | EFFECT-06 | Phase 6 | Complete |
-| EFFECT-07 | Phase 6 | Pending |
+| EFFECT-07 | Phase 6 | Complete |
 | EFFECT-08 | Phase 5 | Complete |
 | EFFECT-09 | Phase 6 | Pending |
 | DEMO-01 | Phase 3 | Complete |
@@ -131,4 +131,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-06-10*
-*Last updated: 2026-06-22 after Phase 6 Plan 06-03 eye and nose provider verification*
+*Last updated: 2026-06-22 after Phase 6 Plan 06-04 mouth and lip provider verification*

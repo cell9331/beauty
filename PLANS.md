@@ -35,7 +35,7 @@
 | Started | 2026-06-22 |
 | Scope | Execute GSD Phase 6 core beauty effects plans 06-01 through 06-05 in wave order. |
 | Source Request | `$gsd-execute-phase 6` |
-| Current Step | Wave 4 / Plan 06-04: add mouth and lip MVP controls with safe missing-landmark behavior. |
+| Current Step | Wave 5 / Plan 06-05: add combined-effect safety, no-face degradation, Demo status/smoke tests, docs, and final verification. |
 | Verification Policy | Run focused SwiftPM tests after each plan, then full SDK and Demo simulator tests before completion; record any environment failures exactly. |
 
 Checklist:
@@ -46,8 +46,8 @@ Checklist:
 | Execute 06-01 | `completed` | Task commits `8e538e7` and `df0876a`; `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 79 XCTest cases; `06-01-SUMMARY.md` records EFFECT-01 completion plus partial EFFECT-09 foundation evidence. |
 | Execute 06-02 | `completed` | Task commits `5086225`, `e4eae32`, `1a41d75`, `f4ba264`, and `ddb4fc4`; `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 89 XCTest cases; `06-02-SUMMARY.md` records EFFECT-04 completion plus partial EFFECT-09 face-shape evidence. |
 | Execute 06-03 | `completed` | Task commits `370ebee`, `0ae51a3`, `fbdd43b`, `669a085`, `c6a0484`, and `f0f3e95`; `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 103 XCTest cases; `06-03-SUMMARY.md` records EFFECT-05 and EFFECT-06 completion plus partial EFFECT-09 eye/nose degradation evidence. |
-| Execute 06-04 | `active` | Ready to execute mouth and lip MVP plan after 06-03 metadata closeout. |
-| Execute 06-05 | `planned` | Pending 06-04 summary. |
+| Execute 06-04 | `completed` | Task commits `e101273`, `0f4eed3`, `9f04d88`, `76c85ca`, `08ec581`, `a0553b0`, and `b208586`; `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 115 XCTest cases; `06-04-SUMMARY.md` records EFFECT-07 completion plus partial EFFECT-09 mouth/lip degradation evidence. |
+| Execute 06-05 | `active` | Ready to execute final combined safety, no-face degradation, Demo status/smoke, docs, and final verification plan after 06-04 metadata closeout. |
 | Final verification and record | `planned` | Pending all summaries. |
 
 ## 4. Completed
