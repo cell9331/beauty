@@ -5,6 +5,10 @@ import BeautyCore
 
 public enum BeautyColorEffectPipeline {
     public static func apply(to pixelBuffer: CVPixelBuffer, plan: BeautyEffectPlan) throws -> CVPixelBuffer {
+        try apply(to: pixelBuffer, plan: plan, face: nil)
+    }
+
+    static func apply(to pixelBuffer: CVPixelBuffer, plan: BeautyEffectPlan, face: FaceGeometry?) throws -> CVPixelBuffer {
         let width = CVPixelBufferGetWidth(pixelBuffer)
         let height = CVPixelBufferGetHeight(pixelBuffer)
         let pixelFormat = CVPixelBufferGetPixelFormatType(pixelBuffer)
@@ -66,9 +70,21 @@ public enum BeautyColorEffectPipeline {
                     alpha: sourceRow[offset + 3],
                     plan: plan
                 )
-                outputRow[offset] = pixel.blue
-                outputRow[offset + 1] = pixel.green
-                outputRow[offset + 2] = pixel.red
+                let normalizedPoint = SIMD2<Float>(
+                    (Float(column) + 0.5) / Float(width),
+                    (Float(row) + 0.5) / Float(height)
+                )
+                let lipPixel = lipTransform(
+                    blue: pixel.blue,
+                    green: pixel.green,
+                    red: pixel.red,
+                    plan: plan,
+                    face: face,
+                    normalizedPoint: normalizedPoint
+                )
+                outputRow[offset] = lipPixel.blue
+                outputRow[offset + 1] = lipPixel.green
+                outputRow[offset + 2] = lipPixel.red
                 outputRow[offset + 3] = pixel.alpha
             }
         }
@@ -77,6 +93,10 @@ public enum BeautyColorEffectPipeline {
     }
 
     public static func apply(to image: CIImage, plan: BeautyEffectPlan) -> CIImage {
+        apply(to: image, plan: plan, face: nil)
+    }
+
+    static func apply(to image: CIImage, plan: BeautyEffectPlan, face: FaceGeometry?) -> CIImage {
         guard plan.hasVisibleColorOutput else {
             return image.cropped(to: image.extent)
         }
@@ -115,6 +135,8 @@ public enum BeautyColorEffectPipeline {
                 "inputBiasVector": CIVector(x: redBias, y: greenBias, z: blueBias, w: 0)
             ]
         )
+
+        output = applyLipColor(to: output, plan: plan, face: face)
 
         return output.cropped(to: image.extent)
     }
@@ -183,6 +205,89 @@ public enum BeautyColorEffectPipeline {
             red: toByte(r),
             alpha: alpha
         )
+    }
+
+    private static func lipTransform(
+        blue: UInt8,
+        green: UInt8,
+        red: UInt8,
+        plan: BeautyEffectPlan,
+        face: FaceGeometry?,
+        normalizedPoint: SIMD2<Float>
+    ) -> (blue: UInt8, green: UInt8, red: UInt8) {
+        guard plan.activeDomains.contains(.lipColor),
+              plan.effectiveStrengths.lipColor > 0,
+              let face,
+              lipMaskValue(at: normalizedPoint, face: face) > 0
+        else {
+            return (blue, green, red)
+        }
+
+        let mask = lipMaskValue(at: normalizedPoint, face: face)
+        let blend = min(plan.effectiveStrengths.lipColor, BeautySafetyCaps.lipColor) * mask
+        var r = Float(red) / 255
+        var g = Float(green) / 255
+        var b = Float(blue) / 255
+        let luminance = 0.299 * r + 0.587 * g + 0.114 * b
+        let enhancedR = min(1, luminance * 0.45 + r * 0.55 + 0.20)
+        let enhancedG = max(0, g * 0.94)
+        let enhancedB = max(0, b * 0.90)
+
+        r = r * (1 - blend) + enhancedR * blend
+        g = g * (1 - blend) + enhancedG * blend
+        b = b * (1 - blend) + enhancedB * blend
+
+        return (blue: toByte(b), green: toByte(g), red: toByte(r))
+    }
+
+    private static func applyLipColor(to image: CIImage, plan: BeautyEffectPlan, face: FaceGeometry?) -> CIImage {
+        guard plan.activeDomains.contains(.lipColor),
+              plan.effectiveStrengths.lipColor > 0,
+              let face,
+              let center = LandmarkGeometryHelper.center(of: face.outerLips)
+        else {
+            return image
+        }
+
+        let extent = image.extent
+        let radiusX = CGFloat(max(face.outerLips.map { abs($0.x - center.x) }.max() ?? 0, 0.03)) * extent.width
+        let radiusY = CGFloat(max(face.outerLips.map { abs($0.y - center.y) }.max() ?? 0, 0.02)) * extent.height
+        let centerX = extent.minX + CGFloat(center.x) * extent.width
+        let centerY = extent.minY + CGFloat(1 - center.y) * extent.height
+        let rect = CGRect(
+            x: centerX - radiusX,
+            y: centerY - radiusY,
+            width: radiusX * 2,
+            height: radiusY * 2
+        ).insetBy(dx: -1, dy: -1)
+
+        let strength = CGFloat(min(plan.effectiveStrengths.lipColor, BeautySafetyCaps.lipColor))
+        let tinted = image.applyingFilter(
+            "CIColorMatrix",
+            parameters: [
+                "inputRVector": CIVector(x: 1, y: 0, z: 0, w: 0),
+                "inputGVector": CIVector(x: 0, y: 0.94, z: 0, w: 0),
+                "inputBVector": CIVector(x: 0, y: 0, z: 0.90, w: 0),
+                "inputAVector": CIVector(x: 0, y: 0, z: 0, w: 1),
+                "inputBiasVector": CIVector(x: strength * 0.18, y: 0, z: 0, w: 0)
+            ]
+        )
+        return tinted.cropped(to: rect).composited(over: image).cropped(to: extent)
+    }
+
+    private static func lipMaskValue(at point: SIMD2<Float>, face: FaceGeometry) -> Float {
+        guard let center = LandmarkGeometryHelper.center(of: face.outerLips) else {
+            return 0
+        }
+        let radiusX = max(face.outerLips.map { abs($0.x - center.x) }.max() ?? 0, 0.03)
+        let radiusY = max(face.outerLips.map { abs($0.y - center.y) }.max() ?? 0, 0.02)
+        let dx = (point.x - center.x) / radiusX
+        let dy = (point.y - center.y) / radiusY
+        let distance = dx * dx + dy * dy
+        guard distance <= 1 else {
+            return 0
+        }
+        return max(0, 1 - distance)
     }
 
     private static func filterContribution(for plan: BeautyEffectPlan) -> FilterContribution {

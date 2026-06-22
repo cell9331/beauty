@@ -214,7 +214,13 @@ public enum BeautyEffectResolver {
             }
         }
         if strengths.lipColor > 0 {
-            activeDomains.insert(.lipColor)
+            if let faceGeometry, !faceGeometry.outerLips.isEmpty {
+                activeDomains.insert(.lipColor)
+            } else {
+                skippedDomains.insert(.lipColor)
+                metrics["beauty.effects.skippedLipDomains"] = 1
+                extraWarnings.append(Self.lipSkippedWarning)
+            }
         }
 
         metrics["beauty.effects.activeCount"] = Double(activeDomains.count)
@@ -304,6 +310,13 @@ public enum BeautyEffectResolver {
         BeautyValidationWarning(
             code: "mouth_landmarks_missing",
             message: "Mouth geometry was skipped because required mouth inputs were unavailable."
+        )
+    }
+
+    private static var lipSkippedWarning: BeautyValidationWarning {
+        BeautyValidationWarning(
+            code: "lip_landmarks_missing",
+            message: "Lip color was skipped because required mouth inputs were unavailable."
         )
     }
 
