@@ -2,8 +2,13 @@ import BeautyCore
 
 public enum BeautyEffectResolver {
     public static func resolve(parameters: BeautyParameters) -> BeautyEffectPlan {
+        resolve(parameters: parameters, faceGeometry: nil)
+    }
+
+    static func resolve(parameters: BeautyParameters, faceGeometry: FaceGeometry?) -> BeautyEffectPlan {
         let normalized = parameters.normalized()
         var activeDomains: Set<BeautyEffectDomain> = []
+        var skippedDomains: Set<BeautyEffectDomain> = []
         var metrics: [String: Double] = [:]
         var cappedCount = 0
 
@@ -68,8 +73,37 @@ public enum BeautyEffectResolver {
                 metrics["beauty.effects.filter.warmLight"] = 1
             }
         }
-        if anyNonZero(strengths.faceSlim, strengths.faceSmall, strengths.faceVShape, strengths.jawSlim, strengths.chinLength) {
-            activeDomains.insert(.faceShape)
+        let hasFaceShapeValues = anyNonZero(
+            strengths.faceSlim,
+            strengths.faceSmall,
+            strengths.faceVShape,
+            strengths.jawSlim,
+            strengths.chinLength
+        )
+        var extraWarnings: [BeautyValidationWarning] = []
+
+        if hasFaceShapeValues {
+            if let faceGeometry {
+                let conflict = GeometryConflictResolver().resolve(strengths: strengths)
+                strengths = conflict.strengths
+                extraWarnings.append(contentsOf: conflict.warnings)
+                metrics.merge(conflict.metrics) { _, new in new }
+
+                let geometryPointCount = BeautyGeometryEffectPipeline
+                    .controlPoints(for: strengths, face: faceGeometry)
+                    .count
+                if geometryPointCount > 0 {
+                    activeDomains.insert(.faceShape)
+                    metrics["beauty.effects.geometryPointCount"] = Double(geometryPointCount)
+                } else {
+                    skippedDomains.insert(.faceShape)
+                    extraWarnings.append(Self.faceShapeSkippedWarning)
+                }
+            } else {
+                skippedDomains.insert(.faceShape)
+                metrics["beauty.effects.skippedFaceDomains"] = 1
+                extraWarnings.append(Self.faceShapeSkippedWarning)
+            }
         }
         if anyNonZero(strengths.eyeSize, strengths.eyeDistance, strengths.eyeYPosition, strengths.eyeTailLift) {
             activeDomains.insert(.eyes)
@@ -87,15 +121,17 @@ public enum BeautyEffectResolver {
         metrics["beauty.effects.activeCount"] = Double(activeDomains.count)
         metrics["beauty.effects.cappedCount"] = Double(cappedCount)
 
-        let warnings = cappedCount > 0 ? [
+        var warnings = cappedCount > 0 ? [
             BeautyValidationWarning(
                 code: "beauty_strength_capped",
                 message: "Effective beauty strength was capped for natural output."
             )
         ] : []
+        warnings.append(contentsOf: extraWarnings)
 
         return BeautyEffectPlan(
             activeDomains: activeDomains,
+            skippedDomains: skippedDomains,
             warnings: warnings,
             metrics: metrics,
             effectiveStrengths: strengths
@@ -120,5 +156,12 @@ public enum BeautyEffectResolver {
 
     private static func anyNonZero(_ values: Float...) -> Bool {
         values.contains { abs($0) > Float.ulpOfOne }
+    }
+
+    private static var faceShapeSkippedWarning: BeautyValidationWarning {
+        BeautyValidationWarning(
+            code: "face_effects_skipped_no_face",
+            message: "Face-dependent geometry was skipped because no usable face was available."
+        )
     }
 }
