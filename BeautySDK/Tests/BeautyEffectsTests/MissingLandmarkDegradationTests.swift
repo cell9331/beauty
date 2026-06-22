@@ -100,4 +100,51 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertTrue(plan.skippedDomains.contains(.nose))
         XCTAssertTrue(plan.warnings.contains { $0.code == "geometry_stale_skipped" })
     }
+
+    func testMissingMouthSkipsOnlyMouthAndKeepsEyeNoseAndSafeDomainsActive() {
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(
+                brightness: 0.2,
+                eyeSize: 0.2,
+                noseSlim: 0.2,
+                mouthSize: 1,
+                filterId: "soft_clean",
+                filterIntensity: 0.5
+            ),
+            faceGeometry: .missingMouth
+        )
+
+        XCTAssertFalse(plan.activeDomains.contains(.mouth))
+        XCTAssertTrue(plan.activeDomains.contains(.eyes))
+        XCTAssertTrue(plan.activeDomains.contains(.nose))
+        XCTAssertTrue(plan.activeDomains.contains(.color))
+        XCTAssertTrue(plan.activeDomains.contains(.filter))
+        XCTAssertEqual(plan.skippedDomains, [.mouth])
+        XCTAssertTrue(plan.warnings.contains { $0.code == "mouth_landmarks_missing" })
+    }
+
+    func testReusedLandmarksReduceMouthGeometry() {
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(mouthSize: 1, mouthWidth: 1, smile: 1),
+            faceGeometry: .reused
+        )
+
+        XCTAssertTrue(plan.activeDomains.contains(.mouth))
+        XCTAssertLessThan(plan.effectiveStrengths.mouthSize, BeautySafetyCaps.mouthSize)
+        XCTAssertLessThan(plan.effectiveStrengths.mouthWidth, BeautySafetyCaps.mouthWidth)
+        XCTAssertLessThan(plan.effectiveStrengths.smile, BeautySafetyCaps.smile)
+        XCTAssertTrue(plan.warnings.contains { $0.code == "geometry_stale_reduced" })
+    }
+
+    func testStaleLandmarksSkipStrongMouthGeometry() {
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(brightness: 0.2, mouthSize: 1, mouthWidth: 1, smile: 1),
+            faceGeometry: .stale
+        )
+
+        XCTAssertFalse(plan.activeDomains.contains(.mouth))
+        XCTAssertTrue(plan.activeDomains.contains(.color))
+        XCTAssertTrue(plan.skippedDomains.contains(.mouth))
+        XCTAssertTrue(plan.warnings.contains { $0.code == "geometry_stale_skipped" })
+    }
 }

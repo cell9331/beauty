@@ -4,10 +4,23 @@ import BeautyCore
 
 final class GeometryConflictResolverTests: XCTestCase {
     func testCombinedHighFaceShapeStrengthsAreWeakenedBelowIndependentCappedSum() {
-        let independent = strengths(faceSlim: 1, faceSmall: 1, faceVShape: 1, jawSlim: 1, chinLength: 1)
+        let independent = strengths(
+            faceSlim: 1,
+            faceSmall: 1,
+            faceVShape: 1,
+            jawSlim: 1,
+            chinLength: 1,
+            eyeSize: 1,
+            noseSlim: 1,
+            mouthSize: 1,
+            mouthWidth: 1,
+            smile: 1
+        )
         let resolved = GeometryConflictResolver().resolve(strengths: independent)
 
-        XCTAssertLessThan(resolved.strengths.faceShapeTotal, independent.faceShapeTotal)
+        XCTAssertLessThan(resolved.strengths.geometryTotal, independent.geometryTotal)
+        XCTAssertLessThan(resolved.strengths.mouthSize, independent.mouthSize)
+        XCTAssertLessThan(resolved.strengths.smile, independent.smile)
         XCTAssertTrue(resolved.warnings.contains { $0.code == "combined_geometry_weakened" })
     }
 
@@ -74,7 +87,12 @@ final class GeometryConflictResolverTests: XCTestCase {
         faceSmall: Float = 0,
         faceVShape: Float = 0,
         jawSlim: Float = 0,
-        chinLength: Float = 0
+        chinLength: Float = 0,
+        eyeSize: Float = 0,
+        noseSlim: Float = 0,
+        mouthSize: Float = 0,
+        mouthWidth: Float = 0,
+        smile: Float = 0
     ) -> BeautyEffectiveStrengths {
         var strengths = BeautyEffectiveStrengths()
         strengths.faceSlim = min(faceSlim, BeautySafetyCaps.faceSlim)
@@ -82,12 +100,26 @@ final class GeometryConflictResolverTests: XCTestCase {
         strengths.faceVShape = min(faceVShape, BeautySafetyCaps.faceVShape)
         strengths.jawSlim = min(jawSlim, BeautySafetyCaps.jawSlim)
         strengths.chinLength = min(max(chinLength, -BeautySafetyCaps.chinLength), BeautySafetyCaps.chinLength)
+        strengths.eyeSize = min(max(eyeSize, -BeautySafetyCaps.eyeSize), BeautySafetyCaps.eyeSize)
+        strengths.noseSlim = min(noseSlim, BeautySafetyCaps.noseSlim)
+        strengths.mouthSize = min(max(mouthSize, -BeautySafetyCaps.mouthSize), BeautySafetyCaps.mouthSize)
+        strengths.mouthWidth = min(max(mouthWidth, -BeautySafetyCaps.mouthWidth), BeautySafetyCaps.mouthWidth)
+        strengths.smile = min(smile, BeautySafetyCaps.smile)
         return strengths
     }
 }
 
 private extension BeautyEffectiveStrengths {
-    var faceShapeTotal: Float {
-        faceSlim + faceSmall + faceVShape + jawSlim + abs(chinLength)
+    var geometryTotal: Float {
+        faceSlim +
+            faceSmall +
+            faceVShape +
+            jawSlim +
+            abs(chinLength) +
+            abs(eyeSize) +
+            noseSlim +
+            abs(mouthSize) +
+            abs(mouthWidth) +
+            smile
     }
 }
