@@ -13,11 +13,18 @@ struct BeautyParameterStatus: Equatable, Sendable {
 
 }
 
+enum BeautyParameterSource: Equatable, Sendable {
+    case custom
+    case preset(id: String)
+    case imported
+}
+
 @MainActor
 final class BeautyParameterStore: ObservableObject {
     @Published private(set) var displayValues: [BeautyControlID: Double]
     @Published private(set) var selectedFilterId: String?
     @Published private(set) var selectedPresetId: String?
+    @Published private(set) var parameterSource: BeautyParameterSource
     @Published private(set) var status: BeautyParameterStatus
 
     private let descriptors: [BeautyControlDescriptor]
@@ -31,6 +38,7 @@ final class BeautyParameterStore: ObservableObject {
         )
         self.selectedFilterId = nil
         self.selectedPresetId = nil
+        self.parameterSource = .custom
         self.status = .idle
     }
 
@@ -133,12 +141,14 @@ final class BeautyParameterStore: ObservableObject {
 
         displayValues[descriptor.id] = descriptor.displayRange.clampedDisplayValue(value)
         selectedPresetId = nil
+        parameterSource = .custom
         status = .idle
     }
 
     func selectFilter(id: String?) {
         selectedFilterId = id
         selectedPresetId = nil
+        parameterSource = .custom
         if id == nil {
             displayValues[.filterIntensity] = BeautyControlDescriptor.descriptor(id: .filterIntensity).defaultDisplayValue
         }
@@ -148,6 +158,14 @@ final class BeautyParameterStore: ObservableObject {
     func applyPreset(_ preset: BeautyPreset) {
         apply(parameters: preset.parameters)
         selectedPresetId = preset.id
+        parameterSource = .preset(id: preset.id)
+        status = .idle
+    }
+
+    func applyImportedParameters(_ parameters: BeautyParameters) {
+        apply(parameters: parameters)
+        selectedPresetId = nil
+        parameterSource = .imported
         status = .idle
     }
 
@@ -162,6 +180,7 @@ final class BeautyParameterStore: ObservableObject {
 
         displayValues[descriptor.id] = descriptor.defaultDisplayValue
         selectedPresetId = nil
+        parameterSource = .custom
         status = .idle
     }
 
@@ -172,42 +191,53 @@ final class BeautyParameterStore: ObservableObject {
 
         selectedFilterId = nil
         selectedPresetId = nil
+        parameterSource = .custom
         status = .idle
     }
 
     private func apply(parameters: BeautyParameters) {
-        setDisplayValue(Double(parameters.skinSmoothing) * 100, for: .skinSmoothing)
-        setDisplayValue(Double(parameters.skinWhitening) * 100, for: .skinWhitening)
-        setDisplayValue(Double(parameters.skinRosy) * 100, for: .skinRosy)
-        setDisplayValue(Double(parameters.skinSharpen) * 100, for: .skinSharpen)
-        setDisplayValue(Double(parameters.brightness) * 100, for: .brightness)
-        setDisplayValue(Double(parameters.contrast) * 100, for: .contrast)
-        setDisplayValue(Double(parameters.saturation) * 100, for: .saturation)
-        setDisplayValue(Double(parameters.temperature) * 100, for: .temperature)
-        setDisplayValue(Double(parameters.tint) * 100, for: .tint)
-        setDisplayValue(Double(parameters.exposure) * 100, for: .exposure)
-        setDisplayValue(Double(parameters.highlight) * 100, for: .highlight)
-        setDisplayValue(Double(parameters.shadow) * 100, for: .shadow)
-        setDisplayValue(Double(parameters.faceSlim) * 100, for: .faceSlim)
-        setDisplayValue(Double(parameters.faceSmall) * 100, for: .faceSmall)
-        setDisplayValue(Double(parameters.faceVShape) * 100, for: .faceVShape)
-        setDisplayValue(Double(parameters.jawSlim) * 100, for: .jawSlim)
-        setDisplayValue(Double(parameters.chinLength) * 100, for: .chinLength)
-        setDisplayValue(Double(parameters.eyeSize) * 100, for: .eyeSize)
-        setDisplayValue(Double(parameters.eyeDistance) * 100, for: .eyeDistance)
-        setDisplayValue(Double(parameters.eyeYPosition) * 100, for: .eyeYPosition)
-        setDisplayValue(Double(parameters.eyeTailLift) * 100, for: .eyeTailLift)
-        setDisplayValue(Double(parameters.noseSlim) * 100, for: .noseSlim)
-        setDisplayValue(Double(parameters.noseWingSlim) * 100, for: .noseWingSlim)
-        setDisplayValue(Double(parameters.noseTipSize) * 100, for: .noseTipSize)
-        setDisplayValue(Double(parameters.noseBridge) * 100, for: .noseBridge)
-        setDisplayValue(Double(parameters.mouthSize) * 100, for: .mouthSize)
-        setDisplayValue(Double(parameters.mouthWidth) * 100, for: .mouthWidth)
-        setDisplayValue(Double(parameters.smile) * 100, for: .smile)
-        setDisplayValue(Double(parameters.lipColor) * 100, for: .lipColor)
-        selectedFilterId = parameters.filterId
+        let normalized = parameters.normalized()
+
+        setDisplayValueFromSnapshot(Double(normalized.skinSmoothing) * 100, for: .skinSmoothing)
+        setDisplayValueFromSnapshot(Double(normalized.skinWhitening) * 100, for: .skinWhitening)
+        setDisplayValueFromSnapshot(Double(normalized.skinRosy) * 100, for: .skinRosy)
+        setDisplayValueFromSnapshot(Double(normalized.skinSharpen) * 100, for: .skinSharpen)
+        setDisplayValueFromSnapshot(Double(normalized.brightness) * 100, for: .brightness)
+        setDisplayValueFromSnapshot(Double(normalized.contrast) * 100, for: .contrast)
+        setDisplayValueFromSnapshot(Double(normalized.saturation) * 100, for: .saturation)
+        setDisplayValueFromSnapshot(Double(normalized.temperature) * 100, for: .temperature)
+        setDisplayValueFromSnapshot(Double(normalized.tint) * 100, for: .tint)
+        setDisplayValueFromSnapshot(Double(normalized.exposure) * 100, for: .exposure)
+        setDisplayValueFromSnapshot(Double(normalized.highlight) * 100, for: .highlight)
+        setDisplayValueFromSnapshot(Double(normalized.shadow) * 100, for: .shadow)
+        setDisplayValueFromSnapshot(Double(normalized.faceSlim) * 100, for: .faceSlim)
+        setDisplayValueFromSnapshot(Double(normalized.faceSmall) * 100, for: .faceSmall)
+        setDisplayValueFromSnapshot(Double(normalized.faceVShape) * 100, for: .faceVShape)
+        setDisplayValueFromSnapshot(Double(normalized.jawSlim) * 100, for: .jawSlim)
+        setDisplayValueFromSnapshot(Double(normalized.chinLength) * 100, for: .chinLength)
+        setDisplayValueFromSnapshot(Double(normalized.eyeSize) * 100, for: .eyeSize)
+        setDisplayValueFromSnapshot(Double(normalized.eyeDistance) * 100, for: .eyeDistance)
+        setDisplayValueFromSnapshot(Double(normalized.eyeYPosition) * 100, for: .eyeYPosition)
+        setDisplayValueFromSnapshot(Double(normalized.eyeTailLift) * 100, for: .eyeTailLift)
+        setDisplayValueFromSnapshot(Double(normalized.noseSlim) * 100, for: .noseSlim)
+        setDisplayValueFromSnapshot(Double(normalized.noseWingSlim) * 100, for: .noseWingSlim)
+        setDisplayValueFromSnapshot(Double(normalized.noseTipSize) * 100, for: .noseTipSize)
+        setDisplayValueFromSnapshot(Double(normalized.noseBridge) * 100, for: .noseBridge)
+        setDisplayValueFromSnapshot(Double(normalized.mouthSize) * 100, for: .mouthSize)
+        setDisplayValueFromSnapshot(Double(normalized.mouthWidth) * 100, for: .mouthWidth)
+        setDisplayValueFromSnapshot(Double(normalized.smile) * 100, for: .smile)
+        setDisplayValueFromSnapshot(Double(normalized.lipColor) * 100, for: .lipColor)
+        selectedFilterId = normalized.filterId
         displayValues[.filterIntensity] = BeautyControlDescriptor.descriptor(id: .filterIntensity)
             .displayRange
-            .clampedDisplayValue(Double(parameters.filterIntensity) * 100)
+            .clampedDisplayValue(Double(normalized.filterIntensity) * 100)
+    }
+
+    private func setDisplayValueFromSnapshot(_ value: Double, for controlID: BeautyControlID) {
+        let descriptor = BeautyControlDescriptor.descriptor(id: controlID)
+        guard descriptor.availability.isEnabled else {
+            return
+        }
+        displayValues[descriptor.id] = descriptor.displayRange.clampedDisplayValue(value)
     }
 }
