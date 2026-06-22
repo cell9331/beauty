@@ -35,6 +35,10 @@ let package = Package(
         .testTarget(name: "BeautySDKTests", dependencies: ["BeautySDK"]),
         .testTarget(name: "BeautyCoreTests", dependencies: ["BeautyCore", "BeautySDK"]),
         .testTarget(name: "BeautyDetectionTests", dependencies: ["BeautyCore", "BeautyDetection"]),
+        .testTarget(
+            name: "BeautyEffectsTests",
+            dependencies: ["BeautyCore", "BeautyDetection", "BeautyRender", "BeautyResources", "BeautyEffects"]
+        ),
         .testTarget(name: "BeautyRenderTests", dependencies: ["BeautyCore", "BeautyRender"]),
         .testTarget(name: "BeautyResourcesTests", dependencies: ["BeautyCore", "BeautyResources"])
     ]
