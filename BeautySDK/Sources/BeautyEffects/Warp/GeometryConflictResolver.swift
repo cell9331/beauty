@@ -14,7 +14,7 @@ struct GeometryConflictResolver: Sendable {
     }
 
     func resolve(strengths: BeautyEffectiveStrengths) -> GeometryConflictResolution {
-        let total = faceShapeTotal(strengths)
+        let total = geometryTotal(strengths)
         guard total > totalThreshold else {
             return GeometryConflictResolution(strengths: strengths, warnings: [], metrics: [:])
         }
@@ -26,6 +26,14 @@ struct GeometryConflictResolver: Sendable {
         weakened.faceVShape *= scale
         weakened.jawSlim *= scale
         weakened.chinLength *= scale
+        weakened.eyeSize *= scale
+        weakened.eyeDistance *= scale
+        weakened.eyeYPosition *= scale
+        weakened.eyeTailLift *= scale
+        weakened.noseSlim *= scale
+        weakened.noseWingSlim *= scale
+        weakened.noseTipSize *= scale
+        weakened.noseBridge *= scale
 
         return GeometryConflictResolution(
             strengths: weakened,
@@ -42,12 +50,20 @@ struct GeometryConflictResolver: Sendable {
         )
     }
 
-    private func faceShapeTotal(_ strengths: BeautyEffectiveStrengths) -> Float {
+    private func geometryTotal(_ strengths: BeautyEffectiveStrengths) -> Float {
         strengths.faceSlim +
             strengths.faceSmall +
             strengths.faceVShape +
             strengths.jawSlim +
-            abs(strengths.chinLength)
+            abs(strengths.chinLength) +
+            abs(strengths.eyeSize) +
+            abs(strengths.eyeDistance) +
+            abs(strengths.eyeYPosition) +
+            abs(strengths.eyeTailLift) +
+            strengths.noseSlim +
+            strengths.noseWingSlim +
+            abs(strengths.noseTipSize) +
+            strengths.noseBridge
     }
 
     private func nonZeroFaceShapeFieldCount(_ strengths: BeautyEffectiveStrengths) -> Int {
@@ -56,7 +72,15 @@ struct GeometryConflictResolver: Sendable {
             strengths.faceSmall,
             strengths.faceVShape,
             strengths.jawSlim,
-            abs(strengths.chinLength)
+            abs(strengths.chinLength),
+            abs(strengths.eyeSize),
+            abs(strengths.eyeDistance),
+            abs(strengths.eyeYPosition),
+            abs(strengths.eyeTailLift),
+            strengths.noseSlim,
+            strengths.noseWingSlim,
+            abs(strengths.noseTipSize),
+            strengths.noseBridge
         ].filter { $0 > Float.ulpOfOne }.count
     }
 }

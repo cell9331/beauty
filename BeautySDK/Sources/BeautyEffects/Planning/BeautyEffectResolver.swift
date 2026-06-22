@@ -124,7 +124,21 @@ public enum BeautyEffectResolver {
             }
         }
         if anyNonZero(strengths.noseSlim, strengths.noseWingSlim, strengths.noseTipSize, strengths.noseBridge) {
-            activeDomains.insert(.nose)
+            if let faceGeometry {
+                let result = NoseWarpProvider().makeControlPoints(face: faceGeometry, strengths: strengths)
+                if result.points.isEmpty {
+                    skippedDomains.insert(.nose)
+                    metrics["beauty.effects.skippedNoseDomains"] = 1
+                    extraWarnings.append(Self.noseSkippedWarning)
+                } else {
+                    activeDomains.insert(.nose)
+                    geometryPointCount += result.points.count
+                }
+            } else {
+                skippedDomains.insert(.nose)
+                metrics["beauty.effects.skippedNoseDomains"] = 1
+                extraWarnings.append(Self.noseSkippedWarning)
+            }
         }
         if anyNonZero(strengths.mouthSize, strengths.mouthWidth, strengths.smile) {
             activeDomains.insert(.mouth)
@@ -187,6 +201,13 @@ public enum BeautyEffectResolver {
         BeautyValidationWarning(
             code: "eye_landmarks_missing",
             message: "Eye geometry was skipped because required eye inputs were unavailable."
+        )
+    }
+
+    private static var noseSkippedWarning: BeautyValidationWarning {
+        BeautyValidationWarning(
+            code: "nose_landmarks_missing",
+            message: "Nose geometry was skipped because required nose inputs were unavailable."
         )
     }
 }
