@@ -35,7 +35,7 @@
 | Started | 2026-06-22 |
 | Scope | Execute GSD Phase 6 core beauty effects plans 06-01 through 06-05 in wave order. |
 | Source Request | `$gsd-execute-phase 6` |
-| Current Step | Wave 3 / Plan 06-03: add eye and nose providers using the shared geometry provider layer. |
+| Current Step | Wave 4 / Plan 06-04: add mouth and lip MVP controls with safe missing-landmark behavior. |
 | Verification Policy | Run focused SwiftPM tests after each plan, then full SDK and Demo simulator tests before completion; record any environment failures exactly. |
 
 Checklist:
@@ -45,8 +45,8 @@ Checklist:
 | Initialize phase execution | `completed` | `state.begin-phase --phase 06 --name core-beauty-effects --plans 5` updated `.planning/STATE.md`. |
 | Execute 06-01 | `completed` | Task commits `8e538e7` and `df0876a`; `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 79 XCTest cases; `06-01-SUMMARY.md` records EFFECT-01 completion plus partial EFFECT-09 foundation evidence. |
 | Execute 06-02 | `completed` | Task commits `5086225`, `e4eae32`, `1a41d75`, `f4ba264`, and `ddb4fc4`; `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 89 XCTest cases; `06-02-SUMMARY.md` records EFFECT-04 completion plus partial EFFECT-09 face-shape evidence. |
-| Execute 06-03 | `active` | Ready to execute eye and nose provider plan after 06-02 metadata closeout. |
-| Execute 06-04 | `planned` | Pending 06-03 summary. |
+| Execute 06-03 | `completed` | Task commits `370ebee`, `0ae51a3`, `fbdd43b`, `669a085`, `c6a0484`, and `f0f3e95`; `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 103 XCTest cases; `06-03-SUMMARY.md` records EFFECT-05 and EFFECT-06 completion plus partial EFFECT-09 eye/nose degradation evidence. |
+| Execute 06-04 | `active` | Ready to execute mouth and lip MVP plan after 06-03 metadata closeout. |
 | Execute 06-05 | `planned` | Pending 06-04 summary. |
 | Final verification and record | `planned` | Pending all summaries. |
 
