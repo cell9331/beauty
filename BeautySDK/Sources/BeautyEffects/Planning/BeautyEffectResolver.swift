@@ -2,10 +2,18 @@ import BeautyCore
 
 public enum BeautyEffectResolver {
     public static func resolve(parameters: BeautyParameters) -> BeautyEffectPlan {
-        resolve(parameters: parameters, faceGeometry: nil)
+        resolve(parameters: parameters, faceGeometry: nil, treatsMissingFaceAsNoFace: false)
     }
 
     static func resolve(parameters: BeautyParameters, faceGeometry: FaceGeometry?) -> BeautyEffectPlan {
+        resolve(parameters: parameters, faceGeometry: faceGeometry, treatsMissingFaceAsNoFace: true)
+    }
+
+    private static func resolve(
+        parameters: BeautyParameters,
+        faceGeometry: FaceGeometry?,
+        treatsMissingFaceAsNoFace: Bool
+    ) -> BeautyEffectPlan {
         let normalized = parameters.normalized()
         var activeDomains: Set<BeautyEffectDomain> = []
         var skippedDomains: Set<BeautyEffectDomain> = []
@@ -51,8 +59,10 @@ public enum BeautyEffectResolver {
         strengths.lipColor = capUnit(normalized.lipColor, cap: BeautySafetyCaps.lipColor, cappedCount: &cappedCount)
 
         var extraWarnings: [BeautyValidationWarning] = []
+        var appendedNoFaceWarning = false
         var appendedStaleGeometryWarning = false
         let staleGeometry = faceGeometry?.freshness == .stale
+        let noUsableFace = treatsMissingFaceAsNoFace && faceGeometry == nil
         let hasGeometryValues = anyNonZero(
             strengths.faceSlim,
             strengths.faceSmall,
@@ -80,6 +90,14 @@ public enum BeautyEffectResolver {
             extraWarnings.append(Self.staleGeometryWarning)
         }
 
+        func appendNoFaceWarningIfNeeded() {
+            guard !appendedNoFaceWarning else {
+                return
+            }
+            appendedNoFaceWarning = true
+            extraWarnings.append(Self.faceShapeSkippedWarning)
+        }
+
         if faceGeometry?.freshness == .reused, hasGeometryValues {
             Self.scaleGeometryStrengths(&strengths, by: 0.5)
             metrics["beauty.effects.reusedGeometryScale"] = 0.5
@@ -87,7 +105,12 @@ public enum BeautyEffectResolver {
         }
 
         if anyNonZero(strengths.skinSmoothing, strengths.skinWhitening, strengths.skinRosy, strengths.skinSharpen) {
-            activeDomains.insert(.skin)
+            if noUsableFace {
+                skippedDomains.insert(.skin)
+                appendNoFaceWarningIfNeeded()
+            } else {
+                activeDomains.insert(.skin)
+            }
         }
         if anyNonZero(
             strengths.brightness,
@@ -142,7 +165,11 @@ public enum BeautyEffectResolver {
             } else {
                 skippedDomains.insert(.faceShape)
                 metrics["beauty.effects.skippedFaceDomains"] = 1
-                extraWarnings.append(Self.faceShapeSkippedWarning)
+                if noUsableFace {
+                    appendNoFaceWarningIfNeeded()
+                } else {
+                    extraWarnings.append(Self.faceShapeSkippedWarning)
+                }
             }
         }
         if anyNonZero(strengths.eyeSize, strengths.eyeDistance, strengths.eyeYPosition, strengths.eyeTailLift) {
@@ -163,7 +190,11 @@ public enum BeautyEffectResolver {
             } else {
                 skippedDomains.insert(.eyes)
                 metrics["beauty.effects.skippedEyeDomains"] = 1
-                extraWarnings.append(Self.eyeSkippedWarning)
+                if noUsableFace {
+                    appendNoFaceWarningIfNeeded()
+                } else {
+                    extraWarnings.append(Self.eyeSkippedWarning)
+                }
             }
         }
         if anyNonZero(strengths.noseSlim, strengths.noseWingSlim, strengths.noseTipSize, strengths.noseBridge) {
@@ -184,7 +215,11 @@ public enum BeautyEffectResolver {
             } else {
                 skippedDomains.insert(.nose)
                 metrics["beauty.effects.skippedNoseDomains"] = 1
-                extraWarnings.append(Self.noseSkippedWarning)
+                if noUsableFace {
+                    appendNoFaceWarningIfNeeded()
+                } else {
+                    extraWarnings.append(Self.noseSkippedWarning)
+                }
             }
         }
         if anyNonZero(strengths.mouthSize, strengths.mouthWidth, strengths.smile) {
@@ -210,7 +245,11 @@ public enum BeautyEffectResolver {
             } else {
                 skippedDomains.insert(.mouth)
                 metrics["beauty.effects.skippedMouthDomains"] = 1
-                extraWarnings.append(Self.mouthSkippedWarning)
+                if noUsableFace {
+                    appendNoFaceWarningIfNeeded()
+                } else {
+                    extraWarnings.append(Self.mouthSkippedWarning)
+                }
             }
         }
         if strengths.lipColor > 0 {
@@ -219,10 +258,22 @@ public enum BeautyEffectResolver {
             } else {
                 skippedDomains.insert(.lipColor)
                 metrics["beauty.effects.skippedLipDomains"] = 1
-                extraWarnings.append(Self.lipSkippedWarning)
+                if noUsableFace {
+                    appendNoFaceWarningIfNeeded()
+                } else {
+                    extraWarnings.append(Self.lipSkippedWarning)
+                }
             }
         }
 
+        if noUsableFace {
+            let skippedFaceDependentCount = skippedDomains
+                .intersection([.skin, .faceShape, .eyes, .nose, .mouth, .lipColor])
+                .count
+            if skippedFaceDependentCount > 0 {
+                metrics["beauty.effects.skippedFaceDomains"] = Double(skippedFaceDependentCount)
+            }
+        }
         metrics["beauty.effects.activeCount"] = Double(activeDomains.count)
         metrics["beauty.effects.cappedCount"] = Double(cappedCount)
         if geometryPointCount > 0 {
