@@ -97,7 +97,16 @@ final class LipColorEffectTests: XCTestCase {
             guard let sourceBase = rawBytes.baseAddress else {
                 throw BeautyError.invalidInput
             }
-            memcpy(baseAddress, sourceBase, bytes.count)
+            let bytesPerRow = CVPixelBufferGetBytesPerRow(pixelBuffer)
+            let expectedRowBytes = width * 4
+            for row in 0..<height {
+                let sourceStart = row * expectedRowBytes
+                memcpy(
+                    baseAddress.advanced(by: row * bytesPerRow),
+                    sourceBase.advanced(by: sourceStart),
+                    expectedRowBytes
+                )
+            }
         }
         return pixelBuffer
     }
