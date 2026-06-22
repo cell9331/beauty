@@ -97,7 +97,7 @@ final class FaceShapeWarpProviderTests: XCTestCase {
     }
 }
 
-private extension FaceGeometry {
+extension FaceGeometry {
     static let fixture = FaceGeometry(
         bounds: FaceBounds(x: 0.30, y: 0.20, width: 0.40, height: 0.60),
         faceContour: [
