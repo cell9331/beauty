@@ -30,6 +30,24 @@ _No active plans._
 
 ## 4. Completed
 
+### C-2026-06-22-gsd-discuss-phase-7-rich-demo-qa-surface
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-22 |
+| Scope | Ran `$gsd-discuss-phase 7` in text mode and captured Phase 7 implementation decisions for copy/paste parameter JSON, reset/source semantics, read-only debug overlay, final Demo readiness evidence, manual release-risk handling, and v1 traceability closure. |
+| Requirements | DEMO-06, DEMO-07 |
+| Files | `.planning/phases/07-rich-demo-qa-surface/07-CONTEXT.md`, `.planning/phases/07-rich-demo-qa-surface/07-DISCUSSION-LOG.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `wc -l` reported 160 lines for `07-CONTEXT.md` and 234 lines for `07-DISCUSSION-LOG.md`; placeholder scan for `[X]`, `[Name]`, `[date]`, `{PHASE`, `TODO`, `TBD`, `FIXME`, `Lorem`, `占位`, and `待定` returned no matches; `init.phase-op 7` reports `has_context: true`, `has_plans: false`, and `context_path: .planning/phases/07-rich-demo-qa-surface/07-CONTEXT.md`; checkpoint removal check printed `checkpoint_removed=yes`; `.planning/STATE.md` records `Stopped at: Phase 7 context gathered` and the Phase 7 context resume file; `git diff --check -- .planning/phases/07-rich-demo-qa-surface .planning/STATE.md PLANS.md` exited 0. |
+| Build | Not run; this was a GSD discussion/context documentation workflow with no Swift or Xcode source changes. |
+
+Outcome:
+
+- Phase 7 is ready for planning with locked decisions for a copy/paste JSON sheet using a versioned `schemaVersion` + `parameters` envelope, preview-before-apply validation, unchanged parameters on failed import, and minimal deterministic export payloads.
+- Reset semantics stay simple and current-behavior aligned: single reset and reset all return to SDK zero defaults, imported JSON is a custom snapshot, and manual edits clear applied-source state.
+- Debug overlay scope is read-only and privacy-safe: one preview-surface toggle, redacted diagnostic summary fields, last redacted error code plus friendly status, and no face boxes, landmarks, control points, raw framework strings, paths, or stack traces.
+- Final Demo readiness requires focused XCTest/view-state/pipeline evidence plus privacy/import scans, while manual visual naturalness, real-device camera/Vision parity, long-run hardware checks, and release-grade claims remain explicit release risks until proven.
+
 ### C-2026-06-22-gsd-execute-phase-6-core-beauty-effects
 
 | Field | Value |
