@@ -13,6 +13,15 @@ final class BeautyParameterStoreTests: XCTestCase {
         XCTAssertEqual(store.parametersSnapshot.skinSmoothing, 0.75, accuracy: 0.0001)
     }
 
+    func testDEMO06InitialSourceIsCustomWithDefaultSnapshot() {
+        let store = BeautyParameterStore()
+
+        XCTAssertEqual(store.parameterSource, .custom)
+        XCTAssertNil(store.selectedPresetId)
+        XCTAssertNil(store.selectedFilterId)
+        XCTAssertEqual(store.parametersSnapshot, BeautyParameters())
+    }
+
     func testBidirectionalDisplayValueNormalizesIntoSDKSnapshot() {
         let store = BeautyParameterStore()
 
@@ -140,7 +149,114 @@ final class BeautyParameterStoreTests: XCTestCase {
             XCTAssertEqual(store.displayValue(for: .exposure), Double(preset.parameters.exposure) * 100, accuracy: 0.0001)
             XCTAssertEqual(store.displayValue(for: .filterIntensity), Double(preset.parameters.filterIntensity) * 100, accuracy: 0.0001)
             XCTAssertEqual(store.parametersSnapshot, preset.parameters, preset.displayName)
+            XCTAssertEqual(store.selectedPresetId, preset.id, preset.displayName)
+            XCTAssertEqual(store.parameterSource, .preset(id: preset.id), preset.displayName)
         }
+    }
+
+    func testDEMO06ApplyingImportedParametersSyncsSlidersFilterAndSource() {
+        let store = BeautyParameterStore()
+        let imported = BeautyParameters(
+            skinSmoothing: 0.42,
+            brightness: -0.2,
+            filterId: "soft_clean",
+            filterIntensity: 0.35
+        )
+
+        store.applyImportedParameters(imported)
+
+        XCTAssertEqual(store.displayValue(for: .skinSmoothing), 42, accuracy: 0.0001)
+        XCTAssertEqual(store.displayValue(for: .brightness), -20, accuracy: 0.0001)
+        XCTAssertEqual(store.selectedFilterId, "soft_clean")
+        XCTAssertEqual(store.displayValue(for: .filterIntensity), 35, accuracy: 0.0001)
+        XCTAssertNil(store.selectedPresetId)
+        XCTAssertEqual(store.parameterSource, .imported)
+        XCTAssertEqual(store.parametersSnapshot, imported)
+    }
+
+    func testDEMO06ApplyingImportedParametersClearsPreviousPresetSelection() throws {
+        let preset = try XCTUnwrap(try BeautySDKResources.builtInPresets().first)
+        let store = BeautyParameterStore()
+
+        store.applyPreset(preset)
+        store.applyImportedParameters(BeautyParameters(skinSmoothing: 0.42))
+
+        XCTAssertNil(store.selectedPresetId)
+        XCTAssertEqual(store.parameterSource, .imported)
+    }
+
+    func testDEMO06ManualSliderEditAfterPresetOrImportReturnsSourceToCustom() throws {
+        let preset = try XCTUnwrap(try BeautySDKResources.builtInPresets().first)
+        let store = BeautyParameterStore()
+
+        store.applyPreset(preset)
+        store.setDisplayValue(64, for: .skinSmoothing)
+
+        XCTAssertEqual(store.parameterSource, .custom)
+        XCTAssertNil(store.selectedPresetId)
+        XCTAssertEqual(store.displayValue(for: .brightness), Double(preset.parameters.brightness) * 100, accuracy: 0.0001)
+
+        store.applyImportedParameters(BeautyParameters(skinSmoothing: 0.42, brightness: -0.2))
+        store.setDisplayValue(21, for: .skinSmoothing)
+
+        XCTAssertEqual(store.parameterSource, .custom)
+        XCTAssertNil(store.selectedPresetId)
+        XCTAssertEqual(store.displayValue(for: .brightness), -20, accuracy: 0.0001)
+    }
+
+    func testDEMO06ManualFilterChangeAfterPresetOrImportReturnsSourceToCustom() throws {
+        let preset = try XCTUnwrap(try BeautySDKResources.builtInPresets().first)
+        let store = BeautyParameterStore()
+
+        store.applyPreset(preset)
+        store.selectFilter(id: "warm_light")
+
+        XCTAssertEqual(store.parameterSource, .custom)
+        XCTAssertNil(store.selectedPresetId)
+
+        store.applyImportedParameters(BeautyParameters(filterId: "soft_clean", filterIntensity: 0.35))
+        store.selectFilter(id: nil)
+
+        XCTAssertEqual(store.parameterSource, .custom)
+        XCTAssertNil(store.selectedPresetId)
+        XCTAssertNil(store.selectedFilterId)
+    }
+
+    func testDEMO06SingleResetAfterImportResetsOnlyTargetControlAndSource() {
+        let store = BeautyParameterStore()
+
+        store.applyImportedParameters(
+            BeautyParameters(skinSmoothing: 0.42, brightness: -0.2, filterId: "soft_clean", filterIntensity: 0.35)
+        )
+        store.reset(.skinSmoothing)
+
+        XCTAssertEqual(store.displayValue(for: .skinSmoothing), 0)
+        XCTAssertEqual(store.displayValue(for: .brightness), -20, accuracy: 0.0001)
+        XCTAssertEqual(store.selectedFilterId, "soft_clean")
+        XCTAssertEqual(store.displayValue(for: .filterIntensity), 35, accuracy: 0.0001)
+        XCTAssertEqual(BeautyControlDescriptor.descriptor(id: .skinSmoothing).resetLabel, "Reset Skin Smoothing")
+        XCTAssertEqual(store.parameterSource, .custom)
+    }
+
+    func testDEMO06ResetAllAfterPresetOrImportClearsFilterPresetAndSource() throws {
+        let preset = try XCTUnwrap(try BeautySDKResources.builtInPresets().first)
+        let store = BeautyParameterStore()
+
+        store.applyPreset(preset)
+        store.resetAll()
+
+        XCTAssertNil(store.selectedFilterId)
+        XCTAssertNil(store.selectedPresetId)
+        XCTAssertEqual(store.parameterSource, .custom)
+        XCTAssertEqual(store.parametersSnapshot, BeautyParameters())
+
+        store.applyImportedParameters(BeautyParameters(skinSmoothing: 0.42, filterId: "soft_clean", filterIntensity: 0.35))
+        store.resetAll()
+
+        XCTAssertNil(store.selectedFilterId)
+        XCTAssertNil(store.selectedPresetId)
+        XCTAssertEqual(store.parameterSource, .custom)
+        XCTAssertEqual(store.parametersSnapshot, BeautyParameters())
     }
 
     func testResetCopyIsStableForControlsAndAllParameters() {
