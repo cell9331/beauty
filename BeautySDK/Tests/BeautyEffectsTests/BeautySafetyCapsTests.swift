@@ -13,6 +13,8 @@ final class BeautySafetyCapsTests: XCTestCase {
         XCTAssertEqual(BeautySafetyCaps.faceSlim, 0.60, accuracy: 0.0001)
         XCTAssertEqual(BeautySafetyCaps.faceSmall, 0.45, accuracy: 0.0001)
         XCTAssertEqual(BeautySafetyCaps.faceVShape, 0.50, accuracy: 0.0001)
+        XCTAssertLessThanOrEqual(BeautySafetyCaps.jawSlim, BeautySafetyCaps.faceSlim)
+        XCTAssertEqual(BeautySafetyCaps.jawSlim, 0.45, accuracy: 0.0001)
         XCTAssertEqual(BeautySafetyCaps.chinLength, 0.35, accuracy: 0.0001)
 
         XCTAssertEqual(BeautySafetyCaps.eyeSize, 0.45, accuracy: 0.0001)
