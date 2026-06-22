@@ -34,7 +34,7 @@ Requirements for the initial SDK milestone. Each requirement must map to exactly
 - [x] **EFFECT-01**: User can adjust skin smoothing, skin whitening, rosy tone, and skin sharpen controls through Demo sliders backed by SDK parameters.
 - [x] **EFFECT-02**: User can adjust brightness, contrast, saturation, temperature, tint, exposure, highlight, and shadow controls through Demo sliders backed by SDK parameters.
 - [x] **EFFECT-03**: User can apply a filter by `filterId` and adjust `filterIntensity`, with missing filter resources handled as typed errors or visibly disabled UI.
-- [ ] **EFFECT-04**: User can adjust face slim, small face, V shape, jaw/chin controls through SDK-backed parameters.
+- [x] **EFFECT-04**: User can adjust face slim, small face, V shape, jaw/chin controls through SDK-backed parameters.
 - [ ] **EFFECT-05**: User can adjust eye size, eye distance, eye vertical position, and eye tail lift through SDK-backed parameters.
 - [ ] **EFFECT-06**: User can adjust nose slim, nose wing, nose tip, and nose bridge controls through SDK-backed parameters.
 - [ ] **EFFECT-07**: User can adjust mouth size, mouth width, smile, and lip color controls through SDK-backed parameters.
@@ -108,7 +108,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EFFECT-01 | Phase 6 | Complete |
 | EFFECT-02 | Phase 5 | Complete |
 | EFFECT-03 | Phase 5 | Complete |
-| EFFECT-04 | Phase 6 | Pending |
+| EFFECT-04 | Phase 6 | Complete |
 | EFFECT-05 | Phase 6 | Pending |
 | EFFECT-06 | Phase 6 | Pending |
 | EFFECT-07 | Phase 6 | Pending |
