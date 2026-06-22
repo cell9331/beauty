@@ -31,7 +31,7 @@ Requirements for the initial SDK milestone. Each requirement must map to exactly
 
 ### MVP Effects
 
-- [ ] **EFFECT-01**: User can adjust skin smoothing, skin whitening, rosy tone, and skin sharpen controls through Demo sliders backed by SDK parameters.
+- [x] **EFFECT-01**: User can adjust skin smoothing, skin whitening, rosy tone, and skin sharpen controls through Demo sliders backed by SDK parameters.
 - [x] **EFFECT-02**: User can adjust brightness, contrast, saturation, temperature, tint, exposure, highlight, and shadow controls through Demo sliders backed by SDK parameters.
 - [x] **EFFECT-03**: User can apply a filter by `filterId` and adjust `filterIntensity`, with missing filter resources handled as typed errors or visibly disabled UI.
 - [ ] **EFFECT-04**: User can adjust face slim, small face, V shape, jaw/chin controls through SDK-backed parameters.
@@ -105,7 +105,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PIPE-06 | Phase 3 | Complete |
 | PIPE-07 | Phase 4 | Complete |
 | PIPE-08 | Phase 3 | Complete |
-| EFFECT-01 | Phase 6 | Pending |
+| EFFECT-01 | Phase 6 | Complete |
 | EFFECT-02 | Phase 5 | Complete |
 | EFFECT-03 | Phase 5 | Complete |
 | EFFECT-04 | Phase 6 | Pending |

@@ -200,15 +200,33 @@ Plans:
   4. User can adjust nose slim, nose wing, nose tip, nose bridge, mouth size, mouth width, smile, and lip color controls.
   5. Default values are no-op, natural presets stay conservative, high intensity values are safety-capped, and face-dependent effects degrade safely.
 
-**Plans:** 5 plans
-
+**Plans:** 1/5 plans executed
 Plans:
+**Wave 1**
 
-- [ ] 06-01: Implement skin and color-adjacent effect passes with fixture checks.
+- [x] 06-01: Implement skin and color-adjacent effect passes with fixture checks.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 06-02: Implement face-shape warp controls with naturalness caps.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 06-03: Implement eye and nose MVP controls with coordinate fixtures.
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 06-04: Implement mouth and lip MVP controls with safe missing-landmark behavior.
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
 - [ ] 06-05: Add combined-effect safety, no-face degradation, and visual/regression tests.
+
+**Cross-cutting constraints:**
+
+- D-03: automated fixture/provider evidence is required before Demo smoke.
+- D-08: cap, skip, stale, and weakening evidence must appear through `BeautyResult.warnings` or metrics.
+- D-12: Demo sliders remain enabled and existing detection status/debug surfaces carry degradation feedback.
 
 ### Phase 7: Rich Demo QA Surface
 
@@ -244,5 +262,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | 3. Realtime and Still Input Slice | 4/4 | Complete    | 2026-06-12 |
 | 4. Detection and Coordinate Safety | 5/5 | Complete    | 2026-06-18 |
 | 5. Filters, Presets, and Resource Flow | 4/4 | Complete    | 2026-06-19 |
-| 6. Core Beauty Effects | 0/5 | Not started | - |
+| 6. Core Beauty Effects | 1/5 | In Progress|  |
 | 7. Rich Demo QA Surface | 0/3 | Not started | - |

@@ -26,9 +26,53 @@
 
 ## 3. Active
 
-No active plan.
+### P-2026-06-22-gsd-execute-phase-6-core-beauty-effects
+
+| Field | Value |
+| --- | --- |
+| Status | `active` |
+| Owner | Agent |
+| Started | 2026-06-22 |
+| Scope | Execute GSD Phase 6 core beauty effects plans 06-01 through 06-05 in wave order. |
+| Source Request | `$gsd-execute-phase 6` |
+| Current Step | Wave 2 / Plan 06-02: add face-shape geometry providers on top of the Phase 6 effect planning foundation. |
+| Verification Policy | Run focused SwiftPM tests after each plan, then full SDK and Demo simulator tests before completion; record any environment failures exactly. |
+
+Checklist:
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| Initialize phase execution | `completed` | `state.begin-phase --phase 06 --name core-beauty-effects --plans 5` updated `.planning/STATE.md`. |
+| Execute 06-01 | `completed` | Task commits `8e538e7` and `df0876a`; `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 79 XCTest cases; `06-01-SUMMARY.md` records EFFECT-01 completion plus partial EFFECT-09 foundation evidence. |
+| Execute 06-02 | `active` | Ready to execute face-shape provider plan after 06-01 metadata closeout. |
+| Execute 06-03 | `planned` | Pending 06-02 summary. |
+| Execute 06-04 | `planned` | Pending 06-03 summary. |
+| Execute 06-05 | `planned` | Pending 06-04 summary. |
+| Final verification and record | `planned` | Pending all summaries. |
 
 ## 4. Completed
+
+### C-2026-06-21-gsd-plan-phase-6-core-beauty-effects
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-21 |
+| Scope | Ran `$gsd-plan-phase 6` with research-first flow and produced Phase 6 research, validation, pattern, and five executable plans for core beauty effects. |
+| Requirements | EFFECT-01, EFFECT-04, EFFECT-05, EFFECT-06, EFFECT-07, EFFECT-09 |
+| Files | `.planning/phases/06-core-beauty-effects/06-RESEARCH.md`, `.planning/phases/06-core-beauty-effects/06-VALIDATION.md`, `.planning/phases/06-core-beauty-effects/06-PATTERNS.md`, `.planning/phases/06-core-beauty-effects/06-01-PLAN.md`, `.planning/phases/06-core-beauty-effects/06-02-PLAN.md`, `.planning/phases/06-core-beauty-effects/06-03-PLAN.md`, `.planning/phases/06-core-beauty-effects/06-04-PLAN.md`, `.planning/phases/06-core-beauty-effects/06-05-PLAN.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.plan-phase 6` reports `phase_status: Planned`, `has_research: true`, `has_plans: true`, and `plan_count: 5`; frontmatter scan passed for all five plans with required keys; requirement scan covered `EFFECT-01`, `EFFECT-04`, `EFFECT-05`, `EFFECT-06`, `EFFECT-07`, and `EFFECT-09`; `check.decision-coverage-plan` passed with 18/18 CONTEXT decisions covered; placeholder scan for `[X]`, `[Name]`, `[date]`, `{PHASE`, `TODO`, `TBD`, and `FIXME` returned no matches; `06-RESEARCH.md` contains `RESEARCH COMPLETE`; `state.planned-phase --phase 06 --name core-beauty-effects --plans 5` updated Phase 6 state; `roadmap.annotate-dependencies 06` annotated five waves and three cross-cutting constraints; gap analysis covered all Phase 6 requirements and D-01 through D-18, with only other-phase requirements reported as out of scope; `git diff --check -- .planning/phases/06-core-beauty-effects .planning/ROADMAP.md .planning/STATE.md PLANS.md` exited 0. |
+| Build | Not run; this was a GSD planning/documentation workflow with no Swift or Xcode source changes. |
+| Commit | Not created because the repository has unrelated modified and untracked files outside this Phase 6 planning scope. |
+
+Outcome:
+
+- Phase 6 now has `06-RESEARCH.md`, `06-VALIDATION.md`, `06-PATTERNS.md`, and five executable plans in waves 1 through 5.
+- `06-01` establishes effect planning, safety caps, and visible skin/color/filter/preset output.
+- `06-02` adds face-shape and chin warp providers with naturalness caps and compound weakening.
+- `06-03` adds eye and nose providers with targeted missing-landmark degradation.
+- `06-04` adds mouth and lip behavior with safe missing-mouth degradation.
+- `06-05` closes combined-effect safety, no-face/stale behavior, Demo status/smoke tests, root docs, and final verification.
+- `.planning/ROADMAP.md` records Phase 6 wave dependencies, and `.planning/STATE.md` points resume to `06-01-PLAN.md` for execution.
 
 ### C-2026-06-20-gsd-discuss-phase-6-core-beauty-effects
 
