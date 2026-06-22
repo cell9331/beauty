@@ -147,4 +147,22 @@ extension FaceGeometry {
         rightEye: fixture.rightEye,
         nose: []
     )
+
+    static let reused = FaceGeometry(
+        bounds: fixture.bounds,
+        faceContour: fixture.faceContour,
+        leftEye: fixture.leftEye,
+        rightEye: fixture.rightEye,
+        nose: fixture.nose,
+        freshness: .reused
+    )
+
+    static let stale = FaceGeometry(
+        bounds: fixture.bounds,
+        faceContour: fixture.faceContour,
+        leftEye: fixture.leftEye,
+        rightEye: fixture.rightEye,
+        nose: fixture.nose,
+        freshness: .stale
+    )
 }

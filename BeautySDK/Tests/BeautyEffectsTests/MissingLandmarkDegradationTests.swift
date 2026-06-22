@@ -73,4 +73,31 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertGreaterThan(plan.metrics["beauty.effects.geometryPointCount"] ?? 0, 0)
         XCTAssertNotEqual(output, input)
     }
+
+    func testReusedLandmarksReduceEyeAndNoseGeometry() {
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(eyeSize: 1, noseSlim: 1),
+            faceGeometry: .reused
+        )
+
+        XCTAssertTrue(plan.activeDomains.contains(.eyes))
+        XCTAssertTrue(plan.activeDomains.contains(.nose))
+        XCTAssertLessThan(plan.effectiveStrengths.eyeSize, BeautySafetyCaps.eyeSize)
+        XCTAssertLessThan(plan.effectiveStrengths.noseSlim, BeautySafetyCaps.noseSlim)
+        XCTAssertTrue(plan.warnings.contains { $0.code == "geometry_stale_reduced" })
+    }
+
+    func testStaleLandmarksSkipStrongEyeAndNoseGeometry() {
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(brightness: 0.2, eyeSize: 1, noseSlim: 1),
+            faceGeometry: .stale
+        )
+
+        XCTAssertFalse(plan.activeDomains.contains(.eyes))
+        XCTAssertFalse(plan.activeDomains.contains(.nose))
+        XCTAssertTrue(plan.activeDomains.contains(.color))
+        XCTAssertTrue(plan.skippedDomains.contains(.eyes))
+        XCTAssertTrue(plan.skippedDomains.contains(.nose))
+        XCTAssertTrue(plan.warnings.contains { $0.code == "geometry_stale_skipped" })
+    }
 }
