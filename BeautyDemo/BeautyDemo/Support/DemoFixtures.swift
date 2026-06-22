@@ -5,7 +5,6 @@ nonisolated enum DemoFixtures {
     static let previewTitle = "Choose Camera or Photo"
     static let previewBody = "Use Camera for live preview, or Photo to process a local image on this device."
     static let activeCategoryTitle = "Beauty"
-    static let visualPendingStatus = "Visual update pending Phase 6"
 
     static func photoFixtureImage() -> CIImage {
         CIImage(color: CIColor(red: 0.22, green: 0.38, blue: 0.78, alpha: 1))

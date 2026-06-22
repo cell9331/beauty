@@ -11,10 +11,6 @@ struct BeautyParameterStatus: Equatable, Sendable {
         secondaryText: nil
     )
 
-    static let appliedPendingVisual = BeautyParameterStatus(
-        primaryText: "Parameters applied",
-        secondaryText: "Visual update pending Phase 6"
-    )
 }
 
 @MainActor
@@ -137,7 +133,7 @@ final class BeautyParameterStore: ObservableObject {
 
         displayValues[descriptor.id] = descriptor.displayRange.clampedDisplayValue(value)
         selectedPresetId = nil
-        status = .appliedPendingVisual
+        status = .idle
     }
 
     func selectFilter(id: String?) {
@@ -146,13 +142,13 @@ final class BeautyParameterStore: ObservableObject {
         if id == nil {
             displayValues[.filterIntensity] = BeautyControlDescriptor.descriptor(id: .filterIntensity).defaultDisplayValue
         }
-        status = .appliedPendingVisual
+        status = .idle
     }
 
     func applyPreset(_ preset: BeautyPreset) {
         apply(parameters: preset.parameters)
         selectedPresetId = preset.id
-        status = .appliedPendingVisual
+        status = .idle
     }
 
     func reset(_ controlID: BeautyControlID) {
@@ -166,7 +162,7 @@ final class BeautyParameterStore: ObservableObject {
 
         displayValues[descriptor.id] = descriptor.defaultDisplayValue
         selectedPresetId = nil
-        status = .appliedPendingVisual
+        status = .idle
     }
 
     func resetAll() {
@@ -176,7 +172,7 @@ final class BeautyParameterStore: ObservableObject {
 
         selectedFilterId = nil
         selectedPresetId = nil
-        status = .appliedPendingVisual
+        status = .idle
     }
 
     private func apply(parameters: BeautyParameters) {
