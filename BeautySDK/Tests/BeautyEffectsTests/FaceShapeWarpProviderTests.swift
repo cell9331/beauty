@@ -124,6 +124,16 @@ extension FaceGeometry {
             SIMD2<Float>(0.50, 0.52),
             SIMD2<Float>(0.46, 0.58),
             SIMD2<Float>(0.54, 0.58)
+        ],
+        outerLips: [
+            SIMD2<Float>(0.42, 0.66),
+            SIMD2<Float>(0.46, 0.63),
+            SIMD2<Float>(0.50, 0.62),
+            SIMD2<Float>(0.54, 0.63),
+            SIMD2<Float>(0.58, 0.66),
+            SIMD2<Float>(0.54, 0.69),
+            SIMD2<Float>(0.50, 0.70),
+            SIMD2<Float>(0.46, 0.69)
         ]
     )
 
@@ -148,12 +158,22 @@ extension FaceGeometry {
         nose: []
     )
 
+    static let missingMouth = FaceGeometry(
+        bounds: fixture.bounds,
+        faceContour: fixture.faceContour,
+        leftEye: fixture.leftEye,
+        rightEye: fixture.rightEye,
+        nose: fixture.nose,
+        outerLips: []
+    )
+
     static let reused = FaceGeometry(
         bounds: fixture.bounds,
         faceContour: fixture.faceContour,
         leftEye: fixture.leftEye,
         rightEye: fixture.rightEye,
         nose: fixture.nose,
+        outerLips: fixture.outerLips,
         freshness: .reused
     )
 
@@ -163,6 +183,7 @@ extension FaceGeometry {
         leftEye: fixture.leftEye,
         rightEye: fixture.rightEye,
         nose: fixture.nose,
+        outerLips: fixture.outerLips,
         freshness: .stale
     )
 }
