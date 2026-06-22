@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Realtime and Still Input Slice** - Demo can send camera frames and still images through the SDK safely. (completed 2026-06-12)
 - [x] **Phase 4: Detection and Coordinate Safety** - SDK can reason about faces, orientation, mirroring, and safe degraded frames. (completed 2026-06-18)
 - [x] **Phase 5: Filters, Presets, and Resource Flow** - Users can apply safe color/filter controls and built-in presets. (completed 2026-06-19)
-- [ ] **Phase 6: Core Beauty Effects** - Users can tune skin, face, eye, nose, and mouth MVP controls with safety caps.
+- [x] **Phase 6: Core Beauty Effects** - Users can tune skin, face, eye, nose, and mouth MVP controls with safety caps. (completed 2026-06-22)
 - [ ] **Phase 7: Rich Demo QA Surface** - Demo becomes a complete validation surface with compare, reset, debug, and tests.
 
 ## Phase Details
@@ -200,7 +200,7 @@ Plans:
   4. User can adjust nose slim, nose wing, nose tip, nose bridge, mouth size, mouth width, smile, and lip color controls.
   5. Default values are no-op, natural presets stay conservative, high intensity values are safety-capped, and face-dependent effects degrade safely.
 
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans complete
 Plans:
 **Wave 1**
 
@@ -220,7 +220,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 06-05: Add combined-effect safety, no-face degradation, and visual/regression tests.
+- [x] 06-05: Add combined-effect safety, no-face degradation, and visual/regression tests.
 
 **Cross-cutting constraints:**
 
@@ -262,5 +262,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | 3. Realtime and Still Input Slice | 4/4 | Complete    | 2026-06-12 |
 | 4. Detection and Coordinate Safety | 5/5 | Complete    | 2026-06-18 |
 | 5. Filters, Presets, and Resource Flow | 4/4 | Complete    | 2026-06-19 |
-| 6. Core Beauty Effects | 4/5 | In Progress|  |
+| 6. Core Beauty Effects | 5/5 | Complete    | 2026-06-22 |
 | 7. Rich Demo QA Surface | 0/3 | Not started | - |

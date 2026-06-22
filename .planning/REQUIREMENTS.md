@@ -39,7 +39,7 @@ Requirements for the initial SDK milestone. Each requirement must map to exactly
 - [x] **EFFECT-06**: User can adjust nose slim, nose wing, nose tip, and nose bridge controls through SDK-backed parameters.
 - [x] **EFFECT-07**: User can adjust mouth size, mouth width, smile, and lip color controls through SDK-backed parameters.
 - [x] **EFFECT-08**: User can apply at least five built-in presets: Natural, Clear, Refined, Male Natural, and ID Photo Natural.
-- [ ] **EFFECT-09**: Default parameters are no-op, natural presets are conservative, high-intensity values are safety-capped, and face-dependent effects safely degrade when face or landmarks are missing.
+- [x] **EFFECT-09**: Default parameters are no-op, natural presets are conservative, high-intensity values are safety-capped, and face-dependent effects safely degrade when face or landmarks are missing.
 
 ### Rich Demo
 
@@ -113,7 +113,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EFFECT-06 | Phase 6 | Complete |
 | EFFECT-07 | Phase 6 | Complete |
 | EFFECT-08 | Phase 5 | Complete |
-| EFFECT-09 | Phase 6 | Pending |
+| EFFECT-09 | Phase 6 | Complete |
 | DEMO-01 | Phase 3 | Complete |
 | DEMO-02 | Phase 2 | Complete |
 | DEMO-03 | Phase 2 | Complete |
@@ -131,4 +131,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-06-10*
-*Last updated: 2026-06-22 after Phase 6 Plan 06-04 mouth and lip provider verification*
+*Last updated: 2026-06-22 after Phase 6 Plan 06-05 combined safety and Demo closeout verification*

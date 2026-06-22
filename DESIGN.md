@@ -389,6 +389,12 @@ Rules:
 - An effect must not read UI state directly.
 - Resource-backed effects must receive resolved resource handles, not raw paths.
 - Pass order is owned by `RenderGraph`, not individual effects.
+- Phase 6 current implementation resolves skin, color, filter, face-shape, eyes, nose, mouth, and lip-color domains through `BeautyEffectResolver` before rendering.
+- Default `BeautyParameters()` resolves to no active visual output beyond copy/render tolerance.
+- Color and metadata filters are face-agnostic and may continue when no usable face exists.
+- Skin, face shape, eyes, nose, mouth, and lip color are face-dependent in Phase 6 no-face routing; they skip with redacted warning/metric evidence when `faceGeometry` is explicitly unavailable.
+- Missing landmark groups skip only their dependent domains: eyes require eye groups, nose requires nose, and mouth/lip require outer lips.
+- Reused landmarks reduce effective geometry briefly; stale landmarks skip strong geometry and record stable warning/metric evidence.
 
 ## 9. RenderGraph Design
 
@@ -551,6 +557,7 @@ Degradation must be explicit:
 - Attach warning metadata when output is degraded.
 - Log internal detail according to `RELIABILITY.md`.
 - Do not hide repeated failures that affect visible output.
+- Phase 6 cap, skip, stale, reused, and combined-weakening events are carried through `BeautyResult.warnings` and numeric `metrics` using stable redacted keys; they must not add normal UI banners by themselves.
 
 ## 15. Concurrency Design
 
@@ -607,6 +614,8 @@ Each implementation must make these contracts testable:
 | Multiple warp providers merge into one control point buffer. | Unit or render plan test |
 | Empty passes are skipped. | RenderGraph test |
 | App-facing API does not expose Vision or Metal internals. | Compile/API review |
+| Phase 6 all-domain combined parameters remain capped, conservative, and redacted. | `CombinedEffectSafetyTests` plus resolver and engine fixture tests |
+| No-face, missing-eye, missing-nose, missing-mouth/lip, reused, and stale contexts degrade only affected domains. | `MissingLandmarkDegradationTests` and combined resolver tests |
 
 ## 18. Open Design Watchlist
 

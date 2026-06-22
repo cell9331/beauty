@@ -10,7 +10,8 @@
 当前仓库状态：
 
 - 已存在 `BeautyDemo/` Xcode Demo App。
-- 已存在 `BeautySDK/` Swift Package 骨架，包含 `BeautyCore`、`BeautyDetection`、`BeautyRender`、`BeautyEffects`、`BeautyResources` 和 public `BeautySDK` facade。
+- 已存在 `BeautySDK/` Swift Package，包含 `BeautyCore`、`BeautyDetection`、`BeautyRender`、`BeautyEffects`、`BeautyResources` 和 public `BeautySDK` facade。
+- Phase 6 当前实现已让 `BeautyEffects` 承担效果解析、安全 cap、几何 provider、MVP 颜色/几何输出与降级 metadata；Demo 仍只通过 public `BeautySDK` facade 集成。
 - `docs/` 下存在历史规划资料，迁移后的根级文档优先级更高。
 
 ## 2. 顶层不变量
@@ -166,12 +167,15 @@ BeautyDemo
 - 磨皮、美白、红润
 - 眼、鼻、嘴、脸型的 `WarpControlPointProvider`
 - 妆容、分割、身体美型的后续扩展入口
+- Phase 6 当前实现：`BeautyEffectResolver`、`BeautySafetyCaps`、脸型/眼/鼻/嘴 provider、合并几何弱化、唇色 mouth-region 输出、颜色/滤镜 MVP 输出、warning/metric 证据。
 
 规则：
 
 - 五官功能是 `BeautyEffects` 内部模块，不拆成独立 Package。
 - 多个几何效果只产出控制点，统一交给 `FaceWarpPass`。
 - 新效果必须声明依赖：是否需要人脸点、资源、额外模型、额外 pass。
+- 算法级安全 cap、combined weakening、missing-landmark skip 和 stale/reused 降级只改变内部 effective strength，不收窄 public `BeautyParameters` 范围。
+- `BeautyEffects` 可以使用内部 `FaceGeometry`/`WarpControlPoint` 适配层，但不得把控制点、bounding box、landmark 或 provider 类型暴露给 `BeautySDK` public facade 或 Demo。
 
 ### 6.5 BeautyResources
 

@@ -155,6 +155,13 @@ Required checks:
 
 Algorithm-level caps are visual-safety controls and must be kept separate from public API ranges.
 
+Phase 6 current behavior:
+
+- Public slider range remains unchanged, but effective skin/color/geometry/lip/filter strengths are capped or weakened inside `BeautyEffects`.
+- Combined face, eye, nose, and mouth geometry weakening is reported only as redacted warnings and numeric metrics.
+- No-face routing skips face-dependent skin, geometry, eye, nose, mouth, and lip-color domains while allowing face-agnostic color/filter domains to continue.
+- Missing eye, nose, and mouth landmark groups skip only their dependent domains; raw landmark points, bounding boxes, and provider internals remain private.
+
 ## 7. JSON and Preset Validation
 
 Preset JSON is untrusted unless bundled and versioned by the SDK.
@@ -266,6 +273,8 @@ landmarks=[(0.421,0.215), ...]
 rawPresetJson={...}
 ```
 
+Phase 6 warning and metric payloads may include stable domain names, counts, capped-domain totals, geometry point counts, and effective-strength values. They must not include raw face coordinates, bounding boxes, local paths, raw framework errors, or image bytes.
+
 ## 10. Network Policy
 
 Current SDK policy:
@@ -339,6 +348,12 @@ Security-sensitive changes must add or update checks for:
 - Logging output with debug mode on and off.
 - Realtime frame processing without persistence.
 - Privacy manifest presence when SDK behavior requires it.
+
+Phase 6 effect/privacy evidence recorded 2026-06-22:
+
+- `CombinedEffectSafetyTests` and `MissingLandmarkDegradationTests` cover combined caps, no-face routing, partial landmark skips, stale/reused degradation, and redacted warning/metric behavior.
+- Demo import-boundary tests keep `BeautyDemo` on the public `BeautySDK` facade.
+- Static scans cover stale pending UI copy, `VNFaceObservation`, bounding boxes, raw framework errors, local paths, raw preset JSON, and image-byte dump tokens on active SDK/Demo surfaces.
 
 If automated tests are not yet available, record manual checks in `PLANS.md`.
 

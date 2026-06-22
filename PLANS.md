@@ -26,31 +26,27 @@
 
 ## 3. Active
 
-### P-2026-06-22-gsd-execute-phase-6-core-beauty-effects
+_No active plans._
+
+## 4. Completed
+
+### C-2026-06-22-gsd-execute-phase-6-core-beauty-effects
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
-| Owner | Agent |
-| Started | 2026-06-22 |
-| Scope | Execute GSD Phase 6 core beauty effects plans 06-01 through 06-05 in wave order. |
-| Source Request | `$gsd-execute-phase 6` |
-| Current Step | Wave 5 / Plan 06-05: add combined-effect safety, no-face degradation, Demo status/smoke tests, docs, and final verification. |
-| Verification Policy | Run focused SwiftPM tests after each plan, then full SDK and Demo simulator tests before completion; record any environment failures exactly. |
+| Completed | 2026-06-22 |
+| Scope | Executed GSD Phase 6 core beauty effects plans 06-01 through 06-05 in wave order, closing MVP skin, color/filter, face-shape, eyes, nose, mouth, lip color, combined safety, Demo feedback, docs, and final verification. |
+| Requirements | EFFECT-01, EFFECT-04, EFFECT-05, EFFECT-06, EFFECT-07, EFFECT-09 |
+| Files | `BeautySDK/Sources/BeautyEffects/**`, `BeautySDK/Sources/BeautySDK/BeautyEngine.swift`, `BeautySDK/Tests/BeautyEffectsTests/**`, `BeautySDK/Tests/BeautyCoreTests/BeautyEngineTests.swift`, `BeautyDemo/BeautyDemo/State/BeautyParameterStore.swift`, `BeautyDemo/BeautyDemo/Support/DemoFixtures.swift`, `BeautyDemo/BeautyDemoTests/*.swift`, `.planning/phases/06-core-beauty-effects/*-SUMMARY.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, `.planning/REQUIREMENTS.md`, `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `QUALITY_SCORE.md`, `PLANS.md` |
+| Verification | `swift test --package-path BeautySDK --filter CombinedEffectSafetyTests` passed with 4 tests; `swift test --package-path BeautySDK --filter MissingLandmarkDegradationTests` passed with 10 tests; `swift test --package-path BeautySDK --filter BeautyEngineTests` passed with 9 tests; `swift test --package-path BeautySDK --filter BeautyEffectsTests` passed with 45 tests; focused Demo `xcodebuild` for `BeautyParameterStoreTests`, `BeautyDemoViewStateTests`, `BeautyDemoImportBoundaryTests`, and `InputPipelinePrivacyTests` passed; full `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test` passed with 67 Demo XCTest cases; full `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 119 XCTest cases; Demo internal import scan returned no matches; exact stale pending-copy scan returned no matches; public geometry/raw framework/path scan returned no matches; `git diff --check -- BeautySDK BeautyDemo ARCHITECTURE.md DESIGN.md FRONTEND.md SECURITY.md RELIABILITY.md PRODUCT_SENSE.md QUALITY_SCORE.md PLANS.md .planning` exited 0. |
+| Build | SDK SwiftPM tests and Demo simulator tests passed. XcodeBuildMCP `test_sim` could not find `simctl` in its tool environment, so verification used the planned shell `xcodebuild` commands with explicit `DEVELOPER_DIR`. |
 
-Checklist:
+Outcome:
 
-| Step | Status | Evidence |
-| --- | --- | --- |
-| Initialize phase execution | `completed` | `state.begin-phase --phase 06 --name core-beauty-effects --plans 5` updated `.planning/STATE.md`. |
-| Execute 06-01 | `completed` | Task commits `8e538e7` and `df0876a`; `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 79 XCTest cases; `06-01-SUMMARY.md` records EFFECT-01 completion plus partial EFFECT-09 foundation evidence. |
-| Execute 06-02 | `completed` | Task commits `5086225`, `e4eae32`, `1a41d75`, `f4ba264`, and `ddb4fc4`; `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 89 XCTest cases; `06-02-SUMMARY.md` records EFFECT-04 completion plus partial EFFECT-09 face-shape evidence. |
-| Execute 06-03 | `completed` | Task commits `370ebee`, `0ae51a3`, `fbdd43b`, `669a085`, `c6a0484`, and `f0f3e95`; `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 103 XCTest cases; `06-03-SUMMARY.md` records EFFECT-05 and EFFECT-06 completion plus partial EFFECT-09 eye/nose degradation evidence. |
-| Execute 06-04 | `completed` | Task commits `e101273`, `0f4eed3`, `9f04d88`, `76c85ca`, `08ec581`, `a0553b0`, and `b208586`; `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 115 XCTest cases; `06-04-SUMMARY.md` records EFFECT-07 completion plus partial EFFECT-09 mouth/lip degradation evidence. |
-| Execute 06-05 | `active` | Ready to execute final combined safety, no-face degradation, Demo status/smoke, docs, and final verification plan after 06-04 metadata closeout. |
-| Final verification and record | `planned` | Pending all summaries. |
-
-## 4. Completed
+- `BeautyEffects` now owns tested effect resolution, safety caps, skin/color/filter output, face/eye/nose/mouth providers, lip color, combined geometry weakening, no-face skips, missing-landmark degradation, reused/stale behavior, and redacted warning/metric evidence.
+- Public `BeautyEngine` paths preserve default no-op behavior while applying deterministic MVP visual output for scoped domains and conservative built-in presets.
+- Demo normal parameter, filter, preset, and reset interactions stay quiet instead of showing stale pending-copy feedback; detection/degradation copy remains in the existing status path.
+- Root docs and quality score now reflect completed Phase 6 behavior and the remaining manual risks: visual naturalness review, production render quality, simulator screenshot/UI automation, real-device camera/Vision smoke, performance budgets, and long-run reliability.
 
 ### C-2026-06-21-gsd-plan-phase-6-core-beauty-effects
 
@@ -405,6 +401,7 @@ Outcome:
 | TD-007 | GSD Traceability | v2 `ADV-01` through `ADV-10` appear in `.planning/REQUIREMENTS.md` body but not its Traceability table; `phase.complete` warns about them. | GSD audits may continue surfacing deferred v2 IDs even though v1 SDK traceability is complete. | Decide whether deferred v2 requirements should be added to Traceability as Deferred or moved to a separate backlog table. | `open` |
 | TD-008 | Manual Device QA | Phase 4 simulator/tests cannot prove real-device front-camera mirroring or real Vision quality. | Mirror/crop expectations and real detector behavior may differ from synthetic fixtures. | On a physical iPhone, run front-camera preview and confirm mirrored preview with stable processed crop; run no-face, partial-face, and low-light face checks and confirm expected status copy with no crash. | `open` |
 | TD-009 | Manual Visual QA | Phase 5 view-state tests verify preset/filter chip labels, ordering, enabled state, and copy, but no simulator screenshot or human visual smoke was performed for actual layout. | Preset/filter chips could visually clip or feel crowded despite passing model-level tests. | Launch Demo, open Beauty and Filters panels, and confirm preset/filter chips plus color/filter sliders fit without clipping across the target simulator sizes. | `open` |
+| TD-010 | Phase 6 Visual and Hardware QA | Phase 6 automated fixtures prove deterministic MVP output, caps, skips, and Demo state, but not final naturalness, production GPU quality, real camera parity, or long-run performance. | Release-like claims could overstate visual quality or device behavior beyond current automated evidence. | Inspect fixed fixtures or simulator preview for naturalness; run real-device front-camera and still-image smoke; add screenshot/UI automation, production render regression, 720p timing, and long-run memory checks in Phase 7 or a dedicated QA phase. | `open` |
 
 ## 6. Plan Template
 

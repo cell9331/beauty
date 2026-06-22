@@ -208,10 +208,16 @@ The list defines Demo expectations, not SDK implementation order. If a control m
 Phase 5 current state:
 
 - Beauty panel exposes compact preset chips for `Natural`, `Clear`, `Refined`, `Male Natural`, and `ID Photo Natural`.
-- Color controls are visible in the Beauty panel and map to public `BeautyParameters`; Phase 5 remains no-op visually until render passes are implemented.
+- Color controls are visible in the Beauty panel and map to public `BeautyParameters`; Phase 6 routes them through visible SDK output.
 - Filters is an enabled top-level panel with `None`, `Soft Clean`, `Warm Light`, and `Filter Intensity`.
 - Preset and filter data comes through `BeautySDKResources`; Demo source and tests must not import internal SDK targets.
 - Resource failures use fixed friendly copy and must not show raw paths, `NSError`, bundle details, or internal target names.
+
+Phase 6 current state:
+
+- Normal slider, filter, preset, single-reset, and reset-all changes keep `BeautyParameterStore.status` at `.idle`; the old pending-visual Phase 6 copy is not active product copy.
+- Detection and degradation feedback remains centralized in `DetectionStatusPresentation`; no cap banners, per-slider warning rows, or internal provider details are shown in normal UI.
+- Focused view-state tests cover Beauty, Face Shape, Eyes, Nose, Mouth, Filters, and Presets paths without changing category or subcategory ordering.
 
 ## 9. Camera Preview
 
@@ -372,6 +378,12 @@ Phase 4 detection/metadata evidence recorded 2026-06-18:
 - Camera and Photo snapshots pass `BeautyInputMetadata` through the public `BeautySDK` facade into metadata-aware `BeautyEngine.processResult(...)` calls.
 - Demo status copy is centralized in `DetectionStatusPresentation`; sliders remain enabled while face-dependent output degrades.
 - `InputPipelinePrivacyTests` scans Demo code and detection status/debug summaries for internal Target imports, raw Vision objects, public geometry, raw framework errors, and local paths.
+
+Phase 6 Demo feedback evidence recorded 2026-06-22:
+
+- `BeautyParameterStoreTests` verifies normal parameter changes no longer surface pending-Phase-6 copy.
+- `BeautyDemoViewStateTests` verifies existing category order plus Beauty, Face Shape, Eyes, Nose, Mouth, Filters, and Presets panel paths.
+- `InputPipelinePrivacyTests` scans active Demo panel/state source for stale Phase 6 pending copy and raw resource/privacy tokens.
 
 ## 17. Implementation Checklist
 

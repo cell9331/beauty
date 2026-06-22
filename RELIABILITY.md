@@ -128,6 +128,8 @@ Degradation is expected behavior, not a hidden failure.
 
 Every degradation path that affects visible output should be visible in debug metrics or result warnings.
 
+Phase 6 current implementation treats skin, face shape, eyes, nose, mouth, and lip color as face-dependent when the resolver is given an explicit no-face context. Color adjustment and metadata filters remain face-agnostic and continue when their parameters are non-zero. Missing landmark groups skip only dependent domains, reused landmarks reduce geometry briefly, and stale landmarks disable strong geometry with warning/metric evidence.
+
 ## 7. Observability Model
 
 First-version diagnostics live in `BeautyCore/Diagnostics`; do not create a separate diagnostics package until another product actually shares it. Use three layers:
@@ -479,6 +481,17 @@ Phase 4 detection/coordinate evidence recorded 2026-06-18:
 - `CameraBeautyPipelineTests` covers result-backed detection summaries and debounced camera warning replacement.
 - `ImageEditorPipelineTests` covers result-backed photo detection summaries and persisted no-face status copy.
 - `InputPipelinePrivacyTests` covers public detection summary/debug leakage scans.
+
+Phase 6 effect-degradation evidence recorded 2026-06-22:
+
+- Resolver and engine tests cover default no-op, visible all-domain output, conservative built-in presets, high-strength caps, combined geometry weakening, no-face skips, missing eye/nose/mouth skips, reused geometry reduction, and stale geometry skips.
+- `BeautyResult.warnings` and `metrics` carry cap, skip, point-count, active-domain, and weakened-domain evidence without requiring normal UI banners.
+- Demo focused tests verify normal parameter changes are quiet and existing panel paths remain enabled while degradation status stays in `DetectionStatusPresentation`.
+
+Remaining manual reliability checks:
+
+- Real-device camera/Vision smoke still needs hardware verification for mirror/crop behavior, low-light detection quality, and long-run realtime stability.
+- Automated pixel deltas prove deterministic output changes, not final visual naturalness; release-like claims still need simulator screenshot or human fixture review.
 
 ## 19. Release Readiness Gates
 

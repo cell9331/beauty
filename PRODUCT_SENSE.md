@@ -310,6 +310,24 @@ Manual checks still required before release-like claims:
 - Real front-camera preview on device: confirm mirror behavior matches user expectation while processed output/crop stays stable.
 - Real Vision quality smoke: verify no-face, partial-face, and low-light faces produce the expected status copy and no crash.
 
+### 7.7 Phase 6 Core Beauty Effects Acceptance
+
+Agent-verifiable checks:
+
+- Default pixel-buffer and image paths preserve input within copy/render tolerance.
+- Skin, color, filter, face shape, eyes, nose, mouth, and lip controls have deterministic visible or provider-level output evidence.
+- All five built-in presets produce conservative non-zero output and remain under safety caps.
+- High-strength combined geometry is capped and weakened with redacted warning/metric evidence.
+- No usable face skips face-dependent domains while color and filter continue.
+- Missing eye, nose, and mouth landmarks skip only affected domains.
+- Demo normal parameter changes stay quiet; existing detection status copy handles no-face, partial, low-confidence, and stale states.
+- Demo panel smoke coverage includes Beauty, Face Shape, Eyes, Nose, Mouth, Filters, and Presets without category reordering.
+
+Manual checks still required before release-like claims:
+
+- Human visual review of fixed fixtures or simulator preview for naturalness, especially skin texture, face shape plausibility, lip/rosy color, and filter strength.
+- Hardware smoke for real camera/photo parity and real Vision quality under front camera, side face, and low light.
+
 ## 8. Preset Product Contract
 
 MVP built-in presets:
@@ -336,7 +354,7 @@ Phase 5 automated evidence:
 - `BeautySDKResources.availableFilters()` exposes `soft_clean` / `Soft Clean` and `warm_light` / `Warm Light` as metadata-only filters.
 - Demo preset chips apply full parameter snapshots and synchronize visible skin, color, filter, and intensity controls.
 - Demo Filters panel supports `None`, `Soft Clean`, `Warm Light`, and `Filter Intensity`; missing resource copy is friendly and redacted.
-- Full visual effect quality remains Phase 6+ scope because current color/filter behavior is parameter-chain/no-op render behavior.
+- Phase 6 now makes presets, color, filters, skin, face shape, eyes, nose, mouth, and lip color visibly effective through deterministic MVP output; final artistic quality remains a manual visual QA gate.
 
 ## 9. Scenario Matrix
 
