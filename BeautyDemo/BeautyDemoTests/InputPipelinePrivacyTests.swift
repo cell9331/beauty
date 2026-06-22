@@ -96,6 +96,30 @@ final class InputPipelinePrivacyTests: XCTestCase {
         XCTAssertTrue((tokenMatches + importMatches).isEmpty, (tokenMatches + importMatches).joined(separator: "\n"))
     }
 
+    func testDEMO06ParameterJSONSurfacesStayLocalFirstAndCopyPasteOnly() throws {
+        let files = try swiftFiles(in: [
+            "BeautyDemo/BeautyDemo/State",
+            "BeautyDemo/BeautyDemo/Editor",
+            "BeautyDemo/BeautyDemoTests"
+        ])
+        let forbiddenTokens = [
+            "URL" + "Session",
+            "http" + "://",
+            "https" + "://",
+            "up" + "load",
+            "Document" + "Picker",
+            "file" + "Importer",
+            "file" + "Exporter",
+            "raw" + "PresetJson",
+            "/private" + "/var",
+            "NS" + "Error"
+        ]
+
+        let tokenMatches = try matches(for: forbiddenTokens, in: files)
+
+        XCTAssertTrue(tokenMatches.isEmpty, tokenMatches.joined(separator: "\n"))
+    }
+
     func testD13FriendlyInputCopyIsPresentAndRawCopyIsAbsent() throws {
         let editorText = try readTextFile("BeautyDemo/BeautyDemo/Editor/EditorShellView.swift")
         let imageModelsText = try readTextFile("BeautyDemo/BeautyDemo/Editor/ImageInputModels.swift")
