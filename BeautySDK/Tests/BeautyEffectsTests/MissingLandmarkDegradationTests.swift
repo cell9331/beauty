@@ -147,4 +147,22 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertTrue(plan.skippedDomains.contains(.mouth))
         XCTAssertTrue(plan.warnings.contains { $0.code == "geometry_stale_skipped" })
     }
+
+    func testMissingMouthSkipsLipColorAndKeepsSafeDomainsActive() {
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(
+                brightness: 0.2,
+                lipColor: 1,
+                filterId: "warm_light",
+                filterIntensity: 0.5
+            ),
+            faceGeometry: .missingMouth
+        )
+
+        XCTAssertFalse(plan.activeDomains.contains(.lipColor))
+        XCTAssertTrue(plan.activeDomains.contains(.color))
+        XCTAssertTrue(plan.activeDomains.contains(.filter))
+        XCTAssertTrue(plan.skippedDomains.contains(.lipColor))
+        XCTAssertTrue(plan.warnings.contains { $0.code == "lip_landmarks_missing" })
+    }
 }
