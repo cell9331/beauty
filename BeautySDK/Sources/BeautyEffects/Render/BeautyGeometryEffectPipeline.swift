@@ -9,7 +9,8 @@ enum BeautyGeometryEffectPipeline {
 
     static func controlPoints(for strengths: BeautyEffectiveStrengths, face: FaceGeometry) -> [WarpControlPoint] {
         FaceShapeWarpProvider().makeControlPoints(face: face, strengths: strengths).points +
-            ChinWarpProvider().makeControlPoints(face: face, strengths: strengths).points
+            ChinWarpProvider().makeControlPoints(face: face, strengths: strengths).points +
+            EyeWarpProvider().makeControlPoints(face: face, strengths: strengths).points
     }
 
     /// MVP fixture proxy until the production warp pass consumes control points directly.

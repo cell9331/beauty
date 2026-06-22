@@ -24,6 +24,23 @@ struct FaceBounds: Equatable, Sendable {
 struct FaceGeometry: Equatable, Sendable {
     let bounds: FaceBounds
     let faceContour: [SIMD2<Float>]
+    let leftEye: [SIMD2<Float>]
+    let rightEye: [SIMD2<Float>]
+    let nose: [SIMD2<Float>]
+
+    init(
+        bounds: FaceBounds,
+        faceContour: [SIMD2<Float>],
+        leftEye: [SIMD2<Float>] = [],
+        rightEye: [SIMD2<Float>] = [],
+        nose: [SIMD2<Float>] = []
+    ) {
+        self.bounds = bounds
+        self.faceContour = faceContour
+        self.leftEye = leftEye
+        self.rightEye = rightEye
+        self.nose = nose
+    }
 
     var center: SIMD2<Float> {
         LandmarkGeometryHelper.center(of: faceContour) ?? bounds.center

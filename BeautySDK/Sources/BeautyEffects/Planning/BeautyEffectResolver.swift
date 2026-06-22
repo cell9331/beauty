@@ -11,6 +11,7 @@ public enum BeautyEffectResolver {
         var skippedDomains: Set<BeautyEffectDomain> = []
         var metrics: [String: Double] = [:]
         var cappedCount = 0
+        var geometryPointCount = 0
 
         var strengths = BeautyEffectiveStrengths()
         strengths.skinSmoothing = capUnit(normalized.skinSmoothing, cap: BeautySafetyCaps.skinSmoothing, cappedCount: &cappedCount)
@@ -89,12 +90,12 @@ public enum BeautyEffectResolver {
                 extraWarnings.append(contentsOf: conflict.warnings)
                 metrics.merge(conflict.metrics) { _, new in new }
 
-                let geometryPointCount = BeautyGeometryEffectPipeline
+                let faceShapePointCount = BeautyGeometryEffectPipeline
                     .controlPoints(for: strengths, face: faceGeometry)
                     .count
-                if geometryPointCount > 0 {
+                if faceShapePointCount > 0 {
                     activeDomains.insert(.faceShape)
-                    metrics["beauty.effects.geometryPointCount"] = Double(geometryPointCount)
+                    geometryPointCount += faceShapePointCount
                 } else {
                     skippedDomains.insert(.faceShape)
                     extraWarnings.append(Self.faceShapeSkippedWarning)
@@ -106,7 +107,21 @@ public enum BeautyEffectResolver {
             }
         }
         if anyNonZero(strengths.eyeSize, strengths.eyeDistance, strengths.eyeYPosition, strengths.eyeTailLift) {
-            activeDomains.insert(.eyes)
+            if let faceGeometry {
+                let result = EyeWarpProvider().makeControlPoints(face: faceGeometry, strengths: strengths)
+                if result.points.isEmpty {
+                    skippedDomains.insert(.eyes)
+                    metrics["beauty.effects.skippedEyeDomains"] = 1
+                    extraWarnings.append(Self.eyeSkippedWarning)
+                } else {
+                    activeDomains.insert(.eyes)
+                    geometryPointCount += result.points.count
+                }
+            } else {
+                skippedDomains.insert(.eyes)
+                metrics["beauty.effects.skippedEyeDomains"] = 1
+                extraWarnings.append(Self.eyeSkippedWarning)
+            }
         }
         if anyNonZero(strengths.noseSlim, strengths.noseWingSlim, strengths.noseTipSize, strengths.noseBridge) {
             activeDomains.insert(.nose)
@@ -120,6 +135,9 @@ public enum BeautyEffectResolver {
 
         metrics["beauty.effects.activeCount"] = Double(activeDomains.count)
         metrics["beauty.effects.cappedCount"] = Double(cappedCount)
+        if geometryPointCount > 0 {
+            metrics["beauty.effects.geometryPointCount"] = Double(geometryPointCount)
+        }
 
         var warnings = cappedCount > 0 ? [
             BeautyValidationWarning(
@@ -162,6 +180,13 @@ public enum BeautyEffectResolver {
         BeautyValidationWarning(
             code: "face_effects_skipped_no_face",
             message: "Face-dependent geometry was skipped because no usable face was available."
+        )
+    }
+
+    private static var eyeSkippedWarning: BeautyValidationWarning {
+        BeautyValidationWarning(
+            code: "eye_landmarks_missing",
+            message: "Eye geometry was skipped because required eye inputs were unavailable."
         )
     }
 }
