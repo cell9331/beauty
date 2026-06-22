@@ -106,6 +106,67 @@ final class BeautyDemoViewStateTests: XCTestCase {
         XCTAssertFalse(failedState.body.contains("/"))
     }
 
+    func testDEMO06PreviewToolbarIncludesParameterJSONAndPreservesCompareLabels() {
+        XCTAssertEqual(
+            EditorShellView.previewToolbarViewState(compareActionTitle: "Show Before").map(\.title),
+            ["Show Before", "Parameter JSON"]
+        )
+        XCTAssertEqual(
+            EditorShellView.previewToolbarViewState(compareActionTitle: "Show After").map(\.title),
+            ["Show After", "Parameter JSON"]
+        )
+    }
+
+    func testDEMO06ParameterJSONSheetCopyMatchesContract() {
+        let importState = ParameterJSONSheetView.viewState(mode: .import, importState: .empty)
+        let exportState = ParameterJSONSheetView.viewState(mode: .export, importState: .empty)
+
+        XCTAssertEqual(importState.title, "Parameter JSON")
+        XCTAssertEqual(importState.modeTitles, ["Import", "Export"])
+        XCTAssertEqual(importState.primaryPrompt, "Paste parameter JSON")
+        XCTAssertEqual(importState.previewActionTitle, "Preview Parameter JSON")
+        XCTAssertEqual(importState.applyActionTitle, "Apply Imported Parameters")
+        XCTAssertEqual(exportState.primaryPrompt, "Copy this deterministic payload for SDK QA or round-trip tests.")
+        XCTAssertEqual(exportState.exportActionTitle, "Copy Parameter JSON")
+    }
+
+    func testDEMO06InvalidPreviewCopyKeepsCurrentSettingsLanguage() {
+        let state = ParameterJSONSheetView.viewState(
+            mode: .import,
+            importState: .failed(.invalidJSON)
+        )
+
+        XCTAssertEqual(
+            state.feedbackText,
+            "Parameter JSON could not be read. Fix the pasted payload and preview again. Current settings stay unchanged."
+        )
+        XCTAssertTrue(state.feedbackText?.contains("Current settings stay unchanged.") == true)
+    }
+
+    func testDEMO06ApplyIsUnavailableUntilPreviewCandidateExists() {
+        XCTAssertFalse(ParameterJSONSheetView.viewState(mode: .import, importState: .empty).canApply)
+        XCTAssertFalse(ParameterJSONSheetView.viewState(mode: .import, importState: .failed(.invalidJSON)).canApply)
+        XCTAssertTrue(ParameterJSONSheetView.viewState(mode: .import, importState: .preview(BeautyParameters())).canApply)
+    }
+
+    @MainActor
+    func testDEMO06ValidSheetCandidateAppliesImportedPathAndClearsPresetSource() throws {
+        let store = BeautyParameterStore()
+        let preset = try XCTUnwrap(try BeautySDKResources.builtInPresets().first)
+        store.applyPreset(preset)
+        let exported = try ParameterJSONCoding.export(
+            parameters: BeautyParameters(skinSmoothing: 0.42, filterId: "soft_clean", filterIntensity: 0.35)
+        )
+        let candidate = try XCTUnwrap(ParameterJSONCoding.previewImport(exported).candidate)
+
+        store.applyImportedParameters(candidate)
+
+        XCTAssertNil(store.selectedPresetId)
+        XCTAssertEqual(store.parameterSource, .imported)
+        XCTAssertEqual(store.selectedFilterId, "soft_clean")
+        XCTAssertEqual(store.displayValue(for: .skinSmoothing), 42, accuracy: 0.0001)
+    }
+
     func testPhase3InputStateMatrixCoversPIPE01PIPE04PIPE06PIPE08AndDEMO01() throws {
         let snapshot = try makeImageSnapshot()
         let states = [
