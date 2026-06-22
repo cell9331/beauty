@@ -35,6 +35,22 @@ final class GeometryConflictResolverTests: XCTestCase {
         XCTAssertEqual(points, BeautyGeometryEffectPipeline.controlPoints(for: plan, face: .fixture))
     }
 
+    func testGeometryPipelineMVPProxyProducesDeterministicVisibleBytes() {
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(faceSlim: 1, chinLength: 1),
+            faceGeometry: .fixture
+        )
+        let input: [UInt8] = [
+            20, 30, 40, 255,
+            80, 90, 100, 255
+        ]
+
+        let output = BeautyGeometryEffectPipeline.applyMVPProxy(toBGRA: input, plan: plan, face: .fixture)
+
+        XCTAssertNotEqual(output, input)
+        XCTAssertEqual(output, BeautyGeometryEffectPipeline.applyMVPProxy(toBGRA: input, plan: plan, face: .fixture))
+    }
+
     func testNoFaceSkipsFaceShapeButKeepsColorAndFilterDomains() {
         let plan = BeautyEffectResolver.resolve(
             parameters: BeautyParameters(
