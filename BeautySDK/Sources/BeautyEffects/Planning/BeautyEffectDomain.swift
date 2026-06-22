@@ -1,4 +1,4 @@
-enum BeautyEffectDomain: String, CaseIterable, Equatable, Hashable, Sendable {
+public enum BeautyEffectDomain: String, CaseIterable, Equatable, Hashable, Sendable {
     case skin
     case color
     case filter

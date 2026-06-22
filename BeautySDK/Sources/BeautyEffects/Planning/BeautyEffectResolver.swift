@@ -1,7 +1,7 @@
 import BeautyCore
 
-enum BeautyEffectResolver {
-    static func resolve(parameters: BeautyParameters) -> BeautyEffectPlan {
+public enum BeautyEffectResolver {
+    public static func resolve(parameters: BeautyParameters) -> BeautyEffectPlan {
         let normalized = parameters.normalized()
         var activeDomains: Set<BeautyEffectDomain> = []
         var metrics: [String: Double] = [:]
@@ -61,6 +61,12 @@ enum BeautyEffectResolver {
         }
         if normalized.filterId != nil, strengths.filterIntensity > 0 {
             activeDomains.insert(.filter)
+            if normalized.filterId == "soft_clean" {
+                metrics["beauty.effects.filter.softClean"] = 1
+            }
+            if normalized.filterId == "warm_light" {
+                metrics["beauty.effects.filter.warmLight"] = 1
+            }
         }
         if anyNonZero(strengths.faceSlim, strengths.faceSmall, strengths.faceVShape, strengths.jawSlim, strengths.chinLength) {
             activeDomains.insert(.faceShape)

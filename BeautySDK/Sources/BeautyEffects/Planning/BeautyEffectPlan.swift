@@ -1,13 +1,13 @@
 import BeautyCore
 
-struct BeautyEffectPlan: Equatable, Sendable {
-    let activeDomains: Set<BeautyEffectDomain>
-    let skippedDomains: Set<BeautyEffectDomain>
-    let warnings: [BeautyValidationWarning]
-    let metrics: [String: Double]
-    let effectiveStrengths: BeautyEffectiveStrengths
+public struct BeautyEffectPlan: Equatable, Sendable {
+    public let activeDomains: Set<BeautyEffectDomain>
+    public let skippedDomains: Set<BeautyEffectDomain>
+    public let warnings: [BeautyValidationWarning]
+    public let metrics: [String: Double]
+    public let effectiveStrengths: BeautyEffectiveStrengths
 
-    init(
+    public init(
         activeDomains: Set<BeautyEffectDomain> = [],
         skippedDomains: Set<BeautyEffectDomain> = [],
         warnings: [BeautyValidationWarning] = [],
@@ -22,35 +22,37 @@ struct BeautyEffectPlan: Equatable, Sendable {
     }
 }
 
-struct BeautyEffectiveStrengths: Equatable, Sendable {
-    var skinSmoothing: Float = 0
-    var skinWhitening: Float = 0
-    var skinRosy: Float = 0
-    var skinSharpen: Float = 0
-    var brightness: Float = 0
-    var contrast: Float = 0
-    var saturation: Float = 0
-    var temperature: Float = 0
-    var tint: Float = 0
-    var exposure: Float = 0
-    var highlight: Float = 0
-    var shadow: Float = 0
-    var filterIntensity: Float = 0
-    var faceSlim: Float = 0
-    var faceSmall: Float = 0
-    var faceVShape: Float = 0
-    var jawSlim: Float = 0
-    var chinLength: Float = 0
-    var eyeSize: Float = 0
-    var eyeDistance: Float = 0
-    var eyeYPosition: Float = 0
-    var eyeTailLift: Float = 0
-    var noseSlim: Float = 0
-    var noseWingSlim: Float = 0
-    var noseTipSize: Float = 0
-    var noseBridge: Float = 0
-    var mouthSize: Float = 0
-    var mouthWidth: Float = 0
-    var smile: Float = 0
-    var lipColor: Float = 0
+public struct BeautyEffectiveStrengths: Equatable, Sendable {
+    public var skinSmoothing: Float = 0
+    public var skinWhitening: Float = 0
+    public var skinRosy: Float = 0
+    public var skinSharpen: Float = 0
+    public var brightness: Float = 0
+    public var contrast: Float = 0
+    public var saturation: Float = 0
+    public var temperature: Float = 0
+    public var tint: Float = 0
+    public var exposure: Float = 0
+    public var highlight: Float = 0
+    public var shadow: Float = 0
+    public var filterIntensity: Float = 0
+    public var faceSlim: Float = 0
+    public var faceSmall: Float = 0
+    public var faceVShape: Float = 0
+    public var jawSlim: Float = 0
+    public var chinLength: Float = 0
+    public var eyeSize: Float = 0
+    public var eyeDistance: Float = 0
+    public var eyeYPosition: Float = 0
+    public var eyeTailLift: Float = 0
+    public var noseSlim: Float = 0
+    public var noseWingSlim: Float = 0
+    public var noseTipSize: Float = 0
+    public var noseBridge: Float = 0
+    public var mouthSize: Float = 0
+    public var mouthWidth: Float = 0
+    public var smile: Float = 0
+    public var lipColor: Float = 0
+
+    public init() {}
 }

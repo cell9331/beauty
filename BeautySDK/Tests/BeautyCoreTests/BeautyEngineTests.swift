@@ -32,49 +32,88 @@ final class BeautyEngineTests: XCTestCase {
         XCTAssertEqual(try PixelBufferFixtures.rgbaBytes(from: output), try PixelBufferFixtures.rgbaBytes(from: image))
     }
 
-    func testEFFECT02PixelBufferNoopAcceptsNonZeroColorAndFilterParameters() throws {
-        let input = try PixelBufferFixtures.makeBGRA(width: 1, height: 1, bytes: [10, 20, 30, 255])
+    func testEFFECT01PixelBufferSkinColorAndFilterParametersProduceVisibleOutput() throws {
+        let input = try PixelBufferFixtures.makeBGRA(width: 2, height: 1, bytes: [
+            30, 40, 50, 255,
+            90, 100, 110, 255
+        ])
         let engine = try BeautyEngine(configuration: .default)
         let parameters = BeautyParameters(
+            skinWhitening: 0.5,
+            skinRosy: 0.3,
             brightness: 0.2,
-            contrast: -0.1,
-            saturation: 0.3,
-            temperature: 0.15,
-            tint: -0.05,
-            exposure: 0.25,
-            highlight: -0.2,
-            shadow: 0.1,
             filterId: "soft_clean",
-            filterIntensity: 0.35
+            filterIntensity: 0.5
         )
 
-        let output = try engine.process(pixelBuffer: input, orientation: .up, parameters: parameters)
+        let result = try engine.processResult(
+            pixelBuffer: input,
+            metadata: BeautyInputMetadata(orientation: .up, source: .camera),
+            parameters: parameters
+        )
 
-        XCTAssertFalse(input === output)
-        XCTAssertEqual(try PixelBufferFixtures.bytes(from: output), try PixelBufferFixtures.bytes(from: input))
+        XCTAssertFalse(input === result.output)
+        XCTAssertNotEqual(try PixelBufferFixtures.bytes(from: result.output), try PixelBufferFixtures.bytes(from: input))
+        XCTAssertEqual(result.metrics["beauty.effects.activeCount"], 3)
     }
 
-    func testEFFECT02ImageNoopAcceptsNonZeroColorAndFilterParameters() throws {
+    func testEFFECT01ImageSkinColorAndFilterParametersProduceVisibleOutput() throws {
         let image = CIImage(color: CIColor(red: 0.2, green: 0.3, blue: 0.4, alpha: 1))
             .cropped(to: CGRect(x: 0, y: 0, width: 1, height: 1))
         let engine = try BeautyEngine(configuration: .default)
         let parameters = BeautyParameters(
-            brightness: -0.2,
-            contrast: 0.1,
-            saturation: -0.3,
-            temperature: -0.15,
-            tint: 0.05,
-            exposure: -0.25,
-            highlight: 0.2,
-            shadow: -0.1,
+            skinWhitening: 0.3,
+            skinRosy: 0.2,
+            brightness: 0.2,
             filterId: "warm_light",
-            filterIntensity: 0.35
+            filterIntensity: 0.5
         )
 
-        let output = try engine.process(image: image, orientation: .up, parameters: parameters)
+        let result = try engine.processResult(
+            image: image,
+            metadata: BeautyInputMetadata(orientation: .up, source: .photo),
+            parameters: parameters
+        )
 
-        XCTAssertEqual(output.extent, image.extent)
-        XCTAssertEqual(try PixelBufferFixtures.rgbaBytes(from: output), try PixelBufferFixtures.rgbaBytes(from: image))
+        XCTAssertEqual(result.output.extent, image.extent)
+        XCTAssertNotEqual(try PixelBufferFixtures.rgbaBytes(from: result.output), try PixelBufferFixtures.rgbaBytes(from: image))
+        XCTAssertEqual(result.metrics["beauty.effects.activeCount"], 3)
+    }
+
+    func testEFFECT09UnknownFilterThrowsTypedResourceErrorBeforeRendering() throws {
+        let input = try PixelBufferFixtures.makeBGRA(width: 1, height: 1, bytes: [10, 20, 30, 255])
+        let engine = try BeautyEngine(configuration: .default)
+        let parameters = BeautyParameters(filterId: "missing_filter", filterIntensity: 0.5)
+
+        XCTAssertThrowsError(
+            try engine.process(pixelBuffer: input, orientation: .up, parameters: parameters)
+        ) { error in
+            XCTAssertEqual(error as? BeautyError, .resourceNotFound("missing_filter"))
+        }
+    }
+
+    func testEFFECT09BuiltInPresetProducesVisiblePixelBufferOutput() throws {
+        let input = try PixelBufferFixtures.makeBGRA(width: 1, height: 1, bytes: [80, 90, 100, 255])
+        let engine = try BeautyEngine(configuration: .default)
+        let preset = try BeautySDKResources.preset(id: "natural")
+
+        let output = try engine.process(pixelBuffer: input, orientation: .up, parameters: preset.parameters)
+
+        XCTAssertNotEqual(try PixelBufferFixtures.bytes(from: output), try PixelBufferFixtures.bytes(from: input))
+    }
+
+    func testEFFECT09EngineReturnsResolverWarningsAndMetrics() throws {
+        let input = try PixelBufferFixtures.makeBGRA(width: 1, height: 1, bytes: [70, 80, 90, 255])
+        let engine = try BeautyEngine(configuration: .default)
+
+        let result = try engine.processResult(
+            pixelBuffer: input,
+            metadata: BeautyInputMetadata(orientation: .up, source: .camera),
+            parameters: BeautyParameters(skinSmoothing: 1)
+        )
+
+        XCTAssertTrue(result.warnings.contains { $0.code == "beauty_strength_capped" })
+        XCTAssertEqual(result.metrics["beauty.effects.cappedCount"], 1)
     }
 
     func testSDK06UnsupportedPixelFormatReturnsTypedError() throws {
