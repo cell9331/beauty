@@ -33,6 +33,7 @@ struct FaceGeometry: Equatable, Sendable {
     let leftEye: [SIMD2<Float>]
     let rightEye: [SIMD2<Float>]
     let nose: [SIMD2<Float>]
+    let outerLips: [SIMD2<Float>]
     let freshness: LandmarkGeometryFreshness
 
     init(
@@ -41,6 +42,7 @@ struct FaceGeometry: Equatable, Sendable {
         leftEye: [SIMD2<Float>] = [],
         rightEye: [SIMD2<Float>] = [],
         nose: [SIMD2<Float>] = [],
+        outerLips: [SIMD2<Float>] = [],
         freshness: LandmarkGeometryFreshness = .fresh
     ) {
         self.bounds = bounds
@@ -48,6 +50,7 @@ struct FaceGeometry: Equatable, Sendable {
         self.leftEye = leftEye
         self.rightEye = rightEye
         self.nose = nose
+        self.outerLips = outerLips
         self.freshness = freshness
     }
 
