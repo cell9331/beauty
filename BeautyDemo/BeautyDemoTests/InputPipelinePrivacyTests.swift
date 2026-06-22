@@ -78,6 +78,7 @@ final class InputPipelinePrivacyTests: XCTestCase {
             "NSError",
             "Bundle.",
             "rawPresetJson",
+            "Visual update pending " + "Phase 6",
             "../",
             ".cube",
             "LUTPass",

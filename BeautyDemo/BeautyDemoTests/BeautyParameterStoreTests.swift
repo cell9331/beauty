@@ -87,13 +87,12 @@ final class BeautyParameterStoreTests: XCTestCase {
         XCTAssertEqual(store.parametersSnapshot.filterIntensity, 0.35, accuracy: 0.0001)
     }
 
-    func testSliderUpdateSurfacesAppliedAndPendingVisualStatus() {
+    func testNormalParameterChangesStayQuietAfterPhase6VisualEffects() {
         let store = BeautyParameterStore()
 
         store.setDisplayValue(25, for: .faceSlim)
 
-        XCTAssertEqual(store.status.primaryText, "Parameters applied")
-        XCTAssertEqual(store.status.secondaryText, "Visual update pending Phase 6")
+        XCTAssertEqual(store.status, .idle)
     }
 
     func testSingleControlResetLeavesUnrelatedDisplayValuesUnchanged() {

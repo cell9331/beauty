@@ -217,13 +217,13 @@ final class BeautyDemoViewStateTests: XCTestCase {
         let state = BeautyPanelView.viewState(
             categoryID: .beauty,
             selectedSubcategoryID: .eyes,
-            status: .appliedPendingVisual
+            status: .idle
         )
 
         // DEMO-05 DEMO-08
         XCTAssertTrue(state.showsResetAll)
-        XCTAssertEqual(state.status.primaryText, "Parameters applied")
-        XCTAssertEqual(state.status.secondaryText, "Visual update pending Phase 6")
+        XCTAssertNil(state.status.primaryText)
+        XCTAssertNil(state.status.secondaryText)
         XCTAssertEqual(state.presetPickerItems.map(\.title), ["Natural", "Clear", "Refined", "Male Natural", "ID Photo Natural"])
         XCTAssertEqual(state.presetPickerItems.map(\.accessibilityLabel), [
             "Apply Natural Preset",
@@ -249,6 +249,59 @@ final class BeautyDemoViewStateTests: XCTestCase {
                 .shadow
             ]
         )
+    }
+
+    func testPhase6PanelPathsCoverAllEffectCategoriesWithoutReordering() {
+        XCTAssertEqual(
+            BeautyCategory.all.map(\.id),
+            [.beauty, .faceShape, .facialFeatures, .makeup, .filters, .stickers, .background, .style]
+        )
+        XCTAssertEqual(
+            FacialFeatureSubcategory.all.map(\.id),
+            [.eyes, .nose, .mouth, .eyebrows, .teeth, .hairline]
+        )
+
+        let beauty = BeautyPanelView.viewState(categoryID: .beauty, selectedSubcategoryID: .eyes, status: .idle)
+        XCTAssertEqual(beauty.category.title, "Beauty")
+        XCTAssertEqual(beauty.presetPickerItems.map(\.title), ["Natural", "Clear", "Refined", "Male Natural", "ID Photo Natural"])
+        XCTAssertEqual(beauty.controls.map(\.id), [
+            .skinSmoothing,
+            .skinWhitening,
+            .skinRosy,
+            .skinSharpen,
+            .brightness,
+            .contrast,
+            .saturation,
+            .temperature,
+            .tint,
+            .exposure,
+            .highlight,
+            .shadow
+        ])
+
+        let faceShape = BeautyPanelView.viewState(categoryID: .faceShape, selectedSubcategoryID: .eyes, status: .idle)
+        XCTAssertEqual(faceShape.category.title, "Face Shape")
+        XCTAssertEqual(faceShape.controls.map(\.id), [.faceSlim, .faceSmall, .faceVShape, .jawSlim, .chinLength])
+
+        let eyes = BeautyPanelView.viewState(categoryID: .facialFeatures, selectedSubcategoryID: .eyes, status: .idle)
+        XCTAssertEqual(eyes.subcategories.filter(\.isSelected).map(\.id), [.eyes])
+        XCTAssertEqual(eyes.controls.map(\.id), [.eyeSize, .eyeDistance, .eyeYPosition, .eyeTailLift])
+
+        let nose = BeautyPanelView.viewState(categoryID: .facialFeatures, selectedSubcategoryID: .nose, status: .idle)
+        XCTAssertEqual(nose.subcategories.filter(\.isSelected).map(\.id), [.nose])
+        XCTAssertEqual(nose.controls.map(\.id), [.noseSlim, .noseWingSlim, .noseTipSize, .noseBridge])
+
+        let mouth = BeautyPanelView.viewState(categoryID: .facialFeatures, selectedSubcategoryID: .mouth, status: .idle)
+        XCTAssertEqual(mouth.subcategories.filter(\.isSelected).map(\.id), [.mouth])
+        XCTAssertEqual(mouth.controls.map(\.id), [.mouthSize, .mouthWidth, .smile, .lipColor])
+
+        let filters = BeautyPanelView.viewState(categoryID: .filters, selectedSubcategoryID: .eyes, status: .idle)
+        XCTAssertEqual(filters.category.title, "Filters")
+        XCTAssertEqual(filters.filterPickerItems.map(\.title), ["None", "Soft Clean", "Warm Light"])
+        XCTAssertEqual(filters.controls.map(\.id), [.filterIntensity])
+
+        XCTAssertTrue([beauty, faceShape, eyes, nose, mouth, filters].allSatisfy(\.activeAvailability.isEnabled))
+        XCTAssertTrue([beauty, faceShape, eyes, nose, mouth, filters].allSatisfy(\.showsResetAll))
     }
 
     func testEFFECT03MissingResourceCopyIsFriendlyAndRedacted() {
