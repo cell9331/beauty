@@ -30,6 +30,23 @@ _No active plans._
 
 ## 4. Completed
 
+### C-2026-06-23-gsd-complete-milestone-v1
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-23 |
+| Scope | Completed `$gsd-complete-milestone v1.0` for the MVP milestone: archived roadmap, requirements, and milestone audit files; collapsed living PROJECT/ROADMAP/STATE context for the next milestone; wrote milestone summary and retrospective; kept `.planning/phases/` in place per user option `2`; and removed root `.planning/REQUIREMENTS.md` so the next milestone starts with fresh requirements. |
+| Files | `.planning/milestones/v1.0-ROADMAP.md`, `.planning/milestones/v1.0-REQUIREMENTS.md`, `.planning/milestones/v1.0-MILESTONE-AUDIT.md`, `.planning/MILESTONES.md`, `.planning/RETROSPECTIVE.md`, `.planning/PROJECT.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `.planning/REQUIREMENTS.md`, `PLANS.md` |
+| Verification | Pre-close checks had passed before archival: `gsd-tools.cjs query audit-open` reported all clear; `gsd-tools.cjs query roadmap.analyze` reported 7/7 phases, 28/28 plans, 100%; requirements audit showed 33/33 v1 requirements complete; archive safety commit `ada0596` was created before deleting `.planning/REQUIREMENTS.md`; `git diff --check` over milestone archive files passed; final staged diff check passed before commit. |
+| Build | Not run for this closeout step; only GSD planning/archive Markdown files changed. Full SDK SwiftPM tests and Demo simulator tests had passed earlier in the same v1.0 audit run and are cited in `.planning/milestones/v1.0-MILESTONE-AUDIT.md`. |
+
+Outcome:
+
+- v1.0 MVP now has historical archive files under `.planning/milestones/`.
+- Living `.planning/ROADMAP.md`, `.planning/PROJECT.md`, and `.planning/STATE.md` point to next-milestone planning instead of carrying the full v1.0 working set.
+- `.planning/REQUIREMENTS.md` was removed after the archive safety commit; `$gsd-new-milestone` should recreate fresh active requirements.
+- `.planning/phases/` remains in place as raw execution history because the user chose not to move phase directories.
+
 ### C-2026-06-23-gsd-audit-gap-closure-v1
 
 | Field | Value |
