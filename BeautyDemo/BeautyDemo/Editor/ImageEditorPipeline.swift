@@ -129,7 +129,8 @@ final class ImageEditorPipeline: ObservableObject {
                     outputCGImage: try renderer.render(processingResult.output),
                     metadata: decoded.metadata,
                     parameters: work.parameters,
-                    detectionSummary: processingResult.detectionSummary
+                    detectionSummary: processingResult.detectionSummary,
+                    warningCount: processingResult.warnings.count
                 )
                 result = .success(snapshot)
             } catch {

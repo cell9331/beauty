@@ -11,6 +11,7 @@ nonisolated struct CameraProcessingSnapshot: @unchecked Sendable, Equatable {
     let parameters: BeautyParameters
     let extent: CGSize
     let detectionSummary: BeautyDetectionSummary?
+    let warningCount: Int
 
     var orientation: CGImagePropertyOrientation {
         metadata.orientation
@@ -26,7 +27,8 @@ nonisolated struct CameraProcessingSnapshot: @unchecked Sendable, Equatable {
         metadata: BeautyInputMetadata,
         parameters: BeautyParameters,
         extent: CGSize,
-        detectionSummary: BeautyDetectionSummary? = nil
+        detectionSummary: BeautyDetectionSummary? = nil,
+        warningCount: Int = 0
     ) {
         self.inputPixelBuffer = inputPixelBuffer
         self.outputPixelBuffer = outputPixelBuffer
@@ -34,6 +36,7 @@ nonisolated struct CameraProcessingSnapshot: @unchecked Sendable, Equatable {
         self.parameters = parameters
         self.extent = extent
         self.detectionSummary = detectionSummary
+        self.warningCount = max(0, warningCount)
     }
 
     init(
@@ -43,7 +46,8 @@ nonisolated struct CameraProcessingSnapshot: @unchecked Sendable, Equatable {
         timestamp: TimeInterval,
         parameters: BeautyParameters,
         extent: CGSize,
-        detectionSummary: BeautyDetectionSummary? = nil
+        detectionSummary: BeautyDetectionSummary? = nil,
+        warningCount: Int = 0
     ) {
         self.init(
             inputPixelBuffer: inputPixelBuffer,
@@ -55,7 +59,8 @@ nonisolated struct CameraProcessingSnapshot: @unchecked Sendable, Equatable {
             ),
             parameters: parameters,
             extent: extent,
-            detectionSummary: detectionSummary
+            detectionSummary: detectionSummary,
+            warningCount: warningCount
         )
     }
 
@@ -65,7 +70,12 @@ nonisolated struct CameraProcessingSnapshot: @unchecked Sendable, Equatable {
             lhs.metadata == rhs.metadata &&
             lhs.parameters == rhs.parameters &&
             lhs.extent == rhs.extent &&
-            lhs.detectionSummary == rhs.detectionSummary
+            lhs.detectionSummary == rhs.detectionSummary &&
+            lhs.warningCount == rhs.warningCount
+    }
+
+    var detectionDebugSummary: DetectionDebugSummary? {
+        detectionSummary.map { DetectionDebugSummary(summary: $0) }
     }
 }
 
@@ -241,7 +251,8 @@ final class CameraBeautyPipeline: ObservableObject {
                 metadata: work.frame.metadata,
                 parameters: work.parameters,
                 extent: work.frame.extent,
-                detectionSummary: result.detectionSummary
+                detectionSummary: result.detectionSummary,
+                warningCount: result.warnings.count
             )
             latestSnapshot = snapshot
             let presentation = detectionStatusDebouncer.update(with: result.detectionSummary)

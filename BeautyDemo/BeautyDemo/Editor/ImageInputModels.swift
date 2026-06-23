@@ -112,6 +112,7 @@ nonisolated struct ImageProcessingSnapshot: @unchecked Sendable, Equatable {
     let metadata: BeautyInputMetadata
     let parameters: BeautyParameters
     let detectionSummary: BeautyDetectionSummary?
+    let warningCount: Int
 
     var orientation: CGImagePropertyOrientation {
         metadata.orientation
@@ -130,7 +131,8 @@ nonisolated struct ImageProcessingSnapshot: @unchecked Sendable, Equatable {
         outputCGImage: CGImage,
         metadata: BeautyInputMetadata,
         parameters: BeautyParameters,
-        detectionSummary: BeautyDetectionSummary? = nil
+        detectionSummary: BeautyDetectionSummary? = nil,
+        warningCount: Int = 0
     ) {
         self.sourceKind = sourceKind
         self.sourceID = sourceID
@@ -141,6 +143,7 @@ nonisolated struct ImageProcessingSnapshot: @unchecked Sendable, Equatable {
         self.metadata = metadata
         self.parameters = parameters
         self.detectionSummary = detectionSummary
+        self.warningCount = max(0, warningCount)
     }
 
     init(
@@ -152,7 +155,8 @@ nonisolated struct ImageProcessingSnapshot: @unchecked Sendable, Equatable {
         outputCGImage: CGImage,
         orientation: CGImagePropertyOrientation,
         parameters: BeautyParameters,
-        detectionSummary: BeautyDetectionSummary? = nil
+        detectionSummary: BeautyDetectionSummary? = nil,
+        warningCount: Int = 0
     ) {
         self.init(
             sourceKind: sourceKind,
@@ -166,7 +170,8 @@ nonisolated struct ImageProcessingSnapshot: @unchecked Sendable, Equatable {
                 source: .photo
             ),
             parameters: parameters,
-            detectionSummary: detectionSummary
+            detectionSummary: detectionSummary,
+            warningCount: warningCount
         )
     }
 
@@ -181,7 +186,12 @@ nonisolated struct ImageProcessingSnapshot: @unchecked Sendable, Equatable {
             lhs.outputCGImage.height == rhs.outputCGImage.height &&
             lhs.metadata == rhs.metadata &&
             lhs.parameters == rhs.parameters &&
-            lhs.detectionSummary == rhs.detectionSummary
+            lhs.detectionSummary == rhs.detectionSummary &&
+            lhs.warningCount == rhs.warningCount
+    }
+
+    var detectionDebugSummary: DetectionDebugSummary? {
+        detectionSummary.map { DetectionDebugSummary(summary: $0) }
     }
 }
 
@@ -227,8 +237,6 @@ nonisolated enum PhotoProcessingState: Equatable, Sendable {
     }
 
     var detectionDebugSummary: DetectionDebugSummary? {
-        latestSnapshot.flatMap { snapshot in
-            DetectionStatusPresentation(summary: snapshot.detectionSummary).debugSummary
-        }
+        latestSnapshot?.detectionDebugSummary
     }
 }
