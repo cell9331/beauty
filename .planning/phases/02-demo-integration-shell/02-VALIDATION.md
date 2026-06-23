@@ -1,10 +1,11 @@
 ---
 phase: 02
 slug: demo-integration-shell
-status: draft
+status: approved
 nyquist_compliant: true
-wave_0_complete: false
+wave_0_complete: true
 created: 2026-06-11
+audited: 2026-06-23
 ---
 
 # Phase 02 — Validation Strategy
@@ -51,22 +52,22 @@ The internal-import scan and `Hello, world!` scan must return no matches.
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 02-01-01 | 02-01 | 1 | SDK-08 | T-02-01 / N/A | Demo imports the public facade only and does not gain internal SDK target imports. | build + static | `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' build` plus internal-import scan | ❌ W0 | ⬜ pending |
-| 02-01-02 | 02-01 | 1 | DEMO-08 | T-02-02 / N/A | Demo view-state tests can run without camera/photo/private media access. | xcode test | `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test` | ❌ W0 | ⬜ pending |
-| 02-02-01 | 02-02 | 1 | DEMO-02, DEMO-03, DEMO-04, DEMO-05 | T-02-03 / N/A | Disabled controls do not invoke unavailable resource/camera/filter behavior. | unit | `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test` | ❌ W0 | ⬜ pending |
-| 02-03-01 | 02-03 | 2 | SDK-08, DEMO-02, DEMO-03, DEMO-04, DEMO-05, DEMO-08 | T-02-04 / N/A | Final shell exposes only honest app-side state and remains local/no-network/no-photo-input. | full suite | full suite command above | ❌ W0 | ⬜ pending |
+| 02-01-01 | 02-01 | 1 | SDK-08 | T-02-01 / N/A | Demo imports the public facade only and does not gain internal SDK target imports. | build + static | `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' build` plus internal-import scan | yes | green |
+| 02-01-02 | 02-01 | 1 | DEMO-08 | T-02-02 / N/A | Demo view-state tests can run without camera/photo/private media access. | xcode test | `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test` | yes | green |
+| 02-02-01 | 02-02 | 1 | DEMO-02, DEMO-03, DEMO-04, DEMO-05 | T-02-03 / N/A | Disabled controls do not invoke unavailable resource/camera/filter behavior. | unit | `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test` | yes | green |
+| 02-03-01 | 02-03 | 2 | SDK-08, DEMO-02, DEMO-03, DEMO-04, DEMO-05, DEMO-08 | T-02-04 / N/A | Final shell exposes only honest app-side state and remains local/no-network/no-photo-input. | full suite | full suite command above | yes | green |
 
-*Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
+All task rows are green after the 2026-06-23 validation audit.
 
 ---
 
 ## Wave 0 Requirements
 
-- [ ] `BeautyDemo/BeautyDemo.xcodeproj/project.pbxproj` — local `BeautySDK` package product wired to the app target.
-- [ ] `BeautyDemo/BeautyDemoTests/` — Demo unit test directory and test target.
-- [ ] `BeautyDemo/BeautyDemo/Panel/` — category, subcategory, availability, and control descriptors.
-- [ ] `BeautyDemo/BeautyDemo/State/` — parameter display state, normalization, and reset behavior.
-- [ ] `BeautyDemo/BeautyDemo/Editor/` — static editor shell entry point replacing the template.
+- [x] `BeautyDemo/BeautyDemo.xcodeproj/project.pbxproj` — local `BeautySDK` package product wired to the app target.
+- [x] `BeautyDemo/BeautyDemoTests/` — Demo unit test directory and test target.
+- [x] `BeautyDemo/BeautyDemo/Panel/` — category, subcategory, availability, and control descriptors.
+- [x] `BeautyDemo/BeautyDemo/State/` — parameter display state, normalization, and reset behavior.
+- [x] `BeautyDemo/BeautyDemo/Editor/` — static editor shell entry point replacing the template.
 
 ---
 
@@ -82,9 +83,24 @@ The internal-import scan and `Hello, world!` scan must return no matches.
 
 - [x] All tasks have `<automated>` verify or Wave 0 dependencies.
 - [x] Sampling continuity: no 3 consecutive tasks without automated verify.
-- [x] Wave 0 covers all MISSING references.
+- [x] Wave 0 covers all previously absent references.
 - [x] No watch-mode flags.
 - [x] Feedback latency < 120s after infrastructure exists.
 - [x] `nyquist_compliant: true` set in frontmatter.
 
-**Approval:** pending
+**Approval:** approved 2026-06-23 after milestone audit cleanup
+
+## Validation Audit 2026-06-23
+
+| Metric | Count |
+|--------|-------|
+| Task rows audited | 4 |
+| Green rows | 4 |
+| Wave 0 items complete | 5 |
+| Escalated manual-only items | 0 |
+
+Evidence:
+
+- `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test` passed during the v1.0 milestone audit run.
+- `rg -n "import Beauty(Core|Detection|Effects|Render|Resources)" BeautyDemo/BeautyDemo BeautyDemo/BeautyDemoTests` returned no matches.
+- `02-VERIFICATION.md` records `SDK-08`, `DEMO-02`, `DEMO-03`, `DEMO-04`, `DEMO-05`, and `DEMO-08` as passed.

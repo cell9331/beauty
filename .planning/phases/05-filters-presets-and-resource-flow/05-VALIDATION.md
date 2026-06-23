@@ -1,10 +1,11 @@
 ---
 phase: 05
 slug: filters-presets-and-resource-flow
-status: draft
+status: approved
 nyquist_compliant: true
 wave_0_complete: true
 created: 2026-06-19
+audited: 2026-06-23
 ---
 
 # Phase 05 — Validation Strategy
@@ -21,7 +22,7 @@ created: 2026-06-19
 | **Config file** | `BeautySDK/Package.swift`, `BeautyDemo/BeautyDemo.xcodeproj/project.pbxproj` |
 | **Quick run command** | `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` |
 | **Full suite command** | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test` |
-| **Estimated runtime** | ~60 to 180 seconds depending on simulator state |
+| **Estimated runtime** | ~60 to 180 seconds based on simulator state |
 
 ---
 
@@ -44,7 +45,7 @@ created: 2026-06-19
 | 05-03-01 | 05-03 | 3 | EFFECT-02, EFFECT-03, EFFECT-08 | T-05-03 | Demo only displays available filter/preset entries and syncs preset values without exposing internal resource errors. | unit/view-state | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test -only-testing:BeautyDemoTests/BeautyParameterStoreTests -only-testing:BeautyDemoTests/BeautyDemoViewStateTests -only-testing:BeautyDemoTests/BeautyCategoryModelTests` | yes | green |
 | 05-04-01 | 05-04 | 4 | EFFECT-02, EFFECT-03, EFFECT-08 | T-05-04 | Final scans prove no Demo internal imports, no raw Demo resource/path leaks, and all Phase 5 requirements are covered by tests/docs. | full/static | `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK && DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test` | yes | green |
 
-*Status: pending, green, red, flaky*
+All task rows are green after the 2026-06-23 validation audit.
 
 ---
 
@@ -76,3 +77,18 @@ Existing infrastructure covers all phase requirements:
 - [x] `nyquist_compliant: true` set in frontmatter.
 
 **Approval:** approved 2026-06-19
+
+## Validation Audit 2026-06-23
+
+| Metric | Count |
+|--------|-------|
+| Task rows audited | 4 |
+| Green rows | 4 |
+| Wave 0 items complete | 3 |
+| Escalated manual-only items | 0 |
+
+Evidence:
+
+- `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 119 tests during the v1.0 milestone audit run.
+- `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test` passed during the v1.0 milestone audit run.
+- `05-VERIFICATION.md` records `EFFECT-02`, `EFFECT-03`, and `EFFECT-08` as passed with non-blocking manual visual-placement debt.

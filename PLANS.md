@@ -30,6 +30,23 @@ _No active plans._
 
 ## 4. Completed
 
+### C-2026-06-23-gsd-audit-gap-closure-v1
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-23 |
+| Scope | Closed the v1.0 milestone audit documentation gaps by adding missing phase verification reports, backfilling validation audit status across all phases, rechecking 33/33 requirement traceability, and updating `.planning/v1.0-MILESTONE-AUDIT.md` from `gaps_found` to `passed`. |
+| Files | `.planning/v1.0-MILESTONE-AUDIT.md`, `.planning/phases/01-sdk-foundation-and-public-facade/01-VALIDATION.md`, `.planning/phases/02-demo-integration-shell/02-01-SUMMARY.md`, `.planning/phases/02-demo-integration-shell/02-02-SUMMARY.md`, `.planning/phases/02-demo-integration-shell/02-03-SUMMARY.md`, `.planning/phases/02-demo-integration-shell/02-VALIDATION.md`, `.planning/phases/02-demo-integration-shell/02-VERIFICATION.md`, `.planning/phases/03-realtime-and-still-input-slice/03-VALIDATION.md`, `.planning/phases/03-realtime-and-still-input-slice/03-VERIFICATION.md`, `.planning/phases/04-detection-and-coordinate-safety/04-VALIDATION.md`, `.planning/phases/04-detection-and-coordinate-safety/04-VERIFICATION.md`, `.planning/phases/05-filters-presets-and-resource-flow/05-VALIDATION.md`, `.planning/phases/06-core-beauty-effects/06-VALIDATION.md`, `.planning/phases/06-core-beauty-effects/06-VERIFICATION.md`, `.planning/phases/07-rich-demo-qa-surface/07-VALIDATION.md`, `PLANS.md` |
+| Verification | `gsd-tools.cjs query audit-open --json` returned 0 open items; `gsd-tools.cjs query roadmap.analyze` reported 7/7 phases, 28/28 plans, 100%; requirement cross-check script reported 33 requirements, 33 verification IDs, 33 summary IDs, with no missing/extra IDs; Nyquist scan reported compliant phases `01` through `07`, no partial/missing phases; stale validation status scan for `draft`, `pending`, incomplete Wave 0, and missing/planned task rows returned no matches; audit-report stale-gap scan returned no matches; `git diff --check -- <touched audit/validation/verification files>` exited 0. |
+| Build | No code changes in this cleanup. Full SDK SwiftPM tests and full Demo simulator tests had passed earlier in the same 2026-06-23 milestone audit run and are cited in the updated audit report. |
+
+Outcome:
+
+- `.planning/v1.0-MILESTONE-AUDIT.md` now records `status: passed`, 33/33 requirements satisfied, 7/7 phase verification files present, 4/4 integration checks, 4/4 flows, and 7/7 Nyquist-compliant phases.
+- Missing Phase 2, 3, 4, and 6 verification artifacts are now present with requirement evidence and no blocking gaps.
+- All seven validation files have approved frontmatter, `nyquist_compliant: true`, `wave_0_complete: true`, and green task rows.
+- Remaining risks are non-blocking release/manual QA debt already tracked as `TD-007` through `TD-010`.
+
 ### C-2026-06-23-gsd-audit-milestone-v1
 
 | Field | Value |

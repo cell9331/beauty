@@ -1,10 +1,11 @@
 ---
 phase: 04
 slug: detection-and-coordinate-safety
-status: draft
+status: approved
 nyquist_compliant: true
 wave_0_complete: true
 created: 2026-06-18
+audited: 2026-06-23
 ---
 
 # Phase 04 - Validation Strategy
@@ -39,18 +40,18 @@ created: 2026-06-18
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 04-01-01 | 04-01 | 1 | PIPE-05, PIPE-07 | T-04-01 | Public metadata exposes summaries only, not face geometry | unit | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK --filter BeautyInputMetadataTests` | no | pending |
-| 04-01-02 | 04-01 | 1 | PIPE-07 | T-04-02 | Detection availability and reasons are structured and redacted | unit | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK --filter BeautyResultDetectionSummaryTests` | no | pending |
-| 04-02-01 | 04-02 | 2 | PIPE-07 | T-04-03 | Vision adapter returns internal models without leaking Vision objects | unit/smoke | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK --filter BeautyDetectionTests` | no | pending |
-| 04-02-02 | 04-02 | 2 | PIPE-07 | T-04-04 | No-face, partial-face, disabled, and not-run states do not crash | unit | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK --filter DetectionAvailabilityTests` | no | pending |
-| 04-03-01 | 04-03 | 3 | PIPE-05 | T-04-05 | Orientation and mirroring conversions stay explicit | unit | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK --filter CoordinateMapperTests` | no | pending |
-| 04-03-02 | 04-03 | 3 | PIPE-05 | T-04-06 | Old orientation API is equivalent to default non-mirrored metadata API | unit | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK --filter BeautyEngineMetadataCompatibilityTests` | no | pending |
-| 04-04-01 | 04-04 | 4 | PIPE-05, PIPE-07 | T-04-07 | Demo Camera and Photo snapshots carry full metadata through public facade only | simulator XCTest | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' -only-testing:BeautyDemoTests/CameraSessionControllerTests -only-testing:BeautyDemoTests/CameraBeautyPipelineTests -only-testing:BeautyDemoTests/ImageEditorPipelineTests test` | yes | pending |
-| 04-04-02 | 04-04 | 4 | PIPE-07 | T-04-08 | Demo status/debug data shows safe summaries and no sensitive geometry/path/raw errors | simulator XCTest/static scan | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' -only-testing:BeautyDemoTests/InputPipelinePrivacyTests test` | yes | pending |
-| 04-05-01 | 04-05 | 5 | PIPE-05, PIPE-07 | T-04-09 | Root docs and privacy scans reflect only safe public metadata | docs/static/simulator XCTest | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' -only-testing:BeautyDemoTests/InputPipelinePrivacyTests test` | yes | pending |
-| 04-05-02 | 04-05 | 5 | PIPE-05, PIPE-07 | T-04-10 | Full SDK and Demo integration remains green | full suite/static scans | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` plus the full Demo XCTest command below | yes | pending |
+| 04-01-01 | 04-01 | 1 | PIPE-05, PIPE-07 | T-04-01 | Public metadata exposes summaries only, not face geometry | unit | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK --filter BeautyInputMetadataTests` | yes | green |
+| 04-01-02 | 04-01 | 1 | PIPE-07 | T-04-02 | Detection availability and reasons are structured and redacted | unit | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK --filter BeautyResultDetectionSummaryTests` | yes | green |
+| 04-02-01 | 04-02 | 2 | PIPE-07 | T-04-03 | Vision adapter returns internal models without leaking Vision objects | unit/smoke | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK --filter BeautyDetectionTests` | yes | green |
+| 04-02-02 | 04-02 | 2 | PIPE-07 | T-04-04 | No-face, partial-face, disabled, and not-run states do not crash | unit | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK --filter DetectionAvailabilityTests` | yes | green |
+| 04-03-01 | 04-03 | 3 | PIPE-05 | T-04-05 | Orientation and mirroring conversions stay explicit | unit | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK --filter CoordinateMapperTests` | yes | green |
+| 04-03-02 | 04-03 | 3 | PIPE-05 | T-04-06 | Old orientation API is equivalent to default non-mirrored metadata API | unit | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK --filter BeautyEngineMetadataCompatibilityTests` | yes | green |
+| 04-04-01 | 04-04 | 4 | PIPE-05, PIPE-07 | T-04-07 | Demo Camera and Photo snapshots carry full metadata through public facade only | simulator XCTest | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' -only-testing:BeautyDemoTests/CameraSessionControllerTests -only-testing:BeautyDemoTests/CameraBeautyPipelineTests -only-testing:BeautyDemoTests/ImageEditorPipelineTests test` | yes | green |
+| 04-04-02 | 04-04 | 4 | PIPE-07 | T-04-08 | Demo status/debug data shows safe summaries and no sensitive geometry/path/raw errors | simulator XCTest/static scan | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' -only-testing:BeautyDemoTests/InputPipelinePrivacyTests test` | yes | green |
+| 04-05-01 | 04-05 | 5 | PIPE-05, PIPE-07 | T-04-09 | Root docs and privacy scans reflect only safe public metadata | docs/static/simulator XCTest | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' -only-testing:BeautyDemoTests/InputPipelinePrivacyTests test` | yes | green |
+| 04-05-02 | 04-05 | 5 | PIPE-05, PIPE-07 | T-04-10 | Full SDK and Demo integration remains green | full suite/static scans | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` plus the full Demo XCTest command below | yes | green |
 
-*Status: pending, green, red, flaky.*
+All task rows are green after the 2026-06-23 validation audit.
 
 ---
 
@@ -84,3 +85,18 @@ Existing infrastructure covers the phase requirements:
 - [x] `nyquist_compliant: true` set in frontmatter.
 
 **Approval:** approved 2026-06-18 for planning input
+
+## Validation Audit 2026-06-23
+
+| Metric | Count |
+|--------|-------|
+| Task rows audited | 10 |
+| Green rows | 10 |
+| Wave 0 items complete | 4 |
+| Escalated manual-only items | 0 |
+
+Evidence:
+
+- `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 119 tests during the v1.0 milestone audit run.
+- `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test` passed during the v1.0 milestone audit run.
+- `04-VERIFICATION.md` records `PIPE-05` and `PIPE-07` as passed.
