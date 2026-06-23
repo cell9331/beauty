@@ -37,6 +37,27 @@ struct EditorPreviewViewState: Equatable {
     }
 }
 
+struct EditorPreviewToolbarAction: Identifiable, Equatable {
+    enum Kind: Equatable {
+        case compare
+        case parameterJSON
+    }
+
+    let id: Kind
+    let title: String
+}
+
+private enum EditorSheet: Identifiable {
+    case parameterJSON
+
+    var id: String {
+        switch self {
+        case .parameterJSON:
+            "parameterJSON"
+        }
+    }
+}
+
 struct EditorShellView: View {
     @Environment(\.openURL) private var openURL
     @StateObject private var parameterStore = BeautyParameterStore()
@@ -50,6 +71,7 @@ struct EditorShellView: View {
     @State private var latestCameraFrame: CameraPreviewFrame?
     @State private var selectedPhotoItem: PhotosPickerItem?
     @State private var compareState = CompareState()
+    @State private var activeSheet: EditorSheet?
 
     private let cameraPermissionClient: any CameraPermissionClient
 
@@ -82,6 +104,16 @@ struct EditorShellView: View {
         .background(Color(red: 247 / 255, green: 248 / 255, blue: 250 / 255))
         .onChange(of: selectedPhotoItem) { _, item in
             handlePhotoSelection(item)
+        }
+        .sheet(item: $activeSheet) { sheet in
+            switch sheet {
+            case .parameterJSON:
+                ParameterJSONSheetView(parameterStore: parameterStore) { _ in
+                    if selectedInputMode == .photo {
+                        imageEditorPipeline.reprocessLatest(parameters: parameterStore.parametersSnapshot)
+                    }
+                }
+            }
         }
     }
 
@@ -137,7 +169,7 @@ struct EditorShellView: View {
             VStack {
                 Spacer()
                 if cameraBeautyPipeline.state.latestSnapshot != nil {
-                    compareButton
+                    previewToolbar(showsCompare: true)
                 }
                 if let statusText = state.statusText {
                     cameraStatusBanner(statusText)
@@ -163,7 +195,7 @@ struct EditorShellView: View {
             VStack {
                 Spacer()
                 if imageEditorPipeline.state.latestSnapshot != nil, !imageEditorPipeline.state.isLoading {
-                    compareButton
+                    previewToolbar(showsCompare: true)
                 }
                 if imageEditorPipeline.state.isLoading {
                     cameraStatusBanner(PhotoProcessingState.loadingText)
@@ -179,6 +211,15 @@ struct EditorShellView: View {
         }
     }
 
+    private func previewToolbar(showsCompare: Bool) -> some View {
+        HStack(spacing: 8) {
+            if showsCompare {
+                compareButton
+            }
+            parameterJSONButton
+        }
+    }
+
     private var compareButton: some View {
         Button(compareState.actionTitle) {
             compareState.toggle()
@@ -188,6 +229,16 @@ struct EditorShellView: View {
         .accessibilityLabel(compareState.actionTitle)
         .accessibilityValue(compareState.accessibilityValue)
         .accessibilityHint("Switches between before and after without changing parameters.")
+    }
+
+    private var parameterJSONButton: some View {
+        Button("Parameter JSON") {
+            activeSheet = .parameterJSON
+        }
+        .font(.system(size: 13, weight: .semibold))
+        .buttonStyle(.bordered)
+        .frame(minHeight: 44)
+        .accessibilityLabel("Open Parameter JSON")
     }
 
     private func cameraStatusBanner(_ text: String) -> some View {
@@ -346,6 +397,13 @@ struct EditorShellView: View {
 
     static func modeViewState(selectedMode: EditorInputMode?) -> [BeautyModeItem] {
         DemoFixtures.inputModeItems(selectedMode: selectedMode)
+    }
+
+    static func previewToolbarViewState(compareActionTitle: String) -> [EditorPreviewToolbarAction] {
+        [
+            EditorPreviewToolbarAction(id: .compare, title: compareActionTitle),
+            EditorPreviewToolbarAction(id: .parameterJSON, title: "Parameter JSON")
+        ]
     }
 
     static func previewViewState(
