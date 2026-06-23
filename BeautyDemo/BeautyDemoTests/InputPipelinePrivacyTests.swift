@@ -149,6 +149,31 @@ final class InputPipelinePrivacyTests: XCTestCase {
         XCTAssertTrue(tokenMatches.isEmpty, tokenMatches.joined(separator: "\n"))
     }
 
+    func testDEMO07FutureUnavailableCopyAvoidsRawClaimsAndInfoRoutes() throws {
+        let files = try swiftFiles(in: ["BeautyDemo/BeautyDemo/Panel"])
+        let text = try files
+            .map { try String(contentsOf: $0, encoding: .utf8) }
+            .joined(separator: "\n")
+        let forbiddenTokens = [
+            "Vision",
+            "land" + "mark",
+            "bounding",
+            "NS" + "Error",
+            "/private" + "/var",
+            "release-grade",
+            "production-ready",
+            "Navigation" + "Link",
+            ".sheet(",
+            "Info" + "Page"
+        ]
+
+        let tokenMatches = try matches(for: forbiddenTokens, in: files)
+
+        XCTAssertTrue(text.contains("Not in v1"))
+        XCTAssertFalse(text.contains("Phase 2 shell"))
+        XCTAssertTrue(tokenMatches.isEmpty, tokenMatches.joined(separator: "\n"))
+    }
+
     func testD13FriendlyInputCopyIsPresentAndRawCopyIsAbsent() throws {
         let editorText = try readTextFile("BeautyDemo/BeautyDemo/Editor/EditorShellView.swift")
         let imageModelsText = try readTextFile("BeautyDemo/BeautyDemo/Editor/ImageInputModels.swift")

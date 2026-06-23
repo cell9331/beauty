@@ -388,6 +388,54 @@ final class BeautyDemoViewStateTests: XCTestCase {
         XCTAssertTrue([beauty, faceShape, eyes, nose, mouth, filters].allSatisfy(\.showsResetAll))
     }
 
+    func testDEMO07FutureCategoriesStayVisibleDisabledAndUseFinalV1Copy() {
+        let disabledCategories = BeautyCategory.all.filter { !$0.availability.isEnabled }
+
+        XCTAssertEqual(BeautyCategory.all.map(\.id), [.beauty, .faceShape, .facialFeatures, .makeup, .filters, .stickers, .background, .style])
+        XCTAssertEqual(disabledCategories.map(\.id), [.makeup, .stickers, .background, .style])
+        XCTAssertEqual(disabledCategories.map { $0.availability.badge }, Array(repeating: "Not in v1", count: 4))
+        XCTAssertEqual(disabledCategories.map { $0.availability.reason }, [
+            "Makeup templates are not included in v1.",
+            "Sticker effects are not included in v1.",
+            "Background editing is not included in v1.",
+            "Style templates are not included in v1."
+        ])
+
+        for category in disabledCategories {
+            let state = BeautyPanelView.viewState(categoryID: category.id, selectedSubcategoryID: .eyes, status: .idle)
+            XCTAssertFalse(state.activeAvailability.isEnabled)
+            XCTAssertTrue(state.controls.isEmpty)
+            XCTAssertTrue(state.disabledControls.isEmpty)
+            XCTAssertFalse(state.showsResetAll)
+        }
+    }
+
+    func testDEMO07FutureSubcategoriesStayVisibleDisabledAndUseFinalV1Copy() {
+        let subcategories = FacialFeatureSubcategory.all
+        let disabledSubcategories = subcategories.filter { !$0.availability.isEnabled }
+
+        XCTAssertEqual(subcategories.map(\.id), [.eyes, .nose, .mouth, .eyebrows, .teeth, .hairline])
+        XCTAssertEqual(disabledSubcategories.map(\.id), [.eyebrows, .teeth, .hairline])
+        XCTAssertEqual(disabledSubcategories.map { $0.availability.badge }, Array(repeating: "Not in v1", count: 3))
+        XCTAssertEqual(disabledSubcategories.map { $0.availability.reason }, [
+            "Eyebrow controls are not included in v1.",
+            "Teeth whitening is not included in v1.",
+            "Hairline controls are not included in v1."
+        ])
+
+        for subcategory in disabledSubcategories {
+            let state = BeautyPanelView.viewState(
+                categoryID: .facialFeatures,
+                selectedSubcategoryID: subcategory.id,
+                status: .idle
+            )
+            XCTAssertFalse(state.activeAvailability.isEnabled)
+            XCTAssertTrue(state.controls.isEmpty)
+            XCTAssertTrue(state.disabledControls.isEmpty)
+            XCTAssertFalse(state.showsResetAll)
+        }
+    }
+
     func testEFFECT03MissingResourceCopyIsFriendlyAndRedacted() {
         let state = BeautyResourcePickerFailureState.unavailable
 
