@@ -170,6 +170,13 @@ final class BeautyDemoViewStateTests: XCTestCase {
         XCTAssertFalse(ParameterJSONSheetView.viewState(mode: .import, importState: .empty).canApply)
         XCTAssertFalse(ParameterJSONSheetView.viewState(mode: .import, importState: .failed(.invalidJSON)).canApply)
         XCTAssertTrue(ParameterJSONSheetView.viewState(mode: .import, importState: .preview(BeautyParameters())).canApply)
+        XCTAssertFalse(
+            ParameterJSONSheetView.viewState(
+                mode: .import,
+                importState: .preview(BeautyParameters()),
+                isPreviewCurrent: false
+            ).canApply
+        )
     }
 
     @MainActor

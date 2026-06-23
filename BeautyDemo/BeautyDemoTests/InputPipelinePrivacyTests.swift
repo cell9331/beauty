@@ -184,6 +184,15 @@ final class InputPipelinePrivacyTests: XCTestCase {
         XCTAssertLessThan(clearSelection.lowerBound, taskStart.lowerBound)
     }
 
+    func testDEMO07PhotoPickerSelectionIgnoresStaleAsyncLoads() {
+        var generation = PhotoSelectionGeneration()
+        let first = generation.beginSelection()
+        let second = generation.beginSelection()
+
+        XCTAssertFalse(generation.isCurrent(first))
+        XCTAssertTrue(generation.isCurrent(second))
+    }
+
     func testD13FriendlyInputCopyIsPresentAndRawCopyIsAbsent() throws {
         let editorText = try readTextFile("BeautyDemo/BeautyDemo/Editor/EditorShellView.swift")
         let imageModelsText = try readTextFile("BeautyDemo/BeautyDemo/Editor/ImageInputModels.swift")

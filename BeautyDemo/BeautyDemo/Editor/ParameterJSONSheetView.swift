@@ -28,10 +28,15 @@ struct ParameterJSONSheetView: View {
     @State private var mode: ParameterJSONSheetMode = .import
     @State private var importText = ""
     @State private var importState: ParameterJSONImportState = .empty
+    @State private var previewedImportText = ""
     @State private var exportText = ""
 
     var body: some View {
-        let state = Self.viewState(mode: mode, importState: importState)
+        let state = Self.viewState(
+            mode: mode,
+            importState: importState,
+            isPreviewCurrent: previewedImportText == importText
+        )
 
         NavigationStack {
             VStack(alignment: .leading, spacing: 16) {
@@ -76,7 +81,8 @@ struct ParameterJSONSheetView: View {
 
     static func viewState(
         mode: ParameterJSONSheetMode,
-        importState: ParameterJSONImportState
+        importState: ParameterJSONImportState,
+        isPreviewCurrent: Bool = true
     ) -> ParameterJSONSheetViewState {
         let feedbackText: String?
         switch importState {
@@ -98,7 +104,7 @@ struct ParameterJSONSheetView: View {
             applyActionTitle: "Apply Imported Parameters",
             exportActionTitle: "Copy Parameter JSON",
             feedbackText: feedbackText,
-            canApply: importState.candidate != nil
+            canApply: importState.candidate != nil && isPreviewCurrent
         )
     }
 
@@ -118,6 +124,10 @@ struct ParameterJSONSheetView: View {
                 .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 .accessibilityLabel("Paste parameter JSON")
+                .onChange(of: importText) { _, _ in
+                    importState = .empty
+                    previewedImportText = ""
+                }
 
             if let feedbackText = state.feedbackText {
                 Text(feedbackText)
@@ -130,6 +140,7 @@ struct ParameterJSONSheetView: View {
             HStack(spacing: 8) {
                 Button(state.previewActionTitle) {
                     importState = ParameterJSONCoding.previewImport(importText)
+                    previewedImportText = importText
                 }
                 .font(.system(size: 13, weight: .semibold))
                 .buttonStyle(.borderedProminent)
@@ -137,7 +148,8 @@ struct ParameterJSONSheetView: View {
                 .accessibilityHint("Decodes pasted parameters without changing current settings.")
 
                 Button(state.applyActionTitle) {
-                    guard let candidate = importState.candidate else {
+                    guard previewedImportText == importText,
+                          let candidate = importState.candidate else {
                         return
                     }
                     parameterStore.applyImportedParameters(candidate)

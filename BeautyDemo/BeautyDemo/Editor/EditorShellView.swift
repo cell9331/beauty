@@ -72,6 +72,7 @@ struct EditorShellView: View {
     @State private var cameraPermissionState: CameraPermissionState = .notDetermined
     @State private var latestCameraFrame: CameraPreviewFrame?
     @State private var selectedPhotoItem: PhotosPickerItem?
+    @State private var photoSelectionGeneration = PhotoSelectionGeneration()
     @State private var compareState = CompareState()
     @State private var debugVisibilityState = PreviewDebugVisibilityState()
     @State private var activeSheet: EditorSheet?
@@ -390,17 +391,24 @@ struct EditorShellView: View {
             return
         }
 
+        let selectionGeneration = photoSelectionGeneration.beginSelection()
         selectedPhotoItem = nil
 
         Task {
             do {
                 if let data = try await item.loadTransferable(type: Data.self) {
+                    guard photoSelectionGeneration.isCurrent(selectionGeneration) else {
+                        return
+                    }
                     imageEditorPipeline.process(
                         input: .photosPickerData(data),
                         parameters: parameterStore.parametersSnapshot
                     )
                 }
             } catch {
+                guard photoSelectionGeneration.isCurrent(selectionGeneration) else {
+                    return
+                }
                 imageEditorPipeline.recordSelectionFailure()
             }
         }
@@ -538,6 +546,19 @@ struct EditorShellView: View {
                 primaryActionTitle: "Try Again"
             )
         }
+    }
+}
+
+struct PhotoSelectionGeneration: Equatable, Sendable {
+    private(set) var value: UInt64 = 0
+
+    mutating func beginSelection() -> UInt64 {
+        value &+= 1
+        return value
+    }
+
+    func isCurrent(_ generation: UInt64) -> Bool {
+        generation == value
     }
 }
 
