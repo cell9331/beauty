@@ -20,6 +20,16 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Code size:** `BeautySDK` and `BeautyDemo` contain about 13,266 Swift lines at v1.0 close.
 
+## Current Milestone: v1.1 Meitu UI
+
+**Goal:** Rebuild the SwiftUI Demo experience around the local `meituxiuxiu` references so the first screen looks like a Meitu Xiuxiu-style home page and the edit flow uses the referenced full-screen preview plus bottom beauty tool panel.
+
+**Target features:**
+
+- A Meitu-style Home screen with retro film hero, search/VIP chrome, primary action cards, paged tool grid, recommendation image rails, bottom tabs, and sticky shortcut behavior while scrolling.
+- A Meitu-style Editor screen with full-screen preview, white bottom tool panel, intensity slider, first-level and second-level horizontal beauty categories, static Pro/limited/OFF badges, and cancel/confirm actions.
+- Functional routing and SDK integration so supported Home actions open the existing camera/photo/editor flows, supported editor tools update `BeautyParameterStore` and reprocess previews, and unsupported referenced tools are visibly disabled rather than overclaimed.
+
 ## Requirements
 
 ### Validated
@@ -37,8 +47,10 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ### Active
 
-- [ ] Define the next milestone with `$gsd-new-milestone`.
-- [ ] Decide whether next work prioritizes release hardening, advanced beauty modules, creative modules, or distribution readiness.
+- [ ] Rebuild the Demo first screen to match `meituxiuxiu/HOME_MAP.md`.
+- [ ] Rebuild the Demo edit surface to match `meituxiuxiu/FUNCTION_MAP.md`.
+- [ ] Connect supported Home and Editor interactions to existing local-first camera, photo, compare, parameter, and SDK processing behavior.
+- [ ] Keep unavailable Meitu reference capabilities honest through disabled/static states instead of fake working features.
 
 ### Out of Scope
 
@@ -76,6 +88,11 @@ Historical milestone detail is archived in:
 - `.planning/milestones/v1.0-REQUIREMENTS.md`
 - `.planning/milestones/v1.0-MILESTONE-AUDIT.md`
 
+Current v1.1 visual reference contracts:
+
+- `meituxiuxiu/HOME_MAP.md` owns the Home screen reference structure and scroll behavior.
+- `meituxiuxiu/FUNCTION_MAP.md` owns the Editor `美型 / 五官` tool-panel taxonomy and visual behavior.
+
 ## Constraints
 
 - **SDK boundary:** SDK targets must not contain SwiftUI or UIKit pages; UI stays in `BeautyDemo` or host apps.
@@ -98,10 +115,11 @@ Historical milestone detail is archived in:
 | MVP starts with foundation, camera/still-image flow, presets, filters, and core face/skin controls. | This sequence let tests and privacy/reliability contracts grow before richer effects. | Good |
 | Advanced makeup, segmentation, body shaping, stickers, AI style, and video export are staged later. | v1 shipped the core pipeline and left higher-breadth features as explicit future milestone candidates. | Good |
 | Release-like claims require separate hardware, visual, performance, and long-run evidence. | v1 automation proves correctness and safety, not production naturalness or device endurance. | Revisit in next milestone |
+| v1.1 prioritizes Meitu-style Demo fidelity over new SDK algorithms. | The user rejected the prior Demo surface as not matching the `meituxiuxiu` references; visual/navigation fidelity must be fixed before claiming a rich Demo. | Pending |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-06-23 after v1.0 milestone*
+*Last updated: 2026-06-23 after v1.1 milestone start*

@@ -1,17 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: MVP
-status: Awaiting next milestone
-stopped_at: Milestone v1.0 archived
-last_updated: "2026-06-23T03:37:20.911Z"
-last_activity: 2026-06-23 -- Milestone v1.0 completed and archived
+milestone: v1.1
+milestone_name: Meitu UI
+status: planning
+last_updated: "2026-06-23T08:24:14.920Z"
+last_activity: 2026-06-23 -- v1.1 Meitu UI requirements and roadmap defined
 progress:
-  total_phases: 7
-  completed_phases: 7
-  total_plans: 28
-  completed_plans: 28
-  percent: 100
+  total_phases: 3
+  completed_phases: 0
+  total_plans: 11
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -21,16 +20,16 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-06-23)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Planning the next milestone.
+**Current focus:** Phase 8 Meitu Home Rebuild.
 
 ## Current Position
 
-Phase: Milestone v1.0 complete
-Plan: none
-Status: Awaiting next milestone
-Last activity: 2026-06-23 -- Milestone v1.0 completed and archived
+Phase: 8 - Meitu Home Rebuild
+Plan: 08-01 pending
+Status: Ready to plan Phase 8
+Last activity: 2026-06-23 -- v1.1 Meitu UI requirements and roadmap defined
 
-Progress: 7/7 phases, 28/28 plans, 33/33 v1 requirements complete.
+Progress: 0/3 v1.1 phases, 0/11 plans, 0/19 v1.1 requirements complete.
 
 ## Performance Metrics
 
@@ -68,14 +67,16 @@ Recent milestone-level outcomes:
 
 ### Pending Todos
 
-- Start the next milestone with `$gsd-new-milestone`.
-- Decide whether the next milestone prioritizes release hardening, advanced beauty modules, creative modules, or SDK distribution readiness.
+- Plan and execute Phase 8 Meitu Home Rebuild.
+- Keep Phase 8 grounded in `meituxiuxiu/HOME_MAP.md`.
+- Preserve existing local-first camera/photo and `BeautySDK` facade boundaries while replacing the Demo UI.
 
 ### Blockers/Concerns
 
 - Current repository has unrelated uncommitted documentation changes outside `.planning`; future commits should keep file scopes explicit.
 - Deferred v2 `ADV-*` items remain outside v1 traceability and are tracked as `TD-007` in `PLANS.md`.
 - Manual release risks remain tracked as `TD-008`, `TD-009`, and `TD-010`.
+- v1.1 reference screenshots are local analysis inputs, not licensed production assets; implementation should recreate structure and feel without copying commercial assets directly.
 
 ## Deferred Items
 
@@ -87,9 +88,9 @@ Recent milestone-level outcomes:
 ## Session Continuity
 
 Last session: 2026-06-23
-Stopped at: Milestone v1.0 archived
-Resume file: None
+Stopped at: v1.1 roadmap defined
+Resume file: `.planning/ROADMAP.md`
 
 ## Operator Next Steps
 
-- Run `$gsd-new-milestone` to define the next milestone.
+- Run `$gsd-plan-phase 8` or proceed with Phase 8 implementation plan for Meitu Home Rebuild.
