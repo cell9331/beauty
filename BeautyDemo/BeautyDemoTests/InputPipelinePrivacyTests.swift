@@ -119,6 +119,36 @@ final class InputPipelinePrivacyTests: XCTestCase {
         XCTAssertTrue(tokenMatches.isEmpty, tokenMatches.joined(separator: "\n"))
     }
 
+    func testDEMO07PreviewDebugOverlaySurfacesStayRedactedAndGeometryFree() throws {
+        let files = try swiftFiles(in: [
+            "BeautyDemo/BeautyDemo/Camera",
+            "BeautyDemo/BeautyDemo/Editor"
+        ])
+        let forbiddenTokens = [
+            "VN" + "FaceObservation",
+            "bounding" + "Box",
+            "land" + "mark",
+            "CGPoint",
+            "CGRect",
+            "NS" + "Error",
+            "/private" + "/var",
+            "raw" + "PresetJson",
+            "image " + "bytes",
+            "http" + "://",
+            "https" + "://"
+        ]
+        let overlayText = try readTextFile("BeautyDemo/BeautyDemo/Editor/PreviewDebugOverlayState.swift")
+
+        XCTAssertTrue(overlayText.contains("processing_paused"))
+        XCTAssertTrue(overlayText.contains("photo_decode_failed"))
+        XCTAssertTrue(overlayText.contains("Warnings"))
+
+        let tokenMatches = try matches(for: forbiddenTokens, in: files)
+            .filter { !$0.contains("ImageInputModels.swift: contains CGRect") }
+
+        XCTAssertTrue(tokenMatches.isEmpty, tokenMatches.joined(separator: "\n"))
+    }
+
     func testD13FriendlyInputCopyIsPresentAndRawCopyIsAbsent() throws {
         let editorText = try readTextFile("BeautyDemo/BeautyDemo/Editor/EditorShellView.swift")
         let imageModelsText = try readTextFile("BeautyDemo/BeautyDemo/Editor/ImageInputModels.swift")
