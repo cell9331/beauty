@@ -42,6 +42,11 @@ final class BeautyCategoryModelTests: XCTestCase {
             disabledSubcategories.map(\.title),
             ["Eyebrows", "Teeth", "Hairline"]
         )
-        XCTAssertTrue(disabledSubcategories.allSatisfy { $0.availability.badge == "Requires future resource support" })
+        XCTAssertEqual(disabledSubcategories.map(\.availability.badge), Array(repeating: "Not in v1", count: 3))
+        XCTAssertEqual(disabledSubcategories.map(\.availability.reason), [
+            "Eyebrow controls are not included in v1.",
+            "Teeth whitening is not included in v1.",
+            "Hairline controls are not included in v1."
+        ])
     }
 }
