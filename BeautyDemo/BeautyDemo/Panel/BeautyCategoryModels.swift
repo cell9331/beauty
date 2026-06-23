@@ -20,8 +20,8 @@ struct BeautyAvailability: Equatable, Sendable {
     }
 
     static let futureResourceSupport = BeautyAvailability.disabled(
-        badge: "Requires future resource support",
-        reason: "This control depends on future resource support."
+        badge: "Not in v1",
+        reason: "This control is not included in v1."
     )
 
     static let resourceUnavailable = BeautyAvailability.disabled(
@@ -78,8 +78,8 @@ extension BeautyCategory {
             id: .makeup,
             title: "Makeup",
             availability: .disabled(
-                badge: "Requires future resource support",
-                reason: "Makeup templates require future resource packs."
+                badge: "Not in v1",
+                reason: "Makeup templates are not included in v1."
             ),
             panelKind: .disabled
         ),
@@ -93,8 +93,8 @@ extension BeautyCategory {
             id: .stickers,
             title: "Stickers",
             availability: .disabled(
-                badge: "Requires future resource support",
-                reason: "Sticker assets are deferred beyond the Phase 2 shell."
+                badge: "Not in v1",
+                reason: "Sticker effects are not included in v1."
             ),
             panelKind: .disabled
         ),
@@ -102,8 +102,8 @@ extension BeautyCategory {
             id: .background,
             title: "Background",
             availability: .disabled(
-                badge: "Requires future resource support",
-                reason: "Background editing depends on later segmentation support."
+                badge: "Not in v1",
+                reason: "Background editing is not included in v1."
             ),
             panelKind: .disabled
         ),
@@ -111,8 +111,8 @@ extension BeautyCategory {
             id: .style,
             title: "Style",
             availability: .disabled(
-                badge: "Requires future resource support",
-                reason: "Style templates are deferred beyond v1 basics."
+                badge: "Not in v1",
+                reason: "Style templates are not included in v1."
             ),
             panelKind: .disabled
         )
@@ -159,24 +159,24 @@ extension FacialFeatureSubcategory {
             id: .eyebrows,
             title: "Eyebrows",
             availability: .disabled(
-                badge: "Requires future resource support",
-                reason: "Eyebrow controls are deferred beyond the 1.0 parameter set."
+                badge: "Not in v1",
+                reason: "Eyebrow controls are not included in v1."
             )
         ),
         FacialFeatureSubcategory(
             id: .teeth,
             title: "Teeth",
             availability: .disabled(
-                badge: "Requires future resource support",
-                reason: "Teeth whitening is deferred beyond the 1.0 parameter set."
+                badge: "Not in v1",
+                reason: "Teeth whitening is not included in v1."
             )
         ),
         FacialFeatureSubcategory(
             id: .hairline,
             title: "Hairline",
             availability: .disabled(
-                badge: "Requires future resource support",
-                reason: "Hairline controls are deferred beyond the 1.0 parameter set."
+                badge: "Not in v1",
+                reason: "Hairline controls are not included in v1."
             )
         )
     ]
