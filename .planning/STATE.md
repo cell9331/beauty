@@ -77,7 +77,7 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- Phase 7 is complete; run `$gsd-verify-work 7` or milestone audit before release-like claims.
+- Phase 7 human UAT is complete with 4/4 visible SwiftUI checks passed; run milestone audit or `$gsd-complete-milestone v1.0` before starting the next milestone cycle.
 
 ### Blockers/Concerns
 

@@ -1,9 +1,11 @@
 ---
 phase: 07-rich-demo-qa-surface
 verified: 2026-06-23T02:05:11Z
-status: human_needed
+status: verified
 score: 5/5 must-haves verified
 overrides_applied: 0
+human_uat_completed: 2026-06-23T02:44:18Z
+human_uat_result: 4/4 passed
 human_verification:
   - test: "Launch the Demo, switch to a preview mode with a usable camera or photo preview, open Parameter JSON, export JSON, paste it into Import, preview it, and apply it."
     expected: "The sheet shows Import/Export copy, Apply stays disabled until a valid preview, valid Apply changes settings, and failed previews leave current settings unchanged."
@@ -23,7 +25,7 @@ human_verification:
 
 **Phase Goal:** Demo becomes a complete SDK validation surface with preset/reset/JSON workflows, compare/debug states, and v1 readiness evidence.
 **Verified:** 2026-06-23T02:05:11Z
-**Status:** human_needed
+**Status:** verified
 **Re-verification:** No - initial verification
 
 ## User Flow Coverage
@@ -121,7 +123,9 @@ Existing clean code review `.planning/phases/07-rich-demo-qa-surface/07-REVIEW.m
 
 Recorded full regression evidence in `07-03-SUMMARY.md` and `PLANS.md` includes the full Demo simulator suite on `iPhone 17, OS=26.5` and the full SDK SwiftPM suite. I did not rely on those records alone: this verifier reran the focused Phase 7 Demo command and the full SDK SwiftPM suite successfully.
 
-### Human Verification Required
+### Human Verification Completed
+
+Manual UAT completed on 2026-06-23T02:44:18Z in `07-HUMAN-UAT.md`; all 4 visible SwiftUI checks passed.
 
 ### 1. Parameter JSON Visible Flow
 
@@ -149,7 +153,9 @@ Recorded full regression evidence in `07-03-SUMMARY.md` and `PLANS.md` includes 
 
 ### Gaps Summary
 
-No implementation gaps were found. All five roadmap success criteria and both Phase 7 requirement IDs are verified in code/tests. Status is `human_needed` because Phase 7 is a user-facing SwiftUI QA surface and visual/user-flow UAT was not performed by this verifier.
+No implementation gaps were found. All five roadmap success criteria and both Phase 7 requirement IDs were verified in code/tests. The initial verifier required human UAT because Phase 7 is a user-facing SwiftUI QA surface and visual/user-flow UAT was not performed by that automated pass.
+
+Manual UAT later verified all four user-visible SwiftUI flows in `07-HUMAN-UAT.md`; Phase 7 now has code/test evidence plus human-visible flow confirmation. Release-like claims still exclude manual visual naturalness, real-device camera/Vision parity, production render quality, performance budgets, and long-run hardware readiness unless those separate risks are proven.
 
 ---
 

@@ -46,7 +46,7 @@ Outcome:
 - `DEMO-06` is complete with deterministic parameter JSON export/import preview, failed-import non-mutation, source/reset semantics, and copy/paste-only privacy evidence.
 - `DEMO-07` is complete with before/after compare preservation, read-only redacted debug overlay states, recoverable error codes, and v1 unavailable-state honesty.
 - Phase 7 does not claim manual visual naturalness, real-device camera/Vision parity, production render quality, simulator screenshot/UI automation, performance budgets, or long-run hardware readiness; those remain release risks until separately proven.
-- GSD verifier recorded `status: human_needed` with 5/5 must-haves verified and no implementation gaps; four visible SwiftUI UAT items are persisted in `07-HUMAN-UAT.md`.
+- GSD verifier recorded 5/5 must-haves verified with no implementation gaps; subsequent human UAT passed all four visible SwiftUI checks in `07-HUMAN-UAT.md`.
 - GSD security gate recorded `threats_open: 0` for 14 plan-time threats; accepted supply-chain risks are documented as native SwiftUI/no-new-dependency decisions in `07-SECURITY.md`.
 
 ### C-2026-06-22-gsd-plan-phase-7-rich-demo-qa-surface
