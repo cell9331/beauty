@@ -30,6 +30,23 @@ _No active plans._
 
 ## 4. Completed
 
+### C-2026-06-23-gsd-audit-milestone-v1
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-23 |
+| Scope | Ran `$gsd-audit-milestone v1.0` preflight before milestone archival, aggregating phase verification coverage, requirements traceability, current SDK/Demo integration checks, UAT status, and Nyquist validation-document coverage. |
+| Files | `.planning/v1.0-MILESTONE-AUDIT.md`, `PLANS.md` |
+| Verification | `gsd-tools.cjs query audit-open --json` returned 0 open items before audit; `gsd-tools.cjs query roadmap.analyze` reported 7/7 phases, 28/28 plans, 100%; `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 119 tests; `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test` passed; Demo internal facade-boundary scan returned no matches; active local-first/privacy scan returned no matches. |
+| Build | Full SDK SwiftPM tests and full Demo simulator tests passed. |
+
+Outcome:
+
+- Milestone audit status is `gaps_found`, not `passed`.
+- Current implementation/integration evidence is green, but the GSD audit gate found 21 orphaned requirements because Phases 2, 3, 4, and 6 lack phase-level `*-VERIFICATION.md` files.
+- All seven phases have `*-VALIDATION.md`, but strict Nyquist audit classification remains partial because validation task tables still contain draft/pending state.
+- Next options are to regenerate missing phase verification reports and rerun audit, or explicitly proceed with `$gsd-complete-milestone v1.0` while accepting these documentation gaps as known debt.
+
 ### C-2026-06-23-gsd-execute-phase-7-rich-demo-qa-surface
 
 | Field | Value |
