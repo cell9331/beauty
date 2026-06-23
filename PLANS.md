@@ -30,6 +30,36 @@ _No active plans._
 
 ## 4. Completed
 
+### C-2026-06-23-meituxiuxiu-home-map
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-23 |
+| Scope | Reviewed the 4 homepage PNG screenshots under `meituxiuxiu/home/`, classified first-screen, tool-grid pagination, recommendation feed, sticky shortcut, and bottom-tab behavior, and documented how the homepage reference relates to the existing editor tool-panel reference. |
+| Files | `meituxiuxiu/HOME_MAP.md`, `meituxiuxiu/FUNCTION_MAP.md`, `PLANS.md` |
+| Verification | Visual inspection covered `IMG_0871.PNG` through `IMG_0874.PNG`; `HOME_MAP.md` maps all four screenshots to deduplicated UI states and records the homepage/editor split; `git diff --check -- meituxiuxiu/HOME_MAP.md meituxiuxiu/FUNCTION_MAP.md PLANS.md` passed. |
+| Build | Not run; this was a reference documentation task with no Swift/Xcode source changes. |
+
+Outcome:
+
+- `meituxiuxiu/HOME_MAP.md` now captures homepage structure, main actions, paged tool grid, recommendation feed, sticky scrolled state, bottom tabs, and 1:1 restoration notes.
+- `meituxiuxiu/FUNCTION_MAP.md` now points readers to the separate homepage reference so editor screenshots are not mistaken for home screenshots.
+
+### C-2026-06-23-meituxiuxiu-reference-map
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-23 |
+| Scope | Reviewed all 15 PNG screenshots under `meituxiuxiu/`, classified them by unique Meitu Xiuxiu editor function category, merged duplicate horizontal-scroll screenshots into functional groups, and documented the reference UI structure without deleting any source images. |
+| Files | `meituxiuxiu/FUNCTION_MAP.md`, `PLANS.md` |
+| Verification | Visual inspection covered `IMG_0856.PNG` through `IMG_0870.PNG`; the document records 7 unique first-level function groups and maps every screenshot to a deduplicated role; `git diff --check -- meituxiuxiu/FUNCTION_MAP.md PLANS.md` passed. |
+| Build | Not run; this was a reference documentation task with no Swift/Xcode source changes. |
+
+Outcome:
+
+- `meituxiuxiu/FUNCTION_MAP.md` now captures the shared editor layout, unique function taxonomy, per-image classification, duplicate handling, and uncovered scope.
+- The reference folder was identified as editor-panel evidence, not App-home evidence.
+
 ### C-2026-06-23-gsd-complete-milestone-v1
 
 | Field | Value |
