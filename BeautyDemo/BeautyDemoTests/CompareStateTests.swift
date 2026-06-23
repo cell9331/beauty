@@ -68,6 +68,39 @@ final class CompareStateTests: XCTestCase {
         XCTAssertEqual(snapshot.parameters, parameters)
     }
 
+    func testD15DebugTogglePreservesEditorSelectionParametersAndCompareDisplay() {
+        var debugState = PreviewDebugVisibilityState()
+        let parameters = BeautyParameters(skinSmoothing: 0.6, eyeSize: 0.2)
+
+        let snapshot = PreviewDebugVisibilityState.preservingEditorState(
+            mode: .photo,
+            category: .facialFeatures,
+            subcategory: .nose,
+            parameters: parameters,
+            compareDisplay: .before,
+            toggle: &debugState
+        )
+
+        XCTAssertTrue(debugState.isVisible)
+        XCTAssertEqual(snapshot.mode, .photo)
+        XCTAssertEqual(snapshot.category, .facialFeatures)
+        XCTAssertEqual(snapshot.subcategory, .nose)
+        XCTAssertEqual(snapshot.parameters, parameters)
+        XCTAssertEqual(snapshot.compareDisplay, .before)
+    }
+
+    func testD11DebugToggleCopyAndAccessibilityValuesMatchContract() {
+        var state = PreviewDebugVisibilityState()
+
+        XCTAssertEqual(state.title, "Show Debug Details")
+        XCTAssertEqual(state.accessibilityValue, "Debug details hidden")
+
+        state.toggle()
+
+        XCTAssertEqual(state.title, "Hide Debug Details")
+        XCTAssertEqual(state.accessibilityValue, "Debug details visible")
+    }
+
     func testD12PreviewDebugDetectionRowsUseRedactedSummaryOnly() {
         let summaries = [
             BeautyDetectionSummary.noFace,

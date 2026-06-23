@@ -108,12 +108,35 @@ final class BeautyDemoViewStateTests: XCTestCase {
 
     func testDEMO06PreviewToolbarIncludesParameterJSONAndPreservesCompareLabels() {
         XCTAssertEqual(
-            EditorShellView.previewToolbarViewState(compareActionTitle: "Show Before").map(\.title),
-            ["Show Before", "Parameter JSON"]
+            EditorShellView.previewToolbarViewState(
+                compareActionTitle: "Show Before",
+                debugActionTitle: "Show Debug Details",
+                debugAccessibilityValue: "Debug details hidden"
+            ).map(\.title),
+            ["Show Before", "Show Debug Details", "Parameter JSON"]
         )
         XCTAssertEqual(
-            EditorShellView.previewToolbarViewState(compareActionTitle: "Show After").map(\.title),
-            ["Show After", "Parameter JSON"]
+            EditorShellView.previewToolbarViewState(
+                compareActionTitle: "Show After",
+                debugActionTitle: "Hide Debug Details",
+                debugAccessibilityValue: "Debug details visible"
+            ).map(\.title),
+            ["Show After", "Hide Debug Details", "Parameter JSON"]
+        )
+        XCTAssertEqual(
+            EditorShellView.previewToolbarViewState(
+                compareActionTitle: "Show Before",
+                debugActionTitle: "Show Debug Details",
+                debugAccessibilityValue: "Debug details hidden"
+            ).first { $0.id == .debug }?.accessibilityValue,
+            "Debug details hidden"
+        )
+    }
+
+    func testDEMO07DebugOverlayEmptyCopyMatchesContract() {
+        XCTAssertEqual(
+            PreviewDebugOverlayView.emptyStateText,
+            "Debug details are unavailable for this preview."
         )
     }
 
