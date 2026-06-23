@@ -219,6 +219,14 @@ Phase 6 current state:
 - Detection and degradation feedback remains centralized in `DetectionStatusPresentation`; no cap banners, per-slider warning rows, or internal provider details are shown in normal UI.
 - Focused view-state tests cover Beauty, Face Shape, Eyes, Nose, Mouth, Filters, and Presets paths without changing category or subcategory ordering.
 
+Phase 7 current state:
+
+- The preview toolbar includes `Show Before` / `Show After`, `Show Debug Details` / `Hide Debug Details`, and `Parameter JSON` without changing compare labels.
+- `Parameter JSON` opens a copy/paste-only sheet with Import and Export modes. Import previews a schemaVersion 1 payload before Apply; failed previews leave current settings unchanged. Export copies a deterministic `schemaVersion` plus `parameters` payload.
+- `BeautyParameterStore` tracks custom, preset, and imported source state. Single reset returns one control to SDK default, reset all returns to `BeautyParameters()`, and manual slider/filter edits clear applied preset/import source.
+- `PreviewDebugOverlayView` is read-only and displays only safe value rows from public detection summaries, warning counts, redacted recoverable error codes, and friendly status copy.
+- Future categories and facial-feature subcategories remain visible, disabled, ordered, and marked `Not in v1`; no extra info route or active future-domain controls were added.
+
 ## 9. Camera Preview
 
 Camera preview responsibilities:
@@ -384,6 +392,13 @@ Phase 6 Demo feedback evidence recorded 2026-06-22:
 - `BeautyParameterStoreTests` verifies normal parameter changes no longer surface pending-Phase-6 copy.
 - `BeautyDemoViewStateTests` verifies existing category order plus Beauty, Face Shape, Eyes, Nose, Mouth, Filters, and Presets panel paths.
 - `InputPipelinePrivacyTests` scans active Demo panel/state source for stale Phase 6 pending copy and raw resource/privacy tokens.
+
+Phase 7 Demo QA evidence recorded 2026-06-23:
+
+- Focused `xcodebuild` coverage for `BeautyParameterStoreTests`, `ParameterJSONCodingTests`, `BeautyDemoViewStateTests`, `CompareStateTests`, `InputPipelinePrivacyTests`, and `BeautyDemoImportBoundaryTests` passed on iPhone 17 iOS 26.5.
+- Full Demo simulator tests passed on iPhone 17 iOS 26.5 after updating stale unavailable-copy test expectations to the Phase 7 `Not in v1` contract.
+- `InputPipelinePrivacyTests` and active-surface `rg` scans cover copy/paste JSON, preview-before-apply, raw JSON non-echo, debug redaction, facade-only imports, and no file/network JSON scope creep.
+- Simulator screenshot/UI automation was not run; visual layout, Dynamic Type overlap, and manual naturalness remain release-risk checks rather than pass evidence.
 
 ## 17. Implementation Checklist
 

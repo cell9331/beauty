@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Detection and Coordinate Safety** - SDK can reason about faces, orientation, mirroring, and safe degraded frames. (completed 2026-06-18)
 - [x] **Phase 5: Filters, Presets, and Resource Flow** - Users can apply safe color/filter controls and built-in presets. (completed 2026-06-19)
 - [x] **Phase 6: Core Beauty Effects** - Users can tune skin, face, eye, nose, and mouth MVP controls with safety caps. (completed 2026-06-22)
-- [ ] **Phase 7: Rich Demo QA Surface** - Demo becomes a complete validation surface with compare, reset, debug, and tests.
+- [x] **Phase 7: Rich Demo QA Surface** - Demo becomes a complete validation surface with compare, reset, debug, and tests. (completed 2026-06-23)
 
 ## Phase Details
 
@@ -242,13 +242,19 @@ Plans:
   4. Automated checks cover final Demo workflows and SDK boundary rules.
   5. Requirements traceability shows all 33 v1 requirements mapped to phases.
 
-**Plans:** 3 plans
-
+**Plans:** 3/3 plans complete
 Plans:
+**Wave 1**
 
-- [ ] 07-01: Add preset/reset/JSON workflows and state persistence boundaries.
-- [ ] 07-02: Add final compare/debug overlay UX and unavailable-state polish.
-- [ ] 07-03: Add final Demo QA tests, traceability audit, and v1 readiness documentation.
+- [x] 07-01: Add preset/reset/JSON workflows and state persistence boundaries.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [x] 07-02: Add final compare/debug overlay UX and unavailable-state polish.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [x] 07-03: Add final Demo QA tests, traceability audit, and v1 readiness documentation.
 
 ## Progress
 
@@ -263,4 +269,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | 4. Detection and Coordinate Safety | 5/5 | Complete    | 2026-06-18 |
 | 5. Filters, Presets, and Resource Flow | 4/4 | Complete    | 2026-06-19 |
 | 6. Core Beauty Effects | 5/5 | Complete    | 2026-06-22 |
-| 7. Rich Demo QA Surface | 0/3 | Not started | - |
+| 7. Rich Demo QA Surface | 3/3 | Complete    | 2026-06-23 |

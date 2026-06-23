@@ -194,6 +194,15 @@ Forbidden:
 - Resolving JSON resource IDs as arbitrary filesystem paths.
 - Loading remote preset URLs without an explicit network and integrity design.
 
+Phase 7 Demo parameter JSON evidence recorded 2026-06-23:
+
+- Demo parameter JSON is copy/paste-only and limited to 65,536 UTF-8 bytes before decoding.
+- The accepted envelope is `schemaVersion: 1` plus `parameters`; unsupported schemas, malformed JSON, oversized payloads, and unknown `filterId` values map to stable friendly errors.
+- Import preview validates through the public `BeautySDKResources.validate(parameters:)` facade before Apply; failed imports do not mutate current parameters, selected filter, selected preset, sliders, compare state, or debug state.
+- Export emits only deterministic `schemaVersion` and `parameters`; it does not include timestamps, source labels, detection summaries, debug metrics, local paths, or build metadata.
+- Raw pasted JSON is confined to the explicit sheet text editor and is not echoed in status, error, debug, or log copy.
+- The broad raw-token scan over all Demo source/tests reports expected XCTest guard literals and existing non-debug image geometry helpers; the scoped active JSON/debug surface scan returned no matches.
+
 ## 8. Resource Security
 
 Resource types:
@@ -354,6 +363,12 @@ Phase 6 effect/privacy evidence recorded 2026-06-22:
 - `CombinedEffectSafetyTests` and `MissingLandmarkDegradationTests` cover combined caps, no-face routing, partial landmark skips, stale/reused degradation, and redacted warning/metric behavior.
 - Demo import-boundary tests keep `BeautyDemo` on the public `BeautySDK` facade.
 - Static scans cover stale pending UI copy, `VNFaceObservation`, bounding boxes, raw framework errors, local paths, raw preset JSON, and image-byte dump tokens on active SDK/Demo surfaces.
+
+Phase 7 debug/privacy evidence recorded 2026-06-23:
+
+- The preview debug overlay shows only frame status, detection availability/reason/count/timing summaries, warning counts, redacted error codes, and friendly status copy.
+- No face boxes, landmarks, control points, geometry overlay, raw Vision objects, raw `NSError`, local paths, stack traces, image bytes, network calls, document pickers, file importers, or file exporters were added to active JSON/debug surfaces.
+- `rg -n "import Beauty(Core|Detection|Effects|Render|Resources)" BeautyDemo/BeautyDemo BeautyDemo/BeautyDemoTests` returned no matches.
 
 If automated tests are not yet available, record manual checks in `PLANS.md`.
 

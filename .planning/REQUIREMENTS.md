@@ -48,8 +48,8 @@ Requirements for the initial SDK milestone. Each requirement must map to exactly
 - [x] **DEMO-03**: Demo shows v1-unimplemented categories or controls, including advanced makeup, stickers, background, and style, as disabled or coming-later states rather than active features.
 - [x] **DEMO-04**: Demo exposes Facial Features subcategories for Eyes, Nose, Mouth, Eyebrows, Teeth, and Hairline, with v1-unimplemented items disabled.
 - [x] **DEMO-05**: Demo sliders support `0...100` and `-100...100` display ranges and normalize values before passing parameters to the SDK.
-- [ ] **DEMO-06**: Demo supports preset selection, single-parameter reset, reset-all, and basic parameter JSON import/export.
-- [ ] **DEMO-07**: Demo provides before/after compare and debug overlay states for detection, degradation, and recoverable errors.
+- [x] **DEMO-06**: Demo supports preset selection, single-parameter reset, reset-all, and basic parameter JSON import/export.
+- [x] **DEMO-07**: Demo provides before/after compare and debug overlay states for detection, degradation, and recoverable errors.
 - [x] **DEMO-08**: Automated Demo tests or view-state tests cover visible categories, disabled unavailable controls, slider normalization, and no internal SDK target imports.
 
 ## v2 Requirements
@@ -119,8 +119,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DEMO-03 | Phase 2 | Complete |
 | DEMO-04 | Phase 2 | Complete |
 | DEMO-05 | Phase 2 | Complete |
-| DEMO-06 | Phase 7 | Pending |
-| DEMO-07 | Phase 7 | Pending |
+| DEMO-06 | Phase 7 | Complete |
+| DEMO-07 | Phase 7 | Complete |
 | DEMO-08 | Phase 2 | Complete |
 
 **Coverage:**
@@ -131,4 +131,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-06-10*
-*Last updated: 2026-06-22 after Phase 6 Plan 06-05 combined safety and Demo closeout verification*
+*Last updated: 2026-06-23 after Phase 7 Plan 07-03 final Demo QA, privacy/import scans, and traceability closeout*

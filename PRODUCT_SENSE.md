@@ -328,6 +328,21 @@ Manual checks still required before release-like claims:
 - Human visual review of fixed fixtures or simulator preview for naturalness, especially skin texture, face shape plausibility, lip/rosy color, and filter strength.
 - Hardware smoke for real camera/photo parity and real Vision quality under front camera, side face, and low light.
 
+### 7.8 Phase 7 Rich Demo QA Acceptance
+
+Agent-verifiable checks recorded 2026-06-23:
+
+- Parameter JSON round-trip, exact top-level keys, deterministic export, 64 KB size rejection, unsupported schema rejection, malformed JSON non-echo, unknown filter rejection, and facade validation are covered by `ParameterJSONCodingTests`.
+- Preset/import/custom source transitions, imported apply, single reset, reset all, manual slider clearing, and manual filter clearing are covered by `BeautyParameterStoreTests`.
+- The preview toolbar, `Parameter JSON` sheet copy, preview-before-apply gating, invalid-copy language, debug empty state, category order, and `Not in v1` unavailable copy are covered by `BeautyDemoViewStateTests` and `BeautyCategoryModelTests`.
+- Before/after compare and debug visibility preserve editor selection, parameters, and compare display; debug rows expose only redacted summaries and friendly recoverable status through `CompareStateTests`.
+- `InputPipelinePrivacyTests`, `BeautyDemoImportBoundaryTests`, and static scans verify facade-only imports, local-first JSON/debug surfaces, no file/network JSON scope creep, no raw JSON status/debug echo, and no geometry debug overlay.
+
+Manual checks still required before release-like claims:
+
+- Visual naturalness review of fixtures or simulator preview.
+- Real-device front-camera parity, real Vision behavior, low-light/side-face smoke, production render quality, performance budgets, simulator screenshot/UI automation, and long-run hardware stability.
+
 ## 8. Preset Product Contract
 
 MVP built-in presets:

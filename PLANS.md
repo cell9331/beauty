@@ -30,6 +30,63 @@ _No active plans._
 
 ## 4. Completed
 
+### C-2026-06-23-gsd-execute-phase-7-rich-demo-qa-surface
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-23 |
+| Scope | Executed GSD Phase 7 final wave 07-03 after 07-01 and 07-02: ran focused Demo QA, full Demo simulator tests, full SDK SwiftPM tests, facade/privacy scans, fixed stale unavailable-copy test coverage, closed DEMO-06/DEMO-07 traceability, and updated root docs/quality evidence for v1 Demo readiness. |
+| Requirements | DEMO-06, DEMO-07 |
+| Files | `BeautyDemo/BeautyDemoTests/BeautyCategoryModelTests.swift`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `QUALITY_SCORE.md`, `PLANS.md`, `.planning/phases/07-rich-demo-qa-surface/07-03-SUMMARY.md` |
+| Verification | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test -only-testing:BeautyDemoTests/BeautyParameterStoreTests -only-testing:BeautyDemoTests/ParameterJSONCodingTests -only-testing:BeautyDemoTests/BeautyDemoViewStateTests -only-testing:BeautyDemoTests/CompareStateTests -only-testing:BeautyDemoTests/InputPipelinePrivacyTests -only-testing:BeautyDemoTests/BeautyDemoImportBoundaryTests` passed; first full Demo suite run exposed stale `BeautyCategoryModelTests.testFutureFacialFeatureSubcategoriesAreDisabled` expectation for old future-resource badge, then `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test -only-testing:BeautyDemoTests/BeautyCategoryModelTests` passed and the full Demo suite passed; `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 119 XCTest cases; `rg -n "import Beauty(Core|Detection|Effects|Render|Resources)" BeautyDemo/BeautyDemo BeautyDemo/BeautyDemoTests` returned no matches; exact broad JSON/debug privacy scan returned expected XCTest guard literals and non-debug `CGRect` image helpers, while scoped active JSON/debug surface scan returned no matches; `git diff --check -- BeautyDemo BeautySDK FRONTEND.md SECURITY.md RELIABILITY.md PRODUCT_SENSE.md QUALITY_SCORE.md PLANS.md .planning` exited 0. |
+| Build | Focused Demo tests, full Demo simulator tests, and full SDK SwiftPM tests passed. |
+
+Outcome:
+
+- `DEMO-06` is complete with deterministic parameter JSON export/import preview, failed-import non-mutation, source/reset semantics, and copy/paste-only privacy evidence.
+- `DEMO-07` is complete with before/after compare preservation, read-only redacted debug overlay states, recoverable error codes, and v1 unavailable-state honesty.
+- Phase 7 does not claim manual visual naturalness, real-device camera/Vision parity, production render quality, simulator screenshot/UI automation, performance budgets, or long-run hardware readiness; those remain release risks until separately proven.
+
+### C-2026-06-22-gsd-plan-phase-7-rich-demo-qa-surface
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-22 |
+| Scope | Ran `$gsd-plan-phase 7` after research, validation, and UI-SPEC gates were already satisfied; produced a Phase 7 pattern map and three executable plans for parameter JSON/source semantics, preview debug/unavailable-state polish, and final QA/readiness closeout. |
+| Requirements | DEMO-06, DEMO-07 |
+| Files | `.planning/phases/07-rich-demo-qa-surface/07-PATTERNS.md`, `.planning/phases/07-rich-demo-qa-surface/07-01-PLAN.md`, `.planning/phases/07-rich-demo-qa-surface/07-02-PLAN.md`, `.planning/phases/07-rich-demo-qa-surface/07-03-PLAN.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.plan-phase 7` reports `phase_status: Planned`, `has_research: true`, `has_context: true`, `has_plans: true`, `plan_count: 3`, and `patterns_path` set; frontmatter/task scan passed for all three plans with required keys, `read_first`, `action`, `acceptance_criteria`, artifacts, and threat models; requirement scan covered `DEMO-06` and `DEMO-07`; `check.decision-coverage-plan` passed with 23/23 CONTEXT decisions covered; placeholder scan over `07-PATTERNS.md` and `07-0*-PLAN.md` returned no matches; `state.planned-phase --phase 07 --name rich-demo-qa-surface --plans 3` and `roadmap.annotate-dependencies 07` ran; post-planning gap analysis covered `DEMO-06`, `DEMO-07`, and `D-01` through `D-23`, with only non-Phase-7 requirements reported as not covered; `git diff --check -- .planning/phases/07-rich-demo-qa-surface/07-PATTERNS.md .planning/phases/07-rich-demo-qa-surface/07-0*-PLAN.md` exited 0. |
+| Build | Not run; this was a GSD planning/documentation workflow with no Swift or Xcode source changes. |
+| Commit | Not created because the worktree already contains unrelated modified/untracked files and `PLANS.md` / `.planning/STATE.md` had pre-existing local changes outside this plan generation. |
+
+Outcome:
+
+- Phase 7 now has `07-PATTERNS.md` and three executable plans in waves 1 through 3.
+- `07-01` adds copy/paste parameter JSON, deterministic export, preview-before-apply validation, imported/preset/custom source state, and reset semantics for `DEMO-06`.
+- `07-02` adds the read-only preview debug overlay, compare/debug preservation, redacted camera/photo debug state, and disabled/future category polish for `DEMO-07`.
+- `07-03` closes final focused/full QA, privacy/import scans, requirements traceability, root docs, quality score, and manual release-risk recording for `DEMO-06` and `DEMO-07`.
+- `.planning/ROADMAP.md` records Phase 7 wave dependencies, and `.planning/STATE.md` points resume to `07-01-PLAN.md` for execution.
+- Planning was performed inline because this Codex runtime did not expose direct sub-agent execution in the current tool set; the GSD planner/checker gates were applied through local artifacts and deterministic checks.
+
+### C-2026-06-22-gsd-ui-phase-7-rich-demo-qa-surface
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-22 |
+| Scope | Ran `$gsd-ui-phase 7` for Phase 7 and produced an approved SwiftUI UI design contract covering copy/paste parameter JSON, preview-before-apply import, source/reset semantics, preview-surface debug overlay, unavailable-state polish, accessibility, privacy boundaries, and verification expectations. |
+| Requirements | DEMO-06, DEMO-07 |
+| Files | `.planning/phases/07-rich-demo-qa-surface/07-UI-SPEC.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `wc -l` reported 333 lines for `07-UI-SPEC.md`; frontmatter/sign-off scan found `status: approved`, `reviewed_at`, and six checked PASS dimensions; inline gsd-ui-checker gate approved Copywriting, Visuals, Color, Typography, Spacing, and Registry Safety; placeholder/generic-copy scan over `07-UI-SPEC.md` and `.planning/STATE.md` returned no matches; `init.plan-phase 7` reports `has_research: true`, `has_context: true`, `has_plans: false`, and `plan_count: 0`; `workflow.ui_phase` and `workflow.ui_safety_gate` are both `true`; `git diff --check -- .planning/phases/07-rich-demo-qa-surface/07-UI-SPEC.md .planning/STATE.md PLANS.md` exited 0. |
+| Build | Not run; this was a GSD UI contract/documentation workflow with no Swift or Xcode source changes. |
+| Commit | Not created because the worktree already contains unrelated modified/untracked files and `PLANS.md` / `.planning/STATE.md` had pre-existing local changes outside this UI-SPEC write. |
+
+Outcome:
+
+- Phase 7 now has an approved `07-UI-SPEC.md` for native SwiftUI implementation planning.
+- The contract preserves the existing 4/8/16/24/32/48/64 spacing scale, four-size/two-weight typography, existing palette, SF Symbols, and no web registry.
+- Planner can proceed with `$gsd-plan-phase 7` using the UI contract as design context.
+- Sub-agent work was executed inline because this Codex runtime exposes sub-agents under an explicit delegation rule; the researcher/checker instructions and gates were still applied.
+
 ### C-2026-06-22-gsd-discuss-phase-7-rich-demo-qa-surface
 
 | Field | Value |

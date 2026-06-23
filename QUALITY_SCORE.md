@@ -34,19 +34,19 @@ Quality gate:
 
 ## 3. Current Snapshot
 
-Current repository state as of 2026-06-22:
+Current repository state as of 2026-06-23:
 
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
 | Root docs | 4 | `AGENTS.md`, `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `PLANS.md`, `QUALITY_SCORE.md` exist and separate current state from target architecture. | Keep root docs synced when `.planning/PROJECT.md`, `docs/10_document_audit_report.md`, or implementation contracts change. |
 | Historical docs | 3 | `docs/README.md` is the long-doc entry, lists current implementation status, and routes historical `docs/superpowers/` planning artifacts as background. | Continue conflict scans against root contracts and fresh command output. |
-| GSD planning | 4 | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, Phase 1/2/3/4/5 plan artifacts, Phase 6 execution summaries through 06-04, and active 06-05 closeout context exist. | Commit 06-05 summary/state/roadmap/requirements after final closeout. |
+| GSD planning | 4 | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, Phase 1 through Phase 7 plan artifacts, and Phase 7 summaries through 07-03 close v1 Demo traceability. | Run final `$gsd-verify-work` / milestone audit before archiving v1. |
 | SDK Package | 4 | `BeautySDK/Package.swift` exists with `BeautyCore`, `BeautyDetection`, `BeautyRender`, `BeautyEffects`, `BeautyResources`, and facade `BeautySDK` targets; `swift test --package-path BeautySDK` passes with 119 XCTest cases. | Replace MVP geometry/color proxies with production-quality render passes and performance evidence. |
-| Demo App | 4 | `BeautyDemo` imports `BeautySDK`, renders the editor shell, enabled Camera/Photo modes, camera permission/session states, bounded realtime pipeline, photo input pipeline, compare state, preset/filter chips, color controls, quiet Phase 6 parameter status, and deterministic view-state coverage for Beauty, Face Shape, Eyes, Nose, Mouth, Filters, and Presets. | Add simulator screenshot/UI automation and manual visual QA for final layout and naturalness. |
-| Tests | 4 | `BeautySDK/Tests` has 119 passing XCTest cases; `BeautyDemoTests` has 67 passing XCTest cases covering import boundary, Camera, realtime pipeline, Photo, compare, privacy scans, resources, presets, filters, panel state, parameter state, metadata, coordinate, detection degradation, visual effect fixtures, provider output, combined caps, no-face skips, and Demo Phase 6 panel paths. | Add performance, production render regression, simulator UI automation, and long-run coverage in later phases. |
-| Security | 4 | Parameter/preset/resource validation tests plus purpose-string, no-upload/no-network, no raw path/error copy, facade-only import, Demo resource-control source scans, and public geometry/raw framework leakage scans pass; privacy manifest still absent. | Add privacy manifest review when SDK distribution behavior exists. |
-| Reliability | 4 | `BeautyError`, no-op unsupported format mapping, SDK-created output, idempotent `reset()`, realtime backpressure, stale-frame drops, photo stale-work handling, previous-visual preservation, coordinate mapping failures, no-face/partial/low-confidence summaries, resource-not-found validation, combined effect caps, targeted missing-landmark skips, stale/reused geometry degradation, and Demo warning/resource failure copy are tested; runtime metrics and long-run checks are still absent. | Add production render-resource degradation, performance budgets, and long-run tests when render/effects pipelines mature. |
-| Product acceptance | 4 | `PRODUCT_SENSE.md` defines journeys and now records Phase 3, Phase 4, Phase 5, and Phase 6 automated evidence for realtime Camera, still image editing, compare, local-first privacy, metadata, coordinate mapping, safe detection degradation, built-in presets, filters, color/filter output, skin/face/eye/nose/mouth/lip MVP output, conservative presets, and Demo panel smoke. | Attach manual/hardware smoke evidence before release-like naturalness claims. |
+| Demo App | 4 | `BeautyDemo` imports `BeautySDK`, renders the editor shell, enabled Camera/Photo modes, camera permission/session states, bounded realtime pipeline, photo input pipeline, compare/debug toolbar, copy/paste Parameter JSON sheet, preset/import/custom source state, reset semantics, preset/filter chips, color controls, quiet Phase 6 parameter status, and deterministic view-state coverage for Beauty, Face Shape, Eyes, Nose, Mouth, Filters, and Presets. | Add simulator screenshot/UI automation and manual visual QA for final layout and naturalness. |
+| Tests | 4 | `BeautySDK/Tests` has 119 passing XCTest cases; `BeautyDemoTests` has 98 XCTest methods by source count, and the full Demo simulator suite passed on iPhone 17 iOS 26.5. Coverage includes import boundary, Camera, realtime pipeline, Photo, compare/debug, parameter JSON, privacy scans, resources, presets, filters, panel state, parameter source/reset state, metadata, coordinate, detection degradation, visual effect fixtures, provider output, combined caps, no-face skips, and Demo Phase 7 panel paths. | Add performance, production render regression, simulator UI automation, and long-run coverage in later phases. |
+| Security | 4 | Parameter/preset/resource validation tests plus purpose-string, no-upload/no-network, no raw path/error copy, facade-only import, Demo resource-control source scans, public geometry/raw framework leakage scans, 64 KB parameter JSON limit, schema validation, raw JSON non-echo tests, and active JSON/debug surface scans pass; privacy manifest still absent. | Add privacy manifest review when SDK distribution behavior exists. |
+| Reliability | 4 | `BeautyError`, no-op unsupported format mapping, SDK-created output, idempotent `reset()`, realtime backpressure, stale-frame drops, photo stale-work handling, previous-visual preservation, coordinate mapping failures, no-face/partial/low-confidence summaries, resource-not-found validation, combined effect caps, targeted missing-landmark skips, stale/reused geometry degradation, Demo warning/resource failure copy, recoverable debug status codes, and non-mutating JSON import failures are tested; runtime metrics and long-run checks are still absent. | Add production render-resource degradation, performance budgets, and long-run tests when render/effects pipelines mature. |
+| Product acceptance | 4 | `PRODUCT_SENSE.md` defines journeys and now records Phase 3 through Phase 7 automated evidence for realtime Camera, still image editing, compare/debug, local-first privacy, metadata, coordinate mapping, safe detection degradation, built-in presets, filters, parameter JSON round-trip, reset/source semantics, unavailable-state honesty, color/filter output, skin/face/eye/nose/mouth/lip MVP output, conservative presets, and Demo panel smoke. | Attach manual/hardware smoke evidence before release-like naturalness claims. |
 
 ### 3.1 Phase 4 Final Verification
 
@@ -78,6 +78,17 @@ Recorded 2026-06-22:
 - Exact stale pending-visual Phase 6 copy scan across BeautyDemo, BeautySDK, and root docs returned no matches.
 - Public geometry/raw framework/path scan over `BeautySDK/Sources/BeautyCore`, `BeautySDK/Sources/BeautySDK`, `BeautyDemo/BeautyDemo/Camera`, and `BeautyDemo/BeautyDemo/Editor` returned no matches.
 - Broad raw-token scan still reports expected policy examples in root docs and guard strings in tests; it is not evidence of an active SDK/Demo surface leak.
+
+### 3.4 Phase 7 Final Verification
+
+Recorded 2026-06-23:
+
+- Focused Demo `xcodebuild` command for `BeautyParameterStoreTests`, `ParameterJSONCodingTests`, `BeautyDemoViewStateTests`, `CompareStateTests`, `InputPipelinePrivacyTests`, and `BeautyDemoImportBoundaryTests` passed on `platform=iOS Simulator,name=iPhone 17,OS=26.5`.
+- Full Demo `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test` passed after aligning stale future-subcategory copy coverage with `Not in v1`.
+- `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK` passed with 119 XCTest cases.
+- `rg -n "import Beauty(Core|Detection|Effects|Render|Resources)" BeautyDemo/BeautyDemo BeautyDemo/BeautyDemoTests` returned no matches.
+- The exact broad JSON/debug privacy scan reported expected XCTest guard literals and existing non-debug `CGRect` image helpers; the scoped active JSON/debug surface scan returned no matches.
+- Simulator screenshot/UI automation, manual visual naturalness review, real-device camera/Vision parity, production render quality, performance budgets, and long-run hardware checks were not run and remain release-risk gates.
 
 ## 4. Product Domain Scorecard
 

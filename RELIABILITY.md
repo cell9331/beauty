@@ -488,10 +488,18 @@ Phase 6 effect-degradation evidence recorded 2026-06-22:
 - `BeautyResult.warnings` and `metrics` carry cap, skip, point-count, active-domain, and weakened-domain evidence without requiring normal UI banners.
 - Demo focused tests verify normal parameter changes are quiet and existing panel paths remain enabled while degradation status stays in `DetectionStatusPresentation`.
 
+Phase 7 Demo reliability evidence recorded 2026-06-23:
+
+- `PreviewDebugOverlayState` maps recoverable camera pause to `processing_paused` with `Processing paused. Showing the last usable preview.` and photo decode failure to `photo_decode_failed` with `Could not read that photo. Choose another image.`
+- Compare and debug toggles are display-only; tests prove they preserve selected mode, category, subcategory, `BeautyParameters`, and compare display.
+- Parameter JSON import is recoverable: invalid JSON, unsupported schema, oversized payload, invalid values, and unknown filters keep the current parameter snapshot unchanged until explicit Apply succeeds.
+- Full Demo simulator tests and full SDK SwiftPM tests passed as final closeout evidence.
+
 Remaining manual reliability checks:
 
 - Real-device camera/Vision smoke still needs hardware verification for mirror/crop behavior, low-light detection quality, and long-run realtime stability.
 - Automated pixel deltas prove deterministic output changes, not final visual naturalness; release-like claims still need simulator screenshot or human fixture review.
+- Performance budgets, simulator screenshot/UI automation, and 10-minute long-run hardware checks were not run in Phase 7 and remain release-risk gates.
 
 ## 19. Release Readiness Gates
 
