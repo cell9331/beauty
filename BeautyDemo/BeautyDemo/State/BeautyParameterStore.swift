@@ -228,9 +228,10 @@ final class BeautyParameterStore: ObservableObject {
         setDisplayValueFromSnapshot(Double(normalized.smile) * 100, for: .smile)
         setDisplayValueFromSnapshot(Double(normalized.lipColor) * 100, for: .lipColor)
         selectedFilterId = normalized.filterId
+        let filterIntensity = normalized.filterId == nil ? 0 : Double(normalized.filterIntensity) * 100
         displayValues[.filterIntensity] = BeautyControlDescriptor.descriptor(id: .filterIntensity)
             .displayRange
-            .clampedDisplayValue(Double(normalized.filterIntensity) * 100)
+            .clampedDisplayValue(filterIntensity)
     }
 
     private func setDisplayValueFromSnapshot(_ value: Double, for controlID: BeautyControlID) {

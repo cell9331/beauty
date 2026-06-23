@@ -136,6 +136,46 @@ final class ImageEditorPipelineTests: XCTestCase {
         XCTAssertEqual(snapshot.parameters.skinSmoothing, 0.9)
     }
 
+    func testD14StalePhotoCompletionDoesNotBlockIdleWaitForLatestWork() async throws {
+        let firstStarted = expectation(description: "first photo processing started")
+        let releaseFirst = DispatchSemaphore(value: 0)
+        let waitReturned = expectation(description: "waitUntilIdle returned after latest work")
+        let callCount = LockedPhotoCounter()
+        let processor = StillImageProcessor { image, _, _ in
+            if callCount.increment() == 1 {
+                firstStarted.fulfill()
+                _ = releaseFirst.wait(timeout: .now() + 2)
+            }
+            return BeautyResult(output: image)
+        }
+        let pipeline = ImageEditorPipeline(
+            processor: processor,
+            processingQueue: DispatchQueue(label: "beauty.demo.tests.concurrent-photo-pipeline", attributes: .concurrent)
+        )
+
+        pipeline.process(
+            input: .fixture(id: "stale", image: Self.testImage(red: 0.1)),
+            parameters: .init(skinSmoothing: 0.1)
+        )
+        await fulfillment(of: [firstStarted], timeout: 2)
+        pipeline.process(
+            input: .fixture(id: "latest", image: Self.testImage(red: 0.9)),
+            parameters: .init(skinSmoothing: 0.9)
+        )
+
+        Task { @MainActor in
+            await pipeline.waitUntilIdle()
+            waitReturned.fulfill()
+        }
+        await fulfillment(of: [waitReturned], timeout: 2)
+        releaseFirst.signal()
+        await pipeline.waitUntilIdle()
+
+        let snapshot = try XCTUnwrap(pipeline.state.latestSnapshot)
+        XCTAssertEqual(snapshot.sourceID, "latest")
+        XCTAssertEqual(snapshot.parameters.skinSmoothing, 0.9)
+    }
+
     func testPIPE07PhotoDetectionStatusPersistsUntilNewProcessingResult() async throws {
         let summaries = LockedPhotoQueue<BeautyDetectionSummary?>([
             BeautyDetectionSummary(

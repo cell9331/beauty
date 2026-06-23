@@ -390,6 +390,8 @@ struct EditorShellView: View {
             return
         }
 
+        selectedPhotoItem = nil
+
         Task {
             do {
                 if let data = try await item.loadTransferable(type: Data.self) {
@@ -401,7 +403,6 @@ struct EditorShellView: View {
             } catch {
                 imageEditorPipeline.recordSelectionFailure()
             }
-            selectedPhotoItem = nil
         }
     }
 

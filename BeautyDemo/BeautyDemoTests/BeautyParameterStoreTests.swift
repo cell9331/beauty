@@ -174,6 +174,17 @@ final class BeautyParameterStoreTests: XCTestCase {
         XCTAssertEqual(store.parametersSnapshot, imported)
     }
 
+    func testDEMO06ApplyingImportedParametersWithoutFilterClearsVisibleIntensity() {
+        let store = BeautyParameterStore()
+
+        store.applyImportedParameters(BeautyParameters(filterId: nil, filterIntensity: 0.8))
+
+        XCTAssertNil(store.selectedFilterId)
+        XCTAssertEqual(store.displayValue(for: .filterIntensity), 0, accuracy: 0.0001)
+        XCTAssertEqual(store.parametersSnapshot.filterIntensity, 0, accuracy: 0.0001)
+        XCTAssertEqual(store.parameterSource, .imported)
+    }
+
     func testDEMO06ApplyingImportedParametersClearsPreviousPresetSelection() throws {
         let preset = try XCTUnwrap(try BeautySDKResources.builtInPresets().first)
         let store = BeautyParameterStore()

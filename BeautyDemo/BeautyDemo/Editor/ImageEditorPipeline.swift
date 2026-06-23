@@ -173,6 +173,7 @@ final class ImageEditorPipeline: ObservableObject {
 
     private func finish(_ work: ImageProcessingWork, result: ImageProcessingResult) {
         guard work.generation == generation else {
+            resumeIdleContinuationsIfNeeded()
             return
         }
 
