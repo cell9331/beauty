@@ -40,11 +40,13 @@ struct EditorPreviewViewState: Equatable {
 struct EditorPreviewToolbarAction: Identifiable, Equatable {
     enum Kind: Equatable {
         case compare
+        case debug
         case parameterJSON
     }
 
     let id: Kind
     let title: String
+    let accessibilityValue: String?
 }
 
 private enum EditorSheet: Identifiable {
@@ -71,6 +73,7 @@ struct EditorShellView: View {
     @State private var latestCameraFrame: CameraPreviewFrame?
     @State private var selectedPhotoItem: PhotosPickerItem?
     @State private var compareState = CompareState()
+    @State private var debugVisibilityState = PreviewDebugVisibilityState()
     @State private var activeSheet: EditorSheet?
 
     private let cameraPermissionClient: any CameraPermissionClient
@@ -166,6 +169,12 @@ struct EditorShellView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 .accessibilityLabel("Live camera preview")
 
+            if debugVisibilityState.isVisible {
+                PreviewDebugOverlayView(state: PreviewDebugOverlayState.camera(cameraBeautyPipeline.state))
+                    .padding(16)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            }
+
             VStack {
                 Spacer()
                 if cameraBeautyPipeline.state.latestSnapshot != nil {
@@ -192,6 +201,12 @@ struct EditorShellView: View {
                 photoMessage(for: state)
             }
 
+            if debugVisibilityState.isVisible {
+                PreviewDebugOverlayView(state: PreviewDebugOverlayState.photo(imageEditorPipeline.state))
+                    .padding(16)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            }
+
             VStack {
                 Spacer()
                 if imageEditorPipeline.state.latestSnapshot != nil, !imageEditorPipeline.state.isLoading {
@@ -216,6 +231,7 @@ struct EditorShellView: View {
             if showsCompare {
                 compareButton
             }
+            debugButton
             parameterJSONButton
         }
     }
@@ -229,6 +245,19 @@ struct EditorShellView: View {
         .accessibilityLabel(compareState.actionTitle)
         .accessibilityValue(compareState.accessibilityValue)
         .accessibilityHint("Switches between before and after without changing parameters.")
+    }
+
+    private var debugButton: some View {
+        Button(debugVisibilityState.title) {
+            debugVisibilityState.toggle()
+        }
+        .font(.system(size: 13, weight: .semibold))
+        .buttonStyle(.bordered)
+        .tint(debugVisibilityState.isVisible ? Color(red: 47 / 255, green: 107 / 255, blue: 255 / 255) : nil)
+        .frame(minHeight: 44)
+        .accessibilityLabel(debugVisibilityState.title)
+        .accessibilityValue(debugVisibilityState.accessibilityValue)
+        .accessibilityHint("Shows read-only preview diagnostics without changing output.")
     }
 
     private var parameterJSONButton: some View {
@@ -399,10 +428,19 @@ struct EditorShellView: View {
         DemoFixtures.inputModeItems(selectedMode: selectedMode)
     }
 
-    static func previewToolbarViewState(compareActionTitle: String) -> [EditorPreviewToolbarAction] {
+    static func previewToolbarViewState(
+        compareActionTitle: String,
+        debugActionTitle: String,
+        debugAccessibilityValue: String
+    ) -> [EditorPreviewToolbarAction] {
         [
-            EditorPreviewToolbarAction(id: .compare, title: compareActionTitle),
-            EditorPreviewToolbarAction(id: .parameterJSON, title: "Parameter JSON")
+            EditorPreviewToolbarAction(id: .compare, title: compareActionTitle, accessibilityValue: nil),
+            EditorPreviewToolbarAction(
+                id: .debug,
+                title: debugActionTitle,
+                accessibilityValue: debugAccessibilityValue
+            ),
+            EditorPreviewToolbarAction(id: .parameterJSON, title: "Parameter JSON", accessibilityValue: nil)
         ]
     }
 

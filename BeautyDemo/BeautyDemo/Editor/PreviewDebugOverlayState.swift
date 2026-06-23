@@ -1,4 +1,48 @@
+import BeautySDK
 import Foundation
+
+nonisolated struct PreviewDebugVisibilityState: Equatable, Sendable {
+    var isVisible = false
+
+    var title: String {
+        isVisible ? "Hide Debug Details" : "Show Debug Details"
+    }
+
+    var accessibilityValue: String {
+        isVisible ? "Debug details visible" : "Debug details hidden"
+    }
+
+    mutating func toggle() {
+        isVisible.toggle()
+    }
+
+    static func preservingEditorState(
+        mode: EditorInputMode?,
+        category: BeautyCategoryID,
+        subcategory: FacialFeatureSubcategoryID,
+        parameters: BeautyParameters,
+        compareDisplay: CompareState.Display,
+        toggle state: inout PreviewDebugVisibilityState
+    ) -> PreviewDebugSelectionSnapshot {
+        let snapshot = PreviewDebugSelectionSnapshot(
+            mode: mode,
+            category: category,
+            subcategory: subcategory,
+            parameters: parameters,
+            compareDisplay: compareDisplay
+        )
+        state.toggle()
+        return snapshot
+    }
+}
+
+nonisolated struct PreviewDebugSelectionSnapshot: Equatable, Sendable {
+    let mode: EditorInputMode?
+    let category: BeautyCategoryID
+    let subcategory: FacialFeatureSubcategoryID
+    let parameters: BeautyParameters
+    let compareDisplay: CompareState.Display
+}
 
 nonisolated struct PreviewDebugOverlayState: Equatable, Sendable {
     static let allowedRowLabels: Set<String> = [
