@@ -2,17 +2,20 @@
 
 ## Overview
 
-Beauty v1.1 rebuilds the SwiftUI Demo around the local `meituxiuxiu` references. The goal is to replace the prior SDK-dashboard-like first screen with a Meitu Xiuxiu-style Home experience and a Meitu-style editor surface while preserving the existing local-first `BeautySDK` facade, camera/photo pipelines, parameter store, compare behavior, and privacy boundaries.
+Beauty v1.2 corrects the Meitu UI workflow: convert the two local Meitu reference surfaces into static HTML baselines first, verify those HTML baselines in a browser, then optimize SwiftUI against the approved HTML rather than tuning directly from screenshots.
 
 Visual reference contracts:
 
-- Home: `meituxiuxiu/HOME_MAP.md`
-- Editor: `meituxiuxiu/FUNCTION_MAP.md`
+- Home screenshots and map: `meituxiuxiu/home/`, `meituxiuxiu/HOME_MAP.md`
+- Editor screenshots and map: `meituxiuxiu/IMG_0856.PNG` through `IMG_0870.PNG`, `meituxiuxiu/FUNCTION_MAP.md`
+- Planned HTML outputs: `meituxiuxiu/html/home.html`, `meituxiuxiu/html/editor.html`, `meituxiuxiu/html/README.md`
+- Planned v1.2 evidence: `.planning/evidence/v1.2/`
 
 ## Milestones
 
 - ✅ **v1.0 MVP** - Phases 1-7, shipped 2026-06-23. See `.planning/milestones/v1.0-ROADMAP.md`.
 - ✅ **v1.1 Meitu UI** - Phases 8-10, implemented and verified 2026-06-24.
+- 🚧 **v1.2 HTML Reference Fidelity** - Phases 11-15, planned 2026-06-24.
 
 ## Phases
 
@@ -29,104 +32,153 @@ Visual reference contracts:
 
 </details>
 
-## ✅ v1.1 Meitu UI (Phases 8-10)
+<details>
+<summary>v1.1 Meitu UI (Phases 8-10) - implemented 2026-06-24</summary>
 
-### Phase 8: Meitu Home Rebuild
+- [x] Phase 8: Meitu Home Rebuild (4/4 plans) - completed 2026-06-24
+- [x] Phase 9: Meitu Editor Tool Panel (4/4 plans) - completed 2026-06-24
+- [x] Phase 10: Home-to-Editor Flow and v1.1 QA (3/3 plans) - completed 2026-06-24
 
-**Goal:** Replace the Demo first screen with a Meitu Xiuxiu-style Home matching `meituxiuxiu/HOME_MAP.md`.
+</details>
+
+## 🚧 v1.2 HTML Reference Fidelity (Phases 11-15)
+
+### Phase 11: HTML Reference Baselines
+
+**Goal:** Build local static HTML baselines for the two reference surfaces before touching SwiftUI.
 **Mode:** mvp
-**Depends on:** v1.0 Demo shell and reference docs
-**Requirements:** HOME-01, HOME-02, HOME-03, HOME-04, HOME-05, HOME-06
+**Depends on:** v1.1 screenshots, `meituxiuxiu/HOME_MAP.md`, `meituxiuxiu/FUNCTION_MAP.md`
+**Requirements:** HTML-01, HTML-02, HTML-03, HTML-04, HTML-05
 **Success Criteria** (what must be TRUE):
 
-1. The first visible Demo screen uses the reference-style dark Home, not SDK-dashboard copy.
-2. The retro film hero, search/VIP/brand chrome, `拍一拍` CTA, and brown primary action hierarchy are present.
-3. The tool grid supports the three reference paging states with a visible page indicator.
-4. Recommendation image rails and the floating bottom tab bar match the reference structure.
-5. Scrolling produces a sticky horizontal shortcut rail like `IMG_0874.PNG`.
+1. `meituxiuxiu/html/home.html` opens locally and represents Home first screen, paged grid, recommendation rails, bottom tabs, and sticky shortcut state.
+2. `meituxiuxiu/html/editor.html` opens locally and represents the editor preview chrome, white bottom panel, category rails, badges, slider, cancel, and confirm controls.
+3. HTML references are deterministic and offline with no network requests, upload paths, analytics, or remote assets.
+4. Browser screenshots for both HTML pages are captured under `.planning/evidence/v1.2/`.
 
-**Plans:** 4/4 plans complete
+**Plans:** 0/4 plans complete
 Plans:
 
 **Wave 1**
 
-- [x] 08-01: Add Home data models, visual constants, local image/reference assets, and deterministic view-state tests.
+- [ ] 11-01: Create `meituxiuxiu/html/` structure, reference README, shared CSS tokens, and local-only asset policy.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [x] 08-02: Implement the Home hero, primary action cards, paged tool grid, recommendation rails, and bottom tab bar.
+- [ ] 11-02: Implement the Home HTML baseline from `HOME_MAP.md` and `meituxiuxiu/home/`.
+- [ ] 11-03: Implement the Editor HTML baseline from `FUNCTION_MAP.md` and editor screenshots.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [x] 08-03: Implement Home scroll behavior and sticky shortcut rail.
+- [ ] 11-04: Capture browser screenshots and verify HTML local/offline behavior.
 
-**Wave 4** *(blocked on Wave 3 completion)*
+### Phase 12: HTML-to-SwiftUI Delta Contract
 
-- [x] 08-04: Verify Home layout through focused tests and screenshot/manual evidence against `HOME_MAP.md`.
-
-### Phase 9: Meitu Editor Tool Panel
-
-**Goal:** Rebuild the editor surface around the Meitu-style full-screen preview and bottom `美型 / 五官` tool panel from `meituxiuxiu/FUNCTION_MAP.md`.
+**Goal:** Convert HTML baselines into a measurable SwiftUI design contract before implementation.
 **Mode:** mvp
-**Depends on:** Phase 8
-**Requirements:** EDIT-01, EDIT-02, EDIT-03, EDIT-04, EDIT-05, EDIT-06, EDIT-07
+**Depends on:** Phase 11
+**Requirements:** AUDIT-01, AUDIT-02, AUDIT-03
 **Success Criteria** (what must be TRUE):
 
-1. The editor displays a full-screen camera/photo preview above a white tool panel instead of a form-like control surface.
-2. The editor chrome includes brand capsule, `背景保护`, compare affordance, shared slider, `整体`, cancel, and confirm controls.
-3. The first-level categories and second-level tools match the deduplicated `FUNCTION_MAP.md` taxonomy.
-4. Supported tools update existing `BeautyParameterStore` parameters through the shared slider.
-5. Unsupported reference tools are visible but disabled/static with honest badge/state treatment.
-6. Cancel and confirm preserve the preview, compare state, selected input mode, and local-first behavior.
+1. Current SwiftUI Home and Editor screenshots are captured in the same simulator framing used for v1.1 evidence.
+2. A delta report identifies concrete differences between HTML and SwiftUI: dimensions, colors, typography, spacing, hierarchy, scroll/sticky states, badges, and rails.
+3. A component/token mapping names the SwiftUI files and subviews that own each delta.
 
-**Plans:** 4/4 plans complete
+**Plans:** 0/3 plans complete
 Plans:
 
 **Wave 1**
 
-- [x] 09-01: Add editor taxonomy models for first-level categories, second-level tools, badges, support status, and parameter mappings.
+- [ ] 12-01: Capture current SwiftUI screenshots for Home first screen, Home sticky state, and Editor tool panel.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [x] 09-02: Implement the full-screen editor layout and bottom Meitu tool panel.
+- [ ] 12-02: Write `meituxiuxiu/html/SWIFTUI_DELTA.md` comparing HTML baselines to SwiftUI screenshots.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [x] 09-03: Wire supported tool selection and slider edits into `BeautyParameterStore` while preserving compare/debug/JSON behavior.
+- [ ] 12-03: Write the SwiftUI token/component mapping and phase acceptance matrix.
 
-**Wave 4** *(blocked on Wave 3 completion)*
+### Phase 13: Home SwiftUI Fidelity Pass
 
-- [x] 09-04: Verify editor taxonomy, disabled tools, parameter mapping, and visual reference behavior.
-
-### Phase 10: Home-to-Editor Flow and v1.1 QA
-
-**Goal:** Connect Home actions to existing camera/photo/editor processing paths and close v1.1 verification without overclaiming unsupported reference features.
+**Goal:** Update SwiftUI Home using the approved Home HTML baseline and delta contract.
 **Mode:** mvp
-**Depends on:** Phase 9
-**Requirements:** FLOW-01, FLOW-02, FLOW-03, FLOW-04, FLOW-05, FLOW-06
+**Depends on:** Phase 12
+**Requirements:** HSWIFT-01, HSWIFT-02, HSWIFT-03
 **Success Criteria** (what must be TRUE):
 
-1. `图片美化` opens the local photo editing path and preserves existing PhotosPicker/still-image processing behavior.
-2. `相机` and `拍一拍` open the local camera path and preserve permission, realtime processing, and privacy behavior.
-3. `人像美容` opens the editor focused on the Meitu-style beauty panel.
-4. Unsupported Home and Editor actions are visibly disabled/static without network/upload behavior or fake success states.
-5. Automated tests cover Home structure, editor taxonomy, route targets, parameter mapping, disabled states, and facade-only imports.
-6. v1.1 has recorded screenshot/manual evidence for Home first screen, Home scrolled state, and Editor tool panel against the local references.
+1. Home hero, search/brand/VIP chrome, `拍一拍`, action cards, grid, recommendations, and bottom tabs align with the Home HTML baseline.
+2. Sticky shortcut and grid/page states match the Home HTML baseline while preserving existing supported routes and disabled/static unsupported actions.
+3. Focused tests and screenshot evidence show Home no longer depends on ad hoc visual guesses.
 
-**Plans:** 3/3 plans complete
+**Plans:** 0/3 plans complete
 Plans:
 
 **Wave 1**
 
-- [x] 10-01: Add Home action routing into photo, camera, and editor-focused flows while keeping unsupported actions disabled.
+- [ ] 13-01: Apply Home HTML tokens to SwiftUI Home layout, typography, colors, cards, and rails.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [x] 10-02: Add focused view-state, flow, privacy, and import-boundary tests for v1.1 behavior.
+- [ ] 13-02: Tune Home sticky/page states and supported/disabled route affordances.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [x] 10-03: Run full Demo/SDK verification, capture visual evidence, and update root docs/quality score for v1.1.
+- [ ] 13-03: Update Home tests and capture optimized Home screenshots.
+
+### Phase 14: Editor SwiftUI Fidelity Pass
+
+**Goal:** Update SwiftUI Editor using the approved Editor HTML baseline and delta contract.
+**Mode:** mvp
+**Depends on:** Phase 13
+**Requirements:** ESWIFT-01, ESWIFT-02, ESWIFT-03
+**Success Criteria** (what must be TRUE):
+
+1. Editor preview chrome and bottom panel match the Editor HTML baseline more closely than v1.1 evidence.
+2. Category rails, second-level tools, icon sizing, label spacing, badges, slider, `整体`, `背景保护`, cancel, and confirm controls align with the HTML baseline.
+3. Existing parameter bindings, camera/photo paths, compare/debug/JSON behavior, and cancel/confirm semantics remain intact.
+
+**Plans:** 0/3 plans complete
+Plans:
+
+**Wave 1**
+
+- [ ] 14-01: Apply Editor HTML tokens to `EditorShellView` preview chrome and bottom-panel container.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 14-02: Tune `MeituEditorToolPanelView` category rails, tool items, badges, slider, and actions.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 14-03: Preserve editor behavior with focused tests and capture optimized Editor screenshots.
+
+### Phase 15: v1.2 Visual QA and Closeout
+
+**Goal:** Verify the HTML-first workflow end to end and document remaining gaps honestly.
+**Mode:** mvp
+**Depends on:** Phase 14
+**Requirements:** VQA-01, VQA-02, VQA-03
+**Success Criteria** (what must be TRUE):
+
+1. Automated tests cover HTML assumptions, Home/Editor view-state contracts, supported routes, parameter mappings, disabled states, and launch-only screenshot hooks.
+2. Full Demo simulator tests, SDK SwiftPM tests, facade scans, offline HTML scans, and whitespace checks pass.
+3. Final evidence records HTML baselines, SwiftUI before/after screenshots, the delta report, accepted gaps, and future work.
+
+**Plans:** 0/3 plans complete
+Plans:
+
+**Wave 1**
+
+- [ ] 15-01: Add or update contract tests and scans for HTML-first assumptions.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 15-02: Run full Demo/SDK verification, facade scans, offline HTML scans, and visual evidence capture.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 15-03: Update root docs, quality score, requirements, roadmap, state, and PLANS closeout for v1.2.
 
 ## Progress
 
@@ -142,12 +194,18 @@ Plans:
 | 8. Meitu Home Rebuild | v1.1 | 4/4 | Complete | 2026-06-24 |
 | 9. Meitu Editor Tool Panel | v1.1 | 4/4 | Complete | 2026-06-24 |
 | 10. Home-to-Editor Flow and v1.1 QA | v1.1 | 3/3 | Complete | 2026-06-24 |
+| 11. HTML Reference Baselines | v1.2 | 0/4 | Planned | - |
+| 12. HTML-to-SwiftUI Delta Contract | v1.2 | 0/3 | Planned | - |
+| 13. Home SwiftUI Fidelity Pass | v1.2 | 0/3 | Planned | - |
+| 14. Editor SwiftUI Fidelity Pass | v1.2 | 0/3 | Planned | - |
+| 15. v1.2 Visual QA and Closeout | v1.2 | 0/3 | Planned | - |
 
 ## Backlog
 
 Future milestone candidates:
 
+- Automated screenshot diffing and multi-device visual sweeps.
 - Full `图库`, `AI 修图`, and `我` tab implementation.
 - Real AI Home tools, template details, search, VIP, and recommendation-card flows.
 - New SDK algorithm families for 3D/Pro shaping, makeup, segmentation/background, body shaping, stickers, AR masks, style effects, and video export.
-- Distribution readiness: privacy manifest, resource-pack strategy, binary packaging, compatibility matrix, and commercial SDK documentation.
+- Release hardening: real-device camera/Vision parity, production render quality, performance budgets, long-run hardware checks, privacy manifest, and distribution readiness.

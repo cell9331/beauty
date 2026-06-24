@@ -13,6 +13,7 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 ## Current State
 
 **Shipped version:** v1.0 MVP on 2026-06-23.
+**Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
 
 **Implementation state:** v1.1 adds a Meitu-style Home first screen, Home-to-editor routing, and a Meitu-style editor tool panel on top of the v1.0 SDK/Demo foundation. v1.0 includes a Swift Package SDK, public facade models and engine, realtime camera and still-image Demo paths, orientation/mirroring metadata, face detection/degradation summaries, resource-backed filters/presets, visible MVP skin/color/face/eye/nose/mouth effects, deterministic tests, copy/paste parameter JSON, compare state, and redacted debug overlay evidence.
 
@@ -20,17 +21,19 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Code size:** `BeautySDK` and `BeautyDemo` contain about 13,266 Swift lines at v1.0 close.
 
-## Current Milestone: v1.1 Meitu UI
+## Current Milestone: v1.2 HTML Reference Fidelity
 
-**Status:** Implemented and verified on 2026-06-24.
+**Status:** Planned on 2026-06-24.
 
-**Goal:** Rebuild the SwiftUI Demo experience around the local `meituxiuxiu` references so the first screen looks like a Meitu Xiuxiu-style home page and the edit flow uses the referenced full-screen preview plus bottom beauty tool panel.
+**Goal:** Convert the two local Meitu reference surfaces into static HTML baselines first, then use those HTML baselines and a delta report to optimize SwiftUI Home and Editor fidelity.
 
 **Target features:**
 
-- A Meitu-style Home screen with retro film hero, search/VIP chrome, primary action cards, paged tool grid, recommendation image rails, bottom tabs, and sticky shortcut behavior while scrolling.
-- A Meitu-style Editor screen with full-screen preview, white bottom tool panel, intensity slider, first-level and second-level horizontal beauty categories, static Pro/limited/OFF badges, and cancel/confirm actions.
-- Functional routing and SDK integration so supported Home actions open the existing camera/photo/editor flows, supported editor tools update `BeautyParameterStore` and reprocess previews, and unsupported referenced tools are visibly disabled rather than overclaimed.
+- Static local HTML Home reference generated from `meituxiuxiu/home/` and `meituxiuxiu/HOME_MAP.md`.
+- Static local HTML Editor reference generated from `meituxiuxiu/IMG_0856.PNG` through `IMG_0870.PNG` and `meituxiuxiu/FUNCTION_MAP.md`.
+- Browser screenshot evidence for HTML baselines before SwiftUI edits.
+- A visual delta report and token/component contract mapping HTML measurements to SwiftUI files.
+- SwiftUI Home and Editor fidelity optimization based on the approved HTML baselines while preserving local-first SDK behavior.
 
 ## Requirements
 
@@ -54,6 +57,14 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 - [x] Connect supported Home and Editor interactions to existing local-first camera, photo, compare, parameter, and SDK processing behavior.
 - [x] Keep unavailable Meitu reference capabilities honest through disabled/static states instead of fake working features.
 
+### Active in v1.2
+
+- [ ] Create local static HTML references for the Home and Editor surfaces before changing SwiftUI.
+- [ ] Capture browser screenshots of the HTML references and current SwiftUI surfaces under consistent framing.
+- [ ] Write a visual delta report and SwiftUI token/component mapping.
+- [ ] Optimize SwiftUI Home and Editor from the approved HTML baselines.
+- [ ] Verify v1.2 with focused/full tests, facade scans, offline HTML scans, and final visual evidence.
+
 ### Out of Scope
 
 - Standalone consumer App Store product - still out of scope; Demo remains an SDK validation app.
@@ -66,8 +77,9 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ## Next Milestone Goals
 
-No next milestone has been selected yet. Strong candidates:
+No post-v1.2 milestone has been selected yet. Strong candidates:
 
+- **Automated Visual QA:** pixel/perceptual screenshot diffing and multi-device sweeps.
 - **Release Hardening:** physical iPhone camera/Vision QA, front-camera mirroring smoke, screenshot/UI automation, 720p timing budget, long-run memory/thermal checks, production render regression, and privacy manifest review.
 - **Advanced Beauty:** makeup templates/components, skin repair, eyebrows/teeth/hairline/forehead, multi-face handling, and richer preset/resource packs.
 - **Distribution:** SDK packaging, compatibility matrix, binary distribution, resource-pack trust model, and commercial integration docs.
@@ -90,10 +102,12 @@ Historical milestone detail is archived in:
 - `.planning/milestones/v1.0-REQUIREMENTS.md`
 - `.planning/milestones/v1.0-MILESTONE-AUDIT.md`
 
-Current v1.1 visual reference contracts:
+Current visual reference contracts:
 
 - `meituxiuxiu/HOME_MAP.md` owns the Home screen reference structure and scroll behavior.
 - `meituxiuxiu/FUNCTION_MAP.md` owns the Editor `美型 / 五官` tool-panel taxonomy and visual behavior.
+- v1.2 planned HTML baselines live under `meituxiuxiu/html/` and become the immediate visual source of truth for SwiftUI optimization once verified.
+- v1.2 planned evidence lives under `.planning/evidence/v1.2/`.
 
 ## Constraints
 
@@ -106,6 +120,8 @@ Current v1.1 visual reference contracts:
 - **Permissions:** Camera/photo prompts are app-owned; SDK APIs must not trigger protected-resource prompts by themselves.
 - **Resource trust:** Presets, LUTs, makeup packs, stickers, and future resource bundles are untrusted unless bundled, versioned, and validated.
 - **Toolchain:** Current observed environment is Xcode 26.5 with explicit iOS Simulator destinations required for reliable `xcodebuild` evidence.
+- **HTML reference workflow:** v1.2 must build and verify static local HTML references before SwiftUI visual tuning; SwiftUI changes should cite the HTML delta contract, not just raw screenshots.
+- **Offline reference safety:** HTML references must use local code/assets only; no network fonts, remote media, analytics, upload, or hidden service calls.
 
 ## Key Decisions
 
@@ -118,10 +134,11 @@ Current v1.1 visual reference contracts:
 | Advanced makeup, segmentation, body shaping, stickers, AI style, and video export are staged later. | v1 shipped the core pipeline and left higher-breadth features as explicit future milestone candidates. | Good |
 | Release-like claims require separate hardware, visual, performance, and long-run evidence. | v1 automation proves correctness and safety, not production naturalness or device endurance. | Revisit in next milestone |
 | v1.1 prioritizes Meitu-style Demo fidelity over new SDK algorithms. | The user rejected the prior Demo surface as not matching the `meituxiuxiu` references; visual/navigation fidelity had to be fixed before claiming a rich Demo. | Completed in v1.1 |
+| v1.2 must use HTML references before SwiftUI tuning. | The user identified that direct SwiftUI tuning from screenshots skipped an important design intermediate; HTML baselines make visual intent inspectable and easier to compare. | Planned for v1.2 |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-06-24 after v1.1 implementation verification*
+*Last updated: 2026-06-24 after v1.2 milestone planning*

@@ -35,3 +35,32 @@
 **What's next:** Start a fresh milestone with `$gsd-new-milestone` and choose between release hardening, advanced beauty modules, creative modules, or distribution readiness.
 
 ---
+
+## v1.1 Meitu UI (Implemented: 2026-06-24)
+
+**Delivered:** A Meitu-style SwiftUI Demo shell with Home first screen, Home-to-editor routing, and a Meitu-style editor tool panel while preserving the existing local-first `BeautySDK` facade, camera/photo pipelines, compare/debug/JSON behavior, and honest unavailable states.
+
+**Phases completed:** 8-10 (11 plans)
+
+**Key accomplishments:**
+
+- Added the dark Meitu-style Home first screen with film hero, search/brand/VIP chrome, `拍一拍`, primary actions, paged tool grid, recommendation rails, floating bottom tabs, and sticky shortcut rail.
+- Added the Meitu-style editor panel with black preview area, white bottom panel, `背景保护`, shared intensity slider, `整体`, cancel/confirm, first-level category order, second-level tool rails, and static `限免` / `Pro` / `OFF` badge treatment.
+- Routed `图片美化`, `相机`, `拍一拍`, and `人像美容` into the existing local photo/camera/editor paths.
+- Kept unsupported Meitu/VIP/AI/Pro/video/body/makeup-like capabilities disabled/static rather than fake-functional.
+- Captured screenshot evidence for Home first screen, Home sticky state, and editor tool panel under `.planning/evidence/v1.1/`.
+
+**Verification:**
+
+- Focused `BeautyDemoViewStateTests` passed.
+- Full Demo simulator tests passed on `iPhone 17, OS=26.5`.
+- Full SDK SwiftPM suite passed with 119 tests.
+- Demo facade import scan returned no internal SDK target imports.
+
+**Known deferred items:** Exact commercial asset parity, full `图库` / `AI 修图` / `我` tabs, network AI tools, real video editing, new SDK algorithm families, hardware QA, performance budgets, and long-run release-hardening remain future scope.
+
+**Git commit:** `8274754`
+
+**What's next:** v1.2 should create static HTML references for the two Meitu surfaces before further SwiftUI fidelity tuning.
+
+---

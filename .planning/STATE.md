@@ -1,35 +1,35 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: Meitu UI
-status: verified
-last_updated: "2026-06-24T00:00:00.000Z"
-last_activity: 2026-06-24 -- v1.1 Meitu UI Home, editor, routing, tests, and visual evidence completed
+milestone: v1.2
+milestone_name: HTML Reference Fidelity
+status: planning
+last_updated: "2026-06-24T02:09:28.167Z"
+last_activity: 2026-06-24 -- v1.2 HTML Reference Fidelity requirements and roadmap planned
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 11
-  completed_plans: 11
-  percent: 100
+  total_phases: 5
+  completed_phases: 0
+  total_plans: 16
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-06-23)
+See: `.planning/PROJECT.md` (updated 2026-06-24)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** v1.1 Meitu UI implementation is complete; next focus is selecting a new milestone or release-hardening scope.
+**Current focus:** v1.2 HTML Reference Fidelity: build Home and Editor HTML baselines first, then optimize SwiftUI from the approved HTML delta contract.
 
 ## Current Position
 
-Phase: 10 - Home-to-Editor Flow and v1.1 QA
-Plan: 10-03 complete
-Status: v1.1 implementation verified
-Last activity: 2026-06-24 -- Home, editor, routing, screenshot evidence, full Demo tests, and SDK tests completed
+Phase: 11 - HTML Reference Baselines
+Plan: 11-01 pending
+Status: Ready to plan Phase 11
+Last activity: 2026-06-24 -- v1.2 HTML-first fidelity roadmap defined
 
-Progress: 3/3 v1.1 phases, 11/11 plans, 19/19 v1.1 requirements complete.
+Progress: 0/5 v1.2 phases, 0/16 plans, 0/17 v1.2 requirements complete.
 
 ## Performance Metrics
 
@@ -54,6 +54,11 @@ Progress: 3/3 v1.1 phases, 11/11 plans, 19/19 v1.1 requirements complete.
 | 8. Meitu Home Rebuild | 4/4 | Complete |
 | 9. Meitu Editor Tool Panel | 4/4 | Complete |
 | 10. Home-to-Editor Flow and v1.1 QA | 3/3 | Complete |
+| 11. HTML Reference Baselines | 0/4 | Planned |
+| 12. HTML-to-SwiftUI Delta Contract | 0/3 | Planned |
+| 13. Home SwiftUI Fidelity Pass | 0/3 | Planned |
+| 14. Editor SwiftUI Fidelity Pass | 0/3 | Planned |
+| 15. v1.2 Visual QA and Closeout | 0/3 | Planned |
 
 ## Accumulated Context
 
@@ -68,13 +73,14 @@ Recent milestone-level outcomes:
 - v1.0 shipped core SDK/Demo capability and deferred advanced modules to future milestones.
 - v1.1 replaced the old SDK-dashboard first screen with a Meitu-style Home and editor panel based on `meituxiuxiu/HOME_MAP.md` and `meituxiuxiu/FUNCTION_MAP.md`.
 - v1.1 preserved camera/photo processing, compare/debug/JSON behavior, and facade-only `BeautySDK` integration while keeping unsupported Meitu reference capabilities disabled/static.
+- v1.2 changes the UI fidelity workflow: build inspectable static HTML references for Home and Editor first, then use a delta report to guide SwiftUI changes.
 - Release-like visual quality, hardware parity, performance budgets, and long-run reliability remain separate QA scope.
 
 ### Pending Todos
 
-- Select the next milestone before expanding beyond v1.1.
-- Keep future Meitu parity work grounded in `meituxiuxiu/HOME_MAP.md` and `meituxiuxiu/FUNCTION_MAP.md`.
-- Preserve existing local-first camera/photo and `BeautySDK` facade boundaries for any new Home or editor actions.
+- Plan and execute Phase 11 HTML Reference Baselines.
+- Keep v1.2 grounded in `meituxiuxiu/HOME_MAP.md`, `meituxiuxiu/FUNCTION_MAP.md`, and the generated `meituxiuxiu/html/` files.
+- Preserve existing local-first camera/photo and `BeautySDK` facade boundaries while optimizing SwiftUI visuals.
 
 ### Blockers/Concerns
 
@@ -93,9 +99,9 @@ Recent milestone-level outcomes:
 ## Session Continuity
 
 Last session: 2026-06-24
-Stopped at: v1.1 implementation verified
-Resume file: `.planning/evidence/v1.1/VISUAL-EVIDENCE.md`
+Stopped at: v1.2 roadmap defined
+Resume file: `.planning/ROADMAP.md`
 
 ## Operator Next Steps
 
-- Review the v1.1 screenshots in `.planning/evidence/v1.1/` and choose the next milestone: release hardening, advanced Meitu parity, or SDK distribution.
+- Run `$gsd-plan-phase 11` or proceed with Phase 11 implementation planning for HTML Reference Baselines.
