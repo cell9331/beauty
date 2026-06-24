@@ -14,13 +14,15 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Shipped version:** v1.0 MVP on 2026-06-23.
 
-**Implementation state:** v1.0 includes a Swift Package SDK, public facade models and engine, realtime camera and still-image Demo paths, orientation/mirroring metadata, face detection/degradation summaries, resource-backed filters/presets, visible MVP skin/color/face/eye/nose/mouth effects, deterministic tests, copy/paste parameter JSON, compare state, and redacted debug overlay evidence.
+**Implementation state:** v1.1 adds a Meitu-style Home first screen, Home-to-editor routing, and a Meitu-style editor tool panel on top of the v1.0 SDK/Demo foundation. v1.0 includes a Swift Package SDK, public facade models and engine, realtime camera and still-image Demo paths, orientation/mirroring metadata, face detection/degradation summaries, resource-backed filters/presets, visible MVP skin/color/face/eye/nose/mouth effects, deterministic tests, copy/paste parameter JSON, compare state, and redacted debug overlay evidence.
 
-**Verification state:** The v1.0 milestone audit passed with 33/33 v1 requirements satisfied, 7/7 phase verification files present, 4/4 integration checks, 4/4 E2E flows, and 7/7 Nyquist-compliant validation files.
+**Verification state:** The v1.1 implementation has 19/19 requirements complete with focused/full Demo tests, SDK SwiftPM tests, facade import scan, and screenshot evidence for Home first screen, Home sticky state, and editor tool panel. The v1.0 milestone audit passed with 33/33 v1 requirements satisfied, 7/7 phase verification files present, 4/4 integration checks, 4/4 E2E flows, and 7/7 Nyquist-compliant validation files.
 
 **Code size:** `BeautySDK` and `BeautyDemo` contain about 13,266 Swift lines at v1.0 close.
 
 ## Current Milestone: v1.1 Meitu UI
+
+**Status:** Implemented and verified on 2026-06-24.
 
 **Goal:** Rebuild the SwiftUI Demo experience around the local `meituxiuxiu` references so the first screen looks like a Meitu Xiuxiu-style home page and the edit flow uses the referenced full-screen preview plus bottom beauty tool panel.
 
@@ -45,12 +47,12 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 - MVP beauty effects for skin, color/filter, face shape, eyes, nose, mouth, and lip color with conservative caps and degradation - v1.0.
 - Rich Demo QA surface with preset/reset/source semantics, parameter JSON import/export, read-only debug overlay, disabled future categories, and final UAT evidence - v1.0.
 
-### Active
+### Completed in v1.1
 
-- [ ] Rebuild the Demo first screen to match `meituxiuxiu/HOME_MAP.md`.
-- [ ] Rebuild the Demo edit surface to match `meituxiuxiu/FUNCTION_MAP.md`.
-- [ ] Connect supported Home and Editor interactions to existing local-first camera, photo, compare, parameter, and SDK processing behavior.
-- [ ] Keep unavailable Meitu reference capabilities honest through disabled/static states instead of fake working features.
+- [x] Rebuild the Demo first screen to match `meituxiuxiu/HOME_MAP.md`.
+- [x] Rebuild the Demo edit surface to match `meituxiuxiu/FUNCTION_MAP.md`.
+- [x] Connect supported Home and Editor interactions to existing local-first camera, photo, compare, parameter, and SDK processing behavior.
+- [x] Keep unavailable Meitu reference capabilities honest through disabled/static states instead of fake working features.
 
 ### Out of Scope
 
@@ -115,11 +117,11 @@ Current v1.1 visual reference contracts:
 | MVP starts with foundation, camera/still-image flow, presets, filters, and core face/skin controls. | This sequence let tests and privacy/reliability contracts grow before richer effects. | Good |
 | Advanced makeup, segmentation, body shaping, stickers, AI style, and video export are staged later. | v1 shipped the core pipeline and left higher-breadth features as explicit future milestone candidates. | Good |
 | Release-like claims require separate hardware, visual, performance, and long-run evidence. | v1 automation proves correctness and safety, not production naturalness or device endurance. | Revisit in next milestone |
-| v1.1 prioritizes Meitu-style Demo fidelity over new SDK algorithms. | The user rejected the prior Demo surface as not matching the `meituxiuxiu` references; visual/navigation fidelity must be fixed before claiming a rich Demo. | Pending |
+| v1.1 prioritizes Meitu-style Demo fidelity over new SDK algorithms. | The user rejected the prior Demo surface as not matching the `meituxiuxiu` references; visual/navigation fidelity had to be fixed before claiming a rich Demo. | Completed in v1.1 |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-06-23 after v1.1 milestone start*
+*Last updated: 2026-06-24 after v1.1 implementation verification*

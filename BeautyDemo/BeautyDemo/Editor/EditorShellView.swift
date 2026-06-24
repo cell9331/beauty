@@ -68,6 +68,8 @@ struct EditorShellView: View {
     @StateObject private var imageEditorPipeline: ImageEditorPipeline
     @State private var selectedCategoryID: BeautyCategoryID = .beauty
     @State private var selectedSubcategoryID: FacialFeatureSubcategoryID = .eyes
+    @State private var selectedMeituCategoryID: MeituEditorCategoryID = .faceShape
+    @State private var selectedMeituToolID = "face.width"
     @State private var selectedInputMode: EditorInputMode?
     @State private var cameraPermissionState: CameraPermissionState = .notDetermined
     @State private var latestCameraFrame: CameraPreviewFrame?
@@ -76,38 +78,60 @@ struct EditorShellView: View {
     @State private var compareState = CompareState()
     @State private var debugVisibilityState = PreviewDebugVisibilityState()
     @State private var activeSheet: EditorSheet?
+    @State private var confirmedParameters = BeautyParameters()
 
     private let cameraPermissionClient: any CameraPermissionClient
+    private let initialMode: EditorInputMode?
 
     @MainActor
     init(
+        initialMode: EditorInputMode? = nil,
         cameraPermissionClient: (any CameraPermissionClient)? = nil,
         cameraSessionController: CameraSessionController? = nil,
         cameraBeautyPipeline: CameraBeautyPipeline? = nil,
         imageEditorPipeline: ImageEditorPipeline? = nil
     ) {
+        self.initialMode = initialMode
         self.cameraPermissionClient = cameraPermissionClient ?? SystemCameraPermissionClient()
+        self._selectedInputMode = State(initialValue: initialMode)
         self._cameraSessionController = StateObject(wrappedValue: cameraSessionController ?? CameraSessionController())
         self._cameraBeautyPipeline = StateObject(wrappedValue: cameraBeautyPipeline ?? CameraBeautyPipeline())
         self._imageEditorPipeline = StateObject(wrappedValue: imageEditorPipeline ?? ImageEditorPipeline())
     }
 
     var body: some View {
-        VStack(spacing: 16) {
-            modeHeader
-            previewSurface
-            BeautyPanelView(
-                selectedCategoryID: selectedCategoryID,
-                selectedSubcategoryID: $selectedSubcategoryID,
-                parameterStore: parameterStore
+        ZStack(alignment: .bottom) {
+            Color.black.ignoresSafeArea()
+
+            VStack(spacing: 0) {
+                editorTopBar
+                    .padding(.top, 52)
+                    .padding(.horizontal, 16)
+
+                previewSurface
+            }
+
+            MeituEditorToolPanelView(
+                selectedCategoryID: $selectedMeituCategoryID,
+                selectedToolID: $selectedMeituToolID,
+                parameterStore: parameterStore,
+                compareTitle: compareState.display == .after ? "对比" : "原图",
+                debugTitle: debugVisibilityState.isVisible ? "调试开" : "调试",
+                onCancel: cancelEditorChanges,
+                onConfirm: confirmEditorChanges
             )
-            BeautyCategoryRailView(selectedCategoryID: $selectedCategoryID)
         }
-        .padding(16)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(red: 247 / 255, green: 248 / 255, blue: 250 / 255))
         .onChange(of: selectedPhotoItem) { _, item in
             handlePhotoSelection(item)
+        }
+        .onChange(of: parameterStore.displayValues) { _, _ in
+            reprocessPhotoIfNeeded()
+        }
+        .task {
+            if initialMode == .camera {
+                await requestCameraAndStartIfNeeded()
+            }
         }
         .sheet(item: $activeSheet) { sheet in
             switch sheet {
@@ -119,6 +143,15 @@ struct EditorShellView: View {
                 }
             }
         }
+    }
+
+    private var editorTopBar: some View {
+        HStack {
+            Spacer()
+            BrandCapsule()
+            Spacer()
+        }
+        .frame(height: 44)
     }
 
     private var modeHeader: some View {
@@ -141,14 +174,11 @@ struct EditorShellView: View {
         )
 
         return ZStack {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(Color.white)
-                .shadow(color: Color.black.opacity(0.06), radius: 12, y: 4)
-
             previewContent(for: state)
         }
         .frame(maxWidth: .infinity)
-        .frame(minHeight: 320)
+        .frame(maxHeight: .infinity)
+        .padding(.bottom, 238)
         .accessibilityElement(children: .combine)
     }
 
@@ -167,7 +197,6 @@ struct EditorShellView: View {
     private func cameraPreviewContent(for state: EditorPreviewViewState) -> some View {
         ZStack {
             CameraPreviewLayerView(session: cameraSessionController.session)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
                 .accessibilityLabel("Live camera preview")
 
             if debugVisibilityState.isVisible {
@@ -195,8 +224,9 @@ struct EditorShellView: View {
             if let snapshot = imageEditorPipeline.state.latestSnapshot {
                 Image(decorative: compareState.photoImage(from: snapshot), scale: 1)
                     .resizable()
-                    .scaledToFit()
-                    .padding(16)
+                    .scaledToFill()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .clipped()
                     .accessibilityLabel("Photo preview")
             } else {
                 photoMessage(for: state)
@@ -218,7 +248,7 @@ struct EditorShellView: View {
                 } else if let statusText = state.statusText {
                     cameraStatusBanner(statusText)
                 }
-                if !imageEditorPipeline.state.isLoading {
+                if imageEditorPipeline.state.latestSnapshot != nil, !imageEditorPipeline.state.isLoading {
                     photoPickerButton("Choose Photo")
                 }
             }
@@ -292,9 +322,10 @@ struct EditorShellView: View {
             VStack(spacing: 8) {
                 Text(state.heading)
                     .font(.system(size: state.kind == .initial ? 28 : 20, weight: .semibold))
+                    .foregroundStyle(.white)
                 Text(state.body)
                     .font(.system(size: 16))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.white.opacity(0.72))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 24)
             }
@@ -317,11 +348,16 @@ struct EditorShellView: View {
             VStack(spacing: 8) {
                 Text(state.heading)
                     .font(.system(size: 20, weight: .semibold))
+                    .foregroundStyle(.white)
                 Text(state.body)
                     .font(.system(size: 16))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.white.opacity(0.72))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 24)
+            }
+
+            if let primaryActionTitle = state.primaryActionTitle {
+                photoPickerButton(primaryActionTitle)
             }
         }
     }
@@ -366,6 +402,22 @@ struct EditorShellView: View {
         case .photo:
             cameraSessionController.stop()
             cameraBeautyPipeline.reset()
+        }
+    }
+
+    private func cancelEditorChanges() {
+        parameterStore.restoreCustomParameters(confirmedParameters)
+        reprocessPhotoIfNeeded()
+    }
+
+    private func confirmEditorChanges() {
+        confirmedParameters = parameterStore.parametersSnapshot
+        reprocessPhotoIfNeeded()
+    }
+
+    private func reprocessPhotoIfNeeded() {
+        if selectedInputMode == .photo {
+            imageEditorPipeline.reprocessLatest(parameters: parameterStore.parametersSnapshot)
         }
     }
 

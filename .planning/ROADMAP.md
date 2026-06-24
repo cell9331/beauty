@@ -12,7 +12,7 @@ Visual reference contracts:
 ## Milestones
 
 - ✅ **v1.0 MVP** - Phases 1-7, shipped 2026-06-23. See `.planning/milestones/v1.0-ROADMAP.md`.
-- 🚧 **v1.1 Meitu UI** - Phases 8-10, in planning/execution.
+- ✅ **v1.1 Meitu UI** - Phases 8-10, implemented and verified 2026-06-24.
 
 ## Phases
 
@@ -29,7 +29,7 @@ Visual reference contracts:
 
 </details>
 
-## 🚧 v1.1 Meitu UI (Phases 8-10)
+## ✅ v1.1 Meitu UI (Phases 8-10)
 
 ### Phase 8: Meitu Home Rebuild
 
@@ -45,24 +45,24 @@ Visual reference contracts:
 4. Recommendation image rails and the floating bottom tab bar match the reference structure.
 5. Scrolling produces a sticky horizontal shortcut rail like `IMG_0874.PNG`.
 
-**Plans:** 0/4 plans complete
+**Plans:** 4/4 plans complete
 Plans:
 
 **Wave 1**
 
-- [ ] 08-01: Add Home data models, visual constants, local image/reference assets, and deterministic view-state tests.
+- [x] 08-01: Add Home data models, visual constants, local image/reference assets, and deterministic view-state tests.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 08-02: Implement the Home hero, primary action cards, paged tool grid, recommendation rails, and bottom tab bar.
+- [x] 08-02: Implement the Home hero, primary action cards, paged tool grid, recommendation rails, and bottom tab bar.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 08-03: Implement Home scroll behavior and sticky shortcut rail.
+- [x] 08-03: Implement Home scroll behavior and sticky shortcut rail.
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 08-04: Verify Home layout through focused tests and screenshot/manual evidence against `HOME_MAP.md`.
+- [x] 08-04: Verify Home layout through focused tests and screenshot/manual evidence against `HOME_MAP.md`.
 
 ### Phase 9: Meitu Editor Tool Panel
 
@@ -79,24 +79,24 @@ Plans:
 5. Unsupported reference tools are visible but disabled/static with honest badge/state treatment.
 6. Cancel and confirm preserve the preview, compare state, selected input mode, and local-first behavior.
 
-**Plans:** 0/4 plans complete
+**Plans:** 4/4 plans complete
 Plans:
 
 **Wave 1**
 
-- [ ] 09-01: Add editor taxonomy models for first-level categories, second-level tools, badges, support status, and parameter mappings.
+- [x] 09-01: Add editor taxonomy models for first-level categories, second-level tools, badges, support status, and parameter mappings.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 09-02: Implement the full-screen editor layout and bottom Meitu tool panel.
+- [x] 09-02: Implement the full-screen editor layout and bottom Meitu tool panel.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 09-03: Wire supported tool selection and slider edits into `BeautyParameterStore` while preserving compare/debug/JSON behavior.
+- [x] 09-03: Wire supported tool selection and slider edits into `BeautyParameterStore` while preserving compare/debug/JSON behavior.
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 09-04: Verify editor taxonomy, disabled tools, parameter mapping, and visual reference behavior.
+- [x] 09-04: Verify editor taxonomy, disabled tools, parameter mapping, and visual reference behavior.
 
 ### Phase 10: Home-to-Editor Flow and v1.1 QA
 
@@ -113,20 +113,20 @@ Plans:
 5. Automated tests cover Home structure, editor taxonomy, route targets, parameter mapping, disabled states, and facade-only imports.
 6. v1.1 has recorded screenshot/manual evidence for Home first screen, Home scrolled state, and Editor tool panel against the local references.
 
-**Plans:** 0/3 plans complete
+**Plans:** 3/3 plans complete
 Plans:
 
 **Wave 1**
 
-- [ ] 10-01: Add Home action routing into photo, camera, and editor-focused flows while keeping unsupported actions disabled.
+- [x] 10-01: Add Home action routing into photo, camera, and editor-focused flows while keeping unsupported actions disabled.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 10-02: Add focused view-state, flow, privacy, and import-boundary tests for v1.1 behavior.
+- [x] 10-02: Add focused view-state, flow, privacy, and import-boundary tests for v1.1 behavior.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 10-03: Run full Demo/SDK verification, capture visual evidence, and update root docs/quality score for v1.1.
+- [x] 10-03: Run full Demo/SDK verification, capture visual evidence, and update root docs/quality score for v1.1.
 
 ## Progress
 
@@ -139,9 +139,9 @@ Plans:
 | 5. Filters, Presets, and Resource Flow | v1.0 | 4/4 | Complete | 2026-06-19 |
 | 6. Core Beauty Effects | v1.0 | 5/5 | Complete | 2026-06-22 |
 | 7. Rich Demo QA Surface | v1.0 | 3/3 | Complete | 2026-06-23 |
-| 8. Meitu Home Rebuild | v1.1 | 0/4 | Planned | - |
-| 9. Meitu Editor Tool Panel | v1.1 | 0/4 | Planned | - |
-| 10. Home-to-Editor Flow and v1.1 QA | v1.1 | 0/3 | Planned | - |
+| 8. Meitu Home Rebuild | v1.1 | 4/4 | Complete | 2026-06-24 |
+| 9. Meitu Editor Tool Panel | v1.1 | 4/4 | Complete | 2026-06-24 |
+| 10. Home-to-Editor Flow and v1.1 QA | v1.1 | 3/3 | Complete | 2026-06-24 |
 
 ## Backlog
 

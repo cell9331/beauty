@@ -3,6 +3,129 @@ import XCTest
 @testable import BeautyDemo
 
 final class BeautyDemoViewStateTests: XCTestCase {
+    func testV11HomeViewStateMatchesMeituReferenceHierarchy() {
+        let state = MeituHomeView.viewState()
+
+        XCTAssertEqual(state.hero.title, "复古胶片相机")
+        XCTAssertEqual(state.hero.ctaTitle, "拍一拍")
+        XCTAssertEqual(
+            state.primaryActions.map(\.title),
+            ["图片美化", "修视频", "人像美容", "拼图", "相机", "视频美容"]
+        )
+        XCTAssertEqual(
+            state.primaryActions.map(\.route),
+            [.photoEditor, .disabled, .beautyEditor, .disabled, .cameraEditor, .disabled]
+        )
+        XCTAssertEqual(state.primaryActions.filter { $0.size == .large }.map(\.title), ["图片美化", "修视频"])
+        XCTAssertEqual(state.toolPages.map(\.tools.count), [8, 12, 1])
+        XCTAssertEqual(
+            state.recommendations.map(\.title),
+            ["欧美闪光滤镜", "不能错过热门玩法", "欧美曲线塑形", "欧美美容常态"]
+        )
+        XCTAssertEqual(state.tabs.map(\.title), ["首页", "图库", "AI 修图", "我"])
+        XCTAssertEqual(state.tabs.filter(\.isSelected).map(\.title), ["首页"])
+        XCTAssertEqual(state.tabs.filter(\.showsDot).map(\.title), ["我"])
+    }
+
+    func testV11HomeRoutesOnlySupportedLocalFlows() {
+        XCTAssertEqual(ContentView.routeTarget(for: .photoEditor), .photo)
+        XCTAssertEqual(ContentView.routeTarget(for: .cameraEditor), .camera)
+        XCTAssertEqual(ContentView.routeTarget(for: .beautyEditor), .beauty)
+        XCTAssertNil(ContentView.routeTarget(for: .disabled))
+        XCTAssertEqual(MeituEditorRouteTarget.photo.initialMode, .photo)
+        XCTAssertEqual(MeituEditorRouteTarget.camera.initialMode, .camera)
+        XCTAssertEqual(MeituEditorRouteTarget.beauty.initialMode, .photo)
+        XCTAssertNil(ContentView.initialRouteTarget(arguments: ["BeautyDemo"]))
+        XCTAssertEqual(
+            ContentView.initialRouteTarget(arguments: ["BeautyDemo", "--beauty-demo-route", "editor-beauty"]),
+            .beauty
+        )
+        XCTAssertFalse(ContentView.initialHomeStickyPreview(arguments: ["BeautyDemo"]))
+        XCTAssertTrue(ContentView.initialHomeStickyPreview(arguments: ["BeautyDemo", "--beauty-demo-home-sticky"]))
+    }
+
+    func testV11EditorTaxonomyMatchesMeituFunctionReferenceOrder() {
+        XCTAssertEqual(
+            MeituEditorCategory.all.map(\.title),
+            ["3D塑颜", "比例", "脸型", "眼睛", "嘴唇", "鼻子", "眉毛"]
+        )
+        XCTAssertEqual(
+            MeituEditorCategory.category(id: .faceShape).tools.map(\.title),
+            ["脸宽", "小脸", "面部流畅", "太阳穴", "颧骨", "下巴长短", "去双下巴", "去双下巴", "尖下巴", "V脸", "下颌角", "下颌线", "发际线"]
+        )
+        XCTAssertEqual(
+            MeituEditorCategory.category(id: .eyes).tools.map(\.title),
+            ["大小", "上下", "眼高", "长度", "眼距", "去脂", "提肌", "眼瞳大小", "眼神矫正", "眼睑下至", "眼尾上扬", "倾斜", "祛红血丝", "内眼角", "外眼角", "对称"]
+        )
+    }
+
+    func testV11EditorSupportedToolMappingsAndDisabledHonesty() {
+        let faceTools = MeituEditorCategory.category(id: .faceShape).tools
+        let eyeTools = MeituEditorCategory.category(id: .eyes).tools
+        let browTools = MeituEditorCategory.category(id: .eyebrows).tools
+
+        XCTAssertEqual(faceTools.first { $0.title == "脸宽" }?.controlID, .faceSlim)
+        XCTAssertEqual(faceTools.first { $0.title == "小脸" }?.controlID, .faceSmall)
+        XCTAssertEqual(faceTools.first { $0.title == "V脸" }?.controlID, .faceVShape)
+        XCTAssertEqual(faceTools.first { $0.title == "下颌角" }?.controlID, .jawSlim)
+        XCTAssertEqual(eyeTools.first { $0.title == "大小" }?.controlID, .eyeSize)
+        XCTAssertEqual(eyeTools.first { $0.title == "眼尾上扬" }?.controlID, .eyeTailLift)
+        XCTAssertTrue(browTools.allSatisfy { !$0.isSupported })
+        XCTAssertTrue(MeituEditorCategory.all.flatMap(\.tools).filter { !$0.isSupported }.allSatisfy {
+            $0.unavailableReason?.contains("v1.1") == true
+        })
+    }
+
+    @MainActor
+    func testV11MeituPanelSliderWritesSupportedParameterOnly() {
+        let store = BeautyParameterStore()
+        var categoryID: MeituEditorCategoryID = .faceShape
+        var toolID = "face.width"
+        let supported = MeituEditorCategory.category(id: categoryID).tools.first { $0.id == toolID }!
+        let unsupported = MeituEditorCategory.category(id: .faceShape).tools.first { $0.id == "face.smooth" }!
+
+        store.setDisplayValue(36, for: supported.controlID!)
+        XCTAssertEqual(store.displayValue(for: .faceSlim), 36, accuracy: 0.0001)
+        XCTAssertEqual(store.parametersSnapshot.faceSlim, 0.36, accuracy: 0.0001)
+
+        let state = MeituEditorToolPanelView.viewState(
+            selectedCategoryID: categoryID,
+            selectedToolID: toolID,
+            displayValue: store.displayValue(for: supported.controlID!),
+            compareTitle: "对比",
+            debugTitle: "调试"
+        )
+        XCTAssertEqual(state.selectedTool.controlID, .faceSlim)
+        XCTAssertEqual(state.selectedValue, 36, accuracy: 0.0001)
+        XCTAssertEqual(state.sliderRange, .enhancement)
+
+        categoryID = .faceShape
+        toolID = unsupported.id
+        let disabledState = MeituEditorToolPanelView.viewState(
+            selectedCategoryID: categoryID,
+            selectedToolID: toolID,
+            displayValue: 0,
+            compareTitle: "对比",
+            debugTitle: "调试"
+        )
+        XCTAssertFalse(disabledState.selectedTool.isSupported)
+        XCTAssertNil(disabledState.selectedTool.controlID)
+    }
+
+    @MainActor
+    func testV11CancelRestoresPreviousConfirmedParameterSnapshot() {
+        let store = BeautyParameterStore()
+        store.setDisplayValue(24, for: .faceSlim)
+        let confirmed = store.parametersSnapshot
+        store.setDisplayValue(68, for: .faceSlim)
+
+        store.restoreCustomParameters(confirmed)
+
+        XCTAssertEqual(store.displayValue(for: .faceSlim), 24, accuracy: 0.0001)
+        XCTAssertEqual(store.parametersSnapshot.faceSlim, 0.24, accuracy: 0.0001)
+        XCTAssertEqual(store.parameterSource, .custom)
+    }
+
     func testInitialCategoryRailViewStateCoversSDK08AndDEMO02() {
         let items = BeautyCategoryRailView.viewState(selectedCategoryID: .beauty)
 

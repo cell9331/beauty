@@ -4,7 +4,10 @@ import SwiftUI
 struct BeautyDemoApp: App {
     var body: some Scene {
         WindowGroup {
-            EditorShellView()
+            ContentView(
+                initialRouteTarget: ContentView.initialRouteTarget(),
+                initialHomeStickyPreview: ContentView.initialHomeStickyPreview()
+            )
         }
     }
 }

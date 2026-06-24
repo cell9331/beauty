@@ -343,6 +343,23 @@ Manual checks still required before release-like claims:
 - Visual naturalness review of fixtures or simulator preview.
 - Real-device front-camera parity, real Vision behavior, low-light/side-face smoke, production render quality, performance budgets, simulator screenshot/UI automation, and long-run hardware stability.
 
+### 7.9 v1.1 Meitu UI Acceptance
+
+Agent-verifiable checks recorded 2026-06-24:
+
+- Home first screen is no longer the SDK-dashboard/editor shell. `ContentView` starts at `MeituHomeView`, and `BeautyDemoViewStateTests.testV11HomeViewStateMatchesMeituReferenceHierarchy` verifies the Meitu-style hero, `拍一拍`, primary actions, paged tool counts, recommendation rails, and bottom tabs.
+- Supported Home routes stay local-first: `图片美化` opens photo mode, `相机` and `拍一拍` open camera mode, and `人像美容` opens the beauty editor path. Unsupported actions are disabled/static and do not add upload, network AI, video, VIP, or entitlement behavior.
+- Editor first-level taxonomy matches the deduplicated local reference order: `3D塑颜`, `比例`, `脸型`, `眼睛`, `嘴唇`, `鼻子`, `眉毛`.
+- Supported Meitu reference tools write existing SDK-backed `BeautyControlID` values through `BeautyParameterStore`; unsupported tools remain visible with honest unavailable copy instead of fake support.
+- Cancel/confirm behavior preserves the local preview flow: cancel restores the last confirmed parameter snapshot, and confirm records the current snapshot without resetting input mode or compare/debug state.
+- Screenshot evidence exists for Home first screen, Home sticky state, and editor tool panel in `.planning/evidence/v1.1/`.
+
+Manual checks still required before stronger product claims:
+
+- Pixel-level 1:1 comparison against every local Meitu screenshot across multiple device sizes.
+- Exact commercial asset parity, VIP/paywall behavior, AI feature flows, video editing, `图库` / `AI 修图` / `我` tab content, and recommendation detail pages.
+- Release hardening still requires real-device camera/Vision parity, performance budgets, long-run stability, and naturalness review for SDK effects.
+
 ## 8. Preset Product Contract
 
 MVP built-in presets:

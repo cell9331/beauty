@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Meitu UI
-status: planning
-last_updated: "2026-06-23T08:24:14.920Z"
-last_activity: 2026-06-23 -- v1.1 Meitu UI requirements and roadmap defined
+status: verified
+last_updated: "2026-06-24T00:00:00.000Z"
+last_activity: 2026-06-24 -- v1.1 Meitu UI Home, editor, routing, tests, and visual evidence completed
 progress:
   total_phases: 3
-  completed_phases: 0
+  completed_phases: 3
   total_plans: 11
-  completed_plans: 0
-  percent: 0
+  completed_plans: 11
+  percent: 100
 ---
 
 # Project State
@@ -20,23 +20,23 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-06-23)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 8 Meitu Home Rebuild.
+**Current focus:** v1.1 Meitu UI implementation is complete; next focus is selecting a new milestone or release-hardening scope.
 
 ## Current Position
 
-Phase: 8 - Meitu Home Rebuild
-Plan: 08-01 pending
-Status: Ready to plan Phase 8
-Last activity: 2026-06-23 -- v1.1 Meitu UI requirements and roadmap defined
+Phase: 10 - Home-to-Editor Flow and v1.1 QA
+Plan: 10-03 complete
+Status: v1.1 implementation verified
+Last activity: 2026-06-24 -- Home, editor, routing, screenshot evidence, full Demo tests, and SDK tests completed
 
-Progress: 0/3 v1.1 phases, 0/11 plans, 0/19 v1.1 requirements complete.
+Progress: 3/3 v1.1 phases, 11/11 plans, 19/19 v1.1 requirements complete.
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total phases completed: 7
-- Total plans completed: 28
+- Total phases completed: 10
+- Total plans completed: 39
 - Total tasks recorded from summaries: 62
 - Milestone Swift LOC at close: about 13,266 across `BeautySDK` and `BeautyDemo`
 
@@ -51,6 +51,9 @@ Progress: 0/3 v1.1 phases, 0/11 plans, 0/19 v1.1 requirements complete.
 | 5. Filters, Presets, and Resource Flow | 4/4 | Complete |
 | 6. Core Beauty Effects | 5/5 | Complete |
 | 7. Rich Demo QA Surface | 3/3 | Complete |
+| 8. Meitu Home Rebuild | 4/4 | Complete |
+| 9. Meitu Editor Tool Panel | 4/4 | Complete |
+| 10. Home-to-Editor Flow and v1.1 QA | 3/3 | Complete |
 
 ## Accumulated Context
 
@@ -63,13 +66,15 @@ Recent milestone-level outcomes:
 - Product remains a modular iOS SDK with a rich Demo validation app.
 - Demo remains facade-only and local-first.
 - v1.0 shipped core SDK/Demo capability and deferred advanced modules to future milestones.
+- v1.1 replaced the old SDK-dashboard first screen with a Meitu-style Home and editor panel based on `meituxiuxiu/HOME_MAP.md` and `meituxiuxiu/FUNCTION_MAP.md`.
+- v1.1 preserved camera/photo processing, compare/debug/JSON behavior, and facade-only `BeautySDK` integration while keeping unsupported Meitu reference capabilities disabled/static.
 - Release-like visual quality, hardware parity, performance budgets, and long-run reliability remain separate QA scope.
 
 ### Pending Todos
 
-- Plan and execute Phase 8 Meitu Home Rebuild.
-- Keep Phase 8 grounded in `meituxiuxiu/HOME_MAP.md`.
-- Preserve existing local-first camera/photo and `BeautySDK` facade boundaries while replacing the Demo UI.
+- Select the next milestone before expanding beyond v1.1.
+- Keep future Meitu parity work grounded in `meituxiuxiu/HOME_MAP.md` and `meituxiuxiu/FUNCTION_MAP.md`.
+- Preserve existing local-first camera/photo and `BeautySDK` facade boundaries for any new Home or editor actions.
 
 ### Blockers/Concerns
 
@@ -87,10 +92,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-06-23
-Stopped at: v1.1 roadmap defined
-Resume file: `.planning/ROADMAP.md`
+Last session: 2026-06-24
+Stopped at: v1.1 implementation verified
+Resume file: `.planning/evidence/v1.1/VISUAL-EVIDENCE.md`
 
 ## Operator Next Steps
 
-- Run `$gsd-plan-phase 8` or proceed with Phase 8 implementation plan for Meitu Home Rebuild.
+- Review the v1.1 screenshots in `.planning/evidence/v1.1/` and choose the next milestone: release hardening, advanced Meitu parity, or SDK distribution.

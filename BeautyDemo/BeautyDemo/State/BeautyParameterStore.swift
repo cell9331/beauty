@@ -169,6 +169,13 @@ final class BeautyParameterStore: ObservableObject {
         status = .idle
     }
 
+    func restoreCustomParameters(_ parameters: BeautyParameters) {
+        apply(parameters: parameters)
+        selectedPresetId = nil
+        parameterSource = .custom
+        status = .idle
+    }
+
     func reset(_ controlID: BeautyControlID) {
         reset(BeautyControlDescriptor.descriptor(id: controlID))
     }

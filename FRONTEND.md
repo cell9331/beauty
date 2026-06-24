@@ -227,6 +227,16 @@ Phase 7 current state:
 - `PreviewDebugOverlayView` is read-only and displays only safe value rows from public detection summaries, warning counts, redacted recoverable error codes, and friendly status copy.
 - Future categories and facial-feature subcategories remain visible, disabled, ordered, and marked `Not in v1`; no extra info route or active future-domain controls were added.
 
+Phase v1.1 Meitu UI current state:
+
+- `ContentView` launches into `MeituHomeView` by default. The previous editor shell remains reachable through Home actions and launch-only verification arguments.
+- Home is organized around `meituxiuxiu/HOME_MAP.md`: dark background, retro film hero, search/brand/VIP chrome, `拍一拍`, brown primary action hierarchy, paged tool grid, recommendation rails, floating bottom tabs, and sticky shortcut rail.
+- Supported Home routes are limited to existing local flows: `图片美化` opens photo mode, `相机` and `拍一拍` open camera mode, and `人像美容` opens the photo-backed beauty editor. `修视频`, `拼图`, `视频美容`, AI, VIP, and tab/detail flows are static or disabled in v1.1.
+- `EditorShellView` uses a Meitu-style black preview area plus white `MeituEditorToolPanelView` bottom sheet while preserving existing camera/photo processing, compare, debug, and Parameter JSON state.
+- The editor tool taxonomy follows `meituxiuxiu/FUNCTION_MAP.md` in first-level order: `3D塑颜`, `比例`, `脸型`, `眼睛`, `嘴唇`, `鼻子`, `眉毛`. Supported tools map to existing `BeautyControlID`; unsupported tools remain visible with disabled/static `限免`, `Pro`, or `OFF` treatment.
+- Cancel restores the last confirmed `BeautyParameters` snapshot through `BeautyParameterStore.restoreCustomParameters(_:)`; confirm updates the snapshot without resetting preview, compare state, or input mode.
+- Launch-only visual evidence hooks are `--beauty-demo-route editor-photo|editor-camera|editor-beauty` and `--beauty-demo-home-sticky`; normal launch still starts at Home.
+
 ## 9. Camera Preview
 
 Camera preview responsibilities:
@@ -399,6 +409,14 @@ Phase 7 Demo QA evidence recorded 2026-06-23:
 - Full Demo simulator tests passed on iPhone 17 iOS 26.5 after updating stale unavailable-copy test expectations to the Phase 7 `Not in v1` contract.
 - `InputPipelinePrivacyTests` and active-surface `rg` scans cover copy/paste JSON, preview-before-apply, raw JSON non-echo, debug redaction, facade-only imports, and no file/network JSON scope creep.
 - Simulator screenshot/UI automation was not run; visual layout, Dynamic Type overlap, and manual naturalness remain release-risk checks rather than pass evidence.
+
+Phase v1.1 Meitu UI evidence recorded 2026-06-24:
+
+- `BeautyDemoViewStateTests` covers Home hierarchy, supported/disabled Home routes, launch-only screenshot arguments, editor taxonomy, supported tool-to-parameter mappings, disabled tool honesty, shared slider state, and cancel restore behavior.
+- Full Demo simulator tests passed on iPhone 17 iOS 26.5 after the Home/editor rewrite, and the full SDK SwiftPM suite still passed with 119 tests.
+- Facade boundary scan `rg -n "import Beauty(Core|Detection|Effects|Render|Resources)" BeautyDemo/BeautyDemo BeautyDemo/BeautyDemoTests` returned no matches.
+- Screenshot-backed visual evidence is stored in `.planning/evidence/v1.1/home-first-screen.png`, `.planning/evidence/v1.1/home-sticky-state.png`, and `.planning/evidence/v1.1/editor-tool-panel.png`.
+- v1.1 does not claim full commercial Meitu feature parity, exact commercial assets, real video editing, network AI generation, VIP entitlement logic, or new SDK algorithm families.
 
 ## 17. Implementation Checklist
 

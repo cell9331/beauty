@@ -26,9 +26,30 @@
 
 ## 3. Active
 
-_No active plans._
+No active plan. Next work should start a new Active item before changing code or contracts.
 
 ## 4. Completed
+
+### C-2026-06-24-v1-1-meitu-ui-implementation
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-24 |
+| Scope | Implemented v1.1 Meitu-style Home, Meitu-style editor tool panel, and Home-to-editor routing while preserving the existing local `BeautySDK` facade, camera/photo pipelines, compare/debug/JSON behavior, and honest unavailable states. |
+| Requirements | HOME-01 through HOME-06, EDIT-01 through EDIT-07, FLOW-01 through FLOW-06 |
+| Files | `BeautyDemo/BeautyDemo/Home/MeituHomeModels.swift`, `BeautyDemo/BeautyDemo/Home/MeituHomeView.swift`, `BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift`, `BeautyDemo/BeautyDemo/Editor/MeituEditorToolPanelView.swift`, `BeautyDemo/BeautyDemo/Editor/EditorShellView.swift`, `BeautyDemo/BeautyDemo/ContentView.swift`, `BeautyDemo/BeautyDemo/App/BeautyDemoApp.swift`, `BeautyDemo/BeautyDemo/State/BeautyParameterStore.swift`, `BeautyDemo/BeautyDemoTests/BeautyDemoViewStateTests.swift`, `.planning/evidence/v1.1/VISUAL-EVIDENCE.md`, `.planning/phases/08-meitu-home-rebuild/08-VERIFICATION.md`, `.planning/phases/09-meitu-editor-tool-panel/09-VERIFICATION.md`, `.planning/phases/10-home-to-editor-flow-and-v1-1-qa/10-VERIFICATION.md`, `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `FRONTEND.md`, `PRODUCT_SENSE.md`, `QUALITY_SCORE.md`, `PLANS.md` |
+| Verification | Focused `BeautyDemoViewStateTests`, full `BeautyDemo` simulator tests, full `BeautySDK` SwiftPM tests, facade import scan, and screenshot-backed visual evidence passed. |
+| Build | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' build` passed; full Demo simulator test and SDK SwiftPM test passed. |
+
+Outcome:
+
+- `ContentView` now launches into `MeituHomeView` by default instead of the old SDK-dashboard shell.
+- Home implements the dark Meitu-style first screen with film hero, search/brand/VIP chrome, `拍一拍`, primary action hierarchy, paged tool grid, recommendation rails, floating bottom tab bar, and sticky shortcut rail.
+- Editor implements the referenced black preview plus white bottom panel with `背景保护`, compare/debug affordances, shared intensity slider, `整体`, cancel/confirm, and first-level category order `3D塑颜`, `比例`, `脸型`, `眼睛`, `嘴唇`, `鼻子`, `眉毛`.
+- Supported reference tools write existing `BeautyParameterStore` controls; unsupported Meitu/VIP/AI/Pro/video/body/makeup-like capabilities remain visible but disabled/static instead of fake-functional.
+- `图片美化`, `相机`, `拍一拍`, and `人像美容` route into the existing local photo/camera/editor paths; launch-only screenshot routes are documented as verification hooks, not product features.
+- Screenshot evidence is stored in `.planning/evidence/v1.1/home-first-screen.png`, `.planning/evidence/v1.1/home-sticky-state.png`, and `.planning/evidence/v1.1/editor-tool-panel.png`.
+- Remaining non-v1.1 work: exact commercial asset parity, full `图库` / `AI 修图` / `我` tabs, network AI tools, real video editing, new SDK algorithm families, hardware QA, performance budgets, and long-run release-hardening.
 
 ### C-2026-06-23-meituxiuxiu-home-map
 
