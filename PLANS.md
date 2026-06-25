@@ -30,11 +30,11 @@
 
 | Field | Value |
 | --- | --- |
-| Status | planned |
+| Status | active |
 | Scope | Plan and execute v1.2 HTML Reference Fidelity: create static local HTML baselines for the Meitu Home and Editor references, capture browser evidence, write an HTML-to-SwiftUI delta contract, then optimize SwiftUI Home and Editor from that approved HTML contract while preserving local-first SDK behavior. |
 | Requirements | HTML-01 through HTML-05, AUDIT-01 through AUDIT-03, HSWIFT-01 through HSWIFT-03, ESWIFT-01 through ESWIFT-03, VQA-01 through VQA-03 |
-| Files | Pending |
-| Verification | Pending |
+| Files | `.planning/phases/11-html-reference-baselines/11-CONTEXT.md`, `.planning/phases/11-html-reference-baselines/11-DISCUSSION-LOG.md` |
+| Verification | Phase 11 context and discussion log created; implementation verification pending. |
 
 Checklist:
 

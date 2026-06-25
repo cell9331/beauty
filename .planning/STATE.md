@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: HTML Reference Fidelity
 status: planning
-last_updated: "2026-06-24T02:09:28.167Z"
-last_activity: 2026-06-24 -- v1.2 HTML Reference Fidelity requirements and roadmap planned
+last_updated: "2026-06-25T11:19:25+08:00"
+last_activity: 2026-06-25 -- Phase 11 HTML Reference Baselines context and discussion log captured
 progress:
   total_phases: 5
   completed_phases: 0
@@ -26,8 +26,8 @@ See: `.planning/PROJECT.md` (updated 2026-06-24)
 
 Phase: 11 - HTML Reference Baselines
 Plan: 11-01 pending
-Status: Ready to plan Phase 11
-Last activity: 2026-06-24 -- v1.2 HTML-first fidelity roadmap defined
+Status: Phase 11 context captured; ready to plan Phase 11
+Last activity: 2026-06-25 -- Phase 11 HTML-first boundaries, decisions, references, and evidence policy captured
 
 Progress: 0/5 v1.2 phases, 0/16 plans, 0/17 v1.2 requirements complete.
 
@@ -79,6 +79,7 @@ Recent milestone-level outcomes:
 ### Pending Todos
 
 - Plan and execute Phase 11 HTML Reference Baselines.
+- Read `.planning/phases/11-html-reference-baselines/11-CONTEXT.md` before planning or implementing Phase 11.
 - Keep v1.2 grounded in `meituxiuxiu/HOME_MAP.md`, `meituxiuxiu/FUNCTION_MAP.md`, and the generated `meituxiuxiu/html/` files.
 - Preserve existing local-first camera/photo and `BeautySDK` facade boundaries while optimizing SwiftUI visuals.
 
@@ -98,9 +99,9 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-06-24
-Stopped at: v1.2 roadmap defined
-Resume file: `.planning/ROADMAP.md`
+Last session: 2026-06-25
+Stopped at: Phase 11 discussion context complete
+Resume file: `.planning/phases/11-html-reference-baselines/11-CONTEXT.md`
 
 ## Operator Next Steps
 
