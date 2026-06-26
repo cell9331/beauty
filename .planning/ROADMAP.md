@@ -2,183 +2,116 @@
 
 ## Overview
 
-Beauty v1.2 corrects the Meitu UI workflow: convert the two local Meitu reference surfaces into static HTML baselines first, verify those HTML baselines in a browser, then optimize SwiftUI against the approved HTML rather than tuning directly from screenshots.
+Beauty v1.3 is a no-new-UI core beauty module milestone. It references the Meitu Xiuxiu beauty editor taxonomy, narrows scope to core beauty, prepares a direct example-image validation path, and then designs/implements promoted SDK-level beauty modules behind existing boundaries.
 
-Visual reference contracts:
-
-- Home screenshots and map: `meituxiuxiu/home/`, `meituxiuxiu/HOME_MAP.md`
-- Editor screenshots and map: `meituxiuxiu/IMG_0856.PNG` through `IMG_0870.PNG`, `meituxiuxiu/FUNCTION_MAP.md`
-- Planned HTML outputs: `meituxiuxiu/html/home.html`, `meituxiuxiu/html/editor.html`, `meituxiuxiu/html/README.md`
-- Planned v1.2 evidence: `.planning/evidence/v1.2/`
+This milestone does not add SwiftUI screens, Home/discovery surfaces, resource/style systems, AI/background flows, video/body flows, gallery/account flows, payment, VIP, or entitlement behavior.
 
 ## Milestones
 
 - ✅ **v1.0 MVP** - Phases 1-7, shipped 2026-06-23. See `.planning/milestones/v1.0-ROADMAP.md`.
 - ✅ **v1.1 Meitu UI** - Phases 8-10, implemented and verified 2026-06-24.
-- 🚧 **v1.2 HTML Reference Fidelity** - Phases 11-15, planned 2026-06-24.
+- ✅ **v1.2 HTML Reference Fidelity** - Phase 11 completed 2026-06-25; Phases 12-15 canceled 2026-06-26.
+- 🚧 **v1.3 Meitu Core Beauty Module Design and Implementation** - Phase 16 completed 2026-06-26; Phases 17-20 remain planned.
 
-## Phases
+## v1.3 Meitu Core Beauty Module Design and Implementation
 
-<details>
-<summary>v1.0 MVP (Phases 1-7) - shipped 2026-06-23</summary>
+### Phase 16: Example Image Validation Harness
 
-- [x] Phase 1: SDK Foundation and Public Facade (4/4 plans) - completed 2026-06-11
-- [x] Phase 2: Demo Integration Shell (3/3 plans) - completed 2026-06-11
-- [x] Phase 3: Realtime and Still Input Slice (4/4 plans) - completed 2026-06-12
-- [x] Phase 4: Detection and Coordinate Safety (5/5 plans) - completed 2026-06-18
-- [x] Phase 5: Filters, Presets, and Resource Flow (4/4 plans) - completed 2026-06-19
-- [x] Phase 6: Core Beauty Effects (5/5 plans) - completed 2026-06-22
-- [x] Phase 7: Rich Demo QA Surface (3/3 plans) - completed 2026-06-23
+**Goal:** Prepare the code-level image validation path before implementing more core beauty logic.
+**Mode:** implementation prep
+**Depends on:** existing `BeautySDK` facade, `example-images/input/`
+**Requirements:** PREP-01, PREP-02, PREP-03, PREP-04
+**Success Criteria**:
 
-</details>
+1. `BeautyExampleRenderer` builds as a SwiftPM executable product.
+2. The renderer imports only public `BeautySDK`, loads images from `example-images/input/`, and writes PNG outputs to `example-images/out/`.
+3. Output file names and watermarks include the parameter and strength, and output dimensions match input dimensions.
+4. `docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md` records commands, current cases, and geometry-output limitations.
 
-<details>
-<summary>v1.1 Meitu UI (Phases 8-10) - implemented 2026-06-24</summary>
-
-- [x] Phase 8: Meitu Home Rebuild (4/4 plans) - completed 2026-06-24
-- [x] Phase 9: Meitu Editor Tool Panel (4/4 plans) - completed 2026-06-24
-- [x] Phase 10: Home-to-Editor Flow and v1.1 QA (3/3 plans) - completed 2026-06-24
-
-</details>
-
-## 🚧 v1.2 HTML Reference Fidelity (Phases 11-15)
-
-### Phase 11: HTML Reference Baselines
-
-**Goal:** Build local static HTML baselines for the two reference surfaces before touching SwiftUI.
-**Mode:** mvp
-**Depends on:** v1.1 screenshots, `meituxiuxiu/HOME_MAP.md`, `meituxiuxiu/FUNCTION_MAP.md`
-**Requirements:** HTML-01, HTML-02, HTML-03, HTML-04, HTML-05
-**Success Criteria** (what must be TRUE):
-
-1. `meituxiuxiu/html/home.html` opens locally and represents Home first screen, paged grid, recommendation rails, bottom tabs, and sticky shortcut state.
-2. `meituxiuxiu/html/editor.html` opens locally and represents the editor preview chrome, white bottom panel, category rails, badges, slider, cancel, and confirm controls.
-3. HTML references are deterministic and offline with no network requests, upload paths, analytics, or remote assets.
-4. Browser screenshots for both HTML pages are captured under `.planning/evidence/v1.2/`.
-
-**Plans:** 0/4 plans complete
-Plans:
-
+**Plans:** 2/2 plans complete
 **Wave 1**
 
-- [ ] 11-01: Create `meituxiuxiu/html/` structure, reference README, shared CSS tokens, and local-only asset policy.
+- [x] 16-01: Add and verify the `BeautyExampleRenderer` executable and ignored output directory.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 11-02: Implement the Home HTML baseline from `HOME_MAP.md` and `meituxiuxiu/home/`.
-- [ ] 11-03: Implement the Editor HTML baseline from `FUNCTION_MAP.md` and editor screenshots.
+- [x] 16-02: Update documentation and planning files so v1.3 starts from executable code-level validation.
 
-**Wave 3** *(blocked on Wave 2 completion)*
+**Cross-cutting constraints:**
 
-- [ ] 11-04: Capture browser screenshots and verify HTML local/offline behavior.
+- D-13: geometry-heavy branches do not count as visually complete in Phase 16.
+- D-15: Phase 19 owns geometry saved-output status and verification for face/facial-feature shaping branches.
 
-### Phase 12: HTML-to-SwiftUI Delta Contract
+### Phase 17: Core Beauty Contracts and Module Boundaries
 
-**Goal:** Convert HTML baselines into a measurable SwiftUI design contract before implementation.
-**Mode:** mvp
-**Depends on:** Phase 11
-**Requirements:** AUDIT-01, AUDIT-02, AUDIT-03
-**Success Criteria** (what must be TRUE):
+**Goal:** Finalize taxonomy, branch status, and module ownership before branch implementation.
+**Mode:** design
+**Depends on:** Phase 16
+**Requirements:** CBT-01, CBT-02, CBT-03, MOD-01
+**Success Criteria**:
 
-1. Current SwiftUI Home and Editor screenshots are captured in the same simulator framing used for v1.1 evidence.
-2. A delta report identifies concrete differences between HTML and SwiftUI: dimensions, colors, typography, spacing, hierarchy, scroll/sticky states, badges, and rails.
-3. A component/token mapping names the SwiftUI files and subviews that own each delta.
+1. `docs/meitu-function-blueprint/README.md`, `MINDMAP.md`, `FEATURE_MATRIX.md`, and `MODULES.md` describe the active core beauty scope.
+2. Branch folders exist only for minimal editor support, beauty shaping, and skin retouch.
+3. Deferred families are explicitly excluded and cannot be mistaken for active scope.
+4. Demo ownership and SDK ownership are separated before implementation starts.
+
+**Plans:** 0/2 plans complete
+
+- [ ] 17-01: Finalize taxonomy, feature matrix, and module ownership for core beauty only.
+- [ ] 17-02: Verify contracts against `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, and current SDK targets.
+
+### Phase 18: Skin Retouch Core Modules
+
+**Goal:** Implement promoted skin-retouch module logic behind SDK boundaries and verify visible outputs where available.
+**Mode:** implementation
+**Depends on:** Phases 16-17
+**Requirements:** SKIN-01, SKIN-02, SKIN-03
+**Success Criteria**:
+
+1. Basic skin behavior is covered by focused tests and example-image output cases.
+2. Skin repair and teeth/hairline branches are implemented only when local inputs and degradation behavior are clear; otherwise they remain documented future branches.
+3. Safety caps, warnings, no-face behavior, and parameter clamping are verified.
 
 **Plans:** 0/3 plans complete
-Plans:
 
-**Wave 1**
+- [ ] 18-01: Audit current skin controls and map them to the v1.3 branch contracts.
+- [ ] 18-02: Implement promoted skin-retouch module improvements behind SDK boundaries.
+- [ ] 18-03: Verify skin-retouch tests and saved example-image outputs.
 
-- [ ] 12-01: Capture current SwiftUI screenshots for Home first screen, Home sticky state, and Editor tool panel.
+### Phase 19: Beauty Shaping Core Modules
 
-**Wave 2** *(blocked on Wave 1 completion)*
+**Goal:** Implement or prepare promoted face/facial-feature shaping logic behind SDK boundaries, with honest geometry-output status.
+**Mode:** implementation
+**Depends on:** Phases 16-17
+**Requirements:** BSHAPE-01, BSHAPE-02, BSHAPE-03
+**Success Criteria**:
 
-- [ ] 12-02: Write `meituxiuxiu/html/SWIFTUI_DELTA.md` comparing HTML baselines to SwiftUI screenshots.
-
-**Wave 3** *(blocked on Wave 2 completion)*
-
-- [ ] 12-03: Write the SwiftUI token/component mapping and phase acceptance matrix.
-
-### Phase 13: Home SwiftUI Fidelity Pass
-
-**Goal:** Update SwiftUI Home using the approved Home HTML baseline and delta contract.
-**Mode:** mvp
-**Depends on:** Phase 12
-**Requirements:** HSWIFT-01, HSWIFT-02, HSWIFT-03
-**Success Criteria** (what must be TRUE):
-
-1. Home hero, search/brand/VIP chrome, `拍一拍`, action cards, grid, recommendations, and bottom tabs align with the Home HTML baseline.
-2. Sticky shortcut and grid/page states match the Home HTML baseline while preserving existing supported routes and disabled/static unsupported actions.
-3. Focused tests and screenshot evidence show Home no longer depends on ad hoc visual guesses.
+1. `3D塑颜`, `比例`, `脸型`, `眼睛`, `嘴唇`, `鼻子`, and `眉毛` branches have clear implemented/partial/future status.
+2. Promoted shaping logic has provider/unit evidence and degradation behavior.
+3. Saved image-output evidence is required only after face detection plus geometry rendering can produce visible output through the public facade.
 
 **Plans:** 0/3 plans complete
-Plans:
 
-**Wave 1**
+- [ ] 19-01: Audit existing shaping providers, parameters, and geometry-output gaps.
+- [ ] 19-02: Implement promoted shaping module logic or integration prep behind SDK boundaries.
+- [ ] 19-03: Verify tests and update example-image output status honestly.
 
-- [ ] 13-01: Apply Home HTML tokens to SwiftUI Home layout, typography, colors, cards, and rails.
+### Phase 20: Core Module Closeout
 
-**Wave 2** *(blocked on Wave 1 completion)*
+**Goal:** Close v1.3 with editor-support contracts, verification evidence, and planning ledger consistency.
+**Mode:** verification
+**Depends on:** Phases 16-19
+**Requirements:** EDITOR-01, EDITOR-02, EDITOR-03, MOD-02, MOD-03, MOD-04
+**Success Criteria**:
 
-- [ ] 13-02: Tune Home sticky/page states and supported/disabled route affordances.
+1. Editor support remains app-side and no new SwiftUI screens are added.
+2. Promoted visible effects have unit/integration evidence plus example-image output evidence.
+3. Planning documents, docs, and root contracts reflect actual implemented behavior and remaining limitations.
 
-**Wave 3** *(blocked on Wave 2 completion)*
+**Plans:** 0/2 plans complete
 
-- [ ] 13-03: Update Home tests and capture optimized Home screenshots.
-
-### Phase 14: Editor SwiftUI Fidelity Pass
-
-**Goal:** Update SwiftUI Editor using the approved Editor HTML baseline and delta contract.
-**Mode:** mvp
-**Depends on:** Phase 13
-**Requirements:** ESWIFT-01, ESWIFT-02, ESWIFT-03
-**Success Criteria** (what must be TRUE):
-
-1. Editor preview chrome and bottom panel match the Editor HTML baseline more closely than v1.1 evidence.
-2. Category rails, second-level tools, icon sizing, label spacing, badges, slider, `整体`, `背景保护`, cancel, and confirm controls align with the HTML baseline.
-3. Existing parameter bindings, camera/photo paths, compare/debug/JSON behavior, and cancel/confirm semantics remain intact.
-
-**Plans:** 0/3 plans complete
-Plans:
-
-**Wave 1**
-
-- [ ] 14-01: Apply Editor HTML tokens to `EditorShellView` preview chrome and bottom-panel container.
-
-**Wave 2** *(blocked on Wave 1 completion)*
-
-- [ ] 14-02: Tune `MeituEditorToolPanelView` category rails, tool items, badges, slider, and actions.
-
-**Wave 3** *(blocked on Wave 2 completion)*
-
-- [ ] 14-03: Preserve editor behavior with focused tests and capture optimized Editor screenshots.
-
-### Phase 15: v1.2 Visual QA and Closeout
-
-**Goal:** Verify the HTML-first workflow end to end and document remaining gaps honestly.
-**Mode:** mvp
-**Depends on:** Phase 14
-**Requirements:** VQA-01, VQA-02, VQA-03
-**Success Criteria** (what must be TRUE):
-
-1. Automated tests cover HTML assumptions, Home/Editor view-state contracts, supported routes, parameter mappings, disabled states, and launch-only screenshot hooks.
-2. Full Demo simulator tests, SDK SwiftPM tests, facade scans, offline HTML scans, and whitespace checks pass.
-3. Final evidence records HTML baselines, SwiftUI before/after screenshots, the delta report, accepted gaps, and future work.
-
-**Plans:** 0/3 plans complete
-Plans:
-
-**Wave 1**
-
-- [ ] 15-01: Add or update contract tests and scans for HTML-first assumptions.
-
-**Wave 2** *(blocked on Wave 1 completion)*
-
-- [ ] 15-02: Run full Demo/SDK verification, facade scans, offline HTML scans, and visual evidence capture.
-
-**Wave 3** *(blocked on Wave 2 completion)*
-
-- [ ] 15-03: Update root docs, quality score, requirements, roadmap, state, and PLANS closeout for v1.2.
+- [ ] 20-01: Finalize editor support contracts, delivery boundary, and root contract updates.
+- [ ] 20-02: Run closeout tests, example-image renderer, scope scans, and planning consistency checks.
 
 ## Progress
 
@@ -194,18 +127,24 @@ Plans:
 | 8. Meitu Home Rebuild | v1.1 | 4/4 | Complete | 2026-06-24 |
 | 9. Meitu Editor Tool Panel | v1.1 | 4/4 | Complete | 2026-06-24 |
 | 10. Home-to-Editor Flow and v1.1 QA | v1.1 | 3/3 | Complete | 2026-06-24 |
-| 11. HTML Reference Baselines | v1.2 | 0/4 | Planned | - |
-| 12. HTML-to-SwiftUI Delta Contract | v1.2 | 0/3 | Planned | - |
-| 13. Home SwiftUI Fidelity Pass | v1.2 | 0/3 | Planned | - |
-| 14. Editor SwiftUI Fidelity Pass | v1.2 | 0/3 | Planned | - |
-| 15. v1.2 Visual QA and Closeout | v1.2 | 0/3 | Planned | - |
+| 11. HTML Reference Baselines | v1.2 | 4/4 | Complete | 2026-06-25 |
+| 12. HTML-to-SwiftUI Delta Contract | v1.2 | 0/3 | Canceled | 2026-06-26 |
+| 13. Home SwiftUI Fidelity Pass | v1.2 | 0/3 | Canceled | 2026-06-26 |
+| 14. Editor SwiftUI Fidelity Pass | v1.2 | 0/3 | Canceled | 2026-06-26 |
+| 15. v1.2 Visual QA and Closeout | v1.2 | 0/3 | Canceled | 2026-06-26 |
+| 16. Example Image Validation Harness | v1.3 | 2/2 | Complete | 2026-06-26 |
+| 17. Core Beauty Contracts and Module Boundaries | v1.3 | 0/2 | Planned | - |
+| 18. Skin Retouch Core Modules | v1.3 | 0/3 | Planned | - |
+| 19. Beauty Shaping Core Modules | v1.3 | 0/3 | Planned | - |
+| 20. Core Module Closeout | v1.3 | 0/2 | Planned | - |
 
 ## Backlog
 
 Future milestone candidates:
 
-- Automated screenshot diffing and multi-device visual sweeps.
-- Full `图库`, `AI 修图`, and `我` tab implementation.
-- Real AI Home tools, template details, search, VIP, and recommendation-card flows.
-- New SDK algorithm families for 3D/Pro shaping, makeup, segmentation/background, body shaping, stickers, AR masks, style effects, and video export.
-- Release hardening: real-device camera/Vision parity, production render quality, performance budgets, long-run hardware checks, privacy manifest, and distribution readiness.
+- Home/discovery feature system planning.
+- Filters, makeup, stickers, templates, and resource-pack planning.
+- AI retouch, background segmentation, cutout, and eraser planning.
+- Video beauty, body shaping, and export pipeline planning.
+- Gallery, account, search, VIP, payment, and entitlement planning.
+- Automated visual QA with pixel/perceptual diffing and device sweeps.

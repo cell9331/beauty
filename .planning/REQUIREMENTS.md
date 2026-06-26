@@ -1,99 +1,107 @@
 # Requirements: Beauty
 
-**Defined:** 2026-06-24
-**Milestone:** v1.2 HTML Reference Fidelity
+**Defined:** 2026-06-26
+**Milestone:** v1.3 Meitu Core Beauty Module Design and Implementation
 **Core Value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
 
-## v1.2 Requirements
+## v1.3 Requirements
 
-Requirements for the HTML-reference-first fidelity pass. Each requirement maps to exactly one roadmap phase.
+Requirements for the core beauty module milestone. v1.3 does not write new SwiftUI screens. It prepares and then implements SDK-level core beauty modules behind existing boundaries, using code-level tests and example-image output where visible rendering is available.
 
-### HTML Reference Pages
+### Preparation and Example Image Validation
 
-- [ ] **HTML-01**: User or agent can open a static Home HTML reference page generated from `meituxiuxiu/home/` screenshots and `meituxiuxiu/HOME_MAP.md`.
-- [ ] **HTML-02**: User or agent can open a static Editor HTML reference page generated from the editor screenshots `IMG_0856.PNG` through `IMG_0870.PNG` and `meituxiuxiu/FUNCTION_MAP.md`.
-- [ ] **HTML-03**: The Home HTML covers first screen, tool-grid paging, recommendation rails, bottom tabs, and sticky shortcut state; the Editor HTML covers preview chrome, bottom tool panel, first-level categories, second-level rails, badges, slider, cancel, and confirm controls.
-- [ ] **HTML-04**: HTML references are local, deterministic, and offline: no network fonts, no remote images, no analytics, no upload, and no hidden runtime service.
-- [ ] **HTML-05**: Browser screenshots are captured for the Home HTML first screen, Home HTML sticky state, and Editor HTML tool panel as v1.2 baseline evidence.
+- [x] **PREP-01**: A SwiftPM executable can load portrait fixtures from `example-images/input/`, run them through the public `BeautySDK` facade, and save PNG outputs under `example-images/out/`.
+- [x] **PREP-02**: Output file names include the source image, modified parameter, and parameter strength, and generated images keep the same pixel dimensions as the source image.
+- [x] **PREP-03**: Output images include a readable bottom watermark with the parameter and strength, placed so it does not cover the face.
+- [x] **PREP-04**: The validation document records build/run commands, current visible cases, and the geometry-output limitation for face-shape/eye/nose/mouth/eyebrow/3D-sculpt branches.
 
-### HTML-to-SwiftUI Design Contract
+### Core Beauty Taxonomy
 
-- [ ] **AUDIT-01**: Current SwiftUI Home and Editor screenshots are captured using the same simulator/device framing as the HTML references.
-- [ ] **AUDIT-02**: A visual delta report compares HTML baselines against current SwiftUI, covering layout, spacing, typography, color, card proportions, toolbar placement, category rails, badges, and sticky behavior.
-- [ ] **AUDIT-03**: A design-token and component contract maps HTML measurements and states to SwiftUI files/components before SwiftUI edits begin.
+- [ ] **CBT-01**: The milestone has a local mind map and feature matrix for core Meitu-style beauty functions.
+- [ ] **CBT-02**: Core beauty function families are limited to minimal editor shell, beauty shaping, and skin retouch.
+- [ ] **CBT-03**: Home/discovery, resource/style systems, AI/background, video/body, gallery/account, search, VIP, payment, and entitlement surfaces are explicitly excluded from this milestone.
 
-### Home SwiftUI Fidelity Pass
+### Beauty Shaping Modules
 
-- [ ] **HSWIFT-01**: SwiftUI Home is updated from the approved Home HTML reference for hero composition, search/brand/VIP chrome, `拍一拍`, primary action cards, tool grid, recommendation rails, and bottom tabs.
-- [ ] **HSWIFT-02**: SwiftUI Home sticky shortcut behavior and page/grid states match the Home HTML reference while preserving supported local routes and disabled/static unsupported actions.
-- [ ] **HSWIFT-03**: Home view-state tests and screenshot evidence prove the optimized SwiftUI Home matches the HTML reference closely enough for v1.2 acceptance.
+- [ ] **BSHAPE-01**: `3D塑颜`, `比例`, `脸型`, `眼睛`, `嘴唇`, `鼻子`, and `眉毛` each have branch documentation and module ownership.
+- [ ] **BSHAPE-02**: Promoted beauty-shaping branches implement core logic behind SDK boundaries with safety caps, degradation behavior, and tests.
+- [ ] **BSHAPE-03**: Branch status is honest: implemented, partial, blocked by geometry visual output, or future.
 
-### Editor SwiftUI Fidelity Pass
+### Skin Retouch Modules
 
-- [ ] **ESWIFT-01**: SwiftUI Editor preview chrome and white bottom panel are updated from the approved Editor HTML reference.
-- [ ] **ESWIFT-02**: SwiftUI Editor category rails, tool icons, labels, `限免` / `Pro` / `OFF` badges, shared slider, `整体`, `背景保护`, cancel, and confirm controls match the Editor HTML reference.
-- [ ] **ESWIFT-03**: Editor parameter binding, camera/photo processing, compare/debug/JSON behavior, cancel/confirm semantics, and unavailable-state honesty remain unchanged while visual fidelity improves.
+- [ ] **SKIN-01**: Basic skin, skin repair, and teeth/hairline branches each have branch documentation and module ownership.
+- [ ] **SKIN-02**: Promoted skin-retouch branches implement core logic behind SDK boundaries with degradation behavior, parameter caps, and tests.
+- [ ] **SKIN-03**: Current MVP skin controls stay separated from future local repair or region-based retouch capabilities.
 
-### Verification and Closeout
+### Editor Support Contract
 
-- [ ] **VQA-01**: Automated tests cover the HTML contract assumptions, Home/Editor view-state structure, supported routes, parameter mappings, disabled states, and launch-only screenshot hooks.
-- [ ] **VQA-02**: Full Demo simulator tests, full SDK SwiftPM tests, facade import scans, offline/no-network HTML scans, and `git diff --check` pass after SwiftUI optimization.
-- [ ] **VQA-03**: v1.2 final evidence records HTML baselines, before/after SwiftUI screenshots, the delta report, unresolved visual gaps, and explicit out-of-scope items.
+- [ ] **EDITOR-01**: Minimal editor shell support is documented for input routing, preview chrome, bottom panel, and commit flow.
+- [ ] **EDITOR-02**: Editor shell documentation clarifies Demo ownership versus SDK ownership for core beauty tools.
+- [ ] **EDITOR-03**: Cancel/confirm, compare/debug, slider, category rail, and parameter snapshot semantics remain app-side support logic, not SDK algorithm logic.
+
+### Module and Verification Planning
+
+- [ ] **MOD-01**: Module boundaries map Demo, `BeautySDK`, `BeautyCore`, `BeautyDetection`, `BeautyRender`, `BeautyEffects`, and `BeautyResources` ownership for core beauty.
+- [ ] **MOD-02**: The roadmap decomposes v1.3 into preparation, contracts, skin, shaping, and closeout phases with 100% requirement traceability.
+- [ ] **MOD-03**: `PLANS.md`, `.planning/PROJECT.md`, `.planning/ROADMAP.md`, and `.planning/STATE.md` describe v1.3 as a no-new-UI core module design/implementation milestone.
+- [ ] **MOD-04**: Promoted visible effects must provide unit/integration evidence and example-image output evidence before being considered complete.
 
 ## Future Requirements
 
-Deferred to later releases. These are valuable but not in this milestone unless explicitly promoted.
+Deferred to later milestones unless explicitly promoted.
 
-### Advanced Visual Automation
+### Deferred Meitu Product Areas
 
-- **FUT-01**: Pixel-diff or perceptual-diff tooling automatically compares HTML and SwiftUI screenshots with thresholds.
-- **FUT-02**: Multi-device visual sweeps cover compact, regular, Dynamic Type, landscape, and dark/light variations.
-- **FUT-03**: HTML references are expanded into a full clickable prototype for `图库`, `AI 修图`, `我`, search, VIP, and recommendation details.
-
-### Product Expansion
-
-- **FUT-04**: Real AI tools, video editing, VIP entitlement behavior, and tab-specific screens become functional flows.
-- **FUT-05**: New SDK algorithm families support advanced 3D/Pro shaping, makeup, segmentation/background, body shaping, stickers, AR masks, style effects, and video export.
+- **FUT-HOME-01**: Home/discovery feature system planning.
+- **FUT-STYLE-01**: Filters, makeup, stickers, templates, and resource-pack planning.
+- **FUT-AI-01**: AI retouch, background segmentation, cutout, and eraser planning.
+- **FUT-VIDEO-01**: Video beauty, body shaping, and export pipeline planning.
+- **FUT-ACCOUNT-01**: Gallery, account, search, VIP, payment, and entitlement planning.
 
 ## Out of Scope
 
 | Feature | Reason |
 | --- | --- |
-| Full commercial Meitu/Xingtu product parity | v1.2 is a fidelity workflow correction, not full feature parity. |
-| Copying commercial assets as production assets | Local screenshots are references; implementation must recreate structure and feel with owned/local code and assets. |
-| Network AI generation or upload flows | Current privacy posture remains local-first and no-upload by default. |
-| Real video editing pipeline | `修视频` and `视频美容` can remain static/disabled until a dedicated video milestone. |
-| VIP/paywall entitlement logic | `VIP`, `Pro`, and `限免` remain visual/static states unless promoted later. |
-| New SDK algorithm families | v1.2 optimizes the Demo UI using existing SDK parameters and pipelines. |
-| Hardware/performance release hardening | Real-device camera/Vision parity, 720p timing, long-run thermal/memory, and production render quality are separate release-hardening scope. |
+| New SwiftUI screens | User narrowed v1.3 to core module design, encapsulation, implementation, and direct code-level verification. |
+| Home/discovery surfaces | Core beauty module work only. |
+| Filters, makeup, stickers, templates | Resource/style systems are deferred. |
+| AI/background/cutout/eraser | AI and segmentation are deferred. |
+| Video/body/export | Video and body pipelines are deferred. |
+| Gallery/account/search/VIP/payment | Product/account surfaces are deferred. |
+| Commercial asset parity | Reference taxonomy may be used; commercial assets are not production inputs. |
+| Broad host-facing API expansion | Any required public API or parameter change must be explicitly documented in the owning root contract. |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| HTML-01 | Phase 11 | Pending |
-| HTML-02 | Phase 11 | Pending |
-| HTML-03 | Phase 11 | Pending |
-| HTML-04 | Phase 11 | Pending |
-| HTML-05 | Phase 11 | Pending |
-| AUDIT-01 | Phase 12 | Pending |
-| AUDIT-02 | Phase 12 | Pending |
-| AUDIT-03 | Phase 12 | Pending |
-| HSWIFT-01 | Phase 13 | Pending |
-| HSWIFT-02 | Phase 13 | Pending |
-| HSWIFT-03 | Phase 13 | Pending |
-| ESWIFT-01 | Phase 14 | Pending |
-| ESWIFT-02 | Phase 14 | Pending |
-| ESWIFT-03 | Phase 14 | Pending |
-| VQA-01 | Phase 15 | Pending |
-| VQA-02 | Phase 15 | Pending |
-| VQA-03 | Phase 15 | Pending |
+| PREP-01 | Phase 16 | Complete |
+| PREP-02 | Phase 16 | Complete |
+| PREP-03 | Phase 16 | Complete |
+| PREP-04 | Phase 16 | Complete |
+| CBT-01 | Phase 17 | Pending |
+| CBT-02 | Phase 17 | Pending |
+| CBT-03 | Phase 17 | Pending |
+| MOD-01 | Phase 17 | Pending |
+| SKIN-01 | Phase 18 | Pending |
+| SKIN-02 | Phase 18 | Pending |
+| SKIN-03 | Phase 18 | Pending |
+| BSHAPE-01 | Phase 19 | Pending |
+| BSHAPE-02 | Phase 19 | Pending |
+| BSHAPE-03 | Phase 19 | Pending |
+| EDITOR-01 | Phase 20 | Pending |
+| EDITOR-02 | Phase 20 | Pending |
+| EDITOR-03 | Phase 20 | Pending |
+| MOD-02 | Phase 20 | Pending |
+| MOD-03 | Phase 20 | Pending |
+| MOD-04 | Phase 20 | Pending |
 
 **Coverage:**
-- v1.2 requirements: 17 total
-- Mapped to phases: 17
+
+- v1.3 requirements: 20 total
+- Mapped to phases: 20
 - Unmapped: 0
 
 ---
-*Requirements defined: 2026-06-24*
-*Last updated: 2026-06-24 after v1.2 milestone planning*
+*Requirements defined: 2026-06-26*
+*Last updated: 2026-06-26 after Phase 16 example-image validation execution*

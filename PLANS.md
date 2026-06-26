@@ -26,25 +26,84 @@
 
 ## 3. Active
 
-### A-2026-06-24-v1-2-html-reference-fidelity
+No active plan. Phase 16 is complete; the next planned v1.3 step is Phase 17 contracts.
+
+## 4. Completed
+
+### C-2026-06-26-gsd-execute-phase-16-example-image-validation-harness
 
 | Field | Value |
 | --- | --- |
-| Status | active |
-| Scope | Plan and execute v1.2 HTML Reference Fidelity: create static local HTML baselines for the Meitu Home and Editor references, capture browser evidence, write an HTML-to-SwiftUI delta contract, then optimize SwiftUI Home and Editor from that approved HTML contract while preserving local-first SDK behavior. |
-| Requirements | HTML-01 through HTML-05, AUDIT-01 through AUDIT-03, HSWIFT-01 through HSWIFT-03, ESWIFT-01 through ESWIFT-03, VQA-01 through VQA-03 |
-| Files | `.planning/phases/11-html-reference-baselines/11-CONTEXT.md`, `.planning/phases/11-html-reference-baselines/11-DISCUSSION-LOG.md` |
-| Verification | Phase 11 context and discussion log created; implementation verification pending. |
+| Completed | 2026-06-26 |
+| Scope | Ran `$gsd-execute-phase 16` for Phase 16 Example Image Validation Harness. Verified the existing `BeautyExampleRenderer` executable/output path, kept `EXAMPLE_IMAGE_VALIDATION.md` unchanged because it already contained the required contract, and closed PREP traceability from fresh command evidence without committing generated PNG outputs. |
+| Requirements | PREP-01, PREP-02, PREP-03, PREP-04 |
+| Files | `.planning/phases/16-example-image-validation-harness/16-01-SUMMARY.md`, `.planning/phases/16-example-image-validation-harness/16-02-SUMMARY.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift build --package-path BeautySDK --product BeautyExampleRenderer` passed; `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out --case skinWhitening_0p50` wrote `e1` through `e5` outputs; `file example-images/input/e2.png example-images/out/e2__skinWhitening_0p50.png` confirmed both are `576 x 1024`; `git check-ignore example-images/out/e2__skinWhitening_0p50.png` passed; facade-only import scan returned no matches for internal SDK targets, SwiftUI, or UIKit; validation-doc scan found the build/run commands, `skinWhitening_0p50`, `example-images/out/`, `e2__skinWhitening_0p50.png`, `Geometry Limitation`, and `face detection plus geometry rendering integration`; visual inspection recorded only: output is non-empty; watermark is readable; bottom watermark does not cover the face. |
+| Build | SwiftPM executable build and representative renderer run passed. Full SDK test suite was not rerun for Phase 16 because the phase verification contract is the renderer build/run/dimension path. |
+| Commit | `3a9423e` records the 16-01 summary; the 16-02 summary and ledger changes are recorded in the Phase 16 closeout commit. |
 
-Checklist:
+Outcome:
 
-- [ ] Create local static Home and Editor HTML baselines under `meituxiuxiu/html/`.
-- [ ] Capture browser screenshots for HTML baselines and current SwiftUI surfaces.
-- [ ] Write the HTML-to-SwiftUI visual delta report and token/component mapping.
-- [ ] Optimize SwiftUI Home and Editor using the approved HTML contract.
-- [ ] Run focused/full Demo verification, SDK SwiftPM tests, facade scans, offline HTML scans, and final visual evidence closeout.
+- `PREP-01` through `PREP-04` are complete from fresh Phase 16 command evidence.
+- `example-images/out/e2__skinWhitening_0p50.png` is the representative ignored local output and matches `example-images/input/e2.png` dimensions.
+- Generated PNG outputs remain under ignored `example-images/out/`; no `.planning/evidence/v1.3/*.png` artifact was added.
+- `docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md` remains the authority for command/output/case rules and needed no content change.
+- geometry-heavy saved-image output remains deferred to Phase 19.
 
-## 4. Completed
+### C-2026-06-26-gsd-plan-phase-16-example-image-validation-harness
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-26 |
+| Scope | Ran `$gsd-plan-phase 16` for Phase 16 Example Image Validation Harness. Created research, validation, pattern-map, and two executable plans that formalize the existing `BeautyExampleRenderer` path without adding UI, new renderer cases, new fixtures, or new algorithms. |
+| Requirements | PREP-01, PREP-02, PREP-03, PREP-04 |
+| Files | `.planning/phases/16-example-image-validation-harness/16-RESEARCH.md`, `.planning/phases/16-example-image-validation-harness/16-VALIDATION.md`, `.planning/phases/16-example-image-validation-harness/16-PATTERNS.md`, `.planning/phases/16-example-image-validation-harness/16-01-PLAN.md`, `.planning/phases/16-example-image-validation-harness/16-02-PLAN.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.plan-phase 16` reports `has_research: true`, `has_context: true`, `has_plans: true`, and `plan_count: 2`; plan structure scan passed for frontmatter, objectives, tasks, `read_first`, `action`, `acceptance_criteria`, `threat_model`, and artifacts sections; requirement scan covered `PREP-01` through `PREP-04`; `check.decision-coverage-plan` passed with 20/20 CONTEXT decisions covered; placeholder/stale-token scan returned no matches; `git diff --check -- .planning/phases/16-example-image-validation-harness` passed. |
+| Build | Not run; this was a GSD planning/documentation workflow. The generated plans require Phase 16 execution to run `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift build --package-path BeautySDK --product BeautyExampleRenderer`, `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out --case skinWhitening_0p50`, and `file example-images/input/e2.png example-images/out/e2__skinWhitening_0p50.png`. |
+| Commit | Not created because the worktree already contained unrelated modified and untracked files, including pre-existing changes in `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md`, and documentation files. |
+
+Outcome:
+
+- Phase 16 now has `16-01-PLAN.md` for fresh SwiftPM build/run/dimension/ignored-output/facade-only verification.
+- Phase 16 now has `16-02-PLAN.md` for documentation and planning-ledger closeout after fresh evidence exists.
+- `16-VALIDATION.md` records the Nyquist validation strategy and blocks on build, renderer run, missing representative output, ignored-output failure, or dimension mismatch.
+- `16-PATTERNS.md` captures the local renderer, output-directory, documentation, and requirement-closeout patterns for executors.
+- Geometry-heavy saved-image output remains deferred to Phase 19 and must not be marked visually complete by Phase 16.
+
+### C-2026-06-26-v1-3-core-module-prep
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-26 |
+| Scope | Prepared v1.3 Meitu Core Beauty Module Design and Implementation: kept scope to core beauty only, added a no-UI example-image validation harness, documented how to run code modules against `example-images/input/`, saved parameter-labeled outputs to `example-images/out/`, and updated planning docs so later work implements SDK core modules rather than new UI. |
+| Requirements | PREP-01 through PREP-04, CBT-01 through CBT-03, BSHAPE-01 through BSHAPE-03, SKIN-01 through SKIN-03, EDITOR-01 through EDITOR-03, MOD-01 through MOD-04 |
+| Files | `BeautySDK/Package.swift`, `BeautySDK/Sources/BeautyExampleRenderer/main.swift`, `.gitignore`, `docs/meitu-function-blueprint/README.md`, `docs/meitu-function-blueprint/MINDMAP.md`, `docs/meitu-function-blueprint/FEATURE_MATRIX.md`, `docs/meitu-function-blueprint/MODULES.md`, `docs/meitu-function-blueprint/DELIVERY_BOUNDARY.md`, `docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md`, `docs/meitu-function-blueprint/shared/IMPLEMENTATION_PRINCIPLES.md`, `docs/meitu-function-blueprint/features/beauty-shaping/**`, `docs/meitu-function-blueprint/features/skin-retouch/**`, `docs/meitu-function-blueprint/features/editor-shell/**`, `docs/README.md`, `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift build --package-path BeautySDK --product BeautyExampleRenderer` passed; `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out --case skinWhitening_0p50` wrote five PNGs; `file example-images/input/e2.png example-images/out/e2__skinWhitening_0p50.png` confirmed both are `576 x 1024`; output visual inspection confirmed the bottom watermark is readable and does not cover the face; `swift test --package-path BeautySDK` passed with 119 tests; stale-scope scan found no current v1.3 docs-only claims outside historical Completed entries; `git diff --check` passed for touched files. |
+| Build | SwiftPM executable build and full SDK SwiftPM tests passed. |
+
+Outcome:
+
+- `BeautyExampleRenderer` now provides a no-UI validation path from `example-images/input/` to ignored `example-images/out/`.
+- Output files include source image, parameter, and strength in the filename and a readable bottom watermark on the image.
+- v1.3 planning now starts from code-level module verification rather than UI work or docs-only planning.
+- Geometry-heavy branches still need face detection plus geometry rendering output before saved-image visual completion can be claimed.
+
+### C-2026-06-26-v1-2-html-reference-baselines-retained
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-26 |
+| Scope | Closed v1.2 as reduced-scope complete: retained Phase 11 local static HTML baselines and browser evidence, canceled Phase 12 HTML-to-SwiftUI Delta Contract, Phase 13 Home SwiftUI Fidelity Pass, Phase 14 Editor SwiftUI Fidelity Pass, and Phase 15 v1.2 Visual QA and Closeout by user decision. |
+| Requirements | HTML-01 through HTML-05 complete; AUDIT-01 through AUDIT-03, HSWIFT-01 through HSWIFT-03, ESWIFT-01 through ESWIFT-03, and VQA-01 through VQA-03 canceled. |
+| Files | `.planning/phases/11-html-reference-baselines/11-CONTEXT.md`, `.planning/phases/11-html-reference-baselines/11-DISCUSSION-LOG.md`, `.planning/phases/11-html-reference-baselines/11-RESEARCH.md`, `.planning/phases/11-html-reference-baselines/11-VALIDATION.md`, `.planning/phases/11-html-reference-baselines/11-PATTERNS.md`, `.planning/phases/11-html-reference-baselines/11-01-PLAN.md`, `.planning/phases/11-html-reference-baselines/11-02-PLAN.md`, `.planning/phases/11-html-reference-baselines/11-03-PLAN.md`, `.planning/phases/11-html-reference-baselines/11-04-PLAN.md`, `.planning/phases/11-html-reference-baselines/11-01-SUMMARY.md`, `.planning/phases/11-html-reference-baselines/11-02-SUMMARY.md`, `.planning/phases/11-html-reference-baselines/11-03-SUMMARY.md`, `.planning/phases/11-html-reference-baselines/11-04-SUMMARY.md`, `meituxiuxiu/html/README.md`, `meituxiuxiu/html/styles.css`, `meituxiuxiu/html/home.html`, `meituxiuxiu/html/editor.html`, `meituxiuxiu/html/offline-check.mjs`, `.planning/evidence/v1.2/VISUAL-EVIDENCE.md`, `.planning/evidence/v1.2/home-html-first-screen.png`, `.planning/evidence/v1.2/home-html-sticky-state.png`, `.planning/evidence/v1.2/editor-html-tool-panel.png`, `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | Phase 11 verification remains the retained evidence: HTML-01 through HTML-05 complete; Home and Editor static scans passed; `node meituxiuxiu/html/offline-check.mjs` passed; Playwright captured three 390x844 PNG screenshots under `.planning/evidence/v1.2/`. Cancellation cleanup verified with `git diff --check` over planning files. |
+| Build | Not run for the cancellation cleanup; only planning Markdown files changed after Phase 11. |
+
+Outcome:
+
+- Phase 11 HTML reference outputs remain available under `meituxiuxiu/html/` and `.planning/evidence/v1.2/`.
+- Phase 12-15 planning and execution are intentionally canceled, not open blockers.
+- Future SwiftUI visual tuning must be promoted as a new milestone or phase instead of resuming canceled v1.2 work by default.
 
 ### C-2026-06-24-v1-1-meitu-ui-implementation
 
