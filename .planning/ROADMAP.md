@@ -55,10 +55,10 @@ This milestone does not add SwiftUI screens, Home/discovery surfaces, resource/s
 3. Deferred families are explicitly excluded and cannot be mistaken for active scope.
 4. Demo ownership and SDK ownership are separated before implementation starts.
 
-**Plans:** 0/2 plans complete
+**Plans:** 1/2 plans executed
 **Wave 1**
 
-- [ ] 17-01: Finalize taxonomy, feature matrix, and module ownership for core beauty only.
+- [x] 17-01: Finalize taxonomy, feature matrix, and module ownership for core beauty only.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -137,7 +137,7 @@ This milestone does not add SwiftUI screens, Home/discovery surfaces, resource/s
 | 14. Editor SwiftUI Fidelity Pass | v1.2 | 0/3 | Canceled | 2026-06-26 |
 | 15. v1.2 Visual QA and Closeout | v1.2 | 0/3 | Canceled | 2026-06-26 |
 | 16. Example Image Validation Harness | v1.3 | 2/2 | Complete    | 2026-06-26 |
-| 17. Core Beauty Contracts and Module Boundaries | v1.3 | 0/2 | Planned | - |
+| 17. Core Beauty Contracts and Module Boundaries | v1.3 | 1/2 | In Progress|  |
 | 18. Skin Retouch Core Modules | v1.3 | 0/3 | Planned | - |
 | 19. Beauty Shaping Core Modules | v1.3 | 0/3 | Planned | - |
 | 20. Core Module Closeout | v1.3 | 0/2 | Planned | - |
