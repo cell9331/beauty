@@ -21,19 +21,21 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Code size:** `BeautySDK` and `BeautyDemo` contain about 13,266 Swift lines at v1.0 close.
 
-## Current Milestone: v1.2 HTML Reference Fidelity
+## Current Milestone: v1.3 Meitu Core Beauty Module Design and Implementation
 
-**Status:** Planned on 2026-06-24.
+**Status:** Phase 16 example-image validation completed on 2026-06-26; Phase 17 contracts are next.
 
-**Goal:** Convert the two local Meitu reference surfaces into static HTML baselines first, then use those HTML baselines and a delta report to optimize SwiftUI Home and Editor fidelity.
+**Goal:** Reference the Meitu Xiuxiu beauty editor, clarify the core beauty module system, and implement SDK-level core beauty logic without adding new SwiftUI screens.
 
 **Target features:**
 
-- Static local HTML Home reference generated from `meituxiuxiu/home/` and `meituxiuxiu/HOME_MAP.md`.
-- Static local HTML Editor reference generated from `meituxiuxiu/IMG_0856.PNG` through `IMG_0870.PNG` and `meituxiuxiu/FUNCTION_MAP.md`.
-- Browser screenshot evidence for HTML baselines before SwiftUI edits.
-- A visual delta report and token/component contract mapping HTML measurements to SwiftUI files.
-- SwiftUI Home and Editor fidelity optimization based on the approved HTML baselines while preserving local-first SDK behavior.
+- Local mind map and feature matrix for core Meitu-style beauty functions.
+- A code-level example-image validation harness that loads `example-images/input/`, runs the public `BeautySDK` facade, and saves watermarked outputs to `example-images/out/`.
+- Branch folders for `3D塑颜`, `比例`, `脸型`, `眼睛`, `嘴唇`, `鼻子`, `眉毛`, basic skin, skin repair, and teeth/hairline.
+- Minimal editor support documentation for input routing, preview chrome, bottom panel, and commit flow.
+- Module boundary documentation mapping each core beauty branch to Demo and SDK ownership.
+- Implementation and tests for promoted core beauty branches, with explicit status for visible image-output coverage.
+- Explicit exclusions for Home/discovery, filters/makeup/stickers/templates, AI/background, video/body, gallery/account, search, VIP, payment, and entitlement surfaces.
 
 ## Requirements
 
@@ -57,13 +59,25 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 - [x] Connect supported Home and Editor interactions to existing local-first camera, photo, compare, parameter, and SDK processing behavior.
 - [x] Keep unavailable Meitu reference capabilities honest through disabled/static states instead of fake working features.
 
-### Active in v1.2
+### Completed in v1.2
 
-- [ ] Create local static HTML references for the Home and Editor surfaces before changing SwiftUI.
-- [ ] Capture browser screenshots of the HTML references and current SwiftUI surfaces under consistent framing.
-- [ ] Write a visual delta report and SwiftUI token/component mapping.
-- [ ] Optimize SwiftUI Home and Editor from the approved HTML baselines.
-- [ ] Verify v1.2 with focused/full tests, facade scans, offline HTML scans, and final visual evidence.
+- [x] Create local static HTML references for the Home and Editor surfaces before changing SwiftUI.
+- [x] Capture browser screenshots of the HTML references under documented `390x844` framing.
+
+### Canceled in v1.2
+
+- [x] Canceled: capture current SwiftUI comparison screenshots for the HTML delta workflow.
+- [x] Canceled: write a visual delta report and SwiftUI token/component mapping.
+- [x] Canceled: optimize SwiftUI Home and Editor from the approved HTML baselines.
+- [x] Canceled: run the v1.2 SwiftUI fidelity closeout; existing Phase 11 HTML offline evidence remains valid.
+
+### Active in v1.3
+
+- [x] Prepare the code-level example-image validation harness before starting feature implementation.
+- [ ] Document and keep current the core beauty taxonomy and mind map under `docs/meitu-function-blueprint/`.
+- [ ] Design and implement promoted beauty-shaping branch module logic behind SDK boundaries.
+- [ ] Design and implement promoted skin-retouch branch module logic behind SDK boundaries.
+- [ ] Verify promoted branches through unit/integration tests and saved example-image outputs when visible rendering is available.
 
 ### Out of Scope
 
@@ -71,17 +85,18 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 - Demo direct imports of `BeautyCore`, `BeautyDetection`, `BeautyRender`, `BeautyEffects`, or `BeautyResources` - still out of scope; Demo must stay facade-only.
 - Cloud upload or network processing by default - still out of scope; privacy posture remains local-first.
 - Full Meitu/Xingtu feature parity in v1 - validated as deferred to future milestones.
+- Home/discovery, filters/makeup/stickers/templates, AI/background, video/body, gallery/account, search, VIP, payment, and entitlement planning - out of v1.3 because the user narrowed this milestone to core beauty only.
 - Treating ignored `.worktrees/` content as shipped main-worktree implementation - still out of scope.
 - Third-party beauty SDK as the core implementation - still out of scope unless explicitly approved later.
 - Camera/photo permission prompts from SDK internals - still out of scope; host app or Demo owns protected-resource UX.
 
 ## Next Milestone Goals
 
-No post-v1.2 milestone has been selected yet. Strong candidates:
+No post-v1.3 milestone has been selected yet. Strong candidates:
 
 - **Automated Visual QA:** pixel/perceptual screenshot diffing and multi-device sweeps.
 - **Release Hardening:** physical iPhone camera/Vision QA, front-camera mirroring smoke, screenshot/UI automation, 720p timing budget, long-run memory/thermal checks, production render regression, and privacy manifest review.
-- **Advanced Beauty:** makeup templates/components, skin repair, eyebrows/teeth/hairline/forehead, multi-face handling, and richer preset/resource packs.
+- **Deferred Meitu Product Areas:** Home/discovery, style resources, AI/background, video/body, gallery/account, search, VIP, payment, and entitlement planning.
 - **Distribution:** SDK packaging, compatibility matrix, binary distribution, resource-pack trust model, and commercial integration docs.
 
 ## Context
@@ -106,8 +121,10 @@ Current visual reference contracts:
 
 - `meituxiuxiu/HOME_MAP.md` owns the Home screen reference structure and scroll behavior.
 - `meituxiuxiu/FUNCTION_MAP.md` owns the Editor `美型 / 五官` tool-panel taxonomy and visual behavior.
-- v1.2 planned HTML baselines live under `meituxiuxiu/html/` and become the immediate visual source of truth for SwiftUI optimization once verified.
-- v1.2 planned evidence lives under `.planning/evidence/v1.2/`.
+- v1.2 HTML baselines live under `meituxiuxiu/html/` as retained reference artifacts.
+- v1.2 evidence lives under `.planning/evidence/v1.2/` and currently covers the retained HTML baselines only.
+- v1.3 core beauty module plan lives under `docs/meitu-function-blueprint/`.
+- v1.3 example-image validation is documented in `docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md` and implemented by the `BeautyExampleRenderer` SwiftPM executable.
 
 ## Constraints
 
@@ -120,8 +137,9 @@ Current visual reference contracts:
 - **Permissions:** Camera/photo prompts are app-owned; SDK APIs must not trigger protected-resource prompts by themselves.
 - **Resource trust:** Presets, LUTs, makeup packs, stickers, and future resource bundles are untrusted unless bundled, versioned, and validated.
 - **Toolchain:** Current observed environment is Xcode 26.5 with explicit iOS Simulator destinations required for reliable `xcodebuild` evidence.
-- **HTML reference workflow:** v1.2 must build and verify static local HTML references before SwiftUI visual tuning; SwiftUI changes should cite the HTML delta contract, not just raw screenshots.
+- **HTML reference workflow:** v1.2 built and verified static local HTML references. If SwiftUI visual tuning is re-promoted later, it should cite a new explicit contract rather than raw screenshots alone.
 - **Offline reference safety:** HTML references must use local code/assets only; no network fonts, remote media, analytics, upload, or hidden service calls.
+- **v1.3 scope boundary:** v1.3 designs and implements core beauty modules only; no new SwiftUI screens, Home/discovery, style resources, AI/background, video/body, gallery/account, search, VIP, payment, or entitlement work.
 
 ## Key Decisions
 
@@ -134,11 +152,12 @@ Current visual reference contracts:
 | Advanced makeup, segmentation, body shaping, stickers, AI style, and video export are staged later. | v1 shipped the core pipeline and left higher-breadth features as explicit future milestone candidates. | Good |
 | Release-like claims require separate hardware, visual, performance, and long-run evidence. | v1 automation proves correctness and safety, not production naturalness or device endurance. | Revisit in next milestone |
 | v1.1 prioritizes Meitu-style Demo fidelity over new SDK algorithms. | The user rejected the prior Demo surface as not matching the `meituxiuxiu` references; visual/navigation fidelity had to be fixed before claiming a rich Demo. | Completed in v1.1 |
-| v1.2 must use HTML references before SwiftUI tuning. | The user identified that direct SwiftUI tuning from screenshots skipped an important design intermediate; HTML baselines make visual intent inspectable and easier to compare. | Planned for v1.2 |
+| v1.2 retains HTML references but cancels SwiftUI tuning. | The user decided on 2026-06-26 to keep the Phase 11 HTML baseline outputs and cancel Phases 12-15 because the subsequent planning direction was not useful. | Reduced-scope complete |
+| v1.3 focuses only on core beauty modules, not UI. | The user clarified that resources, AI, video, account, and gallery should not be planned now, and that this milestone should do core module design, encapsulation, implementation, and direct code-level image validation before any new UI work. | Phase 16 complete; continue with Phase 17 contracts |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-06-24 after v1.2 milestone planning*
+*Last updated: 2026-06-26 after Phase 16 example-image validation execution*
