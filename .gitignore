@@ -2,4 +2,6 @@
 .codex-backups/
 .worktrees/
 *.xcuserstate
+*.xcuserdatad/
 .build/
+example-images/out/

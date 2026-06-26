@@ -9,7 +9,8 @@ let package = Package(
         .macOS(.v14)
     ],
     products: [
-        .library(name: "BeautySDK", targets: ["BeautySDK"])
+        .library(name: "BeautySDK", targets: ["BeautySDK"]),
+        .executable(name: "BeautyExampleRenderer", targets: ["BeautyExampleRenderer"])
     ],
     targets: [
         .target(name: "BeautyCore"),
@@ -31,6 +32,10 @@ let package = Package(
         .target(
             name: "BeautySDK",
             dependencies: ["BeautyCore", "BeautyDetection", "BeautyRender", "BeautyEffects", "BeautyResources"]
+        ),
+        .executableTarget(
+            name: "BeautyExampleRenderer",
+            dependencies: ["BeautySDK"]
         ),
         .testTarget(name: "BeautySDKTests", dependencies: ["BeautySDK"]),
         .testTarget(name: "BeautyCoreTests", dependencies: ["BeautyCore", "BeautySDK"]),

@@ -1,0 +1,228 @@
+import AppKit
+import CoreImage
+import Foundation
+import ImageIO
+import BeautySDK
+
+struct RenderCase {
+    let id: String
+    let displayName: String
+    let parameters: BeautyParameters
+}
+
+enum ExampleRendererError: Error, CustomStringConvertible {
+    case missingInputDirectory(String)
+    case missingInputImages(String)
+    case unknownCase(String, [String])
+    case imageLoadFailed(String)
+    case renderFailed(String)
+    case pngEncodingFailed(String)
+
+    var description: String {
+        switch self {
+        case .missingInputDirectory(let path):
+            "Input directory does not exist: \(path)"
+        case .missingInputImages(let path):
+            "Input directory contains no PNG or JPEG images: \(path)"
+        case .unknownCase(let id, let available):
+            "Unknown render case: \(id). Available cases: \(available.joined(separator: ", "))"
+        case .imageLoadFailed(let path):
+            "Could not load image: \(path)"
+        case .renderFailed(let path):
+            "Could not render image: \(path)"
+        case .pngEncodingFailed(let path):
+            "Could not encode PNG: \(path)"
+        }
+    }
+}
+
+let arguments = CommandLine.arguments
+let inputDirectory = value(after: "--input", in: arguments) ?? "example-images/input"
+let outputDirectory = value(after: "--output", in: arguments) ?? "example-images/out"
+let selectedCase = value(after: "--case", in: arguments)
+
+let cases = [
+    RenderCase(
+        id: "skinSmoothing_0p50",
+        displayName: "skinSmoothing 0.50",
+        parameters: BeautyParameters(skinSmoothing: 0.50)
+    ),
+    RenderCase(
+        id: "skinWhitening_0p50",
+        displayName: "skinWhitening 0.50",
+        parameters: BeautyParameters(skinWhitening: 0.50)
+    ),
+    RenderCase(
+        id: "skinRosy_0p40",
+        displayName: "skinRosy 0.40",
+        parameters: BeautyParameters(skinRosy: 0.40)
+    ),
+    RenderCase(
+        id: "skinSharpen_0p40",
+        displayName: "skinSharpen 0.40",
+        parameters: BeautyParameters(skinSharpen: 0.40)
+    ),
+    RenderCase(
+        id: "brightness_plus0p25",
+        displayName: "brightness +0.25",
+        parameters: BeautyParameters(brightness: 0.25)
+    ),
+    RenderCase(
+        id: "contrast_plus0p25",
+        displayName: "contrast +0.25",
+        parameters: BeautyParameters(contrast: 0.25)
+    ),
+    RenderCase(
+        id: "filter_softClean_0p50",
+        displayName: "filter soft_clean 0.50",
+        parameters: BeautyParameters(filterId: "soft_clean", filterIntensity: 0.50)
+    ),
+    RenderCase(
+        id: "filter_warmLight_0p50",
+        displayName: "filter warm_light 0.50",
+        parameters: BeautyParameters(filterId: "warm_light", filterIntensity: 0.50)
+    ),
+    RenderCase(
+        id: "skinCombo_0p50",
+        displayName: "skin combo 0.50",
+        parameters: BeautyParameters(
+            skinSmoothing: 0.50,
+            skinWhitening: 0.50,
+            skinRosy: 0.35,
+            skinSharpen: 0.25
+        )
+    )
+]
+
+do {
+    let inputURL = URL(fileURLWithPath: inputDirectory, isDirectory: true)
+    let outputURL = URL(fileURLWithPath: outputDirectory, isDirectory: true)
+    let fileManager = FileManager.default
+    guard fileManager.fileExists(atPath: inputURL.path) else {
+        throw ExampleRendererError.missingInputDirectory(inputURL.path)
+    }
+    try fileManager.createDirectory(at: outputURL, withIntermediateDirectories: true)
+
+    let renderCases = cases.filter { selectedCase == nil || selectedCase == $0.id }
+    if let selectedCase, renderCases.isEmpty {
+        throw ExampleRendererError.unknownCase(selectedCase, cases.map(\.id))
+    }
+
+    let imageURLs = try fileManager
+        .contentsOfDirectory(at: inputURL, includingPropertiesForKeys: nil)
+        .filter { ["png", "jpg", "jpeg"].contains($0.pathExtension.lowercased()) }
+        .sorted { $0.lastPathComponent < $1.lastPathComponent }
+    guard !imageURLs.isEmpty else {
+        throw ExampleRendererError.missingInputImages(inputURL.path)
+    }
+
+    let engine = try BeautyEngine(configuration: .default)
+    let context = CIContext(options: [
+        .workingColorSpace: CGColorSpaceCreateDeviceRGB(),
+        .outputColorSpace: CGColorSpaceCreateDeviceRGB()
+    ])
+
+    for imageURL in imageURLs {
+        guard let inputImage = CIImage(contentsOf: imageURL, options: [.applyOrientationProperty: true]) else {
+            throw ExampleRendererError.imageLoadFailed(imageURL.path)
+        }
+
+        for renderCase in renderCases {
+            let result = try engine.processResult(
+                image: inputImage,
+                metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+                parameters: renderCase.parameters
+            )
+            guard let cgImage = context.createCGImage(result.output, from: result.output.extent) else {
+                throw ExampleRendererError.renderFailed(imageURL.path)
+            }
+
+            let watermark = watermarkText(for: renderCase, result: result)
+            let watermarked = try drawWatermark(watermark, on: cgImage)
+            let baseName = imageURL.deletingPathExtension().lastPathComponent
+            let outputName = "\(baseName)__\(renderCase.id).png"
+            let destination = outputURL.appendingPathComponent(outputName)
+            guard let png = watermarked.pngData() else {
+                throw ExampleRendererError.pngEncodingFailed(destination.path)
+            }
+            try png.write(to: destination, options: .atomic)
+            print("wrote \(destination.path)")
+        }
+    }
+} catch {
+    fputs("\(error)\n", stderr)
+    exit(1)
+}
+
+func value(after flag: String, in arguments: [String]) -> String? {
+    guard let index = arguments.firstIndex(of: flag),
+          arguments.indices.contains(index + 1)
+    else {
+        return nil
+    }
+    return arguments[index + 1]
+}
+
+func watermarkText(for renderCase: RenderCase, result: BeautyResult<CIImage>) -> String {
+    _ = result
+    return renderCase.displayName
+}
+
+func drawWatermark(_ text: String, on cgImage: CGImage) throws -> NSBitmapImageRep {
+    let width = cgImage.width
+    let height = cgImage.height
+    guard let bitmap = NSBitmapImageRep(
+        bitmapDataPlanes: nil,
+        pixelsWide: width,
+        pixelsHigh: height,
+        bitsPerSample: 8,
+        samplesPerPixel: 4,
+        hasAlpha: true,
+        isPlanar: false,
+        colorSpaceName: .deviceRGB,
+        bitmapFormat: [],
+        bytesPerRow: 0,
+        bitsPerPixel: 0
+    ),
+        let graphics = NSGraphicsContext(bitmapImageRep: bitmap)
+    else {
+        throw ExampleRendererError.renderFailed("watermark")
+    }
+
+    NSGraphicsContext.saveGraphicsState()
+    NSGraphicsContext.current = graphics
+    graphics.cgContext.draw(
+        cgImage,
+        in: CGRect(x: 0, y: 0, width: CGFloat(width), height: CGFloat(height))
+    )
+
+    let fontSize = CGFloat(max(34, min(72, width / 30)))
+    let padding = CGFloat(max(24, width / 70))
+    let bandHeight = fontSize * 1.75
+    let bandRect = NSRect(
+        x: padding,
+        y: padding,
+        width: CGFloat(width) - padding * 2,
+        height: bandHeight
+    )
+    NSColor.black.withAlphaComponent(0.62).setFill()
+    NSBezierPath(roundedRect: bandRect, xRadius: 18, yRadius: 18).fill()
+
+    let horizontalInset = padding * 0.6
+    let verticalInset = (bandHeight - fontSize * 1.15) / 2
+    let textRect = bandRect.insetBy(dx: horizontalInset, dy: verticalInset)
+    let attributes: [NSAttributedString.Key: Any] = [
+        .font: NSFont.monospacedSystemFont(ofSize: fontSize, weight: .semibold),
+        .foregroundColor: NSColor.white
+    ]
+    (text as NSString).draw(with: textRect, options: [.usesLineFragmentOrigin, .truncatesLastVisibleLine], attributes: attributes)
+    NSGraphicsContext.restoreGraphicsState()
+
+    return bitmap
+}
+
+extension NSBitmapImageRep {
+    func pngData() -> Data? {
+        representation(using: .png, properties: [:])
+    }
+}
