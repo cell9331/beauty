@@ -64,7 +64,7 @@ completed: 2026-06-26
 
 ## Task Commits
 
-1. **Task 1: Verify and update the example-image validation document** - no doc commit; required text was already present.
+1. **Task 1: Verify and update the example-image validation document** - required text was already present; tracked with the Phase 16 support commit `be1d960`.
 2. **Task 2: Mark PREP requirements complete from rerun evidence** - pending final ledger commit.
 
 **Plan metadata:** pending final summary commit.
@@ -103,7 +103,7 @@ None - plan executed exactly as written.
 
 ## Issues Encountered
 
-The worktree already contained unrelated modified and untracked files before Phase 16 execution. Closeout commits are scoped to Phase 16 summary and ledger files only.
+The worktree already contained unrelated modified and untracked files before Phase 16 execution. Closeout commits were scoped to Phase 16 support, summary, ledger, review, verification, and project-context files.
 
 ## User Setup Required
 

@@ -26,7 +26,7 @@ key-files:
   modified: []
 
 key-decisions:
-  - "No product-code changes were made because the existing BeautyExampleRenderer build and representative run passed."
+  - "No product-code edits were needed during verification because the existing BeautyExampleRenderer build and representative run passed."
   - "Phase 16 visual evidence is factual only: output is non-empty; watermark is readable; bottom watermark does not cover the face."
   - "Geometry-heavy saved-image output remains deferred to Phase 19."
 
@@ -50,7 +50,7 @@ completed: 2026-06-26
 - **Started:** 2026-06-26T08:10:00Z
 - **Completed:** 2026-06-26T08:15:27Z
 - **Tasks:** 3
-- **Files modified:** 1 summary file; ignored local PNG outputs were overwritten in `example-images/out/`
+- **Files modified:** 1 summary file; ignored local PNG outputs were overwritten in `example-images/out/`; pre-existing renderer support files were committed later in `be1d960` so the harness is durable in git.
 
 ## Accomplishments
 
@@ -61,11 +61,11 @@ completed: 2026-06-26
 
 ## Task Commits
 
-This plan was verification-only and required no product-code changes.
+This plan was verification-first and required no product-code edits during the build/run tasks. The pre-existing renderer support files were committed later as Phase 16 support in `be1d960`.
 
-1. **Task 1: Build the example renderer executable** - no source commit; build and static checks passed.
-2. **Task 2: Run the representative renderer case** - no source commit; ignored local PNG outputs were regenerated.
-3. **Task 3: Prove representative dimensions and watermark placement** - no source commit; command and visual evidence recorded here.
+1. **Task 1: Build the example renderer executable** - build and static checks passed; support files committed in `be1d960`.
+2. **Task 2: Run the representative renderer case** - ignored local PNG outputs were regenerated; support files committed in `be1d960`.
+3. **Task 3: Prove representative dimensions and watermark placement** - command and visual evidence recorded here.
 
 **Plan metadata:** pending final summary commit.
 
@@ -100,7 +100,8 @@ This plan was verification-only and required no product-code changes.
 
 ## Decisions Made
 
-- Kept `BeautyExampleRenderer` unchanged because no build or run blocker appeared.
+- Kept `BeautyExampleRenderer` behavior unchanged because no build or run blocker appeared.
+- Committed the pre-existing renderer support files in `be1d960` after verification so Phase 16 evidence is reproducible from tracked files.
 - Kept Phase 16 evidence as command output, file metadata, and a short local observation rather than committed PNG artifacts.
 - Did not add renderer cases, fixtures, output formats, SwiftUI screens, or algorithm behavior.
 
