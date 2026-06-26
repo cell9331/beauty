@@ -17,9 +17,9 @@ Requirements for the core beauty module milestone. v1.3 does not write new Swift
 
 ### Core Beauty Taxonomy
 
-- [ ] **CBT-01**: The milestone has a local mind map and feature matrix for core Meitu-style beauty functions.
-- [ ] **CBT-02**: Core beauty function families are limited to minimal editor shell, beauty shaping, and skin retouch.
-- [ ] **CBT-03**: Home/discovery, resource/style systems, AI/background, video/body, gallery/account, search, VIP, payment, and entitlement surfaces are explicitly excluded from this milestone.
+- [x] **CBT-01**: The milestone has a local mind map and feature matrix for core Meitu-style beauty functions.
+- [x] **CBT-02**: Core beauty function families are limited to minimal editor shell, beauty shaping, and skin retouch.
+- [x] **CBT-03**: Home/discovery, resource/style systems, AI/background, video/body, gallery/account, search, VIP, payment, and entitlement surfaces are explicitly excluded from this milestone.
 
 ### Beauty Shaping Modules
 
@@ -41,7 +41,7 @@ Requirements for the core beauty module milestone. v1.3 does not write new Swift
 
 ### Module and Verification Planning
 
-- [ ] **MOD-01**: Module boundaries map Demo, `BeautySDK`, `BeautyCore`, `BeautyDetection`, `BeautyRender`, `BeautyEffects`, and `BeautyResources` ownership for core beauty.
+- [x] **MOD-01**: Module boundaries map Demo, `BeautySDK`, `BeautyCore`, `BeautyDetection`, `BeautyRender`, `BeautyEffects`, and `BeautyResources` ownership for core beauty.
 - [ ] **MOD-02**: The roadmap decomposes v1.3 into preparation, contracts, skin, shaping, and closeout phases with 100% requirement traceability.
 - [ ] **MOD-03**: `PLANS.md`, `.planning/PROJECT.md`, `.planning/ROADMAP.md`, and `.planning/STATE.md` describe v1.3 as a no-new-UI core module design/implementation milestone.
 - [ ] **MOD-04**: Promoted visible effects must provide unit/integration evidence and example-image output evidence before being considered complete.
@@ -79,10 +79,10 @@ Deferred to later milestones unless explicitly promoted.
 | PREP-02 | Phase 16 | Complete |
 | PREP-03 | Phase 16 | Complete |
 | PREP-04 | Phase 16 | Complete |
-| CBT-01 | Phase 17 | Pending |
-| CBT-02 | Phase 17 | Pending |
-| CBT-03 | Phase 17 | Pending |
-| MOD-01 | Phase 17 | Pending |
+| CBT-01 | Phase 17 | Complete |
+| CBT-02 | Phase 17 | Complete |
+| CBT-03 | Phase 17 | Complete |
+| MOD-01 | Phase 17 | Complete |
 | SKIN-01 | Phase 18 | Pending |
 | SKIN-02 | Phase 18 | Pending |
 | SKIN-03 | Phase 18 | Pending |
@@ -104,4 +104,4 @@ Deferred to later milestones unless explicitly promoted.
 
 ---
 *Requirements defined: 2026-06-26*
-*Last updated: 2026-06-26 after Phase 16 example-image validation execution*
+*Last updated: 2026-06-26 after Phase 17 contract and module-boundary execution*

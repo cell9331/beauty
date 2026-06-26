@@ -21,8 +21,22 @@ key-files:
     - docs/meitu-function-blueprint/MINDMAP.md
     - docs/meitu-function-blueprint/README.md
     - docs/meitu-function-blueprint/features/beauty-shaping/README.md
+    - docs/meitu-function-blueprint/features/beauty-shaping/3d-sculpt/README.md
+    - docs/meitu-function-blueprint/features/beauty-shaping/eyebrows/README.md
+    - docs/meitu-function-blueprint/features/beauty-shaping/eyes/README.md
+    - docs/meitu-function-blueprint/features/beauty-shaping/face-shape/README.md
+    - docs/meitu-function-blueprint/features/beauty-shaping/lips/README.md
+    - docs/meitu-function-blueprint/features/beauty-shaping/nose/README.md
+    - docs/meitu-function-blueprint/features/beauty-shaping/proportion/README.md
     - docs/meitu-function-blueprint/features/editor-shell/README.md
+    - docs/meitu-function-blueprint/features/editor-shell/bottom-panel/README.md
+    - docs/meitu-function-blueprint/features/editor-shell/commit-flow/README.md
+    - docs/meitu-function-blueprint/features/editor-shell/input-routing/README.md
+    - docs/meitu-function-blueprint/features/editor-shell/preview-chrome/README.md
     - docs/meitu-function-blueprint/features/skin-retouch/README.md
+    - docs/meitu-function-blueprint/features/skin-retouch/skin-basic/README.md
+    - docs/meitu-function-blueprint/features/skin-retouch/skin-repair/README.md
+    - docs/meitu-function-blueprint/features/skin-retouch/teeth-hairline/README.md
     - docs/meitu-function-blueprint/shared/IMPLEMENTATION_PRINCIPLES.md
   modified:
     - docs/meitu-function-blueprint/DELIVERY_BOUNDARY.md
@@ -49,23 +63,24 @@ completed: 2026-06-26
 - **Started:** 2026-06-26T09:11:00Z
 - **Completed:** 2026-06-26T09:19:36Z
 - **Tasks:** 4
-- **Files modified:** 9
+- **Files modified:** 23
 
 ## Accomplishments
 
 - Replaced the mixed blueprint status vocabulary with `implemented`, `partial`, `blocked-by-geometry-output`, and `future`.
 - Expanded `FEATURE_MATRIX.md` into the branch-level source of truth for active family scope, owner, dependencies, current public `BeautyParameters`, future parameter needs, and evidence expectation.
+- Normalized all branch detail READMEs under the three active family folders to the same status/owner/parameter/evidence shape.
 - Clarified Demo ownership for input routing, preview chrome, bottom panel, category rails, labels, badges, slider mapping, compare/debug, cancel/confirm, and parameter snapshots.
 - Preserved active families as exactly `editor-shell`, `beauty-shaping`, and `skin-retouch`, with explicit exclusions for Home/discovery, resource/style systems, AI/background, video/body, gallery/account, search, VIP, payment, and entitlement behavior.
 
 ## Task Commits
 
-1. **Task 1: Normalize status vocabulary and evidence ladder** - `d11a3bf`
-2. **Task 2: Finalize branch-level feature matrix** - `d11a3bf`
-3. **Task 3: Clarify module ownership and dependency boundaries** - `d11a3bf`
+1. **Task 1: Normalize status vocabulary and evidence ladder** - `d11a3bf`, `10d9fbe`
+2. **Task 2: Finalize branch-level feature matrix** - `d11a3bf`, `10d9fbe`
+3. **Task 3: Clarify module ownership and dependency boundaries** - `d11a3bf`, `10d9fbe`
 4. **Task 4: Preserve active family scope and deferred exclusions** - `d11a3bf`
 
-All four documentation tasks were committed together because the status table, ownership rows, and family READMEs cross-reference the same Markdown contract edits.
+The primary matrix/family updates landed in `d11a3bf`; `10d9fbe` normalized the existing branch detail READMEs discovered under the same blueprint tree.
 
 ## Files Created/Modified
 
@@ -78,6 +93,7 @@ All four documentation tasks were committed together because the status table, o
 - `docs/meitu-function-blueprint/features/editor-shell/README.md` - Enumerated Demo-owned editor shell responsibilities.
 - `docs/meitu-function-blueprint/features/beauty-shaping/README.md` - Listed branch status, current parameters, future needs, and geometry evidence expectations.
 - `docs/meitu-function-blueprint/features/skin-retouch/README.md` - Separated implemented basic skin from future repair and teeth/hairline branches.
+- `docs/meitu-function-blueprint/features/*/*/README.md` - Branch detail docs now carry the same status, owner, dependency, parameter, future-need, and evidence fields as the matrix.
 
 ## Decisions Made
 
@@ -88,6 +104,7 @@ All four documentation tasks were committed together because the status table, o
 ## Verification
 
 - `! rg -n "static/future|partial/future|static/unavailable|planned-doc" docs/meitu-function-blueprint/FEATURE_MATRIX.md docs/meitu-function-blueprint/DELIVERY_BOUNDARY.md docs/meitu-function-blueprint/shared/IMPLEMENTATION_PRINCIPLES.md` passed.
+- `! rg -n "static/future|partial/future|static/unavailable|planned-doc" docs/meitu-function-blueprint` passed after branch detail normalization.
 - `rg -n "implemented|partial|blocked-by-geometry-output|future" docs/meitu-function-blueprint/FEATURE_MATRIX.md docs/meitu-function-blueprint/DELIVERY_BOUNDARY.md docs/meitu-function-blueprint/shared/IMPLEMENTATION_PRINCIPLES.md` passed.
 - `rg -n "provider|resolver|facade|saved-image|geometry" docs/meitu-function-blueprint/FEATURE_MATRIX.md docs/meitu-function-blueprint/shared/IMPLEMENTATION_PRINCIPLES.md docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md` passed.
 - `rg -n "3D塑颜|比例|脸型|眼睛|嘴唇|鼻子|眉毛|Basic skin|Skin repair|Teeth/hairline|Input routing|Preview chrome|Bottom panel|Commit flow" docs/meitu-function-blueprint/FEATURE_MATRIX.md docs/meitu-function-blueprint/MINDMAP.md` passed.
@@ -103,7 +120,7 @@ All four documentation tasks were committed together because the status table, o
 
 ## Deviations from Plan
 
-The implementation stayed within the planned documentation scope. The only process deviation was commit granularity: Tasks 1 through 4 landed in one Markdown contract commit (`d11a3bf`) because the same feature matrix and ownership tables satisfy multiple task criteria and would be inconsistent if partially committed.
+The implementation stayed within the planned documentation scope. The only process deviation was commit granularity: the matrix/family edits landed in one Markdown contract commit (`d11a3bf`) and the existing branch detail docs were normalized in follow-up commit `10d9fbe`.
 
 **Total deviations:** 1 process deviation.
 **Impact on plan:** No scope expansion and no source-code changes.
@@ -111,6 +128,7 @@ The implementation stayed within the planned documentation scope. The only proce
 ## Issues Encountered
 
 - The negative `BeautyResources` scan initially matched deferred-family wording on the same line. The wording was split so the contract still excludes those areas while satisfying the deterministic scan.
+- Final status inspection found existing untracked branch README files under active family folders with stale status wording. They were brought into Phase 17 scope and normalized in `10d9fbe`.
 
 ## User Setup Required
 

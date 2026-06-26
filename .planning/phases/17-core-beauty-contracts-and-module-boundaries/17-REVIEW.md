@@ -1,9 +1,9 @@
 ---
 phase: 17-core-beauty-contracts-and-module-boundaries
-reviewed: 2026-06-26T09:23:38Z
+reviewed: 2026-06-26T09:31:18Z
 status: clean
 scope: phase-17-blueprint-docs-and-boundary-scans
-files_reviewed: 11
+files_reviewed: 30
 critical: 0
 warning: 0
 info: 0
@@ -18,11 +18,15 @@ Phase 17 documentation and boundary review passed with no findings.
 - Phase commits reviewed:
   - `d11a3bf` - normalized core beauty blueprint contracts.
   - `aa56c18` - completed the `17-01` summary and plan-progress tracking.
+  - `10d9fbe` - normalized branch detail contracts under active family folders.
 - Pending Wave 2 ledger files reviewed before final commit:
+  - `.planning/phases/17-core-beauty-contracts-and-module-boundaries/17-01-SUMMARY.md`
   - `.planning/phases/17-core-beauty-contracts-and-module-boundaries/17-02-SUMMARY.md`
+  - `.planning/phases/17-core-beauty-contracts-and-module-boundaries/17-VERIFICATION.md`
   - `.planning/REQUIREMENTS.md`
   - `.planning/ROADMAP.md`
   - `.planning/STATE.md`
+  - `PLANS.md`
 - Blueprint files reviewed:
   - `docs/meitu-function-blueprint/README.md`
   - `docs/meitu-function-blueprint/MINDMAP.md`
@@ -33,6 +37,7 @@ Phase 17 documentation and boundary review passed with no findings.
   - `docs/meitu-function-blueprint/features/editor-shell/README.md`
   - `docs/meitu-function-blueprint/features/beauty-shaping/README.md`
   - `docs/meitu-function-blueprint/features/skin-retouch/README.md`
+  - `docs/meitu-function-blueprint/features/*/*/README.md`
 
 ## Findings
 
@@ -40,12 +45,14 @@ None.
 
 ## Review Checks
 
-- PASS: `! rg -n "static/future|partial/future|static/unavailable|planned-doc" docs/meitu-function-blueprint/FEATURE_MATRIX.md docs/meitu-function-blueprint/DELIVERY_BOUNDARY.md docs/meitu-function-blueprint/shared/IMPLEMENTATION_PRINCIPLES.md`
+- PASS: `! rg -n "static/future|partial/future|static/unavailable|planned-doc" docs/meitu-function-blueprint`
 - PASS: `! rg -n "BeautyResources.*(filter|makeup|sticker|template|download|VIP|payment|entitlement)" docs/meitu-function-blueprint/MODULES.md docs/meitu-function-blueprint/features`
 - PASS: `! rg -n "TO""DO|TB""D|FIX""ME|待""定|占""位|Lor""em" docs/meitu-function-blueprint .planning/phases/17-core-beauty-contracts-and-module-boundaries/17-01-SUMMARY.md .planning/phases/17-core-beauty-contracts-and-module-boundaries/17-02-SUMMARY.md`
 - PASS: `git diff --check -- docs/meitu-function-blueprint .planning/phases/17-core-beauty-contracts-and-module-boundaries/17-01-SUMMARY.md .planning/phases/17-core-beauty-contracts-and-module-boundaries/17-02-SUMMARY.md .planning/REQUIREMENTS.md .planning/ROADMAP.md .planning/STATE.md`
 - PASS: `! rg -n "import Beauty(Core|Detection|Effects|Render|Resources)" BeautyDemo/BeautyDemo BeautyDemo/BeautyDemoTests BeautySDK/Sources/BeautyExampleRenderer`
 - PASS: `! rg -n "import SwiftUI|import UIKit" BeautySDK/Sources/BeautyExampleRenderer`
+- PASS: `node "$HOME/.codex/get-shit-done/bin/gsd-tools.cjs" query verify.schema-drift 17`
+- PASS: `! rg -n "17\. Core Beauty Contracts and Module Boundaries \| 0/2 \| Planned|Phases 17-20 remain planned|Run \`\\$gsd-execute-phase 17\`" .planning/STATE.md .planning/ROADMAP.md`
 
 ## Notes
 

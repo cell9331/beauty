@@ -11,7 +11,7 @@ This milestone does not add SwiftUI screens, Home/discovery surfaces, resource/s
 - ✅ **v1.0 MVP** - Phases 1-7, shipped 2026-06-23. See `.planning/milestones/v1.0-ROADMAP.md`.
 - ✅ **v1.1 Meitu UI** - Phases 8-10, implemented and verified 2026-06-24.
 - ✅ **v1.2 HTML Reference Fidelity** - Phase 11 completed 2026-06-25; Phases 12-15 canceled 2026-06-26.
-- 🚧 **v1.3 Meitu Core Beauty Module Design and Implementation** - Phase 16 completed 2026-06-26; Phases 17-20 remain planned.
+- 🚧 **v1.3 Meitu Core Beauty Module Design and Implementation** - Phases 16-17 completed 2026-06-26; Phases 18-20 remain planned.
 
 ## v1.3 Meitu Core Beauty Module Design and Implementation
 
@@ -55,14 +55,14 @@ This milestone does not add SwiftUI screens, Home/discovery surfaces, resource/s
 3. Deferred families are explicitly excluded and cannot be mistaken for active scope.
 4. Demo ownership and SDK ownership are separated before implementation starts.
 
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 **Wave 1**
 
 - [x] 17-01: Finalize taxonomy, feature matrix, and module ownership for core beauty only.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 17-02: Verify contracts against `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, and current SDK targets.
+- [x] 17-02: Verify contracts against `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, and current SDK targets.
 
 ### Phase 18: Skin Retouch Core Modules
 
@@ -136,8 +136,8 @@ This milestone does not add SwiftUI screens, Home/discovery surfaces, resource/s
 | 13. Home SwiftUI Fidelity Pass | v1.2 | 0/3 | Canceled | 2026-06-26 |
 | 14. Editor SwiftUI Fidelity Pass | v1.2 | 0/3 | Canceled | 2026-06-26 |
 | 15. v1.2 Visual QA and Closeout | v1.2 | 0/3 | Canceled | 2026-06-26 |
-| 16. Example Image Validation Harness | v1.3 | 2/2 | Complete    | 2026-06-26 |
-| 17. Core Beauty Contracts and Module Boundaries | v1.3 | 1/2 | In Progress|  |
+| 16. Example Image Validation Harness | v1.3 | 2/2 | Complete | 2026-06-26 |
+| 17. Core Beauty Contracts and Module Boundaries | v1.3 | 2/2 | Complete | 2026-06-26 |
 | 18. Skin Retouch Core Modules | v1.3 | 0/3 | Planned | - |
 | 19. Beauty Shaping Core Modules | v1.3 | 0/3 | Planned | - |
 | 20. Core Module Closeout | v1.3 | 0/2 | Planned | - |

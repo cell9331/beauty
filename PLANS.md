@@ -26,9 +26,30 @@
 
 ## 3. Active
 
-No active plan. Phase 17 planning is complete; the next planned v1.3 step is `$gsd-execute-phase 17`.
+No active plan. Phase 17 execution is complete; the next planned v1.3 step is `$gsd-discuss-phase 18`.
 
 ## 4. Completed
+
+### C-2026-06-26-gsd-execute-phase-17-core-beauty-contracts-and-module-boundaries
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-26 |
+| Scope | Ran `$gsd-execute-phase 17` for Phase 17 Core Beauty Contracts and Module Boundaries. Normalized the Meitu core beauty blueprint status taxonomy, active family scope, branch detail docs, Demo-vs-SDK ownership, module dependency boundaries, public parameter coverage, future parameter needs, deferred-family exclusions, and Phase 17 evidence gates. |
+| Requirements | CBT-01, CBT-02, CBT-03, MOD-01 |
+| Files | `docs/meitu-function-blueprint/README.md`, `docs/meitu-function-blueprint/MINDMAP.md`, `docs/meitu-function-blueprint/FEATURE_MATRIX.md`, `docs/meitu-function-blueprint/MODULES.md`, `docs/meitu-function-blueprint/DELIVERY_BOUNDARY.md`, `docs/meitu-function-blueprint/shared/IMPLEMENTATION_PRINCIPLES.md`, `docs/meitu-function-blueprint/features/**/README.md`, `.planning/phases/17-core-beauty-contracts-and-module-boundaries/17-01-SUMMARY.md`, `.planning/phases/17-core-beauty-contracts-and-module-boundaries/17-02-SUMMARY.md`, `.planning/phases/17-core-beauty-contracts-and-module-boundaries/17-REVIEW.md`, `.planning/phases/17-core-beauty-contracts-and-module-boundaries/17-VERIFICATION.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.execute-phase 17` reported `incomplete_count: 0`; `phase-plan-index 17` reported both `17-01` and `17-02` with `has_summary: true`; `phase.complete 17` marked Phase 17 complete with `plans_executed: 2/2`; `verify.schema-drift 17` reported no drift; old status scan `! rg -n "static/future|partial/future|static/unavailable|planned-doc" docs/meitu-function-blueprint` passed; allowed status and parameter scans passed across matrix, family docs, and branch docs; top-level family directory check returned exactly `beauty-shaping`, `editor-shell`, and `skin-retouch`; deferred-family scan found Home/discovery, resource/style, AI/background, video/body, gallery/account, search, VIP, payment, and entitlement exclusions; `BeautyResources` deferred-owner negative scan passed; root-doc diff check returned no changes; Demo/renderer internal-import scan passed; renderer SwiftUI/UIKit scan passed; `git diff --name-only -- BeautyDemo BeautySDK/Sources example-images` returned empty; later SKIN, BSHAPE, EDITOR, MOD-02, MOD-03, and MOD-04 requirements remained pending; current STATE/ROADMAP ledgers no longer describe Phase 17 as planned or next to execute; `17-REVIEW.md` records `status: clean`; `17-VERIFICATION.md` records `status: passed`; `git diff --check -- docs/meitu-function-blueprint .planning/phases/17-core-beauty-contracts-and-module-boundaries .planning/REQUIREMENTS.md .planning/ROADMAP.md .planning/STATE.md PLANS.md` passed. |
+| Build | Not run; Phase 17 was a documentation and boundary contract phase with no Swift source, SwiftUI screen, renderer case, fixture, or generated image output changes. |
+| Commit | `d11a3bf` normalized the main blueprint contracts; `aa56c18` completed the first plan summary/tracking; `10d9fbe` normalized branch detail contracts; `68cb512` added the clean code review report; final ledger/verification commit records closeout artifacts. |
+
+Outcome:
+
+- The active blueprint now uses only `implemented`, `partial`, `blocked-by-geometry-output`, and `future` as branch statuses.
+- Feature and branch docs separate current public `BeautyParameters` coverage from future parameter needs.
+- Demo-owned rails, labels, badges, slider mapping, compare/debug, cancel/confirm, input routing, and parameter snapshots are explicitly app-side.
+- SDK ownership stays product-neutral: `BeautyEffects` owns promoted effect logic with `BeautyDetection` and `BeautyRender` dependencies; `BeautyResources` remains dependency/future-only where needed.
+- `CBT-01`, `CBT-02`, `CBT-03`, and `MOD-01` are complete; later skin, shaping, editor-support, and closeout requirements remain pending.
+- Geometry-heavy saved-image output remains a later-phase limitation until public facade detection plus geometry render integration produces saved outputs.
 
 ### C-2026-06-26-gsd-plan-phase-17-core-beauty-contracts-and-module-boundaries
 
