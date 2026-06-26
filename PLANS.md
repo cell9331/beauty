@@ -26,9 +26,28 @@
 
 ## 3. Active
 
-No active plan. Phase 17 context is complete; the next planned v1.3 step is `$gsd-plan-phase 17`.
+No active plan. Phase 17 planning is complete; the next planned v1.3 step is `$gsd-execute-phase 17`.
 
 ## 4. Completed
+
+### C-2026-06-26-gsd-plan-phase-17-core-beauty-contracts-and-module-boundaries
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-26 |
+| Scope | Ran `$gsd-plan-phase 17` for Phase 17 Core Beauty Contracts and Module Boundaries. Created research, validation, pattern-map, and two executable plans to normalize the core beauty blueprint status taxonomy, module ownership, Demo-vs-SDK boundaries, deferred-family exclusions, and Phase 17 verification gates. |
+| Requirements | CBT-01, CBT-02, CBT-03, MOD-01 |
+| Files | `.planning/phases/17-core-beauty-contracts-and-module-boundaries/17-RESEARCH.md`, `.planning/phases/17-core-beauty-contracts-and-module-boundaries/17-VALIDATION.md`, `.planning/phases/17-core-beauty-contracts-and-module-boundaries/17-PATTERNS.md`, `.planning/phases/17-core-beauty-contracts-and-module-boundaries/17-01-PLAN.md`, `.planning/phases/17-core-beauty-contracts-and-module-boundaries/17-02-PLAN.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `node "$HOME/.codex/get-shit-done/bin/gsd-tools.cjs" query init.plan-phase 17` reported `phase_status: Planned`, `has_research: true`, `has_context: true`, `has_plans: true`, `plan_count: 2`, and a Phase 17 `patterns_path`; structural scan found required plan sections including `<objective>`, `## Artifacts this phase produces`, `<threat_model>`, `<tasks>`, `<read_first>`, `<action>`, and `<acceptance_criteria>`; requirement scan found CBT-01, CBT-02, CBT-03, and MOD-01 across the research, validation, pattern, and plan files; explicit decision scan found D-01 through D-12 in the generated plans after `check.decision-coverage-plan` skipped because the current context markdown exposed no tool-trackable decisions; `17-VALIDATION.md` records `status: approved`, `nyquist_compliant: true`, and `wave_0_complete: true`; placeholder/template-token scan returned no matches; `state.planned-phase --phase 17 --name core-beauty-contracts-and-module-boundaries --plans 2` and `roadmap.annotate-dependencies 17` ran; `git diff --check -- .planning/phases/17-core-beauty-contracts-and-module-boundaries .planning/ROADMAP.md .planning/STATE.md PLANS.md` passed. |
+| Build | Not run; this was a GSD planning/documentation workflow with no Swift or Xcode source changes. |
+
+Outcome:
+
+- Phase 17 now has `17-01-PLAN.md` for in-place blueprint normalization: strict branch statuses, feature matrix, module ownership, family docs, and deferred exclusions.
+- Phase 17 now has `17-02-PLAN.md` for root-contract consistency, facade-only import scans, no-code/no-new-UI checks, and planning-ledger closeout after evidence passes.
+- `17-VALIDATION.md` records the Nyquist validation strategy for static documentation scans and boundary checks.
+- Geometry-heavy saved-image output remains deferred; provider/resolver evidence can support `partial` status only until public facade detection plus geometry render output exists.
+- Next step is `$gsd-execute-phase 17`.
 
 ### C-2026-06-26-gsd-discuss-phase-17-core-beauty-contracts-and-module-boundaries
 

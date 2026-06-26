@@ -56,8 +56,12 @@ This milestone does not add SwiftUI screens, Home/discovery surfaces, resource/s
 4. Demo ownership and SDK ownership are separated before implementation starts.
 
 **Plans:** 0/2 plans complete
+**Wave 1**
 
 - [ ] 17-01: Finalize taxonomy, feature matrix, and module ownership for core beauty only.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 17-02: Verify contracts against `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, and current SDK targets.
 
 ### Phase 18: Skin Retouch Core Modules
