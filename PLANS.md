@@ -26,9 +26,29 @@
 
 ## 3. Active
 
-No active plan. Phase 16 is complete; the next planned v1.3 step is Phase 17 contracts.
+No active plan. Phase 17 context is complete; the next planned v1.3 step is `$gsd-plan-phase 17`.
 
 ## 4. Completed
+
+### C-2026-06-26-gsd-discuss-phase-17-core-beauty-contracts-and-module-boundaries
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-26 |
+| Scope | Ran `$gsd-discuss-phase 17` for Phase 17 Core Beauty Contracts and Module Boundaries. Captured user decisions for branch status taxonomy, Demo-vs-SDK ownership, module dependency mapping, and verification/evidence gates before Phase 17 planning. |
+| Requirements | CBT-01, CBT-02, CBT-03, MOD-01 |
+| Files | `.planning/phases/17-core-beauty-contracts-and-module-boundaries/17-CONTEXT.md`, `.planning/phases/17-core-beauty-contracts-and-module-boundaries/17-DISCUSSION-LOG.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `node "$HOME/.codex/get-shit-done/bin/gsd-tools.cjs" query init.phase-op 17` reported `phase_found: true`, `phase_dir: .planning/phases/17-core-beauty-contracts-and-module-boundaries`, `has_context: true`, `has_plans: false`, and `context_path: .planning/phases/17-core-beauty-contracts-and-module-boundaries/17-CONTEXT.md`; `test ! -e .planning/phases/17-core-beauty-contracts-and-module-boundaries/17-DISCUSS-CHECKPOINT.json` passed; targeted context term scan found `blocked-by-geometry-output` and `BeautyParameters` in both Phase 17 context/log files; `rg` confirmed `.planning/STATE.md` now points to `Phase 17 context gathered` and `17-CONTEXT.md`; `git diff --check -- .planning/phases/17-core-beauty-contracts-and-module-boundaries/17-CONTEXT.md .planning/phases/17-core-beauty-contracts-and-module-boundaries/17-DISCUSSION-LOG.md .planning/STATE.md PLANS.md` passed. |
+| Build | Not run; this was a GSD context/documentation workflow with no source changes. |
+
+Outcome:
+
+- Phase 17 context locks a strict four-state feature status model: `implemented`, `partial`, `blocked-by-geometry-output`, and `future`.
+- Branch status stays branch-level with subtool notes and explicit current `BeautyParameters` coverage versus future parameter needs.
+- Meitu-style branch names remain in blueprint docs and Demo taxonomy; SDK names stay product-neutral.
+- Demo ownership is explicit for rails, labels, badges, slider mapping, compare/debug, cancel/confirm, input routing, and parameter snapshots.
+- Future implementation phases use an evidence ladder; geometry provider tests count as partial evidence until public facade saved-image geometry output exists.
+- Root contracts are updated only when Phase 17 changes a real contract.
 
 ### C-2026-06-26-gsd-execute-phase-16-example-image-validation-harness
 
