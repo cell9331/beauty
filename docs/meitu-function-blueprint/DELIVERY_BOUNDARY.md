@@ -16,9 +16,10 @@
 - No new SwiftUI screens.
 - No Home or Editor visual rebuild.
 - No network AI, upload, account, payment, VIP entitlement, or remote service behavior.
-- No Home/discovery, filter/makeup/sticker/template, AI/background, video/body, gallery/account, search, VIP, payment, or entitlement planning.
+- No Home/discovery, resource/style systems, AI/background, video/body, gallery/account, search, VIP, payment, or entitlement behavior.
 - No claim of full Meitu/Xingtu parity.
 - No use of commercial screenshots as production assets.
+- No new renderer case, fixture, generated image output, or algorithm output claim in Phase 17.
 
 ## Acceptance Signals
 
@@ -26,5 +27,6 @@
 - A future agent can answer: "What is the business behavior?"
 - A future agent can answer: "What technical core is needed?"
 - A future agent can answer: "What is explicitly out of scope?"
-- The docs expose which functions are implemented, static, partial, or future.
+- The docs expose branch status using only `implemented`, `partial`, `blocked-by-geometry-output`, or `future`.
+- Geometry provider/resolver evidence is recorded as partial until public facade saved-image output exists for the branch.
 - The local renderer can build and save representative parameter outputs from `example-images/input/` to `example-images/out/` without UI.

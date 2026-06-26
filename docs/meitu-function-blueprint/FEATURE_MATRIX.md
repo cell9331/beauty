@@ -1,0 +1,37 @@
+# Feature Matrix
+
+Status meanings:
+
+- `implemented` - Current SDK/Demo behavior exists and has tests plus facade-visible example output when the branch produces visible image output.
+- `partial` - Current public parameters, provider logic, resolver behavior, or unit evidence exists, but visible saved-image completion or branch coverage is incomplete.
+- `blocked-by-geometry-output` - The branch needs public facade detection plus geometry render integration before saved example-image output can prove it.
+- `future` - Out of implementation scope until explicitly promoted.
+
+Geometry provider and resolver tests are useful provider evidence, but they do not count as visible completion until `BeautyEngine.processResult(...)` can produce public-facade saved-image output for the branch.
+
+| Family | Branch | Status | Primary owner | Dependencies | Current public `BeautyParameters` coverage | Future parameter needs | Evidence expectation | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Editor shell | Input routing | implemented | `BeautyDemo/Editor` | Public `BeautySDK` facade, camera/photo pipelines | Input routing creates `BeautyParameters` snapshots but owns no SDK parameter. | Future video input state remains out of v1.3. | Demo route tests and facade-only import scans. | Photo/camera route through existing local pipelines; no SDK internals. |
+| Editor shell | Preview chrome | implemented | `BeautyDemo/Editor` | `BeautyParameterStore`, result/debug presentation | Compare/debug reads output and redacted summaries; no SDK parameter. | Background protection remains Demo affordance until a promoted SDK feature exists. | Demo view-state tests and no internal import scan. | Brand, preview, compare/debug, and badges stay app-side. |
+| Editor shell | Bottom panel | implemented | `BeautyDemo/Panel` | `BeautyDemo/State`, public `BeautyParameters` | Slider mapping covers current public skin, color, faceShape, eyes, nose, mouth, lipColor, and filter fields. | Any new visible tool needs a product-neutral public parameter or remains disabled. | View-state mapping tests plus no SwiftUI work in Phase 17. | Category rails, labels, badges, and slider mapping are Demo-owned. |
+| Editor shell | Commit flow | implemented | `BeautyDemo/State` | `BeautyParameterStore`, editor apply/rollback UI | Parameter snapshot, cancel/confirm, reset, import, preset, and filter source state. | Future multi-step editor history remains app-side. | State tests and planning scans. | Cancel/confirm and parameter snapshots exist outside SDK algorithm ownership. |
+| Beauty shaping | 3D塑颜 | blocked-by-geometry-output | `BeautyEffects` | `BeautyDetection` pose/landmarks, `BeautyRender` unified warp | None. | Symmetry, vertical, horizontal, and tilt controls need product-neutral parameters and design updates. | Detection/render integration plus public facade saved-image output required before visible completion. | Current branch is a documented geometry target only. |
+| Beauty shaping | 比例 | partial | `BeautyEffects` | `BeautyDetection` landmarks, `BeautyRender` unified warp | `faceSmall` covers small-head style behavior indirectly. | Forehead, mid-face, philtrum, lower-face, short-face, and head-face controls need new parameters if promoted. | Existing provider/resolver evidence is partial; saved-image output waits for facade geometry. | Meitu branch name stays in Demo taxonomy; SDK language stays product-neutral. |
+| Beauty shaping | 脸型 | partial | `BeautyEffects` | `BeautyDetection` landmarks, `BeautyRender` unified warp | `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, `chinLength`. | Smooth face, temple, cheekbone, double chin, pointed chin, and hairline need new parameters or resources if promoted. | Provider/resolver tests support partial; public facade saved-image output is still required for visual completion. | Uses SDK domain `faceShape`. |
+| Beauty shaping | 眼睛 | partial | `BeautyEffects` | `BeautyDetection` eye landmarks, `BeautyRender` unified warp | `eyeSize`, `eyeDistance`, `eyeYPosition`, `eyeTailLift`. | Eye height, length, pupil, gaze, lid, redness, corners, symmetry, and eye-fat controls need new parameters/resources if promoted. | Provider/resolver tests support partial; public facade saved-image output is still required for visual completion. | Uses SDK domain `eyes`. |
+| Beauty shaping | 嘴唇 | partial | `BeautyEffects` | `BeautyDetection` mouth landmarks, `BeautyRender` unified warp | `mouthSize`, `mouthWidth`, `smile`, `lipColor`. | M-lip, position, tilt, left/right, and teeth controls need new parameters or a retouch/segmentation design. | Provider/resolver and lip-color output evidence are partial by subtool; geometry saved-output remains required. | Uses SDK domains `mouth` and `lipColor`. |
+| Beauty shaping | 鼻子 | partial | `BeautyEffects` | `BeautyDetection` nose landmarks, `BeautyRender` unified warp | `noseSlim`, `noseWingSlim`, `noseTipSize`, `noseBridge`. | Lift, root/bridge split, and additional nose shaping controls need new parameters if promoted. | Provider/resolver tests support partial; public facade saved-image output is still required for visual completion. | Uses SDK domain `nose`. |
+| Beauty shaping | 眉毛 | future | `BeautyEffects` | Future landmarks/resource support only if promoted | None. | Position, thickness, length, distance, head distance, tilt, and peak controls need new parameters and possibly resources. | No v1.3 completion evidence expected until explicitly promoted. | `BeautyResources` may be a future dependency, not an active owner. |
+| Skin retouch | Basic skin | implemented | `BeautyEffects` | `BeautyRender` color/skin pass path, public `BeautySDK` facade | `skinSmoothing`, `skinWhitening`, `skinRosy`, `skinSharpen`. | None for current basic skin branch. | XCTest coverage plus `BeautyExampleRenderer` saved-image cases. | Current facade-visible cases include skin smoothing, whitening, rosy, sharpen, and combo paths. |
+| Skin retouch | Skin repair | future | `BeautyEffects` | Future local repair algorithm and safety policy | None. | Blemish, pore, and texture parameters need design updates if promoted. | No v1.3 completion evidence expected until explicitly promoted. | No cloud repair or AI upload by default. |
+| Skin retouch | Teeth/hairline | future | `BeautyEffects` | Future segmentation/landmarks and optional resources | None. | Teeth whitening and hairline parameters need design, privacy, and reliability updates if promoted. | No v1.3 completion evidence expected until explicitly promoted. | Teeth may overlap mouth/skin retouch; hairline may require resource or segmentation design. |
+
+## Explicitly Excluded Families
+
+| Family | Reason |
+| --- | --- |
+| Home/discovery | Not part of core beauty logic for this milestone. |
+| Resource/style systems | Filters, makeup, stickers, templates, downloads, and style packs are deferred. |
+| AI/background/cutout/eraser | AI and segmentation are deferred. |
+| Video/body/export | Video and body-shaping pipelines are deferred. |
+| Gallery/account/search/VIP/payment/entitlement | Product/account and commercial entitlement surfaces are deferred. |

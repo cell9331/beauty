@@ -4,15 +4,15 @@
 
 | Module | Owns | Must not own |
 | --- | --- | --- |
-| `BeautyDemo/Editor` | Editor shell, preview, compare/debug buttons, cancel/confirm, input mode routing | Effect algorithms, Metal passes, Vision detector state |
-| `BeautyDemo/Panel` | Tool/category rails, sliders, badges, visible parameter mapping | Camera/session internals, SDK internal targets |
-| `BeautyDemo/State` | App-side parameter store, source state, route state | Internal SDK control points or raw landmarks |
+| `BeautyDemo/Editor` | Editor shell, preview chrome, compare/debug buttons, cancel/confirm, input routing, background-protection affordance | Effect algorithms, Metal passes, Vision detector state |
+| `BeautyDemo/Panel` | Tool/category rails, category rails, labels, sliders, badges, visible slider mapping | Camera/session internals, SDK internal targets |
+| `BeautyDemo/State` | App-side parameter store, parameter snapshot state, source state, route state | Internal SDK control points or raw landmarks |
 | `BeautySDK` facade | Stable host-facing engine, resources facade, public parameter/result models | SwiftUI pages, Meitu product-specific screen state |
 | `BeautyCore` | Parameters, errors, diagnostics, frame metadata, public-safe summaries | SwiftUI, Vision, Metal pass implementation |
 | `BeautyDetection` | Face/landmark/segmentation/body detection internals | UI overlays, render pass ownership |
 | `BeautyRender` | Metal/Core Image render graph, texture lifecycle, shader passes | Product category taxonomy |
 | `BeautyEffects` | Effect resolution, safety caps, geometry providers, style effect composition | UI state, entitlement/product routing |
-| `BeautyResources` | LUT/preset/makeup/sticker/model manifests and validation | Business download/payment UI |
+| `BeautyResources` | Bundled resource manifests and validation when a promoted branch genuinely needs resources | Deferred product/resource UI ownership in v1.3 |
 
 ## Dependency Direction
 
@@ -28,6 +28,18 @@ BeautyDemo
 
 Demo may describe Meitu-like functions, but SDK APIs should stay product-neutral where possible. Example: `eyeSize` is public SDK language; `眼睛/大小` is Demo taxonomy language.
 
+## Branch Ownership
+
+| Family | Branch | Primary owner | Dependencies | Boundary |
+| --- | --- | --- | --- | --- |
+| Editor shell | Input routing | `BeautyDemo/Editor` | Public `BeautySDK` facade | Demo selects photo/camera source and passes normalized metadata; SDK does not own route UI. |
+| Editor shell | Preview chrome | `BeautyDemo/Editor` | Public result/debug summaries | Compare/debug affordances, labels, and badges stay app-side and read-only. |
+| Editor shell | Bottom panel | `BeautyDemo/Panel` | `BeautyDemo/State`, `BeautyParameters` | Category rails, labels, badges, and slider mapping are Demo-owned. |
+| Editor shell | Commit flow | `BeautyDemo/State` | `BeautyParameterStore` | Cancel/confirm and parameter snapshot rollback/apply stay app-side. |
+| Beauty shaping | `3D塑颜`, `比例`, `脸型`, `眼睛`, `嘴唇`, `鼻子`, `眉毛` | `BeautyEffects` | `BeautyDetection` landmarks/pose and `BeautyRender` unified warp | Meitu branch labels stay in blueprint/Demo taxonomy; SDK domains stay product-neutral (`faceShape`, `eyes`, `nose`, `mouth`). |
+| Skin retouch | Basic skin | `BeautyEffects` | `BeautyRender` color/skin path and public `BeautySDK` facade | Current skin parameters are visible through facade output and local renderer cases. |
+| Skin retouch | Skin repair, Teeth/hairline | `BeautyEffects` if promoted | Future local algorithm, landmarks, segmentation, or resources as explicitly designed | No cloud repair, AI upload, or active resource ownership by default. |
+
 ## Planning Rule
 
 Each future implementation phase must declare:
@@ -39,9 +51,12 @@ Each future implementation phase must declare:
 5. Privacy/reliability risk.
 6. Unit/integration verification evidence.
 7. Example-image output evidence when the module has visible image output.
+8. Whether provider/resolver evidence is only `partial` or public facade saved-image output can support `implemented`.
 
 ## Example Image Verification Ownership
 
 `BeautyExampleRenderer` is a macOS-only SwiftPM executable used for local SDK verification. It imports only the public `BeautySDK` facade, reads portrait fixtures from `example-images/input/`, runs `BeautyEngine.processResult(image:metadata:parameters:)`, and writes watermarked outputs to `example-images/out/`.
 
 The tool validates public processing behavior. It must not reach into internal SDK targets or Demo SwiftUI state.
+
+Filters, makeup, stickers, templates, downloads, VIP, payment, and entitlement behavior remain deferred product/resource areas, not active v1.3 ownership.
