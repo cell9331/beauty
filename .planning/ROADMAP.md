@@ -132,7 +132,7 @@ This milestone does not add SwiftUI screens, Home/discovery surfaces, resource/s
 | 13. Home SwiftUI Fidelity Pass | v1.2 | 0/3 | Canceled | 2026-06-26 |
 | 14. Editor SwiftUI Fidelity Pass | v1.2 | 0/3 | Canceled | 2026-06-26 |
 | 15. v1.2 Visual QA and Closeout | v1.2 | 0/3 | Canceled | 2026-06-26 |
-| 16. Example Image Validation Harness | v1.3 | 2/2 | Complete | 2026-06-26 |
+| 16. Example Image Validation Harness | v1.3 | 2/2 | Complete    | 2026-06-26 |
 | 17. Core Beauty Contracts and Module Boundaries | v1.3 | 0/2 | Planned | - |
 | 18. Skin Retouch Core Modules | v1.3 | 0/3 | Planned | - |
 | 19. Beauty Shaping Core Modules | v1.3 | 0/3 | Planned | - |
