@@ -26,9 +26,28 @@
 
 ## 3. Active
 
-No active plan. Phase 17 execution is complete; the next planned v1.3 step is `$gsd-discuss-phase 18`.
+No active plan. Phase 18 context is gathered; the next planned v1.3 step is `$gsd-plan-phase 18`.
 
 ## 4. Completed
+
+### C-2026-06-27-gsd-discuss-phase-18-skin-retouch-core-modules
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-27 |
+| Scope | Ran `$gsd-discuss-phase 18` for Phase 18 Skin Retouch Core Modules. Captured user decisions for Basic skin formula ambition, facade-visible no-detection behavior, future branch exclusions, and Phase 18 verification gates before planning. |
+| Requirements | SKIN-01, SKIN-02, SKIN-03 |
+| Files | `.planning/phases/18-skin-retouch-core-modules/18-CONTEXT.md`, `.planning/phases/18-skin-retouch-core-modules/18-DISCUSSION-LOG.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.phase-op 18` reported `phase_found: true`, `phase_dir: .planning/phases/18-skin-retouch-core-modules`, `has_context: true`, `has_plans: false`, and `context_path: .planning/phases/18-skin-retouch-core-modules/18-CONTEXT.md`; `test ! -e .planning/phases/18-skin-retouch-core-modules/18-DISCUSS-CHECKPOINT.json` passed; targeted scan found `改进公式`, `保持 facade 可见`, `Skin repair`, `Teeth/hairline`, `skinSmoothing_0p50`, `skinCombo_0p50`, `Phase 18 context gathered`, and `18-CONTEXT` across the context/log/state files; `git diff --check -- .planning/phases/18-skin-retouch-core-modules/18-CONTEXT.md .planning/phases/18-skin-retouch-core-modules/18-DISCUSSION-LOG.md .planning/STATE.md` passed before this ledger update. |
+| Build | Not run; this was a GSD context/documentation workflow with no Swift source changes. |
+
+Outcome:
+
+- Phase 18 context allows conservative Basic skin formula improvements inside the existing pipeline without adding public parameters, targets, or new render passes.
+- Basic skin remains facade-visible in no-detection renderer/public paths as lightweight full-frame skin-tone improvement, while explicit internal no-face resolver semantics may still skip face-dependent skin for future detection-integrated flows.
+- Skin repair and Teeth/hairline stay `future`; Phase 18 planning must add negative scans to prevent accidental implementation or completion claims.
+- Required Phase 18 evidence is focused XCTest plus all current skin renderer cases, dimension checks, factual visual observations, and negative scans. Full `swift test --package-path BeautySDK` is optional extra evidence, not the fixed gate.
+- Next step is `$gsd-plan-phase 18`.
 
 ### C-2026-06-26-gsd-execute-phase-17-core-beauty-contracts-and-module-boundaries
 
