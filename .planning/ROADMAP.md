@@ -76,14 +76,14 @@ This milestone does not add SwiftUI screens, Home/discovery surfaces, resource/s
 2. Skin repair and teeth/hairline branches are implemented only when local inputs and degradation behavior are clear; otherwise they remain documented future branches.
 3. Safety caps, warnings, no-face behavior, and parameter clamping are verified.
 
-**Plans:** 1/3 plans executed
+**Plans:** 2/3 plans executed
 **Wave 1**
 
 - [x] 18-01: Audit current skin controls and map them to the v1.3 branch contracts.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 18-02: Implement promoted skin-retouch module improvements behind SDK boundaries.
+- [x] 18-02: Implement promoted skin-retouch module improvements behind SDK boundaries.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -145,7 +145,7 @@ This milestone does not add SwiftUI screens, Home/discovery surfaces, resource/s
 | 15. v1.2 Visual QA and Closeout | v1.2 | 0/3 | Canceled | 2026-06-26 |
 | 16. Example Image Validation Harness | v1.3 | 2/2 | Complete | 2026-06-26 |
 | 17. Core Beauty Contracts and Module Boundaries | v1.3 | 2/2 | Complete | 2026-06-26 |
-| 18. Skin Retouch Core Modules | v1.3 | 1/3 | In Progress|  |
+| 18. Skin Retouch Core Modules | v1.3 | 2/3 | In Progress|  |
 | 19. Beauty Shaping Core Modules | v1.3 | 0/3 | Planned | - |
 | 20. Core Module Closeout | v1.3 | 0/2 | Planned | - |
 
