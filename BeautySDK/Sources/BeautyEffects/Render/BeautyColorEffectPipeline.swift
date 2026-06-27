@@ -110,7 +110,7 @@ public enum BeautyColorEffectPipeline {
             filter.brightness
         )
         let contrast = CGFloat(1 + strengths.contrast * 0.20 + strengths.skinSharpen * 0.18)
-        let saturation = CGFloat(max(0, 1 + strengths.saturation * 0.28 + filter.saturation))
+        let saturation = CGFloat(max(0, 1 + strengths.saturation * 0.28 - strengths.skinSmoothing * 0.18 + filter.saturation))
 
         var output = image.applyingFilter(
             "CIColorControls",
@@ -192,11 +192,12 @@ public enum BeautyColorEffectPipeline {
             b += strengths.shadow * 0.08
         }
 
-        let smoothing = strengths.skinSmoothing * 0.08
+        let smoothing = strengths.skinSmoothing * 0.16
         if smoothing > 0 {
-            r = r * (1 - smoothing) + luminance * smoothing
-            g = g * (1 - smoothing) + luminance * smoothing
-            b = b * (1 - smoothing) + luminance * smoothing
+            let skinLuminance = 0.299 * r + 0.587 * g + 0.114 * b
+            r = r * (1 - smoothing) + skinLuminance * smoothing
+            g = g * (1 - smoothing) + skinLuminance * smoothing
+            b = b * (1 - smoothing) + skinLuminance * smoothing
         }
 
         return (
