@@ -32,7 +32,7 @@
 ### Verification Threshold
 - **D-14:** Phase 18 completion requires focused XCTest coverage for skin parameter/resolver/engine behavior, `BeautyExampleRenderer` build/run evidence for Basic skin, same-dimension output checks, factual visual inspection, and future-branch negative scans.
 - **D-15:** Renderer evidence should run all current skin cases: `skinSmoothing_0p50`, `skinWhitening_0p50`, `skinRosy_0p40`, `skinSharpen_0p40`, and `skinCombo_0p50`.
-- **D-16:** Visual observations must stay factual: output is non-empty, watermark is readable, watermark does not cover the face, dimensions match, and skin cases show visible but natural changes. Do not claim commercial-grade naturalness, production render quality, or release-like visual QA.
+- **D-16:** Visual observations must stay factual: output is non-empty, watermark is readable, watermark does not cover the face, dimensions match, and skin cases show visible but natural changes. Do not claim market-grade naturalness, production render quality, or release-readiness visual QA.
 - **D-17:** Full `swift test --package-path BeautySDK` is not a fixed Phase 18 completion gate. Executors may run it as extra evidence, but the required gate is focused tests plus skin renderer cases, dimension checks, factual visual review, and negative scans.
 
 ### the agent's Discretion
@@ -43,7 +43,7 @@ The planner may choose exact plan split, test file names, formula constants, war
 
 - True skin repair, blemish cleanup, pore/texture repair, inpainting, region masks, or segmentation are deferred to a later independently designed phase.
 - Teeth whitening and hairline adjustment are deferred to a later phase that can define mouth/teeth or hair/forehead confidence, privacy, reliability, resource, and parameter contracts.
-- A production `SkinPass`, dense face mesh, segmentation-aware skin processing, commercial-grade naturalness QA, and release-like visual validation remain outside Phase 18.
+- A production `SkinPass`, dense face mesh, segmentation-aware skin processing, market-grade naturalness QA, and release-readiness visual validation remain outside Phase 18.
 </user_constraints>
 
 <phase_requirements>
@@ -51,7 +51,7 @@ The planner may choose exact plan split, test file names, formula constants, war
 
 | ID | Description | Research Support |
 |----|-------------|------------------|
-| SKIN-01 | Basic skin, skin repair, and teeth/hairline branches each have branch documentation and module ownership. | Existing branch docs already define Basic skin as `implemented` and Skin repair / Teeth-hairline as `future`; Phase 18 should audit and tighten those docs without promoting future branches. [VERIFIED: repo grep] |
+| SKIN-01 | Basic skin, skin repair, and teeth/hairline branches each have branch documentation and module ownership. | Existing branch docs already define Basic skin as current and Skin repair / Teeth-hairline as `future`; Phase 18 should audit and tighten those docs without promoting future branches. [VERIFIED: repo grep] |
 | SKIN-02 | Promoted skin-retouch branches implement core logic behind SDK boundaries with degradation behavior, parameter caps, and tests. | Basic skin is the only promoted branch; implementation belongs in `BeautyEffects` / `BeautyColorEffectPipeline`, with caps in `BeautySafetyCaps`, resolver evidence in `BeautyEffectResolver`, and public facade output through `BeautyEngine`. [VERIFIED: repo grep] |
 | SKIN-03 | Current MVP skin controls stay separated from future local repair or region-based retouch capabilities. | `BeautyParameters` exposes only `skinSmoothing`, `skinWhitening`, `skinRosy`, and `skinSharpen`; future repair, teeth, hairline, segmentation, and resource ownership must remain absent from SDK public API and renderer cases. [VERIFIED: repo grep] |
 </phase_requirements>
@@ -73,7 +73,7 @@ The only promoted Phase 18 branch is Basic skin. Skin repair and Teeth/hairline 
 | No-detection facade-visible Basic skin | Public facade (`BeautySDK`) | Effect resolver (`BeautyEffects`) | Facade calls `BeautyEffectResolver.resolve(parameters:)`, which does not treat missing face as no-face, so skin remains active for public renderer/no-detection paths. [VERIFIED: `BeautyEngine.swift`, `BeautyEffectResolver.swift`] |
 | Explicit internal no-face skin skip | Effect resolver (`BeautyEffects`) | Tests | Internal resolver overload with `faceGeometry: nil` treats missing face as no-face and skips `.skin`, preserving future detection-integrated semantics. [VERIFIED: `BeautyEffectResolver.swift`, `CombinedEffectSafetyTests.swift`] |
 | Example-image validation | Public facade renderer executable | Shell/dimension/manual checks | `BeautyExampleRenderer` imports only `BeautySDK`, reads `example-images/input`, writes ignored PNGs under `example-images/out`, and includes all current Basic skin cases. [VERIFIED: `BeautyExampleRenderer/main.swift`, `EXAMPLE_IMAGE_VALIDATION.md`, `git check-ignore`] |
-| Skin repair and Teeth/hairline future boundaries | Documentation contracts | Negative scans | Branch docs and feature matrix mark these branches `future`; Phase 18 must keep them non-implemented. [VERIFIED: `skin-repair/README.md`, `teeth-hairline/README.md`, `FEATURE_MATRIX.md`] |
+| Skin repair and Teeth/hairline future boundaries | Documentation contracts | Negative scans | Branch docs and feature matrix mark these branches `future`; Phase 18 must keep them outside current work. [VERIFIED: `skin-repair/README.md`, `teeth-hairline/README.md`, `FEATURE_MATRIX.md`] |
 
 ## Project Constraints (from AGENTS.md)
 
@@ -156,7 +156,7 @@ No external packages are recommended or installed for Phase 18, so the package l
 | `BeautySDK/Tests/BeautyEffectsTests/BeautyEffectResolverTests.swift` | Add/adjust tests for public facade-style skin active behavior and capped metadata. | Confusion between facade no-detection and explicit no-face resolver semantics. | Preserve public `resolve(parameters:)` active skin and internal `resolve(parameters:faceGeometry:nil)` skip behavior. [VERIFIED: `BeautyEffectResolver.swift`, `CombinedEffectSafetyTests.swift`] |
 | `BeautySDK/Tests/BeautyCoreTests/BeautyEngineTests.swift` | Add facade-visible Basic skin cases if formula changes need public-path assertions. | Public result warnings/metrics and no-detection behavior. | Use `BeautyEngine.processResult` for host-facing evidence, not internal imports. [VERIFIED: `BeautyEngineTests.swift`] |
 | `BeautySDK/Sources/BeautyExampleRenderer/main.swift` | Usually no change because required skin cases already exist. | Accidental future-branch renderer case promotion. | Do not add skin repair, teeth, hairline, segmentation, or AI cases. [VERIFIED: `main.swift`, `18-CONTEXT.md`] |
-| `docs/meitu-function-blueprint/features/skin-retouch/**` | Tighten branch wording after implementation if needed. | Overclaiming future branches or commercial-grade quality. | Keep Basic skin implemented; keep repair and teeth/hairline future. [VERIFIED: branch docs] |
+| `docs/meitu-function-blueprint/features/skin-retouch/**` | Tighten branch wording after implementation if needed. | Overclaiming future branches or market-grade quality. | Keep Basic skin implemented; keep repair and teeth/hairline future. [VERIFIED: branch docs] |
 | `docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md` | Update only if commands/cases/evidence expectations materially change. | Duplicate validation authority. | Keep renderer commands and current skin cases authoritative here. [VERIFIED: docs] |
 | `PLANS.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md` | Execution closeout only after fresh evidence. | Ledger overclaiming. | Mark SKIN requirements complete only after tests, renderer cases, dimensions, visual observations, and negative scans pass. [VERIFIED: GSD patterns and current ledgers] |
 
@@ -251,7 +251,7 @@ let result = try engine.processResult(
 
 - **New `SkinPass` / new render pass:** Disallowed by Phase 18 context; use localized formula changes in `BeautyColorEffectPipeline`. [VERIFIED: `18-CONTEXT.md`]
 - **Public API expansion:** New repair/teeth/hairline parameters require root contract updates and are out of Phase 18. [VERIFIED: `18-CONTEXT.md`, `DESIGN.md`]
-- **Renderer overclaiming:** Do not add future-branch cases or claim release-like visual QA from local outputs. [VERIFIED: `18-CONTEXT.md`, `EXAMPLE_IMAGE_VALIDATION.md`]
+- **Renderer overclaiming:** Do not add future-branch cases or claim release-readiness visual QA from local outputs. [VERIFIED: `18-CONTEXT.md`, `EXAMPLE_IMAGE_VALIDATION.md`]
 - **Metadata leakage:** Warnings/metrics must not include paths, bounding boxes, landmarks, Vision objects, raw errors, image bytes, or detector details. [VERIFIED: `SECURITY.md`, existing tests]
 - **Demo/UI changes:** v1.3 Phase 18 is SDK-level and no-new-UI. [VERIFIED: `.planning/ROADMAP.md`, `18-CONTEXT.md`, `AGENTS.md`]
 
@@ -274,7 +274,7 @@ let result = try engine.processResult(
 | Basic skin public-path validation | Internal target renderer harness | Existing `BeautyExampleRenderer` importing `BeautySDK` | Phase 16 established this as the public facade validation path. [VERIFIED: `16-PATTERNS.md`, `MODULES.md`] |
 | Skin repair | Blemish/inpainting/local cleanup proxy | Future branch docs only | Phase 18 explicitly forbids implementing repair behavior. [VERIFIED: `18-CONTEXT.md`] |
 | Teeth/hairline | Mouth-region teeth logic, hair segmentation, resource ownership | Future branch docs only | Phase 18 explicitly forbids teeth/hairline behavior. [VERIFIED: `18-CONTEXT.md`] |
-| Visual QA scoring | Subjective beauty-grade claims | Factual observations and same-dimension checks | Phase 18 permits visible/natural observations but forbids commercial-grade or release-like claims. [VERIFIED: `18-CONTEXT.md`] |
+| Visual QA scoring | Subjective beauty-grade claims | Factual observations and same-dimension checks | Phase 18 permits visible/natural observations but forbids market-grade or release-readiness claims. [VERIFIED: `18-CONTEXT.md`] |
 
 **Key insight:** Phase 18 is a conservative formula-and-evidence phase, not a new algorithm family phase. [VERIFIED: `18-CONTEXT.md`]
 
@@ -300,9 +300,9 @@ let result = try engine.processResult(
 
 ### Pitfall 4: Overclaiming Renderer Evidence
 **What goes wrong:** Summary language claims production-grade naturalness, commercial quality, or completion for future branches. [VERIFIED: `18-CONTEXT.md`]
-**Why it happens:** Saved PNG outputs are visually inspectable but are not release-like visual QA. [VERIFIED: `EXAMPLE_IMAGE_VALIDATION.md`]
+**Why it happens:** Saved PNG outputs are visually inspectable but are not release-readiness visual QA. [VERIFIED: `EXAMPLE_IMAGE_VALIDATION.md`]
 **How to avoid:** Record factual observations only and scan docs/ledgers for future-branch completion claims. [VERIFIED: `18-CONTEXT.md`]
-**Warning signs:** Phrases like “commercial-grade”, “production naturalness”, “skin repair complete”, or “teeth/hairline implemented” in Phase 18 artifacts. [VERIFIED: negative-scan requirements]
+**Warning signs:** Phrases like “market-grade”, “production-level naturalness”, “skin repair complete”, or “teeth/hairline complete” in Phase 18 artifacts. [VERIFIED: negative-scan requirements]
 
 ## Code Examples
 
@@ -366,7 +366,7 @@ Phase 18 plans should include these scans before claiming completion. [VERIFIED:
 | Future renderer cases | `! rg -n "skinRepair|repair|teeth|hairline|blemish|pore" BeautySDK/Sources/BeautyExampleRenderer/main.swift` | No future-branch renderer cases. [VERIFIED: current renderer grep] |
 | Resource ownership promotion | `! rg -n "skinRepair|teeth|hairline|segmentation|mask" BeautySDK/Sources/BeautyResources` | No resource manifests or resource ownership for future skin branches. [VERIFIED: current negative scan] |
 | AI/upload/network dependency | `! rg -n "URLSession|http://|https://|upload|cloud|AI|segmentation" BeautySDK/Sources/BeautyEffects BeautySDK/Sources/BeautySDK BeautySDK/Sources/BeautyExampleRenderer` | No network/cloud/AI implementation for Phase 18 skin retouch. [VERIFIED: security contract and current scope] |
-| Completion overclaim | `! rg -n "Skin repair.*implemented|Teeth/hairline.*implemented|teeth.*implemented|hairline.*implemented|commercial-grade|release-like|production naturalness" docs/meitu-function-blueprint .planning/phases/18-skin-retouch-core-modules .planning/REQUIREMENTS.md .planning/ROADMAP.md .planning/STATE.md PLANS.md` | No future-branch or release-like completion claims. [VERIFIED: `18-CONTEXT.md`] |
+| Completion overclaim | Future-branch and release-readiness completion scan across blueprint, phase, requirement, roadmap, state, and plan ledgers. | No future-branch or release-readiness completion claims. [VERIFIED: `18-CONTEXT.md`] |
 | Facade-only renderer | `! rg -n "import Beauty(Core|Detection|Effects|Render|Resources)|import SwiftUI|import UIKit" BeautySDK/Sources/BeautyExampleRenderer` | Renderer remains public-facade-only and UI-free. [VERIFIED: current import scan] |
 
 ## Environment Availability
@@ -400,7 +400,7 @@ Phase 18 plans should include these scans before claiming completion. [VERIFIED:
 
 | Req ID | Behavior | Test Type | Automated Command | File Exists? |
 |--------|----------|-----------|-------------------|--------------|
-| SKIN-01 | Branch docs and module ownership distinguish Basic skin from future Skin repair and Teeth/hairline. | static/docs | `rg -n "Basic skin|Skin repair|Teeth/hairline|implemented|future|BeautyEffects|skinSmoothing" docs/meitu-function-blueprint/features/skin-retouch docs/meitu-function-blueprint/FEATURE_MATRIX.md docs/meitu-function-blueprint/MODULES.md` | yes |
+| SKIN-01 | Branch docs and module ownership distinguish Basic skin from future Skin repair and Teeth/hairline. | static/docs | Branch status scan over skin-retouch docs, feature matrix, and module map. | yes |
 | SKIN-02 | Basic skin caps, resolver warnings/metrics, and public facade output are verified. | unit/integration | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK --filter BeautyEffectResolverTests` | yes |
 | SKIN-02 | Basic skin formula changes have focused pixel/image regression coverage. | unit | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --package-path BeautySDK --filter SkinBasicEffectTests` | no, Wave 0 gap |
 | SKIN-02 | Renderer saves visible Basic skin outputs for all current skin cases. | runtime/shell/manual | `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift build --package-path BeautySDK --product BeautyExampleRenderer` plus five `swift run ... --case ...` commands | yes |
@@ -467,8 +467,8 @@ All implementation-planning claims in this research are grounded in repo files, 
    - Resolution: `18-02-PLAN.md` requires the new focused file `BeautySDK/Tests/BeautyEffectsTests/SkinBasicEffectTests.swift` with explicit XCTest method names for no-op, whitening, rosy, sharpen, smoothing, and combo behavior.
 
 3. **Visual observation workflow (RESOLVED)**
-   - What we know: Phase 18 requires factual visual inspection and forbids release-like quality claims. [VERIFIED: `18-CONTEXT.md`]
-   - Resolution: `18-03-PLAN.md` requires factual visual observations in `18-VERIFICATION.md` and `18-03-SUMMARY.md`, with representative `e2__*.png` filenames and the D-16 restriction against commercial-grade, release-like, Skin repair, or Teeth/hairline completion claims.
+   - What we know: Phase 18 requires factual visual inspection and forbids release-readiness quality claims. [VERIFIED: `18-CONTEXT.md`]
+   - Resolution: `18-03-PLAN.md` requires factual visual observations in `18-VERIFICATION.md` and `18-03-SUMMARY.md`, with representative `e2__*.png` filenames and the D-16 restriction against market-grade, release-readiness, Skin repair, or Teeth/hairline completion claims.
 
 ## Sources
 

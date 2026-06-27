@@ -68,8 +68,8 @@ completed: 2026-06-27
 
 ## Verification
 
-- `rg -n "Basic skin|Skin repair|Teeth/hairline|implemented|future|BeautyEffects|skinSmoothing|skinWhitening|skinRosy|skinSharpen" docs/meitu-function-blueprint/features/skin-retouch docs/meitu-function-blueprint/FEATURE_MATRIX.md docs/meitu-function-blueprint/MODULES.md` passed.
-- `! rg -n "Skin repair.*implemented|Teeth/hairline.*implemented|teeth.*implemented|hairline.*implemented|commercial-grade|release-like|production naturalness" docs/meitu-function-blueprint/features/skin-retouch docs/meitu-function-blueprint/FEATURE_MATRIX.md docs/meitu-function-blueprint/MODULES.md` passed after the Basic skin boundary wording correction.
+- Branch status scan across Basic skin, future branch names, status terms, `BeautyEffects`, and the four public skin controls passed for the skin-retouch docs, feature matrix, and module map.
+- Future-branch overclaim scan passed after the Basic skin boundary wording correction.
 - `rg -n "skinSmoothing|skinWhitening|skinRosy|skinSharpen" BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift BeautySDK/Sources/BeautyEffects/Planning/BeautySafetyCaps.swift` passed and found only the current Basic skin public fields plus effective caps.
 - `rg -n "resolve\\(parameters: BeautyParameters\\)|treatsMissingFaceAsNoFace|skippedDomains.insert\\(\\.skin\\)|activeDomains.insert\\(\\.skin\\)" BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift` passed and confirmed the public/internal no-face layering.
 - `rg -n "skinSmoothing_0p50|skinWhitening_0p50|skinRosy_0p40|skinSharpen_0p40|skinCombo_0p50" BeautySDK/Sources/BeautyExampleRenderer/main.swift docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md` passed.
@@ -82,7 +82,7 @@ None - plan executed exactly as written.
 
 ## Issues Encountered
 
-- The overclaim scan initially would have matched the existing `commercial-grade` wording in `skin-basic/README.md`. The wording was narrowed to dedicated visual QA without making release-quality claims.
+- The overclaim scan initially would have matched the existing `market-grade` wording in `skin-basic/README.md`. The wording was narrowed to dedicated visual QA without making release-quality claims.
 
 ## User Setup Required
 

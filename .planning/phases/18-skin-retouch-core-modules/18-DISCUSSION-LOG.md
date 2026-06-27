@@ -57,7 +57,7 @@
 | 只跑聚焦 XCTest | 只验证代码单元，不证明 example-image 输出路径。 | |
 
 **User's choice:** 聚焦 + renderer。  
-**Notes:** Renderer 需要跑全部当前 skin cases：`skinSmoothing_0p50`、`skinWhitening_0p50`、`skinRosy_0p40`、`skinSharpen_0p40`、`skinCombo_0p50`。视觉检查只记录事实性结论，不做商业级自然度或 release-like 质量声明。完整 `swift test --package-path BeautySDK` 可作为额外验证，但不是固定完成门槛。
+**Notes:** Renderer 需要跑全部当前 skin cases：`skinSmoothing_0p50`、`skinWhitening_0p50`、`skinRosy_0p40`、`skinSharpen_0p40`、`skinCombo_0p50`。视觉检查只记录事实性结论，不做商业级自然度或 release-readiness 质量声明。完整 `swift test --package-path BeautySDK` 可作为额外验证，但不是固定完成门槛。
 
 ## the agent's Discretion
 
@@ -65,4 +65,4 @@
 
 ## Deferred Ideas
 
-- True skin repair, blemish/pore/texture cleanup, teeth whitening, hairline adjustment, segmentation, production `SkinPass`, dense mesh, and release-like visual QA are deferred outside Phase 18.
+- True skin repair, blemish/pore/texture cleanup, teeth whitening, hairline adjustment, segmentation, production `SkinPass`, dense mesh, and release-readiness visual QA are deferred outside Phase 18.

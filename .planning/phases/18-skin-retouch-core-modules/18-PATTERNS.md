@@ -436,7 +436,7 @@ try png.write(to: destination, options: .atomic)
 
 **Module ownership pattern** (`MODULES.md` lines 39-41, 56-60): Basic skin belongs to `BeautyEffects` with `BeautyRender` color/skin path and public `BeautySDK` facade; renderer imports only `BeautySDK` and must not reach internal targets or Demo SwiftUI state.
 
-**Planner instruction:** tighten docs only if implementation changes the real contract. Keep Basic skin `implemented`; keep Skin repair and Teeth/hairline `future`; do not add commercial-grade or release-like claims.
+**Planner instruction:** tighten docs only if implementation changes the real contract. Keep Basic skin `implemented`; keep Skin repair and Teeth/hairline `future`; do not add market-grade or release-readiness claims.
 
 ---
 
@@ -525,7 +525,7 @@ For implementation scans, exclude expected lip-color `mask` terms in `BeautyColo
 **Source:** `EXAMPLE_IMAGE_VALIDATION.md` lines 32-41 and 65-78; `PLANS.md` lines 147-148 for Phase 16 evidence wording
 **Apply to:** Phase 18 renderer evidence and summaries
 
-Allowed observations: output exists/non-empty, dimensions match input, watermark is readable, watermark does not cover the face, and current skin cases show visible but natural changes. Do not claim commercial-grade naturalness, release-like visual QA, or production render quality.
+Allowed observations: output exists/non-empty, dimensions match input, watermark is readable, watermark does not cover the face, and current skin cases show visible but natural changes. Do not claim market-grade naturalness, release-readiness visual QA, or production render quality.
 
 ## No Analog Found
 

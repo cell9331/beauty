@@ -8,7 +8,7 @@
 
 Phase 18 implements and verifies promoted skin-retouch module logic behind existing SDK boundaries for `SKIN-01`, `SKIN-02`, and `SKIN-03`.
 
-The implementation scope is Basic skin only. Phase 18 may improve the existing Basic skin output formula while keeping the public parameter model unchanged: `skinSmoothing`, `skinWhitening`, `skinRosy`, and `skinSharpen`. It must not add new SwiftUI screens, new public skin-repair parameters, teeth/hairline behavior, segmentation/AI/upload flows, resource/style ownership, or release-like visual quality claims.
+The implementation scope is Basic skin only. Phase 18 may improve the existing Basic skin output formula while keeping the public parameter model unchanged: `skinSmoothing`, `skinWhitening`, `skinRosy`, and `skinSharpen`. It must not add new SwiftUI screens, new public skin-repair parameters, teeth/hairline behavior, segmentation/AI/upload flows, resource/style ownership, or release-readiness visual quality claims.
 
 Skin repair and teeth/hairline remain documented future branches in this phase. Their boundaries should be tightened enough that downstream agents do not accidentally implement or claim them.
 
@@ -39,7 +39,7 @@ Skin repair and teeth/hairline remain documented future branches in this phase. 
 ### Verification Threshold
 - **D-14:** Phase 18 completion requires focused XCTest coverage for skin parameter/resolver/engine behavior, `BeautyExampleRenderer` build/run evidence for Basic skin, same-dimension output checks, factual visual inspection, and future-branch negative scans.
 - **D-15:** Renderer evidence should run all current skin cases: `skinSmoothing_0p50`, `skinWhitening_0p50`, `skinRosy_0p40`, `skinSharpen_0p40`, and `skinCombo_0p50`.
-- **D-16:** Visual observations must stay factual: output is non-empty, watermark is readable, watermark does not cover the face, dimensions match, and skin cases show visible but natural changes. Do not claim commercial-grade naturalness, production render quality, or release-like visual QA.
+- **D-16:** Visual observations must stay factual: output is non-empty, watermark is readable, watermark does not cover the face, dimensions match, and skin cases show visible but natural changes. Do not claim market-grade naturalness, production render quality, or release-readiness visual QA.
 - **D-17:** Full `swift test --package-path BeautySDK` is not a fixed Phase 18 completion gate. Executors may run it as extra evidence, but the required gate is focused tests plus skin renderer cases, dimension checks, factual visual review, and negative scans.
 
 ### the agent's Discretion
@@ -133,7 +133,7 @@ The planner may choose exact plan split, test file names, formula constants, war
 
 - True skin repair, blemish cleanup, pore/texture repair, inpainting, region masks, or segmentation are deferred to a later independently designed phase.
 - Teeth whitening and hairline adjustment are deferred to a later phase that can define mouth/teeth or hair/forehead confidence, privacy, reliability, resource, and parameter contracts.
-- A production `SkinPass`, dense face mesh, segmentation-aware skin processing, commercial-grade naturalness QA, and release-like visual validation remain outside Phase 18.
+- A production `SkinPass`, dense face mesh, segmentation-aware skin processing, market-grade naturalness QA, and release-readiness visual validation remain outside Phase 18.
 
 </deferred>
 

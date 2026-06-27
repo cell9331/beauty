@@ -26,10 +26,31 @@
 
 ## 3. Active
 
-No active plan. Phase 18 is planned; the next planned v1.3 step is `$gsd-execute-phase 18`.
+No active plan. The next planned v1.3 step is `$gsd-discuss-phase 19`.
 
 
 ## 4. Completed
+
+### C-2026-06-27-gsd-execute-phase-18-skin-retouch-core-modules
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-27 |
+| Scope | Ran `$gsd-execute-phase 18` for Phase 18 Skin Retouch Core Modules. Audited branch contracts, improved conservative Basic skin formula behavior inside the existing color pipeline, added focused tests, protected redacted resolver/facade metadata, generated all current Basic skin renderer outputs, and closed SKIN traceability. |
+| Requirements | SKIN-01, SKIN-02, SKIN-03 |
+| Files | `docs/meitu-function-blueprint/features/skin-retouch/skin-basic/README.md`, `BeautySDK/Sources/BeautyEffects/Render/BeautyColorEffectPipeline.swift`, `BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift`, `BeautySDK/Sources/BeautyEffects/Warp/EyeWarpProvider.swift`, `BeautySDK/Sources/BeautyEffects/Warp/NoseWarpProvider.swift`, `BeautySDK/Sources/BeautyEffects/Warp/MouthWarpProvider.swift`, `BeautySDK/Tests/BeautyEffectsTests/SkinBasicEffectTests.swift`, `BeautySDK/Tests/BeautyEffectsTests/BeautyEffectResolverTests.swift`, `BeautySDK/Tests/BeautyEffectsTests/MissingLandmarkDegradationTests.swift`, `BeautySDK/Tests/BeautyEffectsTests/MouthWarpProviderTests.swift`, `BeautySDK/Tests/BeautyCoreTests/BeautyEngineTests.swift`, `.planning/phases/18-skin-retouch-core-modules/18-01-SUMMARY.md`, `18-02-SUMMARY.md`, `18-03-SUMMARY.md`, `18-REVIEW.md`, `18-VERIFICATION.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `SkinBasicEffectTests` passed with 6 tests; `BeautyEffectResolverTests` passed with 6 tests; `BeautyEngineTests` passed with 11 tests; `BeautyExampleRenderer` built; renderer runs for `skinSmoothing_0p50`, `skinWhitening_0p50`, `skinRosy_0p40`, `skinSharpen_0p40`, and `skinCombo_0p50` each wrote `e1` through `e5` ignored PNG outputs; `file` confirmed `example-images/input/e2.png` and all five representative `e2__skin*.png` outputs are 576 x 1024; `git check-ignore` confirmed representative outputs are ignored; `stat` confirmed representative outputs are non-empty; thumbnail inspection recorded readable bottom labels below the face and visible restrained changes; future parameter, renderer case, implementation/resource, network/upload/AI, internal import, and completion-overclaim scans passed; `18-REVIEW.md` records `status: clean`; `phase.complete 18` reported `plans_executed: 3/3`, `requirements_updated: true`, `roadmap_updated: true`, and `state_updated: true`. |
+| Build | SwiftPM focused tests, renderer build, and five renderer runs passed. Full `swift test --package-path BeautySDK` was not run because Phase 18 fixed the required gate as focused tests plus renderer evidence and negative scans. |
+| Commit | `8214bf5` tightened the branch contract; `e206af9` completed Plan 18-01 tracking; `c4c8a02` added Basic skin formula regressions; `6545f81` improved Basic skin smoothing behavior; `4d5d36c` protected resolver metadata; `b5080f2` completed Plan 18-02 tracking; final closeout commit records verification, review, and ledgers. |
+
+Outcome:
+
+- `SKIN-01`, `SKIN-02`, and `SKIN-03` are complete.
+- Basic skin remains the only promoted Phase 18 skin-retouch branch, using existing public parameters: `skinSmoothing`, `skinWhitening`, `skinRosy`, and `skinSharpen`.
+- Public no-detection facade paths keep Basic skin visible, while explicit internal no-face resolver contexts can skip face-dependent skin with redacted metadata.
+- Skin repair and Teeth/hairline remain future branches with no new public parameters, renderer cases, resources, segmentation, network/upload/AI dependency, or completion claim.
+- Generated PNGs remain ignored local artifacts under `example-images/out/`.
+- Next step is `$gsd-discuss-phase 19`.
 
 ### C-2026-06-27-gsd-plan-phase-18-skin-retouch-core-modules
 

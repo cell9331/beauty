@@ -29,9 +29,9 @@ Requirements for the core beauty module milestone. v1.3 does not write new Swift
 
 ### Skin Retouch Modules
 
-- [ ] **SKIN-01**: Basic skin, skin repair, and teeth/hairline branches each have branch documentation and module ownership.
-- [ ] **SKIN-02**: Promoted skin-retouch branches implement core logic behind SDK boundaries with degradation behavior, parameter caps, and tests.
-- [ ] **SKIN-03**: Current MVP skin controls stay separated from future local repair or region-based retouch capabilities.
+- [x] **SKIN-01**: Basic skin, skin repair, and teeth/hairline branches each have branch documentation and module ownership.
+- [x] **SKIN-02**: Promoted skin-retouch branches implement core logic behind SDK boundaries with degradation behavior, parameter caps, and tests.
+- [x] **SKIN-03**: Current MVP skin controls stay separated from future local repair or region-based retouch capabilities.
 
 ### Editor Support Contract
 
@@ -83,9 +83,9 @@ Deferred to later milestones unless explicitly promoted.
 | CBT-02 | Phase 17 | Complete |
 | CBT-03 | Phase 17 | Complete |
 | MOD-01 | Phase 17 | Complete |
-| SKIN-01 | Phase 18 | Pending |
-| SKIN-02 | Phase 18 | Pending |
-| SKIN-03 | Phase 18 | Pending |
+| SKIN-01 | Phase 18 | Complete |
+| SKIN-02 | Phase 18 | Complete |
+| SKIN-03 | Phase 18 | Complete |
 | BSHAPE-01 | Phase 19 | Pending |
 | BSHAPE-02 | Phase 19 | Pending |
 | BSHAPE-03 | Phase 19 | Pending |
@@ -104,4 +104,4 @@ Deferred to later milestones unless explicitly promoted.
 
 ---
 *Requirements defined: 2026-06-26*
-*Last updated: 2026-06-26 after Phase 17 contract and module-boundary execution*
+*Last updated: 2026-06-27 after Phase 18 skin-retouch execution*
