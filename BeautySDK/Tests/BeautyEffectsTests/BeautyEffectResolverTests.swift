@@ -48,6 +48,37 @@ final class BeautyEffectResolverTests: XCTestCase {
         XCTAssertEqual(plan.metrics["beauty.effects.activeCount"], 3)
     }
 
+    func testPublicResolverKeepsBasicSkinActiveWithoutFaceGeometry() {
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(skinSmoothing: 0.4, skinWhitening: 0.3)
+        )
+
+        XCTAssertTrue(plan.activeDomains.contains(.skin))
+        XCTAssertFalse(plan.skippedDomains.contains(.skin))
+        XCTAssertFalse(plan.warnings.contains { $0.code == "face_effects_skipped_no_face" })
+        XCTAssertEqual(plan.metrics["beauty.effects.activeCount"], 1)
+    }
+
+    func testInternalNoFaceResolverSkipsBasicSkinWithRedactedWarning() {
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(skinSmoothing: 0.4, skinWhitening: 0.3),
+            faceGeometry: nil
+        )
+
+        XCTAssertFalse(plan.activeDomains.contains(.skin))
+        XCTAssertTrue(plan.skippedDomains.contains(.skin))
+        XCTAssertTrue(plan.warnings.contains { $0.code == "face_effects_skipped_no_face" })
+        XCTAssertEqual(plan.metrics["beauty.effects.skippedFaceDomains"], 1)
+
+        let combined = (
+            plan.warnings.map { "\($0.code) \($0.message)" } +
+            Array(plan.metrics.keys)
+        ).joined(separator: " ")
+        for forbidden in ["/private/var", "NSError", "VNFaceObservation", "bounding", "landmark", "rawPresetJson"] {
+            XCTAssertFalse(combined.contains(forbidden), "Unexpected sensitive term: \(forbidden)")
+        }
+    }
+
     func testWarningsAndMetricsDoNotExposeSensitiveTerms() {
         let plan = BeautyEffectResolver.resolve(parameters: BeautyParameters(skinSmoothing: 1))
         let combined = (

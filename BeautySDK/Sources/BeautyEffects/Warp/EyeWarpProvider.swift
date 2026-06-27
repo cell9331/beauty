@@ -6,7 +6,7 @@ struct EyeWarpProvider: WarpControlPointProvider {
         guard let leftCenter = LandmarkGeometryHelper.center(of: face.leftEye),
               let rightCenter = LandmarkGeometryHelper.center(of: face.rightEye)
         else {
-            return WarpControlPointResult(points: [], skipReason: "eye_landmarks_missing")
+            return WarpControlPointResult(points: [], skipReason: "eye_inputs_missing")
         }
 
         var points: [WarpControlPoint] = []

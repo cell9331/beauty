@@ -18,7 +18,7 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertTrue(plan.activeDomains.contains(.color))
         XCTAssertTrue(plan.activeDomains.contains(.filter))
         XCTAssertEqual(plan.skippedDomains, [.eyes])
-        XCTAssertTrue(plan.warnings.contains { $0.code == "eye_landmarks_missing" })
+        XCTAssertTrue(plan.warnings.contains { $0.code == "eye_inputs_missing" })
     }
 
     func testEyeDegradationMetadataIsRedacted() {
@@ -53,7 +53,7 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertTrue(plan.activeDomains.contains(.color))
         XCTAssertTrue(plan.activeDomains.contains(.filter))
         XCTAssertEqual(plan.skippedDomains, [.nose])
-        XCTAssertTrue(plan.warnings.contains { $0.code == "nose_landmarks_missing" })
+        XCTAssertTrue(plan.warnings.contains { $0.code == "nose_inputs_missing" })
     }
 
     func testNoseGeometryProducesDeterministicProxyEvidenceAndCapMetadata() {
@@ -120,7 +120,7 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertTrue(plan.activeDomains.contains(.color))
         XCTAssertTrue(plan.activeDomains.contains(.filter))
         XCTAssertEqual(plan.skippedDomains, [.mouth])
-        XCTAssertTrue(plan.warnings.contains { $0.code == "mouth_landmarks_missing" })
+        XCTAssertTrue(plan.warnings.contains { $0.code == "mouth_inputs_missing" })
     }
 
     func testReusedLandmarksReduceMouthGeometry() {
@@ -163,6 +163,6 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertTrue(plan.activeDomains.contains(.color))
         XCTAssertTrue(plan.activeDomains.contains(.filter))
         XCTAssertTrue(plan.skippedDomains.contains(.lipColor))
-        XCTAssertTrue(plan.warnings.contains { $0.code == "lip_landmarks_missing" })
+        XCTAssertTrue(plan.warnings.contains { $0.code == "lip_inputs_missing" })
     }
 }

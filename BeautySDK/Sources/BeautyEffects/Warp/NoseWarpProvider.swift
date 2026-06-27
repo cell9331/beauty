@@ -4,7 +4,7 @@ struct NoseWarpProvider: WarpControlPointProvider {
         strengths: BeautyEffectiveStrengths
     ) -> WarpControlPointResult {
         guard let center = LandmarkGeometryHelper.center(of: face.nose) else {
-            return WarpControlPointResult(points: [], skipReason: "nose_landmarks_missing")
+            return WarpControlPointResult(points: [], skipReason: "nose_inputs_missing")
         }
 
         var points: [WarpControlPoint] = []

@@ -116,6 +116,48 @@ final class BeautyEngineTests: XCTestCase {
         XCTAssertEqual(result.metrics["beauty.effects.cappedCount"], 1)
     }
 
+    func testSKIN02FacadeNoDetectionBasicSkinProducesVisibleImageOutput() throws {
+        let image = CIImage(color: CIColor(red: 0.70, green: 0.31, blue: 0.19, alpha: 1))
+            .cropped(to: CGRect(x: 0, y: 0, width: 1, height: 1))
+        let engine = try BeautyEngine(configuration: .default)
+
+        let result = try engine.processResult(
+            image: image,
+            metadata: BeautyInputMetadata(orientation: .up, source: .photo),
+            parameters: BeautyParameters(skinSmoothing: 0.5)
+        )
+
+        XCTAssertEqual(result.output.extent, image.extent)
+        XCTAssertNotEqual(try PixelBufferFixtures.rgbaBytes(from: result.output), try PixelBufferFixtures.rgbaBytes(from: image))
+        XCTAssertEqual(result.metrics["beauty.effects.activeCount"], 1)
+        XCTAssertEqual(result.detectionSummary?.availability, .notRun)
+    }
+
+    func testSKIN02FacadeNoDetectionBasicSkinReturnsRedactedMetadata() throws {
+        let image = CIImage(color: CIColor(red: 0.38, green: 0.32, blue: 0.27, alpha: 1))
+            .cropped(to: CGRect(x: 0, y: 0, width: 1, height: 1))
+        let engine = try BeautyEngine(configuration: .default)
+
+        let result = try engine.processResult(
+            image: image,
+            metadata: BeautyInputMetadata(orientation: .up, source: .photo),
+            parameters: BeautyParameters(skinSmoothing: 1)
+        )
+
+        XCTAssertTrue(result.warnings.contains { $0.code == "beauty_strength_capped" })
+        XCTAssertEqual(result.metrics["beauty.effects.cappedCount"], 1)
+        XCTAssertEqual(result.detectionSummary?.availability, .notRun)
+
+        let combined = (
+            result.warnings.map { "\($0.code) \($0.message)" } +
+            Array(result.metrics.keys) +
+            (result.detectionSummary?.reasons.map(\.rawValue) ?? [])
+        ).joined(separator: " ")
+        for forbidden in ["landmark", "boundingBox", "VNFaceObservation", "/private/var", "NSError", "rawPresetJson", "image bytes"] {
+            XCTAssertFalse(combined.contains(forbidden), "Unexpected sensitive term: \(forbidden)")
+        }
+    }
+
     func testSDK06UnsupportedPixelFormatReturnsTypedError() throws {
         let input = try PixelBufferFixtures.makePixelBuffer(width: 2, height: 2, pixelFormat: kCVPixelFormatType_OneComponent8)
         let engine = try BeautyEngine(configuration: .default)

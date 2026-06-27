@@ -56,7 +56,7 @@ final class MouthWarpProviderTests: XCTestCase {
         )
 
         XCTAssertTrue(result.points.isEmpty)
-        XCTAssertEqual(result.skipReason, "mouth_landmarks_missing")
+        XCTAssertEqual(result.skipReason, "mouth_inputs_missing")
     }
 
     private func strengths(

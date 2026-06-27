@@ -4,7 +4,7 @@ struct MouthWarpProvider: WarpControlPointProvider {
         strengths: BeautyEffectiveStrengths
     ) -> WarpControlPointResult {
         guard let center = LandmarkGeometryHelper.center(of: face.outerLips) else {
-            return WarpControlPointResult(points: [], skipReason: "mouth_landmarks_missing")
+            return WarpControlPointResult(points: [], skipReason: "mouth_inputs_missing")
         }
 
         var points: [WarpControlPoint] = []

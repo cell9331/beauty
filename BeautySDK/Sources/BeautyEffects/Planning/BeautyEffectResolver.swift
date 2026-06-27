@@ -345,28 +345,28 @@ public enum BeautyEffectResolver {
 
     private static var eyeSkippedWarning: BeautyValidationWarning {
         BeautyValidationWarning(
-            code: "eye_landmarks_missing",
+            code: "eye_inputs_missing",
             message: "Eye geometry was skipped because required eye inputs were unavailable."
         )
     }
 
     private static var noseSkippedWarning: BeautyValidationWarning {
         BeautyValidationWarning(
-            code: "nose_landmarks_missing",
+            code: "nose_inputs_missing",
             message: "Nose geometry was skipped because required nose inputs were unavailable."
         )
     }
 
     private static var mouthSkippedWarning: BeautyValidationWarning {
         BeautyValidationWarning(
-            code: "mouth_landmarks_missing",
+            code: "mouth_inputs_missing",
             message: "Mouth geometry was skipped because required mouth inputs were unavailable."
         )
     }
 
     private static var lipSkippedWarning: BeautyValidationWarning {
         BeautyValidationWarning(
-            code: "lip_landmarks_missing",
+            code: "lip_inputs_missing",
             message: "Lip color was skipped because required mouth inputs were unavailable."
         )
     }
