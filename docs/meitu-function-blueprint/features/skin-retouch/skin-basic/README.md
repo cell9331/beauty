@@ -7,7 +7,8 @@ Basic skin provides smoothing, whitening, rosy, and sharpen controls with natura
 ## Technical Core
 
 - Current SDK supports MVP output.
-- Requires face-aware or full-frame tuning depending on input and detection availability.
+- Public facade and renderer paths may apply lightweight full-frame skin-tone tuning when detection has not run or no facade-visible face geometry is available.
+- Explicit internal no-face resolver contexts may skip face-dependent skin for future detection-integrated flows.
 - Verification should include no-face behavior and conservative caps.
 - Status: `implemented`.
 - Primary owner: `BeautyEffects`.
@@ -18,4 +19,4 @@ Basic skin provides smoothing, whitening, rosy, and sharpen controls with natura
 
 ## Boundary
 
-Do not add aggressive commercial-grade retouch claims without visual QA.
+Do not add release-quality retouch claims without dedicated visual QA.
