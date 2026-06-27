@@ -26,9 +26,29 @@
 
 ## 3. Active
 
-No active plan. Phase 18 context is gathered; the next planned v1.3 step is `$gsd-plan-phase 18`.
+No active plan. Phase 18 is planned; the next planned v1.3 step is `$gsd-execute-phase 18`.
+
 
 ## 4. Completed
+
+### C-2026-06-27-gsd-plan-phase-18-skin-retouch-core-modules
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-27 |
+| Scope | Ran `$gsd-plan-phase 18` for Phase 18 Skin Retouch Core Modules. Created research, validation, pattern-map, and three executable plans for branch audit, conservative Basic skin implementation/tests, and renderer/ledger verification. |
+| Requirements | SKIN-01, SKIN-02, SKIN-03 |
+| Files | `.planning/phases/18-skin-retouch-core-modules/18-RESEARCH.md`, `18-VALIDATION.md`, `18-PATTERNS.md`, `18-01-PLAN.md`, `18-02-PLAN.md`, `18-03-PLAN.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.plan-phase 18` reported `has_research: true`, `has_context: true`, `has_plans: true`, `plan_count: 3`, and `phase_status: Planned`; plan-checker initially found two blockers, then passed after `18-RESEARCH.md` open questions were resolved and `18-03-PLAN.md` grouped generated PNG outputs; local requirement scan reported `SKIN-01=covered`, `SKIN-02=covered`, and `SKIN-03=covered`; `check.decision-coverage-plan .planning/phases/18-skin-retouch-core-modules .planning/phases/18-skin-retouch-core-modules/18-CONTEXT.md` passed with 17/17 decisions covered; `state.planned-phase --phase 18 --name skin-retouch-core-modules --plans 3` ran; `roadmap.annotate-dependencies 18` added three wave headers; post-planning gap analysis reported SKIN-01 through SKIN-03 and D-01 through D-17 covered while unrelated milestone requirements remained outside Phase 18; `git diff --check -- .planning/phases/18-skin-retouch-core-modules PLANS.md .planning/ROADMAP.md .planning/STATE.md` passed. |
+| Build | Not run; this was a GSD planning/documentation workflow with no Swift source changes. |
+
+Outcome:
+
+- Phase 18 now has `18-01-PLAN.md` to audit Basic skin, Skin repair, and Teeth/hairline branch contracts before implementation.
+- Phase 18 now has `18-02-PLAN.md` to improve Basic skin formulas inside `BeautyColorEffectPipeline`, add focused `SkinBasicEffectTests`, and protect facade/no-face behavior with resolver and engine tests.
+- Phase 18 now has `18-03-PLAN.md` to run focused XCTest, build/run all five current Basic skin renderer cases, check dimensions, record factual visual observations, run future-branch negative scans, and close ledgers only after evidence passes.
+- Skin repair and Teeth/hairline remain explicitly future-only; the plans include negative scans for no public parameter/API expansion, no future renderer cases, no resource/segmentation/AI/upload dependency, and no completion overclaim.
+- Next step is `$gsd-execute-phase 18`.
 
 ### C-2026-06-27-gsd-discuss-phase-18-skin-retouch-core-modules
 

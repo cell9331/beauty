@@ -456,22 +456,19 @@ All implementation-planning claims in this research are grounded in repo files, 
 |---|-------|---------|---------------|
 | — | No assumed claims. | — | — |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Exact Basic skin formula constants**
+1. **Exact Basic skin formula constants (RESOLVED)**
    - What we know: Phase 18 permits formula improvements and requires conservative medium strengths. [VERIFIED: `18-CONTEXT.md`]
-   - What's unclear: Exact coefficients are intentionally left to executor/planner discretion. [VERIFIED: `18-CONTEXT.md`]
-   - Recommendation: Planner should require before/after focused tests around chosen constants, not lock constants in research.
+   - Resolution: `18-02-PLAN.md` leaves exact constants to the executor but requires conservative Basic skin formula changes inside `BeautyColorEffectPipeline.swift`, focused before/after assertions in `SkinBasicEffectTests`, and cap-respecting medium-strength checks before the plan can pass.
 
-2. **Dedicated formula test file name**
+2. **Dedicated formula test file name (RESOLVED)**
    - What we know: Existing tests cover related resolver/engine behavior, but no `SkinBasicEffectTests.swift` exists. [VERIFIED: test listing]
-   - What's unclear: Planner may choose the exact filename. [VERIFIED: `18-CONTEXT.md` discretion]
-   - Recommendation: Use `BeautySDK/Tests/BeautyEffectsTests/SkinBasicEffectTests.swift` unless the planner prefers extending an existing effects test file.
+   - Resolution: `18-02-PLAN.md` requires the new focused file `BeautySDK/Tests/BeautyEffectsTests/SkinBasicEffectTests.swift` with explicit XCTest method names for no-op, whitening, rosy, sharpen, smoothing, and combo behavior.
 
-3. **Visual observation workflow**
+3. **Visual observation workflow (RESOLVED)**
    - What we know: Phase 18 requires factual visual inspection and forbids release-like quality claims. [VERIFIED: `18-CONTEXT.md`]
-   - What's unclear: Whether execution will record observations in plan summaries only or a verification artifact too. [VERIFIED: no Phase 18 plans yet]
-   - Recommendation: Require observations in `18-03-SUMMARY.md` or `18-VERIFICATION.md`, with exact generated filenames.
+   - Resolution: `18-03-PLAN.md` requires factual visual observations in `18-VERIFICATION.md` and `18-03-SUMMARY.md`, with representative `e2__*.png` filenames and the D-16 restriction against commercial-grade, release-like, Skin repair, or Teeth/hairline completion claims.
 
 ## Sources
 

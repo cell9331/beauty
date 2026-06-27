@@ -77,9 +77,16 @@ This milestone does not add SwiftUI screens, Home/discovery surfaces, resource/s
 3. Safety caps, warnings, no-face behavior, and parameter clamping are verified.
 
 **Plans:** 0/3 plans complete
+**Wave 1**
 
 - [ ] 18-01: Audit current skin controls and map them to the v1.3 branch contracts.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 18-02: Implement promoted skin-retouch module improvements behind SDK boundaries.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 18-03: Verify skin-retouch tests and saved example-image outputs.
 
 ### Phase 19: Beauty Shaping Core Modules
