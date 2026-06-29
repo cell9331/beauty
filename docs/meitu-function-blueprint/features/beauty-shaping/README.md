@@ -23,6 +23,10 @@ Beauty shaping covers face geometry and facial feature adjustments inspired by M
 | `鼻子` | partial | `BeautyEffects` | `noseSlim`, `noseWingSlim`, `noseTipSize`, `noseBridge` | Lift, root/bridge split, additional nose shaping | Current provider/resolver evidence is partial; facade-visible geometry output is still required. |
 | `眉毛` | future | `BeautyEffects` | None | Position, thickness, length, distance, head distance, tilt, peak; resources only if explicitly designed | No v1.3 completion evidence until promoted. |
 
+## Phase 19 Evidence
+
+Phase 19 strengthens provider, resolver, degradation, cap, and redaction tests for the current public fields while preserving branch status honesty. `swift test --package-path BeautySDK` and focused shaping suites pass as SDK evidence, but public facade saved-image geometry output is still required before geometry-heavy branches can claim visual completion. `lipColor` remains visible color evidence for a subtool; it does not complete the full lips branch.
+
 ## Boundary
 
 No public landmarks/control points. Demo taxonomy maps to product-neutral SDK parameter names.

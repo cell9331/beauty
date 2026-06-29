@@ -60,7 +60,7 @@ These cases are limited to effects that currently produce visible image output t
 
 Face-shape, eye, nose, mouth, eyebrow, and 3D sculpt branches already have internal planning/provider tests, but full visual image output needs face detection plus geometry rendering integration.
 
-Before marking those branches visually complete, v1.3 must extend this validation path so those parameters produce saved image outputs from the same `example-images/input` fixtures.
+Phase 19 strengthens provider, resolver, cap, degradation, and redaction XCTest evidence for current public shaping fields. That evidence remains internal partial evidence only; before marking those branches visually complete, v1.3 must extend this public facade validation path so geometry parameters produce same-dimension, watermarked saved-image outputs from the same `example-images/input` fixtures.
 
 ## Verification Commands
 
@@ -76,4 +76,3 @@ swift run --package-path BeautySDK BeautyExampleRenderer \
 
 file example-images/input/e2.png example-images/out/e2__skinWhitening_0p50.png
 ```
-

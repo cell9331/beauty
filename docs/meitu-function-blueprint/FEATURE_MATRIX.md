@@ -9,6 +9,8 @@ Status meanings:
 
 Geometry provider and resolver tests are useful provider evidence, but they do not count as visible completion until `BeautyEngine.processResult(...)` can produce public-facade saved-image output for the branch.
 
+Phase 19 strengthens beauty-shaping provider, resolver, degradation, cap, and redaction XCTest evidence for existing public fields. The strengthened evidence keeps `比例`, `脸型`, `眼睛`, `嘴唇`, and `鼻子` at `partial`, keeps `3D塑颜` at `blocked-by-geometry-output`, and keeps `眉毛` as `future` until public facade saved-image geometry output and any future parameter design exist.
+
 | Family | Branch | Status | Primary owner | Dependencies | Current public `BeautyParameters` coverage | Future parameter needs | Evidence expectation | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Editor shell | Input routing | implemented | `BeautyDemo/Editor` | Public `BeautySDK` facade, camera/photo pipelines | Input routing creates `BeautyParameters` snapshots but owns no SDK parameter. | Future video input state remains out of v1.3. | Demo route tests and facade-only import scans. | Photo/camera route through existing local pipelines; no SDK internals. |

@@ -59,4 +59,6 @@ Each future implementation phase must declare:
 
 The tool validates public processing behavior. It must not reach into internal SDK targets or Demo SwiftUI state.
 
+Phase 19 strengthens `BeautyEffects` provider/resolver/degradation evidence for beauty-shaping branches through SwiftPM XCTest only. That evidence remains provider-level partial evidence until public facade detection plus geometry render integration produces saved geometry outputs through `BeautyExampleRenderer`.
+
 Filters, makeup, stickers, templates, downloads, VIP, payment, and entitlement behavior remain deferred product/resource areas, not active v1.3 ownership.
