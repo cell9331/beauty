@@ -26,10 +26,29 @@
 
 ## 3. Active
 
-No active plan. The next planned v1.3 step is `$gsd-discuss-phase 19`.
+No active plan. The next planned v1.3 step is `$gsd-plan-phase 19`.
 
 
 ## 4. Completed
+
+### C-2026-06-29-gsd-discuss-phase-19-beauty-shaping-core-modules
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-29 |
+| Scope | Ran `$gsd-discuss-phase 19` for Phase 19 Beauty Shaping Core Modules. Captured user decisions that Phase 19 is SDK-only/no-UI, does not add public `BeautyParameters`, does not attempt public facade geometry saved-image output, keeps existing shaping branches partial where appropriate, leaves `3D塑颜` blocked by geometry output, leaves `眉毛` future, and verifies with BeautySDK tests plus status/API/UI/renderer/redaction scans. |
+| Requirements | BSHAPE-01, BSHAPE-02, BSHAPE-03 |
+| Files | `.planning/phases/19-beauty-shaping-core-modules/19-CONTEXT.md`, `.planning/phases/19-beauty-shaping-core-modules/19-DISCUSSION-LOG.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.phase-op 19` reported `phase_found: true`, `phase_dir: null`, `expected_phase_dir: .planning/phases/19-beauty-shaping-core-modules`, `has_context: false`, `has_plans: false`, and `plan_count: 0`; `swift test --package-path BeautySDK --list-tests` succeeded after approved SwiftPM cache access and listed current SDK tests; `swift test --package-path BeautySDK` passed with 129 tests and 0 failures; `state.record-session --stopped-at "Phase 19 context gathered" --resume-file ".planning/phases/19-beauty-shaping-core-modules/19-CONTEXT.md"` reported `recorded: true`; the discussion checkpoint was removed after context/log creation. |
+| Build | SwiftPM `BeautySDK` test build passed as part of `swift test --package-path BeautySDK`. |
+
+Outcome:
+
+- Phase 19 planning must stay within `BeautySDK` core module logic, SDK tests, and blueprint/planning docs.
+- Face-shape, eyes, nose, mouth/lip, and proportion branches stay `partial` unless a later phase wires public facade geometry saved-image output.
+- `3D塑颜` remains `blocked-by-geometry-output`; `眉毛` remains `future`.
+- No new public shaping parameters, no UI/SwiftUI work, and no geometry renderer cases are allowed in Phase 19 plans.
+- Next step is `$gsd-plan-phase 19`.
 
 ### C-2026-06-27-gsd-execute-phase-18-skin-retouch-core-modules
 
