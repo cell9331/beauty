@@ -26,10 +26,29 @@
 
 ## 3. Active
 
-No active plan. The next planned v1.3 step is `$gsd-plan-phase 19`.
+No active plan. The next planned v1.3 step is `$gsd-execute-phase 19`.
 
 
 ## 4. Completed
+
+### C-2026-06-29-gsd-plan-phase-19-beauty-shaping-core-modules
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-29 |
+| Scope | Ran `$gsd-plan-phase 19` for Phase 19 Beauty Shaping Core Modules. Created research, validation, pattern map, and five executable plans across four waves for shaping audit, split provider/test hardening, honest status verification, final negative scans, and ledger closeout. |
+| Requirements | BSHAPE-01, BSHAPE-02, BSHAPE-03 |
+| Files | `.planning/phases/19-beauty-shaping-core-modules/19-RESEARCH.md`, `19-VALIDATION.md`, `19-PATTERNS.md`, `19-01-PLAN.md`, `19-02-PLAN.md`, `19-03-PLAN.md`, `19-04-PLAN.md`, `19-05-PLAN.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.plan-phase 19` reported `phase_status: Planned`, `has_research: true`, `has_context: true`, `has_plans: true`, and `plan_count: 5`; research-first gate selected by user; validation file exists, `git diff --check` passed, and no template placeholders remained; pattern mapper classified 19 files and found analogs for 19/19; plan-checker passed structure, requirements, dependencies, threat models, task fields, and context constraints, then user accepted the remaining checker caveat that Plans 19-03/19-05 should scope redaction checks to emitted warning/metric strings instead of all implementation identifiers and that Plans 19-02/19-03/19-04 should name analog patterns more explicitly; requirement scan found BSHAPE-01, BSHAPE-02, and BSHAPE-03 covered across plan frontmatter; `check.decision-coverage-plan .planning/phases/19-beauty-shaping-core-modules .planning/phases/19-beauty-shaping-core-modules/19-CONTEXT.md` passed with 20/20 decisions covered; `state.planned-phase --phase 19 --name beauty-shaping-core-modules --plans 5` ran; `roadmap.annotate-dependencies 19` reported 4 waves and no new update needed; post-planning gap analysis reported BSHAPE-01 through BSHAPE-03 and D-01 through D-20 covered while unrelated milestone requirements remained outside Phase 19. |
+| Build | Not run; this was a GSD planning/documentation workflow with no Swift source changes. Researcher ran `swift test --package-path BeautySDK --list-tests` successfully as research environment evidence. |
+| Commit | `a711743` researched Phase 19; `b7f28ed` added validation strategy; `96b9707` created the initial plans; `0fef0de` split/revised plans after checker blockers; `14a35b7` fixed plan checker gates. |
+
+Outcome:
+
+- Phase 19 now has five executable plans: `19-01` audit, `19-02` face/eye/nose/conflict hardening, `19-03` mouth/lip/resolver/degradation hardening, `19-04` test/status verification, and `19-05` final negative scans plus ledger closeout.
+- The plans preserve the locked scope: SDK-only/no UI, no new public `BeautyParameters`, no public facade geometry saved-image output, no geometry renderer cases, `3D塑颜` remains `blocked-by-geometry-output`, and `眉毛` remains `future`.
+- The accepted planning caveat is explicit for execution: redaction verification should inspect emitted warning/metric strings or add XCTest assertions instead of failing on legitimate implementation identifiers such as `controlPoint`; task actions should lean on the concrete analogs in `19-PATTERNS.md`.
+- Next step is `$gsd-execute-phase 19`.
 
 ### C-2026-06-29-gsd-discuss-phase-19-beauty-shaping-core-modules
 
