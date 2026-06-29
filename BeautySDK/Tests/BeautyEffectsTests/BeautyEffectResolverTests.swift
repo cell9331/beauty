@@ -59,6 +59,29 @@ final class BeautyEffectResolverTests: XCTestCase {
         XCTAssertEqual(plan.metrics["beauty.effects.activeCount"], 1)
     }
 
+    func testPublicResolverDoesNotActivateGeometryDomainsWithoutFaceGeometry() {
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(
+                brightness: 0.2,
+                faceSlim: 1,
+                eyeSize: 1,
+                noseSlim: 1,
+                mouthSize: 1,
+                lipColor: 1
+            )
+        )
+
+        XCTAssertTrue(plan.activeDomains.contains(.color))
+        XCTAssertFalse(plan.activeDomains.contains(.faceShape))
+        XCTAssertFalse(plan.activeDomains.contains(.eyes))
+        XCTAssertFalse(plan.activeDomains.contains(.nose))
+        XCTAssertFalse(plan.activeDomains.contains(.mouth))
+        XCTAssertFalse(plan.activeDomains.contains(.lipColor))
+        XCTAssertTrue(plan.skippedDomains.isSuperset(of: [.faceShape, .eyes, .nose, .mouth, .lipColor]))
+        XCTAssertNil(plan.metrics["beauty.effects.geometryPointCount"])
+        assertRedacted(plan)
+    }
+
     func testInternalNoFaceResolverSkipsBasicSkinWithRedactedWarning() {
         let plan = BeautyEffectResolver.resolve(
             parameters: BeautyParameters(skinSmoothing: 0.4, skinWhitening: 0.3),
@@ -88,6 +111,17 @@ final class BeautyEffectResolverTests: XCTestCase {
 
         for forbidden in ["/private/var", "NSError", "VNFaceObservation", "bounding", "landmark", "rawPresetJson"] {
             XCTAssertFalse(combined.contains(forbidden), "Unexpected sensitive term: \(forbidden)")
+        }
+    }
+
+    private func assertRedacted(_ plan: BeautyEffectPlan, file: StaticString = #filePath, line: UInt = #line) {
+        let metadata = (
+            plan.warnings.map { "\($0.code) \($0.message)" } +
+            Array(plan.metrics.keys)
+        ).joined(separator: " ")
+
+        for forbidden in ["landmark", "control point", "controlPoint", "bounding", "VNFaceObservation", "/private/var", "image bytes", "SIMD", "[0."] {
+            XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)", file: file, line: line)
         }
     }
 }
