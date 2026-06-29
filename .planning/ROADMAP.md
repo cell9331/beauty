@@ -101,10 +101,10 @@ This milestone does not add SwiftUI screens, Home/discovery surfaces, resource/s
 2. Promoted shaping logic has provider/unit evidence and degradation behavior.
 3. Saved image-output evidence is required only after face detection plus geometry rendering can produce visible output through the public facade.
 
-**Plans:** 0/5 plans complete
+**Plans:** 1/5 plans executed
 **Wave 1**
 
-- [ ] 19-01: Audit existing shaping providers, parameters, and geometry-output gaps.
+- [x] 19-01: Audit existing shaping providers, parameters, and geometry-output gaps.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -158,7 +158,7 @@ This milestone does not add SwiftUI screens, Home/discovery surfaces, resource/s
 | 16. Example Image Validation Harness | v1.3 | 2/2 | Complete | 2026-06-26 |
 | 17. Core Beauty Contracts and Module Boundaries | v1.3 | 2/2 | Complete | 2026-06-26 |
 | 18. Skin Retouch Core Modules | v1.3 | 3/3 | Complete | 2026-06-27 |
-| 19. Beauty Shaping Core Modules | v1.3 | 0/3 | Planned | - |
+| 19. Beauty Shaping Core Modules | v1.3 | 1/5 | In Progress|  |
 | 20. Core Module Closeout | v1.3 | 0/2 | Planned | - |
 
 ## Backlog
