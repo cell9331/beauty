@@ -23,7 +23,7 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ## Current Milestone: v1.3 Meitu Core Beauty Module Design and Implementation
 
-**Status:** Phase 16 example-image validation completed on 2026-06-26; Phase 17 contracts are next.
+**Status:** Phases 16-19 are complete; Phase 20 Core Module Closeout is next.
 
 **Goal:** Reference the Meitu Xiuxiu beauty editor, clarify the core beauty module system, and implement SDK-level core beauty logic without adding new SwiftUI screens.
 
@@ -74,9 +74,9 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 ### Active in v1.3
 
 - [x] Prepare the code-level example-image validation harness before starting feature implementation.
-- [ ] Document and keep current the core beauty taxonomy and mind map under `docs/meitu-function-blueprint/`.
-- [ ] Design and implement promoted beauty-shaping branch module logic behind SDK boundaries.
-- [ ] Design and implement promoted skin-retouch branch module logic behind SDK boundaries.
+- [x] Document and keep current the core beauty taxonomy and mind map under `docs/meitu-function-blueprint/`.
+- [x] Design and implement promoted beauty-shaping branch module logic behind SDK boundaries.
+- [x] Design and implement promoted skin-retouch branch module logic behind SDK boundaries.
 - [ ] Verify promoted branches through unit/integration tests and saved example-image outputs when visible rendering is available.
 
 ### Out of Scope
@@ -153,11 +153,11 @@ Current visual reference contracts:
 | Release-like claims require separate hardware, visual, performance, and long-run evidence. | v1 automation proves correctness and safety, not production naturalness or device endurance. | Revisit in next milestone |
 | v1.1 prioritizes Meitu-style Demo fidelity over new SDK algorithms. | The user rejected the prior Demo surface as not matching the `meituxiuxiu` references; visual/navigation fidelity had to be fixed before claiming a rich Demo. | Completed in v1.1 |
 | v1.2 retains HTML references but cancels SwiftUI tuning. | The user decided on 2026-06-26 to keep the Phase 11 HTML baseline outputs and cancel Phases 12-15 because the subsequent planning direction was not useful. | Reduced-scope complete |
-| v1.3 focuses only on core beauty modules, not UI. | The user clarified that resources, AI, video, account, and gallery should not be planned now, and that this milestone should do core module design, encapsulation, implementation, and direct code-level image validation before any new UI work. | Phase 16 complete; continue with Phase 17 contracts |
+| v1.3 focuses only on core beauty modules, not UI. | The user clarified that resources, AI, video, account, and gallery should not be planned now, and that this milestone should do core module design, encapsulation, implementation, and direct code-level image validation before any new UI work. | Phases 16-19 complete; continue with Phase 20 closeout |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-06-26 after Phase 16 example-image validation execution*
+*Last updated: 2026-06-29 after Phase 19 beauty-shaping execution*

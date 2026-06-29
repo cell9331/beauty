@@ -26,10 +26,30 @@
 
 ## 3. Active
 
-No active plan. The next planned v1.3 step is `$gsd-execute-phase 19`.
+No active plan. The next planned v1.3 step is `$gsd-discuss-phase 20`.
 
 
 ## 4. Completed
+
+### C-2026-06-29-gsd-execute-phase-19-beauty-shaping-core-modules
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-29 |
+| Scope | Ran `$gsd-execute-phase 19` for Phase 19 Beauty Shaping Core Modules. Added shaping audit evidence, hardened provider/resolver/degradation/redaction XCTest coverage for existing SDK fields, updated blueprint/example-image docs with honest geometry-output status, ran final negative scans, and closed BSHAPE traceability. |
+| Requirements | BSHAPE-01, BSHAPE-02, BSHAPE-03 |
+| Files | `.planning/phases/19-beauty-shaping-core-modules/19-SHAPING-AUDIT.md`, `19-01-SUMMARY.md`, `19-02-SUMMARY.md`, `19-03-SUMMARY.md`, `19-04-SUMMARY.md`, `19-05-SUMMARY.md`, `19-REVIEW.md`, `19-VERIFICATION.md`, `BeautySDK/Tests/BeautyEffectsTests/FaceShapeWarpProviderTests.swift`, `GeometryConflictResolverTests.swift`, `EyeWarpProviderTests.swift`, `NoseWarpProviderTests.swift`, `MouthWarpProviderTests.swift`, `LipColorEffectTests.swift`, `MissingLandmarkDegradationTests.swift`, `BeautyEffectResolverTests.swift`, `docs/meitu-function-blueprint/features/beauty-shaping/README.md`, `docs/meitu-function-blueprint/FEATURE_MATRIX.md`, `docs/meitu-function-blueprint/MODULES.md`, `docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md`, `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | Focused shaping suites passed: `FaceShapeWarpProviderTests` 7/0, `EyeWarpProviderTests` 6/0, `NoseWarpProviderTests` 6/0, `MouthWarpProviderTests` 6/0, `GeometryConflictResolverTests` 6/0, `MissingLandmarkDegradationTests` 11/0, and `BeautyEffectResolverTests` 7/0; `swift test --package-path BeautySDK --filter BeautyEffectsTests` passed with 65 tests and 0 failures; final `swift test --package-path BeautySDK` passed with 141 tests and 0 failures; exact public `BeautyParameters` field inventory passed for the pre-existing 31 fields; `git diff --quiet -- BeautyDemo` passed; `BeautyExampleRenderer/main.swift` negative scans found no shaping/lip renderer parameters or geometry case IDs; branch overclaim scan found no beauty-shaping branch marked implemented; scoped emitted warning/metric string scan passed; `phase-plan-index 19` reported all five summaries present and no incomplete plans; `verify.schema-drift 19` reported `drift_detected: false`; `19-REVIEW.md` records `status: clean`; `19-VERIFICATION.md` records `status: passed`; `phase.complete 19` reported `plans_executed: 5/5`, `requirements_updated: true`, `roadmap_updated: true`, and `state_updated: true`. |
+| Build | Full SwiftPM test suite passed with `swift test --package-path BeautySDK` (141 tests, 0 failures). |
+| Commit | `c706ba4` audited shaping branch evidence; `1f8bad5`, `9fcd805`, `3a91ff8`, and `39722d2` hardened XCTest evidence; `86ff51f` and `3007290` recorded verification/docs; `2682f9f` recorded final negative scans; `188a4ca` added the clean review report; final closeout commit records ledgers and plan summary. |
+
+Outcome:
+
+- `BSHAPE-01`, `BSHAPE-02`, and `BSHAPE-03` are complete.
+- `比例`, `脸型`, `眼睛`, `嘴唇`, and `鼻子` remain `partial`; `3D塑颜` remains `blocked-by-geometry-output`; `眉毛` remains `future`.
+- Phase 19 added no public `BeautyParameters` fields, SwiftUI/Demo changes, renderer geometry cases, public facade geometry saved-image output, 3D sculpt implementation, or eyebrow implementation.
+- Public facade saved-image geometry output remains deferred until face detection plus geometry render integration exists.
+- Next step is `$gsd-discuss-phase 20`.
 
 ### C-2026-06-29-gsd-plan-phase-19-beauty-shaping-core-modules
 

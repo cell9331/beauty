@@ -23,9 +23,9 @@ Requirements for the core beauty module milestone. v1.3 does not write new Swift
 
 ### Beauty Shaping Modules
 
-- [ ] **BSHAPE-01**: `3D塑颜`, `比例`, `脸型`, `眼睛`, `嘴唇`, `鼻子`, and `眉毛` each have branch documentation and module ownership.
-- [ ] **BSHAPE-02**: Promoted beauty-shaping branches implement core logic behind SDK boundaries with safety caps, degradation behavior, and tests.
-- [ ] **BSHAPE-03**: Branch status is honest: implemented, partial, blocked by geometry visual output, or future.
+- [x] **BSHAPE-01**: `3D塑颜`, `比例`, `脸型`, `眼睛`, `嘴唇`, `鼻子`, and `眉毛` each have branch documentation and module ownership.
+- [x] **BSHAPE-02**: Promoted beauty-shaping branches implement core logic behind SDK boundaries with safety caps, degradation behavior, and tests.
+- [x] **BSHAPE-03**: Branch status is honest: implemented, partial, blocked by geometry visual output, or future.
 
 ### Skin Retouch Modules
 
@@ -86,9 +86,9 @@ Deferred to later milestones unless explicitly promoted.
 | SKIN-01 | Phase 18 | Complete |
 | SKIN-02 | Phase 18 | Complete |
 | SKIN-03 | Phase 18 | Complete |
-| BSHAPE-01 | Phase 19 | Pending |
-| BSHAPE-02 | Phase 19 | Pending |
-| BSHAPE-03 | Phase 19 | Pending |
+| BSHAPE-01 | Phase 19 | Complete |
+| BSHAPE-02 | Phase 19 | Complete |
+| BSHAPE-03 | Phase 19 | Complete |
 | EDITOR-01 | Phase 20 | Pending |
 | EDITOR-02 | Phase 20 | Pending |
 | EDITOR-03 | Phase 20 | Pending |
