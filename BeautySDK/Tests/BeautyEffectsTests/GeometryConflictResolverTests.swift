@@ -24,6 +24,43 @@ final class GeometryConflictResolverTests: XCTestCase {
         XCTAssertTrue(resolved.warnings.contains { $0.code == "combined_geometry_weakened" })
     }
 
+    func testCombinedGeometryWeakeningMetadataUsesOnlyRedactedCodesAndMetrics() {
+        let resolved = GeometryConflictResolver().resolve(strengths: strengths(
+            faceSlim: 1,
+            faceSmall: 1,
+            faceVShape: 1,
+            jawSlim: 1,
+            chinLength: 1,
+            eyeSize: 1,
+            eyeDistance: 1,
+            eyeYPosition: 1,
+            eyeTailLift: 1,
+            noseSlim: 1,
+            noseWingSlim: 1,
+            noseTipSize: 1,
+            noseBridge: 1,
+            mouthSize: 1,
+            mouthWidth: 1,
+            smile: 1
+        ))
+
+        XCTAssertEqual(resolved.warnings.map(\.code), ["combined_geometry_weakened"])
+        XCTAssertEqual(Set(resolved.metrics.keys), [
+            "beauty.effects.weakenedCount",
+            "beauty.effects.geometryStrengthScale"
+        ])
+        XCTAssertGreaterThan(resolved.metrics["beauty.effects.weakenedCount"] ?? 0, 0)
+        XCTAssertLessThan(resolved.metrics["beauty.effects.geometryStrengthScale"] ?? 1, 1)
+
+        let metadata = (
+            resolved.warnings.map { "\($0.code) \($0.message)" } +
+            Array(resolved.metrics.keys)
+        ).joined(separator: " ")
+        for forbidden in ["landmark", "control point", "controlPoint", "bounding", "VNFaceObservation", "/private/var", "image bytes", "SIMD", "[0."] {
+            XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)")
+        }
+    }
+
     func testResolverReportsGeometryPointAndCapMetricsForFaceShapeContext() {
         let plan = BeautyEffectResolver.resolve(
             parameters: BeautyParameters(faceSlim: 1, faceSmall: 1, faceVShape: 1, jawSlim: 1, chinLength: 1),
@@ -89,7 +126,13 @@ final class GeometryConflictResolverTests: XCTestCase {
         jawSlim: Float = 0,
         chinLength: Float = 0,
         eyeSize: Float = 0,
+        eyeDistance: Float = 0,
+        eyeYPosition: Float = 0,
+        eyeTailLift: Float = 0,
         noseSlim: Float = 0,
+        noseWingSlim: Float = 0,
+        noseTipSize: Float = 0,
+        noseBridge: Float = 0,
         mouthSize: Float = 0,
         mouthWidth: Float = 0,
         smile: Float = 0
@@ -101,7 +144,13 @@ final class GeometryConflictResolverTests: XCTestCase {
         strengths.jawSlim = min(jawSlim, BeautySafetyCaps.jawSlim)
         strengths.chinLength = min(max(chinLength, -BeautySafetyCaps.chinLength), BeautySafetyCaps.chinLength)
         strengths.eyeSize = min(max(eyeSize, -BeautySafetyCaps.eyeSize), BeautySafetyCaps.eyeSize)
+        strengths.eyeDistance = min(max(eyeDistance, -BeautySafetyCaps.eyeDistance), BeautySafetyCaps.eyeDistance)
+        strengths.eyeYPosition = min(max(eyeYPosition, -BeautySafetyCaps.eyeYPosition), BeautySafetyCaps.eyeYPosition)
+        strengths.eyeTailLift = min(max(eyeTailLift, -BeautySafetyCaps.eyeTailLift), BeautySafetyCaps.eyeTailLift)
         strengths.noseSlim = min(noseSlim, BeautySafetyCaps.noseSlim)
+        strengths.noseWingSlim = min(noseWingSlim, BeautySafetyCaps.noseWingSlim)
+        strengths.noseTipSize = min(max(noseTipSize, -BeautySafetyCaps.noseTipSize), BeautySafetyCaps.noseTipSize)
+        strengths.noseBridge = min(noseBridge, BeautySafetyCaps.noseBridge)
         strengths.mouthSize = min(max(mouthSize, -BeautySafetyCaps.mouthSize), BeautySafetyCaps.mouthSize)
         strengths.mouthWidth = min(max(mouthWidth, -BeautySafetyCaps.mouthWidth), BeautySafetyCaps.mouthWidth)
         strengths.smile = min(smile, BeautySafetyCaps.smile)

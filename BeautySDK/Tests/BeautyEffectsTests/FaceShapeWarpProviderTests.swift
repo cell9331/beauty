@@ -41,6 +41,34 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         }
     }
 
+    func testFaceShapeOutputsAreDeterministicClampedAndProportionAdjacent() {
+        let face = FaceGeometry.fixture
+        let provider = FaceShapeWarpProvider()
+        let partialStrengths = strengths(
+            faceSlim: 1,
+            faceSmall: 1,
+            faceVShape: 1,
+            jawSlim: 1
+        )
+
+        let first = provider.makeControlPoints(face: face, strengths: partialStrengths)
+        let second = provider.makeControlPoints(face: face, strengths: partialStrengths)
+
+        XCTAssertEqual(first, second)
+        XCTAssertFalse(first.points.isEmpty)
+        XCTAssertTrue(first.points.allSatisfy { point in
+            (0...1).contains(point.source.x) &&
+                (0...1).contains(point.source.y) &&
+                (0...1).contains(point.target.x) &&
+                (0...1).contains(point.target.y)
+        })
+        XCTAssertTrue(first.points.allSatisfy { $0.radius >= 0.04 && $0.radius <= 0.35 })
+        XCTAssertTrue(first.points.allSatisfy { $0.strength <= BeautySafetyCaps.faceSlim })
+
+        let faceSmallOnly = provider.makeControlPoints(face: face, strengths: strengths(faceSmall: 1))
+        XCTAssertGreaterThanOrEqual(faceSmallOnly.points.count, face.faceContour.count)
+    }
+
     func testVShapeAndJawSlimProduceOnlyLowerFacePoints() {
         let provider = FaceShapeWarpProvider()
         let face = FaceGeometry.fixture
@@ -68,6 +96,22 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         XCTAssertLessThan(shortPoint.target.y, shortPoint.source.y)
         XCTAssertLessThanOrEqual(longPoint.strength, BeautySafetyCaps.chinLength)
         XCTAssertLessThanOrEqual(shortPoint.strength, BeautySafetyCaps.chinLength)
+    }
+
+    func testChinLengthOutputIsDeterministicAndClamped() {
+        let provider = ChinWarpProvider()
+        let face = FaceGeometry.fixture
+
+        let first = provider.makeControlPoints(face: face, strengths: strengths(chinLength: 1))
+        let second = provider.makeControlPoints(face: face, strengths: strengths(chinLength: 1))
+
+        XCTAssertEqual(first, second)
+        let point = try! XCTUnwrap(first.points.first)
+        XCTAssertTrue((0...1).contains(point.source.x))
+        XCTAssertTrue((0...1).contains(point.source.y))
+        XCTAssertTrue((0...1).contains(point.target.x))
+        XCTAssertTrue((0...1).contains(point.target.y))
+        XCTAssertLessThanOrEqual(point.strength, BeautySafetyCaps.chinLength)
     }
 
     func testMissingFaceContourReturnsNoFaceShapePoints() {
