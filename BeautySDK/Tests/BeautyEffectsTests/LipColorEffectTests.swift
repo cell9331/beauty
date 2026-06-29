@@ -16,6 +16,17 @@ final class LipColorEffectTests: XCTestCase {
         XCTAssertTrue(plan.warnings.contains { $0.code == "beauty_strength_capped" })
     }
 
+    func testLipColorDoesNotActivateMouthGeometryDomain() {
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(lipColor: 1),
+            faceGeometry: .fixture
+        )
+
+        XCTAssertTrue(plan.activeDomains.contains(.lipColor))
+        XCTAssertFalse(plan.activeDomains.contains(.mouth))
+        XCTAssertTrue(BeautyGeometryEffectPipeline.controlPoints(for: plan, face: .fixture).isEmpty)
+    }
+
     func testLipColorZeroKeepsLipDomainInactiveAndPixelBufferNoop() throws {
         let inputBytes = uniformBGRA(width: 10, height: 10)
         let input = try makeBGRA(width: 10, height: 10, bytes: inputBytes)
