@@ -78,7 +78,7 @@ The codebase already contains internal `FaceGeometry`, `WarpControlPoint`, provi
 
 | ID | Description | Research Support |
 | --- | --- | --- |
-| BSHAPE-01 | `3D塑颜`, `比例`, `脸型`, `眼睛`, `嘴唇`, `鼻子`, and `眉毛` each have branch documentation and module ownership. [VERIFIED: .planning/REQUIREMENTS.md] | Branch docs and matrix already enumerate all seven branches, ownership, public parameter coverage, future needs, and evidence expectations; Plan 19-01 should audit and Plan 19-03 should rescan them. [VERIFIED: docs/meitu-function-blueprint/features/beauty-shaping/README.md; docs/meitu-function-blueprint/FEATURE_MATRIX.md; docs/meitu-function-blueprint/MODULES.md] |
+| BSHAPE-01 | `3D塑颜`, `比例`, `脸型`, `眼睛`, `嘴唇`, `鼻子`, and `眉毛` each have branch documentation and module ownership. [VERIFIED: .planning/REQUIREMENTS.md] | Branch docs and matrix already enumerate all seven branches, ownership, public parameter coverage, future needs, and evidence expectations; Plan 19-01 should audit and Plan 19-04 should rescan them. [VERIFIED: docs/meitu-function-blueprint/features/beauty-shaping/README.md; docs/meitu-function-blueprint/FEATURE_MATRIX.md; docs/meitu-function-blueprint/MODULES.md] |
 | BSHAPE-02 | Promoted beauty-shaping branches implement core logic behind SDK boundaries with safety caps, degradation behavior, and tests. [VERIFIED: .planning/REQUIREMENTS.md] | Existing providers, `BeautySafetyCaps`, `BeautyEffectResolver`, `GeometryConflictResolver`, and focused tests are the implementation surface; plans should strengthen gaps inside `BeautyEffects` only. [VERIFIED: BeautySDK/Sources/BeautyEffects/Planning/BeautySafetyCaps.swift; BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift; BeautySDK/Sources/BeautyEffects/Warp; BeautySDK/Tests/BeautyEffectsTests] |
 | BSHAPE-03 | Branch status is honest: implemented, partial, blocked by geometry visual output, or future. [VERIFIED: .planning/REQUIREMENTS.md] | Evidence ladder states provider/resolver geometry evidence is not saved-image completion; plans must keep `3D塑颜` blocked, `眉毛` future, and current geometry branches partial. [VERIFIED: docs/meitu-function-blueprint/shared/IMPLEMENTATION_PRINCIPLES.md; .planning/phases/19-beauty-shaping-core-modules/19-CONTEXT.md] |
 </phase_requirements>
@@ -111,7 +111,7 @@ The codebase already contains internal `FaceGeometry`, `WarpControlPoint`, provi
 
 | Tool / Target | Version | Purpose | When to Use |
 | --- | --- | --- | --- |
-| `rg` | local command used successfully [VERIFIED: rg --files] | Static scans for branch status, public parameter additions, UI imports, renderer cases, sensitive tokens. [VERIFIED: QUALITY_SCORE.md; .planning/phases/19-beauty-shaping-core-modules/19-CONTEXT.md] | Use in Plan 19-01 and 19-03 negative scan gates. [VERIFIED: .planning/phases/19-beauty-shaping-core-modules/19-CONTEXT.md] |
+| `rg` | local command used successfully [VERIFIED: rg --files] | Static scans for branch status, public parameter additions, UI imports, renderer cases, sensitive tokens. [VERIFIED: QUALITY_SCORE.md; .planning/phases/19-beauty-shaping-core-modules/19-CONTEXT.md] | Use in Plan 19-01, Plan 19-04, and Plan 19-05 scan gates. [VERIFIED: .planning/phases/19-beauty-shaping-core-modules/19-CONTEXT.md] |
 | `BeautyExampleRenderer` | local SwiftPM executable [VERIFIED: BeautySDK/Package.swift] | Public facade saved-image evidence for already-visible skin/color/filter cases. [VERIFIED: docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md] | Optional regression only in Phase 19; do not add geometry cases. [VERIFIED: .planning/phases/19-beauty-shaping-core-modules/19-CONTEXT.md] |
 
 ### Alternatives Considered
@@ -337,12 +337,12 @@ The renderer currently lists skin/color/filter cases and imports only `BeautySDK
 | A1 | If `rg` were unavailable, `find`/`grep` could substitute for static scans. [ASSUMED] | Environment Availability | Low; `rg` is currently available, so the fallback is not needed for this machine. [VERIFIED: rg --files] |
 | A2 | Research remains valid for about 30 days unless Phase 19 source or blueprint contracts change first. [ASSUMED] | Metadata | Low; planner should reread changed files if source/docs move before execution. [VERIFIED: AGENTS.md] |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Which exact provider gaps should Plan 19-02 improve?**
-   - What we know: Phase 19 may strengthen provider, resolver, degradation, docs, and tests for existing public parameters only. [VERIFIED: .planning/phases/19-beauty-shaping-core-modules/19-CONTEXT.md]
-   - What's unclear: Research does not mandate a specific code change if audit finds coverage already sufficient. [VERIFIED: BeautySDK/Tests/BeautyEffectsTests]
-   - Recommendation: Plan 19-01 should produce a concrete audit checklist; Plan 19-02 should implement only gaps found by that audit. [VERIFIED: .planning/ROADMAP.md]
+   - Concrete answer: Plan 19-01 audits and documents the exact evidence baseline, but provider hardening is no longer contingent on an unspecified audit result. Plan 19-02 has a bounded predetermined scope: face-shape/chin/proportion-adjacent provider evidence plus eye/nose provider evidence in `FaceShapeWarpProvider`, `ChinWarpProvider`, `EyeWarpProvider`, `NoseWarpProvider`, `GeometryConflictResolver`, and their focused provider tests. [VERIFIED: .planning/phases/19-beauty-shaping-core-modules/19-02-PLAN.md]
+   - Split answer: mouth, lip-color, resolver degradation, stale/reused behavior, and redaction evidence move to Plan 19-03 so each provider/test hardening plan stays under the file-scope threshold while remaining executable. [VERIFIED: .planning/phases/19-beauty-shaping-core-modules/19-03-PLAN.md]
+   - Required gap set: provider tests must cover deterministic clamped control points, missing-input skip reasons, existing safety caps, combined geometry weakening metadata, affected-domain skips, unaffected safe-domain preservation, and redacted warning/metric output. These assertions use only D-07 public fields and do not add public parameters, UI, renderer geometry cases, public facade geometry output, `3D塑颜`, or `眉毛` implementation. [VERIFIED: .planning/phases/19-beauty-shaping-core-modules/19-CONTEXT.md]
 
 ## Environment Availability
 
@@ -391,7 +391,7 @@ The renderer currently lists skin/color/filter cases and imports only `BeautySDK
 ### Wave 0 Gaps
 
 - None for framework setup; SwiftPM XCTest infrastructure exists and test listing succeeded. [VERIFIED: BeautySDK/Package.swift; swift test --package-path BeautySDK --list-tests]
-- Plan 19-01 should still audit whether each branch has enough focused assertions before Plan 19-02 changes code. [VERIFIED: .planning/ROADMAP.md]
+- Plan 19-01 records the branch/provider evidence baseline; Plans 19-02 and 19-03 have fixed hardening scopes for the concrete assertion set resolved above. [VERIFIED: .planning/ROADMAP.md]
 
 ## Security Domain
 

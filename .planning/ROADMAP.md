@@ -101,11 +101,23 @@ This milestone does not add SwiftUI screens, Home/discovery surfaces, resource/s
 2. Promoted shaping logic has provider/unit evidence and degradation behavior.
 3. Saved image-output evidence is required only after face detection plus geometry rendering can produce visible output through the public facade.
 
-**Plans:** 0/3 plans complete
+**Plans:** 0/5 plans complete
+**Wave 1**
 
 - [ ] 19-01: Audit existing shaping providers, parameters, and geometry-output gaps.
-- [ ] 19-02: Implement promoted shaping module logic or integration prep behind SDK boundaries.
-- [ ] 19-03: Verify tests and update example-image output status honestly.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 19-02: Harden face/chin/proportion plus eye/nose provider evidence behind SDK boundaries.
+- [ ] 19-03: Harden mouth/lip, resolver degradation, and redaction evidence behind SDK boundaries.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 19-04: Verify BeautySDK shaping tests and update blueprint/example-image status honestly.
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 19-05: Run final negative scans and close Phase 19 planning ledgers.
 
 ### Phase 20: Core Module Closeout
 
