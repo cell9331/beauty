@@ -18,6 +18,30 @@ final class NoseWarpProviderTests: XCTestCase {
         XCTAssertLessThanOrEqual(right.strength, BeautySafetyCaps.noseSlim)
     }
 
+    func testNoseProviderOutputIsDeterministicAndClampedForAllCurrentFields() {
+        let provider = NoseWarpProvider()
+        let currentFieldStrengths = strengths(
+            noseSlim: 1,
+            noseWingSlim: 1,
+            noseTipSize: -1,
+            noseBridge: 1
+        )
+
+        let first = provider.makeControlPoints(face: .fixture, strengths: currentFieldStrengths)
+        let second = provider.makeControlPoints(face: .fixture, strengths: currentFieldStrengths)
+
+        XCTAssertEqual(first, second)
+        XCTAssertFalse(first.points.isEmpty)
+        XCTAssertTrue(first.points.allSatisfy { point in
+            (0...1).contains(point.source.x) &&
+                (0...1).contains(point.source.y) &&
+                (0...1).contains(point.target.x) &&
+                (0...1).contains(point.target.y)
+        })
+        XCTAssertTrue(first.points.allSatisfy { $0.radius >= 0.03 && $0.radius <= 0.20 })
+        XCTAssertTrue(first.points.allSatisfy { $0.strength <= BeautySafetyCaps.noseSlim })
+    }
+
     func testNoseWingSlimCreatesLowerNosePointsWithCappedStrength() {
         let result = NoseWarpProvider().makeControlPoints(
             face: .fixture,
@@ -54,6 +78,16 @@ final class NoseWarpProviderTests: XCTestCase {
         XCTAssertTrue(result.points.allSatisfy { $0.strength <= BeautySafetyCaps.noseBridge })
     }
 
+    func testMissingNoseInputsReturnSkipReason() {
+        let result = NoseWarpProvider().makeControlPoints(
+            face: .missingNose,
+            strengths: strengths(noseSlim: 1, noseWingSlim: 1, noseTipSize: 1, noseBridge: 1)
+        )
+
+        XCTAssertTrue(result.points.isEmpty)
+        XCTAssertEqual(result.skipReason, "nose_inputs_missing")
+    }
+
     private func strengths(
         noseSlim: Float = 0,
         noseWingSlim: Float = 0,
@@ -63,7 +97,7 @@ final class NoseWarpProviderTests: XCTestCase {
         var strengths = BeautyEffectiveStrengths()
         strengths.noseSlim = min(noseSlim, BeautySafetyCaps.noseSlim)
         strengths.noseWingSlim = min(noseWingSlim, BeautySafetyCaps.noseWingSlim)
-        strengths.noseTipSize = min(noseTipSize, BeautySafetyCaps.noseTipSize)
+        strengths.noseTipSize = min(max(noseTipSize, -BeautySafetyCaps.noseTipSize), BeautySafetyCaps.noseTipSize)
         strengths.noseBridge = min(noseBridge, BeautySafetyCaps.noseBridge)
         return strengths
     }
