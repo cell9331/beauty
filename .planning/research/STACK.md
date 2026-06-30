@@ -1,134 +1,58 @@
 # Stack Research
 
-**Domain:** Modular iOS beauty SDK with rich SwiftUI Demo app
-**Researched:** 2026-06-10
-**Confidence:** HIGH for Apple-platform stack; MEDIUM for feature breadth prioritization
+**Domain:** iOS beauty SDK hardening, QA automation, performance, and distribution readiness.
+**Researched:** 2026-06-30
+**Confidence:** HIGH for Apple platform guidance, MEDIUM for project-specific phase sizing.
 
 ## Recommended Stack
 
 ### Core Technologies
 
 | Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| Swift | Apple Swift 6.3.2 observed locally | SDK and Demo implementation language | Native Apple-platform language, supports value models, Sendable contracts, Swift Package targets, and testable public APIs. |
-| Xcode | 26.5 observed locally | Project build, simulator builds, package integration | Current repo already uses an Xcode 26.5 iOS app project with object version 77 and generated Info.plist settings. |
-| Swift Package Manager | Xcode/Swift toolchain version | `BeautySDK` package and internal targets | Matches the existing root architecture contract and keeps SDK modules reusable outside the Demo app. |
-| SwiftUI | iOS SDK 26.5 observed locally | Demo app UI | Current app shell already uses SwiftUI; root frontend contract expects SwiftUI state and a rich parameter UI. |
-| Observation / Observable state | iOS 17+ style, available in current platform family | Demo state stores | Fits SwiftUI parameter stores and avoids overcoupling SDK internals to UI state. |
-| AVFoundation | iOS SDK framework | Camera capture and frame delivery | Standard Apple API for camera sessions and `AVCaptureVideoDataOutput` sample buffers. |
-| Vision | iOS SDK framework | Face detection, landmarks, future person segmentation | Apple-supported local face-landmark and segmentation path; aligns with privacy and no-network constraints. |
-| Metal | iOS SDK framework | Real-time render pipeline and geometry/color passes | Required for efficient camera-frame processing, texture reuse, and custom warp/filter effects. |
-| Core Image | iOS SDK framework | Still-image filters, color adjustments, LUT prototyping | Useful for still-image processing and some color/filter paths before all effects are custom Metal. |
-| XCTest | Xcode toolchain | Unit, package, and future UI tests | Needed to move beyond documentation-only quality evidence. |
+| --- | --- | --- | --- |
+| Swift / SwiftPM | Apple Swift 6.x observed locally during v1.3 planning | SDK unit tests, executable renderer, package-level validation | Existing SDK is a Swift Package and already verifies with `swift test --package-path BeautySDK`. |
+| XCTest / XCUITest / XCTMetric | Xcode-provided | Unit, UI, and repeatable performance tests | Official Apple test stack; avoids adding third-party runners before the local gates are stable. |
+| Xcode / xcodebuild / simctl | Xcode 26.x observed locally during v1.3 planning | Demo build, simulator test, screenshot capture | Existing evidence and repo docs already require explicit simulator destinations. |
+| Instruments / xctrace | Xcode-provided | Timing, allocations, long-run profiling | Apple recommends Xcode performance tools for app performance investigation. |
+| Metal / Core Image / AVFoundation / Vision | Apple platform frameworks | Rendering, image IO, camera input, face detection | Existing architecture already uses Apple-local processing and avoids third-party beauty SDKs. |
+| OSLog / OSSignposter / MetricKit | Apple platform frameworks | Redacted logs, signposts, app-level diagnostics | Existing `RELIABILITY.md` names these as the diagnostics model. |
 
-### Supporting Frameworks
+### Supporting Tools
 
-| Framework | Version | Purpose | When to Use |
-|-----------|---------|---------|-------------|
-| CoreVideo | iOS SDK 26.5 observed | `CVPixelBuffer`, texture cache input/output | Realtime frame and no-op processing foundation. |
-| CoreMedia | iOS SDK 26.5 observed | Sample timing and frame metadata | Camera pipelines, timestamp propagation, frame dropping metrics. |
-| CoreGraphics | iOS SDK 26.5 observed | Geometry, image orientation, public lightweight types | Public value models and orientation/extent contracts. |
-| OSLog | iOS SDK 26.5 observed | Diagnostics and privacy-aware logging | SDK and Demo logging with redaction rules. |
-| Metal Performance Shaders | iOS SDK 26.5 observed | Optimized blur/sharpen/image kernels | Use when a standard GPU operation exists and is faster than custom shaders. |
-| Accelerate | iOS SDK 26.5 observed | CPU-side numeric/image operations | Only for offline or setup operations where GPU is unnecessary. |
-
-### Development Tools
-
-| Tool | Purpose | Notes |
-|------|---------|-------|
-| `xcodebuild -list` | Discover schemes and targets | Current repo lists only `BeautyDemo`; use before build/test commands. |
-| Explicit iOS Simulator destination | Reliable build evidence | Avoid generic destination choosing incompatible `My Mac`. |
-| Swift Package tests | Validate SDK modules | Add with `BeautySDK/Tests/**` as soon as the package exists. |
-| Xcode GPU tools / Instruments | Performance profiling | Needed once Metal render passes and camera preview exist. |
-| `rg` and `git diff --check` | Documentation/code hygiene | Already part of repo workflow. |
-
-## Installation
-
-No external package installation is recommended for the foundation.
-
-Recommended initial package work:
-
-```bash
-mkdir -p BeautySDK/Sources BeautySDK/Tests
-swift package init --type library --name BeautySDK
-```
-
-Then reshape the package into the target layout required by `ARCHITECTURE.md`:
-
-```text
-BeautyCore
-BeautyDetection
-BeautyRender
-BeautyEffects
-BeautyResources
-BeautySDK
-```
-
-The Demo app should add the local package through the Xcode project and import only:
-
-```swift
-import BeautySDK
-```
+| Tool | Purpose | When to Use |
+| --- | --- | --- |
+| `BeautyExampleRenderer` | Deterministic still-image output regression | Use for no-op tolerance, visible output, dimensions, watermark, and geometry-output boundaries. |
+| `rg`, shell scans | Boundary and privacy checks | Use for facade-only imports, no realtime `UIImage`, no raw path/framework error leaks, and no overclaiming. |
+| Local screenshot artifacts | UI/layout regression evidence | Use for simulator visual checks without introducing remote services or network assets. |
 
 ## Alternatives Considered
 
 | Recommended | Alternative | When to Use Alternative |
-|-------------|-------------|-------------------------|
-| Swift Package internal targets | Multiple separate packages | Only if modules need independent versioning/distribution later. |
-| Vision landmarks | Custom ML face landmark model | Only after Vision precision, performance, or landmark coverage proves insufficient. |
-| Metal render graph | Core Image-only pipeline | Acceptable for early still-image color/filter prototype, not enough for full realtime geometry effects. |
-| Local Swift/Metal implementation | Third-party beauty SDK | Only if the product pivots from building a SDK to wrapping a vendor SDK. |
-| SwiftUI Demo | UIKit Demo | UIKit may be useful for `MTKView`/camera preview wrappers, but app composition should stay SwiftUI unless measurement shows a real issue. |
+| --- | --- | --- |
+| XCTest/XCUITest | Third-party iOS UI testing frameworks | Only after native tests cannot express a required check. |
+| Instruments/xctrace evidence | Ad hoc timing logs only | Logs are acceptable as a first signal, but release-like claims need profiler or repeatable metric evidence. |
+| Local renderer fixtures | Manual-only visual review | Manual review remains useful, but deterministic fixture output should be the regression backbone. |
+| Apple-local processing | Third-party beauty SDK or cloud processing | Requires explicit user approval plus `SECURITY.md` network/dependency updates. |
 
 ## What NOT to Use
 
 | Avoid | Why | Use Instead |
-|-------|-----|-------------|
-| Realtime `UIImage` conversion | Extra copies and main-thread pressure in camera preview | Pass `CVPixelBuffer` / textures through the pipeline. |
-| Demo imports of internal SDK targets | Makes Demo unlike a real host app and breaks facade verification | `import BeautySDK` only. |
-| Network processing by default | Violates local-first privacy posture for faces/photos | On-device Vision, Metal, Core Image, and local resources. |
-| Full feature build before no-op foundation | Hides integration, testing, and performance problems | Foundation -> no-op flow -> detection -> render graph -> effects. |
-| Unversioned LUT/makeup/sticker files | Resource drift and unsafe loading | Versioned manifests with validation in `BeautyResources`. |
-
-## Stack Patterns by Variant
-
-**If the phase is SDK foundation:**
-- Use Swift Package targets with no UI framework dependencies in core targets.
-- Because this preserves SDK reuse and makes facade tests meaningful.
-
-**If the phase is realtime camera:**
-- Use AVFoundation sample buffers, CoreVideo pixel buffers, Metal texture caches, and bounded in-flight processing.
-- Because latency and frame dropping are more important than processing every captured frame.
-
-**If the phase is still-image editing:**
-- Use image orientation normalization and a quality processing mode.
-- Because still images can spend more time preserving quality than live preview.
-
-**If the phase is resource-backed effects:**
-- Use `BeautyResources` manifests for presets, LUTs, makeup packs, and stickers.
-- Because resources are product data and must be versioned, validated, and diagnosable.
-
-## Version Compatibility
-
-| Package or Framework | Compatible With | Notes |
-|----------------------|-----------------|-------|
-| `BeautyDemo` Xcode project | Xcode 26.5 observed locally | Older Xcode versions may not handle object version 77 cleanly. |
-| `BeautySDK` Swift package | Current Swift/Xcode toolchain | Start with source package; binary distribution can come later. |
-| SwiftUI/Observation | iOS 17+ design style | Deployment target is currently 26.5, so modern state APIs are acceptable unless compatibility goals change. |
-| Vision/Metal/Core Image | iOS SDK 26.5 observed locally | Use availability checks only if future requirements lower deployment target. |
+| --- | --- | --- |
+| Hidden network analytics or cloud processing | Violates current local-first privacy posture. | Local tests, local metrics, and explicit opt-in design if network is ever promoted. |
+| New product feature work during v1.4 | Dilutes hardening goals and makes quality regressions harder to isolate. | Defer feature breadth to later milestones. |
+| Unbounded screenshot expectations | Causes flaky UI tests across simulator/device differences. | Stable routes, fixed destinations, scoped screenshots, and tolerance-based comparisons. |
+| Per-frame free-form logging | High overhead and privacy risk. | Sampled metrics, redacted event logs, and signposts. |
 
 ## Sources
 
-- Apple Developer Documentation, `AVCaptureVideoDataOutput`: https://developer.apple.com/documentation/avfoundation/avcapturevideodataoutput
-- Apple Technical Note TN2445, Handling Frame Drops with `AVCaptureVideoDataOutput`: https://developer.apple.com/library/archive/technotes/tn2445/_index.html
-- Apple Developer Documentation, `VNDetectFaceLandmarksRequest`: https://developer.apple.com/documentation/vision/vndetectfacelandmarksrequest
-- Apple Developer Documentation, Metal: https://developer.apple.com/documentation/metal
-- Apple Developer Documentation, `CIColorCube`: https://developer.apple.com/documentation/coreimage/cicolorcube
-- Apple Developer Documentation, PackageDescription / Swift Package Manager: https://developer.apple.com/documentation/PackageDescription
-- Apple Developer Documentation, Observation: https://developer.apple.com/documentation/observation
-- Apple Developer Documentation, privacy manifests for apps and third-party SDKs: https://developer.apple.com/documentation/bundleresources/adding-a-privacy-manifest-to-your-app-or-third-party-sdk
-- Local files: `.planning/PROJECT.md`, `.planning/codebase/STACK.md`, `.planning/codebase/ARCHITECTURE.md`, `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `docs/01_product_feature_plan.md`.
+- Apple Xcode performance documentation: https://developer.apple.com/documentation/xcode/improving-your-app-s-performance
+- Apple Metal Best Practices Guide, persistent objects: https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/MTLBestPracticesGuide/PersistentObjects.html
+- Apple Metal Best Practices Guide, buffering: https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/MTLBestPracticesGuide/TripleBuffering.html
+- Apple XCTest metrics documentation: https://developer.apple.com/documentation/xctest/xctmetric
+- Apple AVFoundation late-frame discard property: https://developer.apple.com/documentation/avfoundation/avcapturevideodataoutput/alwaysdiscardslatevideoframes
+- Apple privacy manifest documentation: https://developer.apple.com/documentation/bundleresources/privacy-manifest-files
+- Apple Vision face landmarks request documentation: https://developer.apple.com/documentation/vision/vndetectfacelandmarksrequest
 
 ---
-*Stack research for: modular iOS beauty SDK*
-*Researched: 2026-06-10*
+*Stack research for: v1.4 Stability, QA, and Debt Cleanup*
+*Researched: 2026-06-30*

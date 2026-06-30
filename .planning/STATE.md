@@ -1,17 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.3
-milestone_name: Meitu Core Beauty Module Design and Implementation
-status: Awaiting next milestone
-stopped_at: Completed Phase 20 and v1.3 closeout
-last_updated: "2026-06-30T02:16:13.356Z"
-last_activity: 2026-06-30 — Milestone v1.3 completed and archived
+milestone: v1.4
+milestone_name: Stability, QA, and Debt Cleanup
+status: planning
+last_updated: "2026-06-30T03:39:37.120Z"
+last_activity: 2026-06-30 — v1.4 roadmap created
 progress:
   total_phases: 5
-  completed_phases: 5
-  total_plans: 14
-  completed_plans: 14
-  percent: 100
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -21,14 +20,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-06-30)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** v1.3 complete — awaiting next milestone selection
+**Current focus:** v1.4 Stability, QA, and Debt Cleanup
 
 ## Current Position
 
-Phase: Milestone v1.3 complete
+Phase: 21 - Baseline Audit and Quality Ledger Refresh
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-06-30 — Milestone v1.3 completed and archived
+Status: Roadmap ready; awaiting Phase 21 discussion
+Last activity: 2026-06-30 — Milestone v1.4 requirements and roadmap created
 
 ## Performance Metrics
 
@@ -96,12 +95,14 @@ Recent milestone-level outcomes:
 - Phase 18 completed Basic skin retouch work behind existing SDK boundaries: focused Basic skin, resolver, and engine tests passed; all current Basic skin renderer cases wrote ignored local outputs; representative output dimensions, labels, and factual visual observations passed; future skin-retouch branches remain future.
 - Phase 19 completed beauty-shaping core-module evidence behind SDK boundaries: branch docs and ownership exist, promoted partial branches have provider/resolver/degradation/cap/redaction XCTest evidence, full `swift test --package-path BeautySDK` passed with 141 tests, final API/UI/renderer/status/redaction scans passed, and geometry-heavy saved-image output remains deferred until public facade detection plus geometry rendering exists.
 - Phase 20 completed v1.3 core module closeout: editor-shell support is documented as Demo-owned no-new-UI app-side behavior, full `swift test --package-path BeautySDK` passed with 141 tests, `BeautyExampleRenderer` built and ran all current skin/color/filter cases, 45 ignored renderer outputs were non-empty and same-dimension, no public parameter/import/UI/renderer/status drift was found, and `20-VERIFICATION.md` preserves geometry saved-output and release-hardening limitations.
+- v1.4 focuses on stability, QA, performance, security, and technical-debt cleanup. It does not add new product areas, public `BeautyParameters`, hidden network/cloud behavior, payment/VIP/account flows, or broad UI redesign.
+- v1.4 uses Phase 21 through Phase 25 and keeps existing `.planning/phases/` history directories in place.
 
 ### Pending Todos
 
-- Select the next milestone before starting new scoped implementation work.
-- Preserve v1.3 boundaries when planning future work: no historical-doc normalization by default, no new SwiftUI work unless explicitly selected, and geometry saved-image output remains deferred until public facade detection plus geometry rendering exists.
-- Release-hardening candidates remain future scope: physical-device camera/Vision parity, production naturalness review, screenshot/UI automation, performance budgets, memory/thermal checks, privacy manifest review, and automated visual diffs.
+- Start Phase 21 with `$gsd-discuss-phase 21`.
+- Preserve v1.4 boundaries while planning: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign.
+- Convert release-hardening candidates into measurable evidence or documented blockers: physical-device camera/Vision parity, production naturalness review, screenshot/UI automation, performance budgets, memory/thermal checks, privacy manifest review, and automated visual diffs.
 
 ### Blockers/Concerns
 
@@ -117,7 +118,7 @@ Recent milestone-level outcomes:
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
 | Advanced beauty | Makeup, segmentation, body shaping, stickers, AI style, video export, commercial SDK distribution | Deferred to v2+ | Initialization |
-| Release QA | Real-device camera/Vision parity, visual naturalness, production render quality, performance budgets, and long-run hardware readiness | Deferred to next release-hardening scope | v1.0 close |
+| Release QA | Real-device camera/Vision parity, visual naturalness, production render quality, performance budgets, and long-run hardware readiness | Partially promoted into v1.4 hardening scope; feature expansion remains deferred | v1.4 start |
 | SwiftUI visual fidelity | HTML-to-SwiftUI delta report, Home SwiftUI fidelity pass, Editor SwiftUI fidelity pass, and v1.2 visual QA closeout | Canceled from v1.2; may be reconsidered as a future milestone | 2026-06-26 |
 | Deferred Meitu product areas | Home/discovery, style resources, AI/background, video/body, account/gallery, search, VIP, payment, entitlement | Deferred outside v1.3 core beauty modules | 2026-06-26 |
 
@@ -129,4 +130,4 @@ Resume file: None
 
 ## Operator Next Steps
 
-- Start the next milestone with /gsd-new-milestone
+- Run `$gsd-discuss-phase 21` to gather Phase 21 context.

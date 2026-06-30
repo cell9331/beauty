@@ -14,12 +14,27 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Shipped version:** v1.3 Meitu Core Beauty Module Design and Implementation on 2026-06-30.
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
+**Current milestone:** v1.4 Stability, QA, and Debt Cleanup.
 
 **Implementation state:** v1.3 adds the core beauty module blueprint, example-image validation harness, Basic skin implementation evidence, beauty-shaping provider/resolver evidence, and editor-shell ownership closeout on top of the v1.1 Meitu-style Demo and v1.0 SDK/Demo foundation. v1.3 remains no-new-UI: no new SwiftUI screens, public parameters, renderer geometry cases, or geometry saved-image output were added.
 
 **Verification state:** The v1.3 milestone audit passed with 20/20 requirements satisfied, 5/5 phases complete, 6/6 integration checks, 4/4 flows, and 5/5 validation files present. Phase 20 records the closeout gate: `swift test --package-path BeautySDK` passed with 141 tests, `BeautyExampleRenderer` built and ran all current skin/color/filter cases, 45 ignored outputs were non-empty and same-dimension, Demo imports remained facade-only, SDK non-UI targets remained SwiftUI/UIKit-free, and the public `BeautyParameters` inventory stayed at the existing 31 fields. Earlier v1.0 and v1.1 verification remains archived in `.planning/MILESTONES.md` and `.planning/milestones/`.
 
 **Code size:** `BeautySDK` and `BeautyDemo` contain about 13,266 Swift lines at v1.3 close.
+
+## Current Milestone: v1.4 Stability, QA, and Debt Cleanup
+
+**Goal:** Convert known post-v1.3 release-hardening risks into measurable quality gates, fix high-value technical debt, and improve existing reliability without expanding product scope.
+
+**Target features:**
+
+- Baseline audit of quality scores, root contracts, `.planning` state, and open technical debt.
+- Automated Demo QA evidence through simulator UI/screenshot checks, layout sweeps, or documented equivalent evidence.
+- Performance and long-run reliability gates for realtime 720p timing, dropped-frame behavior, quality modes, memory growth, and reset/degradation paths.
+- Renderer and example-output regression coverage for no-op tolerance, visible output, dimension/watermark stability, and geometry-output boundaries.
+- Security and distribution cleanup for privacy manifest assessment, log/metric redaction, resource trust checks, and current documentation sync.
+
+**Key context:** v1.4 is a hardening and cleanup milestone. It does not add new product families, public `BeautyParameters`, new Meitu feature surfaces, network/cloud behavior, payment/VIP/account flows, or broad UI redesign. Phase numbering continues from Phase 21, and existing `.planning/phases/` history directories remain in place.
 
 ## Last Completed Milestone: v1.3 Meitu Core Beauty Module Design and Implementation
 
@@ -96,10 +111,12 @@ v1.3 remains a no-new-UI core module milestone. Phase 20 added no new SwiftUI sc
 
 ## Next Milestone Goals
 
-No post-v1.3 milestone has been selected yet. Strong candidates:
+Current active milestone:
 
-- **Automated Visual QA:** pixel/perceptual screenshot diffing and multi-device sweeps.
-- **Release Hardening:** physical iPhone camera/Vision QA, front-camera mirroring smoke, screenshot/UI automation, 720p timing budget, long-run memory/thermal checks, production render regression, and privacy manifest review.
+- **v1.4 Stability, QA, and Debt Cleanup:** automated QA, release-hardening gates, performance/reliability budgets, renderer regression evidence, privacy/resource review, and documentation debt cleanup.
+
+Future milestone candidates after v1.4:
+
 - **Deferred Meitu Product Areas:** Home/discovery, style resources, AI/background, video/body, gallery/account, search, VIP, payment, and entitlement planning.
 - **Distribution:** SDK packaging, compatibility matrix, binary distribution, resource-pack trust model, and commercial integration docs.
 
@@ -161,10 +178,11 @@ Current visual reference contracts:
 | v1.1 prioritizes Meitu-style Demo fidelity over new SDK algorithms. | The user rejected the prior Demo surface as not matching the `meituxiuxiu` references; visual/navigation fidelity had to be fixed before claiming a rich Demo. | Completed in v1.1 |
 | v1.2 retains HTML references but cancels SwiftUI tuning. | The user decided on 2026-06-26 to keep the Phase 11 HTML baseline outputs and cancel Phases 12-15 because the subsequent planning direction was not useful. | Reduced-scope complete |
 | v1.3 focuses only on core beauty modules, not UI. | The user clarified that resources, AI, video, account, and gallery should not be planned now, and that this milestone should do core module design, encapsulation, implementation, and direct code-level image validation before any new UI work. | Completed in Phase 20 |
+| v1.4 prioritizes hardening and debt cleanup over feature breadth. | The user selected a first-principles optimization milestone to consolidate existing functionality, fix issues, improve performance, and clean historical debt before adding new product areas. | Active |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-06-30 after v1.3 milestone archival*
+*Last updated: 2026-06-30 after v1.4 milestone start*

@@ -1,176 +1,159 @@
 # Project Research Summary
 
 **Project:** Beauty
-**Domain:** Modular iOS beauty SDK with rich SwiftUI Demo app
-**Researched:** 2026-06-10
-**Confidence:** HIGH for foundation and Apple-platform architecture; MEDIUM for advanced feature staging
+**Domain:** Local-first iOS beauty SDK hardening, QA automation, performance, and technical-debt cleanup.
+**Researched:** 2026-06-30
+**Confidence:** HIGH for local project gaps and Apple platform constraints; MEDIUM for exact implementation effort.
 
 ## Executive Summary
 
-Beauty should be planned as a reusable iOS SDK first and a rich Demo app second. The Demo can feel like a Meitu/Xingtu-style editor, but it should exercise SDK capabilities through the public `BeautySDK` facade rather than becoming the place where algorithms live.
+v1.4 should be a hardening milestone, not a feature milestone. v1.3 closed core beauty module design and implementation with strong unit/renderer evidence, but the current project documents still identify release-hardening gaps: automated visual QA, physical-device camera/Vision smoke, 720p timing budgets, long-run memory checks, production render regression, privacy manifest review, and root-doc/debt cleanup.
 
-The recommended approach is a staged native Apple stack: Swift Package targets for SDK modules, SwiftUI for the Demo, AVFoundation for camera frames, Vision for face landmarks and later segmentation, Metal for realtime effects, Core Image where it helps still-image/filter workflows, and XCTest from the first SDK foundation phase. The most important roadmap constraint is order: package/facade/value models -> no-op processing -> camera/still image flow -> detection/coordinates -> render graph/resources -> visible effects -> rich Demo expansion.
+The recommended approach is evidence-first: refresh the quality/debt baseline, add stable automated QA and output-regression gates, then add performance/reliability checks and security/distribution cleanup. This avoids optimizing without a baseline and prevents future feature work from building on unknown release risks.
 
-The biggest risks are scope explosion, realtime performance debt, coordinate/mirroring drift, fake-looking overpowered effects, unsafe resource loading, and late privacy work. Each of these needs explicit phase success criteria, not just implementation tasks.
+The main risk is overclaiming release readiness from simulator-only or fixture-only evidence. v1.4 should explicitly distinguish automated simulator/SwiftPM evidence from physical-device or manual evidence, and record blocked hardware checks when hardware is unavailable.
 
 ## Key Findings
 
 ### Recommended Stack
 
-Use native Apple frameworks and keep third-party dependencies out of the core pipeline by default. The current repo already targets Xcode 26.5 and a SwiftUI iOS Demo shell, so the lowest-risk foundation is a local Swift Package named `BeautySDK` with internal targets and a public facade.
+Use the existing Apple-native stack: SwiftPM, XCTest/XCUITest/XCTMetric, xcodebuild/simctl, Instruments/xctrace, Metal/Core Image/AVFoundation/Vision, OSLog/OSSignposter/MetricKit, and the local `BeautyExampleRenderer`. Do not add third-party beauty SDKs, network services, or UI testing frameworks unless a later phase proves native tooling insufficient.
 
 **Core technologies:**
-- Swift / Swift Package Manager: SDK modules and public API surface.
-- SwiftUI / Observation: Demo state and category UI.
-- AVFoundation / CoreVideo / CoreMedia: realtime camera frame input and timing.
-- Vision: face landmarks now, person segmentation later.
-- Metal / Core Image: realtime render graph, color/filter paths, and still-image processing.
-- XCTest / xcodebuild: package, facade, and Demo verification.
+
+- SwiftPM / XCTest: existing SDK test backbone.
+- XCUITest / simulator screenshots: best fit for deterministic Demo QA.
+- Instruments / XCTMetric: repeatable performance and memory evidence.
+- Metal best-practice checks: persistent objects, bounded per-frame work, and no realtime blocking waits.
+- Privacy manifests and security scans: required for distribution-like SDK review.
 
 ### Expected Features
 
-**Must have (table stakes):**
-- Public `BeautySDK` facade with `BeautyEngine`, configuration, parameters, presets, result, and typed errors.
-- Modular SDK targets for core, detection, render, effects, resources, and facade.
-- No-op frame/image processing path before visible effects.
-- Realtime camera preview and still-image processing through SDK.
-- 1.0 parameter model, built-in presets, skin/color/filter MVP, and first face/eye/nose/mouth controls.
-- Demo categories, sliders, compare/reset, disabled states, diagnostics, and error/degradation UI.
+**Must have:**
 
-**Should have (competitive):**
-- Meitu/Xingtu-style Demo polish with rich categories and preset-first flow.
-- Naturalness safety caps and fixture checks.
-- Resource manifest validation for presets, LUTs, makeup packs, and future stickers.
-- Makeup, segmentation/background, and multi-face tuning after foundation quality is proven.
+- Baseline quality/debt audit.
+- Full SDK/Demo verification sweep or reproducible local blocker notes.
+- Automated or documented visual QA evidence.
+- Performance and long-run reliability checks.
+- Renderer output regression.
+- Privacy/resource/logging review.
 
-**Defer (v2+):**
-- Body shaping, AI style generation, AR stickers, background replacement at production quality, video export, and commercial SDK distribution hardening.
+**Should have:**
+
+- Physical-device smoke protocol and evidence when hardware is available.
+- Updated quality scores after evidence exists.
+- Negative scans for no new API/UI/network/product scope.
+
+**Defer:**
+
+- New public `BeautyParameters`.
+- Geometry-heavy saved-image completion.
+- New Meitu product areas.
+- SDK packaging/XCFramework distribution beyond assessment.
 
 ### Architecture Approach
 
-Keep the SDK boundary strict. Demo and host apps import only `BeautySDK`; internals are split by responsibility. Use immutable parameter snapshots per process call, a canonical image-normalized coordinate model, a centralized RenderGraph, and validated resource manifests.
+Keep the existing boundary architecture. Demo QA stays in `BeautyDemo` and imports only `BeautySDK`. Renderer regression uses public facade paths. Performance/reliability improvements respect `RELIABILITY.md` budgets and `SECURITY.md` redaction. Diagnostics and metrics stay local, sampled, redacted, and opt-in.
 
 **Major components:**
-1. `BeautyDemo` — SwiftUI UX, permissions, input selection, sliders, compare, debug overlay.
-2. `BeautySDK` facade — public host-facing API and stable error/result mapping.
-3. `BeautyCore` — parameters, configuration, validation, diagnostics, metrics.
-4. `BeautyDetection` — Vision detection, landmarks, tracking, coordinate mapping.
-5. `BeautyRender` — Metal/Core Image contexts, texture caches, pixel buffer pools, render passes.
-6. `BeautyEffects` — skin, color, filter, warp, feature effect construction.
-7. `BeautyResources` — presets, LUTs, makeup/sticker manifests and validators.
+
+1. Baseline ledger and root-doc audit.
+2. Demo visual/UI QA harness.
+3. SDK/Demo performance and long-run gates.
+4. `BeautyExampleRenderer` output regression matrix.
+5. Security/distribution review and closeout scans.
 
 ### Critical Pitfalls
 
-1. **Building effects before foundation** — prevent with package/facade/no-op/tests as first phases.
-2. **Realtime `UIImage` conversion** — keep camera pipeline on sample buffers, pixel buffers, and textures.
-3. **Coordinate and mirroring drift** — add canonical coordinate model and fixtures before geometry effects.
-4. **Naturalness treated as polish** — build caps, presets, and visual checks into effect contracts.
-5. **Unsafe resource loading** — version and validate all presets/LUTs/makeup/sticker resources.
-6. **Late privacy work** — permission strings, redacted logging, and privacy manifest review must appear before relevant features are complete.
+1. **Optimizing without baseline evidence** - prevent with Phase 21 audit and commands.
+2. **Flaky screenshot QA** - prevent with stable routes, explicit destinations, and scoped evidence.
+3. **Simulator-only release claims** - separate simulator evidence from physical-device evidence.
+4. **Privacy manifest drift** - tie manifest review to actual logs, metrics, resource, and network behavior.
+5. **Scope creep** - negative-scan new APIs, UI routes, network behavior, and feature-completion claims.
 
 ## Implications for Roadmap
 
-Based on research, suggested phase structure:
+### Phase 21: Baseline Audit and Quality Ledger Refresh
 
-### Phase 1: SDK Foundation and Public Facade
-**Rationale:** Everything depends on package shape, public API, validation, and tests.
-**Delivers:** `BeautySDK` package targets, value models, typed errors, no-op `BeautyEngine`, initial tests.
-**Addresses:** SDK facade, modular package, default no-op.
-**Avoids:** Demo-only algorithms and untestable foundation.
+**Rationale:** Establish the true debt and verification baseline before fixing anything.
+**Delivers:** Updated quality/debt ledger, stale-doc status, current command inventory, and scoped hardening decisions.
+**Addresses:** Audit and docs requirements.
+**Avoids:** Optimizing without baseline evidence.
 
-### Phase 2: Demo Integration Shell
-**Rationale:** The Demo must prove host-app integration without internal imports.
-**Delivers:** SwiftUI shell organized into camera/image/parameters/presets/diagnostics areas; imports only `BeautySDK`.
-**Addresses:** Rich Demo direction and integration realism.
-**Avoids:** UI-first SDK coupling.
+### Phase 22: Automated Demo QA and Screenshot Evidence
 
-### Phase 3: Camera and Still-Image Processing Flow
-**Rationale:** Realtime and still-image pipelines are table stakes and expose performance/privacy issues early.
-**Delivers:** Camera permission UI, frame input, bounded processing, still-image input, orientation handling, compare/loading/error states.
-**Uses:** AVFoundation, CoreVideo, CoreMedia, SwiftUI, SDK facade.
+**Rationale:** v1.1/v1.2 UI evidence exists, but automation and layout sweeps are still future.
+**Delivers:** Simulator UI/screenshot route evidence or documented local blockers.
+**Addresses:** Visual QA and UI automation requirements.
+**Avoids:** Manual-only UI confidence.
 
-### Phase 4: Detection and Coordinate Foundation
-**Rationale:** Geometry effects cannot be reliable without landmarks and coordinate contracts.
-**Delivers:** Vision detection abstraction, face observations, landmarks, orientation/mirroring mappers, fixture tests.
-**Implements:** `BeautyDetection` plus core coordinate models.
+### Phase 23: Performance and Reliability Gates
 
-### Phase 5: RenderGraph, Resources, Filters, and Presets
-**Rationale:** Visible effects need ordered rendering and validated resources.
-**Delivers:** Metal/Core Image render foundation, color/filter controls, LUT/preset resource validation, built-in presets.
-**Avoids:** Per-effect rendering islands and untrusted resources.
+**Rationale:** `RELIABILITY.md` has budgets but current score shows performance tests at 0.
+**Delivers:** Timing/memory/backpressure/quality-mode checks and long-run protocol.
+**Addresses:** Performance and reliability requirements.
+**Avoids:** Release-readiness claims without budgets.
 
-### Phase 6: Core Beauty Effects
-**Rationale:** After detection/render/resources exist, implement the MVP value users expect.
-**Delivers:** Skin smoothing/whitening/rosy/sharpen, face shape, eyes, nose, mouth, naturalness caps, no-face degradation.
-**Addresses:** Product MVP from `PRODUCT_SENSE.md`.
+### Phase 24: Renderer Output Regression Hardening
 
-### Phase 7: Rich Demo Experience and QA Surface
-**Rationale:** The SDK needs a convincing Meitu/Xingtu-style validation surface.
-**Delivers:** Bottom categories, sliders, preset-first flow, reset, compare, debug overlay, fixture-driven QA, disabled/unavailable states.
-**Uses:** SDK facade only.
+**Rationale:** `BeautyExampleRenderer` exists and should become a stronger regression gate.
+**Delivers:** No-op tolerance, visible-output checks, matrix documentation, and geometry-output honesty.
+**Addresses:** Render and output requirements.
+**Avoids:** Provider tests being mistaken for visual completion.
 
-### Phase 8: Advanced Modules
-**Rationale:** Advanced feature breadth should follow the stable MVP.
-**Delivers:** Makeup, background/segmentation, multi-face, LUT packs, parameter import/export, and later video/body/stickers.
-**Research flag:** Each advanced module should receive phase-level research before planning.
+### Phase 25: Security, Distribution Review, and Closeout
+
+**Rationale:** Privacy manifest, resource trust, redaction, and scope scans are closeout concerns for a hardening milestone.
+**Delivers:** Privacy/resource/log review, final negative scans, quality score updates, and milestone closeout evidence.
+**Addresses:** Security and traceability requirements.
+**Avoids:** Privacy drift and scope creep.
 
 ### Phase Ordering Rationale
 
-- The order follows technical dependencies: package/API before integration, integration before input pipelines, input before detection, detection before geometry, render/resources before rich effects.
-- The order prevents the most expensive reversals: coordinate rewrites, realtime pipeline rewrites, and public API churn.
-- The Demo grows alongside the SDK but remains a consumer of public APIs, which keeps integration tests honest.
+- Baseline first so later work closes verified gaps.
+- Visual QA before UI cleanup so layout changes have evidence.
+- Performance before optimization claims so measurements define success.
+- Renderer regression before final closeout so output claims are concrete.
+- Security/distribution review last so it reflects all v1.4 behavior.
 
 ### Research Flags
 
-Phases likely needing deeper research during planning:
-- **Camera and Still-Image Processing:** AVFoundation frame delivery, orientation, and backpressure details.
-- **Detection and Coordinates:** Vision landmarks, mirroring, fixture strategy.
-- **RenderGraph and Effects:** Metal pass design, texture reuse, effect ordering.
-- **Resources and Advanced Modules:** Manifest formats, LUT dimensions, makeup attachment, segmentation masks.
-- **Video Export / Commercial Distribution:** Export pipeline, privacy manifests, packaging, and compatibility.
-
-Phases with standard patterns:
-- **SDK Foundation:** Swift Package, facade, value models, typed errors, no-op tests.
-- **Demo Integration Shell:** SwiftUI app organization and public-facade import checks.
+- **Phase 22:** May need local simulator availability checks before screenshot automation.
+- **Phase 23:** May need deeper Instruments/xctrace details during planning.
+- **Phase 25:** May need exact `PrivacyInfo.xcprivacy` contents during planning.
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
-|------|------------|-------|
-| Stack | HIGH | Verified against current repo facts and Apple platform docs. |
-| Features | MEDIUM/HIGH | MVP is strongly defined by local docs; broader competitor parity should be validated per advanced module. |
-| Architecture | HIGH | Root contracts and platform constraints align. |
-| Pitfalls | HIGH | Pitfalls map directly to known iOS media, Vision, Metal, privacy, and SDK-boundary risks. |
+| --- | --- | --- |
+| Stack | HIGH | Existing Apple-native stack matches official guidance and project constraints. |
+| Features | HIGH | Derived from `.planning/PROJECT.md`, `QUALITY_SCORE.md`, `RELIABILITY.md`, `SECURITY.md`, and `PLANS.md`. |
+| Architecture | HIGH | v1.4 preserves the established SDK/Demo boundaries. |
+| Pitfalls | MEDIUM | Pitfalls are strongly supported locally; exact automation fragility depends on machine/simulator state. |
 
-**Overall confidence:** HIGH for roadmap foundation; MEDIUM for later advanced feature ordering.
+**Overall confidence:** HIGH
 
 ### Gaps to Address
 
-- **Visual quality benchmarks:** Need fixture images and acceptance thresholds during effect phases.
-- **Device compatibility:** Current repo targets iOS 26.5; any lower target requires availability review.
-- **Advanced makeup/body/style modules:** Need dedicated research before implementation.
-- **Commercial SDK distribution:** Needs privacy manifest, package/binary strategy, and integration documentation later.
+- Hardware availability: physical iPhone checks may be blocked locally; record status explicitly.
+- Performance tooling depth: Phase 23 planning should decide between XCTMetric, xctrace, or a narrow command-level harness per target.
+- Privacy manifest contents: Phase 25 should inspect actual API/resource/log behavior before writing or changing manifest files.
 
 ## Sources
 
-### Primary (HIGH confidence)
-- Apple Developer Documentation, `AVCaptureVideoDataOutput`: https://developer.apple.com/documentation/avfoundation/avcapturevideodataoutput
-- Apple Technical Note TN2445, Handling Frame Drops with `AVCaptureVideoDataOutput`: https://developer.apple.com/library/archive/technotes/tn2445/_index.html
-- Apple Developer Documentation, `VNDetectFaceLandmarksRequest`: https://developer.apple.com/documentation/vision/vndetectfacelandmarksrequest
-- Apple Developer Documentation, Metal: https://developer.apple.com/documentation/metal
-- Apple Developer Documentation, `CIColorCube`: https://developer.apple.com/documentation/coreimage/cicolorcube
-- Apple Developer Documentation, PackageDescription / Swift Package Manager: https://developer.apple.com/documentation/PackageDescription
-- Apple Developer Documentation, Observation: https://developer.apple.com/documentation/observation
-- Apple Developer Documentation, privacy manifests for apps and third-party SDKs: https://developer.apple.com/documentation/bundleresources/adding-a-privacy-manifest-to-your-app-or-third-party-sdk
-- Local root contracts: `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`.
+### Primary
 
-### Secondary (MEDIUM confidence)
-- Local `docs/01_product_feature_plan.md` and `docs/02_development_stages_full_plan.md` — broad feature and phase ambition.
-- Local `.planning/codebase/*.md` — current brownfield implementation facts.
-
-### Tertiary (LOW confidence)
-- None used for core recommendations.
+- `QUALITY_SCORE.md` - current quality scores and repair queue.
+- `RELIABILITY.md` - budgets, degradation, long-run, and release readiness gates.
+- `SECURITY.md` - privacy manifest, local-first, resource trust, and logging requirements.
+- `.planning/PROJECT.md` and `.planning/STATE.md` - v1.3 completion state and next-milestone candidates.
+- Apple Xcode performance documentation: https://developer.apple.com/documentation/xcode/improving-your-app-s-performance
+- Apple Metal Best Practices Guide: https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/MTLBestPracticesGuide/PersistentObjects.html
+- Apple XCTest metrics documentation: https://developer.apple.com/documentation/xctest/xctmetric
+- Apple AVFoundation late-frame discard property: https://developer.apple.com/documentation/avfoundation/avcapturevideodataoutput/alwaysdiscardslatevideoframes
+- Apple privacy manifest documentation: https://developer.apple.com/documentation/bundleresources/privacy-manifest-files
+- Apple Vision face landmarks request documentation: https://developer.apple.com/documentation/vision/vndetectfacelandmarksrequest
 
 ---
-*Research completed: 2026-06-10*
+*Research completed: 2026-06-30*
 *Ready for roadmap: yes*

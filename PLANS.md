@@ -26,9 +26,30 @@
 
 ## 3. Active
 
-No active work. Select the next milestone before starting new scoped implementation.
+No active implementation work. Next step is `$gsd-discuss-phase 21`.
 
 ## 4. Completed
+
+### C-2026-06-30-gsd-new-milestone-v1-4
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-30 |
+| Scope | Ran `$gsd-new-milestone` for v1.4 after user selected research-first and then confirmed the proposed hardening scope. Started v1.4 as a stability, QA, and technical-debt cleanup milestone, wrote the current research package, updated project/state context, created requirements and roadmap artifacts, and kept phase numbering continuing from Phase 21 while preserving existing `.planning/phases/` history directories. |
+| Requirements | AUD-01, AUD-02, AUD-03, AUD-04, QA-01, QA-02, QA-03, QA-04, PERF-01, PERF-02, PERF-03, PERF-04, PERF-05, RENDER-01, RENDER-02, RENDER-03, RENDER-04, SEC-01, SEC-02, SEC-03, SEC-04, DOC-01, DOC-02, DOC-03 |
+| Files | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/research/STACK.md`, `.planning/research/FEATURES.md`, `.planning/research/ARCHITECTURE.md`, `.planning/research/PITFALLS.md`, `.planning/research/SUMMARY.md`, `PLANS.md` |
+| Verification | `state.milestone-switch --milestone "v1.4" --name "Stability, QA, and Debt Cleanup"` returned `switched: true` and `status: planning`; `roadmap analyze` parsed 5 v1.4 phases with `next_phase: "21"`; custom REQ-ID check reported 24 requirements, 24 trace rows, 24 phase-mapped IDs, and no missing or extra mappings; placeholder scan over `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, and `.planning/research/` returned no matches; `git diff --check` passed for scoped v1.4 planning files and `PLANS.md`. |
+| Build | Not run; this was a GSD planning/research/documentation workflow with no Swift source changes. |
+| Commit | Final scoped milestone-start commit records these artifacts. |
+
+Outcome:
+
+- v1.4 is now the active milestone: `Stability, QA, and Debt Cleanup`.
+- `.planning/REQUIREMENTS.md` defines 24 hardening requirements with full traceability.
+- `.planning/ROADMAP.md` defines Phase 21 through Phase 25.
+- `.planning/STATE.md` points to Phase 21 as the next step.
+- Existing `.planning/phases/` history directories were intentionally left in place.
+- Next step is `$gsd-discuss-phase 21`.
 
 ### C-2026-06-30-gsd-complete-milestone-v1-3
 
