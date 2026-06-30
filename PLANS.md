@@ -26,10 +26,31 @@
 
 ## 3. Active
 
-No active plan. The next planned v1.3 step is `$gsd-discuss-phase 20`.
+No active plan. The next planned v1.3 step is `$gsd-plan-phase 20`.
 
 
 ## 4. Completed
+
+### C-2026-06-30-gsd-discuss-phase-20-core-module-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-30 |
+| Scope | Ran `$gsd-discuss-phase 20` for Phase 20 Core Module Closeout. Captured user decisions for editor-shell closeout strictness, visible evidence thresholds, and ledger/root-contract sync depth before Phase 20 planning. |
+| Requirements | EDITOR-01, EDITOR-02, EDITOR-03, MOD-02, MOD-03, MOD-04 |
+| Files | `.planning/phases/20-core-module-closeout/20-CONTEXT.md`, `.planning/phases/20-core-module-closeout/20-DISCUSSION-LOG.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.phase-op 20` reported `phase_found: true`, `phase_dir: null`, `expected_phase_dir: .planning/phases/20-core-module-closeout`, `has_context: false`, `has_plans: false`, and `plan_count: 0`; no Phase 20 `.continue-here.md`, `*-SPEC.md`, existing context, existing checkpoint, existing plans, or matching TODOs were found; user selected all three gray areas and chose the recommended closeout decisions in text-mode fallback after `request_user_input` was unavailable; `git diff --check` passed for `20-CONTEXT.md` and `20-DISCUSSION-LOG.md`; the interim `20-DISCUSS-CHECKPOINT.json` was removed after context/log creation; `state.record-session --stopped-at "Phase 20 context gathered" --resume-file ".planning/phases/20-core-module-closeout/20-CONTEXT.md"` reported `recorded: true`. |
+| Build | Not run; this was a GSD context/documentation workflow with no Swift source changes. Phase 20 planning is expected to include full SDK tests, current renderer matrix, editor evidence scans/tests where practical, and ledger checks. |
+| Commit | `17decb1` captured Phase 20 context/log; `2b17c5e` recorded the state session; final ledger commit records this `PLANS.md` update. |
+
+Outcome:
+
+- Phase 20 planning should tighten editor-shell blueprint docs and reconcile `FRONTEND.md` / `PRODUCT_SENSE.md` only where closeout needs explicit acceptance or evidence wording.
+- Editor-shell support is existing app-side behavior to document and verify; Phase 20 must not add SwiftUI screens, Demo interaction rewrites, public parameters, renderer cases, or SDK ownership creep.
+- Visible closeout requires `swift test --package-path BeautySDK`, all current `BeautyExampleRenderer` cases, dimension/watermark checks, and factual visual observations without production-quality claims.
+- Shaping branches remain `partial` or `blocked-by-geometry-output`; provider/resolver evidence is not saved-image visual completion.
+- Closeout should update current authority docs and planning ledgers, preserve explicit limitation/deferred tables, and avoid normalizing historical docs unless stale wording misroutes current agents.
+- Next step is `$gsd-plan-phase 20`.
 
 ### C-2026-06-29-gsd-execute-phase-19-beauty-shaping-core-modules
 
