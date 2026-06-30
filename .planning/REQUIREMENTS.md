@@ -10,10 +10,12 @@ v1.4 is a hardening and technical-debt cleanup milestone. It converts known post
 
 ### Audit and Baseline
 
-- [ ] **AUD-01**: Maintainers can see an updated quality and debt baseline that distinguishes still-open debt, completed debt, blocked hardware checks, and obsolete historical items.
-- [ ] **AUD-02**: Maintainers can run or inspect a documented baseline verification sweep for existing SDK tests, Demo build/test commands, import/privacy scans, and renderer commands; any local toolchain blocker is recorded with the failing command.
-- [ ] **AUD-03**: Current root contracts and `.planning` artifacts describe v1.4 as stability, QA, performance, security, and cleanup work rather than new product-feature work.
-- [ ] **AUD-04**: Open debt items TD-005, TD-008, TD-009, and TD-010 are triaged into this milestone, explicitly deferred, or marked blocked with evidence.
+- [x] **AUD-01**: Maintainers can see an updated quality and debt baseline that distinguishes still-open debt, completed debt, blocked hardware checks, and obsolete historical items.
+- [x] **AUD-02**: Maintainers can run or inspect a documented baseline verification sweep for existing SDK tests, Demo build/test commands, import/privacy scans, and renderer commands; any local toolchain blocker is recorded with the failing command.
+- [x] **AUD-03**: Current root contracts and `.planning` artifacts describe v1.4 as stability, QA, performance, security, and cleanup work rather than new product-feature work.
+- [x] **AUD-04**: Open debt items TD-005, TD-008, TD-009, and TD-010 are triaged into this milestone, explicitly deferred, or marked blocked with evidence.
+
+Phase 21 evidence is recorded in `.planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-BASELINE-AUDIT.md` and refreshed into `QUALITY_SCORE.md`, `PLANS.md`, `.planning/PROJECT.md`, `.planning/STATE.md`, and `.planning/ROADMAP.md`. Current SDK tests and renderer commands pass; explicit Demo simulator build/test evidence is blocked by the missing local Metal Toolchain; stale `.planning/codebase/*` maps are deferred background. TD-005 routes to Phase 25, TD-008 splits to Phase 22/23 with physical iPhone evidence blocked until hardware exists, TD-009 routes to Phase 22, and TD-010 splits across Phases 22/23/24/25.
 
 ### Automated Demo QA
 
@@ -77,10 +79,10 @@ Deferred to later milestones unless explicitly promoted.
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| AUD-01 | Phase 21 | Planned |
-| AUD-02 | Phase 21 | Planned |
-| AUD-03 | Phase 21 | Planned |
-| AUD-04 | Phase 21 | Planned |
+| AUD-01 | Phase 21 | Complete |
+| AUD-02 | Phase 21 | Complete |
+| AUD-03 | Phase 21 | Complete |
+| AUD-04 | Phase 21 | Complete |
 | QA-01 | Phase 22 | Planned |
 | QA-02 | Phase 22 | Planned |
 | QA-03 | Phase 22 | Planned |
@@ -110,4 +112,4 @@ Deferred to later milestones unless explicitly promoted.
 
 ---
 *Requirements defined: 2026-06-30*
-*Last updated: 2026-06-30 after v1.4 roadmap creation*
+*Last updated: 2026-06-30 after Phase 21 baseline audit*

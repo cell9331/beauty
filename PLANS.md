@@ -26,7 +26,15 @@
 
 ## 3. Active
 
-No active implementation work. Next step is `$gsd-execute-phase 21`.
+Phase 21 Baseline Audit and Quality Ledger Refresh is active.
+
+| Field | Value |
+| --- | --- |
+| Status | `active` |
+| Scope | Execute `$gsd-execute-phase 21` without source changes: baseline audit evidence, quality-score refresh, TD-005/TD-008/TD-009/TD-010 routing, and planning-ledger closeout. |
+| Current Step | Plan 21-02 ledger synchronization is in progress after Plan 21-01 created `21-BASELINE-AUDIT.md` and Task 1 refreshed `QUALITY_SCORE.md` in commit `c1af498`. |
+| Next Step | Create Phase 21 closeout verification and `21-02-SUMMARY.md`, then route to `$gsd-discuss-phase 22`. |
+| Known Blocker | Current Demo simulator build/test evidence is blocked by missing local Metal Toolchain when compiling `BeautySDK/Sources/BeautyRender/Shaders/Warp.metal`; Phase 22 must rerun after `xcodebuild -downloadComponent MetalToolchain`. |
 
 ## 4. Completed
 
@@ -989,12 +997,13 @@ Outcome:
 | TD-002 | SDK Package | `BeautySDK` Swift Package 尚未创建。 | 根级架构文档已定义目标结构，但代码仍只有 Demo 模板。 | Phase 1 已创建 SPM 与 facade / internal targets；后续按 roadmap 扩展真实检测、资源、效果和 Demo 集成。 | `completed` |
 | TD-003 | Demo UI | `BeautyDemo` 仍是默认 `Hello, world!` SwiftUI 模板。 | 无法验证产品旅程、参数面板、相机预览。 | 按 `FRONTEND.md` 建立 Demo App 目录与最小页面。 | `open` |
 | TD-004 | Tests | 尚无 SDK 单元测试、渲染测试、UI 测试。 | 质量评分和发布门禁暂只能靠文档检查。 | Phase 1 已创建 facade/core/render foundation XCTest；Detection、Resources、Effects、Demo UI、性能和长跑测试仍按后续阶段补齐。 | `partial` |
-| TD-005 | Privacy Manifest | 尚未创建 `PrivacyInfo.xcprivacy`。 | 未来分发 SDK 或使用 required-reason APIs 时会成为合规风险。 | SDK target 创建后按 `SECURITY.md` 评估并添加。 | `open` |
+| TD-005 | Privacy Manifest | Phase 21 `find BeautySDK BeautyDemo -name PrivacyInfo.xcprivacy -print` found no privacy manifest. | Future distribution or required-reason API usage can become a compliance risk if not assessed. | Route to Phase 25: assess actual SDK/Demo behavior and Apple required-reason API usage, then add or explicitly defer `PrivacyInfo.xcprivacy`. | `routed` |
 | TD-006 | Historical Docs | `docs/` 下历史长文档与根级文档存在重叠。 | Agent 可能读取到旧结论。 | 已将 `docs/README.md` 设为长文档入口，并在 `QUALITY_SCORE.md` 中加入旧文件名、source import JSON、关键术语一致性扫描规则。 | `completed` |
 | TD-007 | GSD Traceability | v2 `ADV-01` through `ADV-10` appear in `.planning/REQUIREMENTS.md` body but not its Traceability table; `phase.complete` warns about them. | GSD audits may continue surfacing deferred v2 IDs even though v1 SDK traceability is complete. | Decide whether deferred v2 requirements should be added to Traceability as Deferred or moved to a separate backlog table. | `open` |
-| TD-008 | Manual Device QA | Phase 4 simulator/tests cannot prove real-device front-camera mirroring or real Vision quality. | Mirror/crop expectations and real detector behavior may differ from synthetic fixtures. | On a physical iPhone, run front-camera preview and confirm mirrored preview with stable processed crop; run no-face, partial-face, and low-light face checks and confirm expected status copy with no crash. | `open` |
-| TD-009 | Manual Visual QA | Phase 5 view-state tests verify preset/filter chip labels, ordering, enabled state, and copy, but no simulator screenshot or human visual smoke was performed for actual layout. | Preset/filter chips could visually clip or feel crowded despite passing model-level tests. | Launch Demo, open Beauty and Filters panels, and confirm preset/filter chips plus color/filter sliders fit without clipping across the target simulator sizes. | `open` |
-| TD-010 | Phase 6 Visual and Hardware QA | Phase 6 automated fixtures prove deterministic MVP output, caps, skips, and Demo state, but not final naturalness, production GPU quality, real camera parity, or long-run performance. | Release-like claims could overstate visual quality or device behavior beyond current automated evidence. | Inspect fixed fixtures or simulator preview for naturalness; run real-device front-camera and still-image smoke; add screenshot/UI automation, production render regression, 720p timing, and long-run memory checks in Phase 7 or a dedicated QA phase. | `open` |
+| TD-008 | Manual Device QA | Phase 21 found available iOS 26.5 simulators but collected no physical iPhone evidence. Explicit Demo simulator build/test is also blocked by missing local Metal Toolchain. | Mirror/crop expectations, real detector behavior, and hardware endurance may differ from simulator and synthetic fixtures. | Split route: Phase 22 reruns Demo simulator build/test plus visual/camera evidence after Metal Toolchain repair; Phase 23 covers performance/long-run evidence; physical iPhone checks remain `blocked` until device evidence is available. | `routed/blocked` |
+| TD-009 | Manual Visual QA | Phase 21 did not capture new screenshots or human visual smoke; current `xcodebuild` Demo build is blocked by missing Metal Toolchain. | Preset/filter chips, controls, labels, badges, and panels could visually clip despite model-level tests. | Route to Phase 22: produce deterministic Demo visual/layout evidence under `.planning/evidence/v1.4/` or record the exact local blocker. | `routed` |
+| TD-010 | Phase 6 Visual and Hardware QA | Phase 21 SDK tests and renderer commands passed, but release-like naturalness, production GPU quality, real camera parity, automated screenshot diffing, 720p timing, and long-run memory remain unproved. | Release-like claims could overstate visual quality or device behavior beyond current automated evidence. | Split route: Phase 22 visual/layout, Phase 23 performance/long-run, Phase 24 renderer output regression/no-op tolerance, and Phase 25 privacy/security implications. | `routed` |
+| TD-011 | Stale Codebase Maps | Phase 21 read `.planning/codebase/*` and found stale maps that still describe missing SDK/tests despite current SwiftPM package and 141 passing SDK XCTest cases. | Future agents could follow obsolete codebase maps instead of current source, root docs, and `.planning` ledgers. | Treat maps as stale background only; defer formal `$gsd-map-codebase` refresh until explicitly scoped. | `deferred` |
 
 ## 6. Plan Template
 

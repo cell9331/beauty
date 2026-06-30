@@ -4,7 +4,7 @@
 
 Beauty v1.4 is a stability, QA, and technical-debt cleanup milestone. It converts known post-v1.3 release-hardening risks into measurable gates: baseline audit, automated Demo visual QA, performance/reliability evidence, renderer output regression, privacy/resource review, and documentation/traceability cleanup.
 
-This milestone does not add new Meitu product surfaces, public `BeautyParameters`, cloud/network behavior, payment/VIP/account flows, or broad UI redesign. Phase numbering continues from Phase 21, and existing `.planning/phases/` history directories remain in place.
+This milestone does not add Meitu product-surface breadth, public parameter fields, remote-processing behavior, paid-account flows, or broad UI redesign. Phase numbering continues from Phase 21, and existing `.planning/phases/` history directories remain in place.
 
 ## Milestones
 
@@ -30,12 +30,14 @@ This milestone does not add new Meitu product surfaces, public `BeautyParameters
 3. TD-005, TD-008, TD-009, and TD-010 are triaged into v1.4 phases, explicitly deferred, or marked blocked with evidence.
 4. No product-feature or public-API expansion enters the baseline phase.
 
-**Plans:** 2 plans across 2 waves
+**Plans:** 2 plans across 2 waves; 1/2 complete
 
-- **Wave 1:** `21-01` Baseline verification sweep and evidence ledger.
-- **Wave 2:** `21-02` Quality score, debt routing, and planning ledger refresh. Depends on `21-01`.
+- **Wave 1:** `21-01` Baseline verification sweep and evidence ledger - complete in `21-BASELINE-AUDIT.md`.
+- **Wave 2:** `21-02` Quality score, debt routing, and planning ledger refresh - in progress. Depends on `21-01`.
 
-**Next command:** `$gsd-execute-phase 21`
+**Current evidence:** Phase 21 `swift test --package-path BeautySDK` passed with 141 XCTest cases, `BeautyExampleRenderer` built and wrote 45 ignored outputs, boundary/privacy scans passed, and explicit Demo simulator build/test evidence is blocked by the missing local Metal Toolchain. TD-005 routes to Phase 25; TD-008 splits to Phase 22/Phase 23 with physical iPhone checks blocked until hardware evidence exists; TD-009 routes to Phase 22; TD-010 splits across Phases 22, 23, 24, and 25. Stale `.planning/codebase/*` maps are deferred background.
+
+**Next command:** Finish `$gsd-execute-phase 21` closeout, then `$gsd-discuss-phase 22`.
 
 ### Phase 22: Automated Demo QA and Screenshot Evidence
 
@@ -111,7 +113,7 @@ This milestone does not add new Meitu product surfaces, public `BeautyParameters
 
 | Phase | Milestone | Requirements | Plans Complete | Status |
 | --- | --- | --- | ---: | --- |
-| 21. Baseline Audit and Quality Ledger Refresh | v1.4 | AUD-01, AUD-02, AUD-03, AUD-04 | 0/2 | Planned |
+| 21. Baseline Audit and Quality Ledger Refresh | v1.4 | AUD-01, AUD-02, AUD-03, AUD-04 | 1/2 | In Progress |
 | 22. Automated Demo QA and Screenshot Evidence | v1.4 | QA-01, QA-02, QA-03, QA-04 | 0/0 | Planned |
 | 23. Performance and Reliability Gates | v1.4 | PERF-01, PERF-02, PERF-03, PERF-04, PERF-05 | 0/0 | Planned |
 | 24. Renderer Output Regression Hardening | v1.4 | RENDER-01, RENDER-02, RENDER-03, RENDER-04 | 0/0 | Planned |
@@ -132,5 +134,5 @@ Future milestone candidates after v1.4:
 - Filters, makeup, stickers, templates, and resource-pack planning.
 - AI retouch, background segmentation, cutout, and eraser planning.
 - Video beauty, body shaping, and export pipeline planning.
-- Gallery, account, search, VIP, payment, and entitlement planning.
+- Gallery, account, search, premium access, commerce, and account authorization planning.
 - SDK packaging, compatibility matrix, binary distribution, resource-pack trust model, and commercial integration docs.

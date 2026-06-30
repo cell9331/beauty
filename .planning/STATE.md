@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Stability, QA, and Debt Cleanup
-status: planning
-stopped_at: Phase 21 planned
-last_updated: "2026-06-30T05:23:34.687Z"
-last_activity: 2026-06-30 — Phase 21 planned
+status: executing
+stopped_at: Phase 21 Plan 21-02 ledger refresh in progress
+last_updated: "2026-06-30T08:20:00.000Z"
+last_activity: 2026-06-30 — Phase 21 baseline audit captured and quality ledger refresh in progress
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 2
-  completed_plans: 0
-  percent: 0
+  completed_plans: 1
+  percent: 50
 ---
 
 # Project State
@@ -26,9 +26,9 @@ See: `.planning/PROJECT.md` (updated 2026-06-30)
 ## Current Position
 
 Phase: 21 - Baseline Audit and Quality Ledger Refresh
-Plan: 2 plans across 2 waves
-Status: Planned; ready for Phase 21 execution
-Last activity: 2026-06-30 — Phase 21 planned
+Plan: 21-02 - Quality score, debt routing, and planning ledger refresh
+Status: In progress; Plan 21-01 baseline evidence is complete and Plan 21-02 ledger synchronization is underway
+Last activity: 2026-06-30 — `21-BASELINE-AUDIT.md` created and `QUALITY_SCORE.md` refreshed from Phase 21 evidence
 
 ## Performance Metrics
 
@@ -63,6 +63,7 @@ Last activity: 2026-06-30 — Phase 21 planned
 | 18. Skin Retouch Core Modules | 3/3 | Complete |
 | 19. Beauty Shaping Core Modules | 5/5 | Complete |
 | 20. Core Module Closeout | 2/2 | Complete |
+| 21. Baseline Audit and Quality Ledger Refresh | 1/2 | In Progress |
 | Phase 18 P1 | 8 min | 2 tasks | 2 files |
 | Phase 18 P2 | 117 min | 3 tasks | 10 files |
 | Phase 18 P3 | 19 min | 3 tasks | 6 files |
@@ -96,20 +97,26 @@ Recent milestone-level outcomes:
 - Phase 18 completed Basic skin retouch work behind existing SDK boundaries: focused Basic skin, resolver, and engine tests passed; all current Basic skin renderer cases wrote ignored local outputs; representative output dimensions, labels, and factual visual observations passed; future skin-retouch branches remain future.
 - Phase 19 completed beauty-shaping core-module evidence behind SDK boundaries: branch docs and ownership exist, promoted partial branches have provider/resolver/degradation/cap/redaction XCTest evidence, full `swift test --package-path BeautySDK` passed with 141 tests, final API/UI/renderer/status/redaction scans passed, and geometry-heavy saved-image output remains deferred until public facade detection plus geometry rendering exists.
 - Phase 20 completed v1.3 core module closeout: editor-shell support is documented as Demo-owned no-new-UI app-side behavior, full `swift test --package-path BeautySDK` passed with 141 tests, `BeautyExampleRenderer` built and ran all current skin/color/filter cases, 45 ignored renderer outputs were non-empty and same-dimension, no public parameter/import/UI/renderer/status drift was found, and `20-VERIFICATION.md` preserves geometry saved-output and release-hardening limitations.
-- v1.4 focuses on stability, QA, performance, security, and technical-debt cleanup. It does not add new product areas, public `BeautyParameters`, hidden network/cloud behavior, payment/VIP/account flows, or broad UI redesign.
+- v1.4 focuses on stability, QA, performance, security, and technical-debt cleanup. It does not add product-area breadth, public parameter fields, hidden remote-processing behavior, paid-account flows, or broad UI redesign.
 - v1.4 uses Phase 21 through Phase 25 and keeps existing `.planning/phases/` history directories in place.
+- Phase 21 Plan 21-01 captured the current baseline in `.planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-BASELINE-AUDIT.md`: SDK tests pass with 141 XCTest cases, `BeautyExampleRenderer` builds and writes 45 ignored outputs, boundary/privacy scans pass, and Demo simulator build/test evidence is blocked by the missing local Metal Toolchain.
+- Phase 21 Plan 21-02 refreshed `QUALITY_SCORE.md` from the baseline and routes TD-005 to Phase 25, TD-008 to Phases 22/23 with physical iPhone evidence blocked until hardware exists, TD-009 to Phase 22, and TD-010 across Phases 22/23/24/25.
+- `.planning/codebase/*` maps are stale background for v1.4 and should not override current source, root docs, or `.planning` ledgers.
 
 ### Pending Todos
 
-- Execute Phase 21 with `$gsd-execute-phase 21`.
+- Finish Phase 21 Plan 21-02 closeout with `21-VERIFICATION.md`, `21-02-SUMMARY.md`, roadmap/state completion, and final `PLANS.md` ledger entry.
+- After Phase 21 completes, run `$gsd-discuss-phase 22`.
 - Preserve v1.4 boundaries while planning: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign.
 - Convert release-hardening candidates into measurable evidence or documented blockers: physical-device camera/Vision parity, production naturalness review, screenshot/UI automation, performance budgets, memory/thermal checks, privacy manifest review, and automated visual diffs.
 
 ### Blockers/Concerns
 
-- Current repository has unrelated uncommitted documentation changes outside `.planning`; future commits should keep file scopes explicit.
+- Current repository has unrelated uncommitted documentation changes outside Phase 21 files; future commits should keep file scopes explicit.
 - Deferred v2 `ADV-*` items remain outside v1 traceability and are tracked as `TD-007` in `PLANS.md`.
-- Manual release risks remain tracked as `TD-008`, `TD-009`, and `TD-010`.
+- Manual release risks are now routed by Phase 21: `TD-008` to Phase 22/23 with physical-device checks blocked until hardware exists, `TD-009` to Phase 22, and `TD-010` across Phases 22/23/24/25.
+- `TD-005` remains routed to Phase 25 because no `PrivacyInfo.xcprivacy` exists.
+- Local Demo simulator build/test evidence is blocked until the Xcode Metal Toolchain component is installed.
 - v1.1 reference screenshots are local analysis inputs, not licensed production assets; implementation should recreate structure and feel without copying commercial assets directly.
 - Phase 12-15 cancellation is intentional; do not treat canceled AUDIT, HSWIFT, ESWIFT, or VQA requirements as open blockers.
 - Geometry-heavy branches need face detection plus geometry rendering output before they can claim saved example-image visual completion.
@@ -121,14 +128,15 @@ Recent milestone-level outcomes:
 | Advanced beauty | Makeup, segmentation, body shaping, stickers, AI style, video export, commercial SDK distribution | Deferred to v2+ | Initialization |
 | Release QA | Real-device camera/Vision parity, visual naturalness, production render quality, performance budgets, and long-run hardware readiness | Partially promoted into v1.4 hardening scope; feature expansion remains deferred | v1.4 start |
 | SwiftUI visual fidelity | HTML-to-SwiftUI delta report, Home SwiftUI fidelity pass, Editor SwiftUI fidelity pass, and v1.2 visual QA closeout | Canceled from v1.2; may be reconsidered as a future milestone | 2026-06-26 |
-| Deferred Meitu product areas | Home/discovery, style resources, AI/background, video/body, account/gallery, search, VIP, payment, entitlement | Deferred outside v1.3 core beauty modules | 2026-06-26 |
+| Deferred Meitu product areas | Home/discovery, style resources, AI/background, video/body, account/gallery, search, premium access, commerce, account authorization | Deferred outside v1.3 core beauty modules | 2026-06-26 |
+| Codebase maps | Formal refresh of stale `.planning/codebase/*` maps | Deferred until explicitly scoped | Phase 21 |
 
 ## Session Continuity
 
-Last session: 2026-06-30T04:23:28.053Z
-Stopped at: Phase 21 context gathered
-Resume file: .planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-CONTEXT.md
+Last session: 2026-06-30T08:20:00.000Z
+Stopped at: Phase 21 Plan 21-02 ledger refresh in progress
+Resume file: .planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-02-PLAN.md
 
 ## Operator Next Steps
 
-- Run `$gsd-execute-phase 21` to execute the baseline audit plans.
+- Complete `$gsd-execute-phase 21` by writing `21-VERIFICATION.md`, `21-02-SUMMARY.md`, and the final Phase 21 ledger closeout.
