@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Stability, QA, and Debt Cleanup
 status: planning
-stopped_at: Phase 21 complete
-last_updated: "2026-06-30T08:59:22.789Z"
-last_activity: 2026-06-30 — Phase 21 completed; ready for Phase 22 discussion
+stopped_at: Phase 22 context gathered
+last_updated: "2026-06-30T10:17:41.895Z"
+last_activity: 2026-06-30 — Phase 21 completed with `21-BASELINE-AUDIT.md`, `21-VERIFICATION.md`, and both plan summaries
 progress:
   total_phases: 5
   completed_phases: 1
@@ -132,9 +132,9 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-06-30T08:55:00.000Z
-Stopped at: Phase 21 complete
-Resume file: .planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-VERIFICATION.md
+Last session: 2026-06-30T10:17:41.892Z
+Stopped at: Phase 22 context gathered
+Resume file: .planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-CONTEXT.md
 
 ## Operator Next Steps
 
