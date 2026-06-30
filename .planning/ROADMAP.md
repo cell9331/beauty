@@ -132,8 +132,12 @@ This milestone does not add SwiftUI screens, Home/discovery surfaces, resource/s
 3. Planning documents, docs, and root contracts reflect actual implemented behavior and remaining limitations.
 
 **Plans:** 0/2 plans complete
+**Wave 1**
 
 - [ ] 20-01: Finalize editor support contracts, delivery boundary, and root contract updates.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 20-02: Run closeout tests, example-image renderer, scope scans, and planning consistency checks.
 
 ## Progress

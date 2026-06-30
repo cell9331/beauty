@@ -26,10 +26,30 @@
 
 ## 3. Active
 
-No active plan. The next planned v1.3 step is `$gsd-plan-phase 20`.
+No active plan. The next planned v1.3 step is `$gsd-execute-phase 20`.
 
 
 ## 4. Completed
+
+### C-2026-06-30-gsd-plan-phase-20-core-module-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-30 |
+| Scope | Ran `$gsd-plan-phase 20` for Phase 20 Core Module Closeout. Created research, validation, pattern map, and two executable plans across two waves for editor-shell contract/root wording closeout, full SDK/renderer evidence, negative scans, and planning-ledger completion. |
+| Requirements | EDITOR-01, EDITOR-02, EDITOR-03, MOD-02, MOD-03, MOD-04 |
+| Files | `.planning/phases/20-core-module-closeout/20-RESEARCH.md`, `20-VALIDATION.md`, `20-PATTERNS.md`, `20-01-PLAN.md`, `20-02-PLAN.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.plan-phase 20` reported `phase_status: Planned`, `has_research: true`, `has_context: true`, `has_plans: true`, `plan_count: 2`, and `patterns_path: .planning/phases/20-core-module-closeout/20-PATTERNS.md`; user selected research-first after `request_user_input` was unavailable and the workflow fell back to text-mode; `swift --version` reported Apple Swift 6.3.3 and `xcodebuild -version` reported Xcode 26.6; `swift test --package-path BeautySDK --list-tests` completed and listed the current SDK test inventory; `xcodebuild -list -project BeautyDemo/BeautyDemo.xcodeproj` resolved targets/schemes but reported local CoreSimulator out-of-date, so Phase 20 plans keep broad simulator verification non-required per D-06; renderer case scan found the required nine current cases in `BeautyExampleRenderer/main.swift`; `git diff --check -- .planning/phases/20-core-module-closeout` passed; placeholder scan returned no matches; structural plan scan found required frontmatter, `<objective>`, artifacts, `<threat_model>`, `<tasks>`, `<read_first>`, `<action>`, and `<acceptance_criteria>` in both plans; local requirement coverage found EDITOR-01, EDITOR-02, EDITOR-03, MOD-02, MOD-03, and MOD-04 covered; `check.decision-coverage-plan .planning/phases/20-core-module-closeout .planning/phases/20-core-module-closeout/20-CONTEXT.md` passed with 18/18 decisions covered; `state.planned-phase --phase 20 --name core-module-closeout --plans 2` updated state; `roadmap.annotate-dependencies 20` added two waves; post-planning gap analysis reported Phase 20 requirements and D-01 through D-18 covered while older completed v1.3 requirement IDs were not covered by Phase 20 plans, which is expected non-blocking scope noise. |
+| Build | Not run; this was a GSD planning/documentation workflow with no Swift source changes. Research verified the SDK test inventory with `swift test --package-path BeautySDK --list-tests`; execution Plan 20-02 requires full `swift test --package-path BeautySDK`, renderer build/run, output checks, negative scans, and ledger checks. |
+| Commit | Final planning commit records the Phase 20 plan artifacts, roadmap/state updates, and this ledger entry. |
+
+Outcome:
+
+- Phase 20 now has `20-01-PLAN.md` for editor-shell blueprint, delivery-boundary, and minimal root contract acceptance wording. It explicitly forbids new SwiftUI screens, Demo routes, tool-panel behavior, app-state behavior, public parameters, renderer cases, and historical-doc normalization.
+- Phase 20 now has `20-02-PLAN.md` for full SDK tests, all nine current `BeautyExampleRenderer` cases, output dimension/watermark/factual visual notes, no-new-UI/API/import/renderer/redaction scans, requirement traceability, roadmap/state consistency, and final ledger closeout.
+- `20-RESEARCH.md` records the local CoreSimulator mismatch from `xcodebuild -list`; broad simulator verification remains non-required unless execution changes app behavior.
+- All 18 Phase 20 context decisions are covered by the plans.
+- Next step is `$gsd-execute-phase 20`.
 
 ### C-2026-06-30-gsd-discuss-phase-20-core-module-closeout
 
