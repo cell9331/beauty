@@ -26,17 +26,32 @@
 
 ## 3. Active
 
-Phase 21 Baseline Audit and Quality Ledger Refresh is active.
+No active implementation work. Next step is `$gsd-discuss-phase 22`.
+
+## 4. Completed
+
+### C-2026-06-30-gsd-execute-phase-21-baseline-audit
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
-| Scope | Execute `$gsd-execute-phase 21` without source changes: baseline audit evidence, quality-score refresh, TD-005/TD-008/TD-009/TD-010 routing, and planning-ledger closeout. |
-| Current Step | Plan 21-02 ledger synchronization is in progress after Plan 21-01 created `21-BASELINE-AUDIT.md` and Task 1 refreshed `QUALITY_SCORE.md` in commit `c1af498`. |
-| Next Step | Create Phase 21 closeout verification and `21-02-SUMMARY.md`, then route to `$gsd-discuss-phase 22`. |
-| Known Blocker | Current Demo simulator build/test evidence is blocked by missing local Metal Toolchain when compiling `BeautySDK/Sources/BeautyRender/Shaders/Warp.metal`; Phase 22 must rerun after `xcodebuild -downloadComponent MetalToolchain`. |
+| Completed | 2026-06-30 |
+| Scope | Ran `$gsd-execute-phase 21` for Phase 21 Baseline Audit and Quality Ledger Refresh. Captured current SDK, renderer, Demo, import/privacy, privacy-manifest, root-doc, and planning-ledger baseline evidence; refreshed `QUALITY_SCORE.md`; routed TD-005, TD-008, TD-009, and TD-010; added TD-011 for stale codebase maps; and closed AUD-01 through AUD-04 without source changes. |
+| Requirements | AUD-01, AUD-02, AUD-03, AUD-04 |
+| Files | `.planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-BASELINE-AUDIT.md`, `21-VERIFICATION.md`, `21-01-SUMMARY.md`, `21-02-SUMMARY.md`, `QUALITY_SCORE.md`, `PLANS.md`, `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md` |
+| Verification | `swift test --package-path BeautySDK` passed with 141 XCTest cases; `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed; `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out` wrote 45 ignored PNG outputs; output checks found no zero-byte PNGs and representative same-dimension outputs; `xcodebuild -list -project BeautyDemo/BeautyDemo.xcodeproj` and `xcrun simctl list devices available` succeeded; explicit Demo build on `platform=iOS Simulator,name=iPhone 17,OS=26.5` is blocked by missing local Metal Toolchain while compiling `Warp.metal`, so Demo tests were not rerun; Demo internal import, SDK non-UI import, active Demo local-first, sensitive raw/geometry, public parameter inventory, renderer geometry-case exclusion, privacy manifest inventory, and root placeholder scans were run or classified in `21-BASELINE-AUDIT.md`; `verify.schema-drift 21` reported `drift_detected: false`; active `.planning` scope scan returned no product/API/UI expansion matches; `git diff --check` passed for Phase 21 ledgers. |
+| Build | SwiftPM SDK tests and `BeautyExampleRenderer` build/run passed. Demo simulator build/test remains blocked by missing local Metal Toolchain and is routed to Phase 22. |
+| Commit | `5f3ba69`, `221a8b4`, `0edfc21`, and `4e7fd87` completed Plan 21-01; `c1af498` refreshed `QUALITY_SCORE.md`; `a53a001` routed the baseline debt ledgers; final closeout commits record `21-VERIFICATION.md`, `21-02-SUMMARY.md`, and this ledger entry. |
 
-## 4. Completed
+Outcome:
+
+- AUD-01 through AUD-04 are complete.
+- Current SDK and renderer evidence passes; Demo simulator build/test pass is not claimed.
+- TD-005 is routed to Phase 25.
+- TD-008 is split between Phase 22/23 with physical iPhone evidence blocked until hardware exists.
+- TD-009 is routed to Phase 22.
+- TD-010 is split across Phases 22, 23, 24, and 25.
+- TD-011 records stale `.planning/codebase/*` maps as deferred background.
+- Next step is `$gsd-discuss-phase 22`.
 
 ### C-2026-06-30-gsd-plan-phase-21-baseline-audit
 

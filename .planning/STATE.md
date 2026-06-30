@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Stability, QA, and Debt Cleanup
-status: executing
-stopped_at: Phase 21 Plan 21-02 ledger refresh in progress
-last_updated: "2026-06-30T08:20:00.000Z"
-last_activity: 2026-06-30 — Phase 21 baseline audit captured and quality ledger refresh in progress
+status: planning
+stopped_at: Phase 21 complete
+last_updated: "2026-06-30T08:55:00.000Z"
+last_activity: 2026-06-30 — Phase 21 completed; ready for Phase 22 discussion
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
-  percent: 50
+  completed_plans: 2
+  percent: 20
 ---
 
 # Project State
@@ -25,10 +25,10 @@ See: `.planning/PROJECT.md` (updated 2026-06-30)
 
 ## Current Position
 
-Phase: 21 - Baseline Audit and Quality Ledger Refresh
-Plan: 21-02 - Quality score, debt routing, and planning ledger refresh
-Status: In progress; Plan 21-01 baseline evidence is complete and Plan 21-02 ledger synchronization is underway
-Last activity: 2026-06-30 — `21-BASELINE-AUDIT.md` created and `QUALITY_SCORE.md` refreshed from Phase 21 evidence
+Phase: 22 - Automated Demo QA and Screenshot Evidence
+Plan: Not planned yet
+Status: Phase 21 complete; ready for Phase 22 discussion/planning
+Last activity: 2026-06-30 — Phase 21 completed with `21-BASELINE-AUDIT.md` and `21-VERIFICATION.md`
 
 ## Performance Metrics
 
@@ -63,7 +63,7 @@ Last activity: 2026-06-30 — `21-BASELINE-AUDIT.md` created and `QUALITY_SCORE.
 | 18. Skin Retouch Core Modules | 3/3 | Complete |
 | 19. Beauty Shaping Core Modules | 5/5 | Complete |
 | 20. Core Module Closeout | 2/2 | Complete |
-| 21. Baseline Audit and Quality Ledger Refresh | 1/2 | In Progress |
+| 21. Baseline Audit and Quality Ledger Refresh | 2/2 | Complete |
 | Phase 18 P1 | 8 min | 2 tasks | 2 files |
 | Phase 18 P2 | 117 min | 3 tasks | 10 files |
 | Phase 18 P3 | 19 min | 3 tasks | 6 files |
@@ -100,13 +100,12 @@ Recent milestone-level outcomes:
 - v1.4 focuses on stability, QA, performance, security, and technical-debt cleanup. It does not add product-area breadth, public parameter fields, hidden remote-processing behavior, paid-account flows, or broad UI redesign.
 - v1.4 uses Phase 21 through Phase 25 and keeps existing `.planning/phases/` history directories in place.
 - Phase 21 Plan 21-01 captured the current baseline in `.planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-BASELINE-AUDIT.md`: SDK tests pass with 141 XCTest cases, `BeautyExampleRenderer` builds and writes 45 ignored outputs, boundary/privacy scans pass, and Demo simulator build/test evidence is blocked by the missing local Metal Toolchain.
-- Phase 21 Plan 21-02 refreshed `QUALITY_SCORE.md` from the baseline and routes TD-005 to Phase 25, TD-008 to Phases 22/23 with physical iPhone evidence blocked until hardware exists, TD-009 to Phase 22, and TD-010 across Phases 22/23/24/25.
+- Phase 21 Plan 21-02 refreshed `QUALITY_SCORE.md` from the baseline, closed AUD-01 through AUD-04, and routes TD-005 to Phase 25, TD-008 to Phases 22/23 with physical iPhone evidence blocked until hardware exists, TD-009 to Phase 22, and TD-010 across Phases 22/23/24/25.
 - `.planning/codebase/*` maps are stale background for v1.4 and should not override current source, root docs, or `.planning` ledgers.
 
 ### Pending Todos
 
-- Finish Phase 21 Plan 21-02 closeout with `21-VERIFICATION.md`, `21-02-SUMMARY.md`, roadmap/state completion, and final `PLANS.md` ledger entry.
-- After Phase 21 completes, run `$gsd-discuss-phase 22`.
+- Run `$gsd-discuss-phase 22`.
 - Preserve v1.4 boundaries while planning: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign.
 - Convert release-hardening candidates into measurable evidence or documented blockers: physical-device camera/Vision parity, production naturalness review, screenshot/UI automation, performance budgets, memory/thermal checks, privacy manifest review, and automated visual diffs.
 
@@ -133,10 +132,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-06-30T08:20:00.000Z
-Stopped at: Phase 21 Plan 21-02 ledger refresh in progress
-Resume file: .planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-02-PLAN.md
+Last session: 2026-06-30T08:55:00.000Z
+Stopped at: Phase 21 complete
+Resume file: .planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-VERIFICATION.md
 
 ## Operator Next Steps
 
-- Complete `$gsd-execute-phase 21` by writing `21-VERIFICATION.md`, `21-02-SUMMARY.md`, and the final Phase 21 ledger closeout.
+- Run `$gsd-discuss-phase 22` to plan automated Demo QA and screenshot/layout evidence.

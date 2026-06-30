@@ -12,7 +12,7 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 - ✅ **v1.1 Meitu UI** - Phases 8-10, implemented and verified 2026-06-24. Summary is in `.planning/MILESTONES.md`.
 - ✅ **v1.2 HTML Reference Fidelity** - Phase 11 completed 2026-06-25; Phases 12-15 canceled 2026-06-26. Summary is in `.planning/MILESTONES.md`.
 - ✅ **v1.3 Meitu Core Beauty Module Design and Implementation** - Phases 16-20 shipped 2026-06-30. See `.planning/milestones/v1.3-ROADMAP.md`, `.planning/milestones/v1.3-REQUIREMENTS.md`, and `.planning/milestones/v1.3-MILESTONE-AUDIT.md`.
-- 🟡 **v1.4 Stability, QA, and Debt Cleanup** - Phases 21-25 planned 2026-06-30.
+- 🟡 **v1.4 Stability, QA, and Debt Cleanup** - Phase 21 complete; Phases 22-25 planned.
 
 ## v1.4 Stability, QA, and Debt Cleanup
 
@@ -30,14 +30,14 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 3. TD-005, TD-008, TD-009, and TD-010 are triaged into v1.4 phases, explicitly deferred, or marked blocked with evidence.
 4. No product-feature or public-API expansion enters the baseline phase.
 
-**Plans:** 2 plans across 2 waves; 1/2 complete
+**Plans:** 2 plans across 2 waves; 2/2 complete
 
 - **Wave 1:** `21-01` Baseline verification sweep and evidence ledger - complete in `21-BASELINE-AUDIT.md`.
-- **Wave 2:** `21-02` Quality score, debt routing, and planning ledger refresh - in progress. Depends on `21-01`.
+- **Wave 2:** `21-02` Quality score, debt routing, and planning ledger refresh - complete in `21-VERIFICATION.md`. Depends on `21-01`.
 
 **Current evidence:** Phase 21 `swift test --package-path BeautySDK` passed with 141 XCTest cases, `BeautyExampleRenderer` built and wrote 45 ignored outputs, boundary/privacy scans passed, and explicit Demo simulator build/test evidence is blocked by the missing local Metal Toolchain. TD-005 routes to Phase 25; TD-008 splits to Phase 22/Phase 23 with physical iPhone checks blocked until hardware evidence exists; TD-009 routes to Phase 22; TD-010 splits across Phases 22, 23, 24, and 25. Stale `.planning/codebase/*` maps are deferred background.
 
-**Next command:** Finish `$gsd-execute-phase 21` closeout, then `$gsd-discuss-phase 22`.
+**Next command:** `$gsd-discuss-phase 22`
 
 ### Phase 22: Automated Demo QA and Screenshot Evidence
 
@@ -113,7 +113,7 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 
 | Phase | Milestone | Requirements | Plans Complete | Status |
 | --- | --- | --- | ---: | --- |
-| 21. Baseline Audit and Quality Ledger Refresh | v1.4 | AUD-01, AUD-02, AUD-03, AUD-04 | 1/2 | In Progress |
+| 21. Baseline Audit and Quality Ledger Refresh | v1.4 | AUD-01, AUD-02, AUD-03, AUD-04 | 2/2 | Complete |
 | 22. Automated Demo QA and Screenshot Evidence | v1.4 | QA-01, QA-02, QA-03, QA-04 | 0/0 | Planned |
 | 23. Performance and Reliability Gates | v1.4 | PERF-01, PERF-02, PERF-03, PERF-04, PERF-05 | 0/0 | Planned |
 | 24. Renderer Output Regression Hardening | v1.4 | RENDER-01, RENDER-02, RENDER-03, RENDER-04 | 0/0 | Planned |
