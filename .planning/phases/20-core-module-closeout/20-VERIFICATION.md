@@ -1,6 +1,6 @@
 ---
 phase: 20-core-module-closeout
-status: in_progress
+status: passed
 updated: 2026-06-30
 requirements:
   - EDITOR-01
@@ -305,7 +305,20 @@ Observed summary:
 - `sensitive emitted string scan passed`.
 - No warning, metric, debug label, or emitted string literal exposes `VNFaceObservation`, raw bounding/landmark/control-point internals, absolute private paths, image bytes, `SIMD`, or raw normalized-coordinate examples.
 
-## Pending Ledger Checks
+## Ledger Checks
 
-- Requirements, roadmap, state, project context, and `PLANS.md` closeout.
-- Roadmap analysis, plan index, schema drift, and final formatting checks.
+Phase 20 closeout updates:
+
+- `.planning/REQUIREMENTS.md` marks `EDITOR-01`, `EDITOR-02`, `EDITOR-03`, `MOD-02`, `MOD-03`, and `MOD-04` complete after this verification evidence.
+- `.planning/ROADMAP.md` marks Phase 20 as 2/2 plans complete and v1.3 complete.
+- `.planning/STATE.md` marks v1.3 complete and records Phase 20 closeout evidence.
+- `.planning/PROJECT.md` records v1.3 completion, no-new-UI core module scope, current `BeautyExampleRenderer` evidence, geometry-output limitation, and release-hardening future scope.
+- `PLANS.md` moves the active Phase 20 execution entry into Completed with exact verification evidence.
+
+Post-update checks:
+
+- `roadmap.analyze` passed without changing scope.
+- `phase-plan-index 20` reported both plans complete after `20-02-SUMMARY.md` was created.
+- `verify.schema-drift 20` reported no schema drift.
+- `20-REVIEW.md` records a clean inline review with no Critical, Warning, or Info findings.
+- `git diff --check` passed for Phase 20 planning ledgers, verification, review, and summary files.

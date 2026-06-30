@@ -23,7 +23,7 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ## Current Milestone: v1.3 Meitu Core Beauty Module Design and Implementation
 
-**Status:** Phases 16-19 are complete; Phase 20 Core Module Closeout is next.
+**Status:** Complete as of 2026-06-30.
 
 **Goal:** Reference the Meitu Xiuxiu beauty editor, clarify the core beauty module system, and implement SDK-level core beauty logic without adding new SwiftUI screens.
 
@@ -71,13 +71,17 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 - [x] Canceled: optimize SwiftUI Home and Editor from the approved HTML baselines.
 - [x] Canceled: run the v1.2 SwiftUI fidelity closeout; existing Phase 11 HTML offline evidence remains valid.
 
-### Active in v1.3
+### Completed in v1.3
 
 - [x] Prepare the code-level example-image validation harness before starting feature implementation.
 - [x] Document and keep current the core beauty taxonomy and mind map under `docs/meitu-function-blueprint/`.
 - [x] Design and implement promoted beauty-shaping branch module logic behind SDK boundaries.
 - [x] Design and implement promoted skin-retouch branch module logic behind SDK boundaries.
-- [ ] Verify promoted branches through unit/integration tests and saved example-image outputs when visible rendering is available.
+- [x] Verify promoted branches through unit/integration tests and saved example-image outputs when visible rendering is available.
+
+Phase 20 closeout evidence is recorded in `.planning/phases/20-core-module-closeout/20-VERIFICATION.md`: `swift test --package-path BeautySDK` passed with 141 tests, `BeautyExampleRenderer` built and ran all current skin/color/filter cases, 45 ignored outputs were non-empty and same-dimension, Demo imports remained facade-only, SDK non-UI targets remained SwiftUI/UIKit-free, and the public `BeautyParameters` inventory stayed at the existing 31 fields.
+
+v1.3 remains a no-new-UI core module milestone. Phase 20 added no new SwiftUI screens, public parameters, renderer cases, or geometry saved-image output. Geometry-heavy branches remain partial or `blocked-by-geometry-output`; geometry saved-image output is deferred until public facade detection plus geometry rendering can produce watermarked same-dimension saved outputs. Release-hardening QA remains future work.
 
 ### Out of Scope
 
@@ -153,11 +157,11 @@ Current visual reference contracts:
 | Release-like claims require separate hardware, visual, performance, and long-run evidence. | v1 automation proves correctness and safety, not production naturalness or device endurance. | Revisit in next milestone |
 | v1.1 prioritizes Meitu-style Demo fidelity over new SDK algorithms. | The user rejected the prior Demo surface as not matching the `meituxiuxiu` references; visual/navigation fidelity had to be fixed before claiming a rich Demo. | Completed in v1.1 |
 | v1.2 retains HTML references but cancels SwiftUI tuning. | The user decided on 2026-06-26 to keep the Phase 11 HTML baseline outputs and cancel Phases 12-15 because the subsequent planning direction was not useful. | Reduced-scope complete |
-| v1.3 focuses only on core beauty modules, not UI. | The user clarified that resources, AI, video, account, and gallery should not be planned now, and that this milestone should do core module design, encapsulation, implementation, and direct code-level image validation before any new UI work. | Phases 16-19 complete; continue with Phase 20 closeout |
+| v1.3 focuses only on core beauty modules, not UI. | The user clarified that resources, AI, video, account, and gallery should not be planned now, and that this milestone should do core module design, encapsulation, implementation, and direct code-level image validation before any new UI work. | Completed in Phase 20 |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-06-29 after Phase 19 beauty-shaping execution*
+*Last updated: 2026-06-30 after Phase 20 core-module closeout*

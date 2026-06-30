@@ -35,16 +35,16 @@ Requirements for the core beauty module milestone. v1.3 does not write new Swift
 
 ### Editor Support Contract
 
-- [ ] **EDITOR-01**: Minimal editor shell support is documented for input routing, preview chrome, bottom panel, and commit flow.
-- [ ] **EDITOR-02**: Editor shell documentation clarifies Demo ownership versus SDK ownership for core beauty tools.
-- [ ] **EDITOR-03**: Cancel/confirm, compare/debug, slider, category rail, and parameter snapshot semantics remain app-side support logic, not SDK algorithm logic.
+- [x] **EDITOR-01**: Minimal editor shell support is documented for input routing, preview chrome, bottom panel, and commit flow.
+- [x] **EDITOR-02**: Editor shell documentation clarifies Demo ownership versus SDK ownership for core beauty tools.
+- [x] **EDITOR-03**: Cancel/confirm, compare/debug, slider, category rail, and parameter snapshot semantics remain app-side support logic, not SDK algorithm logic.
 
 ### Module and Verification Planning
 
 - [x] **MOD-01**: Module boundaries map Demo, `BeautySDK`, `BeautyCore`, `BeautyDetection`, `BeautyRender`, `BeautyEffects`, and `BeautyResources` ownership for core beauty.
-- [ ] **MOD-02**: The roadmap decomposes v1.3 into preparation, contracts, skin, shaping, and closeout phases with 100% requirement traceability.
-- [ ] **MOD-03**: `PLANS.md`, `.planning/PROJECT.md`, `.planning/ROADMAP.md`, and `.planning/STATE.md` describe v1.3 as a no-new-UI core module design/implementation milestone.
-- [ ] **MOD-04**: Promoted visible effects must provide unit/integration evidence and example-image output evidence before being considered complete.
+- [x] **MOD-02**: The roadmap decomposes v1.3 into preparation, contracts, skin, shaping, and closeout phases with 100% requirement traceability.
+- [x] **MOD-03**: `PLANS.md`, `.planning/PROJECT.md`, `.planning/ROADMAP.md`, and `.planning/STATE.md` describe v1.3 as a no-new-UI core module design/implementation milestone.
+- [x] **MOD-04**: Promoted visible effects must provide unit/integration evidence and example-image output evidence before being considered complete.
 
 ## Future Requirements
 
@@ -89,19 +89,20 @@ Deferred to later milestones unless explicitly promoted.
 | BSHAPE-01 | Phase 19 | Complete |
 | BSHAPE-02 | Phase 19 | Complete |
 | BSHAPE-03 | Phase 19 | Complete |
-| EDITOR-01 | Phase 20 | Pending |
-| EDITOR-02 | Phase 20 | Pending |
-| EDITOR-03 | Phase 20 | Pending |
-| MOD-02 | Phase 20 | Pending |
-| MOD-03 | Phase 20 | Pending |
-| MOD-04 | Phase 20 | Pending |
+| EDITOR-01 | Phase 20 | Complete |
+| EDITOR-02 | Phase 20 | Complete |
+| EDITOR-03 | Phase 20 | Complete |
+| MOD-02 | Phase 20 | Complete |
+| MOD-03 | Phase 20 | Complete |
+| MOD-04 | Phase 20 | Complete |
 
 **Coverage:**
 
 - v1.3 requirements: 20 total
 - Mapped to phases: 20
 - Unmapped: 0
+- Phase 20 closeout evidence: `.planning/phases/20-core-module-closeout/20-VERIFICATION.md` records `swift test --package-path BeautySDK`, the full current `BeautyExampleRenderer` matrix, renderer output checks, no-new-UI/API/import/renderer/status scans, and final ledger checks.
 
 ---
 *Requirements defined: 2026-06-26*
-*Last updated: 2026-06-27 after Phase 18 skin-retouch execution*
+*Last updated: 2026-06-30 after Phase 20 core-module closeout*

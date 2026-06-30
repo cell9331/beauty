@@ -2,41 +2,41 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Meitu Core Beauty Module Design and Implementation
-status: executing
-stopped_at: Completed 20-01-PLAN.md
-last_updated: "2026-06-30T01:45:05.798Z"
-last_activity: 2026-06-30 -- Phase 20 execution started
+status: completed
+stopped_at: Completed Phase 20 and v1.3 closeout
+last_updated: "2026-06-30T01:56:18.589Z"
+last_activity: 2026-06-30
 progress:
   total_phases: 5
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 14
-  completed_plans: 13
-  percent: 80
+  completed_plans: 14
+  percent: 100
 ---
 
 # Project State
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-06-26)
+See: `.planning/PROJECT.md` (updated 2026-06-30)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 20 — core-module-closeout
+**Current focus:** v1.3 complete — awaiting next milestone selection
 
 ## Current Position
 
-Phase: 20 (core-module-closeout) — EXECUTING
+Phase: 20 (core-module-closeout) — COMPLETE
 Plan: 2 of 2
-Status: Ready to execute
-Last activity: 2026-06-30 -- Phase 20 execution started
+Status: v1.3 complete
+Last activity: 2026-06-30 -- Phase 20 closeout completed
 
 ## Performance Metrics
 
 **Velocity:**
 
 - Total phases completed: 14
-- Total plans completed: 55
-- Total tasks recorded from summaries: 62
+- Total plans completed: 57
+- Total tasks recorded from summaries: 65
 - Milestone Swift LOC at close: about 13,266 across `BeautySDK` and `BeautyDemo`
 
 **By Phase:**
@@ -62,7 +62,7 @@ Last activity: 2026-06-30 -- Phase 20 execution started
 | 17. Core Beauty Contracts and Module Boundaries | 2/2 | Complete |
 | 18. Skin Retouch Core Modules | 3/3 | Complete |
 | 19. Beauty Shaping Core Modules | 5/5 | Complete |
-| 20. Core Module Closeout | 0/2 | Planned |
+| 20. Core Module Closeout | 2/2 | Complete |
 | Phase 18 P1 | 8 min | 2 tasks | 2 files |
 | Phase 18 P2 | 117 min | 3 tasks | 10 files |
 | Phase 18 P3 | 19 min | 3 tasks | 6 files |
@@ -72,6 +72,7 @@ Last activity: 2026-06-30 -- Phase 20 execution started
 | Phase 19 P04 | 3 min | 2 tasks | 5 files |
 | Phase 19 P05 | 5 min | 2 tasks | 4 files |
 | Phase 20 P01 | 11 min | 2 tasks | 10 files |
+| Phase 20 P02 | 14 min | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -94,13 +95,13 @@ Recent milestone-level outcomes:
 - Release-readiness visual quality, hardware parity, performance budgets, and long-run reliability remain separate QA scope.
 - Phase 18 completed Basic skin retouch work behind existing SDK boundaries: focused Basic skin, resolver, and engine tests passed; all current Basic skin renderer cases wrote ignored local outputs; representative output dimensions, labels, and factual visual observations passed; future skin-retouch branches remain future.
 - Phase 19 completed beauty-shaping core-module evidence behind SDK boundaries: branch docs and ownership exist, promoted partial branches have provider/resolver/degradation/cap/redaction XCTest evidence, full `swift test --package-path BeautySDK` passed with 141 tests, final API/UI/renderer/status/redaction scans passed, and geometry-heavy saved-image output remains deferred until public facade detection plus geometry rendering exists.
+- Phase 20 completed v1.3 core module closeout: editor-shell support is documented as Demo-owned no-new-UI app-side behavior, full `swift test --package-path BeautySDK` passed with 141 tests, `BeautyExampleRenderer` built and ran all current skin/color/filter cases, 45 ignored renderer outputs were non-empty and same-dimension, no public parameter/import/UI/renderer/status drift was found, and `20-VERIFICATION.md` preserves geometry saved-output and release-hardening limitations.
 
 ### Pending Todos
 
-- Discuss or plan Phase 20 with `$gsd-discuss-phase 20` or `$gsd-plan-phase 20`.
-- Keep v1.3 limited to core beauty: `beauty-shaping`, `skin-retouch`, and minimal `editor-shell` support.
-- Do not add resources/style, AI/background, video/body, Home/discovery, or account/gallery branches to v1.3.
-- Update root contracts if promoted core beauty implementation changes public parameters, architecture boundaries, reliability behavior, security posture, or product acceptance criteria.
+- Select the next milestone before starting new scoped implementation work.
+- Preserve v1.3 boundaries when planning future work: no historical-doc normalization by default, no new SwiftUI work unless explicitly selected, and geometry saved-image output remains deferred until public facade detection plus geometry rendering exists.
+- Release-hardening candidates remain future scope: physical-device camera/Vision parity, production naturalness review, screenshot/UI automation, performance budgets, memory/thermal checks, privacy manifest review, and automated visual diffs.
 
 ### Blockers/Concerns
 
@@ -122,10 +123,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-06-30T01:45:05.794Z
-Stopped at: Completed 20-01-PLAN.md
+Last session: 2026-06-30T01:53:30Z
+Stopped at: Completed Phase 20 and v1.3 closeout
 Resume file: None
 
 ## Operator Next Steps
 
-- Start Phase 20 Core Module Closeout when ready.
+- Choose and discuss the next milestone before promoting new implementation work.

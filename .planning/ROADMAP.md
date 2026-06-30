@@ -11,7 +11,7 @@ This milestone does not add SwiftUI screens, Home/discovery surfaces, resource/s
 - ✅ **v1.0 MVP** - Phases 1-7, shipped 2026-06-23. See `.planning/milestones/v1.0-ROADMAP.md`.
 - ✅ **v1.1 Meitu UI** - Phases 8-10, implemented and verified 2026-06-24.
 - ✅ **v1.2 HTML Reference Fidelity** - Phase 11 completed 2026-06-25; Phases 12-15 canceled 2026-06-26.
-- 🚧 **v1.3 Meitu Core Beauty Module Design and Implementation** - Phases 16-19 completed; Phase 20 remains planned.
+- ✅ **v1.3 Meitu Core Beauty Module Design and Implementation** - Phases 16-20 completed 2026-06-30.
 
 ## v1.3 Meitu Core Beauty Module Design and Implementation
 
@@ -131,14 +131,18 @@ This milestone does not add SwiftUI screens, Home/discovery surfaces, resource/s
 2. Promoted visible effects have unit/integration evidence plus example-image output evidence.
 3. Planning documents, docs, and root contracts reflect actual implemented behavior and remaining limitations.
 
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 **Wave 1**
 
 - [x] 20-01: Finalize editor support contracts, delivery boundary, and root contract updates.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 20-02: Run closeout tests, example-image renderer, scope scans, and planning consistency checks.
+- [x] 20-02: Run closeout tests, example-image renderer, scope scans, and planning consistency checks.
+
+**Closeout evidence:** `20-VERIFICATION.md` records `swift test --package-path BeautySDK`, `BeautyExampleRenderer` build/run evidence for the current nine-case matrix, ignored non-empty same-dimension renderer outputs, factual visual observations, unchanged 31-field public parameter inventory, Demo facade-only import scans, SDK non-UI target scans, shaping overclaim scans, and ledger checks.
+
+**Limitations preserved:** Phase 20 added no new SwiftUI screens, no new public parameters, no renderer geometry cases, and no geometry saved-image output. Geometry-heavy output remains deferred; `blocked-by-geometry-output` branches stay blocked until public facade detection plus geometry rendering produces saved outputs. Release-hardening QA remains future work.
 
 ## Progress
 
@@ -163,7 +167,7 @@ This milestone does not add SwiftUI screens, Home/discovery surfaces, resource/s
 | 17. Core Beauty Contracts and Module Boundaries | v1.3 | 2/2 | Complete | 2026-06-26 |
 | 18. Skin Retouch Core Modules | v1.3 | 3/3 | Complete | 2026-06-27 |
 | 19. Beauty Shaping Core Modules | v1.3 | 5/5 | Complete | 2026-06-29 |
-| 20. Core Module Closeout | v1.3 | 1/2 | In Progress|  |
+| 20. Core Module Closeout | v1.3 | 2/2 | Complete | 2026-06-30 |
 
 ## Backlog
 

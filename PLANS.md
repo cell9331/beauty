@@ -26,18 +26,30 @@
 
 ## 3. Active
 
-### A-2026-06-30-gsd-execute-phase-20-core-module-closeout
+No active work. Select the next milestone before starting new scoped implementation.
+
+## 4. Completed
+
+### C-2026-06-30-gsd-execute-phase-20-core-module-closeout
 
 | Field | Value |
 | --- | --- |
-| Status | active |
-| Started | 2026-06-30 |
-| Scope | Run `$gsd-execute-phase 20` for Phase 20 Core Module Closeout. Execute the two planned waves: editor-shell/current-authority contract closeout, then SDK/renderer evidence, scope scans, and planning-ledger closeout. |
+| Completed | 2026-06-30 |
+| Scope | Ran `$gsd-execute-phase 20` for Phase 20 Core Module Closeout. Completed editor-shell/current-authority contract closeout, SDK/renderer evidence, scope scans, planning-ledger closeout, and v1.3 milestone completion without adding UI, public parameters, renderer cases, or geometry saved-image output. |
 | Requirements | EDITOR-01, EDITOR-02, EDITOR-03, MOD-02, MOD-03, MOD-04 |
-| Verification Plan | Plan 20-01 doc scans and no-BeautyDemo-source-diff checks; Plan 20-02 full `swift test --package-path BeautySDK`, full current `BeautyExampleRenderer` matrix, renderer output checks, API/UI/renderer/status/redaction scans, roadmap/state/schema checks, code review, and phase verification. |
+| Files | `.planning/phases/20-core-module-closeout/20-VERIFICATION.md`, `20-REVIEW.md`, `20-01-SUMMARY.md`, `20-02-SUMMARY.md`, docs under `docs/meitu-function-blueprint/features/editor-shell/`, `docs/meitu-function-blueprint/MODULES.md`, `docs/meitu-function-blueprint/DELIVERY_BOUNDARY.md`, `docs/meitu-function-blueprint/FEATURE_MATRIX.md`, `FRONTEND.md`, `PRODUCT_SENSE.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `.planning/PROJECT.md`, `PLANS.md` |
+| Verification | Plan 20-01 doc scans confirmed editor-shell input routing, preview chrome, bottom panel, commit flow, Demo-owned state semantics, and no `BeautyDemo` source diff; `swift test --package-path BeautySDK` passed with 141 tests and 0 failures; `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed; `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out` wrote 45 ignored PNG outputs across the current nine cases; representative outputs were ignored by git, non-empty, same-dimension, and visually inspected for readable bottom watermarks and factual visible changes; exact public `BeautyParameters` inventory remained the existing 31 fields; `BeautyExampleRenderer` geometry-case negative scan passed; Demo internal import scan returned no matches; SDK non-UI SwiftUI/UIKit scan returned no matches; `git diff --name-only -- BeautyDemo` returned no output; shaping overclaim scan returned no matches; scoped emitted sensitive-string scan passed; `20-REVIEW.md` records `status: clean`; `roadmap.analyze`, `phase-plan-index 20`, and `verify.schema-drift 20` passed; `git diff --check` passed for changed Phase 20 docs and ledgers. |
+| Build | Full SwiftPM SDK test suite and `BeautyExampleRenderer` build/run passed. Broad Demo simulator verification was not run because Phase 20 made no Demo source changes and the Phase 20 context kept broad simulator verification non-required; earlier planning also recorded local CoreSimulator mismatch. |
+| Commit | `02b0d5b`, `b2fb010`, and `fa041c9` completed Plan 20-01; `c7c59bf` and `c67ed1d` recorded Plan 20-02 SDK/renderer/output/scope evidence; final closeout commit records ledgers, `20-02-SUMMARY.md`, and verification status. |
 
+Outcome:
 
-## 4. Completed
+- `EDITOR-01`, `EDITOR-02`, `EDITOR-03`, `MOD-02`, `MOD-03`, and `MOD-04` are complete.
+- v1.3 is complete as a no-new-UI core module design/implementation milestone.
+- Current authority docs record editor-shell support as Demo-owned app-side behavior using the public `BeautySDK` facade.
+- `BeautyExampleRenderer` evidence covers current skin/color/filter saved-image cases only.
+- Geometry-heavy saved-image output remains deferred; shaping branches remain partial or `blocked-by-geometry-output` until public facade detection plus geometry rendering produces same-dimension, watermarked saved outputs.
+- Release-hardening QA, hardware camera/Vision parity, production naturalness evaluation, performance budgets, long-run reliability, automated visual diffing, and multi-device sweeps remain future scope.
 
 ### C-2026-06-30-gsd-plan-phase-20-core-module-closeout
 
