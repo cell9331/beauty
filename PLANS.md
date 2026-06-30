@@ -26,9 +26,31 @@
 
 ## 3. Active
 
-No active implementation work. Next step is `$gsd-discuss-phase 22`.
+No active implementation work. Next step is `$gsd-plan-phase 22`.
 
 ## 4. Completed
+
+### C-2026-06-30-gsd-discuss-phase-22-demo-qa-evidence
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-30 |
+| Scope | Ran `$gsd-discuss-phase 22` for Phase 22 Automated Demo QA and Screenshot Evidence. Captured user decisions for the current Demo screenshot capture path, target simulator matrix, evidence acceptance bar, and blocker/honesty policy before Phase 22 planning. |
+| Requirements | QA-01, QA-02, QA-03, QA-04 |
+| Files | `.planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-CONTEXT.md`, `.planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-DISCUSSION-LOG.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.phase-op 22` reported `phase_found: true`, `phase_dir: .planning/phases/22-automated-demo-qa-and-screenshot-evidence`, `has_context: true`, `has_plans: false`, and `plan_count: 0`; `todo.match-phase 22` reported zero matches; `request_user_input` was unavailable, so the workflow used text-mode numbered questions and the user selected all four gray areas; the temporary `22-DISCUSS-CHECKPOINT.json` was removed after context/log creation; placeholder scan over `22-CONTEXT.md`, `22-DISCUSSION-LOG.md`, and `.planning/STATE.md` returned no matches; `git diff --check` passed for the new context/log and state update; `state.record-session --stopped-at "Phase 22 context gathered" --resume-file ".planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-CONTEXT.md"` reported `recorded: true`. |
+| Build | Not run; this was a GSD discussion/context workflow with no Swift source changes. Phase 22 planning is expected to include explicit Demo build/test commands when local Metal Toolchain availability allows and exact blocker records otherwise. |
+| Commit | `7a52cf9` captured Phase 22 context/log; `7a2ec64` recorded the state session; final ledger commit records this `PLANS.md` update. |
+
+Outcome:
+
+- Phase 22 planning should use current launch arguments plus `simctl` screenshots as the primary evidence path.
+- Required evidence states are Home first screen, Home sticky state, and the editor beauty/photo tool panel.
+- Required simulator destination is `platform=iOS Simulator,name=iPhone 17,OS=26.5`; one extra phone smoke check is optional if cheap after baseline passes.
+- Each required screenshot needs exact commands, file path, framing, and factual review notes for clipping, overlap, disabled honesty, and route scope.
+- If the Metal Toolchain remains missing, Phase 22 must reproduce and document the blocker and rerun protocol rather than claiming current screenshot pass evidence.
+- Archived v1.1/v1.2 screenshots are background comparison only, not current v1.4 pass evidence.
+- Next step is `$gsd-plan-phase 22`.
 
 ### C-2026-06-30-gsd-execute-phase-21-baseline-audit
 
