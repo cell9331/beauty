@@ -30,6 +30,26 @@ No active implementation work. Next step is `$gsd-discuss-phase 21`.
 
 ## 4. Completed
 
+### C-2026-06-30-gsd-discuss-phase-21-baseline-audit
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-30 |
+| Scope | Ran `$gsd-discuss-phase 21` for Phase 21 Baseline Audit and Quality Ledger Refresh. Captured user decisions for full baseline evidence, debt triage routing, stale codebase map handling, and reproducible hardware/tooling blocker rules before Phase 21 planning. |
+| Requirements | AUD-01, AUD-02, AUD-03, AUD-04 |
+| Files | `.planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-CONTEXT.md`, `.planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-DISCUSSION-LOG.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init phase-op 21` reported `phase_found: true`, no existing context, no plans, no verification, and expected phase directory `.planning/phases/21-baseline-audit-and-quality-ledger-refresh`; `todo.match-phase 21` reported zero matches; no Phase 21 SPEC, context, or checkpoint existed; user selected all four gray areas in text mode; `git diff --check` passed for the new Phase 21 context/log; placeholder scan over `21-CONTEXT.md` and `21-DISCUSSION-LOG.md` returned no matches; `state record-session --stopped-at "Phase 21 context gathered" --resume-file ".planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-CONTEXT.md"` reported `recorded: true`. |
+| Build | Not run; this was a GSD discussion/context workflow with no Swift source changes. |
+| Commit | `7fbde95` captured Phase 21 context/log; `0e9c087` recorded the state session; final ledger commit records this `PLANS.md` update. |
+
+Outcome:
+
+- Phase 21 planning must run the full available baseline sweep and record exact pass/fail/blocker evidence.
+- TD-005, TD-008, TD-009, and TD-010 are to be triaged/routed, not fixed early in Phase 21.
+- `.planning/codebase/*` maps are stale and should be flagged/deferred rather than refreshed in Phase 21.
+- Hardware/tooling blockers must be reproducible with exact command, environment, failure summary, impact, and next step.
+- Next step is `$gsd-plan-phase 21`.
+
 ### C-2026-06-30-gsd-new-milestone-v1-4
 
 | Field | Value |
