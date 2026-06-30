@@ -124,8 +124,188 @@ Geometry limitation:
 - It does not prove public facade saved-image completion for face shape, eyes, nose, mouth geometry, eyebrow, proportion, or 3D sculpt branches.
 - Geometry-heavy shaping branches remain `partial` or `blocked-by-geometry-output` until public facade detection plus geometry render integration can produce same-dimension, watermarked saved outputs.
 
-## Pending Checks
+## Mechanical Output Checks
 
-- Mechanical output checks: ignored status, non-empty files, source/output dimensions, and factual visual observations.
-- Scope scans: public API inventory, renderer geometry-case exclusion, Demo facade-only imports, non-UI SDK target imports, BeautyDemo source diff, shaping status honesty, and sensitive-token scan.
-- Ledger checks: requirements, roadmap, state, project context, `PLANS.md`, roadmap analysis, plan index, and schema drift.
+### Ignored Evidence Artifacts
+
+Command:
+
+```bash
+git check-ignore -v example-images/out/e1__skinSmoothing_0p50.png example-images/out/e2__skinWhitening_0p50.png example-images/out/e3__skinRosy_0p40.png example-images/out/e4__filter_warmLight_0p50.png example-images/out/e5__skinCombo_0p50.png
+```
+
+Result: passed.
+
+Observed summary:
+
+- `.gitignore:7:example-images/out/` matched each representative renderer output.
+- Generated renderer artifacts remain untracked evidence, not committed deliverables.
+
+### Non-Empty Files
+
+Command:
+
+```bash
+stat -f '%N %z' example-images/out/e1__skinSmoothing_0p50.png example-images/out/e2__skinWhitening_0p50.png example-images/out/e3__skinRosy_0p40.png example-images/out/e4__filter_warmLight_0p50.png example-images/out/e5__skinCombo_0p50.png
+```
+
+Result: passed.
+
+Observed sizes:
+
+- `e1__skinSmoothing_0p50.png`: 6040860 bytes.
+- `e2__skinWhitening_0p50.png`: 842493 bytes.
+- `e3__skinRosy_0p40.png`: 11592671 bytes.
+- `e4__filter_warmLight_0p50.png`: 4650381 bytes.
+- `e5__skinCombo_0p50.png`: 5621510 bytes.
+
+### Dimensions
+
+Command:
+
+```bash
+python3 -c '<PNG header dimension scan for all example-images/out/*.png>'
+```
+
+Result: passed.
+
+Observed summary:
+
+- `dimension check passed: 45 outputs`.
+- Every generated output preserved its source input dimensions.
+
+Representative `file` output:
+
+- `example-images/input/e2.png`: 576 x 1024.
+- `example-images/out/e2__skinSmoothing_0p50.png`: 576 x 1024.
+- `example-images/out/e2__skinWhitening_0p50.png`: 576 x 1024.
+- `example-images/out/e2__skinCombo_0p50.png`: 576 x 1024.
+- `example-images/out/e4__filter_warmLight_0p50.png`: 1440 x 2560.
+
+### Visual Inspection
+
+Representative outputs inspected with the local image viewer:
+
+- `example-images/out/e2__skinWhitening_0p50.png`: non-empty face image, readable bottom watermark below the face, visible lightening/tone change.
+- `example-images/out/e2__skinCombo_0p50.png`: non-empty face image, readable bottom watermark below the face, visible combined skin/tone change.
+- `example-images/out/e4__filter_warmLight_0p50.png`: non-empty face image, readable bottom watermark below the face, visible warm filter/tone change.
+
+Visual limitation:
+
+- These observations are factual artifact checks only. They do not claim effect quality, naturalness, real-device parity, release readiness, or geometry saved-image completion.
+
+## Scope Scans
+
+### Public Parameter Inventory
+
+Command:
+
+```bash
+python3 -c '<assert BeautyParameters public var list equals the documented 31-field v1.3 inventory>'
+```
+
+Result: passed.
+
+Observed summary:
+
+- `fields ok: 31`.
+- No new public `BeautyParameters` field was added during closeout.
+
+### Renderer Geometry Case Exclusion
+
+Command:
+
+```bash
+! rg -n 'id: "(face|eye|nose|mouth|lip|chin|jaw|proportion|3d|brow)|BeautyParameters\([^)]*(faceSlim|faceSmall|faceVShape|jawSlim|chinLength|eyeSize|eyeDistance|eyeYPosition|eyeTailLift|noseSlim|noseWingSlim|noseTipSize|noseBridge|mouthSize|mouthWidth|smile|lipColor)' BeautySDK/Sources/BeautyExampleRenderer/main.swift
+```
+
+Result: passed with no matches.
+
+Meaning:
+
+- `BeautyExampleRenderer` still contains only skin, color, and filter cases.
+- Geometry-heavy saved-image output remains out of scope for Phase 20.
+
+### Demo Facade-Only Imports
+
+Command:
+
+```bash
+rg -n 'import Beauty(Core|Detection|Effects|Render|Resources)' BeautyDemo/BeautyDemo BeautyDemo/BeautyDemoTests || true
+```
+
+Result: passed with no matches.
+
+Meaning:
+
+- Demo sources and tests do not import SDK internals directly.
+
+### SDK UI Dependency Scan
+
+Command:
+
+```bash
+rg -n 'SwiftUI|UIKit' BeautySDK/Sources/BeautyCore BeautySDK/Sources/BeautyDetection BeautySDK/Sources/BeautyRender BeautySDK/Sources/BeautyEffects 2>/dev/null || true
+```
+
+Result: passed with no matches.
+
+Meaning:
+
+- Non-UI SDK targets remain UI-framework-free.
+
+### BeautyDemo Source Diff
+
+Command:
+
+```bash
+git diff --name-only -- BeautyDemo
+```
+
+Result: passed with no output.
+
+Meaning:
+
+- Phase 20 closeout did not change Demo source or project files.
+
+### Shaping Status Honesty
+
+Command:
+
+```bash
+! rg -n '3D塑颜.*implemented|比例.*implemented|脸型.*implemented|眼睛.*implemented|嘴唇.*implemented|鼻子.*implemented|眉毛.*implemented' docs/meitu-function-blueprint/FEATURE_MATRIX.md docs/meitu-function-blueprint/features/beauty-shaping
+```
+
+Result: passed with no matches.
+
+Meaning:
+
+- Shaping branches are not overclaimed as implemented in current blueprint docs.
+
+### Sensitive Emitted String Scan
+
+Broad implementation-token scan:
+
+```bash
+! rg -n 'VNFaceObservation|bounding|landmark|control point|controlPoint|/private/var|image bytes|SIMD|\[0\.' BeautySDK/Sources/BeautyCore BeautySDK/Sources/BeautySDK BeautyDemo/BeautyDemo/Editor BeautyDemo/BeautyDemo/Camera BeautySDK/Sources/BeautyEffects/Planning BeautySDK/Sources/BeautyEffects/Warp
+```
+
+Result: failed on implementation-only geometry/math identifiers such as `SIMD2`, `controlPoints`, `bounds`, and landmark model property names inside provider code.
+
+Replacement scoped command:
+
+```bash
+python3 -c '<scan Swift string literals in the same source roots for sensitive warning/metric/debug tokens>'
+```
+
+Result: passed.
+
+Observed summary:
+
+- `sensitive emitted string scan passed`.
+- No warning, metric, debug label, or emitted string literal exposes `VNFaceObservation`, raw bounding/landmark/control-point internals, absolute private paths, image bytes, `SIMD`, or raw normalized-coordinate examples.
+
+## Pending Ledger Checks
+
+- Requirements, roadmap, state, project context, and `PLANS.md` closeout.
+- Roadmap analysis, plan index, schema drift, and final formatting checks.
