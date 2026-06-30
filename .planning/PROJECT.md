@@ -12,18 +12,18 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ## Current State
 
-**Shipped version:** v1.0 MVP on 2026-06-23.
+**Shipped version:** v1.3 Meitu Core Beauty Module Design and Implementation on 2026-06-30.
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
 
-**Implementation state:** v1.1 adds a Meitu-style Home first screen, Home-to-editor routing, and a Meitu-style editor tool panel on top of the v1.0 SDK/Demo foundation. v1.0 includes a Swift Package SDK, public facade models and engine, realtime camera and still-image Demo paths, orientation/mirroring metadata, face detection/degradation summaries, resource-backed filters/presets, visible MVP skin/color/face/eye/nose/mouth effects, deterministic tests, copy/paste parameter JSON, compare state, and redacted debug overlay evidence.
+**Implementation state:** v1.3 adds the core beauty module blueprint, example-image validation harness, Basic skin implementation evidence, beauty-shaping provider/resolver evidence, and editor-shell ownership closeout on top of the v1.1 Meitu-style Demo and v1.0 SDK/Demo foundation. v1.3 remains no-new-UI: no new SwiftUI screens, public parameters, renderer geometry cases, or geometry saved-image output were added.
 
-**Verification state:** The v1.1 implementation has 19/19 requirements complete with focused/full Demo tests, SDK SwiftPM tests, facade import scan, and screenshot evidence for Home first screen, Home sticky state, and editor tool panel. The v1.0 milestone audit passed with 33/33 v1 requirements satisfied, 7/7 phase verification files present, 4/4 integration checks, 4/4 E2E flows, and 7/7 Nyquist-compliant validation files.
+**Verification state:** The v1.3 milestone audit passed with 20/20 requirements satisfied, 5/5 phases complete, 6/6 integration checks, 4/4 flows, and 5/5 validation files present. Phase 20 records the closeout gate: `swift test --package-path BeautySDK` passed with 141 tests, `BeautyExampleRenderer` built and ran all current skin/color/filter cases, 45 ignored outputs were non-empty and same-dimension, Demo imports remained facade-only, SDK non-UI targets remained SwiftUI/UIKit-free, and the public `BeautyParameters` inventory stayed at the existing 31 fields. Earlier v1.0 and v1.1 verification remains archived in `.planning/MILESTONES.md` and `.planning/milestones/`.
 
-**Code size:** `BeautySDK` and `BeautyDemo` contain about 13,266 Swift lines at v1.0 close.
+**Code size:** `BeautySDK` and `BeautyDemo` contain about 13,266 Swift lines at v1.3 close.
 
-## Current Milestone: v1.3 Meitu Core Beauty Module Design and Implementation
+## Last Completed Milestone: v1.3 Meitu Core Beauty Module Design and Implementation
 
-**Status:** Complete as of 2026-06-30.
+**Status:** Shipped and archived as of 2026-06-30.
 
 **Goal:** Reference the Meitu Xiuxiu beauty editor, clarify the core beauty module system, and implement SDK-level core beauty logic without adding new SwiftUI screens.
 
@@ -120,6 +120,9 @@ Historical milestone detail is archived in:
 - `.planning/milestones/v1.0-ROADMAP.md`
 - `.planning/milestones/v1.0-REQUIREMENTS.md`
 - `.planning/milestones/v1.0-MILESTONE-AUDIT.md`
+- `.planning/milestones/v1.3-ROADMAP.md`
+- `.planning/milestones/v1.3-REQUIREMENTS.md`
+- `.planning/milestones/v1.3-MILESTONE-AUDIT.md`
 
 Current visual reference contracts:
 
@@ -164,4 +167,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-06-30 after Phase 20 core-module closeout*
+*Last updated: 2026-06-30 after v1.3 milestone archival*

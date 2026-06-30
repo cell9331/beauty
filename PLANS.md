@@ -30,6 +30,44 @@ No active work. Select the next milestone before starting new scoped implementat
 
 ## 4. Completed
 
+### C-2026-06-30-gsd-complete-milestone-v1-3
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-30 |
+| Scope | Ran `$gsd-complete-milestone v1.3` from `$gsd-progress --next` after the v1.3 audit passed. Archived the v1.3 roadmap, requirements, and milestone audit, updated milestone/state/project summaries, collapsed the live roadmap to the next-milestone handoff, and intentionally kept Phase 16-20 directories in `.planning/phases/` after user selected `Skip` for phase-directory archival. |
+| Requirements | PREP-01, PREP-02, PREP-03, PREP-04, CBT-01, CBT-02, CBT-03, MOD-01, SKIN-01, SKIN-02, SKIN-03, BSHAPE-01, BSHAPE-02, BSHAPE-03, EDITOR-01, EDITOR-02, EDITOR-03, MOD-02, MOD-03, MOD-04 |
+| Files | `.planning/milestones/v1.3-ROADMAP.md`, `.planning/milestones/v1.3-REQUIREMENTS.md`, `.planning/milestones/v1.3-MILESTONE-AUDIT.md`, `.planning/MILESTONES.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `.planning/PROJECT.md`, `PLANS.md` |
+| Verification | `milestone.complete v1.3 --name "Meitu Core Beauty Module Design and Implementation"` returned `archived.roadmap: true`, `archived.requirements: true`, `archived.audit: true`, `phases: 5`, `plans: 14`, and `tasks: 35`; phase directories were not moved because the user selected `Skip`; live `ROADMAP.md` now has no active phases and routes to `$gsd-new-milestone`; `PROJECT.md` records v1.3 as the shipped version and references the v1.3 archives; `MILESTONES.md` includes the v1.3 shipped summary and verification evidence. |
+| Build | Not run; this was a planning archival workflow. The archived audit and Phase 20 verification preserve the full SDK test and renderer evidence. |
+| Commit | Final scoped archive commit records these planning files. |
+
+Outcome:
+
+- v1.3 is archived under `.planning/milestones/`.
+- `.planning/ROADMAP.md` is ready for the next milestone cycle.
+- `.planning/phases/16-*` through `.planning/phases/20-*` remain in place as raw execution history.
+- Next step is `$gsd-new-milestone`.
+
+### C-2026-06-30-gsd-audit-milestone-v1-3
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-30 |
+| Scope | Ran the milestone-audit preflight required by `$gsd-progress --next` before v1.3 archival. Audited Phase 16 through Phase 20 summaries, verification files, requirement traceability, integration boundaries, Nyquist validation metadata, and accepted limitations. |
+| Requirements | PREP-01, PREP-02, PREP-03, PREP-04, CBT-01, CBT-02, CBT-03, MOD-01, SKIN-01, SKIN-02, SKIN-03, BSHAPE-01, BSHAPE-02, BSHAPE-03, EDITOR-01, EDITOR-02, EDITOR-03, MOD-02, MOD-03, MOD-04 |
+| Files | `.planning/milestones/v1.3-MILESTONE-AUDIT.md`, `PLANS.md` |
+| Verification | `roadmap.analyze` reported 5 completed phases, 14 plans, 14 summaries, and 100% progress; `phase-plan-index` reported no incomplete plans for phases 16-20; all 20 v1.3 requirements were checked complete in `.planning/REQUIREMENTS.md`, present in summary frontmatter, and covered by passed phase verification files; inline integration checks found no Demo/renderer internal SDK imports, no SwiftUI/UIKit imports in non-UI SDK targets, no renderer geometry cases, zero source/image diffs under `BeautyDemo`, `BeautySDK`, and `example-images`, and the expected 31 public `BeautyParameters` fields; validation files exist for phases 16-20 with Phase 18's `wave_0_complete: false` recorded as a non-blocking note because the created test and execution gates passed; `git diff --check -- .planning/v1.3-MILESTONE-AUDIT.md` passed before the complete-milestone workflow moved the audit into `.planning/milestones/`. |
+| Build | Not run; this was an audit/documentation workflow over existing phase evidence. Phase 20 already records the passing full `swift test --package-path BeautySDK` and renderer matrix evidence. |
+| Commit | Not created in this step; next archival command is `$gsd-complete-milestone v1.3`. |
+
+Outcome:
+
+- `.planning/milestones/v1.3-MILESTONE-AUDIT.md` records `status: passed`.
+- No unsatisfied or orphaned v1.3 requirements were found.
+- Geometry-heavy saved-image output and release-hardening QA remain accepted future-scope limitations, not v1.3 blockers.
+- Next step is `$gsd-complete-milestone v1.3`.
+
 ### C-2026-06-30-gsd-execute-phase-20-core-module-closeout
 
 | Field | Value |

@@ -1,5 +1,39 @@
 # Milestones
 
+## v1.3 Meitu Core Beauty Module Design and Implementation (Shipped: 2026-06-30)
+
+**Delivered:** A no-new-UI core beauty module milestone: executable example-image validation, normalized core beauty module contracts, Basic skin evidence, beauty-shaping provider/resolver evidence, and editor-shell ownership closeout behind the public `BeautySDK` facade.
+
+**Phases completed:** 16-20 (5 phases, 14 plans, 35 recorded tasks)
+
+**Key accomplishments:**
+
+- Added and verified `BeautyExampleRenderer` as a public-facade validation harness that writes same-dimension, watermarked, ignored local outputs from `example-images/input/`.
+- Normalized `docs/meitu-function-blueprint/` into the current authority for core beauty status, module ownership, Demo-vs-SDK boundaries, and deferred product areas.
+- Improved and verified Basic skin behavior through focused tests, renderer output cases, dimension checks, and factual visual observations.
+- Hardened beauty-shaping provider/resolver/degradation/redaction evidence for the existing public shaping fields without adding public parameters or renderer geometry cases.
+- Closed editor-shell support as Demo-owned app-side behavior and recorded no-new-UI, facade-only, public-parameter, renderer-scope, and sensitive-string scans.
+- Preserved geometry-heavy saved-image output and release-hardening QA as explicit future limitations.
+
+**Verification:**
+
+- Milestone audit passed: 20/20 requirements, 5/5 phases, 6/6 integration checks, 4/4 flows, and 5/5 validation files.
+- `swift test --package-path BeautySDK` passed with 141 tests and 0 failures during Phase 20 closeout.
+- `BeautyExampleRenderer` built and ran all nine current skin/color/filter cases, producing 45 ignored same-dimension PNG outputs.
+- Demo/renderer facade-only scans, SDK non-UI SwiftUI/UIKit scans, public `BeautyParameters` 31-field inventory checks, and renderer geometry-case negative scans passed.
+
+**Known limitations:** Geometry-heavy saved-image output remains deferred until public facade detection plus geometry rendering produces watermarked same-dimension outputs. Release-hardening QA, real-device camera/Vision parity, production naturalness review, screenshot/UI automation, performance budgets, memory/thermal checks, privacy manifest review, and automated visual diffs remain future scope.
+
+**Archives:**
+
+- `.planning/milestones/v1.3-ROADMAP.md`
+- `.planning/milestones/v1.3-REQUIREMENTS.md`
+- `.planning/milestones/v1.3-MILESTONE-AUDIT.md`
+
+**What's next:** Start a fresh milestone with `$gsd-new-milestone`.
+
+---
+
 ## v1.0 MVP (Shipped: 2026-06-23)
 
 **Delivered:** A modular local-first iOS `BeautySDK` plus a SwiftUI Demo validation app covering public facade integration, camera/still-image input, safe detection/degradation, resource-backed presets/filters, MVP beauty effects, and final Demo QA workflows.
