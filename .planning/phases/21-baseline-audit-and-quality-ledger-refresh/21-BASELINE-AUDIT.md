@@ -49,3 +49,37 @@ Blocked gate: Demo simulator build/test evidence.
 - Impact: Phase 21 cannot claim current Demo simulator build/test pass. SwiftPM SDK and renderer command evidence remain meaningful because they passed through SwiftPM.
 - Next step: run `xcodebuild -downloadComponent MetalToolchain` outside Phase 21 audit scope, then rerun Demo build/test in Phase 22 screenshot/QA work.
 
+## SDK and Renderer Baseline
+
+| Area | Status | Exact command | Evidence summary | Requirement / debt | Next step |
+| --- | --- | --- | --- | --- | --- |
+| Full SDK tests | passed | `swift test --package-path BeautySDK` | Built successfully and executed 141 XCTest cases with 0 failures and 0 unexpected failures. The Swift Testing runner then reported 0 tests in 0 suites, also passed. | AUD-02 | Use as current SDK automated baseline. |
+| Renderer build | passed | `swift build --package-path BeautySDK --product BeautyExampleRenderer` | Built product `BeautyExampleRenderer` successfully for debugging. | AUD-02, RENDER-01 | Phase 24 can promote renderer evidence into regression gates. |
+| Renderer all-cases run | passed | `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out` | Wrote 45 PNG outputs: 5 input fixtures times 9 current renderer cases. | AUD-02, RENDER-01, RENDER-03 | Keep generated PNGs local/ignored; Phase 24 should add tolerance/regression checks. |
+| Input fixture count | passed | `find example-images/input -maxdepth 1 -type f | sort` | Found `e1.png`, `e2.png`, `e3.png`, `e4.png`, and `e5.png`. | AUD-02 | Fixture set is current baseline input set. |
+| Output count | passed | `find example-images/out -maxdepth 1 -type f -name '*.png' | wc -l` | Counted 45 generated PNG outputs. | AUD-02, RENDER-03 | Matches current 5 x 9 renderer matrix. |
+| Ignored-output policy | passed | `git check-ignore example-images/out/e1__skinSmoothing_0p50.png example-images/out/e2__skinWhitening_0p50.png example-images/out/e5__skinCombo_0p50.png` | Representative outputs are ignored by git. `git status --short -- example-images/out` returned no tracked/untracked output. | AUD-02 | Do not commit generated renderer PNGs. |
+| Non-empty output check | passed | `find example-images/out -maxdepth 1 -type f -name '*.png' -size 0 -print` | Returned no zero-byte PNG files. | AUD-02, RENDER-03 | Phase 24 should convert this into a repeatable all-output gate. |
+| Representative dimensions | passed | `sips -g pixelWidth -g pixelHeight <input/output files>` | `e1` input and `e1__skinSmoothing_0p50` both 1728 x 2304; `e2` input and `e2__skinWhitening_0p50` both 576 x 1024; `e5` input and `e5__skinCombo_0p50` both 1440 x 2560. | AUD-02, RENDER-03 | Phase 24 should check all output dimensions and no-op tolerance. |
+| Archived Phase 20 renderer evidence | archived | `.planning/phases/20-core-module-closeout/20-VERIFICATION.md` | Phase 20 also recorded 141 SDK tests, renderer build/run, 45 ignored outputs, non-empty files, all-output dimension checks, and visual notes. This is historical support, not a substitute for the current Phase 21 run above. | AUD-01, AUD-02 | Keep archived evidence separate from current evidence. |
+
+Current renderer case IDs from `BeautySDK/Sources/BeautyExampleRenderer/main.swift`:
+
+| Case ID | Status | Notes |
+| --- | --- | --- |
+| `skinSmoothing_0p50` | passed | Current skin case. |
+| `skinWhitening_0p50` | passed | Current skin case. |
+| `skinRosy_0p40` | passed | Current skin case. |
+| `skinSharpen_0p40` | passed | Current skin case. |
+| `brightness_plus0p25` | passed | Current color case. |
+| `contrast_plus0p25` | passed | Current color case. |
+| `filter_softClean_0p50` | passed | Current metadata filter case. |
+| `filter_warmLight_0p50` | passed | Current metadata filter case. |
+| `skinCombo_0p50` | passed | Current combined skin case. |
+
+Renderer scope notes:
+
+- Current output evidence is for public-facade skin, color, and filter saved-image cases only.
+- The renderer does not contain geometry-heavy saved-image cases for face, eye, nose, mouth, lip, chin, jaw, proportion, 3D sculpt, or brow branches.
+- Geometry-heavy branches remain `partial`, `blocked-by-geometry-output`, or `future` until public facade detection plus geometry rendering can produce same-dimension, watermarked saved outputs.
+
