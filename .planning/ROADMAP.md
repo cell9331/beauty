@@ -30,7 +30,7 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 3. TD-005, TD-008, TD-009, and TD-010 are triaged into v1.4 phases, explicitly deferred, or marked blocked with evidence.
 4. No product-feature or public-API expansion enters the baseline phase.
 
-**Plans:** 2 plans across 2 waves; 2/2 complete
+**Plans:** 2/2 plans complete
 
 - **Wave 1:** `21-01` Baseline verification sweep and evidence ledger - complete in `21-BASELINE-AUDIT.md`.
 - **Wave 2:** `21-02` Quality score, debt routing, and planning ledger refresh - complete in `21-VERIFICATION.md`. Depends on `21-01`.

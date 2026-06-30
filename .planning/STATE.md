@@ -4,7 +4,7 @@ milestone: v1.4
 milestone_name: Stability, QA, and Debt Cleanup
 status: planning
 stopped_at: Phase 21 complete
-last_updated: "2026-06-30T08:55:00.000Z"
+last_updated: "2026-06-30T08:59:22.789Z"
 last_activity: 2026-06-30 — Phase 21 completed; ready for Phase 22 discussion
 progress:
   total_phases: 5
@@ -28,14 +28,14 @@ See: `.planning/PROJECT.md` (updated 2026-06-30)
 Phase: 22 - Automated Demo QA and Screenshot Evidence
 Plan: Not planned yet
 Status: Phase 21 complete; ready for Phase 22 discussion/planning
-Last activity: 2026-06-30 — Phase 21 completed with `21-BASELINE-AUDIT.md` and `21-VERIFICATION.md`
+Last activity: 2026-06-30 — Phase 21 completed with `21-BASELINE-AUDIT.md`, `21-VERIFICATION.md`, and both plan summaries
 
 ## Performance Metrics
 
 **Velocity:**
 
 - Total phases completed: 14
-- Total plans completed: 57
+- Total plans completed: 59
 - Total tasks recorded from summaries: 65
 - Milestone Swift LOC at close: about 13,266 across `BeautySDK` and `BeautyDemo`
 

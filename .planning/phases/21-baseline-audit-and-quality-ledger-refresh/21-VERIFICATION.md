@@ -65,10 +65,11 @@ These gates were run for closeout:
 
 - `rg -n '2026-06-30|Phase 21|21-BASELINE-AUDIT|v1.4|blocked|deferred|CoreSimulator|TD-005|TD-008|TD-009|TD-010' QUALITY_SCORE.md` passed.
 - `rg -n 'TD-005|TD-008|TD-009|TD-010|Phase 22|Phase 23|Phase 24|Phase 25|routed|blocked|deferred' PLANS.md .planning/PROJECT.md .planning/STATE.md .planning/REQUIREMENTS.md .planning/ROADMAP.md` passed.
+- `node "$HOME/.codex/get-shit-done/bin/gsd-tools.cjs" query roadmap.analyze` reported Phase 21 with 2 plans, 2 summaries, `disk_status: complete`, `completed_phases: 1`, `progress_percent: 100`, and `next_phase: "22"`. It still reports `roadmap_complete: false`; the roadmap progress row and `phase.complete 21` output both record Phase 21 complete, so this is treated as non-blocking analyzer status noise.
+- `node "$HOME/.codex/get-shit-done/bin/gsd-tools.cjs" query phase-plan-index 21` reported both `21-01` and `21-02` with `has_summary: true` and `incomplete: []`.
 - `node "$HOME/.codex/get-shit-done/bin/gsd-tools.cjs" query verify.schema-drift 21` reported `drift_detected: false`.
+- `node "$HOME/.codex/get-shit-done/bin/gsd-tools.cjs" query phase.complete 21` reported `plans_executed: "2/2"`, `next_phase: "22"`, `roadmap_updated: true`, `state_updated: true`, and `requirements_updated: true`. It warned that optional `STATE.md` field labels `Current Phase Name` and `Last Activity Description` were not found; the current state was manually checked and points to Phase 22.
 - `git diff --check` passed for Phase 21 ledger files.
-
-`roadmap.analyze` and `phase-plan-index 21` are expected to report Phase 21 fully complete only after `21-02-SUMMARY.md` exists; the summary is created as the final Plan 21-02 artifact.
 
 ## Remaining Routed Work
 
@@ -76,4 +77,3 @@ These gates were run for closeout:
 - Phase 23: add repeatable performance, quality-mode, reset/degradation, long-run, and redacted metric checks.
 - Phase 24: harden renderer output regression, no-op tolerance, all-output dimensions, and watermark/readability checks.
 - Phase 25: assess privacy manifest status, resource trust, final security scans, and v1.4 closeout documentation.
-
