@@ -131,10 +131,10 @@ This milestone does not add SwiftUI screens, Home/discovery surfaces, resource/s
 2. Promoted visible effects have unit/integration evidence plus example-image output evidence.
 3. Planning documents, docs, and root contracts reflect actual implemented behavior and remaining limitations.
 
-**Plans:** 0/2 plans complete
+**Plans:** 1/2 plans executed
 **Wave 1**
 
-- [ ] 20-01: Finalize editor support contracts, delivery boundary, and root contract updates.
+- [x] 20-01: Finalize editor support contracts, delivery boundary, and root contract updates.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -163,7 +163,7 @@ This milestone does not add SwiftUI screens, Home/discovery surfaces, resource/s
 | 17. Core Beauty Contracts and Module Boundaries | v1.3 | 2/2 | Complete | 2026-06-26 |
 | 18. Skin Retouch Core Modules | v1.3 | 3/3 | Complete | 2026-06-27 |
 | 19. Beauty Shaping Core Modules | v1.3 | 5/5 | Complete | 2026-06-29 |
-| 20. Core Module Closeout | v1.3 | 0/2 | Planned | - |
+| 20. Core Module Closeout | v1.3 | 1/2 | In Progress|  |
 
 ## Backlog
 

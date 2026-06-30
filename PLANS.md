@@ -26,7 +26,15 @@
 
 ## 3. Active
 
-No active plan. The next planned v1.3 step is `$gsd-execute-phase 20`.
+### A-2026-06-30-gsd-execute-phase-20-core-module-closeout
+
+| Field | Value |
+| --- | --- |
+| Status | active |
+| Started | 2026-06-30 |
+| Scope | Run `$gsd-execute-phase 20` for Phase 20 Core Module Closeout. Execute the two planned waves: editor-shell/current-authority contract closeout, then SDK/renderer evidence, scope scans, and planning-ledger closeout. |
+| Requirements | EDITOR-01, EDITOR-02, EDITOR-03, MOD-02, MOD-03, MOD-04 |
+| Verification Plan | Plan 20-01 doc scans and no-BeautyDemo-source-diff checks; Plan 20-02 full `swift test --package-path BeautySDK`, full current `BeautyExampleRenderer` matrix, renderer output checks, API/UI/renderer/status/redaction scans, roadmap/state/schema checks, code review, and phase verification. |
 
 
 ## 4. Completed
