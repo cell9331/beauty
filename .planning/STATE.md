@@ -2,9 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Stability, QA, and Debt Cleanup
-status: planning
-last_updated: "2026-06-30T03:39:37.120Z"
-last_activity: 2026-06-30 — v1.4 roadmap created
+status: Roadmap ready; awaiting Phase 21 discussion
+stopped_at: Phase 21 context gathered
+last_updated: "2026-06-30T04:23:28.056Z"
+last_activity: 2026-06-30 — Milestone v1.4 requirements and roadmap created
 progress:
   total_phases: 5
   completed_phases: 0
@@ -124,9 +125,9 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-06-30T01:53:30Z
-Stopped at: Completed Phase 20 and v1.3 closeout
-Resume file: None
+Last session: 2026-06-30T04:23:28.053Z
+Stopped at: Phase 21 context gathered
+Resume file: .planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-CONTEXT.md
 
 ## Operator Next Steps
 
