@@ -360,6 +360,21 @@ Manual checks still required before stronger product claims:
 - Exact commercial asset parity, VIP/paywall behavior, AI feature flows, video editing, `图库` / `AI 修图` / `我` tab content, and recommendation detail pages.
 - Release hardening still requires real-device camera/Vision parity, performance budgets, long-run stability, and naturalness review for SDK effects.
 
+### 7.10 Phase 20 Core Module Closeout Acceptance
+
+Agent-verifiable checks:
+
+- Editor-shell support is documented as existing app-side behavior: input routing, preview chrome, category rail, tool rail, sliders, compare/debug, cancel/confirm, and parameter snapshot ownership stay in `BeautyDemo`.
+- Demo integration remains facade-only: Demo source and tests import the public `BeautySDK` facade, not internal SDK targets.
+- Phase 20 closeout does not add new SwiftUI screens, Demo routes, public parameters, renderer cases, or geometry saved-image output.
+- Visible promoted effects require `swift test --package-path BeautySDK`, all current `BeautyExampleRenderer` cases, ignored same-dimension outputs, readable bottom watermarks, and factual visual observations.
+- Geometry-heavy shaping branches remain `partial` or `blocked-by-geometry-output` until public facade detection plus geometry rendering can produce saved example-image outputs.
+
+Manual or future release-hardening checks still required before stronger product claims:
+
+- Release-like naturalness review, real-device Vision parity, simulator screenshot/UI automation, performance budgets, and long-run hardware stability.
+- Production render quality, commercial asset parity, and exact Meitu/Xingtu feature parity.
+
 ## 8. Preset Product Contract
 
 MVP built-in presets:

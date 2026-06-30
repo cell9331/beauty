@@ -237,6 +237,13 @@ Phase v1.1 Meitu UI current state:
 - Cancel restores the last confirmed `BeautyParameters` snapshot through `BeautyParameterStore.restoreCustomParameters(_:)`; confirm updates the snapshot without resetting preview, compare state, or input mode.
 - Launch-only visual evidence hooks are `--beauty-demo-route editor-photo|editor-camera|editor-beauty` and `--beauty-demo-home-sticky`; normal launch still starts at Home.
 
+Phase 20 editor-shell closeout current state:
+
+- Existing Demo editor support owns app-side interaction state for input routing, preview chrome, category rail, tool rail, sliders, compare/debug, cancel/confirm, and parameter snapshot behavior.
+- Demo imports only the public `BeautySDK` facade. Editor state may construct `BeautyParameters` snapshots and read public result/debug summaries, but it must not import SDK internal targets or own SDK algorithm state.
+- Normal Phase 20 closeout does not add new SwiftUI screens, routes, tool-panel behavior, app-state behavior, public parameters, renderer cases, export flow, or media transfer behavior.
+- Release-like visual naturalness, real-device Vision parity, simulator screenshot/UI automation, performance budgets, and long-run checks remain release-hardening risks, not Phase 20 editor acceptance gates.
+
 ## 9. Camera Preview
 
 Camera preview responsibilities:
