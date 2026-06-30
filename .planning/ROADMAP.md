@@ -30,8 +30,12 @@ This milestone does not add new Meitu product surfaces, public `BeautyParameters
 3. TD-005, TD-008, TD-009, and TD-010 are triaged into v1.4 phases, explicitly deferred, or marked blocked with evidence.
 4. No product-feature or public-API expansion enters the baseline phase.
 
-**Plans:** Not planned yet
-**Next command:** `$gsd-discuss-phase 21`
+**Plans:** 2 plans across 2 waves
+
+- **Wave 1:** `21-01` Baseline verification sweep and evidence ledger.
+- **Wave 2:** `21-02` Quality score, debt routing, and planning ledger refresh. Depends on `21-01`.
+
+**Next command:** `$gsd-execute-phase 21`
 
 ### Phase 22: Automated Demo QA and Screenshot Evidence
 
@@ -107,7 +111,7 @@ This milestone does not add new Meitu product surfaces, public `BeautyParameters
 
 | Phase | Milestone | Requirements | Plans Complete | Status |
 | --- | --- | --- | ---: | --- |
-| 21. Baseline Audit and Quality Ledger Refresh | v1.4 | AUD-01, AUD-02, AUD-03, AUD-04 | 0/0 | Planned |
+| 21. Baseline Audit and Quality Ledger Refresh | v1.4 | AUD-01, AUD-02, AUD-03, AUD-04 | 0/2 | Planned |
 | 22. Automated Demo QA and Screenshot Evidence | v1.4 | QA-01, QA-02, QA-03, QA-04 | 0/0 | Planned |
 | 23. Performance and Reliability Gates | v1.4 | PERF-01, PERF-02, PERF-03, PERF-04, PERF-05 | 0/0 | Planned |
 | 24. Renderer Output Regression Hardening | v1.4 | RENDER-01, RENDER-02, RENDER-03, RENDER-04 | 0/0 | Planned |

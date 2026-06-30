@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Stability, QA, and Debt Cleanup
 status: planning
-stopped_at: Phase 21 context gathered
-last_updated: "2026-06-30T04:25:38.173Z"
-last_activity: 2026-06-30 — Phase 21 context gathered
+stopped_at: Phase 21 planned
+last_updated: "2026-06-30T05:23:34.687Z"
+last_activity: 2026-06-30 — Phase 21 planned
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 0
+  total_plans: 2
   completed_plans: 0
   percent: 0
 ---
@@ -26,9 +26,9 @@ See: `.planning/PROJECT.md` (updated 2026-06-30)
 ## Current Position
 
 Phase: 21 - Baseline Audit and Quality Ledger Refresh
-Plan: —
-Status: Context gathered; ready for Phase 21 planning
-Last activity: 2026-06-30 — Phase 21 context gathered
+Plan: 2 plans across 2 waves
+Status: Planned; ready for Phase 21 execution
+Last activity: 2026-06-30 — Phase 21 planned
 
 ## Performance Metrics
 
@@ -101,7 +101,7 @@ Recent milestone-level outcomes:
 
 ### Pending Todos
 
-- Plan Phase 21 with `$gsd-plan-phase 21`.
+- Execute Phase 21 with `$gsd-execute-phase 21`.
 - Preserve v1.4 boundaries while planning: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign.
 - Convert release-hardening candidates into measurable evidence or documented blockers: physical-device camera/Vision parity, production naturalness review, screenshot/UI automation, performance budgets, memory/thermal checks, privacy manifest review, and automated visual diffs.
 
@@ -131,4 +131,4 @@ Resume file: .planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-CO
 
 ## Operator Next Steps
 
-- Run `$gsd-plan-phase 21` to create Phase 21 plans.
+- Run `$gsd-execute-phase 21` to execute the baseline audit plans.

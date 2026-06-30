@@ -26,9 +26,30 @@
 
 ## 3. Active
 
-No active implementation work. Next step is `$gsd-discuss-phase 21`.
+No active implementation work. Next step is `$gsd-execute-phase 21`.
 
 ## 4. Completed
+
+### C-2026-06-30-gsd-plan-phase-21-baseline-audit
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-06-30 |
+| Scope | Ran `$gsd-plan-phase 21` for Phase 21 Baseline Audit and Quality Ledger Refresh after the required research gate selected research-first. Created research, validation, pattern map, and two executable plans across two waves for evidence capture, debt routing, quality-score refresh, and planning-ledger closeout. |
+| Requirements | AUD-01, AUD-02, AUD-03, AUD-04 |
+| Files | `.planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-RESEARCH.md`, `21-VALIDATION.md`, `21-PATTERNS.md`, `21-01-PLAN.md`, `21-02-PLAN.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | User selected research-first in text-mode fallback because `request_user_input` was unavailable; `swift --version` reported Apple Swift 6.3.3; `xcodebuild -version` reported Xcode 26.6; `swift test --package-path BeautySDK --list-tests` succeeded and listed 141 XCTest entries; `xcodebuild -list -project BeautyDemo/BeautyDemo.xcodeproj` listed `BeautyDemo`, `BeautyDemoTests`, and schemes while reporting CoreSimulator current `1051.54.0` older than required `1051.55.0`; `xcrun simctl list devices available` listed iOS 26.5 devices after a stale-service warning; renderer inventory found 5 input fixtures and 45 existing local PNG outputs; `git diff --check -- .planning/phases/21-baseline-audit-and-quality-ledger-refresh` passed; structural plan scan found required frontmatter, `<objective>`, artifacts, `<tasks>`, `<read_first>`, `<action>`, `<acceptance_criteria>`, `<threat_model>`, `<verification>`, and `<success_criteria>` in both plans; requirement scan found AUD-01, AUD-02, AUD-03, and AUD-04 covered; `check.decision-coverage-plan .planning/phases/21-baseline-audit-and-quality-ledger-refresh .planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-CONTEXT.md` passed with 18/18 decisions covered; `phase-plan-index 21` reported two plans across two waves; `state.planned-phase --phase 21 --name baseline-audit-and-quality-ledger-refresh --plans 2` updated state; `roadmap.annotate-dependencies 21` detected two waves and required no automatic roadmap edit, so the Phase 21 roadmap plan list was updated manually. |
+| Build | Not run; this was a GSD planning/documentation workflow with no Swift source changes. Research verified SwiftPM test inventory only; execution Plan 21-01 requires the full baseline sweep and exact pass/fail/blocker records. |
+| Commit | Final planning commit records the Phase 21 plan artifacts, roadmap/state updates, and this ledger entry. |
+
+Outcome:
+
+- Phase 21 now has `21-01-PLAN.md` for the baseline command sweep and `21-BASELINE-AUDIT.md` evidence ledger.
+- Phase 21 now has `21-02-PLAN.md` for `QUALITY_SCORE.md`, `PLANS.md`, `.planning` ledger synchronization, TD-005/TD-008/TD-009/TD-010 routing, and closeout verification.
+- `21-RESEARCH.md` records local toolchain discovery, including the CoreSimulator version mismatch that execution must classify if still present.
+- `21-VALIDATION.md` sets the audit validation strategy and manual-only blocker protocol for physical iPhone and visual naturalness checks.
+- All 18 Phase 21 context decisions are covered by the plans.
+- Next step is `$gsd-execute-phase 21`.
 
 ### C-2026-06-30-gsd-discuss-phase-21-baseline-audit
 
