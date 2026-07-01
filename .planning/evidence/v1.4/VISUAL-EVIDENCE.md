@@ -146,7 +146,10 @@ Conclusion: unsupported future routes remain inactive; `--beauty-demo-route edit
 
 ## Archived comparison only
 
-`.planning/evidence/v1.1/` and `.planning/evidence/v1.2/` are archived background comparison inputs only. They are not current v1.4 pass evidence and must not be copied or cited as fresh Phase 22 screenshots.
+Archived screenshot folders are background comparison inputs only. They are not current v1.4 pass evidence and must not be copied or cited as fresh Phase 22 screenshots.
+
+- `.planning/evidence/v1.1/` remains archived background comparison.
+- `.planning/evidence/v1.2/` remains archived background comparison.
 
 ## Physical iPhone manual protocol
 
@@ -163,10 +166,18 @@ Because `Demo simulator build: blocked`, install the missing local Metal Toolcha
 3. Rerun `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test -only-testing:BeautyDemoTests/BeautyDemoViewStateTests`.
 4. If both prerequisite commands pass, continue with Plan 22-02 screenshot capture using the existing `simctl` launch routes.
 
+## Final artifact gate
+
+No current v1.4 screenshots captured.
+
+PNG inventory status: no `.planning/evidence/v1.4/*.png` files are present because `Screenshot capture status: blocked`.
+
+Zero-byte screenshot status: not applicable because no current screenshot PNG files were created.
+
 ## Explicit non-claims
 
-- `no production naturalness claim`: Phase 22 does not claim production naturalness passed.
-- `no effect quality claim`: Phase 22 does not claim effect quality passed.
-- `no physical-device parity claim`: Phase 22 does not claim physical-device camera/Vision parity passed.
-- `no screenshot-diff claim`: Phase 22 does not claim screenshot-diff baselines passed.
+- `no production naturalness claim`: Phase 22 makes no production naturalness claim.
+- `no effect quality claim`: Phase 22 makes no effect quality claim.
+- `no physical-device parity claim`: Phase 22 makes no physical-device camera/Vision parity claim.
+- `no screenshot-diff claim`: Phase 22 makes no screenshot-diff baseline claim.
 - Phase 22 does not claim exact commercial Meitu parity, new product routes, hidden network/cloud behavior, public `BeautyParameters` expansion, or current screenshots while the Metal Toolchain blocker remains.
