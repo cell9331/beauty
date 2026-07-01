@@ -60,6 +60,44 @@ Screenshot capture status: blocked
 | Home sticky state | `.planning/evidence/v1.4/home-sticky-state.png` | Not captured; blocked by Demo build prerequisite. |
 | Editor beauty/photo tool panel | `.planning/evidence/v1.4/editor-tool-panel.png` | Not captured; blocked by Demo build prerequisite. |
 
+## Per-state review notes
+
+### Home first screen
+
+| Field | Evidence |
+| --- | --- |
+| Screenshot path | `not captured` |
+| Command | Normal launch after successful build/install would use `xcrun simctl launch "$DEVICE_UDID" com.yakang.BeautyDemo`, then `xcrun simctl io "$DEVICE_UDID" screenshot .planning/evidence/v1.4/home-first-screen.png`. |
+| Framing | blocked; expected focal point is `Hero camera module and 拍一拍 CTA`. |
+| Clipping / overlap | blocked by Metal Toolchain prerequisite; rerun after `xcodebuild -downloadComponent MetalToolchain`. |
+| Disabled honesty | blocked for screenshot review; Plan 22-01 route/model scans show unsupported future routes remain inactive. |
+| Route scope | blocked for screenshot review; normal launch should stay on current Home first screen with no new product route. |
+| Non-claims | no production naturalness claim, no effect quality claim, no physical-device parity claim, no screenshot-diff claim, and no current v1.4 pass evidence from archived screenshots. |
+
+### Home sticky state
+
+| Field | Evidence |
+| --- | --- |
+| Screenshot path | `not captured` |
+| Command | Sticky launch after successful build/install would use `xcrun simctl launch "$DEVICE_UDID" com.yakang.BeautyDemo --beauty-demo-home-sticky`, then `xcrun simctl io "$DEVICE_UDID" screenshot .planning/evidence/v1.4/home-sticky-state.png`. |
+| Framing | blocked; expected focal point is `Sticky shortcut rail pinned near the top`. |
+| Clipping / overlap | blocked by Metal Toolchain prerequisite; rerun after `xcodebuild -downloadComponent MetalToolchain`. |
+| Disabled honesty | blocked for screenshot review; Plan 22-01 route/model scans show disabled future Home tools remain inactive. |
+| Route scope | blocked for screenshot review; `--beauty-demo-home-sticky` is launch-only evidence routing and does not add a product route. |
+| Non-claims | no production naturalness claim, no effect quality claim, no physical-device parity claim, no screenshot-diff claim, and no current v1.4 pass evidence from archived screenshots. |
+
+### Editor beauty/photo tool panel
+
+| Field | Evidence |
+| --- | --- |
+| Screenshot path | `not captured` |
+| Command | Editor launch after successful build/install would use `xcrun simctl launch "$DEVICE_UDID" com.yakang.BeautyDemo --beauty-demo-route editor-beauty`, then `xcrun simctl io "$DEVICE_UDID" screenshot .planning/evidence/v1.4/editor-tool-panel.png`. |
+| Framing | blocked; expected focal point is `White bottom tool panel with selected tool ring, selected category underline, and slider row`. |
+| Clipping / overlap | blocked by Metal Toolchain prerequisite; rerun after `xcodebuild -downloadComponent MetalToolchain`. |
+| Disabled honesty | blocked for screenshot review; Plan 22-01 route/model scans show unsupported editor tools keep disabled copy, `controlID: nil`, or visible `限免` / `Pro` / `OFF` treatment. |
+| Route scope | blocked for screenshot review; `--beauty-demo-route editor-beauty` is the existing required editor evidence route and does not enable new Meitu product areas. |
+| Non-claims | no production naturalness claim, no effect quality claim, no physical-device parity claim, no screenshot-diff claim, and no current v1.4 pass evidence from archived screenshots. |
+
 ## Route/model disabled-honesty checks
 
 Demo focused view-state test: blocked
