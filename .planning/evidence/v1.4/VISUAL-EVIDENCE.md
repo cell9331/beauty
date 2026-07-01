@@ -40,6 +40,18 @@ No current v1.4 screenshots captured in Plan 22-01.
 
 Screenshot capture pending Plan 22-02. Plan 22-02 may create `.planning/evidence/v1.4/home-first-screen.png`, `.planning/evidence/v1.4/home-sticky-state.png`, and `.planning/evidence/v1.4/editor-tool-panel.png` only after the Demo app builds, installs, launches, and `xcrun simctl io` screenshot commands succeed.
 
+Screenshot capture status: blocked
+
+| Field | Evidence |
+| --- | --- |
+| Blocking prerequisite | `Demo simulator build: blocked` |
+| Build command | `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' build` |
+| Destination | `platform=iOS Simulator,name=iPhone 17,OS=26.5` |
+| Environment | Xcode `26.6` build `17F113`; Apple Swift `6.3.3`; iPhone 17 iOS 26.5 simulator `8E200128-9A69-462E-9507-047F5AB54FC3`. |
+| Failure summary | Build exits `65` while compiling `BeautySDK/Sources/BeautyRender/Shaders/Warp.metal`; Xcode cannot execute tool `metal` because the Metal Toolchain is missing. |
+| Impact | The app cannot be installed or launched for current `simctl io screenshot` capture, so no current v1.4 PNG evidence is created. |
+| Rerun protocol | Install the Metal Toolchain with `xcodebuild -downloadComponent MetalToolchain`, rerun the exact build and focused test commands, then run the documented `simctl` boot/install/launch/screenshot sequence. |
+
 ## Required states
 
 | State | Required path | Current status |
