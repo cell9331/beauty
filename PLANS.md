@@ -26,35 +26,29 @@
 
 ## 3. Active
 
-### P-2026-07-01-gsd-plan-phase-22-demo-qa-evidence
+None.
+
+## 4. Completed
+
+### C-2026-07-01-gsd-plan-phase-22-demo-qa-evidence
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
-| Owner | Agent |
-| Started | 2026-07-01 |
-| Scope | Continue `$gsd-progress --next` into `$gsd-plan-phase 22` for Automated Demo QA and Screenshot Evidence. |
-| Source Request | `$gsd-progress --next`; user selected research-first in text-mode fallback. |
-| Current Step | Resume `$gsd-plan-phase 22` to create executable plans from the approved UI-SPEC. |
-| Verification Policy | Plan-phase must preserve QA-01 through QA-04 coverage, pass plan-checker/coverage gates, and record exact Demo build/test/screenshot commands or Metal Toolchain blocker evidence. |
+| Completed | 2026-07-01 |
+| Scope | Ran `$gsd-plan-phase 22` for Phase 22 Automated Demo QA and Screenshot Evidence. Reused existing context, research, validation, and approved UI-SPEC; created a pattern map; generated two executable plans across two waves; fixed one checker blocker in verification predicates; and marked Phase 22 ready for execution. |
+| Requirements | QA-01, QA-02, QA-03, QA-04 |
+| Files | `.planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-PATTERNS.md`, `22-01-PLAN.md`, `22-02-PLAN.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, `PLANS.md` |
+| Verification | `init.plan-phase 22` reported `phase_status: Pending`, `has_context: true`, `has_research: true`, `has_plans: false`, `phase_req_ids: QA-01, QA-02, QA-03, QA-04`, `commit_docs: true`, and `text_mode: false`; pattern mapper created `22-PATTERNS.md` and `git diff --check -- 22-PATTERNS.md` passed; planner created `22-01-PLAN.md` and `22-02-PLAN.md`; first plan-checker pass found one blocker because Plan 22-02 branched on generic `Metal Toolchain` text; revision changed the plans to explicit `Demo simulator build: passed|blocked`, `Demo focused view-state test: passed|blocked`, and `Screenshot capture status: passed|blocked` markers; second plan-checker pass reported `VERIFICATION PASSED`; `phase-plan-index 22` reported two plans across two waves with `22-02` depending on `22-01`; `check.decision-coverage-plan` passed with `19/19` decisions covered; post-planning gap analysis showed QA-01 through QA-04 and D-01 through D-19 covered, with uncovered items belonging to other v1.4 phases; `roadmap.annotate-dependencies 22` detected two waves and required no automatic edit; scoped `git diff --check` passed. |
+| Build | Not run; this was a GSD planning/documentation workflow with no Swift source changes. Phase 22 execution plans require exact Demo build/test/screenshot commands or reproducible Metal Toolchain blocker records. |
+| Commit | `c7c1457` created the initial two PLAN files; this final scoped closeout commit records the pattern map, checker-driven plan revision, state/roadmap updates, and this ledger entry. |
 
-Checklist:
+Outcome:
 
-| Step | Status | Evidence |
-| --- | --- | --- |
-| Determine next route | `completed` | `$gsd-progress --next` gates found no checkpoint, state status `planning`, no Phase 22 verification failures, and no phase with plans lacking summaries; routed to `$gsd-plan-phase 22`. |
-| Research Phase 22 | `completed` | Created `.planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-RESEARCH.md`; current probe reran `xcodebuild -version`, `xcodebuild -list -project BeautyDemo/BeautyDemo.xcodeproj`, `xcrun simctl list devices available`, and explicit iPhone 17 Demo build. |
-| Validate research artifacts | `completed` | Created `22-VALIDATION.md`; `git diff --check -- 22-RESEARCH.md 22-VALIDATION.md` passed; placeholder scan over both files returned no matches. |
-| Resolve UI planning gate | `completed` | Created and approved `.planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-UI-SPEC.md`; second gsd-ui-checker pass reported PASS for Copywriting, Visuals, Color, Typography, Spacing, and Registry Safety with no recommendations. |
-| Generate executable plans | `planned` | Pending rerun of `$gsd-plan-phase 22` using `22-CONTEXT.md`, `22-RESEARCH.md`, `22-VALIDATION.md`, and approved `22-UI-SPEC.md`. |
-
-Blockers:
-
-| Blocker | Evidence | Next Step |
-| --- | --- | --- |
-| Demo simulator build still blocked by local Metal Toolchain | `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' build` exited 65 compiling `BeautySDK/Sources/BeautyRender/Shaders/Warp.metal`: `cannot execute tool 'metal' due to missing Metal Toolchain; use: xcodebuild -downloadComponent MetalToolchain`. | Phase 22 execution plans must record this blocker or rerun after installing the Metal Toolchain component. |
-
-## 4. Completed
+- `22-01-PLAN.md` covers Demo build/test prerequisite evidence, exact Metal Toolchain blocker/pass handling, and route/model disabled-honesty checks.
+- `22-02-PLAN.md` covers current v1.4 simulator screenshot capture or blocker-preserving rerun protocol for Home first screen, Home sticky state, and editor beauty/photo tool panel.
+- Both plans preserve blocker honesty: screenshots are created only after build/install/launch/screenshot commands pass; blocked execution must not create or claim current screenshot pass evidence.
+- Phase 22 remains scoped to QA evidence and explicitly forbids broad UI automation, screenshot-diff baselines, product-route expansion, new public parameters, physical-device parity pass claims, and production naturalness/effect-quality claims.
+- Next step is `$gsd-execute-phase 22`.
 
 ### C-2026-07-01-gsd-ui-phase-22-demo-qa-evidence
 

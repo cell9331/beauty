@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Stability, QA, and Debt Cleanup
 status: planning
-stopped_at: Phase 22 UI-SPEC approved
-last_updated: "2026-07-01T01:21:24.931Z"
-last_activity: 2026-07-01 — Phase 22 UI-SPEC approved with all six checker dimensions passing
+stopped_at: Phase 22 planned
+last_updated: "2026-07-01T02:06:44.000Z"
+last_activity: 2026-07-01 — Phase 22 executable plans created and plan-checker passed
 progress:
   total_phases: 5
   completed_phases: 1
-  total_plans: 2
+  total_plans: 4
   completed_plans: 2
   percent: 20
 ---
@@ -26,9 +26,9 @@ See: `.planning/PROJECT.md` (updated 2026-06-30)
 ## Current Position
 
 Phase: 22 - Automated Demo QA and Screenshot Evidence
-Plan: Not planned yet
-Status: Phase 22 UI-SPEC approved; ready for Phase 22 executable planning
-Last activity: 2026-07-01 — Phase 22 UI-SPEC approved with all six checker dimensions passing
+Plan: 2 plans ready to execute
+Status: Phase 22 planned; ready for execute-phase
+Last activity: 2026-07-01 — Phase 22 executable plans created and plan-checker passed
 
 ## Performance Metrics
 
@@ -64,6 +64,7 @@ Last activity: 2026-07-01 — Phase 22 UI-SPEC approved with all six checker dim
 | 19. Beauty Shaping Core Modules | 5/5 | Complete |
 | 20. Core Module Closeout | 2/2 | Complete |
 | 21. Baseline Audit and Quality Ledger Refresh | 2/2 | Complete |
+| 22. Automated Demo QA and Screenshot Evidence | 0/2 | Planned |
 | Phase 18 P1 | 8 min | 2 tasks | 2 files |
 | Phase 18 P2 | 117 min | 3 tasks | 10 files |
 | Phase 18 P3 | 19 min | 3 tasks | 6 files |
@@ -105,9 +106,10 @@ Recent milestone-level outcomes:
 
 ### Pending Todos
 
-- Run `$gsd-discuss-phase 22`.
-- Preserve v1.4 boundaries while planning: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign.
-- Convert release-hardening candidates into measurable evidence or documented blockers: physical-device camera/Vision parity, production naturalness review, screenshot/UI automation, performance budgets, memory/thermal checks, privacy manifest review, and automated visual diffs.
+- Run `$gsd-execute-phase 22`.
+- Preserve v1.4 boundaries while executing: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign.
+- Execute Phase 22 evidence plans with exact Demo build/test/screenshot commands or reproducible Metal Toolchain blocker records.
+- Convert remaining release-hardening candidates into measurable evidence or documented blockers in later phases: physical-device camera/Vision parity, production naturalness review, performance budgets, memory/thermal checks, privacy manifest review, renderer regression, and automated visual diffs.
 
 ### Blockers/Concerns
 
@@ -132,11 +134,11 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-01T01:21:24.927Z
-Stopped at: Phase 22 UI-SPEC approved
-Resume file: .planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-UI-SPEC.md
+Last session: 2026-07-01T10:06:44+0800
+Stopped at: Phase 22 planned
+Resume file: .planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-01-PLAN.md
 
 ## Operator Next Steps
 
-- Rerun `$gsd-plan-phase 22` to create executable plans from `22-CONTEXT.md`, `22-RESEARCH.md`, `22-VALIDATION.md`, and approved `22-UI-SPEC.md`.
-- Preserve the local Metal Toolchain blocker protocol unless `xcodebuild -downloadComponent MetalToolchain` has been completed and the Demo simulator build is rerun.
+- Run `$gsd-execute-phase 22`.
+- Preserve the local Metal Toolchain blocker protocol unless `xcodebuild -downloadComponent MetalToolchain` has been completed and the Demo simulator build/test/screenshot commands are rerun.

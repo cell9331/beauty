@@ -53,8 +53,12 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 3. `.planning/evidence/v1.4/` records screenshots or documented local blockers with commands, framing, and review notes.
 4. Unsupported/future product areas stay inactive and honest; no new UI route is accidentally enabled.
 
-**Plans:** Not planned yet
-**Next command:** `$gsd-discuss-phase 22` after Phase 21 completes
+**Plans:** 2 plans ready
+
+- **Wave 1:** `22-01` Demo build/test prerequisite sweep, Metal Toolchain blocker/pass evidence, and route/model disabled-honesty checks.
+- **Wave 2:** `22-02` Simulator screenshot capture or blocker-preserving rerun protocol with factual review notes. Depends on `22-01`.
+
+**Next command:** `$gsd-execute-phase 22`
 
 ### Phase 23: Performance and Reliability Gates
 
@@ -114,7 +118,7 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 | Phase | Milestone | Requirements | Plans Complete | Status |
 | --- | --- | --- | ---: | --- |
 | 21. Baseline Audit and Quality Ledger Refresh | v1.4 | AUD-01, AUD-02, AUD-03, AUD-04 | 2/2 | Complete |
-| 22. Automated Demo QA and Screenshot Evidence | v1.4 | QA-01, QA-02, QA-03, QA-04 | 0/0 | Planned |
+| 22. Automated Demo QA and Screenshot Evidence | v1.4 | QA-01, QA-02, QA-03, QA-04 | 0/2 | Planned |
 | 23. Performance and Reliability Gates | v1.4 | PERF-01, PERF-02, PERF-03, PERF-04, PERF-05 | 0/0 | Planned |
 | 24. Renderer Output Regression Hardening | v1.4 | RENDER-01, RENDER-02, RENDER-03, RENDER-04 | 0/0 | Planned |
 | 25. Security, Distribution Review, and Closeout | v1.4 | SEC-01, SEC-02, SEC-03, SEC-04, DOC-01, DOC-02, DOC-03 | 0/0 | Planned |
