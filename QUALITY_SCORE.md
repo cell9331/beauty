@@ -34,19 +34,19 @@ Quality gate:
 
 ## 3. Current Snapshot
 
-Current repository state as of 2026-06-30 after Phase 21 baseline audit:
+Current repository state as of 2026-07-01 after Phase 22 automated Demo QA evidence:
 
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
 | Root docs | 4 | `AGENTS.md`, `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `PLANS.md`, and `QUALITY_SCORE.md` still exist as current owner docs. Phase 21 root placeholder scan found only historical `PLANS.md` verification prose, not unresolved contract placeholders. | Keep root docs synced when `.planning/PROJECT.md`, `.planning/ROADMAP.md`, implementation contracts, or Phase 22-25 evidence change. |
 | Historical docs | 3 | `docs/README.md` remains the long-doc entry. Phase 21 records `.planning/codebase/*` maps as stale background because they still contradict the current Swift package, tests, and planning ledgers. | Continue conflict scans and defer any formal `.planning/codebase/*` remap until explicitly scoped. |
-| GSD planning | 4 | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, and `.planning/REQUIREMENTS.md` define v1.4 as stability, QA, performance, security, and debt cleanup. `21-BASELINE-AUDIT.md` records current evidence for AUD-01 through AUD-04. | Complete Phase 21 ledger closeout, then plan Phase 22 Demo QA evidence. |
+| GSD planning | 4 | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, and `.planning/REQUIREMENTS.md` define v1.4 as stability, QA, performance, security, and debt cleanup. Phase 21 records AUD-01 through AUD-04; Phase 22 records QA-01 through QA-04 through the documented Metal Toolchain blocker path. | Start Phase 23 performance/reliability planning. |
 | SDK Package | 4 | `BeautySDK/Package.swift` exists with `BeautyCore`, `BeautyDetection`, `BeautyRender`, `BeautyEffects`, `BeautyResources`, facade `BeautySDK`, and `BeautyExampleRenderer`. Phase 21 `swift test --package-path BeautySDK` passed with 141 XCTest cases. | Phase 23 should add performance/reliability gates; Phase 24 should harden renderer regression evidence. |
-| Demo App | 4 | Existing archived Demo evidence remains valid for shipped behavior, but Phase 21 cannot claim a current Demo simulator build/test pass: explicit iPhone 17 iOS 26.5 build is blocked by the missing local Metal Toolchain while compiling `Warp.metal`. | Install the Metal Toolchain, then run explicit-destination Demo build/test and screenshot/layout checks in Phase 22. |
-| Tests | 4 | Phase 21 `swift test --package-path BeautySDK --list-tests` succeeded and full `swift test --package-path BeautySDK` passed with 141 XCTest cases. Demo simulator tests were not run after the current build prerequisite failed on the missing Metal Toolchain. | After toolchain repair, run Demo simulator tests in Phase 22; add performance, renderer regression, screenshot diffing, and long-run coverage in Phases 23-24. |
+| Demo App | 4 | Existing archived Demo evidence remains valid for shipped behavior. Phase 22 reproduced the explicit iPhone 17 iOS 26.5 Demo build/test blocker, recorded no current v1.4 PNG screenshots, and added blocker-form Home/editor review notes plus route/model disabled-honesty scans in `.planning/evidence/v1.4/VISUAL-EVIDENCE.md`. | Install the Metal Toolchain before claiming current Demo simulator build/test or screenshot pass evidence. |
+| Tests | 4 | Phase 22 reran `swift test --package-path BeautySDK` successfully with 141 XCTest cases. Demo simulator build and focused `BeautyDemoViewStateTests` remain blocked by the missing Metal Toolchain, and the blocker is recorded with exact rerun protocol. | Add performance, renderer regression, and long-run coverage in Phases 23-24; rerun Demo tests after Metal Toolchain repair. |
 | Security | 4 | Phase 21 import/privacy scans passed for facade-only Demo imports, non-UI SDK targets, active Demo no-network/no-upload/raw-path tokens, and public sensitive geometry/raw leakage. `find BeautySDK BeautyDemo -name PrivacyInfo.xcprivacy -print` found no privacy manifest, so TD-005 remains open. | Phase 25 should assess required-reason APIs and add or explicitly defer `PrivacyInfo.xcprivacy`. |
 | Reliability | 4 | Existing tests cover typed errors, reset, backpressure, stale work, degradation, resource failures, and non-mutating JSON import failures. Phase 21 added no timing, long-run, or runtime metric evidence. | Phase 23 should add repeatable timing, memory/long-run, quality-mode, reset, degradation, and redacted metric checks. |
-| Product acceptance | 4 | Existing acceptance evidence covers current SDK/Demo journeys, but Phase 21 did not add release-like naturalness review, physical-device parity, or fresh simulator screenshots. | Phase 22 should produce deterministic Demo visual/layout evidence; Phase 24 should produce renderer output regression evidence without naturalness overclaims. |
+| Product acceptance | 4 | Existing acceptance evidence covers current SDK/Demo journeys. Phase 22 added deterministic command evidence, no-PNG blocker inventory, per-state blocked review notes, route/model disabled-honesty scans, and explicit non-claims for current v1.4 Demo visual QA. | Phase 23 should add performance/long-run evidence; Phase 24 should produce renderer output regression evidence without naturalness overclaims. |
 
 ### 3.1 Phase 4 Final Verification
 
@@ -116,6 +116,17 @@ Recorded 2026-06-30 in `.planning/phases/21-baseline-audit-and-quality-ledger-re
 - No `PrivacyInfo.xcprivacy` exists, so TD-005 remains routed to Phase 25.
 - TD-008 splits to Phase 22/Phase 23 with physical iPhone checks blocked until hardware evidence exists; TD-009 routes to Phase 22; TD-010 splits across Phases 22, 23, 24, and 25.
 - `.planning/codebase/*` maps are stale for current v1.4 source truth and remain deferred background material, not current authority.
+
+### 3.7 Phase 22 Automated Demo QA Evidence
+
+Recorded 2026-07-01 in `.planning/evidence/v1.4/VISUAL-EVIDENCE.md` and `.planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-VERIFICATION.md`:
+
+- Exact iPhone 17 / iOS 26.5 Demo build and focused `BeautyDemoViewStateTests` commands both exit 65 while compiling `BeautySDK/Sources/BeautyRender/Shaders/Warp.metal` because the local Metal Toolchain is missing.
+- No current v1.4 screenshot PNGs exist or are claimed under `.planning/evidence/v1.4/`.
+- Home first screen, Home sticky state, and editor beauty/photo tool-panel review notes are recorded in blocked form with exact rerun commands and UI-SPEC focal points.
+- Static route/model scans confirm unsupported/future Home and editor areas remain inactive while Demo XCTest is blocked by the same build prerequisite.
+- `swift test --package-path BeautySDK` passed with 141 XCTest cases after Phase 22 execution.
+- Phase 22 does not claim production naturalness, effect quality, physical-device camera/Vision parity, screenshot-diff baselines, exact commercial Meitu parity, new product routes, hidden network/cloud behavior, or public API expansion.
 
 ## 4. Product Domain Scorecard
 
@@ -345,11 +356,11 @@ SDK 1.0 readiness:
 
 | Priority | Item | Why |
 | --- | --- | --- |
-| 1 | Repair local Demo simulator tooling and capture Phase 22 visual/layout evidence. | Phase 21 explicit Demo build/test is blocked by missing Metal Toolchain, and TD-008/TD-009 still need screenshot or documented visual evidence. |
-| 2 | Add Phase 23 timing, long-run, quality-mode, reset/degradation, and redacted metric checks. | Current reliability evidence is strong in unit/pipeline paths but lacks performance budgets and endurance proof. |
+| 1 | Add Phase 23 timing, long-run, quality-mode, reset/degradation, and redacted metric checks. | Current reliability evidence is strong in unit/pipeline paths but lacks performance budgets and endurance proof. |
+| 2 | Repair local Demo simulator tooling before claiming current screenshot pass evidence. | Phase 22 completed the documented blocker path; actual current PNG capture still requires `xcodebuild -downloadComponent MetalToolchain` and rerunning the exact build/test/screenshot commands. |
 | 3 | Promote Phase 24 renderer evidence into regression gates. | Current renderer run proves 45 visible skin/color/filter outputs, but no-op tolerance, all-output dimensions, watermark readability, and regression thresholds remain future work. |
 | 4 | Complete Phase 25 privacy manifest, resource trust, and final security/distribution review. | TD-005 is still open and no `PrivacyInfo.xcprivacy` exists in `BeautySDK` or `BeautyDemo`. |
-| 5 | Defer formal `.planning/codebase/*` remap until explicitly scoped. | Phase 21 found the maps stale; current source, root contracts, and `.planning` ledgers are authoritative. |
+| 5 | Defer formal `.planning/codebase/*` remap until explicitly scoped. | Phase 21 and the Phase 22 drift warning found the maps stale; current source, root contracts, and `.planning` ledgers are authoritative. |
 
 ## 15. Quality Decision Log
 
@@ -364,3 +375,4 @@ SDK 1.0 readiness:
 | 2026-06-12 | Phase 3 raises Realtime Camera and Still Image Editing to score 3 through deterministic pipeline, privacy, and view-state tests. | The Camera/Photo input slice is now test-backed, while real hardware smoke, visual effects, and long-run performance remain later gates. |
 | 2026-06-22 | Phase 6 raises BeautyEffects and MVP effect domains to score 4 through resolver, provider, fixture, degradation, and Demo panel tests. | Deterministic automated evidence now exists; production render quality, hardware smoke, and manual naturalness review remain release-like gates. |
 | 2026-06-30 | Phase 21 establishes the v1.4 evidence baseline from `21-BASELINE-AUDIT.md`. | SDK tests and renderer commands pass now; Demo build/test is blocked by the missing Metal Toolchain; unresolved visual, hardware, performance, privacy, renderer-regression, and stale-map work routes to Phases 22 through 25. |
+| 2026-07-01 | Phase 22 records automated Demo QA evidence through the blocker-honest path. | Current screenshot capture is still blocked by the missing Metal Toolchain, but the repo now has exact commands, per-state blocked review notes, route/model honesty evidence, no-PNG inventory, and rerun protocol for QA-01 through QA-04. |

@@ -3,39 +3,39 @@ gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Stability, QA, and Debt Cleanup
 status: planning
-stopped_at: Phase 22 planned
-last_updated: "2026-07-01T02:06:44.000Z"
-last_activity: 2026-07-01 — Phase 22 executable plans created and plan-checker passed
+stopped_at: Phase 22 complete
+last_updated: "2026-07-01T06:55:23.064Z"
+last_activity: 2026-07-01 — Phase 22 verified through blocker-honest Demo QA evidence
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 4
-  completed_plans: 2
-  percent: 20
+  completed_plans: 4
+  percent: 40
 ---
 
 # Project State
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-06-30)
+See: `.planning/PROJECT.md` (updated 2026-07-01)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** v1.4 Stability, QA, and Debt Cleanup
+**Current focus:** Phase 23 — Performance and Reliability Gates
 
 ## Current Position
 
-Phase: 22 - Automated Demo QA and Screenshot Evidence
-Plan: 2 plans ready to execute
-Status: Phase 22 planned; ready for execute-phase
-Last activity: 2026-07-01 — Phase 22 executable plans created and plan-checker passed
+Phase: 23 - Performance and Reliability Gates
+Plan: Not started
+Status: Ready for discuss-phase
+Last activity: 2026-07-01 — Phase 22 verified through blocker-honest Demo QA evidence
 
 ## Performance Metrics
 
 **Velocity:**
 
 - Total phases completed: 14
-- Total plans completed: 59
+- Total plans completed: 61
 - Total tasks recorded from summaries: 65
 - Milestone Swift LOC at close: about 13,266 across `BeautySDK` and `BeautyDemo`
 
@@ -64,7 +64,7 @@ Last activity: 2026-07-01 — Phase 22 executable plans created and plan-checker
 | 19. Beauty Shaping Core Modules | 5/5 | Complete |
 | 20. Core Module Closeout | 2/2 | Complete |
 | 21. Baseline Audit and Quality Ledger Refresh | 2/2 | Complete |
-| 22. Automated Demo QA and Screenshot Evidence | 0/2 | Planned |
+| 22. Automated Demo QA and Screenshot Evidence | 2/2 | Complete |
 | Phase 18 P1 | 8 min | 2 tasks | 2 files |
 | Phase 18 P2 | 117 min | 3 tasks | 10 files |
 | Phase 18 P3 | 19 min | 3 tasks | 6 files |
@@ -102,13 +102,13 @@ Recent milestone-level outcomes:
 - v1.4 uses Phase 21 through Phase 25 and keeps existing `.planning/phases/` history directories in place.
 - Phase 21 Plan 21-01 captured the current baseline in `.planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-BASELINE-AUDIT.md`: SDK tests pass with 141 XCTest cases, `BeautyExampleRenderer` builds and writes 45 ignored outputs, boundary/privacy scans pass, and Demo simulator build/test evidence is blocked by the missing local Metal Toolchain.
 - Phase 21 Plan 21-02 refreshed `QUALITY_SCORE.md` from the baseline, closed AUD-01 through AUD-04, and routes TD-005 to Phase 25, TD-008 to Phases 22/23 with physical iPhone evidence blocked until hardware exists, TD-009 to Phase 22, and TD-010 across Phases 22/23/24/25.
+- Phase 22 completed automated Demo QA evidence through the allowed blocker-honest path: `.planning/evidence/v1.4/VISUAL-EVIDENCE.md` records exact iPhone 17 build/test commands, the missing Metal Toolchain blocker, route/model disabled-honesty scans, blocked per-state review notes, no current v1.4 PNG screenshots, and rerun protocol.
 - `.planning/codebase/*` maps are stale background for v1.4 and should not override current source, root docs, or `.planning` ledgers.
 
 ### Pending Todos
 
-- Run `$gsd-execute-phase 22`.
 - Preserve v1.4 boundaries while executing: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign.
-- Execute Phase 22 evidence plans with exact Demo build/test/screenshot commands or reproducible Metal Toolchain blocker records.
+- Run `$gsd-discuss-phase 23`.
 - Convert remaining release-hardening candidates into measurable evidence or documented blockers in later phases: physical-device camera/Vision parity, production naturalness review, performance budgets, memory/thermal checks, privacy manifest review, renderer regression, and automated visual diffs.
 
 ### Blockers/Concerns
@@ -134,11 +134,11 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-01T10:06:44+0800
-Stopped at: Phase 22 planned
-Resume file: .planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-01-PLAN.md
+Last session: 2026-07-01T14:55:23+0800
+Stopped at: Phase 22 complete
+Resume file: .planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-VERIFICATION.md
 
 ## Operator Next Steps
 
-- Run `$gsd-execute-phase 22`.
+- Run `$gsd-discuss-phase 23`.
 - Preserve the local Metal Toolchain blocker protocol unless `xcodebuild -downloadComponent MetalToolchain` has been completed and the Demo simulator build/test/screenshot commands are rerun.

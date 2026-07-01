@@ -17,12 +17,14 @@ v1.4 is a hardening and technical-debt cleanup milestone. It converts known post
 
 Phase 21 evidence is recorded in `.planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-BASELINE-AUDIT.md` and refreshed into `QUALITY_SCORE.md`, `PLANS.md`, `.planning/PROJECT.md`, `.planning/STATE.md`, and `.planning/ROADMAP.md`. Current SDK tests and renderer commands pass; explicit Demo simulator build/test evidence is blocked by the missing local Metal Toolchain; stale `.planning/codebase/*` maps are deferred background. TD-005 routes to Phase 25, TD-008 splits to Phase 22/23 with physical iPhone evidence blocked until hardware exists, TD-009 routes to Phase 22, and TD-010 splits across Phases 22/23/24/25.
 
+Phase 22 evidence is recorded in `.planning/evidence/v1.4/VISUAL-EVIDENCE.md` and `.planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-VERIFICATION.md`. The phase completed through the allowed blocker-honest path: exact iPhone 17 Demo build/test commands reproduce the missing Metal Toolchain blocker, no current v1.4 PNG screenshots are created or claimed, required per-state review notes are present in blocked form, and unsupported/future routes remain inactive through source scans and existing view-state test coverage.
+
 ### Automated Demo QA
 
-- [ ] **QA-01**: Maintainers can capture or verify deterministic Demo visual evidence for the Home first screen, Home sticky state, and editor tool panel using stable launch routes and explicit simulator destinations where local simulator tooling allows it.
-- [ ] **QA-02**: Maintainers can verify that current supported Demo controls, labels, future-state badges, and main panels do not clip or overlap across the target simulator sizes selected for v1.4.
-- [ ] **QA-03**: v1.4 visual evidence is stored under `.planning/evidence/v1.4/` with commands, simulator/device framing, and review notes sufficient for future comparison.
-- [ ] **QA-04**: Unsupported Meitu-style product areas and future categories remain visibly honest and inactive; v1.4 does not accidentally enable new UI routes or fake capabilities.
+- [x] **QA-01**: Maintainers can capture or verify deterministic Demo visual evidence for the Home first screen, Home sticky state, and editor tool panel using stable launch routes and explicit simulator destinations where local simulator tooling allows it.
+- [x] **QA-02**: Maintainers can verify that current supported Demo controls, labels, future-state badges, and main panels do not clip or overlap across the target simulator sizes selected for v1.4.
+- [x] **QA-03**: v1.4 visual evidence is stored under `.planning/evidence/v1.4/` with commands, simulator/device framing, and review notes sufficient for future comparison.
+- [x] **QA-04**: Unsupported Meitu-style product areas and future categories remain visibly honest and inactive; v1.4 does not accidentally enable new UI routes or fake capabilities.
 
 ### Performance and Reliability
 
@@ -83,10 +85,10 @@ Deferred to later milestones unless explicitly promoted.
 | AUD-02 | Phase 21 | Complete |
 | AUD-03 | Phase 21 | Complete |
 | AUD-04 | Phase 21 | Complete |
-| QA-01 | Phase 22 | Planned |
-| QA-02 | Phase 22 | Planned |
-| QA-03 | Phase 22 | Planned |
-| QA-04 | Phase 22 | Planned |
+| QA-01 | Phase 22 | Complete |
+| QA-02 | Phase 22 | Complete |
+| QA-03 | Phase 22 | Complete |
+| QA-04 | Phase 22 | Complete |
 | PERF-01 | Phase 23 | Planned |
 | PERF-02 | Phase 23 | Planned |
 | PERF-03 | Phase 23 | Planned |
@@ -112,4 +114,4 @@ Deferred to later milestones unless explicitly promoted.
 
 ---
 *Requirements defined: 2026-06-30*
-*Last updated: 2026-06-30 after Phase 21 baseline audit*
+*Last updated: 2026-07-01 after Phase 22 automated Demo QA evidence*

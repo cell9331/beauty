@@ -30,6 +30,26 @@ None.
 
 ## 4. Completed
 
+### C-2026-07-01-gsd-execute-phase-22-demo-qa-evidence
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-01 |
+| Scope | Ran `$gsd-execute-phase 22` for Phase 22 Automated Demo QA and Screenshot Evidence. Executed both planned waves, reproduced the current Demo Metal Toolchain blocker, recorded blocker-honest visual evidence under `.planning/evidence/v1.4/`, preserved route/model disabled-honesty evidence, and verified QA-01 through QA-04 without claiming current screenshot pass evidence. |
+| Requirements | QA-01, QA-02, QA-03, QA-04 |
+| Files | `.planning/evidence/v1.4/VISUAL-EVIDENCE.md`, `.planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-01-SUMMARY.md`, `22-02-SUMMARY.md`, `22-VERIFICATION.md`, `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `QUALITY_SCORE.md`, `PLANS.md` |
+| Verification | `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' build` exited 65 while compiling `BeautySDK/Sources/BeautyRender/Shaders/Warp.metal` because the local Metal Toolchain is missing; focused `BeautyDemoViewStateTests` exited 65 for the same prerequisite; static route/model scans found the existing editor launch routes, disabled Home routes, unsupported editor `controlID: nil` and unavailable copy, and future category tests; no `.planning/evidence/v1.4/*.png` files exist; final overclaim scan passed; `swift test --package-path BeautySDK` passed with 141 tests; code review gate skipped because no source files changed after planning artifacts were filtered; `verify.schema-drift 22` reported `drift_detected: false`; codebase drift emitted a non-blocking stale-map warning; `22-VERIFICATION.md` reports `status: passed` and score `4/4 must-haves verified`; scoped `git diff --check` passed. |
+| Build | SDK SwiftPM tests passed. Demo simulator build/test remains blocked by missing local Metal Toolchain and is documented with exact command, environment, failure summary, impact, next step, and rerun protocol. |
+| Commit | `020a923`, `eac5430`, `ca8df13`, and `db2fb22` completed Plan 22-01; `7fdcc13`, `7fb3fc5`, `f32dad1`, and `353bfaf` completed Plan 22-02; final closeout commits record verification and ledger updates. |
+
+Outcome:
+
+- QA-01 through QA-04 are complete through the Phase 22 blocker-honest evidence path allowed by `22-CONTEXT.md`.
+- `.planning/evidence/v1.4/VISUAL-EVIDENCE.md` is the current v1.4 Demo QA evidence ledger and explicitly states no current screenshot PNGs were captured.
+- Required Home first screen, Home sticky state, and editor tool-panel review notes are present in blocked form with exact rerun commands and UI-SPEC focal points.
+- Unsupported/future Meitu-style routes remain inactive by source scans and existing test coverage, while focused XCTest remains blocked by the Metal Toolchain prerequisite.
+- Next step is `$gsd-discuss-phase 23`.
+
 ### C-2026-07-01-gsd-plan-phase-22-demo-qa-evidence
 
 | Field | Value |
@@ -1077,7 +1097,7 @@ Outcome:
 | TD-006 | Historical Docs | `docs/` 下历史长文档与根级文档存在重叠。 | Agent 可能读取到旧结论。 | 已将 `docs/README.md` 设为长文档入口，并在 `QUALITY_SCORE.md` 中加入旧文件名、source import JSON、关键术语一致性扫描规则。 | `completed` |
 | TD-007 | GSD Traceability | v2 `ADV-01` through `ADV-10` appear in `.planning/REQUIREMENTS.md` body but not its Traceability table; `phase.complete` warns about them. | GSD audits may continue surfacing deferred v2 IDs even though v1 SDK traceability is complete. | Decide whether deferred v2 requirements should be added to Traceability as Deferred or moved to a separate backlog table. | `open` |
 | TD-008 | Manual Device QA | Phase 21 found available iOS 26.5 simulators but collected no physical iPhone evidence. Explicit Demo simulator build/test is also blocked by missing local Metal Toolchain. | Mirror/crop expectations, real detector behavior, and hardware endurance may differ from simulator and synthetic fixtures. | Split route: Phase 22 reruns Demo simulator build/test plus visual/camera evidence after Metal Toolchain repair; Phase 23 covers performance/long-run evidence; physical iPhone checks remain `blocked` until device evidence is available. | `routed/blocked` |
-| TD-009 | Manual Visual QA | Phase 21 did not capture new screenshots or human visual smoke; current `xcodebuild` Demo build is blocked by missing Metal Toolchain. | Preset/filter chips, controls, labels, badges, and panels could visually clip despite model-level tests. | Route to Phase 22: produce deterministic Demo visual/layout evidence under `.planning/evidence/v1.4/` or record the exact local blocker. | `routed` |
+| TD-009 | Manual Visual QA | Phase 21 did not capture new screenshots or human visual smoke; current `xcodebuild` Demo build is blocked by missing Metal Toolchain. | Preset/filter chips, controls, labels, badges, and panels could visually clip despite model-level tests. | Phase 22 recorded exact local blocker evidence, no-PNG inventory, blocked per-state review notes, and rerun protocol in `.planning/evidence/v1.4/VISUAL-EVIDENCE.md`; actual screenshot pass evidence still requires installing the Metal Toolchain and rerunning the exact commands. | `completed-with-blocker` |
 | TD-010 | Phase 6 Visual and Hardware QA | Phase 21 SDK tests and renderer commands passed, but release-like naturalness, production GPU quality, real camera parity, automated screenshot diffing, 720p timing, and long-run memory remain unproved. | Release-like claims could overstate visual quality or device behavior beyond current automated evidence. | Split route: Phase 22 visual/layout, Phase 23 performance/long-run, Phase 24 renderer output regression/no-op tolerance, and Phase 25 privacy/security implications. | `routed` |
 | TD-011 | Stale Codebase Maps | Phase 21 read `.planning/codebase/*` and found stale maps that still describe missing SDK/tests despite current SwiftPM package and 141 passing SDK XCTest cases. | Future agents could follow obsolete codebase maps instead of current source, root docs, and `.planning` ledgers. | Treat maps as stale background only; defer formal `$gsd-map-codebase` refresh until explicitly scoped. | `deferred` |
 
