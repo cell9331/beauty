@@ -26,7 +26,34 @@
 
 ## 3. Active
 
-No active implementation work. Next step is `$gsd-plan-phase 22`.
+### P-2026-07-01-gsd-plan-phase-22-demo-qa-evidence
+
+| Field | Value |
+| --- | --- |
+| Status | `blocked` |
+| Owner | Agent |
+| Started | 2026-07-01 |
+| Scope | Continue `$gsd-progress --next` into `$gsd-plan-phase 22` for Automated Demo QA and Screenshot Evidence. |
+| Source Request | `$gsd-progress --next`; user selected research-first in text-mode fallback. |
+| Current Step | Run `$gsd-ui-phase 22`, then resume `$gsd-plan-phase 22` to create executable plans. |
+| Verification Policy | Plan-phase must preserve QA-01 through QA-04 coverage, pass plan-checker/coverage gates, and record exact Demo build/test/screenshot commands or Metal Toolchain blocker evidence. |
+
+Checklist:
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| Determine next route | `completed` | `$gsd-progress --next` gates found no checkpoint, state status `planning`, no Phase 22 verification failures, and no phase with plans lacking summaries; routed to `$gsd-plan-phase 22`. |
+| Research Phase 22 | `completed` | Created `.planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-RESEARCH.md`; current probe reran `xcodebuild -version`, `xcodebuild -list -project BeautyDemo/BeautyDemo.xcodeproj`, `xcrun simctl list devices available`, and explicit iPhone 17 Demo build. |
+| Validate research artifacts | `completed` | Created `22-VALIDATION.md`; `git diff --check -- 22-RESEARCH.md 22-VALIDATION.md` passed; placeholder scan over both files returned no matches. |
+| Resolve UI planning gate | `blocked` | Phase 22 is Demo visual/layout evidence for Home and Editor surfaces, `workflow.ui_safety_gate` is enabled, and no `22-UI-SPEC.md` exists. Per `$gsd-plan-phase`, planning must stop and run `$gsd-ui-phase 22` first. |
+| Generate executable plans | `planned` | Pending after UI-SPEC exists. |
+
+Blockers:
+
+| Blocker | Evidence | Next Step |
+| --- | --- | --- |
+| Missing Phase 22 UI-SPEC | `find .planning/phases/22-automated-demo-qa-and-screenshot-evidence -name '*UI-SPEC.md'` returned no file; Phase 22 roadmap and context are explicitly UI visual/layout QA work. | Run `$gsd-ui-phase 22`, then rerun `$gsd-plan-phase 22`. |
+| Demo simulator build still blocked by local Metal Toolchain | `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' build` exited 65 compiling `BeautySDK/Sources/BeautyRender/Shaders/Warp.metal`: `cannot execute tool 'metal' due to missing Metal Toolchain; use: xcodebuild -downloadComponent MetalToolchain`. | Phase 22 execution plans must record this blocker or rerun after installing the Metal Toolchain component. |
 
 ## 4. Completed
 

@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Stability, QA, and Debt Cleanup
 status: planning
-stopped_at: Phase 22 context gathered
-last_updated: "2026-06-30T10:17:41.895Z"
+stopped_at: Phase 22 research and validation complete; UI-SPEC required before planning
+last_updated: "2026-07-01T01:09:48.221Z"
 last_activity: 2026-06-30 — Phase 21 completed with `21-BASELINE-AUDIT.md`, `21-VERIFICATION.md`, and both plan summaries
 progress:
   total_phases: 5
@@ -132,10 +132,11 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-06-30T10:17:41.892Z
-Stopped at: Phase 22 context gathered
-Resume file: .planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-CONTEXT.md
+Last session: 2026-07-01T01:09:48.217Z
+Stopped at: Phase 22 research and validation complete; UI-SPEC required before planning
+Resume file: .planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-RESEARCH.md
 
 ## Operator Next Steps
 
-- Run `$gsd-discuss-phase 22` to plan automated Demo QA and screenshot/layout evidence.
+- Run `$gsd-ui-phase 22` to create the required QA/evidence UI design contract.
+- Then rerun `$gsd-plan-phase 22` to create executable plans from `22-CONTEXT.md`, `22-RESEARCH.md`, `22-VALIDATION.md`, and `22-UI-SPEC.md`.
