@@ -30,12 +30,12 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `blocked` |
+| Status | `active` |
 | Owner | Agent |
 | Started | 2026-07-01 |
 | Scope | Continue `$gsd-progress --next` into `$gsd-plan-phase 22` for Automated Demo QA and Screenshot Evidence. |
 | Source Request | `$gsd-progress --next`; user selected research-first in text-mode fallback. |
-| Current Step | Run `$gsd-ui-phase 22`, then resume `$gsd-plan-phase 22` to create executable plans. |
+| Current Step | Resume `$gsd-plan-phase 22` to create executable plans from the approved UI-SPEC. |
 | Verification Policy | Plan-phase must preserve QA-01 through QA-04 coverage, pass plan-checker/coverage gates, and record exact Demo build/test/screenshot commands or Metal Toolchain blocker evidence. |
 
 Checklist:
@@ -45,17 +45,35 @@ Checklist:
 | Determine next route | `completed` | `$gsd-progress --next` gates found no checkpoint, state status `planning`, no Phase 22 verification failures, and no phase with plans lacking summaries; routed to `$gsd-plan-phase 22`. |
 | Research Phase 22 | `completed` | Created `.planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-RESEARCH.md`; current probe reran `xcodebuild -version`, `xcodebuild -list -project BeautyDemo/BeautyDemo.xcodeproj`, `xcrun simctl list devices available`, and explicit iPhone 17 Demo build. |
 | Validate research artifacts | `completed` | Created `22-VALIDATION.md`; `git diff --check -- 22-RESEARCH.md 22-VALIDATION.md` passed; placeholder scan over both files returned no matches. |
-| Resolve UI planning gate | `blocked` | Phase 22 is Demo visual/layout evidence for Home and Editor surfaces, `workflow.ui_safety_gate` is enabled, and no `22-UI-SPEC.md` exists. Per `$gsd-plan-phase`, planning must stop and run `$gsd-ui-phase 22` first. |
-| Generate executable plans | `planned` | Pending after UI-SPEC exists. |
+| Resolve UI planning gate | `completed` | Created and approved `.planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-UI-SPEC.md`; second gsd-ui-checker pass reported PASS for Copywriting, Visuals, Color, Typography, Spacing, and Registry Safety with no recommendations. |
+| Generate executable plans | `planned` | Pending rerun of `$gsd-plan-phase 22` using `22-CONTEXT.md`, `22-RESEARCH.md`, `22-VALIDATION.md`, and approved `22-UI-SPEC.md`. |
 
 Blockers:
 
 | Blocker | Evidence | Next Step |
 | --- | --- | --- |
-| Missing Phase 22 UI-SPEC | `find .planning/phases/22-automated-demo-qa-and-screenshot-evidence -name '*UI-SPEC.md'` returned no file; Phase 22 roadmap and context are explicitly UI visual/layout QA work. | Run `$gsd-ui-phase 22`, then rerun `$gsd-plan-phase 22`. |
 | Demo simulator build still blocked by local Metal Toolchain | `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' build` exited 65 compiling `BeautySDK/Sources/BeautyRender/Shaders/Warp.metal`: `cannot execute tool 'metal' due to missing Metal Toolchain; use: xcodebuild -downloadComponent MetalToolchain`. | Phase 22 execution plans must record this blocker or rerun after installing the Metal Toolchain component. |
 
 ## 4. Completed
+
+### C-2026-07-01-gsd-ui-phase-22-demo-qa-evidence
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-01 |
+| Scope | Ran `$gsd-ui-phase 22` for Phase 22 Automated Demo QA and Screenshot Evidence. Created the native SwiftUI UI design contract for Home first screen, Home sticky state, and editor beauty/photo tool-panel screenshot evidence; locked visual hierarchy, spacing, typography, color, copywriting, registry-safety, route-scope, and blocker-honesty expectations before executable planning. |
+| Requirements | QA-01, QA-02, QA-03, QA-04 |
+| Files | `.planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-UI-SPEC.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.plan-phase 22` reported `phase_found: true`, `has_context: true`, `has_research: true`, `has_plans: false`, `commit_docs: true`, and `text_mode: false`; `workflow.ui_phase` and `workflow.ui_safety_gate` were both `true`; no pre-existing `22-UI-SPEC.md` was found; gsd-ui-researcher created the UI-SPEC and `git diff --check` passed for that artifact; first gsd-ui-checker pass approved with one non-blocking Visuals recommendation; the UI-SPEC was refined with explicit focal points for Home first screen, Home sticky state, and editor tool panel; second gsd-ui-checker pass reported PASS for all six dimensions with no recommendations; `state.record-session --stopped-at "Phase 22 UI-SPEC approved" --resume-file ".planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-UI-SPEC.md"` reported `recorded: true`; final `git diff --check -- .planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-UI-SPEC.md .planning/STATE.md PLANS.md` passed. |
+| Build | Not run; this was a GSD UI design-contract documentation workflow with no Swift source changes. Demo simulator build/test remains governed by the existing local Metal Toolchain blocker and must be handled during Phase 22 planning/execution. |
+| Commit | `657de6f` created the initial UI-SPEC; final scoped commit records approved metadata, focal-point refinement, state update, and this ledger entry. |
+
+Outcome:
+
+- Phase 22 now has an approved `22-UI-SPEC.md` for native SwiftUI Demo QA and screenshot evidence planning.
+- Required visual evidence states are Home first screen, Home sticky state, and editor beauty/photo tool panel.
+- The UI contract explicitly forbids redesign, product-route expansion, new public parameters, web/shadcn registries, and unsupported claims.
+- Next step is `$gsd-plan-phase 22`.
 
 ### C-2026-06-30-gsd-discuss-phase-22-demo-qa-evidence
 

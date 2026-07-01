@@ -1,10 +1,11 @@
 ---
 phase: 22
 slug: automated-demo-qa-and-screenshot-evidence
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-07-01
+reviewed_at: 2026-07-01T09:19:49+08:00
 ---
 
 # Phase 22 - UI Design Contract
@@ -164,6 +165,20 @@ Rules:
 
 Optional state: `--beauty-demo-route editor-camera` may produce `editor-camera-route.png` only if permission/session behavior is cheap and reliable. It must not block required completion.
 
+### Focal Points and Visual Hierarchy
+
+| State | Primary Focal Point | Secondary Hierarchy |
+|-------|---------------------|---------------------|
+| Home first screen | Hero camera module and `拍一拍` CTA, including the readable headline/subtitle above it | Top chrome, primary action grid, then disabled/static Home routes and bottom tab context |
+| Home sticky state | Sticky shortcut rail pinned near the top of the scrolled Home state | Recommendation area framing, route labels, bottom tab bar, and safe-area clearance |
+| Editor beauty/photo tool panel | White bottom tool panel with selected tool ring, selected category underline, and slider row | Black preview area, `对比` / `调试` / `背景保护` controls, category rail, tool rail, cancel/confirm actions |
+
+Rules:
+
+- The first screenshot review note for each state must name the primary focal point above.
+- Focal points are evidence anchors only; they must not cause Phase 22 to redesign, reorder, restyle, or enable new product routes.
+- Any focal point hidden by clipping, overlap, safe-area collision, unreadable copy, or disabled-state ambiguity must be recorded as an issue or blocker.
+
 ### Evidence File Contract
 
 The evidence README must be `.planning/evidence/v1.4/VISUAL-EVIDENCE.md` and include:
@@ -245,11 +260,11 @@ Each required state needs a note with these fields:
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: PASS
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** approved 2026-07-01

@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Stability, QA, and Debt Cleanup
 status: planning
-stopped_at: Phase 22 research and validation complete; UI-SPEC required before planning
-last_updated: "2026-07-01T01:09:48.221Z"
-last_activity: 2026-06-30 — Phase 21 completed with `21-BASELINE-AUDIT.md`, `21-VERIFICATION.md`, and both plan summaries
+stopped_at: Phase 22 UI-SPEC approved
+last_updated: "2026-07-01T01:21:24.931Z"
+last_activity: 2026-07-01 — Phase 22 UI-SPEC approved with all six checker dimensions passing
 progress:
   total_phases: 5
   completed_phases: 1
@@ -27,8 +27,8 @@ See: `.planning/PROJECT.md` (updated 2026-06-30)
 
 Phase: 22 - Automated Demo QA and Screenshot Evidence
 Plan: Not planned yet
-Status: Phase 21 complete; ready for Phase 22 discussion/planning
-Last activity: 2026-06-30 — Phase 21 completed with `21-BASELINE-AUDIT.md`, `21-VERIFICATION.md`, and both plan summaries
+Status: Phase 22 UI-SPEC approved; ready for Phase 22 executable planning
+Last activity: 2026-07-01 — Phase 22 UI-SPEC approved with all six checker dimensions passing
 
 ## Performance Metrics
 
@@ -132,11 +132,11 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-01T01:09:48.217Z
-Stopped at: Phase 22 research and validation complete; UI-SPEC required before planning
-Resume file: .planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-RESEARCH.md
+Last session: 2026-07-01T01:21:24.927Z
+Stopped at: Phase 22 UI-SPEC approved
+Resume file: .planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-UI-SPEC.md
 
 ## Operator Next Steps
 
-- Run `$gsd-ui-phase 22` to create the required QA/evidence UI design contract.
-- Then rerun `$gsd-plan-phase 22` to create executable plans from `22-CONTEXT.md`, `22-RESEARCH.md`, `22-VALIDATION.md`, and `22-UI-SPEC.md`.
+- Rerun `$gsd-plan-phase 22` to create executable plans from `22-CONTEXT.md`, `22-RESEARCH.md`, `22-VALIDATION.md`, and approved `22-UI-SPEC.md`.
+- Preserve the local Metal Toolchain blocker protocol unless `xcodebuild -downloadComponent MetalToolchain` has been completed and the Demo simulator build is rerun.
