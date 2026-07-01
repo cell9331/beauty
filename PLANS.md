@@ -30,6 +30,28 @@ None.
 
 ## 4. Completed
 
+### C-2026-07-01-gsd-discuss-phase-23-performance-reliability
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-01 |
+| Scope | Ran `$gsd-discuss-phase 23` for Phase 23 Performance and Reliability Gates. Captured user decisions for SDK 720p timing evidence, automated long-run fixture evidence, quality/reset/degradation scope, and structured redacted performance artifacts before Phase 23 planning. |
+| Requirements | PERF-01, PERF-02, PERF-03, PERF-04, PERF-05 |
+| Files | `.planning/phases/23-performance-and-reliability-gates/23-CONTEXT.md`, `.planning/phases/23-performance-and-reliability-gates/23-DISCUSSION-LOG.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.phase-op 23` reported `phase_found: true`, expected phase dir `.planning/phases/23-performance-and-reliability-gates`, no existing context/research/plans/verification, and `plan_count: 0`; `todo.match-phase 23` reported zero matches; user selected all four gray areas in text mode; `23-DISCUSS-CHECKPOINT.json` was created incrementally and removed after context/log creation; `state.record-session --stopped-at "Phase 23 context gathered" --resume-file ".planning/phases/23-performance-and-reliability-gates/23-CONTEXT.md"` reported `recorded: true`; `state.update "Status" "Ready for planning"` reported `updated: true`; `state.update "Operator Next Steps"` reported `updated: false` because that section is not a supported field, so the correct next command is recorded here and in final output; placeholder scan over `23-CONTEXT.md`, `23-DISCUSSION-LOG.md`, and `.planning/STATE.md` returned no matches; `wc -l` reported 144 lines for `23-CONTEXT.md` and 110 lines for `23-DISCUSSION-LOG.md`; scoped `git diff --check` passed. |
+| Build | Not run; this was a GSD discussion/context workflow with no Swift source changes. Phase 23 planning should include `swift test --package-path BeautySDK` and any new timing/long-run helper commands it introduces. |
+| Commit | Final scoped closeout commit records the Phase 23 context/log, state session update, and this ledger entry. |
+
+Outcome:
+
+- Phase 23 timing should use an SDK 720p synthetic `CVPixelBuffer` loop through `BeautyEngine`, with representative no-op, skin/color/filter, and high-but-capped cases.
+- Timing evidence is record-and-compare against `RELIABILITY.md` budgets, not a hard first-pass optimization gate.
+- Long-run evidence should start with an automated fixture loop and trend-based memory baseline; Demo simulator and physical iPhone checks are secondary evidence or blocker records.
+- Quality-mode work may add only minimal internal/test behavior if needed; no public API, Demo UI, product route, or broad strategy expansion is allowed.
+- Reset/degradation evidence should cover SDK engine and Demo pipelines while preserving caps, warnings, metrics, no-face, stale/reused, missing-landmark, and recovery behavior.
+- Performance evidence must be structured and redacted, logs stay optional/off by default, and Phase 23 must not claim release-grade performance, naturalness, device parity, or all-device 30 fps without actual evidence.
+- Next step is `$gsd-plan-phase 23`.
+
 ### C-2026-07-01-gsd-execute-phase-22-demo-qa-evidence
 
 | Field | Value |
