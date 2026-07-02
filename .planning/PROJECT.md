@@ -20,7 +20,7 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Verification state:** The v1.3 milestone audit passed with 20/20 requirements satisfied, 5/5 phases complete, 6/6 integration checks, 4/4 flows, and 5/5 validation files present. Phase 20 records the closeout gate: `swift test --package-path BeautySDK` passed with 141 tests, `BeautyExampleRenderer` built and ran all current skin/color/filter cases, 45 ignored outputs were non-empty and same-dimension, Demo imports remained facade-only, SDK non-UI targets remained SwiftUI/UIKit-free, and the public `BeautyParameters` inventory stayed at the existing 31 fields. Earlier v1.0 and v1.1 verification remains archived in `.planning/MILESTONES.md` and `.planning/milestones/`.
 
-**Current v1.4 baseline:** Phase 21 records current evidence in `.planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-BASELINE-AUDIT.md`: SwiftPM SDK tests pass with 141 XCTest cases, `BeautyExampleRenderer` builds and writes 45 ignored skin/color/filter PNG outputs, boundary/privacy scans pass, and explicit Demo simulator build/test evidence is blocked by the missing local Metal Toolchain. Phase 22 records automated Demo QA evidence in `.planning/evidence/v1.4/VISUAL-EVIDENCE.md`: the exact iPhone 17 Demo build/test commands still reproduce the missing Metal Toolchain blocker, no current v1.4 screenshots are claimed, no v1.4 PNGs exist, required per-state review notes are blocked with rerun protocol, and unsupported/future routes remain inactive by source scans. TD-005 routes to Phase 25; TD-008 continues into Phase 23 for performance/physical-device evidence with hardware blocked until available; TD-010 continues across Phases 23, 24, and 25. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
+**Current v1.4 baseline:** Phases 21 through 23 are complete. Phase 21 records current evidence in `.planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-BASELINE-AUDIT.md`: SwiftPM SDK tests pass with 141 XCTest cases, `BeautyExampleRenderer` builds and writes 45 ignored skin/color/filter PNG outputs, boundary/privacy scans pass, and explicit Demo simulator build/test evidence is blocked by the missing local Metal Toolchain. Phase 22 records automated Demo QA evidence in `.planning/evidence/v1.4/VISUAL-EVIDENCE.md`: the exact iPhone 17 Demo build/test commands still reproduce the missing Metal Toolchain blocker, no current v1.4 screenshots are claimed, no v1.4 PNGs exist, required per-state review notes are blocked with rerun protocol, and unsupported/future routes remain inactive by source scans. Phase 23 records performance and reliability evidence in `.planning/phases/23-performance-and-reliability-gates/23-PERFORMANCE-EVIDENCE.md`: full SDK tests pass with 148 XCTest cases, focused Demo camera xcodebuild passes, 720p timing is recorded as over-budget baseline evidence, and physical iPhone plus 600-second preview evidence remains blocked or not run. TD-005 routes to Phase 25; TD-008 remains partially blocked for physical iPhone evidence; TD-010 continues across Phases 24 and 25. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
 **Code size:** `BeautySDK` and `BeautyDemo` contain about 13,266 Swift lines at v1.3 close.
 
@@ -32,7 +32,7 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 - Baseline audit of quality scores, root contracts, `.planning` state, and open technical debt.
 - Automated Demo QA evidence through simulator UI/screenshot checks, layout sweeps, or documented equivalent evidence. Phase 22 completed the documented-equivalent blocker path on 2026-07-01.
-- Performance and long-run reliability gates for realtime 720p timing, dropped-frame behavior, quality modes, memory growth, and reset/degradation paths.
+- Performance and long-run reliability gates for realtime 720p timing, dropped-frame behavior, quality modes, memory growth, and reset/degradation paths. Phase 23 completed the evidence-gate path on 2026-07-02 while keeping 600-second preview and physical iPhone checks explicit as blocked or not run.
 - Renderer and example-output regression coverage for no-op tolerance, visible output, dimension/watermark stability, and geometry-output boundaries.
 - Security and distribution cleanup for privacy manifest assessment, log/metric redaction, resource trust checks, and current documentation sync.
 
@@ -100,6 +100,12 @@ Phase 20 closeout evidence is recorded in `.planning/phases/20-core-module-close
 
 v1.3 remains a no-new-UI core module milestone. Phase 20 added no new SwiftUI screens, public parameters, renderer cases, or geometry saved-image output. Geometry-heavy branches remain partial or `blocked-by-geometry-output`; geometry saved-image output is deferred until public facade detection plus geometry rendering can produce watermarked same-dimension saved outputs. Release-hardening QA remains future work.
 
+### Completed in v1.4 So Far
+
+- [x] Baseline audit and quality ledger refresh - Phase 21.
+- [x] Automated Demo QA and screenshot evidence through blocker-honest records - Phase 22.
+- [x] Performance and reliability gates with SDK timing, Demo backpressure, reset/degradation, redaction, evidence ledger, and validation closeout - Phase 23.
+
 ### Out of Scope
 
 - Standalone consumer App Store product - still out of scope; Demo remains an SDK validation app.
@@ -162,7 +168,7 @@ Current visual reference contracts:
 - **Privacy:** Default behavior is no upload, no raw-frame persistence, no landmark persistence, and no sensitive path logging.
 - **Permissions:** Camera/photo prompts are app-owned; SDK APIs must not trigger protected-resource prompts by themselves.
 - **Resource trust:** Presets, LUTs, makeup packs, stickers, and future resource bundles are untrusted unless bundled, versioned, and validated.
-- **Toolchain:** Phase 21 observed Xcode 26.6 and Swift 6.3.3. Explicit iOS Simulator destinations are required for reliable `xcodebuild` evidence, and current Demo simulator build/test evidence is blocked until the local Metal Toolchain component is installed.
+- **Toolchain:** Phase 21 observed Xcode 26.6 and Swift 6.3.3. Explicit iOS Simulator destinations are required for reliable `xcodebuild` evidence. Phase 23 focused Demo camera tests pass in the current environment, while Phase 22 screenshot evidence still needs the screenshot protocol rerun before a current visual pass can be claimed.
 - **HTML reference workflow:** v1.2 built and verified static local HTML references. If SwiftUI visual tuning is re-promoted later, it should cite a new explicit contract rather than raw screenshots alone.
 - **Offline reference safety:** HTML references must use local code/assets only; no network fonts, remote media, analytics, upload, or hidden service calls.
 - **v1.3 scope boundary:** v1.3 designs and implements core beauty modules only; no new SwiftUI screens, Home/discovery, style resources, AI/background, video/body, gallery/account, search, premium access, commerce, or account authorization work.
@@ -176,16 +182,17 @@ Current visual reference contracts:
 | Demo uses modules only through the `BeautySDK` facade. | Facade-only Demo imports keep host integration realistic and are covered by tests/scans. | Good |
 | MVP starts with foundation, camera/still-image flow, presets, filters, and core face/skin controls. | This sequence let tests and privacy/reliability contracts grow before richer effects. | Good |
 | Advanced makeup, segmentation, body shaping, stickers, AI style, and video export are staged later. | v1 shipped the core pipeline and left higher-breadth features as explicit future milestone candidates. | Good |
-| Release-like claims require separate hardware, visual, performance, and long-run evidence. | v1 automation proves correctness and safety, not production naturalness or device endurance. | Revisit in next milestone |
+| Release-like claims require separate hardware, visual, performance, and long-run evidence. | v1 automation proves correctness and safety, not commercial visual quality or device endurance. | Revisit in next milestone |
 | v1.1 prioritizes Meitu-style Demo fidelity over new SDK algorithms. | The user rejected the prior Demo surface as not matching the `meituxiuxiu` references; visual/navigation fidelity had to be fixed before claiming a rich Demo. | Completed in v1.1 |
 | v1.2 retains HTML references but cancels SwiftUI tuning. | The user decided on 2026-06-26 to keep the Phase 11 HTML baseline outputs and cancel Phases 12-15 because the subsequent planning direction was not useful. | Reduced-scope complete |
 | v1.3 focuses only on core beauty modules, not UI. | The user clarified that resources, AI, video, account, and gallery should not be planned now, and that this milestone should do core module design, encapsulation, implementation, and direct code-level image validation before any new UI work. | Completed in Phase 20 |
 | v1.4 prioritizes hardening and debt cleanup over feature breadth. | The user selected a first-principles optimization milestone to consolidate existing functionality, fix issues, improve performance, and clean historical debt before adding new product areas. | Active |
 | Phase 21 is the v1.4 evidence baseline, not a fix phase. | Current SDK/renderer evidence passed, Demo simulator evidence has a reproducible local toolchain blocker, and stale codebase maps were found. | Routes debt to Phases 22-25 without source changes |
+| Phase 23 completes performance/reliability as evidence and blocker records, not optimization. | Current 720p SDK timings remain over budget in SwiftPM debug XCTest, while backpressure/reset/degradation/redaction evidence passes and missing long-run/device checks are explicit. | Completed in Phase 23 |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-06-30 after Phase 21 baseline audit*
+*Last updated: 2026-07-02 after Phase 23 performance and reliability gates*
