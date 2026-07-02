@@ -30,6 +30,27 @@ None.
 
 ## 4. Completed
 
+### C-2026-07-02-gsd-discuss-phase-24-renderer-output-regression
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-02 |
+| Scope | Ran `$gsd-discuss-phase 24` for Phase 24 Renderer Output Regression Hardening. Captured user decisions for the code-owned renderer matrix, no-op fixture tolerance, visible-output regression checks, and geometry status guards before Phase 24 planning. |
+| Requirements | RENDER-01, RENDER-02, RENDER-03, RENDER-04 |
+| Files | `.planning/phases/24-renderer-output-regression-hardening/24-CONTEXT.md`, `.planning/phases/24-renderer-output-regression-hardening/24-DISCUSSION-LOG.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.phase-op 24` reported `phase_found: true`, expected phase dir `.planning/phases/24-renderer-output-regression-hardening`, no existing context/research/plans/verification, and `plan_count: 0`; no `*-SPEC.md`, existing context, or checkpoint was found; `todo.match-phase 24` reported zero matches; `request_user_input` was unavailable in Default mode, so the workflow used text-mode fallback; user selected all four gray areas and then selected context creation; `24-DISCUSS-CHECKPOINT.json` was created incrementally and removed after context/log creation; `state.record-session --stopped-at "Phase 24 context gathered" --resume-file ".planning/phases/24-renderer-output-regression-hardening/24-CONTEXT.md"` reported `recorded: true`; `state.update "Status" "Ready for planning"` reported `updated: true`; placeholder scan over `24-CONTEXT.md`, `24-DISCUSSION-LOG.md`, and `.planning/STATE.md` returned no matches; `wc -l` reported 143 lines for `24-CONTEXT.md` and 219 lines for `24-DISCUSSION-LOG.md`; scoped `git diff --check` passed. |
+| Build | Not run; this was a GSD discussion/context workflow with no Swift source changes. Phase 24 planning should include `swift build --package-path BeautySDK --product BeautyExampleRenderer`, renderer all-case run, no-op fixture regression, generated-output invariant checks, facade-only import scans, and geometry overclaim scans. |
+| Commit | Final scoped closeout commit records the Phase 24 context/log, state session update, and this ledger entry. |
+
+Outcome:
+
+- Phase 24 renderer matrix is code-owned: the current `BeautyExampleRenderer` case list is canonical, with a focused static inventory check and durable documentation in `docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md`.
+- No-op regression should test facade output before watermarking, use exact rendered-pixel equality where deterministic, cover all five current example fixtures, and hard-fail deterministic drift unless a documented platform color-management tolerance is needed.
+- Visible-output evidence should automatically verify the current 45 PNG outputs for existence, non-empty content, same dimensions, and a change signal; generated PNGs remain ignored and evidence is recorded in Markdown.
+- Watermark readability is a factual representative inspection, not OCR; visible-change wording must avoid commercial quality, naturalness, release-readiness, all-device parity, and Meitu parity claims.
+- Geometry-heavy branches are guarded only: current `partial`, `blocked-by-geometry-output`, and `future` statuses remain unless public facade detection plus geometry rendering produces same-dimension, watermarked `BeautyExampleRenderer` outputs.
+- Next step is `$gsd-plan-phase 24`.
+
 ### C-2026-07-02-gsd-execute-phase-23-performance-reliability
 
 | Field | Value |
