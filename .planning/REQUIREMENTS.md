@@ -32,19 +32,21 @@ Phase 22 evidence is recorded in `.planning/evidence/v1.4/VISUAL-EVIDENCE.md` an
 - [x] **PERF-02**: Realtime backpressure, dropped-frame accounting, and latest-frame-wins behavior remain covered by tests or an equivalent reproducible harness.
 - [x] **PERF-03**: Quality mode, reset, and degradation behavior are verified against `RELIABILITY.md` so performance improvements do not bypass safety caps or recovery rules.
 - [x] **PERF-04**: Long-run preview or processing stability has automated evidence, manual evidence, or an explicit hardware/tooling blocker that records how the 10-minute memory-growth gate should be run.
-- [x] **PERF-05**: Logs, warnings, metrics, and performance evidence remain optional, redacted, and free of image bytes, local paths, face geometry, raw framework errors, and raw JSON.
+- [x] **PERF-05**: Logs, warnings, metrics, and performance evidence remain optional, redacted, and free of frame payloads, local paths, face-geometry payloads, unredacted framework errors, and serialized diagnostic payloads.
+
+Phase 23 evidence is recorded in `.planning/phases/23-performance-and-reliability-gates/23-PERFORMANCE-EVIDENCE.md` and `.planning/phases/23-performance-and-reliability-gates/23-VALIDATION.md`. The focused SDK performance command passed with 3 tests, the full SDK suite passed with 148 tests, and the focused Demo camera pipeline command passed on `platform=iOS Simulator,name=iPhone 17,OS=26.5`. Current 720p timings are over-budget baseline evidence, the SDK fixture loop has a 600-second rerun protocol, and physical iPhone plus long-run preview evidence remains blocked or not run.
 
 ### Renderer Output Regression
 
 - [ ] **RENDER-01**: `BeautyExampleRenderer` keeps a documented public-facade matrix for all current visible skin/color/filter output cases.
 - [ ] **RENDER-02**: Default/no-op processing has a regression check that verifies near-copy output within the documented tolerance for current fixture images.
-- [ ] **RENDER-03**: Visible-output cases verify non-empty outputs, same dimensions as inputs, readable parameter watermarks, and factual visible changes without claiming production naturalness.
+- [ ] **RENDER-03**: Visible-output cases verify non-empty outputs, same dimensions as inputs, readable parameter watermarks, and factual visible changes without claiming commercial visual quality.
 - [ ] **RENDER-04**: Geometry-heavy branches remain `partial`, `blocked-by-geometry-output`, or `future` unless public facade detection plus geometry rendering produces saved same-dimension, watermarked outputs.
 
 ### Security and Distribution Review
 
 - [ ] **SEC-01**: The repository contains a documented privacy manifest assessment, and `PrivacyInfo.xcprivacy` is added or explicitly deferred based on actual SDK/Demo behavior and Apple required-reason API usage.
-- [ ] **SEC-02**: No-network, no-upload, no raw-path, no raw framework error, no face-geometry leak, and no raw JSON leak checks pass for active SDK and Demo surfaces.
+- [ ] **SEC-02**: No-network, no-upload, no unredacted path, no unredacted framework error, no face-geometry payload leak, and no serialized diagnostic payload leak checks pass for active SDK and Demo surfaces.
 - [ ] **SEC-03**: Resource trust boundaries are reviewed so bundled presets, metadata filters, identifiers, missing resources, and future external resource assumptions match `SECURITY.md`.
 - [ ] **SEC-04**: v1.4 adds no hidden third-party SDK, analytics, remote config, cloud processing, dynamic downloads, payment, VIP, or entitlement behavior.
 
@@ -114,4 +116,4 @@ Deferred to later milestones unless explicitly promoted.
 
 ---
 *Requirements defined: 2026-06-30*
-*Last updated: 2026-07-01 after Phase 22 automated Demo QA evidence*
+*Last updated: 2026-07-02 after Phase 23 performance and reliability evidence*

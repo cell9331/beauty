@@ -12,7 +12,7 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 - ✅ **v1.1 Meitu UI** - Phases 8-10, implemented and verified 2026-06-24. Summary is in `.planning/MILESTONES.md`.
 - ✅ **v1.2 HTML Reference Fidelity** - Phase 11 completed 2026-06-25; Phases 12-15 canceled 2026-06-26. Summary is in `.planning/MILESTONES.md`.
 - ✅ **v1.3 Meitu Core Beauty Module Design and Implementation** - Phases 16-20 shipped 2026-06-30. See `.planning/milestones/v1.3-ROADMAP.md`, `.planning/milestones/v1.3-REQUIREMENTS.md`, and `.planning/milestones/v1.3-MILESTONE-AUDIT.md`.
-- 🟡 **v1.4 Stability, QA, and Debt Cleanup** - Phases 21-22 complete; Phases 23-25 planned.
+- 🟡 **v1.4 Stability, QA, and Debt Cleanup** - Phases 21-23 complete; Phases 24-25 planned.
 
 ## v1.4 Stability, QA, and Debt Cleanup
 
@@ -77,13 +77,15 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 4. Long-run memory/preview stability has automated evidence, manual evidence, or a documented hardware/tooling blocker.
 5. Logs, warnings, metrics, and performance artifacts stay optional and redacted.
 
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans complete
 
 - **Wave 1:** `23-01` SDK 720p timing, short fixture-loop memory baseline, and initial redacted performance evidence; `23-02` Demo backpressure, reset, still-image recovery, and blocker-honest focused xcodebuild evidence; `23-03` SDK quality-mode contract, engine reset, degradation, safety-cap, and redaction regressions.
 - **Wave 2:** `23-04` Final performance/reliability evidence ledger and validation status closeout. Depends on `23-01`, `23-02`, and `23-03`.
 - **Wave 3:** `23-05` Requirement, roadmap, state, quality-score, and planning-ledger traceability sync. Depends on `23-04`.
 
-**Next command:** `$gsd-execute-phase 23`
+**Current evidence:** Phase 23 completed through `.planning/phases/23-performance-and-reliability-gates/23-PERFORMANCE-EVIDENCE.md` and `23-VALIDATION.md`. Focused SDK performance evidence passed with 3 tests, full `swift test --package-path BeautySDK` passed with 148 tests, and focused Demo camera xcodebuild passed on the explicit iPhone 17 simulator destination. The 720p timing matrix is over-budget baseline evidence, SDK memory evidence remains a short fixture-loop with a 600-second rerun protocol, and physical iPhone plus long-run preview evidence remains blocked or not run. The Phase 22 Metal Toolchain screenshot blocker remains background until the screenshot protocol is rerun; Phase 23 focused camera tests pass in the current environment.
+
+**Next command:** `$gsd-discuss-phase 24`
 
 ### Phase 24: Renderer Output Regression Hardening
 
@@ -100,7 +102,7 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 4. Geometry-heavy branches keep honest `partial`, `blocked-by-geometry-output`, or `future` status unless public facade geometry output exists.
 
 **Plans:** Not planned yet
-**Next command:** `$gsd-discuss-phase 24` after Phase 21 completes
+**Next command:** `$gsd-discuss-phase 24`
 
 ### Phase 25: Security, Distribution Review, and Closeout
 
@@ -126,7 +128,7 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 | --- | --- | --- | ---: | --- |
 | 21. Baseline Audit and Quality Ledger Refresh | v1.4 | AUD-01, AUD-02, AUD-03, AUD-04 | 2/2 | Complete |
 | 22. Automated Demo QA and Screenshot Evidence | v1.4 | QA-01, QA-02, QA-03, QA-04 | 2/2 | Complete |
-| 23. Performance and Reliability Gates | v1.4 | PERF-01, PERF-02, PERF-03, PERF-04, PERF-05 | 4/5 | In Progress |
+| 23. Performance and Reliability Gates | v1.4 | PERF-01, PERF-02, PERF-03, PERF-04, PERF-05 | 5/5 | Complete |
 | 24. Renderer Output Regression Hardening | v1.4 | RENDER-01, RENDER-02, RENDER-03, RENDER-04 | 0/0 | Planned |
 | 25. Security, Distribution Review, and Closeout | v1.4 | SEC-01, SEC-02, SEC-03, SEC-04, DOC-01, DOC-02, DOC-03 | 0/0 | Planned |
 

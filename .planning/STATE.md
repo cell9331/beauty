@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Stability, QA, and Debt Cleanup
-status: executing
-stopped_at: Completed 23-04-PLAN.md
-last_updated: "2026-07-02T02:53:43.000Z"
-last_activity: 2026-07-02 — Plan 23-04 completed with final performance evidence and validation closeout
+status: verifying
+stopped_at: Completed 23-05-PLAN.md
+last_updated: "2026-07-02T02:57:17.000Z"
+last_activity: 2026-07-02 — Phase 23 evidence synchronized; final verification next
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 9
-  completed_plans: 8
-  percent: 89
+  completed_plans: 9
+  percent: 100
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-01)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 23 — Performance and Reliability Gates
+**Current focus:** Phase 23 — Performance and Reliability Gates verification
 
 ## Current Position
 
 Phase: 23 - Performance and Reliability Gates
-Plan: 4/5 complete; next 23-05
-Status: Executing
-Last activity: 2026-07-02 — Plan 23-04 completed with final performance evidence and validation closeout
+Plan: 5/5 complete; next final verification and Phase 24 planning
+Status: Verifying
+Last activity: 2026-07-02 — Phase 23 evidence synchronized; final verification next
 
 ## Performance Metrics
 
@@ -107,21 +107,22 @@ Recent milestone-level outcomes:
 - Phase 21 Plan 21-01 captured the current baseline in `.planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-BASELINE-AUDIT.md`: SDK tests pass with 141 XCTest cases, `BeautyExampleRenderer` builds and writes 45 ignored outputs, boundary/privacy scans pass, and Demo simulator build/test evidence is blocked by the missing local Metal Toolchain.
 - Phase 21 Plan 21-02 refreshed `QUALITY_SCORE.md` from the baseline, closed AUD-01 through AUD-04, and routes TD-005 to Phase 25, TD-008 to Phases 22/23 with physical iPhone evidence blocked until hardware exists, TD-009 to Phase 22, and TD-010 across Phases 22/23/24/25.
 - Phase 22 completed automated Demo QA evidence through the allowed blocker-honest path: `.planning/evidence/v1.4/VISUAL-EVIDENCE.md` records exact iPhone 17 build/test commands, the missing Metal Toolchain blocker, route/model disabled-honesty scans, blocked per-state review notes, no current v1.4 PNG screenshots, and rerun protocol.
+- Phase 23 completed performance and reliability evidence in `.planning/phases/23-performance-and-reliability-gates/23-PERFORMANCE-EVIDENCE.md`: focused SDK performance evidence passed with 3 tests, full SDK SwiftPM passed with 148 tests, focused Demo camera xcodebuild passed, 720p timings are recorded as over-budget baseline evidence, redaction/no-overclaim scans passed, and physical iPhone plus 600-second preview evidence remains blocked or not run.
 - `.planning/codebase/*` maps are stale background for v1.4 and should not override current source, root docs, or `.planning` ledgers.
 
 ### Pending Todos
 
 - Preserve v1.4 boundaries while executing: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign.
-- Run `$gsd-discuss-phase 23`.
-- Convert remaining release-hardening candidates into measurable evidence or documented blockers in later phases: physical-device camera/Vision parity, production naturalness review, performance budgets, memory/thermal checks, privacy manifest review, renderer regression, and automated visual diffs.
+- Run final Phase 23 verification, then `$gsd-discuss-phase 24`.
+- Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest review, renderer regression, and automated visual diffs.
 
 ### Blockers/Concerns
 
 - Current repository has unrelated uncommitted documentation changes outside Phase 21 files; future commits should keep file scopes explicit.
 - Deferred v2 `ADV-*` items remain outside v1 traceability and are tracked as `TD-007` in `PLANS.md`.
-- Manual release risks are now routed by Phase 21: `TD-008` to Phase 22/23 with physical-device checks blocked until hardware exists, `TD-009` to Phase 22, and `TD-010` across Phases 22/23/24/25.
+- Manual release risks are now routed by Phase 21 and updated by Phase 23: `TD-008` has focused simulator camera pass evidence but physical iPhone checks remain blocked until hardware exists; `TD-009` remains Phase 22 visual evidence with screenshot rerun protocol; and `TD-010` keeps renderer, device, and long-run work routed across Phases 24/25.
 - `TD-005` remains routed to Phase 25 because no `PrivacyInfo.xcprivacy` exists.
-- Local Demo simulator build/test evidence is blocked until the Xcode Metal Toolchain component is installed.
+- Phase 23 focused Demo simulator camera tests pass in the current environment. Phase 22 screenshot evidence still carries the historical Metal Toolchain blocker until the screenshot protocol is rerun.
 - v1.1 reference screenshots are local analysis inputs, not licensed production assets; implementation should recreate structure and feel without copying commercial assets directly.
 - Phase 12-15 cancellation is intentional; do not treat canceled AUDIT, HSWIFT, ESWIFT, or VQA requirements as open blockers.
 - Geometry-heavy branches need face detection plus geometry rendering output before they can claim saved example-image visual completion.
@@ -138,11 +139,11 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-02T02:53:43.000Z
-Stopped at: Completed 23-04-PLAN.md
+Last session: 2026-07-02T02:57:17.000Z
+Stopped at: Completed 23-05-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
 
-- Run `$gsd-execute-phase 23`.
-- Preserve the local Metal Toolchain blocker protocol unless `xcodebuild -downloadComponent MetalToolchain` has been completed and the Demo simulator build/test/screenshot commands are rerun.
+- Run final Phase 23 verification and code review.
+- Then run `$gsd-discuss-phase 24`.
