@@ -65,6 +65,54 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         }
     }
 
+    func testPERF03NoFaceMissingStaleAndReusedGeometryRemainRedactedAndDegraded() {
+        let parameters = BeautyParameters(
+            brightness: 0.2,
+            faceSlim: 1,
+            eyeSize: 1,
+            noseSlim: 1,
+            mouthSize: 1,
+            lipColor: 1,
+            filterId: "soft_clean",
+            filterIntensity: 0.5
+        )
+
+        let noFace = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: nil)
+        XCTAssertTrue(noFace.activeDomains.contains(.color))
+        XCTAssertTrue(noFace.activeDomains.contains(.filter))
+        XCTAssertFalse(noFace.activeDomains.contains(.faceShape))
+        XCTAssertTrue(noFace.skippedDomains.isSuperset(of: [.faceShape, .eyes, .nose, .mouth, .lipColor]))
+        XCTAssertTrue(noFace.warnings.contains { $0.code == "face_effects_skipped_no_face" })
+
+        let missingMouth = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .missingMouth)
+        XCTAssertTrue(missingMouth.activeDomains.contains(.color))
+        XCTAssertTrue(missingMouth.activeDomains.contains(.filter))
+        XCTAssertTrue(missingMouth.activeDomains.contains(.eyes))
+        XCTAssertTrue(missingMouth.activeDomains.contains(.nose))
+        XCTAssertFalse(missingMouth.activeDomains.contains(.mouth))
+        XCTAssertFalse(missingMouth.activeDomains.contains(.lipColor))
+        XCTAssertTrue(missingMouth.warnings.contains { $0.code == "mouth_inputs_missing" })
+        XCTAssertTrue(missingMouth.warnings.contains { $0.code == "lip_inputs_missing" })
+
+        let stale = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .stale)
+        XCTAssertTrue(stale.activeDomains.contains(.color))
+        XCTAssertTrue(stale.activeDomains.contains(.filter))
+        XCTAssertFalse(stale.activeDomains.contains(.eyes))
+        XCTAssertFalse(stale.activeDomains.contains(.nose))
+        XCTAssertTrue(stale.warnings.contains { $0.code == "geometry_stale_skipped" })
+
+        let reused = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .reused)
+        XCTAssertTrue(reused.activeDomains.contains(.eyes))
+        XCTAssertTrue(reused.activeDomains.contains(.nose))
+        XCTAssertLessThan(reused.effectiveStrengths.eyeSize, BeautySafetyCaps.eyeSize)
+        XCTAssertLessThan(reused.effectiveStrengths.noseSlim, BeautySafetyCaps.noseSlim)
+        XCTAssertTrue(reused.warnings.contains { $0.code == "geometry_stale_reduced" })
+
+        for plan in [noFace, missingMouth, stale, reused] {
+            assertRedacted(plan)
+        }
+    }
+
     func testMissingNoseSkipsOnlyNoseAndKeepsEyeAndSafeDomainsActive() {
         let plan = BeautyEffectResolver.resolve(
             parameters: BeautyParameters(

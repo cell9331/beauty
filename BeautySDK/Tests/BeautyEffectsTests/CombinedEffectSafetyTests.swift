@@ -83,6 +83,52 @@ final class CombinedEffectSafetyTests: XCTestCase {
         XCTAssertLessThan(plan.effectiveStrengths.mouthSize, BeautySafetyCaps.mouthSize)
     }
 
+    func testPERF03HighCappedTimingParametersPreserveSafetyCapsAndRedactedMetrics() {
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(
+                skinSmoothing: 1,
+                skinWhitening: 1,
+                brightness: 0.2,
+                faceSlim: 1,
+                faceSmall: 1,
+                faceVShape: 1,
+                jawSlim: 1,
+                eyeSize: 1,
+                noseSlim: 1,
+                noseWingSlim: 1,
+                noseTipSize: 1,
+                noseBridge: 1,
+                mouthSize: 1,
+                mouthWidth: 1,
+                smile: 1,
+                lipColor: 1,
+                filterId: "warm_light",
+                filterIntensity: 1
+            ),
+            faceGeometry: .fixture
+        )
+
+        XCTAssertTrue(plan.warnings.contains { $0.code == "beauty_strength_capped" })
+        XCTAssertTrue(plan.warnings.contains { $0.code == "combined_geometry_weakened" })
+        XCTAssertGreaterThan(plan.metrics["beauty.effects.cappedCount"] ?? 0, 0)
+        XCTAssertGreaterThan(plan.metrics["beauty.effects.weakenedCount"] ?? 0, 0)
+        XCTAssertLessThanOrEqual(plan.effectiveStrengths.skinSmoothing, BeautySafetyCaps.skinSmoothing)
+        XCTAssertLessThanOrEqual(plan.effectiveStrengths.skinWhitening, BeautySafetyCaps.skinWhitening)
+        XCTAssertLessThan(plan.effectiveStrengths.faceSlim, BeautySafetyCaps.faceSlim)
+        XCTAssertLessThan(plan.effectiveStrengths.eyeSize, BeautySafetyCaps.eyeSize)
+        XCTAssertLessThan(plan.effectiveStrengths.noseSlim, BeautySafetyCaps.noseSlim)
+        XCTAssertLessThan(plan.effectiveStrengths.mouthSize, BeautySafetyCaps.mouthSize)
+        XCTAssertGreaterThan(plan.metrics["beauty.effects.geometryPointCount"] ?? 0, 0)
+
+        let metadata = (
+            plan.warnings.map { "\($0.code) \($0.message)" } +
+            Array(plan.metrics.keys)
+        ).joined(separator: " ")
+        for forbidden in ["VNFaceObservation", "boundingBox", "/private/var", "NSError", "rawPresetJson", "image bytes", "SIMD", "[0."] {
+            XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)")
+        }
+    }
+
     func testBuiltInPresetsStayWithinCapsAndProduceVisibleFixtureEvidence() throws {
         let image = CIImage(color: CIColor(red: 0.25, green: 0.30, blue: 0.35, alpha: 1))
             .cropped(to: CGRect(x: 0, y: 0, width: 2, height: 1))
