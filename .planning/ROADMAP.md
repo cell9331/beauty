@@ -12,7 +12,7 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 - ✅ **v1.1 Meitu UI** - Phases 8-10, implemented and verified 2026-06-24. Summary is in `.planning/MILESTONES.md`.
 - ✅ **v1.2 HTML Reference Fidelity** - Phase 11 completed 2026-06-25; Phases 12-15 canceled 2026-06-26. Summary is in `.planning/MILESTONES.md`.
 - ✅ **v1.3 Meitu Core Beauty Module Design and Implementation** - Phases 16-20 shipped 2026-06-30. See `.planning/milestones/v1.3-ROADMAP.md`, `.planning/milestones/v1.3-REQUIREMENTS.md`, and `.planning/milestones/v1.3-MILESTONE-AUDIT.md`.
-- 🟡 **v1.4 Stability, QA, and Debt Cleanup** - Phases 21-23 complete; Phases 24-25 planned.
+- 🟡 **v1.4 Stability, QA, and Debt Cleanup** - Phases 21-24 complete; Phase 25 planned.
 
 ## v1.4 Stability, QA, and Debt Cleanup
 
@@ -97,16 +97,18 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 **Success Criteria:**
 
 1. The renderer matrix documents all current visible skin/color/filter cases and runs through the public `BeautySDK` facade.
-2. Default/no-op processing has a near-copy regression check with an explicit tolerance.
+2. Default/no-op processing has an exact pre-watermark rendered-pixel regression check for the current fixtures.
 3. Visible-output cases verify non-empty output, same dimensions, readable watermarks, and factual visible changes.
 4. Geometry-heavy branches keep honest `partial`, `blocked-by-geometry-output`, or `future` status unless public facade geometry output exists.
 
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 - **Wave 1:** `24-01` Focused SwiftPM renderer matrix and pre-watermark no-op fixture regression tests; `24-02` Renderer build/run, 45-output invariant helper/evidence, and example-image validation doc update.
 - **Wave 2:** `24-03` Geometry/no-overclaim verification and root/planning ledger synchronization. Depends on `24-01` and `24-02`.
 
-**Next command:** `$gsd-execute-phase 24`
+**Current evidence:** Phase 24 completed through `.planning/phases/24-renderer-output-regression-hardening/24-RENDERER-EVIDENCE.md`, `24-VERIFICATION.md`, and `24-VALIDATION.md`. Focused renderer regression tests passed with 2 tests, full `swift test --package-path BeautySDK` passed with 150 tests, `BeautyExampleRenderer` built and regenerated 45 ignored local PNG outputs, the helper verified all current outputs for existence, non-empty files, same dimensions, and input/output byte difference, and geometry/no-overclaim scans passed. Geometry saved-output remains future work.
+
+**Next command:** `$gsd-discuss-phase 25`
 
 ### Phase 25: Security, Distribution Review, and Closeout
 
@@ -133,7 +135,7 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 | 21. Baseline Audit and Quality Ledger Refresh | v1.4 | AUD-01, AUD-02, AUD-03, AUD-04 | 2/2 | Complete |
 | 22. Automated Demo QA and Screenshot Evidence | v1.4 | QA-01, QA-02, QA-03, QA-04 | 2/2 | Complete |
 | 23. Performance and Reliability Gates | v1.4 | PERF-01, PERF-02, PERF-03, PERF-04, PERF-05 | 5/5 | Complete |
-| 24. Renderer Output Regression Hardening | v1.4 | RENDER-01, RENDER-02, RENDER-03, RENDER-04 | 2/3 | In Progress |
+| 24. Renderer Output Regression Hardening | v1.4 | RENDER-01, RENDER-02, RENDER-03, RENDER-04 | 3/3 | Complete |
 | 25. Security, Distribution Review, and Closeout | v1.4 | SEC-01, SEC-02, SEC-03, SEC-04, DOC-01, DOC-02, DOC-03 | 0/0 | Planned |
 
 **Coverage:**

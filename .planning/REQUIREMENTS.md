@@ -39,9 +39,11 @@ Phase 23 evidence is recorded in `.planning/phases/23-performance-and-reliabilit
 ### Renderer Output Regression
 
 - [x] **RENDER-01**: `BeautyExampleRenderer` keeps a documented public-facade matrix for all current visible skin/color/filter output cases.
-- [x] **RENDER-02**: Default/no-op processing has a regression check that verifies near-copy output within the documented tolerance for current fixture images.
+- [x] **RENDER-02**: Default/no-op processing has a regression check that verifies exact pre-watermark rendered-pixel equality for current fixture images; no tolerance fallback was required in Phase 24.
 - [x] **RENDER-03**: Visible-output cases verify non-empty outputs, same dimensions as inputs, readable parameter watermarks, and factual visible changes without claiming commercial visual quality.
 - [x] **RENDER-04**: Geometry-heavy branches remain `partial`, `blocked-by-geometry-output`, or `future` unless public facade detection plus geometry rendering produces saved same-dimension, watermarked outputs.
+
+Phase 24 evidence is recorded in `.planning/phases/24-renderer-output-regression-hardening/24-RENDERER-EVIDENCE.md` and `.planning/phases/24-renderer-output-regression-hardening/24-VERIFICATION.md`. The focused renderer regression tests passed, full `swift test --package-path BeautySDK` passed with 150 tests, `BeautyExampleRenderer` built and regenerated 45 ignored local PNG outputs, the generated-output helper passed for all expected outputs, and geometry/no-overclaim scans passed. Phase 24 does not add product features, public parameters, Demo UI, committed PNG baselines, reference-app parity evidence, or geometry saved-output completion.
 
 ### Security and Distribution Review
 
@@ -96,10 +98,10 @@ Deferred to later milestones unless explicitly promoted.
 | PERF-03 | Phase 23 | Complete |
 | PERF-04 | Phase 23 | Complete |
 | PERF-05 | Phase 23 | Complete |
-| RENDER-01 | Phase 24 | Planned |
-| RENDER-02 | Phase 24 | Planned |
-| RENDER-03 | Phase 24 | Planned |
-| RENDER-04 | Phase 24 | Planned |
+| RENDER-01 | Phase 24 | Complete |
+| RENDER-02 | Phase 24 | Complete |
+| RENDER-03 | Phase 24 | Complete |
+| RENDER-04 | Phase 24 | Complete |
 | SEC-01 | Phase 25 | Planned |
 | SEC-02 | Phase 25 | Planned |
 | SEC-03 | Phase 25 | Planned |
@@ -116,4 +118,4 @@ Deferred to later milestones unless explicitly promoted.
 
 ---
 *Requirements defined: 2026-06-30*
-*Last updated: 2026-07-02 after Phase 23 performance and reliability evidence*
+*Last updated: 2026-07-02 after Phase 24 renderer output regression evidence*

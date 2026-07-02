@@ -34,19 +34,19 @@ Quality gate:
 
 ## 3. Current Snapshot
 
-Current repository state as of 2026-07-02 after Phase 23 performance and reliability evidence:
+Current repository state as of 2026-07-02 after Phase 24 renderer output regression evidence:
 
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
 | Root docs | 4 | `AGENTS.md`, `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `PLANS.md`, and `QUALITY_SCORE.md` still exist as current owner docs. Phase 21 root placeholder scan found only historical `PLANS.md` verification prose, not unresolved contract placeholders. | Keep root docs synced when `.planning/PROJECT.md`, `.planning/ROADMAP.md`, implementation contracts, or Phase 22-25 evidence change. |
 | Historical docs | 3 | `docs/README.md` remains the long-doc entry. Phase 21 records `.planning/codebase/*` maps as stale background because they still contradict the current Swift package, tests, and planning ledgers. | Continue conflict scans and defer any formal `.planning/codebase/*` remap until explicitly scoped. |
-| GSD planning | 4 | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, and `.planning/REQUIREMENTS.md` define v1.4 as stability, QA, performance, security, and debt cleanup. Phase 21 records AUD-01 through AUD-04; Phase 22 records QA-01 through QA-04; Phase 23 records PERF-01 through PERF-05 in `23-PERFORMANCE-EVIDENCE.md`. | Start Phase 24 renderer regression hardening planning. |
-| SDK Package | 4 | `BeautySDK/Package.swift` exists with `BeautyCore`, `BeautyDetection`, `BeautyRender`, `BeautyEffects`, `BeautyResources`, facade `BeautySDK`, and `BeautyExampleRenderer`. Phase 23 `swift test --package-path BeautySDK` passed with 148 XCTest cases. | Phase 24 should harden renderer regression evidence; optimized profiling remains separate from Phase 23 baseline timing. |
+| GSD planning | 4 | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, and `.planning/REQUIREMENTS.md` define v1.4 as stability, QA, performance, security, and debt cleanup. Phase 21 records AUD-01 through AUD-04; Phase 22 records QA-01 through QA-04; Phase 23 records PERF-01 through PERF-05; Phase 24 records RENDER-01 through RENDER-04 in `24-RENDERER-EVIDENCE.md` and `24-VERIFICATION.md`. | Start Phase 25 security, distribution, and closeout planning. |
+| SDK Package | 4 | `BeautySDK/Package.swift` exists with `BeautyCore`, `BeautyDetection`, `BeautyRender`, `BeautyEffects`, `BeautyResources`, facade `BeautySDK`, and `BeautyExampleRenderer`. Phase 24 `swift test --package-path BeautySDK` passed with 150 XCTest cases and `BeautyExampleRenderer` built successfully. | Optimized profiling and privacy/distribution review remain separate Phase 25 or future gates. |
 | Demo App | 4 | Existing archived Demo evidence remains valid for shipped behavior. Phase 22 recorded blocker-form Home/editor review notes and no current v1.4 PNG screenshots. Phase 23 focused camera pipeline xcodebuild passed on `platform=iOS Simulator,name=iPhone 17,OS=26.5`, but screenshot and long-run routes were not rerun. | Rerun the screenshot protocol before claiming current screenshot evidence; keep physical iPhone checks blocked until hardware evidence exists. |
-| Tests | 4 | Phase 23 reran `swift test --package-path BeautySDK` successfully with 148 XCTest cases, added focused performance evidence tests, and recorded focused Demo camera pipeline xcodebuild pass evidence with 7 tests. | Add renderer regression in Phase 24 and keep 600-second preview plus physical iPhone checks as manual/future evidence. |
+| Tests | 4 | Phase 24 reran `swift test --package-path BeautySDK` successfully with 150 XCTest cases, added focused renderer matrix/no-op fixture regression tests, and retained Phase 23 focused Demo camera pipeline xcodebuild pass evidence with 7 tests. | Keep 600-second preview plus physical iPhone checks as manual/future evidence. |
 | Security | 4 | Phase 21 import/privacy scans passed for facade-only Demo imports, non-UI SDK targets, active Demo no-network/no-upload/raw-path tokens, and public sensitive geometry/raw leakage. `find BeautySDK BeautyDemo -name PrivacyInfo.xcprivacy -print` found no privacy manifest, so TD-005 remains open. | Phase 25 should assess required-reason APIs and add or explicitly defer `PrivacyInfo.xcprivacy`. |
 | Reliability | 4 | Existing tests cover typed errors, reset, backpressure, stale work, degradation, resource failures, and non-mutating JSON import failures. Phase 23 adds repeatable 720p timing baseline evidence, short fixture-loop memory protocol, quality-mode/reset/degradation/cap tests, focused Demo backpressure/reset evidence, and redaction scans. | Keep the 600-second preview route, physical iPhone checks, and optimized profiling as explicit follow-up evidence. |
-| Product acceptance | 4 | Existing acceptance evidence covers current SDK/Demo journeys. Phase 22 added deterministic visual-QA blocker evidence; Phase 23 adds command-backed performance/reliability evidence and explicit non-claims for timing, screenshot, long-run, and device gaps. | Phase 24 should produce renderer output regression evidence without commercial visual-quality overclaims. |
+| Product acceptance | 4 | Existing acceptance evidence covers current SDK/Demo journeys. Phase 22 added deterministic visual-QA blocker evidence; Phase 23 adds command-backed performance/reliability evidence and explicit non-claims for timing, screenshot, long-run, and device gaps. Phase 24 adds command-backed skin/color/filter renderer-output regression evidence and explicit geometry/non-claim guards. | Phase 25 should complete privacy manifest, resource trust, and final security/distribution review. |
 
 ### 3.1 Phase 4 Final Verification
 
@@ -140,6 +140,18 @@ Recorded 2026-07-02 in `.planning/phases/23-performance-and-reliability-gates/23
 - SDK quality-mode, engine reset, degradation, safety-cap, redacted metric, Demo backpressure/reset, and still-image recovery regressions are test-backed.
 - Redaction and no-overclaim scans over the Phase 23 evidence passed.
 - Physical iPhone, screenshot acceptance, optimized profiling, and 600-second preview evidence remain blocked or not run.
+
+### 3.9 Phase 24 Renderer Output Regression Evidence
+
+Recorded 2026-07-02 in `.planning/phases/24-renderer-output-regression-hardening/24-RENDERER-EVIDENCE.md`, `24-VERIFICATION.md`, and `24-VALIDATION.md`:
+
+- `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyRendererOutputRegressionTests` passed with 2 tests and 0 failures.
+- `swift test --package-path BeautySDK` passed with 150 tests and 0 failures.
+- `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed.
+- `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out` regenerated 45 ignored local PNG outputs for 5 fixtures times 9 current renderer cases.
+- `python3 .planning/phases/24-renderer-output-regression-hardening/check_renderer_outputs.py --input example-images/input --output example-images/out` passed for all expected outputs, checking existence, non-empty files, same dimensions, and input/output byte difference.
+- Public facade import, renderer geometry-case exclusion, geometry status, no-overclaim, decision-coverage, and scoped diff checks passed.
+- Geometry saved-output, reference-app parity, broad device evidence, and market visual-quality evidence remain outside Phase 24.
 
 ## 4. Product Domain Scorecard
 
@@ -369,10 +381,10 @@ SDK 1.0 readiness:
 
 | Priority | Item | Why |
 | --- | --- | --- |
-| 1 | Promote Phase 24 renderer evidence into regression gates. | Current renderer run proves 45 visible skin/color/filter outputs, but no-op tolerance, all-output dimensions, watermark readability, and regression thresholds remain future work. |
+| 1 | Complete Phase 25 privacy manifest, resource trust, and final security/distribution review. | TD-005 is still open and no `PrivacyInfo.xcprivacy` exists in `BeautySDK` or `BeautyDemo`. |
 | 2 | Run dedicated 600-second preview and physical iPhone checks when setup is available. | Phase 23 records a short fixture loop and focused simulator pass evidence, but long-run preview and device evidence remain blocked or not run. |
 | 3 | Rerun current Demo screenshot evidence. | Phase 22 completed the documented blocker path; current PNG capture still requires rerunning the exact build/test/screenshot commands and recording pass or blocker status. |
-| 4 | Complete Phase 25 privacy manifest, resource trust, and final security/distribution review. | TD-005 is still open and no `PrivacyInfo.xcprivacy` exists in `BeautySDK` or `BeautyDemo`. |
+| 4 | Keep Phase 24 renderer regression gates current when the renderer matrix changes. | Phase 24 now protects the current 9-case skin/color/filter matrix and 45 ignored generated outputs; future renderer cases need matching tests, helper inventory, and evidence updates. |
 | 5 | Defer formal `.planning/codebase/*` remap until explicitly scoped. | Phase 21 and the Phase 22 drift warning found the maps stale; current source, root contracts, and `.planning` ledgers are authoritative. |
 
 ## 15. Quality Decision Log
@@ -388,5 +400,6 @@ SDK 1.0 readiness:
 | 2026-06-12 | Phase 3 raises Realtime Camera and Still Image Editing to score 3 through deterministic pipeline, privacy, and view-state tests. | The Camera/Photo input slice is now test-backed, while real hardware smoke, visual effects, and long-run performance remain later gates. |
 | 2026-06-22 | Phase 6 raises BeautyEffects and MVP effect domains to score 4 through resolver, provider, fixture, degradation, and Demo panel tests. | Deterministic automated evidence now exists; production render quality, hardware smoke, and manual naturalness review remain release-like gates. |
 | 2026-06-30 | Phase 21 establishes the v1.4 evidence baseline from `21-BASELINE-AUDIT.md`. | SDK tests and renderer commands pass now; Demo build/test is blocked by the missing Metal Toolchain; unresolved visual, hardware, performance, privacy, renderer-regression, and stale-map work routes to Phases 22 through 25. |
+| 2026-07-02 | Phase 24 adds renderer output regression gates without changing product scope. | Focused renderer tests, full SDK tests, all-case renderer run, output helper, geometry guard scans, and no-overclaim scans now back RENDER-01 through RENDER-04. |
 | 2026-07-01 | Phase 22 records automated Demo QA evidence through the blocker-honest path. | Current screenshot capture is still blocked by the missing Metal Toolchain, but the repo now has exact commands, per-state blocked review notes, route/model honesty evidence, no-PNG inventory, and rerun protocol for QA-01 through QA-04. |
 | 2026-07-02 | Phase 23 records performance and reliability evidence from `23-PERFORMANCE-EVIDENCE.md`. | SDK performance evidence, full SDK tests, focused Demo camera tests, quality/reset/degradation regressions, and scans pass; over-budget timing, 600-second preview, screenshot, and physical iPhone gaps remain explicit follow-up work. |
