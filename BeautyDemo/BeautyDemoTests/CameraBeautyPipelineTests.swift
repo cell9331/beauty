@@ -75,6 +75,45 @@ final class CameraBeautyPipelineTests: XCTestCase {
         XCTAssertEqual(pipeline.state.droppedFrameCount, 1)
     }
 
+    func testPERF02BackpressureStressKeepsLatestFrameWinsAndCountsDroppedFrames() async throws {
+        let firstStarted = expectation(description: "first frame started")
+        let releaseFirst = DispatchSemaphore(value: 0)
+        let processedTimestamps = LockedValues<TimeInterval>()
+        let processedParameters = LockedValues<BeautyParameters>()
+        let processor = CameraFrameProcessor { frame, parameters in
+            processedTimestamps.append(frame.timestamp)
+            processedParameters.append(parameters)
+            if frame.timestamp == 1 {
+                firstStarted.fulfill()
+                _ = releaseFirst.wait(timeout: .now() + 2)
+            }
+            return BeautyResult(output: frame.pixelBuffer)
+        }
+        let pipeline = CameraBeautyPipeline(maxInFlight: 1, processor: processor)
+
+        pipeline.enqueue(frame: try makeFrame(timestamp: 1), parameters: .init(skinSmoothing: 0.1))
+        await fulfillment(of: [firstStarted], timeout: 2)
+
+        pipeline.enqueue(frame: try makeFrame(timestamp: 2), parameters: .init(skinSmoothing: 0.2))
+        pipeline.enqueue(frame: try makeFrame(timestamp: 3), parameters: .init(skinSmoothing: 0.3))
+        pipeline.enqueue(frame: try makeFrame(timestamp: 4), parameters: .init(skinSmoothing: 0.4))
+        pipeline.enqueue(frame: try makeFrame(timestamp: 5), parameters: .init(skinSmoothing: 0.5))
+
+        XCTAssertEqual(pipeline.inFlightCount, 1)
+        XCTAssertEqual(pipeline.droppedFrameCount, 3)
+        XCTAssertEqual(pipeline.lastDropReason, .backpressure)
+        XCTAssertEqual(pipeline.state.droppedFrameCount, 3)
+
+        releaseFirst.signal()
+        await pipeline.waitUntilIdle()
+
+        XCTAssertEqual(processedTimestamps.values, [1, 5])
+        XCTAssertEqual(processedParameters.values.map(\.skinSmoothing), [0.1, 0.5])
+        XCTAssertEqual(pipeline.state.latestSnapshot?.parameters.skinSmoothing, 0.5)
+        XCTAssertEqual(pipeline.state.droppedFrameCount, 3)
+        XCTAssertEqual(pipeline.droppedFrameCount, 3)
+    }
+
     func testD14LatestParameterSnapshotIsUsedForFrameThatProcesses() async throws {
         let firstStarted = expectation(description: "first frame started")
         let releaseFirst = DispatchSemaphore(value: 0)
@@ -157,6 +196,58 @@ final class CameraBeautyPipelineTests: XCTestCase {
         pipeline.enqueue(frame: try makeFrame(timestamp: 5), parameters: .init())
         await pipeline.waitUntilIdle()
         XCTAssertEqual(pipeline.state.statusText, "Waiting for a fresh face reading. Showing the last usable preview.")
+    }
+
+    func testPERF03ResetClearsPendingWorkDropCountersWarningsAndSnapshots() async throws {
+        let blockedFrameStarted = expectation(description: "blocked frame started")
+        let blockedFrameReleased = expectation(description: "blocked frame released")
+        let releaseBlockedFrame = DispatchSemaphore(value: 0)
+        let processedTimestamps = LockedValues<TimeInterval>()
+        let processor = CameraFrameProcessor { frame, _ in
+            processedTimestamps.append(frame.timestamp)
+            if frame.timestamp == 2 {
+                blockedFrameStarted.fulfill()
+                _ = releaseBlockedFrame.wait(timeout: .now() + 2)
+                blockedFrameReleased.fulfill()
+            }
+            let summary: BeautyDetectionSummary? = frame.timestamp == 1 ? .noFace : .notRun
+            return BeautyResult(output: frame.pixelBuffer, detectionSummary: summary)
+        }
+        let pipeline = CameraBeautyPipeline(maxInFlight: 1, processor: processor)
+
+        pipeline.enqueue(frame: try makeFrame(timestamp: 1), parameters: .init(skinSmoothing: 0.1))
+        await pipeline.waitUntilIdle()
+        let preResetSnapshot = try XCTUnwrap(pipeline.state.latestSnapshot)
+        XCTAssertEqual(preResetSnapshot.timestamp, 1)
+        XCTAssertEqual(pipeline.state.statusText, "No face detected. Face adjustments are paused.")
+
+        pipeline.enqueue(frame: try makeFrame(timestamp: 2), parameters: .init(skinSmoothing: 0.2))
+        await fulfillment(of: [blockedFrameStarted], timeout: 2)
+        pipeline.enqueue(frame: try makeFrame(timestamp: 3), parameters: .init(skinSmoothing: 0.3))
+        pipeline.enqueue(frame: try makeFrame(timestamp: 4), parameters: .init(skinSmoothing: 0.4))
+
+        XCTAssertEqual(pipeline.inFlightCount, 1)
+        XCTAssertEqual(pipeline.droppedFrameCount, 1)
+        XCTAssertEqual(pipeline.lastDropReason, .backpressure)
+        XCTAssertEqual(pipeline.state.latestSnapshot, preResetSnapshot)
+        XCTAssertEqual(pipeline.state.statusText, "No face detected. Face adjustments are paused.")
+
+        pipeline.reset()
+
+        XCTAssertEqual(pipeline.inFlightCount, 0)
+        XCTAssertEqual(pipeline.droppedFrameCount, 0)
+        XCTAssertNil(pipeline.lastDropReason)
+        XCTAssertEqual(pipeline.state, .idle)
+        XCTAssertNil(pipeline.state.latestSnapshot)
+        XCTAssertNil(pipeline.state.statusText)
+
+        releaseBlockedFrame.signal()
+        await fulfillment(of: [blockedFrameReleased], timeout: 2)
+        try await Task.sleep(nanoseconds: 50_000_000)
+
+        XCTAssertEqual(pipeline.state, .idle)
+        XCTAssertNil(pipeline.state.latestSnapshot)
+        XCTAssertEqual(processedTimestamps.values, [1, 2])
     }
 
     private func makeFrame(timestamp: TimeInterval, pixelFormat: OSType = kCVPixelFormatType_32BGRA) throws -> CameraPreviewFrame {
