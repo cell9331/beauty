@@ -16,6 +16,27 @@ final class BeautyConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.logLevel, .error)
     }
 
+    func testPERF03RenderQualityModesAreStableConfigurationContract() {
+        XCTAssertEqual(BeautyRenderQuality.performance.rawValue, "performance")
+        XCTAssertEqual(BeautyRenderQuality.balanced.rawValue, "balanced")
+        XCTAssertEqual(BeautyRenderQuality.quality.rawValue, "quality")
+
+        let defaultConfiguration = BeautyConfiguration.default
+        XCTAssertEqual(defaultConfiguration.renderQuality, .balanced)
+        XCTAssertFalse(defaultConfiguration.enablePerformanceLog)
+        XCTAssertEqual(defaultConfiguration.logLevel, .error)
+
+        let performanceConfiguration = BeautyConfiguration(renderQuality: .performance)
+        let qualityConfiguration = BeautyConfiguration(renderQuality: .quality)
+
+        XCTAssertEqual(performanceConfiguration.renderQuality, .performance)
+        XCTAssertEqual(qualityConfiguration.renderQuality, .quality)
+        XCTAssertFalse(performanceConfiguration.enablePerformanceLog)
+        XCTAssertEqual(qualityConfiguration.logLevel, .error)
+        XCTAssertNotEqual(performanceConfiguration.renderQuality, qualityConfiguration.renderQuality)
+        // PERF-03 currently verifies the configuration contract, not runtime quality strategy differences.
+    }
+
     func testConfigurationClampsInvalidCountsAndSizes() {
         let configuration = BeautyConfiguration(
             preferredProcessingSize: CGSize(width: CGFloat.nan, height: 720),

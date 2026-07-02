@@ -180,6 +180,34 @@ final class BeautyEngineTests: XCTestCase {
         copy = parameters
         XCTAssertEqual(copy.skinSmoothing, 0.5)
     }
+
+    func testPERF03ResetPreservesConfigurationQualityAndDetectionSummaryContract() throws {
+        let configuration = BeautyConfiguration(
+            enableFaceTracking: false,
+            renderQuality: .quality,
+            enablePerformanceLog: false,
+            logLevel: .error
+        )
+        let engine = try BeautyEngine(configuration: configuration)
+        let input = try PixelBufferFixtures.makeBGRA(width: 1, height: 1, bytes: [80, 90, 100, 255])
+        let parameters = BeautyParameters(skinSmoothing: 0.5, brightness: 0.1)
+        let originalParameters = parameters
+
+        engine.reset()
+        let result = try engine.processResult(
+            pixelBuffer: input,
+            metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+            parameters: parameters
+        )
+
+        XCTAssertEqual(engine.configuration, configuration)
+        XCTAssertEqual(engine.configuration.renderQuality, .quality)
+        XCTAssertFalse(engine.configuration.enablePerformanceLog)
+        XCTAssertEqual(engine.configuration.logLevel, .error)
+        XCTAssertEqual(engine.resetCountForTesting, 1)
+        XCTAssertEqual(parameters, originalParameters)
+        XCTAssertEqual(result.detectionSummary?.availability, .disabled)
+    }
 }
 
 enum PixelBufferFixtures {
