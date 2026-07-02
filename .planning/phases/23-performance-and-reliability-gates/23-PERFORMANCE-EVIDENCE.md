@@ -1,79 +1,97 @@
 ---
 phase: 23-performance-and-reliability-gates
-status: draft
+status: final
 updated: 2026-07-02
 requirements:
   - PERF-01
+  - PERF-02
+  - PERF-03
   - PERF-04
   - PERF-05
 ---
 
-# Phase 23 Performance Evidence
+# Phase 23 Performance and Reliability Evidence
 
 ## Scope
 
-This artifact records the initial SDK-side Phase 23 timing, memory-baseline, budget-comparison, and redaction evidence created by Plan 23-01.
+This artifact is the final Phase 23 evidence ledger for timing, budget comparison, memory-trend protocol, Demo backpressure, reset/recovery, SDK degradation, safety caps, and redaction status.
 
 Status values:
 
-- `passed`: command or scan ran now and passed.
-- `recorded`: evidence was captured as a current-environment baseline and may include risks.
-- `blocked`: command could not produce meaningful evidence because local tooling or hardware is unavailable.
-- `not attempted`: intentionally not run in this plan.
-- `future`: routed to a later v1.4 phase or manual protocol.
+- `passed`: command or scan ran in this phase and passed.
+- `recorded`: current-environment evidence exists but includes a limitation or risk.
+- `blocked`: hardware or tooling needed for that evidence is unavailable.
+- `not run`: evidence was intentionally left to the documented rerun protocol.
 
-## Explicit non-claims
+## Non-claims
 
-- This is current-environment baseline evidence, not shipped frame-rate readiness.
-- This does not assert commercial visual review, real-device parity, screenshot acceptance, or market fitness.
+- Current timing is SwiftPM debug XCTest baseline data, not shipped frame-rate readiness.
+- Phase 23 does not assert commercial visual review, real-device parity, screenshot acceptance, or market fitness.
 - The short fixture loop does not satisfy the 600-second preview-stability gate in `RELIABILITY.md`.
-- Demo simulator and physical iPhone checks remain secondary until the documented tooling or hardware prerequisites are available.
+- Focused Demo pipeline tests passing on a simulator do not replace physical iPhone or long-run preview evidence.
+- Performance logging remains optional and off by default; Phase 23 does not introduce per-frame persistent logs.
 
 ## Environment
 
 | Item | Value |
 | --- | --- |
-| Evidence run date | `2026-07-02` |
+| Evidence date | `2026-07-02` |
+| Local time window | `10:49 +0800` |
 | Swift | Apple Swift `6.3.3`, swift-driver `1.148.6` |
 | Swift target | `arm64-apple-macosx26.0` |
 | Xcode | `26.6`, build `17F113` |
 | SDK command runner | SwiftPM XCTest |
-| Input shape | Synthetic BGRA `CVPixelBuffer`, `1280x720`, source `.testFixture`, orientation `.up` |
+| Demo command runner | `xcodebuild` XCTest |
+| Demo destination | `platform=iOS Simulator,name=iPhone 17,OS=26.5` |
+| SDK input shape | Synthetic BGRA `CVPixelBuffer`, `1280x720`, source `.testFixture`, orientation `.up` |
 | SDK entrypoint | `BeautyEngine.processResult(pixelBuffer:metadata:parameters:)` |
-| Configuration | `BeautyConfiguration.default`, render quality `.balanced`, `enablePerformanceLog == false`, `logLevel == .error` |
+| SDK configuration | `BeautyConfiguration.default`, render quality `.balanced`, `enablePerformanceLog == false`, `logLevel == .error` |
 
-## Exact commands
+## Exact Command Results
 
-| Area | Status | Exact command | Evidence summary | Requirement |
+| Area | Status | Exact command | Result | Requirement |
 | --- | --- | --- | --- | --- |
-| Swift version | passed | `swift --version` | Apple Swift `6.3.3`, target `arm64-apple-macosx26.0`. | PERF-01 |
-| Xcode version | passed | `xcodebuild -version` | Xcode `26.6`, build `17F113`. | PERF-01 |
-| Focused SDK evidence tests | passed | `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyPerformanceEvidenceTests` | Built `BeautyCoreTests` and executed 3 `BeautyPerformanceEvidenceTests` cases with 0 failures in 11.410 seconds. | PERF-01, PERF-04, PERF-05 |
-| Redaction guard test | passed | Same focused SwiftPM command above | `testPERF05PerformanceEvidenceReportUsesOnlyAllowlistedFields` verified the report contains only allowlisted field names and excludes sensitive payload terms. | PERF-05 |
+| Swift environment | passed | `swift --version` | Apple Swift `6.3.3`, swift-driver `1.148.6`, target `arm64-apple-macosx26.0`. | PERF-01 |
+| Xcode environment | passed | `xcodebuild -version` | Xcode `26.6`, build `17F113`. | PERF-01, PERF-02 |
+| Focused SDK evidence tests | passed | `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyPerformanceEvidenceTests` | Executed 3 tests, 0 failures, 11.292 seconds. | PERF-01, PERF-04, PERF-05 |
+| Full SDK suite | passed | `swift test --package-path BeautySDK` | Executed 148 tests, 0 failures, 15.153 seconds. | PERF-01, PERF-03, PERF-04, PERF-05 |
+| Focused Demo camera tests | passed | `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' -only-testing:BeautyDemoTests/CameraBeautyPipelineTests test` | Xcode reported `TEST SUCCEEDED`; 7 camera pipeline tests passed, including both PERF camera regressions. | PERF-02, PERF-03, PERF-04 |
+| Focused Demo camera plus still-image tests | passed | `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' -only-testing:BeautyDemoTests/CameraBeautyPipelineTests -only-testing:BeautyDemoTests/ImageEditorPipelineTests test` | Plan 23-02 executed 7 camera tests and 9 image-editor tests with 0 failures. | PERF-02, PERF-03 |
+| Required field scan | passed | `rg -n "PERF-01|PERF-02|PERF-03|PERF-04|PERF-05|Timing matrix|Budget comparison|Memory trend|Backpressure|Quality mode|Reset|Degradation|Redaction scan|Non-claims|Rerun protocol" .planning/phases/23-performance-and-reliability-gates/23-PERFORMANCE-EVIDENCE.md` | Required evidence headings and requirement IDs are present. | PERF-01, PERF-02, PERF-03, PERF-04, PERF-05 |
+| Scoped redaction scan | passed | Plan 23-04 scoped forbidden-token scan over this artifact | No matches after final edits. | PERF-05 |
+| Scoped no-overclaim scan | passed | Plan 23-04 scoped no-overclaim scan over this artifact | No matches after final edits. | PERF-05 |
 
-## SDK 720p Timing Matrix
+## SDK 720p Timing matrix
 
-The focused test prints the allowlisted timing report below. Sample and warmup counts are intentionally small so the command stays cheap enough for normal SwiftPM verification.
+Timing values come from the focused SDK evidence command in this plan. Sample and warmup counts are intentionally small so maintainers can rerun the command during normal SwiftPM verification.
 
 | Case | Samples | Warmups | Mean ms | Maximum ms | Resolution | Quality | Budget status | Warning codes | Metric keys |
 | --- | ---: | ---: | ---: | ---: | --- | --- | --- | --- | --- |
-| `default_noop` | 3 | 1 | 159.818 | 162.058 | `1280x720` | `balanced` | `over_budget_recorded` | none | `beauty.effects.activeCount`, `beauty.effects.cappedCount` |
-| `skin_color_filter` | 3 | 1 | 367.118 | 367.949 | `1280x720` | `balanced` | `over_budget_recorded` | none | `beauty.effects.activeCount`, `beauty.effects.cappedCount`, `beauty.effects.filter.softClean` |
-| `high_capped` | 3 | 1 | 410.448 | 411.044 | `1280x720` | `balanced` | `over_budget_recorded` | `beauty_strength_capped`, `eye_inputs_missing`, `face_effects_skipped_no_face`, `lip_inputs_missing`, `mouth_inputs_missing`, `nose_inputs_missing` | `beauty.effects.activeCount`, `beauty.effects.cappedCount`, `beauty.effects.filter.warmLight`, `beauty.effects.skippedEyeDomains`, `beauty.effects.skippedFaceDomains`, `beauty.effects.skippedLipDomains`, `beauty.effects.skippedMouthDomains`, `beauty.effects.skippedNoseDomains` |
+| `default_noop` | 3 | 1 | 160.340 | 161.518 | `1280x720` | `balanced` | `over_budget_recorded` | none | `beauty.effects.activeCount`, `beauty.effects.cappedCount` |
+| `skin_color_filter` | 3 | 1 | 366.483 | 368.224 | `1280x720` | `balanced` | `over_budget_recorded` | none | `beauty.effects.activeCount`, `beauty.effects.cappedCount`, `beauty.effects.filter.softClean` |
+| `high_capped` | 3 | 1 | 399.286 | 399.938 | `1280x720` | `balanced` | `over_budget_recorded` | `beauty_strength_capped`, `eye_inputs_missing`, `face_effects_skipped_no_face`, `lip_inputs_missing`, `mouth_inputs_missing`, `nose_inputs_missing` | `beauty.effects.activeCount`, `beauty.effects.cappedCount`, `beauty.effects.filter.warmLight`, `beauty.effects.skippedEyeDomains`, `beauty.effects.skippedFaceDomains`, `beauty.effects.skippedLipDomains`, `beauty.effects.skippedMouthDomains`, `beauty.effects.skippedNoseDomains` |
 
 ## Budget comparison
 
-`RELIABILITY.md` sets the first-version render-total reference at 5 to 12 ms per processed frame, with pass-level references of 2 to 6 ms for skin, 0.3 to 1.0 ms for color, and 0.5 to 1.5 ms for LUT/filter work.
+`RELIABILITY.md` defines the first-version render-total reference at 5 to 12 ms per processed frame. Its pass-level references are 2 to 6 ms for skin work, 0.3 to 1.0 ms for color work, and 0.5 to 1.5 ms for LUT/filter work.
 
-All three 720p SDK cases are currently above the first-version render-total reference. Per Phase 23 decision D-03, this plan records and classifies the result instead of optimizing or changing behavior in the timing evidence task.
+All three current 720p SDK cases exceed the first-version render-total reference in SwiftPM debug XCTest. Phase 23 records this as baseline evidence and risk; it does not optimize, loosen budgets, or reclassify the result as a pass.
 
-| Case | Environment | Result | Impact | Risk | Next action |
-| --- | --- | --- | --- | --- | --- |
-| `default_noop` | SwiftPM debug XCTest on Apple Swift 6.3.3, macOS target | Mean 159.818 ms exceeds the 5 to 12 ms reference. | Establishes that debug XCTest timing is not a performance pass. | No-op path may include debug/test overhead and allocation cost that requires later profiling. | Keep as baseline; compare against future optimized or release-like runs before changing budgets. |
-| `skin_color_filter` | Same current SwiftPM debug environment | Mean 367.118 ms exceeds the reference. | Skin/color/filter processing is measurable and slow in this local baseline. | Interactive preview targets remain unproved. | Route optimization or release-mode profiling only after evidence is consolidated. |
-| `high_capped` | Same current SwiftPM debug environment | Mean 410.448 ms exceeds the reference while preserving warning and metric codes. | High capped case proves caps are not bypassed for timing. | Strong-parameter cases require later profiling before readiness claims. | Keep safety-cap behavior intact; Phase 23 closeout records risk and rerun protocol. |
+| Case | Result | Impact | Risk | Next action |
+| --- | --- | --- | --- | --- |
+| `default_noop` | Mean 160.340 ms exceeds the 5 to 12 ms render-total reference. | Establishes that debug XCTest timing is not a performance pass. | No-op work may include debug/test overhead and allocation cost. | Keep as baseline; rerun in an optimized profiling setup before budget decisions. |
+| `skin_color_filter` | Mean 366.483 ms exceeds the render-total reference. | Skin, color, and filter work are measurable in the baseline. | Interactive preview readiness remains unproved. | Profile after evidence closeout; preserve current behavior until an optimization plan exists. |
+| `high_capped` | Mean 399.286 ms exceeds the render-total reference while preserving warning and metric codes. | High-parameter timing proves safety caps are not bypassed during evidence collection. | Strong-parameter cases need later profiling before readiness claims. | Keep safety-cap behavior intact and rerun after profiling changes. |
 
-## Fixture-loop memory trend
+## Over-Budget Classification
+
+| Case | Classification | Reason |
+| --- | --- | --- |
+| `default_noop` | `over_budget_recorded` | Current mean exceeds the `RELIABILITY.md` render-total reference. |
+| `skin_color_filter` | `over_budget_recorded` | Current mean exceeds the render-total reference for combined skin/color/filter work. |
+| `high_capped` | `over_budget_recorded` | Current mean exceeds the render-total reference; warning and metric evidence confirms caps still apply. |
+
+## Memory trend
 
 | Field | Evidence |
 | --- | --- |
@@ -82,29 +100,64 @@ All three 720p SDK cases are currently above the first-version render-total refe
 | Iterations in printed report | 6 |
 | Iterations in dedicated memory test | 9 |
 | Case mix | `default_noop`, `skin_color_filter`, `high_capped` |
-| Memory metric status | `unavailable` in the current helper because no resident-memory sampler is wired into the test target. |
+| Memory metric status | `unavailable`; no resident-memory sampler is wired into the test target. |
 | Growth trend | `unavailable` |
 | Short-run status | `short_baseline_non_claim` |
-| Rerun protocol | Run the same focused SwiftPM filter after adding or enabling an allowlisted resident-memory sampler, with `loopIterations` sized for 600 seconds, then record start, end, peak, case mix, and trend. |
 
-## Redaction policy
+## Rerun protocol
 
-Committed Phase 23 performance evidence may include only case name, sample counts, warmup counts, duration summary, resolution bucket, quality mode, warning codes, metric keys, memory status, blocker class, impact, next step, and rerun protocol.
+To attempt the full 600-second gate from `RELIABILITY.md`:
 
-The focused test keeps SDK logs optional and off by default. It does not enable per-frame logging and does not persist frames, selected files, face-coordinate payloads, private framework objects, unredacted preset payloads, user identifiers, token-like data, or diagnostic dumps.
+1. Add or enable an allowlisted resident-memory sampler in the test target.
+2. Run `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyPerformanceEvidenceTests` with the fixture loop sized for 600 seconds.
+3. Record start, end, peak, case mix, iteration count, trend status, and non-claims.
+4. Keep the artifact limited to aggregate counters, duration summaries, quality mode, warning codes, metric keys, blocker class, impact, next step, and rerun protocol.
 
-## Initial blockers and routed work
+## Demo Backpressure and focused xcodebuild status
+
+| Evidence | Status | Result | Requirement |
+| --- | --- | --- | --- |
+| `CameraBeautyPipelineTests.testPERF02BackpressureStressKeepsLatestFrameWinsAndCountsDroppedFrames` | passed | One in-flight frame, one latest pending frame, three stale pending drops, `lastDropReason == .backpressure`, processed timestamps `1` and `5`, and latest parameter snapshot are verified. | PERF-02 |
+| `CameraBeautyPipelineTests.testPERF03ResetClearsPendingWorkDropCountersWarningsAndSnapshots` | passed | Reset clears pending work, latest snapshot, warnings, status copy, in-flight count, dropped-frame count, drop reason, and stale completion handling. | PERF-03 |
+| `ImageEditorPipelineTests.testPERF03SelectionFailureCanRecoverWithLatestValidFixture` | passed | Invalid picker data preserves the previous snapshot and later valid fixture input replaces the failure state. | PERF-03 |
+| Focused camera xcodebuild command | passed | The iPhone 17 iOS 26.5 simulator command passed in Plan 23-04. | PERF-02, PERF-04 |
+| Focused camera plus still-image xcodebuild command | passed | The combined focused command passed in Plan 23-02. | PERF-02, PERF-03 |
+
+The earlier Phase 21 and 22 Metal Toolchain blocker is superseded for these focused build/test commands in this environment only. It is not a screenshot, long-run, or physical-device claim.
+
+## SDK Quality mode, Reset, Degradation, and caps
+
+| Evidence | Status | Result | Requirement |
+| --- | --- | --- | --- |
+| `BeautyConfigurationTests.testPERF03RenderQualityModesAreStableConfigurationContract` | passed | Quality-mode raw values and default configuration remain stable. | PERF-03 |
+| `BeautyEngineTests.testPERF03ResetPreservesConfigurationQualityAndDetectionSummaryContract` | passed | `BeautyEngine.reset()` preserves configuration, caller parameters, reset count, and disabled detection summary behavior. | PERF-03 |
+| `CombinedEffectSafetyTests.testPERF03HighCappedTimingParametersPreserveSafetyCapsAndRedactedMetrics` | passed | High timing parameters preserve caps, weakening metadata, warnings, and metrics. | PERF-03, PERF-05 |
+| `MissingLandmarkDegradationTests.testPERF03NoFaceMissingStaleAndReusedGeometryRemainRedactedAndDegraded` | passed | No-face, missing mouth/lip, stale, reused, safe color/filter domains, and redacted warning/metric behavior are covered. | PERF-03, PERF-05 |
+| Full SDK suite | passed | 148 SwiftPM tests passed with 0 failures after the Phase 23 regressions were added. | PERF-01, PERF-03, PERF-04, PERF-05 |
+
+## Physical iPhone and Demo Simulator Evidence
 
 | Gate | Status | Evidence | Impact | Next step |
 | --- | --- | --- | --- | --- |
-| 600-second preview stability | future | Current automated loop is intentionally short and labeled as a non-claim. | PERF-04 gets a repeatable baseline but not the full long-run gate. | Rerun with a longer fixture loop and memory sampler when cheap enough. |
-| Demo simulator evidence | blocked | Phase 21 and Phase 22 record the missing local Metal Toolchain prerequisite for the explicit iPhone 17 simulator build/test path. | Phase 23 cannot claim current Demo simulator pass evidence yet. | Run `xcodebuild -downloadComponent MetalToolchain`, then rerun focused Demo commands. |
-| Physical iPhone evidence | blocked | No hardware run exists in the current repository evidence. | Real-device stability and parity remain unproved. | Record device, route, duration, memory/thermal observations, and limitations when hardware is available. |
+| Focused Demo simulator camera regressions | passed | The Plan 23-04 focused xcodebuild camera command passed on the iPhone 17 iOS 26.5 simulator. | Backpressure and reset regressions have current simulator evidence. | Keep the same destination explicit for future reruns. |
+| Demo simulator long-run preview | not run | No 600-second simulator preview loop was collected in Phase 23. | Long-run preview memory behavior remains unproved. | Run a dedicated 600-second preview route with aggregate memory/thermal notes and retain non-claims. |
+| Demo simulator screenshot capture | not run | Phase 23 did not capture current screenshots. | Visual screenshot acceptance remains outside this evidence. | Build, install, launch the existing routes, capture screenshots, and record only artifact paths plus review status in a visual QA phase. |
+| Physical iPhone long-run camera route | blocked | No physical iPhone run exists in the repository evidence. | Device camera/Vision behavior and hardware thermal/memory behavior remain unproved. | When hardware is available, record device class, OS, route, duration, aggregate memory/thermal observations, pass/blocker status, and limitations. |
 
-## Requirement coverage so far
+## Redaction scan
 
-| Requirement | Current Plan 23-01 status | Evidence |
+Phase 23 evidence is limited to allowlisted case names, sample counts, warmup counts, duration summaries, resolution bucket, quality mode, warning codes, metric keys, memory status, blocker class, impact, next step, and rerun protocol.
+
+The Plan 23-04 scoped redaction scan over this file returned no matches after final edits. The artifact avoids frame payloads, private local paths, face-coordinate payloads, unredacted preset payloads, user identifiers, token-like data, and diagnostic dumps.
+
+The no-overclaim scan also returned no matches. The conclusions are limited to pass, recorded baseline, blocked, not-run, risk, and rerun status.
+
+## Requirement Coverage
+
+| Requirement | Status | Evidence |
 | --- | --- | --- |
-| PERF-01 | recorded | `BeautyPerformanceEvidenceTests` runs a `1280x720` SDK timing matrix through `BeautyEngine.processResult(pixelBuffer:metadata:parameters:)`, with exact command and over-budget classification. |
-| PERF-04 | recorded | The bounded fixture loop records case mix, iteration count, unavailable memory metric status, short-run non-claim, and 600-second rerun protocol. |
-| PERF-05 | passed | The report allowlist test and this artifact avoid sensitive payload fields and keep performance logging off by default. |
+| PERF-01 | recorded | Focused SDK evidence command records a `1280x720` timing matrix through `BeautyEngine.processResult(pixelBuffer:metadata:parameters:)`; all current cases are classified as over-budget baseline data against `RELIABILITY.md`. |
+| PERF-02 | passed | Demo camera backpressure regression and focused xcodebuild camera command verify latest-frame-wins and dropped-frame accounting. |
+| PERF-03 | passed | SDK and Demo regressions cover quality mode, reset, degradation, safety caps, no-face/missing/stale/reused behavior, and recovery after still-image selection failure. |
+| PERF-04 | passed-with-blocker-record | SDK fixture-loop evidence exists with a 600-second rerun protocol; focused Demo simulator tests pass; physical iPhone and long-run preview evidence remain blocked or not run. |
+| PERF-05 | passed | Performance logs remain optional/off by default, evidence fields are allowlisted, and redaction plus no-overclaim scans pass. |
