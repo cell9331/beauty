@@ -34,19 +34,19 @@ Quality gate:
 
 ## 3. Current Snapshot
 
-Current repository state as of 2026-07-01 after Phase 22 automated Demo QA evidence:
+Current repository state as of 2026-07-02 after Phase 23 performance and reliability evidence:
 
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
 | Root docs | 4 | `AGENTS.md`, `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `PLANS.md`, and `QUALITY_SCORE.md` still exist as current owner docs. Phase 21 root placeholder scan found only historical `PLANS.md` verification prose, not unresolved contract placeholders. | Keep root docs synced when `.planning/PROJECT.md`, `.planning/ROADMAP.md`, implementation contracts, or Phase 22-25 evidence change. |
 | Historical docs | 3 | `docs/README.md` remains the long-doc entry. Phase 21 records `.planning/codebase/*` maps as stale background because they still contradict the current Swift package, tests, and planning ledgers. | Continue conflict scans and defer any formal `.planning/codebase/*` remap until explicitly scoped. |
-| GSD planning | 4 | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, and `.planning/REQUIREMENTS.md` define v1.4 as stability, QA, performance, security, and debt cleanup. Phase 21 records AUD-01 through AUD-04; Phase 22 records QA-01 through QA-04 through the documented Metal Toolchain blocker path. | Start Phase 23 performance/reliability planning. |
-| SDK Package | 4 | `BeautySDK/Package.swift` exists with `BeautyCore`, `BeautyDetection`, `BeautyRender`, `BeautyEffects`, `BeautyResources`, facade `BeautySDK`, and `BeautyExampleRenderer`. Phase 21 `swift test --package-path BeautySDK` passed with 141 XCTest cases. | Phase 23 should add performance/reliability gates; Phase 24 should harden renderer regression evidence. |
-| Demo App | 4 | Existing archived Demo evidence remains valid for shipped behavior. Phase 22 reproduced the explicit iPhone 17 iOS 26.5 Demo build/test blocker, recorded no current v1.4 PNG screenshots, and added blocker-form Home/editor review notes plus route/model disabled-honesty scans in `.planning/evidence/v1.4/VISUAL-EVIDENCE.md`. | Install the Metal Toolchain before claiming current Demo simulator build/test or screenshot pass evidence. |
-| Tests | 4 | Phase 22 reran `swift test --package-path BeautySDK` successfully with 141 XCTest cases. Demo simulator build and focused `BeautyDemoViewStateTests` remain blocked by the missing Metal Toolchain, and the blocker is recorded with exact rerun protocol. | Add performance, renderer regression, and long-run coverage in Phases 23-24; rerun Demo tests after Metal Toolchain repair. |
+| GSD planning | 4 | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, and `.planning/REQUIREMENTS.md` define v1.4 as stability, QA, performance, security, and debt cleanup. Phase 21 records AUD-01 through AUD-04; Phase 22 records QA-01 through QA-04; Phase 23 records PERF-01 through PERF-05 in `23-PERFORMANCE-EVIDENCE.md`. | Start Phase 24 renderer regression hardening planning. |
+| SDK Package | 4 | `BeautySDK/Package.swift` exists with `BeautyCore`, `BeautyDetection`, `BeautyRender`, `BeautyEffects`, `BeautyResources`, facade `BeautySDK`, and `BeautyExampleRenderer`. Phase 23 `swift test --package-path BeautySDK` passed with 148 XCTest cases. | Phase 24 should harden renderer regression evidence; optimized profiling remains separate from Phase 23 baseline timing. |
+| Demo App | 4 | Existing archived Demo evidence remains valid for shipped behavior. Phase 22 recorded blocker-form Home/editor review notes and no current v1.4 PNG screenshots. Phase 23 focused camera pipeline xcodebuild passed on `platform=iOS Simulator,name=iPhone 17,OS=26.5`, but screenshot and long-run routes were not rerun. | Rerun the screenshot protocol before claiming current screenshot evidence; keep physical iPhone checks blocked until hardware evidence exists. |
+| Tests | 4 | Phase 23 reran `swift test --package-path BeautySDK` successfully with 148 XCTest cases, added focused performance evidence tests, and recorded focused Demo camera pipeline xcodebuild pass evidence with 7 tests. | Add renderer regression in Phase 24 and keep 600-second preview plus physical iPhone checks as manual/future evidence. |
 | Security | 4 | Phase 21 import/privacy scans passed for facade-only Demo imports, non-UI SDK targets, active Demo no-network/no-upload/raw-path tokens, and public sensitive geometry/raw leakage. `find BeautySDK BeautyDemo -name PrivacyInfo.xcprivacy -print` found no privacy manifest, so TD-005 remains open. | Phase 25 should assess required-reason APIs and add or explicitly defer `PrivacyInfo.xcprivacy`. |
-| Reliability | 4 | Existing tests cover typed errors, reset, backpressure, stale work, degradation, resource failures, and non-mutating JSON import failures. Phase 21 added no timing, long-run, or runtime metric evidence. | Phase 23 should add repeatable timing, memory/long-run, quality-mode, reset, degradation, and redacted metric checks. |
-| Product acceptance | 4 | Existing acceptance evidence covers current SDK/Demo journeys. Phase 22 added deterministic command evidence, no-PNG blocker inventory, per-state blocked review notes, route/model disabled-honesty scans, and explicit non-claims for current v1.4 Demo visual QA. | Phase 23 should add performance/long-run evidence; Phase 24 should produce renderer output regression evidence without naturalness overclaims. |
+| Reliability | 4 | Existing tests cover typed errors, reset, backpressure, stale work, degradation, resource failures, and non-mutating JSON import failures. Phase 23 adds repeatable 720p timing baseline evidence, short fixture-loop memory protocol, quality-mode/reset/degradation/cap tests, focused Demo backpressure/reset evidence, and redaction scans. | Keep the 600-second preview route, physical iPhone checks, and optimized profiling as explicit follow-up evidence. |
+| Product acceptance | 4 | Existing acceptance evidence covers current SDK/Demo journeys. Phase 22 added deterministic visual-QA blocker evidence; Phase 23 adds command-backed performance/reliability evidence and explicit non-claims for timing, screenshot, long-run, and device gaps. | Phase 24 should produce renderer output regression evidence without commercial visual-quality overclaims. |
 
 ### 3.1 Phase 4 Final Verification
 
@@ -126,7 +126,20 @@ Recorded 2026-07-01 in `.planning/evidence/v1.4/VISUAL-EVIDENCE.md` and `.planni
 - Home first screen, Home sticky state, and editor beauty/photo tool-panel review notes are recorded in blocked form with exact rerun commands and UI-SPEC focal points.
 - Static route/model scans confirm unsupported/future Home and editor areas remain inactive while Demo XCTest is blocked by the same build prerequisite.
 - `swift test --package-path BeautySDK` passed with 141 XCTest cases after Phase 22 execution.
-- Phase 22 does not claim production naturalness, effect quality, physical-device camera/Vision parity, screenshot-diff baselines, exact commercial Meitu parity, new product routes, hidden network/cloud behavior, or public API expansion.
+- Phase 22 does not claim commercial visual quality, effect quality, physical-device camera/Vision parity, screenshot-diff baselines, exact commercial Meitu parity, new product routes, hidden network/cloud behavior, or public API expansion.
+
+### 3.8 Phase 23 Performance and Reliability Evidence
+
+Recorded 2026-07-02 in `.planning/phases/23-performance-and-reliability-gates/23-PERFORMANCE-EVIDENCE.md` and `23-VALIDATION.md`:
+
+- `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyPerformanceEvidenceTests` passed with 3 tests and 0 failures.
+- `swift test --package-path BeautySDK` passed with 148 tests and 0 failures.
+- `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' -only-testing:BeautyDemoTests/CameraBeautyPipelineTests test` passed with 7 camera tests and 0 failures.
+- The SDK `1280x720` timing matrix records `default_noop`, `skin_color_filter`, and `high_capped` as over-budget baseline cases against `RELIABILITY.md`; this is evidence for comparison, not a readiness claim.
+- The memory evidence is a short SDK fixture loop with unavailable resident-memory sampling and a 600-second rerun protocol.
+- SDK quality-mode, engine reset, degradation, safety-cap, redacted metric, Demo backpressure/reset, and still-image recovery regressions are test-backed.
+- Redaction and no-overclaim scans over the Phase 23 evidence passed.
+- Physical iPhone, screenshot acceptance, optimized profiling, and 600-second preview evidence remain blocked or not run.
 
 ## 4. Product Domain Scorecard
 
@@ -169,7 +182,7 @@ Recorded 2026-07-01 in `.planning/evidence/v1.4/VISUAL-EVIDENCE.md` and `.planni
 | Detection tests | 4 | 4 | No face, low confidence, missing landmarks, mapping failure, face limit, selection stability, detector unavailable, timeout, and reset coverage exists. |
 | Render tests | 4 | 3 | Copy pass preserves BGRA bytes, unsupported copy input maps to `BeautyError`, RenderGraph pass order is tested, and Phase 6 has deterministic MVP color/geometry/lip fixture evidence. |
 | Effect fixture tests | 4 | 4 | Naturalness-oriented visible fixtures, high-strength safety caps, all-domain combined weakening, no-face degradation, partial landmark skips, reused/stale behavior, and preset output are tested. |
-| Performance tests | 4 | 0 | 720p frame budget, dropped frames, memory long-run, quality modes. |
+| Performance tests | 4 | 3 | Phase 23 adds repeatable 720p timing, dropped-frame/backpressure, quality-mode, reset/degradation, safety-cap, and redacted evidence tests; 600-second preview and optimized profiling remain future checks. |
 | Security tests | 4 | 4 | Invalid JSON and redacted typed errors are tested in SDK; Demo adds purpose strings, no-upload/no-network, no raw path/error copy, no realtime `UIImage`, facade-only import scans, and public detection geometry/raw framework leakage scans. |
 | UI tests | 3 | 3 | View-state XCTest covers launch-shell data, enabled Camera/Photo modes, permission/unavailable/loading/error states, compare labels, categories, disabled controls, slider mapping, reset surface, and import boundary; UI automation remains future work. |
 
@@ -197,8 +210,8 @@ Recorded 2026-07-01 in `.planning/evidence/v1.4/VISUAL-EVIDENCE.md` and `.planni
 | Resource validation | 5 | 4 | Manifest schema, metadata filter registry, built-in preset lookup, missing-resource typed errors, and traversal-like ID tests. Checksums and byte-size limits remain future work for real assets. |
 | Error typing | 5 | 3 | Public foundation failures map to `BeautyError`; broader render/detection/resource failures need later coverage. |
 | Degradation | 5 | 4 | No face, partial/missing landmark, low-confidence, stale, skipped/reused, mapping failure, combined effect skip/weakening, and Demo status debounce paths are tested; resource and GPU overload paths remain future work. |
-| Observability | 4 | 2 | Logger levels, metrics, signposts, disabled mode tested. |
-| Performance budgets | 4 | 2 | Bounded in-flight work and dropped-frame counters are tested; 720p timing and memory long-run remain future checks. |
+| Observability | 4 | 3 | Logger defaults, disabled mode, redacted warning/metric keys, and optional performance evidence fields are tested; full signpost/MetricKit coverage remains future work. |
+| Performance budgets | 4 | 3 | Bounded in-flight work, dropped-frame counters, 720p timing matrix, over-budget classification, and memory rerun protocol are recorded; 600-second preview and optimized profiling remain future checks. |
 | Reset behavior | 4 | 3 | Phase 1 verifies idempotent engine `reset()` and user parameter immutability; Phase 2 verifies single-slider and reset-all Demo parameter state. Future detection/render transient state still needs coverage. |
 
 ## 9. Architecture Fitness Checks
@@ -348,7 +361,7 @@ SDK 1.0 readiness:
 - Increase a score only when evidence exists in code, tests, command output, or current docs.
 - Decrease a score when implementation drifts from the owning document.
 - A score above `3` requires some automated verification or a recorded manual check.
-- A score of `5` requires automated regression coverage or a release-grade manual protocol.
+- A score of `5` requires automated regression coverage or a release-like manual protocol.
 - Do not give credit for historical `docs/` content if a root document contradicts it.
 - Record major score changes in `PLANS.md` or release notes.
 
@@ -356,9 +369,9 @@ SDK 1.0 readiness:
 
 | Priority | Item | Why |
 | --- | --- | --- |
-| 1 | Add Phase 23 timing, long-run, quality-mode, reset/degradation, and redacted metric checks. | Current reliability evidence is strong in unit/pipeline paths but lacks performance budgets and endurance proof. |
-| 2 | Repair local Demo simulator tooling before claiming current screenshot pass evidence. | Phase 22 completed the documented blocker path; actual current PNG capture still requires `xcodebuild -downloadComponent MetalToolchain` and rerunning the exact build/test/screenshot commands. |
-| 3 | Promote Phase 24 renderer evidence into regression gates. | Current renderer run proves 45 visible skin/color/filter outputs, but no-op tolerance, all-output dimensions, watermark readability, and regression thresholds remain future work. |
+| 1 | Promote Phase 24 renderer evidence into regression gates. | Current renderer run proves 45 visible skin/color/filter outputs, but no-op tolerance, all-output dimensions, watermark readability, and regression thresholds remain future work. |
+| 2 | Run dedicated 600-second preview and physical iPhone checks when setup is available. | Phase 23 records a short fixture loop and focused simulator pass evidence, but long-run preview and device evidence remain blocked or not run. |
+| 3 | Rerun current Demo screenshot evidence. | Phase 22 completed the documented blocker path; current PNG capture still requires rerunning the exact build/test/screenshot commands and recording pass or blocker status. |
 | 4 | Complete Phase 25 privacy manifest, resource trust, and final security/distribution review. | TD-005 is still open and no `PrivacyInfo.xcprivacy` exists in `BeautySDK` or `BeautyDemo`. |
 | 5 | Defer formal `.planning/codebase/*` remap until explicitly scoped. | Phase 21 and the Phase 22 drift warning found the maps stale; current source, root contracts, and `.planning` ledgers are authoritative. |
 
@@ -376,3 +389,4 @@ SDK 1.0 readiness:
 | 2026-06-22 | Phase 6 raises BeautyEffects and MVP effect domains to score 4 through resolver, provider, fixture, degradation, and Demo panel tests. | Deterministic automated evidence now exists; production render quality, hardware smoke, and manual naturalness review remain release-like gates. |
 | 2026-06-30 | Phase 21 establishes the v1.4 evidence baseline from `21-BASELINE-AUDIT.md`. | SDK tests and renderer commands pass now; Demo build/test is blocked by the missing Metal Toolchain; unresolved visual, hardware, performance, privacy, renderer-regression, and stale-map work routes to Phases 22 through 25. |
 | 2026-07-01 | Phase 22 records automated Demo QA evidence through the blocker-honest path. | Current screenshot capture is still blocked by the missing Metal Toolchain, but the repo now has exact commands, per-state blocked review notes, route/model honesty evidence, no-PNG inventory, and rerun protocol for QA-01 through QA-04. |
+| 2026-07-02 | Phase 23 records performance and reliability evidence from `23-PERFORMANCE-EVIDENCE.md`. | SDK performance evidence, full SDK tests, focused Demo camera tests, quality/reset/degradation regressions, and scans pass; over-budget timing, 600-second preview, screenshot, and physical iPhone gaps remain explicit follow-up work. |
