@@ -377,12 +377,12 @@ This is the path to preserve; Phase 24 should test it from the outside instead o
 |---|-------|---------|---------------|
 | A1 | CIImage fixture-level no-op equality may be affected by platform color-management behavior if contexts are not fixed. [ASSUMED] | Common Pitfalls | Planner may choose an overly broad tolerance or misclassify a true regression; mitigate by first trying exact equality with fixed context and documenting any fallback. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Does exact rendered-pixel equality pass for all five current PNG fixtures on this local CIImage path?**
-   - What we know: Exact no-op equality passes for existing synthetic image tests, and the current CI no-op path returns `image.cropped(to: image.extent)` when there is no visible color output. [VERIFIED: codebase grep]
-   - What's unclear: Research did not add or run the new five-fixture no-op test, so fixture-level equality is not yet proven. [VERIFIED: codebase grep]
-   - Recommendation: Planner should require a RED/GREEN test that first asserts exact equality; introduce tolerance only if the execution artifact records a specific color-management reason. [VERIFIED: `.planning/phases/24-renderer-output-regression-hardening/24-CONTEXT.md`]
+   - Resolution: This is intentionally resolved as an execution-time RED/GREEN gate, not a planning blocker. Plan `24-01` must first add `BeautyRendererOutputRegressionTests/testDefaultParametersPreserveCurrentFixturePixelsBeforeWatermark` with exact rendered-pixel equality for `example-images/input/e1.png` through `example-images/input/e5.png`. [VERIFIED: `.planning/phases/24-renderer-output-regression-hardening/24-CONTEXT.md`; VERIFIED: `.planning/phases/24-renderer-output-regression-hardening/24-01-PLAN.md`]
+   - Required GREEN path: If exact equality passes with a fixed `CIContext` and `RGBA8` render path, keep exact equality as the documented tolerance. [VERIFIED: `.planning/phases/24-renderer-output-regression-hardening/24-CONTEXT.md`]
+   - Required fallback path: If exact equality fails for a platform color-management reason, execution must record the concrete reason in `24-RENDERER-EVIDENCE.md`, document the explicit fallback tolerance, and keep deterministic no-op drift as a hard failure. No generic or undocumented tolerance is allowed. [VERIFIED: `.planning/phases/24-renderer-output-regression-hardening/24-CONTEXT.md`; VERIFIED: `.planning/phases/24-renderer-output-regression-hardening/24-VALIDATION.md`]
 
 ## Environment Availability
 
