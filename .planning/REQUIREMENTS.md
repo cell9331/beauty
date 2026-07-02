@@ -38,8 +38,8 @@ Phase 23 evidence is recorded in `.planning/phases/23-performance-and-reliabilit
 
 ### Renderer Output Regression
 
-- [ ] **RENDER-01**: `BeautyExampleRenderer` keeps a documented public-facade matrix for all current visible skin/color/filter output cases.
-- [ ] **RENDER-02**: Default/no-op processing has a regression check that verifies near-copy output within the documented tolerance for current fixture images.
+- [x] **RENDER-01**: `BeautyExampleRenderer` keeps a documented public-facade matrix for all current visible skin/color/filter output cases.
+- [x] **RENDER-02**: Default/no-op processing has a regression check that verifies near-copy output within the documented tolerance for current fixture images.
 - [ ] **RENDER-03**: Visible-output cases verify non-empty outputs, same dimensions as inputs, readable parameter watermarks, and factual visible changes without claiming commercial visual quality.
 - [ ] **RENDER-04**: Geometry-heavy branches remain `partial`, `blocked-by-geometry-output`, or `future` unless public facade detection plus geometry rendering produces saved same-dimension, watermarked outputs.
 
