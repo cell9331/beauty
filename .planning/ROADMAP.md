@@ -77,14 +77,11 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 4. Long-run memory/preview stability has automated evidence, manual evidence, or a documented hardware/tooling blocker.
 5. Logs, warnings, metrics, and performance artifacts stay optional and redacted.
 
-**Plans:** 5 plans
-Plans:
+**Plans:** 5 plans planned
 
-- [ ] `23-01-PLAN.md` — SDK 720p timing, short fixture-loop memory baseline, initial redacted performance evidence.
-- [ ] `23-02-PLAN.md` — Demo backpressure, reset, still-image recovery, and blocker-honest focused xcodebuild evidence.
-- [ ] `23-03-PLAN.md` — SDK quality-mode contract, engine reset, degradation, safety-cap, and redaction regressions.
-- [ ] `23-04-PLAN.md` — Final performance/reliability evidence ledger and validation status closeout.
-- [ ] `23-05-PLAN.md` — Requirement, roadmap, state, quality-score, and planning-ledger traceability sync.
+- **Wave 1:** `23-01` SDK 720p timing, short fixture-loop memory baseline, and initial redacted performance evidence; `23-02` Demo backpressure, reset, still-image recovery, and blocker-honest focused xcodebuild evidence; `23-03` SDK quality-mode contract, engine reset, degradation, safety-cap, and redaction regressions.
+- **Wave 2:** `23-04` Final performance/reliability evidence ledger and validation status closeout. Depends on `23-01`, `23-02`, and `23-03`.
+- **Wave 3:** `23-05` Requirement, roadmap, state, quality-score, and planning-ledger traceability sync. Depends on `23-04`.
 
 **Next command:** `$gsd-execute-phase 23`
 
