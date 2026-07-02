@@ -88,6 +88,37 @@ final class ImageEditorPipelineTests: XCTestCase {
         XCTAssertFalse(pipeline.state.statusText?.contains("/") == true)
     }
 
+    func testPERF03SelectionFailureCanRecoverWithLatestValidFixture() async throws {
+        let pipeline = ImageEditorPipeline()
+        pipeline.process(
+            input: .fixture(id: "initial-valid", image: Self.testImage(red: 0.2)),
+            parameters: .init(skinSmoothing: 0.2)
+        )
+        await pipeline.waitUntilIdle()
+        let previousSnapshot = try XCTUnwrap(pipeline.state.latestSnapshot)
+
+        pipeline.process(input: .photosPickerData(Data()), parameters: .init(skinSmoothing: 0.9))
+        await pipeline.waitUntilIdle()
+
+        XCTAssertEqual(pipeline.state.latestSnapshot, previousSnapshot)
+        XCTAssertEqual(pipeline.state.statusText, PhotoProcessingState.decodeFailureText)
+        XCTAssertFalse(pipeline.state.statusText?.contains("NSError") == true)
+        XCTAssertFalse(pipeline.state.statusText?.contains("/") == true)
+
+        // PERF-03: after selection failure, the latest valid fixture replaces stale failure state.
+        pipeline.process(
+            input: .fixture(id: "latest-valid", image: Self.testImage(red: 0.8)),
+            parameters: .init(skinSmoothing: 0.7)
+        )
+        await pipeline.waitUntilIdle()
+
+        let recoveredSnapshot = try XCTUnwrap(pipeline.state.latestSnapshot)
+        XCTAssertEqual(recoveredSnapshot.sourceID, "latest-valid")
+        XCTAssertEqual(recoveredSnapshot.parameters.skinSmoothing, 0.7)
+        XCTAssertNil(pipeline.state.statusText)
+        XCTAssertNotEqual(recoveredSnapshot, previousSnapshot)
+    }
+
     func testD11LoadingOverlaysPreviousVisual() async throws {
         let secondStarted = expectation(description: "second photo processing started")
         let releaseSecond = DispatchSemaphore(value: 0)
