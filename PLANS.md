@@ -30,6 +30,26 @@ None.
 
 ## 4. Completed
 
+### C-2026-07-02-gsd-plan-phase-24-renderer-output-regression-hardening
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-02 |
+| Scope | Ran `$gsd-plan-phase 24` for Phase 24 Renderer Output Regression Hardening. Completed research-first planning, created validation and pattern-map artifacts, generated three executable plans across two waves, resolved the checker research-resolution blocker, passed independent plan-checker verification, and marked Phase 24 ready for execution. |
+| Requirements | RENDER-01, RENDER-02, RENDER-03, RENDER-04 |
+| Files | `.planning/phases/24-renderer-output-regression-hardening/24-RESEARCH.md`, `24-VALIDATION.md`, `24-PATTERNS.md`, `24-01-PLAN.md`, `24-02-PLAN.md`, `24-03-PLAN.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.plan-phase 24` reported `phase_status: Pending`, `has_context: true`, `has_research: false`, `has_plans: false`, `phase_req_ids: RENDER-01, RENDER-02, RENDER-03, RENDER-04`, `commit_docs: true`, and `nyquist_validation_enabled: true`; `request_user_input` was unavailable in Default mode, so the workflow used text-mode fallback and the user selected research-first; researcher created `24-RESEARCH.md` and committed `5e9944b`; `24-VALIDATION.md` was created from the validation template and scoped `git diff --check` passed before commit `2a5be82`; UI helper was unavailable locally, so the UI gate was classified manually as skipped because Phase 24 is SDK renderer/CLI evidence with no SwiftUI/frontend scope; schema scan found no database patterns; pattern mapper created `24-PATTERNS.md` and scoped `git diff --check` passed before commit `390b412`; planner created three PLAN files and updated roadmap in commit `004d1f1`; first checker pass found one blocker because `24-RESEARCH.md` still had an unresolved Open Questions section; research was revised to `## Open Questions (RESOLVED)` with an execution-time exact-equality/tolerance decision and committed as `d12a706`; second checker pass returned `VERIFICATION PASSED`; `phase-plan-index 24` reported three plans across waves 1 and 2 with `24-03` depending on `24-01` and `24-02`; requirement coverage showed RENDER-01 through RENDER-04 covered; `check.decision-coverage-plan` passed with `16/16` decisions covered; `state.planned-phase --phase 24 --name renderer-output-regression-hardening --plans 3` updated state metadata; `roadmap.annotate-dependencies 24` reported `updated: false`, `waves: 2`; post-planning gap analysis showed RENDER-01 through RENDER-04 and D-01 through D-16 covered, with uncovered rows belonging to other v1.4 phases; scoped `git diff --check` passed. |
+| Build | Not run; this was a GSD planning/documentation workflow with no Swift source changes. Phase 24 execution plans require `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyRendererOutputRegressionTests`, full `swift test --package-path BeautySDK`, `swift build --package-path BeautySDK --product BeautyExampleRenderer`, all-case renderer run, generated PNG invariant checks, facade-only import scans, geometry status scans, and no-overclaim scans. |
+| Commit | `5e9944b` research; `2a5be82` validation strategy; `390b412` pattern map; `004d1f1` three PLAN files and roadmap; `d12a706` research-resolution revision; final scoped closeout commit records `.planning/STATE.md` and this ledger entry. |
+
+Outcome:
+
+- `24-01-PLAN.md` covers focused SwiftPM renderer case-inventory and pre-watermark no-op fixture regression tests for the current 9 renderer cases and all five current fixtures.
+- `24-02-PLAN.md` covers renderer build/run evidence, a generated-output invariant helper, 45-output evidence, representative factual watermark notes, and `EXAMPLE_IMAGE_VALIDATION.md` synchronization.
+- `24-03-PLAN.md` covers geometry status honesty, no-overclaim scans, validation status closeout, and root/planning ledger synchronization after Wave 1 evidence exists.
+- Plans preserve the Phase 24 boundaries: no product-feature breadth, no public parameter expansion, no Demo UI, no OCR, no committed PNG baselines, no commercial/Meitu/device-parity claims, and no geometry saved-output implementation.
+- Phase 24 is ready for `$gsd-execute-phase 24`.
+
 ### C-2026-07-02-gsd-discuss-phase-24-renderer-output-regression
 
 | Field | Value |

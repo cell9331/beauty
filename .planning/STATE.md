@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Stability, QA, and Debt Cleanup
 status: planning
-stopped_at: Phase 24 context gathered
-last_updated: "2026-07-02T08:03:58.937Z"
-last_activity: 2026-07-02 — Phase 23 verified complete; Phase 24 discussion next
+stopped_at: Phase 24 planned
+last_updated: "2026-07-02T08:45:27.502Z"
+last_activity: 2026-07-02 - Phase 24 planned with 3 executable plans; execute Phase 24 next
 progress:
   total_phases: 5
   completed_phases: 3
-  total_plans: 9
+  total_plans: 12
   completed_plans: 9
   percent: 60
 ---
@@ -26,9 +26,9 @@ See: `.planning/PROJECT.md` (updated 2026-07-01)
 ## Current Position
 
 Phase: 24 - Renderer Output Regression Hardening
-Plan: Not planned
-Status: Ready for planning
-Last activity: 2026-07-02 — Phase 23 verified complete; Phase 24 discussion next
+Plan: 3 plans ready
+Status: Ready to execute
+Last activity: 2026-07-02 - Phase 24 planned with 3 executable plans; execute Phase 24 next
 
 ## Performance Metrics
 
@@ -110,12 +110,13 @@ Recent milestone-level outcomes:
 - Phase 21 Plan 21-02 refreshed `QUALITY_SCORE.md` from the baseline, closed AUD-01 through AUD-04, and routes TD-005 to Phase 25, TD-008 to Phases 22/23 with physical iPhone evidence blocked until hardware exists, TD-009 to Phase 22, and TD-010 across Phases 22/23/24/25.
 - Phase 22 completed automated Demo QA evidence through the allowed blocker-honest path: `.planning/evidence/v1.4/VISUAL-EVIDENCE.md` records exact iPhone 17 build/test commands, the missing Metal Toolchain blocker, route/model disabled-honesty scans, blocked per-state review notes, no current v1.4 PNG screenshots, and rerun protocol.
 - Phase 23 completed performance and reliability evidence in `.planning/phases/23-performance-and-reliability-gates/23-PERFORMANCE-EVIDENCE.md`: focused SDK performance evidence passed with 3 tests, full SDK SwiftPM passed with 148 tests, focused Demo camera xcodebuild passed, 720p timings are recorded as over-budget baseline evidence, redaction/no-overclaim scans passed, and physical iPhone plus 600-second preview evidence remains blocked or not run.
+- Phase 24 planning produced three executable plans across two waves: `24-01` focused SwiftPM renderer matrix and pre-watermark no-op fixture regression tests, `24-02` renderer build/run plus 45-output invariant evidence and example-image validation docs, and `24-03` geometry/no-overclaim closeout plus root/planning ledger synchronization.
 - `.planning/codebase/*` maps are stale background for v1.4 and should not override current source, root docs, or `.planning` ledgers.
 
 ### Pending Todos
 
 - Preserve v1.4 boundaries while executing: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign.
-- Run `$gsd-discuss-phase 24`.
+- Run `$gsd-execute-phase 24`.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest review, renderer regression, and automated visual diffs.
 
 ### Blockers/Concerns
@@ -142,9 +143,9 @@ Recent milestone-level outcomes:
 ## Session Continuity
 
 Last session: 2026-07-02T08:03:47.424Z
-Stopped at: Phase 24 context gathered
-Resume file: .planning/phases/24-renderer-output-regression-hardening/24-CONTEXT.md
+Stopped at: Phase 24 planned
+Resume file: .planning/phases/24-renderer-output-regression-hardening/24-01-PLAN.md
 
 ## Operator Next Steps
 
-- Run `$gsd-discuss-phase 24`.
+- Run `$gsd-execute-phase 24`.
