@@ -101,8 +101,12 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 3. Visible-output cases verify non-empty output, same dimensions, readable watermarks, and factual visible changes.
 4. Geometry-heavy branches keep honest `partial`, `blocked-by-geometry-output`, or `future` status unless public facade geometry output exists.
 
-**Plans:** Not planned yet
-**Next command:** `$gsd-discuss-phase 24`
+**Plans:** 3 plans
+
+- **Wave 1:** `24-01` Focused SwiftPM renderer matrix and pre-watermark no-op fixture regression tests; `24-02` Renderer build/run, 45-output invariant helper/evidence, and example-image validation doc update.
+- **Wave 2:** `24-03` Geometry/no-overclaim verification and root/planning ledger synchronization. Depends on `24-01` and `24-02`.
+
+**Next command:** `$gsd-execute-phase 24`
 
 ### Phase 25: Security, Distribution Review, and Closeout
 
@@ -129,7 +133,7 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 | 21. Baseline Audit and Quality Ledger Refresh | v1.4 | AUD-01, AUD-02, AUD-03, AUD-04 | 2/2 | Complete |
 | 22. Automated Demo QA and Screenshot Evidence | v1.4 | QA-01, QA-02, QA-03, QA-04 | 2/2 | Complete |
 | 23. Performance and Reliability Gates | v1.4 | PERF-01, PERF-02, PERF-03, PERF-04, PERF-05 | 5/5 | Complete |
-| 24. Renderer Output Regression Hardening | v1.4 | RENDER-01, RENDER-02, RENDER-03, RENDER-04 | 0/0 | Planned |
+| 24. Renderer Output Regression Hardening | v1.4 | RENDER-01, RENDER-02, RENDER-03, RENDER-04 | 0/3 | Planned |
 | 25. Security, Distribution Review, and Closeout | v1.4 | SEC-01, SEC-02, SEC-03, SEC-04, DOC-01, DOC-02, DOC-03 | 0/0 | Planned |
 
 **Coverage:**
