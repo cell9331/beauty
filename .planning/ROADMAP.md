@@ -77,7 +77,7 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 4. Long-run memory/preview stability has automated evidence, manual evidence, or a documented hardware/tooling blocker.
 5. Logs, warnings, metrics, and performance artifacts stay optional and redacted.
 
-**Plans:** 2/5 plans executed
+**Plans:** 3/5 plans executed
 
 - **Wave 1:** `23-01` SDK 720p timing, short fixture-loop memory baseline, and initial redacted performance evidence; `23-02` Demo backpressure, reset, still-image recovery, and blocker-honest focused xcodebuild evidence; `23-03` SDK quality-mode contract, engine reset, degradation, safety-cap, and redaction regressions.
 - **Wave 2:** `23-04` Final performance/reliability evidence ledger and validation status closeout. Depends on `23-01`, `23-02`, and `23-03`.
@@ -126,7 +126,7 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 | --- | --- | --- | ---: | --- |
 | 21. Baseline Audit and Quality Ledger Refresh | v1.4 | AUD-01, AUD-02, AUD-03, AUD-04 | 2/2 | Complete |
 | 22. Automated Demo QA and Screenshot Evidence | v1.4 | QA-01, QA-02, QA-03, QA-04 | 2/2 | Complete |
-| 23. Performance and Reliability Gates | v1.4 | PERF-01, PERF-02, PERF-03, PERF-04, PERF-05 | 2/5 | In Progress |
+| 23. Performance and Reliability Gates | v1.4 | PERF-01, PERF-02, PERF-03, PERF-04, PERF-05 | 3/5 | In Progress |
 | 24. Renderer Output Regression Hardening | v1.4 | RENDER-01, RENDER-02, RENDER-03, RENDER-04 | 0/0 | Planned |
 | 25. Security, Distribution Review, and Closeout | v1.4 | SEC-01, SEC-02, SEC-03, SEC-04, DOC-01, DOC-02, DOC-03 | 0/0 | Planned |
 
