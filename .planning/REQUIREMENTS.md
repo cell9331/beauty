@@ -29,8 +29,8 @@ Phase 22 evidence is recorded in `.planning/evidence/v1.4/VISUAL-EVIDENCE.md` an
 ### Performance and Reliability
 
 - [x] **PERF-01**: Maintainers can run a repeatable timing check for current 720p or fixture-based processing paths and compare the result to the engineering budgets in `RELIABILITY.md`.
-- [ ] **PERF-02**: Realtime backpressure, dropped-frame accounting, and latest-frame-wins behavior remain covered by tests or an equivalent reproducible harness.
-- [ ] **PERF-03**: Quality mode, reset, and degradation behavior are verified against `RELIABILITY.md` so performance improvements do not bypass safety caps or recovery rules.
+- [x] **PERF-02**: Realtime backpressure, dropped-frame accounting, and latest-frame-wins behavior remain covered by tests or an equivalent reproducible harness.
+- [x] **PERF-03**: Quality mode, reset, and degradation behavior are verified against `RELIABILITY.md` so performance improvements do not bypass safety caps or recovery rules.
 - [x] **PERF-04**: Long-run preview or processing stability has automated evidence, manual evidence, or an explicit hardware/tooling blocker that records how the 10-minute memory-growth gate should be run.
 - [x] **PERF-05**: Logs, warnings, metrics, and performance evidence remain optional, redacted, and free of image bytes, local paths, face geometry, raw framework errors, and raw JSON.
 
@@ -90,8 +90,8 @@ Deferred to later milestones unless explicitly promoted.
 | QA-03 | Phase 22 | Complete |
 | QA-04 | Phase 22 | Complete |
 | PERF-01 | Phase 23 | Complete |
-| PERF-02 | Phase 23 | Planned |
-| PERF-03 | Phase 23 | Planned |
+| PERF-02 | Phase 23 | Complete |
+| PERF-03 | Phase 23 | Complete |
 | PERF-04 | Phase 23 | Complete |
 | PERF-05 | Phase 23 | Complete |
 | RENDER-01 | Phase 24 | Planned |
