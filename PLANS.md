@@ -26,7 +26,16 @@
 
 ## 3. Active
 
-None.
+### A-2026-07-04-gsd-new-milestone-v1-5
+
+| Field | Value |
+| --- | --- |
+| Status | active |
+| Started | 2026-07-04 |
+| Scope | Start v1.5 as an SDK-core milestone for geometry saved-output foundation plus the `脸型` existing-parameter slice from `美型 / 五官`. Preserve no-UI, local-first, facade-visible evidence, and ledger-update boundaries. |
+| Files | `.planning/PROJECT.md`, `.planning/STATE.md`, pending `.planning/REQUIREMENTS.md`, pending `.planning/ROADMAP.md`, `PLANS.md` |
+| Next | Resolve the GSD research decision, define v1.5 requirements, generate the roadmap, and map the first executable phase. |
+| Notes | `phases clear` was not run with `--confirm` because it would delete 21 preserved historical phase directories; continue phase numbering for v1.5 instead. |
 
 ## 4. Completed
 
