@@ -1,17 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.4
-milestone_name: Stability, QA, and Debt Cleanup
-status: Awaiting next milestone
+milestone: v1.5
+milestone_name: milestone
+status: Defining requirements for v1.5 SDK Geometry Output Foundation and Face Shape Slice
 stopped_at: v1.4 milestone archived
-last_updated: "2026-07-03T22:55:06Z"
-last_activity: 2026-07-04 -- Milestone v1.4 archived; phase directories preserved in place
+last_updated: "2026-07-03T23:34:10.593Z"
+last_activity: 2026-07-03 — Milestone v1.5 started
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 15
-  completed_plans: 15
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -25,10 +25,10 @@ See: `.planning/PROJECT.md` (updated 2026-07-04)
 
 ## Current Position
 
-Phase: Milestone v1.4 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-07-04 -- Milestone v1.4 archived; phase directories preserved in place
+Status: Defining requirements for v1.5 SDK Geometry Output Foundation and Face Shape Slice
+Last activity: 2026-07-03 — Milestone v1.5 started
 
 ## Performance Metrics
 
