@@ -93,6 +93,54 @@
 
 ---
 
+## Milestone: v1.4 - Stability, QA, and Debt Cleanup
+
+**Shipped:** 2026-07-03
+**Phases:** 5 | **Plans:** 15 | **Recorded tasks:** 34
+
+### What Was Built
+
+- Current-evidence quality baseline covering SDK tests, renderer commands, Demo simulator blocker status, debt routing, and stale-map disposition.
+- Demo QA evidence ledger that preserves exact build/test commands, no-PNG screenshot status, blocked per-state review notes, and disabled-route honesty without claiming screenshot success.
+- Performance and reliability gates for 720p SDK timing, backpressure, dropped-frame accounting, reset, quality-mode, degradation, safety caps, redacted metrics, and focused Demo camera behavior.
+- Renderer regression coverage through a public-facade matrix test, exact pre-watermark no-op fixture checks, a 45-output invariant helper, and durable example-image validation docs.
+- Privacy, active-source security, bundled-resource trust, and traceability closeout with explicit future triggers for manifest, external packages, hardware, long-run, and commercial packaging work.
+
+### What Worked
+
+- Treating blocker-honest evidence as first-class output kept the milestone truthful without stalling on local screenshot tooling or physical-device availability.
+- Focused tests and scoped scans gave strong gates for Demo backpressure, SDK degradation, renderer output, product-scope tokens, and resource trust without changing public API.
+- The final audit made validation-document drift visible before archival, and the follow-up cleanup closed it without inventing new evidence.
+- Archiving ROADMAP/REQUIREMENTS/AUDIT before deleting active requirements preserved traceability while keeping the next milestone context small.
+
+### What Was Inefficient
+
+- Phase 21 and Phase 22 validation files still needed retroactive final-status cleanup after the milestone audit.
+- Phase 22 screenshot evidence stayed blocked even after Phase 23 focused Demo camera tests passed; the screenshot protocol needs its own rerun instead of inheriting later build evidence.
+- Several no-overclaim scans had to be tuned around self-matching documentation strings, which added planning overhead.
+- The working tree had unrelated documentation and asset changes, so final archive commits required strict file scoping.
+
+### Patterns Established
+
+- Current-evidence milestones can pass with accepted blocker paths when commands, environment, impact, non-claims, and rerun protocols are explicit.
+- Renderer evidence should combine source-owned case inventory, exact no-op fixture checks, generated-output invariants, ignored-artifact checks, and no geometry overclaim.
+- Privacy/resource closeout should separate active SDK/Demo behavior, tests/fixtures, example CLI behavior, policy docs, and future distribution triggers.
+- Phase archival is optional; keeping phase directories in place is acceptable when historical path stability matters more than aggressive cleanup.
+
+### Key Lessons
+
+1. Validation metadata must be closed during phase execution; audit-time repair is avoidable documentation debt.
+2. A passed build/test in one later scope does not erase an earlier screenshot blocker; each evidence lane needs its own command-backed rerun.
+3. Future release-hardening work should split device, screenshot, long-run, optimized profiling, packaging, and external-resource integrity into explicit scoped phases.
+
+### Cost Observations
+
+- Model mix: not measured.
+- Sessions: multiple phase sessions across v1.4 plus one archival session.
+- Notable: The milestone close was smooth after validation debt was cleared, but unrelated local changes made path-scoped staging mandatory.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -101,6 +149,7 @@
 |-----------|----------|--------|------------|
 | v1.0 | multiple | 7 | Established GSD phase execution, facade-boundary scans, Nyquist validation, and milestone archive flow. |
 | v1.3 | multiple | 5 | Added example-image renderer evidence and strict branch-status taxonomy for partial geometry work. |
+| v1.4 | multiple | 5 | Added blocker-honest hardening gates, renderer output regression, active-source privacy/security scans, and archive-before-delete closeout. |
 
 ### Cumulative Quality
 
@@ -108,9 +157,11 @@
 |-----------|-------|----------|-------------------|
 | v1.0 | 119 SDK tests plus Demo simulator XCTest suite | Requirement traceability 33/33 | No new third-party runtime dependency recorded for v1 Demo QA surface. |
 | v1.3 | 141 SDK tests plus renderer matrix evidence | Requirement traceability 20/20 | No new third-party runtime dependency recorded for core beauty closeout. |
+| v1.4 | 150 SDK tests, focused Demo privacy/import tests, renderer invariant helper, and milestone audit | Requirement traceability 24/24 | No new third-party runtime dependency recorded for hardening closeout. |
 
 ### Top Lessons (Verified Across Milestones)
 
 1. Keep facade-boundary and privacy scans cheap enough to run at every phase close.
 2. Archive-ready planning artifacts need the same rigor as code and tests.
 3. Separate provider/resolver evidence, saved-image evidence, and release-hardening evidence to avoid overclaiming shipped scope.
+4. Blocker-honest evidence is useful only when paired with exact rerun commands and clear non-claims.

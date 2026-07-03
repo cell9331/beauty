@@ -1,5 +1,46 @@
 # Milestones
 
+## v1.4 Stability, QA, and Debt Cleanup (Shipped: 2026-07-03)
+
+**Delivered:** A hardening and debt-cleanup milestone that turned post-v1.3 release risks into evidence-backed gates for baseline quality, Demo visual QA, performance/reliability, renderer output regression, privacy/resource trust, and traceability closeout.
+
+**Phases completed:** 21-25 (5 phases, 15 plans, 34 recorded tasks)
+
+**Key accomplishments:**
+
+- Established a current v1.4 quality baseline with passing SDK/renderer checks, explicit Demo screenshot/tooling blockers, debt routing, and synchronized quality ledgers.
+- Preserved Demo QA honesty by recording exact iPhone 17 build/test commands, no-PNG screenshot status, blocked per-state review notes, and route/model disabled-honesty evidence.
+- Added performance and reliability evidence for 720p timing, backpressure, reset, degradation, quality mode, safety caps, redacted metrics, and focused Demo camera pipeline behavior.
+- Hardened renderer output regression with a public-facade case inventory test, exact pre-watermark no-op fixture checks, a 45-output invariant helper, and durable example-image validation docs.
+- Completed privacy, active-source security, and bundled-resource trust review while keeping `PrivacyInfo.xcprivacy`, external packages, hardware, long-run, and commercial packaging claims scoped to future triggers.
+- Passed the v1.4 milestone audit with 24/24 requirements, 5/5 phases, 5/5 integration checks, 5/5 end-to-end flows, and 5/5 Nyquist validation files.
+
+**Stats:**
+
+- 5 phases, 15 plans, 34 recorded tasks
+- About 15,844 Swift source/test LOC across `BeautySDK` and `BeautyDemo`
+- 93 commits from `v1.3` to the Phase 25 closeout head before archival
+- Git range before archival: `v1.3` -> `a1017d4`
+
+**Verification:**
+
+- Milestone audit passed: 24/24 requirements, 5/5 phases, 5/5 integration checks, 5/5 flows, and 5/5 Nyquist validation files.
+- `swift test --package-path BeautySDK` passed with 150 tests during Phase 24/25 closeout evidence.
+- Focused Demo privacy/import simulator tests passed with 17 tests on `platform=iOS Simulator,name=iPhone 17,OS=26.5` during Phase 25 closeout.
+- `BeautyExampleRenderer` built and regenerated 45 ignored same-dimension skin/color/filter outputs; the Phase 24 helper verified all 45 outputs.
+
+**Known limitations:** v1.4 is a current-evidence hardening milestone, not commercial release approval. Current screenshot PNG capture, physical-device parity, 600-second preview endurance, optimized profiling, geometry saved-output completion, external package integrity, live Apple required-reason documentation review, and commercial packaging checks remain future or setup-specific work.
+
+**Archives:**
+
+- `.planning/milestones/v1.4-ROADMAP.md`
+- `.planning/milestones/v1.4-REQUIREMENTS.md`
+- `.planning/milestones/v1.4-MILESTONE-AUDIT.md`
+
+**What's next:** Start a fresh milestone with `$gsd-new-milestone`.
+
+---
+
 ## v1.3 Meitu Core Beauty Module Design and Implementation (Shipped: 2026-06-30)
 
 **Delivered:** A no-new-UI core beauty module milestone: executable example-image validation, normalized core beauty module contracts, Basic skin evidence, beauty-shaping provider/resolver evidence, and editor-shell ownership closeout behind the public `BeautySDK` facade.

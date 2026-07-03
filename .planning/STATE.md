@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Stability, QA, and Debt Cleanup
-status: ready_for_milestone_audit
-stopped_at: Phase 25 complete
-last_updated: "2026-07-03T08:50:34.421Z"
-last_activity: 2026-07-03 -- Phase 25 security/distribution closeout complete
+status: Awaiting next milestone
+stopped_at: v1.4 milestone archived
+last_updated: "2026-07-03T22:55:06Z"
+last_activity: 2026-07-04 -- Milestone v1.4 archived; phase directories preserved in place
 progress:
   total_phases: 5
   completed_phases: 5
@@ -18,26 +18,26 @@ progress:
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-07-03)
+See: `.planning/PROJECT.md` (updated 2026-07-04)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** v1.4 milestone audit and archival routing
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Phase: 25 (security-distribution-review-and-closeout) — COMPLETE
-Plan: 3 of 3
-Status: Ready for milestone audit routing
-Last activity: 2026-07-03 -- Phase 25 security/distribution closeout complete
+Phase: Milestone v1.4 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-07-04 -- Milestone v1.4 archived; phase directories preserved in place
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total phases completed: 16
-- Total plans completed: 66
-- Total tasks recorded from summaries: 69
-- Milestone Swift LOC at close: about 16,429 across `BeautySDK` and `BeautyDemo`
+- Total phases completed: 21
+- Total plans completed: 72
+- Total tasks recorded from milestone summaries: at least 131
+- Milestone Swift LOC at close: about 15,844 across `BeautySDK` and `BeautyDemo` source/test files
 
 **By Phase:**
 
@@ -122,12 +122,13 @@ Recent milestone-level outcomes:
 - Phase 24 completed renderer output regression hardening: focused renderer regression tests passed with 2 tests, full SDK SwiftPM passed with 150 tests, `BeautyExampleRenderer` built and regenerated 45 ignored local PNG outputs, `check_renderer_outputs.py` verified all expected outputs, and `24-VERIFICATION.md` records passed geometry/no-overclaim scans while keeping geometry saved-output deferred.
 - Phase 25 planning produced three executable plans across two waves: `25-01` privacy manifest assessment, active security scans, required-reason classification, and conditional manifest disposition; `25-02` resource trust review, focused resource tests, and external-resource boundary evidence; and `25-03` final ledger synchronization, blocker/deferred table, traceability, and conservative closeout wording.
 - Phase 25 completed security, distribution review, and closeout: privacy manifest addition is explicitly deferred for current SDK/Demo behavior, active-source security scans and focused Demo privacy/import tests pass, bundled-resource trust is verified, `QUALITY_SCORE.md` and security ledgers are synchronized, and SEC-01 through SEC-04 plus DOC-01 through DOC-03 are complete.
+- v1.4 milestone audit passed in `.planning/v1.4-MILESTONE-AUDIT.md`: all 24 requirements, 5 phases, 5 integration checks, 5 flows, and 5/5 Nyquist validation files are satisfied. Phase 21 and Phase 22 validation-document drift was cleaned on 2026-07-03 by updating their `VALIDATION.md` files to final status with audit trails.
 - `.planning/codebase/*` maps are stale background for v1.4 and should not override current source, root docs, or `.planning` ledgers.
 
 ### Pending Todos
 
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
-- Run `$gsd-progress --next` to route into v1.4 milestone audit or archival.
+- Start the next milestone with `$gsd-new-milestone` before resuming implementation work.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, renderer regression, and automated visual diffs.
 
 ### Blockers/Concerns
@@ -153,10 +154,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-03T08:46:51.000Z
-Stopped at: Phase 25 complete
-Resume file: .planning/phases/25-security-distribution-review-and-closeout/25-SECURITY-CLOSEOUT.md
+Last session: 2026-07-04T06:55:06+08:00
+Stopped at: v1.4 milestone archived
+Resume file: .planning/MILESTONES.md
 
 ## Operator Next Steps
 
-- Run `$gsd-progress --next`.
+- Start the next milestone with `$gsd-new-milestone`.

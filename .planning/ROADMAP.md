@@ -2,153 +2,56 @@
 
 ## Overview
 
-Beauty v1.4 is a stability, QA, and technical-debt cleanup milestone. It converts known post-v1.3 release-hardening risks into measurable gates: baseline audit, automated Demo visual QA, performance/reliability evidence, renderer output regression, privacy/resource review, and documentation/traceability cleanup.
+Beauty v1.4 has shipped and is archived. The active roadmap is intentionally kept short so the next milestone can start from fresh requirements without carrying the full v1.4 phase body in the working context.
 
-This milestone does not add Meitu product-surface breadth, public parameter fields, remote-processing behavior, paid-account flows, or broad UI redesign. Phase numbering continues from Phase 21, and existing `.planning/phases/` history directories remain in place.
+Current product direction remains a modular local-first iOS `BeautySDK` plus a SwiftUI Demo validation app. Future work should start with `$gsd-new-milestone` and promote only the next scoped milestone requirements.
 
 ## Milestones
 
 - ✅ **v1.0 MVP** - Phases 1-7, shipped 2026-06-23. See `.planning/milestones/v1.0-ROADMAP.md`.
 - ✅ **v1.1 Meitu UI** - Phases 8-10, implemented and verified 2026-06-24. Summary is in `.planning/MILESTONES.md`.
 - ✅ **v1.2 HTML Reference Fidelity** - Phase 11 completed 2026-06-25; Phases 12-15 canceled 2026-06-26. Summary is in `.planning/MILESTONES.md`.
-- ✅ **v1.3 Meitu Core Beauty Module Design and Implementation** - Phases 16-20 shipped 2026-06-30. See `.planning/milestones/v1.3-ROADMAP.md`, `.planning/milestones/v1.3-REQUIREMENTS.md`, and `.planning/milestones/v1.3-MILESTONE-AUDIT.md`.
-- ✅ **v1.4 Stability, QA, and Debt Cleanup** - Phases 21-25 complete as the current-evidence baseline.
+- ✅ **v1.3 Meitu Core Beauty Module Design and Implementation** - Phases 16-20 shipped 2026-06-30. See `.planning/milestones/v1.3-ROADMAP.md`.
+- ✅ **v1.4 Stability, QA, and Debt Cleanup** - Phases 21-25 shipped 2026-07-03. See `.planning/milestones/v1.4-ROADMAP.md`, `.planning/milestones/v1.4-REQUIREMENTS.md`, and `.planning/milestones/v1.4-MILESTONE-AUDIT.md`.
 
-## v1.4 Stability, QA, and Debt Cleanup
+## Phases
 
-### Phase 21: Baseline Audit and Quality Ledger Refresh
+<details>
+<summary>✅ v1.4 Stability, QA, and Debt Cleanup (Phases 21-25) - SHIPPED 2026-07-03</summary>
 
-**Goal:** Establish the true v1.4 quality, verification, and technical-debt baseline before implementation changes.
-**Mode:** audit / planning cleanup
-**Depends on:** v1.3 archive and v1.4 research package
-**Requirements:** AUD-01, AUD-02, AUD-03, AUD-04
+- [x] Phase 21: Baseline Audit and Quality Ledger Refresh (2/2 plans) - completed 2026-06-30.
+- [x] Phase 22: Automated Demo QA and Screenshot Evidence (2/2 plans) - completed 2026-07-01.
+- [x] Phase 23: Performance and Reliability Gates (5/5 plans) - completed 2026-07-02.
+- [x] Phase 24: Renderer Output Regression Hardening (3/3 plans) - completed 2026-07-02.
+- [x] Phase 25: Security, Distribution Review, and Closeout (3/3 plans) - completed 2026-07-03.
 
-**Success Criteria:**
+Archive files:
 
-1. `QUALITY_SCORE.md`, `PLANS.md`, `.planning/PROJECT.md`, and `.planning/STATE.md` agree on the current v1.4 scope, open debt, and known blockers.
-2. Existing SDK, Demo, renderer, import-boundary, and privacy verification commands are inventoried with pass/fail/blocker status.
-3. TD-005, TD-008, TD-009, and TD-010 are triaged into v1.4 phases, explicitly deferred, or marked blocked with evidence.
-4. No product-feature or public-API expansion enters the baseline phase.
+- `.planning/milestones/v1.4-ROADMAP.md`
+- `.planning/milestones/v1.4-REQUIREMENTS.md`
+- `.planning/milestones/v1.4-MILESTONE-AUDIT.md`
 
-**Plans:** 2/2 plans complete
+Accepted limitations remain future or setup-specific work: current screenshot PNG capture, physical iPhone parity, 600-second preview endurance, optimized profiling, geometry saved-output completion, external package integrity, and commercial packaging approval.
 
-- **Wave 1:** `21-01` Baseline verification sweep and evidence ledger - complete in `21-BASELINE-AUDIT.md`.
-- **Wave 2:** `21-02` Quality score, debt routing, and planning ledger refresh - complete in `21-VERIFICATION.md`. Depends on `21-01`.
-
-**Current evidence:** Phase 21 `swift test --package-path BeautySDK` passed with 141 XCTest cases, `BeautyExampleRenderer` built and wrote 45 ignored outputs, boundary/privacy scans passed, and explicit Demo simulator build/test evidence is blocked by the missing local Metal Toolchain. TD-005 routes to Phase 25; TD-008 splits to Phase 22/Phase 23 with physical iPhone checks blocked until hardware evidence exists; TD-009 routes to Phase 22; TD-010 splits across Phases 22, 23, 24, and 25. Stale `.planning/codebase/*` maps are deferred background.
-
-**Next command:** `$gsd-discuss-phase 22`
-
-### Phase 22: Automated Demo QA and Screenshot Evidence
-
-**Goal:** Add repeatable Demo visual/layout evidence for current Home and Editor surfaces.
-**Mode:** QA automation
-**Depends on:** Phase 21
-**Requirements:** QA-01, QA-02, QA-03, QA-04
-
-**Success Criteria:**
-
-1. Stable launch routes and explicit simulator destinations capture or verify Home first screen, Home sticky state, and editor tool-panel evidence.
-2. Selected target simulator sizes verify that current controls, labels, badges, and panels do not clip or overlap.
-3. `.planning/evidence/v1.4/` records screenshots or documented local blockers with commands, framing, and review notes.
-4. Unsupported/future product areas stay inactive and honest; no new UI route is accidentally enabled.
-
-**Plans:** 2/2 plans complete
-
-- **Wave 1:** `22-01` Demo build/test prerequisite sweep, Metal Toolchain blocker/pass evidence, and route/model disabled-honesty checks.
-- **Wave 2:** `22-02` Simulator screenshot capture or blocker-preserving rerun protocol with factual review notes. Depends on `22-01`.
-
-**Current evidence:** Phase 22 completed through the documented blocker-honest path. `.planning/evidence/v1.4/VISUAL-EVIDENCE.md` records the exact iPhone 17 build/test commands, Xcode/Swift environment, missing Metal Toolchain failure while compiling `Warp.metal`, route/model disabled-honesty scans, blocked per-state review notes, no-PNG inventory, and rerun protocol. No current v1.4 screenshot pass is claimed.
-
-**Next command:** `$gsd-discuss-phase 23`
-
-### Phase 23: Performance and Reliability Gates
-
-**Goal:** Turn reliability budgets into repeatable timing, backpressure, long-run, reset, quality-mode, and redaction checks.
-**Mode:** reliability / performance
-**Depends on:** Phase 21
-**Requirements:** PERF-01, PERF-02, PERF-03, PERF-04, PERF-05
-
-**Success Criteria:**
-
-1. Current 720p or fixture-based processing paths have a repeatable timing command or test and compare results to `RELIABILITY.md` budgets.
-2. Backpressure, dropped-frame accounting, and latest-frame-wins behavior remain covered by tests or a reproducible harness.
-3. Quality mode, reset, degradation, and safety-cap behavior are verified so optimization does not bypass recovery rules.
-4. Long-run memory/preview stability has automated evidence, manual evidence, or a documented hardware/tooling blocker.
-5. Logs, warnings, metrics, and performance artifacts stay optional and redacted.
-
-**Plans:** 5/5 plans complete
-
-- **Wave 1:** `23-01` SDK 720p timing, short fixture-loop memory baseline, and initial redacted performance evidence; `23-02` Demo backpressure, reset, still-image recovery, and blocker-honest focused xcodebuild evidence; `23-03` SDK quality-mode contract, engine reset, degradation, safety-cap, and redaction regressions.
-- **Wave 2:** `23-04` Final performance/reliability evidence ledger and validation status closeout. Depends on `23-01`, `23-02`, and `23-03`.
-- **Wave 3:** `23-05` Requirement, roadmap, state, quality-score, and planning-ledger traceability sync. Depends on `23-04`.
-
-**Current evidence:** Phase 23 completed through `.planning/phases/23-performance-and-reliability-gates/23-PERFORMANCE-EVIDENCE.md` and `23-VALIDATION.md`. Focused SDK performance evidence passed with 3 tests, full `swift test --package-path BeautySDK` passed with 148 tests, and focused Demo camera xcodebuild passed on the explicit iPhone 17 simulator destination. The 720p timing matrix is over-budget baseline evidence, SDK memory evidence remains a short fixture-loop with a 600-second rerun protocol, and physical iPhone plus long-run preview evidence remains blocked or not run. The Phase 22 Metal Toolchain screenshot blocker remains background until the screenshot protocol is rerun; Phase 23 focused camera tests pass in the current environment.
-
-**Next command:** `$gsd-discuss-phase 24`
-
-### Phase 24: Renderer Output Regression Hardening
-
-**Goal:** Promote `BeautyExampleRenderer` from closeout evidence to a stable output-regression gate.
-**Mode:** regression / renderer QA
-**Depends on:** Phase 21
-**Requirements:** RENDER-01, RENDER-02, RENDER-03, RENDER-04
-
-**Success Criteria:**
-
-1. The renderer matrix documents all current visible skin/color/filter cases and runs through the public `BeautySDK` facade.
-2. Default/no-op processing has an exact pre-watermark rendered-pixel regression check for the current fixtures.
-3. Visible-output cases verify non-empty output, same dimensions, readable watermarks, and factual visible changes.
-4. Geometry-heavy branches keep honest `partial`, `blocked-by-geometry-output`, or `future` status unless public facade geometry output exists.
-
-**Plans:** 3/3 plans complete
-
-- **Wave 1:** `24-01` Focused SwiftPM renderer matrix and pre-watermark no-op fixture regression tests; `24-02` Renderer build/run, 45-output invariant helper/evidence, and example-image validation doc update.
-- **Wave 2:** `24-03` Geometry/no-overclaim verification and root/planning ledger synchronization. Depends on `24-01` and `24-02`.
-
-**Current evidence:** Phase 24 completed through `.planning/phases/24-renderer-output-regression-hardening/24-RENDERER-EVIDENCE.md`, `24-VERIFICATION.md`, and `24-VALIDATION.md`. Focused renderer regression tests passed with 2 tests, full `swift test --package-path BeautySDK` passed with 150 tests, `BeautyExampleRenderer` built and regenerated 45 ignored local PNG outputs, the helper verified all current outputs for existence, non-empty files, same dimensions, and input/output byte difference, and geometry/no-overclaim scans passed. Geometry saved-output remains future work.
-
-**Next command:** `$gsd-discuss-phase 25`
-
-### Phase 25: Security, Distribution Review, and Closeout
-
-**Goal:** Close v1.4 with privacy/resource/log review, final negative scans, score updates, and traceability consistency.
-**Mode:** security / closeout
-**Depends on:** Phases 21-24
-**Requirements:** SEC-01, SEC-02, SEC-03, SEC-04, DOC-01, DOC-02, DOC-03
-
-**Success Criteria:**
-
-1. Privacy manifest status is assessed against actual SDK/Demo behavior and Apple required-reason API usage.
-2. No-network, no-upload, raw-path, raw-framework-error, face-geometry, raw-JSON, third-party SDK, and hidden-product-scope scans pass.
-3. Resource trust boundaries match `SECURITY.md`, including bundled presets, metadata filters, resource identifiers, and missing-resource behavior.
-4. `QUALITY_SCORE.md`, `PLANS.md`, `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, and `.planning/STATE.md` are synchronized with v1.4 evidence.
-5. The milestone is ready for audit without unmapped requirements.
-
-**Plans:** 3/3 plans complete
-
-- **Wave 1:** `25-01` Privacy manifest assessment, active security scans, required-reason classification, and conditional smallest manifest disposition; `25-02` Resource trust review, focused resource tests, and external-resource boundary evidence.
-- **Wave 2:** `25-03` Final security/quality/planning ledger synchronization, blocker/deferred table, requirement traceability, and conservative closeout wording. Depends on `25-01` and `25-02`.
-
-**Current evidence:** Phase 25 completed through `.planning/phases/25-security-distribution-review-and-closeout/25-SECURITY-CLOSEOUT.md`, `25-RESOURCE-TRUST-EVIDENCE.md`, and `25-VALIDATION.md`. The privacy manifest inventory found no `PrivacyInfo.xcprivacy`; adding one is explicitly deferred for current SDK/Demo behavior with rerun triggers. Active SDK/Demo/package/project scans found no default network, upload, raw path/error, face-geometry payload, raw diagnostic payload, hidden third-party SDK, payment, entitlement, analytics, cloud, remote config, or dynamic download behavior after the narrow Demo copy fix. Bundled resource trust is verified for manifest schema, metadata filters, bundled presets, logical identifiers, traversal-like ID rejection, and typed redacted errors; external resource packages remain disabled. Full SDK tests and focused Demo privacy/import checks pass. Screenshot, physical iPhone, 600-second preview, optimized profiling, external package-integrity, and commercial packaging checks remain future or blocked/not-run evidence.
-
-**Next command:** `$gsd-progress --next`
+</details>
 
 ## Progress
 
-| Phase | Milestone | Requirements | Plans Complete | Status |
-| --- | --- | --- | ---: | --- |
-| 21. Baseline Audit and Quality Ledger Refresh | v1.4 | AUD-01, AUD-02, AUD-03, AUD-04 | 2/2 | Complete |
-| 22. Automated Demo QA and Screenshot Evidence | v1.4 | QA-01, QA-02, QA-03, QA-04 | 2/2 | Complete |
-| 23. Performance and Reliability Gates | v1.4 | PERF-01, PERF-02, PERF-03, PERF-04, PERF-05 | 5/5 | Complete |
-| 24. Renderer Output Regression Hardening | v1.4 | RENDER-01, RENDER-02, RENDER-03, RENDER-04 | 3/3 | Complete |
-| 25. Security, Distribution Review, and Closeout | v1.4 | SEC-01, SEC-02, SEC-03, SEC-04, DOC-01, DOC-02, DOC-03 | 3/3 | Complete |
+| Milestone | Phases | Plans | Requirements | Status | Completed |
+| --- | ---: | ---: | ---: | --- | --- |
+| v1.0 MVP | 7 | 28 | 33/33 | Shipped | 2026-06-23 |
+| v1.1 Meitu UI | 3 | 11 | 4/4 | Implemented and verified | 2026-06-24 |
+| v1.2 HTML Reference Fidelity | 1 completed, 4 canceled | 4 completed | Reduced scope | Completed | 2026-06-26 |
+| v1.3 Meitu Core Beauty Module Design and Implementation | 5 | 14 | 20/20 | Shipped | 2026-06-30 |
+| v1.4 Stability, QA, and Debt Cleanup | 5 | 15 | 24/24 | Shipped | 2026-07-03 |
 
-**Coverage:**
+## Next
 
-- v1.4 requirements: 24 total
-- Mapped to phases: 24
-- Unmapped: 0
+No active milestone is defined. Start the next milestone with:
+
+```bash
+$gsd-new-milestone
+```
 
 ## Backlog
 

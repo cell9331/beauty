@@ -1,10 +1,11 @@
 ---
 phase: 21
 slug: baseline-audit-and-quality-ledger-refresh
-status: draft
+status: final
 nyquist_compliant: true
 wave_0_complete: true
 created: 2026-06-30
+updated: 2026-07-03
 ---
 
 # Phase 21 - Validation Strategy
@@ -32,11 +33,11 @@ created: 2026-06-30
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 21-01-01 | 01 | 1 | AUD-02 | T-21-01-01 | Commands are recorded with pass/fail/blocker status and no false pass claims. | command sweep | `swift test --package-path BeautySDK` | yes | pending |
-| 21-01-02 | 01 | 1 | AUD-02, AUD-03 | T-21-01-02 | Static scans preserve SDK/Demo/privacy/API scope boundaries. | static scan | `rg -n "import Beauty(Core|Detection|Effects|Render|Resources)" BeautyDemo/BeautyDemo BeautyDemo/BeautyDemoTests || true` | yes | pending |
-| 21-01-03 | 01 | 1 | AUD-01, AUD-02 | T-21-01-03 | Baseline artifact classifies current, archived, blocked, deferred, and not-attempted evidence. | artifact check | `rg -n "passed|failed|blocked|deferred|archived" .planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-BASELINE-AUDIT.md` | yes | pending |
-| 21-02-01 | 02 | 2 | AUD-01, AUD-03, AUD-04 | T-21-02-01 | Ledgers route debt without fixing later-phase work. | doc scan | `rg -n "TD-005|TD-008|TD-009|TD-010|Phase 22|Phase 23|Phase 24|Phase 25" QUALITY_SCORE.md PLANS.md .planning/PROJECT.md .planning/STATE.md .planning/ROADMAP.md` | yes | pending |
-| 21-02-02 | 02 | 2 | AUD-01, AUD-03 | T-21-02-02 | Quality-score changes cite current command evidence and avoid release-readiness overclaims. | doc scan | `rg -n "2026-06-30|21-BASELINE-AUDIT|blocked|deferred|not attempted" QUALITY_SCORE.md PLANS.md` | yes | pending |
+| 21-01-01 | 01 | 1 | AUD-02 | T-21-01-01 | Commands are recorded with pass/fail/blocker status and no false pass claims. | command sweep | `swift test --package-path BeautySDK` | yes | passed |
+| 21-01-02 | 01 | 1 | AUD-02, AUD-03 | T-21-01-02 | Static scans preserve SDK/Demo/privacy/API scope boundaries. | static scan | `rg -n "import Beauty(Core|Detection|Effects|Render|Resources)" BeautyDemo/BeautyDemo BeautyDemo/BeautyDemoTests || true` | yes | passed |
+| 21-01-03 | 01 | 1 | AUD-01, AUD-02 | T-21-01-03 | Baseline artifact classifies current, archived, blocked, deferred, and not-attempted evidence. | artifact check | `rg -n "passed|failed|blocked|deferred|archived" .planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-BASELINE-AUDIT.md` | yes | passed |
+| 21-02-01 | 02 | 2 | AUD-01, AUD-03, AUD-04 | T-21-02-01 | Ledgers route debt without fixing later-phase work. | doc scan | `rg -n "TD-005|TD-008|TD-009|TD-010|Phase 22|Phase 23|Phase 24|Phase 25" QUALITY_SCORE.md PLANS.md .planning/PROJECT.md .planning/STATE.md .planning/ROADMAP.md` | yes | passed |
+| 21-02-02 | 02 | 2 | AUD-01, AUD-03 | T-21-02-02 | Quality-score changes cite current command evidence and avoid release-readiness overclaims. | doc scan | `rg -n "2026-06-30|21-BASELINE-AUDIT|blocked|deferred|not attempted" QUALITY_SCORE.md PLANS.md` | yes | passed |
 
 ## Wave 0 Requirements
 
@@ -64,4 +65,24 @@ Existing infrastructure covers all phase requirements:
 - [x] Feedback latency target is below 20 minutes for automated checks.
 - [x] `nyquist_compliant: true` set in frontmatter.
 
-**Approval:** pending execution evidence
+**Approval:** Approved after retroactive validation audit on 2026-07-03. `21-VERIFICATION.md` already records `status: passed`; this update closes the stale draft/pending validation-document state without adding new source behavior.
+
+## Validation Audit 2026-07-03
+
+| Metric | Count |
+|--------|-------|
+| Gaps found | 1 |
+| Resolved | 1 |
+| Escalated | 0 |
+
+### Audit Findings
+
+- Existing phase evidence is complete: `21-VERIFICATION.md` reports `status: passed` for AUD-01 through AUD-04.
+- The only Nyquist gap was document state drift: this file still had non-final frontmatter and task rows that had not been updated after Phase 21 execution completed.
+- No new tests were generated because Phase 21 was an audit and ledger-refresh phase with command-backed evidence already recorded in `21-BASELINE-AUDIT.md`, `21-VERIFICATION.md`, and the plan summaries.
+
+### Evidence Used
+
+- `phase-plan-index 21` reports both `21-01` and `21-02` have summaries and no incomplete plans.
+- `21-VERIFICATION.md` records passed SDK/renderer/static/doc gates and the accepted Demo Metal Toolchain blocker classification.
+- Scoped checks on 2026-07-03 confirmed Phase 21 evidence still references AUD-01 through AUD-04, `21-BASELINE-AUDIT.md`, TD-005, TD-008, TD-009, and TD-010.

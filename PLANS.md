@@ -30,6 +30,63 @@ None.
 
 ## 4. Completed
 
+### C-2026-07-04-gsd-complete-milestone-v1-4
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-04 |
+| Scope | Ran `$gsd-complete-milestone v1.4` after the v1.4 audit passed and Phase 21/22 validation-document debt was cleaned. Archived the v1.4 roadmap, requirements, and milestone audit; collapsed the active roadmap; updated project/state/milestone/retrospective ledgers; preserved Phase 21-25 directories in place by user choice; and prepared the repository for the next milestone. |
+| Requirements | AUD-01, AUD-02, AUD-03, AUD-04, QA-01, QA-02, QA-03, QA-04, PERF-01, PERF-02, PERF-03, PERF-04, PERF-05, RENDER-01, RENDER-02, RENDER-03, RENDER-04, SEC-01, SEC-02, SEC-03, SEC-04, DOC-01, DOC-02, DOC-03 |
+| Files | `.planning/milestones/v1.4-ROADMAP.md`, `.planning/milestones/v1.4-REQUIREMENTS.md`, `.planning/milestones/v1.4-MILESTONE-AUDIT.md`, `.planning/MILESTONES.md`, `.planning/ROADMAP.md`, `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/RETROSPECTIVE.md`, `.planning/REQUIREMENTS.md`, `PLANS.md` |
+| Verification | `gsd_run query audit-open` reported all artifact types clear. `gsd_run query roadmap.analyze` reported v1.4 has 5/5 completed phases, 15/15 plans, 15/15 summaries, and 100% progress. `.planning/REQUIREMENTS.md` had 24/24 v1.4 requirements checked complete before archival. `.planning/milestones/v1.4-*` archive files were created. Phase-directory archival was skipped by explicit user choice, preserving `.planning/phases/21-*` through `.planning/phases/25-*` paths. |
+| Build | Not run; this was milestone archival and documentation closeout using existing Phase 21-25 command-backed evidence. No Swift source or behavior changed during archival. |
+| Commit | Included in the v1.4 milestone archival commits. |
+
+Outcome:
+
+- `.planning/milestones/v1.4-ROADMAP.md`, `.planning/milestones/v1.4-REQUIREMENTS.md`, and `.planning/milestones/v1.4-MILESTONE-AUDIT.md` preserve the shipped v1.4 scope and evidence.
+- `.planning/ROADMAP.md` now keeps v1.4 as a collapsed shipped milestone and preserves the Backlog section for future planning.
+- `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/MILESTONES.md`, and `.planning/RETROSPECTIVE.md` now describe v1.4 as archived and route the operator to `$gsd-new-milestone`.
+- `.planning/REQUIREMENTS.md` is removed after archive creation so the next milestone starts from fresh requirements.
+
+### C-2026-07-03-gsd-validate-phase-21-22-cleanup
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-03 |
+| Scope | Ran the `$gsd-validate-phase` cleanup path for Phase 21 and Phase 22 validation-document debt after the v1.4 milestone audit reported `tech_debt`. Closed stale `draft`/`pending` validation rows using existing passed phase verification and blocker-honest evidence; no new source, test, screenshot, or product behavior was added. |
+| Requirements | AUD-01, AUD-02, AUD-03, AUD-04, QA-01, QA-02, QA-03, QA-04 |
+| Files | `.planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-VALIDATION.md`, `.planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-VALIDATION.md`, `.planning/v1.4-MILESTONE-AUDIT.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `phase-plan-index 21` and `phase-plan-index 22` reported all plans have summaries and no incomplete plans. Phase 21 evidence scan confirmed `21-VERIFICATION.md` has `status: passed`, AUD-01 through AUD-04, `21-BASELINE-AUDIT.md`, and TD-005/TD-008/TD-009/TD-010 routing evidence. Phase 22 evidence scan confirmed `Demo simulator build: blocked`, `Demo focused view-state test: blocked`, `Screenshot capture status: blocked`, required-state review notes, and route/model disabled-honesty evidence in `VISUAL-EVIDENCE.md`/`22-VERIFICATION.md`. No `.planning/evidence/v1.4/*.png` files exist under the blocker path, and the scoped overclaim scan over `VISUAL-EVIDENCE.md` passed. Final stale-state scan over Phase 21/22 validation docs passed, and scoped `git diff --check` passed for validation/audit/state/plan files. |
+| Build | Not run; this was a validation-document cleanup using existing Phase 21/22 command-backed evidence. No new tests or screenshots were generated. |
+| Commit | Not committed in this step. |
+
+Outcome:
+
+- `21-VALIDATION.md` is now `status: final`; all Phase 21 task rows are marked `passed`, and a `Validation Audit 2026-07-03` trail explains the cleanup.
+- `22-VALIDATION.md` is now `status: final`; task rows are marked `passed` or `passed-blocker-path`, preserving the accepted no-PNG Metal Toolchain blocker path and adding a validation audit trail.
+- `.planning/v1.4-MILESTONE-AUDIT.md` now records `status: passed`, with 24/24 requirements, 5/5 phases, 5/5 integration checks, 5/5 flows, and 5/5 Nyquist validation files.
+- `.planning/STATE.md` now routes to `$gsd-complete-milestone v1.4`.
+
+### C-2026-07-03-gsd-audit-milestone-v1-4
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-03 |
+| Scope | Ran `$gsd-progress --next`, which passed safety gates, found Phase 25 and all v1.4 phases complete, hit the `$gsd-complete-milestone` pre-flight audit gate, and routed to `$gsd-audit-milestone v1.4`. Completed the milestone audit inline because subagent spawning was not explicitly requested. |
+| Requirements | AUD-01, AUD-02, AUD-03, AUD-04, QA-01, QA-02, QA-03, QA-04, PERF-01, PERF-02, PERF-03, PERF-04, PERF-05, RENDER-01, RENDER-02, RENDER-03, RENDER-04, SEC-01, SEC-02, SEC-03, SEC-04, DOC-01, DOC-02, DOC-03 |
+| Files | `.planning/v1.4-MILESTONE-AUDIT.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `$gsd-progress --next` safety checks passed: no `.planning/.continue-here.md`, no error/failed state, no Phase 25 verification failures, and Phases 21-25 all have matching PLAN/SUMMARY counts. `init.milestone-op` reported `milestone_version: v1.4`, `completed_phases: 5`, and `all_phases_complete: true`. `.planning/REQUIREMENTS.md` reports 24/24 v1.4 requirements complete and 0 unmapped. Summary extraction found all 24 requirement IDs in Phase 21-25 SUMMARY frontmatter. Phase 21-25 VERIFICATION files all report `status: passed`. `audit-open` reported all artifact types clear. Nyquist scan found validation files for all five phases; Phases 23-25 are final/compliant, while Phases 21-22 remain draft/pending validation artifacts despite passed verification, so audit status is `tech_debt`. |
+| Build | Not run; this was a planning/audit workflow with no source changes. It reused existing command-backed Phase 21-25 evidence. |
+| Commit | Not committed in this step. |
+
+Outcome:
+
+- v1.4 milestone requirements are satisfied: 24/24 requirements, 5/5 phases, 5/5 integration checks, and 5/5 flows passed audit review.
+- The audit is intentionally `tech_debt`, not `passed`, because `21-VALIDATION.md` and `22-VALIDATION.md` still contain draft/pending task rows even though their phase verification files passed.
+- Remaining accepted limitations are documented: no current v1.4 screenshot PNG pass, no physical iPhone parity, no 600-second preview endurance, no geometry saved-output completion, no external package capability, no commercial packaging approval, and no unsupported release-readiness claim.
+- Next step is either `$gsd-complete-milestone v1.4` to archive while accepting the audit's tech-debt status, or `$gsd-validate-phase 21` plus `$gsd-validate-phase 22` to clean validation artifacts before archival.
+
 ### C-2026-07-03-gsd-execute-phase-25-security-distribution-closeout
 
 | Field | Value |
