@@ -1,11 +1,10 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.5
-milestone_name: milestone
-status: Defining requirements for v1.5 SDK Geometry Output Foundation and Face Shape Slice
-stopped_at: v1.4 milestone archived
-last_updated: "2026-07-03T23:34:10.593Z"
-last_activity: 2026-07-03 — Milestone v1.5 started
+milestone_name: SDK Geometry Output Foundation and Face Shape Slice
+status: planning
+last_updated: "2026-07-03T23:35:17.034Z"
+last_activity: 2026-07-03
 progress:
   total_phases: 0
   completed_phases: 0
@@ -27,7 +26,7 @@ See: `.planning/PROJECT.md` (updated 2026-07-04)
 
 Phase: Not started (defining requirements)
 Plan: —
-Status: Defining requirements for v1.5 SDK Geometry Output Foundation and Face Shape Slice
+Status: Defining requirements
 Last activity: 2026-07-03 — Milestone v1.5 started
 
 ## Performance Metrics
