@@ -7,6 +7,7 @@
 - Entry routes must preserve local-first behavior: camera/photo processing stays on device.
 - Feature names may follow Meitu-style Chinese taxonomy in Demo, but SDK names stay stable and product-neutral.
 - Cancel/confirm semantics belong to the editor shell, not individual effect providers.
+- `美型 / 五官` implementation work is SDK-core first. Do not add SwiftUI or Demo UI work unless a future milestone explicitly scopes it.
 
 ## Technical Core Principles
 
@@ -27,6 +28,8 @@
 | `future` | No current v1.3 implementation claim; planning may describe business behavior and future dependencies only. |
 
 Provider/resolver evidence for geometry is not the same as facade-visible saved-image completion. A geometry branch remains below `implemented` until the public `BeautySDK` facade can process the branch and `BeautyExampleRenderer` can save representative same-dimension output.
+
+Second-level tool status for `美型 / 五官` is tracked in `../SHAPE_FEATURE_LEDGER.md`. After completing a tool, update that ledger and the owning branch README in the same closeout.
 
 ## Documentation Checklist
 

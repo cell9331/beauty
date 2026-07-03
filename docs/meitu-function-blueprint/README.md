@@ -18,12 +18,13 @@ Phase 17 status labels are branch-level only. The allowed values are:
 ## Reading Order
 
 1. `MINDMAP.md` - Full feature tree and Mermaid mind map.
-2. `FEATURE_MATRIX.md` - Feature inventory, status, and implementation priority.
-3. `EXAMPLE_IMAGE_VALIDATION.md` - How to run real example images through SDK module logic and save outputs.
-4. `MODULES.md` - SDK/Demo module ownership and dependency boundaries.
-5. `DELIVERY_BOUNDARY.md` - What this milestone includes and excludes.
-6. Feature folders under `features/` - One large function family per folder.
-7. Branch folders under each feature family - One branch capability per folder.
+2. `SHAPE_FEATURE_LEDGER.md` - 1:1 de-duplicated `美型 / 五官` first-level and second-level SDK-core status ledger.
+3. `FEATURE_MATRIX.md` - Branch-level feature inventory, status, and implementation priority.
+4. `EXAMPLE_IMAGE_VALIDATION.md` - How to run real example images through SDK module logic and save outputs.
+5. `MODULES.md` - SDK/Demo module ownership and dependency boundaries.
+6. `DELIVERY_BOUNDARY.md` - What this milestone includes and excludes.
+7. Feature folders under `features/` - One large function family per folder.
+8. Branch folders under each feature family - One branch capability per folder.
 
 ## Feature Families
 
@@ -47,6 +48,7 @@ Phase 17 status labels are branch-level only. The allowed values are:
 
 - Every large function family gets one folder.
 - The active family set is exactly `editor-shell`, `beauty-shaping`, and `skin-retouch`.
+- `SHAPE_FEATURE_LEDGER.md` owns second-level `美型 / 五官` tool status. `FEATURE_MATRIX.md` stays branch-level and should not duplicate every tool row.
 - Branch docs must state business logic, core technical logic, primary owner, dependencies, boundaries, current public `BeautyParameters` coverage, future parameter needs, and acceptance signals.
 - Unsupported core beauty capabilities are documented as future branches, not fake current behavior.
 - Implementation phases must be derived from this module plan and verified through code-level tests plus example-image output where the current module can produce visible output.

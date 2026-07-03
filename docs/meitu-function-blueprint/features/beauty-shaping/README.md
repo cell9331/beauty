@@ -4,6 +4,8 @@
 
 Beauty shaping covers face geometry and facial feature adjustments inspired by Meitu `美型 / 五官`: `3D塑颜`, `比例`, `脸型`, `眼睛`, `嘴唇`, `鼻子`, and `眉毛`.
 
+`../../SHAPE_FEATURE_LEDGER.md` is the authority for the 1:1 de-duplicated second-level tool list and per-tool SDK-core status.
+
 ## Technical Core
 
 - SDK owner: `BeautyEffects` geometry providers plus `BeautyRender` unified warp pass.
@@ -32,3 +34,5 @@ Phase 19 strengthens provider, resolver, degradation, cap, and redaction tests f
 No public landmarks/control points. Demo taxonomy maps to product-neutral SDK parameter names.
 `BeautyResources` is only a future dependency for resource-backed shaping.
 Filters, makeup, stickers, templates, downloads, VIP, payment, and entitlement behavior remain deferred product/resource areas.
+
+Implementation work in this family is SDK-core work only unless a future milestone explicitly scopes UI. Do not add SwiftUI surface area to mark a tool complete.

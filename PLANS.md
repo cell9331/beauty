@@ -30,6 +30,24 @@ None.
 
 ## 4. Completed
 
+### C-2026-07-04-meitu-shape-feature-ledger
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-04 |
+| Scope | Created a local 1:1 de-duplicated SDK-core ledger for Meitu Xiuxiu editor `美型 / 五官` first-level and second-level functions. Captured the first-principles boundary: no UI work, no Demo rebuild, no remote processing, SDK product-neutral names, and completion only through SDK behavior plus tests/output evidence. |
+| Requirements | Documentation contract only; no active milestone requirements file exists after v1.4 archival. |
+| Files | `docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md`, `docs/meitu-function-blueprint/README.md`, `docs/meitu-function-blueprint/FEATURE_MATRIX.md`, `docs/meitu-function-blueprint/features/beauty-shaping/README.md`, `docs/meitu-function-blueprint/shared/IMPLEMENTATION_PRINCIPLES.md`, `PLANS.md` |
+| Verification | `git diff --check` passed for touched docs. Scans confirmed the ledger contains all 7 first-level groups (`3D塑颜`, `比例`, `脸型`, `眼睛`, `嘴唇`, `鼻子`, `眉毛`) and all referenced second-level tools from `meituxiuxiu/FUNCTION_MAP.md`. Linkage scans confirmed `README.md`, `FEATURE_MATRIX.md`, beauty-shaping README, and shared implementation principles point to `SHAPE_FEATURE_LEDGER.md` and preserve SDK-core/no-UI boundaries. |
+| Build | Not run; documentation-only contract update with no Swift source changes. |
+| Commit | Included in the shape feature ledger documentation commit. |
+
+Outcome:
+
+- `SHAPE_FEATURE_LEDGER.md` is now the second-level `美型 / 五官` status authority.
+- `FEATURE_MATRIX.md` remains branch-level and points to the new ledger instead of duplicating every second-level tool.
+- Completion rules require updating the ledger, branch README, branch-level matrix when applicable, example-image validation evidence, and phase verification artifacts after SDK-core work completes.
+
 ### C-2026-07-04-gsd-complete-milestone-v1-4
 
 | Field | Value |
