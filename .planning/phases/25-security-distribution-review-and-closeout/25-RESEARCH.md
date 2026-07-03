@@ -357,17 +357,17 @@ Source: `plutil` is available locally; exact manifest path should follow the tar
 | A1 | The required-reason seed scan token list covers likely iOS API families but is not an authoritative full Apple list. | Code Examples / Validation Architecture | Planner might miss a newly listed API unless execution cross-checks Apple docs. |
 | A2 | `BeautySDK/Sources/BeautySDK/Resources/PrivacyInfo.xcprivacy` is a plausible manifest location if the facade target owns the SDK manifest. | Code Examples | Execution may choose `BeautyCore` or another target resource location based on actual API use and SwiftPM resource packaging. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Does the final active source use any Apple required-reason API after Phase 25 scans?**
+1. **RESOLVED for planning: Does the final active source use any Apple required-reason API after Phase 25 scans?**
    - What we know: Research scan found no current `PrivacyInfo.xcprivacy`; a broad token scan found `FileManager.default` in `BeautyExampleRenderer` and `remoteInfo` project metadata, not active SDK/Demo behavior. [VERIFIED: codebase]
-   - What's unclear: Exact final declaration need depends on execution-time scan classification against current Apple docs. [CITED: developer.apple.com/documentation/bundleresources/describing-use-of-required-reason-api]
-   - Recommendation: Make the privacy manifest decision an explicit evidence table row before adding or deferring. [VERIFIED: 25-CONTEXT.md]
+   - Planning resolution: Plan `25-01` owns required-reason API classification as an execution evidence step. The executor must cross-check active-source matches against current Apple documentation, record the checked date in `25-SECURITY-CLOSEOUT.md`, and then add the smallest fact-matching manifest or explicitly defer with evidence. [VERIFIED: 25-CONTEXT.md]
+   - Execution rule: The final declaration decision is a planned SEC-01 evidence gate, not an open planning question. [VERIFIED: 25-VALIDATION.md]
 
-2. **If a manifest is added, which target owns it?**
+2. **RESOLVED for planning: If a manifest is added, which target owns it?**
    - What we know: Apple says manifests are added to target resources, and `BeautySDK` is distributed as a Swift package library facade. [CITED: developer.apple.com/documentation/bundleresources/adding-a-privacy-manifest-to-your-app-or-third-party-sdk] [VERIFIED: codebase]
-   - What's unclear: The correct target depends on whether the declared behavior belongs to the facade target, a lower target, or Demo. [ASSUMED]
-   - Recommendation: Place the manifest at the smallest target that actually uses the declared API or owns the SDK declaration, then verify it is included as a target resource. [ASSUMED]
+   - Planning resolution: Plan `25-01` owns manifest target placement if evidence requires a manifest. The executor must choose the smallest fact-matching target resource path based on the code path that triggers declaration, with `BeautySDK/Sources/BeautySDK/Resources/PrivacyInfo.xcprivacy` as the facade-owned candidate only when the facade target owns the SDK declaration. [VERIFIED: 25-PATTERNS.md]
+   - Execution rule: Target ownership is a planned SEC-01 implementation decision with required package/project inclusion evidence and `plutil` validation when a manifest is added, not an open planning question. [VERIFIED: 25-VALIDATION.md]
 
 ## Environment Availability
 
