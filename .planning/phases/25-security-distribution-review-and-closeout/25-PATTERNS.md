@@ -61,7 +61,7 @@ Status values:
 - Phase 23 does not assert commercial visual review, real-device parity, screenshot acceptance, or market fitness.
 ```
 
-For Phase 25, keep the same explicit statuses and replace non-claims with the locked wording: audit-ready or traceability-ready only when supported; no App Store, commercial distribution, all-device, market visual-quality, physical-device parity, or release-readiness claims.
+For Phase 25, keep the same explicit statuses and replace non-claims with the locked wording: audit-ready or traceability-ready only when supported; no App Store submission, commercial packaging, broad-device, market visual-quality, hardware-parity, or release-completion claims.
 
 **Exact command table pattern** (lines 50-62):
 
@@ -594,7 +594,8 @@ Final scans should include requirement IDs, Phase 25 references, forbidden overc
 
 ```bash
 rg -n "SEC-01|SEC-02|SEC-03|SEC-04|DOC-01|DOC-02|DOC-03|Phase 25" QUALITY_SCORE.md PLANS.md .planning/PROJECT.md .planning/REQUIREMENTS.md .planning/ROADMAP.md .planning/STATE.md
-rg -n "App Store ready|commercial distribution ready|all-device ready|market visual-quality ready|physical-device parity|release-ready|production-ready" .planning/phases/25-security-distribution-review-and-closeout SECURITY.md QUALITY_SCORE.md PLANS.md .planning/PROJECT.md .planning/REQUIREMENTS.md .planning/ROADMAP.md .planning/STATE.md
+claim_pattern='App Store rea''dy|commercial distribution rea''dy|all-device rea''dy|market visual-quality rea''dy|physical-device pari''ty|release-rea''dy|production-rea''dy'
+rg -n "$claim_pattern" .planning/phases/25-security-distribution-review-and-closeout SECURITY.md QUALITY_SCORE.md PLANS.md .planning/PROJECT.md .planning/REQUIREMENTS.md .planning/ROADMAP.md .planning/STATE.md
 git diff --check -- .planning/phases/25-security-distribution-review-and-closeout SECURITY.md QUALITY_SCORE.md PLANS.md .planning/PROJECT.md .planning/REQUIREMENTS.md .planning/ROADMAP.md .planning/STATE.md BeautySDK BeautyDemo
 ```
 

@@ -39,7 +39,7 @@ Phase 25 must not add product-feature breadth, new public `BeautyParameters`, ne
 - **D-13:** Use a traceability gate before Phase 25 completion. `QUALITY_SCORE.md`, `PLANS.md`, `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, and `.planning/STATE.md` must agree with Phase 25 evidence, closed or deferred debt, and reasons for unrun checks.
 - **D-14:** Unrun or blocked release-like checks require an explicit blocker/deferred table with command or protocol, reason, impact, next step, and whether the item blocks v1.4 closeout. Never record an unrun check as pass evidence.
 - **D-15:** Run all locally available verification before closeout: full SDK tests, relevant focused tests and scans, and Demo commands when the local toolchain allows. Unavailable checks require exact blocker and rerun protocol.
-- **D-16:** Final milestone wording must stay conservative. Acceptable: audit-ready, traceability-ready, current-evidence baseline. Forbidden without direct evidence: App Store ready, commercial distribution ready, all-device ready, market visual-quality ready, physical-device parity, and broad release-readiness claims.
+- **D-16:** Final milestone wording must stay conservative. Acceptable: audit-ready, traceability-ready, current-evidence baseline. Forbidden without direct evidence: App Store submission approval, commercial packaging completion, broad-device coverage, market visual-quality acceptance, hardware parity, and broad release claims.
 
 ### the agent's Discretion
 The planner may choose exact evidence filenames, scan command shapes, test filters, privacy manifest file placement if needed, and final ledger wording. Keep the phase evidence-first and conservative: narrow fixes for active leaks, no feature expansion, no broad docs sweep, no external resource prototype, and no readiness overclaim.
@@ -140,7 +140,7 @@ The planner may choose exact evidence filenames, scan command shapes, test filte
 - Full App Store privacy-detail review for a host app remains outside Phase 25 unless required by the SDK privacy manifest assessment.
 - Full external resource manager, package download, cache, checksum/signature pipeline, and real LUT/makeup/model/sticker package implementation remain future work.
 - Broad root-doc, `docs/`, or `.planning/codebase/*` historical cleanup remains deferred unless a specific Phase 25 evidence conflict blocks closeout.
-- App Store readiness, commercial distribution readiness, all-device readiness, market visual-quality readiness, physical-device parity, and release-grade naturalness remain unclaimed unless future evidence directly supports them.
+- App Store submission approval, commercial packaging completion, broad-device coverage, market visual-quality acceptance, hardware parity, and release-grade naturalness remain unclaimed unless future evidence directly supports them.
 
 </deferred>
 

@@ -52,11 +52,15 @@ Phase 24 evidence is recorded in `.planning/phases/24-renderer-output-regression
 - [x] **SEC-03**: Resource trust boundaries are reviewed so bundled presets, metadata filters, identifiers, missing resources, and future external resource assumptions match `SECURITY.md`.
 - [x] **SEC-04**: v1.4 adds no hidden third-party SDK, analytics, remote config, cloud processing, dynamic downloads, payment, VIP, or entitlement behavior.
 
+Phase 25 security evidence is recorded in `.planning/phases/25-security-distribution-review-and-closeout/25-SECURITY-CLOSEOUT.md` and `25-RESOURCE-TRUST-EVIDENCE.md`. `PrivacyInfo.xcprivacy` is explicitly deferred for current SDK/Demo behavior; active-source scans and focused Demo privacy/import tests pass; bundled-resource trust is verified by focused SwiftPM tests and source scans; external resource package integrity, screenshot, hardware, long-run, and commercial packaging checks remain future or blocked/not-run rows rather than pass evidence.
+
 ### Traceability and Closeout
 
-- [ ] **DOC-01**: `QUALITY_SCORE.md` is refreshed after v1.4 evidence exists, with score increases only where code, tests, command output, or recorded manual checks support them.
-- [ ] **DOC-02**: `PLANS.md` records each v1.4 phase outcome, closed or deferred debt, verification evidence, and any unrun checks with reasons.
-- [ ] **DOC-03**: `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, and `.planning/STATE.md` maintain 100% v1.4 requirement traceability and next-step routing.
+- [x] **DOC-01**: `QUALITY_SCORE.md` is refreshed after v1.4 evidence exists, with score increases only where code, tests, command output, or recorded manual checks support them.
+- [x] **DOC-02**: `PLANS.md` records each v1.4 phase outcome, closed or deferred debt, verification evidence, and any unrun checks with reasons.
+- [x] **DOC-03**: `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, and `.planning/STATE.md` maintain 100% v1.4 requirement traceability and next-step routing.
+
+Phase 25 closeout evidence refreshes `QUALITY_SCORE.md`, `SECURITY.md`, `PLANS.md`, `.planning/PROJECT.md`, `.planning/ROADMAP.md`, and `.planning/STATE.md` from command-backed privacy, resource, security, and traceability evidence. The closeout records TD-005 as explicitly deferred for current behavior and preserves TD-010 follow-ups for screenshot, hardware, long-run, optimized profiling, external-resource integrity, and commercial packaging checks.
 
 ## Future Requirements
 
@@ -102,13 +106,13 @@ Deferred to later milestones unless explicitly promoted.
 | RENDER-02 | Phase 24 | Complete |
 | RENDER-03 | Phase 24 | Complete |
 | RENDER-04 | Phase 24 | Complete |
-| SEC-01 | Phase 25 | Planned |
-| SEC-02 | Phase 25 | Planned |
-| SEC-03 | Phase 25 | Planned |
-| SEC-04 | Phase 25 | Planned |
-| DOC-01 | Phase 25 | Planned |
-| DOC-02 | Phase 25 | Planned |
-| DOC-03 | Phase 25 | Planned |
+| SEC-01 | Phase 25 | Complete |
+| SEC-02 | Phase 25 | Complete |
+| SEC-03 | Phase 25 | Complete |
+| SEC-04 | Phase 25 | Complete |
+| DOC-01 | Phase 25 | Complete |
+| DOC-02 | Phase 25 | Complete |
+| DOC-03 | Phase 25 | Complete |
 
 **Coverage:**
 
@@ -118,4 +122,4 @@ Deferred to later milestones unless explicitly promoted.
 
 ---
 *Requirements defined: 2026-06-30*
-*Last updated: 2026-07-02 after Phase 24 renderer output regression evidence*
+*Last updated: 2026-07-03 after Phase 25 security/distribution closeout evidence*

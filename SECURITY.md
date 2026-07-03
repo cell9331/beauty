@@ -95,6 +95,13 @@ Phase 3 protected-resource evidence recorded 2026-06-12:
 - `InputPipelinePrivacyTests` verifies the purpose strings and scans Camera, Editor, and Support input paths for network/upload calls, raw `/private/var` paths, and raw framework error copy.
 - Static scan `rg -n "URLSession|http://|https://|upload|/private/var|NSError|AVError" BeautyDemo/BeautyDemo/Camera BeautyDemo/BeautyDemo/Editor BeautyDemo/BeautyDemo/Support` returned no matches.
 
+Phase 25 privacy-manifest evidence recorded 2026-07-03:
+
+- `find BeautySDK BeautyDemo -name PrivacyInfo.xcprivacy -print` found no existing privacy manifest.
+- Phase 25 explicitly defers adding `PrivacyInfo.xcprivacy` because current SDK facade and Demo app evidence shows no default data collection, upload, raw frame or landmark persistence, analytics, remote config, payment, entitlement, or hidden third-party SDK behavior.
+- Required-reason seed scans found no active SDK facade or Demo app use of `UserDefaults`, file timestamp, disk-space, system boot-time, active keyboard, or POSIX stat APIs. The only `FileManager.default` seed hit is in the `BeautyExampleRenderer` local example executable and is classified separately as local input/output fixture enumeration.
+- Re-evaluate the manifest before SDK behavior collects data, uses required-reason APIs, adds third-party SDKs, adds network/cloud/analytics behavior, packages the example executable into an app distribution, or enters App Store/commercial packaging review.
+
 ## 5. Permission Model
 
 Demo App permission states:
@@ -244,6 +251,13 @@ Rules:
 - Caches must have size limits and eviction rules.
 - Missing optional resources degrade gracefully; missing required resources return typed errors.
 
+Phase 25 resource-trust evidence recorded 2026-07-03:
+
+- Current `BeautyResources` evidence covers bundled SwiftPM resources only: manifest schema version, metadata filters, five bundled presets, logical resource identifiers, traversal-like ID rejection, unknown preset/filter behavior, and typed redacted missing-resource errors.
+- `swift test --package-path BeautySDK --filter BeautyResourcesTests.BeautyResourceCatalogTests` passed with 6 tests and `swift test --package-path BeautySDK --filter BeautySDKTests.BeautySDKFacadeTests` passed with 5 tests.
+- Resource scans confirmed `Bundle.module`, conservative identifier validation, `resourceNotFound`, `presetDecodeFailed`, and no active resource target network, download, remote config, cloud, payment, entitlement, or listed third-party SDK behavior.
+- This does not complete external LUT, makeup, model, sticker, dynamic download, cache, checksum/signature, or package-integrity capability. Those remain disabled until a future resource-manager design defines type, size, path confinement, integrity, cache, privacy, and failure policy.
+
 ## 9. Logging and Metrics
 
 Log levels:
@@ -370,6 +384,12 @@ Phase 7 debug/privacy evidence recorded 2026-06-23:
 - No face boxes, landmarks, control points, geometry overlay, raw Vision objects, raw `NSError`, local paths, stack traces, image bytes, network calls, document pickers, file importers, or file exporters were added to active JSON/debug surfaces.
 - `rg -n "import Beauty(Core|Detection|Effects|Render|Resources)" BeautyDemo/BeautyDemo BeautyDemo/BeautyDemoTests` returned no matches.
 
+Phase 25 active-source security evidence recorded 2026-07-03:
+
+- Active SDK/Demo/package/project scans found no default `URLSession`, HTTP(S), upload, cloud, analytics, telemetry, tracking, remote config, StoreKit, payment, entitlement, or hidden third-party SDK behavior after the narrow Demo product-copy fix.
+- Scoped raw path/error/geometry/diagnostic scans over active SDK core/facade and Demo camera/editor surfaces found no raw framework errors, absolute local paths, face geometry payloads, raw JSON, or image-byte exposure.
+- Focused `InputPipelinePrivacyTests` and `BeautyDemoImportBoundaryTests` passed on `platform=iOS Simulator,name=iPhone 17,OS=26.5`, including the new SEC-04 active-source product-scope regression guard.
+
 If automated tests are not yet available, record manual checks in `PLANS.md`.
 
 ## 15. Review Gates
@@ -395,3 +415,4 @@ Before merging any change touching these areas, update `SECURITY.md` if needed:
 | 2026-05-25 | External resources are disabled until a resource manager with validation exists. | LUT, makeup, model, and texture packages cross a trust boundary. |
 | 2026-05-25 | Logs must never include image paths, image bytes, landmarks, or raw JSON. | Debuggability must not leak user content or biometric-adjacent data. |
 | 2026-05-25 | Distributed SDK builds must revisit `PrivacyInfo.xcprivacy`. | Apple requires privacy manifests for apps and third-party SDKs according to SDK behavior. |
+| 2026-07-03 | Phase 25 defers `PrivacyInfo.xcprivacy` for current source behavior and keeps external resources disabled. | Current command evidence supports local-first SDK/Demo behavior and bundled-resource trust only; future collection, required-reason APIs, third-party SDKs, network behavior, or external packages must reopen the review. |

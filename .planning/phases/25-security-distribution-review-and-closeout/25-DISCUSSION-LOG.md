@@ -72,4 +72,4 @@
 - Full host-app App Store privacy-detail review unless required by SDK manifest assessment.
 - External resource manager/package implementation.
 - Broad historical documentation or stale codebase-map cleanup.
-- App Store, commercial distribution, all-device, market visual-quality, physical-device parity, or release-candidate claims without direct evidence.
+- App Store submission, commercial packaging, broad-device, market visual-quality, hardware-parity, or release-candidate claims without direct evidence.

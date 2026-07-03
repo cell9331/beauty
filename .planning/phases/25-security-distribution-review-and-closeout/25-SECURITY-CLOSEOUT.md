@@ -1,10 +1,11 @@
 ---
 phase: 25-security-distribution-review-and-closeout
-status: draft
+status: final
 updated: 2026-07-03
 requirements:
   - SEC-01
   - SEC-02
+  - SEC-03
   - SEC-04
   - DOC-01
   - DOC-02
@@ -71,6 +72,36 @@ This artifact records Phase 25 privacy manifest, active-source security, depende
 | `BeautyDemo/BeautyDemo/Home/MeituHomeView.swift` visible `VIP` copy | Active Demo UI copy | Fixed as a narrow SEC-04 product-scope wording issue; no behavior or route was present. |
 | Test guard literals for forbidden tokens | Test guard literal | Preserved through string concatenation so broad active-source scans do not self-match. |
 | Root docs and Phase 25 plans mentioning upload, network, privacy, and distribution | Policy / planning text | Not counted as active-source leaks. Final ledger scans classify documentation claims separately from shipped behavior. |
+
+## Resource Trust Summary
+
+| Area | Status | Evidence | Requirement |
+| --- | --- | --- | --- |
+| Bundled resource manifest and presets | passed | `25-RESOURCE-TRUST-EVIDENCE.md` records manifest schema, metadata filter IDs, five bundled presets, preset lookup, and facade validation. | SEC-03 |
+| Unknown and traversal-like resource IDs | passed | Focused `BeautyResourceCatalogTests` cover typed missing-resource errors and conservative identifier behavior. | SEC-03 |
+| External package boundary | recorded | `25-RESOURCE-TRUST-EVIDENCE.md` keeps real LUT, makeup, model, sticker, dynamic download, cache, checksum/signature, and package-integrity capability disabled. | SEC-03 |
+
+## Current Milestone Evidence Baseline
+
+| Evidence | Status | Result |
+| --- | --- | --- |
+| Full SDK suite | passed | `swift test --package-path BeautySDK` passed with 150 XCTest cases after Wave 1 security/resource changes. |
+| Focused Demo privacy/import suite | passed | `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' -only-testing:BeautyDemoTests/InputPipelinePrivacyTests -only-testing:BeautyDemoTests/BeautyDemoImportBoundaryTests test` passed with 17 tests. |
+| Focused resource suite | passed | `swift test --package-path BeautySDK --filter BeautyResourcesTests.BeautyResourceCatalogTests` passed with 6 tests and `swift test --package-path BeautySDK --filter BeautySDKTests.BeautySDKFacadeTests` passed with 5 tests. |
+| Focused SDK configuration suite | passed | `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyConfigurationTests` passed with 4 tests. |
+| Claim-control scan | passed | Final forbidden wording scan returns no matches across Phase 25 artifacts and synchronized ledgers. |
+
+## Final Closeout Traceability
+
+| Requirement | Status | Evidence |
+| --- | --- | --- |
+| SEC-01 | passed | Privacy manifest inventory, required-reason seed scan, explicit manifest deferral, and rerun triggers are recorded above. |
+| SEC-02 | passed | Active no-network/no-upload/raw-path/raw-error/geometry/raw-diagnostic scans and focused SDK/Demo tests passed. |
+| SEC-03 | passed | `25-RESOURCE-TRUST-EVIDENCE.md` records bundled resource trust and preserves future external-resource boundaries. |
+| SEC-04 | passed | Third-party/product-scope scans passed after the narrow Demo badge text fix; regression coverage was added. |
+| DOC-01 | passed | `QUALITY_SCORE.md` was refreshed from Phase 25 evidence without raising unsupported external-resource or packaging scores. |
+| DOC-02 | passed | `PLANS.md` records Phase 25 outcome, TD-005 disposition, TD-010 remaining checks, and unrun/blocker reasons. |
+| DOC-03 | passed | `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, and `.planning/STATE.md` synchronize Phase 25 completion and next-step routing. |
 
 ## Blockers and Deferred Checks
 
