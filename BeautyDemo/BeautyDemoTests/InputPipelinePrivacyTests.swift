@@ -38,6 +38,49 @@ final class InputPipelinePrivacyTests: XCTestCase {
         XCTAssertTrue(matches.isEmpty, matches.joined(separator: "\n"))
     }
 
+    func testSEC04ActiveSourcesAvoidHiddenNetworkAndProductScope() throws {
+        let swiftSources = try swiftFiles(in: [
+            "BeautySDK/Sources",
+            "BeautyDemo/BeautyDemo"
+        ])
+        let sourceTexts = try swiftSources.map {
+            (relativePath($0), try String(contentsOf: $0, encoding: .utf8))
+        }
+        let configTexts = try [
+            "BeautySDK/Package.swift",
+            "BeautyDemo/BeautyDemo.xcodeproj/project.pbxproj"
+        ].map {
+            ($0, try readTextFile($0))
+        }
+        let forbiddenTokens = [
+            "Firebase",
+            "Alamofire",
+            "RevenueCat",
+            "Store" + "Kit",
+            "V" + "IP",
+            "entitle" + "ment",
+            "pay" + "ment",
+            "Remote" + "Config",
+            "Cloud" + "Kit",
+            "analytics",
+            "telemetry",
+            "tracking",
+            "URL" + "Session",
+            "http" + "://",
+            "https" + "://",
+            "down" + "load",
+            "up" + "load"
+        ]
+
+        let matches = (sourceTexts + configTexts).flatMap { path, text in
+            forbiddenTokens.compactMap { token in
+                text.contains(token) ? "\(path): contains \(token)" : nil
+            }
+        }
+
+        XCTAssertTrue(matches.isEmpty, matches.joined(separator: "\n"))
+    }
+
     func testPIPE02RealtimeCameraPathDoesNotUseUIImageConversion() throws {
         let cameraFiles = try swiftFiles(in: ["BeautyDemo/BeautyDemo/Camera"])
         let matches = try matches(for: ["UIImage"], in: cameraFiles)

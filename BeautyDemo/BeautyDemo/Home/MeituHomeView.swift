@@ -168,7 +168,7 @@ struct MeituHomeView: View {
                         .font(.system(size: 18, weight: .bold))
                         .foregroundStyle(Color(hex: 0xF59CCD))
                 )
-            Text("VIP")
+            Text("v1")
                 .font(.system(size: 8, weight: .heavy))
                 .foregroundStyle(Color(hex: 0xFF7FB5))
                 .padding(.horizontal, 5)
