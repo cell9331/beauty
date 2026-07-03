@@ -30,6 +30,26 @@ None.
 
 ## 4. Completed
 
+### C-2026-07-03-gsd-discuss-phase-25-security-distribution-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-03 |
+| Scope | Ran `$gsd-progress --next`, which passed safety gates and routed to `$gsd-discuss-phase 25` for Phase 25 Security, Distribution Review, and Closeout. Captured user decisions for privacy manifest disposition, active-surface security scan boundaries, resource trust review, and final closeout traceability before planning. |
+| Requirements | SEC-01, SEC-02, SEC-03, SEC-04, DOC-01, DOC-02, DOC-03 |
+| Files | `.planning/phases/25-security-distribution-review-and-closeout/25-CONTEXT.md`, `.planning/phases/25-security-distribution-review-and-closeout/25-DISCUSSION-LOG.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `$gsd-progress --next` state checks passed: no `.planning/.continue-here.md`, no `status: error` or `status: failed`, no Phase 25 verification failures, no prior Phase 21-24 plans without summaries, no prior unresolved verification failures, and no context-without-plan prior phases. `request_user_input` was unavailable in Default mode, so the discussion used text-mode numbered questions. User selected all four gray areas and then selected ready-for-context. Scoped `git diff --check` passed for the Phase 25 context/log artifacts. `state.record-session --stopped-at "Phase 25 context gathered" --resume-file ".planning/phases/25-security-distribution-review-and-closeout/25-CONTEXT.md"` reported `recorded: true`; `state.update "Status" "Ready for Phase 25 planning"` reported `updated: true`; `state.update "Operator Next Steps" "Run $gsd-plan-phase 25"` reported `updated: false` because that section is not a supported field, so the correct next command is recorded here and in final output. |
+| Build | Not run; this was a GSD discussion/context workflow with no Swift source changes. Phase 25 planning should include privacy manifest assessment, active-surface security scans, resource trust tests/scans, full available SDK tests, relevant focused tests, Demo commands where local tooling allows, and blocker-honest rerun protocols for unavailable checks. |
+| Commit | `a7e92df` captured Phase 25 context/log; `a24c980` recorded the Phase 25 context session; `bced4ce` marked Phase 25 ready for planning; final ledger commit records this `PLANS.md` update. |
+
+Outcome:
+
+- Phase 25 privacy manifest work is evidence-driven: assess actual SDK/Demo behavior, data collection/persistence/upload, required-reason API usage, and distribution risk before adding or deferring `PrivacyInfo.xcprivacy`.
+- Active SDK/Demo security leaks are hard failures; test guard literals, fixtures, and docs examples must be classified rather than blindly rewritten.
+- Resource trust review covers current bundled presets, metadata filters, identifiers, traversal-like IDs, unknown filter/preset behavior, and missing-resource typed errors while keeping external resource packages future-only.
+- Phase 25 completion requires traceability across `QUALITY_SCORE.md`, `PLANS.md`, `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, and `.planning/STATE.md`, with unrun checks recorded as blockers/deferred items rather than pass evidence.
+- Next step is `$gsd-plan-phase 25`.
+
 ### C-2026-07-02-gsd-execute-phase-24-renderer-output-regression-hardening
 
 | Field | Value |
