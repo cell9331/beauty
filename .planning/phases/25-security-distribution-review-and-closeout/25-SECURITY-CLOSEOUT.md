@@ -19,6 +19,7 @@ This artifact records Phase 25 privacy manifest, active-source security, depende
 
 - `passed`: command, scan, test, or source assertion ran in this phase and passed.
 - `recorded`: evidence exists with an explicit limitation or classification.
+- `deferred`: a planned artifact is intentionally not added because current evidence does not require it.
 - `fixed`: a current active-source finding was corrected narrowly and verified.
 - `blocked`: tooling, hardware, or external review evidence is unavailable in the current environment.
 - `not run`: evidence is intentionally left to the documented rerun protocol.
@@ -43,7 +44,7 @@ This artifact records Phase 25 privacy manifest, active-source security, depende
 
 | Status | Manifest path | Reason | Rerun trigger |
 | --- | --- | --- | --- |
-| pending | None yet | Task 1 evidence shows no SDK/Demo manifest exists; Task 2 will record final add/defer/block disposition after focused manifest verification. | Any new SDK/Demo data collection, required-reason API use, third-party SDK, network/cloud behavior, App Store submission target, or commercial distribution packaging review. |
+| deferred | None added | No current `BeautySDK` facade or `BeautyDemo` app source collects, uploads, persists, or tracks user data by default; no active SDK/Demo seed matches were found for `UserDefaults`, file timestamp, disk-space, system boot-time, active keyboard, or POSIX stat APIs; the only seed hit is example-renderer local file enumeration, classified separately from SDK facade and Demo protected-resource processing. Host apps remain responsible for their own protected-resource purpose strings and App Store privacy answers. | Add or re-evaluate `PrivacyInfo.xcprivacy` when SDK/Demo code starts collecting data, adds required-reason API usage, adds third-party SDKs, adds network/cloud/analytics behavior, packages the example executable for app distribution, or enters a commercial distribution/App Store submission phase. |
 
 ## Active Security Scan Results
 
