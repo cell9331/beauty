@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Stability, QA, and Debt Cleanup
 status: planning
-stopped_at: Completed Phase 24 Renderer Output Regression Hardening
-last_updated: "2026-07-02T09:22:53.887Z"
+stopped_at: Phase 25 context gathered
+last_updated: "2026-07-03T05:23:28.950Z"
 last_activity: 2026-07-02 - Phase 24 completed; ready for Phase 25 security, distribution, and closeout planning
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 12
   completed_plans: 12
-  percent: 100
+  percent: 80
 ---
 
 # Project State
@@ -147,9 +147,9 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-02T09:35:00.000Z
-Stopped at: Completed Phase 24 Renderer Output Regression Hardening
-Resume file: None
+Last session: 2026-07-03T05:23:28.943Z
+Stopped at: Phase 25 context gathered
+Resume file: .planning/phases/25-security-distribution-review-and-closeout/25-CONTEXT.md
 
 ## Operator Next Steps
 
