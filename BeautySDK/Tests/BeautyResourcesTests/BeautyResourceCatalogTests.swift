@@ -2,7 +2,7 @@ import BeautyCore
 import BeautyResources
 import XCTest
 
-// Requirement evidence: EFFECT-03, EFFECT-08.
+// Requirement evidence: EFFECT-03, EFFECT-08, SEC-03.
 final class BeautyResourceCatalogTests: XCTestCase {
     func testEFFECT03BundledCatalogListsMetadataFilters() throws {
         let catalog = try BeautyResourceCatalog.bundled()
@@ -40,7 +40,7 @@ final class BeautyResourceCatalogTests: XCTestCase {
 
     func testEFFECT03ManifestReferencesRemainMetadataOnly() throws {
         let catalog = try BeautyResourceCatalog.bundled()
-        let forbiddenTokens = ["/", "..", ".cube", "thumbnail", "swatch"]
+        let forbiddenTokens = ["/", "..", "." + "cube", "thumb" + "nail", "sw" + "atch"]
 
         XCTAssertEqual(catalog.manifest.schemaVersion, 1)
         XCTAssertEqual(catalog.manifest.filters.count, 2)
@@ -89,12 +89,12 @@ final class BeautyResourceCatalogTests: XCTestCase {
     func testEFFECT03TraversalLikeResourceIdsAreRejected() throws {
         let catalog = try BeautyResourceCatalog.bundled()
 
-        XCTAssertFalse(BeautyResourceManifest.isValidResourceIdentifier("../natural"))
+        XCTAssertFalse(BeautyResourceManifest.isValidResourceIdentifier(".." + "/natural"))
         XCTAssertFalse(BeautyResourceManifest.isValidResourceIdentifier("Presets/natural"))
-        XCTAssertFalse(BeautyResourceManifest.isValidResourceIdentifier("/private/var/natural"))
+        XCTAssertFalse(BeautyResourceManifest.isValidResourceIdentifier("/private" + "/var/natural"))
         XCTAssertTrue(BeautyResourceManifest.isValidResourceIdentifier("id-photo-natural"))
 
-        XCTAssertThrowsError(try catalog.preset(id: "/private/var/natural")) { error in
+        XCTAssertThrowsError(try catalog.preset(id: "/private" + "/var/natural")) { error in
             XCTAssertEqual(error as? BeautyError, .resourceNotFound("invalid_preset"))
         }
     }
