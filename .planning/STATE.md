@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Stability, QA, and Debt Cleanup
 status: planning
-stopped_at: Phase 25 context gathered
-last_updated: "2026-07-03T05:23:41.340Z"
-last_activity: 2026-07-02 - Phase 24 completed; ready for Phase 25 security, distribution, and closeout planning
+stopped_at: Phase 25 planned
+last_updated: "2026-07-03T08:12:08.871Z"
+last_activity: 2026-07-03 - Phase 25 planned; ready for Phase 25 execution
 progress:
   total_phases: 5
   completed_phases: 4
-  total_plans: 12
+  total_plans: 15
   completed_plans: 12
   percent: 80
 ---
@@ -26,9 +26,9 @@ See: `.planning/PROJECT.md` (updated 2026-07-01)
 ## Current Position
 
 Phase: 25 - Security, Distribution Review, and Closeout
-Plan: Not planned yet
-Status: Ready for Phase 25 planning
-Last activity: 2026-07-02 - Phase 24 completed; ready for Phase 25 security, distribution, and closeout planning
+Plan: 3 plans ready (`25-01`, `25-02`, `25-03`)
+Status: Ready to execute Phase 25
+Last activity: 2026-07-03 - Phase 25 planned; ready for Phase 25 execution
 
 ## Performance Metrics
 
@@ -67,6 +67,7 @@ Last activity: 2026-07-02 - Phase 24 completed; ready for Phase 25 security, dis
 | 22. Automated Demo QA and Screenshot Evidence | 2/2 | Complete |
 | 23. Performance and Reliability Gates | 5/5 | Complete |
 | 24. Renderer Output Regression Hardening | 3/3 | Complete |
+| 25. Security, Distribution Review, and Closeout | 0/3 | Planned |
 | Phase 18 P1 | 8 min | 2 tasks | 2 files |
 | Phase 18 P2 | 117 min | 3 tasks | 10 files |
 | Phase 18 P3 | 19 min | 3 tasks | 6 files |
@@ -116,12 +117,13 @@ Recent milestone-level outcomes:
 - Phase 23 completed performance and reliability evidence in `.planning/phases/23-performance-and-reliability-gates/23-PERFORMANCE-EVIDENCE.md`: focused SDK performance evidence passed with 3 tests, full SDK SwiftPM passed with 148 tests, focused Demo camera xcodebuild passed, 720p timings are recorded as over-budget baseline evidence, redaction/no-overclaim scans passed, and physical iPhone plus 600-second preview evidence remains blocked or not run.
 - Phase 24 planning produced three executable plans across two waves: `24-01` focused SwiftPM renderer matrix and pre-watermark no-op fixture regression tests, `24-02` renderer build/run plus 45-output invariant evidence and example-image validation docs, and `24-03` geometry/no-overclaim closeout plus root/planning ledger synchronization.
 - Phase 24 completed renderer output regression hardening: focused renderer regression tests passed with 2 tests, full SDK SwiftPM passed with 150 tests, `BeautyExampleRenderer` built and regenerated 45 ignored local PNG outputs, `check_renderer_outputs.py` verified all expected outputs, and `24-VERIFICATION.md` records passed geometry/no-overclaim scans while keeping geometry saved-output deferred.
+- Phase 25 planning produced three executable plans across two waves: `25-01` privacy manifest assessment, active security scans, required-reason classification, and conditional manifest disposition; `25-02` resource trust review, focused resource tests, and external-resource boundary evidence; and `25-03` final ledger synchronization, blocker/deferred table, traceability, and conservative closeout wording.
 - `.planning/codebase/*` maps are stale background for v1.4 and should not override current source, root docs, or `.planning` ledgers.
 
 ### Pending Todos
 
 - Preserve v1.4 boundaries while executing: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign.
-- Run `$gsd-discuss-phase 25`.
+- Run `$gsd-execute-phase 25`.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest review, renderer regression, and automated visual diffs.
 
 ### Blockers/Concerns
@@ -148,9 +150,9 @@ Recent milestone-level outcomes:
 ## Session Continuity
 
 Last session: 2026-07-03T05:23:28.943Z
-Stopped at: Phase 25 context gathered
-Resume file: .planning/phases/25-security-distribution-review-and-closeout/25-CONTEXT.md
+Stopped at: Phase 25 planned
+Resume file: .planning/phases/25-security-distribution-review-and-closeout/25-01-PLAN.md
 
 ## Operator Next Steps
 
-- Run `$gsd-discuss-phase 25`.
+- Run `$gsd-execute-phase 25`.
