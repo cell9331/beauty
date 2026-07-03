@@ -12,7 +12,7 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 - ✅ **v1.1 Meitu UI** - Phases 8-10, implemented and verified 2026-06-24. Summary is in `.planning/MILESTONES.md`.
 - ✅ **v1.2 HTML Reference Fidelity** - Phase 11 completed 2026-06-25; Phases 12-15 canceled 2026-06-26. Summary is in `.planning/MILESTONES.md`.
 - ✅ **v1.3 Meitu Core Beauty Module Design and Implementation** - Phases 16-20 shipped 2026-06-30. See `.planning/milestones/v1.3-ROADMAP.md`, `.planning/milestones/v1.3-REQUIREMENTS.md`, and `.planning/milestones/v1.3-MILESTONE-AUDIT.md`.
-- 🟡 **v1.4 Stability, QA, and Debt Cleanup** - Phases 21-24 complete; Phase 25 planned.
+- ✅ **v1.4 Stability, QA, and Debt Cleanup** - Phases 21-25 complete as the current-evidence baseline.
 
 ## v1.4 Stability, QA, and Debt Cleanup
 
@@ -125,12 +125,14 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 4. `QUALITY_SCORE.md`, `PLANS.md`, `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, and `.planning/STATE.md` are synchronized with v1.4 evidence.
 5. The milestone is ready for audit without unmapped requirements.
 
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 - **Wave 1:** `25-01` Privacy manifest assessment, active security scans, required-reason classification, and conditional smallest manifest disposition; `25-02` Resource trust review, focused resource tests, and external-resource boundary evidence.
 - **Wave 2:** `25-03` Final security/quality/planning ledger synchronization, blocker/deferred table, requirement traceability, and conservative closeout wording. Depends on `25-01` and `25-02`.
 
-**Next command:** `$gsd-execute-phase 25`
+**Current evidence:** Phase 25 completed through `.planning/phases/25-security-distribution-review-and-closeout/25-SECURITY-CLOSEOUT.md`, `25-RESOURCE-TRUST-EVIDENCE.md`, and `25-VALIDATION.md`. The privacy manifest inventory found no `PrivacyInfo.xcprivacy`; adding one is explicitly deferred for current SDK/Demo behavior with rerun triggers. Active SDK/Demo/package/project scans found no default network, upload, raw path/error, face-geometry payload, raw diagnostic payload, hidden third-party SDK, payment, entitlement, analytics, cloud, remote config, or dynamic download behavior after the narrow Demo copy fix. Bundled resource trust is verified for manifest schema, metadata filters, bundled presets, logical identifiers, traversal-like ID rejection, and typed redacted errors; external resource packages remain disabled. Full SDK tests and focused Demo privacy/import checks pass. Screenshot, physical iPhone, 600-second preview, optimized profiling, external package-integrity, and commercial packaging checks remain future or blocked/not-run evidence.
+
+**Next command:** `$gsd-progress --next`
 
 ## Progress
 
@@ -140,7 +142,7 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 | 22. Automated Demo QA and Screenshot Evidence | v1.4 | QA-01, QA-02, QA-03, QA-04 | 2/2 | Complete |
 | 23. Performance and Reliability Gates | v1.4 | PERF-01, PERF-02, PERF-03, PERF-04, PERF-05 | 5/5 | Complete |
 | 24. Renderer Output Regression Hardening | v1.4 | RENDER-01, RENDER-02, RENDER-03, RENDER-04 | 3/3 | Complete |
-| 25. Security, Distribution Review, and Closeout | v1.4 | 2/3 | In Progress|  |
+| 25. Security, Distribution Review, and Closeout | v1.4 | SEC-01, SEC-02, SEC-03, SEC-04, DOC-01, DOC-02, DOC-03 | 3/3 | Complete |
 
 **Coverage:**
 

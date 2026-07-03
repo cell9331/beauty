@@ -2,41 +2,41 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Stability, QA, and Debt Cleanup
-status: executing
-stopped_at: Completed 25-02-PLAN.md
-last_updated: "2026-07-03T08:36:52.778Z"
-last_activity: 2026-07-03 -- Phase 25 execution started
+status: ready_for_milestone_audit
+stopped_at: Phase 25 complete
+last_updated: "2026-07-03T08:50:34.421Z"
+last_activity: 2026-07-03 -- Phase 25 security/distribution closeout complete
 progress:
   total_phases: 5
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 15
-  completed_plans: 14
-  percent: 80
+  completed_plans: 15
+  percent: 100
 ---
 
 # Project State
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-07-01)
+See: `.planning/PROJECT.md` (updated 2026-07-03)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 25 — security-distribution-review-and-closeout
+**Current focus:** v1.4 milestone audit and archival routing
 
 ## Current Position
 
-Phase: 25 (security-distribution-review-and-closeout) — EXECUTING
+Phase: 25 (security-distribution-review-and-closeout) — COMPLETE
 Plan: 3 of 3
-Status: Ready to execute
-Last activity: 2026-07-03 -- Phase 25 execution started
+Status: Ready for milestone audit routing
+Last activity: 2026-07-03 -- Phase 25 security/distribution closeout complete
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total phases completed: 15
-- Total plans completed: 62
-- Total tasks recorded from summaries: 67
+- Total phases completed: 16
+- Total plans completed: 66
+- Total tasks recorded from summaries: 69
 - Milestone Swift LOC at close: about 16,429 across `BeautySDK` and `BeautyDemo`
 
 **By Phase:**
@@ -67,7 +67,7 @@ Last activity: 2026-07-03 -- Phase 25 execution started
 | 22. Automated Demo QA and Screenshot Evidence | 2/2 | Complete |
 | 23. Performance and Reliability Gates | 5/5 | Complete |
 | 24. Renderer Output Regression Hardening | 3/3 | Complete |
-| 25. Security, Distribution Review, and Closeout | 0/3 | Planned |
+| 25. Security, Distribution Review, and Closeout | 3/3 | Complete |
 | Phase 18 P1 | 8 min | 2 tasks | 2 files |
 | Phase 18 P2 | 117 min | 3 tasks | 10 files |
 | Phase 18 P3 | 19 min | 3 tasks | 6 files |
@@ -88,6 +88,7 @@ Last activity: 2026-07-03 -- Phase 25 execution started
 | Phase 24 P03 | 10 min | 2 tasks | 7 files |
 | Phase 25 P01 | 12 min | 2 tasks | 3 files |
 | Phase 25 P02 | 5 min | 2 tasks | 2 files |
+| Phase 25 P03 | 10 min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -120,20 +121,21 @@ Recent milestone-level outcomes:
 - Phase 24 planning produced three executable plans across two waves: `24-01` focused SwiftPM renderer matrix and pre-watermark no-op fixture regression tests, `24-02` renderer build/run plus 45-output invariant evidence and example-image validation docs, and `24-03` geometry/no-overclaim closeout plus root/planning ledger synchronization.
 - Phase 24 completed renderer output regression hardening: focused renderer regression tests passed with 2 tests, full SDK SwiftPM passed with 150 tests, `BeautyExampleRenderer` built and regenerated 45 ignored local PNG outputs, `check_renderer_outputs.py` verified all expected outputs, and `24-VERIFICATION.md` records passed geometry/no-overclaim scans while keeping geometry saved-output deferred.
 - Phase 25 planning produced three executable plans across two waves: `25-01` privacy manifest assessment, active security scans, required-reason classification, and conditional manifest disposition; `25-02` resource trust review, focused resource tests, and external-resource boundary evidence; and `25-03` final ledger synchronization, blocker/deferred table, traceability, and conservative closeout wording.
+- Phase 25 completed security, distribution review, and closeout: privacy manifest addition is explicitly deferred for current SDK/Demo behavior, active-source security scans and focused Demo privacy/import tests pass, bundled-resource trust is verified, `QUALITY_SCORE.md` and security ledgers are synchronized, and SEC-01 through SEC-04 plus DOC-01 through DOC-03 are complete.
 - `.planning/codebase/*` maps are stale background for v1.4 and should not override current source, root docs, or `.planning` ledgers.
 
 ### Pending Todos
 
-- Preserve v1.4 boundaries while executing: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign.
-- Run `$gsd-execute-phase 25`.
-- Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest review, renderer regression, and automated visual diffs.
+- Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
+- Run `$gsd-progress --next` to route into v1.4 milestone audit or archival.
+- Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, renderer regression, and automated visual diffs.
 
 ### Blockers/Concerns
 
 - Current repository has unrelated uncommitted documentation changes outside Phase 21 files; future commits should keep file scopes explicit.
 - Deferred v2 `ADV-*` items remain outside v1 traceability and are tracked as `TD-007` in `PLANS.md`.
-- Manual release risks are now routed by Phase 21 and updated by Phases 23 and 24: `TD-008` has focused simulator camera pass evidence but physical iPhone checks remain blocked until hardware exists; `TD-009` remains Phase 22 visual evidence with screenshot rerun protocol; and `TD-010` keeps device, long-run, and final security/distribution work routed through Phase 25 or later setup-specific checks.
-- `TD-005` remains routed to Phase 25 because no `PrivacyInfo.xcprivacy` exists.
+- Manual release risks are now routed by Phase 21 and updated by Phases 23 through 25: `TD-008` has focused simulator camera pass evidence but physical iPhone checks remain blocked until hardware exists; `TD-009` remains Phase 22 visual evidence with screenshot rerun protocol; and `TD-010` keeps device, long-run, screenshot, optimized profiling, external-resource integrity, and commercial packaging work routed to later setup-specific checks.
+- `TD-005` is closed for current v1.4 evidence through explicit `PrivacyInfo.xcprivacy` deferral; reopen it if SDK/Demo behavior starts collecting data, uses required-reason APIs, adds third-party SDKs, adds network/cloud/analytics behavior, packages the example executable, or enters packaging/submission work.
 - Phase 23 focused Demo simulator camera tests pass in the current environment. Phase 22 screenshot evidence still carries the historical Metal Toolchain blocker until the screenshot protocol is rerun.
 - v1.1 reference screenshots are local analysis inputs, not licensed production assets; implementation should recreate structure and feel without copying commercial assets directly.
 - Phase 12-15 cancellation is intentional; do not treat canceled AUDIT, HSWIFT, ESWIFT, or VQA requirements as open blockers.
@@ -151,10 +153,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-03T08:36:52.774Z
-Stopped at: Completed 25-02-PLAN.md
-Resume file: None
+Last session: 2026-07-03T08:46:51.000Z
+Stopped at: Phase 25 complete
+Resume file: .planning/phases/25-security-distribution-review-and-closeout/25-SECURITY-CLOSEOUT.md
 
 ## Operator Next Steps
 
-- Run `$gsd-execute-phase 25`.
+- Run `$gsd-progress --next`.
