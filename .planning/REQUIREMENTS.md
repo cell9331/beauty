@@ -47,10 +47,10 @@ Phase 24 evidence is recorded in `.planning/phases/24-renderer-output-regression
 
 ### Security and Distribution Review
 
-- [ ] **SEC-01**: The repository contains a documented privacy manifest assessment, and `PrivacyInfo.xcprivacy` is added or explicitly deferred based on actual SDK/Demo behavior and Apple required-reason API usage.
-- [ ] **SEC-02**: No-network, no-upload, no unredacted path, no unredacted framework error, no face-geometry payload leak, and no serialized diagnostic payload leak checks pass for active SDK and Demo surfaces.
+- [x] **SEC-01**: The repository contains a documented privacy manifest assessment, and `PrivacyInfo.xcprivacy` is added or explicitly deferred based on actual SDK/Demo behavior and Apple required-reason API usage.
+- [x] **SEC-02**: No-network, no-upload, no unredacted path, no unredacted framework error, no face-geometry payload leak, and no serialized diagnostic payload leak checks pass for active SDK and Demo surfaces.
 - [ ] **SEC-03**: Resource trust boundaries are reviewed so bundled presets, metadata filters, identifiers, missing resources, and future external resource assumptions match `SECURITY.md`.
-- [ ] **SEC-04**: v1.4 adds no hidden third-party SDK, analytics, remote config, cloud processing, dynamic downloads, payment, VIP, or entitlement behavior.
+- [x] **SEC-04**: v1.4 adds no hidden third-party SDK, analytics, remote config, cloud processing, dynamic downloads, payment, VIP, or entitlement behavior.
 
 ### Traceability and Closeout
 
