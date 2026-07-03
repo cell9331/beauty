@@ -125,8 +125,12 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 4. `QUALITY_SCORE.md`, `PLANS.md`, `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, and `.planning/STATE.md` are synchronized with v1.4 evidence.
 5. The milestone is ready for audit without unmapped requirements.
 
-**Plans:** Not planned yet
-**Next command:** `$gsd-discuss-phase 25` after Phase 24 completes
+**Plans:** 3 plans
+
+- **Wave 1:** `25-01` Privacy manifest assessment, active security scans, required-reason classification, and conditional smallest manifest disposition; `25-02` Resource trust review, focused resource tests, and external-resource boundary evidence.
+- **Wave 2:** `25-03` Final security/quality/planning ledger synchronization, blocker/deferred table, requirement traceability, and conservative closeout wording. Depends on `25-01` and `25-02`.
+
+**Next command:** `$gsd-execute-phase 25`
 
 ## Progress
 
@@ -136,7 +140,7 @@ This milestone does not add Meitu product-surface breadth, public parameter fiel
 | 22. Automated Demo QA and Screenshot Evidence | v1.4 | QA-01, QA-02, QA-03, QA-04 | 2/2 | Complete |
 | 23. Performance and Reliability Gates | v1.4 | PERF-01, PERF-02, PERF-03, PERF-04, PERF-05 | 5/5 | Complete |
 | 24. Renderer Output Regression Hardening | v1.4 | RENDER-01, RENDER-02, RENDER-03, RENDER-04 | 3/3 | Complete |
-| 25. Security, Distribution Review, and Closeout | v1.4 | SEC-01, SEC-02, SEC-03, SEC-04, DOC-01, DOC-02, DOC-03 | 0/0 | Planned |
+| 25. Security, Distribution Review, and Closeout | v1.4 | SEC-01, SEC-02, SEC-03, SEC-04, DOC-01, DOC-02, DOC-03 | 0/3 | Planned |
 
 **Coverage:**
 
