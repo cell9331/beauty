@@ -76,6 +76,14 @@ The resource test requirement comment now cites `SEC-03`. Test guard literals fo
 
 Current bundled-resource evidence supports only the existing bundled manifest/preset trust boundary. It does not complete external resource package capability and does not justify score 5 for real LUT, makeup, model, sticker, download, cache, checksum/signature, or package-integrity capability.
 
+## External Boundary Sign-Off
+
+| Check | Status | Evidence | Requirement |
+| --- | --- | --- | --- |
+| Unsupported external resource classes remain disabled | passed | No production code changes added LUT, makeup, model, sticker, dynamic package, cache, checksum/signature, Demo UI, or public-parameter capability. | SEC-03 |
+| Current evidence limited to bundled resources | passed | Focused tests cover bundled manifest/preset/filter behavior only; the boundary table above keeps external packages future. | SEC-03 |
+| Quality-score constraint recorded | passed | This artifact explicitly says bundled-resource evidence does not complete external resource package capability and does not justify score 5 for that capability. | SEC-03 |
+
 ## Blockers and Deferred Checks
 
 | Gate | Status | Evidence | Impact | Next step | Closeout blocking |
