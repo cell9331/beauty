@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: SDK Geometry Output Foundation and Face Shape Slice
-status: planning
-last_updated: "2026-07-03T23:35:17.034Z"
-last_activity: 2026-07-03
+status: planned
+last_updated: "2026-07-03T23:39:32.062Z"
+last_activity: 2026-07-04 -- v1.5 roadmap created with Phases 26-28
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -20,14 +20,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-04)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Planning next milestone
+**Current focus:** Phase 26 Geometry Facade and Landmark Routing Foundation
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 26 Geometry Facade and Landmark Routing Foundation
 Plan: —
-Status: Defining requirements
-Last activity: 2026-07-03 — Milestone v1.5 started
+Status: Ready for Phase 26 discussion
+Last activity: 2026-07-04 -- v1.5 requirements and roadmap created
 
 ## Performance Metrics
 
@@ -67,6 +67,9 @@ Last activity: 2026-07-03 — Milestone v1.5 started
 | 23. Performance and Reliability Gates | 5/5 | Complete |
 | 24. Renderer Output Regression Hardening | 3/3 | Complete |
 | 25. Security, Distribution Review, and Closeout | 3/3 | Complete |
+| 26. Geometry Facade and Landmark Routing Foundation | 0/0 | Pending |
+| 27. Geometry Render Output and Verification Harness | 0/0 | Pending |
+| 28. Face Shape Slice Completion and Documentation Closeout | 0/0 | Pending |
 | Phase 18 P1 | 8 min | 2 tasks | 2 files |
 | Phase 18 P2 | 117 min | 3 tasks | 10 files |
 | Phase 18 P3 | 19 min | 3 tasks | 6 files |
@@ -122,12 +125,13 @@ Recent milestone-level outcomes:
 - Phase 25 planning produced three executable plans across two waves: `25-01` privacy manifest assessment, active security scans, required-reason classification, and conditional manifest disposition; `25-02` resource trust review, focused resource tests, and external-resource boundary evidence; and `25-03` final ledger synchronization, blocker/deferred table, traceability, and conservative closeout wording.
 - Phase 25 completed security, distribution review, and closeout: privacy manifest addition is explicitly deferred for current SDK/Demo behavior, active-source security scans and focused Demo privacy/import tests pass, bundled-resource trust is verified, `QUALITY_SCORE.md` and security ledgers are synchronized, and SEC-01 through SEC-04 plus DOC-01 through DOC-03 are complete.
 - v1.4 milestone audit passed in `.planning/v1.4-MILESTONE-AUDIT.md`: all 24 requirements, 5 phases, 5 integration checks, 5 flows, and 5/5 Nyquist validation files are satisfied. Phase 21 and Phase 22 validation-document drift was cleaned on 2026-07-03 by updating their `VALIDATION.md` files to final status with audit trails.
+- v1.5 is scoped to SDK geometry output foundation plus the `脸型` existing-parameter slice only. Phase 26 covers public facade geometry activation and privacy-safe landmark routing, Phase 27 covers saved-output geometry evidence and degradation verification, and Phase 28 covers `脸型` tool completion plus ledger/documentation closeout.
 - `.planning/codebase/*` maps are stale background for v1.4 and should not override current source, root docs, or `.planning` ledgers.
 
 ### Pending Todos
 
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
-- Start the next milestone with `$gsd-new-milestone` before resuming implementation work.
+- Start Phase 26 with `$gsd-discuss-phase 26` before implementation work.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, renderer regression, and automated visual diffs.
 
 ### Blockers/Concerns
@@ -139,7 +143,7 @@ Recent milestone-level outcomes:
 - Phase 23 focused Demo simulator camera tests pass in the current environment. Phase 22 screenshot evidence still carries the historical Metal Toolchain blocker until the screenshot protocol is rerun.
 - v1.1 reference screenshots are local analysis inputs, not licensed production assets; implementation should recreate structure and feel without copying commercial assets directly.
 - Phase 12-15 cancellation is intentional; do not treat canceled AUDIT, HSWIFT, ESWIFT, or VQA requirements as open blockers.
-- Geometry-heavy branches need face detection plus geometry rendering output before they can claim saved example-image visual completion.
+- Geometry-heavy branches need face detection plus geometry rendering output before they can claim saved example-image visual completion; v1.5 promotes only the first `脸型` slice after this evidence exists.
 
 ## Deferred Items
 
@@ -149,14 +153,16 @@ Recent milestone-level outcomes:
 | Release QA | Real-device camera/Vision parity, visual naturalness, production render quality, performance budgets, and long-run hardware readiness | Partially promoted into v1.4 hardening scope; feature expansion remains deferred | v1.4 start |
 | SwiftUI visual fidelity | HTML-to-SwiftUI delta report, Home SwiftUI fidelity pass, Editor SwiftUI fidelity pass, and v1.2 visual QA closeout | Canceled from v1.2; may be reconsidered as a future milestone | 2026-06-26 |
 | Deferred Meitu product areas | Home/discovery, style resources, AI/background, video/body, account/gallery, search, premium access, commerce, account authorization | Deferred outside v1.3 core beauty modules | 2026-06-26 |
+| Broader Meitu shape groups | `眼睛`, `鼻子`, `嘴唇`, `比例`, `3D塑颜`, and `眉毛` implementation after the first `脸型` slice proves geometry output | Deferred outside v1.5 first slice | v1.5 start |
 | Codebase maps | Formal refresh of stale `.planning/codebase/*` maps | Deferred until explicitly scoped | Phase 21 |
 
 ## Session Continuity
 
-Last session: 2026-07-04T06:55:06+08:00
-Stopped at: v1.4 milestone archived
-Resume file: .planning/MILESTONES.md
+Last session: 2026-07-04T07:39:32+08:00
+Stopped at: v1.5 roadmap created
+Resume file: .planning/ROADMAP.md
 
 ## Operator Next Steps
 
-- Start the next milestone with `$gsd-new-milestone`.
+- Run `$gsd-discuss-phase 26` for Geometry Facade and Landmark Routing Foundation.
+- Also available: `$gsd-plan-phase 26`.
