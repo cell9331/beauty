@@ -26,18 +26,28 @@
 
 ## 3. Active
 
-### A-2026-07-04-gsd-new-milestone-v1-5
+None.
+
+## 4. Completed
+
+### C-2026-07-04-gsd-new-milestone-v1-5
 
 | Field | Value |
 | --- | --- |
-| Status | active |
-| Started | 2026-07-04 |
-| Scope | Start v1.5 as an SDK-core milestone for geometry saved-output foundation plus the `脸型` existing-parameter slice from `美型 / 五官`. Preserve no-UI, local-first, facade-visible evidence, and ledger-update boundaries. |
-| Files | `.planning/PROJECT.md`, `.planning/STATE.md`, pending `.planning/REQUIREMENTS.md`, pending `.planning/ROADMAP.md`, `PLANS.md` |
-| Next | Resolve the GSD research decision, define v1.5 requirements, generate the roadmap, and map the first executable phase. |
-| Notes | `phases clear` was not run with `--confirm` because it would delete 21 preserved historical phase directories; continue phase numbering for v1.5 instead. |
+| Completed | 2026-07-04 |
+| Scope | Started v1.5 as an SDK-core milestone for geometry saved-output foundation plus the `脸型` existing-parameter slice from `美型 / 五官`. Preserved the no-UI, local-first, facade-visible evidence, and ledger-update boundaries. |
+| Requirements | GEO-01, GEO-02, GEO-03, GEO-04, FACE-01, FACE-02, FACE-03, FACE-04, FACE-05, FACE-06, DOC-01, DOC-02, DOC-03 |
+| Files | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `PLANS.md` |
+| Verification | User selected the recommended first slice and then selected skip research. `git diff --check` passed for `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, and `.planning/STATE.md`. Requirement scans confirmed all 13 v1.5 IDs are present and mapped to Phase 26, 27, or 28. `gsd-tools roadmap analyze` recognized 3 phases, 0 completed phases, and `next_phase: 26`. Pending todo scan found no `.planning/todos/pending/*.md` files to tag. |
+| Build | Not run; this was a planning/documentation workflow with no Swift source changes. |
+| Commit | `63fd133`, `d7f3e70`, `7d7b963`, `2f41d1f`, `f97e63e` plus the final `PLANS.md` completion commit. |
 
-## 4. Completed
+Outcome:
+
+- v1.5 current milestone is recorded in `.planning/PROJECT.md` and `.planning/STATE.md`.
+- `.planning/REQUIREMENTS.md` defines 13 requirements across geometry output foundation, `脸型` completion, and documentation/evidence.
+- `.planning/ROADMAP.md` defines Phase 26 through Phase 28 and routes the next step to `$gsd-discuss-phase 26`.
+- `phases clear --confirm` was intentionally not run because it would delete 21 preserved historical phase directories; v1.5 continues phase numbering instead.
 
 ### C-2026-07-04-meitu-shape-feature-ledger
 
