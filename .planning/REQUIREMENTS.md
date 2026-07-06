@@ -7,8 +7,8 @@
 
 ### Geometry Output Foundation
 
-- [ ] **GEO-01**: SDK public facade can run geometry-enabled still-image processing through `BeautyEngine.processResult(...)`.
-- [ ] **GEO-02**: Detection and landmark results can feed geometry render planning without exposing raw landmark payloads or sensitive diagnostics.
+- [x] **GEO-01**: SDK public facade can run geometry-enabled still-image processing through `BeautyEngine.processResult(...)`.
+- [x] **GEO-02**: Detection and landmark results can feed geometry render planning without exposing raw landmark payloads or sensitive diagnostics.
 - [ ] **GEO-03**: Geometry render output preserves input dimensions and produces deterministic saved-output evidence through `BeautyExampleRenderer` or an equivalent SDK-only path.
 - [ ] **GEO-04**: Geometry output verification covers no-face, missing-landmark, stale/reused-landmark, and combined-strength degradation paths.
 
@@ -54,8 +54,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| GEO-01 | Phase 26 | Pending |
-| GEO-02 | Phase 26 | Pending |
+| GEO-01 | Phase 26 | Complete - `26-VERIFICATION.md` records `BeautyEngineGeometryFacadeTests`, focused compatibility/detector tests, and full `swift test --package-path BeautySDK` evidence for geometry-triggered still-image facade detection. |
+| GEO-02 | Phase 26 | Complete - `26-VERIFICATION.md` records selected-face resolver/degradation tests plus public/SPI raw geometry export and active-source redaction scans. |
 | GEO-03 | Phase 27 | Pending |
 | GEO-04 | Phase 27 | Pending |
 | FACE-01 | Phase 28 | Pending |
@@ -72,7 +72,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 - v1.5 requirements: 13 total
 - Mapped to phases: 13
 - Unmapped: 0
+- Complete: 2
+- Pending: 11
 
 ---
 *Requirements defined: 2026-07-04*
-*Last updated: 2026-07-04 after initial v1.5 definition*
+*Last updated: 2026-07-06 after Phase 26 verification*

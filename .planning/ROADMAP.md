@@ -38,11 +38,11 @@ Accepted limitations remain future or setup-specific work: current screenshot PN
 
 ### Phase 26: Geometry Facade and Landmark Routing Foundation
 
-**Status:** Planned
+**Status:** Complete - completed 2026-07-06
 **Goal:** Make public `BeautySDK` still-image processing capable of activating geometry render intent from detection and landmarks without exposing raw geometry data.
 **Requirements:** GEO-01, GEO-02
 **Dependencies:** None
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 Plans:
 **Wave 1**
 
@@ -58,7 +58,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 26-04-PLAN.md — Root-doc and planning ledger synchronization.
+- [x] 26-04-PLAN.md — Root-doc and planning ledger synchronization.
 
 **Cross-cutting constraints:**
 
@@ -70,6 +70,10 @@ Plans:
 2. Detection and landmark data can feed geometry render planning without Demo/internal-target imports.
 3. Diagnostics, summaries, metrics, and errors remain redacted and do not expose raw landmark payloads or sensitive paths.
 4. Existing no-UI and local-first boundaries remain intact.
+
+**Evidence:** `.planning/phases/26-geometry-facade-and-landmark-routing-foundation/26-VERIFICATION.md` records focused facade, metadata compatibility, detector, resolver, and degradation tests plus full `swift test --package-path BeautySDK` passing with 159 tests. Static scans passed for public/SPI raw geometry export, active-source raw geometry/error/path/image-byte leakage, renderer geometry-case exclusion, and `SHAPE_FEATURE_LEDGER.md` implemented-status guard.
+
+**Boundary:** Phase 26 proves facade geometry intent and package-internal routing only. Phase 27 remains the owner for deterministic saved-output geometry evidence; Phase 28 remains the owner for `脸型` implementation-status promotion.
 
 ### Phase 27: Geometry Render Output and Verification Harness
 
@@ -109,20 +113,14 @@ Plans:
 | v1.2 HTML Reference Fidelity | 1 completed, 4 canceled | 4 completed | Reduced scope | Completed | 2026-06-26 |
 | v1.3 Meitu Core Beauty Module Design and Implementation | 5 | 14 | 20/20 | Shipped | 2026-06-30 |
 | v1.4 Stability, QA, and Debt Cleanup | 5 | 15 | 24/24 | Shipped | 2026-07-03 |
-| v1.5 SDK Geometry Output Foundation and Face Shape Slice | 3 | 4 planned | 0/13 | Active | - |
+| v1.5 SDK Geometry Output Foundation and Face Shape Slice | 3 | 4 Phase 26 plans executed | 2/13 | Active - Phase 26 complete | - |
 
 ## Next
 
-Execute Phase 26:
+Start Phase 27 planning for saved-output geometry evidence:
 
 ```bash
-$gsd-execute-phase 26
-```
-
-Also available:
-
-```bash
-$gsd-execute-phase 26 --wave 1
+$gsd-discuss-phase 27
 ```
 
 ## Backlog

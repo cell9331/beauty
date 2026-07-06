@@ -130,6 +130,13 @@ Every degradation path that affects visible output should be visible in debug me
 
 Phase 6 current implementation treats skin, face shape, eyes, nose, mouth, and lip color as face-dependent when the resolver is given an explicit no-face context. Color adjustment and metadata filters remain face-agnostic and continue when their parameters are non-zero. Missing landmark groups skip only dependent domains, reused landmarks reduce geometry briefly, and stale landmarks disable strong geometry with warning/metric evidence.
 
+Phase 26 still-image facade behavior:
+
+- `BeautyEngine.processResult(image:metadata:parameters:)` runs detection only when face-shape, eye, nose, mouth, or `lipColor` parameters require geometry.
+- No-op, color, filter, and basic-skin paths preserve `.notRun` detection-summary compatibility.
+- Disabled tracking preserves `.disabled` and avoids detector work.
+- No face, low confidence, missing landmark groups, detector unavailable, and detector timeout degrade through redacted summaries/warnings/metrics while safe face-agnostic work can continue.
+
 ## 7. Observability Model
 
 First-version diagnostics live in `BeautyCore/Diagnostics`; do not create a separate diagnostics package until another product actually shares it. Use three layers:
@@ -368,6 +375,7 @@ Rules:
 - Public `BeautyDetectionSummary` exposes only availability, redacted reason codes, counts, and timings.
 - Camera UI status is debounced for three processed frames; photo UI status persists with the processed image until the next image result.
 - `noFace`, `partial`, `lowConfidence`, `stale`, `skipped`, and `reused` are non-fatal states unless a required render dependency fails separately.
+- Phase 26 public still-image detection follows this non-fatal policy: unusable detection skips face-dependent geometry domains, keeps safe non-geometry domains, and never exposes raw detector errors in public results.
 
 First-version thresholds:
 
@@ -495,6 +503,12 @@ Phase 7 Demo reliability evidence recorded 2026-06-23:
 - Parameter JSON import is recoverable: invalid JSON, unsupported schema, oversized payload, invalid values, and unknown filters keep the current parameter snapshot unchanged until explicit Apply succeeds.
 - Full Demo simulator tests and full SDK SwiftPM tests passed as final closeout evidence.
 
+Phase 26 geometry-facade reliability evidence recorded 2026-07-06:
+
+- `BeautyEngineGeometryFacadeTests` covers detector-call gating, selected-face routing, no-geometry `.notRun`, disabled-tracking `.disabled`, no-face, low-confidence, missing-landmark, detector-unavailable, timeout, safe-domain continuation, and redacted public evidence.
+- `BeautyDetectionTests.VisionFaceDetectorTests`, `BeautyEffectResolverTests`, and `MissingLandmarkDegradationTests` cover detector seams, selected-face resolver routing, and group-specific degradation.
+- Full `swift test --package-path BeautySDK` passed with 159 tests; raw-leak and public/SPI export scans passed as recorded in `26-VERIFICATION.md`.
+
 Remaining manual reliability checks:
 
 - Real-device camera/Vision smoke still needs hardware verification for mirror/crop behavior, low-light detection quality, and long-run realtime stability.
@@ -524,3 +538,4 @@ Before a release-like build:
 | 2026-05-25 | First-version target is 720p stable 30 fps, with 1080p for mid/high-end devices. | Matches existing planning notes and avoids overpromising 4K realtime. |
 | 2026-05-25 | Detection cadence can be lower than render cadence. | Face landmarks do not need full frame-rate detection for stable preview. |
 | 2026-05-25 | Metrics are internal/debug-first before becoming a public API. | Avoid locking an immature observability contract too early. |
+| 2026-07-06 | Still-image geometry detection is gated by parameter need and degrades through summaries instead of public errors. | Host apps keep no-geometry compatibility, disabled tracking remains non-error, and unusable detection skips only face-dependent work. |

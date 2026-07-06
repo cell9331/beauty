@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: SDK Geometry Output Foundation and Face Shape Slice
-status: executing
-stopped_at: Completed 26-03-PLAN.md
-last_updated: "2026-07-06T04:58:44.165Z"
-last_activity: 2026-07-06 -- Phase 26 execution started
+status: ready
+stopped_at: Completed Phase 26
+last_updated: "2026-07-06T05:04:49.000Z"
+last_activity: 2026-07-06 -- Phase 26 completed
 progress:
   total_phases: 3
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 4
-  completed_plans: 3
-  percent: 75
+  completed_plans: 4
+  percent: 100
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-04)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 26 — geometry-facade-and-landmark-routing-foundation
+**Current focus:** Phase 27 — geometry-render-output-and-verification-harness
 
 ## Current Position
 
-Phase: 26 (geometry-facade-and-landmark-routing-foundation) — EXECUTING
-Plan: 4 of 4
-Status: Ready to execute
-Last activity: 2026-07-06 -- Phase 26 execution started
+Phase: 27 (geometry-render-output-and-verification-harness) — PENDING
+Plan: not planned yet
+Status: Ready for discussion/planning
+Last activity: 2026-07-06 -- Phase 26 completed
 
 ## Performance Metrics
 
@@ -68,7 +68,7 @@ Last activity: 2026-07-06 -- Phase 26 execution started
 | 23. Performance and Reliability Gates | 5/5 | Complete |
 | 24. Renderer Output Regression Hardening | 3/3 | Complete |
 | 25. Security, Distribution Review, and Closeout | 3/3 | Complete |
-| 26. Geometry Facade and Landmark Routing Foundation | 3/4 | In Progress |
+| 26. Geometry Facade and Landmark Routing Foundation | 4/4 | Complete |
 | 27. Geometry Render Output and Verification Harness | 0/0 | Pending |
 | 28. Face Shape Slice Completion and Documentation Closeout | 0/0 | Pending |
 | Phase 18 P1 | 8 min | 2 tasks | 2 files |
@@ -127,12 +127,13 @@ Recent milestone-level outcomes:
 - Phase 25 completed security, distribution review, and closeout: privacy manifest addition is explicitly deferred for current SDK/Demo behavior, active-source security scans and focused Demo privacy/import tests pass, bundled-resource trust is verified, `QUALITY_SCORE.md` and security ledgers are synchronized, and SEC-01 through SEC-04 plus DOC-01 through DOC-03 are complete.
 - v1.4 milestone audit passed in `.planning/v1.4-MILESTONE-AUDIT.md`: all 24 requirements, 5 phases, 5 integration checks, 5 flows, and 5/5 Nyquist validation files are satisfied. Phase 21 and Phase 22 validation-document drift was cleaned on 2026-07-03 by updating their `VALIDATION.md` files to final status with audit trails.
 - v1.5 is scoped to SDK geometry output foundation plus the `脸型` existing-parameter slice only. Phase 26 covers public facade geometry activation and privacy-safe landmark routing, Phase 27 covers saved-output geometry evidence and degradation verification, and Phase 28 covers `脸型` tool completion plus ledger/documentation closeout.
+- Phase 26 completed the public still-image geometry facade/routing foundation: `BeautyEngine.processResult(image:metadata:parameters:)` now runs geometry-triggered detection only when needed, routes one package-only selected face into internal geometry planning, preserves no-geometry and disabled-tracking compatibility, and records only redacted summaries, warnings, and aggregate metrics. `26-VERIFICATION.md` passed focused facade/detector/effects tests, full SDK SwiftPM tests with 159 tests, raw-geometry/redaction scans, renderer-case exclusion, and `SHAPE_FEATURE_LEDGER.md` implemented-status guard.
 - `.planning/codebase/*` maps are stale background for v1.4 and should not override current source, root docs, or `.planning` ledgers.
 
 ### Pending Todos
 
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
-- Execute Phase 26 with `$gsd-execute-phase 26`; four plans are ready across four dependent waves.
+- Start Phase 27 with `$gsd-discuss-phase 27`; saved-output geometry rendering evidence and degradation verification remain Phase 27 scope.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, renderer regression, and automated visual diffs.
 
 ### Blockers/Concerns
@@ -159,11 +160,11 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-06T04:58:43.952Z
-Stopped at: Completed 26-03-PLAN.md
-Resume file: .planning/phases/26-geometry-facade-and-landmark-routing-foundation/26-04-PLAN.md
+Last session: 2026-07-06T05:04:49.000Z
+Stopped at: Completed Phase 26
+Resume file: .planning/ROADMAP.md
 
 ## Operator Next Steps
 
-- Run `$gsd-execute-phase 26` for Geometry Facade and Landmark Routing Foundation.
-- Also available: `$gsd-review --phase 26 --all` before execution, or `$gsd-plan-phase 26 --research` to refresh research and replan.
+- Run `$gsd-discuss-phase 27` for Geometry Render Output and Verification Harness.
+- Preserve Phase 26 boundaries until Phase 27/28 evidence exists: no saved-output geometry claim, no Demo UI change, no public raw geometry API, and no `SHAPE_FEATURE_LEDGER.md` implementation-status promotion.

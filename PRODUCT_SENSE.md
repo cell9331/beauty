@@ -128,6 +128,7 @@ Acceptance:
 | Loading | Large image processing shows loading state and does not block UI indefinitely. |
 | Error | Invalid image returns typed error and preserves previous output. |
 | Compare | Before/after uses same crop/orientation and does not shift unexpectedly. |
+| Geometry intent | Geometry-triggering still-image parameters can activate detection through the public facade, with redacted degradation when no usable face exists. |
 
 ### 5.4 One-Tap Preset
 
@@ -375,6 +376,20 @@ Manual or future release-hardening checks still required before stronger product
 - Release-like naturalness review, real-device Vision parity, simulator screenshot/UI automation, performance budgets, and long-run hardware stability.
 - Production render quality, commercial asset parity, and exact Meitu/Xingtu feature parity.
 
+### 7.11 Phase 26 Geometry Facade Acceptance
+
+Agent-verifiable checks recorded 2026-07-06:
+
+- `BeautyEngineGeometryFacadeTests` proves public still-image processing runs detection only for geometry-triggering parameters and routes one selected usable face into internal geometry planning.
+- No-op, color, filter, and basic-skin still-image requests preserve `.notRun`; disabled tracking preserves `.disabled`.
+- No-face, low-confidence, missing-landmark, detector-unavailable, and timeout states degrade without crashing, keep safe face-agnostic work active, and expose only redacted summaries, warnings, and aggregate metrics.
+- Public/SPI export scans and active-source scans prove no raw landmark, bounding-box, control-point, Vision observation, raw framework error, local path, raw JSON, or image-byte payload is exposed.
+
+Manual or future checks still required before stronger product claims:
+
+- Phase 26 does not add Demo UI behavior, saved-output renderer cases, generated PNG evidence, commercial quality evidence, full Meitu parity, or `SHAPE_FEATURE_LEDGER.md` implementation status.
+- Phase 27 owns deterministic saved-output geometry rendering evidence; Phase 28 owns verified `脸型` tool completion and ledger promotion.
+
 ## 8. Preset Product Contract
 
 MVP built-in presets:
@@ -451,3 +466,4 @@ Before merging product-facing changes, verify:
 | 2026-05-25 | Naturalness is a product invariant, not a style preference. | Beauty SDK trust depends on avoiding obvious distortion. |
 | 2026-05-25 | Presets are complete parameter bundles. | Keeps one-tap UX deterministic and testable. |
 | 2026-05-25 | Later domains stay visible but not blocking: makeup, segmentation, body, video export. | Prevents scope creep while preserving architecture direction. |
+| 2026-07-06 | Phase 26 proves public still-image geometry intent without claiming visible geometry output. | Host apps can exercise detection-backed planning through `BeautyEngine.processResult(...)`, while saved-output quality and `脸型` completion remain later evidence gates. |

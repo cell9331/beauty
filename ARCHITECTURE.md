@@ -12,6 +12,7 @@
 - 已存在 `BeautyDemo/` Xcode Demo App。
 - 已存在 `BeautySDK/` Swift Package，包含 `BeautyCore`、`BeautyDetection`、`BeautyRender`、`BeautyEffects`、`BeautyResources` 和 public `BeautySDK` facade。
 - Phase 6 当前实现已让 `BeautyEffects` 承担效果解析、安全 cap、几何 provider、MVP 颜色/几何输出与降级 metadata；Demo 仍只通过 public `BeautySDK` facade 集成。
+- Phase 26 当前实现已让 public `BeautySDK` still-image facade 在几何参数需要时触发检测，并通过 package-only 检测观察值把一个 selected face 路由到 `BeautyEffects` 内部 `FaceGeometry` planning；public API 仍只暴露 redacted `BeautyDetectionSummary`、warnings 和 aggregate metrics。
 - `docs/` 下存在历史规划资料，迁移后的根级文档优先级更高。
 
 ## 2. 顶层不变量
@@ -137,6 +138,7 @@ BeautyDemo
 - 不把 Vision 坐标泄漏到 `BeautySDK` 对外 API。
 - `VisionFaceDetector`、`CoordinateMapper`、`BeautyFaceObservation`、landmark groups 和 Vision bounding boxes 都停留在 `BeautyDetection` 内部。
 - 对外只通过 `BeautySDK` facade 暴露 `BeautyInputMetadata` 与 geometry-free 的 `BeautyDetectionSummary`。
+- Phase 26 允许 `BeautySDK` 通过 package-only seam 调用 `VisionFaceDetector` 并选择一个 usable face；该 seam 不允许 Demo 或 public API 访问 raw observation、bounding box、landmark、Vision object 或 provider internals。
 - 坐标映射的规范出口是 image-normalized SDK 模型；preview / mirrored preview 只属于 App 展示层。
 
 ### 6.3 BeautyRender
@@ -176,6 +178,7 @@ BeautyDemo
 - 新效果必须声明依赖：是否需要人脸点、资源、额外模型、额外 pass。
 - 算法级安全 cap、combined weakening、missing-landmark skip 和 stale/reused 降级只改变内部 effective strength，不收窄 public `BeautyParameters` 范围。
 - `BeautyEffects` 可以使用内部 `FaceGeometry`/`WarpControlPoint` 适配层，但不得把控制点、bounding box、landmark 或 provider 类型暴露给 `BeautySDK` public facade 或 Demo。
+- Phase 26 的 `BeautyFaceGeometryAdapter` 只把 selected package observation 转成内部 `FaceGeometry` planning input；它不是 public geometry export，也不是 renderer saved-output evidence。
 
 ### 6.5 BeautyResources
 
@@ -212,6 +215,7 @@ import BeautySDK
 - 暴露 `BeautySDKResources`，让 App 获取内置 filters、presets，并在提交参数前验证 filter 引用。
 - 隐藏 Vision、Metal、Core Image、Target 拆分细节。
 - 把内部错误映射为稳定 SDK 错误。
+- Phase 26 的 still-image `BeautyEngine.processResult(image:metadata:parameters:)` 在 face-shape、eye、nose、mouth 或 `lipColor` 参数需要几何时触发检测；no-op/color/filter/basic-skin 路径保留 `.notRun`，disabled tracking 保留 `.disabled`。
 
 ### 6.7 BeautyDemo
 

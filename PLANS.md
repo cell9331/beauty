@@ -30,6 +30,25 @@ None.
 
 ## 4. Completed
 
+### C-2026-07-06-gsd-execute-phase-26-geometry-facade-routing
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-06 |
+| Scope | Ran `$gsd-execute-phase 26` for Geometry Facade and Landmark Routing Foundation. Completed four dependent waves: package-only selected-face geometry resolver routing, public still-image facade detection gating, final verification/validation evidence, and root/planning ledger synchronization. |
+| Requirements | GEO-01, GEO-02 |
+| Files | `BeautySDK/Sources/BeautyDetection/BeautyFaceObservation.swift`, `CoordinateSpace.swift`, `VisionFaceDetector.swift`, `BeautySDK/Sources/BeautyEffects/Planning/BeautyFaceGeometryAdapter.swift`, `BeautyEffectResolver.swift`, `BeautySDK/Sources/BeautySDK/BeautyEngine.swift`, `BeautyEngineGeometryDetection.swift`, `BeautyEngineTestingSupport.swift`, focused SDK tests, `.planning/phases/26-geometry-facade-and-landmark-routing-foundation/26-VERIFICATION.md`, `26-VALIDATION.md`, `26-01-SUMMARY.md`, `26-02-SUMMARY.md`, `26-03-SUMMARY.md`, `26-04-SUMMARY.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `ARCHITECTURE.md`, `DESIGN.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `QUALITY_SCORE.md`, `PLANS.md` |
+| Verification | `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyEngineGeometryFacadeTests` passed with 4 tests; `BeautyEngineMetadataCompatibilityTests` passed with 4 tests; `BeautyDetectionTests.VisionFaceDetectorTests` passed with 6 tests; `BeautyEffectsTests.BeautyEffectResolverTests` passed with 10 tests; `BeautyEffectsTests.MissingLandmarkDegradationTests` passed with 14 tests; full `swift test --package-path BeautySDK` passed with 159 tests. Public/SPI raw geometry export scans, active-source raw-leak scans, Demo internal-import scan, renderer geometry-case exclusion scan, `SHAPE_FEATURE_LEDGER.md` implemented-status guard, D-01 through D-16 traceability scan, root/planning evidence scan, and scoped `git diff --check` passed. |
+| Build | SDK SwiftPM tests passed. No Demo build/test was run in Phase 26 because no Demo source/UI behavior changed; Demo boundary was covered by static import and active-source redaction scans. |
+| Commit | Task commits include `82ef988`, `04c033b`, `9e8dc18`, `3308a67`, `3a15fbc`, `b3cc91b`, `958527d`, and `bfd1d17`; final closeout commit records Plan 26-04 docs/ledger synchronization and this entry. |
+
+Outcome:
+
+- GEO-01 is complete: public still-image `BeautyEngine.processResult(image:metadata:parameters:)` now detects only for geometry-triggering face-shape, eye, nose, mouth, or `lipColor` parameters, while no-op/color/filter/basic-skin paths preserve `.notRun` and disabled tracking preserves `.disabled`.
+- GEO-02 is complete: selected package-only detection observations can feed internal `FaceGeometry` planning through `BeautyEffectResolver` without public raw landmark, bounding-box, control-point, Vision object, raw framework error, local path, raw JSON, or image-byte exposure.
+- Phase 26 intentionally adds no Demo UI behavior, no `BeautyExampleRenderer` geometry case, no saved-output PNG evidence claim, no public raw geometry API, no commercial quality/full parity/release-readiness claim, and no `SHAPE_FEATURE_LEDGER.md` implementation-status promotion.
+- Phase 27 is the next owner for deterministic saved-output geometry rendering evidence; Phase 28 remains the owner for verified `脸型` tool completion and ledger promotion.
+
 ### C-2026-07-06-gsd-plan-phase-26-geometry-facade-routing
 
 | Field | Value |

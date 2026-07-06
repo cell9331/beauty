@@ -46,6 +46,13 @@ They must never expose:
 
 `InputPipelinePrivacyTests` owns the current automated guard for these public summary and Demo debug boundaries.
 
+Phase 26 facade-geometry privacy evidence recorded 2026-07-06:
+
+- `BeautyEngineGeometryFacadeTests` and resolver/degradation tests prove public still-image geometry activation through summaries, warnings, and aggregate metrics only.
+- Public/SPI raw geometry export scans passed with zero matches for public or SPI exposure of `VisionDetectionObservation`, `BeautyFaceObservation`, `FaceGeometry`, raw landmarks, bounding boxes, or control points.
+- Active-source scans over `BeautySDK` public/Core surfaces and active Demo source passed for raw Vision observation names, raw framework errors, absolute local paths, raw JSON, image bytes, and raw landmark strings.
+- Phase 26 did not add Demo UI behavior, renderer geometry cases, saved-output PNG claims, network behavior, or `SHAPE_FEATURE_LEDGER.md` implementation-status promotion.
+
 ## 3. Trust Boundaries
 
 ```text
@@ -390,6 +397,12 @@ Phase 25 active-source security evidence recorded 2026-07-03:
 - Scoped raw path/error/geometry/diagnostic scans over active SDK core/facade and Demo camera/editor surfaces found no raw framework errors, absolute local paths, face geometry payloads, raw JSON, or image-byte exposure.
 - Focused `InputPipelinePrivacyTests` and `BeautyDemoImportBoundaryTests` passed on `platform=iOS Simulator,name=iPhone 17,OS=26.5`, including the new SEC-04 active-source product-scope regression guard.
 
+Phase 26 geometry facade security evidence recorded 2026-07-06:
+
+- Focused `BeautyEngineGeometryFacadeTests`, `BeautyDetectionTests.VisionFaceDetectorTests`, `BeautyEffectResolverTests`, and `MissingLandmarkDegradationTests` passed, and full `swift test --package-path BeautySDK` passed with 159 tests.
+- Public/SPI raw geometry export scan, active-source raw-leak scan, Demo internal-import scan, renderer geometry-case exclusion scan, and `SHAPE_FEATURE_LEDGER.md` implemented-status guard are recorded in `26-VERIFICATION.md`.
+- Public evidence remains limited to `BeautyDetectionSummary`, warnings, and numeric aggregate metrics; no raw landmarks, bounds, control points, framework errors, local paths, raw JSON, or image bytes are allowed across the public facade.
+
 If automated tests are not yet available, record manual checks in `PLANS.md`.
 
 ## 15. Review Gates
@@ -416,3 +429,4 @@ Before merging any change touching these areas, update `SECURITY.md` if needed:
 | 2026-05-25 | Logs must never include image paths, image bytes, landmarks, or raw JSON. | Debuggability must not leak user content or biometric-adjacent data. |
 | 2026-05-25 | Distributed SDK builds must revisit `PrivacyInfo.xcprivacy`. | Apple requires privacy manifests for apps and third-party SDKs according to SDK behavior. |
 | 2026-07-03 | Phase 25 defers `PrivacyInfo.xcprivacy` for current source behavior and keeps external resources disabled. | Current command evidence supports local-first SDK/Demo behavior and bundled-resource trust only; future collection, required-reason APIs, third-party SDKs, network behavior, or external packages must reopen the review. |
+| 2026-07-06 | Phase 26 keeps geometry detection and landmark routing package-internal and redacted at the public facade. | Still-image geometry intent can be proven without exposing raw biometric-adjacent payloads, sensitive diagnostics, Demo internals, or saved-output implementation claims. |

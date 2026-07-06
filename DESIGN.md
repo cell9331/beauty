@@ -202,6 +202,7 @@ Rules:
 - The summary must not expose points, rects, bounding boxes, landmark coordinates, `VNFaceObservation`, raw framework errors, or local image paths.
 - `.mappingFailed` is a degraded state; output should still be possible when rendering can safely skip face-dependent work.
 - `.disabled` and `.notRun` are valid non-error states for configuration or first-version no-op paths.
+- Phase 26 still-image processing uses `.notRun` when parameters do not require geometry and `.disabled` when tracking/detection is disabled; geometry-triggered unusable detection maps to redacted `noFace`, `lowConfidence`, `partial`, or failure reason summaries while face-agnostic effects may continue.
 
 ## 5. Detection Models
 
@@ -225,6 +226,7 @@ Rules:
 - `VNFaceObservation` must not cross the `BeautyDetection` boundary.
 - Low-confidence faces can be used for light color effects but not strong geometry.
 - Face ordering must be deterministic, usually largest face first then stable ID.
+- Phase 26 selects the first usable package-only detection observation for still-image geometry planning and does not expose raw observation data outside SDK internals.
 
 ### 5.2 BeautyFaceLandmarks
 
@@ -395,6 +397,7 @@ Rules:
 - Skin, face shape, eyes, nose, mouth, and lip color are face-dependent in Phase 6 no-face routing; they skip with redacted warning/metric evidence when `faceGeometry` is explicitly unavailable.
 - Missing landmark groups skip only their dependent domains: eyes require eye groups, nose requires nose, and mouth/lip require outer lips.
 - Reused landmarks reduce effective geometry briefly; stale landmarks skip strong geometry and record stable warning/metric evidence.
+- Phase 26 adds `BeautyEffectResolver.requiresFaceGeometry(parameters:)` as the still-image detection trigger. `BeautyEffectResolver.resolve(parameters:selectedFaceObservation:)` converts one selected package-only detection observation into internal `FaceGeometry`; nil, no-face, low-confidence, and missing landmark groups degrade through the same redacted warnings and aggregate metrics as existing resolver contexts.
 
 ## 9. RenderGraph Design
 
@@ -491,6 +494,7 @@ Per-frame invariants:
 - A skipped detection frame can reuse recent landmarks only within the allowed reuse window.
 - Render pass list is derived after detection state is known.
 - A frame never mutates global public parameters.
+- Phase 26 applies this ordering to public still-image `BeautyEngine.processResult(image:metadata:parameters:)` for geometry-triggering parameters; pixel-buffer realtime behavior remains unchanged by that phase.
 
 ## 12. Parameter State Machine
 
@@ -616,6 +620,7 @@ Each implementation must make these contracts testable:
 | App-facing API does not expose Vision or Metal internals. | Compile/API review |
 | Phase 6 all-domain combined parameters remain capped, conservative, and redacted. | `CombinedEffectSafetyTests` plus resolver and engine fixture tests |
 | No-face, missing-eye, missing-nose, missing-mouth/lip, reused, and stale contexts degrade only affected domains. | `MissingLandmarkDegradationTests` and combined resolver tests |
+| Still-image geometry-trigger detection and selected-face routing stay public-facade safe. | `BeautyEngineGeometryFacadeTests`, `BeautyEffectResolverTests`, public/SPI raw geometry export scans, and active-source redaction scans |
 
 ## 18. Open Design Watchlist
 
