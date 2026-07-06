@@ -4,14 +4,25 @@ import CoreVideo
 import Foundation
 import ImageIO
 import BeautyCore
+import BeautyDetection
 import BeautyEffects
 
 public final class BeautyEngine {
     public let configuration: BeautyConfiguration
+    var faceDetector: VisionFaceDetector
     private var resetGeneration: UInt64 = 0
 
     public init(configuration: BeautyConfiguration = .default) throws {
         self.configuration = configuration
+        self.faceDetector = VisionFaceDetector()
+    }
+
+    package init(
+        configuration: BeautyConfiguration = .default,
+        faceDetector: VisionFaceDetector
+    ) throws {
+        self.configuration = configuration
+        self.faceDetector = faceDetector
     }
 
     /// Returns an SDK-created output pixel buffer that is readable for the current processing result lifecycle.
@@ -74,29 +85,33 @@ public final class BeautyEngine {
         metadata: BeautyInputMetadata,
         parameters: BeautyParameters
     ) throws -> BeautyResult<CIImage> {
-        _ = metadata
         guard image.extent.isFiniteAndNonEmpty else {
             throw BeautyError.invalidInput
         }
         let validated = try BeautySDKResources.validate(parameters: parameters)
-        let plan = BeautyEffectResolver.resolve(parameters: validated)
+        let route = resolveStillImageGeometry(
+            metadata: metadata,
+            imageExtent: image.extent.size,
+            parameters: validated
+        )
         return BeautyResult(
-            output: BeautyColorEffectPipeline.apply(to: image, plan: plan),
-            warnings: plan.warnings,
-            metrics: plan.metrics,
-            detectionSummary: initialDetectionSummary
+            output: BeautyColorEffectPipeline.apply(to: image, plan: route.plan),
+            warnings: route.plan.warnings,
+            metrics: route.plan.metrics,
+            detectionSummary: route.detectionSummary
         )
     }
 
     public func reset() {
         resetGeneration &+= 1
+        faceDetector.resetTracking()
     }
 
     public var resetCountForTesting: UInt64 {
         resetGeneration
     }
 
-    private var initialDetectionSummary: BeautyDetectionSummary {
+    var initialDetectionSummary: BeautyDetectionSummary {
         configuration.enableFaceTracking ? .notRun : .disabled
     }
 

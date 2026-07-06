@@ -3,14 +3,14 @@ import CoreGraphics
 import Foundation
 import Vision
 
-struct VisionDetectionObservation: Equatable, Sendable {
-    let stableID: String?
-    let confidence: Double
-    let normalizedArea: Double
-    let visionBounds: CoordinateRect?
-    let landmarks: BeautyFaceLandmarks
+package struct VisionDetectionObservation: Equatable, Sendable {
+    package let stableID: String?
+    package let confidence: Double
+    package let normalizedArea: Double
+    package let visionBounds: CoordinateRect?
+    package let landmarks: BeautyFaceLandmarks
 
-    init(
+    package init(
         stableID: String? = nil,
         confidence: Double = 1,
         normalizedArea: Double = 0,
@@ -25,24 +25,24 @@ struct VisionDetectionObservation: Equatable, Sendable {
     }
 }
 
-struct VisionFaceDetectionResult: Equatable, Sendable {
-    let observations: [BeautyFaceObservation]
-    let summary: BeautyDetectionSummary
+package struct VisionFaceDetectionResult: Equatable, Sendable {
+    package let observations: [BeautyFaceObservation]
+    package let summary: BeautyDetectionSummary
 }
 
-struct VisionFaceDetector: Sendable {
-    enum Failure: Error, Equatable, Sendable {
+package struct VisionFaceDetector: Sendable {
+    package enum Failure: Error, Equatable, Sendable {
         case detectorUnavailable
         case detectionTimedOut
     }
 
-    typealias ObservationProvider = @Sendable (BeautyInputMetadata) throws -> [VisionDetectionObservation]
+    package typealias ObservationProvider = @Sendable (BeautyInputMetadata) throws -> [VisionDetectionObservation]
 
     private let minimumConfidence: Double
     private let observationProvider: ObservationProvider
     private var selectionPolicy: FaceSelectionPolicy
 
-    init(
+    package init(
         minimumConfidence: Double = 0.5,
         observationProvider: @escaping ObservationProvider = VisionFaceDetector.defaultObservationProvider
     ) {
@@ -51,7 +51,7 @@ struct VisionFaceDetector: Sendable {
         self.selectionPolicy = FaceSelectionPolicy()
     }
 
-    mutating func detect(
+    package mutating func detect(
         metadata: BeautyInputMetadata,
         imageExtent: CGSize = CGSize(width: 1, height: 1),
         previewExtent: CGSize? = nil,
@@ -86,7 +86,7 @@ struct VisionFaceDetector: Sendable {
         }
     }
 
-    mutating func resetTracking() {
+    package mutating func resetTracking() {
         selectionPolicy.reset()
     }
 
