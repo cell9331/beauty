@@ -1,5 +1,6 @@
 import XCTest
 import BeautyCore
+import BeautyDetection
 @testable import BeautyEffects
 
 final class MissingLandmarkDegradationTests: XCTestCase {
@@ -243,6 +244,82 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertTrue(plan.warnings.contains { $0.code == "lip_inputs_missing" })
     }
 
+    func testSelectedFaceRoutePreservesGroupSpecificDegradation() {
+        let parameters = BeautyParameters(
+            brightness: 0.2,
+            eyeSize: 1,
+            noseSlim: 1,
+            mouthSize: 1,
+            lipColor: 1,
+            filterId: "soft_clean",
+            filterIntensity: 0.5
+        )
+
+        let missingEye = BeautyEffectResolver.resolve(
+            parameters: parameters,
+            selectedFaceObservation: .fixture(missing: [.leftEye])
+        )
+        XCTAssertFalse(missingEye.activeDomains.contains(.eyes))
+        XCTAssertTrue(missingEye.activeDomains.contains(.nose))
+        XCTAssertTrue(missingEye.activeDomains.contains(.mouth))
+        XCTAssertTrue(missingEye.activeDomains.contains(.lipColor))
+        XCTAssertTrue(missingEye.activeDomains.contains(.color))
+        XCTAssertTrue(missingEye.activeDomains.contains(.filter))
+        XCTAssertTrue(missingEye.warnings.contains { $0.code == "eye_inputs_missing" })
+
+        let missingNose = BeautyEffectResolver.resolve(
+            parameters: parameters,
+            selectedFaceObservation: .fixture(missing: [.nose])
+        )
+        XCTAssertTrue(missingNose.activeDomains.contains(.eyes))
+        XCTAssertFalse(missingNose.activeDomains.contains(.nose))
+        XCTAssertTrue(missingNose.activeDomains.contains(.mouth))
+        XCTAssertTrue(missingNose.activeDomains.contains(.lipColor))
+        XCTAssertTrue(missingNose.warnings.contains { $0.code == "nose_inputs_missing" })
+
+        let missingMouth = BeautyEffectResolver.resolve(
+            parameters: parameters,
+            selectedFaceObservation: .fixture(missing: [.outerLips])
+        )
+        XCTAssertTrue(missingMouth.activeDomains.contains(.eyes))
+        XCTAssertTrue(missingMouth.activeDomains.contains(.nose))
+        XCTAssertFalse(missingMouth.activeDomains.contains(.mouth))
+        XCTAssertFalse(missingMouth.activeDomains.contains(.lipColor))
+        XCTAssertTrue(missingMouth.warnings.contains { $0.code == "mouth_inputs_missing" })
+        XCTAssertTrue(missingMouth.warnings.contains { $0.code == "lip_inputs_missing" })
+
+        for plan in [missingEye, missingNose, missingMouth] {
+            assertRedacted(plan)
+        }
+    }
+
+    func testSelectedFaceRouteNilFaceSkipsFaceDependentDomainsOnly() {
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(
+                brightness: 0.2,
+                faceSlim: 1,
+                eyeSize: 1,
+                noseSlim: 1,
+                mouthSize: 1,
+                lipColor: 1,
+                filterId: "warm_light",
+                filterIntensity: 0.5
+            ),
+            selectedFaceObservation: nil
+        )
+
+        XCTAssertTrue(plan.activeDomains.contains(.color))
+        XCTAssertTrue(plan.activeDomains.contains(.filter))
+        XCTAssertFalse(plan.activeDomains.contains(.faceShape))
+        XCTAssertFalse(plan.activeDomains.contains(.eyes))
+        XCTAssertFalse(plan.activeDomains.contains(.nose))
+        XCTAssertFalse(plan.activeDomains.contains(.mouth))
+        XCTAssertFalse(plan.activeDomains.contains(.lipColor))
+        XCTAssertTrue(plan.skippedDomains.isSuperset(of: [.faceShape, .eyes, .nose, .mouth, .lipColor]))
+        XCTAssertTrue(plan.warnings.contains { $0.code == "face_effects_skipped_no_face" })
+        assertRedacted(plan)
+    }
+
     private func assertRedacted(_ plan: BeautyEffectPlan, file: StaticString = #filePath, line: UInt = #line) {
         let metadata = (
             plan.warnings.map { "\($0.code) \($0.message)" } +
@@ -252,5 +329,17 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         for forbidden in ["landmark", "control point", "controlPoint", "bounding", "VNFaceObservation", "/private/var", "image bytes", "SIMD", "[0."] {
             XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)", file: file, line: line)
         }
+    }
+}
+
+extension BeautyFaceObservation {
+    static func fixture(missing groups: Set<BeautyLandmarkGroup> = []) -> BeautyFaceObservation {
+        let availableGroups = Set(BeautyLandmarkGroup.allCases).subtracting(groups)
+        return BeautyFaceObservation(
+            stableID: "selected",
+            confidence: 0.96,
+            imageBounds: CoordinateRect(x: 0.30, y: 0.20, width: 0.40, height: 0.60),
+            landmarks: BeautyFaceLandmarks(availableGroups: availableGroups)
+        )
     }
 }
