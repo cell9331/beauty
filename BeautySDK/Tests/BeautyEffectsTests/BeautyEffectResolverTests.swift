@@ -1,5 +1,6 @@
 import XCTest
 import BeautyCore
+import BeautyDetection
 @testable import BeautyEffects
 
 final class BeautyEffectResolverTests: XCTestCase {
@@ -114,6 +115,62 @@ final class BeautyEffectResolverTests: XCTestCase {
         }
     }
 
+    func testRequiresFaceGeometryOnlyForGeometryTriggeredParameters() {
+        XCTAssertFalse(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters()))
+        XCTAssertFalse(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(skinSmoothing: 0.4)))
+        XCTAssertFalse(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(brightness: 0.2)))
+        XCTAssertFalse(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(filterId: "soft_clean", filterIntensity: 0.5)))
+
+        XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(faceSlim: 0.4)))
+        XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(eyeSize: 0.4)))
+        XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(noseSlim: 0.4)))
+        XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(mouthSize: 0.4)))
+        XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(lipColor: 0.4)))
+    }
+
+    func testSelectedFaceObservationActivatesGeometryPlanningWithRedactedEvidence() {
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(
+                brightness: 0.2,
+                faceSlim: 0.4,
+                eyeSize: 0.4,
+                noseSlim: 0.4,
+                mouthSize: 0.4,
+                lipColor: 0.4
+            ),
+            selectedFaceObservation: .usableFixture
+        )
+
+        XCTAssertTrue(plan.activeDomains.contains(.color))
+        XCTAssertTrue(plan.activeDomains.contains(.faceShape))
+        XCTAssertTrue(plan.activeDomains.contains(.eyes))
+        XCTAssertTrue(plan.activeDomains.contains(.nose))
+        XCTAssertTrue(plan.activeDomains.contains(.mouth))
+        XCTAssertTrue(plan.activeDomains.contains(.lipColor))
+        XCTAssertGreaterThan(plan.metrics["beauty.effects.geometryPointCount"] ?? 0, 0)
+        assertRedacted(plan)
+    }
+
+    func testSelectedFaceObservationFallbackBoundsStillActivateGeometryPlanning() {
+        let observation = BeautyFaceObservation(
+            stableID: "fallback",
+            confidence: 0.95,
+            normalizedArea: 0.30,
+            landmarks: .complete
+        )
+
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(faceSlim: 0.4, eyeSize: 0.4, noseSlim: 0.4),
+            selectedFaceObservation: observation
+        )
+
+        XCTAssertTrue(plan.activeDomains.contains(.faceShape))
+        XCTAssertTrue(plan.activeDomains.contains(.eyes))
+        XCTAssertTrue(plan.activeDomains.contains(.nose))
+        XCTAssertGreaterThan(plan.metrics["beauty.effects.geometryPointCount"] ?? 0, 0)
+        assertRedacted(plan)
+    }
+
     private func assertRedacted(_ plan: BeautyEffectPlan, file: StaticString = #filePath, line: UInt = #line) {
         let metadata = (
             plan.warnings.map { "\($0.code) \($0.message)" } +
@@ -124,4 +181,13 @@ final class BeautyEffectResolverTests: XCTestCase {
             XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)", file: file, line: line)
         }
     }
+}
+
+extension BeautyFaceObservation {
+    static let usableFixture = BeautyFaceObservation(
+        stableID: "selected",
+        confidence: 0.96,
+        imageBounds: CoordinateRect(x: 0.30, y: 0.20, width: 0.40, height: 0.60),
+        landmarks: .complete
+    )
 }

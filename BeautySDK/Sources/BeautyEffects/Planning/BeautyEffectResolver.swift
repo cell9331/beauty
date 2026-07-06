@@ -1,8 +1,42 @@
 import BeautyCore
+import BeautyDetection
 
 public enum BeautyEffectResolver {
     public static func resolve(parameters: BeautyParameters) -> BeautyEffectPlan {
         resolve(parameters: parameters, faceGeometry: nil, treatsMissingFaceAsNoFace: false)
+    }
+
+    package static func requiresFaceGeometry(parameters: BeautyParameters) -> Bool {
+        let normalized = parameters.normalized()
+        return anyNonZero(
+            normalized.faceSlim,
+            normalized.faceSmall,
+            normalized.faceVShape,
+            normalized.jawSlim,
+            normalized.chinLength,
+            normalized.eyeSize,
+            normalized.eyeDistance,
+            normalized.eyeYPosition,
+            normalized.eyeTailLift,
+            normalized.noseSlim,
+            normalized.noseWingSlim,
+            normalized.noseTipSize,
+            normalized.noseBridge,
+            normalized.mouthSize,
+            normalized.mouthWidth,
+            normalized.smile,
+            normalized.lipColor
+        )
+    }
+
+    package static func resolve(
+        parameters: BeautyParameters,
+        selectedFaceObservation: BeautyFaceObservation?
+    ) -> BeautyEffectPlan {
+        resolve(
+            parameters: parameters,
+            faceGeometry: selectedFaceObservation.map(BeautyFaceGeometryAdapter.makeGeometry(from:))
+        )
     }
 
     static func resolve(parameters: BeautyParameters, faceGeometry: FaceGeometry?) -> BeautyEffectPlan {

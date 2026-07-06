@@ -1,13 +1,13 @@
 import Foundation
 
-struct BeautyFaceObservation: Equatable, Sendable {
-    let stableID: String?
-    let confidence: Double
-    let normalizedArea: Double
-    let imageBounds: CoordinateRect?
-    let landmarks: BeautyFaceLandmarks
+package struct BeautyFaceObservation: Equatable, Sendable {
+    package let stableID: String?
+    package let confidence: Double
+    package let normalizedArea: Double
+    package let imageBounds: CoordinateRect?
+    package let landmarks: BeautyFaceLandmarks
 
-    init(
+    package init(
         stableID: String? = nil,
         confidence: Double = 1,
         normalizedArea: Double = 0,
@@ -22,7 +22,7 @@ struct BeautyFaceObservation: Equatable, Sendable {
     }
 }
 
-enum BeautyLandmarkGroup: String, CaseIterable, Equatable, Sendable {
+package enum BeautyLandmarkGroup: String, CaseIterable, Equatable, Sendable {
     case faceContour
     case leftEye
     case rightEye
@@ -30,7 +30,7 @@ enum BeautyLandmarkGroup: String, CaseIterable, Equatable, Sendable {
     case outerLips
 }
 
-struct BeautyFaceLandmarks: Equatable, Sendable {
+package struct BeautyFaceLandmarks: Equatable, Sendable {
     private static let requiredGeometryGroups: Set<BeautyLandmarkGroup> = [
         .faceContour,
         .leftEye,
@@ -39,21 +39,21 @@ struct BeautyFaceLandmarks: Equatable, Sendable {
         .outerLips
     ]
 
-    let availableGroups: Set<BeautyLandmarkGroup>
+    package let availableGroups: Set<BeautyLandmarkGroup>
 
-    init(availableGroups: Set<BeautyLandmarkGroup>) {
+    package init(availableGroups: Set<BeautyLandmarkGroup>) {
         self.availableGroups = availableGroups
     }
 
-    static let complete = BeautyFaceLandmarks(
+    package static let complete = BeautyFaceLandmarks(
         availableGroups: Set(BeautyLandmarkGroup.allCases)
     )
 
-    static let missingRequiredGeometry = BeautyFaceLandmarks(
+    package static let missingRequiredGeometry = BeautyFaceLandmarks(
         availableGroups: [.faceContour, .leftEye, .rightEye]
     )
 
-    var hasRequiredGeometry: Bool {
+    package var hasRequiredGeometry: Bool {
         Self.requiredGeometryGroups.isSubset(of: availableGroups)
     }
 }

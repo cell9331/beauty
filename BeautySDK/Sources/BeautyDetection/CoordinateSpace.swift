@@ -23,26 +23,26 @@ struct CoordinatePoint: Equatable, Sendable {
     }
 }
 
-struct CoordinateRect: Equatable, Sendable {
-    let x: Double
-    let y: Double
-    let width: Double
-    let height: Double
+package struct CoordinateRect: Equatable, Sendable {
+    package let x: Double
+    package let y: Double
+    package let width: Double
+    package let height: Double
 
-    init(x: Double, y: Double, width: Double, height: Double) {
+    package init(x: Double, y: Double, width: Double, height: Double) {
         self.x = x
         self.y = y
         self.width = width
         self.height = height
     }
 
-    var minX: Double { x }
-    var minY: Double { y }
-    var maxX: Double { x + width }
-    var maxY: Double { y + height }
-    var area: Double { max(0, width) * max(0, height) }
+    package var minX: Double { x }
+    package var minY: Double { y }
+    package var maxX: Double { x + width }
+    package var maxY: Double { y + height }
+    package var area: Double { max(0, width) * max(0, height) }
 
-    var isFinite: Bool {
+    package var isFinite: Bool {
         x.isFinite && y.isFinite && width.isFinite && height.isFinite
     }
 
