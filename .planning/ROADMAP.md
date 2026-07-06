@@ -42,12 +42,13 @@ Accepted limitations remain future or setup-specific work: current screenshot PN
 **Goal:** Make public `BeautySDK` still-image processing capable of activating geometry render intent from detection and landmarks without exposing raw geometry data.
 **Requirements:** GEO-01, GEO-02
 **Dependencies:** None
-**Plans:** 3 plans
+**Plans:** 4 plans
 
 Plans:
 - [ ] 26-01-PLAN.md — Package-only selected-face geometry adapter and resolver routing.
 - [ ] 26-02-PLAN.md — Public still-image facade detection gating and selected-face routing.
-- [ ] 26-03-PLAN.md — Verification, validation, root-doc, and ledger closeout.
+- [ ] 26-03-PLAN.md — Verification and validation evidence closeout.
+- [ ] 26-04-PLAN.md — Root-doc and planning ledger synchronization.
 
 **Success Criteria:**
 
@@ -94,7 +95,7 @@ Plans:
 | v1.2 HTML Reference Fidelity | 1 completed, 4 canceled | 4 completed | Reduced scope | Completed | 2026-06-26 |
 | v1.3 Meitu Core Beauty Module Design and Implementation | 5 | 14 | 20/20 | Shipped | 2026-06-30 |
 | v1.4 Stability, QA, and Debt Cleanup | 5 | 15 | 24/24 | Shipped | 2026-07-03 |
-| v1.5 SDK Geometry Output Foundation and Face Shape Slice | 3 | 3 planned | 0/13 | Active | - |
+| v1.5 SDK Geometry Output Foundation and Face Shape Slice | 3 | 4 planned | 0/13 | Active | - |
 
 ## Next
 
