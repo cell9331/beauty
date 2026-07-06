@@ -38,17 +38,31 @@ Accepted limitations remain future or setup-specific work: current screenshot PN
 
 ### Phase 26: Geometry Facade and Landmark Routing Foundation
 
-**Status:** Pending
+**Status:** Planned
 **Goal:** Make public `BeautySDK` still-image processing capable of activating geometry render intent from detection and landmarks without exposing raw geometry data.
 **Requirements:** GEO-01, GEO-02
 **Dependencies:** None
 **Plans:** 4 plans
-
 Plans:
+**Wave 1**
+
 - [ ] 26-01-PLAN.md — Package-only selected-face geometry adapter and resolver routing.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 26-02-PLAN.md — Public still-image facade detection gating and selected-face routing.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 26-03-PLAN.md — Verification and validation evidence closeout.
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 26-04-PLAN.md — Root-doc and planning ledger synchronization.
+
+**Cross-cutting constraints:**
+
+- `SHAPE_FEATURE_LEDGER.md` `implemented` statuses remain unchanged in Phase 26, per D-12.
 
 **Success Criteria:**
 

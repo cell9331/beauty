@@ -30,6 +30,27 @@ None.
 
 ## 4. Completed
 
+### C-2026-07-06-gsd-plan-phase-26-geometry-facade-routing
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-06 |
+| Scope | Ran `$gsd-plan-phase 26` for Phase 26 Geometry Facade and Landmark Routing Foundation. Completed research-first planning, validation strategy, pattern mapping, four executable plans across four dependent waves, checker-driven revisions, roadmap dependency annotation, state routing, and final planning ledger synchronization. |
+| Requirements | GEO-01, GEO-02 |
+| Files | `.planning/phases/26-geometry-facade-and-landmark-routing-foundation/26-RESEARCH.md`, `26-VALIDATION.md`, `26-PATTERNS.md`, `26-01-PLAN.md`, `26-02-PLAN.md`, `26-03-PLAN.md`, `26-04-PLAN.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.plan-phase 26` reported Phase 26 pending with `has_context: true`, `has_research: false`, `has_plans: false`, `phase_req_ids: GEO-01, GEO-02`, `research_enabled: true`, `plan_checker_enabled: true`, `nyquist_validation_enabled: true`, and `commit_docs: true`. User selected research-first. Researcher created `26-RESEARCH.md` and commit `44f80b1`; validation strategy commit `ca6dd1c`; pattern map commit `1e87eba`; initial plan commit `9f7514a`. First checker pass found 3 blockers and 1 warning; revision commit `a61693f` resolved the research heading, fail-closed scan semantics, active-source raw-leak scan scope, and closeout scan verification. Second checker pass had no blockers and 2 warnings; closeout split commit `48718e0` corrected validation wave rows and split `26-03`/`26-04`. Final plan-checker returned `VERIFICATION PASSED` for 4 plans. `phase-plan-index 26` reports waves 1-4 with dependencies `26-02 -> 26-01`, `26-03 -> 26-01/26-02`, and `26-04 -> 26-03`. `check.decision-coverage-plan` passed with `16/16` decisions covered. Requirement scan confirmed GEO-01 and GEO-02 are covered. `roadmap.annotate-dependencies 26` reported `updated: true`, `waves: 4`, `cross_cutting_constraints: 1`. Post-planning gap analysis showed GEO-01/GEO-02 and D-01 through D-16 covered; uncovered DOC/FACE/GEO-03/GEO-04 rows belong to later v1.5 phases, not Phase 26 scope. Scoped `git diff --check` passed for Phase 26 planning artifacts, `.planning/ROADMAP.md`, `.planning/STATE.md`, and this ledger. |
+| Build | Not run; this was a GSD planning/documentation workflow with no Swift source changes. Phase 26 execution plans require focused SDK facade/effects/detection tests, full `swift test --package-path BeautySDK`, active-source raw-leak scans, public/SPI export scans, renderer-case exclusion scans, and ledger overclaim scans. |
+| Commit | Planning commits: `44f80b1`, `ca6dd1c`, `1e87eba`, `9f7514a`, `a61693f`, `48718e0`; final state/roadmap/ledger commit records this entry. |
+
+Outcome:
+
+- `26-01-PLAN.md` builds the package-only selected-face geometry adapter and resolver routing foundation for GEO-02.
+- `26-02-PLAN.md` wires public still-image facade detection gating and selected-face routing for GEO-01/GEO-02.
+- `26-03-PLAN.md` captures verification and validation evidence after implementation.
+- `26-04-PLAN.md` synchronizes root docs and planning ledgers only after evidence exists.
+- Plans preserve Phase 26 boundaries: no public raw geometry API, no Demo UI work, no saved-output renderer cases, no generated PNG evidence claim, and no `SHAPE_FEATURE_LEDGER.md` `implemented` status promotion.
+- Phase 26 is ready for `$gsd-execute-phase 26`.
+
 ### C-2026-07-06-gsd-discuss-phase-26-geometry-facade-routing
 
 | Field | Value |
