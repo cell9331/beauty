@@ -59,7 +59,7 @@ final class BeautyEngineMetadataCompatibilityTests: XCTestCase {
         XCTAssertEqual(result.detectionSummary?.reasons, [])
     }
 
-    func testPIPE07ImageResultReportsNotRunBeforeDetectorIntegration() throws {
+    func testPIPE07ImageResultReportsNotRunWhenGeometryIsNotRequired() throws {
         let image = CIImage(color: .white)
             .cropped(to: CGRect(x: 0, y: 0, width: 1, height: 1))
         let engine = try BeautyEngine(configuration: .default)
