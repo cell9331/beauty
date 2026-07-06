@@ -434,9 +434,9 @@ All implementation-critical codebase and project-scope claims in this research a
 | A1 | ASVS category labels and STRIDE classifications are applicable as the GSD security template frames them; current OWASP docs were not fetched in this session. [ASSUMED] | Security Domain | Planner may need to adjust category labels during security review, but Phase 26's concrete mitigations still come from verified project security docs. [CITED: SECURITY.md] |
 | A2 | Research remains valid until 2026-08-05 unless Phase 26/27 source changes land earlier. [ASSUMED] | Metadata | Planner should refresh source scans if code changes before execution. [ASSUMED] |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-None blocking. [VERIFIED: codebase] Exact internal type names, SPI/test-seam shape, adapter implementation, metric names, test filenames, scan command shapes, and evidence filenames are intentionally delegated to planner discretion by the Phase 26 context. [CITED: .planning/phases/26-geometry-facade-and-landmark-routing-foundation/26-CONTEXT.md]
+Resolved: no blocking questions remain. [VERIFIED: codebase] Exact internal type names, SPI/test-seam shape, adapter implementation, metric names, test filenames, scan command shapes, and evidence filenames are intentionally delegated to planner discretion by the Phase 26 context. [CITED: .planning/phases/26-geometry-facade-and-landmark-routing-foundation/26-CONTEXT.md]
 
 ## Environment Availability
 
