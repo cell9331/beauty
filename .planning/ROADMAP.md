@@ -42,7 +42,7 @@ Accepted limitations remain future or setup-specific work: current screenshot PN
 **Goal:** Make public `BeautySDK` still-image processing capable of activating geometry render intent from detection and landmarks without exposing raw geometry data.
 **Requirements:** GEO-01, GEO-02
 **Dependencies:** None
-**Plans:** 1/4 plans executed
+**Plans:** 2/4 plans executed
 Plans:
 **Wave 1**
 
@@ -50,7 +50,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 26-02-PLAN.md — Public still-image facade detection gating and selected-face routing.
+- [x] 26-02-PLAN.md — Public still-image facade detection gating and selected-face routing.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
