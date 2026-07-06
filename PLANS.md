@@ -30,6 +30,26 @@ None.
 
 ## 4. Completed
 
+### C-2026-07-06-gsd-discuss-phase-26-geometry-facade-routing
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-06 |
+| Scope | Ran `$gsd-discuss-phase 26` for Phase 26 Geometry Facade and Landmark Routing Foundation. Captured implementation decisions for geometry-triggered detection, selected-face landmark-to-geometry routing, Phase 26 proof boundaries, and diagnostics/redaction before planning. |
+| Requirements | GEO-01, GEO-02 |
+| Files | `.planning/phases/26-geometry-facade-and-landmark-routing-foundation/26-CONTEXT.md`, `.planning/phases/26-geometry-facade-and-landmark-routing-foundation/26-DISCUSSION-LOG.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.phase-op 26` reported Phase 26 exists with no existing context, research, plans, verification, or phase directory. No `*-SPEC.md`, existing context, or checkpoint was present. `todo.match-phase 26` returned zero matches. Recent prior contexts from Phases 25, 24, and 23 were read; stale `.planning/codebase/*` maps were checked but treated as background because current source/root docs supersede them. User selected all four gray areas, then chose the recommended option for every detailed question and selected finish context. `26-DISCUSS-CHECKPOINT.json` was written incrementally and removed after `26-CONTEXT.md` and `26-DISCUSSION-LOG.md` were created. `state.record-session --stopped-at "Phase 26 context gathered" --resume-file ".planning/phases/26-geometry-facade-and-landmark-routing-foundation/26-CONTEXT.md"` reported `recorded: true`; `state.update "Status" "Ready for Phase 26 planning"` reported `updated: true`. Scoped `git diff --check` passed for Phase 26 context/log, `.planning/STATE.md`, and this ledger. Placeholder/checkpoint scan over the new Phase 26 artifacts and state returned no matches. |
+| Build | Not run; this was a GSD discussion/context workflow with no Swift source changes. Phase 26 planning should include focused SDK facade tests, existing detector/resolver/provider tests, active-source raw leak scans, and full SDK tests where local tooling allows. |
+| Commit | Pending scoped workflow commit. |
+
+Outcome:
+
+- Detection should run only for geometry-triggering still-image parameters; no-op/color/filter/basic-skin paths preserve current `.notRun` or `.disabled` behavior.
+- Unusable detection degrades and continues with safe face-agnostic work, redacted summaries, warnings, and numeric metrics.
+- Landmark routing starts with one selected face, uses internal `FaceGeometry` only, and preserves group-specific no-face/missing/stale/reused degradation.
+- Phase 26 proves geometry intent/routing through focused SDK facade tests and supporting internal tests; saved-output renderer evidence remains Phase 27.
+- `BeautyExampleRenderer` cases and `SHAPE_FEATURE_LEDGER.md` implementation statuses remain unchanged until later phases produce saved-output/tool-specific evidence.
+
 ### C-2026-07-04-gsd-new-milestone-v1-5
 
 | Field | Value |
