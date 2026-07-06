@@ -1,10 +1,11 @@
 ---
 phase: 26
 slug: geometry-facade-and-landmark-routing-foundation
-status: draft
+status: final
 nyquist_compliant: true
-wave_0_complete: false
+wave_0_complete: true
 created: 2026-07-06
+completed: 2026-07-06
 ---
 
 # Phase 26 - Validation Strategy
@@ -32,19 +33,28 @@ created: 2026-07-06
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 26-01-01 | 01 | 1 | GEO-01, GEO-02 | T-26-01-01 | Public facade tests can inject deterministic usable-face, no-face, low-confidence, missing-landmark, and detector-failure states without exposing raw geometry types publicly. | focused XCTest | `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyEngineGeometryFacadeTests` | Wave 0 | pending |
-| 26-01-02 | 01 | 1 | GEO-01 | T-26-01-02 | `BeautyEngine.processResult(...)` runs detection only for geometry-triggering parameters and preserves `.notRun` or `.disabled` for no-op/color/filter/basic-skin paths. | focused XCTest | `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyEngineGeometryFacadeTests` plus `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyEngineMetadataCompatibilityTests` | Wave 0/existing | pending |
-| 26-02-01 | 02 | 2 | GEO-01, GEO-02 | T-26-02-01 | One selected usable face routes into internal `FaceGeometry` and activates existing resolver geometry intent while missing groups degrade only their own domains. | focused XCTest | `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyEffectResolverTests` plus `swift test --package-path BeautySDK --filter BeautyEffectsTests.MissingLandmarkDegradationTests` | existing | pending |
-| 26-02-02 | 02 | 2 | GEO-02 | T-26-02-02 | Public result evidence stays limited to `BeautyDetectionSummary`, warnings, and aggregate numeric metrics; no coordinates, bounds, landmarks, control points, paths, raw framework errors, image bytes, or raw JSON leak. | focused XCTest/static scan | `sh -c 'rg -n -e VNFaceObservation -e boundingBox -e controlPoint -e /private/var -e NSError -e AVError -e rawPresetJson -e "raw JSON" -e "image bytes" -e landmarks= -e landmarkCoordinates -e rawLandmark BeautySDK/Sources/BeautyCore BeautySDK/Sources/BeautySDK BeautyDemo/BeautyDemo; public_status=$?; rg -n -e /private/var -e NSError -e AVError -e rawPresetJson -e "raw JSON" -e "image bytes" BeautySDK/Sources/BeautyDetection BeautySDK/Sources/BeautyEffects; internal_status=$?; if [ "$public_status" -eq 1 ]; then if [ "$internal_status" -eq 1 ]; then exit 0; fi; fi; exit 1'` | existing active-source scan surface | pending |
-| 26-03-01 | 03 | 3 | GEO-01, GEO-02 | T-26-03-01 | Verification and validation artifacts record actual command evidence, D-01 through D-16 traceability, and explicit non-claims for saved-output geometry, PNG evidence, Demo UI, public raw geometry API, and `SHAPE_FEATURE_LEDGER.md` implementation completion. | doc/traceability scan | `for d in D-01 D-02 D-03 D-04 D-05 D-06 D-07 D-08 D-09 D-10 D-11 D-12 D-13 D-14 D-15 D-16; do rg -n "$d" .planning/phases/26-geometry-facade-and-landmark-routing-foundation/26-VERIFICATION.md .planning/phases/26-geometry-facade-and-landmark-routing-foundation/26-VALIDATION.md >/dev/null || exit 1; done` | evidence docs | pending |
+| 26-01-01 | 01 | 1 | GEO-02 | T-26-01-01 | Package-only selected-face observation routing activates internal resolver geometry planning without public raw geometry exports. | focused XCTest/static scan | `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyEffectResolverTests`; public raw geometry export scan | `BeautyFaceGeometryAdapter.swift`, resolver tests | passed |
+| 26-01-02 | 01 | 1 | GEO-02 | T-26-01-02 | Selected-face routing preserves missing eye/nose/mouth/lip, no-face, stale, reused, and redacted aggregate metadata behavior. | focused XCTest/static scan | `swift test --package-path BeautySDK --filter BeautyEffectsTests.MissingLandmarkDegradationTests`; active planning raw-leak scan | existing effects tests | passed |
+| 26-02-01 | 02 | 2 | GEO-01, GEO-02 | T-26-02-01 | SPI-only facade detector fixtures simulate usable, no-face, low-confidence, missing-landmark, unavailable, and timeout states without public/SPI raw geometry exposure. | focused XCTest/static scan | `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyEngineGeometryFacadeTests`; `swift test --package-path BeautySDK --filter BeautyDetectionTests.VisionFaceDetectorTests`; public/SPI export scan | `BeautyEngineGeometryFacadeTests.swift` | passed |
+| 26-02-02 | 02 | 2 | GEO-01, GEO-02 | T-26-02-02 | `BeautyEngine.processResult(image:metadata:parameters:)` runs detection only for geometry-triggering still-image parameters, preserves `.notRun`/`.disabled` compatibility, and degrades with redacted summaries/warnings/metrics. | focused XCTest/static scan | `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyEngineGeometryFacadeTests`; `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyEngineMetadataCompatibilityTests`; active-source raw-leak scan | facade helper and tests | passed |
+| 26-03-01 | 03 | 3 | GEO-01, GEO-02 | T-26-03-01 | Verification and validation artifacts record actual command evidence, D-01 through D-16 traceability, and explicit non-claims for saved-output geometry, PNG evidence, Demo UI, public raw geometry API, and `SHAPE_FEATURE_LEDGER.md` implementation completion. | doc/traceability scan | `for d in D-01 D-02 D-03 D-04 D-05 D-06 D-07 D-08 D-09 D-10 D-11 D-12 D-13 D-14 D-15 D-16; do rg -n "$d" .planning/phases/26-geometry-facade-and-landmark-routing-foundation/26-VERIFICATION.md .planning/phases/26-geometry-facade-and-landmark-routing-foundation/26-VALIDATION.md >/dev/null || exit 1; done` | evidence docs | passed |
 | 26-04-01 | 04 | 4 | GEO-01, GEO-02 | T-26-04-01 | Root docs and planning ledgers record only facade routing evidence, preserve no-UI/local-first boundaries, and do not claim saved-output geometry or `SHAPE_FEATURE_LEDGER.md` implementation completion. | doc/traceability scan | `rg -n "GEO-01|GEO-02|26-VERIFICATION|BeautyEngineGeometryFacadeTests|geometry routing|redacted" .planning/REQUIREMENTS.md .planning/ROADMAP.md .planning/STATE.md ARCHITECTURE.md DESIGN.md SECURITY.md RELIABILITY.md PRODUCT_SENSE.md QUALITY_SCORE.md PLANS.md` | existing docs | pending |
 
 ## Wave 0 Requirements
 
-- [ ] `BeautySDK/Tests/BeautyCoreTests/BeautyEngineGeometryFacadeTests.swift` or an equivalent focused extension to `BeautyEngineTests.swift` proves public-facade geometry activation and degradation through `BeautyEngine.processResult(...)`.
-- [ ] A narrow internal or SPI-only detector seam exists for deterministic facade tests without adding public raw geometry, landmark, provider, or Vision types.
-- [ ] A minimal internal adapter path exists from the selected usable detection result to internal `FaceGeometry`, sufficient for existing geometry resolver/provider tests.
-- [ ] Scan commands classify active source separately from tests/docs when checking raw leak literals.
+- [x] `BeautySDK/Tests/BeautyCoreTests/BeautyEngineGeometryFacadeTests.swift` proves public-facade geometry activation and degradation through `BeautyEngine.processResult(...)`.
+- [x] A narrow package/SPI-only detector seam exists for deterministic facade tests without adding public raw geometry, landmark, provider, or Vision types.
+- [x] A minimal internal adapter path exists from the selected usable detection result to internal `FaceGeometry`, sufficient for existing geometry resolver/provider tests.
+- [x] Scan commands classify active source separately from tests/docs when checking raw leak literals.
+
+## Decision Coverage
+
+D-01 through D-16 are covered by `26-VERIFICATION.md`, this final validation file, and the plan summaries:
+
+- D-01, D-02, D-03, D-04, D-05, D-06, D-07, D-08, D-09 are covered by focused facade, detector, resolver, and degradation tests.
+- D-10 and D-12 are covered by renderer-case exclusion and `SHAPE_FEATURE_LEDGER.md` implemented-status scans.
+- D-11 is covered by public facade tests plus existing detector/effects tests.
+- D-13, D-14, D-15, and D-16 are covered by redaction assertions, numeric aggregate metrics, active-source scans, and the decision to keep `beauty.effects.geometryPointCount` as aggregate non-coordinate evidence.
 
 ## Manual-Only Verifications
 
@@ -63,4 +73,4 @@ created: 2026-07-06
 - [x] Feedback latency target is below 20 minutes for automated SDK tests and active-source scans.
 - [x] `nyquist_compliant: true` set in frontmatter.
 
-**Approval:** Pending execution evidence.
+**Approval:** Final. See `26-VERIFICATION.md` for exact command output and non-claim boundaries.
