@@ -107,8 +107,62 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
         }
     }
 
+    func testExistingExampleImageFixtureProducesUsableFaceForGeometryCase() throws {
+        let engine = try BeautyEngine(configuration: .default)
+        var summaries: [String] = []
+
+        for fixtureURL in try portraitFixtureURLs() {
+            let input = try fixtureImage(at: fixtureURL)
+            let result = try engine.processResult(
+                image: input,
+                metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+                parameters: phase27FaceShapeParameters()
+            )
+            summaries.append("\(fixtureURL.lastPathComponent):\(result.detectionSummary?.availability.rawValue ?? "nil")")
+            assertRedacted(result)
+
+            guard result.detectionSummary?.availability == .usable else {
+                continue
+            }
+
+            XCTAssertEqual(result.output.extent, input.extent)
+            XCTAssertEqual(result.detectionSummary?.usedFaceCount, 1)
+            XCTAssertEqual(result.metrics["beauty.detection.geometryRequired"], 1)
+            return
+        }
+
+        XCTFail("Expected at least one portrait fixture to produce usable public-facade detection; summaries=\(summaries.joined(separator: ","))")
+    }
+
+    func testRealDetectionMetadataStaysRedactedForGeometryCase() throws {
+        let engine = try BeautyEngine(configuration: .default)
+
+        for fixtureURL in try portraitFixtureURLs() {
+            let input = try fixtureImage(at: fixtureURL)
+            let result = try engine.processResult(
+                image: input,
+                metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+                parameters: phase27FaceShapeParameters()
+            )
+
+            XCTAssertEqual(result.output.extent, input.extent)
+            XCTAssertEqual(result.metrics["beauty.detection.geometryRequired"], 1)
+            assertRedacted(result)
+        }
+    }
+
     private static let image = CIImage(color: CIColor(red: 0.35, green: 0.25, blue: 0.20, alpha: 1))
         .cropped(to: CGRect(x: 0, y: 0, width: 2, height: 2))
+
+    private func phase27FaceShapeParameters() -> BeautyParameters {
+        BeautyParameters(
+            faceSlim: 0.35,
+            faceSmall: 0.30,
+            faceVShape: 0.35,
+            jawSlim: 0.30,
+            chinLength: 0.20
+        )
+    }
 
     private func geometryAndSafeParameters() -> BeautyParameters {
         BeautyParameters(
@@ -121,6 +175,37 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
             filterId: "soft_clean",
             filterIntensity: 0.5
         )
+    }
+
+    private func portraitFixtureURLs() throws -> [URL] {
+        let inputDirectory = try repositoryRootURL().appendingPathComponent("example-images/input", isDirectory: true)
+        return try (1...5).map { index in
+            let fixtureName = "e\(index).png"
+            let url = inputDirectory.appendingPathComponent(fixtureName)
+            guard FileManager.default.fileExists(atPath: url.path) else {
+                throw FacadeFixtureError.missing(fixtureName)
+            }
+            return url
+        }
+    }
+
+    private func fixtureImage(at url: URL) throws -> CIImage {
+        guard let image = CIImage(contentsOf: url, options: [.applyOrientationProperty: true]) else {
+            throw FacadeFixtureError.unreadable(url.lastPathComponent)
+        }
+        return image
+    }
+
+    private func repositoryRootURL() throws -> URL {
+        var current = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
+        while current.path != "/" {
+            let candidate = current.appendingPathComponent("example-images/input/e1.png")
+            if FileManager.default.fileExists(atPath: candidate.path) {
+                return current
+            }
+            current.deleteLastPathComponent()
+        }
+        throw FacadeFixtureError.missing("example-images/input/e1.png")
     }
 
     private func assertRedacted(
@@ -150,6 +235,20 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
             "SIMD"
         ] {
             XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)", file: file, line: line)
+        }
+    }
+}
+
+private enum FacadeFixtureError: Error, CustomStringConvertible {
+    case missing(String)
+    case unreadable(String)
+
+    var description: String {
+        switch self {
+        case .missing(let name):
+            "Missing required facade fixture: \(name)"
+        case .unreadable(let name):
+            "Could not read required facade fixture: \(name)"
         }
     }
 }
