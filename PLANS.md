@@ -30,6 +30,28 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-07-gsd-discuss-phase-28-face-shape-slice-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-07 |
+| Scope | Ran `$gsd-progress --next`, which passed safety gates after Phase 27 completion and routed to `$gsd-discuss-phase 28` for Face Shape Slice Completion and Documentation Closeout. Captured decisions for `下颌线` alias handling, per-tool renderer/test evidence, and scoped status/document closeout. |
+| Requirements | FACE-01, FACE-02, FACE-03, FACE-04, FACE-05, FACE-06, DOC-01, DOC-02, DOC-03 |
+| Files | `.planning/phases/28-face-shape-slice-completion-and-documentation-closeout/28-CONTEXT.md`, `.planning/phases/28-face-shape-slice-completion-and-documentation-closeout/28-DISCUSSION-LOG.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `$gsd-progress --next` found no unresolved `.planning/.continue-here.md`, no error/failed state, no unresolved Phase 27 verification failures, and no Phase 26/27 plans without summaries. `init.phase-op 28` reported Phase 28 exists in the roadmap with no context, research, plans, verification, or phase directory. `todo.match-phase 28` returned zero matches. Prior context from Phases 27, 26, and 25 plus root contracts, blueprint docs, and relevant renderer/face-shape code/tests were read. User selected all three gray areas and chose the recommended option for each detailed question. Scoped `git diff --check` passed for Phase 28 context/log, `.planning/STATE.md`, and this ledger. |
+| Build | Not run; this was a GSD discussion/context workflow with no Swift source changes. Phase 28 planning should include per-parameter renderer cases, geometry-vs-baseline helper evidence, focused SDK tests for safety/degradation/redaction, full SDK tests where local tooling allows, and scoped ledger/doc synchronization after evidence exists. |
+| Commit | Included in the Phase 28 context/session ledger commits. |
+
+Outcome:
+
+- `下颌线` is locked as an alias-backed `jawSlim` behavior for v1.5; Phase 28 must not add a separate public parameter, Demo behavior, entitlement/pro path, or distinct algorithm.
+- Phase 28 evidence should include one renderer case per distinct face-shape SDK parameter: `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, and both positive and negative `chinLength`; `下颌线` shares `jawSlim`.
+- Each renderer case must preserve dimensions and show a geometry-vs-`geometryBaseline_noop` delta above the watermark band on usable portrait fixtures.
+- Focused XCTest/scans should cover caps, missing contour/no-face degradation, signed `chinLength`, combined weakening, redaction, and raw-geometry leak prevention.
+- If evidence passes, promote only `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线`; keep branch-level `脸型` as `partial` and avoid UI, commercial quality, device parity, broad Meitu parity, new geometry group, or release-readiness claims.
+
+Next step: `$gsd-plan-phase 28`.
+
 ### C-2026-07-07-gsd-execute-phase-27-geometry-render-output-harness
 
 | Field | Value |
