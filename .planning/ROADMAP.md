@@ -81,7 +81,7 @@ Plans:
 **Goal:** Produce deterministic SDK-only saved-output evidence for geometry rendering and degradation behavior.
 **Requirements:** GEO-03, GEO-04
 **Dependencies:** Phase 26
-**Plans:** 2/4 plans executed
+**Plans:** 3/4 plans executed
 Plans:
 **Wave 1**
 
@@ -93,7 +93,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 27-03-PLAN.md — Renderer matrix, baseline comparison helper, and no-face saved-output evidence path.
+- [x] 27-03-PLAN.md — Renderer matrix, baseline comparison helper, and no-face saved-output evidence path.
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
