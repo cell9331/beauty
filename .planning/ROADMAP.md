@@ -81,6 +81,23 @@ Plans:
 **Goal:** Produce deterministic SDK-only saved-output evidence for geometry rendering and degradation behavior.
 **Requirements:** GEO-03, GEO-04
 **Dependencies:** Phase 26
+**Plans:** 4 plans
+Plans:
+**Wave 1**
+
+- [ ] 27-01-PLAN.md — Real still-image detection input seam and public-facade fixture probe.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 27-02-PLAN.md — Selected-face geometry still-image render output path.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 27-03-PLAN.md — Renderer matrix, baseline comparison helper, and no-face saved-output evidence path.
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 27-04-PLAN.md — Final evidence, validation, root docs, and planning ledger synchronization.
 
 **Success Criteria:**
 
@@ -117,10 +134,10 @@ Plans:
 
 ## Next
 
-Start Phase 27 planning for saved-output geometry evidence:
+Execute Phase 27 saved-output geometry evidence:
 
 ```bash
-$gsd-discuss-phase 27
+$gsd-execute-phase 27
 ```
 
 ## Backlog

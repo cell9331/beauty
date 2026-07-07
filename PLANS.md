@@ -26,17 +26,31 @@
 
 ## 3. Active
 
-### A-2026-07-07-gsd-plan-phase-27-geometry-render-output-harness
+No active work recorded.
+
+## 4. Completed
+
+### C-2026-07-07-gsd-plan-phase-27-geometry-render-output-harness
 
 | Field | Value |
 | --- | --- |
-| Status | active |
-| Scope | Run `$gsd-plan-phase 27` for Phase 27 Geometry Render Output and Verification Harness, using the existing Phase 27 context and research-first planning path. |
+| Completed | 2026-07-07 |
+| Scope | Created Phase 27 executable plans for Geometry Render Output and Verification Harness from existing Phase 27 context, research, validation, and pattern-map artifacts. |
 | Requirements | GEO-03, GEO-04 |
-| Current Step | Research-first selected; preparing Phase 27 research before validation, pattern mapping, planning, and plan-checker verification. |
-| Verification | Pending. |
+| Files | `.planning/phases/27-geometry-render-output-and-verification-harness/27-01-PLAN.md`, `.planning/phases/27-geometry-render-output-and-verification-harness/27-02-PLAN.md`, `.planning/phases/27-geometry-render-output-and-verification-harness/27-03-PLAN.md`, `.planning/phases/27-geometry-render-output-and-verification-harness/27-04-PLAN.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `frontmatter.validate --schema plan` passed for all four Phase 27 PLAN files. `verify.plan-structure` passed for all four plans with 2 tasks each and no errors or warnings. `check.decision-coverage-plan` passed with 17/17 Phase 27 decisions covered. Requirement scan confirmed GEO-03 and GEO-04 appear in plan frontmatter. Threat-model, Artifacts, read-first, and acceptance-criteria scans passed across all four plans. |
+| Build | Not run; this was a GSD planning/documentation workflow with no Swift source changes. Phase 27 execution plans require focused SDK tests, full `swift test --package-path BeautySDK`, renderer build/run, Phase 27 helper checks, ignored-output checks, raw-leak scans, no-overclaim scans, and ledger-status guards. |
+| Commit | Pending in this working session. |
 
-## 4. Completed
+Outcome:
+
+- `27-01-PLAN.md` creates the real still-image detection input seam and public-facade fixture probe.
+- `27-02-PLAN.md` carries selected-face geometry into the internal still-image render path and proves pre-watermark geometry output differs from a no-geometry baseline.
+- `27-03-PLAN.md` appends the renderer baseline and combined face-shape case, adds a dedicated no-face input fixture, and creates the Phase 27 geometry output helper.
+- `27-04-PLAN.md` records final renderer/degradation evidence and synchronizes root docs and planning ledgers without promoting Phase 28 `脸型` status.
+- Phase 27 remains SDK-only: no Demo UI work, no public raw geometry API, no committed generated PNG baselines, no quality/parity/release claims, and no `SHAPE_FEATURE_LEDGER.md` `implemented` promotion.
+
+Next step: `$gsd-execute-phase 27`.
 
 ### C-2026-07-07-gsd-discuss-phase-27-geometry-output-harness
 
