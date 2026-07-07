@@ -89,6 +89,7 @@ None - plan executed as written.
 ## Issues Encountered
 
 - A renderer wrapper attempt used a zsh reserved variable and failed before reporting. The renderer command was rerun with a neutral wrapper variable and passed, writing 66 outputs.
+- Code review found that helper baseline comparisons should ignore the differing watermark labels. The helper was strengthened to compare the top image region above the watermark band, then rerun successfully.
 
 ## Verification
 
@@ -98,7 +99,7 @@ None - plan executed as written.
 - `swift test --package-path BeautySDK` passed with 167 tests.
 - `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed.
 - `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out` wrote 66 ignored PNG outputs.
-- `python3 .planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py --input example-images/input --output example-images/out` passed with 66/66 outputs, same dimensions, 5/5 portrait geometry-vs-baseline comparisons, and no-face output presence.
+- `python3 .planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py --input example-images/input --output example-images/out` passed with 66/66 outputs, same dimensions, 5/5 portrait geometry-vs-baseline top-region comparisons, and no-face output presence.
 - `git check-ignore` confirmed representative generated geometry outputs are ignored.
 - Evidence raw-leak, no-overclaim, public/SPI export, active-source redaction, renderer import/scope, Demo internal-import, face-shape ledger guard, GSD decision coverage, and scoped `git diff --check` scans passed.
 

@@ -38,7 +38,7 @@ What is not claimed:
 
 | Requirement | Evidence | Status |
 | --- | --- | --- |
-| GEO-03 | `BeautyExampleRenderer` builds and writes 66 generated outputs from 6 fixtures and 11 cases. The Phase 27 helper passes with 66/66 outputs, same dimensions, 5/5 portrait geometry-vs-baseline comparisons, and no-face output present. `BeautyRendererOutputRegressionTests` verifies the matrix and scope. | passed |
+| GEO-03 | `BeautyExampleRenderer` builds and writes 66 generated outputs from 6 fixtures and 11 cases. The Phase 27 helper passes with 66/66 outputs, same dimensions, 5/5 portrait geometry-vs-baseline top-region comparisons, and no-face output present. `BeautyRendererOutputRegressionTests` verifies the matrix and scope. | passed |
 | GEO-04 | Dedicated no-face output exists; focused missing-landmark, no-face/stale/reused, combined-strength, and face-shape conflict-cap tests pass. Public evidence stays redacted and aggregate-only. | passed |
 
 ## Command Evidence
@@ -54,7 +54,7 @@ What is not claimed:
 | Full SDK suite | `swift test --package-path BeautySDK` | Passed: 167 tests, 0 failures. |
 | Renderer build | `swift build --package-path BeautySDK --product BeautyExampleRenderer` | Built product successfully. |
 | Renderer run | `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out` | Wrote 66 PNG outputs. |
-| Phase 27 helper | `python3 .planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py --input example-images/input --output example-images/out` | Passed: 66/66 outputs, 5/5 portrait geometry-vs-baseline comparisons, no-face output present. |
+| Phase 27 helper | `python3 .planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py --input example-images/input --output example-images/out` | Passed: 66/66 outputs, 5/5 portrait geometry-vs-baseline top-region comparisons, no-face output present. |
 | Ignored output policy | `git check-ignore example-images/out/e1__faceShapeCombo_0p35.png example-images/out/e1__geometryBaseline_noop.png example-images/out/no-face-gradient__faceShapeCombo_0p35.png` | Passed: representative generated geometry outputs are ignored. |
 
 ## Static Scans

@@ -43,7 +43,7 @@ What is not claimed:
 | Full SDK suite | passed | `swift test --package-path BeautySDK` | Executed 167 tests, 0 failures. | GEO-03, GEO-04 |
 | Renderer build | passed | `swift build --package-path BeautySDK --product BeautyExampleRenderer` | Built product `BeautyExampleRenderer` successfully. | GEO-03 |
 | Renderer all-case run | passed | `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out` | Wrote 66 PNG outputs. | GEO-03, GEO-04 |
-| Generated-output helper | passed | `python3 .planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py --input example-images/input --output example-images/out` | Passed with 66/66 outputs, 5/5 portrait geometry-vs-baseline comparisons, and no-face geometry output present. | GEO-03, GEO-04 |
+| Generated-output helper | passed | `python3 .planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py --input example-images/input --output example-images/out` | Passed with 66/66 outputs, 5/5 portrait geometry-vs-baseline top-region comparisons, and no-face geometry output present. | GEO-03, GEO-04 |
 | Ignored-output policy | passed | `git check-ignore example-images/out/e1__faceShapeCombo_0p35.png example-images/out/e1__geometryBaseline_noop.png example-images/out/no-face-gradient__faceShapeCombo_0p35.png` | Representative generated geometry outputs are ignored by git. | GEO-03 |
 
 ## Renderer Matrix
@@ -75,7 +75,7 @@ dimensions 576x1024: 11 outputs
 dimensions 1440x2560: 22 outputs
 dimensions 1728x2304: 11 outputs
 dimensions 2160x3840: 11 outputs
-portrait geometry-vs-baseline comparisons: 5/5
+portrait geometry-vs-baseline top-region comparisons: 5/5
 no-face geometry output present: no-face-gradient.png -> no-face-gradient__faceShapeCombo_0p35.png
 fixtures: e1.png, e2.png, e3.png, e4.png, e5.png, no-face-gradient.png
 cases: skinSmoothing_0p50, skinWhitening_0p50, skinRosy_0p40, skinSharpen_0p40, brightness_plus0p25, contrast_plus0p25, filter_softClean_0p50, filter_warmLight_0p50, skinCombo_0p50, geometryBaseline_noop, faceShapeCombo_0p35

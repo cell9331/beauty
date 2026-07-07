@@ -56,7 +56,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | --- | --- | --- |
 | GEO-01 | Phase 26 | Complete - `26-VERIFICATION.md` records `BeautyEngineGeometryFacadeTests`, focused compatibility/detector tests, and full `swift test --package-path BeautySDK` evidence for geometry-triggered still-image facade detection. |
 | GEO-02 | Phase 26 | Complete - `26-VERIFICATION.md` records selected-face resolver/degradation tests plus public/SPI raw geometry export and active-source redaction scans. |
-| GEO-03 | Phase 27 | Complete - `27-VERIFICATION.md` records `BeautyExampleRenderer` build/run evidence, 66 ignored PNG outputs, `check_geometry_renderer_outputs.py`, same-dimension checks, 5/5 portrait geometry-vs-baseline comparisons, no-face output presence, and renderer matrix tests. |
+| GEO-03 | Phase 27 | Complete - `27-VERIFICATION.md` records `BeautyExampleRenderer` build/run evidence, 66 ignored PNG outputs, `check_geometry_renderer_outputs.py`, same-dimension checks, 5/5 portrait geometry-vs-baseline top-region comparisons, no-face output presence, and renderer matrix tests. |
 | GEO-04 | Phase 27 | Complete - `27-VERIFICATION.md` records no-face saved-output evidence plus focused missing-landmark, stale/reused, combined-strength, and face-shape conflict-cap tests with redacted summaries and scans. |
 | FACE-01 | Phase 28 | Pending |
 | FACE-02 | Phase 28 | Pending |

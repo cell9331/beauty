@@ -396,7 +396,7 @@ Manual or future checks still required before stronger product claims:
 Agent-verifiable checks recorded 2026-07-07:
 
 - `BeautyExampleRenderer` builds and runs through the public `BeautySDK` facade with 6 fixtures and 11 cases, including `geometryBaseline_noop` and `faceShapeCombo_0p35`.
-- The Phase 27 helper verifies 66/66 ignored PNG outputs, same dimensions, 5/5 portrait geometry-vs-baseline comparisons, and no-face output presence.
+- The Phase 27 helper verifies 66/66 ignored PNG outputs, same dimensions, 5/5 portrait geometry-vs-baseline top-region comparisons, and no-face output presence.
 - `BeautyEngineGeometryFacadeTests` proves real fixture detection, selected-face geometry output delta, no-face degradation, and redacted metadata.
 - Focused missing-landmark, stale/reused, combined-strength, and face-shape conflict tests pass with redacted summaries and aggregate metrics.
 - Renderer scope scans prove Phase 27 did not add eye, nose, mouth, lip, proportion, 3D, or brow saved-output cases.

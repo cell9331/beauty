@@ -50,7 +50,7 @@ completed: 2026-07-07
 - Appended `geometryBaseline_noop` and `faceShapeCombo_0p35` to the public-facade renderer case matrix.
 - Added committed input fixture `example-images/input/no-face-gradient.png` for no-face geometry saved-output evidence.
 - Expanded `BeautyRendererOutputRegressionTests` to cover 11 renderer case IDs, 6 input fixtures, face-shape-only scope, and no-face summary redaction.
-- Added `check_geometry_renderer_outputs.py`, which verified 66/66 generated PNG outputs, 5/5 portrait geometry-vs-baseline comparisons, and no-face geometry output presence.
+- Added `check_geometry_renderer_outputs.py`, which verified 66/66 generated PNG outputs, 5/5 portrait geometry-vs-baseline top-region comparisons, and no-face geometry output presence.
 
 ## Task Commits
 
@@ -82,7 +82,7 @@ None.
 - `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyRendererOutputRegressionTests` passed with 4 tests.
 - `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed.
 - `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out` wrote 66 local PNG outputs.
-- `python3 .planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py --input example-images/input --output example-images/out` passed with `66/66 outputs`, `portrait geometry-vs-baseline comparisons: 5/5`, and no-face output present.
+- `python3 .planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py --input example-images/input --output example-images/out` passed with `66/66 outputs`, `portrait geometry-vs-baseline top-region comparisons: 5/5`, and no-face output present.
 - `git check-ignore example-images/out/e1__faceShapeCombo_0p35.png example-images/out/e1__geometryBaseline_noop.png example-images/out/no-face-gradient__faceShapeCombo_0p35.png` confirmed representative generated PNGs are ignored.
 - Renderer public-import scan, geometry-scope scan, helper-output raw-leak scan, and scoped `git diff --check` passed.
 

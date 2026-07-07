@@ -188,7 +188,7 @@ Recorded 2026-07-07 in `.planning/phases/27-geometry-render-output-and-verificat
 - `swift test --package-path BeautySDK` passed with 167 tests and 0 failures.
 - `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed.
 - `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out` wrote 66 ignored PNG outputs across 6 fixtures and 11 cases.
-- `python3 .planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py --input example-images/input --output example-images/out` passed with 66/66 outputs, same-dimension buckets, 5/5 portrait geometry-vs-baseline comparisons, and no-face output presence.
+- `python3 .planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py --input example-images/input --output example-images/out` passed with 66/66 outputs, same-dimension buckets, 5/5 portrait geometry-vs-baseline top-region comparisons, and no-face output presence.
 - Public/SPI raw geometry export scans, active-source redaction scans, renderer public-import scans, renderer scope scans, Demo internal-import scans, overclaim scans, evidence raw-leak scans, and `SHAPE_FEATURE_LEDGER.md` implemented-status guard scans passed.
 - Phase 27 does not claim Demo UI behavior, broad geometry-domain saved-output completion, generated PNG baselines, public raw geometry APIs, or face-shape implementation status.
 
