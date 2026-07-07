@@ -81,11 +81,11 @@ Plans:
 **Goal:** Produce deterministic SDK-only saved-output evidence for geometry rendering and degradation behavior.
 **Requirements:** GEO-03, GEO-04
 **Dependencies:** Phase 26
-**Plans:** 4 plans
+**Plans:** 1/4 plans executed
 Plans:
 **Wave 1**
 
-- [ ] 27-01-PLAN.md — Real still-image detection input seam and public-facade fixture probe.
+- [x] 27-01-PLAN.md — Real still-image detection input seam and public-facade fixture probe.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
