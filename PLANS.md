@@ -26,7 +26,15 @@
 
 ## 3. Active
 
-None.
+### A-2026-07-07-gsd-plan-phase-27-geometry-render-output-harness
+
+| Field | Value |
+| --- | --- |
+| Status | active |
+| Scope | Run `$gsd-plan-phase 27` for Phase 27 Geometry Render Output and Verification Harness, using the existing Phase 27 context and research-first planning path. |
+| Requirements | GEO-03, GEO-04 |
+| Current Step | Research-first selected; preparing Phase 27 research before validation, pattern mapping, planning, and plan-checker verification. |
+| Verification | Pending. |
 
 ## 4. Completed
 
