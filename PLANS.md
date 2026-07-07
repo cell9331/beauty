@@ -30,6 +30,26 @@ None.
 
 ## 4. Completed
 
+### C-2026-07-07-gsd-discuss-phase-27-geometry-output-harness
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-07 |
+| Scope | Ran `$gsd-progress --next`, which passed safety gates after Phase 26 completion and routed to `$gsd-discuss-phase 27` for Geometry Render Output and Verification Harness. Captured user decisions for renderer-first geometry saved-output evidence, face-shape-first scope, mechanical evidence bar, degradation evidence split, and no-overclaim/privacy boundaries before planning. |
+| Requirements | GEO-03, GEO-04 |
+| Files | `.planning/phases/27-geometry-render-output-and-verification-harness/27-CONTEXT.md`, `.planning/phases/27-geometry-render-output-and-verification-harness/27-DISCUSSION-LOG.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `$gsd-progress --next` found no unresolved `.planning/.continue-here.md`, no error/failed state, no unresolved Phase 26 verification failures, and no prior plans without summaries. `init.phase-op 27` reported Phase 27 exists in the roadmap with no context, research, plans, verification, or phase directory. `todo.match-phase 27` returned zero matches. Prior contexts from Phases 26, 25, and 24 plus root contracts and relevant renderer/geometry code were read. User selected all four gray areas, then selected the recommended option for each detailed question and selected finish context. The temporary `27-DISCUSS-CHECKPOINT.json` parsed successfully while in use and was removed after canonical context/log creation. `state.record-session --stopped-at "Phase 27 context gathered" --resume-file ".planning/phases/27-geometry-render-output-and-verification-harness/27-CONTEXT.md"` reported `recorded: true`; `state.update "Status" "Ready for Phase 27 planning"` reported `updated: true`. |
+| Build | Not run; this was a GSD discussion/context workflow with no Swift source changes. Phase 27 planning should include renderer/helper tests, real-facade `BeautyExampleRenderer` build/run evidence, geometry-output helper checks, focused degradation/redaction tests, no-overclaim scans, and full SDK tests where local tooling allows. |
+| Commit | Included in the Phase 27 context/session ledger commits. |
+
+Outcome:
+
+- Phase 27 should use a renderer-first hybrid: append geometry cases to `BeautyExampleRenderer`, back them with focused tests/helper checks, and add a narrow fallback verifier only if real-facade fixture detection cannot cover a required degradation case.
+- Saved-output scope is face-shape first with one combined moderate-strength case for existing `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, and `chinLength`; Phase 28 still owns per-tool `脸型` evidence and ledger promotion.
+- A saved-output pass means same dimensions, non-identical geometry output against a no-geometry baseline, redacted geometry metrics, ignored generated PNGs under `example-images/out/`, and representative factual notes only.
+- GEO-04 evidence must cover no-face, missing-landmark, stale/reused, and combined-strength paths; renderer PNGs are required for happy path and no-face, while the remaining paths may use focused XCTest plus helper/evidence Markdown summaries.
+- Phase 27 must not add Demo UI work, public raw geometry APIs, committed PNG baselines, subjective quality claims, commercial/release readiness claims, full Meitu parity claims, or `SHAPE_FEATURE_LEDGER.md` implementation-status promotion.
+
 ### C-2026-07-06-gsd-execute-phase-26-geometry-facade-routing
 
 | Field | Value |
