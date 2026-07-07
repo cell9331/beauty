@@ -151,6 +151,66 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
         }
     }
 
+    func testSelectedFaceGeometryChangesImageBeforeWatermarkComparedToNoGeometryBaseline() throws {
+        let provider = SDKTestingFaceDetectionProvider([.usableFace, .usableFace])
+        let engine = try BeautyEngine(faceDetectionProvider: provider)
+
+        let baseline = try engine.processResult(
+            image: Self.image,
+            metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+            parameters: BeautyParameters()
+        )
+        let geometry = try engine.processResult(
+            image: Self.image,
+            metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+            parameters: phase27FaceShapeParameters()
+        )
+        let repeatedGeometry = try engine.processResult(
+            image: Self.image,
+            metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+            parameters: phase27FaceShapeParameters()
+        )
+
+        XCTAssertEqual(provider.invocationCount, 2)
+        XCTAssertEqual(baseline.output.extent, Self.image.extent)
+        XCTAssertEqual(geometry.output.extent, Self.image.extent)
+        XCTAssertEqual(repeatedGeometry.output.extent, Self.image.extent)
+        XCTAssertEqual(geometry.detectionSummary?.availability, .usable)
+        XCTAssertEqual(geometry.detectionSummary?.usedFaceCount, 1)
+        XCTAssertEqual(geometry.metrics["beauty.detection.geometryRequired"], 1)
+        XCTAssertGreaterThan(geometry.metrics["beauty.effects.geometryPointCount"] ?? 0, 0)
+
+        XCTAssertNotEqual(
+            renderedRGBABytes(from: geometry.output),
+            renderedRGBABytes(from: baseline.output)
+        )
+        XCTAssertEqual(
+            renderedRGBABytes(from: geometry.output),
+            renderedRGBABytes(from: repeatedGeometry.output)
+        )
+        assertRedacted(geometry)
+    }
+
+    func testNoFaceGeometryRequestPreservesDimensionsAndRedactedDegradation() throws {
+        let provider = SDKTestingFaceDetectionProvider([.noFace])
+        let engine = try BeautyEngine(faceDetectionProvider: provider)
+
+        let result = try engine.processResult(
+            image: Self.image,
+            metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+            parameters: phase27FaceShapeParameters()
+        )
+
+        XCTAssertEqual(provider.invocationCount, 1)
+        XCTAssertEqual(result.output.extent, Self.image.extent)
+        XCTAssertEqual(result.detectionSummary?.availability, .noFace)
+        XCTAssertEqual(result.detectionSummary?.reasons, [.noFaceDetected])
+        XCTAssertEqual(result.metrics["beauty.detection.geometryRequired"], 1)
+        XCTAssertEqual(result.metrics["beauty.detection.usedFaceCount"], 0)
+        XCTAssertTrue(result.warnings.contains { $0.code == "face_effects_skipped_no_face" })
+        assertRedacted(result)
+    }
+
     private static let image = CIImage(color: CIColor(red: 0.35, green: 0.25, blue: 0.20, alpha: 1))
         .cropped(to: CGRect(x: 0, y: 0, width: 2, height: 2))
 
@@ -206,6 +266,27 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
             current.deleteLastPathComponent()
         }
         throw FacadeFixtureError.missing("example-images/input/e1.png")
+    }
+
+    private func renderedRGBABytes(from image: CIImage) -> [UInt8] {
+        let extent = image.extent
+        let width = Int(extent.width.rounded(.toNearestOrAwayFromZero))
+        let height = Int(extent.height.rounded(.toNearestOrAwayFromZero))
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let context = CIContext(options: [
+            .workingColorSpace: colorSpace,
+            .outputColorSpace: colorSpace
+        ])
+        var bytes = [UInt8](repeating: 0, count: width * height * 4)
+        context.render(
+            image,
+            toBitmap: &bytes,
+            rowBytes: width * 4,
+            bounds: extent,
+            format: .RGBA8,
+            colorSpace: colorSpace
+        )
+        return bytes
     }
 
     private func assertRedacted(
