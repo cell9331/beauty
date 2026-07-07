@@ -1,11 +1,13 @@
 import CoreGraphics
 import CoreImage
 import BeautyCore
+import BeautyDetection
 import BeautyEffects
 
 struct BeautyEngineGeometryRoute {
     let plan: BeautyEffectPlan
     let detectionSummary: BeautyDetectionSummary
+    let selectedFaceObservation: BeautyFaceObservation?
 }
 
 extension BeautyEngine {
@@ -18,7 +20,8 @@ extension BeautyEngine {
         guard BeautyEffectResolver.requiresFaceGeometry(parameters: parameters) else {
             return BeautyEngineGeometryRoute(
                 plan: BeautyEffectResolver.resolve(parameters: parameters),
-                detectionSummary: initialDetectionSummary
+                detectionSummary: initialDetectionSummary,
+                selectedFaceObservation: nil
             )
         }
 
@@ -29,7 +32,8 @@ extension BeautyEngine {
             )
             return BeautyEngineGeometryRoute(
                 plan: withDetectionMetrics(plan, summary: .disabled, geometryRequired: true),
-                detectionSummary: .disabled
+                detectionSummary: .disabled,
+                selectedFaceObservation: nil
             )
         }
 
@@ -45,7 +49,8 @@ extension BeautyEngine {
         )
         return BeautyEngineGeometryRoute(
             plan: withDetectionMetrics(plan, summary: detection.summary, geometryRequired: true),
-            detectionSummary: detection.summary
+            detectionSummary: detection.summary,
+            selectedFaceObservation: detection.observations.first
         )
     }
 

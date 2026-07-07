@@ -96,7 +96,11 @@ public final class BeautyEngine {
             parameters: validated
         )
         return BeautyResult(
-            output: BeautyColorEffectPipeline.apply(to: image, plan: route.plan),
+            output: BeautyColorEffectPipeline.apply(
+                to: image,
+                plan: route.plan,
+                selectedFaceObservation: route.selectedFaceObservation
+            ),
             warnings: route.plan.warnings,
             metrics: route.plan.metrics,
             detectionSummary: route.detectionSummary

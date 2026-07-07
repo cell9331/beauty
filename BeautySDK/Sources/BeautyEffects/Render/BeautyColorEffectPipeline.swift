@@ -2,6 +2,7 @@ import CoreGraphics
 import CoreImage
 import CoreVideo
 import BeautyCore
+import BeautyDetection
 
 public enum BeautyColorEffectPipeline {
     public static func apply(to pixelBuffer: CVPixelBuffer, plan: BeautyEffectPlan) throws -> CVPixelBuffer {
@@ -96,47 +97,60 @@ public enum BeautyColorEffectPipeline {
         apply(to: image, plan: plan, face: nil)
     }
 
+    package static func apply(
+        to image: CIImage,
+        plan: BeautyEffectPlan,
+        selectedFaceObservation: BeautyFaceObservation?
+    ) -> CIImage {
+        let face = selectedFaceObservation.map(BeautyFaceGeometryAdapter.makeGeometry(from:))
+        return apply(to: image, plan: plan, face: face)
+    }
+
     static func apply(to image: CIImage, plan: BeautyEffectPlan, face: FaceGeometry?) -> CIImage {
-        guard plan.hasVisibleColorOutput else {
-            return image.cropped(to: image.extent)
+        var output = image
+
+        if plan.hasVisibleColorOutput {
+            let strengths = plan.effectiveStrengths
+            let filter = filterContribution(for: plan)
+            let brightness = CGFloat(
+                strengths.brightness * 0.14 +
+                    strengths.exposure * 0.10 +
+                    strengths.skinWhitening * 0.16 +
+                    filter.brightness
+            )
+            let contrast = CGFloat(1 + strengths.contrast * 0.20 + strengths.skinSharpen * 0.18)
+            let saturation = CGFloat(max(0, 1 + strengths.saturation * 0.28 - strengths.skinSmoothing * 0.18 + filter.saturation))
+
+            output = output.applyingFilter(
+                "CIColorControls",
+                parameters: [
+                    kCIInputBrightnessKey: brightness,
+                    kCIInputContrastKey: contrast,
+                    kCIInputSaturationKey: saturation
+                ]
+            )
+
+            let redBias = CGFloat(strengths.skinRosy * 0.08 + strengths.temperature * 0.04 + strengths.tint * 0.02 + filter.redBias)
+            let greenBias = CGFloat(strengths.skinWhitening * 0.02 + strengths.tint * 0.03 + filter.greenBias)
+            let blueBias = CGFloat(-strengths.temperature * 0.04 + filter.blueBias)
+
+            output = output.applyingFilter(
+                "CIColorMatrix",
+                parameters: [
+                    "inputRVector": CIVector(x: 1, y: 0, z: 0, w: 0),
+                    "inputGVector": CIVector(x: 0, y: 1, z: 0, w: 0),
+                    "inputBVector": CIVector(x: 0, y: 0, z: 1, w: 0),
+                    "inputAVector": CIVector(x: 0, y: 0, z: 0, w: 1),
+                    "inputBiasVector": CIVector(x: redBias, y: greenBias, z: blueBias, w: 0)
+                ]
+            )
+
+            output = applyLipColor(to: output, plan: plan, face: face)
         }
 
-        let strengths = plan.effectiveStrengths
-        let filter = filterContribution(for: plan)
-        let brightness = CGFloat(
-            strengths.brightness * 0.14 +
-            strengths.exposure * 0.10 +
-            strengths.skinWhitening * 0.16 +
-            filter.brightness
-        )
-        let contrast = CGFloat(1 + strengths.contrast * 0.20 + strengths.skinSharpen * 0.18)
-        let saturation = CGFloat(max(0, 1 + strengths.saturation * 0.28 - strengths.skinSmoothing * 0.18 + filter.saturation))
-
-        var output = image.applyingFilter(
-            "CIColorControls",
-            parameters: [
-                kCIInputBrightnessKey: brightness,
-                kCIInputContrastKey: contrast,
-                kCIInputSaturationKey: saturation
-            ]
-        )
-
-        let redBias = CGFloat(strengths.skinRosy * 0.08 + strengths.temperature * 0.04 + strengths.tint * 0.02 + filter.redBias)
-        let greenBias = CGFloat(strengths.skinWhitening * 0.02 + strengths.tint * 0.03 + filter.greenBias)
-        let blueBias = CGFloat(-strengths.temperature * 0.04 + filter.blueBias)
-
-        output = output.applyingFilter(
-            "CIColorMatrix",
-            parameters: [
-                "inputRVector": CIVector(x: 1, y: 0, z: 0, w: 0),
-                "inputGVector": CIVector(x: 0, y: 1, z: 0, w: 0),
-                "inputBVector": CIVector(x: 0, y: 0, z: 1, w: 0),
-                "inputAVector": CIVector(x: 0, y: 0, z: 0, w: 1),
-                "inputBiasVector": CIVector(x: redBias, y: greenBias, z: blueBias, w: 0)
-            ]
-        )
-
-        output = applyLipColor(to: output, plan: plan, face: face)
+        if let face {
+            output = BeautyGeometryEffectPipeline.applyMVPProxy(to: output, plan: plan, face: face)
+        }
 
         return output.cropped(to: image.extent)
     }
