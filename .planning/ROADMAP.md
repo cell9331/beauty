@@ -116,6 +116,20 @@ Plans:
 **Goal:** Complete the `脸型` existing-parameter slice and update status ledgers only where facade-visible evidence exists.
 **Requirements:** FACE-01, FACE-02, FACE-03, FACE-04, FACE-05, FACE-06, DOC-01, DOC-02, DOC-03
 **Dependencies:** Phase 27
+**Plans:** 4 plans
+Plans:
+**Wave 1**
+
+- [ ] 28-01-PLAN.md — Per-tool public-facade renderer cases and top-region helper evidence.
+- [ ] 28-02-PLAN.md — Focused safety, degradation, cap, signed-chin, alias, and redaction evidence.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 28-03-PLAN.md — Command-backed face-shape renderer and focused test evidence capture.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 28-04-PLAN.md — Scoped ledger promotion, final verification, root docs, and planning closeout.
 
 **Success Criteria:**
 
@@ -134,14 +148,14 @@ Plans:
 | v1.2 HTML Reference Fidelity | 1 completed, 4 canceled | 4 completed | Reduced scope | Completed | 2026-06-26 |
 | v1.3 Meitu Core Beauty Module Design and Implementation | 5 | 14 | 20/20 | Shipped | 2026-06-30 |
 | v1.4 Stability, QA, and Debt Cleanup | 5 | 15 | 24/24 | Shipped | 2026-07-03 |
-| v1.5 SDK Geometry Output Foundation and Face Shape Slice | 3 | 8 Phase 26-27 plans complete | 4/13 | Active - Phase 27 complete | - |
+| v1.5 SDK Geometry Output Foundation and Face Shape Slice | 3 | 12 planned, 8 complete | 4/13 | Active - Phase 28 planned | - |
 
 ## Next
 
-Discuss Phase 28 face-shape slice completion and documentation closeout:
+Execute Phase 28 face-shape slice completion and documentation closeout:
 
 ```bash
-$gsd-discuss-phase 28
+$gsd-execute-phase 28
 ```
 
 ## Backlog
