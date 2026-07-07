@@ -1,5 +1,6 @@
 import BeautyCore
 import CoreGraphics
+import CoreImage
 import Foundation
 import Vision
 
@@ -30,13 +31,32 @@ package struct VisionFaceDetectionResult: Equatable, Sendable {
     package let summary: BeautyDetectionSummary
 }
 
+package struct VisionFaceDetectionInput: @unchecked Sendable {
+    package let metadata: BeautyInputMetadata
+    package let imageExtent: CGSize
+    package let previewExtent: CGSize?
+    package let stillImage: CIImage?
+
+    package init(
+        metadata: BeautyInputMetadata,
+        imageExtent: CGSize,
+        previewExtent: CGSize? = nil,
+        stillImage: CIImage? = nil
+    ) {
+        self.metadata = metadata
+        self.imageExtent = imageExtent
+        self.previewExtent = previewExtent
+        self.stillImage = stillImage
+    }
+}
+
 package struct VisionFaceDetector: Sendable {
     package enum Failure: Error, Equatable, Sendable {
         case detectorUnavailable
         case detectionTimedOut
     }
 
-    package typealias ObservationProvider = @Sendable (BeautyInputMetadata) throws -> [VisionDetectionObservation]
+    package typealias ObservationProvider = @Sendable (VisionFaceDetectionInput) throws -> [VisionDetectionObservation]
 
     private let minimumConfidence: Double
     private let observationProvider: ObservationProvider
@@ -57,13 +77,36 @@ package struct VisionFaceDetector: Sendable {
         previewExtent: CGSize? = nil,
         configuration: BeautyConfiguration = .default
     ) -> VisionFaceDetectionResult {
+        detect(
+            image: nil,
+            metadata: metadata,
+            imageExtent: imageExtent,
+            previewExtent: previewExtent,
+            configuration: configuration
+        )
+    }
+
+    package mutating func detect(
+        image: CIImage?,
+        metadata: BeautyInputMetadata,
+        imageExtent: CGSize = CGSize(width: 1, height: 1),
+        previewExtent: CGSize? = nil,
+        configuration: BeautyConfiguration = .default
+    ) -> VisionFaceDetectionResult {
         guard configuration.enableFaceTracking else {
             selectionPolicy.reset()
             return VisionFaceDetectionResult(observations: [], summary: .disabled)
         }
 
         do {
-            let observations = try observationProvider(metadata)
+            let observations = try observationProvider(
+                VisionFaceDetectionInput(
+                    metadata: metadata,
+                    imageExtent: imageExtent,
+                    previewExtent: previewExtent,
+                    stillImage: image
+                )
+            )
             return summarize(
                 observations,
                 metadata: metadata,
@@ -221,11 +264,56 @@ package struct VisionFaceDetector: Sendable {
         }
     }
 
-    private static func defaultObservationProvider(
-        metadata: BeautyInputMetadata
-    ) throws -> [VisionDetectionObservation] {
-        _ = metadata
-        _ = VNDetectFaceLandmarksRequest()
-        throw Failure.detectorUnavailable
+    private static func defaultObservationProvider(_ input: VisionFaceDetectionInput) throws -> [VisionDetectionObservation] {
+        guard let image = input.stillImage else {
+            throw Failure.detectorUnavailable
+        }
+
+        let request = VNDetectFaceLandmarksRequest()
+        let handler = VNImageRequestHandler(
+            ciImage: image,
+            orientation: input.metadata.orientation,
+            options: [:]
+        )
+        try handler.perform([request])
+
+        return (request.results ?? []).map { observation in
+            VisionDetectionObservation(
+                stableID: observation.uuid.uuidString,
+                confidence: Double(observation.confidence),
+                normalizedArea: Double(observation.boundingBox.width * observation.boundingBox.height),
+                visionBounds: CoordinateRect(
+                    x: Double(observation.boundingBox.origin.x),
+                    y: Double(observation.boundingBox.origin.y),
+                    width: Double(observation.boundingBox.width),
+                    height: Double(observation.boundingBox.height)
+                ),
+                landmarks: landmarks(from: observation.landmarks)
+            )
+        }
+    }
+
+    private static func landmarks(from landmarks: VNFaceLandmarks2D?) -> BeautyFaceLandmarks {
+        guard let landmarks else {
+            return BeautyFaceLandmarks(availableGroups: [])
+        }
+
+        var groups: Set<BeautyLandmarkGroup> = []
+        if landmarks.faceContour?.pointCount ?? 0 > 0 {
+            groups.insert(.faceContour)
+        }
+        if landmarks.leftEye?.pointCount ?? 0 > 0 {
+            groups.insert(.leftEye)
+        }
+        if landmarks.rightEye?.pointCount ?? 0 > 0 {
+            groups.insert(.rightEye)
+        }
+        if landmarks.nose?.pointCount ?? 0 > 0 || landmarks.noseCrest?.pointCount ?? 0 > 0 {
+            groups.insert(.nose)
+        }
+        if landmarks.outerLips?.pointCount ?? 0 > 0 {
+            groups.insert(.outerLips)
+        }
+        return BeautyFaceLandmarks(availableGroups: groups)
     }
 }

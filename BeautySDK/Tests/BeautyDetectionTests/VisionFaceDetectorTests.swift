@@ -1,3 +1,4 @@
+import CoreImage
 import ImageIO
 import XCTest
 import BeautyCore
@@ -104,11 +105,82 @@ final class VisionFaceDetectorTests: XCTestCase {
         assertNoRawVisionDiagnostics(in: String(describing: result.summary))
     }
 
+    func testDefaultStillImageProviderReturnsRedactedNoFaceForNoFaceFixture() {
+        var detector = VisionFaceDetector()
+        let image = CIImage(color: CIColor(red: 0.10, green: 0.12, blue: 0.15, alpha: 1))
+            .cropped(to: CGRect(x: 0, y: 0, width: 64, height: 64))
+
+        let result = detector.detect(
+            image: image,
+            metadata: metadata(),
+            imageExtent: image.extent.size
+        )
+
+        XCTAssertEqual(result.observations, [])
+        XCTAssertEqual(result.summary.availability, .noFace)
+        XCTAssertEqual(result.summary.reasons, [.noFaceDetected])
+        XCTAssertEqual(result.summary.faceCount, 0)
+        XCTAssertEqual(result.summary.usedFaceCount, 0)
+        assertNoRawVisionDiagnostics(in: String(describing: result.summary))
+    }
+
+    func testDefaultStillImageProviderMapsUsableFaceWithoutRawPayload() throws {
+        var detector = VisionFaceDetector()
+        var summaries: [String] = []
+
+        for fixtureURL in try portraitFixtureURLs() {
+            guard let image = CIImage(contentsOf: fixtureURL, options: [.applyOrientationProperty: true]) else {
+                throw FixtureError.unreadable(fixtureURL.lastPathComponent)
+            }
+
+            let result = detector.detect(
+                image: image,
+                metadata: metadata(),
+                imageExtent: image.extent.size
+            )
+            summaries.append("\(fixtureURL.lastPathComponent):\(result.summary.availability.rawValue)")
+            assertNoRawVisionDiagnostics(in: String(describing: result.summary))
+
+            if result.summary.availability == .usable {
+                XCTAssertGreaterThanOrEqual(result.summary.faceCount, 1)
+                XCTAssertEqual(result.summary.usedFaceCount, 1)
+                XCTAssertEqual(result.observations.count, 1)
+                return
+            }
+        }
+
+        XCTFail("Expected at least one portrait fixture to produce usable redacted detection; summaries=\(summaries.joined(separator: ","))")
+    }
+
     private func metadata() -> BeautyInputMetadata {
         BeautyInputMetadata(
             orientation: .up,
             source: .testFixture
         )
+    }
+
+    private func portraitFixtureURLs() throws -> [URL] {
+        let inputDirectory = try repositoryRootURL().appendingPathComponent("example-images/input", isDirectory: true)
+        return try (1...5).map { index in
+            let fixtureName = "e\(index).png"
+            let url = inputDirectory.appendingPathComponent(fixtureName)
+            guard FileManager.default.fileExists(atPath: url.path) else {
+                throw FixtureError.missing(fixtureName)
+            }
+            return url
+        }
+    }
+
+    private func repositoryRootURL() throws -> URL {
+        var current = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
+        while current.path != "/" {
+            let candidate = current.appendingPathComponent("example-images/input/e1.png")
+            if FileManager.default.fileExists(atPath: candidate.path) {
+                return current
+            }
+            current.deleteLastPathComponent()
+        }
+        throw FixtureError.missing("example-images/input/e1.png")
     }
 
     private func assertNoRawVisionDiagnostics(
@@ -124,6 +196,20 @@ final class VisionFaceDetectorTests: XCTestCase {
                 file: file,
                 line: line
             )
+        }
+    }
+}
+
+private enum FixtureError: Error, CustomStringConvertible {
+    case missing(String)
+    case unreadable(String)
+
+    var description: String {
+        switch self {
+        case .missing(let name):
+            "Missing required fixture: \(name)"
+        case .unreadable(let name):
+            "Could not read required fixture: \(name)"
         }
     }
 }

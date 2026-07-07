@@ -1,4 +1,5 @@
 import CoreGraphics
+import CoreImage
 import BeautyCore
 import BeautyEffects
 
@@ -9,6 +10,7 @@ struct BeautyEngineGeometryRoute {
 
 extension BeautyEngine {
     func resolveStillImageGeometry(
+        image: CIImage? = nil,
         metadata: BeautyInputMetadata,
         imageExtent: CGSize,
         parameters: BeautyParameters
@@ -32,6 +34,7 @@ extension BeautyEngine {
         }
 
         let detection = faceDetector.detect(
+            image: image,
             metadata: metadata,
             imageExtent: imageExtent,
             configuration: configuration

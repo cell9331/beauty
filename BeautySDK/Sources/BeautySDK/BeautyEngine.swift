@@ -90,6 +90,7 @@ public final class BeautyEngine {
         }
         let validated = try BeautySDKResources.validate(parameters: parameters)
         let route = resolveStillImageGeometry(
+            image: image,
             metadata: metadata,
             imageExtent: image.extent.size,
             parameters: validated
