@@ -16,7 +16,9 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         "contrast_plus0p25",
         "filter_softClean_0p50",
         "filter_warmLight_0p50",
-        "skinCombo_0p50"
+        "skinCombo_0p50",
+        "geometryBaseline_noop",
+        "faceShapeCombo_0p35"
     ]
 
     private static let fixtureNames = [
@@ -24,7 +26,8 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         "e2.png",
         "e3.png",
         "e4.png",
-        "e5.png"
+        "e5.png",
+        "no-face-gradient.png"
     ]
 
     func testRendererCaseInventoryMatchesCurrentPublicFacadeMatrix() throws {
@@ -43,6 +46,73 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
                 "BeautyExampleRenderer/main.swift should not import \(forbiddenTarget)"
             )
         }
+    }
+
+    func testFaceShapeComboCaseUsesOnlyPhase27FaceShapeParameters() throws {
+        let source = try rendererSource()
+        guard let idRange = source.range(of: "id: \"faceShapeCombo_0p35\"") else {
+            XCTFail("Missing faceShapeCombo_0p35 renderer case")
+            return
+        }
+        let snippet = String(source[idRange.lowerBound...]).prefix(600)
+
+        for required in [
+            "faceSlim: 0.35",
+            "faceSmall: 0.30",
+            "faceVShape: 0.35",
+            "jawSlim: 0.30",
+            "chinLength: 0.20"
+        ] {
+            XCTAssertTrue(snippet.contains(required), "Missing \(required)")
+        }
+
+        for forbidden in [
+            "eyeSize",
+            "eyeDistance",
+            "eyeYPosition",
+            "eyeTailLift",
+            "noseSlim",
+            "noseWingSlim",
+            "noseTipSize",
+            "noseBridge",
+            "mouthSize",
+            "mouthWidth",
+            "smile",
+            "lipColor",
+            "brow",
+            "proportion",
+            "3d"
+        ] {
+            XCTAssertFalse(snippet.contains(forbidden), "Unexpected geometry scope token: \(forbidden)")
+        }
+    }
+
+    func testNoFaceFixtureProducesNoFaceSummaryForFaceShapeCombo() throws {
+        let engine = try BeautyEngine(configuration: .default)
+        let inputDirectory = try repositoryRootURL().appendingPathComponent("example-images/input", isDirectory: true)
+        let fixtureName = "no-face-gradient.png"
+        let fixtureURL = inputDirectory.appendingPathComponent(fixtureName)
+        let input = try fixtureImage(at: fixtureURL, named: fixtureName)
+
+        let result = try engine.processResult(
+            image: input,
+            metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+            parameters: BeautyParameters(
+                faceSlim: 0.35,
+                faceSmall: 0.30,
+                faceVShape: 0.35,
+                jawSlim: 0.30,
+                chinLength: 0.20
+            )
+        )
+
+        XCTAssertEqual(result.output.extent, input.extent)
+        XCTAssertEqual(result.detectionSummary?.availability, .noFace)
+        XCTAssertEqual(result.detectionSummary?.reasons, [.noFaceDetected])
+        XCTAssertEqual(result.metrics["beauty.detection.geometryRequired"], 1)
+        XCTAssertEqual(result.metrics["beauty.detection.usedFaceCount"], 0)
+        XCTAssertTrue(result.warnings.contains { $0.code == "face_effects_skipped_no_face" })
+        assertRedacted(result)
     }
 
     func testDefaultParametersPreserveCurrentFixturePixelsBeforeWatermark() throws {
@@ -136,6 +206,36 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
             )
         }
         return bytes
+    }
+
+    private func assertRedacted(
+        _ result: BeautyResult<CIImage>,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let metadata = (
+            result.warnings.map { "\($0.code) \($0.message)" } +
+            Array(result.metrics.keys) +
+            (result.detectionSummary?.reasons.map(\.rawValue) ?? [])
+        ).joined(separator: " ")
+
+        for forbidden in [
+            "VNFaceObservation",
+            "boundingBox",
+            "controlPoint",
+            "/private/var",
+            "NSError",
+            "AVError",
+            "rawPresetJson",
+            "raw JSON",
+            "image bytes",
+            "landmarks=",
+            "landmarkCoordinates",
+            "rawLandmark",
+            "SIMD"
+        ] {
+            XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)", file: file, line: line)
+        }
     }
 
     private func relativeFixtureName(for url: URL) -> String {

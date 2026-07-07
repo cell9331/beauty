@@ -91,6 +91,22 @@ let cases = [
             skinRosy: 0.35,
             skinSharpen: 0.25
         )
+    ),
+    RenderCase(
+        id: "geometryBaseline_noop",
+        displayName: "geometry baseline noop",
+        parameters: BeautyParameters()
+    ),
+    RenderCase(
+        id: "faceShapeCombo_0p35",
+        displayName: "face shape combo 0.35",
+        parameters: BeautyParameters(
+            faceSlim: 0.35,
+            faceSmall: 0.30,
+            faceVShape: 0.35,
+            jawSlim: 0.30,
+            chinLength: 0.20
+        )
     )
 ]
 
