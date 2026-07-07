@@ -137,6 +137,13 @@ Phase 26 still-image facade behavior:
 - Disabled tracking preserves `.disabled` and avoids detector work.
 - No face, low confidence, missing landmark groups, detector unavailable, and detector timeout degrade through redacted summaries/warnings/metrics while safe face-agnostic work can continue.
 
+Phase 27 saved-output geometry behavior:
+
+- `BeautyEngine.processResult(image:metadata:parameters:)` can return same-dimension still-image geometry output when a usable selected face is available.
+- The dedicated no-face renderer fixture preserves output dimensions and records redacted no-face degradation evidence.
+- Focused missing-landmark, no-face/stale/reused, combined-strength, and face-shape conflict-cap tests pass, so geometry degradation remains deterministic and aggregate-only.
+- `BeautyExampleRenderer` and `check_geometry_renderer_outputs.py` provide rerunnable saved-output evidence without requiring committed generated PNG baselines.
+
 ## 7. Observability Model
 
 First-version diagnostics live in `BeautyCore/Diagnostics`; do not create a separate diagnostics package until another product actually shares it. Use three layers:

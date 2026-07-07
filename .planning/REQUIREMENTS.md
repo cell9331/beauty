@@ -9,8 +9,8 @@
 
 - [x] **GEO-01**: SDK public facade can run geometry-enabled still-image processing through `BeautyEngine.processResult(...)`.
 - [x] **GEO-02**: Detection and landmark results can feed geometry render planning without exposing raw landmark payloads or sensitive diagnostics.
-- [ ] **GEO-03**: Geometry render output preserves input dimensions and produces deterministic saved-output evidence through `BeautyExampleRenderer` or an equivalent SDK-only path.
-- [ ] **GEO-04**: Geometry output verification covers no-face, missing-landmark, stale/reused-landmark, and combined-strength degradation paths.
+- [x] **GEO-03**: Geometry render output preserves input dimensions and produces deterministic saved-output evidence through `BeautyExampleRenderer` or an equivalent SDK-only path.
+- [x] **GEO-04**: Geometry output verification covers no-face, missing-landmark, stale/reused-landmark, and combined-strength degradation paths.
 
 ### Face Shape Slice
 
@@ -56,8 +56,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | --- | --- | --- |
 | GEO-01 | Phase 26 | Complete - `26-VERIFICATION.md` records `BeautyEngineGeometryFacadeTests`, focused compatibility/detector tests, and full `swift test --package-path BeautySDK` evidence for geometry-triggered still-image facade detection. |
 | GEO-02 | Phase 26 | Complete - `26-VERIFICATION.md` records selected-face resolver/degradation tests plus public/SPI raw geometry export and active-source redaction scans. |
-| GEO-03 | Phase 27 | Pending |
-| GEO-04 | Phase 27 | Pending |
+| GEO-03 | Phase 27 | Complete - `27-VERIFICATION.md` records `BeautyExampleRenderer` build/run evidence, 66 ignored PNG outputs, `check_geometry_renderer_outputs.py`, same-dimension checks, 5/5 portrait geometry-vs-baseline comparisons, no-face output presence, and renderer matrix tests. |
+| GEO-04 | Phase 27 | Complete - `27-VERIFICATION.md` records no-face saved-output evidence plus focused missing-landmark, stale/reused, combined-strength, and face-shape conflict-cap tests with redacted summaries and scans. |
 | FACE-01 | Phase 28 | Pending |
 | FACE-02 | Phase 28 | Pending |
 | FACE-03 | Phase 28 | Pending |
@@ -72,9 +72,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 - v1.5 requirements: 13 total
 - Mapped to phases: 13
 - Unmapped: 0
-- Complete: 2
-- Pending: 11
+- Complete: 4
+- Pending: 9
 
 ---
 *Requirements defined: 2026-07-04*
-*Last updated: 2026-07-06 after Phase 26 verification*
+*Last updated: 2026-07-07 after Phase 27 verification*

@@ -30,6 +30,27 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-07-gsd-execute-phase-27-geometry-render-output-harness
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-07 |
+| Scope | Ran `$gsd-execute-phase 27` for Geometry Render Output and Verification Harness. Completed four dependent waves: real still-image Vision input seam, selected-face still-image geometry output routing, renderer matrix/helper/no-face fixture, and final evidence plus root/planning ledger synchronization. |
+| Requirements | GEO-03, GEO-04 |
+| Files | `BeautySDK/Sources/BeautyDetection/VisionFaceDetector.swift`, `BeautySDK/Sources/BeautySDK/BeautyEngine.swift`, `BeautyEngineGeometryDetection.swift`, `BeautySDK/Sources/BeautyEffects/Render/BeautyColorEffectPipeline.swift`, `BeautyGeometryEffectPipeline.swift`, `BeautySDK/Sources/BeautyExampleRenderer/main.swift`, focused SDK tests, `example-images/input/no-face-gradient.png`, `.planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py`, `27-GEOMETRY-RENDERER-EVIDENCE.md`, `27-VERIFICATION.md`, `27-VALIDATION.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md`, `ARCHITECTURE.md`, `DESIGN.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `QUALITY_SCORE.md`, `PLANS.md` |
+| Verification | `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyEngineGeometryFacadeTests` passed with 8 tests; `BeautyRendererOutputRegressionTests` passed with 4 tests; focused missing-landmark, no-face/stale/reused, combined-strength, and face-shape conflict-cap tests each passed; full `swift test --package-path BeautySDK` passed with 167 tests. `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed. `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out` wrote 66 ignored PNG outputs. `check_geometry_renderer_outputs.py` passed with 66/66 outputs, same dimensions, 5/5 portrait geometry-vs-baseline comparisons, and no-face output presence. Public/SPI raw geometry export scans, active-source redaction scans, renderer public-import scans, renderer scope scans, Demo internal-import scans, evidence raw-leak scans, overclaim scans, face-shape ledger guard, GSD decision coverage, and scoped `git diff --check` passed. |
+| Build | SDK SwiftPM tests and `BeautyExampleRenderer` build/run passed. No Demo build/test was run because Phase 27 changed no Demo source/UI behavior; Demo boundary was covered by static import scans. |
+| Commit | Task commits include `2355587`, `cd21ba3`, `5ae3bbe`, `3a3e0fd`, `21639fd`, `761283d`, `14ec1f5`, `160702a`, `acbf066`, and `3d8f9e2`; final docs/ledger synchronization is committed with this entry. |
+
+Outcome:
+
+- GEO-03 is complete: `BeautyExampleRenderer` now emits `geometryBaseline_noop` and `faceShapeCombo_0p35`, and the helper verifies same-dimension saved-output geometry evidence without hashes or committed PNG baselines.
+- GEO-04 is complete: no-face saved-output evidence plus missing-landmark, stale/reused, combined-strength, and face-shape conflict-cap tests pass with redacted summaries and aggregate metrics.
+- Phase 27 remains SDK-only: no Demo UI work, no public raw geometry API, no eye/nose/mouth/lip saved-output expansion, no generated PNG baselines, no quality/parity/launch claims, and no `SHAPE_FEATURE_LEDGER.md` implemented-status promotion.
+- Phase 28 is the next owner for per-tool `脸型` completion, `下颌线` alias handling, and status ledger promotion.
+
+Next step: `$gsd-discuss-phase 28`.
+
 ### C-2026-07-07-gsd-plan-phase-27-geometry-render-output-harness
 
 | Field | Value |

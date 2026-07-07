@@ -129,6 +129,7 @@ Acceptance:
 | Error | Invalid image returns typed error and preserves previous output. |
 | Compare | Before/after uses same crop/orientation and does not shift unexpectedly. |
 | Geometry intent | Geometry-triggering still-image parameters can activate detection through the public facade, with redacted degradation when no usable face exists. |
+| Geometry saved output | The SDK-only renderer can save same-dimension geometry foundation outputs through the public facade, with a no-geometry baseline, no-face evidence, and redacted degradation summaries. |
 
 ### 5.4 One-Tap Preset
 
@@ -390,6 +391,21 @@ Manual or future checks still required before stronger product claims:
 - Phase 26 does not add Demo UI behavior, saved-output renderer cases, generated PNG evidence, commercial quality evidence, full Meitu parity, or `SHAPE_FEATURE_LEDGER.md` implementation status.
 - Phase 27 owns deterministic saved-output geometry rendering evidence; Phase 28 owns verified `脸型` tool completion and ledger promotion.
 
+### 7.12 Phase 27 Geometry Saved-Output Acceptance
+
+Agent-verifiable checks recorded 2026-07-07:
+
+- `BeautyExampleRenderer` builds and runs through the public `BeautySDK` facade with 6 fixtures and 11 cases, including `geometryBaseline_noop` and `faceShapeCombo_0p35`.
+- The Phase 27 helper verifies 66/66 ignored PNG outputs, same dimensions, 5/5 portrait geometry-vs-baseline comparisons, and no-face output presence.
+- `BeautyEngineGeometryFacadeTests` proves real fixture detection, selected-face geometry output delta, no-face degradation, and redacted metadata.
+- Focused missing-landmark, stale/reused, combined-strength, and face-shape conflict tests pass with redacted summaries and aggregate metrics.
+- Renderer scope scans prove Phase 27 did not add eye, nose, mouth, lip, proportion, 3D, or brow saved-output cases.
+
+Manual or future checks still required before stronger product claims:
+
+- Phase 28 owns per-tool `脸型` completion and `SHAPE_FEATURE_LEDGER.md` status promotion.
+- Broader geometry-domain output, real-device camera/Vision parity, long-run preview evidence, and visual review remain separate scoped work.
+
 ## 8. Preset Product Contract
 
 MVP built-in presets:
@@ -467,3 +483,4 @@ Before merging product-facing changes, verify:
 | 2026-05-25 | Presets are complete parameter bundles. | Keeps one-tap UX deterministic and testable. |
 | 2026-05-25 | Later domains stay visible but not blocking: makeup, segmentation, body, video export. | Prevents scope creep while preserving architecture direction. |
 | 2026-07-06 | Phase 26 proves public still-image geometry intent without claiming visible geometry output. | Host apps can exercise detection-backed planning through `BeautyEngine.processResult(...)`, while saved-output quality and `脸型` completion remain later evidence gates. |
+| 2026-07-07 | Phase 27 proves SDK-only saved-output geometry foundation without promoting per-tool face-shape status. | The renderer/helper path now verifies same-dimension geometry outputs and degradation evidence, while Phase 28 remains the owner for `脸型` tool completion. |

@@ -34,19 +34,19 @@ Quality gate:
 
 ## 3. Current Snapshot
 
-Current repository state as of 2026-07-06 after Phase 26 geometry facade and landmark routing evidence:
+Current repository state as of 2026-07-07 after Phase 27 geometry render output and verification harness evidence:
 
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
 | Root docs | 4 | `AGENTS.md`, `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `PLANS.md`, and `QUALITY_SCORE.md` still exist as current owner docs. Phase 21 root placeholder scan found only historical `PLANS.md` verification prose, not unresolved contract placeholders. | Keep root docs synced when `.planning/PROJECT.md`, `.planning/ROADMAP.md`, implementation contracts, or Phase 22-25 evidence change. |
 | Historical docs | 3 | `docs/README.md` remains the long-doc entry. Phase 21 records `.planning/codebase/*` maps as stale background because they still contradict the current Swift package, tests, and planning ledgers. | Continue conflict scans and defer any formal `.planning/codebase/*` remap until explicitly scoped. |
-| GSD planning | 4 | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, and `.planning/REQUIREMENTS.md` define v1.5 as SDK geometry output foundation plus the `脸型` existing-parameter slice. Phase 26 records GEO-01 and GEO-02 complete from `26-VERIFICATION.md`; Phase 27 and Phase 28 remain pending for saved-output geometry evidence and face-shape ledger promotion. | Start Phase 27 planning for saved-output geometry render evidence; keep Phase 28 ledger promotion blocked until that evidence exists. |
-| SDK Package | 4 | `BeautySDK/Package.swift` exists with `BeautyCore`, `BeautyDetection`, `BeautyRender`, `BeautyEffects`, `BeautyResources`, facade `BeautySDK`, and `BeautyExampleRenderer`. Phase 26 `swift test --package-path BeautySDK` passed with 159 XCTest cases after public still-image geometry gating and selected-face routing. | Geometry saved-output rendering, optimized profiling, and commercial packaging remain future gates. |
+| GSD planning | 4 | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, and `.planning/REQUIREMENTS.md` define v1.5 as SDK geometry output foundation plus the `脸型` existing-parameter slice. Phase 26 records GEO-01/GEO-02 complete from `26-VERIFICATION.md`; Phase 27 records GEO-03/GEO-04 complete from `27-VERIFICATION.md`; Phase 28 remains pending for per-tool face-shape completion and ledger promotion. | Discuss Phase 28 for the `脸型` existing-parameter slice and keep second-level status promotion blocked until tool-specific evidence exists. |
+| SDK Package | 4 | `BeautySDK/Package.swift` exists with `BeautyCore`, `BeautyDetection`, `BeautyRender`, `BeautyEffects`, `BeautyResources`, facade `BeautySDK`, and `BeautyExampleRenderer`. Phase 27 `swift test --package-path BeautySDK` passed with 167 XCTest cases after saved-output geometry routing, renderer matrix expansion, and helper evidence. | Phase 28 face-shape completion, optimized profiling, and packaging remain future gates. |
 | Demo App | 4 | Existing archived Demo evidence remains valid for shipped behavior. Phase 22 recorded blocker-form Home/editor review notes and no current v1.4 PNG screenshots. Phase 23 focused camera pipeline xcodebuild passed on `platform=iOS Simulator,name=iPhone 17,OS=26.5`; Phase 25 focused privacy/import xcodebuild passed with 17 tests, but screenshot and long-run routes were not rerun. | Rerun the screenshot protocol before claiming current screenshot evidence; keep physical iPhone checks blocked until hardware evidence exists. |
-| Tests | 4 | Phase 26 focused facade, metadata compatibility, detector, resolver, and missing-landmark degradation tests passed; full `swift test --package-path BeautySDK` passed with 159 XCTest cases. Phase 25 Demo camera/privacy/import evidence remains the latest Demo xcodebuild pass. | Keep geometry saved-output renderer checks, 600-second preview, and physical iPhone checks as manual/future evidence. |
-| Security | 4 | Phase 26 public/SPI raw geometry export scans and active-source raw-leak scans passed, proving public still-image geometry intent without raw landmarks, bounds, control points, Vision objects, raw framework errors, local paths, raw JSON, or image bytes. Phase 25 privacy-manifest deferral and bundled-resource trust evidence remain current. | Reopen manifest, dependency, network, resource-integrity, and raw-geometry review when behavior changes or commercial packaging starts. |
-| Reliability | 4 | Existing tests cover typed errors, reset, backpressure, stale work, degradation, resource failures, and non-mutating JSON import failures. Phase 26 adds public still-image geometry detection gating, disabled/no-run compatibility, no-face/low-confidence/missing-landmark/detector-failure degradation, and safe-domain continuation evidence. | Keep saved-output geometry rendering, the 600-second preview route, physical iPhone checks, and optimized profiling as explicit follow-up evidence. |
-| Product acceptance | 4 | Existing acceptance evidence covers current SDK/Demo journeys. Phase 26 proves public still-image geometry intent/routing through the facade and records explicit non-claims for Demo UI, saved-output PNGs, commercial quality, full parity, and face-shape implementation status. | Future work should target Phase 27 saved-output geometry evidence, Phase 28 `脸型` completion, screenshot rerun, long-run preview, hardware checks, external resource package design, and commercial packaging only when scoped. |
+| Tests | 4 | Phase 27 focused facade, renderer, missing-landmark, no-face/stale/reused, combined-strength, and face-shape conflict tests passed; full `swift test --package-path BeautySDK` passed with 167 XCTest cases. Phase 25 Demo camera/privacy/import evidence remains the latest Demo xcodebuild pass. | Keep Phase 28 tool-specific saved-output checks, 600-second preview, and physical iPhone checks as manual/future evidence. |
+| Security | 4 | Phase 27 public/SPI raw geometry export scans, active-source redaction scans, renderer public-import scans, Demo internal-import scans, evidence-doc raw-leak scans, and ledger promotion guards passed. Phase 25 privacy-manifest deferral and bundled-resource trust evidence remain current. | Reopen manifest, dependency, network, resource-integrity, and raw-geometry review when behavior changes or packaging starts. |
+| Reliability | 4 | Existing tests cover typed errors, reset, backpressure, stale work, degradation, resource failures, and non-mutating JSON import failures. Phase 27 adds same-dimension saved-output geometry evidence, dedicated no-face renderer evidence, missing-landmark, stale/reused, and combined-strength degradation checks. | Keep Phase 28 tool-specific evidence, the 600-second preview route, physical iPhone checks, and optimized profiling as explicit follow-up evidence. |
+| Product acceptance | 4 | Existing acceptance evidence covers current SDK/Demo journeys. Phase 27 proves SDK-only saved-output geometry foundation through the public facade and records explicit non-claims for Demo UI, broad geometry-domain completion, parity, and face-shape implementation status. | Future work should target Phase 28 `脸型` completion, screenshot rerun, long-run preview, hardware checks, external resource package design, and packaging only when scoped. |
 
 ### 3.1 Phase 4 Final Verification
 
@@ -177,6 +177,20 @@ Recorded 2026-07-06 in `.planning/phases/26-geometry-facade-and-landmark-routing
 - Public/SPI raw geometry export scans and active-source raw-leak scans passed with zero matches.
 - Renderer geometry-case exclusion and `SHAPE_FEATURE_LEDGER.md` implemented-status guard scans passed, preserving Phase 27/28 ownership.
 - Phase 26 does not claim saved-output geometry rendering, generated PNG evidence, Demo UI behavior, commercial visual quality, full Meitu parity, release readiness, or `脸型` implementation status.
+
+### 3.12 Phase 27 Geometry Render Output Evidence
+
+Recorded 2026-07-07 in `.planning/phases/27-geometry-render-output-and-verification-harness/27-VERIFICATION.md`, `27-GEOMETRY-RENDERER-EVIDENCE.md`, and `27-VALIDATION.md`:
+
+- `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyEngineGeometryFacadeTests` passed with 8 tests and 0 failures.
+- `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyRendererOutputRegressionTests` passed with 4 tests and 0 failures.
+- Focused missing-landmark, no-face/stale/reused, combined-strength, and face-shape conflict-cap tests each passed with 0 failures.
+- `swift test --package-path BeautySDK` passed with 167 tests and 0 failures.
+- `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed.
+- `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out` wrote 66 ignored PNG outputs across 6 fixtures and 11 cases.
+- `python3 .planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py --input example-images/input --output example-images/out` passed with 66/66 outputs, same-dimension buckets, 5/5 portrait geometry-vs-baseline comparisons, and no-face output presence.
+- Public/SPI raw geometry export scans, active-source redaction scans, renderer public-import scans, renderer scope scans, Demo internal-import scans, overclaim scans, evidence raw-leak scans, and `SHAPE_FEATURE_LEDGER.md` implemented-status guard scans passed.
+- Phase 27 does not claim Demo UI behavior, broad geometry-domain saved-output completion, generated PNG baselines, public raw geometry APIs, or face-shape implementation status.
 
 ## 4. Product Domain Scorecard
 
@@ -406,11 +420,11 @@ SDK 1.0 readiness:
 
 | Priority | Item | Why |
 | --- | --- | --- |
-| 1 | Execute Phase 27 saved-output geometry evidence. | Phase 26 proves facade geometry intent/routing only; `BeautyExampleRenderer` geometry output, generated PNG evidence, and degradation rendering checks remain pending. |
+| 1 | Execute Phase 28 face-shape slice completion. | Phase 27 proves the shared saved-output geometry foundation; per-tool `脸型` completion, `下颌线` alias handling, and status promotion still need Phase 28 evidence. |
 | 2 | Run dedicated 600-second preview and physical iPhone checks when setup is available. | Phase 23 records a short fixture loop and focused simulator pass evidence, but long-run preview and device evidence remain blocked or not run. |
 | 3 | Rerun current Demo screenshot evidence. | Phase 22 completed the documented blocker path; current PNG capture still requires rerunning the exact build/test/screenshot commands and recording pass or blocker status. |
 | 4 | Design external resource package trust before enabling any dynamic packages. | Phase 25 covers bundled resources only; LUT, makeup, model, sticker, download, cache, checksum/signature, and package-integrity capability remain disabled. |
-| 5 | Keep Phase 24 renderer regression gates current when the renderer matrix changes. | Phase 24 protects the current 9-case skin/color/filter matrix and 45 ignored generated outputs; future renderer cases need matching tests, helper inventory, and evidence updates. |
+| 5 | Keep renderer regression gates current when the renderer matrix changes. | Phase 27 protects the current 11-case matrix, 6 fixtures, and 66 ignored generated outputs; future renderer cases need matching tests, helper inventory, and evidence updates. |
 | 6 | Defer formal `.planning/codebase/*` remap until explicitly scoped. | Phase 21 and the Phase 22 drift warning found the maps stale; current source, root contracts, and `.planning` ledgers are authoritative. |
 
 ## 15. Quality Decision Log
@@ -431,3 +445,4 @@ SDK 1.0 readiness:
 | 2026-07-02 | Phase 23 records performance and reliability evidence from `23-PERFORMANCE-EVIDENCE.md`. | SDK performance evidence, full SDK tests, focused Demo camera tests, quality/reset/degradation regressions, and scans pass; over-budget timing, 600-second preview, screenshot, and physical iPhone gaps remain explicit follow-up work. |
 | 2026-07-03 | Phase 25 records security/distribution closeout evidence without raising unsupported capability scores. | Privacy manifest deferral, active-source negative scans, bundled-resource trust tests, focused Demo privacy/import tests, and traceability sync pass; external resources, screenshot rerun, long-run preview, hardware checks, and commercial packaging remain future or blocked/not-run evidence. |
 | 2026-07-06 | Phase 26 records public still-image geometry facade/routing evidence without raising saved-output or release-quality claims. | Focused facade/detector/effects tests, full 159-test SDK suite, public/SPI raw geometry export scans, active-source raw-leak scans, renderer-case exclusion, and ledger-status guard pass; Phase 27/28 still own saved-output geometry and `脸型` completion. |
+| 2026-07-07 | Phase 27 records saved-output geometry foundation evidence without promoting per-tool face-shape status. | Focused facade/renderer/degradation tests, full 167-test SDK suite, 66 ignored renderer outputs, Phase 27 helper checks, redaction scans, renderer scope scans, and ledger-status guard pass; Phase 28 still owns `脸型` completion. |

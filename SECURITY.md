@@ -53,6 +53,13 @@ Phase 26 facade-geometry privacy evidence recorded 2026-07-06:
 - Active-source scans over `BeautySDK` public/Core surfaces and active Demo source passed for raw Vision observation names, raw framework errors, absolute local paths, raw JSON, image bytes, and raw landmark strings.
 - Phase 26 did not add Demo UI behavior, renderer geometry cases, saved-output PNG claims, network behavior, or `SHAPE_FEATURE_LEDGER.md` implementation-status promotion.
 
+Phase 27 geometry-output privacy evidence recorded 2026-07-07:
+
+- `BeautyExampleRenderer` remains public-facade-only and writes generated geometry PNGs only under ignored `example-images/out/`.
+- `27-VERIFICATION.md` records public/SPI raw geometry export scans, active-source redaction scans, renderer public-import scans, Demo internal-import scans, and evidence-doc raw-leak scans as passed.
+- The generated-output helper records only relative fixture names, case IDs, counts, dimensions, geometry-vs-baseline comparison counts, and no-face output presence.
+- Phase 27 did not add Demo UI behavior, public raw geometry APIs, network behavior, raw geometry evidence fields, generated PNG baselines, or `SHAPE_FEATURE_LEDGER.md` implementation-status promotion.
+
 ## 3. Trust Boundaries
 
 ```text

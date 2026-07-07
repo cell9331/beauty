@@ -203,6 +203,7 @@ Rules:
 - `.mappingFailed` is a degraded state; output should still be possible when rendering can safely skip face-dependent work.
 - `.disabled` and `.notRun` are valid non-error states for configuration or first-version no-op paths.
 - Phase 26 still-image processing uses `.notRun` when parameters do not require geometry and `.disabled` when tracking/detection is disabled; geometry-triggered unusable detection maps to redacted `noFace`, `lowConfidence`, `partial`, or failure reason summaries while face-agnostic effects may continue.
+- Phase 27 still-image geometry output keeps this summary model unchanged: selected-face render data stays internal, and saved-output evidence is recorded through renderer/helper counts, dimensions, warnings, and aggregate metrics only.
 
 ## 5. Detection Models
 
@@ -398,6 +399,7 @@ Rules:
 - Missing landmark groups skip only their dependent domains: eyes require eye groups, nose requires nose, and mouth/lip require outer lips.
 - Reused landmarks reduce effective geometry briefly; stale landmarks skip strong geometry and record stable warning/metric evidence.
 - Phase 26 adds `BeautyEffectResolver.requiresFaceGeometry(parameters:)` as the still-image detection trigger. `BeautyEffectResolver.resolve(parameters:selectedFaceObservation:)` converts one selected package-only detection observation into internal `FaceGeometry`; nil, no-face, low-confidence, and missing landmark groups degrade through the same redacted warnings and aggregate metrics as existing resolver contexts.
+- Phase 27 routes that selected-face result into the still-image render path for same-dimension geometry output evidence. The current image path uses a deterministic internal CIImage geometry proxy after color/lip work when internal geometry points exist; no public parameter, public result field, or Demo dependency changes.
 
 ## 9. RenderGraph Design
 
@@ -495,6 +497,7 @@ Per-frame invariants:
 - Render pass list is derived after detection state is known.
 - A frame never mutates global public parameters.
 - Phase 26 applies this ordering to public still-image `BeautyEngine.processResult(image:metadata:parameters:)` for geometry-triggering parameters; pixel-buffer realtime behavior remains unchanged by that phase.
+- Phase 27 extends the still-image ordering so selected usable geometry can affect the returned image while no-face and missing inputs degrade through the existing warnings/metrics path.
 
 ## 12. Parameter State Machine
 
@@ -621,6 +624,7 @@ Each implementation must make these contracts testable:
 | Phase 6 all-domain combined parameters remain capped, conservative, and redacted. | `CombinedEffectSafetyTests` plus resolver and engine fixture tests |
 | No-face, missing-eye, missing-nose, missing-mouth/lip, reused, and stale contexts degrade only affected domains. | `MissingLandmarkDegradationTests` and combined resolver tests |
 | Still-image geometry-trigger detection and selected-face routing stay public-facade safe. | `BeautyEngineGeometryFacadeTests`, `BeautyEffectResolverTests`, public/SPI raw geometry export scans, and active-source redaction scans |
+| Saved-output geometry foundation preserves dimensions and differs from a no-geometry baseline through the public facade. | `BeautyRendererOutputRegressionTests`, `BeautyEngineGeometryFacadeTests`, `BeautyExampleRenderer`, and `check_geometry_renderer_outputs.py` |
 
 ## 18. Open Design Watchlist
 

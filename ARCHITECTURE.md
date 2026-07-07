@@ -13,6 +13,7 @@
 - 已存在 `BeautySDK/` Swift Package，包含 `BeautyCore`、`BeautyDetection`、`BeautyRender`、`BeautyEffects`、`BeautyResources` 和 public `BeautySDK` facade。
 - Phase 6 当前实现已让 `BeautyEffects` 承担效果解析、安全 cap、几何 provider、MVP 颜色/几何输出与降级 metadata；Demo 仍只通过 public `BeautySDK` facade 集成。
 - Phase 26 当前实现已让 public `BeautySDK` still-image facade 在几何参数需要时触发检测，并通过 package-only 检测观察值把一个 selected face 路由到 `BeautyEffects` 内部 `FaceGeometry` planning；public API 仍只暴露 redacted `BeautyDetectionSummary`、warnings 和 aggregate metrics。
+- Phase 27 当前实现已让 public still-image facade 通过内部 selected-face route 产生 same-dimension geometry saved-output evidence；`BeautyExampleRenderer` 仍只 import `BeautySDK`，generated PNGs 保持在 ignored `example-images/out/`。
 - `docs/` 下存在历史规划资料，迁移后的根级文档优先级更高。
 
 ## 2. 顶层不变量
@@ -179,6 +180,7 @@ BeautyDemo
 - 算法级安全 cap、combined weakening、missing-landmark skip 和 stale/reused 降级只改变内部 effective strength，不收窄 public `BeautyParameters` 范围。
 - `BeautyEffects` 可以使用内部 `FaceGeometry`/`WarpControlPoint` 适配层，但不得把控制点、bounding box、landmark 或 provider 类型暴露给 `BeautySDK` public facade 或 Demo。
 - Phase 26 的 `BeautyFaceGeometryAdapter` 只把 selected package observation 转成内部 `FaceGeometry` planning input；它不是 public geometry export，也不是 renderer saved-output evidence。
+- Phase 27 的 still-image geometry render output 只通过内部 `BeautyColorEffectPipeline` selected-face overload 和 `BeautyGeometryEffectPipeline` CIImage proxy 证明 foundation evidence；它不是新的 public raw geometry surface，也不是 Demo UI behavior。
 
 ### 6.5 BeautyResources
 
@@ -216,6 +218,7 @@ import BeautySDK
 - 隐藏 Vision、Metal、Core Image、Target 拆分细节。
 - 把内部错误映射为稳定 SDK 错误。
 - Phase 26 的 still-image `BeautyEngine.processResult(image:metadata:parameters:)` 在 face-shape、eye、nose、mouth 或 `lipColor` 参数需要几何时触发检测；no-op/color/filter/basic-skin 路径保留 `.notRun`，disabled tracking 保留 `.disabled`。
+- Phase 27 的 still-image `BeautyEngine.processResult(image:metadata:parameters:)` 在 usable selected face 存在时把几何意图传入内部 image render path；public result 仍只包含 output image、redacted summary、warnings 和 aggregate metrics。
 
 ### 6.7 BeautyDemo
 

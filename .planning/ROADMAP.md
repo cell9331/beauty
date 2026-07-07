@@ -77,11 +77,11 @@ Plans:
 
 ### Phase 27: Geometry Render Output and Verification Harness
 
-**Status:** Pending
+**Status:** Complete - completed 2026-07-07
 **Goal:** Produce deterministic SDK-only saved-output evidence for geometry rendering and degradation behavior.
 **Requirements:** GEO-03, GEO-04
 **Dependencies:** Phase 26
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 Plans:
 **Wave 1**
 
@@ -97,7 +97,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 27-04-PLAN.md — Final evidence, validation, root docs, and planning ledger synchronization.
+- [x] 27-04-PLAN.md — Final evidence, validation, root docs, and planning ledger synchronization.
 
 **Success Criteria:**
 
@@ -105,6 +105,10 @@ Plans:
 2. `BeautyExampleRenderer` or an equivalent SDK-only path saves deterministic geometry output evidence.
 3. Verification covers no-face, missing-landmark, stale/reused-landmark, and combined-strength degradation behavior.
 4. Renderer evidence avoids commercial quality, UI, device parity, and full Meitu parity claims.
+
+**Evidence:** `.planning/phases/27-geometry-render-output-and-verification-harness/27-VERIFICATION.md` records focused facade, renderer, missing-landmark, no-face/stale/reused, combined-strength, and face-shape conflict tests plus full `swift test --package-path BeautySDK` passing with 167 tests. `BeautyExampleRenderer` builds and writes 66 ignored PNG outputs, and `check_geometry_renderer_outputs.py` verifies 66/66 outputs, same dimensions, 5/5 portrait geometry-vs-baseline comparisons, and no-face output presence. Static scans passed for public/SPI raw geometry export, active-source redaction, renderer public imports, geometry scope, Demo internal imports, overclaim wording, and face-shape ledger no-promotion guard.
+
+**Boundary:** Phase 27 proves saved-output geometry foundation only. Phase 28 remains the owner for per-tool `脸型` completion evidence and `SHAPE_FEATURE_LEDGER.md` implemented-status promotion.
 
 ### Phase 28: Face Shape Slice Completion and Documentation Closeout
 
@@ -130,14 +134,14 @@ Plans:
 | v1.2 HTML Reference Fidelity | 1 completed, 4 canceled | 4 completed | Reduced scope | Completed | 2026-06-26 |
 | v1.3 Meitu Core Beauty Module Design and Implementation | 5 | 14 | 20/20 | Shipped | 2026-06-30 |
 | v1.4 Stability, QA, and Debt Cleanup | 5 | 15 | 24/24 | Shipped | 2026-07-03 |
-| v1.5 SDK Geometry Output Foundation and Face Shape Slice | 3 | 4 Phase 26 plans executed | 2/13 | Active - Phase 26 complete | - |
+| v1.5 SDK Geometry Output Foundation and Face Shape Slice | 3 | 8 Phase 26-27 plans complete | 4/13 | Active - Phase 27 complete | - |
 
 ## Next
 
-Execute Phase 27 saved-output geometry evidence:
+Discuss Phase 28 face-shape slice completion and documentation closeout:
 
 ```bash
-$gsd-execute-phase 27
+$gsd-discuss-phase 28
 ```
 
 ## Backlog
