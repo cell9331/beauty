@@ -194,9 +194,9 @@ BeautySDK/
 
 ```swift
 RenderCase(
-    id: "faceSlim_0p45",
-    displayName: "faceSlim 0.45",
-    parameters: BeautyParameters(faceSlim: 0.45)
+    id: "faceSlim_0p35",
+    displayName: "faceSlim 0.35",
+    parameters: BeautyParameters(faceSlim: 0.35)
 )
 ```
 
@@ -216,7 +216,7 @@ private static let expectedRendererCaseIDs = [
     "...",
     "geometryBaseline_noop",
     "faceShapeCombo_0p35",
-    "faceSlim_0p45"
+    "faceSlim_0p35"
 ]
 ```
 
@@ -231,8 +231,8 @@ The current test also forbids internal SDK target imports in the renderer source
 ```python
 differs = top_region_differs(
     output_dir / expected_output_name(fixture_name, "geometryBaseline_noop"),
-    output_dir / expected_output_name(fixture_name, "faceSlim_0p45"),
-    "output faceSlim_0p45",
+    output_dir / expected_output_name(fixture_name, "faceSlim_0p35"),
+    "output faceSlim_0p35",
 )
 ```
 
@@ -266,7 +266,7 @@ The Phase 27 review records that full watermarked-image comparisons were insuffi
 ## Common Pitfalls
 
 ### Pitfall 1: False Positive Geometry Deltas From Watermark Labels
-**What goes wrong:** A helper compares full PNG bytes and passes because `faceSlim 0.45` and `geometry baseline noop` labels differ in the watermark band. [VERIFIED: .planning/phases/27-geometry-render-output-and-verification-harness/27-REVIEW.md]  
+**What goes wrong:** A helper compares full PNG bytes and passes because `faceSlim 0.35` and `geometry baseline noop` labels differ in the watermark band. [VERIFIED: .planning/phases/27-geometry-render-output-and-verification-harness/27-REVIEW.md]
 **Why it happens:** The renderer draws a bottom watermark after the engine output. [VERIFIED: BeautySDK/Sources/BeautyExampleRenderer/main.swift]  
 **How to avoid:** Reuse Phase 27's `comparable_top_region_rows` and `top_region_differs` pattern for Phase 28 cases. [VERIFIED: .planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py]  
 **Warning signs:** Helper output reports differences but no top-region comparison count or label. [VERIFIED: .planning/phases/27-geometry-render-output-and-verification-harness/27-REVIEW.md]
@@ -376,17 +376,17 @@ Source: Phase 27 helper decodes PNGs with the Python standard library and compar
 |---|-------|---------|---------------|
 | A1 | Recommended names such as `check_face_shape_renderer_outputs.py` and `28-FACE-SHAPE-RENDERER-EVIDENCE.md` are examples, not locked names. | Recommended Project Structure | Low; planner can choose exact filenames under the phase directory. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Should Phase 28 create a new helper or extend the Phase 27 helper?**  
+1. **RESOLVED: Should Phase 28 create a new helper or extend the Phase 27 helper?**
    What we know: Phase 27's helper is located under the Phase 27 directory and hardcodes current 11 cases plus a single `faceShapeCombo_0p35` geometry case. [VERIFIED: .planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py]  
-   What's unclear: Whether the planner prefers a Phase 28-owned helper for per-tool closeout or a backward-compatible helper extension. [ASSUMED]  
-   Recommendation: Prefer a Phase 28-owned helper or a clearly Phase 28-scoped copy so Phase 27 evidence remains historically stable. [ASSUMED]
+   Resolution: Use a Phase 28-owned helper under `.planning/phases/28-face-shape-slice-completion-and-documentation-closeout/`, preserving Phase 27 helper behavior and Phase 27 historical evidence stability. [CITED: revision_context]
+   Decision: Plan 28-01 should create `check_face_shape_renderer_outputs.py` in the Phase 28 directory rather than modifying the Phase 27 helper. [RESOLVED]
 
-2. **What per-tool strengths should be used?**  
+2. **RESOLVED: What per-tool strengths should be used?**
    What we know: Phase 28 allows the planner to choose moderate strengths, and current caps are `faceSlim 0.60`, `faceSmall 0.45`, `faceVShape 0.50`, `jawSlim 0.45`, and `chinLength 0.35`. [CITED: .planning/phases/28-face-shape-slice-completion-and-documentation-closeout/28-CONTEXT.md; VERIFIED: BeautySDK/Sources/BeautyEffects/Planning/BeautySafetyCaps.swift]  
-   What's unclear: The exact strength values that maximize reliable top-region deltas without looking like quality claims. [ASSUMED]  
-   Recommendation: Use moderate values at or below Phase 27's existing 0.20-0.35 range for renderer evidence, and keep cap evidence in focused tests. [ASSUMED]
+   Resolution: Use moderate renderer strengths at or below the existing Phase 27 range for renderer evidence, and keep cap proof in focused XCTest coverage rather than relying on renderer-strength extremes. [CITED: revision_context]
+   Decision: Plan 28-01's `faceSlim_0p35`, `faceSmall_0p35`, `faceVShape_0p35`, `jawSlim_0p35`, `chinLength_plus0p30`, and `chinLength_minus0p30` strengths stay at or below the Phase 27 renderer range, while Plan 28-02 owns focused cap proof. [RESOLVED]
 
 ## Environment Availability
 
