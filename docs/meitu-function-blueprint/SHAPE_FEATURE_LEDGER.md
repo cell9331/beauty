@@ -66,18 +66,18 @@ Before marking a second-level tool `implemented`:
 | `比例` | 人中 | future | None. | Define neutral parameter and geometry behavior. |
 | `比例` | 下庭 | future | None. | Define neutral parameter and geometry behavior. |
 | `比例` | 短脸 | future | None. | Define neutral parameter and geometry behavior. |
-| `脸型` | 脸宽 | partial | Existing `faceSlim` coverage. | Facade-visible geometry output and branch-specific acceptance evidence. |
-| `脸型` | 小脸 | partial | Existing `faceSmall` coverage. | Facade-visible geometry output and branch-specific acceptance evidence. |
+| `脸型` | 脸宽 | implemented | Existing `faceSlim` coverage plus Phase 28 renderer case `faceSlim_0p35`, safety/degradation tests, and `28-FACE-SHAPE-RENDERER-EVIDENCE.md`. | Complete for the v1.5 scoped SDK slice; broader quality/device review remains separate. |
+| `脸型` | 小脸 | implemented | Existing `faceSmall` coverage plus Phase 28 renderer case `faceSmall_0p35`, safety/degradation tests, and `28-FACE-SHAPE-RENDERER-EVIDENCE.md`. | Complete for the v1.5 scoped SDK slice; broader quality/device review remains separate. |
 | `脸型` | 面部流畅 | future | None. | Define neutral parameter, geometry behavior, and safety caps. |
 | `脸型` | 太阳穴 | future | None. | Define neutral parameter, geometry behavior, and safety caps. |
 | `脸型` | 颧骨 | future | None. | Define neutral parameter, geometry behavior, and safety caps. |
-| `脸型` | 下巴长短 | partial | Existing `chinLength` coverage. | Facade-visible geometry output and branch-specific acceptance evidence. |
+| `脸型` | 下巴长短 | implemented | Existing signed `chinLength` coverage plus Phase 28 renderer cases `chinLength_plus0p30` and `chinLength_minus0p30`, safety/degradation tests, and `28-FACE-SHAPE-RENDERER-EVIDENCE.md`. | Complete for the v1.5 scoped SDK slice; broader quality/device review remains separate. |
 | `脸型` | 去双下巴 | future | None. | Needs local retouch/geometry design; no cloud or remote AI by default. |
 | `脸型` | 去双下巴 Pro | future | None. | Pro/commercial gating is out of scope; core SDK behavior would still need local design first. |
 | `脸型` | 尖下巴 | future | None. | Define neutral parameter and geometry behavior. |
-| `脸型` | V脸 | partial | Existing `faceVShape` coverage. | Facade-visible geometry output and branch-specific acceptance evidence. |
-| `脸型` | 下颌角 | partial | Existing `jawSlim` coverage. | Facade-visible geometry output and branch-specific acceptance evidence. |
-| `脸型` | 下颌线 | partial | Existing `jawSlim` coverage is reused. | Decide whether this remains an alias or needs a distinct neutral parameter; facade-visible output evidence. |
+| `脸型` | V脸 | implemented | Existing `faceVShape` coverage plus Phase 28 renderer case `faceVShape_0p35`, safety/degradation tests, and `28-FACE-SHAPE-RENDERER-EVIDENCE.md`. | Complete for the v1.5 scoped SDK slice; broader quality/device review remains separate. |
+| `脸型` | 下颌角 | implemented | Existing `jawSlim` coverage plus Phase 28 renderer case `jawSlim_0p35`, safety/degradation tests, and `28-FACE-SHAPE-RENDERER-EVIDENCE.md`. | Complete for the v1.5 scoped SDK slice; broader quality/device review remains separate. |
+| `脸型` | 下颌线 | implemented | Phase 28 v1.5 evidence is alias-backed by `jawSlim` and shared with `下颌角`; renderer case `jawSlim_0p35`, safety/degradation tests, and `28-FACE-SHAPE-RENDERER-EVIDENCE.md` apply. | Complete only as a documented `jawSlim` alias; a distinct neutral parameter would require future design and evidence. |
 | `脸型` | 发际线 | future | None. | Needs segmentation/resource design if promoted. |
 | `眼睛` | 大小 | partial | Existing `eyeSize` coverage. | Facade-visible geometry output and branch-specific acceptance evidence. |
 | `眼睛` | 上下 | partial | Existing `eyeYPosition` coverage. | Facade-visible geometry output and branch-specific acceptance evidence. |

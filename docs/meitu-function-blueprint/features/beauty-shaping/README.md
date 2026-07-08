@@ -19,7 +19,7 @@ Beauty shaping covers face geometry and facial feature adjustments inspired by M
 | --- | --- | --- | --- | --- | --- |
 | `3D塑颜` | blocked-by-geometry-output | `BeautyEffects` | None | Symmetry, vertical, horizontal, tilt | Requires detection/render integration and public facade saved-image output before visible completion. |
 | `比例` | partial | `BeautyEffects` | `faceSmall` | Forehead, mid-face, philtrum, lower-face, short-face, head-face | Current provider/resolver evidence is partial; facade-visible geometry output is still required. |
-| `脸型` | partial | `BeautyEffects` | `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, `chinLength` | Smooth face, temple, cheekbone, double chin, pointed chin, hairline | Current provider/resolver evidence is partial; facade-visible geometry output is still required. |
+| `脸型` | partial | `BeautyEffects` | `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, `chinLength` | Smooth face, temple, cheekbone, double chin, pointed chin, hairline | Phase 28 completes only the scoped rows `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线`; remaining rows still need separate evidence. |
 | `眼睛` | partial | `BeautyEffects` | `eyeSize`, `eyeDistance`, `eyeYPosition`, `eyeTailLift` | Eye height, length, pupil, gaze, lower lid, redness, corners, symmetry | Current provider/resolver evidence is partial; facade-visible geometry output is still required. |
 | `嘴唇` | partial | `BeautyEffects` | `mouthSize`, `mouthWidth`, `smile`, `lipColor` | M-lip, position, tilt, left/right, teeth | Lip color has visible color evidence; geometry subtools still need facade-visible geometry output. |
 | `鼻子` | partial | `BeautyEffects` | `noseSlim`, `noseWingSlim`, `noseTipSize`, `noseBridge` | Lift, root/bridge split, additional nose shaping | Current provider/resolver evidence is partial; facade-visible geometry output is still required. |
@@ -28,6 +28,12 @@ Beauty shaping covers face geometry and facial feature adjustments inspired by M
 ## Phase 19 Evidence
 
 Phase 19 strengthens provider, resolver, degradation, cap, and redaction tests for the current public fields while preserving branch status honesty. `swift test --package-path BeautySDK` and focused shaping suites pass as SDK evidence, but public facade saved-image geometry output is still required before geometry-heavy branches can claim visual completion. `lipColor` remains visible color evidence for a subtool; it does not complete the full lips branch.
+
+## Phase 28 Face-Shape Evidence
+
+Phase 28 adds public-facade saved-output evidence for six scoped face-shape rows: `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线`. The renderer/helper path records 102 ignored outputs and 30/30 top-region comparisons in `28-FACE-SHAPE-RENDERER-EVIDENCE.md`, with final closeout in `28-VERIFICATION.md`.
+
+`下颌线` remains a documented `jawSlim` alias and shares evidence with `下颌角`. The branch remains `partial` until the unscoped face-shape rows and broader `美型 / 五官` branches have their own SDK behavior and evidence.
 
 ## Boundary
 
