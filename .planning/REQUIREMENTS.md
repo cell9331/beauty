@@ -67,10 +67,17 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DOC-01 | Phase 28 | Complete - `28-VERIFICATION.md` and `SHAPE_FEATURE_LEDGER.md` mark only `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线` as implemented. |
 | DOC-02 | Phase 28 | Complete - `28-VERIFICATION.md` cites synchronized beauty-shaping docs, `FEATURE_MATRIX.md`, and `EXAMPLE_IMAGE_VALIDATION.md`, with branch-level `脸型` still partial. |
 | DOC-03 | Phase 28 | Complete - `28-VERIFICATION.md` records focused tests, renderer build/run, helper output, static scans, ignored-output policy, and blocker-free closeout without UI, commercial, or broad reference-app parity claims. |
+| EYE-01 | Future | Deferred - promote existing `眼睛` parameters only after a scoped phase adds saved-output evidence and ledger updates. |
+| NOSE-01 | Future | Deferred - promote existing `鼻子` parameters only after a scoped phase adds saved-output evidence and ledger updates. |
+| MOUTH-01 | Future | Deferred - promote existing `嘴唇` parameters only after geometry evidence exists and `丰唇` is separated from color-only behavior. |
+| PROP-01 | Future | Deferred - promote additional `比例` tools only after product-neutral parameters and geometry behavior are designed. |
+| SCULPT-01 | Future | Deferred - promote `3D塑颜` only after pose-aware design and saved-output evidence exist. |
+| BROW-01 | Future | Deferred - promote `眉毛` only after landmark/resource ownership is designed. |
 
 **Coverage:**
 - v1.5 requirements: 13 total
 - Mapped to phases: 13
+- Future requirements tracked: 6
 - Unmapped: 0
 - Complete: 13
 - Pending: 0
