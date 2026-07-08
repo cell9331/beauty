@@ -18,7 +18,13 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         "filter_warmLight_0p50",
         "skinCombo_0p50",
         "geometryBaseline_noop",
-        "faceShapeCombo_0p35"
+        "faceShapeCombo_0p35",
+        "faceSlim_0p35",
+        "faceSmall_0p35",
+        "chinLength_plus0p30",
+        "chinLength_minus0p30",
+        "faceVShape_0p35",
+        "jawSlim_0p35"
     ]
 
     private static let fixtureNames = [
@@ -85,6 +91,60 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         ] {
             XCTAssertFalse(snippet.contains(forbidden), "Unexpected geometry scope token: \(forbidden)")
         }
+    }
+
+    func testPhase28FaceShapeCasesUseOnlyExistingPublicParameters() throws {
+        let source = try rendererSource()
+        let expectedCases = [
+            ("faceSlim_0p35", "faceSlim: 0.35"),
+            ("faceSmall_0p35", "faceSmall: 0.35"),
+            ("chinLength_plus0p30", "chinLength: 0.30"),
+            ("chinLength_minus0p30", "chinLength: -0.30"),
+            ("faceVShape_0p35", "faceVShape: 0.35"),
+            ("jawSlim_0p35", "jawSlim: 0.35")
+        ]
+        let faceShapeFields = [
+            "faceSlim:",
+            "faceSmall:",
+            "faceVShape:",
+            "jawSlim:",
+            "chinLength:"
+        ]
+
+        for (caseID, requiredParameter) in expectedCases {
+            let snippet = try rendererCaseSnippet(for: caseID, in: source)
+
+            XCTAssertTrue(snippet.contains(requiredParameter), "Missing \(requiredParameter) in \(caseID)")
+            XCTAssertEqual(
+                faceShapeFields.filter { snippet.contains($0) },
+                [requiredParameter.split(separator: " ").first.map(String.init) ?? ""],
+                "\(caseID) should use exactly one public face-shape parameter"
+            )
+            XCTAssertFalse(snippet.contains("BeautyDemo"), "\(caseID) should not introduce Demo coupling")
+        }
+
+        XCTAssertFalse(source.contains("jaw" + "Line"), "Renderer should not add a separate jawline parameter")
+        XCTAssertFalse(source.contains("face" + "Line"), "Renderer should not add a separate face-line parameter")
+        XCTAssertFalse(source.contains("\u{4E0B}\u{988C}\u{7EBF}"), "Renderer should not add localized alias behavior")
+        for term in ["P" + "ro", "V" + "IP", "entitle" + "ment", "pre" + "mium", "pay" + "ment"] {
+            XCTAssertFalse(containsStandaloneToken(term, in: source), "Renderer should not add commercial gating")
+        }
+        XCTAssertFalse(source.contains("net" + "work"), "Renderer should stay local-only")
+        XCTAssertFalse(source.contains("cl" + "oud"), "Renderer should stay local-only")
+    }
+
+    func testJawlineAliasSharesJawSlimRendererEvidence() throws {
+        let source = try rendererSource()
+        let caseIDs = rendererCaseIDs(in: source)
+        let jawSlimCases = caseIDs.filter { $0 == "jawSlim_0p35" }
+        let separateJawlineCases = caseIDs.filter { caseID in
+            caseID.contains("jaw" + "Line") || caseID.contains("jawline")
+        }
+        let snippet = try rendererCaseSnippet(for: "jawSlim_0p35", in: source)
+
+        XCTAssertEqual(jawSlimCases, ["jawSlim_0p35"])
+        XCTAssertTrue(snippet.contains("jawSlim: 0.35"))
+        XCTAssertTrue(separateJawlineCases.isEmpty, "Jawline alias evidence should share jawSlim_0p35")
     }
 
     func testNoFaceFixtureProducesNoFaceSummaryForFaceShapeCombo() throws {
@@ -157,6 +217,25 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
             }
             return String(remainder[..<endIndex])
         }
+    }
+
+    private func rendererCaseSnippet(for caseID: String, in source: String) throws -> String {
+        guard let idRange = source.range(of: "id: \"\(caseID)\"") else {
+            throw RegressionTestError.missing(caseID)
+        }
+
+        let remainder = source[idRange.lowerBound...]
+        if let nextCaseRange = remainder.range(of: "\n    RenderCase(") {
+            return String(remainder[..<nextCaseRange.lowerBound])
+        }
+        if let endRange = remainder.range(of: "\n]") {
+            return String(remainder[..<endRange.lowerBound])
+        }
+        return String(remainder)
+    }
+
+    private func containsStandaloneToken(_ token: String, in source: String) -> Bool {
+        source.range(of: "\\b\(NSRegularExpression.escapedPattern(for: token))\\b", options: .regularExpression) != nil
     }
 
     private func exampleFixtureURLs() throws -> [URL] {

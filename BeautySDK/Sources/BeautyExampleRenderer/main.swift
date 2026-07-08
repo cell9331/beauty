@@ -107,6 +107,36 @@ let cases = [
             jawSlim: 0.30,
             chinLength: 0.20
         )
+    ),
+    RenderCase(
+        id: "faceSlim_0p35",
+        displayName: "faceSlim 0.35",
+        parameters: BeautyParameters(faceSlim: 0.35)
+    ),
+    RenderCase(
+        id: "faceSmall_0p35",
+        displayName: "faceSmall 0.35",
+        parameters: BeautyParameters(faceSmall: 0.35)
+    ),
+    RenderCase(
+        id: "chinLength_plus0p30",
+        displayName: "chinLength +0.30",
+        parameters: BeautyParameters(chinLength: 0.30)
+    ),
+    RenderCase(
+        id: "chinLength_minus0p30",
+        displayName: "chinLength -0.30",
+        parameters: BeautyParameters(chinLength: -0.30)
+    ),
+    RenderCase(
+        id: "faceVShape_0p35",
+        displayName: "faceVShape 0.35",
+        parameters: BeautyParameters(faceVShape: 0.35)
+    ),
+    RenderCase(
+        id: "jawSlim_0p35",
+        displayName: "jawSlim 0.35",
+        parameters: BeautyParameters(jawSlim: 0.35)
     )
 ]
 
