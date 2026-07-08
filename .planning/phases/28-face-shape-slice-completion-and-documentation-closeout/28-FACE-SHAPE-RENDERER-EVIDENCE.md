@@ -54,6 +54,13 @@ What is not claimed:
 | Renderer all-case run | passed | `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out` | Wrote 102 PNG outputs, confirmed by `rg -c '^wrote ' /tmp/phase28-renderer-run.out`. | FACE-01 through FACE-06 |
 | Phase 28 helper | passed | `python3 .planning/phases/28-face-shape-slice-completion-and-documentation-closeout/check_face_shape_renderer_outputs.py --input example-images/input --output example-images/out` | Passed with 102/102 outputs and 30/30 portrait face-shape-vs-baseline top-region comparisons. | FACE-01 through FACE-06 |
 | Ignored-output policy | passed | `git check-ignore example-images/out/e1__faceSlim_0p35.png example-images/out/e1__chinLength_minus0p30.png example-images/out/e1__jawSlim_0p35.png example-images/out/no-face-gradient__jawSlim_0p35.png` | Representative generated Phase 28 outputs are ignored by git. | DOC-03 |
+| Renderer regression tests | passed | `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyRendererOutputRegressionTests` | Executed 6 tests, 0 failures. Covered 17-case inventory, public-facade import boundary, scoped Phase 28 case parameters, and `jawSlim_0p35` alias sharing. | FACE-01 through FACE-06 |
+| Provider tests | passed | `swift test --package-path BeautySDK --filter BeautyEffectsTests.FaceShapeWarpProviderTests` | Executed 8 tests, 0 failures. Covered per-parameter caps, missing contour, signed `chinLength`, and `jawSlim` alias evidence. | FACE-01 through FACE-06 |
+| Combined safety tests | passed | `swift test --package-path BeautySDK --filter BeautyEffectsTests.CombinedEffectSafetyTests` | Executed 5 tests, 0 failures. Covered all scoped face-shape parameters in no-face and combined weakening evidence. | FACE-01 through FACE-06 |
+| Conflict resolver tests | passed | `swift test --package-path BeautySDK --filter BeautyEffectsTests.GeometryConflictResolverTests` | Executed 7 tests, 0 failures. Covered combined weakening, signed `chinLength`, redacted metrics, and scoped face-shape cap evidence. | FACE-01 through FACE-06 |
+| Public/SPI raw geometry export scan | passed | `rg` scan over `BeautySDK/Sources/BeautySDK`, `BeautySDK/Sources/BeautyDetection`, and `BeautySDK/Sources/BeautyEffects` | Zero matches for public or SPI exports of internal face geometry or observation payloads. | DOC-03 |
+| Hidden public-surface expansion scan | passed | `rg` scan over renderer, public SDK source, and tests | Zero matches for separate jawline renderer/API tokens, entitlement/payment/network/cloud behavior, or localized alias renderer case wording. | FACE-06, DOC-03 |
+| Helper-output raw-leak scan | passed | `rg` scan over `/tmp/phase28-face-shape-helper.out` | Zero matches for forbidden local-path, raw diagnostic, raw geometry, or payload tokens. | DOC-03 |
 ## Renderer Matrix
 
 The Phase 28 renderer matrix is owned by `BeautySDK/Sources/BeautyExampleRenderer/main.swift`.
@@ -96,6 +103,24 @@ cases: skinSmoothing_0p50, skinWhitening_0p50, skinRosy_0p40, skinSharpen_0p40, 
 phase 28 cases: faceSlim_0p35, faceSmall_0p35, chinLength_plus0p30, chinLength_minus0p30, faceVShape_0p35, jawSlim_0p35
 ```
 
+## Focused Safety Evidence
+
+| Evidence path | Command | Result |
+| --- | --- | --- |
+| Provider caps and contour degradation | `swift test --package-path BeautySDK --filter BeautyEffectsTests.FaceShapeWarpProviderTests` | Passed with 8 tests. Covers `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, signed `chinLength`, caps, deterministic output, and `missing_face_contour`. |
+| No-face degradation and combined weakening | `swift test --package-path BeautySDK --filter BeautyEffectsTests.CombinedEffectSafetyTests` | Passed with 5 tests. Covers no-face skip behavior, safe color/filter continuation, capped counts, weakened counts, geometry strength scale, and redacted warning/metric metadata. |
+| Conflict resolution and signed chin | `swift test --package-path BeautySDK --filter BeautyEffectsTests.GeometryConflictResolverTests` | Passed with 7 tests. Covers high face-shape strengths, positive and negative `chinLength`, cap metrics, and `combined_geometry_weakened`. |
+
+## Static Scan Evidence
+
+| Gate | Scope | Result |
+| --- | --- | --- |
+| Public raw geometry export guard | `BeautySDK/Sources/BeautySDK`, `BeautySDK/Sources/BeautyDetection`, `BeautySDK/Sources/BeautyEffects` | Passed with zero matches. |
+| Renderer public import guard | `BeautyExampleRenderer/main.swift` and `BeautyRendererOutputRegressionTests.swift` | Passed with zero internal SDK target imports. |
+| Hidden jawline/API behavior guard | Renderer, public SDK source, and tests | Passed with zero separate jawline renderer/API tokens, entitlement/payment/network/cloud tokens, or localized alias renderer case wording. |
+| Generated-output policy | Representative `git check-ignore` command | Passed; generated outputs remain local ignored artifacts. |
+| Helper output redaction | `/tmp/phase28-face-shape-helper.out` | Passed with zero forbidden raw payload tokens. |
+
 ## Evidence Field Allowlist
 
 This artifact is limited to relative paths, fixture names, case IDs, counts, dimensions, command status, warning or metric names, requirement IDs, and factual evidence notes.
@@ -108,6 +133,10 @@ It does not include raw facial measurements, local absolute paths, raw framework
 swift build --package-path BeautySDK --product BeautyExampleRenderer
 swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out
 python3 .planning/phases/28-face-shape-slice-completion-and-documentation-closeout/check_face_shape_renderer_outputs.py --input example-images/input --output example-images/out
+swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyRendererOutputRegressionTests
+swift test --package-path BeautySDK --filter BeautyEffectsTests.FaceShapeWarpProviderTests
+swift test --package-path BeautySDK --filter BeautyEffectsTests.CombinedEffectSafetyTests
+swift test --package-path BeautySDK --filter BeautyEffectsTests.GeometryConflictResolverTests
 git check-ignore example-images/out/e1__faceSlim_0p35.png example-images/out/e1__chinLength_minus0p30.png example-images/out/e1__jawSlim_0p35.png example-images/out/no-face-gradient__jawSlim_0p35.png
 ```
 
