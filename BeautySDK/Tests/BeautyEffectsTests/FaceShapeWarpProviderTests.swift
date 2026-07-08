@@ -82,6 +82,24 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         XCTAssertTrue(jawSlim.points.allSatisfy { $0.source.y >= face.bounds.midY })
     }
 
+    func testJawSlimEvidenceCoversJawAngleAndAliasBackedJawline() {
+        let provider = FaceShapeWarpProvider()
+        let face = FaceGeometry.fixture
+
+        let result = provider.makeControlPoints(face: face, strengths: strengths(jawSlim: 1))
+
+        XCTAssertNil(result.skipReason)
+        XCTAssertEqual(result.points.count, 2)
+        XCTAssertTrue(result.points.allSatisfy { $0.source.y >= face.bounds.midY })
+        XCTAssertTrue(result.points.allSatisfy { $0.target.y == $0.source.y })
+        XCTAssertTrue(result.points.allSatisfy { $0.strength <= BeautySafetyCaps.jawSlim })
+
+        let left = try! XCTUnwrap(result.points.first { $0.source.x < face.center.x })
+        let right = try! XCTUnwrap(result.points.first { $0.source.x > face.center.x })
+        XCTAssertGreaterThan(left.target.x, left.source.x)
+        XCTAssertLessThan(right.target.x, right.source.x)
+    }
+
     func testChinLengthMovesOppositeDirectionsAndCapsStrength() {
         let provider = ChinWarpProvider()
         let face = FaceGeometry.fixture
