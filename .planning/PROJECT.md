@@ -12,19 +12,21 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ## Current State
 
-**Shipped version:** v1.4 Stability, QA, and Debt Cleanup on 2026-07-03.
+**Shipped version:** v1.5 SDK Geometry Output Foundation and Face Shape Slice on 2026-07-08.
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
-**Current milestone:** v1.5 SDK Geometry Output Foundation and Face Shape Slice.
+**Current milestone:** None active; start the next milestone with `$gsd-new-milestone`.
 
-**Implementation state:** v1.4 does not add product-feature breadth or public API surface. It hardens the v1.3 core beauty module and the v1.1 Meitu-style Demo through evidence-backed quality, Demo QA, performance/reliability, renderer regression, privacy/security, resource trust, and documentation traceability gates. Current SDK/Demo behavior remains local-first, facade-only from the Demo, and no-network by default.
+**Implementation state:** v1.5 completes SDK-only geometry output foundation and the first verified `脸型` existing-parameter slice. Public still-image processing can activate geometry-triggered detection through `BeautyEngine.processResult(...)`, route one selected face into package-internal geometry planning, produce deterministic saved-output geometry evidence through `BeautyExampleRenderer`, and verify scoped face-shape tools through existing public parameters. Current SDK/Demo behavior remains local-first, facade-only from the Demo, and no-network by default.
 
-**Verification state:** The v1.4 milestone audit passed with 24/24 requirements, 5/5 phases, 5/5 integration checks, 5/5 flows, and 5/5 Nyquist validation files. Phase 25 closeout evidence includes full `swift test --package-path BeautySDK` with 150 tests, focused Demo privacy/import simulator tests with 17 tests on `platform=iOS Simulator,name=iPhone 17,OS=26.5`, active no-network/no-upload/raw-leak/product-scope scans, and bundled-resource trust tests. Phase 24 renderer evidence built `BeautyExampleRenderer`, regenerated 45 ignored local outputs, and verified all current outputs with the invariant helper.
+**Verification state:** The v1.5 milestone audit passed with 13/13 requirements, 3/3 phases, 4/4 integration checks, 4/4 flows, and 3/3 Nyquist validation files. Phase 28 closeout evidence includes full `swift test --package-path BeautySDK` with 171 tests, `BeautyExampleRenderer` build/run evidence with 102 ignored outputs, `check_face_shape_renderer_outputs.py` passing with 102/102 outputs and 30/30 top-region comparisons, plus public/import boundary, hidden-surface, raw-leak, overclaim, ledger, and Demo import scans.
 
-**Archived v1.4 baseline:** Phase 21 records the quality/debt baseline; Phase 22 records the accepted no-PNG Demo screenshot blocker path; Phase 23 records SDK timing, focused Demo backpressure/reset/recovery, quality-mode, degradation, and redaction evidence; Phase 24 records renderer output regression evidence; Phase 25 records privacy manifest deferral, active-source security, bundled-resource trust, and closeout traceability. Remaining screenshot, physical iPhone, 600-second preview, optimized profiling, external-package integrity, commercial packaging, and geometry saved-output checks stay future or setup-specific work, not v1.4 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
+**Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
-**Code size:** `BeautySDK` and `BeautyDemo` contain about 15,844 Swift source/test lines at v1.4 close, excluding build-derived files.
+**Code size:** `BeautySDK` and `BeautyDemo` contain 17,794 Swift lines in the local closeout count, including build-derived `.build` files observed during v1.5 archive.
 
-## Current Milestone: v1.5 SDK Geometry Output Foundation and Face Shape Slice
+## Last Completed Milestone: v1.5 SDK Geometry Output Foundation and Face Shape Slice
+
+**Status:** Shipped and archived as of 2026-07-08.
 
 **Goal:** Make the existing `BeautySDK` public facade capable of producing verifiable SDK-only geometry output, then complete the first `美型 / 五官` slice for the `脸型` tools that already have public parameters.
 
@@ -34,9 +36,9 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 - `脸型` SDK slice: `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and `下颌线` are implemented only when their existing product-neutral parameters have tests, safety/degradation coverage, and facade-visible output evidence.
 - Documentation-led completion: `docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md`, the beauty-shaping branch README, `FEATURE_MATRIX.md`, `EXAMPLE_IMAGE_VALIDATION.md`, and phase verification evidence are updated when completion status changes.
 
-**Key context:** v1.5 is SDK-core only. It does not add SwiftUI screens, Demo tool-panel work, new account/commercial behavior, remote processing, hidden network behavior, or broad Meitu feature parity. `眼睛`, `嘴唇`, `鼻子`, `比例`, `3D塑颜`, and `眉毛` remain future/partial unless explicitly promoted by a later milestone or phase.
+**Key context:** v1.5 is SDK-core only. It does not add SwiftUI screens, Demo tool-panel work, new account/commercial behavior, remote processing, hidden network behavior, commercial visual approval, packaging readiness, or broad Meitu feature parity. `眼睛`, `嘴唇`, `鼻子`, `比例`, `3D塑颜`, and `眉毛` remain future/partial unless explicitly promoted by a later milestone or phase.
 
-## Last Completed Milestone: v1.4 Stability, QA, and Debt Cleanup
+## Previous Completed Milestone: v1.4 Stability, QA, and Debt Cleanup
 
 **Status:** Shipped and archived as of 2026-07-03.
 
@@ -122,11 +124,11 @@ v1.3 remains a no-new-UI core module milestone. Phase 20 added no new SwiftUI sc
 - [x] Renderer output regression hardening with current matrix, no-op fixture checks, generated-output invariants, and geometry boundary honesty - Phase 24.
 - [x] Security, distribution review, and closeout with privacy manifest disposition, active security scans, bundled-resource trust evidence, and 100% v1.4 traceability - Phase 25.
 
-### Active in v1.5
+### Completed in v1.5
 
-- [ ] Build SDK-only geometry saved-output support through the public `BeautySDK` facade.
-- [ ] Complete the `脸型` existing-parameter slice without adding UI scope.
-- [ ] Keep the `美型 / 五官` ledger as the authority for second-level status changes.
+- [x] Build SDK-only geometry saved-output support through the public `BeautySDK` facade.
+- [x] Complete the `脸型` existing-parameter slice without adding UI scope.
+- [x] Keep the `美型 / 五官` ledger as the authority for second-level status changes.
 
 ### Out of Scope
 
@@ -140,8 +142,6 @@ v1.3 remains a no-new-UI core module milestone. Phase 20 added no new SwiftUI sc
 - Camera/photo permission prompts from SDK internals - still out of scope; host app or Demo owns protected-resource UX.
 
 ## Next Milestone Goals
-
-The active v1.5 milestone is limited to SDK geometry output foundation and the `脸型` existing-parameter slice from `美型 / 五官`.
 
 Future milestone candidates after v1.5:
 
@@ -172,6 +172,9 @@ Historical milestone detail is archived in:
 - `.planning/milestones/v1.4-ROADMAP.md`
 - `.planning/milestones/v1.4-REQUIREMENTS.md`
 - `.planning/milestones/v1.4-MILESTONE-AUDIT.md`
+- `.planning/milestones/v1.5-ROADMAP.md`
+- `.planning/milestones/v1.5-REQUIREMENTS.md`
+- `.planning/milestones/v1.5-MILESTONE-AUDIT.md`
 
 Current visual reference contracts:
 
@@ -215,11 +218,11 @@ Current visual reference contracts:
 | Phase 21 is the v1.4 evidence baseline, not a fix phase. | Current SDK/renderer evidence passed, Demo simulator evidence has a reproducible local toolchain blocker, and stale codebase maps were found. | Routes debt to Phases 22-25 without source changes |
 | Phase 23 completes performance/reliability as evidence and blocker records, not optimization. | Current 720p SDK timings remain over budget in SwiftPM debug XCTest, while backpressure/reset/degradation/redaction evidence passes and missing long-run/device checks are explicit. | Completed in Phase 23 |
 | Phase 25 completes privacy/resource/security closeout as current evidence, not packaging approval. | Current SDK/Demo behavior supports explicit manifest deferral and bundled-resource trust only; external packages, long-run, screenshot, hardware, optimized profiling, and commercial packaging remain future or blocked/not-run checks. | Completed in Phase 25 |
-| v1.5 starts with geometry output foundation plus `脸型`, not all `美型 / 五官` groups. | The user chose the smallest first-principles slice: prove facade-visible geometry output first, then mark only the existing face-shape tools complete when evidence exists. | Active in v1.5 |
+| v1.5 starts with geometry output foundation plus `脸型`, not all `美型 / 五官` groups. | The user chose the smallest first-principles slice: prove facade-visible geometry output first, then mark only the existing face-shape tools complete when evidence exists. | Completed and archived in v1.5 |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-07-04 after v1.5 milestone start*
+*Last updated: 2026-07-08 after v1.5 milestone completion*

@@ -30,6 +30,45 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-08-gsd-complete-milestone-v1-5
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-08 |
+| Scope | Archived v1.5 SDK Geometry Output Foundation and Face Shape Slice after the milestone audit passed. |
+| Requirements | GEO-01, GEO-02, GEO-03, GEO-04, FACE-01, FACE-02, FACE-03, FACE-04, FACE-05, FACE-06, DOC-01, DOC-02, DOC-03 |
+| Files | `.planning/milestones/v1.5-ROADMAP.md`, `.planning/milestones/v1.5-REQUIREMENTS.md`, `.planning/milestones/v1.5-MILESTONE-AUDIT.md`, `.planning/MILESTONES.md`, `.planning/ROADMAP.md`, `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/RETROSPECTIVE.md`, `PLANS.md` |
+| Verification | `audit-open` reported all artifact types clear. `roadmap.analyze` reported Phases 26-28 complete with 12/12 plans summarized and 100% progress. `.planning/milestones/v1.5-MILESTONE-AUDIT.md` has `status: passed`. `milestone.complete v1.5 --name "SDK Geometry Output Foundation and Face Shape Slice"` archived roadmap, requirements, and audit files and updated `MILESTONES.md`/`STATE.md`. Follow-up scans verified live roadmap/project/state references route to `$gsd-new-milestone`; archive files exist under `.planning/milestones/`; scoped whitespace/diff checks passed. |
+| Build | Not run; this was a milestone archive/documentation workflow. No Swift source changed. |
+
+Outcome:
+
+- v1.5 is archived under `.planning/milestones/`.
+- Live `.planning/ROADMAP.md` is constant-size and points to `$gsd-new-milestone`.
+- `.planning/PROJECT.md` records v1.5 as the shipped version and moves v1.5 requirements into completed history.
+- Phase directories remain in `.planning/phases/` for path-stable execution history, matching the prior v1.4 operator choice.
+
+Next step: `$gsd-new-milestone`.
+
+### C-2026-07-08-gsd-audit-milestone-v1-5
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-08 |
+| Scope | Ran the v1.5 milestone audit preflight after `$gsd-progress --next` found Phases 26-28 complete and no incomplete execution work. |
+| Requirements | GEO-01, GEO-02, GEO-03, GEO-04, FACE-01, FACE-02, FACE-03, FACE-04, FACE-05, FACE-06, DOC-01, DOC-02, DOC-03 |
+| Files | `.planning/milestones/v1.5-MILESTONE-AUDIT.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, `PLANS.md` |
+| Verification | Read GSD progress/next/audit workflow instructions, `.planning/STATE.md`, `.planning/ROADMAP.md`, `.planning/REQUIREMENTS.md`, and Phase 26-28 verification/validation/summary artifacts. `gsd-tools.cjs query state.json`, `roadmap.analyze`, `phases.list`, and `init.milestone-op` showed v1.5 at 3/3 phases and 12/12 plans complete. Safety checks found no `.planning/.continue-here.md`, no error/failed state, no Phase 28 `FAIL` markers, and no plans without summaries. Requirement, verification, summary-frontmatter, and Nyquist scans confirmed 13/13 v1.5 requirements satisfied, Phase 26/27/28 verifications passed, and all three validation files are `nyquist_compliant: true`. |
+| Build | Not run; this was a milestone audit/documentation workflow aggregating existing command-backed phase evidence. No Swift source changed. |
+
+Outcome:
+
+- `.planning/milestones/v1.5-MILESTONE-AUDIT.md` records `status: passed` with 13/13 requirements, 3/3 phases, 4/4 integration checks, and 4/4 E2E flows satisfied.
+- No critical requirement, integration, flow, orphan, or Nyquist gaps were found.
+- Deferred broader `美型 / 五官`, device, commercial, screenshot, profiling, packaging, and launch-readiness work remains outside v1.5 scope.
+
+Next step completed by `C-2026-07-08-gsd-complete-milestone-v1-5`.
+
 ### C-2026-07-08-gsd-execute-phase-28-face-shape-slice-closeout
 
 | Field | Value |

@@ -141,6 +141,52 @@
 
 ---
 
+## Milestone: v1.5 - SDK Geometry Output Foundation and Face Shape Slice
+
+**Shipped:** 2026-07-08
+**Phases:** 3 | **Plans:** 12 | **Recorded tasks:** 22
+
+### What Was Built
+
+- Public still-image facade geometry activation through `BeautyEngine.processResult(...)`, with package-internal selected-face routing into geometry planning.
+- Deterministic SDK-only saved-output geometry evidence through `BeautyExampleRenderer`, `geometryBaseline_noop`, `faceShapeCombo_0p35`, a no-face fixture, and the Phase 27 helper.
+- Per-tool face-shape renderer evidence for `faceSlim`, `faceSmall`, signed `chinLength`, `faceVShape`, and `jawSlim`, with 102 ignored outputs and 30/30 top-region comparisons.
+- Focused safety/degradation/redaction tests for caps, no-face/missing-contour behavior, signed `chinLength`, combined weakening, and `jawSlim` alias evidence.
+- Scoped blueprint and planning ledger promotion for exactly six second-level `脸型` rows while keeping branch-level `脸型` partial.
+
+### What Worked
+
+- Splitting v1.5 into facade routing, renderer foundation, and per-tool status promotion prevented premature ledger changes.
+- Renderer evidence stayed command-backed and ignored-output based, avoiding committed PNG baselines while still proving dimensions and visible geometry deltas.
+- Alias handling for `下颌线` stayed conservative: shared `jawSlim` evidence, no new parameter, no Demo behavior, and no distinct algorithm.
+- The milestone audit was cheap because Phase 26-28 verification, validation, summary frontmatter, and requirement traceability were already synchronized.
+
+### What Was Inefficient
+
+- The final archive still needed manual live-doc cleanup because the archive primitive did not collapse `ROADMAP.md` or evolve `PROJECT.md` fully.
+- Local Swift LOC counting included build-derived `.build` files; future closeout stats should use an explicit source-only path filter when precision matters.
+- The working tree still contains unrelated historical documentation and asset changes, requiring strict path-scoped commits.
+
+### Patterns Established
+
+- Geometry-heavy feature completion requires facade-visible saved-output evidence before `implemented` status.
+- Generated-output helpers should report counts, dimensions, fixture/case IDs, and comparison counts without hashes, raw pixels, or raw geometry payloads.
+- Branch-level status can remain partial while scoped second-level rows become implemented from evidence.
+
+### Key Lessons
+
+1. Do not promote feature-ledger status from provider/resolver evidence alone; require public-facade saved-output evidence for geometry-heavy rows.
+2. Alias-backed features need explicit non-claims so future work does not accidentally split API, renderer, or algorithm behavior.
+3. Milestone archive tooling is useful for canonical files, but PROJECT/ROADMAP/RETROSPECTIVE still need human review.
+
+### Cost Observations
+
+- Model mix: not measured.
+- Sessions: multiple phase sessions across v1.5 plus audit/archive sessions.
+- Notable: The v1.5 closeout benefited from prior v1.4 blocker-honest evidence patterns and required no new Swift verification during archive.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -150,6 +196,7 @@
 | v1.0 | multiple | 7 | Established GSD phase execution, facade-boundary scans, Nyquist validation, and milestone archive flow. |
 | v1.3 | multiple | 5 | Added example-image renderer evidence and strict branch-status taxonomy for partial geometry work. |
 | v1.4 | multiple | 5 | Added blocker-honest hardening gates, renderer output regression, active-source privacy/security scans, and archive-before-delete closeout. |
+| v1.5 | multiple | 3 | Added public-facade geometry output evidence and scoped face-shape ledger promotion. |
 
 ### Cumulative Quality
 
@@ -158,6 +205,7 @@
 | v1.0 | 119 SDK tests plus Demo simulator XCTest suite | Requirement traceability 33/33 | No new third-party runtime dependency recorded for v1 Demo QA surface. |
 | v1.3 | 141 SDK tests plus renderer matrix evidence | Requirement traceability 20/20 | No new third-party runtime dependency recorded for core beauty closeout. |
 | v1.4 | 150 SDK tests, focused Demo privacy/import tests, renderer invariant helper, and milestone audit | Requirement traceability 24/24 | No new third-party runtime dependency recorded for hardening closeout. |
+| v1.5 | 171 SDK tests, geometry and face-shape renderer helpers, and milestone audit | Requirement traceability 13/13 | No new third-party runtime dependency recorded for geometry closeout. |
 
 ### Top Lessons (Verified Across Milestones)
 
@@ -165,3 +213,4 @@
 2. Archive-ready planning artifacts need the same rigor as code and tests.
 3. Separate provider/resolver evidence, saved-image evidence, and release-hardening evidence to avoid overclaiming shipped scope.
 4. Blocker-honest evidence is useful only when paired with exact rerun commands and clear non-claims.
+5. Geometry-heavy status promotion should be staged: routing, saved-output foundation, then per-tool ledger promotion.

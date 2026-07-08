@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: milestone
-status: Ready for v1.5 milestone audit/closeout
-stopped_at: Completed Phase 28 execution
-last_updated: "2026-07-08T02:24:58.281Z"
-last_activity: 2026-07-08
+status: Awaiting next milestone
+stopped_at: Completed v1.5 milestone archive
+last_updated: "2026-07-08T06:18:35.825Z"
+last_activity: 2026-07-08 — Milestone v1.5 completed and archived
 progress:
   total_phases: 3
   completed_phases: 3
@@ -18,17 +18,17 @@ progress:
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-07-04)
+See: `.planning/PROJECT.md` (updated 2026-07-08)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** v1.5 milestone audit/closeout after Phase 28 completion
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Phase: 28 (Face Shape Slice Completion and Documentation Closeout) — COMPLETE
-Plan: 4 of 4
-Status: Ready for v1.5 milestone audit/closeout
-Last activity: 2026-07-08 -- Phase 28 completed
+Phase: Milestone v1.5 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-07-08 — Milestone v1.5 completed and archived
 
 ## Performance Metrics
 
@@ -37,7 +37,7 @@ Last activity: 2026-07-08 -- Phase 28 completed
 - Total phases completed: 24
 - Total plans completed: 84
 - Total tasks recorded from milestone summaries: at least 139
-- Milestone Swift LOC at close: about 15,844 across `BeautySDK` and `BeautyDemo` source/test files
+- Milestone Swift LOC at close: 17,794 in the local closeout count across `BeautySDK` and `BeautyDemo`, including build-derived `.build` files observed during archive.
 
 **By Phase:**
 
@@ -142,7 +142,7 @@ Recent milestone-level outcomes:
 ### Pending Todos
 
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
-- Run v1.5 milestone audit/closeout now that Phase 26 through Phase 28 are complete.
+- Start the next milestone with `$gsd-new-milestone` when ready.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, screenshot reruns, packaging review, broader `美型 / 五官` slices, and automated visual diffs.
 
 ### Blockers/Concerns
@@ -170,11 +170,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-08T10:40:00+08:00
-Stopped at: Completed Phase 28 execution
+Last session: 2026-07-08T14:18:35+08:00
+Stopped at: Completed v1.5 milestone archive
 Resume file: .planning/ROADMAP.md
 
 ## Operator Next Steps
 
-- Run the v1.5 milestone audit/closeout flow.
-- Preserve the completed Phase 28 boundaries: no Demo UI change, no public raw geometry API, no distinct `下颌线` parameter or algorithm, and no broader `脸型` branch, commercial, device, or launch-readiness claim.
+- Start the next milestone with `$gsd-new-milestone`.
