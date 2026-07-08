@@ -116,7 +116,7 @@ Plans:
 **Goal:** Complete the `脸型` existing-parameter slice and update status ledgers only where facade-visible evidence exists.
 **Requirements:** FACE-01, FACE-02, FACE-03, FACE-04, FACE-05, FACE-06, DOC-01, DOC-02, DOC-03
 **Dependencies:** Phase 27
-**Plans:** 2/4 plans executed
+**Plans:** 3/4 plans executed
 Plans:
 **Wave 1**
 
@@ -125,7 +125,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 28-03-PLAN.md — Command-backed face-shape renderer and focused test evidence capture.
+- [x] 28-03-PLAN.md — Command-backed face-shape renderer and focused test evidence capture.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
