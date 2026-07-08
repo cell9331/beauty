@@ -401,6 +401,10 @@ Agent-verifiable checks recorded 2026-07-07:
 - Focused missing-landmark, stale/reused, combined-strength, and face-shape conflict tests pass with redacted summaries and aggregate metrics.
 - Renderer scope scans prove Phase 27 did not add eye, nose, mouth, lip, proportion, 3D, or brow saved-output cases.
 
+Correction recorded 2026-07-08:
+
+- User visual verification found that top-region pixel comparisons alone could pass from a global image change without visible face-shape deformation. The still-image geometry path now performs local control-point warp, and regression coverage checks local pixel movement plus unchanged unaffected pixels.
+
 Manual or future checks still required before stronger product claims:
 
 - Phase 28 owns per-tool `脸型` completion and `SHAPE_FEATURE_LEDGER.md` status promotion.
@@ -412,7 +416,7 @@ Agent-verifiable checks recorded 2026-07-08:
 
 - `BeautyExampleRenderer` builds and runs through the public `BeautySDK` facade with 6 fixtures and 17 cases, including `faceSlim_0p35`, `faceSmall_0p35`, `chinLength_plus0p30`, `chinLength_minus0p30`, `faceVShape_0p35`, and `jawSlim_0p35`.
 - The Phase 28 helper verifies 102/102 ignored outputs, same dimensions, 30/30 portrait face-shape-vs-baseline top-region comparisons, and no-face face-shape output presence.
-- Focused renderer, provider, combined-safety, and conflict-resolver tests pass with cap, no-face, signed-chin, weakening, redaction, and `jawSlim` alias coverage.
+- Focused renderer, provider, combined-safety, conflict-resolver, and spatial-warp tests pass with cap, no-face, signed-chin, weakening, redaction, local pixel displacement, unaffected-pixel stability, and `jawSlim` alias coverage.
 - `SHAPE_FEATURE_LEDGER.md` marks exactly `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线` as implemented; `FEATURE_MATRIX.md` keeps branch-level `脸型` partial.
 
 Manual or future checks still required before stronger product claims:

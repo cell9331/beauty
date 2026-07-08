@@ -30,6 +30,23 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-08-v1-5-face-shape-visual-warp-validation
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-08 |
+| Scope | Corrected the v1.5 face-shape validation gap where saved renderer outputs changed pixels through a global geometry proxy but did not visibly deform face shape. |
+| Requirements | GEO-03, FACE-01, FACE-02, FACE-03, FACE-04, FACE-05 |
+| Files | `BeautySDK/Sources/BeautyEffects/Render/BeautyGeometryEffectPipeline.swift`, `BeautySDK/Tests/BeautyEffectsTests/BeautyGeometryEffectPipelineTests.swift`, `BeautySDK/Tests/BeautyCoreTests/BeautyEngineGeometryFacadeTests.swift`, `.planning/MILESTONES.md`, `.planning/RETROSPECTIVE.md`, `ARCHITECTURE.md`, `DESIGN.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `QUALITY_SCORE.md`, `PLANS.md` |
+| Verification | Confirmed the original CIImage path only applied `CIColorMatrix` global color bias after control-point generation. Replaced that path with control-point-driven local CIImage resampling that preserves unaffected pixels. Added `BeautyGeometryEffectPipelineTests/testCIImageGeometryWarpMovesLocalPixelsWithoutGlobalColorBias`. Focused tests passed: new spatial-warp test, `BeautyEffectsTests.GeometryConflictResolverTests`, `BeautyEffectsTests.FaceShapeWarpProviderTests`, and `BeautyCoreTests.BeautyEngineGeometryFacadeTests`. Full `swift test --package-path BeautySDK` passed with 172 tests. `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed. `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out` regenerated 102 ignored PNG outputs. Phase 28 helper passed with 102/102 outputs and 30/30 portrait face-shape-vs-baseline top-region comparisons. |
+| Build | SDK SwiftPM tests and `BeautyExampleRenderer` build/run passed. No Demo build/test was run because the correction changed SDK still-image internals, SDK tests, ignored renderer outputs, and documentation only; no Demo source/UI behavior changed. |
+
+Outcome:
+
+- User-reported validation issue is confirmed and fixed for the still-image public-facade path.
+- v1.5 face-shape evidence now includes a spatial regression that rejects global color-only output as geometry evidence.
+- Public API, Demo UI, raw geometry exposure, `jawSlim` alias handling, and scoped `脸型` ledger boundaries remain unchanged.
+
 ### C-2026-07-08-gsd-complete-milestone-v1-5
 
 | Field | Value |

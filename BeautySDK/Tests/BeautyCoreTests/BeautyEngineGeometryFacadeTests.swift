@@ -1,4 +1,5 @@
 import CoreImage
+import Foundation
 import XCTest
 @_spi(Testing) import BeautySDK
 
@@ -154,27 +155,28 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
     func testSelectedFaceGeometryChangesImageBeforeWatermarkComparedToNoGeometryBaseline() throws {
         let provider = SDKTestingFaceDetectionProvider([.usableFace, .usableFace])
         let engine = try BeautyEngine(faceDetectionProvider: provider)
+        let spatialImage = spatialFixtureImage(width: 160, height: 160)
 
         let baseline = try engine.processResult(
-            image: Self.image,
+            image: spatialImage,
             metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
             parameters: BeautyParameters()
         )
         let geometry = try engine.processResult(
-            image: Self.image,
+            image: spatialImage,
             metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
             parameters: phase27FaceShapeParameters()
         )
         let repeatedGeometry = try engine.processResult(
-            image: Self.image,
+            image: spatialImage,
             metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
             parameters: phase27FaceShapeParameters()
         )
 
         XCTAssertEqual(provider.invocationCount, 2)
-        XCTAssertEqual(baseline.output.extent, Self.image.extent)
-        XCTAssertEqual(geometry.output.extent, Self.image.extent)
-        XCTAssertEqual(repeatedGeometry.output.extent, Self.image.extent)
+        XCTAssertEqual(baseline.output.extent, spatialImage.extent)
+        XCTAssertEqual(geometry.output.extent, spatialImage.extent)
+        XCTAssertEqual(repeatedGeometry.output.extent, spatialImage.extent)
         XCTAssertEqual(geometry.detectionSummary?.availability, .usable)
         XCTAssertEqual(geometry.detectionSummary?.usedFaceCount, 1)
         XCTAssertEqual(geometry.metrics["beauty.detection.geometryRequired"], 1)
@@ -235,6 +237,31 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
             filterId: "soft_clean",
             filterIntensity: 0.5
         )
+    }
+
+    private func spatialFixtureImage(width: Int, height: Int) -> CIImage {
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        return CIImage(
+            bitmapData: Data(gradientRGBABytes(width: width, height: height)),
+            bytesPerRow: width * 4,
+            size: CGSize(width: width, height: height),
+            format: .RGBA8,
+            colorSpace: colorSpace
+        )
+    }
+
+    private func gradientRGBABytes(width: Int, height: Int) -> [UInt8] {
+        var bytes: [UInt8] = []
+        bytes.reserveCapacity(width * height * 4)
+        for row in 0..<height {
+            for column in 0..<width {
+                bytes.append(UInt8(column * 255 / max(width - 1, 1)))
+                bytes.append(UInt8(row * 255 / max(height - 1, 1)))
+                bytes.append(UInt8((column + row) * 255 / max(width + height - 2, 1)))
+                bytes.append(255)
+            }
+        }
+        return bytes
     }
 
     private func portraitFixtureURLs() throws -> [URL] {

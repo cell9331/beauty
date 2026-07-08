@@ -4,13 +4,15 @@
 
 **Delivered:** SDK-only geometry output foundation plus the first verified `脸型` existing-parameter slice through public-facade renderer evidence, safety/degradation tests, and scoped blueprint ledger promotion.
 
+**Post-ship validation correction (2026-07-08):** User visual verification found the original saved-output evidence could pass from a global geometry proxy without visible face-shape deformation. The still-image CIImage path now performs local control-point warp, and `BeautyGeometryEffectPipelineTests/testCIImageGeometryWarpMovesLocalPixelsWithoutGlobalColorBias` rejects global color-only evidence by checking local pixel movement and unchanged unaffected pixels.
+
 **Phases completed:** 26-28 (3 phases, 12 plans, 22 recorded tasks)
 
 **Key accomplishments:**
 
 - Added package-internal selected-face observation routing from public still-image facade detection into existing internal geometry planning while keeping raw landmarks and control points private.
 - Produced deterministic saved-output geometry evidence through `BeautyExampleRenderer`, including `geometryBaseline_noop`, `faceShapeCombo_0p35`, a no-face fixture, 66 ignored PNG outputs, and the Phase 27 helper.
-- Completed per-tool public-facade renderer evidence for `faceSlim`, `faceSmall`, signed `chinLength`, `faceVShape`, and `jawSlim`, with 102 ignored outputs and 30/30 top-region comparisons.
+- Completed per-tool public-facade renderer evidence for `faceSlim`, `faceSmall`, signed `chinLength`, `faceVShape`, and `jawSlim`, with 102 ignored outputs, 30/30 top-region comparisons, and post-ship spatial-warp regression coverage.
 - Strengthened focused safety/degradation/redaction tests for caps, no-face/missing-contour behavior, signed `chinLength`, combined weakening, raw-geometry leak prevention, and `jawSlim` alias evidence.
 - Promoted exactly six scoped `脸型` rows in `SHAPE_FEATURE_LEDGER.md`: `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线`.
 - Passed the v1.5 milestone audit with 13/13 requirements, 3/3 phases, 4/4 integration checks, 4/4 end-to-end flows, and 3/3 Nyquist validation files.
@@ -25,6 +27,7 @@
 
 - Milestone audit passed: 13/13 requirements, 3/3 phases, 4/4 integration checks, 4/4 flows, and 3/3 Nyquist validation files.
 - Phase 28 full SDK suite passed with 171 tests.
+- Post-correction full SDK suite passed with 172 tests, including the spatial-warp regression.
 - `BeautyExampleRenderer` built and wrote 102 ignored PNG outputs across 6 fixtures and 17 cases.
 - Phase 28 helper passed with 102/102 outputs and 30/30 portrait top-region comparisons.
 

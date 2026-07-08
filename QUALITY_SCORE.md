@@ -34,19 +34,19 @@ Quality gate:
 
 ## 3. Current Snapshot
 
-Current repository state as of 2026-07-08 after Phase 28 face-shape slice completion and documentation closeout evidence:
+Current repository state as of 2026-07-08 after Phase 28 face-shape slice completion, documentation closeout evidence, and the v1.5 face-shape visual-warp validation correction:
 
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
 | Root docs | 4 | `AGENTS.md`, `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `PLANS.md`, and `QUALITY_SCORE.md` still exist as current owner docs. Phase 21 root placeholder scan found only historical `PLANS.md` verification prose, not unresolved contract placeholders. | Keep root docs synced when `.planning/PROJECT.md`, `.planning/ROADMAP.md`, implementation contracts, or Phase 22-25 evidence change. |
 | Historical docs | 3 | `docs/README.md` remains the long-doc entry. Phase 21 records `.planning/codebase/*` maps as stale background because they still contradict the current Swift package, tests, and planning ledgers. | Continue conflict scans and defer any formal `.planning/codebase/*` remap until explicitly scoped. |
 | GSD planning | 4 | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, and `.planning/REQUIREMENTS.md` define v1.5 as SDK geometry output foundation plus the `脸型` existing-parameter slice. Phase 26 records GEO-01/GEO-02 complete, Phase 27 records GEO-03/GEO-04 complete, and Phase 28 records FACE-01 through FACE-06 plus DOC-01 through DOC-03 complete from `28-VERIFICATION.md`. | Run v1.5 milestone audit/closeout and keep future work scoped to deferred items. |
-| SDK Package | 4 | `BeautySDK/Package.swift` exists with `BeautyCore`, `BeautyDetection`, `BeautyRender`, `BeautyEffects`, `BeautyResources`, facade `BeautySDK`, and `BeautyExampleRenderer`. Phase 28 `swift test --package-path BeautySDK` passed with 171 XCTest cases after per-tool face-shape renderer, provider, and safety evidence. | Optimized profiling, physical-device checks, and packaging remain future gates. |
+| SDK Package | 4 | `BeautySDK/Package.swift` exists with `BeautyCore`, `BeautyDetection`, `BeautyRender`, `BeautyEffects`, `BeautyResources`, facade `BeautySDK`, and `BeautyExampleRenderer`. Post-correction `swift test --package-path BeautySDK` passed with 172 XCTest cases after per-tool face-shape renderer, provider, safety, and spatial-warp evidence. | Optimized profiling, physical-device checks, and packaging remain future gates. |
 | Demo App | 4 | Existing archived Demo evidence remains valid for shipped behavior. Phase 22 recorded blocker-form Home/editor review notes and no current v1.4 PNG screenshots. Phase 23 focused camera pipeline xcodebuild passed on `platform=iOS Simulator,name=iPhone 17,OS=26.5`; Phase 25 focused privacy/import xcodebuild passed with 17 tests, but screenshot and long-run routes were not rerun. | Rerun the screenshot protocol before claiming current screenshot evidence; keep physical iPhone checks blocked until hardware evidence exists. |
-| Tests | 4 | Phase 28 focused renderer, provider, combined-safety, and conflict-resolver tests passed; full `swift test --package-path BeautySDK` passed with 171 XCTest cases. Phase 25 Demo camera/privacy/import evidence remains the latest Demo xcodebuild pass. | Keep 600-second preview, screenshot rerun, physical iPhone checks, and optimized profiling as manual/future evidence. |
+| Tests | 4 | Phase 28 focused renderer, provider, combined-safety, conflict-resolver, and spatial-warp tests passed; full `swift test --package-path BeautySDK` passed with 172 XCTest cases. Phase 25 Demo camera/privacy/import evidence remains the latest Demo xcodebuild pass. | Keep 600-second preview, screenshot rerun, physical iPhone checks, and optimized profiling as manual/future evidence. |
 | Security | 4 | Phase 28 public/import boundary scans, hidden public-surface scans, evidence-doc redaction scans, ignored-output checks, and no-overclaim scans passed. Phase 25 privacy-manifest deferral and bundled-resource trust evidence remain current. | Reopen manifest, dependency, network, resource-integrity, and raw-geometry review when behavior changes or packaging starts. |
 | Reliability | 4 | Existing tests cover typed errors, reset, backpressure, stale work, degradation, resource failures, and non-mutating JSON import failures. Phase 28 adds per-tool face-shape saved-output evidence, no-face output presence, caps, signed-chin, combined weakening, and redacted evidence checks. | Keep the 600-second preview route, physical iPhone checks, screenshot reruns, and optimized profiling as explicit follow-up evidence. |
-| Product acceptance | 4 | Existing acceptance evidence covers current SDK/Demo journeys. Phase 28 proves the scoped `脸型` existing-parameter slice through public-facade renderer output and records explicit non-claims for Demo UI, branch-wide completion, device parity, and commercial visual review. | Future work should target broader `美型 / 五官` slices, screenshot rerun, long-run preview, hardware checks, external resource package design, and packaging only when scoped. |
+| Product acceptance | 4 | Existing acceptance evidence covers current SDK/Demo journeys. Phase 28 proves the scoped `脸型` existing-parameter slice through public-facade renderer output and spatial-warp regression coverage, and records explicit non-claims for Demo UI, branch-wide completion, device parity, and commercial visual review. | Future work should target broader `美型 / 五官` slices, screenshot rerun, long-run preview, hardware checks, external resource package design, and packaging only when scoped. |
 
 ### 3.1 Phase 4 Final Verification
 
@@ -198,9 +198,10 @@ Recorded 2026-07-08 in `.planning/phases/28-face-shape-slice-completion-and-docu
 
 - `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyRendererOutputRegressionTests` passed with 6 tests and 0 failures.
 - `swift test --package-path BeautySDK --filter BeautyEffectsTests.FaceShapeWarpProviderTests` passed with 8 tests and 0 failures.
+- `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyGeometryEffectPipelineTests/testCIImageGeometryWarpMovesLocalPixelsWithoutGlobalColorBias` passed with 1 test and 0 failures after replacing the global color proxy with local control-point warp.
 - `swift test --package-path BeautySDK --filter BeautyEffectsTests.CombinedEffectSafetyTests` passed with 5 tests and 0 failures.
 - `swift test --package-path BeautySDK --filter BeautyEffectsTests.GeometryConflictResolverTests` passed with 7 tests and 0 failures.
-- `swift test --package-path BeautySDK` passed with 171 tests and 0 failures.
+- `swift test --package-path BeautySDK` passed with 172 tests and 0 failures after the spatial-warp regression was added.
 - `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed.
 - `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out` wrote 102 ignored PNG outputs across 6 fixtures and 17 cases.
 - `python3 .planning/phases/28-face-shape-slice-completion-and-documentation-closeout/check_face_shape_renderer_outputs.py --input example-images/input --output example-images/out` passed with 102/102 outputs, same-dimension buckets, 30/30 portrait face-shape-vs-baseline top-region comparisons, and no-face face-shape output presence.
@@ -216,7 +217,7 @@ Recorded 2026-07-08 in `.planning/phases/28-face-shape-slice-completion-and-docu
 | Still Image Editing | 4 | 4 | Fixed fixture and PhotosPicker-data seam process through SDK, loading/error preservation is tested, compare state is covered, and Phase 6 image output has deterministic effect evidence. |
 | Presets | 4 | 4 | Built-in JSON presets decode, validate, apply deterministically, and sync UI controls. |
 | Skin Beauty | 4 | 4 | Default no-op, visible skin/color fixture output, high-strength safety caps, and no-face combined skip behavior are tested. |
-| Face Shape | 4 | 4 | Control points are generated safely, combined geometry weakens, no-face skips, and MVP proxy evidence is tested. |
+| Face Shape | 4 | 4 | Control points are generated safely, combined geometry weakens, no-face skips, and CIImage local warp evidence is tested. |
 | Eyes | 4 | 4 | Eye provider output, caps, reused/stale reduction, and missing-eye landmark skips are tested. |
 | Nose | 4 | 4 | Nose provider output, caps, reused/stale reduction, and missing-nose landmark skips are tested. |
 | Mouth | 4 | 4 | Mouth provider output, lip-color fixture output, reused/stale reduction, and missing-mouth/lip skips are tested. |

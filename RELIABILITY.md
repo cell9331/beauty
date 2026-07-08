@@ -140,6 +140,7 @@ Phase 26 still-image facade behavior:
 Phase 27 saved-output geometry behavior:
 
 - `BeautyEngine.processResult(image:metadata:parameters:)` can return same-dimension still-image geometry output when a usable selected face is available.
+- The still-image geometry path now uses bounded local CIImage resampling from internal `WarpControlPoint` source/target pairs; unaffected pixels outside point radii remain unchanged, preventing global color-only output from counting as geometry.
 - The dedicated no-face renderer fixture preserves output dimensions and records redacted no-face degradation evidence.
 - Focused missing-landmark, no-face/stale/reused, combined-strength, and face-shape conflict-cap tests pass, so geometry degradation remains deterministic and aggregate-only.
 - `BeautyExampleRenderer` and `check_geometry_renderer_outputs.py` provide rerunnable saved-output evidence without requiring committed generated PNG baselines.
@@ -148,7 +149,7 @@ Phase 28 scoped face-shape behavior:
 
 - Per-tool saved-output evidence exists for `faceSlim`, `faceSmall`, signed `chinLength`, `faceVShape`, and `jawSlim` through existing public parameters.
 - `jawSlim` covers both `下颌角` and alias-backed `下颌线`; no separate degradation path is introduced for `下颌线`.
-- Focused provider, combined-safety, and conflict-resolver tests pass for caps, missing contour/no-face degradation, signed `chinLength`, combined weakening, and redacted warning/metric evidence.
+- Focused provider, combined-safety, conflict-resolver, and spatial-warp tests pass for caps, missing contour/no-face degradation, signed `chinLength`, combined weakening, redacted warning/metric evidence, and local pixel displacement.
 - `BeautyExampleRenderer` and `check_face_shape_renderer_outputs.py` provide rerunnable scoped face-shape saved-output evidence without requiring committed generated PNG baselines.
 
 ## 7. Observability Model
@@ -526,8 +527,8 @@ Phase 26 geometry-facade reliability evidence recorded 2026-07-06:
 Phase 28 face-shape reliability evidence recorded 2026-07-08:
 
 - `BeautyRendererOutputRegressionTests` passed with 6 tests and covers the 17-case renderer matrix, public-facade import boundary, scoped Phase 28 case IDs, and `jawSlim` alias sharing.
-- `FaceShapeWarpProviderTests`, `CombinedEffectSafetyTests`, and `GeometryConflictResolverTests` passed with focused cap, no-face, signed-chin, weakening, and redaction coverage.
-- Full `swift test --package-path BeautySDK` passed with 171 tests.
+- `FaceShapeWarpProviderTests`, `CombinedEffectSafetyTests`, `GeometryConflictResolverTests`, and `BeautyGeometryEffectPipelineTests` passed with focused cap, no-face, signed-chin, weakening, redaction, and local-warp coverage.
+- Full post-correction `swift test --package-path BeautySDK` passed with 172 tests.
 - `BeautyExampleRenderer` built and wrote 102 ignored outputs; `check_face_shape_renderer_outputs.py` passed with 102/102 outputs and 30/30 top-region comparisons.
 
 Remaining manual reliability checks:

@@ -150,7 +150,7 @@
 
 - Public still-image facade geometry activation through `BeautyEngine.processResult(...)`, with package-internal selected-face routing into geometry planning.
 - Deterministic SDK-only saved-output geometry evidence through `BeautyExampleRenderer`, `geometryBaseline_noop`, `faceShapeCombo_0p35`, a no-face fixture, and the Phase 27 helper.
-- Per-tool face-shape renderer evidence for `faceSlim`, `faceSmall`, signed `chinLength`, `faceVShape`, and `jawSlim`, with 102 ignored outputs and 30/30 top-region comparisons.
+- Per-tool face-shape renderer evidence for `faceSlim`, `faceSmall`, signed `chinLength`, `faceVShape`, and `jawSlim`, with 102 ignored outputs, 30/30 top-region comparisons, and a post-ship correction from global proxy output to local control-point warp.
 - Focused safety/degradation/redaction tests for caps, no-face/missing-contour behavior, signed `chinLength`, combined weakening, and `jawSlim` alias evidence.
 - Scoped blueprint and planning ledger promotion for exactly six second-level `脸型` rows while keeping branch-level `脸型` partial.
 
@@ -171,6 +171,7 @@
 
 - Geometry-heavy feature completion requires facade-visible saved-output evidence before `implemented` status.
 - Generated-output helpers should report counts, dimensions, fixture/case IDs, and comparison counts without hashes, raw pixels, or raw geometry payloads.
+- Top-region pixel comparisons are not sufficient by themselves for geometry completion; face-shape evidence also needs a spatial assertion that control points move local pixels while unaffected pixels remain unchanged.
 - Branch-level status can remain partial while scoped second-level rows become implemented from evidence.
 
 ### Key Lessons
