@@ -63,13 +63,6 @@ class RendererOutputError(Exception):
 
 
 @dataclass(frozen=True)
-class PNGPixels:
-    width: int
-    height: int
-    rgba: bytes
-
-
-@dataclass(frozen=True)
 class PNGPayload:
     width: int
     height: int
@@ -159,94 +152,6 @@ def read_png_payload(path: Path, label: str) -> PNGPayload:
         raise RendererOutputError(f"{label}: truncated image data")
 
     return PNGPayload(width=width, height=height, color_type=color_type, raw=raw)
-
-
-def read_png_rgba_pixels(path: Path, label: str) -> PNGPixels:
-    try:
-        data = path.read_bytes()
-    except OSError:
-        raise RendererOutputError(f"{label}: unreadable") from None
-
-    if data[:8] != b"\x89PNG\r\n\x1a\n":
-        raise RendererOutputError(f"{label}: not a PNG")
-
-    width: int | None = None
-    height: int | None = None
-    bit_depth: int | None = None
-    color_type: int | None = None
-    compression_method: int | None = None
-    filter_method: int | None = None
-    interlace_method: int | None = None
-    idat_chunks: list[bytes] = []
-
-    offset = 8
-    while offset + 8 <= len(data):
-        length = struct.unpack(">I", data[offset : offset + 4])[0]
-        chunk_type = data[offset + 4 : offset + 8]
-        chunk_start = offset + 8
-        chunk_end = chunk_start + length
-        if chunk_end + 4 > len(data):
-            raise RendererOutputError(f"{label}: truncated chunk")
-        chunk_data = data[chunk_start:chunk_end]
-        offset = chunk_end + 4
-
-        if chunk_type == b"IHDR":
-            if length != 13:
-                raise RendererOutputError(f"{label}: invalid IHDR")
-            width, height = struct.unpack(">II", chunk_data[:8])
-            bit_depth = chunk_data[8]
-            color_type = chunk_data[9]
-            compression_method = chunk_data[10]
-            filter_method = chunk_data[11]
-            interlace_method = chunk_data[12]
-        elif chunk_type == b"IDAT":
-            idat_chunks.append(chunk_data)
-        elif chunk_type == b"IEND":
-            break
-
-    if width is None or height is None:
-        raise RendererOutputError(f"{label}: missing IHDR")
-    if bit_depth != 8 or color_type not in (2, 6):
-        raise RendererOutputError(f"{label}: unsupported PNG color type")
-    if compression_method != 0 or filter_method != 0 or interlace_method != 0:
-        raise RendererOutputError(f"{label}: unsupported PNG encoding")
-
-    try:
-        raw = zlib.decompress(b"".join(idat_chunks))
-    except zlib.error:
-        raise RendererOutputError(f"{label}: invalid PNG data") from None
-
-    channels = 4 if color_type == 6 else 3
-    bytes_per_pixel = channels
-    row_length = width * channels
-    expected_length = (row_length + 1) * height
-    if len(raw) < expected_length:
-        raise RendererOutputError(f"{label}: truncated image data")
-
-    rows: list[bytes] = []
-    previous = bytearray(row_length)
-    raw_offset = 0
-
-    for _ in range(height):
-        filter_type = raw[raw_offset]
-        raw_offset += 1
-        row = bytearray(raw[raw_offset : raw_offset + row_length])
-        raw_offset += row_length
-        unfilter_scanline(row, previous, bytes_per_pixel, filter_type, label)
-
-        if channels == 4:
-            rows.append(bytes(row))
-        else:
-            rgba = bytearray(width * 4)
-            for column in range(width):
-                source = column * 3
-                target = column * 4
-                rgba[target : target + 3] = row[source : source + 3]
-                rgba[target + 3] = 255
-            rows.append(bytes(rgba))
-        previous = row
-
-    return PNGPixels(width=width, height=height, rgba=b"".join(rows))
 
 
 def unfilter_scanline(
