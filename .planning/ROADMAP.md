@@ -116,12 +116,12 @@ Plans:
 **Goal:** Complete the `脸型` existing-parameter slice and update status ledgers only where facade-visible evidence exists.
 **Requirements:** FACE-01, FACE-02, FACE-03, FACE-04, FACE-05, FACE-06, DOC-01, DOC-02, DOC-03
 **Dependencies:** Phase 27
-**Plans:** 1/4 plans executed
+**Plans:** 2/4 plans executed
 Plans:
 **Wave 1**
 
 - [x] 28-01-PLAN.md — Per-tool public-facade renderer cases and top-region helper evidence.
-- [ ] 28-02-PLAN.md — Focused safety, degradation, cap, signed-chin, alias, and redaction evidence.
+- [x] 28-02-PLAN.md — Focused safety, degradation, cap, signed-chin, alias, and redaction evidence.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
