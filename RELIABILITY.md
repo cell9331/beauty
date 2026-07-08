@@ -144,6 +144,13 @@ Phase 27 saved-output geometry behavior:
 - Focused missing-landmark, no-face/stale/reused, combined-strength, and face-shape conflict-cap tests pass, so geometry degradation remains deterministic and aggregate-only.
 - `BeautyExampleRenderer` and `check_geometry_renderer_outputs.py` provide rerunnable saved-output evidence without requiring committed generated PNG baselines.
 
+Phase 28 scoped face-shape behavior:
+
+- Per-tool saved-output evidence exists for `faceSlim`, `faceSmall`, signed `chinLength`, `faceVShape`, and `jawSlim` through existing public parameters.
+- `jawSlim` covers both `下颌角` and alias-backed `下颌线`; no separate degradation path is introduced for `下颌线`.
+- Focused provider, combined-safety, and conflict-resolver tests pass for caps, missing contour/no-face degradation, signed `chinLength`, combined weakening, and redacted warning/metric evidence.
+- `BeautyExampleRenderer` and `check_face_shape_renderer_outputs.py` provide rerunnable scoped face-shape saved-output evidence without requiring committed generated PNG baselines.
+
 ## 7. Observability Model
 
 First-version diagnostics live in `BeautyCore/Diagnostics`; do not create a separate diagnostics package until another product actually shares it. Use three layers:
@@ -515,6 +522,13 @@ Phase 26 geometry-facade reliability evidence recorded 2026-07-06:
 - `BeautyEngineGeometryFacadeTests` covers detector-call gating, selected-face routing, no-geometry `.notRun`, disabled-tracking `.disabled`, no-face, low-confidence, missing-landmark, detector-unavailable, timeout, safe-domain continuation, and redacted public evidence.
 - `BeautyDetectionTests.VisionFaceDetectorTests`, `BeautyEffectResolverTests`, and `MissingLandmarkDegradationTests` cover detector seams, selected-face resolver routing, and group-specific degradation.
 - Full `swift test --package-path BeautySDK` passed with 159 tests; raw-leak and public/SPI export scans passed as recorded in `26-VERIFICATION.md`.
+
+Phase 28 face-shape reliability evidence recorded 2026-07-08:
+
+- `BeautyRendererOutputRegressionTests` passed with 6 tests and covers the 17-case renderer matrix, public-facade import boundary, scoped Phase 28 case IDs, and `jawSlim` alias sharing.
+- `FaceShapeWarpProviderTests`, `CombinedEffectSafetyTests`, and `GeometryConflictResolverTests` passed with focused cap, no-face, signed-chin, weakening, and redaction coverage.
+- Full `swift test --package-path BeautySDK` passed with 171 tests.
+- `BeautyExampleRenderer` built and wrote 102 ignored outputs; `check_face_shape_renderer_outputs.py` passed with 102/102 outputs and 30/30 top-region comparisons.
 
 Remaining manual reliability checks:
 

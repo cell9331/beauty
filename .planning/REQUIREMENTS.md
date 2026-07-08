@@ -14,18 +14,18 @@
 
 ### Face Shape Slice
 
-- [ ] **FACE-01**: `脸宽` is SDK-complete through existing `faceSlim`.
-- [ ] **FACE-02**: `小脸` is SDK-complete through existing `faceSmall`.
-- [ ] **FACE-03**: `下巴长短` is SDK-complete through existing `chinLength`.
-- [ ] **FACE-04**: `V脸` is SDK-complete through existing `faceVShape`.
-- [ ] **FACE-05**: `下颌角` is SDK-complete through existing `jawSlim`.
-- [ ] **FACE-06**: `下颌线` is explicitly handled as either a documented `jawSlim` alias or a separate SDK behavior decision, with ledger evidence.
+- [x] **FACE-01**: `脸宽` is SDK-complete through existing `faceSlim`.
+- [x] **FACE-02**: `小脸` is SDK-complete through existing `faceSmall`.
+- [x] **FACE-03**: `下巴长短` is SDK-complete through existing `chinLength`.
+- [x] **FACE-04**: `V脸` is SDK-complete through existing `faceVShape`.
+- [x] **FACE-05**: `下颌角` is SDK-complete through existing `jawSlim`.
+- [x] **FACE-06**: `下颌线` is explicitly handled as either a documented `jawSlim` alias or a separate SDK behavior decision, with ledger evidence.
 
 ### Documentation and Evidence
 
-- [ ] **DOC-01**: `SHAPE_FEATURE_LEDGER.md` marks only verified `脸型` tools as `implemented`.
-- [ ] **DOC-02**: Beauty-shaping branch docs, `FEATURE_MATRIX.md`, and `EXAMPLE_IMAGE_VALIDATION.md` match the new SDK evidence.
-- [ ] **DOC-03**: Phase verification records exact test, renderer, scan, and blocker evidence without claiming UI, commercial, or full Meitu parity.
+- [x] **DOC-01**: `SHAPE_FEATURE_LEDGER.md` marks only verified `脸型` tools as `implemented`.
+- [x] **DOC-02**: Beauty-shaping branch docs, `FEATURE_MATRIX.md`, and `EXAMPLE_IMAGE_VALIDATION.md` match the new SDK evidence.
+- [x] **DOC-03**: Phase verification records exact test, renderer, scan, and blocker evidence without claiming UI, commercial, or full Meitu parity.
 
 ## Future Requirements
 
@@ -58,23 +58,23 @@ Which phases cover which requirements. Updated during roadmap creation.
 | GEO-02 | Phase 26 | Complete - `26-VERIFICATION.md` records selected-face resolver/degradation tests plus public/SPI raw geometry export and active-source redaction scans. |
 | GEO-03 | Phase 27 | Complete - `27-VERIFICATION.md` records `BeautyExampleRenderer` build/run evidence, 66 ignored PNG outputs, `check_geometry_renderer_outputs.py`, same-dimension checks, 5/5 portrait geometry-vs-baseline top-region comparisons, no-face output presence, and renderer matrix tests. |
 | GEO-04 | Phase 27 | Complete - `27-VERIFICATION.md` records no-face saved-output evidence plus focused missing-landmark, stale/reused, combined-strength, and face-shape conflict-cap tests with redacted summaries and scans. |
-| FACE-01 | Phase 28 | Pending |
-| FACE-02 | Phase 28 | Pending |
-| FACE-03 | Phase 28 | Pending |
-| FACE-04 | Phase 28 | Pending |
-| FACE-05 | Phase 28 | Pending |
-| FACE-06 | Phase 28 | Pending |
-| DOC-01 | Phase 28 | Pending |
-| DOC-02 | Phase 28 | Pending |
-| DOC-03 | Phase 28 | Pending |
+| FACE-01 | Phase 28 | Complete - `28-VERIFICATION.md` records `faceSlim_0p35` renderer evidence, focused safety/degradation tests, 102-output helper evidence, and ledger promotion for `脸宽`. |
+| FACE-02 | Phase 28 | Complete - `28-VERIFICATION.md` records `faceSmall_0p35` renderer evidence, focused safety/degradation tests, 102-output helper evidence, and ledger promotion for `小脸`. |
+| FACE-03 | Phase 28 | Complete - `28-VERIFICATION.md` records `chinLength_plus0p30` and `chinLength_minus0p30` renderer evidence, signed-chin tests, helper evidence, and ledger promotion for `下巴长短`. |
+| FACE-04 | Phase 28 | Complete - `28-VERIFICATION.md` records `faceVShape_0p35` renderer evidence, focused safety/degradation tests, helper evidence, and ledger promotion for `V脸`. |
+| FACE-05 | Phase 28 | Complete - `28-VERIFICATION.md` records `jawSlim_0p35` renderer evidence, focused safety/degradation tests, helper evidence, and ledger promotion for `下颌角`. |
+| FACE-06 | Phase 28 | Complete - `28-VERIFICATION.md` records `下颌线` as alias-backed by `jawSlim`, sharing `jawSlim_0p35` evidence with `下颌角` and avoiding a distinct parameter or algorithm. |
+| DOC-01 | Phase 28 | Complete - `28-VERIFICATION.md` and `SHAPE_FEATURE_LEDGER.md` mark only `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线` as implemented. |
+| DOC-02 | Phase 28 | Complete - `28-VERIFICATION.md` cites synchronized beauty-shaping docs, `FEATURE_MATRIX.md`, and `EXAMPLE_IMAGE_VALIDATION.md`, with branch-level `脸型` still partial. |
+| DOC-03 | Phase 28 | Complete - `28-VERIFICATION.md` records focused tests, renderer build/run, helper output, static scans, ignored-output policy, and blocker-free closeout without UI, commercial, or broad reference-app parity claims. |
 
 **Coverage:**
 - v1.5 requirements: 13 total
 - Mapped to phases: 13
 - Unmapped: 0
-- Complete: 4
-- Pending: 9
+- Complete: 13
+- Pending: 0
 
 ---
 *Requirements defined: 2026-07-04*
-*Last updated: 2026-07-07 after Phase 27 verification*
+*Last updated: 2026-07-08 after Phase 28 verification*

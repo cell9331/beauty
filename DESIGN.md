@@ -88,6 +88,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable
 | Mouth | `mouthSize`, `mouthWidth`, `smile`, `lipColor` | mixed |
 | Filter | `filterId`, `filterIntensity` | ID + `0.0...1.0` |
 
+Phase 28 completion evidence covers the existing Face Shape fields only: `faceSlim` for `脸宽`, `faceSmall` for `小脸`, signed `chinLength` for `下巴长短`, `faceVShape` for `V脸`, and `jawSlim` for both `下颌角` and alias-backed `下颌线`. It does not add a new public parameter or change the `BeautyParameters` shape.
+
 Rules:
 
 - `0` means no effect for numeric parameters unless the field is explicitly bidirectional.
@@ -400,6 +402,7 @@ Rules:
 - Reused landmarks reduce effective geometry briefly; stale landmarks skip strong geometry and record stable warning/metric evidence.
 - Phase 26 adds `BeautyEffectResolver.requiresFaceGeometry(parameters:)` as the still-image detection trigger. `BeautyEffectResolver.resolve(parameters:selectedFaceObservation:)` converts one selected package-only detection observation into internal `FaceGeometry`; nil, no-face, low-confidence, and missing landmark groups degrade through the same redacted warnings and aggregate metrics as existing resolver contexts.
 - Phase 27 routes that selected-face result into the still-image render path for same-dimension geometry output evidence. The current image path uses a deterministic internal CIImage geometry proxy after color/lip work when internal geometry points exist; no public parameter, public result field, or Demo dependency changes.
+- Phase 28 records per-tool face-shape renderer evidence through existing parameters and focused resolver/provider tests. `下颌线` remains a `jawSlim` alias, so the design contract stays one `jawSlim` field rather than splitting jaw angle and jawline behavior in v1.5.
 
 ## 9. RenderGraph Design
 

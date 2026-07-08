@@ -60,6 +60,14 @@ Phase 27 geometry-output privacy evidence recorded 2026-07-07:
 - The generated-output helper records only relative fixture names, case IDs, counts, dimensions, geometry-vs-baseline comparison counts, and no-face output presence.
 - Phase 27 did not add Demo UI behavior, public raw geometry APIs, network behavior, raw geometry evidence fields, generated PNG baselines, or `SHAPE_FEATURE_LEDGER.md` implementation-status promotion.
 
+Phase 28 face-shape privacy evidence recorded 2026-07-08:
+
+- `BeautyExampleRenderer` remains public-facade-only while adding scoped face-shape cases for existing parameters.
+- `28-VERIFICATION.md` records public/import boundary scans, hidden public-surface scans, redaction scans, ignored-output checks, and wording guards as passed.
+- The Phase 28 helper records only relative fixture names, case IDs, counts, dimensions, top-region comparison counts, and no-face output presence.
+- Generated PNGs remain ignored local artifacts; docs record commands and counts rather than generated image baselines or hashes.
+- Phase 28 did not add Demo UI behavior, public raw geometry APIs, network behavior, raw geometry evidence fields, a distinct `下颌线` parameter, or broader branch status claims.
+
 ## 3. Trust Boundaries
 
 ```text

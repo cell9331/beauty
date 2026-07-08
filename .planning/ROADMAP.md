@@ -13,7 +13,7 @@ The milestone remains SDK-core only: no new SwiftUI screens, no Demo UI rebuild,
 - ✅ **v1.2 HTML Reference Fidelity** - Phase 11 completed 2026-06-25; Phases 12-15 canceled 2026-06-26. Summary is in `.planning/MILESTONES.md`.
 - ✅ **v1.3 Meitu Core Beauty Module Design and Implementation** - Phases 16-20 shipped 2026-06-30. See `.planning/milestones/v1.3-ROADMAP.md`.
 - ✅ **v1.4 Stability, QA, and Debt Cleanup** - Phases 21-25 shipped 2026-07-03. See `.planning/milestones/v1.4-ROADMAP.md`, `.planning/milestones/v1.4-REQUIREMENTS.md`, and `.planning/milestones/v1.4-MILESTONE-AUDIT.md`.
-- 🔄 **v1.5 SDK Geometry Output Foundation and Face Shape Slice** - Phases 26-28, active.
+- 🔄 **v1.5 SDK Geometry Output Foundation and Face Shape Slice** - Phases 26-28 complete; ready for milestone audit/closeout.
 
 ## Phases
 
@@ -112,11 +112,11 @@ Plans:
 
 ### Phase 28: Face Shape Slice Completion and Documentation Closeout
 
-**Status:** Pending
+**Status:** Complete - completed 2026-07-08
 **Goal:** Complete the `脸型` existing-parameter slice and update status ledgers only where facade-visible evidence exists.
 **Requirements:** FACE-01, FACE-02, FACE-03, FACE-04, FACE-05, FACE-06, DOC-01, DOC-02, DOC-03
 **Dependencies:** Phase 27
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 Plans:
 **Wave 1**
 
@@ -129,7 +129,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 28-04-PLAN.md — Scoped ledger promotion, final verification, root docs, and planning closeout.
+- [x] 28-04-PLAN.md — Scoped ledger promotion, final verification, root docs, and planning closeout.
 
 **Success Criteria:**
 
@@ -138,6 +138,10 @@ Plans:
 3. `SHAPE_FEATURE_LEDGER.md` marks only verified `脸型` rows as `implemented`.
 4. Beauty-shaping branch docs, `FEATURE_MATRIX.md`, and `EXAMPLE_IMAGE_VALIDATION.md` match the final evidence.
 5. Phase verification records exact test, renderer, scan, and blocker evidence without claiming UI, commercial readiness, or full reference-app parity.
+
+**Evidence:** `.planning/phases/28-face-shape-slice-completion-and-documentation-closeout/28-VERIFICATION.md` records focused renderer, provider, combined-safety, and conflict-resolver tests plus full `swift test --package-path BeautySDK` passing with 171 tests. `BeautyExampleRenderer` builds and writes 102 ignored PNG outputs across 6 fixtures and 17 cases, and `check_face_shape_renderer_outputs.py` verifies 102/102 outputs, same dimensions, 30/30 portrait face-shape-vs-baseline top-region comparisons, and no-face face-shape output presence. Static scans passed for public/import boundaries, hidden public-surface expansion, raw evidence leakage, overclaim wording, ledger promotion guards, Demo internal imports, and GSD decision coverage.
+
+**Boundary:** Phase 28 promotes only the six scoped second-level `脸型` rows. Branch-level `脸型` remains `partial`; unscoped face-shape rows, broader `美型 / 五官` branches, Demo UI work, physical-device parity, commercial visual review, screenshot reruns, optimized profiling, packaging review, and launch-readiness evidence remain outside Phase 28.
 
 ## Progress
 
@@ -148,14 +152,14 @@ Plans:
 | v1.2 HTML Reference Fidelity | 1 completed, 4 canceled | 4 completed | Reduced scope | Completed | 2026-06-26 |
 | v1.3 Meitu Core Beauty Module Design and Implementation | 5 | 14 | 20/20 | Shipped | 2026-06-30 |
 | v1.4 Stability, QA, and Debt Cleanup | 5 | 15 | 24/24 | Shipped | 2026-07-03 |
-| v1.5 SDK Geometry Output Foundation and Face Shape Slice | 3 | 12 planned, 8 complete | 4/13 | Active - Phase 28 planned | - |
+| v1.5 SDK Geometry Output Foundation and Face Shape Slice | 3 | 12 planned, 12 complete | 13/13 | Complete - ready for milestone audit/closeout | 2026-07-08 |
 
 ## Next
 
-Execute Phase 28 face-shape slice completion and documentation closeout:
+Run the v1.5 milestone audit/closeout flow:
 
 ```bash
-$gsd-execute-phase 28
+$gsd-audit-milestone
 ```
 
 ## Backlog

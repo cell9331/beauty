@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: milestone
 status: executing
-stopped_at: Completed 28-03-PLAN.md
-last_updated: "2026-07-08T02:06:43.424Z"
-last_activity: 2026-07-08 -- Phase 28 execution started
+stopped_at: Completed Phase 28 execution
+last_updated: "2026-07-08T10:40:00+08:00"
+last_activity: 2026-07-08 -- Phase 28 completed
 progress:
   total_phases: 3
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 12
-  completed_plans: 11
-  percent: 67
+  completed_plans: 12
+  percent: 100
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-04)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 28 — Face Shape Slice Completion and Documentation Closeout
+**Current focus:** v1.5 milestone audit/closeout after Phase 28 completion
 
 ## Current Position
 
-Phase: 28 (Face Shape Slice Completion and Documentation Closeout) — EXECUTING
+Phase: 28 (Face Shape Slice Completion and Documentation Closeout) — COMPLETE
 Plan: 4 of 4
-Status: Ready to execute
-Last activity: 2026-07-08 -- Phase 28 execution started
+Status: Ready for v1.5 milestone audit/closeout
+Last activity: 2026-07-08 -- Phase 28 completed
 
 ## Performance Metrics
 
@@ -70,7 +70,7 @@ Last activity: 2026-07-08 -- Phase 28 execution started
 | 25. Security, Distribution Review, and Closeout | 3/3 | Complete |
 | 26. Geometry Facade and Landmark Routing Foundation | 4/4 | Complete |
 | 27. Geometry Render Output and Verification Harness | 4/4 | Complete |
-| 28. Face Shape Slice Completion and Documentation Closeout | 0/4 | Pending |
+| 28. Face Shape Slice Completion and Documentation Closeout | 4/4 | Complete |
 | Phase 18 P1 | 8 min | 2 tasks | 2 files |
 | Phase 18 P2 | 117 min | 3 tasks | 10 files |
 | Phase 18 P3 | 19 min | 3 tasks | 6 files |
@@ -136,13 +136,14 @@ Recent milestone-level outcomes:
 - v1.5 is scoped to SDK geometry output foundation plus the `脸型` existing-parameter slice only. Phase 26 covers public facade geometry activation and privacy-safe landmark routing, Phase 27 covers saved-output geometry evidence and degradation verification, and Phase 28 covers `脸型` tool completion plus ledger/documentation closeout.
 - Phase 26 completed the public still-image geometry facade/routing foundation: `BeautyEngine.processResult(image:metadata:parameters:)` now runs geometry-triggered detection only when needed, routes one package-only selected face into internal geometry planning, preserves no-geometry and disabled-tracking compatibility, and records only redacted summaries, warnings, and aggregate metrics. `26-VERIFICATION.md` passed focused facade/detector/effects tests, full SDK SwiftPM tests with 159 tests, raw-geometry/redaction scans, renderer-case exclusion, and `SHAPE_FEATURE_LEDGER.md` implemented-status guard.
 - Phase 27 completed saved-output geometry foundation evidence: `BeautyExampleRenderer` now includes `geometryBaseline_noop` and `faceShapeCombo_0p35`, writes 66 ignored PNG outputs across 6 fixtures and 11 cases, and `check_geometry_renderer_outputs.py` verifies 66/66 outputs, same dimensions, 5/5 portrait geometry-vs-baseline top-region comparisons, and no-face output presence. `27-VERIFICATION.md` records focused degradation tests, full SDK SwiftPM tests with 167 tests, redaction scans, renderer scope scans, Demo import scans, and the guard that `SHAPE_FEATURE_LEDGER.md` face-shape rows remain unpromoted.
+- Phase 28 completed the scoped `脸型` existing-parameter slice: renderer cases `faceSlim_0p35`, `faceSmall_0p35`, `chinLength_plus0p30`, `chinLength_minus0p30`, `faceVShape_0p35`, and `jawSlim_0p35` produce public-facade saved-output evidence; `check_face_shape_renderer_outputs.py` verifies 102/102 outputs and 30/30 top-region comparisons; focused safety/degradation/redaction tests and scans pass; `SHAPE_FEATURE_LEDGER.md` promotes exactly `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线` while branch-level `脸型` remains partial.
 - `.planning/codebase/*` maps are stale background for v1.4 and should not override current source, root docs, or `.planning` ledgers.
 
 ### Pending Todos
 
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
-- Execute Phase 28 with `$gsd-execute-phase 28`; per-tool `脸型` completion evidence and status promotion remain Phase 28 scope.
-- Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, renderer regression, and automated visual diffs.
+- Run v1.5 milestone audit/closeout now that Phase 26 through Phase 28 are complete.
+- Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, screenshot reruns, packaging review, broader `美型 / 五官` slices, and automated visual diffs.
 
 ### Blockers/Concerns
 
@@ -153,7 +154,7 @@ Recent milestone-level outcomes:
 - Phase 23 focused Demo simulator camera tests pass in the current environment. Phase 22 screenshot evidence still carries the historical Metal Toolchain blocker until the screenshot protocol is rerun.
 - v1.1 reference screenshots are local analysis inputs, not licensed production assets; implementation should recreate structure and feel without copying commercial assets directly.
 - Phase 12-15 cancellation is intentional; do not treat canceled AUDIT, HSWIFT, ESWIFT, or VQA requirements as open blockers.
-- Geometry-heavy branches need face detection plus geometry rendering output before they can claim saved example-image visual completion; v1.5 promotes only the first `脸型` slice after this evidence exists.
+- Geometry-heavy branches need face detection plus geometry rendering output before they can claim saved example-image visual completion; v1.5 promotes only the scoped six-row `脸型` slice after this evidence exists.
 
 ## Deferred Items
 
@@ -163,16 +164,17 @@ Recent milestone-level outcomes:
 | Release QA | Real-device camera/Vision parity, visual naturalness, production render quality, performance budgets, and long-run hardware readiness | Partially promoted into v1.4 hardening scope; feature expansion remains deferred | v1.4 start |
 | SwiftUI visual fidelity | HTML-to-SwiftUI delta report, Home SwiftUI fidelity pass, Editor SwiftUI fidelity pass, and v1.2 visual QA closeout | Canceled from v1.2; may be reconsidered as a future milestone | 2026-06-26 |
 | Deferred Meitu product areas | Home/discovery, style resources, AI/background, video/body, account/gallery, search, premium access, commerce, account authorization | Deferred outside v1.3 core beauty modules | 2026-06-26 |
-| Broader Meitu shape groups | `眼睛`, `鼻子`, `嘴唇`, `比例`, `3D塑颜`, and `眉毛` implementation after the first `脸型` slice proves geometry output | Deferred outside v1.5 first slice | v1.5 start |
+| Broader Meitu shape groups | `眼睛`, `鼻子`, `嘴唇`, `比例`, `3D塑颜`, `眉毛`, and unscoped `脸型` rows beyond the six Phase 28 rows | Deferred outside v1.5 first slice | Phase 28 closeout |
+| Release/setup evidence | Physical-device camera/Vision parity, commercial visual review, screenshot reruns, optimized profiling, 600-second preview evidence, packaging review, and launch-readiness review | Deferred outside Phase 28 | Phase 28 closeout |
 | Codebase maps | Formal refresh of stale `.planning/codebase/*` maps | Deferred until explicitly scoped | Phase 21 |
 
 ## Session Continuity
 
-Last session: 2026-07-08T02:06:43.420Z
-Stopped at: Completed 28-03-PLAN.md
-Resume file: .planning/phases/28-face-shape-slice-completion-and-documentation-closeout/28-04-PLAN.md
+Last session: 2026-07-08T10:40:00+08:00
+Stopped at: Completed Phase 28 execution
+Resume file: .planning/ROADMAP.md
 
 ## Operator Next Steps
 
-- Run `$gsd-execute-phase 28` for Face Shape Slice Completion and Documentation Closeout.
-- Preserve Phase 28 planning boundaries during execution: no Demo UI change, no public raw geometry API, no distinct `下颌线` parameter or algorithm, and no broader `脸型` branch/commercial/device/release-readiness claim.
+- Run the v1.5 milestone audit/closeout flow.
+- Preserve the completed Phase 28 boundaries: no Demo UI change, no public raw geometry API, no distinct `下颌线` parameter or algorithm, and no broader `脸型` branch, commercial, device, or launch-readiness claim.

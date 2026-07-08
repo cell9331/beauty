@@ -30,6 +30,28 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-08-gsd-execute-phase-28-face-shape-slice-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-08 |
+| Scope | Ran `$gsd-execute-phase 28` for Face Shape Slice Completion and Documentation Closeout. Completed per-tool face-shape renderer cases/helper evidence, focused safety/degradation/redaction tests, command-backed evidence capture, scoped ledger promotion, final verification, root docs, and planning ledgers. |
+| Requirements | FACE-01, FACE-02, FACE-03, FACE-04, FACE-05, FACE-06, DOC-01, DOC-02, DOC-03 |
+| Files | `BeautySDK/Sources/BeautyExampleRenderer/main.swift`, `BeautySDK/Tests/BeautyCoreTests/BeautyRendererOutputRegressionTests.swift`, `BeautySDK/Tests/BeautyEffectsTests/FaceShapeWarpProviderTests.swift`, `CombinedEffectSafetyTests.swift`, `GeometryConflictResolverTests.swift`, `BeautyEffectResolverTests.swift`, `MissingLandmarkDegradationTests.swift`, `.planning/phases/28-face-shape-slice-completion-and-documentation-closeout/check_face_shape_renderer_outputs.py`, `28-FACE-SHAPE-RENDERER-EVIDENCE.md`, `28-VERIFICATION.md`, `28-VALIDATION.md`, `28-01-SUMMARY.md`, `28-02-SUMMARY.md`, `28-03-SUMMARY.md`, blueprint docs, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `ARCHITECTURE.md`, `DESIGN.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `QUALITY_SCORE.md`, `PLANS.md` |
+| Verification | Focused SDK tests passed: `BeautyRendererOutputRegressionTests` 6 tests, `FaceShapeWarpProviderTests` 8 tests, `CombinedEffectSafetyTests` 5 tests, `GeometryConflictResolverTests` 7 tests, `BeautyEffectResolverTests` 10 tests, and `MissingLandmarkDegradationTests` 14 tests. Full `swift test --package-path BeautySDK` passed with 171 tests. `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed. `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out` wrote 102 ignored PNG outputs. `check_face_shape_renderer_outputs.py` passed with 102/102 outputs and 30/30 top-region comparisons. Representative `git check-ignore`, public/import boundary scans, hidden public-surface scans, evidence redaction scans, no-overclaim scans, ledger guards, Demo internal-import scan, GSD decision coverage, and scoped `git diff --check` passed. |
+| Build | SDK SwiftPM tests and `BeautyExampleRenderer` build/run passed. No Demo build/test was run because Phase 28 changed no Demo source/UI behavior; Demo boundary was covered by static import scans. |
+| Commit | Task commits include `4cb9eed`, `2b0bc95`, `c74970c`, `16a2822`, `eb2a419`, `a54d471`, `841ef5a`, `d4c6391`, `685b73e`, and `161370f`; final root/planning synchronization is committed with this entry. |
+
+Outcome:
+
+- FACE-01 through FACE-05 are complete through existing public parameters `faceSlim`, `faceSmall`, signed `chinLength`, `faceVShape`, and `jawSlim`.
+- FACE-06 is complete as a documented `jawSlim` alias for `下颌线`; no separate parameter, renderer case, Demo behavior, commercial gate, or algorithm split was added.
+- `SHAPE_FEATURE_LEDGER.md` marks exactly `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线` as implemented.
+- `FEATURE_MATRIX.md` keeps branch-level `脸型` partial; unscoped `脸型` rows and broader `美型 / 五官` branches remain future or partial according to their existing evidence.
+- Phase 28 records no Demo UI completion, device parity, commercial visual review, broad reference-app parity, new geometry group, launch-readiness, generated PNG baseline, public raw geometry API, or whole-branch `脸型` completion claim.
+
+Next step: run the v1.5 milestone audit/closeout flow.
+
 ### C-2026-07-08-gsd-plan-phase-28-face-shape-slice-closeout
 
 | Field | Value |

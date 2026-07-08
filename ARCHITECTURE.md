@@ -14,6 +14,7 @@
 - Phase 6 当前实现已让 `BeautyEffects` 承担效果解析、安全 cap、几何 provider、MVP 颜色/几何输出与降级 metadata；Demo 仍只通过 public `BeautySDK` facade 集成。
 - Phase 26 当前实现已让 public `BeautySDK` still-image facade 在几何参数需要时触发检测，并通过 package-only 检测观察值把一个 selected face 路由到 `BeautyEffects` 内部 `FaceGeometry` planning；public API 仍只暴露 redacted `BeautyDetectionSummary`、warnings 和 aggregate metrics。
 - Phase 27 当前实现已让 public still-image facade 通过内部 selected-face route 产生 same-dimension geometry saved-output evidence；`BeautyExampleRenderer` 仍只 import `BeautySDK`，generated PNGs 保持在 ignored `example-images/out/`。
+- Phase 28 当前实现已为 scoped `脸型` existing-parameter slice 提供 SDK-only saved-output evidence；`BeautyExampleRenderer` 仍只通过 public `BeautySDK` facade 生成 ignored local outputs，未新增 Demo UI、public raw geometry surface 或新的 geometry group。
 - `docs/` 下存在历史规划资料，迁移后的根级文档优先级更高。
 
 ## 2. 顶层不变量
@@ -181,6 +182,7 @@ BeautyDemo
 - `BeautyEffects` 可以使用内部 `FaceGeometry`/`WarpControlPoint` 适配层，但不得把控制点、bounding box、landmark 或 provider 类型暴露给 `BeautySDK` public facade 或 Demo。
 - Phase 26 的 `BeautyFaceGeometryAdapter` 只把 selected package observation 转成内部 `FaceGeometry` planning input；它不是 public geometry export，也不是 renderer saved-output evidence。
 - Phase 27 的 still-image geometry render output 只通过内部 `BeautyColorEffectPipeline` selected-face overload 和 `BeautyGeometryEffectPipeline` CIImage proxy 证明 foundation evidence；它不是新的 public raw geometry surface，也不是 Demo UI behavior。
+- Phase 28 的 per-tool face-shape evidence 只覆盖 existing public parameters `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, and `chinLength`；`下颌线` 仍是 `jawSlim` alias，不新增单独 provider 或 public parameter。
 
 ### 6.5 BeautyResources
 

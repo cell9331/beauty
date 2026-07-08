@@ -406,6 +406,19 @@ Manual or future checks still required before stronger product claims:
 - Phase 28 owns per-tool `脸型` completion and `SHAPE_FEATURE_LEDGER.md` status promotion.
 - Broader geometry-domain output, real-device camera/Vision parity, long-run preview evidence, and visual review remain separate scoped work.
 
+### 7.13 Phase 28 Face-Shape Slice Acceptance
+
+Agent-verifiable checks recorded 2026-07-08:
+
+- `BeautyExampleRenderer` builds and runs through the public `BeautySDK` facade with 6 fixtures and 17 cases, including `faceSlim_0p35`, `faceSmall_0p35`, `chinLength_plus0p30`, `chinLength_minus0p30`, `faceVShape_0p35`, and `jawSlim_0p35`.
+- The Phase 28 helper verifies 102/102 ignored outputs, same dimensions, 30/30 portrait face-shape-vs-baseline top-region comparisons, and no-face face-shape output presence.
+- Focused renderer, provider, combined-safety, and conflict-resolver tests pass with cap, no-face, signed-chin, weakening, redaction, and `jawSlim` alias coverage.
+- `SHAPE_FEATURE_LEDGER.md` marks exactly `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线` as implemented; `FEATURE_MATRIX.md` keeps branch-level `脸型` partial.
+
+Manual or future checks still required before stronger product claims:
+
+- Unscoped `脸型` rows, broader `美型 / 五官` branches, Demo UI changes, physical-device parity, screenshot reruns, commercial visual review, optimized profiling, packaging review, and launch-readiness review remain separate scoped work.
+
 ## 8. Preset Product Contract
 
 MVP built-in presets:
@@ -484,3 +497,4 @@ Before merging product-facing changes, verify:
 | 2026-05-25 | Later domains stay visible but not blocking: makeup, segmentation, body, video export. | Prevents scope creep while preserving architecture direction. |
 | 2026-07-06 | Phase 26 proves public still-image geometry intent without claiming visible geometry output. | Host apps can exercise detection-backed planning through `BeautyEngine.processResult(...)`, while saved-output quality and `脸型` completion remain later evidence gates. |
 | 2026-07-07 | Phase 27 proves SDK-only saved-output geometry foundation without promoting per-tool face-shape status. | The renderer/helper path now verifies same-dimension geometry outputs and degradation evidence, while Phase 28 remains the owner for `脸型` tool completion. |
+| 2026-07-08 | Phase 28 promotes only the scoped existing-parameter `脸型` rows after per-tool saved-output evidence passes. | `下颌线` stays a `jawSlim` alias, branch-level `脸型` remains partial, and broader UI/device/commercial claims stay out of scope. |
