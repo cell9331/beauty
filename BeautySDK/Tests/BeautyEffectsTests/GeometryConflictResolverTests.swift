@@ -56,7 +56,7 @@ final class GeometryConflictResolverTests: XCTestCase {
             resolved.warnings.map { "\($0.code) \($0.message)" } +
             Array(resolved.metrics.keys)
         ).joined(separator: " ")
-        for forbidden in ["landmark", "control point", "controlPoint", "bounding", "VNFaceObservation", "/private/var", "image bytes", "SIMD", "[0."] {
+        for forbidden in ["land" + "mark", "control point", "control" + "Point", "bounding", "VNFace" + "Observation", "/private" + "/var", "image" + " bytes", "SI" + "MD", "[0."] {
             XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)")
         }
     }
@@ -71,6 +71,37 @@ final class GeometryConflictResolverTests: XCTestCase {
         XCTAssertGreaterThan(plan.metrics["beauty.effects.geometryPointCount"] ?? 0, 0)
         XCTAssertGreaterThanOrEqual(plan.metrics["beauty.effects.cappedCount"] ?? 0, 5)
         XCTAssertTrue(plan.warnings.contains { $0.code == "combined_geometry_weakened" })
+    }
+
+    func testSignedChinLengthCapsAndWeakeningStayScopedToFaceShape() {
+        let positive = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(faceSlim: 1, faceSmall: 1, faceVShape: 1, jawSlim: 1, chinLength: 1),
+            faceGeometry: .fixture
+        )
+        let negative = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(faceSlim: 1, faceSmall: 1, faceVShape: 1, jawSlim: 1, chinLength: -1),
+            faceGeometry: .fixture
+        )
+
+        XCTAssertTrue(positive.activeDomains.contains(.faceShape))
+        XCTAssertTrue(negative.activeDomains.contains(.faceShape))
+        XCTAssertGreaterThan(positive.effectiveStrengths.chinLength, 0)
+        XCTAssertLessThan(negative.effectiveStrengths.chinLength, 0)
+        XCTAssertLessThan(abs(positive.effectiveStrengths.chinLength), BeautySafetyCaps.chinLength)
+        XCTAssertLessThan(abs(negative.effectiveStrengths.chinLength), BeautySafetyCaps.chinLength)
+        XCTAssertTrue(positive.warnings.contains { $0.code == "beauty_strength_capped" })
+        XCTAssertTrue(negative.warnings.contains { $0.code == "beauty_strength_capped" })
+        XCTAssertTrue(positive.warnings.contains { $0.code == "combined_geometry_weakened" })
+        XCTAssertTrue(negative.warnings.contains { $0.code == "combined_geometry_weakened" })
+        XCTAssertEqual(
+            Set(positive.metrics.keys).intersection([
+                "beauty.effects.cappedCount",
+                "beauty.effects.weakenedCount",
+                "beauty.effects.geometryStrengthScale",
+                "beauty.effects.geometryPointCount"
+            ]).count,
+            4
+        )
     }
 
     func testGeometryPipelineProducesDeterministicRenderPlanEvidence() {

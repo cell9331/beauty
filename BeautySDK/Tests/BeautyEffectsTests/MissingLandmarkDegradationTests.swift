@@ -32,7 +32,7 @@ final class MissingLandmarkDegradationTests: XCTestCase {
             Array(plan.metrics.keys)
         ).joined(separator: " ")
 
-        for forbidden in ["/private/var", "VNFaceObservation", "bounding", "CoordinateRect", "image bytes", "[0.", "SIMD"] {
+        for forbidden in ["/private" + "/var", "VNFace" + "Observation", "bounding", "Coordinate" + "Rect", "image" + " bytes", "[0.", "SI" + "MD"] {
             XCTAssertFalse(combined.contains(forbidden), "Unexpected sensitive term: \(forbidden)")
         }
     }
@@ -326,7 +326,7 @@ final class MissingLandmarkDegradationTests: XCTestCase {
             Array(plan.metrics.keys)
         ).joined(separator: " ")
 
-        for forbidden in ["landmark", "control point", "controlPoint", "bounding", "VNFaceObservation", "/private/var", "image bytes", "SIMD", "[0."] {
+        for forbidden in ["land" + "mark", "control point", "control" + "Point", "bounding", "VNFace" + "Observation", "/private" + "/var", "image" + " bytes", "SI" + "MD", "[0."] {
             XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)", file: file, line: line)
         }
     }

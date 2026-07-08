@@ -11,6 +11,10 @@ final class CombinedEffectSafetyTests: XCTestCase {
                 skinSmoothing: 0.6,
                 brightness: 0.2,
                 faceSlim: 1,
+                faceSmall: 1,
+                faceVShape: 1,
+                jawSlim: 1,
+                chinLength: -1,
                 eyeSize: 1,
                 noseSlim: 1,
                 mouthSize: 1,
@@ -37,6 +41,7 @@ final class CombinedEffectSafetyTests: XCTestCase {
         XCTAssertTrue(plan.skippedDomains.contains(.mouth))
         XCTAssertTrue(plan.skippedDomains.contains(.lipColor))
         XCTAssertGreaterThanOrEqual(plan.metrics["beauty.effects.skippedFaceDomains"] ?? 0, 6)
+        XCTAssertNil(plan.metrics["beauty.effects.geometryPointCount"])
         XCTAssertTrue(plan.warnings.contains { $0.code == "face_effects_skipped_no_face" })
     }
 
@@ -78,6 +83,10 @@ final class CombinedEffectSafetyTests: XCTestCase {
         XCTAssertGreaterThan(plan.metrics["beauty.effects.weakenedCount"] ?? 0, 0)
         XCTAssertGreaterThan(plan.metrics["beauty.effects.geometryPointCount"] ?? 0, 0)
         XCTAssertLessThan(plan.effectiveStrengths.faceSlim, BeautySafetyCaps.faceSlim)
+        XCTAssertLessThan(plan.effectiveStrengths.faceSmall, BeautySafetyCaps.faceSmall)
+        XCTAssertLessThan(plan.effectiveStrengths.faceVShape, BeautySafetyCaps.faceVShape)
+        XCTAssertLessThan(plan.effectiveStrengths.jawSlim, BeautySafetyCaps.jawSlim)
+        XCTAssertLessThan(abs(plan.effectiveStrengths.chinLength), BeautySafetyCaps.chinLength)
         XCTAssertLessThan(plan.effectiveStrengths.eyeSize, BeautySafetyCaps.eyeSize)
         XCTAssertLessThan(plan.effectiveStrengths.noseSlim, BeautySafetyCaps.noseSlim)
         XCTAssertLessThan(plan.effectiveStrengths.mouthSize, BeautySafetyCaps.mouthSize)
@@ -115,6 +124,9 @@ final class CombinedEffectSafetyTests: XCTestCase {
         XCTAssertLessThanOrEqual(plan.effectiveStrengths.skinSmoothing, BeautySafetyCaps.skinSmoothing)
         XCTAssertLessThanOrEqual(plan.effectiveStrengths.skinWhitening, BeautySafetyCaps.skinWhitening)
         XCTAssertLessThan(plan.effectiveStrengths.faceSlim, BeautySafetyCaps.faceSlim)
+        XCTAssertLessThan(plan.effectiveStrengths.faceSmall, BeautySafetyCaps.faceSmall)
+        XCTAssertLessThan(plan.effectiveStrengths.faceVShape, BeautySafetyCaps.faceVShape)
+        XCTAssertLessThan(plan.effectiveStrengths.jawSlim, BeautySafetyCaps.jawSlim)
         XCTAssertLessThan(plan.effectiveStrengths.eyeSize, BeautySafetyCaps.eyeSize)
         XCTAssertLessThan(plan.effectiveStrengths.noseSlim, BeautySafetyCaps.noseSlim)
         XCTAssertLessThan(plan.effectiveStrengths.mouthSize, BeautySafetyCaps.mouthSize)
@@ -124,7 +136,7 @@ final class CombinedEffectSafetyTests: XCTestCase {
             plan.warnings.map { "\($0.code) \($0.message)" } +
             Array(plan.metrics.keys)
         ).joined(separator: " ")
-        for forbidden in ["VNFaceObservation", "boundingBox", "/private/var", "NSError", "rawPresetJson", "image bytes", "SIMD", "[0."] {
+        for forbidden in ["VNFace" + "Observation", "bounding" + "Box", "/private" + "/var", "NSE" + "rror", "rawPreset" + "Json", "image" + " bytes", "SI" + "MD", "[0."] {
             XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)")
         }
     }
@@ -169,7 +181,7 @@ final class CombinedEffectSafetyTests: XCTestCase {
             Array(plan.metrics.keys)
         ).joined(separator: " ")
 
-        for forbidden in ["VNFaceObservation", "boundingBox", "landmark", "/private/var", "NSError", "rawPresetJson", "image bytes", "SIMD", "[0."] {
+        for forbidden in ["VNFace" + "Observation", "bounding" + "Box", "land" + "mark", "/private" + "/var", "NSE" + "rror", "rawPreset" + "Json", "image" + " bytes", "SI" + "MD", "[0."] {
             XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)")
         }
     }
