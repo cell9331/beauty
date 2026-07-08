@@ -30,6 +30,26 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-08-gsd-plan-phase-28-face-shape-slice-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-08 |
+| Scope | Created Phase 28 executable plans for Face Shape Slice Completion and Documentation Closeout from Phase 28 context, research, validation strategy, and pattern map artifacts. |
+| Requirements | FACE-01, FACE-02, FACE-03, FACE-04, FACE-05, FACE-06, DOC-01, DOC-02, DOC-03 |
+| Files | `.planning/phases/28-face-shape-slice-completion-and-documentation-closeout/28-RESEARCH.md`, `28-VALIDATION.md`, `28-PATTERNS.md`, `28-01-PLAN.md`, `28-02-PLAN.md`, `28-03-PLAN.md`, `28-04-PLAN.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.plan-phase 28` reported Phase 28 pending with `has_context: true`, `has_research: false`, `has_plans: false`, `phase_req_ids: FACE-01, FACE-02, FACE-03, FACE-04, FACE-05, FACE-06, DOC-01, DOC-02, DOC-03`, `research_enabled: true`, `plan_checker_enabled: true`, `nyquist_validation_enabled: true`, and `commit_docs: true`. User selected research-first. Researcher created `28-RESEARCH.md` and commit `f3dee08`. Validation strategy commit `6df5e40` created `28-VALIDATION.md`; pattern map commit `0f3b640` created `28-PATTERNS.md`; planner created four plan files in commit `80f0705`. Checker pass 1 found unresolved research questions, a false-positive bare `pro` scan, and a stale validation map; commit `a628981` fixed them. Checker pass 2 found shell command-substitution risk in `28-04`; commit `0e3e513` fixed it. Checker pass 3 found missing watermark-only false-positive mitigation in `28-02`/`28-04`; commit `9d1ec34` fixed it. Final plan-checker returned `VERIFICATION PASSED` for 4 plans. `phase-plan-index 28` reports waves 1-3 with `28-01` and `28-02` parallel in Wave 1, `28-03 -> 28-01/28-02`, and `28-04 -> 28-03`. `check.decision-coverage-plan` passed with `15/15` decisions covered. Requirement scan confirmed all nine Phase 28 FACE/DOC IDs are covered. Post-planning gap analysis showed all Phase 28 FACE/DOC IDs and D-01 through D-15 covered; uncovered GEO-01 through GEO-04 rows belong to prior v1.5 phases, not Phase 28 scope. Scoped `git diff --check` passed for Phase 28 planning artifacts, `.planning/STATE.md`, and this ledger. |
+| Build | Not run; this was a GSD planning/documentation workflow with no Swift source changes. Phase 28 execution plans require focused SDK tests, full `swift test --package-path BeautySDK`, `BeautyExampleRenderer` build/run, Phase 28 helper checks, ignored-output checks, raw-leak scans, no-overclaim scans, ledger guards, and GSD decision coverage. |
+| Commit | Planning commits: `f3dee08`, `6df5e40`, `0f3b640`, `80f0705`, `a628981`, `0e3e513`, `9d1ec34`; final state/ledger commit records this entry. |
+
+Outcome:
+
+- `28-01-PLAN.md` adds per-tool public-facade renderer cases for `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, positive `chinLength`, and negative `chinLength`, plus a Phase 28 top-region helper.
+- `28-02-PLAN.md` closes focused safety/degradation/redaction evidence for caps, no-face/missing contour, signed `chinLength`, combined weakening, and raw-geometry leak prevention.
+- `28-03-PLAN.md` records command-backed renderer/helper/test evidence before any status promotion.
+- `28-04-PLAN.md` promotes only the six scoped `脸型` rows after evidence passes, keeps branch-level `脸型` partial, and synchronizes blueprint/root/planning ledgers without Demo UI, public API, parity, commercial quality, device parity, or release-readiness claims.
+- Phase 28 is ready for `$gsd-execute-phase 28`.
+
 ### C-2026-07-07-gsd-discuss-phase-28-face-shape-slice-closeout
 
 | Field | Value |
