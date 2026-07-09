@@ -33,7 +33,7 @@ For completed prior scope, see:
 
 **Requirements:** EYE-01, EYE-02, EYE-03
 
-**Plans:** 2/4 plans executed
+**Plans:** 3/4 plans executed
 
 **Success criteria:**
 
@@ -51,7 +51,7 @@ Plans:
 
 - [x] `29-01-PLAN.md` — Add locked eye renderer cases, inventory tests, and the Phase 29 output helper.
 - [x] `29-02-PLAN.md` — Add ignored `eyes/` gallery support and update example-image validation docs.
-- [ ] `29-03-PLAN.md` — Record command-backed eye renderer evidence, verification, and validation.
+- [x] `29-03-PLAN.md` — Record command-backed eye renderer evidence, verification, and validation.
 - [ ] `29-04-PLAN.md` — Synchronize Phase 29 planning ledgers and quality evidence without eye status promotion.
 
 ### Phase 30: Eye Safety, Ledger, and Closeout

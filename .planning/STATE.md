@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.6
 milestone_name: Broader 美型 / 五官 SDK Slice - Eyes
 status: executing
-stopped_at: Completed 29-02-PLAN.md
-last_updated: "2026-07-09T06:56:15.634Z"
-last_activity: 2026-07-09 — Phase 29 Plan 29-02 completed; 2/4 execution plans complete
+stopped_at: Completed 29-03-PLAN.md
+last_updated: "2026-07-09T07:08:14.038Z"
+last_activity: 2026-07-09 — Phase 29 Plan 29-03 completed; 3/4 execution plans complete
 progress:
   total_phases: 2
   completed_phases: 0
   total_plans: 4
-  completed_plans: 2
-  percent: 50
+  completed_plans: 3
+  percent: 75
 ---
 
 # Project State
@@ -26,9 +26,9 @@ See: `.planning/PROJECT.md` (updated 2026-07-09)
 ## Current Position
 
 Phase: 29 (Eye Renderer Output Evidence) — EXECUTING
-Plan: 3 of 4
-Status: Executing Phase 29 plan 3 of 4
-Last activity: 2026-07-09 — Phase 29 Plan 29-02 completed; 2/4 execution plans complete
+Plan: 4 of 4
+Status: Executing Phase 29 plan 4 of 4
+Last activity: 2026-07-09 — Phase 29 Plan 29-03 completed; 3/4 execution plans complete
 
 ## Performance Metrics
 
@@ -101,6 +101,7 @@ Last activity: 2026-07-09 — Phase 29 Plan 29-02 completed; 2/4 execution plans
 | Phase 28 P03 | 6 min | 2 tasks | 2 files |
 | Phase 29 P01 | 8 min | 2 tasks | 3 files |
 | Phase 29 P02 | 5 min | 2 tasks | 3 files |
+| Phase 29 P03 | 15 min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -139,12 +140,13 @@ Recent milestone-level outcomes:
 - Phase 26 completed the public still-image geometry facade/routing foundation: `BeautyEngine.processResult(image:metadata:parameters:)` now runs geometry-triggered detection only when needed, routes one package-only selected face into internal geometry planning, preserves no-geometry and disabled-tracking compatibility, and records only redacted summaries, warnings, and aggregate metrics. `26-VERIFICATION.md` passed focused facade/detector/effects tests, full SDK SwiftPM tests with 159 tests, raw-geometry/redaction scans, renderer-case exclusion, and `SHAPE_FEATURE_LEDGER.md` implemented-status guard.
 - Phase 27 completed saved-output geometry foundation evidence: `BeautyExampleRenderer` now includes `geometryBaseline_noop` and `faceShapeCombo_0p35`, writes 66 ignored PNG outputs across 6 fixtures and 11 cases, and `check_geometry_renderer_outputs.py` verifies 66/66 outputs, same dimensions, 5/5 portrait geometry-vs-baseline top-region comparisons, and no-face output presence. `27-VERIFICATION.md` records focused degradation tests, full SDK SwiftPM tests with 167 tests, redaction scans, renderer scope scans, Demo import scans, and the guard that `SHAPE_FEATURE_LEDGER.md` face-shape rows remain unpromoted.
 - Phase 28 completed the scoped `脸型` existing-parameter slice: renderer cases `faceSlim_0p35`, `faceSmall_0p35`, `chinLength_plus0p30`, `chinLength_minus0p30`, `faceVShape_0p35`, and `jawSlim_0p35` produce public-facade saved-output evidence; `check_face_shape_renderer_outputs.py` verifies 102/102 outputs and 30/30 top-region comparisons; focused safety/degradation/redaction tests and scans pass; `SHAPE_FEATURE_LEDGER.md` promotes exactly `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线` while branch-level `脸型` remains partial.
+- Phase 29 Plan 29-03 completed public-facade renderer evidence for existing eye parameters: renderer and gallery commands generated 161 ignored PNG outputs, the Phase 29 helper verified 161/161 outputs and 36/36 top-region eye comparisons, focused/full SDK tests passed, and `眼睛` remains partial pending Phase 30 safety, boundary, and ledger evidence.
 - `.planning/codebase/*` maps are stale background for v1.4 and should not override current source, root docs, or `.planning` ledgers.
 
 ### Pending Todos
 
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
-- Continue Phase 29 with plan `29-03-PLAN.md`.
+- Continue Phase 29 with plan `29-04-PLAN.md`.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, screenshot reruns, packaging review, broader `美型 / 五官` slices, and automated visual diffs.
 
 ### Blockers/Concerns
@@ -172,10 +174,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-09T06:56:15.628Z
-Stopped at: Completed 29-02-PLAN.md
+Last session: 2026-07-09T07:08:14.031Z
+Stopped at: Completed 29-03-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
 
-- Continue Phase 29 with plan `29-03-PLAN.md`.
+- Continue Phase 29 with plan `29-04-PLAN.md`.
