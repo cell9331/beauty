@@ -28,12 +28,13 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
     ]
 
     private static let fixtureNames = [
-        "e1.png",
-        "e2.png",
-        "e3.png",
-        "e4.png",
-        "e5.png",
-        "no-face-gradient.png"
+        "portraits/e1.png",
+        "portraits/e2.png",
+        "portraits/e3.png",
+        "portraits/e4.png",
+        "portraits/e5.png",
+        "portraits/e6.jpg",
+        "negatives/no-face-gradient.png"
     ]
 
     func testRendererCaseInventoryMatchesCurrentPublicFacadeMatrix() throws {
@@ -150,7 +151,7 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
     func testNoFaceFixtureProducesNoFaceSummaryForFaceShapeCombo() throws {
         let engine = try BeautyEngine(configuration: .default)
         let inputDirectory = try repositoryRootURL().appendingPathComponent("example-images/input", isDirectory: true)
-        let fixtureName = "no-face-gradient.png"
+        let fixtureName = "negatives/no-face-gradient.png"
         let fixtureURL = inputDirectory.appendingPathComponent(fixtureName)
         let input = try fixtureImage(at: fixtureURL, named: fixtureName)
 

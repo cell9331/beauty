@@ -38,7 +38,7 @@ enum ExampleRendererError: Error, CustomStringConvertible {
 
 let arguments = CommandLine.arguments
 let inputDirectory = value(after: "--input", in: arguments) ?? "example-images/input"
-let outputDirectory = value(after: "--output", in: arguments) ?? "example-images/out"
+let outputDirectory = value(after: "--output", in: arguments) ?? "example-images/output"
 let selectedCase = value(after: "--case", in: arguments)
 
 let cases = [
@@ -154,10 +154,7 @@ do {
         throw ExampleRendererError.unknownCase(selectedCase, cases.map(\.id))
     }
 
-    let imageURLs = try fileManager
-        .contentsOfDirectory(at: inputURL, includingPropertiesForKeys: nil)
-        .filter { ["png", "jpg", "jpeg"].contains($0.pathExtension.lowercased()) }
-        .sorted { $0.lastPathComponent < $1.lastPathComponent }
+    let imageURLs = fixtureImageURLs(in: inputURL, fileManager: fileManager)
     guard !imageURLs.isEmpty else {
         throw ExampleRendererError.missingInputImages(inputURL.path)
     }
@@ -207,6 +204,42 @@ func value(after flag: String, in arguments: [String]) -> String? {
         return nil
     }
     return arguments[index + 1]
+}
+
+func fixtureImageURLs(in directory: URL, fileManager: FileManager) -> [URL] {
+    guard let enumerator = fileManager.enumerator(
+        at: directory,
+        includingPropertiesForKeys: [.isRegularFileKey],
+        options: [.skipsHiddenFiles]
+    ) else {
+        return []
+    }
+
+    var urls: [URL] = []
+    for case let url as URL in enumerator {
+        guard ["png", "jpg", "jpeg"].contains(url.pathExtension.lowercased()) else {
+            continue
+        }
+        let values = try? url.resourceValues(forKeys: [.isRegularFileKey])
+        guard values?.isRegularFile == true else {
+            continue
+        }
+        urls.append(url)
+    }
+
+    return urls.sorted {
+        relativePath($0, from: directory) < relativePath($1, from: directory)
+    }
+}
+
+func relativePath(_ url: URL, from directory: URL) -> String {
+    let directoryPath = directory.standardizedFileURL.path
+    let filePath = url.standardizedFileURL.path
+    let prefix = directoryPath.hasSuffix("/") ? directoryPath : directoryPath + "/"
+    guard filePath.hasPrefix(prefix) else {
+        return url.lastPathComponent
+    }
+    return String(filePath.dropFirst(prefix.count))
 }
 
 func watermarkText(for renderCase: RenderCase, result: BeautyResult<CIImage>) -> String {

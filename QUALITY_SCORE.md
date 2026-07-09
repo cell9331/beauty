@@ -109,7 +109,7 @@ Recorded 2026-06-30 in `.planning/phases/21-baseline-audit-and-quality-ledger-re
 - `swift --version`, `xcodebuild -version`, `swift test --package-path BeautySDK --list-tests`, `xcodebuild -list -project BeautyDemo/BeautyDemo.xcodeproj`, and `xcrun simctl list devices available` established the current command inventory. No CoreSimulator version mismatch appeared in this run.
 - `swift test --package-path BeautySDK` passed with 141 XCTest cases.
 - `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed.
-- `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out` wrote 45 ignored PNG outputs across 5 fixtures and 9 current skin/color/filter cases.
+- `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/output` wrote 45 ignored PNG outputs across 5 fixtures and 9 current skin/color/filter cases.
 - Output checks found no zero-byte renderer PNGs and representative outputs matched input dimensions.
 - `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' build` is blocked by a missing local Metal Toolchain while compiling `BeautySDK/Sources/BeautyRender/Shaders/Warp.metal`; Demo tests are therefore blocked until the same prerequisite is repaired.
 - Current import, SDK UI-dependency, active Demo local-first, sensitive raw/geometry, public `BeautyParameters`, renderer geometry-case, privacy manifest, and root placeholder scans passed or were classified with exact limitations.
@@ -148,8 +148,8 @@ Recorded 2026-07-02 in `.planning/phases/24-renderer-output-regression-hardening
 - `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyRendererOutputRegressionTests` passed with 2 tests and 0 failures.
 - `swift test --package-path BeautySDK` passed with 150 tests and 0 failures.
 - `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed.
-- `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out` regenerated 45 ignored local PNG outputs for 5 fixtures times 9 current renderer cases.
-- `python3 .planning/phases/24-renderer-output-regression-hardening/check_renderer_outputs.py --input example-images/input --output example-images/out` passed for all expected outputs, checking existence, non-empty files, same dimensions, and input/output byte difference.
+- `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/output` regenerated 45 ignored local PNG outputs for 5 fixtures times 9 current renderer cases.
+- `python3 .planning/phases/24-renderer-output-regression-hardening/check_renderer_outputs.py --input example-images/input --output example-images/output` passed for all expected outputs, checking existence, non-empty files, same dimensions, and input/output byte difference.
 - Public facade import, renderer geometry-case exclusion, geometry status, no-overclaim, decision-coverage, and scoped diff checks passed.
 - Geometry saved-output, reference-app parity, broad device evidence, and market visual-quality evidence remain outside Phase 24.
 
@@ -187,8 +187,8 @@ Recorded 2026-07-07 in `.planning/phases/27-geometry-render-output-and-verificat
 - Focused missing-landmark, no-face/stale/reused, combined-strength, and face-shape conflict-cap tests each passed with 0 failures.
 - `swift test --package-path BeautySDK` passed with 167 tests and 0 failures.
 - `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed.
-- `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out` wrote 66 ignored PNG outputs across 6 fixtures and 11 cases.
-- `python3 .planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py --input example-images/input --output example-images/out` passed with 66/66 outputs, same-dimension buckets, 5/5 portrait geometry-vs-baseline top-region comparisons, and no-face output presence.
+- `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/output` wrote 77 ignored PNG outputs across 7 fixtures and 11 cases after `e6.jpg` was added.
+- `python3 .planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py --input example-images/input --output example-images/output` passed with 77/77 outputs, same-dimension buckets, 6/6 portrait geometry-vs-baseline top-region comparisons, and no-face output presence.
 - Public/SPI raw geometry export scans, active-source redaction scans, renderer public-import scans, renderer scope scans, Demo internal-import scans, overclaim scans, evidence raw-leak scans, and `SHAPE_FEATURE_LEDGER.md` implemented-status guard scans passed.
 - Phase 27 does not claim Demo UI behavior, broad geometry-domain saved-output completion, generated PNG baselines, public raw geometry APIs, or face-shape implementation status.
 
@@ -203,8 +203,12 @@ Recorded 2026-07-08 in `.planning/phases/28-face-shape-slice-completion-and-docu
 - `swift test --package-path BeautySDK --filter BeautyEffectsTests.GeometryConflictResolverTests` passed with 7 tests and 0 failures.
 - `swift test --package-path BeautySDK` passed with 172 tests and 0 failures after the spatial-warp regression was added.
 - `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed.
-- `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/out` wrote 102 ignored PNG outputs across 6 fixtures and 17 cases.
-- `python3 .planning/phases/28-face-shape-slice-completion-and-documentation-closeout/check_face_shape_renderer_outputs.py --input example-images/input --output example-images/out` passed with 102/102 outputs, same-dimension buckets, 30/30 portrait face-shape-vs-baseline top-region comparisons, and no-face face-shape output presence.
+- `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/output` wrote 119 ignored PNG outputs across 7 fixtures and 17 cases after `e6.jpg` was added.
+- `python3 .planning/phases/28-face-shape-slice-completion-and-documentation-closeout/check_face_shape_renderer_outputs.py --input example-images/input --output example-images/output` passed with 119/119 outputs, same-dimension buckets, 36/36 portrait face-shape-vs-baseline top-region comparisons, and no-face face-shape output presence.
+- `example-images/input/` source fixtures are now committed under `portraits/` and `negatives/`; `BeautyExampleRenderer` recursively reads nested input fixtures while keeping generated output filenames flat under ignored `example-images/output/`.
+- `example-images/input/` source fixtures were compressed or accepted on 2026-07-09: PNG portrait fixtures now use a 900 px maximum edge, `e6.jpg` is a 1728x2304 JPEG source fixture at 591,802 bytes, the no-face negative fixture is 64 px, and every committed source fixture is below 1,000,000 bytes.
+- `python3 example-images/generate_gallery.py --input example-images/input --output example-images/output --gallery example-images/gallery` wrote 119 ignored gallery PNGs grouped by feature family and case ID.
+- `git check-ignore` confirmed representative `example-images/output/*.png` and `example-images/gallery/**/*.png` artifacts are ignored.
 - Public/import boundary scans, hidden public-surface scans, evidence redaction scans, ignored-output checks, no-overclaim scans, ledger guards, Demo internal-import scans, and GSD decision coverage passed.
 - Phase 28 promotes only `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线`; branch-level `脸型` remains partial.
 

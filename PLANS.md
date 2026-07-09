@@ -30,6 +30,70 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-09-example-input-e6-portrait-fixture
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-09 |
+| Scope | Added user-supplied `e6.jpg` as a sixth committed portrait fixture while preserving the nested example-image contract and generated-output ignore policy. |
+| Files | `example-images/input/portraits/e6.jpg`, `.planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py`, `.planning/phases/28-face-shape-slice-completion-and-documentation-closeout/check_face_shape_renderer_outputs.py`, `BeautySDK/Tests/BeautyCoreTests/BeautyRendererOutputRegressionTests.swift`, `BeautySDK/Tests/BeautyCoreTests/BeautyEngineGeometryFacadeTests.swift`, `BeautySDK/Tests/BeautyDetectionTests/VisionFaceDetectorTests.swift`, `example-images/README.md`, `QUALITY_SCORE.md`, `PLANS.md` |
+| Verification | `e6.jpg` is 1728x2304 and 591,802 bytes. `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/output` regenerated 119 ignored flat outputs. `python3 .planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py --input example-images/input --output example-images/output` passed with 77/77 outputs and 6/6 portrait geometry-vs-baseline top-region comparisons. `python3 .planning/phases/28-face-shape-slice-completion-and-documentation-closeout/check_face_shape_renderer_outputs.py --input example-images/input --output example-images/output` passed with 119/119 outputs and 36/36 portrait face-shape-vs-baseline top-region comparisons. `python3 example-images/generate_gallery.py --input example-images/input --output example-images/output --gallery example-images/gallery` wrote 119 ignored gallery PNGs. Focused fixture-path tests passed: `BeautyCoreTests.BeautyRendererOutputRegressionTests` 6 tests, `BeautyCoreTests.BeautyEngineGeometryFacadeTests` 8 tests, and `BeautyDetectionTests.VisionFaceDetectorTests` 8 tests. |
+| Build | Focused SDK tests, renderer run, Phase 27 helper, Phase 28 helper, and gallery generation passed. Full SDK suite was not rerun because this only added one source fixture and synchronized fixture path inventories/docs. |
+
+Outcome:
+
+- `example-images/input/portraits/` now has six portrait fixtures: `e1.png` through `e5.png` plus `e6.jpg`.
+- The Python helpers support PNG and JPEG input fixture dimensions while still requiring generated outputs to be PNG.
+- Generated output and gallery artifacts remain ignored.
+
+### C-2026-07-09-example-input-fixture-compression
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-09 |
+| Scope | Reduced committed `example-images/input` source fixture dimensions and file sizes so every original input image is below 1 MB while preserving renderer/test usefulness. |
+| Files | `example-images/input/portraits/e1.png`, `example-images/input/portraits/e2.png`, `example-images/input/portraits/e3.png`, `example-images/input/portraits/e4.png`, `example-images/input/portraits/e5.png`, `example-images/input/negatives/no-face-gradient.png`, `example-images/README.md`, `QUALITY_SCORE.md`, `PLANS.md` |
+| Verification | Size/dimension inspection confirmed `e1.png` is 675x900 and 929,129 bytes; `e2.png`, `e3.png`, `e4.png`, and `e5.png` are 506x900 and 650,316/680,540/731,951/717,292 bytes; `no-face-gradient.png` is 64x64 and 381 bytes. `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/output` regenerated 102 ignored flat outputs from compressed inputs. `python3 example-images/generate_gallery.py --input example-images/input --output example-images/output --gallery example-images/gallery` wrote 102 ignored gallery PNGs. Focused fixture-path tests passed: `BeautyCoreTests.BeautyRendererOutputRegressionTests` 6 tests, `BeautyCoreTests.BeautyEngineGeometryFacadeTests` 8 tests, and `BeautyDetectionTests.VisionFaceDetectorTests` 8 tests. Phase 27 helper passed with 66/66 outputs and 5/5 portrait geometry-vs-baseline top-region comparisons. Phase 28 helper passed with 102/102 outputs and 30/30 portrait face-shape-vs-baseline top-region comparisons. `find` counted 102 output PNGs and 102 gallery PNGs. `git check-ignore` confirmed representative output and gallery PNGs are ignored. |
+| Build | Focused SDK tests and renderer run passed. Full SDK suite was not rerun because this changed only committed example image fixtures, ignored regenerated artifacts, and docs. |
+
+Outcome:
+
+- Portrait source fixtures now use a 900 px maximum edge.
+- The no-face negative fixture is now a 64x64 generated gradient.
+- Every committed input PNG is under 1 MB.
+
+### C-2026-07-08-example-images-structured-layout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-08 |
+| Scope | Finished the example-image directory design with committed nested input fixtures, ignored flat generated output, ignored generated gallery view, and synchronized renderer/test/helper/docs paths. |
+| Files | `example-images/input/`, `example-images/README.md`, `example-images/generate_gallery.py`, `BeautySDK/Sources/BeautyExampleRenderer/main.swift`, `BeautySDK/Tests/BeautyCoreTests/BeautyRendererOutputRegressionTests.swift`, `BeautySDK/Tests/BeautyCoreTests/BeautyEngineGeometryFacadeTests.swift`, `BeautySDK/Tests/BeautyDetectionTests/VisionFaceDetectorTests.swift`, `.planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py`, `.planning/phases/28-face-shape-slice-completion-and-documentation-closeout/check_face_shape_renderer_outputs.py`, `.gitignore`, `ARCHITECTURE.md`, `SECURITY.md`, `QUALITY_SCORE.md`, `PLANS.md` |
+| Verification | `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed. Focused fixture-path tests passed: `BeautyCoreTests.BeautyRendererOutputRegressionTests` 6 tests, `BeautyCoreTests.BeautyEngineGeometryFacadeTests` 8 tests, and `BeautyDetectionTests.VisionFaceDetectorTests` 8 tests. `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/output` regenerated 102 flat ignored PNG outputs from nested fixtures. `python3 example-images/generate_gallery.py --input example-images/input --output example-images/output --gallery example-images/gallery` wrote 102 ignored gallery PNGs. Phase 27 helper passed with 66/66 outputs and 5/5 portrait geometry-vs-baseline top-region comparisons. Phase 28 helper passed with 102/102 outputs and 30/30 portrait face-shape-vs-baseline top-region comparisons. `find` counted 102 output PNGs and 102 gallery PNGs. `git check-ignore` confirmed representative output and gallery PNGs are ignored. A scoped scan found no active references to the legacy `example-images/out/` path or the old flat `example-images/input/e*.png` and `example-images/input/no-face-gradient.png` fixture paths. |
+| Build | SDK renderer build and focused SDK tests passed. Full SDK suite was not rerun because this changed example fixture organization, renderer fixture discovery, helper scripts, ignored generated artifacts, and docs only. |
+
+Outcome:
+
+- Source fixtures are now committed under `example-images/input/portraits/` and `example-images/input/negatives/`.
+- `BeautyExampleRenderer` recursively reads nested input fixtures and keeps generated PNG names flat under ignored `example-images/output/`.
+- `example-images/gallery/` is an ignored generated review view grouped by feature family and case ID.
+
+### C-2026-07-08-example-images-output-directory-rename
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-08 |
+| Scope | Renamed the current generated example-image directory contract from `example-images/out` to `example-images/output` while keeping `example-images/input` as the source fixture directory. |
+| Files | `BeautySDK/Sources/BeautyExampleRenderer/main.swift`, `.gitignore`, `example-images/README.md`, `ARCHITECTURE.md`, `QUALITY_SCORE.md`, `PLANS.md` |
+| Verification | `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed. `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input` used the new default and wrote 102 ignored PNG outputs under `example-images/output`. `python3 .planning/phases/28-face-shape-slice-completion-and-documentation-closeout/check_face_shape_renderer_outputs.py --input example-images/input --output example-images/output` passed with 102/102 outputs and 30/30 portrait face-shape comparisons. `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyRendererOutputRegressionTests` passed with 6 tests. `git check-ignore` confirmed representative `example-images/output/*.png` files are ignored. A scoped scan found no legacy `example-images/out/` path in active renderer source, the example-image README, root contract docs, current quality snapshot, or SDK tests; older Completed ledger/history entries still preserve their original command text. |
+| Build | SDK renderer build and focused renderer tests passed. Full SDK suite was not rerun because this changed the renderer default output path, ignore policy, local generated artifact directory, and docs only. |
+
+Outcome:
+
+- `example-images/input/` remains the committed fixture source directory.
+- `example-images/output/` is now the ignored generated-output directory.
+- Local generated PNGs were moved from `out/` to `output/`; the legacy `example-images/out/` directory was removed.
+
 ### C-2026-07-08-v1-5-face-shape-visual-warp-validation
 
 | Field | Value |

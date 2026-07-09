@@ -13,7 +13,7 @@
 - 已存在 `BeautySDK/` Swift Package，包含 `BeautyCore`、`BeautyDetection`、`BeautyRender`、`BeautyEffects`、`BeautyResources` 和 public `BeautySDK` facade。
 - Phase 6 当前实现已让 `BeautyEffects` 承担效果解析、安全 cap、几何 provider、MVP 颜色/几何输出与降级 metadata；Demo 仍只通过 public `BeautySDK` facade 集成。
 - Phase 26 当前实现已让 public `BeautySDK` still-image facade 在几何参数需要时触发检测，并通过 package-only 检测观察值把一个 selected face 路由到 `BeautyEffects` 内部 `FaceGeometry` planning；public API 仍只暴露 redacted `BeautyDetectionSummary`、warnings 和 aggregate metrics。
-- Phase 27 当前实现已让 public still-image facade 通过内部 selected-face route 产生 same-dimension geometry saved-output evidence；2026-07-08 验证修正后，该 still-image 路径使用控制点驱动的局部 CIImage warp，而不是全局色偏代理；`BeautyExampleRenderer` 仍只 import `BeautySDK`，generated PNGs 保持在 ignored `example-images/out/`。
+- Phase 27 当前实现已让 public still-image facade 通过内部 selected-face route 产生 same-dimension geometry saved-output evidence；2026-07-08 验证修正后，该 still-image 路径使用控制点驱动的局部 CIImage warp，而不是全局色偏代理；`BeautyExampleRenderer` 仍只 import `BeautySDK`，递归读取 committed `example-images/input/portraits/` 与 `input/negatives/` fixtures，generated PNGs 保持在 ignored flat `example-images/output/`，人工浏览视图保持在 ignored `example-images/gallery/`。
 - Phase 28 当前实现已为 scoped `脸型` existing-parameter slice 提供 SDK-only saved-output evidence 和空间形变回归测试；`BeautyExampleRenderer` 仍只通过 public `BeautySDK` facade 生成 ignored local outputs，未新增 Demo UI、public raw geometry surface 或新的 geometry group。
 - `docs/` 下存在历史规划资料，迁移后的根级文档优先级更高。
 

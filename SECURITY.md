@@ -55,7 +55,7 @@ Phase 26 facade-geometry privacy evidence recorded 2026-07-06:
 
 Phase 27 geometry-output privacy evidence recorded 2026-07-07:
 
-- `BeautyExampleRenderer` remains public-facade-only and writes generated geometry PNGs only under ignored `example-images/out/`.
+- `BeautyExampleRenderer` remains public-facade-only and writes generated geometry PNGs only under ignored `example-images/output/`; generated human-review copies stay under ignored `example-images/gallery/`.
 - `27-VERIFICATION.md` records public/SPI raw geometry export scans, active-source redaction scans, renderer public-import scans, Demo internal-import scans, and evidence-doc raw-leak scans as passed.
 - The generated-output helper records only relative fixture names, case IDs, counts, dimensions, geometry-vs-baseline comparison counts, and no-face output presence.
 - Phase 27 did not add Demo UI behavior, public raw geometry APIs, network behavior, raw geometry evidence fields, generated PNG baselines, or `SHAPE_FEATURE_LEDGER.md` implementation-status promotion.

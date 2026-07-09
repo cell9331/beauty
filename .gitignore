@@ -4,4 +4,6 @@
 *.xcuserstate
 *.xcuserdatad/
 .build/
-example-images/out/
+example-images/output/
+example-images/gallery/
+.serena/

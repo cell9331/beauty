@@ -13,14 +13,15 @@ from pathlib import Path
 
 
 PORTRAIT_FIXTURE_NAMES = [
-    "e1.png",
-    "e2.png",
-    "e3.png",
-    "e4.png",
-    "e5.png",
+    "portraits/e1.png",
+    "portraits/e2.png",
+    "portraits/e3.png",
+    "portraits/e4.png",
+    "portraits/e5.png",
+    "portraits/e6.jpg",
 ]
 
-NO_FACE_FIXTURE_NAME = "no-face-gradient.png"
+NO_FACE_FIXTURE_NAME = "negatives/no-face-gradient.png"
 
 FIXTURE_NAMES = PORTRAIT_FIXTURE_NAMES + [
     NO_FACE_FIXTURE_NAME,
@@ -89,6 +90,52 @@ def read_png_dimensions(path: Path, label: str) -> tuple[int, int]:
             return struct.unpack(">II", ihdr[:8])
     except OSError:
         raise RendererOutputError(f"{label}: unreadable") from None
+
+
+def read_jpeg_dimensions(path: Path, label: str) -> tuple[int, int]:
+    try:
+        data = path.read_bytes()
+    except OSError:
+        raise RendererOutputError(f"{label}: unreadable") from None
+
+    if len(data) < 4 or data[:2] != b"\xff\xd8":
+        raise RendererOutputError(f"{label}: not a JPEG")
+
+    offset = 2
+    while offset + 4 <= len(data):
+        if data[offset] != 0xFF:
+            raise RendererOutputError(f"{label}: invalid JPEG marker")
+        while offset < len(data) and data[offset] == 0xFF:
+            offset += 1
+        if offset >= len(data):
+            break
+        marker = data[offset]
+        offset += 1
+        if marker in (0xD8, 0xD9) or 0xD0 <= marker <= 0xD7:
+            continue
+        if offset + 2 > len(data):
+            break
+        segment_length = struct.unpack(">H", data[offset : offset + 2])[0]
+        if segment_length < 2 or offset + segment_length > len(data):
+            raise RendererOutputError(f"{label}: invalid JPEG segment")
+        if marker in (0xC0, 0xC1, 0xC2):
+            segment = data[offset + 2 : offset + segment_length]
+            if len(segment) < 5:
+                raise RendererOutputError(f"{label}: truncated JPEG SOF")
+            height, width = struct.unpack(">HH", segment[1:5])
+            return width, height
+        offset += segment_length
+
+    raise RendererOutputError(f"{label}: missing JPEG dimensions")
+
+
+def read_fixture_dimensions(path: Path, label: str) -> tuple[int, int]:
+    extension = path.suffix.lower()
+    if extension == ".png":
+        return read_png_dimensions(path, label)
+    if extension in (".jpg", ".jpeg"):
+        return read_jpeg_dimensions(path, label)
+    raise RendererOutputError(f"{label}: unsupported fixture type")
 
 
 def read_png_payload(path: Path, label: str) -> PNGPayload:
@@ -328,7 +375,7 @@ def main() -> int:
             continue
 
         try:
-            fixture_dimensions = read_png_dimensions(fixture_path, fixture_label)
+            fixture_dimensions = read_fixture_dimensions(fixture_path, fixture_label)
         except RendererOutputError as error:
             failures.append(str(error))
             continue
