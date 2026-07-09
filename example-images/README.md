@@ -31,6 +31,7 @@ The gallery groups current cases under:
 - `color/`: `brightness_plus0p25`, `contrast_plus0p25`
 - `filter/`: `filter_softClean_0p50`, `filter_warmLight_0p50`
 - `face-shape/`: `geometryBaseline_noop`, `faceShapeCombo_0p35`, `faceSlim_0p35`, `faceSmall_0p35`, `chinLength_plus0p30`, `chinLength_minus0p30`, `faceVShape_0p35`, `jawSlim_0p35`
+- `eyes/`: `eyeSize_0p35`, `eyeDistance_plus0p25`, `eyeDistance_minus0p25`, `eyeYPosition_plus0p20`, `eyeYPosition_minus0p20`, `eyeTailLift_0p25`
 
 ## Verify Outputs
 
@@ -38,4 +39,10 @@ Run the relevant helper against the same output directory, for example:
 
 ```bash
 python3 .planning/phases/28-face-shape-slice-completion-and-documentation-closeout/check_face_shape_renderer_outputs.py --input example-images/input --output example-images/output
+```
+
+Phase 29 eye output evidence uses:
+
+```bash
+python3 .planning/phases/29-eye-renderer-output-evidence/check_eye_renderer_outputs.py --input example-images/input --output example-images/output
 ```

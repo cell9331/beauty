@@ -38,6 +38,14 @@ CASE_GROUPS = {
         "faceVShape_0p35",
         "jawSlim_0p35",
     ],
+    "eyes": [
+        "eyeSize_0p35",
+        "eyeDistance_plus0p25",
+        "eyeDistance_minus0p25",
+        "eyeYPosition_plus0p20",
+        "eyeYPosition_minus0p20",
+        "eyeTailLift_0p25",
+    ],
 }
 
 
