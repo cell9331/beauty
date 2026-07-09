@@ -24,7 +24,13 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         "chinLength_plus0p30",
         "chinLength_minus0p30",
         "faceVShape_0p35",
-        "jawSlim_0p35"
+        "jawSlim_0p35",
+        "eyeSize_0p35",
+        "eyeDistance_plus0p25",
+        "eyeDistance_minus0p25",
+        "eyeYPosition_plus0p20",
+        "eyeYPosition_minus0p20",
+        "eyeTailLift_0p25"
     ]
 
     private static let fixtureNames = [
@@ -146,6 +152,57 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         XCTAssertEqual(jawSlimCases, ["jawSlim_0p35"])
         XCTAssertTrue(snippet.contains("jawSlim: 0.35"))
         XCTAssertTrue(separateJawlineCases.isEmpty, "Jawline alias evidence should share jawSlim_0p35")
+    }
+
+    func testPhase29EyeCasesUseOnlyExistingPublicEyeParameters() throws {
+        let source = try rendererSource()
+        let expectedCases = [
+            ("eyeSize_0p35", "eyeSize: 0.35"),
+            ("eyeDistance_plus0p25", "eyeDistance: 0.25"),
+            ("eyeDistance_minus0p25", "eyeDistance: -0.25"),
+            ("eyeYPosition_plus0p20", "eyeYPosition: 0.20"),
+            ("eyeYPosition_minus0p20", "eyeYPosition: -0.20"),
+            ("eyeTailLift_0p25", "eyeTailLift: 0.25")
+        ]
+        let eyeFields = [
+            "eyeSize:",
+            "eyeDistance:",
+            "eyeYPosition:",
+            "eyeTailLift:"
+        ]
+
+        for (caseID, requiredParameter) in expectedCases {
+            let snippet = try rendererCaseSnippet(for: caseID, in: source)
+
+            XCTAssertTrue(snippet.contains(requiredParameter), "Missing \(requiredParameter) in \(caseID)")
+            XCTAssertEqual(
+                eyeFields.filter { snippet.contains($0) },
+                [requiredParameter.split(separator: " ").first.map(String.init) ?? ""],
+                "\(caseID) should use exactly one public eye parameter"
+            )
+            XCTAssertFalse(snippet.contains("BeautyDemo"), "\(caseID) should not introduce Demo coupling")
+        }
+
+        for forbidden in [
+            "eyeCombo",
+            "eyeTailLift_minus",
+            "eyeHeight",
+            "eyeLength",
+            "pupil",
+            "gaze",
+            "lid",
+            "redness",
+            "innerCorner",
+            "outerCorner",
+            "symmetry"
+        ] {
+            XCTAssertFalse(source.contains(forbidden), "Renderer should not add out-of-scope eye case: \(forbidden)")
+        }
+        for term in ["P" + "ro", "V" + "IP", "entitle" + "ment", "pre" + "mium", "pay" + "ment"] {
+            XCTAssertFalse(containsStandaloneToken(term, in: source), "Renderer should not add commercial gating")
+        }
+        XCTAssertFalse(source.contains("net" + "work"), "Renderer should stay local-only")
+        XCTAssertFalse(source.contains("cl" + "oud"), "Renderer should stay local-only")
     }
 
     func testNoFaceFixtureProducesNoFaceSummaryForFaceShapeCombo() throws {

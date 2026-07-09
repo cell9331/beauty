@@ -137,6 +137,36 @@ let cases = [
         id: "jawSlim_0p35",
         displayName: "jawSlim 0.35",
         parameters: BeautyParameters(jawSlim: 0.35)
+    ),
+    RenderCase(
+        id: "eyeSize_0p35",
+        displayName: "eyeSize 0.35",
+        parameters: BeautyParameters(eyeSize: 0.35)
+    ),
+    RenderCase(
+        id: "eyeDistance_plus0p25",
+        displayName: "eyeDistance +0.25",
+        parameters: BeautyParameters(eyeDistance: 0.25)
+    ),
+    RenderCase(
+        id: "eyeDistance_minus0p25",
+        displayName: "eyeDistance -0.25",
+        parameters: BeautyParameters(eyeDistance: -0.25)
+    ),
+    RenderCase(
+        id: "eyeYPosition_plus0p20",
+        displayName: "eyeYPosition +0.20",
+        parameters: BeautyParameters(eyeYPosition: 0.20)
+    ),
+    RenderCase(
+        id: "eyeYPosition_minus0p20",
+        displayName: "eyeYPosition -0.20",
+        parameters: BeautyParameters(eyeYPosition: -0.20)
+    ),
+    RenderCase(
+        id: "eyeTailLift_0p25",
+        displayName: "eyeTailLift 0.25",
+        parameters: BeautyParameters(eyeTailLift: 0.25)
     )
 ]
 
