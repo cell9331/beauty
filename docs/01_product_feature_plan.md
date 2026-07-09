@@ -1,910 +1,910 @@
-# 01. Beauty SDK Product Feature Plan
+# Beauty SDK Product Feature Plan
 
-## 1. Product positioning
+## 1. 产品定位
 
-This SDK is oriented to picture editing, camera shooting, short videos, live broadcasts, social chats, ID photos, AI portraits and other scenarios, and provides beauty and portrait refinement capabilities such as beautiful photo show, light face camera, and wake-up photo.
+本 SDK 面向图片编辑、相机拍摄、短视频、直播、社交聊天、证件照、AI 写真等场景，提供类似美图秀秀、轻颜相机、醒图一类的美颜与人像精修能力。
 
-Core goals:
+核心目标：
 
-- Supports real-time preview and offline image processing.
-- Supports natural, controllable, fine-grained face adjustment.
-- Supports multiple presets, one-click beautification, and also supports manual fine-tuning by advanced users.
-- Supports multiple input scenarios such as photography, video, live streaming, portrait picture editing, etc.
-- Provided as SDK for App integration, function modules can be tailored as needed.
-
----
-
-## 2. Function Overview
-
-Beauty SDK can be divided into the following major modules:
-
-1. Basic beauty
-2. Face reshaping
-3. Eye adjustment
-4. Nose adjustment
-5. Mouth adjustment
-6. Eyebrow adjustment
-7. Chin/forehead/hairline adjustment
-8. Teeth/Lip Color/Eye Enhancement
-9. Makeup system
-10. Filter system
-11. Body beauty
-12. Background and portrait segmentation
-13. Stylized effects
-14. One-click preset template
-15. Multi-face processing
-16. SDK access and parameter control
+- 支持实时预览与离线图片处理。
+- 支持自然、可控、细粒度的人脸调整。
+- 支持多档预设，一键美颜，也支持高级用户手动微调。
+- 支持拍照、视频、直播流、人像图片编辑等多种输入场景。
+- 作为 SDK 提供给 App 集成，功能模块可按需裁剪。
 
 ---
 
-# 3. Basic beauty function
+## 2. 功能总览
 
-Basic beauty care mainly solves problems such as skin texture, skin color, blemishes, and clarity.
+美颜 SDK 可以分为以下几个大模块：
 
-## 3.1 Microdermabrasion
-
-Function description: Make skin smoother, reduce pores, fine lines, and minor spots.
-
-Parameter suggestions:
-
-- Microdermabrasion intensity: 0 ~ 100
-- Preserve skin texture: 0 ~ 100
-- Face area protection: On/Off
-- Facial sharpness protection: On/Off
-
-Product Note:
-
-- Don't make your face look plastic.
-- The bridge of the nose, eyes, lips, and eyebrow edges need to be kept clear.
-- Mid-to-high-end solutions need to support "skin area recognition" and only process skin areas.
-
-## 3.2 Whitening
-
-Function description: Improves the brightness of skin tone and makes skin tone cleaner.
-
-Parameter suggestions:
-
-- Whitening intensity: 0 ~ 100
-- Skin tone: cool white/natural/warm white
-- Highlight protection: on/off
-
-## 3.3 Ruddy
-
-Function description: Increase facial complexion.
-
-Parameter suggestions:
-
-- Ruddy intensity: 0 ~ 100
--Ruddy areas: cheeks / whole face / natural distribution
-
-## 3.4 Acne removal/freckle removal/blemish repair
-
-Function description: Remove acne, spots, moles, and small blemishes on the skin.
-
-Functional form:
-
-- Automatically remove acne
-- Manually select acne removal
-- Automatically remove freckles
-- Partial repair pen
-
-Parameter suggestions:
-
-- Defect recognition strength: 0 ~ 100
-- Repair naturalness: 0 ~ 100
-- Whether to keep moles: On/Off
-
-## 3.5 Dark circles/nasolabial folds/tear trough treatment
-
-Function description: Reduce fatigue.
-
-Adjustable items:
-
-- Lighten dark circles
-- Lighten tear troughs
-- Reduce nasolabial folds
-- Reduce forehead lines
-- Reduce fine lines around the eyes
-
-Parameter suggestions:
-
-- Strength: 0 ~ 100
-- Naturalness: 0 ~ 100
-
-## 3.6 Clarity / Sharpening
-
-Function description: Enhance facial features, hair, and contour definition.
-
-Parameter suggestions:
-
-- Clarity: 0 ~ 100
-- Facial features enhancement: 0 ~ 100
-- Hair enhancement: 0 ~ 100
-- Skin sharpening protection: On/Off
+1. 基础美颜
+2. 脸型重塑
+3. 眼部调整
+4. 鼻部调整
+5. 嘴部调整
+6. 眉毛调整
+7. 下巴 / 额头 / 发际线调整
+8. 牙齿 / 唇色 / 眼神增强
+9. 妆容系统
+10. 滤镜系统
+11. 身体美型
+12. 背景与人像分割
+13. 风格化效果
+14. 一键预设模板
+15. 多人脸处理
+16. SDK 接入与参数控制
 
 ---
 
-# 4. Face reshaping function
+# 3. 基础美颜功能
 
-Face reshaping is one of the core modules of the beauty SDK.
+基础美颜主要解决皮肤质感、肤色、瑕疵、清晰度等问题。
 
-## 4.1 Face slimming
+## 3.1 磨皮
 
-Function description: Narrow the width of the face.
+功能说明：让皮肤更平滑，减少毛孔、细纹、轻微斑点。
 
-Adjustable items:
+参数建议：
 
-- Overall face slimming
-- Face slimming on the left side of the face
-- Face slimming on the right side of the face
-- Jawline tightening
-- Cheek reduction
-- Narrowing of cheekbones
+- 磨皮强度：0 ~ 100
+- 保留皮肤纹理：0 ~ 100
+- 人脸区域保护：开启 / 关闭
+- 五官锐度保护：开启 / 关闭
 
-Parameter suggestions:
+产品注意：
 
-- Face slimming intensity: 0 ~ 100
-- Symmetry: On/Off
-- Face protection boundary: 0 ~ 100
+- 不能把脸磨成塑料感。
+- 鼻梁、眼睛、嘴唇、眉毛边缘需要保持清晰。
+- 中高端方案需要支持“皮肤区域识别”，只对皮肤区域处理。
 
-## 4.2 Small face
+## 3.2 美白
 
-Function description: Reduce the overall facial area while maintaining the natural proportions of the facial features.
+功能说明：提升肤色亮度，让肤色更干净。
 
-Parameter suggestions:
+参数建议：
 
-- Small face intensity: 0 ~ 100
-- Facial features follow zoom: On/Off
+- 美白强度：0 ~ 100
+- 肤色冷暖：冷白 / 自然 / 暖白
+- 高光保护：开启 / 关闭
 
-## 4.3 Narrow face
+## 3.3 红润
 
-Function description: Mainly compresses the width of the cheeks and mid-face.
+功能说明：增加面部气色。
 
-Suitable scenarios:
+参数建议：
 
-- round face
-- wide face
-- Lens close-range distortion correction
+- 红润强度：0 ~ 100
+- 红润区域：脸颊 / 全脸 / 自然分布
 
-## 4.4 V face
+## 3.4 祛痘 / 祛斑 / 瑕疵修复
 
-Functional description: Make the chin more pointed and the face closer to a V-shape.
+功能说明：去除皮肤上的痘痘、斑点、黑痣、细小瑕疵。
 
-Parameter suggestions:
+功能形式：
 
-- V face intensity: 0 ~ 100
-- Chin sharpness: 0 ~ 100
-- Jaw contraction: 0 ~ 100
+- 自动祛痘
+- 手动点选祛痘
+- 自动祛斑
+- 局部修复笔
 
-## 4.5 Mandibular line optimization
+参数建议：
 
-Function description: Make facial contours clearer.
+- 瑕疵识别强度：0 ~ 100
+- 修复自然度：0 ~ 100
+- 是否保留痣：开启 / 关闭
 
-Adjustable items:
+## 3.5 黑眼圈 / 法令纹 / 泪沟处理
 
-- Jawline definition
-- Jaw width
-- Narrowing of the mandibular angle
-- Natural transition between chin and jaw
+功能说明：减轻疲惫感。
 
-## 4.6 Zygomatic bone adjustment
+可调项目：
 
-Function description: Adjust the mid-face contour.
+- 淡化黑眼圈
+- 淡化泪沟
+- 淡化法令纹
+- 淡化额头纹
+- 淡化眼周细纹
 
-Adjustable items:
+参数建议：
 
-- Zygoma adduction
-- Softening of cheekbones
-- Fine adjustment of cheekbone height
+- 强度：0 ~ 100
+- 自然度：0 ~ 100
 
-## 4.7 Facial length adjustment
+## 3.6 清晰度 / 锐化
 
-Function description: Adjust the vertical proportion of the face.
+功能说明：增强五官、头发、轮廓清晰度。
 
-Adjustable items:
+参数建议：
 
-- Shorten face length
-- Elongate the face shape
-- Atrium shortened / lengthened
-- The lower court is shortened/lengthened
-
-## 4.8 Facial symmetry correction
-
-Function description: Improve left and right face asymmetry.
-
-Adjustable items:
-
-- Automatic symmetry
-- Correction of left and right face width
-- Left and right eye height correction
-- Height correction of the left and right corners of the mouth
-- Correction of left and right face contours
+- 清晰度：0 ~ 100
+- 五官增强：0 ~ 100
+- 头发增强：0 ~ 100
+- 皮肤锐化保护：开启 / 关闭
 
 ---
 
-# 5. Eye adjustment function
+# 4. 脸型重塑功能
 
-The eyes are the most sensitive and commonly used area for fine-tuning by users and require segmentation capabilities.
+脸型重塑是美颜 SDK 的核心模块之一。
 
-## 5.1 Big eyes/small eyes
+## 4.1 瘦脸
 
-Function description: Adjust the overall size of the eyes.
+功能说明：收窄脸部宽度。
 
-Adjustable items:
+可调项目：
 
-- Overall enlargement of both eyes
-- Left eye individually enlarged
-- Right eye individually enlarged
-- Eye height adjustment
-- Eye width adjustment
+- 整体瘦脸
+- 左脸瘦脸
+- 右脸瘦脸
+- 下颌线收紧
+- 腮帮缩小
+- 颧骨收窄
 
-Parameter suggestions:
+参数建议：
 
-- Big Eye Strength: -100 ~ 100
-  - Negative numbers: narrow the eyes
-  - Positive numbers: enlarge eyes
-- Left and right sync: on/off
-- Eye protection: On / Off
+- 瘦脸强度：0 ~ 100
+- 左右对称：开启 / 关闭
+- 人脸保护边界：0 ~ 100
 
-## 5.2 Eye distance adjustment
+## 4.2 小脸
 
-Function description: Adjust the distance between the two eyes.
+功能说明：整体缩小脸部面积，同时保持五官比例自然。
 
-Adjustable items:
+参数建议：
 
-- Eye distance is shortened
-- Distance between eyes
-- Lateral movement of left eye
-- Right eye moves laterally
+- 小脸强度：0 ~ 100
+- 五官跟随缩放：开启 / 关闭
 
-Parameter suggestions:
+## 4.3 窄脸
 
-- Eye distance: -100 ~ 100
-  - Negative number: Eye distance becomes closer
-  -Positive number: the distance between the eyes becomes farther
+功能说明：主要压缩脸颊和脸部中段宽度。
 
-## 5.3 Adjust the upper and lower position of the eyes
+适合场景：
 
-Function description: Adjust the vertical position of the eyes on the face.
+- 圆脸
+- 宽脸
+- 镜头近距离畸变修正
 
-Adjustable items:
+## 4.4 V 脸
 
-- Move eyes up/down
-- Move left eye up/down
-- Move the right eye up/down
+功能说明：让下巴更尖、脸型更接近 V 型。
 
-Parameter suggestions:
+参数建议：
 
-- Eye Y-axis position: -100 ~ 100
+- V 脸强度：0 ~ 100
+- 下巴尖度：0 ~ 100
+- 下颌收缩：0 ~ 100
 
-## 5.4 Eye rotation/tilt adjustment
+## 4.5 下颌线优化
 
-Function description: Adjust the angle of the eyes to make them softer or more vivid.
+功能说明：让脸部轮廓更清晰。
 
-Adjustable items:
+可调项目：
 
-- Left eye rotation
-- Right eye rotation
-- The tail of the eyes is raised
-- Press down the end of the eye
-- Eye head height adjustment
-- Eye tail height adjustment
+- 下颌线清晰度
+- 下颌宽度
+- 下颌角收窄
+- 下巴与下颌过渡自然度
 
-Suitable for:
+## 4.6 颧骨调整
 
-- Smart eyes
-- droopy eyes
-- cat eye
-- Gentle eyes
+功能说明：调整面中部轮廓。
 
-## 5.5 Eye shape adjustment
+可调项目：
 
-Adjustable items:
+- 颧骨内收
+- 颧骨柔化
+- 颧骨高度微调
 
-- round eyes
-- Almond eyes
-- peach blossom eyes
-- Danfeng eyes
-- droopy eyes
-- cat eye
-- European eye shape
+## 4.7 面部长度调整
 
-Implementation method:
+功能说明：调整脸的纵向比例。
 
-- Can be used as advanced presets, not necessarily all open as independent parameters.
+可调项目：
 
-## 5.6 Eye corner adjustment
+- 缩短脸长
+- 拉长脸型
+- 中庭缩短 / 拉长
+- 下庭缩短 / 拉长
 
-Adjustable items:
+## 4.8 脸部对称修正
 
-- Open the inner corner of the eye
-- Open the outer corners of the eyes
-- Eye head stretching
-- Eye end stretching
-- Sharpness of eye corners
+功能说明：改善左右脸不对称。
 
-Parameter suggestions:
+可调项目：
 
-- Inner corner of eye: 0 ~ 100
-- Outer corner of eye: 0 ~ 100
-- Raising the tail of the eyes: -100 ~ 100
-
-## 5.7 Lying Silkworm
-
-Functional description: Enhance the eyes under the eyes and make them more friendly.
-
-Adjustable items:
-
-- Lying silkworm enhancement
-- Silkworm Shadow
-- Silkworm highlighter
-- lying width
-
-## 5.8 Eye light
-
-Function description: Add eye highlights to make eyes brighter.
-
-Adjustable items:
-
-- Eye light intensity
-- Eye light style
-- Eye light position
-- Left and right eye synchronization
-
-## 5.9 Eye Bag/Dark Circle Repair
-
-Adjustable items:
-
-- Remove eye bags
-- Lighten dark circles
-- Lighten tear troughs
-- Brighten the eye area
-
-## 5.10 Eyeball enhancement
-
-Adjustable items:
-
-- Brighten the whites of the eyes
-- Remove yellowish whites of eyes
-- Eyeball clarity
-- dilation of pupils
-- Fine-tuning eye color
+- 自动对称
+- 左右脸宽度修正
+- 左右眼高度修正
+- 左右嘴角高度修正
+- 左右脸轮廓修正
 
 ---
 
-# 6. Nose adjustment function
+# 5. 眼部调整功能
 
-Nose adjustment should take into account three-dimensionality and naturalness, and should not be excessively deformed.
+眼部是用户最敏感、最常用的精修区域，需要细分能力。
 
-## 6.1 Slim nose
+## 5.1 大眼 / 小眼
 
-Function description: Narrow the width of the nose wing and bridge of the nose.
+功能说明：调整眼睛整体大小。
 
-Adjustable items:
+可调项目：
 
-- Narrowing of the bridge of the nose
-- Nose retraction
-- Reduction of nose tip
-- Narrowing of nostrils
+- 双眼整体放大
+- 左眼单独放大
+- 右眼单独放大
+- 眼高调整
+- 眼宽调整
 
-Parameter suggestions:
+参数建议：
 
-- Slim nose strength: 0 ~ 100
-- Nose width: -100 ~ 100
-- Nose size: -100 ~ 100
+- 大眼强度：-100 ~ 100
+  - 负数：缩小眼睛
+  - 正数：放大眼睛
+- 左右同步：开启 / 关闭
+- 眼球保护：开启 / 关闭
 
-## 6.2 Nose Bridge Adjustment
+## 5.2 眼距调整
 
-Adjustable items:
+功能说明：调整两只眼睛之间的距离。
 
-- Increased nose bridge
-- Narrowing of the bridge of the nose
-- Nose bridge highlight enhancement
-- Bridge shadow enhancement
-- Straight line correction of nose bridge
+可调项目：
 
-## 6.3 Nose tip adjustment
+- 眼距拉近
+- 眼距拉远
+- 左眼横向移动
+- 右眼横向移动
 
-Adjustable items:
+参数建议：
 
-- Reduction of nose tip
-- Upturned nose
-- Press down the tip of the nose
-- Nose roundness
-- Sharpness of nose
+- 眼距：-100 ~ 100
+  - 负数：眼距变近
+  - 正数：眼距变远
 
-## 6.4 Nose adjustment
+## 5.3 眼睛上下位置调整
 
-Adjustable items:
+功能说明：调整眼睛在脸上的垂直位置。
 
-- Narrowing of the nose
-- Nose symmetry correction
-- Nose height adjustment
-- Nose shadow enhancement
+可调项目：
 
-## 6.5 Nose position adjustment
+- 双眼上移 / 下移
+- 左眼上移 / 下移
+- 右眼上移 / 下移
 
-Adjustable items:
+参数建议：
 
-- Move the nose up/down as a whole
-- Move the nose overall to the left/right
-- Overall nose scaling
+- 眼睛 Y 轴位置：-100 ~ 100
 
-## 6.6 Nasal base / philtrum relationship
+## 5.4 眼睛旋转 / 倾斜调整
 
-Adjustable items:
+功能说明：调整眼睛角度，让眼型更柔和或更有神。
 
-- Filling feeling at the nasal base
--Shortened philtrum
--Nasolabial distance adjustment
+可调项目：
 
----
+- 左眼旋转
+- 右眼旋转
+- 眼尾上扬
+- 眼尾下压
+- 眼头高度调整
+- 眼尾高度调整
 
-# 7. Mouth adjustment function
+适合做成：
 
-Mouth adjustment includes not only shape adjustment, but also expression, lip color, and teeth treatment.
+- 灵动眼
+- 下垂眼
+- 猫眼
+- 温柔眼
 
-## 7.1 Mouth size
+## 5.5 眼型调整
 
-Adjustable items:
+可调项目：
 
-- Enlarge/reduce the entire mouth
-- Mouth width
-- Mouth height
-- Upper lip thickness
-- Lower lip thickness
+- 圆眼
+- 杏眼
+- 桃花眼
+- 丹凤眼
+- 下垂眼
+- 猫眼
+- 欧式眼型
 
-Parameter suggestions:
+实现方式：
 
-- Mouth size: -100 ~ 100
-- Mouth width: -100 ~ 100
-- Lip thickness: -100 ~ 100
+- 可以作为高级预设，不一定全部开放为独立参数。
 
-## 7.2 Mouth position
+## 5.6 眼角调整
 
-Adjustable items:
+可调项目：
 
-- Move mouth up/down
-- Move mouth left/right
-- Mouth rotation correction
+- 开内眼角
+- 开外眼角
+- 眼头拉伸
+- 眼尾拉伸
+- 眼角锐度
 
-## 7.3 Mouth corner adjustment
+参数建议：
 
-Function description: Make expressions more natural and smiley.
+- 内眼角：0 ~ 100
+- 外眼角：0 ~ 100
+- 眼尾上扬：-100 ~ 100
 
-Adjustable items:
+## 5.7 卧蚕
 
-- Corners of mouth raised
-- Press down the corners of your mouth
-- Adjust the left corner of the mouth individually
-- Adjust the right corner of the mouth individually
-- Smile intensity
+功能说明：增强眼下卧蚕，让眼睛更有亲和力。
 
-Parameter suggestions:
+可调项目：
 
-- Smile: 0 ~ 100
-- Mouth corner angle: -100 ~ 100
+- 卧蚕增强
+- 卧蚕阴影
+- 卧蚕高光
+- 卧蚕宽度
 
-## 7.4 Lip shape adjustment
+## 5.8 眼神光
 
-Adjustable items:
+功能说明：增加眼睛高光，让眼睛更亮。
 
-- M lip
-- smile lips
--Thick lips
-- Thin lips
--Pouty lips
-- Lip peak enhancement
-- Lip enhancement
+可调项目：
 
-## 7.5 Renzhong adjustment
+- 眼神光强度
+- 眼神光样式
+- 眼神光位置
+- 左右眼同步
 
-Adjustable items:
+## 5.9 眼袋 / 黑眼圈修复
 
--Shortened philtrum
-- Elongated philtrum
-- philtrum clarity
-- Shadow among people
+可调项目：
 
-## 7.6 Teeth Whitening
+- 去眼袋
+- 淡化黑眼圈
+- 淡化泪沟
+- 眼周提亮
 
-Adjustable items:
+## 5.10 眼球增强
 
-- Teeth whitening
-- Remove yellow teeth
-- Teeth brightness
--Tooth edge protection
+可调项目：
 
-## 7.7 Lip color enhancement
-
-Adjustable items:
-
-- Natural lip color
-- lipstick strength
-- Lip saturation
-- Lip gloss
-- Reduce lip lines
+- 眼白提亮
+- 眼白去黄
+- 眼球清晰度
+- 瞳孔放大
+- 瞳色微调
 
 ---
 
-# 8. Eyebrow adjustment function
+# 6. 鼻部调整功能
 
-Eyebrows will obviously affect the overall temperament and are suitable to be combined with the makeup system.
+鼻子调整要兼顾立体感和自然度，不能过度变形。
 
-## 8.1 Eyebrow position
+## 6.1 瘦鼻
 
-Adjustable items:
+功能说明：收窄鼻翼、鼻梁宽度。
 
-- Move eyebrows up/down
-- Move left eyebrow up/down
-- Move the right eyebrow up/down
-- Eyebrow distance adjustment
+可调项目：
 
-## 8.2 Eyebrow shape
+- 鼻梁变窄
+- 鼻翼收缩
+- 鼻头缩小
+- 鼻孔收窄
 
-Adjustable items:
+参数建议：
 
-- Flat eyebrow
-- Curved eyebrows
-- Liu Yemei
-- wild eyebrow
-- raised eyebrows
-- Standard eyebrows
+- 瘦鼻强度：0 ~ 100
+- 鼻翼宽度：-100 ~ 100
+- 鼻头大小：-100 ~ 100
 
-## 8.3 Eyebrow thickness
+## 6.2 鼻梁调整
 
-Adjustable items:
+可调项目：
 
-- thickening eyebrows
-- Eyebrows become thinner
-- The tail of the eyebrow is lengthened
--Brow softening
+- 鼻梁增高
+- 鼻梁变窄
+- 鼻梁高光增强
+- 鼻梁阴影增强
+- 鼻梁直线修正
 
-## 8.4 Eyebrow color
+## 6.3 鼻头调整
 
-Adjustable items:
+可调项目：
 
-- black
-- brown
-- light brown
-- gray brown
-- Custom colors
-- Eyebrow color intensity
+- 鼻头缩小
+- 鼻头上翘
+- 鼻头下压
+- 鼻头圆润度
+- 鼻尖锐度
 
----
+## 6.4 鼻翼调整
 
-# 9. Forehead/chin/hairline function
+可调项目：
 
-## 9.1 Forehead adjustment
+- 鼻翼收窄
+- 鼻翼对称修正
+- 鼻翼高度调整
+- 鼻翼阴影增强
 
-Adjustable items:
+## 6.5 鼻子位置调整
 
-- The forehead becomes higher
-- The forehead becomes lower
-- Full forehead
-- A feeling of filling in the temples
+可调项目：
 
-## 9.2 Chin adjustment
+- 鼻子整体上移 / 下移
+- 鼻子整体左移 / 右移
+- 鼻子整体缩放
 
-Adjustable items:
+## 6.6 鼻基底 / 人中关系
 
-- Chin becomes pointed
-- Shortening of the chin
-- Chin becomes longer
-- Move chin left/right
-- Feeling of protruding chin
-- Chin roundness
+可调项目：
 
-## 9.3 Hairline adjustment
-
-Adjustable items:
-
-- Lowered hairline
-- Improved hairline
-- Forehead replacement
-- Bangs area protection
+- 鼻基底填充感
+- 人中缩短
+- 鼻唇距离调整
 
 ---
 
-# 10. Makeup System
+# 7. 嘴部调整功能
 
-The makeup system can be divided into "overall makeup templates" and "partial makeup components".
+嘴部调整既包括形状调整，也包括表情、唇色、牙齿处理。
 
-## 10.1 Overall makeup template
+## 7.1 嘴巴大小
 
-Available:
+可调项目：
 
-- Daily makeup
-- Commuting makeup
-- Clear makeup
-- Sweet girl makeup
-- Pure lust makeup
-- Korean makeup
-- Hong Kong style makeup
-- Retro makeup
-- ID photo makeup
-- Natural makeup for boys
+- 嘴巴整体放大 / 缩小
+- 嘴巴宽度
+- 嘴巴高度
+- 上唇厚度
+- 下唇厚度
 
-Parameter suggestions:
+参数建议：
 
-- Overall strength of makeup: 0 ~ 100
-- Makeup transparency: 0 ~ 100
-- Whether to follow the face angle: On/Off
+- 嘴巴大小：-100 ~ 100
+- 嘴巴宽度：-100 ~ 100
+- 嘴唇厚度：-100 ~ 100
 
-## 10.2 Partial makeup
+## 7.2 嘴巴位置
 
-### Base makeup
+可调项目：
 
-- Foundation
-- Concealer
-- brighten
-- Contouring
-- Highlights
+- 嘴巴上移 / 下移
+- 嘴巴左移 / 右移
+- 嘴巴旋转修正
 
-### Eye makeup
+## 7.3 嘴角调整
 
-- eye shadow
-- Eyeliner
-- eyelashes
-- Wocan
-- Color contact lenses
-- Eye light
+功能说明：让表情更自然、更有微笑感。
 
-### Eyebrow makeup
+可调项目：
 
-- Eyebrow shape
-- Eyebrow color
-- Eyebrow density
+- 嘴角上扬
+- 嘴角下压
+- 左嘴角单独调整
+- 右嘴角单独调整
+- 微笑强度
 
-### Lip makeup
+参数建议：
 
-- lipstick
-- lip gloss
-- matte lips
-- Hydrating lips
-- Gradient lip
+- 微笑：0 ~ 100
+- 嘴角角度：-100 ~ 100
 
-### Blush
+## 7.4 唇形调整
 
-- Apple cheek blush
-- Blush under eyes
-- Tip of nose blush
-- Contouring blush
+可调项目：
 
-### Contouring / Highlighting
+- M 唇
+- 微笑唇
+- 厚唇
+- 薄唇
+- 嘟嘟唇
+- 唇峰增强
+- 唇珠增强
 
-- Nose shadow
-- Highlight on the bridge of nose
-- Cheekbone shading
-- Jaw shadow
-- Forehead highlight
+## 7.5 人中调整
+
+可调项目：
+
+- 人中缩短
+- 人中拉长
+- 人中清晰度
+- 人中阴影
+
+## 7.6 牙齿美白
+
+可调项目：
+
+- 牙齿美白
+- 牙齿去黄
+- 牙齿亮度
+- 牙齿边缘保护
+
+## 7.7 唇色增强
+
+可调项目：
+
+- 自然唇色
+- 口红强度
+- 唇部饱和度
+- 唇部光泽
+- 唇纹淡化
 
 ---
 
-# 11. Filter system
+# 8. 眉毛调整功能
 
-Filters are used to control the overall style of photos and videos.
+眉毛会明显影响整体气质，适合和妆容系统结合。
 
-## 11.1 Basic filter classification
+## 8.1 眉毛位置
 
-- natural
-- Clear
-- fair complexion
-- cream
-- film
-- Retro
-- Hong Kong style
-- Japanese
-- Korean style
-- Nuanyang
-- cold white
-- dark tone
-- Cinematic feel
-- black and white
+可调项目：
 
-## 11.2 Filter parameters
+- 眉毛上移 / 下移
+- 左眉上移 / 下移
+- 右眉上移 / 下移
+- 眉间距调整
 
-- Filter strength: 0 ~ 100
-- brightness
-- Contrast
-- saturation
-- color temperature
-- Hue
-- Highlights
-- shadow
-- fade
-- Particles
-- Vignetting
-- sharpen
+## 8.2 眉毛形状
 
-## 11.3 LUT support
+可调项目：
 
-The SDK can support importing LUT files for expanding filter packages.
+- 平眉
+- 弯眉
+- 柳叶眉
+- 野生眉
+- 挑眉
+- 标准眉
 
-Recommended support:
+## 8.3 眉毛粗细
+
+可调项目：
+
+- 眉毛加粗
+- 眉毛变细
+- 眉尾拉长
+- 眉头柔化
+
+## 8.4 眉色
+
+可调项目：
+
+- 黑色
+- 棕色
+- 浅棕色
+- 灰棕色
+- 自定义颜色
+- 眉色强度
+
+---
+
+# 9. 额头 / 下巴 / 发际线功能
+
+## 9.1 额头调整
+
+可调项目：
+
+- 额头变高
+- 额头变低
+- 额头饱满
+- 太阳穴填充感
+
+## 9.2 下巴调整
+
+可调项目：
+
+- 下巴变尖
+- 下巴变短
+- 下巴变长
+- 下巴左移 / 右移
+- 下巴前突感
+- 下巴圆润度
+
+## 9.3 发际线调整
+
+可调项目：
+
+- 发际线降低
+- 发际线提高
+- 额角补发
+- 刘海区域保护
+
+---
+
+# 10. 妆容系统
+
+妆容系统可以分为“整体妆容模板”和“局部妆容组件”。
+
+## 10.1 整体妆容模板
+
+可提供：
+
+- 日常妆
+- 通勤妆
+- 清透妆
+- 甜妹妆
+- 纯欲妆
+- 韩系妆
+- 港风妆
+- 复古妆
+- 证件照妆
+- 男生自然妆
+
+参数建议：
+
+- 妆容整体强度：0 ~ 100
+- 妆容透明度：0 ~ 100
+- 是否跟随人脸角度：开启 / 关闭
+
+## 10.2 局部妆容
+
+### 底妆
+
+- 粉底
+- 遮瑕
+- 提亮
+- 修容
+- 高光
+
+### 眼妆
+
+- 眼影
+- 眼线
+- 睫毛
+- 卧蚕
+- 美瞳
+- 眼神光
+
+### 眉妆
+
+- 眉形
+- 眉色
+- 眉毛浓度
+
+### 唇妆
+
+- 口红
+- 唇釉
+- 哑光唇
+- 水光唇
+- 渐变唇
+
+### 腮红
+
+- 苹果肌腮红
+- 眼下腮红
+- 鼻尖腮红
+- 修容腮红
+
+### 修容 / 高光
+
+- 鼻影
+- 鼻梁高光
+- 颧骨阴影
+- 下颌阴影
+- 额头高光
+
+---
+
+# 11. 滤镜系统
+
+滤镜用于控制整体照片和视频的风格。
+
+## 11.1 基础滤镜分类
+
+- 自然
+- 清透
+- 白皙
+- 奶油
+- 胶片
+- 复古
+- 港风
+- 日系
+- 韩系
+- 暖阳
+- 冷白
+- 暗调
+- 电影感
+- 黑白
+
+## 11.2 滤镜参数
+
+- 滤镜强度：0 ~ 100
+- 亮度
+- 对比度
+- 饱和度
+- 色温
+- 色调
+- 高光
+- 阴影
+- 褪色
+- 颗粒
+- 暗角
+- 锐化
+
+## 11.3 LUT 支持
+
+SDK 可支持导入 LUT 文件，用于扩展滤镜包。
+
+建议支持：
 
 - 3D LUT
 - Cube LUT
-- Built-in LUT pack
-- Custom LUT loading
-- Hot update of filter pack
+- 内置 LUT 包
+- 自定义 LUT 加载
+- 滤镜包热更新
 
 ---
 
-# 12. Body beautification function
+# 12. 身体美型功能
 
-If the SDK covers full-body shooting or video scenes in the future, body beauty can be added.
+如果 SDK 未来覆盖全身拍摄或视频场景，可以加入身体美型。
 
-## 12.1 Long legs
+## 12.1 长腿
 
-Adjustable items:
+可调项目：
 
-- Leg elongation
-- Lengthened calves
-- Thigh elongation
-- Height proportion adjustment
+- 腿部拉长
+- 小腿拉长
+- 大腿拉长
+- 身高比例调整
 
-## 12.2 Lose weight
+## 12.2 瘦身
 
-Adjustable items:
+可调项目：
 
-- Narrow the waist
-- Shoulder width adjustment
-- arms become thinner
-- thinning of legs
-- Crotch adjustment
+- 腰部收窄
+- 肩宽调整
+- 手臂变细
+- 腿部变细
+- 胯部调整
 
-## 12.3 Optimization of head-to-body ratio
+## 12.3 头身比优化
 
-Adjustable items:
+可调项目：
 
-- Reduced head size
-- Optimized shoulder-neck ratio
-- Upper body proportion adjustment
-
----
-
-# 13. Background and portrait segmentation
-
-## 13.1 Portrait segmentation
-
-Function description: Identify portrait areas and separate people and background.
-
-Available capabilities:
-
-- Background blur
-- Background replacement
-- Background transparency
-- Background coloring
-- Portrait strokes
-- Depth of field effect
-
-## 13.2 Background blur
-
-Adjustable items:
-
-- Blur intensity
-- Spot pattern
-- Depth of field range
-- Edge feathering
-
-## 13.3 Background replacement
-
-Available scenarios:
-
-- ID photo
-- Live broadcast background
-- AI photo
-- Product pictures/avatars
+- 头部缩小
+- 肩颈比例优化
+- 上半身比例调整
 
 ---
 
-# 14. Stylized effect
+# 13. 背景与人像分割
 
-## 14.1 Portrait style
+## 13.1 人像分割
 
-- Comic style
-- watercolor style
-- National style
-- Oil painting style
-- Cyber style
-- Vintage film
-- 3D cartoon
-- AI photo
+功能说明：识别人像区域，分离人物和背景。
 
-## 14.2 Special Effect Stickers
+可用能力：
 
-- cat ears
-- Rabbit ears
-- glasses
-- Headgear
-- Dynamic stickers
-- Holiday stickers
-- AR mask
+- 背景虚化
+- 背景替换
+- 背景透明化
+- 背景调色
+- 人像描边
+- 景深效果
 
-## 14.3 Light effect
+## 13.2 背景虚化
 
-- Backlight
-- Soft light
-- Starlight
-- light spot
--Ambient light
-- rim light
+可调项目：
 
----
+- 虚化强度
+- 光斑样式
+- 景深范围
+- 边缘羽化
 
-# 15. One-click preset template
+## 13.3 背景替换
 
-The beauty SDK should not only give users a bunch of parameters, but also provide one-click presets.
+可用场景：
 
-## 15.1 Basic presets
-
-- Native nature
-- Clear and fair skin
-- Sweet and cute
-- Sophisticated and photogenic
-- Light and mature temperament
-- Boys are natural
--Natural ID photo
-
-## 15.2 Scene Preset
-
-- Selfie
-- Group photo
-- Live broadcast
-- video call
-- ID photo
-- Night scene selfie
-- Warm light indoors
-- Outdoor sunshine
-
-## 15.3 Crowd preset
-
-- Girls are natural
-- Girls are exquisite
-- Boys are natural
-- Refreshing for boys
-- Child protection mode
-- Natural grooming for middle-aged and elderly people
-
-Child Protection Mode Recommendations:
-
-- Significant changes in face shape are prohibited.
-- No heavy makeup.
-- Only slight skin tone, brightness, clarity optimization allowed.
+- 证件照
+- 直播背景
+- AI 写真
+- 商品图 / 头像
 
 ---
 
-# 16. Multiple face processing
+# 14. 风格化效果
 
-## 16.1 Multi-face recognition
+## 14.1 人像风格
 
-Function description: Recognize multiple faces in the same picture or video.
+- 漫画风
+- 水彩风
+- 国风
+- 油画风
+- 赛博风
+- 复古胶片
+- 3D 卡通
+- AI 写真
 
-Ability requirements:
+## 14.2 特效贴纸
 
-- Supports up to N faces.
--Support main face recognition.
--Supports selecting a certain face to adjust individually.
-- Support unified beauty for everyone.
-- Support different people using different parameters.
+- 猫耳
+- 兔耳
+- 眼镜
+- 头饰
+- 动态贴纸
+- 节日贴纸
+- AR 面具
 
-## 16.2 Main face strategy
+## 14.3 光效
 
-Optional strategies:
-
-- The face with the largest area is used as the main face.
-- The face closest to the center of the screen is used as the main face.
-- User manually selects the main face.
-- Keep track of faces recognized for the first time.
+- 逆光
+- 柔光
+- 星光
+- 光斑
+- 氛围光
+- 边缘光
 
 ---
 
-# 17. SDK parameter design suggestions
+# 15. 一键预设模板
 
-## 17.1 Parameter naming example
+美颜 SDK 不应该只给用户一堆参数，也需要提供一键预设。
 
-Basic beauty:
+## 15.1 基础预设
+
+- 原生自然
+- 清透白皙
+- 甜美可爱
+- 精致上镜
+- 轻熟气质
+- 男生自然
+- 证件照自然
+
+## 15.2 场景预设
+
+- 自拍
+- 合照
+- 直播
+- 视频通话
+- 证件照
+- 夜景自拍
+- 室内暖光
+- 户外阳光
+
+## 15.3 人群预设
+
+- 女生自然
+- 女生精致
+- 男生自然
+- 男生清爽
+- 儿童保护模式
+- 中老年自然修饰
+
+儿童保护模式建议：
+
+- 禁止脸型大幅调整。
+- 禁止浓妆。
+- 只允许轻微肤色、亮度、清晰度优化。
+
+---
+
+# 16. 多人脸处理
+
+## 16.1 多人脸识别
+
+功能说明：同一张图片或视频中识别多张脸。
+
+能力要求：
+
+- 支持最多 N 张脸。
+- 支持主脸识别。
+- 支持选择某一张脸单独调整。
+- 支持所有人统一美颜。
+- 支持不同人使用不同参数。
+
+## 16.2 主脸策略
+
+可选策略：
+
+- 面积最大的人脸作为主脸。
+- 距离画面中心最近的人脸作为主脸。
+- 用户手动选择主脸。
+- 首次识别的人脸保持跟踪。
+
+---
+
+# 17. SDK 参数设计建议
+
+## 17.1 参数命名示例
+
+基础美颜：
 
 - skinSmoothing
 - skinWhitening
@@ -914,7 +914,7 @@ Basic beauty:
 - wrinkleRemoval
 - faceSharpen
 
-Face shape:
+脸型：
 
 - faceSlim
 - faceSmall
@@ -924,7 +924,7 @@ Face shape:
 - chinWidth
 - foreheadHeight
 
-Eyes:
+眼睛：
 
 - eyeSize
 - eyeWidth
@@ -938,7 +938,7 @@ Eyes:
 - eyeBrighten
 - eyeWhite
 
-Nose:
+鼻子：
 
 - noseSlim
 - noseBridgeHeight
@@ -947,7 +947,7 @@ Nose:
 - noseTipLift
 - nosePositionY
 
-Mouth:
+嘴巴：
 
 - mouthSize
 - mouthWidth
@@ -958,7 +958,7 @@ Mouth:
 - lowerLipThickness
 - teethWhitening
 
-Makeup:
+妆容：
 
 - makeupIntensity
 - lipstickIntensity
@@ -967,7 +967,7 @@ Makeup:
 - eyeshadowIntensity
 - eyelinerIntensity
 
-Filter:
+滤镜：
 
 - filterId
 - filterIntensity
@@ -978,258 +978,257 @@ Filter:
 - tint
 - sharpness
 
-## 17.2 Parameter range recommendations
+## 17.2 参数范围建议
 
-It is recommended to use uniform ranges for most parameters:
+建议大多数参数使用统一范围：
 
-- 0 ~ 100: only enhanced parameters
-- -100 ~ 100: Bidirectional adjustment parameters
-- Bool: switch parameter
-- Enum: type selection parameter
-- String / ID: resource parameters, such as filter ID, makeup ID, sticker ID
+- 0 ~ 100：只增强型参数
+- -100 ~ 100：双向调整型参数
+- Bool：开关型参数
+- Enum：类型选择型参数
+- String / ID：资源型参数，例如滤镜 ID、妆容 ID、贴纸 ID
 
-Example:
+示例：
 
-- Big eyes: -100 ~ 100
-- Eye distance: -100 ~ 100
-- Face slimming: 0 ~ 100
-- Microdermabrasion: 0 ~ 100
-- Whitening: 0 ~ 100
-- Mouth smile: 0 ~ 100
-
----
-
-# 18. Product interface design suggestions
-
-Although this is an SDK, a Demo App or integrator UI can refer to the following structure.
-
-## 18.1 First level classification
-
-Bottom level Tab:
-
-1. Beauty
-2. Face shape
-3. facial features
-4. Makeup
-5. Filters
-6. Stickers
-7. Background
-8. Style
-
-## 18.2 Secondary classification
-
-Remove it again under the facial features:
-
-- eyes
-- nose
-- Mouth
-- eyebrows
-- Teeth
-- Hairline
-
-## 18.3 Parameter interaction
-
-Recommended interactions:
-
-- Horizontal function list
-- A slider appears after clicking on the function
-- Slider supports zeroing
-- Support long press to view the original image
--Support before and after comparison
--Supports saving custom presets
--Supports one-click restoration to default
-
-## 18.4 Advanced Mode
-
-For professional users or internal parameter adjustment:
-
--Support independent adjustment for left and right eyes
--Support local point fine-tuning
--Support parameter JSON import and export
--Support parameter group saving
-- Support A/B comparison
+- 大眼：-100 ~ 100
+- 眼距：-100 ~ 100
+- 瘦脸：0 ~ 100
+- 磨皮：0 ~ 100
+- 美白：0 ~ 100
+- 嘴角微笑：0 ~ 100
 
 ---
 
-# 19. Feature priority suggestions
+# 18. 产品界面设计建议
 
-## 19.1 MVP Phase 1
+虽然这是 SDK，但 Demo App 或集成方 UI 可以参考以下结构。
 
-Prioritize the implementation of the most core and user-perceived functions:
+## 18.1 一级分类
 
-Basic beauty:
+底部一级 Tab：
 
-- Microdermabrasion
-- Whitening
-- ruddy
-- Clarity
+1. 美颜
+2. 脸型
+3. 五官
+4. 妆容
+5. 滤镜
+6. 贴纸
+7. 背景
+8. 风格
 
-Face shape:
+## 18.2 二级分类
 
-- face slimming
-- small face
-- V face
-- Chin
+五官下再拆：
 
-Eyes:
+- 眼睛
+- 鼻子
+- 嘴巴
+- 眉毛
+- 牙齿
+- 发际线
 
-- big eyes
-- eye distance
-- The upper and lower position of the eyes
-- The tail of the eyes is raised
-- Eye light
+## 18.3 参数交互
 
-Nose:
+推荐交互：
 
-- thin nose
-- bridge of nose
-- nose
+- 横向功能列表
+- 点击功能后出现滑杆
+- 滑杆支持归零
+- 支持长按查看原图
+- 支持前后对比
+- 支持保存自定义预设
+- 支持一键恢复默认
 
-Mouth:
+## 18.4 高级模式
 
-- Mouth size
-- smile
-- lip color
-- Teeth whitening
+面向专业用户或内部调参：
 
-Filter:
-
-- Basic filters
-- Filter strength
-
-Default:
-
-- natural
-- Clear
-- Exquisite
-- Boys are natural
-
-## 19.2 Second phase
-
-- Makeup system
-- Wocan
-- Color contact lenses
-- Eyebrow adjustment
-- Dark circles / nasolabial folds
-- Individually adjust multiple faces
-- Background blur
-- LUT filter extension
-
-## 19.3 The third stage
-
-- Body beauty
-- AR stickers
-- AI stylization
-- Background replacement
-- Video high performance optimization
-- Parameters are delivered to the cloud
-- Commercial filters/makeup material package
+- 支持左右眼独立调节
+- 支持局部点位微调
+- 支持参数 JSON 导入导出
+- 支持参数组保存
+- 支持 A/B 对比
 
 ---
 
-# 20. Recommended core feature list
+# 19. 功能优先级建议
 
-If you only build a relatively complete beauty SDK, it is recommended that the core capabilities include at least:
+## 19.1 MVP 第一阶段
 
-1. Microdermabrasion
-2. Whitening
-3. ruddy
-4. Remove acne
-5. Reduce dark circles
-6. Face slimming
-7. Small face
-8. V face
-9. Chin adjustment
-10. Cheekbone adjustment
-11. Big eyes
-12. Eye distance adjustment
-13. Adjust the up and down position of the eyes
-14. Raised eyes
-15. Lying silkworm
-16. Eye light
-17. Slim nose
-18. Nose bridge adjustment
-19. Nose adjustment
-20. Nose adjustment
-21. Mouth size
-22. Smile
-23. Lip color enhancement
-24. Teeth Whitening
-25. Eyebrow Shape
-26. Eyebrow color
-27. Makeup Templates
-28. Partial makeup
-29. Filters
-30. Portrait segmentation
-31. Background blur
-32. Multi-face processing
-33. Parameter preset
-34. Parameter import and export
-35. Real-time video processing
-36. Image offline processing
+优先实现最核心、用户感知最强的功能：
 
----
+基础美颜：
 
-# 21. Product Design Principles
+- 磨皮
+- 美白
+- 红润
+- 清晰度
 
-## 21.1 Natural priority
+脸型：
 
-Beauty should not only pursue intensity, but should prioritize naturalness.
+- 瘦脸
+- 小脸
+- V 脸
+- 下巴
 
-It is recommended that each parameter have naturalness constraints internally:
+眼睛：
 
-- Avoid distortion of facial features.
-- Avoid background stretching.
-- Avoid obvious deformation of facial edges.
-- Avoid inconsistent proportions of characters in group photos.
+- 大眼
+- 眼距
+- 眼睛上下位置
+- 眼尾上扬
+- 眼神光
 
-## 21.2 Parameters can be combined
+鼻子：
 
-Users often adjust not just one parameter, but a combination of multiple parameters.
+- 瘦鼻
+- 鼻梁
+- 鼻头
 
-Need to consider:
+嘴巴：
 
-- Microdermabrasion + Clarity do not cancel each other out.
-- Big eyes + distance between eyes + raised tail of eyes need to keep the eyes natural.
-- For face slimming + chin + V face, you need to avoid having a face that is too pointed.
-- Makeup + filters need to avoid oversaturated colors.
+- 嘴巴大小
+- 嘴角微笑
+- 唇色
+- 牙齿美白
 
-## 21.3 Real-time performance priority
+滤镜：
 
-As an SDK, you must pay attention to real-time preview performance.
+- 基础滤镜
+- 滤镜强度
 
-Basic requirements:
+预设：
 
-- Support image processing.
-- Support camera real-time preview.
-- Support video frame processing.
-- Support low-end machine downgrade strategy.
--Support different resolution output.
+- 自然
+- 清透
+- 精致
+- 男生自然
 
-## 21.4 Configurable and extensible
+## 19.2 第二阶段
 
-The SDK should not hard-code all capabilities.
+- 妆容系统
+- 卧蚕
+- 美瞳
+- 眉毛调整
+- 黑眼圈 / 法令纹
+- 多人脸单独调整
+- 背景虚化
+- LUT 滤镜扩展
 
-Recommended support:
+## 19.3 第三阶段
 
-- Distribution of configuration files.
-- Filter resources are dynamically loaded.
--Dynamic loading of makeup materials.
-- Parameter presets are dynamically loaded.
-- Function modules are enabled on demand.
+- 身体美型
+- AR 贴纸
+- AI 风格化
+- 背景替换
+- 视频高性能优化
+- 参数云端下发
+- 商业化滤镜 / 妆容素材包
 
 ---
 
-# 22. Documents that can be split later
+# 20. 推荐的核心功能清单
 
-You can continue to split it into the following documents:
+如果只做一套比较完整的美颜 SDK，建议核心能力至少包括：
 
-1. "Beauty SDK Product Requirements Document PRD"
-2. "Beauty SDK Function Parameter List"
-3. "Beauty SDK Demo App UI Structure Design"
-4. "Beauty SDK Face Key Points and Algorithm Capability Planning"
-5. "Beauty SDK iOS Technical Architecture Design"
-6. "Beauty SDK Filter and Makeup Resource Specifications"
-7. "Beauty SDK External API Design Document"
-8. "Beauty SDK Performance and Model Adaptation Plan"
+1. 磨皮
+2. 美白
+3. 红润
+4. 祛痘
+5. 黑眼圈淡化
+6. 瘦脸
+7. 小脸
+8. V 脸
+9. 下巴调整
+10. 颧骨调整
+11. 大眼
+12. 眼距调整
+13. 眼睛上下位置调整
+14. 眼尾上扬
+15. 卧蚕
+16. 眼神光
+17. 瘦鼻
+18. 鼻梁调整
+19. 鼻翼调整
+20. 鼻头调整
+21. 嘴巴大小
+22. 嘴角微笑
+23. 唇色增强
+24. 牙齿美白
+25. 眉毛形状
+26. 眉色
+27. 妆容模板
+28. 局部妆容
+29. 滤镜
+30. 人像分割
+31. 背景虚化
+32. 多人脸处理
+33. 参数预设
+34. 参数导入导出
+35. 实时视频处理
+36. 图片离线处理
 
+---
+
+# 21. 产品设计原则
+
+## 21.1 自然优先
+
+美颜不能只追求强度，应该优先保证自然。
+
+建议每个参数内部都带自然度约束：
+
+- 避免五官扭曲。
+- 避免背景被拉伸。
+- 避免脸部边缘变形明显。
+- 避免多人合照中人物比例不一致。
+
+## 21.2 参数可组合
+
+用户常常不是只调一个参数，而是多个参数组合。
+
+需要考虑：
+
+- 磨皮 + 清晰度不能互相抵消。
+- 大眼 + 眼距 + 眼尾上扬需要保持眼睛自然。
+- 瘦脸 + 下巴 + V 脸需要避免脸型过尖。
+- 妆容 + 滤镜需要避免颜色过饱和。
+
+## 21.3 实时性能优先
+
+作为 SDK，必须关注实时预览性能。
+
+基础要求：
+
+- 支持图片处理。
+- 支持相机实时预览。
+- 支持视频帧处理。
+- 支持低端机降级策略。
+- 支持不同分辨率输出。
+
+## 21.4 可配置、可扩展
+
+SDK 不应该把所有能力写死。
+
+建议支持：
+
+- 配置文件下发。
+- 滤镜资源动态加载。
+- 妆容素材动态加载。
+- 参数预设动态加载。
+- 功能模块按需启用。
+
+---
+
+# 22. 后续可继续拆分的文档
+
+后续可以继续拆成以下几份文档：
+
+1. 《美颜 SDK 产品需求文档 PRD》
+2. 《美颜 SDK 功能参数表》
+3. 《美颜 SDK Demo App UI 结构设计》
+4. 《美颜 SDK 人脸关键点与算法能力规划》
+5. 《美颜 SDK iOS 技术架构设计》
+6. 《美颜 SDK 滤镜与妆容资源规范》
+7. 《美颜 SDK 对外 API 设计文档》
+8. 《美颜 SDK 性能与机型适配方案》

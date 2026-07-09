@@ -1,56 +1,75 @@
-# 09. iOS Beauty SDK Algorithm and Effect Implementation
+# Beauty SDK Algorithm Effects Implementation
 
-iOS Beauty SDK Algorithm Effect Implementation Document
-1. Documentation goals
-This document defines the implementation scheme of core beauty effects in BeautySDK.
-What must be achieved to cover the first version of MVP:
-1. Big eyes / small eyes
-2. Eye distance adjustment
-3. Up and down position of eyes
-4. Raise the tail of the eyes
-5. Face slimming
-6. Small face
-7. V face
-8. Chin adjustment
-9. Slim nose
-10. Narrowing of the nose
-11. Reduction of nose tip
-12. Mouth size
-13. Mouth width
-14. Smile
-15. Microdermabrasion
-16. Whitening
-17. ruddy
-18. Clear / Sharpen
-19. Lip color enhancement
-20. LUT filters
-This document is intended to guide:
-BeautyEffects module development
-Metal shader development
-WarpControlPointProvider Development
-Parameter debugging
-Effect acceptance
-Performance optimization
+## 1. 文档目标
 
-2. Overall implementation principles
-2.1 Geometric deformation unified into FaceWarpPass
-The following functions all belong to geometric deformation:
-big eyes
-eye distance
-eyes up and down
-Eye tail raised
-face slimming
-small face
-V face
-chin
-thin nose
-Nose
-Nose
-mouth size
-mouth width
-smile
-These features should not be written independently of Metal Pass.
-Unified process:
+本文档定义 BeautySDK 中核心美颜效果的实现方案。
+
+覆盖第一版 MVP 必须实现的效果：
+
+```text
+1. 大眼 / 小眼
+2. 眼距调整
+3. 眼睛上下位置
+4. 眼尾上扬
+5. 瘦脸
+6. 小脸
+7. V 脸
+8. 下巴调整
+9. 瘦鼻
+10. 鼻翼收窄
+11. 鼻头缩小
+12. 嘴巴大小
+13. 嘴巴宽度
+14. 嘴角微笑
+15. 磨皮
+16. 美白
+17. 红润
+18. 清晰 / 锐化
+19. 唇色增强
+20. LUT 滤镜
+```
+
+本文档用于指导：
+
+```text
+BeautyEffects 模块开发
+Metal shader 开发
+WarpControlPointProvider 开发
+参数调试
+效果验收
+性能优化
+```
+
+---
+
+# 2. 总体实现原则
+
+## 2.1 几何形变统一进入 FaceWarpPass
+
+以下功能全部属于几何形变：
+
+```text
+大眼
+眼距
+眼睛上下
+眼尾上扬
+瘦脸
+小脸
+V 脸
+下巴
+瘦鼻
+鼻翼
+鼻头
+嘴巴大小
+嘴巴宽度
+嘴角微笑
+```
+
+这些功能不应该各自写独立 Metal Pass。
+
+统一流程：
+
+```text
 BeautyParameters
         ↓
 WarpControlPointProvider
@@ -59,27 +78,46 @@ WarpControlPointProvider
         ↓
 FaceWarpPass
         ↓
-Warp.Metal
+Warp.metal
         ↓
 warpedTexture
-2.2 Merging color effects
-The following features are color and image enhancements:
-Whitening
-ruddy
-clear / sharpen
-lip color enhancement
-LUT filter
-Wherever possible, should be combined:
-SkinPass: microdermabrasion, whitening, rosiness
-ColorPass: Basic Color, Clear/Sharpen
-LUTPass: filter
-MakeupPass: lip color, lipstick, blush, subsequent versions
-2.3 Parameters must have security strength mapping
-Although the UI incoming value is:
+```
+
+## 2.2 颜色类效果合并处理
+
+以下功能属于颜色和图像增强：
+
+```text
+美白
+红润
+清晰 / 锐化
+唇色增强
+LUT 滤镜
+```
+
+应尽量合并：
+
+```text
+SkinPass：磨皮、美白、红润
+ColorPass：基础颜色、清晰 / 锐化
+LUTPass：滤镜
+MakeupPass：唇色、口红、腮红，后续版本
+```
+
+## 2.3 参数必须有安全强度映射
+
+UI 传入值虽然是：
+
+```text
 0...1
 -1...1
-But the full range cannot be used directly linearly within the algorithm.
-should do:
+```
+
+但算法内部不能直接线性使用完整范围。
+
+应该做：
+
+```text
 normalized parameter
         ↓
 clamp
@@ -89,11 +127,21 @@ safety scale
 nonlinear curve
         ↓
 actual displacement / color intensity
-Example:
-let safeStrength = pow(abs(parameter), 0.85) * maxStrength
+```
 
-3. Public data structures
-3.1 WarpControlPoint
+示例：
+
+```swift
+let safeStrength = pow(abs(parameter), 0.85) * maxStrength
+```
+
+---
+
+# 3. 公共数据结构
+
+## 3.1 WarpControlPoint
+
+```swift
 public struct WarpControlPoint: Sendable {
     public let source: SIMD2<Float>
     public let target: SIMD2<Float>
@@ -101,13 +149,21 @@ public struct WarpControlPoint: Sendable {
     public let strength: Float
     public let falloff: Float
 }
-Field description:
-source: original position of control point, Texture Normalized coordinates
-target: control point target position, Texture Normalized coordinates
-radius: influence radius, Texture Normalized unit
-strength: actual strength, usually 0...1
-falloff: attenuation parameter, controlling edge transition
-3.2 WarpControlPointProvider
+```
+
+字段说明：
+
+```text
+source：控制点原始位置，Texture Normalized 坐标
+target：控制点目标位置，Texture Normalized 坐标
+radius：影响半径，Texture Normalized 单位
+strength：实际强度，通常 0...1
+falloff：衰减参数，控制边缘过渡
+```
+
+## 3.2 WarpControlPointProvider
+
+```swift
 public protocol WarpControlPointProvider {
     func makeControlPoints(
         face: BeautyFaceObservation,
@@ -115,9 +171,15 @@ public protocol WarpControlPointProvider {
         imageSize: CGSize
     ) -> [WarpControlPoint]
 }
-3.3 LandmarkGeometryHelper
-All providers should rely on unified geometry tools and not write their own.
-Suggested tools:
+```
+
+## 3.3 LandmarkGeometryHelper
+
+所有 Provider 都应该依赖统一的几何工具，不要自己散写。
+
+建议工具：
+
+```swift
 public enum LandmarkGeometryHelper {
     public static func center(of points: [SIMD2<Float>]) -> SIMD2<Float>?
     public static func boundingRect(of points: [SIMD2<Float>]) -> CGRect?
@@ -127,26 +189,45 @@ public enum LandmarkGeometryHelper {
     public static func topMostPoint(in points: [SIMD2<Float>]) -> SIMD2<Float>?
     public static func bottomMostPoint(in points: [SIMD2<Float>]) -> SIMD2<Float>?
 }
+```
 
-4. FaceWarpPass overall design
-4.1 Input
+---
+
+# 4. FaceWarpPass 总体设计
+
+## 4.1 输入
+
+```text
 inputTexture
 BeautyParameters
 [BeautyFaceObservation]
 [WarpControlPointProvider]
-4.2 Output
+```
+
+## 4.2 输出
+
+```text
 outputTexture
-4.3 Processing flow
-1. Traverse faces.
-2. Traverse providers.
-3. Each provider generates control points based on the current face and parameters.
-4. Merge all control points.
-5. Upload to GPU buffer.
-6. Warp.Metal reverse-samples each pixel.
-7. Output warpedTexture.
-4.4 Metal sampling logic
-Each output pixel:
-p = current output coordinates
+```
+
+## 4.3 处理流程
+
+```text
+1. 遍历 faces。
+2. 遍历 providers。
+3. 每个 provider 根据当前 face 和 parameters 生成控制点。
+4. 合并所有控制点。
+5. 上传到 GPU buffer。
+6. Warp.metal 对每个像素做反向采样。
+7. 输出 warpedTexture。
+```
+
+## 4.4 Metal 采样逻辑
+
+每个输出像素：
+
+```text
+p = 当前输出坐标
 samplePosition = p
 
 for controlPoint in controlPoints:
@@ -157,234 +238,479 @@ for controlPoint in controlPoints:
         samplePosition -= offset
 
 output[p] = input[samplePosition]
-Use reverse sampling:
-Invert the input sampling position from the output pixel
-avoid cavities
-4.5 falloff curve
-Recommended first edition:
+```
+
+使用反向采样：
+
+```text
+从 output 像素反推 input 采样位置
+避免出现空洞
+```
+
+## 4.5 falloff 曲线
+
+推荐第一版：
+
+```text
 x = d / radius
 weight = (1 - x)^2
-Softer:
+```
+
+更柔和：
+
+```text
 weight = smoothstep(1, 0, x)
-Metal example:
+```
+
+Metal 示例：
+
+```metal
 float falloffWeight(float x, float falloff) {
     x = clamp(x, 0.0, 1.0);
     float w = 1.0 - smoothstep(0.0, 1.0, x);
     return pow(w, max(falloff, 0.001));
 }
+```
 
-5. EyeWarpProvider: Eye effects
-5.1 Support parameters
+---
+
+# 5. EyeWarpProvider：眼睛类效果
+
+## 5.1 支持参数
+
+```text
 eyeSize
 eyeDistance
 eyeYPosition
 eyeTailLift
-Key points of dependency:
-leftEye
-rightEye
-leftPupil, optional
-rightPupil, optional
+```
 
-5.2 eyeSize: big eyes / small eyes
-Function description
-Adjust the overall size of the eyes.
-Positive number: eyes become bigger
-Negative numbers: eyes become smaller
-input parameters
-eyeSize: -1...1
-Dependence point
+依赖关键点：
+
+```text
 leftEye
 rightEye
-Control point generation
-For each eye:
+leftPupil，可选
+rightPupil，可选
+```
+
+---
+
+## 5.2 eyeSize：大眼 / 小眼
+
+### 功能说明
+
+调整眼睛整体大小。
+
+```text
+正数：眼睛变大
+负数：眼睛变小
+```
+
+### 输入参数
+
+```text
+eyeSize: -1...1
+```
+
+### 依赖点位
+
+```text
+leftEye
+rightEye
+```
+
+### 控制点生成
+
+对每只眼睛：
+
+```text
 eyeCenter = center(eyePoints)
 eyeRect = boundingRect(eyePoints)
 eyeWidth = eyeRect.width
 eyeHeight = eyeRect.height
 radius = max(eyeWidth, eyeHeight) * radiusScale
-Recommended:
+```
+
+推荐：
+
+```text
 radiusScale = 1.8 ~ 2.4
 maxStrength = 0.45
-For big eyes:
+```
+
+对于大眼：
+
+```text
 source = eyeCenter
 target = eyeCenter
-However, a single source/target point is not enough to express amplification. The shader needs to support the radial scale type, or use multiple control points.
-The first version is simpler:
-Provide a radialScale control type for eyeSize in the shader.
-If you insist on unifying the WarpControlPoint, you can generate multiple control points around the eyes:
-The point above the eye moves upward
-Now point moves down
-Eyes move outward
-Eye tail moves outward
-Recommended first version implementation
-In order to unify Provider, it is recommended to generate 4 control points:
-top point -> move up
-bottom point -> move down
-inner point -> move toward the outside of the eye head
-outer point -> move to the outside of the eye
-For each eye:
+```
+
+但单个 source/target 点不足以表达放大，需要 shader 支持 radial scale 类型，或者用多个控制点。
+
+第一版更简单方案：
+
+```text
+在 shader 中为 eyeSize 提供 radialScale control type。
+```
+
+如果坚持统一 WarpControlPoint，可以生成眼周多个控制点：
+
+```text
+眼上点向上移动
+眼下点向下移动
+眼头向外移动
+眼尾向外移动
+```
+
+### 推荐第一版实现
+
+为了统一 Provider，建议生成 4 个控制点：
+
+```text
+top point    -> 向上移动
+bottom point -> 向下移动
+inner point  -> 向眼头外侧移动
+outer point  -> 向眼尾外侧移动
+```
+
+对于每只眼睛：
+
+```text
 top = topMostPoint(eyePoints)
 bottom = bottomMostPoint(eyePoints)
 left = leftMostPoint(eyePoints)
 right = rightMostPoint(eyePoints)
 center = center(eyePoints)
-Moving direction:
+```
+
+移动方向：
+
+```text
 direction = normalize(point - center)
 target = point + direction * displacement
-Displacement:
-displacement = eyeSize * maxStrength * eyeWidth
-security restrictions
-Actual strength limit: 0.45
-The radius of influence cannot exceed 2.5 times the width of the eye
-Does not significantly affect eyebrows and nose bridge
-Skip if there are no eye points
-Skip when the number of left and right eye points is abnormal.
-Acceptance criteria
-Eyes become bigger obviously but naturally
-Eyeballs and eyelid edges are not cracked
-Eyebrows are not obviously deformed
-The bridge of the nose is not pulled crooked
-The effect is the same for left and right eyes
+```
 
-5.3 eyeDistance: eye distance adjustment
-Function description
-Adjust the distance between your eyes.
-Negative numbers: Eye distance becomes closer
-Positive number: The distance between the eyes becomes farther
-Dependence point
+位移：
+
+```text
+displacement = eyeSize * maxStrength * eyeWidth
+```
+
+### 安全限制
+
+```text
+实际强度上限：0.45
+影响半径不能超过眼睛宽度的 2.5 倍
+不能明显影响眉毛和鼻梁
+没有眼睛点时跳过
+左右眼点数异常时跳过
+```
+
+### 验收标准
+
+```text
+眼睛变大明显但自然
+眼球和眼皮边缘不破裂
+眉毛不明显变形
+鼻梁不被拉歪
+左右眼效果一致
+```
+
+---
+
+## 5.3 eyeDistance：眼距调整
+
+### 功能说明
+
+调整两眼之间距离。
+
+```text
+负数：眼距变近
+正数：眼距变远
+```
+
+### 依赖点位
+
+```text
 leftEye center
 rightEye center
 face center
-Control point generation
+```
+
+### 控制点生成
+
+```text
 leftEyeCenter
 rightEyeCenter
 faceCenterX
-Direction:
+```
+
+方向：
+
+```text
 left eye:
-eyeDistance > 0: move left
-    eyeDistance < 0: move right
+    eyeDistance > 0：向左移动
+    eyeDistance < 0：向右移动
 
 right eye:
-    eyeDistance > 0: move to the right
-    eyeDistance < 0: move left
-Displacement:
+    eyeDistance > 0：向右移动
+    eyeDistance < 0：向左移动
+```
+
+位移：
+
+```text
 displacement = abs(eyeDistance) * maxStrength * distanceBetweenEyes
 maxStrength = 0.12 ~ 0.18
-Control points:
+```
+
+控制点：
+
+```text
 source = eyeCenter
 target = eyeCenter + horizontalOffset
 radius = eyeWidth * 2.0
-security restrictions
-Actual strength limit: 0.3
-The affected area cannot cover the entire nose
-It is recommended to only affect the orbital area
-Acceptance criteria
-The distance between the eyes changes naturally
-The bridge of the nose is not obviously distorted
-Eye shape is not significantly deformed
+```
 
-5.4 eyeYPosition: the upper and lower position of the eye
-Function description
-Overall adjustment of vertical eye position.
-Positive number: Eyes move upward
-Negative numbers: Eyes move downward
-Control point generation
-Generate a central control point for each eye:
+### 安全限制
+
+```text
+实际强度上限：0.3
+影响区域不能覆盖整个鼻子
+建议只影响眼眶周围
+```
+
+### 验收标准
+
+```text
+两眼距离变化自然
+鼻梁不明显扭曲
+眼睛形状不明显变形
+```
+
+---
+
+## 5.4 eyeYPosition：眼睛上下位置
+
+### 功能说明
+
+整体调整眼睛垂直位置。
+
+```text
+正数：眼睛上移
+负数：眼睛下移
+```
+
+### 控制点生成
+
+每只眼睛生成一个中心控制点：
+
+```text
 source = eyeCenter
 target = eyeCenter + SIMD2(0, -verticalOffset)
-Note:
-If the Texture Normalized coordinate y increases downward, then:
-Move up: target.y -= offset
-Move down: target.y += offset
-Displacement:
+```
+
+注意：
+
+如果 Texture Normalized 坐标 y 向下增加，则：
+
+```text
+上移：target.y -= offset
+下移：target.y += offset
+```
+
+位移：
+
+```text
 offset = eyeYPosition * maxStrength * faceHeight
 maxStrength = 0.03 ~ 0.06
-security restrictions
-Actual strength limit: 0.25
-The upper and lower position of the eyes is a strong proportional adjustment, so the first version should be conservative.
-Avoid abnormal distance between eyebrows and eyes
+```
 
-5.5 eyeTailLift: Eye tail lift
-Function description
-Adjust the angle of the eye end.
-Positive number: the tail of the eye is raised
-Negative number: Press down the tail of the eye
-Dependence point
+### 安全限制
+
+```text
+实际强度上限：0.25
+眼睛上下位置属于强比例调整，第一版要保守
+避免眉眼距离异常
+```
+
+---
+
+## 5.5 eyeTailLift：眼尾上扬
+
+### 功能说明
+
+调整眼尾角度。
+
+```text
+正数：眼尾上扬
+负数：眼尾下压
+```
+
+### 依赖点位
+
+```text
 leftEye
 rightEye
-Eye end judgment
-In non-mirror unified coordinates:
-Outer corner of left eye: further to the left
-Outer corner of right eye: further to the right
-But if the input is mirrored coordinates, CoordinateMapper has been unified to the texture coordinates, so the Provider can only judge based on the current texture.
-Control point generation
+```
+
+### 眼尾判断
+
+在非镜像统一坐标下：
+
+```text
+左眼外眼角：更靠左的点
+右眼外眼角：更靠右的点
+```
+
+但如果输入是镜像后坐标，CoordinateMapper 已经统一到 texture 坐标，所以 Provider 只根据当前 texture 左右判断即可。
+
+### 控制点生成
+
+```text
 leftEyeOuter = leftMostPoint(leftEye)
 rightEyeOuter = rightMostPoint(rightEye)
-Move:
-Upward: outer.y -= offset
-Press down: outer.y += offset
-Displacement:
+```
+
+移动：
+
+```text
+上扬：outer.y -= offset
+下压：outer.y += offset
+```
+
+位移：
+
+```text
 offset = eyeTailLift * maxStrength * eyeHeight
 maxStrength = 0.4 ~ 0.7
-radius：
-eyeWidth * 1.2
-Acceptance criteria
-Changes in the angle of the tail of the eye are visible
-No obvious movement of eyes and head
-The eyes do not drift as a whole
+```
 
-6. FaceShapeWarpProvider: Face shape effect
-6.1 Support parameters
+radius：
+
+```text
+eyeWidth * 1.2
+```
+
+### 验收标准
+
+```text
+眼尾角度变化可见
+眼头不明显移动
+眼睛不整体漂移
+```
+
+---
+
+# 6. FaceShapeWarpProvider：脸型类效果
+
+## 6.1 支持参数
+
+```text
 faceSlim
 faceSmall
 faceVShape
 jawSlim
-Key points of dependency:
+```
+
+依赖关键点：
+
+```text
 faceContour
 boundingBox
+```
 
-6.2 faceSlim: face slimming
-Function description
-Narrow the cheek area.
-Dependence point
+---
+
+## 6.2 faceSlim：瘦脸
+
+### 功能说明
+
+收窄脸颊区域。
+
+### 依赖点位
+
+```text
 faceContour
 faceCenter
-Control point selection
-Need an estimate:
+```
+
+### 控制点选择
+
+需要估计：
+
+```text
 leftCheek
 rightCheek
-If the faceContour points are arranged from one side to the other side according to the contour, the points on both sides of the middle and lower parts can be taken.
-More robust first version approach:
+```
+
+如果 faceContour 点位按轮廓从一侧到另一侧排列，可以取中下部两侧点。
+
+更稳健的第一版方式：
+
+```text
 faceRect = boundingRect(faceContour)
 leftCheek = SIMD2(faceRect.minX, faceRect.midY + faceRect.height * 0.12)
 rightCheek = SIMD2(faceRect.maxX, faceRect.midY + faceRect.height * 0.12)
 faceCenter = center(faceContour)
-Control point generation
+```
+
+### 控制点生成
+
+```text
 leftCheek target  = leftCheek  + SIMD2(+offset, 0)
 rightCheek target = rightCheek + SIMD2(-offset, 0)
-Displacement:
+```
+
+位移：
+
+```text
 offset = faceSlim * maxStrength * faceWidth
 maxStrength = 0.08 ~ 0.12
-radius：
-faceWidth * 0.35 ~ 0.45
-security restrictions
-Actual strength limit: 0.6
-Reduce intensity when the face is too sideways
-Skip if faceContour is incomplete
-If the face is too small, skip or reduce the intensity.
-Acceptance criteria
-Cheeks narrow naturally
-The background stretch is not obvious
-The mouth and nose are not obviously deformed
-The left and right faces are basically symmetrical
+```
 
-6.3 faceSmall: small face
-Function description
-Reduce the overall visual area of the face.
-Implementation ideas
-Move the facial contour points as a whole toward the center of the face.
-Control point generation
-Select multiple contour points:
+radius：
+
+```text
+faceWidth * 0.35 ~ 0.45
+```
+
+### 安全限制
+
+```text
+实际强度上限：0.6
+人脸太侧时降低强度
+faceContour 不完整时跳过
+脸太小则跳过或降低强度
+```
+
+### 验收标准
+
+```text
+脸颊变窄自然
+背景拉伸不明显
+嘴巴鼻子不明显变形
+左右脸基本对称
+```
+
+---
+
+## 6.3 faceSmall：小脸
+
+### 功能说明
+
+整体缩小脸部视觉面积。
+
+### 实现思路
+
+将脸部轮廓点整体向脸中心移动。
+
+### 控制点生成
+
+选择多个轮廓点：
+
+```text
 leftUpperFace
 leftCheek
 leftJaw
@@ -392,254 +718,559 @@ rightUpperFace
 rightCheek
 rightJaw
 chin
-Each point:
+```
+
+每个点：
+
+```text
 direction = normalize(faceCenter - point)
 target = point + direction * displacement
-Displacement:
+```
+
+位移：
+
+```text
 displacement = faceSmall * maxStrength * faceWidth
 maxStrength = 0.04 ~ 0.08
-radius：
-faceWidth * 0.25 ~ 0.4
-security restrictions
-Actual strength limit: 0.45
-Don’t let the entire facial features collapse toward the center
-It is not recommended to move the forehead too much in the first version
+```
 
-6.4 faceVShape: V face
-Function description
-Tighten the lower face to bring it closer to a V-shape.
-Dependence point
+radius：
+
+```text
+faceWidth * 0.25 ~ 0.4
+```
+
+### 安全限制
+
+```text
+实际强度上限：0.45
+不要让五官整体向中心塌陷
+不建议第一版移动额头过多
+```
+
+---
+
+## 6.4 faceVShape：V 脸
+
+### 功能说明
+
+收紧下脸部，让脸型更接近 V 型。
+
+### 依赖点位
+
+```text
 faceContour
 chin point
 jaw points
-Control point generation
-leftJaw -> move inwards and upwards
-rightJaw -> move inwards and upwards
-chin -> slightly downward or maintain, depending on the effect of the product
-Displacement:
+```
+
+### 控制点生成
+
+```text
+leftJaw  -> 向内上方移动
+rightJaw -> 向内上方移动
+chin     -> 轻微向下或保持，视产品效果决定
+```
+
+位移：
+
+```text
 jawOffsetX = faceVShape * maxStrength * faceWidth
 jawOffsetY = faceVShape * maxStrength * faceHeight * 0.2
-Recommended:
-maxStrength = 0.06 ~ 0.1
-security restrictions
-Actual strength limit: 0.5
-Prevent awl face
-Prevent the chin from being too pointed
+```
 
-6.5 jawSlim: jaw tightening
-Function description
-Optimize jawline and cheeks.
-Control point generation
-Select the left and right sides of the jaw:
+推荐：
+
+```text
+maxStrength = 0.06 ~ 0.1
+```
+
+### 安全限制
+
+```text
+实际强度上限：0.5
+防止锥子脸
+防止下巴过尖
+```
+
+---
+
+## 6.5 jawSlim：下颌收紧
+
+### 功能说明
+
+优化下颌线和腮帮。
+
+### 控制点生成
+
+选择下颌左右两侧：
+
+```text
 leftJawArea
 rightJawArea
-Goal:
-move inward
-Move slightly upward
-Acceptance criteria
-The jawline is tighter
-Does not affect the corners of the mouth
-No obvious distortion in the neck area
+```
 
-7. ChinWarpProvider: Chin adjustment
-7.1 chinLength: chin length
-Function description
-Positive numbers: elongate the chin
-Negative number: shorten the chin
-Dependence point
+目标：
+
+```text
+向内移动
+轻微向上移动
+```
+
+### 验收标准
+
+```text
+下颌线更收紧
+不影响嘴角
+脖子区域不明显扭曲
+```
+
+---
+
+# 7. ChinWarpProvider：下巴调整
+
+## 7.1 chinLength：下巴长度
+
+### 功能说明
+
+```text
+正数：拉长下巴
+负数：缩短下巴
+```
+
+### 依赖点位
+
+```text
 faceContour bottom point
 outerLips
 faceCenter
-Control point generation
+```
+
+### 控制点生成
+
+```text
 chinPoint = bottomMostPoint(faceContour)
-Move:
-Positive number: chinPoint.y += offset
-Negative number: chinPoint.y -= offset
-If the Texture coordinate y increases downward:
-Lengthen chin = y increases
-shorten chin = y decrease
-Displacement:
+```
+
+移动：
+
+```text
+正数：chinPoint.y += offset
+负数：chinPoint.y -= offset
+```
+
+如果 Texture 坐标 y 向下增加：
+
+```text
+拉长下巴 = y 增加
+缩短下巴 = y 减少
+```
+
+位移：
+
+```text
 offset = chinLength * maxStrength * faceHeight
 maxStrength = 0.06 ~ 0.1
-radius：
-faceWidth * 0.25
-security restrictions
-Actual strength limit: 0.35
-Do not affect the mouth area too much
-Do not cause sharp deformity of the chin
+```
 
-8. NoseWarpProvider: nose effect
-8.1 Support parameters
+radius：
+
+```text
+faceWidth * 0.25
+```
+
+### 安全限制
+
+```text
+实际强度上限：0.35
+不要影响嘴巴区域过多
+不要导致下巴尖锐畸形
+```
+
+---
+
+# 8. NoseWarpProvider：鼻子类效果
+
+## 8.1 支持参数
+
+```text
 noseSlim
 noseWingSlim
 noseTipSize
 noseBridge
-Key points of dependency:
-nose
-noseCrest
+```
 
-8.2 noseSlim: thin nose
-Function description
-Overall narrowing of the nose area.
-Dependence point
+依赖关键点：
+
+```text
 nose
 noseCrest
-Nose bridge centerline estimation
+```
+
+---
+
+## 8.2 noseSlim：瘦鼻
+
+### 功能说明
+
+整体收窄鼻子区域。
+
+### 依赖点位
+
+```text
+nose
+noseCrest
+```
+
+### 鼻梁中心线估计
+
+```text
 noseCenter = center(nose + noseCrest)
 noseRect = boundingRect(nose)
-Control point generation
-Estimate the left and right boundaries of the nose:
+```
+
+### 控制点生成
+
+估计鼻子左右边界：
+
+```text
 leftNose = leftMostPoint(nose)
 rightNose = rightMostPoint(nose)
-Move towards the center:
+```
+
+向中心移动：
+
+```text
 leftNose target = leftNose + SIMD2(+offset, 0)
 rightNose target = rightNose + SIMD2(-offset, 0)
-Displacement:
+```
+
+位移：
+
+```text
 offset = noseSlim * maxStrength * noseWidth
 maxStrength = 0.12 ~ 0.2
-radius：
-noseWidth * 1.2 ~ 1.8
-security restrictions
-Actual strength limit: 0.35
-Skip when there are insufficient points
-Reduce intensity when facing sideways
+```
 
-8.3 noseWingSlim: nose wing narrowing
-Function description
-Narrow the nose.
-Control point selection
-Select the left and right borders of the lower half of the nose area.
-If the Vision point is not stable enough:
-Use the lower part of nose boundingRect to estimate nose position
+radius：
+
+```text
+noseWidth * 1.2 ~ 1.8
+```
+
+### 安全限制
+
+```text
+实际强度上限：0.35
+点位不足时跳过
+侧脸时降低强度
+```
+
+---
+
+## 8.3 noseWingSlim：鼻翼收窄
+
+### 功能说明
+
+收窄鼻翼。
+
+### 控制点选择
+
+选择 nose 区域下半部分左右边界。
+
+如果 Vision 点位不够稳定：
+
+```text
+使用 nose boundingRect 下部估算鼻翼位置
+```
+
+```text
 leftWing = SIMD2(noseRect.minX, noseRect.maxY - noseRect.height * 0.25)
 rightWing = SIMD2(noseRect.maxX, noseRect.maxY - noseRect.height * 0.25)
-Move:
-leftWing -> right
-rightWing -> left
-security restrictions
-Actual strength limit: 0.35
-The radius should be smaller than noseSlim
-Avoid affecting the area above the lips too much.
+```
 
-8.4 noseTipSize: nose tip size
-Function description
-Negative number: The tip of the nose is reduced
-Positive number: The tip of the nose is enlarged and is usually not exposed on the product
-Control point generation
-Estimated nose center:
+移动：
+
+```text
+leftWing -> 向右
+rightWing -> 向左
+```
+
+### 安全限制
+
+```text
+实际强度上限：0.35
+半径要小于 noseSlim
+不要影响嘴唇上方过多
+```
+
+---
+
+## 8.4 noseTipSize：鼻头大小
+
+### 功能说明
+
+```text
+负数：鼻头缩小
+正数：鼻头放大，产品上通常不暴露
+```
+
+### 控制点生成
+
+估计鼻头中心：
+
+```text
 noseTip = bottomMostPoint(nose)
-To reduce the size of the nose tip, you can use multiple points to move toward the center of the nose tip:
+```
+
+缩小鼻头可以用多个点向鼻头中心移动：
+
+```text
 leftTipBoundary -> noseTipCenter
 rightTipBoundary -> noseTipCenter
 topTipBoundary -> noseTipCenter
 bottomTipBoundary -> noseTipCenter
-Simplified first version:
-The left and right borders of the nose move toward the center
-security restrictions
-Actual strength limit: 0.3
-Avoid nose collapse
+```
 
-8.5 noseBridge: nose bridge enhancement
-Function description
-Enhance the three-dimensional effect of the bridge of the nose.
-implementation strategy
-The first edition can be divided into two parts:
-1. Slight geometric narrowing of the bridge of the nose
-2. Slight light and shadow enhancement
-Geometry part:
-The left and right areas around noseCrest move toward the center line
-The light and shadow part will be later put into Makeup/Light effect:
-Nose bridge highlight
-nasal shadow
-Note
-The bridge of the nose becoming higher is not a purely geometric problem.
-Don’t just rely on stretching.
+第一版简化：
 
-9. MouthWarpProvider: mouth effects
-9.1 Support parameters
+```text
+鼻头左右边界向中心移动
+```
+
+### 安全限制
+
+```text
+实际强度上限：0.3
+避免鼻头塌陷
+```
+
+---
+
+## 8.5 noseBridge：鼻梁增强
+
+### 功能说明
+
+增强鼻梁立体感。
+
+### 实现策略
+
+第一版可以分两部分：
+
+```text
+1. 轻微几何收窄鼻梁
+2. 轻微光影增强
+```
+
+几何部分：
+
+```text
+noseCrest 周围左右区域向中心线移动
+```
+
+光影部分后续放到 Makeup / Light effect：
+
+```text
+鼻梁高光
+鼻侧阴影
+```
+
+### 注意
+
+```text
+鼻梁变高不是纯几何问题。
+不要只靠拉伸实现。
+```
+
+---
+
+# 9. MouthWarpProvider：嘴巴类效果
+
+## 9.1 支持参数
+
+```text
 mouthSize
 mouthWidth
 smile
-Key points of dependency:
+```
+
+依赖关键点：
+
+```text
 outerLips
 innerLips
+```
 
-9.2 mouthSize: mouth size
-Function description
-Positive number: the mouth becomes bigger
-Negative numbers: the mouth becomes smaller
-Dependence point
+---
+
+## 9.2 mouthSize：嘴巴大小
+
+### 功能说明
+
+```text
+正数：嘴巴变大
+负数：嘴巴变小
+```
+
+### 依赖点位
+
+```text
 outerLips
 mouthCenter
-Control point generation
-Get the upper, lower, left and right boundaries of the mouth:
+```
+
+### 控制点生成
+
+取嘴巴上下左右边界：
+
+```text
 topLip
 bottomLip
 leftCorner
 rightCorner
 mouthCenter
-Move:
+```
+
+移动：
+
+```text
 direction = normalize(point - mouthCenter)
 target = point + direction * displacement
-Displacement:
+```
+
+位移：
+
+```text
 displacement = mouthSize * maxStrength * mouthWidth
 maxStrength = 0.15 ~ 0.25
-radius：
-mouthWidth * 0.8 ~ 1.2
-security restrictions
-Actual strength limit: 0.35
-Do not severely stretch the tooth area
-Skip when there are insufficient mouth points
+```
 
-9.3 mouthWidth: mouth width
-Function description
-Positive number: mouth becomes wider
-Negative numbers: the mouth becomes narrower
-Control point generation
+radius：
+
+```text
+mouthWidth * 0.8 ~ 1.2
+```
+
+### 安全限制
+
+```text
+实际强度上限：0.35
+不要严重拉伸牙齿区域
+嘴巴点位不足时跳过
+```
+
+---
+
+## 9.3 mouthWidth：嘴巴宽度
+
+### 功能说明
+
+```text
+正数：嘴巴变宽
+负数：嘴巴变窄
+```
+
+### 控制点生成
+
+```text
 leftCorner = leftMostPoint(outerLips)
 rightCorner = rightMostPoint(outerLips)
-Move:
-Positive number: leftCorner moves left, rightCorner moves right
-Negative numbers: leftCorner moves right, rightCorner moves left
-Displacement:
+```
+
+移动：
+
+```text
+正数：leftCorner 左移，rightCorner 右移
+负数：leftCorner 右移，rightCorner 左移
+```
+
+位移：
+
+```text
 offset = mouthWidth * maxStrength * mouthWidthValue
 maxStrength = 0.2 ~ 0.3
+```
 
-9.4 smile: smile at the corners of the mouth
-Function description
-Let the corners of your mouth rise slightly.
-Dependence point
+---
+
+## 9.4 smile：嘴角微笑
+
+### 功能说明
+
+让嘴角轻微上扬。
+
+### 依赖点位
+
+```text
 leftCorner
 rightCorner
 outerLips
-Control point generation
+```
+
+### 控制点生成
+
+```text
 leftCorner target.y -= offset
 rightCorner target.y -= offset
-If y increases downward, then y decreases upward.
-Displacement:
+```
+
+如果 y 向下增加，则上扬就是 y 减少。
+
+位移：
+
+```text
 offset = smile * maxStrength * mouthHeight
 maxStrength = 0.6 ~ 1.0
-radius：
-mouthWidth * 0.35 ~ 0.5
-security restrictions
-Actual strength limit: 0.5
-Don't pull your mouth into a fake smile
-Do not significantly affect the nose and chin
-Acceptance criteria
-Expression is softer
-The corners of the mouth are raised naturally
-The tooth area is not obviously distorted
-Symmetrical mouth corners
+```
 
-10. SkinSmoothEffect: microdermabrasion
-10.1 Function description
-Microdermabrasion is used to reduce skin noise, pores and slight texture, but does not blur the features and edges.
-Parameters:
+radius：
+
+```text
+mouthWidth * 0.35 ~ 0.5
+```
+
+### 安全限制
+
+```text
+实际强度上限：0.5
+不要把嘴巴拉成假笑
+不要明显影响鼻子和下巴
+```
+
+### 验收标准
+
+```text
+表情更柔和
+嘴角上扬自然
+牙齿区域不明显扭曲
+左右嘴角对称
+```
+
+---
+
+# 10. SkinSmoothEffect：磨皮
+
+## 10.1 功能说明
+
+磨皮用于降低皮肤噪声、毛孔和轻微纹理，但不能把五官和边缘磨糊。
+
+参数：
+
+```text
 skinSmoothing: 0...1
-10.2 First version implementation strategy
-The first version can be used:
-Low frequency smoothing + high frequency detail addition
-Process:
+```
+
+## 10.2 第一版实现策略
+
+第一版可以采用：
+
+```text
+低频平滑 + 高频细节回加
+```
+
+流程：
+
+```text
 inputTexture
     ↓
 Blur / Smooth Texture
@@ -647,129 +1278,268 @@ Blur / Smooth Texture
 detail = input - smooth
     ↓
 output = mix(input, smooth + detail * detailPreserve, intensity)
-10.3 More realistic MVP simplification
-In order to implement quickly, the first version can:
-1. Use a small radius bilateral-like blur or edge-aware blur.
-2. Mix the original image and the smoothed image according to skinSmoothing.
-3. Slightly preserve high-frequency details.
-If there is no skin mask:
-The intensity must be low.
-Protect the edges.
-Don’t force the entire image to be blurry.
-10.4 Recommended Pass
+```
+
+## 10.3 更现实的 MVP 简化
+
+为了快速落地，第一版可以：
+
+```text
+1. 用小半径 bilateral-like blur 或 edge-aware blur。
+2. 根据 skinSmoothing 混合原图和平滑图。
+3. 轻微保留高频细节。
+```
+
+如果没有 skin mask：
+
+```text
+强度必须低。
+保护边缘。
+不要全图强模糊。
+```
+
+## 10.4 推荐 Pass
+
+```text
 SkinBlurHorizontal
 SkinBlurVertical
 SkinBlend
-Or:
-SkinPass internal multi-stage encode
-10.5 Security restrictions
-Actual strength limit: 0.6
-Reduced edge strength
-High frequency details are retained by default 0.35 ~ 0.5
-10.6 Acceptance criteria
-Skin smoothens
-The edges of the eyes, eyebrows, and mouth are not blurry
-Hair edges are not blurry
-No obvious plastic face will appear
-An intensity of 0 is equal to the original image
+```
 
-11. SkinWhitenEffect: Whitening
-11.1 Function description
-Improves skin tone's brightness and cleanliness.
-Parameters:
+或者：
+
+```text
+SkinPass 内部多阶段 encode
+```
+
+## 10.5 安全限制
+
+```text
+实际强度上限：0.6
+边缘强度降低
+高频细节保留默认 0.35 ~ 0.5
+```
+
+## 10.6 验收标准
+
+```text
+皮肤变平滑
+眼睛、眉毛、嘴巴边缘不糊
+头发边缘不糊
+不会出现明显塑料脸
+强度为 0 等于原图
+```
+
+---
+
+# 11. SkinWhitenEffect：美白
+
+## 11.1 功能说明
+
+提升肤色亮度和干净感。
+
+参数：
+
+```text
 skinWhitening: 0...1
-11.2 First version implementation strategy
-When there is no skin mask, conservative full-image skin color optimization is used:
-1. Slightly increase mid-tone brightness.
-2. Reduce yellowness/dullness.
-3. Protect highlights and avoid overexposure.
-4. Keep the black area from being lifted too much.
-11.3 Simplified formula ideas
+```
+
+## 11.2 第一版实现策略
+
+没有 skin mask 时，采用保守全图肤色优化：
+
+```text
+1. 轻微提高中间调亮度。
+2. 降低黄色 / 暗沉。
+3. 保护高光，避免过曝。
+4. 保持黑色区域不被抬太多。
+```
+
+## 11.3 简化公式思路
+
+```text
 luma = dot(color.rgb, vec3(0.299, 0.587, 0.114))
 whitenWeight = smoothstep(0.2, 0.85, luma) * (1 - smoothstep(0.85, 1.0, luma))
 color.rgb += whitenAmount * whitenWeight
-The yellow color can be slightly reduced:
+```
+
+可以轻微降低黄色：
+
+```text
 color.b += smallAmount
 color.r += smallAmount * 0.5
-11.4 Security restrictions
-Actual strength limit: 0.5
-Highlight area reduction effect
-Dark area reduction effect
-The skin mask must be connected later
-11.5 Acceptance criteria
-Brighter and cleaner complexion
-The background is not overly brightened
-Highlights are not overexposed
-Not fake
+```
 
-12. SkinRosyEffect: rosy
-12.1 Function description
-Increase facial complexion.
-Parameters:
+## 11.4 安全限制
+
+```text
+实际强度上限：0.5
+高光区域减少作用
+暗部区域减少作用
+后续必须接入 skin mask
+```
+
+## 11.5 验收标准
+
+```text
+肤色更亮更干净
+背景不过度变亮
+高光不过曝
+不会假白
+```
+
+---
+
+# 12. SkinRosyEffect：红润
+
+## 12.1 功能说明
+
+增加面部气色。
+
+参数：
+
+```text
 skinRosy: 0...1
-12.2 First version implementation strategy
-Without skin mask, only slight color enhancement is done:
-boost red channel
-Slightly lowered green/blue balance
-Limit scope based on brightness
-12.3 Recommended strategies
+```
+
+## 12.2 第一版实现策略
+
+没有 skin mask 时，只做轻微色彩增强：
+
+```text
+提升红色通道
+轻微降低绿色 / 蓝色平衡
+根据亮度限制作用范围
+```
+
+## 12.3 推荐策略
+
+```text
 rosyColor = vec3(1.0, 0.82, 0.82)
 output = mix(color, color * rosyColor, rosyWeight * intensity)
-Or:
-color.r += 0.03 * intensity * skinLikeWeight
-12.4 Security restrictions
-Actual strength limit: 0.4
-Don’t make the whole picture red
-Don’t over-enhance the red color of your lips and clothing
+```
 
-13. SkinSharpenEffect/ColorSharpen: Clear Sharpening
-13.1 Function description
-Enhance facial features and image clarity.
-Parameters:
+或者：
+
+```text
+color.r += 0.03 * intensity * skinLikeWeight
+```
+
+## 12.4 安全限制
+
+```text
+实际强度上限：0.4
+不能让整张图发红
+唇色和衣服红色不要被过度增强
+```
+
+---
+
+# 13. SkinSharpenEffect / ColorSharpen：清晰锐化
+
+## 13.1 功能说明
+
+增强五官和图像清晰度。
+
+参数：
+
+```text
 skinSharpen: 0...1
-13.2 Implementation strategy
-Use simple unsharp mask:
+```
+
+## 13.2 实现策略
+
+使用简单 unsharp mask：
+
+```text
 blurred = blur(input)
 detail = input - blurred
 output = input + detail * sharpenAmount
-MVP can do light sharpening in ColorPass.
-13.3 Security restrictions
-Actual strength limit: 0.4
-Sharpening after dermabrasion
-Don't enhance noise
-Reduce sharpening in dark light scenes
+```
 
-14. LipColorEffect: Lip color enhancement
-14.1 Function description
-Enhances natural lip color without doing a full lipstick.
-Parameters:
+MVP 可以在 ColorPass 中做轻量锐化。
+
+## 13.3 安全限制
+
+```text
+实际强度上限：0.4
+磨皮后锐化
+不要增强噪点
+暗光场景降低锐化
+```
+
+---
+
+# 14. LipColorEffect：唇色增强
+
+## 14.1 功能说明
+
+增强自然唇色，不做完整口红。
+
+参数：
+
+```text
 lipColor: 0...1
-14.2 Dependence points
+```
+
+## 14.2 依赖点位
+
+```text
 outerLips
 innerLips
-14.3 First version implementation strategy
-Generate a rough lip mask using lip key points.
-MVP simplifies:
-Generate an elliptical area based on outerLips boundingRect
-Exclude innerLips region, optional
-Color enhancement:
-Boost red/saturation
-Retain original light and dark textures
-Mixing method:
-output = mix(input, enhancedLipColor, mask * lipColor)
-14.4 Security restrictions
-Actual strength limit: 0.5
-Don’t look like a solid color patch
-Do not apply it outside the teeth
-Skip if there are no lips points
+```
 
-15. LUTFilterEffect: filter
-15.1 Function description
-Apply LUT style filters.
-Parameters:
+## 14.3 第一版实现策略
+
+通过嘴唇关键点生成粗略 lip mask。
+
+MVP 可简化：
+
+```text
+根据 outerLips boundingRect 生成椭圆区域
+排除 innerLips 区域，可选
+```
+
+颜色增强：
+
+```text
+提升红色 / 饱和度
+保留原有明暗纹理
+```
+
+混合方式：
+
+```text
+output = mix(input, enhancedLipColor, mask * lipColor)
+```
+
+## 14.4 安全限制
+
+```text
+实际强度上限：0.5
+不要像纯色贴片
+不要涂到牙齿外
+没有 lips 点时跳过
+```
+
+---
+
+# 15. LUTFilterEffect：滤镜
+
+## 15.1 功能说明
+
+应用 LUT 风格滤镜。
+
+参数：
+
+```text
 filterId: String?
 filterIntensity: 0...1
-15.2 Implementation process
+```
+
+## 15.2 实现流程
+
+```text
 filterId
     ↓
 LUTLoader
@@ -781,120 +1551,217 @@ LUTPass
 filteredColor
     ↓
 mix(original, filtered, filterIntensity)
-15.3 Rules
-filterId == nil: skip
-filterIntensity == 0: skip
-LUT not found: error thrown or downgraded without filter
-LUT cannot be parsed every frame
-15.4 Acceptance criteria
-Intensity 0 is equal to the original image
-Strength 1 is the full filter
-Slider changes smoothly
-Switching multiple filters without crashing
-Resource cache is valid
+```
 
-16. Parameter combination order
-Recommended rendering order:
+## 15.3 规则
+
+```text
+filterId == nil：跳过
+filterIntensity == 0：跳过
+LUT 找不到：抛错或降级无滤镜
+LUT 不能每帧解析
+```
+
+## 15.4 验收标准
+
+```text
+强度 0 等于原图
+强度 1 是完整滤镜
+滑杆变化平滑
+多个滤镜切换不崩溃
+资源缓存有效
+```
+
+---
+
+# 16. 参数组合顺序
+
+推荐渲染顺序：
+
+```text
 1. FaceWarpPass
 2. SkinPass
 3. LipColor / MakeupPass
 4. ColorPass
 5. LUTPass
 6. OutputPass
-Reason:
-Do the deformation first, then the skin and color to avoid deformation and stretching as a result of microdermabrasion.
-The lip color is made after deformation to fit the current lip position.
-The LUT is done last to unify the overall style.
+```
 
-17. Parameter conflict handling
-17.1 Big eyes + eye distance
-Question:
-Both effects affect the peri-eye area.
-Strategy:
-First generate all eye control points.
-Limit the total displacement when merging.
-The influence radius of eyeDistance is slightly larger, and the influence radius of eyeSize is slightly smaller.
-17.2 Face slimming + small face + V face
-Question:
-Superposition of multiple face shape parameters can easily lead to excessive deformation.
-Strategy:
-The total intensity of the face shape class is normalized and limited.
-The total displacement does not exceed faceWidth * 0.12.
-17.3 Slim nose + nose wing + nose tip
-Question:
-There are few points in the nose area, and it is easy to collapse after superposition.
-Strategy:
-nose total strength limit.
-noseWingSlim first, noseSlim next, and noseTipSize last.
-17.4 Mouth size + smile
-Question:
-The corners of the mouth are affected by both mouthSize and smile.
-Strategy:
-The total displacement limit of the mouth corner point.
-The y displacement of smile is given priority, and the x/y displacement of mouthSize is weakened.
+原因：
 
-18. Downgrade strategy
-18.1 No face
-Skips all FaceWarpPass control points.
-Moving on to filters/colors that don't rely on faces.
-18.2 Some key points are missing
-No eye points: Skip the eye effect.
-No nose points: Skip the nose effect.
-No lip points: Skip mouth and lip color.
-No contour points: skip the face shape.
-18.3 The face is too small
-Reduce geometric deformation intensity.
-Skip advanced effects.
-18.4 Side view / wide angle
-The first version can be roughly judged by the boundingBox and key point distribution.
-Strategy:
-When the yaw is too large, reduce the strength of the face, nose, and mouth.
+```text
+先做形变，再做皮肤和颜色，避免磨皮结果被形变拉伸。
+唇色在形变后做，贴合当前嘴唇位置。
+LUT 最后做，统一整体风格。
+```
 
-19. Acceptance Test Atlas
-Each effect must be tested in the following scenarios:
-Positive face
-Slight profile
-round face
-long face
-wide face
-small eyes
-big eyes
-Flat nose
-wide nose
-thin lips
-thick lips
-wear glasses
-Bangs cover
-dim light
-strong light
-front camera
-rear camera
-multiple faces
+---
 
-20. First version development sequence
-Suggested order:
+# 17. 参数冲突处理
+
+## 17.1 大眼 + 眼距
+
+问题：
+
+```text
+两个效果都影响眼周区域。
+```
+
+策略：
+
+```text
+先生成所有 eye control points。
+合并时限制总位移。
+eyeDistance 影响半径略大，eyeSize 影响半径略小。
+```
+
+## 17.2 瘦脸 + 小脸 + V 脸
+
+问题：
+
+```text
+多个脸型参数叠加容易过度变形。
+```
+
+策略：
+
+```text
+脸型类总强度做归一化限制。
+总位移不超过 faceWidth * 0.12。
+```
+
+## 17.3 瘦鼻 + 鼻翼 + 鼻头
+
+问题：
+
+```text
+鼻子区域点位少，叠加后容易塌。
+```
+
+策略：
+
+```text
+nose 总强度限制。
+优先 noseWingSlim，其次 noseSlim，最后 noseTipSize。
+```
+
+## 17.4 嘴巴大小 + 微笑
+
+问题：
+
+```text
+嘴角同时被 mouthSize 和 smile 影响。
+```
+
+策略：
+
+```text
+嘴角点位总位移限制。
+smile 的 y 位移优先，mouthSize 的 x/y 位移减弱。
+```
+
+---
+
+# 18. 降级策略
+
+## 18.1 没有人脸
+
+```text
+跳过所有 FaceWarpPass 控制点。
+继续执行不依赖人脸的滤镜 / 色彩。
+```
+
+## 18.2 部分关键点缺失
+
+```text
+没有眼睛点：跳过眼睛效果。
+没有鼻子点：跳过鼻子效果。
+没有嘴唇点：跳过嘴巴和唇色。
+没有轮廓点：跳过脸型。
+```
+
+## 18.3 人脸过小
+
+```text
+降低几何形变强度。
+跳过高级效果。
+```
+
+## 18.4 侧脸 / 大角度
+
+第一版可通过 boundingBox 和关键点分布粗略判断。
+
+策略：
+
+```text
+yaw 过大时降低脸型、鼻子、嘴巴强度。
+```
+
+---
+
+# 19. 验收测试图集
+
+每个效果必须在以下场景测试：
+
+```text
+正脸
+轻微侧脸
+圆脸
+长脸
+宽脸
+小眼睛
+大眼睛
+塌鼻梁
+宽鼻翼
+薄嘴唇
+厚嘴唇
+戴眼镜
+刘海遮挡
+暗光
+强光
+前置摄像头
+后置摄像头
+多人脸
+```
+
+---
+
+# 20. 第一版开发顺序
+
+建议顺序：
+
+```text
 1. LUTFilterEffect
 2. ColorPass / skinSharpen
 3. SkinWhitenEffect
 4. SkinRosyEffect
-5. FaceWarpPass basic framework
+5. FaceWarpPass 基础框架
 6. EyeWarpProvider.eyeSize
 7. FaceShapeWarpProvider.faceSlim
 8. FaceShapeWarpProvider.faceSmall / faceVShape
 9. ChinWarpProvider.chinLength
 10. NoseWarpProvider.noseSlim
 11. MouthWarpProvider.smile
-12. Add eyeDistance / eyeYPosition / eyeTailLift
-13. Add noseWingSlim / noseTipSize
-14. Supplement mouthSize / mouthWidth
+12. 补 eyeDistance / eyeYPosition / eyeTailLift
+13. 补 noseWingSlim / noseTipSize
+14. 补 mouthSize / mouthWidth
 15. SkinSmoothEffect
 16. LipColorEffect
-Reason:
-First do the effect that does not depend on the point, and quickly verify the RenderGraph.
-Then do FaceWarpPass, first achieve the two logo effects of big eyes and slim face.
-Finally complete the complete MVP parameters.
+```
 
-21. First version of Provider file planning
+原因：
+
+```text
+先做不依赖点位的效果，快速验证 RenderGraph。
+再做 FaceWarpPass，先实现大眼和瘦脸两个标志效果。
+最后补完整 MVP 参数。
+```
+
+---
+
+# 21. 第一版 Provider 文件规划
+
+```text
 BeautyEffects/Warp/
 ├── WarpControlPoint.swift
 ├── WarpControlPointProvider.swift
@@ -904,74 +1771,123 @@ BeautyEffects/Warp/
 ├── ChinWarpProvider.swift
 ├── NoseWarpProvider.swift
 └── MouthWarpProvider.swift
+```
+
+```text
 BeautyEffects/Skin/
 ├── SkinSmoothEffect.swift
 ├── SkinWhitenEffect.swift
 ├── SkinRosyEffect.swift
 └── SkinSharpenEffect.swift
+```
+
+```text
 BeautyEffects/Color/
 ├── ColorAdjustmentEffect.swift
 ├── LUTFilterEffect.swift
 └── FilterBlendEffect.swift
+```
+
+```text
 BeautyEffects/Makeup/
 └── LipColorEffect.swift
+```
 
-22. First version of effect acceptance criteria
-22.1 Basic effects
-When the parameter is 0, the output is close to the original image.
-The effect changes continuously as the parameter gradually increases.
-There will be no serious image damage when the intensity is maximum.
-When there are no key points, the corresponding effect will be automatically skipped.
-22.2 Real-time performance
-720p 30fps available.
-1080p is available on mid- to high-end devices.
-Big eyes + face slimming + whitening + LUT can be turned on at the same time without lagging.
-22.3 Visual effects
-Naturally big eyes.
-Slimming the face does not stretch the background.
-The nose is not flat.
-The corners of his mouth are true.
-Microdermabrasion is not plastic.
-Whitening is not fake.
-Ruddy but not red.
-The filter does not have a serious color cast.
+---
 
-23. Subsequent advanced algorithm expansion
-23.1 Advanced Eyes
-Eye width
-Eyes high
-Open the inner corner of the eye
-Out of the corner of the eye
-lying silkworm
-Eye light
-Brighten the whites of the eyes
-Contact lenses
-23.2 Advanced skins
+# 22. 第一版效果验收标准
+
+## 22.1 基础效果
+
+```text
+参数为 0 时输出接近原图。
+参数逐渐增大时效果连续变化。
+强度最大时不出现严重破图。
+没有关键点时自动跳过对应效果。
+```
+
+## 22.2 实时性能
+
+```text
+720p 30fps 可用。
+1080p 在中高端设备可用。
+大眼 + 瘦脸 + 美白 + LUT 同时开启不卡顿。
+```
+
+## 22.3 视觉效果
+
+```text
+大眼自然。
+瘦脸不拉背景。
+鼻子不塌。
+嘴角不假。
+磨皮不塑料。
+美白不假白。
+红润不过红。
+滤镜不偏色严重。
+```
+
+---
+
+# 23. 后续高级算法扩展
+
+## 23.1 高级眼睛
+
+```text
+眼宽
+眼高
+开内眼角
+开外眼角
+卧蚕
+眼神光
+眼白提亮
+美瞳
+```
+
+## 23.2 高级皮肤
+
+```text
 skin mask
-facial features protection mask
-Remove acne
-Freckle removal
-Nasal pattern
-tear trough
-Skin texture preserved
-23.3 Advanced makeup
-lipstick
-blush
-eye shadow
-Eyeliner
-eyelashes
-eyebrows
-Contour
-Highlights
-23.4 Advanced deformation
+五官保护 mask
+祛痘
+祛斑
+法令纹
+泪沟
+皮肤纹理保留
+```
+
+## 23.3 高级妆容
+
+```text
+口红
+腮红
+眼影
+眼线
+睫毛
+眉毛
+修容
+高光
+```
+
+## 23.4 高级形变
+
+```text
 mesh warp
 dense landmarks
 face mesh
 3D pose aware deformation
+```
 
-24. One sentence conclusion
-The implementation of the first version of the algorithm should not pursue the number of functions, but ensure that the underlying model is correct:
-All facial deformations generate WarpControlPoint and enter FaceWarpPass uniformly.
-All color and skin effects are combined by Pass, avoiding one shader per parameter.
-Each parameter has security strength, downgrade strategy, and acceptance criteria.
-As long as this set of rules is stable, subsequent additions of advanced eyes, complete makeup, skin repair, and background segmentation can all be expanded on the same architecture.
+---
+
+# 24. 一句话结论
+
+第一版算法实现不要追求功能数量，而要保证底层模式正确：
+
+```text
+所有五官形变都生成 WarpControlPoint，统一进入 FaceWarpPass。
+所有颜色和皮肤效果都按 Pass 合并，避免每个参数一个 shader。
+每个参数都有安全强度、降级策略和验收标准。
+```
+
+只要这套规则稳定，后续增加高级眼睛、完整妆容、皮肤修复、背景分割，都可以在同一套架构上继续扩展。

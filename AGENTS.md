@@ -1,5 +1,7 @@
 # AGENTS.md
 
+Spend time on thinking; you do not need to use the commentary channel to report progress to me.
+
 > `beauty` 仓库的 Agent 唯一入口。本文只做导航，不承载业务细节。
 > 若需要解释、规则或决策，请写入下方对应文档。
 
@@ -53,15 +55,20 @@ QUALITY_SCORE.md                  覆盖率、质量分与文档巡检规则
 
 ## 5. 历史资料
 
-在新的根级文档完成前，可参考：
+`docs/README.md` 是长文档入口。当前可参考：
 
-- `docs/00_index.md`
 - `docs/01_product_feature_plan.md`
-- `docs/02_development_spec_and_engineering_guidelines.md`
-- `docs/03_development_stages_full_plan.md`
-- `docs/04_architecture_spm_skeleton.md`
+- `docs/02_development_stages_full_plan.md`
+- `docs/03_architecture_spm_skeleton.md`
+- `docs/04_development_spec.md`
+- `docs/05_public_api_design.md`
+- `docs/06_beauty_parameters_spec.md`
+- `docs/07_face_landmarks_coordinate_system.md`
+- `docs/08_metal_render_pipeline_design.md`
+- `docs/09_algorithm_effects_implementation.md`
+- `docs/10_document_audit_report.md`
 
-匹配的根级文档建立后，以上文件降级为背景资料，不再作为当前契约。
+`docs/_source/` 仅保留导入源，不作为阅读入口。匹配的根级文档建立后，`docs/` 长文档降级为背景资料，不再作为当前契约。
 
 ## 6. Agent 工作流
 
@@ -98,10 +105,10 @@ rg --files
 xcodebuild -list -project BeautyDemo/BeautyDemo.xcodeproj
 ```
 
-构建前先确认本机可用 scheme 与模拟器，再运行：
+构建前先确认本机可用 scheme 与模拟器。默认 destination 可能选到不兼容的 “My Mac”，构建时应显式指定可用 iOS Simulator：
 
 ```bash
-xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo build
+xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=<Simulator Name>,OS=<OS Version>' build
 ```
 
 若命令因本机 Xcode 配置失败，记录可复现的失败原因，不要伪造验证结果。
