@@ -380,17 +380,17 @@ Source: Phase 28 helper already computes expected comparisons from portrait fixt
 | A2 | A Phase 29-owned helper is preferable to modifying Phase 28's helper in place. | Alternatives Considered | Low; planner may still extend/mirror as long as Phase 29 constants and evidence requirements are satisfied. |
 | A3 | Manual visual inspection alone is insufficient as the only output evidence gate. | Don't Hand-Roll | Medium; repository precedent strongly favors helper evidence, but the exact inspection policy is not a separately locked user decision. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should the helper be named `check_eye_renderer_outputs.py`?**  
    What we know: Phase 29 context gives the planner discretion over the exact helper filename. [CITED: .planning/phases/29-eye-renderer-output-evidence/29-CONTEXT.md]  
    What's unclear: No locked filename exists. [CITED: .planning/phases/29-eye-renderer-output-evidence/29-CONTEXT.md]  
-   Recommendation: Use `check_eye_renderer_outputs.py` for clarity and keep it in the Phase 29 directory. [ASSUMED]
+   RESOLVED: Use `check_eye_renderer_outputs.py` and keep it in the Phase 29 directory. The filename is now part of the executable plans and validation contract, while the locked user decision remains the helper behavior rather than the name. [CITED: .planning/phases/29-eye-renderer-output-evidence/29-CONTEXT.md; VERIFIED: .planning/phases/29-eye-renderer-output-evidence/29-01-PLAN.md; VERIFIED: .planning/phases/29-eye-renderer-output-evidence/29-VALIDATION.md]
 
 2. **Do the locked strengths produce 36/36 top-region differences on the current fixtures without algorithm changes?**  
    What we know: Eye provider behavior exists, and the locked strengths are below current caps. [VERIFIED: BeautySDK/Sources/BeautyEffects/Warp/EyeWarpProvider.swift; VERIFIED: BeautySDK/Sources/BeautyEffects/Planning/BeautySafetyCaps.swift; CITED: .planning/phases/29-eye-renderer-output-evidence/29-CONTEXT.md]  
    What's unclear: The renderer has not yet generated the new eye cases, so the 36 comparisons are not proven yet. [VERIFIED: BeautySDK/Sources/BeautyExampleRenderer/main.swift]  
-   Recommendation: Make helper failure a hard Phase 29 gate and fix implementation or fixture handling before completion if any comparison fails. [CITED: .planning/phases/29-eye-renderer-output-evidence/29-CONTEXT.md]
+   RESOLVED: Treat the locked strengths as the planned execution target and make `36/36` portrait eye-vs-`geometryBaseline_noop` top-region comparisons a hard Phase 29 completion gate. If any comparison fails, execution must fix implementation, strength handling, or fixture handling before marking Phase 29 complete. [CITED: .planning/phases/29-eye-renderer-output-evidence/29-CONTEXT.md; VERIFIED: .planning/phases/29-eye-renderer-output-evidence/29-01-PLAN.md; VERIFIED: .planning/phases/29-eye-renderer-output-evidence/29-03-PLAN.md]
 
 ## Environment Availability
 
