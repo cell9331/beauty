@@ -30,6 +30,26 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-09-gsd-discuss-phase-29-eye-renderer-output-evidence
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-09 |
+| Scope | Ran `$gsd-discuss-phase 29` for Eye Renderer Output Evidence. Captured Phase 29 implementation decisions for public-facade eye renderer case matrix, helper evidence gates, generated output/gallery routing, and documentation/status boundaries. |
+| Requirements | EYE-01, EYE-02, EYE-03 |
+| Files | `.planning/phases/29-eye-renderer-output-evidence/29-CONTEXT.md`, `.planning/phases/29-eye-renderer-output-evidence/29-DISCUSSION-LOG.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.phase-op 29` reported Phase 29 exists with no prior context, research, plans, verification, or phase directory. `todo.match-phase 29` returned zero matches. Prior context from Phases 26, 27, and 28 plus root contracts, blueprint docs, current renderer/eye code, tests, helper, gallery, and ignore policy were read. User selected all three gray areas and chose the recommended option for each detailed question. Scoped `git diff --check` passed for Phase 29 context/log, `.planning/STATE.md`, and this ledger. |
+| Build | Not run; this was a GSD discussion/context workflow with no Swift source changes. Phase 29 planning should include renderer inventory tests, helper verification, `BeautyExampleRenderer` build/run, ignored-output/gallery checks, and no-overclaim/status scans. |
+
+Outcome:
+
+- Phase 29 should add exactly six eye renderer cases: `eyeSize_0p35`, `eyeDistance_plus0p25`, `eyeDistance_minus0p25`, `eyeYPosition_plus0p20`, `eyeYPosition_minus0p20`, and `eyeTailLift_0p25`.
+- The Phase 29 helper should validate the full renderer matrix plus 36/36 portrait eye-vs-`geometryBaseline_noop` top-region comparisons, and fail/fix before completion if any comparison fails.
+- `example-images/output/` is the canonical generated output path, and generated gallery support should add an ignored `eyes/` group.
+- Phase 29 may record renderer evidence but must keep `眼睛` rows and branch status `partial` until Phase 30 safety/degradation/ledger closeout passes.
+
+Next step: `$gsd-plan-phase 29`.
+
 ### C-2026-07-09-v1-6-milestone-initialization
 
 | Field | Value |
