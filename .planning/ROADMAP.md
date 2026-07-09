@@ -33,7 +33,7 @@ For completed prior scope, see:
 
 **Requirements:** EYE-01, EYE-02, EYE-03
 
-**Plans:** 4 plans
+**Plans:** 1/4 plans executed
 
 **Success criteria:**
 
@@ -49,7 +49,7 @@ For completed prior scope, see:
 
 Plans:
 
-- [ ] `29-01-PLAN.md` — Add locked eye renderer cases, inventory tests, and the Phase 29 output helper.
+- [x] `29-01-PLAN.md` — Add locked eye renderer cases, inventory tests, and the Phase 29 output helper.
 - [ ] `29-02-PLAN.md` — Add ignored `eyes/` gallery support and update example-image validation docs.
 - [ ] `29-03-PLAN.md` — Record command-backed eye renderer evidence, verification, and validation.
 - [ ] `29-04-PLAN.md` — Synchronize Phase 29 planning ledgers and quality evidence without eye status promotion.
@@ -83,7 +83,7 @@ Plans:
 | v1.3 Meitu Core Beauty Module Design and Implementation | 5 | 14 | 20/20 | Shipped | 2026-06-30 |
 | v1.4 Stability, QA, and Debt Cleanup | 5 | 15 | 24/24 | Shipped | 2026-07-03 |
 | v1.5 SDK Geometry Output Foundation and Face Shape Slice | 3 | 12 | 13/13 | Shipped | 2026-07-08 |
-| v1.6 Broader `美型 / 五官` SDK Slice - Eyes | 2 | 4 | 0/9 | Planned | — |
+| v1.6 Broader `美型 / 五官` SDK Slice - Eyes | 2 | 4 | 2/9 | In Progress | — |
 
 ## Next
 

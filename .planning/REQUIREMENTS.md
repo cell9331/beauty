@@ -7,8 +7,8 @@
 
 ### Eye Renderer Evidence
 
-- [ ] **EYE-01**: `BeautyExampleRenderer` can generate public-facade saved-output cases for the existing public eye parameters `eyeSize`, signed `eyeDistance`, signed `eyeYPosition`, and `eyeTailLift` without importing internal SDK targets.
-- [ ] **EYE-02**: The eye renderer helper verifies every expected eye output exists, is non-empty, preserves input dimensions, and differs from `geometryBaseline_noop` above the watermark band on usable portrait fixtures.
+- [x] **EYE-01**: `BeautyExampleRenderer` can generate public-facade saved-output cases for the existing public eye parameters `eyeSize`, signed `eyeDistance`, signed `eyeYPosition`, and `eyeTailLift` without importing internal SDK targets.
+- [x] **EYE-02**: The eye renderer helper verifies every expected eye output exists, is non-empty, preserves input dimensions, and differs from `geometryBaseline_noop` above the watermark band on usable portrait fixtures.
 - [ ] **EYE-03**: Generated eye output and gallery artifacts stay under ignored `example-images/output/` and `example-images/gallery/`; no generated PNG baseline is committed.
 
 ### Eye Safety And Degradation
@@ -47,8 +47,8 @@
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| EYE-01 | Phase 29 | Pending |
-| EYE-02 | Phase 29 | Pending |
+| EYE-01 | Phase 29 | Complete |
+| EYE-02 | Phase 29 | Complete |
 | EYE-03 | Phase 29 | Pending |
 | EYE-04 | Phase 30 | Pending |
 | EYE-05 | Phase 30 | Pending |
