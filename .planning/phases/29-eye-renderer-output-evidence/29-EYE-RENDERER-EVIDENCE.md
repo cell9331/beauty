@@ -116,7 +116,7 @@ phase 29 cases: eyeSize_0p35, eyeDistance_plus0p25, eyeDistance_minus0p25, eyeYP
 | Demo and renderer internal-import guard | `BeautyDemo/BeautyDemo`, `BeautyDemo/BeautyDemoTests`, and `BeautyExampleRenderer/main.swift` | Passed with zero internal SDK target imports. |
 | Helper output redaction | Phase 29 helper output | Passed with zero forbidden raw payload tokens. |
 | No-overclaim wording | Phase 29 summaries and example-image validation doc | Passed with zero prohibited quality, parity, readiness, or eye completion claims. |
-| Legacy output path guard | Touched active docs | Passed with zero `example-images/out/` references. |
+| Legacy output path guard | Touched active docs | Passed with zero legacy generated-output directory references. |
 
 ## Evidence Field Allowlist
 
