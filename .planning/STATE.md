@@ -3,7 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.6
 milestone_name: Broader 美型 / 五官 SDK Slice - Eyes
 status: planning
-last_updated: "2026-07-09T01:54:37.000Z"
+stopped_at: Phase 29 context gathered
+last_updated: "2026-07-09T02:31:47.935Z"
 last_activity: 2026-07-09 — v1.6 roadmap and requirements initialized
 progress:
   total_phases: 2
@@ -169,9 +170,9 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-09T09:54:37+08:00
-Stopped at: v1.6 roadmap and requirements initialized
-Resume file: .planning/ROADMAP.md
+Last session: 2026-07-09T02:31:18.414Z
+Stopped at: Phase 29 context gathered
+Resume file: .planning/phases/29-eye-renderer-output-evidence/29-CONTEXT.md
 
 ## Operator Next Steps
 
