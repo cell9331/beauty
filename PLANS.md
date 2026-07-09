@@ -30,6 +30,25 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-09-gsd-plan-phase-29-eye-renderer-output-evidence
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-09 |
+| Scope | Created Phase 29 executable plans for Eye Renderer Output Evidence from Phase 29 context, research, validation strategy, and pattern map artifacts. |
+| Requirements | EYE-01, EYE-02, EYE-03 |
+| Files | `.planning/phases/29-eye-renderer-output-evidence/29-RESEARCH.md`, `29-VALIDATION.md`, `29-PATTERNS.md`, `29-01-PLAN.md`, `29-02-PLAN.md`, `29-03-PLAN.md`, `29-04-PLAN.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | User selected research-first. Researcher created `29-RESEARCH.md` and commit `90435c4`. Validation strategy commit `1a9ab03` created `29-VALIDATION.md`; pattern map commit `e521c77` created `29-PATTERNS.md`; planner created four plan files in commit `3a387aa`. Checker pass 1 found unresolved research questions and a missing Phase 28 evidence analog reference; commit `3bc2433` resolved both. Final plan-checker returned `VERIFICATION PASSED` for 4 plans. Requirement scan confirmed EYE-01, EYE-02, and EYE-03 are covered. `check.decision-coverage-plan` passed with `14/14` decisions covered. `phase-plan-index 29` reports waves 1-4: `29-01`, `29-02 -> 29-01`, `29-03 -> 29-01/29-02`, and `29-04 -> 29-03`. Scoped `git diff --check` passed for Phase 29 planning artifacts, `.planning/STATE.md`, and this ledger. |
+| Build | Not run; this was a GSD planning/documentation workflow with no Swift source changes. Phase 29 execution plans require focused SDK tests, full `swift test --package-path BeautySDK`, `BeautyExampleRenderer` build/run, Phase 29 helper checks, generated gallery checks, ignored-output checks, raw-leak/no-overclaim scans, and GSD decision coverage. |
+
+Outcome:
+
+- `29-01-PLAN.md` adds exactly six public-facade eye renderer cases plus renderer inventory tests and `check_eye_renderer_outputs.py` for 161/161 outputs and 36/36 eye-vs-baseline comparisons.
+- `29-02-PLAN.md` adds ignored generated `eyes/` gallery support and updates example-image validation docs without committing generated PNG baselines.
+- `29-03-PLAN.md` records command-backed renderer/helper/gallery/ignore evidence and final validation, mirroring the Phase 28 evidence artifact structure.
+- `29-04-PLAN.md` synchronizes requirements, roadmap, state, quality, and ledger notes while keeping `眼睛` rows and branch status partial until Phase 30.
+- Phase 29 is ready for `$gsd-execute-phase 29`.
+
 ### C-2026-07-09-gsd-discuss-phase-29-eye-renderer-output-evidence
 
 | Field | Value |
