@@ -33,6 +33,8 @@ For completed prior scope, see:
 
 **Requirements:** EYE-01, EYE-02, EYE-03
 
+**Plans:** 4 plans
+
 **Success criteria:**
 
 1. `BeautyExampleRenderer` includes one case per existing eye behavior needed for evidence: `eyeSize`, positive and negative `eyeDistance`, positive and negative `eyeYPosition`, and `eyeTailLift`.
@@ -44,6 +46,13 @@ For completed prior scope, see:
 
 - Reuse the Phase 27/28 helper pattern and the current nested `example-images/input/` fixture layout.
 - Do not add Demo UI, public parameters, public raw geometry, entitlement/commercial strings, or non-eye renderer cases.
+
+Plans:
+
+- [ ] `29-01-PLAN.md` — Add locked eye renderer cases, inventory tests, and the Phase 29 output helper.
+- [ ] `29-02-PLAN.md` — Add ignored `eyes/` gallery support and update example-image validation docs.
+- [ ] `29-03-PLAN.md` — Record command-backed eye renderer evidence, verification, and validation.
+- [ ] `29-04-PLAN.md` — Synchronize Phase 29 planning ledgers and quality evidence without eye status promotion.
 
 ### Phase 30: Eye Safety, Ledger, and Closeout
 
@@ -74,20 +83,14 @@ For completed prior scope, see:
 | v1.3 Meitu Core Beauty Module Design and Implementation | 5 | 14 | 20/20 | Shipped | 2026-06-30 |
 | v1.4 Stability, QA, and Debt Cleanup | 5 | 15 | 24/24 | Shipped | 2026-07-03 |
 | v1.5 SDK Geometry Output Foundation and Face Shape Slice | 3 | 12 | 13/13 | Shipped | 2026-07-08 |
-| v1.6 Broader `美型 / 五官` SDK Slice - Eyes | 2 | 0 | 0/9 | Planned | — |
+| v1.6 Broader `美型 / 五官` SDK Slice - Eyes | 2 | 4 | 0/9 | Planned | — |
 
 ## Next
 
-Start Phase 29 discussion:
+Execute Phase 29:
 
 ```bash
-$gsd-discuss-phase 29
-```
-
-Alternative if context is already clear:
-
-```bash
-$gsd-plan-phase 29
+$gsd-execute-phase 29
 ```
 
 ## Backlog
