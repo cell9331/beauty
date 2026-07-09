@@ -30,6 +30,28 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-09-gsd-execute-phase-29-eye-renderer-output-evidence
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-09 |
+| Scope | Ran `$gsd-execute-phase 29` for Eye Renderer Output Evidence. Added public-facade eye renderer cases and helper evidence for existing public eye parameters, generated ignored gallery routing, command-backed evidence artifacts, final validation, and planning/quality ledger closeout. |
+| Requirements | EYE-01, EYE-02, EYE-03 |
+| Files | `BeautySDK/Sources/BeautyExampleRenderer/main.swift`, `BeautySDK/Tests/BeautyCoreTests/BeautyRendererOutputRegressionTests.swift`, `.planning/phases/29-eye-renderer-output-evidence/check_eye_renderer_outputs.py`, `29-EYE-RENDERER-EVIDENCE.md`, `29-VERIFICATION.md`, `29-VALIDATION.md`, `29-01-SUMMARY.md`, `29-02-SUMMARY.md`, `29-03-SUMMARY.md`, `example-images/generate_gallery.py`, `example-images/README.md`, `docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `QUALITY_SCORE.md`, `PLANS.md` |
+| Verification | `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyRendererOutputRegressionTests` passed with 7 tests. `swift test --package-path BeautySDK --filter BeautyEffectsTests.EyeWarpProviderTests` passed with 6 tests. `swift test --package-path BeautySDK` passed with 173 tests. `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed. `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/output` wrote 161 ignored PNG outputs. `python3 .planning/phases/29-eye-renderer-output-evidence/check_eye_renderer_outputs.py --input example-images/input --output example-images/output` passed with 161/161 outputs and 36/36 comparisons. `python3 example-images/generate_gallery.py --input example-images/input --output example-images/output --gallery example-images/gallery` wrote 161 ignored gallery PNGs. Representative `git check-ignore` checks passed, `git ls-files example-images/output example-images/gallery` returned 0 tracked generated files, and raw-leak/no-overclaim/public-boundary/internal-import scans plus 14/14 GSD decision coverage passed. |
+| Build | SDK SwiftPM tests and `BeautyExampleRenderer` build/run passed. No Demo build/test was run because Phase 29 changed no Demo source or UI behavior; Demo boundary was covered by static import scans. |
+
+Outcome:
+
+- `BeautyExampleRenderer` now includes exactly six Phase 29 eye cases: `eyeSize_0p35`, `eyeDistance_plus0p25`, `eyeDistance_minus0p25`, `eyeYPosition_plus0p20`, `eyeYPosition_minus0p20`, and `eyeTailLift_0p25`.
+- `check_eye_renderer_outputs.py` verifies the 23-case by 7-fixture matrix, same dimensions, non-empty output files, 36/36 portrait eye-vs-baseline top-region comparisons, and representative no-face output `no-face-gradient__eyeSize_0p35.png`.
+- `example-images/generate_gallery.py` routes the six eye cases into ignored `example-images/gallery/eyes/{caseId}/{fixtureStem}.png` review paths.
+- Generated output and gallery PNGs remain ignored local artifacts; no generated PNG baseline is committed.
+- Phase 29 records public-facade renderer evidence for existing public eye parameters only. `眼睛` rows and branch remain `partial` until Phase 30 safety, degradation, boundary, and scoped ledger closeout passes.
+- Phase 29 does not add Demo UI, new public parameters, public raw geometry APIs, network/cloud behavior, commercial entitlement paths, generated PNG baselines, device parity, broad reference-app parity, launch readiness, or whole-branch eye completion.
+
+Next step: `$gsd-discuss-phase 30`.
+
 ### C-2026-07-09-gsd-plan-phase-29-eye-renderer-output-evidence
 
 | Field | Value |
