@@ -14,7 +14,7 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Shipped version:** v1.5 SDK Geometry Output Foundation and Face Shape Slice on 2026-07-08.
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
-**Current milestone:** None active; start the next milestone with `$gsd-new-milestone`.
+**Current milestone:** v1.6 Broader `美型 / 五官` SDK Slice - Eyes.
 
 **Implementation state:** v1.5 completes SDK-only geometry output foundation and the first verified `脸型` existing-parameter slice. Public still-image processing can activate geometry-triggered detection through `BeautyEngine.processResult(...)`, route one selected face into package-internal geometry planning, produce deterministic saved-output geometry evidence through `BeautyExampleRenderer`, and verify scoped face-shape tools through existing public parameters. Current SDK/Demo behavior remains local-first, facade-only from the Demo, and no-network by default.
 
@@ -23,6 +23,19 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
 **Code size:** `BeautySDK` and `BeautyDemo` contain 17,794 Swift lines in the local closeout count, including build-derived `.build` files observed during v1.5 archive.
+
+## Current Milestone: v1.6 Broader `美型 / 五官` SDK Slice - Eyes
+
+**Goal:** Extend the v1.5 geometry-output foundation to complete the existing-parameter `眼睛` SDK slice through public-facade saved-output evidence, safety/degradation tests, and scoped ledger promotion.
+
+**Target features:**
+
+- Eye renderer evidence: `BeautyExampleRenderer` should add public-facade cases for existing public eye parameters `eyeSize`, signed `eyeDistance`, signed `eyeYPosition`, and `eyeTailLift`.
+- Eye output helper evidence: generated outputs should stay same-dimension, remain ignored, and differ from `geometryBaseline_noop` above the watermark band on usable portrait fixtures.
+- Eye safety evidence: focused tests should cover caps, no-face and missing-eye-landmark degradation, combined weakening, redacted summaries/metrics, and no raw geometry leakage.
+- Scoped documentation closeout: promote only the mapped `眼睛` ledger rows backed by existing public parameters, keep branch-level `眼睛` partial, and avoid Demo UI, public API expansion, commercial/device/release-readiness, or broad Meitu parity claims.
+
+**Key context:** v1.6 is SDK-core only and continues the Phase 26-28 architecture. It should not add SwiftUI screens, new public parameters, new account/commercial behavior, remote processing, hidden network behavior, or unscoped `眼睛` tools such as eye height, length, pupil, gaze, lid, redness, corners, or symmetry.
 
 ## Last Completed Milestone: v1.5 SDK Geometry Output Foundation and Face Shape Slice
 
@@ -130,6 +143,13 @@ v1.3 remains a no-new-UI core module milestone. Phase 20 added no new SwiftUI sc
 - [x] Complete the `脸型` existing-parameter slice without adding UI scope.
 - [x] Keep the `美型 / 五官` ledger as the authority for second-level status changes.
 
+### Active in v1.6
+
+- [ ] Complete the existing-parameter `眼睛` SDK slice without adding UI scope or public parameters.
+- [ ] Add public-facade saved-output renderer/helper evidence for `eyeSize`, signed `eyeDistance`, signed `eyeYPosition`, and `eyeTailLift`.
+- [ ] Add focused safety, degradation, redaction, and boundary evidence for the `眼睛` slice.
+- [ ] Promote only evidence-backed second-level `眼睛` rows in `SHAPE_FEATURE_LEDGER.md`; keep branch-level `眼睛` partial.
+
 ### Out of Scope
 
 - Standalone consumer App Store product - still out of scope; Demo remains an SDK validation app.
@@ -143,9 +163,10 @@ v1.3 remains a no-new-UI core module milestone. Phase 20 added no new SwiftUI sc
 
 ## Next Milestone Goals
 
-Future milestone candidates after v1.5:
+Future milestone candidates after v1.6:
 
-- **Broader `美型 / 五官` slices:** `眼睛`, `鼻子`, `嘴唇`, `比例`, `3D塑颜`, and `眉毛` remain future or partial until explicitly scoped.
+- **Broader `美型 / 五官` slices:** `鼻子`, `嘴唇`, `比例`, `3D塑颜`, and `眉毛` remain future or partial until explicitly scoped.
+- **Remaining `眼睛` tools:** eye height, eye length, pupil/gaze, lid, redness, corner, and symmetry features need separate parameter/resource design before implementation.
 - **Deferred Meitu Product Areas:** Home/discovery, style resources, AI/background, video/body, gallery/account, search, premium access, commerce, and account authorization planning.
 - **Distribution:** SDK packaging, compatibility matrix, binary distribution, resource-pack trust model, and commercial integration docs.
 
@@ -200,6 +221,7 @@ Current visual reference contracts:
 - **Offline reference safety:** HTML references must use local code/assets only; no network fonts, remote media, analytics, upload, or hidden service calls.
 - **v1.3 scope boundary:** v1.3 designs and implements core beauty modules only; no new SwiftUI screens, Home/discovery, style resources, AI/background, video/body, gallery/account, search, premium access, commerce, or account authorization work.
 - **v1.5 scope boundary:** v1.5 starts from `docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md` and promotes only SDK-core geometry output plus the `脸型` existing-parameter slice; UI and non-face-shape groups stay out of scope unless the roadmap explicitly changes.
+- **v1.6 scope boundary:** v1.6 starts from the same ledger and promotes only existing public-parameter `眼睛` rows after public-facade saved-output and safety/degradation evidence exists; no UI, public API, commercial, device, release, or unscoped `眼睛` claim is included.
 
 ## Key Decisions
 
@@ -218,6 +240,7 @@ Current visual reference contracts:
 | Phase 21 is the v1.4 evidence baseline, not a fix phase. | Current SDK/renderer evidence passed, Demo simulator evidence has a reproducible local toolchain blocker, and stale codebase maps were found. | Routes debt to Phases 22-25 without source changes |
 | Phase 23 completes performance/reliability as evidence and blocker records, not optimization. | Current 720p SDK timings remain over budget in SwiftPM debug XCTest, while backpressure/reset/degradation/redaction evidence passes and missing long-run/device checks are explicit. | Completed in Phase 23 |
 | Phase 25 completes privacy/resource/security closeout as current evidence, not packaging approval. | Current SDK/Demo behavior supports explicit manifest deferral and bundled-resource trust only; external packages, long-run, screenshot, hardware, optimized profiling, and commercial packaging remain future or blocked/not-run checks. | Completed in Phase 25 |
+| v1.6 targets the `眼睛` existing-parameter slice next. | `眼睛` already has public SDK parameters and provider/resolver evidence, and v1.5 created the public-facade geometry output harness needed for visual completion evidence. | Active in v1.6 |
 | v1.5 starts with geometry output foundation plus `脸型`, not all `美型 / 五官` groups. | The user chose the smallest first-principles slice: prove facade-visible geometry output first, then mark only the existing face-shape tools complete when evidence exists. | Completed and archived in v1.5 |
 
 ## Evolution
@@ -225,4 +248,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-07-08 after v1.5 milestone completion*
+*Last updated: 2026-07-09 after v1.6 milestone initialization*

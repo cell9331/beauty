@@ -1,34 +1,33 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.5
-milestone_name: milestone
-status: Awaiting next milestone
-stopped_at: Completed v1.5 milestone archive
-last_updated: "2026-07-08T06:18:35.825Z"
-last_activity: 2026-07-08 — Milestone v1.5 completed and archived
+milestone: v1.6
+milestone_name: Broader 美型 / 五官 SDK Slice - Eyes
+status: planning
+last_updated: "2026-07-09T01:54:37.000Z"
+last_activity: 2026-07-09 — v1.6 roadmap and requirements initialized
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 12
-  completed_plans: 12
-  percent: 100
+  total_phases: 2
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-07-08)
+See: `.planning/PROJECT.md` (updated 2026-07-09)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Planning next milestone
+**Current focus:** v1.6 `眼睛` SDK slice planning
 
 ## Current Position
 
-Phase: Milestone v1.5 complete
+Phase: 29 - Eye Renderer Output Evidence
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-07-08 — Milestone v1.5 completed and archived
+Status: Ready for discussion/planning
+Last activity: 2026-07-09 — v1.6 roadmap and requirements initialized
 
 ## Performance Metrics
 
@@ -142,7 +141,7 @@ Recent milestone-level outcomes:
 ### Pending Todos
 
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
-- Start the next milestone with `$gsd-new-milestone` when ready.
+- Start Phase 29 with `$gsd-discuss-phase 29` or `$gsd-plan-phase 29` if context is already clear.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, screenshot reruns, packaging review, broader `美型 / 五官` slices, and automated visual diffs.
 
 ### Blockers/Concerns
@@ -170,10 +169,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-08T14:18:35+08:00
-Stopped at: Completed v1.5 milestone archive
+Last session: 2026-07-09T09:54:37+08:00
+Stopped at: v1.6 roadmap and requirements initialized
 Resume file: .planning/ROADMAP.md
 
 ## Operator Next Steps
 
-- Start the next milestone with `$gsd-new-milestone`.
+- Start Phase 29 with `$gsd-discuss-phase 29`.

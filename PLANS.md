@@ -30,6 +30,25 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-09-v1-6-milestone-initialization
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-09 |
+| Scope | Started v1.6 as the Broader `美型 / 五官` SDK Slice - Eyes milestone after converging the dirty worktree. Defined requirements and roadmap for the existing-parameter `眼睛` slice without adding UI, public API, commercial, network, device, release-readiness, or unscoped eye-tool scope. |
+| Files | `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `state.milestone-switch --milestone "v1.6" --name "Broader 美型 / 五官 SDK Slice - Eyes"` initialized milestone state. Scoped scans verified v1.6 references, Phase 29/30 routing, and EYE-01 through EYE-08 plus DOC-01 traceability across `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, and `PLANS.md`. `git diff --check` passed. |
+| Build | Not run; this was a planning/documentation initialization with no Swift source changes. |
+
+Outcome:
+
+- v1.6 is now the active milestone.
+- Phase 29 owns public-facade eye renderer/helper output evidence for `eyeSize`, signed `eyeDistance`, signed `eyeYPosition`, and `eyeTailLift`.
+- Phase 30 owns eye caps/degradation/redaction/boundary tests and scoped ledger/documentation closeout.
+- Branch-level `眼睛` remains partial until evidence-backed rows are promoted.
+
+Next step: `$gsd-discuss-phase 29`.
+
 ### C-2026-07-09-example-input-e6-portrait-fixture
 
 | Field | Value |

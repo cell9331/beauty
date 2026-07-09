@@ -1,10 +1,10 @@
-# Roadmap: Beauty
+# Roadmap: Beauty v1.6 Broader `美型 / 五官` SDK Slice - Eyes
 
 ## Overview
 
-Beauty has completed v1.5 and is awaiting the next milestone cycle. The shipped product remains a modular, local-first iOS beauty SDK with a rich SwiftUI Demo validation app that uses only the public `BeautySDK` facade.
+v1.6 extends the shipped v1.5 geometry-output foundation to the existing public `眼睛` SDK parameters. The milestone remains SDK-core only: it adds public-facade renderer evidence, focused safety/degradation tests, and scoped ledger promotion for evidence-backed eye tools without adding Demo UI, public API fields, commercial behavior, network/cloud behavior, or release-readiness claims.
 
-For the full archived v1.5 scope, see:
+For completed prior scope, see:
 
 - `.planning/milestones/v1.5-ROADMAP.md`
 - `.planning/milestones/v1.5-REQUIREMENTS.md`
@@ -12,48 +12,57 @@ For the full archived v1.5 scope, see:
 
 ## Milestones
 
-- ✅ **v1.0 MVP** - Phases 1-7, shipped 2026-06-23. See `.planning/milestones/v1.0-ROADMAP.md`.
-- ✅ **v1.1 Meitu UI** - Phases 8-10, implemented and verified 2026-06-24. Summary is in `.planning/MILESTONES.md`.
-- ✅ **v1.2 HTML Reference Fidelity** - Phase 11 completed 2026-06-25; Phases 12-15 canceled 2026-06-26. Summary is in `.planning/MILESTONES.md`.
-- ✅ **v1.3 Meitu Core Beauty Module Design and Implementation** - Phases 16-20 shipped 2026-06-30. See `.planning/milestones/v1.3-ROADMAP.md`.
-- ✅ **v1.4 Stability, QA, and Debt Cleanup** - Phases 21-25 shipped 2026-07-03. See `.planning/milestones/v1.4-ROADMAP.md`, `.planning/milestones/v1.4-REQUIREMENTS.md`, and `.planning/milestones/v1.4-MILESTONE-AUDIT.md`.
-- ✅ **v1.5 SDK Geometry Output Foundation and Face Shape Slice** - Phases 26-28 shipped 2026-07-08. See `.planning/milestones/v1.5-ROADMAP.md`, `.planning/milestones/v1.5-REQUIREMENTS.md`, and `.planning/milestones/v1.5-MILESTONE-AUDIT.md`.
+- ✅ **v1.0 MVP** - Phases 1-7, shipped 2026-06-23.
+- ✅ **v1.1 Meitu UI** - Phases 8-10, implemented and verified 2026-06-24.
+- ✅ **v1.2 HTML Reference Fidelity** - Phase 11 completed 2026-06-25; Phases 12-15 canceled 2026-06-26.
+- ✅ **v1.3 Meitu Core Beauty Module Design and Implementation** - Phases 16-20 shipped 2026-06-30.
+- ✅ **v1.4 Stability, QA, and Debt Cleanup** - Phases 21-25 shipped 2026-07-03.
+- ✅ **v1.5 SDK Geometry Output Foundation and Face Shape Slice** - Phases 26-28 shipped 2026-07-08.
+- ◆ **v1.6 Broader `美型 / 五官` SDK Slice - Eyes** - Phases 29-30 planned 2026-07-09.
 
 ## Phases
 
-<details>
-<summary>✅ v1.4 Stability, QA, and Debt Cleanup (Phases 21-25) - SHIPPED 2026-07-03</summary>
+| Phase | Name | Goal | Requirements | Success Criteria |
+| ---: | --- | --- | --- | --- |
+| 29 | Eye Renderer Output Evidence | Add eye-specific public-facade renderer cases and helper evidence using existing public parameters only. | EYE-01, EYE-02, EYE-03 | 4 |
+| 30 | Eye Safety, Ledger, and Closeout | Prove safety/degradation/redaction boundaries, promote only scoped `眼睛` rows, and synchronize docs. | EYE-04, EYE-05, EYE-06, EYE-07, EYE-08, DOC-01 | 5 |
 
-- [x] Phase 21: Baseline Audit and Quality Ledger Refresh (2/2 plans) - completed 2026-06-30.
-- [x] Phase 22: Automated Demo QA and Screenshot Evidence (2/2 plans) - completed 2026-07-01.
-- [x] Phase 23: Performance and Reliability Gates (5/5 plans) - completed 2026-07-02.
-- [x] Phase 24: Renderer Output Regression Hardening (3/3 plans) - completed 2026-07-02.
-- [x] Phase 25: Security, Distribution Review, and Closeout (3/3 plans) - completed 2026-07-03.
+### Phase 29: Eye Renderer Output Evidence
 
-Archive files:
+**Goal:** Extend `BeautyExampleRenderer` and verification helpers so existing public eye parameters produce verifiable saved-output evidence through the public `BeautySDK` facade.
 
-- `.planning/milestones/v1.4-ROADMAP.md`
-- `.planning/milestones/v1.4-REQUIREMENTS.md`
-- `.planning/milestones/v1.4-MILESTONE-AUDIT.md`
+**Requirements:** EYE-01, EYE-02, EYE-03
 
-</details>
+**Success criteria:**
 
-<details>
-<summary>✅ v1.5 SDK Geometry Output Foundation and Face Shape Slice (Phases 26-28) - SHIPPED 2026-07-08</summary>
+1. `BeautyExampleRenderer` includes one case per existing eye behavior needed for evidence: `eyeSize`, positive and negative `eyeDistance`, positive and negative `eyeYPosition`, and `eyeTailLift`.
+2. A Phase 29 helper validates all expected renderer outputs across committed input fixtures, including same dimensions and non-empty generated PNGs.
+3. Usable portrait fixture eye outputs differ from `geometryBaseline_noop` above the watermark band; no-face fixture output is present and safely degraded.
+4. Generated output/gallery files remain ignored, flat output names remain deterministic, and no generated PNG baseline is committed.
 
-- [x] Phase 26: Geometry Facade and Landmark Routing Foundation (4/4 plans) - completed 2026-07-06.
-- [x] Phase 27: Geometry Render Output and Verification Harness (4/4 plans) - completed 2026-07-07.
-- [x] Phase 28: Face Shape Slice Completion and Documentation Closeout (4/4 plans) - completed 2026-07-08.
+**Notes:**
 
-Archive files:
+- Reuse the Phase 27/28 helper pattern and the current nested `example-images/input/` fixture layout.
+- Do not add Demo UI, public parameters, public raw geometry, entitlement/commercial strings, or non-eye renderer cases.
 
-- `.planning/milestones/v1.5-ROADMAP.md`
-- `.planning/milestones/v1.5-REQUIREMENTS.md`
-- `.planning/milestones/v1.5-MILESTONE-AUDIT.md`
+### Phase 30: Eye Safety, Ledger, and Closeout
 
-Accepted limitations remain future or setup-specific work: broader `美型 / 五官` slices, Demo UI work, physical-device parity, commercial visual review, screenshot reruns, optimized profiling, packaging review, and launch-readiness evidence.
+**Goal:** Close the `眼睛` existing-parameter slice with focused safety/degradation/redaction evidence and scoped documentation promotion.
 
-</details>
+**Requirements:** EYE-04, EYE-05, EYE-06, EYE-07, EYE-08, DOC-01
+
+**Success criteria:**
+
+1. Focused XCTest coverage proves eye caps, no-face behavior, missing-eye-landmark skips, no stale/reused eye geometry, and combined-geometry weakening.
+2. Boundary scans pass for public raw geometry leakage, Demo internal SDK imports, renderer internal imports, network/cloud behavior, and commercial entitlement paths.
+3. `SHAPE_FEATURE_LEDGER.md` promotes exactly `眼睛` rows backed by existing public parameters: `大小`, `上下`, `眼距`, and `眼尾上扬`.
+4. `FEATURE_MATRIX.md`, `EXAMPLE_IMAGE_VALIDATION.md`, root contracts, `QUALITY_SCORE.md`, `PLANS.md`, and phase verification artifacts record the evidence and limitations.
+5. Branch-level `眼睛` remains `partial`, and future eye tools without public parameter/resource design remain future.
+
+**Notes:**
+
+- The phase should not claim commercial visual quality, device parity, launch readiness, full Meitu parity, or whole-branch `眼睛` completion.
+- If renderer evidence from Phase 29 reveals a fixture-specific weakness, record the limitation and keep promotion scoped to command-backed evidence.
 
 ## Progress
 
@@ -65,20 +74,28 @@ Accepted limitations remain future or setup-specific work: broader `美型 / 五
 | v1.3 Meitu Core Beauty Module Design and Implementation | 5 | 14 | 20/20 | Shipped | 2026-06-30 |
 | v1.4 Stability, QA, and Debt Cleanup | 5 | 15 | 24/24 | Shipped | 2026-07-03 |
 | v1.5 SDK Geometry Output Foundation and Face Shape Slice | 3 | 12 | 13/13 | Shipped | 2026-07-08 |
+| v1.6 Broader `美型 / 五官` SDK Slice - Eyes | 2 | 0 | 0/9 | Planned | — |
 
 ## Next
 
-Start the next milestone:
+Start Phase 29 discussion:
 
 ```bash
-$gsd-new-milestone
+$gsd-discuss-phase 29
+```
+
+Alternative if context is already clear:
+
+```bash
+$gsd-plan-phase 29
 ```
 
 ## Backlog
 
-Future milestone candidates after v1.5:
+Future milestone candidates after v1.6:
 
-- Broader `美型 / 五官` slices: `眼睛`, `鼻子`, `嘴唇`, `比例`, `3D塑颜`, and `眉毛`.
+- Broader `美型 / 五官` slices: `鼻子`, `嘴唇`, `比例`, `3D塑颜`, and `眉毛`.
+- Remaining unscoped `眼睛` tools that need new parameter/resource design.
 - Home/discovery feature system planning.
 - Filters, makeup, stickers, templates, and resource-pack planning.
 - AI retouch, background segmentation, cutout, and eraser planning.
