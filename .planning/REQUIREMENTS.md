@@ -7,9 +7,9 @@
 
 ### Eye Renderer Evidence
 
-- [x] **EYE-01**: `BeautyExampleRenderer` can generate public-facade saved-output cases for the existing public eye parameters `eyeSize`, signed `eyeDistance`, signed `eyeYPosition`, and `eyeTailLift` without importing internal SDK targets.
-- [x] **EYE-02**: The eye renderer helper verifies every expected eye output exists, is non-empty, preserves input dimensions, and differs from `geometryBaseline_noop` above the watermark band on usable portrait fixtures.
-- [x] **EYE-03**: Generated eye output and gallery artifacts stay under ignored `example-images/output/` and `example-images/gallery/`; no generated PNG baseline is committed.
+- [x] **EYE-01**: `BeautyExampleRenderer` can generate public-facade saved-output cases for the existing public eye parameters `eyeSize`, signed `eyeDistance`, signed `eyeYPosition`, and `eyeTailLift` without importing internal SDK targets. Evidence: `.planning/phases/29-eye-renderer-output-evidence/29-VERIFICATION.md` and `.planning/phases/29-eye-renderer-output-evidence/29-EYE-RENDERER-EVIDENCE.md`.
+- [x] **EYE-02**: The eye renderer helper verifies every expected eye output exists, is non-empty, preserves input dimensions, and differs from `geometryBaseline_noop` above the watermark band on usable portrait fixtures. Evidence: `.planning/phases/29-eye-renderer-output-evidence/29-VERIFICATION.md` and `.planning/phases/29-eye-renderer-output-evidence/29-EYE-RENDERER-EVIDENCE.md`.
+- [x] **EYE-03**: Generated eye output and gallery artifacts stay under ignored `example-images/output/` and `example-images/gallery/`; no generated PNG baseline is committed. Evidence: `.planning/phases/29-eye-renderer-output-evidence/29-VERIFICATION.md` and `.planning/phases/29-eye-renderer-output-evidence/29-EYE-RENDERER-EVIDENCE.md`.
 
 ### Eye Safety And Degradation
 
@@ -45,17 +45,17 @@
 
 ## Traceability
 
-| Requirement | Phase | Status |
-| --- | --- | --- |
-| EYE-01 | Phase 29 | Complete |
-| EYE-02 | Phase 29 | Complete |
-| EYE-03 | Phase 29 | Complete |
-| EYE-04 | Phase 30 | Pending |
-| EYE-05 | Phase 30 | Pending |
-| EYE-06 | Phase 30 | Pending |
-| EYE-07 | Phase 30 | Pending |
-| EYE-08 | Phase 30 | Pending |
-| DOC-01 | Phase 30 | Pending |
+| Requirement | Phase | Status | Evidence |
+| --- | --- | --- | --- |
+| EYE-01 | Phase 29 | Complete | `29-VERIFICATION.md` records six public-facade eye renderer cases, the 23-case matrix, and public-import boundary evidence; `29-EYE-RENDERER-EVIDENCE.md` records the case-to-parameter mapping. |
+| EYE-02 | Phase 29 | Complete | `29-VERIFICATION.md` and `29-EYE-RENDERER-EVIDENCE.md` record 161/161 outputs, 36/36 eye-vs-baseline top-region comparisons, dimensions, and representative no-face output presence. |
+| EYE-03 | Phase 29 | Complete | `29-VERIFICATION.md` and `29-EYE-RENDERER-EVIDENCE.md` record ignored output/gallery checks, generated `eyes/` gallery routing, and zero tracked generated output/gallery files. |
+| EYE-04 | Phase 30 | Pending | Pending Phase 30 safety-cap evidence. |
+| EYE-05 | Phase 30 | Pending | Pending Phase 30 no-face, missing-eye-landmark, and stale/reused-geometry evidence. |
+| EYE-06 | Phase 30 | Pending | Pending Phase 30 combined-geometry weakening evidence. |
+| EYE-07 | Phase 30 | Pending | Pending Phase 30 public/import/network/commercial boundary evidence. |
+| EYE-08 | Phase 30 | Pending | Pending Phase 30 scoped `SHAPE_FEATURE_LEDGER.md` row evidence. |
+| DOC-01 | Phase 30 | Pending | Pending Phase 30 documentation synchronization after safety and scoped ledger evidence. |
 
 **Coverage:**
 
@@ -65,4 +65,4 @@
 
 ---
 *Requirements defined: 2026-07-09*
-*Last updated: 2026-07-09 after v1.6 milestone initialization*
+*Last updated: 2026-07-09 after Phase 29 renderer evidence closeout*

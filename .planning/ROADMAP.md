@@ -18,7 +18,7 @@ For completed prior scope, see:
 - ✅ **v1.3 Meitu Core Beauty Module Design and Implementation** - Phases 16-20 shipped 2026-06-30.
 - ✅ **v1.4 Stability, QA, and Debt Cleanup** - Phases 21-25 shipped 2026-07-03.
 - ✅ **v1.5 SDK Geometry Output Foundation and Face Shape Slice** - Phases 26-28 shipped 2026-07-08.
-- ◆ **v1.6 Broader `美型 / 五官` SDK Slice - Eyes** - Phases 29-30 planned 2026-07-09.
+- ◆ **v1.6 Broader `美型 / 五官` SDK Slice - Eyes** - Phase 29 complete; Phase 30 planned 2026-07-09.
 
 ## Phases
 
@@ -33,7 +33,9 @@ For completed prior scope, see:
 
 **Requirements:** EYE-01, EYE-02, EYE-03
 
-**Plans:** 3/4 plans executed
+**Status:** Complete - completed 2026-07-09
+
+**Plans:** 4/4 plans complete
 
 **Success criteria:**
 
@@ -52,7 +54,11 @@ Plans:
 - [x] `29-01-PLAN.md` — Add locked eye renderer cases, inventory tests, and the Phase 29 output helper.
 - [x] `29-02-PLAN.md` — Add ignored `eyes/` gallery support and update example-image validation docs.
 - [x] `29-03-PLAN.md` — Record command-backed eye renderer evidence, verification, and validation.
-- [ ] `29-04-PLAN.md` — Synchronize Phase 29 planning ledgers and quality evidence without eye status promotion.
+- [x] `29-04-PLAN.md` — Synchronize Phase 29 planning ledgers and quality evidence without eye status promotion.
+
+**Evidence:** `.planning/phases/29-eye-renderer-output-evidence/29-VERIFICATION.md` and `.planning/phases/29-eye-renderer-output-evidence/29-EYE-RENDERER-EVIDENCE.md` record six public-facade eye renderer cases, 161/161 generated outputs, 36/36 eye-vs-baseline top-region comparisons, representative no-face output presence, ignored generated output/gallery checks, and no-promotion limitations.
+
+**Boundary:** Phase 29 proves renderer evidence for existing public eye parameters only. `眼睛` rows and branch remain `partial` until Phase 30 safety, degradation, boundary, and ledger closeout passes.
 
 ### Phase 30: Eye Safety, Ledger, and Closeout
 
@@ -87,10 +93,10 @@ Plans:
 
 ## Next
 
-Execute Phase 29:
+Plan Phase 30:
 
 ```bash
-$gsd-execute-phase 29
+$gsd-discuss-phase 30
 ```
 
 ## Backlog
