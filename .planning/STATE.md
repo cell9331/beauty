@@ -4,14 +4,14 @@ milestone: v1.6
 milestone_name: Broader 美型 / 五官 SDK Slice - Eyes
 status: planning
 stopped_at: Completed Phase 29 execution
-last_updated: "2026-07-09T07:10:30.000Z"
-last_activity: 2026-07-09 — Phase 29 completed; EYE-01 through EYE-03 closed from renderer evidence
+last_updated: "2026-07-10T02:17:33.384Z"
+last_activity: 2026-07-10 — Phase 29 completed; EYE-01 through EYE-03 closed from renderer evidence
 progress:
   total_phases: 2
   completed_phases: 1
   total_plans: 4
   completed_plans: 4
-  percent: 100
+  percent: 50
 ---
 
 # Project State
@@ -26,9 +26,9 @@ See: `.planning/PROJECT.md` (updated 2026-07-09)
 ## Current Position
 
 Phase: 30 (Eye Safety, Ledger, and Closeout) — PLANNING
-Plan: Not generated
+Plan: Not started
 Status: Ready to discuss and plan Phase 30
-Last activity: 2026-07-09 — Phase 29 completed; EYE-01 through EYE-03 closed from renderer evidence
+Last activity: 2026-07-10 — Phase 29 completed; EYE-01 through EYE-03 closed from renderer evidence
 
 ## Performance Metrics
 
