@@ -161,6 +161,7 @@ def read_png_payload(path: Path, label: str) -> PNGPayload:
     filter_method: int | None = None
     interlace_method: int | None = None
     idat_chunks: list[bytes] = []
+    seen_iend = False
 
     offset = 8
     while offset + 8 <= len(data):
@@ -185,10 +186,13 @@ def read_png_payload(path: Path, label: str) -> PNGPayload:
         elif chunk_type == b"IDAT":
             idat_chunks.append(chunk_data)
         elif chunk_type == b"IEND":
+            seen_iend = True
             break
 
     if width is None or height is None:
         raise RendererOutputError(f"{label}: missing IHDR")
+    if not seen_iend:
+        raise RendererOutputError(f"{label}: missing IEND")
     if bit_depth != 8 or color_type not in (2, 6):
         raise RendererOutputError(f"{label}: unsupported PNG color type")
     if compression_method != 0 or filter_method != 0 or interlace_method != 0:
@@ -203,6 +207,8 @@ def read_png_payload(path: Path, label: str) -> PNGPayload:
     expected_length = (width * channels + 1) * height
     if len(raw) < expected_length:
         raise RendererOutputError(f"{label}: truncated image data")
+    if len(raw) > expected_length:
+        raise RendererOutputError(f"{label}: invalid image data length")
 
     return PNGPayload(width=width, height=height, color_type=color_type, raw=raw)
 
@@ -406,11 +412,12 @@ def main() -> int:
                 continue
 
             try:
-                output_dimensions = read_png_dimensions(output_path, output_label)
+                output_payload = read_png_payload(output_path, output_label)
             except RendererOutputError as error:
                 failures.append(str(error))
                 continue
 
+            output_dimensions = (output_payload.width, output_payload.height)
             if output_dimensions != fixture_dimensions:
                 failures.append(
                     f"{output_label}: dimensions {output_dimensions[0]}x{output_dimensions[1]} "

@@ -20,18 +20,18 @@ enum ExampleRendererError: Error, CustomStringConvertible {
 
     var description: String {
         switch self {
-        case .missingInputDirectory(let path):
-            "Input directory does not exist: \(path)"
-        case .missingInputImages(let path):
-            "Input directory contains no PNG or JPEG images: \(path)"
+        case .missingInputDirectory(let label):
+            "Input directory does not exist: \(label)"
+        case .missingInputImages(let label):
+            "Input directory contains no PNG or JPEG images: \(label)"
         case .unknownCase(let id, let available):
             "Unknown render case: \(id). Available cases: \(available.joined(separator: ", "))"
-        case .imageLoadFailed(let path):
-            "Could not load image: \(path)"
-        case .renderFailed(let path):
-            "Could not render image: \(path)"
-        case .pngEncodingFailed(let path):
-            "Could not encode PNG: \(path)"
+        case .imageLoadFailed(let label):
+            "Could not load image: \(label)"
+        case .renderFailed(let label):
+            "Could not render image: \(label)"
+        case .pngEncodingFailed(let label):
+            "Could not encode PNG: \(label)"
         }
     }
 }
@@ -175,7 +175,7 @@ do {
     let outputURL = URL(fileURLWithPath: outputDirectory, isDirectory: true)
     let fileManager = FileManager.default
     guard fileManager.fileExists(atPath: inputURL.path) else {
-        throw ExampleRendererError.missingInputDirectory(inputURL.path)
+        throw ExampleRendererError.missingInputDirectory("input directory")
     }
     try fileManager.createDirectory(at: outputURL, withIntermediateDirectories: true)
 
@@ -186,7 +186,7 @@ do {
 
     let imageURLs = fixtureImageURLs(in: inputURL, fileManager: fileManager)
     guard !imageURLs.isEmpty else {
-        throw ExampleRendererError.missingInputImages(inputURL.path)
+        throw ExampleRendererError.missingInputImages("input directory")
     }
 
     let engine = try BeautyEngine(configuration: .default)
@@ -197,7 +197,7 @@ do {
 
     for imageURL in imageURLs {
         guard let inputImage = CIImage(contentsOf: imageURL, options: [.applyOrientationProperty: true]) else {
-            throw ExampleRendererError.imageLoadFailed(imageURL.path)
+            throw ExampleRendererError.imageLoadFailed(relativePath(imageURL, from: inputURL))
         }
 
         for renderCase in renderCases {
@@ -207,7 +207,7 @@ do {
                 parameters: renderCase.parameters
             )
             guard let cgImage = context.createCGImage(result.output, from: result.output.extent) else {
-                throw ExampleRendererError.renderFailed(imageURL.path)
+                throw ExampleRendererError.renderFailed(relativePath(imageURL, from: inputURL))
             }
 
             let watermark = watermarkText(for: renderCase, result: result)
@@ -216,10 +216,10 @@ do {
             let outputName = "\(baseName)__\(renderCase.id).png"
             let destination = outputURL.appendingPathComponent(outputName)
             guard let png = watermarked.pngData() else {
-                throw ExampleRendererError.pngEncodingFailed(destination.path)
+                throw ExampleRendererError.pngEncodingFailed(outputName)
             }
             try png.write(to: destination, options: .atomic)
-            print("wrote \(destination.path)")
+            print("wrote \(outputName)")
         }
     }
 } catch {

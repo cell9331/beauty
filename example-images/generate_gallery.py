@@ -11,6 +11,8 @@ from pathlib import Path
 
 
 SUPPORTED_INPUT_EXTENSIONS = {".png", ".jpg", ".jpeg"}
+REPO_ROOT = Path(__file__).resolve().parent.parent
+ALLOWED_GALLERY_ROOT = (REPO_ROOT / "example-images" / "gallery").resolve()
 
 CASE_GROUPS = {
     "skin": [
@@ -74,6 +76,8 @@ def main() -> int:
 
 
 def generate_gallery(input_dir: Path, output_dir: Path, gallery_dir: Path) -> None:
+    validate_gallery_directory(input_dir=input_dir, output_dir=output_dir, gallery_dir=gallery_dir)
+
     fixture_stems = discover_fixture_stems(input_dir)
     expected_sources = [
         output_dir / f"{fixture_stem}__{case_id}.png"
@@ -83,10 +87,14 @@ def generate_gallery(input_dir: Path, output_dir: Path, gallery_dir: Path) -> No
     ]
     missing = [path for path in expected_sources if not path.is_file()]
     if missing:
-        sample = ", ".join(str(path) for path in missing[:5])
+        sample = ", ".join(display_path(path) for path in missing[:5])
         suffix = "" if len(missing) <= 5 else f", ... ({len(missing)} missing)"
         raise GalleryError(f"Missing generated output PNGs: {sample}{suffix}")
 
+    if gallery_dir.exists() and not gallery_dir.is_dir():
+        raise GalleryError("Gallery path exists but is not a directory")
+    if gallery_dir.is_symlink():
+        raise GalleryError("Gallery directory must not be a symbolic link")
     if gallery_dir.exists():
         shutil.rmtree(gallery_dir)
     gallery_dir.mkdir(parents=True, exist_ok=True)
@@ -102,12 +110,43 @@ def generate_gallery(input_dir: Path, output_dir: Path, gallery_dir: Path) -> No
                 shutil.copy2(source, destination)
                 copied += 1
 
-    print(f"wrote {copied} gallery PNGs under {gallery_dir}")
+    print(f"wrote {copied} gallery PNGs under {display_path(gallery_dir)}")
+
+
+def validate_gallery_directory(input_dir: Path, output_dir: Path, gallery_dir: Path) -> None:
+    resolved_gallery = gallery_dir.resolve()
+    resolved_input = input_dir.resolve()
+    resolved_output = output_dir.resolve()
+
+    if not is_relative_to(resolved_gallery, ALLOWED_GALLERY_ROOT):
+        raise GalleryError("Gallery directory must be under example-images/gallery")
+    if paths_overlap(resolved_gallery, resolved_input) or paths_overlap(resolved_gallery, resolved_output):
+        raise GalleryError("Gallery directory must not overlap input or output directories")
+
+
+def paths_overlap(left: Path, right: Path) -> bool:
+    return left == right or is_relative_to(left, right) or is_relative_to(right, left)
+
+
+def is_relative_to(path: Path, parent: Path) -> bool:
+    try:
+        path.relative_to(parent)
+    except ValueError:
+        return False
+    return True
+
+
+def display_path(path: Path) -> str:
+    resolved = path.resolve()
+    try:
+        return resolved.relative_to(REPO_ROOT).as_posix()
+    except ValueError:
+        return path.name or "<outside-repository>"
 
 
 def discover_fixture_stems(input_dir: Path) -> list[str]:
     if not input_dir.is_dir():
-        raise GalleryError(f"Input directory does not exist: {input_dir}")
+        raise GalleryError(f"Input directory does not exist: {display_path(input_dir)}")
 
     input_paths = sorted(
         path
@@ -115,7 +154,7 @@ def discover_fixture_stems(input_dir: Path) -> list[str]:
         if path.is_file() and path.suffix.lower() in SUPPORTED_INPUT_EXTENSIONS
     )
     if not input_paths:
-        raise GalleryError(f"Input directory contains no supported images: {input_dir}")
+        raise GalleryError(f"Input directory contains no supported images: {display_path(input_dir)}")
 
     stems = [path.stem for path in input_paths]
     counts = Counter(stems)
