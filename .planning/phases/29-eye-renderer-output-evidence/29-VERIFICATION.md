@@ -64,6 +64,7 @@ The phase proves renderer evidence for existing public eye parameters only. `眼
 | Helper/evidence redaction | `rg` raw-payload scan over evidence and helper output | Passed with zero matches. |
 | No-overclaim wording | `rg` quality/parity/readiness/eye-completion scan | Passed with zero matches. |
 | Code review | `29-REVIEW.md` | Passed with `status: clean` after resolving gallery deletion, renderer path-label, and helper PNG-decode findings. |
+| Security closeout | `29-SECURITY.md` | Passed with `status: verified` and `threats_open: 0`. |
 | Decision coverage | `check.decision-coverage-plan` | Passed with 14/14 decisions covered. |
 
 ## Static Boundary Results
@@ -72,6 +73,7 @@ The phase proves renderer evidence for existing public eye parameters only. `眼
 - `BeautyExampleRenderer` success output and renderer-local errors avoid absolute local path labels.
 - `check_eye_renderer_outputs.py` decodes every generated output PNG and requires `IEND` plus exact decoded scanline length.
 - `example-images/generate_gallery.py` refuses gallery paths outside `example-images/gallery/` and refuses input/output overlap before deleting any generated gallery directory.
+- `29-SECURITY.md` closes all 23 plan-time threats with no accepted risks and no open threats.
 - `BeautyDemo` was not changed by Phase 29.
 - `SHAPE_FEATURE_LEDGER.md` and `FEATURE_MATRIX.md` were not changed in Plan 29-02 or Plan 29-03.
 - No generated PNG output or gallery file is tracked by git.

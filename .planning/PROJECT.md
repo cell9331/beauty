@@ -16,9 +16,9 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
 **Current milestone:** v1.6 Broader `美型 / 五官` SDK Slice - Eyes.
 
-**Implementation state:** v1.5 completes SDK-only geometry output foundation and the first verified `脸型` existing-parameter slice. Public still-image processing can activate geometry-triggered detection through `BeautyEngine.processResult(...)`, route one selected face into package-internal geometry planning, produce deterministic saved-output geometry evidence through `BeautyExampleRenderer`, and verify scoped face-shape tools through existing public parameters. Current SDK/Demo behavior remains local-first, facade-only from the Demo, and no-network by default.
+**Implementation state:** v1.5 completes SDK-only geometry output foundation and the first verified `脸型` existing-parameter slice. Phase 29 of v1.6 adds public-facade saved-output evidence for the existing public eye parameters `eyeSize`, signed `eyeDistance`, signed `eyeYPosition`, and `eyeTailLift`, with generated output and gallery artifacts kept ignored. Current SDK/Demo behavior remains local-first, facade-only from the Demo, and no-network by default.
 
-**Verification state:** The v1.5 milestone audit passed with 13/13 requirements, 3/3 phases, 4/4 integration checks, 4/4 flows, and 3/3 Nyquist validation files. Phase 28 closeout evidence includes full `swift test --package-path BeautySDK` with 171 tests, `BeautyExampleRenderer` build/run evidence with 102 ignored outputs, `check_face_shape_renderer_outputs.py` passing with 102/102 outputs and 30/30 top-region comparisons, plus public/import boundary, hidden-surface, raw-leak, overclaim, ledger, and Demo import scans.
+**Verification state:** The v1.5 milestone audit passed with 13/13 requirements, 3/3 phases, 4/4 integration checks, 4/4 flows, and 3/3 Nyquist validation files. Phase 29 closeout evidence includes full `swift test --package-path BeautySDK` with 173 tests, `BeautyExampleRenderer` build/run evidence with 161 ignored outputs, `check_eye_renderer_outputs.py` passing with 161/161 outputs and 36/36 top-region comparisons, gallery safety checks, code review status clean, `29-SECURITY.md` with `threats_open: 0`, plus public/import boundary, raw-leak, overclaim, generated-artifact, and ignored-path scans.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
@@ -143,10 +143,13 @@ v1.3 remains a no-new-UI core module milestone. Phase 20 added no new SwiftUI sc
 - [x] Complete the `脸型` existing-parameter slice without adding UI scope.
 - [x] Keep the `美型 / 五官` ledger as the authority for second-level status changes.
 
+### Completed in v1.6
+
+- [x] Validated in Phase 29: add public-facade saved-output renderer/helper evidence for `eyeSize`, signed `eyeDistance`, signed `eyeYPosition`, and `eyeTailLift` without adding UI scope or public parameters.
+
 ### Active in v1.6
 
 - [ ] Complete the existing-parameter `眼睛` SDK slice without adding UI scope or public parameters.
-- [ ] Add public-facade saved-output renderer/helper evidence for `eyeSize`, signed `eyeDistance`, signed `eyeYPosition`, and `eyeTailLift`.
 - [ ] Add focused safety, degradation, redaction, and boundary evidence for the `眼睛` slice.
 - [ ] Promote only evidence-backed second-level `眼睛` rows in `SHAPE_FEATURE_LEDGER.md`; keep branch-level `眼睛` partial.
 
@@ -248,4 +251,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-07-09 after v1.6 milestone initialization*
+*Last updated: 2026-07-10 after Phase 29 eye renderer evidence closeout*
