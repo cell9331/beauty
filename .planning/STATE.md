@@ -1,8 +1,8 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.6
-milestone_name: milestone
-status: Ready to discuss and plan Phase 30
+milestone_name: Broader 美型 / 五官 SDK Slice - Eyes
+status: planning
 stopped_at: Phase 30 context gathered
 last_updated: "2026-07-10T03:53:47.898Z"
 last_activity: 2026-07-10 — Phase 29 completed; EYE-01 through EYE-03 closed from renderer evidence

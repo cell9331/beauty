@@ -30,6 +30,27 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-10-gsd-discuss-phase-30-eye-safety-ledger-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-10 |
+| Scope | Ran `$gsd-discuss-phase 30` for Eye Safety, Ledger, and Closeout. Captured implementation decisions for positive-only eye input semantics, eye-specific stale/reused degradation, layered safety evidence, combined-geometry weakening, active-source boundary enforcement, atomic four-row ledger promotion, and targeted contract synchronization. |
+| Requirements | Planning context for EYE-04, EYE-05, EYE-06, EYE-07, EYE-08, DOC-01 |
+| Files | `.planning/phases/30-eye-safety-ledger-and-closeout/30-CONTEXT.md`, `.planning/phases/30-eye-safety-ledger-and-closeout/30-DISCUSSION-LOG.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | `init.phase-op 30` reported Phase 30 exists with no prior context, research, plans, verification, or phase directory. `todo.match-phase 30` returned zero matches. Project/requirements/state, Phases 27-29 context, current root/blueprint contracts, eye parameter/resolver/provider code, focused tests, Phase 29 evidence, and the stale codebase maps were reviewed. The user selected all four gray areas and explicitly chose all 16 recommended decisions. Context/log placeholder scans, canonical-reference existence checks, checkpoint JSON validation, and `git diff --check` passed. |
+| Build | Not run; this was a GSD discussion/context workflow with no Swift source changes. Phase 30 planning must include focused eye safety/degradation/combined tests, full `swift test --package-path BeautySDK`, `BeautyExampleRenderer` build/run, the 161/161 and 36/36 Phase 29 helper regression, active-source boundary scans, and atomic ledger-promotion guards. |
+| Commit | `fe6b0f5` captured Phase 30 context/log; `4693b16` recorded the Phase 30 context session; the final ledger commit records this `PLANS.md` entry. |
+
+Outcome:
+
+- `eyeSize` and `eyeTailLift` are positive-only and normalize negative input to zero; `eyeDistance` and `eyeYPosition` remain signed. All four fields require exact cap/direction, warning/metric, finite-overflow, and non-finite input evidence.
+- Reused and stale geometry both skip the eye domain completely, while other geometry domains retain established reused-strength reduction. Missing either eye group skips the entire eye domain.
+- EYE-05 uses public-facade plus resolver/provider evidence; EYE-06 uses six per-behavior combined cases plus one all-eye/multi-domain case; Phase 29 visible-output evidence is rerun before closeout.
+- Active-source EYE-07 violations are hard promotion blockers. `大小`, `上下`, `眼距`, and `眼尾上扬` promote atomically only after every gate passes, while branch-level `眼睛` remains `partial`.
+
+Next step: `$gsd-plan-phase 30`.
+
 ### C-2026-07-09-gsd-execute-phase-29-eye-renderer-output-evidence
 
 | Field | Value |
