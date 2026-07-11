@@ -4,36 +4,33 @@ import BeautyDetection
 @testable import BeautyEffects
 
 final class MissingLandmarkDegradationTests: XCTestCase {
-    func testMissingOneEyeGroupSkipsOnlyEyesAndKeepsSafeDomainsActive() {
-        let plan = BeautyEffectResolver.resolve(
-            parameters: BeautyParameters(
-                brightness: 0.2,
-                eyeSize: 1,
-                filterId: "soft_clean",
-                filterIntensity: 0.5
-            ),
-            faceGeometry: .missingLeftEye
-        )
+    func testMissingEitherEyeGroupSkipsEyesZerosStrengthsAndKeepsOtherDomainsActive() {
+        for face in [FaceGeometry.missingLeftEye, .missingRightEye] {
+            let plan = BeautyEffectResolver.resolve(
+                parameters: BeautyParameters(
+                    brightness: 0.2,
+                    eyeSize: 1,
+                    eyeDistance: -1,
+                    eyeYPosition: 1,
+                    eyeTailLift: 1,
+                    noseSlim: 0.2,
+                    mouthSize: 0.2,
+                    filterId: "soft_clean",
+                    filterIntensity: 0.5
+                ),
+                faceGeometry: face
+            )
 
-        XCTAssertFalse(plan.activeDomains.contains(.eyes))
-        XCTAssertTrue(plan.activeDomains.contains(.color))
-        XCTAssertTrue(plan.activeDomains.contains(.filter))
-        XCTAssertEqual(plan.skippedDomains, [.eyes])
-        XCTAssertTrue(plan.warnings.contains { $0.code == "eye_inputs_missing" })
-    }
-
-    func testEyeDegradationMetadataIsRedacted() {
-        let plan = BeautyEffectResolver.resolve(
-            parameters: BeautyParameters(eyeSize: 1),
-            faceGeometry: .missingLeftEye
-        )
-        let combined = (
-            plan.warnings.map { "\($0.code) \($0.message)" } +
-            Array(plan.metrics.keys)
-        ).joined(separator: " ")
-
-        for forbidden in ["/private" + "/var", "VNFace" + "Observation", "bounding", "Coordinate" + "Rect", "image" + " bytes", "[0.", "SI" + "MD"] {
-            XCTAssertFalse(combined.contains(forbidden), "Unexpected sensitive term: \(forbidden)")
+            XCTAssertFalse(plan.activeDomains.contains(.eyes))
+            XCTAssertTrue(plan.skippedDomains.contains(.eyes))
+            XCTAssertTrue(plan.activeDomains.isSuperset(of: [.nose, .mouth, .color, .filter]))
+            assertEyeStrengthsAreZero(plan)
+            XCTAssertEqual(plan.metrics["beauty.effects.skippedEyeDomains"], 1)
+            XCTAssertTrue(plan.warnings.contains {
+                $0.code == "eye_inputs_missing" && $0.message == "Eye effects skipped: inputs incomplete."
+            })
+            assertRedacted(plan)
+            assertNoEyeSideOrRawGeometryDisclosure(plan)
         }
     }
 
@@ -103,9 +100,10 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertTrue(stale.warnings.contains { $0.code == "geometry_stale_skipped" })
 
         let reused = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .reused)
-        XCTAssertTrue(reused.activeDomains.contains(.eyes))
+        XCTAssertFalse(reused.activeDomains.contains(.eyes))
+        XCTAssertTrue(reused.skippedDomains.contains(.eyes))
         XCTAssertTrue(reused.activeDomains.contains(.nose))
-        XCTAssertLessThan(reused.effectiveStrengths.eyeSize, BeautySafetyCaps.eyeSize)
+        XCTAssertEqual(reused.effectiveStrengths.eyeSize, 0)
         XCTAssertLessThan(reused.effectiveStrengths.noseSlim, BeautySafetyCaps.noseSlim)
         XCTAssertTrue(reused.warnings.contains { $0.code == "geometry_stale_reduced" })
 
@@ -152,31 +150,59 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertNotEqual(output, input)
     }
 
-    func testReusedLandmarksReduceEyeAndNoseGeometry() {
+    func testReusedEyeGeometrySkipsEyesZerosStrengthsAndPreservesNonEyeReuseReduction() {
+        let eyeOnlyPlan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(eyeSize: 1, eyeDistance: -1, eyeYPosition: 1, eyeTailLift: 1),
+            faceGeometry: .reused
+        )
+        XCTAssertNil(eyeOnlyPlan.metrics["beauty.effects.geometryPointCount"])
+        assertEyeStrengthsAreZero(eyeOnlyPlan)
+        assertNoEyeSideOrRawGeometryDisclosure(eyeOnlyPlan)
+
         let plan = BeautyEffectResolver.resolve(
-            parameters: BeautyParameters(eyeSize: 1, noseSlim: 1),
+            parameters: BeautyParameters(
+                faceSlim: 1,
+                eyeSize: 1,
+                eyeDistance: -1,
+                eyeYPosition: 1,
+                eyeTailLift: 1,
+                noseSlim: 1,
+                mouthSize: 1
+            ),
             faceGeometry: .reused
         )
 
-        XCTAssertTrue(plan.activeDomains.contains(.eyes))
-        XCTAssertTrue(plan.activeDomains.contains(.nose))
-        XCTAssertLessThan(plan.effectiveStrengths.eyeSize, BeautySafetyCaps.eyeSize)
+        XCTAssertFalse(plan.activeDomains.contains(.eyes))
+        XCTAssertTrue(plan.skippedDomains.contains(.eyes))
+        XCTAssertTrue(plan.activeDomains.isSuperset(of: [.faceShape, .nose, .mouth]))
+        assertEyeStrengthsAreZero(plan)
+        XCTAssertEqual(plan.metrics["beauty.effects.skippedEyeDomains"], 1)
+        XCTAssertEqual(plan.metrics["beauty.effects.reusedGeometryScale"], 0.5)
+        XCTAssertTrue(plan.warnings.contains {
+            $0.code == "eye_geometry_reused_skipped" && $0.message == "Eye effects skipped: inputs reused."
+        })
         XCTAssertLessThan(plan.effectiveStrengths.noseSlim, BeautySafetyCaps.noseSlim)
         XCTAssertTrue(plan.warnings.contains { $0.code == "geometry_stale_reduced" })
+        assertRedacted(plan)
+        assertNoEyeSideOrRawGeometryDisclosure(plan)
     }
 
-    func testStaleLandmarksSkipStrongEyeAndNoseGeometry() {
+    func testStaleEyeGeometrySkipsEyesZerosStrengthsWithDistinctReason() {
         let plan = BeautyEffectResolver.resolve(
-            parameters: BeautyParameters(brightness: 0.2, eyeSize: 1, noseSlim: 1),
+            parameters: BeautyParameters(eyeSize: 1, eyeDistance: -1, eyeYPosition: 1, eyeTailLift: 1),
             faceGeometry: .stale
         )
 
         XCTAssertFalse(plan.activeDomains.contains(.eyes))
-        XCTAssertFalse(plan.activeDomains.contains(.nose))
-        XCTAssertTrue(plan.activeDomains.contains(.color))
         XCTAssertTrue(plan.skippedDomains.contains(.eyes))
-        XCTAssertTrue(plan.skippedDomains.contains(.nose))
-        XCTAssertTrue(plan.warnings.contains { $0.code == "geometry_stale_skipped" })
+        assertEyeStrengthsAreZero(plan)
+        XCTAssertEqual(plan.metrics["beauty.effects.skippedEyeDomains"], 1)
+        XCTAssertNil(plan.metrics["beauty.effects.geometryPointCount"])
+        XCTAssertTrue(plan.warnings.contains {
+            $0.code == "eye_geometry_stale_skipped" && $0.message == "Eye effects skipped: inputs stale."
+        })
+        assertRedacted(plan)
+        assertNoEyeSideOrRawGeometryDisclosure(plan)
     }
 
     func testMissingMouthSkipsOnlyMouthAndKeepsEyeNoseAndSafeDomainsActive() {
@@ -328,6 +354,31 @@ final class MissingLandmarkDegradationTests: XCTestCase {
 
         for forbidden in ["land" + "mark", "control point", "control" + "Point", "bounding", "VNFace" + "Observation", "/private" + "/var", "image" + " bytes", "SI" + "MD", "[0."] {
             XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)", file: file, line: line)
+        }
+    }
+
+    private func assertEyeStrengthsAreZero(_ plan: BeautyEffectPlan, file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertEqual(plan.effectiveStrengths.eyeSize, 0, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.eyeDistance, 0, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.eyeYPosition, 0, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.eyeTailLift, 0, file: file, line: line)
+    }
+
+    private func assertNoEyeSideOrRawGeometryDisclosure(
+        _ plan: BeautyEffectPlan,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let metadata = (
+            plan.warnings.map { "\($0.code) \($0.message)" } +
+            Array(plan.metrics.keys)
+        ).joined(separator: " ").lowercased()
+        let forbidden = [
+            "left", "right", "eye side", "landmark", "coordinate", "bounding", "bounds",
+            "control point", "path", "image bytes", "raw", "vnfaceobservation", "nserror", "averror",
+        ]
+        for term in forbidden {
+            XCTAssertFalse(metadata.contains(term), "Unexpected sensitive term: \(term)", file: file, line: line)
         }
     }
 }

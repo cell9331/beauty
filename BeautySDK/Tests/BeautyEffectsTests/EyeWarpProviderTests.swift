@@ -77,14 +77,16 @@ final class EyeWarpProviderTests: XCTestCase {
         XCTAssertTrue(result.points.allSatisfy { $0.strength <= BeautySafetyCaps.eyeTailLift })
     }
 
-    func testMissingEyeInputsReturnSkipReason() {
-        let result = EyeWarpProvider().makeControlPoints(
-            face: .missingLeftEye,
-            strengths: strengths(eyeSize: 1, eyeDistance: 1, eyeYPosition: 1, eyeTailLift: 1)
-        )
+    func testMissingEitherEyeInputReturnsStableSkipReasonWithoutPoints() {
+        for face in [FaceGeometry.missingLeftEye, .missingRightEye] {
+            let result = EyeWarpProvider().makeControlPoints(
+                face: face,
+                strengths: strengths(eyeSize: 1, eyeDistance: 1, eyeYPosition: 1, eyeTailLift: 1)
+            )
 
-        XCTAssertTrue(result.points.isEmpty)
-        XCTAssertEqual(result.skipReason, "eye_inputs_missing")
+            XCTAssertTrue(result.points.isEmpty)
+            XCTAssertEqual(result.skipReason, "eye_inputs_missing")
+        }
     }
 
     private func strengths(

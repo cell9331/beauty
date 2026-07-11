@@ -209,7 +209,17 @@ extension FaceGeometry {
         faceContour: fixture.faceContour,
         leftEye: [],
         rightEye: fixture.rightEye,
-        nose: fixture.nose
+        nose: fixture.nose,
+        outerLips: fixture.outerLips
+    )
+
+    static let missingRightEye = FaceGeometry(
+        bounds: fixture.bounds,
+        faceContour: fixture.faceContour,
+        leftEye: fixture.leftEye,
+        rightEye: [],
+        nose: fixture.nose,
+        outerLips: fixture.outerLips
     )
 
     static let missingNose = FaceGeometry(

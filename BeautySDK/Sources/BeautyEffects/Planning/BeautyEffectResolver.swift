@@ -81,6 +81,12 @@ public enum BeautyEffectResolver {
         strengths.eyeDistance = capSigned(normalized.eyeDistance, cap: BeautySafetyCaps.eyeDistance, cappedCount: &cappedCount)
         strengths.eyeYPosition = capSigned(normalized.eyeYPosition, cap: BeautySafetyCaps.eyeYPosition, cappedCount: &cappedCount)
         strengths.eyeTailLift = capUnit(normalized.eyeTailLift, cap: BeautySafetyCaps.eyeTailLift, cappedCount: &cappedCount)
+        let hasRequestedEyeValues = anyNonZero(
+            strengths.eyeSize,
+            strengths.eyeDistance,
+            strengths.eyeYPosition,
+            strengths.eyeTailLift
+        )
 
         strengths.noseSlim = capUnit(normalized.noseSlim, cap: BeautySafetyCaps.noseSlim, cappedCount: &cappedCount)
         strengths.noseWingSlim = capUnit(normalized.noseWingSlim, cap: BeautySafetyCaps.noseWingSlim, cappedCount: &cappedCount)
@@ -97,16 +103,12 @@ public enum BeautyEffectResolver {
         var appendedStaleGeometryWarning = false
         let staleGeometry = faceGeometry?.freshness == .stale
         let noUsableFace = treatsMissingFaceAsNoFace && faceGeometry == nil
-        let hasGeometryValues = anyNonZero(
+        let hasReusableNonEyeGeometryValues = anyNonZero(
             strengths.faceSlim,
             strengths.faceSmall,
             strengths.faceVShape,
             strengths.jawSlim,
             strengths.chinLength,
-            strengths.eyeSize,
-            strengths.eyeDistance,
-            strengths.eyeYPosition,
-            strengths.eyeTailLift,
             strengths.noseSlim,
             strengths.noseWingSlim,
             strengths.noseTipSize,
@@ -132,10 +134,15 @@ public enum BeautyEffectResolver {
             extraWarnings.append(Self.faceShapeSkippedWarning)
         }
 
-        if faceGeometry?.freshness == .reused, hasGeometryValues {
-            Self.scaleGeometryStrengths(&strengths, by: 0.5)
+        if faceGeometry?.freshness == .reused, hasReusableNonEyeGeometryValues {
+            Self.scaleReusableNonEyeGeometryStrengths(&strengths, by: 0.5)
             metrics["beauty.effects.reusedGeometryScale"] = 0.5
             extraWarnings.append(Self.reusedGeometryWarning)
+        }
+        if faceGeometry?.freshness == .reused, hasRequestedEyeValues {
+            Self.zeroEyeStrengths(&strengths)
+        } else if staleGeometry, hasRequestedEyeValues {
+            Self.zeroEyeStrengths(&strengths)
         }
 
         if anyNonZero(strengths.skinSmoothing, strengths.skinWhitening, strengths.skinRosy, strengths.skinSharpen) {
@@ -206,14 +213,19 @@ public enum BeautyEffectResolver {
                 }
             }
         }
-        if anyNonZero(strengths.eyeSize, strengths.eyeDistance, strengths.eyeYPosition, strengths.eyeTailLift) {
-            if staleGeometry {
+        if hasRequestedEyeValues {
+            if faceGeometry?.freshness == .reused {
                 skippedDomains.insert(.eyes)
                 metrics["beauty.effects.skippedEyeDomains"] = 1
-                appendStaleGeometryWarningIfNeeded()
+                extraWarnings.append(Self.reusedEyeSkippedWarning)
+            } else if staleGeometry {
+                skippedDomains.insert(.eyes)
+                metrics["beauty.effects.skippedEyeDomains"] = 1
+                extraWarnings.append(Self.staleEyeSkippedWarning)
             } else if let faceGeometry {
                 let result = EyeWarpProvider().makeControlPoints(face: faceGeometry, strengths: strengths)
                 if result.points.isEmpty {
+                    Self.zeroEyeStrengths(&strengths)
                     skippedDomains.insert(.eyes)
                     metrics["beauty.effects.skippedEyeDomains"] = 1
                     extraWarnings.append(Self.eyeSkippedWarning)
@@ -351,16 +363,19 @@ public enum BeautyEffectResolver {
         values.contains { abs($0) > Float.ulpOfOne }
     }
 
-    private static func scaleGeometryStrengths(_ strengths: inout BeautyEffectiveStrengths, by scale: Float) {
+    private static func zeroEyeStrengths(_ strengths: inout BeautyEffectiveStrengths) {
+        strengths.eyeSize = 0
+        strengths.eyeDistance = 0
+        strengths.eyeYPosition = 0
+        strengths.eyeTailLift = 0
+    }
+
+    private static func scaleReusableNonEyeGeometryStrengths(_ strengths: inout BeautyEffectiveStrengths, by scale: Float) {
         strengths.faceSlim *= scale
         strengths.faceSmall *= scale
         strengths.faceVShape *= scale
         strengths.jawSlim *= scale
         strengths.chinLength *= scale
-        strengths.eyeSize *= scale
-        strengths.eyeDistance *= scale
-        strengths.eyeYPosition *= scale
-        strengths.eyeTailLift *= scale
         strengths.noseSlim *= scale
         strengths.noseWingSlim *= scale
         strengths.noseTipSize *= scale
@@ -380,7 +395,21 @@ public enum BeautyEffectResolver {
     private static var eyeSkippedWarning: BeautyValidationWarning {
         BeautyValidationWarning(
             code: "eye_inputs_missing",
-            message: "Eye geometry was skipped because required eye inputs were unavailable."
+            message: "Eye effects skipped: inputs incomplete."
+        )
+    }
+
+    private static var reusedEyeSkippedWarning: BeautyValidationWarning {
+        BeautyValidationWarning(
+            code: "eye_geometry_reused_skipped",
+            message: "Eye effects skipped: inputs reused."
+        )
+    }
+
+    private static var staleEyeSkippedWarning: BeautyValidationWarning {
+        BeautyValidationWarning(
+            code: "eye_geometry_stale_skipped",
+            message: "Eye effects skipped: inputs stale."
         )
     }
 
