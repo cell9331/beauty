@@ -104,6 +104,15 @@ These cases are limited to effects that currently produce visible image output t
 | `eyeYPosition_minus0p20` | Phase 29 downward `上下` renderer evidence through existing `eyeYPosition` |
 | `eyeTailLift_0p25` | Phase 29 `眼尾上扬` renderer evidence through existing `eyeTailLift` |
 
+## Phase 30 Eye Safety Closeout Evidence
+
+- The canonical renderer matrix remains 23 cases across 7 fixtures, producing 161/161 validated outputs.
+- The unchanged `check_eye_renderer_outputs.py` helper retains 36/36 portrait eye-vs-baseline comparisons and representative no-face output evidence.
+- Generated files under `example-images/output/` and `example-images/gallery/` remain ignored local artifacts; no generated baseline is committed.
+- Gallery logic was unchanged, so no gallery rerun was required for this closeout.
+- Phase 30 safety, degradation, combined-geometry, privacy, and boundary results are recorded in `30-EYE-SAFETY-EVIDENCE.md`; the pre-promotion verdict is recorded in `30-VERIFICATION.md`.
+- These facts support exactly four existing-parameter eye subtools while the branch retains future gaps.
+
 ## Geometry Status
 
 Face-shape, eye, nose, mouth, eyebrow, and 3D sculpt branches already have internal planning/provider tests. Phase 27 adds the first SDK-only saved-output geometry foundation evidence through the public still-image facade.

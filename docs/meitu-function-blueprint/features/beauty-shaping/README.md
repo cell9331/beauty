@@ -35,6 +35,12 @@ Phase 28 adds public-facade saved-output evidence for six scoped face-shape rows
 
 `下颌线` remains a documented `jawSlim` alias and shares evidence with `下颌角`. The branch remains `partial` until the unscoped face-shape rows and broader `美型 / 五官` branches have their own SDK behavior and evidence.
 
+## Phase 30 Eye Evidence
+
+Phase 30 implements exactly four existing-parameter eye subtools: `大小`, `上下`, `眼距`, and `眼尾上扬`. The `眼睛` branch remains `partial` because eye height, length, pupil, gaze, lids, redness, corners, symmetry, eye-fat, and other future tools still require separate product-neutral design and evidence.
+
+Public-facade output for the four subtools is recorded in `29-EYE-RENDERER-EVIDENCE.md`. Input semantics, caps, missing/reused/stale degradation, combined weakening, privacy, and active-source boundaries are recorded in `30-EYE-SAFETY-EVIDENCE.md`.
+
 ## Boundary
 
 No public landmarks/control points. Demo taxonomy maps to product-neutral SDK parameter names.
