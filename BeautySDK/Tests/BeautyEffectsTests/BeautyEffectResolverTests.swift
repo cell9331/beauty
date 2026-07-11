@@ -128,6 +128,53 @@ final class BeautyEffectResolverTests: XCTestCase {
         XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(lipColor: 0.4)))
     }
 
+    func testEYE04EyeCapsResolveExactValuesDirectionsWarningsAndCounts() {
+        let cases: [(name: String, parameters: BeautyParameters, keyPath: KeyPath<BeautyEffectiveStrengths, Float>, expected: Float)] = [
+            ("eyeSize positive", BeautyParameters(eyeSize: 1), \.eyeSize, BeautySafetyCaps.eyeSize),
+            ("eyeDistance positive", BeautyParameters(eyeDistance: 1), \.eyeDistance, BeautySafetyCaps.eyeDistance),
+            ("eyeDistance negative", BeautyParameters(eyeDistance: -1), \.eyeDistance, -BeautySafetyCaps.eyeDistance),
+            ("eyeYPosition positive", BeautyParameters(eyeYPosition: 1), \.eyeYPosition, BeautySafetyCaps.eyeYPosition),
+            ("eyeYPosition negative", BeautyParameters(eyeYPosition: -1), \.eyeYPosition, -BeautySafetyCaps.eyeYPosition),
+            ("eyeTailLift positive", BeautyParameters(eyeTailLift: 1), \.eyeTailLift, BeautySafetyCaps.eyeTailLift),
+        ]
+
+        for entry in cases {
+            let plan = BeautyEffectResolver.resolve(
+                parameters: entry.parameters,
+                faceGeometry: .fixture
+            )
+
+            XCTAssertTrue(plan.activeDomains.contains(.eyes), entry.name)
+            XCTAssertEqual(plan.effectiveStrengths[keyPath: entry.keyPath], entry.expected, accuracy: 0.0001, entry.name)
+            XCTAssertTrue(plan.warnings.contains { $0.code == "beauty_strength_capped" }, entry.name)
+            XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 1, entry.name)
+            XCTAssertFalse(plan.warnings.contains { $0.code == "combined_geometry_weakened" }, entry.name)
+        }
+    }
+
+    func testEYE04NegativePositiveOnlyEyeInputsAreNoOps() {
+        let cases: [(name: String, parameters: BeautyParameters, publicKeyPath: KeyPath<BeautyParameters, Float>, effectiveKeyPath: KeyPath<BeautyEffectiveStrengths, Float>)] = [
+            ("negative eyeSize", BeautyParameters(eyeSize: -1), \.eyeSize, \.eyeSize),
+            ("negative eyeTailLift", BeautyParameters(eyeTailLift: -1), \.eyeTailLift, \.eyeTailLift),
+        ]
+
+        for entry in cases {
+            let plan = BeautyEffectResolver.resolve(
+                parameters: entry.parameters,
+                faceGeometry: .fixture
+            )
+
+            XCTAssertEqual(entry.parameters[keyPath: entry.publicKeyPath], 0, entry.name)
+            XCTAssertEqual(plan.effectiveStrengths[keyPath: entry.effectiveKeyPath], 0, entry.name)
+            XCTAssertFalse(BeautyEffectResolver.requiresFaceGeometry(parameters: entry.parameters), entry.name)
+            XCTAssertFalse(plan.activeDomains.contains(.eyes), entry.name)
+            XCTAssertFalse(plan.skippedDomains.contains(.eyes), entry.name)
+            XCTAssertFalse(plan.warnings.contains { $0.code == "eye_inputs_missing" }, entry.name)
+            XCTAssertFalse(plan.warnings.contains { $0.code == "beauty_strength_capped" }, entry.name)
+            XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 0, entry.name)
+        }
+    }
+
     func testSelectedFaceObservationActivatesGeometryPlanningWithRedactedEvidence() {
         let plan = BeautyEffectResolver.resolve(
             parameters: BeautyParameters(

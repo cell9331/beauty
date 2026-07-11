@@ -77,10 +77,10 @@ public enum BeautyEffectResolver {
         strengths.jawSlim = capUnit(normalized.jawSlim, cap: BeautySafetyCaps.jawSlim, cappedCount: &cappedCount)
         strengths.chinLength = capSigned(normalized.chinLength, cap: BeautySafetyCaps.chinLength, cappedCount: &cappedCount)
 
-        strengths.eyeSize = capSigned(normalized.eyeSize, cap: BeautySafetyCaps.eyeSize, cappedCount: &cappedCount)
+        strengths.eyeSize = capUnit(normalized.eyeSize, cap: BeautySafetyCaps.eyeSize, cappedCount: &cappedCount)
         strengths.eyeDistance = capSigned(normalized.eyeDistance, cap: BeautySafetyCaps.eyeDistance, cappedCount: &cappedCount)
         strengths.eyeYPosition = capSigned(normalized.eyeYPosition, cap: BeautySafetyCaps.eyeYPosition, cappedCount: &cappedCount)
-        strengths.eyeTailLift = capSigned(normalized.eyeTailLift, cap: BeautySafetyCaps.eyeTailLift, cappedCount: &cappedCount)
+        strengths.eyeTailLift = capUnit(normalized.eyeTailLift, cap: BeautySafetyCaps.eyeTailLift, cappedCount: &cappedCount)
 
         strengths.noseSlim = capUnit(normalized.noseSlim, cap: BeautySafetyCaps.noseSlim, cappedCount: &cappedCount)
         strengths.noseWingSlim = capUnit(normalized.noseWingSlim, cap: BeautySafetyCaps.noseWingSlim, cappedCount: &cappedCount)
