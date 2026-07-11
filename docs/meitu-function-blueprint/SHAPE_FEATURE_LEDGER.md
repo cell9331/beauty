@@ -79,17 +79,17 @@ Before marking a second-level tool `implemented`:
 | `脸型` | 下颌角 | implemented | Existing `jawSlim` coverage plus Phase 28 renderer case `jawSlim_0p35`, safety/degradation tests, and `28-FACE-SHAPE-RENDERER-EVIDENCE.md`. | Complete for the v1.5 scoped SDK slice; broader quality/device review remains separate. |
 | `脸型` | 下颌线 | implemented | Phase 28 v1.5 evidence is alias-backed by `jawSlim` and shared with `下颌角`; renderer case `jawSlim_0p35`, safety/degradation tests, and `28-FACE-SHAPE-RENDERER-EVIDENCE.md` apply. | Complete only as a documented `jawSlim` alias; a distinct neutral parameter would require future design and evidence. |
 | `脸型` | 发际线 | future | None. | Needs segmentation/resource design if promoted. |
-| `眼睛` | 大小 | partial | Existing `eyeSize` coverage. | Facade-visible geometry output and branch-specific acceptance evidence. |
-| `眼睛` | 上下 | partial | Existing `eyeYPosition` coverage. | Facade-visible geometry output and branch-specific acceptance evidence. |
+| `眼睛` | 大小 | implemented | Existing `eyeSize` coverage, Phase 29 `eyeSize_0p35` output in `29-EYE-RENDERER-EVIDENCE.md`, and Phase 30 safety/degradation/boundary evidence in `30-EYE-SAFETY-EVIDENCE.md`. | Complete for this existing-parameter subtool only; broader eye tools and review remain separate. |
+| `眼睛` | 上下 | implemented | Existing signed `eyeYPosition` coverage, Phase 29 positive/negative output in `29-EYE-RENDERER-EVIDENCE.md`, and Phase 30 safety/degradation/boundary evidence in `30-EYE-SAFETY-EVIDENCE.md`. | Complete for this existing-parameter subtool only; broader eye tools and review remain separate. |
 | `眼睛` | 眼高 | future | None. | Define neutral parameter and geometry behavior. |
 | `眼睛` | 长度 | future | None. | Define neutral parameter and geometry behavior. |
-| `眼睛` | 眼距 | partial | Existing `eyeDistance` coverage. | Facade-visible geometry output and branch-specific acceptance evidence. |
+| `眼睛` | 眼距 | implemented | Existing signed `eyeDistance` coverage, Phase 29 positive/negative output in `29-EYE-RENDERER-EVIDENCE.md`, and Phase 30 safety/degradation/boundary evidence in `30-EYE-SAFETY-EVIDENCE.md`. | Complete for this existing-parameter subtool only; broader eye tools and review remain separate. |
 | `眼睛` | 去脂 | future | None. | Needs local retouch/segmentation design; no cloud AI by default. |
 | `眼睛` | 提肌 | future | None. | Define neutral parameter and geometry behavior. |
 | `眼睛` | 眼瞳大小 | future | None. | Needs iris/pupil-safe design and privacy-safe detection assumptions. |
 | `眼睛` | 眼神矫正 | future | None. | Needs gaze/landmark design and conservative safety policy. |
 | `眼睛` | 眼睑下至 | future | None. | Define neutral parameter and geometry behavior. |
-| `眼睛` | 眼尾上扬 | partial | Existing `eyeTailLift` coverage. | Facade-visible geometry output and branch-specific acceptance evidence. |
+| `眼睛` | 眼尾上扬 | implemented | Existing `eyeTailLift` coverage, Phase 29 `eyeTailLift_0p25` output in `29-EYE-RENDERER-EVIDENCE.md`, and Phase 30 safety/degradation/boundary evidence in `30-EYE-SAFETY-EVIDENCE.md`. | Complete for this existing-parameter subtool only; broader eye tools and review remain separate. |
 | `眼睛` | 倾斜 | future | None. | Define neutral parameter and geometry behavior. |
 | `眼睛` | 祛红血丝 | future | None. | Needs local color/segmentation retouch design. |
 | `眼睛` | 内眼角 | future | None. | Define neutral parameter and geometry behavior. |
