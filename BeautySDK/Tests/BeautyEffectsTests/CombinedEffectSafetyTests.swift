@@ -186,6 +186,72 @@ final class CombinedEffectSafetyTests: XCTestCase {
         }
     }
 
+    func testEYE06EachVisibleEyeBehaviorWeakensWithFaceShapeAndPreservesDirection() {
+        let cases: [(name: String, parameters: BeautyParameters, keyPath: KeyPath<BeautyEffectiveStrengths, Float>, expected: Float)] = [
+            ("eyeSize positive", BeautyParameters(eyeSize: 1), \.eyeSize, BeautySafetyCaps.eyeSize),
+            ("eyeDistance positive", BeautyParameters(eyeDistance: 1), \.eyeDistance, BeautySafetyCaps.eyeDistance),
+            ("eyeDistance negative", BeautyParameters(eyeDistance: -1), \.eyeDistance, -BeautySafetyCaps.eyeDistance),
+            ("eyeYPosition positive", BeautyParameters(eyeYPosition: 1), \.eyeYPosition, BeautySafetyCaps.eyeYPosition),
+            ("eyeYPosition negative", BeautyParameters(eyeYPosition: -1), \.eyeYPosition, -BeautySafetyCaps.eyeYPosition),
+            ("eyeTailLift positive", BeautyParameters(eyeTailLift: 1), \.eyeTailLift, BeautySafetyCaps.eyeTailLift),
+        ]
+
+        for entry in cases {
+            let normal = BeautyEffectResolver.resolve(parameters: entry.parameters, faceGeometry: .fixture)
+            var combinedParameters = entry.parameters
+            combinedParameters.faceSlim = 1
+            combinedParameters.faceSmall = 1
+            let combined = BeautyEffectResolver.resolve(parameters: combinedParameters, faceGeometry: .fixture)
+            let normalValue = normal.effectiveStrengths[keyPath: entry.keyPath]
+            let combinedValue = combined.effectiveStrengths[keyPath: entry.keyPath]
+
+            XCTAssertEqual(normalValue, entry.expected, accuracy: 0.0001, entry.name)
+            XCTAssertTrue(combined.activeDomains.isSuperset(of: [.eyes, .faceShape]), entry.name)
+            XCTAssertGreaterThan(abs(combinedValue), 0, entry.name)
+            XCTAssertLessThan(abs(combinedValue), abs(normalValue), entry.name)
+            XCTAssertEqual(combinedValue.sign, normalValue.sign, entry.name)
+            XCTAssertTrue(combined.warnings.contains { $0.code == "combined_geometry_weakened" }, entry.name)
+            XCTAssertGreaterThan(combined.metrics["beauty.effects.weakenedCount"] ?? 0, 0, entry.name)
+            XCTAssertLessThan(combined.metrics["beauty.effects.geometryStrengthScale"] ?? 1, 1, entry.name)
+        }
+    }
+
+    func testEYE06AllEyeMultiDomainCaseEmitsStableWeakeningEvidence() {
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(
+                faceSlim: 1,
+                eyeSize: 1,
+                eyeDistance: -1,
+                eyeYPosition: 1,
+                eyeTailLift: 1,
+                noseSlim: 1
+            ),
+            faceGeometry: .fixture
+        )
+
+        XCTAssertTrue(plan.activeDomains.isSuperset(of: [.eyes, .faceShape, .nose]))
+        XCTAssertLessThan(plan.effectiveStrengths.eyeDistance, 0)
+        XCTAssertGreaterThan(plan.effectiveStrengths.eyeYPosition, 0)
+        XCTAssertEqual(plan.metrics["beauty.effects.weakenedCount"], 6)
+        XCTAssertTrue(plan.warnings.contains { $0.code == "combined_geometry_weakened" })
+        XCTAssertLessThan(plan.metrics["beauty.effects.geometryStrengthScale"] ?? 1, 1)
+        XCTAssertGreaterThan(plan.metrics["beauty.effects.geometryPointCount"] ?? 0, 0)
+        assertCombinedMetadataRedacted(plan)
+    }
+
+    private func assertCombinedMetadataRedacted(
+        _ plan: BeautyEffectPlan,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let metadata = (
+            plan.warnings.map { "\($0.code) \($0.message)" } + Array(plan.metrics.keys)
+        ).joined(separator: " ")
+        for forbidden in ["VNFace" + "Observation", "bounding" + "Box", "land" + "mark", "/private" + "/var", "NSE" + "rror", "rawPreset" + "Json", "image" + " bytes", "SI" + "MD", "[0."] {
+            XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)", file: file, line: line)
+        }
+    }
+
     private func rgbaBytes(from image: CIImage) -> [UInt8] {
         let context = CIContext(options: [.workingColorSpace: CGColorSpaceCreateDeviceRGB()])
         var output = [UInt8](repeating: 0, count: 2 * 1 * 4)
