@@ -68,7 +68,7 @@ Plans:
 
 **Status:** In Progress
 
-**Plans:** 2/7 plans executed
+**Plans:** 3/7 plans executed
 
 **Success criteria:**
 
