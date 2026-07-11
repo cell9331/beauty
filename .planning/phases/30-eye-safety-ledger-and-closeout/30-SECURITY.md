@@ -53,6 +53,13 @@ No accepted risks.
 | --- | --- | --- |
 | 2026-07-11 | Frozen Plans 30-01/02 implementation, tests, helper, generated artifacts, and asserted active roots | 9 threats closed, 0 open |
 
+## Promotion and Root-Contract Audit
+
+- The atomic promotion guard passed for exactly `大小`, `上下`, `眼距`, and `眼尾上扬`; the `眼睛` branch remains partial.
+- Per-file blueprint checks passed for the four promoted rows, branch wording, and no-overclaim constraints. Root contract synchronization passed independently in design, reliability, product, and security documents.
+- The promotion closes T-30-01 and preserves the T-30-08 no-overclaim boundary. T-30-SC remains closed because this documentation-only synchronization used no package installation or external service.
+- `30-EYE-SAFETY-EVIDENCE.md` remains the command-backed evidence source. This audit does not finalize overall Phase 30 verification or global GSD ledgers.
+
 ## Sign-Off
 
 `30-EYE-SAFETY-EVIDENCE.md` passed. `30-REVIEW.md` is clean. Pre-promotion threats are closed; later ledger and documentation edits require their own guards.

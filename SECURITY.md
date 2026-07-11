@@ -68,6 +68,14 @@ Phase 28 face-shape privacy evidence recorded 2026-07-08:
 - Generated PNGs remain ignored local artifacts; docs record commands and counts rather than generated image baselines or hashes.
 - Phase 28 did not add Demo UI behavior, public raw geometry APIs, network behavior, raw geometry evidence fields, a distinct `下颌线` parameter, or broader branch status claims.
 
+### Phase 30 Eye Safety Boundary Evidence
+
+- EYE-07 validation proves positive-only size/tail behavior, signed distance/position behavior, finite range and cap enforcement, and non-finite normalization before eye geometry is produced. Missing, reused, or stale eye inputs emit only fixed category messages/codes and aggregate metrics.
+- The asserted active roots cover the public SDK surface, `BeautyCore`, `BeautyRender`, renderer source, and active Demo source. A multiline public/SPI scan found no exposure of `FaceGeometry`, `WarpControlPoint`, `CGPoint`, or `CGRect`; renderer and Demo checks found no forbidden internal import.
+- Network/cloud API scans and StoreKit/entitlement scans returned no active execution paths. The only `vipChip` candidates are the two classified static allowlist occurrences `VIP-COMMERCIAL-ALLOW-01` and `VIP-COMMERCIAL-ALLOW-02`; `unclassified_matches: 0`.
+- The parameter inventory contains 31 public fields and matches the reviewed contract. Generated renderer outputs and gallery copies remain ignored, untracked local artifacts rather than committed evidence.
+- Command-backed details are in `30-EYE-SAFETY-EVIDENCE.md`; threat classifications and sign-off are in `30-SECURITY.md`.
+
 ## 3. Trust Boundaries
 
 ```text
