@@ -213,6 +213,35 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
         assertRedacted(result)
     }
 
+    func testEyeNoFaceRequestPreservesExtentSafeDomainsAndRedactedMetadata() throws {
+        let provider = SDKTestingFaceDetectionProvider([.noFace])
+        let engine = try BeautyEngine(faceDetectionProvider: provider)
+
+        let result = try engine.processResult(
+            image: Self.image,
+            metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+            parameters: BeautyParameters(
+                brightness: 0.2,
+                eyeSize: 0.35,
+                filterId: "soft_clean",
+                filterIntensity: 0.5
+            )
+        )
+
+        XCTAssertEqual(provider.invocationCount, 1)
+        XCTAssertEqual(result.output.extent, Self.image.extent)
+        XCTAssertEqual(result.detectionSummary?.availability, .noFace)
+        XCTAssertEqual(result.detectionSummary?.reasons, [.noFaceDetected])
+        XCTAssertEqual(result.detectionSummary?.faceCount, 0)
+        XCTAssertEqual(result.detectionSummary?.usedFaceCount, 0)
+        XCTAssertEqual(result.metrics["beauty.detection.geometryRequired"], 1)
+        XCTAssertTrue((result.metrics["beauty.effects.activeCount"] ?? 0) >= 2)
+        XCTAssertNil(result.metrics["beauty.effects.geometryPointCount"])
+        XCTAssertTrue(result.warnings.contains { $0.code == "face_effects_skipped_no_face" })
+        assertRedacted(result)
+        assertNoEyeSideOrRawGeometryDisclosure(result)
+    }
+
     private static let image = CIImage(color: CIColor(red: 0.35, green: 0.25, blue: 0.20, alpha: 1))
         .cropped(to: CGRect(x: 0, y: 0, width: 2, height: 2))
 
@@ -350,6 +379,24 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
             "SIMD"
         ] {
             XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)", file: file, line: line)
+        }
+    }
+
+    private func assertNoEyeSideOrRawGeometryDisclosure(
+        _ result: BeautyResult<CIImage>,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let metadata = (
+            result.warnings.map { "\($0.code) \($0.message)" } +
+            Array(result.metrics.keys) +
+            (result.detectionSummary?.reasons.map(\.rawValue) ?? [])
+        ).joined(separator: " ").lowercased()
+        for term in [
+            "left", "right", "eye side", "landmark", "coordinate", "bounding", "bounds",
+            "control point", "path", "image bytes", "raw",
+        ] {
+            XCTAssertFalse(metadata.contains(term), "Unexpected sensitive term: \(term)", file: file, line: line)
         }
     }
 }
