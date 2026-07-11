@@ -13,7 +13,7 @@
 
 ### Eye Safety And Degradation
 
-- [ ] **EYE-04**: Focused tests cover eye safety caps for existing public eye parameters and prove out-of-range public input resolves to conservative effective strengths.
+- [x] **EYE-04**: Focused tests cover eye safety caps for existing public eye parameters and prove out-of-range public input resolves to conservative effective strengths.
 - [ ] **EYE-05**: Focused tests cover no-face and missing-eye-landmark degradation, including preserved dimensions, redacted warnings, and no stale or reused eye geometry.
 - [ ] **EYE-06**: Focused tests cover combined-geometry weakening when eye parameters are used with other face-dependent geometry domains.
 
@@ -50,7 +50,7 @@
 | EYE-01 | Phase 29 | Complete | `29-VERIFICATION.md` records six public-facade eye renderer cases, the 23-case matrix, and public-import boundary evidence; `29-EYE-RENDERER-EVIDENCE.md` records the case-to-parameter mapping. |
 | EYE-02 | Phase 29 | Complete | `29-VERIFICATION.md` and `29-EYE-RENDERER-EVIDENCE.md` record 161/161 outputs, 36/36 eye-vs-baseline top-region comparisons, dimensions, and representative no-face output presence. |
 | EYE-03 | Phase 29 | Complete | `29-VERIFICATION.md` and `29-EYE-RENDERER-EVIDENCE.md` record ignored output/gallery checks, generated `eyes/` gallery routing, and zero tracked generated output/gallery files. |
-| EYE-04 | Phase 30 | Pending | Pending Phase 30 safety-cap evidence. |
+| EYE-04 | Phase 30 | Complete | `30-01-SUMMARY.md` records positive-only size/tail normalization, signed distance/Y behavior, exact caps, warning/count evidence, and abnormal-input/no-op coverage. |
 | EYE-05 | Phase 30 | Pending | Pending Phase 30 no-face, missing-eye-landmark, and stale/reused-geometry evidence. |
 | EYE-06 | Phase 30 | Pending | Pending Phase 30 combined-geometry weakening evidence. |
 | EYE-07 | Phase 30 | Pending | Pending Phase 30 public/import/network/commercial boundary evidence. |

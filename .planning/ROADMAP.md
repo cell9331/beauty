@@ -66,9 +66,9 @@ Plans:
 
 **Requirements:** EYE-04, EYE-05, EYE-06, EYE-07, EYE-08, DOC-01
 
-**Status:** Planned
+**Status:** In Progress
 
-**Plans:** 7 plans
+**Plans:** 1/7 plans executed
 
 **Success criteria:**
 
