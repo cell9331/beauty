@@ -128,7 +128,7 @@ Degradation is expected behavior, not a hidden failure.
 
 Every degradation path that affects visible output should be visible in debug metrics or result warnings.
 
-Phase 6 current implementation treats skin, face shape, eyes, nose, mouth, and lip color as face-dependent when the resolver is given an explicit no-face context. Color adjustment and metadata filters remain face-agnostic and continue when their parameters are non-zero. Missing landmark groups skip only dependent domains, reused landmarks reduce geometry briefly, and stale landmarks disable strong geometry with warning/metric evidence.
+Phase 6 current implementation treats skin, face shape, eyes, nose, mouth, and lip color as face-dependent when the resolver is given an explicit no-face context. Color adjustment and metadata filters remain face-agnostic and continue when their parameters are non-zero. Missing landmark groups skip only their dependent domains; current freshness behavior is owned by the domain-specific contracts below.
 
 Phase 26 still-image facade behavior:
 
@@ -151,6 +151,14 @@ Phase 28 scoped face-shape behavior:
 - `jawSlim` covers both `下颌角` and alias-backed `下颌线`; no separate degradation path is introduced for `下颌线`.
 - Focused provider, combined-safety, conflict-resolver, and spatial-warp tests pass for caps, missing contour/no-face degradation, signed `chinLength`, combined weakening, redacted warning/metric evidence, and local pixel displacement.
 - `BeautyExampleRenderer` and `check_face_shape_renderer_outputs.py` provide rerunnable scoped face-shape saved-output evidence without requiring committed generated PNG baselines.
+
+### Phase 30 Eye Freshness Contract
+
+- Missing either eye group skips and zeros the complete eye domain with category code `eye_inputs_missing`.
+- Reused eye geometry skips and zeros the complete eye domain with `eye_geometry_reused_skipped`; stale eye geometry does the same with `eye_geometry_stale_skipped`.
+- The stricter reused/stale policy applies only to eyes. Reused face shape, nose, and mouth geometry retain the established `0.5` effective-strength reduction and generic reduction evidence.
+- Warnings expose only fixed category messages. Metrics remain aggregate counts/scales; they do not contain eye side, geometry, image, or local-path payloads.
+- Focused resolver/provider/facade evidence and exact warning/metric assertions are recorded in `30-EYE-SAFETY-EVIDENCE.md`.
 
 ## 7. Observability Model
 

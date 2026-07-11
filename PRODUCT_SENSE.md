@@ -423,6 +423,14 @@ Manual or future checks still required before stronger product claims:
 
 - Unscoped `脸型` rows, broader `美型 / 五官` branches, Demo UI changes, physical-device parity, screenshot reruns, commercial visual review, optimized profiling, packaging review, and launch-readiness review remain separate scoped work.
 
+### 7.14 Phase 30 Eye Slice Acceptance
+
+- Exactly four second-level eye subtools are implemented from existing public parameters: `大小`, `上下`, `眼距`, and `眼尾上扬`.
+- Acceptance requires positive-only size/tail behavior, signed distance/position behavior, exact caps, either-eye missing degradation, reused/stale eye skips, combined weakening, redacted aggregate diagnostics, public-facade output, and active-source boundary evidence.
+- Branch-level `眼睛` remains `partial`. Eye height, length, pupil, gaze, lid, redness, corners, symmetry, eye-fat, and other future tools require separate product-neutral design and evidence.
+- `30-EYE-SAFETY-EVIDENCE.md` is the command-backed acceptance source for this scoped slice.
+- This acceptance does not claim whole-branch completion, physical-device parity, commercial review, broad reference parity, final visual quality, packaging, shipping, or launch readiness.
+
 ## 8. Preset Product Contract
 
 MVP built-in presets:

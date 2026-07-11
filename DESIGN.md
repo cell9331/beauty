@@ -83,12 +83,21 @@ public struct BeautyParameters: Codable, Equatable, Sendable
 | Skin | `skinSmoothing`, `skinWhitening`, `skinRosy`, `skinSharpen` | `0.0...1.0` |
 | Color | `brightness`, `contrast`, `saturation`, `temperature`, `tint`, `exposure`, `highlight`, `shadow` | mixed |
 | Face Shape | `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, `chinLength` | mixed |
-| Eyes | `eyeSize`, `eyeDistance`, `eyeYPosition`, `eyeTailLift` | mixed |
+| Eyes | `eyeSize`, `eyeTailLift`: `[0, 1]`; `eyeDistance`, `eyeYPosition`: `[-1, 1]` | positive-only size/tail plus signed distance/position |
 | Nose | `noseSlim`, `noseWingSlim`, `noseTipSize`, `noseBridge` | mixed |
 | Mouth | `mouthSize`, `mouthWidth`, `smile`, `lipColor` | mixed |
 | Filter | `filterId`, `filterIntensity` | ID + `0.0...1.0` |
 
 Phase 28 completion evidence covers the existing Face Shape fields only: `faceSlim` for `脸宽`, `faceSmall` for `小脸`, signed `chinLength` for `下巴长短`, `faceVShape` for `V脸`, and `jawSlim` for both `下颌角` and alias-backed `下颌线`. It does not add a new public parameter or change the `BeautyParameters` shape.
+
+### Phase 30 Eye Safety Contract
+
+- `eyeSize` and `eyeTailLift` are positive-only `[0, 1]`; negative finite values normalize to zero. Their exact effective caps are `0.45` and `0.30`.
+- `eyeDistance` and `eyeYPosition` are signed `[-1, 1]`; both directions survive normalization and weakening. Their exact effective caps are `0.30` and `0.25`.
+- `NaN`, positive infinity, and negative infinity normalize to zero for every eye field. Finite overflow clamps to the public range before effective caps apply.
+- Eye geometry requires both eyes. Missing either eye group skips the entire eye domain and zeros all four eye strengths.
+- Reused and stale eye geometry also skip the eye domain and zero all four strengths. This stricter freshness rule is eye-specific; it does not redefine non-eye reuse behavior.
+- Evidence for exact caps, abnormal inputs, missing/reused/stale degradation, combined weakening, and active-source boundaries is recorded in `30-EYE-SAFETY-EVIDENCE.md`.
 
 Rules:
 
