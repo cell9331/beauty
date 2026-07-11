@@ -1,11 +1,12 @@
 ---
 phase: 30-eye-safety-ledger-and-closeout
-status: in_progress
+status: passed
 verified: 2026-07-11
 requirements:
   - EYE-04
   - EYE-05
   - EYE-06
+  - EYE-07
 ---
 
 # Phase 30 Eye Safety Evidence
@@ -77,6 +78,22 @@ The all-eye multi-domain case activates eyes, face shape, and nose, preserves ne
 ## Generated-Artifact Policy
 
 Representative eye outputs are ignored. `git ls-files example-images/output example-images/gallery` returned no tracked generated files. Generated PNGs remain local evidence and are not committed baselines.
+
+## Active-Source Boundary Classification
+
+| Gate | Observed result |
+| --- | --- |
+| Public/SPI raw geometry across six SDK roots | `public_geometry_candidates: 0` |
+| Demo/renderer internal SDK imports | 0 matches |
+| API-shaped network/cloud paths | 0 matches |
+| StoreKit/purchase/subscription/receipt/paywall/entitlement paths | 0 matches |
+| New public eye stored fields | 0 additions; 31-field inventory test passed |
+| `VIP-COMMERCIAL-ALLOW-01` | `vipChip use` is a static Home view reference |
+| `VIP-COMMERCIAL-ALLOW-02` | `private vipChip declaration` is a private static view declaration |
+
+unclassified_matches: 0
+
+These results satisfy EYE-07 for the frozen pre-promotion source. Neither static `vipChip` occurrence is an API-shaped commercial execution path.
 
 ## Evidence Field Allowlist
 

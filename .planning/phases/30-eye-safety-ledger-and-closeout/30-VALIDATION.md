@@ -1,13 +1,17 @@
 ---
 phase: 30
 slug: eye-safety-ledger-and-closeout
-status: draft
+status: in_progress
 nyquist_compliant: false
-wave_0_complete: false
+wave_0_complete: true
 created: 2026-07-10
 ---
 
 # Phase 30 — Validation Strategy
+
+full_suite_tests: 178
+
+Execution evidence: `30-EYE-SAFETY-EVIDENCE.md`.
 
 > Per-phase validation contract for eye input semantics, eye-specific geometry degradation, combined weakening, active-source boundaries, and atomic ledger promotion.
 
@@ -34,13 +38,13 @@ created: 2026-07-10
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 30-01-01 | 01 | 1 | EYE-04 | T-30-01 | `eyeSize` and `eyeTailLift` normalize negative/non-finite input to zero; `eyeDistance` and `eyeYPosition` preserve signed finite direction. | unit | `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyParametersTests` | Existing suite; exact Phase 30 matrix missing | ⬜ pending |
-| 30-01-02 | 01 | 1 | EYE-04 | T-30-01 | Each eye field has exact effective cap/direction, `beauty_strength_capped`, and exact capped-count evidence without spurious missing-eye warnings. | unit | `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyEffectResolverTests` | Existing suite; exact per-field matrix missing | ⬜ pending |
-| 30-02-01 | 02 | 2 | EYE-05 | T-30-02, T-30-03, T-30-04 | Missing either eye, reused eye geometry, and stale eye geometry skip the whole eye domain, zero all four effective strengths, emit distinct redacted reasons, and preserve unrelated safe domains. | unit | `swift test --package-path BeautySDK --filter BeautyEffectsTests.EyeWarpProviderTests`; `swift test --package-path BeautySDK --filter BeautyEffectsTests.MissingLandmarkDegradationTests` | Existing suites; right-eye/zeroing/distinct-reason assertions missing | ⬜ pending |
-| 30-02-02 | 02 | 2 | EYE-05 | T-30-02, T-30-04 | Public no-face eye requests preserve output extent, continue safe color/filter work, and expose aggregate redacted metadata only. | integration | `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyEngineGeometryFacadeTests` | Existing suite; eye-specific case missing | ⬜ pending |
-| 30-02-03 | 02 | 2 | EYE-06 | T-30-01 | Six visible eye behaviors plus one all-eye multi-domain case are weakened through the existing conflict resolver while signed directions are preserved. | unit | `swift test --package-path BeautySDK --filter BeautyEffectsTests.CombinedEffectSafetyTests` | Existing suite; seven required cases missing | ⬜ pending |
-| 30-03-01 | 03 | 3 | EYE-04, EYE-05, EYE-06 | T-30-01, T-30-02, T-30-03, T-30-04 | Focused and full suites pass, and Phase 29 visible-output evidence remains exactly 161/161 outputs and 36/36 comparisons before promotion. | integration/regression | Full SDK suite; renderer build/run; Phase 29 helper redirected before display with Python status propagation; canonical `full_suite_tests` extraction | Existing infrastructure; Phase 30 evidence artifact missing | ⬜ pending |
-| 30-03-02 | 03 | 3 | EYE-07 | T-30-04, T-30-05, T-30-08 | Active source exposes no raw public/SPI geometry, forbidden internal imports, network/cloud behavior, commercial entitlement path, new public eye field, or tracked generated PNG. | static/security | Fail-closed active-source `rg`/PCRE scans with explicit 0/1/>1 status branches, 31-field inventory test, and `git ls-files example-images/output example-images/gallery` | Existing patterns; Phase 30 results missing | ⬜ pending |
+| 30-01-01 | 01 | 1 | EYE-04 | T-30-01 | `eyeSize` and `eyeTailLift` normalize negative/non-finite input to zero; `eyeDistance` and `eyeYPosition` preserve signed finite direction. | unit | `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyParametersTests` | Existing suite; exact Phase 30 matrix added | ✅ passed |
+| 30-01-02 | 01 | 1 | EYE-04 | T-30-01 | Each eye field has exact effective cap/direction, `beauty_strength_capped`, and exact capped-count evidence without spurious missing-eye warnings. | unit | `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyEffectResolverTests` | Existing suite; exact per-field matrix added | ✅ passed |
+| 30-02-01 | 02 | 2 | EYE-05 | T-30-02, T-30-03, T-30-04 | Missing either eye, reused eye geometry, and stale eye geometry skip the whole eye domain, zero all four effective strengths, emit distinct redacted reasons, and preserve unrelated safe domains. | unit | `swift test --package-path BeautySDK --filter BeautyEffectsTests.EyeWarpProviderTests`; `swift test --package-path BeautySDK --filter BeautyEffectsTests.MissingLandmarkDegradationTests` | Assertions added and observed | ✅ passed |
+| 30-02-02 | 02 | 2 | EYE-05 | T-30-02, T-30-04 | Public no-face eye requests preserve output extent, continue safe color/filter work, and expose aggregate redacted metadata only. | integration | `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyEngineGeometryFacadeTests` | Eye-specific case added and observed | ✅ passed |
+| 30-02-03 | 02 | 2 | EYE-06 | T-30-01 | Six visible eye behaviors plus one all-eye multi-domain case are weakened through the existing conflict resolver while signed directions are preserved. | unit | `swift test --package-path BeautySDK --filter BeautyEffectsTests.CombinedEffectSafetyTests` | Seven cases added and observed | ✅ passed |
+| 30-03-01 | 03 | 3 | EYE-04, EYE-05, EYE-06 | T-30-01, T-30-02, T-30-03, T-30-04 | Focused and full suites pass, and Phase 29 visible-output evidence remains exactly 161/161 outputs and 36/36 comparisons before promotion. | integration/regression | Full SDK suite; renderer build/run; Phase 29 helper redirected before display with Python status propagation; canonical `full_suite_tests` extraction | Evidence artifact created from observed results | ✅ passed |
+| 30-03-02 | 03 | 3 | EYE-07 | T-30-04, T-30-05, T-30-08 | Active source exposes no raw public/SPI geometry, forbidden internal imports, network/cloud behavior, commercial entitlement path, new public eye field, or tracked generated PNG. | static/security | Fail-closed active-source `rg`/PCRE scans with explicit 0/1/>1 status branches, 31-field inventory test, and `git ls-files example-images/output example-images/gallery` | Boundary results observed and classified | ✅ passed |
 | 30-04-01 | 04 | 4 | EYE-08 | T-30-06, T-30-07 | Exactly `大小`, `上下`, `眼距`, and `眼尾上扬` promote together only after every gate; no other eye row promotes and branch-level `眼睛` stays `partial`. | doc/static guard | Exact ledger-row and feature-row invariant, evidence-link, no-overclaim, and changed-file checks | Rows currently partial; promotion guards missing | ⬜ pending |
 | 30-04-02 | 04 | 4 | DOC-01 | T-30-03, T-30-06, T-30-08 | Eyes README, beauty-shaping README, and example validation independently record four-row-versus-partial wording and unchanged 23/7/161/36 evidence. | doc/static guard | Exact Phase 30 heading-to-next-heading extraction with independent per-file invariant, evidence-link, no-overclaim, and changed-file checks | Blueprint closeout wording missing | ⬜ pending |
 | 30-05-01 | 05 | 5 | EYE-04, EYE-05, EYE-06, DOC-01 | T-30-01, T-30-02, T-30-03, T-30-08 | DESIGN, RELIABILITY, and PRODUCT_SENSE independently record exact semantics, the eye-only freshness exception, four-row acceptance, and non-claims. | doc/static guard | Bounded Phase 30 section checks plus exact negative guards for the current DESIGN `mixed` row and global RELIABILITY reused-landmark sentence | Root contracts not synchronized | ⬜ pending |
