@@ -74,6 +74,58 @@ final class BeautyParametersTests: XCTestCase {
         XCTAssertEqual(parameters.filterIntensity, 1)
     }
 
+    func testEYE04EyeInputsNormalizePositiveOnlySignedOverflowAndNonFiniteValues() {
+        let overflow = BeautyParameters(
+            eyeSize: -1,
+            eyeDistance: 2,
+            eyeYPosition: -2,
+            eyeTailLift: 2
+        )
+        XCTAssertEqual(overflow.eyeSize, 0, "eyeSize negative input")
+        XCTAssertEqual(overflow.eyeDistance, 1, "eyeDistance positive overflow")
+        XCTAssertEqual(overflow.eyeYPosition, -1, "eyeYPosition negative overflow")
+        XCTAssertEqual(overflow.eyeTailLift, 1, "eyeTailLift positive overflow")
+
+        let oppositeOverflow = BeautyParameters(
+            eyeSize: 2,
+            eyeDistance: -2,
+            eyeYPosition: 2,
+            eyeTailLift: -1
+        )
+        XCTAssertEqual(oppositeOverflow.eyeSize, 1, "eyeSize positive overflow")
+        XCTAssertEqual(oppositeOverflow.eyeDistance, -1, "eyeDistance negative overflow")
+        XCTAssertEqual(oppositeOverflow.eyeYPosition, 1, "eyeYPosition positive overflow")
+        XCTAssertEqual(oppositeOverflow.eyeTailLift, 0, "eyeTailLift negative input")
+
+        let nonFiniteValues: [(name: String, value: Float)] = [
+            ("NaN", .nan),
+            ("positive infinity", .infinity),
+            ("negative infinity", -.infinity),
+        ]
+        for entry in nonFiniteValues {
+            XCTAssertEqual(
+                BeautyParameters(eyeSize: entry.value).eyeSize,
+                0,
+                "eyeSize \(entry.name)"
+            )
+            XCTAssertEqual(
+                BeautyParameters(eyeDistance: entry.value).eyeDistance,
+                0,
+                "eyeDistance \(entry.name)"
+            )
+            XCTAssertEqual(
+                BeautyParameters(eyeYPosition: entry.value).eyeYPosition,
+                0,
+                "eyeYPosition \(entry.name)"
+            )
+            XCTAssertEqual(
+                BeautyParameters(eyeTailLift: entry.value).eyeTailLift,
+                0,
+                "eyeTailLift \(entry.name)"
+            )
+        }
+    }
+
     func testSDK03CodableRoundTripAndMissingFieldsUseDefaults() throws {
         let parameters = BeautyParameters(
             skinSmoothing: 0.2,

@@ -124,10 +124,10 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         self.jawSlim = Self.clampUnit(jawSlim)
         self.chinLength = Self.clampSigned(chinLength)
 
-        self.eyeSize = Self.clampSigned(eyeSize)
+        self.eyeSize = Self.clampUnit(eyeSize)
         self.eyeDistance = Self.clampSigned(eyeDistance)
         self.eyeYPosition = Self.clampSigned(eyeYPosition)
-        self.eyeTailLift = Self.clampSigned(eyeTailLift)
+        self.eyeTailLift = Self.clampUnit(eyeTailLift)
 
         self.noseSlim = Self.clampUnit(noseSlim)
         self.noseWingSlim = Self.clampUnit(noseWingSlim)
