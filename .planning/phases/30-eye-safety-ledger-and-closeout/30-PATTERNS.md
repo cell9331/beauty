@@ -343,13 +343,12 @@ Recommended structure for `30-EYE-SAFETY-EVIDENCE.md`:
 ```markdown
 ---
 phase: 30-eye-safety-ledger-and-closeout
-status: passed
+status: in_progress
 verified: YYYY-MM-DD
 requirements:
   - EYE-04
   - EYE-05
   - EYE-06
-  - EYE-07
 ---
 
 # Phase 30 Eye Safety Evidence
@@ -367,7 +366,9 @@ requirements:
 ## Rerun Protocol
 ```
 
-Set `status: passed` only after observed commands pass. Record the observed final full-suite count rather than planning one.
+Task 30-03-01 creates this artifact as `status: in_progress` with EYE-04 through EYE-06 only. Task 30-03-02 adds EYE-07 and sets `status: passed` only after every active-source and classification gate succeeds. Record the observed final full-suite count rather than planning one.
+
+Persist that observed count exactly once as `full_suite_tests: {observed integer}`. Use one shell-safe integer extractor for this canonical line and require the identical value in `30-VERIFICATION.md`, `30-VALIDATION.md`, the bounded Phase 30 `QUALITY_SCORE.md` section, and the bounded Phase 30 `PLANS.md` execution section.
 
 `30-VERIFICATION.md` should follow Phase 29's `Verdict`, `Requirement Coverage`, `Decision Traceability`, `Automated Checks`, `Static Boundary Results`, `Non-Claims`, and `Result` sections. Map all D-01 through D-21 and EYE-04 through EYE-08 plus DOC-01.
 
@@ -406,6 +407,8 @@ BeautySDK/Sources/BeautyEffects
 BeautySDK/Sources/BeautyExampleRenderer/main.swift
 BeautyDemo/BeautyDemo
 ```
+
+The following regexes are pattern definitions, not safe control-flow examples. Executor commands must redirect candidate output and explicitly handle ripgrep status `0` as matches, `1` as no match, and any status greater than `1` as a hard error. The Phase 29 Python helper must likewise redirect first, propagate its own nonzero status, and only display/parse output after success.
 
 Public/SPI raw geometry guard:
 
@@ -453,7 +456,7 @@ The promotion task must depend on passing/clean/verified versions of:
 
 - `30-EYE-SAFETY-EVIDENCE.md`;
 - `30-VERIFICATION.md`;
-- final `30-VALIDATION.md`;
+- `30-VALIDATION.md` in `status: in_progress` with every executed row through 30-03 passed and every downstream closeout row pending; final passed/Nyquist status necessarily follows the closeout rows;
 - `30-REVIEW.md` with `status: clean`;
 - `30-SECURITY.md` with `status: verified` and `threats_open: 0`;
 - Phase 29 helper rerun at `161/161` and `36/36`;
@@ -492,6 +495,8 @@ The first guard proves both the exact count and exact names because it compares 
 
 ### Owning-document update patterns
 
+Historical ledgers and long-lived root documents must be verified through an exact Phase 30 row or an exact Phase 30 heading bounded by the next heading of equal or higher level. For each required file, keep changed-file, owning-invariant, `30-EYE-SAFETY-EVIDENCE.md` link, and no-overclaim checks independent so Phase 28/29 or discussion history cannot satisfy the closeout.
+
 | File | Concrete update pattern after the gate |
 | --- | --- |
 | `SHAPE_FEATURE_LEDGER.md` | Four rows only; cite Phase 29 visible-output plus Phase 30 safety/degradation/boundary evidence. Keep all other eye rows unchanged. |
@@ -520,10 +525,13 @@ Do not copy full evidence tables into every contract. Each owning document shoul
 | Eye degradation and combined weakening | Resolver freshness/domain lines plus provider/degradation/combined/facade tests | Depends on public semantics. Do not run a second writer against `BeautyEffectResolver.swift`. |
 | Shared right-eye fixture | `FaceShapeWarpProviderTests.swift` extension or one dedicated shared test-support file | Single owner; provider and degradation tests consume it. Avoid duplicate fixture declarations. |
 | Review and security | `30-REVIEW.md` and `30-SECURITY.md` | May be produced in parallel only after source/tests are frozen; they write distinct files. |
-| Evidence and final verification | `30-EYE-SAFETY-EVIDENCE.md`, `30-VERIFICATION.md`, final `30-VALIDATION.md` | Consume the same frozen command results. Verification/validation wait for review and security dispositions. |
+| Evidence and promotion-ready verification | `30-EYE-SAFETY-EVIDENCE.md`, `30-VERIFICATION.md`, in-progress `30-VALIDATION.md` | Consume the same frozen command results. Wave 3 closes only executed rows; final verification/validation belongs to the last GSD/work closeout. |
 | Renderer/helper regression | Existing renderer and Phase 29 helper; generated `example-images/output/` | Runtime writes only to ignored output. Serialize with any other renderer/gallery run; do not edit or commit generated PNGs. |
 | Atomic ledger promotion | `SHAPE_FEATURE_LEDGER.md` | One owner and one gated edit after all evidence passes. No independent row promotion. |
-| Contract/planning closeout | Blueprint/root/planning docs and `PLANS.md` | May split by disjoint files after the promotion gate, but `.planning/STATE.md`, `.planning/ROADMAP.md`, `.planning/REQUIREMENTS.md`, `QUALITY_SCORE.md`, and `PLANS.md` are global ledger hotspots and need one final consistency owner. |
+| Blueprint closeout | Five blueprint/status docs | Keep with the atomic promotion plan; verify each file independently. |
+| Root contract closeout | `DESIGN.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, Phase security | Run after promotion as a dependent plan with per-file invariant/privacy/no-overclaim gates. |
+| Quality/project closeout | `QUALITY_SCORE.md`, `.planning/PROJECT.md` | Run after root contracts as a small dependent plan using observed evidence only. |
+| Final GSD/work closeout | `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md`, final verification/validation | One final consistency owner after every document gate; record the observed count and explicit no-Demo-build rationale. |
 
 Recommended dependency chain:
 
@@ -531,7 +539,10 @@ Recommended dependency chain:
 public normalization/caps
   -> eye degradation + combined/facade tests
   -> full evidence + review + security + boundary gate
-  -> atomic four-row promotion + owning-document synchronization
+  -> atomic four-row promotion + five blueprint owners
+  -> root design/security/reliability/product contracts
+  -> quality + project contracts
+  -> final requirements/roadmap/state/work/verification/validation closeout
 ```
 
 ## Reference-Only Surfaces

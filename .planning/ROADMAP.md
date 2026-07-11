@@ -66,6 +66,10 @@ Plans:
 
 **Requirements:** EYE-04, EYE-05, EYE-06, EYE-07, EYE-08, DOC-01
 
+**Status:** Planned
+
+**Plans:** 7 plans
+
 **Success criteria:**
 
 1. Focused XCTest coverage proves eye caps, no-face behavior, missing-eye-landmark skips, no stale/reused eye geometry, and combined-geometry weakening.
@@ -79,6 +83,16 @@ Plans:
 - The phase should not claim commercial visual quality, device parity, launch readiness, full Meitu parity, or whole-branch `眼睛` completion.
 - If renderer evidence from Phase 29 reveals a fixture-specific weakness, record the limitation and keep promotion scoped to command-backed evidence.
 
+Plans:
+
+- [ ] `30-01-PLAN.md` — Align public eye normalization and exact cap/direction evidence.
+- [ ] `30-02-PLAN.md` — Enforce missing/reused/stale eye degradation and combined weakening.
+- [ ] `30-03-PLAN.md` — Run full evidence, renderer regression, review, security, and boundary gates.
+- [ ] `30-04-PLAN.md` — Gate and atomically promote four scoped rows across the five blueprint owners.
+- [ ] `30-05-PLAN.md` — Synchronize design, reliability, product, and security contracts.
+- [ ] `30-06-PLAN.md` — Synchronize the quality snapshot and milestone project contract.
+- [ ] `30-07-PLAN.md` — Close requirements, roadmap, state, work ledger, verification, and validation.
+
 ## Progress
 
 | Milestone | Phases | Plans | Requirements | Status | Completed |
@@ -89,14 +103,14 @@ Plans:
 | v1.3 Meitu Core Beauty Module Design and Implementation | 5 | 14 | 20/20 | Shipped | 2026-06-30 |
 | v1.4 Stability, QA, and Debt Cleanup | 5 | 15 | 24/24 | Shipped | 2026-07-03 |
 | v1.5 SDK Geometry Output Foundation and Face Shape Slice | 3 | 12 | 13/13 | Shipped | 2026-07-08 |
-| v1.6 Broader `美型 / 五官` SDK Slice - Eyes | 2 | 4 | 3/9 | In Progress | — |
+| v1.6 Broader `美型 / 五官` SDK Slice - Eyes | 2 | 11 | 3/9 | In Progress | — |
 
 ## Next
 
-Plan Phase 30:
+Execute Phase 30:
 
 ```bash
-$gsd-discuss-phase 30
+$gsd-execute-phase 30
 ```
 
 ## Backlog

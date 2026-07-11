@@ -30,6 +30,27 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-11-gsd-plan-phase-30-eye-safety-ledger-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-11 |
+| Scope | Created Phase 30 executable plans for Eye Safety, Ledger, and Closeout from the locked Phase 30 context, repository-grounded research, Nyquist validation strategy, and current code/test/document patterns. Checker feedback expanded the initial four-plan outline into seven bounded sequential waves with fail-closed security scans and evidence-before-promotion ordering. |
+| Requirements | EYE-04, EYE-05, EYE-06, EYE-07, EYE-08, DOC-01 |
+| Files | `.planning/phases/30-eye-safety-ledger-and-closeout/30-RESEARCH.md`, `30-VALIDATION.md`, `30-PATTERNS.md`, `30-01-PLAN.md` through `30-07-PLAN.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
+| Verification | User selected research-first. Research created `30-RESEARCH.md`; its focused six-suite baseline passed 49 tests. `30-VALIDATION.md` and `30-PATTERNS.md` were generated. Initial checker pass found six blockers covering premature evidence status, incomplete raw-geometry scans, tautological VIP classification, eye-side redaction, closeout scope, and aggregate doc scans. Revision reduced the next checker pass to two blockers: fail-open `rg` status handling and historical-text false positives. The second revision added explicit `rg` 0/1/>1 handling, bounded Phase 30 section/row checks, stale-contract negative guards, explicit evidence links, and canonical `full_suite_tests` equality. The final checker spawn failed because the sub-agent usage limit was reached; the user explicitly chose to accept the revised plans. Deterministic gates then passed: `phase-plan-index 30` reported seven plans in seven sequential waves with no checkpoints; all six Phase 30 requirement IDs were found in plan frontmatter; `check.decision-coverage-plan` passed 21/21 decisions; every one of 15 tasks has matching `read_first`, `action`, and `acceptance_criteria`; every plan has one threat model and one `Artifacts this phase produces` section; `roadmap.annotate-dependencies 30` recorded seven waves; scoped `git diff --check` passed. |
+| Build | No implementation build was run because this workflow changed planning/documentation artifacts only. The research-time focused SDK baseline passed 49 tests; execution plans require focused and full SDK tests, `BeautyExampleRenderer` build/run, the Phase 29 161/161 and 36/36 helper regression, active-source security scans, and atomic ledger guards. |
+| Commit | Research `62861ee`, validation `3365ec6`, pattern map `c833789`; the final planning/state/roadmap/ledger commit records the checker-driven revisions and seven plans. |
+
+Outcome:
+
+- `30-01-PLAN.md` locks positive-only `eyeSize`/`eyeTailLift`, signed `eyeDistance`/`eyeYPosition`, exact caps, abnormal-input behavior, warnings, and aggregate cap metrics.
+- `30-02-PLAN.md` adds missing/reused/stale eye-domain zeroing and category-only redacted reasons while preserving non-eye reuse reduction, plus six per-behavior and one aggregate combined-weakening case.
+- `30-03-PLAN.md` runs focused/full SDK evidence, the unchanged Phase 29 renderer regression, fail-closed EYE-07 boundary scans, review/security closeout, and promotion-ready evidence before any ledger edit.
+- `30-04-PLAN.md` atomically promotes exactly `大小`, `上下`, `眼距`, and `眼尾上扬` while keeping branch-level `眼睛` partial and synchronizing the five blueprint evidence owners.
+- `30-05-PLAN.md` through `30-07-PLAN.md` separately synchronize owning root contracts, quality/project state, and final GSD/work ledgers using per-file Phase 30 evidence-link and no-overclaim guards.
+- Phase 30 is ready for `$gsd-execute-phase 30`; final plan-checker approval was not obtained because of the recorded sub-agent quota failure and was explicitly overridden by the user.
+
 ### C-2026-07-10-gsd-discuss-phase-30-eye-safety-ledger-closeout
 
 | Field | Value |

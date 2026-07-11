@@ -68,12 +68,15 @@ The two real implementation seams are:
 1. `BeautyParameters` currently normalizes all four eye fields with `clampSigned`. Change only `eyeSize` and `eyeTailLift` to the existing `clampUnit`; keep distance and vertical position signed. [VERIFIED: `BeautyParameters.swift`]
 2. `BeautyEffectResolver` currently applies one global `0.5` reuse scale to every geometry strength, including eyes, and uses the generic stale warning for stale eye geometry. Refactor that path so eyes are remembered as requested but zeroed/skipped for reused and stale geometry, while non-eye geometry continues using the existing reuse scale. Missing-eye provider failure must also zero all four eye effective strengths. [VERIFIED: `BeautyEffectResolver.swift`; VERIFIED: `MissingLandmarkDegradationTests.swift`]
 
-The safest plan structure is four sequential waves:
+The safest revised plan structure is seven sequential waves. The first three behavior/evidence waves remain unchanged; the former 18-file closeout is split at contract/ledger ownership boundaries so no executor owns the atomic promotion and every global hotspot at once:
 
 1. Public eye normalization and exact cap/abnormal-input evidence.
 2. Eye-specific missing/reused/stale degradation plus combined-weakening evidence.
 3. Command-backed tests, Phase 29 renderer regression, active-source scans, review/security, and Phase 30 evidence/verification.
-4. Atomic four-row promotion and all owning documentation/planning updates only after Wave 3 passes.
+4. Atomic four-row promotion plus its five blueprint owners only after Wave 3 passes.
+5. Design, security, reliability, and product contracts plus the Phase 30 security promotion audit.
+6. Quality snapshot and milestone project contract.
+7. Requirements, roadmap, state, work ledger, final verification, and validation.
 
 Sequential waves avoid overlapping edits to `BeautyEffectResolver.swift` and make the atomic promotion gate auditable.
 
@@ -330,17 +333,27 @@ Depends on 30-02. Likely artifacts:
 
 - `30-EYE-SAFETY-EVIDENCE.md` (name discretionary)
 - `30-VERIFICATION.md`
-- final `30-VALIDATION.md`
+- in-progress `30-VALIDATION.md` with executed rows passed and downstream closeout rows pending
 - `30-REVIEW.md` because code review is enabled
 - `30-SECURITY.md` because security enforcement is enabled
 
 Run all focused/full tests, Phase 29 renderer regression, active-source scans, generated-artifact guards, requirement/decision coverage, and wording scans. Do not promote the ledger in this plan.
 
-### Plan 30-04 — Atomic Promotion and Contract Synchronization
+### Plan 30-04 — Atomic Promotion and Blueprint Synchronization
 
-Depends on a fully passing 30-03. Update the four ledger rows in one task/edit and immediately run exact row/branch guards. Then update owning root/blueprint/planning documents from observed evidence only.
+Depends on a fully passing 30-03. Update the four ledger rows in one task/edit and immediately run exact row/branch guards. Keep the five blueprint owners together so the atomic status transition, branch-partial wording, and unchanged renderer-validation contract remain one auditable unit.
 
-This ordering is essential: evidence documents are inputs to promotion, not written after a speculative status change.
+### Plan 30-05 — Root Contract Synchronization
+
+Depends on 30-04. Update `DESIGN.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, and the Phase 30 security audit with independent per-file invariant, evidence-link, privacy, and no-overclaim gates.
+
+### Plan 30-06 — Quality and Project Synchronization
+
+Depends on 30-05. Update `QUALITY_SCORE.md` and `.planning/PROJECT.md` from observed evidence only, leaving final requirement/workflow status to the last consistency owner.
+
+### Plan 30-07 — Final GSD and Work-Ledger Closeout
+
+Depends on 30-06. Update requirements, roadmap, state, `PLANS.md`, final verification, and validation with independent per-file checks. This ordering is essential: evidence documents are inputs to promotion, and final `passed`/Nyquist status follows every required document rather than preceding it.
 
 ## Boundary Scan Architecture
 
@@ -369,6 +382,8 @@ rg -n "public .*FaceGeometry|public .*BeautyFaceObservation|public .*[Ll]andmark
 ```
 
 Expected result: no real matches. Current raw face observation and landmark types are package-only. [VERIFIED: current declarations]
+
+These and the following regexes define scan scope only. Phase 30 execution must redirect each scan to a file and branch explicitly on ripgrep status: `0` means matches to reject/classify, `1` means a clean no-match, and any larger status is a hard read/regex error. Do not mask status or use a negative two-branch form that treats status `2` as clean.
 
 ### Demo and Renderer Import Guards
 
