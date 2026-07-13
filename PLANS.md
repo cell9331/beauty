@@ -26,26 +26,27 @@
 
 ## 3. Active
 
-### A-2026-07-13-v1-7-nose-sdk-slice
+No active work recorded.
+
+## 4. Completed
+
+### C-2026-07-13-v1-7-nose-sdk-slice
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
-| Scope | Deliver v1.7 Broader `美型 / 五官` SDK Slice - Nose through Phases 31-32, milestone audit, archive/tag, and cleanup. |
-| Requirements | NOSE-01 through NOSE-08 and DOC-01. |
-| Boundaries | SDK-core only; existing four public nose parameters; no Demo UI, public-field expansion, dependency, remote/commercial path, tracked generated PNG, or readiness/parity overclaim. |
-| Current step | Milestone initialized; Phase 31 discuss, shared-contract scan, research, and planning are next. |
-| Verification target | Focused nose/facade/degradation/combined-effect/renderer suites; full `swift test`; renderer build/run; 196/196 outputs; 30/30 portrait comparisons; security/import/public-inventory/artifact scans; code review; Nyquist; milestone audit. |
+| Completed | 2026-07-13 |
+| Scope | Delivered, audited, archived, tagged, and cleaned up v1.7 Broader `美型 / 五官` SDK Slice - Nose. |
+| Requirements | NOSE-01 through NOSE-08 and DOC-01: 9/9 satisfied. |
+| Runtime | 186-test full SDK suite; 196/196 outputs; 30/30 portrait comparisons; 6/6 signed comparisons. |
+| Audit | 2/2 phases, 9/9 integration checks, 5/5 flows, both phases Nyquist compliant, `threats_open: 0`. |
+| Archive | `v1.7-ROADMAP.md`, `v1.7-REQUIREMENTS.md`, `v1.7-MILESTONE-AUDIT.md`, and `v1.7-phases/`; annotated tag `v1.7`. |
+| Boundaries | Exactly four rows implemented; `山根`, `提升`, and branch-level `鼻子` remain partial/future; all readiness/parity exclusions preserved. |
 
-Checklist:
+Outcome:
 
-- [x] Initialize v1.7 requirements and Phase 31-32 roadmap.
-- [x] Complete Phase 31 renderer/output/gallery evidence: 180-test full suite, 196/196 outputs, 30/30 portrait comparisons, 6/6 signed tip comparisons, ignored 196-file gallery, and clean review/security.
-- [x] Complete Phase 32 safety, boundary, ledger, and documentation closeout: seven focused suites, 186-test full suite, 196/196 renderer regression, exact four-row promotion, clean review, `threats_open: 0`, and synchronized current owners.
-- [x] Pass final comprehensive current-owner scan and single final milestone audit: 9/9 requirements, 2/2 phases, 9/9 integration checks, 5/5 flows, both phases Nyquist compliant, no blockers or milestone debt.
-- [ ] Archive v1.7, create annotated tag `v1.7`, archive Phase 31/32 history, and leave a clean worktree.
-
-## 4. Completed
+- Phase 31/32 history is archived under `.planning/milestones/v1.7-phases/`.
+- Live `REQUIREMENTS.md` is removed and live ROADMAP has no active milestone.
+- Generated output/gallery files remain ignored and untracked.
 
 ### C-2026-07-13-gsd-complete-milestone-v1-6
 

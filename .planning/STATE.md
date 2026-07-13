@@ -21,7 +21,7 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-13)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** v1.7 milestone archive, tag, and cleanup
+**Current focus:** Planning the next milestone
 
 ## Current Position
 
@@ -210,7 +210,7 @@ Recent milestone-level outcomes:
 
 Last session: 2026-07-13
 Stopped at: Completed 32-07-PLAN.md
-Resume file: .planning/phases/32-nose-safety-ledger-and-closeout/32-VERIFICATION.md
+Resume file: .planning/milestones/v1.7-phases/32-nose-safety-ledger-and-closeout/32-VERIFICATION.md
 
 ## Operator Next Steps
 
