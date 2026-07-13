@@ -30,6 +30,28 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-13-gsd-new-milestone-v1-9-nose-remaining-tools
+
+**Status:** Completed
+
+**Why:**
+
+- Resolve the two nose rows deliberately deferred by v1.7 instead of borrowing `noseBridge` or `noseTipSize` evidence.
+- Close branch-level `鼻子` only after compatibility, geometry, facade-output, safety, privacy, artifact, and documentation gates agree.
+
+**Delivered:**
+
+- Initialized v1.9 `Nose Remaining Tools and Branch Closeout` in `.planning/PROJECT.md` and reset `.planning/STATE.md` through the GSD milestone-switch handler.
+- Added stack, feature, architecture, and pitfall research plus a reconciled summary that freezes positive-only `noseRootNarrowing` and `noseTipLift` as the roadmap baseline.
+- Defined 15 testable requirements covering the 31-to-33 stored-field contract, independent root/tip geometry, facade output, six-field degradation/conflict behavior, fail-closed boundaries, and atomic SDK-core branch promotion.
+- Created Phase 35 `Public Contract and Independent Geometry`, Phase 36 `Public-Facade Output Evidence`, and Phase 37 `Nose Safety, Boundary, and Branch Closeout`, with all 15 requirements mapped exactly once.
+
+**Verification:**
+
+- `git diff --check` passed before each milestone artifact commit.
+- Requirement traceability reports 15 total, 15 mapped, 0 unmapped, 0 duplicates, and 100% coverage.
+- Phase numbering continues after v1.8 Phase 34 as required; historical phase directories and archived v1.7 evidence remain intact.
+
 ### C-2026-07-13-v1-8-mouth-sdk-slice-lifecycle
 
 | Field | Value |
