@@ -7,10 +7,10 @@
 
 ### Mouth Renderer Evidence
 
-- [ ] **MOUTH-01**: The public `BeautySDK` facade renders isolated `mouthSize` positive/negative, `mouthWidth` positive/negative, `smile`, and `lipColor` cases, with each case setting exactly one existing public parameter.
-- [ ] **MOUTH-02**: A mouth output helper verifies the complete derived case-by-fixture matrix as decodable, non-empty, same-dimension PNGs; portrait mouth-region differences exclude the watermark band; signed geometry outputs differ from baseline and from each other; and representative no-face outputs preserve extent.
-- [ ] **MOUTH-03**: Lip-color evidence is contained to a documented mouth-region color check and is not counted as geometry displacement or true `丰唇` evidence.
-- [ ] **MOUTH-04**: Mouth/lip gallery routing is ignored, and `example-images/output` plus `example-images/gallery` contain no tracked generated files.
+- [x] **MOUTH-01**: The public `BeautySDK` facade renders isolated `mouthSize` positive/negative, `mouthWidth` positive/negative, `smile`, and `lipColor` cases, with each case setting exactly one existing public parameter.
+- [x] **MOUTH-02**: A mouth output helper verifies the complete derived case-by-fixture matrix as decodable, non-empty, same-dimension PNGs; portrait mouth-region differences exclude the watermark band; signed geometry outputs differ from baseline and from each other; and representative no-face outputs preserve extent.
+- [x] **MOUTH-03**: Lip-color evidence is contained to a documented mouth-region color check and is not counted as geometry displacement or true `丰唇` evidence.
+- [x] **MOUTH-04**: Mouth/lip gallery routing is ignored, and `example-images/output` plus `example-images/gallery` contain no tracked generated files.
 
 ### Mouth Safety and Closeout
 
@@ -44,10 +44,10 @@
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| MOUTH-01 | Phase 33 | Pending |
-| MOUTH-02 | Phase 33 | Pending |
-| MOUTH-03 | Phase 33 | Pending |
-| MOUTH-04 | Phase 33 | Pending |
+| MOUTH-01 | Phase 33 | Complete |
+| MOUTH-02 | Phase 33 | Complete |
+| MOUTH-03 | Phase 33 | Complete |
+| MOUTH-04 | Phase 33 | Complete |
 | MOUTH-05 | Phase 34 | Pending |
 | MOUTH-06 | Phase 34 | Pending |
 | MOUTH-07 | Phase 34 | Pending |

@@ -20,14 +20,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-13)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 33 — Mouth Renderer Output Evidence
+**Current focus:** Phase 34 — Mouth Safety, Degradation, and Ledger Closeout
 
 ## Current Position
 
-Phase: 33 of 34 (Mouth Renderer Output Evidence)
+Phase: 34 of 34 (Mouth Safety, Degradation, and Ledger Closeout)
 Plan: —
-Status: Roadmap created; ready to discuss or plan Phase 33
-Last activity: 2026-07-13 — v1.8 roadmap created with 11/11 requirements mapped
+Status: Phase 33 complete; Phase 34 not started
+Last activity: 2026-07-13 — Phase 33 passed renderer, helper, gallery, and artifact evidence
 
 ## Performance Metrics
 

@@ -30,6 +30,16 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-13-phase-33-mouth-renderer-evidence
+
+**Status:** Completed
+
+**Delivered:** Six isolated public-facade mouth/lip cases, exact inventory tests, decoded 238-output helper, geometry/signed/color ROI evidence, and ignored mouth gallery routing.
+
+**Verification:** Focused renderer tests passed 9/9; full SDK suite passed; renderer helper passed 238/238 outputs, 30/30 geometry comparisons, 12/12 signed comparisons, and 6/6 lip-color containment checks; generated gallery wrote 238 ignored files and zero output/gallery files are tracked.
+
+**Boundary:** `lipColor` remains color-only evidence; Phase 34 owns safety, degradation, and exact row promotion.
+
 ### C-2026-07-13-gsd-new-milestone-v1-8-mouth-sdk-slice
 
 **Status:** Completed
