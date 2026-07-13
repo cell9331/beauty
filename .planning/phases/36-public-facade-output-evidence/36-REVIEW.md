@@ -6,16 +6,16 @@ reviewed: 2026-07-13
 files_reviewed: 6
 findings:
   critical: 1
-  warning: 2
+  warning: 0
   info: 0
-  total: 3
+  total: 1
 ---
 
-# Phase 36 Code Review
+# Phase 36 Code Re-Review
 
 ## Scope
 
-Reviewed the requested Phase 36 executable, test, helper, gallery, and durable evidence files:
+Fresh independent review after fix commits `cdae1a4`, `45c969c`, and `3c87267` covered all six requested Phase 36 files:
 
 - `BeautySDK/Sources/BeautyExampleRenderer/main.swift`
 - `BeautySDK/Tests/BeautyCoreTests/BeautyRendererOutputRegressionTests.swift`
@@ -24,47 +24,30 @@ Reviewed the requested Phase 36 executable, test, helper, gallery, and durable e
 - `example-images/README.md`
 - `docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md`
 
-## Findings
+## Finding
 
-### CR-01: A symlinked allow-list root can redirect recursive gallery deletion outside the repository
+### CR-02: The final gallery validation still has a destructive ancestor-swap race
 
 **Severity:** Critical  
-**File:** `example-images/generate_gallery.py:15-16, 114-120, 136-144`
+**File:** `example-images/generate_gallery.py:176-195`
 
-`ALLOWED_GALLERY_ROOT` is defined as the resolved target of `example-images/gallery`, and validation rejects only `gallery_dir.is_symlink()` at the final path component. If `example-images/gallery` is a symlink to an external directory and the caller supplies a child such as `example-images/gallery/victim`, the child itself is not a symlink, both resolved paths are under the same external target, and validation succeeds. `shutil.rmtree(gallery_dir)` then recursively deletes the external `victim` directory.
+The static symlink-component escape reported as CR-01 is fixed: the destination is now restricted to the exact lexical `example-images/gallery` root and existing symlinks in either `example-images` or `gallery` are rejected. However, the second `validate_gallery_directory(...)` call and `shutil.rmtree(gallery_dir)` remain separate pathname operations. A concurrent replacement of the already-validated `example-images` directory with a symlink in that interval makes `rmtree` resolve the same lexical gallery path under an external directory. Repeating the validation immediately before deletion narrows the race but does not close it.
 
-This bypasses the stated repository containment boundary and the Phase 36 high-severity path-cleanup threat mitigation. A safe reproducer that stopped before deletion confirmed `validate_gallery_directory(...)` accepts this symlink-ancestor arrangement.
+A deterministic temporary-directory adversarial reproducer replaced `repo/example-images` inside a wrapped `shutil.rmtree` call, after the last validation and before the real deletion. `recreate_gallery_directory(...)` returned successfully and the external `external/gallery/must-survive.txt` sentinel was deleted. This violates the high-severity T36-03 containment invariant even though all non-racing symlink self-tests pass.
 
-Reject a symlink in every component from the repository root through the requested gallery path, and anchor containment against the lexical repository path rather than an allow-list root whose own `.resolve()` may escape the repository. Revalidate the physical target immediately before deletion; requiring the exact canonical `example-images/gallery` root would further reduce the destructive surface.
+Perform destructive cleanup through a repository-anchored directory descriptor and refuse changed inode/device identities, or atomically rename the validated gallery directory to a quarantine name within a securely opened repository parent before deleting the quarantined object. The implementation needs a regression that forces an ancestor replacement precisely between validation and destructive use and proves the external sentinel survives.
 
-### WR-01: PNG decompression is unbounded before decoded-size validation
+## Confirmed Fixes and Verification
 
-**Severity:** Warning  
-**File:** `.planning/phases/36-public-facade-output-evidence/check_nose_remaining_renderer_outputs.py:195-263`
-
-The helper correctly checks signatures, chunk bounds, CRCs, supported encodings, decoded length, and filter types, but it calls `decompressor.decompress(...)` and `flush()` without a maximum output length. Dimension and expected-size checks occur only after zlib has materialized the entire stream. There is also no accepted maximum width, height, compressed file size, or decoded byte count.
-
-Because the Phase 36 threat model treats fixture/output bytes as untrusted, a small expected-name PNG containing a high-ratio stream can exhaust memory or terminate CI before the helper can return its controlled fail-closed error. Bound dimensions and decoded bytes before inflation, reject values outside the fixture/output budget, and use bounded incremental decompression (for example, expected scanline bytes plus one) so excess output is rejected without being fully allocated.
-
-### WR-02: Gallery inventory validation does not reject duplicate renderer IDs
-
-**Severity:** Warning  
-**File:** `example-images/generate_gallery.py:188-214`
-
-`validate_case_inventory` rejects duplicates only in `gallery_case_ids`, then compares sets. Duplicate IDs in the discovered renderer list are collapsed, so `validate_case_inventory(["only"], ["only", "only"])` succeeds. That is not the documented duplicate-free renderer/gallery bijection and could let the renderer overwrite the same flat output name while the gallery still reports a matching inventory.
-
-The strict Phase 36 output helper independently rejects duplicate renderer IDs, so the current accepted 36-case run is unaffected, but `generate_gallery.py` is callable on its own and claims to enforce this invariant before copying. Reject duplicates in `renderer_case_ids` as well, then compare counts/order or sets as appropriate.
-
-## Verified Behavior
-
+- Original CR-01 static symlink cases are rejected for the exact gallery root, a symlinked `example-images` ancestor, and a gallery child.
+- Original WR-01 is fixed for PNG decoding: dimensions and decoded length are bounded before inflation; incremental decompression rejects excess output; EOF, `unused_data`, `unconsumed_tail`, appended streams, chunk bounds, IEND trailing data, and CRC checks fail closed.
+- Original WR-02 is fixed: duplicate renderer IDs are rejected before the renderer/gallery set comparison, preserving the duplicate-free exact bijection.
+- `python3 example-images/generate_gallery.py --self-test` passed.
+- Phase 36 helper `--self-test` and Python compilation passed.
 - Focused `BeautyRendererOutputRegressionTests` passed 10/10.
-- Helper self-tests and Python compilation passed.
-- The live strict helper passed 252/252 full decodes with the documented 12/12 baseline, 6/6 root/bridge, 12/12 lift/signed-tip, and 2/2 no-face results.
-- Current output and gallery inventories each contain exactly 252 PNGs.
-- Renderer cases remain isolated on the public `BeautySDK` facade; representative no-face diagnostics remain aggregate and redacted.
-- Documentation preserves provisional `0.25`, no-promotion, no device/commercial/packaging/launch claim, and Phase 37 ownership boundaries.
-- `git diff --check` passed before this report was added.
+- The live strict helper passed 252/252 full decodes, 12/12 baseline comparisons, 6/6 root/bridge comparisons, 12/12 lift/signed-tip comparisons, and 2/2 no-face comparisons.
+- `git diff --check` passed before this report rewrite.
 
 ## Verdict
 
-Phase 36 is not clean at standard review depth. The current generated evidence is internally consistent, but the destructive gallery path guard has a symlink-ancestor escape and the strict helper/gallery validators have the two fail-closed gaps above.
+Phase 36 is not clean at standard review depth. The bounded PNG and duplicate-inventory repairs are sound, and the static symlink escape is closed, but the destructive gallery cleanup still permits an external deletion through an ancestor-swap TOCTOU race.
