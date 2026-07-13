@@ -242,6 +242,35 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
         assertNoEyeSideOrRawGeometryDisclosure(result)
     }
 
+    func testNoseNoFaceRequestPreservesExtentSafeDomainsAndRedactedMetadata() throws {
+        let provider = SDKTestingFaceDetectionProvider([.noFace])
+        let engine = try BeautyEngine(faceDetectionProvider: provider)
+
+        let result = try engine.processResult(
+            image: Self.image,
+            metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+            parameters: BeautyParameters(
+                brightness: 0.2,
+                noseSlim: 1,
+                noseWingSlim: 1,
+                noseTipSize: -1,
+                noseBridge: 1,
+                filterId: "soft_clean",
+                filterIntensity: 0.5
+            )
+        )
+
+        XCTAssertEqual(provider.invocationCount, 1)
+        XCTAssertEqual(result.output.extent, Self.image.extent)
+        XCTAssertEqual(result.detectionSummary?.availability, .noFace)
+        XCTAssertEqual(result.metrics["beauty.detection.geometryRequired"], 1)
+        XCTAssertTrue((result.metrics["beauty.effects.activeCount"] ?? 0) >= 2)
+        XCTAssertEqual(result.metrics["beauty.effects.skippedNoseDomains"], 1)
+        XCTAssertNil(result.metrics["beauty.effects.geometryPointCount"])
+        XCTAssertTrue(result.warnings.contains { $0.code == "face_effects_skipped_no_face" })
+        assertRedacted(result)
+    }
+
     private static let image = CIImage(color: CIColor(red: 0.35, green: 0.25, blue: 0.20, alpha: 1))
         .cropped(to: CGRect(x: 0, y: 0, width: 2, height: 2))
 
