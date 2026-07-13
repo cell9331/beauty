@@ -265,16 +265,18 @@ final class NoseWarpProviderTests: XCTestCase {
             noseTip: FaceGeometry.fixture.noseTip,
             outerLips: FaceGeometry.fixture.outerLips
         )
+        let requested = strengths(
+            noseSlim: 1,
+            noseWingSlim: 1,
+            noseTipSize: -1,
+            noseBridge: 1,
+            noseRootNarrowing: 1
+        )
         let emissions = NoseWarpProvider().fieldEmissions(
             face: face,
-            strengths: strengths(
-                noseSlim: 1,
-                noseWingSlim: 1,
-                noseTipSize: -1,
-                noseBridge: 1,
-                noseRootNarrowing: 1
-            )
+            strengths: requested
         )
+        let sanitized = emissions.sanitizing(requested)
 
         XCTAssertTrue(emissions.noseSlim.isEmpty)
         XCTAssertFalse(emissions.noseWingSlim.isEmpty)
@@ -282,6 +284,48 @@ final class NoseWarpProviderTests: XCTestCase {
         XCTAssertFalse(emissions.noseBridge.isEmpty)
         XCTAssertFalse(emissions.noseRootNarrowing.isEmpty)
         XCTAssertEqual(emissions.points.count, 5)
+        XCTAssertEqual(sanitized.noseSlim, 0)
+        XCTAssertEqual(sanitized.noseWingSlim, requested.noseWingSlim)
+        XCTAssertEqual(sanitized.noseTipSize, requested.noseTipSize)
+        XCTAssertEqual(sanitized.noseBridge, requested.noseBridge)
+        XCTAssertEqual(sanitized.noseRootNarrowing, requested.noseRootNarrowing)
+    }
+
+    func testIndependentFieldEmissionsIncludeStrengthAndDisplacementGuards() {
+        let nearCenterRoot = FaceGeometry(
+            bounds: FaceGeometry.fixture.bounds,
+            faceContour: FaceGeometry.fixture.faceContour,
+            leftEye: FaceGeometry.fixture.leftEye,
+            rightEye: FaceGeometry.fixture.rightEye,
+            nose: FaceGeometry.fixture.nose,
+            noseRoot: [
+                SIMD2<Float>(0.49989995, 0.488),
+                SIMD2<Float>(0.50010005, 0.488)
+            ],
+            noseTip: FaceGeometry.fixture.noseTip,
+            outerLips: FaceGeometry.fixture.outerLips
+        )
+        let provider = NoseWarpProvider()
+        let rootBlocked = provider.fieldEmissions(
+            face: nearCenterRoot,
+            strengths: strengths(noseRootNarrowing: 1, noseTipLift: 1)
+        )
+        let tinyTip = provider.fieldEmissions(
+            face: .fixture,
+            strengths: strengths(
+                noseRootNarrowing: 1,
+                noseTipLift: Float.ulpOfOne * 2
+            )
+        )
+
+        XCTAssertTrue(rootBlocked.noseRootNarrowing.isEmpty)
+        XCTAssertFalse(rootBlocked.noseTipLift.isEmpty)
+        XCTAssertFalse(tinyTip.noseRootNarrowing.isEmpty)
+        XCTAssertTrue(tinyTip.noseTipLift.isEmpty)
+
+        let legacyThreshold = strengths(noseTipSize: Float.ulpOfOne)
+        let legacyThresholdEmissions = provider.fieldEmissions(face: .fixture, strengths: legacyThreshold)
+        XCTAssertEqual(legacyThresholdEmissions.sanitizing(legacyThreshold).noseTipSize, 0)
     }
 
     func testMissingNoseInputsReturnSkipReason() {

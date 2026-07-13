@@ -38,6 +38,21 @@
 
 ## 4. Completed
 
+### C-2026-07-13-phase-35-code-review-iteration-2-remediation
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Closed Phase 35 iteration-2 review findings CR-03 and CR-04 with one provider-owned per-field emission contract shared by resolver preflight and final dispatch. |
+| Behavior | Non-emitting legacy/root/tip fields are zeroed independently before conflict accounting; emitting siblings remain active and conflict totals, scale, and weakened count exclude unsupported work. |
+| Verification | Focused resolver/provider/degradation/conflict/combined suites passed 68/68 XCTest cases; full `swift test --package-path BeautySDK` passed 214/214; `git diff --check` passed. |
+
+Outcome:
+
+- One-point legacy geometry can no longer let a non-emitting `noseSlim` survive beside valid root work.
+- Structurally valid but displacement-blocked root work and tiny non-emitting tip work are excluded before conflicts with exact mixed-case scale/count regressions.
+- Public geometry/privacy boundaries and Phase 36/37 non-claims are unchanged.
+
 ### C-2026-07-13-phase-35-public-contract-independent-geometry
 
 | Field | Value |

@@ -310,6 +310,77 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         assertRedacted(plan)
     }
 
+    func testPhase35ReviewNonEmittingRootIsExcludedWhileTipSiblingRemainsActive() {
+        let face = FaceGeometry(
+            bounds: FaceGeometry.fixture.bounds,
+            faceContour: FaceGeometry.fixture.faceContour,
+            leftEye: FaceGeometry.fixture.leftEye,
+            rightEye: FaceGeometry.fixture.rightEye,
+            nose: FaceGeometry.fixture.nose,
+            noseRoot: [
+                SIMD2<Float>(0.49989995, 0.488),
+                SIMD2<Float>(0.50010005, 0.488)
+            ],
+            noseTip: FaceGeometry.fixture.noseTip,
+            outerLips: FaceGeometry.fixture.outerLips
+        )
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(
+                faceSlim: 1,
+                faceSmall: 1,
+                noseRootNarrowing: 1,
+                noseTipLift: 1
+            ),
+            faceGeometry: face
+        )
+        let expectedScale = 1 / (
+            BeautySafetyCaps.faceSlim +
+                BeautySafetyCaps.faceSmall +
+                BeautySafetyCaps.noseTipLift
+        )
+
+        XCTAssertEqual(plan.effectiveStrengths.noseRootNarrowing, 0)
+        XCTAssertEqual(
+            plan.effectiveStrengths.noseTipLift,
+            BeautySafetyCaps.noseTipLift * expectedScale,
+            accuracy: 0.0001
+        )
+        XCTAssertEqual(plan.metrics["beauty.effects.geometryStrengthScale"] ?? 0, Double(expectedScale), accuracy: 0.0001)
+        XCTAssertEqual(plan.metrics["beauty.effects.weakenedCount"], 3)
+        XCTAssertTrue(plan.activeDomains.isSuperset(of: [.faceShape, .nose]))
+        XCTAssertFalse(plan.skippedDomains.contains(.nose))
+        assertRedacted(plan)
+    }
+
+    func testPhase35ReviewTinyNonEmittingTipIsExcludedWhileRootSiblingRemainsActive() {
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(
+                faceSlim: 1,
+                faceSmall: 1,
+                noseRootNarrowing: 1,
+                noseTipLift: Float.ulpOfOne * 2
+            ),
+            faceGeometry: .fixture
+        )
+        let expectedScale = 1 / (
+            BeautySafetyCaps.faceSlim +
+                BeautySafetyCaps.faceSmall +
+                BeautySafetyCaps.noseRootNarrowing
+        )
+
+        XCTAssertEqual(plan.effectiveStrengths.noseTipLift, 0)
+        XCTAssertEqual(
+            plan.effectiveStrengths.noseRootNarrowing,
+            BeautySafetyCaps.noseRootNarrowing * expectedScale,
+            accuracy: 0.0001
+        )
+        XCTAssertEqual(plan.metrics["beauty.effects.geometryStrengthScale"] ?? 0, Double(expectedScale), accuracy: 0.0001)
+        XCTAssertEqual(plan.metrics["beauty.effects.weakenedCount"], 3)
+        XCTAssertTrue(plan.activeDomains.isSuperset(of: [.faceShape, .nose]))
+        XCTAssertFalse(plan.skippedDomains.contains(.nose))
+        assertRedacted(plan)
+    }
+
     func testNoseGeometryProducesDeterministicProxyEvidenceAndCapMetadata() {
         let plan = BeautyEffectResolver.resolve(
             parameters: BeautyParameters(noseSlim: 1, noseTipSize: 1),

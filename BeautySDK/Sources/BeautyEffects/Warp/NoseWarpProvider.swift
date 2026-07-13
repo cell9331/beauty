@@ -14,6 +14,29 @@ struct NoseWarpFieldEmissions: Equatable, Sendable {
             noseRootNarrowing +
             noseTipLift
     }
+
+    func sanitizing(_ strengths: BeautyEffectiveStrengths) -> BeautyEffectiveStrengths {
+        var sanitized = strengths
+        if strengths.noseSlim != 0, noseSlim.isEmpty {
+            sanitized.noseSlim = 0
+        }
+        if strengths.noseWingSlim != 0, noseWingSlim.isEmpty {
+            sanitized.noseWingSlim = 0
+        }
+        if strengths.noseTipSize != 0, noseTipSize.isEmpty {
+            sanitized.noseTipSize = 0
+        }
+        if strengths.noseBridge != 0, noseBridge.isEmpty {
+            sanitized.noseBridge = 0
+        }
+        if strengths.noseRootNarrowing != 0, noseRootNarrowing.isEmpty {
+            sanitized.noseRootNarrowing = 0
+        }
+        if strengths.noseTipLift != 0, noseTipLift.isEmpty {
+            sanitized.noseTipLift = 0
+        }
+        return sanitized
+    }
 }
 
 struct NoseWarpProvider: WarpControlPointProvider {
@@ -60,14 +83,6 @@ struct NoseWarpProvider: WarpControlPointProvider {
                 ? tipLiftPoints(face: face, strength: strengths.noseTipLift)
                 : []
         )
-    }
-
-    func hasValidRootSupport(in face: FaceGeometry) -> Bool {
-        validatedRootPair(in: face) != nil
-    }
-
-    func hasValidTipSupport(in face: FaceGeometry) -> Bool {
-        validatedTipSupport(in: face) != nil
     }
 
     func validatedRootPair(in face: FaceGeometry) -> (left: SIMD2<Float>, right: SIMD2<Float>)? {
