@@ -23,6 +23,13 @@ EXPECTED_FIXTURE_COUNT = 7
 EXPECTED_OUTPUT_COUNT = 252
 EXPECTED_PORTRAIT_COUNT = 6
 
+# Current fixtures are at most 675x900 and renderer PNGs are below 5 MiB. These
+# ceilings leave deliberate headroom while bounding all untrusted PNG allocation.
+MAX_PNG_WIDTH = 4_096
+MAX_PNG_HEIGHT = 4_096
+MAX_PNG_FILE_BYTES = 16 * 1_024 * 1_024
+MAX_PNG_DECODED_BYTES = 64 * 1_024 * 1_024
+
 BASELINE_CASE_ID = "geometryBaseline_noop"
 ROOT_CASE_ID = "noseRootNarrowing_0p25"
 LIFT_CASE_ID = "noseTipLift_0p25"
@@ -194,6 +201,8 @@ def read_fixture_dimensions(path: Path, label: str) -> tuple[int, int]:
 
 def read_png_payload(path: Path, label: str) -> PNGPayload:
     try:
+        if path.stat().st_size > MAX_PNG_FILE_BYTES:
+            raise RendererOutputError(f"{label}: PNG file exceeds {MAX_PNG_FILE_BYTES} byte budget")
         data = path.read_bytes()
     except OSError:
         raise RendererOutputError(f"{label}: unreadable") from None
@@ -239,6 +248,10 @@ def read_png_payload(path: Path, label: str) -> PNGPayload:
         raise RendererOutputError(f"{label}: missing IHDR")
     if width <= 0 or height <= 0:
         raise RendererOutputError(f"{label}: invalid dimensions")
+    if width > MAX_PNG_WIDTH or height > MAX_PNG_HEIGHT:
+        raise RendererOutputError(
+            f"{label}: dimensions {width}x{height} exceed {MAX_PNG_WIDTH}x{MAX_PNG_HEIGHT} budget"
+        )
     if not seen_iend:
         raise RendererOutputError(f"{label}: missing IEND")
     if offset != len(data):
@@ -249,18 +262,41 @@ def read_png_payload(path: Path, label: str) -> PNGPayload:
         raise RendererOutputError(f"{label}: unsupported PNG color type")
     if compression_method != 0 or filter_method != 0 or interlace_method != 0:
         raise RendererOutputError(f"{label}: unsupported PNG encoding")
-    try:
-        decompressor = zlib.decompressobj()
-        raw = decompressor.decompress(b"".join(idat_chunks)) + decompressor.flush()
-    except zlib.error:
-        raise RendererOutputError(f"{label}: invalid PNG data") from None
-    if not decompressor.eof or decompressor.unused_data:
-        raise RendererOutputError(f"{label}: incomplete PNG data stream")
     channels = 4 if color_type == 6 else 3
     expected_length = (width * channels + 1) * height
+    if expected_length > MAX_PNG_DECODED_BYTES:
+        raise RendererOutputError(
+            f"{label}: decoded image data budget {expected_length} exceeds {MAX_PNG_DECODED_BYTES}"
+        )
+
+    try:
+        decompressor = zlib.decompressobj()
+        raw = bytearray()
+        for index, compressed_chunk in enumerate(idat_chunks):
+            if decompressor.eof:
+                raise RendererOutputError(f"{label}: trailing compressed PNG data")
+            pending = compressed_chunk
+            while pending:
+                decoded = decompressor.decompress(pending, expected_length + 1 - len(raw))
+                raw.extend(decoded)
+                if len(raw) > expected_length:
+                    raise RendererOutputError(f"{label}: decoded image data exceeds {expected_length} byte budget")
+                pending = decompressor.unconsumed_tail
+                if pending and not decoded:
+                    raise RendererOutputError(f"{label}: compressed PNG data exceeds decoded budget")
+            if decompressor.unused_data:
+                raise RendererOutputError(f"{label}: trailing compressed PNG data")
+
+        raw.extend(decompressor.flush(expected_length + 1 - len(raw)))
+    except zlib.error:
+        raise RendererOutputError(f"{label}: invalid PNG data") from None
+    if len(raw) > expected_length:
+        raise RendererOutputError(f"{label}: decoded image data exceeds {expected_length} byte budget")
+    if not decompressor.eof or decompressor.unused_data or decompressor.unconsumed_tail:
+        raise RendererOutputError(f"{label}: incomplete PNG data stream")
     if len(raw) != expected_length:
         raise RendererOutputError(f"{label}: decoded image data length {len(raw)} != {expected_length}")
-    return PNGPayload(width, height, color_type, raw)
+    return PNGPayload(width, height, color_type, bytes(raw))
 
 
 def paeth_predictor(left: int, up: int, upper_left: int) -> int:
@@ -502,14 +538,23 @@ def expect_error(label: str, function, expected_fragment: str) -> None:
     raise AssertionError(f"{label}: expected RendererOutputError")
 
 
-def make_test_png(path: Path, width: int = 2, height: int = 2, corrupt: bool = False) -> None:
-    raw = b"".join(b"\x00" + b"\x00\x00\x00" * width for _ in range(height))
+def make_test_png(
+    path: Path,
+    width: int = 2,
+    height: int = 2,
+    corrupt: bool = False,
+    raw_override: bytes | None = None,
+    compressed_suffix: bytes = b"",
+) -> None:
+    raw = raw_override if raw_override is not None else b"".join(
+        b"\x00" + b"\x00\x00\x00" * width for _ in range(height)
+    )
     def chunk(kind: bytes, payload: bytes) -> bytes:
         crc = binascii.crc32(kind + payload) & 0xFFFFFFFF
         return struct.pack(">I", len(payload)) + kind + payload + struct.pack(">I", crc)
     data = b"\x89PNG\r\n\x1a\n"
     data += chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 2, 0, 0, 0))
-    data += chunk(b"IDAT", zlib.compress(raw)) + chunk(b"IEND", b"")
+    data += chunk(b"IDAT", zlib.compress(raw) + compressed_suffix) + chunk(b"IEND", b"")
     if corrupt:
         data = data[:-1]
     path.write_bytes(data)
@@ -539,9 +584,36 @@ def run_self_tests() -> None:
         (output / "stale__one.png").unlink()
         make_test_png(output / "same__one.png", corrupt=True)
         expect_error("corrupt output", lambda: validate_matrix(output, ["one"], [fixture]), "missing IEND")
+
+        oversized_dimensions = root / "oversized-dimensions.png"
+        make_test_png(oversized_dimensions, width=MAX_PNG_WIDTH + 1, height=1, raw_override=b"")
+        expect_error(
+            "oversized dimensions",
+            lambda: read_png_payload(oversized_dimensions, "oversized"),
+            "exceed 4096x4096 budget",
+        )
+
+        compression_bomb = root / "compression-bomb.png"
+        make_test_png(compression_bomb, raw_override=b"\x00" * 1_000_000)
+        expect_error(
+            "compression bomb",
+            lambda: read_png_payload(compression_bomb, "bomb"),
+            "decoded image data exceeds 14 byte budget",
+        )
+
+        trailing_stream = root / "trailing-stream.png"
+        make_test_png(trailing_stream, compressed_suffix=zlib.compress(b"unexpected"))
+        expect_error(
+            "trailing compressed stream",
+            lambda: read_png_payload(trailing_stream, "trailing"),
+            "trailing compressed PNG data",
+        )
         expect_error("ROI watermark", lambda: nose_roi(100, 100), "not wholly above watermark")
 
-    print("self-test passed: duplicate IDs/stems, missing/extra/corrupt outputs, ROI/watermark rejection")
+    print(
+        "self-test passed: duplicate IDs/stems, missing/extra/corrupt outputs, bounded PNG decode, "
+        "ROI/watermark rejection"
+    )
 
 
 def parse_args() -> argparse.Namespace:
