@@ -66,9 +66,9 @@ Plans:
 
 **Requirements:** EYE-04, EYE-05, EYE-06, EYE-07, EYE-08, DOC-01
 
-**Status:** In Progress
+**Status:** Complete - completed 2026-07-13
 
-**Plans:** 6/7 plans executed
+**Plans:** 7/7 plans complete
 
 **Success criteria:**
 
@@ -85,13 +85,15 @@ Plans:
 
 Plans:
 
-- [ ] `30-01-PLAN.md` — Align public eye normalization and exact cap/direction evidence.
-- [ ] `30-02-PLAN.md` — Enforce missing/reused/stale eye degradation and combined weakening.
-- [ ] `30-03-PLAN.md` — Run full evidence, renderer regression, review, security, and boundary gates.
-- [ ] `30-04-PLAN.md` — Gate and atomically promote four scoped rows across the five blueprint owners.
-- [ ] `30-05-PLAN.md` — Synchronize design, reliability, product, and security contracts.
-- [ ] `30-06-PLAN.md` — Synchronize the quality snapshot and milestone project contract.
-- [ ] `30-07-PLAN.md` — Close requirements, roadmap, state, work ledger, verification, and validation.
+- [x] `30-01-PLAN.md` — Align public eye normalization and exact cap/direction evidence.
+- [x] `30-02-PLAN.md` — Enforce missing/reused/stale eye degradation and combined weakening.
+- [x] `30-03-PLAN.md` — Run full evidence, renderer regression, review, security, and boundary gates.
+- [x] `30-04-PLAN.md` — Gate and atomically promote four scoped rows across the five blueprint owners.
+- [x] `30-05-PLAN.md` — Synchronize design, reliability, product, and security contracts.
+- [x] `30-06-PLAN.md` — Synchronize the quality snapshot and milestone project contract.
+- [x] `30-07-PLAN.md` — Close requirements, roadmap, state, work ledger, verification, and validation.
+
+**Evidence:** `30-EYE-SAFETY-EVIDENCE.md` records EYE-04 through EYE-07 command evidence; atomic blueprint and owning-contract guards close EYE-08 and DOC-01. Exactly four rows are implemented and branch-level `眼睛` remains `partial`.
 
 ## Progress
 
@@ -103,14 +105,14 @@ Plans:
 | v1.3 Meitu Core Beauty Module Design and Implementation | 5 | 14 | 20/20 | Shipped | 2026-06-30 |
 | v1.4 Stability, QA, and Debt Cleanup | 5 | 15 | 24/24 | Shipped | 2026-07-03 |
 | v1.5 SDK Geometry Output Foundation and Face Shape Slice | 3 | 12 | 13/13 | Shipped | 2026-07-08 |
-| v1.6 Broader `美型 / 五官` SDK Slice - Eyes | 2 | 11 | 3/9 | In Progress | — |
+| v1.6 Broader `美型 / 五官` SDK Slice - Eyes | 2 | 11 | 9/9 | Complete | 2026-07-13 |
 
 ## Next
 
-Execute Phase 30:
+Audit milestone v1.6:
 
 ```bash
-$gsd-execute-phase 30
+$gsd-audit-milestone
 ```
 
 ## Backlog

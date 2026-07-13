@@ -13,15 +13,15 @@
 
 ### Eye Safety And Degradation
 
-- [x] **EYE-04**: Focused tests cover eye safety caps for existing public eye parameters and prove out-of-range public input resolves to conservative effective strengths.
-- [x] **EYE-05**: Focused tests cover no-face and missing-eye-landmark degradation, including preserved dimensions, redacted warnings, and no stale or reused eye geometry.
-- [x] **EYE-06**: Focused tests cover combined-geometry weakening when eye parameters are used with other face-dependent geometry domains.
+- [x] **EYE-04**: Focused tests cover eye safety caps for existing public eye parameters and prove out-of-range public input resolves to conservative effective strengths. Evidence: `30-EYE-SAFETY-EVIDENCE.md` and `30-VERIFICATION.md`.
+- [x] **EYE-05**: Focused tests cover no-face and missing-eye-landmark degradation, including preserved dimensions, redacted warnings, and no stale or reused eye geometry. Evidence: `30-EYE-SAFETY-EVIDENCE.md` and `30-VERIFICATION.md`.
+- [x] **EYE-06**: Focused tests cover combined-geometry weakening when eye parameters are used with other face-dependent geometry domains. Evidence: `30-EYE-SAFETY-EVIDENCE.md` and `30-VERIFICATION.md`.
 
 ### Boundaries And Documentation
 
-- [x] **EYE-07**: Public/import scans prove the `眼睛` slice adds no public raw geometry API, no Demo internal SDK imports, no network/cloud behavior, and no commercial entitlement path.
-- [x] **EYE-08**: `SHAPE_FEATURE_LEDGER.md` promotes only evidence-backed existing-parameter `眼睛` rows: `大小`, `上下`, `眼距`, and `眼尾上扬`.
-- [ ] **DOC-01**: `FEATURE_MATRIX.md`, `EXAMPLE_IMAGE_VALIDATION.md`, root contracts, `QUALITY_SCORE.md`, and `PLANS.md` are synchronized after evidence passes, while branch-level `眼睛` remains `partial`.
+- [x] **EYE-07**: Public/import scans prove the `眼睛` slice adds no public raw geometry API, no Demo internal SDK imports, no network/cloud behavior, and no commercial entitlement path. Evidence: `30-EYE-SAFETY-EVIDENCE.md`, `30-SECURITY.md`, and `30-VERIFICATION.md`.
+- [x] **EYE-08**: `SHAPE_FEATURE_LEDGER.md` promotes only evidence-backed existing-parameter `眼睛` rows: `大小`, `上下`, `眼距`, and `眼尾上扬`. Evidence: `30-EYE-SAFETY-EVIDENCE.md` and `30-VERIFICATION.md`.
+- [x] **DOC-01**: `FEATURE_MATRIX.md`, `EXAMPLE_IMAGE_VALIDATION.md`, root contracts, `QUALITY_SCORE.md`, and `PLANS.md` are synchronized after evidence passes, while branch-level `眼睛` remains `partial`. Evidence: `30-EYE-SAFETY-EVIDENCE.md`, `30-SECURITY.md`, and `30-VERIFICATION.md`.
 
 ## Future Requirements
 
@@ -50,12 +50,12 @@
 | EYE-01 | Phase 29 | Complete | `29-VERIFICATION.md` records six public-facade eye renderer cases, the 23-case matrix, and public-import boundary evidence; `29-EYE-RENDERER-EVIDENCE.md` records the case-to-parameter mapping. |
 | EYE-02 | Phase 29 | Complete | `29-VERIFICATION.md` and `29-EYE-RENDERER-EVIDENCE.md` record 161/161 outputs, 36/36 eye-vs-baseline top-region comparisons, dimensions, and representative no-face output presence. |
 | EYE-03 | Phase 29 | Complete | `29-VERIFICATION.md` and `29-EYE-RENDERER-EVIDENCE.md` record ignored output/gallery checks, generated `eyes/` gallery routing, and zero tracked generated output/gallery files. |
-| EYE-04 | Phase 30 | Complete | `30-01-SUMMARY.md` records positive-only size/tail normalization, signed distance/Y behavior, exact caps, warning/count evidence, and abnormal-input/no-op coverage. |
-| EYE-05 | Phase 30 | Complete | `30-02-SUMMARY.md` records either-eye missing, reused/stale zeroing, non-eye reuse preservation, public no-face extent/safe-domain behavior, and explicit redaction guards. |
-| EYE-06 | Phase 30 | Complete | `30-02-SUMMARY.md` records six direction-specific normal-versus-combined cases and one exact six-field all-eye multi-domain weakening case. |
+| EYE-04 | Phase 30 | Complete | `30-EYE-SAFETY-EVIDENCE.md` and `30-VERIFICATION.md` record positive-only size/tail normalization, signed distance/Y behavior, exact caps, warning/count evidence, and abnormal-input/no-op coverage. |
+| EYE-05 | Phase 30 | Complete | `30-EYE-SAFETY-EVIDENCE.md` and `30-VERIFICATION.md` record either-eye missing, reused/stale zeroing, non-eye reuse preservation, public no-face extent/safe-domain behavior, and explicit redaction guards. |
+| EYE-06 | Phase 30 | Complete | `30-EYE-SAFETY-EVIDENCE.md` and `30-VERIFICATION.md` record six direction-specific normal-versus-combined cases and one exact six-field all-eye multi-domain weakening case. |
 | EYE-07 | Phase 30 | Complete | `30-EYE-SAFETY-EVIDENCE.md` and `30-SECURITY.md` record zero public/SPI raw geometry, forbidden imports, network/cloud paths, commercial execution paths, and unclassified VIP matches. |
-| EYE-08 | Phase 30 | Complete | `30-04-SUMMARY.md` records the atomic promotion of exactly `大小`, `上下`, `眼距`, and `眼尾上扬` while branch-level `眼睛` remains partial. |
-| DOC-01 | Phase 30 | Pending | Pending Phase 30 documentation synchronization after safety and scoped ledger evidence. |
+| EYE-08 | Phase 30 | Complete | `30-EYE-SAFETY-EVIDENCE.md`, `30-VERIFICATION.md`, and `30-04-SUMMARY.md` record the atomic promotion of exactly `大小`, `上下`, `眼距`, and `眼尾上扬` while branch-level `眼睛` remains partial. |
+| DOC-01 | Phase 30 | Complete | `30-EYE-SAFETY-EVIDENCE.md`, `30-SECURITY.md`, and `30-VERIFICATION.md` anchor the synchronized blueprint, root, quality, project, work, and planning contracts while branch-level `眼睛` remains partial. |
 
 **Coverage:**
 

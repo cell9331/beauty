@@ -113,6 +113,13 @@ Last activity: 2026-07-11 -- Phase 30 Plan 30-06 synchronized observed quality a
 
 ## Accumulated Context
 
+### Phase 30 Eye Safety, Ledger, and Closeout Result
+
+- Observed focused tests and the 178-test full SDK suite passed; the unchanged renderer helper passed 161/161 outputs and 36/36 portrait comparisons.
+- Boundary and security gates passed for raw geometry, internal imports, network/cloud, commercial entitlement paths, the 31-field inventory, exact VIP classification, and untracked generated artifacts; `threats_open: 0`.
+- Exactly `大小`, `上下`, `眼距`, and `眼尾上扬` are implemented. Branch-level `眼睛` remains `partial`, with future eye tools and setup-specific device, visual, packaging, and readiness work still deferred.
+- Command evidence is recorded in `30-EYE-SAFETY-EVIDENCE.md`. Phase 30 closes the milestone requirements; the next workflow is milestone audit/progress via `$gsd-audit-milestone`.
+
 ### Decisions
 
 Full decision context is in `.planning/PROJECT.md`.
