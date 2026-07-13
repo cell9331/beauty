@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.9
 milestone_name: Nose Remaining Tools and Branch Closeout
 status: executing
-stopped_at: Completed 35-01-PLAN.md
-last_updated: "2026-07-13T06:27:23.858Z"
+stopped_at: Completed 35-02-PLAN.md
+last_updated: "2026-07-13T06:37:24.506Z"
 last_activity: 2026-07-13 -- Phase 35 execution started
 progress:
   total_phases: 3
   completed_phases: 0
   total_plans: 4
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -26,8 +26,8 @@ See: `.planning/PROJECT.md` (updated 2026-07-13)
 ## Current Position
 
 Phase: 35 (Public Contract and Independent Geometry) — EXECUTING
-Plan: 2 of 4
-Status: Executing Phase 35
+Plan: 3 of 4
+Status: Ready to execute
 Last activity: 2026-07-13 -- Phase 35 execution started
 
 ### Phase 34 Mouth Safety, Degradation, and Ledger Closeout Result
@@ -133,6 +133,7 @@ Last activity: 2026-07-13
 | Phase 30 P06 | 4 min | 2 tasks | 2 files |
 | Phase 30 P07 | 8 min | 2 tasks | 6 files |
 | Phase 35 P01 | 3 min | 2 tasks | 6 files |
+| Phase 35 P02 | 6 min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -200,6 +201,9 @@ Recent milestone-level outcomes:
 - [Phase 35]: Keep both new nose fields as independent positive-only storage with defaulted source-compatible initializer arguments. — This preserves the frozen Phase 35 contract without aliasing legacy nose behavior.
 - [Phase 35]: Keep bundled preset JSON unchanged and prove compatibility through missing-key zero decoding. — Editing explicit zero keys would hide the legacy payload behavior being verified.
 - [Phase 35]: Use independent 0.25 caps provisionally for both new values. — Phase 37 owns final calibration after output evidence.
+- [Phase 35]: Keep root and tip supports explicit and package-internal rather than deriving them from the legacy nose proxy. — This preserves provenance and prevents either new field from aliasing shipped behavior.
+- [Phase 35]: Validate root and tip supports before clamping and share those validators with support availability. — Malformed biometric-adjacent geometry must fail closed and resolver routing must agree with provider emission.
+- [Phase 35]: Limit the legacy nose center guard to legacy fields. — Valid explicit root or tip support must remain usable when the legacy proxy is absent.
 
 ### Pending Todos
 
@@ -232,8 +236,8 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-13T06:26:48.353Z
-Stopped at: Completed 35-01-PLAN.md
+Last session: 2026-07-13T06:37:24.498Z
+Stopped at: Completed 35-02-PLAN.md
 Resume file: None
 
 ## Operator Next Steps

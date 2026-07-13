@@ -13,9 +13,9 @@
 
 ### Independent Nose Geometry
 
-- [ ] **NOSE-04**: `noseRootNarrowing` produces bounded symmetric horizontal contraction only in a deterministic upper-root subset, preserves vertical coordinates, and is observably distinct from `noseBridge`.
-- [ ] **NOSE-05**: `noseTipLift` produces bounded upward motion only in a deterministic lower-tip subset, preserves horizontal coordinates, and is observably distinct from both directions of signed `noseTipSize`.
-- [ ] **NOSE-06**: Missing or insufficient upper-root/lower-tip geometry fails closed without substituting legacy bridge or tip-size control points, while valid provider output remains deterministic, finite, bounded, and non-empty.
+- [x] **NOSE-04**: `noseRootNarrowing` produces bounded symmetric horizontal contraction only in a deterministic upper-root subset, preserves vertical coordinates, and is observably distinct from `noseBridge`.
+- [x] **NOSE-05**: `noseTipLift` produces bounded upward motion only in a deterministic lower-tip subset, preserves horizontal coordinates, and is observably distinct from both directions of signed `noseTipSize`.
+- [x] **NOSE-06**: Missing or insufficient upper-root/lower-tip geometry fails closed without substituting legacy bridge or tip-size control points, while valid provider output remains deterministic, finite, bounded, and non-empty.
 
 ### Public-Facade Output Evidence
 
@@ -59,9 +59,9 @@
 | NOSE-01 | Phase 35 | Complete |
 | NOSE-02 | Phase 35 | Complete |
 | NOSE-03 | Phase 35 | Complete |
-| NOSE-04 | Phase 35 | Pending |
-| NOSE-05 | Phase 35 | Pending |
-| NOSE-06 | Phase 35 | Pending |
+| NOSE-04 | Phase 35 | Complete |
+| NOSE-05 | Phase 35 | Complete |
+| NOSE-06 | Phase 35 | Complete |
 | NOSE-07 | Phase 36 | Pending |
 | NOSE-08 | Phase 36 | Pending |
 | NOSE-09 | Phase 36 | Pending |
