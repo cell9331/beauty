@@ -1,6 +1,7 @@
 ---
 phase: 33
 plan: "03"
+requirements-completed: [MOUTH-04]
 key_files:
   modified:
     - example-images/generate_gallery.py

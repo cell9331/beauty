@@ -1,6 +1,7 @@
 ---
 phase: 33
 plan: "02"
+requirements-completed: [MOUTH-02, MOUTH-03]
 key_files:
   created:
     - .planning/phases/33-mouth-renderer-output-evidence/check_mouth_renderer_outputs.py

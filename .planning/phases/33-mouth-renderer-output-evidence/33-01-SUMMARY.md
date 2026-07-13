@@ -1,6 +1,7 @@
 ---
 phase: 33
 plan: "01"
+requirements-completed: [MOUTH-01]
 key_files:
   modified:
     - BeautySDK/Sources/BeautyExampleRenderer/main.swift

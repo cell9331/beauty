@@ -30,6 +30,14 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-13-v1-8-audit-metadata-remediation
+
+**Status:** Completed
+
+**Delivered:** Synchronized v1.8 STATE progress/history/todos/continuity, ROADMAP and REQUIREMENTS closeout footers, explicit Phase 33 Nyquist metadata, and Phase 33/34 summary requirement frontmatter for a clean three-source audit rerun.
+
+**Verification:** Exact stale-state scans, 11/11 summary requirement extraction, 2/2 explicit Nyquist declarations, `roadmap.analyze` 100% completion, and `git diff --check` passed. Runtime behavior is unchanged; the first audit's fresh 190-test suite remains the implementation baseline until the independent rerun.
+
 ### C-2026-07-13-gsd-audit-milestone-v1-8-first-run
 
 | Field | Value |

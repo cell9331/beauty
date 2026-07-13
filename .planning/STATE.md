@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.8
 milestone_name: Broader 美型 / 五官 SDK Slice - Mouth
-status: roadmap_created
-last_updated: "2026-07-13T03:19:01.030Z"
+status: milestone_complete
+last_updated: "2026-07-13T04:08:00Z"
 last_activity: 2026-07-13
 progress:
   total_phases: 2
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  completed_phases: 2
+  total_plans: 6
+  completed_plans: 6
+  percent: 100
 ---
 
 # Project State
@@ -42,8 +42,8 @@ Last activity: 2026-07-13 — Phase 34 passed safety, degradation, combined, bou
 
 **Velocity:**
 
-- Total phases completed: 28
-- Total plans completed: 113
+- Total phases completed: 30
+- Total plans completed: 119
 - Total tasks recorded from milestone summaries: at least 147
 - Milestone Swift LOC at close: 17,794 in the local closeout count across `BeautySDK` and `BeautyDemo`, including build-derived `.build` files observed during archive.
 
@@ -83,6 +83,8 @@ Last activity: 2026-07-13 — Phase 34 passed safety, degradation, combined, bou
 | 30. Eye Safety, Ledger, and Closeout | 7/7 | Complete |
 | 31. Nose Renderer Output Evidence | 4/4 | Complete |
 | 32. Nose Safety, Ledger, and Closeout | 7/7 | Complete |
+| 33. Mouth Renderer Output Evidence | 3/3 | Complete |
+| 34. Mouth Safety, Degradation, and Ledger Closeout | 3/3 | Complete |
 
 **Plan Performance:**
 
@@ -129,6 +131,13 @@ Last activity: 2026-07-13 — Phase 34 passed safety, degradation, combined, bou
 | Phase 30 P07 | 8 min | 2 tasks | 6 files |
 
 ## Accumulated Context
+
+### Phase 33-34 Mouth Slice Result
+
+- Phase 33 passed 238/238 output invariants, 30/30 portrait mouth-region geometry comparisons, 12/12 signed comparisons, and 6/6 lip-color containment checks across 34 cases × 7 fixtures.
+- Phase 34 passed 13/13 focused tests and the 190-test full SDK suite. Missing/no-face/stale mouth geometry zeros all three strengths, reused geometry retains exact `0.5`, eligible stale/reused `lipColor` follows its independent color-domain policy, and combined weakening preserves both signed directions.
+- Fail-closed boundary scans passed for raw geometry, internal imports, network/cloud, commercial paths, dependencies, public 31-field inventory, sign loss, and generated artifacts; review is clean and `threats_open: 0`.
+- Exactly `大小`, `宽度`, and `微笑` are implemented. `上下`, `倾斜`, `左右`, `M唇`, true `丰唇`, `白牙`, and branch-level `嘴唇` remain partial/future. Milestone audit remediation is complete and the next workflow is an independent audit rerun.
 
 ### Phase 31-32 Nose Slice Result
 
@@ -187,10 +196,8 @@ Recent milestone-level outcomes:
 
 ### Pending Todos
 
-- Plan and execute Phase 33 public-facade mouth/lip renderer, helper, ROI, signed-pair, color-containment, gallery, and artifact evidence.
-- Plan Phase 34 only after Phase 33 freezes output semantics; independently decide and verify stale/reused `lipColor` policy before ledger promotion.
+- Rerun the independent v1.8 milestone audit after synchronizing the planning and validation metadata; archive/tag/cleanup only if it passes without debt.
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
-- Archive v1.7, create annotated tag `v1.7`, then clean up Phase 31/32 history.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, screenshot reruns, packaging review, broader `美型 / 五官` slices, and automated visual diffs.
 
 ### Blockers/Concerns
@@ -212,16 +219,16 @@ Recent milestone-level outcomes:
 | Release QA | Real-device camera/Vision parity, visual naturalness, production render quality, performance budgets, and long-run hardware readiness | Partially promoted into v1.4 hardening scope; feature expansion remains deferred | v1.4 start |
 | SwiftUI visual fidelity | HTML-to-SwiftUI delta report, Home SwiftUI fidelity pass, Editor SwiftUI fidelity pass, and v1.2 visual QA closeout | Canceled from v1.2; may be reconsidered as a future milestone | 2026-06-26 |
 | Deferred Meitu product areas | Home/discovery, style resources, AI/background, video/body, account/gallery, search, premium access, commerce, account authorization | Deferred outside v1.3 core beauty modules | 2026-06-26 |
-| Broader Meitu shape groups | Remaining `眼睛`, `鼻子` (`山根`, `提升`), `嘴唇`, `比例`, `3D塑颜`, `眉毛`, and unscoped `脸型` rows | Deferred outside completed slices | Phase 32 closeout |
+| Broader Meitu shape groups | Remaining eye rows, `鼻子` (`山根`, `提升`), mouth rows (`上下`, `倾斜`, `左右`, `M唇`, true `丰唇`, `白牙`), `比例`, `3D塑颜`, `眉毛`, and unscoped `脸型` rows | Deferred outside completed slices | Phase 34 closeout |
 | Release/setup evidence | Physical-device camera/Vision parity, commercial visual review, screenshot reruns, optimized profiling, 600-second preview evidence, packaging review, and launch-readiness review | Deferred outside Phase 28 | Phase 28 closeout |
 | Codebase maps | Formal refresh of stale `.planning/codebase/*` maps | Deferred until explicitly scoped | Phase 21 |
 
 ## Session Continuity
 
 Last session: 2026-07-13
-Stopped at: Created v1.8 roadmap
-Resume file: .planning/ROADMAP.md
+Stopped at: Completed Phase 34 and repaired the first v1.8 audit's planning/validation metadata gaps
+Resume file: .planning/v1.8-MILESTONE-AUDIT.md
 
 ## Operator Next Steps
 
-- Discuss or plan Phase 33 with `$gsd-discuss-phase 33` or `$gsd-plan-phase 33`.
+- Rerun `$gsd-audit-milestone v1.8`; proceed to milestone completion only if the result is `passed` with no unaccepted debt.
