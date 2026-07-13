@@ -30,6 +30,22 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-13-gsd-audit-milestone-v1-8-third-run
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Re-audited v1.8 independently after commit `6bd3f04` corrected the Phase 33 handoff. |
+| Requirements | MOUTH-01 through MOUTH-10 satisfied; DOC-01 remains unsatisfied. Effective score: 10/11. |
+| Files | `.planning/v1.8-MILESTONE-AUDIT.md`, `PLANS.md` |
+| Verification | Fresh full SwiftPM passed 190/190. Renderer/helper evidence passed 238/238 outputs, 30/30 geometry comparisons, 12/12 signed comparisons, and 6/6 lip-color checks. Integration scored 10/11, flows 4/5, Nyquist 2/2, and security passed with `threats_open: 0`. The Phase 33 handoff fix is correct, but PROJECT and QUALITY_SCORE still present v1.7/Phase 32 as current. |
+
+Outcome:
+
+- Audit remains `gaps_found`; no gap or debt is accepted.
+- Completion, annotated tag creation, requirements/roadmap archival, and Phase 33-34 cleanup did not run.
+- Required next repair is to synchronize the PROJECT and QUALITY_SCORE current snapshots with v1.8, followed by another independent audit.
+
 ### C-2026-07-13-gsd-audit-milestone-v1-8-second-run
 
 | Field | Value |
