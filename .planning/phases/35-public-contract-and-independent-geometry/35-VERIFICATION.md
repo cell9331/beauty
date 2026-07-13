@@ -1,12 +1,12 @@
 ---
 phase: 35
-status: implementation_verified_pending_sync
+status: passed
 observed_at: 2026-07-13T06:52:19Z
 ---
 
 # Phase 35 Verification
 
-This is the Task `35-04-01` implementation verdict. Runtime and structural evidence is green, but requirement/phase completion remains pending Task `35-04-02` contract and ledger synchronization plus its final rerun.
+Task `35-04-01` captured the non-final implementation evidence. Task `35-04-02` synchronized every current owner, reran the full suite and boundary gates, and finalized this command-backed verdict.
 
 ## Observed Test Evidence
 
@@ -31,12 +31,12 @@ Focused aggregate: 94/94 observed XCTest tests passed across nine suites.
 
 | Requirement | Status | Command-backed evidence |
 | --- | --- | --- |
-| NOSE-01 | passed pending 35-04-02 sync | Independent positive-only `noseRootNarrowing` and `noseTipLift`; default `0`; finite `0...1` clamp; non-finite `0`; exact inventory. |
-| NOSE-02 | passed pending 35-04-02 sync | Legacy 31-key payload and all five unchanged bundled presets decode both fields as zero; 33-field values round-trip; defaulted initializer arguments preserve source-style calls. |
-| NOSE-03 | passed pending 35-04-02 sync | Each field independently requires geometry, resolves through caps/activation/reuse/conflict/provider/facade, and exposes aggregate-only public evidence. |
-| NOSE-04 | passed pending 35-04-02 sync | Explicit upper-root support emits deterministic symmetric horizontal inward vectors, keeps Y unchanged, and does not alias `noseBridge`. |
-| NOSE-05 | passed pending 35-04-02 sync | Explicit lower-tip support emits deterministic upward vertical vectors, keeps X unchanged, and does not alias either signed `noseTipSize` direction. |
-| NOSE-06 | passed pending 35-04-02 sync | Empty, insufficient, non-finite, asymmetric, duplicate, same-side, out-of-bounds, and misplaced supports fail closed without borrowing legacy vectors; valid sibling and safe domains continue. |
+| NOSE-01 | passed | Independent positive-only `noseRootNarrowing` and `noseTipLift`; default `0`; finite `0...1` clamp; non-finite `0`; exact inventory. |
+| NOSE-02 | passed | Legacy 31-key payload and all five unchanged bundled presets decode both fields as zero; 33-field values round-trip; defaulted initializer arguments preserve source-style calls. |
+| NOSE-03 | passed | Each field independently requires geometry, resolves through caps/activation/reuse/conflict/provider/facade, and exposes aggregate-only public evidence. |
+| NOSE-04 | passed | Explicit upper-root support emits deterministic symmetric horizontal inward vectors, keeps Y unchanged, and does not alias `noseBridge`. |
+| NOSE-05 | passed | Explicit lower-tip support emits deterministic upward vertical vectors, keeps X unchanged, and does not alias either signed `noseTipSize` direction. |
+| NOSE-06 | passed | Empty, insufficient, non-finite, asymmetric, duplicate, same-side, out-of-bounds, and misplaced supports fail closed without borrowing legacy vectors; valid sibling and safe domains continue. |
 
 ## Exact Implemented Contract
 
@@ -72,5 +72,17 @@ No Demo build was run because Phase 35 changed no Demo source or UI behavior; fa
 - Phase 36 owns renderer cases, decoded-output helper, gallery generation, baseline/legacy ROI comparisons, and ignored 252-output evidence if its fixture inventory remains unchanged.
 - Phase 37 owns final cap calibration, exhaustive all-six degradation and exactly-once weakening, final active-source boundary closeout, blueprint/ledger promotion, and SDK-core branch completion.
 - This phase does not claim renderer/gallery/output completion, final cap calibration, exhaustive once-only safety, physical-device parity, commercial visual approval, packaging, shipping, or launch readiness.
-- Final verification is pending `35-04-02`; do not treat this non-final status as phase completion.
 
+## Post-Synchronization Final Gate
+
+| Final check | Result |
+| --- | --- |
+| Full `swift test --package-path BeautySDK` rerun | passed, 207/207 XCTest tests, zero failures, 30.757 seconds XCTest / 31 seconds wall |
+| Five root contract owners | passed: inventory, semantics, vectors, freshness, redaction, and deferrals agree |
+| REQUIREMENTS / ROADMAP / STATE / PLANS consistency | passed: only NOSE-01 through NOSE-06 complete, 15/15 mapped, Phase 35 at 4/4, Phase 36 next |
+| Public/SPI raw geometry and diagnostics | passed: no public geometry or raw payload |
+| Dependency, network/cloud/commercial, renderer/Demo, generated-artifact, and archive boundaries | green |
+| Product no-promotion/no-overclaim | passed: `山根`, `提升`, and branch-level `鼻子` remain unpromoted/partial |
+| Diff hygiene | passed |
+
+Phase 35 is passed. Phase 36 and Phase 37 non-claims above remain binding.

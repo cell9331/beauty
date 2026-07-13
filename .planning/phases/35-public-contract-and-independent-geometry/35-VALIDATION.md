@@ -1,8 +1,8 @@
 ---
 phase: 35
 slug: public-contract-and-independent-geometry
-status: draft
-nyquist_compliant: false
+status: passed
+nyquist_compliant: true
 wave_0_complete: true
 created: 2026-07-13
 ---
@@ -46,7 +46,7 @@ created: 2026-07-13
 | 35-03-02 | 03 | 3 | NOSE-03 | T35-03 | Both new fields participate in caps, counts, reuse, and conflict weakening | integration | `swift test --package-path BeautySDK --filter BeautySafetyCapsTests && swift test --package-path BeautySDK --filter GeometryConflictResolverTests && swift test --package-path BeautySDK --filter CombinedEffectSafetyTests` | ✅ | ✅ passed (1/1 + 8/8 + 10/10) |
 | 35-03-03 | 03 | 3 | NOSE-03 | T35-04 | Public facade reveals only redacted summaries/metrics, never raw landmarks/control points | facade | `swift test --package-path BeautySDK --filter BeautyEngineGeometryFacadeTests` | ✅ | ✅ passed (11/11) |
 | 35-04-01 | 04 | 4 | NOSE-01–NOSE-06 | T35-01–T35-04 | Focused/full implementation and ASVS L1 evidence is captured but remains explicitly non-final until contract synchronization | regression/security | `swift test --package-path BeautySDK && git diff --check` | ✅ | ✅ passed (94/94 focused; 207/207 full) |
-| 35-04-02 | 04 | 4 | NOSE-01–NOSE-06 | T35-01–T35-04 | Contract/ledger synchronization, no-promotion and no-overclaim checks pass before the final full/scoped rerun sets verification, security, and Nyquist states green | regression/boundary | `swift test --package-path BeautySDK && git diff --check` | ✅ | ⬜ pending |
+| 35-04-02 | 04 | 4 | NOSE-01–NOSE-06 | T35-01–T35-04 | Contract/ledger synchronization, no-promotion and no-overclaim checks pass before the final full/scoped rerun sets verification, security, and Nyquist states green | regression/boundary | `swift test --package-path BeautySDK && git diff --check` | ✅ | ✅ passed (207/207 final full; boundary gates green) |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -101,12 +101,12 @@ Use the actual suite names reported by SwiftPM when a module-qualified filter se
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verification or an explicit structural gate.
-- [ ] Sampling continuity: no three consecutive tasks lack automated verification.
+- [x] All tasks have `<automated>` verification or an explicit structural gate.
+- [x] Sampling continuity: no three consecutive tasks lack automated verification.
 - [x] Wave 0 covers all infrastructure references.
 - [x] No watch-mode flags are used.
-- [ ] Focused feedback latency remains below 30 seconds.
-- [ ] Full SwiftPM and boundary scans pass.
-- [ ] `nyquist_compliant: true` is set after execution evidence is recorded.
+- [x] Focused feedback latency remains below 30 seconds.
+- [x] Full SwiftPM and boundary scans pass.
+- [x] `nyquist_compliant: true` is set after execution evidence is recorded.
 
-**Approval:** pending execution
+**Approval:** passed after Task `35-04-02` post-synchronization rerun

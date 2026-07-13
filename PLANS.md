@@ -33,10 +33,27 @@
 | Status | active |
 | Scope | Execute v1.9 Phases 35-37 autonomously, then audit, archive, tag, and clean up the milestone. |
 | Requirements | NOSE-01 through NOSE-14 and DOC-01. |
-| Current step | Phase 35 Plans `35-01` through `35-03` complete; execute final verification and contract synchronization in `35-04`. |
+| Current step | Phase 35 is complete at 4/4 plans with `35-VERIFICATION.md`; plan and execute Phase 36 public-facade output evidence next. |
 | Verification | Per-phase focused/full SwiftPM, renderer/helper, security, review, Nyquist, and milestone-audit gates defined by ROADMAP and REQUIREMENTS. |
 
 ## 4. Completed
+
+### C-2026-07-13-phase-35-public-contract-independent-geometry
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Completed Phase 35 Plans `35-01` through `35-04`: exact public-model compatibility, independent package-only root/tip geometry, resolver/conflict/facade routing, ASVS L1 review, and current-owner synchronization. |
+| Requirements | NOSE-01 through NOSE-06 complete; NOSE-07 onward and DOC-01 remain pending. |
+| Files | Public/effective model and geometry code/tests from Plans 35-01 through 35-03; `ARCHITECTURE.md`, `DESIGN.md`, `RELIABILITY.md`, `SECURITY.md`, `PRODUCT_SENSE.md`, current GSD ledgers, and Phase 35 verification/security/validation evidence in Plan 35-04. |
+| Verification | `35-VERIFICATION.md`: 94/94 focused and 207/207 full XCTest cases; exact 33 = 32 numeric + `filterId`; provisional `0.25`; reused exact `0.5`; explicit `noseRoot`/`noseTip`; public/SPI, diagnostics, dependency, network/commercial, renderer/Demo, artifact, archive, no-promotion, and diff-hygiene gates. |
+| Build | Full SwiftPM suite passed. No Demo build was required because Demo source was unchanged. |
+
+Outcome:
+
+- `noseRootNarrowing` and `noseTipLift` are independent positive-only public contracts with fail-closed package-internal supports and redacted facade routing.
+- `山根`, `提升`, and branch-level `鼻子` remain unpromoted/partial; Phase 36 owns renderer/helper/gallery/ROI output and Phase 37 owns cap calibration, exhaustive exactly-once safety, boundaries, and promotion.
+- No renderer/output, final-cap, device/commercial, packaging, shipping, or launch-readiness claim was made.
 
 ### C-2026-07-13-gsd-new-milestone-v1-9-nose-remaining-tools
 

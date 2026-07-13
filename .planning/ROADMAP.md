@@ -21,25 +21,27 @@
 
 **Requirements:** NOSE-01, NOSE-02, NOSE-03, NOSE-04, NOSE-05, NOSE-06
 
-**Status:** Planned
+**Status:** Complete
 
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
+
+**Evidence:** `35-VERIFICATION.md` records 94/94 focused and 207/207 full XCTest results for the exact 33-field, provisional `0.25`, reused `0.5`, explicit `noseRoot`/`noseTip`, fail-closed, and redacted facade contract. No Demo build was required because Demo source was unchanged. Phase 36 is next; Phase 37 retains cap calibration, exhaustive safety, boundary closeout, and promotion.
 
 **Wave 1**
 
-- [ ] `35-01-PLAN.md` — public contract, 33-field compatibility, effective values, and provisional caps
+- [x] `35-01-PLAN.md` — public contract, 33-field compatibility, effective values, and provisional caps
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] `35-02-PLAN.md` — package-internal root/tip supports and independent fail-closed provider geometry
+- [x] `35-02-PLAN.md` — package-internal root/tip supports and independent fail-closed provider geometry
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] `35-03-PLAN.md` — resolver, degradation, conflict, and redacted public-facade routing
+- [x] `35-03-PLAN.md` — resolver, degradation, conflict, and redacted public-facade routing
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] `35-04-PLAN.md` — full verification, security/Nyquist finalization, and current-owner synchronization without promotion
+- [x] `35-04-PLAN.md` — full verification, security/Nyquist finalization, and current-owner synchronization without promotion
 
 **Success Criteria:**
 
@@ -82,13 +84,13 @@
 
 ## Progress
 
-- [ ] Phase 35: Public Contract and Independent Geometry
+- [x] Phase 35: Public Contract and Independent Geometry
 - [ ] Phase 36: Public-Facade Output Evidence
 - [ ] Phase 37: Nose Safety, Boundary, and Branch Closeout
 
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
-| 35. Public Contract and Independent Geometry | 3/4 | In Progress|  |
+| 35. Public Contract and Independent Geometry | 4/4 | Complete | 2026-07-13 |
 | 36. Public-Facade Output Evidence | 0/TBD | Not started | — |
 | 37. Nose Safety, Boundary, and Branch Closeout | 0/TBD | Not started | — |
 
@@ -100,4 +102,4 @@
 
 ---
 *Roadmap created: 2026-07-13*
-*Last updated: 2026-07-13 for Phase 35 planning completion*
+*Last updated: 2026-07-13 after Phase 35 completion; Phase 36 is next*

@@ -54,23 +54,23 @@
 
 ## Traceability
 
-| Requirement | Phase | Status |
-| --- | --- | --- |
-| NOSE-01 | Phase 35 | Complete |
-| NOSE-02 | Phase 35 | Complete |
-| NOSE-03 | Phase 35 | Complete |
-| NOSE-04 | Phase 35 | Complete |
-| NOSE-05 | Phase 35 | Complete |
-| NOSE-06 | Phase 35 | Complete |
-| NOSE-07 | Phase 36 | Pending |
-| NOSE-08 | Phase 36 | Pending |
-| NOSE-09 | Phase 36 | Pending |
-| NOSE-10 | Phase 37 | Pending |
-| NOSE-11 | Phase 37 | Pending |
-| NOSE-12 | Phase 37 | Pending |
-| NOSE-13 | Phase 37 | Pending |
-| NOSE-14 | Phase 37 | Pending |
-| DOC-01 | Phase 37 | Pending |
+| Requirement | Phase | Status | Evidence |
+| --- | --- | --- | --- |
+| NOSE-01 | Phase 35 | Complete | `35-VERIFICATION.md` model/normalization evidence |
+| NOSE-02 | Phase 35 | Complete | `35-VERIFICATION.md` compatibility evidence |
+| NOSE-03 | Phase 35 | Complete | `35-VERIFICATION.md` resolver/facade evidence |
+| NOSE-04 | Phase 35 | Complete | `35-VERIFICATION.md` independent root-vector evidence |
+| NOSE-05 | Phase 35 | Complete | `35-VERIFICATION.md` independent tip-vector evidence |
+| NOSE-06 | Phase 35 | Complete | `35-VERIFICATION.md` fail-closed support evidence |
+| NOSE-07 | Phase 36 | Pending | Renderer matrix not yet executed |
+| NOSE-08 | Phase 36 | Pending | Output helper and ROI evidence not yet executed |
+| NOSE-09 | Phase 36 | Pending | No-face output/gallery evidence not yet executed |
+| NOSE-10 | Phase 37 | Pending | Final cap calibration deferred |
+| NOSE-11 | Phase 37 | Pending | Exhaustive six-field degradation deferred |
+| NOSE-12 | Phase 37 | Pending | Exactly-once combined safety deferred |
+| NOSE-13 | Phase 37 | Pending | Final active-source boundary closeout deferred |
+| NOSE-14 | Phase 37 | Pending | Product row/branch promotion deferred |
+| DOC-01 | Phase 37 | Pending | Final owner synchronization and audit deferred |
 
 **Coverage:**
 
@@ -82,4 +82,4 @@
 
 ---
 *Requirements defined: 2026-07-13*
-*Last updated: 2026-07-13 after v1.9 roadmap mapping*
+*Last updated: 2026-07-13 after Phase 35 command-backed verification*

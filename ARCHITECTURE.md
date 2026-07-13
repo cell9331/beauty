@@ -183,6 +183,7 @@ BeautyDemo
 - Phase 26 的 `BeautyFaceGeometryAdapter` 只把 selected package observation 转成内部 `FaceGeometry` planning input；它不是 public geometry export，也不是 renderer saved-output evidence。
 - Phase 27 的 still-image geometry render output 只通过内部 `BeautyColorEffectPipeline` selected-face overload 和 `BeautyGeometryEffectPipeline` CIImage local warp 证明 foundation evidence；它不是新的 public raw geometry surface，也不是 Demo UI behavior。
 - Phase 28 的 per-tool face-shape evidence 只覆盖 existing public parameters `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, and `chinLength`；`下颌线` 仍是 `jawSlim` alias，不新增单独 provider 或 public parameter。
+- Phase 35 保持 `FaceGeometry.nose` 为四个既有鼻部 helper 的 legacy proxy；新增的 package-internal、default-empty `noseRoot` / `noseTip` explicit supports 只供 `noseRootNarrowing` / `noseTipLift` helper 使用，禁止回退借用 legacy proxy，也绝不跨越 public `BeautySDK` facade。该边界由 `35-VERIFICATION.md` 的 public/SPI 与 redacted diagnostics 扫描负责验证。
 
 ### 6.5 BeautyResources
 

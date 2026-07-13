@@ -165,6 +165,14 @@ Phase 28 scoped face-shape behavior:
 
 - Missing nose landmarks and stale geometry skip the complete nose domain, zero `noseSlim`, `noseWingSlim`, `noseTipSize`, and `noseBridge`, and emit only category-level or aggregate evidence.
 - Reused nose geometry intentionally differs from the eye rule: it remains active at the established non-eye `0.5` scale, including signed negative `noseTipSize`.
+
+### Phase 35 Six-Field Nose Reliability Contract
+
+- The complete nose set is `noseSlim`, `noseWingSlim`, signed `noseTipSize`, `noseBridge`, `noseRootNarrowing`, and `noseTipLift`. Missing face/nose input or stale geometry zeros all six; reused geometry preserves every eligible direction at exact `0.5`.
+- The new provisional cap is `0.25` per field, so reused capped `noseRootNarrowing` or `noseTipLift` is exactly `0.125` before any independent combined-geometry weakening.
+- Package-internal explicit `noseRoot` and `noseTip` supports fail closed independently: insufficient/malformed root support zeros only root narrowing, and insufficient/malformed tip support zeros only tip lift. Valid sibling/legacy nose work and safe face-agnostic domains continue.
+- Diagnostics remain stable and redacted: category warnings such as `nose_inputs_missing`, aggregate skipped-domain counts, geometry-point counts, capped counts, and reuse scale are allowed; raw support points, coordinates, bounds, provider types, and paths are forbidden.
+- `35-VERIFICATION.md` records 94/94 focused and 207/207 full XCTest evidence. Phase 36 output and Phase 37 cap calibration/exhaustive exactly-once safety remain later gates.
 - No-face public requests preserve extent and permit safe color/filter domains to continue.
 - Combined geometry reduces magnitude without flipping signed tip direction; all four fields have focused evidence in `32-NOSE-SAFETY-EVIDENCE.md`.
 

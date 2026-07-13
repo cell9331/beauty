@@ -73,13 +73,21 @@ Phase 28 face-shape privacy evidence recorded 2026-07-08:
 - EYE-07 validation proves positive-only size/tail behavior, signed distance/position behavior, finite range and cap enforcement, and non-finite normalization before eye geometry is produced. Missing, reused, or stale eye inputs emit only fixed category messages/codes and aggregate metrics.
 - The asserted active roots cover the public SDK surface, `BeautyCore`, `BeautyRender`, renderer source, and active Demo source. A multiline public/SPI scan found no exposure of `FaceGeometry`, `WarpControlPoint`, `CGPoint`, or `CGRect`; renderer and Demo checks found no forbidden internal import.
 - Network/cloud API scans and StoreKit/entitlement scans returned no active execution paths. The only `vipChip` candidates are the two classified static allowlist occurrences `VIP-COMMERCIAL-ALLOW-01` and `VIP-COMMERCIAL-ALLOW-02`; `unclassified_matches: 0`.
-- The parameter inventory contains 31 public fields and matches the reviewed contract. Generated renderer outputs and gallery copies remain ignored, untracked local artifacts rather than committed evidence.
+- The current parameter inventory contains exactly 33 public stored fields (32 numeric plus `filterId`) and matches the Phase 35 reviewed contract. Generated renderer outputs and gallery copies remain ignored, untracked local artifacts rather than committed evidence.
 - Command-backed details are in `30-EYE-SAFETY-EVIDENCE.md`; threat classifications and sign-off are in `30-SECURITY.md`.
 
 ### Phase 32 Nose Safety Boundary Evidence
 
-- Public and effective parameter tests lock three positive-only fields, signed `noseTipSize`, exact caps, and non-finite normalization without expanding the 31-field public inventory.
+- Public and effective parameter tests lock three legacy positive-only fields, signed `noseTipSize`, exact caps, and non-finite normalization for the historical 31-field public inventory.
 - Missing/stale nose geometry fails closed with zero strengths and category-level warnings; reused geometry exposes only the aggregate `0.5` scale.
+
+### Phase 35 Independent Nose Security Boundary
+
+- The current public inventory is 33 stored fields = 32 numeric plus `filterId`; `noseRootNarrowing` and `noseTipLift` are scalar parameters only and do not expose geometry.
+- `FaceGeometry.noseRoot` and `.noseTip` are package-internal, default-empty explicit supports. No public/SPI raw geometry, `WarpControlPoint`, landmark, bounds, SIMD support array, or provider type crosses the facade.
+- Non-finite public values become zero. Private supports are checked for finiteness, normalized/face bounds, distinctness, sufficient cardinality, and field-specific root/tip structure before any target clamp.
+- New helpers never fall back to the legacy `FaceGeometry.nose` proxy. Malformed support zeros only the matching new field and emits redacted category/aggregate diagnostics without points, coordinates, paths, or framework details.
+- Phase 35 ASVS L1 evidence in `35-SECURITY.md` and `35-VERIFICATION.md` found no dependency, network/cloud, commercial, renderer/Demo, generated-artifact, archive-tampering, or public raw-geometry drift. Phase 36/37 remain required before product promotion.
 - Renderer and Demo remain facade-only; scans find no public/SPI raw geometry, network/cloud execution, StoreKit/entitlement/payment path, or new dependency.
 - All 196 output/gallery PNGs remain ignored local artifacts; `git ls-files example-images/output example-images/gallery` returns zero files.
 - Command-backed details are in `32-NOSE-SAFETY-EVIDENCE.md`; threat sign-off is in `32-SECURITY.md` with `threats_open: 0`.

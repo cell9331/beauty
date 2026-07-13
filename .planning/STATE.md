@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.9
 milestone_name: Nose Remaining Tools and Branch Closeout
 status: executing
-stopped_at: Completed 35-03-PLAN.md
+stopped_at: Completed 35-04-PLAN.md
 last_updated: "2026-07-13T06:46:23.853Z"
 last_activity: 2026-07-13 -- Phase 35 execution started
 progress:
   total_phases: 3
   completed_phases: 0
   total_plans: 4
-  completed_plans: 3
-  percent: 0
+  completed_plans: 4
+  percent: 33
 ---
 
 # Project State
@@ -21,14 +21,22 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-13)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 35 — Public Contract and Independent Geometry
+**Current focus:** Phase 36 — Public-Facade Output Evidence
 
 ## Current Position
 
-Phase: 35 (Public Contract and Independent Geometry) — EXECUTING
-Plan: 4 of 4
-Status: Ready to execute
-Last activity: 2026-07-13 -- Phase 35 execution started
+Phase: 36 (Public-Facade Output Evidence) — NOT STARTED
+Plan: Not planned
+Status: Phase 35 complete; ready for Phase 36 planning
+Last activity: 2026-07-13 -- Phase 35 completed 4/4 plans
+
+### Phase 35 Public Contract and Independent Geometry Result
+
+- `35-VERIFICATION.md` records 94/94 focused and 207/207 full XCTest cases with zero failures.
+- `BeautyParameters` is exactly 33 stored fields = 32 numeric plus `filterId`; independent `noseRootNarrowing` and `noseTipLift` use default/non-finite zero and provisional `0.25` caps.
+- Package-internal explicit `noseRoot` / `noseTip` supports drive independent horizontal-root and vertical-tip vectors without legacy fallback; reused scale is exact `0.5` (`0.125` at either new cap).
+- Public/SPI, diagnostics, dependency, network/commercial, renderer/Demo, artifact, archive, and no-promotion gates are green. No Demo build was required because Demo source was unchanged.
+- `山根`, `提升`, and branch-level `鼻子` remain unpromoted/partial. Phase 36 owns renderer/helper/gallery/ROI evidence; Phase 37 owns cap calibration, exhaustive safety/boundaries, and promotion.
 
 ### Phase 34 Mouth Safety, Degradation, and Ledger Closeout Result
 
@@ -88,6 +96,7 @@ Last activity: 2026-07-13
 | 32. Nose Safety, Ledger, and Closeout | 7/7 | Complete |
 | 33. Mouth Renderer Output Evidence | 3/3 | Complete |
 | 34. Mouth Safety, Degradation, and Ledger Closeout | 3/3 | Complete |
+| 35. Public Contract and Independent Geometry | 4/4 | Complete |
 
 **Plan Performance:**
 
@@ -135,6 +144,7 @@ Last activity: 2026-07-13
 | Phase 35 P01 | 3 min | 2 tasks | 6 files |
 | Phase 35 P02 | 6 min | 2 tasks | 5 files |
 | Phase 35 P03 | 5 min | 3 tasks | 7 files |
+| Phase 35 P04 | final evidence | 2 tasks | 12 files |
 
 ## Accumulated Context
 

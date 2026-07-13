@@ -68,7 +68,7 @@
 
 ### 4.2 BeautyParameters
 
-`BeautyParameters` 是所有可调效果的唯一公共参数模型。1.0 参数模型包含 31 个字段，覆盖基础皮肤、基础颜色、脸型、眼睛、鼻子、嘴巴和滤镜。
+`BeautyParameters` 是所有可调效果的唯一公共参数模型。Phase 35 后当前模型包含精确 **33 个 stored fields = 32 个 numeric fields + `filterId`**，覆盖基础皮肤、基础颜色、脸型、眼睛、鼻子、嘴巴和滤镜。
 
 最低协议：
 
@@ -84,7 +84,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable
 | Color | `brightness`, `contrast`, `saturation`, `temperature`, `tint`, `exposure`, `highlight`, `shadow` | mixed |
 | Face Shape | `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, `chinLength` | mixed |
 | Eyes | `eyeSize`, `eyeTailLift`: `[0, 1]`; `eyeDistance`, `eyeYPosition`: `[-1, 1]` | positive-only size/tail plus signed distance/position |
-| Nose | `noseSlim`, `noseWingSlim`, `noseTipSize`, `noseBridge` | mixed |
+| Nose | `noseSlim`, `noseWingSlim`, signed `noseTipSize`, `noseBridge`, `noseRootNarrowing`, `noseTipLift` | legacy mixed + new positive-only `0...1` |
 | Mouth | `mouthSize`, `mouthWidth`, `smile`, `lipColor` | mixed |
 | Filter | `filterId`, `filterIntensity` | ID + `0.0...1.0` |
 
@@ -107,6 +107,15 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
 - Combined face/eye/mouth geometry weakens every nose field conservatively while preserving signed tip direction.
 - Combined face/eye/nose geometry weakens `mouthSize`, `mouthWidth`, and `smile` conservatively while preserving signed mouth directions; `lipColor` is excluded because it is a color-domain effect.
 - Evidence is recorded in `31-NOSE-RENDERER-EVIDENCE.md` and `32-NOSE-SAFETY-EVIDENCE.md`.
+
+### Phase 35 Independent Nose Contract
+
+- `noseRootNarrowing` and `noseTipLift` are independent positive-only public `Float` values in `0...1`; each defaults to `0`, finite overflow clamps to the public range, and every non-finite value becomes `0`. Neither aliases the four legacy nose fields.
+- Both values have provisional effective cap `0.25`. Phase 36 owns output/ROI evidence and Phase 37 owns the final exact-cap calibration; Phase 35 does not call the provisional value final.
+- `noseRootNarrowing` consumes only an explicit package-internal upper-root pair and produces symmetric horizontal inward motion with unchanged Y. `noseTipLift` consumes only an explicit lower-tip subset and produces upward vertical motion with unchanged X.
+- `FaceGeometry.nose` remains the legacy proxy. Default-empty `noseRoot` / `noseTip` supports are validated for finiteness, bounds, provenance, symmetry/distinctness, and sufficient cardinality before output clamping; invalid support fails closed with no bridge or signed-tip fallback.
+- Missing/stale aggregate nose geometry zeros all six nose fields. Reused non-eye geometry applies exact `0.5`; therefore each new field is `0.125` when entering reuse at its provisional cap. Insufficient support zeros only the matching new field while valid sibling/legacy and safe non-geometry domains may continue.
+- Phase 35 command evidence is `35-VERIFICATION.md`; it keeps `山根`, `提升`, and branch-level `鼻子` unpromoted until Phases 36/37 complete their own output, safety, boundary, and promotion gates.
 
 Rules:
 
