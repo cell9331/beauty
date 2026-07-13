@@ -126,6 +126,22 @@ final class BeautyParametersTests: XCTestCase {
         }
     }
 
+    func testNOSE04NoseInputsNormalizePositiveOnlySignedOverflowAndNonFiniteValues() {
+        let values = BeautyParameters(
+            noseSlim: -1,
+            noseWingSlim: 2,
+            noseTipSize: -2,
+            noseBridge: .infinity
+        )
+        XCTAssertEqual(values.noseSlim, 0)
+        XCTAssertEqual(values.noseWingSlim, 1)
+        XCTAssertEqual(values.noseTipSize, -1)
+        XCTAssertEqual(values.noseBridge, 0)
+
+        let positive = BeautyParameters(noseTipSize: 2)
+        XCTAssertEqual(positive.noseTipSize, 1)
+    }
+
     func testSDK03CodableRoundTripAndMissingFieldsUseDefaults() throws {
         let parameters = BeautyParameters(
             skinSmoothing: 0.2,

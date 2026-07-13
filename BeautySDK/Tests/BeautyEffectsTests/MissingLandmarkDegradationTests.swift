@@ -118,6 +118,9 @@ final class MissingLandmarkDegradationTests: XCTestCase {
                 brightness: 0.2,
                 eyeSize: 0.2,
                 noseSlim: 1,
+                noseWingSlim: 1,
+                noseTipSize: -1,
+                noseBridge: 1,
                 filterId: "soft_clean",
                 filterIntensity: 0.5
             ),
@@ -129,7 +132,33 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertTrue(plan.activeDomains.contains(.color))
         XCTAssertTrue(plan.activeDomains.contains(.filter))
         XCTAssertEqual(plan.skippedDomains, [.nose])
+        assertNoseStrengthsAreZero(plan)
+        XCTAssertEqual(plan.metrics["beauty.effects.skippedNoseDomains"], 1)
         XCTAssertTrue(plan.warnings.contains { $0.code == "nose_inputs_missing" })
+        assertRedacted(plan)
+    }
+
+    func testNOSE05StaleZerosNoseWhileReusedScalesAllFieldsByHalf() {
+        let parameters = BeautyParameters(
+            noseSlim: 1,
+            noseWingSlim: 1,
+            noseTipSize: -1,
+            noseBridge: 1
+        )
+        let stale = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .stale)
+        XCTAssertTrue(stale.skippedDomains.contains(.nose))
+        assertNoseStrengthsAreZero(stale)
+        XCTAssertEqual(stale.metrics["beauty.effects.skippedNoseDomains"], 1)
+        XCTAssertTrue(stale.warnings.contains { $0.code == "geometry_stale_skipped" })
+
+        let reused = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .reused)
+        XCTAssertTrue(reused.activeDomains.contains(.nose))
+        XCTAssertEqual(reused.metrics["beauty.effects.reusedGeometryScale"], 0.5)
+        XCTAssertEqual(reused.effectiveStrengths.noseSlim, 0.175, accuracy: 0.0001)
+        XCTAssertEqual(reused.effectiveStrengths.noseWingSlim, 0.175, accuracy: 0.0001)
+        XCTAssertEqual(reused.effectiveStrengths.noseTipSize, -0.15, accuracy: 0.0001)
+        XCTAssertEqual(reused.effectiveStrengths.noseBridge, 0.15, accuracy: 0.0001)
+        assertRedacted(reused)
     }
 
     func testNoseGeometryProducesDeterministicProxyEvidenceAndCapMetadata() {
@@ -362,6 +391,13 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertEqual(plan.effectiveStrengths.eyeDistance, 0, file: file, line: line)
         XCTAssertEqual(plan.effectiveStrengths.eyeYPosition, 0, file: file, line: line)
         XCTAssertEqual(plan.effectiveStrengths.eyeTailLift, 0, file: file, line: line)
+    }
+
+    private func assertNoseStrengthsAreZero(_ plan: BeautyEffectPlan, file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertEqual(plan.effectiveStrengths.noseSlim, 0, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.noseWingSlim, 0, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.noseTipSize, 0, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.noseBridge, 0, file: file, line: line)
     }
 
     private func assertNoEyeSideOrRawGeometryDisclosure(

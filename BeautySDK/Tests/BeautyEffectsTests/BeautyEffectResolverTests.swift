@@ -175,6 +175,41 @@ final class BeautyEffectResolverTests: XCTestCase {
         }
     }
 
+    func testNOSE04ExactCapsSignedSemanticsWarningsAndCounts() {
+        let cases: [(BeautyParameters, KeyPath<BeautyEffectiveStrengths, Float>, Float)] = [
+            (BeautyParameters(noseSlim: 1), \.noseSlim, 0.35),
+            (BeautyParameters(noseWingSlim: 1), \.noseWingSlim, 0.35),
+            (BeautyParameters(noseTipSize: 1), \.noseTipSize, 0.30),
+            (BeautyParameters(noseTipSize: -1), \.noseTipSize, -0.30),
+            (BeautyParameters(noseBridge: 1), \.noseBridge, 0.30),
+        ]
+
+        for (parameters, keyPath, expected) in cases {
+            let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)
+            XCTAssertEqual(plan.effectiveStrengths[keyPath: keyPath], expected, accuracy: 0.0001)
+            XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 1)
+            XCTAssertTrue(plan.warnings.contains { $0.code == "beauty_strength_capped" })
+        }
+
+        let all = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(noseSlim: 1, noseWingSlim: 1, noseTipSize: -1, noseBridge: 1),
+            faceGeometry: .fixture
+        )
+        XCTAssertEqual(all.metrics["beauty.effects.cappedCount"], 4)
+        XCTAssertLessThan(all.effectiveStrengths.noseTipSize, 0)
+    }
+
+    func testNOSE04NegativePositiveOnlyInputsAreSilentNoOps() {
+        let parameters = BeautyParameters(noseSlim: -1, noseWingSlim: -1, noseBridge: -1)
+        let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)
+        XCTAssertEqual(parameters.noseSlim, 0)
+        XCTAssertEqual(parameters.noseWingSlim, 0)
+        XCTAssertEqual(parameters.noseBridge, 0)
+        XCTAssertFalse(plan.activeDomains.contains(.nose))
+        XCTAssertFalse(plan.skippedDomains.contains(.nose))
+        XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 0)
+    }
+
     func testSelectedFaceObservationActivatesGeometryPlanningWithRedactedEvidence() {
         let plan = BeautyEffectResolver.resolve(
             parameters: BeautyParameters(

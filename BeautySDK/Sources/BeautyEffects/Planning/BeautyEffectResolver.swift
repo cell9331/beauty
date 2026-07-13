@@ -245,12 +245,14 @@ public enum BeautyEffectResolver {
         }
         if anyNonZero(strengths.noseSlim, strengths.noseWingSlim, strengths.noseTipSize, strengths.noseBridge) {
             if staleGeometry {
+                Self.zeroNoseStrengths(&strengths)
                 skippedDomains.insert(.nose)
                 metrics["beauty.effects.skippedNoseDomains"] = 1
                 appendStaleGeometryWarningIfNeeded()
             } else if let faceGeometry {
                 let result = NoseWarpProvider().makeControlPoints(face: faceGeometry, strengths: strengths)
                 if result.points.isEmpty {
+                    Self.zeroNoseStrengths(&strengths)
                     skippedDomains.insert(.nose)
                     metrics["beauty.effects.skippedNoseDomains"] = 1
                     extraWarnings.append(Self.noseSkippedWarning)
@@ -259,6 +261,7 @@ public enum BeautyEffectResolver {
                     geometryPointCount += result.points.count
                 }
             } else {
+                Self.zeroNoseStrengths(&strengths)
                 skippedDomains.insert(.nose)
                 metrics["beauty.effects.skippedNoseDomains"] = 1
                 if noUsableFace {
@@ -368,6 +371,13 @@ public enum BeautyEffectResolver {
         strengths.eyeDistance = 0
         strengths.eyeYPosition = 0
         strengths.eyeTailLift = 0
+    }
+
+    private static func zeroNoseStrengths(_ strengths: inout BeautyEffectiveStrengths) {
+        strengths.noseSlim = 0
+        strengths.noseWingSlim = 0
+        strengths.noseTipSize = 0
+        strengths.noseBridge = 0
     }
 
     private static func scaleReusableNonEyeGeometryStrengths(_ strengths: inout BeautyEffectiveStrengths, by scale: Float) {

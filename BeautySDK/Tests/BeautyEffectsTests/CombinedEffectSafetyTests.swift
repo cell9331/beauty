@@ -239,6 +239,33 @@ final class CombinedEffectSafetyTests: XCTestCase {
         assertCombinedMetadataRedacted(plan)
     }
 
+    func testNOSE06EveryNoseFieldWeakensWithFaceEyeMouthAndPreservesDirection() {
+        let cases: [(BeautyParameters, KeyPath<BeautyEffectiveStrengths, Float>, Float)] = [
+            (BeautyParameters(noseSlim: 1), \.noseSlim, 0.35),
+            (BeautyParameters(noseWingSlim: 1), \.noseWingSlim, 0.35),
+            (BeautyParameters(noseTipSize: 1), \.noseTipSize, 0.30),
+            (BeautyParameters(noseTipSize: -1), \.noseTipSize, -0.30),
+            (BeautyParameters(noseBridge: 1), \.noseBridge, 0.30),
+        ]
+
+        for (noseParameters, keyPath, expected) in cases {
+            let normal = BeautyEffectResolver.resolve(parameters: noseParameters, faceGeometry: .fixture)
+            var combinedParameters = noseParameters
+            combinedParameters.faceSlim = 1
+            combinedParameters.eyeSize = 1
+            combinedParameters.mouthSize = 1
+            let combined = BeautyEffectResolver.resolve(parameters: combinedParameters, faceGeometry: .fixture)
+            let normalValue = normal.effectiveStrengths[keyPath: keyPath]
+            let combinedValue = combined.effectiveStrengths[keyPath: keyPath]
+            XCTAssertEqual(normalValue, expected, accuracy: 0.0001)
+            XCTAssertGreaterThan(abs(combinedValue), 0)
+            XCTAssertLessThan(abs(combinedValue), abs(normalValue))
+            XCTAssertEqual(combinedValue.sign, normalValue.sign)
+            XCTAssertTrue(combined.warnings.contains { $0.code == "combined_geometry_weakened" })
+            assertCombinedMetadataRedacted(combined)
+        }
+    }
+
     private func assertCombinedMetadataRedacted(
         _ plan: BeautyEffectPlan,
         file: StaticString = #filePath,
