@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.9
 milestone_name: Nose Remaining Tools and Branch Closeout
 status: executing
-stopped_at: Completed 36-02-PLAN.md
-last_updated: "2026-07-13T09:22:50.020Z"
-last_activity: 2026-07-13 -- Plan 36-02 completed with strict 252/252 output evidence
+stopped_at: Completed 36-03-PLAN.md
+last_updated: "2026-07-13T09:30:00.000Z"
+last_activity: 2026-07-13 -- Phase 36 completed with public-facade output, gallery, security, and no-promotion evidence
 progress:
   total_phases: 3
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 7
-  completed_plans: 6
-  percent: 86
+  completed_plans: 7
+  percent: 100
 ---
 
 # Project State
@@ -21,14 +21,22 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-13)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 36 — public-facade-output-evidence
+**Current focus:** Phase 36 complete; Phase 37 is next but not started
 
 ## Current Position
 
-Phase: 36 (public-facade-output-evidence) — EXECUTING
+Phase: 36 (public-facade-output-evidence) — COMPLETE
 Plan: 3 of 3
-Status: Ready to execute
-Last activity: 2026-07-13 -- Plan 36-02 completed with strict 252/252 output evidence
+Status: Complete; do not transition Phase 37 until its planning workflow starts
+Last activity: 2026-07-13 -- Phase 36 completed with strict 252/252 output and gallery evidence
+
+### Phase 36 Public-Facade Output Evidence Result
+
+- Fresh focused renderer tests passed 10/10 and the full SwiftPM suite passed 220/220.
+- A guarded clean render and strict helper passed 36 cases × 7 fixtures = 252/252 decoded same-dimension outputs; clean gallery generation wrote exactly 252 ignored, untracked PNGs.
+- Fixed ROI evidence passed 12/12 new-field-to-baseline, 6/6 root-to-bridge, and 12/12 lift-to-signed-tip comparisons; representative no-face extent/no-op and facade redaction passed.
+- ASVS L1 records `threats_open: 0`; schema drift, dependency/import/privacy, generated-artifact, no-promotion, and diff-hygiene gates passed.
+- `山根`, `提升`, and branch-level `鼻子` remain unpromoted/partial. Phase 37 retains final caps, exhaustive safety/boundaries, and atomic promotion and has not started.
 
 ### Phase 35 Public Contract and Independent Geometry Result
 
@@ -147,6 +155,7 @@ Last activity: 2026-07-13
 | Phase 35 P04 | 11 min | 2 tasks | 12 files |
 | Phase 36 P01 | 3 min | 2 tasks | 2 files |
 | Phase 36 P02 | 10 min | 2 tasks | 2 files |
+| Phase 36 P03 | final evidence | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -251,10 +260,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-13T09:22:50.012Z
-Stopped at: Completed 36-02-PLAN.md
+Last session: 2026-07-13T09:30:00.000Z
+Stopped at: Completed 36-03-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
 
-- Start the next milestone with /gsd-new-milestone
+- Phase 37 planning is next; do not treat Phase 36 output evidence as final cap, exhaustive safety, or promotion evidence.

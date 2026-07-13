@@ -19,9 +19,9 @@
 
 ### Public-Facade Output Evidence
 
-- [ ] **NOSE-07**: `BeautyExampleRenderer` includes exactly one isolated public-facade case for each new field, expanding the current 34-case × 7-fixture matrix to 36 cases and 252 ignored outputs if the fixture inventory is unchanged.
-- [ ] **NOSE-08**: A v1.9-owned output helper verifies every expected PNG is decodable, non-empty, and same-dimension; both new cases differ from baseline on all usable portraits above the watermark; and each differs from its nearest legacy nose effect in the intended nose ROI.
-- [ ] **NOSE-09**: Representative no-face outputs preserve extent and degrade safely, gallery/output routing remains ignored, and no generated output or gallery PNG is tracked.
+- [x] **NOSE-07**: `BeautyExampleRenderer` includes exactly one isolated public-facade case for each new field, expanding the current 34-case × 7-fixture matrix to 36 cases and 252 ignored outputs if the fixture inventory is unchanged.
+- [x] **NOSE-08**: A v1.9-owned output helper verifies every expected PNG is decodable, non-empty, and same-dimension; both new cases differ from baseline on all usable portraits above the watermark; and each differs from its nearest legacy nose effect in the intended nose ROI.
+- [x] **NOSE-09**: Representative no-face outputs preserve extent and degrade safely, gallery/output routing remains ignored, and no generated output or gallery PNG is tracked.
 
 ### Safety and Branch Closeout
 
@@ -62,9 +62,9 @@
 | NOSE-04 | Phase 35 | Complete | `35-VERIFICATION.md` independent root-vector evidence |
 | NOSE-05 | Phase 35 | Complete | `35-VERIFICATION.md` independent tip-vector evidence |
 | NOSE-06 | Phase 35 | Complete | `35-VERIFICATION.md` fail-closed support evidence |
-| NOSE-07 | Phase 36 | Pending | Renderer matrix not yet executed |
-| NOSE-08 | Phase 36 | Pending | Output helper and ROI evidence not yet executed |
-| NOSE-09 | Phase 36 | Pending | No-face output/gallery evidence not yet executed |
+| NOSE-07 | Phase 36 | Complete | `36-VERIFICATION.md`: exact 36 × 7 public-facade renderer inventory and 252 ignored outputs |
+| NOSE-08 | Phase 36 | Complete | `36-VERIFICATION.md`: 252/252 full decode plus 12 baseline, 6 root/bridge, and 12 lift/signed-tip ROI comparisons |
+| NOSE-09 | Phase 36 | Complete | `36-VERIFICATION.md`: no-face extent/degradation and ignored, untracked 252-file gallery/output containment |
 | NOSE-10 | Phase 37 | Pending | Final cap calibration deferred |
 | NOSE-11 | Phase 37 | Pending | Exhaustive six-field degradation deferred |
 | NOSE-12 | Phase 37 | Pending | Exactly-once combined safety deferred |
@@ -82,4 +82,4 @@
 
 ---
 *Requirements defined: 2026-07-13*
-*Last updated: 2026-07-13 after Phase 35 command-backed verification*
+*Last updated: 2026-07-13 after Phase 36 command-backed verification; NOSE-10 through NOSE-14 and DOC-01 remain Phase 37*

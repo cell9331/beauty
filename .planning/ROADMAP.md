@@ -57,7 +57,11 @@
 
 **Requirements:** NOSE-07, NOSE-08, NOSE-09
 
-**Status:** Not started
+**Status:** Complete
+
+**Plans:** 3/3 plans complete
+
+**Evidence:** `36-VERIFICATION.md` records fresh 10/10 focused and 220/220 full XCTest results, a guarded clean 36 × 7 = 252 renderer matrix, strict 252/252 full decode, exact 252-file gallery, 12/12 baseline, 6/6 root/bridge, 12/12 lift/signed-tip comparisons, representative no-face extent/no-op evidence, ignored/untracked containment, `threats_open: 0`, and intact no-promotion boundaries. Phase 37 is next and remains not started.
 
 **Success Criteria:**
 
@@ -85,13 +89,13 @@
 ## Progress
 
 - [x] Phase 35: Public Contract and Independent Geometry
-- [ ] Phase 36: Public-Facade Output Evidence
+- [x] Phase 36: Public-Facade Output Evidence
 - [ ] Phase 37: Nose Safety, Boundary, and Branch Closeout
 
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
 | 35. Public Contract and Independent Geometry | 4/4 | Complete    | 2026-07-13 |
-| 36. Public-Facade Output Evidence | 2/3 | In Progress | — |
+| 36. Public-Facade Output Evidence | 3/3 | Complete | 2026-07-13 |
 | 37. Nose Safety, Boundary, and Branch Closeout | 0/TBD | Not started | — |
 
 ## Backlog
@@ -102,4 +106,4 @@
 
 ---
 *Roadmap created: 2026-07-13*
-*Last updated: 2026-07-13 after Phase 35 completion; Phase 36 is next*
+*Last updated: 2026-07-13 after Phase 36 completion; Phase 37 is next but not started*

@@ -33,10 +33,27 @@
 | Status | active |
 | Scope | Execute v1.9 Phases 35-37 autonomously, then audit, archive, tag, and clean up the milestone. |
 | Requirements | NOSE-01 through NOSE-14 and DOC-01. |
-| Current step | Phase 35 is complete at 4/4 plans with `35-VERIFICATION.md`; plan and execute Phase 36 public-facade output evidence next. |
+| Current step | Phase 36 is complete at 3/3 plans with `36-VERIFICATION.md`; Phase 37 safety/boundary/branch closeout is next but not started. |
 | Verification | Per-phase focused/full SwiftPM, renderer/helper, security, review, Nyquist, and milestone-audit gates defined by ROADMAP and REQUIREMENTS. |
 
 ## 4. Completed
+
+### C-2026-07-13-phase-36-public-facade-output-evidence
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Completed Phase 36 Plans `36-01` through `36-03`: isolated public-facade cases, strict output decoder/ROI evidence, exact ignored gallery, ASVS L1 review, Nyquist finalization, and planning closeout without product promotion. |
+| Requirements | NOSE-07, NOSE-08, and NOSE-09 complete; NOSE-10 through NOSE-14 and DOC-01 remain Phase 37. |
+| Runtime | Fresh 10/10 focused renderer XCTest and 220/220 full SwiftPM; guarded clean 36 × 7 renderer/helper and gallery each passed exactly 252 files. |
+| Evidence | 252/252 decoded same-dimension outputs; 12/12 baseline, 6/6 root/bridge, and 12/12 lift/signed-tip ROI comparisons; representative 2/2 no-face extent/no-op; ignored/untracked containment; `threats_open: 0`. |
+| Boundaries | `0.25` remains provisional; `山根`, `提升`, and branch-level `鼻子` remain unpromoted; caps/providers/resolvers/product ledgers/PROJECT/QUALITY_SCORE/Demo/Package.swift remain untouched. |
+
+Outcome:
+
+- Gallery routing is an exact duplicate-free bijection with discovered renderer cases and writes 252 disposable local PNGs.
+- Verification closes only NOSE-07 through NOSE-09 with observed public-facade output evidence and conservative non-claims.
+- Phase 37 remains the next unstarted owner for final caps, exhaustive six-field safety, active-source boundary closeout, and atomic promotion.
 
 ### C-2026-07-13-phase-35-code-review-iteration-4-remediation
 
