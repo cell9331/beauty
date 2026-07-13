@@ -162,6 +162,9 @@ public enum BeautyEffectResolver {
         let noseProvider = NoseWarpProvider()
         if !staleGeometry, let faceGeometry {
             let supportAvailability = noseProvider.supportAvailability(for: faceGeometry)
+            if !supportAvailability.legacy {
+                Self.zeroLegacyNoseStrengths(&strengths)
+            }
             if strengths.noseRootNarrowing > 0, !supportAvailability.rootNarrowing {
                 strengths.noseRootNarrowing = 0
             }
@@ -403,12 +406,16 @@ public enum BeautyEffectResolver {
     }
 
     private static func zeroNoseStrengths(_ strengths: inout BeautyEffectiveStrengths) {
+        zeroLegacyNoseStrengths(&strengths)
+        strengths.noseRootNarrowing = 0
+        strengths.noseTipLift = 0
+    }
+
+    private static func zeroLegacyNoseStrengths(_ strengths: inout BeautyEffectiveStrengths) {
         strengths.noseSlim = 0
         strengths.noseWingSlim = 0
         strengths.noseTipSize = 0
         strengths.noseBridge = 0
-        strengths.noseRootNarrowing = 0
-        strengths.noseTipLift = 0
     }
 
     private static func zeroMouthGeometryStrengths(_ strengths: inout BeautyEffectiveStrengths) {

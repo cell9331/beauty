@@ -1,4 +1,5 @@
 struct NoseWarpSupportAvailability: Equatable, Sendable {
+    let legacy: Bool
     let rootNarrowing: Bool
     let tipLift: Bool
 }
@@ -50,6 +51,7 @@ struct NoseWarpProvider: WarpControlPointProvider {
 
     func supportAvailability(for face: FaceGeometry) -> NoseWarpSupportAvailability {
         NoseWarpSupportAvailability(
+            legacy: LandmarkGeometryHelper.center(of: face.nose) != nil,
             rootNarrowing: validatedRootPair(in: face) != nil,
             tipLift: validatedTipSupport(in: face) != nil
         )

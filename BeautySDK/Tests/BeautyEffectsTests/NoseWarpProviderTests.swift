@@ -125,7 +125,7 @@ final class NoseWarpProviderTests: XCTestCase {
         assertSafe(points: first.points, strength: BeautySafetyCaps.noseRootNarrowing)
         XCTAssertEqual(
             provider.supportAvailability(for: .fixture),
-            NoseWarpSupportAvailability(rootNarrowing: true, tipLift: true)
+            NoseWarpSupportAvailability(legacy: true, rootNarrowing: true, tipLift: true)
         )
     }
 
@@ -230,6 +230,10 @@ final class NoseWarpProviderTests: XCTestCase {
         XCTAssertFalse(tip.points.isEmpty)
         XCTAssertNil(root.skipReason)
         XCTAssertNil(tip.skipReason)
+        XCTAssertEqual(
+            provider.supportAvailability(for: face),
+            NoseWarpSupportAvailability(legacy: false, rootNarrowing: true, tipLift: true)
+        )
     }
 
     func testMissingNoseInputsReturnSkipReason() {

@@ -224,6 +224,52 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         assertRedacted(plan)
     }
 
+    func testPhase35ReviewValidIndependentSupportCannotMaskUnavailableLegacyNoseWork() {
+        let face = FaceGeometry(
+            bounds: FaceGeometry.fixture.bounds,
+            faceContour: FaceGeometry.fixture.faceContour,
+            leftEye: FaceGeometry.fixture.leftEye,
+            rightEye: FaceGeometry.fixture.rightEye,
+            nose: [],
+            noseRoot: FaceGeometry.fixture.noseRoot,
+            noseTip: FaceGeometry.fixture.noseTip,
+            outerLips: FaceGeometry.fixture.outerLips
+        )
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(
+                faceSlim: 1,
+                faceSmall: 1,
+                noseSlim: 1,
+                noseWingSlim: 1,
+                noseTipSize: -1,
+                noseBridge: 1,
+                noseRootNarrowing: 1
+            ),
+            faceGeometry: face
+        )
+        let expectedScale = 1 / (
+            BeautySafetyCaps.faceSlim +
+                BeautySafetyCaps.faceSmall +
+                BeautySafetyCaps.noseRootNarrowing
+        )
+
+        XCTAssertEqual(plan.effectiveStrengths.noseSlim, 0)
+        XCTAssertEqual(plan.effectiveStrengths.noseWingSlim, 0)
+        XCTAssertEqual(plan.effectiveStrengths.noseTipSize, 0)
+        XCTAssertEqual(plan.effectiveStrengths.noseBridge, 0)
+        XCTAssertEqual(
+            plan.effectiveStrengths.noseRootNarrowing,
+            BeautySafetyCaps.noseRootNarrowing * expectedScale,
+            accuracy: 0.0001
+        )
+        XCTAssertEqual(plan.metrics["beauty.effects.geometryStrengthScale"] ?? 0, Double(expectedScale), accuracy: 0.0001)
+        XCTAssertEqual(plan.metrics["beauty.effects.weakenedCount"], 3)
+        XCTAssertTrue(plan.activeDomains.isSuperset(of: [.faceShape, .nose]))
+        XCTAssertFalse(plan.skippedDomains.contains(.nose))
+        XCTAssertFalse(plan.warnings.contains { $0.code == "nose_inputs_missing" })
+        assertRedacted(plan)
+    }
+
     func testNoseGeometryProducesDeterministicProxyEvidenceAndCapMetadata() {
         let plan = BeautyEffectResolver.resolve(
             parameters: BeautyParameters(noseSlim: 1, noseTipSize: 1),
