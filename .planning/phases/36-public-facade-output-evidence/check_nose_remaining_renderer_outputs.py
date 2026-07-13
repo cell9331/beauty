@@ -47,8 +47,8 @@ ROI_BOTTOM = 0.70
 
 # Initial conservative floors. Task 36-02-02 calibrates once, commits the final
 # fixed values, then performs a fresh strict run.
-MIN_CHANGED_PIXELS = 16
-MIN_ABSOLUTE_RGB_DELTA = 64
+MIN_CHANGED_PIXELS = 500
+MIN_ABSOLUTE_RGB_DELTA = 2_000
 
 
 class RendererOutputError(Exception):
@@ -352,26 +352,25 @@ def region_difference(reference_path: Path, candidate_path: Path) -> ComparisonM
 
 
 def watermark_safe_no_face_difference(reference_path: Path, candidate_path: Path) -> ComparisonMetrics:
-    """Compare all pixels outside the renderer's exact bottom band rectangle.
+    """Compare the conservative pre-watermark region of a no-face output.
 
-    The 64x64 fixture has no full row above its oversized watermark rectangle,
-    so the side columns outside that rectangle are the non-watermarked evidence.
+    Normal images use every full row above the renderer-matched exclusion. The
+    64x64 negative has zero such rows because the display label overflows its
+    tiny canvas, so its deterministic fallback is the right half, which is
+    outside the observed left-origin label raster and still covers 2,048 pixels.
     """
     width, height, reference_rows = decoded_rgb(reference_path)
     other_width, other_height, candidate_rows = decoded_rgb(candidate_path)
     if (width, height) != (other_width, other_height):
         raise RendererOutputError("no-face comparison dimensions differ")
-    font_size = max(34.0, min(72.0, width / 30.0))
-    padding = max(24.0, width / 70.0)
-    band_height = font_size * 1.75
-    band_left = max(0, int(math.floor(padding)))
-    band_right = min(width, int(math.ceil(width - padding)))
-    band_top = max(0, int(math.floor(height - (padding + band_height))))
-    band_bottom = min(height, int(math.ceil(height - padding)))
+    comparable_rows = comparable_top_region_rows(width, height)
+    fallback_left = math.ceil(width / 2)
     changed = delta = pixels = 0
     for row_index in range(height):
         for column in range(width):
-            if band_top <= row_index < band_bottom and band_left <= column < band_right:
+            if comparable_rows > 0 and row_index >= comparable_rows:
+                continue
+            if comparable_rows == 0 and column < fallback_left:
                 continue
             start = column * 3
             first = reference_rows[row_index][start : start + 3]
