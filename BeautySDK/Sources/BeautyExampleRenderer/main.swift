@@ -167,6 +167,31 @@ let cases = [
         id: "eyeTailLift_0p25",
         displayName: "eyeTailLift 0.25",
         parameters: BeautyParameters(eyeTailLift: 0.25)
+    ),
+    RenderCase(
+        id: "noseSlim_0p35",
+        displayName: "noseSlim 0.35",
+        parameters: BeautyParameters(noseSlim: 0.35)
+    ),
+    RenderCase(
+        id: "noseWingSlim_0p35",
+        displayName: "noseWingSlim 0.35",
+        parameters: BeautyParameters(noseWingSlim: 0.35)
+    ),
+    RenderCase(
+        id: "noseTipSize_plus0p30",
+        displayName: "noseTipSize +0.30",
+        parameters: BeautyParameters(noseTipSize: 0.30)
+    ),
+    RenderCase(
+        id: "noseTipSize_minus0p30",
+        displayName: "noseTipSize -0.30",
+        parameters: BeautyParameters(noseTipSize: -0.30)
+    ),
+    RenderCase(
+        id: "noseBridge_0p30",
+        displayName: "noseBridge 0.30",
+        parameters: BeautyParameters(noseBridge: 0.30)
     )
 ]
 

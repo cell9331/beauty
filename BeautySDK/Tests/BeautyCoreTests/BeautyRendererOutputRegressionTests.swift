@@ -30,7 +30,12 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         "eyeDistance_minus0p25",
         "eyeYPosition_plus0p20",
         "eyeYPosition_minus0p20",
-        "eyeTailLift_0p25"
+        "eyeTailLift_0p25",
+        "noseSlim_0p35",
+        "noseWingSlim_0p35",
+        "noseTipSize_plus0p30",
+        "noseTipSize_minus0p30",
+        "noseBridge_0p30"
     ]
 
     private static let fixtureNames = [
@@ -203,6 +208,33 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         }
         XCTAssertFalse(source.contains("net" + "work"), "Renderer should stay local-only")
         XCTAssertFalse(source.contains("cl" + "oud"), "Renderer should stay local-only")
+    }
+
+    func testPhase31NoseCasesUseOnlyExistingPublicNoseParameters() throws {
+        let source = try rendererSource()
+        let expectedCases = [
+            ("noseSlim_0p35", "noseSlim: 0.35"),
+            ("noseWingSlim_0p35", "noseWingSlim: 0.35"),
+            ("noseTipSize_plus0p30", "noseTipSize: 0.30"),
+            ("noseTipSize_minus0p30", "noseTipSize: -0.30"),
+            ("noseBridge_0p30", "noseBridge: 0.30")
+        ]
+        let noseFields = ["noseSlim:", "noseWingSlim:", "noseTipSize:", "noseBridge:"]
+
+        for (caseID, requiredParameter) in expectedCases {
+            let snippet = try rendererCaseSnippet(for: caseID, in: source)
+            XCTAssertTrue(snippet.contains(requiredParameter), "Missing \(requiredParameter) in \(caseID)")
+            XCTAssertEqual(
+                noseFields.filter { snippet.contains($0) },
+                [requiredParameter.split(separator: " ").first.map(String.init) ?? ""],
+                "\(caseID) should use exactly one public nose parameter"
+            )
+            XCTAssertFalse(snippet.contains("BeautyDemo"), "\(caseID) should not introduce Demo coupling")
+        }
+
+        for forbidden in ["noseCombo", "noseRoot", "noseLift", "shanGen", "tiSheng"] {
+            XCTAssertFalse(source.contains(forbidden), "Renderer should not add out-of-scope nose case: \(forbidden)")
+        }
     }
 
     func testNoFaceFixtureProducesNoFaceSummaryForFaceShapeCombo() throws {
