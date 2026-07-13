@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 import shutil
 import sys
 from collections import Counter
@@ -13,6 +14,7 @@ from pathlib import Path
 SUPPORTED_INPUT_EXTENSIONS = {".png", ".jpg", ".jpeg"}
 REPO_ROOT = Path(__file__).resolve().parent.parent
 ALLOWED_GALLERY_ROOT = (REPO_ROOT / "example-images" / "gallery").resolve()
+RENDERER_SOURCE = REPO_ROOT / "BeautySDK" / "Sources" / "BeautyExampleRenderer" / "main.swift"
 
 CASE_GROUPS = {
     "skin": [
@@ -54,6 +56,8 @@ CASE_GROUPS = {
         "noseTipSize_plus0p30",
         "noseTipSize_minus0p30",
         "noseBridge_0p30",
+        "noseRootNarrowing_0p25",
+        "noseTipLift_0p25",
     ],
     "mouth": [
         "mouthSize_plus0p35",
@@ -94,10 +98,11 @@ def generate_gallery(input_dir: Path, output_dir: Path, gallery_dir: Path) -> No
     validate_gallery_directory(input_dir=input_dir, output_dir=output_dir, gallery_dir=gallery_dir)
 
     fixture_stems = discover_fixture_stems(input_dir)
+    gallery_case_ids = [case_id for case_ids in CASE_GROUPS.values() for case_id in case_ids]
+    validate_case_inventory(gallery_case_ids, discover_renderer_case_ids(RENDERER_SOURCE))
     expected_sources = [
         output_dir / f"{fixture_stem}__{case_id}.png"
-        for case_ids in CASE_GROUPS.values()
-        for case_id in case_ids
+        for case_id in gallery_case_ids
         for fixture_stem in fixture_stems
     ]
     missing = [path for path in expected_sources if not path.is_file()]
@@ -178,6 +183,35 @@ def discover_fixture_stems(input_dir: Path) -> list[str]:
         raise GalleryError(f"Duplicate fixture stems are not supported: {', '.join(duplicates)}")
 
     return stems
+
+
+def discover_renderer_case_ids(renderer_source: Path) -> list[str]:
+    if not renderer_source.is_file():
+        raise GalleryError(f"Renderer source does not exist: {display_path(renderer_source)}")
+
+    case_ids = re.findall(r'RenderCase\(\s*id:\s*"([^"]+)"', renderer_source.read_text(encoding="utf-8"))
+    if not case_ids:
+        raise GalleryError("Renderer source contains no RenderCase IDs")
+    return case_ids
+
+
+def validate_case_inventory(gallery_case_ids: list[str], renderer_case_ids: list[str]) -> None:
+    counts = Counter(gallery_case_ids)
+    duplicates = sorted(case_id for case_id, count in counts.items() if count > 1)
+    if duplicates:
+        raise GalleryError(f"Duplicate gallery case IDs are not supported: {', '.join(duplicates)}")
+
+    gallery_cases = set(gallery_case_ids)
+    renderer_cases = set(renderer_case_ids)
+    missing = sorted(renderer_cases - gallery_cases)
+    unexpected = sorted(gallery_cases - renderer_cases)
+    if missing or unexpected:
+        details = []
+        if missing:
+            details.append(f"missing from gallery: {', '.join(missing)}")
+        if unexpected:
+            details.append(f"not in renderer: {', '.join(unexpected)}")
+        raise GalleryError("Gallery case inventory does not match renderer: " + "; ".join(details))
 
 
 if __name__ == "__main__":

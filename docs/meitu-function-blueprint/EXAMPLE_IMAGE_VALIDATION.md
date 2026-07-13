@@ -53,6 +53,15 @@ python3 .planning/phases/29-eye-renderer-output-evidence/check_eye_renderer_outp
   --output example-images/output
 ```
 
+Run the Phase 36 remaining-nose helper after the all-case renderer command:
+
+```bash
+python3 .planning/phases/36-public-facade-output-evidence/check_nose_remaining_renderer_outputs.py \
+  --input example-images/input \
+  --output example-images/output \
+  --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
+```
+
 ## Output Rules
 
 - Output directory: `example-images/output/`.
@@ -110,6 +119,17 @@ These cases are limited to effects that currently produce visible image output t
 | `noseTipSize_plus0p30` | Phase 31 positive-direction `鼻尖` renderer evidence through existing signed `noseTipSize` |
 | `noseTipSize_minus0p30` | Phase 31 negative-direction `鼻尖` renderer evidence through existing signed `noseTipSize` |
 | `noseBridge_0p30` | Phase 31 `鼻梁` renderer evidence through existing `noseBridge`; this is not `山根` alias evidence |
+| `noseRootNarrowing_0p25` | Phase 36 isolated public-facade output evidence for `noseRootNarrowing`; provisional 0.25 input, not final `山根` promotion or cap |
+| `noseTipLift_0p25` | Phase 36 isolated public-facade output evidence for `noseTipLift`; provisional 0.25 input, not final `提升` promotion or cap |
+
+## Phase 36 Remaining-Nose Output Evidence Summary
+
+- The helper discovers the actual 36 renderer cases and seven recursive fixtures before requiring and fully decoding the exact 36 × 7 = 252 same-dimension matrix.
+- Six portrait fixtures pass 12/12 new-field-to-`geometryBaseline_noop` comparisons, 6/6 `noseRootNarrowing_0p25`-to-`noseBridge_0p30` comparisons, and 12/12 `noseTipLift_0p25`-to-both-signed-`noseTipSize` comparisons.
+- All five comparison families use the fixed top-origin nose ROI x = 25%-75%, y = 20%-70%, wholly above the watermark boundary, with frozen global floors of 500 changed pixels and 2,000 absolute RGB delta.
+- The two new no-face outputs preserve 64 × 64 extent and are exact no-ops in the helper's fixed watermark-safe region; XCTest separately records `.noFace`, `.noFaceDetected`, zero used faces, aggregate-only metrics, and redacted diagnostics.
+- `generate_gallery.py` requires a duplicate-free exact bijection between its flattened groups and discovered renderer case IDs, then creates 252 ignored, untracked review PNGs. Outputs and gallery files remain disposable local evidence and are never committed.
+- The `0.25` strengths are provisional output inputs. Phase 36 does not promote `山根`, `提升`, or branch-level `鼻子`; Phase 37 retains final cap calibration, exhaustive six-field degradation/provider-empty and exactly-once weakening coverage, active-source boundary closeout, and atomic product-ledger promotion.
 
 ## Phase 30 Eye Safety Closeout Evidence
 

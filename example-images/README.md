@@ -32,7 +32,7 @@ The gallery groups current cases under:
 - `filter/`: `filter_softClean_0p50`, `filter_warmLight_0p50`
 - `face-shape/`: `geometryBaseline_noop`, `faceShapeCombo_0p35`, `faceSlim_0p35`, `faceSmall_0p35`, `chinLength_plus0p30`, `chinLength_minus0p30`, `faceVShape_0p35`, `jawSlim_0p35`
 - `eyes/`: `eyeSize_0p35`, `eyeDistance_plus0p25`, `eyeDistance_minus0p25`, `eyeYPosition_plus0p20`, `eyeYPosition_minus0p20`, `eyeTailLift_0p25`
-- `nose/`: `noseSlim_0p35`, `noseWingSlim_0p35`, `noseTipSize_plus0p30`, `noseTipSize_minus0p30`, `noseBridge_0p30`
+- `nose/`: `noseSlim_0p35`, `noseWingSlim_0p35`, `noseTipSize_plus0p30`, `noseTipSize_minus0p30`, `noseBridge_0p30`, `noseRootNarrowing_0p25`, `noseTipLift_0p25`
 - `mouth/`: `mouthSize_plus0p35`, `mouthSize_minus0p35`, `mouthWidth_plus0p35`, `mouthWidth_minus0p35`, `smile_0p50`, `lipColor_0p50`
 
 ## Verify Outputs
@@ -64,3 +64,16 @@ python3 .planning/phases/33-mouth-renderer-output-evidence/check_mouth_renderer_
 ```
 
 The Phase 33 helper requires 238/238 decoded same-dimension outputs, 30/30 mouth-geometry ROI comparisons, 12/12 signed-pair comparisons, 6/6 separate lip-color containment checks, and representative no-face extent.
+
+Phase 36 remaining-nose output evidence uses:
+
+```bash
+python3 .planning/phases/36-public-facade-output-evidence/check_nose_remaining_renderer_outputs.py \
+  --input example-images/input \
+  --output example-images/output \
+  --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
+```
+
+The helper discovers the live renderer and fixture inventories before requiring the current 36 × 7 = 252 matrix. It fully decodes 252/252 same-dimension outputs and separately gates 12/12 new-field-to-baseline portrait comparisons, 6/6 root-to-bridge comparisons, and 12/12 lift-to-both-signed-tip comparisons in the fixed nose ROI (x 25%-75%, y 20%-70%) at the frozen floors of 500 changed pixels and 2,000 absolute RGB delta. Both new no-face outputs preserve the 64 × 64 extent and are baseline-identical in the watermark-safe fallback region.
+
+The values `0.25` in `noseRootNarrowing_0p25` and `noseTipLift_0p25` are provisional output-evidence inputs, not final caps or commercial calibration. Gallery generation first requires a duplicate-free exact bijection between `CASE_GROUPS` and the renderer's discovered case IDs, then writes 252 ignored, untracked local PNGs. This evidence does not promote `山根`, `提升`, or branch-level `鼻子`; final caps, exhaustive safety and active-source boundary closeout remain Phase 37 work.
