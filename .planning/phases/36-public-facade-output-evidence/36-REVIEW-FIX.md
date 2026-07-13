@@ -1,63 +1,70 @@
 ---
 phase: 36-public-facade-output-evidence
 source_review: .planning/phases/36-public-facade-output-evidence/36-REVIEW.md
-fixed_at: 2026-07-13T09:51:00Z
+fixed_at: 2026-07-13T10:02:38Z
 status: all_fixed
-iteration: 1
+iteration: 2
 fix_scope: critical_warning
-findings_in_scope: 3
-fixed: 3
+findings_in_scope: 1
+fixed: 1
 skipped: 0
 fix_commits:
-  - cdae1a4
-  - 45c969c
-  - 3c87267
+  - 1cfa68c
 findings_fixed:
   critical: 1
-  warning: 2
+  warning: 0
   info: 0
-  total: 3
+  total: 1
 ---
 
-# Phase 36 Code Review Fix Report — Iteration 1
+# Phase 36 Code Review Fix Report — Iteration 2
 
-All critical and warning findings from the Phase 36 standard review are fixed.
+The iteration-2 critical finding CR-02 is fixed with no skipped finding. Earlier CR-01, WR-01, and WR-02 remediations remain intact.
 
-## Fixes
+## Iteration 2 Fix
 
-### CR-01: Gallery cleanup symlink containment
+### CR-02: Final-validation-to-deletion ancestor-swap TOCTOU
 
-- Anchored the destination lexically to the physical repository root and restricted destructive cleanup to the exact canonical `example-images/gallery` path.
-- Rejects symbolic links at every component from the repository root through the gallery destination.
-- Repeats lexical-component, physical-target, and input/output-overlap validation immediately before `shutil.rmtree`.
-- Added deterministic negative tests for a symlinked gallery root, a symlinked `example-images` ancestor, and a requested gallery child. Every case verifies an external sentinel survives.
-- Commit: `cdae1a4` (`fix(36): contain gallery cleanup to repository root`).
+- Replaced pathname-based `shutil.rmtree` cleanup with repository-parent, repository, `example-images`, and gallery directory descriptors opened using `O_DIRECTORY | O_NOFOLLOW`.
+- Requires `st_dev`/`st_ino` identity agreement between every opened descriptor and its no-follow parent entry before destructive use, after the deterministic race hook, at quarantine, and during recursive descent.
+- Atomically renames the validated gallery entry to a unique quarantine name within the securely opened `example-images` descriptor before deleting it.
+- Recursively enumerates and removes quarantine contents with descriptor-relative `listdir`, `stat(..., follow_symlinks=False)`, `open`, `unlink`, and `rmdir`; symbolic links are unlinked and never traversed.
+- Fails closed on platforms without the required descriptor-relative, descriptor-listing, no-follow, or directory-open support.
+- Added a deterministic regression that renames `example-images` and substitutes an external symlink after final validation but before destructive use. The operation rejects the device/inode mismatch, leaves the original local gallery intact, and proves the external sentinel survives.
+- Added a recursive nested-symlink regression proving descriptor-relative cleanup removes only the link and recreates an empty gallery without touching the external sentinel.
+- Commit: `1cfa68c` (`fix(36): anchor gallery cleanup to descriptors`).
 
-### WR-01: Bounded PNG decompression
+## Finding History
 
-- Validates file size, width, height, and computed decoded scanline budget before inflation.
-- Uses incremental `zlib.decompressobj` calls capped at the exact expected decoded length plus one byte; excess decoded output is rejected without materializing the remainder.
-- Rejects incomplete streams, unconsumed input, unused/trailing compressed data, appended deflate streams, and excess output.
-- Added deterministic negative tests for over-budget dimensions, a high-ratio compression bomb, and a trailing compressed stream while retaining the existing corrupt-output checks.
-- Commit: `3c87267` (`fix(36): bound untrusted PNG decompression`).
+### CR-01: Static gallery cleanup symlink containment — fixed in iteration 1
 
-### WR-02: Duplicate renderer gallery IDs
+- Exact lexical gallery-root restriction and static symlink-component rejection remain covered for the gallery root, `example-images` ancestor, and requested gallery child.
+- External-survival assertions remain in the gallery self-test.
+- Commit: `cdae1a4`.
 
-- `validate_case_inventory` now rejects duplicate renderer IDs before set comparison, matching the helper's duplicate-free bijection contract.
-- Added the reported `gallery=["only"]`, `renderer=["only", "only"]` negative regression.
-- Commit: `45c969c` (`fix(36): reject duplicate renderer gallery cases`).
+### WR-01: Bounded PNG decompression — fixed in iteration 1
+
+- Dimension, decoded-budget, incremental-inflation, stream-completeness, trailing-data, and CRC checks remain unchanged.
+- Compression-bomb, oversized-dimension, trailing-stream, and corrupt-output regressions continue to pass.
+- Commit: `3c87267`.
+
+### WR-02: Duplicate renderer gallery IDs — fixed in iteration 1
+
+- Renderer IDs remain duplicate-checked before exact renderer/gallery set comparison.
+- The duplicate `renderer=["only", "only"]` regression remains in the gallery self-test.
+- Commit: `45c969c`.
 
 ## Verification
 
-- PASS: `python3 example-images/generate_gallery.py --self-test` — exact-root, symlink-root, symlink-ancestor, external-survival, and duplicate-renderer-ID negative cases.
+- PASS: `python3 example-images/generate_gallery.py --self-test` — exact root, prior static symlink cases, deterministic post-validation ancestor swap, recursive nested-symlink no-follow cleanup, external sentinel survival, and duplicate renderer ID rejection.
 - PASS: `python3 -m py_compile example-images/generate_gallery.py`.
-- PASS: Phase 36 helper `--self-test` — existing negatives plus bounded-decode dimension, compression-bomb, and trailing-stream cases.
+- PASS: Phase 36 helper `--self-test` — duplicate IDs/stems, missing/extra/corrupt outputs, bounded PNG decode, and ROI/watermark rejection.
 - PASS: `python3 -m py_compile .planning/phases/36-public-facade-output-evidence/check_nose_remaining_renderer_outputs.py`.
-- PASS: strict helper against the current matrix — 252/252 outputs accepted with bounded full decode.
-- PASS: gallery regeneration wrote exactly 252 files under the exact canonical ignored gallery root.
+- PASS: clean gallery regeneration wrote exactly 252 ignored, untracked PNGs.
+- PASS: live strict helper fully decoded 252/252 outputs and passed 12/12 baseline, 6/6 root/bridge, 12/12 lift/signed-tip, and 2/2 no-face comparisons.
 - PASS: `swift test --package-path BeautySDK --filter BeautyRendererOutputRegressionTests` — 10/10 XCTest cases, zero failures.
-- PASS: `git diff --check` after each finding fix.
+- PASS: `git diff --check`.
 
 ## Status
 
-All three in-scope findings are fixed with no skipped finding. Phase 36's provisional-strength, no-promotion, generated-artifact, and Phase 37 ownership boundaries remain unchanged. This report is intentionally left uncommitted for the orchestrator.
+All iteration-2 findings in scope are fixed. The Phase 36 provisional-strength, no-promotion, generated-artifact, and Phase 37 ownership boundaries remain unchanged. This report is intentionally left uncommitted for the orchestrator.
