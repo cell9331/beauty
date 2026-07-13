@@ -12,6 +12,8 @@ enum BeautyFaceGeometryAdapter {
             leftEye: landmarks.contains(.leftEye) ? leftEye(in: bounds) : [],
             rightEye: landmarks.contains(.rightEye) ? rightEye(in: bounds) : [],
             nose: landmarks.contains(.nose) ? nose(in: bounds) : [],
+            noseRoot: landmarks.contains(.nose) ? noseRoot(in: bounds) : [],
+            noseTip: landmarks.contains(.nose) ? noseTip(in: bounds) : [],
             outerLips: landmarks.contains(.outerLips) ? outerLips(in: bounds) : []
         )
     }
@@ -74,6 +76,21 @@ enum BeautyFaceGeometryAdapter {
             point(bounds, x: 0.50, y: 0.55),
             point(bounds, x: 0.40, y: 0.64),
             point(bounds, x: 0.60, y: 0.64)
+        ]
+    }
+
+    private static func noseRoot(in bounds: FaceBounds) -> [SIMD2<Float>] {
+        [
+            point(bounds, x: 0.44, y: 0.48),
+            point(bounds, x: 0.56, y: 0.48)
+        ]
+    }
+
+    private static func noseTip(in bounds: FaceBounds) -> [SIMD2<Float>] {
+        [
+            point(bounds, x: 0.44, y: 0.62),
+            point(bounds, x: 0.50, y: 0.66),
+            point(bounds, x: 0.56, y: 0.62)
         ]
     }
 

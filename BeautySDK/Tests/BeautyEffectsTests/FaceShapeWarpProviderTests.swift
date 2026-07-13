@@ -1,8 +1,55 @@
 import XCTest
 import BeautyCore
+import BeautyDetection
 @testable import BeautyEffects
 
 final class FaceShapeWarpProviderTests: XCTestCase {
+    func testFaceGeometryAdapterKeepsLegacyNoseAndAddsExplicitRootAndTipSupports() {
+        let bounds = CoordinateRect(x: 0.30, y: 0.20, width: 0.40, height: 0.60)
+        let complete = BeautyFaceGeometryAdapter.makeGeometry(
+            from: BeautyFaceObservation(imageBounds: bounds, landmarks: .complete)
+        )
+        let missingNoseGroups = Set(BeautyLandmarkGroup.allCases).subtracting([.nose])
+        let missing = BeautyFaceGeometryAdapter.makeGeometry(
+            from: BeautyFaceObservation(
+                imageBounds: bounds,
+                landmarks: BeautyFaceLandmarks(availableGroups: missingNoseGroups)
+            )
+        )
+
+        assertPoints(complete.nose, equalTo: [
+            SIMD2<Float>(0.484, 0.458),
+            SIMD2<Float>(0.500, 0.530),
+            SIMD2<Float>(0.460, 0.584),
+            SIMD2<Float>(0.540, 0.584)
+        ])
+        assertPoints(complete.noseRoot, equalTo: [
+            SIMD2<Float>(0.476, 0.488),
+            SIMD2<Float>(0.524, 0.488)
+        ])
+        assertPoints(complete.noseTip, equalTo: [
+            SIMD2<Float>(0.476, 0.572),
+            SIMD2<Float>(0.500, 0.596),
+            SIMD2<Float>(0.524, 0.572)
+        ])
+        XCTAssertTrue(missing.nose.isEmpty)
+        XCTAssertTrue(missing.noseRoot.isEmpty)
+        XCTAssertTrue(missing.noseTip.isEmpty)
+    }
+
+    private func assertPoints(
+        _ actual: [SIMD2<Float>],
+        equalTo expected: [SIMD2<Float>],
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(actual.count, expected.count, file: file, line: line)
+        for (actualPoint, expectedPoint) in zip(actual, expected) {
+            XCTAssertEqual(actualPoint.x, expectedPoint.x, accuracy: 0.000001, file: file, line: line)
+            XCTAssertEqual(actualPoint.y, expectedPoint.y, accuracy: 0.000001, file: file, line: line)
+        }
+    }
+
     func testFaceSlimCreatesSymmetricCheekPointsMovingInward() {
         let result = FaceShapeWarpProvider().makeControlPoints(
             face: .fixture,
@@ -187,6 +234,15 @@ extension FaceGeometry {
             SIMD2<Float>(0.46, 0.58),
             SIMD2<Float>(0.54, 0.58)
         ],
+        noseRoot: [
+            SIMD2<Float>(0.476, 0.488),
+            SIMD2<Float>(0.524, 0.488)
+        ],
+        noseTip: [
+            SIMD2<Float>(0.476, 0.572),
+            SIMD2<Float>(0.500, 0.596),
+            SIMD2<Float>(0.524, 0.572)
+        ],
         outerLips: [
             SIMD2<Float>(0.42, 0.66),
             SIMD2<Float>(0.46, 0.63),
@@ -210,6 +266,8 @@ extension FaceGeometry {
         leftEye: [],
         rightEye: fixture.rightEye,
         nose: fixture.nose,
+        noseRoot: fixture.noseRoot,
+        noseTip: fixture.noseTip,
         outerLips: fixture.outerLips
     )
 
@@ -219,6 +277,8 @@ extension FaceGeometry {
         leftEye: fixture.leftEye,
         rightEye: [],
         nose: fixture.nose,
+        noseRoot: fixture.noseRoot,
+        noseTip: fixture.noseTip,
         outerLips: fixture.outerLips
     )
 
@@ -227,8 +287,44 @@ extension FaceGeometry {
         faceContour: fixture.faceContour,
         leftEye: fixture.leftEye,
         rightEye: fixture.rightEye,
-        nose: []
+        nose: [],
+        noseRoot: [],
+        noseTip: []
     )
+
+    static let onePointNoseRoot = replacingNoseRoot([fixture.noseRoot[0]])
+
+    static let nonFiniteNoseRoot = replacingNoseRoot([
+        SIMD2<Float>(.nan, fixture.noseRoot[0].y),
+        fixture.noseRoot[1]
+    ])
+
+    static let sameSideNoseRoot = replacingNoseRoot([
+        SIMD2<Float>(0.510, 0.488),
+        SIMD2<Float>(0.524, 0.488)
+    ])
+
+    static let asymmetricNoseRoot = replacingNoseRoot([
+        SIMD2<Float>(0.470, 0.488),
+        SIMD2<Float>(0.524, 0.488)
+    ])
+
+    static let degenerateNoseRoot = replacingNoseRoot([
+        SIMD2<Float>(0.476, 0.488),
+        SIMD2<Float>(0.476, 0.488)
+    ])
+
+    static let onePointNoseTip = replacingNoseTip([fixture.noseTip[0]])
+
+    static let nonFiniteNoseTip = replacingNoseTip([
+        SIMD2<Float>(fixture.noseTip[0].x, .infinity),
+        fixture.noseTip[1]
+    ])
+
+    static let degenerateNoseTip = replacingNoseTip([
+        SIMD2<Float>(0.500, 0.596),
+        SIMD2<Float>(0.500, 0.596)
+    ])
 
     static let missingMouth = FaceGeometry(
         bounds: fixture.bounds,
@@ -236,6 +332,8 @@ extension FaceGeometry {
         leftEye: fixture.leftEye,
         rightEye: fixture.rightEye,
         nose: fixture.nose,
+        noseRoot: fixture.noseRoot,
+        noseTip: fixture.noseTip,
         outerLips: []
     )
 
@@ -245,6 +343,8 @@ extension FaceGeometry {
         leftEye: fixture.leftEye,
         rightEye: fixture.rightEye,
         nose: fixture.nose,
+        noseRoot: fixture.noseRoot,
+        noseTip: fixture.noseTip,
         outerLips: fixture.outerLips,
         freshness: .reused
     )
@@ -255,7 +355,37 @@ extension FaceGeometry {
         leftEye: fixture.leftEye,
         rightEye: fixture.rightEye,
         nose: fixture.nose,
+        noseRoot: fixture.noseRoot,
+        noseTip: fixture.noseTip,
         outerLips: fixture.outerLips,
         freshness: .stale
     )
+
+    private static func replacingNoseRoot(_ noseRoot: [SIMD2<Float>]) -> FaceGeometry {
+        FaceGeometry(
+            bounds: fixture.bounds,
+            faceContour: fixture.faceContour,
+            leftEye: fixture.leftEye,
+            rightEye: fixture.rightEye,
+            nose: fixture.nose,
+            noseRoot: noseRoot,
+            noseTip: fixture.noseTip,
+            outerLips: fixture.outerLips,
+            freshness: fixture.freshness
+        )
+    }
+
+    private static func replacingNoseTip(_ noseTip: [SIMD2<Float>]) -> FaceGeometry {
+        FaceGeometry(
+            bounds: fixture.bounds,
+            faceContour: fixture.faceContour,
+            leftEye: fixture.leftEye,
+            rightEye: fixture.rightEye,
+            nose: fixture.nose,
+            noseRoot: fixture.noseRoot,
+            noseTip: noseTip,
+            outerLips: fixture.outerLips,
+            freshness: fixture.freshness
+        )
+    }
 }
