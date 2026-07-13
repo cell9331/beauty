@@ -30,6 +30,14 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-13-v1-8-doc-01-current-owner-remediation
+
+**Status:** Completed
+
+**Delivered:** Synchronized `.planning/PROJECT.md` and `QUALITY_SCORE.md` current-state owners with completed Phase 33-34 mouth evidence, replacing stale v1.7/Phase 32 lifecycle routing while preserving the exact three-row promotion, color-only `lipColor` boundary, partial `嘴唇` branch, and all device/commercial/packaging/launch non-claims.
+
+**Verification:** Current-owner scans find Phase 34, 190/190 full SDK tests, 238/238 outputs, 30/30 geometry comparisons, 12/12 signed comparisons, 6/6 lip-color checks, exact `大小`/`宽度`/`微笑` promotion, partial `嘴唇`, and audit-gated lifecycle routing. `git diff --check` passed. Runtime behavior is unchanged.
+
 ### C-2026-07-13-gsd-audit-milestone-v1-8-third-run
 
 | Field | Value |

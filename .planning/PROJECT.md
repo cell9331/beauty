@@ -16,9 +16,9 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
 **Current milestone:** v1.8 Broader `美型 / 五官` SDK Slice - Mouth.
 
-**Implementation state:** v1.7 completes the SDK-only existing-parameter nose slice across Phases 31 and 32. Public-facade evidence covers `noseSlim`, `noseWingSlim`, signed `noseTipSize`, and `noseBridge`; missing/stale geometry fails closed, reused geometry stays at `0.5`, and exactly `大小`, `鼻翼`, `鼻梁`, and `鼻尖` are implemented while branch-level `鼻子` remains `partial`.
+**Implementation state:** v1.8 implementation is complete across Phases 33 and 34. The SDK-only existing-parameter mouth slice covers signed `mouthSize`, signed `mouthWidth`, `smile`, and color-only `lipColor`; missing/no-face/stale mouth geometry fails closed, reused geometry stays at exact `0.5`, and combined face/eye/nose weakening covers all three mouth geometry fields without scaling `lipColor` as geometry. Exactly `大小`, `宽度`, and `微笑` are implemented while `lipColor` is not claimed as true `丰唇` and branch-level `嘴唇` remains `partial`.
 
-**Verification state:** The final v1.7 audit passes 9/9 requirements, 2/2 phases, 9/9 integration checks, 5/5 E2E flows, and both phases Nyquist compliant. Runtime evidence includes 186 SDK tests, 196/196 outputs, 30/30 portrait comparisons, and 6/6 signed tip comparisons. Archive/tag/cleanup remains the next lifecycle gate.
+**Verification state:** Phase 34 evidence passes 13/13 focused checks and the 190-test full SDK suite. Mouth renderer/helper evidence passes 238/238 outputs, 30/30 portrait geometry comparisons, 12/12 signed comparisons, and 6/6 lip-color containment checks; both v1.8 phases are Nyquist compliant and security has `threats_open: 0`. The current lifecycle gate is a fresh independent v1.8 milestone audit; archive, tag, and Phase 33-34 cleanup may run only after a clean pass with no unaccepted debt.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
@@ -304,4 +304,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-07-13 after v1.8 milestone initialization*
+*Last updated: 2026-07-13 after v1.8 Phase 34 completion and DOC-01 current-state synchronization*
