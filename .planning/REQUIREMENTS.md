@@ -7,9 +7,9 @@
 
 ### Nose Renderer Evidence
 
-- [ ] **NOSE-01**: The public `BeautySDK` facade renders `noseSlim_0p35`, `noseWingSlim_0p35`, `noseTipSize_plus0p30`, `noseTipSize_minus0p30`, and `noseBridge_0p30`, with each case setting exactly one existing public nose parameter.
-- [ ] **NOSE-02**: A nose output helper verifies 196/196 full-decodable, non-empty, same-dimension PNGs, 30/30 portrait central-face differences above the watermark band, distinct signed tip outputs, and representative no-face extent preservation.
-- [ ] **NOSE-03**: Nose gallery routing is ignored, and `example-images/output` plus `example-images/gallery` contain no tracked generated files.
+- [x] **NOSE-01**: The public `BeautySDK` facade renders `noseSlim_0p35`, `noseWingSlim_0p35`, `noseTipSize_plus0p30`, `noseTipSize_minus0p30`, and `noseBridge_0p30`, with each case setting exactly one existing public nose parameter.
+- [x] **NOSE-02**: A nose output helper verifies 196/196 full-decodable, non-empty, same-dimension PNGs, 30/30 portrait central-face differences above the watermark band, distinct signed tip outputs, and representative no-face extent preservation.
+- [x] **NOSE-03**: Nose gallery routing is ignored, and `example-images/output` plus `example-images/gallery` contain no tracked generated files.
 
 ### Nose Safety and Closeout
 
@@ -40,9 +40,9 @@
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| NOSE-01 | Phase 31 | Pending |
-| NOSE-02 | Phase 31 | Pending |
-| NOSE-03 | Phase 31 | Pending |
+| NOSE-01 | Phase 31 | Complete |
+| NOSE-02 | Phase 31 | Complete |
+| NOSE-03 | Phase 31 | Complete |
 | NOSE-04 | Phase 32 | Pending |
 | NOSE-05 | Phase 32 | Pending |
 | NOSE-06 | Phase 32 | Pending |

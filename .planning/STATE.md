@@ -1,16 +1,17 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.7
-milestone_name: Broader 美型 / 五官 SDK Slice - Nose
-status: planning
-last_updated: "2026-07-13T02:36:07.967Z"
+milestone_name: Broader `美型 / 五官` SDK Slice - Nose
+status: Defining requirements
+stopped_at: Completed 30-07-PLAN.md
+last_updated: "2026-07-13T02:46:31.245Z"
 last_activity: 2026-07-13
 progress:
-  total_phases: 0
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_phases: 2
+  completed_phases: 1
+  total_plans: 4
+  completed_plans: 4
+  percent: 50
 ---
 
 # Project State
@@ -24,17 +25,17 @@ See: `.planning/PROJECT.md` (updated 2026-07-13)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
+Phase: 32
+Plan: Not started
 Status: Defining requirements
-Last activity: 2026-07-13 — Milestone v1.7 started
+Last activity: 2026-07-13
 
 ## Performance Metrics
 
 **Velocity:**
 
 - Total phases completed: 26
-- Total plans completed: 102
+- Total plans completed: 106
 - Total tasks recorded from milestone summaries: at least 147
 - Milestone Swift LOC at close: 17,794 in the local closeout count across `BeautySDK` and `BeautyDemo`, including build-derived `.build` files observed during archive.
 

@@ -71,6 +71,8 @@ python3 .planning/phases/29-eye-renderer-output-evidence/check_eye_renderer_outp
 - The Phase 28 helper verifies 102 current outputs for existence, non-empty files, same pixel dimensions, 30/30 portrait face-shape-vs-baseline top-region differences above the watermark band, and no-face face-shape output presence.
 - Phase 29 command results are recorded in `.planning/phases/29-eye-renderer-output-evidence/29-EYE-RENDERER-EVIDENCE.md` and `.planning/phases/29-eye-renderer-output-evidence/29-VERIFICATION.md`.
 - The Phase 29 helper verifies 161 current outputs for existence, non-empty files, same pixel dimensions, 36/36 portrait eye-vs-baseline top-region differences above the watermark band, and representative no-face eye output `no-face-gradient__eyeSize_0p35.png` presence.
+- Phase 31 command results are recorded in `.planning/phases/31-nose-renderer-output-evidence/31-NOSE-RENDERER-EVIDENCE.md` and `31-VERIFICATION.md`.
+- The Phase 31 helper verifies 196 current outputs, 30/30 portrait nose-vs-baseline central-face differences above the watermark band, 6/6 positive-vs-negative `noseTipSize` differences, and representative no-face nose output `no-face-gradient__noseSlim_0p35.png` presence.
 
 ## Current Built-In Cases
 
@@ -103,6 +105,11 @@ These cases are limited to effects that currently produce visible image output t
 | `eyeYPosition_plus0p20` | Phase 29 upward `上下` renderer evidence through existing `eyeYPosition` |
 | `eyeYPosition_minus0p20` | Phase 29 downward `上下` renderer evidence through existing `eyeYPosition` |
 | `eyeTailLift_0p25` | Phase 29 `眼尾上扬` renderer evidence through existing `eyeTailLift` |
+| `noseSlim_0p35` | Phase 31 `大小` renderer evidence through existing `noseSlim` |
+| `noseWingSlim_0p35` | Phase 31 `鼻翼` renderer evidence through existing `noseWingSlim` |
+| `noseTipSize_plus0p30` | Phase 31 positive-direction `鼻尖` renderer evidence through existing signed `noseTipSize` |
+| `noseTipSize_minus0p30` | Phase 31 negative-direction `鼻尖` renderer evidence through existing signed `noseTipSize` |
+| `noseBridge_0p30` | Phase 31 `鼻梁` renderer evidence through existing `noseBridge`; this is not `山根` alias evidence |
 
 ## Phase 30 Eye Safety Closeout Evidence
 
@@ -127,6 +134,16 @@ Current status boundaries:
 - Phase 27 proves only the shared geometry output foundation with `faceShapeCombo_0p35`.
 - Phase 28 completes only the scoped `脸型` rows `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线`; branch-level `脸型` stays `partial`.
 - Phases 29 and 30 complete the existing-public-parameter eye slice: exactly `大小`, `上下`, `眼距`, and `眼尾上扬` are implemented, while branch-level `眼睛` remains `partial` because the remaining eye tools are future work.
+- Phase 31 adds renderer evidence for the four existing public nose parameters. Nose rows and branch remain `partial` until Phase 32 safety, degradation, boundary, and ledger closeout passes.
+
+## Phase 31 Nose Renderer Evidence Summary
+
+- `BeautyRendererOutputRegressionTests` verifies the 28-case renderer matrix, public-facade-only import boundary, the five locked nose IDs, and one-existing-public-nose-field-per-case behavior.
+- The all-case renderer writes 196 ignored PNG outputs across seven fixtures; `check_nose_renderer_outputs.py` verifies 196/196 full decodes and dimensions.
+- Six portrait fixtures across five cases produce 30/30 nose-vs-`geometryBaseline_noop` differences above the watermark band; signed tip outputs also differ in 6/6 direct comparisons.
+- Generated review files route to ignored `example-images/gallery/nose/{caseId}/{fixtureStem}.png`, and representative no-face output preserves dimensions.
+- This is output evidence only. It does not promote `大小`, `鼻翼`, `鼻梁`, or `鼻尖`; Phase 32 owns safety and exact four-row promotion. `山根`, `提升`, and branch-level `鼻子` remain partial/future.
+- No Demo UI, public field, dependency, network/cloud, commercial path, tracked PNG baseline, device parity, commercial approval, broad parity, packaging, launch, or whole-branch claim is added.
 
 Before any geometry-heavy branch or second-level tool is marked visually complete, this public facade validation path must produce same-dimension, watermarked saved outputs from the same `example-images/input` fixtures through `BeautyExampleRenderer`, with tool-specific evidence recorded in the owning phase.
 

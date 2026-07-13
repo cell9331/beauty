@@ -32,6 +32,7 @@ The gallery groups current cases under:
 - `filter/`: `filter_softClean_0p50`, `filter_warmLight_0p50`
 - `face-shape/`: `geometryBaseline_noop`, `faceShapeCombo_0p35`, `faceSlim_0p35`, `faceSmall_0p35`, `chinLength_plus0p30`, `chinLength_minus0p30`, `faceVShape_0p35`, `jawSlim_0p35`
 - `eyes/`: `eyeSize_0p35`, `eyeDistance_plus0p25`, `eyeDistance_minus0p25`, `eyeYPosition_plus0p20`, `eyeYPosition_minus0p20`, `eyeTailLift_0p25`
+- `nose/`: `noseSlim_0p35`, `noseWingSlim_0p35`, `noseTipSize_plus0p30`, `noseTipSize_minus0p30`, `noseBridge_0p30`
 
 ## Verify Outputs
 
@@ -46,3 +47,11 @@ Phase 29 eye output evidence uses:
 ```bash
 python3 .planning/phases/29-eye-renderer-output-evidence/check_eye_renderer_outputs.py --input example-images/input --output example-images/output
 ```
+
+Phase 31 nose output evidence uses:
+
+```bash
+python3 .planning/phases/31-nose-renderer-output-evidence/check_nose_renderer_outputs.py --input example-images/input --output example-images/output
+```
+
+The Phase 31 helper requires 196/196 decoded same-dimension outputs, 30/30 portrait nose-vs-baseline comparisons, 6/6 positive-vs-negative `noseTipSize` comparisons, and representative no-face nose output presence.

@@ -43,7 +43,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
-| 31. Nose Renderer Output Evidence | 0/TBD | Not started | — |
+| 31. Nose Renderer Output Evidence | 4/4 | Complete    | 2026-07-13 |
 | 32. Nose Safety, Ledger, and Closeout | 0/TBD | Not started | — |
 
 ## Backlog
