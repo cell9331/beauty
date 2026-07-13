@@ -22,6 +22,8 @@ public enum BeautyEffectResolver {
             normalized.noseWingSlim,
             normalized.noseTipSize,
             normalized.noseBridge,
+            normalized.noseRootNarrowing,
+            normalized.noseTipLift,
             normalized.mouthSize,
             normalized.mouthWidth,
             normalized.smile,
@@ -92,6 +94,8 @@ public enum BeautyEffectResolver {
         strengths.noseWingSlim = capUnit(normalized.noseWingSlim, cap: BeautySafetyCaps.noseWingSlim, cappedCount: &cappedCount)
         strengths.noseTipSize = capSigned(normalized.noseTipSize, cap: BeautySafetyCaps.noseTipSize, cappedCount: &cappedCount)
         strengths.noseBridge = capUnit(normalized.noseBridge, cap: BeautySafetyCaps.noseBridge, cappedCount: &cappedCount)
+        strengths.noseRootNarrowing = capUnit(normalized.noseRootNarrowing, cap: BeautySafetyCaps.noseRootNarrowing, cappedCount: &cappedCount)
+        strengths.noseTipLift = capUnit(normalized.noseTipLift, cap: BeautySafetyCaps.noseTipLift, cappedCount: &cappedCount)
 
         strengths.mouthSize = capSigned(normalized.mouthSize, cap: BeautySafetyCaps.mouthSize, cappedCount: &cappedCount)
         strengths.mouthWidth = capSigned(normalized.mouthWidth, cap: BeautySafetyCaps.mouthWidth, cappedCount: &cappedCount)
@@ -113,6 +117,8 @@ public enum BeautyEffectResolver {
             strengths.noseWingSlim,
             strengths.noseTipSize,
             strengths.noseBridge,
+            strengths.noseRootNarrowing,
+            strengths.noseTipLift,
             strengths.mouthSize,
             strengths.mouthWidth,
             strengths.smile
@@ -243,14 +249,29 @@ public enum BeautyEffectResolver {
                 }
             }
         }
-        if anyNonZero(strengths.noseSlim, strengths.noseWingSlim, strengths.noseTipSize, strengths.noseBridge) {
+        if anyNonZero(
+            strengths.noseSlim,
+            strengths.noseWingSlim,
+            strengths.noseTipSize,
+            strengths.noseBridge,
+            strengths.noseRootNarrowing,
+            strengths.noseTipLift
+        ) {
             if staleGeometry {
                 Self.zeroNoseStrengths(&strengths)
                 skippedDomains.insert(.nose)
                 metrics["beauty.effects.skippedNoseDomains"] = 1
                 appendStaleGeometryWarningIfNeeded()
             } else if let faceGeometry {
-                let result = NoseWarpProvider().makeControlPoints(face: faceGeometry, strengths: strengths)
+                let provider = NoseWarpProvider()
+                let supportAvailability = provider.supportAvailability(for: faceGeometry)
+                if strengths.noseRootNarrowing > 0, !supportAvailability.rootNarrowing {
+                    strengths.noseRootNarrowing = 0
+                }
+                if strengths.noseTipLift > 0, !supportAvailability.tipLift {
+                    strengths.noseTipLift = 0
+                }
+                let result = provider.makeControlPoints(face: faceGeometry, strengths: strengths)
                 if result.points.isEmpty {
                     Self.zeroNoseStrengths(&strengths)
                     skippedDomains.insert(.nose)
@@ -382,6 +403,8 @@ public enum BeautyEffectResolver {
         strengths.noseWingSlim = 0
         strengths.noseTipSize = 0
         strengths.noseBridge = 0
+        strengths.noseRootNarrowing = 0
+        strengths.noseTipLift = 0
     }
 
     private static func zeroMouthGeometryStrengths(_ strengths: inout BeautyEffectiveStrengths) {
@@ -400,6 +423,8 @@ public enum BeautyEffectResolver {
         strengths.noseWingSlim *= scale
         strengths.noseTipSize *= scale
         strengths.noseBridge *= scale
+        strengths.noseRootNarrowing *= scale
+        strengths.noseTipLift *= scale
         strengths.mouthSize *= scale
         strengths.mouthWidth *= scale
         strengths.smile *= scale

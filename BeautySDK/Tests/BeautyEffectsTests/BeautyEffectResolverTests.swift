@@ -124,6 +124,8 @@ final class BeautyEffectResolverTests: XCTestCase {
         XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(faceSlim: 0.4)))
         XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(eyeSize: 0.4)))
         XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(noseSlim: 0.4)))
+        XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(noseRootNarrowing: 0.4)))
+        XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(noseTipLift: 0.4)))
         XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(mouthSize: 0.4)))
         XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(lipColor: 0.4)))
     }
@@ -175,13 +177,15 @@ final class BeautyEffectResolverTests: XCTestCase {
         }
     }
 
-    func testNOSE04ExactCapsSignedSemanticsWarningsAndCounts() {
+    func testPhase35NOSE03ExactCapsRoutingWarningsAndCounts() {
         let cases: [(BeautyParameters, KeyPath<BeautyEffectiveStrengths, Float>, Float)] = [
             (BeautyParameters(noseSlim: 1), \.noseSlim, 0.35),
             (BeautyParameters(noseWingSlim: 1), \.noseWingSlim, 0.35),
             (BeautyParameters(noseTipSize: 1), \.noseTipSize, 0.30),
             (BeautyParameters(noseTipSize: -1), \.noseTipSize, -0.30),
             (BeautyParameters(noseBridge: 1), \.noseBridge, 0.30),
+            (BeautyParameters(noseRootNarrowing: 1), \.noseRootNarrowing, 0.25),
+            (BeautyParameters(noseTipLift: 1), \.noseTipLift, 0.25),
         ]
 
         for (parameters, keyPath, expected) in cases {
@@ -189,6 +193,10 @@ final class BeautyEffectResolverTests: XCTestCase {
             XCTAssertEqual(plan.effectiveStrengths[keyPath: keyPath], expected, accuracy: 0.0001)
             XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 1)
             XCTAssertTrue(plan.warnings.contains { $0.code == "beauty_strength_capped" })
+            XCTAssertTrue(plan.activeDomains.contains(.nose))
+            XCTAssertGreaterThan(plan.metrics["beauty.effects.geometryPointCount"] ?? 0, 0)
+            XCTAssertFalse(plan.warnings.contains { $0.code == "combined_geometry_weakened" })
+            assertRedacted(plan)
         }
 
         let all = BeautyEffectResolver.resolve(
@@ -199,15 +207,25 @@ final class BeautyEffectResolverTests: XCTestCase {
         XCTAssertLessThan(all.effectiveStrengths.noseTipSize, 0)
     }
 
-    func testNOSE04NegativePositiveOnlyInputsAreSilentNoOps() {
-        let parameters = BeautyParameters(noseSlim: -1, noseWingSlim: -1, noseBridge: -1)
-        let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)
-        XCTAssertEqual(parameters.noseSlim, 0)
-        XCTAssertEqual(parameters.noseWingSlim, 0)
-        XCTAssertEqual(parameters.noseBridge, 0)
-        XCTAssertFalse(plan.activeDomains.contains(.nose))
-        XCTAssertFalse(plan.skippedDomains.contains(.nose))
-        XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 0)
+    func testPhase35NOSE03NegativePositiveOnlyInputsAreSilentNoOps() {
+        let cases: [(BeautyParameters, KeyPath<BeautyParameters, Float>, KeyPath<BeautyEffectiveStrengths, Float>)] = [
+            (BeautyParameters(noseSlim: -1), \.noseSlim, \.noseSlim),
+            (BeautyParameters(noseWingSlim: -1), \.noseWingSlim, \.noseWingSlim),
+            (BeautyParameters(noseBridge: -1), \.noseBridge, \.noseBridge),
+            (BeautyParameters(noseRootNarrowing: -1), \.noseRootNarrowing, \.noseRootNarrowing),
+            (BeautyParameters(noseTipLift: -1), \.noseTipLift, \.noseTipLift),
+        ]
+
+        for (parameters, publicKeyPath, effectiveKeyPath) in cases {
+            let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)
+            XCTAssertEqual(parameters[keyPath: publicKeyPath], 0)
+            XCTAssertEqual(plan.effectiveStrengths[keyPath: effectiveKeyPath], 0)
+            XCTAssertFalse(BeautyEffectResolver.requiresFaceGeometry(parameters: parameters))
+            XCTAssertFalse(plan.activeDomains.contains(.nose))
+            XCTAssertFalse(plan.skippedDomains.contains(.nose))
+            XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 0)
+            assertRedacted(plan)
+        }
     }
 
     func testSelectedFaceObservationActivatesGeometryPlanningWithRedactedEvidence() {

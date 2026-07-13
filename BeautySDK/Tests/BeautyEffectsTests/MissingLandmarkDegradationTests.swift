@@ -138,12 +138,14 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         assertRedacted(plan)
     }
 
-    func testNOSE05StaleZerosNoseWhileReusedScalesAllFieldsByHalf() {
+    func testPhase35NOSE03StaleZerosNoseWhileReusedScalesAllFieldsByHalf() {
         let parameters = BeautyParameters(
             noseSlim: 1,
             noseWingSlim: 1,
             noseTipSize: -1,
-            noseBridge: 1
+            noseBridge: 1,
+            noseRootNarrowing: 1,
+            noseTipLift: 1
         )
         let stale = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .stale)
         XCTAssertTrue(stale.skippedDomains.contains(.nose))
@@ -158,7 +160,45 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertEqual(reused.effectiveStrengths.noseWingSlim, 0.175, accuracy: 0.0001)
         XCTAssertEqual(reused.effectiveStrengths.noseTipSize, -0.15, accuracy: 0.0001)
         XCTAssertEqual(reused.effectiveStrengths.noseBridge, 0.15, accuracy: 0.0001)
+        XCTAssertEqual(reused.effectiveStrengths.noseRootNarrowing, 0.125, accuracy: 0.0001)
+        XCTAssertEqual(reused.effectiveStrengths.noseTipLift, 0.125, accuracy: 0.0001)
         assertRedacted(reused)
+    }
+
+    func testPhase35NOSE06InvalidIndependentSupportFailsClosedAndSafeDomainsContinue() {
+        let cases: [(FaceGeometry, BeautyParameters, KeyPath<BeautyEffectiveStrengths, Float>)] = [
+            (.onePointNoseRoot, BeautyParameters(brightness: 0.2, noseRootNarrowing: 1, filterId: "soft_clean", filterIntensity: 0.5), \.noseRootNarrowing),
+            (.onePointNoseTip, BeautyParameters(brightness: 0.2, noseTipLift: 1, filterId: "soft_clean", filterIntensity: 0.5), \.noseTipLift),
+        ]
+
+        for (face, parameters, keyPath) in cases {
+            let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: face)
+            XCTAssertFalse(plan.activeDomains.contains(.nose))
+            XCTAssertTrue(plan.skippedDomains.contains(.nose))
+            XCTAssertTrue(plan.activeDomains.isSuperset(of: [.color, .filter]))
+            XCTAssertEqual(plan.effectiveStrengths[keyPath: keyPath], 0)
+            XCTAssertEqual(plan.metrics["beauty.effects.skippedNoseDomains"], 1)
+            XCTAssertTrue(plan.warnings.contains { $0.code == "nose_inputs_missing" })
+            assertRedacted(plan)
+        }
+    }
+
+    func testPhase35NOSE06InvalidIndependentSupportDoesNotZeroValidLegacyNoseWork() {
+        let cases: [(FaceGeometry, BeautyParameters, KeyPath<BeautyEffectiveStrengths, Float>, KeyPath<BeautyEffectiveStrengths, Float>)] = [
+            (.onePointNoseRoot, BeautyParameters(noseBridge: 1, noseRootNarrowing: 1), \.noseRootNarrowing, \.noseBridge),
+            (.onePointNoseTip, BeautyParameters(noseTipSize: 1, noseTipLift: 1), \.noseTipLift, \.noseTipSize),
+        ]
+
+        for (face, parameters, invalidKeyPath, legacyKeyPath) in cases {
+            let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: face)
+            XCTAssertTrue(plan.activeDomains.contains(.nose))
+            XCTAssertFalse(plan.skippedDomains.contains(.nose))
+            XCTAssertEqual(plan.effectiveStrengths[keyPath: invalidKeyPath], 0)
+            XCTAssertGreaterThan(plan.effectiveStrengths[keyPath: legacyKeyPath], 0)
+            XCTAssertGreaterThan(plan.metrics["beauty.effects.geometryPointCount"] ?? 0, 0)
+            XCTAssertFalse(plan.warnings.contains { $0.code == "nose_inputs_missing" })
+            assertRedacted(plan)
+        }
     }
 
     func testNoseGeometryProducesDeterministicProxyEvidenceAndCapMetadata() {
@@ -413,6 +453,8 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertEqual(plan.effectiveStrengths.noseWingSlim, 0, file: file, line: line)
         XCTAssertEqual(plan.effectiveStrengths.noseTipSize, 0, file: file, line: line)
         XCTAssertEqual(plan.effectiveStrengths.noseBridge, 0, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.noseRootNarrowing, 0, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.noseTipLift, 0, file: file, line: line)
     }
 
     private func assertNoEyeSideOrRawGeometryDisclosure(
