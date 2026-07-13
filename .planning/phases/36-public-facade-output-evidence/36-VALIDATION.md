@@ -3,7 +3,7 @@ phase: 36
 slug: public-facade-output-evidence
 status: draft
 nyquist_compliant: false
-wave_0_complete: true
+wave_0_complete: false
 created: 2026-07-13
 ---
 
