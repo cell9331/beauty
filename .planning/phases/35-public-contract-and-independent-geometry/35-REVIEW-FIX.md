@@ -1,13 +1,16 @@
 ---
 phase: 35-public-contract-and-independent-geometry
 source_review: .planning/phases/35-public-contract-and-independent-geometry/35-REVIEW.md
-fixed_at: 2026-07-13T07:16:17Z
-status: fixed
-iteration: 1
+fixed_at: 2026-07-13T07:29:02Z
+status: all_fixed
+iteration: 2
 fix_scope: critical_warning
+findings_in_scope: 2
+fixed: 2
+skipped: 0
 fix_commits:
-  - 3cf59de
-  - bfd7375
+  - 8f8bda7
+  - 05209b3
 findings_fixed:
   critical: 2
   warning: 0
@@ -15,30 +18,37 @@ findings_fixed:
   total: 2
 ---
 
-# Phase 35 Code Review Fix Report
+# Phase 35 Code Review Fix Report — Iteration 2
 
-Both critical findings from the standard Phase 35 code review were fixed in iteration 1.
+Both critical findings from the iteration-2 Phase 35 review are fixed.
 
 ## Fixes
 
-1. **CR-01: Unsupported independent supports affected conflict weakening**
-   - Captured nose request intent, then validated and sanitized root/tip support before any face-shape or mouth conflict resolver can observe the strengths.
-   - Reused the same provider for final nose dispatch while preserving isolated invalid-support skip diagnostics.
-   - Added a mixed face-shape/invalid-root regression proving exact usable-work scaling and a weakened count of two.
-   - Commit: `3cf59de` (`fix(35): sanitize independent supports before conflicts`).
+1. **CR-03: Aggregate legacy availability allowed non-rendering fields to survive mixed requests**
+   - Replaced the aggregate legacy availability bit with `NoseWarpFieldEmissions`, a provider-owned result containing actual control-point output for each of the six nose fields.
+   - Both resolver preflight and final provider dispatch consume that same per-field emission contract.
+   - Legacy sanitization now zeros only the requested helper whose actual emission is empty; emitting legacy and independent siblings remain active.
+   - Added a one-point legacy mixed regression proving `noseSlim == 0`, supported root work stays active, conflict scale is exactly `1 / (0.60 + 0.45 + 0.25)`, and weakened count is exactly `3`.
+   - Commit: `8f8bda7` (`fix(35): sanitize legacy nose fields by emission`).
 
-2. **CR-02: Valid independent support masked unavailable legacy nose work**
-   - Extended nose support availability with the legacy nose-center proxy.
-   - Zeroed all four unavailable legacy strengths before conflict accounting while retaining independently supported root/tip work.
-   - Added provider availability coverage and a mixed legacy/new/face-shape regression proving the legacy strengths remain zero, the supported new field stays active, and conflict metrics exclude non-rendering legacy work.
-   - Commit: `bfd7375` (`fix(35): zero unavailable legacy nose strengths`).
+2. **CR-04: Structural root/tip availability did not reflect requested-strength emission**
+   - Removed resolver-only structural root/tip availability checks.
+   - Root/tip preflight now uses the provider's actual field emission, including strength thresholds, computed displacement, remaining centerline room, target validation, and support validation.
+   - Added provider and resolver regressions for a structurally valid near-center root pair with non-emitting displacement and a positive tip request whose displacement is below the emission threshold.
+   - Mixed tests prove the failed field is zero before conflict accounting, its supported sibling remains active, scale is exactly `1 / (0.60 + 0.45 + 0.25)`, and weakened count is exactly `3`.
+   - Commit: `05209b3` (`fix(35): exclude non-emitting independent nose work`).
 
 ## Verification
 
-- PASS: affected focused suites (`BeautyEffectResolverTests`, `MissingLandmarkDegradationTests`, `GeometryConflictResolverTests`, `CombinedEffectSafetyTests`, and `NoseWarpProviderTests`) — 63/63 tests.
-- PASS: `swift test --package-path BeautySDK` — 209/209 tests.
-- PASS: `git diff --check`.
+- PASS: `NoseWarpProviderTests` — 15/15 XCTest cases.
+- PASS: `MissingLandmarkDegradationTests` — 21/21 XCTest cases.
+- PASS: `GeometryConflictResolverTests` — 8/8 XCTest cases.
+- PASS: `CombinedEffectSafetyTests` — 10/10 XCTest cases.
+- PASS: `BeautyEffectResolverTests` — 14/14 XCTest cases.
+- PASS: affected focused aggregate — 68/68 XCTest cases.
+- PASS: `swift test --package-path BeautySDK` — 214/214 XCTest cases, zero failures.
+- PASS: `git diff --check` before both fix commits.
 
 ## Status
 
-All in-scope critical and warning findings are fixed. No info findings existed, and no unrelated scope was changed.
+All iteration-2 critical and warning findings are fixed. Public raw geometry/privacy boundaries, package dependencies, and Phase 36/37 non-claims remain unchanged. This report is intentionally left uncommitted for the orchestrator.
