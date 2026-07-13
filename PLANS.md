@@ -33,7 +33,7 @@
 | Status | active |
 | Scope | Execute v1.9 Phases 35-37 autonomously, then audit, archive, tag, and clean up the milestone. |
 | Requirements | NOSE-01 through NOSE-14 and DOC-01. |
-| Current step | Phase 35 smart discuss and planning. |
+| Current step | Phase 35 planned in four verified waves; execute `35-01` through `35-04` sequentially. |
 | Verification | Per-phase focused/full SwiftPM, renderer/helper, security, review, Nyquist, and milestone-audit gates defined by ROADMAP and REQUIREMENTS. |
 
 ## 4. Completed

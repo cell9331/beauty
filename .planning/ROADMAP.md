@@ -21,7 +21,25 @@
 
 **Requirements:** NOSE-01, NOSE-02, NOSE-03, NOSE-04, NOSE-05, NOSE-06
 
-**Status:** Planning
+**Status:** Planned
+
+**Plans:** 0/4 plans complete
+
+**Wave 1**
+
+- [ ] `35-01-PLAN.md` — public contract, 33-field compatibility, effective values, and provisional caps
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] `35-02-PLAN.md` — package-internal root/tip supports and independent fail-closed provider geometry
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] `35-03-PLAN.md` — resolver, degradation, conflict, and redacted public-facade routing
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] `35-04-PLAN.md` — full verification, security/Nyquist finalization, and current-owner synchronization without promotion
 
 **Success Criteria:**
 
@@ -82,4 +100,4 @@
 
 ---
 *Roadmap created: 2026-07-13*
-*Last updated: 2026-07-13 for v1.9 roadmap creation*
+*Last updated: 2026-07-13 for Phase 35 planning completion*

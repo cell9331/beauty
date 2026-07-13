@@ -39,13 +39,14 @@ created: 2026-07-13
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
 | 35-01-01 | 01 | 1 | NOSE-01, NOSE-02 | T35-01 | Non-finite values become zero; old payloads/presets remain neutral | unit/compatibility | `swift test --package-path BeautySDK --filter BeautyParametersTests` | ✅ | ⬜ pending |
-| 35-01-02 | 01 | 1 | NOSE-01, NOSE-02 | T35-01 | Resource decoding adds no implicit nonzero nose behavior | integration | `swift test --package-path BeautySDK --filter BeautyResourcesTests` | ✅ | ⬜ pending |
+| 35-01-02 | 01 | 1 | NOSE-01, NOSE-02 | T35-01 | Resource decoding adds no implicit nonzero nose behavior | integration | `swift test --package-path BeautySDK --filter BeautyResourceCatalogTests` | ✅ | ⬜ pending |
 | 35-02-01 | 02 | 2 | NOSE-04, NOSE-05, NOSE-06 | T35-02 | Package-internal supports remain fail-closed and never expose raw geometry | unit | `swift test --package-path BeautySDK --filter NoseWarpProviderTests` | ✅ | ⬜ pending |
 | 35-02-02 | 02 | 2 | NOSE-04, NOSE-05, NOSE-06 | T35-02 | Invalid/insufficient supports cannot borrow legacy bridge/tip points | unit | `swift test --package-path BeautySDK --filter FaceShapeWarpProviderTests` | ✅ | ⬜ pending |
 | 35-03-01 | 03 | 3 | NOSE-03, NOSE-06 | T35-03 | Missing/stale/provider-empty geometry zeros affected strengths with aggregate-only diagnostics | integration | `swift test --package-path BeautySDK --filter BeautyEffectResolverTests && swift test --package-path BeautySDK --filter MissingLandmarkDegradationTests` | ✅ | ⬜ pending |
 | 35-03-02 | 03 | 3 | NOSE-03 | T35-03 | Both new fields participate in caps, counts, reuse, and conflict weakening | integration | `swift test --package-path BeautySDK --filter BeautySafetyCapsTests && swift test --package-path BeautySDK --filter GeometryConflictResolverTests && swift test --package-path BeautySDK --filter CombinedEffectSafetyTests` | ✅ | ⬜ pending |
 | 35-03-03 | 03 | 3 | NOSE-03 | T35-04 | Public facade reveals only redacted summaries/metrics, never raw landmarks/control points | facade | `swift test --package-path BeautySDK --filter BeautyEngineGeometryFacadeTests` | ✅ | ⬜ pending |
-| 35-04-01 | 04 | 4 | NOSE-01–NOSE-06 | T35-01–T35-04 | Current contracts match observed source while rows/branch remain unpromoted | regression/boundary | `swift test --package-path BeautySDK && git diff --check` | ✅ | ⬜ pending |
+| 35-04-01 | 04 | 4 | NOSE-01–NOSE-06 | T35-01–T35-04 | Focused/full implementation and ASVS L1 evidence is captured but remains explicitly non-final until contract synchronization | regression/security | `swift test --package-path BeautySDK && git diff --check` | ✅ | ⬜ pending |
+| 35-04-02 | 04 | 4 | NOSE-01–NOSE-06 | T35-01–T35-04 | Contract/ledger synchronization, no-promotion and no-overclaim checks pass before the final full/scoped rerun sets verification, security, and Nyquist states green | regression/boundary | `swift test --package-path BeautySDK && git diff --check` | ✅ | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -82,7 +83,7 @@ All Phase 35 runtime behaviors have automated verification. Structural scope che
 
 ```bash
 swift test --package-path BeautySDK --filter BeautyParametersTests
-swift test --package-path BeautySDK --filter BeautyResourcesTests
+swift test --package-path BeautySDK --filter BeautyResourceCatalogTests
 swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautySafetyCapsTests
 swift test --package-path BeautySDK --filter BeautyEffectsTests.NoseWarpProviderTests
 swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyEffectResolverTests
