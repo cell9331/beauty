@@ -6,4 +6,6 @@
 .build/
 example-images/output/
 example-images/gallery/
+example-images/.gallery-staging/
+example-images/.gallery-quarantine/
 .serena/

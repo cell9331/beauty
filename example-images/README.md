@@ -9,6 +9,8 @@
   - `input/negatives/`: negative fixtures such as `no-face-gradient.png`.
 - `output/`: ignored flat generated renderer PNGs, named `{fixtureStem}__{caseId}.png`.
 - `gallery/`: ignored generated human-review view, grouped as `{featureFamily}/{caseId}/{fixtureStem}.png`.
+- `.gallery-staging/`: ignored fail-closed publication slot. A leftover means a prior run did not publish and blocks another run.
+- `.gallery-quarantine/previous/`: ignored single-slot preservation of the prior gallery. The generator never traverses or deletes it.
 
 Generated `output/` and `gallery/` contents are local artifacts. Recreate them instead of committing PNGs.
 Committed `input/` fixtures should stay below 1 MB each; the current PNG portrait fixtures use a 900 px maximum edge, `e6.jpg` is a committed JPEG portrait fixture, and the no-face negative fixture is 64 px.
@@ -24,6 +26,10 @@ swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/
 ```bash
 python3 example-images/generate_gallery.py --input example-images/input --output example-images/output --gallery example-images/gallery
 ```
+
+Gallery generation opens the repository, `example-images`, input, output, and every staging directory through no-follow descriptors. It copies securely opened regular sources into exclusive descriptor-relative destinations, revalidates identities, then publishes the complete staging tree with an atomic descriptor-relative rename. If `gallery/` already exists, it is moved intact into `.gallery-quarantine/previous/`; no old-gallery entry is enumerated or deleted, so nested mount points and links are never crossed.
+
+The quarantine is intentionally bounded to one slot. A later run fails closed while `.gallery-quarantine/` or `.gallery-staging/` exists and does not claim cleanup. After reviewing the preserved prior gallery, an operator may remove these ignored slots using an explicitly chosen out-of-band procedure and rerun the generator.
 
 The gallery groups current cases under:
 
@@ -76,4 +82,4 @@ python3 .planning/phases/36-public-facade-output-evidence/check_nose_remaining_r
 
 The helper discovers the live renderer and fixture inventories before requiring the current 36 × 7 = 252 matrix. It fully decodes 252/252 same-dimension outputs and separately gates 12/12 new-field-to-baseline portrait comparisons, 6/6 root-to-bridge comparisons, and 12/12 lift-to-both-signed-tip comparisons in the fixed nose ROI (x 25%-75%, y 20%-70%) at the frozen floors of 500 changed pixels and 2,000 absolute RGB delta. Both new no-face outputs preserve the 64 × 64 extent and are baseline-identical in the watermark-safe fallback region.
 
-The values `0.25` in `noseRootNarrowing_0p25` and `noseTipLift_0p25` are provisional output-evidence inputs, not final caps or commercial calibration. Gallery generation first requires a duplicate-free exact bijection between `CASE_GROUPS` and the renderer's discovered case IDs, then writes 252 ignored, untracked local PNGs. This evidence does not promote `山根`, `提升`, or branch-level `鼻子`; final caps, exhaustive safety and active-source boundary closeout remain Phase 37 work.
+The values `0.25` in `noseRootNarrowing_0p25` and `noseTipLift_0p25` are provisional output-evidence inputs, not final caps or commercial calibration. Gallery generation first requires a duplicate-free exact bijection between `CASE_GROUPS` and the renderer's discovered case IDs, then publishes 252 ignored, untracked local PNGs. Preserved quarantine/staging slots are also ignored and must remain untracked. This evidence does not promote `山根`, `提升`, or branch-level `鼻子`; final caps, exhaustive safety and active-source boundary closeout remain Phase 37 work.
