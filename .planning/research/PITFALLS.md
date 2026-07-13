@@ -1,199 +1,337 @@
 # Pitfalls Research
 
-**Domain:** Public-facade mouth geometry and lip-color evidence for the existing-parameter iOS beauty SDK slice
+**Domain:** Independent nose-geometry parameters and evidence-backed SDK branch closeout
 **Researched:** 2026-07-13
 **Confidence:** HIGH
 
 ## Critical Pitfalls
 
-### Pitfall 1: Signed mouth controls are proved only at the provider layer
+### Pitfall 1: Calling `山根` or `提升` an alias of an existing nose tool
 
-**What goes wrong:** `mouthSize` or `mouthWidth` accepts negative input, but a later normalization, conflict-resolution, render, or evidence step folds it through `abs`, so positive and negative public-facade outputs are indistinguishable or move in the same direction.
+**What goes wrong:**
+The new public fields exist in name only while `山根` reuses `noseBridge`, or `提升` reuses `noseTipSize`, the same provider branch, or the same renderer evidence. The ledger can then claim two tools from one behavior even though v1.7 explicitly reserved `noseBridge` evidence for `鼻梁` and kept `山根`/`提升` unresolved.
 
-**Why it happens:** Current provider tests correctly assert expand/contract and widen/narrow, but provider evidence does not prove that the public `BeautySDK` facade preserves direction through detection, planning, unified warp, image rendering, and saving. A visible difference from no-op also does not prove opposite directions.
+**Why it happens:**
+All nose effects share the `.nose` domain and the same landmark group. Reusing an existing strength or control-point function is easy and still produces a visible output, so ordinary baseline comparisons do not prove semantic independence.
 
-**How to avoid:** Keep signed caps and sign preservation explicit at every boundary. Add paired positive/negative renderer cases for both fields, direct positive-versus-negative output comparisons, and focused tests that combined weakening reduces magnitude without changing sign.
+**How to avoid:**
+Define product-neutral names, public ranges, direction meanings, affected anatomical region, and displacement vectors before implementation. Give each field its own `BeautyParameters` storage, effective strength, safety cap, provider branch, isolated renderer case, and tests. In addition to baseline differences, require `山根` output to differ from `noseBridge` and `提升` output to differ from the nearest existing nose behavior at equal normalized strength. Shared helper math is acceptable; shared meaning or evidence is not.
 
-**Warning signs:** Renderer inventory has only one sign; assertions use only `abs`; tests compare each signed output only with baseline; positive and negative output hashes/pixel deltas are identical.
+**Warning signs:**
+- A new field is assigned into `strengths.noseBridge` or `strengths.noseTipSize`.
+- The provider has no new independently named control-point path.
+- A ledger row cites `noseBridge_0p30` or another v1.7 case.
+- The two new renderer cases produce identical control points, identical PNGs, or only watermark differences.
+- Documentation uses “bridge-like,” “tip-like,” or “alias” without an explicit semantic decision.
 
-**Phase to address:** Phase 33 renderer/output evidence, then Phase 34 safety closeout.
-
----
-
-### Pitfall 2: Skipped mouth geometry remains non-zero in the effective plan
-
-**What goes wrong:** Missing, no-face, or stale mouth geometry is marked skipped, yet `mouthSize`, `mouthWidth`, or `smile` remains non-zero in `effectiveStrengths`. Downstream code or future refactors can accidentally render a domain that the plan claims was disabled.
-
-**Why it happens:** The current resolver explicitly zeroes skipped eye and nose strengths, but the mouth branches only update `skippedDomains` and metrics. Existing tests mostly assert domain membership, not fail-closed values.
-
-**How to avoid:** Add one mouth-domain zeroing helper and invoke it for stale geometry, missing outer lips, and no usable face. Assert all three geometry fields are exactly zero while safe color/filter domains continue. Keep reused usable geometry active at the established exact `0.5` scale and assert signed values retain direction.
-
-**Warning signs:** A plan contains `.mouth` in `skippedDomains` and a non-zero mouth effective strength; stale/no-face tests omit strength assertions; degradation behavior differs depending on entry route.
-
-**Phase to address:** Phase 34 safety closeout.
+**Phase to address:**
+Proposed Phase 35, public contract and independent geometry semantics; re-prove independence in Phase 36 output evidence.
 
 ---
 
-### Pitfall 3: Geometry freshness and lip-color containment are conflated
+### Pitfall 2: Expanding `BeautyParameters` without preserving source and Codable compatibility
 
-**What goes wrong:** Either lip color is weakened as if it were a warp strength, or stale mouth coordinates continue driving a color mask simply because outer-lip points are non-empty. Conversely, fixing mouth geometry by zeroing all mouth-adjacent values can incorrectly suppress a safe color-domain path.
+**What goes wrong:**
+Older preset/parameter JSON fails to decode, the new fields bypass normalization, existing call sites stop compiling, or encode/decode/round-trip behavior silently omits a field. Conversely, current docs and tests may keep asserting a 31-field inventory after the intended expansion to 33 stored fields.
 
-**Why it happens:** Geometry and `lipColor` depend on the same outer-lip landmarks but belong to different render domains. Current reusable-geometry scaling includes only mouth geometry, while current lip-color activation checks landmark presence but not freshness. The correct policy must therefore be stated and tested rather than inherited accidentally.
+**Why it happens:**
+`BeautyParameters` is a manually maintained public struct. A field must be threaded through stored properties, `CodingKeys`, the public initializer with a zero default, `init(from:)`, and `normalized()`. The repository also has Mirror-based field-count tests, Demo JSON import/export, bundled preset JSON, facade validation, and many source call sites using the initializer.
 
-**How to avoid:** Treat `.mouth` and `.lipColor` as separate domains with a shared input-validity contract. Geometry gets signed caps, conflict weakening, and reuse scaling; color remains unsigned and must never enter geometry weakening. Explicitly decide and lock stale/reused color-mask behavior, with fail-closed behavior for absent or unusable mouth ROI and safe-domain continuation.
+**How to avoid:**
+Append independently labeled initializer parameters with zero defaults; add both coding keys; decode absent keys through the existing zero-default helper; include both values in `normalized()`; and test old JSON, partial JSON, new round trips, non-finite input, and default no-op behavior. Verify bundled presets without the keys still decode to zero and existing source-style initializers still compile. Treat the encoded addition of zero-valued keys as a schema behavior to document and test. Update the current public inventory to 33 only after both fields are actually public.
 
-**Warning signs:** `lipColor` appears in geometry weakened-count expectations; a stale geometry plan leaves `.lipColor` active without an explicit contract; mouth skip logic zeros or scales `lipColor`; tests activate both domains but assert only one.
+**Warning signs:**
+- One of the new names appears in fewer places than the existing four nose fields in `BeautyParameters.swift`.
+- `Mirror(...).children.count` still expects 31 in current tests.
+- Old JSON fixtures fail, or missing new keys do not resolve to exact zero.
+- `normalized()` returns defaults for the new fields even when input is non-zero.
+- A public initializer parameter has no default or was renamed after evidence was written.
+- A broad “31 → 33” replacement modifies archived v1.7/v1.8 facts.
 
-**Phase to address:** Phase 34 safety closeout, with separate Phase 33 output cases.
-
----
-
-### Pitfall 4: Combined weakening is incomplete or direction-destroying
-
-**What goes wrong:** Some mouth geometry fields escape multi-domain weakening, `smile` is counted inconsistently, signed fields cross zero, or `lipColor` is mistakenly included in the geometry weakened count.
-
-**Why it happens:** Generic combined-effect tests commonly sample one representative mouth field. Mouth has two signed fields, one positive-only geometry field, and one non-geometry color field, so representative coverage hides classification errors.
-
-**How to avoid:** Use a table-driven test for `mouthSize+`, `mouthSize-`, `mouthWidth+`, `mouthWidth-`, and `smile`. For each, assert non-zero reduced magnitude, exact sign preservation where signed, the warning and redacted numeric metrics, and the expected weakened count. Add an all-mouth case proving `lipColor` remains outside geometry scaling.
-
-**Warning signs:** Only `mouthSize: 1` is tested; weakened count is asserted with `> 0` rather than an exact value; no negative combined case exists; changing `lipColor` changes geometry scale.
-
-**Phase to address:** Phase 34 safety closeout.
+**Phase to address:**
+Proposed Phase 35. Compatibility must be complete before renderer or closeout work begins.
 
 ---
 
-### Pitfall 5: Output evidence uses an ROI that cannot distinguish the claimed effect
+### Pitfall 3: Producing control points that are no-ops, cancel, or overlap existing nose warps
 
-**What goes wrong:** Whole-image or central-face comparison passes because of watermark, lip color, another active effect, resampling noise, or changes outside the mouth. A signed pair can also differ without proving that the difference is localized to the intended mouth region.
+**What goes wrong:**
+The provider returns points and the domain is marked active, but `RenderableWarpPoint` drops them because displacement is effectively zero; or new points overlap `noseBridge`/`noseTipSize` and sum to the same, canceled, or exaggerated warp. A count-based assertion passes while the image does not express the promised tool.
 
-**Why it happens:** Earlier nose/eye helpers establish dimension and watermark-exclusion patterns, but their central-feature ROI should not be copied blindly. Mouth geometry and lip color need a lower-central-face ROI, and mixed cases cannot attribute the change to one domain.
+**Why it happens:**
+The current still-image warp sums displacement from every point within its radius. `noseBridge` already uses upper-nose points and `noseTipSize` uses lower-nose points. The available nose landmark set is small, and clamping targets to the center or image bounds can collapse source and target. Provider point counts are therefore weaker evidence than spatial and rendered differences.
 
-**How to avoid:** Keep cases single-parameter except for one explicitly labeled mouth combo. Exclude the watermark band, use a documented lower-central mouth ROI on usable portrait fixtures, compare geometry cases against the geometry no-op baseline, compare both signs directly, and validate `lipColor` independently. Keep representative no-face checks extent-preserving and fail-closed.
+**How to avoid:**
+Specify non-overlapping or intentionally composable regions and direction vectors. Unit-test source-region membership, non-zero displacement, target direction, radius bounds, deterministic order, and distinction from existing providers. Add isolated facade-visible comparisons against `geometryBaseline_noop`, plus direct new-vs-nearest-existing comparisons above the watermark in a nose-focused ROI. Add combined-nose tests to detect cancellation and excessive displacement when root, lift, bridge, and tip are active together.
 
-**Warning signs:** Comparisons include the bottom watermark; only full-frame byte inequality is asserted; geometry and lip color are enabled together; the ROI is copied from nose/eye evidence without coordinates; no positive-negative comparison exists.
+**Warning signs:**
+- Source equals target after clamping.
+- Only `points.count > 0` is asserted.
+- New and old fields select the same landmark subset and displacement formula.
+- Portrait comparison passes only as full-image byte inequality or in the watermark band.
+- One or more fixtures produce identical baseline/new or root/bridge outputs.
+- Combined nose output is weaker than either isolated effect without a documented conflict rule.
 
-**Phase to address:** Phase 33 renderer/output evidence.
-
----
-
-### Pitfall 6: `lipColor` evidence is promoted as true `丰唇` geometry
-
-**What goes wrong:** The ledger marks `丰唇` implemented because lip pixels visibly change, or branch-level `嘴唇` becomes implemented after only the existing four public parameters are evidenced.
-
-**Why it happens:** The Demo historically maps `丰唇` to `lipColor`, while the authoritative ledger already says color evidence is not plump-lip geometry. Marketing labels and product-neutral SDK parameters are not a 1:1 semantic match.
-
-**How to avoid:** Promote exactly `大小`, `宽度`, and `微笑` when facade-visible geometry plus safety evidence passes. Record `lipColor` as distinct color-domain evidence, not a promotion basis for `丰唇`. Keep `丰唇` partial, all unmapped rows future, and branch-level `嘴唇` partial.
-
-**Warning signs:** More than three rows change to `implemented`; `丰唇` cites a `lipColor` renderer case; documentation says four implemented mouth rows; branch status loses `partial`.
-
-**Phase to address:** Phase 34 ledger/document closeout.
+**Phase to address:**
+Proposed Phase 35 for provider geometry and focused tests; Phase 36 for facade-visible differential evidence.
 
 ---
 
-### Pitfall 7: Evidence leaks face-derived data or generated artifacts
+### Pitfall 4: Leaving caps and directionality implicit
 
-**What goes wrong:** Warnings, metrics, gallery manifests, filenames, or committed PNGs expose landmarks, boxes, paths, face observations, image bytes, or fixture-derived artifacts. Ignored output may also be accidentally force-added.
+**What goes wrong:**
+Negative values are accidentally accepted for a positive-only control, a signed field loses its negative direction through `abs`, `min`, reused scaling, or provider strength construction, or a high public value bypasses the natural cap. UI-neutral public semantics and effective algorithm caps become conflated.
 
-**Why it happens:** Mouth evidence naturally tempts developers to log ROI coordinates and landmark availability while debugging. Gallery generation creates a large set of plausible-looking artifacts that can escape containment even when the main output directory is ignored.
+**Why it happens:**
+The current nose family mixes positive-only fields with signed `noseTipSize`. Public normalization is `0...1` or `-1...1`, while `BeautySafetyCaps` applies smaller effective ranges. Existing provider code sometimes uses `abs(strength)` for point strength while direction remains in displacement, so a superficially correct assertion can miss sign loss.
 
-**How to avoid:** Keep warnings categorical and metrics numeric/count-only; never serialize raw points or boxes through public/SPI types. Use established ignored output/gallery directories, static case IDs without user data, and finish with tracked/untracked/ignore scans. Evidence documents should contain counts and commands, not sensitive coordinates or image payloads.
+**How to avoid:**
+Decide each field's public range and the exact physical meaning of positive and, if applicable, negative values before naming it. Keep public normalization separate from effective caps. Test lower/upper overflow, NaN, both infinities, exact cap values, capped-count increments, provider target direction, facade output direction, reused scaling, and combined weakening. If a field is positive-only, explicitly prove negative input becomes zero; if signed, prove both directions remain distinct end to end.
 
-**Warning signs:** Metadata contains `landmark`, `controlPoint`, bounding coordinates, private paths, observation types, or numeric point arrays; `git status` lists generated PNGs; evidence links generated images as tracked baselines.
+**Warning signs:**
+- A cap is copied from `noseBridge` or `noseTipSize` without a geometry-specific rationale.
+- Tests check only `<= cap` rather than exact effective values.
+- `abs` is applied before displacement direction is computed.
+- Only the positive renderer case exists for a signed contract.
+- Warnings or `cappedCount` omit one new field.
 
-**Phase to address:** Both phases; final enforcement in Phase 34.
+**Phase to address:**
+Proposed Phase 35 for semantics, normalization, and exact caps; Phase 37 for all safety-path verification.
+
+---
+
+### Pitfall 5: Updating the happy path but not every degradation list
+
+**What goes wrong:**
+Missing or stale nose landmarks leave one new strength active, reused geometry fails to apply exact `0.5`, or detection is not triggered when only a new parameter is set. The plan may advertise `.nose` while producing no points, or unsafe stale geometry may continue.
+
+**Why it happens:**
+Nose fields are repeated manually in `requiresFaceGeometry`, request detection, reusable-non-eye detection, `zeroNoseStrengths`, `scaleReusableNonEyeGeometryStrengths`, active-domain checks, effective strengths, provider tests, and degradation assertions. Adding the field only to `BeautyParameters` and `NoseWarpProvider` is insufficient.
+
+**How to avoid:**
+Use the existing four nose fields as a propagation checklist. For each new field, verify: geometry-required routing; no-face skip and zero; missing-nose skip and zero; stale skip and zero; reused exact `0.5`; `.nose` active only with usable non-empty provider output; unrelated color/filter continuation; and category-level warnings/metrics. Update shared `assertNoseStrengthsAreZero` helpers so omissions fail loudly.
+
+**Warning signs:**
+- A repository search shows a four-field list that excludes either new name.
+- New-only parameters produce `detectionSummary == .notRun`.
+- Missing/stale tests assert the domain but not every effective strength.
+- Reused geometry preserves the old four fields but leaves a new field at full strength.
+- A no-face request emits geometry point metrics.
+
+**Phase to address:**
+Proposed Phase 35 for routing completeness and Phase 37 for the full freshness/degradation matrix.
+
+---
+
+### Pitfall 6: Omitting new fields from combined-geometry weakening or weakening them more than once
+
+**What goes wrong:**
+High-strength face/eye/mouth/nose combinations weaken the four legacy nose fields but not `山根`/`提升`, producing disproportionate nose deformation. Alternatively, repeated conflict resolution scales a value twice, obscuring the intended exact behavior.
+
+**Why it happens:**
+`GeometryConflictResolver` manually enumerates fields in its total, non-zero count, and scaled output. `BeautyEffectResolver` invokes conflict resolution from more than one domain path, so list completeness and call placement both matter. A generic “combined warning exists” test does not prove each new field was counted and scaled once with direction preserved.
+
+**How to avoid:**
+Add both fields to geometry total, non-zero field count, and weakened strengths. Test each new field independently with representative face, eye, and mouth geometry, comparing isolated effective strength to combined effective strength and preserving sign where relevant. Add an all-nose and all-domain case with an explicit expected weakening count/scale, and inspect whether conflict resolution is applied once per plan rather than incidentally per active domain.
+
+**Warning signs:**
+- `combined_geometry_weakened` exists but a new effective strength equals its isolated cap.
+- `weakenedCount` does not change when either new field is enabled.
+- Results depend on whether a mouth or face-shape field is also non-zero.
+- The same parameter is multiplied by the geometry scale in multiple resolver branches.
+
+**Phase to address:**
+Proposed Phase 37 safety and integration closeout, after isolated geometry behavior is stable.
+
+---
+
+### Pitfall 7: Leaking raw geometry or parameter detail through diagnostics and evidence
+
+**What goes wrong:**
+Warnings, metrics, helper output, or evidence documents expose landmark coordinates, bounding boxes, absolute paths, raw framework errors, parameter snapshots, or per-face details. A harmless-looking debug assertion can widen the public or recorded privacy surface.
+
+**Why it happens:**
+New geometry is easiest to debug by printing points and paths. This repository explicitly treats landmarks as biometric-adjacent, permits only geometry-free summaries plus category/aggregate diagnostics, and records generated output evidence in Markdown.
+
+**How to avoid:**
+Reuse fixed category-level nose reason codes and aggregate numeric metrics. Keep control points and face geometry internal/package-only. Helpers should report relative fixture names, case IDs, counts, dimensions, and comparison pass/fail only. Extend public/SPI, active-source, warning/metric, raw-path, and evidence-document scans to cover the new code and phase artifacts.
+
+**Warning signs:**
+- Warning messages interpolate field names, values, coordinates, face indices, or local URLs.
+- Metrics keys contain per-point or per-fixture geometry.
+- Evidence contains `/Users/`, `/private/var`, `CGPoint`, `CGRect`, raw landmark arrays, or framework error descriptions.
+- The Demo or renderer imports `BeautyDetection`, `BeautyEffects`, or `BeautyRender` to inspect geometry.
+
+**Phase to address:**
+Proposed Phase 37 security and boundary scan; enforce fixed diagnostics during Phase 35 implementation.
+
+---
+
+### Pitfall 8: Treating generated PNGs as either disposable noise or committed baselines
+
+**What goes wrong:**
+The renderer matrix changes but the helper/gallery routing still expects the old 34-case/238-output inventory, or generated PNGs are accidentally committed. At the other extreme, outputs are regenerated and deleted without recording reproducible counts and comparisons, leaving no reviewable evidence.
+
+**Why it happens:**
+The canonical case inventory is hard-coded in the renderer regression test and helper scripts use fixed case sets/counts. v1.7 evidence was 28 × 7 = 196, while the current post-mouth matrix is 34 × 7 = 238. Archive moves also make old `.planning/phases/...` command paths stale if current docs are not updated deliberately.
+
+**How to avoid:**
+Recalculate the matrix only after the semantic decision determines how many direction cases each field needs. Keep one public field per isolated case. Update renderer inventory, helper expectations, gallery groups, no-face representative checks, and current command paths together. Verify full PNG decode, non-empty files, same dimensions, ROI differences, pairwise semantic differences, ignored status, and `git ls-files` zero tracked output/gallery artifacts. Record commands and aggregate results in evidence, not the PNGs themselves.
+
+**Warning signs:**
+- Docs still call 196 or 238 the current matrix after cases are added.
+- Helpers pass while silently ignoring unexpected case IDs.
+- `git status` shows files under `example-images/output` or `example-images/gallery`.
+- Gallery cleanup deletes outside its safe root.
+- Current docs reference pre-archive `.planning/phases/31...` paths that no longer exist.
+
+**Phase to address:**
+Proposed Phase 36 renderer/helper/gallery evidence; Phase 37 repeats artifact containment during closeout.
+
+---
+
+### Pitfall 9: Declaring branch-level `鼻子` complete from code or tool-row status alone
+
+**What goes wrong:**
+The branch is promoted to `implemented` before both independent tools have public-facade output, safety/degradation coverage, redaction scans, and synchronized owning docs. Claims may expand further into Demo UI, device parity, commercial naturalness, broad reference-app parity, packaging, or launch readiness without evidence.
+
+**Why it happens:**
+Once all six taxonomy rows appear implemented, the status looks mechanically complete. However, the repository's status contract requires SDK behavior, tests, facade-visible output, and same-phase ledger/branch updates. Several current owners repeat branch status and inventory, while archived milestone documents must remain historically accurate.
+
+**How to avoid:**
+Make branch promotion the last closeout action. Require both new rows to pass contract, provider, facade, output-helper, freshness, combined-safety, redaction, dependency/import, and artifact gates. Update the authoritative second-level ledger first, then nose README, branch-level `FEATURE_MATRIX.md`, `EXAMPLE_IMAGE_VALIDATION.md`, root contracts, quality/current planning owners, and milestone evidence. Preserve archived v1.7/v1.8 counts and non-claims as historical facts. State explicitly that SDK branch completion adds no Demo/device/commercial/packaging/launch claim.
+
+**Warning signs:**
+- `FEATURE_MATRIX.md` says `implemented` while either ledger row is partial/future.
+- A row is promoted from provider tests without isolated public-facade output.
+- Current owner docs disagree on 31 vs 33 fields, case counts, or branch status.
+- A global replacement rewrites v1.7's exact four-row or 31-field archive.
+- “Nose complete” appears without the qualifier “SDK branch” and explicit non-claims.
+
+**Phase to address:**
+Proposed Phase 37 only, after Phases 35 and 36 evidence is complete.
 
 ## Technical Debt Patterns
 
 | Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
-| --- | --- | --- | --- |
-| Reuse provider tests as facade evidence | No renderer/helper work | Cannot prove detection-to-saved-output wiring or signed direction | Never for ledger promotion |
-| Copy nose/eye ROI unchanged | Fast helper reuse | False positives or missed mouth changes | Never; reuse decoder/invariant machinery only |
-| Skip a domain without zeroing strengths | Smaller resolver diff | Plan state becomes internally contradictory and unsafe to consume | Never |
-| Treat all outer-lip consumers as one domain | Simple degradation branch | Geometry scaling contaminates color, or stale color masks remain active | Never |
-| Promote by public-field count | Easy documentation update | Overclaims `丰唇` and whole-branch completeness | Never |
-| Commit visual baselines | Easy review | Repository growth and unapproved artistic golden files | Only under a separately approved baseline policy; out of scope here |
+|----------|-------------------|----------------|-----------------|
+| Map `山根` to `noseBridge` or `提升` to `noseTipSize` | Minimal code and tests | False taxonomy completion and inseparable future API semantics | Never for v1.9's explicit independent-field goal |
+| Add fields only to `BeautyParameters` and provider | Visible local prototype | Detection, degradation, weakening, Codable, and inventory drift | Only in an uncommitted spike |
+| Assert control-point count instead of displacement and rendered ROI | Fast green test | Geometry no-ops and aliases pass undetected | Never as completion evidence |
+| Copy an existing safety cap without direction/region evidence | Fast constants | Unnatural or ineffective behavior becomes public contract | Only as a temporary spike value, never closeout |
+| Hard-code a new output total before semantics decide signed cases | Simple helper | Stale matrix and missing direction evidence | Never |
+| Global replace all `31` inventory references with `33` | Quick documentation update | Corrupts historical v1.7/v1.8 archives | Never; update current owners selectively |
+| Commit generated PNGs as proof | Easy visual review | Repository bloat and unreviewed binary baseline drift | Never under the current ignored-artifact contract |
+| Promote branch status before the final owner scan | Makes progress appear complete | Contradictory public claims and audit repairs | Never |
 
 ## Integration Gotchas
 
 | Integration | Common Mistake | Correct Approach |
-| --- | --- | --- |
-| Public facade -> resolver -> unified warp | Prove only `MouthWarpProvider` movement | Run public-facade saved-output cases and focused facade tests |
-| Detection -> outer-lip geometry | Treat non-empty points as fresh/usable | Apply explicit absence, reuse, and stale policy before either dependent domain activates |
-| Mouth geometry -> conflict resolver | Weaken one representative field or include `lipColor` | Cover every geometry field and exclude color from geometry counts/scales |
-| Lip color -> render mask | Use geometry output as color evidence | Give `lipColor` its own isolated output and containment checks |
-| Renderer -> helper/gallery | Compare raw full frame | Decode dimensions, exclude watermark, use mouth ROI, direct signed pairs, and keep outputs ignored |
-| Evidence -> feature ledger | Map `lipColor` to `丰唇` | Promote only the three semantically matching geometry rows |
+|-------------|----------------|------------------|
+| `BeautyParameters` → resolver | Add storage but omit `requiresFaceGeometry`, cap, active check, zero, or reuse list | Trace each field through every legacy nose occurrence and test a new-only request |
+| Resolver → `NoseWarpProvider` | Mark `.nose` active because strength is non-zero even when points collapse | Activate only after non-empty renderable control points; zero and skip otherwise |
+| Nose provider → unified warp | Reuse identical landmarks/displacements or allow additive overlap to exaggerate output | Prove distinct region/vector semantics and combined composability |
+| Conflict resolver → effective strengths | Add fields to scale but not total/count, or scale from multiple domain paths | Update all three enumerations and assert exact once-per-plan weakening behavior |
+| Codable → old presets/Demo JSON | Make new keys required or forget normalized/round-trip plumbing | Decode missing keys as zero; preserve schema behavior; test old and new payloads |
+| Renderer → helper/gallery | Add case IDs without updating expected inventory and safe gallery groups | Keep canonical IDs, helper cases, matrix math, gallery routing, and docs in one change set |
+| Runtime outputs → evidence docs | Record raw paths/geometry or track PNGs | Record relative names and aggregates; keep output/gallery ignored and untracked |
+| Tool ledger → branch matrix | Promote branch when rows look complete but evidence owners disagree | Run a final current-owner scan, then promote all owners atomically |
 
 ## Performance Traps
 
 | Trap | Symptoms | Prevention | When It Breaks |
-| --- | --- | --- | --- |
-| Separate warp passes per mouth control | Redundant sampling and inconsistent combined output | Preserve one unified geometry pass with merged control points | As soon as multiple mouth/face controls are enabled together |
-| Whole-frame evidence scans for every assertion | Slow gallery validation with weak attribution | Decode once per file and calculate bounded mouth/watermark-safe regions | Across the full fixture-by-case matrix |
-| Extra detection solely for lip color | Duplicate work and divergent face selection | Reuse facade-selected face geometry under the same validity contract | Still-image matrix and especially realtime preview |
+|------|----------|------------|----------------|
+| Excess overlapping nose control points | Still-image renderer slows and combined output overshoots | Reuse helper math, minimize distinct points, bound radii, test combined point inventory | Cost grows with affected pixels × renderable points; visible first on large still images |
+| Duplicate points with the same radius | Stronger-than-cap visual displacement despite capped scalar strengths | De-duplicate or intentionally combine vectors before render; add max-displacement tests | As soon as two active fields influence the same ROI |
+| Full-frame comparison for localized effects | Slow helpers and false positives from watermark/color changes | Restrict comparisons to a documented nose ROI above the watermark | Every fixture; worsens as matrix expands |
+| Re-running all generated artifacts for a small semantic failure | Long iteration and stale mixed output directories | Run isolated cases first, clean/rerun the full matrix only for evidence closeout | At 34+ cases × 7 fixtures and increasing |
 
 ## Security Mistakes
 
 | Mistake | Risk | Prevention |
-| --- | --- | --- |
-| Logging mouth ROI or raw outer-lip points | Face-derived biometric geometry leakage | Categorical warnings and aggregate numeric metrics only |
-| Returning geometry through public/SPI evidence helpers | Expands privacy-sensitive API surface | Keep helpers image/count based and geometry internal |
-| Committing gallery/output PNGs | Persists fixture-derived face images | Ignore directories and verify zero tracked generated artifacts |
-| Adding network/dependency paths for validation | Violates local-first SDK boundary | Use standard-library/local test helpers and bundled fixtures only |
+|---------|------|------------|
+| Logging new control points or landmark regions | Biometric-adjacent derived data leakage | Fixed category warnings and aggregate metrics only |
+| Exposing provider/control-point types to the facade or Demo | Permanent public privacy and architecture expansion | Keep geometry internal/package-only; scan public/SPI and imports |
+| Recording absolute fixture/output paths in evidence | Local user/environment disclosure | Relative fixture names and repository-relative commands only |
+| Echoing raw parameter JSON on decode errors | User preference/payload leakage | Preserve stable redacted Demo import errors |
+| Adding dependencies/network for a local geometry tool | Violates local-first boundary and broadens supply-chain risk | No dependency or network change; fail closed in boundary scans |
+| Tracking generated face outputs | Persists sensitive portrait derivatives in git | Ignore output/gallery roots and assert zero tracked files |
 
 ## UX Pitfalls
 
 | Pitfall | User Impact | Better Approach |
-| --- | --- | --- |
-| Negative size/width behaves like positive | Slider direction feels broken and unpredictable | Lock opposite facade-visible directions |
-| Stale geometry continues moving/coloring lips | Mouth jumps or mask drifts off the face | Fail closed or apply the explicitly tested conservative reuse policy |
-| Lip color labeled as plump lips | User expects shape/volume but receives tint | Keep color and true plump geometry named and evidenced separately |
-| Missing mouth disables unrelated effects | Brightness/filter unexpectedly disappear | Skip only `.mouth`/`.lipColor` as applicable; continue safe domains |
+|---------|-------------|-----------------|
+| Root, bridge, lift, and tip look identical | Controls feel fake or redundant | Give each a documented region/direction and pairwise visible evidence |
+| Direction label and rendered motion disagree | Adjustment feels inverted | Lock positive/negative semantics from normalized coordinates through facade output |
+| High combined nose settings overpower other geometry | Unnatural facial distortion | Exact caps plus once-per-plan combined weakening |
+| Missing/stale face silently applies partial nose warp | Flicker or unstable deformation | Skip/zero the whole nose domain; keep safe color/filter work active |
+| Branch completion is presented as app/UI parity | Host integrators expect controls or commercial quality that do not exist | Say “SDK nose branch complete” and retain explicit UI/device/commercial non-claims |
 
 ## "Looks Done But Isn't" Checklist
 
-- [ ] **Signed geometry:** Both signs render and differ from each other in the mouth ROI, not merely from no-op.
-- [ ] **Facade wiring:** Evidence runs through `BeautySDK`, not only resolver/provider internals.
-- [ ] **Fail-closed state:** Missing/no-face/stale skipped mouth strengths are exactly zero.
-- [ ] **Reuse policy:** Geometry stays at the exact established `0.5` scale with sign preserved; color behavior is independently explicit.
-- [ ] **Domain separation:** `lipColor` is absent from geometry weakening and has isolated evidence.
-- [ ] **Output validity:** Every output is non-empty, same-dimension, watermark-safe, and attributable to its case.
-- [ ] **Ledger honesty:** Exactly `大小`, `宽度`, and `微笑` become implemented; `丰唇` and branch-level `嘴唇` do not.
-- [ ] **Containment:** Warnings/metrics are redacted and zero generated PNG/gallery files are tracked.
+- [ ] **Independent semantics:** Both fields have unique neutral names, ranges, region/vector definitions, caps, and nearest-existing pairwise tests.
+- [ ] **Public model:** Stored properties, coding keys, defaulted initializer, decoder, normalization, equality/round-trip, and current 33-field inventory agree.
+- [ ] **Backward compatibility:** v1.8-era JSON and bundled presets decode both new fields as exact zero; existing initializer call patterns compile.
+- [ ] **Routing:** A request containing only either new field triggers geometry detection and `.nose` planning.
+- [ ] **Geometry:** Every emitted point has non-zero displacement after clamping and remains distinct from bridge/tip behavior across fixtures.
+- [ ] **Caps/direction:** Overflow, negative policy, non-finite values, exact caps, warning, and capped-count behavior are locked.
+- [ ] **Freshness:** No-face, missing-nose, and stale geometry zero all six nose strengths; reused geometry scales all six by exact `0.5` with direction preserved.
+- [ ] **Combined safety:** Each new field participates in geometry total, count, and weakening exactly once; all-domain tests pass.
+- [ ] **Redaction:** Public results, warnings, metrics, helper output, and evidence contain no raw geometry, raw paths, payloads, or framework errors.
+- [ ] **Facade output:** Isolated cases differ from baseline in a nose ROI and differ from their nearest legacy behavior; signed cases have both directions if applicable.
+- [ ] **Artifacts:** Full matrix decodes at the expected dimensions, gallery routing is safe, outputs are ignored, and zero generated files are tracked.
+- [ ] **Inventory:** Renderer IDs, helper expectations, case/fixture totals, public field count, and current owner docs all match.
+- [ ] **Branch closeout:** Both tool rows and branch status are promoted only after the final scan; v1.7/v1.8 archives remain unchanged.
+- [ ] **Non-claims:** No Demo UI, device parity, commercial visual approval, broad Meitu parity, packaging, or launch readiness is implied.
 
 ## Recovery Strategies
 
 | Pitfall | Recovery Cost | Recovery Steps |
-| --- | --- | --- |
-| Signed outputs collapse | MEDIUM | Trace sign through normalization/resolver/provider, add paired tests, regenerate ignored evidence |
-| Skipped strengths remain live | LOW | Add mouth zeroing helper, cover every skip route, rerun focused facade/degradation suites |
-| Lip color and geometry are conflated | MEDIUM | Split policy/tests/metrics by domain and rewrite evidence claims before promotion |
-| Wrong ROI produces false evidence | MEDIUM | Invalidate counts, define mouth ROI, rerun helper and gallery, update evidence document |
-| Ledger overpromotion | LOW | Revert unsupported rows/status, run exact-row guards and current-owner documentation scan |
-| Generated/private artifacts leak | HIGH | Remove artifacts from index/history as appropriate, rotate unsafe fixtures if needed, strengthen ignore/redaction scans |
+|---------|---------------|----------------|
+| Semantic alias discovered before release | MEDIUM | Freeze promotion, write distinct semantic contract, split field/provider/cases, regenerate evidence |
+| Public field shipped with wrong name/range | HIGH | Do not silently repurpose; preserve old decoding/API, add a corrected field or versioned migration, document compatibility |
+| Geometry no-op/overlap | MEDIUM | Inspect control-point vectors, separate regions/radii, add pairwise tests, regenerate only after isolated cases pass |
+| Missing freshness/weakening propagation | LOW | Search all legacy nose lists, update zero/reuse/conflict helpers, add new-only degradation tests |
+| Sensitive diagnostics/evidence recorded | HIGH | Remove leaked artifacts/history as policy requires, replace with aggregates, rerun scans, invalidate affected evidence |
+| Generated PNG accidentally tracked | MEDIUM | Untrack without deleting needed local review files, confirm ignore rules, rescan git index, rerun artifact gate |
+| Inventory/doc drift | LOW | Identify current owners vs archives, repair current owners in one batch, run link/table/count/wording scan |
+| Premature branch promotion | MEDIUM | Revert current status to partial, list missing gates, finish evidence, rerun single final audit |
 
 ## Pitfall-to-Phase Mapping
 
+How the proposed roadmap should address these pitfalls.
+
 | Pitfall | Prevention Phase | Verification |
-| --- | --- | --- |
-| Signed facade direction | Phase 33 + 34 | Paired positive/negative output comparisons and sign-preserving combined tests |
-| Non-zero skipped strengths | Phase 34 | Exact-zero assertions for missing, no-face, and stale routes |
-| Geometry/color conflation | Phase 34 | Separate active/skipped-domain, freshness, scale, and weakened-count assertions |
-| Incomplete combined weakening | Phase 34 | Table-driven five-direction geometry matrix plus color exclusion |
-| Invalid output ROI | Phase 33 | Mouth-region comparisons excluding watermark; isolated cases and no-face invariants |
-| Ledger overclaim | Phase 34 | Exact three-row guard, `丰唇` partial guard, branch partial guard |
-| Redaction/artifact leakage | Phase 33 + 34 | Forbidden-token scans, public/SPI boundary scans, ignore checks, zero tracked PNGs |
+|---------|------------------|--------------|
+| Semantic aliasing | Phase 35: public contract and independent geometry | Unique fields/provider paths plus new-vs-legacy control-point and output distinctions |
+| Source/Codable compatibility | Phase 35 | Old JSON/defaults, new round trip, non-finite normalization, source-style compile, 33-field inventory |
+| No-op/overlap geometry | Phase 35, then Phase 36 | Vector/region tests followed by isolated ROI and pairwise facade-output comparisons |
+| Caps/direction | Phase 35, finalized Phase 37 | Exact normalization/caps and end-to-end direction under reuse/weakening |
+| Missing/reused/stale propagation | Phase 37 | New-only no-face/missing/stale/reused matrix with all six strengths asserted |
+| Combined weakening | Phase 37 | Per-field and all-domain scale/count tests, no double scaling |
+| Redaction | Phase 37 | Public/SPI/import/source/evidence scans and fixed aggregate diagnostics |
+| Generated artifacts and matrix drift | Phase 36, repeated Phase 37 | Full helper/gallery run, expected totals, ignore and zero-tracked checks |
+| Public inventory and owner drift | Phase 35 for API owners; Phase 37 for full closeout | Selective current-owner update, archives unchanged, comprehensive final scan |
+| Documentation overclaim | Phase 37 | Exact two-row plus branch promotion and explicit SDK-only non-claims |
 
 ## Sources
 
-- `.planning/PROJECT.md` — v1.8 goal, scope, and exact promotion boundary.
-- `BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift` — current caps, activation, degradation, combined weakening, and the mouth zeroing gap.
-- `BeautySDK/Sources/BeautyEffects/Warp/MouthWarpProvider.swift` and `MouthWarpProviderTests.swift` — current signed geometry semantics and provider-only evidence.
-- `BeautySDK/Tests/BeautyEffectsTests/MissingLandmarkDegradationTests.swift` and `CombinedEffectSafetyTests.swift` — existing absence/reuse/stale and combined-effect coverage.
-- `docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md`, `features/beauty-shaping/README.md`, and `features/beauty-shaping/lips/README.md` — authoritative row status and `lipColor`/`丰唇` distinction.
-- v1.6 eye and v1.7 nose milestone artifacts — established public-facade evidence, signed comparison, degradation, redaction, documentation, and artifact-containment patterns.
-- `$HOME/.codex/get-shit-done/templates/research-project/PITFALLS.md` — research structure.
+- `.planning/PROJECT.md` — v1.9 goal, target features, active requirements, and scope boundaries.
+- `DESIGN.md` — current 31-field parameter model, nose ranges, exact caps, and v1.7 semantics.
+- `SECURITY.md` — local-first posture, biometric-adjacent geometry boundary, parameter validation, redaction, and Phase 32 containment evidence.
+- `RELIABILITY.md` — degradation, aggregate diagnostics, missing/stale/reused nose policy, and safe-domain continuation.
+- `.planning/milestones/v1.7-REQUIREMENTS.md`, `v1.7-ROADMAP.md`, and `v1.7-MILESTONE-AUDIT.md` — exact four-row evidence, deferred `山根`/`提升`, and branch non-completion.
+- `.planning/milestones/v1.7-phases/31-nose-renderer-output-evidence/31-PATTERNS.md` — renderer/helper/gallery evidence pattern.
+- `.planning/milestones/v1.7-phases/32-nose-safety-ledger-and-closeout/32-PATTERNS.md`, `32-NOSE-SAFETY-EVIDENCE.md`, and `32-COMPREHENSIVE-CURRENT-OWNER-SCAN.md` — freshness, weakening, boundary, artifact, and owner-scan patterns.
+- `BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift` and `BeautySDK/Tests/BeautyCoreTests/BeautyParametersTests.swift` — manual public/Codable plumbing and inventory contract.
+- `BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift`, `BeautyEffectPlan.swift`, and `BeautySafetyCaps.swift` — repeated field propagation, caps, active/skip routing, zeroing, and reuse scaling.
+- `BeautySDK/Sources/BeautyEffects/Warp/NoseWarpProvider.swift` and `GeometryConflictResolver.swift` — existing bridge/tip regions, additive combined geometry, and weakening enumeration.
+- `BeautySDK/Sources/BeautyEffects/Render/BeautyGeometryEffectPipeline.swift` — renderable-point filtering and additive per-pixel displacement behavior.
+- `BeautySDK/Tests/BeautyEffectsTests/NoseWarpProviderTests.swift`, `MissingLandmarkDegradationTests.swift`, and `CombinedEffectSafetyTests.swift` — current provider, freshness, redaction, and combined-safety patterns.
+- `BeautySDK/Sources/BeautyExampleRenderer/main.swift` and `BeautySDK/Tests/BeautyCoreTests/BeautyRendererOutputRegressionTests.swift` — canonical renderer matrix and one-field-per-case boundary.
+- `docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md`, `FEATURE_MATRIX.md`, `EXAMPLE_IMAGE_VALIDATION.md`, and `features/beauty-shaping/nose/README.md` — authoritative tool/branch statuses, output protocol, and documentation ownership.
+- `BeautyDemo/BeautyDemoTests/ParameterJSONCodingTests.swift` — Demo schema, deterministic export/import, and redacted decode errors.
 
 ---
-*Pitfalls research for: v1.8 Broader 美型 / 五官 SDK Slice - Mouth*
+*Pitfalls research for: v1.9 Nose Remaining Tools and Branch Closeout*
 *Researched: 2026-07-13*
