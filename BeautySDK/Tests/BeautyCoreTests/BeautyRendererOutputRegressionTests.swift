@@ -323,6 +323,36 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         assertRedacted(result)
     }
 
+    func testPhase36NOSE09IsolatedNoseCasesPreserveNoFaceFacadeContract() throws {
+        let engine = try BeautyEngine(configuration: .default)
+        let inputDirectory = try repositoryRootURL().appendingPathComponent("example-images/input", isDirectory: true)
+        let fixtureName = "negatives/no-face-gradient.png"
+        let fixtureURL = inputDirectory.appendingPathComponent(fixtureName)
+        let input = try fixtureImage(at: fixtureURL, named: fixtureName)
+        let isolatedParameters = [
+            BeautyParameters(noseRootNarrowing: 0.25),
+            BeautyParameters(noseTipLift: 0.25)
+        ]
+
+        for parameters in isolatedParameters {
+            let result = try engine.processResult(
+                image: input,
+                metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+                parameters: parameters
+            )
+
+            XCTAssertEqual(result.output.extent, input.extent)
+            XCTAssertEqual(result.detectionSummary?.availability, .noFace)
+            XCTAssertEqual(result.detectionSummary?.reasons, [.noFaceDetected])
+            XCTAssertEqual(result.detectionSummary?.usedFaceCount, 0)
+            XCTAssertEqual(result.metrics["beauty.detection.geometryRequired"], 1)
+            XCTAssertEqual(result.metrics["beauty.detection.usedFaceCount"], 0)
+            XCTAssertTrue(result.warnings.contains { $0.code == "face_effects_skipped_no_face" })
+            assertRedacted(result)
+            assertNoPhase36NoseFieldDisclosure(result)
+        }
+    }
+
     func testDefaultParametersPreserveCurrentFixturePixelsBeforeWatermark() throws {
         let engine = try BeautyEngine(configuration: .default)
 
@@ -469,6 +499,27 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
             "SIMD"
         ] {
             XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)", file: file, line: line)
+        }
+    }
+
+    private func assertNoPhase36NoseFieldDisclosure(
+        _ result: BeautyResult<CIImage>,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let metadata = (
+            result.warnings.map { "\($0.code) \($0.message)" } +
+            Array(result.metrics.keys) +
+            (result.detectionSummary?.reasons.map(\.rawValue) ?? [])
+        ).joined(separator: " ").lowercased()
+
+        for forbidden in ["noseroot", "nosetip", "narrowing", "lift", "coordinate", "landmark"] {
+            XCTAssertFalse(
+                metadata.contains(forbidden),
+                "Unexpected field-specific or raw geometry term: \(forbidden)",
+                file: file,
+                line: line
+            )
         }
     }
 
