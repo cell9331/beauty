@@ -1,8 +1,8 @@
 ---
 phase: 30-eye-safety-ledger-and-closeout
-reviewed: 2026-07-11T09:20:00Z
+reviewed: "2026-07-13T09:19:00Z"
 depth: standard
-files_reviewed: 10
+files_reviewed: 9
 files_reviewed_list:
   - BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift
   - BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift
@@ -13,7 +13,6 @@ files_reviewed_list:
   - BeautySDK/Tests/BeautyEffectsTests/FaceShapeWarpProviderTests.swift
   - BeautySDK/Tests/BeautyCoreTests/BeautyEngineGeometryFacadeTests.swift
   - BeautySDK/Tests/BeautyEffectsTests/CombinedEffectSafetyTests.swift
-  - .planning/phases/30-eye-safety-ledger-and-closeout/30-EYE-SAFETY-EVIDENCE.md
 findings:
   critical: 0
   warning: 0
@@ -22,11 +21,11 @@ findings:
 status: clean
 ---
 
-# Phase 30 Pre-Promotion Review
+# Phase 30 Code Review
 
 ## Summary
 
-The frozen Plan 30-01/02 implementation and tests are clean for correctness, security, privacy, regression risk, scope, and test quality. Command evidence is linked in `30-EYE-SAFETY-EVIDENCE.md`.
+The Phase 30 implementation and requested tests are clean at standard depth for correctness, regressions, security/privacy, test quality, and code quality.
 
 ## Review Results
 
@@ -44,8 +43,8 @@ None.
 
 ## Verification
 
-Focused suites, the 178-test full suite, renderer regression, helper, active-source boundary scans, generated-artifact guards, and scoped diff checks passed as recorded in `30-EYE-SAFETY-EVIDENCE.md`.
+The requested nine-file scope was inspected line by line. A combined focused test invocation covering all seven affected XCTest suites passed 62 tests with zero failures on 2026-07-13. The broader Phase 30 command evidence remains recorded in `30-EYE-SAFETY-EVIDENCE.md`.
 
 ## Residual Scope
 
-This is a pre-promotion review. Eye ledger promotion and owning-contract closeout remain later-plan work.
+Device evidence, commercial visual review, broader parity, packaging, and milestone audit remain outside this source/test review.
