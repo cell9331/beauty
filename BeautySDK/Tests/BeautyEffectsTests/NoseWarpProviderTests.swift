@@ -66,6 +66,24 @@ final class NoseWarpProviderTests: XCTestCase {
         XCTAssertTrue(result.points.allSatisfy { $0.strength <= BeautySafetyCaps.noseTipSize })
     }
 
+    func testNoseTipSizePreservesOppositeSignedDirections() {
+        let provider = NoseWarpProvider()
+        let positive = provider.makeControlPoints(face: .fixture, strengths: strengths(noseTipSize: 1))
+        let negative = provider.makeControlPoints(face: .fixture, strengths: strengths(noseTipSize: -1))
+
+        XCTAssertFalse(positive.points.isEmpty)
+        XCTAssertEqual(positive.points.map(\.source), negative.points.map(\.source))
+        XCTAssertNotEqual(positive.points.map(\.target), negative.points.map(\.target))
+        for (positivePoint, negativePoint) in zip(positive.points, negative.points) {
+            XCTAssertGreaterThan(
+                LandmarkGeometryHelper.distance(negativePoint.target, positivePoint.target),
+                Float.ulpOfOne
+            )
+            XCTAssertEqual(positivePoint.strength, BeautySafetyCaps.noseTipSize, accuracy: 0.0001)
+            XCTAssertEqual(negativePoint.strength, BeautySafetyCaps.noseTipSize, accuracy: 0.0001)
+        }
+    }
+
     func testNoseBridgeCreatesUpperBridgePointsWithCappedStrength() {
         let result = NoseWarpProvider().makeControlPoints(
             face: .fixture,

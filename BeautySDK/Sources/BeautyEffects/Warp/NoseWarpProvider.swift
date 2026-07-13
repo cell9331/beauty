@@ -18,7 +18,7 @@ struct NoseWarpProvider: WarpControlPointProvider {
         }
 
         if abs(strengths.noseTipSize) > Float.ulpOfOne {
-            points.append(contentsOf: tipPoints(face: face, center: center, strength: abs(strengths.noseTipSize)))
+            points.append(contentsOf: tipPoints(face: face, center: center, strength: strengths.noseTipSize))
         }
 
         if strengths.noseBridge > 0 {
@@ -79,11 +79,12 @@ struct NoseWarpProvider: WarpControlPointProvider {
         strength: Float
     ) -> [WarpControlPoint] {
         lowerNosePoints(face: face, center: center).map { source in
-            makePoint(
+            let displacement = face.bounds.height * 0.025 * strength / BeautySafetyCaps.noseTipSize
+            return makePoint(
                 source: source,
-                target: LandmarkGeometryHelper.move(source, toward: center, by: face.bounds.height * 0.025),
+                target: LandmarkGeometryHelper.move(source, toward: center, by: displacement),
                 radius: face.bounds.width * 0.09,
-                strength: strength
+                strength: abs(strength)
             )
         }
     }
