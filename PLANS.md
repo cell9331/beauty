@@ -26,7 +26,15 @@
 
 ## 3. Active
 
-No active work recorded.
+### A-2026-07-13-v1-9-autonomous
+
+| Field | Value |
+| --- | --- |
+| Status | active |
+| Scope | Execute v1.9 Phases 35-37 autonomously, then audit, archive, tag, and clean up the milestone. |
+| Requirements | NOSE-01 through NOSE-14 and DOC-01. |
+| Current step | Phase 35 smart discuss and planning. |
+| Verification | Per-phase focused/full SwiftPM, renderer/helper, security, review, Nyquist, and milestone-audit gates defined by ROADMAP and REQUIREMENTS. |
 
 ## 4. Completed
 
