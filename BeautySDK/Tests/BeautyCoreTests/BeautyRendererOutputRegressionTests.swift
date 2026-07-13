@@ -35,7 +35,13 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         "noseWingSlim_0p35",
         "noseTipSize_plus0p30",
         "noseTipSize_minus0p30",
-        "noseBridge_0p30"
+        "noseBridge_0p30",
+        "mouthSize_plus0p35",
+        "mouthSize_minus0p35",
+        "mouthWidth_plus0p35",
+        "mouthWidth_minus0p35",
+        "smile_0p50",
+        "lipColor_0p50"
     ]
 
     private static let fixtureNames = [
@@ -234,6 +240,34 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
 
         for forbidden in ["noseCombo", "noseRoot", "noseLift", "shanGen", "tiSheng"] {
             XCTAssertFalse(source.contains(forbidden), "Renderer should not add out-of-scope nose case: \(forbidden)")
+        }
+    }
+
+    func testPhase33MouthCasesUseOnlyExistingPublicMouthParameters() throws {
+        let source = try rendererSource()
+        let expectedCases = [
+            ("mouthSize_plus0p35", "mouthSize: 0.35"),
+            ("mouthSize_minus0p35", "mouthSize: -0.35"),
+            ("mouthWidth_plus0p35", "mouthWidth: 0.35"),
+            ("mouthWidth_minus0p35", "mouthWidth: -0.35"),
+            ("smile_0p50", "smile: 0.50"),
+            ("lipColor_0p50", "lipColor: 0.50")
+        ]
+        let mouthFields = ["mouthSize:", "mouthWidth:", "smile:", "lipColor:"]
+
+        for (caseID, requiredParameter) in expectedCases {
+            let snippet = try rendererCaseSnippet(for: caseID, in: source)
+            XCTAssertTrue(snippet.contains(requiredParameter), "Missing \(requiredParameter) in \(caseID)")
+            XCTAssertEqual(
+                mouthFields.filter { snippet.contains($0) },
+                [requiredParameter.split(separator: " ").first.map(String.init) ?? ""],
+                "\(caseID) should use exactly one public mouth/lip parameter"
+            )
+            XCTAssertFalse(snippet.contains("BeautyDemo"), "\(caseID) should not introduce Demo coupling")
+        }
+
+        for forbidden in ["mouthCombo", "mouthYPosition", "mouthTilt", "mouthXPosition", "mLip", "lipPlump", "teethWhitening"] {
+            XCTAssertFalse(source.contains(forbidden), "Renderer should not add out-of-scope mouth case: \(forbidden)")
         }
     }
 

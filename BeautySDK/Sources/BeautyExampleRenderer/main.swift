@@ -192,6 +192,36 @@ let cases = [
         id: "noseBridge_0p30",
         displayName: "noseBridge 0.30",
         parameters: BeautyParameters(noseBridge: 0.30)
+    ),
+    RenderCase(
+        id: "mouthSize_plus0p35",
+        displayName: "mouthSize +0.35",
+        parameters: BeautyParameters(mouthSize: 0.35)
+    ),
+    RenderCase(
+        id: "mouthSize_minus0p35",
+        displayName: "mouthSize -0.35",
+        parameters: BeautyParameters(mouthSize: -0.35)
+    ),
+    RenderCase(
+        id: "mouthWidth_plus0p35",
+        displayName: "mouthWidth +0.35",
+        parameters: BeautyParameters(mouthWidth: 0.35)
+    ),
+    RenderCase(
+        id: "mouthWidth_minus0p35",
+        displayName: "mouthWidth -0.35",
+        parameters: BeautyParameters(mouthWidth: -0.35)
+    ),
+    RenderCase(
+        id: "smile_0p50",
+        displayName: "smile 0.50",
+        parameters: BeautyParameters(smile: 0.50)
+    ),
+    RenderCase(
+        id: "lipColor_0p50",
+        displayName: "lipColor 0.50",
+        parameters: BeautyParameters(lipColor: 0.50)
     )
 ]
 
