@@ -194,6 +194,16 @@ let cases = [
         parameters: BeautyParameters(noseBridge: 0.30)
     ),
     RenderCase(
+        id: "noseRootNarrowing_0p25",
+        displayName: "noseRootNarrowing 0.25",
+        parameters: BeautyParameters(noseRootNarrowing: 0.25)
+    ),
+    RenderCase(
+        id: "noseTipLift_0p25",
+        displayName: "noseTipLift 0.25",
+        parameters: BeautyParameters(noseTipLift: 0.25)
+    ),
+    RenderCase(
         id: "mouthSize_plus0p35",
         displayName: "mouthSize +0.35",
         parameters: BeautyParameters(mouthSize: 0.35)

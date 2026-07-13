@@ -36,6 +36,8 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         "noseTipSize_plus0p30",
         "noseTipSize_minus0p30",
         "noseBridge_0p30",
+        "noseRootNarrowing_0p25",
+        "noseTipLift_0p25",
         "mouthSize_plus0p35",
         "mouthSize_minus0p35",
         "mouthWidth_plus0p35",
@@ -70,6 +72,7 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
                 "BeautyExampleRenderer/main.swift should not import \(forbiddenTarget)"
             )
         }
+        XCTAssertEqual(source.components(separatedBy: "engine.processResult(").count - 1, 1)
     }
 
     func testFaceShapeComboCaseUsesOnlyPhase27FaceShapeParameters() throws {
@@ -216,16 +219,25 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         XCTAssertFalse(source.contains("cl" + "oud"), "Renderer should stay local-only")
     }
 
-    func testPhase31NoseCasesUseOnlyExistingPublicNoseParameters() throws {
+    func testPhase36NOSE07NoseCasesUseExactlyOnePublicNoseParameter() throws {
         let source = try rendererSource()
         let expectedCases = [
             ("noseSlim_0p35", "noseSlim: 0.35"),
             ("noseWingSlim_0p35", "noseWingSlim: 0.35"),
             ("noseTipSize_plus0p30", "noseTipSize: 0.30"),
             ("noseTipSize_minus0p30", "noseTipSize: -0.30"),
-            ("noseBridge_0p30", "noseBridge: 0.30")
+            ("noseBridge_0p30", "noseBridge: 0.30"),
+            ("noseRootNarrowing_0p25", "noseRootNarrowing: 0.25"),
+            ("noseTipLift_0p25", "noseTipLift: 0.25")
         ]
-        let noseFields = ["noseSlim:", "noseWingSlim:", "noseTipSize:", "noseBridge:"]
+        let noseFields = [
+            "noseSlim:",
+            "noseWingSlim:",
+            "noseTipSize:",
+            "noseBridge:",
+            "noseRootNarrowing:",
+            "noseTipLift:"
+        ]
 
         for (caseID, requiredParameter) in expectedCases {
             let snippet = try rendererCaseSnippet(for: caseID, in: source)
@@ -238,8 +250,20 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
             XCTAssertFalse(snippet.contains("BeautyDemo"), "\(caseID) should not introduce Demo coupling")
         }
 
-        for forbidden in ["noseCombo", "noseRoot", "noseLift", "shanGen", "tiSheng"] {
-            XCTAssertFalse(source.contains(forbidden), "Renderer should not add out-of-scope nose case: \(forbidden)")
+        let caseIDs = rendererCaseIDs(in: source)
+        for alias in ["noseCombo", "noseRoot", "noseLift", "shanGen", "tiSheng"] {
+            XCTAssertFalse(
+                caseIDs.contains { $0 == alias || $0.hasPrefix("\(alias)_") },
+                "Renderer should not add alias case: \(alias)"
+            )
+            XCTAssertFalse(
+                containsInitializerLabel(alias, in: source),
+                "Renderer should not add alias initializer label: \(alias)"
+            )
+            XCTAssertFalse(
+                source.contains("displayName: \"\(alias) "),
+                "Renderer should not add alias display label: \(alias)"
+            )
         }
     }
 
@@ -360,6 +384,13 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
 
     private func containsStandaloneToken(_ token: String, in source: String) -> Bool {
         source.range(of: "\\b\(NSRegularExpression.escapedPattern(for: token))\\b", options: .regularExpression) != nil
+    }
+
+    private func containsInitializerLabel(_ label: String, in source: String) -> Bool {
+        source.range(
+            of: "\\b\(NSRegularExpression.escapedPattern(for: label))\\s*:",
+            options: .regularExpression
+        ) != nil
     }
 
     private func exampleFixtureURLs() throws -> [URL] {
