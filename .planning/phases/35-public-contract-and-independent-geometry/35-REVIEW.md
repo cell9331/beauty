@@ -1,7 +1,12 @@
 ---
 phase: 35-public-contract-and-independent-geometry
-reviewed: 2026-07-13T07:10:48Z
+reviewed: 2026-07-13T07:20:32Z
+iteration: 2
 depth: standard
+head: 6bb48d5
+fix_commits_reviewed:
+  - 3cf59de
+  - bfd7375
 files_reviewed: 24
 files_reviewed_list:
   - ARCHITECTURE.md
@@ -36,39 +41,54 @@ findings:
 status: issues_found
 ---
 
-# Phase 35: Code Review Report
+# Phase 35: Code Review Report — Iteration 2
 
-**Reviewed:** 2026-07-13T07:10:48Z
+**Reviewed:** 2026-07-13T07:20:32Z
 **Depth:** standard
 **Files Reviewed:** 24
 **Status:** issues_found
 
 ## Summary
 
-The public model, Codable compatibility, independent root/tip vectors, private geometry boundary, and redacted facade surface are internally consistent. Two fail-closed ordering defects remain in mixed-geometry cases: unsupported new support can influence conflict weakening before it is zeroed, and valid new support can conceal missing legacy nose output while leaving legacy effective strengths nonzero.
+The two fix commits improve the ordering substantially: validator-rejected root/tip requests are now removed before conflict resolution, and a completely absent legacy nose proxy no longer survives beside valid independent support. Public model compatibility, aggregate redaction, private support visibility, and the documented Phase 36/37 boundaries remain intact.
 
-## Narrative Findings (AI reviewer)
+The fixes do not yet close the underlying mixed-output problem. Sanitization still uses availability flags that are coarser than the provider's actual per-field emission behavior. Consequently, one legacy field or one independent field can emit no control points while a sibling field makes the aggregate provider result nonempty; the non-rendering field then remains in effective strengths and may participate in conflict totals, counts, and scaling.
 
 ## Critical Issues
 
-### CR-01: Unsupported root/tip strengths participate in conflict weakening before support validation
+### CR-03: One aggregate legacy availability bit still lets non-rendering legacy fields survive mixed requests
 
-**File:** `BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift:197-200`
+**Files:** `BeautySDK/Sources/BeautyEffects/Warp/NoseWarpProvider.swift:13-35,52-57`; `BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift:154-174,274-290`
 
-**Issue:** The face-shape branch runs `GeometryConflictResolver` before the nose branch checks `supportAvailability` at lines 266-273. An unsupported `noseRootNarrowing` or `noseTipLift` therefore contributes to the total, weakened count, warning, and scale applied to otherwise valid geometry, and is only zeroed afterward. For example, capped `faceSlim = 0.60`, `faceSmall = 0.45`, and an invalid capped root request `= 0.25` produce scale `1 / 1.30`; after the root is discarded, the valid face fields remain over-weakened compared with the `1 / 1.05` scale their usable work warrants. This contradicts the documented field-specific fail-closed contract and makes aggregate conflict metrics describe work that cannot render.
+**Issue:** Commit `bfd7375` defines `supportAvailability.legacy` as only `center(of: face.nose) != nil` and then zeros all four legacy fields only when that single bit is false. A nonempty legacy proxy is not sufficient for every legacy helper. For example, with a one-point `face.nose`, `legacy` is true, but `slimPoints` emits nothing because its left and right extrema are identical. If explicit root support is valid and `noseRootNarrowing` is also requested, the root points make the aggregate provider result nonempty. The resolver therefore marks `.nose` active and retains `noseSlim`; with face-shape or mouth work present, that non-rendering value also remains eligible for conflict accounting. This is the same mixed legacy/new masking class as the original CR-02, narrowed from an empty proxy to a per-field-insufficient proxy.
 
-**Fix:** Validate and sanitize new nose supports once, before either conflict-resolution call can observe the strengths (after freshness handling and only when usable geometry exists). Reuse that availability result in the nose branch. Add a regression test combining malformed root/tip support with enough valid face-shape fields to cross the threshold, asserting that the invalid field is excluded from the scale and weakened count.
+**Fix:** Replace the single legacy bit with per-field emission availability (at least `noseSlim`, `noseWingSlim`, `noseTipSize`, and `noseBridge`), derived from the same prerequisites used by each helper, or return a per-field emission result from the provider. Sanitize each requested field before either conflict call. Add mixed regressions in which one legacy helper cannot emit while root or tip support can, and assert the unsupported legacy strength is zero and absent from weakened count/scale while the supported sibling remains active.
 
-### CR-02: Valid new support can mask missing legacy nose inputs and preserve non-rendering legacy strengths
+### CR-04: Root/tip support availability can be true even when the requested field cannot emit points
 
-**File:** `BeautySDK/Sources/BeautyEffects/Warp/NoseWarpProvider.swift:18-47`
+**Files:** `BeautySDK/Sources/BeautyEffects/Warp/NoseWarpProvider.swift:52-57,110-123,151-169`; `BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift:163-173,219-222,280-290`
 
-**Issue:** When legacy nose work is requested but `face.nose` has no center, the provider silently emits no legacy points. If a new root or tip request has valid explicit support, its points make the aggregate result nonempty, so the resolver marks `.nose` active and retains legacy strengths such as `noseBridge` or `noseTipSize`. Rendering calls the provider again and still produces only the new-field points. This regresses the prior missing-legacy behavior and returns effective strengths for effects that did not render; the aggregate `points.isEmpty` check in `BeautyEffectResolver.swift:274-282` cannot detect the partial failure.
+**Issue:** `supportAvailability(for:)` checks only structural root/tip support. Actual point generation has additional strength- and displacement-dependent failure guards. A structurally valid near-center root pair can pass `validatedRootPair`, yet `room - 0.0001` can be at or below `Float.ulpOfOne`, causing `rootNarrowingPoints` to return empty. Likewise, a valid fixture plus a positive public root/tip value just above `Float.ulpOfOne` can pass the resolver's nonzero test while its computed displacement fails the provider's `> Float.ulpOfOne` guard. If any legacy or sibling field emits points, the aggregate result is nonempty, so the failed independent strength survives. If face-shape work runs first, it can also affect conflict total/count/scale before the provider reveals that it emitted nothing. Thus the original CR-01 ordering defect remains for availability/output mismatches, and the root contracts' field-specific fail-closed claim is not fully true.
 
-**Fix:** Expose legacy-support availability (or per-field emission status) alongside root/tip availability and sanitize requested legacy strengths when their legacy proxy is unavailable, while preserving valid independent root/tip work. Add a mixed regression case with empty `face.nose`, valid explicit root/tip support, and both legacy plus new requests; assert the new field remains active but all unsupported legacy strengths are zero and contribute no false effective state or conflict accounting.
+**Fix:** Make the pre-conflict check reflect actual requested-strength emission, not structural support alone. One robust approach is to generate or validate each requested field independently before conflict resolution, zero fields whose individual result is empty, then perform conflict resolution and final aggregate dispatch. Add regression cases for valid-but-non-emitting displacement and a mixed supported sibling, asserting exact exclusion from effective strengths and conflict metrics.
+
+## Prior Finding Disposition
+
+- Original CR-01 is fixed for root/tip supports rejected by the structural validators, but CR-04 shows the ordering contract is still incomplete when structural availability and actual emission disagree.
+- Original CR-02 is fixed for an entirely empty `face.nose`, but CR-03 shows the replacement `legacy` flag is not sufficiently field-specific for partially usable legacy geometry.
+
+## Verification
+
+- PASS: `swift test --package-path BeautySDK --filter NoseWarpProviderTests` — 13/13.
+- PASS: `swift test --package-path BeautySDK --filter MissingLandmarkDegradationTests` — 18/18.
+- PASS: `swift test --package-path BeautySDK --filter GeometryConflictResolverTests` — 8/8.
+- PASS: `git diff --check 3cf59de^..bfd7375`.
+- PASS: both independent fields still appear exactly three times in `GeometryConflictResolver` (scale, total, count).
+- PASS: scoped public/SPI raw-geometry and network/commercial scans found no new exposure or dependency path.
+
+The green focused tests do not cover either partial-emission mixed case described above.
 
 ---
 
-_Reviewed: 2026-07-13T07:10:48Z_
-_Reviewer: the agent (gsd-code-reviewer)_
+_Reviewer: fresh independent GSD code review, iteration 2_
 _Depth: standard_
