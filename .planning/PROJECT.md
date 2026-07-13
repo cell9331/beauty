@@ -147,6 +147,12 @@ v1.3 remains a no-new-UI core module milestone. Phase 20 added no new SwiftUI sc
 
 - [x] Validated in Phase 29: add public-facade saved-output renderer/helper evidence for `eyeSize`, signed `eyeDistance`, signed `eyeYPosition`, and `eyeTailLift` without adding UI scope or public parameters.
 
+#### Phase 30 Eye Safety, Ledger, and Closeout
+
+The verified v1.6 SDK-only existing-parameter slice maps `eyeSize`, `eyeDistance`, `eyeYPosition`, and `eyeTailLift` to exactly four implemented rows: `大小`, `眼距`, `上下`, and `眼尾上扬`. Command-backed details are recorded in `30-EYE-SAFETY-EVIDENCE.md`, with the verified boundary audit in `30-SECURITY.md`.
+
+Branch-level `眼睛` remains `partial`. Eye height, length, pupil/gaze, lid, redness, corners, symmetry, and other tools remain future work. This slice adds no new public fields or Demo UI, remains local-first with no network/cloud processing or commercial entitlement path, and commits no generated image baseline. It does not claim device evidence, commercial visual approval, broad reference parity, launch readiness, or whole-branch completion.
+
 ### Active in v1.6
 
 - [ ] Complete the existing-parameter `眼睛` SDK slice without adding UI scope or public parameters.
