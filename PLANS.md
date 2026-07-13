@@ -38,6 +38,22 @@
 
 ## 4. Completed
 
+### C-2026-07-13-phase-36-code-review-iteration-3-remediation
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Redesigned Phase 36 gallery publication for CR-03/CR-04 and closed WR-03 bounded PNG acquisition without changing renderer cases or Phase 37 promotion owners. |
+| Security | Fresh descriptor-anchored staging uses exclusive no-follow destination opens and atomic descriptor-relative publication; preexisting galleries are moved intact into one ignored quarantine slot and are never traversed or recursively deleted. |
+| Reliability | Existing staging/quarantine state fails closed and blocks repeated publication until explicit operator handling; the PNG helper opens once, bounds retained reads to the file ceiling plus one byte, and rejects growth/excess. |
+| Verification | Gallery and helper self-tests cover post-recreation ancestor swap, mount-like non-traversal instrumentation, external sentinel survival, bounded repeated-run behavior, and PNG replacement/growth races; final runtime counts are recorded in `36-REVIEW-FIX.md`. |
+
+Outcome:
+
+- Gallery destination writes remain descriptor-relative from fresh staging population through atomic publication.
+- Old gallery contents, including nested mounts or links, are preserved without enumeration under a bounded ignored quarantine and are not described as cleaned.
+- PNG/JPEG acquisition no longer uses a pathname stat/read split or an unbounded whole-file read.
+
 ### C-2026-07-13-phase-36-public-facade-output-evidence
 
 | Field | Value |

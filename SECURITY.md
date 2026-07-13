@@ -92,6 +92,14 @@ Phase 28 face-shape privacy evidence recorded 2026-07-08:
 - All 196 output/gallery PNGs remain ignored local artifacts; `git ls-files example-images/output example-images/gallery` returns zero files.
 - Command-backed details are in `32-NOSE-SAFETY-EVIDENCE.md`; threat sign-off is in `32-SECURITY.md` with `threats_open: 0`.
 
+### Phase 36 Generated-Gallery Publication Boundary
+
+- Gallery population and publication stay anchored to no-follow repository descriptors. Staging directories and destination files are created descriptor-relatively and exclusively; renderer outputs are opened once as regular files and copied through those descriptors.
+- Repository, `example-images`, input/output, staging, and created-entry device/inode identities are revalidated before one atomic descriptor-relative staging-to-gallery rename. No destination pathname write occurs after validation.
+- A preexisting gallery is never enumerated, recursively deleted, or cleaned. It is moved intact to the single ignored `.gallery-quarantine/previous/` slot, preventing traversal of symlinks, mount points, or bind-mount-like nested directories.
+- Existing quarantine or staging state blocks another run. The generator does not claim cleanup; explicit operator handling is required before retry, and all gallery/quarantine/staging artifacts must remain ignored and untracked.
+- The Phase 36 PNG helper opens each PNG once with `O_NOFOLLOW`, bounds both `fstat` size and retained reads to 16 MiB plus one detection byte, and rejects same-file growth or excess without a pathname stat/read split.
+
 ## 3. Trust Boundaries
 
 ```text

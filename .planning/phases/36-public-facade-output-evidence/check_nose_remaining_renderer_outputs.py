@@ -6,7 +6,9 @@ from __future__ import annotations
 import argparse
 import binascii
 import math
+import os
 import re
+import stat
 import struct
 import sys
 import tempfile
@@ -29,6 +31,7 @@ MAX_PNG_WIDTH = 4_096
 MAX_PNG_HEIGHT = 4_096
 MAX_PNG_FILE_BYTES = 16 * 1_024 * 1_024
 MAX_PNG_DECODED_BYTES = 64 * 1_024 * 1_024
+MAX_JPEG_FILE_BYTES = 16 * 1_024 * 1_024
 
 BASELINE_CASE_ID = "geometryBaseline_noop"
 ROOT_CASE_ID = "noseRootNarrowing_0p25"
@@ -158,10 +161,7 @@ def read_png_dimensions(path: Path, label: str) -> tuple[int, int]:
 
 
 def read_jpeg_dimensions(path: Path, label: str) -> tuple[int, int]:
-    try:
-        data = path.read_bytes()
-    except OSError:
-        raise RendererOutputError(f"{label}: unreadable") from None
+    data = read_bounded_regular_file(path, label, MAX_JPEG_FILE_BYTES, "JPEG")
     if len(data) < 4 or data[:2] != b"\xff\xd8":
         raise RendererOutputError(f"{label}: not a JPEG")
     offset = 2
@@ -199,13 +199,63 @@ def read_fixture_dimensions(path: Path, label: str) -> tuple[int, int]:
     raise RendererOutputError(f"{label}: unsupported fixture type")
 
 
-def read_png_payload(path: Path, label: str) -> PNGPayload:
+def read_bounded_regular_file(
+    path: Path,
+    label: str,
+    maximum_bytes: int,
+    kind: str,
+    *,
+    _after_fstat=None,
+) -> bytes:
+    """Open once without following a symlink and retain at most max + 1 bytes."""
+    descriptor = None
     try:
-        if path.stat().st_size > MAX_PNG_FILE_BYTES:
-            raise RendererOutputError(f"{label}: PNG file exceeds {MAX_PNG_FILE_BYTES} byte budget")
-        data = path.read_bytes()
+        if not hasattr(os, "O_NOFOLLOW"):
+            raise RendererOutputError(f"{label}: no-follow file opening is unsupported")
+        flags = os.O_RDONLY | os.O_NOFOLLOW | getattr(os, "O_CLOEXEC", 0)
+        descriptor = os.open(path, flags)
+        before = os.fstat(descriptor)
+        if not stat.S_ISREG(before.st_mode):
+            raise RendererOutputError(f"{label}: {kind} is not a regular file")
+        if before.st_size > maximum_bytes:
+            raise RendererOutputError(f"{label}: {kind} file exceeds {maximum_bytes} byte budget")
+        if _after_fstat is not None:
+            _after_fstat()
+
+        retained = bytearray()
+        limit = maximum_bytes + 1
+        while len(retained) < limit:
+            chunk = os.read(descriptor, min(1024 * 1024, limit - len(retained)))
+            if not chunk:
+                break
+            retained.extend(chunk)
+        if len(retained) > maximum_bytes:
+            raise RendererOutputError(f"{label}: {kind} file exceeds {maximum_bytes} byte budget")
+        after = os.fstat(descriptor)
+        if not _same_file_identity(before, after) or after.st_size != before.st_size:
+            raise RendererOutputError(f"{label}: {kind} file changed while reading")
+        if len(retained) != before.st_size:
+            raise RendererOutputError(f"{label}: {kind} file changed while reading")
+        return bytes(retained)
     except OSError:
         raise RendererOutputError(f"{label}: unreadable") from None
+    finally:
+        if descriptor is not None:
+            os.close(descriptor)
+
+
+def _same_file_identity(left: os.stat_result, right: os.stat_result) -> bool:
+    return left.st_dev == right.st_dev and left.st_ino == right.st_ino
+
+
+def read_png_payload(path: Path, label: str, *, _after_fstat=None) -> PNGPayload:
+    data = read_bounded_regular_file(
+        path,
+        label,
+        MAX_PNG_FILE_BYTES,
+        "PNG",
+        _after_fstat=_after_fstat,
+    )
     if not data:
         raise RendererOutputError(f"{label}: zero bytes")
     if data[:8] != b"\x89PNG\r\n\x1a\n":
@@ -593,6 +643,36 @@ def run_self_tests() -> None:
             "exceed 4096x4096 budget",
         )
 
+        replaced_path = root / "replaced-after-fstat.png"
+        opened_path = root / "opened-before-replacement.png"
+        make_test_png(replaced_path)
+
+        def replace_after_fstat() -> None:
+            replaced_path.rename(opened_path)
+            with replaced_path.open("wb") as replacement:
+                replacement.truncate(MAX_PNG_FILE_BYTES + 1)
+
+        replacement_payload = read_png_payload(
+            replaced_path,
+            "replacement race",
+            _after_fstat=replace_after_fstat,
+        )
+        if (replacement_payload.width, replacement_payload.height) != (2, 2):
+            raise AssertionError("replacement race did not stay on the securely opened PNG descriptor")
+
+        growing_path = root / "grown-after-fstat.png"
+        make_test_png(growing_path)
+
+        def grow_after_fstat() -> None:
+            with growing_path.open("r+b") as growing:
+                growing.truncate(MAX_PNG_FILE_BYTES + 1)
+
+        expect_error(
+            "growth after fstat",
+            lambda: read_png_payload(growing_path, "growth race", _after_fstat=grow_after_fstat),
+            f"exceeds {MAX_PNG_FILE_BYTES} byte budget",
+        )
+
         compression_bomb = root / "compression-bomb.png"
         make_test_png(compression_bomb, raw_override=b"\x00" * 1_000_000)
         expect_error(
@@ -612,7 +692,7 @@ def run_self_tests() -> None:
 
     print(
         "self-test passed: duplicate IDs/stems, missing/extra/corrupt outputs, bounded PNG decode, "
-        "ROI/watermark rejection"
+        "single-descriptor replacement/growth races, ROI/watermark rejection"
     )
 
 
