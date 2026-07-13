@@ -1,0 +1,57 @@
+# Requirements: Beauty v1.7
+
+**Defined:** 2026-07-13
+**Core Value:** An iOS app can integrate `BeautySDK` and get natural, controllable, local-first beauty processing through a stable modular facade.
+
+## v1.7 Requirements
+
+### Nose Renderer Evidence
+
+- [ ] **NOSE-01**: The public `BeautySDK` facade renders `noseSlim_0p35`, `noseWingSlim_0p35`, `noseTipSize_plus0p30`, `noseTipSize_minus0p30`, and `noseBridge_0p30`, with each case setting exactly one existing public nose parameter.
+- [ ] **NOSE-02**: A nose output helper verifies 196/196 full-decodable, non-empty, same-dimension PNGs, 30/30 portrait central-face differences above the watermark band, distinct signed tip outputs, and representative no-face extent preservation.
+- [ ] **NOSE-03**: Nose gallery routing is ignored, and `example-images/output` plus `example-images/gallery` contain no tracked generated files.
+
+### Nose Safety and Closeout
+
+- [ ] **NOSE-04**: Normalization, signed semantics, exact effective caps (`0.35`, `0.35`, `±0.30`, `0.30`), warnings, and capped-count evidence are locked for all four nose fields.
+- [ ] **NOSE-05**: No-face, missing nose landmarks, reused geometry at `0.5` scale, stale geometry, redacted warnings/metrics, zeroed fail-closed effective strengths, and safe-domain continuation are verified.
+- [ ] **NOSE-06**: Conservative weakening with face, eye, and mouth geometry covers all four nose fields and preserves both signed `noseTipSize` directions.
+- [ ] **NOSE-07**: Raw geometry, internal Demo/renderer imports, network/cloud, commercial paths, public inventory, new dependencies, and generated artifacts remain fail-closed.
+- [ ] **NOSE-08**: Exactly `大小`, `鼻翼`, `鼻梁`, and `鼻尖` are promoted; `山根`, `提升`, and branch-level `鼻子` remain partial/future.
+- [ ] **DOC-01**: Blueprint, root contracts, `QUALITY_SCORE.md`, `PROJECT.md`, `ROADMAP.md`, `REQUIREMENTS.md`, `STATE.md`, `PLANS.md`, verification, validation, and milestone audit agree with verified evidence and conservative non-claims.
+
+## Future Requirements
+
+- **NOSE-F01**: Decide whether `山根` aliases `noseBridge` or requires an independent neutral public parameter before promotion.
+- **NOSE-F02**: Design an independent public parameter and evidence path for `提升` before promotion.
+
+## Out of Scope
+
+| Feature | Reason |
+| --- | --- |
+| New SwiftUI Demo UI | v1.7 is SDK-core only. |
+| New public `BeautyParameters` fields | The slice uses only the four existing nose fields. |
+| Network/cloud, account, payment, VIP, entitlement, or commercial execution paths | These would violate the local-first SDK slice boundary. |
+| Tracked generated PNG baselines | Output and gallery remain ignored runtime evidence. |
+| Device parity, commercial visual approval, broad Meitu parity, packaging or launch readiness | These require separate setup-specific or commercial evidence. |
+| Whole `鼻子` branch completion | `山根` and `提升` remain unresolved future tools. |
+
+## Traceability
+
+| Requirement | Phase | Status |
+| --- | --- | --- |
+| NOSE-01 | Phase 31 | Pending |
+| NOSE-02 | Phase 31 | Pending |
+| NOSE-03 | Phase 31 | Pending |
+| NOSE-04 | Phase 32 | Pending |
+| NOSE-05 | Phase 32 | Pending |
+| NOSE-06 | Phase 32 | Pending |
+| NOSE-07 | Phase 32 | Pending |
+| NOSE-08 | Phase 32 | Pending |
+| DOC-01 | Phase 32 | Pending |
+
+**Coverage:** 9 requirements, 9 mapped, 0 unmapped.
+
+---
+*Requirements defined: 2026-07-13*
+*Last updated: 2026-07-13 after v1.7 milestone initialization*

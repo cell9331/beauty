@@ -14,7 +14,7 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Shipped version:** v1.6 Broader `美型 / 五官` SDK Slice - Eyes on 2026-07-13.
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
-**Current milestone:** None; planning the next milestone.
+**Current milestone:** v1.7 Broader `美型 / 五官` SDK Slice - Nose.
 
 **Implementation state:** v1.6 completes the SDK-only existing-parameter eye slice across Phases 29 and 30. Public-facade saved-output evidence covers `eyeSize`, signed `eyeDistance`, signed `eyeYPosition`, and `eyeTailLift`; safety and degradation behavior is verified; exactly `大小`, `上下`, `眼距`, and `眼尾上扬` are implemented while branch-level `眼睛` remains `partial`. Generated output/gallery artifacts remain ignored. Current SDK/Demo behavior remains local-first, facade-only from the Demo, and no-network by default.
 
@@ -23,6 +23,19 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
 **Code size:** `BeautySDK` and `BeautyDemo` contain 17,794 Swift lines in the local closeout count, including build-derived `.build` files observed during v1.5 archive.
+
+## Current Milestone: v1.7 Broader `美型 / 五官` SDK Slice - Nose
+
+**Goal:** Complete the SDK-only existing-parameter `鼻子` slice through public-facade renderer evidence, signed-safe normalization and degradation behavior, and exact four-row ledger promotion.
+
+**Target features:**
+
+- Add five public-facade renderer cases for `noseSlim`, `noseWingSlim`, signed `noseTipSize`, and `noseBridge`, expanding the matrix from 23 to 28 cases across seven fixtures.
+- Add ignored nose output/gallery evidence proving 196/196 outputs, 30/30 portrait central-face comparisons, signed tip-direction differences, and representative no-face extent preservation.
+- Lock exact caps, signed semantics, missing/reused/stale geometry degradation, combined weakening, warning/metric redaction, and safe-domain continuation.
+- Promote exactly `大小`, `鼻翼`, `鼻梁`, and `鼻尖` while keeping `山根`, `提升`, and branch-level `鼻子` partial/future.
+
+**Key context:** v1.7 is SDK-core only and uses the existing 31-field public inventory. It adds no SwiftUI Demo UI, public fields, dependency, network/cloud behavior, account/payment/VIP/entitlement/commercial path, or tracked generated PNG baseline. It does not claim device parity, commercial visual approval, broad Meitu parity, packaging readiness, launch readiness, or whole-branch completion.
 
 ## Last Completed Milestone: v1.6 Broader `美型 / 五官` SDK Slice - Eyes
 
@@ -155,6 +168,13 @@ The verified v1.6 SDK-only existing-parameter slice maps `eyeSize`, `eyeDistance
 
 Branch-level `眼睛` remains `partial`. Eye height, length, pupil/gaze, lid, redness, corners, symmetry, and other tools remain future work. This slice adds no new public fields or Demo UI, remains local-first with no network/cloud processing or commercial entitlement path, and commits no generated image baseline. It does not claim device evidence, commercial visual approval, broad reference parity, launch readiness, or whole-branch completion.
 
+### Active in v1.7
+
+- [ ] Add public-facade nose renderer/output/gallery evidence for the four existing nose parameters.
+- [ ] Preserve signed `noseTipSize` end to end and lock exact effective caps for all four fields.
+- [ ] Verify fail-closed missing/stale geometry, reduced reused geometry, combined weakening, redaction, and safe-domain continuation.
+- [ ] Promote exactly four evidence-backed nose rows while preserving the partial branch and future rows.
+
 ### Out of Scope
 
 - Standalone consumer App Store product - still out of scope; Demo remains an SDK validation app.
@@ -230,6 +250,7 @@ Current visual reference contracts:
 - **v1.3 scope boundary:** v1.3 designs and implements core beauty modules only; no new SwiftUI screens, Home/discovery, style resources, AI/background, video/body, gallery/account, search, premium access, commerce, or account authorization work.
 - **v1.5 scope boundary:** v1.5 starts from `docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md` and promotes only SDK-core geometry output plus the `脸型` existing-parameter slice; UI and non-face-shape groups stay out of scope unless the roadmap explicitly changes.
 - **v1.6 scope boundary:** v1.6 starts from the same ledger and promotes only existing public-parameter `眼睛` rows after public-facade saved-output and safety/degradation evidence exists; no UI, public API, commercial, device, release, or unscoped `眼睛` claim is included.
+- **v1.7 scope boundary:** v1.7 promotes only the four existing public-parameter `鼻子` rows after public-facade output, signed-direction, safety, degradation, and boundary evidence exists; `山根`, `提升`, and branch-level `鼻子` remain partial/future.
 
 ## Key Decisions
 
@@ -249,6 +270,7 @@ Current visual reference contracts:
 | Phase 23 completes performance/reliability as evidence and blocker records, not optimization. | Current 720p SDK timings remain over budget in SwiftPM debug XCTest, while backpressure/reset/degradation/redaction evidence passes and missing long-run/device checks are explicit. | Completed in Phase 23 |
 | Phase 25 completes privacy/resource/security closeout as current evidence, not packaging approval. | Current SDK/Demo behavior supports explicit manifest deferral and bundled-resource trust only; external packages, long-run, screenshot, hardware, optimized profiling, and commercial packaging remain future or blocked/not-run checks. | Completed in Phase 25 |
 | v1.6 targets the existing-public-parameter `眼睛` slice. | `眼睛` already had public SDK parameters and provider/resolver evidence, and v1.5 created the public-facade geometry output harness needed for visual completion evidence. | Completed in Phase 30; milestone audit passed |
+| v1.7 targets the existing-public-parameter `鼻子` slice without collapsing signed tip direction. | The renderer foundation exists, and the four public nose fields can be completed without adding API or UI breadth; `noseTipSize` must retain positive/negative semantics end to end. | Active in Phases 31-32 |
 | v1.5 starts with geometry output foundation plus `脸型`, not all `美型 / 五官` groups. | The user chose the smallest first-principles slice: prove facade-visible geometry output first, then mark only the existing face-shape tools complete when evidence exists. | Completed and archived in v1.5 |
 
 ## Evolution
@@ -256,4 +278,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-07-13 after v1.6 milestone completion*
+*Last updated: 2026-07-13 after v1.7 milestone initialization*
