@@ -1,5 +1,45 @@
 # Milestones
 
+## v1.7 Broader 美型 / 五官 SDK Slice - Nose (Shipped: 2026-07-13)
+
+**Phases completed:** 2 phases, 11 plans, 0 tasks
+
+**Delivered:** An SDK-only existing-parameter nose slice with public-facade renderer evidence, signed-safe behavior, fail-closed degradation, and exact four-row blueprint promotion.
+
+**Key accomplishments:**
+
+- Added five public-facade nose renderer cases and verified 196/196 outputs, 30/30 portrait comparisons, and 6/6 signed tip comparisons.
+- Fixed `NoseWarpProvider` sign folding so positive and negative `noseTipSize` remain distinct end to end.
+- Locked exact caps, missing/stale zeroing, reused `0.5`, no-face safe-domain continuation, combined weakening, and redacted diagnostics.
+- Passed a fresh 186-test full SDK suite plus all seven required focused suites.
+- Passed fail-closed raw-geometry, import, network/cloud, commercial, dependency, public-inventory, sign-loss, and generated-artifact scans with `threats_open: 0`.
+- Promoted exactly `大小`, `鼻翼`, `鼻梁`, and `鼻尖` while preserving `山根`, `提升`, and branch-level `鼻子` as partial/future.
+
+**Stats:**
+
+- 72 files changed, 1,288 insertions, 60 deletions before archive
+- 18,806 Swift source/test lines
+- 2 phases, 11 plans
+- Same-day milestone execution and audit on 2026-07-13
+
+**Git range:** `751243c` → final v1.7 archive commit
+
+**Verification:**
+
+- Milestone audit passed 9/9 requirements, 2/2 phases, 9/9 integration checks, 5/5 flows, and both phases Nyquist compliant.
+- Full SDK suite passed 186 tests; renderer/helper passed 196/196, 30/30, and 6/6.
+- Exactly four nose rows are implemented; branch-level `鼻子` remains `partial`.
+
+**Archives:**
+
+- `.planning/milestones/v1.7-ROADMAP.md`
+- `.planning/milestones/v1.7-REQUIREMENTS.md`
+- `.planning/milestones/v1.7-MILESTONE-AUDIT.md`
+
+**What's next:** Start a fresh milestone when ready.
+
+---
+
 ## v1.6 Broader 美型 / 五官 SDK Slice - Eyes (Shipped: 2026-07-13)
 
 **Delivered:** An SDK-only existing-parameter eye slice with public-facade renderer evidence, conservative safety/degradation behavior, and exact four-row blueprint promotion.

@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.7
 milestone_name: Broader `美型 / 五官` SDK Slice - Nose
-status: Awaiting milestone archive
+status: Awaiting next milestone
 stopped_at: Completed 32-07-PLAN.md
-last_updated: "2026-07-13T03:04:07.159Z"
-last_activity: 2026-07-13
+last_updated: "2026-07-13T03:09:10.880Z"
+last_activity: 2026-07-13 — Milestone v1.7 completed and archived
 progress:
   total_phases: 2
   completed_phases: 2
@@ -25,10 +25,10 @@ See: `.planning/PROJECT.md` (updated 2026-07-13)
 
 ## Current Position
 
-Phase: 32 complete
-Plan: 7/7 complete
-Status: Awaiting milestone archive
-Last activity: 2026-07-13 — v1.7 milestone audit passed
+Phase: Milestone v1.7 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-07-13 — Milestone v1.7 completed and archived
 
 ## Performance Metrics
 
@@ -214,4 +214,4 @@ Resume file: .planning/phases/32-nose-safety-ledger-and-closeout/32-VERIFICATION
 
 ## Operator Next Steps
 
-- Run `$gsd-complete-milestone v1.7`, create the annotated tag, then run `$gsd-cleanup`.
+- Start the next milestone with /gsd-new-milestone

@@ -233,6 +233,49 @@
 
 ---
 
+## Milestone: v1.7 - Broader 美型 / 五官 SDK Slice - Nose
+
+**Shipped:** 2026-07-13
+**Phases:** 2 | **Plans:** 11
+
+### What Was Built
+
+- Five public-facade nose renderer cases with 196/196 output, 30/30 portrait, 6/6 signed-tip, and ignored-gallery evidence.
+- End-to-end signed `noseTipSize` correction plus exact caps and normalization for all four existing fields.
+- Missing/stale fail-closed zeroing, reused `0.5`, safe no-face continuation, combined weakening, and redacted diagnostics.
+- Exact implementation promotion for `大小`, `鼻翼`, `鼻梁`, and `鼻尖`, while `山根`, `提升`, and branch-level `鼻子` remain partial/future.
+
+### What Worked
+
+- The shared-contract scan found the sign-folding call before planning and enumerated every renderer/helper/current-owner consumer.
+- Phase 31 output evidence preceded Phase 32 safety and ledger promotion.
+- The comprehensive pre-audit scan collected the complete documentation defect set, repaired it in one batch, and enabled a single passing final audit.
+
+### What Was Inefficient
+
+- The first focused combined-suite run experienced a one-off 374-second preset test; the fresh full suite completed normally in 30 seconds.
+- GSD summary extraction reported zero tasks because the compact plan/summary artifacts did not encode task counts, so archive stats use plans and direct verification evidence.
+
+### Patterns Established
+
+- Signed geometry requires distinct normalization, effective-strength, provider-target, renderer-baseline, and positive-vs-negative evidence.
+- Non-eye reuse policy must remain explicit when a nearby eye domain uses a stricter skip contract.
+- Historical evidence sections must carry time-qualified counts once the canonical renderer inventory grows.
+
+### Key Lessons
+
+1. Scan all shared consumers before planning any renderer inventory expansion.
+2. Treat sign preservation as an end-to-end contract, not merely a resolver test.
+3. Collect the whole current-owner defect set before final audit and batch repair once.
+
+### Cost Observations
+
+- Model mix: not measured.
+- Sessions: autonomous milestone initialization, Phase 31/32 execution, audit, and archive.
+- Notable: Runtime implementation was small; output decoding and comprehensive documentation evidence dominated elapsed time.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -244,6 +287,7 @@
 | v1.4 | multiple | 5 | Added blocker-honest hardening gates, renderer output regression, active-source privacy/security scans, and archive-before-delete closeout. |
 | v1.5 | multiple | 3 | Added public-facade geometry output evidence and scoped face-shape ledger promotion. |
 | v1.6 | multiple | 2 | Added exact eye-slice evidence/promotion and comprehensive current-owner consistency scans. |
+| v1.7 | autonomous | 2 | Added signed nose-slice evidence, fail-closed degradation, and single-pass final audit discipline. |
 
 ### Cumulative Quality
 
@@ -254,6 +298,7 @@
 | v1.4 | 150 SDK tests, focused Demo privacy/import tests, renderer invariant helper, and milestone audit | Requirement traceability 24/24 | No new third-party runtime dependency recorded for hardening closeout. |
 | v1.5 | 171 SDK tests, geometry and face-shape renderer helpers, and milestone audit | Requirement traceability 13/13 | No new third-party runtime dependency recorded for geometry closeout. |
 | v1.6 | 178 SDK tests, eye renderer helper, boundary scans, and milestone audit | Requirement traceability 9/9 | No new third-party runtime dependency recorded for eye-slice closeout. |
+| v1.7 | 186 SDK tests, 196-output nose helper, boundary scans, and milestone audit | Requirement traceability 9/9 | No new third-party runtime dependency recorded for nose-slice closeout. |
 
 ### Top Lessons (Verified Across Milestones)
 

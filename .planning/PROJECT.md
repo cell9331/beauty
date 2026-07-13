@@ -12,9 +12,9 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ## Current State
 
-**Shipped version:** v1.6 Broader `美型 / 五官` SDK Slice - Eyes on 2026-07-13.
+**Shipped version:** v1.7 Broader `美型 / 五官` SDK Slice - Nose on 2026-07-13.
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
-**Current milestone:** v1.7 Broader `美型 / 五官` SDK Slice - Nose.
+**Current milestone:** None; v1.7 is archived and the next milestone is not yet defined.
 
 **Implementation state:** v1.7 completes the SDK-only existing-parameter nose slice across Phases 31 and 32. Public-facade evidence covers `noseSlim`, `noseWingSlim`, signed `noseTipSize`, and `noseBridge`; missing/stale geometry fails closed, reused geometry stays at `0.5`, and exactly `大小`, `鼻翼`, `鼻梁`, and `鼻尖` are implemented while branch-level `鼻子` remains `partial`.
 
@@ -24,7 +24,7 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Code size:** `BeautySDK` and `BeautyDemo` contain 17,794 Swift lines in the local closeout count, including build-derived `.build` files observed during v1.5 archive.
 
-## Current Milestone: v1.7 Broader `美型 / 五官` SDK Slice - Nose
+## Last Completed Milestone: v1.7 Broader `美型 / 五官` SDK Slice - Nose
 
 **Goal:** Complete the SDK-only existing-parameter `鼻子` slice through public-facade renderer evidence, signed-safe normalization and degradation behavior, and exact four-row ledger promotion.
 
@@ -34,6 +34,8 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 - Add ignored nose output/gallery evidence proving 196/196 outputs, 30/30 portrait central-face comparisons, signed tip-direction differences, and representative no-face extent preservation.
 - Lock exact caps, signed semantics, missing/reused/stale geometry degradation, combined weakening, warning/metric redaction, and safe-domain continuation.
 - Promote exactly `大小`, `鼻翼`, `鼻梁`, and `鼻尖` while keeping `山根`, `提升`, and branch-level `鼻子` partial/future.
+
+**Status:** Shipped, audited, and archived as of 2026-07-13.
 
 **Key context:** v1.7 is SDK-core only and uses the existing 31-field public inventory. It adds no SwiftUI Demo UI, public fields, dependency, network/cloud behavior, account/payment/VIP/entitlement/commercial path, or tracked generated PNG baseline. It does not claim device parity, commercial visual approval, broad Meitu parity, packaging readiness, launch readiness, or whole-branch completion.
 
@@ -188,9 +190,9 @@ Branch-level `眼睛` remains `partial`. Eye height, length, pupil/gaze, lid, re
 
 ## Next Milestone Goals
 
-Future milestone candidates after v1.6:
+Future milestone candidates after v1.7:
 
-- **Broader `美型 / 五官` slices:** `鼻子`, `嘴唇`, `比例`, `3D塑颜`, and `眉毛` remain future or partial until explicitly scoped.
+- **Broader `美型 / 五官` slices:** remaining nose tools (`山根`, `提升`), `嘴唇`, `比例`, `3D塑颜`, and `眉毛` remain future or partial until explicitly scoped.
 - **Remaining `眼睛` tools:** eye height, eye length, pupil/gaze, lid, redness, corner, and symmetry features need separate parameter/resource design before implementation.
 - **Deferred Meitu Product Areas:** Home/discovery, style resources, AI/background, video/body, gallery/account, search, premium access, commerce, and account authorization planning.
 - **Distribution:** SDK packaging, compatibility matrix, binary distribution, resource-pack trust model, and commercial integration docs.
@@ -278,4 +280,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-07-13 after v1.7 milestone initialization*
+*Last updated: 2026-07-13 after v1.7 milestone completion*
