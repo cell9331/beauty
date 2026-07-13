@@ -1,0 +1,66 @@
+# Requirements: Beauty v1.8
+
+**Defined:** 2026-07-13
+**Core Value:** An iOS app can integrate `BeautySDK` and get natural, controllable, local-first beauty processing through a stable modular facade.
+
+## v1.8 Requirements
+
+### Mouth Renderer Evidence
+
+- [ ] **MOUTH-01**: The public `BeautySDK` facade renders isolated `mouthSize` positive/negative, `mouthWidth` positive/negative, `smile`, and `lipColor` cases, with each case setting exactly one existing public parameter.
+- [ ] **MOUTH-02**: A mouth output helper verifies the complete derived case-by-fixture matrix as decodable, non-empty, same-dimension PNGs; portrait mouth-region differences exclude the watermark band; signed geometry outputs differ from baseline and from each other; and representative no-face outputs preserve extent.
+- [ ] **MOUTH-03**: Lip-color evidence is contained to a documented mouth-region color check and is not counted as geometry displacement or true `丰唇` evidence.
+- [ ] **MOUTH-04**: Mouth/lip gallery routing is ignored, and `example-images/output` plus `example-images/gallery` contain no tracked generated files.
+
+### Mouth Safety and Closeout
+
+- [ ] **MOUTH-05**: Normalization, signed semantics, exact effective caps (`mouthSize ±0.35`, `mouthWidth ±0.35`, `smile 0.50`, `lipColor 0.50`), warnings, and capped-count evidence are locked for all four existing fields.
+- [ ] **MOUTH-06**: No-face, missing outer-lip landmarks, stale geometry, redacted warnings/metrics, exact-zero fail-closed mouth geometry strengths, and safe-domain continuation are verified.
+- [ ] **MOUTH-07**: Reused geometry applies the established exact `0.5` scale to `mouthSize`, `mouthWidth`, and `smile` while preserving signed direction; stale and reused `lipColor` behavior is independently specified and verified as a color-domain policy.
+- [ ] **MOUTH-08**: Conservative combined weakening with face, eye, and nose geometry covers all three mouth geometry fields, preserves both signed directions, and does not incorrectly scale `lipColor` as geometry.
+- [ ] **MOUTH-09**: Raw geometry, internal Demo/renderer imports, network/cloud, commercial paths, public inventory, new dependencies, and generated artifacts remain fail-closed.
+- [ ] **MOUTH-10**: Exactly `大小`, `宽度`, and `微笑` are promoted; `上下`, `倾斜`, `左右`, `M唇`, `丰唇`, `白牙`, and branch-level `嘴唇` remain partial/future.
+- [ ] **DOC-01**: Blueprint, root contracts, `QUALITY_SCORE.md`, `PROJECT.md`, `ROADMAP.md`, `REQUIREMENTS.md`, `STATE.md`, `PLANS.md`, verification, validation, and milestone audit agree with verified evidence and conservative non-claims.
+
+## Future Requirements
+
+- **MOUTH-F01**: Design neutral public parameters and geometry evidence for `上下`, `倾斜`, and `左右` before promotion.
+- **MOUTH-F02**: Design independent upper/lower-lip geometry for `M唇` and true `丰唇`; `lipColor` cannot satisfy either requirement.
+- **MOUTH-F03**: Define teeth-region ownership, segmentation, and local retouch behavior before promoting `白牙`.
+
+## Out of Scope
+
+| Feature | Reason |
+| --- | --- |
+| New SwiftUI Demo UI | v1.8 is SDK-core only. |
+| New public `BeautyParameters` fields | The slice uses only the four existing mouth/lip fields. |
+| Treating `lipColor` as true `丰唇` geometry | Tint is color-domain evidence and does not prove structural lip plumping. |
+| Network/cloud, account, payment, VIP, entitlement, or commercial execution paths | These would violate the local-first SDK slice boundary. |
+| Tracked generated PNG baselines | Output and gallery remain ignored runtime evidence. |
+| Device parity, commercial visual approval, broad Meitu parity, packaging or launch readiness | These require separate setup-specific or commercial evidence. |
+| Whole `嘴唇` branch completion | Six referenced rows remain unresolved future/partial tools. |
+
+## Traceability
+
+| Requirement | Phase | Status |
+| --- | --- | --- |
+| MOUTH-01 | TBD | Pending |
+| MOUTH-02 | TBD | Pending |
+| MOUTH-03 | TBD | Pending |
+| MOUTH-04 | TBD | Pending |
+| MOUTH-05 | TBD | Pending |
+| MOUTH-06 | TBD | Pending |
+| MOUTH-07 | TBD | Pending |
+| MOUTH-08 | TBD | Pending |
+| MOUTH-09 | TBD | Pending |
+| MOUTH-10 | TBD | Pending |
+| DOC-01 | TBD | Pending |
+
+**Coverage:**
+- v1.8 requirements: 11 total
+- Mapped to phases: 0
+- Unmapped: 11 ⚠️
+
+---
+*Requirements defined: 2026-07-13*
+*Last updated: 2026-07-13 after v1.8 milestone initialization*
