@@ -48,6 +48,13 @@ CASE_GROUPS = {
         "eyeYPosition_minus0p20",
         "eyeTailLift_0p25",
     ],
+    "nose": [
+        "noseSlim_0p35",
+        "noseWingSlim_0p35",
+        "noseTipSize_plus0p30",
+        "noseTipSize_minus0p30",
+        "noseBridge_0p30",
+    ],
 }
 
 
