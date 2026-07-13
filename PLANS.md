@@ -30,6 +30,22 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-13-gsd-audit-milestone-v1-8-final-pass
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Ran a fresh independent v1.8 audit after the single autonomous DOC-01 current-owner remediation. |
+| Requirements | MOUTH-01 through MOUTH-10 and DOC-01 satisfied: 11/11. |
+| Files | `.planning/v1.8-MILESTONE-AUDIT.md`, `PLANS.md` |
+| Verification | Independent integration passed 11/11 checks and 5/5 E2E flows; both phases and both Nyquist validations pass; security has `threats_open: 0`. Fresh full SwiftPM passed 190/190, and the helper passed 238/238 outputs, 30/30 geometry comparisons, 12/12 signed comparisons, and 6/6 lip-color checks. Exact promotion, future boundaries, public inventory, import/dependency/network/commercial/raw-geometry scans, and ignored/untracked artifact gates passed. |
+
+Outcome:
+
+- v1.8 audit status is `passed` with no blocker or unaccepted milestone debt.
+- Historical failed audits and remediations remain below as chronology and are superseded by this final verdict.
+- Milestone completion, archival, annotated tag creation, and Phase 33-34 cleanup may proceed.
+
 ### C-2026-07-13-v1-8-doc-01-current-owner-remediation
 
 **Status:** Completed
