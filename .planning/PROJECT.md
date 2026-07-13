@@ -14,7 +14,7 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Shipped version:** v1.7 Broader `美型 / 五官` SDK Slice - Nose on 2026-07-13.
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
-**Current milestone:** None; v1.7 is archived and the next milestone is not yet defined.
+**Current milestone:** v1.8 Broader `美型 / 五官` SDK Slice - Mouth.
 
 **Implementation state:** v1.7 completes the SDK-only existing-parameter nose slice across Phases 31 and 32. Public-facade evidence covers `noseSlim`, `noseWingSlim`, signed `noseTipSize`, and `noseBridge`; missing/stale geometry fails closed, reused geometry stays at `0.5`, and exactly `大小`, `鼻翼`, `鼻梁`, and `鼻尖` are implemented while branch-level `鼻子` remains `partial`.
 
@@ -23,6 +23,19 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
 **Code size:** `BeautySDK` and `BeautyDemo` contain 17,794 Swift lines in the local closeout count, including build-derived `.build` files observed during v1.5 archive.
+
+## Current Milestone: v1.8 Broader `美型 / 五官` SDK Slice - Mouth
+
+**Goal:** Complete the SDK-only existing-parameter `嘴唇` slice through public-facade output evidence, signed-safe geometry behavior, lip-color containment, conservative degradation, and exact evidence-backed ledger promotion.
+
+**Target features:**
+
+- Add public-facade renderer cases for signed `mouthSize`, signed `mouthWidth`, `smile`, and `lipColor`, with ignored output/gallery evidence across the established fixture matrix.
+- Lock exact caps, signed direction, missing/reused/stale mouth-geometry degradation, combined weakening, warning/metric redaction, and safe-domain continuation.
+- Verify `lipColor` as a color-domain capability distinct from geometry shaping and prevent it from being mislabeled as true `丰唇` geometry evidence.
+- Promote exactly the evidence-backed `大小`, `宽度`, and `微笑` rows while keeping `上下`, `倾斜`, `左右`, `M唇`, `丰唇`, `白牙`, and branch-level `嘴唇` partial/future.
+
+**Key context:** v1.8 is SDK-core only and uses the existing 31-field public inventory. It adds no SwiftUI Demo UI, public fields, dependency, network/cloud behavior, account/payment/VIP/entitlement/commercial path, or tracked generated PNG baseline. It does not claim device parity, commercial visual approval, broad Meitu parity, packaging readiness, launch readiness, whole-branch completion, or true plump-lip geometry from `lipColor`.
 
 ## Last Completed Milestone: v1.7 Broader `美型 / 五官` SDK Slice - Nose
 
@@ -170,12 +183,19 @@ The verified v1.6 SDK-only existing-parameter slice maps `eyeSize`, `eyeDistance
 
 Branch-level `眼睛` remains `partial`. Eye height, length, pupil/gaze, lid, redness, corners, symmetry, and other tools remain future work. This slice adds no new public fields or Demo UI, remains local-first with no network/cloud processing or commercial entitlement path, and commits no generated image baseline. It does not claim device evidence, commercial visual approval, broad reference parity, launch readiness, or whole-branch completion.
 
-### Active in v1.7
+### Completed in v1.7
 
 - [x] Add public-facade nose renderer/output/gallery evidence for the four existing nose parameters.
 - [x] Preserve signed `noseTipSize` end to end and lock exact effective caps for all four fields.
 - [x] Verify fail-closed missing/stale geometry, reduced reused geometry, combined weakening, redaction, and safe-domain continuation.
 - [x] Promote exactly four evidence-backed nose rows while preserving the partial branch and future rows.
+
+### Active in v1.8
+
+- [ ] Add public-facade mouth/lip renderer, output-helper, and ignored-gallery evidence for the four existing public parameters.
+- [ ] Preserve signed `mouthSize` and `mouthWidth` behavior and lock exact effective caps for all four fields.
+- [ ] Verify fail-closed missing/stale mouth geometry, reduced reused geometry, combined weakening, redaction, lip-color containment, and safe-domain continuation.
+- [ ] Promote exactly the evidence-backed mouth rows while preserving the partial branch and future rows, including the explicit `lipColor` versus `丰唇` distinction.
 
 ### Out of Scope
 
@@ -190,7 +210,7 @@ Branch-level `眼睛` remains `partial`. Eye height, length, pupil/gaze, lid, re
 
 ## Next Milestone Goals
 
-Future milestone candidates after v1.7:
+Future milestone candidates after v1.8:
 
 - **Broader `美型 / 五官` slices:** remaining nose tools (`山根`, `提升`), `嘴唇`, `比例`, `3D塑颜`, and `眉毛` remain future or partial until explicitly scoped.
 - **Remaining `眼睛` tools:** eye height, eye length, pupil/gaze, lid, redness, corner, and symmetry features need separate parameter/resource design before implementation.
@@ -280,4 +300,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-07-13 after v1.7 milestone completion*
+*Last updated: 2026-07-13 after v1.8 milestone initialization*
