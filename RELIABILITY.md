@@ -160,6 +160,13 @@ Phase 28 scoped face-shape behavior:
 - Warnings expose only fixed category messages. Metrics remain aggregate counts/scales; they do not contain eye side, geometry, image, or local-path payloads.
 - Focused resolver/provider/facade evidence and exact warning/metric assertions are recorded in `30-EYE-SAFETY-EVIDENCE.md`.
 
+### Phase 32 Nose Freshness Contract
+
+- Missing nose landmarks and stale geometry skip the complete nose domain, zero `noseSlim`, `noseWingSlim`, `noseTipSize`, and `noseBridge`, and emit only category-level or aggregate evidence.
+- Reused nose geometry intentionally differs from the eye rule: it remains active at the established non-eye `0.5` scale, including signed negative `noseTipSize`.
+- No-face public requests preserve extent and permit safe color/filter domains to continue.
+- Combined geometry reduces magnitude without flipping signed tip direction; all four fields have focused evidence in `32-NOSE-SAFETY-EVIDENCE.md`.
+
 ## 7. Observability Model
 
 First-version diagnostics live in `BeautyCore/Diagnostics`; do not create a separate diagnostics package until another product actually shares it. Use three layers:

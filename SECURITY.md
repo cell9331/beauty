@@ -76,6 +76,14 @@ Phase 28 face-shape privacy evidence recorded 2026-07-08:
 - The parameter inventory contains 31 public fields and matches the reviewed contract. Generated renderer outputs and gallery copies remain ignored, untracked local artifacts rather than committed evidence.
 - Command-backed details are in `30-EYE-SAFETY-EVIDENCE.md`; threat classifications and sign-off are in `30-SECURITY.md`.
 
+### Phase 32 Nose Safety Boundary Evidence
+
+- Public and effective parameter tests lock three positive-only fields, signed `noseTipSize`, exact caps, and non-finite normalization without expanding the 31-field public inventory.
+- Missing/stale nose geometry fails closed with zero strengths and category-level warnings; reused geometry exposes only the aggregate `0.5` scale.
+- Renderer and Demo remain facade-only; scans find no public/SPI raw geometry, network/cloud execution, StoreKit/entitlement/payment path, or new dependency.
+- All 196 output/gallery PNGs remain ignored local artifacts; `git ls-files example-images/output example-images/gallery` returns zero files.
+- Command-backed details are in `32-NOSE-SAFETY-EVIDENCE.md`; threat sign-off is in `32-SECURITY.md` with `threats_open: 0`.
+
 ## 3. Trust Boundaries
 
 ```text

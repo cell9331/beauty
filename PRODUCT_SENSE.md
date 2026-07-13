@@ -431,6 +431,14 @@ Manual or future checks still required before stronger product claims:
 - `30-EYE-SAFETY-EVIDENCE.md` is the command-backed acceptance source for this scoped slice.
 - This acceptance does not claim whole-branch completion, physical-device parity, commercial review, broad reference parity, final visual quality, packaging, shipping, or launch readiness.
 
+### 7.15 Phase 32 Nose Slice Acceptance
+
+- Exactly four second-level nose subtools are implemented from existing public parameters: `大小`, `鼻翼`, `鼻梁`, and signed `鼻尖`.
+- Acceptance requires 196/196 public-facade outputs, 30/30 portrait comparisons, distinct signed tip output, exact caps, missing/stale fail-closed zeroing, reused `0.5` scaling, safe no-face continuation, all-field combined weakening, redacted diagnostics, and active-source boundary evidence.
+- `山根` does not borrow `noseBridge` evidence; it remains partial pending an explicit alias or independent parameter decision. `提升` remains future, and branch-level `鼻子` remains `partial`.
+- `31-NOSE-RENDERER-EVIDENCE.md` and `32-NOSE-SAFETY-EVIDENCE.md` are the command-backed acceptance sources.
+- This acceptance does not claim whole-branch completion, device parity, commercial review, broad reference parity, packaging, shipping, or launch readiness.
+
 ## 8. Preset Product Contract
 
 MVP built-in presets:
