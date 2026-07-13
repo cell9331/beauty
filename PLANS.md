@@ -30,6 +30,22 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-13-gsd-audit-milestone-v1-8-first-run
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Audited v1.8 after Phases 33-34, including three-source coverage, Nyquist discovery, security state, and independent cross-phase/E2E verification. |
+| Requirements | MOUTH-01 through MOUTH-10 satisfied; DOC-01 unsatisfied. Effective score: 10/11. |
+| Files | `.planning/v1.8-MILESTONE-AUDIT.md`, `PLANS.md` |
+| Verification | Fresh full SwiftPM suite passed 190/190. Integration passed 10/11 checks and 4/5 flows; runtime mouth behavior and `threats_open: 0` are sound. Current STATE/REQUIREMENTS/ROADMAP ownership contradicts Phase 34's DOC-01 claim, and Phase 33 Nyquist plus Phase 33/34 requirement-summary metadata is incomplete. |
+
+Outcome:
+
+- Audit status is `gaps_found`; completion, tag creation, and cleanup did not run.
+- Required repair: synchronize STATE, closeout footers, Phase 33 Nyquist metadata, and summary requirement metadata, then rerun an independent audit.
+- No audit gap or technical debt was silently accepted.
+
 ### C-2026-07-13-phase-33-mouth-renderer-evidence
 
 **Status:** Completed
