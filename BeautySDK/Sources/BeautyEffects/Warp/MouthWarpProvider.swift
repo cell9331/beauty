@@ -1,3 +1,27 @@
+struct MouthWarpFieldEmissions: Equatable, Sendable {
+    let mouthSize: [WarpControlPoint]
+    let mouthWidth: [WarpControlPoint]
+    let smile: [WarpControlPoint]
+
+    var points: [WarpControlPoint] {
+        mouthSize + mouthWidth + smile
+    }
+
+    func sanitizing(_ strengths: BeautyEffectiveStrengths) -> BeautyEffectiveStrengths {
+        var sanitized = strengths
+        if strengths.mouthSize != 0, mouthSize.isEmpty {
+            sanitized.mouthSize = 0
+        }
+        if strengths.mouthWidth != 0, mouthWidth.isEmpty {
+            sanitized.mouthWidth = 0
+        }
+        if strengths.smile != 0, smile.isEmpty {
+            sanitized.smile = 0
+        }
+        return sanitized
+    }
+}
+
 struct MouthWarpProvider: WarpControlPointProvider {
     func makeControlPoints(
         face: FaceGeometry,
@@ -7,21 +31,37 @@ struct MouthWarpProvider: WarpControlPointProvider {
             return WarpControlPointResult(points: [], skipReason: "mouth_inputs_missing")
         }
 
-        var points: [WarpControlPoint] = []
+        return WarpControlPointResult(
+            points: fieldEmissions(face: face, strengths: strengths, center: center).points
+        )
+    }
 
-        if abs(strengths.mouthSize) > Float.ulpOfOne {
-            points.append(contentsOf: sizePoints(face: face, center: center, strength: strengths.mouthSize))
+    func fieldEmissions(
+        face: FaceGeometry,
+        strengths: BeautyEffectiveStrengths
+    ) -> MouthWarpFieldEmissions {
+        guard let center = LandmarkGeometryHelper.center(of: face.outerLips) else {
+            return MouthWarpFieldEmissions(mouthSize: [], mouthWidth: [], smile: [])
         }
+        return fieldEmissions(face: face, strengths: strengths, center: center)
+    }
 
-        if abs(strengths.mouthWidth) > Float.ulpOfOne {
-            points.append(contentsOf: widthPoints(face: face, center: center, strength: strengths.mouthWidth))
-        }
-
-        if strengths.smile > 0 {
-            points.append(contentsOf: smilePoints(face: face, strength: strengths.smile))
-        }
-
-        return WarpControlPointResult(points: points)
+    private func fieldEmissions(
+        face: FaceGeometry,
+        strengths: BeautyEffectiveStrengths,
+        center: SIMD2<Float>
+    ) -> MouthWarpFieldEmissions {
+        MouthWarpFieldEmissions(
+            mouthSize: abs(strengths.mouthSize) > Float.ulpOfOne
+                ? sizePoints(face: face, center: center, strength: strengths.mouthSize)
+                : [],
+            mouthWidth: abs(strengths.mouthWidth) > Float.ulpOfOne
+                ? widthPoints(face: face, center: center, strength: strengths.mouthWidth)
+                : [],
+            smile: strengths.smile > 0
+                ? smilePoints(face: face, strength: strengths.smile)
+                : []
+        )
     }
 
     private func sizePoints(

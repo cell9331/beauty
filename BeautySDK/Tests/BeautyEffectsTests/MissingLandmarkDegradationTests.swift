@@ -428,6 +428,144 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         }
     }
 
+    func testPhase35ReviewConflictThresholdCrossingSignedMouthFieldsAreSkippedAndExcluded() {
+        let fields: [(
+            name: String,
+            parameter: WritableKeyPath<BeautyParameters, Float>,
+            effective: WritableKeyPath<BeautyEffectiveStrengths, Float>,
+            emission: KeyPath<MouthWarpFieldEmissions, [WarpControlPoint]>
+        )] = [
+            ("mouthSize", \.mouthSize, \.mouthSize, \.mouthSize),
+            ("mouthWidth", \.mouthWidth, \.mouthWidth, \.mouthWidth),
+        ]
+        let expectedTotal = phase35EyeAndNoseConflictTotal
+        let expectedScale = 1 / expectedTotal
+
+        for field in fields {
+            for direction: Float in [1, -1] {
+                var parameters = phase35EyeAndNoseConflictParameters
+                let requested = direction * Float.ulpOfOne * 2
+                parameters[keyPath: field.parameter] = requested
+                var preConflictStrengths = BeautyEffectiveStrengths()
+                preConflictStrengths[keyPath: field.effective] = requested
+                XCTAssertFalse(
+                    MouthWarpProvider()
+                        .fieldEmissions(face: .fixture, strengths: preConflictStrengths)[keyPath: field.emission]
+                        .isEmpty,
+                    "The regression fixture must emit before conflict weakening: \(field.name)."
+                )
+
+                let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)
+                let finalEmissions = MouthWarpProvider().fieldEmissions(
+                    face: .fixture,
+                    strengths: plan.effectiveStrengths
+                )
+
+                XCTAssertEqual(plan.effectiveStrengths[keyPath: field.effective], 0, field.name)
+                XCTAssertTrue(finalEmissions[keyPath: field.emission].isEmpty, field.name)
+                XCTAssertEqual(
+                    finalEmissions.sanitizing(plan.effectiveStrengths),
+                    plan.effectiveStrengths,
+                    "Every retained mouth strength must emit at its final effective value: \(field.name)."
+                )
+                XCTAssertTrue(plan.activeDomains.isSuperset(of: [.eyes, .nose]), field.name)
+                XCTAssertFalse(plan.activeDomains.contains(.mouth), field.name)
+                XCTAssertTrue(plan.skippedDomains.contains(.mouth), field.name)
+                XCTAssertEqual(plan.metrics["beauty.effects.skippedMouthDomains"], 1, field.name)
+                XCTAssertEqual(plan.metrics["beauty.effects.weakenedCount"], 10, field.name)
+                XCTAssertEqual(
+                    plan.metrics["beauty.effects.geometryStrengthScale"] ?? 0,
+                    Double(expectedScale),
+                    accuracy: 0.0000001,
+                    field.name
+                )
+                XCTAssertEqual(
+                    plan.warnings.filter { $0.code == "combined_geometry_weakened" }.count,
+                    1,
+                    field.name
+                )
+                XCTAssertEqual(
+                    plan.warnings.filter { $0.code == "mouth_inputs_missing" }.count,
+                    1,
+                    field.name
+                )
+                assertRedacted(plan)
+            }
+        }
+    }
+
+    func testPhase35ReviewConflictThresholdCrossingSignedMouthFieldsKeepSupportedSibling() {
+        let cases: [(
+            name: String,
+            droppedParameter: WritableKeyPath<BeautyParameters, Float>,
+            droppedEffective: WritableKeyPath<BeautyEffectiveStrengths, Float>,
+            droppedEmission: KeyPath<MouthWarpFieldEmissions, [WarpControlPoint]>,
+            siblingParameter: WritableKeyPath<BeautyParameters, Float>,
+            siblingEffective: KeyPath<BeautyEffectiveStrengths, Float>,
+            siblingEmission: KeyPath<MouthWarpFieldEmissions, [WarpControlPoint]>,
+            siblingCap: Float
+        )] = [
+            ("mouthSize with mouthWidth", \.mouthSize, \.mouthSize, \.mouthSize, \.mouthWidth, \.mouthWidth, \.mouthWidth, BeautySafetyCaps.mouthWidth),
+            ("mouthWidth with mouthSize", \.mouthWidth, \.mouthWidth, \.mouthWidth, \.mouthSize, \.mouthSize, \.mouthSize, BeautySafetyCaps.mouthSize),
+        ]
+
+        for entry in cases {
+            for direction: Float in [1, -1] {
+                var parameters = phase35EyeAndNoseConflictParameters
+                let requested = direction * Float.ulpOfOne * 2
+                parameters[keyPath: entry.droppedParameter] = requested
+                parameters[keyPath: entry.siblingParameter] = 1
+                let expectedScale = 1 / (phase35EyeAndNoseConflictTotal + entry.siblingCap)
+                var preConflictStrengths = BeautyEffectiveStrengths()
+                preConflictStrengths[keyPath: entry.droppedEffective] = requested
+                XCTAssertFalse(
+                    MouthWarpProvider()
+                        .fieldEmissions(face: .fixture, strengths: preConflictStrengths)[keyPath: entry.droppedEmission]
+                        .isEmpty,
+                    "The regression fixture must emit before conflict weakening: \(entry.name)."
+                )
+
+                let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)
+                let finalEmissions = MouthWarpProvider().fieldEmissions(
+                    face: .fixture,
+                    strengths: plan.effectiveStrengths
+                )
+
+                XCTAssertEqual(plan.effectiveStrengths[keyPath: entry.droppedEffective], 0, entry.name)
+                XCTAssertEqual(
+                    plan.effectiveStrengths[keyPath: entry.siblingEffective],
+                    entry.siblingCap * expectedScale,
+                    accuracy: 0.0000001,
+                    entry.name
+                )
+                XCTAssertTrue(finalEmissions[keyPath: entry.droppedEmission].isEmpty, entry.name)
+                XCTAssertFalse(finalEmissions[keyPath: entry.siblingEmission].isEmpty, entry.name)
+                XCTAssertEqual(
+                    finalEmissions.sanitizing(plan.effectiveStrengths),
+                    plan.effectiveStrengths,
+                    "Every retained mouth strength must emit at its final effective value: \(entry.name)."
+                )
+                XCTAssertTrue(plan.activeDomains.isSuperset(of: [.eyes, .nose, .mouth]), entry.name)
+                XCTAssertFalse(plan.skippedDomains.contains(.mouth), entry.name)
+                XCTAssertNil(plan.metrics["beauty.effects.skippedMouthDomains"], entry.name)
+                XCTAssertEqual(plan.metrics["beauty.effects.weakenedCount"], 11, entry.name)
+                XCTAssertEqual(
+                    plan.metrics["beauty.effects.geometryStrengthScale"] ?? 0,
+                    Double(expectedScale),
+                    accuracy: 0.0000001,
+                    entry.name
+                )
+                XCTAssertEqual(
+                    plan.warnings.filter { $0.code == "combined_geometry_weakened" }.count,
+                    1,
+                    entry.name
+                )
+                XCTAssertFalse(plan.warnings.contains { $0.code == "mouth_inputs_missing" }, entry.name)
+                assertRedacted(plan)
+            }
+        }
+    }
+
     func testNoseGeometryProducesDeterministicProxyEvidenceAndCapMetadata() {
         let plan = BeautyEffectResolver.resolve(
             parameters: BeautyParameters(noseSlim: 1, noseTipSize: 1),
@@ -499,6 +637,34 @@ final class MissingLandmarkDegradationTests: XCTestCase {
             line: line
         )
         assertRedacted(plan, file: file, line: line)
+    }
+
+    private var phase35EyeAndNoseConflictParameters: BeautyParameters {
+        BeautyParameters(
+            eyeSize: 1,
+            eyeDistance: 1,
+            eyeYPosition: 1,
+            eyeTailLift: 1,
+            noseSlim: 1,
+            noseWingSlim: 1,
+            noseTipSize: 1,
+            noseBridge: 1,
+            noseRootNarrowing: 1,
+            noseTipLift: 1
+        )
+    }
+
+    private var phase35EyeAndNoseConflictTotal: Float {
+        BeautySafetyCaps.eyeSize +
+            BeautySafetyCaps.eyeDistance +
+            BeautySafetyCaps.eyeYPosition +
+            BeautySafetyCaps.eyeTailLift +
+            BeautySafetyCaps.noseSlim +
+            BeautySafetyCaps.noseWingSlim +
+            BeautySafetyCaps.noseTipSize +
+            BeautySafetyCaps.noseBridge +
+            BeautySafetyCaps.noseRootNarrowing +
+            BeautySafetyCaps.noseTipLift
     }
 
     func testReusedEyeGeometrySkipsEyesZerosStrengthsAndPreservesNonEyeReuseReduction() {

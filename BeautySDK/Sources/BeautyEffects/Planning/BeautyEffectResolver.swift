@@ -159,10 +159,20 @@ public enum BeautyEffectResolver {
             strengths.noseRootNarrowing,
             strengths.noseTipLift
         )
+        let hadRequestedMouthValues = anyNonZero(
+            strengths.mouthSize,
+            strengths.mouthWidth,
+            strengths.smile
+        )
         let noseProvider = NoseWarpProvider()
+        let mouthProvider = MouthWarpProvider()
         if !staleGeometry, let faceGeometry {
-            let emissions = noseProvider.fieldEmissions(face: faceGeometry, strengths: strengths)
-            strengths = emissions.sanitizing(strengths)
+            strengths = noseProvider
+                .fieldEmissions(face: faceGeometry, strengths: strengths)
+                .sanitizing(strengths)
+            strengths = mouthProvider
+                .fieldEmissions(face: faceGeometry, strengths: strengths)
+                .sanitizing(strengths)
         }
 
         if anyNonZero(strengths.skinSmoothing, strengths.skinWhitening, strengths.skinRosy, strengths.skinSharpen) {
@@ -213,7 +223,8 @@ public enum BeautyEffectResolver {
             let conflict = Self.resolveGeometryConflict(
                 strengths: strengths,
                 faceGeometry: faceGeometry,
-                noseProvider: noseProvider
+                noseProvider: noseProvider,
+                mouthProvider: mouthProvider
             )
             strengths = conflict.strengths
             extraWarnings.append(contentsOf: conflict.warnings)
@@ -304,14 +315,14 @@ public enum BeautyEffectResolver {
                 }
             }
         }
-        if anyNonZero(strengths.mouthSize, strengths.mouthWidth, strengths.smile) {
+        if hadRequestedMouthValues {
             if staleGeometry {
                 Self.zeroMouthGeometryStrengths(&strengths)
                 skippedDomains.insert(.mouth)
                 metrics["beauty.effects.skippedMouthDomains"] = 1
                 appendStaleGeometryWarningIfNeeded()
             } else if let faceGeometry {
-                let result = MouthWarpProvider().makeControlPoints(face: faceGeometry, strengths: strengths)
+                let result = mouthProvider.makeControlPoints(face: faceGeometry, strengths: strengths)
                 if result.points.isEmpty {
                     Self.zeroMouthGeometryStrengths(&strengths)
                     skippedDomains.insert(.mouth)
@@ -401,21 +412,23 @@ public enum BeautyEffectResolver {
     private static func resolveGeometryConflict(
         strengths: BeautyEffectiveStrengths,
         faceGeometry: FaceGeometry,
-        noseProvider: NoseWarpProvider
+        noseProvider: NoseWarpProvider,
+        mouthProvider: MouthWarpProvider
     ) -> GeometryConflictResolution {
         var retainedBaseline = strengths
 
-        // A conflict scale can move a previously emitting nose field below its
-        // provider threshold. Remove that work from the unscaled baseline and
-        // recompute so final emissions and conflict evidence share one mask.
-        // Each pass can only remove fields, and there are exactly six fields.
-        for _ in 0..<6 {
+        // A conflict scale can move a previously emitting nose or mouth field
+        // below its provider threshold. Remove that work from the unscaled
+        // baseline and recompute so final emissions and conflict evidence share
+        // one mask. Each pass can only remove fields, and there are nine fields.
+        for _ in 0..<9 {
             let resolution = GeometryConflictResolver().resolve(strengths: retainedBaseline)
-            let finalEmissions = noseProvider.fieldEmissions(
-                face: faceGeometry,
-                strengths: resolution.strengths
-            )
-            let nextBaseline = finalEmissions.sanitizing(retainedBaseline)
+            var nextBaseline = noseProvider
+                .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
+                .sanitizing(retainedBaseline)
+            nextBaseline = mouthProvider
+                .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
+                .sanitizing(nextBaseline)
             if nextBaseline == retainedBaseline {
                 return resolution
             }

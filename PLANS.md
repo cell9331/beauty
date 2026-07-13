@@ -38,6 +38,21 @@
 
 ## 4. Completed
 
+### C-2026-07-13-phase-35-code-review-iteration-4-remediation
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Closed Phase 35 iteration-4 finding CR-06 by converging shared conflict weakening with provider eligibility for all retained nose and mouth fields. |
+| Behavior | Provider-owned mouth field emissions now sanitize preflight and final scaled work; signed `mouthSize` / `mouthWidth` threshold crossings are zeroed and excluded before conflict evidence is finalized, while supported mouth siblings remain active. |
+| Verification | Focused provider/resolver/degradation/conflict/combined suites and full `swift test --package-path BeautySDK` recorded in `35-REVIEW-FIX.md`; exact domain, warning, scale, count, effective-strength, and final-emission regressions cover both signed directions with and without supported siblings. |
+
+Outcome:
+
+- Every retained mouth geometry field is provider-eligible at its final conflict-scaled strength.
+- A threshold-crossing mouth request with no retained sibling preserves `.mouth` skipped-domain and redacted `mouth_inputs_missing` evidence; a supported sibling keeps `.mouth` active.
+- The established bounded nose convergence, aggregate diagnostic privacy, and Phase 36/37 non-claims remain unchanged.
+
 ### C-2026-07-13-phase-35-code-review-iteration-3-remediation
 
 | Field | Value |
