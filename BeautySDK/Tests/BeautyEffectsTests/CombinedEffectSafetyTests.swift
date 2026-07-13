@@ -5,6 +5,27 @@ import BeautyResources
 @testable import BeautyEffects
 
 final class CombinedEffectSafetyTests: XCTestCase {
+    func testMOUTH05ExactCapsSignedSemanticsWarningAndCappedCount() {
+        let cases: [(BeautyParameters, KeyPath<BeautyEffectiveStrengths, Float>, Float)] = [
+            (BeautyParameters(mouthSize: 1), \.mouthSize, 0.35),
+            (BeautyParameters(mouthSize: -1), \.mouthSize, -0.35),
+            (BeautyParameters(mouthWidth: 1), \.mouthWidth, 0.35),
+            (BeautyParameters(mouthWidth: -1), \.mouthWidth, -0.35),
+            (BeautyParameters(smile: 1), \.smile, 0.50),
+            (BeautyParameters(lipColor: 1), \.lipColor, 0.50),
+        ]
+        for (parameters, keyPath, expected) in cases {
+            let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)
+            XCTAssertEqual(plan.effectiveStrengths[keyPath: keyPath], expected, accuracy: 0.0001)
+            XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 1)
+            XCTAssertTrue(plan.warnings.contains {
+                $0.code == "beauty_strength_capped" &&
+                    $0.message == "Effective beauty strength was capped for natural output."
+            })
+            assertCombinedMetadataRedacted(plan)
+        }
+    }
+
     func testNoFaceSkipsFaceDependentDomainsButKeepsColorAndFilterActive() {
         let plan = BeautyEffectResolver.resolve(
             parameters: BeautyParameters(
@@ -261,6 +282,35 @@ final class CombinedEffectSafetyTests: XCTestCase {
             XCTAssertGreaterThan(abs(combinedValue), 0)
             XCTAssertLessThan(abs(combinedValue), abs(normalValue))
             XCTAssertEqual(combinedValue.sign, normalValue.sign)
+            XCTAssertTrue(combined.warnings.contains { $0.code == "combined_geometry_weakened" })
+            assertCombinedMetadataRedacted(combined)
+        }
+    }
+
+    func testMOUTH08EveryMouthGeometryFieldWeakensWithFaceEyeNoseAndPreservesDirection() {
+        let cases: [(BeautyParameters, KeyPath<BeautyEffectiveStrengths, Float>, Float)] = [
+            (BeautyParameters(mouthSize: 1, lipColor: 1), \.mouthSize, 0.35),
+            (BeautyParameters(mouthSize: -1, lipColor: 1), \.mouthSize, -0.35),
+            (BeautyParameters(mouthWidth: 1, lipColor: 1), \.mouthWidth, 0.35),
+            (BeautyParameters(mouthWidth: -1, lipColor: 1), \.mouthWidth, -0.35),
+            (BeautyParameters(smile: 1, lipColor: 1), \.smile, 0.50),
+        ]
+
+        for (mouthParameters, keyPath, expected) in cases {
+            let normal = BeautyEffectResolver.resolve(parameters: mouthParameters, faceGeometry: .fixture)
+            var combinedParameters = mouthParameters
+            combinedParameters.faceSlim = 1
+            combinedParameters.eyeSize = 1
+            combinedParameters.noseSlim = 1
+            let combined = BeautyEffectResolver.resolve(parameters: combinedParameters, faceGeometry: .fixture)
+            let normalValue = normal.effectiveStrengths[keyPath: keyPath]
+            let combinedValue = combined.effectiveStrengths[keyPath: keyPath]
+
+            XCTAssertEqual(normalValue, expected, accuracy: 0.0001)
+            XCTAssertGreaterThan(abs(combinedValue), 0)
+            XCTAssertLessThan(abs(combinedValue), abs(normalValue))
+            XCTAssertEqual(combinedValue.sign, normalValue.sign)
+            XCTAssertEqual(combined.effectiveStrengths.lipColor, 0.50, accuracy: 0.0001)
             XCTAssertTrue(combined.warnings.contains { $0.code == "combined_geometry_weakened" })
             assertCombinedMetadataRedacted(combined)
         }

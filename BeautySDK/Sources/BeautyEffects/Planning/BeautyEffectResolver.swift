@@ -273,6 +273,7 @@ public enum BeautyEffectResolver {
         }
         if anyNonZero(strengths.mouthSize, strengths.mouthWidth, strengths.smile) {
             if staleGeometry {
+                Self.zeroMouthGeometryStrengths(&strengths)
                 skippedDomains.insert(.mouth)
                 metrics["beauty.effects.skippedMouthDomains"] = 1
                 appendStaleGeometryWarningIfNeeded()
@@ -284,6 +285,7 @@ public enum BeautyEffectResolver {
 
                 let result = MouthWarpProvider().makeControlPoints(face: faceGeometry, strengths: strengths)
                 if result.points.isEmpty {
+                    Self.zeroMouthGeometryStrengths(&strengths)
                     skippedDomains.insert(.mouth)
                     metrics["beauty.effects.skippedMouthDomains"] = 1
                     extraWarnings.append(Self.mouthSkippedWarning)
@@ -292,6 +294,7 @@ public enum BeautyEffectResolver {
                     geometryPointCount += result.points.count
                 }
             } else {
+                Self.zeroMouthGeometryStrengths(&strengths)
                 skippedDomains.insert(.mouth)
                 metrics["beauty.effects.skippedMouthDomains"] = 1
                 if noUsableFace {
@@ -305,6 +308,7 @@ public enum BeautyEffectResolver {
             if let faceGeometry, !faceGeometry.outerLips.isEmpty {
                 activeDomains.insert(.lipColor)
             } else {
+                strengths.lipColor = 0
                 skippedDomains.insert(.lipColor)
                 metrics["beauty.effects.skippedLipDomains"] = 1
                 if noUsableFace {
@@ -378,6 +382,12 @@ public enum BeautyEffectResolver {
         strengths.noseWingSlim = 0
         strengths.noseTipSize = 0
         strengths.noseBridge = 0
+    }
+
+    private static func zeroMouthGeometryStrengths(_ strengths: inout BeautyEffectiveStrengths) {
+        strengths.mouthSize = 0
+        strengths.mouthWidth = 0
+        strengths.smile = 0
     }
 
     private static func scaleReusableNonEyeGeometryStrengths(_ strengths: inout BeautyEffectiveStrengths, by scale: Float) {

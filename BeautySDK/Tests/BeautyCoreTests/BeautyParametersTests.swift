@@ -142,6 +142,27 @@ final class BeautyParametersTests: XCTestCase {
         XCTAssertEqual(positive.noseTipSize, 1)
     }
 
+    func testMOUTH05MouthInputsNormalizeSignedPositiveOnlyOverflowAndNonFiniteValues() {
+        let overflow = BeautyParameters(mouthSize: -2, mouthWidth: 2, smile: -1, lipColor: 2)
+        XCTAssertEqual(overflow.mouthSize, -1)
+        XCTAssertEqual(overflow.mouthWidth, 1)
+        XCTAssertEqual(overflow.smile, 0)
+        XCTAssertEqual(overflow.lipColor, 1)
+
+        for value: Float in [.nan, .infinity, -.infinity] {
+            let parameters = BeautyParameters(
+                mouthSize: value,
+                mouthWidth: value,
+                smile: value,
+                lipColor: value
+            )
+            XCTAssertEqual(parameters.mouthSize, 0)
+            XCTAssertEqual(parameters.mouthWidth, 0)
+            XCTAssertEqual(parameters.smile, 0)
+            XCTAssertEqual(parameters.lipColor, 0)
+        }
+    }
+
     func testSDK03CodableRoundTripAndMissingFieldsUseDefaults() throws {
         let parameters = BeautyParameters(
             skinSmoothing: 0.2,

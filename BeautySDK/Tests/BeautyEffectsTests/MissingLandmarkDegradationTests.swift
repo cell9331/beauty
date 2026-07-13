@@ -254,30 +254,40 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertTrue(plan.activeDomains.contains(.filter))
         XCTAssertEqual(plan.skippedDomains, [.mouth])
         XCTAssertTrue(plan.warnings.contains { $0.code == "mouth_inputs_missing" })
+        XCTAssertEqual(plan.effectiveStrengths.mouthSize, 0)
+        XCTAssertEqual(plan.effectiveStrengths.mouthWidth, 0)
+        XCTAssertEqual(plan.effectiveStrengths.smile, 0)
     }
 
     func testReusedLandmarksReduceMouthGeometry() {
         let plan = BeautyEffectResolver.resolve(
-            parameters: BeautyParameters(mouthSize: 1, mouthWidth: 1, smile: 1),
+            parameters: BeautyParameters(mouthSize: -1, mouthWidth: 1, smile: 1, lipColor: 1),
             faceGeometry: .reused
         )
 
         XCTAssertTrue(plan.activeDomains.contains(.mouth))
-        XCTAssertLessThan(plan.effectiveStrengths.mouthSize, BeautySafetyCaps.mouthSize)
-        XCTAssertLessThan(plan.effectiveStrengths.mouthWidth, BeautySafetyCaps.mouthWidth)
-        XCTAssertLessThan(plan.effectiveStrengths.smile, BeautySafetyCaps.smile)
+        XCTAssertTrue(plan.activeDomains.contains(.lipColor))
+        XCTAssertEqual(plan.effectiveStrengths.mouthSize, -0.175, accuracy: 0.0001)
+        XCTAssertEqual(plan.effectiveStrengths.mouthWidth, 0.175, accuracy: 0.0001)
+        XCTAssertEqual(plan.effectiveStrengths.smile, 0.25, accuracy: 0.0001)
+        XCTAssertEqual(plan.effectiveStrengths.lipColor, 0.50, accuracy: 0.0001)
         XCTAssertTrue(plan.warnings.contains { $0.code == "geometry_stale_reduced" })
     }
 
     func testStaleLandmarksSkipStrongMouthGeometry() {
         let plan = BeautyEffectResolver.resolve(
-            parameters: BeautyParameters(brightness: 0.2, mouthSize: 1, mouthWidth: 1, smile: 1),
+            parameters: BeautyParameters(brightness: 0.2, mouthSize: -1, mouthWidth: 1, smile: 1, lipColor: 1),
             faceGeometry: .stale
         )
 
         XCTAssertFalse(plan.activeDomains.contains(.mouth))
         XCTAssertTrue(plan.activeDomains.contains(.color))
         XCTAssertTrue(plan.skippedDomains.contains(.mouth))
+        XCTAssertTrue(plan.activeDomains.contains(.lipColor), "stale lip color remains a color-domain operation")
+        XCTAssertEqual(plan.effectiveStrengths.mouthSize, 0)
+        XCTAssertEqual(plan.effectiveStrengths.mouthWidth, 0)
+        XCTAssertEqual(plan.effectiveStrengths.smile, 0)
+        XCTAssertEqual(plan.effectiveStrengths.lipColor, 0.50, accuracy: 0.0001)
         XCTAssertTrue(plan.warnings.contains { $0.code == "geometry_stale_skipped" })
     }
 
@@ -297,6 +307,7 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertTrue(plan.activeDomains.contains(.filter))
         XCTAssertTrue(plan.skippedDomains.contains(.lipColor))
         XCTAssertTrue(plan.warnings.contains { $0.code == "lip_inputs_missing" })
+        XCTAssertEqual(plan.effectiveStrengths.lipColor, 0)
     }
 
     func testSelectedFaceRoutePreservesGroupSpecificDegradation() {
@@ -372,6 +383,10 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertFalse(plan.activeDomains.contains(.lipColor))
         XCTAssertTrue(plan.skippedDomains.isSuperset(of: [.faceShape, .eyes, .nose, .mouth, .lipColor]))
         XCTAssertTrue(plan.warnings.contains { $0.code == "face_effects_skipped_no_face" })
+        XCTAssertEqual(plan.effectiveStrengths.mouthSize, 0)
+        XCTAssertEqual(plan.effectiveStrengths.mouthWidth, 0)
+        XCTAssertEqual(plan.effectiveStrengths.smile, 0)
+        XCTAssertEqual(plan.effectiveStrengths.lipColor, 0)
         assertRedacted(plan)
     }
 
