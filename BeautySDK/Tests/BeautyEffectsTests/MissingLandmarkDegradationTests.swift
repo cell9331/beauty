@@ -201,6 +201,29 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         }
     }
 
+    func testPhase35ReviewUnsupportedIndependentSupportIsExcludedFromConflictAccounting() {
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(
+                faceSlim: 1,
+                faceSmall: 1,
+                noseRootNarrowing: 1
+            ),
+            faceGeometry: .onePointNoseRoot
+        )
+        let expectedScale = 1 / (BeautySafetyCaps.faceSlim + BeautySafetyCaps.faceSmall)
+
+        XCTAssertEqual(plan.effectiveStrengths.noseRootNarrowing, 0)
+        XCTAssertEqual(plan.effectiveStrengths.faceSlim, BeautySafetyCaps.faceSlim * expectedScale, accuracy: 0.0001)
+        XCTAssertEqual(plan.effectiveStrengths.faceSmall, BeautySafetyCaps.faceSmall * expectedScale, accuracy: 0.0001)
+        XCTAssertEqual(plan.metrics["beauty.effects.geometryStrengthScale"] ?? 0, Double(expectedScale), accuracy: 0.0001)
+        XCTAssertEqual(plan.metrics["beauty.effects.weakenedCount"], 2)
+        XCTAssertTrue(plan.activeDomains.contains(.faceShape))
+        XCTAssertTrue(plan.skippedDomains.contains(.nose))
+        XCTAssertTrue(plan.warnings.contains { $0.code == "combined_geometry_weakened" })
+        XCTAssertTrue(plan.warnings.contains { $0.code == "nose_inputs_missing" })
+        assertRedacted(plan)
+    }
+
     func testNoseGeometryProducesDeterministicProxyEvidenceAndCapMetadata() {
         let plan = BeautyEffectResolver.resolve(
             parameters: BeautyParameters(noseSlim: 1, noseTipSize: 1),

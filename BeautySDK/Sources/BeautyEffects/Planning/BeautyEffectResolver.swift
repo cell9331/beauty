@@ -151,6 +151,25 @@ public enum BeautyEffectResolver {
             Self.zeroEyeStrengths(&strengths)
         }
 
+        let hadRequestedNoseValues = anyNonZero(
+            strengths.noseSlim,
+            strengths.noseWingSlim,
+            strengths.noseTipSize,
+            strengths.noseBridge,
+            strengths.noseRootNarrowing,
+            strengths.noseTipLift
+        )
+        let noseProvider = NoseWarpProvider()
+        if !staleGeometry, let faceGeometry {
+            let supportAvailability = noseProvider.supportAvailability(for: faceGeometry)
+            if strengths.noseRootNarrowing > 0, !supportAvailability.rootNarrowing {
+                strengths.noseRootNarrowing = 0
+            }
+            if strengths.noseTipLift > 0, !supportAvailability.tipLift {
+                strengths.noseTipLift = 0
+            }
+        }
+
         if anyNonZero(strengths.skinSmoothing, strengths.skinWhitening, strengths.skinRosy, strengths.skinSharpen) {
             if noUsableFace {
                 skippedDomains.insert(.skin)
@@ -249,29 +268,14 @@ public enum BeautyEffectResolver {
                 }
             }
         }
-        if anyNonZero(
-            strengths.noseSlim,
-            strengths.noseWingSlim,
-            strengths.noseTipSize,
-            strengths.noseBridge,
-            strengths.noseRootNarrowing,
-            strengths.noseTipLift
-        ) {
+        if hadRequestedNoseValues {
             if staleGeometry {
                 Self.zeroNoseStrengths(&strengths)
                 skippedDomains.insert(.nose)
                 metrics["beauty.effects.skippedNoseDomains"] = 1
                 appendStaleGeometryWarningIfNeeded()
             } else if let faceGeometry {
-                let provider = NoseWarpProvider()
-                let supportAvailability = provider.supportAvailability(for: faceGeometry)
-                if strengths.noseRootNarrowing > 0, !supportAvailability.rootNarrowing {
-                    strengths.noseRootNarrowing = 0
-                }
-                if strengths.noseTipLift > 0, !supportAvailability.tipLift {
-                    strengths.noseTipLift = 0
-                }
-                let result = provider.makeControlPoints(face: faceGeometry, strengths: strengths)
+                let result = noseProvider.makeControlPoints(face: faceGeometry, strengths: strengths)
                 if result.points.isEmpty {
                     Self.zeroNoseStrengths(&strengths)
                     skippedDomains.insert(.nose)
