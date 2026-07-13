@@ -123,10 +123,13 @@ final class NoseWarpProviderTests: XCTestCase {
         XCTAssertLessThan(left.target.x, FaceGeometry.fixture.bounds.midX)
         XCTAssertGreaterThan(right.target.x, FaceGeometry.fixture.bounds.midX)
         assertSafe(points: first.points, strength: BeautySafetyCaps.noseRootNarrowing)
-        XCTAssertEqual(
-            provider.supportAvailability(for: .fixture),
-            NoseWarpSupportAvailability(legacy: true, rootNarrowing: true, tipLift: true)
+        let emissions = provider.fieldEmissions(
+            face: .fixture,
+            strengths: strengths(noseSlim: 1, noseRootNarrowing: 1, noseTipLift: 1)
         )
+        XCTAssertFalse(emissions.noseSlim.isEmpty)
+        XCTAssertFalse(emissions.noseRootNarrowing.isEmpty)
+        XCTAssertFalse(emissions.noseTipLift.isEmpty)
     }
 
     func testNoseTipLiftProducesDeterministicVerticalUpwardBoundedVectors() {
@@ -185,7 +188,13 @@ final class NoseWarpProviderTests: XCTestCase {
             )
             XCTAssertTrue(result.points.isEmpty, name)
             XCTAssertEqual(result.skipReason, "nose_inputs_missing", name)
-            XCTAssertFalse(NoseWarpProvider().supportAvailability(for: face).rootNarrowing, name)
+            XCTAssertTrue(
+                NoseWarpProvider()
+                    .fieldEmissions(face: face, strengths: strengths(noseRootNarrowing: 1))
+                    .noseRootNarrowing
+                    .isEmpty,
+                name
+            )
         }
     }
 
@@ -206,7 +215,13 @@ final class NoseWarpProviderTests: XCTestCase {
             )
             XCTAssertTrue(result.points.isEmpty, name)
             XCTAssertEqual(result.skipReason, "nose_inputs_missing", name)
-            XCTAssertFalse(NoseWarpProvider().supportAvailability(for: face).tipLift, name)
+            XCTAssertTrue(
+                NoseWarpProvider()
+                    .fieldEmissions(face: face, strengths: strengths(noseTipLift: 1))
+                    .noseTipLift
+                    .isEmpty,
+                name
+            )
         }
     }
 
@@ -230,10 +245,43 @@ final class NoseWarpProviderTests: XCTestCase {
         XCTAssertFalse(tip.points.isEmpty)
         XCTAssertNil(root.skipReason)
         XCTAssertNil(tip.skipReason)
-        XCTAssertEqual(
-            provider.supportAvailability(for: face),
-            NoseWarpSupportAvailability(legacy: false, rootNarrowing: true, tipLift: true)
+        let emissions = provider.fieldEmissions(
+            face: face,
+            strengths: strengths(noseSlim: 1, noseRootNarrowing: 1, noseTipLift: 1)
         )
+        XCTAssertTrue(emissions.noseSlim.isEmpty)
+        XCTAssertFalse(emissions.noseRootNarrowing.isEmpty)
+        XCTAssertFalse(emissions.noseTipLift.isEmpty)
+    }
+
+    func testLegacyFieldEmissionsUseEachHelpersActualPrerequisites() {
+        let face = FaceGeometry(
+            bounds: FaceGeometry.fixture.bounds,
+            faceContour: FaceGeometry.fixture.faceContour,
+            leftEye: FaceGeometry.fixture.leftEye,
+            rightEye: FaceGeometry.fixture.rightEye,
+            nose: [SIMD2<Float>(0.50, 0.52)],
+            noseRoot: FaceGeometry.fixture.noseRoot,
+            noseTip: FaceGeometry.fixture.noseTip,
+            outerLips: FaceGeometry.fixture.outerLips
+        )
+        let emissions = NoseWarpProvider().fieldEmissions(
+            face: face,
+            strengths: strengths(
+                noseSlim: 1,
+                noseWingSlim: 1,
+                noseTipSize: -1,
+                noseBridge: 1,
+                noseRootNarrowing: 1
+            )
+        )
+
+        XCTAssertTrue(emissions.noseSlim.isEmpty)
+        XCTAssertFalse(emissions.noseWingSlim.isEmpty)
+        XCTAssertFalse(emissions.noseTipSize.isEmpty)
+        XCTAssertFalse(emissions.noseBridge.isEmpty)
+        XCTAssertFalse(emissions.noseRootNarrowing.isEmpty)
+        XCTAssertEqual(emissions.points.count, 5)
     }
 
     func testMissingNoseInputsReturnSkipReason() {

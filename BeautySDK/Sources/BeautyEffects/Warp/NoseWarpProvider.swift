@@ -1,7 +1,19 @@
-struct NoseWarpSupportAvailability: Equatable, Sendable {
-    let legacy: Bool
-    let rootNarrowing: Bool
-    let tipLift: Bool
+struct NoseWarpFieldEmissions: Equatable, Sendable {
+    let noseSlim: [WarpControlPoint]
+    let noseWingSlim: [WarpControlPoint]
+    let noseTipSize: [WarpControlPoint]
+    let noseBridge: [WarpControlPoint]
+    let noseRootNarrowing: [WarpControlPoint]
+    let noseTipLift: [WarpControlPoint]
+
+    var points: [WarpControlPoint] {
+        noseSlim +
+            noseWingSlim +
+            noseTipSize +
+            noseBridge +
+            noseRootNarrowing +
+            noseTipLift
+    }
 }
 
 struct NoseWarpProvider: WarpControlPointProvider {
@@ -9,52 +21,53 @@ struct NoseWarpProvider: WarpControlPointProvider {
         face: FaceGeometry,
         strengths: BeautyEffectiveStrengths
     ) -> WarpControlPointResult {
-        var points: [WarpControlPoint] = []
-        let legacyRequested = strengths.noseSlim > 0 ||
+        let emissions = fieldEmissions(face: face, strengths: strengths)
+        let requestedWork = strengths.noseSlim > 0 ||
             strengths.noseWingSlim > 0 ||
             abs(strengths.noseTipSize) > Float.ulpOfOne ||
-            strengths.noseBridge > 0
-        let newRequested = strengths.noseRootNarrowing > 0 || strengths.noseTipLift > 0
+            strengths.noseBridge > 0 ||
+            strengths.noseRootNarrowing > 0 ||
+            strengths.noseTipLift > 0
 
-        if legacyRequested, let center = LandmarkGeometryHelper.center(of: face.nose) {
-            if strengths.noseSlim > 0 {
-                points.append(contentsOf: slimPoints(face: face, center: center, strength: strengths.noseSlim))
-            }
-
-            if strengths.noseWingSlim > 0 {
-                points.append(contentsOf: wingPoints(face: face, center: center, strength: strengths.noseWingSlim))
-            }
-
-            if abs(strengths.noseTipSize) > Float.ulpOfOne {
-                points.append(contentsOf: tipPoints(face: face, center: center, strength: strengths.noseTipSize))
-            }
-
-            if strengths.noseBridge > 0 {
-                points.append(contentsOf: bridgePoints(face: face, center: center, strength: strengths.noseBridge))
-            }
-        }
-
-        if strengths.noseRootNarrowing > 0 {
-            points.append(contentsOf: rootNarrowingPoints(face: face, strength: strengths.noseRootNarrowing))
-        }
-
-        if strengths.noseTipLift > 0 {
-            points.append(contentsOf: tipLiftPoints(face: face, strength: strengths.noseTipLift))
-        }
-
-        let requestedWork = legacyRequested || newRequested
         return WarpControlPointResult(
-            points: points,
-            skipReason: requestedWork && points.isEmpty ? "nose_inputs_missing" : nil
+            points: emissions.points,
+            skipReason: requestedWork && emissions.points.isEmpty ? "nose_inputs_missing" : nil
         )
     }
 
-    func supportAvailability(for face: FaceGeometry) -> NoseWarpSupportAvailability {
-        NoseWarpSupportAvailability(
-            legacy: LandmarkGeometryHelper.center(of: face.nose) != nil,
-            rootNarrowing: validatedRootPair(in: face) != nil,
-            tipLift: validatedTipSupport(in: face) != nil
+    func fieldEmissions(
+        face: FaceGeometry,
+        strengths: BeautyEffectiveStrengths
+    ) -> NoseWarpFieldEmissions {
+        let center = LandmarkGeometryHelper.center(of: face.nose)
+        return NoseWarpFieldEmissions(
+            noseSlim: strengths.noseSlim > 0
+                ? center.map { slimPoints(face: face, center: $0, strength: strengths.noseSlim) } ?? []
+                : [],
+            noseWingSlim: strengths.noseWingSlim > 0
+                ? center.map { wingPoints(face: face, center: $0, strength: strengths.noseWingSlim) } ?? []
+                : [],
+            noseTipSize: abs(strengths.noseTipSize) > Float.ulpOfOne
+                ? center.map { tipPoints(face: face, center: $0, strength: strengths.noseTipSize) } ?? []
+                : [],
+            noseBridge: strengths.noseBridge > 0
+                ? center.map { bridgePoints(face: face, center: $0, strength: strengths.noseBridge) } ?? []
+                : [],
+            noseRootNarrowing: strengths.noseRootNarrowing > 0
+                ? rootNarrowingPoints(face: face, strength: strengths.noseRootNarrowing)
+                : [],
+            noseTipLift: strengths.noseTipLift > 0
+                ? tipLiftPoints(face: face, strength: strengths.noseTipLift)
+                : []
         )
+    }
+
+    func hasValidRootSupport(in face: FaceGeometry) -> Bool {
+        validatedRootPair(in: face) != nil
+    }
+
+    func hasValidTipSupport(in face: FaceGeometry) -> Bool {
+        validatedTipSupport(in: face) != nil
     }
 
     func validatedRootPair(in face: FaceGeometry) -> (left: SIMD2<Float>, right: SIMD2<Float>)? {

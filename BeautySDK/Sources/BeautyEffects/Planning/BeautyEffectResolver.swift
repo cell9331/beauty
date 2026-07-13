@@ -161,14 +161,12 @@ public enum BeautyEffectResolver {
         )
         let noseProvider = NoseWarpProvider()
         if !staleGeometry, let faceGeometry {
-            let supportAvailability = noseProvider.supportAvailability(for: faceGeometry)
-            if !supportAvailability.legacy {
-                Self.zeroLegacyNoseStrengths(&strengths)
-            }
-            if strengths.noseRootNarrowing > 0, !supportAvailability.rootNarrowing {
+            let emissions = noseProvider.fieldEmissions(face: faceGeometry, strengths: strengths)
+            Self.zeroNonEmittingLegacyNoseStrengths(&strengths, emissions: emissions)
+            if strengths.noseRootNarrowing > 0, !noseProvider.hasValidRootSupport(in: faceGeometry) {
                 strengths.noseRootNarrowing = 0
             }
-            if strengths.noseTipLift > 0, !supportAvailability.tipLift {
+            if strengths.noseTipLift > 0, !noseProvider.hasValidTipSupport(in: faceGeometry) {
                 strengths.noseTipLift = 0
             }
         }
@@ -416,6 +414,24 @@ public enum BeautyEffectResolver {
         strengths.noseWingSlim = 0
         strengths.noseTipSize = 0
         strengths.noseBridge = 0
+    }
+
+    private static func zeroNonEmittingLegacyNoseStrengths(
+        _ strengths: inout BeautyEffectiveStrengths,
+        emissions: NoseWarpFieldEmissions
+    ) {
+        if strengths.noseSlim > 0, emissions.noseSlim.isEmpty {
+            strengths.noseSlim = 0
+        }
+        if strengths.noseWingSlim > 0, emissions.noseWingSlim.isEmpty {
+            strengths.noseWingSlim = 0
+        }
+        if abs(strengths.noseTipSize) > Float.ulpOfOne, emissions.noseTipSize.isEmpty {
+            strengths.noseTipSize = 0
+        }
+        if strengths.noseBridge > 0, emissions.noseBridge.isEmpty {
+            strengths.noseBridge = 0
+        }
     }
 
     private static func zeroMouthGeometryStrengths(_ strengths: inout BeautyEffectiveStrengths) {
