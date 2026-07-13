@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.9
 milestone_name: Nose Remaining Tools and Branch Closeout
 status: executing
-stopped_at: Completed 35-02-PLAN.md
-last_updated: "2026-07-13T06:37:24.506Z"
+stopped_at: Completed 35-03-PLAN.md
+last_updated: "2026-07-13T06:46:23.853Z"
 last_activity: 2026-07-13 -- Phase 35 execution started
 progress:
   total_phases: 3
   completed_phases: 0
   total_plans: 4
-  completed_plans: 2
+  completed_plans: 3
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: `.planning/PROJECT.md` (updated 2026-07-13)
 ## Current Position
 
 Phase: 35 (Public Contract and Independent Geometry) — EXECUTING
-Plan: 3 of 4
+Plan: 4 of 4
 Status: Ready to execute
 Last activity: 2026-07-13 -- Phase 35 execution started
 
@@ -134,6 +134,7 @@ Last activity: 2026-07-13
 | Phase 30 P07 | 8 min | 2 tasks | 6 files |
 | Phase 35 P01 | 3 min | 2 tasks | 6 files |
 | Phase 35 P02 | 6 min | 2 tasks | 5 files |
+| Phase 35 P03 | 5 min | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -204,6 +205,8 @@ Recent milestone-level outcomes:
 - [Phase 35]: Keep root and tip supports explicit and package-internal rather than deriving them from the legacy nose proxy. — This preserves provenance and prevents either new field from aliasing shipped behavior.
 - [Phase 35]: Validate root and tip supports before clamping and share those validators with support availability. — Malformed biometric-adjacent geometry must fail closed and resolver routing must agree with provider emission.
 - [Phase 35]: Limit the legacy nose center guard to legacy fields. — Valid explicit root or tip support must remain usable when the legacy proxy is absent.
+- [Phase 35]: Sanitize unsupported root and tip requests independently before using the same NoseWarpProvider, preserving valid sibling and legacy nose work. — Prevents legacy vector borrowing while retaining compatible aggregate nose behavior.
+- [Phase 35]: Preserve existing GeometryConflictResolver call placement while adding both fields to scale, total, and count. — Phase 37 owns exhaustive once-only conflict behavior.
 
 ### Pending Todos
 
@@ -236,8 +239,8 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-13T06:37:24.498Z
-Stopped at: Completed 35-02-PLAN.md
+Last session: 2026-07-13T06:46:23.846Z
+Stopped at: Completed 35-03-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
