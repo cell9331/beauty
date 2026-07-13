@@ -26,6 +26,28 @@ final class BeautyResourceCatalogTests: XCTestCase {
         )
     }
 
+    func testNOSE02BundledPresetsDecodeNewNoseFieldsAsZero() throws {
+        let presets = try BeautyResourceCatalog.bundled().builtInPresets()
+
+        XCTAssertEqual(
+            presets.map(\.id),
+            ["natural", "clear", "refined", "male-natural", "id-photo-natural"]
+        )
+        XCTAssertEqual(presets.count, 5)
+        for preset in presets {
+            XCTAssertEqual(
+                preset.parameters.noseRootNarrowing,
+                0,
+                "\(preset.id) noseRootNarrowing"
+            )
+            XCTAssertEqual(
+                preset.parameters.noseTipLift,
+                0,
+                "\(preset.id) noseTipLift"
+            )
+        }
+    }
+
     func testEFFECT08PresetLookupIsDeterministicAndComplete() throws {
         let catalog = try BeautyResourceCatalog.bundled()
 

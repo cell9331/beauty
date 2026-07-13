@@ -49,6 +49,8 @@ public struct BeautyEffectiveStrengths: Equatable, Sendable {
     public var noseWingSlim: Float = 0
     public var noseTipSize: Float = 0
     public var noseBridge: Float = 0
+    public var noseRootNarrowing: Float = 0
+    public var noseTipLift: Float = 0
     public var mouthSize: Float = 0
     public var mouthWidth: Float = 0
     public var smile: Float = 0

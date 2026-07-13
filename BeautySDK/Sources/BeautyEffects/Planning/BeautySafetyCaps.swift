@@ -20,6 +20,8 @@ enum BeautySafetyCaps {
     static let noseWingSlim: Float = 0.35
     static let noseTipSize: Float = 0.30
     static let noseBridge: Float = 0.30
+    static let noseRootNarrowing: Float = 0.25
+    static let noseTipLift: Float = 0.25
 
     static let mouthSize: Float = 0.35
     static let mouthWidth: Float = 0.35

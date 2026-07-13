@@ -26,6 +26,8 @@ final class BeautySafetyCapsTests: XCTestCase {
         XCTAssertEqual(BeautySafetyCaps.noseWingSlim, 0.35, accuracy: 0.0001)
         XCTAssertEqual(BeautySafetyCaps.noseTipSize, 0.30, accuracy: 0.0001)
         XCTAssertEqual(BeautySafetyCaps.noseBridge, 0.30, accuracy: 0.0001)
+        XCTAssertEqual(BeautySafetyCaps.noseRootNarrowing, 0.25, accuracy: 0.0001)
+        XCTAssertEqual(BeautySafetyCaps.noseTipLift, 0.25, accuracy: 0.0001)
 
         XCTAssertEqual(BeautySafetyCaps.mouthSize, 0.35, accuracy: 0.0001)
         XCTAssertEqual(BeautySafetyCaps.mouthWidth, 0.35, accuracy: 0.0001)
