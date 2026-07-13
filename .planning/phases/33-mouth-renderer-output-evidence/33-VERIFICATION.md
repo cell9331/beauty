@@ -13,4 +13,4 @@ score: 4/4
 | MOUTH-03 | 6/6 contained mouth-region color changes; excluded from geometry claims | Passed |
 | MOUTH-04 | 238 ignored gallery files; zero tracked output/gallery files | Passed |
 
-Full `swift test --package-path BeautySDK` passed 187/187. `git diff --check` and artifact-boundary checks passed. Phase 34 safety and promotion gates remain pending.
+Full `swift test --package-path BeautySDK` passed 187/187. `git diff --check` and artifact-boundary checks passed. Phase 34 subsequently completed the mouth safety, degradation, boundary, and exact-promotion gates; its owning evidence is recorded in `34-VERIFICATION.md`.
