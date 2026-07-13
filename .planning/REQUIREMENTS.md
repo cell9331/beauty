@@ -44,23 +44,23 @@
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| MOUTH-01 | TBD | Pending |
-| MOUTH-02 | TBD | Pending |
-| MOUTH-03 | TBD | Pending |
-| MOUTH-04 | TBD | Pending |
-| MOUTH-05 | TBD | Pending |
-| MOUTH-06 | TBD | Pending |
-| MOUTH-07 | TBD | Pending |
-| MOUTH-08 | TBD | Pending |
-| MOUTH-09 | TBD | Pending |
-| MOUTH-10 | TBD | Pending |
-| DOC-01 | TBD | Pending |
+| MOUTH-01 | Phase 33 | Pending |
+| MOUTH-02 | Phase 33 | Pending |
+| MOUTH-03 | Phase 33 | Pending |
+| MOUTH-04 | Phase 33 | Pending |
+| MOUTH-05 | Phase 34 | Pending |
+| MOUTH-06 | Phase 34 | Pending |
+| MOUTH-07 | Phase 34 | Pending |
+| MOUTH-08 | Phase 34 | Pending |
+| MOUTH-09 | Phase 34 | Pending |
+| MOUTH-10 | Phase 34 | Pending |
+| DOC-01 | Phase 34 | Pending |
 
 **Coverage:**
 - v1.8 requirements: 11 total
-- Mapped to phases: 0
-- Unmapped: 11 ⚠️
+- Mapped to phases: 11
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-07-13*
-*Last updated: 2026-07-13 after v1.8 milestone initialization*
+*Last updated: 2026-07-13 after v1.8 roadmap creation*

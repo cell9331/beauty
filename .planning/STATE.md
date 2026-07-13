@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.8
 milestone_name: Broader 美型 / 五官 SDK Slice - Mouth
-status: planning
+status: roadmap_created
 last_updated: "2026-07-13T03:19:01.030Z"
 last_activity: 2026-07-13
 progress:
-  total_phases: 0
+  total_phases: 2
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -20,14 +20,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-13)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Planning the next milestone
+**Current focus:** Phase 33 — Mouth Renderer Output Evidence
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 33 of 34 (Mouth Renderer Output Evidence)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-07-13 — Milestone v1.8 started
+Status: Roadmap created; ready to discuss or plan Phase 33
+Last activity: 2026-07-13 — v1.8 roadmap created with 11/11 requirements mapped
 
 ## Performance Metrics
 
@@ -178,6 +178,8 @@ Recent milestone-level outcomes:
 
 ### Pending Todos
 
+- Plan and execute Phase 33 public-facade mouth/lip renderer, helper, ROI, signed-pair, color-containment, gallery, and artifact evidence.
+- Plan Phase 34 only after Phase 33 freezes output semantics; independently decide and verify stale/reused `lipColor` policy before ledger promotion.
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
 - Archive v1.7, create annotated tag `v1.7`, then clean up Phase 31/32 history.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, screenshot reruns, packaging review, broader `美型 / 五官` slices, and automated visual diffs.
@@ -208,9 +210,9 @@ Recent milestone-level outcomes:
 ## Session Continuity
 
 Last session: 2026-07-13
-Stopped at: Completed 32-07-PLAN.md
-Resume file: .planning/milestones/v1.7-phases/32-nose-safety-ledger-and-closeout/32-VERIFICATION.md
+Stopped at: Created v1.8 roadmap
+Resume file: .planning/ROADMAP.md
 
 ## Operator Next Steps
 
-- Start the next milestone with /gsd-new-milestone
+- Discuss or plan Phase 33 with `$gsd-discuss-phase 33` or `$gsd-plan-phase 33`.

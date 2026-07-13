@@ -30,6 +30,28 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-13-gsd-new-milestone-v1-8-mouth-sdk-slice
+
+**Status:** Completed
+
+**Why:**
+
+- Start the next evidence-led `美型 / 五官` SDK slice after v1.7 nose closeout.
+- Scope existing mouth/lip parameters without expanding the stable public inventory or overstating `lipColor` as true `丰唇` geometry.
+
+**Delivered:**
+
+- Initialized v1.8 `Broader 美型 / 五官 SDK Slice - Mouth` in `.planning/PROJECT.md` and reset `.planning/STATE.md` through the GSD milestone-switch handler.
+- Added milestone research for stack, features, architecture, and pitfalls, with a synthesized two-phase recommendation.
+- Defined 11 testable requirements covering public-facade output, signed mouth geometry, lip-color containment, degradation, combined weakening, boundaries, exact ledger promotion, and documentation closeout.
+- Created Phase 33 `Mouth Renderer Output Evidence` and Phase 34 `Mouth Safety, Degradation, and Ledger Closeout`, with 11/11 requirements mapped exactly once.
+
+**Verification:**
+
+- `git diff --check` passed for the roadmap artifacts before commit.
+- Requirement traceability reports 11 total, 11 mapped, and 0 unmapped.
+- Phase numbering continues after v1.7 Phase 32 as required.
+
 ### C-2026-07-13-v1-7-nose-sdk-slice
 
 | Field | Value |
