@@ -25,7 +25,7 @@ For completed prior scope, see:
 | Phase | Name | Goal | Requirements | Success Criteria |
 | ---: | --- | --- | --- | --- |
 | 29 | Eye Renderer Output Evidence | Add eye-specific public-facade renderer cases and helper evidence using existing public parameters only. | EYE-01, EYE-02, EYE-03 | 4 |
-| 30 | Eye Safety, Ledger, and Closeout | Prove safety/degradation/redaction boundaries, promote only scoped `眼睛` rows, and synchronize docs. | EYE-04, EYE-05, EYE-06, EYE-07, EYE-08, DOC-01 | 5 |
+| 30 | Eye Safety, Ledger, and Closeout | 7/7 | Complete    | 2026-07-13 |
 
 ### Phase 29: Eye Renderer Output Evidence
 

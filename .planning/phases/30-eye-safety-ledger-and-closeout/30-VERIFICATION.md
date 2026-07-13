@@ -72,3 +72,41 @@ Phase 30 does not claim whole eye-branch completion, new public fields, Demo UI 
 ## Verdict
 
 Passed. The scoped four-row v1.6 eye slice is ready for milestone audit; milestone audit and archive remain separate workflows.
+
+## Independent Goal Audit (2026-07-13)
+
+**Status:** `passed`
+
+**Score:** 9/9 v1.6 requirements accounted for; 6/6 Phase 30 requirements achieved.
+
+This verification was rechecked against current source, tests, renderer inventory, blueprint rows, and planning traceability rather than inferred from the seven plan summaries.
+
+### Actual-code evidence
+
+- `BeautyParameters` uses positive-only `clampUnit` for `eyeSize` and `eyeTailLift`, signed `clampSigned` for `eyeDistance` and `eyeYPosition`, and still exposes exactly 31 stored fields under the passing inventory test.
+- `BeautyEffectResolver` uses `capUnit` for size/tail and `capSigned` for distance/Y. Its current missing/reused/stale paths zero all four eye strengths, increment only aggregate skipped-eye metadata, and emit the fixed category messages asserted by tests.
+- Current tests contain the required abnormal-input matrix, six exact cap/direction cases, two positive-only negative no-ops, either-eye missing coverage, reused/stale eye skip coverage with retained non-eye reuse reduction, public no-face extent/redaction coverage, six direction-specific combined weakening cases, and one exact six-field aggregate case.
+- A fresh `swift test --package-path BeautySDK` run completed successfully with 178 tests and zero failures. This independently reconfirms the canonical `full_suite_tests: 178` value.
+- The renderer source and renderer inventory test contain exactly the six Phase 29 eye cases used by EYE-01 through EYE-03. Phase 29's committed verifier/evidence remains the owner of the 161/161 output and 36/36 comparison observations; Phase 30 does not relabel those historical command observations as newly generated evidence.
+- `SHAPE_FEATURE_LEDGER.md` marks exactly `大小`, `上下`, `眼距`, and `眼尾上扬` implemented under `眼睛`; all other eye subtools remain future. `FEATURE_MATRIX.md` keeps the `眼睛` branch `partial` and names the same four implemented subtools.
+- Current generated output/gallery roots contain no tracked files. The public model remains limited to the existing four eye fields, and the Phase 30 security evidence records zero raw-geometry, forbidden-import, network/cloud, commercial-execution, and unclassified VIP candidates.
+
+### v1.6 traceability audit
+
+| Requirement | Owner | Current accounting |
+| --- | --- | --- |
+| EYE-01 | Phase 29 | Six public-facade renderer cases remain in renderer source and inventory tests; requirement and traceability rows are complete. |
+| EYE-02 | Phase 29 | The committed helper and Phase 29 verification own the 161/161 existence/dimension and 36/36 portrait comparison evidence; requirement and traceability rows are complete. |
+| EYE-03 | Phase 29 | Output/gallery paths remain ignored and untracked; requirement and traceability rows are complete. |
+| EYE-04 | Phase 30 | Current normalization, resolver code, focused tests, and fresh full-suite run satisfy the cap/input goal. |
+| EYE-05 | Phase 30 | Current resolver/provider/facade code and degradation/redaction tests satisfy the fail-safe goal. |
+| EYE-06 | Phase 30 | Current combined-effect tests cover all six visible directions plus the aggregate case. |
+| EYE-07 | Phase 30 | Boundary/security evidence is closed with `threats_open: 0` and no contradictory current source or inventory finding. |
+| EYE-08 | Phase 30 | Exact four-row promotion is present; no fifth eye row is implemented. |
+| DOC-01 | Phase 30 | Blueprint, root, quality, project, requirements, roadmap, state, validation, and work ledgers remain synchronized while branch status stays partial. |
+
+### Must-have and non-claim result
+
+All Plan 30-01 through 30-07 must-have truths are represented by current behavior or bounded documentation state. The source/test findings agree with the evidence, review is `clean`, security is `verified` with `threats_open: 0`, and validation retains all fifteen task rows as passed. No evidence was found for a forbidden overclaim: Phase 30 still excludes whole-eye completion, new public fields, Demo UI changes, device evidence, commercial visual approval, broad reference parity, packaging, launch readiness, and committed generated baselines.
+
+No human-only acceptance gate remains for the scoped phase goal. Device/commercial/broad-parity review is explicitly future scope rather than incomplete Phase 30 acceptance.
