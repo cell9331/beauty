@@ -14,7 +14,7 @@ Eye tools include size, vertical position, eye height, length, distance, fat rem
 - Dependencies: `BeautyDetection` eye landmarks and `BeautyRender` unified warp output.
 - Current public `BeautyParameters` coverage: `eyeSize`, `eyeDistance`, `eyeYPosition`, and `eyeTailLift`.
 - Future parameter needs: eye height, length, pupil, gaze, lower lid, redness, corners, and symmetry.
-- Evidence expectation: current provider/resolver evidence is partial; visible completion needs public facade saved-image geometry output.
+- Evidence status: Phase 29 public-facade saved-image output and Phase 30 safety/degradation evidence complete exactly the existing-parameter subtools `大小`, `上下`, `眼距`, and `眼尾上扬`; branch-level status remains `partial` because the future tools above still need separate design and evidence.
 
 ## Boundary
 

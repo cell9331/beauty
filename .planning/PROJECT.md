@@ -12,28 +12,30 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ## Current State
 
-**Shipped version:** v1.5 SDK Geometry Output Foundation and Face Shape Slice on 2026-07-08.
+**Shipped version:** v1.6 Broader `美型 / 五官` SDK Slice - Eyes on 2026-07-13.
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
-**Current milestone:** v1.6 Broader `美型 / 五官` SDK Slice - Eyes.
+**Current milestone:** None; planning the next milestone.
 
-**Implementation state:** v1.5 completes SDK-only geometry output foundation and the first verified `脸型` existing-parameter slice. Phase 29 of v1.6 adds public-facade saved-output evidence for the existing public eye parameters `eyeSize`, signed `eyeDistance`, signed `eyeYPosition`, and `eyeTailLift`, with generated output and gallery artifacts kept ignored. Current SDK/Demo behavior remains local-first, facade-only from the Demo, and no-network by default.
+**Implementation state:** v1.6 completes the SDK-only existing-parameter eye slice across Phases 29 and 30. Public-facade saved-output evidence covers `eyeSize`, signed `eyeDistance`, signed `eyeYPosition`, and `eyeTailLift`; safety and degradation behavior is verified; exactly `大小`, `上下`, `眼距`, and `眼尾上扬` are implemented while branch-level `眼睛` remains `partial`. Generated output/gallery artifacts remain ignored. Current SDK/Demo behavior remains local-first, facade-only from the Demo, and no-network by default.
 
-**Verification state:** The v1.5 milestone audit passed with 13/13 requirements, 3/3 phases, 4/4 integration checks, 4/4 flows, and 3/3 Nyquist validation files. Phase 29 closeout evidence includes full `swift test --package-path BeautySDK` with 173 tests, `BeautyExampleRenderer` build/run evidence with 161 ignored outputs, `check_eye_renderer_outputs.py` passing with 161/161 outputs and 36/36 top-region comparisons, gallery safety checks, code review status clean, `29-SECURITY.md` with `threats_open: 0`, plus public/import boundary, raw-leak, overclaim, generated-artifact, and ignored-path scans.
+**Verification state:** The final v1.6 milestone audit passed with 9/9 requirements, 2/2 phases, 9/9 integration checks, 5/5 flows, and both phases Nyquist compliant. A fresh full `swift test --package-path BeautySDK` passed with 178 tests; renderer/helper evidence remains 161/161 outputs and 36/36 portrait comparisons; review, security, boundary, degradation, redaction, combined-weakening, documentation, and artifact-containment gates pass.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
 **Code size:** `BeautySDK` and `BeautyDemo` contain 17,794 Swift lines in the local closeout count, including build-derived `.build` files observed during v1.5 archive.
 
-## Current Milestone: v1.6 Broader `美型 / 五官` SDK Slice - Eyes
+## Last Completed Milestone: v1.6 Broader `美型 / 五官` SDK Slice - Eyes
+
+**Status:** Shipped and audited as of 2026-07-13.
 
 **Goal:** Extend the v1.5 geometry-output foundation to complete the existing-parameter `眼睛` SDK slice through public-facade saved-output evidence, safety/degradation tests, and scoped ledger promotion.
 
 **Target features:**
 
-- Eye renderer evidence: `BeautyExampleRenderer` should add public-facade cases for existing public eye parameters `eyeSize`, signed `eyeDistance`, signed `eyeYPosition`, and `eyeTailLift`.
-- Eye output helper evidence: generated outputs should stay same-dimension, remain ignored, and differ from `geometryBaseline_noop` above the watermark band on usable portrait fixtures.
-- Eye safety evidence: focused tests should cover caps, no-face and missing-eye-landmark degradation, combined weakening, redacted summaries/metrics, and no raw geometry leakage.
-- Scoped documentation closeout: promote only the mapped `眼睛` ledger rows backed by existing public parameters, keep branch-level `眼睛` partial, and avoid Demo UI, public API expansion, commercial/device/release-readiness, or broad Meitu parity claims.
+- Eye renderer evidence: `BeautyExampleRenderer` includes public-facade cases for existing public eye parameters `eyeSize`, signed `eyeDistance`, signed `eyeYPosition`, and `eyeTailLift`.
+- Eye output helper evidence: generated outputs preserve dimensions, remain ignored, and differ from `geometryBaseline_noop` above the watermark band on usable portrait fixtures.
+- Eye safety evidence: focused tests cover caps, no-face and missing/reused/stale-eye degradation, combined weakening, redacted summaries/metrics, and no raw geometry leakage.
+- Scoped documentation closeout: only the mapped `眼睛` rows backed by existing public parameters are implemented; branch-level `眼睛` remains partial, with no Demo UI, public API expansion, commercial/device/release-readiness, or broad Meitu parity claim.
 
 **Key context:** v1.6 is SDK-core only and continues the Phase 26-28 architecture. It should not add SwiftUI screens, new public parameters, new account/commercial behavior, remote processing, hidden network behavior, or unscoped `眼睛` tools such as eye height, length, pupil, gaze, lid, redness, corners, or symmetry.
 
@@ -153,12 +155,6 @@ The verified v1.6 SDK-only existing-parameter slice maps `eyeSize`, `eyeDistance
 
 Branch-level `眼睛` remains `partial`. Eye height, length, pupil/gaze, lid, redness, corners, symmetry, and other tools remain future work. This slice adds no new public fields or Demo UI, remains local-first with no network/cloud processing or commercial entitlement path, and commits no generated image baseline. It does not claim device evidence, commercial visual approval, broad reference parity, launch readiness, or whole-branch completion.
 
-### Active in v1.6
-
-- [ ] Complete the existing-parameter `眼睛` SDK slice without adding UI scope or public parameters.
-- [ ] Add focused safety, degradation, redaction, and boundary evidence for the `眼睛` slice.
-- [ ] Promote only evidence-backed second-level `眼睛` rows in `SHAPE_FEATURE_LEDGER.md`; keep branch-level `眼睛` partial.
-
 ### Out of Scope
 
 - Standalone consumer App Store product - still out of scope; Demo remains an SDK validation app.
@@ -205,6 +201,9 @@ Historical milestone detail is archived in:
 - `.planning/milestones/v1.5-ROADMAP.md`
 - `.planning/milestones/v1.5-REQUIREMENTS.md`
 - `.planning/milestones/v1.5-MILESTONE-AUDIT.md`
+- `.planning/milestones/v1.6-ROADMAP.md`
+- `.planning/milestones/v1.6-REQUIREMENTS.md`
+- `.planning/milestones/v1.6-MILESTONE-AUDIT.md`
 
 Current visual reference contracts:
 
@@ -249,7 +248,7 @@ Current visual reference contracts:
 | Phase 21 is the v1.4 evidence baseline, not a fix phase. | Current SDK/renderer evidence passed, Demo simulator evidence has a reproducible local toolchain blocker, and stale codebase maps were found. | Routes debt to Phases 22-25 without source changes |
 | Phase 23 completes performance/reliability as evidence and blocker records, not optimization. | Current 720p SDK timings remain over budget in SwiftPM debug XCTest, while backpressure/reset/degradation/redaction evidence passes and missing long-run/device checks are explicit. | Completed in Phase 23 |
 | Phase 25 completes privacy/resource/security closeout as current evidence, not packaging approval. | Current SDK/Demo behavior supports explicit manifest deferral and bundled-resource trust only; external packages, long-run, screenshot, hardware, optimized profiling, and commercial packaging remain future or blocked/not-run checks. | Completed in Phase 25 |
-| v1.6 targets the `眼睛` existing-parameter slice next. | `眼睛` already has public SDK parameters and provider/resolver evidence, and v1.5 created the public-facade geometry output harness needed for visual completion evidence. | Active in v1.6 |
+| v1.6 targets the existing-public-parameter `眼睛` slice. | `眼睛` already had public SDK parameters and provider/resolver evidence, and v1.5 created the public-facade geometry output harness needed for visual completion evidence. | Completed in Phase 30; milestone audit passed |
 | v1.5 starts with geometry output foundation plus `脸型`, not all `美型 / 五官` groups. | The user chose the smallest first-principles slice: prove facade-visible geometry output first, then mark only the existing face-shape tools complete when evidence exists. | Completed and archived in v1.5 |
 
 ## Evolution
@@ -257,4 +256,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-07-10 after Phase 29 eye renderer evidence closeout*
+*Last updated: 2026-07-13 after v1.6 milestone completion*

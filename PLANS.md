@@ -30,6 +30,185 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-13-gsd-complete-milestone-v1-6
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Archived the audited v1.6 milestone, preserved Phase 29/30 directories in place by user choice, evolved current planning owners, and prepared the repository for a fresh milestone. |
+| Requirements | Archived EYE-01 through EYE-08 and DOC-01 as 9/9 complete. |
+| Files | `.planning/milestones/v1.6-ROADMAP.md`, `.planning/milestones/v1.6-REQUIREMENTS.md`, `.planning/milestones/v1.6-MILESTONE-AUDIT.md`, `.planning/MILESTONES.md`, `.planning/PROJECT.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `.planning/RETROSPECTIVE.md`, `QUALITY_SCORE.md`, `PLANS.md`; active `.planning/REQUIREMENTS.md` removed after the safety commit. |
+| Verification | Open artifact audit was clear; roadmap analysis reported 2/2 phases, 11/11 summaries, and 100% progress; final milestone audit passed 9/9 requirements, 9/9 integration checks, and 5/5 flows; fresh SDK suite passed 178 tests; archive/link/table/artifact and `git diff --check` guards passed. |
+| Build | Fresh full SwiftPM suite passed 178 tests before archival. No Demo build was required because milestone-close changes are documentation/planning only. |
+
+Outcome:
+
+- v1.6 is archived and ready to tag.
+- Phase directories remain under `.planning/phases/`; `$gsd-cleanup` can archive them later.
+- The live roadmap has no active milestone and preserves the backlog.
+- Next step after tag: `$gsd-new-milestone`.
+
+### C-2026-07-13-gsd-audit-milestone-v1-6-final-pass
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Ran the final comprehensive v1.6 milestone audit after the batch DOC-01 remediation and synchronized current milestone-closeout owners to the passed verdict. |
+| Requirements | EYE-01 through EYE-08 and DOC-01 satisfied: 9/9. |
+| Files | `.planning/v1.6-MILESTONE-AUDIT.md`, `.planning/PROJECT.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `QUALITY_SCORE.md`, `PLANS.md` |
+| Verification | Independent integration checker passed 9/9 integration checks and 5/5 E2E flows, confirmed 2/2 phase verifications and both Nyquist validations, and found no blockers or milestone debt. Fresh `swift test --package-path BeautySDK` passed 178 tests with zero failures in 30.485 seconds. Current-owner link, stale-state, exact four-row, partial-branch, table-shape, ignored/untracked artifact, and `git diff --check` gates passed. |
+| Build | Fresh full SwiftPM test suite passed with 178 tests; no Demo build was required because the final remediation changed documentation only and Demo source remains unchanged. |
+
+Outcome:
+
+- v1.6 milestone audit status is `passed` with requirements 9/9, phases 2/2, integration 9/9, and flows 5/5.
+- No blocker or in-scope milestone technical debt remains.
+- Historical failed audits and repairs remain below as an explicit chronology; this final independent pass supersedes their verdicts.
+- Next step: `$gsd-complete-milestone v1.6`.
+
+### C-2026-07-13-v1-6-audit-comprehensive-batch-repair
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Performed a comprehensive current-owner defect scan, then repaired the complete discovered DOC-01 set in one batch rather than iterating one finding at a time. |
+| Requirements | DOC-01 remediation; EYE-01 through EYE-08 runtime behavior is unchanged. |
+| Files | `docs/meitu-function-blueprint/features/beauty-shaping/README.md`, `docs/meitu-function-blueprint/features/beauty-shaping/eyes/README.md`, `.planning/STATE.md`, `.planning/v1.6-MILESTONE-AUDIT.md`, `PLANS.md` |
+| Verification | Current-owner stale Phase 30/output scans found no obsolete eye claim that facade-visible output is still required. Exact positive guards found the four implemented rows and partial-branch boundary in both shaping READMEs, FEATURE_MATRIX, the ledger, project/roadmap/state/quality owners, and Phase 29/30 evidence links. STATE now has separate three-column phase and four-column plan-performance tables. All relative Markdown links resolve, generated output/gallery roots contain zero tracked files, and `git diff --check` passed. |
+| Build | Not run; this batch changes documentation only. Runtime evidence remains the Phase 30 178-test full suite. |
+
+Outcome:
+
+- Both parent and eye-specific blueprint contracts now distinguish four completed existing-parameter subtools from the still-partial branch.
+- STATE phase and plan metrics render as separate structurally valid tables.
+- The audit report now records the full three-defect batch and preserves `gaps_found` until an independent re-audit.
+- The earlier fourth-audit PLANS entry remains as historical chronology and is superseded by this comprehensive scan.
+- Next step: run `$gsd-audit-milestone` once for the final independent verdict.
+
+### C-2026-07-13-gsd-audit-milestone-v1-6-fourth-run
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Re-ran the complete v1.6 milestone audit after the STATE remediation, including three-source coverage, Nyquist discovery, and a fourth independent integration/E2E check. |
+| Requirements | EYE-01 through EYE-08 satisfied; DOC-01 remains unsatisfied. Effective score remains 8/9. |
+| Files | `.planning/v1.6-MILESTONE-AUDIT.md`, `PLANS.md` |
+| Verification | The checker confirmed all previously reported planning/state defects are closed, then found one remaining live contradiction in `docs/meitu-function-blueprint/features/beauty-shaping/README.md`: the eye Branch Contracts row still says facade-visible geometry output is required despite the same file's Phase 30 evidence section. Integration remains 8/9 and E2E flows 4/5; both phases are Nyquist compliant. `git diff --check` passed. |
+| Build | No new build was run for this documentation audit. Runtime evidence remains the Phase 30 178-test full suite. |
+
+Outcome:
+
+- The milestone remains `gaps_found` solely because one current blueprint contract cell contradicts completed Phase 29/30 eye evidence.
+- No runtime blocker or new non-critical debt was found.
+- Next step: repair the beauty-shaping eye contract row, scan equivalent blueprint tables, and rerun `$gsd-audit-milestone`.
+
+### C-2026-07-13-v1-6-audit-doc-sync-repair-3
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Closed the remaining DOC-01 contradictions in `.planning/STATE.md` found by the third milestone audit. |
+| Requirements | DOC-01 remediation; no runtime or product-scope change. |
+| Files | `.planning/STATE.md`, `PLANS.md` |
+| Verification | Full-file stale-state scans found no outdated PROJECT date, Phase 30 current focus, `Plan: Not started`, pending Phase 30 promotion, planning-only Phase 30 outcome, or instruction to execute Phase 30. Positive guards confirm 2/2 phases, 11/11 plans, Phase 30's 7/7 row, 178 tests, exactly four implemented eye rows, branch-level `眼睛` partial, and milestone-audit/archive routing. `git diff --check` passed. |
+| Build | Not run; this repair changes documentation only. Runtime evidence remains the Phase 30 178-test full suite. |
+
+Outcome:
+
+- STATE now points to the current PROJECT date and identifies milestone closeout as the current position.
+- The phase table and velocity count include completed Phase 30.
+- Accumulated context records Phase 29 as followed by completed Phase 30 rather than leaving promotion pending.
+- Pending work now routes to audit/archive rather than Phase 30 execution.
+- Next step: rerun `$gsd-audit-milestone` for a fresh final verdict.
+
+### C-2026-07-13-gsd-audit-milestone-v1-6-third-run
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Re-ran the complete v1.6 milestone audit after the second DOC-01 remediation, including three-source requirement coverage, Nyquist discovery, and a third independent cross-phase/E2E check. |
+| Requirements | EYE-01 through EYE-08 satisfied; DOC-01 remains unsatisfied. Effective score remains 8/9. |
+| Files | `.planning/v1.6-MILESTONE-AUDIT.md`, `PLANS.md` |
+| Verification | The checker confirmed all earlier defects in EXAMPLE_IMAGE_VALIDATION, PROJECT, QUALITY_SCORE, ROADMAP, and REQUIREMENTS are closed, then found internally stale current focus, position, context, and pending-todo state in `.planning/STATE.md`. Integration remains 8/9 and E2E flows 4/5. Both phases are Nyquist compliant; no runtime/source blocker or non-critical debt was found. `git diff --check` passed. |
+| Build | No new build was run for this documentation audit. Runtime evidence remains the Phase 30 178-test full suite. |
+
+Outcome:
+
+- The milestone remains `gaps_found` solely because STATE contradicts its own completed frontmatter and Phase 30 result section.
+- The second repair record's claim that STATE scans were clean was overbroad and is superseded by this fresh independent finding.
+- Next step: repair STATE and rerun `$gsd-audit-milestone`.
+
+### C-2026-07-13-v1-6-audit-doc-sync-repair-2
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Closed the remaining DOC-01 current-state contradictions found by the second v1.6 milestone audit and expanded the repair scan to the requirement footer. |
+| Requirements | DOC-01 remediation; runtime behavior and the four-row/partial-branch boundary are unchanged. |
+| Files | `.planning/PROJECT.md`, `.planning/ROADMAP.md`, `.planning/REQUIREMENTS.md`, `PLANS.md` |
+| Verification | Current-state scans found no remaining Phase 30-planned, v1.6-next/active, Phase-29-only current verification, obsolete current 173-test, or stale last-updated claims across PROJECT, ROADMAP, REQUIREMENTS, STATE, QUALITY_SCORE, and EXAMPLE_IMAGE_VALIDATION. ROADMAP's two phase rows have five cells matching the five declared columns. Positive guards confirm Phase 30/178 tests, all nine requirement IDs, exactly four implemented eye rows, and branch-level partial wording. `git diff --check` passed. |
+| Build | Not run; this repair changes documentation only. Runtime evidence remains the Phase 30 178-test full suite. |
+
+Outcome:
+
+- PROJECT now records v1.6 implementation and verification through Phase 30, marks the eye-slice decision completed, and carries the current closeout date.
+- ROADMAP now marks both phases complete and restores a structurally valid Phase 30 row with goal, requirement IDs, and five success criteria.
+- REQUIREMENTS now carries the Phase 30/remediation update date.
+- Next step: rerun `$gsd-audit-milestone` for a fresh final verdict.
+
+### C-2026-07-13-gsd-audit-milestone-v1-6-rerun
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Re-ran the complete v1.6 milestone audit after the first DOC-01 remediation, including the three-source requirement cross-check, both phase validations, and a fresh independent integration/E2E check. |
+| Requirements | EYE-01 through EYE-08 satisfied; DOC-01 remains unsatisfied. Effective milestone score remains 8/9. |
+| Files | `.planning/v1.6-MILESTONE-AUDIT.md`, `PLANS.md` |
+| Verification | The integration checker confirmed that the first three defects were fixed, then found remaining current-state contradictions in `.planning/PROJECT.md` and `.planning/ROADMAP.md`. Integration remains 8/9 and E2E flows 4/5. Both phases remain Nyquist compliant; no runtime/source integration gap or non-critical debt was found. `git diff --check` passed. |
+| Build | No new build was run for this documentation re-audit. Current runtime evidence remains the Phase 30 178-test full suite and the previous audit checker's fresh 48-test pass. |
+
+Outcome:
+
+- The milestone remains `gaps_found`; the first remediation was necessary but incomplete.
+- PROJECT's Current State and decision/footer text still stop at Phase 29 or call v1.6 active, while ROADMAP still calls Phase 30 planned and has a malformed Phase 30 summary row.
+- Next step: repair those PROJECT/ROADMAP surfaces and rerun `$gsd-audit-milestone`.
+
+### C-2026-07-13-v1-6-audit-doc-sync-repair
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Closed the DOC-01 contradictions found by the v1.6 milestone audit without changing runtime behavior or broadening the eye slice. |
+| Requirements | DOC-01 remediation; exactly four eye rows remain implemented and branch-level `眼睛` remains `partial`. |
+| Files | `docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md`, `.planning/PROJECT.md`, `QUALITY_SCORE.md`, `PLANS.md` |
+| Verification | Focused stale-state scans found no remaining claims that Phase 30 is pending, no unchecked `Active in v1.6` block, and no current-snapshot references to the obsolete 173-test state. Positive guards found the Phase 30 evidence links, 178-test count, four implemented row names, and partial-branch boundary. `git diff --check` passed. |
+| Build | Not run; this repair changes documentation only. Runtime evidence remains the Phase 30 178-test full suite and the audit integration checker's fresh 48-test pass. |
+
+Outcome:
+
+- `EXAMPLE_IMAGE_VALIDATION.md` now records the completed Phase 30 safety/status evidence and distinguishes four implemented rows from the partial eye branch.
+- `.planning/PROJECT.md` no longer presents completed Phase 30 objectives as active unchecked work.
+- `QUALITY_SCORE.md` Current Snapshot now reflects Phase 30 completion, 178 tests, current safety/degradation evidence, and future-only boundaries.
+- Next step: rerun `$gsd-audit-milestone` to replace the pre-repair `gaps_found` verdict with a fresh audit result.
+
+### C-2026-07-13-gsd-audit-milestone-v1-6
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Audited the v1.6 milestone across both phase verifications, all summary requirement metadata, REQUIREMENTS traceability, Nyquist validation, cross-phase wiring, and end-to-end flows. |
+| Requirements | EYE-01 through EYE-08 satisfied; DOC-01 unsatisfied by current-document contradictions. Effective milestone score: 8/9. |
+| Files | `.planning/v1.6-MILESTONE-AUDIT.md`, `PLANS.md` |
+| Verification | Both phase verification files pass and both validation files are Nyquist compliant. The integration checker found 8/9 integration checks wired and 4/5 E2E flows passing; its fresh targeted Swift selection passed 48 tests with zero failures. Direct inspection confirmed stale completion state in `docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md`, `.planning/PROJECT.md`, and the `QUALITY_SCORE.md` Current Snapshot. |
+| Build | No full build was rerun for this documentation audit. The integration checker ran 48 targeted tests successfully. |
+
+Outcome:
+
+- Milestone status is `gaps_found`, not passed, because DOC-01's claimed synchronization is contradicted by three current owner surfaces.
+- Runtime integration for the four existing public eye parameters is complete; EYE-01 through EYE-08 have no scoped cross-phase blocker.
+- Both Phases 29 and 30 are Nyquist compliant, with no missing validation artifact.
+- Next step: repair the three stale documentation surfaces in a scoped closure and rerun `$gsd-audit-milestone`.
+
 ### C-2026-07-13-gsd-execute-phase-30-eye-safety-ledger-closeout
 
 | Field | Value |

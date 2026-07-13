@@ -126,7 +126,7 @@ Current status boundaries:
 - `眉毛` and unpromoted branches remain `future`.
 - Phase 27 proves only the shared geometry output foundation with `faceShapeCombo_0p35`.
 - Phase 28 completes only the scoped `脸型` rows `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线`; branch-level `脸型` stays `partial`.
-- Phase 29 records public-facade renderer evidence for existing eye parameters only; `眼睛` rows and branch remain `partial` until Phase 30 safety/degradation/status closeout.
+- Phases 29 and 30 complete the existing-public-parameter eye slice: exactly `大小`, `上下`, `眼距`, and `眼尾上扬` are implemented, while branch-level `眼睛` remains `partial` because the remaining eye tools are future work.
 
 Before any geometry-heavy branch or second-level tool is marked visually complete, this public facade validation path must produce same-dimension, watermarked saved outputs from the same `example-images/input` fixtures through `BeautyExampleRenderer`, with tool-specific evidence recorded in the owning phase.
 
@@ -206,5 +206,15 @@ Phase 29 records command-backed renderer evidence for existing public eye parame
 - The all-case renderer command produces 161 ignored PNG outputs across seven committed input fixtures and 23 renderer cases.
 - `check_eye_renderer_outputs.py` verifies those 161 outputs for existence, non-empty files, same pixel dimensions, 36/36 portrait eye-vs-`geometryBaseline_noop` top-region comparisons, and representative no-face output `no-face-gradient__eyeSize_0p35.png` presence.
 - Generated gallery support groups the six Phase 29 case IDs under ignored `example-images/gallery/eyes/{caseId}/{fixtureStem}.png`.
-- This is renderer evidence for existing public eye parameters only; `眼睛` rows and branch remain `partial` until Phase 30 records safety, degradation, redaction, and scoped status evidence.
+- This is renderer evidence for existing public eye parameters only; Phase 30 supplies the safety, degradation, redaction, boundary, and scoped status evidence required for the four-row promotion.
 - Phase 29 does not claim Demo UI completion, commercial review, device parity, reference-app parity, launch readiness, new public parameters, generated PNG baselines, or whole-branch eye completion.
+
+## Phase 30 Evidence Summary
+
+Phase 30 closes the safety and status gates for the existing-public-parameter eye slice in `.planning/phases/30-eye-safety-ledger-and-closeout/30-EYE-SAFETY-EVIDENCE.md` and `.planning/phases/30-eye-safety-ledger-and-closeout/30-VERIFICATION.md`:
+
+- The full SDK suite passed with 178 tests; focused coverage proves positive-only size/tail semantics, signed distance/Y semantics, exact conservative caps, and abnormal-input no-ops.
+- Missing either eye, reused eye geometry, and stale eye geometry skip and zero the eye domain while safe unrelated domains continue; warnings and metrics remain category-only and aggregate.
+- Combined-geometry tests prove weakening for all six visible eye directions and the all-eye multi-domain case while preserving signed directions.
+- Active-source boundary checks found no public/SPI raw geometry, forbidden Demo or renderer imports, network/cloud execution path, commercial entitlement path, or tracked generated image artifact.
+- Exactly `大小`, `上下`, `眼距`, and `眼尾上扬` are implemented. Branch-level `眼睛` remains `partial`; future eye tools, device evidence, commercial visual review, broad parity, packaging, and release readiness remain out of scope.

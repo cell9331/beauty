@@ -1,5 +1,49 @@
 # Milestones
 
+## v1.6 Broader 美型 / 五官 SDK Slice - Eyes (Shipped: 2026-07-13)
+
+**Delivered:** An SDK-only existing-parameter eye slice with public-facade renderer evidence, conservative safety/degradation behavior, and exact four-row blueprint promotion.
+
+**Phases completed:** 29-30 (2 phases, 11 plans, 19 recorded tasks)
+
+**Key accomplishments:**
+
+- Public-facade eye renderer cases plus a Phase 29 helper proving 161 generated outputs and 36 eye-vs-baseline comparisons
+- Ignored `eyes/` gallery routing and example-image docs for the Phase 29 public-facade eye renderer evidence path
+- Positive-only size/tail normalization and signed distance/Y behavior now resolve through matching exact safety caps with complete abnormal-input and silent no-op evidence.
+- Eye geometry now fails closed for incomplete, reused, or stale inputs while non-eye reuse remains reduced, public no-face output stays safe, and every visible eye direction has combined-weakening evidence.
+- Seven focused suites, the 178-test SDK suite, the 161/161 and 36/36 renderer regression, and fail-closed active-source security scans now form a clean promotion-ready evidence gate.
+- Exactly four evidence-backed eye subtools are now implemented while the eye branch stays partial and all five blueprint owners preserve renderer, privacy, and future-gap boundaries.
+- Design, reliability, product, and security contracts now agree on the evidence-backed four-tool eye slice while preserving branch and release non-claims.
+- Global quality and milestone project contracts now reflect the observed four-row eye slice without broadening the partial branch or product-readiness claims.
+- Phase 30 is closed with six traced requirements, seven completed plans, fifteen passed validation rows, and conservative four-row/partial-branch boundaries.
+
+**Stats:**
+
+- 69 files changed across milestone work and closeout
+- 18,577 Swift source/test lines in the current `BeautySDK` and `BeautyDemo` count
+- 2 phases, 11 plans, 19 recorded tasks
+- 5 calendar days from Phase 29 start to ship (2026-07-09 → 2026-07-13)
+
+**Git range:** `f963122` → final v1.6 archive commit
+
+**Verification:**
+
+- Milestone audit passed: 9/9 requirements, 2/2 phases, 9/9 integration checks, 5/5 flows, and both phases Nyquist compliant.
+- Fresh `swift test --package-path BeautySDK` passed with 178 tests and zero failures.
+- Renderer/helper evidence passed with 161/161 outputs and 36/36 portrait comparisons.
+- Exactly `大小`, `上下`, `眼距`, and `眼尾上扬` are implemented; branch-level `眼睛` remains `partial`.
+
+**Archives:**
+
+- `.planning/milestones/v1.6-ROADMAP.md`
+- `.planning/milestones/v1.6-REQUIREMENTS.md`
+- `.planning/milestones/v1.6-MILESTONE-AUDIT.md`
+
+**What's next:** Start a fresh milestone with `$gsd-new-milestone`.
+
+---
+
 ## v1.5 SDK Geometry Output Foundation and Face Shape Slice (Shipped: 2026-07-08)
 
 **Delivered:** SDK-only geometry output foundation plus the first verified `脸型` existing-parameter slice through public-facade renderer evidence, safety/degradation tests, and scoped blueprint ledger promotion.

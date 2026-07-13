@@ -188,6 +188,51 @@
 
 ---
 
+## Milestone: v1.6 - Broader 美型 / 五官 SDK Slice - Eyes
+
+**Shipped:** 2026-07-13
+**Phases:** 2 | **Plans:** 11 | **Recorded tasks:** 19
+
+### What Was Built
+
+- Six public-facade eye renderer cases plus a 23-case/7-fixture helper path with 161/161 outputs and 36/36 portrait comparisons.
+- Conservative public eye normalization, exact caps, missing/reused/stale eye-domain degradation, no-face continuation, and combined-geometry weakening.
+- Active-source boundary evidence for raw geometry, internal imports, network/cloud behavior, commercial paths, public inventory, and generated artifacts.
+- Exact implementation promotion for `大小`, `上下`, `眼距`, and `眼尾上扬`, while branch-level `眼睛` remains `partial`.
+- Synchronized root, blueprint, quality, project, roadmap, requirements, state, validation, work-ledger, and audit owners.
+
+### What Worked
+
+- The evidence-before-promotion sequence kept runtime verification ahead of ledger changes.
+- Exact row-count, boundary, redaction, and generated-artifact guards made the four-tool scope enforceable.
+- The final comprehensive integration checker combined source wiring, tests, renderer/helper evidence, and current-owner documentation checks.
+
+### What Was Inefficient
+
+- Initial Phase 30 closeout scans were too narrowly bounded and missed stale current-state text in several owner documents.
+- Repeated audit/fix cycles found one contradiction at a time before the work switched to a comprehensive current-owner scan.
+- Phase 29 summaries 03/04 used `requirements` rather than `requirements-completed`, requiring audit-time interpretation despite complete evidence elsewhere.
+
+### Patterns Established
+
+- Milestone closeout scans should cover every current owner and contract table, not only files touched by the final plan.
+- Parent branch contracts and child feature contracts must be checked together whenever second-level status changes.
+- Markdown table structure, relative links, and historical-vs-current wording belong in documentation verification gates.
+
+### Key Lessons
+
+1. Run one comprehensive current-owner consistency audit before declaring DOC requirements complete; narrow scans invite serial repair loops.
+2. Keep historical evidence wording, current contracts, and future-scope boundaries explicitly distinguishable.
+3. Use `requirements-completed` consistently in every summary to keep three-source milestone audits mechanical.
+
+### Cost Observations
+
+- Model mix: not measured.
+- Sessions: multiple Phase 29/30 sessions plus audit and remediation sessions.
+- Notable: Runtime work was stable; documentation reconciliation dominated final closeout cost.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -198,6 +243,7 @@
 | v1.3 | multiple | 5 | Added example-image renderer evidence and strict branch-status taxonomy for partial geometry work. |
 | v1.4 | multiple | 5 | Added blocker-honest hardening gates, renderer output regression, active-source privacy/security scans, and archive-before-delete closeout. |
 | v1.5 | multiple | 3 | Added public-facade geometry output evidence and scoped face-shape ledger promotion. |
+| v1.6 | multiple | 2 | Added exact eye-slice evidence/promotion and comprehensive current-owner consistency scans. |
 
 ### Cumulative Quality
 
@@ -207,6 +253,7 @@
 | v1.3 | 141 SDK tests plus renderer matrix evidence | Requirement traceability 20/20 | No new third-party runtime dependency recorded for core beauty closeout. |
 | v1.4 | 150 SDK tests, focused Demo privacy/import tests, renderer invariant helper, and milestone audit | Requirement traceability 24/24 | No new third-party runtime dependency recorded for hardening closeout. |
 | v1.5 | 171 SDK tests, geometry and face-shape renderer helpers, and milestone audit | Requirement traceability 13/13 | No new third-party runtime dependency recorded for geometry closeout. |
+| v1.6 | 178 SDK tests, eye renderer helper, boundary scans, and milestone audit | Requirement traceability 9/9 | No new third-party runtime dependency recorded for eye-slice closeout. |
 
 ### Top Lessons (Verified Across Milestones)
 
@@ -215,3 +262,4 @@
 3. Separate provider/resolver evidence, saved-image evidence, and release-hardening evidence to avoid overclaiming shipped scope.
 4. Blocker-honest evidence is useful only when paired with exact rerun commands and clear non-claims.
 5. Geometry-heavy status promotion should be staged: routing, saved-output foundation, then per-tool ledger promotion.
+6. Documentation closeout should scan all current owners and parent/child contracts in one pass before milestone audit.
