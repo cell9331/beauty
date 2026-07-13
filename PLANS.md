@@ -30,6 +30,22 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-13-gsd-audit-milestone-v1-8-second-run
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Re-audited v1.8 independently after the one permitted autonomous metadata remediation attempt. |
+| Requirements | MOUTH-01 through MOUTH-10 satisfied; DOC-01 remains unsatisfied. Effective score: 10/11. |
+| Files | `.planning/v1.8-MILESTONE-AUDIT.md`, `PLANS.md` |
+| Verification | The prior STATE/footer/summary/Nyquist gaps are closed. Fresh focused Swift tests passed 47/47, inventory/artifact/boundary scans passed, integration scored 10/11, and flows scored 4/5. One stale sentence in `33-VERIFICATION.md` still says completed Phase 34 gates remain pending. |
+
+Outcome:
+
+- Audit remains `gaps_found`; the allowed autonomous closure attempt is exhausted.
+- Completion, annotated tag creation, requirements/roadmap archival, and Phase 33-34 cleanup did not run.
+- Required next repair is the stale Phase 33 verification handoff sentence, followed by another independent audit.
+
 ### C-2026-07-13-v1-8-audit-metadata-remediation
 
 **Status:** Completed
