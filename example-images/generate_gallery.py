@@ -252,6 +252,11 @@ def validate_case_inventory(gallery_case_ids: list[str], renderer_case_ids: list
     if duplicates:
         raise GalleryError(f"Duplicate gallery case IDs are not supported: {', '.join(duplicates)}")
 
+    renderer_counts = Counter(renderer_case_ids)
+    renderer_duplicates = sorted(case_id for case_id, count in renderer_counts.items() if count > 1)
+    if renderer_duplicates:
+        raise GalleryError(f"Duplicate renderer case IDs are not supported: {', '.join(renderer_duplicates)}")
+
     gallery_cases = set(gallery_case_ids)
     renderer_cases = set(renderer_case_ids)
     missing = sorted(renderer_cases - gallery_cases)
@@ -276,6 +281,12 @@ def expect_gallery_error(label: str, function, expected_fragment: str) -> None:
 
 
 def run_self_tests() -> None:
+    expect_gallery_error(
+        "duplicate renderer IDs",
+        lambda: validate_case_inventory(["only"], ["only", "only"]),
+        "Duplicate renderer case IDs",
+    )
+
     with tempfile.TemporaryDirectory() as temporary:
         repo_root = Path(temporary) / "repo"
         example_images = repo_root / "example-images"
@@ -315,7 +326,7 @@ def run_self_tests() -> None:
         if not sentinel.is_file():
             raise AssertionError("gallery child validation deleted an external file")
 
-    print("self-test passed: exact gallery root, symlink containment, external survival")
+    print("self-test passed: exact gallery root, symlink containment, external survival, duplicate renderer IDs")
 
 
 if __name__ == "__main__":
