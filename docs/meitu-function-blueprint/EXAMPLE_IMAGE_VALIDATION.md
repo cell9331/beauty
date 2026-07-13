@@ -113,7 +113,7 @@ These cases are limited to effects that currently produce visible image output t
 
 ## Phase 30 Eye Safety Closeout Evidence
 
-- The canonical renderer matrix remains 23 cases across 7 fixtures, producing 161/161 validated outputs.
+- At Phase 30 close, the renderer matrix was 23 cases across 7 fixtures and produced 161/161 validated eye-slice outputs; the current Phase 31+ matrix is 28 × 7 = 196.
 - The unchanged `check_eye_renderer_outputs.py` helper retains 36/36 portrait eye-vs-baseline comparisons and representative no-face output evidence.
 - Generated files under `example-images/output/` and `example-images/gallery/` remain ignored local artifacts; no generated baseline is committed.
 - Gallery logic was unchanged, so no gallery rerun was required for this closeout.

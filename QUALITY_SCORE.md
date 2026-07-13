@@ -243,6 +243,16 @@ full_suite_tests: 178
 - A Demo build was not required because Demo source was unchanged.
 - Future eye tools, physical-device evidence, commercial visual review, broader reference parity, packaging, and launch readiness remain separate work.
 
+### 3.16 Phases 31-32 Nose Slice Evidence
+
+Recorded 2026-07-13 in `31-NOSE-RENDERER-EVIDENCE.md`, `32-NOSE-SAFETY-EVIDENCE.md`, and both phase verifications:
+
+- The public-facade renderer passed 196/196 decoded same-dimension outputs, 30/30 portrait nose comparisons, 6/6 signed tip comparisons, and representative no-face extent preservation.
+- All required focused suites passed; a fresh full SDK suite passed 186 tests with zero failures.
+- Exact caps, signed tip semantics, missing/stale zeroing, reused `0.5`, safe no-face continuation, all-field combined weakening, and redacted aggregate evidence are locked.
+- Fail-closed scans passed for raw geometry, internal imports, network/cloud, commercial paths, dependency/public inventory drift, sign loss, and tracked generated artifacts.
+- Exactly `大小`, `鼻翼`, `鼻梁`, and `鼻尖` are implemented. `山根`, `提升`, and branch-level `鼻子` remain partial/future; no readiness/parity claim is made.
+
 ## 4. Product Domain Scorecard
 
 | Domain | Target Score | Current | Required Evidence For 4+ |
@@ -254,7 +264,7 @@ full_suite_tests: 178
 | Skin Beauty | 4 | 4 | Default no-op, visible skin/color fixture output, high-strength safety caps, and no-face combined skip behavior are tested. |
 | Face Shape | 4 | 4 | Control points are generated safely, combined geometry weakens, no-face skips, and CIImage local warp evidence is tested. |
 | Eyes | 4 | 4 | Positive-only/signed inputs, exact caps, missing-eye skips, reused/stale eye-domain skips, combined weakening, and redacted aggregate evidence are tested; 161/161 outputs and 36/36 comparisons pass. Exactly four rows are implemented while branch-level `眼睛` remains partial. |
-| Nose | 4 | 4 | Nose provider output, caps, reused/stale reduction, and missing-nose landmark skips are tested. |
+| Nose | 4 | 4 | 196/196 output, 30/30 portrait, signed-tip, exact-cap, missing/stale zeroing, reused `0.5`, no-face continuation, combined weakening, redaction, and boundary evidence pass. Exactly four rows are implemented while branch-level `鼻子` remains partial. |
 | Mouth | 4 | 4 | Mouth provider output, lip-color fixture output, reused/stale reduction, and missing-mouth/lip skips are tested. |
 | Filters | 4 | 4 | `filterId nil`, missing filter, intensity 0/1, metadata filter IDs, and Demo filter selection are covered; real LUT decode remains Phase 6+ render scope. |
 | Makeup | 3 | 0 | Resource manifest, missing-resource behavior, landmark attachment tests. |
