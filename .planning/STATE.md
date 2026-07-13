@@ -2,7 +2,7 @@
 gsd_state_version: 1.0
 milestone: v1.7
 milestone_name: Broader `美型 / 五官` SDK Slice - Nose
-status: Awaiting milestone audit
+status: Awaiting milestone archive
 stopped_at: Completed 32-07-PLAN.md
 last_updated: "2026-07-13T03:04:07.159Z"
 last_activity: 2026-07-13
@@ -21,14 +21,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-13)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** v1.7 milestone audit and archive
+**Current focus:** v1.7 milestone archive, tag, and cleanup
 
 ## Current Position
 
 Phase: 32 complete
 Plan: 7/7 complete
-Status: Awaiting milestone audit
-Last activity: 2026-07-13 — Phase 32 verification passed
+Status: Awaiting milestone archive
+Last activity: 2026-07-13 — v1.7 milestone audit passed
 
 ## Performance Metrics
 
@@ -127,7 +127,7 @@ Last activity: 2026-07-13 — Phase 32 verification passed
 - Phase 31 passed 196/196 output invariants, 30/30 portrait nose comparisons, 6/6 signed tip comparisons, and ignored gallery containment across 28 cases × 7 fixtures.
 - Phase 32 passed all seven required focused suites and a fresh 186-test full SDK suite. Missing/stale nose geometry zeros all four strengths, reused geometry retains exact `0.5`, no-face safe domains continue, and combined weakening preserves both tip directions.
 - Fail-closed boundary scans passed for raw geometry, internal imports, network/cloud, commercial paths, dependencies, public 31-field inventory, sign loss, and generated artifacts; review is clean and `threats_open: 0`.
-- Exactly `大小`, `鼻翼`, `鼻梁`, and `鼻尖` are implemented. `山根`, `提升`, and branch-level `鼻子` remain partial/future. Next step is milestone audit.
+- Exactly `大小`, `鼻翼`, `鼻梁`, and `鼻尖` are implemented. `山根`, `提升`, and branch-level `鼻子` remain partial/future. The final audit passed 9/9 requirements, 9/9 integration checks, and 5/5 flows; next step is archive/tag/cleanup.
 
 ### Phase 30 Eye Safety, Ledger, and Closeout Result
 
@@ -180,12 +180,12 @@ Recent milestone-level outcomes:
 ### Pending Todos
 
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
-- Run the v1.7 milestone audit, then archive/tag/cleanup if it passes.
+- Archive v1.7, create annotated tag `v1.7`, then clean up Phase 31/32 history.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, screenshot reruns, packaging review, broader `美型 / 五官` slices, and automated visual diffs.
 
 ### Blockers/Concerns
 
-- No active v1.7 milestone blocker remains; final audit is pending.
+- No active v1.7 milestone blocker remains; final audit passed.
 - Deferred v2 `ADV-*` items remain outside v1 traceability and are tracked as `TD-007` in `PLANS.md`.
 - Manual release risks are now routed by Phase 21 and updated by Phases 23 through 25: `TD-008` has focused simulator camera pass evidence but physical iPhone checks remain blocked until hardware exists; `TD-009` remains Phase 22 visual evidence with screenshot rerun protocol; and `TD-010` keeps device, long-run, screenshot, optimized profiling, external-resource integrity, and commercial packaging work routed to later setup-specific checks.
 - `TD-005` is closed for current v1.4 evidence through explicit `PrivacyInfo.xcprivacy` deferral; reopen it if SDK/Demo behavior starts collecting data, uses required-reason APIs, adds third-party SDKs, adds network/cloud/analytics behavior, packages the example executable, or enters packaging/submission work.
@@ -214,4 +214,4 @@ Resume file: .planning/phases/32-nose-safety-ledger-and-closeout/32-VERIFICATION
 
 ## Operator Next Steps
 
-- Run `$gsd-audit-milestone` for v1.7, then complete and clean up the milestone.
+- Run `$gsd-complete-milestone v1.7`, create the annotated tag, then run `$gsd-cleanup`.

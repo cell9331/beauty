@@ -42,7 +42,7 @@ Checklist:
 - [x] Initialize v1.7 requirements and Phase 31-32 roadmap.
 - [x] Complete Phase 31 renderer/output/gallery evidence: 180-test full suite, 196/196 outputs, 30/30 portrait comparisons, 6/6 signed tip comparisons, ignored 196-file gallery, and clean review/security.
 - [x] Complete Phase 32 safety, boundary, ledger, and documentation closeout: seven focused suites, 186-test full suite, 196/196 renderer regression, exact four-row promotion, clean review, `threats_open: 0`, and synchronized current owners.
-- [x] Pass final comprehensive current-owner scan: collected two stale historical/current wording defects, repaired them in one batch, then passed links, tables, summary-frontmatter, exact-row, artifact-count, tracked-file, stale-wording, and whitespace guards.
+- [x] Pass final comprehensive current-owner scan and single final milestone audit: 9/9 requirements, 2/2 phases, 9/9 integration checks, 5/5 flows, both phases Nyquist compliant, no blockers or milestone debt.
 - [ ] Archive v1.7, create annotated tag `v1.7`, archive Phase 31/32 history, and leave a clean worktree.
 
 ## 4. Completed
