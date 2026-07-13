@@ -10,57 +10,11 @@
 - ✅ **v1.5 SDK Geometry Output Foundation and Face Shape Slice** — Phases 26-28, shipped 2026-07-08.
 - ✅ **[v1.6 Broader `美型 / 五官` SDK Slice - Eyes](milestones/v1.6-ROADMAP.md)** — Phases 29-30, shipped 2026-07-13.
 - ✅ **[v1.7 Broader `美型 / 五官` SDK Slice - Nose](milestones/v1.7-ROADMAP.md)** — Phases 31-32, shipped 2026-07-13.
-- 🚧 **v1.8 Broader `美型 / 五官` SDK Slice - Mouth** — Phases 33-34.
+- ✅ **[v1.8 Broader `美型 / 五官` SDK Slice - Mouth](milestones/v1.8-ROADMAP.md)** — Phases 33-34, shipped 2026-07-13.
 
-## Current Milestone: v1.8 Broader `美型 / 五官` SDK Slice - Mouth
+## Current Milestone
 
-### Phase 33: Mouth Renderer Output Evidence
-
-**Goal:** Produce deterministic public-facade renderer, mouth/lip output-helper, and ignored-gallery evidence for all four existing mouth/lip parameters while keeping geometry and color claims distinct.
-
-**Requirements:** MOUTH-01, MOUTH-02, MOUTH-03, MOUTH-04
-
-**Status:** Complete (2026-07-13)
-
-**Success Criteria:**
-
-1. Six isolated public-facade cases cover positive/negative `mouthSize`, positive/negative `mouthWidth`, `smile`, and `lipColor`, with exactly one existing public parameter set per case.
-2. A phase-owned helper derives the actual case-by-fixture matrix and verifies every output is a decodable, non-empty, same-dimension PNG; representative no-face output preserves extent.
-3. Usable portrait geometry cases differ from `geometryBaseline_noop` in a documented mouth ROI above the watermark, and each signed pair differs both from baseline and from its opposite direction.
-4. `lipColor` passes a documented mouth-region color-containment check but is never counted as geometry displacement or true `丰唇` evidence.
-5. Mouth/lip gallery routing remains ignored and no generated PNG under output or gallery is tracked.
-
-### Phase 34: Mouth Safety, Degradation, and Ledger Closeout
-
-**Goal:** Lock mouth/lip caps and signed semantics, geometry/color freshness policy, conservative degradation and combined weakening, fail-closed boundaries, exact three-row promotion, and milestone-closeout documentation.
-
-**Requirements:** MOUTH-05, MOUTH-06, MOUTH-07, MOUTH-08, MOUTH-09, MOUTH-10, DOC-01
-
-**Status:** Complete (2026-07-13)
-
-**Plans:** 3/3 plans complete
-
-- [x] `34-01-PLAN.md` — mouth safety and freshness semantics
-- [x] `34-02-PLAN.md` — combined safety and boundary evidence
-- [x] `34-03-PLAN.md` — ledger and documentation closeout
-
-**Success Criteria:**
-
-1. Focused tests lock normalization, signed direction, warnings, capped counts, and exact effective caps of `mouthSize ±0.35`, `mouthWidth ±0.35`, `smile 0.50`, and `lipColor 0.50`.
-2. No-face, missing outer-lip landmarks, and stale geometry zero all three mouth geometry strengths; diagnostics remain redacted and independent safe domains continue.
-3. Reused geometry applies exact `0.5` scaling to `mouthSize`, `mouthWidth`, and `smile` with signs preserved, while stale/reused `lipColor` follows an independently specified and verified color-domain policy.
-4. Combined weakening with face, eye, and nose geometry covers all three mouth geometry fields and both signed directions without scaling `lipColor` as geometry.
-5. Security, inventory, import, dependency, network/cloud, commercial, generated-artifact, verification, validation, and audit gates pass; exactly `大小`, `宽度`, and `微笑` are promoted while all named future rows and branch-level `嘴唇` remain partial/future, with all owning documents aligned.
-
-## Progress
-
-- [x] Phase 33: Mouth Renderer Output Evidence
-- [x] Phase 34: Mouth Safety, Degradation, and Ledger Closeout
-
-| Phase | Plans Complete | Status | Completed |
-| --- | --- | --- | --- |
-| 33. Mouth Renderer Output Evidence | 3/3 | Complete | 2026-07-13 |
-| 34. Mouth Safety, Degradation, and Ledger Closeout | 3/3 | Complete | 2026-07-13 |
+No active milestone. Start the next requirements and roadmap cycle with `$gsd-new-milestone`.
 
 ## Backlog
 
@@ -70,5 +24,4 @@
 - Device, commercial visual, packaging, performance, and launch-readiness evidence remains separately scoped.
 
 ---
-*Roadmap created: 2026-07-13*
-*Last updated: 2026-07-13 after Phase 34 completion and audit metadata remediation*
+*Last updated: 2026-07-13 after v1.8 milestone archival*

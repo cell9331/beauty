@@ -276,6 +276,50 @@
 
 ---
 
+## Milestone: v1.8 - Broader 美型 / 五官 SDK Slice - Mouth
+
+**Shipped:** 2026-07-13
+**Phases:** 2 | **Plans:** 6
+
+### What Was Built
+
+- Six isolated public-facade mouth/lip cases plus 238/238 decoded same-dimension output and ignored-gallery evidence.
+- Signed `mouthSize` and `mouthWidth` geometry with 30/30 ROI and 12/12 opposite-direction comparisons.
+- Exact caps, missing/no-face/stale fail-closed zeroing, reused `0.5`, combined weakening, and redacted diagnostics.
+- Color-only `lipColor` containment with 6/6 checks and an explicit boundary against true `丰唇` geometry.
+- Exact promotion for `大小`, `宽度`, and `微笑`, while branch-level `嘴唇` remains partial.
+
+### What Worked
+
+- The output-evidence phase preceded safety and ledger promotion, keeping visible proof ahead of status changes.
+- Exact matrix, signed-pair, inventory, artifact, and future-row guards made the narrow slice mechanically verifiable.
+- The final independent audit rechecked runtime, cross-phase wiring, current owners, Nyquist, security, and all conservative non-claims.
+
+### What Was Inefficient
+
+- Early audit passes surfaced documentation-owner contradictions sequentially rather than in one complete current-owner scan.
+- Compact summaries omitted task counts and one-line metadata, so automatic archive statistics required manual enrichment.
+
+### Patterns Established
+
+- Every phase handoff must be updated after downstream completion; historical verification must not describe completed gates as pending.
+- Milestone audits should scan PROJECT and QUALITY_SCORE current snapshots alongside phase-local evidence.
+- Color-domain evidence and geometry-domain evidence need separate claims, freshness policy, and promotion rules.
+
+### Key Lessons
+
+1. Run a comprehensive current-owner contradiction scan before the first milestone audit.
+2. Treat positive/negative geometry as an end-to-end output contract, not only a normalization test.
+3. Keep future rows and branch-level status explicit even when all existing public parameters are verified.
+
+### Cost Observations
+
+- Model mix: not measured.
+- Sessions: autonomous phase execution plus audit, one bounded closure attempt, and archive.
+- Notable: Runtime behavior stabilized quickly; documentation consistency dominated closeout effort.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -288,6 +332,7 @@
 | v1.5 | multiple | 3 | Added public-facade geometry output evidence and scoped face-shape ledger promotion. |
 | v1.6 | multiple | 2 | Added exact eye-slice evidence/promotion and comprehensive current-owner consistency scans. |
 | v1.7 | autonomous | 2 | Added signed nose-slice evidence, fail-closed degradation, and single-pass final audit discipline. |
+| v1.8 | autonomous | 2 | Added signed mouth evidence, color-vs-geometry separation, and current-owner audit closure. |
 
 ### Cumulative Quality
 
@@ -299,6 +344,7 @@
 | v1.5 | 171 SDK tests, geometry and face-shape renderer helpers, and milestone audit | Requirement traceability 13/13 | No new third-party runtime dependency recorded for geometry closeout. |
 | v1.6 | 178 SDK tests, eye renderer helper, boundary scans, and milestone audit | Requirement traceability 9/9 | No new third-party runtime dependency recorded for eye-slice closeout. |
 | v1.7 | 186 SDK tests, 196-output nose helper, boundary scans, and milestone audit | Requirement traceability 9/9 | No new third-party runtime dependency recorded for nose-slice closeout. |
+| v1.8 | 190 SDK tests, 238-output mouth helper, signed/color checks, boundary scans, and milestone audit | Requirement traceability 11/11 | No new third-party runtime dependency recorded for mouth-slice closeout. |
 
 ### Top Lessons (Verified Across Milestones)
 

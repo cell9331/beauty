@@ -1,5 +1,39 @@
 # Milestones
 
+## v1.8 Broader 美型 / 五官 SDK Slice - Mouth (Shipped: 2026-07-13)
+
+**Phases completed:** 2 phases, 6 plans, 0 tasks
+
+**Delivered:** An SDK-only existing-parameter mouth slice with public-facade renderer evidence, signed-safe geometry, color-only lip evidence, fail-closed degradation, and exact three-row blueprint promotion.
+
+**Key accomplishments:**
+
+- Added six isolated mouth/lip facade cases and verified 238/238 decoded same-dimension outputs across 34 cases and seven fixtures.
+- Proved 30/30 mouth-geometry ROI comparisons, 12/12 signed comparisons, and 6/6 lip-color containment checks.
+- Locked exact caps, missing/no-face/stale zeroing, reused `0.5`, safe-domain continuation, combined face/eye/nose weakening, and redacted diagnostics.
+- Passed a fresh 190-test full SDK suite and fail-closed inventory/import/dependency/network/commercial/raw-geometry/artifact scans with `threats_open: 0`.
+- Promoted exactly `大小`, `宽度`, and `微笑` while preserving color-only `lipColor`, future/partial rows, and branch-level `嘴唇` as partial.
+- Passed the final audit with 11/11 requirements, 11/11 integration checks, 5/5 flows, and both phases Nyquist compliant.
+
+**Stats:**
+
+- 53 files changed, 1,549 insertions, 331 deletions through the final audit
+- 18,966 Swift source/test lines at close
+- 2 phases, 6 plans, 0 explicitly recorded tasks
+- Same-day milestone execution and audit on 2026-07-13
+
+**Git range:** `e7e4047` → final v1.8 archive commit
+
+**Archives:**
+
+- `.planning/milestones/v1.8-ROADMAP.md`
+- `.planning/milestones/v1.8-REQUIREMENTS.md`
+- `.planning/milestones/v1.8-MILESTONE-AUDIT.md`
+
+**What's next:** Start a fresh milestone with `$gsd-new-milestone`.
+
+---
+
 ## v1.7 Broader 美型 / 五官 SDK Slice - Nose (Shipped: 2026-07-13)
 
 **Phases completed:** 2 phases, 11 plans, 0 tasks

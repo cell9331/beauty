@@ -1,10 +1,11 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.8
-milestone_name: Broader 美型 / 五官 SDK Slice - Mouth
-status: milestone_complete
-last_updated: "2026-07-13T04:08:00Z"
-last_activity: 2026-07-13
+milestone_name: Broader `美型 / 五官` SDK Slice - Mouth
+status: Awaiting next milestone
+stopped_at: Completed Phase 34 and repaired the first v1.8 audit's planning/validation metadata gaps
+last_updated: "2026-07-13T04:20:03.636Z"
+last_activity: 2026-07-13 — Milestone v1.8 completed and archived
 progress:
   total_phases: 2
   completed_phases: 2
@@ -20,13 +21,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-13)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** v1.8 phases complete; milestone lifecycle audit pending
+**Current focus:** Planning the next milestone
 
 ## Current Position
 
-Phase: 34 of 34 (Mouth Safety, Degradation, and Ledger Closeout)
+Phase: Milestone v1.8 complete
 Plan: —
-Status: Phase 33 and Phase 34 complete; milestone audit/complete/cleanup intentionally not run by phase execution
+Status: Awaiting next milestone
+Last activity: 2026-07-13 — Milestone v1.8 completed and archived
 
 ### Phase 34 Mouth Safety, Degradation, and Ledger Closeout Result
 
@@ -35,8 +37,9 @@ Status: Phase 33 and Phase 34 complete; milestone audit/complete/cleanup intenti
 - Combined face/eye/nose weakening covers all mouth geometry directions and excludes `lipColor`.
 - 13/13 focused and 190/190 full SDK tests passed; helper passed at 238/238, 30/30, 12/12, and 6/6.
 - Exactly `大小`, `宽度`, and `微笑` are implemented; branch-level `嘴唇` remains partial.
-- Next workflow: milestone audit; no device/commercial/packaging/launch-readiness claim.
-Last activity: 2026-07-13 — Phase 34 passed safety, degradation, combined, boundary, ledger, and documentation gates
+- Final audit passed 11/11 requirements, 11/11 integration checks, and 5/5 flows; no device/commercial/packaging/launch-readiness claim.
+
+Last activity: 2026-07-13
 
 ## Performance Metrics
 
@@ -137,7 +140,7 @@ Last activity: 2026-07-13 — Phase 34 passed safety, degradation, combined, bou
 - Phase 33 passed 238/238 output invariants, 30/30 portrait mouth-region geometry comparisons, 12/12 signed comparisons, and 6/6 lip-color containment checks across 34 cases × 7 fixtures.
 - Phase 34 passed 13/13 focused tests and the 190-test full SDK suite. Missing/no-face/stale mouth geometry zeros all three strengths, reused geometry retains exact `0.5`, eligible stale/reused `lipColor` follows its independent color-domain policy, and combined weakening preserves both signed directions.
 - Fail-closed boundary scans passed for raw geometry, internal imports, network/cloud, commercial paths, dependencies, public 31-field inventory, sign loss, and generated artifacts; review is clean and `threats_open: 0`.
-- Exactly `大小`, `宽度`, and `微笑` are implemented. `上下`, `倾斜`, `左右`, `M唇`, true `丰唇`, `白牙`, and branch-level `嘴唇` remain partial/future. Milestone audit remediation is complete and the next workflow is an independent audit rerun.
+- Exactly `大小`, `宽度`, and `微笑` are implemented. `上下`, `倾斜`, `左右`, `M唇`, true `丰唇`, `白牙`, and branch-level `嘴唇` remain partial/future. The final audit passed 11/11 requirements, 11/11 integration checks, and 5/5 flows; v1.8 is archived.
 
 ### Phase 31-32 Nose Slice Result
 
@@ -196,13 +199,13 @@ Recent milestone-level outcomes:
 
 ### Pending Todos
 
-- Rerun the independent v1.8 milestone audit after synchronizing the planning and validation metadata; archive/tag/cleanup only if it passes without debt.
+- Start the next milestone with `$gsd-new-milestone` when ready.
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, screenshot reruns, packaging review, broader `美型 / 五官` slices, and automated visual diffs.
 
 ### Blockers/Concerns
 
-- No active v1.7 milestone blocker remains; final audit passed.
+- No active v1.8 milestone blocker remains; final audit passed without accepted debt.
 - Deferred v2 `ADV-*` items remain outside v1 traceability and are tracked as `TD-007` in `PLANS.md`.
 - Manual release risks are now routed by Phase 21 and updated by Phases 23 through 25: `TD-008` has focused simulator camera pass evidence but physical iPhone checks remain blocked until hardware exists; `TD-009` remains Phase 22 visual evidence with screenshot rerun protocol; and `TD-010` keeps device, long-run, screenshot, optimized profiling, external-resource integrity, and commercial packaging work routed to later setup-specific checks.
 - `TD-005` is closed for current v1.4 evidence through explicit `PrivacyInfo.xcprivacy` deferral; reopen it if SDK/Demo behavior starts collecting data, uses required-reason APIs, adds third-party SDKs, adds network/cloud/analytics behavior, packages the example executable, or enters packaging/submission work.
@@ -226,9 +229,9 @@ Recent milestone-level outcomes:
 ## Session Continuity
 
 Last session: 2026-07-13
-Stopped at: Completed Phase 34 and repaired the first v1.8 audit's planning/validation metadata gaps
-Resume file: .planning/v1.8-MILESTONE-AUDIT.md
+Stopped at: v1.8 audited and archived; annotated tag and Phase 33-34 cleanup follow
+Resume file: `.planning/milestones/v1.8-MILESTONE-AUDIT.md`
 
 ## Operator Next Steps
 
-- Rerun `$gsd-audit-milestone v1.8`; proceed to milestone completion only if the result is `passed` with no unaccepted debt.
+- Start the next milestone with /gsd-new-milestone
