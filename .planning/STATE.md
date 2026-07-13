@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.7
 milestone_name: Broader `美型 / 五官` SDK Slice - Nose
-status: Defining requirements
-stopped_at: Completed 30-07-PLAN.md
-last_updated: "2026-07-13T02:46:31.245Z"
+status: Awaiting milestone audit
+stopped_at: Completed 32-07-PLAN.md
+last_updated: "2026-07-13T03:04:07.159Z"
 last_activity: 2026-07-13
 progress:
   total_phases: 2
-  completed_phases: 1
-  total_plans: 4
-  completed_plans: 4
-  percent: 50
+  completed_phases: 2
+  total_plans: 11
+  completed_plans: 11
+  percent: 100
 ---
 
 # Project State
@@ -21,21 +21,21 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-13)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Planning the next milestone
+**Current focus:** v1.7 milestone audit and archive
 
 ## Current Position
 
-Phase: 32
-Plan: Not started
-Status: Defining requirements
-Last activity: 2026-07-13
+Phase: 32 complete
+Plan: 7/7 complete
+Status: Awaiting milestone audit
+Last activity: 2026-07-13 — Phase 32 verification passed
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total phases completed: 26
-- Total plans completed: 106
+- Total phases completed: 28
+- Total plans completed: 113
 - Total tasks recorded from milestone summaries: at least 147
 - Milestone Swift LOC at close: 17,794 in the local closeout count across `BeautySDK` and `BeautyDemo`, including build-derived `.build` files observed during archive.
 
@@ -73,6 +73,8 @@ Last activity: 2026-07-13
 | 28. Face Shape Slice Completion and Documentation Closeout | 4/4 | Complete |
 | 29. Eye Renderer Output Evidence | 4/4 | Complete |
 | 30. Eye Safety, Ledger, and Closeout | 7/7 | Complete |
+| 31. Nose Renderer Output Evidence | 4/4 | Complete |
+| 32. Nose Safety, Ledger, and Closeout | 7/7 | Complete |
 
 **Plan Performance:**
 
@@ -120,6 +122,13 @@ Last activity: 2026-07-13
 
 ## Accumulated Context
 
+### Phase 31-32 Nose Slice Result
+
+- Phase 31 passed 196/196 output invariants, 30/30 portrait nose comparisons, 6/6 signed tip comparisons, and ignored gallery containment across 28 cases × 7 fixtures.
+- Phase 32 passed all seven required focused suites and a fresh 186-test full SDK suite. Missing/stale nose geometry zeros all four strengths, reused geometry retains exact `0.5`, no-face safe domains continue, and combined weakening preserves both tip directions.
+- Fail-closed boundary scans passed for raw geometry, internal imports, network/cloud, commercial paths, dependencies, public 31-field inventory, sign loss, and generated artifacts; review is clean and `threats_open: 0`.
+- Exactly `大小`, `鼻翼`, `鼻梁`, and `鼻尖` are implemented. `山根`, `提升`, and branch-level `鼻子` remain partial/future. Next step is milestone audit.
+
 ### Phase 30 Eye Safety, Ledger, and Closeout Result
 
 - Observed focused tests and the 178-test full SDK suite passed; the unchanged renderer helper passed 161/161 outputs and 36/36 portrait comparisons.
@@ -164,17 +173,19 @@ Recent milestone-level outcomes:
 - Phase 28 completed the scoped `脸型` existing-parameter slice: renderer cases `faceSlim_0p35`, `faceSmall_0p35`, `chinLength_plus0p30`, `chinLength_minus0p30`, `faceVShape_0p35`, and `jawSlim_0p35` produce public-facade saved-output evidence; `check_face_shape_renderer_outputs.py` verifies 102/102 outputs and 30/30 top-region comparisons; focused safety/degradation/redaction tests and scans pass; `SHAPE_FEATURE_LEDGER.md` promotes exactly `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线` while branch-level `脸型` remains partial.
 - Phase 29 completed public-facade renderer evidence for existing eye parameters: renderer and gallery commands generated 161 ignored PNG outputs, the Phase 29 helper verified 161/161 outputs and 36/36 top-region eye comparisons, focused/full SDK tests passed, and generated artifacts remained ignored. Phase 30 subsequently closed the safety, boundary, and ledger gates.
 - Phase 30 completed all seven sequential plans covering public eye normalization/caps, missing/reused/stale eye degradation, combined weakening, full renderer/security evidence, atomic four-row promotion, owning contract updates, and final planning-ledger closeout. The full SDK suite passed with 178 tests; exactly `大小`, `上下`, `眼距`, and `眼尾上扬` are implemented while branch-level `眼睛` remains `partial`.
+- Phase 31 completed public-facade nose renderer/helper/gallery evidence with 196/196 outputs, 30/30 portrait comparisons, and distinct signed `noseTipSize` output.
+- Phase 32 completed exact caps, fail-closed missing/stale behavior, reused `0.5`, safe no-face continuation, combined weakening, boundary scans, exact four-row promotion, and all current-owner contracts; the full SDK suite passed 186 tests.
 - `.planning/codebase/*` maps are stale background for v1.4 and should not override current source, root docs, or `.planning` ledgers.
 
 ### Pending Todos
 
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
-- Define the next milestone with `$gsd-new-milestone` when ready.
+- Run the v1.7 milestone audit, then archive/tag/cleanup if it passes.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, screenshot reruns, packaging review, broader `美型 / 五官` slices, and automated visual diffs.
 
 ### Blockers/Concerns
 
-- No active milestone blocker remains after the v1.6 archive.
+- No active v1.7 milestone blocker remains; final audit is pending.
 - Deferred v2 `ADV-*` items remain outside v1 traceability and are tracked as `TD-007` in `PLANS.md`.
 - Manual release risks are now routed by Phase 21 and updated by Phases 23 through 25: `TD-008` has focused simulator camera pass evidence but physical iPhone checks remain blocked until hardware exists; `TD-009` remains Phase 22 visual evidence with screenshot rerun protocol; and `TD-010` keeps device, long-run, screenshot, optimized profiling, external-resource integrity, and commercial packaging work routed to later setup-specific checks.
 - `TD-005` is closed for current v1.4 evidence through explicit `PrivacyInfo.xcprivacy` deferral; reopen it if SDK/Demo behavior starts collecting data, uses required-reason APIs, adds third-party SDKs, adds network/cloud/analytics behavior, packages the example executable, or enters packaging/submission work.
@@ -191,16 +202,16 @@ Recent milestone-level outcomes:
 | Release QA | Real-device camera/Vision parity, visual naturalness, production render quality, performance budgets, and long-run hardware readiness | Partially promoted into v1.4 hardening scope; feature expansion remains deferred | v1.4 start |
 | SwiftUI visual fidelity | HTML-to-SwiftUI delta report, Home SwiftUI fidelity pass, Editor SwiftUI fidelity pass, and v1.2 visual QA closeout | Canceled from v1.2; may be reconsidered as a future milestone | 2026-06-26 |
 | Deferred Meitu product areas | Home/discovery, style resources, AI/background, video/body, account/gallery, search, premium access, commerce, account authorization | Deferred outside v1.3 core beauty modules | 2026-06-26 |
-| Broader Meitu shape groups | `眼睛`, `鼻子`, `嘴唇`, `比例`, `3D塑颜`, `眉毛`, and unscoped `脸型` rows beyond the six Phase 28 rows | Deferred outside v1.5 first slice | Phase 28 closeout |
+| Broader Meitu shape groups | Remaining `眼睛`, `鼻子` (`山根`, `提升`), `嘴唇`, `比例`, `3D塑颜`, `眉毛`, and unscoped `脸型` rows | Deferred outside completed slices | Phase 32 closeout |
 | Release/setup evidence | Physical-device camera/Vision parity, commercial visual review, screenshot reruns, optimized profiling, 600-second preview evidence, packaging review, and launch-readiness review | Deferred outside Phase 28 | Phase 28 closeout |
 | Codebase maps | Formal refresh of stale `.planning/codebase/*` maps | Deferred until explicitly scoped | Phase 21 |
 
 ## Session Continuity
 
-Last session: 2026-07-13T01:15:55.529Z
-Stopped at: Completed 30-07-PLAN.md
-Resume file: .planning/phases/30-eye-safety-ledger-and-closeout/30-VERIFICATION.md
+Last session: 2026-07-13
+Stopped at: Completed 32-07-PLAN.md
+Resume file: .planning/phases/32-nose-safety-ledger-and-closeout/32-VERIFICATION.md
 
 ## Operator Next Steps
 
-- Start the next milestone with `$gsd-new-milestone`.
+- Run `$gsd-audit-milestone` for v1.7, then complete and clean up the milestone.

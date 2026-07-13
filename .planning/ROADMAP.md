@@ -19,6 +19,10 @@
 
 **Requirements:** NOSE-01, NOSE-02, NOSE-03
 
+**Status:** Complete - completed 2026-07-13
+
+**Plans:** 4/4 plans complete
+
 **Success Criteria:**
 
 1. The renderer matrix contains 28 cases across seven fixtures and writes 196 ignored outputs.
@@ -32,6 +36,10 @@
 
 **Requirements:** NOSE-04, NOSE-05, NOSE-06, NOSE-07, NOSE-08, DOC-01
 
+**Status:** Complete - completed 2026-07-13
+
+**Plans:** 7/7 plans complete
+
 **Success Criteria:**
 
 1. Focused tests lock exact caps, signed `noseTipSize`, missing/stale fail-closed behavior, reused `0.5` scaling, redacted diagnostics, and safe-domain continuation.
@@ -41,10 +49,13 @@
 
 ## Progress
 
+- [x] Phase 31: Nose Renderer Output Evidence
+- [x] Phase 32: Nose Safety, Ledger, and Closeout
+
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
 | 31. Nose Renderer Output Evidence | 4/4 | Complete    | 2026-07-13 |
-| 32. Nose Safety, Ledger, and Closeout | 0/TBD | Not started | — |
+| 32. Nose Safety, Ledger, and Closeout | 7/7 | Complete    | 2026-07-13 |
 
 ## Backlog
 
@@ -54,4 +65,4 @@
 
 ---
 *Roadmap created: 2026-07-13*
-*Last updated: 2026-07-13 after v1.7 milestone initialization*
+*Last updated: 2026-07-13 after Phase 32 verification passed*

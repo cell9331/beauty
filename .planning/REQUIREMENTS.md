@@ -13,12 +13,12 @@
 
 ### Nose Safety and Closeout
 
-- [ ] **NOSE-04**: Normalization, signed semantics, exact effective caps (`0.35`, `0.35`, `±0.30`, `0.30`), warnings, and capped-count evidence are locked for all four nose fields.
-- [ ] **NOSE-05**: No-face, missing nose landmarks, reused geometry at `0.5` scale, stale geometry, redacted warnings/metrics, zeroed fail-closed effective strengths, and safe-domain continuation are verified.
-- [ ] **NOSE-06**: Conservative weakening with face, eye, and mouth geometry covers all four nose fields and preserves both signed `noseTipSize` directions.
-- [ ] **NOSE-07**: Raw geometry, internal Demo/renderer imports, network/cloud, commercial paths, public inventory, new dependencies, and generated artifacts remain fail-closed.
-- [ ] **NOSE-08**: Exactly `大小`, `鼻翼`, `鼻梁`, and `鼻尖` are promoted; `山根`, `提升`, and branch-level `鼻子` remain partial/future.
-- [ ] **DOC-01**: Blueprint, root contracts, `QUALITY_SCORE.md`, `PROJECT.md`, `ROADMAP.md`, `REQUIREMENTS.md`, `STATE.md`, `PLANS.md`, verification, validation, and milestone audit agree with verified evidence and conservative non-claims.
+- [x] **NOSE-04**: Normalization, signed semantics, exact effective caps (`0.35`, `0.35`, `±0.30`, `0.30`), warnings, and capped-count evidence are locked for all four nose fields.
+- [x] **NOSE-05**: No-face, missing nose landmarks, reused geometry at `0.5` scale, stale geometry, redacted warnings/metrics, zeroed fail-closed effective strengths, and safe-domain continuation are verified.
+- [x] **NOSE-06**: Conservative weakening with face, eye, and mouth geometry covers all four nose fields and preserves both signed `noseTipSize` directions.
+- [x] **NOSE-07**: Raw geometry, internal Demo/renderer imports, network/cloud, commercial paths, public inventory, new dependencies, and generated artifacts remain fail-closed.
+- [x] **NOSE-08**: Exactly `大小`, `鼻翼`, `鼻梁`, and `鼻尖` are promoted; `山根`, `提升`, and branch-level `鼻子` remain partial/future.
+- [x] **DOC-01**: Blueprint, root contracts, `QUALITY_SCORE.md`, `PROJECT.md`, `ROADMAP.md`, `REQUIREMENTS.md`, `STATE.md`, `PLANS.md`, verification, validation, and milestone audit agree with verified evidence and conservative non-claims.
 
 ## Future Requirements
 
@@ -43,12 +43,12 @@
 | NOSE-01 | Phase 31 | Complete |
 | NOSE-02 | Phase 31 | Complete |
 | NOSE-03 | Phase 31 | Complete |
-| NOSE-04 | Phase 32 | Pending |
-| NOSE-05 | Phase 32 | Pending |
-| NOSE-06 | Phase 32 | Pending |
-| NOSE-07 | Phase 32 | Pending |
-| NOSE-08 | Phase 32 | Pending |
-| DOC-01 | Phase 32 | Pending |
+| NOSE-04 | Phase 32 | Complete |
+| NOSE-05 | Phase 32 | Complete |
+| NOSE-06 | Phase 32 | Complete |
+| NOSE-07 | Phase 32 | Complete |
+| NOSE-08 | Phase 32 | Complete |
+| DOC-01 | Phase 32 | Complete |
 
 **Coverage:** 9 requirements, 9 mapped, 0 unmapped.
 
