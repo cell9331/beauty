@@ -30,6 +30,24 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-13-v1-8-mouth-sdk-slice-lifecycle
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Delivered, independently audited, archived, and cleaned up v1.8 Broader `美型 / 五官` SDK Slice - Mouth. |
+| Requirements | MOUTH-01 through MOUTH-10 and DOC-01: 11/11 satisfied. |
+| Runtime | Fresh 190-test full SDK suite; 238/238 outputs; 30/30 geometry comparisons; 12/12 signed comparisons; 6/6 lip-color containment checks. |
+| Audit | 2/2 phases, 11/11 integration checks, 5/5 flows, both phases Nyquist compliant, `threats_open: 0`, no accepted debt. |
+| Archive | `v1.8-ROADMAP.md`, `v1.8-REQUIREMENTS.md`, `v1.8-MILESTONE-AUDIT.md`, and `v1.8-phases/`; annotated tag `v1.8`. |
+| Boundaries | Exactly `大小`, `宽度`, and `微笑` implemented; `lipColor` remains color-only; all named future rows and branch-level `嘴唇` remain partial/future. |
+
+Outcome:
+
+- Phase 33/34 execution history is archived under `.planning/milestones/v1.8-phases/`; unrelated historical phase directories remain in place.
+- Live `REQUIREMENTS.md` is removed after its safety archive, and live ROADMAP has no active milestone while preserving the backlog.
+- Generated output/gallery files remain ignored and untracked; no push was performed.
+
 ### C-2026-07-13-gsd-audit-milestone-v1-8-final-pass
 
 | Field | Value |
@@ -2232,7 +2250,7 @@ Acceptable examples:
 
 #### Phase 34 Execution Evidence
 
-`gsd-execute-phase-34` completed MOUTH-05 through MOUTH-10 and DOC-01. Command-backed details are in `.planning/phases/34-mouth-safety-degradation-and-ledger-closeout/34-MOUTH-SAFETY-EVIDENCE.md`.
+`gsd-execute-phase-34` completed MOUTH-05 through MOUTH-10 and DOC-01. Command-backed details are archived in `.planning/milestones/v1.8-phases/34-mouth-safety-degradation-and-ledger-closeout/34-MOUTH-SAFETY-EVIDENCE.md`.
 
 full_suite_tests: 190
 

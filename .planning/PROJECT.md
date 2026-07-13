@@ -258,6 +258,7 @@ Historical milestone detail is archived in:
 - `.planning/milestones/v1.8-ROADMAP.md`
 - `.planning/milestones/v1.8-REQUIREMENTS.md`
 - `.planning/milestones/v1.8-MILESTONE-AUDIT.md`
+- `.planning/milestones/v1.8-phases/`
 
 Current visual reference contracts:
 

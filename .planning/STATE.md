@@ -229,7 +229,7 @@ Recent milestone-level outcomes:
 ## Session Continuity
 
 Last session: 2026-07-13
-Stopped at: v1.8 audited and archived; annotated tag and Phase 33-34 cleanup follow
+Stopped at: v1.8 audited, archived, and Phase 33-34 execution history cleaned up; annotated tag is the final local lifecycle action
 Resume file: `.planning/milestones/v1.8-MILESTONE-AUDIT.md`
 
 ## Operator Next Steps

@@ -29,6 +29,7 @@
 - `.planning/milestones/v1.8-ROADMAP.md`
 - `.planning/milestones/v1.8-REQUIREMENTS.md`
 - `.planning/milestones/v1.8-MILESTONE-AUDIT.md`
+- `.planning/milestones/v1.8-phases/`
 
 **What's next:** Start a fresh milestone with `$gsd-new-milestone`.
 
