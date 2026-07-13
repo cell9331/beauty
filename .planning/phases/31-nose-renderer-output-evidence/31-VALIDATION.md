@@ -1,7 +1,7 @@
 ---
 phase: 31
 slug: nose-renderer-output-evidence
-status: ready
+status: complete
 nyquist_compliant: true
 updated: 2026-07-13
 ---
@@ -14,4 +14,4 @@ updated: 2026-07-13
 | NOSE-02 | `check_nose_renderer_outputs.py` | 196/196 outputs, 30/30 baseline comparisons, 6/6 signed comparisons, no-face output |
 | NOSE-03 | gallery command, `git check-ignore`, `git ls-files` | 196 ignored gallery files; zero tracked generated files |
 
-Full phase verification also runs the complete SDK suite and fail-closed import/scope/redaction scans.
+Full phase verification ran the complete SDK suite and fail-closed import/scope/redaction scans. All rows are green; `31-VERIFICATION.md` is `passed`.
