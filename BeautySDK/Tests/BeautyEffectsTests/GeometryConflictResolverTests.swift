@@ -39,6 +39,8 @@ final class GeometryConflictResolverTests: XCTestCase {
             noseWingSlim: 1,
             noseTipSize: 1,
             noseBridge: 1,
+            noseRootNarrowing: 1,
+            noseTipLift: 1,
             mouthSize: 1,
             mouthWidth: 1,
             smile: 1
@@ -49,7 +51,7 @@ final class GeometryConflictResolverTests: XCTestCase {
             "beauty.effects.weakenedCount",
             "beauty.effects.geometryStrengthScale"
         ])
-        XCTAssertGreaterThan(resolved.metrics["beauty.effects.weakenedCount"] ?? 0, 0)
+        XCTAssertEqual(resolved.metrics["beauty.effects.weakenedCount"], 18)
         XCTAssertLessThan(resolved.metrics["beauty.effects.geometryStrengthScale"] ?? 1, 1)
 
         let metadata = (
@@ -59,6 +61,21 @@ final class GeometryConflictResolverTests: XCTestCase {
         for forbidden in ["land" + "mark", "control point", "control" + "Point", "bounding", "VNFace" + "Observation", "/private" + "/var", "image" + " bytes", "SI" + "MD", "[0."] {
             XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)")
         }
+    }
+
+    func testPhase35NOSE03IndependentNoseFieldsContributeToConflictTotalCountAndScaling() {
+        let independent = strengths(noseRootNarrowing: 1, noseTipLift: 1)
+        let resolved = GeometryConflictResolver(totalThreshold: 0.25).resolve(strengths: independent)
+
+        XCTAssertEqual(independent.noseRootNarrowing, BeautySafetyCaps.noseRootNarrowing, accuracy: 0.0001)
+        XCTAssertEqual(independent.noseTipLift, BeautySafetyCaps.noseTipLift, accuracy: 0.0001)
+        XCTAssertGreaterThan(resolved.strengths.noseRootNarrowing, 0)
+        XCTAssertGreaterThan(resolved.strengths.noseTipLift, 0)
+        XCTAssertLessThan(resolved.strengths.noseRootNarrowing, independent.noseRootNarrowing)
+        XCTAssertLessThan(resolved.strengths.noseTipLift, independent.noseTipLift)
+        XCTAssertEqual(resolved.metrics["beauty.effects.weakenedCount"], 2)
+        XCTAssertEqual(resolved.metrics["beauty.effects.geometryStrengthScale"] ?? 0, 0.5, accuracy: 0.0001)
+        XCTAssertTrue(resolved.warnings.contains { $0.code == "combined_geometry_weakened" })
     }
 
     func testResolverReportsGeometryPointAndCapMetricsForFaceShapeContext() {
@@ -164,6 +181,8 @@ final class GeometryConflictResolverTests: XCTestCase {
         noseWingSlim: Float = 0,
         noseTipSize: Float = 0,
         noseBridge: Float = 0,
+        noseRootNarrowing: Float = 0,
+        noseTipLift: Float = 0,
         mouthSize: Float = 0,
         mouthWidth: Float = 0,
         smile: Float = 0
@@ -182,6 +201,8 @@ final class GeometryConflictResolverTests: XCTestCase {
         strengths.noseWingSlim = min(noseWingSlim, BeautySafetyCaps.noseWingSlim)
         strengths.noseTipSize = min(max(noseTipSize, -BeautySafetyCaps.noseTipSize), BeautySafetyCaps.noseTipSize)
         strengths.noseBridge = min(noseBridge, BeautySafetyCaps.noseBridge)
+        strengths.noseRootNarrowing = min(max(noseRootNarrowing, 0), BeautySafetyCaps.noseRootNarrowing)
+        strengths.noseTipLift = min(max(noseTipLift, 0), BeautySafetyCaps.noseTipLift)
         strengths.mouthSize = min(max(mouthSize, -BeautySafetyCaps.mouthSize), BeautySafetyCaps.mouthSize)
         strengths.mouthWidth = min(max(mouthWidth, -BeautySafetyCaps.mouthWidth), BeautySafetyCaps.mouthWidth)
         strengths.smile = min(smile, BeautySafetyCaps.smile)
@@ -198,6 +219,11 @@ private extension BeautyEffectiveStrengths {
             abs(chinLength) +
             abs(eyeSize) +
             noseSlim +
+            noseWingSlim +
+            abs(noseTipSize) +
+            noseBridge +
+            noseRootNarrowing +
+            noseTipLift +
             abs(mouthSize) +
             abs(mouthWidth) +
             smile

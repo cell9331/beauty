@@ -34,6 +34,8 @@ struct GeometryConflictResolver: Sendable {
         weakened.noseWingSlim *= scale
         weakened.noseTipSize *= scale
         weakened.noseBridge *= scale
+        weakened.noseRootNarrowing *= scale
+        weakened.noseTipLift *= scale
         weakened.mouthSize *= scale
         weakened.mouthWidth *= scale
         weakened.smile *= scale
@@ -67,6 +69,8 @@ struct GeometryConflictResolver: Sendable {
             strengths.noseWingSlim +
             abs(strengths.noseTipSize) +
             strengths.noseBridge +
+            strengths.noseRootNarrowing +
+            strengths.noseTipLift +
             abs(strengths.mouthSize) +
             abs(strengths.mouthWidth) +
             strengths.smile
@@ -87,6 +91,8 @@ struct GeometryConflictResolver: Sendable {
             strengths.noseWingSlim,
             abs(strengths.noseTipSize),
             strengths.noseBridge,
+            strengths.noseRootNarrowing,
+            strengths.noseTipLift,
             abs(strengths.mouthSize),
             abs(strengths.mouthWidth),
             strengths.smile
