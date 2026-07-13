@@ -4,11 +4,14 @@
 from __future__ import annotations
 
 import argparse
+import errno
 import os
 import re
 import shutil
+import stat
 import sys
 import tempfile
+import uuid
 from collections import Counter
 from pathlib import Path
 
@@ -164,35 +167,163 @@ def validate_gallery_directory(
     require_no_symlink_components(lexical_gallery, lexical_repo_root)
 
     resolved_gallery = lexical_gallery.resolve()
+    resolved_allowed_gallery = lexical_repo_root.resolve() / "example-images" / "gallery"
     resolved_input = input_dir.resolve()
     resolved_output = output_dir.resolve()
 
-    if resolved_gallery != allowed_gallery_root:
+    if resolved_gallery != resolved_allowed_gallery:
         raise GalleryError("Gallery directory resolves outside the repository example-images/gallery")
     if paths_overlap(resolved_gallery, resolved_input) or paths_overlap(resolved_gallery, resolved_output):
         raise GalleryError("Gallery directory must not overlap input or output directories")
 
 
-def recreate_gallery_directory(gallery_dir: Path, *, repo_root: Path = REPO_ROOT) -> None:
-    """Delete only the exact physical gallery root after a last-moment containment check."""
+def _require_descriptor_operations() -> None:
+    required_dir_fd = (os.open, os.stat, os.mkdir, os.rename, os.unlink, os.rmdir)
+    if (
+        not hasattr(os, "O_DIRECTORY")
+        or not hasattr(os, "O_NOFOLLOW")
+        or any(operation not in os.supports_dir_fd for operation in required_dir_fd)
+        or os.stat not in os.supports_follow_symlinks
+        or os.listdir not in os.supports_fd
+    ):
+        raise GalleryError("Safe descriptor-relative gallery cleanup is not supported on this platform")
+
+
+def _directory_open_flags() -> int:
+    return os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | getattr(os, "O_CLOEXEC", 0)
+
+
+def _open_directory(name: str, *, parent_fd: int) -> int:
+    try:
+        return os.open(name, _directory_open_flags(), dir_fd=parent_fd)
+    except OSError as error:
+        raise GalleryError(f"Gallery path component is not a safe directory: {name}") from error
+
+
+def _same_identity(left: os.stat_result, right: os.stat_result) -> bool:
+    return left.st_dev == right.st_dev and left.st_ino == right.st_ino
+
+
+def _require_entry_identity(parent_fd: int, name: str, opened_fd: int) -> None:
+    try:
+        entry = os.stat(name, dir_fd=parent_fd, follow_symlinks=False)
+    except OSError as error:
+        raise GalleryError(f"Gallery path changed after validation: {name}") from error
+    opened = os.fstat(opened_fd)
+    if not stat.S_ISDIR(entry.st_mode) or not _same_identity(entry, opened):
+        raise GalleryError(f"Gallery path changed after validation: {name}")
+
+
+def _remove_directory_contents(directory_fd: int) -> None:
+    """Remove an opened directory tree without resolving a child pathname outside it."""
+    try:
+        names = os.listdir(directory_fd)
+    except OSError as error:
+        raise GalleryError("Unable to enumerate quarantined gallery directory") from error
+
+    for name in names:
+        if name in (".", ".."):
+            raise GalleryError("Unsafe gallery directory entry")
+        try:
+            entry = os.stat(name, dir_fd=directory_fd, follow_symlinks=False)
+        except OSError as error:
+            raise GalleryError(f"Gallery entry changed during cleanup: {name}") from error
+
+        if stat.S_ISDIR(entry.st_mode):
+            child_fd = _open_directory(name, parent_fd=directory_fd)
+            try:
+                if not _same_identity(entry, os.fstat(child_fd)):
+                    raise GalleryError(f"Gallery entry changed during cleanup: {name}")
+                _remove_directory_contents(child_fd)
+                _require_entry_identity(directory_fd, name, child_fd)
+            finally:
+                os.close(child_fd)
+            try:
+                os.rmdir(name, dir_fd=directory_fd)
+            except OSError as error:
+                raise GalleryError(f"Unable to remove gallery directory entry: {name}") from error
+        else:
+            try:
+                os.unlink(name, dir_fd=directory_fd)
+            except OSError as error:
+                raise GalleryError(f"Unable to remove gallery file entry: {name}") from error
+
+
+def recreate_gallery_directory(
+    gallery_dir: Path,
+    *,
+    repo_root: Path = REPO_ROOT,
+    _before_destructive_use=None,
+) -> None:
+    """Recreate gallery through anchored descriptors; never follow entries while deleting."""
     validate_gallery_directory(
         input_dir=repo_root / "example-images" / "input",
         output_dir=repo_root / "example-images" / "output",
         gallery_dir=gallery_dir,
         repo_root=repo_root,
     )
-    if gallery_dir.exists() and not gallery_dir.is_dir():
-        raise GalleryError("Gallery path exists but is not a directory")
-    if gallery_dir.exists():
-        # Repeat the physical and component checks immediately before destructive work.
-        validate_gallery_directory(
-            input_dir=repo_root / "example-images" / "input",
-            output_dir=repo_root / "example-images" / "output",
-            gallery_dir=gallery_dir,
-            repo_root=repo_root,
-        )
-        shutil.rmtree(gallery_dir)
-    gallery_dir.mkdir(parents=True, exist_ok=True)
+    _require_descriptor_operations()
+
+    lexical_repo_root = lexical_absolute(repo_root)
+    parent_fd = repo_fd = example_fd = gallery_fd = None
+    try:
+        parent_fd = os.open(str(lexical_repo_root.parent), _directory_open_flags())
+        repo_fd = _open_directory(lexical_repo_root.name, parent_fd=parent_fd)
+        _require_entry_identity(parent_fd, lexical_repo_root.name, repo_fd)
+        example_fd = _open_directory("example-images", parent_fd=repo_fd)
+        _require_entry_identity(repo_fd, "example-images", example_fd)
+
+        try:
+            gallery_fd = os.open("gallery", _directory_open_flags(), dir_fd=example_fd)
+        except OSError as error:
+            if error.errno != errno.ENOENT:
+                raise GalleryError("Gallery path exists but is not a safe directory") from error
+
+        if gallery_fd is not None:
+            _require_entry_identity(example_fd, "gallery", gallery_fd)
+        if _before_destructive_use is not None:
+            _before_destructive_use()
+
+        # These identity checks are deliberately after the final validation hook.
+        _require_entry_identity(parent_fd, lexical_repo_root.name, repo_fd)
+        _require_entry_identity(repo_fd, "example-images", example_fd)
+        if gallery_fd is not None:
+            _require_entry_identity(example_fd, "gallery", gallery_fd)
+            quarantine_name = f".gallery-delete-{os.getpid()}-{uuid.uuid4().hex}"
+            try:
+                os.rename(
+                    "gallery",
+                    quarantine_name,
+                    src_dir_fd=example_fd,
+                    dst_dir_fd=example_fd,
+                )
+            except OSError as error:
+                raise GalleryError("Gallery path changed before quarantine") from error
+            _require_entry_identity(example_fd, quarantine_name, gallery_fd)
+            _remove_directory_contents(gallery_fd)
+            _require_entry_identity(example_fd, quarantine_name, gallery_fd)
+            try:
+                os.rmdir(quarantine_name, dir_fd=example_fd)
+            except OSError as error:
+                raise GalleryError("Unable to remove quarantined gallery directory") from error
+
+        _require_entry_identity(repo_fd, "example-images", example_fd)
+        try:
+            os.mkdir("gallery", dir_fd=example_fd)
+        except OSError as error:
+            raise GalleryError("Unable to create gallery directory safely") from error
+        created_fd = _open_directory("gallery", parent_fd=example_fd)
+        try:
+            _require_entry_identity(example_fd, "gallery", created_fd)
+            _require_entry_identity(repo_fd, "example-images", example_fd)
+        finally:
+            os.close(created_fd)
+    except OSError as error:
+        raise GalleryError("Unable to anchor gallery cleanup to repository descriptors") from error
+    finally:
+        for descriptor in (gallery_fd, example_fd, repo_fd, parent_fd):
+            if descriptor is not None:
+                os.close(descriptor)
 
 
 def paths_overlap(left: Path, right: Path) -> bool:
@@ -326,7 +457,66 @@ def run_self_tests() -> None:
         if not sentinel.is_file():
             raise AssertionError("gallery child validation deleted an external file")
 
-    print("self-test passed: exact gallery root, symlink containment, external survival, duplicate renderer IDs")
+    with tempfile.TemporaryDirectory() as temporary:
+        repo_root = Path(temporary) / "repo"
+        example_images = repo_root / "example-images"
+        gallery = example_images / "gallery"
+        gallery.mkdir(parents=True)
+        (gallery / "local.txt").write_text("local gallery", encoding="utf-8")
+
+        external = Path(temporary) / "external"
+        external_gallery = external / "gallery"
+        external_gallery.mkdir(parents=True)
+        sentinel = external_gallery / "must-survive.txt"
+        sentinel.write_text("outside repository", encoding="utf-8")
+        displaced = repo_root / "example-images-before-swap"
+
+        def swap_example_images_after_validation() -> None:
+            example_images.rename(displaced)
+            example_images.symlink_to(external, target_is_directory=True)
+
+        try:
+            expect_gallery_error(
+                "ancestor swap after final validation",
+                lambda: recreate_gallery_directory(
+                    gallery,
+                    repo_root=repo_root,
+                    _before_destructive_use=swap_example_images_after_validation,
+                ),
+                "changed after validation: example-images",
+            )
+            if not sentinel.is_file():
+                raise AssertionError("ancestor swap deleted the external sentinel")
+            if not (displaced / "gallery" / "local.txt").is_file():
+                raise AssertionError("ancestor swap performed destructive cleanup before failing closed")
+        finally:
+            if example_images.is_symlink():
+                example_images.unlink()
+            if displaced.exists():
+                displaced.rename(example_images)
+
+    with tempfile.TemporaryDirectory() as temporary:
+        repo_root = Path(temporary) / "repo"
+        gallery = repo_root / "example-images" / "gallery"
+        nested = gallery / "nested"
+        nested.mkdir(parents=True)
+        external = Path(temporary) / "external"
+        external.mkdir()
+        sentinel = external / "must-survive.txt"
+        sentinel.write_text("outside repository", encoding="utf-8")
+        (nested / "external-link").symlink_to(external, target_is_directory=True)
+
+        recreate_gallery_directory(gallery, repo_root=repo_root)
+        if not sentinel.is_file():
+            raise AssertionError("descriptor-relative cleanup followed a nested symlink")
+        if list(gallery.iterdir()):
+            raise AssertionError("descriptor-relative cleanup did not recreate an empty gallery")
+
+    print(
+        "self-test passed: exact gallery root, static symlink containment, "
+        "ancestor-swap fail-closed, recursive no-follow cleanup, external survival, "
+        "duplicate renderer IDs"
+    )
 
 
 if __name__ == "__main__":
