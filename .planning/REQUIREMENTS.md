@@ -7,9 +7,9 @@
 
 ### Public Nose Contract
 
-- [ ] **NOSE-01**: A host can set independent positive-only `noseRootNarrowing` and `noseTipLift` public parameters in `0...1`, with default `0`, finite clamping, non-finite fallback, and no alias to an existing nose field.
-- [ ] **NOSE-02**: Existing 31-field JSON and bundled presets decode with both new fields at `0`, new 33-field values round-trip, and existing source-style initializer calls retain neutral defaults.
-- [ ] **NOSE-03**: Either new field independently triggers the established face-geometry route and propagates through effective strengths, activation, metrics, degradation, conflict handling, and the existing public facade without exposing raw geometry.
+- [x] **NOSE-01**: A host can set independent positive-only `noseRootNarrowing` and `noseTipLift` public parameters in `0...1`, with default `0`, finite clamping, non-finite fallback, and no alias to an existing nose field.
+- [x] **NOSE-02**: Existing 31-field JSON and bundled presets decode with both new fields at `0`, new 33-field values round-trip, and existing source-style initializer calls retain neutral defaults.
+- [x] **NOSE-03**: Either new field independently triggers the established face-geometry route and propagates through effective strengths, activation, metrics, degradation, conflict handling, and the existing public facade without exposing raw geometry.
 
 ### Independent Nose Geometry
 
@@ -56,9 +56,9 @@
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| NOSE-01 | Phase 35 | Pending |
-| NOSE-02 | Phase 35 | Pending |
-| NOSE-03 | Phase 35 | Pending |
+| NOSE-01 | Phase 35 | Complete |
+| NOSE-02 | Phase 35 | Complete |
+| NOSE-03 | Phase 35 | Complete |
 | NOSE-04 | Phase 35 | Pending |
 | NOSE-05 | Phase 35 | Pending |
 | NOSE-06 | Phase 35 | Pending |
@@ -73,6 +73,7 @@
 | DOC-01 | Phase 37 | Pending |
 
 **Coverage:**
+
 - v1.9 requirements: 15 total
 - Mapped to phases: 15
 - Unmapped: 0

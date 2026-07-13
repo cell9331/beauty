@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.9
 milestone_name: Nose Remaining Tools and Branch Closeout
-status: ready_to_execute
-stopped_at: Phase 35 planned with 4 executable plans across 4 waves
-last_updated: "2026-07-13T06:16:01.933Z"
-last_activity: 2026-07-13 — Phase 35 planned and independently verified with NOSE-01 through NOSE-06 covered
+status: executing
+stopped_at: Completed 35-01-PLAN.md
+last_updated: "2026-07-13T06:27:23.858Z"
+last_activity: 2026-07-13 -- Phase 35 execution started
 progress:
   total_phases: 3
   completed_phases: 0
   total_plans: 4
-  completed_plans: 0
+  completed_plans: 1
   percent: 0
 ---
 
@@ -25,10 +25,10 @@ See: `.planning/PROJECT.md` (updated 2026-07-13)
 
 ## Current Position
 
-Phase: 35 of 37 — Public Contract and Independent Geometry
-Plan: 0 of 4
-Status: Ready to execute
-Last activity: 2026-07-13 — Phase 35 planning produced four sequential plans; plan checker passed after three targeted revisions
+Phase: 35 (Public Contract and Independent Geometry) — EXECUTING
+Plan: 2 of 4
+Status: Executing Phase 35
+Last activity: 2026-07-13 -- Phase 35 execution started
 
 ### Phase 34 Mouth Safety, Degradation, and Ledger Closeout Result
 
@@ -132,6 +132,7 @@ Last activity: 2026-07-13
 | Phase 30 P05 | 8 min | 2 tasks | 5 files |
 | Phase 30 P06 | 4 min | 2 tasks | 2 files |
 | Phase 30 P07 | 8 min | 2 tasks | 6 files |
+| Phase 35 P01 | 3 min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -196,6 +197,9 @@ Recent milestone-level outcomes:
 - Phase 31 completed public-facade nose renderer/helper/gallery evidence with 196/196 outputs, 30/30 portrait comparisons, and distinct signed `noseTipSize` output.
 - Phase 32 completed exact caps, fail-closed missing/stale behavior, reused `0.5`, safe no-face continuation, combined weakening, boundary scans, exact four-row promotion, and all current-owner contracts; the full SDK suite passed 186 tests.
 - `.planning/codebase/*` maps are stale background for v1.4 and should not override current source, root docs, or `.planning` ledgers.
+- [Phase 35]: Keep both new nose fields as independent positive-only storage with defaulted source-compatible initializer arguments. — This preserves the frozen Phase 35 contract without aliasing legacy nose behavior.
+- [Phase 35]: Keep bundled preset JSON unchanged and prove compatibility through missing-key zero decoding. — Editing explicit zero keys would hide the legacy payload behavior being verified.
+- [Phase 35]: Use independent 0.25 caps provisionally for both new values. — Phase 37 owns final calibration after output evidence.
 
 ### Pending Todos
 
@@ -228,9 +232,9 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-13
-Stopped at: v1.8 audited, archived, tagged, and Phase 33-34 execution history cleaned up
-Resume file: `.planning/milestones/v1.8-MILESTONE-AUDIT.md`
+Last session: 2026-07-13T06:26:48.353Z
+Stopped at: Completed 35-01-PLAN.md
+Resume file: None
 
 ## Operator Next Steps
 

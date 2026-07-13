@@ -23,7 +23,7 @@
 
 **Status:** Planned
 
-**Plans:** 0/4 plans complete
+**Plans:** 1/4 plans executed
 
 **Wave 1**
 
@@ -88,7 +88,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
-| 35. Public Contract and Independent Geometry | 0/TBD | Planning | — |
+| 35. Public Contract and Independent Geometry | 1/4 | In Progress|  |
 | 36. Public-Facade Output Evidence | 0/TBD | Not started | — |
 | 37. Nose Safety, Boundary, and Branch Closeout | 0/TBD | Not started | — |
 
