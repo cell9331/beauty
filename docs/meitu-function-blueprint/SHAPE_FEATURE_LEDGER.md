@@ -104,12 +104,12 @@ Before marking a second-level tool `implemented`:
 | `嘴唇` | 丰唇 | partial | Demo currently maps this to `lipColor`, which is visible color evidence, not true geometry plump behavior. | Decide whether to create a distinct geometry parameter or relabel mapping; then add facade-visible evidence. |
 | `嘴唇` | 微笑 | partial | Existing `smile` coverage. | Facade-visible geometry output and branch-specific acceptance evidence. |
 | `嘴唇` | 白牙 | future | None. | Needs local teeth segmentation/retouch design. |
-| `鼻子` | 大小 | partial | Existing `noseSlim` coverage. | Facade-visible geometry output and branch-specific acceptance evidence. |
+| `鼻子` | 大小 | implemented | Existing `noseSlim`; Phase 31 `noseSlim_0p35` output plus Phase 32 exact-cap, degradation, combined-safety, and boundary evidence. | Complete for this existing-parameter subtool only; branch review remains separate. |
 | `鼻子` | 提升 | future | None. | Define neutral parameter and geometry behavior. |
-| `鼻子` | 鼻翼 | partial | Existing `noseWingSlim` coverage. | Facade-visible geometry output and branch-specific acceptance evidence. |
-| `鼻子` | 山根 | partial | Existing `noseBridge` coverage is reused. | Decide whether root and bridge remain aliases or split into distinct neutral parameters; facade-visible evidence. |
-| `鼻子` | 鼻梁 | partial | Existing `noseBridge` coverage. | Facade-visible geometry output and branch-specific acceptance evidence. |
-| `鼻子` | 鼻尖 | partial | Existing `noseTipSize` coverage. | Facade-visible geometry output and branch-specific acceptance evidence. |
+| `鼻子` | 鼻翼 | implemented | Existing `noseWingSlim`; Phase 31 `noseWingSlim_0p35` output plus Phase 32 safety/degradation/boundary evidence. | Complete for this existing-parameter subtool only. |
+| `鼻子` | 山根 | partial | No independent evidence. `noseBridge` evidence belongs to `鼻梁` and is not borrowed as an alias. | Decide explicitly whether root and bridge alias or require a distinct neutral parameter. |
+| `鼻子` | 鼻梁 | implemented | Existing `noseBridge`; Phase 31 `noseBridge_0p30` output plus Phase 32 safety/degradation/boundary evidence. | Complete for this existing-parameter subtool only; not evidence for `山根`. |
+| `鼻子` | 鼻尖 | implemented | Existing signed `noseTipSize`; Phase 31 positive/negative output plus Phase 32 signed-cap, degradation, and combined-safety evidence. | Complete for this signed existing-parameter subtool only. |
 | `眉毛` | 上下 | future | None. | Needs landmark/resource design if promoted. |
 | `眉毛` | 粗细 | future | None. | Needs landmark/resource design if promoted. |
 | `眉毛` | 长短 | future | None. | Needs landmark/resource design if promoted. |
