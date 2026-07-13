@@ -4,16 +4,17 @@
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import shutil
 import sys
+import tempfile
 from collections import Counter
 from pathlib import Path
 
 
 SUPPORTED_INPUT_EXTENSIONS = {".png", ".jpg", ".jpeg"}
 REPO_ROOT = Path(__file__).resolve().parent.parent
-ALLOWED_GALLERY_ROOT = (REPO_ROOT / "example-images" / "gallery").resolve()
 RENDERER_SOURCE = REPO_ROOT / "BeautySDK" / "Sources" / "BeautyExampleRenderer" / "main.swift"
 
 CASE_GROUPS = {
@@ -79,15 +80,19 @@ def main() -> int:
     parser.add_argument("--input", default="example-images/input", help="Committed source fixture directory.")
     parser.add_argument("--output", default="example-images/output", help="Flat generated renderer output directory.")
     parser.add_argument("--gallery", default="example-images/gallery", help="Generated human-review gallery directory.")
+    parser.add_argument("--self-test", action="store_true", help="Run deterministic negative-path checks.")
     args = parser.parse_args()
 
     try:
-        generate_gallery(
-            input_dir=Path(args.input),
-            output_dir=Path(args.output),
-            gallery_dir=Path(args.gallery),
-        )
-    except GalleryError as error:
+        if args.self_test:
+            run_self_tests()
+        else:
+            generate_gallery(
+                input_dir=Path(args.input),
+                output_dir=Path(args.output),
+                gallery_dir=Path(args.gallery),
+            )
+    except (GalleryError, AssertionError) as error:
         print(error, file=sys.stderr)
         return 1
 
@@ -111,13 +116,7 @@ def generate_gallery(input_dir: Path, output_dir: Path, gallery_dir: Path) -> No
         suffix = "" if len(missing) <= 5 else f", ... ({len(missing)} missing)"
         raise GalleryError(f"Missing generated output PNGs: {sample}{suffix}")
 
-    if gallery_dir.exists() and not gallery_dir.is_dir():
-        raise GalleryError("Gallery path exists but is not a directory")
-    if gallery_dir.is_symlink():
-        raise GalleryError("Gallery directory must not be a symbolic link")
-    if gallery_dir.exists():
-        shutil.rmtree(gallery_dir)
-    gallery_dir.mkdir(parents=True, exist_ok=True)
+    recreate_gallery_directory(gallery_dir)
 
     copied = 0
     for group, case_ids in CASE_GROUPS.items():
@@ -133,15 +132,67 @@ def generate_gallery(input_dir: Path, output_dir: Path, gallery_dir: Path) -> No
     print(f"wrote {copied} gallery PNGs under {display_path(gallery_dir)}")
 
 
-def validate_gallery_directory(input_dir: Path, output_dir: Path, gallery_dir: Path) -> None:
-    resolved_gallery = gallery_dir.resolve()
+def lexical_absolute(path: Path) -> Path:
+    return Path(os.path.abspath(path))
+
+
+def require_no_symlink_components(path: Path, repo_root: Path) -> None:
+    try:
+        relative = path.relative_to(repo_root)
+    except ValueError:
+        raise GalleryError("Gallery directory must be the repository example-images/gallery") from None
+
+    current = repo_root
+    for component in relative.parts:
+        current /= component
+        if current.is_symlink():
+            raise GalleryError(f"Gallery path component must not be a symbolic link: {component}")
+
+
+def validate_gallery_directory(
+    input_dir: Path,
+    output_dir: Path,
+    gallery_dir: Path,
+    *,
+    repo_root: Path = REPO_ROOT,
+) -> None:
+    lexical_repo_root = lexical_absolute(repo_root)
+    lexical_gallery = lexical_absolute(gallery_dir)
+    allowed_gallery_root = lexical_repo_root / "example-images" / "gallery"
+    if lexical_gallery != allowed_gallery_root:
+        raise GalleryError("Gallery directory must be the repository example-images/gallery")
+    require_no_symlink_components(lexical_gallery, lexical_repo_root)
+
+    resolved_gallery = lexical_gallery.resolve()
     resolved_input = input_dir.resolve()
     resolved_output = output_dir.resolve()
 
-    if not is_relative_to(resolved_gallery, ALLOWED_GALLERY_ROOT):
-        raise GalleryError("Gallery directory must be under example-images/gallery")
+    if resolved_gallery != allowed_gallery_root:
+        raise GalleryError("Gallery directory resolves outside the repository example-images/gallery")
     if paths_overlap(resolved_gallery, resolved_input) or paths_overlap(resolved_gallery, resolved_output):
         raise GalleryError("Gallery directory must not overlap input or output directories")
+
+
+def recreate_gallery_directory(gallery_dir: Path, *, repo_root: Path = REPO_ROOT) -> None:
+    """Delete only the exact physical gallery root after a last-moment containment check."""
+    validate_gallery_directory(
+        input_dir=repo_root / "example-images" / "input",
+        output_dir=repo_root / "example-images" / "output",
+        gallery_dir=gallery_dir,
+        repo_root=repo_root,
+    )
+    if gallery_dir.exists() and not gallery_dir.is_dir():
+        raise GalleryError("Gallery path exists but is not a directory")
+    if gallery_dir.exists():
+        # Repeat the physical and component checks immediately before destructive work.
+        validate_gallery_directory(
+            input_dir=repo_root / "example-images" / "input",
+            output_dir=repo_root / "example-images" / "output",
+            gallery_dir=gallery_dir,
+            repo_root=repo_root,
+        )
+        shutil.rmtree(gallery_dir)
+    gallery_dir.mkdir(parents=True, exist_ok=True)
 
 
 def paths_overlap(left: Path, right: Path) -> bool:
@@ -212,6 +263,59 @@ def validate_case_inventory(gallery_case_ids: list[str], renderer_case_ids: list
         if unexpected:
             details.append(f"not in renderer: {', '.join(unexpected)}")
         raise GalleryError("Gallery case inventory does not match renderer: " + "; ".join(details))
+
+
+def expect_gallery_error(label: str, function, expected_fragment: str) -> None:
+    try:
+        function()
+    except GalleryError as error:
+        if expected_fragment not in str(error):
+            raise AssertionError(f"{label}: unexpected error: {error}") from error
+        return
+    raise AssertionError(f"{label}: expected GalleryError")
+
+
+def run_self_tests() -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+        repo_root = Path(temporary) / "repo"
+        example_images = repo_root / "example-images"
+        example_images.mkdir(parents=True)
+        gallery = example_images / "gallery"
+        external = Path(temporary) / "external"
+        victim = external / "victim"
+        victim.mkdir(parents=True)
+        sentinel = victim / "must-survive.txt"
+        sentinel.write_text("outside repository", encoding="utf-8")
+
+        gallery.symlink_to(external, target_is_directory=True)
+        expect_gallery_error(
+            "symlinked gallery root",
+            lambda: recreate_gallery_directory(gallery, repo_root=repo_root),
+            "must not be a symbolic link",
+        )
+        if not sentinel.is_file():
+            raise AssertionError("symlinked gallery root deleted an external file")
+
+        gallery.unlink()
+        example_images.rmdir()
+        example_images.symlink_to(external, target_is_directory=True)
+        expect_gallery_error(
+            "symlinked gallery ancestor",
+            lambda: recreate_gallery_directory(gallery, repo_root=repo_root),
+            "must not be a symbolic link",
+        )
+        if not sentinel.is_file():
+            raise AssertionError("symlinked gallery ancestor deleted an external file")
+
+        expect_gallery_error(
+            "gallery child rejected",
+            lambda: recreate_gallery_directory(gallery / "victim", repo_root=repo_root),
+            "must be the repository example-images/gallery",
+        )
+        if not sentinel.is_file():
+            raise AssertionError("gallery child validation deleted an external file")
+
+    print("self-test passed: exact gallery root, symlink containment, external survival")
 
 
 if __name__ == "__main__":
