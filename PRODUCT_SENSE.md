@@ -445,7 +445,7 @@ Manual or future checks still required before stronger product claims:
 - The prior unresolved alias decision is closed at the SDK contract level: `山根` maps to independent public `noseRootNarrowing`, and `提升` maps to independent public `noseTipLift`; neither borrows `noseBridge` or signed `noseTipSize` behavior.
 - Acceptance requires an exact 33 stored-field model (32 numeric plus `filterId`), positive-only `0...1` values, default/non-finite zero, legacy JSON/preset/source-call compatibility, provisional `0.25` caps, and isolated facade routing with redacted evidence.
 - Root narrowing must move only an explicit upper-root pair horizontally inward and tip lift must move only an explicit lower-tip subset vertically upward. Missing or malformed explicit support fails closed without legacy fallback; reused eligible geometry keeps exact `0.5`.
-- `35-VERIFICATION.md` records 94/94 focused and 207/207 full XCTest evidence plus public/SPI, privacy, dependency, artifact, archive, and scope scans.
+- `35-VERIFICATION.md` records fresh 106/106 focused and 219/219 full XCTest evidence, a clean final 24-file code review, and passing public/SPI, privacy, dependency, artifact, archive, and scope scans.
 - `山根`, `提升`, and branch-level `鼻子` remain unpromoted/partial. Phase 36 still owns renderer/helper/gallery/ROI output evidence, and Phase 37 owns cap calibration, exhaustive six-field/once-only safety, boundary closeout, ledger promotion, and SDK-core branch completion.
 - This acceptance does not claim renderer/gallery completion, calibrated caps, device parity, commercial review, packaging, shipping, or launch readiness. No Demo build was required because Phase 35 changed no Demo source.
 

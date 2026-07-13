@@ -25,7 +25,7 @@
 
 **Plans:** 4/4 plans complete
 
-**Evidence:** `35-VERIFICATION.md` records 94/94 focused and 207/207 full XCTest results for the exact 33-field, provisional `0.25`, reused `0.5`, explicit `noseRoot`/`noseTip`, fail-closed, and redacted facade contract. No Demo build was required because Demo source was unchanged. Phase 36 is next; Phase 37 retains cap calibration, exhaustive safety, boundary closeout, and promotion.
+**Evidence:** `35-VERIFICATION.md` records fresh 106/106 focused and 219/219 full XCTest results for the exact 33-field, provisional `0.25`, reused `0.5`, explicit `noseRoot`/`noseTip`, fail-closed, redacted facade, and bounded nose/mouth conflict-emission convergence contracts. The final code review is clean. No Demo build was required because Demo source was unchanged. Phase 36 is next; Phase 37 retains cap calibration, exhaustive safety, boundary closeout, and promotion.
 
 **Wave 1**
 
@@ -90,7 +90,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
-| 35. Public Contract and Independent Geometry | 4/4 | Complete | 2026-07-13 |
+| 35. Public Contract and Independent Geometry | 4/4 | Complete    | 2026-07-13 |
 | 36. Public-Facade Output Evidence | 0/TBD | Not started | — |
 | 37. Nose Safety, Boundary, and Branch Closeout | 0/TBD | Not started | — |
 

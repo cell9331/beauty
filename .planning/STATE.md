@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.9
 milestone_name: Nose Remaining Tools and Branch Closeout
-status: planning
-stopped_at: Completed 35-04-PLAN.md
-last_updated: "2026-07-13T07:03:28.993Z"
-last_activity: 2026-07-13 -- Phase 35 completed 4/4 plans
+status: ready_to_plan
+stopped_at: Phase 35 verified and complete; Phase 36 not started
+last_updated: "2026-07-13T08:08:51.162Z"
+last_activity: 2026-07-13 — Phase 35 passed 6/6 requirements with a clean final review and 219/219 full SDK tests
 progress:
   total_phases: 3
   completed_phases: 1
@@ -26,13 +26,13 @@ See: `.planning/PROJECT.md` (updated 2026-07-13)
 ## Current Position
 
 Phase: 36 (Public-Facade Output Evidence) — NOT STARTED
-Plan: Not planned
+Plan: Not started
 Status: Phase 35 complete; ready for Phase 36 planning
-Last activity: 2026-07-13 -- Phase 35 completed 4/4 plans
+Last activity: 2026-07-13 — Phase 35 passed 6/6 requirements with a clean final review and 219/219 full SDK tests
 
 ### Phase 35 Public Contract and Independent Geometry Result
 
-- `35-VERIFICATION.md` records 94/94 focused and 207/207 full XCTest cases with zero failures.
+- `35-VERIFICATION.md` records fresh 106/106 focused and 219/219 full XCTest cases with zero failures; the final 24-file code review is clean.
 - `BeautyParameters` is exactly 33 stored fields = 32 numeric plus `filterId`; independent `noseRootNarrowing` and `noseTipLift` use default/non-finite zero and provisional `0.25` caps.
 - Package-internal explicit `noseRoot` / `noseTip` supports drive independent horizontal-root and vertical-tip vectors without legacy fallback; reused scale is exact `0.5` (`0.125` at either new cap).
 - Public/SPI, diagnostics, dependency, network/commercial, renderer/Demo, artifact, archive, and no-promotion gates are green. No Demo build was required because Demo source was unchanged.
@@ -54,7 +54,7 @@ Last activity: 2026-07-13
 **Velocity:**
 
 - Total phases completed: 30
-- Total plans completed: 119
+- Total plans completed: 123
 - Total tasks recorded from milestone summaries: at least 147
 - Milestone Swift LOC at close: 17,794 in the local closeout count across `BeautySDK` and `BeautyDemo`, including build-derived `.build` files observed during archive.
 
@@ -216,7 +216,7 @@ Recent milestone-level outcomes:
 - [Phase 35]: Validate root and tip supports before clamping and share those validators with support availability. — Malformed biometric-adjacent geometry must fail closed and resolver routing must agree with provider emission.
 - [Phase 35]: Limit the legacy nose center guard to legacy fields. — Valid explicit root or tip support must remain usable when the legacy proxy is absent.
 - [Phase 35]: Sanitize unsupported root and tip requests independently before using the same NoseWarpProvider, preserving valid sibling and legacy nose work. — Prevents legacy vector borrowing while retaining compatible aggregate nose behavior.
-- [Phase 35]: Preserve existing GeometryConflictResolver call placement while adding both fields to scale, total, and count. — Phase 37 owns exhaustive once-only conflict behavior.
+- [Phase 35]: Converge conflict weakening with provider-owned per-field nose and mouth emissions before final metrics and dispatch. — Retained fields only decrease across the bounded nine-field loop, so effective strengths, total, scale, weakened count, and emitted work agree while Phase 37 still owns the exhaustive six-nose-field matrix.
 
 ### Pending Todos
 

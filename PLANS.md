@@ -91,7 +91,7 @@ Outcome:
 | Scope | Completed Phase 35 Plans `35-01` through `35-04`: exact public-model compatibility, independent package-only root/tip geometry, resolver/conflict/facade routing, ASVS L1 review, and current-owner synchronization. |
 | Requirements | NOSE-01 through NOSE-06 complete; NOSE-07 onward and DOC-01 remain pending. |
 | Files | Public/effective model and geometry code/tests from Plans 35-01 through 35-03; `ARCHITECTURE.md`, `DESIGN.md`, `RELIABILITY.md`, `SECURITY.md`, `PRODUCT_SENSE.md`, current GSD ledgers, and Phase 35 verification/security/validation evidence in Plan 35-04. |
-| Verification | `35-VERIFICATION.md`: 94/94 focused and 207/207 full XCTest cases; exact 33 = 32 numeric + `filterId`; provisional `0.25`; reused exact `0.5`; explicit `noseRoot`/`noseTip`; public/SPI, diagnostics, dependency, network/commercial, renderer/Demo, artifact, archive, no-promotion, and diff-hygiene gates. |
+| Verification | `35-VERIFICATION.md`: fresh 106/106 focused and 219/219 full XCTest cases; clean final 24-file code review; exact 33 = 32 numeric + `filterId`; provisional `0.25`; reused exact `0.5`; explicit `noseRoot`/`noseTip`; bounded nose/mouth conflict-emission convergence; public/SPI, diagnostics, dependency, network/commercial, renderer/Demo, artifact, archive, no-promotion, and diff-hygiene gates. |
 | Build | Full SwiftPM suite passed. No Demo build was required because Demo source was unchanged. |
 
 Outcome:
