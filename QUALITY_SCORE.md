@@ -227,6 +227,22 @@ Recorded 2026-07-09 in `.planning/phases/29-eye-renderer-output-evidence/29-VERI
 - Public-boundary, Demo/renderer internal-import, raw-leak, no-overclaim, and GSD decision-coverage checks passed.
 - Phase 29 records renderer evidence for existing public eye parameters only; `眼睛` rows and branch remain `partial` until Phase 30 safety, degradation, redaction, and scoped status evidence passes.
 
+### 3.15 Phase 30 Eye Safety, Ledger, and Closeout Evidence
+
+Recorded 2026-07-11 in `.planning/phases/30-eye-safety-ledger-and-closeout/30-EYE-SAFETY-EVIDENCE.md`:
+
+full_suite_tests: 178
+
+- EYE-04 observed tests passed: `testEYE04EyeInputsNormalizePositiveOnlySignedOverflowAndNonFiniteValues`, `testEYE04EyeCapsResolveExactValuesDirectionsWarningsAndCounts`, and `testEYE04NegativePositiveOnlyEyeInputsAreNoOps`.
+- EYE-05 observed tests passed for either-eye missing input, complete-domain zeroing, reused-eye skip, stale-eye skip, preserved non-eye reuse, public no-face behavior, and redacted metadata. Reused eyes skip entirely; reused face shape keeps scale `0.5`, reused nose keeps scale `0.5`, and reused mouth keeps scale `0.5`.
+- EYE-06 observed tests passed: `testEYE06EachVisibleEyeBehaviorWeakensWithFaceShapeAndPreservesDirection` and `testEYE06AllEyeMultiDomainCaseEmitsStableWeakeningEvidence`.
+- EYE-07 boundary gates passed with zero public/SPI raw-geometry candidates, zero forbidden Demo/renderer internal imports, zero network/cloud paths, zero StoreKit/entitlement execution paths, the unchanged 31-field public inventory, exactly two classified static VIP occurrences, `unclassified_matches: 0`, and no tracked generated output/gallery artifacts.
+- The unchanged Phase 29 regression produced 161 outputs; the helper passed 161/161 outputs and 36/36 portrait eye comparisons. Generated outputs remain ignored local evidence.
+- `30-REVIEW.md` is clean and `30-SECURITY.md` remains verified with `threats_open: 0`.
+- EYE-08 and DOC-01 closeout promoted exactly `大小`, `上下`, `眼距`, and `眼尾上扬`; branch-level `眼睛` remains `partial` with future tools explicitly unimplemented.
+- A Demo build was not required because Demo source was unchanged.
+- Future eye tools, physical-device evidence, commercial visual review, broader reference parity, packaging, and launch readiness remain separate work.
+
 ## 4. Product Domain Scorecard
 
 | Domain | Target Score | Current | Required Evidence For 4+ |
@@ -237,7 +253,7 @@ Recorded 2026-07-09 in `.planning/phases/29-eye-renderer-output-evidence/29-VERI
 | Presets | 4 | 4 | Built-in JSON presets decode, validate, apply deterministically, and sync UI controls. |
 | Skin Beauty | 4 | 4 | Default no-op, visible skin/color fixture output, high-strength safety caps, and no-face combined skip behavior are tested. |
 | Face Shape | 4 | 4 | Control points are generated safely, combined geometry weakens, no-face skips, and CIImage local warp evidence is tested. |
-| Eyes | 4 | 4 | Eye provider output, caps, reused/stale reduction, and missing-eye landmark skips are tested; Phase 29 adds public-facade renderer evidence with 161/161 outputs and 36/36 comparisons. Phase 30 still owns row and branch closeout. |
+| Eyes | 4 | 4 | Positive-only/signed inputs, exact caps, missing-eye skips, reused/stale eye-domain skips, combined weakening, and redacted aggregate evidence are tested; 161/161 outputs and 36/36 comparisons pass. Exactly four rows are implemented while branch-level `眼睛` remains partial. |
 | Nose | 4 | 4 | Nose provider output, caps, reused/stale reduction, and missing-nose landmark skips are tested. |
 | Mouth | 4 | 4 | Mouth provider output, lip-color fixture output, reused/stale reduction, and missing-mouth/lip skips are tested. |
 | Filters | 4 | 4 | `filterId nil`, missing filter, intensity 0/1, metadata filter IDs, and Demo filter selection are covered; real LUT decode remains Phase 6+ render scope. |
