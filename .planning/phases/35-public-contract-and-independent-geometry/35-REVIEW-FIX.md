@@ -1,54 +1,56 @@
 ---
 phase: 35-public-contract-and-independent-geometry
 source_review: .planning/phases/35-public-contract-and-independent-geometry/35-REVIEW.md
-fixed_at: 2026-07-13T07:29:02Z
+fixed_at: 2026-07-13T07:42:49Z
 status: all_fixed
-iteration: 2
+iteration: 3
 fix_scope: critical_warning
-findings_in_scope: 2
-fixed: 2
+findings_in_scope: 1
+fixed: 1
 skipped: 0
 fix_commits:
-  - 8f8bda7
-  - 05209b3
+  - 33665e6
 findings_fixed:
-  critical: 2
+  critical: 1
   warning: 0
   info: 0
-  total: 2
+  total: 1
 ---
 
-# Phase 35 Code Review Fix Report — Iteration 2
+# Phase 35 Code Review Fix Report — Iteration 3
 
-Both critical findings from the iteration-2 Phase 35 review are fixed.
+The iteration-3 critical finding CR-05 is fixed.
 
-## Fixes
+## Fix
 
-1. **CR-03: Aggregate legacy availability allowed non-rendering fields to survive mixed requests**
-   - Replaced the aggregate legacy availability bit with `NoseWarpFieldEmissions`, a provider-owned result containing actual control-point output for each of the six nose fields.
-   - Both resolver preflight and final provider dispatch consume that same per-field emission contract.
-   - Legacy sanitization now zeros only the requested helper whose actual emission is empty; emitting legacy and independent siblings remain active.
-   - Added a one-point legacy mixed regression proving `noseSlim == 0`, supported root work stays active, conflict scale is exactly `1 / (0.60 + 0.45 + 0.25)`, and weakened count is exactly `3`.
-   - Commit: `8f8bda7` (`fix(35): sanitize legacy nose fields by emission`).
+### CR-05: Conflict weakening could invalidate a preflight emission without final per-field sanitization
 
-2. **CR-04: Structural root/tip availability did not reflect requested-strength emission**
-   - Removed resolver-only structural root/tip availability checks.
-   - Root/tip preflight now uses the provider's actual field emission, including strength thresholds, computed displacement, remaining centerline room, target validation, and support validation.
-   - Added provider and resolver regressions for a structurally valid near-center root pair with non-emitting displacement and a positive tip request whose displacement is below the emission threshold.
-   - Mixed tests prove the failed field is zero before conflict accounting, its supported sibling remains active, scale is exactly `1 / (0.60 + 0.45 + 0.25)`, and weakened count is exactly `3`.
-   - Commit: `05209b3` (`fix(35): exclude non-emitting independent nose work`).
+- Moved valid fresh-geometry conflict resolution ahead of face, eye, nose, and mouth provider dispatch so every downstream domain consumes the same final effective strengths.
+- Added a deterministic monotonic convergence loop around the existing conflict resolver and provider-owned `NoseWarpFieldEmissions` contract.
+- Each mask-changing pass removes newly non-emitting nose fields from the unscaled retained baseline, then recomputes conflict total, weakened count, scale, warnings, and final strengths. A pass can only remove work, and exactly six nose fields exist, so the implementation permits at most six mask changes and cannot loop indefinitely.
+- Threshold-crossing `noseRootNarrowing`, `noseTipLift`, and both signed directions of `noseTipSize` now become exact zero. Their contribution is excluded from the recomputed conflict evidence, supported `noseSlim` work remains active, and final provider emissions exactly match the retained effective nose strengths.
+- Warning behavior remains category-only: one `combined_geometry_weakened` warning remains, no `nose_inputs_missing` warning is emitted while a supported sibling continues, and aggregate scale/count metrics contain no raw geometry or field payload.
+- Updated `DESIGN.md`, `RELIABILITY.md`, and `PLANS.md` with the bounded convergence and final-emission invariant.
+- Commit: `33665e6` (`fix(35): converge nose conflict emissions`).
+
+## Regression Evidence
+
+- Root fixture: requested `0.000004` emits before weakening, crosses its displacement threshold after the initial scale, becomes zero, and is excluded from the final six-field conflict count/scale.
+- Tip-lift fixture: requested `0.000003` follows the same displacement-threshold crossing and exclusion behavior.
+- Signed tip-size fixture: both `+2 * Float.ulpOfOne` and `-2 * Float.ulpOfOne` emit before weakening, cross the provider strength threshold after scaling, and become zero without changing the retained sibling or diagnostic privacy.
+- All three mixed-sibling regressions assert final `noseSlim` emission, exact final scale `1 / 2.70`, weakened count `6`, one combined warning, no nose-missing warning, active face-shape/nose domains, and equality between retained effective strengths and provider sanitization at final values.
 
 ## Verification
 
 - PASS: `NoseWarpProviderTests` — 15/15 XCTest cases.
-- PASS: `MissingLandmarkDegradationTests` — 21/21 XCTest cases.
+- PASS: `MissingLandmarkDegradationTests` — 24/24 XCTest cases.
 - PASS: `GeometryConflictResolverTests` — 8/8 XCTest cases.
 - PASS: `CombinedEffectSafetyTests` — 10/10 XCTest cases.
 - PASS: `BeautyEffectResolverTests` — 14/14 XCTest cases.
-- PASS: affected focused aggregate — 68/68 XCTest cases.
-- PASS: `swift test --package-path BeautySDK` — 214/214 XCTest cases, zero failures.
-- PASS: `git diff --check` before both fix commits.
+- PASS: affected focused aggregate — 71/71 XCTest cases.
+- PASS: `swift test --package-path BeautySDK` — 217/217 XCTest cases, zero failures.
+- PASS: `git diff --check` before the fix commit.
 
 ## Status
 
-All iteration-2 critical and warning findings are fixed. Public raw geometry/privacy boundaries, package dependencies, and Phase 36/37 non-claims remain unchanged. This report is intentionally left uncommitted for the orchestrator.
+All iteration-3 critical and warning findings are fixed. Public raw geometry/privacy boundaries, established warning/metric semantics, and Phase 36/37 non-claims remain unchanged. This report is intentionally left uncommitted for the orchestrator.
