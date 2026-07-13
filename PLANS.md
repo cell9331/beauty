@@ -30,6 +30,34 @@ No active work recorded.
 
 ## 4. Completed
 
+### C-2026-07-13-gsd-execute-phase-30-eye-safety-ledger-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Ran `gsd-execute-phase-30` across seven sequential plans: public eye normalization/caps; missing/reused/stale degradation; combined weakening; command-backed renderer/security evidence; atomic four-row promotion; blueprint/root/quality/project synchronization; and final GSD/work-ledger closeout. |
+| Requirements | EYE-04, EYE-05, EYE-06, EYE-07, EYE-08, DOC-01 |
+| Files | Plan 30-01: `BeautyParameters.swift`, `BeautyEffectResolver.swift`, and two focused test files. Plan 30-02: resolver plus five degradation/facade/combined test files. Plan 30-03: `30-EYE-SAFETY-EVIDENCE.md`, `30-REVIEW.md`, `30-SECURITY.md`, `30-VERIFICATION.md`, `30-VALIDATION.md`. Plan 30-04: five blueprint owners. Plan 30-05: `DESIGN.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `SECURITY.md`, phase security. Plan 30-06: `QUALITY_SCORE.md`, `.planning/PROJECT.md`. Plan 30-07: requirements, roadmap, state, this work ledger, verification, and validation. Each plan also records its summary. |
+| Build | Seven focused suites passed with observed results: `BeautyParametersTests` 7, `BeautyEffectResolverTests` 12, `EyeWarpProviderTests` 6, `MissingLandmarkDegradationTests` 13, `CombinedEffectSafetyTests` 7, `BeautyEngineGeometryFacadeTests` 9, and `BeautyRendererOutputRegressionTests` 7. The full SDK suite, `BeautyExampleRenderer` build/run, and helper passed. No Demo build was required because Demo source was unchanged. |
+| Commits | Plan task commits: `8bba092`, `4cf58a6`, `bcb504d`, `0d989f7`, `cd9848b`, `b5d985c`, `1257ce4`, `a9d3ea7`, `56187ac`, `7fc9da1`, `ecfe87e`, `6b0e2c3`, `74537ac`, plus Plan 30-07 closeout commits. |
+
+#### Phase 30 Execution Evidence
+
+The `gsd-execute-phase-30` transaction is backed by detailed command evidence in `30-EYE-SAFETY-EVIDENCE.md`.
+
+full_suite_tests: 178
+
+- EYE-04 observed tests prove positive-only size/tail normalization, signed distance/Y behavior, non-finite zeroing, exact caps, warnings, and aggregate cap counts.
+- EYE-05 observed tests prove either-eye missing, reused, and stale eye geometry skip and zero the domain while reusable face shape, nose, and mouth remain scaled by 0.5; public no-face output preserves extent and safe domains.
+- EYE-06 observed tests cover six visible signed/directional weakening cases and one all-eye multi-domain case with exactly six weakened fields.
+- The renderer built and ran 23 cases across 7 fixtures, writing 161 ignored outputs; the unchanged helper passed 161/161 outputs and 36/36 portrait comparisons.
+- No Demo build was required because Demo source was unchanged; Demo boundaries were covered by the import, network, and commercial scans.
+- EYE-07 classifications passed: zero public/SPI raw-geometry candidates across asserted roots, zero forbidden Demo/renderer imports, zero network/cloud and commercial/StoreKit/entitlement execution paths, unchanged 31-field public inventory, no tracked generated artifacts, exact static allowlists `VIP-COMMERCIAL-ALLOW-01` and `VIP-COMMERCIAL-ALLOW-02`, and `unclassified_matches: 0`.
+- `30-REVIEW.md` is clean; `30-SECURITY.md` is verified with `threats_open: 0`; decision coverage passed 21/21.
+- EYE-08 atomically promoted exactly `大小`, `上下`, `眼距`, and `眼尾上扬`. Branch-level `眼睛` remains `partial`; future eye tools, device evidence, commercial visual review, broader parity, packaging, and readiness remain separate work.
+- DOC-01 synchronized every blueprint, root, quality, project, requirement, roadmap, state, verification, validation, and work-ledger owner through independent bounded checks.
+- Next step: run `$gsd-audit-milestone` for v1.6; milestone audit/archive is not claimed by Phase 30 execution.
+
 ### C-2026-07-11-gsd-plan-phase-30-eye-safety-ledger-closeout
 
 | Field | Value |
