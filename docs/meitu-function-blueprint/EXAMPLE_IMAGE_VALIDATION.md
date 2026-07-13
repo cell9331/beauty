@@ -235,3 +235,12 @@ Phase 30 closes the safety and status gates for the existing-public-parameter ey
 - Combined-geometry tests prove weakening for all six visible eye directions and the all-eye multi-domain case while preserving signed directions.
 - Active-source boundary checks found no public/SPI raw geometry, forbidden Demo or renderer imports, network/cloud execution path, commercial entitlement path, or tracked generated image artifact.
 - Exactly `大小`, `上下`, `眼距`, and `眼尾上扬` are implemented. Branch-level `眼睛` remains `partial`; future eye tools, device evidence, commercial visual review, broad parity, packaging, and release readiness remain out of scope.
+
+## Phase 33 Mouth Renderer Evidence Summary
+
+- `BeautyRendererOutputRegressionTests` verifies the 34-case public-facade matrix and six isolated existing mouth/lip cases.
+- The renderer produces 238 ignored PNGs across seven fixtures; the Phase 33 helper fully decodes 238/238 with matching dimensions.
+- Five geometry cases pass 30/30 portrait mouth-ROI comparisons and both signed pairs pass 12/12 direct comparisons above the watermark.
+- `lipColor` passes 6/6 separate lower-central mouth-region containment checks and is not geometry or true `丰唇` evidence.
+- Generated review paths are ignored under `example-images/gallery/mouth/`; no output/gallery PNG is tracked.
+- Phase 34 owns safety, degradation, ledger promotion, and whole-slice closeout.

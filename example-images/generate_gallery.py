@@ -55,6 +55,14 @@ CASE_GROUPS = {
         "noseTipSize_minus0p30",
         "noseBridge_0p30",
     ],
+    "mouth": [
+        "mouthSize_plus0p35",
+        "mouthSize_minus0p35",
+        "mouthWidth_plus0p35",
+        "mouthWidth_minus0p35",
+        "smile_0p50",
+        "lipColor_0p50",
+    ],
 }
 
 
