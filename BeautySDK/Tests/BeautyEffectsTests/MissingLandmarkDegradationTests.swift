@@ -381,6 +381,53 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         assertRedacted(plan)
     }
 
+    func testPhase35ReviewConflictThresholdCrossingRootIsRemovedBeforeFinalConflictEvidence() {
+        assertConflictThresholdCrossingNoseField(
+            parameters: BeautyParameters(
+                faceSlim: 1,
+                faceSmall: 1,
+                faceVShape: 1,
+                jawSlim: 1,
+                chinLength: 1,
+                noseSlim: 1,
+                noseRootNarrowing: 0.000004
+            ),
+            dropped: \.noseRootNarrowing
+        )
+    }
+
+    func testPhase35ReviewConflictThresholdCrossingTipLiftIsRemovedBeforeFinalConflictEvidence() {
+        assertConflictThresholdCrossingNoseField(
+            parameters: BeautyParameters(
+                faceSlim: 1,
+                faceSmall: 1,
+                faceVShape: 1,
+                jawSlim: 1,
+                chinLength: 1,
+                noseSlim: 1,
+                noseTipLift: 0.000003
+            ),
+            dropped: \.noseTipLift
+        )
+    }
+
+    func testPhase35ReviewConflictThresholdCrossingSignedTipSizeIsRemovedInBothDirections() {
+        for requested in [Float.ulpOfOne * 2, -Float.ulpOfOne * 2] {
+            assertConflictThresholdCrossingNoseField(
+                parameters: BeautyParameters(
+                    faceSlim: 1,
+                    faceSmall: 1,
+                    faceVShape: 1,
+                    jawSlim: 1,
+                    chinLength: 1,
+                    noseSlim: 1,
+                    noseTipSize: requested
+                ),
+                dropped: \.noseTipSize
+            )
+        }
+    }
+
     func testNoseGeometryProducesDeterministicProxyEvidenceAndCapMetadata() {
         let plan = BeautyEffectResolver.resolve(
             parameters: BeautyParameters(noseSlim: 1, noseTipSize: 1),
@@ -397,6 +444,61 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertTrue(plan.warnings.contains { $0.code == "beauty_strength_capped" })
         XCTAssertGreaterThan(plan.metrics["beauty.effects.geometryPointCount"] ?? 0, 0)
         XCTAssertNotEqual(output, input)
+    }
+
+    private func assertConflictThresholdCrossingNoseField(
+        parameters: BeautyParameters,
+        dropped: KeyPath<BeautyEffectiveStrengths, Float>,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)
+        let expectedTotal = BeautySafetyCaps.faceSlim +
+            BeautySafetyCaps.faceSmall +
+            BeautySafetyCaps.faceVShape +
+            BeautySafetyCaps.jawSlim +
+            BeautySafetyCaps.chinLength +
+            BeautySafetyCaps.noseSlim
+        let expectedScale = 1 / expectedTotal
+        let finalEmissions = NoseWarpProvider().fieldEmissions(
+            face: .fixture,
+            strengths: plan.effectiveStrengths
+        )
+
+        XCTAssertEqual(plan.effectiveStrengths[keyPath: dropped], 0, file: file, line: line)
+        XCTAssertEqual(
+            plan.effectiveStrengths.noseSlim,
+            BeautySafetyCaps.noseSlim * expectedScale,
+            accuracy: 0.0000001,
+            file: file,
+            line: line
+        )
+        XCTAssertEqual(
+            plan.metrics["beauty.effects.geometryStrengthScale"] ?? 0,
+            Double(expectedScale),
+            accuracy: 0.0000001,
+            file: file,
+            line: line
+        )
+        XCTAssertEqual(plan.metrics["beauty.effects.weakenedCount"], 6, file: file, line: line)
+        XCTAssertTrue(plan.activeDomains.isSuperset(of: [.faceShape, .nose]), file: file, line: line)
+        XCTAssertFalse(plan.skippedDomains.contains(.nose), file: file, line: line)
+        XCTAssertEqual(
+            plan.warnings.filter { $0.code == "combined_geometry_weakened" }.count,
+            1,
+            file: file,
+            line: line
+        )
+        XCTAssertFalse(plan.warnings.contains { $0.code == "nose_inputs_missing" }, file: file, line: line)
+        XCTAssertFalse(finalEmissions.noseSlim.isEmpty, file: file, line: line)
+        XCTAssertEqual(
+            finalEmissions.sanitizing(plan.effectiveStrengths),
+            plan.effectiveStrengths,
+            "Every retained nose strength must emit at its final effective value.",
+            file: file,
+            line: line
+        )
+        assertRedacted(plan, file: file, line: line)
     }
 
     func testReusedEyeGeometrySkipsEyesZerosStrengthsAndPreservesNonEyeReuseReduction() {

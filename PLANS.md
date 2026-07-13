@@ -38,6 +38,21 @@
 
 ## 4. Completed
 
+### C-2026-07-13-phase-35-code-review-iteration-3-remediation
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-13 |
+| Scope | Closed Phase 35 iteration-3 finding CR-05 by converging conflict weakening and provider emission eligibility on one retained six-field nose set. |
+| Behavior | A deterministic monotonic loop permits at most six nose-field mask changes; threshold-crossing root, tip-lift, and signed tip-size work is removed from the unscaled baseline before conflict total, weakened count, and scale are recomputed, while emitting siblings remain active. |
+| Verification | Focused resolver/provider/degradation/conflict/combined suites and full `swift test --package-path BeautySDK` recorded in `35-REVIEW-FIX.md`; final per-field emissions exactly match retained effective strengths in explicit mixed-sibling regressions. |
+
+Outcome:
+
+- Final effective nose strengths and final provider emissions now use the same per-field eligibility at conflict-scaled values.
+- `combined_geometry_weakened` warning and aggregate metrics exclude threshold-crossing work without adding raw geometry or field-level diagnostic payloads.
+- Public geometry/privacy boundaries and Phase 36/37 non-claims are unchanged.
+
 ### C-2026-07-13-phase-35-code-review-iteration-2-remediation
 
 | Field | Value |

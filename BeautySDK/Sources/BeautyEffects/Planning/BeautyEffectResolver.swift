@@ -201,6 +201,24 @@ public enum BeautyEffectResolver {
             strengths.jawSlim,
             strengths.chinLength
         )
+        let hasMouthGeometryValues = anyNonZero(
+            strengths.mouthSize,
+            strengths.mouthWidth,
+            strengths.smile
+        )
+        if !staleGeometry,
+           let faceGeometry,
+           hasFaceShapeValues || hasMouthGeometryValues
+        {
+            let conflict = Self.resolveGeometryConflict(
+                strengths: strengths,
+                faceGeometry: faceGeometry,
+                noseProvider: noseProvider
+            )
+            strengths = conflict.strengths
+            extraWarnings.append(contentsOf: conflict.warnings)
+            metrics.merge(conflict.metrics) { _, new in new }
+        }
 
         if hasFaceShapeValues {
             if staleGeometry {
@@ -208,11 +226,6 @@ public enum BeautyEffectResolver {
                 metrics["beauty.effects.skippedFaceDomains"] = 1
                 appendStaleGeometryWarningIfNeeded()
             } else if let faceGeometry {
-                let conflict = GeometryConflictResolver().resolve(strengths: strengths)
-                strengths = conflict.strengths
-                extraWarnings.append(contentsOf: conflict.warnings)
-                metrics.merge(conflict.metrics) { _, new in new }
-
                 let faceShapePointCount = BeautyGeometryEffectPipeline
                     .controlPoints(for: strengths, face: faceGeometry)
                     .count
@@ -298,11 +311,6 @@ public enum BeautyEffectResolver {
                 metrics["beauty.effects.skippedMouthDomains"] = 1
                 appendStaleGeometryWarningIfNeeded()
             } else if let faceGeometry {
-                let conflict = GeometryConflictResolver().resolve(strengths: strengths)
-                strengths = conflict.strengths
-                extraWarnings.append(contentsOf: conflict.warnings)
-                metrics.merge(conflict.metrics) { _, new in new }
-
                 let result = MouthWarpProvider().makeControlPoints(face: faceGeometry, strengths: strengths)
                 if result.points.isEmpty {
                     Self.zeroMouthGeometryStrengths(&strengths)
@@ -388,6 +396,33 @@ public enum BeautyEffectResolver {
 
     private static func anyNonZero(_ values: Float...) -> Bool {
         values.contains { abs($0) > Float.ulpOfOne }
+    }
+
+    private static func resolveGeometryConflict(
+        strengths: BeautyEffectiveStrengths,
+        faceGeometry: FaceGeometry,
+        noseProvider: NoseWarpProvider
+    ) -> GeometryConflictResolution {
+        var retainedBaseline = strengths
+
+        // A conflict scale can move a previously emitting nose field below its
+        // provider threshold. Remove that work from the unscaled baseline and
+        // recompute so final emissions and conflict evidence share one mask.
+        // Each pass can only remove fields, and there are exactly six fields.
+        for _ in 0..<6 {
+            let resolution = GeometryConflictResolver().resolve(strengths: retainedBaseline)
+            let finalEmissions = noseProvider.fieldEmissions(
+                face: faceGeometry,
+                strengths: resolution.strengths
+            )
+            let nextBaseline = finalEmissions.sanitizing(retainedBaseline)
+            if nextBaseline == retainedBaseline {
+                return resolution
+            }
+            retainedBaseline = nextBaseline
+        }
+
+        return GeometryConflictResolver().resolve(strengths: retainedBaseline)
     }
 
     private static func zeroEyeStrengths(_ strengths: inout BeautyEffectiveStrengths) {
