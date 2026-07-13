@@ -28,6 +28,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
     public var noseWingSlim: Float
     public var noseTipSize: Float
     public var noseBridge: Float
+    public var noseRootNarrowing: Float
+    public var noseTipLift: Float
 
     public var mouthSize: Float
     public var mouthWidth: Float
@@ -63,6 +65,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         case noseWingSlim
         case noseTipSize
         case noseBridge
+        case noseRootNarrowing
+        case noseTipLift
         case mouthSize
         case mouthWidth
         case smile
@@ -97,6 +101,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         noseWingSlim: Float = 0,
         noseTipSize: Float = 0,
         noseBridge: Float = 0,
+        noseRootNarrowing: Float = 0,
+        noseTipLift: Float = 0,
         mouthSize: Float = 0,
         mouthWidth: Float = 0,
         smile: Float = 0,
@@ -133,6 +139,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         self.noseWingSlim = Self.clampUnit(noseWingSlim)
         self.noseTipSize = Self.clampSigned(noseTipSize)
         self.noseBridge = Self.clampUnit(noseBridge)
+        self.noseRootNarrowing = Self.clampUnit(noseRootNarrowing)
+        self.noseTipLift = Self.clampUnit(noseTipLift)
 
         self.mouthSize = Self.clampSigned(mouthSize)
         self.mouthWidth = Self.clampSigned(mouthWidth)
@@ -171,6 +179,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             noseWingSlim: try container.decodeFloatIfPresent(.noseWingSlim),
             noseTipSize: try container.decodeFloatIfPresent(.noseTipSize),
             noseBridge: try container.decodeFloatIfPresent(.noseBridge),
+            noseRootNarrowing: try container.decodeFloatIfPresent(.noseRootNarrowing),
+            noseTipLift: try container.decodeFloatIfPresent(.noseTipLift),
             mouthSize: try container.decodeFloatIfPresent(.mouthSize),
             mouthWidth: try container.decodeFloatIfPresent(.mouthWidth),
             smile: try container.decodeFloatIfPresent(.smile),
@@ -207,6 +217,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             noseWingSlim: noseWingSlim,
             noseTipSize: noseTipSize,
             noseBridge: noseBridge,
+            noseRootNarrowing: noseRootNarrowing,
+            noseTipLift: noseTipLift,
             mouthSize: mouthSize,
             mouthWidth: mouthWidth,
             smile: smile,

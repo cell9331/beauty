@@ -3,10 +3,10 @@ import BeautySDK
 
 // Requirement evidence: SDK-03, SDK-05.
 final class BeautyParametersTests: XCTestCase {
-    func testSDK03DefaultsAreZeroEffectAndExpose31StoredFields() {
+    func testNOSE01DefaultsAreZeroEffectAndExpose33StoredFields() {
         let parameters = BeautyParameters()
 
-        XCTAssertEqual(Mirror(reflecting: parameters).children.count, 31)
+        XCTAssertEqual(Mirror(reflecting: parameters).children.count, 33)
         XCTAssertEqual(parameters.skinSmoothing, 0)
         XCTAssertEqual(parameters.skinWhitening, 0)
         XCTAssertEqual(parameters.skinRosy, 0)
@@ -32,6 +32,8 @@ final class BeautyParametersTests: XCTestCase {
         XCTAssertEqual(parameters.noseWingSlim, 0)
         XCTAssertEqual(parameters.noseTipSize, 0)
         XCTAssertEqual(parameters.noseBridge, 0)
+        XCTAssertEqual(parameters.noseRootNarrowing, 0)
+        XCTAssertEqual(parameters.noseTipLift, 0)
         XCTAssertEqual(parameters.mouthSize, 0)
         XCTAssertEqual(parameters.mouthWidth, 0)
         XCTAssertEqual(parameters.smile, 0)
@@ -142,6 +144,51 @@ final class BeautyParametersTests: XCTestCase {
         XCTAssertEqual(positive.noseTipSize, 1)
     }
 
+    func testNOSE01NewNoseInputsNormalizePositiveOnlyValuesIndependently() {
+        let cases: [(name: String, value: Float, expected: Float)] = [
+            ("negative", -1, 0),
+            ("overflow", 2, 1),
+            ("in range root", 0.21, 0.21),
+            ("in range tip", 0.37, 0.37),
+            ("NaN", .nan, 0),
+            ("positive infinity", .infinity, 0),
+            ("negative infinity", -.infinity, 0),
+        ]
+
+        for testCase in cases {
+            XCTAssertEqual(
+                BeautyParameters(noseRootNarrowing: testCase.value).noseRootNarrowing,
+                testCase.expected,
+                accuracy: 0.0001,
+                "noseRootNarrowing \(testCase.name)"
+            )
+            XCTAssertEqual(
+                BeautyParameters(noseTipLift: testCase.value).noseTipLift,
+                testCase.expected,
+                accuracy: 0.0001,
+                "noseTipLift \(testCase.name)"
+            )
+        }
+
+        let distinct = BeautyParameters(noseRootNarrowing: 0.21, noseTipLift: 0.37)
+        XCTAssertEqual(distinct.noseRootNarrowing, 0.21, accuracy: 0.0001)
+        XCTAssertEqual(distinct.noseTipLift, 0.37, accuracy: 0.0001)
+        XCTAssertNotEqual(distinct, BeautyParameters(noseRootNarrowing: 0.37, noseTipLift: 0.21))
+    }
+
+    func testNOSE01NormalizedCopyReappliesRulesAfterMutableAssignment() {
+        var parameters = BeautyParameters(noseRootNarrowing: 0.21, noseTipLift: 0.37)
+        parameters.noseRootNarrowing = 2
+        parameters.noseTipLift = .nan
+
+        let normalized = parameters.normalized()
+
+        XCTAssertEqual(normalized.noseRootNarrowing, 1)
+        XCTAssertEqual(normalized.noseTipLift, 0)
+        XCTAssertEqual(parameters.noseRootNarrowing, 2, "normalization returns a copy")
+        XCTAssertTrue(parameters.noseTipLift.isNaN, "normalization does not mutate the source")
+    }
+
     func testMOUTH05MouthInputsNormalizeSignedPositiveOnlyOverflowAndNonFiniteValues() {
         let overflow = BeautyParameters(mouthSize: -2, mouthWidth: 2, smile: -1, lipColor: 2)
         XCTAssertEqual(overflow.mouthSize, -1)
@@ -179,7 +226,78 @@ final class BeautyParametersTests: XCTestCase {
         let partialDecoded = try JSONDecoder().decode(BeautyParameters.self, from: partial)
         XCTAssertEqual(partialDecoded.skinSmoothing, 0.4)
         XCTAssertEqual(partialDecoded.eyeSize, 0)
+        XCTAssertEqual(partialDecoded.noseRootNarrowing, 0)
+        XCTAssertEqual(partialDecoded.noseTipLift, 0)
         XCTAssertNil(partialDecoded.filterId)
+    }
+
+    func testNOSE02Legacy31FieldJSONDecodesNewFieldsAsZero() throws {
+        let legacyJSON = Data(#"""
+        {
+          "skinSmoothing": 0.1,
+          "skinWhitening": 0.1,
+          "skinRosy": 0.1,
+          "skinSharpen": 0.1,
+          "brightness": 0.1,
+          "contrast": 0.1,
+          "saturation": 0.1,
+          "temperature": 0.1,
+          "tint": 0.1,
+          "exposure": 0.1,
+          "highlight": 0.1,
+          "shadow": 0.1,
+          "faceSlim": 0.1,
+          "faceSmall": 0.1,
+          "faceVShape": 0.1,
+          "jawSlim": 0.1,
+          "chinLength": 0.1,
+          "eyeSize": 0.1,
+          "eyeDistance": 0.1,
+          "eyeYPosition": 0.1,
+          "eyeTailLift": 0.1,
+          "noseSlim": 0.1,
+          "noseWingSlim": 0.1,
+          "noseTipSize": 0.1,
+          "noseBridge": 0.1,
+          "mouthSize": 0.1,
+          "mouthWidth": 0.1,
+          "smile": 0.1,
+          "lipColor": 0.1,
+          "filterId": null,
+          "filterIntensity": 0.1
+        }
+        """#.utf8)
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: legacyJSON) as? [String: Any])
+        XCTAssertEqual(object.count, 31)
+
+        let decoded = try JSONDecoder().decode(BeautyParameters.self, from: legacyJSON)
+
+        XCTAssertEqual(decoded.noseRootNarrowing, 0)
+        XCTAssertEqual(decoded.noseTipLift, 0)
+    }
+
+    func testNOSE02New33FieldValuesRoundTripWithoutAliasing() throws {
+        let parameters = BeautyParameters(
+            noseRootNarrowing: 0.21,
+            noseTipLift: 0.37,
+            filterId: "clean_01"
+        )
+
+        let data = try JSONEncoder().encode(parameters)
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        let decoded = try JSONDecoder().decode(BeautyParameters.self, from: data)
+
+        XCTAssertEqual(object.count, 33)
+        XCTAssertEqual(decoded, parameters)
+        XCTAssertEqual(decoded.noseRootNarrowing, 0.21, accuracy: 0.0001)
+        XCTAssertEqual(decoded.noseTipLift, 0.37, accuracy: 0.0001)
+    }
+
+    func testNOSE02ExistingLabeledInitializerCallsRemainNeutral() {
+        let existingSourceStyle = BeautyParameters(skinSmoothing: 0.2, noseBridge: 0.1, filterId: "clean_01")
+
+        XCTAssertEqual(existingSourceStyle.noseRootNarrowing, 0)
+        XCTAssertEqual(existingSourceStyle.noseTipLift, 0)
     }
 
     func testEFFECT02ColorAndFilterFieldsRoundTripThroughCodable() throws {
