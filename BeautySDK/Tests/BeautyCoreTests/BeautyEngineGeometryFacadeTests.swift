@@ -4,6 +4,46 @@ import XCTest
 @_spi(Testing) import BeautySDK
 
 final class BeautyEngineGeometryFacadeTests: XCTestCase {
+    func testPhase35NOSE03IndependentNoseFieldsRouteThroughRedactedPublicFacade() throws {
+        let cases = [
+            BeautyParameters(noseRootNarrowing: 1),
+            BeautyParameters(noseTipLift: 1),
+        ]
+
+        for parameters in cases {
+            let provider = SDKTestingFaceDetectionProvider([.usableFace])
+            let engine = try BeautyEngine(faceDetectionProvider: provider)
+            let result = try engine.processResult(
+                image: Self.image,
+                metadata: BeautyInputMetadata(orientation: .up, source: .photo),
+                parameters: parameters
+            )
+
+            XCTAssertEqual(provider.invocationCount, 1)
+            XCTAssertEqual(result.output.extent, Self.image.extent)
+            XCTAssertEqual(result.detectionSummary?.availability, .usable)
+            XCTAssertEqual(result.detectionSummary?.faceCount, 1)
+            XCTAssertEqual(result.detectionSummary?.usedFaceCount, 1)
+            XCTAssertEqual(result.metrics["beauty.detection.geometryRequired"], 1)
+            XCTAssertEqual(result.metrics["beauty.detection.faceCount"], 1)
+            XCTAssertEqual(result.metrics["beauty.detection.usedFaceCount"], 1)
+            XCTAssertGreaterThan(result.metrics["beauty.effects.geometryPointCount"] ?? 0, 0)
+            assertRedacted(result)
+
+            let metadata = (
+                result.warnings.map { "\($0.code) \($0.message)" } +
+                Array(result.metrics.keys) +
+                (result.detectionSummary?.reasons.map(\.rawValue) ?? [])
+            ).joined(separator: " ").lowercased()
+            for forbidden in [
+                "noseroot", "nosetip", "support", "coordinate", "landmark",
+                "controlpoint", "control point", "simd", "bounds", "bounding",
+            ] {
+                XCTAssertFalse(metadata.contains(forbidden), "Unexpected geometry payload term: \(forbidden)")
+            }
+        }
+    }
+
     func testGeometryTriggeredStillImageRunsDetectionAndRoutesSelectedFace() throws {
         let provider = SDKTestingFaceDetectionProvider([.usableFace])
         let engine = try BeautyEngine(faceDetectionProvider: provider)
