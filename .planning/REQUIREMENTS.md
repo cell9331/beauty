@@ -56,12 +56,29 @@
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
+| NOSE-01 | Phase 35 | Pending |
+| NOSE-02 | Phase 35 | Pending |
+| NOSE-03 | Phase 35 | Pending |
+| NOSE-04 | Phase 35 | Pending |
+| NOSE-05 | Phase 35 | Pending |
+| NOSE-06 | Phase 35 | Pending |
+| NOSE-07 | Phase 36 | Pending |
+| NOSE-08 | Phase 36 | Pending |
+| NOSE-09 | Phase 36 | Pending |
+| NOSE-10 | Phase 37 | Pending |
+| NOSE-11 | Phase 37 | Pending |
+| NOSE-12 | Phase 37 | Pending |
+| NOSE-13 | Phase 37 | Pending |
+| NOSE-14 | Phase 37 | Pending |
+| DOC-01 | Phase 37 | Pending |
 
 **Coverage:**
 - v1.9 requirements: 15 total
-- Mapped to phases: 0
-- Unmapped: 15 ⚠️
+- Mapped to phases: 15
+- Unmapped: 0
+- Duplicate mappings: 0
+- Coverage: 100%
 
 ---
 *Requirements defined: 2026-07-13*
-*Last updated: 2026-07-13 after initial v1.9 definition*
+*Last updated: 2026-07-13 after v1.9 roadmap mapping*
