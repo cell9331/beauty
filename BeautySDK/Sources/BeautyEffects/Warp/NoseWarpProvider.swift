@@ -1,31 +1,199 @@
+struct NoseWarpSupportAvailability: Equatable, Sendable {
+    let rootNarrowing: Bool
+    let tipLift: Bool
+}
+
 struct NoseWarpProvider: WarpControlPointProvider {
     func makeControlPoints(
         face: FaceGeometry,
         strengths: BeautyEffectiveStrengths
     ) -> WarpControlPointResult {
-        guard let center = LandmarkGeometryHelper.center(of: face.nose) else {
-            return WarpControlPointResult(points: [], skipReason: "nose_inputs_missing")
-        }
-
         var points: [WarpControlPoint] = []
+        let legacyRequested = strengths.noseSlim > 0 ||
+            strengths.noseWingSlim > 0 ||
+            abs(strengths.noseTipSize) > Float.ulpOfOne ||
+            strengths.noseBridge > 0
+        let newRequested = strengths.noseRootNarrowing > 0 || strengths.noseTipLift > 0
 
-        if strengths.noseSlim > 0 {
-            points.append(contentsOf: slimPoints(face: face, center: center, strength: strengths.noseSlim))
+        if legacyRequested, let center = LandmarkGeometryHelper.center(of: face.nose) {
+            if strengths.noseSlim > 0 {
+                points.append(contentsOf: slimPoints(face: face, center: center, strength: strengths.noseSlim))
+            }
+
+            if strengths.noseWingSlim > 0 {
+                points.append(contentsOf: wingPoints(face: face, center: center, strength: strengths.noseWingSlim))
+            }
+
+            if abs(strengths.noseTipSize) > Float.ulpOfOne {
+                points.append(contentsOf: tipPoints(face: face, center: center, strength: strengths.noseTipSize))
+            }
+
+            if strengths.noseBridge > 0 {
+                points.append(contentsOf: bridgePoints(face: face, center: center, strength: strengths.noseBridge))
+            }
         }
 
-        if strengths.noseWingSlim > 0 {
-            points.append(contentsOf: wingPoints(face: face, center: center, strength: strengths.noseWingSlim))
+        if strengths.noseRootNarrowing > 0 {
+            points.append(contentsOf: rootNarrowingPoints(face: face, strength: strengths.noseRootNarrowing))
         }
 
-        if abs(strengths.noseTipSize) > Float.ulpOfOne {
-            points.append(contentsOf: tipPoints(face: face, center: center, strength: strengths.noseTipSize))
+        if strengths.noseTipLift > 0 {
+            points.append(contentsOf: tipLiftPoints(face: face, strength: strengths.noseTipLift))
         }
 
-        if strengths.noseBridge > 0 {
-            points.append(contentsOf: bridgePoints(face: face, center: center, strength: strengths.noseBridge))
+        let requestedWork = legacyRequested || newRequested
+        return WarpControlPointResult(
+            points: points,
+            skipReason: requestedWork && points.isEmpty ? "nose_inputs_missing" : nil
+        )
+    }
+
+    func supportAvailability(for face: FaceGeometry) -> NoseWarpSupportAvailability {
+        NoseWarpSupportAvailability(
+            rootNarrowing: validatedRootPair(in: face) != nil,
+            tipLift: validatedTipSupport(in: face) != nil
+        )
+    }
+
+    func validatedRootPair(in face: FaceGeometry) -> (left: SIMD2<Float>, right: SIMD2<Float>)? {
+        guard face.noseRoot.count == 2,
+              face.bounds.width.isFinite,
+              face.bounds.width > 0
+        else {
+            return nil
         }
 
-        return WarpControlPointResult(points: points)
+        let pair = face.noseRoot.sorted { lhs, rhs in
+            lhs.x == rhs.x ? lhs.y < rhs.y : lhs.x < rhs.x
+        }
+        let left = pair[0]
+        let right = pair[1]
+        let centerX = face.bounds.midX
+        let leftDistance = centerX - left.x
+        let rightDistance = right.x - centerX
+
+        guard isValidSupportPoint(left, in: face.bounds),
+              isValidSupportPoint(right, in: face.bounds),
+              left != right,
+              abs(left.y - right.y) <= 0.0001,
+              left.x < centerX,
+              right.x > centerX,
+              abs(leftDistance - rightDistance) <= 0.0001,
+              leftDistance > 0.0001,
+              rightDistance > 0.0001
+        else {
+            return nil
+        }
+
+        return (left, right)
+    }
+
+    func validatedTipSupport(in face: FaceGeometry) -> [SIMD2<Float>]? {
+        guard face.noseTip.count >= 2,
+              face.bounds.height.isFinite,
+              face.bounds.height > 0,
+              face.noseTip.allSatisfy({ point in
+                  isValidSupportPoint(point, in: face.bounds) && point.y >= face.bounds.midY
+              }),
+              hasOnlyDistinctPoints(face.noseTip)
+        else {
+            return nil
+        }
+
+        return face.noseTip.sorted { lhs, rhs in
+            lhs.x == rhs.x ? lhs.y < rhs.y : lhs.x < rhs.x
+        }
+    }
+
+    func rootNarrowingPoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
+        guard strength.isFinite,
+              strength > Float.ulpOfOne,
+              let pair = validatedRootPair(in: face)
+        else {
+            return []
+        }
+
+        let requestedDisplacement = face.bounds.width * 0.025 * strength / BeautySafetyCaps.noseRootNarrowing
+        let room = min(face.bounds.midX - pair.left.x, pair.right.x - face.bounds.midX)
+        let displacement = min(requestedDisplacement, room - 0.0001)
+        guard displacement.isFinite, displacement > Float.ulpOfOne else {
+            return []
+        }
+
+        let leftTarget = SIMD2<Float>(pair.left.x + displacement, pair.left.y)
+        let rightTarget = SIMD2<Float>(pair.right.x - displacement, pair.right.y)
+        guard isValidNormalizedPoint(leftTarget),
+              isValidNormalizedPoint(rightTarget),
+              leftTarget.x < face.bounds.midX,
+              rightTarget.x > face.bounds.midX
+        else {
+            return []
+        }
+
+        return [
+            makePoint(
+                source: pair.left,
+                target: leftTarget,
+                radius: face.bounds.width * 0.07,
+                strength: strength
+            ),
+            makePoint(
+                source: pair.right,
+                target: rightTarget,
+                radius: face.bounds.width * 0.07,
+                strength: strength
+            )
+        ]
+    }
+
+    func tipLiftPoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
+        guard strength.isFinite,
+              strength > Float.ulpOfOne,
+              let support = validatedTipSupport(in: face)
+        else {
+            return []
+        }
+
+        let displacement = face.bounds.height * 0.020 * strength / BeautySafetyCaps.noseTipLift
+        guard displacement.isFinite, displacement > Float.ulpOfOne else {
+            return []
+        }
+
+        let targets = support.map { SIMD2<Float>($0.x, $0.y - displacement) }
+        guard zip(support, targets).allSatisfy({ source, target in
+            isValidNormalizedPoint(target) && target.x == source.x && target.y < source.y
+        }) else {
+            return []
+        }
+
+        return zip(support, targets).map { source, target in
+            makePoint(
+                source: source,
+                target: target,
+                radius: face.bounds.width * 0.08,
+                strength: strength
+            )
+        }
+    }
+
+    private func isValidSupportPoint(_ point: SIMD2<Float>, in bounds: FaceBounds) -> Bool {
+        isValidNormalizedPoint(point) &&
+            point.x >= bounds.minX && point.x <= bounds.maxX &&
+            point.y >= bounds.minY && point.y <= bounds.maxY
+    }
+
+    private func isValidNormalizedPoint(_ point: SIMD2<Float>) -> Bool {
+        point.x.isFinite && point.y.isFinite &&
+            (0...1).contains(point.x) && (0...1).contains(point.y)
+    }
+
+    private func hasOnlyDistinctPoints(_ points: [SIMD2<Float>]) -> Bool {
+        for index in points.indices {
+            for otherIndex in points.indices where otherIndex > index && points[index] == points[otherIndex] {
+                return false
+            }
+        }
+        return true
     }
 
     private func slimPoints(

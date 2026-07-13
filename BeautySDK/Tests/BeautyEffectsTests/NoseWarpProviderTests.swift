@@ -96,6 +96,142 @@ final class NoseWarpProviderTests: XCTestCase {
         XCTAssertTrue(result.points.allSatisfy { $0.strength <= BeautySafetyCaps.noseBridge })
     }
 
+    func testNoseRootNarrowingProducesSymmetricHorizontalBoundedVectors() {
+        let provider = NoseWarpProvider()
+        let first = provider.makeControlPoints(
+            face: .fixture,
+            strengths: strengths(noseRootNarrowing: 1)
+        )
+        let second = provider.makeControlPoints(
+            face: .fixture,
+            strengths: strengths(noseRootNarrowing: 1)
+        )
+
+        XCTAssertEqual(first, second)
+        XCTAssertNil(first.skipReason)
+        XCTAssertEqual(first.points.map(\.source), FaceGeometry.fixture.noseRoot.sorted { $0.x < $1.x })
+        XCTAssertEqual(first.points.count, 2)
+        let left = first.points[0]
+        let right = first.points[1]
+        let leftDelta = left.target.x - left.source.x
+        let rightDelta = right.target.x - right.source.x
+        XCTAssertGreaterThan(leftDelta, 0)
+        XCTAssertLessThan(rightDelta, 0)
+        XCTAssertEqual(abs(leftDelta), abs(rightDelta), accuracy: 0.0001)
+        XCTAssertEqual(left.target.y, left.source.y)
+        XCTAssertEqual(right.target.y, right.source.y)
+        XCTAssertLessThan(left.target.x, FaceGeometry.fixture.bounds.midX)
+        XCTAssertGreaterThan(right.target.x, FaceGeometry.fixture.bounds.midX)
+        assertSafe(points: first.points, strength: BeautySafetyCaps.noseRootNarrowing)
+        XCTAssertEqual(
+            provider.supportAvailability(for: .fixture),
+            NoseWarpSupportAvailability(rootNarrowing: true, tipLift: true)
+        )
+    }
+
+    func testNoseTipLiftProducesDeterministicVerticalUpwardBoundedVectors() {
+        let provider = NoseWarpProvider()
+        let first = provider.makeControlPoints(
+            face: .fixture,
+            strengths: strengths(noseTipLift: 1)
+        )
+        let second = provider.makeControlPoints(
+            face: .fixture,
+            strengths: strengths(noseTipLift: 1)
+        )
+        let expectedSources = FaceGeometry.fixture.noseTip.sorted {
+            $0.x == $1.x ? $0.y < $1.y : $0.x < $1.x
+        }
+
+        XCTAssertEqual(first, second)
+        XCTAssertNil(first.skipReason)
+        XCTAssertEqual(first.points.map(\.source), expectedSources)
+        XCTAssertFalse(first.points.isEmpty)
+        XCTAssertTrue(first.points.allSatisfy { $0.source.y >= FaceGeometry.fixture.bounds.midY })
+        XCTAssertTrue(first.points.allSatisfy { $0.target.x == $0.source.x })
+        XCTAssertTrue(first.points.allSatisfy { $0.target.y < $0.source.y })
+        assertSafe(points: first.points, strength: BeautySafetyCaps.noseTipLift)
+    }
+
+    func testNewNoseVectorsDoNotAliasLegacyBridgeOrSignedTipSize() {
+        let provider = NoseWarpProvider()
+        let root = provider.makeControlPoints(face: .fixture, strengths: strengths(noseRootNarrowing: 1))
+        let bridge = provider.makeControlPoints(face: .fixture, strengths: strengths(noseBridge: 1))
+        let lift = provider.makeControlPoints(face: .fixture, strengths: strengths(noseTipLift: 1))
+        let positiveTip = provider.makeControlPoints(face: .fixture, strengths: strengths(noseTipSize: 1))
+        let negativeTip = provider.makeControlPoints(face: .fixture, strengths: strengths(noseTipSize: -1))
+
+        assertDifferentVectors(root, bridge)
+        assertDifferentVectors(lift, positiveTip)
+        assertDifferentVectors(lift, negativeTip)
+    }
+
+    func testMalformedRootSupportsFailClosedWithoutLegacySubstitution() {
+        let malformed: [(String, FaceGeometry)] = [
+            ("empty", .missingNose),
+            ("one-point", .onePointNoseRoot),
+            ("non-finite", .nonFiniteNoseRoot),
+            ("same-side", .sameSideNoseRoot),
+            ("asymmetric", .asymmetricNoseRoot),
+            ("degenerate", .degenerateNoseRoot),
+            ("unequal-y", replacingRoot([SIMD2<Float>(0.476, 0.487), SIMD2<Float>(0.524, 0.489)])),
+            ("out-of-bounds", replacingRoot([SIMD2<Float>(-0.024, 0.488), SIMD2<Float>(1.024, 0.488)]))
+        ]
+
+        for (name, face) in malformed {
+            let result = NoseWarpProvider().makeControlPoints(
+                face: face,
+                strengths: strengths(noseRootNarrowing: 1)
+            )
+            XCTAssertTrue(result.points.isEmpty, name)
+            XCTAssertEqual(result.skipReason, "nose_inputs_missing", name)
+            XCTAssertFalse(NoseWarpProvider().supportAvailability(for: face).rootNarrowing, name)
+        }
+    }
+
+    func testMalformedTipSupportsFailClosedWithoutLegacySubstitution() {
+        let malformed: [(String, FaceGeometry)] = [
+            ("empty", .missingNose),
+            ("one-point", .onePointNoseTip),
+            ("non-finite", .nonFiniteNoseTip),
+            ("degenerate", .degenerateNoseTip),
+            ("upper", replacingTip([SIMD2<Float>(0.476, 0.40), SIMD2<Float>(0.524, 0.40)])),
+            ("out-of-bounds", replacingTip([SIMD2<Float>(0.476, 1.20), SIMD2<Float>(0.524, 1.20)]))
+        ]
+
+        for (name, face) in malformed {
+            let result = NoseWarpProvider().makeControlPoints(
+                face: face,
+                strengths: strengths(noseTipLift: 1)
+            )
+            XCTAssertTrue(result.points.isEmpty, name)
+            XCTAssertEqual(result.skipReason, "nose_inputs_missing", name)
+            XCTAssertFalse(NoseWarpProvider().supportAvailability(for: face).tipLift, name)
+        }
+    }
+
+    func testNewNoseFieldsDoNotDependOnLegacyNoseCenterGuard() {
+        let face = FaceGeometry(
+            bounds: FaceGeometry.fixture.bounds,
+            faceContour: FaceGeometry.fixture.faceContour,
+            leftEye: FaceGeometry.fixture.leftEye,
+            rightEye: FaceGeometry.fixture.rightEye,
+            nose: [],
+            noseRoot: FaceGeometry.fixture.noseRoot,
+            noseTip: FaceGeometry.fixture.noseTip,
+            outerLips: FaceGeometry.fixture.outerLips
+        )
+        let provider = NoseWarpProvider()
+
+        let root = provider.makeControlPoints(face: face, strengths: strengths(noseRootNarrowing: 1))
+        let tip = provider.makeControlPoints(face: face, strengths: strengths(noseTipLift: 1))
+
+        XCTAssertFalse(root.points.isEmpty)
+        XCTAssertFalse(tip.points.isEmpty)
+        XCTAssertNil(root.skipReason)
+        XCTAssertNil(tip.skipReason)
+    }
+
     func testMissingNoseInputsReturnSkipReason() {
         let result = NoseWarpProvider().makeControlPoints(
             face: .missingNose,
@@ -110,13 +246,80 @@ final class NoseWarpProviderTests: XCTestCase {
         noseSlim: Float = 0,
         noseWingSlim: Float = 0,
         noseTipSize: Float = 0,
-        noseBridge: Float = 0
+        noseBridge: Float = 0,
+        noseRootNarrowing: Float = 0,
+        noseTipLift: Float = 0
     ) -> BeautyEffectiveStrengths {
         var strengths = BeautyEffectiveStrengths()
         strengths.noseSlim = min(noseSlim, BeautySafetyCaps.noseSlim)
         strengths.noseWingSlim = min(noseWingSlim, BeautySafetyCaps.noseWingSlim)
         strengths.noseTipSize = min(max(noseTipSize, -BeautySafetyCaps.noseTipSize), BeautySafetyCaps.noseTipSize)
         strengths.noseBridge = min(noseBridge, BeautySafetyCaps.noseBridge)
+        strengths.noseRootNarrowing = min(max(noseRootNarrowing, 0), BeautySafetyCaps.noseRootNarrowing)
+        strengths.noseTipLift = min(max(noseTipLift, 0), BeautySafetyCaps.noseTipLift)
         return strengths
+    }
+
+    private func assertSafe(
+        points: [WarpControlPoint],
+        strength: Float,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertTrue(points.allSatisfy { point in
+            point.source.x.isFinite && point.source.y.isFinite &&
+                point.target.x.isFinite && point.target.y.isFinite &&
+                (0...1).contains(point.source.x) && (0...1).contains(point.source.y) &&
+                (0...1).contains(point.target.x) && (0...1).contains(point.target.y) &&
+                (0.03...0.20).contains(point.radius) &&
+                point.falloff == 2
+        }, file: file, line: line)
+        XCTAssertTrue(points.allSatisfy { abs($0.target.x - $0.source.x) > Float.ulpOfOne ||
+            abs($0.target.y - $0.source.y) > Float.ulpOfOne
+        }, file: file, line: line)
+        XCTAssertTrue(points.allSatisfy { abs($0.strength - strength) <= 0.0001 }, file: file, line: line)
+    }
+
+    private func assertDifferentVectors(
+        _ lhs: WarpControlPointResult,
+        _ rhs: WarpControlPointResult,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertNotEqual(lhs, rhs, file: file, line: line)
+        XCTAssertNotEqual(lhs.points.map(\.source), rhs.points.map(\.source), file: file, line: line)
+        XCTAssertNotEqual(lhs.points.map(\.target), rhs.points.map(\.target), file: file, line: line)
+        XCTAssertNotEqual(
+            lhs.points.map { $0.target - $0.source },
+            rhs.points.map { $0.target - $0.source },
+            file: file,
+            line: line
+        )
+    }
+
+    private func replacingRoot(_ root: [SIMD2<Float>]) -> FaceGeometry {
+        FaceGeometry(
+            bounds: FaceGeometry.fixture.bounds,
+            faceContour: FaceGeometry.fixture.faceContour,
+            leftEye: FaceGeometry.fixture.leftEye,
+            rightEye: FaceGeometry.fixture.rightEye,
+            nose: FaceGeometry.fixture.nose,
+            noseRoot: root,
+            noseTip: FaceGeometry.fixture.noseTip,
+            outerLips: FaceGeometry.fixture.outerLips
+        )
+    }
+
+    private func replacingTip(_ tip: [SIMD2<Float>]) -> FaceGeometry {
+        FaceGeometry(
+            bounds: FaceGeometry.fixture.bounds,
+            faceContour: FaceGeometry.fixture.faceContour,
+            leftEye: FaceGeometry.fixture.leftEye,
+            rightEye: FaceGeometry.fixture.rightEye,
+            nose: FaceGeometry.fixture.nose,
+            noseRoot: FaceGeometry.fixture.noseRoot,
+            noseTip: tip,
+            outerLips: FaceGeometry.fixture.outerLips
+        )
     }
 }
