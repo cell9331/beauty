@@ -243,4 +243,5 @@ Phase 30 closes the safety and status gates for the existing-public-parameter ey
 - Five geometry cases pass 30/30 portrait mouth-ROI comparisons and both signed pairs pass 12/12 direct comparisons above the watermark.
 - `lipColor` passes 6/6 separate lower-central mouth-region containment checks and is not geometry or true `丰唇` evidence.
 - Generated review paths are ignored under `example-images/gallery/mouth/`; no output/gallery PNG is tracked.
+- Phase 34 adds exact cap/freshness/combined-safety evidence and promotes only `大小`, `宽度`, and `微笑`; branch-level `嘴唇` remains partial and `lipColor` remains color-only.
 - Phase 34 owns safety, degradation, ledger promotion, and whole-slice closeout.

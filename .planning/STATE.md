@@ -20,14 +20,23 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-13)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 34 — Mouth Safety, Degradation, and Ledger Closeout
+**Current focus:** v1.8 phases complete; milestone lifecycle audit pending
 
 ## Current Position
 
 Phase: 34 of 34 (Mouth Safety, Degradation, and Ledger Closeout)
 Plan: —
-Status: Phase 33 complete; Phase 34 not started
-Last activity: 2026-07-13 — Phase 33 passed renderer, helper, gallery, and artifact evidence
+Status: Phase 33 and Phase 34 complete; milestone audit/complete/cleanup intentionally not run by phase execution
+
+### Phase 34 Mouth Safety, Degradation, and Ledger Closeout Result
+
+- Exact caps and signed semantics passed; missing/no-face/stale mouth geometry is exact zero.
+- Reused geometry uses exact `0.5` sign-preserving scaling; eligible stale/reused `lipColor` stays unscaled and color-only.
+- Combined face/eye/nose weakening covers all mouth geometry directions and excludes `lipColor`.
+- 13/13 focused and 190/190 full SDK tests passed; helper passed at 238/238, 30/30, 12/12, and 6/6.
+- Exactly `大小`, `宽度`, and `微笑` are implemented; branch-level `嘴唇` remains partial.
+- Next workflow: milestone audit; no device/commercial/packaging/launch-readiness claim.
+Last activity: 2026-07-13 — Phase 34 passed safety, degradation, combined, boundary, ledger, and documentation gates
 
 ## Performance Metrics
 

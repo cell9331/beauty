@@ -206,6 +206,7 @@ Phase 6 current behavior:
 - Combined face, eye, nose, and mouth geometry weakening is reported only as redacted warnings and numeric metrics.
 - No-face routing skips face-dependent skin, geometry, eye, nose, mouth, and lip-color domains while allowing face-agnostic color/filter domains to continue.
 - Missing eye, nose, and mouth landmark groups skip only their dependent domains; raw landmark points, bounding boxes, and provider internals remain private.
+- Mouth warnings and metrics expose only stable reason codes and aggregate counts. No-face or missing outer lips zero skipped mouth/lip strengths; stale geometry zeros only mouth geometry while safe color/filter work and eligible `lipColor` continuation remain local and redacted.
 
 ## 7. JSON and Preset Validation
 

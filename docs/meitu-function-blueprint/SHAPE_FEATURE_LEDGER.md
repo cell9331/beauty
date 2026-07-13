@@ -95,14 +95,14 @@ Before marking a second-level tool `implemented`:
 | `眼睛` | 内眼角 | future | None. | Define neutral parameter and geometry behavior. |
 | `眼睛` | 外眼角 | future | None. | Define neutral parameter and geometry behavior. |
 | `眼睛` | 对称 | future | None. | Define neutral parameter and geometry behavior. |
-| `嘴唇` | 大小 | partial | Existing `mouthSize` coverage. | Facade-visible geometry output and branch-specific acceptance evidence. |
-| `嘴唇` | 宽度 | partial | Existing `mouthWidth` coverage. | Facade-visible geometry output and branch-specific acceptance evidence. |
+| `嘴唇` | 大小 | implemented | Existing signed `mouthSize`; Phase 33 positive/negative output plus Phase 34 exact-cap, degradation, combined-safety, and boundary evidence. | Complete for this existing-parameter subtool only; branch review remains separate. |
+| `嘴唇` | 宽度 | implemented | Existing signed `mouthWidth`; Phase 33 positive/negative output plus Phase 34 exact-cap, degradation, combined-safety, and boundary evidence. | Complete for this existing-parameter subtool only. |
 | `嘴唇` | 上下 | future | None. | Define neutral parameter and geometry behavior. |
 | `嘴唇` | 倾斜 | future | None. | Define neutral parameter and geometry behavior. |
 | `嘴唇` | 左右 | future | None. | Define neutral parameter and geometry behavior. |
 | `嘴唇` | M唇 | future | None. | Define neutral parameter and geometry behavior. |
 | `嘴唇` | 丰唇 | partial | Demo currently maps this to `lipColor`, which is visible color evidence, not true geometry plump behavior. | Decide whether to create a distinct geometry parameter or relabel mapping; then add facade-visible evidence. |
-| `嘴唇` | 微笑 | partial | Existing `smile` coverage. | Facade-visible geometry output and branch-specific acceptance evidence. |
+| `嘴唇` | 微笑 | implemented | Existing `smile`; Phase 33 output plus Phase 34 exact-cap, degradation, combined-safety, and boundary evidence. | Complete for this existing-parameter subtool only. |
 | `嘴唇` | 白牙 | future | None. | Needs local teeth segmentation/retouch design. |
 | `鼻子` | 大小 | implemented | Existing `noseSlim`; Phase 31 `noseSlim_0p35` output plus Phase 32 exact-cap, degradation, combined-safety, and boundary evidence. | Complete for this existing-parameter subtool only; branch review remains separate. |
 | `鼻子` | 提升 | future | None. | Define neutral parameter and geometry behavior. |

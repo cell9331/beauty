@@ -190,12 +190,16 @@ Branch-level `眼睛` remains `partial`. Eye height, length, pupil/gaze, lid, re
 - [x] Verify fail-closed missing/stale geometry, reduced reused geometry, combined weakening, redaction, and safe-domain continuation.
 - [x] Promote exactly four evidence-backed nose rows while preserving the partial branch and future rows.
 
-### Active in v1.8
+### Completed in v1.8
 
-- [ ] Add public-facade mouth/lip renderer, output-helper, and ignored-gallery evidence for the four existing public parameters.
-- [ ] Preserve signed `mouthSize` and `mouthWidth` behavior and lock exact effective caps for all four fields.
-- [ ] Verify fail-closed missing/stale mouth geometry, reduced reused geometry, combined weakening, redaction, lip-color containment, and safe-domain continuation.
-- [ ] Promote exactly the evidence-backed mouth rows while preserving the partial branch and future rows, including the explicit `lipColor` versus `丰唇` distinction.
+- [x] Add public-facade mouth/lip renderer, output-helper, and ignored-gallery evidence for the four existing public parameters.
+- [x] Preserve signed `mouthSize` and `mouthWidth` behavior and lock exact effective caps for all four fields.
+- [x] Verify fail-closed missing/stale mouth geometry, reduced reused geometry, combined weakening, redaction, lip-color containment, and safe-domain continuation.
+- [x] Promote exactly the evidence-backed mouth rows while preserving the partial branch and future rows, including the explicit `lipColor` versus `丰唇` distinction.
+
+#### Phase 34 Mouth Safety, Degradation, and Ledger Closeout
+
+The verified SDK-only slice implements exactly `大小`, `宽度`, and `微笑`. `lipColor` is separately verified color behavior, not true `丰唇`. Branch-level `嘴唇` remains partial; no new public field, UI, dependency, network/commercial path, or tracked generated image was added.
 
 ### Out of Scope
 

@@ -157,6 +157,7 @@ Phase 28 scoped face-shape behavior:
 - Missing either eye group skips and zeros the complete eye domain with category code `eye_inputs_missing`.
 - Reused eye geometry skips and zeros the complete eye domain with `eye_geometry_reused_skipped`; stale eye geometry does the same with `eye_geometry_stale_skipped`.
 - The stricter reused/stale policy applies only to eyes. Reused face shape, nose, and mouth geometry retain the established `0.5` effective-strength reduction and generic reduction evidence.
+- Mouth freshness is domain-specific: reused mouth geometry uses exact `0.5` sign-preserving scaling; stale mouth geometry is exact-zero. `lipColor` remains unscaled for reused/stale geometry when outer lips exist, but skips and zeros for no-face or missing outer lips.
 - Warnings expose only fixed category messages. Metrics remain aggregate counts/scales; they do not contain eye side, geometry, image, or local-path payloads.
 - Focused resolver/provider/facade evidence and exact warning/metric assertions are recorded in `30-EYE-SAFETY-EVIDENCE.md`.
 

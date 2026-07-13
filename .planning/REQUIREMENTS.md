@@ -14,13 +14,13 @@
 
 ### Mouth Safety and Closeout
 
-- [ ] **MOUTH-05**: Normalization, signed semantics, exact effective caps (`mouthSize ±0.35`, `mouthWidth ±0.35`, `smile 0.50`, `lipColor 0.50`), warnings, and capped-count evidence are locked for all four existing fields.
-- [ ] **MOUTH-06**: No-face, missing outer-lip landmarks, stale geometry, redacted warnings/metrics, exact-zero fail-closed mouth geometry strengths, and safe-domain continuation are verified.
-- [ ] **MOUTH-07**: Reused geometry applies the established exact `0.5` scale to `mouthSize`, `mouthWidth`, and `smile` while preserving signed direction; stale and reused `lipColor` behavior is independently specified and verified as a color-domain policy.
-- [ ] **MOUTH-08**: Conservative combined weakening with face, eye, and nose geometry covers all three mouth geometry fields, preserves both signed directions, and does not incorrectly scale `lipColor` as geometry.
-- [ ] **MOUTH-09**: Raw geometry, internal Demo/renderer imports, network/cloud, commercial paths, public inventory, new dependencies, and generated artifacts remain fail-closed.
-- [ ] **MOUTH-10**: Exactly `大小`, `宽度`, and `微笑` are promoted; `上下`, `倾斜`, `左右`, `M唇`, `丰唇`, `白牙`, and branch-level `嘴唇` remain partial/future.
-- [ ] **DOC-01**: Blueprint, root contracts, `QUALITY_SCORE.md`, `PROJECT.md`, `ROADMAP.md`, `REQUIREMENTS.md`, `STATE.md`, `PLANS.md`, verification, validation, and milestone audit agree with verified evidence and conservative non-claims.
+- [x] **MOUTH-05**: Normalization, signed semantics, exact effective caps (`mouthSize ±0.35`, `mouthWidth ±0.35`, `smile 0.50`, `lipColor 0.50`), warnings, and capped-count evidence are locked for all four existing fields.
+- [x] **MOUTH-06**: No-face, missing outer-lip landmarks, stale geometry, redacted warnings/metrics, exact-zero fail-closed mouth geometry strengths, and safe-domain continuation are verified.
+- [x] **MOUTH-07**: Reused geometry applies the established exact `0.5` scale to `mouthSize`, `mouthWidth`, and `smile` while preserving signed direction; stale and reused `lipColor` behavior is independently specified and verified as a color-domain policy.
+- [x] **MOUTH-08**: Conservative combined weakening with face, eye, and nose geometry covers all three mouth geometry fields, preserves both signed directions, and does not incorrectly scale `lipColor` as geometry.
+- [x] **MOUTH-09**: Raw geometry, internal Demo/renderer imports, network/cloud, commercial paths, public inventory, new dependencies, and generated artifacts remain fail-closed.
+- [x] **MOUTH-10**: Exactly `大小`, `宽度`, and `微笑` are promoted; `上下`, `倾斜`, `左右`, `M唇`, `丰唇`, `白牙`, and branch-level `嘴唇` remain partial/future.
+- [x] **DOC-01**: Blueprint, root contracts, `QUALITY_SCORE.md`, `PROJECT.md`, `ROADMAP.md`, `REQUIREMENTS.md`, `STATE.md`, `PLANS.md`, verification, validation, and milestone audit agree with verified evidence and conservative non-claims.
 
 ## Future Requirements
 
@@ -48,13 +48,13 @@
 | MOUTH-02 | Phase 33 | Complete |
 | MOUTH-03 | Phase 33 | Complete |
 | MOUTH-04 | Phase 33 | Complete |
-| MOUTH-05 | Phase 34 | Pending |
-| MOUTH-06 | Phase 34 | Pending |
-| MOUTH-07 | Phase 34 | Pending |
-| MOUTH-08 | Phase 34 | Pending |
-| MOUTH-09 | Phase 34 | Pending |
-| MOUTH-10 | Phase 34 | Pending |
-| DOC-01 | Phase 34 | Pending |
+| MOUTH-05 | Phase 34 | Complete |
+| MOUTH-06 | Phase 34 | Complete |
+| MOUTH-07 | Phase 34 | Complete |
+| MOUTH-08 | Phase 34 | Complete |
+| MOUTH-09 | Phase 34 | Complete |
+| MOUTH-10 | Phase 34 | Complete |
+| DOC-01 | Phase 34 | Complete |
 
 **Coverage:**
 - v1.8 requirements: 11 total

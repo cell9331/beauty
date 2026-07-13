@@ -36,7 +36,13 @@
 
 **Requirements:** MOUTH-05, MOUTH-06, MOUTH-07, MOUTH-08, MOUTH-09, MOUTH-10, DOC-01
 
-**Status:** Not started
+**Status:** Complete (2026-07-13)
+
+**Plans:** 3/3 plans complete
+
+- [x] `34-01-PLAN.md` — mouth safety and freshness semantics
+- [x] `34-02-PLAN.md` — combined safety and boundary evidence
+- [x] `34-03-PLAN.md` — ledger and documentation closeout
 
 **Success Criteria:**
 
@@ -49,12 +55,12 @@
 ## Progress
 
 - [x] Phase 33: Mouth Renderer Output Evidence
-- [ ] Phase 34: Mouth Safety, Degradation, and Ledger Closeout
+- [x] Phase 34: Mouth Safety, Degradation, and Ledger Closeout
 
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
 | 33. Mouth Renderer Output Evidence | 3/3 | Complete | 2026-07-13 |
-| 34. Mouth Safety, Degradation, and Ledger Closeout | 0/TBD | Not started | — |
+| 34. Mouth Safety, Degradation, and Ledger Closeout | 3/3 | Complete | 2026-07-13 |
 
 ## Backlog
 

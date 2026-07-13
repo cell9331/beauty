@@ -233,6 +233,7 @@ MVP must demonstrate:
 | Eye controls | Eye size and at least one additional eye parameter are adjustable. |
 | Nose controls | Nose slim and at least one additional nose parameter are adjustable. |
 | Mouth controls | Smile and at least one additional mouth/lip parameter are adjustable. |
+| Mouth evidence boundary | `大小`, `宽度`, and `微笑` have facade-output plus safety evidence; `lipColor` is color only and does not prove `丰唇`. |
 | Filter controls | Filter ID and intensity are adjustable. |
 | Presets | At least five built-in presets can apply. |
 | Compare | Before/after compare works in Demo. |

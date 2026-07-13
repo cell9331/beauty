@@ -265,7 +265,7 @@ Recorded 2026-07-13 in `31-NOSE-RENDERER-EVIDENCE.md`, `32-NOSE-SAFETY-EVIDENCE.
 | Face Shape | 4 | 4 | Control points are generated safely, combined geometry weakens, no-face skips, and CIImage local warp evidence is tested. |
 | Eyes | 4 | 4 | Positive-only/signed inputs, exact caps, missing-eye skips, reused/stale eye-domain skips, combined weakening, and redacted aggregate evidence are tested; 161/161 outputs and 36/36 comparisons pass. Exactly four rows are implemented while branch-level `眼睛` remains partial. |
 | Nose | 4 | 4 | 196/196 output, 30/30 portrait, signed-tip, exact-cap, missing/stale zeroing, reused `0.5`, no-face continuation, combined weakening, redaction, and boundary evidence pass. Exactly four rows are implemented while branch-level `鼻子` remains partial. |
-| Mouth | 4 | 4 | Mouth provider output, lip-color fixture output, reused/stale reduction, and missing-mouth/lip skips are tested. |
+| Mouth | 4 | 4 | Phase 34 exact caps, signed normalization, exact-zero missing/no-face/stale geometry, reused `0.5`, independent lip-color policy, and combined matrix pass; observed 13/13 focused, 190/190 full SDK, and helper 238/238, 30/30, 12/12, 6/6. Branch `嘴唇` remains partial. |
 | Filters | 4 | 4 | `filterId nil`, missing filter, intensity 0/1, metadata filter IDs, and Demo filter selection are covered; real LUT decode remains Phase 6+ render scope. |
 | Makeup | 3 | 0 | Resource manifest, missing-resource behavior, landmark attachment tests. |
 | Background / Segmentation | 3 | 0 | Mask edge fixtures, no-person fallback, device downgrade behavior. |

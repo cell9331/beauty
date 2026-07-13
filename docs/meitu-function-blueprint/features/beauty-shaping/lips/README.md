@@ -14,7 +14,8 @@ Lip tools include size, width, vertical position, tilt, horizontal position, M l
 - Dependencies: `BeautyDetection` mouth landmarks and `BeautyRender` unified warp output.
 - Current public `BeautyParameters` coverage: `mouthSize`, `mouthWidth`, `smile`, and `lipColor`.
 - Future parameter needs: M-lip, vertical position, tilt, horizontal position, and teeth whitening handoff.
-- Evidence expectation: lip color has visible color evidence; geometry subtools still need public facade saved-image geometry output.
+- Implemented subtools: `大小` (`mouthSize`), `宽度` (`mouthWidth`), and `微笑` (`smile`) through Phase 33 facade output and Phase 34 safety/degradation evidence.
+- Branch status remains `partial`: `上下`, `倾斜`, `左右`, `M唇`, true `丰唇`, and `白牙` are unresolved. `lipColor` is visible color evidence only and is not true plump-lip geometry.
 
 ## Boundary
 
