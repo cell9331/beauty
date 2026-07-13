@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.9
 milestone_name: Nose Remaining Tools and Branch Closeout
 status: executing
-stopped_at: Completed 35-04-PLAN.md
-last_updated: "2026-07-13T09:00:30.020Z"
-last_activity: 2026-07-13 — Phase 35 passed 6/6 requirements with a clean final review and 219/219 full SDK tests
+stopped_at: Completed 36-01-PLAN.md
+last_updated: "2026-07-13T09:06:32.771Z"
+last_activity: 2026-07-13 -- Plan 36-01 completed with 10/10 focused renderer regressions
 progress:
   total_phases: 3
   completed_phases: 1
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 7
+  completed_plans: 5
   percent: 33
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-13)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 36 — Public-Facade Output Evidence
+**Current focus:** Phase 36 — public-facade-output-evidence
 
 ## Current Position
 
-Phase: 36 (Public-Facade Output Evidence) — NOT STARTED
-Plan: Not started
+Phase: 36 (public-facade-output-evidence) — EXECUTING
+Plan: 2 of 3
 Status: Ready to execute
-Last activity: 2026-07-13 — Phase 35 passed 6/6 requirements with a clean final review and 219/219 full SDK tests
+Last activity: 2026-07-13 -- Plan 36-01 completed with 10/10 focused renderer regressions
 
 ### Phase 35 Public Contract and Independent Geometry Result
 
@@ -145,6 +145,7 @@ Last activity: 2026-07-13
 | Phase 35 P02 | 6 min | 2 tasks | 5 files |
 | Phase 35 P03 | 5 min | 3 tasks | 7 files |
 | Phase 35 P04 | 11 min | 2 tasks | 12 files |
+| Phase 36 P01 | 3 min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -249,8 +250,8 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-13T07:03:28.986Z
-Stopped at: Completed 35-04-PLAN.md
+Last session: 2026-07-13T09:06:32.763Z
+Stopped at: Completed 36-01-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
