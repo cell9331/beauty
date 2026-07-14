@@ -14,7 +14,7 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Shipped version:** v1.9 Nose Remaining Tools and Branch Closeout on 2026-07-14.
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
-**Current milestone:** None — planning the next milestone.
+**Current milestone:** v1.10 Mouth Remaining Geometry Controls.
 
 **Implementation state:** Phase 37 is complete. `BeautyParameters` remains exactly 33 stored fields, with independent positive-only `noseRootNarrowing` and `noseTipLift` at final exact `0.25` caps. Package-internal explicit root/tip supports, all-six degradation/transitions, provider-empty removal, and bounded conflict-emission convergence are verified. Exactly `山根` and `提升` are newly promoted, and the exact six-row SDK-core `鼻子` branch is implemented.
 
@@ -23,6 +23,19 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
 **Code size:** `BeautySDK` and `BeautyDemo` contain 17,794 Swift lines in the local closeout count, including build-derived `.build` files observed during v1.5 archive.
+
+## Current Milestone: v1.10 Mouth Remaining Geometry Controls
+
+**Goal:** Complete the five unresolved SDK-core mouth geometry controls through independent public semantics, explicit lip-support geometry, facade-visible output, conservative safety behavior, and evidence-backed ledger promotion while keeping teeth whitening outside the geometry slice.
+
+**Target features:**
+
+- Add product-neutral public controls for mouth vertical position, tilt, horizontal position, M-lip peak definition, and true lip plumping, with defaulted source/JSON compatibility and no aliasing to `mouthSize`, `mouthWidth`, `smile`, or `lipColor`.
+- Extend package-internal mouth geometry with explicit outer/inner and upper/lower lip support sufficient to keep whole-mouth transforms distinct from local lip-shape transforms and to fail closed per unsupported field.
+- Add isolated public-facade renderer/helper and ignored-gallery evidence for all five controls across the established seven-fixture matrix, including both directions for the three signed transforms and distinct M-lip/plump output.
+- Lock exact caps, directionality, no-face and missing/reused/stale degradation, provider-eligible combined weakening, redacted diagnostics, artifact boundaries, and exact five-row promotion.
+
+**Key context:** v1.10 is SDK-core only. It expands the stable public parameter inventory only for the five remaining mouth geometry rows; adds no SwiftUI Demo UI, third-party dependency, network/cloud behavior, account/payment/VIP/entitlement/commercial path, or tracked generated PNG baseline. `白牙` remains future because it requires teeth-region segmentation and color/retouch ownership, so branch-level `嘴唇` remains partial even when the geometry subset is complete. Device parity, commercial visual approval, packaging, shipping, and launch readiness are not claimed.
 
 ## Last Completed Milestone: v1.9 Nose Remaining Tools and Branch Closeout
 
@@ -134,7 +147,9 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ### Active
 
-(None — start the next milestone to define new active requirements.)
+- [ ] Define five independent public mouth geometry controls with source-compatible defaults and legacy-payload zero decoding.
+- [ ] Route explicit lip-support geometry through provider, resolver, facade, output, degradation, conflict, redaction, and artifact gates.
+- [ ] Promote exactly `上下`, `倾斜`, `左右`, `M唇`, and true `丰唇` from evidence while keeping `白牙` and branch-level `嘴唇` partial.
 
 ### Validated
 
@@ -236,9 +251,9 @@ The verified SDK-only slice implements exactly `大小`, `宽度`, and `微笑`.
 
 ## Next Milestone Goals
 
-Future milestone candidates after v1.9:
+Future milestone candidates after v1.10:
 
-- **Broader `美型 / 五官` slices:** remaining mouth tools, `比例`, `3D塑颜`, and `眉毛` remain future or partial until explicitly scoped.
+- **Broader `美型 / 五官` slices:** `白牙`, `比例`, `3D塑颜`, and `眉毛` remain future or partial until explicitly scoped.
 - **Remaining `眼睛` tools:** eye height, eye length, pupil/gaze, lid, redness, corner, and symmetry features need separate parameter/resource design before implementation.
 - **Deferred Meitu Product Areas:** Home/discovery, style resources, AI/background, video/body, gallery/account, search, premium access, commerce, and account authorization planning.
 - **Distribution:** SDK packaging, compatibility matrix, binary distribution, resource-pack trust model, and commercial integration docs.
@@ -308,6 +323,7 @@ Current visual reference contracts:
 - **v1.7 scope boundary:** v1.7 promotes only the four existing public-parameter `鼻子` rows after public-facade output, signed-direction, safety, degradation, and boundary evidence exists; `山根`, `提升`, and branch-level `鼻子` remain partial/future.
 - **v1.8 scope boundary:** v1.8 promotes only `大小`, `宽度`, and `微笑` after facade output, signed-direction, degradation, and boundary evidence; `lipColor` remains color-only, true `丰唇` is not claimed, and branch-level `嘴唇` remains partial.
 - **v1.9 scope boundary:** v1.9 adds only the two product-neutral public fields needed for `山根` and `提升`, then promotes those rows and branch-level `鼻子` only after facade output, safety, degradation, redaction, compatibility, and documentation evidence; Demo UI and release-readiness work remain excluded.
+- **v1.10 scope boundary:** v1.10 adds only the five product-neutral public fields and package-internal lip supports needed for `上下`, `倾斜`, `左右`, `M唇`, and true `丰唇`; `lipColor` remains color-only, `白牙` remains a separate segmentation/retouch concern, and Demo/device/commercial/packaging/shipping/launch work remains excluded.
 
 ## Key Decisions
 
@@ -330,6 +346,7 @@ Current visual reference contracts:
 | v1.7 targets the existing-public-parameter `鼻子` slice without collapsing signed tip direction. | The renderer foundation exists, and the four public nose fields can be completed without adding API or UI breadth; `noseTipSize` must retain positive/negative semantics end to end. | Completed in Phase 32; milestone audit passed |
 | v1.8 targets the existing-public-parameter `嘴唇` slice while separating geometry from lip color. | The existing public fields support signed mouth geometry plus color containment without adding API/UI breadth or mislabeling `lipColor` as true `丰唇`. | Completed in Phase 34; milestone audit passed |
 | v1.9 closes the remaining `鼻子` branch with independent `山根` and `提升` semantics. | v1.7 deliberately left both tools unresolved; branch completion requires explicit public parameters and evidence rather than aliasing `山根` to `noseBridge` or borrowing prior outputs. | Completed in Phase 37; milestone audit pending |
+| v1.10 completes the remaining mouth geometry controls without absorbing teeth whitening. | The five unresolved geometry rows share the existing mouth warp/facade evidence path, while `白牙` needs a different teeth-region segmentation and retouch contract. | — Pending |
 | v1.5 starts with geometry output foundation plus `脸型`, not all `美型 / 五官` groups. | The user chose the smallest first-principles slice: prove facade-visible geometry output first, then mark only the existing face-shape tools complete when evidence exists. | Completed and archived in v1.5 |
 
 ## Evolution
@@ -337,4 +354,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-07-14 after v1.9 milestone completion and archive*
+*Last updated: 2026-07-14 after starting v1.10 Mouth Remaining Geometry Controls*

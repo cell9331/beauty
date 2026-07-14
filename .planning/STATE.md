@@ -1,17 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.9
-milestone_name: Nose Remaining Tools and Branch Closeout
-status: Awaiting next milestone
-stopped_at: Milestone v1.9 completed, audited, archived, and cleaned up
-last_updated: "2026-07-14T03:38:59.066Z"
-last_activity: 2026-07-14 — Milestone v1.9 completed, audited, archived, and cleaned up
+milestone: v1.10
+milestone_name: Mouth Remaining Geometry Controls
+status: planning
+last_updated: "2026-07-14T06:42:43.999Z"
+last_activity: 2026-07-14
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 11
-  completed_plans: 11
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -25,10 +24,10 @@ See: `.planning/PROJECT.md` (updated 2026-07-14)
 
 ## Current Position
 
-Phase: Milestone v1.9 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-07-14 — Milestone v1.9 completed, audited, archived, and cleaned up
+Status: Defining requirements
+Last activity: 2026-07-14 — Milestone v1.10 started
 
 ### Phase 36 Public-Facade Output Evidence Result
 
