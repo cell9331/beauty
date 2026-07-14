@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.9
 milestone_name: Nose Remaining Tools and Branch Closeout
 status: executing
-stopped_at: Completed 37-01-PLAN.md
-last_updated: "2026-07-14T02:38:45.886Z"
-last_activity: 2026-07-14 -- Completed Plan 37-01 exact caps and six-field safety
+stopped_at: Completed 37-02-PLAN.md
+last_updated: "2026-07-14T02:49:16.157Z"
+last_activity: 2026-07-14 -- Completed Plan 37-02 exact combined convergence
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 11
-  completed_plans: 8
-  percent: 73
+  completed_plans: 9
+  percent: 67
 ---
 
 # Project State
@@ -26,9 +26,9 @@ See: `.planning/PROJECT.md` (updated 2026-07-13)
 ## Current Position
 
 Phase: 37 (nose-safety-boundary-and-branch-closeout) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 Status: Ready to execute
-Last activity: 2026-07-14 -- Completed Plan 37-01 exact caps and six-field safety
+Last activity: 2026-07-14 -- Completed Plan 37-02 exact combined convergence
 
 ### Phase 36 Public-Facade Output Evidence Result
 
@@ -157,6 +157,7 @@ Last activity: 2026-07-13
 | Phase 36 P02 | 10 min | 2 tasks | 2 files |
 | Phase 36 P03 | final evidence | 2 tasks | 10 files |
 | Phase 37 P01 | 9 min | 3 tasks | 6 files |
+| Phase 37 P02 | 8 min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -229,6 +230,7 @@ Recent milestone-level outcomes:
 - [Phase 35]: Limit the legacy nose center guard to legacy fields. — Valid explicit root or tip support must remain usable when the legacy proxy is absent.
 - [Phase 35]: Sanitize unsupported root and tip requests independently before using the same NoseWarpProvider, preserving valid sibling and legacy nose work. — Prevents legacy vector borrowing while retaining compatible aggregate nose behavior.
 - [Phase 35]: Converge conflict weakening with provider-owned per-field nose and mouth emissions before final metrics and dispatch. — Retained fields only decrease across the bounded nine-field loop, so effective strengths, total, scale, weakened count, and emitted work agree while Phase 37 still owns the exhaustive six-nose-field matrix.
+- [Phase 37]: Exact combined geometry evidence uses one provider-eligible retained baseline across all face, eye, mouth, and six-field nose work. — All exact totals, counts, scales, effective strengths, domains, warnings, and final provider emissions passed without production changes; provider-empty work contributes zero times.
 
 ### Pending Todos
 
@@ -261,8 +263,8 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-14T02:38:45.879Z
-Stopped at: Completed 37-01-PLAN.md
+Last session: 2026-07-14T02:47:53.743Z
+Stopped at: Completed 37-02-PLAN.md
 Resume file: None
 
 ## Operator Next Steps

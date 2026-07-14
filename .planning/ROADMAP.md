@@ -96,7 +96,7 @@
 | --- | --- | --- | --- |
 | 35. Public Contract and Independent Geometry | 4/4 | Complete    | 2026-07-13 |
 | 36. Public-Facade Output Evidence | 3/3 | Complete    | 2026-07-14 |
-| 37. Nose Safety, Boundary, and Branch Closeout | 1/4 | In Progress|  |
+| 37. Nose Safety, Boundary, and Branch Closeout | 2/4 | In Progress|  |
 
 ## Backlog
 
