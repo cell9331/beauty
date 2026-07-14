@@ -59,7 +59,11 @@
   4. Peak-definition and plump outputs differ from each other and from their nearest shipped size/smile/color controls, so neither new row borrows old evidence.
   5. Representative no-face output degrades safely, gallery routing is a duplicate-free bijection with renderer cases, and all generated output/gallery files remain ignored and untracked.
 
-**Plans**: TBD
+**Plans**: 3 plans
+
+- [ ] `39-01-PLAN.md` — Exact eight-case public renderer contract and representative no-face facade evidence.
+- [ ] `39-02-PLAN.md` — Self-contained strict helper, non-circular calibration, and 308-output visibility/direction/independence evidence.
+- [ ] `39-03-PLAN.md` — Safe ignored gallery publication, evidence-owner synchronization, review/security/verification, and Phase 40 handoff.
 
 ### Phase 40: Mouth Geometry Safety and Ledger Closeout
 
