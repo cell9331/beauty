@@ -2,52 +2,57 @@
 phase: 40-mouth-geometry-safety-and-ledger-closeout
 source_review: .planning/phases/40-mouth-geometry-safety-and-ledger-closeout/40-REVIEW.md
 fixed_at: 2026-07-14
-status: partial
-iteration: 1
+status: all_fixed
+iteration: 2
 fix_scope: critical_warning
 findings_in_scope: 3
-fixed: 0
-partially_fixed: 3
+fixed: 3
+partially_fixed: 0
 skipped: 0
 fix_commits:
   - 7afcba1
+  - f4b6fa6
+findings_fixed:
+  critical: 0
+  warning: 3
+  info: 0
+  total: 3
 ---
 
-# Phase 40 Review Fix Report — Iteration 1
+# Phase 40 Review Fix Report
 
-Commit `7afcba1` materially hardens the boundary checker but does not yet close the three review warnings.
+All three Phase 40 boundary-checker warnings are fixed with no skipped finding.
 
-## Fixes Applied
+## Findings Fixed
 
-### WR-01: Self-test coverage
+### WR-01: Actual positive and mutation coverage
 
-- Expanded the former one-line self-test to 29 passing positive/mutation checks.
-- Added command, missing-tool, exact inventory, unknown owner, import, raw geometry, network, diagnostic, duplicate promotion, privacy manifest, aggregate closeout, tracked artifact, and escaping-symlink negatives.
-- Remaining gap: lifecycle uses a classifier-only assertion rather than the actual check; owner/traceability and several other boundaries are not isolated one-failure-per-boundary fixtures.
+- Iteration 1 expanded the original minimal self-test and installed typed command/path/artifact negatives.
+- Iteration 2 raises the deterministic matrix to 63/63 and invokes the actual boundary functions for isolated promotion rows, all branch owners, all current owners, all Phase 40 traceability rows, multiline lifecycle claims, audit artifacts, tags, archive mutations, worktree mutations, commercial paths, and every artifact state.
+- The reported total now corresponds to observed positive or adversarial check results rather than a lifecycle-classifier proxy.
 
-### WR-02: Promotion, owners, traceability, and lifecycle
+### WR-02: Exact promotion, scoped owners, traceability, and lifecycle
 
-- Added structural unique-row parsing for ledger, matrix, and parent branch rows.
-- Required promotion tokens independently in matrix, parent, and lips owners.
-- Added exact Phase 40/Complete traceability rows for MOUTH-12 through MOUTH-16 and DOC-01.
-- Added audit-file, v1.10-tag, milestone-archive-diff, and lifecycle-claim checks.
-- Remaining gap: root/current owner tokens are not co-located in Phase 40 sections, lifecycle claims can cross a Markdown newline and evade the regex, and `.worktrees` is not guarded.
+- Ledger, matrix, and parent rows are structurally parsed and unique; exactly five geometry rows promote, `白牙` stays future, and branch `嘴唇` stays partial.
+- Matrix, parent, and lips owners each independently carry the required Phase 40 field/nonclaim tokens.
+- Root and planning owners require their facts in a bounded v1.10/Phase 40 section; requirement checklist and traceability rows are exact.
+- The lifecycle guard uses multiline/DOTALL matching through `check_lifecycle_and_archive` and rejects audit artifacts, v1.10 tags, milestone archive changes, `.worktrees`/`.planning/worktrees` changes, and lifecycle success claims.
 
-### WR-03: Compatibility, privacy, raw geometry, and command handling
+### WR-03: Compatibility, raw geometry, diagnostics, privacy, and command behavior
 
-- Replaced count-only compatibility with an exact ordered 38-field inventory.
-- Split search and Git command exit handling; Git exit `1` now fails closed.
-- Added multiline public-geometry scanning, diagnostic privacy, privacy-manifest disposition, and stricter artifact command handling.
-- Remaining gap: plural/compound raw support names and multiline diagnostic payloads evade the current patterns.
+- Compatibility is the exact ordered 38-field public inventory: 37 numeric fields plus `filterId`.
+- Search exit `1` remains clean no-match while every Git nonzero exit is blocking.
+- Public/SPI raw-geometry scanning covers singular, plural, and compound landmark/support/bounds identifiers across bounded multiline declarations.
+- Diagnostic scanning covers bounded multiline quoted warning/metric payloads; privacy-manifest disposition and artifact Git checks remain explicit.
+- Targeted mutations prove plural landmarks/supports and multiline diagnostic payloads fail.
 
 ## Verification
 
-- PASS: Python compilation.
-- PASS as reported by current implementation: checker self-test, 29/29.
-- PASS as reported by current implementation: live pre-promotion checker, 13/13.
-- FAIL independent adversarial coverage: plural raw-geometry identifiers, multiline diagnostic payload, and multiline lifecycle claim are not detected.
-- PASS: `git diff --check` for the review artifacts.
+- PASS: `python3 -m py_compile .../check_mouth_geometry_boundaries.py`.
+- PASS: checker self-test, 63/63.
+- PASS: live pre-promotion checker, 13/13.
+- PASS: review artifact `git diff --check`.
 
 ## Status
 
-Partial: 3/3 warnings improved, 0/3 fully closed. No checker, implementation, test, ledger, owner, or promotion file was modified by the re-review.
+All scoped warnings are fixed: 3/3 fixed, 0 skipped. The re-review changed only review artifacts; it did not modify the checker, Swift implementation/tests, ledger, current owners, requirement state, or lifecycle state.
