@@ -177,6 +177,13 @@ Phase 28 scoped face-shape behavior:
 - No-face public requests preserve extent and permit safe color/filter domains to continue.
 - Combined geometry reduces magnitude without flipping signed tip direction; all four fields have focused evidence in `32-NOSE-SAFETY-EVIDENCE.md`.
 
+### Phase 37 Final Six-Field Nose Reliability Contract
+
+- The two new exact effective caps are `0.25`; reused eligible `noseRootNarrowing` and `noseTipLift` are therefore exactly `0.125` before independent combined weakening. The complete six-field nose set preserves signed `noseTipSize` in both directions.
+- Zero input is inert. No-face, missing aggregate nose input, and stale geometry zero all six fields; reused geometry scales each eligible field by exact `0.5`. Missing field-specific support and provider-empty output remove only that field while supported siblings and safe independent color/filter domains continue.
+- Fresh-to-reused-to-stale and valid-to-missing/provider-empty transition evidence proves no prior strength or vector survives. Provider-empty work is excluded from active domains, conflict totals, weakened counts, scale, warnings, final strengths, and dispatch.
+- One monotonic provider-eligible convergence recomputes the retained nose/mouth baseline until final effective strengths equal final emissions. Phase 37 passed 103/103 focused and 228/228 full tests plus the unchanged 252/252 renderer gate; diagnostics remain category/aggregate-only.
+
 ## 7. Observability Model
 
 First-version diagnostics live in `BeautyCore/Diagnostics`; do not create a separate diagnostics package until another product actually shares it. Use three layers:

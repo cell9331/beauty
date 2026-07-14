@@ -16,9 +16,9 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
 **Current milestone:** v1.9 Nose Remaining Tools and Branch Closeout.
 
-**Implementation state:** Phase 35 is complete. `BeautyParameters` now has exactly 33 stored fields, adding independent positive-only `noseRootNarrowing` and `noseTipLift` values with provisional `0.25` caps. Package-internal explicit root/tip supports drive bounded non-aliased geometry, fail closed per field, and share bounded conflict-emission convergence with existing nose/mouth work. `山根`, `提升`, and branch-level `鼻子` remain unpromoted until Phases 36 and 37 complete output, calibration, exhaustive safety, and ledger gates.
+**Implementation state:** Phase 37 is complete. `BeautyParameters` remains exactly 33 stored fields, with independent positive-only `noseRootNarrowing` and `noseTipLift` at final exact `0.25` caps. Package-internal explicit root/tip supports, all-six degradation/transitions, provider-empty removal, and bounded conflict-emission convergence are verified. Exactly `山根` and `提升` are newly promoted, and the exact six-row SDK-core `鼻子` branch is implemented.
 
-**Verification state:** Phase 35 passes 6/6 requirements with fresh 106/106 focused and 219/219 full SDK tests, a clean final 24-file code review, `threats_open: 0`, and no verification gaps. Public compatibility, package-only geometry, redacted diagnostics, dependency/privacy boundaries, and no-promotion claims are verified. Phase 36 public-facade output evidence is next; Phase 37 retains final calibration, exhaustive safety, boundary closeout, and promotion.
+**Verification state:** Phase 37 passes 6/6 requirements with fresh 103/103 focused and 228/228 full SDK tests, unchanged 252/252 public-facade output plus 12/12 baseline, 6/6 root/bridge, 12/12 lift/signed-tip, and 2/2 no-face comparisons, a clean review, and `threats_open: 0`. Generated artifacts remain ignored/untracked. The independent v1.9 milestone audit is pending and is the next lifecycle action; no Demo/device/commercial/packaging/shipping/launch readiness is claimed.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
@@ -132,12 +132,11 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ### Active
 
-- [ ] Define independent public parameter semantics for `山根` and `提升` and preserve backward-compatible decoding/defaults.
-- [ ] Produce facade-visible output and safety/degradation evidence for both remaining nose tools.
-- [ ] Promote both remaining rows and branch-level `鼻子` only after exact evidence-backed closeout.
+- [ ] Run the independent v1.9 milestone audit; archive, tag, and cleanup remain later lifecycle work only after it passes.
 
 ### Validated
 
+- Exact v1.9 six-row SDK-core `鼻子` branch, independent `山根`/`提升` semantics, final `0.25` caps, 228/228 full tests, unchanged 252/252 output, clean ASVS L1 boundaries, and conservative non-claims - Phase 37.
 - SDK package and public facade boundaries - v1.0.
 - Public SDK value models, 31 normalized parameters, typed errors, clamping, preset validation, and no-op defaults - v1.0.
 - Direct pixel-buffer and still-image processing paths with SDK-created outputs and default no-op behavior - v1.0.
@@ -328,7 +327,7 @@ Current visual reference contracts:
 | v1.6 targets the existing-public-parameter `眼睛` slice. | `眼睛` already had public SDK parameters and provider/resolver evidence, and v1.5 created the public-facade geometry output harness needed for visual completion evidence. | Completed in Phase 30; milestone audit passed |
 | v1.7 targets the existing-public-parameter `鼻子` slice without collapsing signed tip direction. | The renderer foundation exists, and the four public nose fields can be completed without adding API or UI breadth; `noseTipSize` must retain positive/negative semantics end to end. | Completed in Phase 32; milestone audit passed |
 | v1.8 targets the existing-public-parameter `嘴唇` slice while separating geometry from lip color. | The existing public fields support signed mouth geometry plus color containment without adding API/UI breadth or mislabeling `lipColor` as true `丰唇`. | Completed in Phase 34; milestone audit passed |
-| v1.9 closes the remaining `鼻子` branch with independent `山根` and `提升` semantics. | v1.7 deliberately left both tools unresolved; branch completion requires explicit public parameters and evidence rather than aliasing `山根` to `noseBridge` or borrowing prior outputs. | Pending |
+| v1.9 closes the remaining `鼻子` branch with independent `山根` and `提升` semantics. | v1.7 deliberately left both tools unresolved; branch completion requires explicit public parameters and evidence rather than aliasing `山根` to `noseBridge` or borrowing prior outputs. | Completed in Phase 37; milestone audit pending |
 | v1.5 starts with geometry output foundation plus `脸型`, not all `美型 / 五官` groups. | The user chose the smallest first-principles slice: prove facade-visible geometry output first, then mark only the existing face-shape tools complete when evidence exists. | Completed and archived in v1.5 |
 
 ## Evolution
@@ -336,4 +335,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-07-13 after Phase 35 completion*
+*Last updated: 2026-07-14 after Phase 37 completion; independent milestone audit pending*

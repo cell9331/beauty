@@ -76,7 +76,9 @@
 
 **Requirements:** NOSE-10, NOSE-11, NOSE-12, NOSE-13, NOSE-14, DOC-01
 
-**Status:** In progress — Plans 37-01 through 37-03 complete; atomic promotion remains Plan 37-04
+**Status:** Complete — 4/4 plans; independent milestone audit is pending
+
+**Evidence:** Phase 37 passes fresh 103/103 focused and 228/228 full SwiftPM tests, unchanged 252/252 renderer output with 12/12 baseline, 6/6 root/bridge, 12/12 lift/signed-tip, and 2/2 no-face comparisons, clean review, `threats_open: 0`, exact two-row promotion, and exact six-row SDK-core branch completion. Next action: `$gsd-audit-milestone`.
 
 **Success Criteria:**
 
@@ -84,19 +86,19 @@
 2. All six nose fields fail closed for no-face, missing, stale, insufficient, or provider-empty geometry; reused geometry scales each field by exactly `0.5`, diagnostics remain redacted, and independent safe domains continue.
 3. Combined face, eye, mouth, and six-field nose geometry weakens every active geometry field exactly once and preserves all shipped signed directions without regressing prior face/eye/nose/mouth behavior.
 4. Full SDK tests plus active-source scans pass for raw/public geometry, imports, compatibility, network/cloud, commercial paths, dependencies, diagnostics, and generated artifacts.
-5. `山根`, `提升`, and SDK-core branch-level `鼻子` are promoted only after their own evidence passes, and every owning contract, planning ledger, verification, validation, security record, and milestone audit agrees while preserving explicit Demo/device/commercial/packaging/launch non-claims.
+5. `山根`, `提升`, and SDK-core branch-level `鼻子` are promoted only after their own evidence passes, and every phase-owned contract, planning ledger, verification, validation, and security record agrees while preserving explicit Demo/device/commercial/packaging/launch non-claims; the independent milestone audit remains next.
 
 ## Progress
 
 - [x] Phase 35: Public Contract and Independent Geometry
 - [x] Phase 36: Public-Facade Output Evidence
-- [ ] Phase 37: Nose Safety, Boundary, and Branch Closeout
+- [x] Phase 37: Nose Safety, Boundary, and Branch Closeout
 
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
 | 35. Public Contract and Independent Geometry | 4/4 | Complete    | 2026-07-13 |
 | 36. Public-Facade Output Evidence | 3/3 | Complete    | 2026-07-14 |
-| 37. Nose Safety, Boundary, and Branch Closeout | 3/4 | In Progress|  |
+| 37. Nose Safety, Boundary, and Branch Closeout | 4/4 | Complete | 2026-07-14 |
 
 ## Backlog
 
@@ -106,4 +108,4 @@
 
 ---
 *Roadmap created: 2026-07-13*
-*Last updated: 2026-07-14 after Phase 37 Plan 03 command-backed gate; Plan 37-04 promotion remains pending*
+*Last updated: 2026-07-14 after Phase 37 Plan 04 completion; next action is `$gsd-audit-milestone`*

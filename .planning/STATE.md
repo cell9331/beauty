@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.9
 milestone_name: Nose Remaining Tools and Branch Closeout
-status: executing
-stopped_at: Completed 37-03-PLAN.md
-last_updated: "2026-07-14T03:06:58.093Z"
-last_activity: 2026-07-14 -- Completed Plan 37-03 runtime, output, security, and boundary gate
+status: verifying
+stopped_at: Completed 37-04-PLAN.md; independent milestone audit next
+last_updated: "2026-07-14T03:40:00+08:00"
+last_activity: 2026-07-14 -- Completed Phase 37 exact promotion and owner synchronization
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 11
-  completed_plans: 10
-  percent: 91
+  completed_plans: 11
+  percent: 100
 ---
 
 # Project State
@@ -25,10 +25,10 @@ See: `.planning/PROJECT.md` (updated 2026-07-13)
 
 ## Current Position
 
-Phase: 37 (nose-safety-boundary-and-branch-closeout) — EXECUTING
+Phase: 37 (nose-safety-boundary-and-branch-closeout) — COMPLETE
 Plan: 4 of 4
-Status: Ready to execute
-Last activity: 2026-07-14 -- Completed Plan 37-03 runtime, output, security, and boundary gate
+Status: Verified; independent milestone audit pending
+Last activity: 2026-07-14 -- Completed exact two-row/SDK-core promotion and 6/6 phase verification
 
 ### Phase 36 Public-Facade Output Evidence Result
 
@@ -36,7 +36,9 @@ Last activity: 2026-07-14 -- Completed Plan 37-03 runtime, output, security, and
 - A guarded clean render and strict helper passed 36 cases × 7 fixtures = 252/252 decoded same-dimension outputs; clean gallery generation wrote exactly 252 ignored, untracked PNGs.
 - Fixed ROI evidence passed 12/12 new-field-to-baseline, 6/6 root-to-bridge, and 12/12 lift-to-signed-tip comparisons; representative no-face extent/no-op and facade redaction passed.
 - ASVS L1 records `threats_open: 0`; schema drift, dependency/import/privacy, generated-artifact, no-promotion, and diff-hygiene gates passed.
-- `山根`, `提升`, and branch-level `鼻子` remain unpromoted/partial. Plans 37-01 through 37-03 are green; Plan 37-04 retains the atomic promotion and current-owner synchronization.
+- Phase 37 passes 103/103 focused and 228/228 full SwiftPM tests plus the unchanged 252/252 output gate; review is clean and `threats_open: 0`.
+- Exactly `山根` and `提升` are newly implemented from independent evidence; the exact six-row SDK-core `鼻子` branch is implemented.
+- Next action is `$gsd-audit-milestone`; archive, tag, cleanup, Demo/device/commercial/packaging/shipping/launch claims remain outside phase completion.
 
 ### Phase 35 Public Contract and Independent Geometry Result
 

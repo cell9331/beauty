@@ -34,19 +34,19 @@ Quality gate:
 
 ## 3. Current Snapshot
 
-Current repository state as of 2026-07-13 after Phase 34 mouth safety, degradation, ledger, and documentation closeout:
+Current repository state as of 2026-07-14 after Phase 37 exact nose safety, boundary, and SDK-core branch closeout:
 
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
 | Root docs | 4 | `AGENTS.md`, `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `PLANS.md`, and `QUALITY_SCORE.md` still exist as current owner docs. Phase 21 root placeholder scan found only historical `PLANS.md` verification prose, not unresolved contract placeholders. | Keep root docs synced when `.planning/PROJECT.md`, `.planning/ROADMAP.md`, implementation contracts, or Phase 22-25 evidence change. |
 | Historical docs | 3 | `docs/README.md` remains the long-doc entry. Phase 21 records `.planning/codebase/*` maps as stale background because they still contradict the current Swift package, tests, and planning ledgers. | Continue conflict scans and defer any formal `.planning/codebase/*` remap until explicitly scoped. |
-| GSD planning | 4 | v1.8 Phases 33-34 and all six plans are complete. Phase verification and validation evidence covers all 11 mapped requirements, with both phases Nyquist compliant; milestone archival remains gated on a fresh independent audit after DOC-01 current-owner synchronization. | Rerun the independent v1.8 audit; archive/tag/cleanup only after a clean pass with no unaccepted debt. |
-| SDK Package | 4 | `BeautySDK` retains the existing package/facade structure and 31-field public inventory. Phase 34 full `swift test --package-path BeautySDK` passes 190/190 after signed mouth, fail-closed degradation, freshness, and combined-safety fixes. | Optimized profiling, physical-device checks, and packaging remain future gates. |
+| GSD planning | 4 | v1.9 Phases 35-37 and all 11 plans are complete. Phase 37 validation is Nyquist compliant and verification passes 6/6 requirements; the independent milestone audit remains pending. | Run `$gsd-audit-milestone`; archive/tag/cleanup only after its independent result passes. |
+| SDK Package | 4 | `BeautySDK` retains the existing package/facade structure and exact 33-field public inventory (32 numeric plus `filterId`). Phase 37 full `swift test --package-path BeautySDK` passes 228/228 after six-field nose safety and convergence evidence. | Optimized profiling, physical-device checks, and packaging remain future gates. |
 | Demo App | 4 | Existing archived Demo evidence remains valid for shipped behavior. Phase 22 recorded blocker-form Home/editor review notes and no current v1.4 PNG screenshots. Phase 23 focused camera pipeline xcodebuild passed on `platform=iOS Simulator,name=iPhone 17,OS=26.5`; Phase 25 focused privacy/import xcodebuild passed with 17 tests, but screenshot and long-run routes were not rerun. | Rerun the screenshot protocol before claiming current screenshot evidence; keep physical iPhone checks blocked until hardware evidence exists. |
-| Tests | 4 | Phase 34 focused suites cover mouth normalization, exact caps, both signed directions, missing/no-face/stale exact-zero geometry, reused `0.5`, independent lip-color freshness, safe-domain continuation, combined weakening, facade output, and renderer regression. | Add tests only for separately scoped future tools; retain device/Demo gaps explicitly. |
-| Security | 4 | Phase 34 fail-closed scans cover raw geometry, forbidden imports, network/cloud, commercial paths, public inventory, dependencies, and tracked generated artifacts; review is clean with zero open threats. | Reopen manifest, dependency, network, resource-integrity, and raw-geometry review when behavior changes or packaging starts. |
-| Reliability | 4 | Mouth missing/no-face/stale paths zero all three geometry strengths, reused geometry stays at exact `0.5` with signs preserved, eligible `lipColor` follows its independent color policy, safe domains continue, and diagnostics remain redacted/aggregate. | Keep the 600-second preview, physical iPhone, screenshot, and optimized profiling routes future. |
-| Product acceptance | 4 | Phases 33-34 prove 238/238 outputs, 30/30 portrait geometry comparisons, 12/12 signed comparisons, 6/6 lip-color containment checks, and exactly `大小`, `宽度`, `微笑`; `lipColor` is color-only and branch-level `嘴唇` remains `partial`. | Do not infer true `丰唇`, whole-branch, device, commercial, packaging, or launch readiness. |
+| Tests | 4 | Phase 37 focused suites pass 103/103 and cover exact caps, all-six degradation/transitions/provider-empty handling, public no-face continuation, and exact retained-set convergence; full SwiftPM passes 228/228. | Add tests only for separately scoped future tools; retain device/Demo gaps explicitly. |
+| Security | 4 | Phase 37 fail-closed scans cover public/SPI raw geometry, forbidden imports, network/cloud, commercial paths, exact public inventory, dependencies, diagnostics, and tracked/staged generated artifacts; review is clean and `threats_open: 0`. | Reopen manifest, dependency, network, resource-integrity, and raw-geometry review when behavior changes or packaging starts. |
+| Reliability | 4 | All six nose fields fail closed for zero/no-face/missing/provider-empty/stale input, reused eligible geometry uses exact `0.5`, transitions carry no prior emissions, and provider-empty work is excluded from final convergence evidence. | Keep the 600-second preview, physical iPhone, screenshot, and optimized profiling routes future. |
+| Product acceptance | 4 | Phase 37 closes exactly the six-row SDK-core `鼻子` branch after fresh 228/228 full tests and unchanged 252/252 output with independent root/lift comparisons; Demo/device/commercial/packaging/launch claims remain excluded. | Run the independent v1.9 milestone audit; do not infer broader readiness. |
 
 ### 3.1 Phase 4 Final Verification
 
@@ -253,6 +253,16 @@ Recorded 2026-07-13 in `31-NOSE-RENDERER-EVIDENCE.md`, `32-NOSE-SAFETY-EVIDENCE.
 - Fail-closed scans passed for raw geometry, internal imports, network/cloud, commercial paths, dependency/public inventory drift, sign loss, and tracked generated artifacts.
 - Exactly `大小`, `鼻翼`, `鼻梁`, and `鼻尖` are implemented. `山根`, `提升`, and branch-level `鼻子` remain partial/future; no readiness/parity claim is made.
 
+### 3.17 Phases 35-37 Final Nose Branch Evidence
+
+Recorded 2026-07-14 in `35-VERIFICATION.md`, `36-VERIFICATION.md`, `37-NOSE-SAFETY-EVIDENCE.md`, and `37-VERIFICATION.md`:
+
+- Phase 37 focused suites pass 103/103 and full SwiftPM passes 228/228 with exact `0.25` caps, all-six degradation/transitions, provider-empty removal, and one retained-set convergence.
+- The unchanged Phase 36 gate passes 252/252 outputs, 12/12 baseline, 6/6 root/bridge, 12/12 lift/signed-tip, and 2/2 no-face comparisons; generated artifacts remain ignored and untracked.
+- ASVS L1 and active-source boundaries pass with a clean review and `threats_open: 0`.
+- Exactly `大小`, `提升`, `鼻翼`, `山根`, `鼻梁`, and `鼻尖` form the implemented six-row SDK-core branch. `山根` uses only `noseRootNarrowing`; `提升` uses only `noseTipLift`.
+- This Phase 37 quality result does not claim Demo/device/commercial/packaging/shipping/launch readiness, and the independent milestone audit remains pending.
+
 ## 4. Product Domain Scorecard
 
 | Domain | Target Score | Current | Required Evidence For 4+ |
@@ -264,7 +274,7 @@ Recorded 2026-07-13 in `31-NOSE-RENDERER-EVIDENCE.md`, `32-NOSE-SAFETY-EVIDENCE.
 | Skin Beauty | 4 | 4 | Default no-op, visible skin/color fixture output, high-strength safety caps, and no-face combined skip behavior are tested. |
 | Face Shape | 4 | 4 | Control points are generated safely, combined geometry weakens, no-face skips, and CIImage local warp evidence is tested. |
 | Eyes | 4 | 4 | Positive-only/signed inputs, exact caps, missing-eye skips, reused/stale eye-domain skips, combined weakening, and redacted aggregate evidence are tested; 161/161 outputs and 36/36 comparisons pass. Exactly four rows are implemented while branch-level `眼睛` remains partial. |
-| Nose | 4 | 4 | 196/196 output, 30/30 portrait, signed-tip, exact-cap, missing/stale zeroing, reused `0.5`, no-face continuation, combined weakening, redaction, and boundary evidence pass. Exactly four rows are implemented while branch-level `鼻子` remains partial. |
+| Nose | 4 | 4 | Phase 37 passes 228/228 full SwiftPM plus unchanged 252/252 output, independent root/lift comparisons, exact `0.25` caps, all-six degradation/transitions, provider-empty removal, exactly-once convergence, redaction, and `threats_open: 0`. The exact six-row SDK-core `鼻子` branch is implemented; Demo/device/commercial readiness remains separate. |
 | Mouth | 4 | 4 | Phase 34 exact caps, signed normalization, exact-zero missing/no-face/stale geometry, reused `0.5`, independent lip-color policy, and combined matrix pass; observed 13/13 focused, 190/190 full SDK, and helper 238/238, 30/30, 12/12, 6/6. Branch `嘴唇` remains partial. |
 | Filters | 4 | 4 | `filterId nil`, missing filter, intensity 0/1, metadata filter IDs, and Demo filter selection are covered; real LUT decode remains Phase 6+ render scope. |
 | Makeup | 3 | 0 | Resource manifest, missing-resource behavior, landmark attachment tests. |
@@ -481,7 +491,7 @@ SDK 1.0 readiness:
 
 | Priority | Item | Why |
 | --- | --- | --- |
-| 1 | Execute Phase 28 face-shape slice completion. | Phase 27 proves the shared saved-output geometry foundation; per-tool `脸型` completion, `下颌线` alias handling, and status promotion still need Phase 28 evidence. |
+| 1 | Run the independent v1.9 milestone audit. | Phase 37 is internally complete at 6/6, but audit, archive, tag, cleanup, packaging, and readiness have separate lifecycle owners. |
 | 2 | Run dedicated 600-second preview and physical iPhone checks when setup is available. | Phase 23 records a short fixture loop and focused simulator pass evidence, but long-run preview and device evidence remain blocked or not run. |
 | 3 | Rerun current Demo screenshot evidence. | Phase 22 completed the documented blocker path; current PNG capture still requires rerunning the exact build/test/screenshot commands and recording pass or blocker status. |
 | 4 | Design external resource package trust before enabling any dynamic packages. | Phase 25 covers bundled resources only; LUT, makeup, model, sticker, download, cache, checksum/signature, and package-integrity capability remain disabled. |

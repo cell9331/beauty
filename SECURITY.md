@@ -101,6 +101,13 @@ Phase 28 face-shape privacy evidence recorded 2026-07-08:
 - The Phase 36 PNG helper opens each PNG once with `O_NOFOLLOW`, bounds both `fstat` size and retained reads to 16 MiB plus one detection byte, and rejects same-file growth or excess without a pathname stat/read split.
 - Gallery source acquisition has the same 16 MiB compressed-file ceiling before destination creation. Copying stays descriptor-relative and bounded, and publication rejects identity, size, nanosecond modification-time, or change-time drift so a same-inode in-place source mutation cannot publish a torn file.
 
+### Phase 37 Final Nose Security Boundary
+
+- Phase 37 retains the exact public inventory at 33 stored fields = 32 numeric plus `filterId`; the six nose fields remain scalars, while root/tip supports, `FaceGeometry`, landmarks, bounds, provider types, and control points remain package-internal.
+- ASVS L1 active-source and public/SPI scans passed with no forbidden Demo/renderer internal import, dependency drift, network/cloud path, commercial execution path, raw diagnostic geometry, compatibility drift, or tracked/staged generated artifact. `37-SECURITY.md` records `threats_open: 0`.
+- The unchanged renderer/helper result is 252/252 local outputs; output, gallery, staging, and quarantine artifacts remain ignored, untracked, unstaged, disposable evidence. No raw pixels or geometry enter committed evidence.
+- The exact two-row and SDK-core branch promotion is authorized only by the co-located Phase 37 safety/boundary evidence. Physical-device parity, subjective/commercial naturalness, packaging, shipping, launch readiness, and the independent milestone audit remain outside this security result.
+
 ## 3. Trust Boundaries
 
 ```text

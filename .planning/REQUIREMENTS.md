@@ -27,10 +27,10 @@
 
 - [x] **NOSE-10**: Evidence-backed exact natural caps, capped counts, normalization, warnings, and metrics are locked for both new fields without changing the public `0...1` contract.
 - [x] **NOSE-11**: No-face, missing nose landmarks, stale geometry, reused geometry at exact `0.5`, provider-empty fallback, and safe-domain continuation apply consistently to all six nose fields with redacted diagnostics.
-- [ ] **NOSE-12**: Combined face, eye, mouth, and six-field nose geometry weakens each active field exactly once, preserves every shipped signed direction, and does not regress previously completed face/eye/nose/mouth behavior.
-- [ ] **NOSE-13**: Raw geometry, internal Demo/renderer imports, network/cloud, commercial paths, public geometry, dependencies, compatibility boundaries, and generated artifacts remain fail-closed through active-source scans and the full SDK suite.
-- [ ] **NOSE-14**: `山根` and `提升` are promoted only after their own contract, provider, facade-output, safety, degradation, and boundary evidence passes; branch-level `鼻子` is then marked complete for SDK-core scope without borrowing archived v1.7 evidence.
-- [ ] **DOC-01**: Blueprint, root contracts, branch documentation, example validation, `QUALITY_SCORE.md`, `PROJECT.md`, `ROADMAP.md`, `REQUIREMENTS.md`, `STATE.md`, `PLANS.md`, verification, validation, security, and milestone audit agree with observed v1.9 evidence and conservative non-claims.
+- [x] **NOSE-12**: Combined face, eye, mouth, and six-field nose geometry weakens each active field exactly once, preserves every shipped signed direction, and does not regress previously completed face/eye/nose/mouth behavior.
+- [x] **NOSE-13**: Raw geometry, internal Demo/renderer imports, network/cloud, commercial paths, public geometry, dependencies, compatibility boundaries, and generated artifacts remain fail-closed through active-source scans and the full SDK suite.
+- [x] **NOSE-14**: `山根` and `提升` are promoted only after their own contract, provider, facade-output, safety, degradation, and boundary evidence passes; branch-level `鼻子` is then marked complete for SDK-core scope without borrowing archived v1.7 evidence.
+- [x] **DOC-01**: Blueprint, root contracts, branch documentation, example validation, `QUALITY_SCORE.md`, `PROJECT.md`, `ROADMAP.md`, `REQUIREMENTS.md`, `STATE.md`, `PLANS.md`, verification, validation, security, and milestone audit agree with observed v1.9 evidence and conservative non-claims.
 
 ## Future Requirements
 
@@ -67,10 +67,10 @@
 | NOSE-09 | Phase 36 | Complete | `36-VERIFICATION.md`: no-face extent/degradation and ignored, untracked 252-file gallery/output containment |
 | NOSE-10 | Phase 37 | Complete | `37-01-SUMMARY.md`: exact `0.25` finite/non-finite normalization, cap-count, aggregate-warning, and metric table |
 | NOSE-11 | Phase 37 | Complete | `37-01-SUMMARY.md`: all-six zero/no-face/missing/provider-empty/stale/reused/transition matrices and public facade evidence |
-| NOSE-12 | Phase 37 | Pending | Exactly-once combined safety deferred |
-| NOSE-13 | Phase 37 | Pending | Final active-source boundary closeout deferred |
-| NOSE-14 | Phase 37 | Pending | Product row/branch promotion deferred |
-| DOC-01 | Phase 37 | Pending | Final owner synchronization and audit deferred |
+| NOSE-12 | Phase 37 | Complete | `37-NOSE-SAFETY-EVIDENCE.md`: exact retained-set totals/counts/scales and final provider emissions across face/eye/mouth/six-field nose work |
+| NOSE-13 | Phase 37 | Complete | `37-SECURITY.md`, `37-REVIEW.md`, and boundary checker: 228/228 full suite, clean review, `threats_open: 0`, active-source/artifact gates |
+| NOSE-14 | Phase 37 | Complete | `SHAPE_FEATURE_LEDGER.md`, `FEATURE_MATRIX.md`, and branch owners: exactly `山根`/`提升` promoted, exact six-row SDK-core branch implemented |
+| DOC-01 | Phase 37 | Complete | `37-VERIFICATION.md`: current blueprint/root/planning owners synchronized; independent milestone audit remains the next lifecycle action |
 
 **Coverage:**
 
@@ -82,4 +82,4 @@
 
 ---
 *Requirements defined: 2026-07-13*
-*Last updated: 2026-07-13 after Phase 36 command-backed verification; NOSE-10 through NOSE-14 and DOC-01 remain Phase 37*
+*Last updated: 2026-07-14 after Phase 37 6/6 verification; independent milestone audit remains pending*

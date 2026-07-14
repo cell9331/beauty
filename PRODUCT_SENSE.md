@@ -449,6 +449,13 @@ Manual or future checks still required before stronger product claims:
 - `山根`, `提升`, and branch-level `鼻子` remain unpromoted/partial. Phase 36 still owns renderer/helper/gallery/ROI output evidence, and Phase 37 owns cap calibration, exhaustive six-field/once-only safety, boundary closeout, ledger promotion, and SDK-core branch completion.
 - This acceptance does not claim renderer/gallery completion, calibrated caps, device parity, commercial review, packaging, shipping, or launch readiness. No Demo build was required because Phase 35 changed no Demo source.
 
+### 7.17 Phase 37 Exact Nose SDK-Core Branch Acceptance
+
+- Phase 37 promotes exactly `山根` → independent `noseRootNarrowing` and `提升` → independent `noseTipLift`; neither borrows `noseBridge` or signed `noseTipSize` evidence. Together with the four legacy rows, the exact six-row SDK-core `鼻子` branch is implemented.
+- Acceptance requires final exact `0.25` caps, all-six zero/no-face/missing/provider-empty/stale/reused/transition behavior, exactly-once combined convergence, redacted diagnostics, and active-source boundaries.
+- Fresh evidence passes 103/103 focused and 228/228 full SwiftPM tests. The unchanged public-facade output gate passes 252/252 outputs, 12/12 baseline, 6/6 root/bridge, 12/12 lift/signed-tip, and 2/2 no-face comparisons with ignored/untracked artifacts and `threats_open: 0`.
+- SDK-core branch completion does not claim Demo UI, physical-device parity, subjective or commercial naturalness, optimized performance, packaging, shipping, launch readiness, broad reference-product parity, or a passed milestone audit.
+
 ## 8. Preset Product Contract
 
 MVP built-in presets:

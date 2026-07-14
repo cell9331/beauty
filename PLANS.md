@@ -33,10 +33,27 @@
 | Status | active |
 | Scope | Execute v1.9 Phases 35-37 autonomously, then audit, archive, tag, and clean up the milestone. |
 | Requirements | NOSE-01 through NOSE-14 and DOC-01. |
-| Current step | Phase 37 smart-discuss/research/planning is complete at 4 sequential plans with checker verification passed; execute `37-01` through `37-04` next. |
+| Current step | Phases 35-37 are complete and verified; run the independent v1.9 milestone audit next. Archive, tag, and cleanup remain gated on an audit pass. |
 | Verification | Per-phase focused/full SwiftPM, renderer/helper, security, review, Nyquist, and milestone-audit gates defined by ROADMAP and REQUIREMENTS. |
 
 ## 4. Completed
+
+### C-2026-07-14-phase-37-nose-safety-boundary-branch-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-14 |
+| Scope | Completed Phase 37 Plans `37-01` through `37-04`: exact caps, exhaustive six-field degradation/transitions, once-only converged conflicts, fail-closed boundaries, exact promotion, and current-owner synchronization. |
+| Requirements | NOSE-10 through NOSE-14 and DOC-01 pass 6/6; the independent milestone audit remains next. |
+| Runtime | Fresh 103/103 focused and 228/228 full SwiftPM; unchanged renderer/helper evidence passes 252/252, 12/12 baseline, 6/6 root/bridge, 12/12 lift/signed-tip, and 2/2 no-face. |
+| Security | Scoped review is clean; ASVS L1 and active-source/artifact gates pass with `threats_open: 0`. |
+| Promotion | Exactly `山根` and `提升` are newly implemented from their independent fields, then the exact six-row SDK-core `鼻子` branch is implemented. |
+
+Outcome:
+
+- Final root/lift caps are exact `0.25`; reused eligible work is exact `0.5`, and unsupported/provider-empty/stale work cannot survive into totals, warnings, metrics, or dispatch.
+- All current owners preserve explicit Demo/device/commercial/packaging/shipping/launch non-claims and do not claim a passed milestone audit.
+- Next lifecycle action is `$gsd-audit-milestone`; archive, tag, and cleanup remain gated on its independent result.
 
 ### C-2026-07-14-phase-36-code-review-iteration-4-remediation
 
