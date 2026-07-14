@@ -1,7 +1,7 @@
 ---
 phase: 37
 slug: nose-safety-boundary-and-branch-closeout
-status: draft
+status: in_progress
 nyquist_compliant: true
 wave_0_complete: true
 created: 2026-07-14
@@ -34,13 +34,13 @@ created: 2026-07-14
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 37-01-01 | 01 | 1 | NOSE-10 | T37-01 | Aggregate-only cap evidence | unit | `swift test --package-path BeautySDK --filter BeautyEffectResolverTests` | ✅ | ⬜ pending |
-| 37-01-02 | 01 | 1 | NOSE-11 | T37-02 | No prior or sibling emission survives unsupported input | unit/integration | `swift test --package-path BeautySDK --filter MissingLandmarkDegradationTests && swift test --package-path BeautySDK --filter NoseWarpProviderTests` | ✅ | ⬜ pending |
-| 37-01-03 | 01 | 1 | NOSE-11 | T37-03 | No-face results preserve extent and redact geometry | facade | `swift test --package-path BeautySDK --filter BeautyEngineGeometryFacadeTests` | ✅ | ⬜ pending |
-| 37-02-01 | 02 | 2 | NOSE-12 | T37-04 | Every retained field counted/scaled once | unit/integration | `swift test --package-path BeautySDK --filter CombinedEffectSafetyTests && swift test --package-path BeautySDK --filter GeometryConflictResolverTests` | ✅ | ⬜ pending |
-| 37-02-02 | 02 | 2 | NOSE-11, NOSE-12 | T37-04 | Final effective strengths equal final emissions | integration | `swift test --package-path BeautySDK --filter MissingLandmarkDegradationTests && swift test --package-path BeautySDK --filter NoseWarpProviderTests && swift test --package-path BeautySDK --filter MouthWarpProviderTests` | ✅ | ⬜ pending |
-| 37-03-01 | 03 | 3 | NOSE-13 | T37-01 through T37-08 | ASVS L1, HIGH blocking, fail-closed active-source scan | security | Phase-owned boundary script with default and `--allow-promotion` self-tests/live modes | task-produced in 37-03 | ⬜ pending |
-| 37-03-02 | 03 | 3 | NOSE-13 | T37-05 | Exact public facade and ignored-artifact regression | runtime/output | Full SwiftPM plus renderer build/run and Phase 36 helper self-test/live run | ✅ | ⬜ pending |
+| 37-01-01 | 01 | 1 | NOSE-10 | T37-01 | Aggregate-only cap evidence | unit | `swift test --package-path BeautySDK --filter BeautyEffectResolverTests` | ✅ | ✅ passed 15/15 |
+| 37-01-02 | 01 | 1 | NOSE-11 | T37-02 | No prior or sibling emission survives unsupported input | unit/integration | `swift test --package-path BeautySDK --filter MissingLandmarkDegradationTests && swift test --package-path BeautySDK --filter NoseWarpProviderTests` | ✅ | ✅ passed 30/30 + 16/16 |
+| 37-01-03 | 01 | 1 | NOSE-11 | T37-03 | No-face results preserve extent and redact geometry | facade | `swift test --package-path BeautySDK --filter BeautyEngineGeometryFacadeTests` | ✅ | ✅ passed 11/11 |
+| 37-02-01 | 02 | 2 | NOSE-12 | T37-04 | Every retained field counted/scaled once | unit/integration | `swift test --package-path BeautySDK --filter CombinedEffectSafetyTests && swift test --package-path BeautySDK --filter GeometryConflictResolverTests` | ✅ | ✅ passed 10/10 + 9/9 |
+| 37-02-02 | 02 | 2 | NOSE-11, NOSE-12 | T37-04 | Final effective strengths equal final emissions | integration | `swift test --package-path BeautySDK --filter MissingLandmarkDegradationTests && swift test --package-path BeautySDK --filter NoseWarpProviderTests && swift test --package-path BeautySDK --filter MouthWarpProviderTests` | ✅ | ✅ passed; exact 2.95/8 and 1.40/3 convergence locked |
+| 37-03-01 | 03 | 3 | NOSE-13 | T37-01 through T37-08 | ASVS L1, HIGH blocking, fail-closed active-source scan | security | Phase-owned boundary script with default and `--allow-promotion` self-tests/live modes | ✅ | ✅ passed 33/33 self-test, 13/13 default, threats_open 0 |
+| 37-03-02 | 03 | 3 | NOSE-13 | T37-05 | Exact public facade and ignored-artifact regression | runtime/output | Full SwiftPM plus renderer build/run and Phase 36 helper self-test/live run | ✅ | ✅ passed 228/228 and 252/252 exact output gate |
 | 37-04-01 | 04 | 4 | NOSE-14 | T37-06 | Promotion changes exactly two rows then one SDK-core branch | contract scan | Exact ledger/matrix/README status and evidence-reference scans | ✅ | ⬜ pending |
 | 37-04-02 | 04 | 4 | DOC-01 | T37-07 | Current owners agree without audit/readiness overclaim | documentation/lifecycle | Requirement/status/non-claim/current-owner scans plus `git diff --check` | ✅ | ⬜ pending |
 
@@ -72,4 +72,4 @@ All in-scope phase behaviors have automated verification. Subjective naturalness
 - [x] Focused feedback latency is bounded to one task.
 - [x] `nyquist_compliant: true` is set in frontmatter.
 
-**Approval:** approved for planning 2026-07-14; execution evidence pending
+**Approval:** Plans 37-01 through 37-03 passed on 2026-07-14; Plan 37-04 promotion and final phase verification remain pending

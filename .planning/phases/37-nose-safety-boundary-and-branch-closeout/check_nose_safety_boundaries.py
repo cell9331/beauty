@@ -287,8 +287,8 @@ def default_status_checks(root: Path) -> list[Result]:
 
 
 OWNER_SPECS: dict[str, tuple[str, tuple[str, ...]]] = {
-    "nose README": ("docs/meitu-function-blueprint/features/beauty-shaping/nose/README.md", ("Status: `implemented`", "noseRootNarrowing", "noseTipLift", "252/252", "SDK-core", "device", "commercial", "packaging", "launch")),
-    "beauty-shaping README": ("docs/meitu-function-blueprint/features/beauty-shaping/README.md", ("`鼻子`", "implemented", "noseRootNarrowing", "noseTipLift", "SDK-core", "device", "commercial")),
+    "nose README": ("docs/meitu-function-blueprint/features/beauty-shaping/nose/README.md", ("Phase 37", "Status: `implemented`", "noseRootNarrowing", "noseTipLift", "252/252", "SDK-core", "device", "commercial", "packaging", "launch")),
+    "beauty-shaping README": ("docs/meitu-function-blueprint/features/beauty-shaping/README.md", ("Phase 37", "`鼻子`", "implemented", "noseRootNarrowing", "noseTipLift", "SDK-core", "device", "commercial")),
     "example validation": ("docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md", ("Phase 37", "252/252", "12/12", "6/6", "2/2", "37-NOSE-SAFETY-EVIDENCE.md", "implemented", "device", "commercial", "packaging", "launch")),
     "example README": ("example-images/README.md", ("Phase 37", "0.25", "37-NOSE-SAFETY-EVIDENCE.md", "ignored", "untracked", "device", "commercial")),
     "ARCHITECTURE": ("ARCHITECTURE.md", ("Phase 37", "six", "facade", "package-internal", "noseRootNarrowing", "noseTipLift")),
@@ -301,10 +301,10 @@ OWNER_SPECS: dict[str, tuple[str, tuple[str, ...]]] = {
     "ROADMAP": (".planning/ROADMAP.md", ("Phase 37", "4/4", "Complete", "$gsd-audit-milestone")),
     "STATE": (".planning/STATE.md", ("Phase: 37", "Plan: 4 of 4", "COMPLETE", "$gsd-audit-milestone")),
     "PLANS": ("PLANS.md", ("Phase 37", "228/228", "252/252", "threats_open: 0", "$gsd-audit-milestone")),
-    "phase validation": (str(PHASE_DIR / "37-VALIDATION.md"), ("status: passed", "37-01-01", "37-02-02", "37-03-02", "37-04-02", "✅ passed")),
-    "phase verification": (str(PHASE_DIR / "37-VERIFICATION.md"), ("status: passed", "score: 6/6", "228/228", "252/252", "threats_open: 0", "$gsd-audit-milestone")),
-    "phase security": (str(PHASE_DIR / "37-SECURITY.md"), ("review: ASVS L1", "threats_open: 0", "T37-01", "T37-08", "high", "closed")),
-    "safety evidence": (str(PHASE_DIR / "37-NOSE-SAFETY-EVIDENCE.md"), ("NOSE-10", "NOSE-11", "NOSE-12", "NOSE-13", "228/228", "252/252", "12/12", "6/6", "2/2", "noseRootNarrowing", "noseTipLift", "independent")),
+    "phase validation": (str(PHASE_DIR / "37-VALIDATION.md"), ("Phase 37", "status: passed", "37-01-01", "37-02-02", "37-03-02", "37-04-02", "✅ passed")),
+    "phase verification": (str(PHASE_DIR / "37-VERIFICATION.md"), ("Phase 37", "status: passed", "score: 6/6", "228/228", "252/252", "threats_open: 0", "$gsd-audit-milestone")),
+    "phase security": (str(PHASE_DIR / "37-SECURITY.md"), ("Phase 37", "review: ASVS L1", "threats_open: 0", "T37-01", "T37-08", "high", "closed")),
+    "safety evidence": (str(PHASE_DIR / "37-NOSE-SAFETY-EVIDENCE.md"), ("Phase 37", "NOSE-10", "NOSE-11", "NOSE-12", "NOSE-13", "228/228", "252/252", "12/12", "6/6", "2/2", "noseRootNarrowing", "noseTipLift", "independent")),
 }
 
 
@@ -339,8 +339,15 @@ def check_owner_specs(root: Path) -> list[Result]:
     for name, (relative, tokens) in OWNER_SPECS.items():
         try:
             text = read(root, relative)
-            missing = [token for token in tokens if token not in text]
-            results.append(Result(f"promotion owner: {name}", not missing, "all required facts present" if not missing else f"missing {missing}"))
+            phase_offsets = [match.start() for match in re.finditer(r"Phase:? 37|phase: 37", text, re.IGNORECASE)]
+            windows = [text[max(0, offset - 500) : offset + 5_000] for offset in phase_offsets]
+            missing = [token for token in tokens if not any(token in window for window in windows)]
+            results.append(Result(
+                f"promotion owner: {name}",
+                bool(windows) and not missing,
+                "required facts co-located with a Phase 37 owner section"
+                if windows and not missing else f"phase37Windows={len(windows)}, missing {missing}",
+            ))
         except Exception as error:
             results.append(Result(f"promotion owner: {name}", False, f"blocking error: {error}"))
     return results
@@ -429,6 +436,16 @@ def self_test() -> list[Result]:
     )
     for name, passed in states:
         results.append(Result(f"self-test search {name}", passed, "classified exactly"))
+    allowed_match = rg_scan(
+        Path("."), "fixture classified match", "guard", ("fixture",),
+        classifier=lambda line: line == "fixture:1:guard", runner=fake(0, "fixture:1:guard\n"),
+    )
+    rejected_match = rg_scan(
+        Path("."), "fixture unclassified match", "guard", ("fixture",),
+        classifier=lambda _line: False, runner=fake(0, "fixture:1:guard\n"),
+    )
+    results.append(Result("self-test classified guard allow", allowed_match.ok, "known literal accepted"))
+    results.append(Result("self-test unclassified match failure", not rejected_match.ok, "unknown literal rejected"))
 
     with tempfile.TemporaryDirectory(prefix="phase37-default-") as temporary:
         root = Path(temporary)
@@ -490,9 +507,9 @@ def self_test() -> list[Result]:
         with tempfile.TemporaryDirectory(prefix="phase37-artifact-") as temporary:
             root = Path(temporary)
             subprocess.run(["git", "init", "-q"], cwd=root, check=True)
-            write_fixture(root, ".gitignore", "")
+            write_fixture(root, ".gitignore", "example-images/output/\nexample-images/gallery/\n")
             write_fixture(root, "example-images/output/tracked.png", "not-a-real-png")
-            subprocess.run(["git", "add", "example-images/output/tracked.png"], cwd=root, check=True)
+            subprocess.run(["git", "add", "-f", "example-images/output/tracked.png"], cwd=root, check=True)
             artifact = check_artifacts(root)
             results.append(Result("self-test tracked/staged artifact failure", not artifact.ok, "staged generated artifact rejected"))
     else:
