@@ -26,17 +26,25 @@
 
 ## 3. Active
 
-### A-2026-07-13-v1-9-autonomous
+No active plans. The repository is awaiting definition of the next milestone.
+
+## 4. Completed
+
+### C-2026-07-14-v1-9-autonomous-closeout
 
 | Field | Value |
 | --- | --- |
-| Status | active |
-| Scope | Execute v1.9 Phases 35-37 autonomously, then audit, archive, tag, and clean up the milestone. |
-| Requirements | NOSE-01 through NOSE-14 and DOC-01. |
-| Current step | Independent v1.9 audit passed 15/15 requirements, 12/12 integrations, and 5/5 flows; complete/archive/tag the milestone, then run configured cleanup. |
-| Verification | Per-phase focused/full SwiftPM, renderer/helper, security, review, Nyquist, and milestone-audit gates defined by ROADMAP and REQUIREMENTS. |
+| Completed | 2026-07-14 |
+| Scope | Executed v1.9 Phases 35-37 autonomously, completed the independent milestone audit, archived milestone planning artifacts, and cleaned configured completed-phase directories. |
+| Requirements | NOSE-01 through NOSE-14 and DOC-01 pass 15/15; integration passes 12/12 and end-to-end flows pass 5/5. |
+| Verification | Final SwiftPM passes 228/228; strict renderer/helper evidence passes 252/252; Phase 37 boundary checker passes 33/33; scoped review is clean and `threats_open: 0`. |
+| Lifecycle | Archived roadmap, requirements, audit, and Phase 35-37 directories under `.planning/milestones/`; the annotated local `v1.9` tag is the final closeout action. |
 
-## 4. Completed
+Outcome:
+
+- Independent `noseRootNarrowing` and `noseTipLift` contracts, exact caps, degradation convergence, fail-closed boundaries, and the exact six-row SDK-core `鼻子` branch are complete.
+- Exactly `山根` and `提升` were newly promoted from independent evidence without expanding Demo/device/commercial/packaging/shipping/launch claims.
+- The repository has no active execution plan and is ready for `$gsd-new-milestone`.
 
 ### C-2026-07-14-phase-37-nose-safety-boundary-branch-closeout
 

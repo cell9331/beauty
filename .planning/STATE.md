@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.9
 milestone_name: Nose Remaining Tools and Branch Closeout
 status: Awaiting next milestone
-stopped_at: Milestone v1.9 completed, audited, and archived
+stopped_at: Milestone v1.9 completed, audited, archived, and cleaned up
 last_updated: "2026-07-14T03:38:59.066Z"
-last_activity: 2026-07-14 — Milestone v1.9 completed and archived
+last_activity: 2026-07-14 — Milestone v1.9 completed, audited, archived, and cleaned up
 progress:
   total_phases: 3
   completed_phases: 3
@@ -28,7 +28,7 @@ See: `.planning/PROJECT.md` (updated 2026-07-14)
 Phase: Milestone v1.9 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-07-14 — Milestone v1.9 completed and archived
+Last activity: 2026-07-14 — Milestone v1.9 completed, audited, archived, and cleaned up
 
 ### Phase 36 Public-Facade Output Evidence Result
 
