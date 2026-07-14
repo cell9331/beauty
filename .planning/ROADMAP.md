@@ -85,7 +85,7 @@
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
 | 38. Public Contract and Lip-Support Geometry | 4/4 | Complete | 2026-07-14 |
-| 39. Public-Facade Mouth Geometry Output Evidence | 0/TBD | Not started | - |
+| 39. Public-Facade Mouth Geometry Output Evidence | 1/3 | In Progress|  |
 | 40. Mouth Geometry Safety and Ledger Closeout | 0/TBD | Not started | - |
 
 ## Backlog
