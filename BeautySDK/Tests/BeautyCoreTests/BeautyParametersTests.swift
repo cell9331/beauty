@@ -3,10 +3,10 @@ import BeautySDK
 
 // Requirement evidence: SDK-03, SDK-05.
 final class BeautyParametersTests: XCTestCase {
-    func testNOSE01DefaultsAreZeroEffectAndExpose33StoredFields() {
+    func testPhase38MOUTH01DefaultsAreZeroEffectAndExpose38StoredFields() {
         let parameters = BeautyParameters()
 
-        XCTAssertEqual(Mirror(reflecting: parameters).children.count, 33)
+        XCTAssertEqual(Mirror(reflecting: parameters).children.count, 38)
         XCTAssertEqual(parameters.skinSmoothing, 0)
         XCTAssertEqual(parameters.skinWhitening, 0)
         XCTAssertEqual(parameters.skinRosy, 0)
@@ -37,6 +37,11 @@ final class BeautyParametersTests: XCTestCase {
         XCTAssertEqual(parameters.mouthSize, 0)
         XCTAssertEqual(parameters.mouthWidth, 0)
         XCTAssertEqual(parameters.smile, 0)
+        XCTAssertEqual(parameters.mouthYPosition, 0)
+        XCTAssertEqual(parameters.mouthTilt, 0)
+        XCTAssertEqual(parameters.mouthXPosition, 0)
+        XCTAssertEqual(parameters.lipPeakDefinition, 0)
+        XCTAssertEqual(parameters.lipPlump, 0)
         XCTAssertEqual(parameters.lipColor, 0)
         XCTAssertNil(parameters.filterId)
         XCTAssertEqual(parameters.filterIntensity, 0)
@@ -210,6 +215,120 @@ final class BeautyParametersTests: XCTestCase {
         }
     }
 
+    func testPhase38MOUTH01SignedMouthInputsNormalizeIndependently() {
+        let cases: [(name: String, value: Float, expected: Float)] = [
+            ("negative overflow", -2, -1),
+            ("positive overflow", 2, 1),
+            ("negative in range", -0.37, -0.37),
+            ("positive in range", 0.21, 0.21),
+            ("NaN", .nan, 0),
+            ("positive infinity", .infinity, 0),
+            ("negative infinity", -.infinity, 0),
+        ]
+
+        for testCase in cases {
+            XCTAssertEqual(
+                BeautyParameters(mouthYPosition: testCase.value).mouthYPosition,
+                testCase.expected,
+                accuracy: 0.0001,
+                "mouthYPosition \(testCase.name)"
+            )
+            XCTAssertEqual(
+                BeautyParameters(mouthTilt: testCase.value).mouthTilt,
+                testCase.expected,
+                accuracy: 0.0001,
+                "mouthTilt \(testCase.name)"
+            )
+            XCTAssertEqual(
+                BeautyParameters(mouthXPosition: testCase.value).mouthXPosition,
+                testCase.expected,
+                accuracy: 0.0001,
+                "mouthXPosition \(testCase.name)"
+            )
+        }
+    }
+
+    func testPhase38MOUTH02PositiveLipInputsNormalizeIndependently() {
+        let cases: [(name: String, value: Float, expected: Float)] = [
+            ("negative", -1, 0),
+            ("overflow", 2, 1),
+            ("peak in range", 0.21, 0.21),
+            ("plump in range", 0.37, 0.37),
+            ("NaN", .nan, 0),
+            ("positive infinity", .infinity, 0),
+            ("negative infinity", -.infinity, 0),
+        ]
+
+        for testCase in cases {
+            XCTAssertEqual(
+                BeautyParameters(lipPeakDefinition: testCase.value).lipPeakDefinition,
+                testCase.expected,
+                accuracy: 0.0001,
+                "lipPeakDefinition \(testCase.name)"
+            )
+            XCTAssertEqual(
+                BeautyParameters(lipPlump: testCase.value).lipPlump,
+                testCase.expected,
+                accuracy: 0.0001,
+                "lipPlump \(testCase.name)"
+            )
+        }
+    }
+
+    func testPhase38MOUTH01NormalizedCopyReappliesRulesAfterMutableAssignment() {
+        var parameters = BeautyParameters(
+            mouthYPosition: 0.11,
+            mouthTilt: 0.22,
+            mouthXPosition: 0.33,
+            lipPeakDefinition: 0.44,
+            lipPlump: 0.55
+        )
+        parameters.mouthYPosition = 2
+        parameters.mouthTilt = -2
+        parameters.mouthXPosition = .nan
+        parameters.lipPeakDefinition = -1
+        parameters.lipPlump = .infinity
+
+        let normalized = parameters.normalized()
+
+        XCTAssertEqual(normalized.mouthYPosition, 1)
+        XCTAssertEqual(normalized.mouthTilt, -1)
+        XCTAssertEqual(normalized.mouthXPosition, 0)
+        XCTAssertEqual(normalized.lipPeakDefinition, 0)
+        XCTAssertEqual(normalized.lipPlump, 0)
+        XCTAssertEqual(parameters.mouthYPosition, 2, "normalization returns a copy")
+        XCTAssertEqual(parameters.mouthTilt, -2, "normalization returns a copy")
+        XCTAssertTrue(parameters.mouthXPosition.isNaN, "normalization does not mutate the source")
+        XCTAssertEqual(parameters.lipPeakDefinition, -1, "normalization returns a copy")
+        XCTAssertTrue(parameters.lipPlump.isInfinite, "normalization does not mutate the source")
+    }
+
+    func testPhase38MOUTH02NewMouthFieldsHaveIndependentStorageAndEquality() {
+        let distinct = BeautyParameters(
+            mouthYPosition: -0.11,
+            mouthTilt: 0.22,
+            mouthXPosition: -0.33,
+            lipPeakDefinition: 0.44,
+            lipPlump: 0.55
+        )
+
+        XCTAssertEqual(distinct.mouthYPosition, -0.11, accuracy: 0.0001)
+        XCTAssertEqual(distinct.mouthTilt, 0.22, accuracy: 0.0001)
+        XCTAssertEqual(distinct.mouthXPosition, -0.33, accuracy: 0.0001)
+        XCTAssertEqual(distinct.lipPeakDefinition, 0.44, accuracy: 0.0001)
+        XCTAssertEqual(distinct.lipPlump, 0.55, accuracy: 0.0001)
+        XCTAssertNotEqual(
+            distinct,
+            BeautyParameters(
+                mouthYPosition: -0.33,
+                mouthTilt: -0.11,
+                mouthXPosition: 0.22,
+                lipPeakDefinition: 0.55,
+                lipPlump: 0.44
+            )
+        )
+    }
+
     func testSDK03CodableRoundTripAndMissingFieldsUseDefaults() throws {
         let parameters = BeautyParameters(
             skinSmoothing: 0.2,
@@ -276,7 +395,7 @@ final class BeautyParametersTests: XCTestCase {
         XCTAssertEqual(decoded.noseTipLift, 0)
     }
 
-    func testNOSE02New33FieldValuesRoundTripWithoutAliasing() throws {
+    func testPhase38MOUTH03ExistingNoseValuesRoundTripWithin38FieldInventory() throws {
         let parameters = BeautyParameters(
             noseRootNarrowing: 0.21,
             noseTipLift: 0.37,
@@ -287,10 +406,100 @@ final class BeautyParametersTests: XCTestCase {
         let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
         let decoded = try JSONDecoder().decode(BeautyParameters.self, from: data)
 
-        XCTAssertEqual(object.count, 33)
+        XCTAssertEqual(object.count, 38)
         XCTAssertEqual(decoded, parameters)
         XCTAssertEqual(decoded.noseRootNarrowing, 0.21, accuracy: 0.0001)
         XCTAssertEqual(decoded.noseTipLift, 0.37, accuracy: 0.0001)
+    }
+
+    func testPhase38MOUTH03Legacy33FieldJSONDecodesNewMouthFieldsAsZero() throws {
+        let legacyJSON = Data(#"""
+        {
+          "skinSmoothing": 0.1,
+          "skinWhitening": 0.1,
+          "skinRosy": 0.1,
+          "skinSharpen": 0.1,
+          "brightness": 0.1,
+          "contrast": 0.1,
+          "saturation": 0.1,
+          "temperature": 0.1,
+          "tint": 0.1,
+          "exposure": 0.1,
+          "highlight": 0.1,
+          "shadow": 0.1,
+          "faceSlim": 0.1,
+          "faceSmall": 0.1,
+          "faceVShape": 0.1,
+          "jawSlim": 0.1,
+          "chinLength": 0.1,
+          "eyeSize": 0.1,
+          "eyeDistance": 0.1,
+          "eyeYPosition": 0.1,
+          "eyeTailLift": 0.1,
+          "noseSlim": 0.1,
+          "noseWingSlim": 0.1,
+          "noseTipSize": 0.1,
+          "noseBridge": 0.1,
+          "noseRootNarrowing": 0.1,
+          "noseTipLift": 0.1,
+          "mouthSize": 0.1,
+          "mouthWidth": 0.1,
+          "smile": 0.1,
+          "lipColor": 0.1,
+          "filterId": null,
+          "filterIntensity": 0.1
+        }
+        """#.utf8)
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: legacyJSON) as? [String: Any])
+        XCTAssertEqual(object.count, 33)
+
+        let decoded = try JSONDecoder().decode(BeautyParameters.self, from: legacyJSON)
+
+        XCTAssertEqual(decoded.mouthYPosition, 0)
+        XCTAssertEqual(decoded.mouthTilt, 0)
+        XCTAssertEqual(decoded.mouthXPosition, 0)
+        XCTAssertEqual(decoded.lipPeakDefinition, 0)
+        XCTAssertEqual(decoded.lipPlump, 0)
+    }
+
+    func testPhase38MOUTH03New38FieldValuesRoundTripWithoutAliasing() throws {
+        let parameters = BeautyParameters(
+            mouthYPosition: -0.11,
+            mouthTilt: 0.22,
+            mouthXPosition: -0.33,
+            lipPeakDefinition: 0.44,
+            lipPlump: 0.55,
+            filterId: "clean_01"
+        )
+
+        let data = try JSONEncoder().encode(parameters)
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        let decoded = try JSONDecoder().decode(BeautyParameters.self, from: data)
+
+        XCTAssertEqual(object.count, 38)
+        XCTAssertEqual(decoded, parameters)
+        XCTAssertEqual(decoded.mouthYPosition, -0.11, accuracy: 0.0001)
+        XCTAssertEqual(decoded.mouthTilt, 0.22, accuracy: 0.0001)
+        XCTAssertEqual(decoded.mouthXPosition, -0.33, accuracy: 0.0001)
+        XCTAssertEqual(decoded.lipPeakDefinition, 0.44, accuracy: 0.0001)
+        XCTAssertEqual(decoded.lipPlump, 0.55, accuracy: 0.0001)
+    }
+
+    func testPhase38MOUTH03ExistingLabeledInitializerCallsRemainNeutral() {
+        let existingSourceStyle = BeautyParameters(
+            skinSmoothing: 0.2,
+            noseBridge: 0.1,
+            lipColor: 0.3,
+            filterId: "clean_01"
+        )
+
+        XCTAssertEqual(existingSourceStyle.mouthYPosition, 0)
+        XCTAssertEqual(existingSourceStyle.mouthTilt, 0)
+        XCTAssertEqual(existingSourceStyle.mouthXPosition, 0)
+        XCTAssertEqual(existingSourceStyle.lipPeakDefinition, 0)
+        XCTAssertEqual(existingSourceStyle.lipPlump, 0)
+        XCTAssertEqual(existingSourceStyle.lipColor, 0.3, accuracy: 0.0001)
+        XCTAssertEqual(existingSourceStyle.filterId, "clean_01")
     }
 
     func testNOSE02ExistingLabeledInitializerCallsRemainNeutral() {

@@ -34,6 +34,11 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
     public var mouthSize: Float
     public var mouthWidth: Float
     public var smile: Float
+    public var mouthYPosition: Float
+    public var mouthTilt: Float
+    public var mouthXPosition: Float
+    public var lipPeakDefinition: Float
+    public var lipPlump: Float
     public var lipColor: Float
 
     public var filterId: String?
@@ -70,6 +75,11 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         case mouthSize
         case mouthWidth
         case smile
+        case mouthYPosition
+        case mouthTilt
+        case mouthXPosition
+        case lipPeakDefinition
+        case lipPlump
         case lipColor
         case filterId
         case filterIntensity
@@ -106,6 +116,11 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         mouthSize: Float = 0,
         mouthWidth: Float = 0,
         smile: Float = 0,
+        mouthYPosition: Float = 0,
+        mouthTilt: Float = 0,
+        mouthXPosition: Float = 0,
+        lipPeakDefinition: Float = 0,
+        lipPlump: Float = 0,
         lipColor: Float = 0,
         filterId: String? = nil,
         filterIntensity: Float = 0
@@ -145,6 +160,11 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         self.mouthSize = Self.clampSigned(mouthSize)
         self.mouthWidth = Self.clampSigned(mouthWidth)
         self.smile = Self.clampUnit(smile)
+        self.mouthYPosition = Self.clampSigned(mouthYPosition)
+        self.mouthTilt = Self.clampSigned(mouthTilt)
+        self.mouthXPosition = Self.clampSigned(mouthXPosition)
+        self.lipPeakDefinition = Self.clampUnit(lipPeakDefinition)
+        self.lipPlump = Self.clampUnit(lipPlump)
         self.lipColor = Self.clampUnit(lipColor)
 
         self.filterId = filterId
@@ -184,6 +204,11 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             mouthSize: try container.decodeFloatIfPresent(.mouthSize),
             mouthWidth: try container.decodeFloatIfPresent(.mouthWidth),
             smile: try container.decodeFloatIfPresent(.smile),
+            mouthYPosition: try container.decodeFloatIfPresent(.mouthYPosition),
+            mouthTilt: try container.decodeFloatIfPresent(.mouthTilt),
+            mouthXPosition: try container.decodeFloatIfPresent(.mouthXPosition),
+            lipPeakDefinition: try container.decodeFloatIfPresent(.lipPeakDefinition),
+            lipPlump: try container.decodeFloatIfPresent(.lipPlump),
             lipColor: try container.decodeFloatIfPresent(.lipColor),
             filterId: try container.decodeIfPresent(String.self, forKey: .filterId),
             filterIntensity: try container.decodeFloatIfPresent(.filterIntensity)
@@ -222,6 +247,11 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             mouthSize: mouthSize,
             mouthWidth: mouthWidth,
             smile: smile,
+            mouthYPosition: mouthYPosition,
+            mouthTilt: mouthTilt,
+            mouthXPosition: mouthXPosition,
+            lipPeakDefinition: lipPeakDefinition,
+            lipPlump: lipPlump,
             lipColor: lipColor,
             filterId: filterId,
             filterIntensity: filterIntensity
