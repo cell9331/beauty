@@ -41,7 +41,7 @@ GENERATED_ROOTS = (
 )
 LIFECYCLE_CLAIM = re.compile(
     r"v1\.10.{0,80}(audit (passed|complete)|archiv(ed|e complete)|tagged|cleanup complete|launch[- ]ready|shipping complete)",
-    re.IGNORECASE,
+    re.IGNORECASE | re.DOTALL,
 )
 
 
@@ -148,7 +148,7 @@ def check_imports(root: Path) -> Result:
 
 def check_public_geometry(root: Path) -> Result:
     lines = search_lines([
-        "rg", "-n", "-U", r"(?s)(public|@_spi)[^{;]{0,240}(FaceGeometry|WarpControlPoint|SIMD[234]|outerLips|innerLips|upperLips|lowerLips|\blandmark\b|\bsupport\b|\bbounds\b|DetectionProvider|WarpProvider)",
+        "rg", "-n", "-U", r"(?s)(public|@_spi)[^{;]{0,240}(FaceGeometry|WarpControlPoint|SIMD[234]|outerLips|innerLips|upperLips|lowerLips|\b(?:landmarks?|supports?|bounds)\b|[A-Za-z]*(?:Landmarks|Supports|Bounds)\b|DetectionProvider|WarpProvider)",
         "BeautySDK/Sources",
     ], root)
     unknown = [line for line in lines if not ("BeautyEngineTestingSupport.swift" in line and "SDKTestingFaceDetectionProvider" in line)]
@@ -170,8 +170,9 @@ def check_remote_and_commercial(root: Path) -> Result:
 
 
 def check_diagnostic_privacy(root: Path) -> Result:
-    pattern = r'(message:|metrics\[).*?(outerLips|innerLips|upperLips|lowerLips|landmark|coordinate|control.?point|SIMD|bounds|/private/|file://|mouthYPosition|mouthTilt|mouthXPosition|lipPeakDefinition|lipPlump)'
-    lines = search_lines(["rg", "-n", "-i", pattern, "BeautySDK/Sources"], root)
+    forbidden = r'(outerLips|innerLips|upperLips|lowerLips|landmarks?|supports?|coordinate|control.?point|SIMD|bounds|/private/|file://|mouthYPosition|mouthTilt|mouthXPosition|lipPeakDefinition|lipPlump)'
+    pattern = rf'(?s)(message:\s*"[^"\n]{{0,240}}{forbidden}|metrics\[\s*"[^"\n]{{0,240}}{forbidden})'
+    lines = search_lines(["rg", "-n", "-i", "-U", pattern, "BeautySDK/Sources"], root)
     return Result("active diagnostic privacy", not lines, "clean no-match" if not lines else " | ".join(lines[:5]))
 
 
@@ -184,15 +185,16 @@ def check_privacy_manifest_disposition(root: Path) -> Result:
                   "no manifest; explicit local-first deferral and reopen triggers" if ok else f"manifests={len(manifests)}, tokens={sum(t in security for t in tokens)}/3")
 
 
-def check_lifecycle_and_archive(root: Path) -> Result:
+def check_lifecycle_and_archive(root: Path, runner: Runner = run) -> Result:
     audit_files = list((root / ".planning").glob("*v1.10*MILESTONE-AUDIT.md")) + list((root / ".planning").glob("v1.10-MILESTONE-AUDIT.md"))
-    tags = git_lines(["git", "tag", "--list", "v1.10"], root)
-    archive_changes = git_lines(["git", "diff", "--name-only", "bc34c10..HEAD", "--", ".planning/milestones"], root)
-    claim_pattern = LIFECYCLE_CLAIM.pattern
-    claim_lines = search_lines(["rg", "-n", "-i", claim_pattern, "ARCHITECTURE.md", "DESIGN.md", "SECURITY.md", "RELIABILITY.md", "PRODUCT_SENSE.md", "QUALITY_SCORE.md", "PLANS.md", ".planning/PROJECT.md", ".planning/STATE.md"], root)
-    ok = not audit_files and not tags and not archive_changes and not claim_lines
+    tags = git_lines(["git", "tag", "--list", "v1.10"], root, runner)
+    archive_changes = git_lines(["git", "diff", "--name-only", "bc34c10..HEAD", "--", ".planning/milestones", ".worktrees", ".planning/worktrees"], root, runner)
+    worktree_status = git_lines(["git", "status", "--short", "--", ".worktrees", ".planning/worktrees"], root, runner)
+    claim_pattern = "(?s)" + LIFECYCLE_CLAIM.pattern
+    claim_lines = search_lines(["rg", "-n", "-i", "-U", claim_pattern, "ARCHITECTURE.md", "DESIGN.md", "SECURITY.md", "RELIABILITY.md", "PRODUCT_SENSE.md", "QUALITY_SCORE.md", "PLANS.md", ".planning/PROJECT.md", ".planning/STATE.md"], root, runner)
+    ok = not audit_files and not tags and not archive_changes and not worktree_status and not claim_lines
     return Result("lifecycle/archive nonclaim", ok,
-                  "no audit artifact, tag, archive mutation, or lifecycle success claim" if ok else f"audit={audit_files}, tags={tags}, archive={archive_changes}, claims={claim_lines[:3]}")
+                  "no audit artifact, tag, archive/worktree mutation, or lifecycle success claim" if ok else f"audit={audit_files}, tags={tags}, archive={archive_changes}, worktrees={worktree_status}, claims={claim_lines[:3]}")
 
 
 def expected_row_statuses(allow_promotion: bool) -> dict[str, str]:
@@ -236,10 +238,20 @@ def check_promotion(root: Path, allow_promotion: bool) -> Result:
                   "five geometry rows exact; teeth future; branch partial" if not failures else "; ".join(failures))
 
 
+def phase40_section(text: str) -> str:
+    match = re.search(r"^(#{2,3})\s+[^\n]*(?:v1\.10|Phase 40)[^\n]*$", text, re.MULTILINE | re.IGNORECASE)
+    if not match:
+        return ""
+    level = len(match.group(1))
+    following = text[match.end():]
+    next_heading = re.search(rf"^#{{1,{level}}}\s+", following, re.MULTILINE)
+    return text[match.start(): match.end() + (next_heading.start() if next_heading else len(following))]
+
+
 def check_closeout_owners(root: Path, allow_promotion: bool) -> Result:
     if not allow_promotion:
         return Result("current-owner closeout", True, "deferred in pre-promotion mode")
-    required_tokens = {
+    scoped_tokens = {
         "ARCHITECTURE.md": ("v1.10", "mouthYPosition"),
         "DESIGN.md": ("v1.10", "0.25", "fourteen"),
         "SECURITY.md": ("v1.10", "threats_open: 0"),
@@ -247,18 +259,26 @@ def check_closeout_owners(root: Path, allow_promotion: bool) -> Result:
         "PRODUCT_SENSE.md": ("v1.10", "白牙", "partial"),
         "QUALITY_SCORE.md": ("v1.10", "260"),
         ".planning/PROJECT.md": ("v1.10", "Phase 40"),
-        ".planning/REQUIREMENTS.md": ("[x] **MOUTH-12**", "[x] **MOUTH-13**", "[x] **MOUTH-14**", "[x] **MOUTH-15**", "[x] **MOUTH-16**", "[x] **DOC-01**"),
-        ".planning/ROADMAP.md": ("| 40. Mouth Geometry Safety and Ledger Closeout | 4/4 | Complete |"),
         ".planning/STATE.md": ("$gsd-audit-milestone", "Phase 40"),
         "PLANS.md": ("Phase 40", "`completed`"),
     }
     failures = []
-    for relative, tokens in required_tokens.items():
+    for relative, tokens in scoped_tokens.items():
         text = read(root, relative)
+        section = phase40_section(text)
+        if not section:
+            failures.append(f"{relative}: missing bounded v1.10/Phase 40 section")
+            continue
         for token in tokens:
-            if token not in text:
-                failures.append(f"{relative}: missing {token}")
+            if token not in section:
+                failures.append(f"{relative}: Phase 40 section missing {token}")
     requirements = read(root, ".planning/REQUIREMENTS.md")
+    for token in ("[x] **MOUTH-12**", "[x] **MOUTH-13**", "[x] **MOUTH-14**", "[x] **MOUTH-15**", "[x] **MOUTH-16**", "[x] **DOC-01**"):
+        if token not in requirements:
+            failures.append(f"REQUIREMENTS missing {token}")
+    roadmap = read(root, ".planning/ROADMAP.md")
+    if "| 40. Mouth Geometry Safety and Ledger Closeout | 4/4 | Complete |" not in roadmap:
+        failures.append("ROADMAP missing exact Phase 40 4/4 Complete row")
     for requirement in ("MOUTH-12", "MOUTH-13", "MOUTH-14", "MOUTH-15", "MOUTH-16", "DOC-01"):
         rows = [cells for cells in table_rows(requirements) if len(cells) >= 3 and cells[0] == requirement]
         if len(rows) != 1 or rows[0][1] != "Phase 40" or rows[0][2] != "Complete":
@@ -327,12 +347,19 @@ def self_test(source_root: Path) -> int:
             "BeautyDemo/BeautyDemoTests", "docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md",
             "docs/meitu-function-blueprint/FEATURE_MATRIX.md",
             "docs/meitu-function-blueprint/features/beauty-shaping/README.md",
-            "docs/meitu-function-blueprint/features/beauty-shaping/lips/README.md", "SECURITY.md", ".gitignore",
+            "docs/meitu-function-blueprint/features/beauty-shaping/lips/README.md", "ARCHITECTURE.md",
+            "DESIGN.md", "SECURITY.md", "RELIABILITY.md", "PRODUCT_SENSE.md", "QUALITY_SCORE.md",
+            "PLANS.md", ".planning/PROJECT.md", ".planning/REQUIREMENTS.md", ".planning/ROADMAP.md",
+            ".planning/STATE.md", ".planning/phases/40-mouth-geometry-safety-and-ledger-closeout/40-SECURITY.md",
+            ".planning/phases/40-mouth-geometry-safety-and-ledger-closeout/40-VALIDATION.md",
+            ".planning/phases/40-mouth-geometry-safety-and-ledger-closeout/40-VERIFICATION.md", ".gitignore",
         ):
             source = source_root / relative
             destination = root / relative
             destination.parent.mkdir(parents=True, exist_ok=True)
-            if source.is_dir():
+            if not source.exists():
+                destination.write_text("fixture pending\n")
+            elif source.is_dir():
                 shutil.copytree(source, destination, dirs_exist_ok=True)
             else:
                 shutil.copy2(source, destination)
@@ -360,8 +387,10 @@ def self_test(source_root: Path) -> int:
         demo_leak.unlink()
 
         public_leak = root / "BeautySDK/Sources/BeautySDK/PublicLeak.swift"
-        public_leak.write_text("public struct PublicLeak {\n public let bounds: FaceGeometry\n}\n")
+        public_leak.write_text("public struct PublicLeak {\n public let landmarks: MouthLandmarks\n}\n")
         require(not check_public_geometry(root).ok, "multiline public geometry must fail")
+        public_leak.write_text("public struct PublicLeak {\n public let supports: MouthSupports\n}\n")
+        require(not check_public_geometry(root).ok, "plural public supports must fail")
         public_leak.unlink()
 
         network_leak = root / "BeautySDK/Sources/BeautySDK/NetworkLeak.swift"
@@ -369,9 +398,14 @@ def self_test(source_root: Path) -> int:
         require(not check_remote_and_commercial(root).ok, "network path must fail")
         network_leak.unlink()
 
+        commercial_leak = root / "BeautySDK/Sources/BeautySDK/CommercialLeak.swift"
+        commercial_leak.write_text("import StoreKit\n")
+        require(not check_remote_and_commercial(root).ok, "commercial path must fail")
+        commercial_leak.unlink()
+
         diagnostic_leak = root / "BeautySDK/Sources/BeautySDK/DiagnosticLeak.swift"
-        diagnostic_leak.write_text('let warning = BeautyValidationWarning(message: "outerLips coordinate")\n')
-        require(not check_diagnostic_privacy(root).ok, "diagnostic payload must fail")
+        diagnostic_leak.write_text('let warning = BeautyValidationWarning(\n message:\n "outerLips coordinate"\n)\n')
+        require(not check_diagnostic_privacy(root).ok, "multiline diagnostic payload must fail")
         diagnostic_leak.unlink()
 
         ledger = root / "docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md"
@@ -380,19 +414,110 @@ def self_test(source_root: Path) -> int:
         require(not check_promotion(root, False).ok, "duplicate contradictory promotion row must fail")
         ledger.write_text(original_ledger)
 
+        promoted_rows = "\n".join(
+            f"| `嘴唇` | {row} | {status} | evidence | boundary |"
+            for row, status in expected_row_statuses(True).items()
+        )
+        ledger.write_text(promoted_rows + "\n")
+        owner_tokens = " ".join((*FIELDS, "Phase 40", "白牙"))
+        matrix = root / "docs/meitu-function-blueprint/FEATURE_MATRIX.md"
+        parent = root / "docs/meitu-function-blueprint/features/beauty-shaping/README.md"
+        lips = root / "docs/meitu-function-blueprint/features/beauty-shaping/lips/README.md"
+        matrix.write_text(f"| Beauty shaping | 嘴唇 | partial | owner | {owner_tokens} |\n")
+        parent.write_text(f"| `嘴唇` | partial | owner | {owner_tokens} |\n")
+        lips.write_text(f"# Lips\n\n- Status: `partial`.\n\n## Phase 40\n{owner_tokens}\n")
+        require(check_promotion(root, True).ok, "valid structured allow-promotion fixture must pass")
+
+        for row in expected_row_statuses(True):
+            current = ledger.read_text()
+            line = next(line for line in current.splitlines() if f"| {row} |" in line)
+            ledger.write_text(current.replace(line + "\n", ""))
+            require(not check_promotion(root, True).ok, f"missing promotion row {row} must fail")
+            ledger.write_text(current)
+        for owner_path, token in ((matrix, "mouthTilt"), (parent, "lipPlump"), (lips, "mouthXPosition")):
+            current = owner_path.read_text()
+            owner_path.write_text(current.replace(token, "missing-token"))
+            require(not check_promotion(root, True).ok, f"stale branch owner {owner_path.name} must fail")
+            owner_path.write_text(current)
+
+        scoped_fixture = {
+            "ARCHITECTURE.md": "## v1.10 Phase 40\nv1.10 mouthYPosition\n",
+            "DESIGN.md": "## v1.10 Phase 40\nv1.10 0.25 fourteen\n",
+            "SECURITY.md": "## v1.10 Phase 40\nv1.10 threats_open: 0\n",
+            "RELIABILITY.md": "## v1.10 Phase 40\nv1.10 0.5 lipPlump\n",
+            "PRODUCT_SENSE.md": "## v1.10 Phase 40\nv1.10 白牙 partial\n",
+            "QUALITY_SCORE.md": "## v1.10 Phase 40\nv1.10 260\n",
+            ".planning/PROJECT.md": "## Current Milestone v1.10\nPhase 40\n",
+            ".planning/STATE.md": "## Phase 40\n$gsd-audit-milestone\n",
+            "PLANS.md": "### Phase 40\n`completed`\n",
+        }
+        for relative, content in scoped_fixture.items():
+            (root / relative).write_text(content)
+        requirement_ids = ("MOUTH-12", "MOUTH-13", "MOUTH-14", "MOUTH-15", "MOUTH-16", "DOC-01")
+        requirements_text = "\n".join(f"- [x] **{item}**: done" for item in requirement_ids) + "\n\n" + \
+            "\n".join(f"| {item} | Phase 40 | Complete |" for item in requirement_ids) + "\n"
+        (root / ".planning/REQUIREMENTS.md").write_text(requirements_text)
+        (root / ".planning/ROADMAP.md").write_text("| 40. Mouth Geometry Safety and Ledger Closeout | 4/4 | Complete |\n")
+        phase_dir = root / ".planning/phases/40-mouth-geometry-safety-and-ledger-closeout"
+        phase_dir.mkdir(parents=True, exist_ok=True)
+        (phase_dir / "40-SECURITY.md").write_text("threats_open: 0\n")
+        (phase_dir / "40-VALIDATION.md").write_text("nyquist_compliant: true\n")
+        (phase_dir / "40-VERIFICATION.md").write_text("status: passed\n")
+        require(check_closeout_owners(root, True).ok, "valid scoped closeout fixture must pass")
+
+        for relative, content in scoped_fixture.items():
+            path = root / relative
+            token = next(token for token in ("mouthYPosition", "fourteen", "threats_open: 0", "lipPlump", "白牙", "260", "Phase 40", "$gsd-audit-milestone", "`completed`") if token in content)
+            path.write_text(content.replace(token, "stale-history-only"))
+            require(not check_closeout_owners(root, True).ok, f"isolated owner {relative} must fail")
+            path.write_text(content)
+        original_requirements = (root / ".planning/REQUIREMENTS.md").read_text()
+        for item in requirement_ids:
+            (root / ".planning/REQUIREMENTS.md").write_text(original_requirements.replace(f"| {item} | Phase 40 | Complete |", f"| {item} | Phase 39 | Pending |"))
+            require(not check_closeout_owners(root, True).ok, f"isolated traceability {item} must fail")
+        (root / ".planning/REQUIREMENTS.md").write_text(original_requirements)
+
         manifest = root / "BeautySDK/PrivacyInfo.xcprivacy"
         manifest.write_text("fixture")
         require(not check_privacy_manifest_disposition(root).ok, "unexpected privacy manifest must fail")
         manifest.unlink()
 
-        require(LIFECYCLE_CLAIM.search("v1.10 audit passed and archived") is not None,
-                "premature lifecycle claim classifier must match")
-        try:
-            stale_closeout = check_closeout_owners(root, True)
-        except Exception:
-            passed += 1
-        else:
-            require(not stale_closeout.ok, "stale/missing allow-promotion owners must fail")
+        def clean_lifecycle_runner(command: Sequence[str], cwd: Path) -> subprocess.CompletedProcess[str]:
+            if command and command[0] == "rg":
+                return run(command, cwd)
+            return subprocess.CompletedProcess(command, 0, "", "")
+
+        require(check_lifecycle_and_archive(root, clean_lifecycle_runner).ok, "clean lifecycle fixture must pass")
+        architecture = root / "ARCHITECTURE.md"
+        clean_architecture = architecture.read_text()
+        architecture.write_text(clean_architecture + "\n## v1.10\n- Milestone audit passed\n")
+        require(not check_lifecycle_and_archive(root, clean_lifecycle_runner).ok, "multiline lifecycle claim must fail")
+        architecture.write_text(clean_architecture)
+        audit = root / ".planning/v1.10-MILESTONE-AUDIT.md"
+        audit.write_text("status: passed\n")
+        require(not check_lifecycle_and_archive(root, clean_lifecycle_runner).ok, "premature audit artifact must fail")
+        audit.unlink()
+
+        def tag_runner(command: Sequence[str], cwd: Path) -> subprocess.CompletedProcess[str]:
+            if command[:3] == ["git", "tag", "--list"]:
+                return subprocess.CompletedProcess(command, 0, "v1.10\n", "")
+            return clean_lifecycle_runner(command, cwd)
+
+        require(not check_lifecycle_and_archive(root, tag_runner).ok, "premature v1.10 tag must fail")
+
+        def archive_runner(command: Sequence[str], cwd: Path) -> subprocess.CompletedProcess[str]:
+            if command[:3] == ["git", "diff", "--name-only"]:
+                return subprocess.CompletedProcess(command, 0, ".planning/milestones/v1.10-ROADMAP.md\n", "")
+            return clean_lifecycle_runner(command, cwd)
+
+        require(not check_lifecycle_and_archive(root, archive_runner).ok, "archive mutation must fail")
+
+        def worktree_runner(command: Sequence[str], cwd: Path) -> subprocess.CompletedProcess[str]:
+            if command[:3] == ["git", "status", "--short"]:
+                return subprocess.CompletedProcess(command, 0, " M .worktrees/state\n", "")
+            return clean_lifecycle_runner(command, cwd)
+
+        require(not check_lifecycle_and_archive(root, worktree_runner).ok, "worktree mutation must fail")
 
         clean_git: Runner = lambda command, _root: subprocess.CompletedProcess(
             command, 0, "", ""
@@ -400,8 +525,16 @@ def self_test(source_root: Path) -> int:
         tracked_git: Runner = lambda command, _root: subprocess.CompletedProcess(
             command, 0, "example-images/output/leak.png\n" if command[:2] == ["git", "ls-files"] else "", ""
         ) if command[:3] != ["git", "check-ignore", "-q"] else subprocess.CompletedProcess(command, 0, "", "")
+        staged_git: Runner = lambda command, _root: subprocess.CompletedProcess(
+            command, 0, "example-images/gallery/leak.png\n" if command[:3] == ["git", "diff", "--cached"] else "", ""
+        ) if command[:3] != ["git", "check-ignore", "-q"] else subprocess.CompletedProcess(command, 0, "", "")
+        ignored_fail: Runner = lambda command, _root: subprocess.CompletedProcess(
+            command, 1 if command[:3] == ["git", "check-ignore", "-q"] else 0, "", ""
+        )
         require(check_artifacts(root, clean_git).ok, "clean artifact fixture must pass")
         require(not check_artifacts(root, tracked_git).ok, "tracked artifact fixture must fail")
+        require(not check_artifacts(root, staged_git).ok, "staged artifact fixture must fail")
+        require(not check_artifacts(root, ignored_fail).ok, "non-ignored artifact fixture must fail")
 
         outside = Path(directory) / "outside-package"
         outside.write_text(original_package)
