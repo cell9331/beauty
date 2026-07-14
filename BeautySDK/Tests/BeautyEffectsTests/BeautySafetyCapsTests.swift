@@ -3,6 +3,11 @@ import BeautyCore
 @testable import BeautyEffects
 
 final class BeautySafetyCapsTests: XCTestCase {
+    func testNOSE10FinalRemainingNoseCapsAreExactlyPointTwoFive() {
+        XCTAssertEqual(BeautySafetyCaps.noseRootNarrowing, 0.25)
+        XCTAssertEqual(BeautySafetyCaps.noseTipLift, 0.25)
+    }
+
     func testPhase6SafetyCapsMatchCanonicalConstants() {
         XCTAssertEqual(BeautySafetyCaps.skinSmoothing, 0.60, accuracy: 0.0001)
         XCTAssertEqual(BeautySafetyCaps.skinWhitening, 0.50, accuracy: 0.0001)

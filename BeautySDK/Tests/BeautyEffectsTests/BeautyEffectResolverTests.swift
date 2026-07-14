@@ -228,6 +228,80 @@ final class BeautyEffectResolverTests: XCTestCase {
         }
     }
 
+    func testNOSE10FinalRemainingNoseCapNormalizationWarningAndMetricMatrix() {
+        struct Field {
+            let name: String
+            let makeParameters: (Float) -> BeautyParameters
+            let publicValue: KeyPath<BeautyParameters, Float>
+            let effectiveValue: KeyPath<BeautyEffectiveStrengths, Float>
+        }
+        struct Row {
+            let name: String
+            let input: Float
+            let normalized: Float
+            let effective: Float
+            let cappedCount: Double
+            let eligible: Bool
+        }
+
+        let fields = [
+            Field(
+                name: "noseRootNarrowing",
+                makeParameters: { BeautyParameters(noseRootNarrowing: $0) },
+                publicValue: \.noseRootNarrowing,
+                effectiveValue: \.noseRootNarrowing
+            ),
+            Field(
+                name: "noseTipLift",
+                makeParameters: { BeautyParameters(noseTipLift: $0) },
+                publicValue: \.noseTipLift,
+                effectiveValue: \.noseTipLift
+            ),
+        ]
+        let rows = [
+            Row(name: "zero", input: 0, normalized: 0, effective: 0, cappedCount: 0, eligible: false),
+            Row(name: "exact cap", input: 0.25, normalized: 0.25, effective: 0.25, cappedCount: 0, eligible: true),
+            Row(name: "public overflow", input: 1, normalized: 1, effective: 0.25, cappedCount: 1, eligible: true),
+            Row(name: "negative", input: -1, normalized: 0, effective: 0, cappedCount: 0, eligible: false),
+            Row(name: "nan", input: .nan, normalized: 0, effective: 0, cappedCount: 0, eligible: false),
+            Row(name: "positive infinity", input: .infinity, normalized: 0, effective: 0, cappedCount: 0, eligible: false),
+            Row(name: "negative infinity", input: -.infinity, normalized: 0, effective: 0, cappedCount: 0, eligible: false),
+        ]
+
+        for field in fields {
+            for row in rows {
+                let message = "\(field.name) \(row.name)"
+                let parameters = field.makeParameters(row.input)
+                let normalized = parameters.normalized()
+                let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)
+
+                XCTAssertEqual(parameters[keyPath: field.publicValue], row.normalized, message)
+                XCTAssertEqual(normalized[keyPath: field.publicValue], row.normalized, message)
+                XCTAssertEqual(plan.effectiveStrengths[keyPath: field.effectiveValue], row.effective, message)
+                XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], row.cappedCount, message)
+                XCTAssertEqual(plan.activeDomains.contains(.nose), row.eligible, message)
+                XCTAssertFalse(plan.skippedDomains.contains(.nose), message)
+                XCTAssertEqual(
+                    plan.warnings.filter { $0.code == "beauty_strength_capped" }.count,
+                    row.cappedCount == 0 ? 0 : 1,
+                    message
+                )
+                XCTAssertFalse(plan.warnings.contains { $0.code == "nose_inputs_missing" }, message)
+                XCTAssertEqual(
+                    Set(plan.metrics.keys),
+                    row.eligible
+                        ? ["beauty.effects.activeCount", "beauty.effects.cappedCount", "beauty.effects.geometryPointCount"]
+                        : ["beauty.effects.activeCount", "beauty.effects.cappedCount"],
+                    message
+                )
+                if row.eligible {
+                    XCTAssertGreaterThan(plan.metrics["beauty.effects.geometryPointCount"] ?? 0, 0, message)
+                }
+                assertRedacted(plan)
+            }
+        }
+    }
+
     func testSelectedFaceObservationActivatesGeometryPlanningWithRedactedEvidence() {
         let plan = BeautyEffectResolver.resolve(
             parameters: BeautyParameters(
