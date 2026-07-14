@@ -43,7 +43,15 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         "mouthWidth_plus0p35",
         "mouthWidth_minus0p35",
         "smile_0p50",
-        "lipColor_0p50"
+        "lipColor_0p50",
+        "mouthYPosition_plus0p25",
+        "mouthYPosition_minus0p25",
+        "mouthTilt_plus0p25",
+        "mouthTilt_minus0p25",
+        "mouthXPosition_plus0p25",
+        "mouthXPosition_minus0p25",
+        "lipPeakDefinition_0p25",
+        "lipPlump_0p25"
     ]
 
     private static let fixtureNames = [
@@ -267,7 +275,7 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         }
     }
 
-    func testPhase33MouthCasesUseOnlyExistingPublicMouthParameters() throws {
+    func testPhase39MOUTH09MouthCasesUseExactlyOnePublicMouthParameter() throws {
         let source = try rendererSource()
         let expectedCases = [
             ("mouthSize_plus0p35", "mouthSize: 0.35"),
@@ -275,9 +283,27 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
             ("mouthWidth_plus0p35", "mouthWidth: 0.35"),
             ("mouthWidth_minus0p35", "mouthWidth: -0.35"),
             ("smile_0p50", "smile: 0.50"),
-            ("lipColor_0p50", "lipColor: 0.50")
+            ("lipColor_0p50", "lipColor: 0.50"),
+            ("mouthYPosition_plus0p25", "mouthYPosition: 0.25"),
+            ("mouthYPosition_minus0p25", "mouthYPosition: -0.25"),
+            ("mouthTilt_plus0p25", "mouthTilt: 0.25"),
+            ("mouthTilt_minus0p25", "mouthTilt: -0.25"),
+            ("mouthXPosition_plus0p25", "mouthXPosition: 0.25"),
+            ("mouthXPosition_minus0p25", "mouthXPosition: -0.25"),
+            ("lipPeakDefinition_0p25", "lipPeakDefinition: 0.25"),
+            ("lipPlump_0p25", "lipPlump: 0.25")
         ]
-        let mouthFields = ["mouthSize:", "mouthWidth:", "smile:", "lipColor:"]
+        let mouthFields = [
+            "mouthSize:",
+            "mouthWidth:",
+            "smile:",
+            "mouthYPosition:",
+            "mouthTilt:",
+            "mouthXPosition:",
+            "lipPeakDefinition:",
+            "lipPlump:",
+            "lipColor:"
+        ]
 
         for (caseID, requiredParameter) in expectedCases {
             let snippet = try rendererCaseSnippet(for: caseID, in: source)
@@ -290,8 +316,16 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
             XCTAssertFalse(snippet.contains("BeautyDemo"), "\(caseID) should not introduce Demo coupling")
         }
 
-        for forbidden in ["mouthCombo", "mouthYPosition", "mouthTilt", "mouthXPosition", "mLip", "lipPlump", "teethWhitening"] {
-            XCTAssertFalse(source.contains(forbidden), "Renderer should not add out-of-scope mouth case: \(forbidden)")
+        let caseIDs = rendererCaseIDs(in: source)
+        for alias in ["mouthCombo", "mLip", "teethWhitening", "teethWhite"] {
+            XCTAssertFalse(
+                caseIDs.contains { $0 == alias || $0.hasPrefix("\(alias)_") },
+                "Renderer should not add alias or out-of-scope mouth case: \(alias)"
+            )
+            XCTAssertFalse(
+                containsInitializerLabel(alias, in: source),
+                "Renderer should not add alias initializer label: \(alias)"
+            )
         }
     }
 
@@ -350,6 +384,44 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
             XCTAssertTrue(result.warnings.contains { $0.code == "face_effects_skipped_no_face" })
             assertRedacted(result)
             assertNoPhase36NoseFieldDisclosure(result)
+        }
+    }
+
+    func testPhase39MOUTH11IsolatedMouthCasesPreserveNoFaceFacadeContract() throws {
+        let engine = try BeautyEngine(configuration: .default)
+        let inputDirectory = try repositoryRootURL().appendingPathComponent("example-images/input", isDirectory: true)
+        let fixtureName = "negatives/no-face-gradient.png"
+        let fixtureURL = inputDirectory.appendingPathComponent(fixtureName)
+        let input = try fixtureImage(at: fixtureURL, named: fixtureName)
+        let isolatedParameters = [
+            BeautyParameters(mouthYPosition: 0.25),
+            BeautyParameters(mouthYPosition: -0.25),
+            BeautyParameters(mouthTilt: 0.25),
+            BeautyParameters(mouthTilt: -0.25),
+            BeautyParameters(mouthXPosition: 0.25),
+            BeautyParameters(mouthXPosition: -0.25),
+            BeautyParameters(lipPeakDefinition: 0.25),
+            BeautyParameters(lipPlump: 0.25)
+        ]
+
+        for parameters in isolatedParameters {
+            let result = try engine.processResult(
+                image: input,
+                metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+                parameters: parameters
+            )
+
+            XCTAssertEqual(result.output.extent, input.extent)
+            XCTAssertEqual(result.detectionSummary?.availability, .noFace)
+            XCTAssertEqual(result.detectionSummary?.reasons, [.noFaceDetected])
+            XCTAssertEqual(result.detectionSummary?.faceCount, 0)
+            XCTAssertEqual(result.detectionSummary?.usedFaceCount, 0)
+            XCTAssertEqual(result.metrics["beauty.detection.geometryRequired"], 1)
+            XCTAssertEqual(result.metrics["beauty.detection.faceCount"], 0)
+            XCTAssertEqual(result.metrics["beauty.detection.usedFaceCount"], 0)
+            XCTAssertTrue(result.warnings.contains { $0.code == "face_effects_skipped_no_face" })
+            assertRedacted(result)
+            assertNoPhase39MouthFieldDisclosure(result)
         }
     }
 
@@ -514,6 +586,31 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         ).joined(separator: " ").lowercased()
 
         for forbidden in ["noseroot", "nosetip", "narrowing", "lift", "coordinate", "landmark"] {
+            XCTAssertFalse(
+                metadata.contains(forbidden),
+                "Unexpected field-specific or raw geometry term: \(forbidden)",
+                file: file,
+                line: line
+            )
+        }
+    }
+
+    private func assertNoPhase39MouthFieldDisclosure(
+        _ result: BeautyResult<CIImage>,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let metadata = (
+            result.warnings.map { "\($0.code) \($0.message)" } +
+            Array(result.metrics.keys) +
+            (result.detectionSummary?.reasons.map(\.rawValue) ?? [])
+        ).joined(separator: " ").lowercased()
+
+        for forbidden in [
+            "mouthyposition", "mouthtilt", "mouthxposition", "lippeakdefinition", "lipplump",
+            "upperlips", "lowerlips", "innerlips", "support", "coordinate", "landmark",
+            "controlpoint", "control point", "provider"
+        ] {
             XCTAssertFalse(
                 metadata.contains(forbidden),
                 "Unexpected field-specific or raw geometry term: \(forbidden)",

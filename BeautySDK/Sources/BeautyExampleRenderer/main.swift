@@ -232,6 +232,46 @@ let cases = [
         id: "lipColor_0p50",
         displayName: "lipColor 0.50",
         parameters: BeautyParameters(lipColor: 0.50)
+    ),
+    RenderCase(
+        id: "mouthYPosition_plus0p25",
+        displayName: "mouthYPosition +0.25",
+        parameters: BeautyParameters(mouthYPosition: 0.25)
+    ),
+    RenderCase(
+        id: "mouthYPosition_minus0p25",
+        displayName: "mouthYPosition -0.25",
+        parameters: BeautyParameters(mouthYPosition: -0.25)
+    ),
+    RenderCase(
+        id: "mouthTilt_plus0p25",
+        displayName: "mouthTilt +0.25",
+        parameters: BeautyParameters(mouthTilt: 0.25)
+    ),
+    RenderCase(
+        id: "mouthTilt_minus0p25",
+        displayName: "mouthTilt -0.25",
+        parameters: BeautyParameters(mouthTilt: -0.25)
+    ),
+    RenderCase(
+        id: "mouthXPosition_plus0p25",
+        displayName: "mouthXPosition +0.25",
+        parameters: BeautyParameters(mouthXPosition: 0.25)
+    ),
+    RenderCase(
+        id: "mouthXPosition_minus0p25",
+        displayName: "mouthXPosition -0.25",
+        parameters: BeautyParameters(mouthXPosition: -0.25)
+    ),
+    RenderCase(
+        id: "lipPeakDefinition_0p25",
+        displayName: "lipPeakDefinition 0.25",
+        parameters: BeautyParameters(lipPeakDefinition: 0.25)
+    ),
+    RenderCase(
+        id: "lipPlump_0p25",
+        displayName: "lipPlump 0.25",
+        parameters: BeautyParameters(lipPlump: 0.25)
     )
 ]
 
