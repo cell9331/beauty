@@ -37,7 +37,12 @@
   3. Hosts can request M-lip peak definition and true lip plumping and receive distinct local upper/lower lip geometry rather than mouth-size, smile, or lip-color behavior.
   4. Missing or malformed inner/upper/lower support removes only dependent peak/plump work; supported whole-mouth and shipped sibling controls remain eligible, finite, deterministic, and bounded.
   5. Any new field triggers the established public-facade geometry route, while effective strengths and per-field emissions agree and no raw lip support crosses package or diagnostic boundaries.
-**Plans**: TBD
+**Plans**: 4 plans
+
+- [ ] `38-01-PLAN.md` — Public contract, compatibility, effective storage, and provisional caps.
+- [ ] `38-02-PLAN.md` — Independent inner-lip availability and explicit package-only lip supports.
+- [ ] `38-03-PLAN.md` — Eight-field provider emissions and distinct whole/local mouth geometry.
+- [ ] `38-04-PLAN.md` — Resolver/conflict/facade integration, verification, and contract synchronization.
 
 ### Phase 39: Public-Facade Mouth Geometry Output Evidence
 
