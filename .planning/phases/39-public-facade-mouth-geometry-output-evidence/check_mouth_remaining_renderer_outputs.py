@@ -70,10 +70,11 @@ ROI_RIGHT = 0.90
 ROI_TOP = 0.40
 ROI_BOTTOM = 0.82
 
-# Initial conservative floors. Task 39-02-02 calibrates once, commits the final
-# fixed values, then performs a fresh strict run.
-MIN_CHANGED_PIXELS = 1
-MIN_ABSOLUTE_RGB_DELTA = 1
+# Frozen after the one-time Phase 39 measurement run. The weakest measured
+# family minima were 1,921 changed pixels and 16,651 absolute RGB delta, leaving
+# margins of 921 pixels and 6,651 delta before the fresh strict render.
+MIN_CHANGED_PIXELS = 1_000
+MIN_ABSOLUTE_RGB_DELTA = 10_000
 
 
 class RendererOutputError(Exception):
