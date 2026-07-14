@@ -76,7 +76,7 @@
 
 **Requirements:** NOSE-10, NOSE-11, NOSE-12, NOSE-13, NOSE-14, DOC-01
 
-**Status:** In progress — Plan 37-01 complete
+**Status:** In progress — Plans 37-01 through 37-03 complete; atomic promotion remains Plan 37-04
 
 **Success Criteria:**
 
@@ -96,7 +96,7 @@
 | --- | --- | --- | --- |
 | 35. Public Contract and Independent Geometry | 4/4 | Complete    | 2026-07-13 |
 | 36. Public-Facade Output Evidence | 3/3 | Complete    | 2026-07-14 |
-| 37. Nose Safety, Boundary, and Branch Closeout | 2/4 | In Progress|  |
+| 37. Nose Safety, Boundary, and Branch Closeout | 3/4 | In Progress|  |
 
 ## Backlog
 
@@ -106,4 +106,4 @@
 
 ---
 *Roadmap created: 2026-07-13*
-*Last updated: 2026-07-13 after Phase 36 completion; Phase 37 is next but not started*
+*Last updated: 2026-07-14 after Phase 37 Plan 03 command-backed gate; Plan 37-04 promotion remains pending*
