@@ -59,6 +59,61 @@ final class VisionFaceDetectorTests: XCTestCase {
         XCTAssertEqual(result.summary.usedFaceCount, 0)
     }
 
+    func testPhase38MOUTH04MissingOnlyInnerLipsRemainsUsableAndSelected() {
+        let groups = Set(BeautyLandmarkGroup.allCases).subtracting([.innerLips])
+        let landmarks = BeautyFaceLandmarks(availableGroups: groups)
+        XCTAssertTrue(landmarks.hasRequiredGeometry)
+        XCTAssertFalse(landmarks.availableGroups.contains(.innerLips))
+        XCTAssertTrue(landmarks.availableGroups.contains(.outerLips))
+
+        var detector = VisionFaceDetector { _ in
+            [
+                VisionDetectionObservation(
+                    stableID: "outer-only",
+                    confidence: 0.95,
+                    normalizedArea: 0.40,
+                    landmarks: landmarks
+                )
+            ]
+        }
+
+        let result = detector.detect(metadata: metadata())
+
+        XCTAssertEqual(result.observations.map(\.stableID), ["outer-only"])
+        XCTAssertEqual(result.summary.availability, .usable)
+        XCTAssertEqual(result.summary.reasons, [])
+        XCTAssertEqual(result.summary.faceCount, 1)
+        XCTAssertEqual(result.summary.usedFaceCount, 1)
+        assertNoRawVisionDiagnostics(in: String(describing: result.summary))
+    }
+
+    func testPhase38MOUTH04MissingOuterLipsRemainsPartialWhenInnerLipsIsAvailable() {
+        let groups = Set(BeautyLandmarkGroup.allCases).subtracting([.outerLips])
+        let landmarks = BeautyFaceLandmarks(availableGroups: groups)
+        XCTAssertFalse(landmarks.hasRequiredGeometry)
+        XCTAssertTrue(landmarks.availableGroups.contains(.innerLips))
+
+        var detector = VisionFaceDetector { _ in
+            [
+                VisionDetectionObservation(
+                    stableID: "inner-only",
+                    confidence: 0.95,
+                    normalizedArea: 0.40,
+                    landmarks: landmarks
+                )
+            ]
+        }
+
+        let result = detector.detect(metadata: metadata())
+
+        XCTAssertEqual(result.observations, [])
+        XCTAssertEqual(result.summary.availability, .partial)
+        XCTAssertEqual(result.summary.reasons, [.missingLandmarks])
+        XCTAssertEqual(result.summary.faceCount, 1)
+        XCTAssertEqual(result.summary.usedFaceCount, 0)
+        assertNoRawVisionDiagnostics(in: String(describing: result.summary))
+    }
+
     func testPIPE07UsableObservationsUseSelectionPolicyAndPublicCounts() {
         var detector = VisionFaceDetector { _ in
             [

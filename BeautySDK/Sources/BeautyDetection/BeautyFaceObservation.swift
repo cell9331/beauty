@@ -28,6 +28,7 @@ package enum BeautyLandmarkGroup: String, CaseIterable, Equatable, Sendable {
     case rightEye
     case nose
     case outerLips
+    case innerLips
 }
 
 package struct BeautyFaceLandmarks: Equatable, Sendable {

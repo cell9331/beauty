@@ -314,6 +314,9 @@ package struct VisionFaceDetector: Sendable {
         if landmarks.outerLips?.pointCount ?? 0 > 0 {
             groups.insert(.outerLips)
         }
+        if landmarks.innerLips?.pointCount ?? 0 > 0 {
+            groups.insert(.innerLips)
+        }
         return BeautyFaceLandmarks(availableGroups: groups)
     }
 }
