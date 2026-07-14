@@ -26,7 +26,34 @@
 
 ## 3. Active
 
-No active plans. v1.10 is initialized and ready for Phase 38 discussion or planning.
+### P-2026-07-14-v1-10-autonomous-execution
+
+| Field | Value |
+| --- | --- |
+| Status | `active` |
+| Owner | Codex autonomous workflow |
+| Started | 2026-07-14 |
+| Scope | Execute v1.10 Phases 38-40 from smart discussion through planning, implementation, verification, review, milestone audit, archive, tag, and cleanup. |
+| Source Request | `$gsd-autonomous --auto --from 38` |
+| Current Step | Phase 38 smart discussion and execution context. |
+| Verification Policy | Each phase requires committed plans/summaries, focused and full SwiftPM evidence, phase VERIFICATION status `passed`, code review routing, exact requirement traceability, and lifecycle audit before completion. |
+
+Checklist:
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| Initialize autonomous run | `completed` | `init.milestone-op` reports v1.10, 3 phases, 0 complete; `roadmap.analyze` selects Phases 38-40 from requested start. |
+| Phase 38 | `active` | Smart discuss → plan → execute → review → verification pending. |
+| Phase 39 | `planned` | Depends on Phase 38. |
+| Phase 40 | `planned` | Depends on Phase 39. |
+| Lifecycle | `planned` | Audit → complete → cleanup after all phase gates pass. |
+
+Open Questions:
+
+| Question | Current Decision |
+| --- | --- |
+| Autonomous defaults | `--auto` accepts recommended smart-discuss decisions and safe workflow defaults; pause only for a real blocker, grey-area acceptance, or required human validation. |
+| Scope boundary | Keep `白牙`, Demo UI, device/commercial visual approval, packaging, shipping, and launch readiness outside v1.10. |
 
 ## 4. Completed
 
