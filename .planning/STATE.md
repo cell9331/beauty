@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.10
 milestone_name: Mouth Remaining Geometry Controls
-status: planning
-last_updated: "2026-07-14T06:42:43.999Z"
-last_activity: 2026-07-14
+status: Ready to plan
+last_updated: "2026-07-14T06:47:40.000Z"
+last_activity: 2026-07-14 — v1.10 roadmap created with 17/17 requirements mapped
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -20,14 +20,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-14)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Planning the next milestone
+**Current focus:** Phase 38 — Public Contract and Lip-Support Geometry
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 38 of 40 (Public Contract and Lip-Support Geometry)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-07-14 — Milestone v1.10 started
+Status: Ready to plan
+Last activity: 2026-07-14 — v1.10 roadmap created with 17/17 requirements mapped
 
 ### Phase 36 Public-Facade Output Evidence Result
 
