@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.9
 milestone_name: Nose Remaining Tools and Branch Closeout
-status: completing
-stopped_at: v1.9 milestone audit passed; completion/archive next
-last_updated: "2026-07-14T03:40:00+08:00"
-last_activity: 2026-07-14 -- Completed Phase 37 exact promotion and owner synchronization
+status: Awaiting next milestone
+stopped_at: Milestone v1.9 completed, audited, and archived
+last_updated: "2026-07-14T03:38:59.066Z"
+last_activity: 2026-07-14 — Milestone v1.9 completed and archived
 progress:
   total_phases: 3
   completed_phases: 3
@@ -18,17 +18,17 @@ progress:
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-07-13)
+See: `.planning/PROJECT.md` (updated 2026-07-14)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 37 — nose-safety-boundary-and-branch-closeout
+**Current focus:** Planning the next milestone
 
 ## Current Position
 
-Phase: 37 (nose-safety-boundary-and-branch-closeout) — COMPLETE
-Plan: 4 of 4
-Status: Milestone audit passed; completion/archive next
-Last activity: 2026-07-14 -- Independent v1.9 audit passed 15/15 requirements, 12/12 integrations, and 5/5 flows
+Phase: Milestone v1.9 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-07-14 — Milestone v1.9 completed and archived
 
 ### Phase 36 Public-Facade Output Evidence Result
 
@@ -38,7 +38,7 @@ Last activity: 2026-07-14 -- Independent v1.9 audit passed 15/15 requirements, 1
 - ASVS L1 records `threats_open: 0`; schema drift, dependency/import/privacy, generated-artifact, no-promotion, and diff-hygiene gates passed.
 - Phase 37 passes 103/103 focused and 228/228 full SwiftPM tests plus the unchanged 252/252 output gate; review is clean and `threats_open: 0`.
 - Exactly `山根` and `提升` are newly implemented from independent evidence; the exact six-row SDK-core `鼻子` branch is implemented.
-- Next action is `$gsd-audit-milestone`; archive, tag, cleanup, Demo/device/commercial/packaging/shipping/launch claims remain outside phase completion.
+- The independent v1.9 audit passed 15/15 requirements, 12/12 integrations, and 5/5 flows; archive/tag/cleanup are lifecycle records, not Demo/device/commercial/packaging/shipping/launch claims.
 
 ### Phase 35 Public Contract and Independent Geometry Result
 
@@ -272,4 +272,4 @@ Resume file: None
 
 ## Operator Next Steps
 
-- Execute Plan 37-04 next for atomic row/branch promotion and current-owner synchronization; the independent milestone audit remains later lifecycle work.
+- Start the next milestone with /gsd-new-milestone

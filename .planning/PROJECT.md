@@ -12,19 +12,21 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ## Current State
 
-**Shipped version:** v1.8 Broader `美型 / 五官` SDK Slice - Mouth on 2026-07-13.
+**Shipped version:** v1.9 Nose Remaining Tools and Branch Closeout on 2026-07-14.
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
-**Current milestone:** v1.9 Nose Remaining Tools and Branch Closeout.
+**Current milestone:** None — planning the next milestone.
 
 **Implementation state:** Phase 37 is complete. `BeautyParameters` remains exactly 33 stored fields, with independent positive-only `noseRootNarrowing` and `noseTipLift` at final exact `0.25` caps. Package-internal explicit root/tip supports, all-six degradation/transitions, provider-empty removal, and bounded conflict-emission convergence are verified. Exactly `山根` and `提升` are newly promoted, and the exact six-row SDK-core `鼻子` branch is implemented.
 
-**Verification state:** Phase 37 passes 6/6 requirements with fresh 103/103 focused and 228/228 full SDK tests, unchanged 252/252 public-facade output plus 12/12 baseline, 6/6 root/bridge, 12/12 lift/signed-tip, and 2/2 no-face comparisons, a clean review, and `threats_open: 0`. Generated artifacts remain ignored/untracked. The independent v1.9 milestone audit is pending and is the next lifecycle action; no Demo/device/commercial/packaging/shipping/launch readiness is claimed.
+**Verification state:** The independent v1.9 audit passed 15/15 requirements, 3/3 phases, 12/12 integrations, 5/5 flows, and 3/3 Nyquist validations. Fresh 228/228 full SDK tests and 252/252 public-facade output passed with a clean review and `threats_open: 0`. Generated artifacts remain ignored/untracked; no Demo/device/commercial/packaging/shipping/launch readiness is claimed.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
 **Code size:** `BeautySDK` and `BeautyDemo` contain 17,794 Swift lines in the local closeout count, including build-derived `.build` files observed during v1.5 archive.
 
-## Current Milestone: v1.9 Nose Remaining Tools and Branch Closeout
+## Last Completed Milestone: v1.9 Nose Remaining Tools and Branch Closeout
+
+**Status:** Shipped, independently audited, and archived as of 2026-07-14.
 
 **Goal:** Complete the remaining `鼻子` tools by resolving and implementing `山根` and `提升`, then close the branch through public-facade evidence, conservative safety behavior, and synchronized owning documentation.
 
@@ -132,7 +134,7 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ### Active
 
-- [ ] Run the independent v1.9 milestone audit; archive, tag, and cleanup remain later lifecycle work only after it passes.
+(None — start the next milestone to define new active requirements.)
 
 ### Validated
 
@@ -335,4 +337,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-07-14 after Phase 37 completion; independent milestone audit pending*
+*Last updated: 2026-07-14 after v1.9 milestone completion and archive*

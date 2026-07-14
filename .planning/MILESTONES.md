@@ -1,5 +1,46 @@
 # Milestones
 
+## v1.9 Nose Remaining Tools and Branch Closeout (Shipped: 2026-07-14)
+
+**Phases completed:** 3 phases, 11 plans, 22 tasks
+
+**Delivered:** Two independent public nose controls with exact safety contracts, deterministic facade-output evidence, exhaustive six-field degradation/convergence, and exact six-row SDK-core branch completion.
+
+**Key accomplishments:**
+
+- A 33-stored-field public model now carries two independent positive-only nose values with legacy JSON/preset neutrality, distinct effective storage, and provisional exact 0.25 caps.
+- Explicit package-only root and tip supports now drive distinct bounded inward and upward nose vectors with strict malformed-input rejection and no legacy fallback.
+- Both independent nose fields now traverse caps, freshness, support sanitization, conflict accounting, and the public facade with exact degradation behavior and redacted aggregate evidence.
+- Independent nose-root narrowing and nose-tip lift are verified across 94 focused and 207 full-suite tests, closed against ASVS Level 1 boundaries, and recorded without promoting renderer or final-safety claims.
+- Two isolated 0.25 public nose cases expand the renderer to exactly 36 entries, with precise six-field isolation and redacted no-face facade regressions.
+- A self-contained decoder validates a clean 252-PNG public-facade matrix and proves both remaining nose fields visible and distinct from their nearest legacy paths under fixed nose-local thresholds.
+- An exact renderer/gallery inventory produces 252 ignored review PNGs, while fresh 10-test focused, 220-test full, strict output, security, and Nyquist gates close only NOSE-07 through NOSE-09.
+- Exact 0.25 cap evidence and field-complete fail-closed nose safety matrices now cover every public nose field, both signed tip directions, transitions, and the public no-face facade.
+- Exact once-only multi-domain weakening now converges on one provider-eligible retained set across the complete six-field nose inventory and both signed tip directions.
+- A deterministic fail-closed promotion boundary combines fresh 228-test SDK evidence, the unchanged 252-output public-facade matrix, clean review, and ASVS L1 zero-open-threat classification.
+- Exactly `山根` and `提升` were promoted from independent evidence, closing the exact six-row SDK-core `鼻子` branch without Demo/device/commercial readiness claims.
+
+**Stats:**
+
+- 96 files changed, 11,696 insertions, 641 deletions across milestone commits
+- 20,536 tracked Swift source/test lines at close
+- 3 phases, 11 plans, 22 recorded tasks
+- Timeline: 2026-07-13 to 2026-07-14
+
+**Git range:** `60da74c` → final v1.9 archive commit
+
+**Verification:** Audit passed 15/15 requirements, 3/3 phases, 12/12 integrations, 5/5 flows, and 3/3 Nyquist validations; full SwiftPM passed 228/228 and the renderer/helper passed 252/252.
+
+**Archives:**
+
+- `.planning/milestones/v1.9-ROADMAP.md`
+- `.planning/milestones/v1.9-REQUIREMENTS.md`
+- `.planning/milestones/v1.9-MILESTONE-AUDIT.md`
+
+**What's next:** Start a fresh milestone with `$gsd-new-milestone`.
+
+---
+
 ## v1.8 Broader 美型 / 五官 SDK Slice - Mouth (Shipped: 2026-07-13)
 
 **Phases completed:** 2 phases, 6 plans, 0 tasks

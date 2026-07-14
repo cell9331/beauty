@@ -320,6 +320,48 @@
 
 ---
 
+## Milestone: v1.9 - Nose Remaining Tools and Branch Closeout
+
+**Shipped:** 2026-07-14
+**Phases:** 3 | **Plans:** 11 | **Sessions:** 1 autonomous chain
+
+### What Was Built
+
+- Added independent positive-only `noseRootNarrowing` and `noseTipLift` public contracts with legacy decoding neutrality and package-only support geometry.
+- Proved isolated public-facade output across a strict 36 × 7 matrix and closed exact all-six safety, degradation, convergence, privacy, and artifact boundaries.
+- Promoted exactly the two remaining rows and the exact six-row SDK-core `鼻子` branch after an independent 15/15 milestone audit.
+
+### What Worked
+
+- Requirement-named matrices and fixed numeric output thresholds made every promotion claim command-verifiable.
+- Fail-closed review loops caught provider-emission threshold bugs and gallery filesystem races that ordinary green suites did not expose.
+- Keeping promotion last preserved truthful current-owner state throughout implementation and made the final transaction auditable.
+
+### What Was Inefficient
+
+- Repeated deep review iterations on shared conflict and gallery helpers added substantial cycle time; threat modeling these seams earlier would have reduced rework.
+- Several planner/executor agents lingered after artifacts existed, requiring filesystem/commit fallback and one quota-driven main-thread recovery.
+
+### Patterns Established
+
+- Provider eligibility, effective strengths, conflict totals/count/scale, and final emissions must converge on one retained set.
+- Generated-evidence tools require bounded same-descriptor reads and descriptor-anchored atomic publication, not pathname prechecks.
+- Product-row promotion is a final transaction after runtime, security, owner, and lifecycle gates all pass.
+
+### Key Lessons
+
+1. Test threshold-crossing and provider-empty behavior after conflict scaling, not only before it.
+2. Treat local evidence tooling as security-sensitive whenever it deletes, copies, decodes, or publishes filesystem content.
+3. Preserve explicit non-claims in every current owner so SDK-core completion cannot be mistaken for release readiness.
+
+### Cost Observations
+
+- Model mix: quality profile across planning, execution, review, and audit agents.
+- Sessions: one autonomous milestone chain with resumptions after user interruptions.
+- Notable: independent review found high-value defects, but bounded agent timeouts and earlier adversarial fixtures would improve efficiency.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -333,6 +375,7 @@
 | v1.6 | multiple | 2 | Added exact eye-slice evidence/promotion and comprehensive current-owner consistency scans. |
 | v1.7 | autonomous | 2 | Added signed nose-slice evidence, fail-closed degradation, and single-pass final audit discipline. |
 | v1.8 | autonomous | 2 | Added signed mouth evidence, color-vs-geometry separation, and current-owner audit closure. |
+| v1.9 | autonomous | 3 | Added independent remaining-nose contracts, adversarial review loops, atomic six-row branch promotion, and a 15/15 audit. |
 
 ### Cumulative Quality
 
@@ -345,6 +388,7 @@
 | v1.6 | 178 SDK tests, eye renderer helper, boundary scans, and milestone audit | Requirement traceability 9/9 | No new third-party runtime dependency recorded for eye-slice closeout. |
 | v1.7 | 186 SDK tests, 196-output nose helper, boundary scans, and milestone audit | Requirement traceability 9/9 | No new third-party runtime dependency recorded for nose-slice closeout. |
 | v1.8 | 190 SDK tests, 238-output mouth helper, signed/color checks, boundary scans, and milestone audit | Requirement traceability 11/11 | No new third-party runtime dependency recorded for mouth-slice closeout. |
+| v1.9 | 228 SDK tests, 252-output strict helper, adversarial boundary scans, and milestone audit | Requirement traceability 15/15 | No new third-party runtime dependency recorded for remaining-nose closeout. |
 
 ### Top Lessons (Verified Across Milestones)
 

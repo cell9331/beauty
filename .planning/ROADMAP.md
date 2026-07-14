@@ -11,94 +11,11 @@
 - ✅ **[v1.6 Broader `美型 / 五官` SDK Slice - Eyes](milestones/v1.6-ROADMAP.md)** — Phases 29-30, shipped 2026-07-13.
 - ✅ **[v1.7 Broader `美型 / 五官` SDK Slice - Nose](milestones/v1.7-ROADMAP.md)** — Phases 31-32, shipped 2026-07-13.
 - ✅ **[v1.8 Broader `美型 / 五官` SDK Slice - Mouth](milestones/v1.8-ROADMAP.md)** — Phases 33-34, shipped 2026-07-13.
-- 🚧 **v1.9 Nose Remaining Tools and Branch Closeout** — Phases 35-37.
+- ✅ **[v1.9 Nose Remaining Tools and Branch Closeout](milestones/v1.9-ROADMAP.md)** — Phases 35-37, shipped 2026-07-14.
 
-## Current Milestone: v1.9 Nose Remaining Tools and Branch Closeout
+## Current Milestone
 
-### Phase 35: Public Contract and Independent Geometry
-
-**Goal:** Freeze compatibility-safe public semantics for `noseRootNarrowing` and `noseTipLift`, route both fields through the existing facade and safety model, and prove two bounded, deterministic, non-aliased nose geometry paths.
-
-**Requirements:** NOSE-01, NOSE-02, NOSE-03, NOSE-04, NOSE-05, NOSE-06
-
-**Status:** Complete
-
-**Plans:** 4/4 plans complete
-
-**Evidence:** `35-VERIFICATION.md` records fresh 106/106 focused and 219/219 full XCTest results for the exact 33-field, provisional `0.25`, reused `0.5`, explicit `noseRoot`/`noseTip`, fail-closed, redacted facade, and bounded nose/mouth conflict-emission convergence contracts. The final code review is clean. No Demo build was required because Demo source was unchanged. Phase 36 is next; Phase 37 retains cap calibration, exhaustive safety, boundary closeout, and promotion.
-
-**Wave 1**
-
-- [x] `35-01-PLAN.md` — public contract, 33-field compatibility, effective values, and provisional caps
-
-**Wave 2** *(blocked on Wave 1 completion)*
-
-- [x] `35-02-PLAN.md` — package-internal root/tip supports and independent fail-closed provider geometry
-
-**Wave 3** *(blocked on Wave 2 completion)*
-
-- [x] `35-03-PLAN.md` — resolver, degradation, conflict, and redacted public-facade routing
-
-**Wave 4** *(blocked on Wave 3 completion)*
-
-- [x] `35-04-PLAN.md` — full verification, security/Nyquist finalization, and current-owner synchronization without promotion
-
-**Success Criteria:**
-
-1. Hosts can set independent positive-only `noseRootNarrowing` and `noseTipLift` values in `0...1`; defaults, finite clamping, non-finite fallback, and the 33-stored-field inventory are verified without aliasing either field to legacy nose controls.
-2. Existing 31-field JSON, bundled presets, and source-style initializer calls remain neutral and compatible, while new 33-field values round-trip with both fields intact.
-3. Either new field independently activates the established public-facade geometry route and propagates through effective strengths, metrics, degradation, and conflict handling without exposing raw geometry.
-4. Provider evidence proves root narrowing is bounded symmetric horizontal-only motion in an upper-root subset and tip lift is bounded upward vertical-only motion in a lower-tip subset, with deterministic non-empty output distinct from `noseBridge` and signed `noseTipSize`.
-5. Missing or insufficient root/tip geometry fails closed without substituting legacy control points, while valid output stays finite and bounded.
-
-### Phase 36: Public-Facade Output Evidence
-
-**Goal:** Produce deterministic public-facade renderer, output-helper, and ignored-gallery evidence that both new nose tools remain visible, independent, extent-preserving, and artifact-contained across the established fixtures.
-
-**Requirements:** NOSE-07, NOSE-08, NOSE-09
-
-**Status:** Complete
-
-**Plans:** 3/3 plans complete
-
-**Evidence:** `36-VERIFICATION.md` records fresh 10/10 focused and 220/220 full XCTest results, a guarded clean 36 × 7 = 252 renderer matrix, strict 252/252 full decode, exact 252-file gallery, 12/12 baseline, 6/6 root/bridge, 12/12 lift/signed-tip comparisons, representative no-face extent/no-op evidence, ignored/untracked containment, `threats_open: 0`, and intact no-promotion boundaries. Phase 37 is next and remains not started.
-
-**Success Criteria:**
-
-1. `BeautyExampleRenderer` adds exactly one isolated public-facade case per new field, yielding 36 cases and 252 ignored outputs when the current seven-fixture inventory is unchanged.
-2. A v1.9-owned helper derives the actual case-by-fixture inventory and verifies every expected PNG is decodable, non-empty, and same-dimension.
-3. Both new cases differ from `geometryBaseline_noop` on every usable portrait above the watermark and differ from their nearest legacy nose effects within a documented nose ROI.
-4. Representative no-face outputs preserve extent and degrade safely; output/gallery routes remain ignored and no generated PNG is tracked.
-
-### Phase 37: Nose Safety, Boundary, and Branch Closeout
-
-**Goal:** Lock exact safety behavior for all six nose fields, pass fail-closed boundary and regression gates, and atomically promote the two remaining rows plus SDK-core branch status only after all current evidence owners agree.
-
-**Requirements:** NOSE-10, NOSE-11, NOSE-12, NOSE-13, NOSE-14, DOC-01
-
-**Status:** Complete — 4/4 plans; independent milestone audit is pending
-
-**Evidence:** Phase 37 passes fresh 103/103 focused and 228/228 full SwiftPM tests, unchanged 252/252 renderer output with 12/12 baseline, 6/6 root/bridge, 12/12 lift/signed-tip, and 2/2 no-face comparisons, clean review, `threats_open: 0`, exact two-row promotion, and exact six-row SDK-core branch completion. Next action: `$gsd-audit-milestone`.
-
-**Success Criteria:**
-
-1. Focused evidence locks exact natural caps, normalization, capped counts, warnings, and aggregate metrics for both new public fields while preserving the public `0...1` contract.
-2. All six nose fields fail closed for no-face, missing, stale, insufficient, or provider-empty geometry; reused geometry scales each field by exactly `0.5`, diagnostics remain redacted, and independent safe domains continue.
-3. Combined face, eye, mouth, and six-field nose geometry weakens every active geometry field exactly once and preserves all shipped signed directions without regressing prior face/eye/nose/mouth behavior.
-4. Full SDK tests plus active-source scans pass for raw/public geometry, imports, compatibility, network/cloud, commercial paths, dependencies, diagnostics, and generated artifacts.
-5. `山根`, `提升`, and SDK-core branch-level `鼻子` are promoted only after their own evidence passes, and every phase-owned contract, planning ledger, verification, validation, and security record agrees while preserving explicit Demo/device/commercial/packaging/launch non-claims; the independent milestone audit remains next.
-
-## Progress
-
-- [x] Phase 35: Public Contract and Independent Geometry
-- [x] Phase 36: Public-Facade Output Evidence
-- [x] Phase 37: Nose Safety, Boundary, and Branch Closeout
-
-| Phase | Plans Complete | Status | Completed |
-| --- | --- | --- | --- |
-| 35. Public Contract and Independent Geometry | 4/4 | Complete    | 2026-07-13 |
-| 36. Public-Facade Output Evidence | 3/3 | Complete    | 2026-07-14 |
-| 37. Nose Safety, Boundary, and Branch Closeout | 4/4 | Complete    | 2026-07-14 |
+No active milestone. Start the next cycle with `$gsd-new-milestone`.
 
 ## Backlog
 
@@ -107,5 +24,4 @@
 - Device, commercial visual, packaging, performance, and launch-readiness evidence remains separately scoped.
 
 ---
-*Roadmap created: 2026-07-13*
-*Last updated: 2026-07-14 after Phase 37 Plan 04 completion; next action is `$gsd-audit-milestone`*
+*Last updated: 2026-07-14 after v1.9 milestone archive*
