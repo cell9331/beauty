@@ -7,17 +7,17 @@
 
 ### Public Mouth Contract
 
-- [ ] **MOUTH-01**: A host can set independent signed `mouthYPosition`, `mouthTilt`, and `mouthXPosition` public parameters in `-1...1`, each with default `0`, finite clamping, non-finite fallback, and no alias to a shipped mouth field.
-- [ ] **MOUTH-02**: A host can set independent positive-only `lipPeakDefinition` and `lipPlump` public parameters in `0...1`, each with default `0`, finite clamping, non-finite fallback, and no alias to `mouthSize`, `mouthWidth`, `smile`, or `lipColor`.
-- [ ] **MOUTH-03**: Existing 33-field JSON and bundled presets decode all five new fields at `0`, new 38-field values round-trip, existing source-style initializer calls retain neutral defaults, and the exact stored inventory is 37 numeric fields plus `filterId`.
+- [x] **MOUTH-01**: A host can set independent signed `mouthYPosition`, `mouthTilt`, and `mouthXPosition` public parameters in `-1...1`, each with default `0`, finite clamping, non-finite fallback, and no alias to a shipped mouth field.
+- [x] **MOUTH-02**: A host can set independent positive-only `lipPeakDefinition` and `lipPlump` public parameters in `0...1`, each with default `0`, finite clamping, non-finite fallback, and no alias to `mouthSize`, `mouthWidth`, `smile`, or `lipColor`.
+- [x] **MOUTH-03**: Existing 33-field JSON and bundled presets decode all five new fields at `0`, new 38-field values round-trip, existing source-style initializer calls retain neutral defaults, and the exact stored inventory is 37 numeric fields plus `filterId`.
 
 ### Lip Support and Independent Geometry
 
-- [ ] **MOUTH-04**: Package-internal detection records Vision `innerLips` availability beside `outerLips`, and the geometry adapter creates finite, bounded, deterministic whole-mouth, upper-lip, lower-lip, and inner-lip supports without exposing raw geometry publicly or in diagnostics.
-- [ ] **MOUTH-05**: `mouthYPosition`, `mouthTilt`, and `mouthXPosition` produce bounded whole-mouth vertical translation, center rotation, and horizontal translation respectively, preserve both signed directions, and remain mutually distinct.
-- [ ] **MOUTH-06**: `lipPeakDefinition` produces bounded local upper-lip peak shaping from explicit upper/inner support and remains distinct from `smile`, `mouthSize`, and whole-mouth transforms.
-- [ ] **MOUTH-07**: `lipPlump` produces bounded local upper/lower lip thickening from explicit outer/inner support and remains distinct from `lipColor`, `mouthSize`, and `lipPeakDefinition`.
-- [ ] **MOUTH-08**: Provider-owned emissions represent all eight mouth geometry fields independently; missing, malformed, duplicate-only, non-finite, displacement-ineligible, or final-scale-empty support zeros only dependent fields while valid mouth siblings remain eligible and final effective strengths equal final emissions.
+- [x] **MOUTH-04**: Package-internal detection records Vision `innerLips` availability beside `outerLips`, and the geometry adapter creates finite, bounded, deterministic whole-mouth, upper-lip, lower-lip, and inner-lip supports without exposing raw geometry publicly or in diagnostics.
+- [x] **MOUTH-05**: `mouthYPosition`, `mouthTilt`, and `mouthXPosition` produce bounded whole-mouth vertical translation, center rotation, and horizontal translation respectively, preserve both signed directions, and remain mutually distinct.
+- [x] **MOUTH-06**: `lipPeakDefinition` produces bounded local upper-lip peak shaping from explicit upper/inner support and remains distinct from `smile`, `mouthSize`, and whole-mouth transforms.
+- [x] **MOUTH-07**: `lipPlump` produces bounded local upper/lower lip thickening from explicit outer/inner support and remains distinct from `lipColor`, `mouthSize`, and `lipPeakDefinition`.
+- [x] **MOUTH-08**: Provider-owned emissions represent all eight mouth geometry fields independently; missing, malformed, duplicate-only, non-finite, displacement-ineligible, or final-scale-empty support zeros only dependent fields while valid mouth siblings remain eligible and final effective strengths equal final emissions.
 
 ### Public-Facade Output Evidence
 
@@ -61,14 +61,14 @@
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| MOUTH-01 | Phase 38 | Pending |
-| MOUTH-02 | Phase 38 | Pending |
-| MOUTH-03 | Phase 38 | Pending |
-| MOUTH-04 | Phase 38 | Pending |
-| MOUTH-05 | Phase 38 | Pending |
-| MOUTH-06 | Phase 38 | Pending |
-| MOUTH-07 | Phase 38 | Pending |
-| MOUTH-08 | Phase 38 | Pending |
+| MOUTH-01 | Phase 38 | Complete |
+| MOUTH-02 | Phase 38 | Complete |
+| MOUTH-03 | Phase 38 | Complete |
+| MOUTH-04 | Phase 38 | Complete |
+| MOUTH-05 | Phase 38 | Complete |
+| MOUTH-06 | Phase 38 | Complete |
+| MOUTH-07 | Phase 38 | Complete |
+| MOUTH-08 | Phase 38 | Complete |
 | MOUTH-09 | Phase 39 | Pending |
 | MOUTH-10 | Phase 39 | Pending |
 | MOUTH-11 | Phase 39 | Pending |

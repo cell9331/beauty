@@ -20,7 +20,7 @@
 
 ## Phases
 
-- [ ] **Phase 38: Public Contract and Lip-Support Geometry** — Add five compatible public controls and independently eligible whole-mouth/upper/lower lip geometry through the existing facade pipeline.
+- [x] **Phase 38: Public Contract and Lip-Support Geometry** — Add five compatible public controls and independently eligible whole-mouth/upper/lower lip geometry through the existing facade pipeline.
 - [ ] **Phase 39: Public-Facade Mouth Geometry Output Evidence** — Prove all five controls through isolated public-facade output, strict helper checks, and ignored gallery containment.
 - [ ] **Phase 40: Mouth Geometry Safety and Ledger Closeout** — Finalize caps, exhaustive degradation/conflict behavior, fail-closed boundaries, and exact five-row promotion without claiming `白牙` or whole-branch completion.
 
@@ -41,10 +41,10 @@
 
 **Plans**: 4 plans
 
-- [ ] `38-01-PLAN.md` — Public contract, compatibility, effective storage, and provisional caps.
-- [ ] `38-02-PLAN.md` — Independent inner-lip availability and explicit package-only lip supports.
-- [ ] `38-03-PLAN.md` — Eight-field provider emissions and distinct whole/local mouth geometry.
-- [ ] `38-04-PLAN.md` — Resolver/conflict/facade integration, verification, and contract synchronization.
+- [x] `38-01-PLAN.md` — Public contract, exact 38-field compatibility, effective storage, and provisional caps.
+- [x] `38-02-PLAN.md` — Optional inner-lip availability and deterministic package-only supports.
+- [x] `38-03-PLAN.md` — Eight-field provider emissions and independent whole/peak/plump geometry.
+- [x] `38-04-PLAN.md` — Resolver/conflict/facade integration, review, verification, and contract synchronization.
 
 ### Phase 39: Public-Facade Mouth Geometry Output Evidence
 
@@ -80,7 +80,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
-| 38. Public Contract and Lip-Support Geometry | 3/4 | In Progress|  |
+| 38. Public Contract and Lip-Support Geometry | 4/4 | Complete | 2026-07-14 |
 | 39. Public-Facade Mouth Geometry Output Evidence | 0/TBD | Not started | - |
 | 40. Mouth Geometry Safety and Ledger Closeout | 0/TBD | Not started | - |
 

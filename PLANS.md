@@ -35,7 +35,7 @@
 | Started | 2026-07-14 |
 | Scope | Execute v1.10 Phases 38-40 from smart discussion through planning, implementation, verification, review, milestone audit, archive, tag, and cleanup. |
 | Source Request | `$gsd-autonomous --auto --from 38` |
-| Current Step | Phase 38 smart discussion and execution context. |
+| Current Step | Phase 38 passed; Phase 39 smart discussion and execution is next. |
 | Verification Policy | Each phase requires committed plans/summaries, focused and full SwiftPM evidence, phase VERIFICATION status `passed`, code review routing, exact requirement traceability, and lifecycle audit before completion. |
 
 Checklist:
@@ -43,7 +43,7 @@ Checklist:
 | Step | Status | Evidence |
 | --- | --- | --- |
 | Initialize autonomous run | `completed` | `init.milestone-op` reports v1.10, 3 phases, 0 complete; `roadmap.analyze` selects Phases 38-40 from requested start. |
-| Phase 38 | `active` | Smart discuss → plan → execute → review → verification pending. |
+| Phase 38 | `completed` | Four plans complete; 152/152 focused and 259/259 full SwiftPM; clean 21-file review; `38-VERIFICATION.md` passed; `threats_open: 0`. |
 | Phase 39 | `planned` | Depends on Phase 38. |
 | Phase 40 | `planned` | Depends on Phase 39. |
 | Lifecycle | `planned` | Audit → complete → cleanup after all phase gates pass. |
@@ -56,6 +56,23 @@ Open Questions:
 | Scope boundary | Keep `白牙`, Demo UI, device/commercial visual approval, packaging, shipping, and launch readiness outside v1.10. |
 
 ## 4. Completed
+
+### C-2026-07-14-phase-38-public-contract-and-lip-support-geometry
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-14 |
+| Scope | Completed Phase 38 Plans `38-01` through `38-04`: five compatibility-safe public controls, optional package-only lip support, eight-field mouth provider ownership, resolver/conflict/facade routing, review, and verification. |
+| Requirements | MOUTH-01 through MOUTH-08 pass 8/8; MOUTH-09 onward and DOC-01 remain assigned to Phases 39-40. |
+| Runtime | Fresh 152/152 focused and 259/259 full SwiftPM tests passed with zero failures. |
+| Quality | Standard review is clean across 21 Swift files; ASVS L1 and public/SPI, dependency/network/commercial, scope, artifact, no-promotion, and diff gates pass with `threats_open: 0`. |
+| Contract | Exact 38 stored fields = 37 numeric + `filterId`; provisional new-field cap `0.25`; reused eligible geometry exact `0.5`; eight mouth emissions; fourteen-removal convergence. |
+
+Outcome:
+
+- Signed Y/tilt/X transforms and local peak/plump geometry are independent, bounded, provider-eligible, and facade-routed without exposing raw supports or control points.
+- `上下`, `倾斜`, `左右`, `M唇`, true `丰唇`, and branch-level `嘴唇` remain unpromoted until Phase 39 output and Phase 40 final-safety/boundary evidence pass.
+- No renderer/gallery, final-cap, exhaustive transition, Demo/device/commercial, packaging, shipping, launch, or milestone-completion claim is made.
 
 ### C-2026-07-14-gsd-new-milestone-v1-10-mouth-remaining-geometry
 

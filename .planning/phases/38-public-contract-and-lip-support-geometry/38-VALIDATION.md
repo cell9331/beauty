@@ -1,7 +1,7 @@
 ---
 phase: 38
 slug: public-contract-and-lip-support-geometry
-status: draft
+status: passed
 nyquist_compliant: true
 wave_0_complete: true
 created: 2026-07-14
@@ -38,14 +38,14 @@ created: 2026-07-14
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 38-01-01 | 01 | 1 | MOUTH-01..03 | T-38-01 | Non-finite input normalizes to zero; legacy payloads stay neutral | contract | `swift test --package-path BeautySDK --filter BeautyParametersTests` | ✅ | ⬜ pending |
-| 38-01-02 | 01 | 1 | MOUTH-03 | T-38-01 | Bundled payload absence remains safe and local | integration | `swift test --package-path BeautySDK --filter BeautyResourceCatalogTests` | ✅ | ⬜ pending |
-| 38-02-01 | 02 | 1 | MOUTH-04 | T-38-02 | Inner availability does not expose raw landmarks or disable outer-only faces | unit | `swift test --package-path BeautySDK --filter VisionFaceDetectorTests` | ✅ | ⬜ pending |
-| 38-02-02 | 02 | 1 | MOUTH-04 | Package-only supports are finite, bounded, deterministic, and default-empty | unit | `swift test --package-path BeautySDK --filter FaceShapeWarpProviderTests` | ✅ | ⬜ pending |
-| 38-03-01 | 03 | 2 | MOUTH-05..08 | T-38-03 | Each provider field validates its own support and fails closed independently | unit | `swift test --package-path BeautySDK --filter MouthWarpProviderTests` | ✅ | ⬜ pending |
-| 38-04-01 | 04 | 3 | MOUTH-01..08 | T-38-04 | Effective strengths, convergence, diagnostics, and emissions share one retained set | integration | `swift test --package-path BeautySDK --filter BeautyEffectResolverTests && swift test --package-path BeautySDK --filter MissingLandmarkDegradationTests && swift test --package-path BeautySDK --filter GeometryConflictResolverTests && swift test --package-path BeautySDK --filter CombinedEffectSafetyTests` | ✅ | ⬜ pending |
-| 38-04-02 | 04 | 3 | MOUTH-08 | T-38-05 | Public facade exposes only aggregate redacted evidence | integration | `swift test --package-path BeautySDK --filter BeautyEngineGeometryFacadeTests` | ✅ | ⬜ pending |
-| 38-04-03 | 04 | 3 | MOUTH-01..08 | T-38-01..05 | No public geometry, dependency, network, Demo, renderer, promotion, or generated-artifact drift | structural | `swift test --package-path BeautySDK && git diff --check` | ✅ | ⬜ pending |
+| 38-01-01 | 01 | 1 | MOUTH-01..03 | T-38-01 | Non-finite input normalizes to zero; legacy payloads stay neutral | contract | `swift test --package-path BeautySDK --filter BeautyParametersTests` | ✅ | ✅ 21/21 passed |
+| 38-01-02 | 01 | 1 | MOUTH-03 | T-38-01 | Bundled payload absence remains safe and local | integration | `swift test --package-path BeautySDK --filter BeautyResourceCatalogTests` | ✅ | ✅ 8/8 passed; caps 3/3 |
+| 38-02-01 | 02 | 1 | MOUTH-04 | T-38-02 | Inner availability does not expose raw landmarks or disable outer-only faces | unit | `swift test --package-path BeautySDK --filter VisionFaceDetectorTests` | ✅ | ✅ 10/10 passed |
+| 38-02-02 | 02 | 1 | MOUTH-04 | Package-only supports are finite, bounded, deterministic, and default-empty | unit | `swift test --package-path BeautySDK --filter FaceShapeWarpProviderTests` | ✅ | ✅ 12/12 passed |
+| 38-03-01 | 03 | 2 | MOUTH-05..08 | T-38-03 | Each provider field validates its own support and fails closed independently | unit | `swift test --package-path BeautySDK --filter MouthWarpProviderTests` | ✅ | ✅ 16/16 passed |
+| 38-04-01 | 04 | 3 | MOUTH-01..08 | T-38-04 | Effective strengths, convergence, diagnostics, and emissions share one retained set | integration | `swift test --package-path BeautySDK --filter BeautyEffectResolverTests && swift test --package-path BeautySDK --filter MissingLandmarkDegradationTests && swift test --package-path BeautySDK --filter GeometryConflictResolverTests && swift test --package-path BeautySDK --filter CombinedEffectSafetyTests` | ✅ | ✅ 70/70 passed |
+| 38-04-02 | 04 | 3 | MOUTH-08 | T-38-05 | Public facade exposes only aggregate redacted evidence | integration | `swift test --package-path BeautySDK --filter BeautyEngineGeometryFacadeTests` | ✅ | ✅ 12/12 passed |
+| 38-04-03 | 04 | 3 | MOUTH-01..08 | T-38-01..05 | No public geometry, dependency, network, Demo, renderer, promotion, or generated-artifact drift | structural | `swift test --package-path BeautySDK && git diff --check` | ✅ | ✅ 259/259 and final gates passed |
 
 ---
 
@@ -71,3 +71,5 @@ All Phase 38 behaviors have automated contract, vector, resolver, facade, and st
 - [x] `nyquist_compliant: true` set in frontmatter.
 
 **Approval:** approved 2026-07-14 for Phase 38 planning
+
+**Final sign-off:** passed 2026-07-14 after 152/152 focused tests, 259/259 full SwiftPM tests, clean standard review, ASVS L1 `threats_open: 0`, contract synchronization, and final boundary checks.

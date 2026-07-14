@@ -68,7 +68,7 @@
 
 ### 4.2 BeautyParameters
 
-`BeautyParameters` 是所有可调效果的唯一公共参数模型。Phase 35 后当前模型包含精确 **33 个 stored fields = 32 个 numeric fields + `filterId`**，覆盖基础皮肤、基础颜色、脸型、眼睛、鼻子、嘴巴和滤镜。
+`BeautyParameters` 是所有可调效果的唯一公共参数模型。Phase 38 后当前模型包含精确 **38 个 stored fields = 37 个 numeric fields + `filterId`**，覆盖基础皮肤、基础颜色、脸型、眼睛、鼻子、嘴巴和滤镜。
 
 最低协议：
 
@@ -85,7 +85,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable
 | Face Shape | `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, `chinLength` | mixed |
 | Eyes | `eyeSize`, `eyeTailLift`: `[0, 1]`; `eyeDistance`, `eyeYPosition`: `[-1, 1]` | positive-only size/tail plus signed distance/position |
 | Nose | `noseSlim`, `noseWingSlim`, signed `noseTipSize`, `noseBridge`, `noseRootNarrowing`, `noseTipLift` | legacy mixed + new positive-only `0...1` |
-| Mouth | `mouthSize`, `mouthWidth`, `smile`, `lipColor` | mixed |
+| Mouth | `mouthSize`, `mouthWidth`, `smile`, `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, `lipPlump`, `lipColor` | mixed |
 | Filter | `filterId`, `filterIntensity` | ID + `0.0...1.0` |
 
 Phase 28 completion evidence covers the existing Face Shape fields only: `faceSlim` for `脸宽`, `faceSmall` for `小脸`, signed `chinLength` for `下巴长短`, `faceVShape` for `V脸`, and `jawSlim` for both `下颌角` and alias-backed `下颌线`. It does not add a new public parameter or change the `BeautyParameters` shape.
@@ -122,6 +122,13 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
 - Phase 37 finalizes the independent `noseRootNarrowing` and `noseTipLift` effective caps at exact `0.25`; public inputs remain positive-only `0...1`, default/non-finite zero, and finite overflow is counted and reported only through aggregate capped evidence.
 - The exact six-field set is `noseSlim`, `noseWingSlim`, signed `noseTipSize`, `noseBridge`, `noseRootNarrowing`, and `noseTipLift`. Zero/no-face/missing/stale input fails closed, reused eligible geometry applies exact `0.5`, and field-specific missing or provider-empty work is removed without borrowing a sibling's support.
 - Provider eligibility and combined face/eye/mouth/nose convergence use one retained baseline. Removed work contributes zero times; final effective strengths, active domains, total, weakened count, scale, warning, and emitted vectors describe the same converged set while both signed tip directions remain intact.
+
+### Phase 38 Remaining Mouth Geometry Contract
+
+- `mouthYPosition`, `mouthTilt`, and `mouthXPosition` are independent signed `-1...1` public values; `lipPeakDefinition` and `lipPlump` are independent positive-only `0...1` values. All default and non-finite inputs normalize to zero, legacy 33-field payloads decode neutrally, and the current inventory is exactly 38 stored fields.
+- Phase 38 uses provisional effective caps of exact `0.25`. Y/X position translate the unchanged whole-mouth support on one axis, tilt rotates it around a stable mouth center, peak shapes explicit upper plus inner support, and plump thickens explicit upper/lower surfaces away from the inner opening.
+- `MouthWarpProvider` owns eight geometry fields: shipped size/width/smile plus the five new controls. Provider preflight and post-conflict sanitization remove non-emitting work per field; combined nose/mouth convergence is monotonic and bounded at fourteen possible removals, so final strengths, totals, counts, scale, warnings, and emissions share one retained set.
+- Reused eligible non-eye geometry scales by exact `0.5`; `lipColor` remains a separate color-domain effect. Phase 39 owns saved-output/ROI evidence and Phase 40 owns final cap calibration, exhaustive transitions, boundaries, and promotion.
 - `37-NOSE-SAFETY-EVIDENCE.md` records fresh 103/103 focused and 228/228 full XCTest evidence plus unchanged 252/252 public-facade output. This closes only the exact SDK-core branch and does not establish Demo, device, commercial, packaging, shipping, or launch readiness.
 
 Rules:

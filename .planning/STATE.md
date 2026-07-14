@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.10
 milestone_name: Mouth Remaining Geometry Controls
 status: executing
-stopped_at: Initialized v1.10 roadmap; Phase 38 is ready to discuss or plan
-last_updated: "2026-07-14T07:22:51.761Z"
-last_activity: 2026-07-14 -- Phase 38 execution started
+stopped_at: Phase 38 passed; Phase 39 is ready for autonomous discussion and planning
+last_updated: "2026-07-14T08:10:00.000Z"
+last_activity: 2026-07-14 -- Phase 38 completed with clean review and passed verification
 progress:
   total_phases: 3
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 4
-  completed_plans: 0
-  percent: 0
+  completed_plans: 4
+  percent: 33
 ---
 
 # Project State
@@ -21,14 +21,22 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-14)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 38 — Public Contract and Lip-Support Geometry
+**Current focus:** Phase 39 — Public-Facade Mouth Geometry Output Evidence
 
 ## Current Position
 
-Phase: 38 (Public Contract and Lip-Support Geometry) — EXECUTING
-Plan: 1 of 4
-Status: Executing Phase 38
-Last activity: 2026-07-14 -- Phase 38 execution started
+Phase: 39 (Public-Facade Mouth Geometry Output Evidence) — READY
+Plan: Not planned
+Status: Phase 38 passed; ready to discuss/plan Phase 39
+Last activity: 2026-07-14 -- Phase 38 completed
+
+### Phase 38 Public Contract and Lip-Support Geometry Result
+
+- `BeautyParameters` is exactly 38 stored fields = 37 numeric plus `filterId`; the five new controls preserve legacy 33-field JSON, bundled-preset, and defaulted initializer compatibility.
+- Optional coarse `innerLips` availability and default-empty private upper/lower/inner supports preserve outer-only face usability and the unchanged public/raw-geometry boundary.
+- Eight independently eligible mouth geometry emissions route through provisional `0.25` caps, exact reused `0.5`, provider-owned sanitization, and an exact fourteen-removal convergence bound.
+- Fresh evidence passed 152/152 focused and 259/259 full SwiftPM tests; the 21-file standard code review is clean and ASVS L1 records `threats_open: 0`.
+- MOUTH-01 through MOUTH-08 are complete. Saved output/ROI, final caps, exhaustive safety, product-row promotion, and milestone completion remain Phase 39/40 work.
 
 ### Phase 36 Public-Facade Output Evidence Result
 

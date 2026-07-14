@@ -73,7 +73,7 @@ Phase 28 face-shape privacy evidence recorded 2026-07-08:
 - EYE-07 validation proves positive-only size/tail behavior, signed distance/position behavior, finite range and cap enforcement, and non-finite normalization before eye geometry is produced. Missing, reused, or stale eye inputs emit only fixed category messages/codes and aggregate metrics.
 - The asserted active roots cover the public SDK surface, `BeautyCore`, `BeautyRender`, renderer source, and active Demo source. A multiline public/SPI scan found no exposure of `FaceGeometry`, `WarpControlPoint`, `CGPoint`, or `CGRect`; renderer and Demo checks found no forbidden internal import.
 - Network/cloud API scans and StoreKit/entitlement scans returned no active execution paths. The only `vipChip` candidates are the two classified static allowlist occurrences `VIP-COMMERCIAL-ALLOW-01` and `VIP-COMMERCIAL-ALLOW-02`; `unclassified_matches: 0`.
-- The current parameter inventory contains exactly 33 public stored fields (32 numeric plus `filterId`) and matches the Phase 35 reviewed contract. Generated renderer outputs and gallery copies remain ignored, untracked local artifacts rather than committed evidence.
+- The current parameter inventory contains exactly 38 public stored fields (37 numeric plus `filterId`) and matches the Phase 38 reviewed contract. Generated renderer outputs and gallery copies remain ignored, untracked local artifacts rather than committed evidence.
 - Command-backed details are in `30-EYE-SAFETY-EVIDENCE.md`; threat classifications and sign-off are in `30-SECURITY.md`.
 
 ### Phase 32 Nose Safety Boundary Evidence
@@ -107,6 +107,13 @@ Phase 28 face-shape privacy evidence recorded 2026-07-08:
 - ASVS L1 active-source and public/SPI scans passed with no forbidden Demo/renderer internal import, dependency drift, network/cloud path, commercial execution path, raw diagnostic geometry, compatibility drift, or tracked/staged generated artifact. `37-SECURITY.md` records `threats_open: 0`.
 - The unchanged renderer/helper result is 252/252 local outputs; output, gallery, staging, and quarantine artifacts remain ignored, untracked, unstaged, disposable evidence. No raw pixels or geometry enter committed evidence.
 - The exact two-row and SDK-core branch promotion is authorized only by the co-located Phase 37 safety/boundary evidence. Physical-device parity, subjective/commercial naturalness, packaging, shipping, launch readiness, and the independent milestone audit remain outside this security result.
+
+### Phase 38 Remaining Mouth Geometry Security Boundary
+
+- The five new public values are scalars only. Vision `innerLips` crosses detection as coarse availability, while default-empty upper/lower/inner support arrays, `FaceGeometry`, bounds, SIMD values, provider types, and control points remain package-internal.
+- Provider input validation rejects non-finite or out-of-bounds support, insufficient cardinality, duplicate points, degenerate spans, invalid strength, and non-renderable displacement before final clamp/output construction. Failure removes only the dependent field.
+- Facade results expose only stable category warnings and numeric aggregate metrics. Focused facade and source scans reject raw support names, coordinates, landmarks, bounds, framework objects, paths, or provider internals.
+- Phase 38 ASVS L1 evidence found no public/SPI geometry leak, new dependency, network/cloud path, commercial path, Demo/renderer drift, generated artifact, or premature product promotion. Output evidence, final caps, exhaustive safety, and promotion remain Phase 39/40 gates.
 
 ## 3. Trust Boundaries
 

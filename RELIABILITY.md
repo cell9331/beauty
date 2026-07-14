@@ -184,6 +184,13 @@ Phase 28 scoped face-shape behavior:
 - Fresh-to-reused-to-stale and valid-to-missing/provider-empty transition evidence proves no prior strength or vector survives. Provider-empty work is excluded from active domains, conflict totals, weakened counts, scale, warnings, final strengths, and dispatch.
 - One monotonic provider-eligible convergence recomputes the retained nose/mouth baseline until final effective strengths equal final emissions. Phase 37 passed 103/103 focused and 228/228 full tests plus the unchanged 252/252 renderer gate; diagnostics remain category/aggregate-only.
 
+### Phase 38 Eight-Field Mouth Reliability Contract
+
+- Whole-mouth Y/tilt/X work depends only on validated outer-lip support; peak depends on valid upper plus inner support, and plump depends on valid upper, lower, and inner support. Missing, non-finite, duplicate-only, displacement-empty, or final-scale-empty inputs zero only dependent fields while eligible siblings and safe color/filter domains continue.
+- Reused eligible mouth geometry applies exact `0.5` after the provisional cap and preserves signed direction. Missing outer support, no face, or stale geometry zeros all eight mouth geometry fields; `lipColor` retains its independent color-domain policy.
+- Provider preflight and final conflict-scaled emissions use one retained baseline with at most fourteen nose/mouth removals. Unsupported work contributes nothing to active domains, totals, weakened counts, scale, warnings, final strengths, or dispatch. Phase 40 retains ownership of the exhaustive eight-field transition matrix.
+- Phase 38 passed 152/152 focused and 259/259 full SwiftPM tests; public diagnostics remain category/aggregate-only and the standard code review is clean.
+
 ## 7. Observability Model
 
 First-version diagnostics live in `BeautyCore/Diagnostics`; do not create a separate diagnostics package until another product actually shares it. Use three layers:
