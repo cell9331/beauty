@@ -26,36 +26,25 @@
 
 ## 3. Active
 
-### Phase 40 Autonomous Execution
+No active plan. v1.10 is complete, audited, archived, tagged, and cleaned; the repository is ready for a fresh milestone.
+
+## 4. Completed
+
+### C-2026-07-14-v1-10-autonomous-closeout
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
-| Owner | Codex autonomous workflow |
-| Started | 2026-07-14 |
-| Scope | Execute v1.10 Phases 38-40 from smart discussion through planning, implementation, verification, review, milestone audit, archive, tag, and cleanup. |
-| Source Request | `$gsd-autonomous --auto --from 38` |
-| Current Step | Phase 40 is `completed` at 4/4 with final verification green; independent milestone audit is next. |
-| Verification Policy | Each phase requires committed plans/summaries, focused and full SwiftPM evidence, phase VERIFICATION status `passed`, code review routing, exact requirement traceability, and lifecycle audit before completion. |
+| Completed | 2026-07-14 |
+| Scope | Executed v1.10 Phases 38-40 autonomously from smart discussion through planning, implementation, review, verification, independent milestone audit, archive, tag, and cleanup. |
+| Requirements | MOUTH-01 through MOUTH-16 and DOC-01 pass 17/17; integration passes 8/8 and end-to-end flows pass 5/5. |
+| Verification | Fresh SwiftPM passes 265/265; strict output passes 308/308 with 96/96 portrait and 8/8 no-face pairs; boundary gate passes 63/63 self-tests and 13/13 live checks. |
+| Lifecycle | Roadmap, requirements, audit, and Phases 38-40 are archived under `.planning/milestones/`; the annotated local `v1.10` tag records final closeout. |
 
-Checklist:
+Outcome:
 
-| Step | Status | Evidence |
-| --- | --- | --- |
-| Initialize autonomous run | `completed` | `init.milestone-op` reports v1.10, 3 phases, 0 complete; `roadmap.analyze` selects Phases 38-40 from requested start. |
-| Phase 38 | `completed` | Four plans complete; 152/152 focused and 259/259 full SwiftPM; clean 21-file review; `38-VERIFICATION.md` passed; `threats_open: 0`. |
-| Phase 39 | `completed` | Three plans complete; 11/11 focused, 260/260 full SwiftPM, 308/308 strict output, 96/96 portrait pairs, 8/8 no-face, 308 gallery, clean review, and `threats_open: 0`. |
-| Phase 40 | `completed` | Four plans complete; 106 focused, 265 full, 308 output, 63 self-test, clean review, `threats_open: 0`, and exact five-row promotion. |
-| Lifecycle | `planned` | Audit → complete → cleanup after all phase gates pass. |
-
-Open Questions:
-
-| Question | Current Decision |
-| --- | --- |
-| Autonomous defaults | `--auto` accepts recommended smart-discuss decisions and safe workflow defaults; pause only for a real blocker, grey-area acceptance, or required human validation. |
-| Scope boundary | Keep `白牙`, Demo UI, device/commercial visual approval, packaging, shipping, and launch readiness outside v1.10. |
-
-## 4. Completed
+- Independent signed Y/tilt/X controls plus local peak/plump geometry are complete through public, provider, facade-output, safety, degradation, integration, and boundary evidence.
+- Exactly `上下`, `倾斜`, `左右`, `M唇`, and true `丰唇` are implemented; `白牙` remains future and branch-level `嘴唇` remains partial.
+- No Demo/device/commercial/performance/packaging/shipping/launch-readiness claim is made; the next action is `$gsd-new-milestone`.
 
 ### C-2026-07-14-phase-40-mouth-geometry-safety-ledger-closeout
 

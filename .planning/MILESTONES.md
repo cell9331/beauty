@@ -1,5 +1,44 @@
 # Milestones
 
+## v1.10 Mouth Remaining Geometry Controls (Shipped: 2026-07-14)
+
+**Phases completed:** 3 phases, 11 plans, 23 plan tasks
+
+**Delivered:** Five independent remaining mouth geometry controls with exact compatibility and safety contracts, deterministic facade-output evidence, exhaustive eight-field degradation/convergence, and exact five-row promotion while keeping teeth whitening outside the geometry slice.
+
+**Key accomplishments:**
+
+- Five independent mouth geometry controls now round-trip through an exact 38-field public model with legacy JSON/source/preset neutrality and provisional internal cap symbols.
+- Inner-lip availability is now independently recorded and converted with outer availability into deterministic private lip supports while legacy outer-lip geometry and global face usability remain unchanged.
+- The mouth warp provider now owns eight independently validated emissions with distinct signed whole-mouth transforms, local peak/plump vectors, and field-local fail-closed sanitization.
+- All five controls now traverse the complete resolver/conflict/public-facade lifecycle with provider-eligible final strengths, redacted aggregate evidence, and command-backed Phase 38 closure.
+- Eight isolated public mouth-geometry cases extend the renderer to 44 cases with one-field source assertions and aggregate-only no-face behavior for every new direction/control.
+- A self-contained bounded decoder accepted a fresh 308-output public-facade matrix with all sixteen mouth visibility, direction, and independence families plus eight exact no-face no-ops.
+- The exact 44-case gallery, current evidence owners, clean review, ASVS L1 security record, Nyquist map, and passed verification close Phase 39 without promoting product rows.
+- Final exact caps, all-eight degradation, combined face/eye/six-nose/eight-mouth convergence, and the fail-closed boundary authorize exactly five promoted geometry rows.
+
+**Stats:**
+
+- 94 files changed, 9,506 insertions, and 1,086 deletions from milestone initialization through Phase 40 closeout
+- 22,678 Swift source/test lines at close, excluding `.build` output
+- 3 phases, 11 plans, 23 plan tasks
+- Same-day execution and audit on 2026-07-14
+
+**Git range:** `bc34c10` → final v1.10 lifecycle commit
+
+**Verification:** Audit passed 17/17 requirements, 3/3 phases, 8/8 integrations, 5/5 flows, and 3/3 Nyquist validations; fresh SwiftPM passed 265/265, strict output passed 308/308 with 96/96 portrait and 8/8 no-face pairs, and the boundary gate passed 63/63 self-tests plus 13/13 live checks.
+
+**Archives:**
+
+- `.planning/milestones/v1.10-ROADMAP.md`
+- `.planning/milestones/v1.10-REQUIREMENTS.md`
+- `.planning/milestones/v1.10-MILESTONE-AUDIT.md`
+- `.planning/milestones/v1.10-phases/`
+
+**What's next:** Start a fresh milestone with `$gsd-new-milestone`.
+
+---
+
 ## v1.9 Nose Remaining Tools and Branch Closeout (Shipped: 2026-07-14)
 
 **Phases completed:** 3 phases, 11 plans, 22 tasks

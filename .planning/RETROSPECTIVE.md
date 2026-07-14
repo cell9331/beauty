@@ -362,6 +362,49 @@
 
 ---
 
+## Milestone: v1.10 - Mouth Remaining Geometry Controls
+
+**Shipped:** 2026-07-14
+**Phases:** 3 | **Plans:** 11 | **Sessions:** 1 autonomous chain
+
+### What Was Built
+
+- Added independent signed mouth Y/tilt/X controls and positive-only lip peak/plump controls through an exact 38-field compatibility contract.
+- Added package-private outer/inner and upper/lower lip supports plus eight independently eligible mouth emissions with final `0.25` caps.
+- Proved the five controls through a strict 44 × 7 public-facade output matrix, exhaustive degradation/convergence evidence, and exact five-row promotion.
+
+### What Worked
+
+- Keeping promotion until the final phase preserved clean nonclaims while public, provider, output, safety, and boundary evidence accumulated.
+- One retained-set convergence contract aligned requested work, provider eligibility, conflict arithmetic, effective strengths, and final emissions.
+- Frozen non-circular output thresholds and a fixed mouth ROI made visual evidence reproducible without committing binary baselines.
+
+### What Was Inefficient
+
+- The external plan checker timed out despite deterministic plan-structure validation passing, so execution needed an explicit recorded fallback.
+- The strict 308-output decoder is deliberately thorough and took over two minutes during the final audit; progress reporting should account for that expected quiet interval.
+- Automatic milestone statistics counted one summary per plan as a task, so the archive entry required correction to the actual 23 plan tasks.
+
+### Patterns Established
+
+- Local lip-shape effects must declare their exact support dependencies; missing inner support removes only peak/plump work while whole-mouth siblings remain eligible.
+- Milestone audits should rerun the unchanged generated-output gate, not only trust phase evidence or regenerate thresholds.
+- Cleanup must use archived roadmap membership and remain limited to the just-completed phase range when unrelated historical directories remain active.
+
+### Key Lessons
+
+1. For multi-field geometry, treat provider eligibility as the canonical retained set before computing aggregate conflict evidence.
+2. Preserve signed direction through every stage and verify it in saved output, not only normalization and vector unit tests.
+3. Keep teeth whitening separate from mouth warp geometry until teeth-region segmentation and retouch ownership are explicitly scoped.
+
+### Cost Observations
+
+- Model mix: quality profile across planning, implementation, review, verification, and lifecycle audit.
+- Sessions: one autonomous milestone chain with sequential phase agents and an independent lifecycle audit.
+- Notable: fixed evidence owners and adversarial boundary self-tests made the final audit a rerun rather than a repair phase.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -376,6 +419,7 @@
 | v1.7 | autonomous | 2 | Added signed nose-slice evidence, fail-closed degradation, and single-pass final audit discipline. |
 | v1.8 | autonomous | 2 | Added signed mouth evidence, color-vs-geometry separation, and current-owner audit closure. |
 | v1.9 | autonomous | 3 | Added independent remaining-nose contracts, adversarial review loops, atomic six-row branch promotion, and a 15/15 audit. |
+| v1.10 | autonomous | 3 | Added independent remaining-mouth contracts, explicit private lip supports, strict 308-output evidence, and a 17/17 audit. |
 
 ### Cumulative Quality
 
@@ -389,6 +433,7 @@
 | v1.7 | 186 SDK tests, 196-output nose helper, boundary scans, and milestone audit | Requirement traceability 9/9 | No new third-party runtime dependency recorded for nose-slice closeout. |
 | v1.8 | 190 SDK tests, 238-output mouth helper, signed/color checks, boundary scans, and milestone audit | Requirement traceability 11/11 | No new third-party runtime dependency recorded for mouth-slice closeout. |
 | v1.9 | 228 SDK tests, 252-output strict helper, adversarial boundary scans, and milestone audit | Requirement traceability 15/15 | No new third-party runtime dependency recorded for remaining-nose closeout. |
+| v1.10 | 265 SDK tests, 308-output strict helper, 63-case boundary self-test, and milestone audit | Requirement traceability 17/17 | No new third-party runtime dependency recorded for remaining-mouth closeout. |
 
 ### Top Lessons (Verified Across Milestones)
 

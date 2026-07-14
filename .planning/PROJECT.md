@@ -12,19 +12,21 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ## Current State
 
-**Shipped version:** v1.9 Nose Remaining Tools and Branch Closeout on 2026-07-14.
+**Shipped version:** v1.10 Mouth Remaining Geometry Controls on 2026-07-14.
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
-**Current milestone:** v1.10 Mouth Remaining Geometry Controls.
+**Current milestone:** None; ready for `$gsd-new-milestone`.
 
 **Implementation state:** Phase 40 is complete. `BeautyParameters` is exactly 38 stored fields (37 numeric plus `filterId`); independent `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, and `lipPlump` have final exact `0.25` caps, eight-field mouth degradation/transitions, provider-empty removal, and fourteen-removal conflict-emission convergence. Exactly `上下`, `倾斜`, `左右`, `M唇`, and true `丰唇` are newly promoted; `白牙` remains future and branch-level `嘴唇` remains partial.
 
-**Verification state:** Phase 40 passes 106 requirement-focused cases, 265/265 full SDK tests, the unchanged 308/308 public-facade output gate, a 63/63 self-tested promotion checker, clean standard review, and ASVS L1 with `threats_open: 0`. Generated artifacts remain ignored/untracked; no Demo/device/commercial/performance/packaging/shipping/launch readiness is claimed. The next workflow is `$gsd-audit-milestone`.
+**Verification state:** The independent v1.10 audit passes 17/17 requirements, 3/3 phases, 8/8 integrations, 5/5 flows, and all three Nyquist validations. Fresh evidence passes 265/265 full SDK tests, 308/308 public-facade outputs, 96/96 portrait pairs, 8/8 no-face pairs, and the 63/63 boundary self-test. Generated artifacts remain ignored/untracked; no Demo/device/commercial/performance/packaging/shipping/launch readiness is claimed.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
-**Code size:** `BeautySDK` and `BeautyDemo` contain 17,794 Swift lines in the local closeout count, including build-derived `.build` files observed during v1.5 archive.
+**Code size:** `BeautySDK` and `BeautyDemo` contain 22,678 tracked-source Swift lines in the v1.10 closeout count, excluding `.build` output.
 
-## Current Milestone: v1.10 Mouth Remaining Geometry Controls
+## Last Completed Milestone: v1.10 Mouth Remaining Geometry Controls
+
+**Status:** Shipped, independently audited, and archived as of 2026-07-14.
 
 **Goal:** Complete the five unresolved SDK-core mouth geometry controls through independent public semantics, explicit lip-support geometry, facade-visible output, conservative safety behavior, and evidence-backed ledger promotion while keeping teeth whitening outside the geometry slice.
 
@@ -37,7 +39,7 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Key context:** v1.10 is SDK-core only. It expands the stable public parameter inventory only for the five remaining mouth geometry rows; adds no SwiftUI Demo UI, third-party dependency, network/cloud behavior, account/payment/VIP/entitlement/commercial path, or tracked generated PNG baseline. `白牙` remains future because it requires teeth-region segmentation and color/retouch ownership, so branch-level `嘴唇` remains partial even when the geometry subset is complete. Device parity, commercial visual approval, packaging, shipping, and launch readiness are not claimed.
 
-**Phase 40 closeout:** Four plans are complete. Exact caps, all-eight degradation/transitions, combined face/eye/six-nose/eight-mouth convergence, privacy and active-source boundaries, and exact five-row promotion pass. The milestone remains active pending its separately owned audit and lifecycle steps.
+**Closeout:** Eleven plans are complete. Exact caps, all-eight degradation/transitions, combined face/eye/six-nose/eight-mouth convergence, privacy and active-source boundaries, exact five-row promotion, and the independent 17/17 milestone audit pass.
 
 ## Last Completed Milestone: v1.9 Nose Remaining Tools and Branch Closeout
 
@@ -149,12 +151,11 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ### Active
 
-- [ ] Define five independent public mouth geometry controls with source-compatible defaults and legacy-payload zero decoding.
-- [ ] Route explicit lip-support geometry through provider, resolver, facade, output, degradation, conflict, redaction, and artifact gates.
-- [ ] Promote exactly `上下`, `倾斜`, `左右`, `M唇`, and true `丰唇` from evidence while keeping `白牙` and branch-level `嘴唇` partial.
+- No active milestone requirements. The next milestone will define a fresh scoped requirement set.
 
 ### Validated
 
+- Exact v1.10 five-row mouth geometry slice, 38-field compatibility, final `0.25` caps, explicit private lip supports, 265/265 full tests, 308/308 output evidence, 17/17 audit, clean ASVS L1 boundaries, and conservative non-claims - Phases 38-40.
 - Exact v1.9 six-row SDK-core `鼻子` branch, independent `山根`/`提升` semantics, final `0.25` caps, 228/228 full tests, unchanged 252/252 output, clean ASVS L1 boundaries, and conservative non-claims - Phase 37.
 - SDK package and public facade boundaries - v1.0.
 - Public SDK value models, 31 normalized parameters, typed errors, clamping, preset validation, and no-op defaults - v1.0.
@@ -348,7 +349,7 @@ Current visual reference contracts:
 | v1.7 targets the existing-public-parameter `鼻子` slice without collapsing signed tip direction. | The renderer foundation exists, and the four public nose fields can be completed without adding API or UI breadth; `noseTipSize` must retain positive/negative semantics end to end. | Completed in Phase 32; milestone audit passed |
 | v1.8 targets the existing-public-parameter `嘴唇` slice while separating geometry from lip color. | The existing public fields support signed mouth geometry plus color containment without adding API/UI breadth or mislabeling `lipColor` as true `丰唇`. | Completed in Phase 34; milestone audit passed |
 | v1.9 closes the remaining `鼻子` branch with independent `山根` and `提升` semantics. | v1.7 deliberately left both tools unresolved; branch completion requires explicit public parameters and evidence rather than aliasing `山根` to `noseBridge` or borrowing prior outputs. | Completed in Phase 37; milestone audit passed |
-| v1.10 completes the remaining mouth geometry controls without absorbing teeth whitening. | The five unresolved geometry rows share the existing mouth warp/facade evidence path, while `白牙` needs a different teeth-region segmentation and retouch contract. | — Pending |
+| v1.10 completes the remaining mouth geometry controls without absorbing teeth whitening. | The five unresolved geometry rows share the existing mouth warp/facade evidence path, while `白牙` needs a different teeth-region segmentation and retouch contract. | Completed in Phase 40; milestone audit passed |
 | v1.5 starts with geometry output foundation plus `脸型`, not all `美型 / 五官` groups. | The user chose the smallest first-principles slice: prove facade-visible geometry output first, then mark only the existing face-shape tools complete when evidence exists. | Completed and archived in v1.5 |
 
 ## Evolution
@@ -356,4 +357,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-07-14 after starting v1.10 Mouth Remaining Geometry Controls*
+*Last updated: 2026-07-14 after v1.10 milestone archive*

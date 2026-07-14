@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.10
 milestone_name: Mouth Remaining Geometry Controls
-status: verifying
-stopped_at: Completed Phase 40; milestone audit next
-last_updated: "2026-07-14T10:30:00.000Z"
-last_activity: 2026-07-14 -- Phase 40 verified complete; $gsd-audit-milestone next
+status: Awaiting next milestone
+stopped_at: v1.10 archived; ready for next milestone
+last_updated: "2026-07-14T09:47:53.604Z"
+last_activity: 2026-07-14 — Milestone v1.10 completed and archived
 progress:
   total_phases: 3
   completed_phases: 3
@@ -21,14 +21,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-14)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 40 — Mouth Geometry Safety and Ledger Closeout
+**Current focus:** Planning the next milestone
 
 ## Current Position
 
-Phase: 40 (Mouth Geometry Safety and Ledger Closeout) — COMPLETE
-Plan: 4 of 4
-Status: Phase verified; milestone lifecycle remains active
-Last activity: 2026-07-14 -- Phase 40 verified complete; `$gsd-audit-milestone` next
+Phase: Milestone v1.10 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-07-14 — Milestone v1.10 completed and archived
 
 ### Phase 40 Mouth Geometry Safety and Ledger Closeout Result
 
@@ -36,7 +36,7 @@ Last activity: 2026-07-14 -- Phase 40 verified complete; `$gsd-audit-milestone` 
 - All-eight mouth degradation/transitions and exact face/eye/six-nose/eight-mouth provider-eligible convergence pass; reused eligible geometry scales by exact `0.5`.
 - Fresh focused evidence passes 106 cases, full SwiftPM passes 265/265, and unchanged strict output evidence passes 308/308 with ignored/untracked artifacts.
 - Standard review is clean; ASVS L1 records `threats_open: 0`; the self-tested promotion boundary passes 63/63 mutation cases and all live checks.
-- Exactly five new geometry rows are implemented; `白牙` remains future and branch-level `嘴唇` remains partial. Next workflow: `$gsd-audit-milestone`.
+- Exactly five new geometry rows are implemented; `白牙` remains future and branch-level `嘴唇` remains partial. The independent v1.10 audit passed 17/17 requirements and the milestone is archived.
 
 ### Phase 39 Public-Facade Mouth Geometry Output Evidence Result
 
@@ -261,13 +261,13 @@ Recent milestone-level outcomes:
 
 ### Pending Todos
 
-- Discuss or plan Phase 38 `Public Contract and Lip-Support Geometry`.
+- Start the next milestone with `$gsd-new-milestone` when a new scope is chosen.
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, screenshot reruns, packaging review, broader `美型 / 五官` slices, and automated visual diffs.
 
 ### Blockers/Concerns
 
-- No active v1.10 planning blocker remains; exact artistic caps and local lip-shape calibration stay evidence-gated until Phases 39-40.
+- No active v1.10 blocker remains; all three phases and the independent milestone audit passed.
 - Deferred v2 `ADV-*` items remain outside v1 traceability and are tracked as `TD-007` in `PLANS.md`.
 - Manual release risks are now routed by Phase 21 and updated by Phases 23 through 25: `TD-008` has focused simulator camera pass evidence but physical iPhone checks remain blocked until hardware exists; `TD-009` remains Phase 22 visual evidence with screenshot rerun protocol; and `TD-010` keeps device, long-run, screenshot, optimized profiling, external-resource integrity, and commercial packaging work routed to later setup-specific checks.
 - `TD-005` is closed for current v1.4 evidence through explicit `PrivacyInfo.xcprivacy` deferral; reopen it if SDK/Demo behavior starts collecting data, uses required-reason APIs, adds third-party SDKs, adds network/cloud/analytics behavior, packages the example executable, or enters packaging/submission work.
@@ -284,7 +284,7 @@ Recent milestone-level outcomes:
 | Release QA | Real-device camera/Vision parity, visual naturalness, production render quality, performance budgets, and long-run hardware readiness | Partially promoted into v1.4 hardening scope; feature expansion remains deferred | v1.4 start |
 | SwiftUI visual fidelity | HTML-to-SwiftUI delta report, Home SwiftUI fidelity pass, Editor SwiftUI fidelity pass, and v1.2 visual QA closeout | Canceled from v1.2; may be reconsidered as a future milestone | 2026-06-26 |
 | Deferred Meitu product areas | Home/discovery, style resources, AI/background, video/body, account/gallery, search, premium access, commerce, account authorization | Deferred outside v1.3 core beauty modules | 2026-06-26 |
-| Broader Meitu shape groups | Remaining eye rows, `白牙`, `比例`, `3D塑颜`, `眉毛`, and unscoped `脸型` rows; the five remaining mouth geometry rows are active in v1.10 Phases 38-40. | Partially promoted into v1.10; listed non-v1.10 rows remain deferred | v1.10 start |
+| Broader Meitu shape groups | Remaining eye rows, `白牙`, `比例`, `3D塑颜`, `眉毛`, and unscoped `脸型` rows. | Five mouth geometry rows completed in v1.10; listed non-v1.10 rows remain deferred | v1.10 closeout |
 | Release/setup evidence | Physical-device camera/Vision parity, commercial visual review, screenshot reruns, optimized profiling, 600-second preview evidence, packaging review, and launch-readiness review | Deferred outside Phase 28 | Phase 28 closeout |
 | Codebase maps | Formal refresh of stale `.planning/codebase/*` maps | Deferred until explicitly scoped | Phase 21 |
 
@@ -296,4 +296,4 @@ Resume file: None
 
 ## Operator Next Steps
 
-- Run `$gsd-discuss-phase 38` or `$gsd-plan-phase 38`.
+- Start the next milestone with `$gsd-new-milestone`.
