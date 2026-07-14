@@ -26,5 +26,10 @@ enum BeautySafetyCaps {
     static let mouthSize: Float = 0.35
     static let mouthWidth: Float = 0.35
     static let smile: Float = 0.50
+    static let mouthYPosition: Float = 0.25
+    static let mouthTilt: Float = 0.25
+    static let mouthXPosition: Float = 0.25
+    static let lipPeakDefinition: Float = 0.25
+    static let lipPlump: Float = 0.25
     static let lipColor: Float = 0.50
 }

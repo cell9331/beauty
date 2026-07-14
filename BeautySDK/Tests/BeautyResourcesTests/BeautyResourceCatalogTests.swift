@@ -48,6 +48,43 @@ final class BeautyResourceCatalogTests: XCTestCase {
         }
     }
 
+    func testPhase38MOUTH03BundledPresetsDecodeNewMouthFieldsAsZero() throws {
+        let presets = try BeautyResourceCatalog.bundled().builtInPresets()
+
+        XCTAssertEqual(
+            presets.map(\.id),
+            ["natural", "clear", "refined", "male-natural", "id-photo-natural"]
+        )
+        XCTAssertEqual(presets.count, 5)
+        for preset in presets {
+            XCTAssertEqual(
+                preset.parameters.mouthYPosition,
+                0,
+                "\(preset.id) mouthYPosition"
+            )
+            XCTAssertEqual(
+                preset.parameters.mouthTilt,
+                0,
+                "\(preset.id) mouthTilt"
+            )
+            XCTAssertEqual(
+                preset.parameters.mouthXPosition,
+                0,
+                "\(preset.id) mouthXPosition"
+            )
+            XCTAssertEqual(
+                preset.parameters.lipPeakDefinition,
+                0,
+                "\(preset.id) lipPeakDefinition"
+            )
+            XCTAssertEqual(
+                preset.parameters.lipPlump,
+                0,
+                "\(preset.id) lipPlump"
+            )
+        }
+    }
+
     func testEFFECT08PresetLookupIsDeterministicAndComplete() throws {
         let catalog = try BeautyResourceCatalog.bundled()
 

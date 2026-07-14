@@ -54,6 +54,11 @@ public struct BeautyEffectiveStrengths: Equatable, Sendable {
     public var mouthSize: Float = 0
     public var mouthWidth: Float = 0
     public var smile: Float = 0
+    public var mouthYPosition: Float = 0
+    public var mouthTilt: Float = 0
+    public var mouthXPosition: Float = 0
+    public var lipPeakDefinition: Float = 0
+    public var lipPlump: Float = 0
     public var lipColor: Float = 0
 
     public init() {}
