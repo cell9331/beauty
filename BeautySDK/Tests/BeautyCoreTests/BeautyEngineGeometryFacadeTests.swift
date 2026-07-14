@@ -4,6 +4,50 @@ import XCTest
 @_spi(Testing) import BeautySDK
 
 final class BeautyEngineGeometryFacadeTests: XCTestCase {
+    func testPhase38MOUTH08FiveIndependentFieldsRouteThroughRedactedPublicFacade() throws {
+        let cases: [(String, BeautyParameters)] = [
+            ("mouthYPosition", BeautyParameters(mouthYPosition: 1)),
+            ("mouthTilt", BeautyParameters(mouthTilt: 1)),
+            ("mouthXPosition", BeautyParameters(mouthXPosition: 1)),
+            ("lipPeakDefinition", BeautyParameters(lipPeakDefinition: 1)),
+            ("lipPlump", BeautyParameters(lipPlump: 1)),
+        ]
+
+        for (name, parameters) in cases {
+            let provider = SDKTestingFaceDetectionProvider([.usableFace])
+            let engine = try BeautyEngine(faceDetectionProvider: provider)
+            let result = try engine.processResult(
+                image: Self.image,
+                metadata: BeautyInputMetadata(orientation: .up, source: .photo),
+                parameters: parameters
+            )
+
+            XCTAssertEqual(provider.invocationCount, 1, name)
+            XCTAssertEqual(result.output.extent, Self.image.extent, name)
+            XCTAssertEqual(result.detectionSummary?.availability, .usable, name)
+            XCTAssertEqual(result.detectionSummary?.faceCount, 1, name)
+            XCTAssertEqual(result.detectionSummary?.usedFaceCount, 1, name)
+            XCTAssertEqual(result.metrics["beauty.detection.geometryRequired"], 1, name)
+            XCTAssertEqual(result.metrics["beauty.detection.faceCount"], 1, name)
+            XCTAssertEqual(result.metrics["beauty.detection.usedFaceCount"], 1, name)
+            XCTAssertGreaterThan(result.metrics["beauty.effects.geometryPointCount"] ?? 0, 0, name)
+            assertRedacted(result)
+
+            let metadata = (
+                result.warnings.map { "\($0.code) \($0.message)" } +
+                Array(result.metrics.keys) +
+                (result.detectionSummary?.reasons.map(\.rawValue) ?? [])
+            ).joined(separator: " ").lowercased()
+            for forbidden in [
+                "upperlips", "lowerlips", "innerlips", "support", "coordinate",
+                "landmark", "controlpoint", "control point", "simd", "bounds",
+                "provider", "vnface", "nsobject", "framework", "/private/", "file://",
+            ] {
+                XCTAssertFalse(metadata.contains(forbidden), "\(name): unexpected payload term \(forbidden)")
+            }
+        }
+    }
+
     func testPhase35NOSE03IndependentNoseFieldsRouteThroughRedactedPublicFacade() throws {
         let cases = [
             BeautyParameters(noseRootNarrowing: 1),
