@@ -260,32 +260,45 @@ final class CombinedEffectSafetyTests: XCTestCase {
         assertCombinedMetadataRedacted(plan)
     }
 
-    func testPhase35NOSE03EveryNoseFieldWeakensWithFaceEyeMouthAndPreservesDirection() {
-        let cases: [(BeautyParameters, KeyPath<BeautyEffectiveStrengths, Float>, Float)] = [
-            (BeautyParameters(noseSlim: 1), \.noseSlim, 0.35),
-            (BeautyParameters(noseWingSlim: 1), \.noseWingSlim, 0.35),
-            (BeautyParameters(noseTipSize: 1), \.noseTipSize, 0.30),
-            (BeautyParameters(noseTipSize: -1), \.noseTipSize, -0.30),
-            (BeautyParameters(noseBridge: 1), \.noseBridge, 0.30),
-            (BeautyParameters(noseRootNarrowing: 1), \.noseRootNarrowing, 0.25),
-            (BeautyParameters(noseTipLift: 1), \.noseTipLift, 0.25),
+    func testNOSE12EveryNoseDirectionUsesExactOnceOnlyFaceEyeMouthScaling() {
+        let cases: [(name: String, parameters: BeautyParameters, keyPath: KeyPath<BeautyEffectiveStrengths, Float>, unscaled: Float)] = [
+            ("noseSlim", BeautyParameters(noseSlim: 1), \.noseSlim, BeautySafetyCaps.noseSlim),
+            ("noseWingSlim", BeautyParameters(noseWingSlim: 1), \.noseWingSlim, BeautySafetyCaps.noseWingSlim),
+            ("noseTipSize positive", BeautyParameters(noseTipSize: 1), \.noseTipSize, BeautySafetyCaps.noseTipSize),
+            ("noseTipSize negative", BeautyParameters(noseTipSize: -1), \.noseTipSize, -BeautySafetyCaps.noseTipSize),
+            ("noseBridge", BeautyParameters(noseBridge: 1), \.noseBridge, BeautySafetyCaps.noseBridge),
+            ("noseRootNarrowing", BeautyParameters(noseRootNarrowing: 1), \.noseRootNarrowing, BeautySafetyCaps.noseRootNarrowing),
+            ("noseTipLift", BeautyParameters(noseTipLift: 1), \.noseTipLift, BeautySafetyCaps.noseTipLift),
         ]
 
-        for (noseParameters, keyPath, expected) in cases {
-            let normal = BeautyEffectResolver.resolve(parameters: noseParameters, faceGeometry: .fixture)
-            var combinedParameters = noseParameters
+        for entry in cases {
+            let normal = BeautyEffectResolver.resolve(parameters: entry.parameters, faceGeometry: .fixture)
+            var combinedParameters = entry.parameters
             combinedParameters.faceSlim = 1
             combinedParameters.eyeSize = 1
             combinedParameters.mouthSize = 1
             let combined = BeautyEffectResolver.resolve(parameters: combinedParameters, faceGeometry: .fixture)
-            let normalValue = normal.effectiveStrengths[keyPath: keyPath]
-            let combinedValue = combined.effectiveStrengths[keyPath: keyPath]
-            XCTAssertEqual(normalValue, expected, accuracy: 0.0001)
-            XCTAssertGreaterThan(abs(combinedValue), 0)
-            XCTAssertLessThan(abs(combinedValue), abs(normalValue))
-            XCTAssertEqual(combinedValue.sign, normalValue.sign)
-            XCTAssertTrue(combined.warnings.contains { $0.code == "combined_geometry_weakened" })
-            XCTAssertLessThan(combined.metrics["beauty.effects.geometryStrengthScale"] ?? 1, 1)
+            let retainedTotal = BeautySafetyCaps.faceSlim +
+                BeautySafetyCaps.eyeSize +
+                BeautySafetyCaps.mouthSize +
+                abs(entry.unscaled)
+            let expectedScale = 1 / retainedTotal
+
+            XCTAssertEqual(normal.effectiveStrengths[keyPath: entry.keyPath], entry.unscaled, accuracy: 0.0000001, entry.name)
+            XCTAssertEqual(combined.effectiveStrengths.faceSlim, BeautySafetyCaps.faceSlim * expectedScale, accuracy: 0.0000001, entry.name)
+            XCTAssertEqual(combined.effectiveStrengths.eyeSize, BeautySafetyCaps.eyeSize * expectedScale, accuracy: 0.0000001, entry.name)
+            XCTAssertEqual(combined.effectiveStrengths.mouthSize, BeautySafetyCaps.mouthSize * expectedScale, accuracy: 0.0000001, entry.name)
+            XCTAssertEqual(combined.effectiveStrengths[keyPath: entry.keyPath], entry.unscaled * expectedScale, accuracy: 0.0000001, entry.name)
+            XCTAssertEqual(combined.effectiveStrengths[keyPath: entry.keyPath].sign, entry.unscaled.sign, entry.name)
+            XCTAssertEqual(combined.metrics["beauty.effects.weakenedCount"], 4, entry.name)
+            XCTAssertEqual(
+                combined.metrics["beauty.effects.geometryStrengthScale"] ?? 0,
+                Double(expectedScale),
+                accuracy: 0.0000001,
+                entry.name
+            )
+            XCTAssertEqual(combined.warnings.filter { $0.code == "combined_geometry_weakened" }.count, 1, entry.name)
+            XCTAssertTrue(combined.activeDomains.isSuperset(of: [.faceShape, .eyes, .nose, .mouth]), entry.name)
             assertCombinedMetadataRedacted(combined)
         }
     }

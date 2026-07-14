@@ -78,6 +78,71 @@ final class GeometryConflictResolverTests: XCTestCase {
         XCTAssertTrue(resolved.warnings.contains { $0.code == "combined_geometry_weakened" })
     }
 
+    func testNOSE12AllSixNoseFieldsContributeExactlyOnceWithEveryGeometryDomain() {
+        let independent = strengths(
+            faceSlim: 1,
+            faceSmall: 1,
+            faceVShape: 1,
+            jawSlim: 1,
+            chinLength: -1,
+            eyeSize: 1,
+            eyeDistance: -1,
+            eyeYPosition: 1,
+            eyeTailLift: 1,
+            noseSlim: 1,
+            noseWingSlim: 1,
+            noseTipSize: -1,
+            noseBridge: 1,
+            noseRootNarrowing: 1,
+            noseTipLift: 1,
+            mouthSize: -1,
+            mouthWidth: 1,
+            smile: 1
+        )
+        let expectedTotal: Float = 6.65
+        let expectedScale = 1 / expectedTotal
+        let resolved = GeometryConflictResolver().resolve(strengths: independent)
+
+        XCTAssertEqual(independent.geometryTotal, expectedTotal, accuracy: 0.0000001)
+        XCTAssertEqual(resolved.metrics["beauty.effects.weakenedCount"], 18)
+        XCTAssertEqual(
+            resolved.metrics["beauty.effects.geometryStrengthScale"] ?? 0,
+            Double(expectedScale),
+            accuracy: 0.0000001
+        )
+        XCTAssertEqual(resolved.warnings.map(\.code), ["combined_geometry_weakened"])
+        XCTAssertEqual(resolved.strengths.geometryTotal, 1, accuracy: 0.000001)
+
+        let fields: [(KeyPath<BeautyEffectiveStrengths, Float>, Float)] = [
+            (\.faceSlim, BeautySafetyCaps.faceSlim),
+            (\.faceSmall, BeautySafetyCaps.faceSmall),
+            (\.faceVShape, BeautySafetyCaps.faceVShape),
+            (\.jawSlim, BeautySafetyCaps.jawSlim),
+            (\.chinLength, -BeautySafetyCaps.chinLength),
+            (\.eyeSize, BeautySafetyCaps.eyeSize),
+            (\.eyeDistance, -BeautySafetyCaps.eyeDistance),
+            (\.eyeYPosition, BeautySafetyCaps.eyeYPosition),
+            (\.eyeTailLift, BeautySafetyCaps.eyeTailLift),
+            (\.noseSlim, BeautySafetyCaps.noseSlim),
+            (\.noseWingSlim, BeautySafetyCaps.noseWingSlim),
+            (\.noseTipSize, -BeautySafetyCaps.noseTipSize),
+            (\.noseBridge, BeautySafetyCaps.noseBridge),
+            (\.noseRootNarrowing, BeautySafetyCaps.noseRootNarrowing),
+            (\.noseTipLift, BeautySafetyCaps.noseTipLift),
+            (\.mouthSize, -BeautySafetyCaps.mouthSize),
+            (\.mouthWidth, BeautySafetyCaps.mouthWidth),
+            (\.smile, BeautySafetyCaps.smile),
+        ]
+        for (keyPath, unscaled) in fields {
+            XCTAssertEqual(
+                resolved.strengths[keyPath: keyPath],
+                unscaled * expectedScale,
+                accuracy: 0.0000001
+            )
+            XCTAssertEqual(resolved.strengths[keyPath: keyPath].sign, unscaled.sign)
+        }
+    }
+
     func testResolverReportsGeometryPointAndCapMetricsForFaceShapeContext() {
         let plan = BeautyEffectResolver.resolve(
             parameters: BeautyParameters(faceSlim: 1, faceSmall: 1, faceVShape: 1, jawSlim: 1, chinLength: 1),
@@ -218,6 +283,9 @@ private extension BeautyEffectiveStrengths {
             jawSlim +
             abs(chinLength) +
             abs(eyeSize) +
+            abs(eyeDistance) +
+            abs(eyeYPosition) +
+            abs(eyeTailLift) +
             noseSlim +
             noseWingSlim +
             abs(noseTipSize) +
