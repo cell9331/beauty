@@ -127,7 +127,54 @@ final class BeautyEffectResolverTests: XCTestCase {
         XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(noseRootNarrowing: 0.4)))
         XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(noseTipLift: 0.4)))
         XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(mouthSize: 0.4)))
+        XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(mouthYPosition: 0.4)))
+        XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(mouthTilt: 0.4)))
+        XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(mouthXPosition: 0.4)))
+        XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(lipPeakDefinition: 0.4)))
+        XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(lipPlump: 0.4)))
         XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(lipColor: 0.4)))
+    }
+
+    func testPhase38MOUTH05Through08ExactCapsRoutingWarningsAndCounts() {
+        let cases: [(String, BeautyParameters, KeyPath<BeautyEffectiveStrengths, Float>, Float)] = [
+            ("Y positive", BeautyParameters(mouthYPosition: 1), \.mouthYPosition, 0.25),
+            ("Y negative", BeautyParameters(mouthYPosition: -1), \.mouthYPosition, -0.25),
+            ("tilt positive", BeautyParameters(mouthTilt: 1), \.mouthTilt, 0.25),
+            ("tilt negative", BeautyParameters(mouthTilt: -1), \.mouthTilt, -0.25),
+            ("X positive", BeautyParameters(mouthXPosition: 1), \.mouthXPosition, 0.25),
+            ("X negative", BeautyParameters(mouthXPosition: -1), \.mouthXPosition, -0.25),
+            ("peak", BeautyParameters(lipPeakDefinition: 1), \.lipPeakDefinition, 0.25),
+            ("plump", BeautyParameters(lipPlump: 1), \.lipPlump, 0.25),
+        ]
+
+        for (name, parameters, keyPath, expected) in cases {
+            let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)
+            XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: parameters), name)
+            XCTAssertEqual(plan.effectiveStrengths[keyPath: keyPath], expected, accuracy: 0.000001, name)
+            XCTAssertTrue(plan.activeDomains.contains(.mouth), name)
+            XCTAssertFalse(plan.skippedDomains.contains(.mouth), name)
+            XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 1, name)
+            XCTAssertEqual(plan.warnings.filter { $0.code == "beauty_strength_capped" }.count, 1, name)
+            XCTAssertFalse(plan.warnings.contains { $0.code == "combined_geometry_weakened" }, name)
+            XCTAssertGreaterThan(plan.metrics["beauty.effects.geometryPointCount"] ?? 0, 0, name)
+            assertRedacted(plan)
+        }
+    }
+
+    func testPhase38NegativePositiveOnlyLipInputsAreSilentNoOps() {
+        let cases: [(String, BeautyParameters, KeyPath<BeautyEffectiveStrengths, Float>)] = [
+            ("peak", BeautyParameters(lipPeakDefinition: -1), \.lipPeakDefinition),
+            ("plump", BeautyParameters(lipPlump: -1), \.lipPlump),
+        ]
+        for (name, parameters, keyPath) in cases {
+            let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)
+            XCTAssertFalse(BeautyEffectResolver.requiresFaceGeometry(parameters: parameters), name)
+            XCTAssertEqual(plan.effectiveStrengths[keyPath: keyPath], 0, name)
+            XCTAssertFalse(plan.activeDomains.contains(.mouth), name)
+            XCTAssertFalse(plan.skippedDomains.contains(.mouth), name)
+            XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 0, name)
+            XCTAssertTrue(plan.warnings.isEmpty, name)
+        }
     }
 
     func testEYE04EyeCapsResolveExactValuesDirectionsWarningsAndCounts() {

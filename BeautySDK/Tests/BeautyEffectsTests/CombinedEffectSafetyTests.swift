@@ -310,6 +310,14 @@ final class CombinedEffectSafetyTests: XCTestCase {
             (BeautyParameters(mouthWidth: 1, lipColor: 1), \.mouthWidth, 0.35),
             (BeautyParameters(mouthWidth: -1, lipColor: 1), \.mouthWidth, -0.35),
             (BeautyParameters(smile: 1, lipColor: 1), \.smile, 0.50),
+            (BeautyParameters(mouthYPosition: 1, lipColor: 1), \.mouthYPosition, 0.25),
+            (BeautyParameters(mouthYPosition: -1, lipColor: 1), \.mouthYPosition, -0.25),
+            (BeautyParameters(mouthTilt: 1, lipColor: 1), \.mouthTilt, 0.25),
+            (BeautyParameters(mouthTilt: -1, lipColor: 1), \.mouthTilt, -0.25),
+            (BeautyParameters(mouthXPosition: 1, lipColor: 1), \.mouthXPosition, 0.25),
+            (BeautyParameters(mouthXPosition: -1, lipColor: 1), \.mouthXPosition, -0.25),
+            (BeautyParameters(lipPeakDefinition: 1, lipColor: 1), \.lipPeakDefinition, 0.25),
+            (BeautyParameters(lipPlump: 1, lipColor: 1), \.lipPlump, 0.25),
         ]
 
         for (mouthParameters, keyPath, expected) in cases {
@@ -318,6 +326,11 @@ final class CombinedEffectSafetyTests: XCTestCase {
             combinedParameters.faceSlim = 1
             combinedParameters.eyeSize = 1
             combinedParameters.noseSlim = 1
+            combinedParameters.noseWingSlim = 1
+            combinedParameters.noseTipSize = -1
+            combinedParameters.noseBridge = 1
+            combinedParameters.noseRootNarrowing = 1
+            combinedParameters.noseTipLift = 1
             let combined = BeautyEffectResolver.resolve(parameters: combinedParameters, faceGeometry: .fixture)
             let normalValue = normal.effectiveStrengths[keyPath: keyPath]
             let combinedValue = combined.effectiveStrengths[keyPath: keyPath]
@@ -327,7 +340,10 @@ final class CombinedEffectSafetyTests: XCTestCase {
             XCTAssertLessThan(abs(combinedValue), abs(normalValue))
             XCTAssertEqual(combinedValue.sign, normalValue.sign)
             XCTAssertEqual(combined.effectiveStrengths.lipColor, 0.50, accuracy: 0.0001)
-            XCTAssertTrue(combined.warnings.contains { $0.code == "combined_geometry_weakened" })
+            XCTAssertEqual(combined.warnings.filter { $0.code == "combined_geometry_weakened" }.count, 1)
+            XCTAssertLessThan(combined.metrics["beauty.effects.geometryStrengthScale"] ?? 1, 1)
+            XCTAssertGreaterThan(combined.metrics["beauty.effects.weakenedCount"] ?? 0, 0)
+            XCTAssertTrue(combined.activeDomains.isSuperset(of: [.faceShape, .eyes, .nose, .mouth, .lipColor]))
             assertCombinedMetadataRedacted(combined)
         }
     }

@@ -27,6 +27,11 @@ public enum BeautyEffectResolver {
             normalized.mouthSize,
             normalized.mouthWidth,
             normalized.smile,
+            normalized.mouthYPosition,
+            normalized.mouthTilt,
+            normalized.mouthXPosition,
+            normalized.lipPeakDefinition,
+            normalized.lipPlump,
             normalized.lipColor
         )
     }
@@ -100,6 +105,11 @@ public enum BeautyEffectResolver {
         strengths.mouthSize = capSigned(normalized.mouthSize, cap: BeautySafetyCaps.mouthSize, cappedCount: &cappedCount)
         strengths.mouthWidth = capSigned(normalized.mouthWidth, cap: BeautySafetyCaps.mouthWidth, cappedCount: &cappedCount)
         strengths.smile = capUnit(normalized.smile, cap: BeautySafetyCaps.smile, cappedCount: &cappedCount)
+        strengths.mouthYPosition = capSigned(normalized.mouthYPosition, cap: BeautySafetyCaps.mouthYPosition, cappedCount: &cappedCount)
+        strengths.mouthTilt = capSigned(normalized.mouthTilt, cap: BeautySafetyCaps.mouthTilt, cappedCount: &cappedCount)
+        strengths.mouthXPosition = capSigned(normalized.mouthXPosition, cap: BeautySafetyCaps.mouthXPosition, cappedCount: &cappedCount)
+        strengths.lipPeakDefinition = capUnit(normalized.lipPeakDefinition, cap: BeautySafetyCaps.lipPeakDefinition, cappedCount: &cappedCount)
+        strengths.lipPlump = capUnit(normalized.lipPlump, cap: BeautySafetyCaps.lipPlump, cappedCount: &cappedCount)
         strengths.lipColor = capUnit(normalized.lipColor, cap: BeautySafetyCaps.lipColor, cappedCount: &cappedCount)
 
         var extraWarnings: [BeautyValidationWarning] = []
@@ -121,7 +131,12 @@ public enum BeautyEffectResolver {
             strengths.noseTipLift,
             strengths.mouthSize,
             strengths.mouthWidth,
-            strengths.smile
+            strengths.smile,
+            strengths.mouthYPosition,
+            strengths.mouthTilt,
+            strengths.mouthXPosition,
+            strengths.lipPeakDefinition,
+            strengths.lipPlump
         )
 
         func appendStaleGeometryWarningIfNeeded() {
@@ -162,7 +177,12 @@ public enum BeautyEffectResolver {
         let hadRequestedMouthValues = anyNonZero(
             strengths.mouthSize,
             strengths.mouthWidth,
-            strengths.smile
+            strengths.smile,
+            strengths.mouthYPosition,
+            strengths.mouthTilt,
+            strengths.mouthXPosition,
+            strengths.lipPeakDefinition,
+            strengths.lipPlump
         )
         let noseProvider = NoseWarpProvider()
         let mouthProvider = MouthWarpProvider()
@@ -214,7 +234,12 @@ public enum BeautyEffectResolver {
         let hasMouthGeometryValues = anyNonZero(
             strengths.mouthSize,
             strengths.mouthWidth,
-            strengths.smile
+            strengths.smile,
+            strengths.mouthYPosition,
+            strengths.mouthTilt,
+            strengths.mouthXPosition,
+            strengths.lipPeakDefinition,
+            strengths.lipPlump
         )
         if !staleGeometry,
            let faceGeometry,
@@ -420,8 +445,9 @@ public enum BeautyEffectResolver {
         // A conflict scale can move a previously emitting nose or mouth field
         // below its provider threshold. Remove that work from the unscaled
         // baseline and recompute so final emissions and conflict evidence share
-        // one mask. Each pass can only remove fields, and there are nine fields.
-        for _ in 0..<9 {
+        // one mask. Each pass can only remove fields: six nose plus eight mouth,
+        // for an exact bounded convergence maximum of fourteen removals.
+        for _ in 0..<14 {
             let resolution = GeometryConflictResolver().resolve(strengths: retainedBaseline)
             var nextBaseline = noseProvider
                 .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
@@ -462,6 +488,11 @@ public enum BeautyEffectResolver {
         strengths.mouthSize = 0
         strengths.mouthWidth = 0
         strengths.smile = 0
+        strengths.mouthYPosition = 0
+        strengths.mouthTilt = 0
+        strengths.mouthXPosition = 0
+        strengths.lipPeakDefinition = 0
+        strengths.lipPlump = 0
     }
 
     private static func scaleReusableNonEyeGeometryStrengths(_ strengths: inout BeautyEffectiveStrengths, by scale: Float) {
@@ -479,6 +510,11 @@ public enum BeautyEffectResolver {
         strengths.mouthSize *= scale
         strengths.mouthWidth *= scale
         strengths.smile *= scale
+        strengths.mouthYPosition *= scale
+        strengths.mouthTilt *= scale
+        strengths.mouthXPosition *= scale
+        strengths.lipPeakDefinition *= scale
+        strengths.lipPlump *= scale
     }
 
     private static var faceShapeSkippedWarning: BeautyValidationWarning {

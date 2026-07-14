@@ -1048,6 +1048,78 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertTrue(plan.warnings.contains { $0.code == "geometry_stale_reduced" })
     }
 
+    func testPhase38MOUTH08LocalSupportFailuresZeroOnlyDependentFields() {
+        let requested = BeautyParameters(
+            mouthYPosition: 1,
+            mouthTilt: -1,
+            mouthXPosition: 1,
+            lipPeakDefinition: 1,
+            lipPlump: 1
+        )
+        let cases: [(String, FaceGeometry, Bool, Bool)] = [
+            ("missing inner", .missingInnerLips, false, false),
+            ("missing upper", .missingUpperLips, false, false),
+            ("missing lower", .missingLowerLips, true, false),
+            ("non-finite inner", .nonFiniteInnerLips, false, false),
+            ("duplicate upper", .duplicateUpperLips, false, false),
+            ("duplicate lower", .duplicateLowerLips, true, false),
+        ]
+
+        for (name, face, peakEligible, plumpEligible) in cases {
+            let plan = BeautyEffectResolver.resolve(parameters: requested, faceGeometry: face)
+            XCTAssertTrue(plan.activeDomains.contains(.mouth), name)
+            XCTAssertEqual(plan.effectiveStrengths.mouthYPosition, 0.25, accuracy: 0.000001, name)
+            XCTAssertEqual(plan.effectiveStrengths.mouthTilt, -0.25, accuracy: 0.000001, name)
+            XCTAssertEqual(plan.effectiveStrengths.mouthXPosition, 0.25, accuracy: 0.000001, name)
+            XCTAssertEqual(plan.effectiveStrengths.lipPeakDefinition, peakEligible ? 0.25 : 0, accuracy: 0.000001, name)
+            XCTAssertEqual(plan.effectiveStrengths.lipPlump, plumpEligible ? 0.25 : 0, accuracy: 0.000001, name)
+            XCTAssertFalse(plan.warnings.contains { $0.code == "mouth_inputs_missing" }, name)
+            XCTAssertGreaterThan(plan.metrics["beauty.effects.geometryPointCount"] ?? 0, 0, name)
+            assertRedacted(plan)
+        }
+    }
+
+    func testPhase38MOUTH08ReusedStaleMissingOuterAndNoFaceApplyPerMouthGeometry() {
+        let requested = BeautyParameters(
+            mouthYPosition: -1,
+            mouthTilt: 1,
+            mouthXPosition: -1,
+            lipPeakDefinition: 1,
+            lipPlump: 1
+        )
+        let reused = BeautyEffectResolver.resolve(parameters: requested, faceGeometry: .reused)
+        XCTAssertEqual(reused.effectiveStrengths.mouthYPosition, -0.125, accuracy: 0.000001)
+        XCTAssertEqual(reused.effectiveStrengths.mouthTilt, 0.125, accuracy: 0.000001)
+        XCTAssertEqual(reused.effectiveStrengths.mouthXPosition, -0.125, accuracy: 0.000001)
+        XCTAssertEqual(reused.effectiveStrengths.lipPeakDefinition, 0.125, accuracy: 0.000001)
+        XCTAssertEqual(reused.effectiveStrengths.lipPlump, 0.125, accuracy: 0.000001)
+        XCTAssertEqual(reused.metrics["beauty.effects.reusedGeometryScale"], 0.5)
+        XCTAssertTrue(reused.activeDomains.contains(.mouth))
+
+        for (name, face) in [("stale", FaceGeometry.stale), ("missing outer", .missingOuterLips)] {
+            let plan = BeautyEffectResolver.resolve(parameters: requested, faceGeometry: face)
+            assertPhase38MouthGeometryIsZero(plan, name: name)
+            XCTAssertTrue(plan.skippedDomains.contains(.mouth), name)
+            XCTAssertFalse(plan.activeDomains.contains(.mouth), name)
+        }
+        let noFace = BeautyEffectResolver.resolve(parameters: requested, faceGeometry: nil)
+        assertPhase38MouthGeometryIsZero(noFace, name: "no face")
+        XCTAssertTrue(noFace.skippedDomains.contains(.mouth))
+    }
+
+    func testPhase38MOUTH08ProviderEmptyTinyFieldIsRemovedFromFinalEvidence() {
+        let parameters = BeautyParameters(mouthYPosition: Float.ulpOfOne * 2)
+        let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)
+
+        XCTAssertEqual(plan.effectiveStrengths.mouthYPosition, 0)
+        XCTAssertFalse(plan.activeDomains.contains(.mouth))
+        XCTAssertTrue(plan.skippedDomains.contains(.mouth))
+        XCTAssertEqual(plan.metrics["beauty.effects.skippedMouthDomains"], 1)
+        XCTAssertNil(plan.metrics["beauty.effects.geometryPointCount"])
+        XCTAssertEqual(plan.warnings.filter { $0.code == "mouth_inputs_missing" }.count, 1)
+        assertRedacted(plan)
+    }
+
     func testStaleLandmarksSkipStrongMouthGeometry() {
         let plan = BeautyEffectResolver.resolve(
             parameters: BeautyParameters(brightness: 0.2, mouthSize: -1, mouthWidth: 1, smile: 1, lipColor: 1),
@@ -1063,6 +1135,19 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertEqual(plan.effectiveStrengths.smile, 0)
         XCTAssertEqual(plan.effectiveStrengths.lipColor, 0.50, accuracy: 0.0001)
         XCTAssertTrue(plan.warnings.contains { $0.code == "geometry_stale_skipped" })
+    }
+
+    private func assertPhase38MouthGeometryIsZero(
+        _ plan: BeautyEffectPlan,
+        name: String,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(plan.effectiveStrengths.mouthYPosition, 0, name, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.mouthTilt, 0, name, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.mouthXPosition, 0, name, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.lipPeakDefinition, 0, name, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.lipPlump, 0, name, file: file, line: line)
     }
 
     func testMissingMouthSkipsLipColorAndKeepsSafeDomainsActive() {

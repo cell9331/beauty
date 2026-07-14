@@ -78,6 +78,29 @@ final class GeometryConflictResolverTests: XCTestCase {
         XCTAssertTrue(resolved.warnings.contains { $0.code == "combined_geometry_weakened" })
     }
 
+    func testPhase38MOUTH08FiveNewFieldsContributeExactlyOnceAndPreserveSigns() {
+        let independent = strengths(
+            mouthYPosition: -1,
+            mouthTilt: 1,
+            mouthXPosition: -1,
+            lipPeakDefinition: 1,
+            lipPlump: 1
+        )
+        let resolved = GeometryConflictResolver(totalThreshold: 0.50).resolve(strengths: independent)
+        let expectedScale: Float = 0.40
+
+        XCTAssertEqual(independent.geometryTotal, 1.25, accuracy: 0.000001)
+        XCTAssertEqual(resolved.metrics["beauty.effects.weakenedCount"], 5)
+        XCTAssertEqual(resolved.metrics["beauty.effects.geometryStrengthScale"] ?? 0, Double(expectedScale), accuracy: 0.000001)
+        XCTAssertEqual(resolved.strengths.mouthYPosition, -0.25 * expectedScale, accuracy: 0.000001)
+        XCTAssertEqual(resolved.strengths.mouthTilt, 0.25 * expectedScale, accuracy: 0.000001)
+        XCTAssertEqual(resolved.strengths.mouthXPosition, -0.25 * expectedScale, accuracy: 0.000001)
+        XCTAssertEqual(resolved.strengths.lipPeakDefinition, 0.25 * expectedScale, accuracy: 0.000001)
+        XCTAssertEqual(resolved.strengths.lipPlump, 0.25 * expectedScale, accuracy: 0.000001)
+        XCTAssertEqual(resolved.strengths.lipColor, 0)
+        XCTAssertEqual(resolved.warnings.map(\.code), ["combined_geometry_weakened"])
+    }
+
     func testNOSE12AllSixNoseFieldsContributeExactlyOnceWithEveryGeometryDomain() {
         let independent = strengths(
             faceSlim: 1,
@@ -250,7 +273,12 @@ final class GeometryConflictResolverTests: XCTestCase {
         noseTipLift: Float = 0,
         mouthSize: Float = 0,
         mouthWidth: Float = 0,
-        smile: Float = 0
+        smile: Float = 0,
+        mouthYPosition: Float = 0,
+        mouthTilt: Float = 0,
+        mouthXPosition: Float = 0,
+        lipPeakDefinition: Float = 0,
+        lipPlump: Float = 0
     ) -> BeautyEffectiveStrengths {
         var strengths = BeautyEffectiveStrengths()
         strengths.faceSlim = min(faceSlim, BeautySafetyCaps.faceSlim)
@@ -271,6 +299,11 @@ final class GeometryConflictResolverTests: XCTestCase {
         strengths.mouthSize = min(max(mouthSize, -BeautySafetyCaps.mouthSize), BeautySafetyCaps.mouthSize)
         strengths.mouthWidth = min(max(mouthWidth, -BeautySafetyCaps.mouthWidth), BeautySafetyCaps.mouthWidth)
         strengths.smile = min(smile, BeautySafetyCaps.smile)
+        strengths.mouthYPosition = min(max(mouthYPosition, -BeautySafetyCaps.mouthYPosition), BeautySafetyCaps.mouthYPosition)
+        strengths.mouthTilt = min(max(mouthTilt, -BeautySafetyCaps.mouthTilt), BeautySafetyCaps.mouthTilt)
+        strengths.mouthXPosition = min(max(mouthXPosition, -BeautySafetyCaps.mouthXPosition), BeautySafetyCaps.mouthXPosition)
+        strengths.lipPeakDefinition = min(max(lipPeakDefinition, 0), BeautySafetyCaps.lipPeakDefinition)
+        strengths.lipPlump = min(max(lipPlump, 0), BeautySafetyCaps.lipPlump)
         return strengths
     }
 }
@@ -294,6 +327,11 @@ private extension BeautyEffectiveStrengths {
             noseTipLift +
             abs(mouthSize) +
             abs(mouthWidth) +
-            smile
+            smile +
+            abs(mouthYPosition) +
+            abs(mouthTilt) +
+            abs(mouthXPosition) +
+            lipPeakDefinition +
+            lipPlump
     }
 }
