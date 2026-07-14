@@ -1,21 +1,21 @@
 ---
 phase: 36-public-facade-output-evidence
 status: issues_found
-depth: standard
+depth: deep
 reviewed: 2026-07-13
-files_reviewed: 6
+files_reviewed: 10
 findings:
-  critical: 2
-  warning: 1
+  critical: 0
+  warning: 3
   info: 0
   total: 3
 ---
 
-# Phase 36 Code Re-Review - Iteration 3
+# Phase 36 Final Code Re-Review - Iteration 4
 
 ## Scope
 
-Fresh independent review after fix commit `1cfa68c` covered the same six Phase 36 files and the latest `36-REVIEW.md` / `36-REVIEW-FIX.md` history:
+Fresh independent review after remediation commits `392edfd` and `6659685` covered the same six Phase 36 files, the four remediation-owned repository contracts, the latest review/fix history, and both remediation diffs:
 
 - `BeautySDK/Sources/BeautyExampleRenderer/main.swift`
 - `BeautySDK/Tests/BeautyCoreTests/BeautyRendererOutputRegressionTests.swift`
@@ -23,48 +23,57 @@ Fresh independent review after fix commit `1cfa68c` covered the same six Phase 3
 - `example-images/generate_gallery.py`
 - `example-images/README.md`
 - `docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md`
+- `.gitignore`
+- `SECURITY.md`
+- `RELIABILITY.md`
+- `PLANS.md`
 
 ## Findings
 
-### CR-03: Descriptor protection ends before gallery population, allowing an external overwrite race
-
-**Severity:** Critical
-**File:** `example-images/generate_gallery.py:122-132`
-
-`recreate_gallery_directory(...)` securely anchors deletion and creation only for the duration of that call. It closes every descriptor before returning, after which `generate_gallery(...)` creates case directories and copies files through the original pathnames. A concurrent rename of `example-images` followed by an external symlink substitution in this interval redirects both `case_dir.mkdir(...)` and `shutil.copy2(...)` outside the repository. Existing external files with expected gallery names are opened with truncation and overwritten.
-
-A deterministic temporary-repository reproducer wrapped the real `recreate_gallery_directory`, swapped `repo/example-images` for a symlink immediately after the descriptor-safe recreation, and provided the expected source under the external target. `generate_gallery(...)` returned success and changed an external `gallery/x/case/f.png` sentinel from `OLD` to `NEW`. Thus the Phase 36 claim that generated gallery copies stay under the ignored repository gallery is still subject to the same ancestor-swap class even though destructive cleanup itself is anchored.
-
-Keep the validated gallery descriptor open through population and perform directory creation plus destination opens descriptor-relatively with no-follow and identity checks. Source files should likewise be opened before the destructive transition or through anchored input/output descriptors, and the final visible gallery should be published only after a descriptor-relative staging tree is complete and revalidated.
-
-### CR-04: Recursive cleanup traverses mounted directories
-
-**Severity:** Critical
-**File:** `example-images/generate_gallery.py:217-249`
-
-The recursive remover distinguishes only directory versus non-directory. A mount point or bind-mounted directory inside the quarantined gallery passes `stat(..., follow_symlinks=False)`, opens successfully with `O_NOFOLLOW`, and has matching `st_dev`/`st_ino` between the directory entry and opened descriptor. `_remove_directory_contents(...)` then recursively deletes the mounted filesystem's contents. `O_NOFOLLOW` prevents symbolic-link traversal but does not prevent crossing mount points, so the asserted external-deletion containment is incomplete.
-
-Reject filesystem/mount transitions before recursion using a platform-supported no-cross-device/no-mount primitive and fail closed where that guarantee cannot be established. A same-device bind mount means a simple parent/child `st_dev` comparison is insufficient on platforms that support bind mounts. Add an isolated mount-point regression where supported and prove the mounted sentinel survives.
-
-### WR-03: PNG file-size bounding has a stat/read TOCTOU and still permits unbounded allocation
+### WR-04: Failed descriptor acquisition leaks one file descriptor per invocation
 
 **Severity:** Warning
-**File:** `.planning/phases/36-public-facade-output-evidence/check_nose_remaining_renderer_outputs.py:202-208`
+**File:** `example-images/generate_gallery.py:266-268`
 
-`read_png_payload(...)` checks `path.stat().st_size` and then calls `path.read_bytes()` as a separate pathname operation. Replacement or growth between those calls bypasses `MAX_PNG_FILE_BYTES`; `read_bytes()` allocates the entire new file before any post-read check. A deterministic monkeypatch made `stat()` report one byte and `read_bytes()` return 16 MiB + 1 byte; the oversized buffer was allocated and admitted to the parser, which failed only later on its signature. The incremental zlib budget remains sound, but the broader claim that all untrusted PNG allocation is bounded is not yet true.
+`publish_gallery(...)` opens `input_fd`, then attempts to open `output_fd`, and only afterward appends both descriptors to the cleanup list. If the output open fails, `input_fd` is unreachable by the `finally` loop and remains open. The same ownership gap exists inside `_mkdir_open(...)`: an opened directory is not closed if its post-open identity check raises before the descriptor is returned to its caller.
 
-Open once, `fstat` that descriptor, and read through a bounded loop capped at `MAX_PNG_FILE_BYTES + 1`, rejecting excess before retaining it. The same pattern should be considered for JPEG fixture dimension reads, which currently use an entirely unbounded `read_bytes()`.
+A deterministic temporary-repository reproducer omitted `example-images/output` and invoked `publish_gallery(...)` 40 times in one process. Every call failed as intended, but `/dev/fd` grew from 5 to 45. This contradicts fail-closed repeated/library invocation semantics and can exhaust the process descriptor limit under repeated invalid state or a raced identity failure.
+
+Register each descriptor for cleanup immediately after each successful open, rather than batching registration after subsequent fallible operations. `_mkdir_open(...)` should close its local descriptor on every exception before ownership transfers to the caller. Add repeated failure-path descriptor-count tests for missing output and post-open identity mismatch.
+
+### WR-05: Same-inode, same-size source mutation can publish a torn gallery file
+
+**Severity:** Warning
+**File:** `example-images/generate_gallery.py:211-228`
+
+The source-copy check compares only device, inode, and size before and after copying. A concurrent in-place write that preserves the file size changes none of those values, so `_copy_regular_file(...)` accepts a byte stream assembled from different source states. The later staging validation checks only the destination inode and cannot recover source consistency.
+
+A deterministic reproducer copied a 2 MiB source while replacing its second MiB in place after the first `os.read`. `_copy_regular_file(...)` returned success and produced a 2 MiB destination whose first half came from the old state and second half from the new state. Such a destination is eligible for atomic publication even though it was never a stable renderer output. A prior strict-helper run does not close the race between validation and gallery copying.
+
+Capture and compare mutation metadata such as `st_mtime_ns` and `st_ctime_ns` in addition to identity and size, and fail if it changes across the copy. For stronger evidence integrity, validate the completed staged PNG bytes or copy from an immutable snapshot. Add a same-size in-place mutation regression that must fail before publication.
+
+### WR-06: Gallery source copying has no file-size or work budget
+
+**Severity:** Warning
+**File:** `example-images/generate_gallery.py:212-224`
+
+`_copy_regular_file(...)` trusts `before.st_size` as the loop bound but imposes no maximum. A sparse or otherwise oversized regular file with an expected renderer-output name is read and materialized into staging until its entire declared size has been written, permitting unbounded disk consumption and runtime. The helper's 16 MiB PNG acquisition ceiling does not protect the generator because gallery generation is an independent command and never invokes that helper.
+
+Apply a gallery-source ceiling consistent with the committed PNG budget before creating the destination, retain the extra-read growth detection, and cover both pre-open sparse oversize and post-open growth at the ceiling. This keeps descriptor-relative copying bounded as well as path-safe.
 
 ## Confirmed Repairs and Checks
 
-- The iteration-2 descriptor chain rejects the deterministic pre-deletion ancestor swap, and the original local gallery plus external sentinel survive.
-- Quarantine identity checks, nested symbolic-link unlinking, recursive descriptor closure, and ordinary recreation behave correctly. A 100-cycle nested cleanup stress check left `/dev/fd` unchanged at 5 descriptors.
+- Descriptor-relative staging, exclusive no-follow destination creation, quarantine rename, and staging-to-gallery publication prevent pathname redirection into an external tree.
+- The pre-publication ancestor swap self-test fails closed and preserves the external sentinel. Old gallery contents are renamed intact into one quarantine entry without enumeration, recursive deletion, or mount/link traversal.
+- Existing staging/quarantine blocks repeat publication as documented; the visible published gallery and external sentinel remain unchanged on that blocked run.
+- PNG and JPEG acquisition opens once with `O_NOFOLLOW`, requires a regular file, retains at most the configured ceiling plus one byte, and closes its descriptor. Sparse oversize, growth beyond the ceiling, and pathname replacement are bounded or rejected as intended.
+- PNG parsing retains chunk/CRC/IEND/order-end checks and bounded incremental zlib output. The decoded-length, EOF, unused-data, unconsumed-tail, and trailing-stream gates remain sound under the 16 MiB compressed and 64 MiB decoded ceilings.
 - `python3 example-images/generate_gallery.py --self-test` passed.
-- Phase 36 helper `--self-test`, Python compilation, and the live strict helper invocation passed.
-- Focused `BeautyRendererOutputRegressionTests` passed 10/10.
-- PNG decoded-length, decompressor EOF/trailing-stream, chunk/CRC/IEND, dimension, and duplicate renderer inventory fixes remain present and their deterministic regressions pass. The new warning is limited to acquisition of file bytes before parsing/decompression.
-- `git diff --check` passed before this report rewrite.
+- `python3 .planning/phases/36-public-facade-output-evidence/check_nose_remaining_renderer_outputs.py --self-test` passed.
+- `python3 -m py_compile` passed for both Python tools.
+- `swift test --package-path BeautySDK --filter BeautyRendererOutputRegressionTests` passed 10/10 XCTest cases.
+- The live strict helper passed: 252/252 fully decoded same-dimension PNGs, 12/12 baseline, 6/6 root/bridge, 12/12 lift/signed-tip, and 2/2 no-face comparisons.
 
 ## Verdict
 
-Phase 36 is not clean at standard review depth. Commit `1cfa68c` closes the reported pathname-based deletion race and shows no ordinary descriptor leak, but gallery population can still be redirected outside the repository, recursive deletion can cross a mounted directory, and PNG file acquisition is not actually bounded across the stat/read race.
+Phase 36 is not clean at deep review depth. The iteration-3 remediation closes the two prior critical containment defects and the unbounded PNG/JPEG pathname acquisition defect; no critical finding remains. Three warning-level source-acquisition and descriptor-lifetime gaps remain: repeated failed gallery calls leak descriptors, same-size in-place source mutation can publish a torn file, and gallery copying has no source-size/work ceiling.
