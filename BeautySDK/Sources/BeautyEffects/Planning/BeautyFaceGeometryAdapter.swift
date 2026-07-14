@@ -14,7 +14,10 @@ enum BeautyFaceGeometryAdapter {
             nose: landmarks.contains(.nose) ? nose(in: bounds) : [],
             noseRoot: landmarks.contains(.nose) ? noseRoot(in: bounds) : [],
             noseTip: landmarks.contains(.nose) ? noseTip(in: bounds) : [],
-            outerLips: landmarks.contains(.outerLips) ? outerLips(in: bounds) : []
+            outerLips: landmarks.contains(.outerLips) ? outerLips(in: bounds) : [],
+            upperLips: landmarks.contains(.outerLips) ? upperLips(in: bounds) : [],
+            lowerLips: landmarks.contains(.outerLips) ? lowerLips(in: bounds) : [],
+            innerLips: landmarks.contains(.innerLips) ? innerLips(in: bounds) : []
         )
     }
 
@@ -104,6 +107,33 @@ enum BeautyFaceGeometryAdapter {
             point(bounds, x: 0.60, y: 0.82),
             point(bounds, x: 0.50, y: 0.84),
             point(bounds, x: 0.40, y: 0.82)
+        ]
+    }
+
+    private static func upperLips(in bounds: FaceBounds) -> [SIMD2<Float>] {
+        [
+            point(bounds, x: 0.40, y: 0.70),
+            point(bounds, x: 0.50, y: 0.68),
+            point(bounds, x: 0.60, y: 0.70)
+        ]
+    }
+
+    private static func lowerLips(in bounds: FaceBounds) -> [SIMD2<Float>] {
+        [
+            point(bounds, x: 0.40, y: 0.82),
+            point(bounds, x: 0.50, y: 0.84),
+            point(bounds, x: 0.60, y: 0.82)
+        ]
+    }
+
+    private static func innerLips(in bounds: FaceBounds) -> [SIMD2<Float>] {
+        [
+            point(bounds, x: 0.40, y: 0.76),
+            point(bounds, x: 0.45, y: 0.73),
+            point(bounds, x: 0.55, y: 0.73),
+            point(bounds, x: 0.60, y: 0.76),
+            point(bounds, x: 0.55, y: 0.79),
+            point(bounds, x: 0.45, y: 0.79)
         ]
     }
 

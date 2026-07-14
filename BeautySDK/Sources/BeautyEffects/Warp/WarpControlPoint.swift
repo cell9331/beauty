@@ -36,6 +36,9 @@ struct FaceGeometry: Equatable, Sendable {
     let noseRoot: [SIMD2<Float>]
     let noseTip: [SIMD2<Float>]
     let outerLips: [SIMD2<Float>]
+    let upperLips: [SIMD2<Float>]
+    let lowerLips: [SIMD2<Float>]
+    let innerLips: [SIMD2<Float>]
     let freshness: LandmarkGeometryFreshness
 
     init(
@@ -47,6 +50,9 @@ struct FaceGeometry: Equatable, Sendable {
         noseRoot: [SIMD2<Float>] = [],
         noseTip: [SIMD2<Float>] = [],
         outerLips: [SIMD2<Float>] = [],
+        upperLips: [SIMD2<Float>] = [],
+        lowerLips: [SIMD2<Float>] = [],
+        innerLips: [SIMD2<Float>] = [],
         freshness: LandmarkGeometryFreshness = .fresh
     ) {
         self.bounds = bounds
@@ -57,6 +63,9 @@ struct FaceGeometry: Equatable, Sendable {
         self.noseRoot = noseRoot
         self.noseTip = noseTip
         self.outerLips = outerLips
+        self.upperLips = upperLips
+        self.lowerLips = lowerLips
+        self.innerLips = innerLips
         self.freshness = freshness
     }
 

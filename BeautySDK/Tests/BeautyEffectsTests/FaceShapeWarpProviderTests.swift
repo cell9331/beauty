@@ -37,6 +37,135 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         XCTAssertTrue(missing.noseTip.isEmpty)
     }
 
+    func testPhase38MOUTH04AdapterBuildsDeterministicGroupGatedLipSupportsWithoutOuterDrift() {
+        let imageBounds = CoordinateRect(x: 0.30, y: 0.20, width: 0.40, height: 0.60)
+        let completeObservation = BeautyFaceObservation(imageBounds: imageBounds, landmarks: .complete)
+        let complete = BeautyFaceGeometryAdapter.makeGeometry(from: completeObservation)
+        let repeated = BeautyFaceGeometryAdapter.makeGeometry(from: completeObservation)
+        let missingOuter = BeautyFaceGeometryAdapter.makeGeometry(
+            from: BeautyFaceObservation(
+                imageBounds: imageBounds,
+                landmarks: BeautyFaceLandmarks(
+                    availableGroups: Set(BeautyLandmarkGroup.allCases).subtracting([.outerLips])
+                )
+            )
+        )
+        let missingInner = BeautyFaceGeometryAdapter.makeGeometry(
+            from: BeautyFaceObservation(
+                imageBounds: imageBounds,
+                landmarks: BeautyFaceLandmarks(
+                    availableGroups: Set(BeautyLandmarkGroup.allCases).subtracting([.innerLips])
+                )
+            )
+        )
+
+        assertPoints(complete.outerLips, equalTo: [
+            SIMD2<Float>(0.420, 0.656),
+            SIMD2<Float>(0.460, 0.620),
+            SIMD2<Float>(0.500, 0.608),
+            SIMD2<Float>(0.540, 0.620),
+            SIMD2<Float>(0.580, 0.656),
+            SIMD2<Float>(0.540, 0.692),
+            SIMD2<Float>(0.500, 0.704),
+            SIMD2<Float>(0.460, 0.692)
+        ])
+        assertPoints(complete.upperLips, equalTo: [
+            SIMD2<Float>(0.460, 0.620),
+            SIMD2<Float>(0.500, 0.608),
+            SIMD2<Float>(0.540, 0.620)
+        ])
+        assertPoints(complete.lowerLips, equalTo: [
+            SIMD2<Float>(0.460, 0.692),
+            SIMD2<Float>(0.500, 0.704),
+            SIMD2<Float>(0.540, 0.692)
+        ])
+        assertPoints(complete.innerLips, equalTo: [
+            SIMD2<Float>(0.460, 0.656),
+            SIMD2<Float>(0.480, 0.638),
+            SIMD2<Float>(0.520, 0.638),
+            SIMD2<Float>(0.540, 0.656),
+            SIMD2<Float>(0.520, 0.674),
+            SIMD2<Float>(0.480, 0.674)
+        ])
+
+        XCTAssertEqual(complete, repeated)
+        XCTAssertTrue(missingOuter.outerLips.isEmpty)
+        XCTAssertTrue(missingOuter.upperLips.isEmpty)
+        XCTAssertTrue(missingOuter.lowerLips.isEmpty)
+        XCTAssertEqual(missingOuter.innerLips, complete.innerLips)
+        XCTAssertEqual(missingInner.outerLips, complete.outerLips)
+        XCTAssertEqual(missingInner.upperLips, complete.upperLips)
+        XCTAssertEqual(missingInner.lowerLips, complete.lowerLips)
+        XCTAssertTrue(missingInner.innerLips.isEmpty)
+
+        let supports = [complete.outerLips, complete.upperLips, complete.lowerLips, complete.innerLips]
+        for support in supports {
+            XCTAssertTrue(support.allSatisfy { point in
+                point.x.isFinite && point.y.isFinite &&
+                    (0...1).contains(point.x) && (0...1).contains(point.y) &&
+                    point.x >= complete.bounds.minX && point.x <= complete.bounds.maxX &&
+                    point.y >= complete.bounds.minY && point.y <= complete.bounds.maxY
+            })
+            assertOnlyDistinctPoints(support)
+        }
+        XCTAssertNotEqual(complete.upperLips, complete.outerLips)
+        XCTAssertNotEqual(complete.lowerLips, complete.outerLips)
+        XCTAssertNotEqual(complete.upperLips, complete.lowerLips)
+        XCTAssertNotEqual(complete.innerLips, complete.upperLips)
+    }
+
+    func testPhase38MOUTH04FaceGeometryNewSupportsDefaultEmptyForSourceCompatibility() {
+        let legacySourceStyle = FaceGeometry(
+            bounds: FaceBounds(x: 0.30, y: 0.20, width: 0.40, height: 0.60),
+            faceContour: FaceGeometry.fixture.faceContour,
+            outerLips: FaceGeometry.fixture.outerLips
+        )
+
+        XCTAssertEqual(legacySourceStyle.outerLips, FaceGeometry.fixture.outerLips)
+        XCTAssertTrue(legacySourceStyle.upperLips.isEmpty)
+        XCTAssertTrue(legacySourceStyle.lowerLips.isEmpty)
+        XCTAssertTrue(legacySourceStyle.innerLips.isEmpty)
+    }
+
+    func testPhase38MOUTH04NamedLipFixturesPreserveIndependentSupportFailures() {
+        XCTAssertTrue(FaceGeometry.missingMouth.outerLips.isEmpty)
+        XCTAssertTrue(FaceGeometry.missingMouth.upperLips.isEmpty)
+        XCTAssertTrue(FaceGeometry.missingMouth.lowerLips.isEmpty)
+        XCTAssertTrue(FaceGeometry.missingMouth.innerLips.isEmpty)
+
+        XCTAssertTrue(FaceGeometry.missingOuterLips.outerLips.isEmpty)
+        XCTAssertTrue(FaceGeometry.missingOuterLips.upperLips.isEmpty)
+        XCTAssertTrue(FaceGeometry.missingOuterLips.lowerLips.isEmpty)
+        XCTAssertEqual(FaceGeometry.missingOuterLips.innerLips, FaceGeometry.fixture.innerLips)
+        XCTAssertTrue(FaceGeometry.missingUpperLips.upperLips.isEmpty)
+        XCTAssertEqual(FaceGeometry.missingUpperLips.lowerLips, FaceGeometry.fixture.lowerLips)
+        XCTAssertEqual(FaceGeometry.missingUpperLips.innerLips, FaceGeometry.fixture.innerLips)
+        XCTAssertTrue(FaceGeometry.missingLowerLips.lowerLips.isEmpty)
+        XCTAssertEqual(FaceGeometry.missingLowerLips.upperLips, FaceGeometry.fixture.upperLips)
+        XCTAssertTrue(FaceGeometry.missingInnerLips.innerLips.isEmpty)
+        XCTAssertEqual(FaceGeometry.missingInnerLips.upperLips, FaceGeometry.fixture.upperLips)
+        XCTAssertEqual(FaceGeometry.missingInnerLips.lowerLips, FaceGeometry.fixture.lowerLips)
+
+        XCTAssertEqual(FaceGeometry.insufficientUpperLips.upperLips.count, 1)
+        XCTAssertEqual(FaceGeometry.insufficientLowerLips.lowerLips.count, 1)
+        XCTAssertEqual(FaceGeometry.insufficientInnerLips.innerLips.count, 1)
+        XCTAssertEqual(FaceGeometry.duplicateUpperLips.upperLips[0], FaceGeometry.duplicateUpperLips.upperLips[1])
+        XCTAssertEqual(FaceGeometry.duplicateLowerLips.lowerLips[0], FaceGeometry.duplicateLowerLips.lowerLips[1])
+        XCTAssertEqual(FaceGeometry.duplicateInnerLips.innerLips[0], FaceGeometry.duplicateInnerLips.innerLips[1])
+        XCTAssertTrue(FaceGeometry.nonFiniteUpperLips.upperLips.contains { !$0.x.isFinite || !$0.y.isFinite })
+        XCTAssertTrue(FaceGeometry.nonFiniteLowerLips.lowerLips.contains { !$0.x.isFinite || !$0.y.isFinite })
+        XCTAssertTrue(FaceGeometry.nonFiniteInnerLips.innerLips.contains { !$0.x.isFinite || !$0.y.isFinite })
+
+        XCTAssertEqual(FaceGeometry.reused.upperLips, FaceGeometry.fixture.upperLips)
+        XCTAssertEqual(FaceGeometry.reused.lowerLips, FaceGeometry.fixture.lowerLips)
+        XCTAssertEqual(FaceGeometry.reused.innerLips, FaceGeometry.fixture.innerLips)
+        XCTAssertEqual(FaceGeometry.reused.freshness, .reused)
+        XCTAssertEqual(FaceGeometry.stale.upperLips, FaceGeometry.fixture.upperLips)
+        XCTAssertEqual(FaceGeometry.stale.lowerLips, FaceGeometry.fixture.lowerLips)
+        XCTAssertEqual(FaceGeometry.stale.innerLips, FaceGeometry.fixture.innerLips)
+        XCTAssertEqual(FaceGeometry.stale.freshness, .stale)
+    }
+
     private func assertPoints(
         _ actual: [SIMD2<Float>],
         equalTo expected: [SIMD2<Float>],
@@ -47,6 +176,18 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         for (actualPoint, expectedPoint) in zip(actual, expected) {
             XCTAssertEqual(actualPoint.x, expectedPoint.x, accuracy: 0.000001, file: file, line: line)
             XCTAssertEqual(actualPoint.y, expectedPoint.y, accuracy: 0.000001, file: file, line: line)
+        }
+    }
+
+    private func assertOnlyDistinctPoints(
+        _ points: [SIMD2<Float>],
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        for index in points.indices {
+            for otherIndex in points.indices where otherIndex > index {
+                XCTAssertNotEqual(points[index], points[otherIndex], file: file, line: line)
+            }
         }
     }
 
@@ -252,6 +393,24 @@ extension FaceGeometry {
             SIMD2<Float>(0.54, 0.69),
             SIMD2<Float>(0.50, 0.70),
             SIMD2<Float>(0.46, 0.69)
+        ],
+        upperLips: [
+            SIMD2<Float>(0.46, 0.62),
+            SIMD2<Float>(0.50, 0.608),
+            SIMD2<Float>(0.54, 0.62)
+        ],
+        lowerLips: [
+            SIMD2<Float>(0.46, 0.692),
+            SIMD2<Float>(0.50, 0.704),
+            SIMD2<Float>(0.54, 0.692)
+        ],
+        innerLips: [
+            SIMD2<Float>(0.46, 0.656),
+            SIMD2<Float>(0.48, 0.638),
+            SIMD2<Float>(0.52, 0.638),
+            SIMD2<Float>(0.54, 0.656),
+            SIMD2<Float>(0.52, 0.674),
+            SIMD2<Float>(0.48, 0.674)
         ]
     )
 
@@ -268,7 +427,10 @@ extension FaceGeometry {
         nose: fixture.nose,
         noseRoot: fixture.noseRoot,
         noseTip: fixture.noseTip,
-        outerLips: fixture.outerLips
+        outerLips: fixture.outerLips,
+        upperLips: fixture.upperLips,
+        lowerLips: fixture.lowerLips,
+        innerLips: fixture.innerLips
     )
 
     static let missingRightEye = FaceGeometry(
@@ -279,7 +441,10 @@ extension FaceGeometry {
         nose: fixture.nose,
         noseRoot: fixture.noseRoot,
         noseTip: fixture.noseTip,
-        outerLips: fixture.outerLips
+        outerLips: fixture.outerLips,
+        upperLips: fixture.upperLips,
+        lowerLips: fixture.lowerLips,
+        innerLips: fixture.innerLips
     )
 
     static let missingNose = FaceGeometry(
@@ -300,7 +465,10 @@ extension FaceGeometry {
         nose: [],
         noseRoot: fixture.noseRoot,
         noseTip: fixture.noseTip,
-        outerLips: fixture.outerLips
+        outerLips: fixture.outerLips,
+        upperLips: fixture.upperLips,
+        lowerLips: fixture.lowerLips,
+        innerLips: fixture.innerLips
     )
 
     static let onePointLegacyNose = FaceGeometry(
@@ -311,7 +479,10 @@ extension FaceGeometry {
         nose: [SIMD2<Float>(0.50, 0.52)],
         noseRoot: fixture.noseRoot,
         noseTip: fixture.noseTip,
-        outerLips: fixture.outerLips
+        outerLips: fixture.outerLips,
+        upperLips: fixture.upperLips,
+        lowerLips: fixture.lowerLips,
+        innerLips: fixture.innerLips
     )
 
     static let onePointNoseRoot = replacingNoseRoot([fixture.noseRoot[0]])
@@ -356,7 +527,96 @@ extension FaceGeometry {
         nose: fixture.nose,
         noseRoot: fixture.noseRoot,
         noseTip: fixture.noseTip,
-        outerLips: []
+        outerLips: [],
+        upperLips: [],
+        lowerLips: [],
+        innerLips: []
+    )
+
+    static let missingOuterLips = FaceGeometry(
+        bounds: fixture.bounds,
+        faceContour: fixture.faceContour,
+        leftEye: fixture.leftEye,
+        rightEye: fixture.rightEye,
+        nose: fixture.nose,
+        noseRoot: fixture.noseRoot,
+        noseTip: fixture.noseTip,
+        outerLips: [],
+        upperLips: [],
+        lowerLips: [],
+        innerLips: fixture.innerLips
+    )
+
+    static let missingUpperLips = replacingLipSupports(
+        upperLips: [],
+        lowerLips: fixture.lowerLips,
+        innerLips: fixture.innerLips
+    )
+
+    static let missingLowerLips = replacingLipSupports(
+        upperLips: fixture.upperLips,
+        lowerLips: [],
+        innerLips: fixture.innerLips
+    )
+
+    static let missingInnerLips = replacingLipSupports(
+        upperLips: fixture.upperLips,
+        lowerLips: fixture.lowerLips,
+        innerLips: []
+    )
+
+    static let insufficientUpperLips = replacingLipSupports(
+        upperLips: [fixture.upperLips[0]],
+        lowerLips: fixture.lowerLips,
+        innerLips: fixture.innerLips
+    )
+
+    static let insufficientLowerLips = replacingLipSupports(
+        upperLips: fixture.upperLips,
+        lowerLips: [fixture.lowerLips[0]],
+        innerLips: fixture.innerLips
+    )
+
+    static let insufficientInnerLips = replacingLipSupports(
+        upperLips: fixture.upperLips,
+        lowerLips: fixture.lowerLips,
+        innerLips: [fixture.innerLips[0]]
+    )
+
+    static let duplicateUpperLips = replacingLipSupports(
+        upperLips: [fixture.upperLips[0], fixture.upperLips[0]],
+        lowerLips: fixture.lowerLips,
+        innerLips: fixture.innerLips
+    )
+
+    static let duplicateLowerLips = replacingLipSupports(
+        upperLips: fixture.upperLips,
+        lowerLips: [fixture.lowerLips[0], fixture.lowerLips[0]],
+        innerLips: fixture.innerLips
+    )
+
+    static let duplicateInnerLips = replacingLipSupports(
+        upperLips: fixture.upperLips,
+        lowerLips: fixture.lowerLips,
+        innerLips: [fixture.innerLips[0], fixture.innerLips[0]]
+    )
+
+    static let nonFiniteUpperLips = replacingLipSupports(
+        upperLips: [SIMD2<Float>(.nan, fixture.upperLips[0].y)] + fixture.upperLips.dropFirst(),
+        lowerLips: fixture.lowerLips,
+        innerLips: fixture.innerLips
+    )
+
+    static let nonFiniteLowerLips = replacingLipSupports(
+        upperLips: fixture.upperLips,
+        lowerLips: [SIMD2<Float>(fixture.lowerLips[0].x, .infinity)] + fixture.lowerLips.dropFirst(),
+        innerLips: fixture.innerLips
+    )
+
+    static let nonFiniteInnerLips = replacingLipSupports(
+        upperLips: fixture.upperLips,
+        lowerLips: fixture.lowerLips,
+        innerLips: [SIMD2<Float>(-.infinity, fixture.innerLips[0].y)] + fixture.innerLips.dropFirst()
     )
 
     static let reused = FaceGeometry(
@@ -368,6 +628,9 @@ extension FaceGeometry {
         noseRoot: fixture.noseRoot,
         noseTip: fixture.noseTip,
         outerLips: fixture.outerLips,
+        upperLips: fixture.upperLips,
+        lowerLips: fixture.lowerLips,
+        innerLips: fixture.innerLips,
         freshness: .reused
     )
 
@@ -380,6 +643,9 @@ extension FaceGeometry {
         noseRoot: fixture.noseRoot,
         noseTip: fixture.noseTip,
         outerLips: fixture.outerLips,
+        upperLips: fixture.upperLips,
+        lowerLips: fixture.lowerLips,
+        innerLips: fixture.innerLips,
         freshness: .stale
     )
 
@@ -393,6 +659,9 @@ extension FaceGeometry {
             noseRoot: noseRoot,
             noseTip: fixture.noseTip,
             outerLips: fixture.outerLips,
+            upperLips: fixture.upperLips,
+            lowerLips: fixture.lowerLips,
+            innerLips: fixture.innerLips,
             freshness: fixture.freshness
         )
     }
@@ -407,6 +676,30 @@ extension FaceGeometry {
             noseRoot: fixture.noseRoot,
             noseTip: noseTip,
             outerLips: fixture.outerLips,
+            upperLips: fixture.upperLips,
+            lowerLips: fixture.lowerLips,
+            innerLips: fixture.innerLips,
+            freshness: fixture.freshness
+        )
+    }
+
+    private static func replacingLipSupports(
+        upperLips: [SIMD2<Float>],
+        lowerLips: [SIMD2<Float>],
+        innerLips: [SIMD2<Float>]
+    ) -> FaceGeometry {
+        FaceGeometry(
+            bounds: fixture.bounds,
+            faceContour: fixture.faceContour,
+            leftEye: fixture.leftEye,
+            rightEye: fixture.rightEye,
+            nose: fixture.nose,
+            noseRoot: fixture.noseRoot,
+            noseTip: fixture.noseTip,
+            outerLips: fixture.outerLips,
+            upperLips: upperLips,
+            lowerLips: lowerLips,
+            innerLips: innerLips,
             freshness: fixture.freshness
         )
     }
