@@ -46,6 +46,10 @@ CASE_GROUPS = {
     "mouth": [
         "mouthSize_plus0p35", "mouthSize_minus0p35", "mouthWidth_plus0p35",
         "mouthWidth_minus0p35", "smile_0p50", "lipColor_0p50",
+        "mouthYPosition_plus0p25", "mouthYPosition_minus0p25",
+        "mouthTilt_plus0p25", "mouthTilt_minus0p25",
+        "mouthXPosition_plus0p25", "mouthXPosition_minus0p25",
+        "lipPeakDefinition_0p25", "lipPlump_0p25",
     ],
 }
 

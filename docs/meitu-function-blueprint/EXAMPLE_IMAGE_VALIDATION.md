@@ -62,6 +62,15 @@ python3 .planning/phases/36-public-facade-output-evidence/check_nose_remaining_r
   --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
 ```
 
+Run the Phase 39 remaining-mouth helper after the all-case renderer command:
+
+```bash
+python3 .planning/phases/39-public-facade-mouth-geometry-output-evidence/check_mouth_remaining_renderer_outputs.py \
+  --input example-images/input \
+  --output example-images/output \
+  --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
+```
+
 ## Output Rules
 
 - Output directory: `example-images/output/`.
@@ -82,6 +91,8 @@ python3 .planning/phases/36-public-facade-output-evidence/check_nose_remaining_r
 - The Phase 29 helper verifies 161 current outputs for existence, non-empty files, same pixel dimensions, 36/36 portrait eye-vs-baseline top-region differences above the watermark band, and representative no-face eye output `no-face-gradient__eyeSize_0p35.png` presence.
 - Phase 31 command results are recorded in `.planning/phases/31-nose-renderer-output-evidence/31-NOSE-RENDERER-EVIDENCE.md` and `31-VERIFICATION.md`.
 - The Phase 31 helper verifies 196 current outputs, 30/30 portrait nose-vs-baseline central-face differences above the watermark band, 6/6 positive-vs-negative `noseTipSize` differences, and representative no-face nose output `no-face-gradient__noseSlim_0p35.png` presence.
+- Phase 39 command results are recorded in `.planning/phases/39-public-facade-mouth-geometry-output-evidence/39-MOUTH-OUTPUT-EVIDENCE.md`.
+- The Phase 39 helper verifies the discovered 44 × 7 = 308 matrix, 48/48 visibility, 18/18 signed-direction, 12/12 peak-independence, 18/18 plump-independence comparisons, and eight 64 × 64 no-face no-ops.
 
 ## Current Built-In Cases
 
@@ -121,6 +132,20 @@ These cases are limited to effects that currently produce visible image output t
 | `noseBridge_0p30` | Phase 31 `鼻梁` renderer evidence through existing `noseBridge`; this is not `山根` alias evidence |
 | `noseRootNarrowing_0p25` | Phase 36 isolated public-facade output for `noseRootNarrowing` at the Phase 37-finalized exact `0.25` cap; final promotion additionally requires the Phase 37 safety/boundary evidence |
 | `noseTipLift_0p25` | Phase 36 isolated public-facade output for `noseTipLift` at the Phase 37-finalized exact `0.25` cap; final promotion additionally requires the Phase 37 safety/boundary evidence |
+| `mouthSize_plus0p35` | Existing positive signed mouth-size evidence |
+| `mouthSize_minus0p35` | Existing negative signed mouth-size evidence |
+| `mouthWidth_plus0p35` | Existing positive signed mouth-width evidence |
+| `mouthWidth_minus0p35` | Existing negative signed mouth-width evidence |
+| `smile_0p50` | Existing smile evidence |
+| `lipColor_0p50` | Existing color-only lip evidence; not true plump geometry |
+| `mouthYPosition_plus0p25` | Phase 39 provisional positive vertical-position output evidence |
+| `mouthYPosition_minus0p25` | Phase 39 provisional negative vertical-position output evidence |
+| `mouthTilt_plus0p25` | Phase 39 provisional positive tilt output evidence |
+| `mouthTilt_minus0p25` | Phase 39 provisional negative tilt output evidence |
+| `mouthXPosition_plus0p25` | Phase 39 provisional positive horizontal-position output evidence |
+| `mouthXPosition_minus0p25` | Phase 39 provisional negative horizontal-position output evidence |
+| `lipPeakDefinition_0p25` | Phase 39 provisional M-lip peak output evidence |
+| `lipPlump_0p25` | Phase 39 provisional true plump-geometry output evidence |
 
 ## Phase 36 Remaining-Nose Output Evidence Summary
 
@@ -138,6 +163,15 @@ These cases are limited to effects that currently produce visible image output t
 - Phase 37 finalized exact `0.25` caps, all-six zero/no-face/missing/provider-empty/stale/reused/transitions, exactly-once combined convergence, redacted diagnostics, and active-source boundaries; `37-SECURITY.md` records `threats_open: 0`.
 - Exactly `提升` → `noseTipLift` and `山根` → `noseRootNarrowing` were promoted after their independent evidence passed; the exact six-row SDK-core `鼻子` branch is now `implemented` without alias borrowing or unnamed controls.
 - Renderer output and gallery remain disposable, ignored, untracked, and unstaged local artifacts. No Demo UI, physical-device parity, subjective/commercial naturalness, optimized performance, packaging, shipping, launch readiness, broad product parity, milestone-audit, archive, tag, or cleanup result is claimed.
+
+## Phase 39 Remaining-Mouth Output Evidence Summary
+
+- The helper discovers 44 live renderer cases and seven recursive fixtures before requiring and fully decoding the exact 44 × 7 = 308 same-dimension matrix.
+- Six portrait fixtures pass 48/48 new-case visibility, 18/18 signed-direction, 12/12 peak-independence, and 18/18 plump-independence direct comparisons.
+- All sixteen families use the fixed top-origin mouth ROI x = 10%-90%, y = 40%-82%, wholly above the watermark boundary, with frozen global floors of 1,000 changed pixels and 10,000 absolute RGB delta.
+- All eight new no-face outputs preserve 64 × 64 and are exact baseline no-ops across the helper's fixed 2,048-pixel right-half fallback.
+- `generate_gallery.py` enforces a duplicate-free exact renderer bijection and one safe publication produced 308 ignored, untracked regular review PNGs.
+- The `0.25` mouth strengths are provisional output-evidence inputs. Final caps, exhaustive degradation/conflict behavior, current-owner promotion, and branch closeout remain Phase 40; `嘴唇` and all five new rows remain unpromoted here.
 
 ## Phase 30 Eye Safety Closeout Evidence
 
@@ -197,6 +231,11 @@ python3 .planning/phases/28-face-shape-slice-completion-and-documentation-closeo
 python3 .planning/phases/29-eye-renderer-output-evidence/check_eye_renderer_outputs.py \
   --input example-images/input \
   --output example-images/output
+
+python3 .planning/phases/39-public-facade-mouth-geometry-output-evidence/check_mouth_remaining_renderer_outputs.py \
+  --input example-images/input \
+  --output example-images/output \
+  --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
 
 git check-ignore \
   example-images/output/e1__faceShapeCombo_0p35.png \

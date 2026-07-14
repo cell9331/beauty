@@ -40,6 +40,7 @@ The gallery groups current cases under:
 - `eyes/`: `eyeSize_0p35`, `eyeDistance_plus0p25`, `eyeDistance_minus0p25`, `eyeYPosition_plus0p20`, `eyeYPosition_minus0p20`, `eyeTailLift_0p25`
 - `nose/`: `noseSlim_0p35`, `noseWingSlim_0p35`, `noseTipSize_plus0p30`, `noseTipSize_minus0p30`, `noseBridge_0p30`, `noseRootNarrowing_0p25`, `noseTipLift_0p25`
 - `mouth/`: `mouthSize_plus0p35`, `mouthSize_minus0p35`, `mouthWidth_plus0p35`, `mouthWidth_minus0p35`, `smile_0p50`, `lipColor_0p50`
+- `mouth/` Phase 39 additions: `mouthYPosition_plus0p25`, `mouthYPosition_minus0p25`, `mouthTilt_plus0p25`, `mouthTilt_minus0p25`, `mouthXPosition_plus0p25`, `mouthXPosition_minus0p25`, `lipPeakDefinition_0p25`, `lipPlump_0p25`
 
 ## Verify Outputs
 
@@ -82,4 +83,17 @@ python3 .planning/phases/36-public-facade-output-evidence/check_nose_remaining_r
 
 The helper discovers the live renderer and fixture inventories before requiring the current 36 × 7 = 252 matrix. It fully decodes 252/252 same-dimension outputs and separately gates 12/12 new-field-to-baseline portrait comparisons, 6/6 root-to-bridge comparisons, and 12/12 lift-to-both-signed-tip comparisons in the fixed nose ROI (x 25%-75%, y 20%-70%) at the frozen floors of 500 changed pixels and 2,000 absolute RGB delta. Both new no-face outputs preserve the 64 × 64 extent and are baseline-identical in the watermark-safe fallback region.
 
-The values `0.25` in `noseRootNarrowing_0p25` and `noseTipLift_0p25` are the Phase 37-finalized exact SDK safety caps, not commercial calibration. Phase 36 owns the isolated public-facade output chronology; `37-NOSE-SAFETY-EVIDENCE.md` adds final exact-cap, exhaustive six-field degradation/transitions, exactly-once convergence, redaction, and active-source boundary evidence before the exact two-row and SDK-core branch promotion. Gallery generation first requires a duplicate-free exact bijection between `CASE_GROUPS` and the renderer's discovered case IDs, then publishes exactly 252 ignored, untracked local PNGs. Preserved quarantine/staging slots are also ignored and must remain untracked. No Demo UI, device parity, subjective/commercial naturalness, optimized performance, packaging, shipping, launch readiness, broad parity, milestone-audit, archive, tag, or cleanup result is claimed.
+The values `0.25` in `noseRootNarrowing_0p25` and `noseTipLift_0p25` are the Phase 37-finalized exact SDK safety caps, not commercial calibration. Phase 36 owns the isolated public-facade output chronology; `37-NOSE-SAFETY-EVIDENCE.md` adds final exact-cap, exhaustive six-field degradation/transitions, exactly-once convergence, redaction, and active-source boundary evidence before the exact two-row and SDK-core branch promotion. That historical Phase 36 matrix contained 252 files. No Demo UI, device parity, subjective/commercial naturalness, optimized performance, packaging, shipping, launch readiness, broad parity, milestone-audit, archive, tag, or cleanup result is claimed.
+
+Phase 39 remaining-mouth output evidence uses:
+
+```bash
+python3 .planning/phases/39-public-facade-mouth-geometry-output-evidence/check_mouth_remaining_renderer_outputs.py \
+  --input example-images/input \
+  --output example-images/output \
+  --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
+```
+
+The helper discovers the current 44-case renderer and seven fixtures before requiring the exact 44 × 7 = 308 matrix. It fully decodes 308/308 same-dimension PNGs and applies one fixed mouth ROI (x 10%-90%, y 40%-82%) with frozen floors of 1,000 changed pixels and 10,000 absolute RGB delta. Strict evidence passes 48/48 visibility, 18/18 signed-direction, 12/12 peak-independence, and 18/18 plump-independence portrait comparisons. All eight new no-face outputs preserve 64 × 64 and are baseline-identical across the fixed 2,048-pixel label-safe fallback.
+
+The current gallery inventory is a duplicate-free exact bijection with all 44 renderer cases and publishes exactly 308 ignored, untracked regular PNGs. The new `0.25` mouth values remain provisional output-evidence inputs: Phase 39 does not finalize caps, exhaustive safety, product-row promotion, branch completion, device/commercial quality, packaging, shipping, or launch readiness. Phase 40 owns those safety and promotion decisions. Preserved quarantine/staging slots remain ignored and untracked.
