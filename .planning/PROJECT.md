@@ -16,9 +16,9 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
 **Current milestone:** v1.10 Mouth Remaining Geometry Controls.
 
-**Implementation state:** Phase 37 is complete. `BeautyParameters` remains exactly 33 stored fields, with independent positive-only `noseRootNarrowing` and `noseTipLift` at final exact `0.25` caps. Package-internal explicit root/tip supports, all-six degradation/transitions, provider-empty removal, and bounded conflict-emission convergence are verified. Exactly `山根` and `提升` are newly promoted, and the exact six-row SDK-core `鼻子` branch is implemented.
+**Implementation state:** Phase 40 is complete. `BeautyParameters` is exactly 38 stored fields (37 numeric plus `filterId`); independent `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, and `lipPlump` have final exact `0.25` caps, eight-field mouth degradation/transitions, provider-empty removal, and fourteen-removal conflict-emission convergence. Exactly `上下`, `倾斜`, `左右`, `M唇`, and true `丰唇` are newly promoted; `白牙` remains future and branch-level `嘴唇` remains partial.
 
-**Verification state:** The independent v1.9 audit passed 15/15 requirements, 3/3 phases, 12/12 integrations, 5/5 flows, and 3/3 Nyquist validations. Fresh 228/228 full SDK tests and 252/252 public-facade output passed with a clean review and `threats_open: 0`. Generated artifacts remain ignored/untracked; no Demo/device/commercial/packaging/shipping/launch readiness is claimed.
+**Verification state:** Phase 40 passes 106 requirement-focused cases, 265/265 full SDK tests, the unchanged 308/308 public-facade output gate, a 63/63 self-tested promotion checker, clean standard review, and ASVS L1 with `threats_open: 0`. Generated artifacts remain ignored/untracked; no Demo/device/commercial/performance/packaging/shipping/launch readiness is claimed. The next workflow is `$gsd-audit-milestone`.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
@@ -36,6 +36,8 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 - Lock exact caps, directionality, no-face and missing/reused/stale degradation, provider-eligible combined weakening, redacted diagnostics, artifact boundaries, and exact five-row promotion.
 
 **Key context:** v1.10 is SDK-core only. It expands the stable public parameter inventory only for the five remaining mouth geometry rows; adds no SwiftUI Demo UI, third-party dependency, network/cloud behavior, account/payment/VIP/entitlement/commercial path, or tracked generated PNG baseline. `白牙` remains future because it requires teeth-region segmentation and color/retouch ownership, so branch-level `嘴唇` remains partial even when the geometry subset is complete. Device parity, commercial visual approval, packaging, shipping, and launch readiness are not claimed.
+
+**Phase 40 closeout:** Four plans are complete. Exact caps, all-eight degradation/transitions, combined face/eye/six-nose/eight-mouth convergence, privacy and active-source boundaries, and exact five-row promotion pass. The milestone remains active pending its separately owned audit and lifecycle steps.
 
 ## Last Completed Milestone: v1.9 Nose Remaining Tools and Branch Closeout
 

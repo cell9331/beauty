@@ -22,7 +22,7 @@
 
 - [x] **Phase 38: Public Contract and Lip-Support Geometry** — Add five compatible public controls and independently eligible whole-mouth/upper/lower lip geometry through the existing facade pipeline.
 - [x] **Phase 39: Public-Facade Mouth Geometry Output Evidence** — Prove all five controls through isolated public-facade output, strict helper checks, and ignored gallery containment.
-- [ ] **Phase 40: Mouth Geometry Safety and Ledger Closeout** — Finalize caps, exhaustive degradation/conflict behavior, fail-closed boundaries, and exact five-row promotion without claiming `白牙` or whole-branch completion.
+- [x] **Phase 40: Mouth Geometry Safety and Ledger Closeout** — Finalize caps, exhaustive degradation/conflict behavior, fail-closed boundaries, and exact five-row promotion without claiming `白牙` or whole-branch completion.
 
 ## Phase Details
 
@@ -78,7 +78,12 @@
   4. Full tests and active-source scans prove raw geometry, public support types, internal imports, network/cloud, commercial paths, dependencies, compatibility, unclassified matches, and generated artifacts remain fail-closed.
   5. Exactly `上下`, `倾斜`, `左右`, `M唇`, and true `丰唇` become implemented; `白牙` remains future, branch-level `嘴唇` remains partial, and all current contract/planning owners agree without device/commercial/packaging/shipping/launch claims.
 
-**Plans**: TBD
+**Plans**: 4 plans
+
+- [x] `40-01-PLAN.md` — Final exact caps and exhaustive all-eight degradation/transition evidence.
+- [x] `40-02-PLAN.md` — Exact provider-eligible combined convergence and emission arithmetic.
+- [x] `40-03-PLAN.md` — Self-tested fail-closed safety, privacy, compatibility, and artifact boundary gate.
+- [x] `40-04-PLAN.md` — Exact five-row promotion, owner synchronization, final verification, and phase handoff.
 
 ## Progress
 
@@ -86,7 +91,7 @@
 | --- | --- | --- | --- |
 | 38. Public Contract and Lip-Support Geometry | 4/4 | Complete | 2026-07-14 |
 | 39. Public-Facade Mouth Geometry Output Evidence | 3/3 | Complete | 2026-07-14 |
-| 40. Mouth Geometry Safety and Ledger Closeout | 0/TBD | Not started | - |
+| 40. Mouth Geometry Safety and Ledger Closeout | 4/4 | Complete | 2026-07-14 |
 
 ## Backlog
 
@@ -96,4 +101,4 @@
 
 ---
 *Roadmap created: 2026-07-14*
-*Last updated: 2026-07-14 after v1.10 auto-mode roadmap approval*
+*Last updated: 2026-07-14 after Phase 40 closeout*

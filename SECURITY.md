@@ -485,6 +485,12 @@ Before merging any change touching these areas, update `SECURITY.md` if needed:
 
 ## 16. Security Decision Log
 
+### v1.10 Phase 40 Mouth Geometry Closeout
+
+- `40-SECURITY.md` records ASVS L1 review with `threats_open: 0` for `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, and `lipPlump`.
+- Active-source checks fail closed for raw geometry/support exposure, internal Demo/renderer imports, compatibility drift, unclassified matches, network/cloud behavior, commercial paths, dependencies, and generated artifacts.
+- Diagnostics remain aggregate-only and redact paths, identifiers, coordinates, and support points. The existing privacy-manifest disposition is unchanged because Phase 40 adds no collected-data category, system API, remote transfer, account behavior, or tracking behavior.
+
 | Date | Decision | Reason |
 | --- | --- | --- |
 | 2026-05-25 | SDK default is on-device processing with no data upload. | Image frames and facial landmarks are sensitive; local processing reduces privacy risk. |

@@ -3,10 +3,10 @@ phase: 40-mouth-geometry-safety-and-ledger-closeout
 source_review: .planning/phases/40-mouth-geometry-safety-and-ledger-closeout/40-REVIEW.md
 fixed_at: 2026-07-14
 status: all_fixed
-iteration: 2
+iteration: 4
 fix_scope: critical_warning
-findings_in_scope: 3
-fixed: 3
+findings_in_scope: 4
+fixed: 4
 partially_fixed: 0
 skipped: 0
 fix_commits:
@@ -14,14 +14,14 @@ fix_commits:
   - f4b6fa6
 findings_fixed:
   critical: 0
-  warning: 3
+  warning: 4
   info: 0
-  total: 3
+  total: 4
 ---
 
 # Phase 40 Review Fix Report
 
-All three Phase 40 boundary-checker warnings are fixed with no skipped finding.
+All four Phase 40 review warnings are fixed with no skipped finding.
 
 ## Findings Fixed
 
@@ -46,13 +46,19 @@ All three Phase 40 boundary-checker warnings are fixed with no skipped finding.
 - Diagnostic scanning covers bounded multiline quoted warning/metric payloads; privacy-manifest disposition and artifact Git checks remain explicit.
 - Targeted mutations prove plural landmarks/supports and multiline diagnostic payloads fail.
 
+### WR-04: Product Sense historical evidence ownership
+
+- The final Plan 40-04 review found two Phase 37 nose-evidence bullets under the new Phase 40 heading.
+- The bullets are restored to Phase 37 section 7.17, leaving Phase 40 section 7.19 mouth-only and consistent with the 106 focused, 265 full, and 308 output evidence.
+- Final re-review is clean and found no correctness, boundary-bypass, stale-owner, lifecycle-overclaim, or documentation inconsistency.
+
 ## Verification
 
 - PASS: `python3 -m py_compile .../check_mouth_geometry_boundaries.py`.
 - PASS: checker self-test, 63/63.
-- PASS: live pre-promotion checker, 13/13.
+- PASS: live allow-promotion checker, 13/13.
 - PASS: review artifact `git diff --check`.
 
 ## Status
 
-All scoped warnings are fixed: 3/3 fixed, 0 skipped. The re-review changed only review artifacts; it did not modify the checker, Swift implementation/tests, ledger, current owners, requirement state, or lifecycle state.
+All scoped warnings are fixed: 4/4 fixed, 0 skipped. The final fix moved only historical Product Sense evidence to its correct owner section; it did not change Swift implementation behavior or lifecycle state.

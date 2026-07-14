@@ -27,12 +27,12 @@
 
 ### Safety and Geometry-Slice Closeout
 
-- [ ] **MOUTH-12**: Evidence-backed exact natural caps, capped counts, normalization, warnings, metrics, and directionality are locked for all five new fields without changing their public signed or positive-only ranges.
-- [ ] **MOUTH-13**: No-face, missing outer lips, missing inner lips, stale geometry, reused geometry at exact `0.5`, provider-empty fallback, and safe-domain continuation apply per support dependency across all eight mouth geometry fields while `lipColor` retains its independent color-domain policy and diagnostics remain redacted.
-- [ ] **MOUTH-14**: Combined face, eye, six-field nose, and eight-field mouth geometry uses one provider-eligible retained baseline, weakens every active field exactly once, converges through at most fourteen nose/mouth mask removals, preserves every signed direction, and excludes unsupported work from totals, counts, warnings, metrics, and dispatch.
-- [ ] **MOUTH-15**: Raw geometry, public support types, internal Demo/renderer imports, network/cloud, commercial paths, new dependencies, compatibility drift, unclassified source matches, and generated artifacts remain fail-closed through active-source scans and the full SDK suite.
-- [ ] **MOUTH-16**: Exactly `上下`, `倾斜`, `左右`, `M唇`, and true `丰唇` are promoted only after their own contract, support, provider, facade-output, safety, degradation, and boundary evidence passes; `白牙` remains future and branch-level `嘴唇` remains partial.
-- [ ] **DOC-01**: Blueprint, root contracts, branch documentation, example validation, `QUALITY_SCORE.md`, `PROJECT.md`, `ROADMAP.md`, `REQUIREMENTS.md`, `STATE.md`, `PLANS.md`, verification, validation, security, and milestone audit agree with observed v1.10 evidence and conservative non-claims.
+- [x] **MOUTH-12**: Evidence-backed exact natural caps, capped counts, normalization, warnings, metrics, and directionality are locked for all five new fields without changing their public signed or positive-only ranges.
+- [x] **MOUTH-13**: No-face, missing outer lips, missing inner lips, stale geometry, reused geometry at exact `0.5`, provider-empty fallback, and safe-domain continuation apply per support dependency across all eight mouth geometry fields while `lipColor` retains its independent color-domain policy and diagnostics remain redacted.
+- [x] **MOUTH-14**: Combined face, eye, six-field nose, and eight-field mouth geometry uses one provider-eligible retained baseline, weakens every active field exactly once, converges through at most fourteen nose/mouth mask removals, preserves every signed direction, and excludes unsupported work from totals, counts, warnings, metrics, and dispatch.
+- [x] **MOUTH-15**: Raw geometry, public support types, internal Demo/renderer imports, network/cloud, commercial paths, new dependencies, compatibility drift, unclassified source matches, and generated artifacts remain fail-closed through active-source scans and the full SDK suite.
+- [x] **MOUTH-16**: Exactly `上下`, `倾斜`, `左右`, `M唇`, and true `丰唇` are promoted only after their own contract, support, provider, facade-output, safety, degradation, and boundary evidence passes; `白牙` remains future and branch-level `嘴唇` remains partial.
+- [x] **DOC-01**: Blueprint, root contracts, branch documentation, example validation, `QUALITY_SCORE.md`, `PROJECT.md`, `ROADMAP.md`, `REQUIREMENTS.md`, `STATE.md`, `PLANS.md`, verification, validation, security, and milestone audit agree with observed v1.10 evidence and conservative non-claims.
 
 ## Future Requirements
 
@@ -72,12 +72,12 @@
 | MOUTH-09 | Phase 39 | Complete |
 | MOUTH-10 | Phase 39 | Complete |
 | MOUTH-11 | Phase 39 | Complete |
-| MOUTH-12 | Phase 40 | Pending |
-| MOUTH-13 | Phase 40 | Pending |
-| MOUTH-14 | Phase 40 | Pending |
-| MOUTH-15 | Phase 40 | Pending |
-| MOUTH-16 | Phase 40 | Pending |
-| DOC-01 | Phase 40 | Pending |
+| MOUTH-12 | Phase 40 | Complete |
+| MOUTH-13 | Phase 40 | Complete |
+| MOUTH-14 | Phase 40 | Complete |
+| MOUTH-15 | Phase 40 | Complete |
+| MOUTH-16 | Phase 40 | Complete |
+| DOC-01 | Phase 40 | Complete |
 
 **Coverage:**
 
@@ -89,4 +89,4 @@
 
 ---
 *Requirements defined: 2026-07-14*
-*Last updated: 2026-07-14 after auto-mode scope confirmation*
+*Last updated: 2026-07-14 after Phase 40 verification*

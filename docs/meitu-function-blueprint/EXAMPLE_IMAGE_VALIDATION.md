@@ -138,14 +138,14 @@ These cases are limited to effects that currently produce visible image output t
 | `mouthWidth_minus0p35` | Existing negative signed mouth-width evidence |
 | `smile_0p50` | Existing smile evidence |
 | `lipColor_0p50` | Existing color-only lip evidence; not true plump geometry |
-| `mouthYPosition_plus0p25` | Phase 39 provisional positive vertical-position output evidence |
-| `mouthYPosition_minus0p25` | Phase 39 provisional negative vertical-position output evidence |
-| `mouthTilt_plus0p25` | Phase 39 provisional positive tilt output evidence |
-| `mouthTilt_minus0p25` | Phase 39 provisional negative tilt output evidence |
-| `mouthXPosition_plus0p25` | Phase 39 provisional positive horizontal-position output evidence |
-| `mouthXPosition_minus0p25` | Phase 39 provisional negative horizontal-position output evidence |
-| `lipPeakDefinition_0p25` | Phase 39 provisional M-lip peak output evidence |
-| `lipPlump_0p25` | Phase 39 provisional true plump-geometry output evidence |
+| `mouthYPosition_plus0p25` | Phase 39 positive vertical-position output at the Phase 40-finalized exact cap |
+| `mouthYPosition_minus0p25` | Phase 39 negative vertical-position output at the Phase 40-finalized exact cap |
+| `mouthTilt_plus0p25` | Phase 39 positive tilt output at the Phase 40-finalized exact cap |
+| `mouthTilt_minus0p25` | Phase 39 negative tilt output at the Phase 40-finalized exact cap |
+| `mouthXPosition_plus0p25` | Phase 39 positive horizontal-position output at the Phase 40-finalized exact cap |
+| `mouthXPosition_minus0p25` | Phase 39 negative horizontal-position output at the Phase 40-finalized exact cap |
+| `lipPeakDefinition_0p25` | Phase 39 M-lip peak output at the Phase 40-finalized exact cap |
+| `lipPlump_0p25` | Phase 39 true plump-geometry output at the Phase 40-finalized exact cap |
 
 ## Phase 36 Remaining-Nose Output Evidence Summary
 
@@ -171,7 +171,7 @@ These cases are limited to effects that currently produce visible image output t
 - All sixteen families use the fixed top-origin mouth ROI x = 10%-90%, y = 40%-82%, wholly above the watermark boundary, with frozen global floors of 1,000 changed pixels and 10,000 absolute RGB delta.
 - All eight new no-face outputs preserve 64 × 64 and are exact baseline no-ops across the helper's fixed 2,048-pixel right-half fallback.
 - `generate_gallery.py` enforces a duplicate-free exact renderer bijection and one safe publication produced 308 ignored, untracked regular review PNGs.
-- The `0.25` mouth strengths are provisional output-evidence inputs. Final caps, exhaustive degradation/conflict behavior, current-owner promotion, and branch closeout remain Phase 40; `嘴唇` and all five new rows remain unpromoted here.
+- The `0.25` mouth strengths are the Phase 40-finalized exact caps. Phase 40 adds exhaustive eight-field degradation/conflict behavior and promotes exactly `上下`, `倾斜`, `左右`, `M唇`, and true `丰唇`; branch-level `嘴唇` remains partial because `白牙` is future.
 
 ## Phase 30 Eye Safety Closeout Evidence
 

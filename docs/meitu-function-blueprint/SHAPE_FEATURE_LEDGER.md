@@ -97,11 +97,11 @@ Before marking a second-level tool `implemented`:
 | `眼睛` | 对称 | future | None. | Define neutral parameter and geometry behavior. |
 | `嘴唇` | 大小 | implemented | Existing signed `mouthSize`; Phase 33 positive/negative output plus Phase 34 exact-cap, degradation, combined-safety, and boundary evidence. | Complete for this existing-parameter subtool only; branch review remains separate. |
 | `嘴唇` | 宽度 | implemented | Existing signed `mouthWidth`; Phase 33 positive/negative output plus Phase 34 exact-cap, degradation, combined-safety, and boundary evidence. | Complete for this existing-parameter subtool only. |
-| `嘴唇` | 上下 | future | None. | Define neutral parameter and geometry behavior. |
-| `嘴唇` | 倾斜 | future | None. | Define neutral parameter and geometry behavior. |
-| `嘴唇` | 左右 | future | None. | Define neutral parameter and geometry behavior. |
-| `嘴唇` | M唇 | future | None. | Define neutral parameter and geometry behavior. |
-| `嘴唇` | 丰唇 | partial | Demo currently maps this to `lipColor`, which is visible color evidence, not true geometry plump behavior. | Decide whether to create a distinct geometry parameter or relabel mapping; then add facade-visible evidence. |
+| `嘴唇` | 上下 | implemented | Independent signed `mouthYPosition`; Phase 38 contract/provider support, Phase 39 positive/negative facade output, and Phase 40 exact-cap, degradation, conflict, privacy, and boundary evidence. | Complete for this geometry subtool only. |
+| `嘴唇` | 倾斜 | implemented | Independent signed `mouthTilt`; Phase 38 contract/provider support, Phase 39 positive/negative facade output, and Phase 40 exact-cap, degradation, conflict, privacy, and boundary evidence. | Complete for this geometry subtool only. |
+| `嘴唇` | 左右 | implemented | Independent signed `mouthXPosition`; Phase 38 contract/provider support, Phase 39 positive/negative facade output, and Phase 40 exact-cap, degradation, conflict, privacy, and boundary evidence. | Complete for this geometry subtool only. |
+| `嘴唇` | M唇 | implemented | Independent positive-only `lipPeakDefinition`; Phase 38 upper/inner-lip support, Phase 39 distinct peak facade output, and Phase 40 exact-cap, selective degradation, conflict, privacy, and boundary evidence. | Complete independently; this row does not borrow size, smile, color, or plump evidence. |
+| `嘴唇` | 丰唇 | implemented | Independent positive-only geometry `lipPlump`; Phase 38 upper/lower/inner-lip support, Phase 39 distinct plump facade output, and Phase 40 exact-cap, selective degradation, conflict, privacy, and boundary evidence. | True geometry only; `lipColor` remains a separate color-domain capability. |
 | `嘴唇` | 微笑 | implemented | Existing `smile`; Phase 33 output plus Phase 34 exact-cap, degradation, combined-safety, and boundary evidence. | Complete for this existing-parameter subtool only. |
 | `嘴唇` | 白牙 | future | None. | Needs local teeth segmentation/retouch design. |
 | `鼻子` | 大小 | implemented | Existing `noseSlim`; Phase 31 `noseSlim_0p35` output plus Phase 32 exact-cap, degradation, combined-safety, and boundary evidence. | Complete for this existing-parameter subtool only; branch review remains separate. |

@@ -319,6 +319,12 @@ BeautyDemo sliders / presets
 
 ## 11. 决策记录
 
+### v1.10 Phase 40 Mouth Geometry Closeout
+
+- The public facade remains the sole host boundary for the exact 38 stored `BeautyParameters` fields, including `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, and `lipPlump`.
+- Upper/lower/inner lip supports remain package-internal to `BeautyDetection` and `BeautyEffects`; neither the Demo nor example renderer imports them, and diagnostics expose only aggregate redacted state.
+- One provider-eligible retained geometry set feeds conflict scaling and final emission, with at most fourteen nose/mouth removals. Phase 40 changes no target dependency direction, public raw-geometry surface, network path, commercial path, or Demo UI.
+
 | Date | Decision | Reason |
 | --- | --- | --- |
 | 2026-05-24 | 第一版采用一个 `BeautySDK` Swift Package，内部多 Target。 | 共享检测、坐标、Metal 上下文和形变系统，避免多 Package 重复依赖。 |

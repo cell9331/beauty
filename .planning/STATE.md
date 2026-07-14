@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.10
 milestone_name: Mouth Remaining Geometry Controls
-status: executing
-stopped_at: Completed Phase 39
-last_updated: "2026-07-14T08:47:00.000Z"
-last_activity: 2026-07-14 -- Phase 39 verified complete; Phase 40 next
+status: verifying
+stopped_at: Completed Phase 40; milestone audit next
+last_updated: "2026-07-14T10:30:00.000Z"
+last_activity: 2026-07-14 -- Phase 40 verified complete; $gsd-audit-milestone next
 progress:
   total_phases: 3
-  completed_phases: 2
-  total_plans: 7
-  completed_plans: 7
-  percent: 67
+  completed_phases: 3
+  total_plans: 11
+  completed_plans: 11
+  percent: 100
 ---
 
 # Project State
@@ -25,10 +25,18 @@ See: `.planning/PROJECT.md` (updated 2026-07-14)
 
 ## Current Position
 
-Phase: 40 (Mouth Geometry Safety and Ledger Closeout) — PLANNED
-Plan: 0 of TBD
-Status: Ready to plan
-Last activity: 2026-07-14 -- Phase 39 verified complete; Phase 40 next
+Phase: 40 (Mouth Geometry Safety and Ledger Closeout) — COMPLETE
+Plan: 4 of 4
+Status: Phase verified; milestone lifecycle remains active
+Last activity: 2026-07-14 -- Phase 40 verified complete; `$gsd-audit-milestone` next
+
+### Phase 40 Mouth Geometry Safety and Ledger Closeout Result
+
+- Final exact `0.25` caps and signed/positive-only semantics pass for `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, and `lipPlump`.
+- All-eight mouth degradation/transitions and exact face/eye/six-nose/eight-mouth provider-eligible convergence pass; reused eligible geometry scales by exact `0.5`.
+- Fresh focused evidence passes 106 cases, full SwiftPM passes 265/265, and unchanged strict output evidence passes 308/308 with ignored/untracked artifacts.
+- Standard review is clean; ASVS L1 records `threats_open: 0`; the self-tested promotion boundary passes 63/63 mutation cases and all live checks.
+- Exactly five new geometry rows are implemented; `白牙` remains future and branch-level `嘴唇` remains partial. Next workflow: `$gsd-audit-milestone`.
 
 ### Phase 39 Public-Facade Mouth Geometry Output Evidence Result
 

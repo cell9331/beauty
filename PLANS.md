@@ -26,7 +26,7 @@
 
 ## 3. Active
 
-### P-2026-07-14-v1-10-autonomous-execution
+### Phase 40 Autonomous Execution
 
 | Field | Value |
 | --- | --- |
@@ -35,7 +35,7 @@
 | Started | 2026-07-14 |
 | Scope | Execute v1.10 Phases 38-40 from smart discussion through planning, implementation, verification, review, milestone audit, archive, tag, and cleanup. |
 | Source Request | `$gsd-autonomous --auto --from 38` |
-| Current Step | Phase 40 has four verified plans; Plan 40-01 exact caps and eight-field degradation evidence is executing. |
+| Current Step | Phase 40 is `completed` at 4/4 with final verification green; independent milestone audit is next. |
 | Verification Policy | Each phase requires committed plans/summaries, focused and full SwiftPM evidence, phase VERIFICATION status `passed`, code review routing, exact requirement traceability, and lifecycle audit before completion. |
 
 Checklist:
@@ -45,7 +45,7 @@ Checklist:
 | Initialize autonomous run | `completed` | `init.milestone-op` reports v1.10, 3 phases, 0 complete; `roadmap.analyze` selects Phases 38-40 from requested start. |
 | Phase 38 | `completed` | Four plans complete; 152/152 focused and 259/259 full SwiftPM; clean 21-file review; `38-VERIFICATION.md` passed; `threats_open: 0`. |
 | Phase 39 | `completed` | Three plans complete; 11/11 focused, 260/260 full SwiftPM, 308/308 strict output, 96/96 portrait pairs, 8/8 no-face, 308 gallery, clean review, and `threats_open: 0`. |
-| Phase 40 | `active` | Context/research/patterns/validation and four dependency-ordered plans committed; Plan 40-01 executing. |
+| Phase 40 | `completed` | Four plans complete; 106 focused, 265 full, 308 output, 63 self-test, clean review, `threats_open: 0`, and exact five-row promotion. |
 | Lifecycle | `planned` | Audit → complete → cleanup after all phase gates pass. |
 
 Open Questions:
@@ -56,6 +56,22 @@ Open Questions:
 | Scope boundary | Keep `白牙`, Demo UI, device/commercial visual approval, packaging, shipping, and launch readiness outside v1.10. |
 
 ## 4. Completed
+
+### C-2026-07-14-phase-40-mouth-geometry-safety-ledger-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-14 |
+| Scope | Completed Phase 40 Plans `40-01` through `40-04`: exact caps, all-eight degradation/transitions, provider-eligible combined convergence, fail-closed boundaries, exact five-row promotion, and owner synchronization. |
+| Requirements | MOUTH-12 through MOUTH-16 and DOC-01 pass 6/6; all 17 v1.10 requirements now map to complete phases. |
+| Runtime | Fresh 106 requirement-focused and 265/265 full SwiftPM tests passed; unchanged strict helper accepted 308/308 decoded same-dimension outputs. |
+| Quality | Promotion checker passed 63/63 mutation self-tests and all live checks; standard review is clean; ASVS L1 records `threats_open: 0`; generated artifacts remain ignored and untracked. |
+
+Outcome:
+
+- Exactly `上下`, `倾斜`, `左右`, `M唇`, and true geometry `丰唇` are implemented through independent public/provider/output/safety evidence.
+- `白牙` remains future and branch-level `嘴唇` remains partial; no Demo/device/commercial/performance/packaging/shipping/launch claim is made.
+- Phase execution is complete; the separately owned milestone audit and lifecycle steps remain next.
 
 ### C-2026-07-14-phase-39-public-facade-mouth-geometry-output-evidence
 

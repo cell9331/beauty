@@ -593,6 +593,12 @@ Before a release-like build:
 
 ## 20. Reliability Decision Log
 
+### v1.10 Phase 40 Mouth Geometry Closeout
+
+- All eight mouth geometry fields share exact no-face, missing-support, provider-empty, stale, reused, and transition coverage. Reused eligible geometry scales once by exact `0.5`; `lipPlump` and peak definition are removed when their required local support is unavailable while safe siblings and color/filter domains continue.
+- Exact `0.25` caps, capped counts, warnings, totals, retained counts, conflict scale, effective strengths, and final emissions are asserted from the same provider-eligible baseline.
+- The full SwiftPM suite passes 265/265; strict renderer evidence remains 308/308 decoded same-dimension outputs. These deterministic gates do not replace physical-device, subjective visual, optimized performance, or long-run preview evidence.
+
 | Date | Decision | Reason |
 | --- | --- | --- |
 | 2026-05-25 | Realtime errors fall back at App level to original frame where safe. | Preview continuity matters more than applying every effect. |

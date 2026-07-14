@@ -312,11 +312,12 @@ def self_test(source_root: Path) -> int:
             raise AssertionError(label)
         passed += 1
 
+    promoted_source = check_promotion(source_root, True).ok
     positive = (
         check_required_paths(source_root), check_manifest(source_root), check_inventory(source_root),
         check_source_classification(source_root), check_imports(source_root), check_public_geometry(source_root),
         check_remote_and_commercial(source_root), check_diagnostic_privacy(source_root),
-        check_privacy_manifest_disposition(source_root), check_promotion(source_root, False),
+        check_privacy_manifest_disposition(source_root), check_promotion(source_root, promoted_source),
         check_lifecycle_and_archive(source_root), check_artifacts(source_root),
     )
     for result in positive:

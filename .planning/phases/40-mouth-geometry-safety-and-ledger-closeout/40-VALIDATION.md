@@ -13,14 +13,14 @@ requirements: [MOUTH-12, MOUTH-13, MOUTH-14, MOUTH-15, MOUTH-16, DOC-01]
 | 40-01 | MOUTH-13 | eight-field support/freshness/provider/transition tables | passed |
 | 40-02 | MOUTH-14 | exact combined/conflict/degradation/provider suites | passed |
 | 40-03 | MOUTH-15 | 63/63 self-tested active-source checker, 265/265 SwiftPM, 308/308 renderer, artifact gates | passed |
-| 40-04 | MOUTH-16 | exact promotion assertions and allow-promotion boundary run | pending until Plan 40-04 |
-| 40-04 | DOC-01 | owner-consistency checker, full tests, verification/security/review artifacts | pending until Plan 40-04 |
+| 40-04 | MOUTH-16 | exact promotion assertions and allow-promotion boundary run | passed |
+| 40-04 | DOC-01 | owner-consistency checker, full tests, verification/security/review artifacts | passed |
 
 No manual-only requirement is expected. Device/commercial visual validation is explicitly outside this phase and is not a substitute for any automated gate.
 
 ## Nyquist Sign-Off
 
-Plans 40-01 through 40-03 are fully automated and green. Plan 40-04 has deterministic allow-promotion and owner-consistency commands prepared; its two rows become passed only in the final transaction. There are no manual-only gaps.
+Plans 40-01 through 40-04 are fully automated and green. All six Phase 40 requirements have deterministic evidence and there are no manual-only gaps.
 
 
 ## Blocking Gates

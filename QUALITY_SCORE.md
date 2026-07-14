@@ -500,6 +500,12 @@ SDK 1.0 readiness:
 
 ## 15. Quality Decision Log
 
+### v1.10 Phase 40 Mouth Geometry Closeout
+
+- Fresh full SwiftPM evidence passes 265/265 (up from the Phase 39 baseline of 260); the unchanged Phase 39 strict renderer gate passes 308/308 decoded same-dimension outputs with all visibility, signed-direction, independence, and no-face comparisons.
+- Requirement-focused Phase 40 suites pass 106 cases, the promotion checker passes 63/63 mutation self-tests and all live owner/boundary checks, standard code review is clean, and ASVS L1 records `threats_open: 0`.
+- Exactly five mouth geometry rows are promoted while `白牙` and branch-level `嘴唇` remain future/partial. Scores do not gain credit for Demo UI, device parity, subjective/commercial visual quality, optimized performance, packaging, shipping, or launch readiness.
+
 | Date | Decision | Reason |
 | --- | --- | --- |
 | 2026-05-25 | Scores distinguish current state from target state. | The repo has strong planning docs but little SDK implementation yet. |

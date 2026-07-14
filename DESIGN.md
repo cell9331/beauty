@@ -673,6 +673,12 @@ Each implementation must make these contracts testable:
 
 ## 18. Open Design Watchlist
 
+### v1.10 Phase 40 Mouth Geometry Closeout
+
+- `mouthYPosition`, `mouthTilt`, and `mouthXPosition` are signed `-1...1`; `lipPeakDefinition` and `lipPlump` are positive-only `0...1`. Every new field has a final exact natural cap of `0.25`, with signed direction preserved before and after weakening.
+- The eight-field mouth geometry set is size, width, smile, Y position, tilt, X position, peak definition, and plump. Missing inner support removes peak/plump only; reused eligible geometry scales by exact `0.5`; stale or unusable support removes dependent work.
+- Conflict resolution converges through at most fourteen nose/mouth removals and calculates totals, counts, scale, warnings, effective strengths, and emissions from one provider-eligible retained set.
+
 These are known future design areas, not current first-version requirements:
 
 | Area | Reason to Revisit |

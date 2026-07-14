@@ -453,6 +453,8 @@ Manual or future checks still required before stronger product claims:
 
 - Phase 37 promotes exactly `山根` → independent `noseRootNarrowing` and `提升` → independent `noseTipLift`; neither borrows `noseBridge` or signed `noseTipSize` evidence. Together with the four legacy rows, the exact six-row SDK-core `鼻子` branch is implemented.
 - Acceptance requires final exact `0.25` caps, all-six zero/no-face/missing/provider-empty/stale/reused/transition behavior, exactly-once combined convergence, redacted diagnostics, and active-source boundaries.
+- Fresh evidence passes 103/103 focused and 228/228 full SwiftPM tests. The unchanged public-facade output gate passes 252/252 outputs, 12/12 baseline, 6/6 root/bridge, 12/12 lift/signed-tip, and 2/2 no-face comparisons with ignored/untracked artifacts and `threats_open: 0`.
+- SDK-core branch completion does not claim Demo UI, physical-device parity, subjective or commercial naturalness, optimized performance, packaging, shipping, launch readiness, broad reference-product parity, or a passed milestone audit.
 
 ### 7.18 Phase 38 Remaining Mouth Geometry Contract Acceptance
 
@@ -460,8 +462,12 @@ Manual or future checks still required before stronger product claims:
 - Acceptance requires exact 38-field compatibility, optional package-only inner-lip availability, deterministic private supports, distinct whole/peak/plump vectors, provisional `0.25` caps, exact reused `0.5`, eight-field provider eligibility, fourteen-removal convergence, isolated facade routing, redacted diagnostics, and a clean review.
 - `上下`, `倾斜`, `左右`, `M唇`, true `丰唇`, and branch-level `嘴唇` remain unpromoted pending Phase 39 output evidence and Phase 40 final safety/boundary closeout. `白牙` remains future.
 - This acceptance does not claim saved-output/ROI/gallery evidence, final artistic caps, exhaustive transitions, device/commercial naturalness, performance certification, packaging, shipping, launch readiness, or milestone completion. No Demo build was required because Phase 38 changed no Demo source.
-- Fresh evidence passes 103/103 focused and 228/228 full SwiftPM tests. The unchanged public-facade output gate passes 252/252 outputs, 12/12 baseline, 6/6 root/bridge, 12/12 lift/signed-tip, and 2/2 no-face comparisons with ignored/untracked artifacts and `threats_open: 0`.
-- SDK-core branch completion does not claim Demo UI, physical-device parity, subjective or commercial naturalness, optimized performance, packaging, shipping, launch readiness, broad reference-product parity, or a passed milestone audit.
+
+### 7.19 v1.10 Phase 40 Exact Mouth Geometry Acceptance
+
+- Phase 40 promotes exactly `上下` → signed `mouthYPosition`, `倾斜` → signed `mouthTilt`, `左右` → signed `mouthXPosition`, `M唇` → positive-only `lipPeakDefinition`, and true `丰唇` → positive-only geometry `lipPlump` after independent contract, support, facade-output, safety, degradation, privacy, and boundary evidence.
+- The exact `0.25` caps, exact reused `0.5`, selective missing-support behavior, and one provider-eligible combined retained set are automated acceptance criteria. `lipColor` remains color-only and supplies no true plump evidence.
+- `白牙` remains future teeth-region segmentation/color retouch, so branch-level `嘴唇` remains `partial`. This closeout adds no Demo UI and makes no device, commercial visual, performance, packaging, shipping, or launch-readiness claim.
 
 ## 8. Preset Product Contract
 
