@@ -22,7 +22,7 @@ Beauty shaping covers face geometry and facial feature adjustments inspired by M
 | `脸型` | partial | `BeautyEffects` | `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, `chinLength` | Smooth face, temple, cheekbone, double chin, pointed chin, hairline | Phase 28 completes only the scoped rows `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线`; remaining rows still need separate evidence. |
 | `眼睛` | partial | `BeautyEffects` | `eyeSize`, `eyeDistance`, `eyeYPosition`, `eyeTailLift` | Eye height, length, pupil, gaze, lower lid, redness, corners, symmetry | Phase 29 public-facade output and Phase 30 safety/degradation evidence implement exactly `大小`, `上下`, `眼距`, and `眼尾上扬`; remaining eye tools need separate design and evidence. |
 | `嘴唇` | partial | `BeautyEffects` | Implemented: `mouthSize`, `mouthWidth`, `smile`; color-only: `lipColor` | M-lip, position, tilt, left/right, true plump-lip, teeth | Phase 33/34 closes exactly three geometry rows; branch remains partial and lip color is not plump geometry. |
-| `鼻子` | partial | `BeautyEffects` | `noseSlim`, `noseWingSlim`, signed `noseTipSize`, `noseBridge` | `提升`, `山根` alias/parameter decision, additional shaping | Phases 31-32 implement exactly `大小`, `鼻翼`, `鼻梁`, and `鼻尖`; branch remains partial. |
+| `鼻子` | implemented | `BeautyEffects` | `noseSlim`, `noseWingSlim`, signed `noseTipSize`, `noseBridge`, `noseRootNarrowing`, `noseTipLift` | No additional control is implied by the exact six-row taxonomy | Phases 31-32 and 35-37 implement exactly `大小`, `提升`, `鼻翼`, `山根`, `鼻梁`, and `鼻尖`; SDK-core branch complete with UI/device/commercial boundaries preserved. |
 | `眉毛` | future | `BeautyEffects` | None | Position, thickness, length, distance, head distance, tilt, peak; resources only if explicitly designed | No v1.3 completion evidence until promoted. |
 
 ## Phase 19 Evidence
@@ -39,7 +39,7 @@ Phase 28 adds public-facade saved-output evidence for six scoped face-shape rows
 
 Phase 30 implements exactly four existing-parameter eye subtools: `大小`, `上下`, `眼距`, and `眼尾上扬`. The `眼睛` branch remains `partial` because eye height, length, pupil, gaze, lids, redness, corners, symmetry, eye-fat, and other future tools still require separate product-neutral design and evidence.
 
-Phase 32 implements exactly four existing-parameter nose subtools: `大小`, `鼻翼`, `鼻梁`, and signed `鼻尖`. The `鼻子` branch remains `partial`; `山根` does not borrow `noseBridge` evidence, and `提升` remains future.
+Phase 32 implemented exactly four legacy nose subtools: `大小`, `鼻翼`, `鼻梁`, and signed `鼻尖`, while deliberately leaving `山根` and `提升` unresolved. Phases 35-36 established their independent contract/output chain; Phase 37 implements `山根` through `noseRootNarrowing` and `提升` through `noseTipLift`, without borrowing `noseBridge` or signed `noseTipSize` evidence, and closes the exact six-row SDK-core `鼻子` branch with device and commercial boundaries preserved.
 
 Public-facade output for the four subtools is recorded in `29-EYE-RENDERER-EVIDENCE.md`. Input semantics, caps, missing/reused/stale degradation, combined weakening, privacy, and active-source boundaries are recorded in `30-EYE-SAFETY-EVIDENCE.md`.
 

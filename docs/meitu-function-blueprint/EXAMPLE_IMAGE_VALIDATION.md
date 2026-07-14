@@ -119,8 +119,8 @@ These cases are limited to effects that currently produce visible image output t
 | `noseTipSize_plus0p30` | Phase 31 positive-direction `鼻尖` renderer evidence through existing signed `noseTipSize` |
 | `noseTipSize_minus0p30` | Phase 31 negative-direction `鼻尖` renderer evidence through existing signed `noseTipSize` |
 | `noseBridge_0p30` | Phase 31 `鼻梁` renderer evidence through existing `noseBridge`; this is not `山根` alias evidence |
-| `noseRootNarrowing_0p25` | Phase 36 isolated public-facade output evidence for `noseRootNarrowing`; provisional 0.25 input, not final `山根` promotion or cap |
-| `noseTipLift_0p25` | Phase 36 isolated public-facade output evidence for `noseTipLift`; provisional 0.25 input, not final `提升` promotion or cap |
+| `noseRootNarrowing_0p25` | Phase 36 isolated public-facade output for `noseRootNarrowing` at the Phase 37-finalized exact `0.25` cap; final promotion additionally requires the Phase 37 safety/boundary evidence |
+| `noseTipLift_0p25` | Phase 36 isolated public-facade output for `noseTipLift` at the Phase 37-finalized exact `0.25` cap; final promotion additionally requires the Phase 37 safety/boundary evidence |
 
 ## Phase 36 Remaining-Nose Output Evidence Summary
 
@@ -129,7 +129,15 @@ These cases are limited to effects that currently produce visible image output t
 - All five comparison families use the fixed top-origin nose ROI x = 25%-75%, y = 20%-70%, wholly above the watermark boundary, with frozen global floors of 500 changed pixels and 2,000 absolute RGB delta.
 - The two new no-face outputs preserve 64 × 64 extent and are exact no-ops in the helper's fixed watermark-safe region; XCTest separately records `.noFace`, `.noFaceDetected`, zero used faces, aggregate-only metrics, and redacted diagnostics.
 - `generate_gallery.py` requires a duplicate-free exact bijection between its flattened groups and discovered renderer case IDs, then creates 252 ignored, untracked review PNGs. Outputs and gallery files remain disposable local evidence and are never committed.
-- The `0.25` strengths are provisional output inputs. Phase 36 does not promote `山根`, `提升`, or branch-level `鼻子`; Phase 37 retains final cap calibration, exhaustive six-field degradation/provider-empty and exactly-once weakening coverage, active-source boundary closeout, and atomic product-ledger promotion.
+- The Phase 36 `0.25` strengths are output evidence at the Phase 37-finalized exact caps. Phase 36 did not promote product status at the time; Phase 37 subsequently supplied exhaustive six-field degradation/provider-empty, exactly-once weakening, redaction, active-source boundary, and atomic promotion evidence in `37-NOSE-SAFETY-EVIDENCE.md`.
+
+## Phase 37 Nose Safety and Branch Closeout
+
+- Fresh focused evidence passed 103/103 and the full SwiftPM suite passed 228/228 with zero failures.
+- The unchanged Phase 36 renderer/helper result remains exactly 36 cases × 7 fixtures = 252/252 decoded same-dimension outputs, with 12/12 new-field-to-baseline, 6/6 root-to-bridge, 12/12 lift-to-signed-tip, and 2/2 representative no-face comparisons.
+- Phase 37 finalized exact `0.25` caps, all-six zero/no-face/missing/provider-empty/stale/reused/transitions, exactly-once combined convergence, redacted diagnostics, and active-source boundaries; `37-SECURITY.md` records `threats_open: 0`.
+- Exactly `提升` → `noseTipLift` and `山根` → `noseRootNarrowing` were promoted after their independent evidence passed; the exact six-row SDK-core `鼻子` branch is now `implemented` without alias borrowing or unnamed controls.
+- Renderer output and gallery remain disposable, ignored, untracked, and unstaged local artifacts. No Demo UI, physical-device parity, subjective/commercial naturalness, optimized performance, packaging, shipping, launch readiness, broad product parity, milestone-audit, archive, tag, or cleanup result is claimed.
 
 ## Phase 30 Eye Safety Closeout Evidence
 
@@ -149,7 +157,7 @@ Phase 19 strengthens provider, resolver, cap, degradation, and redaction XCTest 
 Current status boundaries:
 
 - `3D塑颜` remains `blocked-by-geometry-output`.
-- `比例`, `脸型`, `眼睛`, `嘴唇`, and `鼻子` remain `partial`.
+- `比例`, `脸型`, `眼睛`, and `嘴唇` remain `partial`; exact six-row SDK-core `鼻子` is `implemented`.
 - `眉毛` and unpromoted branches remain `future`.
 - Phase 27 proves only the shared geometry output foundation with `faceShapeCombo_0p35`.
 - Phase 28 completes only the scoped `脸型` rows `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线`; branch-level `脸型` stays `partial`.

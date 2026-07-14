@@ -47,7 +47,7 @@ Before marking a second-level tool `implemented`:
 | `脸型` | `IMG_0856.PNG`, `IMG_0866.PNG`, `IMG_0867.PNG` | Three horizontal scroll positions merged; duplicated `去双下巴` and `去双下巴 Pro` kept as separate tools because one is a Pro variant. |
 | `眼睛` | `IMG_0857.PNG`, `IMG_0858.PNG`, `IMG_0859.PNG` | Three horizontal scroll positions merged. |
 | `嘴唇` | `IMG_0860.PNG`, `IMG_0861.PNG` | Two horizontal scroll positions merged. |
-| `鼻子` | `IMG_0862.PNG`, `IMG_0863.PNG` | Two horizontal scroll positions merged. |
+| 鼻子 | `IMG_0862.PNG`, `IMG_0863.PNG` | Two horizontal scroll positions merged. |
 | `眉毛` | `IMG_0864.PNG`, `IMG_0865.PNG` | Two horizontal scroll positions merged. |
 
 ## Tool Ledger
@@ -105,9 +105,9 @@ Before marking a second-level tool `implemented`:
 | `嘴唇` | 微笑 | implemented | Existing `smile`; Phase 33 output plus Phase 34 exact-cap, degradation, combined-safety, and boundary evidence. | Complete for this existing-parameter subtool only. |
 | `嘴唇` | 白牙 | future | None. | Needs local teeth segmentation/retouch design. |
 | `鼻子` | 大小 | implemented | Existing `noseSlim`; Phase 31 `noseSlim_0p35` output plus Phase 32 exact-cap, degradation, combined-safety, and boundary evidence. | Complete for this existing-parameter subtool only; branch review remains separate. |
-| `鼻子` | 提升 | future | None. | Define neutral parameter and geometry behavior. |
+| `鼻子` | 提升 | implemented | Independent public `noseTipLift`; Phase 35 contract/provider evidence, Phase 36 isolated facade output distinct from both signed `noseTipSize` directions, and Phase 37 exact-cap, six-field degradation, combined-safety, and boundary evidence. | Complete for the exact SDK-core nose taxonomy; device/commercial visual review remains separate. |
 | `鼻子` | 鼻翼 | implemented | Existing `noseWingSlim`; Phase 31 `noseWingSlim_0p35` output plus Phase 32 safety/degradation/boundary evidence. | Complete for this existing-parameter subtool only. |
-| `鼻子` | 山根 | partial | No independent evidence. `noseBridge` evidence belongs to `鼻梁` and is not borrowed as an alias. | Decide explicitly whether root and bridge alias or require a distinct neutral parameter. |
+| `鼻子` | 山根 | implemented | Independent public `noseRootNarrowing`; Phase 35 contract/provider evidence, Phase 36 isolated facade output distinct from `noseBridge`, and Phase 37 exact-cap, six-field degradation, combined-safety, and boundary evidence. | Complete independently; this row does not borrow `noseBridge` / `鼻梁` evidence. |
 | `鼻子` | 鼻梁 | implemented | Existing `noseBridge`; Phase 31 `noseBridge_0p30` output plus Phase 32 safety/degradation/boundary evidence. | Complete for this existing-parameter subtool only; not evidence for `山根`. |
 | `鼻子` | 鼻尖 | implemented | Existing signed `noseTipSize`; Phase 31 positive/negative output plus Phase 32 signed-cap, degradation, and combined-safety evidence. | Complete for this signed existing-parameter subtool only. |
 | `眉毛` | 上下 | future | None. | Needs landmark/resource design if promoted. |
