@@ -177,6 +177,32 @@ final class BeautyEffectResolverTests: XCTestCase {
         }
     }
 
+    func testMOUTH12ExactCapInputsDoNotCountAsCappedAndOverflowCountsExactlyOnce() {
+        let cases: [(String, BeautyParameters, BeautyParameters, KeyPath<BeautyEffectiveStrengths, Float>, Float)] = [
+            ("Y positive", BeautyParameters(mouthYPosition: 0.25), BeautyParameters(mouthYPosition: 1), \.mouthYPosition, 0.25),
+            ("Y negative", BeautyParameters(mouthYPosition: -0.25), BeautyParameters(mouthYPosition: -1), \.mouthYPosition, -0.25),
+            ("tilt positive", BeautyParameters(mouthTilt: 0.25), BeautyParameters(mouthTilt: 1), \.mouthTilt, 0.25),
+            ("tilt negative", BeautyParameters(mouthTilt: -0.25), BeautyParameters(mouthTilt: -1), \.mouthTilt, -0.25),
+            ("X positive", BeautyParameters(mouthXPosition: 0.25), BeautyParameters(mouthXPosition: 1), \.mouthXPosition, 0.25),
+            ("X negative", BeautyParameters(mouthXPosition: -0.25), BeautyParameters(mouthXPosition: -1), \.mouthXPosition, -0.25),
+            ("peak", BeautyParameters(lipPeakDefinition: 0.25), BeautyParameters(lipPeakDefinition: 1), \.lipPeakDefinition, 0.25),
+            ("plump", BeautyParameters(lipPlump: 0.25), BeautyParameters(lipPlump: 1), \.lipPlump, 0.25),
+        ]
+
+        for (name, exactParameters, overflowParameters, keyPath, expected) in cases {
+            let exact = BeautyEffectResolver.resolve(parameters: exactParameters, faceGeometry: .fixture)
+            XCTAssertEqual(exact.effectiveStrengths[keyPath: keyPath], expected, accuracy: 0.000001, name)
+            XCTAssertEqual(exact.metrics["beauty.effects.cappedCount"], 0, name)
+            XCTAssertFalse(exact.warnings.contains { $0.code == "beauty_strength_capped" }, name)
+
+            let overflow = BeautyEffectResolver.resolve(parameters: overflowParameters, faceGeometry: .fixture)
+            XCTAssertEqual(overflow.effectiveStrengths[keyPath: keyPath], expected, accuracy: 0.000001, name)
+            XCTAssertEqual(overflow.metrics["beauty.effects.cappedCount"], 1, name)
+            XCTAssertEqual(overflow.warnings.filter { $0.code == "beauty_strength_capped" }.count, 1, name)
+            assertRedacted(overflow)
+        }
+    }
+
     func testEYE04EyeCapsResolveExactValuesDirectionsWarningsAndCounts() {
         let cases: [(name: String, parameters: BeautyParameters, keyPath: KeyPath<BeautyEffectiveStrengths, Float>, expected: Float)] = [
             ("eyeSize positive", BeautyParameters(eyeSize: 1), \.eyeSize, BeautySafetyCaps.eyeSize),

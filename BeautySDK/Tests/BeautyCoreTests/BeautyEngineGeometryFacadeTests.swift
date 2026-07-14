@@ -366,6 +366,45 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
         assertNoNoseFieldOrRawGeometryDisclosure(result)
     }
 
+    func testMOUTH13AllEightMouthFieldsNoFacePreserveExtentAndSafeDomains() throws {
+        let provider = SDKTestingFaceDetectionProvider([.noFace])
+        let engine = try BeautyEngine(faceDetectionProvider: provider)
+        let result = try engine.processResult(
+            image: Self.image,
+            metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+            parameters: BeautyParameters(
+                brightness: 0.2,
+                mouthSize: -1,
+                mouthWidth: 1,
+                smile: 1,
+                mouthYPosition: -1,
+                mouthTilt: 1,
+                mouthXPosition: -1,
+                lipPeakDefinition: 1,
+                lipPlump: 1,
+                lipColor: 1,
+                filterId: "soft_clean",
+                filterIntensity: 0.5
+            )
+        )
+
+        XCTAssertEqual(provider.invocationCount, 1)
+        XCTAssertEqual(result.output.extent, Self.image.extent)
+        XCTAssertEqual(result.detectionSummary?.availability, .noFace)
+        XCTAssertEqual(result.detectionSummary?.reasons, [.noFaceDetected])
+        XCTAssertEqual(result.detectionSummary?.faceCount, 0)
+        XCTAssertEqual(result.detectionSummary?.usedFaceCount, 0)
+        XCTAssertEqual(result.metrics["beauty.detection.geometryRequired"], 1)
+        XCTAssertEqual(result.metrics["beauty.effects.activeCount"], 2)
+        XCTAssertEqual(result.metrics["beauty.effects.skippedMouthDomains"], 1)
+        XCTAssertEqual(result.metrics["beauty.effects.skippedLipDomains"], 1)
+        XCTAssertEqual(result.metrics["beauty.effects.cappedCount"], 9)
+        XCTAssertNil(result.metrics["beauty.effects.geometryPointCount"])
+        XCTAssertEqual(result.warnings.filter { $0.code == "face_effects_skipped_no_face" }.count, 1)
+        XCTAssertEqual(result.warnings.filter { $0.code == "beauty_strength_capped" }.count, 1)
+        assertRedacted(result)
+    }
+
     private static let image = CIImage(color: CIColor(red: 0.35, green: 0.25, blue: 0.20, alpha: 1))
         .cropped(to: CGRect(x: 0, y: 0, width: 2, height: 2))
 

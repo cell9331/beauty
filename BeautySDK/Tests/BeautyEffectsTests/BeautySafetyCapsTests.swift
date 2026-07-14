@@ -3,7 +3,7 @@ import BeautyCore
 @testable import BeautyEffects
 
 final class BeautySafetyCapsTests: XCTestCase {
-    func testPhase38MOUTH03ProvisionalMouthGeometryCapsAreExactlyPointTwoFive() {
+    func testMOUTH12FinalMouthGeometryCapsAreExactlyPointTwoFive() {
         XCTAssertEqual(BeautySafetyCaps.mouthYPosition, 0.25)
         XCTAssertEqual(BeautySafetyCaps.mouthTilt, 0.25)
         XCTAssertEqual(BeautySafetyCaps.mouthXPosition, 0.25)
