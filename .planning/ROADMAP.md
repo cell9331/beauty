@@ -95,7 +95,7 @@
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
 | 35. Public Contract and Independent Geometry | 4/4 | Complete    | 2026-07-13 |
-| 36. Public-Facade Output Evidence | 3/3 | Complete | 2026-07-13 |
+| 36. Public-Facade Output Evidence | 3/3 | Complete    | 2026-07-14 |
 | 37. Nose Safety, Boundary, and Branch Closeout | 0/TBD | Not started | — |
 
 ## Backlog

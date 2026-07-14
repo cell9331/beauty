@@ -1,67 +1,62 @@
 ---
 phase: 36
 status: passed
-verified: 2026-07-13
+verified: 2026-07-14
 requirements: [NOSE-07, NOSE-08, NOSE-09]
+verifier: independent
+verified_head: c8c8588
 ---
 
-# Phase 36 Verification
+# Phase 36 Independent Verification
 
 ## Verdict
 
-Passed. Fresh command evidence verifies exactly the Phase 36 public-facade renderer, strict output helper, ignored gallery, representative no-face, privacy, and containment contract for NOSE-07 through NOSE-09. No Phase 37 safety, cap, boundary-closeout, product-promotion, or readiness claim is included.
+Passed. The Phase 36 goal and NOSE-07, NOSE-08, and NOSE-09 are satisfied by the current code, generated local evidence, and fresh independent reruns. This verdict was derived from the implementation and artifacts, not from summaries alone.
 
-The complete focused/full SwiftPM, renderer build, guarded clean renderer/helper/gallery, containment, no-promotion, schema-drift, and diff-hygiene sequence was rerun after these Phase 36 closeout documents and ledgers were written; the observed results below are from that final post-documentation pass.
+The repository is clean at `c8c8588`; the final implementation remediation is `efdaad4`, and the subsequent deep review records zero critical, warning, or informational findings. No Phase 37 cap, exhaustive safety, active-source closeout, product promotion, or readiness claim is included.
 
-## Observed Runtime Evidence
+## Must-Have Verification
 
-| Gate | Observed result |
+| Must-have | Independent result | Actual owner/evidence |
+| --- | --- | --- |
+| Exactly 36 public-facade cases | Passed: 36 `RenderCase` IDs, all unique; one shared `engine.processResult` call; only `BeautySDK` plus platform imports | `BeautyExampleRenderer/main.swift`; focused renderer inventory test |
+| Exactly two isolated new cases | Passed: `noseRootNarrowing_0p25` and `noseTipLift_0p25` each occur once and each initializes only its matching public field at exact `0.25`; the nose contract is seven cases over six fields with no alias/combo case | Renderer source and `testPhase36NOSE07NoseCasesUseExactlyOnePublicNoseParameter` |
+| Seven fixtures / 252 outputs | Passed: seven unique recursive fixture stems, six portraits plus the 64 x 64 no-face fixture; 36 x 7 = 252 output PNGs are present | Actual `example-images/input`, `example-images/output`, and strict helper discovery |
+| Strict full decode / same extent / no extras | Passed: the helper discovers inventories before frozen assertions, rejects missing/unexpected names, reads bounded regular files without following symlinks, validates PNG CRC/chunks/IEND/trailing data, bounds and completes zlib decode, reverses filters, and requires exact input dimensions | `check_nose_remaining_renderer_outputs.py`; helper self-test and live strict run |
+| 12/12 baseline visibility | Passed at fixed ROI/floors: root 6/6, minimum 1,130 changed pixels / 5,125 RGB delta; lift 6/6, minimum 1,644 / 26,334 | Live 252-output helper and `36-NOSE-OUTPUT-EVIDENCE.md` |
+| 6/6 root vs bridge | Passed: minimum 1,291 changed pixels / 5,951 RGB delta | Live strict helper |
+| 12/12 lift vs signed tip | Passed: positive-tip 6/6, minimum 1,839 / 20,433; negative-tip 6/6, minimum 2,132 / 34,911 | Live strict helper |
+| No-face 2/2 | Passed: both new outputs fully decode at 64 x 64 and equal baseline over the fixed 2,048-pixel label-safe region; focused facade tests also prove extent, `.noFace`, `.noFaceDetected`, zero used faces, aggregate/category-only evidence, and redaction | Strict helper and renderer XCTest |
+| Ignored/untracked output and gallery | Passed: actual output and gallery each contain 252 PNGs; representative paths are ignored; tracked and staged scans for output/gallery/staging/quarantine are empty | `.gitignore`, Git containment scans, actual generated roots |
+| Safe gallery after deep review | Passed: exact duplicate-free 36-case renderer/gallery bijection; bounded no-follow source acquisition; full identity/size/mtime/ctime stability; exclusive descriptor-relative staging and atomic publication; intact non-traversed single-slot quarantine; fail-closed retry and portability checks | `generate_gallery.py`, gallery self-test, `36-REVIEW-FIX.md`, clean iteration-5 `36-REVIEW.md` |
+| No promotion; Phase 37 ownership intact | Passed: `提升` remains future, `山根` and branch-level `鼻子` remain partial; NOSE-10 through NOSE-14 and DOC-01 remain pending under Phase 37, which is next and not started | `FEATURE_MATRIX.md`, `REQUIREMENTS.md`, `ROADMAP.md`, `STATE.md`, and no-promotion diffs |
+
+The fixed portrait ROI is top-origin x `[0.25, 0.75)` and y `[0.20, 0.70)`, and the helper proves its bottom remains above the renderer-matched watermark boundary. Acceptance floors remain fixed at 500 changed pixels and 2,000 absolute RGB delta; the accepting run does not derive its own thresholds.
+
+## Fresh Independent Commands
+
+| Gate | Result |
 | --- | --- |
-| Focused renderer XCTest | 10/10 `BeautyRendererOutputRegressionTests` passed, zero failures |
-| Full SwiftPM | 220/220 XCTest cases passed, zero failures |
-| Renderer product build | `BeautyExampleRenderer` built successfully with Xcode developer tools |
-| Guarded clean render | exact physical ignored output root; 36 cases × 7 fixtures wrote 252 PNGs |
-| Strict decoder/helper | 252/252 non-empty, fully decoded, same-dimension PNGs; no missing or unexpected output |
-| Gallery | exact duplicate-free renderer/gallery case bijection; clean generation wrote 252 PNGs |
-| Generated-artifact containment | representative output/gallery paths ignored; zero tracked or staged files under output/gallery |
+| `python3 example-images/generate_gallery.py --self-test` | Passed, including descriptor leaks, bounded work, source/staging mutation, ancestor swap, quarantine, non-traversal, external survival, and duplicate renderer IDs |
+| Phase 36 helper `--self-test` | Passed duplicate IDs/stems, missing/extra/corrupt outputs, bounded decode, replacement/growth races, and ROI/watermark rejection |
+| Python compilation | Passed for gallery and strict helper |
+| Focused SwiftPM | 10/10 passed, zero failures |
+| Full SwiftPM | 220/220 passed, zero failures |
+| Live strict helper | Passed against the actual 252-output matrix with all five 6/6 portrait families and no-face 2/2 |
+| Gallery/output counts | 252 output PNGs and 252 gallery PNGs |
+| Schema drift | `drift_detected: false`, nonblocking |
+| Git hygiene | Clean worktree before this report; `git diff --check` passed; generated roots have no tracked or staged files |
 
-## Output and Independence Results
-
-- The discovered inventory is 36 renderer cases and seven recursive fixtures, including exactly one `noseRootNarrowing_0p25` and one `noseTipLift_0p25` case.
-- All 252 output PNGs preserve their fixture dimensions: 36 at 64 × 64, 144 at 506 × 900, 36 at 675 × 900, and 36 at 1728 × 2304.
-- The fixed top-origin ROI is x `[0.25, 0.75)` and y `[0.20, 0.70)`, wholly above the renderer-matched watermark boundary. Acceptance floors were already frozen at 500 changed pixels and 2,000 absolute RGB delta.
-- Root visibility passed 6/6 with minima 1,130 changed pixels and 5,125 RGB delta; lift visibility passed 6/6 with minima 1,644 and 26,334. Aggregate new-field-to-baseline evidence is 12/12.
-- Root-to-bridge independence passed 6/6 with minima 1,291 and 5,951. Lift-to-positive-tip passed 6/6 with minima 1,839 and 20,433; lift-to-negative-tip passed 6/6 with minima 2,132 and 34,911. Aggregate lift-to-signed-tip evidence is 12/12.
-- Both new no-face outputs fully decode, preserve 64 × 64 extent, and are baseline-identical across the fixed 2,048-pixel watermark-safe fallback (2/2). Focused facade XCTest separately verifies `.noFace`, `.noFaceDetected`, zero used faces, category-only warning/metrics, and redacted diagnostics.
-
-## Boundary and Hygiene Gates
-
-| Gate | Observed result |
-| --- | --- |
-| Public/internal renderer import | Only `BeautySDK` plus AppKit/CoreImage/Foundation/ImageIO; exactly one `engine.processResult` call site |
-| Raw geometry/privacy | No renderer import or use of package-internal geometry, landmarks, control points, or raw geometry payloads |
-| Dependency/network/cloud/commercial | Package.swift, active product sources, and Demo are unchanged from the Phase 36-03 baseline; renderer token scan is clear |
-| No promotion | SHAPE_FEATURE_LEDGER, FEATURE_MATRIX, nose README, PROJECT, QUALITY_SCORE, caps/providers/resolvers, Package.swift, and Demo are unchanged |
-| Product state | `提升` remains future, `山根` remains partial, and branch-level `鼻子` remains partial |
-| Schema/drift | GSD `verify.schema-drift 36` reports `drift_detected: false` |
-| Diff hygiene | `git diff --check` passed |
+The general codebase-drift scan's known stale codebase-map warning is historical mapping debt and does not contradict any Phase 36 implementation, requirement, or current-owner contract; it is nonblocking here.
 
 ## Requirement Verdicts
 
-| Requirement | Verdict | Evidence |
+| Requirement | Verdict | Basis |
 | --- | --- | --- |
-| NOSE-07 | passed | Exactly two isolated public-facade additions produce the discovered 36-case × 7-fixture = 252 ignored matrix |
-| NOSE-08 | passed | The v1.9 helper fully decodes 252/252 and separately passes 12 baseline, 6 root/bridge, and 12 lift/signed-tip ROI comparisons |
-| NOSE-09 | passed | Representative no-face extent/degradation is safe; gallery/output paths are ignored; no generated PNG is tracked or staged |
+| NOSE-07 | passed | Exactly two isolated public-facade cases expand the exact source inventory to 36 and generate the 36 x 7 matrix without an internal render path |
+| NOSE-08 | passed | All 252 outputs are strictly decoded at matching extents with no extras, and the separately gated 12 baseline, 6 root/bridge, and 12 lift/signed-tip ROI comparisons pass fixed floors |
+| NOSE-09 | passed | Representative no-face facade and pixel behavior is safe; output/gallery contain exactly 252 ignored local PNGs each; no generated route is tracked or staged |
 
-## Precise Non-Claims
+## Boundaries and Gaps
 
-- `0.25` is a provisional renderer input, not a final natural cap or commercial calibration.
-- `noseRootNarrowing` is not an alias for `noseBridge`; `noseTipLift` is not either signed `noseTipSize` direction.
-- `山根`, `提升`, and branch-level `鼻子` are not promoted by Phase 36.
-- Phase 37 retains final caps, exhaustive six-field degradation/provider-empty behavior, exactly-once combined safety, final active-source boundaries, and atomic owner promotion.
-- Device parity, commercial naturalness, packaging, shipping, launch readiness, and broad reference-app parity are outside this evidence.
-
-## Gaps
-
-None within NOSE-07 through NOSE-09. The named Phase 37 work is deferred scope, not a Phase 36 verification gap.
+No Phase 36 gap remains. The `0.25` strengths are provisional evidence inputs, not final caps. Final cap calibration, exhaustive six-field degradation/provider-empty coverage, exactly-once combined weakening, final active-source boundaries, atomic `山根`/`提升` and branch promotion, and DOC-01 remain Phase 37 work. Device parity, commercial naturalness, packaging, shipping, and launch readiness are not claimed.

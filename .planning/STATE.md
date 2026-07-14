@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.9
 milestone_name: Nose Remaining Tools and Branch Closeout
-status: executing
+status: planning
 stopped_at: Completed 36-03-PLAN.md
-last_updated: "2026-07-13T09:30:00.000Z"
-last_activity: 2026-07-13 -- Phase 36 completed with public-facade output, gallery, security, and no-promotion evidence
+last_updated: "2026-07-14T01:45:41.450Z"
+last_activity: 2026-07-14
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 7
   completed_plans: 7
-  percent: 100
+  percent: 67
 ---
 
 # Project State
@@ -25,10 +25,10 @@ See: `.planning/PROJECT.md` (updated 2026-07-13)
 
 ## Current Position
 
-Phase: 36 (public-facade-output-evidence) — COMPLETE
-Plan: 3 of 3
+Phase: 37
+Plan: Not started
 Status: Complete; do not transition Phase 37 until its planning workflow starts
-Last activity: 2026-07-13 -- Phase 36 completed with strict 252/252 output and gallery evidence
+Last activity: 2026-07-14
 
 ### Phase 36 Public-Facade Output Evidence Result
 
@@ -62,7 +62,7 @@ Last activity: 2026-07-13
 **Velocity:**
 
 - Total phases completed: 30
-- Total plans completed: 123
+- Total plans completed: 126
 - Total tasks recorded from milestone summaries: at least 147
 - Milestone Swift LOC at close: 17,794 in the local closeout count across `BeautySDK` and `BeautyDemo`, including build-derived `.build` files observed during archive.
 
