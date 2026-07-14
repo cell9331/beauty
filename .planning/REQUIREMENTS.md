@@ -21,9 +21,9 @@
 
 ### Public-Facade Output Evidence
 
-- [ ] **MOUTH-09**: `BeautyExampleRenderer` includes positive/negative isolated public-facade cases for each new signed field plus isolated `lipPeakDefinition` and `lipPlump` cases, expanding the current 36-case × 7-fixture matrix to 44 cases and 308 ignored outputs if fixture inventory is unchanged.
-- [ ] **MOUTH-10**: A v1.10-owned strict output helper derives the complete case/fixture matrix, verifies every expected PNG is decodable, non-empty, and same-dimension, proves all usable portraits differ from baseline above the watermark, preserves each signed direction, and distinguishes peak/plump from their nearest shipped controls in the intended mouth ROI.
-- [ ] **MOUTH-11**: Representative no-face outputs preserve extent and degrade safely, gallery/output routing remains an exact ignored bijection with renderer cases, and no generated output or gallery PNG is tracked.
+- [x] **MOUTH-09**: `BeautyExampleRenderer` includes positive/negative isolated public-facade cases for each new signed field plus isolated `lipPeakDefinition` and `lipPlump` cases, expanding the current 36-case × 7-fixture matrix to 44 cases and 308 ignored outputs if fixture inventory is unchanged.
+- [x] **MOUTH-10**: A v1.10-owned strict output helper derives the complete case/fixture matrix, verifies every expected PNG is decodable, non-empty, and same-dimension, proves all usable portraits differ from baseline above the watermark, preserves each signed direction, and distinguishes peak/plump from their nearest shipped controls in the intended mouth ROI.
+- [x] **MOUTH-11**: Representative no-face outputs preserve extent and degrade safely, gallery/output routing remains an exact ignored bijection with renderer cases, and no generated output or gallery PNG is tracked.
 
 ### Safety and Geometry-Slice Closeout
 
@@ -69,9 +69,9 @@
 | MOUTH-06 | Phase 38 | Complete |
 | MOUTH-07 | Phase 38 | Complete |
 | MOUTH-08 | Phase 38 | Complete |
-| MOUTH-09 | Phase 39 | Pending |
-| MOUTH-10 | Phase 39 | Pending |
-| MOUTH-11 | Phase 39 | Pending |
+| MOUTH-09 | Phase 39 | Complete |
+| MOUTH-10 | Phase 39 | Complete |
+| MOUTH-11 | Phase 39 | Complete |
 | MOUTH-12 | Phase 40 | Pending |
 | MOUTH-13 | Phase 40 | Pending |
 | MOUTH-14 | Phase 40 | Pending |

@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.10
 milestone_name: Mouth Remaining Geometry Controls
 status: executing
-stopped_at: Completed 39-02-PLAN.md
-last_updated: "2026-07-14T08:37:00.000Z"
-last_activity: 2026-07-14 -- Phase 39 strict 308-output evidence complete
+stopped_at: Completed Phase 39
+last_updated: "2026-07-14T08:47:00.000Z"
+last_activity: 2026-07-14 -- Phase 39 verified complete; Phase 40 next
 progress:
   total_phases: 3
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 7
-  completed_plans: 6
-  percent: 33
+  completed_plans: 7
+  percent: 67
 ---
 
 # Project State
@@ -21,14 +21,22 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-14)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 39 — Public-Facade Mouth Geometry Output Evidence
+**Current focus:** Phase 40 — Mouth Geometry Safety and Ledger Closeout
 
 ## Current Position
 
-Phase: 39 (Public-Facade Mouth Geometry Output Evidence) — READY
-Plan: 3 of 3
-Status: Ready to execute
-Last activity: 2026-07-14 -- Phase 39 strict 308-output evidence complete
+Phase: 40 (Mouth Geometry Safety and Ledger Closeout) — PLANNED
+Plan: 0 of TBD
+Status: Ready to plan
+Last activity: 2026-07-14 -- Phase 39 verified complete; Phase 40 next
+
+### Phase 39 Public-Facade Mouth Geometry Output Evidence Result
+
+- Eight isolated cases extend the renderer to exactly 44; focused regression passes 11/11 and full SwiftPM passes 260/260.
+- Fresh strict evidence passes 308/308 decoded same-dimension outputs, 48 visibility, 18 signed-direction, 12 peak-independence, 18 plump-independence, and 8/8 no-face no-ops.
+- Gallery publication produced exactly 308 ignored, untracked regular PNGs through the hardened duplicate-free descriptor-safe bijection.
+- Standard review is clean after bounding JPEG fixture dimensions; ASVS L1 records `threats_open: 0`; MOUTH-09 through MOUTH-11 are complete.
+- All five new rows and branch-level `嘴唇` remain unpromoted; final caps, exhaustive safety/boundaries, and exact promotion remain Phase 40.
 
 ### Phase 38 Public Contract and Lip-Support Geometry Result
 
@@ -36,7 +44,7 @@ Last activity: 2026-07-14 -- Phase 39 strict 308-output evidence complete
 - Optional coarse `innerLips` availability and default-empty private upper/lower/inner supports preserve outer-only face usability and the unchanged public/raw-geometry boundary.
 - Eight independently eligible mouth geometry emissions route through provisional `0.25` caps, exact reused `0.5`, provider-owned sanitization, and an exact fourteen-removal convergence bound.
 - Fresh evidence passed 152/152 focused and 259/259 full SwiftPM tests; the 21-file standard code review is clean and ASVS L1 records `threats_open: 0`.
-- MOUTH-01 through MOUTH-08 are complete. Saved output/ROI, final caps, exhaustive safety, product-row promotion, and milestone completion remain Phase 39/40 work.
+- MOUTH-01 through MOUTH-08 are complete; Phase 39 now supplies saved output/ROI evidence. Final caps, exhaustive safety, product-row promotion, and milestone completion remain Phase 40 work.
 
 ### Phase 36 Public-Facade Output Evidence Result
 
@@ -65,7 +73,7 @@ Last activity: 2026-07-14 -- Phase 39 strict 308-output evidence complete
 - Exactly `大小`, `宽度`, and `微笑` are implemented; branch-level `嘴唇` remains partial.
 - Final audit passed 11/11 requirements, 11/11 integration checks, and 5/5 flows; no device/commercial/packaging/launch-readiness claim.
 
-Last activity: 2026-07-13
+Last activity: 2026-07-14
 
 ## Performance Metrics
 

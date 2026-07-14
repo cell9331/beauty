@@ -1,9 +1,9 @@
 ---
 phase: 39
 slug: public-facade-mouth-geometry-output-evidence
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: complete
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-07-14
 ---
 
@@ -32,17 +32,17 @@ created: 2026-07-14
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 39-01-01 | 01 | 1 | MOUTH-09 | T-39-01 | Exact isolated public cases cannot bypass the facade or alias another field | contract | `swift test --package-path BeautySDK --filter BeautyRendererOutputRegressionTests` | ✅ | ⬜ pending |
-| 39-01-02 | 01 | 1 | MOUTH-11 | T-39-02 | Representative no-face output preserves extent and aggregate-only diagnostics | integration | `swift test --package-path BeautySDK --filter BeautyRendererOutputRegressionTests` | ✅ | ⬜ pending |
-| 39-02-01 | 02 | 2 | MOUTH-10, MOUTH-11 | T-39-03 | Untrusted image/output files are bounded, strictly decoded, and cannot satisfy stale or watermark-only evidence | helper | `python3 check_mouth_remaining_renderer_outputs.py --self-test` | ❌ W0 | ⬜ pending |
-| 39-02-02 | 02 | 2 | MOUTH-09..11 | T-39-03 | Acceptance uses frozen ROI/floors on a fresh exact matrix | end-to-end | guarded renderer build/run plus strict helper | ❌ W0 | ⬜ pending |
-| 39-03-01 | 03 | 3 | MOUTH-11 | T-39-04 | Gallery routes are exact, descriptor-anchored, ignored, and untracked | integration | gallery self-test, one publication, exact 308 read-only count/bijection checks | ✅ | ⬜ pending |
-| 39-03-02 | 03 | 3 | MOUTH-09..11 | T-39-01..05 | Final claims match fresh evidence and Phase 40 promotion owners remain untouched | regression/structural | focused/full tests, strict helper, containment, scope and diff gates | ✅ | ⬜ pending |
+| 39-01-01 | 01 | 1 | MOUTH-09 | T-39-01 | Exact isolated public cases cannot bypass the facade or alias another field | contract | `swift test --package-path BeautySDK --filter BeautyRendererOutputRegressionTests` | ✅ | ✅ 11/11 |
+| 39-01-02 | 01 | 1 | MOUTH-11 | T-39-02 | Representative no-face output preserves extent and aggregate-only diagnostics | integration | `swift test --package-path BeautySDK --filter BeautyRendererOutputRegressionTests` | ✅ | ✅ 11/11 |
+| 39-02-01 | 02 | 2 | MOUTH-10, MOUTH-11 | T-39-03 | Untrusted image/output files are bounded, strictly decoded, and cannot satisfy stale or watermark-only evidence | helper | `python3 check_mouth_remaining_renderer_outputs.py --self-test` | ✅ | ✅ passed |
+| 39-02-02 | 02 | 2 | MOUTH-09..11 | T-39-03 | Acceptance uses frozen ROI/floors on a fresh exact matrix | end-to-end | guarded renderer build/run plus strict helper | ✅ | ✅ 308/308 |
+| 39-03-01 | 03 | 3 | MOUTH-11 | T-39-04 | Gallery routes are exact, descriptor-anchored, ignored, and untracked | integration | gallery self-test, one publication, exact 308 read-only count/bijection checks | ✅ | ✅ 308 |
+| 39-03-02 | 03 | 3 | MOUTH-09..11 | T-39-01..05 | Final claims match fresh evidence and Phase 40 promotion owners remain untouched | regression/structural | focused/full tests, strict helper, containment, scope and diff gates | ✅ | ✅ passed |
 
 ## Wave 0 Requirements
 
-- [ ] `check_mouth_remaining_renderer_outputs.py` — Phase-owned self-contained strict matrix/ROI/no-face helper with deterministic self-tests.
-- [ ] `39-MOUTH-OUTPUT-EVIDENCE.md` — aggregate-only observed calibration and accepting-run record.
+- [x] `check_mouth_remaining_renderer_outputs.py` — Phase-owned self-contained strict matrix/ROI/no-face helper with deterministic self-tests.
+- [x] `39-MOUTH-OUTPUT-EVIDENCE.md` — aggregate-only observed calibration and accepting-run record.
 
 Existing SwiftPM targets, committed fixtures, renderer, gallery generator, and regression suite cover every other dependency; no new framework or package is required.
 
@@ -52,11 +52,11 @@ All Phase 39 requirements have automated public-facade, decoded-output, directio
 
 ## Validation Sign-Off
 
-- [ ] All tasks have automated verification.
-- [ ] Sampling continuity: no three consecutive tasks lack automated verification.
-- [ ] Wave 0 helper/evidence dependencies exist and pass.
+- [x] All tasks have automated verification.
+- [x] Sampling continuity: no three consecutive tasks lack automated verification.
+- [x] Wave 0 helper/evidence dependencies exist and pass.
 - [x] No watch-mode flags.
-- [ ] Focused feedback latency stays below 60 seconds.
-- [ ] `nyquist_compliant: true` set only after the final accepting rerun.
+- [x] Focused feedback latency stays below 60 seconds.
+- [x] `nyquist_compliant: true` set only after the final accepting rerun.
 
-**Approval:** approved 2026-07-14 for planning; final sign-off pending execution evidence.
+**Approval:** final sign-off 2026-07-14 after 11/11 focused, 260/260 full, 308/308 strict output, and 308-file gallery evidence.

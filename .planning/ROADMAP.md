@@ -21,7 +21,7 @@
 ## Phases
 
 - [x] **Phase 38: Public Contract and Lip-Support Geometry** — Add five compatible public controls and independently eligible whole-mouth/upper/lower lip geometry through the existing facade pipeline.
-- [ ] **Phase 39: Public-Facade Mouth Geometry Output Evidence** — Prove all five controls through isolated public-facade output, strict helper checks, and ignored gallery containment.
+- [x] **Phase 39: Public-Facade Mouth Geometry Output Evidence** — Prove all five controls through isolated public-facade output, strict helper checks, and ignored gallery containment.
 - [ ] **Phase 40: Mouth Geometry Safety and Ledger Closeout** — Finalize caps, exhaustive degradation/conflict behavior, fail-closed boundaries, and exact five-row promotion without claiming `白牙` or whole-branch completion.
 
 ## Phase Details
@@ -63,7 +63,7 @@
 
 - [x] `39-01-PLAN.md` — Exact eight-case public renderer contract and representative no-face facade evidence.
 - [x] `39-02-PLAN.md` — Self-contained strict helper, non-circular calibration, and 308-output visibility/direction/independence evidence.
-- [ ] `39-03-PLAN.md` — Safe ignored gallery publication, evidence-owner synchronization, review/security/verification, and Phase 40 handoff.
+- [x] `39-03-PLAN.md` — Safe ignored gallery publication, evidence-owner synchronization, review/security/verification, and Phase 40 handoff.
 
 ### Phase 40: Mouth Geometry Safety and Ledger Closeout
 
@@ -85,7 +85,7 @@
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
 | 38. Public Contract and Lip-Support Geometry | 4/4 | Complete | 2026-07-14 |
-| 39. Public-Facade Mouth Geometry Output Evidence | 2/3 | In Progress |  |
+| 39. Public-Facade Mouth Geometry Output Evidence | 3/3 | Complete | 2026-07-14 |
 | 40. Mouth Geometry Safety and Ledger Closeout | 0/TBD | Not started | - |
 
 ## Backlog
