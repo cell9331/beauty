@@ -33,7 +33,7 @@
 | Status | active |
 | Scope | Execute v1.9 Phases 35-37 autonomously, then audit, archive, tag, and clean up the milestone. |
 | Requirements | NOSE-01 through NOSE-14 and DOC-01. |
-| Current step | Phase 36 is complete at 3/3 plans with `36-VERIFICATION.md`; Phase 37 safety/boundary/branch closeout is next but not started. |
+| Current step | Phase 37 smart-discuss/research/planning is complete at 4 sequential plans with checker verification passed; execute `37-01` through `37-04` next. |
 | Verification | Per-phase focused/full SwiftPM, renderer/helper, security, review, Nyquist, and milestone-audit gates defined by ROADMAP and REQUIREMENTS. |
 
 ## 4. Completed

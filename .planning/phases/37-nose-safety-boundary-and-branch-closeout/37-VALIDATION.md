@@ -39,15 +39,14 @@ created: 2026-07-14
 | 37-01-03 | 01 | 1 | NOSE-11 | T37-03 | No-face results preserve extent and redact geometry | facade | `swift test --package-path BeautySDK --filter BeautyEngineGeometryFacadeTests` | ✅ | ⬜ pending |
 | 37-02-01 | 02 | 2 | NOSE-12 | T37-04 | Every retained field counted/scaled once | unit/integration | `swift test --package-path BeautySDK --filter CombinedEffectSafetyTests && swift test --package-path BeautySDK --filter GeometryConflictResolverTests` | ✅ | ⬜ pending |
 | 37-02-02 | 02 | 2 | NOSE-11, NOSE-12 | T37-04 | Final effective strengths equal final emissions | integration | `swift test --package-path BeautySDK --filter MissingLandmarkDegradationTests && swift test --package-path BeautySDK --filter NoseWarpProviderTests && swift test --package-path BeautySDK --filter MouthWarpProviderTests` | ✅ | ⬜ pending |
-| 37-03-01 | 03 | 3 | NOSE-13 | T37-01 through T37-08 | ASVS L1, HIGH blocking, fail-closed active-source scan | security | Phase-owned boundary script/self-test or explicit classified commands in `37-SECURITY.md` | ❌ W0 | ⬜ pending |
+| 37-03-01 | 03 | 3 | NOSE-13 | T37-01 through T37-08 | ASVS L1, HIGH blocking, fail-closed active-source scan | security | Phase-owned boundary script with default and `--allow-promotion` self-tests/live modes | task-produced in 37-03 | ⬜ pending |
 | 37-03-02 | 03 | 3 | NOSE-13 | T37-05 | Exact public facade and ignored-artifact regression | runtime/output | Full SwiftPM plus renderer build/run and Phase 36 helper self-test/live run | ✅ | ⬜ pending |
 | 37-04-01 | 04 | 4 | NOSE-14 | T37-06 | Promotion changes exactly two rows then one SDK-core branch | contract scan | Exact ledger/matrix/README status and evidence-reference scans | ✅ | ⬜ pending |
 | 37-04-02 | 04 | 4 | DOC-01 | T37-07 | Current owners agree without audit/readiness overclaim | documentation/lifecycle | Requirement/status/non-claim/current-owner scans plus `git diff --check` | ✅ | ⬜ pending |
 
 ## Wave 0 Requirements
 
-- Existing SwiftPM/XCTest and Python helper infrastructure covers runtime behavior.
-- Plan 37-03 must either create an owned fail-closed boundary-check script with self-tests or record explicit classified commands that distinguish matches, no matches, and command errors. This is the only missing validation reference and must be completed before its security task can pass.
+Existing SwiftPM/XCTest and Python helper infrastructure covers all requirements; no Wave 0 install or test stub is missing. The boundary checker is an explicit Plan 37-03 task-produced artifact, not a pre-plan dependency.
 
 ## Manual-Only Verifications
 
@@ -68,7 +67,7 @@ All in-scope phase behaviors have automated verification. Subjective naturalness
 
 - [x] All planned task families have an automated command or explicit Wave 0 dependency.
 - [x] Sampling continuity permits no implementation task without a focused automated check.
-- [x] Wave 0 identifies the only missing owned boundary-check reference.
+- [x] Wave 0 has no missing framework, fixture, or test reference.
 - [x] No watch-mode flags are used.
 - [x] Focused feedback latency is bounded to one task.
 - [x] `nyquist_compliant: true` is set in frontmatter.
