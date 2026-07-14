@@ -338,6 +338,57 @@ final class NoseWarpProviderTests: XCTestCase {
         XCTAssertEqual(result.skipReason, "nose_inputs_missing")
     }
 
+    func testNOSE11SixFieldEmissionEligibilityAndSiblingIsolationMatrix() {
+        typealias EffectivePath = WritableKeyPath<BeautyEffectiveStrengths, Float>
+        typealias EmissionPath = KeyPath<NoseWarpFieldEmissions, [WarpControlPoint]>
+        struct Row {
+            let name: String
+            let value: Float
+            let effective: EffectivePath
+            let emission: EmissionPath
+            let unavailableFace: FaceGeometry
+            let siblingEffective: EffectivePath
+            let siblingEmission: EmissionPath
+            let siblingValue: Float
+        }
+
+        let rows: [Row] = [
+            Row(name: "noseSlim", value: 0.35, effective: \.noseSlim, emission: \.noseSlim, unavailableFace: .onePointLegacyNose, siblingEffective: \.noseRootNarrowing, siblingEmission: \.noseRootNarrowing, siblingValue: 0.25),
+            Row(name: "noseWingSlim", value: 0.35, effective: \.noseWingSlim, emission: \.noseWingSlim, unavailableFace: .missingLegacyNose, siblingEffective: \.noseRootNarrowing, siblingEmission: \.noseRootNarrowing, siblingValue: 0.25),
+            Row(name: "noseTipSize positive", value: 0.30, effective: \.noseTipSize, emission: \.noseTipSize, unavailableFace: .missingLegacyNose, siblingEffective: \.noseRootNarrowing, siblingEmission: \.noseRootNarrowing, siblingValue: 0.25),
+            Row(name: "noseTipSize negative", value: -0.30, effective: \.noseTipSize, emission: \.noseTipSize, unavailableFace: .missingLegacyNose, siblingEffective: \.noseRootNarrowing, siblingEmission: \.noseRootNarrowing, siblingValue: 0.25),
+            Row(name: "noseBridge", value: 0.30, effective: \.noseBridge, emission: \.noseBridge, unavailableFace: .missingLegacyNose, siblingEffective: \.noseRootNarrowing, siblingEmission: \.noseRootNarrowing, siblingValue: 0.25),
+            Row(name: "noseRootNarrowing", value: 0.25, effective: \.noseRootNarrowing, emission: \.noseRootNarrowing, unavailableFace: .onePointNoseRoot, siblingEffective: \.noseTipLift, siblingEmission: \.noseTipLift, siblingValue: 0.25),
+            Row(name: "noseTipLift", value: 0.25, effective: \.noseTipLift, emission: \.noseTipLift, unavailableFace: .onePointNoseTip, siblingEffective: \.noseRootNarrowing, siblingEmission: \.noseRootNarrowing, siblingValue: 0.25),
+        ]
+        let provider = NoseWarpProvider()
+
+        for row in rows {
+            var zero = BeautyEffectiveStrengths()
+            zero[keyPath: row.effective] = 0
+            let zeroEmissions = provider.fieldEmissions(face: .fixture, strengths: zero)
+            XCTAssertTrue(zeroEmissions[keyPath: row.emission].isEmpty, "zero \(row.name)")
+            XCTAssertTrue(zeroEmissions.points.isEmpty, "zero \(row.name)")
+            XCTAssertNil(provider.makeControlPoints(face: .fixture, strengths: zero).skipReason, "zero \(row.name)")
+
+            var eligible = BeautyEffectiveStrengths()
+            eligible[keyPath: row.effective] = row.value
+            let eligibleEmissions = provider.fieldEmissions(face: .fixture, strengths: eligible)
+            XCTAssertFalse(eligibleEmissions[keyPath: row.emission].isEmpty, "eligible \(row.name)")
+            XCTAssertEqual(eligibleEmissions.sanitizing(eligible)[keyPath: row.effective], row.value, "eligible \(row.name)")
+
+            var unavailable = eligible
+            unavailable[keyPath: row.siblingEffective] = row.siblingValue
+            let unavailableEmissions = provider.fieldEmissions(face: row.unavailableFace, strengths: unavailable)
+            let sanitized = unavailableEmissions.sanitizing(unavailable)
+            XCTAssertTrue(unavailableEmissions[keyPath: row.emission].isEmpty, "unavailable/provider-empty \(row.name)")
+            XCTAssertEqual(sanitized[keyPath: row.effective], 0, "unavailable/provider-empty \(row.name)")
+            XCTAssertFalse(unavailableEmissions[keyPath: row.siblingEmission].isEmpty, "sibling \(row.name)")
+            XCTAssertEqual(sanitized[keyPath: row.siblingEffective], row.siblingValue, "sibling \(row.name)")
+            XCTAssertFalse(unavailableEmissions.points.isEmpty, "sibling dispatch \(row.name)")
+        }
+    }
+
     private func strengths(
         noseSlim: Float = 0,
         noseWingSlim: Float = 0,

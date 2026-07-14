@@ -165,6 +165,152 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         assertRedacted(reused)
     }
 
+    func testNOSE11SixFieldZeroNoFaceMissingProviderEmptyStaleAndReusedMatrix() {
+        typealias ParameterPath = WritableKeyPath<BeautyParameters, Float>
+        typealias EffectivePath = WritableKeyPath<BeautyEffectiveStrengths, Float>
+        typealias EmissionPath = KeyPath<NoseWarpFieldEmissions, [WarpControlPoint]>
+        struct Row {
+            let name: String
+            let request: Float
+            let parameter: ParameterPath
+            let effective: EffectivePath
+            let emission: EmissionPath
+            let reused: Float
+            let unavailableFace: FaceGeometry
+            let siblingParameter: ParameterPath
+            let siblingEffective: EffectivePath
+            let siblingEmission: EmissionPath
+        }
+
+        let rows: [Row] = [
+            Row(name: "noseSlim", request: 1, parameter: \.noseSlim, effective: \.noseSlim, emission: \.noseSlim, reused: 0.175, unavailableFace: .onePointLegacyNose, siblingParameter: \.noseRootNarrowing, siblingEffective: \.noseRootNarrowing, siblingEmission: \.noseRootNarrowing),
+            Row(name: "noseWingSlim", request: 1, parameter: \.noseWingSlim, effective: \.noseWingSlim, emission: \.noseWingSlim, reused: 0.175, unavailableFace: .missingLegacyNose, siblingParameter: \.noseRootNarrowing, siblingEffective: \.noseRootNarrowing, siblingEmission: \.noseRootNarrowing),
+            Row(name: "noseTipSize positive", request: 1, parameter: \.noseTipSize, effective: \.noseTipSize, emission: \.noseTipSize, reused: 0.15, unavailableFace: .missingLegacyNose, siblingParameter: \.noseRootNarrowing, siblingEffective: \.noseRootNarrowing, siblingEmission: \.noseRootNarrowing),
+            Row(name: "noseTipSize negative", request: -1, parameter: \.noseTipSize, effective: \.noseTipSize, emission: \.noseTipSize, reused: -0.15, unavailableFace: .missingLegacyNose, siblingParameter: \.noseRootNarrowing, siblingEffective: \.noseRootNarrowing, siblingEmission: \.noseRootNarrowing),
+            Row(name: "noseBridge", request: 1, parameter: \.noseBridge, effective: \.noseBridge, emission: \.noseBridge, reused: 0.15, unavailableFace: .missingLegacyNose, siblingParameter: \.noseRootNarrowing, siblingEffective: \.noseRootNarrowing, siblingEmission: \.noseRootNarrowing),
+            Row(name: "noseRootNarrowing", request: 1, parameter: \.noseRootNarrowing, effective: \.noseRootNarrowing, emission: \.noseRootNarrowing, reused: 0.125, unavailableFace: .onePointNoseRoot, siblingParameter: \.noseTipLift, siblingEffective: \.noseTipLift, siblingEmission: \.noseTipLift),
+            Row(name: "noseTipLift", request: 1, parameter: \.noseTipLift, effective: \.noseTipLift, emission: \.noseTipLift, reused: 0.125, unavailableFace: .onePointNoseTip, siblingParameter: \.noseRootNarrowing, siblingEffective: \.noseRootNarrowing, siblingEmission: \.noseRootNarrowing),
+        ]
+        let provider = NoseWarpProvider()
+
+        for row in rows {
+            var zeroParameters = BeautyParameters()
+            zeroParameters[keyPath: row.parameter] = 0
+            let zero = BeautyEffectResolver.resolve(parameters: zeroParameters, faceGeometry: .fixture)
+            XCTAssertFalse(zero.activeDomains.contains(.nose), "zero \(row.name)")
+            XCTAssertFalse(zero.skippedDomains.contains(.nose), "zero \(row.name)")
+            XCTAssertEqual(zero.effectiveStrengths[keyPath: row.effective], 0, "zero \(row.name)")
+            XCTAssertTrue(provider.fieldEmissions(face: .fixture, strengths: zero.effectiveStrengths)[keyPath: row.emission].isEmpty, "zero \(row.name)")
+            XCTAssertNil(zero.metrics["beauty.effects.geometryPointCount"], "zero \(row.name)")
+            XCTAssertEqual(zero.metrics["beauty.effects.cappedCount"], 0, "zero \(row.name)")
+            XCTAssertNil(zero.metrics["beauty.effects.weakenedCount"], "zero \(row.name)")
+            XCTAssertFalse(zero.warnings.contains { $0.code == "nose_inputs_missing" }, "zero \(row.name)")
+
+            var requested = BeautyParameters()
+            requested[keyPath: row.parameter] = row.request
+            let noFace = BeautyEffectResolver.resolve(parameters: requested, faceGeometry: nil)
+            XCTAssertFalse(noFace.activeDomains.contains(.nose), "no-face \(row.name)")
+            XCTAssertTrue(noFace.skippedDomains.contains(.nose), "no-face \(row.name)")
+            XCTAssertEqual(noFace.effectiveStrengths[keyPath: row.effective], 0, "no-face \(row.name)")
+            XCTAssertNil(noFace.metrics["beauty.effects.geometryPointCount"], "no-face \(row.name)")
+            XCTAssertTrue(noFace.warnings.contains { $0.code == "face_effects_skipped_no_face" }, "no-face \(row.name)")
+
+            var unavailableParameters = requested
+            unavailableParameters[keyPath: row.siblingParameter] = 1
+            let unavailable = BeautyEffectResolver.resolve(
+                parameters: unavailableParameters,
+                faceGeometry: row.unavailableFace
+            )
+            let unavailableEmissions = provider.fieldEmissions(
+                face: row.unavailableFace,
+                strengths: unavailable.effectiveStrengths
+            )
+            XCTAssertEqual(unavailable.effectiveStrengths[keyPath: row.effective], 0, "missing/provider-empty \(row.name)")
+            XCTAssertTrue(unavailableEmissions[keyPath: row.emission].isEmpty, "missing/provider-empty \(row.name)")
+            XCTAssertGreaterThan(abs(unavailable.effectiveStrengths[keyPath: row.siblingEffective]), 0, "sibling \(row.name)")
+            XCTAssertFalse(unavailableEmissions[keyPath: row.siblingEmission].isEmpty, "sibling \(row.name)")
+            XCTAssertTrue(unavailable.activeDomains.contains(.nose), "sibling \(row.name)")
+            XCTAssertFalse(unavailable.skippedDomains.contains(.nose), "sibling \(row.name)")
+            XCTAssertFalse(unavailable.warnings.contains { $0.code == "nose_inputs_missing" }, "sibling \(row.name)")
+            XCTAssertNil(unavailable.metrics["beauty.effects.weakenedCount"], "missing/provider-empty \(row.name)")
+            XCTAssertNil(unavailable.metrics["beauty.effects.geometryStrengthScale"], "missing/provider-empty \(row.name)")
+            XCTAssertEqual(
+                unavailable.metrics["beauty.effects.geometryPointCount"],
+                Double(unavailableEmissions.points.count),
+                "dispatch \(row.name)"
+            )
+
+            let stale = BeautyEffectResolver.resolve(parameters: requested, faceGeometry: .stale)
+            XCTAssertEqual(stale.effectiveStrengths[keyPath: row.effective], 0, "stale \(row.name)")
+            XCTAssertTrue(stale.skippedDomains.contains(.nose), "stale \(row.name)")
+            XCTAssertTrue(provider.fieldEmissions(face: .stale, strengths: stale.effectiveStrengths)[keyPath: row.emission].isEmpty, "stale \(row.name)")
+
+            let reused = BeautyEffectResolver.resolve(parameters: requested, faceGeometry: .reused)
+            XCTAssertEqual(reused.effectiveStrengths[keyPath: row.effective], row.reused, accuracy: 0.0001, "reused \(row.name)")
+            XCTAssertTrue(reused.activeDomains.contains(.nose), "reused \(row.name)")
+            XCTAssertFalse(provider.fieldEmissions(face: .reused, strengths: reused.effectiveStrengths)[keyPath: row.emission].isEmpty, "reused \(row.name)")
+            XCTAssertEqual(reused.metrics["beauty.effects.reusedGeometryScale"], 0.5, "reused \(row.name)")
+
+            for plan in [zero, noFace, unavailable, stale, reused] {
+                assertRedacted(plan)
+            }
+        }
+    }
+
+    func testNOSE11FreshReusedStaleAndValidUnavailableTransitionsDoNotCarryPriorWork() {
+        let allFields = BeautyParameters(
+            noseSlim: 1,
+            noseWingSlim: 1,
+            noseTipSize: -1,
+            noseBridge: 1,
+            noseRootNarrowing: 1,
+            noseTipLift: 1
+        )
+        let provider = NoseWarpProvider()
+        let fresh = BeautyEffectResolver.resolve(parameters: allFields, faceGeometry: .fixture)
+        let reused = BeautyEffectResolver.resolve(parameters: allFields, faceGeometry: .reused)
+        let stale = BeautyEffectResolver.resolve(parameters: allFields, faceGeometry: .stale)
+        let freshEmissions = provider.fieldEmissions(face: .fixture, strengths: fresh.effectiveStrengths)
+        let reusedEmissions = provider.fieldEmissions(face: .reused, strengths: reused.effectiveStrengths)
+        let staleEmissions = provider.fieldEmissions(face: .stale, strengths: stale.effectiveStrengths)
+
+        XCTAssertFalse(freshEmissions.points.isEmpty)
+        XCTAssertFalse(reusedEmissions.points.isEmpty)
+        XCTAssertNotEqual(freshEmissions.points, reusedEmissions.points)
+        XCTAssertTrue(staleEmissions.points.isEmpty)
+        assertNoseStrengthsAreZero(stale)
+        XCTAssertEqual(reused.effectiveStrengths.noseSlim, 0.175, accuracy: 0.0001)
+        XCTAssertEqual(reused.effectiveStrengths.noseWingSlim, 0.175, accuracy: 0.0001)
+        XCTAssertEqual(reused.effectiveStrengths.noseTipSize, -0.15, accuracy: 0.0001)
+        XCTAssertEqual(reused.effectiveStrengths.noseBridge, 0.15, accuracy: 0.0001)
+        XCTAssertEqual(reused.effectiveStrengths.noseRootNarrowing, 0.125, accuracy: 0.0001)
+        XCTAssertEqual(reused.effectiveStrengths.noseTipLift, 0.125, accuracy: 0.0001)
+
+        let transitions: [(String, BeautyParameters, FaceGeometry, KeyPath<BeautyEffectiveStrengths, Float>, KeyPath<NoseWarpFieldEmissions, [WarpControlPoint]>)] = [
+            ("noseSlim", BeautyParameters(noseSlim: 1, noseRootNarrowing: 1), .onePointLegacyNose, \.noseSlim, \.noseSlim),
+            ("noseWingSlim", BeautyParameters(noseWingSlim: 1, noseRootNarrowing: 1), .missingLegacyNose, \.noseWingSlim, \.noseWingSlim),
+            ("noseTipSize positive", BeautyParameters(noseTipSize: 1, noseRootNarrowing: 1), .missingLegacyNose, \.noseTipSize, \.noseTipSize),
+            ("noseTipSize negative", BeautyParameters(noseTipSize: -1, noseRootNarrowing: 1), .missingLegacyNose, \.noseTipSize, \.noseTipSize),
+            ("noseBridge", BeautyParameters(noseBridge: 1, noseRootNarrowing: 1), .missingLegacyNose, \.noseBridge, \.noseBridge),
+            ("noseRootNarrowing", BeautyParameters(noseRootNarrowing: 1, noseTipLift: 1), .onePointNoseRoot, \.noseRootNarrowing, \.noseRootNarrowing),
+            ("noseTipLift", BeautyParameters(noseRootNarrowing: 1, noseTipLift: 1), .onePointNoseTip, \.noseTipLift, \.noseTipLift),
+        ]
+        for (name, parameters, destinationFace, effective, emission) in transitions {
+            let valid = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)
+            let destination = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: destinationFace)
+            let validEmission = provider.fieldEmissions(face: .fixture, strengths: valid.effectiveStrengths)[keyPath: emission]
+            let destinationEmissions = provider.fieldEmissions(face: destinationFace, strengths: destination.effectiveStrengths)
+
+            XCTAssertFalse(validEmission.isEmpty, "valid \(name)")
+            XCTAssertEqual(destination.effectiveStrengths[keyPath: effective], 0, "destination \(name)")
+            XCTAssertTrue(destinationEmissions[keyPath: emission].isEmpty, "destination \(name)")
+            XCTAssertFalse(destinationEmissions.points.isEmpty, "supported sibling \(name)")
+            XCTAssertNotEqual(validEmission, destinationEmissions[keyPath: emission], "no carryover \(name)")
+            assertRedacted(valid)
+            assertRedacted(destination)
+        }
+    }
+
     func testPhase35NOSE06InvalidIndependentSupportFailsClosedAndSafeDomainsContinue() {
         let cases: [(FaceGeometry, BeautyParameters, KeyPath<BeautyEffectiveStrengths, Float>)] = [
             (.onePointNoseRoot, BeautyParameters(brightness: 0.2, noseRootNarrowing: 1, filterId: "soft_clean", filterIntensity: 0.5), \.noseRootNarrowing),
@@ -884,7 +1030,7 @@ final class MissingLandmarkDegradationTests: XCTestCase {
             Array(plan.metrics.keys)
         ).joined(separator: " ")
 
-        for forbidden in ["land" + "mark", "control point", "control" + "Point", "bounding", "VNFace" + "Observation", "/private" + "/var", "image" + " bytes", "SI" + "MD", "[0."] {
+        for forbidden in ["land" + "mark", "control point", "control" + "Point", "bounding", "VNFace" + "Observation", "/private" + "/var", "image" + " bytes", "SI" + "MD", "[0.", "coordinate", "support", "path", "detector", "Face" + "Geometry", "NoseWarp" + "Provider"] {
             XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)", file: file, line: line)
         }
     }

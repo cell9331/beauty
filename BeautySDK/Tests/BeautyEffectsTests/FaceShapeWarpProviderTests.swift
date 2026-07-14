@@ -292,6 +292,28 @@ extension FaceGeometry {
         noseTip: []
     )
 
+    static let missingLegacyNose = FaceGeometry(
+        bounds: fixture.bounds,
+        faceContour: fixture.faceContour,
+        leftEye: fixture.leftEye,
+        rightEye: fixture.rightEye,
+        nose: [],
+        noseRoot: fixture.noseRoot,
+        noseTip: fixture.noseTip,
+        outerLips: fixture.outerLips
+    )
+
+    static let onePointLegacyNose = FaceGeometry(
+        bounds: fixture.bounds,
+        faceContour: fixture.faceContour,
+        leftEye: fixture.leftEye,
+        rightEye: fixture.rightEye,
+        nose: [SIMD2<Float>(0.50, 0.52)],
+        noseRoot: fixture.noseRoot,
+        noseTip: fixture.noseTip,
+        outerLips: fixture.outerLips
+    )
+
     static let onePointNoseRoot = replacingNoseRoot([fixture.noseRoot[0]])
 
     static let nonFiniteNoseRoot = replacingNoseRoot([
