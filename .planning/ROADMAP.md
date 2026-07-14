@@ -80,7 +80,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
-| 38. Public Contract and Lip-Support Geometry | 2/4 | In Progress|  |
+| 38. Public Contract and Lip-Support Geometry | 3/4 | In Progress|  |
 | 39. Public-Facade Mouth Geometry Output Evidence | 0/TBD | Not started | - |
 | 40. Mouth Geometry Safety and Ledger Closeout | 0/TBD | Not started | - |
 
