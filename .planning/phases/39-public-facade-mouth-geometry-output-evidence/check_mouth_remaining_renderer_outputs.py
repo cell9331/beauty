@@ -25,7 +25,7 @@ EXPECTED_FIXTURE_COUNT = 7
 EXPECTED_OUTPUT_COUNT = 308
 EXPECTED_PORTRAIT_COUNT = 6
 
-# Current fixtures are at most 675x900 and renderer PNGs are below 5 MiB. These
+# Current fixtures are at most 1728x2304 and renderer PNGs are below 5 MiB. These
 # ceilings leave deliberate headroom while bounding all untrusted PNG allocation.
 MAX_PNG_WIDTH = 4_096
 MAX_PNG_HEIGHT = 4_096
@@ -229,6 +229,13 @@ def read_jpeg_dimensions(path: Path, label: str) -> tuple[int, int]:
             if len(segment) < 5:
                 raise RendererOutputError(f"{label}: truncated JPEG SOF")
             height, width = struct.unpack(">HH", segment[1:5])
+            if width <= 0 or height <= 0:
+                raise RendererOutputError(f"{label}: invalid dimensions")
+            if width > MAX_PNG_WIDTH or height > MAX_PNG_HEIGHT:
+                raise RendererOutputError(
+                    f"{label}: dimensions {width}x{height} exceed "
+                    f"{MAX_PNG_WIDTH}x{MAX_PNG_HEIGHT} budget"
+                )
             return width, height
         offset += length
     raise RendererOutputError(f"{label}: missing JPEG dimensions")
@@ -716,6 +723,17 @@ def run_self_tests() -> None:
             "exceed 4096x4096 budget",
         )
 
+        oversized_jpeg = root / "oversized-dimensions.jpg"
+        oversized_jpeg.write_bytes(
+            b"\xff\xd8\xff\xc0\x00\x07\x08"
+            + struct.pack(">HH", 1, MAX_PNG_WIDTH + 1)
+        )
+        expect_error(
+            "oversized JPEG dimensions",
+            lambda: read_jpeg_dimensions(oversized_jpeg, "oversized JPEG"),
+            "exceed 4096x4096 budget",
+        )
+
         replaced_path = root / "replaced-after-fstat.png"
         opened_path = root / "opened-before-replacement.png"
         make_test_png(replaced_path)
@@ -772,7 +790,7 @@ def run_self_tests() -> None:
             raise AssertionError(f"no-face fallback mismatch: {no_face_metrics}")
 
     print(
-        "self-test passed: duplicate IDs/stems, missing/extra/corrupt/symlink outputs, bounded PNG decode, "
+        "self-test passed: duplicate IDs/stems, missing/extra/corrupt/symlink outputs, bounded PNG/JPEG decode, "
         "single-descriptor replacement/growth races, ROI/watermark rejection, 2048-pixel no-face fallback"
     )
 
