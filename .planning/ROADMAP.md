@@ -76,7 +76,7 @@
 
 **Requirements:** NOSE-10, NOSE-11, NOSE-12, NOSE-13, NOSE-14, DOC-01
 
-**Status:** Not started
+**Status:** In progress — Plan 37-01 complete
 
 **Success Criteria:**
 
@@ -96,7 +96,7 @@
 | --- | --- | --- | --- |
 | 35. Public Contract and Independent Geometry | 4/4 | Complete    | 2026-07-13 |
 | 36. Public-Facade Output Evidence | 3/3 | Complete    | 2026-07-14 |
-| 37. Nose Safety, Boundary, and Branch Closeout | 0/TBD | Not started | — |
+| 37. Nose Safety, Boundary, and Branch Closeout | 1/4 | In Progress|  |
 
 ## Backlog
 

@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.9
 milestone_name: Nose Remaining Tools and Branch Closeout
-status: planning
-stopped_at: Completed 36-03-PLAN.md
-last_updated: "2026-07-14T02:27:55.051Z"
-last_activity: 2026-07-14 -- Phase 37 planning complete
+status: executing
+stopped_at: Completed 37-01-PLAN.md
+last_updated: "2026-07-14T02:38:45.886Z"
+last_activity: 2026-07-14 -- Completed Plan 37-01 exact caps and six-field safety
 progress:
   total_phases: 3
   completed_phases: 2
-  total_plans: 7
-  completed_plans: 7
-  percent: 67
+  total_plans: 11
+  completed_plans: 8
+  percent: 73
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-13)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 36 complete; Phase 37 is next but not started
+**Current focus:** Phase 37 — nose-safety-boundary-and-branch-closeout
 
 ## Current Position
 
-Phase: 37
-Plan: Not started
-Status: Complete; do not transition Phase 37 until its planning workflow starts
-Last activity: 2026-07-14 -- Phase 37 planning complete
+Phase: 37 (nose-safety-boundary-and-branch-closeout) — EXECUTING
+Plan: 2 of 4
+Status: Ready to execute
+Last activity: 2026-07-14 -- Completed Plan 37-01 exact caps and six-field safety
 
 ### Phase 36 Public-Facade Output Evidence Result
 
@@ -156,6 +156,7 @@ Last activity: 2026-07-13
 | Phase 36 P01 | 3 min | 2 tasks | 2 files |
 | Phase 36 P02 | 10 min | 2 tasks | 2 files |
 | Phase 36 P03 | final evidence | 2 tasks | 10 files |
+| Phase 37 P01 | 9 min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -260,10 +261,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-13T09:30:00.000Z
-Stopped at: Completed 36-03-PLAN.md
+Last session: 2026-07-14T02:38:45.879Z
+Stopped at: Completed 37-01-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
 
-- Phase 37 planning is next; do not treat Phase 36 output evidence as final cap, exhaustive safety, or promotion evidence.
+- Execute Plan 37-02 next for exact combined-geometry convergence; promotion remains pending Plans 37-03 and 37-04.
