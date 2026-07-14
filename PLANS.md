@@ -26,9 +26,28 @@
 
 ## 3. Active
 
-No active plans. The repository is awaiting definition of the next milestone.
+No active plans. v1.10 is initialized and ready for Phase 38 discussion or planning.
 
 ## 4. Completed
+
+### C-2026-07-14-gsd-new-milestone-v1-10-mouth-remaining-geometry
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-14 |
+| Scope | Initialized v1.10 `Mouth Remaining Geometry Controls` through auto-mode scope resolution, focused project/platform research, testable requirements, and a continued three-phase roadmap. |
+| Files | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/research/{STACK,FEATURES,ARCHITECTURE,PITFALLS,SUMMARY}.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `PLANS.md` |
+| Requirements | Defined 17 requirements: MOUTH-01 through MOUTH-16 and DOC-01, mapped exactly once across Phases 38-40. |
+| Roadmap | Phase 38 `Public Contract and Lip-Support Geometry`; Phase 39 `Public-Facade Mouth Geometry Output Evidence`; Phase 40 `Mouth Geometry Safety and Ledger Closeout`. |
+| Verification | `state.milestone-switch` reports v1.10; `roadmap.analyze` parses 3 phases with no missing details; requirement/roadmap checks report 17 mapped, 17 unique, 0 unmapped, 0 duplicates; 15 success criteria; `init.new-milestone` reports v1.10 and Phase 38 next; Markdown placeholder and `git diff --check` scans pass. |
+| Build | Not run because this workflow changed planning Markdown only and no Swift/Xcode source or project configuration. |
+
+Outcome:
+
+- Auto-mode scope includes exactly the five remaining geometry rows: `上下`, `倾斜`, `左右`, `M唇`, and true `丰唇`; `白牙` remains a future segmentation/color-retouch slice and branch-level `嘴唇` remains partial.
+- The public-contract baseline proposes signed `mouthYPosition`, `mouthTilt`, and `mouthXPosition` plus positive-only `lipPeakDefinition` and `lipPlump`, with exact 33-to-38 stored-field compatibility requirements.
+- Research retains the existing Swift/Vision/unified-warp/facade stack, adds no dependency or UI scope, and records Apple Vision outer/inner-lip support as the package-internal geometry seam.
+- The workflow used inline research and roadmapping because the request did not authorize sub-agent delegation; `--auto` approved the scoped requirements and roadmap gates.
 
 ### C-2026-07-14-repository-media-exclusion
 
