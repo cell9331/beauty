@@ -1173,6 +1173,50 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         }
     }
 
+    func testMOUTH14MissingInnerFieldsAreExcludedFromExactCombinedEvidenceAndDispatch() {
+        let parameters = BeautyParameters(
+            faceSlim: 1,
+            eyeSize: 1,
+            noseSlim: 1,
+            noseWingSlim: 1,
+            noseTipSize: -1,
+            noseBridge: 1,
+            noseRootNarrowing: 1,
+            noseTipLift: 1,
+            mouthSize: -1,
+            mouthWidth: 1,
+            smile: 1,
+            mouthYPosition: -1,
+            mouthTilt: 1,
+            mouthXPosition: -1,
+            lipPeakDefinition: 1,
+            lipPlump: 1
+        )
+        let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .missingInnerLips)
+        let retainedTotal: Float = 0.60 + 0.45 + 0.35 + 0.35 + 0.30 + 0.30 + 0.25 + 0.25 +
+            0.35 + 0.35 + 0.50 + 0.25 + 0.25 + 0.25
+        let expectedScale: Float = 1 / retainedTotal
+
+        XCTAssertEqual(retainedTotal, 4.80, accuracy: 0.000001)
+        XCTAssertEqual(plan.metrics["beauty.effects.weakenedCount"], 14)
+        XCTAssertEqual(plan.metrics["beauty.effects.geometryStrengthScale"] ?? 0, Double(expectedScale), accuracy: 0.000001)
+        XCTAssertEqual(plan.warnings.filter { $0.code == "combined_geometry_weakened" }.count, 1)
+        XCTAssertEqual(plan.effectiveStrengths.lipPeakDefinition, 0)
+        XCTAssertEqual(plan.effectiveStrengths.lipPlump, 0)
+        XCTAssertEqual(plan.effectiveStrengths.mouthYPosition, -0.25 * expectedScale, accuracy: 0.000001)
+        XCTAssertEqual(plan.effectiveStrengths.mouthTilt, 0.25 * expectedScale, accuracy: 0.000001)
+        XCTAssertEqual(plan.effectiveStrengths.mouthXPosition, -0.25 * expectedScale, accuracy: 0.000001)
+        XCTAssertTrue(plan.activeDomains.isSuperset(of: [.faceShape, .eyes, .nose, .mouth]))
+
+        let emissions = MouthWarpProvider().fieldEmissions(face: .missingInnerLips, strengths: plan.effectiveStrengths)
+        XCTAssertFalse(emissions.mouthSize.isEmpty)
+        XCTAssertFalse(emissions.mouthYPosition.isEmpty)
+        XCTAssertTrue(emissions.lipPeakDefinition.isEmpty)
+        XCTAssertTrue(emissions.lipPlump.isEmpty)
+        XCTAssertEqual(emissions.sanitizing(plan.effectiveStrengths), plan.effectiveStrengths)
+        assertRedacted(plan)
+    }
+
     func testPhase38MOUTH08ProviderEmptyTinyFieldIsRemovedFromFinalEvidence() {
         let parameters = BeautyParameters(mouthYPosition: Float.ulpOfOne * 2)
         let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)

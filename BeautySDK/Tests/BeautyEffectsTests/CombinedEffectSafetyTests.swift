@@ -303,7 +303,7 @@ final class CombinedEffectSafetyTests: XCTestCase {
         }
     }
 
-    func testMOUTH08EveryMouthGeometryFieldWeakensWithFaceEyeNoseAndPreservesDirection() {
+    func testMOUTH14EveryMouthDirectionUsesExactOnceOnlyFaceEyeSixNoseScaling() {
         let cases: [(BeautyParameters, KeyPath<BeautyEffectiveStrengths, Float>, Float)] = [
             (BeautyParameters(mouthSize: 1, lipColor: 1), \.mouthSize, 0.35),
             (BeautyParameters(mouthSize: -1, lipColor: 1), \.mouthSize, -0.35),
@@ -334,15 +334,24 @@ final class CombinedEffectSafetyTests: XCTestCase {
             let combined = BeautyEffectResolver.resolve(parameters: combinedParameters, faceGeometry: .fixture)
             let normalValue = normal.effectiveStrengths[keyPath: keyPath]
             let combinedValue = combined.effectiveStrengths[keyPath: keyPath]
+            let retainedTotal = BeautySafetyCaps.faceSlim +
+                BeautySafetyCaps.eyeSize +
+                BeautySafetyCaps.noseSlim +
+                BeautySafetyCaps.noseWingSlim +
+                BeautySafetyCaps.noseTipSize +
+                BeautySafetyCaps.noseBridge +
+                BeautySafetyCaps.noseRootNarrowing +
+                BeautySafetyCaps.noseTipLift +
+                abs(expected)
+            let expectedScale: Float = 1 / retainedTotal
 
             XCTAssertEqual(normalValue, expected, accuracy: 0.0001)
-            XCTAssertGreaterThan(abs(combinedValue), 0)
-            XCTAssertLessThan(abs(combinedValue), abs(normalValue))
+            XCTAssertEqual(combinedValue, expected * expectedScale, accuracy: 0.000001)
             XCTAssertEqual(combinedValue.sign, normalValue.sign)
             XCTAssertEqual(combined.effectiveStrengths.lipColor, 0.50, accuracy: 0.0001)
             XCTAssertEqual(combined.warnings.filter { $0.code == "combined_geometry_weakened" }.count, 1)
-            XCTAssertLessThan(combined.metrics["beauty.effects.geometryStrengthScale"] ?? 1, 1)
-            XCTAssertGreaterThan(combined.metrics["beauty.effects.weakenedCount"] ?? 0, 0)
+            XCTAssertEqual(combined.metrics["beauty.effects.geometryStrengthScale"] ?? 0, Double(expectedScale), accuracy: 0.000001)
+            XCTAssertEqual(combined.metrics["beauty.effects.weakenedCount"], 9)
             XCTAssertTrue(combined.activeDomains.isSuperset(of: [.faceShape, .eyes, .nose, .mouth, .lipColor]))
             assertCombinedMetadataRedacted(combined)
         }

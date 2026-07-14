@@ -101,6 +101,45 @@ final class GeometryConflictResolverTests: XCTestCase {
         XCTAssertEqual(resolved.warnings.map(\.code), ["combined_geometry_weakened"])
     }
 
+    func testMOUTH14FaceEyeSixNoseEightMouthFieldsShareOneExactScale() {
+        let strengths = self.strengths(
+            faceSlim: 1,
+            eyeSize: 1,
+            noseSlim: 1,
+            noseWingSlim: 1,
+            noseTipSize: -1,
+            noseBridge: 1,
+            noseRootNarrowing: 1,
+            noseTipLift: 1,
+            mouthSize: -1,
+            mouthWidth: 1,
+            smile: 1,
+            mouthYPosition: -1,
+            mouthTilt: 1,
+            mouthXPosition: -1,
+            lipPeakDefinition: 1,
+            lipPlump: 1
+        )
+        let resolved = GeometryConflictResolver().resolve(strengths: strengths)
+        let retainedTotal: Float = 0.60 + 0.45 + 0.35 + 0.35 + 0.30 + 0.30 + 0.25 + 0.25 +
+            0.35 + 0.35 + 0.50 + 0.25 + 0.25 + 0.25 + 0.25 + 0.25
+        let expectedScale: Float = 1 / retainedTotal
+
+        XCTAssertEqual(retainedTotal, 5.30, accuracy: 0.000001)
+        XCTAssertEqual(resolved.metrics["beauty.effects.weakenedCount"], 16)
+        XCTAssertEqual(resolved.metrics["beauty.effects.geometryStrengthScale"] ?? 0, Double(expectedScale), accuracy: 0.000001)
+        XCTAssertEqual(resolved.warnings.filter { $0.code == "combined_geometry_weakened" }.count, 1)
+        XCTAssertEqual(resolved.strengths.faceSlim, 0.60 * expectedScale, accuracy: 0.000001)
+        XCTAssertEqual(resolved.strengths.eyeSize, 0.45 * expectedScale, accuracy: 0.000001)
+        XCTAssertEqual(resolved.strengths.noseTipSize, -0.30 * expectedScale, accuracy: 0.000001)
+        XCTAssertEqual(resolved.strengths.mouthSize, -0.35 * expectedScale, accuracy: 0.000001)
+        XCTAssertEqual(resolved.strengths.mouthYPosition, -0.25 * expectedScale, accuracy: 0.000001)
+        XCTAssertEqual(resolved.strengths.mouthTilt, 0.25 * expectedScale, accuracy: 0.000001)
+        XCTAssertEqual(resolved.strengths.mouthXPosition, -0.25 * expectedScale, accuracy: 0.000001)
+        XCTAssertEqual(resolved.strengths.lipPeakDefinition, 0.25 * expectedScale, accuracy: 0.000001)
+        XCTAssertEqual(resolved.strengths.lipPlump, 0.25 * expectedScale, accuracy: 0.000001)
+    }
+
     func testNOSE12AllSixNoseFieldsContributeExactlyOnceWithEveryGeometryDomain() {
         let independent = strengths(
             faceSlim: 1,
