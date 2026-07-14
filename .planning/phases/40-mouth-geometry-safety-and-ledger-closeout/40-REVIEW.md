@@ -3,7 +3,8 @@ phase: 40-mouth-geometry-safety-and-ledger-closeout
 status: findings
 depth: standard
 reviewed: 2026-07-14
-reviewed_commit: 18cdcac
+reviewed_commit: 7afcba1
+iteration: 2
 files_reviewed: 7
 findings:
   critical: 0
@@ -12,51 +13,68 @@ findings:
   total: 3
 ---
 
-# Phase 40 Code, Test, and Boundary Review
+# Phase 40 Code, Test, and Boundary Re-Review
 
 ## Scope
 
-Standard-depth review covered the Phase 40 cap, resolver, degradation, conflict, combined-effect, public-facade, and boundary-checker changes requested for review. Relevant production sources were read to compare test expectations with cap normalization, per-field provider sanitization, freshness policy, retained-baseline convergence, warning/metric redaction, and final dispatch behavior.
+The re-review inspected fix commit `7afcba1` against WR-01 through WR-03 and reran Python compilation, the checker self-test, and the live pre-promotion checker. The six Swift test files remain sound against the current production cap, support, freshness, convergence, redaction, and public-facade contracts; the remaining findings are confined to the promotion boundary checker.
 
 ## Findings
 
-### WR-01 — Boundary self-test does not test the boundary checker
+### WR-01 — Adversarial self-test coverage remains incomplete
 
 **Severity:** Warning  
-**File:** `check_mouth_geometry_boundaries.py:222-238`
+**File:** `check_mouth_geometry_boundaries.py:286-418`
 
-`--self-test` asserts three values returned by `expected_row_statuses` and only the generic command helper's exit-1/exit-2 behavior. It never invokes `check_required_paths`, `check_manifest`, `check_inventory`, `check_source_classification`, `check_imports`, `check_public_geometry`, `check_remote_and_commercial`, `check_promotion`, `check_closeout_owners`, or `check_artifacts`. Consequently, a regression that makes any one of those checks accept a known-bad fixture still produces `SELF-TEST PASS`. This does not satisfy the Plan 40-03 contract for a positive fixture plus one deterministic failure per boundary, classified-match/no-match/error coverage, path escape, artifact, owner, and lifecycle failures.
+The fix materially improves the old one-line self-test and now exercises positive live checks plus mutations for dependency, inventory, classification, imports, one multiline raw-geometry form, network, one same-line diagnostic, duplicate promotion, manifest, aggregate stale closeout, artifact, command, and path behavior. However, the reported `29/29 ... owner, lifecycle ... checks` still overstates what is executed:
 
-**Required remediation:** Build deterministic temporary fixtures and exercise every check through at least one passing case and one targeted failing mutation. Include explicit search states (classified match, no match, command error, missing tool), escaping symlink/path containment, tracked/staged generated artifacts, contradictory or missing promotion rows, each required owner, and premature lifecycle artifacts/claims. Report an exact passed/total self-test count and return nonzero when any fixture fails.
+- Lifecycle coverage at lines 388-389 calls only `LIFECYCLE_CLAIM.search(...)`; it never mutates a repository fixture and invokes `check_lifecycle_and_archive` to prove audit artifact, tag, archive, and claim rejection.
+- Owner/traceability coverage invokes one fixture with many missing files/tokens, so it does not prove a one-failure-per-owner or one-failure-per-traceability-row guard.
+- The commercial scanner, missing promotion row, multiline diagnostic form, plural raw-geometry identifiers, and archive/worktree mutation have no targeted negative.
 
-### WR-02 — Promotion and closeout checks can accept contradictory or stale owners
+This remains below Plan 40-03's deterministic positive plus one-failure-per-boundary contract and can let the self-test stay green while a boundary regresses.
 
-**Severity:** Warning  
-**File:** `check_mouth_geometry_boundaries.py:156-206`
+**Required remediation:** Add isolated mutations that call the actual check for each lifecycle condition, every promotion/current owner and requirement row, commercial source, multiline diagnostic, plural/raw support identifier, missing row, archive mutation, and worktree mutation. The self-test total must count each observed check result, not a regex classifier proxy.
 
-The promotion guard checks only whether each desired row substring occurs somewhere. A ledger containing both the desired row and a duplicate contradictory row passes; the three branch owners likewise need only contain one matching substring. In allow-promotion mode, field/phase tokens may be scattered across any of the three concatenated owner files, so two stale owners can pass when the third contains all tokens. Root/planning owner checks similarly search tokens anywhere in whole files rather than proving a co-located Phase 40 owner section, exact requirement traceability, or exact row uniqueness. The checker also has no lifecycle nonclaim check, so a premature v1.10 audit artifact or `audit passed` / `archived` / `tagged` claim is not rejected despite the plan's explicit boundary.
-
-**Required remediation:** Parse ledger and matrix rows structurally; require one unique row per expected label, the exact five promoted statuses, `白牙: future`, and exact partial branch rows. Validate a Phase 40-scoped contract independently in every owner rather than across concatenated documents. Add exact requirement checklist/traceability checks and a lifecycle guard that rejects audit artifacts and audit/archive/tag/cleanup/readiness claims before the independent milestone lifecycle runs. Cover every condition with adversarial self-tests.
-
-### WR-03 — Compatibility, privacy, raw-geometry, and command checks are not fail-closed enough
+### WR-02 — Owner and lifecycle guards still admit stale or multiline overclaims
 
 **Severity:** Warning  
-**File:** `check_mouth_geometry_boundaries.py:69-147,209-219`
+**File:** `check_mouth_geometry_boundaries.py:42-45,187-195,230-270`
 
-The compatibility check proves only `38` declarations, `37` `Float` declarations, one `filterId`, and the five new names. Replacing a legacy field with an arbitrary `Float` preserves all four predicates and passes despite compatibility drift. The public-geometry scan is a same-line regex with a narrow token list; public or SPI declarations containing generic landmark/support/bounds types on another line are not covered. There is no active-source diagnostic leakage scan, privacy-manifest disposition check, or archive/worktree immutability check. Finally, `command_lines` treats exit `1` as a clean result for every command, including `git ls-files` and `git diff`, although exit `1` is only the expected no-match state for `rg`; an operational Git exit `1` can therefore be interpreted as artifact cleanliness.
+Exact ledger/matrix row uniqueness, per-file branch tokens, and exact requirement traceability are improved. The remaining closeout-owner tokens are nevertheless searched anywhere in each full historical file. They are not required to be co-located in a bounded v1.10/Phase 40 owner section, so stale facts from unrelated sections can satisfy the current owner contract.
 
-**Required remediation:** Freeze the exact 38-field public inventory (or a canonical exact legacy-plus-new set), use typed command wrappers that accept exit `1` only for searches, and require Git commands to exit `0`. Restore broad public/SPI raw-geometry and diagnostic-leak scans with explicit classifiers, privacy-manifest disposition, and archive/worktree checks. Add failing fixtures for each bypass.
+The lifecycle claim regex is also line-bound because it is compiled without `DOTALL` and the `rg` call does not use multiline mode. A normal Markdown form such as a `## v1.10` heading followed on the next line by `- Milestone audit passed` is not matched. This bypass was reproduced directly: same-line `v1.10 audit passed` matched, while the heading-plus-bullet form returned false. The archive guard checks `.planning/milestones` only and does not cover `.worktrees`, despite the requested archive/worktree immutability boundary.
 
-## Reviewed Test Semantics
+**Required remediation:** Validate every current owner inside a bounded v1.10/Phase 40 section, make lifecycle matching newline-safe (or parse the scoped sections), and include `.worktrees` status/diff containment. Add direct adversarial fixtures through `check_closeout_owners` and `check_lifecycle_and_archive`.
 
-No additional defect was found in the six Swift test files in scope. Their Phase 40 additions agree with the current production contract: exact-cap inputs do not increment cap evidence, overflow increments once, all thirteen mouth directions preserve sign under one computed scale, missing inner support removes only peak/plump work, reused scaling precedes independent conflict weakening, stale/no-face removes all eight mouth geometry strengths, safe domains continue, and facade diagnostics remain aggregate/redacted. The boundary checker findings above block a clean review because the checker can over-authorize promotion even while the XCTest evidence is valid.
+### WR-03 — Raw-geometry and diagnostic scans retain simple syntax bypasses
+
+**Severity:** Warning  
+**File:** `check_mouth_geometry_boundaries.py:149-175`
+
+The exact 38-field inventory, typed search/Git exit handling, privacy-manifest disposition, and generated-artifact Git checks are fixed. The raw-geometry regex still uses exact word-boundary alternatives `landmark`, `support`, and `bounds`; public identifiers such as `landmarks` and `supports` are not matched unless another listed token happens to appear. Direct regex probes confirmed both `public let landmarks: MouthLandmarks` and `public let supports: MouthSupports` evade the scan.
+
+The diagnostic scan has no `-U`/multiline mode and uses `.*?`, so a common formatted Swift diagnostic with `message:` on one line and `outerLips coordinate` on the next is not detected. The self-test covers only the same-line form and therefore does not expose the bypass.
+
+**Required remediation:** Match singular/plural and identifier variants (`landmark`, `landmarks`, `support`, `supports`, `bounds`, and compound names) and make diagnostic scanning multiline-safe with bounded context. Add one accepted classified testing-SPI fixture and failing plural/multiline fixtures.
+
+## Fixes Verified
+
+- Exact ordered 38-field inventory rejects replacement of a legacy field.
+- `search_lines` and `git_lines` now separate search exit `1` from Git failure; the self-test proves Git exit `1` is blocking.
+- Promotion rows are structurally parsed and duplicate contradictory rows fail.
+- Matrix and parent branch rows require uniqueness; each of the three branch owners independently requires its promotion tokens.
+- Phase 40 requirement traceability requires one exact `Phase 40 / Complete` row per requirement.
+- Privacy-manifest disposition and same-line diagnostic checks were added.
+- Generated artifact checks require successful Git commands and retain tracked/staged/ignore guards.
 
 ## Evidence Run
 
-- `python3 -m py_compile .../check_mouth_geometry_boundaries.py`: passed.
-- `python3 .../check_mouth_geometry_boundaries.py --self-test`: exited zero but emitted only one aggregate self-test pass line, confirming WR-01.
-- Pre-promotion live checker: 10/10 reported pass; this result is not accepted as a promotion-quality gate until WR-01 through WR-03 are remediated.
+- Python compilation: passed.
+- Checker self-test: reported 29/29 passed.
+- Live pre-promotion checker: reported 13/13 passed.
+- Independent probes: plural `landmarks`/`supports`, multiline diagnostic, and multiline lifecycle claim forms were not matched, confirming the remaining findings.
 
 ## Verdict
 
-Findings. Three warnings remain in the fail-closed Phase 40 promotion boundary. Plan 40-04 and any owner-ledger promotion should remain blocked until fixes are applied and the review is rerun.
+Findings remain. Fix commit `7afcba1` closes substantial portions of all three warnings but does not fully remediate any of them. Plan 40-04 and owner-ledger promotion remain blocked pending a further checker hardening pass and clean re-review.
