@@ -32,11 +32,13 @@
 **Depends on**: Phase 37 and the shipped v1.8 mouth geometry baseline
 **Requirements**: MOUTH-01, MOUTH-02, MOUTH-03, MOUTH-04, MOUTH-05, MOUTH-06, MOUTH-07, MOUTH-08
 **Success Criteria** (what must be TRUE):
+
   1. Existing source-style initialization, 33-field JSON, and bundled presets remain neutral while hosts can round-trip exactly five new fields in a 38-field stored model.
   2. Hosts can request both directions of vertical position, tilt, and horizontal position and observe distinct bounded provider vectors rather than aliases of shipped mouth behavior.
   3. Hosts can request M-lip peak definition and true lip plumping and receive distinct local upper/lower lip geometry rather than mouth-size, smile, or lip-color behavior.
   4. Missing or malformed inner/upper/lower support removes only dependent peak/plump work; supported whole-mouth and shipped sibling controls remain eligible, finite, deterministic, and bounded.
   5. Any new field triggers the established public-facade geometry route, while effective strengths and per-field emissions agree and no raw lip support crosses package or diagnostic boundaries.
+
 **Plans**: 4 plans
 
 - [ ] `38-01-PLAN.md` — Public contract, compatibility, effective storage, and provisional caps.
@@ -50,11 +52,13 @@
 **Depends on**: Phase 38
 **Requirements**: MOUTH-09, MOUTH-10, MOUTH-11
 **Success Criteria** (what must be TRUE):
+
   1. Eight isolated public-facade cases cover both directions of all three signed controls plus independent peak-definition and plump controls, expanding the derived renderer matrix to 44 cases.
   2. A guarded clean run produces exactly 308 expected files for the current seven fixtures, and every file is decodable, non-empty, and dimension-preserving.
   3. Every usable portrait differs from baseline in a fixed mouth ROI above the watermark, and each signed pair differs from its opposite direction.
   4. Peak-definition and plump outputs differ from each other and from their nearest shipped size/smile/color controls, so neither new row borrows old evidence.
   5. Representative no-face output degrades safely, gallery routing is a duplicate-free bijection with renderer cases, and all generated output/gallery files remain ignored and untracked.
+
 **Plans**: TBD
 
 ### Phase 40: Mouth Geometry Safety and Ledger Closeout
@@ -63,18 +67,20 @@
 **Depends on**: Phase 39
 **Requirements**: MOUTH-12, MOUTH-13, MOUTH-14, MOUTH-15, MOUTH-16, DOC-01
 **Success Criteria** (what must be TRUE):
+
   1. All five new controls have evidence-backed exact caps, correct normalization/capped counts, and preserved signed or positive-only directionality.
   2. No-face, missing outer/inner support, provider-empty work, stale geometry, reused geometry at exact `0.5`, and transitions degrade only dependent mouth fields while safe siblings and color/filter domains continue.
   3. Combined face, eye, six-field nose, and eight-field mouth work converges on one provider-eligible retained set; exact totals, counts, scales, warnings, effective strengths, and emissions exclude unsupported work.
   4. Full tests and active-source scans prove raw geometry, public support types, internal imports, network/cloud, commercial paths, dependencies, compatibility, unclassified matches, and generated artifacts remain fail-closed.
   5. Exactly `上下`, `倾斜`, `左右`, `M唇`, and true `丰唇` become implemented; `白牙` remains future, branch-level `嘴唇` remains partial, and all current contract/planning owners agree without device/commercial/packaging/shipping/launch claims.
+
 **Plans**: TBD
 
 ## Progress
 
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
-| 38. Public Contract and Lip-Support Geometry | 0/TBD | Not started | - |
+| 38. Public Contract and Lip-Support Geometry | 2/4 | In Progress|  |
 | 39. Public-Facade Mouth Geometry Output Evidence | 0/TBD | Not started | - |
 | 40. Mouth Geometry Safety and Ledger Closeout | 0/TBD | Not started | - |
 
