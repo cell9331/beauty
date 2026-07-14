@@ -282,7 +282,7 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
         assertNoEyeSideOrRawGeometryDisclosure(result)
     }
 
-    func testNoseNoFaceRequestPreservesExtentSafeDomainsAndRedactedMetadata() throws {
+    func testNOSE11AllSixNoseFieldsNoFacePreserveExtentSafeDomainsAndRedactedMetadata() throws {
         let provider = SDKTestingFaceDetectionProvider([.noFace])
         let engine = try BeautyEngine(faceDetectionProvider: provider)
 
@@ -295,6 +295,8 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
                 noseWingSlim: 1,
                 noseTipSize: -1,
                 noseBridge: 1,
+                noseRootNarrowing: 1,
+                noseTipLift: 1,
                 filterId: "soft_clean",
                 filterIntensity: 0.5
             )
@@ -303,12 +305,21 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
         XCTAssertEqual(provider.invocationCount, 1)
         XCTAssertEqual(result.output.extent, Self.image.extent)
         XCTAssertEqual(result.detectionSummary?.availability, .noFace)
+        XCTAssertEqual(result.detectionSummary?.reasons, [.noFaceDetected])
+        XCTAssertEqual(result.detectionSummary?.faceCount, 0)
+        XCTAssertEqual(result.detectionSummary?.usedFaceCount, 0)
         XCTAssertEqual(result.metrics["beauty.detection.geometryRequired"], 1)
-        XCTAssertTrue((result.metrics["beauty.effects.activeCount"] ?? 0) >= 2)
+        XCTAssertEqual(result.metrics["beauty.detection.faceCount"], 0)
+        XCTAssertEqual(result.metrics["beauty.detection.usedFaceCount"], 0)
+        XCTAssertEqual(result.metrics["beauty.effects.activeCount"], 2)
         XCTAssertEqual(result.metrics["beauty.effects.skippedNoseDomains"], 1)
+        XCTAssertEqual(result.metrics["beauty.effects.cappedCount"], 6)
         XCTAssertNil(result.metrics["beauty.effects.geometryPointCount"])
-        XCTAssertTrue(result.warnings.contains { $0.code == "face_effects_skipped_no_face" })
+        XCTAssertEqual(result.warnings.filter { $0.code == "face_effects_skipped_no_face" }.count, 1)
+        XCTAssertEqual(result.warnings.filter { $0.code == "beauty_strength_capped" }.count, 1)
+        XCTAssertFalse(result.warnings.contains { $0.code == "nose_inputs_missing" })
         assertRedacted(result)
+        assertNoNoseFieldOrRawGeometryDisclosure(result)
     }
 
     private static let image = CIImage(color: CIColor(red: 0.35, green: 0.25, blue: 0.20, alpha: 1))
@@ -464,6 +475,25 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
         for term in [
             "left", "right", "eye side", "landmark", "coordinate", "bounding", "bounds",
             "control point", "path", "image bytes", "raw",
+        ] {
+            XCTAssertFalse(metadata.contains(term), "Unexpected sensitive term: \(term)", file: file, line: line)
+        }
+    }
+
+    private func assertNoNoseFieldOrRawGeometryDisclosure(
+        _ result: BeautyResult<CIImage>,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let metadata = (
+            result.warnings.map { "\($0.code) \($0.message)" } +
+            Array(result.metrics.keys) +
+            (result.detectionSummary?.reasons.map(\.rawValue) ?? [])
+        ).joined(separator: " ").lowercased()
+        for term in [
+            "noseroot", "nosetip", "support", "landmark", "coordinate", "bounding", "bounds",
+            "control point", "controlpoint", "path", "image bytes", "detector", "provider",
+            "facegeometry", "simd", "raw",
         ] {
             XCTAssertFalse(metadata.contains(term), "Unexpected sensitive term: \(term)", file: file, line: line)
         }
