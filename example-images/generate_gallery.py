@@ -20,6 +20,7 @@ RENDERER_SOURCE = REPO_ROOT / "BeautySDK" / "Sources" / "BeautyExampleRenderer" 
 STAGING_NAME = ".gallery-staging"
 QUARANTINE_NAME = ".gallery-quarantine"
 QUARANTINE_ENTRY = "previous"
+MAX_GALLERY_SOURCE_BYTES = 16 * 1_024 * 1_024
 
 CASE_GROUPS = {
     "skin": [
@@ -153,6 +154,15 @@ def _same_identity(left: os.stat_result, right: os.stat_result) -> bool:
     return left.st_dev == right.st_dev and left.st_ino == right.st_ino
 
 
+def _same_file_snapshot(left: os.stat_result, right: os.stat_result) -> bool:
+    return (
+        _same_identity(left, right)
+        and left.st_size == right.st_size
+        and left.st_mtime_ns == right.st_mtime_ns
+        and left.st_ctime_ns == right.st_ctime_ns
+    )
+
+
 def _require_entry_identity(parent_fd: int, name: str, opened_fd: int) -> None:
     try:
         entry = os.stat(name, dir_fd=parent_fd, follow_symlinks=False)
@@ -184,9 +194,18 @@ def _mkdir_open(name: str, parent_fd: int) -> int:
         os.mkdir(name, mode=0o755, dir_fd=parent_fd)
     except OSError as error:
         raise GalleryError(f"Unable to create fresh gallery directory: {name}") from error
-    opened = _open_directory(name, parent_fd=parent_fd)
-    _require_entry_identity(parent_fd, name, opened)
-    return opened
+    opened = None
+    try:
+        opened = _open_directory(name, parent_fd=parent_fd)
+        _require_entry_identity(parent_fd, name, opened)
+        return opened
+    except BaseException:
+        if opened is not None:
+            try:
+                os.close(opened)
+            except OSError:
+                pass
+        raise
 
 
 def _write_all(fd: int, data: bytes) -> None:
@@ -203,6 +222,9 @@ def _copy_regular_file(
     destination_name: str,
     source_fd: int,
     destination_fd: int,
+    *,
+    _after_fstat=None,
+    _after_copy_chunk=None,
 ) -> os.stat_result:
     source_flags = os.O_RDONLY | os.O_NOFOLLOW | getattr(os, "O_CLOEXEC", 0)
     destination_flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | getattr(os, "O_CLOEXEC", 0)
@@ -212,18 +234,37 @@ def _copy_regular_file(
         before = os.fstat(source)
         if not stat.S_ISREG(before.st_mode):
             raise GalleryError(f"Gallery source is not a regular file: {source_name}")
+        if before.st_size > MAX_GALLERY_SOURCE_BYTES:
+            raise GalleryError(
+                f"Gallery source exceeds {MAX_GALLERY_SOURCE_BYTES} byte budget: {source_name}"
+            )
+        if _after_fstat is not None:
+            _after_fstat()
+        precopy = os.fstat(source)
+        if precopy.st_size > MAX_GALLERY_SOURCE_BYTES:
+            raise GalleryError(
+                f"Gallery source exceeds {MAX_GALLERY_SOURCE_BYTES} byte budget: {source_name}"
+            )
+        if not _same_file_snapshot(before, precopy):
+            raise GalleryError(f"Gallery source changed while copying: {source_name}")
         destination = os.open(destination_name, destination_flags, 0o644, dir_fd=destination_fd)
         remaining = before.st_size
+        copied_chunks = 0
         while remaining:
             chunk = os.read(source, min(1024 * 1024, remaining))
             if not chunk:
                 raise GalleryError(f"Gallery source changed while copying: {source_name}")
             _write_all(destination, chunk)
             remaining -= len(chunk)
+            copied_chunks += 1
+            if _after_copy_chunk is not None:
+                _after_copy_chunk(copied_chunks)
         if os.read(source, 1):
-            raise GalleryError(f"Gallery source grew while copying: {source_name}")
+            raise GalleryError(
+                f"Gallery source grew beyond {MAX_GALLERY_SOURCE_BYTES} byte budget: {source_name}"
+            )
         after = os.fstat(source)
-        if not _same_identity(before, after) or before.st_size != after.st_size:
+        if not _same_file_snapshot(before, after):
             raise GalleryError(f"Gallery source changed while copying: {source_name}")
         return os.fstat(destination)
     except OSError as error:
@@ -241,6 +282,7 @@ def publish_gallery(
     *,
     repo_root: Path,
     _before_publish=None,
+    _after_source_chunk=None,
 ) -> None:
     """Build a fresh anchored tree and publish it atomically without traversing old trees.
 
@@ -264,18 +306,19 @@ def publish_gallery(
         descriptors.append(example_fd)
         _require_entry_identity(repo_fd, "example-images", example_fd)
         input_fd = _open_directory("input", parent_fd=example_fd)
+        descriptors.append(input_fd)
         output_fd = _open_directory("output", parent_fd=example_fd)
-        descriptors.extend((input_fd, output_fd))
+        descriptors.append(output_fd)
         _require_entry_identity(example_fd, "input", input_fd)
         _require_entry_identity(example_fd, "output", output_fd)
 
         try:
             gallery_fd = os.open("gallery", _directory_open_flags(), dir_fd=example_fd)
+            descriptors.append(gallery_fd)
         except OSError as error:
             if error.errno != errno.ENOENT:
                 raise GalleryError("Gallery path exists but is not a safe directory") from error
         if gallery_fd is not None:
-            descriptors.append(gallery_fd)
             _require_entry_identity(example_fd, "gallery", gallery_fd)
 
         _require_absent(example_fd, STAGING_NAME, "gallery staging slot")
@@ -301,7 +344,8 @@ def publish_gallery(
                     stem = _safe_component(fixture_stem, "fixture stem")
                     destination_name = f"{stem}.png"
                     destination_stat = _copy_regular_file(
-                        f"{stem}__{case_id}.png", destination_name, output_fd, case_fd
+                        f"{stem}__{case_id}.png", destination_name, output_fd, case_fd,
+                        _after_copy_chunk=_after_source_chunk,
                     )
                     created_files.append((case_fd, destination_name, destination_stat))
                     copied += 1
@@ -317,7 +361,7 @@ def publish_gallery(
             _require_entry_identity(directory_parent_fd, directory_name, directory_fd)
         for file_parent_fd, file_name, original in created_files:
             current = os.stat(file_name, dir_fd=file_parent_fd, follow_symlinks=False)
-            if not stat.S_ISREG(current.st_mode) or not _same_identity(original, current):
+            if not stat.S_ISREG(current.st_mode) or not _same_file_snapshot(original, current):
                 raise GalleryError(f"Gallery staging file changed before publication: {file_name}")
         if gallery_fd is not None:
             _require_entry_identity(example_fd, "gallery", gallery_fd)
@@ -428,11 +472,122 @@ def _make_test_repository(root: Path, *, old_gallery: bool = True) -> tuple[Path
     return repo, output
 
 
+def _open_descriptor_count() -> int:
+    return len(os.listdir("/dev/fd"))
+
+
 def run_self_tests() -> None:
     expect_gallery_error(
         "duplicate renderer IDs", lambda: validate_case_inventory(["only"], ["only", "only"]),
         "Duplicate renderer case IDs",
     )
+
+    with tempfile.TemporaryDirectory() as temporary:
+        repo, output = _make_test_repository(Path(temporary), old_gallery=False)
+        (output / "f__case.png").unlink()
+        output.rmdir()
+        before = _open_descriptor_count()
+        for _ in range(40):
+            expect_gallery_error(
+                "repeated missing output",
+                lambda: publish_gallery({"x": ["case"]}, ["f"], repo_root=repo),
+                "safe directory: output",
+            )
+        if _open_descriptor_count() != before:
+            raise AssertionError("missing-output failures leaked file descriptors")
+
+    with tempfile.TemporaryDirectory() as temporary:
+        parent = Path(temporary)
+        parent_fd = os.open(parent, _directory_open_flags())
+        original_require_entry_identity = _require_entry_identity
+        before = _open_descriptor_count()
+        try:
+            def reject_post_open_identity(_parent_fd: int, _name: str, _opened_fd: int) -> None:
+                raise GalleryError("forced post-open identity mismatch")
+
+            globals()["_require_entry_identity"] = reject_post_open_identity
+            for index in range(40):
+                expect_gallery_error(
+                    "repeated post-open identity mismatch",
+                    lambda index=index: _mkdir_open(f"created-{index}", parent_fd),
+                    "post-open identity mismatch",
+                )
+        finally:
+            globals()["_require_entry_identity"] = original_require_entry_identity
+            os.close(parent_fd)
+        if _open_descriptor_count() != before - 1:
+            raise AssertionError("post-open identity failures leaked file descriptors")
+
+    with tempfile.TemporaryDirectory() as temporary:
+        root = Path(temporary)
+        source_dir = root / "source"
+        destination_dir = root / "destination"
+        source_dir.mkdir()
+        destination_dir.mkdir()
+        oversized = source_dir / "oversized.png"
+        with oversized.open("wb") as source_file:
+            source_file.truncate(MAX_GALLERY_SOURCE_BYTES + 1)
+        source_fd = os.open(source_dir, _directory_open_flags())
+        destination_fd = os.open(destination_dir, _directory_open_flags())
+        try:
+            expect_gallery_error(
+                "sparse oversized source",
+                lambda: _copy_regular_file("oversized.png", "copy.png", source_fd, destination_fd),
+                f"exceeds {MAX_GALLERY_SOURCE_BYTES} byte budget",
+            )
+            if (destination_dir / "copy.png").exists():
+                raise AssertionError("oversized source created a gallery destination")
+
+            at_ceiling = source_dir / "at-ceiling.png"
+            with at_ceiling.open("wb") as source_file:
+                source_file.truncate(MAX_GALLERY_SOURCE_BYTES)
+
+            def grow_after_open() -> None:
+                with at_ceiling.open("r+b") as source_file:
+                    source_file.truncate(MAX_GALLERY_SOURCE_BYTES + 1)
+
+            expect_gallery_error(
+                "post-open source ceiling growth",
+                lambda: _copy_regular_file(
+                    "at-ceiling.png", "grown-copy.png", source_fd, destination_fd,
+                    _after_fstat=grow_after_open,
+                ),
+                f"exceeds {MAX_GALLERY_SOURCE_BYTES} byte budget",
+            )
+            if (destination_dir / "grown-copy.png").exists():
+                raise AssertionError("post-open oversized source created a gallery destination")
+        finally:
+            os.close(destination_fd)
+            os.close(source_fd)
+
+    with tempfile.TemporaryDirectory() as temporary:
+        repo, output = _make_test_repository(Path(temporary))
+        source = output / "f__case.png"
+        source.write_bytes(b"A" * (2 * 1_024 * 1_024))
+        mutated = False
+
+        def mutate_same_size_after_first_chunk(chunk_index: int) -> None:
+            nonlocal mutated
+            if chunk_index == 1 and not mutated:
+                writer = os.open(source, os.O_WRONLY | getattr(os, "O_CLOEXEC", 0))
+                try:
+                    os.pwrite(writer, b"B" * (1_024 * 1_024), 1_024 * 1_024)
+                finally:
+                    os.close(writer)
+                mutated = True
+
+        expect_gallery_error(
+            "same-size in-place source mutation",
+            lambda: publish_gallery(
+                {"x": ["case"]}, ["f"], repo_root=repo,
+                _after_source_chunk=mutate_same_size_after_first_chunk,
+            ),
+            "source changed while copying",
+        )
+        if not mutated:
+            raise AssertionError("same-size mutation hook did not run")
+        if (repo / "example-images" / "gallery" / "old.txt").read_text(encoding="utf-8") != "old gallery":
+            raise AssertionError("torn source copy changed the published gallery")
 
     with tempfile.TemporaryDirectory() as temporary:
         root = Path(temporary)
@@ -503,7 +658,8 @@ def run_self_tests() -> None:
                 displaced.rename(example)
 
     print(
-        "self-test passed: descriptor-relative staging/copy/publication, post-recreation "
+        "self-test passed: bounded leak-free descriptor acquisition, stable size-limited source copying, "
+        "descriptor-relative staging/copy/publication, post-recreation "
         "ancestor-swap containment, non-traversed old gallery, bounded quarantine, repeated-run "
         "fail-closed behavior, external survival, duplicate renderer IDs"
     )

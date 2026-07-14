@@ -30,7 +30,7 @@ Core rules:
 | R8 | Empty or zero-strength passes are skipped. | RenderGraph unit test. |
 | R9 | Device quality mode changes degrade predictably. | Mode matrix test. |
 | R10 | `reset()` clears detection, smoothing, transient textures, and resource transient state. | State machine test. |
-| R11 | Evidence-gallery publication is atomic and fail-closed; an incomplete staging slot or preserved prior-gallery quarantine blocks retry instead of being recursively cleaned. | Gallery self-test covers publication, ancestor swap, non-traversal, and repeated-run behavior. |
+| R11 | Evidence-gallery publication is atomic and fail-closed; acquisition failures release descriptors, each source copy has a 16 MiB work ceiling and stable-file check, and an incomplete staging slot or preserved prior-gallery quarantine blocks retry instead of being recursively cleaned. | Gallery self-test covers repeated acquisition failures, bounded mutation/growth rejection, publication, ancestor swap, non-traversal, and repeated-run behavior. |
 
 ## 3. Service-Level Targets
 

@@ -38,6 +38,22 @@
 
 ## 4. Completed
 
+### C-2026-07-14-phase-36-code-review-iteration-4-remediation
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-14 |
+| Scope | Closed Phase 36 iteration-4 warnings WR-04/WR-05/WR-06 without changing renderer cases or Phase 37 promotion owners. |
+| Security | Gallery acquisition registers descriptor ownership immediately, rejects source files above 16 MiB before destination creation, bounds copy reads, and rejects same-inode mutation through identity/size/mtime/ctime snapshot drift. |
+| Reliability | Repeated missing-output and post-open identity failures have stable descriptor counts; deterministic same-size torn-copy, sparse oversize, and post-open ceiling-growth races fail before publication. |
+| Verification | Gallery/helper self-tests, Python compilation, live 252-output helper, focused 10/10 renderer XCTest, and full 220/220 SwiftPM evidence are recorded in `36-REVIEW-FIX.md`. |
+
+Outcome:
+
+- Source acquisition and copy work are bounded to the strict helper's 16 MiB compressed-file ceiling.
+- Neither acquisition exceptions nor post-open identity failures leak descriptors across repeated library invocations.
+- A source or staged file must retain its descriptor identity, size, nanosecond modification time, and change time through atomic publication.
+
 ### C-2026-07-13-phase-36-code-review-iteration-3-remediation
 
 | Field | Value |

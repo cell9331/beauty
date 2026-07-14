@@ -99,6 +99,7 @@ Phase 28 face-shape privacy evidence recorded 2026-07-08:
 - A preexisting gallery is never enumerated, recursively deleted, or cleaned. It is moved intact to the single ignored `.gallery-quarantine/previous/` slot, preventing traversal of symlinks, mount points, or bind-mount-like nested directories.
 - Existing quarantine or staging state blocks another run. The generator does not claim cleanup; explicit operator handling is required before retry, and all gallery/quarantine/staging artifacts must remain ignored and untracked.
 - The Phase 36 PNG helper opens each PNG once with `O_NOFOLLOW`, bounds both `fstat` size and retained reads to 16 MiB plus one detection byte, and rejects same-file growth or excess without a pathname stat/read split.
+- Gallery source acquisition has the same 16 MiB compressed-file ceiling before destination creation. Copying stays descriptor-relative and bounded, and publication rejects identity, size, nanosecond modification-time, or change-time drift so a same-inode in-place source mutation cannot publish a torn file.
 
 ## 3. Trust Boundaries
 
