@@ -712,6 +712,130 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         }
     }
 
+    func testNOSE12AllSixRequestedFieldsConvergeWithProviderEmptyRootAndSupportedSiblings() {
+        let provider = NoseWarpProvider()
+        let retainedTotal = BeautySafetyCaps.faceSlim +
+            BeautySafetyCaps.eyeSize +
+            BeautySafetyCaps.noseSlim +
+            BeautySafetyCaps.noseWingSlim +
+            BeautySafetyCaps.noseTipSize +
+            BeautySafetyCaps.noseBridge +
+            BeautySafetyCaps.noseTipLift +
+            BeautySafetyCaps.mouthSize
+        let expectedScale = 1 / retainedTotal
+
+        XCTAssertEqual(retainedTotal, 2.95, accuracy: 0.000001)
+        for tipDirection: Float in [1, -1] {
+            let plan = BeautyEffectResolver.resolve(
+                parameters: BeautyParameters(
+                    faceSlim: 1,
+                    eyeSize: 1,
+                    noseSlim: 1,
+                    noseWingSlim: 1,
+                    noseTipSize: tipDirection,
+                    noseBridge: 1,
+                    noseRootNarrowing: 1,
+                    noseTipLift: 1,
+                    mouthSize: 1
+                ),
+                faceGeometry: phase37ProviderEmptyRootFace
+            )
+            let emissions = provider.fieldEmissions(
+                face: phase37ProviderEmptyRootFace,
+                strengths: plan.effectiveStrengths
+            )
+
+            XCTAssertEqual(plan.effectiveStrengths.faceSlim, BeautySafetyCaps.faceSlim * expectedScale, accuracy: 0.0000001)
+            XCTAssertEqual(plan.effectiveStrengths.eyeSize, BeautySafetyCaps.eyeSize * expectedScale, accuracy: 0.0000001)
+            XCTAssertEqual(plan.effectiveStrengths.noseSlim, BeautySafetyCaps.noseSlim * expectedScale, accuracy: 0.0000001)
+            XCTAssertEqual(plan.effectiveStrengths.noseWingSlim, BeautySafetyCaps.noseWingSlim * expectedScale, accuracy: 0.0000001)
+            XCTAssertEqual(plan.effectiveStrengths.noseTipSize, tipDirection * BeautySafetyCaps.noseTipSize * expectedScale, accuracy: 0.0000001)
+            XCTAssertEqual(plan.effectiveStrengths.noseBridge, BeautySafetyCaps.noseBridge * expectedScale, accuracy: 0.0000001)
+            XCTAssertEqual(plan.effectiveStrengths.noseRootNarrowing, 0)
+            XCTAssertEqual(plan.effectiveStrengths.noseTipLift, BeautySafetyCaps.noseTipLift * expectedScale, accuracy: 0.0000001)
+            XCTAssertEqual(plan.effectiveStrengths.mouthSize, BeautySafetyCaps.mouthSize * expectedScale, accuracy: 0.0000001)
+            XCTAssertEqual(plan.metrics["beauty.effects.weakenedCount"], 8)
+            XCTAssertEqual(
+                plan.metrics["beauty.effects.geometryStrengthScale"] ?? 0,
+                Double(expectedScale),
+                accuracy: 0.0000001
+            )
+            XCTAssertEqual(plan.warnings.filter { $0.code == "combined_geometry_weakened" }.count, 1)
+            XCTAssertTrue(plan.activeDomains.isSuperset(of: [.faceShape, .eyes, .nose, .mouth]))
+            XCTAssertFalse(plan.skippedDomains.contains(.nose))
+            XCTAssertFalse(plan.warnings.contains { $0.code == "nose_inputs_missing" })
+
+            XCTAssertFalse(emissions.noseSlim.isEmpty)
+            XCTAssertFalse(emissions.noseWingSlim.isEmpty)
+            XCTAssertFalse(emissions.noseTipSize.isEmpty)
+            XCTAssertFalse(emissions.noseBridge.isEmpty)
+            XCTAssertTrue(emissions.noseRootNarrowing.isEmpty)
+            XCTAssertFalse(emissions.noseTipLift.isEmpty)
+            XCTAssertEqual(
+                emissions.sanitizing(plan.effectiveStrengths),
+                plan.effectiveStrengths,
+                "Final effective strengths and final provider eligibility must converge."
+            )
+            XCTAssertFalse(
+                FaceShapeWarpProvider()
+                    .makeControlPoints(face: phase37ProviderEmptyRootFace, strengths: plan.effectiveStrengths)
+                    .points
+                    .isEmpty
+            )
+            XCTAssertFalse(
+                EyeWarpProvider()
+                    .makeControlPoints(face: phase37ProviderEmptyRootFace, strengths: plan.effectiveStrengths)
+                    .points
+                    .isEmpty
+            )
+            XCTAssertFalse(
+                MouthWarpProvider()
+                    .fieldEmissions(face: phase37ProviderEmptyRootFace, strengths: plan.effectiveStrengths)
+                    .mouthSize
+                    .isEmpty
+            )
+            assertRedacted(plan)
+        }
+    }
+
+    func testNOSE12ProviderEmptyOnlyNoseRequestIsRemovedFromConflictAndDomainEvidence() {
+        let retainedTotal = BeautySafetyCaps.faceSlim + BeautySafetyCaps.eyeSize + BeautySafetyCaps.mouthSize
+        let expectedScale = 1 / retainedTotal
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(
+                faceSlim: 1,
+                eyeSize: 1,
+                noseRootNarrowing: 1,
+                mouthSize: 1
+            ),
+            faceGeometry: phase37ProviderEmptyRootFace
+        )
+        let emissions = NoseWarpProvider().fieldEmissions(
+            face: phase37ProviderEmptyRootFace,
+            strengths: plan.effectiveStrengths
+        )
+
+        XCTAssertEqual(retainedTotal, 1.40, accuracy: 0.0000001)
+        XCTAssertEqual(plan.effectiveStrengths.noseRootNarrowing, 0)
+        XCTAssertTrue(emissions.points.isEmpty)
+        XCTAssertEqual(emissions.sanitizing(plan.effectiveStrengths), plan.effectiveStrengths)
+        XCTAssertEqual(plan.effectiveStrengths.faceSlim, BeautySafetyCaps.faceSlim * expectedScale, accuracy: 0.0000001)
+        XCTAssertEqual(plan.effectiveStrengths.eyeSize, BeautySafetyCaps.eyeSize * expectedScale, accuracy: 0.0000001)
+        XCTAssertEqual(plan.effectiveStrengths.mouthSize, BeautySafetyCaps.mouthSize * expectedScale, accuracy: 0.0000001)
+        XCTAssertEqual(plan.metrics["beauty.effects.weakenedCount"], 3)
+        XCTAssertEqual(
+            plan.metrics["beauty.effects.geometryStrengthScale"] ?? 0,
+            Double(expectedScale),
+            accuracy: 0.0000001
+        )
+        XCTAssertEqual(plan.warnings.filter { $0.code == "combined_geometry_weakened" }.count, 1)
+        XCTAssertEqual(plan.warnings.filter { $0.code == "nose_inputs_missing" }.count, 1)
+        XCTAssertFalse(plan.activeDomains.contains(.nose))
+        XCTAssertTrue(plan.skippedDomains.contains(.nose))
+        XCTAssertTrue(plan.activeDomains.isSuperset(of: [.faceShape, .eyes, .mouth]))
+        assertRedacted(plan)
+    }
+
     func testNoseGeometryProducesDeterministicProxyEvidenceAndCapMetadata() {
         let plan = BeautyEffectResolver.resolve(
             parameters: BeautyParameters(noseSlim: 1, noseTipSize: 1),
@@ -811,6 +935,22 @@ final class MissingLandmarkDegradationTests: XCTestCase {
             BeautySafetyCaps.noseBridge +
             BeautySafetyCaps.noseRootNarrowing +
             BeautySafetyCaps.noseTipLift
+    }
+
+    private var phase37ProviderEmptyRootFace: FaceGeometry {
+        FaceGeometry(
+            bounds: FaceGeometry.fixture.bounds,
+            faceContour: FaceGeometry.fixture.faceContour,
+            leftEye: FaceGeometry.fixture.leftEye,
+            rightEye: FaceGeometry.fixture.rightEye,
+            nose: FaceGeometry.fixture.nose,
+            noseRoot: [
+                SIMD2<Float>(0.49989995, 0.488),
+                SIMD2<Float>(0.50010005, 0.488)
+            ],
+            noseTip: FaceGeometry.fixture.noseTip,
+            outerLips: FaceGeometry.fixture.outerLips
+        )
     }
 
     func testReusedEyeGeometrySkipsEyesZerosStrengthsAndPreservesNonEyeReuseReduction() {
