@@ -30,6 +30,20 @@ No active plans. The repository is awaiting definition of the next milestone.
 
 ## 4. Completed
 
+### C-2026-07-14-repository-media-exclusion
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-14 |
+| Scope | Added repository-wide ignore rules for binary image, design, video, audio, font, 3D, and LUT assets while retaining text-based project manifests. |
+| History | Removed matching media blobs from the unpushed local Git history so the initial remote push does not carry obsolete binary payloads; local ignored source materials remain available in the working tree. |
+| Verification | Confirmed no matching media path is tracked or reachable from rewritten branches/tags, ignore checks cover existing local images, and repository object size was measured after garbage collection. |
+
+Outcome:
+
+- Image and creative media files remain local by default and cannot be accidentally added without an explicit force-add.
+- `Assets.xcassets/Contents.json` and other text manifests stay tracked so the Xcode project structure remains reproducible.
+
 ### C-2026-07-14-v1-9-autonomous-closeout
 
 | Field | Value |
