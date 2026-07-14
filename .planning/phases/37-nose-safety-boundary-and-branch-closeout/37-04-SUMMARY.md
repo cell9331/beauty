@@ -3,7 +3,7 @@ phase: 37
 plan: "04"
 status: complete
 completed: 2026-07-14
-requirements: [NOSE-14, DOC-01]
+requirements-completed: [NOSE-14, DOC-01]
 ---
 
 # Plan 37-04 Summary

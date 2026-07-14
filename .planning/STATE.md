@@ -2,8 +2,8 @@
 gsd_state_version: 1.0
 milestone: v1.9
 milestone_name: Nose Remaining Tools and Branch Closeout
-status: verifying
-stopped_at: Completed 37-04-PLAN.md; independent milestone audit next
+status: completing
+stopped_at: v1.9 milestone audit passed; completion/archive next
 last_updated: "2026-07-14T03:40:00+08:00"
 last_activity: 2026-07-14 -- Completed Phase 37 exact promotion and owner synchronization
 progress:
@@ -27,8 +27,8 @@ See: `.planning/PROJECT.md` (updated 2026-07-13)
 
 Phase: 37 (nose-safety-boundary-and-branch-closeout) — COMPLETE
 Plan: 4 of 4
-Status: Verified; independent milestone audit pending
-Last activity: 2026-07-14 -- Completed exact two-row/SDK-core promotion and 6/6 phase verification
+Status: Milestone audit passed; completion/archive next
+Last activity: 2026-07-14 -- Independent v1.9 audit passed 15/15 requirements, 12/12 integrations, and 5/5 flows
 
 ### Phase 36 Public-Facade Output Evidence Result
 

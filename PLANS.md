@@ -33,7 +33,7 @@
 | Status | active |
 | Scope | Execute v1.9 Phases 35-37 autonomously, then audit, archive, tag, and clean up the milestone. |
 | Requirements | NOSE-01 through NOSE-14 and DOC-01. |
-| Current step | Phases 35-37 are complete and verified; run the independent v1.9 milestone audit next. Archive, tag, and cleanup remain gated on an audit pass. |
+| Current step | Independent v1.9 audit passed 15/15 requirements, 12/12 integrations, and 5/5 flows; complete/archive/tag the milestone, then run configured cleanup. |
 | Verification | Per-phase focused/full SwiftPM, renderer/helper, security, review, Nyquist, and milestone-audit gates defined by ROADMAP and REQUIREMENTS. |
 
 ## 4. Completed
