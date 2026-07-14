@@ -82,7 +82,7 @@ Each task was committed atomically:
 - Provider-empty root with five emitting nose siblings: retained total `2.95`; count `8`; scale `1 / 2.95` (`~0.33898305`); root effective strength/emission are zero; all other selected domain providers emit; one combined warning.
 - Provider-empty root without a nose sibling: retained total `1.40`; count `3`; scale `1 / 1.40` (`~0.71428573`); `.nose` is skipped with one redacted `nose_inputs_missing`; face, eye, and mouth stay active; one combined warning.
 
-## Verification Evidence
+## Test Evidence
 
 - `NoseWarpProviderTests` - 16 tests, 0 failures.
 - `MouthWarpProviderTests` - 6 tests, 0 failures.
