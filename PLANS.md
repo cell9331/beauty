@@ -35,7 +35,7 @@
 | Started | 2026-07-14 |
 | Scope | Execute v1.10 Phases 38-40 from smart discussion through planning, implementation, verification, review, milestone audit, archive, tag, and cleanup. |
 | Source Request | `$gsd-autonomous --auto --from 38` |
-| Current Step | Phase 39 is verified complete; Phase 40 planning/execution is next. |
+| Current Step | Phase 40 has four verified plans; Plan 40-01 exact caps and eight-field degradation evidence is executing. |
 | Verification Policy | Each phase requires committed plans/summaries, focused and full SwiftPM evidence, phase VERIFICATION status `passed`, code review routing, exact requirement traceability, and lifecycle audit before completion. |
 
 Checklist:
@@ -45,7 +45,7 @@ Checklist:
 | Initialize autonomous run | `completed` | `init.milestone-op` reports v1.10, 3 phases, 0 complete; `roadmap.analyze` selects Phases 38-40 from requested start. |
 | Phase 38 | `completed` | Four plans complete; 152/152 focused and 259/259 full SwiftPM; clean 21-file review; `38-VERIFICATION.md` passed; `threats_open: 0`. |
 | Phase 39 | `completed` | Three plans complete; 11/11 focused, 260/260 full SwiftPM, 308/308 strict output, 96/96 portrait pairs, 8/8 no-face, 308 gallery, clean review, and `threats_open: 0`. |
-| Phase 40 | `planned` | Depends on Phase 39. |
+| Phase 40 | `active` | Context/research/patterns/validation and four dependency-ordered plans committed; Plan 40-01 executing. |
 | Lifecycle | `planned` | Audit → complete → cleanup after all phase gates pass. |
 
 Open Questions:
