@@ -23,6 +23,16 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
     public var eyeDistance: Float
     public var eyeYPosition: Float
     public var eyeTailLift: Float
+    public var eyeHeight: Float
+    public var eyeLength: Float
+    public var upperEyelidLift: Float
+    public var pupilSize: Float
+    public var gazeCorrection: Float
+    public var lowerEyelidDrop: Float
+    public var eyeTilt: Float
+    public var innerCornerOpen: Float
+    public var outerCornerOpen: Float
+    public var eyeSymmetry: Float
 
     public var noseSlim: Float
     public var noseWingSlim: Float
@@ -66,6 +76,16 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         case eyeDistance
         case eyeYPosition
         case eyeTailLift
+        case eyeHeight
+        case eyeLength
+        case upperEyelidLift
+        case pupilSize
+        case gazeCorrection
+        case lowerEyelidDrop
+        case eyeTilt
+        case innerCornerOpen
+        case outerCornerOpen
+        case eyeSymmetry
         case noseSlim
         case noseWingSlim
         case noseTipSize
@@ -107,6 +127,16 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         eyeDistance: Float = 0,
         eyeYPosition: Float = 0,
         eyeTailLift: Float = 0,
+        eyeHeight: Float = 0,
+        eyeLength: Float = 0,
+        upperEyelidLift: Float = 0,
+        pupilSize: Float = 0,
+        gazeCorrection: Float = 0,
+        lowerEyelidDrop: Float = 0,
+        eyeTilt: Float = 0,
+        innerCornerOpen: Float = 0,
+        outerCornerOpen: Float = 0,
+        eyeSymmetry: Float = 0,
         noseSlim: Float = 0,
         noseWingSlim: Float = 0,
         noseTipSize: Float = 0,
@@ -149,6 +179,16 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         self.eyeDistance = Self.clampSigned(eyeDistance)
         self.eyeYPosition = Self.clampSigned(eyeYPosition)
         self.eyeTailLift = Self.clampUnit(eyeTailLift)
+        self.eyeHeight = Self.clampUnit(eyeHeight)
+        self.eyeLength = Self.clampUnit(eyeLength)
+        self.upperEyelidLift = Self.clampUnit(upperEyelidLift)
+        self.pupilSize = Self.clampUnit(pupilSize)
+        self.gazeCorrection = Self.clampUnit(gazeCorrection)
+        self.lowerEyelidDrop = Self.clampUnit(lowerEyelidDrop)
+        self.eyeTilt = Self.clampSigned(eyeTilt)
+        self.innerCornerOpen = Self.clampUnit(innerCornerOpen)
+        self.outerCornerOpen = Self.clampUnit(outerCornerOpen)
+        self.eyeSymmetry = Self.clampUnit(eyeSymmetry)
 
         self.noseSlim = Self.clampUnit(noseSlim)
         self.noseWingSlim = Self.clampUnit(noseWingSlim)
@@ -195,6 +235,16 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             eyeDistance: try container.decodeFloatIfPresent(.eyeDistance),
             eyeYPosition: try container.decodeFloatIfPresent(.eyeYPosition),
             eyeTailLift: try container.decodeFloatIfPresent(.eyeTailLift),
+            eyeHeight: try container.decodeFloatIfPresent(.eyeHeight),
+            eyeLength: try container.decodeFloatIfPresent(.eyeLength),
+            upperEyelidLift: try container.decodeFloatIfPresent(.upperEyelidLift),
+            pupilSize: try container.decodeFloatIfPresent(.pupilSize),
+            gazeCorrection: try container.decodeFloatIfPresent(.gazeCorrection),
+            lowerEyelidDrop: try container.decodeFloatIfPresent(.lowerEyelidDrop),
+            eyeTilt: try container.decodeFloatIfPresent(.eyeTilt),
+            innerCornerOpen: try container.decodeFloatIfPresent(.innerCornerOpen),
+            outerCornerOpen: try container.decodeFloatIfPresent(.outerCornerOpen),
+            eyeSymmetry: try container.decodeFloatIfPresent(.eyeSymmetry),
             noseSlim: try container.decodeFloatIfPresent(.noseSlim),
             noseWingSlim: try container.decodeFloatIfPresent(.noseWingSlim),
             noseTipSize: try container.decodeFloatIfPresent(.noseTipSize),
@@ -238,6 +288,16 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             eyeDistance: eyeDistance,
             eyeYPosition: eyeYPosition,
             eyeTailLift: eyeTailLift,
+            eyeHeight: eyeHeight,
+            eyeLength: eyeLength,
+            upperEyelidLift: upperEyelidLift,
+            pupilSize: pupilSize,
+            gazeCorrection: gazeCorrection,
+            lowerEyelidDrop: lowerEyelidDrop,
+            eyeTilt: eyeTilt,
+            innerCornerOpen: innerCornerOpen,
+            outerCornerOpen: outerCornerOpen,
+            eyeSymmetry: eyeSymmetry,
             noseSlim: noseSlim,
             noseWingSlim: noseWingSlim,
             noseTipSize: noseTipSize,
