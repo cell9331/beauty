@@ -97,6 +97,155 @@ final class BeautyParametersTests: XCTestCase {
         XCTAssertTrue(parameters.upperEyelidLift.isNaN, "normalization does not mutate the source")
     }
 
+    func testEYE03InventoryContainsExactlyTenIndependentEyeFields() {
+        let parameters = BeautyParameters()
+        let labels = Set(Mirror(reflecting: parameters).children.compactMap(\.label))
+        let expected: Set<String> = [
+            "eyeHeight",
+            "eyeLength",
+            "upperEyelidLift",
+            "pupilSize",
+            "gazeCorrection",
+            "lowerEyelidDrop",
+            "eyeTilt",
+            "innerCornerOpen",
+            "outerCornerOpen",
+            "eyeSymmetry",
+        ]
+
+        XCTAssertEqual(labels.count, 48)
+        XCTAssertTrue(expected.isSubset(of: labels))
+        XCTAssertEqual(expected.count, 10)
+        for field in expected {
+            XCTAssertEqual(labels.filter { $0 == field }.count, 1, "independent storage for \(field)")
+        }
+        XCTAssertEqual(
+            [
+                parameters.eyeHeight,
+                parameters.eyeLength,
+                parameters.upperEyelidLift,
+                parameters.pupilSize,
+                parameters.gazeCorrection,
+                parameters.lowerEyelidDrop,
+                parameters.eyeTilt,
+                parameters.innerCornerOpen,
+                parameters.outerCornerOpen,
+                parameters.eyeSymmetry,
+            ],
+            Array(repeating: Float(0), count: 10)
+        )
+    }
+
+    func testEYE03Legacy38FieldJSONDecodesTenNewFieldsAsZero() throws {
+        let source = BeautyParameters(
+            skinSmoothing: 0.1,
+            eyeSize: 0.12,
+            eyeDistance: -0.13,
+            eyeYPosition: 0.14,
+            eyeTailLift: 0.15,
+            noseBridge: 0.16,
+            mouthTilt: -0.17,
+            filterId: "clean_01",
+            filterIntensity: 0.18
+        )
+        let complete = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: JSONEncoder().encode(source)) as? [String: Any]
+        )
+        var legacy = complete
+        for key in [
+            "eyeHeight", "eyeLength", "upperEyelidLift", "pupilSize", "gazeCorrection",
+            "lowerEyelidDrop", "eyeTilt", "innerCornerOpen", "outerCornerOpen", "eyeSymmetry",
+        ] {
+            legacy.removeValue(forKey: key)
+        }
+        XCTAssertEqual(legacy.count, 38)
+
+        let decoded = try JSONDecoder().decode(
+            BeautyParameters.self,
+            from: JSONSerialization.data(withJSONObject: legacy)
+        )
+
+        XCTAssertEqual(decoded.eyeSize, source.eyeSize)
+        XCTAssertEqual(decoded.eyeDistance, source.eyeDistance)
+        XCTAssertEqual(decoded.eyeYPosition, source.eyeYPosition)
+        XCTAssertEqual(decoded.eyeTailLift, source.eyeTailLift)
+        XCTAssertEqual(decoded.eyeHeight, 0)
+        XCTAssertEqual(decoded.eyeLength, 0)
+        XCTAssertEqual(decoded.upperEyelidLift, 0)
+        XCTAssertEqual(decoded.pupilSize, 0)
+        XCTAssertEqual(decoded.gazeCorrection, 0)
+        XCTAssertEqual(decoded.lowerEyelidDrop, 0)
+        XCTAssertEqual(decoded.eyeTilt, 0)
+        XCTAssertEqual(decoded.innerCornerOpen, 0)
+        XCTAssertEqual(decoded.outerCornerOpen, 0)
+        XCTAssertEqual(decoded.eyeSymmetry, 0)
+    }
+
+    func testEYE03All48FieldsRoundTripUnequalEyeValuesWithoutAliasing() throws {
+        let parameters = BeautyParameters(
+            eyeSize: 0.11,
+            eyeDistance: -0.12,
+            eyeYPosition: 0.13,
+            eyeTailLift: 0.14,
+            eyeHeight: 0.21,
+            eyeLength: 0.32,
+            upperEyelidLift: 0.43,
+            pupilSize: 0.54,
+            gazeCorrection: 0.65,
+            lowerEyelidDrop: 0.76,
+            eyeTilt: -0.87,
+            innerCornerOpen: 0.28,
+            outerCornerOpen: 0.39,
+            eyeSymmetry: 0.91,
+            filterId: "clean_01"
+        )
+
+        let data = try JSONEncoder().encode(parameters)
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        let decoded = try JSONDecoder().decode(BeautyParameters.self, from: data)
+
+        XCTAssertEqual(object.count, 48)
+        XCTAssertEqual(decoded, parameters)
+        XCTAssertEqual(decoded.eyeHeight, 0.21, accuracy: 0.0001)
+        XCTAssertEqual(decoded.eyeLength, 0.32, accuracy: 0.0001)
+        XCTAssertEqual(decoded.upperEyelidLift, 0.43, accuracy: 0.0001)
+        XCTAssertEqual(decoded.pupilSize, 0.54, accuracy: 0.0001)
+        XCTAssertEqual(decoded.gazeCorrection, 0.65, accuracy: 0.0001)
+        XCTAssertEqual(decoded.lowerEyelidDrop, 0.76, accuracy: 0.0001)
+        XCTAssertEqual(decoded.eyeTilt, -0.87, accuracy: 0.0001)
+        XCTAssertEqual(decoded.innerCornerOpen, 0.28, accuracy: 0.0001)
+        XCTAssertEqual(decoded.outerCornerOpen, 0.39, accuracy: 0.0001)
+        XCTAssertEqual(decoded.eyeSymmetry, 0.91, accuracy: 0.0001)
+        XCTAssertNotEqual(decoded.eyeHeight, decoded.eyeLength)
+        XCTAssertNotEqual(decoded.innerCornerOpen, decoded.outerCornerOpen)
+    }
+
+    func testEYE04ExistingSourceStyleInitializerKeepsNewEyeValuesNeutral() {
+        let sourceStyle = BeautyParameters(
+            skinSmoothing: 0.2,
+            eyeSize: 0.12,
+            eyeDistance: -0.13,
+            eyeYPosition: 0.14,
+            eyeTailLift: 0.15,
+            filterId: "clean_01"
+        )
+
+        XCTAssertEqual(sourceStyle.eyeHeight, 0)
+        XCTAssertEqual(sourceStyle.eyeLength, 0)
+        XCTAssertEqual(sourceStyle.upperEyelidLift, 0)
+        XCTAssertEqual(sourceStyle.pupilSize, 0)
+        XCTAssertEqual(sourceStyle.gazeCorrection, 0)
+        XCTAssertEqual(sourceStyle.lowerEyelidDrop, 0)
+        XCTAssertEqual(sourceStyle.eyeTilt, 0)
+        XCTAssertEqual(sourceStyle.innerCornerOpen, 0)
+        XCTAssertEqual(sourceStyle.outerCornerOpen, 0)
+        XCTAssertEqual(sourceStyle.eyeSymmetry, 0)
+        XCTAssertEqual(sourceStyle.eyeSize, 0.12, accuracy: 0.0001)
+        XCTAssertEqual(sourceStyle.eyeDistance, -0.13, accuracy: 0.0001)
+        XCTAssertEqual(sourceStyle.eyeYPosition, 0.14, accuracy: 0.0001)
+        XCTAssertEqual(sourceStyle.eyeTailLift, 0.15, accuracy: 0.0001)
+    }
+
     func testPhase38MOUTH01DefaultsAreZeroEffectAndExpose38StoredFields() {
         let parameters = BeautyParameters()
 

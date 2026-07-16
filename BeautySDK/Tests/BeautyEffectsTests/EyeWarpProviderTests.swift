@@ -89,6 +89,58 @@ final class EyeWarpProviderTests: XCTestCase {
         }
     }
 
+    func testZeroNewEyeFieldsPreserveShippedProviderControlPoints() throws {
+        let legacy = BeautyParameters(
+            eyeSize: 0.31,
+            eyeDistance: -0.22,
+            eyeYPosition: 0.17,
+            eyeTailLift: 0.19
+        )
+        let expanded = BeautyParameters(
+            eyeSize: 0.31,
+            eyeDistance: -0.22,
+            eyeYPosition: 0.17,
+            eyeTailLift: 0.19,
+            eyeHeight: 0,
+            eyeLength: 0,
+            upperEyelidLift: 0,
+            pupilSize: 0,
+            gazeCorrection: 0,
+            lowerEyelidDrop: 0,
+            eyeTilt: 0,
+            innerCornerOpen: 0,
+            outerCornerOpen: 0,
+            eyeSymmetry: 0
+        )
+        let legacyStrengths = shippedStrengths(from: legacy)
+        let expandedStrengths = shippedStrengths(from: expanded)
+        let provider = EyeWarpProvider()
+
+        XCTAssertEqual(legacyStrengths, expandedStrengths)
+        XCTAssertEqual(
+            provider.makeControlPoints(face: .fixture, strengths: legacyStrengths),
+            provider.makeControlPoints(face: .fixture, strengths: expandedStrengths)
+        )
+
+        let legacyJSON = try JSONEncoder().encode(legacy)
+        let expandedJSON = try JSONEncoder().encode(expanded)
+        let legacyDecoded = try JSONDecoder().decode(BeautyParameters.self, from: legacyJSON)
+        let expandedDecoded = try JSONDecoder().decode(BeautyParameters.self, from: expandedJSON)
+        XCTAssertEqual(legacyDecoded.eyeSize, expandedDecoded.eyeSize)
+        XCTAssertEqual(legacyDecoded.eyeDistance, expandedDecoded.eyeDistance)
+        XCTAssertEqual(legacyDecoded.eyeYPosition, expandedDecoded.eyeYPosition)
+        XCTAssertEqual(legacyDecoded.eyeTailLift, expandedDecoded.eyeTailLift)
+    }
+
+    private func shippedStrengths(from parameters: BeautyParameters) -> BeautyEffectiveStrengths {
+        strengths(
+            eyeSize: parameters.eyeSize,
+            eyeDistance: parameters.eyeDistance,
+            eyeYPosition: parameters.eyeYPosition,
+            eyeTailLift: parameters.eyeTailLift
+        )
+    }
+
     private func strengths(
         eyeSize: Float = 0,
         eyeDistance: Float = 0,
