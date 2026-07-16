@@ -133,6 +133,22 @@ final class BeautyEffectResolverTests: XCTestCase {
         XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(lipPeakDefinition: 0.4)))
         XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(lipPlump: 0.4)))
         XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(lipColor: 0.4)))
+
+        let independentEyeParameters = [
+            BeautyParameters(eyeHeight: 0.4),
+            BeautyParameters(eyeLength: 0.4),
+            BeautyParameters(upperEyelidLift: 0.4),
+            BeautyParameters(pupilSize: 0.4),
+            BeautyParameters(gazeCorrection: 0.4),
+            BeautyParameters(lowerEyelidDrop: 0.4),
+            BeautyParameters(eyeTilt: 0.4),
+            BeautyParameters(innerCornerOpen: 0.4),
+            BeautyParameters(outerCornerOpen: 0.4),
+            BeautyParameters(eyeSymmetry: 0.4)
+        ]
+        for parameters in independentEyeParameters {
+            XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: parameters))
+        }
     }
 
     func testPhase38MOUTH05Through08ExactCapsRoutingWarningsAndCounts() {
