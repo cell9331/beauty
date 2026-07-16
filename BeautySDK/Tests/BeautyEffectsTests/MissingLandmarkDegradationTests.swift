@@ -34,6 +34,47 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         }
     }
 
+    func testObservedContourMissingEitherSideCannotReactivateCompleteEyeDomain() {
+        let bounds = CoordinateRect(x: 0.10, y: 0.10, width: 0.80, height: 0.80)
+        let left = BeautyObservedEyeSupport(
+            side: .left,
+            contour: [
+                CoordinatePoint(x: 0.30, y: 0.43), CoordinatePoint(x: 0.34, y: 0.40),
+                CoordinatePoint(x: 0.42, y: 0.40), CoordinatePoint(x: 0.46, y: 0.43),
+                CoordinatePoint(x: 0.42, y: 0.48), CoordinatePoint(x: 0.34, y: 0.48)
+            ]
+        )
+        let observation = BeautyFaceObservation(
+            imageBounds: bounds,
+            landmarks: .complete,
+            observedEyeSupport: [left]
+        )
+
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(brightness: 0.2, eyeSize: 1),
+            selectedFaceObservation: observation
+        )
+
+        XCTAssertFalse(plan.activeDomains.contains(.eyes))
+        XCTAssertTrue(plan.skippedDomains.contains(.eyes))
+        assertEyeStrengthsAreZero(plan)
+        XCTAssertTrue(plan.activeDomains.contains(.color))
+        assertNoEyeSideOrRawGeometryDisclosure(plan)
+    }
+
+    func testMalformedObservedSupportKeepsSafeSiblingDomainsActive() {
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(brightness: 0.2, eyeSize: 1, noseSlim: 0.3),
+            selectedFaceObservation: .fixtureWithMalformedObservedEyes
+        )
+
+        XCTAssertFalse(plan.activeDomains.contains(.eyes))
+        XCTAssertTrue(plan.activeDomains.contains(.nose))
+        XCTAssertTrue(plan.activeDomains.contains(.color))
+        assertEyeStrengthsAreZero(plan)
+        assertNoEyeSideOrRawGeometryDisclosure(plan)
+    }
+
     func testMissingStaleAndReusedGeometryMetadataStayRedacted() {
         let plans = [
             BeautyEffectResolver.resolve(
@@ -1427,4 +1468,17 @@ extension BeautyFaceObservation {
             landmarks: BeautyFaceLandmarks(availableGroups: availableGroups)
         )
     }
+
+    static let fixtureWithMalformedObservedEyes: BeautyFaceObservation = {
+        let bounds = CoordinateRect(x: 0.10, y: 0.10, width: 0.80, height: 0.80)
+        let malformed = [CoordinatePoint(x: .infinity, y: .infinity)]
+        return BeautyFaceObservation(
+            imageBounds: bounds,
+            landmarks: .complete,
+            observedEyeSupport: [
+                BeautyObservedEyeSupport(side: .left, contour: malformed),
+                BeautyObservedEyeSupport(side: .right, contour: malformed)
+            ]
+        )
+    }()
 }

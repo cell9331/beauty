@@ -1,5 +1,6 @@
 import XCTest
 import BeautyCore
+import BeautyDetection
 @testable import BeautyEffects
 
 final class EyeWarpProviderTests: XCTestCase {
@@ -130,6 +131,31 @@ final class EyeWarpProviderTests: XCTestCase {
         XCTAssertEqual(legacyDecoded.eyeDistance, expandedDecoded.eyeDistance)
         XCTAssertEqual(legacyDecoded.eyeYPosition, expandedDecoded.eyeYPosition)
         XCTAssertEqual(legacyDecoded.eyeTailLift, expandedDecoded.eyeTailLift)
+    }
+
+    func testMalformedObservedEyeSupportFailsClosedWithoutChangingNeutralProviderContract() {
+        let observation = BeautyFaceObservation(
+            imageBounds: CoordinateRect(x: 0.10, y: 0.10, width: 0.80, height: 0.80),
+            landmarks: .complete,
+            observedEyeSupport: [
+                BeautyObservedEyeSupport(
+                    side: .left,
+                    contour: [CoordinatePoint(x: .infinity, y: 0)]
+                ),
+                BeautyObservedEyeSupport(
+                    side: .right,
+                    contour: [CoordinatePoint(x: .infinity, y: 0)]
+                )
+            ]
+        )
+        let geometry = BeautyFaceGeometryAdapter.makeGeometry(from: observation)
+        let result = EyeWarpProvider().makeControlPoints(
+            face: geometry,
+            strengths: strengths(eyeSize: 0.4)
+        )
+
+        XCTAssertTrue(result.points.isEmpty)
+        XCTAssertEqual(result.skipReason, "eye_inputs_missing")
     }
 
     private func shippedStrengths(from parameters: BeautyParameters) -> BeautyEffectiveStrengths {
