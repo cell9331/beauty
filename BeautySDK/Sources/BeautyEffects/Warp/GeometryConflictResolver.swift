@@ -30,6 +30,16 @@ struct GeometryConflictResolver: Sendable {
         weakened.eyeDistance *= scale
         weakened.eyeYPosition *= scale
         weakened.eyeTailLift *= scale
+        weakened.eyeHeight *= scale
+        weakened.eyeLength *= scale
+        weakened.upperEyelidLift *= scale
+        weakened.pupilSize *= scale
+        weakened.gazeCorrection *= scale
+        weakened.lowerEyelidDrop *= scale
+        weakened.eyeTilt *= scale
+        weakened.innerCornerOpen *= scale
+        weakened.outerCornerOpen *= scale
+        weakened.eyeSymmetry *= scale
         weakened.noseSlim *= scale
         weakened.noseWingSlim *= scale
         weakened.noseTipSize *= scale
@@ -70,6 +80,16 @@ struct GeometryConflictResolver: Sendable {
             abs(strengths.eyeDistance) +
             abs(strengths.eyeYPosition) +
             abs(strengths.eyeTailLift) +
+            strengths.eyeHeight +
+            strengths.eyeLength +
+            strengths.upperEyelidLift +
+            strengths.pupilSize +
+            strengths.gazeCorrection +
+            strengths.lowerEyelidDrop +
+            abs(strengths.eyeTilt) +
+            strengths.innerCornerOpen +
+            strengths.outerCornerOpen +
+            strengths.eyeSymmetry +
             strengths.noseSlim +
             strengths.noseWingSlim +
             abs(strengths.noseTipSize) +
@@ -97,6 +117,16 @@ struct GeometryConflictResolver: Sendable {
             abs(strengths.eyeDistance),
             abs(strengths.eyeYPosition),
             abs(strengths.eyeTailLift),
+            strengths.eyeHeight,
+            strengths.eyeLength,
+            strengths.upperEyelidLift,
+            strengths.pupilSize,
+            strengths.gazeCorrection,
+            strengths.lowerEyelidDrop,
+            abs(strengths.eyeTilt),
+            strengths.innerCornerOpen,
+            strengths.outerCornerOpen,
+            strengths.eyeSymmetry,
             strengths.noseSlim,
             strengths.noseWingSlim,
             abs(strengths.noseTipSize),

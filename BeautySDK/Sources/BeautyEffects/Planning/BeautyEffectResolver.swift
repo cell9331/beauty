@@ -277,11 +277,12 @@ public enum BeautyEffectResolver {
         )
         if !staleGeometry,
            let faceGeometry,
-           hasFaceShapeValues || hasMouthGeometryValues
+           hasFaceShapeValues || hasMouthGeometryValues || hadRequestedNoseValues || hasRequestedEyeValues
         {
             let conflict = Self.resolveGeometryConflict(
                 strengths: strengths,
                 faceGeometry: faceGeometry,
+                eyeProvider: eyeProvider,
                 noseProvider: noseProvider,
                 mouthProvider: mouthProvider
             )
@@ -471,6 +472,7 @@ public enum BeautyEffectResolver {
     private static func resolveGeometryConflict(
         strengths: BeautyEffectiveStrengths,
         faceGeometry: FaceGeometry,
+        eyeProvider: EyeWarpProvider,
         noseProvider: NoseWarpProvider,
         mouthProvider: MouthWarpProvider
     ) -> GeometryConflictResolution {
@@ -480,10 +482,13 @@ public enum BeautyEffectResolver {
         // below its provider threshold. Remove that work from the unscaled
         // baseline and recompute so final emissions and conflict evidence share
         // one mask. Each pass can only remove fields: six nose plus eight mouth,
-        // for an exact bounded convergence maximum of fourteen removals.
-        for _ in 0..<14 {
+        // for an exact bounded convergence maximum of twenty-eight removals.
+        for _ in 0..<28 {
             let resolution = GeometryConflictResolver().resolve(strengths: retainedBaseline)
-            var nextBaseline = noseProvider
+            var nextBaseline = eyeProvider
+                .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
+                .sanitizing(retainedBaseline)
+            nextBaseline = noseProvider
                 .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
                 .sanitizing(retainedBaseline)
             nextBaseline = mouthProvider
