@@ -146,7 +146,8 @@ final class EyeWarpProviderTests: XCTestCase {
                     side: .right,
                     contour: [CoordinatePoint(x: .infinity, y: 0)]
                 )
-            ]
+            ],
+            observedEyeOrder: .canonical
         )
         let geometry = BeautyFaceGeometryAdapter.makeGeometry(from: observation)
         let result = EyeWarpProvider().makeControlPoints(

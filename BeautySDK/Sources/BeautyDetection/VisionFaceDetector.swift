@@ -222,6 +222,7 @@ package struct VisionFaceDetector: Sendable {
         }
 
         let observedEyeSupport: [BeautyObservedEyeSupport]?
+        let observedEyeOrder: BeautyObservedEyeOrder?
         if let supports = detection.observedEyeSupport {
             // Vision landmark points are normalized to the face bounding box,
             // not to the full image. Keep this as the sole conversion boundary:
@@ -248,8 +249,14 @@ package struct VisionFaceDetector: Sendable {
                     }
                 )
             }
+            observedEyeOrder = deriveEyeOrder(
+                observedEyeSupport ?? [],
+                visionBounds: visionBounds,
+                mapper: mapper
+            )
         } else {
             observedEyeSupport = nil
+            observedEyeOrder = nil
         }
 
         return BeautyFaceObservation(
@@ -258,8 +265,75 @@ package struct VisionFaceDetector: Sendable {
                 normalizedArea: detection.normalizedArea,
                 imageBounds: imageBounds,
                 landmarks: detection.landmarks,
-                observedEyeSupport: observedEyeSupport
+                observedEyeSupport: observedEyeSupport,
+                observedEyeOrder: observedEyeOrder
             )
+    }
+
+    private func deriveEyeOrder(
+        _ supports: [BeautyObservedEyeSupport],
+        visionBounds: CoordinateRect,
+        mapper: CoordinateMapper
+    ) -> BeautyObservedEyeOrder {
+        guard supports.count == 2,
+              let left = supports.first(where: { $0.side == .left }),
+              let right = supports.first(where: { $0.side == .right }),
+              supports.filter({ $0.side == .left }).count == 1,
+              supports.filter({ $0.side == .right }).count == 1,
+              let leftCenter = centroid(left.contour),
+              let rightCenter = centroid(right.contour)
+        else {
+            return .invalid
+        }
+
+        let localOrigin = CoordinatePoint(x: visionBounds.x, y: visionBounds.y)
+        let localRight = CoordinatePoint(
+            x: visionBounds.x + visionBounds.width,
+            y: visionBounds.y
+        )
+        guard let mappedOrigin = try? mapper.map(
+            point: localOrigin,
+            from: .visionNormalized,
+            to: .imageNormalized
+        ), let mappedRight = try? mapper.map(
+            point: localRight,
+            from: .visionNormalized,
+            to: .imageNormalized
+        ) else {
+            return .invalid
+        }
+
+        let axis = SIMD2<Float>(
+            Float(mappedRight.x - mappedOrigin.x),
+            Float(mappedRight.y - mappedOrigin.y)
+        )
+        let axisLength = hypot(axis.x, axis.y)
+        let separation = SIMD2<Float>(
+            Float(rightCenter.x - leftCenter.x),
+            Float(rightCenter.y - leftCenter.y)
+        )
+        guard axis.x.isFinite, axis.y.isFinite,
+              separation.x.isFinite, separation.y.isFinite,
+              axisLength.isFinite, axisLength > 0
+        else {
+            return .invalid
+        }
+
+        let anatomicalAxis = axis / axisLength
+        let projection = separation.x * anatomicalAxis.x + separation.y * anatomicalAxis.y
+        return projection > 0.000001 ? .canonical : .invalid
+    }
+
+    private func centroid(_ points: [CoordinatePoint]) -> CoordinatePoint? {
+        guard !points.isEmpty,
+              points.allSatisfy({ $0.isFinite })
+        else { return nil }
+        let sum = points.reduce(CoordinatePoint(x: 0, y: 0)) { partial, point in
+            CoordinatePoint(x: partial.x + point.x, y: partial.y + point.y)
+        }
+        let count = Double(points.count)
+        let center = CoordinatePoint(x: sum.x / count, y: sum.y / count)
+        return center.isFinite ? center : nil
     }
 
     private func mapPoints(

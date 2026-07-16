@@ -47,7 +47,8 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         let observation = BeautyFaceObservation(
             imageBounds: bounds,
             landmarks: .complete,
-            observedEyeSupport: [left]
+            observedEyeSupport: [left],
+            observedEyeOrder: .canonical
         )
 
         let plan = BeautyEffectResolver.resolve(
@@ -1478,7 +1479,8 @@ extension BeautyFaceObservation {
             observedEyeSupport: [
                 BeautyObservedEyeSupport(side: .left, contour: malformed),
                 BeautyObservedEyeSupport(side: .right, contour: malformed)
-            ]
+            ],
+            observedEyeOrder: .canonical
         )
     }()
 }

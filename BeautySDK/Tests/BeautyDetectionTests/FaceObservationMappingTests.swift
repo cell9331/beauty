@@ -139,6 +139,68 @@ final class FaceObservationMappingTests: XCTestCase {
         }
     }
 
+    func testEYE06ProductionDerivedSideOrderAcceptsAllOrientationsAndMirror() {
+        let bounds = CoordinateRect(x: 0.10, y: 0.10, width: 0.80, height: 0.60)
+        let left = BeautyObservedEyeSupport(
+            side: .left,
+            contour: [
+                CoordinatePoint(x: 0.18, y: 0.35), CoordinatePoint(x: 0.22, y: 0.30),
+                CoordinatePoint(x: 0.28, y: 0.30), CoordinatePoint(x: 0.32, y: 0.35),
+                CoordinatePoint(x: 0.28, y: 0.40), CoordinatePoint(x: 0.22, y: 0.40)
+            ]
+        )
+        let right = BeautyObservedEyeSupport(
+            side: .right,
+            contour: [
+                CoordinatePoint(x: 0.68, y: 0.35), CoordinatePoint(x: 0.72, y: 0.30),
+                CoordinatePoint(x: 0.78, y: 0.30), CoordinatePoint(x: 0.82, y: 0.35),
+                CoordinatePoint(x: 0.78, y: 0.40), CoordinatePoint(x: 0.72, y: 0.40)
+            ]
+        )
+        for orientation in [CGImagePropertyOrientation.up, .right, .left, .down] {
+            for mirrored in [false, true] {
+                var detector = VisionFaceDetector { _ in
+                    [VisionDetectionObservation(
+                        visionBounds: bounds,
+                        observedEyeSupport: [left, right]
+                    )]
+                }
+                let result = detector.detect(
+                    metadata: metadata(orientation: orientation, inputMirrored: mirrored),
+                    imageExtent: CGSize(width: 400, height: 200)
+                )
+                XCTAssertEqual(result.observations.count, 1)
+                XCTAssertEqual(result.observations[0].observedEyeOrder, .canonical)
+                XCTAssertEqual(result.observations[0].observedEyeSupport?.map(\.side), [.left, .right])
+            }
+        }
+    }
+
+    func testEYE06ProductionDerivedSideOrderRejectsSwappedAndDuplicatePayloads() {
+        let bounds = CoordinateRect(x: 0.10, y: 0.10, width: 0.80, height: 0.60)
+        let leftAtRight = BeautyObservedEyeSupport(
+            side: .left,
+            contour: [CoordinatePoint(x: 0.70, y: 0.35), CoordinatePoint(x: 0.76, y: 0.35)]
+        )
+        let rightAtLeft = BeautyObservedEyeSupport(
+            side: .right,
+            contour: [CoordinatePoint(x: 0.20, y: 0.35), CoordinatePoint(x: 0.26, y: 0.35)]
+        )
+        let duplicate = BeautyObservedEyeSupport(
+            side: .left,
+            contour: [CoordinatePoint(x: 0.20, y: 0.35), CoordinatePoint(x: 0.26, y: 0.35)]
+        )
+
+        for supports in [[leftAtRight, rightAtLeft], [leftAtRight, duplicate]] {
+            var detector = VisionFaceDetector { _ in
+                [VisionDetectionObservation(visionBounds: bounds, observedEyeSupport: supports)]
+            }
+            let result = detector.detect(metadata: metadata(orientation: .up))
+            XCTAssertEqual(result.observations.count, 1)
+            XCTAssertEqual(result.observations[0].observedEyeOrder, .invalid)
+        }
+    }
+
     func testEYE05OutOfUnitObservedPointFailsClosedWithRedactedSummary() {
         let malformed = BeautyObservedEyeSupport(
             side: .left,

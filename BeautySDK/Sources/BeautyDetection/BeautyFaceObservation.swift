@@ -5,6 +5,15 @@ package enum BeautyObservedEyeSide: String, Equatable, Sendable {
     case right
 }
 
+/// Result of the detector's anatomical side-order check. An explicit
+/// observed payload never receives an implicit success value: the detector
+/// must derive `.canonical` through the same coordinate metadata that mapped
+/// the contour points.
+package enum BeautyObservedEyeOrder: Equatable, Sendable {
+    case canonical
+    case invalid
+}
+
 /// Frame-scoped, image-normalized evidence captured by the Vision adapter.
 ///
 /// This value intentionally has no Codable or diagnostic representation. It is
@@ -33,6 +42,7 @@ package struct BeautyFaceObservation: Equatable, Sendable {
     package let imageBounds: CoordinateRect?
     package let landmarks: BeautyFaceLandmarks
     package let observedEyeSupport: [BeautyObservedEyeSupport]?
+    package let observedEyeOrder: BeautyObservedEyeOrder?
 
     package init(
         stableID: String? = nil,
@@ -40,7 +50,8 @@ package struct BeautyFaceObservation: Equatable, Sendable {
         normalizedArea: Double = 0,
         imageBounds: CoordinateRect? = nil,
         landmarks: BeautyFaceLandmarks = .complete,
-        observedEyeSupport: [BeautyObservedEyeSupport]? = nil
+        observedEyeSupport: [BeautyObservedEyeSupport]? = nil,
+        observedEyeOrder: BeautyObservedEyeOrder? = nil
     ) {
         self.stableID = stableID
         self.confidence = confidence
@@ -48,6 +59,7 @@ package struct BeautyFaceObservation: Equatable, Sendable {
         self.imageBounds = imageBounds
         self.landmarks = landmarks
         self.observedEyeSupport = observedEyeSupport
+        self.observedEyeOrder = observedEyeOrder
     }
 }
 

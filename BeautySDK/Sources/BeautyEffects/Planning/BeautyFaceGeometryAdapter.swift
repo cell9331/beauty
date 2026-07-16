@@ -22,6 +22,23 @@ enum BeautyFaceGeometryAdapter {
         let landmarks = observation.landmarks.availableGroups
 
         let observedSupports = observation.observedEyeSupport
+        if observedSupports != nil, observation.observedEyeOrder != .canonical {
+            return FaceGeometry(
+                bounds: bounds,
+                faceContour: landmarks.contains(.faceContour) ? faceContour(in: bounds) : [],
+                leftEye: [],
+                rightEye: [],
+                nose: landmarks.contains(.nose) ? nose(in: bounds) : [],
+                noseRoot: landmarks.contains(.nose) ? noseRoot(in: bounds) : [],
+                noseTip: landmarks.contains(.nose) ? noseTip(in: bounds) : [],
+                outerLips: landmarks.contains(.outerLips) ? outerLips(in: bounds) : [],
+                upperLips: landmarks.contains(.outerLips) ? upperLips(in: bounds) : [],
+                lowerLips: landmarks.contains(.outerLips) ? lowerLips(in: bounds) : [],
+                innerLips: landmarks.contains(.innerLips) ? innerLips(in: bounds) : [],
+                leftEyeSupport: nil,
+                rightEyeSupport: nil
+            )
+        }
         let supportsBySide = observedSupports.map { supports in
             supports.reduce(into: [BeautyObservedEyeSide: BeautyObservedEyeSupport]()) { result, support in
                 // Keep the first side sample deterministically; malformed
@@ -105,8 +122,24 @@ enum BeautyFaceGeometryAdapter {
                 outer: outer,
                 corners: corners,
                 center: center,
-                pupil: pupil
+                pupil: pupil,
+                span: span,
+                tilt: tilt
             )
+        }
+
+        var span: SIMD2<Float> {
+            SIMD2<Float>(contourWidth, contourHeight)
+        }
+
+        var tilt: Float {
+            guard let inner = inner.first, let outer = outer.first,
+                  inner.x.isFinite, inner.y.isFinite,
+                  outer.x.isFinite, outer.y.isFinite
+            else { return 0 }
+            let value = atan2(inner.y - outer.y, abs(inner.x - outer.x)) / (.pi / 2)
+            guard value.isFinite else { return 0 }
+            return min(max(value, -1), 1)
         }
     }
 
@@ -141,9 +174,9 @@ enum BeautyFaceGeometryAdapter {
         let relativeWidth = (maxX - minX) / bounds.width
         let relativeHeight = (maxY - minY) / bounds.height
         let relativeArea = relativeWidth * relativeHeight
-        guard (minimumRelativeContourWidth...maximumRelativeContourWidth).contains(relativeWidth),
-              (minimumRelativeContourHeight...maximumRelativeContourHeight).contains(relativeHeight),
-              relativeArea > minimumRelativeContourArea,
+        guard contourWidthIsValid(relativeWidth),
+              contourHeightIsValid(relativeHeight),
+              contourAreaIsValid(relativeArea),
               polygonArea(points) > 0.000001
         else {
             return nil
@@ -200,8 +233,8 @@ enum BeautyFaceGeometryAdapter {
         }
         let widthRatio = (left.contourWidth / right.contourWidth)
         let heightRatio = (left.contourHeight / right.contourHeight)
-        guard (minimumPairedPupilRatio...maximumPairedPupilRatio).contains(widthRatio),
-              (minimumPairedPupilRatio...maximumPairedPupilRatio).contains(heightRatio)
+        guard pairedRatioIsValid(widthRatio),
+              pairedRatioIsValid(heightRatio)
         else {
             return (nil, nil)
         }
@@ -228,15 +261,59 @@ enum BeautyFaceGeometryAdapter {
         let width = maxX - minX
         let height = maxY - minY
         guard width > 0, height > 0,
-              point.x >= minX - width * pupilContainmentExpansion,
-              point.x <= maxX + width * pupilContainmentExpansion,
-              point.y >= minY - height * pupilContainmentExpansion,
-              point.y <= maxY + height * pupilContainmentExpansion
+              pupilContainmentIsValid(
+                  point,
+                  minX: minX,
+                  maxX: maxX,
+                  minY: minY,
+                  maxY: maxY
+              )
         else { return nil }
         let dx = (point.x - (minX + maxX) / 2) / (width / 2)
         let dy = (point.y - (minY + maxY) / 2) / (height / 2)
-        guard sqrt(dx * dx + dy * dy) <= maximumPupilEllipseOffset else { return nil }
+        guard pupilEllipseOffsetIsValid(sqrt(dx * dx + dy * dy)) else { return nil }
         return point
+    }
+
+    // MARK: - Pure locked predicates
+
+    static func contourWidthIsValid(_ value: Float) -> Bool {
+        value.isFinite && (minimumRelativeContourWidth...maximumRelativeContourWidth).contains(value)
+    }
+
+    static func contourHeightIsValid(_ value: Float) -> Bool {
+        value.isFinite && (minimumRelativeContourHeight...maximumRelativeContourHeight).contains(value)
+    }
+
+    static func contourAreaIsValid(_ value: Float) -> Bool {
+        value.isFinite && value > minimumRelativeContourArea
+    }
+
+    static func pupilContainmentIsValid(
+        _ point: SIMD2<Float>,
+        minX: Float,
+        maxX: Float,
+        minY: Float,
+        maxY: Float
+    ) -> Bool {
+        guard point.x.isFinite, point.y.isFinite,
+              minX.isFinite, maxX.isFinite, minY.isFinite, maxY.isFinite
+        else { return false }
+        let width = maxX - minX
+        let height = maxY - minY
+        guard width > 0, height > 0 else { return false }
+        return point.x >= minX - width * pupilContainmentExpansion &&
+            point.x <= maxX + width * pupilContainmentExpansion &&
+            point.y >= minY - height * pupilContainmentExpansion &&
+            point.y <= maxY + height * pupilContainmentExpansion
+    }
+
+    static func pupilEllipseOffsetIsValid(_ value: Float) -> Bool {
+        value.isFinite && value <= maximumPupilEllipseOffset
+    }
+
+    static func pairedRatioIsValid(_ value: Float) -> Bool {
+        value.isFinite && (minimumPairedPupilRatio...maximumPairedPupilRatio).contains(value)
     }
 
     private static func polygonArea(_ points: [SIMD2<Float>]) -> Float {

@@ -22,6 +22,11 @@ struct BeautyEyeSemanticSupport: Equatable, Sendable {
     let corners: [SIMD2<Float>]
     let center: SIMD2<Float>
     let pupil: SIMD2<Float>?
+    /// Image-normalized bounding span `(width, height)` derived from the
+    /// canonical contour. This is semantic evidence, not a visual cap.
+    let span: SIMD2<Float>
+    /// Signed canonical inner-to-outer tilt in `[-1, 1]`.
+    let tilt: Float
 
     var contourEligible: Bool { !contour.isEmpty }
     var pupilEligible: Bool { pupil != nil }
