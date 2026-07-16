@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.11
 milestone_name: Eye Remaining Geometry Controls
-current_phase: 41
-current_phase_name: Public Contract and Observed Eye Support
-status: executing
+current_phase: 42
+current_phase_name: Independent Eye Geometry and Pipeline Integration
+status: planning
 stopped_at: Completed 41-01-PLAN.md
-last_updated: "2026-07-16T03:57:35.989Z"
+last_updated: "2026-07-16T06:23:26.571Z"
 last_activity: 2026-07-16
-last_activity_desc: Completed 41-01-PLAN.md
+last_activity_desc: Phase 41 complete, transitioned to Phase 42
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 4
-  completed_plans: 1
+  total_plans: 5
+  completed_plans: 4
   percent: 0
 ---
 
@@ -28,10 +28,10 @@ See: `.planning/PROJECT.md` (updated 2026-07-14)
 
 ## Current Position
 
-Phase: 41 of 44 — Public Contract and Observed Eye Support
-Plan: 2 of 4 — Thread private Vision observed-eye contours and pupils through detection
-Status: Ready to execute
-Last activity: 2026-07-16 — Completed 41-01-PLAN.md
+Phase: 42 of 44 (Independent Eye Geometry and Pipeline Integration)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-07-16 — Phase 41 complete, transitioned to Phase 42
 
 ### Phase 40 Mouth Geometry Safety and Ledger Closeout Result
 

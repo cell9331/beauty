@@ -20,7 +20,7 @@
 
 ## Phases
 
-- [ ] **Phase 41: Public Contract and Observed Eye Support** — Add ten compatible public controls, private Vision contour/pupil support, canonical coordinate conversion, strict support validation, and privacy boundaries.
+- [x] **Phase 41: Public Contract and Observed Eye Support** — Add ten compatible public controls, private Vision contour/pupil support, canonical coordinate conversion, strict support validation, and privacy boundaries. (completed 2026-07-16)
 - [ ] **Phase 42: Independent Eye Geometry and Pipeline Integration** — Implement ten distinct contour/pupil/correction transforms, fourteen named eye emissions, resolver/conflict convergence, and facade routing.
 - [ ] **Phase 43: Public-Facade Eye Geometry Output Evidence** — Prove isolated controls, signed tilt, eligibility-aware correction/symmetry, no-face behavior, strict decoded outputs, and ignored gallery containment.
 - [ ] **Phase 44: Eye Geometry Safety and Ledger Closeout** — Lock exact caps and transitions, complete the fail-closed boundary gate, promote exactly ten geometry rows, and synchronize all owners.
@@ -40,21 +40,24 @@
   4. The adapter emits deterministic upper/lower/inner/outer/corner/center/pupil support and rejects malformed, duplicate-only, out-of-bounds, implausible, or overlarge input before provider use.
   5. Missing or implausible pupils remove only pupil-dependent requests, while missing either eye contour retains the established complete eye-domain skip and no raw geometry crosses public or diagnostic boundaries.
 
-**Plans**: 1/4 plans executed
+**Plans**: 4/5 plans executed
 
 Plans:
+
+- [ ] 41-05-PLAN.md
+
 **Wave 1**
 
 - [x] 41-01-PLAN.md — Add the ten compatibility-safe public eye scalars and neutral regression evidence.
-- [ ] 41-02-PLAN.md — Thread private Vision contour/pupil support through one coordinate-mapping boundary.
+- [x] 41-02-PLAN.md — Thread private Vision contour/pupil support through one coordinate-mapping boundary.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 41-03-PLAN.md — Canonicalize/validate support and prove field-local degradation.
+- [x] 41-03-PLAN.md — Canonicalize/validate support and prove field-local degradation.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 41-04-PLAN.md — Run fail-closed boundaries and synchronize owning contracts.
+- [x] 41-04-PLAN.md — Run fail-closed boundaries and synchronize owning contracts.
 
 ### Phase 42: Independent Eye Geometry and Pipeline Integration
 
@@ -104,7 +107,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
-| 41. Public Contract and Observed Eye Support | 1/4 | In Progress|  |
+| 41. Public Contract and Observed Eye Support | 6/5 | Complete    | 2026-07-16 |
 | 42. Independent Eye Geometry and Pipeline Integration | 0/TBD | Not started | — |
 | 43. Public-Facade Eye Geometry Output Evidence | 0/TBD | Not started | — |
 | 44. Eye Geometry Safety and Ledger Closeout | 0/TBD | Not started | — |

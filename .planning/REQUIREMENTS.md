@@ -14,9 +14,9 @@
 
 ### Observed Eye Support
 
-- [ ] **EYE-05**: Package-internal detection captures finite bounded left/right Vision eye-contour points and independently optional left/right pupil points for the current request, converts their face-bounds lower-left coordinates into the repository image-normalized convention, and exposes no raw points publicly, persistently, or through diagnostics.
-- [ ] **EYE-06**: The geometry adapter canonicalizes each observed eye into deterministic side-aware upper/lower lid, inner/outer corner, center, span, tilt, and optional pupil support, rejecting non-finite, out-of-bounds, oversized, degenerate, duplicate-only, side-inverted, or implausible structures before provider use.
-- [ ] **EYE-07**: Missing or implausible pupil support, including blink-like outliers, removes only `pupilSize` and `gazeCorrection`; valid contour-dependent shipped and new eye siblings remain eligible, while missing either required eye contour retains the established complete eye-domain skip.
+- [x] **EYE-05**: Package-internal detection captures finite bounded left/right Vision eye-contour points and independently optional left/right pupil points for the current request, converts their face-bounds lower-left coordinates into the repository image-normalized convention, and exposes no raw points publicly, persistently, or through diagnostics.
+- [x] **EYE-06**: The geometry adapter canonicalizes each observed eye into deterministic side-aware upper/lower lid, inner/outer corner, center, span, tilt, and optional pupil support, rejecting non-finite, out-of-bounds, oversized, degenerate, duplicate-only, side-inverted, or implausible structures before provider use.
+- [x] **EYE-07**: Missing or implausible pupil support, including blink-like outliers, removes only `pupilSize` and `gazeCorrection`; valid contour-dependent shipped and new eye siblings remain eligible, while missing either required eye contour retains the established complete eye-domain skip.
 
 ### Independent Eye Geometry
 
@@ -78,9 +78,9 @@
 | EYE-02 | Phase 41 | Complete |
 | EYE-03 | Phase 41 | Complete |
 | EYE-04 | Phase 41 | Complete |
-| EYE-05 | Phase 41 | Pending |
-| EYE-06 | Phase 41 | Pending |
-| EYE-07 | Phase 41 | Pending |
+| EYE-05 | Phase 41 | Complete |
+| EYE-06 | Phase 41 | Complete |
+| EYE-07 | Phase 41 | Complete |
 | EYE-08 | Phase 42 | Pending |
 | EYE-09 | Phase 42 | Pending |
 | EYE-10 | Phase 42 | Pending |
