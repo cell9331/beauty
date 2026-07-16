@@ -490,7 +490,7 @@ public enum BeautyEffectResolver {
                 .sanitizing(retainedBaseline)
             nextBaseline = noseProvider
                 .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
-                .sanitizing(retainedBaseline)
+                .sanitizing(nextBaseline)
             nextBaseline = mouthProvider
                 .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
                 .sanitizing(nextBaseline)

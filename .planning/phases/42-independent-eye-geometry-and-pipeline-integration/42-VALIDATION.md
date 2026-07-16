@@ -23,13 +23,13 @@ created: 2026-07-16
 
 | Task | Wave | Requirements | Verification |
 |---|---:|---|---|
-| 42-01-01 | 1 | EYE-08, EYE-09, EYE-10, EYE-11 | `swift test --package-path BeautySDK --filter BeautyEffectsTests.EyeWarpProviderTests` (9/9) |
-| 42-01-02 | 1 | EYE-12, EYE-13, EYE-14 | Named provider test covers pupil evidence gating; 9/9 provider tests |
+| 42-01-01 | 1 | EYE-08, EYE-09, EYE-10, EYE-11 | `swift test --package-path BeautySDK --filter BeautyEffectsTests.EyeWarpProviderTests` (11/11) |
+| 42-01-02 | 1 | EYE-12, EYE-13, EYE-14 | Named provider test covers pupil evidence gating; 11/11 provider tests |
 | 42-02-01 | 2 | EYE-08..EYE-15 | `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyEffectResolverTests` (18/18) |
-| 42-02-02 | 2 | EYE-15 | `swift test --package-path BeautySDK --filter BeautyEffectsTests.MissingLandmarkDegradationTests` (37/37) |
+| 42-02-02 | 2 | EYE-15 | `swift test --package-path BeautySDK --filter BeautyEffectsTests.MissingLandmarkDegradationTests` (38/38) |
 | 42-03-01 | 3 | EYE-15 | `swift test --package-path BeautySDK --filter BeautyEffectsTests.CombinedEffectSafetyTests` (10/10) |
 | 42-03-02 | 3 | EYE-08..EYE-15 | Combined + resolver/degradation suites pass; aggregate/redaction assertions green |
-| 42-04-01 | 4 | EYE-08..EYE-15 | `swift test --package-path BeautySDK` (295/295) and `git diff --check` |
+| 42-04-01 | 4 | EYE-08..EYE-15 | `swift test --package-path BeautySDK` (299/299) and `git diff --check` |
 
 ## Wave 0 Requirements
 
@@ -70,4 +70,4 @@ created: 2026-07-16
 
 ## Measured gate
 
-Executed on 2026-07-16: provider 9/9, resolver 18/18, degradation 37/37, combined 10/10, and full SwiftPM 295/295. No generated output, Demo, manifest, dependency, or public geometry surface changed.
+Executed on 2026-07-16: provider 11/11, resolver 18/18, degradation 38/38, combined 10/10, and full SwiftPM 299/299. No generated output, Demo, manifest, dependency, or public geometry surface changed.

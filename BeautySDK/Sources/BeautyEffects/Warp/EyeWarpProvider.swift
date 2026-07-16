@@ -166,24 +166,67 @@ struct EyeWarpProvider: WarpControlPointProvider {
     }
 
     private func symmetryPoints(supports: [BeautyEyeSemanticSupport], face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
-        guard supports.count == 2 else { return [] }
-        let left = supports[0], right = supports[1]
+        guard supports.count == 2,
+              let left = supports.first(where: { $0.side == .left }),
+              let right = supports.first(where: { $0.side == .right })
+        else { return [] }
         let midpoint = (left.center + right.center) / 2
         let spanX = (left.span.x + right.span.x) / 2
         let spanY = (left.span.y + right.span.y) / 2
         let centerDelta = (right.center.x - left.center.x).isFinite ? abs(right.center.x - left.center.x) : .infinity
         let spanDelta = abs(left.span.x - right.span.x) + abs(left.span.y - right.span.y)
-        guard centerDelta.isFinite, centerDelta > 0, spanDelta > 0.0001 || abs(left.tilt - right.tilt) > 0.0001 else { return [] }
-        let blend = 0.30 * strength / BeautySafetyCaps.eyeSymmetry
+        func plausible(_ support: BeautyEyeSemanticSupport) -> Bool {
+            support.center.x.isFinite && support.center.y.isFinite &&
+                support.span.x.isFinite && support.span.y.isFinite &&
+                support.span.x > 0 && support.span.y > 0 &&
+                support.span.x <= 1 && support.span.y <= 1 &&
+                support.tilt.isFinite && abs(support.tilt) <= 1 &&
+                !support.contour.isEmpty
+        }
+        guard plausible(left), plausible(right),
+              centerDelta.isFinite, centerDelta > 0,
+              spanX.isFinite, spanY.isFinite, spanX > 0, spanY > 0,
+              spanDelta > 0.0001 || abs(left.tilt - right.tilt) > 0.0001
+        else { return [] }
+        let blend = min(max(0.30 * strength / BeautySafetyCaps.eyeSymmetry, 0), 0.30)
+        guard blend > Float.ulpOfOne else { return [] }
+        let targetTilt = (left.tilt + right.tilt) / 2
         var points: [WarpControlPoint] = []
-        for support in supports {
-            let target = support.center + (midpoint - support.center) * blend
-            points += makePoints(sources: [support.center], targets: [target], face: face, radius: face.bounds.width * 0.08, strength: strength)
-            let halfWidth = spanX / 2
-            let halfHeight = spanY / 2
-            let sourceEdge = SIMD2<Float>(support.center.x + (support.side == .left ? halfWidth : -halfWidth), support.center.y + halfHeight)
-            let targetEdge = SIMD2<Float>(support.center.x + (support.side == .left ? halfWidth : -halfWidth), support.center.y + halfHeight)
-            if spanX.isFinite, spanY.isFinite { points += makePoints(sources: [sourceEdge], targets: [targetEdge], face: face, radius: face.bounds.width * 0.06, strength: strength) }
+        for support in [left, right] {
+            let targetCenter = support.center + (midpoint - support.center) * blend
+            points += makePoints(
+                sources: [support.center],
+                targets: [targetCenter],
+                face: face,
+                radius: face.bounds.width * 0.08,
+                strength: strength
+            )
+
+            // Scale each measured contour toward the paired midpoint span,
+            // then rotate the offset toward the paired midpoint tilt. Using
+            // the real contour points keeps the emitted side identity while
+            // making the span/tilt effect observable in the warp vectors.
+            let scaleX = 1 + ((spanX / support.span.x) - 1) * blend
+            let scaleY = 1 + ((spanY / support.span.y) - 1) * blend
+            let angle = (targetTilt - support.tilt) * (Float.pi / 2) * blend
+            let cosine = cos(angle)
+            let sine = sin(angle)
+            let targets = support.contour.map { point -> SIMD2<Float> in
+                let offset = point - support.center
+                let scaled = SIMD2<Float>(offset.x * scaleX, offset.y * scaleY)
+                let rotated = SIMD2<Float>(
+                    scaled.x * cosine - scaled.y * sine,
+                    scaled.x * sine + scaled.y * cosine
+                )
+                return targetCenter + rotated
+            }
+            points += makePoints(
+                sources: support.contour,
+                targets: targets,
+                face: face,
+                radius: face.bounds.width * 0.06,
+                strength: strength
+            )
         }
         return points
     }

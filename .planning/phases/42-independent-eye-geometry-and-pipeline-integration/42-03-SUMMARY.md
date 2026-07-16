@@ -17,7 +17,7 @@ Extended combined geometry totals, scaling, and non-zero accounting with all ten
 
 - `0f7119d` — eye fields in conflict totals/scaling and bounded resolver convergence.
 - `swift test --package-path BeautySDK --filter BeautyEffectsTests.CombinedEffectSafetyTests` — 10/10 passed.
-- `swift test --package-path BeautySDK` — 295/295 passed.
+- `swift test --package-path BeautySDK` — 299/299 passed.
 
 ## Deferred boundaries
 

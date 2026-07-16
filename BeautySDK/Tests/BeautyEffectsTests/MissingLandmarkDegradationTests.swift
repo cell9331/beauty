@@ -76,6 +76,22 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         assertNoEyeSideOrRawGeometryDisclosure(plan)
     }
 
+    func testUnsupportedEyeFieldIsNotReintroducedIntoConflictBaselineWithValidSiblings() {
+        let malformed = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(faceSlim: 1, eyeSize: 1, noseSlim: 1, mouthSize: 1),
+            selectedFaceObservation: .fixtureWithMalformedObservedEyes
+        )
+        let eyeOmitted = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(faceSlim: 1, noseSlim: 1, mouthSize: 1),
+            selectedFaceObservation: .fixtureWithMalformedObservedEyes
+        )
+
+        XCTAssertEqual(malformed.effectiveStrengths.eyeSize, 0)
+        XCTAssertEqual(malformed.effectiveStrengths.faceSlim, eyeOmitted.effectiveStrengths.faceSlim, accuracy: 0.000001)
+        XCTAssertEqual(malformed.effectiveStrengths.noseSlim, eyeOmitted.effectiveStrengths.noseSlim, accuracy: 0.000001)
+        XCTAssertEqual(malformed.effectiveStrengths.mouthSize, eyeOmitted.effectiveStrengths.mouthSize, accuracy: 0.000001)
+    }
+
     func testMissingStaleAndReusedGeometryMetadataStayRedacted() {
         let plans = [
             BeautyEffectResolver.resolve(
