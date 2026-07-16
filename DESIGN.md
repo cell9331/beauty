@@ -68,7 +68,7 @@
 
 ### 4.2 BeautyParameters
 
-`BeautyParameters` 是所有可调效果的唯一公共参数模型。Phase 38 后当前模型包含精确 **38 个 stored fields = 37 个 numeric fields + `filterId`**，覆盖基础皮肤、基础颜色、脸型、眼睛、鼻子、嘴巴和滤镜。
+`BeautyParameters` 是所有可调效果的唯一公共参数模型。Phase 41 后当前模型包含精确 **48 个 stored fields = 47 个 numeric fields + `filterId`**，覆盖基础皮肤、基础颜色、脸型、眼睛、鼻子、嘴巴和滤镜。
 
 最低协议：
 
@@ -83,7 +83,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable
 | Skin | `skinSmoothing`, `skinWhitening`, `skinRosy`, `skinSharpen` | `0.0...1.0` |
 | Color | `brightness`, `contrast`, `saturation`, `temperature`, `tint`, `exposure`, `highlight`, `shadow` | mixed |
 | Face Shape | `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, `chinLength` | mixed |
-| Eyes | `eyeSize`, `eyeTailLift`: `[0, 1]`; `eyeDistance`, `eyeYPosition`: `[-1, 1]` | positive-only size/tail plus signed distance/position |
+| Eyes | shipped `eyeSize`, `eyeTailLift`: `[0, 1]`; shipped `eyeDistance`, `eyeYPosition`: `[-1, 1]`; new `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `innerCornerOpen`, `outerCornerOpen`, `eyeSymmetry`: `[0, 1]`; new `eyeTilt`: `[-1, 1]` | default-zero independent scalars; one signed new field |
 | Nose | `noseSlim`, `noseWingSlim`, signed `noseTipSize`, `noseBridge`, `noseRootNarrowing`, `noseTipLift` | legacy mixed + new positive-only `0...1` |
 | Mouth | `mouthSize`, `mouthWidth`, `smile`, `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, `lipPlump`, `lipColor` | mixed |
 | Filter | `filterId`, `filterIntensity` | ID + `0.0...1.0` |
@@ -125,11 +125,19 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
 
 ### Phase 38 Remaining Mouth Geometry Contract
 
-- `mouthYPosition`, `mouthTilt`, and `mouthXPosition` are independent signed `-1...1` public values; `lipPeakDefinition` and `lipPlump` are independent positive-only `0...1` values. All default and non-finite inputs normalize to zero, legacy 33-field payloads decode neutrally, and the current inventory is exactly 38 stored fields.
+- `mouthYPosition`, `mouthTilt`, and `mouthXPosition` are independent signed `-1...1` public values; `lipPeakDefinition` and `lipPlump` are independent positive-only `0...1` values. All default and non-finite inputs normalize to zero, legacy 33-field payloads decode neutrally, and the Phase 38 inventory was exactly 38 stored fields.
 - Phase 38 uses provisional effective caps of exact `0.25`. Y/X position translate the unchanged whole-mouth support on one axis, tilt rotates it around a stable mouth center, peak shapes explicit upper plus inner support, and plump thickens explicit upper/lower surfaces away from the inner opening.
 - `MouthWarpProvider` owns eight geometry fields: shipped size/width/smile plus the five new controls. Provider preflight and post-conflict sanitization remove non-emitting work per field; combined nose/mouth convergence is monotonic and bounded at fourteen possible removals, so final strengths, totals, counts, scale, warnings, and emissions share one retained set.
 - Reused eligible non-eye geometry scales by exact `0.5`; `lipColor` remains a separate color-domain effect. Phase 39 owns saved-output/ROI evidence and Phase 40 owns final cap calibration, exhaustive transitions, boundaries, and promotion.
 - `37-NOSE-SAFETY-EVIDENCE.md` records fresh 103/103 focused and 228/228 full XCTest evidence plus unchanged 252/252 public-facade output. This closes only the exact SDK-core branch and does not establish Demo, device, commercial, packaging, shipping, or launch readiness.
+
+### Phase 41 Public Eye Contract and Observed-Support Design
+
+- The ten independent additions are positive-only `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `innerCornerOpen`, `outerCornerOpen`, and `eyeSymmetry`, plus signed `eyeTilt`. Every value defaults to zero; missing legacy 38-key JSON values and non-finite values become zero. The current Codable inventory is exactly 48 stored fields: 47 numeric fields plus `filterId`.
+- `BeautyObservedEyeSupport` carries anatomical left/right contours and optional pupils as package-only, `Sendable`, request-scoped evidence. Vision points cross `CoordinateMapper` exactly once into finite closed-unit image-normalized coordinates. No pupil is synthesized when Vision omits one.
+- `BeautyFaceGeometryAdapter` canonicalizes winding-independent semantic upper/lower/inner/outer/corner/center support. Contours accept 6...16 input points, at least 4 unique points, relative width `0.04...0.50`, height `0.01...0.30`, and bounding area above `0.0004`. Pupils use 10% expanded containment, normalized ellipse offset at most `0.70`, and paired contour width/height ratios `0.50...2.00`. These are support-validation ceilings, not final visual-effect caps.
+- An invalid/absent pupil disables only `pupilSize` and `gazeCorrection`; valid contour siblings remain eligible. An explicit observed payload with either side absent or invalid leaves that `FaceGeometry` eye side empty and never borrows the legacy proxy. The existing resolver complete-eye gate then skips the whole eye domain. A nil observed payload retains the legacy proxy only for shipped zero-default compatibility.
+- Raw and derived support stays non-public, non-Codable, ephemeral, and absent from logs, warnings, errors, descriptions, metrics, snapshots, persistence, and Demo imports. Phase 41 adds no provider transforms, final caps, facade output, renderer/gallery evidence, promotion, Demo behavior, device/commercial evidence, packaging, shipping, or launch-readiness claim.
 
 Rules:
 
@@ -271,6 +279,7 @@ Rules:
 - Low-confidence faces can be used for light color effects but not strong geometry.
 - Face ordering must be deterministic, usually largest face first then stable ID.
 - Phase 26 selects the first usable package-only detection observation for still-image geometry planning and does not expose raw observation data outside SDK internals.
+- Phase 41 optionally attaches package-only observed left/right eye contour and pupil evidence after the single coordinate-mapping boundary. This evidence is consumed within the same request path and is never serialized, diagnosed, persisted, or exposed through the facade.
 
 ### 5.2 BeautyFaceLandmarks
 
@@ -670,6 +679,7 @@ Each implementation must make these contracts testable:
 | No-face, missing-eye, missing-nose, missing-mouth/lip, reused, and stale contexts degrade only affected domains. | `MissingLandmarkDegradationTests` and combined resolver tests |
 | Still-image geometry-trigger detection and selected-face routing stay public-facade safe. | `BeautyEngineGeometryFacadeTests`, `BeautyEffectResolverTests`, public/SPI raw geometry export scans, and active-source redaction scans |
 | Saved-output geometry foundation preserves dimensions and differs from a no-geometry baseline through the public facade. | `BeautyRendererOutputRegressionTests`, `BeautyEngineGeometryFacadeTests`, `BeautyExampleRenderer`, and `check_geometry_renderer_outputs.py` |
+| Ten compatible eye scalars and private observed support remain exact, redacted, and fail closed at scope boundaries. | `BeautyParametersTests`, `VisionFaceDetectorTests`, `BeautyFaceGeometryAdapterTests`, `MissingLandmarkDegradationTests`, and `check_eye_support_boundaries.py` |
 
 ## 18. Open Design Watchlist
 
@@ -678,6 +688,11 @@ Each implementation must make these contracts testable:
 - `mouthYPosition`, `mouthTilt`, and `mouthXPosition` are signed `-1...1`; `lipPeakDefinition` and `lipPlump` are positive-only `0...1`. Every new field has a final exact natural cap of `0.25`, with signed direction preserved before and after weakening.
 - The eight-field mouth geometry set is size, width, smile, Y position, tilt, X position, peak definition, and plump. Missing inner support removes peak/plump only; reused eligible geometry scales by exact `0.5`; stale or unusable support removes dependent work.
 - Conflict resolution converges through at most fourteen nose/mouth removals and calculates totals, counts, scale, warnings, effective strengths, and emissions from one provider-eligible retained set.
+
+### v1.11 Phase 41 Eye Support Boundary
+
+- The 48-field scalar contract, one-mapper private observed-support lifecycle, fixed support-validation ceilings, pupil-local degradation, and complete-eye fail-closed gate are locked before provider semantics begin.
+- Phase 42 owns provider transforms and provisional caps; Phases 43-44 own public-facade output, renderer evidence, final caps, exhaustive safety, and promotion.
 
 These are known future design areas, not current first-version requirements:
 

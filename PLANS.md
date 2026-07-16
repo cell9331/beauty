@@ -26,9 +26,27 @@
 
 ## 3. Active
 
-No active execution plan. v1.11 is initialized and Phase 41 is ready for discussion/planning.
+No active execution plan. v1.11 Phase 41 is complete and Phase 42 is ready for discussion/planning.
 
 ## 4. Completed
+
+### C-2026-07-16-phase-41-public-contract-observed-eye-support
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-16 |
+| Scope | Completed Phase 41 Plans `41-01` through `41-04`: ten compatible public eye scalars, one-mapper package-only observed contour/pupil evidence, semantic validation, pupil-local degradation, complete-eye fail-closed wiring, boundary gate, and owner synchronization. |
+| Contract | Exact 48 stored fields = 47 numeric + `filterId`; positive-only `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `innerCornerOpen`, `outerCornerOpen`, `eyeSymmetry`; signed `eyeTilt`; all default/missing/non-finite values zero and legacy 38-key payloads neutral. |
+| Support | Contours are request-scoped and package-only after one `CoordinateMapper` conversion; locked support ceilings are 6...16 points, 4 unique points, width `0.04...0.50`, height `0.01...0.30`, area above `0.0004`; pupils use 10% containment expansion, offset at most `0.70`, and paired ratios `0.50...2.00`. These are not visual caps. |
+| Degradation | Invalid/absent pupil disables only `pupilSize` and `gazeCorrection`; an explicit missing/invalid contour side stays empty with no proxy fallback and reaches the resolver complete-eye skip. Nil observed support preserves only shipped zero-default compatibility. Diagnostics use fixed reasons and aggregate counts. |
+| Verification | Fresh full SwiftPM passes 283/283. `check_eye_support_boundaries.py --self-test` passes 24/24 and live mode passes 10/10 against baseline `f1c28fa`; active SDK public/Codable/persistence/diagnostic/network/commercial/import scans have zero unclassified matches; output/gallery/staging/quarantine roots are tracked=0, staged=0, non-ignored-untracked=0 and representative paths remain ignored. `git diff --check` passes. |
+| Boundary | No provider transforms, final caps, facade output, renderer/gallery evidence, ledger promotion, Demo change, device/commercial evidence, optimized performance, packaging, shipping, launch, or whole-branch `眼睛` claim. Phase 42 owns provider behavior. |
+
+Outcome:
+
+- EYE-01 through EYE-07 have compatible scalar, mapping, validation, degradation-input, privacy, and fail-closed boundary evidence.
+- Raw/derived contour and pupil data remains ephemeral, non-Codable, non-persistent, non-diagnostic, and absent from public/SPI and Demo surfaces.
+- Phase 42 can implement independent field vectors and provisional caps without reopening the Phase 41 public/support contract.
 
 ### C-2026-07-16-v1-11-milestone-initialization
 

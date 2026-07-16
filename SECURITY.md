@@ -73,7 +73,7 @@ Phase 28 face-shape privacy evidence recorded 2026-07-08:
 - EYE-07 validation proves positive-only size/tail behavior, signed distance/position behavior, finite range and cap enforcement, and non-finite normalization before eye geometry is produced. Missing, reused, or stale eye inputs emit only fixed category messages/codes and aggregate metrics.
 - The asserted active roots cover the public SDK surface, `BeautyCore`, `BeautyRender`, renderer source, and active Demo source. A multiline public/SPI scan found no exposure of `FaceGeometry`, `WarpControlPoint`, `CGPoint`, or `CGRect`; renderer and Demo checks found no forbidden internal import.
 - Network/cloud API scans and StoreKit/entitlement scans returned no active execution paths. The only `vipChip` candidates are the two classified static allowlist occurrences `VIP-COMMERCIAL-ALLOW-01` and `VIP-COMMERCIAL-ALLOW-02`; `unclassified_matches: 0`.
-- The current parameter inventory contains exactly 38 public stored fields (37 numeric plus `filterId`) and matches the Phase 38 reviewed contract. Generated renderer outputs and gallery copies remain ignored, untracked local artifacts rather than committed evidence.
+- The inventory observed by the historical Phase 30/38 contract contained exactly 38 public stored fields (37 numeric plus `filterId`). Generated renderer outputs and gallery copies remained ignored, untracked local artifacts rather than committed evidence.
 - Command-backed details are in `30-EYE-SAFETY-EVIDENCE.md`; threat classifications and sign-off are in `30-SECURITY.md`.
 
 ### Phase 32 Nose Safety Boundary Evidence
@@ -114,6 +114,14 @@ Phase 28 face-shape privacy evidence recorded 2026-07-08:
 - Provider input validation rejects non-finite or out-of-bounds support, insufficient cardinality, duplicate points, degenerate spans, invalid strength, and non-renderable displacement before final clamp/output construction. Failure removes only the dependent field.
 - Facade results expose only stable category warnings and numeric aggregate metrics. Focused facade and source scans reject raw support names, coordinates, landmarks, bounds, framework objects, paths, or provider internals.
 - Phase 38 ASVS L1 evidence found no public/SPI geometry leak, new dependency, network/cloud path, commercial path, Demo/renderer drift, generated artifact, or premature product promotion. Output evidence, final caps, exhaustive safety, and promotion remain Phase 39/40 gates.
+
+### Phase 41 Observed Eye-Support Security Boundary
+
+- The current public surface adds only ten scalars: positive-only `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `innerCornerOpen`, `outerCornerOpen`, and `eyeSymmetry`, plus signed `eyeTilt`. Default/missing/non-finite values are zero and the exact current inventory is 48 stored fields: 47 numeric plus `filterId`.
+- Left/right contour and optional pupil payloads are package-only, `Sendable`, request-scoped, non-Codable evidence. They cross `CoordinateMapper` once, remain finite and closed-unit bounded, are not retained beyond the observation/request path, and never enter public/SPI APIs, persistence, logs, metrics, warnings, errors, descriptions, snapshots, or Demo imports.
+- Contours fail closed outside 6...16 points, 4 unique points, relative width `0.04...0.50`, height `0.01...0.30`, or area above `0.0004`. Pupils independently require 10% expanded containment, normalized ellipse offset at most `0.70`, and paired contour width/height ratios `0.50...2.00`. These reject biometric-adjacent malformed evidence and are not visual caps.
+- Pupil failure removes only `pupilSize`/`gazeCorrection` eligibility. Explicit missing/invalid contour sides remain empty with no proxy fallback and reach the resolver's complete-eye skip. A nil observed payload preserves only the established shipped zero-default compatibility path.
+- `check_eye_support_boundaries.py` fails closed on `rg` errors/unclassified matches, public/SPI support, Codable/persistence, raw diagnostic geometry, network/cloud or commercial paths, drift from manifest/Demo baseline `f1c28fa`, and tracked/staged/non-ignored-untracked output/gallery/staging/quarantine artifacts. Phase 41 adds no provider/output/final-cap/promotion, Demo, device, commercial, packaging, shipping, or launch-readiness claim.
 
 ## 3. Trust Boundaries
 
@@ -490,6 +498,11 @@ Before merging any change touching these areas, update `SECURITY.md` if needed:
 - `40-SECURITY.md` records ASVS L1 review with `threats_open: 0` for `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, and `lipPlump`.
 - Active-source checks fail closed for raw geometry/support exposure, internal Demo/renderer imports, compatibility drift, unclassified matches, network/cloud behavior, commercial paths, dependencies, and generated artifacts.
 - Diagnostics remain aggregate-only and redact paths, identifiers, coordinates, and support points. The existing privacy-manifest disposition is unchanged because Phase 40 adds no collected-data category, system API, remote transfer, account behavior, or tracking behavior.
+
+### v1.11 Phase 41 Eye Support Boundary
+
+- ASVS L1 boundary checks pass only when all active SDK source matches are explicitly classified, `rg` status is 0/1-aware and fail-closed otherwise, the `f1c28fa` manifest/Demo baseline is unchanged, and all four generated-artifact roots remain ignored and untracked/unstaged.
+- The privacy-manifest disposition remains unchanged: the package-only observed eye evidence is local, ephemeral, non-persistent, non-networked, and absent from diagnostic/public surfaces.
 
 | Date | Decision | Reason |
 | --- | --- | --- |

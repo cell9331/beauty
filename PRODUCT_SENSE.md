@@ -469,6 +469,14 @@ Manual or future checks still required before stronger product claims:
 - The exact `0.25` caps, exact reused `0.5`, selective missing-support behavior, and one provider-eligible combined retained set are automated acceptance criteria. `lipColor` remains color-only and supplies no true plump evidence.
 - `白牙` remains future teeth-region segmentation/color retouch, so branch-level `嘴唇` remains `partial`. This closeout adds no Demo UI and makes no device, commercial visual, performance, packaging, shipping, or launch-readiness claim.
 
+### 7.20 Phase 41 Public Eye Contract and Observed-Support Acceptance
+
+- A host can set ten independent, default-zero controls without changing legacy behavior: positive-only `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `innerCornerOpen`, `outerCornerOpen`, and `eyeSymmetry`, plus signed `eyeTilt`. Acceptance locks exact 48-field Codable/source compatibility and neutral legacy 38-key payloads.
+- SDK-core acceptance requires one coordinate conversion for package-only request-scoped left/right contours and optional pupils, deterministic side/winding semantics, contour bounds of 6...16 points / 4 unique points / relative width `0.04...0.50` / height `0.01...0.30` / area above `0.0004`, plus pupil containment/offset/paired-ratio validation. These support ceilings are not visual-strength caps.
+- Missing or invalid pupils make only `pupilSize` and `gazeCorrection` ineligible. Explicit missing or invalid contour sides do not borrow proxies and preserve the whole-eye fail-closed skip while unrelated domains remain safe. Diagnostics are fixed and aggregate-only.
+- Automated acceptance is the full SwiftPM suite, 24/24 adversarial boundary self-tests, and 10/10 live checks with unchanged `f1c28fa` manifest/Demo baseline, clean active-source privacy/network/commercial scans, and ignored/untracked/unstaged output/gallery/staging/quarantine roots.
+- This phase establishes scalar and private-support readiness only. It does not claim provider transforms, visual output, final caps, row or branch promotion, Demo UI, physical-device behavior, commercial naturalness, optimized performance, packaging, shipping, launch readiness, or full `眼睛` completion; those remain Phase 42-44 or later work.
+
 ## 8. Preset Product Contract
 
 MVP built-in presets:
@@ -548,3 +556,4 @@ Before merging product-facing changes, verify:
 | 2026-07-06 | Phase 26 proves public still-image geometry intent without claiming visible geometry output. | Host apps can exercise detection-backed planning through `BeautyEngine.processResult(...)`, while saved-output quality and `脸型` completion remain later evidence gates. |
 | 2026-07-07 | Phase 27 proves SDK-only saved-output geometry foundation without promoting per-tool face-shape status. | The renderer/helper path now verifies same-dimension geometry outputs and degradation evidence, while Phase 28 remains the owner for `脸型` tool completion. |
 | 2026-07-08 | Phase 28 promotes only the scoped existing-parameter `脸型` rows after per-tool saved-output evidence passes. | `下颌线` stays a `jawSlim` alias, branch-level `脸型` remains partial, and broader UI/device/commercial claims stay out of scope. |
+| 2026-07-16 | Phase 41 accepts ten compatible public eye scalars only with validated private observed support and fail-closed privacy/scope evidence. | Honest pupil/gaze/symmetry readiness requires request-scoped observed evidence; provider semantics, visual caps, output, and promotion remain downstream. |

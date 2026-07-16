@@ -191,6 +191,14 @@ Phase 28 scoped face-shape behavior:
 - Provider preflight and final conflict-scaled emissions use one retained baseline with at most fourteen nose/mouth removals. Unsupported work contributes nothing to active domains, totals, weakened counts, scale, warnings, final strengths, or dispatch. Phase 40 retains ownership of the exhaustive eight-field transition matrix.
 - Phase 38 passed 152/152 focused and 259/259 full SwiftPM tests; public diagnostics remain category/aggregate-only and the standard code review is clean.
 
+### Phase 41 Compatible Eye-Support Reliability Contract
+
+- The current 48-field contract adds positive-only `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `innerCornerOpen`, `outerCornerOpen`, and `eyeSymmetry`, plus signed `eyeTilt`. All ten default to zero, decode missing legacy 38-key values as zero, and normalize non-finite values to zero without changing the four shipped eye outputs.
+- One Vision request carries package-only left/right contours and optional pupils through `CoordinateMapper` exactly once. Support is request-scoped and deterministic; malformed or absent evidence cannot trigger a second request, synthesized pupil, persistence, or network fallback.
+- Contours accept 6...16 points, at least 4 unique points, relative width `0.04...0.50`, height `0.01...0.30`, and bounding area above `0.0004`. Pupils use 10% expanded containment, normalized ellipse offset at most `0.70`, and paired width/height ratios `0.50...2.00`. These fixed support-validation ceilings are not provider caps.
+- Invalid/missing pupils zero only `pupilSize` and `gazeCorrection` eligibility. An explicit missing/invalid contour side stays empty without proxy fallback and activates the existing complete-eye skip; safe sibling domains continue. Only a nil observed payload uses the legacy proxy path for shipped zero-default compatibility.
+- Failures remain observable only as fixed category codes and aggregate counts. No raw side label, point, contour, pupil, box, offset, file path, or framework object is logged or measured. Provider transforms, final caps, facade/renderer output, promotion, Demo, device, commercial, packaging, shipping, and launch-readiness evidence remain downstream.
+
 ## 7. Observability Model
 
 First-version diagnostics live in `BeautyCore/Diagnostics`; do not create a separate diagnostics package until another product actually shares it. Use three layers:
@@ -264,6 +272,8 @@ Error metrics:
 - Consecutive detection failures.
 
 ## 9. Logging Policy
+
+Phase 41 observed eye contours, pupils, semantic supports, side identity, boxes, and offsets are never log fields; only fixed redacted reason codes and aggregate skip/count metrics are permitted.
 
 Log levels:
 
@@ -598,6 +608,11 @@ Before a release-like build:
 - All eight mouth geometry fields share exact no-face, missing-support, provider-empty, stale, reused, and transition coverage. Reused eligible geometry scales once by exact `0.5`; `lipPlump` and peak definition are removed when their required local support is unavailable while safe siblings and color/filter domains continue.
 - Exact `0.25` caps, capped counts, warnings, totals, retained counts, conflict scale, effective strengths, and final emissions are asserted from the same provider-eligible baseline.
 - The full SwiftPM suite passes 265/265; strict renderer evidence remains 308/308 decoded same-dimension outputs. These deterministic gates do not replace physical-device, subjective visual, optimized performance, or long-run preview evidence.
+
+### v1.11 Phase 41 Eye Support Closeout
+
+- Full SwiftPM plus 24 adversarial helper self-tests and 10 live checks are the Phase 41 reliability gate. A scan/tool error, missing path/baseline, unclassified active-source match, Demo/manifest drift, or generated-artifact mutation blocks completion.
+- Phase 41 locks support availability and degradation inputs only. Field vectors, visual caps, conflict convergence, public-facade output, renderer matrices, gallery evidence, and exact-row promotion remain Phase 42-44 work.
 
 | Date | Decision | Reason |
 | --- | --- | --- |
