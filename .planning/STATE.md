@@ -29,7 +29,7 @@ See: `.planning/PROJECT.md` (updated 2026-07-14)
 ## Current Position
 
 Phase: 41 of 44 — Public Contract and Observed Eye Support
-Plan: 2 of 4 — Add the ten compatibility-safe public eye scalars and neutral regression evidence
+Plan: 2 of 4 — Thread private Vision observed-eye contours and pupils through detection
 Status: Ready to execute
 Last activity: 2026-07-16 — Completed 41-01-PLAN.md
 
