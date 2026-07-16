@@ -26,24 +26,26 @@
 
 ## 3. Active
 
-### P-2026-07-16-v1-11-eye-remaining-geometry-initialization
+No active execution plan. v1.11 is initialized and Phase 41 is ready for discussion/planning.
+
+## 4. Completed
+
+### C-2026-07-16-v1-11-milestone-initialization
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
-| Scope | Initialize v1.11 `Eye Remaining Geometry Controls` through auto-approved scope, focused research, testable requirements, and a continued roadmap. |
-| Contracts | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/research/`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md` |
-| Verification | Pending structured state, roadmap coverage, Markdown hygiene, and Git diff checks. |
+| Completed | 2026-07-16 |
+| Scope | Initialized v1.11 `Eye Remaining Geometry Controls` through `--auto`: project context, focused Apple Vision/repository research, 24 testable requirements, four-phase roadmap, state reset, and atomic documentation commits. |
+| Requirements | EYE-01 through EYE-23 and DOC-01 defined and mapped exactly once across Phases 41-44; 24/24 coverage. |
+| Research | `.planning/research/{STACK,FEATURES,ARCHITECTURE,PITFALLS,SUMMARY}.md` records the no-new-dependency stack, private observed contour/pupil seam, ten-row geometry scope, and failure modes. |
+| Verification | `roadmap.analyze` parses four phases with 24 mapped requirements and no duplicate IDs; `verify-summary` passes; `git diff --check` passes; no Swift/Xcode build run because this workflow changed planning documents only. |
+| Boundary | `去脂` and `祛红血丝` remain future retouch/color work; no Demo/device/commercial/performance/packaging/shipping/launch claim is made. |
 
-Checklist:
+Outcome:
 
-- [x] Confirm v1.10 is complete and v1.11 continues at Phase 41.
-- [x] Separate ten geometry rows from `去脂` / `祛红血丝` retouch scope.
-- [x] Complete focused project/platform research.
-- [x] Define 24 testable v1.11 requirements; roadmap mapping remains pending.
-- [ ] Validate state, roadmap, traceability, and document hygiene.
-
-## 4. Completed
+- Phase 41 `Public Contract and Observed Eye Support` is next.
+- Pupil, gaze, and symmetry are explicitly gated on private, frame-scoped observed support rather than symmetric proxy-only evidence.
+- Historical v1.1/v1.2 phase directories remain preserved as repository history; they are not v1.10 leftovers and were not deleted during this milestone switch.
 
 ### C-2026-07-14-v1-10-autonomous-closeout
 
