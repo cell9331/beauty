@@ -4,9 +4,9 @@ milestone: v1.11
 milestone_name: Eye Remaining Geometry Controls
 current_phase: 41
 current_phase_name: Public Contract and Observed Eye Support
-status: planning
+status: executing
 stopped_at: v1.11 roadmap created; Phase 41 ready for discussion
-last_updated: "2026-07-16T02:38:37.389Z"
+last_updated: "2026-07-16T03:45:08.384Z"
 last_activity: 2026-07-16
 last_activity_desc: v1.11 roadmap created; Phase 41 ready for discussion
 progress:
@@ -30,7 +30,7 @@ See: `.planning/PROJECT.md` (updated 2026-07-14)
 
 Phase: 41 of 44 — Public Contract and Observed Eye Support
 Plan: —
-Status: Defining requirements
+Status: Ready to execute
 Last activity: 2026-07-16 — v1.11 roadmap created; Phase 41 ready for discussion
 
 ### Phase 40 Mouth Geometry Safety and Ledger Closeout Result

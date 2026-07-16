@@ -40,7 +40,21 @@
   4. The adapter emits deterministic upper/lower/inner/outer/corner/center/pupil support and rejects malformed, duplicate-only, out-of-bounds, implausible, or overlarge input before provider use.
   5. Missing or implausible pupils remove only pupil-dependent requests, while missing either eye contour retains the established complete eye-domain skip and no raw geometry crosses public or diagnostic boundaries.
 
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 41-01-PLAN.md — Add the ten compatibility-safe public eye scalars and neutral regression evidence.
+- [ ] 41-02-PLAN.md — Thread private Vision contour/pupil support through one coordinate-mapping boundary.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 41-03-PLAN.md — Canonicalize/validate support and prove field-local degradation.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 41-04-PLAN.md — Run fail-closed boundaries and synchronize owning contracts.
 
 ### Phase 42: Independent Eye Geometry and Pipeline Integration
 

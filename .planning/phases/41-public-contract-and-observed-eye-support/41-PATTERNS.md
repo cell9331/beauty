@@ -1,8 +1,8 @@
 # Phase 41: Public Contract and Observed Eye Support - Pattern Map
 
 **Mapped:** 2026-07-16  
-**Files analyzed:** 11 planned source/test files  
-**Analogs found:** 11 / 11 (exact or role/data-flow match; new observed-eye validation has only partial analogs)
+**Files analyzed:** 13 planned source/test/tool files
+**Analogs found:** 13 / 13 (exact or role/data-flow match; new observed-eye validation has only partial analogs)
 
 ## File Classification
 
@@ -16,6 +16,8 @@
 | `BeautySDK/Tests/BeautyDetectionTests/FaceObservationMappingTests.swift` | test | coordinate transform | same file's bounds/mirror mapping tests | exact |
 | `BeautySDK/Tests/BeautyDetectionTests/CoordinateMapperTests.swift` | test | deterministic transform matrix | same file's orientation and mirror matrix | exact |
 | `BeautySDK/Sources/BeautyEffects/Planning/BeautyFaceGeometryAdapter.swift` | adapter/utility | transform + validation | same file's group-gated derived geometry | role/data-flow match |
+| `BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift` | resolver/service | request-response + degradation | same file's complete-eye gating and field-zeroing | exact |
+| `.planning/phases/41-public-contract-and-observed-eye-support/check_eye_support_boundaries.py` | utility/checker | batch static scan + fail-closed self-test | `.planning/milestones/v1.9-phases/37-nose-safety-boundary-and-branch-closeout/check_nose_safety_boundaries.py` | exact |
 | `BeautySDK/Tests/BeautyEffectsTests/BeautyFaceGeometryAdapterTests.swift` | test | transform/validation batch | `FaceShapeWarpProviderTests.swift` adapter assertions | role-match (new file) |
 | `BeautySDK/Tests/BeautyEffectsTests/MissingLandmarkDegradationTests.swift` | integration test | field-local degradation | same file's missing-eye and redaction tests | exact |
 | `BeautySDK/Tests/BeautyEffectsTests/EyeWarpProviderTests.swift` | regression test | provider request-response | same file's deterministic eye/skip tests | exact |
@@ -152,6 +154,28 @@ Keep deterministic derivation and field-local empty arrays. Add a private valida
 
 Follow the existing pattern of constructing a `BeautyFaceObservation`, calling `BeautyFaceGeometryAdapter.makeGeometry`, and asserting exact `SIMD2<Float>` arrays with a shared `assertPoints` helper. Add synthetic fixtures for reversed/rotated winding, side identity, orientation/mirror-mapped supports, duplicate/degenerate/oversized contours, missing contour, missing/outside pupil, and valid contour + invalid pupil. Verify deterministic repeated calls and that contour siblings survive pupil invalidation.
 
+### `BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift` (resolver/service, request-response + degradation)
+
+**Analog:** existing geometry requirement scan, eye-domain branch, and zeroing helper in the same file (lines 9-36, 285-313, 467-472).
+
+**Geometry request classification** (lines 9-36): keep `requiresFaceGeometry` as the single normalized nonzero scan. If Plan 03 adds the ten eye fields to this scan, use the existing `parameters.normalized()` + `anyNonZero(...)` pattern and preserve zero-field short-circuit behavior.
+
+**Complete-eye gating** (lines 285-313): retain the ordering of reused/stale/missing checks, then call the adapter/provider only when a face geometry value exists. An empty result inserts `.eyes`, emits aggregate `beauty.effects.skippedEyeDomains`, and appends the fixed `eye_inputs_missing` warning; no support payload belongs in the plan.
+
+**Field-local zeroing** (lines 467-472): the current `zeroEyeStrengths` helper clears all four shipped eye strengths for a complete-eye failure. Extend any new support-eligibility zeroing as a separate field-local operation so invalid pupils clear only pupil-dependent fields while a missing contour continues to fail the complete eye domain. Preserve sibling-domain activity, reused/stale semantics, and redacted metrics/warnings.
+
+### `.planning/phases/41-public-contract-and-observed-eye-support/check_eye_support_boundaries.py` (utility/checker, batch static scan + fail-closed self-test)
+
+**Analog:** `.planning/milestones/v1.9-phases/37-nose-safety-boundary-and-branch-closeout/check_nose_safety_boundaries.py`.
+
+**Fail-closed command/search handling** (analog lines 1-8, 60-78, 107-112): keep the executable Python 3 entry point, classify `rg` status 0 as matches, 1 as clean no-match, and every other status as a blocking error. Wrap each check with an exception boundary that returns a failed `Result` rather than silently passing.
+
+**Safe repository/path scope** (analog lines 81-105, 114-125): locate the repository by `.git` plus `BeautySDK/Package.swift`; resolve required files beneath the root and reject missing, escaping, or symlinked paths. The eye checker should scope scans to active SDK/Demo sources and Phase 41 artifacts, not arbitrary filesystem paths.
+
+**Boundary scan composition** (analog lines 162-232, 243-256, 367-381): compose named `Result` checks for public/SPI geometry leakage, diagnostics, network/dependency paths, generated artifacts, and any eye-field inventory or forbidden raw coordinate tokens. Use explicit classifiers for allowed documentation/testing literals and fail on unclassified matches; return aggregate counts/reason codes only.
+
+**Deterministic self-test** (analog lines 425-518 and 521-550): expose `--self-test` and normal repository modes. Exercise positive and adversarial fixtures for no-match/match/tool-error search states, unclassified matches, path escape rejection, and tracked/staged artifact rejection; print `PASS`/`FAIL` lines and exit nonzero unless every check passes. Do not let a self-test fixture write outside a temporary directory.
+
 ### `BeautySDK/Tests/BeautyEffectsTests/MissingLandmarkDegradationTests.swift` (integration test, field-local degradation)
 
 **Analog:** existing missing-eye and redaction tests (lines 7-35, 1294-1341).
@@ -229,6 +253,6 @@ These are intentional Phase 41 additions, not reasons to import a dependency, ad
 ## Metadata
 
 **Analog search scope:** `BeautySDK/Sources/{BeautyCore,BeautyDetection,BeautyEffects,BeautySDK}` and `BeautySDK/Tests/{BeautyCoreTests,BeautyDetectionTests,BeautyEffectsTests}`; root contracts `DESIGN.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, and `PLANS.md` were consulted for boundaries.  
-**Files scanned:** 11 primary analog files plus `CoordinateMapper`, `BeautyEffectResolver`, `BeautyDetectionSummary`, `BeautyValidationWarning`, `FaceGeometry`, and related fixture helpers.  
+**Files scanned:** 13 primary analog files/tools plus `CoordinateMapper`, `BeautyDetectionSummary`, `BeautyValidationWarning`, `FaceGeometry`, and related fixture helpers.
 **Pattern extraction date:** 2026-07-16.  
 **Scope guard:** Phase 41 owns EYE-01–EYE-07 compatibility, mapping, support validation, privacy, and degradation inputs only; provider transforms, caps, facade output, renderer matrices, gallery evidence, Demo/device/commercial work remain deferred.

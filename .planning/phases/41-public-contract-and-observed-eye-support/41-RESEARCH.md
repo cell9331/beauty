@@ -2,7 +2,7 @@
 
 **Researched:** 2026-07-16  
 **Domain:** Swift/Apple Vision private eye-landmark support and compatibility-safe SDK parameters  
-**Confidence:** HIGH for project boundaries and existing seams; MEDIUM for conservative geometry thresholds
+**Confidence:** HIGH for project boundaries, existing seams, and resolved support-validation thresholds; MEDIUM for optional real-portrait pupil coverage
 
 <user_constraints>
 ## User Constraints (from CONTEXT.md)
@@ -147,10 +147,10 @@ BeautySDK/Sources/BeautyDetection/BeautyFaceObservation.swift  # private observe
 BeautySDK/Sources/BeautyEffects/Planning/BeautyFaceGeometryAdapter.swift # validation/canonicalization
 BeautySDK/Tests/BeautyCoreTests/BeautyParametersTests.swift     # 48-field contract
 BeautySDK/Tests/BeautyDetectionTests/{CoordinateMapperTests,VisionFaceDetectorTests}.swift
-BeautySDK/Tests/BeautyEffectsTests/BeautyFaceGeometryAdapterTests.swift # Wave 0 if needed
+BeautySDK/Tests/BeautyEffectsTests/BeautyFaceGeometryAdapterTests.swift # required first-task test seam
 ```
 
-These are existing seams except the adapter-focused test file, which is a likely Wave 0 addition. [VERIFIED: `rg --files BeautySDK/Sources BeautySDK/Tests`]
+These are existing seams except the adapter-focused test file, whose creation and synthetic fixtures are an explicit first-task dependency before adapter implementation. [VERIFIED: `rg --files BeautySDK/Sources BeautySDK/Tests`; checker-resolved Phase 41 constraint]
 
 ### Pattern 1: Defaulted compatibility-safe scalar
 
@@ -324,16 +324,21 @@ Use the existing single request and do not persist `VNFaceObservation` or landma
 | A1 | Vision contour winding may vary across acquisition fixtures and therefore should not define semantics. | Common Pitfalls | Canonicalization tests could overfit an ordering that is actually stable; keep threshold/ordering decisions fixture-backed. [ASSUMED] |
 | A2 | A dedicated adapter-focused test file is preferable to placing all support tests in existing detector tests. | Recommended Project Structure | Planner may instead extend existing suites; no runtime impact. [ASSUMED] |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **What exact contour point ceiling and plausibility thresholds should Phase 41 lock?**
-   - What we know: CONTEXT requires explicit bounded fixture-tested thresholds, and existing source has no observed point-array validation. [VERIFIED: 41-CONTEXT.md; `rg` source inspection]
-   - What's unclear: The smallest safe values for all real portrait fixtures are not recorded. [VERIFIED: .planning/research/SUMMARY.md]
-   - Recommendation: Inventory available fixture point counts and choose conservative constants with malformed/oversized tests; do not label them final visual caps. [VERIFIED: 41-CONTEXT.md]
-2. **Which portrait fixtures expose valid pupils?**
-   - What we know: Existing detector tests iterate `e1.png`–`e6.jpg`, but current observation abstraction records only coarse landmark availability. [VERIFIED: VisionFaceDetectorTests.swift]
-   - What's unclear: Pupil eligibility and measured deviation are not yet inventoried. [VERIFIED: .planning/research/SUMMARY.md]
-   - Recommendation: Add fixture-level eligibility facts in Phase 41 tests, then let Phase 43 freeze output comparison counts. [VERIFIED: ROADMAP.md]
+### Resolved support-validation thresholds
+
+- Each per-eye contour accepts **6...16 input points** and must retain at least **4 unique finite points**. Reject a contour before `BeautyEffects` when any mapped point is non-finite or outside closed `[0,1]`, when the input exceeds 16 points, or when the result is duplicate-only or otherwise degenerate. [VERIFIED: checker-resolved Phase 41 planning constraint]
+- Relative to the owning face bounds, the contour bounding width must be in **`0.04...0.50`**, bounding height in **`0.01...0.30`**, and bounding area must be strictly greater than **`0.0004`**. Reject support outside these bounds. [VERIFIED: checker-resolved Phase 41 planning constraint]
+- Each pupil region accepts exactly **one unique point per anatomical side**. The mapped point must lie inside the owning contour bounds expanded by **10%**, and its normalized center offset must satisfy `sqrt((dx / halfWidth)^2 + (dy / halfHeight)^2) <= 0.70`. [VERIFIED: checker-resolved Phase 41 planning constraint]
+- Paired pupil plausibility additionally requires left/right owning-eye width ratios and height ratios each in **`0.50...2.00`**. A failed pupil rule invalidates only pupil-dependent support; valid contours and contour-dependent siblings remain available. [VERIFIED: checker-resolved Phase 41 planning constraint; 41-CONTEXT.md]
+- These constants are **support-validation ceilings**, not final visual-effect caps. Every boundary and just-inside/just-outside case must be fixture-tested; Phase 44 still owns final visual caps. [VERIFIED: checker-resolved Phase 41 planning constraint; ROADMAP.md]
+
+### Resolved fixture eligibility
+
+- Synthetic observations injected through `VisionFaceDetector.ObservationProvider` are the normative Phase 41 evidence for coordinate conversion, winding independence, anatomical sides, contour rejection, pupil-local rejection, and sibling survival. [VERIFIED: VisionFaceDetector.swift; checker-resolved Phase 41 planning constraint]
+- A real-portrait pupil inventory is optional exploratory evidence for Phase 43. Its absence or variation cannot block EYE-01 through EYE-07, because Phase 41 acceptance is determined by deterministic synthetic observations and the public compatibility suite. [VERIFIED: checker-resolved Phase 41 planning constraint; REQUIREMENTS.md]
+- No Phase 41 research question remains open. The planner should encode these thresholds and normative fixtures directly in the first plan tasks. [VERIFIED: checker-resolved Phase 41 planning constraint]
 
 ## Environment Availability
 
@@ -367,7 +372,7 @@ No missing dependency blocks Phase 41 implementation. [VERIFIED: command probes;
 | EYE-03 | 38-key legacy decode, 48-field round trip, reflected inventory. | Unit | same focused command | ✅ extend existing |
 | EYE-04 | Zero-default new fields preserve existing four-eye values. | Unit/regression | `swift test --package-path BeautySDK --filter BeautyEffectsTests.EyeWarpProviderTests` | ✅ existing; add neutral assertions |
 | EYE-05 | Vision contour/pupil conversion, finite bounds, orientation, mirror, no raw diagnostics. | Unit | `swift test --package-path BeautySDK --filter BeautyDetectionTests` | ✅ extend existing |
-| EYE-06 | Canonical ordering, side identity, malformed/duplicate/degenerate rejection. | Unit | `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyFaceGeometryAdapterTests` | ❌ likely Wave 0 |
+| EYE-06 | Canonical ordering, side identity, malformed/duplicate/degenerate rejection. | Unit | `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyFaceGeometryAdapterTests` | ❌ required first task |
 | EYE-07 | Pupil-only invalidation and complete eye-domain skip when either contour is absent. | Integration/unit | `swift test --package-path BeautySDK --filter BeautyEffectsTests.MissingLandmarkDegradationTests` | ✅ extend existing |
 
 Boundary scans should also assert no public support type, Codable geometry, Demo imports, raw coordinates in diagnostics, network/cloud path, new dependency, or generated artifacts. [VERIFIED: SECURITY.md; existing v1.9/v1.10 boundary evidence]
@@ -378,11 +383,13 @@ Boundary scans should also assert no public support type, Codable geometry, Demo
 - **Per wave merge:** Run `swift test --package-path BeautySDK`. [VERIFIED: AGENTS.md; PLANS.md]
 - **Phase gate:** Full SwiftPM suite plus active-source/privacy/artifact scans before planning moves to Phase 42. [VERIFIED: 41-CONTEXT.md; QUALITY_SCORE.md]
 
-### Wave 0 Gaps
+### Wave 0 / First-Task Dependencies
 
-- [ ] Add `BeautyFaceGeometryAdapterTests.swift` (or an equivalent focused suite) for support canonicalization and validation if no existing adapter tests are expanded. [VERIFIED: `rg --files BeautySDK/Tests`]
-- [ ] Add synthetic contour/pupil fixtures covering reversed winding, left/right side identity, all required orientations, mirrored metadata, missing pupil, outside pupil, duplicate-only, and over-ceiling input. [VERIFIED: 41-CONTEXT.md]
+- [ ] **Required first task:** create `BeautyFaceGeometryAdapterTests.swift` (or a deliberately named equivalent focused suite) before adapter implementation. It must encode the resolved contour and pupil thresholds as executable boundary cases. [VERIFIED: `rg --files BeautySDK/Tests`; checker-resolved Phase 41 planning constraint]
+- [ ] **Required first task:** create deterministic injected Vision observations covering reversed winding, anatomical left/right identity, all representative orientations, mirrored metadata, 6/16 accepted contour points, 5/17 rejected point counts, fewer than 4 unique points, non-finite/out-of-unit points, duplicate-only/degenerate contours, every face-relative width/height/area boundary, missing/outside/offset pupil, paired-ratio failure, and contour-sibling survival. [VERIFIED: 41-CONTEXT.md; checker-resolved Phase 41 planning constraint]
 - [ ] Add a public-boundary scan for new eye field names and forbidden geometry tokens, following prior phase gates. [VERIFIED: SECURITY.md; PLANS.md]
+
+These are planned implementation prerequisites, not unresolved research. Real portrait pupil availability may be recorded separately for Phase 43 but is not part of the Phase 41 gate. [VERIFIED: checker-resolved Phase 41 planning constraint]
 
 ## Security Domain
 
@@ -440,8 +447,8 @@ Boundary scans should also assert no public support type, Codable geometry, Demo
 
 **Confidence breakdown:**
 - Standard stack: HIGH — package manifest and local tool versions are directly verified; Apple Vision references are official. [VERIFIED/CITED]
-- Architecture: HIGH for ownership/privacy boundaries, MEDIUM for exact private support shape and thresholds because those remain discretionary. [VERIFIED: CONTEXT.md and source]
-- Pitfalls: HIGH — existing mapper tests, security contract, and prior phase evidence identify concrete failure modes; exact thresholds remain open. [VERIFIED: repository; CITED Apple pupil docs]
+- Architecture: HIGH for ownership/privacy boundaries and the now-resolved support-validation thresholds; exact private type names remain discretionary. [VERIFIED: CONTEXT.md; checker-resolved Phase 41 planning constraint]
+- Pitfalls: HIGH — existing mapper tests, security contract, prior phase evidence, and executable boundary values identify concrete failure modes. [VERIFIED: repository; checker-resolved Phase 41 planning constraint; CITED Apple pupil docs]
 
 **Research date:** 2026-07-16  
 **Valid until:** 2026-08-15 for this stable repository stack; re-check if Swift/Xcode deployment or Vision APIs change. [ASSUMED]
