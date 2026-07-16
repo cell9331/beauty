@@ -98,11 +98,31 @@ public enum BeautyEffectResolver {
         strengths.eyeDistance = capSigned(normalized.eyeDistance, cap: BeautySafetyCaps.eyeDistance, cappedCount: &cappedCount)
         strengths.eyeYPosition = capSigned(normalized.eyeYPosition, cap: BeautySafetyCaps.eyeYPosition, cappedCount: &cappedCount)
         strengths.eyeTailLift = capUnit(normalized.eyeTailLift, cap: BeautySafetyCaps.eyeTailLift, cappedCount: &cappedCount)
+        strengths.eyeHeight = capUnit(normalized.eyeHeight, cap: BeautySafetyCaps.eyeHeight, cappedCount: &cappedCount)
+        strengths.eyeLength = capUnit(normalized.eyeLength, cap: BeautySafetyCaps.eyeLength, cappedCount: &cappedCount)
+        strengths.upperEyelidLift = capUnit(normalized.upperEyelidLift, cap: BeautySafetyCaps.upperEyelidLift, cappedCount: &cappedCount)
+        strengths.pupilSize = capUnit(normalized.pupilSize, cap: BeautySafetyCaps.pupilSize, cappedCount: &cappedCount)
+        strengths.gazeCorrection = capUnit(normalized.gazeCorrection, cap: BeautySafetyCaps.gazeCorrection, cappedCount: &cappedCount)
+        strengths.lowerEyelidDrop = capUnit(normalized.lowerEyelidDrop, cap: BeautySafetyCaps.lowerEyelidDrop, cappedCount: &cappedCount)
+        strengths.eyeTilt = capSigned(normalized.eyeTilt, cap: BeautySafetyCaps.eyeTilt, cappedCount: &cappedCount)
+        strengths.innerCornerOpen = capUnit(normalized.innerCornerOpen, cap: BeautySafetyCaps.innerCornerOpen, cappedCount: &cappedCount)
+        strengths.outerCornerOpen = capUnit(normalized.outerCornerOpen, cap: BeautySafetyCaps.outerCornerOpen, cappedCount: &cappedCount)
+        strengths.eyeSymmetry = capUnit(normalized.eyeSymmetry, cap: BeautySafetyCaps.eyeSymmetry, cappedCount: &cappedCount)
         let hasRequestedEyeValues = anyNonZero(
             strengths.eyeSize,
             strengths.eyeDistance,
             strengths.eyeYPosition,
-            strengths.eyeTailLift
+            strengths.eyeTailLift,
+            strengths.eyeHeight,
+            strengths.eyeLength,
+            strengths.upperEyelidLift,
+            strengths.pupilSize,
+            strengths.gazeCorrection,
+            strengths.lowerEyelidDrop,
+            strengths.eyeTilt,
+            strengths.innerCornerOpen,
+            strengths.outerCornerOpen,
+            strengths.eyeSymmetry
         )
 
         strengths.noseSlim = capUnit(normalized.noseSlim, cap: BeautySafetyCaps.noseSlim, cappedCount: &cappedCount)
@@ -196,7 +216,11 @@ public enum BeautyEffectResolver {
         )
         let noseProvider = NoseWarpProvider()
         let mouthProvider = MouthWarpProvider()
+        let eyeProvider = EyeWarpProvider()
         if !staleGeometry, let faceGeometry {
+            strengths = eyeProvider
+                .fieldEmissions(face: faceGeometry, strengths: strengths)
+                .sanitizing(strengths)
             strengths = noseProvider
                 .fieldEmissions(face: faceGeometry, strengths: strengths)
                 .sanitizing(strengths)
@@ -302,7 +326,7 @@ public enum BeautyEffectResolver {
                 metrics["beauty.effects.skippedEyeDomains"] = 1
                 extraWarnings.append(Self.staleEyeSkippedWarning)
             } else if let faceGeometry {
-                let result = EyeWarpProvider().makeControlPoints(face: faceGeometry, strengths: strengths)
+                let result = eyeProvider.makeControlPoints(face: faceGeometry, strengths: strengths)
                 if result.points.isEmpty {
                     Self.zeroEyeStrengths(&strengths)
                     skippedDomains.insert(.eyes)
@@ -479,6 +503,16 @@ public enum BeautyEffectResolver {
         strengths.eyeDistance = 0
         strengths.eyeYPosition = 0
         strengths.eyeTailLift = 0
+        strengths.eyeHeight = 0
+        strengths.eyeLength = 0
+        strengths.upperEyelidLift = 0
+        strengths.pupilSize = 0
+        strengths.gazeCorrection = 0
+        strengths.lowerEyelidDrop = 0
+        strengths.eyeTilt = 0
+        strengths.innerCornerOpen = 0
+        strengths.outerCornerOpen = 0
+        strengths.eyeSymmetry = 0
     }
 
     private static func zeroNoseStrengths(_ strengths: inout BeautyEffectiveStrengths) {
