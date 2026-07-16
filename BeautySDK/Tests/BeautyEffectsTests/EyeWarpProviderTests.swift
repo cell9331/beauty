@@ -159,6 +159,60 @@ final class EyeWarpProviderTests: XCTestCase {
         XCTAssertEqual(result.skipReason, "eye_inputs_missing")
     }
 
+    func testPhase42FourteenNamedEmissionsAreIndependentAndEvidenceGated() {
+        let left = semanticSupport(side: .left, contour: FaceGeometry.fixture.leftEye, pupil: SIMD2<Float>(0.425, 0.385))
+        let right = semanticSupport(side: .right, contour: FaceGeometry.fixture.rightEye, pupil: SIMD2<Float>(0.575, 0.385))
+        let face = FaceGeometry(
+            bounds: FaceGeometry.fixture.bounds,
+            faceContour: FaceGeometry.fixture.faceContour,
+            leftEye: left.contour,
+            rightEye: right.contour,
+            nose: FaceGeometry.fixture.nose,
+            noseRoot: FaceGeometry.fixture.noseRoot,
+            noseTip: FaceGeometry.fixture.noseTip,
+            outerLips: FaceGeometry.fixture.outerLips,
+            upperLips: FaceGeometry.fixture.upperLips,
+            lowerLips: FaceGeometry.fixture.lowerLips,
+            innerLips: FaceGeometry.fixture.innerLips,
+            leftEyeSupport: left,
+            rightEyeSupport: right
+        )
+        var values = BeautyEffectiveStrengths()
+        values.eyeHeight = BeautySafetyCaps.eyeHeight
+        values.eyeLength = BeautySafetyCaps.eyeLength
+        values.upperEyelidLift = BeautySafetyCaps.upperEyelidLift
+        values.pupilSize = BeautySafetyCaps.pupilSize
+        values.gazeCorrection = BeautySafetyCaps.gazeCorrection
+        values.lowerEyelidDrop = BeautySafetyCaps.lowerEyelidDrop
+        values.eyeTilt = BeautySafetyCaps.eyeTilt
+        values.innerCornerOpen = BeautySafetyCaps.innerCornerOpen
+        values.outerCornerOpen = BeautySafetyCaps.outerCornerOpen
+        values.eyeSymmetry = BeautySafetyCaps.eyeSymmetry
+        let emissions = EyeWarpProvider().fieldEmissions(face: face, strengths: values)
+
+        XCTAssertFalse(emissions.eyeHeight.isEmpty)
+        XCTAssertFalse(emissions.eyeLength.isEmpty)
+        XCTAssertFalse(emissions.upperEyelidLift.isEmpty)
+        XCTAssertFalse(emissions.pupilSize.isEmpty)
+        XCTAssertFalse(emissions.gazeCorrection.isEmpty)
+        XCTAssertFalse(emissions.lowerEyelidDrop.isEmpty)
+        XCTAssertFalse(emissions.eyeTilt.isEmpty)
+        XCTAssertFalse(emissions.innerCornerOpen.isEmpty)
+        XCTAssertFalse(emissions.outerCornerOpen.isEmpty)
+        XCTAssertTrue(emissions.eyeSymmetry.isEmpty, "neutral measured pair is a symmetry no-op")
+        XCTAssertTrue(emissions.points.allSatisfy { $0.source.x.isFinite && $0.target.y.isFinite && (0...1).contains($0.target.x) })
+
+        values.pupilSize = BeautySafetyCaps.pupilSize
+        let noPupil = FaceGeometry(
+            bounds: face.bounds, faceContour: face.faceContour, leftEye: face.leftEye, rightEye: face.rightEye,
+            nose: face.nose, noseRoot: face.noseRoot, noseTip: face.noseTip, outerLips: face.outerLips,
+            upperLips: face.upperLips, lowerLips: face.lowerLips, innerLips: face.innerLips,
+            leftEyeSupport: semanticSupport(side: .left, contour: left.contour, pupil: nil),
+            rightEyeSupport: semanticSupport(side: .right, contour: right.contour, pupil: nil)
+        )
+        XCTAssertTrue(EyeWarpProvider().fieldEmissions(face: noPupil, strengths: values).pupilSize.isEmpty)
+    }
+
     private func shippedStrengths(from parameters: BeautyParameters) -> BeautyEffectiveStrengths {
         strengths(
             eyeSize: parameters.eyeSize,
@@ -184,5 +238,18 @@ final class EyeWarpProviderTests: XCTestCase {
 
     private func clampSigned(_ value: Float, _ cap: Float) -> Float {
         min(max(value, -cap), cap)
+    }
+
+    private func semanticSupport(side: BeautyObservedEyeSide, contour: [SIMD2<Float>], pupil: SIMD2<Float>?) -> BeautyEyeSemanticSupport {
+        let center = LandmarkGeometryHelper.center(of: contour)!
+        let upper = contour.filter { $0.y <= center.y }
+        let lower = contour.filter { $0.y >= center.y }
+        let outer = side == .left ? contour.min { $0.x < $1.x }! : contour.max { $0.x < $1.x }!
+        let inner = side == .left ? contour.max { $0.x < $1.x }! : contour.min { $0.x < $1.x }!
+        return BeautyEyeSemanticSupport(
+            side: side, contour: contour, upper: upper, lower: lower, inner: [inner], outer: [outer],
+            corners: [outer, inner], center: center, pupil: pupil,
+            span: SIMD2<Float>(contour.map(\.x).max()! - contour.map(\.x).min()!, contour.map(\.y).max()! - contour.map(\.y).min()!), tilt: 0
+        )
     }
 }
