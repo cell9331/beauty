@@ -1,99 +1,102 @@
 # Project Research Summary
 
 **Project:** Beauty
-**Domain:** Remaining mouth geometry controls in an existing local-first iOS SDK
-**Researched:** 2026-07-14
-**Confidence:** HIGH
+**Domain:** Remaining local-first eye geometry controls
+**Researched:** 2026-07-16
+**Confidence:** HIGH for scope and boundaries; MEDIUM for final calibration
 
 ## Executive Summary
 
-v1.10 should complete the five unresolved mouth geometry rows—`上下`, `倾斜`, `左右`, `M唇`, and true `丰唇`—without including `白牙`. The first three are signed whole-mouth transforms; M-lip and plump are positive local lip-shape controls. `白牙` is a teeth-region segmentation/color-retouch feature and remains a separate future slice, so `嘴唇` stays branch-level partial even after its geometry subset is complete.
+v1.11 can complete ten unresolved eye geometry rows without a new dependency, target, facade method, or render pass. The existing Swift/Vision/unified-warp stack is sufficient, but the current availability-only symmetric eye proxy is not sufficient for honest pupil, gaze, or symmetry behavior. The required architectural addition is package-internal, frame-scoped observed eye contour and optional pupil support derived from the existing Vision landmark request.
 
-No new dependency or rendering pass is needed. The correct extension point is the existing public `BeautyParameters` → package-internal Vision availability/geometry adapter → `MouthWarpProvider` → resolver/conflict convergence → unified warp → public-facade renderer evidence chain. Apple Vision already exposes both outer- and inner-lip landmark regions; the package should record inner-lip availability and derive explicit upper/lower supports without exposing raw geometry.
+The milestone should include `眼高`, `长度`, `提肌`, `眼瞳大小`, `眼神矫正`, `眼睑下至`, `倾斜`, `内眼角`, `外眼角`, and `对称`. It should exclude `去脂` and `祛红血丝`, which belong to retouch/color ownership. The largest risks are coordinate/side inversion, blink-inaccurate pupil input, aliases between similar controls, overaggressive automatic correction, and accounting that claims work the provider did not emit.
 
-The main risks are borrowed semantics, treating missing inner lips as missing all mouth geometry, losing signed direction, and allowing provider-empty work into conflict evidence. Three phases separate contract/support correctness, facade output evidence, and final safety/ledger promotion.
+## Key Findings
 
-## Key Decisions
+### Recommended Stack
 
-### Public Fields
+- Keep SwiftPM, Apple Vision, Core Image/Metal-backed output, the existing unified local warp, XCTest, and the bounded Python helper pattern.
+- Add no dependency or public geometry API.
+- Extend only the private detection-to-effects seam with validated request-scoped eye support.
 
-- `mouthYPosition`: signed whole-mouth vertical translation.
-- `mouthTilt`: signed whole-mouth rotation.
-- `mouthXPosition`: signed whole-mouth horizontal translation.
-- `lipPeakDefinition`: positive M-lip/cupid-bow peak definition, named product-neutrally.
-- `lipPlump`: positive local upper/lower lip plumping, explicitly not `lipColor` or mouth size.
+### Expected Features
 
-The stable inventory becomes 38 stored fields: 37 numeric values plus `filterId`. Old payloads and presets omit the new keys and decode all five to zero.
+**Must have:** ten independent default-zero public controls, exact 38-to-48 compatibility, observed contour/pupil support, fourteen named eye emissions, isolated facade output, exact safety/degradation, and redacted diagnostics.
 
-### Support and Degradation
+**Defer:** eye-fat removal, redness removal, manual gaze redirection, Demo UI, device/commercial/performance/packaging/launch claims.
 
-- Existing outer-lip support remains sufficient for shipped mouth fields and the three whole-mouth transforms.
-- Peak/plump additionally require inner-lip availability and valid explicit upper/lower supports.
-- Missing support removes only dependent fields; siblings continue.
-- Reused geometry applies the established exact `0.5`; stale geometry zeros all geometry fields; lip color keeps its independent color-domain policy.
-- Combined conflict convergence expands to six nose plus eight mouth geometry fields with at most fourteen monotonic removals.
+### Architecture Approach
 
-### Output Evidence
+Detection converts Vision eye contours and optional pupils into a private canonical coordinate representation. The adapter derives side-aware supports; the provider emits each of fourteen eye fields independently; the resolver removes unsupported work before and after conflict scaling; the unified warp renders; the facade exposes only images and aggregate redacted evidence.
 
-Add eight isolated cases to the current 36-case renderer: plus/minus for the three signed fields, one peak case, and one plump case. The derived exact matrix becomes 44 × 7 = 308 outputs. The helper must prove decode/dimensions, fixed mouth-ROI changes, signed-direction distinctions, peak/plump distinctions from confusable legacy controls, representative no-face behavior, and ignored/untracked containment.
+### Critical Pitfalls
 
-## Roadmap Implications
+1. Proxy-only gaze/symmetry evidence — require observed support.
+2. Origin, winding, or side inversion — canonicalize and lock conversion tests.
+3. Blink-implausible pupils — validate and fail only pupil-dependent fields.
+4. Vector aliases — prove full source/target displacement differences.
+5. Correction overreach — use dead zones and bounded reduction of measured deviation.
+6. Effective/emitted mismatch — use named emissions and bounded convergence.
 
-### Phase 38: Public Contract and Lip-Support Geometry
+## Implications for Roadmap
 
-**Delivers:** Five-field compatibility, `innerLips` availability, explicit upper/lower supports, eight-field mouth emissions, resolver/facade integration, and provider-eligible conflict convergence.
+### Phase 41: Public Contract and Observed Eye Support
+**Rationale:** Every advanced control depends on compatibility-safe scalar semantics and honest private support.
+**Delivers:** Exact 48-field contract, Vision contour/pupil capture, canonical conversion, validation, and privacy boundary.
 
-**Avoids:** API aliasing, support coupling, provider/conflict drift, and raw-geometry exposure.
+### Phase 42: Independent Eye Geometry and Pipeline Integration
+**Rationale:** Provider semantics must exist and be field-locally eligible before image evidence is meaningful.
+**Delivers:** Ten distinct transforms/corrections, fourteen named emissions, resolver/conflict/facade routing, and synthetic geometry evidence.
 
-### Phase 39: Public-Facade Mouth Geometry Output Evidence
+### Phase 43: Public-Facade Eye Geometry Output Evidence
+**Rationale:** Product rows require decoded saved-output visibility, direction, independence, correction, no-face, and artifact evidence.
+**Delivers:** Eleven isolated cases (signed tilt has two directions), derived 55-case matrix and 385 files if the seven-fixture inventory is unchanged, eligibility-aware strict checks, and ignored gallery.
 
-**Delivers:** Eight isolated cases, strict 308-output helper evidence, signed and semantic distinction checks, exact ignored gallery, and output-boundary security evidence.
+### Phase 44: Eye Geometry Safety and Ledger Closeout
+**Rationale:** Final caps and promotion must follow output calibration and exhaustive transition evidence.
+**Delivers:** All-fourteen degradation, exact provider-eligible convergence, boundary checker, ten-row promotion, and owner synchronization.
 
-**Avoids:** Provider-only completion claims, stale/partial galleries, sign loss, and plump/color/size confusion.
+### Phase Ordering Rationale
 
-### Phase 40: Mouth Geometry Safety and Ledger Closeout
+- Observed support precedes correction semantics so gaze/symmetry are not fabricated.
+- Provider eligibility precedes renderer claims so output cases cannot borrow sibling work.
+- Final cap and ledger promotion follow strict decoded output and exhaustive safety evidence.
 
-**Delivers:** Final exact caps, exhaustive eight-field support/freshness/combined behavior, fail-closed boundaries, exact five-row promotion, and synchronized current owners.
+### Research Flags
 
-**Avoids:** Unsupported work surviving into diagnostics/dispatch and false whole-branch completion.
-
-## Scope Boundaries
-
-### Included
-
-- Five new public numeric fields and package-internal support geometry.
-- SDK-core provider/resolver/facade/render evidence.
-- Compatibility, caps, degradation, combined weakening, redaction, artifact, and documentation gates.
-
-### Deferred
-
-- `白牙`, teeth segmentation/retouch, and branch-level `嘴唇` completion.
-- Demo UI, third-party dependencies, network/cloud, accounts/payments/VIP/commercial behavior.
-- Physical-device parity, commercial visual approval, performance/thermal certification, packaging, shipping, and launch readiness.
+- **Phase 41:** Deep planning should lock coordinate conversion, side canonicalization, support storage ceilings, and no-persistence enforcement.
+- **Phase 42:** Deep planning should define exact correction dead zones and symmetry dimensions without identity mirroring.
+- **Phase 43:** Planning must inspect actual fixture pupil/contour eligibility before freezing comparison counts.
+- **Phase 44:** Use established v1.9/v1.10 boundary-checker and convergence patterns.
 
 ## Confidence Assessment
 
-| Area | Confidence | Reason |
+| Area | Confidence | Notes |
 | --- | --- | --- |
-| Stack | HIGH | Existing path is shipped and audited; Apple documents both lip regions |
-| Scope | HIGH | Milestone title plus authoritative ledger cleanly separates geometry from `白牙` |
-| Architecture | HIGH | Reuses the established independent-field/provider/facade pattern from v1.9 |
-| Exact artistic caps | MEDIUM | Must be finalized only after facade output evidence |
-| M-lip/plump support geometry | MEDIUM | Explicit design is clear, but output naturalness needs Phase 39 calibration evidence |
+| Stack | HIGH | Existing stack and official Vision regions are sufficient. |
+| Features | HIGH | Repository ledger provides exact remaining rows and exclusions. |
+| Architecture | MEDIUM-HIGH | Boundary is clear; exact private representation belongs to Phase 41 planning. |
+| Pitfalls | HIGH | Official blink caveat and prior provider/convergence failures give concrete gates. |
+
+### Gaps to Address
+
+- Actual portrait fixture pupil availability and measurable deviation must be inventoried before Phase 43 freezes strict eligible-pair counts.
+- Final numeric caps, correction dead zones, and ROI thresholds remain provisional until visible output evidence.
+- Physical-device and commercial-naturalness validation remain explicitly outside this milestone.
 
 ## Sources
 
 ### Primary
 
-- Current source/tests and repository root contracts.
-- Archived v1.8 mouth and v1.9 nose milestone artifacts.
-- `docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md` and lips branch README.
-- Apple Vision `VNFaceLandmarks2D`: https://developer.apple.com/documentation/vision/vnfacelandmarks2d
+- [Apple `VNFaceLandmarks2D`](https://developer.apple.com/documentation/vision/vnfacelandmarks2d) — eye contours, pupils, normalization.
+- [Apple `VNFaceLandmarkRegion2D`](https://developer.apple.com/documentation/vision/vnfacelandmarkregion2d) — normalized point arrays.
+- [Apple pupil documentation](https://developer.apple.com/documentation/vision/vnfacelandmarks2d/leftpupil) — blink inaccuracy caveat.
+- Repository source and root contracts — current model, detector, adapter, provider, facade, safety, privacy, and ledger behavior.
 
-### Background
+### Secondary
 
-- `docs/06_beauty_parameters_spec.md` and `docs/09_algorithm_effects_implementation.md`.
+- Archived v1.6, v1.9, and v1.10 planning/evidence — established eye output and provider-owned convergence patterns.
 
 ---
-*Research completed: 2026-07-14*
+*Research completed: 2026-07-16*
 *Ready for roadmap: yes*

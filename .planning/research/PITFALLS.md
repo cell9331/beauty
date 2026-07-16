@@ -1,128 +1,101 @@
 # Pitfalls Research
 
-**Domain:** Adding five mouth geometry controls to a shipped local-first iOS SDK
-**Researched:** 2026-07-14
+**Domain:** Advanced eye geometry in a privacy-sensitive local iOS SDK
+**Researched:** 2026-07-16
 **Confidence:** HIGH
 
 ## Critical Pitfalls
 
-### 1. Borrowed Semantics
+### 1. Claiming correction from symmetric proxy geometry
 
-**Failure:** `M唇` reuses mouth size/smile vectors or `丰唇` reuses `lipColor`, so the ledger says independent while the SDK output is aliased.
+**Failure:** Gaze or symmetry tests pass although no observed offset/asymmetry exists.
+**Prevention:** Require private observed contour/pupil support and synthetic asymmetric fixtures at provider/facade boundaries; proxies may remain only for shipped zero-default compatibility.
+**Phase:** 41-42.
 
-**Prevention:** One public field, one named provider emission, isolated facade cases, and pairwise ROI evidence against the most confusable shipped controls.
+### 2. Coordinate or side inversion
 
-**Warning signs:** No new support model; equal control points; only aggregate mouth output tests.
+**Failure:** Left/right, upper/lower, inner/outer, or rotation direction reverses because Vision and renderer origins/winding differ.
+**Prevention:** One canonical conversion with exact fixture tests for orientation, mirroring, side identity, corners, and signed tilt.
+**Phase:** 41.
 
-**Phase:** 38 contract, 39 output.
+### 3. Blink-inaccurate pupil input survives
 
-### 2. Inner-Lip Absence Drops Valid Whole-Mouth Work
+**Failure:** Pupil/gaze controls warp an eyelid or jump toward an implausible pupil point. Apple documents that pupil location can be inaccurate during blinking.
+**Prevention:** Validate pupil containment, distance from contour center, finite bounds, and paired plausibility; fail only pupil-dependent fields.
+**Phase:** 41-42.
 
-**Failure:** Missing `innerLips` skips translation, tilt, size, width, or smile even though outer lips are sufficient.
+### 4. New controls alias shipped vectors
 
-**Prevention:** Separate whole-mouth and local-shape eligibility. Sanitize only `lipPeakDefinition` and `lipPlump` when inner/upper/lower support is unavailable.
+**Failure:** Height is radial size, length is distance, upper-lid lift is tail lift, or corners are generic length.
+**Prevention:** Lock source subsets and full displacement vectors; compare each new control to nearest shipped/new neighbors and both signed tilt directions.
+**Phase:** 42-43.
 
-**Warning signs:** One `hasMouthGeometry` Boolean or one aggregate provider guard.
+### 5. Automatic correction becomes identity replacement
 
-**Phase:** 38 and exhaustive Phase 40 degradation.
+**Failure:** Symmetry mirrors one eye or gaze correction recenters every pupil aggressively, changing identity and producing unnatural output.
+**Prevention:** Correct only measured deviation by a capped fraction, preserve a dead zone, and reject implausible inputs.
+**Phase:** 42 and final calibration in 44.
 
-### 3. Provider/Conflict Drift
+### 6. Effective strengths disagree with emitted work
 
-**Failure:** A field contributes to total, warning, scale, or weakened count but emits no final control point after scaling.
+**Failure:** Unsupported or final-scale-empty fields remain in totals, warnings, metrics, or active domains because another eye field emitted points.
+**Prevention:** Named fourteen-field emissions, preflight and post-scale sanitization, and bounded monotonic eye/nose/mouth convergence.
+**Phase:** 42 and 44.
 
-**Prevention:** Extend provider-owned preflight/final field emissions and the monotonic convergence loop to all six nose plus eight mouth geometry fields.
+### 7. Raw eye geometry leaks through diagnostics or state
 
-**Warning signs:** Effective non-zero strength with empty field emission; loop still bounded at nine.
-
-**Phase:** 38 implementation and Phase 40 exact-matrix evidence.
-
-### 4. Rotation/Translation Sign Loss
-
-**Failure:** Positive and negative direction produce the same output or one direction is clamped to zero.
-
-**Prevention:** Signed normalization/caps, vector-level direction assertions, plus/minus facade cases, and opposite-direction ROI comparison.
-
-**Warning signs:** `abs` applied before target calculation; only positive renderer cases.
-
-**Phase:** 38 and 39.
-
-### 5. Lip Plump Becomes Whole-Mouth Enlargement
-
-**Failure:** Plump changes mouth width/position or broad surrounding face regions rather than local lip thickness.
-
-**Prevention:** Use upper/lower outer+inner supports with local radii; compare plump against baseline, mouth size, and peak definition in a fixed mouth ROI above the watermark.
-
-**Warning signs:** Cardinal outer-lip points only; identical output to positive `mouthSize`.
-
-**Phase:** 38 provider design and 39 output.
-
-### 6. False Whole-Branch Completion
-
-**Failure:** Five geometry rows pass and docs claim `嘴唇` complete even though `白牙` has no segmentation/retouch evidence.
-
-**Prevention:** Promote exactly five rows; describe mouth geometry subset as complete; keep `白牙` future and branch partial.
-
-**Warning signs:** Branch ledger changes to `implemented`; teeth whitening appears in geometry tests.
-
-**Phase:** 40 closeout.
+**Failure:** Biometric-adjacent points, eye side, paths, or provider details become public, logged, serialized, or imported by Demo.
+**Prevention:** Package-only request-scoped support, fixed category codes, aggregate-only metrics, source scans, and no public support types.
+**Phase:** 41 and 44.
 
 ## Technical Debt Patterns
 
 | Shortcut | Immediate benefit | Long-term cost | Acceptable? |
 | --- | --- | --- | --- |
-| Derive local lip controls from outer ring only | Less adapter work | Cannot distinguish lip surface from mouth opening | No for M-lip/plump |
-| Add explicit zero keys to presets | Makes new schema visible | Hides missing-key compatibility | No |
-| One combined mouth helper array | Small provider type | Prevents per-field eligibility and exact diagnostics | No |
-| Hard-code expected output count | Fast test update | Drifts when renderer cases change | No; derive the matrix |
-| Track generated PNG evidence | Easy inspection | Violates repository binary-media policy | No |
+| Add ten fields but leave aggregate provider points | Less code | Cannot prove field-local degradation | Never. |
+| Reuse `eyeSize`/`eyeTailLift` evidence | Fewer cases | False product promotion | Never. |
+| Make pupils globally required | Simple guard | Disables contour-only controls and shipped behavior | Never. |
+| Persist Vision points for debugging | Easier inspection | Privacy and lifecycle expansion | Never. |
+| Tune caps before decoded output evidence | Fast constants | Unfounded naturalness contract | Provisional only until Phase 44. |
 
-## Performance and Reliability Traps
+## Performance and Security Traps
 
 | Trap | Symptom | Prevention |
 | --- | --- | --- |
-| Excessive control points/radii | Background or adjacent-feature distortion; higher warp cost | Small fixed point set, bounded radii, exact per-field output tests |
-| Non-convergent conflict repair | Repeated recomputation or inconsistent totals | Monotonic mask removal with maximum fourteen changes |
-| Stale gallery mixing | Helper passes against old files | Guarded clean generation, exact path bijection, bounded atomic publication |
-| Reused/stale policy drift | New fields stay full-strength or leak on stale geometry | Exhaustive eight-field freshness transitions |
+| Duplicate landmark requests | Increased still/realtime cost | Reuse the existing single face-landmark request and selected observation. |
+| Unbounded point arrays | Excess memory/work from malformed injection | Enforce small per-region ceilings and finite normalized coordinates. |
+| Per-point diagnostic output | Raw geometry leakage | Fixed codes plus aggregate counts only. |
+| Tracked output gallery | Repository bloat/licensing exposure | Existing ignore policy and tracked-artifact gate. |
 
-## Security Mistakes
+## “Looks Done But Isn’t” Checklist
 
-| Mistake | Risk | Prevention |
-| --- | --- | --- |
-| Logging upper/lower/inner support coordinates | Biometric-adjacent data leakage | Stable category codes and aggregate counts only |
-| Exposing internal support structs from `BeautySDK` | Public privacy/API expansion | Keep supports package-internal |
-| Introducing network or third-party landmark processing | Changes local-first threat model | Use existing on-device Vision path only |
-| Publishing untrusted generated paths | Filesystem/symlink risk | Reuse bounded descriptor-safe helper/gallery publication |
-
-## Looks Done But Is Not
-
-- [ ] Legacy 33-field payload decodes all five new fields to exact zero.
-- [ ] Each new signed field has both directions in provider and facade output evidence.
-- [ ] Peak/plump remain distinct from each other, mouth size, smile, and lip color.
-- [ ] Missing inner lips removes only local lip-shape fields.
-- [ ] Reused and stale geometry cover all eight mouth geometry fields.
-- [ ] Conflict totals/counts/scales match final emitted fields exactly.
-- [ ] Outputs/gallery are ignored, untracked, exact-count, and fresh-run derived.
-- [ ] `白牙` and branch-level `嘴唇` remain unpromoted.
+- [ ] Exact 48-field storage and complete legacy 38-key decode are both proven.
+- [ ] All ten controls have independent provider and facade evidence.
+- [ ] Pupil-missing/blink-implausible cases preserve contour-only siblings.
+- [ ] Positive/negative tilt is visibly and numerically distinct from tail lift.
+- [ ] Gaze/symmetry no-op on neutral support and reduce only measured deviation.
+- [ ] Reused/stale behavior covers all fourteen eye fields.
+- [ ] Combined totals/counts/scales equal final provider emissions.
+- [ ] Exactly ten geometry rows are promoted; `去脂`, `祛红血丝`, and branch-level `眼睛` remain partial.
 
 ## Pitfall-to-Phase Mapping
 
 | Pitfall | Prevention phase | Verification |
 | --- | --- | --- |
-| Borrowed semantics | 38-39 | Independent field/control-point and ROI comparisons |
-| Support coupling | 38, 40 | Missing-inner mixed-sibling matrix |
-| Conflict drift | 38, 40 | Exact totals, counts, scales, strengths, and emissions |
-| Sign loss | 38-39 | Positive/negative vector and output pairs |
-| Broad plump distortion | 39 | Mouth ROI and confusable-control comparison |
-| False branch completion | 40 | Exact ledger/current-owner scan |
+| Proxy correction | 41-42 | Observed-support contract and asymmetric synthetic evidence. |
+| Coordinate inversion | 41 | Exact conversion, side, orientation, and mirror tests. |
+| Pupil inaccuracy | 41-42 | Missing/outside/degenerate/blink-like rejection with sibling survival. |
+| Aliasing | 42-43 | Full-vector comparisons and fixed eye ROI output families. |
+| Overcorrection | 42-44 | Dead-zone, monotonic reduction, exact caps, visual thresholds. |
+| Accounting drift | 42-44 | Fourteen-field emissions and exact converged arithmetic. |
+| Geometry leakage | 41-44 | Public/SPI, serialization, log/metric, Demo-import, and active-source scans. |
 
 ## Sources
 
-- Phase 35 nose/mouth provider-convergence remediations in `PLANS.md` and archived evidence.
-- Phase 33-34 mouth output, degradation, boundary, and gallery evidence.
-- Phase 36 descriptor-safe renderer/helper/gallery remediations.
-- `SECURITY.md` and `RELIABILITY.md` current contracts.
+- [Apple `leftPupil`](https://developer.apple.com/documentation/vision/vnfacelandmarks2d/leftpupil) and [rightPupil](https://developer.apple.com/documentation/vision/vnfacelandmarks2d/rightpupil) — pupil locations may be inaccurate while blinking.
+- `SECURITY.md` — no landmark persistence or public raw geometry.
+- v1.9/v1.10 boundary and convergence evidence — provider-owned fail-closed patterns.
 
 ---
-*Pitfalls research for: v1.10 Mouth Remaining Geometry Controls*
-*Researched: 2026-07-14*
+*Pitfalls research for: Beauty v1.11 Eye Remaining Geometry Controls*
+*Researched: 2026-07-16*

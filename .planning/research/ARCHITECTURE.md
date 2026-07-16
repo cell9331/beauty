@@ -1,122 +1,82 @@
 # Architecture Research
 
-**Domain:** Mouth geometry expansion inside the existing modular iOS SDK
-**Researched:** 2026-07-14
-**Confidence:** HIGH
+**Domain:** Private observed eye geometry through an existing local-first facade
+**Researched:** 2026-07-16
+**Confidence:** HIGH for boundaries; MEDIUM for private support representation until Phase 41 planning
 
 ## Recommended Architecture
 
 ```text
-BeautyCore
-  BeautyParameters (+5 defaulted fields)
-        ↓
-BeautyDetection
-  outerLips + innerLips availability (package-only)
-        ↓
-BeautyEffects Planning
-  BeautyFaceGeometryAdapter
-    whole-mouth outer support
-    explicit upper/lower + inner-lip support
-        ↓
-  BeautyEffectResolver / BeautyEffectiveStrengths / BeautySafetyCaps
-        ↓
-BeautyEffects Warp
-  MouthWarpProvider field emissions (+5 independent fields)
-  GeometryConflictResolver + bounded provider-eligible convergence
-        ↓
-BeautyRender unified warp
-        ↓
-BeautySDK facade output
-        ↓
-BeautyExampleRenderer + strict helper + ignored gallery
+BeautyParameters (10 new scalars; default zero)
+  -> BeautySDK geometry-required route
+  -> VisionFaceDetector
+       availability + private frame-scoped eye contours/pupils
+  -> BeautyFaceGeometryAdapter
+       validated side-aware upper/lower/corner/pupil supports
+  -> BeautyEffectResolver
+       normalization, caps, freshness, field-local eligibility
+  -> EyeWarpProvider
+       14 independent emissions (4 shipped + 10 new)
+  -> provider-eligible conflict convergence
+  -> existing unified local warp
+  -> public image + redacted aggregate evidence
 ```
 
 ## Component Responsibilities
 
-| Component | New responsibility | Must not own |
+| Component | Responsibility | v1.11 change |
 | --- | --- | --- |
-| `BeautyParameters` | Store/normalize/code five public values compatibly | Caps, landmarks, product labels |
-| `BeautyDetection` | Report `innerLips` availability beside existing `outerLips` | Public/raw coordinate exposure |
-| `BeautyFaceGeometryAdapter` | Construct validated package-internal whole/upper/lower lip supports | Product field semantics or diagnostics |
-| `MouthWarpProvider` | Emit and sanitize each of eight mouth geometry fields independently | Global conflict policy or color effects |
-| `BeautyEffectResolver` | Cap, degrade, route, redact, and preserve eligible siblings | Fabricating missing supports |
-| `GeometryConflictResolver` | Include every retained geometry field exactly once | Counting provider-empty work |
-| Facade/renderer/helper | Prove observable output and compatibility boundaries | Direct internal target imports |
+| `BeautyParameters` | Stable host-facing scalar contract | Add ten defaulted fields across all manual model seams; exact 38-to-48 compatibility. |
+| `BeautyDetection` observation | Selected face and landmark evidence | Carry validated package-only normalized eye contour/pupil values for the current request; never public or persisted. |
+| `VisionFaceDetector` | Vision request and coordinate conversion | Convert left/right eye and optional pupil points from face-bounds coordinates into the repository image-normalized convention with finite/bounds checks. |
+| `BeautyFaceGeometryAdapter` | Package observation to render support | Produce side-aware ordered contours, upper/lower subsets, corners, centers, and optional pupil anchors; no fabricated pupil. |
+| `EyeWarpProvider` | Field-specific vectors and eligibility | Expand from aggregate point output to fourteen named field emissions and sanitize each independently. |
+| Resolver/conflict pipeline | Effective strengths, warnings, metrics | Remove unsupported work before and after scaling so effective values equal emitted work. |
+| Renderer/helper | Public behavior evidence | Add isolated cases, eligibility-aware ROI/direction/independence checks, and ignored artifact containment. |
 
-## Support Model
+## Architectural Patterns
 
-### Whole-Mouth Transforms
+### Private Ephemeral Support
 
-`mouthYPosition`, `mouthTilt`, and `mouthXPosition` require a valid outer-lip ring and center. They transform the whole mouth and can remain eligible when `innerLips` is absent.
+Raw Vision points remain package-internal and request-scoped. They may flow from detection to geometry planning but must not appear in public models, errors, logs, metrics, serialized state, or Demo imports. This is a deliberate extension of the availability-only seam because gaze and symmetry cannot be evidenced honestly from symmetric proxies.
 
-### Local Lip Shape
+### Side-Aware Canonicalization
 
-`lipPeakDefinition` and `lipPlump` require explicit upper/lower supports plus an inner-lip opening. The adapter should derive these supports only from the presence of both Vision outer- and inner-lip groups. If any required support is missing, malformed, non-finite, duplicate-only, or displacement-ineligible, only the dependent field becomes zero.
+Vision points use a face-bounding-box coordinate system with a lower-left origin, while repository rendering uses its established image-normalized convention. Convert once, validate once, and canonicalize each eye into semantic upper/lower/inner/outer supports independent of input winding. Tests must cover orientation, left/right identity, and mirrored metadata.
 
-The package currently stores group availability and synthesizes normalized support geometry from the face bounds. v1.10 should follow that established seam rather than introducing raw landmark arrays into public models or diagnostics.
+### Field-Local Provider Eligibility
 
-## Public Data Contract
+The provider owns named emissions for all fourteen eye fields. Missing pupils remove only `pupilSize` and `gazeCorrection`; malformed paired comparison removes only `eyeSymmetry`; valid contour siblings continue. After conflict scaling, any field whose displacement becomes ineligible is removed from totals, counts, metrics, warnings, and dispatch.
 
-```swift
-public var mouthYPosition: Float       // signed
-public var mouthTilt: Float            // signed
-public var mouthXPosition: Float       // signed
-public var lipPeakDefinition: Float    // positive-only
-public var lipPlump: Float             // positive-only
-```
+### Correction Rather Than Fabrication
 
-- All initializer arguments default to zero.
-- Missing JSON keys decode to zero; existing preset files remain unchanged.
-- Existing fields and meanings remain stable.
-- Stored inventory changes atomically from 33 to 38 fields.
+`gazeCorrection` moves a validated pupil offset toward its eye center by a bounded fraction. `eyeSymmetry` moves only measured inter-eye differences toward a conservative midpoint. Neither control emits when measured deviation is absent, ambiguous, or outside plausible bounds.
 
-## Provider Emission Contract
+## Integration Boundaries
 
-Extend `MouthWarpFieldEmissions` from three to eight named arrays. Its `sanitizing` operation is the one per-field truth source for preflight and final scaled eligibility. The resolver must not infer support from an aggregate non-empty point list.
+| Boundary | Invariant |
+| --- | --- |
+| Public SDK ↔ detection | Scalar parameters trigger existing detection; no geometry type becomes public. |
+| Vision ↔ package observation | Coordinates are finite, normalized, side-aware, ephemeral, and independently optional. |
+| Observation ↔ adapter | Observed contours are preferred for new controls; zero-default new fields preserve all shipped proxy behavior. |
+| Adapter ↔ provider | Each field declares its exact support prerequisites. |
+| Provider ↔ resolver | Provider emissions are the source of eligibility before final evidence. |
+| Resolver ↔ public result | Only fixed codes, counts, scales, and aggregate summaries cross the facade. |
 
-Suggested geometry semantics:
+## Suggested Build Order
 
-- `mouthYPosition`: translate eligible outer/upper/lower points on Y while preserving sign.
-- `mouthXPosition`: translate eligible points on X while preserving sign.
-- `mouthTilt`: rotate eligible points about mouth center; positive/negative directions remain distinct.
-- `lipPeakDefinition`: raise the two upper-lip peaks relative to the upper center without moving the whole mouth.
-- `lipPlump`: move upper and lower outer/inner supports apart locally without applying `lipColor` or whole-mouth scaling.
-
-Exact displacement constants and final caps remain provisional until output evidence is collected.
-
-## Conflict and Degradation Flow
-
-1. Normalize and cap every field.
-2. Apply freshness policy: reused mouth geometry scales by exact `0.5`; stale geometry becomes zero; lip color remains its independent color-domain policy.
-3. Preflight all eight mouth geometry fields through provider-owned emissions.
-4. Compute combined geometry total from the retained baseline.
-5. Apply weakening.
-6. Recheck final emissions; remove any threshold-crossing field and recompute until stable.
-7. Record active/skipped domains, warning, count, scale, and dispatch from the same converged set.
-
-The existing loop bound of nine nose/mouth fields must be updated to the exact combined retained field count: six nose plus eight mouth fields, so at most fourteen monotonic mask changes.
-
-## Phase Ordering
-
-1. **Phase 38 — Public Contract and Lip-Support Geometry:** compatibility, explicit supports, field emissions, resolver/facade integration.
-2. **Phase 39 — Public-Facade Output Evidence:** eight cases, 308 derived outputs, ROI/direction/distinction checks, ignored gallery.
-3. **Phase 40 — Mouth Geometry Safety and Ledger Closeout:** final caps, exhaustive support/freshness/conflict behavior, fail-closed boundaries, exact five-row promotion.
-
-## Anti-Patterns
-
-- Do not alias M-lip/plump to existing size or color fields.
-- Do not make `innerLips` part of all mouth eligibility; whole-mouth transforms need only outer support.
-- Do not add a new package or Metal pass per field.
-- Do not expose or log raw support points.
-- Do not promote branch-level `嘴唇` while `白牙` remains unresolved.
+1. Public 48-field compatibility and private support representation.
+2. Ten independent provider semantics plus fourteen-field resolver integration.
+3. Public-facade renderer/helper/gallery evidence.
+4. Exact caps, exhaustive degradation/convergence, security boundary, and promotion.
 
 ## Sources
 
-- Current package architecture and source files named above.
-- `ARCHITECTURE.md`, `DESIGN.md`, `SECURITY.md`, `RELIABILITY.md`.
-- v1.8 mouth and v1.9 independent-geometry milestone archives.
-- Apple Vision face landmarks: https://developer.apple.com/documentation/vision/vnfacelandmarks2d
+- `ARCHITECTURE.md`, `DESIGN.md`, `SECURITY.md`, and `RELIABILITY.md` — owning repository boundaries.
+- `BeautyFaceObservation.swift`, `VisionFaceDetector.swift`, `BeautyFaceGeometryAdapter.swift`, and `EyeWarpProvider.swift` — current implementation seams.
+- [Apple `VNFaceLandmarks2D`](https://developer.apple.com/documentation/vision/vnfacelandmarks2d) — face-bounds-normalized eye and pupil regions.
+- [Apple Vision coordinate overview](https://developer.apple.com/documentation/vision) — normalized Vision coordinate convention.
 
 ---
-*Architecture research for: v1.10 Mouth Remaining Geometry Controls*
-*Researched: 2026-07-14*
+*Architecture research for: Beauty v1.11 Eye Remaining Geometry Controls*
+*Researched: 2026-07-16*

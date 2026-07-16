@@ -39,7 +39,7 @@ Checklist:
 
 - [x] Confirm v1.10 is complete and v1.11 continues at Phase 41.
 - [x] Separate ten geometry rows from `去脂` / `祛红血丝` retouch scope.
-- [ ] Complete focused project/platform research.
+- [x] Complete focused project/platform research.
 - [ ] Define and map all v1.11 requirements exactly once.
 - [ ] Validate state, roadmap, traceability, and document hygiene.
 

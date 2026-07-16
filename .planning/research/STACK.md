@@ -1,72 +1,58 @@
 # Stack Research
 
-**Domain:** Existing iOS beauty SDK — remaining mouth geometry controls
-**Researched:** 2026-07-14
+**Domain:** Local-first iOS SDK eye geometry controls
+**Researched:** 2026-07-16
 **Confidence:** HIGH
 
-## Recommendation
+## Recommended Stack
 
-v1.10 needs no new framework, package, executable target, or remote service. Extend the existing Swift/SwiftPM, Apple Vision, `BeautyEffects` unified warp, Metal render, XCTest, and Python evidence-helper stack already proven through v1.9.
+### Core Technologies
 
-## Core Technologies
-
-| Technology | Repository baseline | v1.10 purpose | Decision |
+| Technology | Version | Purpose | Why Recommended |
 | --- | --- | --- | --- |
-| Swift / SwiftPM | Swift 6.3.3 observed in Phase 21 | Public parameter compatibility, package-internal lip supports, provider/resolver behavior, tests | Reuse unchanged |
-| Apple Vision | Platform SDK through `VisionFaceDetector` | Detect outer- and inner-lip landmark-group availability | Extend the existing adapter; no alternate detector |
-| Existing unified warp / Metal | `MouthWarpProvider` → `BeautyGeometryEffectPipeline` → `BeautyRender` | Whole-mouth translation/tilt and local lip-peak/plump control points | Reuse one pass; add no per-tool Metal pass |
-| XCTest | `BeautyCoreTests` and `BeautyEffectsTests` | Compatibility, support validation, provider, degradation, conflict, facade, boundary evidence | Extend focused suites |
-| Existing renderer + Python helper | `BeautyExampleRenderer`, strict PNG helpers, ignored gallery | Public-facade image evidence for eight isolated cases | Extend derived matrix to 44 cases × 7 fixtures |
+| Swift / SwiftPM | Swift tools 6.0; observed Swift 6.3.3 | Public model, detector seam, providers, tests | Existing package and concurrency boundaries already own every required capability. |
+| Apple Vision | iOS 17 deployment baseline | Eye contours and optional pupil locations | `VNFaceLandmarks2D` exposes left/right eye outlines and left/right pupil points in face-bounds-normalized coordinates. |
+| Existing unified local warp | Repository implementation | Contour, lid, corner, pupil, correction, and symmetry vectors | Preserves the single geometry pipeline and public `BeautySDK` facade. |
+| Core Image / Metal-backed render path | Existing platform stack | Still-image output evidence | Already produces deterministic same-dimension facade output without a new render pass. |
 
-## Stack Additions
+### Supporting Tools
 
-None.
-
-The only platform capability not currently represented in the package model is Vision's `innerLips` region. Apple documents `outerLips` as the outside lip outline and `innerLips` as the outline of the space between the lips. v1.10 should record availability for both, but keep all generated geometry package-internal and diagnostics aggregate-only.
-
-## Development Tools
-
-| Tool | Purpose | v1.10 use |
+| Tool | Purpose | When to Use |
 | --- | --- | --- |
-| `swift test --package-path BeautySDK` | Runtime contract verification | Focused then full suite |
-| `BeautyExampleRenderer` | Public-facade still-image exercise | Eight new isolated mouth geometry cases |
-| Existing strict output/gallery helpers | Decoder, dimensions, ROI, signed-direction, containment | Derive expected matrix from renderer cases; reject partial/stale runs |
-| `rg`, `git diff --check`, `git check-ignore` | Boundary and artifact scans | Public inventory, private geometry, no network/commercial imports, ignored PNGs |
+| XCTest | Contract, geometry, degradation, facade, and boundary evidence | Every phase; table-driven for scalar contracts and focused tests for vector semantics. |
+| Python 3 standard library | Strict decoded output and gallery checks | Phase 43; keep the helper self-contained and bounded. |
+| Existing promotion checker pattern | Active-source/privacy/artifact fail-closed gate | Phase 44 before any ledger row changes. |
 
-## Alternatives Considered
+## Stack Decision
 
-| Recommended | Alternative | Why not for v1.10 |
+No package, target, third-party SDK, model download, network service, or new public result type is needed. The one material stack change is how existing Vision results are represented internally: v1.11 needs private, frame-scoped normalized eye-contour and pupil support rather than availability-only symmetric proxies for advanced correction fields.
+
+## What NOT to Use
+
+| Avoid | Why | Use Instead |
 | --- | --- | --- |
-| Existing `MouthWarpProvider` | A provider or Metal pass per tool | Duplicates control-point policy and breaks the established unified-warp boundary |
-| Vision outer/inner-lip availability | Third-party dense-landmark SDK | Adds dependency, privacy, packaging, and license scope not requested |
-| Five semantic public fields | Alias new rows to `mouthSize`, `mouthWidth`, `smile`, or `lipColor` | Would borrow evidence and make controls non-independent |
-| Ignored generated outputs | Tracked PNG golden baselines | Repository policy excludes binary media and current evidence is intentionally reproducible/local |
+| Third-party face/beauty SDK | Adds privacy, licensing, binary, and supply-chain scope | Apple Vision plus existing package-owned warp. |
+| Core ML gaze model | A new model/resource/runtime contract is not required for bounded center correction | Validate pupil position relative to its observed eye contour. |
+| Persisted landmarks or public geometry types | Expands biometric-adjacent data exposure | Package-internal, frame-scoped value support consumed before public results. |
+| Deterministic symmetric proxy points for gaze/symmetry evidence | Cannot represent an observed offset or asymmetry | Actual private contour/pupil points with strict validation. |
+| New eye-only render pass | Splits conflict accounting and output behavior | Existing unified local warp and facade route. |
 
-## Compatibility Contract
+## Version Compatibility
 
-- Add exactly five numeric fields with defaulted public initializer arguments and missing-key decode to zero.
-- Preserve all existing field names, meanings, coding keys, preset payloads, and source call sites.
-- Public inventory becomes exactly 38 stored fields: 37 numeric values plus `filterId`.
-- New fields proposed by this research: signed `mouthYPosition`, signed `mouthTilt`, signed `mouthXPosition`, positive-only `lipPeakDefinition`, and positive-only `lipPlump`.
-- The names are project decisions derived from the current product-neutral naming convention; `lipPeakDefinition` avoids exposing the reference UI label `M唇` as an SDK concept.
-
-## What Not to Add
-
-| Avoid | Reason | Use instead |
+| Component | Compatible With | Notes |
 | --- | --- | --- |
-| Teeth segmentation or `teethWhitening` | Not geometry; needs a separate mask/retouch ownership contract | Keep `白牙` future |
-| Demo UI rows | Milestone is SDK-core and facade-evidence only | Renderer cases and ledger updates |
-| Raw landmark logging or persistence | Biometric-adjacent geometry is private | Stable reason codes and aggregate counts |
-| New preset keys | Existing preset JSON is compatibility evidence | Prove missing-key zero defaults |
+| `BeautySDK` package | iOS 17+, macOS 14+ | Preserve current `Package.swift` platforms and tools version. |
+| Legacy public model | Exact 38 stored fields | Missing ten v1.11 keys must decode to zero; new inventory becomes 48 stored fields = 47 numeric plus `filterId`. |
+| Existing presets | Current bundled JSON | Leave payloads textually unchanged; missing keys prove neutral compatibility. |
+| Existing eye fields | `eyeSize`, `eyeDistance`, `eyeYPosition`, `eyeTailLift` | Zero-default new fields must not change their vectors, caps, or evidence. |
 
 ## Sources
 
-- Repository: `BeautyParameters.swift`, `MouthWarpProvider.swift`, `BeautyEffectResolver.swift`, `BeautyGeometryEffectPipeline.swift`, and v1.8/v1.9 milestone evidence.
-- Repository authority: `ARCHITECTURE.md`, `DESIGN.md`, `SECURITY.md`, `RELIABILITY.md`, and `docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md`.
-- Apple Vision: https://developer.apple.com/documentation/vision/vnfacelandmarks2d
-- Apple Vision `innerLips`: https://developer.apple.com/documentation/vision/vnfacelandmarks2d/innerlips
-- Apple Vision `outerLips`: https://developer.apple.com/documentation/vision/vnfacelandmarks2d/outerlips
+- [Apple `VNFaceLandmarks2D`](https://developer.apple.com/documentation/vision/vnfacelandmarks2d) — eye contours, pupil regions, and face-bounds-normalized coordinates.
+- [Apple `VNFaceLandmarkRegion2D`](https://developer.apple.com/documentation/vision/vnfacelandmarkregion2d) — normalized point arrays and point counts.
+- [Apple `leftPupil`](https://developer.apple.com/documentation/vision/vnfacelandmarks2d/leftpupil) — optional pupil location and documented blink inaccuracy.
+- `BeautySDK/Package.swift`, `EyeWarpProvider.swift`, `VisionFaceDetector.swift`, and `BeautyFaceGeometryAdapter.swift` — current repository stack and integration seams.
 
 ---
-*Stack research for: v1.10 Mouth Remaining Geometry Controls*
-*Researched: 2026-07-14*
+*Stack research for: Beauty v1.11 Eye Remaining Geometry Controls*
+*Researched: 2026-07-16*

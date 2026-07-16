@@ -1,87 +1,81 @@
 # Feature Research
 
-**Domain:** Remaining SDK-core mouth geometry controls
-**Researched:** 2026-07-14
-**Confidence:** HIGH
+**Domain:** Remaining SDK-core eye geometry controls
+**Researched:** 2026-07-16
+**Confidence:** HIGH for scope; MEDIUM for final visual calibration
 
-## Scope Resolution
+## Feature Landscape
 
-The source ledger has six unresolved mouth rows. The milestone title narrows scope to geometry controls, so v1.10 includes five rows and deliberately excludes `白牙`:
+### Geometry Scope for v1.11
 
-| Ledger row | Public semantic | Range | Geometry support | v1.10 |
+| Ledger row | Proposed public semantic | Range family | Required private support | Distinction to prove |
 | --- | --- | --- | --- | --- |
-| `上下` | `mouthYPosition` | signed `-1...1` | Whole outer-lip support | Include |
-| `倾斜` | `mouthTilt` | signed `-1...1` | Whole outer-lip support around mouth center | Include |
-| `左右` | `mouthXPosition` | signed `-1...1` | Whole outer-lip support | Include |
-| `M唇` | `lipPeakDefinition` | positive `0...1` | Explicit upper-lip plus inner-lip support | Include |
-| `丰唇` | `lipPlump` | positive `0...1` | Explicit upper/lower plus inner-lip support | Include |
-| `白牙` | Separate teeth-retouch contract | positive if later designed | Teeth region/mask, not mouth warp | Defer |
+| `眼高` | `eyeHeight` | positive-only | upper/lower contour | Vertical aperture, not radial `eyeSize`. |
+| `长度` | `eyeLength` | positive-only | inner/outer corners | Horizontal span, not `eyeDistance`. |
+| `提肌` | `upperEyelidLift` | positive-only | upper lid | Upper-lid-local lift, not whole-eye Y position. |
+| `眼瞳大小` | `pupilSize` | positive-only | contour + pupil | Pupil-local radial geometry, not eye enlargement. |
+| `眼神矫正` | `gazeCorrection` | positive-only automatic correction | contour + pupil | Moves an offset pupil toward a validated neutral center; does not invent a gaze direction. |
+| `眼睑下至` | `lowerEyelidDrop` | positive-only | lower lid | Lower-lid-local drop, not height or size alias. |
+| `倾斜` | `eyeTilt` | signed | both contours and centers | Opposite rotations preserve direction and differ from tail lift. |
+| `内眼角` | `innerCornerOpen` | positive-only | side-aware inner corners | Nasal-corner-local opening, not length. |
+| `外眼角` | `outerCornerOpen` | positive-only | side-aware outer corners | Temporal-corner-local opening, not tail lift or length. |
+| `对称` | `eyeSymmetry` | positive-only automatic correction | both observed contours | Reduces measured inter-eye height/center/tilt difference without mirroring identity or forcing a synthetic face. |
 
-## Table Stakes
+### Table Stakes
 
-| Feature | Why required | Complexity | Acceptance direction |
-| --- | --- | --- | --- |
-| Independent public semantics | Each ledger row must be controllable without borrowing shipped mouth fields | MEDIUM | One new field per row; legacy payloads decode zero |
-| Distinct signed transforms | Up/down, clockwise/counter-clockwise, and left/right must not collapse | MEDIUM | Positive/negative provider and output evidence |
-| Local lip-shape controls | M-lip and plump must change lip shape, not color or whole-mouth size | HIGH | Explicit upper/lower and inner-lip support; isolated outputs differ from legacy controls |
-| Fail-closed support policy | Missing inner lips must not fabricate local shape work | HIGH | Whole-mouth fields may remain; peak/plump zero independently |
-| Facade-visible output evidence | Provider vectors alone do not prove public SDK output | MEDIUM | Eight isolated cases over seven fixtures; strict helper and ignored gallery |
-| Conservative combination | Five new fields join all existing geometry without diagnostics drift | HIGH | Provider-eligible convergence and exact totals/counts/emissions |
+- Every public value is independent, normalized, default-zero, Codable-compatible, and source-compatible.
+- Every control has distinct provider vectors and isolated public-facade output evidence.
+- Contour-only work survives missing pupil support; pupil/gaze work fails closed independently.
+- Automatic gaze and symmetry controls only reduce a measured deviation; already-neutral or implausible support is a no-op.
+- Missing, malformed, blinking/implausible, reused, stale, and no-face inputs produce fixed redacted evidence and safe continuation.
+- Generated outputs and galleries remain ignored and untracked.
 
-## Differentiators
+### Explicitly Deferred
 
-| Feature | Value | Complexity | Boundary |
-| --- | --- | --- | --- |
-| Per-field support degradation | Supported siblings continue when one field lacks geometry | HIGH | No aggregate all-mouth false skip |
-| Evidence-backed semantic separation | True plump is proven distinct from `lipColor`, size, and M-lip | MEDIUM | ROI comparisons and no aliasing |
-| Exact geometry-slice closeout | Five rows promote atomically without overstating whole-branch completion | LOW | `白牙` stays future; `嘴唇` remains partial |
+| Feature | Reason |
+| --- | --- |
+| `去脂` | Local texture/retouch or segmentation work, not geometry. |
+| `祛红血丝` | Eye-region color/vascular retouch with separate containment and safety ownership. |
+| Manual X/Y gaze controls | The product row is correction, not gaze redirection; directional controls would need separate semantics and stronger visual-risk review. |
+| Demo sliders/screens | v1.11 is SDK-core and public-facade evidence only. |
 
-## Anti-Features
-
-| Feature | Why tempting | Why problematic | Alternative |
-| --- | --- | --- | --- |
-| Map `丰唇` to `lipColor` | Existing visible mouth effect | Tint is not structural geometry | Independent `lipPlump` |
-| Implement M-lip as `mouthSize` | Existing radial control points | Cannot prove lip-peak definition | Explicit upper/inner-lip points |
-| Treat missing inner lips as missing all mouth | Simple domain switch | Incorrectly drops valid translation/tilt/smile/size work | Per-field sanitization |
-| Include `白牙` to claim branch completion | One unresolved row remains | Requires segmentation/color safety and different evidence | Separate future milestone |
-| Add UI now | Makes rows visible in Demo | Expands frontend/product scope and validation burden | SDK facade cases only |
-
-## Dependencies
+## Feature Dependencies
 
 ```text
-Public field compatibility
-    └──> Detection records inner-lip availability
-          └──> Adapter builds explicit upper/lower lip supports
-                └──> Provider emits five independent field vectors
-                      └──> Resolver/facade/conflict integration
-                            └──> Isolated renderer/helper evidence
-                                  └──> Final caps, safety, and ledger promotion
+38-field compatibility
+  -> private observed eye contours
+     -> height / length / lids / tilt / corners
+     -> private optional pupil support
+        -> pupil size / gaze correction
+     -> paired-contour comparison
+        -> symmetry correction
+  -> provider-owned per-field eligibility
+     -> resolver/conflict/facade integration
+        -> saved-output evidence
+           -> final safety and exact promotion
 ```
 
-## Milestone Definition
+## Prioritization
 
-### Must Have
+| Group | User value | Cost | Priority |
+| --- | --- | --- | --- |
+| Contract and private support | HIGH | HIGH | P1 |
+| Contour/lid/corner transforms | HIGH | HIGH | P1 |
+| Pupil/gaze/symmetry correction | HIGH | HIGH | P1, after observed support |
+| Output and safety evidence | HIGH | HIGH | P1 |
+| Eye-fat/redness retouch | MEDIUM | HIGH and different domain | Future |
 
-- [ ] Five independent public parameters with compatibility and normalization tests.
-- [ ] Outer/inner and upper/lower support ownership with malformed/missing support rejection.
-- [ ] Provider, resolver, facade, degradation, conflict, redaction, and exact-emission evidence.
-- [ ] Eight isolated facade cases: positive/negative for three signed fields plus one peak and one plump case.
-- [ ] Exact promotion of five geometry rows while `白牙` and branch-level `嘴唇` remain partial.
+## Acceptance Shape
 
-### Future
-
-- [ ] `白牙` segmentation, local retouch, caps, output containment, privacy, and ownership.
-- [ ] Demo UI controls, device/commercial visual review, packaging, and launch evidence.
-- [ ] Independent upper- versus lower-lip thickness controls if product scope later asks for them.
+Completion means exactly the ten geometry rows move from `future` to `implemented` only after public contract, private support, provider, facade output, safety, degradation, security, and documentation evidence agree. Branch-level `眼睛` remains `partial` because the two retouch rows remain unresolved.
 
 ## Sources
 
-- `.planning/milestones/v1.8-REQUIREMENTS.md` future requirements MOUTH-F01 through MOUTH-F03.
-- `docs/meitu-function-blueprint/features/beauty-shaping/lips/README.md`.
-- `docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md`.
-- `docs/06_beauty_parameters_spec.md` advanced mouth parameter background.
-- Current source/tests under `BeautySDK/Sources/BeautyEffects` and `BeautySDK/Tests`.
+- `docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md` — authoritative row inventory and current status.
+- `docs/meitu-function-blueprint/features/beauty-shaping/eyes/README.md` — shipped four-field contract and future gaps.
+- `.planning/milestones/v1.6-*` — immutable evidence for the four shipped eye controls.
+- [Apple `VNFaceLandmarks2D`](https://developer.apple.com/documentation/vision/vnfacelandmarks2d) — available contour and pupil inputs.
 
 ---
-*Feature research for: v1.10 Mouth Remaining Geometry Controls*
-*Researched: 2026-07-14*
+*Feature research for: Beauty v1.11 Eye Remaining Geometry Controls*
+*Researched: 2026-07-16*
