@@ -146,7 +146,10 @@ final class VisionFaceDetectorTests: XCTestCase {
             pupil: [CoordinatePoint(x: 0.65, y: 0.20)]
         )
         var detector = VisionFaceDetector { _ in
-            [VisionDetectionObservation(observedEyeSupport: [left, right])]
+            [VisionDetectionObservation(
+                visionBounds: CoordinateRect(x: 0.10, y: 0.20, width: 0.80, height: 0.60),
+                observedEyeSupport: [left, right]
+            )]
         }
 
         let result = detector.detect(metadata: metadata())
@@ -154,7 +157,32 @@ final class VisionFaceDetectorTests: XCTestCase {
 
         XCTAssertEqual(support?.map(\.side), [.left, .right])
         XCTAssertNil(support?.first(where: { $0.side == .left })?.pupil)
-        XCTAssertEqual(support?.first(where: { $0.side == .right })?.pupil?.count, 1)
+        guard let pupil = support?.first(where: { $0.side == .right })?.pupil,
+              let point = pupil.first
+        else {
+            XCTFail("Expected one mapped right-eye pupil point")
+            return
+        }
+        XCTAssertEqual(pupil.count, 1)
+        XCTAssertEqual(point.x, 0.62, accuracy: 0.000_001)
+        XCTAssertEqual(point.y, 0.68, accuracy: 0.000_001)
+    }
+
+    func testEYE05ObservedSupportWithoutFiniteFaceBoundsFailsClosed() {
+        let support = BeautyObservedEyeSupport(
+            side: .left,
+            contour: [CoordinatePoint(x: 0.20, y: 0.20)]
+        )
+        var detector = VisionFaceDetector { _ in
+            [VisionDetectionObservation(observedEyeSupport: [support])]
+        }
+
+        let result = detector.detect(metadata: metadata())
+
+        XCTAssertEqual(result.observations, [])
+        XCTAssertEqual(result.summary.availability, .partial)
+        XCTAssertEqual(result.summary.reasons, [.mappingFailed])
+        XCTAssertFalse(String(describing: result.summary).contains("CoordinateRect"))
     }
 
     func testPIPE07DetectorUnavailableFailureUsesStructuredReasonOnly() {

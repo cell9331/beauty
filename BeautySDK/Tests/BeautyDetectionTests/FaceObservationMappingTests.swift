@@ -104,19 +104,23 @@ final class FaceObservationMappingTests: XCTestCase {
 
     func testEYE05ObservedPointsPreserveSideAcrossOrientationAndInputMirror() {
         let source = CoordinatePoint(x: 0.25, y: 0.75)
+        let bounds = CoordinateRect(x: 0.20, y: 0.10, width: 0.50, height: 0.60)
         let expected: [(CGImagePropertyOrientation, Bool, CoordinatePoint)] = [
-            (.up, false, CoordinatePoint(x: 0.25, y: 0.25)),
-            (.right, false, CoordinatePoint(x: 0.75, y: 0.25)),
-            (.left, false, CoordinatePoint(x: 0.25, y: 0.75)),
-            (.down, false, CoordinatePoint(x: 0.75, y: 0.75)),
-            (.up, true, CoordinatePoint(x: 0.75, y: 0.25))
+            (.up, false, CoordinatePoint(x: 0.325, y: 0.45)),
+            (.right, false, CoordinatePoint(x: 0.55, y: 0.325)),
+            (.left, false, CoordinatePoint(x: 0.45, y: 0.675)),
+            (.down, false, CoordinatePoint(x: 0.675, y: 0.55)),
+            (.up, true, CoordinatePoint(x: 0.675, y: 0.45))
         ]
 
         for (orientation, mirrored, expectedPoint) in expected {
             let left = BeautyObservedEyeSupport(side: .left, contour: [source])
             let right = BeautyObservedEyeSupport(side: .right, contour: [source])
             var detector = VisionFaceDetector { _ in
-                [VisionDetectionObservation(observedEyeSupport: [left, right])]
+                [VisionDetectionObservation(
+                    visionBounds: bounds,
+                    observedEyeSupport: [left, right]
+                )]
             }
             let result = detector.detect(
                 metadata: metadata(orientation: orientation, inputMirrored: mirrored),
@@ -125,7 +129,12 @@ final class FaceObservationMappingTests: XCTestCase {
             let supports = result.observations[0].observedEyeSupport ?? []
             XCTAssertEqual(supports.map(\.side), [.left, .right])
             for support in supports {
-                XCTAssertEqual(support.contour.first, expectedPoint)
+                guard let point = support.contour.first else {
+                    XCTFail("Expected mapped observed contour point")
+                    continue
+                }
+                XCTAssertEqual(point.x, expectedPoint.x, accuracy: 0.000_001)
+                XCTAssertEqual(point.y, expectedPoint.y, accuracy: 0.000_001)
             }
         }
     }
@@ -136,7 +145,10 @@ final class FaceObservationMappingTests: XCTestCase {
             contour: [CoordinatePoint(x: 1.25, y: 0.50)]
         )
         var detector = VisionFaceDetector { _ in
-            [VisionDetectionObservation(observedEyeSupport: [malformed])]
+            [VisionDetectionObservation(
+                visionBounds: CoordinateRect(x: 0.20, y: 0.20, width: 0.60, height: 0.60),
+                observedEyeSupport: [malformed]
+            )]
         }
 
         let result = detector.detect(metadata: metadata(orientation: .up))

@@ -221,14 +221,35 @@ package struct VisionFaceDetector: Sendable {
             imageBounds = nil
         }
 
-        let observedEyeSupport = try detection.observedEyeSupport.map { supports in
-            try supports.map { support in
+        let observedEyeSupport: [BeautyObservedEyeSupport]?
+        if let supports = detection.observedEyeSupport {
+            // Vision landmark points are normalized to the face bounding box,
+            // not to the full image. Keep this as the sole conversion boundary:
+            // compose the face-local point into Vision image space, then let the
+            // mapper apply orientation/mirror handling exactly once.
+            guard let visionBounds = detection.visionBounds,
+                  visionBounds.isFinite,
+                  visionBounds.width > 0,
+                  visionBounds.height > 0
+            else {
+                throw CoordinateMapper.MappingError.invalidCoordinate
+            }
+
+            observedEyeSupport = try supports.map { support in
                 BeautyObservedEyeSupport(
                     side: support.side,
-                    contour: try mapPoints(support.contour, with: mapper),
-                    pupil: try support.pupil.map { try mapPoints($0, with: mapper) }
+                    contour: try mapPoints(
+                        support.contour,
+                        in: visionBounds,
+                        with: mapper
+                    ),
+                    pupil: try support.pupil.map {
+                        try mapPoints($0, in: visionBounds, with: mapper)
+                    }
                 )
             }
+        } else {
+            observedEyeSupport = nil
         }
 
         return BeautyFaceObservation(
@@ -243,11 +264,23 @@ package struct VisionFaceDetector: Sendable {
 
     private func mapPoints(
         _ points: [CoordinatePoint],
+        in visionBounds: CoordinateRect,
         with mapper: CoordinateMapper
     ) throws -> [CoordinatePoint] {
         try points.map { point in
+            guard point.isFinite,
+                  (0...1).contains(point.x),
+                  (0...1).contains(point.y)
+            else {
+                throw CoordinateMapper.MappingError.invalidCoordinate
+            }
+
+            let visionImagePoint = CoordinatePoint(
+                x: visionBounds.x + point.x * visionBounds.width,
+                y: visionBounds.y + point.y * visionBounds.height
+            )
             let mapped = try mapper.map(
-                point: point,
+                point: visionImagePoint,
                 from: .visionNormalized,
                 to: .imageNormalized
             )
