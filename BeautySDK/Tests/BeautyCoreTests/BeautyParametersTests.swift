@@ -3,6 +3,100 @@ import BeautySDK
 
 // Requirement evidence: SDK-03, SDK-05.
 final class BeautyParametersTests: XCTestCase {
+    func testEYE01NewPositiveOnlyInputsNormalizeIndependently() {
+        let cases: [(name: String, value: Float, expected: Float)] = [
+            ("negative", -1, 0),
+            ("overflow", 2, 1),
+            ("in range", 0.37, 0.37),
+            ("NaN", .nan, 0),
+            ("positive infinity", .infinity, 0),
+            ("negative infinity", -.infinity, 0),
+        ]
+        let fields: [(name: String, keyPath: KeyPath<BeautyParameters, Float>, make: (Float) -> BeautyParameters)] = [
+            ("eyeHeight", \.eyeHeight, { BeautyParameters(eyeHeight: $0) }),
+            ("eyeLength", \.eyeLength, { BeautyParameters(eyeLength: $0) }),
+            ("upperEyelidLift", \.upperEyelidLift, { BeautyParameters(upperEyelidLift: $0) }),
+            ("pupilSize", \.pupilSize, { BeautyParameters(pupilSize: $0) }),
+            ("gazeCorrection", \.gazeCorrection, { BeautyParameters(gazeCorrection: $0) }),
+            ("lowerEyelidDrop", \.lowerEyelidDrop, { BeautyParameters(lowerEyelidDrop: $0) }),
+            ("innerCornerOpen", \.innerCornerOpen, { BeautyParameters(innerCornerOpen: $0) }),
+            ("outerCornerOpen", \.outerCornerOpen, { BeautyParameters(outerCornerOpen: $0) }),
+            ("eyeSymmetry", \.eyeSymmetry, { BeautyParameters(eyeSymmetry: $0) }),
+        ]
+
+        for field in fields {
+            for testCase in cases {
+                XCTAssertEqual(
+                    field.make(testCase.value)[keyPath: field.keyPath],
+                    testCase.expected,
+                    accuracy: 0.0001,
+                    "\(field.name) \(testCase.name)"
+                )
+            }
+        }
+    }
+
+    func testEYE02EyeTiltNormalizesSignedValuesAndBothDirections() {
+        let cases: [(name: String, value: Float, expected: Float)] = [
+            ("negative overflow", -2, -1),
+            ("positive overflow", 2, 1),
+            ("negative in range", -0.37, -0.37),
+            ("positive in range", 0.21, 0.21),
+            ("NaN", .nan, 0),
+            ("positive infinity", .infinity, 0),
+            ("negative infinity", -.infinity, 0),
+        ]
+
+        for testCase in cases {
+            XCTAssertEqual(
+                BeautyParameters(eyeTilt: testCase.value).eyeTilt,
+                testCase.expected,
+                accuracy: 0.0001,
+                "eyeTilt \(testCase.name)"
+            )
+        }
+    }
+
+    func testEYE01EYE02NormalizedCopyReappliesNewEyeRules() {
+        var parameters = BeautyParameters(
+            eyeHeight: 0.11,
+            eyeLength: 0.22,
+            upperEyelidLift: 0.33,
+            pupilSize: 0.44,
+            gazeCorrection: 0.55,
+            lowerEyelidDrop: 0.66,
+            eyeTilt: -0.17,
+            innerCornerOpen: 0.77,
+            outerCornerOpen: 0.88,
+            eyeSymmetry: 0.99
+        )
+        parameters.eyeHeight = 2
+        parameters.eyeLength = -1
+        parameters.upperEyelidLift = .nan
+        parameters.pupilSize = .infinity
+        parameters.gazeCorrection = -.infinity
+        parameters.lowerEyelidDrop = 2
+        parameters.eyeTilt = -2
+        parameters.innerCornerOpen = -1
+        parameters.outerCornerOpen = 2
+        parameters.eyeSymmetry = .nan
+
+        let normalized = parameters.normalized()
+
+        XCTAssertEqual(normalized.eyeHeight, 1)
+        XCTAssertEqual(normalized.eyeLength, 0)
+        XCTAssertEqual(normalized.upperEyelidLift, 0)
+        XCTAssertEqual(normalized.pupilSize, 0)
+        XCTAssertEqual(normalized.gazeCorrection, 0)
+        XCTAssertEqual(normalized.lowerEyelidDrop, 1)
+        XCTAssertEqual(normalized.eyeTilt, -1)
+        XCTAssertEqual(normalized.innerCornerOpen, 0)
+        XCTAssertEqual(normalized.outerCornerOpen, 1)
+        XCTAssertEqual(normalized.eyeSymmetry, 0)
+        XCTAssertEqual(parameters.eyeHeight, 2, "normalization returns a copy")
+        XCTAssertTrue(parameters.upperEyelidLift.isNaN, "normalization does not mutate the source")
+    }
+
     func testPhase38MOUTH01DefaultsAreZeroEffectAndExpose38StoredFields() {
         let parameters = BeautyParameters()
 
