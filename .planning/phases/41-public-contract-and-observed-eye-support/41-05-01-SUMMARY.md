@@ -82,9 +82,9 @@ status: complete
 
 ## Verification
 
-- `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyFaceGeometryAdapterTests` — 9 tests passed.
+- `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyFaceGeometryAdapterTests` — 13 tests passed.
 - `swift test --package-path BeautySDK --filter BeautyDetectionTests.FaceObservationMappingTests` — 8 tests passed.
-- `swift test --package-path BeautySDK` — 291 tests passed, 0 failures.
+- `swift test --package-path BeautySDK` — 295 tests passed, 0 failures before the final boundary-matrix-only test commit; the focused 13-test adapter suite passes after that commit.
 - `git diff --check` — passed before commit.
 
 ## Deviations from Plan
