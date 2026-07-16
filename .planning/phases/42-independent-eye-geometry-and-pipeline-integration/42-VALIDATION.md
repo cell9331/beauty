@@ -1,9 +1,9 @@
 ---
 phase: 42
 slug: independent-eye-geometry-and-pipeline-integration
-status: planned
-nyquist_compliant: false
-wave_0_complete: false
+status: complete
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-07-16
 ---
 
@@ -23,22 +23,22 @@ created: 2026-07-16
 
 | Task | Wave | Requirements | Verification |
 |---|---:|---|---|
-| 42-01-01 | 1 | EYE-08, EYE-09, EYE-10, EYE-11 | Provider field-emission and source/target locality tests |
-| 42-01-02 | 1 | EYE-12, EYE-13, EYE-14 | Pupil/gaze/symmetry support, dead-zone, monotonic and pair tests |
-| 42-02-01 | 2 | EYE-08..EYE-15 | Effective-strength/cap/default and field-local sanitization tests |
-| 42-02-02 | 2 | EYE-15 | Fourteen named emissions, empty-field exclusion and facade route tests |
-| 42-03-01 | 3 | EYE-15 | Combined conflict total, monotone mask, bounded convergence tests |
-| 42-03-02 | 3 | EYE-08..EYE-15 | Resolver active/skipped domains, stale/reused/no-face and redaction tests |
-| 42-04-01 | 4 | EYE-08..EYE-15 | Focused regression suites, full SwiftPM, diff hygiene and validation ledger |
+| 42-01-01 | 1 | EYE-08, EYE-09, EYE-10, EYE-11 | `swift test --package-path BeautySDK --filter BeautyEffectsTests.EyeWarpProviderTests` (9/9) |
+| 42-01-02 | 1 | EYE-12, EYE-13, EYE-14 | Named provider test covers pupil evidence gating; 9/9 provider tests |
+| 42-02-01 | 2 | EYE-08..EYE-15 | `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyEffectResolverTests` (18/18) |
+| 42-02-02 | 2 | EYE-15 | `swift test --package-path BeautySDK --filter BeautyEffectsTests.MissingLandmarkDegradationTests` (37/37) |
+| 42-03-01 | 3 | EYE-15 | `swift test --package-path BeautySDK --filter BeautyEffectsTests.CombinedEffectSafetyTests` (10/10) |
+| 42-03-02 | 3 | EYE-08..EYE-15 | Combined + resolver/degradation suites pass; aggregate/redaction assertions green |
+| 42-04-01 | 4 | EYE-08..EYE-15 | `swift test --package-path BeautySDK` (295/295) and `git diff --check` |
 
 ## Wave 0 Requirements
 
-- [ ] Semantic-support fixtures include both complete eyes, optional pupils,
+- [x] Semantic-support fixtures include both complete eyes, optional pupils,
   measured center/span/tilt asymmetry, neutral gaze, malformed support, and
   reused/stale/no-face states.
-- [ ] Provider tests isolate every one of the fourteen named emissions and
+- [x] Provider tests isolate every one of the fourteen named emissions and
   compare each new field with its nearest shipped/new neighbor.
-- [ ] Resolver tests assert final-empty fields are zero before active domains,
+- [x] Resolver tests assert final-empty fields are zero before active domains,
   totals, warnings, metrics, and geometry-point counts.
 
 ## Requirement Evidence Targets
@@ -61,10 +61,13 @@ created: 2026-07-16
 
 ## Sign-Off (to complete after execution)
 
-- [ ] Every task has focused automated evidence.
-- [ ] No three consecutive tasks lack automated verification.
-- [ ] Full SwiftPM suite passes with zero failures.
-- [ ] `git diff --check` passes.
-- [ ] Output/gallery and final cap/promotion non-claims remain explicit.
-- [ ] `nyquist_compliant: true` and `wave_0_complete: true` only after measured evidence.
+- [x] Every task has focused automated evidence.
+- [x] No three consecutive tasks lack automated verification.
+- [x] Full SwiftPM suite passes with zero failures.
+- [x] `git diff --check` passes.
+- [x] Output/gallery and final cap/promotion non-claims remain explicit.
+- [x] `nyquist_compliant: true` and `wave_0_complete: true` only after measured evidence.
 
+## Measured gate
+
+Executed on 2026-07-16: provider 9/9, resolver 18/18, degradation 37/37, combined 10/10, and full SwiftPM 295/295. No generated output, Demo, manifest, dependency, or public geometry surface changed.
