@@ -1,9 +1,37 @@
+import BeautyDetection
+
 struct WarpControlPoint: Equatable, Sendable {
     let source: SIMD2<Float>
     let target: SIMD2<Float>
     let radius: Float
     let strength: Float
     let falloff: Float
+}
+
+/// Validated, request-scoped semantic evidence for one observed eye.
+///
+/// This type deliberately remains target-internal: observed biometric-adjacent
+/// coordinates must never become part of the public or Codable surface.
+struct BeautyEyeSemanticSupport: Equatable, Sendable {
+    let side: BeautyObservedEyeSide
+    let contour: [SIMD2<Float>]
+    let upper: [SIMD2<Float>]
+    let lower: [SIMD2<Float>]
+    let inner: [SIMD2<Float>]
+    let outer: [SIMD2<Float>]
+    let corners: [SIMD2<Float>]
+    let center: SIMD2<Float>
+    let pupil: SIMD2<Float>?
+
+    var contourEligible: Bool { !contour.isEmpty }
+    var pupilEligible: Bool { pupil != nil }
+
+    // Semantic aliases keep downstream field naming explicit without exposing
+    // additional storage or changing the request-scoped representation.
+    var upperEyelid: [SIMD2<Float>] { upper }
+    var lowerEyelid: [SIMD2<Float>] { lower }
+    var innerCorner: [SIMD2<Float>] { inner }
+    var outerCorner: [SIMD2<Float>] { outer }
 }
 
 struct FaceBounds: Equatable, Sendable {
@@ -39,6 +67,8 @@ struct FaceGeometry: Equatable, Sendable {
     let upperLips: [SIMD2<Float>]
     let lowerLips: [SIMD2<Float>]
     let innerLips: [SIMD2<Float>]
+    let leftEyeSupport: BeautyEyeSemanticSupport?
+    let rightEyeSupport: BeautyEyeSemanticSupport?
     let freshness: LandmarkGeometryFreshness
 
     init(
@@ -53,6 +83,8 @@ struct FaceGeometry: Equatable, Sendable {
         upperLips: [SIMD2<Float>] = [],
         lowerLips: [SIMD2<Float>] = [],
         innerLips: [SIMD2<Float>] = [],
+        leftEyeSupport: BeautyEyeSemanticSupport? = nil,
+        rightEyeSupport: BeautyEyeSemanticSupport? = nil,
         freshness: LandmarkGeometryFreshness = .fresh
     ) {
         self.bounds = bounds
@@ -66,6 +98,8 @@ struct FaceGeometry: Equatable, Sendable {
         self.upperLips = upperLips
         self.lowerLips = lowerLips
         self.innerLips = innerLips
+        self.leftEyeSupport = leftEyeSupport
+        self.rightEyeSupport = rightEyeSupport
         self.freshness = freshness
     }
 
