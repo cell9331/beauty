@@ -31,6 +31,17 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         "eyeYPosition_plus0p20",
         "eyeYPosition_minus0p20",
         "eyeTailLift_0p25",
+        "eyeHeight_0p25",
+        "eyeLength_0p25",
+        "upperEyelidLift_0p25",
+        "pupilSize_0p25",
+        "gazeCorrection_0p25",
+        "lowerEyelidDrop_0p25",
+        "eyeTilt_plus0p25",
+        "eyeTilt_minus0p25",
+        "innerCornerOpen_0p25",
+        "outerCornerOpen_0p25",
+        "eyeSymmetry_0p25",
         "noseSlim_0p35",
         "noseWingSlim_0p35",
         "noseTipSize_plus0p30",
@@ -205,19 +216,7 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
             XCTAssertFalse(snippet.contains("BeautyDemo"), "\(caseID) should not introduce Demo coupling")
         }
 
-        for forbidden in [
-            "eyeCombo",
-            "eyeTailLift_minus",
-            "eyeHeight",
-            "eyeLength",
-            "pupil",
-            "gaze",
-            "lid",
-            "redness",
-            "innerCorner",
-            "outerCorner",
-            "symmetry"
-        ] {
+        for forbidden in ["eyeCombo", "eyeTailLift_minus", "redness"] {
             XCTAssertFalse(source.contains(forbidden), "Renderer should not add out-of-scope eye case: \(forbidden)")
         }
         for term in ["P" + "ro", "V" + "IP", "entitle" + "ment", "pre" + "mium", "pay" + "ment"] {
@@ -225,6 +224,47 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         }
         XCTAssertFalse(source.contains("net" + "work"), "Renderer should stay local-only")
         XCTAssertFalse(source.contains("cl" + "oud"), "Renderer should stay local-only")
+    }
+
+    func testPhase43EYE16EyeCasesUseExactlyOneNewPublicEyeParameter() throws {
+        let source = try rendererSource()
+        let expectedCases = [
+            ("eyeHeight_0p25", "eyeHeight: 0.25"),
+            ("eyeLength_0p25", "eyeLength: 0.25"),
+            ("upperEyelidLift_0p25", "upperEyelidLift: 0.25"),
+            ("pupilSize_0p25", "pupilSize: 0.25"),
+            ("gazeCorrection_0p25", "gazeCorrection: 0.25"),
+            ("lowerEyelidDrop_0p25", "lowerEyelidDrop: 0.25"),
+            ("eyeTilt_plus0p25", "eyeTilt: 0.25"),
+            ("eyeTilt_minus0p25", "eyeTilt: -0.25"),
+            ("innerCornerOpen_0p25", "innerCornerOpen: 0.25"),
+            ("outerCornerOpen_0p25", "outerCornerOpen: 0.25"),
+            ("eyeSymmetry_0p25", "eyeSymmetry: 0.25")
+        ]
+        let newEyeFields = [
+            "eyeHeight:", "eyeLength:", "upperEyelidLift:", "pupilSize:",
+            "gazeCorrection:", "lowerEyelidDrop:", "eyeTilt:", "innerCornerOpen:",
+            "outerCornerOpen:", "eyeSymmetry:"
+        ]
+
+        for (caseID, requiredParameter) in expectedCases {
+            let snippet = try rendererCaseSnippet(for: caseID, in: source)
+            XCTAssertTrue(snippet.contains(requiredParameter), "Missing \(requiredParameter) in \(caseID)")
+            XCTAssertEqual(
+                newEyeFields.filter { snippet.contains($0) },
+                [requiredParameter.split(separator: " ").first.map(String.init) ?? ""],
+                "\(caseID) should use exactly one new public eye parameter"
+            )
+            XCTAssertFalse(snippet.contains("BeautyDemo"), "\(caseID) should not introduce Demo coupling")
+        }
+
+        let caseIDs = rendererCaseIDs(in: source)
+        XCTAssertEqual(caseIDs.count, 55)
+        XCTAssertEqual(Set(caseIDs).count, 55)
+        for alias in ["eyeCombo", "manualGaze", "perEyeAsymmetry"] {
+            XCTAssertFalse(caseIDs.contains { $0 == alias || $0.hasPrefix("\(alias)_") })
+            XCTAssertFalse(containsInitializerLabel(alias, in: source))
+        }
     }
 
     func testPhase36NOSE07NoseCasesUseExactlyOnePublicNoseParameter() throws {

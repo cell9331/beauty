@@ -169,6 +169,61 @@ let cases = [
         parameters: BeautyParameters(eyeTailLift: 0.25)
     ),
     RenderCase(
+        id: "eyeHeight_0p25",
+        displayName: "eyeHeight 0.25",
+        parameters: BeautyParameters(eyeHeight: 0.25)
+    ),
+    RenderCase(
+        id: "eyeLength_0p25",
+        displayName: "eyeLength 0.25",
+        parameters: BeautyParameters(eyeLength: 0.25)
+    ),
+    RenderCase(
+        id: "upperEyelidLift_0p25",
+        displayName: "upperEyelidLift 0.25",
+        parameters: BeautyParameters(upperEyelidLift: 0.25)
+    ),
+    RenderCase(
+        id: "pupilSize_0p25",
+        displayName: "pupilSize 0.25",
+        parameters: BeautyParameters(pupilSize: 0.25)
+    ),
+    RenderCase(
+        id: "gazeCorrection_0p25",
+        displayName: "gazeCorrection 0.25",
+        parameters: BeautyParameters(gazeCorrection: 0.25)
+    ),
+    RenderCase(
+        id: "lowerEyelidDrop_0p25",
+        displayName: "lowerEyelidDrop 0.25",
+        parameters: BeautyParameters(lowerEyelidDrop: 0.25)
+    ),
+    RenderCase(
+        id: "eyeTilt_plus0p25",
+        displayName: "eyeTilt +0.25",
+        parameters: BeautyParameters(eyeTilt: 0.25)
+    ),
+    RenderCase(
+        id: "eyeTilt_minus0p25",
+        displayName: "eyeTilt -0.25",
+        parameters: BeautyParameters(eyeTilt: -0.25)
+    ),
+    RenderCase(
+        id: "innerCornerOpen_0p25",
+        displayName: "innerCornerOpen 0.25",
+        parameters: BeautyParameters(innerCornerOpen: 0.25)
+    ),
+    RenderCase(
+        id: "outerCornerOpen_0p25",
+        displayName: "outerCornerOpen 0.25",
+        parameters: BeautyParameters(outerCornerOpen: 0.25)
+    ),
+    RenderCase(
+        id: "eyeSymmetry_0p25",
+        displayName: "eyeSymmetry 0.25",
+        parameters: BeautyParameters(eyeSymmetry: 0.25)
+    ),
+    RenderCase(
         id: "noseSlim_0p35",
         displayName: "noseSlim 0.35",
         parameters: BeautyParameters(noseSlim: 0.35)
