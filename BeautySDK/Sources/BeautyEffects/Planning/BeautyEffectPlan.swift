@@ -45,6 +45,16 @@ public struct BeautyEffectiveStrengths: Equatable, Sendable {
     public var eyeDistance: Float = 0
     public var eyeYPosition: Float = 0
     public var eyeTailLift: Float = 0
+    public var eyeHeight: Float = 0
+    public var eyeLength: Float = 0
+    public var upperEyelidLift: Float = 0
+    public var pupilSize: Float = 0
+    public var gazeCorrection: Float = 0
+    public var lowerEyelidDrop: Float = 0
+    public var eyeTilt: Float = 0
+    public var innerCornerOpen: Float = 0
+    public var outerCornerOpen: Float = 0
+    public var eyeSymmetry: Float = 0
     public var noseSlim: Float = 0
     public var noseWingSlim: Float = 0
     public var noseTipSize: Float = 0
