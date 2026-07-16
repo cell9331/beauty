@@ -72,15 +72,41 @@
 
 ## Traceability
 
-Roadmap mapping is populated after phase creation. Every v1.11 requirement must map to exactly one phase.
+| Requirement | Phase | Status |
+| --- | --- | --- |
+| EYE-01 | Phase 41 | Pending |
+| EYE-02 | Phase 41 | Pending |
+| EYE-03 | Phase 41 | Pending |
+| EYE-04 | Phase 41 | Pending |
+| EYE-05 | Phase 41 | Pending |
+| EYE-06 | Phase 41 | Pending |
+| EYE-07 | Phase 41 | Pending |
+| EYE-08 | Phase 42 | Pending |
+| EYE-09 | Phase 42 | Pending |
+| EYE-10 | Phase 42 | Pending |
+| EYE-11 | Phase 42 | Pending |
+| EYE-12 | Phase 42 | Pending |
+| EYE-13 | Phase 42 | Pending |
+| EYE-14 | Phase 42 | Pending |
+| EYE-15 | Phase 42 | Pending |
+| EYE-16 | Phase 43 | Pending |
+| EYE-17 | Phase 43 | Pending |
+| EYE-18 | Phase 43 | Pending |
+| EYE-19 | Phase 44 | Pending |
+| EYE-20 | Phase 44 | Pending |
+| EYE-21 | Phase 44 | Pending |
+| EYE-22 | Phase 44 | Pending |
+| EYE-23 | Phase 44 | Pending |
+| DOC-01 | Phase 44 | Pending |
 
 **Coverage:**
 
 - v1.11 requirements: 24 total
-- Mapped to phases: 0
-- Unmapped: 24
+- Mapped to phases: 24
+- Unmapped: 0
 - Duplicate mappings: 0
+- Coverage: 100%
 
 ---
 *Requirements defined: 2026-07-16*
-*Last updated: 2026-07-16 after auto-approved v1.11 scope definition*
+*Last updated: 2026-07-16 after v1.11 roadmap creation*

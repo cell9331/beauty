@@ -2,9 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.11
 milestone_name: Eye Remaining Geometry Controls
+current_phase: 41
+current_phase_name: Public Contract and Observed Eye Support
 status: planning
-last_updated: "2026-07-16T02:27:53.430Z"
+stopped_at: v1.11 roadmap created; Phase 41 ready for discussion
+last_updated: "2026-07-16T02:38:37.389Z"
 last_activity: 2026-07-16
+last_activity_desc: v1.11 roadmap created; Phase 41 ready for discussion
 progress:
   total_phases: 0
   completed_phases: 0
@@ -20,14 +24,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-14)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Planning the next milestone
+**Current focus:** v1.11 Phase 41 planning
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 41 of 44 — Public Contract and Observed Eye Support
 Plan: —
 Status: Defining requirements
-Last activity: 2026-07-16 — Milestone v1.11 started
+Last activity: 2026-07-16 — v1.11 roadmap created; Phase 41 ready for discussion
 
 ### Phase 40 Mouth Geometry Safety and Ledger Closeout Result
 
@@ -290,7 +294,7 @@ Recent milestone-level outcomes:
 ## Session Continuity
 
 Last session: 2026-07-14T08:26:24.226Z
-Stopped at: Completed 39-01-PLAN.md
+Stopped at: v1.11 roadmap created; Phase 41 ready for discussion
 Resume file: None
 
 ## Operator Next Steps
