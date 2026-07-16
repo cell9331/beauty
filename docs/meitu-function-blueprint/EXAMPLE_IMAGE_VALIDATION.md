@@ -6,7 +6,7 @@ This is the local visual-output gate for current public-facade renderer evidence
 
 Use real portrait fixtures from `example-images/input/`, run them through the `BeautySDK` public facade with `BeautyExampleRenderer`, and save visible outputs under `example-images/output/`.
 
-This validates the current skin, color, filter, Phase 27 geometry-output foundation, Phase 28 scoped face-shape renderer path, and Phase 29 existing-eye-parameter renderer path without adding SwiftUI screens, public parameters, product routes, or broader branch completion scope.
+This validates the current skin, color, filter, Phase 27 geometry-output foundation, Phase 28 scoped face-shape renderer path, Phase 29 existing-eye-parameter path, and Phase 43 remaining-eye public-facade output path without adding SwiftUI screens, product routes, or broader branch completion scope.
 
 ## Command
 
@@ -71,6 +71,15 @@ python3 .planning/phases/39-public-facade-mouth-geometry-output-evidence/check_m
   --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
 ```
 
+Run the Phase 43 remaining-eye helper after the all-case renderer command:
+
+```bash
+python3 .planning/phases/43-public-facade-eye-geometry-output-evidence/check_eye_geometry_renderer_outputs.py \
+  --input example-images/input \
+  --output example-images/output \
+  --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
+```
+
 ## Output Rules
 
 - Output directory: `example-images/output/`.
@@ -93,6 +102,8 @@ python3 .planning/phases/39-public-facade-mouth-geometry-output-evidence/check_m
 - The Phase 31 helper verifies 196 current outputs, 30/30 portrait nose-vs-baseline central-face differences above the watermark band, 6/6 positive-vs-negative `noseTipSize` differences, and representative no-face nose output `no-face-gradient__noseSlim_0p35.png` presence.
 - Phase 39 command results are recorded in `.planning/phases/39-public-facade-mouth-geometry-output-evidence/39-MOUTH-OUTPUT-EVIDENCE.md`.
 - The Phase 39 helper verifies the discovered 44 × 7 = 308 matrix, 48/48 visibility, 18/18 signed-direction, 12/12 peak-independence, 18/18 plump-independence comparisons, and eight 64 × 64 no-face no-ops.
+- Phase 43 command results are recorded in `.planning/phases/43-public-facade-eye-geometry-output-evidence/43-EYE-OUTPUT-EVIDENCE.md`.
+- The Phase 43 helper verifies the discovered 55 × 7 = 385 matrix, 66/66 new-case visibility, 6/6 signed-tilt direct comparisons, 60/60 fixed semantic distinctions, one fixed eligible gaze-deviation reduction, complete aggregate eligibility inventory, and eleven 64 × 64 no-face no-ops.
 
 ## Current Built-In Cases
 
@@ -125,6 +136,17 @@ These cases are limited to effects that currently produce visible image output t
 | `eyeYPosition_plus0p20` | Phase 29 upward `上下` renderer evidence through existing `eyeYPosition` |
 | `eyeYPosition_minus0p20` | Phase 29 downward `上下` renderer evidence through existing `eyeYPosition` |
 | `eyeTailLift_0p25` | Phase 29 `眼尾上扬` renderer evidence through existing `eyeTailLift` |
+| `eyeHeight_0p25` | Phase 43 observed public-facade `eyeHeight` output at provisional `0.25` |
+| `eyeLength_0p25` | Phase 43 observed public-facade `eyeLength` output at provisional `0.25` |
+| `upperEyelidLift_0p25` | Phase 43 observed public-facade `upperEyelidLift` output at provisional `0.25` |
+| `pupilSize_0p25` | Phase 43 observed pupil-eligible public-facade `pupilSize` output at provisional `0.25` |
+| `gazeCorrection_0p25` | Phase 43 observed pupil-eligible automatic `gazeCorrection` output at provisional `0.25` |
+| `lowerEyelidDrop_0p25` | Phase 43 observed public-facade `lowerEyelidDrop` output at provisional `0.25` |
+| `eyeTilt_plus0p25` | Phase 43 positive signed `eyeTilt` output at provisional `0.25` |
+| `eyeTilt_minus0p25` | Phase 43 negative signed `eyeTilt` output at provisional `-0.25` |
+| `innerCornerOpen_0p25` | Phase 43 observed public-facade `innerCornerOpen` output at provisional `0.25` |
+| `outerCornerOpen_0p25` | Phase 43 observed public-facade `outerCornerOpen` output at provisional `0.25` |
+| `eyeSymmetry_0p25` | Phase 43 observed measured-pair `eyeSymmetry` output at provisional `0.25` |
 | `noseSlim_0p35` | Phase 31 `大小` renderer evidence through existing `noseSlim` |
 | `noseWingSlim_0p35` | Phase 31 `鼻翼` renderer evidence through existing `noseWingSlim` |
 | `noseTipSize_plus0p30` | Phase 31 positive-direction `鼻尖` renderer evidence through existing signed `noseTipSize` |
@@ -172,6 +194,15 @@ These cases are limited to effects that currently produce visible image output t
 - All eight new no-face outputs preserve 64 × 64 and are exact baseline no-ops across the helper's fixed 2,048-pixel right-half fallback.
 - `generate_gallery.py` enforces a duplicate-free exact renderer bijection and one safe publication produced 308 ignored, untracked regular review PNGs.
 - The `0.25` mouth strengths are the Phase 40-finalized exact caps. Phase 40 adds exhaustive eight-field degradation/conflict behavior and promotes exactly `上下`, `倾斜`, `左右`, `M唇`, and true `丰唇`; branch-level `嘴唇` remains partial because `白牙` is future.
+
+## Phase 43 Remaining-Eye Output Evidence Summary
+
+- The helper discovers exactly 55 live renderer cases and seven recursive fixtures before fully decoding the 385/385 same-dimension matrix.
+- Six eligible portraits pass 66/66 new-case visibility, 6/6 direct positive-versus-negative tilt, and 60/60 fixed nearest-neighbor semantic comparisons in one stored-row eye ROI `x=.10-.90/y=.55-.82`.
+- Fixed floors are 500 changed pixels and 1,000 absolute RGB delta; the weakest accepted visibility remains 909/1,732 and the weakest semantic family remains 2,046/3,670.
+- A fixed eligible fixture reduces the aggregate paired-eye gaze-deviation score by 6,364 against the committed floor of 500. Contour, pupil/gaze, and measured-pair symmetry eligibility are each 6/6 portraits; the one explicit no-face fixture is excluded from those denominators and passes all eleven safe no-ops.
+- The ignored gallery is an exact duplicate-free 55-case × seven-fixture bijection. No output or gallery PNG is tracked or staged.
+- These are observed public-facade output facts at provisional `0.25` inputs. Phase 44 retains final caps, exhaustive transitions/safety, active-source boundary closeout, exact ten-row promotion, and owner-ledger synchronization.
 
 ## Phase 30 Eye Safety Closeout Evidence
 

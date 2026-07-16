@@ -37,6 +37,10 @@ CASE_GROUPS = {
     "eyes": [
         "eyeSize_0p35", "eyeDistance_plus0p25", "eyeDistance_minus0p25",
         "eyeYPosition_plus0p20", "eyeYPosition_minus0p20", "eyeTailLift_0p25",
+        "eyeHeight_0p25", "eyeLength_0p25", "upperEyelidLift_0p25",
+        "pupilSize_0p25", "gazeCorrection_0p25", "lowerEyelidDrop_0p25",
+        "eyeTilt_plus0p25", "eyeTilt_minus0p25", "innerCornerOpen_0p25",
+        "outerCornerOpen_0p25", "eyeSymmetry_0p25",
     ],
     "nose": [
         "noseSlim_0p35", "noseWingSlim_0p35", "noseTipSize_plus0p30",

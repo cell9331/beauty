@@ -38,6 +38,7 @@ The gallery groups current cases under:
 - `filter/`: `filter_softClean_0p50`, `filter_warmLight_0p50`
 - `face-shape/`: `geometryBaseline_noop`, `faceShapeCombo_0p35`, `faceSlim_0p35`, `faceSmall_0p35`, `chinLength_plus0p30`, `chinLength_minus0p30`, `faceVShape_0p35`, `jawSlim_0p35`
 - `eyes/`: `eyeSize_0p35`, `eyeDistance_plus0p25`, `eyeDistance_minus0p25`, `eyeYPosition_plus0p20`, `eyeYPosition_minus0p20`, `eyeTailLift_0p25`
+- `eyes/` Phase 43 additions: `eyeHeight_0p25`, `eyeLength_0p25`, `upperEyelidLift_0p25`, `pupilSize_0p25`, `gazeCorrection_0p25`, `lowerEyelidDrop_0p25`, `eyeTilt_plus0p25`, `eyeTilt_minus0p25`, `innerCornerOpen_0p25`, `outerCornerOpen_0p25`, `eyeSymmetry_0p25`
 - `nose/`: `noseSlim_0p35`, `noseWingSlim_0p35`, `noseTipSize_plus0p30`, `noseTipSize_minus0p30`, `noseBridge_0p30`, `noseRootNarrowing_0p25`, `noseTipLift_0p25`
 - `mouth/`: `mouthSize_plus0p35`, `mouthSize_minus0p35`, `mouthWidth_plus0p35`, `mouthWidth_minus0p35`, `smile_0p50`, `lipColor_0p50`
 - `mouth/` Phase 39 additions: `mouthYPosition_plus0p25`, `mouthYPosition_minus0p25`, `mouthTilt_plus0p25`, `mouthTilt_minus0p25`, `mouthXPosition_plus0p25`, `mouthXPosition_minus0p25`, `lipPeakDefinition_0p25`, `lipPlump_0p25`
@@ -71,6 +72,17 @@ python3 .planning/phases/33-mouth-renderer-output-evidence/check_mouth_renderer_
 ```
 
 The Phase 33 helper requires 238/238 decoded same-dimension outputs, 30/30 mouth-geometry ROI comparisons, 12/12 signed-pair comparisons, 6/6 separate lip-color containment checks, and representative no-face extent.
+
+Phase 43 remaining-eye output evidence uses:
+
+```bash
+python3 .planning/phases/43-public-facade-eye-geometry-output-evidence/check_eye_geometry_renderer_outputs.py \
+  --input example-images/input \
+  --output example-images/output \
+  --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
+```
+
+The helper discovers the live inventory before freezing exactly 55 cases × seven fixtures = 385 decoded same-dimension outputs. It gates eleven new cases in one fixed eye-local ROI at committed floors, proves positive/negative tilt polarity and nearest-neighbor family distinction, records six contour/pupil/symmetry-eligible portraits plus the explicit no-face safe-no-op pool, and proves a fixed eligible automatic-gaze deviation reduction. Generated output and the exact 385-file gallery remain ignored and untracked. These are provisional public-facade output facts; Phase 44 owns final caps, exhaustive safety, boundary closeout, and exact promotion.
 
 Phase 36 remaining-nose output evidence uses:
 
