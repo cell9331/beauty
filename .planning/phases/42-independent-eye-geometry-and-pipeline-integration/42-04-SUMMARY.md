@@ -15,11 +15,11 @@ Closed the Phase 42 validation ledger for EYE-08 through EYE-15. Evidence covers
 
 ## Measured commands
 
-- `swift test --package-path BeautySDK --filter BeautyEffectsTests.EyeWarpProviderTests` — 11/11.
+- `swift test --package-path BeautySDK --filter BeautyEffectsTests.EyeWarpProviderTests` — 14/14.
 - `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyEffectResolverTests` — 18/18.
-- `swift test --package-path BeautySDK --filter BeautyEffectsTests.MissingLandmarkDegradationTests` — 38/38.
+- `swift test --package-path BeautySDK --filter BeautyEffectsTests.MissingLandmarkDegradationTests` — 39/39.
 - `swift test --package-path BeautySDK --filter BeautyEffectsTests.CombinedEffectSafetyTests` — 10/10.
-- `swift test --package-path BeautySDK` — 299/299.
+- `swift test --package-path BeautySDK` — 303/303.
 - `git diff --check` — passed.
 
 ## Non-claims

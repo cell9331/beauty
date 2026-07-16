@@ -175,13 +175,17 @@ struct EyeWarpProvider: WarpControlPointProvider {
         let spanY = (left.span.y + right.span.y) / 2
         let centerDelta = (right.center.x - left.center.x).isFinite ? abs(right.center.x - left.center.x) : .infinity
         let spanDelta = abs(left.span.x - right.span.x) + abs(left.span.y - right.span.y)
+        func normalizedPoint(_ point: SIMD2<Float>) -> Bool {
+            point.x.isFinite && point.y.isFinite &&
+                (0...1).contains(point.x) && (0...1).contains(point.y)
+        }
         func plausible(_ support: BeautyEyeSemanticSupport) -> Bool {
-            support.center.x.isFinite && support.center.y.isFinite &&
+            normalizedPoint(support.center) &&
                 support.span.x.isFinite && support.span.y.isFinite &&
                 support.span.x > 0 && support.span.y > 0 &&
                 support.span.x <= 1 && support.span.y <= 1 &&
                 support.tilt.isFinite && abs(support.tilt) <= 1 &&
-                !support.contour.isEmpty
+                !support.contour.isEmpty && support.contour.allSatisfy(normalizedPoint)
         }
         guard plausible(left), plausible(right),
               centerDelta.isFinite, centerDelta > 0,

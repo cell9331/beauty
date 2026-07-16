@@ -213,6 +213,112 @@ final class EyeWarpProviderTests: XCTestCase {
         XCTAssertTrue(EyeWarpProvider().fieldEmissions(face: noPupil, strengths: values).pupilSize.isEmpty)
     }
 
+    func testPhase42EyeFieldsPreserveLocalDirectionsAndDistinctSources() {
+        let left = semanticSupport(side: .left, contour: FaceGeometry.fixture.leftEye, pupil: SIMD2<Float>(0.425, 0.385))
+        let right = semanticSupport(side: .right, contour: FaceGeometry.fixture.rightEye, pupil: SIMD2<Float>(0.575, 0.385))
+        let face = FaceGeometry(
+            bounds: FaceGeometry.fixture.bounds,
+            faceContour: FaceGeometry.fixture.faceContour,
+            leftEye: left.contour,
+            rightEye: right.contour,
+            nose: FaceGeometry.fixture.nose,
+            noseRoot: FaceGeometry.fixture.noseRoot,
+            noseTip: FaceGeometry.fixture.noseTip,
+            outerLips: FaceGeometry.fixture.outerLips,
+            upperLips: FaceGeometry.fixture.upperLips,
+            lowerLips: FaceGeometry.fixture.lowerLips,
+            innerLips: FaceGeometry.fixture.innerLips,
+            leftEyeSupport: left,
+            rightEyeSupport: right
+        )
+        let provider = EyeWarpProvider()
+        var values = BeautyEffectiveStrengths()
+        values.eyeHeight = BeautySafetyCaps.eyeHeight
+        values.eyeLength = BeautySafetyCaps.eyeLength
+        values.upperEyelidLift = BeautySafetyCaps.upperEyelidLift
+        values.lowerEyelidDrop = BeautySafetyCaps.lowerEyelidDrop
+        values.innerCornerOpen = BeautySafetyCaps.innerCornerOpen
+        values.outerCornerOpen = BeautySafetyCaps.outerCornerOpen
+        let emissions = provider.fieldEmissions(face: face, strengths: values)
+
+        XCTAssertFalse(emissions.eyeHeight.isEmpty)
+        XCTAssertTrue(emissions.eyeHeight.contains { $0.target.y < $0.source.y })
+        XCTAssertTrue(emissions.eyeHeight.contains { $0.target.y > $0.source.y })
+        XCTAssertTrue(emissions.eyeHeight.allSatisfy { $0.target.x == $0.source.x })
+        XCTAssertFalse(emissions.eyeLength.isEmpty)
+        XCTAssertTrue(emissions.eyeLength.allSatisfy { $0.target.y == $0.source.y })
+        XCTAssertTrue(emissions.eyeLength.allSatisfy { $0.target.x != $0.source.x })
+        XCTAssertTrue(emissions.upperEyelidLift.allSatisfy { $0.target.y < $0.source.y })
+        XCTAssertTrue(emissions.lowerEyelidDrop.allSatisfy { $0.target.y > $0.source.y })
+        XCTAssertTrue(emissions.innerCornerOpen.allSatisfy { $0.source.x != $0.target.x })
+        XCTAssertTrue(emissions.outerCornerOpen.allSatisfy { $0.source.x != $0.target.x })
+        XCTAssertNotEqual(emissions.eyeLength.map(\.source), emissions.innerCornerOpen.map(\.source))
+        XCTAssertTrue(emissions.points.allSatisfy { point in
+            (0...1).contains(point.source.x) && (0...1).contains(point.source.y) &&
+                (0...1).contains(point.target.x) && (0...1).contains(point.target.y)
+        })
+    }
+
+    func testPhase42TiltSignsAndPupilGazeAreBoundedAndMonotonic() {
+        let left = semanticSupport(side: .left, contour: FaceGeometry.fixture.leftEye, pupil: SIMD2<Float>(0.425, 0.385))
+        let right = semanticSupport(side: .right, contour: FaceGeometry.fixture.rightEye, pupil: SIMD2<Float>(0.575, 0.385))
+        let face = FaceGeometry(
+            bounds: FaceGeometry.fixture.bounds,
+            faceContour: FaceGeometry.fixture.faceContour,
+            leftEye: left.contour,
+            rightEye: right.contour,
+            nose: FaceGeometry.fixture.nose,
+            noseRoot: FaceGeometry.fixture.noseRoot,
+            noseTip: FaceGeometry.fixture.noseTip,
+            outerLips: FaceGeometry.fixture.outerLips,
+            upperLips: FaceGeometry.fixture.upperLips,
+            lowerLips: FaceGeometry.fixture.lowerLips,
+            innerLips: FaceGeometry.fixture.innerLips,
+            leftEyeSupport: left,
+            rightEyeSupport: right
+        )
+        let provider = EyeWarpProvider()
+        var positive = BeautyEffectiveStrengths()
+        positive.eyeTilt = BeautySafetyCaps.eyeTilt
+        var negative = BeautyEffectiveStrengths()
+        negative.eyeTilt = -BeautySafetyCaps.eyeTilt
+        let positiveTilt = provider.fieldEmissions(face: face, strengths: positive).eyeTilt
+        let negativeTilt = provider.fieldEmissions(face: face, strengths: negative).eyeTilt
+        XCTAssertEqual(positiveTilt.count, negativeTilt.count)
+        XCTAssertTrue(zip(positiveTilt, negativeTilt).contains { pair in
+            let positiveDelta = pair.0.target.y - pair.0.source.y
+            let negativeDelta = pair.1.target.y - pair.1.source.y
+            return abs(positiveDelta) > 0.0001 && abs(negativeDelta) > 0.0001 && positiveDelta * negativeDelta < 0
+        })
+        XCTAssertTrue(positiveTilt.allSatisfy { $0.strength <= BeautySafetyCaps.eyeTilt })
+
+        var halfGaze = BeautyEffectiveStrengths()
+        halfGaze.gazeCorrection = BeautySafetyCaps.gazeCorrection * 0.5
+        var fullGaze = BeautyEffectiveStrengths()
+        fullGaze.gazeCorrection = BeautySafetyCaps.gazeCorrection
+        let pupil = SIMD2<Float>(0.425, 0.385)
+        let center = left.center
+        let half = provider.fieldEmissions(face: face, strengths: halfGaze).gazeCorrection[0]
+        let full = provider.fieldEmissions(face: face, strengths: fullGaze).gazeCorrection[0]
+        func distance(_ point: SIMD2<Float>) -> Float {
+            let delta = point - center
+            return sqrt(delta.x * delta.x + delta.y * delta.y)
+        }
+        XCTAssertLessThan(distance(full.target), distance(half.target))
+        XCTAssertGreaterThan(distance(half.source), distance(half.target))
+        XCTAssertLessThan(distance(half.source), distance(pupil) + 0.0001)
+
+        let neutral = semanticSupport(side: .left, contour: left.contour, pupil: left.center)
+        let neutralRight = semanticSupport(side: .right, contour: right.contour, pupil: right.center)
+        let neutralFace = FaceGeometry(
+            bounds: face.bounds, faceContour: face.faceContour, leftEye: face.leftEye, rightEye: face.rightEye,
+            nose: face.nose, noseRoot: face.noseRoot, noseTip: face.noseTip, outerLips: face.outerLips,
+            upperLips: face.upperLips, lowerLips: face.lowerLips, innerLips: face.innerLips,
+            leftEyeSupport: neutral, rightEyeSupport: neutralRight
+        )
+        XCTAssertTrue(provider.fieldEmissions(face: neutralFace, strengths: fullGaze).gazeCorrection.isEmpty)
+    }
+
     func testSymmetryReducesPairedSpanAndTiltDifferencesWithBoundedVectors() {
         let left = semanticSupport(
             side: .left,
@@ -311,6 +417,42 @@ final class EyeWarpProviderTests: XCTestCase {
         )
         var requested = BeautyEffectiveStrengths()
         requested.eyeSymmetry = BeautySafetyCaps.eyeSymmetry
+        XCTAssertTrue(EyeWarpProvider().fieldEmissions(face: face, strengths: requested).eyeSymmetry.isEmpty)
+    }
+
+    func testSymmetryRejectsMalformedContourEvenWhenScalarMetadataLooksPlausible() {
+        let left = semanticSupport(side: .left, contour: FaceGeometry.fixture.leftEye)
+        let right = BeautyEyeSemanticSupport(
+            side: .right,
+            contour: [SIMD2<Float>(.infinity, 0.4), SIMD2<Float>(0.72, 0.5)],
+            upper: [SIMD2<Float>(.infinity, 0.4)],
+            lower: [SIMD2<Float>(0.72, 0.5)],
+            inner: [SIMD2<Float>(0.72, 0.5)],
+            outer: [SIMD2<Float>(.infinity, 0.4)],
+            corners: [],
+            center: SIMD2<Float>(0.70, 0.45),
+            pupil: nil,
+            span: SIMD2<Float>(0.10, 0.10),
+            tilt: 0.15
+        )
+        let face = FaceGeometry(
+            bounds: FaceGeometry.fixture.bounds,
+            faceContour: FaceGeometry.fixture.faceContour,
+            leftEye: left.contour,
+            rightEye: right.contour,
+            nose: FaceGeometry.fixture.nose,
+            noseRoot: FaceGeometry.fixture.noseRoot,
+            noseTip: FaceGeometry.fixture.noseTip,
+            outerLips: FaceGeometry.fixture.outerLips,
+            upperLips: FaceGeometry.fixture.upperLips,
+            lowerLips: FaceGeometry.fixture.lowerLips,
+            innerLips: FaceGeometry.fixture.innerLips,
+            leftEyeSupport: left,
+            rightEyeSupport: right
+        )
+        var requested = BeautyEffectiveStrengths()
+        requested.eyeSymmetry = BeautySafetyCaps.eyeSymmetry
+
         XCTAssertTrue(EyeWarpProvider().fieldEmissions(face: face, strengths: requested).eyeSymmetry.isEmpty)
     }
 

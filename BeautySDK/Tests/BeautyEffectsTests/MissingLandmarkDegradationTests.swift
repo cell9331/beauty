@@ -92,6 +92,21 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertEqual(malformed.effectiveStrengths.mouthSize, eyeOmitted.effectiveStrengths.mouthSize, accuracy: 0.000001)
     }
 
+    func testPupilDependentEyeFieldsZeroLocallyWhileContourSiblingRemainsAccounted() {
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(eyeHeight: 1, pupilSize: 1, gazeCorrection: 1),
+            faceGeometry: .fixture
+        )
+
+        XCTAssertTrue(plan.activeDomains.contains(.eyes))
+        XCTAssertEqual(plan.effectiveStrengths.eyeHeight, BeautySafetyCaps.eyeHeight, accuracy: 0.000001)
+        XCTAssertEqual(plan.effectiveStrengths.pupilSize, 0, accuracy: 0.000001)
+        XCTAssertEqual(plan.effectiveStrengths.gazeCorrection, 0, accuracy: 0.000001)
+        XCTAssertGreaterThan(plan.metrics["beauty.effects.geometryPointCount"] ?? 0, 0)
+        XCTAssertFalse(plan.skippedDomains.contains(.eyes))
+        assertRedacted(plan)
+    }
+
     func testMissingStaleAndReusedGeometryMetadataStayRedacted() {
         let plans = [
             BeautyEffectResolver.resolve(
