@@ -102,6 +102,53 @@ final class FaceObservationMappingTests: XCTestCase {
         XCTAssertEqual(result.summary.usedFaceCount, 0)
     }
 
+    func testEYE05ObservedPointsPreserveSideAcrossOrientationAndInputMirror() {
+        let source = CoordinatePoint(x: 0.25, y: 0.75)
+        let expected: [(CGImagePropertyOrientation, Bool, CoordinatePoint)] = [
+            (.up, false, CoordinatePoint(x: 0.25, y: 0.25)),
+            (.right, false, CoordinatePoint(x: 0.75, y: 0.25)),
+            (.left, false, CoordinatePoint(x: 0.25, y: 0.75)),
+            (.down, false, CoordinatePoint(x: 0.75, y: 0.75)),
+            (.up, true, CoordinatePoint(x: 0.75, y: 0.25))
+        ]
+
+        for (orientation, mirrored, expectedPoint) in expected {
+            let left = BeautyObservedEyeSupport(side: .left, contour: [source])
+            let right = BeautyObservedEyeSupport(side: .right, contour: [source])
+            var detector = VisionFaceDetector { _ in
+                [VisionDetectionObservation(observedEyeSupport: [left, right])]
+            }
+            let result = detector.detect(
+                metadata: metadata(orientation: orientation, inputMirrored: mirrored),
+                imageExtent: CGSize(width: 400, height: 200)
+            )
+            let supports = result.observations[0].observedEyeSupport ?? []
+            XCTAssertEqual(supports.map(\.side), [.left, .right])
+            for support in supports {
+                XCTAssertEqual(support.contour.first, expectedPoint)
+            }
+        }
+    }
+
+    func testEYE05OutOfUnitObservedPointFailsClosedWithRedactedSummary() {
+        let malformed = BeautyObservedEyeSupport(
+            side: .left,
+            contour: [CoordinatePoint(x: 1.25, y: 0.50)]
+        )
+        var detector = VisionFaceDetector { _ in
+            [VisionDetectionObservation(observedEyeSupport: [malformed])]
+        }
+
+        let result = detector.detect(metadata: metadata(orientation: .up))
+        XCTAssertEqual(result.observations, [])
+        XCTAssertEqual(result.summary.availability, .partial)
+        XCTAssertEqual(result.summary.reasons, [.mappingFailed])
+        XCTAssertEqual(result.summary.faceCount, 1)
+        XCTAssertEqual(result.summary.usedFaceCount, 0)
+        XCTAssertFalse(String(describing: result.summary).contains("1.25"))
+        XCTAssertFalse(String(describing: result.summary).contains("left"))
+    }
+
     private func metadata(
         orientation: CGImagePropertyOrientation,
         inputMirrored: Bool = false
