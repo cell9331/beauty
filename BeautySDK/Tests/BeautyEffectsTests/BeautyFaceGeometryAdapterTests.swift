@@ -122,6 +122,123 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         XCTAssertFalse(BeautyFaceGeometryAdapter.pairedRatioIsValid(2.000_001))
     }
 
+    func testContourCardinalityUniquePointAndClosedUnitBoundaries() {
+        for count in [5, 6, 7, 15, 16, 17] {
+            let geometry = BeautyFaceGeometryAdapter.makeGeometry(
+                from: observation(
+                    left: polygonContour(count: count, x: 0.30, y: 0.40),
+                    right: contour(x: 0.58, y: 0.40)
+                )
+            )
+            XCTAssertEqual(geometry.leftEyeSupport != nil, (6...16).contains(count), "count=\(count)")
+        }
+
+        let threeUnique = polygonContour(count: 6, x: 0.30, y: 0.40)
+            .enumerated().map { index, point in index.isMultiple(of: 2) ? point : polygonContour(count: 6, x: 0.30, y: 0.40)[0] }
+        XCTAssertNil(BeautyFaceGeometryAdapter.makeGeometry(from: observation(left: threeUnique, right: contour(x: 0.58, y: 0.40))).leftEyeSupport)
+
+        let fourUnique = polygonContour(count: 6, x: 0.30, y: 0.40)
+        XCTAssertNotNil(BeautyFaceGeometryAdapter.makeGeometry(from: observation(left: fourUnique, right: contour(x: 0.58, y: 0.40))).leftEyeSupport)
+
+        let xEdgeContours = [
+            polygonContour(count: 6, x: 0.00, y: 0.40, width: 0.32),
+            polygonContour(count: 6, x: 0.68, y: 0.40, width: 0.32)
+        ]
+        for candidate in xEdgeContours {
+            XCTAssertNotNil(BeautyFaceGeometryAdapter.makeGeometry(from: observation(left: candidate, right: contour(x: 0.58, y: 0.40))).leftEyeSupport)
+        }
+        let yEdgeContours = [
+            polygonContour(count: 6, x: 0.30, y: 0.00, height: 0.16),
+            polygonContour(count: 6, x: 0.30, y: 0.84, height: 0.16)
+        ]
+        for candidate in yEdgeContours {
+            XCTAssertNotNil(BeautyFaceGeometryAdapter.makeGeometry(from: observation(left: candidate, right: contour(x: 0.58, y: 0.40))).leftEyeSupport)
+        }
+        for value in [-0.000_001, 1.000_001] {
+            var candidate = contour(x: 0.30, y: 0.40)
+            candidate[0] = CoordinatePoint(x: value, y: candidate[0].y)
+            XCTAssertNil(BeautyFaceGeometryAdapter.makeGeometry(from: observation(left: candidate, right: contour(x: 0.58, y: 0.40))).leftEyeSupport)
+        }
+    }
+
+    func testComposedContourWidthAndHeightBoundariesRemainIndependent() {
+        for (relative, expected) in [
+            (0.039_999, false), (0.040_001, true), (0.040_002, true),
+            (0.499_999, true), (0.50, true), (0.500_001, false)
+        ] {
+            let width = Double(relative) * Double(bounds.width)
+            let geometry = BeautyFaceGeometryAdapter.makeGeometry(
+                from: observation(left: contour(x: 0.50 - width / 2, y: 0.40, width: width, height: 0.08), right: contour(x: 0.58, y: 0.40))
+            )
+            XCTAssertEqual(geometry.leftEyeSupport != nil, expected, "width=\(relative)")
+        }
+        for (relative, expected) in [
+            (0.0099, false), (0.010_001, true), (0.010_002, true),
+            (0.299_999, true), (0.30, true), (0.300_001, false)
+        ] {
+            let height = Double(relative) * Double(bounds.height)
+            let geometry = BeautyFaceGeometryAdapter.makeGeometry(
+                from: observation(left: contour(x: 0.30, y: 0.50 - height / 2, width: 0.16, height: height), right: contour(x: 0.58, y: 0.40))
+            )
+            XCTAssertEqual(geometry.leftEyeSupport != nil, expected, "height=\(relative)")
+        }
+    }
+
+    func testPupilCardinalityAndComposedContainmentOffsetPrecedence() {
+        let validContour = contour(x: 0.30, y: 0.40)
+        for pupils in [
+            [] as [CoordinatePoint],
+            [CoordinatePoint(x: 0.38, y: 0.44)],
+            [CoordinatePoint(x: 0.38, y: 0.44), CoordinatePoint(x: 0.39, y: 0.44)]
+        ] {
+            let geometry = BeautyFaceGeometryAdapter.makeGeometry(
+                from: observation(left: validContour, right: contour(x: 0.58, y: 0.40), pupils: (pupils, nil))
+            )
+            XCTAssertEqual(geometry.leftEyeSupport?.pupilEligible, pupils.count == 1)
+        }
+
+        // The expanded containment edge is accepted by the pure predicate,
+        // but the stricter ellipse offset rejects it in composed validation.
+        XCTAssertTrue(BeautyFaceGeometryAdapter.pupilContainmentIsValid(SIMD2(0.284, 0.44), minX: 0.30, maxX: 0.46, minY: 0.40, maxY: 0.48))
+        let edge = BeautyFaceGeometryAdapter.makeGeometry(
+            from: observation(
+                left: validContour,
+                right: contour(x: 0.58, y: 0.40),
+                pupils: ([CoordinatePoint(x: 0.284, y: 0.44)], nil)
+            )
+        )
+        XCTAssertFalse(edge.leftEyeSupport?.pupilEligible == true)
+    }
+
+    func testPairedWidthAndHeightRatioBoundariesAreIndependent() {
+        let left = contour(x: 0.24, y: 0.40, width: 0.16, height: 0.08)
+        for (rightWidth, expected) in [(0.36, false), (0.32, true), (0.16, true), (0.08, true), (0.07, false)] {
+            let right = contour(x: 0.58, y: 0.40, width: rightWidth, height: 0.08)
+            let geometry = BeautyFaceGeometryAdapter.makeGeometry(
+                from: observation(
+                    left: left,
+                    right: right,
+                    pupils: ([CoordinatePoint(x: 0.32, y: 0.44)], [CoordinatePoint(x: 0.58 + rightWidth / 2, y: 0.44)])
+                )
+            )
+            XCTAssertEqual(geometry.leftEyeSupport?.pupilEligible, expected)
+            XCTAssertEqual(geometry.rightEyeSupport?.pupilEligible, expected)
+        }
+
+        let tallRight = contour(x: 0.58, y: 0.30, width: 0.16, height: 0.20)
+        let heightGeometry = BeautyFaceGeometryAdapter.makeGeometry(
+            from: observation(
+                left: left,
+                right: tallRight,
+                pupils: ([CoordinatePoint(x: 0.32, y: 0.44)], [CoordinatePoint(x: 0.66, y: 0.43)])
+            )
+        )
+        XCTAssertFalse(heightGeometry.leftEyeSupport?.pupilEligible == true)
+        XCTAssertFalse(heightGeometry.rightEyeSupport?.pupilEligible == true)
+        XCTAssertTrue(heightGeometry.leftEyeSupport?.contourEligible == true)
+        XCTAssertTrue(heightGeometry.rightEyeSupport?.contourEligible == true)
+    }
+
     func testPairedRatioFailureClearsPupilsOnlyAndRetainsBothContours() {
         let left = BeautyObservedEyeSupport(
             side: .left,
@@ -205,7 +322,7 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
 
     private func contour(x: Double, y: Double, width: Double = 0.16, height: Double = 0.08) -> [CoordinatePoint] {
         [
-            CoordinatePoint(x: x, y: y + 0.03),
+            CoordinatePoint(x: x, y: y + height * 0.375),
             CoordinatePoint(x: x + width * 0.25, y: y),
             CoordinatePoint(x: x + width * 0.75, y: y),
             CoordinatePoint(x: x + width, y: y + height * 0.375),
@@ -223,6 +340,16 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
             CoordinatePoint(x: x + 0.12, y: y + 0.08 + tilt),
             CoordinatePoint(x: x + 0.04, y: y + 0.08),
         ]
+    }
+
+    private func polygonContour(count: Int, x: Double, y: Double, width: Double = 0.16, height: Double = 0.08) -> [CoordinatePoint] {
+        (0..<count).map { index in
+            let angle = (Double(index) / Double(count)) * 2 * Double.pi
+            return CoordinatePoint(
+                x: x + width * (0.5 + 0.5 * cos(angle)),
+                y: y + height * (0.5 + 0.5 * sin(angle))
+            )
+        }
     }
 
     private func pointOrder(_ lhs: SIMD2<Float>, _ rhs: SIMD2<Float>) -> Bool {
