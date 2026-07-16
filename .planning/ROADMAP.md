@@ -72,7 +72,30 @@ Plans:
   4. EyeWarpProvider owns fourteen named emissions; missing or final-scale-empty fields are removed from effective strengths and all aggregate accounting while valid siblings survive.
   5. Each isolated new field triggers the existing detection/adapter/resolver/facade route with redacted aggregate evidence and no new pass, target, dependency, or public geometry type.
 
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+
+- [ ] 42-01-PLAN.md — Implement independent contour/lid/corner/tilt/pupil/gaze/symmetry provider emissions.
+- [ ] 42-02-PLAN.md — Integrate fourteen named emissions into resolver, field-local eligibility, and facade routing.
+- [ ] 42-03-PLAN.md — Extend combined conflict totals and bounded eye/nose/mouth convergence.
+- [ ] 42-04-PLAN.md — Complete the Phase 42 validation ledger and handoff.
+
+**Wave 1**
+
+- 42-01-PLAN.md
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- 42-02-PLAN.md
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- 42-03-PLAN.md
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- 42-04-PLAN.md
 
 ### Phase 43: Public-Facade Eye Geometry Output Evidence
 
@@ -114,7 +137,7 @@ Plans:
 
 ## Current Status
 
-v1.11 is active in requirements/roadmap definition. Phase 41 is next; implementation has not started.
+v1.11 is active in requirements/roadmap definition. Phase 42 is planned and ready for execution after Phase 41 completion; Phase 43-44 remain unplanned.
 
 ## Backlog
 
