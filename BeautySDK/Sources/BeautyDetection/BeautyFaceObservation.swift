@@ -1,24 +1,53 @@
 import Foundation
 
+package enum BeautyObservedEyeSide: String, Equatable, Sendable {
+    case left
+    case right
+}
+
+/// Frame-scoped, image-normalized evidence captured by the Vision adapter.
+///
+/// This value intentionally has no Codable or diagnostic representation. It is
+/// copied into an observation only after the detector has mapped and bounded
+/// every point, and is released with that request's observation.
+package struct BeautyObservedEyeSupport: Equatable, Sendable {
+    package let side: BeautyObservedEyeSide
+    package let contour: [CoordinatePoint]
+    package let pupil: [CoordinatePoint]?
+
+    package init(
+        side: BeautyObservedEyeSide,
+        contour: [CoordinatePoint],
+        pupil: [CoordinatePoint]? = nil
+    ) {
+        self.side = side
+        self.contour = contour
+        self.pupil = pupil
+    }
+}
+
 package struct BeautyFaceObservation: Equatable, Sendable {
     package let stableID: String?
     package let confidence: Double
     package let normalizedArea: Double
     package let imageBounds: CoordinateRect?
     package let landmarks: BeautyFaceLandmarks
+    package let observedEyeSupport: [BeautyObservedEyeSupport]?
 
     package init(
         stableID: String? = nil,
         confidence: Double = 1,
         normalizedArea: Double = 0,
         imageBounds: CoordinateRect? = nil,
-        landmarks: BeautyFaceLandmarks = .complete
+        landmarks: BeautyFaceLandmarks = .complete,
+        observedEyeSupport: [BeautyObservedEyeSupport]? = nil
     ) {
         self.stableID = stableID
         self.confidence = confidence
         self.normalizedArea = imageBounds?.area ?? max(0, normalizedArea)
         self.imageBounds = imageBounds
         self.landmarks = landmarks
+        self.observedEyeSupport = observedEyeSupport
     }
 }
 

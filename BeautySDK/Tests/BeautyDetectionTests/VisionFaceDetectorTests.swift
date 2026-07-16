@@ -134,6 +134,29 @@ final class VisionFaceDetectorTests: XCTestCase {
         XCTAssertEqual(result.summary.usedFaceCount, 1)
     }
 
+    func testEYE05InjectedObservedSupportMapsBothSidesAndKeepsMissingPupilAbsent() {
+        let left = BeautyObservedEyeSupport(
+            side: .left,
+            contour: [CoordinatePoint(x: 0.20, y: 0.20), CoordinatePoint(x: 0.30, y: 0.20)],
+            pupil: nil
+        )
+        let right = BeautyObservedEyeSupport(
+            side: .right,
+            contour: [CoordinatePoint(x: 0.60, y: 0.20), CoordinatePoint(x: 0.70, y: 0.20)],
+            pupil: [CoordinatePoint(x: 0.65, y: 0.20)]
+        )
+        var detector = VisionFaceDetector { _ in
+            [VisionDetectionObservation(observedEyeSupport: [left, right])]
+        }
+
+        let result = detector.detect(metadata: metadata())
+        let support = result.observations[0].observedEyeSupport
+
+        XCTAssertEqual(support?.map(\.side), [.left, .right])
+        XCTAssertNil(support?.first(where: { $0.side == .left })?.pupil)
+        XCTAssertEqual(support?.first(where: { $0.side == .right })?.pupil?.count, 1)
+    }
+
     func testPIPE07DetectorUnavailableFailureUsesStructuredReasonOnly() {
         var detector = VisionFaceDetector { _ in
             throw VisionFaceDetector.Failure.detectorUnavailable

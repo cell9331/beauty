@@ -10,19 +10,22 @@ package struct VisionDetectionObservation: Equatable, Sendable {
     package let normalizedArea: Double
     package let visionBounds: CoordinateRect?
     package let landmarks: BeautyFaceLandmarks
+    package let observedEyeSupport: [BeautyObservedEyeSupport]?
 
     package init(
         stableID: String? = nil,
         confidence: Double = 1,
         normalizedArea: Double = 0,
         visionBounds: CoordinateRect? = nil,
-        landmarks: BeautyFaceLandmarks = .complete
+        landmarks: BeautyFaceLandmarks = .complete,
+        observedEyeSupport: [BeautyObservedEyeSupport]? = nil
     ) {
         self.stableID = stableID
         self.confidence = confidence
         self.normalizedArea = visionBounds?.area ?? max(0, normalizedArea)
         self.visionBounds = visionBounds
         self.landmarks = landmarks
+        self.observedEyeSupport = observedEyeSupport
     }
 }
 
@@ -207,27 +210,111 @@ package struct VisionFaceDetector: Sendable {
         _ detection: VisionDetectionObservation,
         mapper: CoordinateMapper
     ) throws -> BeautyFaceObservation {
-        guard let visionBounds = detection.visionBounds else {
-            return BeautyFaceObservation(
+        let imageBounds: CoordinateRect?
+        if let visionBounds = detection.visionBounds {
+            imageBounds = try mapper.map(
+                rect: visionBounds,
+                from: .visionNormalized,
+                to: .imageNormalized
+            )
+        } else {
+            imageBounds = nil
+        }
+
+        let observedEyeSupport = try detection.observedEyeSupport.map { supports in
+            try supports.map { support in
+                BeautyObservedEyeSupport(
+                    side: support.side,
+                    contour: try mapPoints(support.contour, with: mapper),
+                    pupil: try support.pupil.map { try mapPoints($0, with: mapper) }
+                )
+            }
+        }
+
+        return BeautyFaceObservation(
                 stableID: detection.stableID,
                 confidence: detection.confidence,
                 normalizedArea: detection.normalizedArea,
-                landmarks: detection.landmarks
+                imageBounds: imageBounds,
+                landmarks: detection.landmarks,
+                observedEyeSupport: observedEyeSupport
             )
+    }
+
+    private func mapPoints(
+        _ points: [CoordinatePoint],
+        with mapper: CoordinateMapper
+    ) throws -> [CoordinatePoint] {
+        try points.map { point in
+            let mapped = try mapper.map(
+                point: point,
+                from: .visionNormalized,
+                to: .imageNormalized
+            )
+            guard mapped.isFinite,
+                  (0...1).contains(mapped.x),
+                  (0...1).contains(mapped.y)
+            else {
+                throw CoordinateMapper.MappingError.invalidCoordinate
+            }
+            return mapped
+        }
+    }
+
+    private static func makeSupport(
+        side: BeautyObservedEyeSide,
+        region: VNFaceLandmarkRegion2D?,
+        pupil: VNFaceLandmarkRegion2D?
+    ) -> BeautyObservedEyeSupport? {
+        guard let region, !region.normalizedPoints.isEmpty else {
+            return nil
         }
 
-        let imageBounds = try mapper.map(
-            rect: visionBounds,
-            from: .visionNormalized,
-            to: .imageNormalized
+        let contour = region.normalizedPoints.map {
+            CoordinatePoint(x: Double($0.x), y: Double($0.y))
+        }
+        let pupilPoints = pupil?.normalizedPoints.map {
+            CoordinatePoint(x: Double($0.x), y: Double($0.y))
+        }
+        return BeautyObservedEyeSupport(
+            side: side,
+            contour: contour,
+            pupil: pupilPoints?.isEmpty == false ? pupilPoints : nil
         )
-        return BeautyFaceObservation(
-            stableID: detection.stableID,
-            confidence: detection.confidence,
-            normalizedArea: imageBounds.area,
-            imageBounds: imageBounds,
-            landmarks: detection.landmarks
-        )
+    }
+
+    private static func landmarks(
+        from landmarks: VNFaceLandmarks2D?
+    ) -> (BeautyFaceLandmarks, [BeautyObservedEyeSupport]?) {
+        guard let landmarks else {
+            return (BeautyFaceLandmarks(availableGroups: []), nil)
+        }
+
+        var groups: Set<BeautyLandmarkGroup> = []
+        if landmarks.faceContour?.pointCount ?? 0 > 0 {
+            groups.insert(.faceContour)
+        }
+        if landmarks.leftEye?.pointCount ?? 0 > 0 {
+            groups.insert(.leftEye)
+        }
+        if landmarks.rightEye?.pointCount ?? 0 > 0 {
+            groups.insert(.rightEye)
+        }
+        if landmarks.nose?.pointCount ?? 0 > 0 || landmarks.noseCrest?.pointCount ?? 0 > 0 {
+            groups.insert(.nose)
+        }
+        if landmarks.outerLips?.pointCount ?? 0 > 0 {
+            groups.insert(.outerLips)
+        }
+        if landmarks.innerLips?.pointCount ?? 0 > 0 {
+            groups.insert(.innerLips)
+        }
+
+        let supports = [
+            makeSupport(side: .left, region: landmarks.leftEye, pupil: landmarks.leftPupil),
+            makeSupport(side: .right, region: landmarks.rightEye, pupil: landmarks.rightPupil)
+        ].compactMap { $0 }
+        return (BeautyFaceLandmarks(availableGroups: groups), supports.isEmpty ? nil : supports)
     }
 
     private func degradedSummary(for detections: [VisionDetectionObservation]) -> BeautyDetectionSummary {
@@ -278,7 +365,8 @@ package struct VisionFaceDetector: Sendable {
         try handler.perform([request])
 
         return (request.results ?? []).map { observation in
-            VisionDetectionObservation(
+            let payload = Self.landmarks(from: observation.landmarks)
+            return VisionDetectionObservation(
                 stableID: observation.uuid.uuidString,
                 confidence: Double(observation.confidence),
                 normalizedArea: Double(observation.boundingBox.width * observation.boundingBox.height),
@@ -288,35 +376,9 @@ package struct VisionFaceDetector: Sendable {
                     width: Double(observation.boundingBox.width),
                     height: Double(observation.boundingBox.height)
                 ),
-                landmarks: landmarks(from: observation.landmarks)
+                landmarks: payload.0,
+                observedEyeSupport: payload.1
             )
         }
-    }
-
-    private static func landmarks(from landmarks: VNFaceLandmarks2D?) -> BeautyFaceLandmarks {
-        guard let landmarks else {
-            return BeautyFaceLandmarks(availableGroups: [])
-        }
-
-        var groups: Set<BeautyLandmarkGroup> = []
-        if landmarks.faceContour?.pointCount ?? 0 > 0 {
-            groups.insert(.faceContour)
-        }
-        if landmarks.leftEye?.pointCount ?? 0 > 0 {
-            groups.insert(.leftEye)
-        }
-        if landmarks.rightEye?.pointCount ?? 0 > 0 {
-            groups.insert(.rightEye)
-        }
-        if landmarks.nose?.pointCount ?? 0 > 0 || landmarks.noseCrest?.pointCount ?? 0 > 0 {
-            groups.insert(.nose)
-        }
-        if landmarks.outerLips?.pointCount ?? 0 > 0 {
-            groups.insert(.outerLips)
-        }
-        if landmarks.innerLips?.pointCount ?? 0 > 0 {
-            groups.insert(.innerLips)
-        }
-        return BeautyFaceLandmarks(availableGroups: groups)
     }
 }

@@ -9,16 +9,16 @@ enum CoordinateSpace: String, CaseIterable, Equatable, Sendable {
     case mirroredPreview
 }
 
-struct CoordinatePoint: Equatable, Sendable {
-    let x: Double
-    let y: Double
+package struct CoordinatePoint: Equatable, Sendable {
+    package let x: Double
+    package let y: Double
 
-    init(x: Double, y: Double) {
+    package init(x: Double, y: Double) {
         self.x = x
         self.y = y
     }
 
-    var isFinite: Bool {
+    package var isFinite: Bool {
         x.isFinite && y.isFinite
     }
 }
