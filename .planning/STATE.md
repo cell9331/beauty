@@ -1,17 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.10
-milestone_name: Mouth Remaining Geometry Controls
-status: Awaiting next milestone
-stopped_at: v1.10 archived; ready for next milestone
-last_updated: "2026-07-14T09:47:53.604Z"
-last_activity: 2026-07-14 — Milestone v1.10 completed and archived
+milestone: v1.11
+milestone_name: Eye Remaining Geometry Controls
+status: planning
+last_updated: "2026-07-16T02:27:53.430Z"
+last_activity: 2026-07-16
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 11
-  completed_plans: 11
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -25,10 +24,10 @@ See: `.planning/PROJECT.md` (updated 2026-07-14)
 
 ## Current Position
 
-Phase: Milestone v1.10 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-07-14 — Milestone v1.10 completed and archived
+Status: Defining requirements
+Last activity: 2026-07-16 — Milestone v1.11 started
 
 ### Phase 40 Mouth Geometry Safety and Ledger Closeout Result
 

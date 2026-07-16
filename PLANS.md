@@ -26,7 +26,22 @@
 
 ## 3. Active
 
-No active plan. v1.10 is complete, audited, archived, tagged, and cleaned; the repository is ready for a fresh milestone.
+### P-2026-07-16-v1-11-eye-remaining-geometry-initialization
+
+| Field | Value |
+| --- | --- |
+| Status | `active` |
+| Scope | Initialize v1.11 `Eye Remaining Geometry Controls` through auto-approved scope, focused research, testable requirements, and a continued roadmap. |
+| Contracts | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/research/`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md` |
+| Verification | Pending structured state, roadmap coverage, Markdown hygiene, and Git diff checks. |
+
+Checklist:
+
+- [x] Confirm v1.10 is complete and v1.11 continues at Phase 41.
+- [x] Separate ten geometry rows from `去脂` / `祛红血丝` retouch scope.
+- [ ] Complete focused project/platform research.
+- [ ] Define and map all v1.11 requirements exactly once.
+- [ ] Validate state, roadmap, traceability, and document hygiene.
 
 ## 4. Completed
 
