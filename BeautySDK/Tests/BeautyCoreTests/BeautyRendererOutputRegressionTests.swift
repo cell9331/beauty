@@ -465,6 +465,47 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         }
     }
 
+    func testPhase43EYE18IsolatedEyeCasesPreserveNoFaceFacadeContract() throws {
+        let engine = try BeautyEngine(configuration: .default)
+        let inputDirectory = try repositoryRootURL().appendingPathComponent("example-images/input", isDirectory: true)
+        let fixtureName = "negatives/no-face-gradient.png"
+        let fixtureURL = inputDirectory.appendingPathComponent(fixtureName)
+        let input = try fixtureImage(at: fixtureURL, named: fixtureName)
+        let isolatedParameters = [
+            BeautyParameters(eyeHeight: 0.25),
+            BeautyParameters(eyeLength: 0.25),
+            BeautyParameters(upperEyelidLift: 0.25),
+            BeautyParameters(pupilSize: 0.25),
+            BeautyParameters(gazeCorrection: 0.25),
+            BeautyParameters(lowerEyelidDrop: 0.25),
+            BeautyParameters(eyeTilt: 0.25),
+            BeautyParameters(eyeTilt: -0.25),
+            BeautyParameters(innerCornerOpen: 0.25),
+            BeautyParameters(outerCornerOpen: 0.25),
+            BeautyParameters(eyeSymmetry: 0.25)
+        ]
+
+        for parameters in isolatedParameters {
+            let result = try engine.processResult(
+                image: input,
+                metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+                parameters: parameters
+            )
+
+            XCTAssertEqual(result.output.extent, input.extent)
+            XCTAssertEqual(result.detectionSummary?.availability, .noFace)
+            XCTAssertEqual(result.detectionSummary?.reasons, [.noFaceDetected])
+            XCTAssertEqual(result.detectionSummary?.faceCount, 0)
+            XCTAssertEqual(result.detectionSummary?.usedFaceCount, 0)
+            XCTAssertEqual(result.metrics["beauty.detection.geometryRequired"], 1)
+            XCTAssertEqual(result.metrics["beauty.detection.faceCount"], 0)
+            XCTAssertEqual(result.metrics["beauty.detection.usedFaceCount"], 0)
+            XCTAssertTrue(result.warnings.contains { $0.code == "face_effects_skipped_no_face" })
+            assertRedacted(result)
+            assertNoPhase43EyeFieldDisclosure(result)
+        }
+    }
+
     func testDefaultParametersPreserveCurrentFixturePixelsBeforeWatermark() throws {
         let engine = try BeautyEngine(configuration: .default)
 
@@ -650,6 +691,31 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
             "mouthyposition", "mouthtilt", "mouthxposition", "lippeakdefinition", "lipplump",
             "upperlips", "lowerlips", "innerlips", "support", "coordinate", "landmark",
             "controlpoint", "control point", "provider"
+        ] {
+            XCTAssertFalse(
+                metadata.contains(forbidden),
+                "Unexpected field-specific or raw geometry term: \(forbidden)",
+                file: file,
+                line: line
+            )
+        }
+    }
+
+    private func assertNoPhase43EyeFieldDisclosure(
+        _ result: BeautyResult<CIImage>,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let metadata = (
+            result.warnings.map { "\($0.code) \($0.message)" } +
+            Array(result.metrics.keys) +
+            (result.detectionSummary?.reasons.map(\.rawValue) ?? [])
+        ).joined(separator: " ").lowercased()
+
+        for forbidden in [
+            "eyeheight", "eyelength", "uppereyelidlift", "pupilsize", "gazecorrection",
+            "lowereyeliddrop", "eyetilt", "innercorneropen", "outercorneropen", "eyesymmetry",
+            "pupil", "contour", "coordinate", "landmark", "controlpoint", "control point", "provider"
         ] {
             XCTAssertFalse(
                 metadata.contains(forbidden),
