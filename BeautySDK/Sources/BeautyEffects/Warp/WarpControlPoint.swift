@@ -25,6 +25,8 @@ struct BeautyEyeSemanticSupport: Equatable, Sendable {
 
     var contourEligible: Bool { !contour.isEmpty }
     var pupilEligible: Bool { pupil != nil }
+    var pupilSizeEligible: Bool { pupilEligible }
+    var gazeCorrectionEligible: Bool { pupilEligible }
 
     // Semantic aliases keep downstream field naming explicit without exposing
     // additional storage or changing the request-scoped representation.
@@ -70,6 +72,9 @@ struct FaceGeometry: Equatable, Sendable {
     let leftEyeSupport: BeautyEyeSemanticSupport?
     let rightEyeSupport: BeautyEyeSemanticSupport?
     let freshness: LandmarkGeometryFreshness
+
+    var leftEyeSemanticSupport: BeautyEyeSemanticSupport? { leftEyeSupport }
+    var rightEyeSemanticSupport: BeautyEyeSemanticSupport? { rightEyeSupport }
 
     init(
         bounds: FaceBounds,
