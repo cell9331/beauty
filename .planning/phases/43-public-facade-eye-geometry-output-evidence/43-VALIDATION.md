@@ -1,9 +1,9 @@
 ---
 phase: 43
 slug: public-facade-eye-geometry-output-evidence
-status: planned
-nyquist_compliant: false
-wave_0_complete: false
+status: complete
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-07-16
 ---
 
@@ -18,6 +18,8 @@ created: 2026-07-16
 | 43-03-01 | 3 | EYE-18 | gallery self-test, one publication, exact 385-file bijection, ignore/tracked/staged scans |
 | 43-03-02 | 3 | EYE-16..18 | focused/full SwiftPM, final strict helper, read-only gallery/containment/scope scans, `git diff --check` |
 
+All six task rows passed on 2026-07-16. Focused renderer evidence is 13/13, full SwiftPM is 305/305, the strict matrix is 385/385, gallery publication is 385/385, and helper/gallery negative-path self-tests pass.
+
 ## Wave 0 Requirements
 
 - Phase-owned strict helper and self-tests exist before output calibration.
@@ -26,4 +28,4 @@ created: 2026-07-16
 
 ## Sign-Off
 
-Set `nyquist_compliant: true` and `wave_0_complete: true` only after the final clean strict 385/385 run, full suite, gallery containment, and scope gates pass. EYE-19..23 and DOC-01 remain deferred.
+`nyquist_compliant: true` and `wave_0_complete: true` follow the final clean strict 385/385 run, 305/305 full suite, 385-file gallery containment, and scope gates. EYE-19..23 and DOC-01 remain deferred.

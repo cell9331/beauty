@@ -31,9 +31,9 @@
 
 ### Public-Facade Output Evidence
 
-- [ ] **EYE-16**: `BeautyExampleRenderer` includes one isolated public-facade case for each positive-only new field plus positive and negative `eyeTilt` cases, expanding the current 44-case matrix to exactly 55 cases and 385 outputs if the seven-fixture inventory is unchanged.
-- [ ] **EYE-17**: A v1.11-owned strict bounded output helper derives the complete case/fixture matrix, decodes every expected non-empty same-dimension PNG, proves contour controls visible on every eligible portrait, proves both tilt directions, and distinguishes lid/corner/pupil/correction/symmetry families from their nearest neighbors in fixed eye-local regions without treating field-local safe no-ops as success.
-- [ ] **EYE-18**: The output evidence inventories contour and pupil/correction eligibility explicitly, proves automatic correction reduces measured deviation on at least one eligible fixture and safely no-ops on neutral/ineligible fixtures, preserves representative no-face extent/no-op behavior, publishes a duplicate-free ignored gallery, and tracks no generated output or gallery image.
+- [x] **EYE-16**: `BeautyExampleRenderer` includes one isolated public-facade case for each positive-only new field plus positive and negative `eyeTilt` cases, expanding the current 44-case matrix to exactly 55 cases and 385 outputs if the seven-fixture inventory is unchanged.
+- [x] **EYE-17**: A v1.11-owned strict bounded output helper derives the complete case/fixture matrix, decodes every expected non-empty same-dimension PNG, proves contour controls visible on every eligible portrait, proves both tilt directions, and distinguishes lid/corner/pupil/correction/symmetry families from their nearest neighbors in fixed eye-local regions without treating field-local safe no-ops as success.
+- [x] **EYE-18**: The output evidence inventories contour and pupil/correction eligibility explicitly, proves automatic correction reduces measured deviation on at least one eligible fixture and safely no-ops on neutral/ineligible fixtures, preserves representative no-face extent/no-op behavior, publishes a duplicate-free ignored gallery, and tracks no generated output or gallery image.
 
 ### Safety and Geometry-Slice Closeout
 
@@ -89,9 +89,9 @@
 | EYE-13 | Phase 42 | Complete |
 | EYE-14 | Phase 42 | Complete |
 | EYE-15 | Phase 42 | Complete |
-| EYE-16 | Phase 43 | Pending |
-| EYE-17 | Phase 43 | Pending |
-| EYE-18 | Phase 43 | Pending |
+| EYE-16 | Phase 43 | Complete |
+| EYE-17 | Phase 43 | Complete |
+| EYE-18 | Phase 43 | Complete |
 | EYE-19 | Phase 44 | Pending |
 | EYE-20 | Phase 44 | Pending |
 | EYE-21 | Phase 44 | Pending |

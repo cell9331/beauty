@@ -22,7 +22,7 @@
 
 - [x] **Phase 41: Public Contract and Observed Eye Support** — Add ten compatible public controls, private Vision contour/pupil support, canonical coordinate conversion, strict support validation, and privacy boundaries. (completed 2026-07-16)
 - [x] **Phase 42: Independent Eye Geometry and Pipeline Integration** — Implement ten distinct contour/pupil/correction transforms, fourteen named eye emissions, resolver/conflict convergence, and facade routing. (completed 2026-07-16)
-- [ ] **Phase 43: Public-Facade Eye Geometry Output Evidence** — Prove isolated controls, signed tilt, eligibility-aware correction/symmetry, no-face behavior, strict decoded outputs, and ignored gallery containment.
+- [x] **Phase 43: Public-Facade Eye Geometry Output Evidence** — Prove isolated controls, signed tilt, eligibility-aware correction/symmetry, no-face behavior, strict decoded outputs, and ignored gallery containment. (completed 2026-07-16)
 - [ ] **Phase 44: Eye Geometry Safety and Ledger Closeout** — Lock exact caps and transitions, complete the fail-closed boundary gate, promote exactly ten geometry rows, and synchronize all owners.
 
 ## Phase Details
@@ -111,6 +111,10 @@ Plans:
 
 **Plans**: TBD
 
+- [x] 43-01-PLAN.md — Freeze the exact 55-case public renderer matrix and representative no-face facade contract.
+- [x] 43-02-PLAN.md — Build, calibrate, and strictly accept the bounded 385-output eye-local evidence matrix.
+- [x] 43-03-PLAN.md — Publish the ignored gallery and close Phase 43 validation/security/tracking.
+
 ### Phase 44: Eye Geometry Safety and Ledger Closeout
 
 **Goal**: Hosts receive conservative, redacted, internally consistent behavior for all fourteen eye geometry fields, and repository owners promote exactly ten evidence-backed rows without overstating the remaining retouch branch.
@@ -132,12 +136,12 @@ Plans:
 | --- | --- | --- | --- |
 | 41. Public Contract and Observed Eye Support | 6/5 | Complete    | 2026-07-16 |
 | 42. Independent Eye Geometry and Pipeline Integration | 4/4 | Complete    | 2026-07-16 |
-| 43. Public-Facade Eye Geometry Output Evidence | 0/TBD | Not started | — |
+| 43. Public-Facade Eye Geometry Output Evidence | 3/3 | Complete | 2026-07-16 |
 | 44. Eye Geometry Safety and Ledger Closeout | 0/TBD | Not started | — |
 
 ## Current Status
 
-v1.11 is active in requirements/roadmap definition. Phase 42 is planned and ready for execution after Phase 41 completion; Phase 43-44 remain unplanned.
+v1.11 Phase 43 is complete with strict public-facade saved-output evidence. Phase 44 is next for final caps, exhaustive safety/degradation, active-source boundaries, exact promotion, and owner synchronization.
 
 ## Backlog
 
@@ -147,4 +151,4 @@ v1.11 is active in requirements/roadmap definition. Phase 42 is planned and read
 - Device, commercial visual, packaging, performance, and launch-readiness evidence remains separately scoped.
 
 ---
-*Last updated: 2026-07-16 after v1.11 roadmap creation*
+*Last updated: 2026-07-16 after Phase 43 public-facade output evidence completion*

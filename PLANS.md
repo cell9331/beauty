@@ -26,9 +26,27 @@
 
 ## 3. Active
 
-No active execution plan. v1.11 Phase 41 is complete and Phase 42 is ready for discussion/planning.
+No active execution plan. v1.11 Phase 43 is complete and Phase 44 is ready for discussion/planning.
 
 ## 4. Completed
+
+### C-2026-07-16-phase-43-public-facade-eye-output-evidence
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-16 |
+| Scope | Completed Phase 43 Plans `43-01` through `43-03`: exact public renderer inventory, representative no-face facade contract, bounded strict PNG/JPEG matrix helper, frozen eye-local output families, eligibility-aware gaze/symmetry evidence, and ignored gallery containment. |
+| Matrix | Exactly 55 duplicate-free public cases × seven committed fixtures = 385/385 regular, non-empty, fully decoded, same-dimension PNG outputs; the eleven new cases are nine positive-only `0.25` cases plus `eyeTilt` `+0.25`/`-0.25`. |
+| Geometry Evidence | One stored-row ROI `x=.10-.90/y=.55-.82` uses fixed 500 changed-pixel and 1,000 RGB-delta floors. Strict evidence passes 66/66 new-case visibility, 6/6 direct signed-tilt, and 60/60 fixed semantic comparisons. Fixed tilt polarity and a paired-eye gaze-deviation reduction of 6,364 pass without raw support disclosure. |
+| Eligibility | Contour, pupil/gaze, and measured-pair symmetry eligibility each cover 6/6 portraits. The committed inventory has no neutral/ineligible portrait; the explicit 64×64 no-face fixture is excluded from portrait denominators and passes 11/11 watermark-safe no-ops plus focused extent/redaction assertions. |
+| Verification | Focused `BeautyRendererOutputRegressionTests` pass 13/13; full SwiftPM passes 305/305; helper self-tests and compilation pass; strict helper passes 385/385; descriptor-safe gallery publication produces exactly 385 ignored, untracked regular files; tracked/staged/non-ignored-untracked generated artifacts remain zero; `git diff --check` passes. |
+| Boundary | EYE-16 through EYE-18 close only. Exact final caps, exhaustive degradation/transitions, 28-field convergence, active-source boundary closeout, ten-row promotion, DOC-01 synchronization, and branch-level `眼睛` remain Phase 44. No Demo/device/commercial/optimized-performance/packaging/shipping/launch claim. |
+
+Outcome:
+
+- Every Phase 41/42 eye control has isolated public-facade saved-output evidence with signed/semantic distinctions.
+- Generated PNGs remain disposable ignored local artifacts; only aggregate facts enter repository history.
+- Phase 44 can lock final safety and promotion without reopening the Phase 43 renderer/output contract.
 
 ### C-2026-07-16-phase-41-public-contract-observed-eye-support
 

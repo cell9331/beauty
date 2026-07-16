@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.11
 milestone_name: Eye Remaining Geometry Controls
-current_phase: 43
-current_phase_name: Public-Facade Eye Geometry Output Evidence
+current_phase: 44
+current_phase_name: Eye Geometry Safety and Ledger Closeout
 status: planning
-stopped_at: Completed 41-01-PLAN.md
-last_updated: "2026-07-16T06:59:42.393Z"
+stopped_at: Completed 43-03-PLAN.md
+last_updated: "2026-07-16T08:50:00.000Z"
 last_activity: 2026-07-16
-last_activity_desc: Phase 42 complete, transitioned to Phase 43
+last_activity_desc: Phase 43 complete, transitioned to Phase 44
 progress:
   total_phases: 4
-  completed_phases: 1
-  total_plans: 9
-  completed_plans: 8
-  percent: 25
+  completed_phases: 3
+  total_plans: 12
+  completed_plans: 12
+  percent: 75
 ---
 
 # Project State
@@ -24,14 +24,22 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-14)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** v1.11 Phase 41 planning
+**Current focus:** v1.11 Phase 44 safety, boundary, and ledger closeout
 
 ## Current Position
 
-Phase: 43 of 44 (Public-Facade Eye Geometry Output Evidence)
+Phase: 44 of 44 (Eye Geometry Safety and Ledger Closeout)
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-07-16 — Phase 42 complete, transitioned to Phase 43
+Last activity: 2026-07-16 — Phase 43 complete, transitioned to Phase 44
+
+### Phase 43 Public-Facade Eye Geometry Output Evidence Result
+
+- Exactly eleven isolated public eye cases extend the renderer from 44 to 55 cases while retaining the single `BeautySDK` facade route.
+- Fresh focused evidence passes 13/13 and the full SwiftPM suite passes 305/305.
+- A bounded strict helper passes 385/385 decoded same-dimension outputs, 66/66 visibility comparisons, 6/6 direct signed-tilt comparisons, 60/60 semantic distinctions, a fixed gaze-reduction gate, and 11/11 no-face no-ops.
+- The descriptor-safe gallery publishes exactly 385 ignored, untracked regular PNGs with an exact renderer/gallery bijection.
+- EYE-16 through EYE-18 are complete. Final caps, exhaustive safety/transitions, active-source boundaries, exact ten-row promotion, DOC-01 owner synchronization, and branch status remain Phase 44.
 
 ### Phase 40 Mouth Geometry Safety and Ledger Closeout Result
 
@@ -189,6 +197,9 @@ Last activity: 2026-07-14
 | Phase 37 P02 | 8 min | 2 tasks | 4 files |
 | Phase 37 P03 | 12 min | 2 tasks | 6 files |
 | Phase 41 P01 | 7min | 2 tasks | 3 files |
+| Phase 43 P01 | 6 min | 2 tasks | 2 files |
+| Phase 43 P02 | 48 min | 2 tasks | 2 files |
+| Phase 43 P03 | 10 min | 2 tasks | 10 files |
 
 ## Accumulated Context
 
