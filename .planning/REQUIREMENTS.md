@@ -7,10 +7,10 @@
 
 ### Public Eye Contract
 
-- [ ] **EYE-01**: A host can set independent positive-only `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `innerCornerOpen`, `outerCornerOpen`, and `eyeSymmetry` values in `0...1`, each with default `0`, finite clamping, non-finite fallback, and no forwarding alias.
-- [ ] **EYE-02**: A host can set independent signed `eyeTilt` in `-1...1`, with default `0`, finite clamping, non-finite fallback, and both directions preserved end to end.
-- [ ] **EYE-03**: Existing complete 38-field JSON and bundled presets decode all ten new values at `0`, new 48-field unequal values round-trip, existing source-style initializer calls retain neutral defaults, and the exact stored inventory is 47 numeric fields plus `filterId`.
-- [ ] **EYE-04**: With all ten new fields at zero, the four shipped eye fields retain their exact public values, safety caps, provider vectors, JSON behavior, and facade evidence; each new field remains independently distinguishable from every shipped and new neighbor.
+- [x] **EYE-01**: A host can set independent positive-only `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `innerCornerOpen`, `outerCornerOpen`, and `eyeSymmetry` values in `0...1`, each with default `0`, finite clamping, non-finite fallback, and no forwarding alias.
+- [x] **EYE-02**: A host can set independent signed `eyeTilt` in `-1...1`, with default `0`, finite clamping, non-finite fallback, and both directions preserved end to end.
+- [x] **EYE-03**: Existing complete 38-field JSON and bundled presets decode all ten new values at `0`, new 48-field unequal values round-trip, existing source-style initializer calls retain neutral defaults, and the exact stored inventory is 47 numeric fields plus `filterId`.
+- [x] **EYE-04**: With all ten new fields at zero, the four shipped eye fields retain their exact public values, safety caps, provider vectors, JSON behavior, and facade evidence; each new field remains independently distinguishable from every shipped and new neighbor.
 
 ### Observed Eye Support
 
@@ -74,10 +74,10 @@
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| EYE-01 | Phase 41 | Pending |
-| EYE-02 | Phase 41 | Pending |
-| EYE-03 | Phase 41 | Pending |
-| EYE-04 | Phase 41 | Pending |
+| EYE-01 | Phase 41 | Complete |
+| EYE-02 | Phase 41 | Complete |
+| EYE-03 | Phase 41 | Complete |
+| EYE-04 | Phase 41 | Complete |
 | EYE-05 | Phase 41 | Pending |
 | EYE-06 | Phase 41 | Pending |
 | EYE-07 | Phase 41 | Pending |

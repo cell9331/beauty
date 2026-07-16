@@ -5,15 +5,15 @@ milestone_name: Eye Remaining Geometry Controls
 current_phase: 41
 current_phase_name: Public Contract and Observed Eye Support
 status: executing
-stopped_at: v1.11 roadmap created; Phase 41 ready for discussion
-last_updated: "2026-07-16T03:45:08.384Z"
+stopped_at: Completed 41-01-PLAN.md
+last_updated: "2026-07-16T03:57:35.989Z"
 last_activity: 2026-07-16
-last_activity_desc: v1.11 roadmap created; Phase 41 ready for discussion
+last_activity_desc: Completed 41-01-PLAN.md
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 4
+  completed_plans: 1
   percent: 0
 ---
 
@@ -29,9 +29,9 @@ See: `.planning/PROJECT.md` (updated 2026-07-14)
 ## Current Position
 
 Phase: 41 of 44 — Public Contract and Observed Eye Support
-Plan: —
+Plan: 2 of 4 — Add the ten compatibility-safe public eye scalars and neutral regression evidence
 Status: Ready to execute
-Last activity: 2026-07-16 — v1.11 roadmap created; Phase 41 ready for discussion
+Last activity: 2026-07-16 — Completed 41-01-PLAN.md
 
 ### Phase 40 Mouth Geometry Safety and Ledger Closeout Result
 
@@ -188,6 +188,7 @@ Last activity: 2026-07-14
 | Phase 37 P01 | 9 min | 3 tasks | 6 files |
 | Phase 37 P02 | 8 min | 2 tasks | 4 files |
 | Phase 37 P03 | 12 min | 2 tasks | 6 files |
+| Phase 41 P01 | 7min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -261,6 +262,8 @@ Recent milestone-level outcomes:
 - [Phase 35]: Sanitize unsupported root and tip requests independently before using the same NoseWarpProvider, preserving valid sibling and legacy nose work. — Prevents legacy vector borrowing while retaining compatible aggregate nose behavior.
 - [Phase 35]: Converge conflict weakening with provider-owned per-field nose and mouth emissions before final metrics and dispatch. — Retained fields only decrease across the bounded nine-field loop, so effective strengths, total, scale, weakened count, and emitted work agree while Phase 37 still owns the exhaustive six-nose-field matrix.
 - [Phase 37]: Exact combined geometry evidence uses one provider-eligible retained baseline across all face, eye, mouth, and six-field nose work. — All exact totals, counts, scales, effective strengths, domains, warnings, and final provider emissions passed without production changes; provider-empty work contributes zero times.
+- [Phase 41]: Phase 41-01 stores exactly ten default-zero eye scalars with finite normalization and preserves legacy 38-key payload neutrality.
+- [Phase 41]: Phase 41-01 defers provider transforms to Phase 42; zero-default regression covers only the existing four shipped eye controls.
 
 ### Pending Todos
 
@@ -293,8 +296,8 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-14T08:26:24.226Z
-Stopped at: v1.11 roadmap created; Phase 41 ready for discussion
+Last session: 2026-07-16T03:56:45.652Z
+Stopped at: Completed 41-01-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
