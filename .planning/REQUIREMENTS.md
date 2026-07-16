@@ -20,14 +20,14 @@
 
 ### Independent Eye Geometry
 
-- [ ] **EYE-08**: `eyeHeight` and `eyeLength` produce bounded vertical-aperture and horizontal-span vectors respectively on both eyes, remain distinct from radial `eyeSize`, signed `eyeDistance`, and each other, and preserve stable centers unless their own semantics require local movement.
-- [ ] **EYE-09**: `upperEyelidLift` and `lowerEyelidDrop` produce bounded upper-lid-only lift and lower-lid-only drop vectors respectively, preserve opposite lids and corners outside their local falloff, and remain distinct from `eyeYPosition`, `eyeHeight`, and `eyeTailLift`.
-- [ ] **EYE-10**: Signed `eyeTilt` rotates both observed eye contours around stable per-eye centers with opposite tangential motion for positive and negative values, bounded radius error, and no alias to `eyeTailLift` or vertical position.
-- [ ] **EYE-11**: `innerCornerOpen` and `outerCornerOpen` use side-aware nasal and temporal corner support respectively, emit bounded local opening vectors on both eyes, and remain distinct from `eyeLength`, `eyeTailLift`, and each other.
-- [ ] **EYE-12**: `pupilSize` produces bounded pupil-local radial geometry from a validated pupil center and its containing eye contour, preserves the surrounding eye contour outside its local falloff, and never borrows `eyeSize` evidence.
-- [ ] **EYE-13**: `gazeCorrection` reduces a validated pupil-to-neutral-center offset by a bounded monotonic fraction, emits no work inside a neutral dead zone or for implausible support, and does not expose or accept a manual gaze direction.
-- [ ] **EYE-14**: `eyeSymmetry` reduces only measured paired-eye center, aperture, span, or tilt differences toward a conservative midpoint, emits no work for already-neutral or implausible pairs, and never mirrors one eye or replaces identity-specific geometry.
-- [ ] **EYE-15**: Provider-owned named emissions represent all fourteen eye geometry fields independently; preflight- or final-scale-ineligible work becomes zero before totals, counts, warnings, metrics, domains, and dispatch, while valid eye siblings continue and any isolated new field triggers the existing public-facade geometry route.
+- [x] **EYE-08**: `eyeHeight` and `eyeLength` produce bounded vertical-aperture and horizontal-span vectors respectively on both eyes, remain distinct from radial `eyeSize`, signed `eyeDistance`, and each other, and preserve stable centers unless their own semantics require local movement.
+- [x] **EYE-09**: `upperEyelidLift` and `lowerEyelidDrop` produce bounded upper-lid-only lift and lower-lid-only drop vectors respectively, preserve opposite lids and corners outside their local falloff, and remain distinct from `eyeYPosition`, `eyeHeight`, and `eyeTailLift`.
+- [x] **EYE-10**: Signed `eyeTilt` rotates both observed eye contours around stable per-eye centers with opposite tangential motion for positive and negative values, bounded radius error, and no alias to `eyeTailLift` or vertical position.
+- [x] **EYE-11**: `innerCornerOpen` and `outerCornerOpen` use side-aware nasal and temporal corner support respectively, emit bounded local opening vectors on both eyes, and remain distinct from `eyeLength`, `eyeTailLift`, and each other.
+- [x] **EYE-12**: `pupilSize` produces bounded pupil-local radial geometry from a validated pupil center and its containing eye contour, preserves the surrounding eye contour outside its local falloff, and never borrows `eyeSize` evidence.
+- [x] **EYE-13**: `gazeCorrection` reduces a validated pupil-to-neutral-center offset by a bounded monotonic fraction, emits no work inside a neutral dead zone or for implausible support, and does not expose or accept a manual gaze direction.
+- [x] **EYE-14**: `eyeSymmetry` reduces only measured paired-eye center, aperture, span, or tilt differences toward a conservative midpoint, emits no work for already-neutral or implausible pairs, and never mirrors one eye or replaces identity-specific geometry.
+- [x] **EYE-15**: Provider-owned named emissions represent all fourteen eye geometry fields independently; preflight- or final-scale-ineligible work becomes zero before totals, counts, warnings, metrics, domains, and dispatch, while valid eye siblings continue and any isolated new field triggers the existing public-facade geometry route.
 
 ### Public-Facade Output Evidence
 
@@ -81,14 +81,14 @@
 | EYE-05 | Phase 41 | Complete |
 | EYE-06 | Phase 41 | Complete |
 | EYE-07 | Phase 41 | Complete |
-| EYE-08 | Phase 42 | Pending |
-| EYE-09 | Phase 42 | Pending |
-| EYE-10 | Phase 42 | Pending |
-| EYE-11 | Phase 42 | Pending |
-| EYE-12 | Phase 42 | Pending |
-| EYE-13 | Phase 42 | Pending |
-| EYE-14 | Phase 42 | Pending |
-| EYE-15 | Phase 42 | Pending |
+| EYE-08 | Phase 42 | Complete |
+| EYE-09 | Phase 42 | Complete |
+| EYE-10 | Phase 42 | Complete |
+| EYE-11 | Phase 42 | Complete |
+| EYE-12 | Phase 42 | Complete |
+| EYE-13 | Phase 42 | Complete |
+| EYE-14 | Phase 42 | Complete |
+| EYE-15 | Phase 42 | Complete |
 | EYE-16 | Phase 43 | Pending |
 | EYE-17 | Phase 43 | Pending |
 | EYE-18 | Phase 43 | Pending |

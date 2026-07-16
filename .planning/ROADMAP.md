@@ -21,7 +21,7 @@
 ## Phases
 
 - [x] **Phase 41: Public Contract and Observed Eye Support** — Add ten compatible public controls, private Vision contour/pupil support, canonical coordinate conversion, strict support validation, and privacy boundaries. (completed 2026-07-16)
-- [ ] **Phase 42: Independent Eye Geometry and Pipeline Integration** — Implement ten distinct contour/pupil/correction transforms, fourteen named eye emissions, resolver/conflict convergence, and facade routing.
+- [x] **Phase 42: Independent Eye Geometry and Pipeline Integration** — Implement ten distinct contour/pupil/correction transforms, fourteen named eye emissions, resolver/conflict convergence, and facade routing. (completed 2026-07-16)
 - [ ] **Phase 43: Public-Facade Eye Geometry Output Evidence** — Prove isolated controls, signed tilt, eligibility-aware correction/symmetry, no-face behavior, strict decoded outputs, and ignored gallery containment.
 - [ ] **Phase 44: Eye Geometry Safety and Ledger Closeout** — Lock exact caps and transitions, complete the fail-closed boundary gate, promote exactly ten geometry rows, and synchronize all owners.
 
@@ -72,14 +72,14 @@ Plans:
   4. EyeWarpProvider owns fourteen named emissions; missing or final-scale-empty fields are removed from effective strengths and all aggregate accounting while valid siblings survive.
   5. Each isolated new field triggers the existing detection/adapter/resolver/facade route with redacted aggregate evidence and no new pass, target, dependency, or public geometry type.
 
-**Plans**: 4 plans
+**Plans**: 4/4 plans complete
 
 Plans:
 
-- [ ] 42-01-PLAN.md — Implement independent contour/lid/corner/tilt/pupil/gaze/symmetry provider emissions.
-- [ ] 42-02-PLAN.md — Integrate fourteen named emissions into resolver, field-local eligibility, and facade routing.
-- [ ] 42-03-PLAN.md — Extend combined conflict totals and bounded eye/nose/mouth convergence.
-- [ ] 42-04-PLAN.md — Complete the Phase 42 validation ledger and handoff.
+- [x] 42-01-PLAN.md — Implement independent contour/lid/corner/tilt/pupil/gaze/symmetry provider emissions.
+- [x] 42-02-PLAN.md — Integrate fourteen named emissions into resolver, field-local eligibility, and facade routing.
+- [x] 42-03-PLAN.md — Extend combined conflict totals and bounded eye/nose/mouth convergence.
+- [x] 42-04-PLAN.md — Complete the Phase 42 validation ledger and handoff.
 
 **Wave 1**
 
@@ -131,7 +131,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
 | 41. Public Contract and Observed Eye Support | 6/5 | Complete    | 2026-07-16 |
-| 42. Independent Eye Geometry and Pipeline Integration | 0/TBD | Not started | — |
+| 42. Independent Eye Geometry and Pipeline Integration | 4/4 | Complete    | 2026-07-16 |
 | 43. Public-Facade Eye Geometry Output Evidence | 0/TBD | Not started | — |
 | 44. Eye Geometry Safety and Ledger Closeout | 0/TBD | Not started | — |
 
