@@ -72,6 +72,52 @@ final class CombinedEffectSafetyTests: XCTestCase {
         XCTAssertEqual(source.components(separatedBy: "for _ in 0..<28").count - 1, 1)
         XCTAssertTrue(source.contains("Each pass can only remove fields"))
     }
+
+    func testEYE21MixedEyeMasksPreserveSafeDomainsAndSignedDirection() {
+        let parameters = BeautyParameters(
+            brightness: 0.2,
+            faceSlim: 1,
+            eyeSize: 1,
+            eyeHeight: 1,
+            pupilSize: 1,
+            gazeCorrection: 1,
+            eyeTilt: -1,
+            eyeSymmetry: 1,
+            noseSlim: 1,
+            mouthSize: -1,
+            filterId: "soft_clean",
+            filterIntensity: 0.5
+        )
+
+        let fresh = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)
+        XCTAssertTrue(fresh.activeDomains.isSuperset(of: [.faceShape, .eyes, .nose, .mouth, .color, .filter]))
+        XCTAssertEqual(fresh.effectiveStrengths.pupilSize, 0)
+        XCTAssertEqual(fresh.effectiveStrengths.gazeCorrection, 0)
+        XCTAssertEqual(fresh.effectiveStrengths.eyeSymmetry, 0)
+        XCTAssertLessThan(fresh.effectiveStrengths.eyeTilt, 0)
+        XCTAssertGreaterThan(fresh.effectiveStrengths.eyeHeight, 0)
+        XCTAssertGreaterThan(fresh.effectiveStrengths.noseSlim, 0)
+        XCTAssertLessThan(fresh.effectiveStrengths.mouthSize, 0)
+        XCTAssertEqual(fresh.warnings.filter { $0.code == "combined_geometry_weakened" }.count, 1)
+
+        let reused = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .reused)
+        XCTAssertFalse(reused.activeDomains.contains(.eyes))
+        XCTAssertTrue(reused.skippedDomains.contains(.eyes))
+        XCTAssertEqual(reused.effectiveStrengths.eyeTilt, 0)
+        XCTAssertTrue(reused.activeDomains.isSuperset(of: [.faceShape, .nose, .mouth, .color, .filter]))
+
+        let noFace = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: nil)
+        XCTAssertFalse(noFace.activeDomains.contains(.eyes))
+        XCTAssertTrue(noFace.skippedDomains.contains(.eyes))
+        XCTAssertEqual(noFace.effectiveStrengths.eyeTilt, 0)
+        XCTAssertTrue(noFace.activeDomains.isSuperset(of: [.color, .filter]))
+        XCTAssertFalse(noFace.activeDomains.contains(.nose))
+        XCTAssertFalse(noFace.activeDomains.contains(.mouth))
+
+        for plan in [fresh, reused, noFace] {
+            assertCombinedMetadataRedacted(plan)
+        }
+    }
     func testMOUTH05ExactCapsSignedSemanticsWarningAndCappedCount() {
         let cases: [(BeautyParameters, KeyPath<BeautyEffectiveStrengths, Float>, Float)] = [
             (BeautyParameters(mouthSize: 1), \.mouthSize, 0.35),
