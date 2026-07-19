@@ -140,6 +140,78 @@ final class GeometryConflictResolverTests: XCTestCase {
         XCTAssertEqual(resolved.strengths.lipPlump, 0.25 * expectedScale, accuracy: 0.000001)
     }
 
+    func testEYE21AllThirtyThreeGeometryFieldsShareExactTenPointSevenBaseline() {
+        let independent = strengths(
+            faceSlim: 1,
+            faceSmall: 1,
+            faceVShape: 1,
+            jawSlim: 1,
+            chinLength: -1,
+            eyeSize: 1,
+            eyeDistance: -1,
+            eyeYPosition: 1,
+            eyeTailLift: 1,
+            eyeHeight: 1,
+            eyeLength: 1,
+            upperEyelidLift: 1,
+            pupilSize: 1,
+            gazeCorrection: 1,
+            lowerEyelidDrop: 1,
+            eyeTilt: -1,
+            innerCornerOpen: 1,
+            outerCornerOpen: 1,
+            eyeSymmetry: 1,
+            noseSlim: 1,
+            noseWingSlim: 1,
+            noseTipSize: -1,
+            noseBridge: 1,
+            noseRootNarrowing: 1,
+            noseTipLift: 1,
+            mouthSize: -1,
+            mouthWidth: 1,
+            smile: 1,
+            mouthYPosition: -1,
+            mouthTilt: 1,
+            mouthXPosition: -1,
+            lipPeakDefinition: 1,
+            lipPlump: 1
+        )
+        let resolved = GeometryConflictResolver().resolve(strengths: independent)
+        let expectedTotal: Float = 10.70
+        let expectedScale: Float = 1 / expectedTotal
+
+        XCTAssertEqual(independent.geometryTotal, expectedTotal, accuracy: 0.000_001)
+        XCTAssertEqual(resolved.metrics["beauty.effects.weakenedCount"], 33)
+        XCTAssertEqual(resolved.metrics["beauty.effects.geometryStrengthScale"] ?? 0, Double(expectedScale), accuracy: 0.000_000_1)
+        XCTAssertEqual(resolved.warnings.map(\.code), ["combined_geometry_weakened"])
+        XCTAssertEqual(resolved.strengths.geometryTotal, 1, accuracy: 0.000_001)
+
+        let signed: [(KeyPath<BeautyEffectiveStrengths, Float>, Float)] = [
+            (\.chinLength, -BeautySafetyCaps.chinLength),
+            (\.eyeDistance, -BeautySafetyCaps.eyeDistance),
+            (\.eyeYPosition, BeautySafetyCaps.eyeYPosition),
+            (\.eyeTilt, -BeautySafetyCaps.eyeTilt),
+            (\.noseTipSize, -BeautySafetyCaps.noseTipSize),
+            (\.mouthSize, -BeautySafetyCaps.mouthSize),
+            (\.mouthWidth, BeautySafetyCaps.mouthWidth),
+            (\.mouthYPosition, -BeautySafetyCaps.mouthYPosition),
+            (\.mouthTilt, BeautySafetyCaps.mouthTilt),
+            (\.mouthXPosition, -BeautySafetyCaps.mouthXPosition),
+        ]
+        for (keyPath, unscaled) in signed {
+            XCTAssertEqual(resolved.strengths[keyPath: keyPath], unscaled * expectedScale, accuracy: 0.000_000_1)
+            XCTAssertEqual(resolved.strengths[keyPath: keyPath].sign, unscaled.sign)
+        }
+
+        var belowThreshold = BeautyEffectiveStrengths()
+        belowThreshold.eyeHeight = 0.40
+        belowThreshold.eyeTilt = -0.30
+        let unchanged = GeometryConflictResolver().resolve(strengths: belowThreshold)
+        XCTAssertEqual(unchanged.strengths, belowThreshold)
+        XCTAssertTrue(unchanged.warnings.isEmpty)
+        XCTAssertTrue(unchanged.metrics.isEmpty)
+    }
+
     func testNOSE12AllSixNoseFieldsContributeExactlyOnceWithEveryGeometryDomain() {
         let independent = strengths(
             faceSlim: 1,
@@ -304,6 +376,16 @@ final class GeometryConflictResolverTests: XCTestCase {
         eyeDistance: Float = 0,
         eyeYPosition: Float = 0,
         eyeTailLift: Float = 0,
+        eyeHeight: Float = 0,
+        eyeLength: Float = 0,
+        upperEyelidLift: Float = 0,
+        pupilSize: Float = 0,
+        gazeCorrection: Float = 0,
+        lowerEyelidDrop: Float = 0,
+        eyeTilt: Float = 0,
+        innerCornerOpen: Float = 0,
+        outerCornerOpen: Float = 0,
+        eyeSymmetry: Float = 0,
         noseSlim: Float = 0,
         noseWingSlim: Float = 0,
         noseTipSize: Float = 0,
@@ -329,6 +411,16 @@ final class GeometryConflictResolverTests: XCTestCase {
         strengths.eyeDistance = min(max(eyeDistance, -BeautySafetyCaps.eyeDistance), BeautySafetyCaps.eyeDistance)
         strengths.eyeYPosition = min(max(eyeYPosition, -BeautySafetyCaps.eyeYPosition), BeautySafetyCaps.eyeYPosition)
         strengths.eyeTailLift = min(max(eyeTailLift, -BeautySafetyCaps.eyeTailLift), BeautySafetyCaps.eyeTailLift)
+        strengths.eyeHeight = min(max(eyeHeight, 0), BeautySafetyCaps.eyeHeight)
+        strengths.eyeLength = min(max(eyeLength, 0), BeautySafetyCaps.eyeLength)
+        strengths.upperEyelidLift = min(max(upperEyelidLift, 0), BeautySafetyCaps.upperEyelidLift)
+        strengths.pupilSize = min(max(pupilSize, 0), BeautySafetyCaps.pupilSize)
+        strengths.gazeCorrection = min(max(gazeCorrection, 0), BeautySafetyCaps.gazeCorrection)
+        strengths.lowerEyelidDrop = min(max(lowerEyelidDrop, 0), BeautySafetyCaps.lowerEyelidDrop)
+        strengths.eyeTilt = min(max(eyeTilt, -BeautySafetyCaps.eyeTilt), BeautySafetyCaps.eyeTilt)
+        strengths.innerCornerOpen = min(max(innerCornerOpen, 0), BeautySafetyCaps.innerCornerOpen)
+        strengths.outerCornerOpen = min(max(outerCornerOpen, 0), BeautySafetyCaps.outerCornerOpen)
+        strengths.eyeSymmetry = min(max(eyeSymmetry, 0), BeautySafetyCaps.eyeSymmetry)
         strengths.noseSlim = min(noseSlim, BeautySafetyCaps.noseSlim)
         strengths.noseWingSlim = min(noseWingSlim, BeautySafetyCaps.noseWingSlim)
         strengths.noseTipSize = min(max(noseTipSize, -BeautySafetyCaps.noseTipSize), BeautySafetyCaps.noseTipSize)
@@ -358,6 +450,16 @@ private extension BeautyEffectiveStrengths {
             abs(eyeDistance) +
             abs(eyeYPosition) +
             abs(eyeTailLift) +
+            eyeHeight +
+            eyeLength +
+            upperEyelidLift +
+            pupilSize +
+            gazeCorrection +
+            lowerEyelidDrop +
+            abs(eyeTilt) +
+            innerCornerOpen +
+            outerCornerOpen +
+            eyeSymmetry +
             noseSlim +
             noseWingSlim +
             abs(noseTipSize) +
