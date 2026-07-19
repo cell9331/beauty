@@ -5,6 +5,73 @@ import BeautyResources
 @testable import BeautyEffects
 
 final class CombinedEffectSafetyTests: XCTestCase {
+    func testEYE21AllTwentyEightProviderFieldsFailClosedWithoutReentry() {
+        struct Row {
+            let name: String
+            let domain: BeautyEffectDomain
+            let makeParameters: (Float) -> BeautyParameters
+            let effective: KeyPath<BeautyEffectiveStrengths, Float>
+        }
+        let rows: [Row] = [
+            Row(name: "eyeSize", domain: .eyes, makeParameters: { BeautyParameters(eyeSize: $0) }, effective: \.eyeSize),
+            Row(name: "eyeDistance", domain: .eyes, makeParameters: { BeautyParameters(eyeDistance: $0) }, effective: \.eyeDistance),
+            Row(name: "eyeYPosition", domain: .eyes, makeParameters: { BeautyParameters(eyeYPosition: $0) }, effective: \.eyeYPosition),
+            Row(name: "eyeTailLift", domain: .eyes, makeParameters: { BeautyParameters(eyeTailLift: $0) }, effective: \.eyeTailLift),
+            Row(name: "eyeHeight", domain: .eyes, makeParameters: { BeautyParameters(eyeHeight: $0) }, effective: \.eyeHeight),
+            Row(name: "eyeLength", domain: .eyes, makeParameters: { BeautyParameters(eyeLength: $0) }, effective: \.eyeLength),
+            Row(name: "upperEyelidLift", domain: .eyes, makeParameters: { BeautyParameters(upperEyelidLift: $0) }, effective: \.upperEyelidLift),
+            Row(name: "pupilSize", domain: .eyes, makeParameters: { BeautyParameters(pupilSize: $0) }, effective: \.pupilSize),
+            Row(name: "gazeCorrection", domain: .eyes, makeParameters: { BeautyParameters(gazeCorrection: $0) }, effective: \.gazeCorrection),
+            Row(name: "lowerEyelidDrop", domain: .eyes, makeParameters: { BeautyParameters(lowerEyelidDrop: $0) }, effective: \.lowerEyelidDrop),
+            Row(name: "eyeTilt", domain: .eyes, makeParameters: { BeautyParameters(eyeTilt: $0) }, effective: \.eyeTilt),
+            Row(name: "innerCornerOpen", domain: .eyes, makeParameters: { BeautyParameters(innerCornerOpen: $0) }, effective: \.innerCornerOpen),
+            Row(name: "outerCornerOpen", domain: .eyes, makeParameters: { BeautyParameters(outerCornerOpen: $0) }, effective: \.outerCornerOpen),
+            Row(name: "eyeSymmetry", domain: .eyes, makeParameters: { BeautyParameters(eyeSymmetry: $0) }, effective: \.eyeSymmetry),
+            Row(name: "noseSlim", domain: .nose, makeParameters: { BeautyParameters(noseSlim: $0) }, effective: \.noseSlim),
+            Row(name: "noseWingSlim", domain: .nose, makeParameters: { BeautyParameters(noseWingSlim: $0) }, effective: \.noseWingSlim),
+            Row(name: "noseTipSize", domain: .nose, makeParameters: { BeautyParameters(noseTipSize: $0) }, effective: \.noseTipSize),
+            Row(name: "noseBridge", domain: .nose, makeParameters: { BeautyParameters(noseBridge: $0) }, effective: \.noseBridge),
+            Row(name: "noseRootNarrowing", domain: .nose, makeParameters: { BeautyParameters(noseRootNarrowing: $0) }, effective: \.noseRootNarrowing),
+            Row(name: "noseTipLift", domain: .nose, makeParameters: { BeautyParameters(noseTipLift: $0) }, effective: \.noseTipLift),
+            Row(name: "mouthSize", domain: .mouth, makeParameters: { BeautyParameters(mouthSize: $0) }, effective: \.mouthSize),
+            Row(name: "mouthWidth", domain: .mouth, makeParameters: { BeautyParameters(mouthWidth: $0) }, effective: \.mouthWidth),
+            Row(name: "smile", domain: .mouth, makeParameters: { BeautyParameters(smile: $0) }, effective: \.smile),
+            Row(name: "mouthYPosition", domain: .mouth, makeParameters: { BeautyParameters(mouthYPosition: $0) }, effective: \.mouthYPosition),
+            Row(name: "mouthTilt", domain: .mouth, makeParameters: { BeautyParameters(mouthTilt: $0) }, effective: \.mouthTilt),
+            Row(name: "mouthXPosition", domain: .mouth, makeParameters: { BeautyParameters(mouthXPosition: $0) }, effective: \.mouthXPosition),
+            Row(name: "lipPeakDefinition", domain: .mouth, makeParameters: { BeautyParameters(lipPeakDefinition: $0) }, effective: \.lipPeakDefinition),
+            Row(name: "lipPlump", domain: .mouth, makeParameters: { BeautyParameters(lipPlump: $0) }, effective: \.lipPlump),
+        ]
+
+        XCTAssertEqual(rows.count, 28)
+        for row in rows {
+            var parameters = row.makeParameters(row.name.contains("Tilt") || row.name.contains("Position") || row.name == "eyeDistance" || row.name == "noseTipSize" || row.name.hasPrefix("mouthS") || row.name == "mouthWidth" ? -1 : 1)
+            parameters.faceSlim = 1
+            parameters.faceSmall = 1
+            let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: providerEmptyGeometry)
+
+            XCTAssertEqual(plan.effectiveStrengths[keyPath: row.effective], 0, row.name)
+            XCTAssertTrue(plan.skippedDomains.contains(row.domain), row.name)
+            XCTAssertFalse(plan.activeDomains.contains(row.domain), row.name)
+            XCTAssertTrue(plan.activeDomains.contains(.faceShape), row.name)
+            XCTAssertEqual(plan.metrics["beauty.effects.weakenedCount"], 2, row.name)
+            XCTAssertEqual(plan.metrics["beauty.effects.geometryStrengthScale"] ?? 0, Double(1 / (BeautySafetyCaps.faceSlim + BeautySafetyCaps.faceSmall)), accuracy: 0.000_001, row.name)
+            XCTAssertEqual(plan.warnings.filter { $0.code == "combined_geometry_weakened" }.count, 1, row.name)
+            assertCombinedMetadataRedacted(plan)
+        }
+    }
+
+    func testEYE21ConvergenceLoopHasExactTwentyEightRemovalCeiling() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let sourceURL = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("Sources/BeautyEffects/Planning/BeautyEffectResolver.swift")
+        let source = try String(contentsOf: sourceURL, encoding: .utf8)
+        XCTAssertEqual(source.components(separatedBy: "for _ in 0..<28").count - 1, 1)
+        XCTAssertTrue(source.contains("Each pass can only remove fields"))
+    }
     func testMOUTH05ExactCapsSignedSemanticsWarningAndCappedCount() {
         let cases: [(BeautyParameters, KeyPath<BeautyEffectiveStrengths, Float>, Float)] = [
             (BeautyParameters(mouthSize: 1), \.mouthSize, 0.35),
@@ -368,6 +435,22 @@ final class CombinedEffectSafetyTests: XCTestCase {
         for forbidden in ["VNFace" + "Observation", "bounding" + "Box", "land" + "mark", "/private" + "/var", "NSE" + "rror", "rawPreset" + "Json", "image" + " bytes", "SI" + "MD", "[0."] {
             XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)", file: file, line: line)
         }
+    }
+
+    private var providerEmptyGeometry: FaceGeometry {
+        FaceGeometry(
+            bounds: FaceGeometry.fixture.bounds,
+            faceContour: FaceGeometry.fixture.faceContour,
+            leftEye: [],
+            rightEye: [],
+            nose: [],
+            noseRoot: [],
+            noseTip: [],
+            outerLips: [],
+            upperLips: [],
+            lowerLips: [],
+            innerLips: []
+        )
     }
 
     private func rgbaBytes(from image: CIImage) -> [UInt8] {
