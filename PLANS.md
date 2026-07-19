@@ -26,9 +26,27 @@
 
 ## 3. Active
 
-No active execution plan. v1.11 Phase 43 is complete and Phase 44 is ready for discussion/planning.
+No active execution plan. v1.11 Phase 44 implementation/current-owner closeout is complete; DOC-01 and lifecycle remain pending the independent `$gsd-audit-milestone` workflow.
 
 ## 4. Completed
+
+### C-2026-07-19-phase-44-eye-geometry-safety-ledger-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-19 |
+| Scope | Completed Plans `44-01` through `44-06`: final caps/dead zones, fourteen-field degradation, exact retained convergence, fail-closed boundary/security/review, ten-row promotion, and current-owner synchronization. |
+| Runtime | Focused suites pass 4/4 caps, 19/19 resolver, 16/16 provider, 40/40 degradation, 12/12 conflict, 13/13 combined, and 13/13 facade; full SwiftPM passes 314/314. |
+| Geometry | One baseline is total 10.70, count 33, scale 1/10.70; all 28 potential provider removals are monotonic, field-local, sign-preserving, and excluded when empty. |
+| Output | Strict evidence passes 385/385, 66/66 visibility, 6/6 tilt, 60/60 semantic, 132/132 portrait, and 11/11 no-face comparisons; artifacts remain ignored/untracked. |
+| Quality | Boundary self-test 57/57; pre/promotion/aggregate-owner modes 13/13, 14/14, 20/20; review clean; ASVS L1 `threats_open: 0`. |
+| Status | EYE-19 through EYE-23 pass. DOC-01 is `pending-independent-audit`; the separate milestone audit does not yet exist or pass. |
+
+Outcome:
+
+- Ten remaining geometry rows are promoted; with four prior rows, fourteen eye geometry rows are implemented.
+- `去脂`/`祛红血丝` remain future and branch `眼睛` remains partial.
+- No Demo/device/commercial/performance/packaging/shipping/launch/audit/archive/tag claim. Next action: `$gsd-audit-milestone`.
 
 ### C-2026-07-16-phase-43-public-facade-eye-output-evidence
 

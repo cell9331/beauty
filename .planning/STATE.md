@@ -6,9 +6,9 @@ current_phase: 44
 current_phase_name: Eye Geometry Safety and Ledger Closeout
 status: executing
 stopped_at: Completed 44-05-PLAN.md
-last_updated: "2026-07-19T13:17:21.891Z"
-last_activity: 2026-07-16
-last_activity_desc: Phase 43 complete, transitioned to Phase 44
+last_updated: "2026-07-19T13:18:37.568Z"
+last_activity: 2026-07-19
+last_activity_desc: Phase 44 implementation/current-owner closeout complete; independent audit pending
 progress:
   total_phases: 4
   completed_phases: 2
@@ -24,14 +24,22 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-14)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** v1.11 Phase 44 safety, boundary, and ledger closeout
+**Current focus:** v1.11 independent milestone audit handoff
 
 ## Current Position
 
-Phase: 44 of 44 (Eye Geometry Safety and Ledger Closeout)
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-07-16 — Phase 43 complete, transitioned to Phase 44
+Phase: 44 (Eye Geometry Safety and Ledger Closeout) — EXECUTING
+Plan: 6 of 6
+Status: Implementation complete; independent audit pending
+Last activity: 2026-07-19 — Phase 44 implementation/current-owner closeout complete
+
+### Phase 44 Eye Geometry Safety and Ledger Closeout Result
+
+- Final ten-field caps/dead zones and all fourteen-field no-face/missing/malformed/provider-empty/fresh/reused/stale behavior pass with redacted diagnostics.
+- Exact retained arithmetic is total 10.70, count 33, scale 1/10.70 with at most 28 monotonic removals and no re-entry/double scaling.
+- Full SwiftPM passes 314/314; strict output remains 385/385; boundary self-test passes 57/57 and live promotion/owner gates pass.
+- Exactly ten remaining geometry rows are promoted; `去脂`/`祛红血丝` remain future and branch `眼睛` remains partial.
+- EYE-19 through EYE-23 are complete. DOC-01 remains pending-independent-audit; no v1.11 audit/archive/tag/lifecycle result is claimed.
 
 ### Phase 43 Public-Facade Eye Geometry Output Evidence Result
 
@@ -318,4 +326,4 @@ Resume file: None
 
 ## Operator Next Steps
 
-- Start the next milestone with `$gsd-new-milestone`.
+- Run `$gsd-audit-milestone` as the independent v1.11 audit owner. Do not mark DOC-01 complete before that workflow passes.

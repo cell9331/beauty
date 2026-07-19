@@ -14,17 +14,19 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Shipped version:** v1.10 Mouth Remaining Geometry Controls on 2026-07-14.
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
-**Current milestone:** v1.11 Eye Remaining Geometry Controls; defining requirements and roadmap.
+**Current milestone:** v1.11 Eye Remaining Geometry Controls; Phase 44 implementation/current-owner closeout complete, independent milestone audit pending.
 
-**Implementation state:** Phase 40 is complete. `BeautyParameters` is exactly 38 stored fields (37 numeric plus `filterId`); independent `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, and `lipPlump` have final exact `0.25` caps, eight-field mouth degradation/transitions, provider-empty removal, and fourteen-removal conflict-emission convergence. Exactly `上下`, `倾斜`, `左右`, `M唇`, and true `丰唇` are newly promoted; `白牙` remains future and branch-level `嘴唇` remains partial.
+**Implementation state:** Phase 44 is complete. `BeautyParameters` is exactly 48 stored fields (47 numeric plus `filterId`); all fourteen eye geometry fields have final caps/dead zones and fail-closed transitions, with one 33-field/10.70 retained baseline and at most 28 removals. Exactly ten remaining eye geometry rows are newly promoted; `去脂`/`祛红血丝` remain future and branch `眼睛` remains partial.
 
-**Verification state:** The independent v1.10 audit passes 17/17 requirements, 3/3 phases, 8/8 integrations, 5/5 flows, and all three Nyquist validations. Fresh evidence passes 265/265 full SDK tests, 308/308 public-facade outputs, 96/96 portrait pairs, 8/8 no-face pairs, and the 63/63 boundary self-test. Generated artifacts remain ignored/untracked; no Demo/device/commercial/performance/packaging/shipping/launch readiness is claimed.
+**Verification state:** EYE-19 through EYE-23 pass through 314/314 full SDK tests, 385/385 public output, 57/57 boundary mutations, exact promotion/owner gates, clean review, and ASVS L1 `threats_open: 0`. DOC-01 remains pending the independent v1.11 audit; v1.11 is not audited, archived, tagged, or shipped. Generated artifacts remain ignored/untracked; no Demo/device/commercial/performance/packaging/shipping/launch readiness is claimed.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
 **Code size:** `BeautySDK` and `BeautyDemo` contain 22,678 tracked-source Swift lines in the v1.10 closeout count, excluding `.build` output.
 
 ## Current Milestone: v1.11 Eye Remaining Geometry Controls
+
+**Status:** Phase implementation/current-owner synchronization complete as of 2026-07-19; independent milestone audit pending.
 
 **Goal:** Complete the ten unresolved SDK-core eye geometry controls through compatibility-safe public semantics, private contour/pupil support, facade-visible output, conservative degradation, and evidence-backed ledger promotion while keeping eye-fat and redness retouch outside the geometry slice.
 

@@ -37,11 +37,11 @@
 
 ### Safety and Geometry-Slice Closeout
 
-- [ ] **EYE-19**: Evidence-backed exact natural caps, neutral dead zones, capped counts, normalization, warnings, metrics, and signed/positive-only directionality are locked for all ten new fields without changing their public ranges.
-- [ ] **EYE-20**: No-face, missing either eye contour, missing/implausible pupil, malformed support, provider-empty work, reused geometry, stale geometry, and fresh/reused/stale transitions apply according to each dependency across all fourteen eye fields; the established reused/stale complete-domain eye skip remains explicit, safe non-eye domains continue, and diagnostics remain redacted.
-- [ ] **EYE-21**: Combined face, fourteen-field eye, six-field nose, and eight-field mouth geometry uses one provider-eligible retained baseline, weakens every active field exactly once, converges through at most twenty-eight eye/nose/mouth mask removals, preserves signed directions, and excludes unsupported work from totals, counts, warnings, metrics, domains, and dispatch.
-- [ ] **EYE-22**: Raw eye/pupil geometry, public support types, persistent landmark state, internal Demo/renderer imports, network/cloud, commercial paths, new dependencies, compatibility drift, unclassified active-source matches, and generated artifacts remain fail-closed through self-tested active-source gates and the full SDK suite.
-- [ ] **EYE-23**: Exactly `眼高`, `长度`, `提肌`, `眼瞳大小`, `眼神矫正`, `眼睑下至`, `倾斜`, `内眼角`, `外眼角`, and `对称` are promoted only after their own contract, support, provider, facade-output, safety, degradation, and boundary evidence passes; `去脂` and `祛红血丝` remain future and branch-level `眼睛` remains partial.
+- [x] **EYE-19**: Evidence-backed exact natural caps, neutral dead zones, capped counts, normalization, warnings, metrics, and signed/positive-only directionality are locked for all ten new fields without changing their public ranges.
+- [x] **EYE-20**: No-face, missing either eye contour, missing/implausible pupil, malformed support, provider-empty work, reused geometry, stale geometry, and fresh/reused/stale transitions apply according to each dependency across all fourteen eye fields; the established reused/stale complete-domain eye skip remains explicit, safe non-eye domains continue, and diagnostics remain redacted.
+- [x] **EYE-21**: Combined face, fourteen-field eye, six-field nose, and eight-field mouth geometry uses one provider-eligible retained baseline, weakens every active field exactly once, converges through at most twenty-eight eye/nose/mouth mask removals, preserves signed directions, and excludes unsupported work from totals, counts, warnings, metrics, domains, and dispatch.
+- [x] **EYE-22**: Raw eye/pupil geometry, public support types, persistent landmark state, internal Demo/renderer imports, network/cloud, commercial paths, new dependencies, compatibility drift, unclassified active-source matches, and generated artifacts remain fail-closed through self-tested active-source gates and the full SDK suite.
+- [x] **EYE-23**: Exactly `眼高`, `长度`, `提肌`, `眼瞳大小`, `眼神矫正`, `眼睑下至`, `倾斜`, `内眼角`, `外眼角`, and `对称` are promoted only after their own contract, support, provider, facade-output, safety, degradation, and boundary evidence passes; `去脂` and `祛红血丝` remain future and branch-level `眼睛` remains partial.
 - [ ] **DOC-01**: Blueprint, root contracts, eye-branch documentation, example validation, `QUALITY_SCORE.md`, `PROJECT.md`, `ROADMAP.md`, `REQUIREMENTS.md`, `STATE.md`, `PLANS.md`, verification, validation, security, review, and milestone audit agree with observed v1.11 evidence and conservative non-claims.
 
 ## Future Requirements
@@ -92,12 +92,12 @@
 | EYE-16 | Phase 43 | Complete |
 | EYE-17 | Phase 43 | Complete |
 | EYE-18 | Phase 43 | Complete |
-| EYE-19 | Phase 44 | Pending |
-| EYE-20 | Phase 44 | Pending |
-| EYE-21 | Phase 44 | Pending |
-| EYE-22 | Phase 44 | Pending |
-| EYE-23 | Phase 44 | Pending |
-| DOC-01 | Phase 44 | Pending |
+| EYE-19 | Phase 44 | Complete |
+| EYE-20 | Phase 44 | Complete |
+| EYE-21 | Phase 44 | Complete |
+| EYE-22 | Phase 44 | Complete |
+| EYE-23 | Phase 44 | Complete |
+| DOC-01 | Phase 44 | Pending independent audit |
 
 **Coverage:**
 

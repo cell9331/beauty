@@ -165,7 +165,7 @@ Plans:
 
 ## Current Status
 
-v1.11 Phase 43 is complete with strict public-facade saved-output evidence. Phase 44 is next for final caps, exhaustive safety/degradation, active-source boundaries, exact promotion, and owner synchronization.
+v1.11 Phase 44 implementation/current-owner closeout is complete. EYE-19 through EYE-23 pass; DOC-01 and lifecycle remain pending the independent `$gsd-audit-milestone` workflow.
 
 ## Backlog
 
@@ -175,4 +175,4 @@ v1.11 Phase 43 is complete with strict public-facade saved-output evidence. Phas
 - Device, commercial visual, packaging, performance, and launch-readiness evidence remains separately scoped.
 
 ---
-*Last updated: 2026-07-16 after Phase 43 public-facade output evidence completion*
+*Last updated: 2026-07-19 after Phase 44 implementation/current-owner closeout; independent audit pending*
