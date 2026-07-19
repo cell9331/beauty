@@ -12,21 +12,21 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ## Current State
 
-**Shipped version:** v1.10 Mouth Remaining Geometry Controls on 2026-07-14.
+**Shipped version:** v1.11 Eye Remaining Geometry Controls on 2026-07-19.
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
-**Current milestone:** v1.11 Eye Remaining Geometry Controls; Phase 44 implementation/current-owner closeout complete, independent milestone audit pending.
+**Current milestone:** None; v1.11 is independently audited, archived, tagged, and shipped. Planning is ready for a fresh milestone.
 
 **Implementation state:** Phase 44 is complete. `BeautyParameters` is exactly 48 stored fields (47 numeric plus `filterId`); all fourteen eye geometry fields have final caps/dead zones and fail-closed transitions, with one 33-field/10.70 retained baseline and at most 28 removals. Exactly ten remaining eye geometry rows are newly promoted; `去脂`/`祛红血丝` remain future and branch `眼睛` remains partial.
 
-**Verification state:** EYE-19 through EYE-23 pass through 314/314 full SDK tests, 385/385 public output, 57/57 boundary mutations, exact promotion/owner gates, clean review, and ASVS L1 `threats_open: 0`. DOC-01 remains pending the independent v1.11 audit; v1.11 is not audited, archived, tagged, or shipped. Generated artifacts remain ignored/untracked; no Demo/device/commercial/performance/packaging/shipping/launch readiness is claimed.
+**Verification state:** v1.11 passed its independent 24/24 requirement, 4/4 phase, 10/10 integration, and 6/6 flow audit. Evidence includes 314/314 full SDK tests, 385/385 public output, 57/57 boundary mutations, exact promotion/owner gates, clean review, and ASVS L1 `threats_open: 0`. Generated artifacts remain ignored/untracked; no Demo/device/commercial/performance/packaging/shipping/launch readiness is claimed.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
 **Code size:** `BeautySDK` and `BeautyDemo` contain 22,678 tracked-source Swift lines in the v1.10 closeout count, excluding `.build` output.
 
-## Current Milestone: v1.11 Eye Remaining Geometry Controls
+## Last Completed Milestone: v1.11 Eye Remaining Geometry Controls
 
-**Status:** Phase implementation/current-owner synchronization complete as of 2026-07-19; independent milestone audit pending.
+**Status:** Shipped, independently audited, archived, and tagged as of 2026-07-19.
 
 **Goal:** Complete the ten unresolved SDK-core eye geometry controls through compatibility-safe public semantics, private contour/pupil support, facade-visible output, conservative degradation, and evidence-backed ledger promotion while keeping eye-fat and redness retouch outside the geometry slice.
 
@@ -37,7 +37,7 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 - Add isolated public-facade renderer/helper and ignored-gallery evidence that distinguishes all ten controls, both directions where signed behavior is required, automatic correction behavior, and safe no-face/pupil-missing cases.
 - Lock exact caps, contour/pupil eligibility, blink/malformed/missing/reused/stale degradation, provider-eligible combined weakening, redacted diagnostics, artifact boundaries, and exact ten-row promotion.
 
-**Key context:** v1.11 is SDK-core only. It excludes `去脂` and `祛红血丝` because they require local retouch or color/segmentation ownership rather than geometry. Pupil, gaze, and symmetry behavior must use validated private observed support and fail closed when that support is absent or implausible; deterministic symmetric proxy points are insufficient evidence. The milestone adds no SwiftUI Demo UI, third-party dependency, network/cloud behavior, account/payment/VIP/entitlement/commercial path, or tracked generated image baseline, and makes no device/commercial/performance/packaging/shipping/launch-readiness claim.
+**Closeout:** The v1.11 audit passed 24/24 requirements, 4/4 phases, 10/10 integration seams, and 6/6 end-to-end flows. It is SDK-core only: `去脂` and `祛红血丝` remain separate retouch/color work; no SwiftUI Demo UI, third-party dependency, network/cloud behavior, account/payment/VIP/entitlement/commercial path, tracked generated image baseline, device, commercial, performance, packaging, shipping, or launch-readiness claim is made.
 
 ## Last Completed Milestone: v1.10 Mouth Remaining Geometry Controls
 
@@ -166,13 +166,12 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ### Active
 
-- [ ] Define ten independent eye-geometry public semantics with source/JSON/preset compatibility and no aliases to shipped eye behavior.
-- [ ] Route validated private eye-contour and pupil support through the existing facade, resolver, provider, and unified-warp boundaries without public raw geometry.
-- [ ] Prove isolated facade-visible output, exact safety/degradation behavior, redacted diagnostics, and evidence-backed ten-row promotion.
-- [ ] Keep eye-fat/redness retouch, Demo UI, external dependencies, network/cloud, and release-readiness claims outside v1.11.
+_(No active requirements; start the next cycle with `$gsd-new-milestone`.)_
 
 ### Validated
 
+- Ten independent eye geometry controls with 48-field source/JSON compatibility, private validated contour/pupil support, fourteen named emissions, strict 385-output facade evidence, conservative degradation, exact ten-row promotion, and a 24/24 independent v1.11 audit - v1.11.
+- Eye-fat/redness retouch, Demo UI, external dependencies, network/cloud, and release-readiness claims remain explicitly outside the shipped v1.11 scope.
 - Exact v1.10 five-row mouth geometry slice, 38-field compatibility, final `0.25` caps, explicit private lip supports, 265/265 full tests, 308/308 output evidence, 17/17 audit, clean ASVS L1 boundaries, and conservative non-claims - Phases 38-40.
 - Exact v1.9 six-row SDK-core `鼻子` branch, independent `山根`/`提升` semantics, final `0.25` caps, 228/228 full tests, unchanged 252/252 output, clean ASVS L1 boundaries, and conservative non-claims - Phase 37.
 - SDK package and public facade boundaries - v1.0.
@@ -369,7 +368,7 @@ Current visual reference contracts:
 | v1.8 targets the existing-public-parameter `嘴唇` slice while separating geometry from lip color. | The existing public fields support signed mouth geometry plus color containment without adding API/UI breadth or mislabeling `lipColor` as true `丰唇`. | Completed in Phase 34; milestone audit passed |
 | v1.9 closes the remaining `鼻子` branch with independent `山根` and `提升` semantics. | v1.7 deliberately left both tools unresolved; branch completion requires explicit public parameters and evidence rather than aliasing `山根` to `noseBridge` or borrowing prior outputs. | Completed in Phase 37; milestone audit passed |
 | v1.10 completes the remaining mouth geometry controls without absorbing teeth whitening. | The five unresolved geometry rows share the existing mouth warp/facade evidence path, while `白牙` needs a different teeth-region segmentation and retouch contract. | Completed in Phase 40; milestone audit passed |
-| v1.11 completes the remaining eye geometry controls without absorbing eye-fat or redness retouch. | Ten unresolved geometry rows can build on the eye warp/facade path, but pupil/gaze/symmetry require private observed support and field-local fail-closed behavior; `去脂` and `祛红血丝` need different retouch/color ownership. | Pending |
+| v1.11 completes the remaining eye geometry controls without absorbing eye-fat or redness retouch. | Ten unresolved geometry rows can build on the eye warp/facade path, but pupil/gaze/symmetry require private observed support and field-local fail-closed behavior; `去脂` and `祛红血丝` need different retouch/color ownership. | Completed and archived in v1.11 |
 | v1.5 starts with geometry output foundation plus `脸型`, not all `美型 / 五官` groups. | The user chose the smallest first-principles slice: prove facade-visible geometry output first, then mark only the existing face-shape tools complete when evidence exists. | Completed and archived in v1.5 |
 
 ## Evolution
@@ -377,4 +376,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-07-16 after v1.11 milestone start*
+*Last updated: 2026-07-19 after v1.11 milestone completion*

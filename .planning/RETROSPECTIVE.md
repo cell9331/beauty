@@ -405,6 +405,49 @@
 
 ---
 
+## Milestone: v1.11 - Eye Remaining Geometry Controls
+
+**Shipped:** 2026-07-19
+**Phases:** 4 | **Plans:** 18
+
+### What Was Built
+
+- Added ten independent eye controls to the 48-field public model while retaining legacy source/JSON/preset neutrality.
+- Added request-scoped, package-internal Vision contour/pupil support with one coordinate-mapping boundary, deterministic canonicalization, and redaction.
+- Wired fourteen named eye emissions through resolver/provider/conflict/facade paths with field-local eligibility and safe sibling continuation.
+- Proved 55 public-facade cases across seven fixtures (385 outputs), strict semantic distinctions, correction/no-op behavior, and ignored-gallery containment.
+- Locked caps, dead zones, freshness/degradation, combined 10.70/33 retained arithmetic, fail-closed boundary gates, and exact promotion of ten geometry rows while keeping retouch rows future.
+
+### What Worked
+
+- Keeping the public contract, private observed support, provider eligibility, output evidence, and ledger promotion as separate gates prevented proxy-only or documentation-only overclaims.
+- Independent audit rechecked all 24 requirements, 10 integration seams, 6 end-to-end flows, and all phase artifacts before lifecycle closeout.
+- Self-tested active-source and generated-artifact boundaries made privacy and repository hygiene reproducible without tracking binary output.
+
+### What Was Inefficient
+
+- A coordinate-frame review finding required a Phase 41 gap-closure plan after the initial implementation, showing that local Vision point coordinates need explicit translated-bounding-box fixtures early.
+- Archive tooling created canonical files and moved phase directories but still required manual ROADMAP/PROJECT/RETROSPECTIVE evolution and path-scoped lifecycle commits.
+- Automatic task extraction from compact summaries was not reliable enough for milestone statistics; plan counts and verification evidence are the authoritative closeout metrics.
+
+### Patterns Established
+
+- Observed geometry must be transformed from face-local Vision coordinates into image-normalized coordinates exactly once before support validation.
+- Field-local eligibility is the retained-set source of truth for totals, counts, warnings, metrics, domains, and final dispatch.
+- Geometry promotion is a final transaction after contract, provider, facade-output, safety, privacy, owner, and independent-audit gates all pass.
+
+### Key Lessons
+
+1. Add translated-bounding-box and orientation/mirror fixtures at the first detection-support plan, not only during review.
+2. Keep archive, roadmap, project, state, and retrospective updates explicit after the CLI archive primitive; lifecycle completion is not only a file move.
+3. Preserve future retouch and partial-branch language in every owner document when a geometry slice ships.
+
+### Cost Observations
+
+- Model mix: quality profile across autonomous planning, implementation, review, verification, and lifecycle agents.
+- Sessions: one autonomous v1.11 chain with phase resumptions and an independent milestone audit.
+- Notable: Runtime implementation and tests were stable; strict saved-output evidence and current-owner documentation synchronization dominated closeout time.
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -420,6 +463,7 @@
 | v1.8 | autonomous | 2 | Added signed mouth evidence, color-vs-geometry separation, and current-owner audit closure. |
 | v1.9 | autonomous | 3 | Added independent remaining-nose contracts, adversarial review loops, atomic six-row branch promotion, and a 15/15 audit. |
 | v1.10 | autonomous | 3 | Added independent remaining-mouth contracts, explicit private lip supports, strict 308-output evidence, and a 17/17 audit. |
+| v1.11 | autonomous | 4 | Added private observed eye support, fourteen named emissions, strict 385-output evidence, exact ten-row promotion, and a 24/24 audit. |
 
 ### Cumulative Quality
 
@@ -434,6 +478,7 @@
 | v1.8 | 190 SDK tests, 238-output mouth helper, signed/color checks, boundary scans, and milestone audit | Requirement traceability 11/11 | No new third-party runtime dependency recorded for mouth-slice closeout. |
 | v1.9 | 228 SDK tests, 252-output strict helper, adversarial boundary scans, and milestone audit | Requirement traceability 15/15 | No new third-party runtime dependency recorded for remaining-nose closeout. |
 | v1.10 | 265 SDK tests, 308-output strict helper, 63-case boundary self-test, and milestone audit | Requirement traceability 17/17 | No new third-party runtime dependency recorded for remaining-mouth closeout. |
+| v1.11 | 314 SDK tests, 385-output strict helper, 57-case boundary self-test, and milestone audit | Requirement traceability 24/24 | No new third-party runtime dependency recorded for remaining-eye closeout. |
 
 ### Top Lessons (Verified Across Milestones)
 

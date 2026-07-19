@@ -1,5 +1,20 @@
 # Milestones
 
+## v1.11 Eye Remaining Geometry Controls (Shipped: 2026-07-19)
+
+**Phases completed:** 4 phases, 18 plans, 3 tasks
+
+**Key accomplishments:**
+
+- Ten default-zero eye controls now share the existing normalized Codable model, with 38-key legacy neutrality, exact 48-field round-trip coverage, and a shipped-eye provider regression.
+- Phase 41 now has a reusable fail-closed gate for its 48-field public contract, private observed-support lifecycle, unchanged Demo/manifest baseline, active-source privacy boundaries, and generated-artifact containment.
+- Private eye support now carries deterministic span/tilt evidence, rejects side-inverted observations through the production mapping metadata, and executes the locked threshold matrix without exposing geometry.
+- Phase 41 now has a command-measured Nyquist ledger and synchronized owner contracts for private span/tilt and production-derived fail-closed side order.
+- 1. [Rule 1 - Bug] Corrected the ROI for stored PNG row orientation
+- [Rule 1 - Bug] No-face eye strengths remained nonzero
+
+---
+
 ## v1.10 Mouth Remaining Geometry Controls (Shipped: 2026-07-14)
 
 **Phases completed:** 3 phases, 11 plans, 23 plan tasks
