@@ -266,6 +266,77 @@ final class BeautyEffectResolverTests: XCTestCase {
         }
     }
 
+    func testEYE19FinalEyeCapNormalizationWarningAndMetricMatrix() {
+        struct Field {
+            let name: String
+            let cap: Float
+            let makeParameters: (Float) -> BeautyParameters
+            let publicValue: KeyPath<BeautyParameters, Float>
+            let effectiveValue: KeyPath<BeautyEffectiveStrengths, Float>
+        }
+        struct Row {
+            let name: String
+            let input: Float
+            let normalized: Float
+            let effectiveMultiplier: Float
+            let cappedCount: Double
+        }
+
+        let positiveFields = [
+            Field(name: "eyeHeight", cap: BeautySafetyCaps.eyeHeight, makeParameters: { BeautyParameters(eyeHeight: $0) }, publicValue: \.eyeHeight, effectiveValue: \.eyeHeight),
+            Field(name: "eyeLength", cap: BeautySafetyCaps.eyeLength, makeParameters: { BeautyParameters(eyeLength: $0) }, publicValue: \.eyeLength, effectiveValue: \.eyeLength),
+            Field(name: "upperEyelidLift", cap: BeautySafetyCaps.upperEyelidLift, makeParameters: { BeautyParameters(upperEyelidLift: $0) }, publicValue: \.upperEyelidLift, effectiveValue: \.upperEyelidLift),
+            Field(name: "pupilSize", cap: BeautySafetyCaps.pupilSize, makeParameters: { BeautyParameters(pupilSize: $0) }, publicValue: \.pupilSize, effectiveValue: \.pupilSize),
+            Field(name: "gazeCorrection", cap: BeautySafetyCaps.gazeCorrection, makeParameters: { BeautyParameters(gazeCorrection: $0) }, publicValue: \.gazeCorrection, effectiveValue: \.gazeCorrection),
+            Field(name: "lowerEyelidDrop", cap: BeautySafetyCaps.lowerEyelidDrop, makeParameters: { BeautyParameters(lowerEyelidDrop: $0) }, publicValue: \.lowerEyelidDrop, effectiveValue: \.lowerEyelidDrop),
+            Field(name: "innerCornerOpen", cap: BeautySafetyCaps.innerCornerOpen, makeParameters: { BeautyParameters(innerCornerOpen: $0) }, publicValue: \.innerCornerOpen, effectiveValue: \.innerCornerOpen),
+            Field(name: "outerCornerOpen", cap: BeautySafetyCaps.outerCornerOpen, makeParameters: { BeautyParameters(outerCornerOpen: $0) }, publicValue: \.outerCornerOpen, effectiveValue: \.outerCornerOpen),
+            Field(name: "eyeSymmetry", cap: BeautySafetyCaps.eyeSymmetry, makeParameters: { BeautyParameters(eyeSymmetry: $0) }, publicValue: \.eyeSymmetry, effectiveValue: \.eyeSymmetry),
+        ]
+        let rows = [
+            Row(name: "zero", input: 0, normalized: 0, effectiveMultiplier: 0, cappedCount: 0),
+            Row(name: "exact cap", input: 0.25, normalized: 0.25, effectiveMultiplier: 1, cappedCount: 0),
+            Row(name: "public overflow", input: 1, normalized: 1, effectiveMultiplier: 1, cappedCount: 1),
+            Row(name: "negative", input: -1, normalized: 0, effectiveMultiplier: 0, cappedCount: 0),
+            Row(name: "nan", input: .nan, normalized: 0, effectiveMultiplier: 0, cappedCount: 0),
+            Row(name: "positive infinity", input: .infinity, normalized: 0, effectiveMultiplier: 0, cappedCount: 0),
+            Row(name: "negative infinity", input: -.infinity, normalized: 0, effectiveMultiplier: 0, cappedCount: 0),
+        ]
+
+        for field in positiveFields {
+            for row in rows {
+                let input = row.name == "exact cap" ? field.cap : row.input
+                let expectedPublic = row.name == "exact cap" ? field.cap : row.normalized
+                let parameters = field.makeParameters(input)
+                let plan = BeautyEffectResolver.resolve(parameters: parameters)
+                let message = "\(field.name) \(row.name)"
+
+                XCTAssertEqual(parameters[keyPath: field.publicValue], expectedPublic, accuracy: 0.000_001, message)
+                XCTAssertEqual(plan.effectiveStrengths[keyPath: field.effectiveValue], field.cap * row.effectiveMultiplier, accuracy: 0.000_001, message)
+                XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], row.cappedCount, message)
+                XCTAssertEqual(plan.warnings.filter { $0.code == "beauty_strength_capped" }.count, row.cappedCount == 0 ? 0 : 1, message)
+                assertRedacted(plan)
+            }
+        }
+
+        for (name, input, expected, cappedCount) in [
+            ("zero", Float(0), Float(0), Double(0)),
+            ("exact positive", BeautySafetyCaps.eyeTilt, BeautySafetyCaps.eyeTilt, Double(0)),
+            ("exact negative", -BeautySafetyCaps.eyeTilt, -BeautySafetyCaps.eyeTilt, Double(0)),
+            ("overflow positive", Float(1), BeautySafetyCaps.eyeTilt, Double(1)),
+            ("overflow negative", Float(-1), -BeautySafetyCaps.eyeTilt, Double(1)),
+            ("nan", Float.nan, Float(0), Double(0)),
+            ("positive infinity", Float.infinity, Float(0), Double(0)),
+            ("negative infinity", -Float.infinity, Float(0), Double(0)),
+        ] {
+            let plan = BeautyEffectResolver.resolve(parameters: BeautyParameters(eyeTilt: input))
+            XCTAssertEqual(plan.effectiveStrengths.eyeTilt, expected, accuracy: 0.000_001, name)
+            XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], cappedCount, name)
+            XCTAssertEqual(plan.warnings.filter { $0.code == "beauty_strength_capped" }.count, cappedCount == 0 ? 0 : 1, name)
+            assertRedacted(plan)
+        }
+    }
+
     func testPhase35NOSE03ExactCapsRoutingWarningsAndCounts() {
         let cases: [(BeautyParameters, KeyPath<BeautyEffectiveStrengths, Float>, Float)] = [
             (BeautyParameters(noseSlim: 1), \.noseSlim, 0.35),

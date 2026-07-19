@@ -16,7 +16,7 @@ enum BeautySafetyCaps {
     static let eyeYPosition: Float = 0.25
     static let eyeTailLift: Float = 0.30
 
-    // Phase 42 provisional caps. Phase 44 owns evidence-backed calibration.
+    // Final evidence-backed eye geometry caps (Phase 44).
     static let eyeHeight: Float = 0.35
     static let eyeLength: Float = 0.35
     static let upperEyelidLift: Float = 0.30

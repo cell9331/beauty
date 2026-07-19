@@ -3,6 +3,26 @@ import BeautyCore
 @testable import BeautyEffects
 
 final class BeautySafetyCapsTests: XCTestCase {
+    func testEYE19FinalRemainingEyeCapsMatchExactContract() {
+        let values: [(String, Float, Float)] = [
+            ("eyeHeight", BeautySafetyCaps.eyeHeight, 0.35),
+            ("eyeLength", BeautySafetyCaps.eyeLength, 0.35),
+            ("upperEyelidLift", BeautySafetyCaps.upperEyelidLift, 0.30),
+            ("pupilSize", BeautySafetyCaps.pupilSize, 0.25),
+            ("gazeCorrection", BeautySafetyCaps.gazeCorrection, 0.25),
+            ("lowerEyelidDrop", BeautySafetyCaps.lowerEyelidDrop, 0.30),
+            ("eyeTilt", BeautySafetyCaps.eyeTilt, 0.25),
+            ("innerCornerOpen", BeautySafetyCaps.innerCornerOpen, 0.25),
+            ("outerCornerOpen", BeautySafetyCaps.outerCornerOpen, 0.25),
+            ("eyeSymmetry", BeautySafetyCaps.eyeSymmetry, 0.25),
+        ]
+
+        XCTAssertEqual(values.count, 10)
+        for (name, actual, expected) in values {
+            XCTAssertEqual(actual, expected, accuracy: 0.000_001, name)
+        }
+    }
+
     func testMOUTH12FinalMouthGeometryCapsAreExactlyPointTwoFive() {
         XCTAssertEqual(BeautySafetyCaps.mouthYPosition, 0.25)
         XCTAssertEqual(BeautySafetyCaps.mouthTilt, 0.25)
