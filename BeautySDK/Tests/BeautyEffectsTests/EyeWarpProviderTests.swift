@@ -342,6 +342,86 @@ final class EyeWarpProviderTests: XCTestCase {
         XCTAssertFalse(neutralEvidence.provesReduction)
     }
 
+    func testEYE19GazeDeadZoneAndMaximumCorrectionFractionAreExact() throws {
+        let leftBase = semanticSupport(side: .left, contour: FaceGeometry.fixture.leftEye)
+        let rightBase = semanticSupport(side: .right, contour: FaceGeometry.fixture.rightEye)
+        var requested = BeautyEffectiveStrengths()
+        requested.gazeCorrection = BeautySafetyCaps.gazeCorrection
+        let provider = EyeWarpProvider()
+
+        for offset in [Float(0), 0.001, 0.001_999] {
+            let face = eyeFace(
+                left: semanticSupport(side: .left, contour: leftBase.contour, pupil: leftBase.center + SIMD2<Float>(offset, 0)),
+                right: semanticSupport(side: .right, contour: rightBase.contour, pupil: rightBase.center - SIMD2<Float>(offset, 0))
+            )
+            let emissions = provider.fieldEmissions(face: face, strengths: requested).gazeCorrection
+            XCTAssertTrue(emissions.isEmpty, "offset \(offset) must remain at or below the 0.002 dead zone")
+            XCTAssertFalse(provider.gazeCorrectionEvidence(face: face, strength: requested.gazeCorrection).provesReduction)
+        }
+
+        let above = Float(0.002_001)
+        let left = semanticSupport(side: .left, contour: leftBase.contour, pupil: leftBase.center + SIMD2<Float>(above, 0))
+        let right = semanticSupport(side: .right, contour: rightBase.contour, pupil: rightBase.center - SIMD2<Float>(above, 0))
+        let face = eyeFace(left: left, right: right)
+        let points = provider.fieldEmissions(face: face, strengths: requested).gazeCorrection
+        XCTAssertEqual(points.count, 2)
+        XCTAssertTrue(points.allSatisfy { point in
+            point.source.x.isFinite && point.source.y.isFinite && point.target.x.isFinite && point.target.y.isFinite &&
+                (0...1).contains(point.source.x) && (0...1).contains(point.source.y) &&
+                (0...1).contains(point.target.x) && (0...1).contains(point.target.y)
+        })
+
+        let leftPoint = try XCTUnwrap(points.first { $0.source.x < 0.5 })
+        let baseline = left.center - leftPoint.source
+        let correction = leftPoint.target - leftPoint.source
+        XCTAssertEqual(abs(correction.x / baseline.x), 0.35, accuracy: 0.000_01)
+        XCTAssertEqual(correction.y, 0, accuracy: 0.000_001)
+        let evidence = provider.gazeCorrectionEvidence(face: face, strength: requested.gazeCorrection)
+        XCTAssertEqual(evidence.eligibleEyeCount, 2)
+        XCTAssertTrue(evidence.provesReduction)
+    }
+
+    func testEYE19SymmetryDeadZoneAndMaximumMidpointBlendAreExact() throws {
+        let leftBase = semanticSupport(side: .left, contour: FaceGeometry.fixture.leftEye, tilt: 0)
+        let rightBase = semanticSupport(side: .right, contour: FaceGeometry.fixture.rightEye, tilt: 0)
+        var requested = BeautyEffectiveStrengths()
+        requested.eyeSymmetry = BeautySafetyCaps.eyeSymmetry
+        let provider = EyeWarpProvider()
+
+        for delta in [Float(0), 0.000_05, 0.000_099] {
+            let right = semanticSupport(
+                side: .right,
+                contour: rightBase.contour,
+                tilt: 0,
+                span: SIMD2<Float>(leftBase.span.x + delta, leftBase.span.y)
+            )
+            XCTAssertTrue(
+                provider.fieldEmissions(face: eyeFace(left: leftBase, right: right), strengths: requested).eyeSymmetry.isEmpty,
+                "span delta \(delta) must remain at or below the 0.0001 dead zone"
+            )
+        }
+
+        let right = semanticSupport(
+            side: .right,
+            contour: rightBase.contour,
+            tilt: 0,
+            span: SIMD2<Float>(leftBase.span.x + 0.000_101, leftBase.span.y)
+        )
+        let points = provider.fieldEmissions(face: eyeFace(left: leftBase, right: right), strengths: requested).eyeSymmetry
+        XCTAssertFalse(points.isEmpty)
+        XCTAssertTrue(points.allSatisfy { point in
+            point.source.x.isFinite && point.source.y.isFinite && point.target.x.isFinite && point.target.y.isFinite &&
+                (0...1).contains(point.source.x) && (0...1).contains(point.source.y) &&
+                (0...1).contains(point.target.x) && (0...1).contains(point.target.y)
+        })
+
+        let centerPoint = try XCTUnwrap(points.first { $0.source == leftBase.center })
+        let midpoint = (leftBase.center + right.center) / 2
+        let available = midpoint.x - leftBase.center.x
+        let used = centerPoint.target.x - centerPoint.source.x
+        XCTAssertEqual(used / available, 0.30, accuracy: 0.000_01)
+    }
+
     func testSymmetryReducesPairedSpanAndTiltDifferencesWithBoundedVectors() {
         let left = semanticSupport(
             side: .left,
@@ -506,7 +586,31 @@ final class EyeWarpProviderTests: XCTestCase {
         min(max(value, -cap), cap)
     }
 
-    private func semanticSupport(side: BeautyObservedEyeSide, contour: [SIMD2<Float>], pupil: SIMD2<Float>? = nil, tilt: Float = 0) -> BeautyEyeSemanticSupport {
+    private func eyeFace(left: BeautyEyeSemanticSupport, right: BeautyEyeSemanticSupport) -> FaceGeometry {
+        FaceGeometry(
+            bounds: FaceGeometry.fixture.bounds,
+            faceContour: FaceGeometry.fixture.faceContour,
+            leftEye: left.contour,
+            rightEye: right.contour,
+            nose: FaceGeometry.fixture.nose,
+            noseRoot: FaceGeometry.fixture.noseRoot,
+            noseTip: FaceGeometry.fixture.noseTip,
+            outerLips: FaceGeometry.fixture.outerLips,
+            upperLips: FaceGeometry.fixture.upperLips,
+            lowerLips: FaceGeometry.fixture.lowerLips,
+            innerLips: FaceGeometry.fixture.innerLips,
+            leftEyeSupport: left,
+            rightEyeSupport: right
+        )
+    }
+
+    private func semanticSupport(
+        side: BeautyObservedEyeSide,
+        contour: [SIMD2<Float>],
+        pupil: SIMD2<Float>? = nil,
+        tilt: Float = 0,
+        span: SIMD2<Float>? = nil
+    ) -> BeautyEyeSemanticSupport {
         let center = LandmarkGeometryHelper.center(of: contour)!
         let upper = contour.filter { $0.y <= center.y }
         let lower = contour.filter { $0.y >= center.y }
@@ -515,7 +619,7 @@ final class EyeWarpProviderTests: XCTestCase {
         return BeautyEyeSemanticSupport(
             side: side, contour: contour, upper: upper, lower: lower, inner: [inner], outer: [outer],
             corners: [outer, inner], center: center, pupil: pupil,
-            span: SIMD2<Float>(contour.map(\.x).max()! - contour.map(\.x).min()!, contour.map(\.y).max()! - contour.map(\.y).min()!), tilt: tilt
+            span: span ?? SIMD2<Float>(contour.map(\.x).max()! - contour.map(\.x).min()!, contour.map(\.y).max()! - contour.map(\.y).min()!), tilt: tilt
         )
     }
 }
