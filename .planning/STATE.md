@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.11
 milestone_name: Eye Remaining Geometry Controls
 status: Awaiting next milestone
-stopped_at: Completed 44-06-PLAN.md; next $gsd-audit-milestone
+stopped_at: Milestone v1.11 complete; next $gsd-new-milestone
 last_updated: "2026-07-19T13:54:25.298Z"
 last_activity: 2026-07-19
 last_activity_desc: Milestone v1.11 completed and archived
@@ -21,7 +21,7 @@ current_phase_name: Eye Geometry Safety and Ledger Closeout
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-07-14)
+See: `.planning/PROJECT.md` (updated 2026-07-19)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
 **Current focus:** Planning the next milestone
