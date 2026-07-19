@@ -23,7 +23,7 @@
 - [x] **Phase 41: Public Contract and Observed Eye Support** — Add ten compatible public controls, private Vision contour/pupil support, canonical coordinate conversion, strict support validation, and privacy boundaries. (completed 2026-07-16)
 - [x] **Phase 42: Independent Eye Geometry and Pipeline Integration** — Implement ten distinct contour/pupil/correction transforms, fourteen named eye emissions, resolver/conflict convergence, and facade routing. (completed 2026-07-16)
 - [x] **Phase 43: Public-Facade Eye Geometry Output Evidence** — Prove isolated controls, signed tilt, eligibility-aware correction/symmetry, no-face behavior, strict decoded outputs, and ignored gallery containment. (completed 2026-07-16)
-- [ ] **Phase 44: Eye Geometry Safety and Ledger Closeout** — Lock exact caps and transitions, complete the fail-closed boundary gate, promote exactly ten geometry rows, and synchronize all owners.
+- [x] **Phase 44: Eye Geometry Safety and Ledger Closeout** — Lock exact caps and transitions, complete the fail-closed boundary gate, promote exactly ten geometry rows, and synchronize all owners; independent milestone audit remains pending.
 
 ## Phase Details
 
@@ -128,7 +128,7 @@ Plans:
   4. Full SDK tests and self-tested active-source/security/artifact gates prove no raw geometry leakage, dependency/network/commercial drift, compatibility drift, public support types, or tracked generated artifacts.
   5. Exactly `眼高`, `长度`, `提肌`, `眼瞳大小`, `眼神矫正`, `眼睑下至`, `倾斜`, `内眼角`, `外眼角`, and `对称` become implemented; `去脂`, `祛红血丝`, and branch-level `眼睛` remain partial with conservative non-claims.
 
-**Plans**: 5/6 plans executed
+**Plans**: 6/6 plans executed
 
 **Wave 1**
 
@@ -152,7 +152,7 @@ Plans:
 
 **Wave 6** *(blocked on Wave 5 completion)*
 
-- [ ] 44-06-PLAN.md
+- [x] 44-06-PLAN.md
 
 ## Progress
 
@@ -161,7 +161,7 @@ Plans:
 | 41. Public Contract and Observed Eye Support | 6/5 | Complete    | 2026-07-16 |
 | 42. Independent Eye Geometry and Pipeline Integration | 4/4 | Complete    | 2026-07-16 |
 | 43. Public-Facade Eye Geometry Output Evidence | 3/3 | Complete | 2026-07-16 |
-| 44. Eye Geometry Safety and Ledger Closeout | 5/6 | In Progress|  |
+| 44. Eye Geometry Safety and Ledger Closeout | 6/6 | Complete | 2026-07-19 |
 
 ## Current Status
 

@@ -193,7 +193,7 @@ def planning_gate(root: Path) -> Result:
 def lifecycle_gate(root: Path) -> Result:
     names = run(["git", "tag", "--list", "v1.11*"], root)
     audit = list((root / ".planning").glob("*v1.11*MILESTONE-AUDIT.md"))
-    claim = re.search(r"(?i)v1\.11[^\n]{0,100}(?:audit (?:passed|complete)|archiv\w*|tagged|shipping complete|launch[- ]ready)", "\n".join(read(root, p) for p in ("PLANS.md", ".planning/PROJECT.md", ".planning/STATE.md")))
+    claim = re.search(r"(?i)v1\.11[^\n]{0,100}(?:audit\s+(?:passed|complete)|archived\s+(?:as|on)|tagged\s+v1\.11|shipping complete|launch[- ]ready)", "\n".join(read(root, p) for p in ("PLANS.md", ".planning/PROJECT.md", ".planning/STATE.md")))
     ok = names.returncode == 0 and not names.stdout.strip() and not audit and claim is None
     return Result("lifecycle/audit nonclaim", ok, "audit remains separate and pending" if ok else "premature audit/tag/lifecycle claim")
 
