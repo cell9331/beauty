@@ -161,7 +161,14 @@ final class EyeWarpProviderTests: XCTestCase {
 
     func testPhase42FourteenNamedEmissionsAreIndependentAndEvidenceGated() {
         let left = semanticSupport(side: .left, contour: FaceGeometry.fixture.leftEye, pupil: SIMD2<Float>(0.425, 0.385))
-        let right = semanticSupport(side: .right, contour: FaceGeometry.fixture.rightEye, pupil: SIMD2<Float>(0.575, 0.385))
+        let rightBase = semanticSupport(side: .right, contour: FaceGeometry.fixture.rightEye, pupil: SIMD2<Float>(0.575, 0.385))
+        let right = semanticSupport(
+            side: .right,
+            contour: rightBase.contour,
+            pupil: rightBase.pupil,
+            tilt: 0.08,
+            span: SIMD2<Float>(rightBase.span.x + 0.01, rightBase.span.y)
+        )
         let face = FaceGeometry(
             bounds: FaceGeometry.fixture.bounds,
             faceContour: FaceGeometry.fixture.faceContour,
@@ -178,6 +185,10 @@ final class EyeWarpProviderTests: XCTestCase {
             rightEyeSupport: right
         )
         var values = BeautyEffectiveStrengths()
+        values.eyeSize = BeautySafetyCaps.eyeSize
+        values.eyeDistance = BeautySafetyCaps.eyeDistance
+        values.eyeYPosition = BeautySafetyCaps.eyeYPosition
+        values.eyeTailLift = BeautySafetyCaps.eyeTailLift
         values.eyeHeight = BeautySafetyCaps.eyeHeight
         values.eyeLength = BeautySafetyCaps.eyeLength
         values.upperEyelidLift = BeautySafetyCaps.upperEyelidLift
@@ -190,16 +201,27 @@ final class EyeWarpProviderTests: XCTestCase {
         values.eyeSymmetry = BeautySafetyCaps.eyeSymmetry
         let emissions = EyeWarpProvider().fieldEmissions(face: face, strengths: values)
 
-        XCTAssertFalse(emissions.eyeHeight.isEmpty)
-        XCTAssertFalse(emissions.eyeLength.isEmpty)
-        XCTAssertFalse(emissions.upperEyelidLift.isEmpty)
-        XCTAssertFalse(emissions.pupilSize.isEmpty)
-        XCTAssertFalse(emissions.gazeCorrection.isEmpty)
-        XCTAssertFalse(emissions.lowerEyelidDrop.isEmpty)
-        XCTAssertFalse(emissions.eyeTilt.isEmpty)
-        XCTAssertFalse(emissions.innerCornerOpen.isEmpty)
-        XCTAssertFalse(emissions.outerCornerOpen.isEmpty)
-        XCTAssertTrue(emissions.eyeSymmetry.isEmpty, "neutral measured pair is a symmetry no-op")
+        let fields: [(String, KeyPath<EyeWarpFieldEmissions, [WarpControlPoint]>)] = [
+            ("eyeSize", \.eyeSize),
+            ("eyeDistance", \.eyeDistance),
+            ("eyeYPosition", \.eyeYPosition),
+            ("eyeTailLift", \.eyeTailLift),
+            ("eyeHeight", \.eyeHeight),
+            ("eyeLength", \.eyeLength),
+            ("upperEyelidLift", \.upperEyelidLift),
+            ("pupilSize", \.pupilSize),
+            ("gazeCorrection", \.gazeCorrection),
+            ("lowerEyelidDrop", \.lowerEyelidDrop),
+            ("eyeTilt", \.eyeTilt),
+            ("innerCornerOpen", \.innerCornerOpen),
+            ("outerCornerOpen", \.outerCornerOpen),
+            ("eyeSymmetry", \.eyeSymmetry),
+        ]
+        XCTAssertEqual(fields.count, 14)
+        for (name, keyPath) in fields {
+            XCTAssertFalse(emissions[keyPath: keyPath].isEmpty, name)
+        }
+        XCTAssertEqual(emissions.sanitizing(values), values)
         XCTAssertTrue(emissions.points.allSatisfy { $0.source.x.isFinite && $0.target.y.isFinite && (0...1).contains($0.target.x) })
 
         values.pupilSize = BeautySafetyCaps.pupilSize
@@ -207,10 +229,19 @@ final class EyeWarpProviderTests: XCTestCase {
             bounds: face.bounds, faceContour: face.faceContour, leftEye: face.leftEye, rightEye: face.rightEye,
             nose: face.nose, noseRoot: face.noseRoot, noseTip: face.noseTip, outerLips: face.outerLips,
             upperLips: face.upperLips, lowerLips: face.lowerLips, innerLips: face.innerLips,
-            leftEyeSupport: semanticSupport(side: .left, contour: left.contour, pupil: nil),
-            rightEyeSupport: semanticSupport(side: .right, contour: right.contour, pupil: nil)
+            leftEyeSupport: semanticSupport(side: .left, contour: left.contour, pupil: nil, tilt: left.tilt, span: left.span),
+            rightEyeSupport: semanticSupport(side: .right, contour: right.contour, pupil: nil, tilt: right.tilt, span: right.span)
         )
-        XCTAssertTrue(EyeWarpProvider().fieldEmissions(face: noPupil, strengths: values).pupilSize.isEmpty)
+        let noPupilEmissions = EyeWarpProvider().fieldEmissions(face: noPupil, strengths: values)
+        XCTAssertTrue(noPupilEmissions.pupilSize.isEmpty)
+        XCTAssertTrue(noPupilEmissions.gazeCorrection.isEmpty)
+        for (name, keyPath) in fields where name != "pupilSize" && name != "gazeCorrection" {
+            XCTAssertFalse(noPupilEmissions[keyPath: keyPath].isEmpty, name)
+        }
+        let sanitized = noPupilEmissions.sanitizing(values)
+        XCTAssertEqual(sanitized.pupilSize, 0)
+        XCTAssertEqual(sanitized.gazeCorrection, 0)
+        XCTAssertEqual(noPupilEmissions.sanitizing(sanitized), sanitized)
     }
 
     func testPhase42EyeFieldsPreserveLocalDirectionsAndDistinctSources() {

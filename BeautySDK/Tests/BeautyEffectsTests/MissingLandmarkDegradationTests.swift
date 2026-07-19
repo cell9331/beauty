@@ -1460,6 +1460,16 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertEqual(plan.effectiveStrengths.eyeDistance, 0, file: file, line: line)
         XCTAssertEqual(plan.effectiveStrengths.eyeYPosition, 0, file: file, line: line)
         XCTAssertEqual(plan.effectiveStrengths.eyeTailLift, 0, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.eyeHeight, 0, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.eyeLength, 0, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.upperEyelidLift, 0, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.pupilSize, 0, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.gazeCorrection, 0, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.lowerEyelidDrop, 0, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.eyeTilt, 0, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.innerCornerOpen, 0, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.outerCornerOpen, 0, file: file, line: line)
+        XCTAssertEqual(plan.effectiveStrengths.eyeSymmetry, 0, file: file, line: line)
     }
 
     private func assertNoseStrengthsAreZero(_ plan: BeautyEffectPlan, file: StaticString = #filePath, line: UInt = #line) {
