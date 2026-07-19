@@ -338,6 +338,9 @@ public enum BeautyEffectResolver {
                     geometryPointCount += result.points.count
                 }
             } else {
+                if treatsMissingFaceAsNoFace {
+                    Self.zeroEyeStrengths(&strengths)
+                }
                 skippedDomains.insert(.eyes)
                 metrics["beauty.effects.skippedEyeDomains"] = 1
                 if noUsableFace {

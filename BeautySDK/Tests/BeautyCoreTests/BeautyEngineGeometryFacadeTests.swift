@@ -306,7 +306,20 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
             metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
             parameters: BeautyParameters(
                 brightness: 0.2,
-                eyeSize: 0.35,
+                eyeSize: 1,
+                eyeDistance: -1,
+                eyeYPosition: 1,
+                eyeTailLift: 1,
+                eyeHeight: 1,
+                eyeLength: 1,
+                upperEyelidLift: 1,
+                pupilSize: 1,
+                gazeCorrection: 1,
+                lowerEyelidDrop: 1,
+                eyeTilt: -1,
+                innerCornerOpen: 1,
+                outerCornerOpen: 1,
+                eyeSymmetry: 1,
                 filterId: "soft_clean",
                 filterIntensity: 0.5
             )
@@ -319,9 +332,12 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
         XCTAssertEqual(result.detectionSummary?.faceCount, 0)
         XCTAssertEqual(result.detectionSummary?.usedFaceCount, 0)
         XCTAssertEqual(result.metrics["beauty.detection.geometryRequired"], 1)
-        XCTAssertTrue((result.metrics["beauty.effects.activeCount"] ?? 0) >= 2)
+        XCTAssertEqual(result.metrics["beauty.effects.activeCount"], 2)
+        XCTAssertEqual(result.metrics["beauty.effects.skippedEyeDomains"], 1)
+        XCTAssertEqual(result.metrics["beauty.effects.cappedCount"], 14)
         XCTAssertNil(result.metrics["beauty.effects.geometryPointCount"])
-        XCTAssertTrue(result.warnings.contains { $0.code == "face_effects_skipped_no_face" })
+        XCTAssertEqual(result.warnings.filter { $0.code == "face_effects_skipped_no_face" }.count, 1)
+        XCTAssertEqual(result.warnings.filter { $0.code == "beauty_strength_capped" }.count, 1)
         assertRedacted(result)
         assertNoEyeSideOrRawGeometryDisclosure(result)
     }

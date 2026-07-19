@@ -107,6 +107,53 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         assertRedacted(plan)
     }
 
+    func testEYE20AllFourteenFieldsFreshnessTransitionsAreStateless() {
+        let parameters = BeautyParameters(
+            brightness: 0.2,
+            eyeSize: 1,
+            eyeDistance: -1,
+            eyeYPosition: 1,
+            eyeTailLift: 1,
+            eyeHeight: 1,
+            eyeLength: 1,
+            upperEyelidLift: 1,
+            pupilSize: 1,
+            gazeCorrection: 1,
+            lowerEyelidDrop: 1,
+            eyeTilt: -1,
+            innerCornerOpen: 1,
+            outerCornerOpen: 1,
+            eyeSymmetry: 1,
+            noseSlim: 0.2,
+            mouthSize: 0.2
+        )
+
+        let fresh = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)
+        let reused = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .reused)
+        let freshAfterReuse = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)
+        let stale = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .stale)
+        let freshAfterStale = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)
+        let noFace = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: nil)
+
+        XCTAssertTrue(fresh.activeDomains.contains(.eyes))
+        XCTAssertEqual(freshAfterReuse.effectiveStrengths, fresh.effectiveStrengths)
+        XCTAssertEqual(freshAfterStale.effectiveStrengths, fresh.effectiveStrengths)
+        XCTAssertEqual(freshAfterReuse.activeDomains, fresh.activeDomains)
+        XCTAssertEqual(freshAfterStale.activeDomains, fresh.activeDomains)
+
+        for plan in [reused, stale, noFace] {
+            XCTAssertFalse(plan.activeDomains.contains(.eyes))
+            XCTAssertTrue(plan.skippedDomains.contains(.eyes))
+            assertEyeStrengthsAreZero(plan)
+            assertRedacted(plan)
+            assertNoEyeSideOrRawGeometryDisclosure(plan)
+        }
+        XCTAssertTrue(reused.activeDomains.isSuperset(of: [.nose, .mouth, .color]))
+        XCTAssertGreaterThan(reused.metrics["beauty.effects.geometryPointCount"] ?? 0, 0)
+        XCTAssertTrue(stale.activeDomains.contains(.color))
+        XCTAssertTrue(noFace.activeDomains.contains(.color))
+    }
+
     func testMissingStaleAndReusedGeometryMetadataStayRedacted() {
         let plans = [
             BeautyEffectResolver.resolve(
@@ -1028,7 +1075,7 @@ final class MissingLandmarkDegradationTests: XCTestCase {
 
     func testReusedEyeGeometrySkipsEyesZerosStrengthsAndPreservesNonEyeReuseReduction() {
         let eyeOnlyPlan = BeautyEffectResolver.resolve(
-            parameters: BeautyParameters(eyeSize: 1, eyeDistance: -1, eyeYPosition: 1, eyeTailLift: 1),
+            parameters: allFourteenEyeParameters,
             faceGeometry: .reused
         )
         XCTAssertNil(eyeOnlyPlan.metrics["beauty.effects.geometryPointCount"])
@@ -1042,6 +1089,16 @@ final class MissingLandmarkDegradationTests: XCTestCase {
                 eyeDistance: -1,
                 eyeYPosition: 1,
                 eyeTailLift: 1,
+                eyeHeight: 1,
+                eyeLength: 1,
+                upperEyelidLift: 1,
+                pupilSize: 1,
+                gazeCorrection: 1,
+                lowerEyelidDrop: 1,
+                eyeTilt: -1,
+                innerCornerOpen: 1,
+                outerCornerOpen: 1,
+                eyeSymmetry: 1,
                 noseSlim: 1,
                 mouthSize: 1
             ),
@@ -1065,7 +1122,7 @@ final class MissingLandmarkDegradationTests: XCTestCase {
 
     func testStaleEyeGeometrySkipsEyesZerosStrengthsWithDistinctReason() {
         let plan = BeautyEffectResolver.resolve(
-            parameters: BeautyParameters(eyeSize: 1, eyeDistance: -1, eyeYPosition: 1, eyeTailLift: 1),
+            parameters: allFourteenEyeParameters,
             faceGeometry: .stale
         )
 
@@ -1453,6 +1510,25 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         for forbidden in ["land" + "mark", "control point", "control" + "Point", "bounding", "VNFace" + "Observation", "/private" + "/var", "image" + " bytes", "SI" + "MD", "[0.", "coordinate", "support", "path", "detector", "Face" + "Geometry", "NoseWarp" + "Provider"] {
             XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)", file: file, line: line)
         }
+    }
+
+    private var allFourteenEyeParameters: BeautyParameters {
+        BeautyParameters(
+            eyeSize: 1,
+            eyeDistance: -1,
+            eyeYPosition: 1,
+            eyeTailLift: 1,
+            eyeHeight: 1,
+            eyeLength: 1,
+            upperEyelidLift: 1,
+            pupilSize: 1,
+            gazeCorrection: 1,
+            lowerEyelidDrop: 1,
+            eyeTilt: -1,
+            innerCornerOpen: 1,
+            outerCornerOpen: 1,
+            eyeSymmetry: 1
+        )
     }
 
     private func assertEyeStrengthsAreZero(_ plan: BeautyEffectPlan, file: StaticString = #filePath, line: UInt = #line) {
