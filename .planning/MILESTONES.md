@@ -2,7 +2,7 @@
 
 ## v1.11 Eye Remaining Geometry Controls (Shipped: 2026-07-19)
 
-**Phases completed:** 4 phases, 18 plans, 3 tasks
+**Phases completed:** 4 phases, 18 plans
 
 **Key accomplishments:**
 
@@ -10,8 +10,9 @@
 - Phase 41 now has a reusable fail-closed gate for its 48-field public contract, private observed-support lifecycle, unchanged Demo/manifest baseline, active-source privacy boundaries, and generated-artifact containment.
 - Private eye support now carries deterministic span/tilt evidence, rejects side-inverted observations through the production mapping metadata, and executes the locked threshold matrix without exposing geometry.
 - Phase 41 now has a command-measured Nyquist ledger and synchronized owner contracts for private span/tilt and production-derived fail-closed side order.
-- 1. [Rule 1 - Bug] Corrected the ROI for stored PNG row orientation
-- [Rule 1 - Bug] No-face eye strengths remained nonzero
+- Phase 43 strict output evidence now covers 55 public-facade cases × 7 fixtures (385 decoded outputs), signed tilt, semantic families, automatic correction, safe no-ops, and ignored-gallery containment.
+- Phase 44 locks exact caps, neutral/dead-zone behavior, 10.70/33 retained arithmetic, bounded convergence, redacted diagnostics, fail-closed boundaries, and exact ten-row promotion.
+- Independent audit passed 24/24 requirements, 4/4 phases, 10/10 integration seams, 6/6 end-to-end flows, and all four Nyquist validation ledgers.
 
 ---
 
