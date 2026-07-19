@@ -43,6 +43,21 @@ struct EyeWarpFieldEmissions: Equatable, Sendable {
     }
 }
 
+/// Package-internal aggregate proof that automatic gaze correction moves
+/// validated pupils toward their own observed eye centers.  This deliberately
+/// carries no points, side labels, or per-eye payload and is never surfaced by
+/// the public facade or diagnostics.
+struct GazeCorrectionAggregateEvidence: Equatable, Sendable {
+    let eligibleEyeCount: Int
+    let baselineOffset: Float
+    let correctedOffset: Float
+
+    var reduction: Float { baselineOffset - correctedOffset }
+    var provesReduction: Bool {
+        eligibleEyeCount > 0 && baselineOffset.isFinite && correctedOffset.isFinite && reduction > 0
+    }
+}
+
 struct EyeWarpProvider: WarpControlPointProvider {
     func makeControlPoints(face: FaceGeometry, strengths: BeautyEffectiveStrengths) -> WarpControlPointResult {
         let emissions = fieldEmissions(face: face, strengths: strengths)
@@ -80,6 +95,22 @@ struct EyeWarpProvider: WarpControlPointProvider {
             innerCornerOpen: strengths.innerCornerOpen > 0 ? supports.flatMap { cornerPoints(support: $0.innerCorner, center: $0.center, face: face, strength: strengths.innerCornerOpen, cap: BeautySafetyCaps.innerCornerOpen) } : [],
             outerCornerOpen: strengths.outerCornerOpen > 0 ? supports.flatMap { cornerPoints(support: $0.outerCorner, center: $0.center, face: face, strength: strengths.outerCornerOpen, cap: BeautySafetyCaps.outerCornerOpen) } : [],
             eyeSymmetry: strengths.eyeSymmetry > 0 ? symmetryPoints(supports: supports, face: face, strength: strengths.eyeSymmetry) : []
+        )
+    }
+
+    /// Returns redacted, aggregate-only evidence for the exact gaze vectors
+    /// emitted at `strength`.  The calculation shares the same sampling path
+    /// as `fieldEmissions`, so unrelated contour span/tilt or paired-eye
+    /// asymmetry cannot manufacture a reduction.
+    func gazeCorrectionEvidence(face: FaceGeometry, strength: Float) -> GazeCorrectionAggregateEvidence {
+        guard strength.isFinite, strength > 0 else {
+            return GazeCorrectionAggregateEvidence(eligibleEyeCount: 0, baselineOffset: 0, correctedOffset: 0)
+        }
+        let samples = semanticSupports(in: face).compactMap { gazeSample(support: $0, strength: strength) }
+        return GazeCorrectionAggregateEvidence(
+            eligibleEyeCount: samples.count,
+            baselineOffset: samples.reduce(0) { $0 + $1.baselineOffset },
+            correctedOffset: samples.reduce(0) { $0 + $1.correctedOffset }
         )
     }
 
@@ -139,13 +170,29 @@ struct EyeWarpProvider: WarpControlPointProvider {
         return makePoints(sources: offsets.map { pupil + $0 }, targets: offsets.map { pupil + $0 * 1.8 }, face: face, radius: face.bounds.width * 0.045, strength: strength)
     }
 
-    private func gazePoints(support: BeautyEyeSemanticSupport, face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
-        guard let pupil = support.pupil, support.contourEligible else { return [] }
+    private struct GazeSample {
+        let pupil: SIMD2<Float>
+        let target: SIMD2<Float>
+        let baselineOffset: Float
+        let correctedOffset: Float
+    }
+
+    private func gazeSample(support: BeautyEyeSemanticSupport, strength: Float) -> GazeSample? {
+        guard let pupil = support.pupil, support.contourEligible else { return nil }
         let delta = support.center - pupil
         let length = sqrt(delta.x * delta.x + delta.y * delta.y)
-        guard length.isFinite, length > 0.002 else { return [] }
+        guard length.isFinite, length > 0.002, strength.isFinite, strength > 0 else { return nil }
         let blend = min(0.35, 0.35 * strength / BeautySafetyCaps.gazeCorrection)
-        return makePoints(sources: [pupil], targets: [pupil + delta * blend], face: face, radius: face.bounds.width * 0.05, strength: strength)
+        let target = pupil + delta * blend
+        let corrected = sqrt((support.center.x - target.x) * (support.center.x - target.x) +
+            (support.center.y - target.y) * (support.center.y - target.y))
+        guard target.x.isFinite, target.y.isFinite, corrected.isFinite else { return nil }
+        return GazeSample(pupil: pupil, target: target, baselineOffset: length, correctedOffset: corrected)
+    }
+
+    private func gazePoints(support: BeautyEyeSemanticSupport, face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
+        guard let sample = gazeSample(support: support, strength: strength) else { return [] }
+        return makePoints(sources: [sample.pupil], targets: [sample.target], face: face, radius: face.bounds.width * 0.05, strength: strength)
     }
 
     private func tiltPoints(support: BeautyEyeSemanticSupport, face: FaceGeometry, strength: Float) -> [WarpControlPoint] {

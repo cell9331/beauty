@@ -103,7 +103,7 @@ python3 .planning/phases/43-public-facade-eye-geometry-output-evidence/check_eye
 - Phase 39 command results are recorded in `.planning/phases/39-public-facade-mouth-geometry-output-evidence/39-MOUTH-OUTPUT-EVIDENCE.md`.
 - The Phase 39 helper verifies the discovered 44 × 7 = 308 matrix, 48/48 visibility, 18/18 signed-direction, 12/12 peak-independence, 18/18 plump-independence comparisons, and eight 64 × 64 no-face no-ops.
 - Phase 43 command results are recorded in `.planning/phases/43-public-facade-eye-geometry-output-evidence/43-EYE-OUTPUT-EVIDENCE.md`.
-- The Phase 43 helper verifies the discovered 55 × 7 = 385 matrix, 66/66 new-case visibility, 6/6 signed-tilt direct comparisons, 60/60 fixed semantic distinctions, one fixed eligible gaze-deviation reduction, complete aggregate eligibility inventory, and eleven 64 × 64 no-face no-ops.
+- The Phase 43 helper verifies the discovered 55 × 7 = 385 matrix, 66/66 new-case visibility, 6/6 signed-tilt direct comparisons, 60/60 fixed semantic distinctions, complete aggregate eligibility inventory, and eleven 64 × 64 no-face no-ops. Gaze reduction is owned by the package-internal aggregate pupil-to-own-center evidence test; the helper's dark-core centroid experiment is adversarially self-tested but not accepted as fixture proof.
 
 ## Current Built-In Cases
 
@@ -200,7 +200,7 @@ These cases are limited to effects that currently produce visible image output t
 - The helper discovers exactly 55 live renderer cases and seven recursive fixtures before fully decoding the 385/385 same-dimension matrix.
 - Six eligible portraits pass 66/66 new-case visibility, 6/6 direct positive-versus-negative tilt, and 60/60 fixed nearest-neighbor semantic comparisons in one stored-row eye ROI `x=.10-.90/y=.55-.82`.
 - Fixed floors are 500 changed pixels and 1,000 absolute RGB delta; the weakest accepted visibility remains 909/1,732 and the weakest semantic family remains 2,046/3,670.
-- A fixed eligible fixture reduces the aggregate paired-eye gaze-deviation score by 6,364 against the committed floor of 500. Contour, pupil/gaze, and measured-pair symmetry eligibility are each 6/6 portraits; the one explicit no-face fixture is excluded from those denominators and passes all eleven safe no-ops.
+- The package-internal `gazeCorrectionEvidence(face:strength:)` aggregate reports two eligible eyes with corrected pupil-to-own-center offset strictly below baseline, while neutral pupils no-op and contour tilt/asymmetry cannot alter the scalar. Contour, pupil/gaze, and measured-pair symmetry eligibility are each 6/6 portraits; the one explicit no-face fixture is excluded from those denominators and passes all eleven safe no-ops. The previous paired-eye RGB mirror score is retired because unrelated asymmetry could satisfy it.
 - The ignored gallery is an exact duplicate-free 55-case × seven-fixture bijection. No output or gallery PNG is tracked or staged.
 - These are observed public-facade output facts at provisional `0.25` inputs. Phase 44 retains final caps, exhaustive transitions/safety, active-source boundary closeout, exact ten-row promotion, and owner-ledger synchronization.
 

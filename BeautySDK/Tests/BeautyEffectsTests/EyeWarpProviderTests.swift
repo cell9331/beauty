@@ -308,6 +308,26 @@ final class EyeWarpProviderTests: XCTestCase {
         XCTAssertGreaterThan(distance(half.source), distance(half.target))
         XCTAssertLessThan(distance(half.source), distance(pupil) + 0.0001)
 
+        let aggregate = provider.gazeCorrectionEvidence(face: face, strength: BeautySafetyCaps.gazeCorrection)
+        XCTAssertEqual(aggregate.eligibleEyeCount, 2)
+        XCTAssertGreaterThan(aggregate.baselineOffset, aggregate.correctedOffset)
+        XCTAssertTrue(aggregate.provesReduction)
+
+        // A contour-only asymmetry (tilt) is deliberately irrelevant to this
+        // evidence: the scalar is tied to pupil-to-own-center offsets, not a
+        // left/right mirror score or arbitrary ROI/color changes.
+        let tiltedFace = FaceGeometry(
+            bounds: face.bounds, faceContour: face.faceContour, leftEye: face.leftEye, rightEye: face.rightEye,
+            nose: face.nose, noseRoot: face.noseRoot, noseTip: face.noseTip, outerLips: face.outerLips,
+            upperLips: face.upperLips, lowerLips: face.lowerLips, innerLips: face.innerLips,
+            leftEyeSupport: semanticSupport(side: .left, contour: left.contour, pupil: pupil, tilt: 0.9),
+            rightEyeSupport: semanticSupport(side: .right, contour: right.contour, pupil: SIMD2<Float>(0.575, 0.385), tilt: -0.9)
+        )
+        XCTAssertEqual(
+            provider.gazeCorrectionEvidence(face: tiltedFace, strength: BeautySafetyCaps.gazeCorrection),
+            aggregate
+        )
+
         let neutral = semanticSupport(side: .left, contour: left.contour, pupil: left.center)
         let neutralRight = semanticSupport(side: .right, contour: right.contour, pupil: right.center)
         let neutralFace = FaceGeometry(
@@ -317,6 +337,9 @@ final class EyeWarpProviderTests: XCTestCase {
             leftEyeSupport: neutral, rightEyeSupport: neutralRight
         )
         XCTAssertTrue(provider.fieldEmissions(face: neutralFace, strengths: fullGaze).gazeCorrection.isEmpty)
+        let neutralEvidence = provider.gazeCorrectionEvidence(face: neutralFace, strength: BeautySafetyCaps.gazeCorrection)
+        XCTAssertEqual(neutralEvidence.eligibleEyeCount, 0)
+        XCTAssertFalse(neutralEvidence.provesReduction)
     }
 
     func testSymmetryReducesPairedSpanAndTiltDifferencesWithBoundedVectors() {

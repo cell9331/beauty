@@ -16,9 +16,9 @@ created: 2026-07-16
 | 43-02-01 | 2 | EYE-17 | helper `--self-test`, `python3 -m py_compile`, bounded decoder negative-path checks |
 | 43-02-02 | 2 | EYE-17, EYE-18 | clean renderer build/run, measurement, frozen strict helper on exactly 385 outputs |
 | 43-03-01 | 3 | EYE-18 | gallery self-test, one publication, exact 385-file bijection, ignore/tracked/staged scans |
-| 43-03-02 | 3 | EYE-16..18 | focused/full SwiftPM, final strict helper, read-only gallery/containment/scope scans, `git diff --check` |
+| 43-03-02 | 3 | EYE-16..18 | focused/full SwiftPM, package-internal aggregate gaze evidence test, final strict helper, read-only gallery/containment/scope scans, `git diff --check` |
 
-All six task rows passed on 2026-07-16. Focused renderer evidence is 13/13, full SwiftPM is 305/305, the strict matrix is 385/385, gallery publication is 385/385, and helper/gallery negative-path self-tests pass.
+All six task rows passed on 2026-07-16; the post-phase gaze evidence fix additionally passes the focused provider aggregate test and helper adversarial self-tests. Focused renderer evidence is 13/13, full SwiftPM is 305/305 before the fix, the strict matrix is 385/385, gallery publication is 385/385, and helper/gallery negative-path self-tests pass.
 
 ## Wave 0 Requirements
 

@@ -82,7 +82,7 @@ python3 .planning/phases/43-public-facade-eye-geometry-output-evidence/check_eye
   --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
 ```
 
-The helper discovers the live inventory before freezing exactly 55 cases × seven fixtures = 385 decoded same-dimension outputs. It gates eleven new cases in one fixed eye-local ROI at committed floors, proves positive/negative tilt polarity and nearest-neighbor family distinction, records six contour/pupil/symmetry-eligible portraits plus the explicit no-face safe-no-op pool, and proves a fixed eligible automatic-gaze deviation reduction. Generated output and the exact 385-file gallery remain ignored and untracked. These are provisional public-facade output facts; Phase 44 owns final caps, exhaustive safety, boundary closeout, and exact promotion.
+The helper discovers the live inventory before freezing exactly 55 cases × seven fixtures = 385 decoded same-dimension outputs. It gates eleven new cases in one fixed eye-local ROI at committed floors, proves positive/negative tilt polarity and nearest-neighbor family distinction, records six contour/pupil/symmetry-eligible portraits plus the explicit no-face safe-no-op pool, and keeps a self-tested dark-core centroid experiment separate from strict fixture acceptance. Automatic-gaze reduction is proven by the package-internal aggregate pupil-to-own-center evidence path; the retired RGB mirror score is not treated as gaze proof. Generated output and the exact 385-file gallery remain ignored and untracked. These are provisional public-facade output facts; Phase 44 owns final caps, exhaustive safety, boundary closeout, and exact promotion.
 
 Phase 36 remaining-nose output evidence uses:
 

@@ -51,7 +51,7 @@ The eyes gallery now has an exact duplicate-free 55-case bijection, and Phase 43
 ## Accomplishments
 
 - Added the eleven new eye IDs to `CASE_GROUPS["eyes"]` and published exactly 385 regular PNGs through the existing descriptor-anchored staging/quarantine flow.
-- Updated live example-image validation and gallery documentation with the strict matrix, fixed ROI/floors, family minima, eligibility/no-op counts, gaze reduction, and conservative non-claims.
+- Updated live example-image validation and gallery documentation with the strict matrix, fixed ROI/floors, family minima, eligibility/no-op counts, package-internal aggregate gaze reduction, and conservative non-claims. Retired the unsound paired-eye RGB mirror score.
 - Final gates pass: focused renderer XCTest 13/13, full SwiftPM 305/305, helper self-test/compile/strict 385/385, gallery self-test/publication 385/385, exact ignore/tracked/staged scans, source scope checks, and `git diff --check`.
 - Recorded `threats_open: 0`, marked EYE-16..18 complete, set Phase 43 validation Nyquist complete, and transitioned state/roadmap/plans to Phase 44 ready-to-plan.
 

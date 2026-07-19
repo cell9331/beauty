@@ -87,8 +87,17 @@ MIN_ABSOLUTE_RGB_DELTA = 1_000
 TILT_EVIDENCE_FIXTURE_STEM = "e1"
 TILT_SPLIT_Y = 0.6545
 MIN_TILT_POLARITY_MARGIN = 0.0005
-GAZE_EVIDENCE_FIXTURE_STEM = "e6"
-MIN_GAZE_DEVIATION_REDUCTION = 500
+
+# The public PNG fixtures do not contain a stable, independently observable
+# pupil displacement at the accepted ROI.  Keep this image-only metric as a
+# deterministic adversarial self-test, but do not promote it to strict proof;
+# the package-internal aggregate scalar in EyeWarpProviderTests is the EYE-18
+# gaze reduction gate.
+IMAGE_GAZE_ROIS = (
+    (0.30, 0.48, 0.55, 0.70),
+    (0.52, 0.70, 0.55, 0.70),
+)
+IMAGE_DARK_CORE_LUMINANCE_MAX = 80
 
 
 class RendererOutputError(Exception):
@@ -530,28 +539,43 @@ def eye_delta_centroid_y(reference_path: Path, candidate_path: Path) -> float:
     return weighted_y / total_delta / height
 
 
-def paired_eye_deviation(path: Path) -> int:
-    """Return an aggregate fixed-region left/right mirror deviation score."""
-    width, height, rows = decoded_rgb(path)
-    left, right, top, bottom = eye_roi(width, height)
-    span = right - left
-    eye_width = max(1, int(span * 0.30))
-    left_start = left + int(span * 0.10)
-    right_end = right - int(span * 0.10)
-    right_start = right_end - eye_width
-    score = 0
-    for row_index in range(top, bottom):
-        row = rows[row_index]
-        for offset in range(eye_width):
-            left_column = left_start + offset
-            right_column = right_end - 1 - offset
-            left_pixel = left_column * 3
-            right_pixel = right_column * 3
-            score += sum(
-                abs(row[left_pixel + channel] - row[right_pixel + channel])
-                for channel in range(3)
-            )
-    return score
+def dark_core_centroid(
+    rows: tuple[bytes, ...], width: int, height: int, roi: tuple[float, float, float, float]
+) -> tuple[float, float] | None:
+    """Locate a bounded dark-core centroid in one fixed normalized eye ROI."""
+    left, right, top, bottom = roi
+    x0, x1 = int(width * left), int(width * right)
+    y0, y1 = int(height * top), int(height * bottom)
+    weight_total = weighted_x = weighted_y = 0
+    for y in range(y0, y1):
+        row = rows[y]
+        for x in range(x0, x1):
+            index = x * 3
+            red, green, blue = row[index : index + 3]
+            luminance = (54 * red + 183 * green + 19 * blue) / 256
+            if luminance > IMAGE_DARK_CORE_LUMINANCE_MAX:
+                continue
+            weight = IMAGE_DARK_CORE_LUMINANCE_MAX - luminance + 1
+            weight_total += weight
+            weighted_x += x * weight
+            weighted_y += y * weight
+    if weight_total == 0:
+        return None
+    return weighted_x / weight_total / width, weighted_y / weight_total / height
+
+
+def dark_core_deviation(
+    rows: tuple[bytes, ...], width: int, height: int
+) -> float | None:
+    """Aggregate distance from each ROI's fixed neutral center, for self-tests only."""
+    total = 0.0
+    for left, right, top, bottom in IMAGE_GAZE_ROIS:
+        centroid = dark_core_centroid(rows, width, height, (left, right, top, bottom))
+        if centroid is None:
+            return None
+        neutral = ((left + right) / 2, (top + bottom) / 2)
+        total += math.hypot(centroid[0] - neutral[0], centroid[1] - neutral[1])
+    return total
 
 
 def watermark_safe_no_face_difference(reference_path: Path, candidate_path: Path) -> ComparisonMetrics:
@@ -666,7 +690,7 @@ def validate_outputs(input_dir: Path, output_dir: Path, renderer_source: Path, m
         all_metrics[family.name] = metrics
 
     portrait_stems = {fixture.stem for fixture in portraits}
-    for required_stem in (TILT_EVIDENCE_FIXTURE_STEM, GAZE_EVIDENCE_FIXTURE_STEM):
+    for required_stem in (TILT_EVIDENCE_FIXTURE_STEM,):
         if required_stem not in portrait_stems:
             raise RendererOutputError("fixed eligibility evidence fixture is absent")
 
@@ -685,17 +709,6 @@ def validate_outputs(input_dir: Path, output_dir: Path, renderer_source: Path, m
             f"tilt polarity failed fixed split/margin: plus={tilt_plus_y:.6f}, "
             f"minus={tilt_minus_y:.6f}, split={TILT_SPLIT_Y:.6f}, "
             f"margin={MIN_TILT_POLARITY_MARGIN:.6f}"
-        )
-
-    gaze_baseline = outputs[(GAZE_EVIDENCE_FIXTURE_STEM, BASELINE_CASE_ID)]
-    gaze_corrected = outputs[(GAZE_EVIDENCE_FIXTURE_STEM, GAZE_CASE_ID)]
-    baseline_deviation = paired_eye_deviation(gaze_baseline)
-    corrected_deviation = paired_eye_deviation(gaze_corrected)
-    gaze_reduction = baseline_deviation - corrected_deviation
-    if not measure and gaze_reduction < MIN_GAZE_DEVIATION_REDUCTION:
-        raise RendererOutputError(
-            f"gaze correction fixed-region deviation reduction {gaze_reduction} "
-            f"is below {MIN_GAZE_DEVIATION_REDUCTION}"
         )
 
     no_face_fixture = no_face[0]
@@ -728,10 +741,7 @@ def validate_outputs(input_dir: Path, output_dir: Path, renderer_source: Path, m
         f"tilt polarity: plus_y={tilt_plus_y:.6f}; minus_y={tilt_minus_y:.6f}; "
         f"fixed_split={TILT_SPLIT_Y:.6f}; margin={MIN_TILT_POLARITY_MARGIN:.6f}"
     )
-    print(
-        f"gaze paired-eye deviation: baseline={baseline_deviation}; corrected={corrected_deviation}; "
-        f"reduction={gaze_reduction}; fixed_floor={MIN_GAZE_DEVIATION_REDUCTION}"
-    )
+    print("gaze image-only dark-core reduction: not accepted; package aggregate scalar gate is required")
     print("eligibility inventory: contour=6/6; pupil_gaze=6/6; symmetry=6/6; portrait_noop=0/0; no_face=1/1")
     for family in FAMILIES:
         metrics = all_metrics[family.name]
@@ -898,9 +908,49 @@ def run_self_tests() -> None:
         if no_face_metrics != ComparisonMetrics(0, 2_048, 0):
             raise AssertionError(f"no-face fallback mismatch: {no_face_metrics}")
 
+        # The image-only pupil metric is intentionally adversarial and is not
+        # used as the fixture gate.  A synthetic pair proves that a real
+        # toward-neutral displacement reduces deviation, while an unrelated
+        # bright color patch or one-sided mirror/asymmetry change cannot.
+        synthetic_width = synthetic_height = 100
+        def synthetic_rows(points: tuple[tuple[float, float], tuple[float, float]]) -> tuple[bytes, ...]:
+            rows = [bytearray([255] * (synthetic_width * 3)) for _ in range(synthetic_height)]
+            for x_normalized, y_normalized in points:
+                x = int(x_normalized * synthetic_width)
+                y = int(y_normalized * synthetic_height)
+                for row_index in range(max(0, y - 1), min(synthetic_height, y + 2)):
+                    for column in range(max(0, x - 1), min(synthetic_width, x + 2)):
+                        index = column * 3
+                        rows[row_index][index : index + 3] = b"\x00\x00\x00"
+            return tuple(bytes(row) for row in rows)
+
+        neutral_points = ((0.39, 0.625), (0.61, 0.625))
+        baseline_points = ((0.35, 0.625), (0.65, 0.625))
+        corrected_points = neutral_points
+        baseline_deviation = dark_core_deviation(
+            synthetic_rows(baseline_points), synthetic_width, synthetic_height
+        )
+        corrected_deviation = dark_core_deviation(
+            synthetic_rows(corrected_points), synthetic_width, synthetic_height
+        )
+        if baseline_deviation is None or corrected_deviation is None or not corrected_deviation < baseline_deviation:
+            raise AssertionError("dark-core centroid did not prove synthetic toward-neutral reduction")
+
+        color_rows = [bytearray(row) for row in synthetic_rows(baseline_points)]
+        color_rows[10][10 * 3 : 10 * 3 + 3] = b"xxy"
+        if dark_core_deviation(tuple(bytes(row) for row in color_rows), synthetic_width, synthetic_height) != baseline_deviation:
+            raise AssertionError("unrelated bright/color change altered dark-core evidence")
+
+        asymmetric_deviation = dark_core_deviation(
+            synthetic_rows(((0.39, 0.625), (0.70, 0.625))), synthetic_width, synthetic_height
+        )
+        if asymmetric_deviation is None or asymmetric_deviation < baseline_deviation:
+            raise AssertionError("one-sided asymmetry incorrectly satisfied dark-core reduction")
+
     print(
         "self-test passed: duplicate IDs/stems, missing/extra/corrupt/symlink outputs, bounded PNG/JPEG decode, "
-        "single-descriptor replacement/growth races, ROI/watermark rejection, 2048-pixel no-face fallback"
+        "single-descriptor replacement/growth races, ROI/watermark rejection, 2048-pixel no-face fallback, "
+        "dark-core toward-neutral reduction and adversarial color/asymmetry rejection"
     )
 
 

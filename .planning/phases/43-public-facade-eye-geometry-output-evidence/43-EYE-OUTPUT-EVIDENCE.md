@@ -41,7 +41,7 @@ Semantic comparisons are fixed rather than dynamically selected: height/length, 
 - Measured-pair symmetry eligibility: 6/6 portraits.
 - Neutral/ineligible portrait pool in the current committed fixture inventory: 0/0; no such portrait is counted as visibility or failure.
 - Explicit ineligible no-face pool: 1/1 fixture; all eleven new requests are safe watermark-region no-ops and preserve 64×64 extent.
-- On the fixed eligible gaze fixture, the paired-eye deviation score decreased from 10,187,336 to 10,180,972: an observed reduction of 6,364 against a frozen minimum of 500.
+- Gaze correction is not accepted from the previous paired-eye RGB mirror score: that score can be reduced by unrelated eye asymmetry and is not a pupil-to-neutral-center measurement. The package-internal `gazeCorrectionEvidence(face:strength:)` aggregate now reports two eligible eyes with a strict baseline-offset > corrected-offset reduction, and its test proves neutral pupils no-op while contour tilt/asymmetry leaves the scalar unchanged. This scalar carries no points or per-eye payload and is not public or diagnostic.
 - Symmetry is proven only on observed, complete measured pairs; the helper does not fabricate or mirror support.
 
 No raw landmark, contour, pupil coordinate, face bound, side label, or provider payload is emitted by the helper or recorded here.
@@ -53,9 +53,10 @@ python3 .planning/phases/43-public-facade-eye-geometry-output-evidence/check_eye
 python3 -m py_compile .planning/phases/43-public-facade-eye-geometry-output-evidence/check_eye_geometry_renderer_outputs.py
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/output
 python3 .planning/phases/43-public-facade-eye-geometry-output-evidence/check_eye_geometry_renderer_outputs.py --input example-images/input --output example-images/output --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
+swift test --package-path BeautySDK --filter EyeWarpProviderTests.testPhase42TiltSignsAndPupilGazeAreBoundedAndMonotonic
 ```
 
-The accepting run followed a guarded physical-root cleanup and fresh render after the separate measurement run. Generated files remain disposable below ignored `example-images/output/`.
+The accepting run followed a guarded physical-root cleanup and fresh render after the separate measurement run. Generated files remain disposable below ignored `example-images/output/`. Image-only dark-core centroid reduction remains a self-tested diagnostic experiment rather than a strict fixture claim because the committed PNGs do not expose a stable pupil displacement at the fixed eye ROI; the package aggregate test is the authoritative EYE-18 gaze reduction evidence.
 
 ## Conservative Boundary
 
