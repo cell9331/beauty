@@ -90,10 +90,14 @@ def base_checks(root: Path) -> list[Result]:
     converted = []
     for result in module.live_checks(root):
         converted.append(Result(result.name, result.ok, result.detail))
-    lines = run(["rg", "-l", "|".join(FIELD_TOKENS), "BeautySDK/Sources", "BeautyDemo/BeautyDemo"], root)
-    observed = {line.strip() for line in lines.stdout.splitlines() if line.strip()} if lines.returncode in (0, 1) else set()
-    converted.append(Result("eye active-source ownership", lines.returncode in (0, 1) and observed == SOURCE_EYE_OWNERS, f"owners={len(observed)}/8"))
+    converted.append(active_source_gate(root))
     return converted
+
+
+def active_source_gate(root: Path, runner: Runner = run) -> Result:
+    lines = runner(["rg", "-l", "|".join(FIELD_TOKENS), "BeautySDK/Sources", "BeautyDemo/BeautyDemo"], root)
+    observed = {line.strip() for line in lines.stdout.splitlines() if line.strip()} if lines.returncode in (0, 1) else set()
+    return Result("eye active-source ownership", lines.returncode in (0, 1) and observed == SOURCE_EYE_OWNERS, f"owners={len(observed)}/8")
 
 
 def rows(text: str) -> list[list[str]]:
@@ -207,11 +211,19 @@ def fake_result(condition: bool, label: str, failures: list[str]) -> None:
 
 def self_test(root: Path) -> int:
     failures: list[str] = []
+    checks = 0
+
+    def require(condition: bool, label: str) -> None:
+        nonlocal checks
+        checks += 1
+        fake_result(condition, label, failures)
+
     # Preserve the prior hardened command/path/source/artifact adversarial matrix.
     try:
         module = phase41(root)
         result = module.self_test()
-        fake_result(all(item.ok for item in result), "Phase41 self-test returned failures", failures)
+        for item in result:
+            require(item.ok, f"inherited:{item.name}")
     except Exception as error:
         failures.append(f"Phase41 self-test exception={error}")
     with tempfile.TemporaryDirectory() as directory:
@@ -225,24 +237,62 @@ def self_test(root: Path) -> int:
                 path.write_text("| Beauty shaping | 眼睛 | partial | Phase 41 Phase 42 Phase 43 Phase 44 |\n")
             else:
                 path.write_text("Phase 41 Phase 42 Phase 43 Phase 44\n")
-        fake_result(ledger_status(fixture, True).ok, "promotion positive fixture", failures)
+        require(ledger_status(fixture, True).ok, "promotion positive fixture")
         ledger = fixture / BLUEPRINT_FILES[0]
         original = ledger.read_text()
-        ledger.write_text(original.replace("| 眼睛 | 眼高 | implemented", "| 眼睛 | 眼高 | future"))
-        fake_result(not ledger_status(fixture, True).ok, "missing promoted row accepted", failures)
+        for name in EYE_FIELDS:
+            ledger.write_text(original.replace(f"| 眼睛 | {name} | implemented", f"| 眼睛 | {name} | future"))
+            require(not ledger_status(fixture, True).ok, f"promotion mutation accepted:{name}")
         ledger.write_text(original)
-        fake_result(check_promotion(fixture).ok, "post-promotion owner fixture", failures)
-        owner = fixture / "DESIGN.md"
-        owner.write_text("Phase 44 .35 .30 .25 .002 .0001 10.70 33 28 fourteen")
-        fake_result(check_owner(fixture, "design").ok, "owner positive fixture", failures)
-        owner.write_text("Phase 44 .35")
-        fake_result(not check_owner(fixture, "design").ok, "missing owner fact accepted", failures)
+        require(check_promotion(fixture).ok, "post-promotion owner fixture")
+        first_owner = fixture / BLUEPRINT_FILES[2]
+        first_owner.write_text("Phase 41 Phase 42 Phase 44\n")
+        require(not check_promotion(fixture).ok, "blueprint evidence mutation accepted")
+        first_owner.write_text("Phase 41 Phase 42 Phase 43 Phase 44\n")
+
+        for name in OWNER_NAMES:
+            for relative in OWNER_PATHS[name]:
+                path = fixture / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(f"## Phase 44\n{' '.join(OWNER_REQUIRED[name])}\n")
+            require(check_owner(fixture, name).ok, f"owner positive:{name}")
+            path = fixture / OWNER_PATHS[name][0]
+            clean = path.read_text()
+            token = OWNER_REQUIRED[name][-1]
+            path.write_text(clean.replace(token, "removed-token", 1))
+            require(not check_owner(fixture, name).ok, f"owner mutation accepted:{name}")
+            path.write_text(clean)
+
+        requirements = fixture / ".planning/REQUIREMENTS.md"
+        requirements.parent.mkdir(parents=True, exist_ok=True)
+        requirements.write_text("\n".join(f"- [x] **{item}** complete" for item in ("EYE-19", "EYE-20", "EYE-21", "EYE-22", "EYE-23")) + "\n- [ ] **DOC-01** pending independent audit\n")
+        validation = fixture / ".planning/phases/44-eye-geometry-safety-and-ledger-closeout/44-VALIDATION.md"
+        validation.parent.mkdir(parents=True, exist_ok=True)
+        validation.write_text("| ✅ |\n" * 16)
+        for plan in range(1, 7):
+            (validation.parent / f"44-{plan:02d}-SUMMARY.md").write_text("status: complete\n")
+        verification = validation.parent / "44-VERIFICATION.md"
+        verification.write_text("DOC-01 pending-independent-audit\n")
+        require(planning_gate(fixture).ok, "planning positive fixture")
+        requirements.write_text(requirements.read_text().replace("pending independent audit", "Complete"))
+        require(not planning_gate(fixture).ok, "DOC-01 completion mutation accepted")
+        requirements.write_text(requirements.read_text().replace("Complete", "pending independent audit"))
+
+        exact_output = "\n".join(sorted(SOURCE_EYE_OWNERS)) + "\n"
+        good_runner: Runner = lambda command, cwd: subprocess.CompletedProcess(command, 0, exact_output, "")
+        bad_runner: Runner = lambda command, cwd: subprocess.CompletedProcess(command, 0, exact_output + "BeautySDK/Sources/Unexpected.swift\n", "")
+        require(active_source_gate(fixture, good_runner).ok, "active-source positive fixture")
+        require(not active_source_gate(fixture, bad_runner).ok, "unclassified active source accepted")
+
         for relative in ("PLANS.md", ".planning/PROJECT.md", ".planning/STATE.md"):
             path = fixture / relative
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text("Phase 44 current; no audit passed\n")
-        fake_result(not lifecycle_gate(fixture).ok, "missing git lifecycle root did not fail closed", failures)
-    print(f"SELF-TEST {'PASS' if not failures else 'FAIL'}: {24 + (5 - len(failures))}/{29} inherited and Phase44 mutation checks")
+            path.write_text("Phase 44 current; independent audit pending\n")
+        subprocess.run(["git", "init", "-q"], cwd=fixture, check=True)
+        require(lifecycle_gate(fixture).ok, "lifecycle positive fixture")
+        (fixture / "PLANS.md").write_text("v1.11 audit passed\n")
+        require(not lifecycle_gate(fixture).ok, "lifecycle claim accepted")
+    print(f"SELF-TEST {'PASS' if not failures else 'FAIL'}: {checks - len(failures)}/{checks} inherited and Phase44 mutation checks")
     if failures:
         for failure in failures:
             print(f"FAIL {failure}")
