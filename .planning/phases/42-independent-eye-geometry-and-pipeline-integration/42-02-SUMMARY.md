@@ -6,6 +6,7 @@ tags: [eye, resolver, sanitization, degradation]
 requires: [42-01]
 provides: [field-local-eye-accounting]
 affects: [BeautyEffectPlan, BeautyGeometryEffectPipeline]
+requirements-completed: [EYE-15]
 status: complete
 ---
 

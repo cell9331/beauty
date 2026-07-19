@@ -3,6 +3,7 @@ phase: 41-public-contract-and-observed-eye-support
 plan: "02"
 subsystem: detection
 tags: [swift, vision, coordinates, privacy, eye-support]
+requirements-completed: [EYE-05]
 
 # Phase 41 Plan 02: Observed Eye Support Summary
 

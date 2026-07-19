@@ -3,6 +3,7 @@ phase: 41-public-contract-and-observed-eye-support
 plan: "03"
 subsystem: effects-geometry
 tags: [swift, eye-support, validation, degradation, privacy]
+requirements-completed: [EYE-06, EYE-07]
 
 # Phase 41 Plan 03: Observed Eye Support Summary
 

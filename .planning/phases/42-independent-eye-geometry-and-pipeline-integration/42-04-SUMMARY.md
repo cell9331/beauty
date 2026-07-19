@@ -6,6 +6,7 @@ tags: [validation, eye, handoff]
 requires: [42-01, 42-02, 42-03]
 provides: [phase42-validation-ledger]
 affects: [ROADMAP, STATE]
+requirements-completed: [EYE-08, EYE-09, EYE-10, EYE-11, EYE-12, EYE-13, EYE-14, EYE-15]
 status: complete
 ---
 

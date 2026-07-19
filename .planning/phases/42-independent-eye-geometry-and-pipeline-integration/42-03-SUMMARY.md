@@ -6,6 +6,7 @@ tags: [eye, conflict, convergence, scaling]
 requires: [42-02]
 provides: [bounded-fourteen-eye-conflict-accounting]
 affects: [BeautyEffectResolver, BeautyGeometryEffectPipeline]
+requirements-completed: [EYE-15]
 status: complete
 ---
 

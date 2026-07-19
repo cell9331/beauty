@@ -6,6 +6,7 @@ tags: [eye, geometry, provider, provisional-caps]
 requires: [41-public-contract-and-observed-eye-support]
 provides: [fourteen-named-eye-emissions]
 affects: [BeautyEffectResolver, GeometryConflictResolver]
+requirements-completed: [EYE-08, EYE-09, EYE-10, EYE-11, EYE-12, EYE-13, EYE-14]
 status: complete
 ---
 
