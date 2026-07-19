@@ -704,3 +704,10 @@ These are known future design areas, not current first-version requirements:
 | Body reshape model | Requires human landmarks, segmentation, and separate geometry safety policy. |
 | Streaming async API | Useful once realtime camera pipeline is formalized beyond per-frame `process`. |
 | Export-quality pipeline | Can use slower passes and higher precision than realtime preview. |
+
+### v1.11 Phase 44 Final Eye Geometry Contract
+
+- Final positive caps are `eyeHeight .35`, `eyeLength .35`, `upperEyelidLift .30`, `pupilSize .25`, `gazeCorrection .25`, `lowerEyelidDrop .30`, `innerCornerOpen .25`, `outerCornerOpen .25`, and `eyeSymmetry .25`; signed `eyeTilt` is `-.25...+.25`.
+- Exact neutral dead zones are `.002` for gaze correction and `.0001` for symmetry span/tilt. Maximum correction and midpoint blend remain `.35` and `.30`.
+- All fourteen eye fields use their narrowest contour/pupil/semantic dependency. Missing/invalid support is field-local where possible; reused/stale/no-face complete-eye policy remains fail-closed.
+- One provider-eligible baseline covers 33 face/eye/nose/mouth geometry fields at exact total `10.70`, scale `1/10.70`, with at most 28 monotonic provider removals and no re-entry/double scaling.

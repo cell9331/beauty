@@ -523,3 +523,10 @@ SDK 1.0 readiness:
 | 2026-07-03 | Phase 25 records security/distribution closeout evidence without raising unsupported capability scores. | Privacy manifest deferral, active-source negative scans, bundled-resource trust tests, focused Demo privacy/import tests, and traceability sync pass; external resources, screenshot rerun, long-run preview, hardware checks, and commercial packaging remain future or blocked/not-run evidence. |
 | 2026-07-06 | Phase 26 records public still-image geometry facade/routing evidence without raising saved-output or release-quality claims. | Focused facade/detector/effects tests, full 159-test SDK suite, public/SPI raw geometry export scans, active-source raw-leak scans, renderer-case exclusion, and ledger-status guard pass; Phase 27/28 still own saved-output geometry and `脸型` completion. |
 | 2026-07-07 | Phase 27 records saved-output geometry foundation evidence without promoting per-tool face-shape status. | Focused facade/renderer/degradation tests, full 167-test SDK suite, 66 ignored renderer outputs, Phase 27 helper checks, redaction scans, renderer scope scans, and ledger-status guard pass; Phase 28 still owns `脸型` completion. |
+
+### v1.11 Phase 44 Eye Geometry Evidence Score
+
+- Fresh focused evidence passes 4/4 caps, 19/19 resolver, 16/16 provider, 40/40 degradation, 12/12 conflict, 13/13 combined, and 13/13 facade; full SwiftPM passes 314/314.
+- Unchanged strict saved-output evidence passes 385/385 decode/dimensions, 66/66 visibility, 6/6 direct tilt, 60/60 semantic distinctions, 132/132 portraits, and 11/11 no-face comparisons.
+- The boundary self-test passes 57/57 and live pre-promotion/promotion checks pass 13/13 and 14/14. Review status is clean with zero findings; ASVS L1 records `threats_open: 0`.
+- These automated scores do not replace device, subjective/commercial, optimized-performance, packaging, shipping, launch, or independent milestone-audit evidence.

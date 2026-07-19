@@ -315,7 +315,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.owner and not args.check_owners:
             parser.error("--owner requires --check-owners")
         results = base_checks(root)
-        results.append(ledger_status(root, promoted=args.check_promotion or args.allow_promotion))
+        results.append(ledger_status(root, promoted=args.check_promotion or args.check_owners or args.allow_promotion))
         if args.check_promotion or args.allow_promotion:
             results.append(check_promotion(root))
         if args.check_owners or args.allow_promotion:

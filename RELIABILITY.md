@@ -621,3 +621,9 @@ Before a release-like build:
 | 2026-05-25 | Detection cadence can be lower than render cadence. | Face landmarks do not need full frame-rate detection for stable preview. |
 | 2026-05-25 | Metrics are internal/debug-first before becoming a public API. | Avoid locking an immature observability contract too early. |
 | 2026-07-06 | Still-image geometry detection is gated by parameter need and degrades through summaries instead of public errors. | Host apps keep no-geometry compatibility, disabled tracking remains non-error, and unusable detection skips only face-dependent work. |
+
+### v1.11 Phase 44 Eye Geometry Reliability Closeout
+
+- All 14 eye strengths are recomputed per request. A fresh valid support emits eligible work; provider-empty work is removed from totals/domains/dispatch; missing pupil removes only pupil/gaze; reused, stale, and no-face complete-eye states zero eye strengths without stale-vector carryover.
+- Safe face/nose/mouth/color/filter siblings continue under mixed masks. Warnings and metrics remain aggregate/redacted.
+- One exact retained baseline converges monotonically through at most 28 eye/nose/mouth removals. A removed field cannot re-enter or be scaled twice.

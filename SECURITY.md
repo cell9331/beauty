@@ -515,3 +515,9 @@ Before merging any change touching these areas, update `SECURITY.md` if needed:
 | 2026-05-25 | Distributed SDK builds must revisit `PrivacyInfo.xcprivacy`. | Apple requires privacy manifests for apps and third-party SDKs according to SDK behavior. |
 | 2026-07-03 | Phase 25 defers `PrivacyInfo.xcprivacy` for current source behavior and keeps external resources disabled. | Current command evidence supports local-first SDK/Demo behavior and bundled-resource trust only; future collection, required-reason APIs, third-party SDKs, network behavior, or external packages must reopen the review. |
 | 2026-07-06 | Phase 26 keeps geometry detection and landmark routing package-internal and redacted at the public facade. | Still-image geometry intent can be proven without exposing raw biometric-adjacent payloads, sensitive diagnostics, Demo internals, or saved-output implementation claims. |
+
+### v1.11 Phase 44 Eye Geometry Security Closeout
+
+- Observed contours/pupils remain request-scoped, package-only, non-Codable, non-persistent, and absent from public or diagnostic raw geometry payloads.
+- The active-source gate classifies the exact 48-field public inventory and eight source owners; command errors, unclassified matches, dependency/import drift, persistence, network/cloud, commercial paths, and artifact escapes fail closed.
+- Generated output/gallery/staging/quarantine remains ignored, untracked, and unstaged. ASVS L1 HIGH findings block promotion; `threats_open: 0` after the 57/57 self-test and 13/13 live boundary pass.

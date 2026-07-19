@@ -331,3 +331,9 @@ BeautyDemo sliders / presets
 | 2026-05-24 | UI 完全放在 `BeautyDemo` 或宿主 App。 | SDK 作为可集成能力，不绑定业务页面和交互样式。 |
 | 2026-05-24 | 五官几何形变统一进入一个形变 pass。 | 降低纹理读写次数，减少参数冲突，提高实时性能。 |
 | 2026-07-13 | v1.7 鼻子 slice 继续复用统一 geometry pass 与 public `BeautySDK` facade，不拆 Package、不新增 public geometry。 | 四个既有 nose 参数可在现有 provider/resolver/render seams 内完成；保持 Demo facade-only 与 raw-geometry 边界。 |
+
+### v1.11 Phase 44 Eye Geometry Closeout
+
+- The 48-field scalar `BeautyParameters` contract remains behind the public `BeautySDK` facade; request-scoped observed support stays package-internal to detection/effects and the unified warp.
+- The local-first dependency direction is unchanged: no external dependency, package target, network/cloud, commercial path, public raw geometry, or new source owner was added.
+- The example renderer and no Demo code import internal SDK modules. Phase 44 is an SDK-core safety/status closeout with no Demo feature change.

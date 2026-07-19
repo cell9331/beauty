@@ -557,3 +557,9 @@ Before merging product-facing changes, verify:
 | 2026-07-07 | Phase 27 proves SDK-only saved-output geometry foundation without promoting per-tool face-shape status. | The renderer/helper path now verifies same-dimension geometry outputs and degradation evidence, while Phase 28 remains the owner for `脸型` tool completion. |
 | 2026-07-08 | Phase 28 promotes only the scoped existing-parameter `脸型` rows after per-tool saved-output evidence passes. | `下颌线` stays a `jawSlim` alias, branch-level `脸型` remains partial, and broader UI/device/commercial claims stay out of scope. |
 | 2026-07-16 | Phase 41 accepts ten compatible public eye scalars only with validated private observed support and fail-closed privacy/scope evidence. | Honest pupil/gaze/symmetry readiness requires request-scoped observed evidence; provider semantics, visual caps, output, and promotion remain downstream. |
+
+### v1.11 Phase 44 Eye Geometry Acceptance
+
+- Automated SDK evidence independently implements exactly `眼高`, `长度`, `提肌`, `眼瞳大小`, `眼神矫正`, `眼睑下至`, `倾斜`, `内眼角`, `外眼角`, and `对称`.
+- `去脂` and `祛红血丝` remain future retouch/color work, so branch `眼睛` remains `partial`.
+- Acceptance is limited to contract, provider, saved-output, exact safety/degradation, privacy, boundary, and owner evidence. It is not device parity, subjective/commercial approval, optimized performance, packaging, shipping, or launch readiness.
