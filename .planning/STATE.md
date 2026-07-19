@@ -314,14 +314,14 @@ Recent milestone-level outcomes:
 | Release QA | Real-device camera/Vision parity, visual naturalness, production render quality, performance budgets, and long-run hardware readiness | Partially promoted into v1.4 hardening scope; feature expansion remains deferred | v1.4 start |
 | SwiftUI visual fidelity | HTML-to-SwiftUI delta report, Home SwiftUI fidelity pass, Editor SwiftUI fidelity pass, and v1.2 visual QA closeout | Canceled from v1.2; may be reconsidered as a future milestone | 2026-06-26 |
 | Deferred Meitu product areas | Home/discovery, style resources, AI/background, video/body, account/gallery, search, premium access, commerce, account authorization | Deferred outside v1.3 core beauty modules | 2026-06-26 |
-| Broader Meitu shape groups | Remaining eye rows, `白牙`, `比例`, `3D塑颜`, `眉毛`, and unscoped `脸型` rows. | Five mouth geometry rows completed in v1.10; listed non-v1.10 rows remain deferred | v1.10 closeout |
+| Broader Meitu shape groups | `白牙`, `比例`, `3D塑颜`, `眉毛`, and unscoped `脸型` rows. | v1.11 eye geometry rows completed; listed non-v1.11 rows remain deferred | v1.11 closeout |
 | Release/setup evidence | Physical-device camera/Vision parity, commercial visual review, screenshot reruns, optimized profiling, 600-second preview evidence, packaging review, and launch-readiness review | Deferred outside Phase 28 | Phase 28 closeout |
 | Codebase maps | Formal refresh of stale `.planning/codebase/*` maps | Deferred until explicitly scoped | Phase 21 |
 
 ## Session Continuity
 
-Last session: 2026-07-19T13:22:28.369Z
-Stopped at: Completed 44-06-PLAN.md; next $gsd-audit-milestone
+Last session: 2026-07-19T14:05:00.000Z
+Stopped at: v1.11 milestone complete; next $gsd-new-milestone
 Resume file: None
 
 ## Operator Next Steps
