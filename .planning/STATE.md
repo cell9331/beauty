@@ -4,14 +4,14 @@ milestone: v1.11
 milestone_name: Eye Remaining Geometry Controls
 current_phase: 44
 current_phase_name: Eye Geometry Safety and Ledger Closeout
-status: awaiting-independent-audit
+status: planning
 stopped_at: Completed 44-06-PLAN.md; next $gsd-audit-milestone
-last_updated: "2026-07-19T13:22:28.383Z"
+last_updated: "2026-07-19T13:52:16.785Z"
 last_activity: 2026-07-19
-last_activity_desc: Phase 44 implementation/current-owner closeout complete
+last_activity_desc: Phase 43 complete, transitioned to Phase 44
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 18
   completed_plans: 18
   percent: 100
@@ -28,10 +28,10 @@ See: `.planning/PROJECT.md` (updated 2026-07-14)
 
 ## Current Position
 
-Phase: 44 (Eye Geometry Safety and Ledger Closeout) — EXECUTING
-Plan: 6 of 6
-Status: Implementation complete; independent audit pending
-Last activity: 2026-07-19 — Phase 44 implementation/current-owner closeout complete
+Phase: 44 — Eye Geometry Safety and Ledger Closeout
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-07-19 — Phase 43 complete, transitioned to Phase 44
 
 ### Phase 44 Eye Geometry Safety and Ledger Closeout Result
 
@@ -39,7 +39,7 @@ Last activity: 2026-07-19 — Phase 44 implementation/current-owner closeout com
 - Exact retained arithmetic is total 10.70, count 33, scale 1/10.70 with at most 28 monotonic removals and no re-entry/double scaling.
 - Full SwiftPM passes 314/314; strict output remains 385/385; boundary self-test passes 57/57 and live promotion/owner gates pass.
 - Exactly ten remaining geometry rows are promoted; `去脂`/`祛红血丝` remain future and branch `眼睛` remains partial.
-- EYE-19 through EYE-23 are complete. DOC-01 remains pending-independent-audit; no v1.11 audit/archive/tag/lifecycle result is claimed.
+- EYE-19 through EYE-23 and DOC-01 are complete through the independent v1.11 audit. Archive/tag/cleanup remain lifecycle steps and are not claimed here.
 
 ### Phase 43 Public-Facade Eye Geometry Output Evidence Result
 
@@ -326,4 +326,4 @@ Resume file: None
 
 ## Operator Next Steps
 
-- Run `$gsd-audit-milestone` as the independent v1.11 audit owner. Do not mark DOC-01 complete before that workflow passes.
+- Independent v1.11 audit passed at `.planning/v1.11-MILESTONE-AUDIT.md`; run milestone archive/tag/cleanup lifecycle next.

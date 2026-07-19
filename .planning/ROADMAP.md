@@ -23,7 +23,7 @@
 - [x] **Phase 41: Public Contract and Observed Eye Support** — Add ten compatible public controls, private Vision contour/pupil support, canonical coordinate conversion, strict support validation, and privacy boundaries. (completed 2026-07-16)
 - [x] **Phase 42: Independent Eye Geometry and Pipeline Integration** — Implement ten distinct contour/pupil/correction transforms, fourteen named eye emissions, resolver/conflict convergence, and facade routing. (completed 2026-07-16)
 - [x] **Phase 43: Public-Facade Eye Geometry Output Evidence** — Prove isolated controls, signed tilt, eligibility-aware correction/symmetry, no-face behavior, strict decoded outputs, and ignored gallery containment. (completed 2026-07-16)
-- [x] **Phase 44: Eye Geometry Safety and Ledger Closeout** — Lock exact caps and transitions, complete the fail-closed boundary gate, promote exactly ten geometry rows, and synchronize all owners; independent milestone audit remains pending.
+- [x] **Phase 44: Eye Geometry Safety and Ledger Closeout** — Lock exact caps and transitions, complete the fail-closed boundary gate, promote exactly ten geometry rows, and synchronize all owners; independent v1.11 milestone audit passed.
 
 ## Phase Details
 
@@ -158,14 +158,14 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
-| 41. Public Contract and Observed Eye Support | 5/5 | Complete    | 2026-07-16 |
+| 41. Public Contract and Observed Eye Support | 7/5 | Complete    | 2026-07-16 |
 | 42. Independent Eye Geometry and Pipeline Integration | 4/4 | Complete    | 2026-07-16 |
-| 43. Public-Facade Eye Geometry Output Evidence | 3/3 | Complete | 2026-07-16 |
+| 43. Public-Facade Eye Geometry Output Evidence | 3/3 | Complete    | 2026-07-16 |
 | 44. Eye Geometry Safety and Ledger Closeout | 6/6 | Complete | 2026-07-19 |
 
 ## Current Status
 
-v1.11 Phase 44 implementation/current-owner closeout is complete. EYE-19 through EYE-23 pass; DOC-01 and lifecycle remain pending the independent `$gsd-audit-milestone` workflow.
+v1.11 Phase 44 implementation/current-owner closeout and independent milestone audit are complete. EYE-19 through EYE-23 and DOC-01 pass; archive/tag/cleanup are the remaining lifecycle steps.
 
 ## Backlog
 
@@ -175,4 +175,4 @@ v1.11 Phase 44 implementation/current-owner closeout is complete. EYE-19 through
 - Device, commercial visual, packaging, performance, and launch-readiness evidence remains separately scoped.
 
 ---
-*Last updated: 2026-07-19 after Phase 44 implementation/current-owner closeout; independent audit pending*
+*Last updated: 2026-07-19 after independent v1.11 milestone audit*

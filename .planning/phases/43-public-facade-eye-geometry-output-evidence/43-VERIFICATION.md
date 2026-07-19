@@ -1,3 +1,19 @@
+---
+phase: 43-public-facade-eye-geometry-output-evidence
+verified: 2026-07-19T22:00:00Z
+status: passed
+score: 3/3 must-haves verified
+behavior_unverified: 0
+overrides_applied: 0
+re_verification:
+  previous_status: passed
+  previous_score: 3/3
+  gaps_closed:
+    - "The unsound RGB mirror gaze score was replaced by package-internal aggregate pupil-to-own-center evidence."
+  gaps_remaining: []
+  regressions: []
+---
+
 # Phase 43 Verification
 
 **Phase:** Public-Facade Eye Geometry Output Evidence  
