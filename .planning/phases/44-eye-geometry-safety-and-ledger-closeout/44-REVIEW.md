@@ -1,7 +1,38 @@
 ---
 phase: 44-eye-geometry-safety-and-ledger-closeout
-reviewed: 2026-07-19
+reviewed: 2026-07-19T21:29:00Z
 depth: deep
+files_reviewed: 29
+files_reviewed_list:
+  - .planning/PROJECT.md
+  - .planning/REQUIREMENTS.md
+  - .planning/ROADMAP.md
+  - .planning/STATE.md
+  - .planning/phases/44-eye-geometry-safety-and-ledger-closeout/44-EYE-SAFETY-EVIDENCE.md
+  - .planning/phases/44-eye-geometry-safety-and-ledger-closeout/44-SECURITY.md
+  - .planning/phases/44-eye-geometry-safety-and-ledger-closeout/check_eye_geometry_boundaries.py
+  - ARCHITECTURE.md
+  - BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift
+  - BeautySDK/Sources/BeautyEffects/Planning/BeautySafetyCaps.swift
+  - BeautySDK/Tests/BeautyCoreTests/BeautyEngineGeometryFacadeTests.swift
+  - BeautySDK/Tests/BeautyEffectsTests/BeautyEffectResolverTests.swift
+  - BeautySDK/Tests/BeautyEffectsTests/BeautySafetyCapsTests.swift
+  - BeautySDK/Tests/BeautyEffectsTests/CombinedEffectSafetyTests.swift
+  - BeautySDK/Tests/BeautyEffectsTests/EyeWarpProviderTests.swift
+  - BeautySDK/Tests/BeautyEffectsTests/GeometryConflictResolverTests.swift
+  - BeautySDK/Tests/BeautyEffectsTests/MissingLandmarkDegradationTests.swift
+  - DESIGN.md
+  - PLANS.md
+  - PRODUCT_SENSE.md
+  - QUALITY_SCORE.md
+  - RELIABILITY.md
+  - SECURITY.md
+  - docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md
+  - docs/meitu-function-blueprint/FEATURE_MATRIX.md
+  - docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md
+  - docs/meitu-function-blueprint/features/beauty-shaping/README.md
+  - docs/meitu-function-blueprint/features/beauty-shaping/eyes/README.md
+  - example-images/README.md
 findings:
   critical: 0
   warning: 0
@@ -10,24 +41,32 @@ findings:
 status: clean
 ---
 
-# Phase 44 Pre-Promotion Code Review
+# Phase 44: Code Review Report
 
-## Scope
+**Reviewed:** 2026-07-19
+**Depth:** deep
+**Files Reviewed:** 29
+**Status:** clean
 
-Reviewed the Phase 44 production delta, cap/resolver/provider/degradation/conflict/facade tests, the new boundary classifier, security record, validation map, and unchanged Phase 43 output/gallery gates.
+## Summary
 
-## Findings
+Reviewed the Phase 44 delta from the Phase 43 baseline, including the resolver/cap changes, all cap/degradation/convergence tests, the fail-closed boundary classifier, promotion ledgers, owner contracts, planning handoff, and security/evidence records. The no-face resolver fix zeros all fourteen internal eye strengths only on the actual no-face facade path while preserving scalar-only public compatibility. The exact 10.70/33-field retained baseline and bounded 28-removal convergence are reflected in implementation and tests. The classifier's adversarial matrix, exact ten-row post-promotion state, eight owner checks, artifact containment, and pending DOC-01/lifecycle gate are consistent and fail closed.
 
-No open correctness, security, privacy, command-handling, compatibility, or regression finding remains. The one runtime defect discovered in Plan 44-01—actual no-face planning retained nonzero eye strengths—was fixed at the narrow internal branch while scalar-only public resolver compatibility remains unchanged.
-
-The checker treats `rg` exit 1 as clean no-match and every other error as blocking, rejects symlink/scope escape through the inherited hardened classifier, requires exact active-source ownership and public inventory, and separates pre-promotion, promotion, owner, and final allow modes. Its 57-fixture mutation matrix covers the required fail-closed boundaries.
+No correctness, security, privacy, compatibility, or scope-drift finding remains. No source or test file was modified during this review.
 
 ## Verification reviewed
 
-- Focused suites: 4/4 caps, 19/19 resolver, 16/16 provider, 40/40 degradation, 12/12 conflict, 13/13 combined, and 13/13 facade.
-- Full SwiftPM: 314/314 passed.
-- Boundary: 57/57 self-test and 13/13 default live passed.
-- Public output: 385/385 decode/dimensions; 66/66 visibility; 6/6 tilt; 60/60 semantic; 132/132 portrait; 11/11 no-face.
-- Phase 43 helper self-test, gallery self-test, artifact containment, and diff hygiene passed.
+- Fresh full SwiftPM suite: 314/314 passed.
+- `check_eye_geometry_boundaries.py --self-test`: 57/57 passed.
+- `--allow-promotion`: 23/23 passed, including exact promotion, all owners, planning handoff, pending independent audit, and artifact containment.
+- `--check-promotion`: 14/14 passed; `--check-owners`: 20/20 passed.
+- `git diff --check` passed; generated output/gallery/staging/quarantine roots remain tracked=0, staged=0, and non-ignored-untracked=0.
+- Existing Phase 43 strict-output/gallery evidence remains unchanged and is cross-referenced without promoting device, commercial, packaging, performance, shipping, launch, or milestone-audit claims.
 
-No `44-REVIEW-FIX.md` was created because the final review has zero findings. Promotion, owner synchronization, planning completion, and independent audit remain later plans.
+DOC-01 remains explicitly pending the independent `$gsd-audit-milestone` workflow. The ten promoted geometry rows are kept separate from future `去脂`/`祛红血丝`, and branch-level `眼睛` remains partial.
+
+---
+
+_Reviewed: 2026-07-19_
+_Reviewer: the agent (gsd-code-reviewer)_
+_Depth: deep_
