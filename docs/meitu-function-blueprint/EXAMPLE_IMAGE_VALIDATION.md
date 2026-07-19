@@ -343,3 +343,10 @@ Phase 30 closes the safety and status gates for the existing-public-parameter ey
 - Generated review paths are ignored under `example-images/gallery/mouth/`; no output/gallery PNG is tracked.
 - Phase 34 adds exact cap/freshness/combined-safety evidence and promotes only `大小`, `宽度`, and `微笑`; branch-level `嘴唇` remains partial and `lipColor` remains color-only.
 - Phase 34 owns safety, degradation, ledger promotion, and whole-slice closeout.
+
+## Phase 44 Eye Geometry Closeout
+
+- The unchanged public-facade matrix has exactly 55 cases × 7 fixtures = 385 ignored, untracked outputs. Strict evidence passes 385/385 decode/dimensions, 66/66 visibility, 6/6 direct tilt, 60/60 semantic distinctions, 132/132 portrait comparisons, and 11/11 no-face no-ops.
+- The authoritative post-`6e4704e` gaze proof is the package-internal aggregate pupil-to-own-center reduction; the helper's image-only mirror/dark-core inference remains rejected.
+- Exactly ten remaining geometry rows are promoted. `去脂` and `祛红血丝` remain future and branch `眼睛` remains `partial`.
+- Output/gallery files remain ignored and untracked. This automated evidence does not establish subjective naturalness, physical-device parity, commercial approval, packaging, shipping, or launch readiness.
