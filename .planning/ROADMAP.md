@@ -128,7 +128,31 @@ Plans:
   4. Full SDK tests and self-tested active-source/security/artifact gates prove no raw geometry leakage, dependency/network/commercial drift, compatibility drift, public support types, or tracked generated artifacts.
   5. Exactly `眼高`, `长度`, `提肌`, `眼瞳大小`, `眼神矫正`, `眼睑下至`, `倾斜`, `内眼角`, `外眼角`, and `对称` become implemented; `去脂`, `祛红血丝`, and branch-level `眼睛` remain partial with conservative non-claims.
 
-**Plans**: TBD
+**Plans**: 0/6 plans executed
+
+**Wave 1**
+
+- [ ] 44-01-PLAN.md
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 44-02-PLAN.md
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 44-03-PLAN.md
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 44-04-PLAN.md
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 44-05-PLAN.md
+
+**Wave 6** *(blocked on Wave 5 completion)*
+
+- [ ] 44-06-PLAN.md
 
 ## Progress
 
@@ -137,7 +161,7 @@ Plans:
 | 41. Public Contract and Observed Eye Support | 6/5 | Complete    | 2026-07-16 |
 | 42. Independent Eye Geometry and Pipeline Integration | 4/4 | Complete    | 2026-07-16 |
 | 43. Public-Facade Eye Geometry Output Evidence | 3/3 | Complete | 2026-07-16 |
-| 44. Eye Geometry Safety and Ledger Closeout | 0/TBD | Not started | — |
+| 44. Eye Geometry Safety and Ledger Closeout | 0/6 | Planned    |  |
 
 ## Current Status
 
