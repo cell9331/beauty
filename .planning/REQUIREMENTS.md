@@ -70,24 +70,40 @@
 
 ## Traceability
 
-Traceability is populated during roadmap creation. Every v1.12 requirement must map to exactly one phase.
-
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| FACE-07..FACE-13 | TBD | Pending |
-| SUPP-01..SUPP-04 | TBD | Pending |
-| GEOM-01..GEOM-04 | TBD | Pending |
-| REGN-01..REGN-03 | TBD | Pending |
-| OUT-01..OUT-03 | TBD | Pending |
-| SAFE-01..SAFE-03 | TBD | Pending |
-| DOC-01 | TBD | Pending |
+| FACE-07 | Phase 45 | Pending |
+| FACE-08 | Phase 45 | Pending |
+| FACE-09 | Phase 45 | Pending |
+| FACE-10 | Phase 45 | Pending |
+| FACE-11 | Phase 45 | Pending |
+| FACE-12 | Phase 45 | Pending |
+| FACE-13 | Phase 45 | Pending |
+| SUPP-01 | Phase 45 | Pending |
+| SUPP-02 | Phase 45 | Pending |
+| SUPP-03 | Phase 45 | Pending |
+| SUPP-04 | Phase 45 | Pending |
+| GEOM-01 | Phase 46 | Pending |
+| GEOM-02 | Phase 46 | Pending |
+| GEOM-03 | Phase 46 | Pending |
+| GEOM-04 | Phase 46 | Pending |
+| REGN-01 | Phase 47 | Pending |
+| REGN-02 | Phase 47 | Pending |
+| REGN-03 | Phase 47 | Pending |
+| OUT-01 | Phase 48 | Pending |
+| OUT-02 | Phase 48 | Pending |
+| OUT-03 | Phase 48 | Pending |
+| SAFE-01 | Phase 49 | Pending |
+| SAFE-02 | Phase 49 | Pending |
+| SAFE-03 | Phase 49 | Pending |
+| DOC-01 | Phase 49 | Pending |
 
 **Coverage:**
 
 - v1.12 requirements: 25 total
-- Mapped to phases: 0
-- Unmapped: 25 ⚠️
+- Mapped to phases: 25
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-07-21*
-*Last updated: 2026-07-21 after v1.12 requirement definition*
+*Last updated: 2026-07-21 after v1.12 roadmap creation*
