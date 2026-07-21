@@ -1,82 +1,79 @@
 # Architecture Research
 
-**Domain:** Private observed eye geometry through an existing local-first facade
-**Researched:** 2026-07-16
-**Confidence:** HIGH for boundaries; MEDIUM for private support representation until Phase 41 planning
+**Domain:** Private observed face and semantic-region support through the existing local-first facade
+**Researched:** 2026-07-21
+**Confidence:** HIGH for package boundaries; MEDIUM for the local semantic resource until Phase 45 proves feasibility
 
 ## Recommended Architecture
 
 ```text
-BeautyParameters (10 new scalars; default zero)
-  -> BeautySDK geometry-required route
+BeautyParameters (7 new default-zero scalars)
+  -> existing BeautySDK geometry-required route
   -> VisionFaceDetector
-       availability + private frame-scoped eye contours/pupils
+       observed face contour + median line (mapped once)
+       optional local semantic-region request (only when needed)
   -> BeautyFaceGeometryAdapter
-       validated side-aware upper/lower/corner/pupil supports
+       validated canonical contour/centerline/submental/hairline support
   -> BeautyEffectResolver
-       normalization, caps, freshness, field-local eligibility
-  -> EyeWarpProvider
-       14 independent emissions (4 shipped + 10 new)
+       caps, freshness, per-field eligibility
+  -> named face-field emissions
+       FaceShapeWarpProvider: smooth / temple / cheekbone / basic double-chin
+       ChinWarpProvider: independent taper
+       region refinement: Pro double-chin / signed hairline
   -> provider-eligible conflict convergence
-  -> existing unified local warp
-  -> public image + redacted aggregate evidence
+  -> existing unified render/facade output
+  -> public image + fixed aggregate diagnostics
 ```
 
 ## Component Responsibilities
 
-| Component | Responsibility | v1.11 change |
-| --- | --- | --- |
-| `BeautyParameters` | Stable host-facing scalar contract | Add ten defaulted fields across all manual model seams; exact 38-to-48 compatibility. |
-| `BeautyDetection` observation | Selected face and landmark evidence | Carry validated package-only normalized eye contour/pupil values for the current request; never public or persisted. |
-| `VisionFaceDetector` | Vision request and coordinate conversion | Convert left/right eye and optional pupil points from face-bounds coordinates into the repository image-normalized convention with finite/bounds checks. |
-| `BeautyFaceGeometryAdapter` | Package observation to render support | Produce side-aware ordered contours, upper/lower subsets, corners, centers, and optional pupil anchors; no fabricated pupil. |
-| `EyeWarpProvider` | Field-specific vectors and eligibility | Expand from aggregate point output to fourteen named field emissions and sanitize each independently. |
-| Resolver/conflict pipeline | Effective strengths, warnings, metrics | Remove unsupported work before and after scaling so effective values equal emitted work. |
-| Renderer/helper | Public behavior evidence | Add isolated cases, eligibility-aware ROI/direction/independence checks, and ignored artifact containment. |
-
-## Architectural Patterns
-
-### Private Ephemeral Support
-
-Raw Vision points remain package-internal and request-scoped. They may flow from detection to geometry planning but must not appear in public models, errors, logs, metrics, serialized state, or Demo imports. This is a deliberate extension of the availability-only seam because gaze and symmetry cannot be evidenced honestly from symmetric proxies.
-
-### Side-Aware Canonicalization
-
-Vision points use a face-bounding-box coordinate system with a lower-left origin, while repository rendering uses its established image-normalized convention. Convert once, validate once, and canonicalize each eye into semantic upper/lower/inner/outer supports independent of input winding. Tests must cover orientation, left/right identity, and mirrored metadata.
-
-### Field-Local Provider Eligibility
-
-The provider owns named emissions for all fourteen eye fields. Missing pupils remove only `pupilSize` and `gazeCorrection`; malformed paired comparison removes only `eyeSymmetry`; valid contour siblings continue. After conflict scaling, any field whose displacement becomes ineligible is removed from totals, counts, metrics, warnings, and dispatch.
-
-### Correction Rather Than Fabrication
-
-`gazeCorrection` moves a validated pupil offset toward its eye center by a bounded fraction. `eyeSymmetry` moves only measured inter-eye differences toward a conservative midpoint. Neither control emits when measured deviation is absent, ambiguous, or outside plausible bounds.
-
-## Integration Boundaries
-
-| Boundary | Invariant |
+| Component | v1.12 responsibility |
 | --- | --- |
-| Public SDK ↔ detection | Scalar parameters trigger existing detection; no geometry type becomes public. |
-| Vision ↔ package observation | Coordinates are finite, normalized, side-aware, ephemeral, and independently optional. |
-| Observation ↔ adapter | Observed contours are preferred for new controls; zero-default new fields preserve all shipped proxy behavior. |
-| Adapter ↔ provider | Each field declares its exact support prerequisites. |
-| Provider ↔ resolver | Provider emissions are the source of eligibility before final evidence. |
-| Resolver ↔ public result | Only fixed codes, counts, scales, and aggregate summaries cross the facade. |
+| `BeautyParameters` | Add seven independent values everywhere the manual 48-field model is constructed, decoded, encoded, normalized, diffed, or reset. |
+| `BeautyDetection` observation | Carry optional package-only mapped contour, median line, and semantic-region descriptor for the current request only. |
+| `VisionFaceDetector` | Extract and map actual `faceContour`/`medianLine`; invoke semantic support only for nonzero dependent fields and never log raw values. |
+| `BeautyFaceGeometryAdapter` | Validate finite bounds, count, winding/order, apex, lateral bands, centerline, mask dimensions/confidence, and cross-support consistency. |
+| Face providers | Produce seven named emissions/operations with independent prerequisites and no reuse of existing field IDs. |
+| Resolver/conflict loop | Remove unsupported/provider-empty work before final totals, counts, scales, warnings, metrics, and dispatch. |
+| Renderer/helper | Prove visibility, locality, direction, independence, basic-vs-refined difference, no-face/no-mask no-op, dimensions, decoding, and ignored-gallery containment. |
+
+## Architectural Invariants
+
+### One Coordinate Conversion Boundary
+
+Vision face landmarks are normalized to the face bounding box. Compose them into image space, then use the existing `CoordinateMapper` exactly once. Reject non-finite, out-of-range, duplicate, undersized, side-inverted, or centerline-inconsistent support before effects see it.
+
+### Private Ephemeral Supports
+
+Contours and masks remain package-only, non-Codable, non-public, non-diagnostic, non-persistent, and request-scoped. Public results expose only fixed availability/reason codes and aggregate counts.
+
+### Region Feasibility Gate
+
+Before downstream phases claim `去双下巴 Pro` or `发际线`, Phase 45 must prove a local support source with license/provenance, bundle hash, supported-platform behavior, bounded memory/output, semantic fixture eligibility, and no network. Failure blocks those rows; it must not be papered over with a face-box proxy.
+
+### Field-Local Degradation
+
+- Missing observed contour removes contour-dependent new rows, not existing zero-default compatibility or face-agnostic effects.
+- Missing submental support removes double-chin fields only.
+- Missing hair/skin support removes `hairlineHeight` only.
+- Reused support is sign-preserving and conservatively scaled; stale support emits no dependent work.
+- Provider-empty fields are removed before final combined accounting.
 
 ## Suggested Build Order
 
-1. Public 48-field compatibility and private support representation.
-2. Ten independent provider semantics plus fourteen-field resolver integration.
-3. Public-facade renderer/helper/gallery evidence.
-4. Exact caps, exhaustive degradation/convergence, security boundary, and promotion.
+1. Exact 55-field contract plus observed face/region support feasibility and privacy boundaries.
+2. Four independent contour/chin geometry controls and named emissions.
+3. Basic/refined double-chin plus signed hairline local-region pipeline.
+4. Public-facade output matrix, semantic/locality comparisons, and ignored gallery.
+5. Final caps, exhaustive transitions/convergence, active-source/security/resource gate, exact promotion, and branch closeout.
 
 ## Sources
 
-- `ARCHITECTURE.md`, `DESIGN.md`, `SECURITY.md`, and `RELIABILITY.md` — owning repository boundaries.
-- `BeautyFaceObservation.swift`, `VisionFaceDetector.swift`, `BeautyFaceGeometryAdapter.swift`, and `EyeWarpProvider.swift` — current implementation seams.
-- [Apple `VNFaceLandmarks2D`](https://developer.apple.com/documentation/vision/vnfacelandmarks2d) — face-bounds-normalized eye and pupil regions.
-- [Apple Vision coordinate overview](https://developer.apple.com/documentation/vision) — normalized Vision coordinate convention.
+- `ARCHITECTURE.md`, `DESIGN.md`, `SECURITY.md`, and `RELIABILITY.md` — owning repository contracts.
+- `BeautyFaceObservation.swift`, `VisionFaceDetector.swift`, `BeautyFaceGeometryAdapter.swift`, `FaceShapeWarpProvider.swift`, and `GeometryConflictResolver.swift` — current integration seams.
+- [Apple `VNFaceLandmarks2D`](https://developer.apple.com/documentation/vision/vnfacelandmarks2d) — face contour, median line, and coordinate convention.
+- [Apple Vision](https://developer.apple.com/documentation/vision) — local requests, normalized geometry, and segmentation APIs.
+- [Apple `MLComputeUnits`](https://developer.apple.com/documentation/coreml/mlcomputeunits) — local compute selection if an approved model is required.
 
 ---
-*Architecture research for: Beauty v1.11 Eye Remaining Geometry Controls*
-*Researched: 2026-07-16*
+*Architecture research for: Beauty v1.12 Face Shape Remaining Capabilities*

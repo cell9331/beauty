@@ -1,102 +1,86 @@
 # Project Research Summary
 
 **Project:** Beauty
-**Domain:** Remaining local-first eye geometry controls
-**Researched:** 2026-07-16
-**Confidence:** HIGH for scope and boundaries; MEDIUM for final calibration
+**Domain:** Remaining local-first face-shape capabilities
+**Researched:** 2026-07-21
+**Confidence:** HIGH for exact scope, compatibility, and boundaries; MEDIUM for local semantic-region implementation until the first phase feasibility gate
 
 ## Executive Summary
 
-v1.11 can complete ten unresolved eye geometry rows without a new dependency, target, facade method, or render pass. The existing Swift/Vision/unified-warp stack is sufficient, but the current availability-only symmetric eye proxy is not sufficient for honest pupil, gaze, or symmetry behavior. The required architectural addition is package-internal, frame-scoped observed eye contour and optional pupil support derived from the existing Vision landmark request.
+v1.12 should complete exactly seven unresolved `脸型` rows: `面部流畅`, `太阳穴`, `颧骨`, `去双下巴`, `去双下巴 Pro`, `尖下巴`, and `发际线`. Four are bounded geometry problems that can extend the existing unified warp after the detector exposes actual private Vision face-contour and median-line points. The current adapter's synthetic seven-point face-box contour is not sufficient evidence for these new claims.
 
-The milestone should include `眼高`, `长度`, `提肌`, `眼瞳大小`, `眼神矫正`, `眼睑下至`, `倾斜`, `内眼角`, `外眼角`, and `对称`. It should exclude `去脂` and `祛红血丝`, which belong to retouch/color ownership. The largest risks are coordinate/side inversion, blink-inaccurate pupil input, aliases between similar controls, overaggressive automatic correction, and accounting that claims work the provider did not emit.
+Double-chin refinement and hairline movement require semantic region support that Apple face landmarks do not expose. Apple person segmentation is useful context but does not distinguish hair from forehead or a submental fold. The milestone must therefore begin with a fail-closed local-resource feasibility gate. Only a bundled, licensed, versioned, hash-verified, no-network support implementation may unlock those rows; otherwise they remain blocked instead of being simulated by a coarse proxy.
+
+The public contract expands from 48 to 55 stored fields, preserves zero-default legacy JSON/preset/source compatibility, and keeps all contours/masks request-scoped and package-internal. “Pro” is an independent higher-fidelity local refinement control, never payment or entitlement state.
 
 ## Key Findings
 
-### Recommended Stack
+### Stack Additions
 
-- Keep SwiftPM, Apple Vision, Core Image/Metal-backed output, the existing unified local warp, XCTest, and the bounded Python helper pattern.
-- Add no dependency or public geometry API.
-- Extend only the private detection-to-effects seam with validated request-scoped eye support.
+- Keep SwiftPM, Apple Vision, the existing unified warp, Core Image/Metal-backed output, XCTest, and bounded Python helpers.
+- Extend the existing Vision request seam with actual face contour and median line.
+- Permit a first-party bundled Core ML/Vision semantic support resource only after provenance, license, hash, platform, memory, and fixture gates pass.
+- Add no third-party beauty SDK, runtime model download, cloud service, public geometry type, or face-only render pass.
 
-### Expected Features
+### Feature Table Stakes
 
-**Must have:** ten independent default-zero public controls, exact 38-to-48 compatibility, observed contour/pupil support, fourteen named eye emissions, isolated facade output, exact safety/degradation, and redacted diagnostics.
+- Seven independent default-zero public controls; `hairlineHeight` signed, the other six positive-only.
+- Four distinct observed-contour transforms, basic and refined double-chin behavior, and signed hairline movement.
+- Field-local missing/malformed/reused/stale degradation and provider-eligible combined accounting.
+- Isolated decoded public-facade output, direction/locality/independence evidence, safe no-ops, and ignored-gallery containment.
+- Exact seven-row promotion and SDK-core `脸型` branch closeout without device/commercial/release claims.
 
-**Defer:** eye-fat removal, redness removal, manual gaze redirection, Demo UI, device/commercial/performance/packaging/launch claims.
+### Watch Out For
 
-### Architecture Approach
-
-Detection converts Vision eye contours and optional pupils into a private canonical coordinate representation. The adapter derives side-aware supports; the provider emits each of fourteen eye fields independently; the resolver removes unsupported work before and after conflict scaling; the unified warp renders; the facade exposes only images and aggregate redacted evidence.
-
-### Critical Pitfalls
-
-1. Proxy-only gaze/symmetry evidence — require observed support.
-2. Origin, winding, or side inversion — canonicalize and lock conversion tests.
-3. Blink-implausible pupils — validate and fail only pupil-dependent fields.
-4. Vector aliases — prove full source/target displacement differences.
-5. Correction overreach — use dead zones and bounded reduction of measured deviation.
-6. Effective/emitted mismatch — use named emissions and bounded convergence.
+1. Synthetic face-box proxies presented as observed contour behavior.
+2. Aliasing new rows to the five shipped face fields.
+3. Treating a person matte as hairline/submental semantics.
+4. Letting a Pro badge create entitlement or network scope.
+5. Region leakage into protected facial/background areas.
+6. Effective-strength metrics disagreeing with final emitted work.
+7. Deferring model provenance and license review until implementation closeout.
 
 ## Implications for Roadmap
 
-### Phase 41: Public Contract and Observed Eye Support
-**Rationale:** Every advanced control depends on compatibility-safe scalar semantics and honest private support.
-**Delivers:** Exact 48-field contract, Vision contour/pupil capture, canonical conversion, validation, and privacy boundary.
+### Phase 45: Public Contract and Local Face Support
 
-### Phase 42: Independent Eye Geometry and Pipeline Integration
-**Rationale:** Provider semantics must exist and be field-locally eligible before image evidence is meaningful.
-**Delivers:** Ten distinct transforms/corrections, fourteen named emissions, resolver/conflict/facade routing, and synthetic geometry evidence.
+Deliver the exact 55-field compatibility contract, actual observed contour/median-line mapping, support validation, private lifecycle, and semantic-resource feasibility gate. No downstream mask-dependent row may proceed on a coarse proxy.
 
-### Phase 43: Public-Facade Eye Geometry Output Evidence
-**Rationale:** Product rows require decoded saved-output visibility, direction, independence, correction, no-face, and artifact evidence.
-**Delivers:** Eleven isolated cases (signed tilt has two directions), derived 55-case matrix and 385 files if the seven-fixture inventory is unchanged, eligibility-aware strict checks, and ignored gallery.
+### Phase 46: Independent Contour and Chin Geometry
 
-### Phase 44: Eye Geometry Safety and Ledger Closeout
-**Rationale:** Final caps and promotion must follow output calibration and exhaustive transition evidence.
-**Delivers:** All-fourteen degradation, exact provider-eligible convergence, boundary checker, ten-row promotion, and owner synchronization.
+Implement `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, and `chinTaper` as named, independently eligible emissions through resolver/conflict/facade routing. Lock vector/locality distinction from all shipped face fields.
 
-### Phase Ordering Rationale
+### Phase 47: Double-Chin and Hairline Region Pipeline
 
-- Observed support precedes correction semantics so gaze/symmetry are not fabricated.
-- Provider eligibility precedes renderer claims so output cases cannot borrow sibling work.
-- Final cap and ledger promotion follow strict decoded output and exhaustive safety evidence.
+Implement basic `doubleChinReduction`, distinct mask-contained `doubleChinRefinement`, and signed `hairlineHeight` using the approved local support. Lock containment, field-local failure, and no-network/resource boundaries.
 
-### Research Flags
+### Phase 48: Public-Facade Face Output Evidence
 
-- **Phase 41:** Deep planning should lock coordinate conversion, side canonicalization, support storage ceilings, and no-persistence enforcement.
-- **Phase 42:** Deep planning should define exact correction dead zones and symmetry dimensions without identity mirroring.
-- **Phase 43:** Planning must inspect actual fixture pupil/contour eligibility before freezing comparison counts.
-- **Phase 44:** Use established v1.9/v1.10 boundary-checker and convergence patterns.
+Add isolated cases for every control and both hairline directions; verify decoded same-dimension output, fixed-region visibility, direction, independence, basic-versus-refined distinction, no-face/no-mask no-ops, and ignored gallery.
+
+### Phase 49: Face Safety and Branch Closeout
+
+Finalize caps/dead zones, all new and existing face-field transitions, provider-eligible multi-domain convergence, redacted diagnostics, active-source/security/resource/artifact gates, exact seven-row promotion, and branch-level `脸型` completion.
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
 | --- | --- | --- |
-| Stack | HIGH | Existing stack and official Vision regions are sufficient. |
-| Features | HIGH | Repository ledger provides exact remaining rows and exclusions. |
-| Architecture | MEDIUM-HIGH | Boundary is clear; exact private representation belongs to Phase 41 planning. |
-| Pitfalls | HIGH | Official blink caveat and prior provider/convergence failures give concrete gates. |
-
-### Gaps to Address
-
-- Actual portrait fixture pupil availability and measurable deviation must be inventoried before Phase 43 freezes strict eligible-pair counts.
-- Final numeric caps, correction dead zones, and ROI thresholds remain provisional until visible output evidence.
-- Physical-device and commercial-naturalness validation remain explicitly outside this milestone.
+| Exact scope | HIGH | Repository ledger names exactly seven unresolved rows. |
+| Public compatibility | HIGH | Established v1.9-v1.11 defaulted-field pattern. |
+| Observed contour geometry | HIGH | Official Vision contour/median-line support and existing mapper seam. |
+| Semantic regions | MEDIUM | Boundary is clear; an acceptable local support resource must still be proven. |
+| Output/safety gating | HIGH | Existing renderer, helper, convergence, and promotion-checker patterns are reusable. |
 
 ## Sources
 
-### Primary
-
-- [Apple `VNFaceLandmarks2D`](https://developer.apple.com/documentation/vision/vnfacelandmarks2d) — eye contours, pupils, normalization.
-- [Apple `VNFaceLandmarkRegion2D`](https://developer.apple.com/documentation/vision/vnfacelandmarkregion2d) — normalized point arrays.
-- [Apple pupil documentation](https://developer.apple.com/documentation/vision/vnfacelandmarks2d/leftpupil) — blink inaccuracy caveat.
-- Repository source and root contracts — current model, detector, adapter, provider, facade, safety, privacy, and ledger behavior.
-
-### Secondary
-
-- Archived v1.6, v1.9, and v1.10 planning/evidence — established eye output and provider-owned convergence patterns.
+- `.planning/research/STACK.md`
+- `.planning/research/FEATURES.md`
+- `.planning/research/ARCHITECTURE.md`
+- `.planning/research/PITFALLS.md`
+- [Apple `VNFaceLandmarks2D`](https://developer.apple.com/documentation/vision/vnfacelandmarks2d)
+- [Apple person segmentation](https://developer.apple.com/documentation/vision/vngeneratepersonsegmentationrequest)
+- [Apple `MLModelConfiguration`](https://developer.apple.com/documentation/coreml/mlmodelconfiguration)
 
 ---
-*Research completed: 2026-07-16*
-*Ready for roadmap: yes*
+*Research summary for: Beauty v1.12 Face Shape Remaining Capabilities*

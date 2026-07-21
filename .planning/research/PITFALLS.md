@@ -1,101 +1,78 @@
 # Pitfalls Research
 
-**Domain:** Advanced eye geometry in a privacy-sensitive local iOS SDK
-**Researched:** 2026-07-16
+**Domain:** Remaining face-shape geometry and local semantic regions
+**Researched:** 2026-07-21
 **Confidence:** HIGH
 
 ## Critical Pitfalls
 
-### 1. Claiming correction from symmetric proxy geometry
+### 1. Synthetic face-box geometry masquerades as observation
 
-**Failure:** Gaze or symmetry tests pass although no observed offset/asymmetry exists.
-**Prevention:** Require private observed contour/pupil support and synthetic asymmetric fixtures at provider/facade boundaries; proxies may remain only for shipped zero-default compatibility.
-**Phase:** 41-42.
+**Failure:** New controls pass against the adapter's current seven-point proxy although no real contour was mapped.
+**Prevention:** Add actual private Vision contour/median-line payloads, validate them, and require observed-support fixtures for every new geometry row.
+**Phase:** 45.
 
-### 2. Coordinate or side inversion
+### 2. Existing fields are relabeled as remaining tools
 
-**Failure:** Left/right, upper/lower, inner/outer, or rotation direction reverses because Vision and renderer origins/winding differ.
-**Prevention:** One canonical conversion with exact fixture tests for orientation, mirroring, side identity, corners, and signed tilt.
-**Phase:** 41.
+**Failure:** `faceSlim`, `jawSlim`, `faceVShape`, or `chinLength` evidence is reused for smooth contour, cheekbone, double chin, or pointed chin.
+**Prevention:** Seven new public values, named emissions, vector/locality comparisons, and active-source alias scans.
+**Phase:** 45-48.
 
-### 3. Blink-inaccurate pupil input survives
+### 3. Person matte is mistaken for hairline or double-chin segmentation
 
-**Failure:** Pupil/gaze controls warp an eyelid or jump toward an implausible pupil point. Apple documents that pupil location can be inaccurate during blinking.
-**Prevention:** Validate pupil containment, distance from contour center, finite bounds, and paired plausibility; fail only pupil-dependent fields.
-**Phase:** 41-42.
+**Failure:** A person/background mask is treated as a hair/skin boundary or submental fold.
+**Prevention:** Require semantic fixture evidence for the exact support class; block promotion if the support source cannot distinguish it.
+**Phase:** 45 and 47.
 
-### 4. New controls alias shipped vectors
+### 4. “Pro” silently becomes commercial behavior
 
-**Failure:** Height is radial size, length is distance, upper-lid lift is tail lift, or corners are generic length.
-**Prevention:** Lock source subsets and full displacement vectors; compare each new control to nearest shipped/new neighbors and both signed tilt directions.
-**Phase:** 42-43.
+**Failure:** Account, entitlement, payment, remote inference, or gated code appears merely because the reference row has a Pro badge.
+**Prevention:** Use independent neutral `doubleChinRefinement` semantics; scan for commercial/network paths and keep pricing out of SDK behavior.
+**Phase:** all, final gate in 49.
 
-### 5. Automatic correction becomes identity replacement
+### 5. Region effects alter protected surroundings
 
-**Failure:** Symmetry mirrors one eye or gaze correction recenters every pupil aggressively, changing identity and producing unnatural output.
-**Prevention:** Correct only measured deviation by a capped fraction, preserve a dead zone, and reject implausible inputs.
-**Phase:** 42 and final calibration in 44.
+**Failure:** Hairline warps eyes/eyebrows or double-chin refinement changes lips, neck clothing, background, or watermark.
+**Prevention:** Fixed containment/extent/locality checks, mask confidence thresholds, bounded feathering, and exact no-op outside eligible regions.
+**Phase:** 47-48.
 
-### 6. Effective strengths disagree with emitted work
+### 6. Coordinate order and mirror direction reverse semantics
 
-**Failure:** Unsupported or final-scale-empty fields remain in totals, warnings, metrics, or active domains because another eye field emitted points.
-**Prevention:** Named fourteen-field emissions, preflight and post-scale sanitization, and bounded monotonic eye/nose/mouth convergence.
-**Phase:** 42 and 44.
+**Failure:** Temple/cheek sides or signed hairline direction flip under orientation/mirroring.
+**Prevention:** One mapper boundary; canonical centerline/contour order; orientation/mirror tests; direct positive/negative output evidence.
+**Phase:** 45 and 48.
 
-### 7. Raw eye geometry leaks through diagnostics or state
+### 7. Provider accounting claims unsupported work
 
-**Failure:** Biometric-adjacent points, eye side, paths, or provider details become public, logged, serialized, or imported by Demo.
-**Prevention:** Package-only request-scoped support, fixed category codes, aggregate-only metrics, source scans, and no public support types.
-**Phase:** 41 and 44.
+**Failure:** Missing masks or empty vectors remain in effective strengths, totals, counts, warnings, or metrics because sibling face work exists.
+**Prevention:** Named seven-field emissions/operations, preflight and post-scale sanitization, monotonic bounded convergence, and exact final-emission assertions.
+**Phase:** 46-49.
 
-## Technical Debt Patterns
+### 8. Model/resource trust is deferred until the end
 
-| Shortcut | Immediate benefit | Long-term cost | Acceptable? |
-| --- | --- | --- | --- |
-| Add ten fields but leave aggregate provider points | Less code | Cannot prove field-local degradation | Never. |
-| Reuse `eyeSize`/`eyeTailLift` evidence | Fewer cases | False product promotion | Never. |
-| Make pupils globally required | Simple guard | Disables contour-only controls and shipped behavior | Never. |
-| Persist Vision points for debugging | Easier inspection | Privacy and lifecycle expansion | Never. |
-| Tune caps before decoded output evidence | Fast constants | Unfounded naturalness contract | Provisional only until Phase 44. |
-
-## Performance and Security Traps
-
-| Trap | Symptom | Prevention |
-| --- | --- | --- |
-| Duplicate landmark requests | Increased still/realtime cost | Reuse the existing single face-landmark request and selected observation. |
-| Unbounded point arrays | Excess memory/work from malformed injection | Enforce small per-region ceilings and finite normalized coordinates. |
-| Per-point diagnostic output | Raw geometry leakage | Fixed codes plus aggregate counts only. |
-| Tracked output gallery | Repository bloat/licensing exposure | Existing ignore policy and tracked-artifact gate. |
+**Failure:** Implementation depends on an unlicensed, mutable, oversized, or runtime-downloaded asset.
+**Prevention:** Make provenance, license, version, hash, package placement, supported platforms, and failure behavior Phase 45 exit criteria.
+**Phase:** 45.
 
 ## “Looks Done But Isn’t” Checklist
 
-- [ ] Exact 48-field storage and complete legacy 38-key decode are both proven.
-- [ ] All ten controls have independent provider and facade evidence.
-- [ ] Pupil-missing/blink-implausible cases preserve contour-only siblings.
-- [ ] Positive/negative tilt is visibly and numerically distinct from tail lift.
-- [ ] Gaze/symmetry no-op on neutral support and reduce only measured deviation.
-- [ ] Reused/stale behavior covers all fourteen eye fields.
-- [ ] Combined totals/counts/scales equal final provider emissions.
-- [ ] Exactly ten geometry rows are promoted; `去脂`, `祛红血丝`, and branch-level `眼睛` remain partial.
-
-## Pitfall-to-Phase Mapping
-
-| Pitfall | Prevention phase | Verification |
-| --- | --- | --- |
-| Proxy correction | 41-42 | Observed-support contract and asymmetric synthetic evidence. |
-| Coordinate inversion | 41 | Exact conversion, side, orientation, and mirror tests. |
-| Pupil inaccuracy | 41-42 | Missing/outside/degenerate/blink-like rejection with sibling survival. |
-| Aliasing | 42-43 | Full-vector comparisons and fixed eye ROI output families. |
-| Overcorrection | 42-44 | Dead-zone, monotonic reduction, exact caps, visual thresholds. |
-| Accounting drift | 42-44 | Fourteen-field emissions and exact converged arithmetic. |
-| Geometry leakage | 41-44 | Public/SPI, serialization, log/metric, Demo-import, and active-source scans. |
+- [ ] Exact 55-field model and legacy 48-field neutrality both pass.
+- [ ] Actual observed contour/median line is used for every new geometry claim.
+- [ ] Basic and refined double-chin controls produce distinct eligible behavior.
+- [ ] Hairline positive/negative directions are direct, local, and mask-contained.
+- [ ] Missing/malformed/reused/stale support degrades only dependent fields.
+- [ ] All seven controls are isolated through the public facade and decoded output.
+- [ ] Final totals/counts/scales equal provider-emitted work after removals.
+- [ ] Raw supports, asset paths, model internals, and generated images do not leak.
+- [ ] Exactly seven rows and branch-level `脸型` are promoted; no readiness overclaim is made.
 
 ## Sources
 
-- [Apple `leftPupil`](https://developer.apple.com/documentation/vision/vnfacelandmarks2d/leftpupil) and [rightPupil](https://developer.apple.com/documentation/vision/vnfacelandmarks2d/rightpupil) — pupil locations may be inaccurate while blinking.
-- `SECURITY.md` — no landmark persistence or public raw geometry.
-- v1.9/v1.10 boundary and convergence evidence — provider-owned fail-closed patterns.
+- [Apple `faceContour`](https://developer.apple.com/documentation/vision/vnfacelandmarks2d/facecontour) — exact cheek-to-chin boundary.
+- [Apple person segmentation](https://developer.apple.com/documentation/vision/vngeneratepersonsegmentationrequest) — person/background matte scope and quality trade-off.
+- `SECURITY.md` — local-first and resource-trust boundary.
+- `.planning/milestones/v1.5-phases/28-*` — previous anti-alias and promotion requirements.
+- v1.9-v1.11 provider/convergence evidence — prior failures and proven gating patterns.
 
 ---
-*Pitfalls research for: Beauty v1.11 Eye Remaining Geometry Controls*
-*Researched: 2026-07-16*
+*Pitfalls research for: Beauty v1.12 Face Shape Remaining Capabilities*

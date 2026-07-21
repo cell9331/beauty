@@ -1,58 +1,52 @@
 # Stack Research
 
-**Domain:** Local-first iOS SDK eye geometry controls
-**Researched:** 2026-07-16
-**Confidence:** HIGH
+**Domain:** Local-first iOS SDK remaining face-shape capabilities
+**Researched:** 2026-07-21
+**Confidence:** HIGH for existing geometry stack; MEDIUM for submental/hairline support until a licensed local resource passes the feasibility gate
 
 ## Recommended Stack
 
-### Core Technologies
-
-| Technology | Version | Purpose | Why Recommended |
+| Technology | Version / baseline | Purpose | Decision |
 | --- | --- | --- | --- |
-| Swift / SwiftPM | Swift tools 6.0; observed Swift 6.3.3 | Public model, detector seam, providers, tests | Existing package and concurrency boundaries already own every required capability. |
-| Apple Vision | iOS 17 deployment baseline | Eye contours and optional pupil locations | `VNFaceLandmarks2D` exposes left/right eye outlines and left/right pupil points in face-bounds-normalized coordinates. |
-| Existing unified local warp | Repository implementation | Contour, lid, corner, pupil, correction, and symmetry vectors | Preserves the single geometry pipeline and public `BeautySDK` facade. |
-| Core Image / Metal-backed render path | Existing platform stack | Still-image output evidence | Already produces deterministic same-dimension facade output without a new render pass. |
-
-### Supporting Tools
-
-| Tool | Purpose | When to Use |
-| --- | --- | --- |
-| XCTest | Contract, geometry, degradation, facade, and boundary evidence | Every phase; table-driven for scalar contracts and focused tests for vector semantics. |
-| Python 3 standard library | Strict decoded output and gallery checks | Phase 43; keep the helper self-contained and bounded. |
-| Existing promotion checker pattern | Active-source/privacy/artifact fail-closed gate | Phase 44 before any ledger row changes. |
+| Swift / SwiftPM | Existing Swift tools 6.0 package; observed Swift 6.3.3 | Public model, private support, providers, tests | Keep. No package split. |
+| Apple Vision face landmarks | Existing iOS 17+ baseline | Observed cheek-to-chin contour and median-line evidence | Extend the current request once; map private points through `CoordinateMapper`. |
+| Core ML + Vision request seam | Existing Apple frameworks | Optional first-party local hair/skin/submental semantic mask | Permit only a repository-approved bundled model with provenance, license, hash, finite output bounds, and no runtime download. |
+| Existing unified local warp | Repository implementation | Smooth contour, temple, cheekbone, pointed chin, basic lower-face shaping | Extend named face-field emissions; do not add a face-only render pass. |
+| Existing Core Image / Metal-backed output | Repository implementation | Mask-contained refinement and public-facade saved output | Reuse same-dimension render/output path and bounded helper pattern. |
+| XCTest + Python standard library | Existing tooling | Contract, support, degradation, strict output, gallery, boundary gates | Keep helpers self-contained and generated artifacts ignored. |
 
 ## Stack Decision
 
-No package, target, third-party SDK, model download, network service, or new public result type is needed. The one material stack change is how existing Vision results are represented internally: v1.11 needs private, frame-scoped normalized eye-contour and pupil support rather than availability-only symmetric proxies for advanced correction fields.
+Four rows (`面部流畅`, `太阳穴`, `颧骨`, `尖下巴`) can build on actual Vision face contour plus median-line evidence and the existing unified warp. The current repository only records face-contour availability and then synthesizes a seven-point contour from the face box; v1.12 must add private observed face support before claiming these rows independently.
 
-## What NOT to Use
+Three rows (`去双下巴`, `去双下巴 Pro`, `发际线`) need region evidence that Apple face landmarks do not provide. Apple documents `faceContour` as cheek-to-chin only. Person segmentation isolates a person from background, not hair from forehead or a submental fold. Therefore these rows require a feasibility gate for a local, repository-approved semantic support implementation. A fabricated face-box region, runtime download, remote API, or unlicensed model is not acceptable completion evidence.
 
-| Avoid | Why | Use Instead |
+## What Not to Add
+
+| Avoid | Why | Use instead |
 | --- | --- | --- |
-| Third-party face/beauty SDK | Adds privacy, licensing, binary, and supply-chain scope | Apple Vision plus existing package-owned warp. |
-| Core ML gaze model | A new model/resource/runtime contract is not required for bounded center correction | Validate pupil position relative to its observed eye contour. |
-| Persisted landmarks or public geometry types | Expands biometric-adjacent data exposure | Package-internal, frame-scoped value support consumed before public results. |
-| Deterministic symmetric proxy points for gaze/symmetry evidence | Cannot represent an observed offset or asymmetry | Actual private contour/pupil points with strict validation. |
-| New eye-only render pass | Splits conflict accounting and output behavior | Existing unified local warp and facade route. |
+| Third-party beauty SDK or cloud retouch | Violates local-first, supply-chain, and product ownership boundaries | Apple frameworks plus repository-owned providers/resources. |
+| Public/Codable raw contour or masks | Expands biometric-adjacent persistence and diagnostics | Request-scoped package-only support values. |
+| Alias new rows to `faceSlim`, `jawSlim`, `faceVShape`, or `chinLength` | Would borrow shipped evidence and make seven false product claims | Independent public scalars and named provider emissions. |
+| Treat person matte as a hairline/submental semantic mask | It only separates a person from background | Prove exact semantic eligibility or fail the feasibility gate. |
+| Runtime model download | Adds network, cache, integrity, versioning, and privacy behavior | Bundled, versioned, hash-verified local resource only. |
+| Tracked generated galleries | Bloats repository and may retain sensitive inputs | Existing ignored output/gallery roots plus artifact scans. |
 
-## Version Compatibility
+## Compatibility Contract
 
-| Component | Compatible With | Notes |
-| --- | --- | --- |
-| `BeautySDK` package | iOS 17+, macOS 14+ | Preserve current `Package.swift` platforms and tools version. |
-| Legacy public model | Exact 38 stored fields | Missing ten v1.11 keys must decode to zero; new inventory becomes 48 stored fields = 47 numeric plus `filterId`. |
-| Existing presets | Current bundled JSON | Leave payloads textually unchanged; missing keys prove neutral compatibility. |
-| Existing eye fields | `eyeSize`, `eyeDistance`, `eyeYPosition`, `eyeTailLift` | Zero-default new fields must not change their vectors, caps, or evidence. |
+- Preserve iOS 17+ and macOS 14+ package platforms unless a separately approved resource forces a change.
+- Expand the exact stored model from 48 to 55 fields: 54 numeric fields plus `filterId`.
+- Keep all seven new values zero by default; legacy 48-field JSON and bundled preset files remain neutral without textual edits.
+- `hairlineHeight` is signed; the other six public controls are positive-only.
+- `去双下巴 Pro` maps to a product-neutral independent refinement control, not entitlement or pricing state.
 
 ## Sources
 
-- [Apple `VNFaceLandmarks2D`](https://developer.apple.com/documentation/vision/vnfacelandmarks2d) — eye contours, pupil regions, and face-bounds-normalized coordinates.
-- [Apple `VNFaceLandmarkRegion2D`](https://developer.apple.com/documentation/vision/vnfacelandmarkregion2d) — normalized point arrays and point counts.
-- [Apple `leftPupil`](https://developer.apple.com/documentation/vision/vnfacelandmarks2d/leftpupil) — optional pupil location and documented blink inaccuracy.
-- `BeautySDK/Package.swift`, `EyeWarpProvider.swift`, `VisionFaceDetector.swift`, and `BeautyFaceGeometryAdapter.swift` — current repository stack and integration seams.
+- [Apple `VNFaceLandmarks2D`](https://developer.apple.com/documentation/vision/vnfacelandmarks2d) — normalized regions, face contour, and median line.
+- [Apple `faceContour`](https://developer.apple.com/documentation/vision/vnfacelandmarks2d/facecontour) — contour covers left cheek through chin to right cheek, not hairline or submental semantics.
+- [Apple person segmentation](https://developer.apple.com/documentation/vision/vngeneratepersonsegmentationrequest) — person matte capability and quality-level trade-off.
+- [Apple `MLModelConfiguration`](https://developer.apple.com/documentation/coreml/mlmodelconfiguration) — local model configuration and compute-unit selection.
+- `BeautyFaceObservation.swift`, `VisionFaceDetector.swift`, `BeautyFaceGeometryAdapter.swift`, `FaceShapeWarpProvider.swift`, and `SECURITY.md` — current repository seams and boundaries.
 
 ---
-*Stack research for: Beauty v1.11 Eye Remaining Geometry Controls*
-*Researched: 2026-07-16*
+*Stack research for: Beauty v1.12 Face Shape Remaining Capabilities*
