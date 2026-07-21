@@ -26,7 +26,7 @@
 
 ## 3. Active
 
-No active execution plan. Milestone v1.12 `Face Shape Remaining Capabilities` is initialized with 25 requirements across Phases 45-49; the next workflow is `$gsd-discuss-phase 45` or `$gsd-plan-phase 45`.
+Milestone v1.12 autonomous execution is active from Phase 45. After the semantic-resource feasibility blocker, the user selected reduced scope: 18 requirements across Phases 45-48 for four contour-driven rows; three semantic-region rows remain future.
 
 ## 4. Completed
 
@@ -46,6 +46,16 @@ Outcome:
 - v1.12 targets exactly `面部流畅`, `太阳穴`, `颧骨`, `去双下巴`, `去双下巴 Pro`, `尖下巴`, and `发际线`, with independent product-neutral semantics and no entitlement interpretation of `Pro`.
 - Phase 45 must prove an approved bundled local semantic support implementation before mask-dependent rows can proceed; person/background matte or a synthetic face-box region is not accepted as hairline/submental evidence.
 - Demo UI, network/cloud, account/payment, device/commercial/performance/packaging/shipping/launch claims remain outside this milestone; next action is Phase 45 discussion or planning.
+
+### C-2026-07-21-v1-12-semantic-resource-rescope
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-21 |
+| Scope | Rescoped v1.12 after autonomous Phase 45 scouting found no approved local semantic model/resource metadata or clean-clone annotated fixture evidence. |
+| Decision | User selected option 2: implement only `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴`; defer `去双下巴`, `去双下巴 Pro`, and `发际线`. |
+| Requirements | Reduced from 25 to 18 requirements and from Phases 45-49 to Phases 45-48; all 18 map exactly once. |
+| Boundary | No third-party semantic model, person-matte proxy, face-box semantic proxy, Demo UI, network/cloud, entitlement, or readiness expansion. Branch-level `脸型` remains `partial`. |
 
 ### C-2026-07-19-phase-44-eye-geometry-safety-ledger-closeout
 

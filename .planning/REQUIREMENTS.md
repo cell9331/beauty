@@ -1,6 +1,7 @@
 # Requirements: Beauty v1.12 Face Shape Remaining Capabilities
 
 **Defined:** 2026-07-21
+**Rescoped:** 2026-07-21 after the semantic-resource feasibility blocker
 **Core Value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
 
 ## v1.12 Requirements
@@ -10,17 +11,13 @@
 - [ ] **FACE-07**: An SDK integrator can request independent positive-only smooth-contour adjustment through `faceContourSmooth`, with zero-default source and Codable compatibility.
 - [ ] **FACE-08**: An SDK integrator can request independent positive-only temple fullness through `templeFullness`, without aliasing `faceSmall` or `faceSlim`.
 - [ ] **FACE-09**: An SDK integrator can request independent positive-only cheekbone narrowing through `cheekboneSlim`, without borrowing whole-cheek slimming evidence.
-- [ ] **FACE-10**: An SDK integrator can request independent positive-only basic double-chin reduction through `doubleChinReduction`, without aliasing `jawSlim`.
-- [ ] **FACE-11**: An SDK integrator can request independent positive-only refined double-chin treatment through `doubleChinRefinement`; the capability carries no payment, entitlement, account, or remote-service semantics.
 - [ ] **FACE-12**: An SDK integrator can request independent positive-only chin taper through `chinTaper`, without changing signed `chinLength` semantics.
-- [ ] **FACE-13**: An SDK integrator can request signed hairline-height adjustment through `hairlineHeight`, with positive and negative directions preserved end to end.
 
 ### Private Face Support
 
 - [ ] **SUPP-01**: New contour-dependent fields use actual Vision face-contour and median-line points mapped once into image-normalized coordinates, not the legacy synthetic face-box proxy.
 - [ ] **SUPP-02**: Observed contour and centerline support is canonicalized and rejected when non-finite, out of bounds, duplicate, undersized, side-inverted, or internally inconsistent.
-- [ ] **SUPP-03**: Mask-dependent fields use a bundled local semantic support implementation whose license, provenance, version, hash, supported platforms, bounded output, and no-network behavior are verified before use.
-- [ ] **SUPP-04**: Contours and masks remain request-scoped, package-internal, non-Codable, non-public, non-persistent, and absent from logs, metrics, errors, and Demo imports.
+- [ ] **SUPP-04**: Observed support remains request-scoped, package-internal, non-Codable, non-public, non-persistent, and absent from logs, metrics, errors, and Demo imports.
 
 ### Contour Geometry
 
@@ -29,44 +26,42 @@
 - [ ] **GEOM-03**: Cheekbone output applies bounded mid-lateral inward movement that is spatially distinct from whole-cheek slimming and jaw narrowing.
 - [ ] **GEOM-04**: Chin-taper output narrows adjacent lower-contour points toward the apex without lengthening or shortening the chin.
 
-### Local Region Effects
-
-- [ ] **REGN-01**: Basic double-chin reduction produces bounded lower-contour/submental behavior only when its required lower-face support is eligible.
-- [ ] **REGN-02**: Refined double-chin treatment produces a mask-contained result distinguishable from basic reduction and is a no-op when refined semantic support is unavailable.
-- [ ] **REGN-03**: Hairline-height output moves an eligible hair/skin boundary in both signed directions while preserving pixels outside the bounded hairline region.
-
 ### Public Output Evidence
 
-- [ ] **OUT-01**: The public `BeautySDK` facade has isolated renderer cases for all seven controls, including both hairline directions and distinct basic-versus-refined double-chin behavior.
-- [ ] **OUT-02**: A bounded strict helper verifies decoded same-dimension output, fixed-region visibility, locality, direction, and independence across the committed fixture matrix.
-- [ ] **OUT-03**: No-face, missing-contour, missing-mask, and ineligible-region cases remain safe; generated output and galleries are ignored, untracked, and descriptor-safe.
+- [ ] **OUT-01**: The public `BeautySDK` facade has one isolated renderer case for each of the four new controls, with no case borrowing a shipped face field.
+- [ ] **OUT-02**: A bounded strict helper verifies decoded same-dimension output, fixed-region visibility, locality, and independence across the established fixture matrix.
+- [ ] **OUT-03**: No-face, missing-contour, and malformed-contour cases remain safe; generated output and galleries are ignored, untracked, and descriptor-safe.
 
-### Safety and Closeout
+### Safety and Scoped Closeout
 
-- [ ] **SAFE-01**: All seven fields have exact final caps or dead zones plus field-local no-face, malformed, missing, reused, stale, and provider-empty transition evidence.
+- [ ] **SAFE-01**: All four fields have exact final caps or dead zones plus field-local no-face, malformed, missing, reused, stale, and provider-empty transition evidence.
 - [ ] **SAFE-02**: Combined face, eye, nose, and mouth geometry converges monotonically on provider-eligible emitted work, with final strengths, totals, counts, scales, warnings, metrics, and dispatch in exact agreement.
-- [ ] **SAFE-03**: Active-source privacy, model/resource trust, network/commercial exclusion, diagnostics redaction, public inventory, Demo import, and generated-artifact gates fail closed with no unresolved high-severity finding.
-- [ ] **DOC-01**: Exactly the seven remaining `脸型` rows and branch-level `脸型` become `implemented` only after all contract, support, output, safety, security, and owner-document evidence passes.
+- [ ] **SAFE-03**: Active-source privacy, diagnostics redaction, public inventory, Demo import, network/commercial exclusion, and generated-artifact gates fail closed with no unresolved high-severity finding.
+- [ ] **DOC-01**: Exactly `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴` become `implemented`; `去双下巴`, `去双下巴 Pro`, `发际线`, and branch-level `脸型` remain future or partial with the blocker recorded.
 
 ## Future Requirements
 
+### Semantic-Region Face Tools
+
+- Basic and refined double-chin reduction require a licensed, versioned, hash-verified local semantic support implementation plus clean-clone representative fixtures.
+- Signed hairline adjustment requires a validated hair/skin boundary implementation and reproducible containment evidence.
+
 ### Product and Release Evidence
 
-- **REL-01**: Physical-device camera/Vision parity is measured for the new contour and semantic-region support.
-- **REL-02**: Commercial visual review and optimized performance profiling approve the new effects for distribution.
-- **UI-01**: Demo or host-app controls expose the seven capabilities through a separately scoped public UI contract.
+- Physical-device camera/Vision parity remains future.
+- Commercial visual review, optimized profiling, and Demo UI remain separately scoped.
 
 ## Out of Scope
 
 | Feature | Reason |
 | --- | --- |
+| `去双下巴`, `去双下巴 Pro`, and `发际线` | No approved semantic resource or clean-clone annotated fixture exists; user selected reduced scope instead of model authorization. |
 | SwiftUI Demo screens or sliders | v1.12 is SDK-core and public-facade output evidence only. |
 | Runtime model download, cloud inference, or remote processing | Violates the local-first and resource-trust boundary. |
-| Payment, VIP, account, or entitlement behavior for “Pro” | The reference label does not define commercial SDK semantics. |
-| Third-party beauty SDK | Core implementation and evidence remain repository-owned. |
-| `比例`, `3D塑颜`, `眉毛`, `白牙`, `去脂`, and `祛红血丝` | Outside the exact remaining `脸型` branch scope. |
+| Payment, VIP, account, or entitlement behavior | No commercial behavior is included. |
+| Third-party beauty SDK or semantic model | Not authorized for the reduced v1.12 scope. |
+| `比例`, `3D塑颜`, `眉毛`, `白牙`, `去脂`, and `祛红血丝` | Outside the contour-driven `脸型` scope. |
 | Device parity, commercial approval, optimized performance, packaging, shipping, or launch readiness | Requires separate setup-specific evidence after functional completion. |
-| Tracked generated image baselines | Renderer and gallery artifacts remain disposable, ignored local evidence. |
 
 ## Traceability
 
@@ -75,35 +70,28 @@
 | FACE-07 | Phase 45 | Pending |
 | FACE-08 | Phase 45 | Pending |
 | FACE-09 | Phase 45 | Pending |
-| FACE-10 | Phase 45 | Pending |
-| FACE-11 | Phase 45 | Pending |
 | FACE-12 | Phase 45 | Pending |
-| FACE-13 | Phase 45 | Pending |
 | SUPP-01 | Phase 45 | Pending |
 | SUPP-02 | Phase 45 | Pending |
-| SUPP-03 | Phase 45 | Pending |
 | SUPP-04 | Phase 45 | Pending |
 | GEOM-01 | Phase 46 | Pending |
 | GEOM-02 | Phase 46 | Pending |
 | GEOM-03 | Phase 46 | Pending |
 | GEOM-04 | Phase 46 | Pending |
-| REGN-01 | Phase 47 | Pending |
-| REGN-02 | Phase 47 | Pending |
-| REGN-03 | Phase 47 | Pending |
-| OUT-01 | Phase 48 | Pending |
-| OUT-02 | Phase 48 | Pending |
-| OUT-03 | Phase 48 | Pending |
-| SAFE-01 | Phase 49 | Pending |
-| SAFE-02 | Phase 49 | Pending |
-| SAFE-03 | Phase 49 | Pending |
-| DOC-01 | Phase 49 | Pending |
+| OUT-01 | Phase 47 | Pending |
+| OUT-02 | Phase 47 | Pending |
+| OUT-03 | Phase 47 | Pending |
+| SAFE-01 | Phase 48 | Pending |
+| SAFE-02 | Phase 48 | Pending |
+| SAFE-03 | Phase 48 | Pending |
+| DOC-01 | Phase 48 | Pending |
 
 **Coverage:**
 
-- v1.12 requirements: 25 total
-- Mapped to phases: 25
+- v1.12 requirements: 18 total
+- Mapped to phases: 18
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-07-21*
-*Last updated: 2026-07-21 after v1.12 roadmap creation*
+*Last updated: 2026-07-21 after semantic-resource blocker rescope*

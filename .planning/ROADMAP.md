@@ -14,30 +14,29 @@
 - ✅ **[v1.9 Nose Remaining Tools and Branch Closeout](milestones/v1.9-ROADMAP.md)** — Phases 35-37, shipped 2026-07-14.
 - ✅ **[v1.10 Mouth Remaining Geometry Controls](milestones/v1.10-ROADMAP.md)** — Phases 38-40, shipped 2026-07-14.
 - ✅ **[v1.11 Eye Remaining Geometry Controls](milestones/v1.11-ROADMAP.md)** — Phases 41-44, shipped 2026-07-19.
-- 🚧 **v1.12 Face Shape Remaining Capabilities** — Phases 45-49, planned 2026-07-21.
+- 🚧 **v1.12 Face Shape Remaining Capabilities** — Phases 45-48, reduced contour-driven scope approved 2026-07-21.
 
 ## Phases
 
-- [ ] **Phase 45: Public Contract and Local Face Support** — Exact 55-field compatibility, actual observed contour/median-line mapping, private support validation, and a fail-closed local semantic-resource feasibility gate.
+- [ ] **Phase 45: Public Contract and Observed Face Support** — Exact 52-field compatibility, actual observed contour/median-line mapping, private validation, and blocker-honest exclusion of semantic-region rows.
 - [ ] **Phase 46: Independent Contour and Chin Geometry** — Distinct smooth-contour, temple, cheekbone, and chin-taper emissions through the existing resolver, conflict, warp, and facade pipeline.
-- [ ] **Phase 47: Double-Chin and Hairline Region Pipeline** — Basic and refined double-chin behavior plus signed hairline movement using approved local semantic support and bounded containment.
-- [ ] **Phase 48: Public-Facade Face Output Evidence** — Isolated renderer cases, decoded strict comparisons, safe no-ops, and ignored descriptor-safe gallery evidence for every new control.
-- [ ] **Phase 49: Face Safety and Branch Closeout** — Final caps, exhaustive field-local transitions, exact multi-domain convergence, security/resource gates, seven-row promotion, and SDK-core `脸型` completion.
+- [ ] **Phase 47: Public-Facade Face Output Evidence** — Isolated renderer cases, decoded strict comparisons, safe no-ops, and ignored descriptor-safe gallery evidence for all four controls.
+- [ ] **Phase 48: Face Safety and Scoped Closeout** — Final caps, exhaustive field-local transitions, exact multi-domain convergence, four-row promotion, and preserved partial branch status.
 
 ## Phase Details
 
-### Phase 45: Public Contract and Local Face Support
+### Phase 45: Public Contract and Observed Face Support
 
-**Goal:** Establish compatibility-safe public semantics and honest private support before any new face-shape implementation claim.
+**Goal:** Establish compatibility-safe public semantics and honest observed face support for the four contour-driven controls.
 
-**Requirements:** FACE-07, FACE-08, FACE-09, FACE-10, FACE-11, FACE-12, FACE-13, SUPP-01, SUPP-02, SUPP-03, SUPP-04
+**Requirements:** FACE-07, FACE-08, FACE-09, FACE-12, SUPP-01, SUPP-02, SUPP-04
 
 **Success criteria:**
 
-1. The public model contains exactly 55 stored fields (54 numeric plus `filterId`), every new field defaults to zero, legacy 48-field payloads decode neutrally, and bundled presets remain unchanged.
+1. The public model contains exactly 52 stored fields (51 numeric plus `filterId`), every new field defaults to zero, legacy 48-field payloads decode neutrally, and bundled presets remain unchanged.
 2. Actual Vision face contour and median line are mapped once, canonicalized across orientation/mirroring, rejected when malformed, and never replaced by the synthetic face-box proxy for new controls.
-3. A bundled local semantic support implementation proves license, provenance, version, hash, platform, bounded-output, representative-fixture eligibility, and no-network behavior; otherwise mask-dependent rows remain explicitly blocked.
-4. Raw contours/masks are request-scoped and package-only, while missing support disables only its dependent new fields and preserves eligible shipped or face-agnostic work.
+3. Raw observed support is request-scoped and package-only, while missing support disables only the four new fields and preserves eligible shipped or face-agnostic work.
+4. `去双下巴`, `去双下巴 Pro`, and `发际线` remain explicitly future with the missing semantic-resource and clean-clone-fixture blocker recorded.
 
 ### Phase 46: Independent Contour and Chin Geometry
 
@@ -52,60 +51,47 @@
 3. Chin taper narrows adjacent contour points toward the apex without changing signed chin length or borrowing V-face evidence.
 4. All four fields have named provider emissions, field-local eligibility, resolver/conflict/facade routing, and provider-empty removal from effective accounting.
 
-### Phase 47: Double-Chin and Hairline Region Pipeline
+### Phase 47: Public-Facade Face Output Evidence
 
-**Goal:** Implement the three mask-sensitive remaining rows through bounded local processing and honest failure behavior.
-
-**Requirements:** REGN-01, REGN-02, REGN-03
-
-**Success criteria:**
-
-1. Basic double-chin reduction operates only on eligible lower-contour/submental support and remains distinct from `jawSlim`.
-2. Refined double-chin treatment is independently selectable, mask-contained, visibly distinct from basic reduction, and a no-op when refined support is ineligible.
-3. Hairline height preserves sign through both directions and changes only an eligible bounded hair/skin region.
-4. Missing, malformed, reused, or stale region support removes only dependent work; protected facial features, clothing/background, and face-agnostic effects remain unchanged.
-
-### Phase 48: Public-Facade Face Output Evidence
-
-**Goal:** Prove every new face capability through decoded public-facade images rather than provider-only assertions.
+**Goal:** Prove every scoped face capability through decoded public-facade images rather than provider-only assertions.
 
 **Requirements:** OUT-01, OUT-02, OUT-03
 
 **Success criteria:**
 
-1. The renderer contains one isolated case for each positive-only control and both `hairlineHeight` directions, with an exact duplicate-free case/fixture/output inventory.
-2. A bounded strict helper verifies every output decodes, preserves dimensions, crosses fixed visibility floors, stays inside the intended region, preserves signed direction, and distinguishes nearest-neighbor semantics including basic versus refined double chin.
-3. Representative no-face, missing-contour, and missing-mask fixtures produce safe public results and exact no-op behavior for unsupported geometry while eligible sibling domains continue.
+1. The renderer contains one isolated case for each new control with an exact duplicate-free case/fixture/output inventory.
+2. A bounded strict helper verifies every output decodes, preserves dimensions, crosses fixed visibility floors, stays inside the intended region, and distinguishes each new field from its nearest shipped/new neighbor.
+3. Representative no-face, missing-contour, and malformed-contour cases produce safe public results while eligible sibling domains continue.
 4. Gallery generation has an exact renderer/gallery bijection and leaves zero tracked, staged, or non-ignored generated artifacts.
 
-### Phase 49: Face Safety and Branch Closeout
+### Phase 48: Face Safety and Scoped Closeout
 
-**Goal:** Freeze final safety and promote the exact remaining rows only after implementation, output, privacy, and resource evidence agree.
+**Goal:** Freeze final safety and promote the exact four scoped rows only after implementation, output, privacy, and boundary evidence agree.
 
 **Requirements:** SAFE-01, SAFE-02, SAFE-03, DOC-01
 
 **Success criteria:**
 
-1. Exact caps/dead zones and no-face, missing, malformed, provider-empty, fresh, reused, and stale transitions pass for all seven new fields and the complete twelve-field face inventory.
-2. Combined forty-field face/eye/nose/mouth geometry converges monotonically on provider-eligible work, with exact final strengths, totals, counts, scale, warnings, metrics, and dispatched emissions.
-3. Public/SPI, diagnostics, persistence, Demo imports, resource license/hash, network/commercial, dependency, generated-artifact, and active-source gates fail closed with no unresolved high-severity issue.
-4. Exactly `面部流畅`, `太阳穴`, `颧骨`, `去双下巴`, `去双下巴 Pro`, `尖下巴`, and `发际线` plus branch-level `脸型` are promoted across every owning ledger without device/commercial/performance/packaging/shipping/launch overclaim.
+1. Exact caps/dead zones and no-face, missing, malformed, provider-empty, fresh, reused, and stale transitions pass for all four new fields and the complete nine-field face inventory.
+2. Combined thirty-seven-field face/eye/nose/mouth geometry converges monotonically on provider-eligible work, with exact final strengths, totals, counts, scale, warnings, metrics, and dispatched emissions.
+3. Public/SPI, diagnostics, persistence, Demo imports, network/commercial, dependency, generated-artifact, and active-source gates fail closed with no unresolved high-severity issue.
+4. Exactly `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴` are promoted; `去双下巴`, `去双下巴 Pro`, `发际线`, and branch-level `脸型` remain future or partial without readiness overclaim.
 
 ## Progress
 
 | Phase | Milestone | Requirements | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 45. Public Contract and Local Face Support | v1.12 | 11 | Not started | — |
+| 45. Public Contract and Observed Face Support | v1.12 | 7 | Not started | — |
 | 46. Independent Contour and Chin Geometry | v1.12 | 4 | Not started | — |
-| 47. Double-Chin and Hairline Region Pipeline | v1.12 | 3 | Not started | — |
-| 48. Public-Facade Face Output Evidence | v1.12 | 3 | Not started | — |
-| 49. Face Safety and Branch Closeout | v1.12 | 4 | Not started | — |
+| 47. Public-Facade Face Output Evidence | v1.12 | 3 | Not started | — |
+| 48. Face Safety and Scoped Closeout | v1.12 | 4 | Not started | — |
 
 ## Backlog
 
-- `白牙`, `去脂`, and `祛红血丝` remain future local segmentation/retouch/color slices after v1.12.
+- `去双下巴`, `去双下巴 Pro`, and `发际线` require an approved local semantic-region implementation and reproducible clean-clone fixtures.
+- `白牙`, `去脂`, and `祛红血丝` remain future local segmentation/retouch/color slices.
 - `比例`, `3D塑颜`, and `眉毛` remain future or partial slices.
 - Demo UI, physical-device parity, commercial visual approval, optimized profiling, packaging, shipping, and launch-readiness evidence remain separately scoped.
 
 ---
-*Last updated: 2026-07-21 after v1.12 roadmap creation*
+*Last updated: 2026-07-21 after semantic-resource blocker rescope*

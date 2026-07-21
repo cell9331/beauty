@@ -26,16 +26,16 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ## Current Milestone: v1.12 Face Shape Remaining Capabilities
 
-**Goal:** Complete the seven unresolved SDK-core `脸型` capabilities through independent product-neutral contracts, validated local geometry or region support, public-facade output, conservative degradation, and evidence-backed branch closeout.
+**Goal:** Complete the four unresolved contour-driven SDK-core `脸型` capabilities through independent product-neutral contracts, validated observed geometry, public-facade output, and conservative evidence-backed promotion.
 
 **Target features:**
 
 - Add independent controls for `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴`, backed by observed face-contour/centerline evidence rather than the existing synthetic face-box proxy or aliases to shipped face fields.
-- Add local-only `去双下巴`, `去双下巴 Pro`, and signed `发际线` capabilities with explicit region/mask eligibility; the Pro label denotes a distinct higher-fidelity SDK behavior, not payment, entitlement, account, or remote service behavior.
-- Preserve source/JSON/preset compatibility, keep all raw contours and masks request-scoped and package-internal, and fail closed per unsupported field without suppressing eligible sibling or face-agnostic effects.
-- Add isolated public-facade renderer/helper and ignored-gallery evidence for all seven rows, both hairline directions, basic-versus-refined double-chin distinction, safe no-face/missing-mask cases, exact caps, combined weakening, redacted diagnostics, and exact seven-row promotion.
+- Preserve source/JSON/preset compatibility, keep raw observed contour support request-scoped and package-internal, and fail closed per unsupported field without suppressing eligible sibling or face-agnostic effects.
+- Add isolated public-facade renderer/helper and ignored-gallery evidence for all four rows, safe no-face/missing-contour cases, exact caps, combined weakening, redacted diagnostics, and exact four-row promotion.
+- Keep `去双下巴`, `去双下巴 Pro`, and `发际线` future until a licensed, reproducible local semantic-region implementation and clean-clone fixtures exist; branch-level `脸型` remains `partial` in v1.12.
 
-**Key context:** v1.12 is SDK-core only. It adds no SwiftUI Demo UI, third-party beauty SDK, network/cloud processing, account/payment/VIP/entitlement path, or tracked generated image baseline. Device parity, commercial visual approval, optimized performance, packaging, shipping, and launch readiness remain separate evidence scopes.
+**Key context:** v1.12 is SDK-core only. On 2026-07-21 the user selected the blocker-honest reduced scope rather than authorizing a third-party semantic model. It adds no SwiftUI Demo UI, semantic model, third-party beauty SDK, network/cloud processing, account/payment/VIP/entitlement path, or tracked generated image baseline. Device parity, commercial visual approval, optimized performance, packaging, shipping, and launch readiness remain separate evidence scopes.
 
 ## Last Completed Milestone: v1.11 Eye Remaining Geometry Controls
 
@@ -179,10 +179,10 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ### Active
 
-- [ ] Seven remaining `脸型` controls have independent product-neutral public semantics with zero-default source/JSON/preset compatibility.
-- [ ] Face-contour, centerline, submental, and hairline support stays local, request-scoped, validated, and private.
+- [ ] Four contour-driven `脸型` controls have independent product-neutral public semantics with zero-default source/JSON/preset compatibility.
+- [ ] Observed face-contour and centerline support stays local, request-scoped, validated, and private.
 - [ ] Each new control has independently distinguishable public-facade output and conservative field-local degradation evidence.
-- [ ] Exact caps, combined-geometry convergence, privacy boundaries, generated-artifact containment, and seven-row ledger promotion pass before branch-level `脸型` completion.
+- [ ] Exact caps, combined-geometry convergence, privacy boundaries, generated-artifact containment, and four-row ledger promotion pass while branch-level `脸型` remains partial.
 
 ### Validated
 
@@ -361,7 +361,7 @@ Current visual reference contracts:
 - **v1.9 scope boundary:** v1.9 adds only the two product-neutral public fields needed for `山根` and `提升`, then promotes those rows and branch-level `鼻子` only after facade output, safety, degradation, redaction, compatibility, and documentation evidence; Demo UI and release-readiness work remain excluded.
 - **v1.10 scope boundary:** v1.10 adds only the five product-neutral public fields and package-internal lip supports needed for `上下`, `倾斜`, `左右`, `M唇`, and true `丰唇`; `lipColor` remains color-only, `白牙` remains a separate segmentation/retouch concern, and Demo/device/commercial/packaging/shipping/launch work remains excluded.
 - **v1.11 scope boundary:** v1.11 adds only the ten product-neutral public fields and private contour/pupil support needed for `眼高`, `长度`, `提肌`, `眼瞳大小`, `眼神矫正`, `眼睑下至`, `倾斜`, `内眼角`, `外眼角`, and `对称`; `去脂` and `祛红血丝` remain separate retouch/color concerns, and Demo/device/commercial/performance/packaging/shipping/launch work remains excluded.
-- **v1.12 scope boundary:** v1.12 adds only the seven product-neutral public controls and private observed-contour/region support needed for `面部流畅`, `太阳穴`, `颧骨`, `去双下巴`, `去双下巴 Pro`, `尖下巴`, and `发际线`; `Pro` is a distinct local capability rather than an entitlement, and Demo/network/account/device/commercial/performance/packaging/shipping/launch work remains excluded.
+- **v1.12 scope boundary:** v1.12 adds only the four product-neutral public controls and private observed-contour/centerline support needed for `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴`; `去双下巴`, `去双下巴 Pro`, and `发际线` remain future pending an approved semantic-region implementation, and Demo/network/account/device/commercial/performance/packaging/shipping/launch work remains excluded.
 
 ## Key Decisions
 
@@ -386,7 +386,7 @@ Current visual reference contracts:
 | v1.9 closes the remaining `鼻子` branch with independent `山根` and `提升` semantics. | v1.7 deliberately left both tools unresolved; branch completion requires explicit public parameters and evidence rather than aliasing `山根` to `noseBridge` or borrowing prior outputs. | Completed in Phase 37; milestone audit passed |
 | v1.10 completes the remaining mouth geometry controls without absorbing teeth whitening. | The five unresolved geometry rows share the existing mouth warp/facade evidence path, while `白牙` needs a different teeth-region segmentation and retouch contract. | Completed in Phase 40; milestone audit passed |
 | v1.11 completes the remaining eye geometry controls without absorbing eye-fat or redness retouch. | Ten unresolved geometry rows can build on the eye warp/facade path, but pupil/gaze/symmetry require private observed support and field-local fail-closed behavior; `去脂` and `祛红血丝` need different retouch/color ownership. | Completed and archived in v1.11 |
-| v1.12 completes the exact seven unresolved `脸型` rows with independent semantics and honest local support. | The existing five face parameters cannot prove smooth-contour, temple, cheekbone, double-chin, pointed-chin, or hairline behavior; observed contours and region masks must remain private and each row needs its own output and safety evidence. | Pending v1.12 |
+| v1.12 completes four contour-driven unresolved `脸型` rows and defers semantic-region rows rather than faking support. | The existing five face parameters cannot prove smooth-contour, temple, cheekbone, or pointed-chin behavior, while no approved semantic model/fixtures exist for double chin or hairline; the user selected reduced scope on 2026-07-21. | Pending v1.12 |
 | v1.5 starts with geometry output foundation plus `脸型`, not all `美型 / 五官` groups. | The user chose the smallest first-principles slice: prove facade-visible geometry output first, then mark only the existing face-shape tools complete when evidence exists. | Completed and archived in v1.5 |
 
 ## Evolution
