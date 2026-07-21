@@ -26,9 +26,26 @@
 
 ## 3. Active
 
-No active execution plan. v1.11 Phase 44 implementation/current-owner closeout is complete; DOC-01 and lifecycle remain pending the independent `$gsd-audit-milestone` workflow.
+No active execution plan. Milestone v1.12 `Face Shape Remaining Capabilities` is initialized with 25 requirements across Phases 45-49; the next workflow is `$gsd-discuss-phase 45` or `$gsd-plan-phase 45`.
 
 ## 4. Completed
+
+### C-2026-07-21-v1-12-milestone-initialization
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-21 |
+| Scope | Initialized v1.12 `Face Shape Remaining Capabilities` through `--auto`: project/state switch, repository and Apple-framework research, 25 testable requirements, five-phase roadmap, and continued numbering from Phase 45. |
+| Requirements | FACE-07 through FACE-13, SUPP-01 through SUPP-04, GEOM-01 through GEOM-04, REGN-01 through REGN-03, OUT-01 through OUT-03, SAFE-01 through SAFE-03, and DOC-01 are mapped exactly once with 25/25 coverage. |
+| Research | `.planning/research/{STACK,FEATURES,ARCHITECTURE,PITFALLS,SUMMARY}.md` records actual Vision contour/median-line use, the synthetic-proxy prohibition, local semantic-resource feasibility gate, seven independent controls, and local-first failure modes. |
+| Verification | `verify-summary` passes; `roadmap.analyze` parses Phases 45-49; a direct ID audit reports 25 requirements, 25 mappings, zero missing, zero duplicate, and zero extra IDs; `git diff --check` passes. |
+| Build | Not run because this workflow changed planning Markdown/state only and did not modify Swift, resources, or Xcode configuration. |
+
+Outcome:
+
+- v1.12 targets exactly `面部流畅`, `太阳穴`, `颧骨`, `去双下巴`, `去双下巴 Pro`, `尖下巴`, and `发际线`, with independent product-neutral semantics and no entitlement interpretation of `Pro`.
+- Phase 45 must prove an approved bundled local semantic support implementation before mask-dependent rows can proceed; person/background matte or a synthetic face-box region is not accepted as hairline/submental evidence.
+- Demo UI, network/cloud, account/payment, device/commercial/performance/packaging/shipping/launch claims remain outside this milestone; next action is Phase 45 discussion or planning.
 
 ### C-2026-07-19-phase-44-eye-geometry-safety-ledger-closeout
 
