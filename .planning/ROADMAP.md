@@ -18,7 +18,7 @@
 
 ## Phases
 
-- [ ] **Phase 45: Public Contract and Observed Face Support** — Exact 52-field compatibility, actual observed contour/median-line mapping, private validation, and blocker-honest exclusion of semantic-region rows.
+- [x] **Phase 45: Public Contract and Observed Face Support** — Exact 52-field compatibility, actual observed contour/median-line mapping, private validation, and blocker-honest exclusion of semantic-region rows. (completed 2026-07-23)
 - [ ] **Phase 46: Independent Contour and Chin Geometry** — Distinct smooth-contour, temple, cheekbone, and chin-taper emissions through the existing resolver, conflict, warp, and facade pipeline.
 - [ ] **Phase 47: Public-Facade Face Output Evidence** — Isolated renderer cases, decoded strict comparisons, safe no-ops, and ignored descriptor-safe gallery evidence for all four controls.
 - [ ] **Phase 48: Face Safety and Scoped Closeout** — Final caps, exhaustive field-local transitions, exact multi-domain convergence, four-row promotion, and preserved partial branch status.
@@ -31,7 +31,7 @@
 
 **Requirements:** FACE-07, FACE-08, FACE-09, FACE-12, SUPP-01, SUPP-02, SUPP-04
 
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans complete
 
 Plans:
 
@@ -39,7 +39,7 @@ Plans:
 - [x] 45-02-PLAN.md — Exact 52-field public compatibility and shipped-neutrality contract.
 - [x] 45-03-PLAN.md — Actual Vision contour/median capture and canonical one-mapper mapping.
 - [x] 45-04-PLAN.md — Face-specific topology validation, independent eligibility, and legacy isolation.
-- [ ] 45-05-PLAN.md — Owner-contract synchronization and live boundary/requirement closeout.
+- [x] 45-05-PLAN.md — Owner-contract synchronization and live boundary/requirement closeout.
 
 **Success criteria:**
 
@@ -91,7 +91,7 @@ Plans:
 
 | Phase | Milestone | Requirements | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 45. Public Contract and Observed Face Support | v1.12 | 4/5 | In Progress|  |
+| 45. Public Contract and Observed Face Support | v1.12 | 5/5 | Complete   | 2026-07-23 |
 | 46. Independent Contour and Chin Geometry | v1.12 | 4 | Not started | — |
 | 47. Public-Facade Face Output Evidence | v1.12 | 3 | Not started | — |
 | 48. Face Safety and Scoped Closeout | v1.12 | 4 | Not started | — |
