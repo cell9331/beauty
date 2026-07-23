@@ -38,8 +38,8 @@ package struct BeautyObservedEyeSupport: Equatable, Sendable {
 /// Frame-scoped, image-normalized face-contour evidence from one request.
 ///
 /// Contour and median-line absence are independent. This immutable package
-/// value intentionally has no Codable or diagnostic representation and is
-/// released with the observation that carries it.
+/// value has no Codable representation and exposes only aggregate counts
+/// through its explicitly redacted diagnostic representation.
 package struct BeautyObservedFaceSupport: Equatable, Sendable {
     package let contour: [CoordinatePoint]?
     package let medianLine: [CoordinatePoint]?
@@ -50,6 +50,16 @@ package struct BeautyObservedFaceSupport: Equatable, Sendable {
     ) {
         self.contour = contour
         self.medianLine = medianLine
+    }
+}
+
+extension BeautyObservedFaceSupport: CustomStringConvertible, CustomDebugStringConvertible {
+    package var description: String {
+        "BeautyObservedFaceSupport(contourCount: \(contour?.count ?? 0), medianLineCount: \(medianLine?.count ?? 0))"
+    }
+
+    package var debugDescription: String {
+        description
     }
 }
 
@@ -81,6 +91,21 @@ package struct BeautyFaceObservation: Equatable, Sendable {
         self.observedEyeSupport = observedEyeSupport
         self.observedEyeOrder = observedEyeOrder
         self.observedFaceSupport = observedFaceSupport
+    }
+}
+
+extension BeautyFaceObservation: CustomStringConvertible, CustomDebugStringConvertible {
+    package var description: String {
+        "BeautyFaceObservation("
+            + "landmarkGroupCount: \(landmarks.availableGroups.count), "
+            + "observedEyeSupportCount: \(observedEyeSupport?.count ?? 0), "
+            + "observedFaceSupportAvailable: \(observedFaceSupport != nil), "
+            + "observedFaceContourCount: \(observedFaceSupport?.contour?.count ?? 0), "
+            + "observedFaceMedianLineCount: \(observedFaceSupport?.medianLine?.count ?? 0))"
+    }
+
+    package var debugDescription: String {
+        description
     }
 }
 

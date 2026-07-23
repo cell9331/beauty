@@ -335,6 +335,68 @@ final class VisionFaceDetectorTests: XCTestCase {
         XCTAssertNil(second.observations.first?.observedFaceSupport)
     }
 
+    func testSUPP04FaceSupportCarrierDescriptionsExposeOnlyApprovedAggregates() {
+        let support = BeautyObservedFaceSupport(
+            contour: [
+                CoordinatePoint(x: 0.123_456_789, y: 0.234_567_891),
+                CoordinatePoint(x: 0.876_543_219, y: 0.345_678_912),
+            ],
+            medianLine: [
+                CoordinatePoint(x: 0.456_789_123, y: 0.567_891_234),
+            ]
+        )
+        let observation = BeautyFaceObservation(
+            stableID: "sensitive-stable-id",
+            confidence: 0.987_654_321,
+            imageBounds: CoordinateRect(
+                x: 0.123_456_789,
+                y: 0.234_567_891,
+                width: 0.345_678_912,
+                height: 0.456_789_123
+            ),
+            observedFaceSupport: support
+        )
+        let visionObservation = VisionDetectionObservation(
+            stableID: "sensitive-stable-id",
+            confidence: 0.987_654_321,
+            visionBounds: CoordinateRect(
+                x: 0.123_456_789,
+                y: 0.234_567_891,
+                width: 0.345_678_912,
+                height: 0.456_789_123
+            ),
+            observedFaceSupport: support
+        )
+
+        let expectedSupport =
+            "BeautyObservedFaceSupport(contourCount: 2, medianLineCount: 1)"
+        let expectedObservation =
+            "BeautyFaceObservation(landmarkGroupCount: 6, observedEyeSupportCount: 0, observedFaceSupportAvailable: true, observedFaceContourCount: 2, observedFaceMedianLineCount: 1)"
+        let expectedVisionObservation =
+            "VisionDetectionObservation(landmarkGroupCount: 6, observedEyeSupportCount: 0, observedFaceSupportAvailable: true, observedFaceContourCount: 2, observedFaceMedianLineCount: 1)"
+
+        XCTAssertEqual(String(describing: support), expectedSupport)
+        XCTAssertEqual(String(reflecting: support), expectedSupport)
+        XCTAssertEqual("\(support)", expectedSupport)
+        XCTAssertEqual(String(describing: observation), expectedObservation)
+        XCTAssertEqual(String(reflecting: observation), expectedObservation)
+        XCTAssertEqual("\(observation)", expectedObservation)
+        XCTAssertEqual(String(describing: visionObservation), expectedVisionObservation)
+        XCTAssertEqual(String(reflecting: visionObservation), expectedVisionObservation)
+        XCTAssertEqual("\(visionObservation)", expectedVisionObservation)
+
+        for diagnostic in [
+            String(describing: support),
+            String(reflecting: observation),
+            String(reflecting: visionObservation),
+        ] {
+            XCTAssertFalse(diagnostic.contains("sensitive-stable-id"))
+            XCTAssertFalse(diagnostic.contains("0.123456789"))
+            XCTAssertFalse(diagnostic.contains("CoordinatePoint"))
+            XCTAssertFalse(diagnostic.contains("CoordinateRect"))
+        }
+    }
+
     func testPIPE07DetectorUnavailableFailureUsesStructuredReasonOnly() {
         var detector = VisionFaceDetector { _ in
             throw VisionFaceDetector.Failure.detectorUnavailable

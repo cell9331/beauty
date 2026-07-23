@@ -309,7 +309,10 @@ def check_codable_persistence(root: Path, runner: Runner = default_runner) -> Re
         if path in APPROVED_CODABLE_PATHS and re.search(r"\b(?:Codable|Encodable|Decodable)\b", line):
             return True
         if path == "BeautySDK/Sources/BeautyDetection/BeautyFaceObservation.swift":
-            return "intentionally has no Codable or diagnostic representation" in line
+            return (
+                "intentionally has no Codable or diagnostic representation" in line
+                or "has no Codable representation" in line
+            )
         if path == "BeautySDK/Sources/BeautyEffects/Warp/WarpControlPoint.swift":
             return "never become part of the public or Codable surface" in line
         if path == "BeautySDK/Sources/BeautyExampleRenderer/main.swift":
@@ -330,16 +333,46 @@ def check_codable_persistence(root: Path, runner: Runner = default_runner) -> Re
 
 def check_diagnostics(root: Path, runner: Runner = default_runner) -> Result:
     raw = (
-        r"BeautyObservedFaceSupport|BeautyFaceSemanticSupport|observedFaceSupport|"
+        r"BeautyObservedFaceSupport|BeautyFaceSemanticSupport|BeautyFaceObservation|"
+        r"VisionDetectionObservation|observedFaceSupport|beautyFaceObservation|"
+        r"faceObservation|visionDetectionObservation|detectionObservation|"
         r"(?:faceContour|medianLine).*(?:coordinate|point|bounds|support)|"
         r"(?:coordinate|point|bounds|support).*(?:faceContour|medianLine)"
     )
-    sink = r"print\(|debugPrint|Logger|os_log|message:|metrics\[|metadata:|description|errorDescription"
+    sink = (
+        r"print\(|debugPrint|Logger|os_log|message:|metrics\[|metadata:|"
+        r"description|errorDescription|\\\(|String\((?:describing|reflecting):"
+    )
+
+    def classified(line: str) -> bool:
+        path = _match_path(line)
+        if path == "BeautySDK/Sources/BeautyDetection/BeautyFaceObservation.swift":
+            return any(
+                token in line
+                for token in (
+                    '"BeautyObservedFaceSupport(contourCount:',
+                    '"observedFaceSupportAvailable:',
+                    '"observedFaceContourCount:',
+                    '"observedFaceMedianLineCount:',
+                )
+            )
+        if path == "BeautySDK/Sources/BeautyDetection/VisionFaceDetector.swift":
+            return any(
+                token in line
+                for token in (
+                    '"observedFaceSupportAvailable:',
+                    '"observedFaceContourCount:',
+                    '"observedFaceMedianLineCount:',
+                )
+            )
+        return False
+
     return rg_scan(
         root,
         "raw face diagnostic leakage",
         rf"(?:{sink}).*(?:{raw})|(?:{raw}).*(?:{sink})",
         (SOURCE_ROOT,),
+        classified,
         runner=runner,
     )
 
@@ -773,6 +806,8 @@ def self_test() -> list[Result]:
                 ("Codable support", "package struct FaceSupport: Codable {}\n", check_codable_persistence),
                 ("persistence", "let saved = UserDefaults.standard.set(observedFaceSupport, forKey: \"face\")\n", check_codable_persistence),
                 ("diagnostic", "print(observedFaceSupport)\n", check_diagnostics),
+                ("carrier interpolation", "let leaked = \"\\(faceObservation)\"\n", check_diagnostics),
+                ("carrier logging", "debugPrint(visionDetectionObservation)\n", check_diagnostics),
                 ("network", "let task = URLSession.shared\n", check_network),
                 ("model source", "import CoreML\n", check_models),
             )

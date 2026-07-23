@@ -32,6 +32,21 @@ package struct VisionDetectionObservation: Equatable, Sendable {
     }
 }
 
+extension VisionDetectionObservation: CustomStringConvertible, CustomDebugStringConvertible {
+    package var description: String {
+        "VisionDetectionObservation("
+            + "landmarkGroupCount: \(landmarks.availableGroups.count), "
+            + "observedEyeSupportCount: \(observedEyeSupport?.count ?? 0), "
+            + "observedFaceSupportAvailable: \(observedFaceSupport != nil), "
+            + "observedFaceContourCount: \(observedFaceSupport?.contour?.count ?? 0), "
+            + "observedFaceMedianLineCount: \(observedFaceSupport?.medianLine?.count ?? 0))"
+    }
+
+    package var debugDescription: String {
+        description
+    }
+}
+
 package struct VisionFaceDetectionResult: Equatable, Sendable {
     package let observations: [BeautyFaceObservation]
     package let summary: BeautyDetectionSummary
