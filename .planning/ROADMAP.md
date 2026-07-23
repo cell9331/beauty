@@ -31,6 +31,15 @@
 
 **Requirements:** FACE-07, FACE-08, FACE-09, FACE-12, SUPP-01, SUPP-02, SUPP-04
 
+**Plans:** 5 plans
+
+Plans:
+- [ ] 45-01-PLAN.md — Wave 0 fail-closed safeguards, private support contracts, and topology fixtures.
+- [ ] 45-02-PLAN.md — Exact 52-field public compatibility and shipped-neutrality contract.
+- [ ] 45-03-PLAN.md — Actual Vision contour/median capture and canonical one-mapper mapping.
+- [ ] 45-04-PLAN.md — Face-specific topology validation, independent eligibility, and legacy isolation.
+- [ ] 45-05-PLAN.md — Owner-contract synchronization and live boundary/requirement closeout.
+
 **Success criteria:**
 
 1. The public model contains exactly 52 stored fields (51 numeric plus `filterId`), every new field defaults to zero, legacy 48-field payloads decode neutrally, and bundled presets remain unchanged.

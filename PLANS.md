@@ -30,6 +30,23 @@ Milestone v1.12 autonomous execution is active from Phase 45. After the semantic
 
 ## 4. Completed
 
+### C-2026-07-21-gsd-plan-phase-45-public-contract-observed-face-support
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-21 |
+| Scope | Planned Phase 45 `Public Contract and Observed Face Support` as five executable plans in four dependency waves: Wave 0 safeguards/contracts, exact public compatibility, actual Vision capture/canonical mapping, topology validation/isolation, and final owner/boundary closeout. |
+| Requirements | FACE-07, FACE-08, FACE-09, FACE-12, SUPP-01, SUPP-02, and SUPP-04 are covered across all five plans; D-01 through D-20 are cited directly in implementation actions and the final multi-source audit. |
+| Source/Probe Audit | ROADMAP goal, all seven requirement IDs, research constraints, and all locked context decisions are covered with no missing item. The specless edge probe resolves request-local immutability, exactly-once mapping, interruption/no persistence, malformed-region isolation, and shared-state concurrency; three bespoke prohibitions remain descriptor-less `flagged-unverified` inputs to the fail-closed checker rather than fabricated checks. |
+| Validation | `45-VALIDATION.md` maps ten tasks to focused automated commands. Plan `45-01` owns Wave 0 creation of the self-tested boundary checker plus face-specific topology fixtures; Plan `45-05` owns live checker/full SwiftPM closeout. Frontmatter, structure, requirement, decision, wave/file-ownership, source-audit, and diff-hygiene checks are planning gates. |
+| Build | Not run because this workflow creates planning and validation documents only; every implementation task specifies a narrow automated command and the final plan requires the full SwiftPM suite. |
+
+Outcome:
+
+- `45-01` runs alone in Wave 1; `45-02` and `45-03` run concurrently in Wave 2 with disjoint file ownership; `45-04` runs in Wave 3; `45-05` closes in Wave 4.
+- Exact 48→52 compatibility and actual private contour/median support are planned without providers, resolver routing, facade output, render passes, Demo UI, dependencies, targets, resources, models, network, or persistence.
+- The shipped seven-point proxy remains a separate compatibility path; deferred double-chin, hairline, and semantic-region work remains future and cannot be claimed by Phase 45.
+
 ### C-2026-07-21-v1-12-milestone-initialization
 
 | Field | Value |
