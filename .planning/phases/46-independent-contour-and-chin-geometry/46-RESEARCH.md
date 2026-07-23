@@ -1,7 +1,7 @@
 # Phase 46: Independent Contour and Chin Geometry - Research
 
-**Researched:** 2026-07-23  
-**Domain:** Swift package-internal face-contour geometry, provider eligibility, conflict convergence, and public-facade routing  
+**Researched:** 2026-07-23
+**Domain:** Swift package-internal face-contour geometry, provider eligibility, conflict convergence, and public-facade routing
 **Confidence:** HIGH for repository seams, contracts, and test architecture; MEDIUM for provisional displacement constants
 
 <user_constraints>
@@ -596,5 +596,5 @@ ASVS L1 enforcement is active; Phase 46 changes how untrusted biometric-adjacent
 - Pitfalls: HIGH — most arise from direct current-source control flow; overlap/visual-constant risks are explicitly assumed.
 - Security: HIGH — derived from active ASVS L1 config, current security contract, and Phase 45 boundary evidence.
 
-**Research date:** 2026-07-23  
+**Research date:** 2026-07-23
 **Valid until:** 2026-08-22 for repository structure; provisional geometry constants remain valid only until Phase 47/48 evidence.
