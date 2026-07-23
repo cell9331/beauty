@@ -57,12 +57,28 @@ Plans:
 **Plans:** 6 plans
 
 Plans:
+**Wave 1**
 
 - [ ] 46-01-PLAN.md — Establish the fail-closed boundary checker and RED asymmetric named-emission contracts.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 46-02-PLAN.md — Lock RED resolver, cap, provider-empty, exact 37-field, and once-only accounting contracts.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 46-03-PLAN.md — Lock RED degradation, unified-dispatch, deterministic facade-route, and redaction contracts.
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 46-04-PLAN.md — Add the four effective fields, provisional caps, and independent face/chin provider emissions.
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
 - [ ] 46-05-PLAN.md — Integrate resolver/conflict accounting and deterministic observed support through the facade.
+
+**Wave 6** *(blocked on Wave 5 completion)*
+
 - [ ] 46-06-PLAN.md — Run the full evidence gate and synchronize validation plus owner documentation.
 
 **Success criteria:**
