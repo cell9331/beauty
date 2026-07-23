@@ -2,18 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.12
 milestone_name: Face Shape Remaining Capabilities
-current_phase: 46
-current_phase_name: Independent Contour and Chin Geometry
 status: executing
-stopped_at: Phase 45 verified and complete; Phase 46 ready to plan
-last_updated: "2026-07-23T08:50:30.176Z"
-last_activity: 2026-07-23
-last_activity_desc: Phase 45 complete, transitioned to Phase 46
+stopped_at: Completed 46-01-PLAN.md
+last_updated: "2026-07-23T09:06:13.804Z"
+last_activity: 2026-07-23 -- Phase 46 execution started
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 5
-  completed_plans: 5
+  total_plans: 11
+  completed_plans: 6
+  percent: 25
 ---
 
 # Project State
@@ -23,14 +21,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-21)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 45 — public-contract-and-observed-face-support
+**Current focus:** Phase 46 — Independent Contour and Chin Geometry
 
 ## Current Position
 
-Phase: 46 — Independent Contour and Chin Geometry
-Plan: Not started
+Phase: 46 (Independent Contour and Chin Geometry) — EXECUTING
+Plan: 2 of 6
 Status: Ready to execute
-Last activity: 2026-07-23 — Phase 45 complete, transitioned to Phase 46
+Last activity: 2026-07-23 -- Phase 46 execution started
 
 ### Phase 44 Eye Geometry Safety and Ledger Closeout Result
 
@@ -217,6 +215,7 @@ Last activity: 2026-07-14
 | Phase 45 P03 | 11 min | 2 tasks | 4 files |
 | Phase 45 P04 | 16 min | 2 tasks | 2 files |
 | Phase 45 P05 | 7 min | 2 tasks | 7 files |
+| Phase 46 P01 | 13 min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -307,6 +306,9 @@ Recent milestone-level outcomes:
 - [Phase 45]: Keep Phase 45 contract details in their routed owners — DESIGN owns mechanics, SECURITY trust prohibitions, RELIABILITY lifecycle/failure behavior, PRODUCT_SENSE acceptance, and PLANS execution history.
 - [Phase 45]: Require the complete executable closeout gate before validation completion — Every focused suite, both checker modes, full SwiftPM, active-source review, and diff hygiene must pass before planned commands become evidence.
 - [Phase 45]: Keep the four face controls storage-only until Phase 46 — Observed support remains separate from the exact seven-point compatibility proxy, so Phase 45 closes compatibility and eligibility without overstating output.
+- [Phase 46]: Keep the Wave 0 provider suite deliberately RED until face/chin named emissions, effective fields, and provisional caps are implemented downstream.
+- [Phase 46]: Use an eleven-point asymmetric observed contour, a sloped three-point median, and apex index 5 for direct source ownership contracts.
+- [Phase 46]: Pin Phase 45 privacy and scope owners while keeping bespoke ethical prohibitions flagged rather than fabricating verified descriptors.
 
 ### Pending Todos
 
@@ -339,8 +341,8 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-23T05:51:34.483Z
-Stopped at: Completed 45-05-PLAN.md
+Last session: 2026-07-23T09:06:13.798Z
+Stopped at: Completed 46-01-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
