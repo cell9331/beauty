@@ -8,10 +8,10 @@
 
 ### Public Face Contract
 
-- [ ] **FACE-07**: An SDK integrator can request independent positive-only smooth-contour adjustment through `faceContourSmooth`, with zero-default source and Codable compatibility.
-- [ ] **FACE-08**: An SDK integrator can request independent positive-only temple fullness through `templeFullness`, without aliasing `faceSmall` or `faceSlim`.
-- [ ] **FACE-09**: An SDK integrator can request independent positive-only cheekbone narrowing through `cheekboneSlim`, without borrowing whole-cheek slimming evidence.
-- [ ] **FACE-12**: An SDK integrator can request independent positive-only chin taper through `chinTaper`, without changing signed `chinLength` semantics.
+- [x] **FACE-07**: An SDK integrator can request independent positive-only smooth-contour adjustment through `faceContourSmooth`, with zero-default source and Codable compatibility.
+- [x] **FACE-08**: An SDK integrator can request independent positive-only temple fullness through `templeFullness`, without aliasing `faceSmall` or `faceSlim`.
+- [x] **FACE-09**: An SDK integrator can request independent positive-only cheekbone narrowing through `cheekboneSlim`, without borrowing whole-cheek slimming evidence.
+- [x] **FACE-12**: An SDK integrator can request independent positive-only chin taper through `chinTaper`, without changing signed `chinLength` semantics.
 
 ### Private Face Support
 
@@ -67,10 +67,10 @@
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| FACE-07 | Phase 45 | Pending |
-| FACE-08 | Phase 45 | Pending |
-| FACE-09 | Phase 45 | Pending |
-| FACE-12 | Phase 45 | Pending |
+| FACE-07 | Phase 45 | Complete |
+| FACE-08 | Phase 45 | Complete |
+| FACE-09 | Phase 45 | Complete |
+| FACE-12 | Phase 45 | Complete |
 | SUPP-01 | Phase 45 | Pending |
 | SUPP-02 | Phase 45 | Complete |
 | SUPP-04 | Phase 45 | Complete |

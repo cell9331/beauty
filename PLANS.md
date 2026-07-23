@@ -30,6 +30,22 @@ Milestone v1.12 autonomous execution is active from Phase 45. After the semantic
 
 ## 4. Completed
 
+### C-2026-07-23-phase-45-plan-02-public-face-contract
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-23 |
+| Scope | Completed Phase 45 Plan `45-02`: exact 48-to-52 public `BeautyParameters` compatibility for `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, and `chinTaper`, without activating provider or resolver routing. |
+| Contract | The model is exactly 52 stored fields (51 numeric plus `filterId`); all four additions are independent positive-only values, default/missing/non-finite inputs become zero, and `normalized()` returns a clamped copy without mutating the source. |
+| Compatibility | Unequal 52-key JSON round-trips independently; legacy 48-key JSON and the reconstructed 38-key payload decode the four fields as zero; historical literal 31/33 counts remain unchanged; all five bundled preset hashes remain byte-identical and decode four zeros. |
+| Verification | Focused suites pass 32/32 parameter, 9/9 resource, and 20/20 resolver tests; `git diff --check` passes. The full SwiftPM probe executed 325 tests and reproduced the prior host-environment-only 86 CoreImage/CoreVideo/Vision failures while all changed focused suites remained green. |
+
+Outcome:
+
+- Explicit zero additions preserve the complete shipped face/eye/nose/mouth resolver plan, and nonzero additions do not yet require face geometry or enter any provider path.
+- Phase 46 remains the sole owner of provider eligibility, effective strengths, caps, emissions, and routing for the four new intents.
+- No preset JSON, package manifest, provider, resolver production, renderer, facade, or Demo source changed.
+
 ### C-2026-07-23-phase-45-plan-01-face-support-safeguards
 
 | Field | Value |

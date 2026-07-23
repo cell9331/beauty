@@ -31,12 +31,12 @@
 
 **Requirements:** FACE-07, FACE-08, FACE-09, FACE-12, SUPP-01, SUPP-02, SUPP-04
 
-**Plans:** 1/5 plans executed
+**Plans:** 2/5 plans executed
 
 Plans:
 
 - [x] 45-01-PLAN.md — Wave 0 fail-closed safeguards, private support contracts, and topology fixtures.
-- [ ] 45-02-PLAN.md — Exact 52-field public compatibility and shipped-neutrality contract.
+- [x] 45-02-PLAN.md — Exact 52-field public compatibility and shipped-neutrality contract.
 - [ ] 45-03-PLAN.md — Actual Vision contour/median capture and canonical one-mapper mapping.
 - [ ] 45-04-PLAN.md — Face-specific topology validation, independent eligibility, and legacy isolation.
 - [ ] 45-05-PLAN.md — Owner-contract synchronization and live boundary/requirement closeout.
@@ -91,7 +91,7 @@ Plans:
 
 | Phase | Milestone | Requirements | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 45. Public Contract and Observed Face Support | v1.12 | 1/5 | In Progress|  |
+| 45. Public Contract and Observed Face Support | v1.12 | 2/5 | In Progress|  |
 | 46. Independent Contour and Chin Geometry | v1.12 | 4 | Not started | — |
 | 47. Public-Facade Face Output Evidence | v1.12 | 3 | Not started | — |
 | 48. Face Safety and Scoped Closeout | v1.12 | 4 | Not started | — |

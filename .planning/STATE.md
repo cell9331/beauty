@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.12
 milestone_name: Face Shape Remaining Capabilities
 status: executing
-stopped_at: Completed 45-01-PLAN.md
-last_updated: "2026-07-23T04:50:37.533Z"
+stopped_at: Completed 45-02-PLAN.md
+last_updated: "2026-07-23T05:05:54.282Z"
 last_activity: 2026-07-23 — Phase 45 execution started
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 5
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: `.planning/PROJECT.md` (updated 2026-07-21)
 ## Current Position
 
 Phase: 45 (public-contract-and-observed-face-support) — EXECUTING
-Plan: 2 of 5
+Plan: 3 of 5
 Status: Ready to execute
 Last activity: 2026-07-23 — Phase 45 execution started
 
@@ -211,6 +211,7 @@ Last activity: 2026-07-14
 | Phase 44 P04 | 5 | 2 tasks | 4 files |
 | Phase 44 P05 | 8 | 2 tasks | 8 files |
 | Phase 45 P01 | 23 min | 2 tasks | 4 files |
+| Phase 45 P02 | 5 min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -289,6 +290,9 @@ Recent milestone-level outcomes:
 - [Phase 45]: Keep observed contour/median evidence in one immutable package-only value with independent optional regions. — Preserves region-local absence and request-lifetime privacy without an all-or-nothing carrier.
 - [Phase 45]: Attach internal observed face semantics beside FaceGeometry.faceContour; never substitute for the exact seven-point compatibility path. — Prevents observed support from changing shipped face behavior or misrepresenting the synthetic proxy.
 - [Phase 45]: Lock face-specific open-path bounds in test fixtures without reusing eye topology constants or polygon-area evidence. — Face contour and median support are open paths with independently researched topology.
+- [Phase 45]: Keep all four additions as independent clampUnit-backed stored values while preserving signed chinLength. — This freezes distinct positive-only public semantics without aliasing the shipped signed chin control.
+- [Phase 45]: Defer requiresFaceGeometry, effective strengths, caps, providers, and routing for the four new intents to Phase 46. — Phase 45 owns compatibility-safe storage only, so nonzero intent must remain unrouted.
+- [Phase 45]: Preserve bundled preset bytes and prove compatibility through missing-key zero decoding. — Explicit zero keys would hide the legacy preset compatibility behavior.
 
 ### Pending Todos
 
@@ -321,8 +325,8 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-23T04:50:37.530Z
-Stopped at: Completed 45-01-PLAN.md
+Last session: 2026-07-23T05:05:54.279Z
+Stopped at: Completed 45-02-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
