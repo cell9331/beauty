@@ -30,6 +30,22 @@ Milestone v1.12 autonomous execution is active from Phase 45. After the semantic
 
 ## 4. Completed
 
+### C-2026-07-23-phase-45-plan-01-face-support-safeguards
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-23 |
+| Scope | Completed Phase 45 Plan `45-01`: a fail-closed face-support boundary checker, private request-local observed contour/median contracts, face-specific topology matrices, and preserved seven-point proxy compatibility. |
+| Requirements | SUPP-02 and SUPP-04 complete. Raw and derived face support remains package-only, non-Codable, non-persistent, non-diagnostic, non-networked, and unavailable to Demo imports. |
+| TDD | RED commits `e8c5f14` and `78146c6`; GREEN commits `d870693` and `30164fc`. |
+| Verification | Boundary checker self-tests pass 34/34; focused `BeautyFaceGeometryAdapterTests` pass 18/18 with SwiftPM sandbox disabled; `git diff --check` passes. The optional full suite built and ran 319 tests but reported 86 host-environment CoreImage/CoreVideo/Vision failures, while the changed suite remained 18/18. |
+
+Outcome:
+
+- `BeautyObservedFaceSupport` carries contour and median-line evidence independently and only for the current request; `BeautyFaceSemanticSupport` derives eligibility without exposing public or persisted state.
+- The shipped seven-point `FaceGeometry` proxy remains a separate optional compatibility path and is not relabeled as observed support.
+- Double-chin, double-chin Pro, hairline, provider behavior, public parameters, and live boundary closeout remain owned by later plans or future scope.
+
 ### C-2026-07-21-gsd-plan-phase-45-public-contract-observed-face-support
 
 | Field | Value |

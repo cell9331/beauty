@@ -2,18 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.12
 milestone_name: Face Shape Remaining Capabilities
-current_phase: 45
-current_phase_name: public-contract-and-observed-face-support
 status: executing
-stopped_at: v1.12 roadmap created; Phase 45 ready for discussion
-last_updated: "2026-07-23T04:22:39.066Z"
-last_activity: 2026-07-23
-last_activity_desc: Phase 45 execution started
+stopped_at: Completed 45-01-PLAN.md
+last_updated: "2026-07-23T04:50:37.533Z"
+last_activity: 2026-07-23 — Phase 45 execution started
 progress:
-  total_phases: 1
+  total_phases: 4
   completed_phases: 0
   total_plans: 5
-  completed_plans: 0
+  completed_plans: 1
+  percent: 0
 ---
 
 # Project State
@@ -28,8 +26,8 @@ See: `.planning/PROJECT.md` (updated 2026-07-21)
 ## Current Position
 
 Phase: 45 (public-contract-and-observed-face-support) — EXECUTING
-Plan: 1 of 5
-Status: Executing Phase 45
+Plan: 2 of 5
+Status: Ready to execute
 Last activity: 2026-07-23 — Phase 45 execution started
 
 ### Phase 44 Eye Geometry Safety and Ledger Closeout Result
@@ -212,6 +210,7 @@ Last activity: 2026-07-14
 | Phase 44 P03 | 20 | 3 tasks | 5 files |
 | Phase 44 P04 | 5 | 2 tasks | 4 files |
 | Phase 44 P05 | 8 | 2 tasks | 8 files |
+| Phase 45 P01 | 23 min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -287,6 +286,9 @@ Recent milestone-level outcomes:
 - [Phase 37]: Exact combined geometry evidence uses one provider-eligible retained baseline across all face, eye, mouth, and six-field nose work. — All exact totals, counts, scales, effective strengths, domains, warnings, and final provider emissions passed without production changes; provider-empty work contributes zero times.
 - [Phase 41]: Phase 41-01 stores exactly ten default-zero eye scalars with finite normalization and preserves legacy 38-key payload neutrality.
 - [Phase 41]: Phase 41-01 defers provider transforms to Phase 42; zero-default regression covers only the existing four shipped eye controls.
+- [Phase 45]: Keep observed contour/median evidence in one immutable package-only value with independent optional regions. — Preserves region-local absence and request-lifetime privacy without an all-or-nothing carrier.
+- [Phase 45]: Attach internal observed face semantics beside FaceGeometry.faceContour; never substitute for the exact seven-point compatibility path. — Prevents observed support from changing shipped face behavior or misrepresenting the synthetic proxy.
+- [Phase 45]: Lock face-specific open-path bounds in test fixtures without reusing eye topology constants or polygon-area evidence. — Face contour and median support are open paths with independently researched topology.
 
 ### Pending Todos
 
@@ -319,8 +321,8 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-19T14:05:00.000Z
-Stopped at: v1.11 milestone complete; next $gsd-new-milestone
+Last session: 2026-07-23T04:50:37.530Z
+Stopped at: Completed 45-01-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
