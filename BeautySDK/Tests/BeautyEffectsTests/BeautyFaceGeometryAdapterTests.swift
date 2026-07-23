@@ -999,6 +999,97 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         XCTAssertEqual(invalidEyeOrder.outerLips, baseline.outerLips)
     }
 
+    func testEffectsFaceGeometryDiagnosticsExposeAggregateCountsOnly() {
+        let sentinel = SIMD2<Float>(0.123_456, 0.234_567)
+        let semanticSupport = BeautyFaceSemanticSupport(
+            contour: Array(repeating: sentinel, count: 7),
+            medianLine: Array(repeating: sentinel, count: 3),
+            apexIndex: 2
+        )
+        let eyeSupport = BeautyEyeSemanticSupport(
+            side: .left,
+            contour: [sentinel],
+            upper: [sentinel],
+            lower: [sentinel],
+            inner: [sentinel],
+            outer: [sentinel],
+            corners: [sentinel],
+            center: sentinel,
+            pupil: sentinel,
+            span: sentinel,
+            tilt: 0.345_678
+        )
+        let geometry = FaceGeometry(
+            bounds: FaceBounds(
+                x: 0.456_789,
+                y: 0.567_891,
+                width: 0.678_912,
+                height: 0.789_123
+            ),
+            faceContour: [sentinel],
+            observedFaceSupport: semanticSupport,
+            leftEye: [sentinel],
+            rightEye: [sentinel],
+            nose: [sentinel],
+            noseRoot: [sentinel],
+            noseTip: [sentinel],
+            outerLips: [sentinel],
+            upperLips: [sentinel],
+            lowerLips: [sentinel],
+            innerLips: [sentinel],
+            leftEyeSupport: eyeSupport,
+            rightEyeSupport: eyeSupport
+        )
+
+        XCTAssertEqual(
+            Mirror(reflecting: semanticSupport).children.compactMap(\.label),
+            ["contourCount", "medianLineCount", "centerlineEligible"]
+        )
+        XCTAssertEqual(
+            Mirror(reflecting: geometry).children.compactMap(\.label),
+            [
+                "landmarkPointCount",
+                "observedEyeSupportCount",
+                "observedFaceSupportAvailable",
+                "observedFaceContourCount",
+                "observedFaceMedianLineCount",
+            ]
+        )
+
+        var semanticDump = ""
+        var geometryDump = ""
+        dump(semanticSupport, to: &semanticDump)
+        dump(geometry, to: &geometryDump)
+
+        for diagnostic in [
+            String(describing: semanticSupport),
+            String(reflecting: semanticSupport),
+            semanticDump,
+            String(describing: geometry),
+            String(reflecting: geometry),
+            geometryDump,
+        ] {
+            for prohibited in [
+                "0.123456",
+                "0.234567",
+                "0.345678",
+                "0.456789",
+                "0.567891",
+                "0.678912",
+                "0.789123",
+                "SIMD2",
+                "FaceBounds",
+                "apexIndex",
+                "bounds",
+            ] {
+                XCTAssertFalse(
+                    diagnostic.contains(prohibited),
+                    "diagnostic leaked \(prohibited): \(diagnostic)"
+                )
+            }
+        }
+    }
+
     func testObservedFaceSupportIsStatelessAcrossAlternatingCalls() {
         let validObservation = faceObservation(
             support: BeautyObservedFaceSupport(

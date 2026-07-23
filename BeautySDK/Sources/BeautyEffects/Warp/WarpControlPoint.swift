@@ -66,6 +66,31 @@ struct BeautyFaceSemanticSupport: Equatable, Sendable {
     }
 }
 
+extension BeautyFaceSemanticSupport: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+    var description: String {
+        "BeautyFaceSemanticSupport("
+            + "contourCount: \(contour.count), "
+            + "medianLineCount: \(medianLine?.count ?? 0), "
+            + "centerlineEligible: \(centerlineEligible))"
+    }
+
+    var debugDescription: String {
+        description
+    }
+
+    var customMirror: Mirror {
+        Mirror(
+            self,
+            children: [
+                "contourCount": contour.count,
+                "medianLineCount": medianLine?.count ?? 0,
+                "centerlineEligible": centerlineEligible,
+            ],
+            displayStyle: .struct
+        )
+    }
+}
+
 struct FaceBounds: Equatable, Sendable {
     let x: Float
     let y: Float
@@ -143,5 +168,51 @@ struct FaceGeometry: Equatable, Sendable {
 
     var center: SIMD2<Float> {
         LandmarkGeometryHelper.center(of: faceContour) ?? bounds.center
+    }
+}
+
+extension FaceGeometry: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+    private var landmarkPointCount: Int {
+        faceContour.count
+            + leftEye.count
+            + rightEye.count
+            + nose.count
+            + noseRoot.count
+            + noseTip.count
+            + outerLips.count
+            + upperLips.count
+            + lowerLips.count
+            + innerLips.count
+    }
+
+    private var observedEyeSupportCount: Int {
+        [leftEyeSupport, rightEyeSupport].compactMap { $0 }.count
+    }
+
+    var description: String {
+        "FaceGeometry("
+            + "landmarkPointCount: \(landmarkPointCount), "
+            + "observedEyeSupportCount: \(observedEyeSupportCount), "
+            + "observedFaceSupportAvailable: \(observedFaceSupport != nil), "
+            + "observedFaceContourCount: \(observedFaceSupport?.contour.count ?? 0), "
+            + "observedFaceMedianLineCount: \(observedFaceSupport?.medianLine?.count ?? 0))"
+    }
+
+    var debugDescription: String {
+        description
+    }
+
+    var customMirror: Mirror {
+        Mirror(
+            self,
+            children: [
+                "landmarkPointCount": landmarkPointCount,
+                "observedEyeSupportCount": observedEyeSupportCount,
+                "observedFaceSupportAvailable": observedFaceSupport != nil,
+                "observedFaceContourCount": observedFaceSupport?.contour.count ?? 0,
+                "observedFaceMedianLineCount": observedFaceSupport?.medianLine?.count ?? 0,
+            ],
+            displayStyle: .struct
+        )
     }
 }

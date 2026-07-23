@@ -365,6 +365,15 @@ def check_diagnostics(root: Path, runner: Runner = default_runner) -> Result:
                     '"observedFaceMedianLineCount:',
                 )
             )
+        if path == "BeautySDK/Sources/BeautyEffects/Warp/WarpControlPoint.swift":
+            return any(
+                token in line
+                for token in (
+                    '"observedFaceSupportAvailable:',
+                    '"observedFaceContourCount:',
+                    '"observedFaceMedianLineCount:',
+                )
+            )
         return False
 
     return rg_scan(
@@ -634,6 +643,13 @@ def build_source_fixture(root: Path) -> Path:
         source,
         "package struct BeautyObservedFaceSupport: Equatable, Sendable {}\n"
         "/// This value intentionally has no Codable or diagnostic representation.\n",
+    )
+    write_fixture(
+        root,
+        "BeautySDK/Sources/BeautyEffects/Warp/WarpControlPoint.swift",
+        'let available = "observedFaceSupportAvailable: \\(observedFaceSupport != nil)"\n'
+        'let contour = "observedFaceContourCount: \\(observedFaceSupport?.contour.count ?? 0)"\n'
+        'let median = "observedFaceMedianLineCount: \\(observedFaceSupport?.medianLine?.count ?? 0)"\n',
     )
     write_fixture(root, "BeautySDK/Sources/BeautyExampleRenderer/main.swift", "// facade-only fixture\n")
     write_fixture(root, "BeautyDemo/App.swift", "import BeautySDK\n")
