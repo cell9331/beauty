@@ -1,7 +1,7 @@
 ---
 phase: 46
 slug: independent-contour-and-chin-geometry
-status: complete
+status: validated
 nyquist_compliant: true
 wave_0_complete: true
 created: 2026-07-23
@@ -113,6 +113,20 @@ All Phase 46 acceptance is automatable through provider vectors, resolver/confli
 
 ---
 
+## Validation Audit 2026-07-23
+
+| Metric | Count |
+|--------|-------|
+| Gaps found | 0 |
+| Resolved | 0 |
+| Escalated | 0 |
+
+The post-review Nyquist audit cross-referenced GEOM-01 through GEOM-04 against every finalized plan task, the 12-row requirement map, the seven focused suites, the complete SwiftPM regression suite, the fail-closed checker, and the independent 18/18 goal verification. Provider vector, resolver lifecycle, conflict accounting, degradation, unified dispatch, facade routing, privacy/scope, and diff-hygiene behavior all have executable evidence. No missing-test or manual-only Phase 46 gap remains.
+
+The standard review found only three trailing spaces in `46-RESEARCH.md`; commit `5a75293` removed them, and the complete phase range now passes `git diff --check`. The fresh verifier rerun executes 368 tests with 3 opt-in Apple Vision skips and 0 failures. Phase 47 output evidence and Phase 48 final safety/promotion remain explicit downstream requirements rather than validation omissions.
+
+---
+
 ## Validation Sign-Off
 
 - [x] Every finalized plan task has an `<automated>` command or explicit Wave 0 dependency.
@@ -125,4 +139,4 @@ All Phase 46 acceptance is automatable through provider vectors, resolver/confli
 - [x] Full SwiftPM and diff/security gates pass.
 - [x] `nyquist_compliant: true` and `wave_0_complete: true` are set only after executed evidence is recorded.
 
-**Approval:** complete — fresh Phase 46 evidence recorded; post-phase Nyquist and security hooks remain independent audits
+**Approval:** validated after post-review Nyquist audit — 2026-07-23
