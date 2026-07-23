@@ -18,6 +18,10 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
     public var faceVShape: Float
     public var jawSlim: Float
     public var chinLength: Float
+    public var faceContourSmooth: Float
+    public var templeFullness: Float
+    public var cheekboneSlim: Float
+    public var chinTaper: Float
 
     public var eyeSize: Float
     public var eyeDistance: Float
@@ -72,6 +76,10 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         case faceVShape
         case jawSlim
         case chinLength
+        case faceContourSmooth
+        case templeFullness
+        case cheekboneSlim
+        case chinTaper
         case eyeSize
         case eyeDistance
         case eyeYPosition
@@ -123,6 +131,10 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         faceVShape: Float = 0,
         jawSlim: Float = 0,
         chinLength: Float = 0,
+        faceContourSmooth: Float = 0,
+        templeFullness: Float = 0,
+        cheekboneSlim: Float = 0,
+        chinTaper: Float = 0,
         eyeSize: Float = 0,
         eyeDistance: Float = 0,
         eyeYPosition: Float = 0,
@@ -174,6 +186,10 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         self.faceVShape = Self.clampUnit(faceVShape)
         self.jawSlim = Self.clampUnit(jawSlim)
         self.chinLength = Self.clampSigned(chinLength)
+        self.faceContourSmooth = Self.clampUnit(faceContourSmooth)
+        self.templeFullness = Self.clampUnit(templeFullness)
+        self.cheekboneSlim = Self.clampUnit(cheekboneSlim)
+        self.chinTaper = Self.clampUnit(chinTaper)
 
         self.eyeSize = Self.clampUnit(eyeSize)
         self.eyeDistance = Self.clampSigned(eyeDistance)
@@ -231,6 +247,10 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             faceVShape: try container.decodeFloatIfPresent(.faceVShape),
             jawSlim: try container.decodeFloatIfPresent(.jawSlim),
             chinLength: try container.decodeFloatIfPresent(.chinLength),
+            faceContourSmooth: try container.decodeFloatIfPresent(.faceContourSmooth),
+            templeFullness: try container.decodeFloatIfPresent(.templeFullness),
+            cheekboneSlim: try container.decodeFloatIfPresent(.cheekboneSlim),
+            chinTaper: try container.decodeFloatIfPresent(.chinTaper),
             eyeSize: try container.decodeFloatIfPresent(.eyeSize),
             eyeDistance: try container.decodeFloatIfPresent(.eyeDistance),
             eyeYPosition: try container.decodeFloatIfPresent(.eyeYPosition),
@@ -284,6 +304,10 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             faceVShape: faceVShape,
             jawSlim: jawSlim,
             chinLength: chinLength,
+            faceContourSmooth: faceContourSmooth,
+            templeFullness: templeFullness,
+            cheekboneSlim: cheekboneSlim,
+            chinTaper: chinTaper,
             eyeSize: eyeSize,
             eyeDistance: eyeDistance,
             eyeYPosition: eyeYPosition,
