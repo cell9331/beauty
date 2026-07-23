@@ -429,6 +429,41 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         XCTAssertNil(geometry.observedFaceSupport)
     }
 
+    func testSmallFaceBoundsUseExactDimensionsForObservedValidationWithoutChangingLegacyProxy() {
+        let smallBounds = CoordinateRect(x: 0.40, y: 0.35, width: 0.02, height: 0.03)
+        func imagePoint(_ x: Double, _ y: Double) -> CoordinatePoint {
+            CoordinatePoint(
+                x: smallBounds.x + smallBounds.width * x,
+                y: smallBounds.y + smallBounds.height * y
+            )
+        }
+        let contour = faceOpenContour(count: 7).map {
+            imagePoint(($0.x - 0.10) / 0.80, ($0.y - 0.15) / 0.60)
+        }
+        let median = faceMedianLine(count: 3).map {
+            imagePoint($0.x, ($0.y - 0.20) / 0.60)
+        }
+
+        let geometry = BeautyFaceGeometryAdapter.makeGeometry(
+            from: BeautyFaceObservation(
+                imageBounds: smallBounds,
+                landmarks: .complete,
+                observedFaceSupport: BeautyObservedFaceSupport(
+                    contour: contour,
+                    medianLine: median
+                )
+            )
+        )
+
+        XCTAssertTrue(geometry.observedFaceSupport?.contourEligible == true)
+        XCTAssertTrue(geometry.observedFaceSupport?.centerlineEligible == true)
+        XCTAssertEqual(geometry.bounds.width, 0.05)
+        XCTAssertEqual(geometry.bounds.height, 0.05)
+        XCTAssertEqual(geometry.faceContour.count, 7)
+        XCTAssertEqual(geometry.faceContour.first, SIMD2<Float>(0.4025, 0.365))
+        XCTAssertEqual(geometry.faceContour.last, SIMD2<Float>(0.4475, 0.365))
+    }
+
     func testFaceSupportFixturesLockCountsAndTopologyThresholdMatrices() {
         XCTAssertEqual(
             faceContourCardinalityMatrix.map(\.count),

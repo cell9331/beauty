@@ -40,10 +40,14 @@ enum BeautyFaceGeometryAdapter {
     static func makeGeometry(from observation: BeautyFaceObservation) -> FaceGeometry {
         let bounds = makeBounds(from: observation)
         let landmarks = observation.landmarks.availableGroups
-        let observedFaceSupport = validatedFaceSupport(
-            observation.observedFaceSupport,
-            bounds: bounds
-        )
+        let observedFaceSupport = observation.imageBounds
+            .flatMap(exactPositiveBounds)
+            .flatMap {
+                validatedFaceSupport(
+                    observation.observedFaceSupport,
+                    bounds: $0
+                )
+            }
 
         let observedSupports = observation.observedEyeSupport
         if observedSupports != nil, observation.observedEyeOrder != .canonical {
@@ -654,6 +658,23 @@ enum BeautyFaceGeometryAdapter {
             width: width,
             height: height
         )
+    }
+
+    private static func exactPositiveBounds(from rect: CoordinateRect) -> FaceBounds? {
+        let x = Float(rect.x)
+        let y = Float(rect.y)
+        let width = Float(rect.width)
+        let height = Float(rect.height)
+        guard x.isFinite,
+              y.isFinite,
+              width.isFinite,
+              height.isFinite,
+              width > 0,
+              height > 0
+        else {
+            return nil
+        }
+        return FaceBounds(x: x, y: y, width: width, height: height)
     }
 
     private static func faceContour(in bounds: FaceBounds) -> [SIMD2<Float>] {
