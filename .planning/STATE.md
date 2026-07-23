@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.12
 milestone_name: Face Shape Remaining Capabilities
 status: executing
-stopped_at: Completed 45-02-PLAN.md
-last_updated: "2026-07-23T05:05:54.282Z"
+stopped_at: Completed 45-03-PLAN.md
+last_updated: "2026-07-23T05:20:37.311Z"
 last_activity: 2026-07-23 — Phase 45 execution started
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 5
-  completed_plans: 2
+  completed_plans: 3
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: `.planning/PROJECT.md` (updated 2026-07-21)
 ## Current Position
 
 Phase: 45 (public-contract-and-observed-face-support) — EXECUTING
-Plan: 3 of 5
+Plan: 4 of 5
 Status: Ready to execute
 Last activity: 2026-07-23 — Phase 45 execution started
 
@@ -212,6 +212,7 @@ Last activity: 2026-07-14
 | Phase 44 P05 | 8 | 2 tasks | 8 files |
 | Phase 45 P01 | 23 min | 2 tasks | 4 files |
 | Phase 45 P02 | 5 min | 2 tasks | 5 files |
+| Phase 45 P03 | 11 min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -293,6 +294,9 @@ Recent milestone-level outcomes:
 - [Phase 45]: Keep all four additions as independent clampUnit-backed stored values while preserving signed chinLength. — This freezes distinct positive-only public semantics without aliasing the shipped signed chin control.
 - [Phase 45]: Defer requiresFaceGeometry, effective strengths, caps, providers, and routing for the four new intents to Phase 46. — Phase 45 owns compatibility-safe storage only, so nonzero intent must remain unrouted.
 - [Phase 45]: Preserve bundled preset bytes and prove compatibility through missing-key zero decoding. — Explicit zero keys would hide the legacy preset compatibility behavior.
+- [Phase 45]: Keep actual contour and median capture in the single existing Vision landmarks request and copy only CoordinatePoint values. — This preserves exactly one detector request and retains no Vision framework region object.
+- [Phase 45]: Preflight contour and median independently at fixed 32-point and 16-point ceilings so valid siblings survive malformed input. — Bounded region-local failure prevents optional support from erasing the selected face or valid sibling region.
+- [Phase 45]: Canonicalize observed open paths with mapper-derived right/down axes and whole-array reversal only. — The same metadata governs point mapping and semantic direction while preserving adjacency.
 
 ### Pending Todos
 
@@ -325,8 +329,8 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-23T05:05:54.279Z
-Stopped at: Completed 45-02-PLAN.md
+Last session: 2026-07-23T05:20:37.307Z
+Stopped at: Completed 45-03-PLAN.md
 Resume file: None
 
 ## Operator Next Steps

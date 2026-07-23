@@ -30,6 +30,23 @@ Milestone v1.12 autonomous execution is active from Phase 45. After the semantic
 
 ## 4. Completed
 
+### C-2026-07-23-phase-45-plan-03-observed-face-mapping
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-23 |
+| Scope | Completed Phase 45 Plan `45-03`: actual Vision `faceContour` and `medianLine` capture in the existing request, bounded independent mapping, mapper-axis canonical direction, and request/concurrency isolation. |
+| Mapping | Raw face-local regions are copied immediately, preflighted independently at fixed ceilings of 32 contour and 16 median points, composed into Vision image space, and mapped exactly once per accepted point. Invalid optional regions become nil without erasing the selected face or valid sibling region; invalid shared bounds retain the existing observation-level mapping failure. |
+| Canonicalization | The 4-orientation × 2-input-mirror matrix passes for forward/reversed contour and median inputs. Canonical direction uses mapper-derived face-local right/down axes and whole-array reversal only; preview mirroring is invariant and adjacency is preserved. |
+| Lifecycle | Consecutive opposite-metadata calls and eight parallel detector values preserve independent payloads with no retry, cache, persistence, framework-region retention, or raw diagnostic output. Six committed portraits are evaluated through aggregate availability/count gates only. |
+| Verification | Focused mapping tests pass 15/15, focused detector tests pass 18/18 with Apple Vision host access, full SwiftPM passes 338/338, and `git diff --check` passes. |
+
+Outcome:
+
+- `VisionDetectionObservation` now carries optional face support beside existing eye support without changing the public surface, detector request count, selection contract, or shipped seven-point proxy.
+- Exact closed-unit edges are accepted; outside, non-finite, oversized, and direction-degenerate regions fail independently and deterministically.
+- Phase 45 Plan `45-04` can validate mapped open-path topology at the adapter boundary; providers, routing, output, final caps, and promotion remain downstream.
+
 ### C-2026-07-23-phase-45-plan-02-public-face-contract
 
 | Field | Value |

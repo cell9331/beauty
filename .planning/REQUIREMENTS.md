@@ -15,7 +15,7 @@
 
 ### Private Face Support
 
-- [ ] **SUPP-01**: New contour-dependent fields use actual Vision face-contour and median-line points mapped once into image-normalized coordinates, not the legacy synthetic face-box proxy.
+- [x] **SUPP-01**: New contour-dependent fields use actual Vision face-contour and median-line points mapped once into image-normalized coordinates, not the legacy synthetic face-box proxy.
 - [x] **SUPP-02**: Observed contour and centerline support is canonicalized and rejected when non-finite, out of bounds, duplicate, undersized, side-inverted, or internally inconsistent.
 - [x] **SUPP-04**: Observed support remains request-scoped, package-internal, non-Codable, non-public, non-persistent, and absent from logs, metrics, errors, and Demo imports.
 
@@ -71,7 +71,7 @@
 | FACE-08 | Phase 45 | Complete |
 | FACE-09 | Phase 45 | Complete |
 | FACE-12 | Phase 45 | Complete |
-| SUPP-01 | Phase 45 | Pending |
+| SUPP-01 | Phase 45 | Complete |
 | SUPP-02 | Phase 45 | Complete |
 | SUPP-04 | Phase 45 | Complete |
 | GEOM-01 | Phase 46 | Pending |
