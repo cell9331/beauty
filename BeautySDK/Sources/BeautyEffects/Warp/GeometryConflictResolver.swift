@@ -26,6 +26,10 @@ struct GeometryConflictResolver: Sendable {
         weakened.faceVShape *= scale
         weakened.jawSlim *= scale
         weakened.chinLength *= scale
+        weakened.faceContourSmooth *= scale
+        weakened.templeFullness *= scale
+        weakened.cheekboneSlim *= scale
+        weakened.chinTaper *= scale
         weakened.eyeSize *= scale
         weakened.eyeDistance *= scale
         weakened.eyeYPosition *= scale
@@ -71,39 +75,46 @@ struct GeometryConflictResolver: Sendable {
     }
 
     private func geometryTotal(_ strengths: BeautyEffectiveStrengths) -> Float {
-        strengths.faceSlim +
-            strengths.faceSmall +
-            strengths.faceVShape +
-            strengths.jawSlim +
-            abs(strengths.chinLength) +
-            abs(strengths.eyeSize) +
-            abs(strengths.eyeDistance) +
-            abs(strengths.eyeYPosition) +
-            abs(strengths.eyeTailLift) +
-            strengths.eyeHeight +
-            strengths.eyeLength +
-            strengths.upperEyelidLift +
-            strengths.pupilSize +
-            strengths.gazeCorrection +
-            strengths.lowerEyelidDrop +
-            abs(strengths.eyeTilt) +
-            strengths.innerCornerOpen +
-            strengths.outerCornerOpen +
-            strengths.eyeSymmetry +
-            strengths.noseSlim +
-            strengths.noseWingSlim +
-            abs(strengths.noseTipSize) +
-            strengths.noseBridge +
-            strengths.noseRootNarrowing +
-            strengths.noseTipLift +
-            abs(strengths.mouthSize) +
-            abs(strengths.mouthWidth) +
-            strengths.smile +
-            abs(strengths.mouthYPosition) +
-            abs(strengths.mouthTilt) +
-            abs(strengths.mouthXPosition) +
-            strengths.lipPeakDefinition +
-            strengths.lipPlump
+        let fields: [Float] = [
+            strengths.faceSlim,
+            strengths.faceSmall,
+            strengths.faceVShape,
+            strengths.jawSlim,
+            abs(strengths.chinLength),
+            strengths.faceContourSmooth,
+            strengths.templeFullness,
+            strengths.cheekboneSlim,
+            strengths.chinTaper,
+            abs(strengths.eyeSize),
+            abs(strengths.eyeDistance),
+            abs(strengths.eyeYPosition),
+            abs(strengths.eyeTailLift),
+            strengths.eyeHeight,
+            strengths.eyeLength,
+            strengths.upperEyelidLift,
+            strengths.pupilSize,
+            strengths.gazeCorrection,
+            strengths.lowerEyelidDrop,
+            abs(strengths.eyeTilt),
+            strengths.innerCornerOpen,
+            strengths.outerCornerOpen,
+            strengths.eyeSymmetry,
+            strengths.noseSlim,
+            strengths.noseWingSlim,
+            abs(strengths.noseTipSize),
+            strengths.noseBridge,
+            strengths.noseRootNarrowing,
+            strengths.noseTipLift,
+            abs(strengths.mouthSize),
+            abs(strengths.mouthWidth),
+            strengths.smile,
+            abs(strengths.mouthYPosition),
+            abs(strengths.mouthTilt),
+            abs(strengths.mouthXPosition),
+            strengths.lipPeakDefinition,
+            strengths.lipPlump,
+        ]
+        return Float(fields.reduce(0.0) { $0 + Double($1) })
     }
 
     private func nonZeroFaceShapeFieldCount(_ strengths: BeautyEffectiveStrengths) -> Int {
@@ -113,6 +124,10 @@ struct GeometryConflictResolver: Sendable {
             strengths.faceVShape,
             strengths.jawSlim,
             abs(strengths.chinLength),
+            strengths.faceContourSmooth,
+            strengths.templeFullness,
+            strengths.cheekboneSlim,
+            strengths.chinTaper,
             abs(strengths.eyeSize),
             abs(strengths.eyeDistance),
             abs(strengths.eyeYPosition),

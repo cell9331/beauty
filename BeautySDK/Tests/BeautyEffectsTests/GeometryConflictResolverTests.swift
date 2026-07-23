@@ -188,7 +188,9 @@ final class GeometryConflictResolverTests: XCTestCase {
         )
         let resolved = GeometryConflictResolver().resolve(strengths: independent)
         let rows = phase46GeometryRows
-        let expectedTotal = rows.reduce(Float(0)) { $0 + abs($1.unscaled) }
+        let expectedTotal = Float(
+            rows.reduce(0.0) { $0 + Double(abs($1.unscaled)) }
+        )
         let expectedScale: Float = 1 / expectedTotal
 
         XCTAssertEqual(rows.count, 37)
@@ -546,42 +548,44 @@ final class GeometryConflictResolverTests: XCTestCase {
 
 private extension BeautyEffectiveStrengths {
     var geometryTotal: Float {
-        faceSlim +
-            faceSmall +
-            faceVShape +
-            jawSlim +
-            abs(chinLength) +
-            faceContourSmooth +
-            templeFullness +
-            cheekboneSlim +
-            chinTaper +
-            abs(eyeSize) +
-            abs(eyeDistance) +
-            abs(eyeYPosition) +
-            abs(eyeTailLift) +
-            eyeHeight +
-            eyeLength +
-            upperEyelidLift +
-            pupilSize +
-            gazeCorrection +
-            lowerEyelidDrop +
-            abs(eyeTilt) +
-            innerCornerOpen +
-            outerCornerOpen +
-            eyeSymmetry +
-            noseSlim +
-            noseWingSlim +
-            abs(noseTipSize) +
-            noseBridge +
-            noseRootNarrowing +
-            noseTipLift +
-            abs(mouthSize) +
-            abs(mouthWidth) +
-            smile +
-            abs(mouthYPosition) +
-            abs(mouthTilt) +
-            abs(mouthXPosition) +
-            lipPeakDefinition +
-            lipPlump
+        Float([
+            faceSlim,
+            faceSmall,
+            faceVShape,
+            jawSlim,
+            abs(chinLength),
+            faceContourSmooth,
+            templeFullness,
+            cheekboneSlim,
+            chinTaper,
+            abs(eyeSize),
+            abs(eyeDistance),
+            abs(eyeYPosition),
+            abs(eyeTailLift),
+            eyeHeight,
+            eyeLength,
+            upperEyelidLift,
+            pupilSize,
+            gazeCorrection,
+            lowerEyelidDrop,
+            abs(eyeTilt),
+            innerCornerOpen,
+            outerCornerOpen,
+            eyeSymmetry,
+            noseSlim,
+            noseWingSlim,
+            abs(noseTipSize),
+            noseBridge,
+            noseRootNarrowing,
+            noseTipLift,
+            abs(mouthSize),
+            abs(mouthWidth),
+            smile,
+            abs(mouthYPosition),
+            abs(mouthTilt),
+            abs(mouthXPosition),
+            lipPeakDefinition,
+            lipPlump,
+        ].reduce(0.0) { $0 + Double($1) })
     }
 }

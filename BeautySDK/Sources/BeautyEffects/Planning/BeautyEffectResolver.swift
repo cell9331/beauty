@@ -14,6 +14,10 @@ public enum BeautyEffectResolver {
             normalized.faceVShape,
             normalized.jawSlim,
             normalized.chinLength,
+            normalized.faceContourSmooth,
+            normalized.templeFullness,
+            normalized.cheekboneSlim,
+            normalized.chinTaper,
             normalized.eyeSize,
             normalized.eyeDistance,
             normalized.eyeYPosition,
@@ -93,6 +97,26 @@ public enum BeautyEffectResolver {
         strengths.faceVShape = capUnit(normalized.faceVShape, cap: BeautySafetyCaps.faceVShape, cappedCount: &cappedCount)
         strengths.jawSlim = capUnit(normalized.jawSlim, cap: BeautySafetyCaps.jawSlim, cappedCount: &cappedCount)
         strengths.chinLength = capSigned(normalized.chinLength, cap: BeautySafetyCaps.chinLength, cappedCount: &cappedCount)
+        strengths.faceContourSmooth = capUnit(
+            normalized.faceContourSmooth,
+            cap: BeautySafetyCaps.faceContourSmooth,
+            cappedCount: &cappedCount
+        )
+        strengths.templeFullness = capUnit(
+            normalized.templeFullness,
+            cap: BeautySafetyCaps.templeFullness,
+            cappedCount: &cappedCount
+        )
+        strengths.cheekboneSlim = capUnit(
+            normalized.cheekboneSlim,
+            cap: BeautySafetyCaps.cheekboneSlim,
+            cappedCount: &cappedCount
+        )
+        strengths.chinTaper = capUnit(
+            normalized.chinTaper,
+            cap: BeautySafetyCaps.chinTaper,
+            cappedCount: &cappedCount
+        )
 
         strengths.eyeSize = capUnit(normalized.eyeSize, cap: BeautySafetyCaps.eyeSize, cappedCount: &cappedCount)
         strengths.eyeDistance = capSigned(normalized.eyeDistance, cap: BeautySafetyCaps.eyeDistance, cappedCount: &cappedCount)
@@ -153,6 +177,10 @@ public enum BeautyEffectResolver {
             strengths.faceVShape,
             strengths.jawSlim,
             strengths.chinLength,
+            strengths.faceContourSmooth,
+            strengths.templeFullness,
+            strengths.cheekboneSlim,
+            strengths.chinTaper,
             strengths.noseSlim,
             strengths.noseWingSlim,
             strengths.noseTipSize,
@@ -196,6 +224,24 @@ public enum BeautyEffectResolver {
             Self.zeroEyeStrengths(&strengths)
         }
 
+        let hadRequestedFaceValues = anyNonZero(
+            strengths.faceSlim,
+            strengths.faceSmall,
+            strengths.faceVShape,
+            strengths.jawSlim,
+            strengths.chinLength,
+            strengths.faceContourSmooth,
+            strengths.templeFullness,
+            strengths.cheekboneSlim,
+            strengths.chinTaper
+        )
+        let hadRequestedShippedFaceValues = anyNonZero(
+            strengths.faceSlim,
+            strengths.faceSmall,
+            strengths.faceVShape,
+            strengths.jawSlim,
+            strengths.chinLength
+        )
         let hadRequestedNoseValues = anyNonZero(
             strengths.noseSlim,
             strengths.noseWingSlim,
@@ -214,10 +260,21 @@ public enum BeautyEffectResolver {
             strengths.lipPeakDefinition,
             strengths.lipPlump
         )
+        let faceProvider = FaceShapeWarpProvider()
+        let chinProvider = ChinWarpProvider()
+        let eyeProvider = EyeWarpProvider()
         let noseProvider = NoseWarpProvider()
         let mouthProvider = MouthWarpProvider()
-        let eyeProvider = EyeWarpProvider()
+        if staleGeometry || noUsableFace {
+            Self.zeroNewFaceGeometryStrengths(&strengths)
+        }
         if !staleGeometry, let faceGeometry {
+            strengths = faceProvider
+                .fieldEmissions(face: faceGeometry, strengths: strengths)
+                .sanitizing(strengths)
+            strengths = chinProvider
+                .fieldEmissions(face: faceGeometry, strengths: strengths)
+                .sanitizing(strengths)
             strengths = eyeProvider
                 .fieldEmissions(face: faceGeometry, strengths: strengths)
                 .sanitizing(strengths)
@@ -263,7 +320,11 @@ public enum BeautyEffectResolver {
             strengths.faceSmall,
             strengths.faceVShape,
             strengths.jawSlim,
-            strengths.chinLength
+            strengths.chinLength,
+            strengths.faceContourSmooth,
+            strengths.templeFullness,
+            strengths.cheekboneSlim,
+            strengths.chinTaper
         )
         let hasMouthGeometryValues = anyNonZero(
             strengths.mouthSize,
@@ -282,6 +343,8 @@ public enum BeautyEffectResolver {
             let conflict = Self.resolveGeometryConflict(
                 strengths: strengths,
                 faceGeometry: faceGeometry,
+                faceProvider: faceProvider,
+                chinProvider: chinProvider,
                 eyeProvider: eyeProvider,
                 noseProvider: noseProvider,
                 mouthProvider: mouthProvider
@@ -291,19 +354,35 @@ public enum BeautyEffectResolver {
             metrics.merge(conflict.metrics) { _, new in new }
         }
 
-        if hasFaceShapeValues {
+        let finalFaceEmissions = staleGeometry ? nil : faceGeometry.map {
+            faceProvider.fieldEmissions(face: $0, strengths: strengths)
+        }
+        let finalChinEmissions = staleGeometry ? nil : faceGeometry.map {
+            chinProvider.fieldEmissions(face: $0, strengths: strengths)
+        }
+        let finalEyeEmissions = staleGeometry ? nil : faceGeometry.map {
+            eyeProvider.fieldEmissions(face: $0, strengths: strengths)
+        }
+        let finalNoseEmissions = staleGeometry ? nil : faceGeometry.map {
+            noseProvider.fieldEmissions(face: $0, strengths: strengths)
+        }
+        let finalMouthEmissions = staleGeometry ? nil : faceGeometry.map {
+            mouthProvider.fieldEmissions(face: $0, strengths: strengths)
+        }
+
+        if hadRequestedFaceValues {
             if staleGeometry {
                 skippedDomains.insert(.faceShape)
                 metrics["beauty.effects.skippedFaceDomains"] = 1
                 appendStaleGeometryWarningIfNeeded()
-            } else if let faceGeometry {
-                let faceShapePointCount = BeautyGeometryEffectPipeline
-                    .controlPoints(for: strengths, face: faceGeometry)
-                    .count
+            } else if faceGeometry != nil {
+                let faceShapePointCount =
+                    (finalFaceEmissions?.points.count ?? 0) +
+                    (finalChinEmissions?.points.count ?? 0)
                 if faceShapePointCount > 0 {
                     activeDomains.insert(.faceShape)
                     geometryPointCount += faceShapePointCount
-                } else {
+                } else if hadRequestedShippedFaceValues {
                     skippedDomains.insert(.faceShape)
                     extraWarnings.append(Self.faceShapeSkippedWarning)
                 }
@@ -326,16 +405,16 @@ public enum BeautyEffectResolver {
                 skippedDomains.insert(.eyes)
                 metrics["beauty.effects.skippedEyeDomains"] = 1
                 extraWarnings.append(Self.staleEyeSkippedWarning)
-            } else if let faceGeometry {
-                let result = eyeProvider.makeControlPoints(face: faceGeometry, strengths: strengths)
-                if result.points.isEmpty {
+            } else if faceGeometry != nil {
+                let points = finalEyeEmissions?.points ?? []
+                if points.isEmpty {
                     Self.zeroEyeStrengths(&strengths)
                     skippedDomains.insert(.eyes)
                     metrics["beauty.effects.skippedEyeDomains"] = 1
                     extraWarnings.append(Self.eyeSkippedWarning)
                 } else {
                     activeDomains.insert(.eyes)
-                    geometryPointCount += result.points.count
+                    geometryPointCount += points.count
                 }
             } else {
                 if treatsMissingFaceAsNoFace {
@@ -356,16 +435,16 @@ public enum BeautyEffectResolver {
                 skippedDomains.insert(.nose)
                 metrics["beauty.effects.skippedNoseDomains"] = 1
                 appendStaleGeometryWarningIfNeeded()
-            } else if let faceGeometry {
-                let result = noseProvider.makeControlPoints(face: faceGeometry, strengths: strengths)
-                if result.points.isEmpty {
+            } else if faceGeometry != nil {
+                let points = finalNoseEmissions?.points ?? []
+                if points.isEmpty {
                     Self.zeroNoseStrengths(&strengths)
                     skippedDomains.insert(.nose)
                     metrics["beauty.effects.skippedNoseDomains"] = 1
                     extraWarnings.append(Self.noseSkippedWarning)
                 } else {
                     activeDomains.insert(.nose)
-                    geometryPointCount += result.points.count
+                    geometryPointCount += points.count
                 }
             } else {
                 Self.zeroNoseStrengths(&strengths)
@@ -384,16 +463,16 @@ public enum BeautyEffectResolver {
                 skippedDomains.insert(.mouth)
                 metrics["beauty.effects.skippedMouthDomains"] = 1
                 appendStaleGeometryWarningIfNeeded()
-            } else if let faceGeometry {
-                let result = mouthProvider.makeControlPoints(face: faceGeometry, strengths: strengths)
-                if result.points.isEmpty {
+            } else if faceGeometry != nil {
+                let points = finalMouthEmissions?.points ?? []
+                if points.isEmpty {
                     Self.zeroMouthGeometryStrengths(&strengths)
                     skippedDomains.insert(.mouth)
                     metrics["beauty.effects.skippedMouthDomains"] = 1
                     extraWarnings.append(Self.mouthSkippedWarning)
                 } else {
                     activeDomains.insert(.mouth)
-                    geometryPointCount += result.points.count
+                    geometryPointCount += points.count
                 }
             } else {
                 Self.zeroMouthGeometryStrengths(&strengths)
@@ -475,22 +554,29 @@ public enum BeautyEffectResolver {
     private static func resolveGeometryConflict(
         strengths: BeautyEffectiveStrengths,
         faceGeometry: FaceGeometry,
+        faceProvider: FaceShapeWarpProvider,
+        chinProvider: ChinWarpProvider,
         eyeProvider: EyeWarpProvider,
         noseProvider: NoseWarpProvider,
         mouthProvider: MouthWarpProvider
     ) -> GeometryConflictResolution {
         var retainedBaseline = strengths
 
-        // A conflict scale can move a previously emitting nose or mouth field
-        // below its provider threshold. Remove that work from the unscaled
-        // baseline and recompute so final emissions and conflict evidence share
-        // one mask. Each pass can only remove fields: six nose plus eight mouth,
-        // for an exact bounded convergence maximum of twenty-eight removals.
-        for _ in 0..<28 {
+        // A conflict scale can move a previously emitting field below its
+        // provider threshold. Remove that work from the unscaled baseline and
+        // recompute so final emissions and conflict evidence share one mask.
+        // Each pass can only remove fields from the exact 37-field inventory.
+        for _ in 0..<37 {
             let resolution = GeometryConflictResolver().resolve(strengths: retainedBaseline)
-            var nextBaseline = eyeProvider
+            var nextBaseline = faceProvider
                 .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
                 .sanitizing(retainedBaseline)
+            nextBaseline = chinProvider
+                .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
+                .sanitizing(nextBaseline)
+            nextBaseline = eyeProvider
+                .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
+                .sanitizing(nextBaseline)
             nextBaseline = noseProvider
                 .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
                 .sanitizing(nextBaseline)
@@ -547,12 +633,23 @@ public enum BeautyEffectResolver {
         strengths.lipPlump = 0
     }
 
+    private static func zeroNewFaceGeometryStrengths(_ strengths: inout BeautyEffectiveStrengths) {
+        strengths.faceContourSmooth = 0
+        strengths.templeFullness = 0
+        strengths.cheekboneSlim = 0
+        strengths.chinTaper = 0
+    }
+
     private static func scaleReusableNonEyeGeometryStrengths(_ strengths: inout BeautyEffectiveStrengths, by scale: Float) {
         strengths.faceSlim *= scale
         strengths.faceSmall *= scale
         strengths.faceVShape *= scale
         strengths.jawSlim *= scale
         strengths.chinLength *= scale
+        strengths.faceContourSmooth *= scale
+        strengths.templeFullness *= scale
+        strengths.cheekboneSlim *= scale
+        strengths.chinTaper *= scale
         strengths.noseSlim *= scale
         strengths.noseWingSlim *= scale
         strengths.noseTipSize *= scale

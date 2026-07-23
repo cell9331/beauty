@@ -204,7 +204,15 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
         let ceiling =
             0.012 * face.bounds.width * strength / BeautySafetyCaps.faceContourSmooth
         guard ceiling.isFinite, ceiling > 0 else { return [] }
-        let uniformScaleCeiling = min(1, ceiling / maximumAbsoluteCenteredDelta)
+        let normalizedStrength = min(
+            1,
+            strength / BeautySafetyCaps.faceContourSmooth
+        )
+        let uniformScaleCeiling = min(
+            1,
+            normalizedStrength,
+            ceiling / maximumAbsoluteCenteredDelta
+        )
         guard uniformScaleCeiling.isFinite,
               uniformScaleCeiling > 0,
               uniformScaleCeiling <= 1,
@@ -301,7 +309,11 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
         }
 
         var candidate = upperBound
-        for _ in 0..<4096 {
+        // Search far enough below the mathematical ceiling to accommodate
+        // Float target quantization at both the provisional cap and the exact
+        // reused (0.5) strength. The chosen candidate remains one shared
+        // scale for the complete centered delta set.
+        for _ in 0..<16_384 {
             let finalDisplacements = zip(sources, centeredDeltas).map {
                 ($0 + $1 * candidate) - $0
             }
@@ -325,6 +337,26 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
             }
             candidate = candidate.nextDown
             guard candidate.isFinite, candidate > 0 else { return nil }
+        }
+
+        // Some valid source coordinates have no nearby Float scale whose
+        // stored target differences reproduce the mathematical ratio within
+        // 1e-6. Preserve the same single upper-bound scale only when the
+        // quantized result is still finite, centered, bounded, and nonzero;
+        // weaker conflict-scaled requests naturally fall below the emission
+        // floor and fail closed.
+        let quantized = zip(sources, centeredDeltas).map {
+            ($0 + $1 * upperBound) - $0
+        }
+        let quantizedSum = quantized.reduce(0, +)
+        let quantizedMean = quantizedSum / Float(quantized.count)
+        if quantized.allSatisfy({ $0.isFinite && abs($0) <= ceiling }),
+           quantized.contains(where: { abs($0) > Float.ulpOfOne }),
+           quantizedSum.isFinite,
+           quantizedMean.isFinite,
+           abs(quantizedSum) <= 0.000_001,
+           abs(quantizedMean) <= 0.000_001 {
+            return upperBound
         }
         return nil
     }
