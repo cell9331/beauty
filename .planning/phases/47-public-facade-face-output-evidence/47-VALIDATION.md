@@ -26,7 +26,7 @@ created: 2026-07-23
 ## Sampling Rate
 
 - After renderer/test edits: focused source/no-face suite plus `git diff --check`.
-- After testing-fixture/facade edits: focused facade suite plus Phase 46 live checker.
+- After testing-fixture/facade edits: focused facade suite plus pinned manifest and scoped privacy/scope scans.
 - After helper edits: self-test, `py_compile`, and diff hygiene.
 - After matrix calibration: guarded clean render, measurement, freeze, second clean render, strict helper.
 - After gallery/docs: generator self-test, one publication, exact containment scans.
@@ -37,7 +37,7 @@ created: 2026-07-23
 | Task ID | Planned behavior | Requirement | Threats | Automated command | File exists | Status |
 |---|---|---|---|---|---|---|
 | 47-W0-01 | exact four-case renderer/source inventory | OUT-01 | T-47-01, T-47-02 | focused renderer XCTest and exact 59 source count | existing to extend | ⬜ pending |
-| 47-W0-02 | representative public degradation fixtures | OUT-03 | T-47-03, T-47-04 | focused facade XCTest and Phase 46 checker | existing to extend | ⬜ pending |
+| 47-W0-02 | representative public degradation fixtures | OUT-03 | T-47-03, T-47-04 | focused facade XCTest plus pinned manifest and scoped privacy scans | existing to extend | ⬜ pending |
 | 47-HELP-01 | bounded decoder/inventory/self-tests | OUT-02, OUT-03 | T-47-05, T-47-06 | helper `--self-test` plus `py_compile` | new | ⬜ pending |
 | 47-OUT-01 | exact 413 same-dimension output matrix | OUT-01, OUT-02 | T-47-05, T-47-07 | clean renderer plus strict helper | new helper | ⬜ pending |
 | 47-OUT-02 | fixed visibility/locality/independence | OUT-02 | T-47-07, T-47-08 | strict helper family gates | new helper | ⬜ pending |

@@ -94,6 +94,22 @@ Plans:
 
 **Requirements:** OUT-01, OUT-02, OUT-03
 
+**Plans:** 0/3 plans executed
+
+Plans:
+
+**Wave 1**
+
+- [ ] 47-01-PLAN.md — Freeze four isolated renderer cases and representative public degradation contracts.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 47-02-PLAN.md — Build the bounded strict helper and accept a clean 413-output face-local matrix.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 47-03-PLAN.md — Publish the exact ignored gallery, synchronize evidence owners, and run final execution gates.
+
 **Success criteria:**
 
 1. The renderer contains one isolated case for each new control with an exact duplicate-free case/fixture/output inventory.
