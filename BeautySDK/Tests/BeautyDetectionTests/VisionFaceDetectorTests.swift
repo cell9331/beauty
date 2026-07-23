@@ -385,13 +385,52 @@ final class VisionFaceDetectorTests: XCTestCase {
         XCTAssertEqual(String(reflecting: visionObservation), expectedVisionObservation)
         XCTAssertEqual("\(visionObservation)", expectedVisionObservation)
 
+        XCTAssertEqual(
+            Mirror(reflecting: support).children.compactMap(\.label),
+            ["contourCount", "medianLineCount"]
+        )
+        XCTAssertEqual(
+            Mirror(reflecting: observation).children.compactMap(\.label),
+            [
+                "landmarkGroupCount",
+                "observedEyeSupportCount",
+                "observedFaceSupportAvailable",
+                "observedFaceContourCount",
+                "observedFaceMedianLineCount",
+            ]
+        )
+        XCTAssertEqual(
+            Mirror(reflecting: visionObservation).children.compactMap(\.label),
+            [
+                "landmarkGroupCount",
+                "observedEyeSupportCount",
+                "observedFaceSupportAvailable",
+                "observedFaceContourCount",
+                "observedFaceMedianLineCount",
+            ]
+        )
+
+        var supportDump = ""
+        var observationDump = ""
+        var visionObservationDump = ""
+        dump(support, to: &supportDump)
+        dump(observation, to: &observationDump)
+        dump(visionObservation, to: &visionObservationDump)
+
         for diagnostic in [
             String(describing: support),
             String(reflecting: observation),
             String(reflecting: visionObservation),
+            supportDump,
+            observationDump,
+            visionObservationDump,
         ] {
             XCTAssertFalse(diagnostic.contains("sensitive-stable-id"))
             XCTAssertFalse(diagnostic.contains("0.123456789"))
+            XCTAssertFalse(diagnostic.contains("0.234567891"))
+            XCTAssertFalse(diagnostic.contains("0.345678912"))
+            XCTAssertFalse(diagnostic.contains("0.456789123"))
+            XCTAssertFalse(diagnostic.contains("0.987654321"))
             XCTAssertFalse(diagnostic.contains("CoordinatePoint"))
             XCTAssertFalse(diagnostic.contains("CoordinateRect"))
         }

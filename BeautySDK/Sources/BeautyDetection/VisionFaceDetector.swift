@@ -32,7 +32,7 @@ package struct VisionDetectionObservation: Equatable, Sendable {
     }
 }
 
-extension VisionDetectionObservation: CustomStringConvertible, CustomDebugStringConvertible {
+extension VisionDetectionObservation: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
     package var description: String {
         "VisionDetectionObservation("
             + "landmarkGroupCount: \(landmarks.availableGroups.count), "
@@ -44,6 +44,20 @@ extension VisionDetectionObservation: CustomStringConvertible, CustomDebugString
 
     package var debugDescription: String {
         description
+    }
+
+    package var customMirror: Mirror {
+        Mirror(
+            self,
+            children: [
+                "landmarkGroupCount": landmarks.availableGroups.count,
+                "observedEyeSupportCount": observedEyeSupport?.count ?? 0,
+                "observedFaceSupportAvailable": observedFaceSupport != nil,
+                "observedFaceContourCount": observedFaceSupport?.contour?.count ?? 0,
+                "observedFaceMedianLineCount": observedFaceSupport?.medianLine?.count ?? 0,
+            ],
+            displayStyle: .struct
+        )
     }
 }
 

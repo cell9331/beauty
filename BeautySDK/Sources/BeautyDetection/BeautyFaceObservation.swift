@@ -53,13 +53,24 @@ package struct BeautyObservedFaceSupport: Equatable, Sendable {
     }
 }
 
-extension BeautyObservedFaceSupport: CustomStringConvertible, CustomDebugStringConvertible {
+extension BeautyObservedFaceSupport: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
     package var description: String {
         "BeautyObservedFaceSupport(contourCount: \(contour?.count ?? 0), medianLineCount: \(medianLine?.count ?? 0))"
     }
 
     package var debugDescription: String {
         description
+    }
+
+    package var customMirror: Mirror {
+        Mirror(
+            self,
+            children: [
+                "contourCount": contour?.count ?? 0,
+                "medianLineCount": medianLine?.count ?? 0,
+            ],
+            displayStyle: .struct
+        )
     }
 }
 
@@ -94,7 +105,7 @@ package struct BeautyFaceObservation: Equatable, Sendable {
     }
 }
 
-extension BeautyFaceObservation: CustomStringConvertible, CustomDebugStringConvertible {
+extension BeautyFaceObservation: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
     package var description: String {
         "BeautyFaceObservation("
             + "landmarkGroupCount: \(landmarks.availableGroups.count), "
@@ -106,6 +117,20 @@ extension BeautyFaceObservation: CustomStringConvertible, CustomDebugStringConve
 
     package var debugDescription: String {
         description
+    }
+
+    package var customMirror: Mirror {
+        Mirror(
+            self,
+            children: [
+                "landmarkGroupCount": landmarks.availableGroups.count,
+                "observedEyeSupportCount": observedEyeSupport?.count ?? 0,
+                "observedFaceSupportAvailable": observedFaceSupport != nil,
+                "observedFaceContourCount": observedFaceSupport?.contour?.count ?? 0,
+                "observedFaceMedianLineCount": observedFaceSupport?.medianLine?.count ?? 0,
+            ],
+            displayStyle: .struct
+        )
     }
 }
 
