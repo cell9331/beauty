@@ -308,6 +308,151 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         XCTAssertNil(geometry.rightEyeSupport)
     }
 
+    func testObservedFaceEnvelopeKeepsContourAndMedianAbsenceIndependent() {
+        let contour = faceOpenContour(count: 7)
+        let median = faceMedianLine(count: 3)
+        let neither = BeautyObservedFaceSupport()
+        let contourOnly = BeautyObservedFaceSupport(contour: contour)
+        let medianOnly = BeautyObservedFaceSupport(medianLine: median)
+        let both = BeautyObservedFaceSupport(contour: contour, medianLine: median)
+
+        XCTAssertNil(neither.contour)
+        XCTAssertNil(neither.medianLine)
+        XCTAssertEqual(contourOnly.contour, contour)
+        XCTAssertNil(contourOnly.medianLine)
+        XCTAssertNil(medianOnly.contour)
+        XCTAssertEqual(medianOnly.medianLine, median)
+        XCTAssertEqual(both.contour, contour)
+        XCTAssertEqual(both.medianLine, median)
+    }
+
+    func testSemanticFaceSupportSeparatesContourAndCenterlineEligibility() {
+        let contour = faceOpenContour(count: 7).map {
+            SIMD2<Float>(Float($0.x), Float($0.y))
+        }
+        let median = faceMedianLine(count: 3).map {
+            SIMD2<Float>(Float($0.x), Float($0.y))
+        }
+        let contourOnly = BeautyFaceSemanticSupport(
+            contour: contour,
+            medianLine: nil,
+            apexIndex: nil
+        )
+        let complete = BeautyFaceSemanticSupport(
+            contour: contour,
+            medianLine: median,
+            apexIndex: 3
+        )
+        let missingApex = BeautyFaceSemanticSupport(
+            contour: contour,
+            medianLine: median,
+            apexIndex: nil
+        )
+
+        XCTAssertTrue(contourOnly.contourEligible)
+        XCTAssertFalse(contourOnly.centerlineEligible)
+        XCTAssertTrue(complete.contourEligible)
+        XCTAssertTrue(complete.centerlineEligible)
+        XCTAssertFalse(missingApex.centerlineEligible)
+    }
+
+    func testFaceGeometryDefaultsObservedSupportToNilAndStoresItSeparately() {
+        let proxy = [
+            SIMD2<Float>(0.14, 0.34),
+            SIMD2<Float>(0.196, 0.564),
+            SIMD2<Float>(0.324, 0.772),
+            SIMD2<Float>(0.50, 0.852),
+            SIMD2<Float>(0.676, 0.772),
+            SIMD2<Float>(0.804, 0.564),
+            SIMD2<Float>(0.86, 0.34),
+        ]
+        let support = BeautyFaceSemanticSupport(
+            contour: faceOpenContour(count: 7).map {
+                SIMD2<Float>(Float($0.x), Float($0.y))
+            },
+            medianLine: nil,
+            apexIndex: nil
+        )
+        let legacy = FaceGeometry(
+            bounds: FaceBounds(x: 0.1, y: 0.1, width: 0.8, height: 0.8),
+            faceContour: proxy
+        )
+        let observed = FaceGeometry(
+            bounds: legacy.bounds,
+            faceContour: proxy,
+            observedFaceSupport: support
+        )
+
+        XCTAssertNil(legacy.observedFaceSupport)
+        XCTAssertEqual(observed.faceContour, proxy)
+        XCTAssertEqual(observed.observedFaceSupport, support)
+        XCTAssertNotEqual(observed.faceContour, support.contour)
+    }
+
+    func testLegacySevenPointFaceContourRemainsExact() {
+        let geometry = BeautyFaceGeometryAdapter.makeGeometry(
+            from: BeautyFaceObservation(imageBounds: bounds, landmarks: .complete)
+        )
+        XCTAssertEqual(
+            geometry.faceContour,
+            [
+                SIMD2<Float>(0.14, 0.34),
+                SIMD2<Float>(0.196, 0.564),
+                SIMD2<Float>(0.324, 0.772),
+                SIMD2<Float>(0.50, 0.852),
+                SIMD2<Float>(0.676, 0.772),
+                SIMD2<Float>(0.804, 0.564),
+                SIMD2<Float>(0.86, 0.34),
+            ]
+        )
+        XCTAssertNil(geometry.observedFaceSupport)
+    }
+
+    func testFaceSupportFixturesLockCountsAndTopologyThresholdMatrices() {
+        XCTAssertEqual(
+            faceContourCardinalityMatrix.map(\.count),
+            [6, 7, 8, 31, 32, 33]
+        )
+        XCTAssertEqual(
+            faceContourCardinalityMatrix.map(\.eligible),
+            [false, true, true, true, true, false]
+        )
+        XCTAssertEqual(
+            faceMedianCardinalityMatrix.map(\.count),
+            [2, 3, 4, 15, 16, 17]
+        )
+        XCTAssertEqual(
+            faceMedianCardinalityMatrix.map(\.eligible),
+            [false, true, true, true, true, false]
+        )
+
+        for entry in faceContourCardinalityMatrix {
+            let fixture = FaceSupportFixture(
+                contour: faceOpenContour(count: entry.count),
+                medianLine: faceMedianLine(count: 3)
+            )
+            XCTAssertEqual(fixture.contour.count, entry.count)
+            XCTAssertTrue(allPointsAreUnique(fixture.contour))
+            XCTAssertNotEqual(fixture.contour.first, fixture.contour.last)
+        }
+        for entry in faceMedianCardinalityMatrix {
+            let fixture = FaceSupportFixture(
+                contour: faceOpenContour(count: 7),
+                medianLine: faceMedianLine(count: entry.count)
+            )
+            XCTAssertEqual(fixture.medianLine.count, entry.count)
+            XCTAssertTrue(allPointsAreUnique(fixture.medianLine))
+        }
+
+        XCTAssertEqual(Set(faceTopologyBoundaryMatrix.map(\.rule)).count, 12)
+        for rule in Set(faceTopologyBoundaryMatrix.map(\.rule)) {
+            let probes = faceTopologyBoundaryMatrix.filter { $0.rule == rule }
+            XCTAssertTrue(probes.contains(where: { $0.position == .inside && $0.eligible }))
+            XCTAssertTrue(probes.contains(where: { $0.position == .equal && $0.eligible }))
+            XCTAssertTrue(probes.contains(where: { $0.position == .outside && !$0.eligible }))
+        }
+    }
+
     private func observation(left: [CoordinatePoint], right: [CoordinatePoint], pupils: ([CoordinatePoint]?, [CoordinatePoint]?) = (nil, nil)) -> BeautyFaceObservation {
         BeautyFaceObservation(
             imageBounds: bounds,
@@ -355,4 +500,113 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
     private func pointOrder(_ lhs: SIMD2<Float>, _ rhs: SIMD2<Float>) -> Bool {
         lhs.x == rhs.x ? lhs.y < rhs.y : lhs.x < rhs.x
     }
+
+    private func faceOpenContour(
+        count: Int,
+        width: Double = 0.80,
+        height: Double = 0.60
+    ) -> [CoordinatePoint] {
+        guard count > 1 else { return [] }
+        return (0..<count).map { index in
+            let progress = Double(index) / Double(count - 1)
+            return CoordinatePoint(
+                x: 0.10 + width * progress,
+                y: 0.15 + height * 4 * progress * (1 - progress)
+            )
+        }
+    }
+
+    private func faceMedianLine(count: Int) -> [CoordinatePoint] {
+        guard count > 1 else { return [] }
+        return (0..<count).map { index in
+            let progress = Double(index) / Double(count - 1)
+            return CoordinatePoint(x: 0.50, y: 0.20 + 0.60 * progress)
+        }
+    }
+
+    private func allPointsAreUnique(_ points: [CoordinatePoint]) -> Bool {
+        points.indices.allSatisfy { index in
+            !points[..<index].contains(points[index])
+        }
+    }
 }
+
+private struct FaceSupportFixture {
+    let contour: [CoordinatePoint]
+    let medianLine: [CoordinatePoint]
+}
+
+private struct FaceCardinalityFixture {
+    let count: Int
+    let eligible: Bool
+}
+
+private enum FaceBoundaryPosition: Hashable {
+    case inside
+    case equal
+    case outside
+}
+
+private struct FaceTopologyBoundaryFixture {
+    let rule: String
+    let value: Double
+    let position: FaceBoundaryPosition
+    let eligible: Bool
+}
+
+private let faceContourCardinalityMatrix = [
+    FaceCardinalityFixture(count: 6, eligible: false),
+    FaceCardinalityFixture(count: 7, eligible: true),
+    FaceCardinalityFixture(count: 8, eligible: true),
+    FaceCardinalityFixture(count: 31, eligible: true),
+    FaceCardinalityFixture(count: 32, eligible: true),
+    FaceCardinalityFixture(count: 33, eligible: false),
+]
+
+private let faceMedianCardinalityMatrix = [
+    FaceCardinalityFixture(count: 2, eligible: false),
+    FaceCardinalityFixture(count: 3, eligible: true),
+    FaceCardinalityFixture(count: 4, eligible: true),
+    FaceCardinalityFixture(count: 15, eligible: true),
+    FaceCardinalityFixture(count: 16, eligible: true),
+    FaceCardinalityFixture(count: 17, eligible: false),
+]
+
+private let faceTopologyBoundaryMatrix = [
+    FaceTopologyBoundaryFixture(rule: "contourWidth", value: 0.500_001, position: .inside, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "contourWidth", value: 0.50, position: .equal, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "contourWidth", value: 0.499_999, position: .outside, eligible: false),
+    FaceTopologyBoundaryFixture(rule: "contourWidthMaximum", value: 0.999_999, position: .inside, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "contourWidthMaximum", value: 1.00, position: .equal, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "contourWidthMaximum", value: 1.000_001, position: .outside, eligible: false),
+    FaceTopologyBoundaryFixture(rule: "contourHeight", value: 0.200_001, position: .inside, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "contourHeight", value: 0.20, position: .equal, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "contourHeight", value: 0.199_999, position: .outside, eligible: false),
+    FaceTopologyBoundaryFixture(rule: "contourHeightMaximum", value: 0.999_999, position: .inside, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "contourHeightMaximum", value: 1.00, position: .equal, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "contourHeightMaximum", value: 1.000_001, position: .outside, eligible: false),
+    FaceTopologyBoundaryFixture(rule: "endpointSeparation", value: 0.350_001, position: .inside, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "endpointSeparation", value: 0.35, position: .equal, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "endpointSeparation", value: 0.349_999, position: .outside, eligible: false),
+    FaceTopologyBoundaryFixture(rule: "curvature", value: 0.100_001, position: .inside, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "curvature", value: 0.10, position: .equal, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "curvature", value: 0.099_999, position: .outside, eligible: false),
+    FaceTopologyBoundaryFixture(rule: "medianDown", value: 0.250_001, position: .inside, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "medianDown", value: 0.25, position: .equal, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "medianDown", value: 0.249_999, position: .outside, eligible: false),
+    FaceTopologyBoundaryFixture(rule: "sideProjection", value: 0.150_001, position: .inside, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "sideProjection", value: 0.15, position: .equal, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "sideProjection", value: 0.149_999, position: .outside, eligible: false),
+    FaceTopologyBoundaryFixture(rule: "sideProjectionMaximum", value: 0.849_999, position: .inside, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "sideProjectionMaximum", value: 0.85, position: .equal, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "sideProjectionMaximum", value: 0.850_001, position: .outside, eligible: false),
+    FaceTopologyBoundaryFixture(rule: "apexDistance", value: 0.399_999, position: .inside, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "apexDistance", value: 0.40, position: .equal, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "apexDistance", value: 0.400_001, position: .outside, eligible: false),
+    FaceTopologyBoundaryFixture(rule: "directionEpsilon", value: 0.000_001_001, position: .inside, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "directionEpsilon", value: 0.000_001, position: .equal, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "directionEpsilon", value: 0.000_000_999, position: .outside, eligible: false),
+    FaceTopologyBoundaryFixture(rule: "apexInteriorPoints", value: 3, position: .inside, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "apexInteriorPoints", value: 2, position: .equal, eligible: true),
+    FaceTopologyBoundaryFixture(rule: "apexInteriorPoints", value: 1, position: .outside, eligible: false),
+]
