@@ -649,6 +649,214 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         XCTAssertEqual(validatedSupportCount, completeSupportCount, "aggregate validation mismatch")
     }
 
+    func testFaceCrossSupportPurePredicatesLockInclusiveBoundaries() {
+        XCTAssertFalse(BeautyFaceGeometryAdapter.faceMedianChordPositionIsValid(0.149_999))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceMedianChordPositionIsValid(0.15))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceMedianChordPositionIsValid(0.150_001))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceMedianChordPositionIsValid(0.849_999))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceMedianChordPositionIsValid(0.85))
+        XCTAssertFalse(BeautyFaceGeometryAdapter.faceMedianChordPositionIsValid(0.850_001))
+
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceApexDistanceIsValid(0.399_999))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceApexDistanceIsValid(0.40))
+        XCTAssertFalse(BeautyFaceGeometryAdapter.faceApexDistanceIsValid(0.400_001))
+
+        XCTAssertFalse(
+            BeautyFaceGeometryAdapter.faceApexInteriorPointsAreValid(before: 1, after: 3)
+        )
+        XCTAssertTrue(
+            BeautyFaceGeometryAdapter.faceApexInteriorPointsAreValid(before: 2, after: 2)
+        )
+        XCTAssertTrue(
+            BeautyFaceGeometryAdapter.faceApexInteriorPointsAreValid(before: 3, after: 3)
+        )
+        XCTAssertFalse(
+            BeautyFaceGeometryAdapter.faceApexInteriorPointsAreValid(before: 3, after: 1)
+        )
+    }
+
+    func testObservedFaceRegionPresenceCombinationsAttachIndependentEligibility() throws {
+        let contour = faceOpenContour(count: 7)
+        let median = faceMedianLine(count: 3)
+
+        let absent = BeautyFaceGeometryAdapter.makeGeometry(
+            from: faceObservation(support: nil)
+        )
+        let neither = BeautyFaceGeometryAdapter.makeGeometry(
+            from: faceObservation(support: BeautyObservedFaceSupport())
+        )
+        let contourOnly = BeautyFaceGeometryAdapter.makeGeometry(
+            from: faceObservation(
+                support: BeautyObservedFaceSupport(contour: contour)
+            )
+        )
+        let medianOnly = BeautyFaceGeometryAdapter.makeGeometry(
+            from: faceObservation(
+                support: BeautyObservedFaceSupport(medianLine: median)
+            )
+        )
+        let complete = BeautyFaceGeometryAdapter.makeGeometry(
+            from: faceObservation(
+                support: BeautyObservedFaceSupport(contour: contour, medianLine: median)
+            )
+        )
+
+        XCTAssertNil(absent.observedFaceSupport)
+        XCTAssertNil(neither.observedFaceSupport)
+        XCTAssertNil(medianOnly.observedFaceSupport)
+        XCTAssertTrue(contourOnly.observedFaceSupport?.contourEligible == true)
+        XCTAssertFalse(contourOnly.observedFaceSupport?.centerlineEligible == true)
+        XCTAssertNil(contourOnly.observedFaceSupport?.medianLine)
+        XCTAssertNil(contourOnly.observedFaceSupport?.apexIndex)
+        XCTAssertTrue(complete.observedFaceSupport?.contourEligible == true)
+        XCTAssertTrue(complete.observedFaceSupport?.centerlineEligible == true)
+        XCTAssertEqual(complete.observedFaceSupport?.apexIndex, 3)
+        XCTAssertEqual(
+            try XCTUnwrap(complete.observedFaceSupport?.contour),
+            contour.map { SIMD2<Float>(Float($0.x), Float($0.y)) }
+        )
+        XCTAssertEqual(
+            try XCTUnwrap(complete.observedFaceSupport?.medianLine),
+            median.map { SIMD2<Float>(Float($0.x), Float($0.y)) }
+        )
+    }
+
+    func testMalformedFaceRegionsAndCrossSupportFailLocally() {
+        let contour = faceOpenContour(count: 7)
+        let median = faceMedianLine(count: 3)
+        let invalidContour = (0..<7).map { index in
+            CoordinatePoint(x: 0.10 + 0.80 * Double(index) / 6, y: 0.50)
+        }
+        let invalidMedian = [
+            CoordinatePoint(x: 0.30, y: 0.50),
+            CoordinatePoint(x: 0.50, y: 0.50),
+            CoordinatePoint(x: 0.70, y: 0.50),
+        ]
+        let chordOutside = [
+            CoordinatePoint(x: 0.18, y: 0.20),
+            CoordinatePoint(x: 0.18, y: 0.50),
+            CoordinatePoint(x: 0.18, y: 0.75),
+        ]
+        let apexTooFar = [
+            CoordinatePoint(x: 0.50, y: 0.80),
+            CoordinatePoint(x: 0.50, y: 0.60),
+            CoordinatePoint(x: 0.50, y: 0.15),
+        ]
+        let edgeApex = [
+            CoordinatePoint(x: contour[1].x, y: 0.15),
+            CoordinatePoint(x: contour[1].x, y: 0.30),
+            contour[1],
+        ]
+
+        let badContour = BeautyFaceGeometryAdapter.makeGeometry(
+            from: faceObservation(
+                support: BeautyObservedFaceSupport(
+                    contour: invalidContour,
+                    medianLine: median
+                )
+            )
+        )
+        XCTAssertNil(badContour.observedFaceSupport)
+
+        for candidate in [invalidMedian, chordOutside, apexTooFar, edgeApex] {
+            let geometry = BeautyFaceGeometryAdapter.makeGeometry(
+                from: faceObservation(
+                    support: BeautyObservedFaceSupport(
+                        contour: contour,
+                        medianLine: candidate
+                    )
+                )
+            )
+            XCTAssertTrue(geometry.observedFaceSupport?.contourEligible == true)
+            XCTAssertFalse(geometry.observedFaceSupport?.centerlineEligible == true)
+            XCTAssertNil(geometry.observedFaceSupport?.medianLine)
+            XCTAssertNil(geometry.observedFaceSupport?.apexIndex)
+        }
+    }
+
+    func testObservedFaceSupportNeverChangesLegacyOrSiblingGeometry() {
+        let baseline = BeautyFaceGeometryAdapter.makeGeometry(
+            from: faceObservation(support: nil)
+        )
+        let observedContour = faceOpenContour(count: 7)
+        let median = faceMedianLine(count: 3)
+        let malformed = [
+            nil,
+            BeautyObservedFaceSupport(),
+            BeautyObservedFaceSupport(medianLine: median),
+            BeautyObservedFaceSupport(
+                contour: Array(repeating: CoordinatePoint(x: 0.5, y: 0.5), count: 7),
+                medianLine: median
+            ),
+            BeautyObservedFaceSupport(
+                contour: observedContour,
+                medianLine: [
+                    CoordinatePoint(x: 0.3, y: 0.5),
+                    CoordinatePoint(x: 0.5, y: 0.5),
+                    CoordinatePoint(x: 0.7, y: 0.5),
+                ]
+            ),
+            BeautyObservedFaceSupport(contour: observedContour, medianLine: median),
+        ]
+
+        for support in malformed {
+            let geometry = BeautyFaceGeometryAdapter.makeGeometry(
+                from: faceObservation(support: support)
+            )
+            assertLegacyAndSiblingGeometryEqual(geometry, baseline)
+        }
+
+        let invalidEyeOrder = BeautyFaceGeometryAdapter.makeGeometry(
+            from: BeautyFaceObservation(
+                imageBounds: bounds,
+                landmarks: .complete,
+                observedEyeSupport: [
+                    BeautyObservedEyeSupport(
+                        side: .left,
+                        contour: contour(x: 0.58, y: 0.40)
+                    ),
+                ],
+                observedEyeOrder: .invalid,
+                observedFaceSupport: BeautyObservedFaceSupport(
+                    contour: observedContour,
+                    medianLine: median
+                )
+            )
+        )
+        XCTAssertTrue(invalidEyeOrder.observedFaceSupport?.centerlineEligible == true)
+        XCTAssertTrue(invalidEyeOrder.leftEye.isEmpty)
+        XCTAssertTrue(invalidEyeOrder.rightEye.isEmpty)
+        XCTAssertEqual(invalidEyeOrder.faceContour, baseline.faceContour)
+        XCTAssertEqual(invalidEyeOrder.nose, baseline.nose)
+        XCTAssertEqual(invalidEyeOrder.outerLips, baseline.outerLips)
+    }
+
+    func testObservedFaceSupportIsStatelessAcrossAlternatingCalls() {
+        let validObservation = faceObservation(
+            support: BeautyObservedFaceSupport(
+                contour: faceOpenContour(count: 7),
+                medianLine: faceMedianLine(count: 3)
+            )
+        )
+        let invalidObservation = faceObservation(
+            support: BeautyObservedFaceSupport(
+                contour: Array(
+                    repeating: CoordinatePoint(x: 0.50, y: 0.50),
+                    count: 7
+                ),
+                medianLine: faceMedianLine(count: 3)
+            )
+        )
+
+        let first = BeautyFaceGeometryAdapter.makeGeometry(from: validObservation)
+        let middle = BeautyFaceGeometryAdapter.makeGeometry(from: invalidObservation)
+        let last = BeautyFaceGeometryAdapter.makeGeometry(from: validObservation)
+
+        XCTAssertTrue(first.observedFaceSupport?.centerlineEligible == true)
+        XCTAssertNil(middle.observedFaceSupport)
+        XCTAssertEqual(last.observedFaceSupport, first.observedFaceSupport)
+    }
+
     private func observation(left: [CoordinatePoint], right: [CoordinatePoint], pupils: ([CoordinatePoint]?, [CoordinatePoint]?) = (nil, nil)) -> BeautyFaceObservation {
         BeautyFaceObservation(
             imageBounds: bounds,
@@ -659,6 +867,48 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
             ],
             observedEyeOrder: .canonical
         )
+    }
+
+    private func faceObservation(
+        support: BeautyObservedFaceSupport?
+    ) -> BeautyFaceObservation {
+        BeautyFaceObservation(
+            imageBounds: bounds,
+            landmarks: .complete,
+            observedFaceSupport: support
+        )
+    }
+
+    private func assertLegacyAndSiblingGeometryEqual(
+        _ candidate: FaceGeometry,
+        _ baseline: FaceGeometry,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(candidate.bounds, baseline.bounds, file: file, line: line)
+        XCTAssertEqual(candidate.faceContour, baseline.faceContour, file: file, line: line)
+        XCTAssertEqual(candidate.leftEye, baseline.leftEye, file: file, line: line)
+        XCTAssertEqual(candidate.rightEye, baseline.rightEye, file: file, line: line)
+        XCTAssertEqual(candidate.nose, baseline.nose, file: file, line: line)
+        XCTAssertEqual(candidate.noseRoot, baseline.noseRoot, file: file, line: line)
+        XCTAssertEqual(candidate.noseTip, baseline.noseTip, file: file, line: line)
+        XCTAssertEqual(candidate.outerLips, baseline.outerLips, file: file, line: line)
+        XCTAssertEqual(candidate.upperLips, baseline.upperLips, file: file, line: line)
+        XCTAssertEqual(candidate.lowerLips, baseline.lowerLips, file: file, line: line)
+        XCTAssertEqual(candidate.innerLips, baseline.innerLips, file: file, line: line)
+        XCTAssertEqual(
+            candidate.leftEyeSupport,
+            baseline.leftEyeSupport,
+            file: file,
+            line: line
+        )
+        XCTAssertEqual(
+            candidate.rightEyeSupport,
+            baseline.rightEyeSupport,
+            file: file,
+            line: line
+        )
+        XCTAssertEqual(candidate.freshness, baseline.freshness, file: file, line: line)
     }
 
     private func contour(x: Double, y: Double, width: Double = 0.16, height: Double = 0.08) -> [CoordinatePoint] {
