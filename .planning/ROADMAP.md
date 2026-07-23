@@ -94,13 +94,13 @@ Plans:
 
 **Requirements:** OUT-01, OUT-02, OUT-03
 
-**Plans:** 0/3 plans executed
+**Plans:** 1/3 plans executed
 
 Plans:
 
 **Wave 1**
 
-- [ ] 47-01-PLAN.md — Freeze four isolated renderer cases and representative public degradation contracts.
+- [x] 47-01-PLAN.md — Freeze four isolated renderer cases and representative public degradation contracts.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
