@@ -250,7 +250,7 @@ These starting bands intentionally yield distinct index pairs on the minimum val
 
 **Recommended provisional constants:** cap all four at `0.25`; maximum displacement at cap `0.012 * face width` for smoothing, `0.018 * face width` for temple/cheekbone, and `0.016 * face width` for taper; radii `0.08`, `0.14`, `0.14`, and `0.12` times face width respectively, passed through the existing radius clamps; falloff `2`. These are implementation starting points only and must be labeled provisional. [ASSUMED]
 
-**Smooth preservation rule:** compute lateral neighbor-chord deltas only for eligible interior samples, cap each delta, subtract the mean emitted delta so the vector set has approximately zero translation, and leave endpoints, vertical coordinates, and horizontal extrema untouched. Provider tests should prove reduced aggregate lateral roughness, zero-sum displacement within tolerance, unchanged extrema, and no all-points-toward-center behavior. [ASSUMED]
+**Smooth preservation rule:** compute finite lateral neighbor-chord deltas only for eligible interior samples, mean-center the complete raw delta set, then apply one uniform finite scale no greater than `1` so the maximum absolute centered displacement stays under the provisional ceiling. Never clamp centered deltas individually because that can break centering. Leave endpoints, vertical coordinates, and horizontal extrema untouched. Provider tests should prove the exact displacement ceiling, zero-sum/zero-mean displacement within tolerance, strictly reduced aggregate lateral roughness, unchanged extrema, and no all-points-toward-center behavior; emit nothing when no finite nonzero improvement exists. [ASSUMED]
 
 **Chin axis rule:** interpolate the validated median polyline's X value at each adjacent source Y; move X toward that value and keep target Y exactly equal to source Y. Do not emit the apex as a source. [ASSUMED]
 
@@ -433,9 +433,9 @@ return GeometryConflictResolver().resolve(strengths: retainedBaseline)
 | A4 | Preserve smooth-contour center/scale using lateral-only, mean-centered deltas while excluding endpoints and horizontal extrema. | Architecture Patterns | Mean correction could reduce local improvement for a highly asymmetric contour; tests must require aggregate improvement and fail closed on no usable delta. |
 | A5 | Preserve chin length by interpolating median X at source Y and keeping every taper target Y unchanged. | Architecture Patterns | A strongly rotated/sloped median may be better served by perpendicular projection; Phase 47 visual evidence can inform later calibration without changing eligibility. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-No blocking user decision remains: contour bands, private helper names, provisional caps, radii, falloff, and displacement constants are explicitly delegated to the agent. [VERIFIED: `46-CONTEXT.md`]
+**RESOLVED by `46-CONTEXT.md` agent discretion:** contour bands, private helper names, provisional caps, radii, falloff, and displacement constants are delegated implementation choices rather than open user decisions. No blocking user decision remains. [VERIFIED: `46-CONTEXT.md`]
 
 Implementation should record the chosen provisional values in `DESIGN.md`/`RELIABILITY.md` as non-final and make them easy for Phase 48 to replace. [VERIFIED: `AGENTS.md`, phase ownership]
 
