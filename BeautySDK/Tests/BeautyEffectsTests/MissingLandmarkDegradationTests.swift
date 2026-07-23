@@ -3,7 +3,255 @@ import BeautyCore
 import BeautyDetection
 @testable import BeautyEffects
 
+private enum Phase46DegradationSupportClass: Equatable {
+    case contour
+    case contourAndCenterline
+}
+
+private enum Phase46DegradationEmissionPath {
+    case face(KeyPath<FaceShapeWarpFieldEmissions, [WarpControlPoint]>)
+    case chin(KeyPath<ChinWarpFieldEmissions, [WarpControlPoint]>)
+
+    func points(
+        face: FaceGeometry,
+        strengths: BeautyEffectiveStrengths
+    ) -> [WarpControlPoint] {
+        switch self {
+        case let .face(keyPath):
+            return FaceShapeWarpProvider()
+                .fieldEmissions(face: face, strengths: strengths)[keyPath: keyPath]
+        case let .chin(keyPath):
+            return ChinWarpProvider()
+                .fieldEmissions(face: face, strengths: strengths)[keyPath: keyPath]
+        }
+    }
+}
+
+private struct Phase46DegradationFieldRow {
+    let name: String
+    let parameter: WritableKeyPath<BeautyParameters, Float>
+    let effective: KeyPath<BeautyEffectiveStrengths, Float>
+    let emission: Phase46DegradationEmissionPath
+    let requiredSupport: Phase46DegradationSupportClass
+}
+
 final class MissingLandmarkDegradationTests: XCTestCase {
+    func testGEOMRepresentativeSupportAndFreshnessDegradationMatrix() {
+        let parameters = phase46AllRequestedParameters
+        let completeFace = FaceGeometry.phase46AsymmetricComplete
+        let complete = BeautyEffectResolver.resolve(
+            parameters: parameters,
+            faceGeometry: completeFace
+        )
+
+        for row in phase46DegradationRows {
+            XCTAssertEqual(
+                complete.effectiveStrengths[keyPath: row.effective],
+                0.25,
+                accuracy: 0.000_001,
+                "complete \(row.name)"
+            )
+            XCTAssertFalse(
+                row.emission.points(
+                    face: completeFace,
+                    strengths: complete.effectiveStrengths
+                ).isEmpty,
+                "complete \(row.name)"
+            )
+        }
+        XCTAssertTrue(complete.activeDomains.contains(.faceShape))
+        XCTAssertFalse(complete.skippedDomains.contains(.faceShape))
+
+        for (name, face) in [
+            ("contour only", FaceGeometry.phase46ContourOnly),
+            ("centerline missing", .phase46CenterlineMissing),
+            ("centerline malformed", .phase46CenterlineIneligible),
+        ] {
+            let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: face)
+            for row in phase46DegradationRows {
+                let expected: Float = row.requiredSupport == .contour ? 0.25 : 0
+                XCTAssertEqual(
+                    plan.effectiveStrengths[keyPath: row.effective],
+                    expected,
+                    accuracy: 0.000_001,
+                    "\(name) \(row.name)"
+                )
+                XCTAssertEqual(
+                    row.emission.points(face: face, strengths: plan.effectiveStrengths).isEmpty,
+                    expected == 0,
+                    "\(name) \(row.name)"
+                )
+            }
+            XCTAssertTrue(plan.activeDomains.contains(.faceShape), name)
+            XCTAssertFalse(plan.skippedDomains.contains(.faceShape), name)
+            assertRedacted(plan)
+        }
+
+        var shippedAndNew = parameters
+        for row in phase46DegradationRows {
+            shippedAndNew[keyPath: row.parameter] = 0.25
+        }
+        shippedAndNew.faceSlim = 0.20
+        shippedAndNew.chinLength = -0.20
+        let shippedOnly = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(faceSlim: 0.20, chinLength: -0.20),
+            faceGeometry: .phase46LegacyProxyOnly
+        )
+        let proxyOnly = BeautyEffectResolver.resolve(
+            parameters: shippedAndNew,
+            faceGeometry: .phase46LegacyProxyOnly
+        )
+        for row in phase46DegradationRows {
+            XCTAssertEqual(
+                proxyOnly.effectiveStrengths[keyPath: row.effective],
+                0,
+                "proxy-only \(row.name)"
+            )
+            XCTAssertTrue(
+                row.emission.points(
+                    face: .phase46LegacyProxyOnly,
+                    strengths: proxyOnly.effectiveStrengths
+                ).isEmpty,
+                "proxy-only \(row.name)"
+            )
+        }
+        let faceProvider = FaceShapeWarpProvider()
+        let chinProvider = ChinWarpProvider()
+        XCTAssertEqual(
+            faceProvider.fieldEmissions(
+                face: .phase46LegacyProxyOnly,
+                strengths: proxyOnly.effectiveStrengths
+            ).faceSlim,
+            faceProvider.fieldEmissions(
+                face: .phase46LegacyProxyOnly,
+                strengths: shippedOnly.effectiveStrengths
+            ).faceSlim
+        )
+        XCTAssertEqual(
+            chinProvider.fieldEmissions(
+                face: .phase46LegacyProxyOnly,
+                strengths: proxyOnly.effectiveStrengths
+            ).chinLength,
+            chinProvider.fieldEmissions(
+                face: .phase46LegacyProxyOnly,
+                strengths: shippedOnly.effectiveStrengths
+            ).chinLength
+        )
+        XCTAssertEqual(proxyOnly.activeDomains, shippedOnly.activeDomains)
+        XCTAssertEqual(proxyOnly.skippedDomains, shippedOnly.skippedDomains)
+        XCTAssertEqual(proxyOnly.metrics, shippedOnly.metrics)
+
+        let staleFace = phase46Face(completeFace, freshness: .stale)
+        for (name, face) in [("no face", Optional<FaceGeometry>.none), ("stale", staleFace)] {
+            let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: face)
+            for row in phase46DegradationRows {
+                XCTAssertEqual(
+                    plan.effectiveStrengths[keyPath: row.effective],
+                    0,
+                    "\(name) \(row.name)"
+                )
+                if let face {
+                    XCTAssertTrue(
+                        row.emission.points(face: face, strengths: plan.effectiveStrengths).isEmpty,
+                        "\(name) \(row.name)"
+                    )
+                }
+            }
+            XCTAssertFalse(plan.activeDomains.contains(.faceShape), name)
+            XCTAssertTrue(plan.skippedDomains.contains(.faceShape), name)
+            XCTAssertNil(plan.metrics["beauty.effects.geometryPointCount"], name)
+            assertRedacted(plan)
+        }
+    }
+
+    func testGEOMFreshReusedStaleFreshTransitionsCarryNoPriorFaceWork() {
+        let parameters = phase46AllRequestedParameters
+        let completeFace = FaceGeometry.phase46AsymmetricComplete
+        let reusedFace = phase46Face(completeFace, freshness: .reused)
+        let staleFace = phase46Face(completeFace, freshness: .stale)
+
+        let fresh = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: completeFace)
+        let reused = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: reusedFace)
+        let stale = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: staleFace)
+        let freshAgain = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: completeFace)
+
+        for row in phase46DegradationRows {
+            XCTAssertEqual(
+                reused.effectiveStrengths[keyPath: row.effective],
+                0.125,
+                accuracy: 0.000_001,
+                "reused \(row.name) must be cap × 0.5 before any combined scale"
+            )
+            XCTAssertFalse(
+                row.emission.points(
+                    face: reusedFace,
+                    strengths: reused.effectiveStrengths
+                ).isEmpty,
+                "reused \(row.name)"
+            )
+            XCTAssertEqual(stale.effectiveStrengths[keyPath: row.effective], 0, "stale \(row.name)")
+            XCTAssertTrue(
+                row.emission.points(
+                    face: staleFace,
+                    strengths: stale.effectiveStrengths
+                ).isEmpty,
+                "stale \(row.name)"
+            )
+        }
+        XCTAssertEqual(reused.metrics["beauty.effects.reusedGeometryScale"], 0.5)
+        XCTAssertFalse(stale.activeDomains.contains(.faceShape))
+        XCTAssertTrue(stale.skippedDomains.contains(.faceShape))
+        XCTAssertEqual(freshAgain, fresh)
+        XCTAssertEqual(
+            phase46NamedPoints(face: completeFace, strengths: freshAgain.effectiveStrengths),
+            phase46NamedPoints(face: completeFace, strengths: fresh.effectiveStrengths)
+        )
+        assertRedacted(fresh)
+        assertRedacted(reused)
+        assertRedacted(stale)
+        assertRedacted(freshAgain)
+    }
+
+    func testGEOMProviderEmptyNewFieldPreservesValidShippedSibling() {
+        let face = FaceGeometry.phase46LocallyStraightContour
+        let parameters = BeautyParameters(faceSlim: 0.20, faceContourSmooth: 0.25)
+        let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: face)
+        let faceEmissions = FaceShapeWarpProvider().fieldEmissions(
+            face: face,
+            strengths: plan.effectiveStrengths
+        )
+        let chinEmissions = ChinWarpProvider().fieldEmissions(
+            face: face,
+            strengths: plan.effectiveStrengths
+        )
+
+        XCTAssertEqual(plan.effectiveStrengths.faceContourSmooth, 0)
+        XCTAssertTrue(faceEmissions.faceContourSmooth.isEmpty)
+        XCTAssertEqual(plan.effectiveStrengths.faceSlim, 0.20, accuracy: 0.000_001)
+        XCTAssertFalse(faceEmissions.faceSlim.isEmpty)
+        XCTAssertTrue(plan.activeDomains.contains(.faceShape))
+        XCTAssertFalse(plan.skippedDomains.contains(.faceShape))
+        XCTAssertFalse(plan.warnings.contains { $0.code == "face_effects_skipped_no_face" })
+        XCTAssertFalse(plan.warnings.contains { $0.code == "combined_geometry_weakened" })
+        XCTAssertNil(plan.metrics["beauty.effects.geometryStrengthScale"])
+        XCTAssertNil(plan.metrics["beauty.effects.weakenedCount"])
+
+        let expectedPoints = faceEmissions.points + chinEmissions.points
+        XCTAssertEqual(expectedPoints, faceEmissions.faceSlim)
+        XCTAssertEqual(
+            BeautyGeometryEffectPipeline.controlPoints(
+                for: plan.effectiveStrengths,
+                face: face
+            ),
+            expectedPoints
+        )
+        XCTAssertEqual(
+            plan.metrics["beauty.effects.geometryPointCount"],
+            Double(expectedPoints.count)
+        )
+        assertRedacted(plan)
+    }
+
     func testMissingEitherEyeGroupSkipsEyesZerosStrengthsAndKeepsOtherDomainsActive() {
         for face in [FaceGeometry.missingLeftEye, .missingRightEye] {
             let plan = BeautyEffectResolver.resolve(
@@ -1499,6 +1747,78 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertEqual(plan.effectiveStrengths.smile, 0)
         XCTAssertEqual(plan.effectiveStrengths.lipColor, 0)
         assertRedacted(plan)
+    }
+
+    private var phase46DegradationRows: [Phase46DegradationFieldRow] {
+        [
+            Phase46DegradationFieldRow(
+                name: "faceContourSmooth",
+                parameter: \.faceContourSmooth,
+                effective: \.faceContourSmooth,
+                emission: .face(\.faceContourSmooth),
+                requiredSupport: .contour
+            ),
+            Phase46DegradationFieldRow(
+                name: "templeFullness",
+                parameter: \.templeFullness,
+                effective: \.templeFullness,
+                emission: .face(\.templeFullness),
+                requiredSupport: .contour
+            ),
+            Phase46DegradationFieldRow(
+                name: "cheekboneSlim",
+                parameter: \.cheekboneSlim,
+                effective: \.cheekboneSlim,
+                emission: .face(\.cheekboneSlim),
+                requiredSupport: .contour
+            ),
+            Phase46DegradationFieldRow(
+                name: "chinTaper",
+                parameter: \.chinTaper,
+                effective: \.chinTaper,
+                emission: .chin(\.chinTaper),
+                requiredSupport: .contourAndCenterline
+            ),
+        ]
+    }
+
+    private var phase46AllRequestedParameters: BeautyParameters {
+        var parameters = BeautyParameters()
+        for row in phase46DegradationRows {
+            parameters[keyPath: row.parameter] = 1
+        }
+        return parameters
+    }
+
+    private func phase46Face(
+        _ face: FaceGeometry,
+        freshness: LandmarkGeometryFreshness
+    ) -> FaceGeometry {
+        FaceGeometry(
+            bounds: face.bounds,
+            faceContour: face.faceContour,
+            observedFaceSupport: face.observedFaceSupport,
+            leftEye: face.leftEye,
+            rightEye: face.rightEye,
+            nose: face.nose,
+            noseRoot: face.noseRoot,
+            noseTip: face.noseTip,
+            outerLips: face.outerLips,
+            upperLips: face.upperLips,
+            lowerLips: face.lowerLips,
+            innerLips: face.innerLips,
+            leftEyeSupport: face.leftEyeSupport,
+            rightEyeSupport: face.rightEyeSupport,
+            freshness: freshness
+        )
+    }
+
+    private func phase46NamedPoints(
+        face: FaceGeometry,
+        strengths: BeautyEffectiveStrengths
+    ) -> [WarpControlPoint] {
+        FaceShapeWarpProvider().fieldEmissions(face: face, strengths: strengths).points +
+            ChinWarpProvider().fieldEmissions(face: face, strengths: strengths).points
     }
 
     private func assertRedacted(_ plan: BeautyEffectPlan, file: StaticString = #filePath, line: UInt = #line) {

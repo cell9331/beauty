@@ -6,6 +6,87 @@ import BeautyCore
 @testable import BeautyEffects
 
 final class BeautyGeometryEffectPipelineTests: XCTestCase {
+    func testGEOMFinalNamedEmissionsDispatchOnceThroughExistingPipeline() {
+        let face = FaceGeometry.phase46AsymmetricComplete
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(
+                faceSlim: 0.10,
+                chinLength: -0.10,
+                faceContourSmooth: 0.10,
+                templeFullness: 0.10,
+                cheekboneSlim: 0.10,
+                chinTaper: 0.10,
+                eyeHeight: 0.10,
+                noseRootNarrowing: 0.10,
+                mouthYPosition: -0.10
+            ),
+            faceGeometry: face
+        )
+        let strengths = plan.effectiveStrengths
+        let faceEmissions = FaceShapeWarpProvider().fieldEmissions(
+            face: face,
+            strengths: strengths
+        )
+        let chinEmissions = ChinWarpProvider().fieldEmissions(
+            face: face,
+            strengths: strengths
+        )
+        let eyeEmissions = EyeWarpProvider().fieldEmissions(
+            face: face,
+            strengths: strengths
+        )
+        let noseEmissions = NoseWarpProvider().fieldEmissions(
+            face: face,
+            strengths: strengths
+        )
+        let mouthEmissions = MouthWarpProvider().fieldEmissions(
+            face: face,
+            strengths: strengths
+        )
+
+        XCTAssertFalse(faceEmissions.faceSlim.isEmpty)
+        XCTAssertFalse(faceEmissions.faceContourSmooth.isEmpty)
+        XCTAssertFalse(faceEmissions.templeFullness.isEmpty)
+        XCTAssertFalse(faceEmissions.cheekboneSlim.isEmpty)
+        XCTAssertFalse(chinEmissions.chinLength.isEmpty)
+        XCTAssertFalse(chinEmissions.chinTaper.isEmpty)
+        XCTAssertFalse(eyeEmissions.eyeHeight.isEmpty)
+        XCTAssertFalse(noseEmissions.noseRootNarrowing.isEmpty)
+        XCTAssertFalse(mouthEmissions.mouthYPosition.isEmpty)
+
+        let providerArrays: [[WarpControlPoint]] = [
+            faceEmissions.points,
+            chinEmissions.points,
+            eyeEmissions.points,
+            noseEmissions.points,
+            mouthEmissions.points,
+        ]
+        let expected = providerArrays.flatMap { $0 }
+        let expectedCount = providerArrays.reduce(0) { $0 + $1.count }
+
+        XCTAssertEqual(expected.count, expectedCount)
+        XCTAssertEqual(
+            BeautyGeometryEffectPipeline.controlPoints(for: strengths, face: face),
+            expected,
+            "Final named provider arrays must enter the existing face→chin→eye→nose→mouth order exactly once."
+        )
+        XCTAssertEqual(
+            BeautyGeometryEffectPipeline.controlPoints(for: plan, face: face),
+            expected,
+            "The existing plan-gated render path must dispatch the same final provider arrays."
+        )
+        XCTAssertEqual(
+            plan.metrics["beauty.effects.geometryPointCount"],
+            Double(expectedCount),
+            "Face-domain accounting must not count the unified eye/nose/mouth arrays a second time."
+        )
+        XCTAssertTrue(
+            plan.activeDomains.isSuperset(
+                of: Set<BeautyEffectDomain>([.faceShape, .eyes, .nose, .mouth])
+            )
+        )
+    }
+
     func testCIImageGeometryWarpMovesLocalPixelsWithoutGlobalColorBias() throws {
         let width = 160
         let height = 160
