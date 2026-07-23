@@ -272,15 +272,21 @@ package struct VisionFaceDetector: Sendable {
                 throw CoordinateMapper.MappingError.invalidCoordinate
             }
 
+            let axes = try mappedFaceAxes(
+                in: visionBounds,
+                with: mapper
+            )
             let contour = mapFaceRegion(
                 support.contour,
                 maximumPointCount: 32,
+                canonicalAxis: axes.right,
                 in: visionBounds,
                 with: mapper
             )
             let medianLine = mapFaceRegion(
                 support.medianLine,
                 maximumPointCount: 16,
+                canonicalAxis: axes.down,
                 in: visionBounds,
                 with: mapper
             )
@@ -404,6 +410,7 @@ package struct VisionFaceDetector: Sendable {
     private func mapFaceRegion(
         _ points: [CoordinatePoint]?,
         maximumPointCount: Int,
+        canonicalAxis: SIMD2<Double>,
         in visionBounds: CoordinateRect,
         with mapper: CoordinateMapper
     ) -> [CoordinatePoint]? {
@@ -419,7 +426,71 @@ package struct VisionFaceDetector: Sendable {
             return nil
         }
 
-        return try? mapPoints(points, in: visionBounds, with: mapper)
+        guard let mapped = try? mapPoints(points, in: visionBounds, with: mapper),
+              let first = mapped.first,
+              let last = mapped.last
+        else {
+            return nil
+        }
+        let direction = SIMD2<Double>(
+            last.x - first.x,
+            last.y - first.y
+        )
+        let projection = direction.x * canonicalAxis.x + direction.y * canonicalAxis.y
+        guard projection.isFinite, abs(projection) > 0.000_001 else {
+            return nil
+        }
+        return projection > 0 ? mapped : Array(mapped.reversed())
+    }
+
+    private func mappedFaceAxes(
+        in visionBounds: CoordinateRect,
+        with mapper: CoordinateMapper
+    ) throws -> (right: SIMD2<Double>, down: SIMD2<Double>) {
+        let bottomLeft = try mapper.map(
+            point: CoordinatePoint(x: visionBounds.minX, y: visionBounds.minY),
+            from: .visionNormalized,
+            to: .imageNormalized
+        )
+        let bottomRight = try mapper.map(
+            point: CoordinatePoint(x: visionBounds.maxX, y: visionBounds.minY),
+            from: .visionNormalized,
+            to: .imageNormalized
+        )
+        let topLeft = try mapper.map(
+            point: CoordinatePoint(x: visionBounds.minX, y: visionBounds.maxY),
+            from: .visionNormalized,
+            to: .imageNormalized
+        )
+
+        let right = try normalizedAxis(
+            from: bottomLeft,
+            to: bottomRight
+        )
+        let down = try normalizedAxis(
+            from: topLeft,
+            to: bottomLeft
+        )
+        return (right, down)
+    }
+
+    private func normalizedAxis(
+        from start: CoordinatePoint,
+        to end: CoordinatePoint
+    ) throws -> SIMD2<Double> {
+        let axis = SIMD2<Double>(
+            end.x - start.x,
+            end.y - start.y
+        )
+        let length = hypot(axis.x, axis.y)
+        guard axis.x.isFinite,
+              axis.y.isFinite,
+              length.isFinite,
+              length > 0.000_001
+        else {
+            throw CoordinateMapper.MappingError.invalidCoordinate
+        }
+        return axis / length
     }
 
     private static func makeSupport(
