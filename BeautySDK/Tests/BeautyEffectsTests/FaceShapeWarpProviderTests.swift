@@ -320,6 +320,365 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         XCTAssertLessThanOrEqual(point.strength, BeautySafetyCaps.chinLength)
     }
 
+    func testGEOM01SmoothContourNamedEmissionRedContract() {
+        let face = FaceGeometry.phase46AsymmetricComplete
+        let provider = FaceShapeWarpProvider()
+        let requested = BeautySafetyCaps.faceContourSmooth * 0.8
+        let emissions = provider.fieldEmissions(
+            face: face,
+            strengths: strengths(faceContourSmooth: requested)
+        )
+        let contour = try! XCTUnwrap(face.observedFaceSupport?.contour)
+        let minimumXIndex = try! XCTUnwrap(contour.indices.min(by: { contour[$0].x < contour[$1].x }))
+        let maximumXIndex = try! XCTUnwrap(contour.indices.max(by: { contour[$0].x < contour[$1].x }))
+        let expectedIndices = contour.indices.filter { index in
+            index > contour.startIndex &&
+                index < contour.index(before: contour.endIndex) &&
+                index != minimumXIndex &&
+                index != maximumXIndex
+        }
+        let expectedSources = expectedIndices.map { contour[$0] }
+
+        XCTAssertEqual(emissions.faceContourSmooth.map { $0.source }, expectedSources)
+        assertPhase46ControlPoints(emissions.faceContourSmooth, face: face, strength: requested)
+        XCTAssertTrue(emissions.faceContourSmooth.allSatisfy { $0.target.y == $0.source.y })
+        XCTAssertFalse(emissions.faceContourSmooth.contains { point in
+            point.source == contour.first || point.source == contour.last
+        })
+        let horizontalExtrema = [
+            contour.min(by: { $0.x < $1.x }),
+            contour.max(by: { $0.x < $1.x }),
+        ].compactMap { $0 }
+        XCTAssertTrue(emissions.faceContourSmooth.allSatisfy { !horizontalExtrema.contains($0.source) })
+
+        let displacements = emissions.faceContourSmooth.map { $0.target.x - $0.source.x }
+        let ceiling = 0.012 * face.bounds.width * requested / BeautySafetyCaps.faceContourSmooth
+        XCTAssertTrue(displacements.allSatisfy { $0.isFinite && abs($0) <= ceiling + 0.000001 })
+        XCTAssertEqual(displacements.reduce(0, +), 0, accuracy: 0.000001)
+        XCTAssertEqual(
+            displacements.reduce(0, +) / Float(max(displacements.count, 1)),
+            0,
+            accuracy: 0.000001
+        )
+
+        let raw = expectedIndices.map { index in
+            (contour[index - 1].x + contour[index + 1].x) / 2 - contour[index].x
+        }
+        let rawMean = raw.reduce(0, +) / Float(raw.count)
+        let centered = raw.map { $0 - rawMean }
+        let nonzeroPairs = zip(centered, displacements).filter {
+            abs($0.0) > Float.ulpOfOne
+        }
+        let scales = nonzeroPairs.map { $0.1 / $0.0 }
+        let uniformScale = try! XCTUnwrap(scales.first)
+        XCTAssertTrue(uniformScale.isFinite && (0...1).contains(uniformScale))
+        XCTAssertTrue(scales.allSatisfy { abs($0 - uniformScale) <= 0.000001 })
+
+        var smoothed = contour
+        for point in emissions.faceContourSmooth {
+            let index = try! XCTUnwrap(contour.firstIndex(of: point.source))
+            smoothed[index] = point.target
+        }
+        XCTAssertLessThan(lateralRoughness(smoothed), lateralRoughness(contour))
+
+        let faceSmall = provider.fieldEmissions(
+            face: face,
+            strengths: strengths(faceSmall: BeautySafetyCaps.faceSmall)
+        )
+        XCTAssertNotEqual(emissions.faceContourSmooth, faceSmall.faceSmall)
+        XCTAssertNotEqual(
+            emissions.faceContourSmooth.map { $0.source },
+            faceSmall.faceSmall.map { $0.source }
+        )
+        for contourEligible in [
+            FaceGeometry.phase46ContourOnly,
+            .phase46CenterlineMissing,
+            .phase46CenterlineIneligible,
+        ] {
+            XCTAssertEqual(
+                provider.fieldEmissions(
+                    face: contourEligible,
+                    strengths: strengths(faceContourSmooth: requested)
+                ).faceContourSmooth,
+                emissions.faceContourSmooth
+            )
+        }
+        XCTAssertTrue(
+            provider.fieldEmissions(
+                face: .phase46LocallyStraightContour,
+                strengths: strengths(faceContourSmooth: requested)
+            ).faceContourSmooth.isEmpty
+        )
+        XCTAssertTrue(
+            provider.fieldEmissions(
+                face: .phase46LegacyProxyOnly,
+                strengths: strengths(faceContourSmooth: requested)
+            ).faceContourSmooth.isEmpty
+        )
+        XCTAssertTrue(
+            provider.fieldEmissions(
+                face: face,
+                strengths: strengths(faceContourSmooth: 0)
+            ).faceContourSmooth.isEmpty
+        )
+    }
+
+    func testGEOM02TempleFullnessNamedEmissionRedContract() {
+        let face = FaceGeometry.phase46AsymmetricComplete
+        let provider = FaceShapeWarpProvider()
+        let requested = BeautySafetyCaps.templeFullness * 0.8
+        let emissions = provider.fieldEmissions(
+            face: face,
+            strengths: strengths(templeFullness: requested)
+        )
+        let contour = try! XCTUnwrap(face.observedFaceSupport?.contour)
+        let expectedSources = contour.indices.compactMap { index -> SIMD2<Float>? in
+            let progress = Float(index) / Float(contour.count - 1)
+            return (0.10..<0.30).contains(progress) || (0.70..<0.90).contains(progress)
+                ? contour[index]
+                : nil
+        }
+        let axis = (contour.map(\.x).min()! + contour.map(\.x).max()!) / 2
+
+        XCTAssertEqual(emissions.templeFullness.map { $0.source }, expectedSources)
+        assertPhase46ControlPoints(emissions.templeFullness, face: face, strength: requested)
+        XCTAssertTrue(emissions.templeFullness.allSatisfy {
+            $0.target.y == $0.source.y && movesOutward($0, from: axis)
+        })
+        let ceiling = 0.018 * face.bounds.width * requested / BeautySafetyCaps.templeFullness
+        XCTAssertTrue(emissions.templeFullness.allSatisfy {
+            abs($0.target.x - $0.source.x) <= ceiling + 0.000001
+        })
+
+        let all = provider.fieldEmissions(
+            face: face,
+            strengths: strengths(
+                faceSlim: BeautySafetyCaps.faceSlim,
+                faceSmall: BeautySafetyCaps.faceSmall,
+                jawSlim: BeautySafetyCaps.jawSlim,
+                templeFullness: requested,
+                cheekboneSlim: BeautySafetyCaps.cheekboneSlim * 0.8
+            )
+        )
+        assertDisjointSources(all.templeFullness, all.cheekboneSlim)
+        assertDisjointSources(all.templeFullness, all.faceSlim)
+        assertDisjointSources(all.templeFullness, all.faceSmall)
+        assertDisjointSources(all.templeFullness, all.jawSlim)
+        for contourEligible in [
+            FaceGeometry.phase46ContourOnly,
+            .phase46CenterlineMissing,
+            .phase46CenterlineIneligible,
+        ] {
+            XCTAssertEqual(
+                provider.fieldEmissions(
+                    face: contourEligible,
+                    strengths: strengths(templeFullness: requested)
+                ).templeFullness,
+                emissions.templeFullness
+            )
+        }
+        XCTAssertTrue(
+            provider.fieldEmissions(
+                face: .phase46LegacyProxyOnly,
+                strengths: strengths(templeFullness: requested)
+            ).templeFullness.isEmpty
+        )
+        XCTAssertTrue(
+            provider.fieldEmissions(
+                face: face,
+                strengths: strengths(templeFullness: 0)
+            ).templeFullness.isEmpty
+        )
+    }
+
+    func testGEOM03CheekboneSlimNamedEmissionRedContract() {
+        let face = FaceGeometry.phase46AsymmetricComplete
+        let provider = FaceShapeWarpProvider()
+        let requested = BeautySafetyCaps.cheekboneSlim * 0.8
+        let emissions = provider.fieldEmissions(
+            face: face,
+            strengths: strengths(cheekboneSlim: requested)
+        )
+        let contour = try! XCTUnwrap(face.observedFaceSupport?.contour)
+        let expectedSources = contour.indices.compactMap { index -> SIMD2<Float>? in
+            let progress = Float(index) / Float(contour.count - 1)
+            return (0.30..<0.46).contains(progress) || (0.54..<0.70).contains(progress)
+                ? contour[index]
+                : nil
+        }
+        let axis = (contour.map(\.x).min()! + contour.map(\.x).max()!) / 2
+
+        XCTAssertEqual(emissions.cheekboneSlim.map { $0.source }, expectedSources)
+        assertPhase46ControlPoints(emissions.cheekboneSlim, face: face, strength: requested)
+        XCTAssertTrue(emissions.cheekboneSlim.allSatisfy { point in
+            point.target.y == point.source.y &&
+                movesInward(point, toward: axis) &&
+                abs(point.target.x - axis) < abs(point.source.x - axis)
+        })
+        let ceiling = 0.018 * face.bounds.width * requested / BeautySafetyCaps.cheekboneSlim
+        XCTAssertTrue(emissions.cheekboneSlim.allSatisfy {
+            abs($0.target.x - $0.source.x) <= ceiling + 0.000001
+        })
+
+        let all = provider.fieldEmissions(
+            face: face,
+            strengths: strengths(
+                faceSlim: BeautySafetyCaps.faceSlim,
+                faceSmall: BeautySafetyCaps.faceSmall,
+                jawSlim: BeautySafetyCaps.jawSlim,
+                templeFullness: BeautySafetyCaps.templeFullness * 0.8,
+                cheekboneSlim: requested
+            )
+        )
+        assertDisjointSources(all.cheekboneSlim, all.templeFullness)
+        assertDisjointSources(all.cheekboneSlim, all.faceSlim)
+        assertDisjointSources(all.cheekboneSlim, all.faceSmall)
+        assertDisjointSources(all.cheekboneSlim, all.jawSlim)
+        for contourEligible in [
+            FaceGeometry.phase46ContourOnly,
+            .phase46CenterlineMissing,
+            .phase46CenterlineIneligible,
+        ] {
+            XCTAssertEqual(
+                provider.fieldEmissions(
+                    face: contourEligible,
+                    strengths: strengths(cheekboneSlim: requested)
+                ).cheekboneSlim,
+                emissions.cheekboneSlim
+            )
+        }
+        XCTAssertTrue(
+            provider.fieldEmissions(
+                face: .phase46LegacyProxyOnly,
+                strengths: strengths(cheekboneSlim: requested)
+            ).cheekboneSlim.isEmpty
+        )
+        XCTAssertTrue(
+            provider.fieldEmissions(
+                face: face,
+                strengths: strengths(cheekboneSlim: 0)
+            ).cheekboneSlim.isEmpty
+        )
+    }
+
+    func testGEOM04ChinTaperNamedEmissionRedContract() {
+        let face = FaceGeometry.phase46AsymmetricComplete
+        let provider = ChinWarpProvider()
+        let requested = BeautySafetyCaps.chinTaper * 0.8
+        let emissions = provider.fieldEmissions(
+            face: face,
+            strengths: strengths(chinTaper: requested)
+        )
+        let support = try! XCTUnwrap(face.observedFaceSupport)
+        let apexIndex = try! XCTUnwrap(support.apexIndex)
+        let expectedSources = [support.contour[apexIndex - 1], support.contour[apexIndex + 1]]
+
+        XCTAssertEqual(emissions.chinTaper.map { $0.source }, expectedSources)
+        assertPhase46ControlPoints(emissions.chinTaper, face: face, strength: requested)
+        XCTAssertFalse(emissions.chinTaper.contains { $0.source == support.contour[apexIndex] })
+        XCTAssertTrue(emissions.chinTaper.allSatisfy { point in
+            let axis = interpolatedMedianX(at: point.source.y, median: support.medianLine!)
+            return point.target.y == point.source.y &&
+                abs(point.target.x - axis) < abs(point.source.x - axis)
+        })
+        let ceiling = 0.016 * face.bounds.width * requested / BeautySafetyCaps.chinTaper
+        XCTAssertTrue(emissions.chinTaper.allSatisfy {
+            abs($0.target.x - $0.source.x) <= ceiling + 0.000001
+        })
+
+        let shippedChin = provider.fieldEmissions(
+            face: face,
+            strengths: strengths(
+                chinLength: -BeautySafetyCaps.chinLength,
+                chinTaper: requested
+            )
+        )
+        assertDisjointSources(shippedChin.chinTaper, shippedChin.chinLength)
+        let shippedFace = FaceShapeWarpProvider().fieldEmissions(
+            face: face,
+            strengths: strengths(faceVShape: BeautySafetyCaps.faceVShape)
+        )
+        assertDisjointSources(emissions.chinTaper, shippedFace.faceVShape)
+
+        for ineligible in [
+            FaceGeometry.phase46ContourOnly,
+            .phase46CenterlineMissing,
+            .phase46CenterlineIneligible,
+            .phase46LegacyProxyOnly,
+        ] {
+            XCTAssertTrue(
+                provider.fieldEmissions(
+                    face: ineligible,
+                    strengths: strengths(chinTaper: requested)
+                ).chinTaper.isEmpty
+            )
+        }
+        XCTAssertTrue(
+            provider.fieldEmissions(
+                face: face,
+                strengths: strengths(chinTaper: 0)
+            ).chinTaper.isEmpty
+        )
+    }
+
+    func testGEOMNamedEmissionsPreserveFiveShippedFaceAndChinArrays() {
+        let face = FaceGeometry.phase46AsymmetricComplete
+        let faceProvider = FaceShapeWarpProvider()
+        let chinProvider = ChinWarpProvider()
+        let baselineFaceSlim = faceProvider.makeControlPoints(
+            face: face,
+            strengths: strengths(faceSlim: BeautySafetyCaps.faceSlim)
+        ).points
+        let baselineFaceSmall = faceProvider.makeControlPoints(
+            face: face,
+            strengths: strengths(faceSmall: BeautySafetyCaps.faceSmall)
+        ).points
+        let baselineFaceVShape = faceProvider.makeControlPoints(
+            face: face,
+            strengths: strengths(faceVShape: BeautySafetyCaps.faceVShape)
+        ).points
+        let baselineJawSlim = faceProvider.makeControlPoints(
+            face: face,
+            strengths: strengths(jawSlim: BeautySafetyCaps.jawSlim)
+        ).points
+        let baselineChinLength = chinProvider.makeControlPoints(
+            face: face,
+            strengths: strengths(chinLength: -BeautySafetyCaps.chinLength)
+        ).points
+        let combined = strengths(
+            faceSlim: BeautySafetyCaps.faceSlim,
+            faceSmall: BeautySafetyCaps.faceSmall,
+            faceVShape: BeautySafetyCaps.faceVShape,
+            jawSlim: BeautySafetyCaps.jawSlim,
+            chinLength: -BeautySafetyCaps.chinLength,
+            faceContourSmooth: BeautySafetyCaps.faceContourSmooth,
+            templeFullness: BeautySafetyCaps.templeFullness,
+            cheekboneSlim: BeautySafetyCaps.cheekboneSlim,
+            chinTaper: BeautySafetyCaps.chinTaper
+        )
+        let faceEmissions = faceProvider.fieldEmissions(face: face, strengths: combined)
+        let chinEmissions = chinProvider.fieldEmissions(face: face, strengths: combined)
+
+        XCTAssertEqual(faceEmissions.faceSlim, baselineFaceSlim)
+        XCTAssertEqual(faceEmissions.faceSmall, baselineFaceSmall)
+        XCTAssertEqual(faceEmissions.faceVShape, baselineFaceVShape)
+        XCTAssertEqual(faceEmissions.jawSlim, baselineJawSlim)
+        XCTAssertEqual(chinEmissions.chinLength, baselineChinLength)
+
+        let proxyOnly = FaceGeometry.phase46LegacyProxyOnly
+        let proxyFace = faceProvider.fieldEmissions(face: proxyOnly, strengths: combined)
+        let proxyChin = chinProvider.fieldEmissions(face: proxyOnly, strengths: combined)
+        XCTAssertEqual(proxyFace.faceSlim, baselineFaceSlim)
+        XCTAssertEqual(proxyFace.faceSmall, baselineFaceSmall)
+        XCTAssertEqual(proxyFace.faceVShape, baselineFaceVShape)
+        XCTAssertEqual(proxyFace.jawSlim, baselineJawSlim)
+        XCTAssertEqual(proxyChin.chinLength, baselineChinLength)
+        XCTAssertTrue(proxyFace.faceContourSmooth.isEmpty)
+        XCTAssertTrue(proxyFace.templeFullness.isEmpty)
+        XCTAssertTrue(proxyFace.cheekboneSlim.isEmpty)
+        XCTAssertTrue(proxyChin.chinTaper.isEmpty)
+    }
+
     func testMissingFaceContourReturnsNoFaceShapePoints() {
         let result = FaceShapeWarpProvider().makeControlPoints(
             face: .missingContour,
@@ -330,12 +689,79 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         XCTAssertEqual(result.skipReason, "missing_face_contour")
     }
 
+    private func assertPhase46ControlPoints(
+        _ points: [WarpControlPoint],
+        face: FaceGeometry,
+        strength: Float,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertFalse(points.isEmpty, file: file, line: line)
+        XCTAssertTrue(points.allSatisfy { point in
+            point.source.x.isFinite && point.source.y.isFinite &&
+                point.target.x.isFinite && point.target.y.isFinite &&
+                point.radius.isFinite && point.strength.isFinite && point.falloff.isFinite &&
+                (0...1).contains(point.source.x) && (0...1).contains(point.source.y) &&
+                (0...1).contains(point.target.x) && (0...1).contains(point.target.y) &&
+                point.radius >= 0.035 && point.radius <= face.bounds.width * 0.20 &&
+                point.strength == strength && point.falloff == 2
+        }, file: file, line: line)
+    }
+
+    private func assertDisjointSources(
+        _ lhs: [WarpControlPoint],
+        _ rhs: [WarpControlPoint],
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertTrue(
+            lhs.allSatisfy { left in rhs.allSatisfy { right in left.source != right.source } },
+            file: file,
+            line: line
+        )
+    }
+
+    private func movesOutward(_ point: WarpControlPoint, from axis: Float) -> Bool {
+        point.source.x < axis
+            ? point.target.x < point.source.x
+            : point.target.x > point.source.x
+    }
+
+    private func movesInward(_ point: WarpControlPoint, toward axis: Float) -> Bool {
+        point.source.x < axis
+            ? point.target.x > point.source.x
+            : point.target.x < point.source.x
+    }
+
+    private func lateralRoughness(_ contour: [SIMD2<Float>]) -> Float {
+        guard contour.count >= 3 else { return 0 }
+        return (1..<(contour.count - 1)).reduce(0) { result, index in
+            result + abs(contour[index].x - (contour[index - 1].x + contour[index + 1].x) / 2)
+        }
+    }
+
+    private func interpolatedMedianX(at y: Float, median: [SIMD2<Float>]) -> Float {
+        for (first, second) in zip(median, median.dropFirst()) {
+            let lower = min(first.y, second.y)
+            let upper = max(first.y, second.y)
+            if (lower...upper).contains(y), abs(second.y - first.y) > Float.ulpOfOne {
+                let progress = (y - first.y) / (second.y - first.y)
+                return first.x + (second.x - first.x) * progress
+            }
+        }
+        return median.min(by: { abs($0.y - y) < abs($1.y - y) })!.x
+    }
+
     private func strengths(
         faceSlim: Float = 0,
         faceSmall: Float = 0,
         faceVShape: Float = 0,
         jawSlim: Float = 0,
-        chinLength: Float = 0
+        chinLength: Float = 0,
+        faceContourSmooth: Float = 0,
+        templeFullness: Float = 0,
+        cheekboneSlim: Float = 0,
+        chinTaper: Float = 0
     ) -> BeautyEffectiveStrengths {
         var strengths = BeautyEffectiveStrengths()
         strengths.faceSlim = min(faceSlim, BeautySafetyCaps.faceSlim)
@@ -343,6 +769,10 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         strengths.faceVShape = min(faceVShape, BeautySafetyCaps.faceVShape)
         strengths.jawSlim = min(jawSlim, BeautySafetyCaps.jawSlim)
         strengths.chinLength = min(max(chinLength, -BeautySafetyCaps.chinLength), BeautySafetyCaps.chinLength)
+        strengths.faceContourSmooth = min(faceContourSmooth, BeautySafetyCaps.faceContourSmooth)
+        strengths.templeFullness = min(templeFullness, BeautySafetyCaps.templeFullness)
+        strengths.cheekboneSlim = min(cheekboneSlim, BeautySafetyCaps.cheekboneSlim)
+        strengths.chinTaper = min(chinTaper, BeautySafetyCaps.chinTaper)
         return strengths
     }
 }
@@ -412,6 +842,68 @@ extension FaceGeometry {
             SIMD2<Float>(0.52, 0.674),
             SIMD2<Float>(0.48, 0.674)
         ]
+    )
+
+    static let phase46AsymmetricComplete = replacingObservedFaceSupport(
+        BeautyFaceSemanticSupport(
+            contour: phase46AsymmetricContour,
+            medianLine: [
+                SIMD2<Float>(0.480, 0.300),
+                SIMD2<Float>(0.495, 0.550),
+                SIMD2<Float>(0.510, 0.820),
+            ],
+            apexIndex: 5
+        )
+    )
+
+    static let phase46ContourOnly = replacingObservedFaceSupport(
+        BeautyFaceSemanticSupport(
+            contour: phase46AsymmetricContour,
+            medianLine: nil,
+            apexIndex: nil
+        )
+    )
+
+    static let phase46CenterlineMissing = replacingObservedFaceSupport(
+        BeautyFaceSemanticSupport(
+            contour: phase46AsymmetricContour,
+            medianLine: nil,
+            apexIndex: 5
+        )
+    )
+
+    static let phase46CenterlineIneligible = replacingObservedFaceSupport(
+        BeautyFaceSemanticSupport(
+            contour: phase46AsymmetricContour,
+            medianLine: [
+                SIMD2<Float>(0.480, 0.300),
+                SIMD2<Float>(0.495, 0.550),
+                SIMD2<Float>(0.510, 0.820),
+            ],
+            apexIndex: phase46AsymmetricContour.endIndex
+        )
+    )
+
+    static let phase46LegacyProxyOnly = replacingObservedFaceSupport(nil)
+
+    static let phase46LocallyStraightContour = replacingObservedFaceSupport(
+        BeautyFaceSemanticSupport(
+            contour: [
+                SIMD2<Float>(0.300, 0.360),
+                SIMD2<Float>(0.340, 0.430),
+                SIMD2<Float>(0.380, 0.500),
+                SIMD2<Float>(0.420, 0.590),
+                SIMD2<Float>(0.460, 0.700),
+                SIMD2<Float>(0.500, 0.800),
+                SIMD2<Float>(0.540, 0.700),
+                SIMD2<Float>(0.580, 0.590),
+                SIMD2<Float>(0.620, 0.500),
+                SIMD2<Float>(0.660, 0.430),
+                SIMD2<Float>(0.700, 0.360),
+            ],
+            medianLine: nil,
+            apexIndex: nil
+        )
     )
 
     static let missingContour = FaceGeometry(
@@ -648,6 +1140,42 @@ extension FaceGeometry {
         innerLips: fixture.innerLips,
         freshness: .stale
     )
+
+    private static let phase46AsymmetricContour = [
+        SIMD2<Float>(0.310, 0.360),
+        SIMD2<Float>(0.290, 0.440),
+        SIMD2<Float>(0.325, 0.520),
+        SIMD2<Float>(0.350, 0.620),
+        SIMD2<Float>(0.415, 0.730),
+        SIMD2<Float>(0.505, 0.800),
+        SIMD2<Float>(0.585, 0.710),
+        SIMD2<Float>(0.640, 0.600),
+        SIMD2<Float>(0.675, 0.490),
+        SIMD2<Float>(0.705, 0.410),
+        SIMD2<Float>(0.680, 0.340),
+    ]
+
+    private static func replacingObservedFaceSupport(
+        _ observedFaceSupport: BeautyFaceSemanticSupport?
+    ) -> FaceGeometry {
+        FaceGeometry(
+            bounds: fixture.bounds,
+            faceContour: fixture.faceContour,
+            observedFaceSupport: observedFaceSupport,
+            leftEye: fixture.leftEye,
+            rightEye: fixture.rightEye,
+            nose: fixture.nose,
+            noseRoot: fixture.noseRoot,
+            noseTip: fixture.noseTip,
+            outerLips: fixture.outerLips,
+            upperLips: fixture.upperLips,
+            lowerLips: fixture.lowerLips,
+            innerLips: fixture.innerLips,
+            leftEyeSupport: fixture.leftEyeSupport,
+            rightEyeSupport: fixture.rightEyeSupport,
+            freshness: fixture.freshness
+        )
+    }
 
     private static func replacingNoseRoot(_ noseRoot: [SIMD2<Float>]) -> FaceGeometry {
         FaceGeometry(
