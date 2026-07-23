@@ -397,6 +397,7 @@ enum BeautyFaceGeometryAdapter {
     ) -> [SIMD2<Float>]? {
         guard (minimumFaceContourPointCount...maximumFaceContourPointCount).contains(input.count),
               faceInputIsValid(input),
+              !facePathHasNonAdjacentIntersections(input),
               let local = faceRelativePoints(input, bounds: bounds),
               let first = local.first,
               let last = local.last,
@@ -564,6 +565,79 @@ enum BeautyFaceGeometryAdapter {
             return false
         }
         return Set(points.map(FacePointKey.init)).count == points.count
+    }
+
+    private static func facePathHasNonAdjacentIntersections(
+        _ points: [CoordinatePoint]
+    ) -> Bool {
+        let segmentCount = points.count - 1
+        guard segmentCount >= 3 else {
+            return false
+        }
+        for firstIndex in 0..<segmentCount {
+            let secondStart = firstIndex + 2
+            guard secondStart < segmentCount else {
+                continue
+            }
+            for secondIndex in secondStart..<segmentCount {
+                if faceSegmentsIntersect(
+                    points[firstIndex],
+                    points[firstIndex + 1],
+                    points[secondIndex],
+                    points[secondIndex + 1]
+                ) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    private static func faceSegmentsIntersect(
+        _ firstStart: CoordinatePoint,
+        _ firstEnd: CoordinatePoint,
+        _ secondStart: CoordinatePoint,
+        _ secondEnd: CoordinatePoint
+    ) -> Bool {
+        let firstStartSide = faceOrientation(firstStart, firstEnd, secondStart)
+        let firstEndSide = faceOrientation(firstStart, firstEnd, secondEnd)
+        let secondStartSide = faceOrientation(secondStart, secondEnd, firstStart)
+        let secondEndSide = faceOrientation(secondStart, secondEnd, firstEnd)
+
+        if faceSignsAreOpposite(firstStartSide, firstEndSide),
+           faceSignsAreOpposite(secondStartSide, secondEndSide) {
+            return true
+        }
+        return (firstStartSide == 0
+            && facePoint(secondStart, liesOnSegmentFrom: firstStart, to: firstEnd))
+            || (firstEndSide == 0
+                && facePoint(secondEnd, liesOnSegmentFrom: firstStart, to: firstEnd))
+            || (secondStartSide == 0
+                && facePoint(firstStart, liesOnSegmentFrom: secondStart, to: secondEnd))
+            || (secondEndSide == 0
+                && facePoint(firstEnd, liesOnSegmentFrom: secondStart, to: secondEnd))
+    }
+
+    private static func faceOrientation(
+        _ start: CoordinatePoint,
+        _ end: CoordinatePoint,
+        _ point: CoordinatePoint
+    ) -> Double {
+        (end.x - start.x) * (point.y - start.y)
+            - (end.y - start.y) * (point.x - start.x)
+    }
+
+    private static func faceSignsAreOpposite(_ lhs: Double, _ rhs: Double) -> Bool {
+        (lhs > 0 && rhs < 0) || (lhs < 0 && rhs > 0)
+    }
+
+    private static func facePoint(
+        _ point: CoordinatePoint,
+        liesOnSegmentFrom start: CoordinatePoint,
+        to end: CoordinatePoint
+    ) -> Bool {
+        (min(start.x, end.x)...max(start.x, end.x)).contains(point.x)
+            && (min(start.y, end.y)...max(start.y, end.y)).contains(point.y)
     }
 
     private static func faceRelativePoints(

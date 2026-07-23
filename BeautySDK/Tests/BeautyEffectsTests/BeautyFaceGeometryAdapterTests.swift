@@ -635,6 +635,47 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         )
     }
 
+    func testFaceContourRejectsNonAdjacentSegmentIntersections() {
+        let faceBounds = FaceBounds(x: 0.10, y: 0.10, width: 0.80, height: 0.80)
+        let bowTie = [
+            CoordinatePoint(x: 0.10, y: 0.15),
+            CoordinatePoint(x: 0.70, y: 0.70),
+            CoordinatePoint(x: 0.25, y: 0.70),
+            CoordinatePoint(x: 0.75, y: 0.25),
+            CoordinatePoint(x: 0.30, y: 0.25),
+            CoordinatePoint(x: 0.50, y: 0.75),
+            CoordinatePoint(x: 0.90, y: 0.15),
+        ]
+        let zigzag = [
+            CoordinatePoint(x: 0.10, y: 0.15),
+            CoordinatePoint(x: 0.75, y: 0.65),
+            CoordinatePoint(x: 0.20, y: 0.55),
+            CoordinatePoint(x: 0.80, y: 0.25),
+            CoordinatePoint(x: 0.25, y: 0.70),
+            CoordinatePoint(x: 0.70, y: 0.45),
+            CoordinatePoint(x: 0.90, y: 0.15),
+        ]
+
+        XCTAssertNil(
+            BeautyFaceGeometryAdapter.validatedFaceContour(
+                bowTie,
+                bounds: faceBounds
+            )
+        )
+        XCTAssertNil(
+            BeautyFaceGeometryAdapter.validatedFaceContour(
+                zigzag,
+                bounds: faceBounds
+            )
+        )
+        XCTAssertNotNil(
+            BeautyFaceGeometryAdapter.validatedFaceContour(
+                faceOpenContour(count: 7),
+                bounds: faceBounds
+            )
+        )
+    }
+
     func testCommittedPortraitAggregateFitsLockedFaceValidationEnvelope() throws {
         var detector = VisionFaceDetector()
         var completeSupportCount = 0
