@@ -1,7 +1,7 @@
 ---
 phase: 45
 slug: public-contract-and-observed-face-support
-status: complete
+status: validated
 nyquist_compliant: true
 wave_0_complete: true
 created: 2026-07-21
@@ -19,7 +19,7 @@ created: 2026-07-21
 | **Config file** | `BeautySDK/Package.swift` |
 | **Quick run command** | `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyParametersTests` |
 | **Full suite command** | `swift test --package-path BeautySDK` |
-| **Measured runtime** | 33.802 seconds for the final 347-test full-suite rerun |
+| **Measured runtime** | Fresh post-review rerun: 354 executed, 3 opt-in skips, 0 failures |
 
 ## Sampling Rate
 
@@ -32,16 +32,16 @@ created: 2026-07-21
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 45-01-01 | 01 | 1 | SUPP-04 | T-45-01, T-45-SC | fail-closed public/privacy/dependency/resource/Demo classifier | self-test/Wave 0 | `python3 .planning/phases/45-public-contract-and-observed-face-support/check_face_support_boundaries.py --self-test` | ✅ current | ✅ green — 34/34 |
-| 45-01-02 | 01 | 1 | SUPP-02, SUPP-04 | T-45-02, T-45-03 | package-only support contracts plus face-specific fixtures and exact legacy proxy | compile/unit/Wave 0 | `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyFaceGeometryAdapterTests` | ✅ current | ✅ green — 27/27 |
+| 45-01-01 | 01 | 1 | SUPP-04 | T-45-01, T-45-SC | fail-closed public/privacy/dependency/resource/Demo classifier | self-test/Wave 0 | `python3 .planning/phases/45-public-contract-and-observed-face-support/check_face_support_boundaries.py --self-test` | ✅ current | ✅ green — 36/36 |
+| 45-01-02 | 01 | 1 | SUPP-02, SUPP-04 | T-45-02, T-45-03 | package-only support contracts plus face-specific fixtures and exact legacy proxy | compile/unit/Wave 0 | `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyFaceGeometryAdapterTests` | ✅ current | ✅ green — 32 executed / 1 opt-in skip |
 | 45-02-01 | 02 | 2 | FACE-07, FACE-08, FACE-09, FACE-12 | T-45-05 | finite positive-only 52-field public contract | unit | `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyParametersTests` | ✅ current | ✅ green — 32/32 |
 | 45-02-02 | 02 | 2 | FACE-07, FACE-08, FACE-09, FACE-12 | T-45-06, T-45-08 | 48-key compatibility, preset bytes, and shipped-domain neutrality | unit/resource/integration | `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyParametersTests && swift test --package-path BeautySDK --filter BeautyResourcesTests.BeautyResourceCatalogTests && swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyEffectResolverTests` | ✅ current | ✅ green — 32/32 + 9/9 + 20/20 |
-| 45-03-01 | 03 | 2 | SUPP-01, SUPP-02, SUPP-04 | T-45-09, T-45-11 | actual one-request Vision capture with independent bounded mapping and redaction | unit | `swift test --package-path BeautySDK --filter BeautyDetectionTests.VisionFaceDetectorTests` | ✅ current | ✅ green — 18/18 |
-| 45-03-02 | 03 | 2 | SUPP-01, SUPP-02 | T-45-10, T-45-12 | one-time mapping and reversal-only canonical direction across metadata | unit | `swift test --package-path BeautySDK --filter BeautyDetectionTests.FaceObservationMappingTests && swift test --package-path BeautySDK --filter BeautyDetectionTests.VisionFaceDetectorTests` | ✅ current | ✅ green — 15/15 + 18/18 |
-| 45-04-01 | 04 | 3 | SUPP-02 | T-45-13, T-45-15 | bounded face-specific open-path topology validation | unit | `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyFaceGeometryAdapterTests` | ✅ current | ✅ green — 27/27 |
-| 45-04-02 | 04 | 3 | SUPP-01, SUPP-02, SUPP-04 | T-45-14, T-45-16, T-45-17 | independent eligibility, exact proxy/sibling isolation, and stateless requests | integration/unit | `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyFaceGeometryAdapterTests && swift test --package-path BeautySDK --filter BeautyDetectionTests` | ✅ current | ✅ green — 27/27 + 48/48 |
+| 45-03-01 | 03 | 2 | SUPP-01, SUPP-02, SUPP-04 | T-45-09, T-45-11 | actual one-request Vision capture with independent bounded mapping and redaction | unit | `swift test --package-path BeautySDK --filter BeautyDetectionTests.VisionFaceDetectorTests` | ✅ current | ✅ green — 20 executed / 2 opt-in skips; opt-in run 20/20 |
+| 45-03-02 | 03 | 2 | SUPP-01, SUPP-02 | T-45-10, T-45-12 | one-time mapping and reversal-only canonical direction across metadata | unit | `swift test --package-path BeautySDK --filter BeautyDetectionTests.FaceObservationMappingTests && swift test --package-path BeautySDK --filter BeautyDetectionTests.VisionFaceDetectorTests` | ✅ current | ✅ green — 15/15 + 20 executed / 2 opt-in skips |
+| 45-04-01 | 04 | 3 | SUPP-02 | T-45-13, T-45-15 | bounded face-specific open-path topology validation | unit | `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyFaceGeometryAdapterTests` | ✅ current | ✅ green — 32 executed / 1 opt-in skip; opt-in run 32/32 |
+| 45-04-02 | 04 | 3 | SUPP-01, SUPP-02, SUPP-04 | T-45-14, T-45-16, T-45-17 | independent eligibility, exact proxy/sibling isolation, and stateless requests | integration/unit | `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyFaceGeometryAdapterTests && swift test --package-path BeautySDK --filter BeautyDetectionTests` | ✅ current | ✅ green — adapter, detector, and mapping focused suites passed |
 | 45-05-01 | 05 | 4 | FACE-07, FACE-08, FACE-09, FACE-12, SUPP-01, SUPP-02, SUPP-04 | T-45-18, T-45-19 | synchronized authoritative contracts and downstream nonclaims | static/docs | `rg -n "chinWidth|faceLift|foreheadHairline|mouthCornerLift|observedFaceSupport|52" DESIGN.md SECURITY.md RELIABILITY.md PRODUCT_SENSE.md PLANS.md && git diff --check` | ✅ current | ✅ green — owner matches present; diff clean |
-| 45-05-02 | 05 | 4 | FACE-07, FACE-08, FACE-09, FACE-12, SUPP-01, SUPP-02, SUPP-04 | T-45-20, T-45-21, T-45-22 | live fail-closed boundary and full requirement closeout | package/boundary | `python3 .planning/phases/45-public-contract-and-observed-face-support/check_face_support_boundaries.py --self-test && python3 .planning/phases/45-public-contract-and-observed-face-support/check_face_support_boundaries.py && swift test --package-path BeautySDK && git diff --check` | ✅ current | ✅ green — 34/34 + 13/13 + 347/347; diff clean |
+| 45-05-02 | 05 | 4 | FACE-07, FACE-08, FACE-09, FACE-12, SUPP-01, SUPP-02, SUPP-04 | T-45-20, T-45-21, T-45-22 | live fail-closed boundary and full requirement closeout | package/boundary | `python3 .planning/phases/45-public-contract-and-observed-face-support/check_face_support_boundaries.py --self-test && python3 .planning/phases/45-public-contract-and-observed-face-support/check_face_support_boundaries.py && swift test --package-path BeautySDK && git diff --check` | ✅ current | ✅ green — 36/36 + 13/13 + 354 executed / 3 skips / 0 failures; diff clean |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -100,16 +100,16 @@ The first post-edit full-suite attempt inside the restricted filesystem sandbox 
 
 | Gate | Executed command | Actual outcome |
 | --- | --- | --- |
-| Checker self-test | `python3 .planning/phases/45-public-contract-and-observed-face-support/check_face_support_boundaries.py --self-test` | PASS — 34/34 positive and adversarial checks |
+| Checker self-test | `python3 .planning/phases/45-public-contract-and-observed-face-support/check_face_support_boundaries.py --self-test` | PASS — 36/36 positive and adversarial checks |
 | Checker live mode | `python3 .planning/phases/45-public-contract-and-observed-face-support/check_face_support_boundaries.py` | PASS — 13/13 live checks; 52 stored/51 numeric/one `filterId`/four face fields; five preset hashes and missing keys unchanged; zero unclassified scope/privacy matches |
 | Public model | `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyParametersTests` | PASS — 32/32 |
 | Bundled resources | `swift test --package-path BeautySDK --filter BeautyResourcesTests.BeautyResourceCatalogTests` | PASS — 9/9 |
 | Shipped resolver neutrality | `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyEffectResolverTests` | PASS — 20/20 |
-| Default detector and request lifecycle | `swift test --package-path BeautySDK --filter BeautyDetectionTests.VisionFaceDetectorTests` | PASS — 18/18 with Apple Vision host access |
+| Default detector and request lifecycle | `swift test --package-path BeautySDK --filter BeautyDetectionTests.VisionFaceDetectorTests` | PASS — 20 executed, 2 opt-in skips, zero failures |
 | Mapping/canonical direction | `swift test --package-path BeautySDK --filter BeautyDetectionTests.FaceObservationMappingTests` | PASS — 15/15 |
-| Adapter topology/isolation | `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyFaceGeometryAdapterTests` | PASS — 27/27 |
-| Complete detection target | `swift test --package-path BeautySDK --filter BeautyDetectionTests` | PASS — 48/48 |
-| Full package | `swift test --package-path BeautySDK` | PASS — 347/347, zero failures, 33.802 seconds on the final rerun |
+| Adapter topology/isolation | `swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyFaceGeometryAdapterTests` | PASS — 32 executed, 1 opt-in skip, zero failures |
+| Complete detection target | `swift test --package-path BeautySDK --filter BeautyDetectionTests` | PASS — focused detector and mapping suites passed with zero failures |
+| Full package | `swift test --package-path BeautySDK --disable-sandbox --jobs 1` | PASS — 354 executed, 3 opt-in skips, zero failures |
 | Owner/static acceptance | `rg -n "chinWidth|faceLift|foreheadHairline|mouthCornerLift|observedFaceSupport|52" DESIGN.md SECURITY.md RELIABILITY.md PRODUCT_SENSE.md PLANS.md && git diff --check` | PASS — current owner matches present and diff hygiene clean; the four implemented identifiers remain `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, and `chinTaper` |
 | Final diff hygiene | `git diff --check` | PASS |
 
@@ -143,6 +143,16 @@ The first post-edit full-suite attempt inside the restricted filesystem sandbox 
 
 All six committed portraits were evaluated through aggregate availability/count and pass/fail evidence only. Every complete support observed in the aggregate fixture test passed contour, median, and cross-support validation; no coordinates, bounds, samples, framework-region descriptions, or identity claims were recorded.
 
+## Validation Audit 2026-07-23
+
+| Metric | Count |
+|--------|-------|
+| Gaps found | 0 |
+| Resolved | 0 |
+| Escalated | 0 |
+
+The post-review Nyquist audit cross-referenced all seven Phase 45 requirements against the current focused suites, boundary checker, opt-in Vision integrations, and the independent 20/20 phase verification. Every requirement remains covered by executable evidence; no manual-only or missing-test gap was found.
+
 ### Active-Source and Diff Review
 
 - The pre-phase-to-closeout production delta is limited to `BeautyParameters.swift`, `BeautyFaceObservation.swift`, `VisionFaceDetector.swift`, `BeautyFaceGeometryAdapter.swift`, and `WarpControlPoint.swift`; the corresponding six focused test files and planning/owner documents contain the evidence.
@@ -162,4 +172,4 @@ All six committed portraits were evaluated through aggregate availability/count 
 - [x] The four new fields are not routed to providers in Phase 45.
 - [x] `nyquist_compliant: true` and `wave_0_complete: true` were set only after the executed evidence above passed.
 
-**Approval:** complete — 2026-07-23
+**Approval:** validated after post-review Nyquist audit — 2026-07-23
