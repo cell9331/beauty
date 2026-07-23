@@ -1,9 +1,9 @@
 ---
 phase: 46
 slug: independent-contour-and-chin-geometry
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: complete
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-07-23
 ---
 
@@ -40,21 +40,45 @@ created: 2026-07-23
 
 | Task ID | Planned Area | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|--------------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 46-W0-01 | asymmetric observed-support fixtures | GEOM-01, GEOM-02, GEOM-03, GEOM-04 | T-46-01, T-46-05 | deterministic package-only fixtures distinguish exact source ownership without raw diagnostic output | unit fixture/Wave 0 | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyEffectsTests.FaceShapeWarpProviderTests` | ✅ extend | ⬜ pending |
-| 46-W0-02 | observed-support facade fixture | GEOM-01, GEOM-02, GEOM-03, GEOM-04 | T-46-04 | public requests use deterministic valid contour/median data while results remain aggregate and redacted | facade fixture/Wave 0 | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyCoreTests.BeautyEngineGeometryFacadeTests` | ✅ extend | ⬜ pending |
-| 46-PROV-01 | smooth contour emission | GEOM-01 | T-46-02, T-46-05 | raw finite neighbor-chord deltas are mean-centered before one uniform finite scale; final displacements stay within the exact ceiling, sum/mean stay zero within `1e-6`, roughness strictly decreases, and no-improvement/proxy cases emit nothing | provider unit | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyEffectsTests.FaceShapeWarpProviderTests` | ✅ extend | ⬜ pending |
-| 46-PROV-02 | temple fullness emission | GEOM-02 | T-46-02, T-46-05 | upper-lateral sources move outward and remain disjoint from cheek/shipped source sets | provider unit | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyEffectsTests.FaceShapeWarpProviderTests` | ✅ extend | ⬜ pending |
-| 46-PROV-03 | cheekbone slim emission | GEOM-03 | T-46-02, T-46-05 | mid-lateral sources move inward and remain disjoint from temple/jaw/whole-face source sets | provider unit | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyEffectsTests.FaceShapeWarpProviderTests` | ✅ extend | ⬜ pending |
-| 46-PROV-04 | chin taper emission | GEOM-04 | T-46-01, T-46-02, T-46-05 | contour+median+apex required; only apex neighbors move in X and chin/apex Y remains unchanged | provider unit | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyEffectsTests.FaceShapeWarpProviderTests` | ✅ extend | ⬜ pending |
-| 46-PLAN-01 | effective strengths, caps, trigger, preflight | GEOM-01, GEOM-02, GEOM-03, GEOM-04 | T-46-01, T-46-06 | provider-empty fields are removed before domains, totals, warnings, metrics, point counts, or dispatch | resolver integration | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyEffectsTests.BeautyEffectResolverTests` | ✅ extend | ⬜ pending |
-| 46-CONF-01 | shared 37-field convergence | GEOM-01, GEOM-02, GEOM-03, GEOM-04 | T-46-03, T-46-06 | retained-baseline mask is monotone and bounded; every emitting field contributes exactly once | conflict unit/integration | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyEffectsTests.GeometryConflictResolverTests` | ✅ extend | ⬜ pending |
-| 46-DEGR-01 | missing/malformed/freshness/provider-empty transitions | GEOM-01, GEOM-02, GEOM-03, GEOM-04 | T-46-01, T-46-06 | failure remains field-local; valid siblings continue; reused is exact 0.5 and stale/no-face are zero | degradation integration | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyEffectsTests.MissingLandmarkDegradationTests` | ✅ extend | ⬜ pending |
-| 46-COMB-01 | representative combined geometry | GEOM-01, GEOM-02, GEOM-03, GEOM-04 | T-46-03 | face/eye/nose/mouth convergence excludes empty work and never revives removed fields | combined integration | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyEffectsTests.CombinedEffectSafetyTests` | ✅ extend | ⬜ pending |
-| 46-PIPE-01 | unified dispatch and accounting | GEOM-01, GEOM-02, GEOM-03, GEOM-04 | T-46-03, T-46-04 | final effective values dispatch through one existing warp path and provider point counts are not duplicated | pipeline integration | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyEffectsTests.BeautyGeometryEffectPipelineTests` | ✅ extend | ⬜ pending |
-| 46-FACADE-01 | isolated public-facade route | GEOM-01, GEOM-02, GEOM-03, GEOM-04 | T-46-04, T-46-07 | each scalar triggers one detection route, produces positive aggregate geometry evidence, preserves extent, and leaks no support data | facade integration | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyCoreTests.BeautyEngineGeometryFacadeTests` | ✅ extend | ⬜ pending |
-| 46-BOUND-01 | privacy/scope/diff gate | GEOM-01, GEOM-02, GEOM-03, GEOM-04 | T-46-04, T-46-07, T-46-08 | no public support type, persistence, cache, dependency, model, network, Demo, renderer-case, or generated-output expansion | static/security | `git diff --check` plus scoped `rg`/git inventory commands recorded by the final plan | ❌ W0 | ⬜ pending |
+| 46-W0-01 | asymmetric observed-support fixtures | GEOM-01, GEOM-02, GEOM-03, GEOM-04 | T-46-01, T-46-05 | deterministic package-only fixtures distinguish exact source ownership without raw diagnostic output | unit fixture/Wave 0 | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyEffectsTests.FaceShapeWarpProviderTests` | ✅ exists | ✅ green |
+| 46-W0-02 | observed-support facade fixture | GEOM-01, GEOM-02, GEOM-03, GEOM-04 | T-46-04 | public requests use deterministic valid contour/median data while results remain aggregate and redacted | facade fixture/Wave 0 | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyCoreTests.BeautyEngineGeometryFacadeTests` | ✅ exists | ✅ green |
+| 46-PROV-01 | smooth contour emission | GEOM-01 | T-46-02, T-46-05 | raw finite neighbor-chord deltas are mean-centered before one uniform finite scale; final displacements stay within the exact ceiling, sum/mean stay zero within `1e-6`, roughness strictly decreases, and no-improvement/proxy cases emit nothing | provider unit | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyEffectsTests.FaceShapeWarpProviderTests` | ✅ exists | ✅ green |
+| 46-PROV-02 | temple fullness emission | GEOM-02 | T-46-02, T-46-05 | upper-lateral sources move outward and remain disjoint from cheek/shipped source sets | provider unit | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyEffectsTests.FaceShapeWarpProviderTests` | ✅ exists | ✅ green |
+| 46-PROV-03 | cheekbone slim emission | GEOM-03 | T-46-02, T-46-05 | mid-lateral sources move inward and remain disjoint from temple/jaw/whole-face source sets | provider unit | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyEffectsTests.FaceShapeWarpProviderTests` | ✅ exists | ✅ green |
+| 46-PROV-04 | chin taper emission | GEOM-04 | T-46-01, T-46-02, T-46-05 | contour+median+apex required; only apex neighbors move in X and chin/apex Y remains unchanged | provider unit | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyEffectsTests.FaceShapeWarpProviderTests` | ✅ exists | ✅ green |
+| 46-PLAN-01 | effective strengths, caps, trigger, preflight | GEOM-01, GEOM-02, GEOM-03, GEOM-04 | T-46-01, T-46-06 | provider-empty fields are removed before domains, totals, warnings, metrics, point counts, or dispatch | resolver integration | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyEffectsTests.BeautyEffectResolverTests` | ✅ exists | ✅ green |
+| 46-CONF-01 | shared 37-field convergence | GEOM-01, GEOM-02, GEOM-03, GEOM-04 | T-46-03, T-46-06 | retained-baseline mask is monotone and bounded; every emitting field contributes exactly once | conflict unit/integration | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyEffectsTests.GeometryConflictResolverTests` | ✅ exists | ✅ green |
+| 46-DEGR-01 | missing/malformed/freshness/provider-empty transitions | GEOM-01, GEOM-02, GEOM-03, GEOM-04 | T-46-01, T-46-06 | failure remains field-local; valid siblings continue; reused is exact 0.5 and stale/no-face are zero | degradation integration | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyEffectsTests.MissingLandmarkDegradationTests` | ✅ exists | ✅ green |
+| 46-COMB-01 | representative combined geometry | GEOM-01, GEOM-02, GEOM-03, GEOM-04 | T-46-03 | face/eye/nose/mouth convergence excludes empty work and never revives removed fields | combined integration | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyEffectsTests.CombinedEffectSafetyTests` | ✅ exists | ✅ green |
+| 46-PIPE-01 | unified dispatch and accounting | GEOM-01, GEOM-02, GEOM-03, GEOM-04 | T-46-03, T-46-04 | final effective values dispatch through one existing warp path and provider point counts are not duplicated | pipeline integration | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyEffectsTests.BeautyGeometryEffectPipelineTests` | ✅ exists | ✅ green |
+| 46-FACADE-01 | isolated public-facade route | GEOM-01, GEOM-02, GEOM-03, GEOM-04 | T-46-04, T-46-07 | each scalar triggers one detection route, produces positive aggregate geometry evidence, preserves extent, and leaks no support data | facade integration | `swift test --package-path BeautySDK --disable-sandbox --filter BeautyCoreTests.BeautyEngineGeometryFacadeTests` | ✅ exists | ✅ green |
+| 46-BOUND-01 | privacy/scope/diff gate | GEOM-01, GEOM-02, GEOM-03, GEOM-04 | T-46-04, T-46-07, T-46-08 | no public support type, persistence, cache, dependency, model, network, Demo, renderer-case, or generated-output expansion | static/security | `python3 .planning/phases/46-independent-contour-and-chin-geometry/check_face_geometry_boundaries.py --self-test && python3 .planning/phases/46-independent-contour-and-chin-geometry/check_face_geometry_boundaries.py && git diff --check` | ✅ exists | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
+
+---
+
+## Executed Evidence
+
+Fresh results on 2026-07-23:
+
+| Gate | Result |
+|------|--------|
+| Provider | `FaceShapeWarpProviderTests`: 17 executed, 0 failed |
+| Resolver | `BeautyEffectResolverTests`: 21 executed, 0 failed |
+| Conflict | `GeometryConflictResolverTests`: 13 executed, 0 failed |
+| Combined | `CombinedEffectSafetyTests`: 14 executed, 0 failed |
+| Pipeline | `BeautyGeometryEffectPipelineTests`: 2 executed, 0 failed |
+| Degradation | `MissingLandmarkDegradationTests`: 43 executed, 0 failed |
+| Facade | `BeautyEngineGeometryFacadeTests`: 15 executed, 0 failed |
+| Effects target | `--filter BeautyEffectsTests`: 205 executed, 1 opt-in Apple Vision integration skip, 0 failed |
+| Full SwiftPM | `--jobs 1`: 368 executed, 3 opt-in Apple Vision integration skips, 0 failed |
+| Boundary self-test | 24/24 passed |
+| Boundary live | 14/14 passed |
+| Pins | `Package.swift` = `6f03b078816ad1f7a426e3f70d4f57503f3152e9`; Phase 45 checker = `7f7cb4ad0ec7463e065ad7b88c6858c0fceb10c4` |
+| Hygiene | `git diff --check` passed; no tracked generated evidence or renderer/Demo/ledger-promotion change |
+
+The three repository-specific governance inputs remain **unverified**: observed support must not become biometric profiling data; the seven-point proxy must not be presented as observed support; and deferred double-chin/hairline/branch-completion behavior must not be silently enabled. Concrete source manifestations pass the boundary checker, but semantic governance verification remains a `$gsd-secure-phase` breadcrumb.
 
 ---
 
@@ -75,11 +99,11 @@ created: 2026-07-23
 
 ## Wave 0 Requirements
 
-- [ ] Extend `FaceShapeWarpProviderTests.swift` with reusable asymmetric complete, contour-only, missing-centerline, and legacy-proxy-only `FaceGeometry` fixtures.
-- [ ] Extend `BeautyEngineTestingSupport.swift` so deterministic `.usableFace` carries valid asymmetric raw contour and median support without adding a public geometry type.
-- [ ] Replace the Phase 45 nonzero-unrouted resolver expectation with Phase 46 positive routing while retaining explicit-zero neutrality.
-- [ ] Add table-driven key-path helpers for the four new `BeautyEffectiveStrengths` fields and their named emissions.
-- [ ] Define a fail-closed Phase 46 boundary/static command set without weakening the historical Phase 45 checker.
+- [x] Extend `FaceShapeWarpProviderTests.swift` with reusable asymmetric complete, contour-only, missing-centerline, and legacy-proxy-only `FaceGeometry` fixtures.
+- [x] Extend `BeautyEngineTestingSupport.swift` so deterministic `.usableFace` carries valid asymmetric raw contour and median support without adding a public geometry type.
+- [x] Replace the Phase 45 nonzero-unrouted resolver expectation with Phase 46 positive routing while retaining explicit-zero neutrality.
+- [x] Add table-driven key-path helpers for the four new `BeautyEffectiveStrengths` fields and their named emissions.
+- [x] Define a fail-closed Phase 46 boundary/static command set without weakening the historical Phase 45 checker.
 
 ---
 
@@ -91,14 +115,14 @@ All Phase 46 acceptance is automatable through provider vectors, resolver/confli
 
 ## Validation Sign-Off
 
-- [ ] Every finalized plan task has an `<automated>` command or explicit Wave 0 dependency.
-- [ ] Sampling continuity: no three consecutive tasks without automated verification.
-- [ ] Wave 0 covers asymmetric provider fixtures, observed-support facade routing, table-driven field helpers, and fail-closed boundary commands.
-- [ ] Provider tests inspect exact sources and vectors rather than only aggregate counts.
-- [ ] Conflict tests prove monotone bounded removal and exactly-once accounting.
-- [ ] No watch-mode flags are used.
-- [ ] Focused feedback latency remains under 120 seconds.
-- [ ] Full SwiftPM and diff/security gates pass.
-- [ ] `nyquist_compliant: true` and `wave_0_complete: true` are set only after executed evidence is recorded.
+- [x] Every finalized plan task has an `<automated>` command or explicit Wave 0 dependency.
+- [x] Sampling continuity: no three consecutive tasks without automated verification.
+- [x] Wave 0 covers asymmetric provider fixtures, observed-support facade routing, table-driven field helpers, and fail-closed boundary commands.
+- [x] Provider tests inspect exact sources and vectors rather than only aggregate counts.
+- [x] Conflict tests prove monotone bounded removal and exactly-once accounting.
+- [x] No watch-mode flags are used.
+- [x] Focused feedback latency remains under 120 seconds.
+- [x] Full SwiftPM and diff/security gates pass.
+- [x] `nyquist_compliant: true` and `wave_0_complete: true` are set only after executed evidence is recorded.
 
-**Approval:** pending execution and post-phase Nyquist audit
+**Approval:** complete — fresh Phase 46 evidence recorded; post-phase Nyquist and security hooks remain independent audits
