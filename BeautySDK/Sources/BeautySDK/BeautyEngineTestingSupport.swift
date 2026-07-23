@@ -22,8 +22,20 @@ private let phase46ObservedMedianLine = [
     CoordinatePoint(x: 0.5250, y: 0.016_666_667),
 ]
 
+private let phase47MalformedObservedContour = [
+    CoordinatePoint(x: 0.10, y: 0.20),
+    CoordinatePoint(x: 0.20, y: 0.35),
+    CoordinatePoint(x: 0.30, y: 0.50),
+    CoordinatePoint(x: 0.30, y: 0.50),
+    CoordinatePoint(x: 0.60, y: 0.50),
+    CoordinatePoint(x: 0.70, y: 0.35),
+    CoordinatePoint(x: 0.80, y: 0.20),
+]
+
 @_spi(Testing) public enum SDKTestingFaceDetectionFixture: Sendable {
     case usableFace
+    case missingObservedFaceContour
+    case malformedObservedFaceContour
     case noFace
     case lowConfidence
     case missingLandmarks
@@ -59,6 +71,30 @@ private let phase46ObservedMedianLine = [
                         landmarks: .complete,
                         observedFaceSupport: BeautyObservedFaceSupport(
                             contour: phase46ObservedContour,
+                            medianLine: phase46ObservedMedianLine
+                        )
+                    )
+                ]
+            case .missingObservedFaceContour:
+                return [
+                    VisionDetectionObservation(
+                        stableID: "fixture-missing-observed-contour",
+                        confidence: 0.96,
+                        normalizedArea: 0.24,
+                        visionBounds: CoordinateRect(x: 0.30, y: 0.20, width: 0.40, height: 0.60),
+                        landmarks: .complete
+                    )
+                ]
+            case .malformedObservedFaceContour:
+                return [
+                    VisionDetectionObservation(
+                        stableID: "fixture-malformed-observed-contour",
+                        confidence: 0.96,
+                        normalizedArea: 0.24,
+                        visionBounds: CoordinateRect(x: 0.30, y: 0.20, width: 0.40, height: 0.60),
+                        landmarks: .complete,
+                        observedFaceSupport: BeautyObservedFaceSupport(
+                            contour: phase47MalformedObservedContour,
                             medianLine: phase46ObservedMedianLine
                         )
                     )

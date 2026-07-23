@@ -139,6 +139,69 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
         }
     }
 
+    func testOUT03MissingAndMalformedObservedContourRemoveNewWorkWhileShippedSiblingContinues() throws {
+        let fixtures: [(name: String, value: SDKTestingFaceDetectionFixture)] = [
+            ("missing", .missingObservedFaceContour),
+            ("malformed", .malformedObservedFaceContour),
+        ]
+        let requests: [(name: String, make: () -> BeautyParameters)] = [
+            (
+                "faceContourSmooth",
+                { BeautyParameters(faceSlim: 0.20, faceContourSmooth: 0.25) }
+            ),
+            (
+                "templeFullness",
+                { BeautyParameters(faceSlim: 0.20, templeFullness: 0.25) }
+            ),
+            (
+                "cheekboneSlim",
+                { BeautyParameters(faceSlim: 0.20, cheekboneSlim: 0.25) }
+            ),
+            (
+                "chinTaper",
+                { BeautyParameters(faceSlim: 0.20, chinTaper: 0.25) }
+            ),
+        ]
+
+        for fixture in fixtures {
+            for request in requests {
+                let baselineProvider = SDKTestingFaceDetectionProvider([fixture.value])
+                let baselineEngine = try BeautyEngine(faceDetectionProvider: baselineProvider)
+                let baseline = try baselineEngine.processResult(
+                    image: Self.image,
+                    metadata: BeautyInputMetadata(orientation: .up, source: .photo),
+                    parameters: BeautyParameters(faceSlim: 0.20)
+                )
+
+                let requestedProvider = SDKTestingFaceDetectionProvider([fixture.value])
+                let requestedEngine = try BeautyEngine(faceDetectionProvider: requestedProvider)
+                let requested = try requestedEngine.processResult(
+                    image: Self.image,
+                    metadata: BeautyInputMetadata(orientation: .up, source: .photo),
+                    parameters: request.make()
+                )
+                let label = "\(fixture.name) \(request.name)"
+
+                XCTAssertEqual(baselineProvider.invocationCount, 1, "baseline \(label)")
+                XCTAssertEqual(requestedProvider.invocationCount, 1, label)
+                XCTAssertEqual(requested.output.extent, Self.image.extent, label)
+                XCTAssertEqual(requested.detectionSummary?.availability, .usable, label)
+                XCTAssertEqual(requested.detectionSummary, baseline.detectionSummary, label)
+                XCTAssertEqual(requested.metrics, baseline.metrics, label)
+                XCTAssertEqual(requested.warnings, baseline.warnings, label)
+                XCTAssertEqual(requested.metrics["beauty.effects.activeCount"], 1, label)
+                XCTAssertEqual(requested.metrics["beauty.effects.geometryPointCount"], 2, label)
+                XCTAssertEqual(
+                    renderedRGBABytes(from: requested.output),
+                    renderedRGBABytes(from: baseline.output),
+                    label
+                )
+                assertRedacted(requested)
+                assertPhase46ObservedSupportRedacted(requested, name: label)
+            }
+        }
+    }
+
     func testPhase38MOUTH08FiveIndependentFieldsRouteThroughRedactedPublicFacade() throws {
         let cases: [(String, BeautyParameters)] = [
             ("mouthYPosition", BeautyParameters(mouthYPosition: 1)),
