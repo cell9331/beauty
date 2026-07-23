@@ -54,7 +54,7 @@ Plans:
 
 **Requirements:** GEOM-01, GEOM-02, GEOM-03, GEOM-04
 
-**Plans:** 4/6 plans executed
+**Plans:** 5/6 plans executed
 
 Plans:
 **Wave 1**
@@ -75,7 +75,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 46-05-PLAN.md — Integrate resolver/conflict accounting and deterministic observed support through the facade.
+- [x] 46-05-PLAN.md — Integrate resolver/conflict accounting and deterministic observed support through the facade.
 
 **Wave 6** *(blocked on Wave 5 completion)*
 
