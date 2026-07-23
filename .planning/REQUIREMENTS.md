@@ -21,10 +21,10 @@
 
 ### Contour Geometry
 
-- [ ] **GEOM-01**: Smooth-contour output reduces local lateral contour irregularity without globally shrinking the face or changing the five shipped face controls.
-- [ ] **GEOM-02**: Temple output applies bounded upper-lateral outward movement that is spatially distinct from `faceSmall` and `faceSlim`.
-- [ ] **GEOM-03**: Cheekbone output applies bounded mid-lateral inward movement that is spatially distinct from whole-cheek slimming and jaw narrowing.
-- [ ] **GEOM-04**: Chin-taper output narrows adjacent lower-contour points toward the apex without lengthening or shortening the chin.
+- [x] **GEOM-01**: Smooth-contour output reduces local lateral contour irregularity without globally shrinking the face or changing the five shipped face controls.
+- [x] **GEOM-02**: Temple output applies bounded upper-lateral outward movement that is spatially distinct from `faceSmall` and `faceSlim`.
+- [x] **GEOM-03**: Cheekbone output applies bounded mid-lateral inward movement that is spatially distinct from whole-cheek slimming and jaw narrowing.
+- [x] **GEOM-04**: Chin-taper output narrows adjacent lower-contour points toward the apex without lengthening or shortening the chin.
 
 ### Public Output Evidence
 
@@ -74,10 +74,10 @@
 | SUPP-01 | Phase 45 | Complete |
 | SUPP-02 | Phase 45 | Complete |
 | SUPP-04 | Phase 45 | Complete |
-| GEOM-01 | Phase 46 | Pending |
-| GEOM-02 | Phase 46 | Pending |
-| GEOM-03 | Phase 46 | Pending |
-| GEOM-04 | Phase 46 | Pending |
+| GEOM-01 | Phase 46 | Complete |
+| GEOM-02 | Phase 46 | Complete |
+| GEOM-03 | Phase 46 | Complete |
+| GEOM-04 | Phase 46 | Complete |
 | OUT-01 | Phase 47 | Pending |
 | OUT-02 | Phase 47 | Pending |
 | OUT-03 | Phase 47 | Pending |

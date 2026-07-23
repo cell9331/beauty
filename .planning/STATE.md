@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.12
 milestone_name: Face Shape Remaining Capabilities
 status: executing
-stopped_at: Completed 46-03-PLAN.md
-last_updated: "2026-07-23T09:31:58.406Z"
+stopped_at: Completed 46-04-PLAN.md
+last_updated: "2026-07-23T09:43:55.275Z"
 last_activity: 2026-07-23 -- Phase 46 execution started
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 11
-  completed_plans: 8
-  percent: 73
+  completed_plans: 9
+  percent: 82
 ---
 
 # Project State
@@ -26,7 +26,7 @@ See: `.planning/PROJECT.md` (updated 2026-07-21)
 ## Current Position
 
 Phase: 46 (Independent Contour and Chin Geometry) — EXECUTING
-Plan: 4 of 6
+Plan: 5 of 6
 Status: Ready to execute
 Last activity: 2026-07-23 -- Phase 46 execution started
 
@@ -218,6 +218,7 @@ Last activity: 2026-07-14
 | Phase 46 P01 | 13 min | 2 tasks | 2 files |
 | Phase 46 P02 | 8min | 2 tasks | 3 files |
 | Phase 46 P03 | 11 min | 2 tasks | 3 files |
+| Phase 46 P04 | 8 min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -317,6 +318,9 @@ Recent milestone-level outcomes:
 - [Phase 46]: Keep the degradation, dispatch, and facade suites deliberately RED until Plans 46-04 and 46-05 add the missing production routing. — Plan 46-03 owns executable contracts only and must not edit production source.
 - [Phase 46]: Use the stable concatenation of final named provider arrays as the sole exactly-once unified-dispatch oracle. — Direct arrays expose omissions and duplicate dispatch that aggregate geometry counts could hide.
 - [Phase 46]: Restrict public-facade route evidence to deterministic aggregate metrics and redacted summaries. — Observed support coordinates, framework types, filesystem details, and provider internals remain non-public.
+- [Phase 46]: Phase 46 Plan 04 keeps all four new effective face/chin values zero-default with explicitly provisional 0.25 caps. — Phase 48 remains the final cap and dead-zone authority.
+- [Phase 46]: New contour/chin emissions require eligible observed support and never borrow the shipped seven-point compatibility proxy. — This preserves shipped vectors while enforcing GEOM field locality and support provenance.
+- [Phase 46]: Contour smoothing is all-or-nothing after mean-centering and one shared representable uniform scale. — Stored Float displacements must meet the exact ceiling, 1e-6 sum/mean and ratio tolerances, and strict roughness reduction without individual clamps.
 
 ### Pending Todos
 
@@ -349,8 +353,8 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-23T09:31:43.502Z
-Stopped at: Completed 46-03-PLAN.md
+Last session: 2026-07-23T09:43:55.266Z
+Stopped at: Completed 46-04-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
