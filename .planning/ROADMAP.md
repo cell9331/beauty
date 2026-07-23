@@ -54,7 +54,7 @@ Plans:
 
 **Requirements:** GEOM-01, GEOM-02, GEOM-03, GEOM-04
 
-**Plans:** 5/6 plans executed
+**Plans:** 6/6 plans executed
 
 Plans:
 **Wave 1**
@@ -79,7 +79,7 @@ Plans:
 
 **Wave 6** *(blocked on Wave 5 completion)*
 
-- [ ] 46-06-PLAN.md — Run the full evidence gate and synchronize validation plus owner documentation.
+- [x] 46-06-PLAN.md — Run the full evidence gate and synchronize validation plus owner documentation.
 
 **Success criteria:**
 
