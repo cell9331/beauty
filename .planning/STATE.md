@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.12
 milestone_name: Face Shape Remaining Capabilities
 status: executing
-stopped_at: Completed 46-02-PLAN.md
-last_updated: "2026-07-23T09:17:52.457Z"
+stopped_at: Completed 46-03-PLAN.md
+last_updated: "2026-07-23T09:31:58.406Z"
 last_activity: 2026-07-23 -- Phase 46 execution started
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 11
-  completed_plans: 7
-  percent: 64
+  completed_plans: 8
+  percent: 73
 ---
 
 # Project State
@@ -26,7 +26,7 @@ See: `.planning/PROJECT.md` (updated 2026-07-21)
 ## Current Position
 
 Phase: 46 (Independent Contour and Chin Geometry) — EXECUTING
-Plan: 3 of 6
+Plan: 4 of 6
 Status: Ready to execute
 Last activity: 2026-07-23 -- Phase 46 execution started
 
@@ -217,6 +217,7 @@ Last activity: 2026-07-14
 | Phase 45 P05 | 7 min | 2 tasks | 7 files |
 | Phase 46 P01 | 13 min | 2 tasks | 2 files |
 | Phase 46 P02 | 8min | 2 tasks | 3 files |
+| Phase 46 P03 | 11 min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -313,6 +314,9 @@ Recent milestone-level outcomes:
 - [Phase 46]: Keep Phase 46 Plan 02 focused suites deliberately RED until downstream plans add the four effective values, provisional caps, named emissions, resolver lifecycle, and exact 37-pass convergence loop.
 - [Phase 46]: Represent the complete geometry inventory as one exact 37-row key-path ledger totaling 11.70 so no aggregate alias can hide an omitted or duplicated field.
 - [Phase 46]: Use a minimally perturbed locally straight observed contour to specify a field that emits before weakening but becomes provider-empty after the shared scale.
+- [Phase 46]: Keep the degradation, dispatch, and facade suites deliberately RED until Plans 46-04 and 46-05 add the missing production routing. — Plan 46-03 owns executable contracts only and must not edit production source.
+- [Phase 46]: Use the stable concatenation of final named provider arrays as the sole exactly-once unified-dispatch oracle. — Direct arrays expose omissions and duplicate dispatch that aggregate geometry counts could hide.
+- [Phase 46]: Restrict public-facade route evidence to deterministic aggregate metrics and redacted summaries. — Observed support coordinates, framework types, filesystem details, and provider internals remain non-public.
 
 ### Pending Todos
 
@@ -345,8 +349,8 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-23T09:17:37.706Z
-Stopped at: Completed 46-02-PLAN.md
+Last session: 2026-07-23T09:31:43.502Z
+Stopped at: Completed 46-03-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
