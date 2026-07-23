@@ -4,6 +4,141 @@ import XCTest
 @_spi(Testing) import BeautySDK
 
 final class BeautyEngineGeometryFacadeTests: XCTestCase {
+    func testGEOMFourIndependentFieldsRouteThroughObservedSupportAndRedactedFacade() throws {
+        let rows: [(name: String, parameters: BeautyParameters)] = [
+            ("faceContourSmooth", BeautyParameters(faceContourSmooth: 0.20)),
+            ("templeFullness", BeautyParameters(templeFullness: 0.20)),
+            ("cheekboneSlim", BeautyParameters(cheekboneSlim: 0.20)),
+            ("chinTaper", BeautyParameters(chinTaper: 0.20)),
+        ]
+        let expectedMetricKeys: Set<String> = [
+            "beauty.detection.geometryRequired",
+            "beauty.detection.faceCount",
+            "beauty.detection.usedFaceCount",
+            "beauty.effects.activeCount",
+            "beauty.effects.cappedCount",
+            "beauty.effects.geometryPointCount",
+        ]
+
+        for row in rows {
+            let provider = SDKTestingFaceDetectionProvider([.usableFace])
+            let engine = try BeautyEngine(faceDetectionProvider: provider)
+            let result = try engine.processResult(
+                image: Self.image,
+                metadata: BeautyInputMetadata(orientation: .up, source: .photo),
+                parameters: row.parameters
+            )
+
+            XCTAssertEqual(provider.invocationCount, 1, row.name)
+            XCTAssertEqual(result.output.extent, Self.image.extent, row.name)
+            XCTAssertEqual(result.detectionSummary?.availability, .usable, row.name)
+            XCTAssertEqual(result.detectionSummary?.reasons, [], row.name)
+            XCTAssertEqual(result.detectionSummary?.faceCount, 1, row.name)
+            XCTAssertEqual(result.detectionSummary?.usedFaceCount, 1, row.name)
+            XCTAssertEqual(result.metrics["beauty.detection.geometryRequired"], 1, row.name)
+            XCTAssertEqual(result.metrics["beauty.detection.faceCount"], 1, row.name)
+            XCTAssertEqual(result.metrics["beauty.detection.usedFaceCount"], 1, row.name)
+            XCTAssertEqual(result.metrics["beauty.effects.activeCount"], 1, row.name)
+            XCTAssertEqual(result.metrics["beauty.effects.cappedCount"], 0, row.name)
+            XCTAssertGreaterThan(
+                result.metrics["beauty.effects.geometryPointCount"] ?? 0,
+                0,
+                row.name
+            )
+            XCTAssertEqual(Set(result.metrics.keys), expectedMetricKeys, row.name)
+            XCTAssertTrue(result.warnings.isEmpty, row.name)
+            assertRedacted(result)
+            assertPhase46ObservedSupportRedacted(result, name: row.name)
+        }
+    }
+
+    func testGEOMUsableFacadeFixturePreservesShippedFaceAndChinEvidenceAtNewFieldZero() throws {
+        let rows: [(
+            name: String,
+            baseline: BeautyParameters,
+            explicitZero: BeautyParameters,
+            expectedPointCount: Double
+        )] = [
+            (
+                "faceSlim",
+                BeautyParameters(faceSlim: 0.20),
+                BeautyParameters(
+                    faceSlim: 0.20,
+                    faceContourSmooth: 0,
+                    templeFullness: 0,
+                    cheekboneSlim: 0,
+                    chinTaper: 0
+                ),
+                2
+            ),
+            (
+                "chinLength positive",
+                BeautyParameters(chinLength: 0.20),
+                BeautyParameters(
+                    chinLength: 0.20,
+                    faceContourSmooth: 0,
+                    templeFullness: 0,
+                    cheekboneSlim: 0,
+                    chinTaper: 0
+                ),
+                1
+            ),
+            (
+                "chinLength negative",
+                BeautyParameters(chinLength: -0.20),
+                BeautyParameters(
+                    chinLength: -0.20,
+                    faceContourSmooth: 0,
+                    templeFullness: 0,
+                    cheekboneSlim: 0,
+                    chinTaper: 0
+                ),
+                1
+            ),
+        ]
+
+        for row in rows {
+            let baselineProvider = SDKTestingFaceDetectionProvider([.usableFace])
+            let baselineEngine = try BeautyEngine(faceDetectionProvider: baselineProvider)
+            let baseline = try baselineEngine.processResult(
+                image: Self.image,
+                metadata: BeautyInputMetadata(orientation: .up, source: .photo),
+                parameters: row.baseline
+            )
+
+            let explicitProvider = SDKTestingFaceDetectionProvider([.usableFace])
+            let explicitEngine = try BeautyEngine(faceDetectionProvider: explicitProvider)
+            let explicit = try explicitEngine.processResult(
+                image: Self.image,
+                metadata: BeautyInputMetadata(orientation: .up, source: .photo),
+                parameters: row.explicitZero
+            )
+
+            XCTAssertEqual(baselineProvider.invocationCount, 1, "baseline \(row.name)")
+            XCTAssertEqual(explicitProvider.invocationCount, 1, "explicit zero \(row.name)")
+            XCTAssertEqual(baseline.output.extent, Self.image.extent, row.name)
+            XCTAssertEqual(explicit.output.extent, Self.image.extent, row.name)
+            XCTAssertEqual(baseline.detectionSummary?.availability, .usable, row.name)
+            XCTAssertEqual(explicit.detectionSummary, baseline.detectionSummary, row.name)
+            XCTAssertEqual(
+                baseline.metrics["beauty.effects.geometryPointCount"],
+                row.expectedPointCount,
+                "known shipped provider count \(row.name)"
+            )
+            XCTAssertEqual(
+                explicit.metrics["beauty.effects.geometryPointCount"],
+                row.expectedPointCount,
+                "explicit-zero shipped provider count \(row.name)"
+            )
+            XCTAssertEqual(explicit.metrics, baseline.metrics, "metric drift \(row.name)")
+            XCTAssertEqual(explicit.warnings, baseline.warnings, "warning drift \(row.name)")
+            assertRedacted(baseline)
+            assertRedacted(explicit)
+            assertPhase46ObservedSupportRedacted(baseline, name: "baseline \(row.name)")
+            assertPhase46ObservedSupportRedacted(explicit, name: "explicit zero \(row.name)")
+        }
+    }
+
     func testPhase38MOUTH08FiveIndependentFieldsRouteThroughRedactedPublicFacade() throws {
         let cases: [(String, BeautyParameters)] = [
             ("mouthYPosition", BeautyParameters(mouthYPosition: 1)),
@@ -595,6 +730,34 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
             "facegeometry", "simd", "raw",
         ] {
             XCTAssertFalse(metadata.contains(term), "Unexpected sensitive term: \(term)", file: file, line: line)
+        }
+    }
+
+    private func assertPhase46ObservedSupportRedacted(
+        _ result: BeautyResult<CIImage>,
+        name: String,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let metadata = (
+            result.warnings.map { "\($0.code) \($0.message)" } +
+            Array(result.metrics.keys) +
+            (result.detectionSummary?.reasons.map(\.rawValue) ?? [])
+        ).joined(separator: " ").lowercased()
+        for term in [
+            "facecontour", "median", "apex", "index", "pathprogress",
+            "source", "target", "radius", "falloff", "displacement",
+            "support", "coordinate", "bounds", "simd", "provider",
+            "vnface", "vnrequest", "vnfacelandmark", "cgpoint", "cgrect",
+            "ciimage", "nsobject", "nserror", "averror", "framework",
+            "/private/", "/users/", "/var/", "file://",
+        ] {
+            XCTAssertFalse(
+                metadata.contains(term),
+                "\(name): unexpected payload term \(term)",
+                file: file,
+                line: line
+            )
         }
     }
 }
