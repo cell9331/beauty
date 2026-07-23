@@ -96,7 +96,7 @@ None for the Phase 46 contract. Visual visibility, ROI locality, naturalness, an
 
 ## Gaps
 
-No Phase 46 gap remains. The three repository-specific governance statements remain explicit inputs to the independent security audit; they do not represent an unverified executable source path.
+No Phase 46 gap remains. The three repository-specific governance statements entered the independent security audit as explicit inputs; `46-SECURITY.md` verifies all three for current repository scope and records `threats_open: 0`.
 
 ---
 _Verified: 2026-07-23T10:48:04Z_

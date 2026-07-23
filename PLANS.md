@@ -46,7 +46,7 @@ Outcome:
 - GEOM-01, GEOM-02, GEOM-03, and GEOM-04 are complete for provider ownership, resolver/conflict accounting, representative degradation, unified dispatch, deterministic public-facade routing, and redacted aggregate evidence.
 - Phase 47 exclusively owns decoded output, ROI/locality visibility, renderer cases, and gallery evidence. Phase 48 exclusively owns final caps/dead zones, exhaustive nine-face/37-field matrices, safety closeout, exact row promotion, and branch status.
 - `去双下巴`, `去双下巴 Pro`, `发际线`, Demo/device/commercial/performance/packaging/shipping/readiness work, and whole-`脸型` completion remain future or partial.
-- Three repository-specific governance inputs remain explicitly unverified for `$gsd-secure-phase`: observed support must not become biometric profiling data; the seven-point proxy must not be represented as observed support; deferred semantic rows must not be silently activated. The concrete source/scope manifestations pass the fail-closed checker.
+- Three repository-specific governance inputs were carried explicitly into `$gsd-secure-phase`: observed support must not become biometric profiling data; the seven-point proxy must not be represented as observed support; deferred semantic rows must not be silently activated. `46-SECURITY.md` verifies all three for the current repository scope and records `threats_open: 0`.
 
 ### C-2026-07-23-phase-45-public-contract-and-observed-face-support
 

@@ -78,7 +78,7 @@ Fresh results on 2026-07-23:
 | Pins | `Package.swift` = `6f03b078816ad1f7a426e3f70d4f57503f3152e9`; Phase 45 checker = `7f7cb4ad0ec7463e065ad7b88c6858c0fceb10c4` |
 | Hygiene | `git diff --check` passed; no tracked generated evidence or renderer/Demo/ledger-promotion change |
 
-The three repository-specific governance inputs remain **unverified**: observed support must not become biometric profiling data; the seven-point proxy must not be presented as observed support; and deferred double-chin/hairline/branch-completion behavior must not be silently enabled. Concrete source manifestations pass the boundary checker, but semantic governance verification remains a `$gsd-secure-phase` breadcrumb.
+At Plan 06 evidence close, the three repository-specific governance inputs remained **unverified**: observed support must not become biometric profiling data; the seven-point proxy must not be presented as observed support; and deferred double-chin/hairline/branch-completion behavior must not be silently enabled. Concrete source manifestations passed the boundary checker. The subsequent independent audit in `46-SECURITY.md` now verifies all three for current repository scope with `threats_open: 0`.
 
 ---
 
