@@ -485,6 +485,15 @@ Manual or future checks still required before stronger product claims:
 - The four controls are intentionally neutral in Phase 45 even when set nonzero: they do not trigger detection, provider work, effective strengths, facade routing, rendering, saved output, Demo behavior, or product-row promotion. Phase 46 owns provider behavior, Phase 47 owns public output evidence, and Phase 48 owns final caps, exhaustive safety, and promotion.
 - `去双下巴`, `去双下巴 Pro`, and `发际线` remain future pending an approved local semantic-region implementation and reproducible fixtures. This acceptance makes no Demo, physical-device, commercial-naturalness, optimized-performance, packaging, shipping, launch-readiness, or whole-`脸型` completion claim.
 
+### 7.22 Phase 46 Independent Contour and Chin Geometry Acceptance
+
+- An SDK integrator can now send four independent intents through the existing public still-image facade: local contour continuity, upper-lateral temple fullness, mid-lateral cheekbone slimming, and apex-adjacent chin taper. Each request triggers one detection route and reaches its own package-internal provider vector rather than aliasing the five shipped face/chin controls.
+- Acceptance requires actual observed contour support for all four controls and complete centerline/apex support for taper. Missing or malformed evidence disables only dependent work; no-face and stale input zero new work, eligible reuse is exact `0.5`, and valid shipped or independent siblings continue.
+- The existing single geometry warp remains the delivery path. Provider-empty fields are absent from final strengths, domains, conflict totals/counts/scales, warnings, metrics, point counts, and dispatch; public results expose only preserved extent, existing summaries, generic warnings, and aggregate metrics.
+- Automated acceptance is 17/17 provider, 21/21 resolver, 13/13 conflict, 14/14 combined, 2/2 pipeline, 43/43 degradation, 15/15 facade, 368-test full SwiftPM with three opt-in Apple Vision skips, and 24/24 self plus 14/14 live boundary checks.
+- The `0.25` caps and geometric constants remain provisional. This phase does not prove decoded pixel visibility, ROI locality, subjective/commercial naturalness, final caps, exhaustive nine-face/37-field safety, gallery publication, product-row or branch promotion, Demo/device behavior, optimized performance, packaging, shipping, or launch readiness. Phase 47 owns decoded output and Phase 48 owns final safety/promotion.
+- `去双下巴`, `去双下巴 Pro`, `发际线`, and whole-`脸型` completion remain future or partial; no entitlement interpretation or semantic proxy is introduced.
+
 ## 8. Preset Product Contract
 
 MVP built-in presets:

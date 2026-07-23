@@ -208,6 +208,16 @@ Phase 28 scoped face-shape behavior:
 - Observable failure evidence is limited to fixed redacted reason categories and aggregate counts/ranges. No coordinate, bounds, side label, sample, framework-region object, raw error, or local path is logged or measured. The authoritative privacy prohibitions are in `SECURITY.md`.
 - Completion requires the fail-closed checker self-test/live modes and every focused/full test command to pass. Post-review Phase 45 evidence is 36/36 checker self-tests and 13/13 live checks; focused suites pass 32/32 parameter, 9/9 resource, 20/20 resolver, and 15/15 mapping tests, while detector executes 20 tests with 2 opt-in integration skips, adapter executes 32 tests with 1 opt-in integration skip, and complete detection executes 50 tests with 2 opt-in integration skips, all with 0 failures. Full SwiftPM executes 354 tests with 3 opt-in integration skips and 0 failures. The four new inputs remain deliberately unrouted until Phase 46.
 
+### Phase 46 Face/Chin Provider Reliability Contract
+
+- Complete contour support permits smooth, temple, and cheekbone work; taper additionally requires an eligible median and interior apex. Missing/malformed centerline removes taper only, and proxy-only support removes all four while shipped face/chin siblings continue unchanged.
+- No-face and stale input zero the four new effective strengths. Eligible reused input applies exact non-eye `0.5` before provider eligibility, so a provisional capped value becomes `0.125`. Fresh→reused→stale→fresh evidence is stateless and restores no prior vector by carryover.
+- Provider-empty work is removed before the first conflict total and after every shared scale. The retained baseline is a monotone subset across exactly `0..<37` possible removals; removed work cannot re-enter or be scaled twice.
+- The complete provisional ledger totals exactly `11.70` over 37 fields. Final strengths, total, count, scale, weakened count, active/skipped domains, generic warnings, aggregate metrics, geometry point count, and unified dispatch all derive from the same final face/chin/eye/nose/mouth named emissions.
+- Valid provider-empty new work contributes zero active/skipped evidence by itself; unavailable/stale face input remains observable through the existing generic face-dependent degradation. An emitting shipped or independent sibling keeps its domain active.
+- Diagnostics remain fixed and aggregate-only. Fresh focused evidence passes 17 provider, 21 resolver, 13 conflict, 14 combined, 2 pipeline, 43 degradation, and 15 facade tests; `BeautyEffectsTests` passes 205 with one opt-in skip, full SwiftPM passes 368 with three opt-in skips, and boundary evidence passes 24/24 self-tests plus 14/14 live checks.
+- These gates prove provider/routing reliability, not decoded visibility, naturalness, final calibration, exhaustive safety, device parity, performance, packaging, shipping, or launch readiness. Phase 47 owns output evidence and Phase 48 owns final safety/promotion.
+
 ## 7. Observability Model
 
 First-version diagnostics live in `BeautyCore/Diagnostics`; do not create a separate diagnostics package until another product actually shares it. Use three layers:

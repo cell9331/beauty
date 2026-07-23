@@ -30,6 +30,24 @@ Milestone v1.12 autonomous execution is active from Phase 45. After the semantic
 
 ## 4. Completed
 
+### C-2026-07-23-phase-46-independent-contour-and-chin-geometry
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-23 |
+| Scope | Completed Phase 46 across Plans `46-01` through `46-06`: RED-first named-emission contracts, four local providers, provisional effective caps, complete resolver/conflict lifecycle, deterministic observed-support facade routing, full evidence, and owner synchronization. |
+| Geometry | `faceContourSmooth` uses centered neighbor-chord continuity; `templeFullness` uses upper-lateral outward bands; `cheekboneSlim` uses disjoint mid-lateral inward bands; `chinTaper` uses centerline-gated apex neighbors with X-only movement. Five shipped face/chin arrays remain unchanged. |
+| Accounting | Four provisional caps are exact `0.25`; eligible reuse is exact `0.5`. Seven face plus two chin named emissions join the existing eye/nose/mouth providers through one retained baseline, exact 37-field/11.70 arithmetic, at most 37 monotone removals, no re-entry, and exactly-once final point accounting. |
+| Degradation and privacy | Missing contour removes all four new fields; missing/malformed centerline removes taper only; no-face/stale zero new work; provider-empty work contributes no final evidence; safe siblings continue. Observed support remains package-only, request-scoped, non-Codable, non-persistent, non-networked, and aggregate-only in diagnostics. |
+| Verification | Focused suites pass 17 provider, 21 resolver, 13 conflict, 14 combined, 2 pipeline, 43 degradation, and 15 facade tests. `BeautyEffectsTests` executes 205 with one opt-in Apple Vision skip; full SwiftPM executes 368 with three opt-in skips; all have zero failures. Boundary self-test/live pass 24/24 and 14/14; pinned hashes, artifact containment, and `git diff --check` pass. |
+
+Outcome:
+
+- GEOM-01, GEOM-02, GEOM-03, and GEOM-04 are complete for provider ownership, resolver/conflict accounting, representative degradation, unified dispatch, deterministic public-facade routing, and redacted aggregate evidence.
+- Phase 47 exclusively owns decoded output, ROI/locality visibility, renderer cases, and gallery evidence. Phase 48 exclusively owns final caps/dead zones, exhaustive nine-face/37-field matrices, safety closeout, exact row promotion, and branch status.
+- `去双下巴`, `去双下巴 Pro`, `发际线`, Demo/device/commercial/performance/packaging/shipping/readiness work, and whole-`脸型` completion remain future or partial.
+- Three repository-specific governance inputs remain explicitly unverified for `$gsd-secure-phase`: observed support must not become biometric profiling data; the seven-point proxy must not be represented as observed support; deferred semantic rows must not be silently activated. The concrete source/scope manifestations pass the fail-closed checker.
+
 ### C-2026-07-23-phase-45-public-contract-and-observed-face-support
 
 | Field | Value |
