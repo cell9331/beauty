@@ -446,6 +446,7 @@ enum BeautyFaceGeometryAdapter {
     ) -> [SIMD2<Float>]? {
         guard (minimumFaceMedianPointCount...maximumFaceMedianPointCount).contains(input.count),
               faceInputIsValid(input),
+              !facePathHasNonAdjacentIntersections(input),
               let local = faceRelativePoints(input, bounds: bounds),
               let first = local.first,
               let last = local.last

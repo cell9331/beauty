@@ -676,6 +676,31 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         )
     }
 
+    func testSelfIntersectingMedianPreservesContourOnlyEligibility() {
+        let contour = faceOpenContour(count: 7)
+        let crossingMedian = [
+            CoordinatePoint(x: 0.50, y: 0.20),
+            CoordinatePoint(x: 0.20, y: 0.80),
+            CoordinatePoint(x: 0.80, y: 0.80),
+            CoordinatePoint(x: 0.20, y: 0.50),
+            CoordinatePoint(x: 0.50, y: 0.80),
+        ]
+
+        let geometry = BeautyFaceGeometryAdapter.makeGeometry(
+            from: faceObservation(
+                support: BeautyObservedFaceSupport(
+                    contour: contour,
+                    medianLine: crossingMedian
+                )
+            )
+        )
+
+        XCTAssertTrue(geometry.observedFaceSupport?.contourEligible == true)
+        XCTAssertFalse(geometry.observedFaceSupport?.centerlineEligible == true)
+        XCTAssertNil(geometry.observedFaceSupport?.medianLine)
+        XCTAssertNil(geometry.observedFaceSupport?.apexIndex)
+    }
+
     func testInjectedSixCaseFaceSupportAggregateFitsLockedValidationEnvelope() {
         let fixtureDimensions: [(width: Double, height: Double)] = [
             (0.56, 0.48),
