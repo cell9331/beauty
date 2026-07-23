@@ -139,6 +139,26 @@ let cases = [
         parameters: BeautyParameters(jawSlim: 0.35)
     ),
     RenderCase(
+        id: "faceContourSmooth_0p25",
+        displayName: "faceContourSmooth 0.25",
+        parameters: BeautyParameters(faceContourSmooth: 0.25)
+    ),
+    RenderCase(
+        id: "templeFullness_0p25",
+        displayName: "templeFullness 0.25",
+        parameters: BeautyParameters(templeFullness: 0.25)
+    ),
+    RenderCase(
+        id: "cheekboneSlim_0p25",
+        displayName: "cheekboneSlim 0.25",
+        parameters: BeautyParameters(cheekboneSlim: 0.25)
+    ),
+    RenderCase(
+        id: "chinTaper_0p25",
+        displayName: "chinTaper 0.25",
+        parameters: BeautyParameters(chinTaper: 0.25)
+    ),
+    RenderCase(
         id: "eyeSize_0p35",
         displayName: "eyeSize 0.35",
         parameters: BeautyParameters(eyeSize: 0.35)
