@@ -412,16 +412,16 @@ enum BeautyFaceGeometryAdapter {
         let height = maxY - minY
         let chordX = last.x - first.x
         let chordY = last.y - first.y
-        let horizontalSeparation = abs(chordX)
+        let rightProjection = chordX
         let chordLength = hypot(chordX, chordY)
         guard width.isFinite,
               height.isFinite,
-              horizontalSeparation.isFinite,
+              rightProjection.isFinite,
               chordLength.isFinite,
               faceContourWidthIsValid(Float(width)),
               faceContourHeightIsValid(Float(height)),
               faceDirectionMagnitudeIsValid(Float(chordLength)),
-              faceEndpointSeparationIsValid(Float(horizontalSeparation))
+              faceEndpointSeparationIsValid(Float(rightProjection))
         else {
             return nil
         }
@@ -454,7 +454,7 @@ enum BeautyFaceGeometryAdapter {
         let deltaX = last.x - first.x
         let deltaY = last.y - first.y
         let directionMagnitude = hypot(deltaX, deltaY)
-        let downProjection = abs(deltaY)
+        let downProjection = deltaY
         guard directionMagnitude.isFinite,
               downProjection.isFinite,
               faceDirectionMagnitudeIsValid(Float(directionMagnitude)),

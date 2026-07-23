@@ -602,7 +602,7 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         }
     }
 
-    func testFaceOpenPathValidationPreservesForwardAndReversedAdjacency() throws {
+    func testFaceOpenPathValidationPreservesCanonicalAdjacencyAndRejectsReversedDirection() throws {
         let faceBounds = FaceBounds(x: 0.10, y: 0.10, width: 0.80, height: 0.80)
         let contour = faceOpenContour(count: 17)
         let median = faceMedianLine(count: 10)
@@ -615,11 +615,11 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
             ),
             contour.map { SIMD2<Float>(Float($0.x), Float($0.y)) }
         )
-        XCTAssertEqual(
-            try XCTUnwrap(
-                BeautyFaceGeometryAdapter.validatedFaceContour(reversedContour, bounds: faceBounds)
-            ),
-            reversedContour.map { SIMD2<Float>(Float($0.x), Float($0.y)) }
+        XCTAssertNil(
+            BeautyFaceGeometryAdapter.validatedFaceContour(
+                reversedContour,
+                bounds: faceBounds
+            )
         )
         XCTAssertEqual(
             try XCTUnwrap(
@@ -627,11 +627,11 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
             ),
             median.map { SIMD2<Float>(Float($0.x), Float($0.y)) }
         )
-        XCTAssertEqual(
-            try XCTUnwrap(
-                BeautyFaceGeometryAdapter.validatedFaceMedianLine(reversedMedian, bounds: faceBounds)
-            ),
-            reversedMedian.map { SIMD2<Float>(Float($0.x), Float($0.y)) }
+        XCTAssertNil(
+            BeautyFaceGeometryAdapter.validatedFaceMedianLine(
+                reversedMedian,
+                bounds: faceBounds
+            )
         )
     }
 
