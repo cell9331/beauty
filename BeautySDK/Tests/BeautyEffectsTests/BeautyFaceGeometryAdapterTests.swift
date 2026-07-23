@@ -472,6 +472,132 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         }
     }
 
+    func testFaceOpenPathPurePredicatesLockInclusiveNumericBoundaries() {
+        XCTAssertFalse(BeautyFaceGeometryAdapter.faceContourWidthIsValid(0.499_999))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceContourWidthIsValid(0.50))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceContourWidthIsValid(0.500_001))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceContourWidthIsValid(0.999_999))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceContourWidthIsValid(1.00))
+        XCTAssertFalse(BeautyFaceGeometryAdapter.faceContourWidthIsValid(1.000_001))
+
+        XCTAssertFalse(BeautyFaceGeometryAdapter.faceContourHeightIsValid(0.199_999))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceContourHeightIsValid(0.20))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceContourHeightIsValid(0.200_001))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceContourHeightIsValid(0.999_999))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceContourHeightIsValid(1.00))
+        XCTAssertFalse(BeautyFaceGeometryAdapter.faceContourHeightIsValid(1.000_001))
+
+        XCTAssertFalse(BeautyFaceGeometryAdapter.faceEndpointSeparationIsValid(0.349_999))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceEndpointSeparationIsValid(0.35))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceEndpointSeparationIsValid(0.350_001))
+
+        XCTAssertFalse(BeautyFaceGeometryAdapter.faceCurvatureIsValid(0.099_999))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceCurvatureIsValid(0.10))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceCurvatureIsValid(0.100_001))
+
+        XCTAssertFalse(BeautyFaceGeometryAdapter.faceMedianDownIsValid(0.249_999))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceMedianDownIsValid(0.25))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceMedianDownIsValid(0.250_001))
+
+        XCTAssertFalse(BeautyFaceGeometryAdapter.faceDirectionMagnitudeIsValid(0.000_000_999))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceDirectionMagnitudeIsValid(0.000_001))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.faceDirectionMagnitudeIsValid(0.000_001_001))
+        XCTAssertFalse(BeautyFaceGeometryAdapter.faceDirectionMagnitudeIsValid(.nan))
+        XCTAssertFalse(BeautyFaceGeometryAdapter.faceDirectionMagnitudeIsValid(.infinity))
+    }
+
+    func testFaceOpenPathCardinalityUniquenessAndBoundsRejectMalformedInput() {
+        let faceBounds = FaceBounds(x: 0.10, y: 0.10, width: 0.80, height: 0.80)
+        for entry in faceContourCardinalityMatrix {
+            let validated = BeautyFaceGeometryAdapter.validatedFaceContour(
+                faceOpenContour(count: entry.count),
+                bounds: faceBounds
+            )
+            XCTAssertEqual(validated != nil, entry.eligible, "contour count=\(entry.count)")
+        }
+        for entry in faceMedianCardinalityMatrix {
+            let validated = BeautyFaceGeometryAdapter.validatedFaceMedianLine(
+                faceMedianLine(count: entry.count),
+                bounds: faceBounds
+            )
+            XCTAssertEqual(validated != nil, entry.eligible, "median count=\(entry.count)")
+        }
+
+        let validContour = faceOpenContour(count: 7)
+        let validMedian = faceMedianLine(count: 3)
+        var adjacentDuplicate = validContour
+        adjacentDuplicate[1] = adjacentDuplicate[0]
+        var repeatedEndpoint = validContour
+        repeatedEndpoint[repeatedEndpoint.count - 1] = repeatedEndpoint[0]
+        var nonFinite = validContour
+        nonFinite[3] = CoordinatePoint(x: .nan, y: nonFinite[3].y)
+        var outside = validContour
+        outside[3] = CoordinatePoint(x: 1.000_001, y: outside[3].y)
+        let identical = Array(repeating: CoordinatePoint(x: 0.50, y: 0.50), count: 7)
+        let collinear = (0..<7).map { index in
+            CoordinatePoint(x: 0.10 + 0.80 * Double(index) / 6, y: 0.50)
+        }
+
+        for malformed in [
+            adjacentDuplicate,
+            repeatedEndpoint,
+            nonFinite,
+            outside,
+            identical,
+            collinear,
+        ] {
+            XCTAssertNil(
+                BeautyFaceGeometryAdapter.validatedFaceContour(malformed, bounds: faceBounds)
+            )
+        }
+
+        var duplicateMedian = validMedian
+        duplicateMedian[1] = duplicateMedian[0]
+        let horizontalMedian = [
+            CoordinatePoint(x: 0.30, y: 0.50),
+            CoordinatePoint(x: 0.50, y: 0.50),
+            CoordinatePoint(x: 0.70, y: 0.50),
+        ]
+        for malformed in [duplicateMedian, horizontalMedian] {
+            XCTAssertNil(
+                BeautyFaceGeometryAdapter.validatedFaceMedianLine(malformed, bounds: faceBounds)
+            )
+        }
+    }
+
+    func testFaceOpenPathValidationPreservesForwardAndReversedAdjacency() throws {
+        let faceBounds = FaceBounds(x: 0.10, y: 0.10, width: 0.80, height: 0.80)
+        let contour = faceOpenContour(count: 17)
+        let median = faceMedianLine(count: 10)
+        let reversedContour = Array(contour.reversed())
+        let reversedMedian = Array(median.reversed())
+
+        XCTAssertEqual(
+            try XCTUnwrap(
+                BeautyFaceGeometryAdapter.validatedFaceContour(contour, bounds: faceBounds)
+            ),
+            contour.map { SIMD2<Float>(Float($0.x), Float($0.y)) }
+        )
+        XCTAssertEqual(
+            try XCTUnwrap(
+                BeautyFaceGeometryAdapter.validatedFaceContour(reversedContour, bounds: faceBounds)
+            ),
+            reversedContour.map { SIMD2<Float>(Float($0.x), Float($0.y)) }
+        )
+        XCTAssertEqual(
+            try XCTUnwrap(
+                BeautyFaceGeometryAdapter.validatedFaceMedianLine(median, bounds: faceBounds)
+            ),
+            median.map { SIMD2<Float>(Float($0.x), Float($0.y)) }
+        )
+        XCTAssertEqual(
+            try XCTUnwrap(
+                BeautyFaceGeometryAdapter.validatedFaceMedianLine(reversedMedian, bounds: faceBounds)
+            ),
+            reversedMedian.map { SIMD2<Float>(Float($0.x), Float($0.y)) }
+        )
+    }
+
     private func observation(left: [CoordinatePoint], right: [CoordinatePoint], pupils: ([CoordinatePoint]?, [CoordinatePoint]?) = (nil, nil)) -> BeautyFaceObservation {
         BeautyFaceObservation(
             imageBounds: bounds,
