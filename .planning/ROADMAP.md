@@ -19,7 +19,7 @@
 ## Phases
 
 - [x] **Phase 45: Public Contract and Observed Face Support** — Exact 52-field compatibility, actual observed contour/median-line mapping, private validation, and blocker-honest exclusion of semantic-region rows. (completed 2026-07-23)
-- [ ] **Phase 46: Independent Contour and Chin Geometry** — Distinct smooth-contour, temple, cheekbone, and chin-taper emissions through the existing resolver, conflict, warp, and facade pipeline.
+- [x] **Phase 46: Independent Contour and Chin Geometry** — Distinct smooth-contour, temple, cheekbone, and chin-taper emissions through the existing resolver, conflict, warp, and facade pipeline. (completed 2026-07-23)
 - [ ] **Phase 47: Public-Facade Face Output Evidence** — Isolated renderer cases, decoded strict comparisons, safe no-ops, and ignored descriptor-safe gallery evidence for all four controls.
 - [ ] **Phase 48: Face Safety and Scoped Closeout** — Final caps, exhaustive field-local transitions, exact multi-domain convergence, four-row promotion, and preserved partial branch status.
 
@@ -54,7 +54,7 @@ Plans:
 
 **Requirements:** GEOM-01, GEOM-02, GEOM-03, GEOM-04
 
-**Plans:** 6/6 plans executed
+**Plans:** 6/6 plans complete
 
 Plans:
 **Wave 1**
@@ -119,7 +119,7 @@ Plans:
 | Phase | Milestone | Requirements | Status | Completed |
 | --- | --- | --- | --- | --- |
 | 45. Public Contract and Observed Face Support | v1.12 | 5/5 | Complete    | 2026-07-23 |
-| 46. Independent Contour and Chin Geometry | v1.12 | 4/6 | In Progress|  |
+| 46. Independent Contour and Chin Geometry | v1.12 | 4/4 | Complete    | 2026-07-23 |
 | 47. Public-Facade Face Output Evidence | v1.12 | 3 | Not started | — |
 | 48. Face Safety and Scoped Closeout | v1.12 | 4 | Not started | — |
 

@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.12
 milestone_name: Face Shape Remaining Capabilities
-current_phase: 46
-current_phase_name: Independent Contour and Chin Geometry
-status: verifying
-stopped_at: Completed 46-06-PLAN.md; ready for Phase 46 verification
-last_updated: "2026-07-23T10:44:05.557Z"
+current_phase: 47
+current_phase_name: Public-Facade Face Output Evidence
+status: planning
+stopped_at: Phase 46 verified, validated, and security-audited; transitioned to Phase 47
+last_updated: "2026-07-23T10:51:27.109Z"
 last_activity: 2026-07-23
-last_activity_desc: Completed 46-06-PLAN.md; Phase 46 ready for verification
+last_activity_desc: Phase 46 complete, transitioned to Phase 47
 progress:
   total_phases: 4
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 11
   completed_plans: 11
   percent: 100
@@ -24,14 +24,22 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-21)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 46 — Independent Contour and Chin Geometry
+**Current focus:** Phase 47 — Public-Facade Face Output Evidence
 
 ## Current Position
 
-Phase: 46 (Independent Contour and Chin Geometry) — VERIFYING
-Plan: 6 of 6
-Status: Phase complete — ready for verification
-Last activity: 2026-07-23 -- Completed 46-06-PLAN.md; Phase 46 ready for verification
+Phase: 47 — Public-Facade Face Output Evidence
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-07-23 — Phase 46 complete, transitioned to Phase 47
+
+### Phase 46 Independent Contour and Chin Geometry Result
+
+- Four independent observed-support providers now emit local contour smoothing, upper-lateral temple fullness, mid-lateral cheekbone slimming, and centerline-gated apex-neighbor chin taper without changing the five shipped face/chin arrays.
+- Provider-empty work is removed before final evidence; exact 37-field monotone convergence totals 11.70, reused input scales by exact 0.5, and no-face/stale work zeros safely.
+- Focused evidence passes 17 provider, 21 resolver, 13 conflict, 14 combined, 2 pipeline, 43 degradation, and 15 facade tests; full SwiftPM passes 368 with 3 opt-in skips.
+- Standard review is clean, goal verification passes 18/18, Nyquist has 0 gaps, and ASVS L1 closes all 19 threats plus the three repository-scoped governance inputs.
+- Phase 47 owns decoded output/ROI/gallery evidence; Phase 48 owns final caps, exhaustive safety, four-row promotion, and partial-branch closeout.
 
 ### Phase 44 Eye Geometry Safety and Ledger Closeout Result
 
