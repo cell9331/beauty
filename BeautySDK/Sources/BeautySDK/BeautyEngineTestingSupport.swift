@@ -2,6 +2,26 @@ import Foundation
 import BeautyCore
 import BeautyDetection
 
+private let phase46ObservedContour = [
+    CoordinatePoint(x: 0.025, y: 0.733_333_333),
+    CoordinatePoint(x: 0.000, y: 0.600_000_000),
+    CoordinatePoint(x: 0.0625, y: 0.466_666_667),
+    CoordinatePoint(x: 0.125, y: 0.300_000_000),
+    CoordinatePoint(x: 0.2875, y: 0.116_666_667),
+    CoordinatePoint(x: 0.5125, y: 0.000_000_000),
+    CoordinatePoint(x: 0.7125, y: 0.150_000_000),
+    CoordinatePoint(x: 0.8500, y: 0.333_333_333),
+    CoordinatePoint(x: 0.9375, y: 0.516_666_667),
+    CoordinatePoint(x: 1.0000, y: 0.650_000_000),
+    CoordinatePoint(x: 0.9500, y: 0.766_666_667),
+]
+
+private let phase46ObservedMedianLine = [
+    CoordinatePoint(x: 0.4500, y: 0.833_333_333),
+    CoordinatePoint(x: 0.4875, y: 0.416_666_667),
+    CoordinatePoint(x: 0.5250, y: 0.016_666_667),
+]
+
 @_spi(Testing) public enum SDKTestingFaceDetectionFixture: Sendable {
     case usableFace
     case noFace
@@ -36,7 +56,11 @@ import BeautyDetection
                         confidence: 0.96,
                         normalizedArea: 0.24,
                         visionBounds: CoordinateRect(x: 0.30, y: 0.20, width: 0.40, height: 0.60),
-                        landmarks: .complete
+                        landmarks: .complete,
+                        observedFaceSupport: BeautyObservedFaceSupport(
+                            contour: phase46ObservedContour,
+                            medianLine: phase46ObservedMedianLine
+                        )
                     )
                 ]
             case .noFace:
