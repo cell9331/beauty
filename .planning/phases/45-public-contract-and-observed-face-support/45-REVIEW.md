@@ -1,6 +1,6 @@
 ---
 phase: 45-public-contract-and-observed-face-support
-reviewed: 2026-07-23T06:02:02Z
+reviewed: 2026-07-23T07:02:05Z
 depth: standard
 files_reviewed: 16
 files_reviewed_list:
@@ -21,95 +21,77 @@ files_reviewed_list:
   - RELIABILITY.md
   - SECURITY.md
 findings:
-  critical: 4
+  critical: 1
   warning: 1
   info: 0
-  total: 5
+  total: 2
 status: issues_found
 ---
 
 # Phase 45: Code Review Report
 
-**Reviewed:** 2026-07-23T06:02:02Z
+**Reviewed:** 2026-07-23T07:02:05Z
 **Depth:** standard
 **Files Reviewed:** 16
 **Status:** issues_found
 
 ## Summary
 
-The public 52-field lifecycle is wired consistently, and the focused adapter suite passes 27/27. The observed-face support path is not ready to ship, however: legitimate small faces can be rejected against inflated bounds, reversed and self-intersecting paths can be promoted as valid semantic evidence, and raw coordinate payloads still have an implicit reflective diagnostic representation. The real-Vision aggregate tests also make the normal regression gate dependent on host services and framework output.
+The iteration-3 median-intersection fix and aggregate-only mirrors on the three detection-layer carriers are present and covered by focused regressions. The review is not clean: the adapter copies the protected observations into effects-layer semantic carriers that still use Swift's default structural reflection, reopening the same raw-coordinate disclosure through `Mirror` and `dump`. Two authoritative owner documents also retain obsolete Phase 41 inventory and pre-fix Phase 45 verification counts.
 
 Verification performed:
 
-- `BeautyFaceGeometryAdapterTests` — PASS, 27/27, after rerunning outside the managed sandbox required by SwiftPM/Apple Vision.
-- `git diff --check 71f7252^..HEAD` over the exact review scope — PASS.
+- `BeautyFaceGeometryAdapterTests` — PASS, 31 executed, 1 opt-in integration skip, 0 failures.
+- `VisionFaceDetectorTests` — PASS, 20 executed, 2 opt-in integration skips, 0 failures.
+- Face-support boundary checker — PASS, 36/36 self-tests and 13/13 live checks.
+- `git diff --check` — PASS.
 
 ## Narrative Findings (AI reviewer)
 
 ## Critical Issues
 
-### CR-01: Small real faces are validated against inflated synthetic bounds
+### CR-01: Effects-layer semantic carriers reopen raw-coordinate reflection
 
 **Classification:** BLOCKER
 
-**File:** `BeautySDK/Sources/BeautyEffects/Planning/BeautyFaceGeometryAdapter.swift:40-46`
+**File:** `BeautySDK/Sources/BeautyEffects/Warp/WarpControlPoint.swift:48-67`, `BeautySDK/Sources/BeautyEffects/Warp/WarpControlPoint.swift:90-142`
 
-**Issue:** `makeGeometry` passes `makeBounds(from:)` into observed-support validation, but `makeBounds` clamps every width and height to at least `0.05` at lines 635-645 and 762-764. The detector accepts any finite positive face bounds. For a legitimate face with width `0.02` and a contour spanning 80% of that box, validation divides the real `0.016` contour span by the inflated `0.05` width and obtains `0.32`, incorrectly failing the documented `0.50` minimum. Height and cross-support distances are distorted the same way. This silently removes valid observed support for small/distant faces even though detection selected the face.
+**Issue:** Commit `49ff737` adds aggregate-only `CustomReflectable` implementations to `BeautyObservedFaceSupport`, `BeautyFaceObservation`, and `VisionDetectionObservation`, but the adapter then copies the same biometric-adjacent values into `BeautyFaceSemanticSupport`. That type stores the raw contour, optional median, and apex index without controlling either its textual or structural representation. Its enclosing `FaceGeometry` also uses default reflection and stores `observedFaceSupport`, bounds, and multiple coordinate arrays. Consequently, `Mirror(reflecting:)` or `dump` on either effects-layer value recursively exposes raw derived coordinates, bounds, and semantic indices. The new reflection regressions cover only the three detection-layer carriers, so they do not exercise this downstream representation. This contradicts `SECURITY.md:130-133` and the Phase 45 closeout assertion that descriptions, structural reflection, and dumps expose aggregate counts only.
 
-**Fix:** Keep the clamped bounds only for the legacy synthetic proxy. Derive a separate exact positive `FaceBounds` from `observation.imageBounds` for observed contour/median validation, without the `0.05` floor, and add tests with face boxes below `0.05` in each dimension.
+**Fix:** Give every sensitive effects-layer carrier, including `BeautyFaceSemanticSupport` and `FaceGeometry`, fixed aggregate-only `CustomStringConvertible`, `CustomDebugStringConvertible`, and `CustomReflectable` representations (or introduce a non-reflectable diagnostic wrapper and prevent these values from entering generic diagnostics). Do not include bounds, indices, coordinates, or nested coordinate-bearing values among mirror children. Add effects tests that call `String(describing:)`, `String(reflecting:)`, `Mirror(reflecting:)`, and `dump` on sentinel-filled `BeautyFaceSemanticSupport` and complete `FaceGeometry` values and assert that no sentinel coordinate, `SIMD2`, bounds value, or apex index appears.
 
 ```swift
-let proxyBounds = makeBounds(from: observation)
-let validationBounds = observation.imageBounds.flatMap(exactPositiveBounds)
-let observedFaceSupport = validationBounds.flatMap {
-    validatedFaceSupport(observation.observedFaceSupport, bounds: $0)
+extension BeautyFaceSemanticSupport: CustomReflectable {
+    var customMirror: Mirror {
+        Mirror(
+            self,
+            children: [
+                "contourCount": contour.count,
+                "medianLineCount": medianLine?.count ?? 0,
+                "centerlineEligible": centerlineEligible,
+            ],
+            displayStyle: .struct
+        )
+    }
 }
 ```
 
-### CR-02: Adapter direction checks accept reversed noncanonical paths
-
-**Classification:** BLOCKER
-
-**File:** `BeautySDK/Sources/BeautyEffects/Planning/BeautyFaceGeometryAdapter.swift:409-420`
-
-**Issue:** Contour validation uses `abs(chordX)`, and median validation uses `abs(deltaY)` at lines 450-457. Consequently, right-to-left contours and bottom-to-top medians pass the same predicates as canonical paths. The test at `BeautySDK/Tests/BeautyEffectsTests/BeautyFaceGeometryAdapterTests.swift:570-600` explicitly locks that reversed paths are accepted unchanged. This contradicts the canonical right/down and “net-down” contracts in `DESIGN.md:147-148` and permits incorrect apex/centerline semantics when any package-internal observation bypasses or regresses detector canonicalization. A reversed median with a sufficiently dense contour can still satisfy chord position, apex distance, and interior-index checks and become `centerlineEligible`.
-
-**Fix:** Enforce signed canonical projections at the adapter trust boundary (`chordX >= minimumFaceEndpointSeparation` and `deltaY >= minimumFaceMedianDown`), or canonicalize there before returning the stored semantic arrays. Replace the reversed-adapter acceptance test with rejection/canonical-output assertions; retain detector tests proving source winding convergence.
-
-### CR-03: Envelope checks accept self-intersecting face contours as eligible
-
-**Classification:** BLOCKER
-
-**File:** `BeautySDK/Sources/BeautyEffects/Planning/BeautyFaceGeometryAdapter.swift:390-435`
-
-**Issue:** The claimed topology validation checks only count, exact-bit uniqueness, global unit bounds, bounding span, endpoint separation, and maximum distance from the endpoint chord. `faceInputIsValid` at lines 554-563 performs no segment-intersection or traversal-consistency check. A seven-point zigzag can be unique, span the required box, have sufficient curvature and endpoint separation, yet cross itself repeatedly and be returned as `contourEligible`. That malformed evidence will be consumed as ordered control geometry in Phase 46 and can generate incorrect or unsafe warps.
-
-**Fix:** Reject intersections between non-adjacent open-path segments (the 32-point ceiling keeps this bounded), and add adversarial bow-tie/zigzag fixtures. If the intended contract also requires left-to-right traversal, enforce a tolerance-bounded monotonic projection after canonical direction is established.
-
-### CR-04: Raw support coordinates remain printable through Swift reflection
-
-**Classification:** BLOCKER
-
-**File:** `BeautySDK/Sources/BeautyDetection/BeautyFaceObservation.swift:38-64`
-
-**Issue:** The comments and `SECURITY.md:130-133` claim no diagnostic/raw-description surface, but ordinary Swift structs receive a reflective fallback representation. `String(describing:)`, string interpolation, XCTest failure output, and generic logging of `BeautyObservedFaceSupport`, `BeautyFaceObservation`, or `VisionDetectionObservation` can therefore include the full `CoordinatePoint` arrays even without `CustomStringConvertible`. Package access reduces exposure but does not prevent an internal log/error path from leaking biometric-adjacent coordinates.
-
-**Fix:** Give the support and enclosing observation carriers explicit redacted `CustomStringConvertible` and `CustomDebugStringConvertible` implementations that expose only approved availability/count aggregates, and add tests covering interpolation and debug descriptions. Extend the boundary checker to reject unapproved interpolation/logging of these carrier types.
+Apply the same aggregate-only boundary to `FaceGeometry`; protecting only the nested support value is insufficient because its other stored geometry is also coordinate-bearing.
 
 ## Warnings
 
-### WR-01: Required regression tests depend on live Vision behavior and repository-local fixture layout
+### WR-01: Authoritative design and reliability records still contradict the final implementation
 
 **Classification:** WARNING
 
-**File:** `BeautySDK/Tests/BeautyDetectionTests/VisionFaceDetectorTests.swift:383-415`
+**File:** `DESIGN.md:71`, `RELIABILITY.md:209`
 
-**Issue:** This test and `BeautySDK/Tests/BeautyEffectsTests/BeautyFaceGeometryAdapterTests.swift:603-661` make the standard suite depend on Apple Vision host services, the current framework revision's landmark availability, and six files found by walking upward from `#filePath`. The phase summaries already record sandbox/host-service failures. A clean checkout on another supported Xcode/macOS revision can fail because Vision returns different optional median data, not because the deterministic mapping/validation contract regressed.
+**Issue:** `DESIGN.md` still calls the Phase 41 inventory the “current” model and specifies 48 stored fields, even though Phase 45 makes the current contract exactly 52 stored fields. `RELIABILITY.md` still records pre-fix evidence—34/34 checker self-tests, 18/18 detector tests, 27/27 adapter tests, 48/48 complete detection tests, and 347/347 full-suite tests—while the final closeout evidence is 36/36, detector 20 executed with 2 skips, adapter 31 executed with 1 skip, complete detection 50 executed with 2 skips, and full suite 353 executed with 3 skips. Commit `1c269a8` updates `PLANS.md` and `SECURITY.md` but leaves these two owner documents internally inconsistent with the code and the final ledger.
 
-**Fix:** Move live portrait detection to a clearly marked opt-in integration suite. Keep the required unit gate deterministic by checking captured/injected package-only contour/median fixtures across the same six cases and metadata matrix; run the live Vision smoke separately on the pinned Apple host configuration.
+**Fix:** Change `DESIGN.md:71` to either identify 48 fields explicitly as a historical Phase 41 snapshot or state the current 52-field inventory (51 numeric plus `filterId`). Replace the Phase 45 evidence in `RELIABILITY.md:209` with the exact final execution/skip counts used by `PLANS.md:42`, preserving the distinction between executed tests, opt-in skips, and failures.
 
 ---
 
-_Reviewed: 2026-07-23T06:02:02Z_
+_Reviewed: 2026-07-23T07:02:05Z_
 _Reviewer: the agent (gsd-code-reviewer)_
 _Depth: standard_
