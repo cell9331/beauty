@@ -54,7 +54,7 @@ Plans:
 
 **Requirements:** GEOM-01, GEOM-02, GEOM-03, GEOM-04
 
-**Plans:** 1/6 plans executed
+**Plans:** 2/6 plans executed
 
 Plans:
 **Wave 1**
@@ -63,7 +63,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 46-02-PLAN.md — Lock RED resolver, cap, provider-empty, exact 37-field, and once-only accounting contracts.
+- [x] 46-02-PLAN.md — Lock RED resolver, cap, provider-empty, exact 37-field, and once-only accounting contracts.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -119,7 +119,7 @@ Plans:
 | Phase | Milestone | Requirements | Status | Completed |
 | --- | --- | --- | --- | --- |
 | 45. Public Contract and Observed Face Support | v1.12 | 5/5 | Complete    | 2026-07-23 |
-| 46. Independent Contour and Chin Geometry | v1.12 | 1/6 | In Progress|  |
+| 46. Independent Contour and Chin Geometry | v1.12 | 2/6 | In Progress|  |
 | 47. Public-Facade Face Output Evidence | v1.12 | 3 | Not started | — |
 | 48. Face Safety and Scoped Closeout | v1.12 | 4 | Not started | — |
 
