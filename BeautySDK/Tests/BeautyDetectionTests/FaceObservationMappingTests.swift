@@ -223,15 +223,297 @@ final class FaceObservationMappingTests: XCTestCase {
         XCTAssertFalse(String(describing: result.summary).contains("left"))
     }
 
+    func testSUPP02FacePathsCanonicalizeAcrossWindingOrientationAndInputMirror() throws {
+        let bounds = CoordinateRect(x: 0.20, y: 0.10, width: 0.50, height: 0.60)
+        let contour = [
+            CoordinatePoint(x: 0.10, y: 0.65),
+            CoordinatePoint(x: 0.35, y: 0.20),
+            CoordinatePoint(x: 0.70, y: 0.15),
+            CoordinatePoint(x: 0.95, y: 0.60)
+        ]
+        let medianLine = [
+            CoordinatePoint(x: 0.50, y: 0.90),
+            CoordinatePoint(x: 0.48, y: 0.50),
+            CoordinatePoint(x: 0.52, y: 0.10)
+        ]
+
+        for orientation in [CGImagePropertyOrientation.up, .right, .left, .down] {
+            for mirrored in [false, true] {
+                let forward = try mappedFaceSupport(
+                    contour: contour,
+                    medianLine: medianLine,
+                    bounds: bounds,
+                    orientation: orientation,
+                    inputMirrored: mirrored
+                )
+                let reversed = try mappedFaceSupport(
+                    contour: Array(contour.reversed()),
+                    medianLine: Array(medianLine.reversed()),
+                    bounds: bounds,
+                    orientation: orientation,
+                    inputMirrored: mirrored
+                )
+
+                XCTAssertEqual(forward, reversed)
+                XCTAssertEqual(forward.contour?.count, contour.count)
+                XCTAssertEqual(forward.medianLine?.count, medianLine.count)
+            }
+        }
+    }
+
+    func testSUPP02CanonicalizationPreservesOpenPathAdjacency() throws {
+        let contour = [
+            CoordinatePoint(x: 0.10, y: 0.65),
+            CoordinatePoint(x: 0.35, y: 0.20),
+            CoordinatePoint(x: 0.70, y: 0.15),
+            CoordinatePoint(x: 0.95, y: 0.60)
+        ]
+        let medianLine = [
+            CoordinatePoint(x: 0.50, y: 0.90),
+            CoordinatePoint(x: 0.48, y: 0.50),
+            CoordinatePoint(x: 0.52, y: 0.10)
+        ]
+
+        let support = try mappedFaceSupport(
+            contour: Array(contour.reversed()),
+            medianLine: Array(medianLine.reversed()),
+            bounds: CoordinateRect(x: 0.20, y: 0.10, width: 0.50, height: 0.60),
+            orientation: .up
+        )
+        let mappedContour = try XCTUnwrap(support.contour)
+        let mappedMedian = try XCTUnwrap(support.medianLine)
+
+        assertPoint(mappedContour[0], x: 0.25, y: 0.51)
+        assertPoint(mappedContour[1], x: 0.375, y: 0.78)
+        assertPoint(mappedContour[2], x: 0.55, y: 0.81)
+        assertPoint(mappedContour[3], x: 0.675, y: 0.54)
+        assertPoint(mappedMedian[0], x: 0.45, y: 0.36)
+        assertPoint(mappedMedian[1], x: 0.44, y: 0.60)
+        assertPoint(mappedMedian[2], x: 0.46, y: 0.84)
+    }
+
+    func testSUPP02PreviewMirroringDoesNotChangeObservedFaceSupport() throws {
+        let contour = [
+            CoordinatePoint(x: 0.10, y: 0.65),
+            CoordinatePoint(x: 0.95, y: 0.60)
+        ]
+        let medianLine = [
+            CoordinatePoint(x: 0.50, y: 0.90),
+            CoordinatePoint(x: 0.52, y: 0.10)
+        ]
+        let regular = try mappedFaceSupport(
+            contour: contour,
+            medianLine: medianLine,
+            bounds: CoordinateRect(x: 0.20, y: 0.10, width: 0.50, height: 0.60),
+            orientation: .right,
+            inputMirrored: true,
+            previewMirrored: false
+        )
+        let previewMirrored = try mappedFaceSupport(
+            contour: contour,
+            medianLine: medianLine,
+            bounds: CoordinateRect(x: 0.20, y: 0.10, width: 0.50, height: 0.60),
+            orientation: .right,
+            inputMirrored: true,
+            previewMirrored: true
+        )
+
+        XCTAssertEqual(regular, previewMirrored)
+    }
+
+    func testSUPP02ClosedUnitFaceRegionEdgesAreAccepted() throws {
+        let support = try mappedFaceSupport(
+            contour: [
+                CoordinatePoint(x: 0, y: 0),
+                CoordinatePoint(x: 1, y: 1)
+            ],
+            medianLine: [
+                CoordinatePoint(x: 0, y: 1),
+                CoordinatePoint(x: 1, y: 0)
+            ],
+            bounds: CoordinateRect(x: 0.20, y: 0.10, width: 0.50, height: 0.60),
+            orientation: .down,
+            inputMirrored: true
+        )
+
+        XCTAssertEqual(support.contour?.count, 2)
+        XCTAssertEqual(support.medianLine?.count, 2)
+    }
+
+    func testSUPP02InvalidOrDirectionDegenerateFaceRegionFailsLocally() throws {
+        let validContour = [
+            CoordinatePoint(x: 0.10, y: 0.65),
+            CoordinatePoint(x: 0.95, y: 0.60)
+        ]
+        let validMedian = [
+            CoordinatePoint(x: 0.50, y: 0.90),
+            CoordinatePoint(x: 0.52, y: 0.10)
+        ]
+        let invalidContours = [
+            [CoordinatePoint(x: -0.000_001, y: 0.20), CoordinatePoint(x: 0.90, y: 0.20)],
+            [CoordinatePoint(x: .infinity, y: 0.20), CoordinatePoint(x: 0.90, y: 0.20)],
+            [CoordinatePoint(x: 0.50, y: 0.20), CoordinatePoint(x: 0.50, y: 0.80)]
+        ]
+        let invalidMedians = [
+            [CoordinatePoint(x: 0.50, y: 1.000_001), CoordinatePoint(x: 0.50, y: 0.10)],
+            [CoordinatePoint(x: 0.50, y: .nan), CoordinatePoint(x: 0.50, y: 0.10)],
+            [CoordinatePoint(x: 0.20, y: 0.50), CoordinatePoint(x: 0.80, y: 0.50)]
+        ]
+        let bounds = CoordinateRect(x: 0.20, y: 0.10, width: 0.50, height: 0.60)
+
+        for contour in invalidContours {
+            let support = try mappedFaceSupport(
+                contour: contour,
+                medianLine: validMedian,
+                bounds: bounds,
+                orientation: .left,
+                inputMirrored: true
+            )
+            XCTAssertNil(support.contour)
+            XCTAssertEqual(support.medianLine?.count, validMedian.count)
+        }
+        for medianLine in invalidMedians {
+            let support = try mappedFaceSupport(
+                contour: validContour,
+                medianLine: medianLine,
+                bounds: bounds,
+                orientation: .left,
+                inputMirrored: true
+            )
+            XCTAssertEqual(support.contour?.count, validContour.count)
+            XCTAssertNil(support.medianLine)
+        }
+    }
+
+    func testSUPP04ConsecutiveOppositeMetadataDoesNotLeakFaceOrientationState() throws {
+        let contour = [
+            CoordinatePoint(x: 0.10, y: 0.65),
+            CoordinatePoint(x: 0.95, y: 0.60)
+        ]
+        let medianLine = [
+            CoordinatePoint(x: 0.50, y: 0.90),
+            CoordinatePoint(x: 0.52, y: 0.10)
+        ]
+        let bounds = CoordinateRect(x: 0.20, y: 0.10, width: 0.50, height: 0.60)
+        var detector = VisionFaceDetector { _ in
+            [VisionDetectionObservation(
+                visionBounds: bounds,
+                observedFaceSupport: BeautyObservedFaceSupport(
+                    contour: contour,
+                    medianLine: medianLine
+                )
+            )]
+        }
+
+        let first = detector.detect(metadata: metadata(orientation: .up))
+        let second = detector.detect(metadata: metadata(orientation: .down, inputMirrored: true))
+        let expectedSecond = try mappedFaceSupport(
+            contour: contour,
+            medianLine: medianLine,
+            bounds: bounds,
+            orientation: .down,
+            inputMirrored: true
+        )
+
+        XCTAssertNotEqual(first.observations.first?.observedFaceSupport, expectedSecond)
+        XCTAssertEqual(second.observations.first?.observedFaceSupport, expectedSecond)
+    }
+
+    func testSUPP04ParallelDetectorValuesDoNotShareObservedFacePayloads() async {
+        let results = await withTaskGroup(
+            of: (Int, Int?).self,
+            returning: [Int: Int].self
+        ) { group in
+            for index in 0..<8 {
+                group.addTask {
+                    let pointCount = index + 2
+                    let middle = Array(
+                        repeating: CoordinatePoint(x: 0.50, y: 0.30),
+                        count: pointCount - 2
+                    )
+                    let contour = [
+                        CoordinatePoint(x: 0.10, y: 0.65)
+                    ] + middle + [
+                        CoordinatePoint(x: 0.95, y: 0.60)
+                    ]
+                    var detector = VisionFaceDetector { _ in
+                        [VisionDetectionObservation(
+                            visionBounds: CoordinateRect(
+                                x: 0.20,
+                                y: 0.10,
+                                width: 0.50,
+                                height: 0.60
+                            ),
+                            observedFaceSupport: BeautyObservedFaceSupport(contour: contour)
+                        )]
+                    }
+                    let orientations: [CGImagePropertyOrientation] = [.up, .right, .left, .down]
+                    let result = detector.detect(
+                        metadata: BeautyInputMetadata(
+                            orientation: orientations[index % orientations.count],
+                            isInputMirrored: index >= orientations.count,
+                            source: .testFixture
+                        )
+                    )
+                    return (index, result.observations.first?.observedFaceSupport?.contour?.count)
+                }
+            }
+
+            var collected: [Int: Int] = [:]
+            for await (index, count) in group {
+                if let count {
+                    collected[index] = count
+                }
+            }
+            return collected
+        }
+
+        XCTAssertEqual(results.count, 8)
+        for index in 0..<8 {
+            XCTAssertEqual(results[index], index + 2)
+        }
+    }
+
     private func metadata(
         orientation: CGImagePropertyOrientation,
-        inputMirrored: Bool = false
+        inputMirrored: Bool = false,
+        previewMirrored: Bool = false
     ) -> BeautyInputMetadata {
         BeautyInputMetadata(
             orientation: orientation,
             isInputMirrored: inputMirrored,
+            isPreviewMirrored: previewMirrored,
             source: .testFixture
         )
+    }
+
+    private func mappedFaceSupport(
+        contour: [CoordinatePoint],
+        medianLine: [CoordinatePoint],
+        bounds: CoordinateRect,
+        orientation: CGImagePropertyOrientation,
+        inputMirrored: Bool = false,
+        previewMirrored: Bool = false
+    ) throws -> BeautyObservedFaceSupport {
+        var detector = VisionFaceDetector { _ in
+            [VisionDetectionObservation(
+                visionBounds: bounds,
+                observedFaceSupport: BeautyObservedFaceSupport(
+                    contour: contour,
+                    medianLine: medianLine
+                )
+            )]
+        }
+        let result = detector.detect(
+            metadata: metadata(
+                orientation: orientation,
+                inputMirrored: inputMirrored,
+                previewMirrored: previewMirrored
+            ),
+            imageExtent: CGSize(width: 400, height: 200),
+            previewExtent: CGSize(width: 200, height: 400)
+        )
+        return try XCTUnwrap(result.observations.first?.observedFaceSupport)
     }
 
     private func assertRect(
@@ -250,5 +532,17 @@ final class FaceObservationMappingTests: XCTestCase {
         XCTAssertEqual(rect.y, expected.y, accuracy: accuracy, file: file, line: line)
         XCTAssertEqual(rect.width, expected.width, accuracy: accuracy, file: file, line: line)
         XCTAssertEqual(rect.height, expected.height, accuracy: accuracy, file: file, line: line)
+    }
+
+    private func assertPoint(
+        _ point: CoordinatePoint,
+        x: Double,
+        y: Double,
+        accuracy: Double = 0.000_001,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(point.x, x, accuracy: accuracy, file: file, line: line)
+        XCTAssertEqual(point.y, y, accuracy: accuracy, file: file, line: line)
     }
 }
