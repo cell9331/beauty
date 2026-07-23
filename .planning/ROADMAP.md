@@ -54,6 +54,17 @@ Plans:
 
 **Requirements:** GEOM-01, GEOM-02, GEOM-03, GEOM-04
 
+**Plans:** 6 plans
+
+Plans:
+
+- [ ] 46-01-PLAN.md — Establish the fail-closed boundary checker and RED asymmetric named-emission contracts.
+- [ ] 46-02-PLAN.md — Lock RED resolver, cap, provider-empty, exact 37-field, and once-only accounting contracts.
+- [ ] 46-03-PLAN.md — Lock RED degradation, unified-dispatch, deterministic facade-route, and redaction contracts.
+- [ ] 46-04-PLAN.md — Add the four effective fields, provisional caps, and independent face/chin provider emissions.
+- [ ] 46-05-PLAN.md — Integrate resolver/conflict accounting and deterministic observed support through the facade.
+- [ ] 46-06-PLAN.md — Run the full evidence gate and synchronize validation plus owner documentation.
+
 **Success criteria:**
 
 1. Smooth contour changes local contour continuity without whole-face shrinkage or modification of existing face-field vectors.
