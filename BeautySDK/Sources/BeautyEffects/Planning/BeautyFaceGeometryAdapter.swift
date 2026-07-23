@@ -17,6 +17,22 @@ enum BeautyFaceGeometryAdapter {
     static let minimumPairedPupilRatio: Float = 0.50
     static let maximumPairedPupilRatio: Float = 2.00
 
+    // Face support is an open contour plus an independently optional median
+    // path. These fixed plausibility bounds are deliberately separate from
+    // the closed eye-contour topology above and are not visual-effect caps.
+    static let minimumFaceContourPointCount = 7
+    static let maximumFaceContourPointCount = 32
+    static let minimumFaceMedianPointCount = 3
+    static let maximumFaceMedianPointCount = 16
+    static let minimumRelativeFaceContourWidth: Float = 0.50
+    static let maximumRelativeFaceContourWidth: Float = 1.00
+    static let minimumRelativeFaceContourHeight: Float = 0.20
+    static let maximumRelativeFaceContourHeight: Float = 1.00
+    static let minimumFaceEndpointSeparation: Float = 0.35
+    static let minimumFaceCurvature: Float = 0.10
+    static let minimumFaceMedianDown: Float = 0.25
+    static let minimumFaceDirectionMagnitude: Float = 0.000_001
+
     static func makeGeometry(from observation: BeautyFaceObservation) -> FaceGeometry {
         let bounds = makeBounds(from: observation)
         let landmarks = observation.landmarks.availableGroups
@@ -316,6 +332,156 @@ enum BeautyFaceGeometryAdapter {
         value.isFinite && (minimumPairedPupilRatio...maximumPairedPupilRatio).contains(value)
     }
 
+    // MARK: - Face-specific open-path validation
+
+    static func faceContourWidthIsValid(_ value: Float) -> Bool {
+        value.isFinite
+            && (minimumRelativeFaceContourWidth...maximumRelativeFaceContourWidth).contains(value)
+    }
+
+    static func faceContourHeightIsValid(_ value: Float) -> Bool {
+        value.isFinite
+            && (minimumRelativeFaceContourHeight...maximumRelativeFaceContourHeight).contains(value)
+    }
+
+    static func faceEndpointSeparationIsValid(_ value: Float) -> Bool {
+        value.isFinite && value >= minimumFaceEndpointSeparation
+    }
+
+    static func faceCurvatureIsValid(_ value: Float) -> Bool {
+        value.isFinite && value >= minimumFaceCurvature
+    }
+
+    static func faceMedianDownIsValid(_ value: Float) -> Bool {
+        value.isFinite && value >= minimumFaceMedianDown
+    }
+
+    static func faceDirectionMagnitudeIsValid(_ value: Float) -> Bool {
+        value.isFinite && value >= minimumFaceDirectionMagnitude
+    }
+
+    static func validatedFaceContour(
+        _ input: [CoordinatePoint],
+        bounds: FaceBounds
+    ) -> [SIMD2<Float>]? {
+        guard (minimumFaceContourPointCount...maximumFaceContourPointCount).contains(input.count),
+              faceInputIsValid(input),
+              let local = faceRelativePoints(input, bounds: bounds),
+              let first = local.first,
+              let last = local.last,
+              let minX = local.map(\.x).min(),
+              let maxX = local.map(\.x).max(),
+              let minY = local.map(\.y).min(),
+              let maxY = local.map(\.y).max()
+        else {
+            return nil
+        }
+
+        let width = maxX - minX
+        let height = maxY - minY
+        let chordX = last.x - first.x
+        let chordY = last.y - first.y
+        let horizontalSeparation = abs(chordX)
+        let chordLength = hypot(chordX, chordY)
+        guard width.isFinite,
+              height.isFinite,
+              horizontalSeparation.isFinite,
+              chordLength.isFinite,
+              faceContourWidthIsValid(Float(width)),
+              faceContourHeightIsValid(Float(height)),
+              faceDirectionMagnitudeIsValid(Float(chordLength)),
+              faceEndpointSeparationIsValid(Float(horizontalSeparation))
+        else {
+            return nil
+        }
+
+        let maximumDepth = local.reduce(0.0) { current, point in
+            let cross = chordX * (point.y - first.y) - chordY * (point.x - first.x)
+            let depth = abs(cross) / chordLength
+            return max(current, depth)
+        }
+        guard maximumDepth.isFinite,
+              faceCurvatureIsValid(Float(maximumDepth))
+        else {
+            return nil
+        }
+        return finiteSIMDPoints(input)
+    }
+
+    static func validatedFaceMedianLine(
+        _ input: [CoordinatePoint],
+        bounds: FaceBounds
+    ) -> [SIMD2<Float>]? {
+        guard (minimumFaceMedianPointCount...maximumFaceMedianPointCount).contains(input.count),
+              faceInputIsValid(input),
+              let local = faceRelativePoints(input, bounds: bounds),
+              let first = local.first,
+              let last = local.last
+        else {
+            return nil
+        }
+        let deltaX = last.x - first.x
+        let deltaY = last.y - first.y
+        let directionMagnitude = hypot(deltaX, deltaY)
+        let downProjection = abs(deltaY)
+        guard directionMagnitude.isFinite,
+              downProjection.isFinite,
+              faceDirectionMagnitudeIsValid(Float(directionMagnitude)),
+              faceMedianDownIsValid(Float(downProjection))
+        else {
+            return nil
+        }
+        return finiteSIMDPoints(input)
+    }
+
+    private static func faceInputIsValid(_ points: [CoordinatePoint]) -> Bool {
+        guard points.allSatisfy({
+            $0.isFinite
+                && (0...1).contains($0.x)
+                && (0...1).contains($0.y)
+        }) else {
+            return false
+        }
+        return Set(points.map(FacePointKey.init)).count == points.count
+    }
+
+    private static func faceRelativePoints(
+        _ points: [CoordinatePoint],
+        bounds: FaceBounds
+    ) -> [(x: Double, y: Double)]? {
+        guard bounds.x.isFinite,
+              bounds.y.isFinite,
+              bounds.width.isFinite,
+              bounds.height.isFinite,
+              bounds.width > 0,
+              bounds.height > 0
+        else {
+            return nil
+        }
+        let originX = Double(bounds.x)
+        let originY = Double(bounds.y)
+        let width = Double(bounds.width)
+        let height = Double(bounds.height)
+        let local = points.map { point in
+            (
+                x: (point.x - originX) / width,
+                y: (point.y - originY) / height
+            )
+        }
+        return local.allSatisfy { $0.x.isFinite && $0.y.isFinite } ? local : nil
+    }
+
+    private static func finiteSIMDPoints(
+        _ points: [CoordinatePoint]
+    ) -> [SIMD2<Float>]? {
+        let converted = points.map {
+            SIMD2<Float>(Float($0.x), Float($0.y))
+        }
+        return converted.allSatisfy { $0.x.isFinite && $0.y.isFinite }
+            ? converted
+            : nil
+    }
+
     private static func polygonArea(_ points: [SIMD2<Float>]) -> Float {
         guard points.count > 2 else { return 0 }
         var sum: Float = 0
@@ -334,6 +500,16 @@ enum BeautyFaceGeometryAdapter {
         let x: UInt32
         let y: UInt32
         init(_ point: SIMD2<Float>) {
+            x = point.x.bitPattern
+            y = point.y.bitPattern
+        }
+    }
+
+    private struct FacePointKey: Hashable {
+        let x: UInt64
+        let y: UInt64
+
+        init(_ point: CoordinatePoint) {
             x = point.x.bitPattern
             y = point.y.bitPattern
         }

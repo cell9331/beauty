@@ -1,5 +1,7 @@
 import XCTest
+import BeautyCore
 import BeautyDetection
+import CoreImage
 @testable import BeautyEffects
 
 final class BeautyFaceGeometryAdapterTests: XCTestCase {
@@ -598,6 +600,55 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         )
     }
 
+    func testCommittedPortraitAggregateFitsLockedFaceValidationEnvelope() throws {
+        var detector = VisionFaceDetector()
+        var completeSupportCount = 0
+        var validatedSupportCount = 0
+
+        for fixtureURL in try portraitFixtureURLs() {
+            guard let image = CIImage(
+                contentsOf: fixtureURL,
+                options: [.applyOrientationProperty: true]
+            ) else {
+                throw FaceFixtureError.unreadable
+            }
+            let result = detector.detect(
+                image: image,
+                metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+                imageExtent: image.extent.size
+            )
+            for observation in result.observations {
+                guard let support = observation.observedFaceSupport,
+                      let contour = support.contour,
+                      let median = support.medianLine,
+                      let rect = observation.imageBounds
+                else {
+                    continue
+                }
+                completeSupportCount += 1
+                let faceBounds = FaceBounds(
+                    x: Float(rect.x),
+                    y: Float(rect.y),
+                    width: Float(rect.width),
+                    height: Float(rect.height)
+                )
+                if BeautyFaceGeometryAdapter.validatedFaceContour(
+                    contour,
+                    bounds: faceBounds
+                ) != nil,
+                   BeautyFaceGeometryAdapter.validatedFaceMedianLine(
+                       median,
+                       bounds: faceBounds
+                   ) != nil {
+                    validatedSupportCount += 1
+                }
+            }
+        }
+
+        XCTAssertGreaterThan(completeSupportCount, 0, "expected observed aggregate support")
+        XCTAssertEqual(validatedSupportCount, completeSupportCount, "aggregate validation mismatch")
+    }
+
     private func observation(left: [CoordinatePoint], right: [CoordinatePoint], pupils: ([CoordinatePoint]?, [CoordinatePoint]?) = (nil, nil)) -> BeautyFaceObservation {
         BeautyFaceObservation(
             imageBounds: bounds,
@@ -675,9 +726,40 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         }
     }
 
+    private func portraitFixtureURLs() throws -> [URL] {
+        let directory = try repositoryRootURL()
+            .appendingPathComponent("example-images/input/portraits", isDirectory: true)
+        return try ["e1.png", "e2.png", "e3.png", "e4.png", "e5.png", "e6.jpg"].map {
+            let url = directory.appendingPathComponent($0)
+            guard FileManager.default.fileExists(atPath: url.path) else {
+                throw FaceFixtureError.missing
+            }
+            return url
+        }
+    }
+
+    private func repositoryRootURL() throws -> URL {
+        var current = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
+        while current.path != "/" {
+            let fixture = current.appendingPathComponent(
+                "example-images/input/portraits/e1.png"
+            )
+            if FileManager.default.fileExists(atPath: fixture.path) {
+                return current
+            }
+            current.deleteLastPathComponent()
+        }
+        throw FaceFixtureError.missing
+    }
+
     private func assertSendable<T: Sendable>(_ value: T) {
         _ = value
     }
+}
+
+private enum FaceFixtureError: Error {
+    case missing
+    case unreadable
 }
 
 private struct FaceSupportFixture {
