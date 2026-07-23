@@ -30,6 +30,23 @@ Milestone v1.12 autonomous execution is active from Phase 45. After the semantic
 
 ## 4. Completed
 
+### C-2026-07-23-phase-45-public-contract-and-observed-face-support
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-23 |
+| Scope | Completed Phase 45 across Plans `45-01` through `45-05`: exact 52-field public compatibility, actual request-local Vision face contour/median mapping, bounded face-specific validation, independent semantic eligibility, authoritative owner synchronization, and fail-closed closeout. |
+| Public contract | `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, and `chinTaper` are independent positive-only default-zero scalars; legacy 48-key payloads and all five byte-identical bundled presets remain neutral, while signed `chinLength` and shipped resolver output remain unchanged. |
+| Support boundary | Actual contour and median values are copied from the existing single Vision request, independently preflighted at 32/16 points, mapped once through request-local metadata, canonicalized by whole-path reversal, and validated without substituting the exact seven-point compatibility proxy. |
+| Isolation | Contour-only and contour-plus-centerline eligibility remain distinct; malformed optional regions fail locally, interruption persists nothing, and repeated/parallel requests share no support state. Raw coordinates remain private, ephemeral, non-Codable, non-persistent, non-diagnostic, and outside identity/biometric-profiling claims. |
+| Verification | Boundary checker passes 34/34 self-tests and 13/13 live checks; focused suites pass 32/32 parameters, 9/9 resources, 20/20 resolver, 18/18 detector, 15/15 mapping, 27/27 adapter, and 48/48 complete detection; full SwiftPM passes 347/347; `git diff --check` passes. |
+
+Outcome:
+
+- FACE-07, FACE-08, FACE-09, FACE-12, SUPP-01, SUPP-02, and SUPP-04 are closed without dependency, model, resource, network, provider, resolver, facade, renderer, Demo, or generated-artifact expansion.
+- Phase 46 still owns providers, effective strengths, caps, routing, and consumption; Phase 47 owns public saved-output evidence; Phase 48 owns final safety and row promotion.
+- `去双下巴`, `去双下巴 Pro`, `发际线`, and branch-level `脸型` remain future or partial. No device, commercial, performance, packaging, shipping, launch-readiness, or milestone-completion claim is made.
+
 ### C-2026-07-23-phase-45-plan-04-face-topology-validation
 
 | Field | Value |

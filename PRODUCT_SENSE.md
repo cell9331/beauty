@@ -477,6 +477,14 @@ Manual or future checks still required before stronger product claims:
 - Automated acceptance is the full SwiftPM suite, 24/24 adversarial boundary self-tests, and 10/10 live checks with unchanged `f1c28fa` manifest/Demo baseline, clean active-source privacy/network/commercial scans, and ignored/untracked/unstaged output/gallery/staging/quarantine roots.
 - This phase establishes scalar and private-support readiness only. It does not claim provider transforms, visual output, final caps, row or branch promotion, Demo UI, physical-device behavior, commercial naturalness, optimized performance, packaging, shipping, launch readiness, or full `眼睛` completion; those remain Phase 42-44 or later work.
 
+### 7.21 Phase 45 Public Face Contract and Observed-Support Acceptance
+
+- An SDK integrator can construct, normalize, encode, and decode independent positive-only `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, and `chinTaper` values. Acceptance requires exact 52-field storage, zero defaults, non-finite-to-zero behavior, neutral legacy 48-key decoding, independent unequal-value round trips, and unchanged bundled preset bytes.
+- Honest support availability requires actual Vision face contour and median-line evidence from the existing request, one coordinate-mapping boundary, stable orientation/mirror direction, face-specific bounded open-path validation, and independent contour-only versus contour-plus-centerline eligibility. The synthetic seven-point face-box proxy is not observed evidence.
+- Missing or malformed observed support must leave the selected face, shipped face controls, eligible eye/nose/lip siblings, and face-agnostic work intact. Automated acceptance covers the exact topology boundaries, six committed portraits through aggregate-only evidence, repeated and parallel request isolation, public/privacy/dependency/scope checks, and the complete SwiftPM regression suite.
+- The four controls are intentionally neutral in Phase 45 even when set nonzero: they do not trigger detection, provider work, effective strengths, facade routing, rendering, saved output, Demo behavior, or product-row promotion. Phase 46 owns provider behavior, Phase 47 owns public output evidence, and Phase 48 owns final caps, exhaustive safety, and promotion.
+- `去双下巴`, `去双下巴 Pro`, and `发际线` remain future pending an approved local semantic-region implementation and reproducible fixtures. This acceptance makes no Demo, physical-device, commercial-naturalness, optimized-performance, packaging, shipping, launch-readiness, or whole-`脸型` completion claim.
+
 ## 8. Preset Product Contract
 
 MVP built-in presets:

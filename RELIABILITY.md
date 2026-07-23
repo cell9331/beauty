@@ -199,6 +199,15 @@ Phase 28 scoped face-shape behavior:
 - Invalid/missing pupils zero only `pupilSize` and `gazeCorrection` eligibility. An explicit missing/invalid contour side stays empty without proxy fallback and activates the existing complete-eye skip; safe sibling domains continue. Only a nil observed payload uses the legacy proxy path for shipped zero-default compatibility.
 - Failures remain observable only as fixed category codes and aggregate counts. No raw side label, point, contour, pupil, box, offset, file path, or framework object is logged or measured. Provider transforms, final caps, facade/renderer output, promotion, Demo, device, commercial, packaging, shipping, and launch-readiness evidence remain downstream.
 
+### Phase 45 Compatible Face-Support Reliability Contract
+
+- One processing request uses the existing single Vision landmarks request and one request-local `CoordinateMapper`. Contour and median are copied immediately, independently bounded before mapping, and converted at most once per accepted point. There is no retry, second detector request, cache, persistence, network fallback, or shared mutable support state.
+- Invalid optional contour or median data fails only that region; a surviving sibling and the selected face continue. Invalid shared face bounds retain the established observation-level mapping failure. At the adapter boundary, invalid contour removes observed semantic eligibility, while invalid median or contour/median inconsistency preserves valid contour-only eligibility. The exact seven-point compatibility proxy and existing face/eye/nose/lip siblings remain unchanged.
+- Canonical direction is deterministic across `.up`, `.right`, `.left`, `.down`, input-mirror true/false, forward/reversed paths, and preview-mirror changes because points and face-local right/down axes use the same mapper metadata and canonicalization performs whole-array reversal only.
+- Support lifetime is the current call. Cancellation or interruption persists nothing, and consecutive opposite-metadata plus parallel requests cannot reuse or overwrite another request's contour/median payload. Valid→invalid→valid adapter calls recompute eligibility without stale carryover.
+- Observable failure evidence is limited to fixed redacted reason categories and aggregate counts/ranges. No coordinate, bounds, side label, sample, framework-region object, raw error, or local path is logged or measured. The authoritative privacy prohibitions are in `SECURITY.md`.
+- Completion requires the fail-closed checker self-test/live modes and every focused/full test command to pass. Phase 45 evidence is 34/34 checker self-tests, 13/13 live checks, 32/32 parameter, 9/9 resource, 20/20 resolver, 18/18 detector, 15/15 mapping, 27/27 adapter, 48/48 complete detection, and 347/347 full SwiftPM tests. The four new inputs remain deliberately unrouted until Phase 46.
+
 ## 7. Observability Model
 
 First-version diagnostics live in `BeautyCore/Diagnostics`; do not create a separate diagnostics package until another product actually shares it. Use three layers:
