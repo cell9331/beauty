@@ -2,6 +2,12 @@ import XCTest
 import BeautyCore
 @testable import BeautyEffects
 
+private struct Phase46GeometryFieldRow {
+    let name: String
+    let effectiveValue: KeyPath<BeautyEffectiveStrengths, Float>
+    let unscaled: Float
+}
+
 final class GeometryConflictResolverTests: XCTestCase {
     func testCombinedHighFaceShapeStrengthsAreWeakenedBelowIndependentCappedSum() {
         let independent = strengths(
@@ -140,13 +146,17 @@ final class GeometryConflictResolverTests: XCTestCase {
         XCTAssertEqual(resolved.strengths.lipPlump, 0.25 * expectedScale, accuracy: 0.000001)
     }
 
-    func testEYE21AllThirtyThreeGeometryFieldsShareExactTenPointSevenBaseline() {
+    func testGEOMAllThirtySevenFieldsShareExactElevenPointSevenBaseline() {
         let independent = strengths(
             faceSlim: 1,
             faceSmall: 1,
             faceVShape: 1,
             jawSlim: 1,
             chinLength: -1,
+            faceContourSmooth: 1,
+            templeFullness: 1,
+            cheekboneSlim: 1,
+            chinTaper: 1,
             eyeSize: 1,
             eyeDistance: -1,
             eyeYPosition: 1,
@@ -177,30 +187,37 @@ final class GeometryConflictResolverTests: XCTestCase {
             lipPlump: 1
         )
         let resolved = GeometryConflictResolver().resolve(strengths: independent)
-        let expectedTotal: Float = 10.70
+        let rows = phase46GeometryRows
+        let expectedTotal = rows.reduce(Float(0)) { $0 + abs($1.unscaled) }
         let expectedScale: Float = 1 / expectedTotal
 
+        XCTAssertEqual(rows.count, 37)
+        XCTAssertEqual(Set(rows.map(\.name)).count, 37)
+        XCTAssertEqual(expectedTotal, 11.70, accuracy: 0.000_001)
         XCTAssertEqual(independent.geometryTotal, expectedTotal, accuracy: 0.000_001)
-        XCTAssertEqual(resolved.metrics["beauty.effects.weakenedCount"], 33)
+        XCTAssertEqual(resolved.metrics["beauty.effects.weakenedCount"], 37)
         XCTAssertEqual(resolved.metrics["beauty.effects.geometryStrengthScale"] ?? 0, Double(expectedScale), accuracy: 0.000_000_1)
         XCTAssertEqual(resolved.warnings.map(\.code), ["combined_geometry_weakened"])
         XCTAssertEqual(resolved.strengths.geometryTotal, 1, accuracy: 0.000_001)
 
-        let signed: [(KeyPath<BeautyEffectiveStrengths, Float>, Float)] = [
-            (\.chinLength, -BeautySafetyCaps.chinLength),
-            (\.eyeDistance, -BeautySafetyCaps.eyeDistance),
-            (\.eyeYPosition, BeautySafetyCaps.eyeYPosition),
-            (\.eyeTilt, -BeautySafetyCaps.eyeTilt),
-            (\.noseTipSize, -BeautySafetyCaps.noseTipSize),
-            (\.mouthSize, -BeautySafetyCaps.mouthSize),
-            (\.mouthWidth, BeautySafetyCaps.mouthWidth),
-            (\.mouthYPosition, -BeautySafetyCaps.mouthYPosition),
-            (\.mouthTilt, BeautySafetyCaps.mouthTilt),
-            (\.mouthXPosition, -BeautySafetyCaps.mouthXPosition),
-        ]
-        for (keyPath, unscaled) in signed {
-            XCTAssertEqual(resolved.strengths[keyPath: keyPath], unscaled * expectedScale, accuracy: 0.000_000_1)
-            XCTAssertEqual(resolved.strengths[keyPath: keyPath].sign, unscaled.sign)
+        for row in rows {
+            XCTAssertEqual(
+                independent[keyPath: row.effectiveValue],
+                row.unscaled,
+                accuracy: 0.000_000_1,
+                row.name
+            )
+            XCTAssertEqual(
+                resolved.strengths[keyPath: row.effectiveValue],
+                row.unscaled * expectedScale,
+                accuracy: 0.000_000_1,
+                row.name
+            )
+            XCTAssertEqual(
+                resolved.strengths[keyPath: row.effectiveValue].sign,
+                row.unscaled.sign,
+                row.name
+            )
         }
 
         var belowThreshold = BeautyEffectiveStrengths()
@@ -210,6 +227,44 @@ final class GeometryConflictResolverTests: XCTestCase {
         XCTAssertEqual(unchanged.strengths, belowThreshold)
         XCTAssertTrue(unchanged.warnings.isEmpty)
         XCTAssertTrue(unchanged.metrics.isEmpty)
+    }
+
+    func testGEOMFourFieldsContributeExactlyOnceAndPreservePositiveDirection() {
+        let independent = strengths(
+            faceContourSmooth: 1,
+            templeFullness: 1,
+            cheekboneSlim: 1,
+            chinTaper: 1
+        )
+        let rows = Array(phase46GeometryRows.prefix(9).suffix(4))
+        let resolved = GeometryConflictResolver(totalThreshold: 0.25).resolve(strengths: independent)
+        let expectedScale: Float = 0.25
+
+        XCTAssertEqual(rows.map(\.name), [
+            "faceContourSmooth",
+            "templeFullness",
+            "cheekboneSlim",
+            "chinTaper",
+        ])
+        XCTAssertEqual(independent.geometryTotal, 1, accuracy: 0.000_001)
+        XCTAssertEqual(rows.reduce(Float(0)) { $0 + $1.unscaled }, 1, accuracy: 0.000_001)
+        XCTAssertEqual(resolved.metrics["beauty.effects.weakenedCount"], 4)
+        XCTAssertEqual(
+            resolved.metrics["beauty.effects.geometryStrengthScale"] ?? 0,
+            Double(expectedScale),
+            accuracy: 0.000_001
+        )
+        XCTAssertEqual(resolved.warnings.map(\.code), ["combined_geometry_weakened"])
+        for row in rows {
+            XCTAssertEqual(independent[keyPath: row.effectiveValue], 0.25, accuracy: 0.000_001, row.name)
+            XCTAssertEqual(
+                resolved.strengths[keyPath: row.effectiveValue],
+                0.25 * expectedScale,
+                accuracy: 0.000_001,
+                row.name
+            )
+            XCTAssertGreaterThan(resolved.strengths[keyPath: row.effectiveValue], 0, row.name)
+        }
     }
 
     func testNOSE12AllSixNoseFieldsContributeExactlyOnceWithEveryGeometryDomain() {
@@ -372,6 +427,10 @@ final class GeometryConflictResolverTests: XCTestCase {
         faceVShape: Float = 0,
         jawSlim: Float = 0,
         chinLength: Float = 0,
+        faceContourSmooth: Float = 0,
+        templeFullness: Float = 0,
+        cheekboneSlim: Float = 0,
+        chinTaper: Float = 0,
         eyeSize: Float = 0,
         eyeDistance: Float = 0,
         eyeYPosition: Float = 0,
@@ -407,6 +466,10 @@ final class GeometryConflictResolverTests: XCTestCase {
         strengths.faceVShape = min(faceVShape, BeautySafetyCaps.faceVShape)
         strengths.jawSlim = min(jawSlim, BeautySafetyCaps.jawSlim)
         strengths.chinLength = min(max(chinLength, -BeautySafetyCaps.chinLength), BeautySafetyCaps.chinLength)
+        strengths.faceContourSmooth = min(max(faceContourSmooth, 0), BeautySafetyCaps.faceContourSmooth)
+        strengths.templeFullness = min(max(templeFullness, 0), BeautySafetyCaps.templeFullness)
+        strengths.cheekboneSlim = min(max(cheekboneSlim, 0), BeautySafetyCaps.cheekboneSlim)
+        strengths.chinTaper = min(max(chinTaper, 0), BeautySafetyCaps.chinTaper)
         strengths.eyeSize = min(max(eyeSize, -BeautySafetyCaps.eyeSize), BeautySafetyCaps.eyeSize)
         strengths.eyeDistance = min(max(eyeDistance, -BeautySafetyCaps.eyeDistance), BeautySafetyCaps.eyeDistance)
         strengths.eyeYPosition = min(max(eyeYPosition, -BeautySafetyCaps.eyeYPosition), BeautySafetyCaps.eyeYPosition)
@@ -437,6 +500,48 @@ final class GeometryConflictResolverTests: XCTestCase {
         strengths.lipPlump = min(max(lipPlump, 0), BeautySafetyCaps.lipPlump)
         return strengths
     }
+
+    private var phase46GeometryRows: [Phase46GeometryFieldRow] {
+        [
+            Phase46GeometryFieldRow(name: "faceSlim", effectiveValue: \.faceSlim, unscaled: BeautySafetyCaps.faceSlim),
+            Phase46GeometryFieldRow(name: "faceSmall", effectiveValue: \.faceSmall, unscaled: BeautySafetyCaps.faceSmall),
+            Phase46GeometryFieldRow(name: "faceVShape", effectiveValue: \.faceVShape, unscaled: BeautySafetyCaps.faceVShape),
+            Phase46GeometryFieldRow(name: "jawSlim", effectiveValue: \.jawSlim, unscaled: BeautySafetyCaps.jawSlim),
+            Phase46GeometryFieldRow(name: "chinLength", effectiveValue: \.chinLength, unscaled: -BeautySafetyCaps.chinLength),
+            Phase46GeometryFieldRow(name: "faceContourSmooth", effectiveValue: \.faceContourSmooth, unscaled: BeautySafetyCaps.faceContourSmooth),
+            Phase46GeometryFieldRow(name: "templeFullness", effectiveValue: \.templeFullness, unscaled: BeautySafetyCaps.templeFullness),
+            Phase46GeometryFieldRow(name: "cheekboneSlim", effectiveValue: \.cheekboneSlim, unscaled: BeautySafetyCaps.cheekboneSlim),
+            Phase46GeometryFieldRow(name: "chinTaper", effectiveValue: \.chinTaper, unscaled: BeautySafetyCaps.chinTaper),
+            Phase46GeometryFieldRow(name: "eyeSize", effectiveValue: \.eyeSize, unscaled: BeautySafetyCaps.eyeSize),
+            Phase46GeometryFieldRow(name: "eyeDistance", effectiveValue: \.eyeDistance, unscaled: -BeautySafetyCaps.eyeDistance),
+            Phase46GeometryFieldRow(name: "eyeYPosition", effectiveValue: \.eyeYPosition, unscaled: BeautySafetyCaps.eyeYPosition),
+            Phase46GeometryFieldRow(name: "eyeTailLift", effectiveValue: \.eyeTailLift, unscaled: BeautySafetyCaps.eyeTailLift),
+            Phase46GeometryFieldRow(name: "eyeHeight", effectiveValue: \.eyeHeight, unscaled: BeautySafetyCaps.eyeHeight),
+            Phase46GeometryFieldRow(name: "eyeLength", effectiveValue: \.eyeLength, unscaled: BeautySafetyCaps.eyeLength),
+            Phase46GeometryFieldRow(name: "upperEyelidLift", effectiveValue: \.upperEyelidLift, unscaled: BeautySafetyCaps.upperEyelidLift),
+            Phase46GeometryFieldRow(name: "pupilSize", effectiveValue: \.pupilSize, unscaled: BeautySafetyCaps.pupilSize),
+            Phase46GeometryFieldRow(name: "gazeCorrection", effectiveValue: \.gazeCorrection, unscaled: BeautySafetyCaps.gazeCorrection),
+            Phase46GeometryFieldRow(name: "lowerEyelidDrop", effectiveValue: \.lowerEyelidDrop, unscaled: BeautySafetyCaps.lowerEyelidDrop),
+            Phase46GeometryFieldRow(name: "eyeTilt", effectiveValue: \.eyeTilt, unscaled: -BeautySafetyCaps.eyeTilt),
+            Phase46GeometryFieldRow(name: "innerCornerOpen", effectiveValue: \.innerCornerOpen, unscaled: BeautySafetyCaps.innerCornerOpen),
+            Phase46GeometryFieldRow(name: "outerCornerOpen", effectiveValue: \.outerCornerOpen, unscaled: BeautySafetyCaps.outerCornerOpen),
+            Phase46GeometryFieldRow(name: "eyeSymmetry", effectiveValue: \.eyeSymmetry, unscaled: BeautySafetyCaps.eyeSymmetry),
+            Phase46GeometryFieldRow(name: "noseSlim", effectiveValue: \.noseSlim, unscaled: BeautySafetyCaps.noseSlim),
+            Phase46GeometryFieldRow(name: "noseWingSlim", effectiveValue: \.noseWingSlim, unscaled: BeautySafetyCaps.noseWingSlim),
+            Phase46GeometryFieldRow(name: "noseTipSize", effectiveValue: \.noseTipSize, unscaled: -BeautySafetyCaps.noseTipSize),
+            Phase46GeometryFieldRow(name: "noseBridge", effectiveValue: \.noseBridge, unscaled: BeautySafetyCaps.noseBridge),
+            Phase46GeometryFieldRow(name: "noseRootNarrowing", effectiveValue: \.noseRootNarrowing, unscaled: BeautySafetyCaps.noseRootNarrowing),
+            Phase46GeometryFieldRow(name: "noseTipLift", effectiveValue: \.noseTipLift, unscaled: BeautySafetyCaps.noseTipLift),
+            Phase46GeometryFieldRow(name: "mouthSize", effectiveValue: \.mouthSize, unscaled: -BeautySafetyCaps.mouthSize),
+            Phase46GeometryFieldRow(name: "mouthWidth", effectiveValue: \.mouthWidth, unscaled: BeautySafetyCaps.mouthWidth),
+            Phase46GeometryFieldRow(name: "smile", effectiveValue: \.smile, unscaled: BeautySafetyCaps.smile),
+            Phase46GeometryFieldRow(name: "mouthYPosition", effectiveValue: \.mouthYPosition, unscaled: -BeautySafetyCaps.mouthYPosition),
+            Phase46GeometryFieldRow(name: "mouthTilt", effectiveValue: \.mouthTilt, unscaled: BeautySafetyCaps.mouthTilt),
+            Phase46GeometryFieldRow(name: "mouthXPosition", effectiveValue: \.mouthXPosition, unscaled: -BeautySafetyCaps.mouthXPosition),
+            Phase46GeometryFieldRow(name: "lipPeakDefinition", effectiveValue: \.lipPeakDefinition, unscaled: BeautySafetyCaps.lipPeakDefinition),
+            Phase46GeometryFieldRow(name: "lipPlump", effectiveValue: \.lipPlump, unscaled: BeautySafetyCaps.lipPlump),
+        ]
+    }
 }
 
 private extension BeautyEffectiveStrengths {
@@ -446,6 +551,10 @@ private extension BeautyEffectiveStrengths {
             faceVShape +
             jawSlim +
             abs(chinLength) +
+            faceContourSmooth +
+            templeFullness +
+            cheekboneSlim +
+            chinTaper +
             abs(eyeSize) +
             abs(eyeDistance) +
             abs(eyeYPosition) +

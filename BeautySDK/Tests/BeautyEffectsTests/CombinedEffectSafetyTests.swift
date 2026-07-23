@@ -61,7 +61,7 @@ final class CombinedEffectSafetyTests: XCTestCase {
         }
     }
 
-    func testEYE21ConvergenceLoopHasExactTwentyEightRemovalCeiling() throws {
+    func testGEOMConvergenceLoopHasExactThirtySevenRemovalCeiling() throws {
         let testURL = URL(fileURLWithPath: #filePath)
         let sourceURL = testURL
             .deletingLastPathComponent()
@@ -69,8 +69,107 @@ final class CombinedEffectSafetyTests: XCTestCase {
             .deletingLastPathComponent()
             .appendingPathComponent("Sources/BeautyEffects/Planning/BeautyEffectResolver.swift")
         let source = try String(contentsOf: sourceURL, encoding: .utf8)
-        XCTAssertEqual(source.components(separatedBy: "for _ in 0..<28").count - 1, 1)
+        XCTAssertEqual(source.components(separatedBy: "for _ in 0..<37").count - 1, 1)
+        XCTAssertEqual(source.components(separatedBy: "for _ in 0..<28").count - 1, 0)
         XCTAssertTrue(source.contains("Each pass can only remove fields"))
+        XCTAssertTrue(source.contains("strengths: resolution.strengths"))
+        XCTAssertTrue(source.contains(".sanitizing(retainedBaseline)"))
+    }
+
+    func testGEOMProviderEmptyFieldsNeverReenterAfterCombinedWeakening() {
+        let face = phase46PostScaleEmptySmoothGeometry
+        let smoothOnly = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(faceContourSmooth: 0.25),
+            faceGeometry: face
+        )
+        let preConflictSmooth = FaceShapeWarpProvider().fieldEmissions(
+            face: face,
+            strengths: smoothOnly.effectiveStrengths
+        ).faceContourSmooth
+        XCTAssertEqual(smoothOnly.effectiveStrengths.faceContourSmooth, 0.25, accuracy: 0.000_001)
+        XCTAssertFalse(preConflictSmooth.isEmpty)
+
+        let parameters = BeautyParameters(
+            faceSlim: 1,
+            faceSmall: 1,
+            faceVShape: 1,
+            jawSlim: 1,
+            chinLength: -1,
+            faceContourSmooth: 1,
+            eyeSize: 1,
+            eyeHeight: 1,
+            noseSlim: 1,
+            noseRootNarrowing: 1,
+            mouthSize: -1,
+            mouthYPosition: -1
+        )
+        let first = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: face)
+        let repeated = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: face)
+        let retainedTotal: Float = 4.35
+        let expectedScale: Float = 1 / retainedTotal
+
+        XCTAssertEqual(first, repeated)
+        XCTAssertEqual(first.effectiveStrengths.faceContourSmooth, 0)
+        XCTAssertEqual(first.metrics["beauty.effects.weakenedCount"], 11)
+        XCTAssertEqual(
+            first.metrics["beauty.effects.geometryStrengthScale"] ?? 0,
+            Double(expectedScale),
+            accuracy: 0.000_001
+        )
+        XCTAssertEqual(first.warnings.filter { $0.code == "combined_geometry_weakened" }.count, 1)
+        XCTAssertTrue(first.activeDomains.isSuperset(of: [.faceShape, .eyes, .nose, .mouth]))
+
+        XCTAssertEqual(first.effectiveStrengths.faceSlim, BeautySafetyCaps.faceSlim * expectedScale, accuracy: 0.000_001)
+        XCTAssertEqual(first.effectiveStrengths.chinLength, -BeautySafetyCaps.chinLength * expectedScale, accuracy: 0.000_001)
+        XCTAssertEqual(first.effectiveStrengths.eyeHeight, BeautySafetyCaps.eyeHeight * expectedScale, accuracy: 0.000_001)
+        XCTAssertEqual(first.effectiveStrengths.noseRootNarrowing, BeautySafetyCaps.noseRootNarrowing * expectedScale, accuracy: 0.000_001)
+        XCTAssertEqual(first.effectiveStrengths.mouthYPosition, -BeautySafetyCaps.mouthYPosition * expectedScale, accuracy: 0.000_001)
+
+        let faceEmissions = FaceShapeWarpProvider().fieldEmissions(
+            face: face,
+            strengths: first.effectiveStrengths
+        )
+        let chinEmissions = ChinWarpProvider().fieldEmissions(
+            face: face,
+            strengths: first.effectiveStrengths
+        )
+        let eyeEmissions = EyeWarpProvider().fieldEmissions(
+            face: face,
+            strengths: first.effectiveStrengths
+        )
+        let noseEmissions = NoseWarpProvider().fieldEmissions(
+            face: face,
+            strengths: first.effectiveStrengths
+        )
+        let mouthEmissions = MouthWarpProvider().fieldEmissions(
+            face: face,
+            strengths: first.effectiveStrengths
+        )
+        let directPoints =
+            faceEmissions.points +
+            chinEmissions.points +
+            eyeEmissions.points +
+            noseEmissions.points +
+            mouthEmissions.points
+
+        XCTAssertTrue(faceEmissions.faceContourSmooth.isEmpty)
+        XCTAssertFalse(faceEmissions.faceSlim.isEmpty)
+        XCTAssertFalse(chinEmissions.chinLength.isEmpty)
+        XCTAssertFalse(eyeEmissions.eyeHeight.isEmpty)
+        XCTAssertFalse(noseEmissions.noseRootNarrowing.isEmpty)
+        XCTAssertFalse(mouthEmissions.mouthYPosition.isEmpty)
+        XCTAssertEqual(
+            BeautyGeometryEffectPipeline.controlPoints(
+                for: first.effectiveStrengths,
+                face: face
+            ),
+            directPoints
+        )
+        XCTAssertEqual(
+            first.metrics["beauty.effects.geometryPointCount"],
+            Double(directPoints.count)
+        )
+        assertCombinedMetadataRedacted(first)
     }
 
     func testEYE21MixedEyeMasksPreserveSafeDomainsAndSignedDirection() {
@@ -496,6 +595,33 @@ final class CombinedEffectSafetyTests: XCTestCase {
             upperLips: [],
             lowerLips: [],
             innerLips: []
+        )
+    }
+
+    private var phase46PostScaleEmptySmoothGeometry: FaceGeometry {
+        let base = FaceGeometry.phase46LocallyStraightContour
+        var contour = base.observedFaceSupport!.contour
+        contour[2].x += Float.ulpOfOne * 4
+        return FaceGeometry(
+            bounds: base.bounds,
+            faceContour: base.faceContour,
+            observedFaceSupport: BeautyFaceSemanticSupport(
+                contour: contour,
+                medianLine: nil,
+                apexIndex: nil
+            ),
+            leftEye: base.leftEye,
+            rightEye: base.rightEye,
+            nose: base.nose,
+            noseRoot: base.noseRoot,
+            noseTip: base.noseTip,
+            outerLips: base.outerLips,
+            upperLips: base.upperLips,
+            lowerLips: base.lowerLips,
+            innerLips: base.innerLips,
+            leftEyeSupport: base.leftEyeSupport,
+            rightEyeSupport: base.rightEyeSupport,
+            freshness: .fresh
         )
     }
 
