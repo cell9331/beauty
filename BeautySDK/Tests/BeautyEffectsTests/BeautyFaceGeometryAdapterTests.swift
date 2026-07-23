@@ -676,7 +676,63 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         )
     }
 
-    func testCommittedPortraitAggregateFitsLockedFaceValidationEnvelope() throws {
+    func testInjectedSixCaseFaceSupportAggregateFitsLockedValidationEnvelope() {
+        let fixtureDimensions: [(width: Double, height: Double)] = [
+            (0.56, 0.48),
+            (0.60, 0.50),
+            (0.64, 0.52),
+            (0.68, 0.54),
+            (0.72, 0.56),
+            (0.76, 0.58),
+        ]
+
+        for (index, dimensions) in fixtureDimensions.enumerated() {
+            let contour = faceOpenContour(
+                count: 7 + index,
+                width: dimensions.width,
+                height: dimensions.height
+            )
+            let median = faceMedianLine(count: 3 + index)
+            let geometry = BeautyFaceGeometryAdapter.makeGeometry(
+                from: faceObservation(
+                    support: BeautyObservedFaceSupport(
+                        contour: contour,
+                        medianLine: median
+                    )
+                )
+            )
+
+            XCTAssertEqual(
+                geometry.observedFaceSupport?.contour.count,
+                contour.count,
+                "fixture=\(index)"
+            )
+            XCTAssertEqual(
+                geometry.observedFaceSupport?.medianLine?.count,
+                median.count,
+                "fixture=\(index)"
+            )
+            XCTAssertTrue(
+                geometry.observedFaceSupport?.contourEligible == true,
+                "fixture=\(index)"
+            )
+            XCTAssertTrue(
+                geometry.observedFaceSupport?.centerlineEligible == true,
+                "fixture=\(index)"
+            )
+        }
+    }
+
+    // Opt-in live Vision integration smoke. Standard unit runs skip before
+    // any repository-local fixture discovery or Apple Vision invocation.
+    func testIntegrationCommittedPortraitAggregateFitsLockedFaceValidationEnvelope() throws {
+        guard ProcessInfo.processInfo.environment[
+            "BEAUTYSDK_RUN_VISION_INTEGRATION_TESTS"
+        ] == "1" else {
+            throw XCTSkip(
+                "Set BEAUTYSDK_RUN_VISION_INTEGRATION_TESTS=1 on the pinned Apple Vision host"
+            )
+        }
         var detector = VisionFaceDetector()
         var completeSupportCount = 0
         var validatedSupportCount = 0

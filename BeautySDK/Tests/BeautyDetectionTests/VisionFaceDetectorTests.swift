@@ -423,7 +423,16 @@ final class VisionFaceDetectorTests: XCTestCase {
         assertNoRawVisionDiagnostics(in: String(describing: result.summary))
     }
 
-    func testDefaultStillImageProviderReturnsRedactedNoFaceForNoFaceFixture() {
+    // Opt-in live Vision integration smoke. The deterministic no-observation
+    // unit contract is covered by testPIPE07NoObservationsReturnsNoFaceSummary.
+    func testIntegrationDefaultStillImageProviderReturnsRedactedNoFaceForNoFaceFixture() throws {
+        guard ProcessInfo.processInfo.environment[
+            "BEAUTYSDK_RUN_VISION_INTEGRATION_TESTS"
+        ] == "1" else {
+            throw XCTSkip(
+                "Set BEAUTYSDK_RUN_VISION_INTEGRATION_TESTS=1 on the pinned Apple Vision host"
+            )
+        }
         var detector = VisionFaceDetector()
         let image = CIImage(color: CIColor(red: 0.10, green: 0.12, blue: 0.15, alpha: 1))
             .cropped(to: CGRect(x: 0, y: 0, width: 64, height: 64))
@@ -442,7 +451,53 @@ final class VisionFaceDetectorTests: XCTestCase {
         assertNoRawVisionDiagnostics(in: String(describing: result.summary))
     }
 
-    func testDefaultStillImageProviderReportsAggregateObservedFaceAvailabilityWithoutRawPayload() throws {
+    func testInjectedSixCaseFaceSupportIsDeterministicAcrossMetadataMatrix() throws {
+        let orientations: [CGImagePropertyOrientation] = [.up, .right, .left, .down]
+
+        for (fixtureIndex, support) in injectedFaceSupportFixtures().enumerated() {
+            for orientation in orientations {
+                for inputMirrored in [false, true] {
+                    var detector = VisionFaceDetector { _ in
+                        [VisionDetectionObservation(
+                            visionBounds: CoordinateRect(
+                                x: 0.10,
+                                y: 0.20,
+                                width: 0.80,
+                                height: 0.60
+                            ),
+                            observedFaceSupport: support
+                        )]
+                    }
+                    let result = detector.detect(
+                        metadata: BeautyInputMetadata(
+                            orientation: orientation,
+                            isInputMirrored: inputMirrored,
+                            source: .testFixture
+                        )
+                    )
+                    let observed = try XCTUnwrap(
+                        result.observations.first?.observedFaceSupport,
+                        "fixture=\(fixtureIndex), orientation=\(orientation), mirrored=\(inputMirrored)"
+                    )
+
+                    XCTAssertEqual(result.summary.availability, .usable)
+                    XCTAssertEqual(observed.contour?.count, support.contour?.count)
+                    XCTAssertEqual(observed.medianLine?.count, support.medianLine?.count)
+                }
+            }
+        }
+    }
+
+    // Opt-in live Vision integration smoke. Standard unit runs skip before
+    // any repository-local fixture discovery or Apple Vision invocation.
+    func testIntegrationDefaultStillImageProviderReportsAggregateObservedFaceAvailabilityWithoutRawPayload() throws {
+        guard ProcessInfo.processInfo.environment[
+            "BEAUTYSDK_RUN_VISION_INTEGRATION_TESTS"
+        ] == "1" else {
+            throw XCTSkip(
+                "Set BEAUTYSDK_RUN_VISION_INTEGRATION_TESTS=1 on the pinned Apple Vision host"
+            )
+        }
         var detector = VisionFaceDetector()
         var summaries: [String] = []
         var usableFaceCount = 0
@@ -475,6 +530,29 @@ final class VisionFaceDetectorTests: XCTestCase {
 
         XCTAssertGreaterThan(usableFaceCount, 0, "Expected usable aggregate detection; summaries=\(summaries.joined(separator: ","))")
         XCTAssertGreaterThan(completeSupportCount, 0, "Expected complete aggregate observed-face support")
+    }
+
+    private func injectedFaceSupportFixtures() -> [BeautyObservedFaceSupport] {
+        (0..<6).map { fixtureIndex in
+            let contourCount = 7 + fixtureIndex
+            let medianCount = 3 + fixtureIndex
+            let contour = (0..<contourCount).map { pointIndex in
+                let progress = Double(pointIndex) / Double(contourCount - 1)
+                return CoordinatePoint(
+                    x: 0.05 + 0.90 * progress,
+                    y: 0.15 + (0.55 + Double(fixtureIndex) * 0.02)
+                        * 4 * progress * (1 - progress)
+                )
+            }
+            let medianLine = (0..<medianCount).map { pointIndex in
+                let progress = Double(pointIndex) / Double(medianCount - 1)
+                return CoordinatePoint(x: 0.50, y: 0.15 + 0.75 * progress)
+            }
+            return BeautyObservedFaceSupport(
+                contour: contour,
+                medianLine: medianLine
+            )
+        }
     }
 
     private func metadata() -> BeautyInputMetadata {
