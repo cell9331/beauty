@@ -83,6 +83,50 @@ final class BeautyParametersTests: XCTestCase {
         XCTAssertEqual(sourceStyle.chinLength, -0.13, accuracy: 0.0001)
     }
 
+    func testFACE07FACE08FACE09FACE12All52KeysRoundTripAndLegacy48DecodesNeutrally() throws {
+        let parameters = BeautyParameters(
+            chinLength: -0.64,
+            faceContourSmooth: 0.13,
+            templeFullness: 0.27,
+            cheekboneSlim: 0.41,
+            chinTaper: 0.55,
+            filterId: "clean_01"
+        )
+        let data = try JSONEncoder().encode(parameters)
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        let decoded = try JSONDecoder().decode(BeautyParameters.self, from: data)
+
+        XCTAssertEqual(object.count, 52)
+        XCTAssertEqual(decoded, parameters)
+        XCTAssertEqual(
+            Set([
+                decoded.faceContourSmooth,
+                decoded.templeFullness,
+                decoded.cheekboneSlim,
+                decoded.chinTaper,
+            ]).count,
+            4,
+            "unequal values prove independent encoded storage"
+        )
+        XCTAssertEqual(decoded.chinLength, -0.64, accuracy: 0.0001)
+
+        var legacy = object
+        for key in ["faceContourSmooth", "templeFullness", "cheekboneSlim", "chinTaper"] {
+            legacy.removeValue(forKey: key)
+        }
+        XCTAssertEqual(legacy.count, 48)
+
+        let legacyDecoded = try JSONDecoder().decode(
+            BeautyParameters.self,
+            from: JSONSerialization.data(withJSONObject: legacy)
+        )
+        XCTAssertEqual(legacyDecoded.faceContourSmooth, 0)
+        XCTAssertEqual(legacyDecoded.templeFullness, 0)
+        XCTAssertEqual(legacyDecoded.cheekboneSlim, 0)
+        XCTAssertEqual(legacyDecoded.chinTaper, 0)
+        XCTAssertEqual(legacyDecoded.chinLength, -0.64, accuracy: 0.0001)
+    }
+
     func testEYE01NewPositiveOnlyInputsNormalizeIndependently() {
         let cases: [(name: String, value: Float, expected: Float)] = [
             ("negative", -1, 0),

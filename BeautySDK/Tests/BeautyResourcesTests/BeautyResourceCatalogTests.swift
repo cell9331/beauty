@@ -85,6 +85,38 @@ final class BeautyResourceCatalogTests: XCTestCase {
         }
     }
 
+    func testFACE07FACE08FACE09FACE12BundledPresetsDecodeNewFaceFieldsAsZero() throws {
+        let presets = try BeautyResourceCatalog.bundled().builtInPresets()
+
+        XCTAssertEqual(
+            presets.map(\.id),
+            ["natural", "clear", "refined", "male-natural", "id-photo-natural"]
+        )
+        XCTAssertEqual(presets.count, 5)
+        for preset in presets {
+            XCTAssertEqual(
+                preset.parameters.faceContourSmooth,
+                0,
+                "\(preset.id) faceContourSmooth"
+            )
+            XCTAssertEqual(
+                preset.parameters.templeFullness,
+                0,
+                "\(preset.id) templeFullness"
+            )
+            XCTAssertEqual(
+                preset.parameters.cheekboneSlim,
+                0,
+                "\(preset.id) cheekboneSlim"
+            )
+            XCTAssertEqual(
+                preset.parameters.chinTaper,
+                0,
+                "\(preset.id) chinTaper"
+            )
+        }
+    }
+
     func testEFFECT08PresetLookupIsDeterministicAndComplete() throws {
         let catalog = try BeautyResourceCatalog.bundled()
 

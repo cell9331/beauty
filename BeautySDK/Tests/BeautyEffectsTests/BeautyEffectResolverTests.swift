@@ -151,6 +151,57 @@ final class BeautyEffectResolverTests: XCTestCase {
         }
     }
 
+    func testFACE07FACE08FACE09FACE12ExplicitZeroPreservesShippedPlanAndNonzeroDoesNotRouteYet() {
+        let omitted = BeautyParameters(
+            faceSlim: 0.24,
+            eyeSize: 0.18,
+            noseSlim: 0.17,
+            mouthSize: -0.16
+        )
+        let explicitZero = BeautyParameters(
+            faceSlim: 0.24,
+            faceContourSmooth: 0,
+            templeFullness: 0,
+            cheekboneSlim: 0,
+            chinTaper: 0,
+            eyeSize: 0.18,
+            noseSlim: 0.17,
+            mouthSize: -0.16
+        )
+
+        let omittedPlan = BeautyEffectResolver.resolve(parameters: omitted, faceGeometry: .fixture)
+        let explicitZeroPlan = BeautyEffectResolver.resolve(parameters: explicitZero, faceGeometry: .fixture)
+
+        XCTAssertEqual(explicitZeroPlan, omittedPlan)
+        XCTAssertEqual(explicitZeroPlan.effectiveStrengths, omittedPlan.effectiveStrengths)
+        XCTAssertEqual(explicitZeroPlan.activeDomains, omittedPlan.activeDomains)
+        XCTAssertEqual(explicitZeroPlan.skippedDomains, omittedPlan.skippedDomains)
+        XCTAssertEqual(explicitZeroPlan.warnings, omittedPlan.warnings)
+        XCTAssertEqual(explicitZeroPlan.metrics, omittedPlan.metrics)
+        XCTAssertEqual(
+            explicitZeroPlan.metrics["beauty.effects.geometryPointCount"],
+            omittedPlan.metrics["beauty.effects.geometryPointCount"]
+        )
+
+        let deferredRequests = [
+            BeautyParameters(faceContourSmooth: 0.4),
+            BeautyParameters(templeFullness: 0.4),
+            BeautyParameters(cheekboneSlim: 0.4),
+            BeautyParameters(chinTaper: 0.4),
+        ]
+        for parameters in deferredRequests {
+            XCTAssertFalse(
+                BeautyEffectResolver.requiresFaceGeometry(parameters: parameters),
+                "Phase 46 owns provider eligibility and routing"
+            )
+            XCTAssertEqual(
+                BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture),
+                BeautyEffectResolver.resolve(parameters: BeautyParameters(), faceGeometry: .fixture),
+                "nonzero public intent remains unrouted in Phase 45"
+            )
+        }
+    }
+
     func testPhase38MOUTH05Through08ExactCapsRoutingWarningsAndCounts() {
         let cases: [(String, BeautyParameters, KeyPath<BeautyEffectiveStrengths, Float>, Float)] = [
             ("Y positive", BeautyParameters(mouthYPosition: 1), \.mouthYPosition, 0.25),
