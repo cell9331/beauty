@@ -3,6 +3,15 @@ import BeautyCore
 import BeautyDetection
 @testable import BeautyEffects
 
+private struct Phase46ResolverFieldRow {
+    let name: String
+    let makeParameters: (Float) -> BeautyParameters
+    let publicValue: KeyPath<BeautyParameters, Float>
+    let effectiveValue: KeyPath<BeautyEffectiveStrengths, Float>
+    let requiresCenterline: Bool
+    let emissionPoints: (FaceGeometry, BeautyEffectiveStrengths) -> [WarpControlPoint]
+}
+
 final class BeautyEffectResolverTests: XCTestCase {
     func testDefaultParametersResolveToNoActiveDomains() {
         let plan = BeautyEffectResolver.resolve(parameters: BeautyParameters())
@@ -151,7 +160,7 @@ final class BeautyEffectResolverTests: XCTestCase {
         }
     }
 
-    func testFACE07FACE08FACE09FACE12ExplicitZeroPreservesShippedPlanAndNonzeroDoesNotRouteYet() {
+    func testGEOMFourFieldsRequireGeometryCapIndependentlyAndPreserveExplicitZeroPlan() {
         let omitted = BeautyParameters(
             faceSlim: 0.24,
             eyeSize: 0.18,
@@ -183,22 +192,146 @@ final class BeautyEffectResolverTests: XCTestCase {
             omittedPlan.metrics["beauty.effects.geometryPointCount"]
         )
 
-        let deferredRequests = [
-            BeautyParameters(faceContourSmooth: 0.4),
-            BeautyParameters(templeFullness: 0.4),
-            BeautyParameters(cheekboneSlim: 0.4),
-            BeautyParameters(chinTaper: 0.4),
+        let face = FaceGeometry.phase46AsymmetricComplete
+        let reusedFace = phase46Face(face, freshness: .reused)
+        let staleFace = phase46Face(face, freshness: .stale)
+        let allowedMetricKeys: Set<String> = [
+            "beauty.effects.activeCount",
+            "beauty.effects.cappedCount",
+            "beauty.effects.geometryPointCount",
+            "beauty.effects.reusedGeometryScale",
+            "beauty.effects.skippedFaceDomains",
         ]
-        for parameters in deferredRequests {
+
+        for row in phase46ResolverRows {
+            let negative = row.makeParameters(-1)
             XCTAssertFalse(
-                BeautyEffectResolver.requiresFaceGeometry(parameters: parameters),
-                "Phase 46 owns provider eligibility and routing"
+                BeautyEffectResolver.requiresFaceGeometry(parameters: negative),
+                "\(row.name) negative normalized input"
+            )
+            XCTAssertEqual(negative[keyPath: row.publicValue], 0, row.name)
+
+            let overflow = row.makeParameters(1)
+            XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: overflow), row.name)
+            let fresh = BeautyEffectResolver.resolve(parameters: overflow, faceGeometry: face)
+            XCTAssertEqual(fresh.effectiveStrengths[keyPath: row.effectiveValue], 0.25, accuracy: 0.000_001, row.name)
+            XCTAssertEqual(fresh.metrics["beauty.effects.cappedCount"], 1, row.name)
+            XCTAssertEqual(fresh.warnings.filter { $0.code == "beauty_strength_capped" }.count, 1, row.name)
+            XCTAssertTrue(fresh.activeDomains.contains(.faceShape), row.name)
+            XCTAssertFalse(fresh.skippedDomains.contains(.faceShape), row.name)
+            let freshEmission = row.emissionPoints(face, fresh.effectiveStrengths)
+            XCTAssertFalse(freshEmission.isEmpty, row.name)
+            XCTAssertEqual(
+                fresh.metrics["beauty.effects.geometryPointCount"],
+                Double(freshEmission.count),
+                row.name
+            )
+            XCTAssertTrue(Set(fresh.metrics.keys).isSubset(of: allowedMetricKeys), row.name)
+            assertRedacted(fresh)
+
+            let reused = BeautyEffectResolver.resolve(parameters: overflow, faceGeometry: reusedFace)
+            XCTAssertEqual(reused.effectiveStrengths[keyPath: row.effectiveValue], 0.125, accuracy: 0.000_001, row.name)
+            XCTAssertFalse(row.emissionPoints(reusedFace, reused.effectiveStrengths).isEmpty, row.name)
+            XCTAssertEqual(reused.metrics["beauty.effects.reusedGeometryScale"], 0.5, row.name)
+
+            let noFace = BeautyEffectResolver.resolve(parameters: overflow, faceGeometry: nil)
+            XCTAssertEqual(noFace.effectiveStrengths[keyPath: row.effectiveValue], 0, row.name)
+            XCTAssertNil(noFace.metrics["beauty.effects.geometryPointCount"], row.name)
+
+            let stale = BeautyEffectResolver.resolve(parameters: overflow, faceGeometry: staleFace)
+            XCTAssertEqual(stale.effectiveStrengths[keyPath: row.effectiveValue], 0, row.name)
+            XCTAssertNil(stale.metrics["beauty.effects.geometryPointCount"], row.name)
+
+            let proxyOnly = BeautyEffectResolver.resolve(
+                parameters: overflow,
+                faceGeometry: .phase46LegacyProxyOnly
+            )
+            XCTAssertEqual(proxyOnly.effectiveStrengths[keyPath: row.effectiveValue], 0, row.name)
+            XCTAssertTrue(
+                row.emissionPoints(.phase46LegacyProxyOnly, proxyOnly.effectiveStrengths).isEmpty,
+                row.name
+            )
+            XCTAssertNil(proxyOnly.metrics["beauty.effects.geometryStrengthScale"], row.name)
+            XCTAssertNil(proxyOnly.metrics["beauty.effects.geometryPointCount"], row.name)
+
+            let contourOnly = BeautyEffectResolver.resolve(
+                parameters: overflow,
+                faceGeometry: .phase46ContourOnly
             )
             XCTAssertEqual(
-                BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture),
-                BeautyEffectResolver.resolve(parameters: BeautyParameters(), faceGeometry: .fixture),
-                "nonzero public intent remains unrouted in Phase 45"
+                contourOnly.effectiveStrengths[keyPath: row.effectiveValue],
+                row.requiresCenterline ? 0 : 0.25,
+                accuracy: 0.000_001,
+                row.name
             )
+        }
+    }
+
+    func testGEOMProviderEmptyFaceWorkIsRemovedBeforeDomainAndConflictAccounting() {
+        let row = phase46ResolverRows[0]
+        let face = FaceGeometry.phase46LocallyStraightContour
+        let parameters = row.makeParameters(0.25)
+        let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: face)
+
+        XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: parameters))
+        XCTAssertTrue(row.emissionPoints(face, plan.effectiveStrengths).isEmpty)
+        XCTAssertEqual(plan.effectiveStrengths[keyPath: row.effectiveValue], 0)
+        XCTAssertFalse(plan.activeDomains.contains(.faceShape))
+        XCTAssertFalse(plan.skippedDomains.contains(.faceShape))
+        XCTAssertFalse(plan.warnings.contains { $0.code == "face_effects_skipped_no_face" })
+        XCTAssertFalse(plan.warnings.contains { $0.code == "combined_geometry_weakened" })
+        XCTAssertNil(plan.metrics["beauty.effects.geometryStrengthScale"])
+        XCTAssertNil(plan.metrics["beauty.effects.geometryPointCount"])
+        XCTAssertEqual(plan.metrics["beauty.effects.activeCount"], 0)
+        XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 0)
+        XCTAssertTrue(
+            BeautyGeometryEffectPipeline.controlPoints(
+                for: plan.effectiveStrengths,
+                face: face
+            ).isEmpty
+        )
+
+        for invalidRow in phase46ResolverRows {
+            var siblingParameters = invalidRow.makeParameters(1)
+            siblingParameters.faceSlim = 0.20
+            let siblingPlan = BeautyEffectResolver.resolve(
+                parameters: siblingParameters,
+                faceGeometry: .phase46LegacyProxyOnly
+            )
+            let shippedFacePoints = FaceShapeWarpProvider().fieldEmissions(
+                face: .phase46LegacyProxyOnly,
+                strengths: siblingPlan.effectiveStrengths
+            ).faceSlim
+
+            XCTAssertEqual(
+                siblingPlan.effectiveStrengths[keyPath: invalidRow.effectiveValue],
+                0,
+                invalidRow.name
+            )
+            XCTAssertTrue(siblingPlan.activeDomains.contains(.faceShape), invalidRow.name)
+            XCTAssertFalse(siblingPlan.skippedDomains.contains(.faceShape), invalidRow.name)
+            XCTAssertFalse(shippedFacePoints.isEmpty, invalidRow.name)
+            XCTAssertTrue(
+                invalidRow.emissionPoints(
+                    .phase46LegacyProxyOnly,
+                    siblingPlan.effectiveStrengths
+                ).isEmpty,
+                invalidRow.name
+            )
+            XCTAssertEqual(
+                siblingPlan.metrics["beauty.effects.geometryPointCount"],
+                Double(shippedFacePoints.count),
+                invalidRow.name
+            )
+            XCTAssertNil(
+                siblingPlan.metrics["beauty.effects.geometryStrengthScale"],
+                invalidRow.name
+            )
+            XCTAssertFalse(
+                siblingPlan.warnings.contains { $0.code == "combined_geometry_weakened" },
+                invalidRow.name
+            )
+            assertRedacted(siblingPlan)
         }
     }
 
@@ -565,6 +698,74 @@ final class BeautyEffectResolverTests: XCTestCase {
         for forbidden in ["land" + "mark", "control point", "control" + "Point", "bounding", "VNFace" + "Observation", "/private" + "/var", "image" + " bytes", "SI" + "MD", "[0."] {
             XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)", file: file, line: line)
         }
+    }
+
+    private var phase46ResolverRows: [Phase46ResolverFieldRow] {
+        [
+            Phase46ResolverFieldRow(
+                name: "faceContourSmooth",
+                makeParameters: { BeautyParameters(faceContourSmooth: $0) },
+                publicValue: \.faceContourSmooth,
+                effectiveValue: \.faceContourSmooth,
+                requiresCenterline: false,
+                emissionPoints: {
+                    FaceShapeWarpProvider().fieldEmissions(face: $0, strengths: $1).faceContourSmooth
+                }
+            ),
+            Phase46ResolverFieldRow(
+                name: "templeFullness",
+                makeParameters: { BeautyParameters(templeFullness: $0) },
+                publicValue: \.templeFullness,
+                effectiveValue: \.templeFullness,
+                requiresCenterline: false,
+                emissionPoints: {
+                    FaceShapeWarpProvider().fieldEmissions(face: $0, strengths: $1).templeFullness
+                }
+            ),
+            Phase46ResolverFieldRow(
+                name: "cheekboneSlim",
+                makeParameters: { BeautyParameters(cheekboneSlim: $0) },
+                publicValue: \.cheekboneSlim,
+                effectiveValue: \.cheekboneSlim,
+                requiresCenterline: false,
+                emissionPoints: {
+                    FaceShapeWarpProvider().fieldEmissions(face: $0, strengths: $1).cheekboneSlim
+                }
+            ),
+            Phase46ResolverFieldRow(
+                name: "chinTaper",
+                makeParameters: { BeautyParameters(chinTaper: $0) },
+                publicValue: \.chinTaper,
+                effectiveValue: \.chinTaper,
+                requiresCenterline: true,
+                emissionPoints: {
+                    ChinWarpProvider().fieldEmissions(face: $0, strengths: $1).chinTaper
+                }
+            ),
+        ]
+    }
+
+    private func phase46Face(
+        _ face: FaceGeometry,
+        freshness: LandmarkGeometryFreshness
+    ) -> FaceGeometry {
+        FaceGeometry(
+            bounds: face.bounds,
+            faceContour: face.faceContour,
+            observedFaceSupport: face.observedFaceSupport,
+            leftEye: face.leftEye,
+            rightEye: face.rightEye,
+            nose: face.nose,
+            noseRoot: face.noseRoot,
+            noseTip: face.noseTip,
+            outerLips: face.outerLips,
+            upperLips: face.upperLips,
+            lowerLips: face.lowerLips,
+            innerLips: face.innerLips,
+            leftEyeSupport: face.leftEyeSupport,
+            rightEyeSupport: face.rightEyeSupport,
+            freshness: freshness
+        )
     }
 }
 
