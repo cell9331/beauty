@@ -91,7 +91,7 @@ Plans:
 
 | Phase | Milestone | Requirements | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 45. Public Contract and Observed Face Support | v1.12 | 5/5 | Complete   | 2026-07-23 |
+| 45. Public Contract and Observed Face Support | v1.12 | 5/5 | Complete    | 2026-07-23 |
 | 46. Independent Contour and Chin Geometry | v1.12 | 4 | Not started | — |
 | 47. Public-Facade Face Output Evidence | v1.12 | 3 | Not started | — |
 | 48. Face Safety and Scoped Closeout | v1.12 | 4 | Not started | — |
