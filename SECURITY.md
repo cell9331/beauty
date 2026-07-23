@@ -530,3 +530,13 @@ Before merging any change touching these areas, update `SECURITY.md` if needed:
 - Observed contours/pupils remain request-scoped, package-only, non-Codable, non-persistent, and absent from public or diagnostic raw geometry payloads.
 - The active-source gate classifies the exact 48-field public inventory and eight source owners; command errors, unclassified matches, dependency/import drift, persistence, network/cloud, commercial paths, and artifact escapes fail closed.
 - Generated output/gallery/staging/quarantine remains ignored, untracked, and unstaged. ASVS L1 HIGH findings block promotion; `threats_open: 0` after the 57/57 self-test and 13/13 live boundary pass.
+
+### Phase 46 Contour Geometry Security Boundary
+
+- The four new providers authorize work only from Phase 45 validated observed support. The synthetic seven-point compatibility contour may continue to drive the five shipped fields but cannot authorize smoothing, temple, cheekbone, or taper output.
+- Every observed or derived coordinate, axis, progress value, displacement, target, radius, strength, and falloff must be finite before bounded construction. Invalid, incomplete, non-improving, or non-renderable work fails the owning field closed; it is never repaired from NaN/∞ by a clamp or borrowed from a sibling.
+- Observed contour and median evidence remains immutable, package-only, non-Codable, request-scoped, non-persistent, and non-networked. The deterministic `.usableFace` payload is testing SPI input that traverses the production mapper and validator; it creates no public support/result inventory.
+- Public diagnostics remain limited to generic warnings and aggregate numeric counts/scales. Raw or derived contour, median, apex, index, source/target, displacement, coordinate, bounds, provider, framework object, file path, and image-byte details are prohibited.
+- The privacy-manifest disposition is unchanged because Phase 46 adds no collected-data category, required-reason API, remote transfer, account behavior, tracking behavior, dependency, model, resource, target, public API, Demo import, renderer case, or generated evidence.
+- `check_face_geometry_boundaries.py` passes 24/24 adversarial self-tests and 14/14 live checks, including the pinned manifest and Phase 45 checker hashes, exact 7+2 ownership, exact 37-pass convergence, artifact containment, redaction, and future-row non-promotion.
+- Concrete source manifestations pass, but the three governance statements about biometric profiling, synthetic-proxy representation, and silent deferred-feature activation remain explicitly unverified for the independent `$gsd-secure-phase` audit. Phase 47 owns decoded output; Phase 48 owns final safety and promotion.

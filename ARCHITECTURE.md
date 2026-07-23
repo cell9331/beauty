@@ -337,3 +337,10 @@ BeautyDemo sliders / presets
 - The 48-field scalar `BeautyParameters` contract remains behind the public `BeautySDK` facade; request-scoped observed support stays package-internal to detection/effects and the unified warp.
 - The local-first dependency direction is unchanged: no external dependency, package target, network/cloud, commercial path, public raw geometry, or new source owner was added.
 - The example renderer and no Demo code import internal SDK modules. Phase 44 is an SDK-core safety/status closeout with no Demo feature change.
+
+### Phase 46 Independent Contour and Chin Geometry
+
+- `BeautyEffects` owns exactly seven package-internal face emissions and two chin emissions. Each shipped or new scalar has one named array and field-local eligibility; the five shipped face/chin arrays preserve their prior compatibility-proxy vectors.
+- `BeautyEffectResolver` keeps one provider-eligible retained baseline across face, chin, eye, nose, and mouth. At most 37 monotone removal passes precede one final provider-array accounting step; the existing `BeautyGeometryEffectPipeline` remains the only warp path.
+- Detection supplies request-scoped observed contour/median evidence through the existing mapper and adapter. `BeautySDK` exposes only the established result, warnings, and aggregate metrics; no new public geometry type, facade method, target, dependency direction, render pass, or Demo import was introduced.
+- Fresh evidence passes 17 provider, 21 resolver, 13 conflict, 14 combined, 2 pipeline, 43 degradation, and 15 facade tests; full SwiftPM passes 368 tests with three explicit Apple Vision opt-in skips. Phase 47 owns decoded-output evidence, while Phase 48 owns final calibration, exhaustive matrices, and promotion.
