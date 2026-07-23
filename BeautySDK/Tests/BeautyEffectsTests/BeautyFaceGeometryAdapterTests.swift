@@ -315,6 +315,7 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         let contourOnly = BeautyObservedFaceSupport(contour: contour)
         let medianOnly = BeautyObservedFaceSupport(medianLine: median)
         let both = BeautyObservedFaceSupport(contour: contour, medianLine: median)
+        let observation = BeautyFaceObservation(observedFaceSupport: both)
 
         XCTAssertNil(neither.contour)
         XCTAssertNil(neither.medianLine)
@@ -324,6 +325,9 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         XCTAssertEqual(medianOnly.medianLine, median)
         XCTAssertEqual(both.contour, contour)
         XCTAssertEqual(both.medianLine, median)
+        XCTAssertEqual(observation.observedFaceSupport, both)
+        assertSendable(neither)
+        assertSendable(observation)
     }
 
     func testSemanticFaceSupportSeparatesContourAndCenterlineEligibility() {
@@ -348,12 +352,20 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
             medianLine: median,
             apexIndex: nil
         )
+        let empty = BeautyFaceSemanticSupport(
+            contour: [],
+            medianLine: median,
+            apexIndex: 0
+        )
 
         XCTAssertTrue(contourOnly.contourEligible)
         XCTAssertFalse(contourOnly.centerlineEligible)
         XCTAssertTrue(complete.contourEligible)
         XCTAssertTrue(complete.centerlineEligible)
         XCTAssertFalse(missingApex.centerlineEligible)
+        XCTAssertFalse(empty.contourEligible)
+        XCTAssertFalse(empty.centerlineEligible)
+        assertSendable(complete)
     }
 
     func testFaceGeometryDefaultsObservedSupportToNilAndStoresItSeparately() {
@@ -393,16 +405,23 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         let geometry = BeautyFaceGeometryAdapter.makeGeometry(
             from: BeautyFaceObservation(imageBounds: bounds, landmarks: .complete)
         )
+        let x = Float(bounds.x)
+        let y = Float(bounds.y)
+        let width = Float(bounds.width)
+        let height = Float(bounds.height)
+        func point(_ xFactor: Float, _ yFactor: Float) -> SIMD2<Float> {
+            SIMD2<Float>(x + width * xFactor, y + height * yFactor)
+        }
         XCTAssertEqual(
             geometry.faceContour,
             [
-                SIMD2<Float>(0.14, 0.34),
-                SIMD2<Float>(0.196, 0.564),
-                SIMD2<Float>(0.324, 0.772),
-                SIMD2<Float>(0.50, 0.852),
-                SIMD2<Float>(0.676, 0.772),
-                SIMD2<Float>(0.804, 0.564),
-                SIMD2<Float>(0.86, 0.34),
+                point(0.05, 0.30),
+                point(0.12, 0.58),
+                point(0.28, 0.84),
+                point(0.50, 0.94),
+                point(0.72, 0.84),
+                point(0.88, 0.58),
+                point(0.95, 0.30),
             ]
         )
         XCTAssertNil(geometry.observedFaceSupport)
@@ -528,6 +547,10 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         points.indices.allSatisfy { index in
             !points[..<index].contains(points[index])
         }
+    }
+
+    private func assertSendable<T: Sendable>(_ value: T) {
+        _ = value
     }
 }
 

@@ -41,6 +41,31 @@ struct BeautyEyeSemanticSupport: Equatable, Sendable {
     var outerCorner: [SIMD2<Float>] { outer }
 }
 
+/// Validated, request-scoped observed contour evidence for face semantics.
+///
+/// This stays separate from `FaceGeometry.faceContour`, whose seven synthetic
+/// points remain the compatibility path for shipped face controls.
+struct BeautyFaceSemanticSupport: Equatable, Sendable {
+    let contour: [SIMD2<Float>]
+    let medianLine: [SIMD2<Float>]?
+    let apexIndex: Int?
+
+    var contourEligible: Bool {
+        !contour.isEmpty
+    }
+
+    var centerlineEligible: Bool {
+        guard contourEligible,
+              let medianLine,
+              !medianLine.isEmpty,
+              let apexIndex
+        else {
+            return false
+        }
+        return contour.indices.contains(apexIndex)
+    }
+}
+
 struct FaceBounds: Equatable, Sendable {
     let x: Float
     let y: Float
@@ -65,6 +90,7 @@ enum LandmarkGeometryFreshness: Equatable, Sendable {
 struct FaceGeometry: Equatable, Sendable {
     let bounds: FaceBounds
     let faceContour: [SIMD2<Float>]
+    let observedFaceSupport: BeautyFaceSemanticSupport?
     let leftEye: [SIMD2<Float>]
     let rightEye: [SIMD2<Float>]
     let nose: [SIMD2<Float>]
@@ -84,6 +110,7 @@ struct FaceGeometry: Equatable, Sendable {
     init(
         bounds: FaceBounds,
         faceContour: [SIMD2<Float>],
+        observedFaceSupport: BeautyFaceSemanticSupport? = nil,
         leftEye: [SIMD2<Float>] = [],
         rightEye: [SIMD2<Float>] = [],
         nose: [SIMD2<Float>] = [],
@@ -99,6 +126,7 @@ struct FaceGeometry: Equatable, Sendable {
     ) {
         self.bounds = bounds
         self.faceContour = faceContour
+        self.observedFaceSupport = observedFaceSupport
         self.leftEye = leftEye
         self.rightEye = rightEye
         self.nose = nose

@@ -35,6 +35,24 @@ package struct BeautyObservedEyeSupport: Equatable, Sendable {
     }
 }
 
+/// Frame-scoped, image-normalized face-contour evidence from one request.
+///
+/// Contour and median-line absence are independent. This immutable package
+/// value intentionally has no Codable or diagnostic representation and is
+/// released with the observation that carries it.
+package struct BeautyObservedFaceSupport: Equatable, Sendable {
+    package let contour: [CoordinatePoint]?
+    package let medianLine: [CoordinatePoint]?
+
+    package init(
+        contour: [CoordinatePoint]? = nil,
+        medianLine: [CoordinatePoint]? = nil
+    ) {
+        self.contour = contour
+        self.medianLine = medianLine
+    }
+}
+
 package struct BeautyFaceObservation: Equatable, Sendable {
     package let stableID: String?
     package let confidence: Double
@@ -43,6 +61,7 @@ package struct BeautyFaceObservation: Equatable, Sendable {
     package let landmarks: BeautyFaceLandmarks
     package let observedEyeSupport: [BeautyObservedEyeSupport]?
     package let observedEyeOrder: BeautyObservedEyeOrder?
+    package let observedFaceSupport: BeautyObservedFaceSupport?
 
     package init(
         stableID: String? = nil,
@@ -51,7 +70,8 @@ package struct BeautyFaceObservation: Equatable, Sendable {
         imageBounds: CoordinateRect? = nil,
         landmarks: BeautyFaceLandmarks = .complete,
         observedEyeSupport: [BeautyObservedEyeSupport]? = nil,
-        observedEyeOrder: BeautyObservedEyeOrder? = nil
+        observedEyeOrder: BeautyObservedEyeOrder? = nil,
+        observedFaceSupport: BeautyObservedFaceSupport? = nil
     ) {
         self.stableID = stableID
         self.confidence = confidence
@@ -60,6 +80,7 @@ package struct BeautyFaceObservation: Equatable, Sendable {
         self.landmarks = landmarks
         self.observedEyeSupport = observedEyeSupport
         self.observedEyeOrder = observedEyeOrder
+        self.observedFaceSupport = observedFaceSupport
     }
 }
 
