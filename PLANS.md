@@ -30,6 +30,22 @@ Milestone v1.12 autonomous execution is active from Phase 45. After the semantic
 
 ## 4. Completed
 
+### C-2026-07-23-phase-45-plan-04-face-topology-validation
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-23 |
+| Scope | Completed Phase 45 Plan `45-04`: face-specific open-contour and median validation, independent contour/centerline eligibility, cross-support apex consistency, and legacy/sibling isolation. |
+| Topology | Contour accepts 7...32 points and median accepts 3...16; every point is finite, closed-unit, exact-bit unique, and validated through face-relative width, height, endpoint chord, curvature, direction, median chord-position, apex-distance, and interior-side predicates without eye constants, sorting, or polygon area. |
+| Isolation | Missing or malformed contour produces no observed semantic support; invalid/missing median preserves contour-only eligibility. The exact seven-point compatibility proxy plus all eye, nose, root, tip, and lip siblings remain unchanged, including alternating valid-invalid-valid requests. |
+| Verification | Focused adapter tests pass 27/27, all BeautyDetection tests pass 48/48, full SwiftPM passes 347/347, all six committed portraits satisfy the locked aggregate validation gate, and `git diff --check` passes. |
+
+Outcome:
+
+- `FaceGeometry.observedFaceSupport` now distinguishes legacy-only, contour-only, and contour-plus-centerline evidence without routing any new field to a provider, resolver, facade, renderer, or metric.
+- The A1 bounds remain unchanged: contour 7...32, median 3...16, width 0.50...1.00, height 0.20...1.00, endpoint separation at least 0.35, curvature at least 0.10, median down at least 0.25, chord position 0.15...0.85, apex distance at most 0.40, and two contour points on each apex side.
+- Phase 45 Plan `45-05` remains responsible for owner-contract synchronization and live boundary closeout; Phase 46 owns provider consumption.
+
 ### C-2026-07-23-phase-45-plan-03-observed-face-mapping
 
 | Field | Value |

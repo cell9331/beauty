@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.12
 milestone_name: Face Shape Remaining Capabilities
 status: executing
-stopped_at: Completed 45-03-PLAN.md
-last_updated: "2026-07-23T05:20:37.311Z"
+stopped_at: Completed 45-04-PLAN.md
+last_updated: "2026-07-23T05:40:48.409Z"
 last_activity: 2026-07-23 — Phase 45 execution started
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 5
-  completed_plans: 3
+  completed_plans: 4
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: `.planning/PROJECT.md` (updated 2026-07-21)
 ## Current Position
 
 Phase: 45 (public-contract-and-observed-face-support) — EXECUTING
-Plan: 4 of 5
+Plan: 5 of 5
 Status: Ready to execute
 Last activity: 2026-07-23 — Phase 45 execution started
 
@@ -213,6 +213,7 @@ Last activity: 2026-07-14
 | Phase 45 P01 | 23 min | 2 tasks | 4 files |
 | Phase 45 P02 | 5 min | 2 tasks | 5 files |
 | Phase 45 P03 | 11 min | 2 tasks | 4 files |
+| Phase 45 P04 | 16 min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -297,6 +298,9 @@ Recent milestone-level outcomes:
 - [Phase 45]: Keep actual contour and median capture in the single existing Vision landmarks request and copy only CoordinatePoint values. — This preserves exactly one detector request and retains no Vision framework region object.
 - [Phase 45]: Preflight contour and median independently at fixed 32-point and 16-point ceilings so valid siblings survive malformed input. — Bounded region-local failure prevents optional support from erasing the selected face or valid sibling region.
 - [Phase 45]: Canonicalize observed open paths with mapper-derived right/down axes and whole-array reversal only. — The same metadata governs point mapping and semantic direction while preserving adjacency.
+- [Phase 45]: Keep the complete A1 face-support envelope unchanged. — All six committed portraits passed aggregate contour, median, and cross-support validation.
+- [Phase 45]: Preserve contour-only semantic eligibility when median or cross-support validation fails. — A valid observed contour remains honest evidence even when centerline evidence is unavailable or inconsistent.
+- [Phase 45]: Attach observed semantic support beside existing geometry siblings without a provider consumer. — Phase 45 owns validation and compatibility isolation; provider routing remains Phase 46.
 
 ### Pending Todos
 
@@ -329,8 +333,8 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-23T05:20:37.307Z
-Stopped at: Completed 45-03-PLAN.md
+Last session: 2026-07-23T05:40:36.054Z
+Stopped at: Completed 45-04-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
