@@ -32,16 +32,25 @@ enum BeautyFaceGeometryAdapter {
     static let minimumFaceCurvature: Float = 0.10
     static let minimumFaceMedianDown: Float = 0.25
     static let minimumFaceDirectionMagnitude: Float = 0.000_001
+    static let minimumFaceMedianChordPosition: Float = 0.15
+    static let maximumFaceMedianChordPosition: Float = 0.85
+    static let maximumFaceApexDistance: Float = 0.40
+    static let minimumFaceApexInteriorPointCount = 2
 
     static func makeGeometry(from observation: BeautyFaceObservation) -> FaceGeometry {
         let bounds = makeBounds(from: observation)
         let landmarks = observation.landmarks.availableGroups
+        let observedFaceSupport = validatedFaceSupport(
+            observation.observedFaceSupport,
+            bounds: bounds
+        )
 
         let observedSupports = observation.observedEyeSupport
         if observedSupports != nil, observation.observedEyeOrder != .canonical {
             return FaceGeometry(
                 bounds: bounds,
                 faceContour: landmarks.contains(.faceContour) ? faceContour(in: bounds) : [],
+                observedFaceSupport: observedFaceSupport,
                 leftEye: [],
                 rightEye: [],
                 nose: landmarks.contains(.nose) ? nose(in: bounds) : [],
@@ -96,6 +105,7 @@ enum BeautyFaceGeometryAdapter {
         return FaceGeometry(
             bounds: bounds,
             faceContour: landmarks.contains(.faceContour) ? faceContour(in: bounds) : [],
+            observedFaceSupport: observedFaceSupport,
             leftEye: landmarks.contains(.leftEye) ? leftEyePoints : [],
             rightEye: landmarks.contains(.rightEye) ? rightEyePoints : [],
             nose: landmarks.contains(.nose) ? nose(in: bounds) : [],
@@ -360,6 +370,23 @@ enum BeautyFaceGeometryAdapter {
         value.isFinite && value >= minimumFaceDirectionMagnitude
     }
 
+    static func faceMedianChordPositionIsValid(_ value: Float) -> Bool {
+        value.isFinite
+            && (minimumFaceMedianChordPosition...maximumFaceMedianChordPosition).contains(value)
+    }
+
+    static func faceApexDistanceIsValid(_ value: Float) -> Bool {
+        value.isFinite && value <= maximumFaceApexDistance
+    }
+
+    static func faceApexInteriorPointsAreValid(
+        before: Int,
+        after: Int
+    ) -> Bool {
+        before >= minimumFaceApexInteriorPointCount
+            && after >= minimumFaceApexInteriorPointCount
+    }
+
     static func validatedFaceContour(
         _ input: [CoordinatePoint],
         bounds: FaceBounds
@@ -432,6 +459,96 @@ enum BeautyFaceGeometryAdapter {
             return nil
         }
         return finiteSIMDPoints(input)
+    }
+
+    private static func validatedFaceSupport(
+        _ observed: BeautyObservedFaceSupport?,
+        bounds: FaceBounds
+    ) -> BeautyFaceSemanticSupport? {
+        guard let observed,
+              let contourInput = observed.contour,
+              let contour = validatedFaceContour(contourInput, bounds: bounds)
+        else {
+            return nil
+        }
+        guard let medianInput = observed.medianLine,
+              let medianLine = validatedFaceMedianLine(medianInput, bounds: bounds),
+              let apexIndex = validatedFaceApexIndex(
+                  contour: contourInput,
+                  medianLine: medianInput,
+                  bounds: bounds
+              )
+        else {
+            return BeautyFaceSemanticSupport(
+                contour: contour,
+                medianLine: nil,
+                apexIndex: nil
+            )
+        }
+        return BeautyFaceSemanticSupport(
+            contour: contour,
+            medianLine: medianLine,
+            apexIndex: apexIndex
+        )
+    }
+
+    private static func validatedFaceApexIndex(
+        contour: [CoordinatePoint],
+        medianLine: [CoordinatePoint],
+        bounds: FaceBounds
+    ) -> Int? {
+        guard let localContour = faceRelativePoints(contour, bounds: bounds),
+              let localMedian = faceRelativePoints(medianLine, bounds: bounds),
+              let first = localContour.first,
+              let last = localContour.last,
+              let medianBottom = localMedian.last
+        else {
+            return nil
+        }
+        let chordX = last.x - first.x
+        let chordY = last.y - first.y
+        let chordLengthSquared = chordX * chordX + chordY * chordY
+        guard chordLengthSquared.isFinite,
+              chordLengthSquared > 0
+        else {
+            return nil
+        }
+        let fromFirstX = medianBottom.x - first.x
+        let fromFirstY = medianBottom.y - first.y
+        let chordPosition = (
+            fromFirstX * chordX + fromFirstY * chordY
+        ) / chordLengthSquared
+        guard chordPosition.isFinite,
+              faceMedianChordPositionIsValid(Float(chordPosition))
+        else {
+            return nil
+        }
+
+        var nearestIndex: Int?
+        var nearestDistance = Double.infinity
+        for (index, point) in localContour.enumerated() {
+            let distance = hypot(
+                point.x - medianBottom.x,
+                point.y - medianBottom.y
+            )
+            guard distance.isFinite else {
+                return nil
+            }
+            if distance < nearestDistance {
+                nearestDistance = distance
+                nearestIndex = index
+            }
+        }
+        guard let nearestIndex,
+              faceApexDistanceIsValid(Float(nearestDistance)),
+              faceApexInteriorPointsAreValid(
+                  before: nearestIndex,
+                  after: localContour.count - nearestIndex - 1
+              )
+        else {
+            return nil
+        }
+        return nearestIndex
     }
 
     private static func faceInputIsValid(_ points: [CoordinatePoint]) -> Bool {

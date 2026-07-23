@@ -604,6 +604,7 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         var detector = VisionFaceDetector()
         var completeSupportCount = 0
         var validatedSupportCount = 0
+        var centerlineEligibleCount = 0
 
         for fixtureURL in try portraitFixtureURLs() {
             guard let image = CIImage(
@@ -642,11 +643,21 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
                    ) != nil {
                     validatedSupportCount += 1
                 }
+                if BeautyFaceGeometryAdapter.makeGeometry(
+                    from: observation
+                ).observedFaceSupport?.centerlineEligible == true {
+                    centerlineEligibleCount += 1
+                }
             }
         }
 
         XCTAssertGreaterThan(completeSupportCount, 0, "expected observed aggregate support")
         XCTAssertEqual(validatedSupportCount, completeSupportCount, "aggregate validation mismatch")
+        XCTAssertEqual(
+            centerlineEligibleCount,
+            completeSupportCount,
+            "aggregate cross-support mismatch"
+        )
     }
 
     func testFaceCrossSupportPurePredicatesLockInclusiveBoundaries() {
