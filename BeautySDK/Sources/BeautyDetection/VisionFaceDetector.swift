@@ -11,6 +11,7 @@ package struct VisionDetectionObservation: Equatable, Sendable {
     package let visionBounds: CoordinateRect?
     package let landmarks: BeautyFaceLandmarks
     package let observedEyeSupport: [BeautyObservedEyeSupport]?
+    package let observedFaceSupport: BeautyObservedFaceSupport?
 
     package init(
         stableID: String? = nil,
@@ -18,7 +19,8 @@ package struct VisionDetectionObservation: Equatable, Sendable {
         normalizedArea: Double = 0,
         visionBounds: CoordinateRect? = nil,
         landmarks: BeautyFaceLandmarks = .complete,
-        observedEyeSupport: [BeautyObservedEyeSupport]? = nil
+        observedEyeSupport: [BeautyObservedEyeSupport]? = nil,
+        observedFaceSupport: BeautyObservedFaceSupport? = nil
     ) {
         self.stableID = stableID
         self.confidence = confidence
@@ -26,6 +28,7 @@ package struct VisionDetectionObservation: Equatable, Sendable {
         self.visionBounds = visionBounds
         self.landmarks = landmarks
         self.observedEyeSupport = observedEyeSupport
+        self.observedFaceSupport = observedFaceSupport
     }
 }
 
@@ -259,6 +262,35 @@ package struct VisionFaceDetector: Sendable {
             observedEyeOrder = nil
         }
 
+        let observedFaceSupport: BeautyObservedFaceSupport?
+        if let support = detection.observedFaceSupport {
+            guard let visionBounds = detection.visionBounds,
+                  visionBounds.isFinite,
+                  visionBounds.width > 0,
+                  visionBounds.height > 0
+            else {
+                throw CoordinateMapper.MappingError.invalidCoordinate
+            }
+
+            let contour = mapFaceRegion(
+                support.contour,
+                maximumPointCount: 32,
+                in: visionBounds,
+                with: mapper
+            )
+            let medianLine = mapFaceRegion(
+                support.medianLine,
+                maximumPointCount: 16,
+                in: visionBounds,
+                with: mapper
+            )
+            observedFaceSupport = contour != nil || medianLine != nil
+                ? BeautyObservedFaceSupport(contour: contour, medianLine: medianLine)
+                : nil
+        } else {
+            observedFaceSupport = nil
+        }
+
         return BeautyFaceObservation(
                 stableID: detection.stableID,
                 confidence: detection.confidence,
@@ -266,7 +298,8 @@ package struct VisionFaceDetector: Sendable {
                 imageBounds: imageBounds,
                 landmarks: detection.landmarks,
                 observedEyeSupport: observedEyeSupport,
-                observedEyeOrder: observedEyeOrder
+                observedEyeOrder: observedEyeOrder,
+                observedFaceSupport: observedFaceSupport
             )
     }
 
@@ -368,6 +401,27 @@ package struct VisionFaceDetector: Sendable {
         }
     }
 
+    private func mapFaceRegion(
+        _ points: [CoordinatePoint]?,
+        maximumPointCount: Int,
+        in visionBounds: CoordinateRect,
+        with mapper: CoordinateMapper
+    ) -> [CoordinatePoint]? {
+        guard let points,
+              !points.isEmpty,
+              points.count <= maximumPointCount,
+              points.allSatisfy({
+                  $0.isFinite
+                      && (0...1).contains($0.x)
+                      && (0...1).contains($0.y)
+              })
+        else {
+            return nil
+        }
+
+        return try? mapPoints(points, in: visionBounds, with: mapper)
+    }
+
     private static func makeSupport(
         side: BeautyObservedEyeSide,
         region: VNFaceLandmarkRegion2D?,
@@ -392,9 +446,13 @@ package struct VisionFaceDetector: Sendable {
 
     private static func landmarks(
         from landmarks: VNFaceLandmarks2D?
-    ) -> (BeautyFaceLandmarks, [BeautyObservedEyeSupport]?) {
+    ) -> (
+        landmarks: BeautyFaceLandmarks,
+        observedEyeSupport: [BeautyObservedEyeSupport]?,
+        observedFaceSupport: BeautyObservedFaceSupport?
+    ) {
         guard let landmarks else {
-            return (BeautyFaceLandmarks(availableGroups: []), nil)
+            return (BeautyFaceLandmarks(availableGroups: []), nil, nil)
         }
 
         var groups: Set<BeautyLandmarkGroup> = []
@@ -421,7 +479,25 @@ package struct VisionFaceDetector: Sendable {
             makeSupport(side: .left, region: landmarks.leftEye, pupil: landmarks.leftPupil),
             makeSupport(side: .right, region: landmarks.rightEye, pupil: landmarks.rightPupil)
         ].compactMap { $0 }
-        return (BeautyFaceLandmarks(availableGroups: groups), supports.isEmpty ? nil : supports)
+        let contour = makePoints(from: landmarks.faceContour)
+        let medianLine = makePoints(from: landmarks.medianLine)
+        let faceSupport = contour != nil || medianLine != nil
+            ? BeautyObservedFaceSupport(contour: contour, medianLine: medianLine)
+            : nil
+        return (
+            BeautyFaceLandmarks(availableGroups: groups),
+            supports.isEmpty ? nil : supports,
+            faceSupport
+        )
+    }
+
+    private static func makePoints(from region: VNFaceLandmarkRegion2D?) -> [CoordinatePoint]? {
+        guard let region, !region.normalizedPoints.isEmpty else {
+            return nil
+        }
+        return region.normalizedPoints.map {
+            CoordinatePoint(x: Double($0.x), y: Double($0.y))
+        }
     }
 
     private func degradedSummary(for detections: [VisionDetectionObservation]) -> BeautyDetectionSummary {
@@ -483,8 +559,9 @@ package struct VisionFaceDetector: Sendable {
                     width: Double(observation.boundingBox.width),
                     height: Double(observation.boundingBox.height)
                 ),
-                landmarks: payload.0,
-                observedEyeSupport: payload.1
+                landmarks: payload.landmarks,
+                observedEyeSupport: payload.observedEyeSupport,
+                observedFaceSupport: payload.observedFaceSupport
             )
         }
     }
