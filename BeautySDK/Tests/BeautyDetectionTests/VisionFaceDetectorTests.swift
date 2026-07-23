@@ -1,4 +1,5 @@
 import CoreImage
+import Foundation
 import ImageIO
 import XCTest
 import BeautyCore
@@ -185,6 +186,155 @@ final class VisionFaceDetectorTests: XCTestCase {
         XCTAssertFalse(String(describing: result.summary).contains("CoordinateRect"))
     }
 
+    func testSUPP01InjectedContourAndMedianMapExactlyOnceIntoImageCoordinates() throws {
+        let support = BeautyObservedFaceSupport(
+            contour: [
+                CoordinatePoint(x: 0.10, y: 0.20),
+                CoordinatePoint(x: 0.90, y: 0.20)
+            ],
+            medianLine: [
+                CoordinatePoint(x: 0.50, y: 0.90),
+                CoordinatePoint(x: 0.50, y: 0.10)
+            ]
+        )
+        var detector = VisionFaceDetector { _ in
+            [VisionDetectionObservation(
+                visionBounds: CoordinateRect(x: 0.10, y: 0.20, width: 0.80, height: 0.60),
+                observedFaceSupport: support
+            )]
+        }
+
+        let result = detector.detect(metadata: metadata())
+        let mapped = try XCTUnwrap(result.observations.first?.observedFaceSupport)
+        let contour = try XCTUnwrap(mapped.contour)
+        let medianLine = try XCTUnwrap(mapped.medianLine)
+
+        assertPoint(contour[0], x: 0.18, y: 0.68)
+        assertPoint(contour[1], x: 0.82, y: 0.68)
+        assertPoint(medianLine[0], x: 0.50, y: 0.26)
+        assertPoint(medianLine[1], x: 0.50, y: 0.74)
+    }
+
+    func testSUPP02NilAndSingleFaceRegionsRemainIndependent() {
+        let contour = [
+            CoordinatePoint(x: 0.10, y: 0.20),
+            CoordinatePoint(x: 0.90, y: 0.20)
+        ]
+        let medianLine = [
+            CoordinatePoint(x: 0.50, y: 0.90),
+            CoordinatePoint(x: 0.50, y: 0.10)
+        ]
+        let cases: [(BeautyObservedFaceSupport?, Bool, Bool)] = [
+            (BeautyObservedFaceSupport(contour: contour), true, false),
+            (BeautyObservedFaceSupport(medianLine: medianLine), false, true),
+            (BeautyObservedFaceSupport(), false, false),
+            (nil, false, false)
+        ]
+
+        for (support, expectsContour, expectsMedian) in cases {
+            var detector = VisionFaceDetector { _ in
+                [VisionDetectionObservation(
+                    visionBounds: CoordinateRect(x: 0.10, y: 0.20, width: 0.80, height: 0.60),
+                    observedFaceSupport: support
+                )]
+            }
+
+            let mapped = detector.detect(metadata: metadata())
+                .observations.first?.observedFaceSupport
+            XCTAssertEqual(mapped?.contour != nil, expectsContour)
+            XCTAssertEqual(mapped?.medianLine != nil, expectsMedian)
+            XCTAssertEqual(mapped != nil, expectsContour || expectsMedian)
+        }
+    }
+
+    func testSUPP02MalformedOrOversizedContourPreservesValidMedianAndFace() {
+        let validMedian = [
+            CoordinatePoint(x: 0.50, y: 0.90),
+            CoordinatePoint(x: 0.50, y: 0.10)
+        ]
+        let invalidContours = [
+            [CoordinatePoint(x: .nan, y: 0.20), CoordinatePoint(x: 0.90, y: 0.20)],
+            Array(repeating: CoordinatePoint(x: 0.50, y: 0.50), count: 33)
+        ]
+
+        for contour in invalidContours {
+            var detector = VisionFaceDetector { _ in
+                [VisionDetectionObservation(
+                    visionBounds: CoordinateRect(x: 0.10, y: 0.20, width: 0.80, height: 0.60),
+                    observedFaceSupport: BeautyObservedFaceSupport(
+                        contour: contour,
+                        medianLine: validMedian
+                    )
+                )]
+            }
+
+            let result = detector.detect(metadata: metadata())
+            XCTAssertEqual(result.observations.count, 1)
+            XCTAssertNil(result.observations[0].observedFaceSupport?.contour)
+            XCTAssertEqual(result.observations[0].observedFaceSupport?.medianLine?.count, 2)
+        }
+    }
+
+    func testSUPP02MalformedOrOversizedMedianPreservesValidContourAndFace() {
+        let validContour = [
+            CoordinatePoint(x: 0.10, y: 0.20),
+            CoordinatePoint(x: 0.90, y: 0.20)
+        ]
+        let invalidMedians = [
+            [CoordinatePoint(x: 0.50, y: -0.01), CoordinatePoint(x: 0.50, y: 0.10)],
+            Array(repeating: CoordinatePoint(x: 0.50, y: 0.50), count: 17)
+        ]
+
+        for medianLine in invalidMedians {
+            var detector = VisionFaceDetector { _ in
+                [VisionDetectionObservation(
+                    visionBounds: CoordinateRect(x: 0.10, y: 0.20, width: 0.80, height: 0.60),
+                    observedFaceSupport: BeautyObservedFaceSupport(
+                        contour: validContour,
+                        medianLine: medianLine
+                    )
+                )]
+            }
+
+            let result = detector.detect(metadata: metadata())
+            XCTAssertEqual(result.observations.count, 1)
+            XCTAssertEqual(result.observations[0].observedFaceSupport?.contour?.count, 2)
+            XCTAssertNil(result.observations[0].observedFaceSupport?.medianLine)
+        }
+    }
+
+    func testSUPP02FaceSupportWithInvalidSharedBoundsKeepsObservationLevelFailure() {
+        var detector = VisionFaceDetector { _ in
+            [VisionDetectionObservation(
+                observedFaceSupport: BeautyObservedFaceSupport(
+                    contour: [
+                        CoordinatePoint(x: 0.10, y: 0.20),
+                        CoordinatePoint(x: 0.90, y: 0.20)
+                    ]
+                )
+            )]
+        }
+
+        let result = detector.detect(metadata: metadata())
+
+        XCTAssertEqual(result.observations, [])
+        XCTAssertEqual(result.summary.availability, .partial)
+        XCTAssertEqual(result.summary.reasons, [.mappingFailed])
+        assertNoRawVisionDiagnostics(in: String(describing: result.summary))
+    }
+
+    func testSUPP04ConsecutiveRequestsCallProviderOnceAndRetainNoPriorFaceSupport() {
+        let provider = FaceSupportObservationProvider()
+        var detector = VisionFaceDetector(observationProvider: provider.call)
+
+        let first = detector.detect(metadata: metadata())
+        let second = detector.detect(metadata: metadata())
+
+        XCTAssertEqual(provider.invocationCount, 2)
+        XCTAssertNotNil(first.observations.first?.observedFaceSupport?.contour)
+        XCTAssertNil(second.observations.first?.observedFaceSupport)
+    }
+
     func testPIPE07DetectorUnavailableFailureUsesStructuredReasonOnly() {
         var detector = VisionFaceDetector { _ in
             throw VisionFaceDetector.Failure.detectorUnavailable
@@ -230,9 +380,11 @@ final class VisionFaceDetectorTests: XCTestCase {
         assertNoRawVisionDiagnostics(in: String(describing: result.summary))
     }
 
-    func testDefaultStillImageProviderMapsUsableFaceWithoutRawPayload() throws {
+    func testDefaultStillImageProviderReportsAggregateObservedFaceAvailabilityWithoutRawPayload() throws {
         var detector = VisionFaceDetector()
         var summaries: [String] = []
+        var usableFaceCount = 0
+        var completeSupportCount = 0
 
         for fixtureURL in try portraitFixtureURLs() {
             guard let image = CIImage(contentsOf: fixtureURL, options: [.applyOrientationProperty: true]) else {
@@ -248,14 +400,19 @@ final class VisionFaceDetectorTests: XCTestCase {
             assertNoRawVisionDiagnostics(in: String(describing: result.summary))
 
             if result.summary.availability == .usable {
+                usableFaceCount += result.observations.count
                 XCTAssertGreaterThanOrEqual(result.summary.faceCount, 1)
                 XCTAssertEqual(result.summary.usedFaceCount, 1)
                 XCTAssertEqual(result.observations.count, 1)
-                return
+                if result.observations.first?.observedFaceSupport?.contour != nil,
+                   result.observations.first?.observedFaceSupport?.medianLine != nil {
+                    completeSupportCount += 1
+                }
             }
         }
 
-        XCTFail("Expected at least one portrait fixture to produce usable redacted detection; summaries=\(summaries.joined(separator: ","))")
+        XCTAssertGreaterThan(usableFaceCount, 0, "Expected usable aggregate detection; summaries=\(summaries.joined(separator: ","))")
+        XCTAssertGreaterThan(completeSupportCount, 0, "Expected complete aggregate observed-face support")
     }
 
     private func metadata() -> BeautyInputMetadata {
@@ -310,6 +467,48 @@ final class VisionFaceDetectorTests: XCTestCase {
                 line: line
             )
         }
+    }
+
+    private func assertPoint(
+        _ point: CoordinatePoint,
+        x: Double,
+        y: Double,
+        accuracy: Double = 0.000_001,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(point.x, x, accuracy: accuracy, file: file, line: line)
+        XCTAssertEqual(point.y, y, accuracy: accuracy, file: file, line: line)
+    }
+}
+
+private final class FaceSupportObservationProvider: @unchecked Sendable {
+    private let lock = NSLock()
+    private var invocations = 0
+
+    var invocationCount: Int {
+        lock.withLock { invocations }
+    }
+
+    func call(_ input: VisionFaceDetectionInput) throws -> [VisionDetectionObservation] {
+        let invocation = lock.withLock {
+            invocations += 1
+            return invocations
+        }
+        let support = invocation == 1
+            ? BeautyObservedFaceSupport(
+                contour: [
+                    CoordinatePoint(x: 0.10, y: 0.20),
+                    CoordinatePoint(x: 0.90, y: 0.20)
+                ]
+            )
+            : nil
+        return [
+            VisionDetectionObservation(
+                visionBounds: CoordinateRect(x: 0.10, y: 0.20, width: 0.80, height: 0.60),
+                observedFaceSupport: support
+            )
+        ]
     }
 }
 
