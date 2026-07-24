@@ -60,6 +60,14 @@ enum BeautyFaceGeometryAdapter {
                     bounds: $0
                 )
             }
+        let observedBrowSupport = observation.imageBounds
+            .flatMap(exactPositiveBounds)
+            .flatMap {
+                validatedBrowSupport(
+                    observation.observedEyebrowSupport,
+                    bounds: $0
+                )
+            }
 
         let observedSupports = observation.observedEyeSupport
         if observedSupports != nil, observation.observedEyeOrder != .canonical {
@@ -77,7 +85,8 @@ enum BeautyFaceGeometryAdapter {
                 lowerLips: landmarks.contains(.outerLips) ? lowerLips(in: bounds) : [],
                 innerLips: landmarks.contains(.innerLips) ? innerLips(in: bounds) : [],
                 leftEyeSupport: nil,
-                rightEyeSupport: nil
+                rightEyeSupport: nil,
+                observedEyebrowSupport: observedBrowSupport
             )
         }
         let supportsBySide = observedSupports.map { supports in
@@ -132,7 +141,8 @@ enum BeautyFaceGeometryAdapter {
             lowerLips: landmarks.contains(.outerLips) ? lowerLips(in: bounds) : [],
             innerLips: landmarks.contains(.innerLips) ? innerLips(in: bounds) : [],
             leftEyeSupport: leftSupport,
-            rightEyeSupport: rightSupport
+            rightEyeSupport: rightSupport,
+            observedEyebrowSupport: observedBrowSupport
         )
     }
 
