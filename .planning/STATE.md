@@ -3,14 +3,17 @@ gsd_state_version: 1.0
 milestone: v1.13
 milestone_name: Eyebrow Geometry Controls
 status: planning
-last_updated: "2026-07-24T04:18:20.254Z"
+stopped_at: Roadmap created; next $gsd-discuss-phase 49
+last_updated: "2026-07-24T04:22:55.000Z"
 last_activity: 2026-07-24
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
   percent: 0
+current_phase: 49
+current_phase_name: Public Contract and Observed Eyebrow Support
 ---
 
 # Project State
@@ -20,14 +23,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-24)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Planning the next milestone
+**Current focus:** Phase 49 — Public Contract and Observed Eyebrow Support
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 49 — Public Contract and Observed Eyebrow Support
 Plan: —
-Status: Defining requirements
-Last activity: 2026-07-24 — Milestone v1.13 started
+Status: Ready to discuss
+Last activity: 2026-07-24 — v1.13 requirements and Phase 49-52 roadmap created
 
 ### Phase 48 Face Safety and Scoped Closeout Result
 
@@ -377,10 +380,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-24T02:56:52.689Z
-Stopped at: v1.12 milestone complete; next $gsd-new-milestone
+Last session: 2026-07-24T04:22:55.000Z
+Stopped at: v1.13 roadmap created; next $gsd-discuss-phase 49
 Resume file: None
 
 ## Operator Next Steps
 
-- Start the next milestone with /gsd-new-milestone
+- Run `$gsd-discuss-phase 49` to lock v1.13 public semantics, observed-support invariants, and phase-specific implementation choices.

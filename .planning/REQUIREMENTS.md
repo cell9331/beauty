@@ -77,14 +77,36 @@
 
 ## Traceability
 
-Roadmap mapping is populated during Phase 49-52 creation.
+| Requirement | Phase | Status |
+| --- | --- | --- |
+| BROW-01 | Phase 49 | Pending |
+| BROW-02 | Phase 49 | Pending |
+| SUPP-01 | Phase 49 | Pending |
+| SUPP-02 | Phase 49 | Pending |
+| SUPP-03 | Phase 49 | Pending |
+| GEOM-01 | Phase 50 | Pending |
+| GEOM-02 | Phase 50 | Pending |
+| GEOM-03 | Phase 50 | Pending |
+| GEOM-04 | Phase 50 | Pending |
+| GEOM-05 | Phase 50 | Pending |
+| GEOM-06 | Phase 50 | Pending |
+| GEOM-07 | Phase 50 | Pending |
+| PIPE-01 | Phase 50 | Pending |
+| PIPE-02 | Phase 50 | Pending |
+| OUT-01 | Phase 51 | Pending |
+| OUT-02 | Phase 51 | Pending |
+| OUT-03 | Phase 51 | Pending |
+| SAFE-01 | Phase 52 | Pending |
+| SAFE-02 | Phase 52 | Pending |
+| SAFE-03 | Phase 52 | Pending |
+| DOC-01 | Phase 52 | Pending |
 
 **Coverage:**
 
 - v1.13 requirements: 21 total
-- Mapped to phases: pending
-- Unmapped: pending
+- Mapped to phases: 21
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-07-24*
-*Last updated: 2026-07-24 after v1.13 requirement definition*
+*Last updated: 2026-07-24 after v1.13 roadmap creation*

@@ -34,7 +34,9 @@
 | Milestone | v1.13 Eyebrow Geometry Controls |
 | Scope | SDK-SPM-only implementation of exactly seven `眉毛` rows: 上下、粗细、长短、间距、眉头间距、倾斜、眉峰. |
 | Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve the 52-field compatibility baseline and all shipped face/eye/nose/mouth output. |
-| Current step | Define v1.13 requirements and Phase 49-52 roadmap, then begin Phase 49 discussion/planning. |
+| Requirements | 21/21 mapped across Phase 49-52; no unmapped requirement. |
+| Roadmap | Phase 49 contract/support → Phase 50 geometry/pipeline → Phase 51 strict output → Phase 52 safety/promotion. |
+| Current step | Run `$gsd-discuss-phase 49`, then plan and execute the first phase. |
 
 Planned follow-on milestones:
 
