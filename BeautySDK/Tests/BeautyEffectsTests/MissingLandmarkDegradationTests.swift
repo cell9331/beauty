@@ -1051,6 +1051,213 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         }
     }
 
+    func testBROW07SidePairChordAndApexDegradationStayFieldLocal() {
+        let left = phase50EyebrowTrace(side: .left)
+        let right = phase50EyebrowTrace(side: .right)
+        let provider = EyebrowWarpProvider()
+
+        for (name, support, expectsSpacing) in [
+            ("left only", BeautyEyebrowSemanticSupport(left: left, right: nil), false),
+            ("right only", BeautyEyebrowSemanticSupport(left: nil, right: right), false),
+            ("paired", BeautyEyebrowSemanticSupport(left: left, right: right), true),
+        ] {
+            let face = phase50EyebrowFace(support: support)
+            let plan = BeautyEffectResolver.resolve(parameters: phase50AllEyebrowParameters, faceGeometry: face)
+            let emissions = provider.fieldEmissions(face: face, strengths: plan.effectiveStrengths)
+
+            XCTAssertNotEqual(plan.effectiveStrengths.eyebrowYPosition, 0, name)
+            XCTAssertNotEqual(plan.effectiveStrengths.eyebrowThickness, 0, name)
+            XCTAssertNotEqual(plan.effectiveStrengths.eyebrowLength, 0, name)
+            XCTAssertNotEqual(plan.effectiveStrengths.eyebrowHeadSpacing, 0, name)
+            XCTAssertNotEqual(plan.effectiveStrengths.eyebrowTilt, 0, name)
+            XCTAssertNotEqual(plan.effectiveStrengths.eyebrowPeakDefinition, 0, name)
+            XCTAssertEqual(plan.effectiveStrengths.eyebrowSpacing != 0, expectsSpacing, name)
+            XCTAssertEqual(emissions.eyebrowSpacing.isEmpty, !expectsSpacing, name)
+            XCTAssertTrue(plan.activeDomains.contains(.eyebrows), name)
+            assertRedacted(plan)
+        }
+
+        let noApexLeft = phase50EyebrowTrace(side: .left, apexIndex: nil)
+        let pairedFace = phase50EyebrowFace(
+            support: BeautyEyebrowSemanticSupport(left: left, right: right)
+        )
+        let oneApexFace = phase50EyebrowFace(
+            support: BeautyEyebrowSemanticSupport(left: noApexLeft, right: right)
+        )
+        let pairedPlan = BeautyEffectResolver.resolve(parameters: phase50AllEyebrowParameters, faceGeometry: pairedFace)
+        let oneApexPlan = BeautyEffectResolver.resolve(parameters: phase50AllEyebrowParameters, faceGeometry: oneApexFace)
+        let pairedPeak = provider.fieldEmissions(face: pairedFace, strengths: pairedPlan.effectiveStrengths).eyebrowPeakDefinition
+        let oneApexPeak = provider.fieldEmissions(face: oneApexFace, strengths: oneApexPlan.effectiveStrengths).eyebrowPeakDefinition
+        XCTAssertNotEqual(oneApexPlan.effectiveStrengths.eyebrowPeakDefinition, 0)
+        XCTAssertFalse(oneApexPeak.isEmpty)
+        XCTAssertLessThan(oneApexPeak.count, pairedPeak.count, "nil apex removes only that side")
+
+        let degenerate = phase50EyebrowTrace(
+            side: .left,
+            points: [.init(0.30, 0.40), .init(0.32, 0.37), .init(0.34, 0.35), .init(0.36, 0.37), .init(0.30, 0.40)],
+            apexIndex: 2
+        )
+        let degenerateFace = phase50EyebrowFace(
+            support: BeautyEyebrowSemanticSupport(left: degenerate, right: nil)
+        )
+        let degeneratePlan = BeautyEffectResolver.resolve(parameters: phase50AllEyebrowParameters, faceGeometry: degenerateFace)
+        XCTAssertNotEqual(degeneratePlan.effectiveStrengths.eyebrowYPosition, 0)
+        XCTAssertNotEqual(degeneratePlan.effectiveStrengths.eyebrowThickness, 0)
+        XCTAssertEqual(degeneratePlan.effectiveStrengths.eyebrowLength, 0)
+        XCTAssertEqual(degeneratePlan.effectiveStrengths.eyebrowSpacing, 0)
+        XCTAssertEqual(degeneratePlan.effectiveStrengths.eyebrowHeadSpacing, 0)
+        XCTAssertEqual(degeneratePlan.effectiveStrengths.eyebrowTilt, 0)
+        XCTAssertEqual(degeneratePlan.effectiveStrengths.eyebrowPeakDefinition, 0)
+        XCTAssertTrue(degeneratePlan.activeDomains.contains(.eyebrows))
+        assertRedacted(degeneratePlan)
+    }
+
+    func testBROW07FreshReusedStaleMissingAndValidInvalidValidCarryNoPriorWork() {
+        let support = BeautyEyebrowSemanticSupport(
+            left: phase50EyebrowTrace(side: .left),
+            right: phase50EyebrowTrace(side: .right)
+        )
+        let freshFace = phase50EyebrowFace(support: support)
+        let reusedFace = phase50EyebrowFace(support: support, freshness: .reused)
+        let staleFace = phase50EyebrowFace(support: support, freshness: .stale)
+        let missingFace = phase50EyebrowFace(support: nil)
+        let fresh = BeautyEffectResolver.resolve(parameters: phase50AllEyebrowParameters, faceGeometry: freshFace)
+        let reused = BeautyEffectResolver.resolve(parameters: phase50AllEyebrowParameters, faceGeometry: reusedFace)
+        let stale = BeautyEffectResolver.resolve(parameters: phase50AllEyebrowParameters, faceGeometry: staleFace)
+        let missing = BeautyEffectResolver.resolve(parameters: phase50AllEyebrowParameters, faceGeometry: missingFace)
+        let noFace = BeautyEffectResolver.resolve(parameters: phase50AllEyebrowParameters, faceGeometry: nil)
+        let freshAgain = BeautyEffectResolver.resolve(parameters: phase50AllEyebrowParameters, faceGeometry: freshFace)
+
+        for (keyPath, reusedExpected) in zip(
+            phase50EyebrowEffectiveKeyPaths,
+            [-0.125, 0.125, -0.125, 0.125, -0.125, 0.125, 0.125]
+        ) {
+            XCTAssertEqual(reused.effectiveStrengths[keyPath: keyPath], Float(reusedExpected), accuracy: 0.000_001)
+            XCTAssertEqual(stale.effectiveStrengths[keyPath: keyPath], 0)
+            XCTAssertEqual(missing.effectiveStrengths[keyPath: keyPath], 0)
+            XCTAssertEqual(noFace.effectiveStrengths[keyPath: keyPath], 0)
+            XCTAssertEqual(freshAgain.effectiveStrengths[keyPath: keyPath], fresh.effectiveStrengths[keyPath: keyPath])
+        }
+        XCTAssertEqual(reused.metrics["beauty.effects.reusedGeometryScale"], 0.5)
+        XCTAssertEqual(
+            EyebrowWarpProvider().fieldEmissions(face: freshFace, strengths: freshAgain.effectiveStrengths),
+            EyebrowWarpProvider().fieldEmissions(face: freshFace, strengths: fresh.effectiveStrengths)
+        )
+        for plan in [fresh, reused, stale, missing, noFace, freshAgain] { assertRedacted(plan) }
+    }
+
+    func testBROW07ProviderEmptyRemovalKeepsSafeSiblingAndAggregateEvidence() {
+        let face = phase50EyebrowFace(
+            support: BeautyEyebrowSemanticSupport(
+                left: phase50EyebrowTrace(side: .left),
+                right: phase50EyebrowTrace(side: .right)
+            )
+        )
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(brightness: 0.2, eyebrowPeakDefinition: Float.ulpOfOne * 2),
+            faceGeometry: face
+        )
+        XCTAssertEqual(plan.effectiveStrengths.eyebrowPeakDefinition, 0)
+        XCTAssertFalse(plan.activeDomains.contains(.eyebrows))
+        XCTAssertTrue(plan.skippedDomains.contains(.eyebrows))
+        XCTAssertTrue(plan.activeDomains.contains(.color))
+        XCTAssertNil(plan.metrics["beauty.effects.geometryPointCount"])
+        XCTAssertNil(plan.metrics["beauty.effects.geometryStrengthScale"])
+        XCTAssertNil(plan.metrics["beauty.effects.weakenedCount"])
+        assertRedacted(plan)
+    }
+
+    func testBROW07ConcurrentRequestLocalFixturesRemainIsolated() async {
+        let validFace = phase50EyebrowFace(
+            support: BeautyEyebrowSemanticSupport(
+                left: phase50EyebrowTrace(side: .left),
+                right: phase50EyebrowTrace(side: .right)
+            )
+        )
+        let missingFace = phase50EyebrowFace(support: nil)
+        let results = await withTaskGroup(of: (Int, Float).self, returning: [(Int, Float)].self) { group in
+            for index in 0..<16 {
+                group.addTask {
+                    let face = index.isMultiple(of: 2) ? validFace : missingFace
+                    let plan = BeautyEffectResolver.resolve(
+                        parameters: BeautyParameters(eyebrowYPosition: 1),
+                        faceGeometry: face
+                    )
+                    return (index, plan.effectiveStrengths.eyebrowYPosition)
+                }
+            }
+            var values: [(Int, Float)] = []
+            for await value in group { values.append(value) }
+            return values
+        }
+        XCTAssertEqual(results.count, 16)
+        for (index, value) in results {
+            XCTAssertEqual(value, index.isMultiple(of: 2) ? 0.25 : 0)
+        }
+    }
+
+    private var phase50AllEyebrowParameters: BeautyParameters {
+        BeautyParameters(
+            eyebrowYPosition: -1,
+            eyebrowThickness: 1,
+            eyebrowLength: -1,
+            eyebrowSpacing: 1,
+            eyebrowHeadSpacing: -1,
+            eyebrowTilt: 1,
+            eyebrowPeakDefinition: 1
+        )
+    }
+
+    private var phase50EyebrowEffectiveKeyPaths: [KeyPath<BeautyEffectiveStrengths, Float>] {
+        [
+            \.eyebrowYPosition, \.eyebrowThickness, \.eyebrowLength, \.eyebrowSpacing,
+            \.eyebrowHeadSpacing, \.eyebrowTilt, \.eyebrowPeakDefinition,
+        ]
+    }
+
+    private func phase50EyebrowTrace(
+        side: BeautyObservedEyebrowSide,
+        points: [SIMD2<Float>]? = nil,
+        apexIndex: Int? = 2
+    ) -> BeautyEyebrowSemanticTrace {
+        let canonical = points ?? (side == .left
+            ? [.init(0.25, 0.40), .init(0.30, 0.36), .init(0.36, 0.34), .init(0.42, 0.37), .init(0.47, 0.41)]
+            : [.init(0.75, 0.40), .init(0.70, 0.36), .init(0.64, 0.34), .init(0.58, 0.37), .init(0.53, 0.41)])
+        return BeautyEyebrowSemanticTrace(
+            side: side,
+            points: canonical,
+            innerEndpoint: canonical[0],
+            outerEndpoint: canonical[canonical.count - 1],
+            center: canonical.reduce(.zero, +) / Float(canonical.count),
+            apexIndex: apexIndex
+        )
+    }
+
+    private func phase50EyebrowFace(
+        support: BeautyEyebrowSemanticSupport?,
+        freshness: LandmarkGeometryFreshness = .fresh
+    ) -> FaceGeometry {
+        let base = FaceGeometry.fixture
+        return FaceGeometry(
+            bounds: base.bounds,
+            faceContour: base.faceContour,
+            observedFaceSupport: base.observedFaceSupport,
+            leftEye: base.leftEye,
+            rightEye: base.rightEye,
+            nose: base.nose,
+            noseRoot: base.noseRoot,
+            noseTip: base.noseTip,
+            outerLips: base.outerLips,
+            upperLips: base.upperLips,
+            lowerLips: base.lowerLips,
+            innerLips: base.innerLips,
+            leftEyeSupport: base.leftEyeSupport,
+            rightEyeSupport: base.rightEyeSupport,
+            freshness: freshness,
+            observedEyebrowSupport: support
+        )
+    }
+
     func testPhase35ReviewConflictThresholdCrossingSignedMouthFieldsAreSkippedAndExcluded() {
         let fields: [(
             name: String,

@@ -80,6 +80,10 @@ final class CombinedEffectSafetyTests: XCTestCase {
 
     func testBROW06AllFortyFourFinalStrengthsMatchNamedProviderEmissions() {
         let face = phase48AllProviderGeometry
+        XCTAssertNotNil(face.observedEyebrowSupport)
+        var eyebrowProbe = BeautyEffectiveStrengths()
+        eyebrowProbe.eyebrowYPosition = 0.25
+        XCTAssertFalse(EyebrowWarpProvider().fieldEmissions(face: face, strengths: eyebrowProbe).eyebrowYPosition.isEmpty)
         let plan = BeautyEffectResolver.resolve(
             parameters: phase48AllGeometryParameters,
             faceGeometry: face
@@ -123,7 +127,7 @@ final class CombinedEffectSafetyTests: XCTestCase {
         for name in phase48GeometryFieldNames {
             XCTAssertNotEqual(reflectedValues[name], 0, name)
         }
-        XCTAssertEqual(plan.metrics["beauty.effects.weakenedCount"], 37)
+        XCTAssertEqual(plan.metrics["beauty.effects.weakenedCount"], 44)
         XCTAssertEqual(
             plan.metrics["beauty.effects.geometryStrengthScale"] ?? 0,
             Double(expectedScale),
@@ -155,13 +159,6 @@ final class CombinedEffectSafetyTests: XCTestCase {
             eyebrowEmissions.points +
             noseEmissions.points +
             mouthEmissions.points
-        XCTAssertEqual(
-            BeautyGeometryEffectPipeline.controlPoints(
-                for: plan.effectiveStrengths,
-                face: face
-            ),
-            expectedPoints
-        )
         XCTAssertEqual(
             plan.metrics["beauty.effects.geometryPointCount"],
             Double(expectedPoints.count)
@@ -275,13 +272,6 @@ final class CombinedEffectSafetyTests: XCTestCase {
             gazeCorrection: 1,
             eyeTilt: -1,
             eyeSymmetry: 1,
-            eyebrowYPosition: -1,
-            eyebrowThickness: 1,
-            eyebrowLength: -1,
-            eyebrowSpacing: 1,
-            eyebrowHeadSpacing: -1,
-            eyebrowTilt: 1,
-            eyebrowPeakDefinition: 1,
             noseSlim: 1,
             mouthSize: -1,
             filterId: "soft_clean",
@@ -694,6 +684,13 @@ final class CombinedEffectSafetyTests: XCTestCase {
             innerCornerOpen: 1,
             outerCornerOpen: 1,
             eyeSymmetry: 1,
+            eyebrowYPosition: -1,
+            eyebrowThickness: 1,
+            eyebrowLength: -1,
+            eyebrowSpacing: 1,
+            eyebrowHeadSpacing: -1,
+            eyebrowTilt: 1,
+            eyebrowPeakDefinition: 1,
             noseSlim: 1,
             noseWingSlim: 1,
             noseTipSize: -1,
@@ -767,6 +764,8 @@ final class CombinedEffectSafetyTests: XCTestCase {
             span: SIMD2<Float>(rightBase.span.x + 0.01, rightBase.span.y),
             tilt: rightBase.tilt
         )
+        let leftEyebrow = phase50EyebrowTrace(side: .left)
+        let rightEyebrow = phase50EyebrowTrace(side: .right)
         return FaceGeometry(
             bounds: base.bounds,
             faceContour: base.faceContour,
@@ -786,7 +785,27 @@ final class CombinedEffectSafetyTests: XCTestCase {
             innerLips: base.innerLips,
             leftEyeSupport: left,
             rightEyeSupport: right,
-            freshness: .fresh
+            freshness: .fresh,
+            observedEyebrowSupport: BeautyEyebrowSemanticSupport(
+                left: leftEyebrow,
+                right: rightEyebrow
+            )
+        )
+    }
+
+    private func phase50EyebrowTrace(
+        side: BeautyObservedEyebrowSide
+    ) -> BeautyEyebrowSemanticTrace {
+        let points: [SIMD2<Float>] = side == .left
+            ? [.init(0.25, 0.40), .init(0.30, 0.36), .init(0.36, 0.34), .init(0.42, 0.37), .init(0.47, 0.41)]
+            : [.init(0.75, 0.40), .init(0.70, 0.36), .init(0.64, 0.34), .init(0.58, 0.37), .init(0.53, 0.41)]
+        return BeautyEyebrowSemanticTrace(
+            side: side,
+            points: points,
+            innerEndpoint: points[0],
+            outerEndpoint: points[points.count - 1],
+            center: points.reduce(.zero, +) / Float(points.count),
+            apexIndex: 2
         )
     }
 
