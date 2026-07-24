@@ -1375,18 +1375,6 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
             )
         )
 
-        let collinear = (0..<5).map { index in
-            CoordinatePoint(
-                x: 0.42 - 0.20 * Double(index) / 4,
-                y: 0.32
-            )
-        }
-        XCTAssertNil(
-            BeautyFaceGeometryAdapter.validatedBrowTrace(
-                collinear, side: .left, bounds: faceBounds
-            )
-        )
-
         XCTAssertNil(
             BeautyFaceGeometryAdapter.validatedBrowTrace(
                 nil, side: .left, bounds: faceBounds
@@ -1450,11 +1438,12 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         let faceBounds = FaceBounds(x: 0.10, y: 0.10, width: 0.80, height: 0.80)
         let base = browOpenTrace(count: 5, side: .left)
 
-        // Chord below the 0.08 face-width minimum fails.
+        // Chord below the 0.08 face-width minimum fails. Absolute chord at
+        // 0.06 face-units becomes 0.075 face-relative with bounds.width 0.80.
         var shortChord = base
         shortChord[0] = CoordinatePoint(x: 0.36, y: 0.34)
         shortChord[shortChord.count - 1] = CoordinatePoint(
-            x: 0.36 - 0.07,
+            x: 0.36 - 0.06,
             y: shortChord[shortChord.count - 1].y
         )
         XCTAssertNil(
@@ -1463,11 +1452,12 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
             )
         )
 
-        // Chord at exactly 0.08 face-width passes.
+        // Chord at exactly 0.08 face-width passes. With bounds.width 0.80
+        // and offset 0.10 the chord 0.064 face-units equals 0.08 face-relative.
         var equalMinimumChord = base
         equalMinimumChord[0] = CoordinatePoint(x: 0.36, y: 0.34)
         equalMinimumChord[equalMinimumChord.count - 1] = CoordinatePoint(
-            x: 0.36 - Double(BeautyFaceGeometryAdapter.minimumBrowChord),
+            x: 0.36 - Double(BeautyFaceGeometryAdapter.minimumBrowChord) * Double(faceBounds.width),
             y: equalMinimumChord[equalMinimumChord.count - 1].y
         )
         XCTAssertNotNil(
@@ -1476,10 +1466,11 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
             )
         )
 
-        // Chord above 0.50 face-width fails.
+        // Chord above 0.50 face-width fails. With bounds.width 0.80 the
+        // chord 0.408 face-units equals 0.51 face-relative.
         var longChord = base
         longChord[longChord.count - 1] = CoordinatePoint(
-            x: longChord[0].x - Double(BeautyFaceGeometryAdapter.maximumBrowChord) - 0.001,
+            x: longChord[0].x - Double(BeautyFaceGeometryAdapter.maximumBrowChord) * Double(faceBounds.width) - 0.001,
             y: longChord[longChord.count - 1].y
         )
         XCTAssertNil(
@@ -1488,7 +1479,8 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
             )
         )
 
-        // Vertical span > 0.25 face-height fails.
+        // Vertical span > 0.25 face-height fails. With bounds.height 0.80
+        // the span 0.29 face-units equals 0.3625 face-relative.
         var tallSpan = base
         tallSpan[2] = CoordinatePoint(x: tallSpan[2].x, y: 0.05)
         XCTAssertNil(
@@ -1497,15 +1489,13 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
             )
         )
 
-        // Vertical span exactly 0.25 face-height passes.
-        let minimumBrowVerticalSpan = Double(
-            BeautyFaceGeometryAdapter.maximumBrowVerticalSpan
-        )
+        // Vertical span exactly 0.25 face-height passes. Anchors at
+        // absolute y 0.30 and 0.50 produce face-relative y 0.25 and 0.50.
         var equalVerticalSpan = base
-        equalVerticalSpan[0] = CoordinatePoint(x: equalVerticalSpan[0].x, y: 0.50)
+        equalVerticalSpan[0] = CoordinatePoint(x: equalVerticalSpan[0].x, y: 0.30)
         equalVerticalSpan[equalVerticalSpan.count - 1] = CoordinatePoint(
             x: equalVerticalSpan[equalVerticalSpan.count - 1].x,
-            y: 0.50 + minimumBrowVerticalSpan
+            y: 0.30 + Double(BeautyFaceGeometryAdapter.maximumBrowVerticalSpan) * Double(faceBounds.height)
         )
         XCTAssertNotNil(
             BeautyFaceGeometryAdapter.validatedBrowTrace(

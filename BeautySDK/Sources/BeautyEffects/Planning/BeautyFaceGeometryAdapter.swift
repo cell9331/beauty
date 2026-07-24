@@ -430,7 +430,52 @@ enum BeautyFaceGeometryAdapter {
         side: BeautyObservedEyebrowSide,
         bounds: FaceBounds
     ) -> BeautyEyebrowSemanticTrace? {
-        nil
+        guard let input else { return nil }
+        guard (minimumBrowPointCount...maximumBrowPointCount).contains(input.count) else {
+            return nil
+        }
+        guard browInputIsValid(input) else {
+            return nil
+        }
+        guard !browPathHasNonAdjacentIntersections(input) else {
+            return nil
+        }
+        guard let local = faceRelativePoints(input, bounds: bounds),
+              let first = local.first,
+              let last = local.last
+        else {
+            return nil
+        }
+        let chordLength = Float(abs(last.x - first.x))
+        guard chordLength.isFinite,
+              browChordIsValid(chordLength)
+        else {
+            return nil
+        }
+        let minY = local.map(\.y).min()!
+        let maxY = local.map(\.y).max()!
+        let verticalSpan = Float(maxY - minY)
+        guard verticalSpan.isFinite,
+              browVerticalSpanIsValid(verticalSpan)
+        else {
+            return nil
+        }
+        let points = input.map { SIMD2<Float>(Float($0.x), Float($0.y)) }
+        guard let innerPoint = points.first,
+              let outerPoint = points.last
+        else {
+            return nil
+        }
+        let center = points.reduce(.zero, +) / Float(points.count)
+        let apexIndex = browApexIndex(local: local)
+        return BeautyEyebrowSemanticTrace(
+            side: side,
+            points: points,
+            innerEndpoint: innerPoint,
+            outerEndpoint: outerPoint,
+            center: center,
+            apexIndex: apexIndex
+        )
     }
 
     /// Validates the independently optional left and right sides and bundles
@@ -441,7 +486,124 @@ enum BeautyFaceGeometryAdapter {
         _ observed: BeautyObservedEyebrowSupport?,
         bounds: FaceBounds
     ) -> BeautyEyebrowSemanticSupport? {
-        nil
+        guard let observed else { return nil }
+        let left = validatedBrowTrace(observed.left, side: .left, bounds: bounds)
+        let right = validatedBrowTrace(observed.right, side: .right, bounds: bounds)
+        guard left != nil || right != nil else { return nil }
+        return BeautyEyebrowSemanticSupport(left: left, right: right)
+    }
+
+    private static func browInputIsValid(_ points: [CoordinatePoint]) -> Bool {
+        guard points.allSatisfy({
+            $0.isFinite
+                && (0...1).contains($0.x)
+                && (0...1).contains($0.y)
+        }) else {
+            return false
+        }
+        return Set(points.map { BrowPointKey($0) }).count == points.count
+    }
+
+    private static func browPathHasNonAdjacentIntersections(
+        _ points: [CoordinatePoint]
+    ) -> Bool {
+        let segmentCount = points.count - 1
+        guard segmentCount >= 3 else {
+            return false
+        }
+        for firstIndex in 0..<segmentCount {
+            let secondStart = firstIndex + 2
+            guard secondStart < segmentCount else {
+                continue
+            }
+            for secondIndex in secondStart..<segmentCount {
+                if faceSegmentsIntersect(
+                    points[firstIndex],
+                    points[firstIndex + 1],
+                    points[secondIndex],
+                    points[secondIndex + 1]
+                ) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    /// Computes the unique interior index with greatest face-up perpendicular
+    /// displacement above the projection epsilon. Returns `nil` when the chord
+    /// collapses, when no interior point has a finite displacement above the
+    /// epsilon, or when multiple interior points tie within the epsilon.
+    private static func browApexIndex(
+        local: [(x: Double, y: Double)]
+    ) -> Int? {
+        let interiorIndices = Array(1..<(local.count - 1))
+        guard !interiorIndices.isEmpty else { return nil }
+        let start = local.first!
+        let end = local.last!
+        let chordX = end.x - start.x
+        let chordY = end.y - start.y
+        let chordLengthSquared = chordX * chordX + chordY * chordY
+        guard chordLengthSquared.isFinite,
+              browProjectionMagnitudeIsValid(Float(sqrt(chordLengthSquared)))
+        else {
+            return nil
+        }
+        let chordLength = sqrt(chordLengthSquared)
+
+        // Choose the perpendicular to the chord with the smaller (more
+        // negative) y component so positive projection points face-up.
+        let candidateLeft = (x: -chordY, y: chordX)
+        let candidateRight = (x: chordY, y: -chordX)
+        let faceUpX: Double
+        let faceUpY: Double
+        if candidateLeft.y < candidateRight.y {
+            faceUpX = candidateLeft.x / chordLength
+            faceUpY = candidateLeft.y / chordLength
+        } else {
+            faceUpX = candidateRight.x / chordLength
+            faceUpY = candidateRight.y / chordLength
+        }
+
+        var bestIndex: Int?
+        var bestDisplacement: Double = -.infinity
+        var tiedCount = 0
+        for index in interiorIndices {
+            let p = local[index]
+            let dx = p.x - start.x
+            let dy = p.y - start.y
+            let signedDisplacement = faceUpX * dx + faceUpY * dy
+            guard signedDisplacement.isFinite else {
+                return nil
+            }
+            if signedDisplacement
+                > bestDisplacement + Double(minimumBrowProjectionMagnitude)
+            {
+                bestDisplacement = signedDisplacement
+                bestIndex = index
+                tiedCount = 1
+            } else if abs(signedDisplacement - bestDisplacement)
+                <= Double(minimumBrowProjectionMagnitude)
+            {
+                tiedCount += 1
+            }
+        }
+        guard tiedCount == 1, let bestIndex,
+              browProjectionMagnitudeIsValid(Float(bestDisplacement))
+        else {
+            return nil
+        }
+        return bestIndex
+    }
+
+    private struct BrowPointKey: Hashable {
+        let x: UInt64
+        let y: UInt64
+
+        init(_ point: CoordinatePoint) {
+            x = point.x.bitPattern
+            y = point.y.bitPattern
+        }
     }
 
     static func validatedFaceContour(
