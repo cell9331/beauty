@@ -36,7 +36,7 @@
 | Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve legacy 52-key compatibility and all shipped face/eye/nose/mouth output while the current model is exactly 59 stored fields. |
 | Requirements | 21/21 mapped across Phase 49-52; no unmapped requirement. |
 | Roadmap | Phase 49 contract/support → Phase 50 geometry/pipeline → Phase 51 strict output → Phase 52 safety/promotion. |
-| Current step | Phase 50 Plans 50-01 and 50-02 complete; proceed sequentially to Plan 50-03 resolver integration. |
+| Current step | Phase 50 Plans 50-01 through 50-03 complete; proceed sequentially to Plan 50-04 conflict arithmetic. |
 
 Phase 49 closeout record (2026-07-24):
 
@@ -53,6 +53,22 @@ Planned follow-on milestones:
 - v1.16: `去双下巴`, `去双下巴 Pro`, and narrow facial-feature closeout.
 
 ## 4. Completed
+
+### C-2026-07-24-phase-50-plan-03-eyebrow-resolver-integration
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-24 |
+| Scope | Routed seven eyebrow intents through provisional caps, exact reuse scaling, provider preflight, exact 44-pass convergence, and aggregate-only final resolver evidence. |
+| Commits | TDD routing `e5141d5` / `8574e02`; TDD lifecycle `5c57fcf` / `15f9c70`. |
+| Verification | Resolver suite passes 26/26; provider suite passes 11/11; boundary self-test passes 4/4; source locks and `git diff --check` pass. |
+| Boundary | Conflict arithmetic, unified dispatch/facade evidence, decoded output, final calibration, exhaustive closure, promotion, Demo/UI, dependency/resource/model/network, and release claims remain later-plan work. |
+
+Outcome:
+
+- All seven normalized eyebrow fields reach same-named provisional `0.25` effective strengths and aggregate `.eyebrows` activity without aliasing `.eyes` or `.faceShape`.
+- Fresh work stays full, reused work scales once by exact `0.5`, stale/no-face work zeros, and provider-empty fields are removed locally before final evidence.
+- Fixed `eyebrow_inputs_missing`, aggregate `beauty.effects.skippedEyebrowDomains`, and total geometry point count disclose no side, support, coordinate, or provider detail.
 
 ### C-2026-07-24-phase-50-plan-02-independent-eyebrow-provider
 

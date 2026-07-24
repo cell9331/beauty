@@ -18,18 +18,18 @@
 
 ### Independent Eyebrow Geometry
 
-- [ ] **GEOM-01**: Signed eyebrow vertical position translates eligible complete brow traces up or down without moving the eyes or aliasing eye vertical position.
-- [ ] **GEOM-02**: Signed eyebrow thickness performs bounded trace-normal expansion or compression inside a protected brow-local strip without makeup, texture synthesis, or resource placement.
-- [ ] **GEOM-03**: Signed eyebrow length extends or contracts outer endpoint neighborhoods while preserving inner heads and avoiding whole-brow scaling.
-- [ ] **GEOM-04**: Signed overall eyebrow spacing translates complete paired brows symmetrically around the face center.
-- [ ] **GEOM-05**: Signed eyebrow-head spacing moves only canonical inner endpoint neighborhoods and remains distinguishable from overall spacing.
-- [ ] **GEOM-06**: Signed eyebrow tilt rotates each eligible brow locally around its center and preserves direction across orientation and mirroring.
-- [ ] **GEOM-07**: Positive-only eyebrow peak definition adjusts a bounded interior apex relative to the endpoint chord without translating the whole brow.
+- [x] **GEOM-01**: Signed eyebrow vertical position translates eligible complete brow traces up or down without moving the eyes or aliasing eye vertical position.
+- [x] **GEOM-02**: Signed eyebrow thickness performs bounded trace-normal expansion or compression inside a protected brow-local strip without makeup, texture synthesis, or resource placement.
+- [x] **GEOM-03**: Signed eyebrow length extends or contracts outer endpoint neighborhoods while preserving inner heads and avoiding whole-brow scaling.
+- [x] **GEOM-04**: Signed overall eyebrow spacing translates complete paired brows symmetrically around the face center.
+- [x] **GEOM-05**: Signed eyebrow-head spacing moves only canonical inner endpoint neighborhoods and remains distinguishable from overall spacing.
+- [x] **GEOM-06**: Signed eyebrow tilt rotates each eligible brow locally around its center and preserves direction across orientation and mirroring.
+- [x] **GEOM-07**: Positive-only eyebrow peak definition adjusts a bounded interior apex relative to the endpoint chord without translating the whole brow.
 
 ### Resolver and Unified Pipeline
 
-- [ ] **PIPE-01**: All seven eyebrow fields have named provider emissions, field-local eligibility, provider-empty removal, resolver/facade routing, and safe continuation of eligible sibling and non-eyebrow domains.
-- [ ] **PIPE-02**: Combined face, eye, eyebrow, nose, and mouth geometry converges monotonically over one exact 44-field provider-eligible retained set whose final strengths, totals, counts, scale, warnings, metrics, and unified dispatch agree.
+- [x] **PIPE-01**: All seven eyebrow fields have named provider emissions, field-local eligibility, provider-empty removal, resolver/facade routing, and safe continuation of eligible sibling and non-eyebrow domains.
+- [x] **PIPE-02**: Combined face, eye, eyebrow, nose, and mouth geometry converges monotonically over one exact 44-field provider-eligible retained set whose final strengths, totals, counts, scale, warnings, metrics, and unified dispatch agree.
 
 ### Public-Facade Output Evidence
 
@@ -84,15 +84,15 @@
 | SUPP-01 | Phase 49 | Complete |
 | SUPP-02 | Phase 49 | Complete |
 | SUPP-03 | Phase 49 | Complete |
-| GEOM-01 | Phase 50 | Pending |
-| GEOM-02 | Phase 50 | Pending |
-| GEOM-03 | Phase 50 | Pending |
-| GEOM-04 | Phase 50 | Pending |
-| GEOM-05 | Phase 50 | Pending |
-| GEOM-06 | Phase 50 | Pending |
-| GEOM-07 | Phase 50 | Pending |
-| PIPE-01 | Phase 50 | Pending |
-| PIPE-02 | Phase 50 | Pending |
+| GEOM-01 | Phase 50 | Complete |
+| GEOM-02 | Phase 50 | Complete |
+| GEOM-03 | Phase 50 | Complete |
+| GEOM-04 | Phase 50 | Complete |
+| GEOM-05 | Phase 50 | Complete |
+| GEOM-06 | Phase 50 | Complete |
+| GEOM-07 | Phase 50 | Complete |
+| PIPE-01 | Phase 50 | Complete |
+| PIPE-02 | Phase 50 | Complete |
 | OUT-01 | Phase 51 | Pending |
 | OUT-02 | Phase 51 | Pending |
 | OUT-03 | Phase 51 | Pending |

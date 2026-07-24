@@ -5,15 +5,15 @@ milestone_name: Eyebrow Geometry Controls
 current_phase: 50
 current_phase_name: Independent Eyebrow Geometry and Pipeline Integration
 status: executing
-stopped_at: Completed 50-02-PLAN.md
-last_updated: "2026-07-24T11:43:33.159Z"
+stopped_at: Completed 50-03-PLAN.md
+last_updated: "2026-07-24T11:51:48.003Z"
 last_activity: 2026-07-24
-last_activity_desc: Plan 50-01 Wave 0 contracts complete; Plan 50-02 ready
+last_activity_desc: Plan 50-03 eyebrow resolver integration complete; Plan 50-04 ready
 progress:
   total_phases: 2
   completed_phases: 1
   total_plans: 11
-  completed_plans: 7
+  completed_plans: 8
 ---
 
 # Project State
@@ -28,9 +28,9 @@ See: `.planning/PROJECT.md` (updated 2026-07-24)
 ## Current Position
 
 Phase: 50 (Independent Eyebrow Geometry and Pipeline Integration) — EXECUTING
-Plan: 3 of 6
+Plan: 4 of 6
 Status: Ready to execute
-Last activity: 2026-07-24 — Plan 50-01 Wave 0 contracts complete; Plan 50-02 ready
+Last activity: 2026-07-24 — Plan 50-03 eyebrow resolver integration complete; Plan 50-04 ready
 
 ### Phase 48 Face Safety and Scoped Closeout Result
 
@@ -252,6 +252,7 @@ Last activity: 2026-07-14
 | Phase 49 P04 | 8 min | 2 tasks | 2 files |
 | Phase 49 P05 | 9 min | 3 tasks | 8 files |
 | Phase 50 P01 | 8 min | 3 tasks | 3 files |
+| Phase 50 P03 | 7 min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -359,6 +360,8 @@ Recent milestone-level outcomes:
 - [Phase 49]: Keep all seven eyebrow values storage-only until Phase 50. — Phase 49 closes public compatibility without prematurely changing face-geometry triggers or resolver output.
 - [Phase 50]: Plan 50-01 keeps the eyebrow provider contracts deliberately RED and leaves production satisfaction of GEOM-01 through GEOM-07 and PIPE-01 through PIPE-02 to later Phase 50 implementation plans.
 - [Phase 50]: Eyebrow facade fixtures remain immutable and request-local through the existing selected-face adapter with no public or SPI raw-coordinate result carrier.
+- [Phase 50]: Plan 50-03 exposes eyebrow activity only as aggregate `.eyebrows` with fixed warning and metric labels.
+- [Phase 50]: Plan 50-03 applies exact reused scale `0.5` once in the resolver while keeping `EyebrowWarpProvider` stateless.
 
 ### Pending Todos
 
@@ -392,8 +395,8 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-24T11:43:33.138Z
-Stopped at: Completed 50-02-PLAN.md
+Last session: 2026-07-24T11:51:47.976Z
+Stopped at: Completed 50-03-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
