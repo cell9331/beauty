@@ -113,12 +113,17 @@ def live_checks(root: Path) -> None:
 
 def self_test() -> None:
     root = repo_root(Path.cwd())
-    pre_implementation_checks(root)
+    pinned_contracts(root)
+    scope_fences(root)
     cases = 0
     with tempfile.TemporaryDirectory() as temp:
         corpus = Path(temp) / "repo"
         shutil.copytree(root, corpus, symlinks=True, ignore=shutil.ignore_patterns(".git", ".build"))
         (corpus / ".git").mkdir()
+        provider = corpus / PROVIDER
+        if provider.exists():
+            provider.unlink()
+        pre_implementation_checks(corpus)
         # Each live requirement is absent in the isolated pre-production corpus, so live must fail.
         try:
             live_checks(corpus)

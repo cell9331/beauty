@@ -54,10 +54,14 @@ struct EyebrowWarpProvider: WarpControlPointProvider {
                 ? traces.flatMap { thicknessPoints(trace: $0, face: face, strength: strengths.eyebrowThickness) } : [],
             eyebrowLength: isSignedWork(strengths.eyebrowLength)
                 ? traces.flatMap { lengthPoints(trace: $0, face: face, strength: strengths.eyebrowLength) } : [],
-            eyebrowSpacing: [],
-            eyebrowHeadSpacing: [],
-            eyebrowTilt: [],
-            eyebrowPeakDefinition: []
+            eyebrowSpacing: isSignedWork(strengths.eyebrowSpacing)
+                ? spacingPoints(face: face, strength: strengths.eyebrowSpacing) : [],
+            eyebrowHeadSpacing: isSignedWork(strengths.eyebrowHeadSpacing)
+                ? traces.flatMap { headSpacingPoints(trace: $0, face: face, strength: strengths.eyebrowHeadSpacing) } : [],
+            eyebrowTilt: isSignedWork(strengths.eyebrowTilt)
+                ? traces.flatMap { tiltPoints(trace: $0, face: face, strength: strengths.eyebrowTilt) } : [],
+            eyebrowPeakDefinition: strengths.eyebrowPeakDefinition.isFinite && strengths.eyebrowPeakDefinition > Float.ulpOfOne
+                ? traces.flatMap { peakPoints(trace: $0, face: face, strength: strengths.eyebrowPeakDefinition) } : []
         )
     }
 
@@ -130,6 +134,95 @@ struct EyebrowWarpProvider: WarpControlPointProvider {
         )
     }
 
+    private func spacingPoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
+        guard validFace(face), let support = face.observedEyebrowSupport,
+              support.pairedEligible, let left = support.left, let right = support.right,
+              left.side == .left, right.side == .right,
+              validTrace(left), validTrace(right), let axis = normalized(right.center - left.center)
+        else { return [] }
+        let displacement = face.bounds.width * 0.025 * strength / provisionalCap
+        guard displacement.isFinite, abs(displacement) > epsilon else { return [] }
+        let sources = left.points + right.points
+        let targets = left.points.map { $0 - axis * displacement } +
+            right.points.map { $0 + axis * displacement }
+        return makePoints(
+            sources: sources, targets: targets, radius: face.bounds.width * 0.08,
+            strength: abs(strength)
+        )
+    }
+
+    private func headSpacingPoints(
+        trace: BeautyEyebrowSemanticTrace,
+        face: FaceGeometry,
+        strength: Float
+    ) -> [WarpControlPoint] {
+        guard validFace(face), validTrace(trace), trace.points.count >= 2,
+              let axis = normalized(trace.outerEndpoint - trace.innerEndpoint)
+        else { return [] }
+        let displacement = face.bounds.width * 0.020 * strength / provisionalCap
+        guard displacement.isFinite, abs(displacement) > epsilon else { return [] }
+        let sources = [trace.innerEndpoint, trace.points[1]]
+        let targets = [sources[0] + axis * displacement, sources[1] + axis * displacement * 0.5]
+        return makePoints(
+            sources: sources, targets: targets, radius: face.bounds.width * 0.06,
+            strength: abs(strength)
+        )
+    }
+
+    private func tiltPoints(
+        trace: BeautyEyebrowSemanticTrace,
+        face: FaceGeometry,
+        strength: Float
+    ) -> [WarpControlPoint] {
+        guard validFace(face), validTrace(trace),
+              let axis = normalized(trace.outerEndpoint - trace.innerEndpoint)
+        else { return [] }
+        let orientation: Float = axis.x >= 0 ? -1 : 1
+        let angle = orientation * 0.12 * strength / provisionalCap
+        guard angle.isFinite, abs(angle) > epsilon else { return [] }
+        let cosine = cos(angle)
+        let sine = sin(angle)
+        let samples = trace.points.filter { vectorLength($0 - trace.center) > epsilon }
+        let targets = samples.map { point -> SIMD2<Float> in
+            let offset = point - trace.center
+            return trace.center + SIMD2<Float>(
+                offset.x * cosine - offset.y * sine,
+                offset.x * sine + offset.y * cosine
+            )
+        }
+        return makePoints(
+            sources: samples, targets: targets, radius: face.bounds.width * 0.075,
+            strength: abs(strength)
+        )
+    }
+
+    private func peakPoints(
+        trace: BeautyEyebrowSemanticTrace,
+        face: FaceGeometry,
+        strength: Float
+    ) -> [WarpControlPoint] {
+        guard validFace(face), validTrace(trace), strength <= provisionalCap,
+              let apexIndex = trace.apexIndex,
+              apexIndex > trace.points.startIndex,
+              apexIndex < trace.points.index(before: trace.points.endIndex),
+              let chordAxis = normalized(trace.outerEndpoint - trace.innerEndpoint)
+        else { return [] }
+        let apex = trace.points[apexIndex]
+        let fromInner = apex - trace.innerEndpoint
+        let projection = trace.innerEndpoint + chordAxis * dot(fromInner, chordAxis)
+        guard let normal = normalized(apex - projection) else { return [] }
+        let displacement = face.bounds.height * 0.012 * strength / provisionalCap
+        guard displacement.isFinite, displacement > epsilon else { return [] }
+        let indices = [apexIndex - 1, apexIndex, apexIndex + 1]
+        let weights: [Float] = [0.5, 1, 0.5]
+        let sources = indices.map { trace.points[$0] }
+        let targets = zip(sources, weights).map { $0.0 + normal * displacement * $0.1 }
+        return makePoints(
+            sources: sources, targets: targets, radius: face.bounds.width * 0.055,
+            strength: strength
+        )
+    }
+
     private func makePoints(
         sources: [SIMD2<Float>],
         targets: [SIMD2<Float>],
@@ -137,7 +230,8 @@ struct EyebrowWarpProvider: WarpControlPointProvider {
         strength: Float
     ) -> [WarpControlPoint] {
         guard sources.count == targets.count, !sources.isEmpty,
-              radius.isFinite, radius > epsilon, strength.isFinite, strength > Float.ulpOfOne,
+              radius.isFinite, radius > epsilon, radius <= 1,
+              strength.isFinite, strength > Float.ulpOfOne, strength <= provisionalCap,
               sources.indices.allSatisfy({
                   isUnitPoint(sources[$0]) && isUnitPoint(targets[$0]) &&
                       vectorLength(targets[$0] - sources[$0]) > epsilon
@@ -149,12 +243,16 @@ struct EyebrowWarpProvider: WarpControlPointProvider {
     }
 
     private func validFace(_ face: FaceGeometry) -> Bool {
-        face.bounds.width.isFinite && face.bounds.height.isFinite &&
-            face.bounds.width > epsilon && face.bounds.height > epsilon
+        face.bounds.x.isFinite && face.bounds.y.isFinite &&
+            face.bounds.width.isFinite && face.bounds.height.isFinite &&
+            face.bounds.width > epsilon && face.bounds.height > epsilon &&
+            (0...1).contains(face.bounds.minX) && (0...1).contains(face.bounds.minY) &&
+            (0...1).contains(face.bounds.maxX) && (0...1).contains(face.bounds.maxY)
     }
 
     private func validTrace(_ trace: BeautyEyebrowSemanticTrace) -> Bool {
         (4...16).contains(trace.points.count) && trace.points.allSatisfy(isUnitPoint) &&
+            trace.points.first == trace.innerEndpoint && trace.points.last == trace.outerEndpoint &&
             isUnitPoint(trace.innerEndpoint) && isUnitPoint(trace.outerEndpoint) && isUnitPoint(trace.center)
     }
 
@@ -169,11 +267,15 @@ struct EyebrowWarpProvider: WarpControlPointProvider {
         sqrt(vector.x * vector.x + vector.y * vector.y)
     }
 
+    private func dot(_ lhs: SIMD2<Float>, _ rhs: SIMD2<Float>) -> Float {
+        lhs.x * rhs.x + lhs.y * rhs.y
+    }
+
     private func isUnitPoint(_ point: SIMD2<Float>) -> Bool {
         point.x.isFinite && point.y.isFinite && (0...1).contains(point.x) && (0...1).contains(point.y)
     }
 
     private func isSignedWork(_ strength: Float) -> Bool {
-        strength.isFinite && abs(strength) > Float.ulpOfOne
+        strength.isFinite && abs(strength) > Float.ulpOfOne && abs(strength) <= provisionalCap
     }
 }
