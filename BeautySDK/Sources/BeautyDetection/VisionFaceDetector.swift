@@ -4,6 +4,15 @@ import CoreImage
 import Foundation
 import Vision
 
+enum EyebrowPreflight {
+    static let maximumPointCount = 16
+    static let minimumPointCount = 1
+
+    static func accepts(pointCount: Int, isOpenPath: Bool) -> Bool {
+        isOpenPath && (minimumPointCount...maximumPointCount).contains(pointCount)
+    }
+}
+
 package struct VisionDetectionObservation: Equatable, Sendable {
     package let stableID: String?
     package let confidence: Double
@@ -12,6 +21,7 @@ package struct VisionDetectionObservation: Equatable, Sendable {
     package let landmarks: BeautyFaceLandmarks
     package let observedEyeSupport: [BeautyObservedEyeSupport]?
     package let observedFaceSupport: BeautyObservedFaceSupport?
+    package let observedEyebrowSupport: BeautyObservedEyebrowSupport?
 
     package init(
         stableID: String? = nil,
@@ -20,7 +30,8 @@ package struct VisionDetectionObservation: Equatable, Sendable {
         visionBounds: CoordinateRect? = nil,
         landmarks: BeautyFaceLandmarks = .complete,
         observedEyeSupport: [BeautyObservedEyeSupport]? = nil,
-        observedFaceSupport: BeautyObservedFaceSupport? = nil
+        observedFaceSupport: BeautyObservedFaceSupport? = nil,
+        observedEyebrowSupport: BeautyObservedEyebrowSupport? = nil
     ) {
         self.stableID = stableID
         self.confidence = confidence
@@ -29,6 +40,7 @@ package struct VisionDetectionObservation: Equatable, Sendable {
         self.landmarks = landmarks
         self.observedEyeSupport = observedEyeSupport
         self.observedFaceSupport = observedFaceSupport
+        self.observedEyebrowSupport = observedEyebrowSupport
     }
 }
 
@@ -39,7 +51,10 @@ extension VisionDetectionObservation: CustomStringConvertible, CustomDebugString
             + "observedEyeSupportCount: \(observedEyeSupport?.count ?? 0), "
             + "observedFaceSupportAvailable: \(observedFaceSupport != nil), "
             + "observedFaceContourCount: \(observedFaceSupport?.contour?.count ?? 0), "
-            + "observedFaceMedianLineCount: \(observedFaceSupport?.medianLine?.count ?? 0))"
+            + "observedFaceMedianLineCount: \(observedFaceSupport?.medianLine?.count ?? 0), "
+            + "observedEyebrowSupportAvailable: \(observedEyebrowSupport != nil), "
+            + "observedLeftEyebrowCount: \(observedEyebrowSupport?.left?.count ?? 0), "
+            + "observedRightEyebrowCount: \(observedEyebrowSupport?.right?.count ?? 0))"
     }
 
     package var debugDescription: String {
@@ -55,6 +70,9 @@ extension VisionDetectionObservation: CustomStringConvertible, CustomDebugString
                 "observedFaceSupportAvailable": observedFaceSupport != nil,
                 "observedFaceContourCount": observedFaceSupport?.contour?.count ?? 0,
                 "observedFaceMedianLineCount": observedFaceSupport?.medianLine?.count ?? 0,
+                "observedEyebrowSupportAvailable": observedEyebrowSupport != nil,
+                "observedLeftEyebrowCount": observedEyebrowSupport?.left?.count ?? 0,
+                "observedRightEyebrowCount": observedEyebrowSupport?.right?.count ?? 0,
             ],
             displayStyle: .struct
         )
@@ -326,6 +344,31 @@ package struct VisionFaceDetector: Sendable {
             observedFaceSupport = nil
         }
 
+        let observedEyebrowSupport: BeautyObservedEyebrowSupport?
+        if let support = detection.observedEyebrowSupport {
+            guard let visionBounds = detection.visionBounds,
+                  visionBounds.isFinite,
+                  visionBounds.width > 0,
+                  visionBounds.height > 0
+            else {
+                throw CoordinateMapper.MappingError.invalidCoordinate
+            }
+
+            let axes = try mappedFaceCenterAndAxes(
+                in: visionBounds,
+                with: mapper
+            )
+            observedEyebrowSupport = try mapEyebrowSupport(
+                support,
+                faceCenter: axes.center,
+                rightAxis: axes.right,
+                in: visionBounds,
+                with: mapper
+            )
+        } else {
+            observedEyebrowSupport = nil
+        }
+
         return BeautyFaceObservation(
                 stableID: detection.stableID,
                 confidence: detection.confidence,
@@ -334,7 +377,8 @@ package struct VisionFaceDetector: Sendable {
                 landmarks: detection.landmarks,
                 observedEyeSupport: observedEyeSupport,
                 observedEyeOrder: observedEyeOrder,
-                observedFaceSupport: observedFaceSupport
+                observedFaceSupport: observedFaceSupport,
+                observedEyebrowSupport: observedEyebrowSupport
             )
     }
 
@@ -503,6 +547,119 @@ package struct VisionFaceDetector: Sendable {
         return (right, down)
     }
 
+    private func mappedFaceCenterAndAxes(
+        in visionBounds: CoordinateRect,
+        with mapper: CoordinateMapper
+    ) throws -> (center: CoordinatePoint, right: SIMD2<Double>, down: SIMD2<Double>) {
+        let bottomLeft = try mapper.map(
+            point: CoordinatePoint(x: visionBounds.minX, y: visionBounds.minY),
+            from: .visionNormalized,
+            to: .imageNormalized
+        )
+        let bottomRight = try mapper.map(
+            point: CoordinatePoint(x: visionBounds.maxX, y: visionBounds.minY),
+            from: .visionNormalized,
+            to: .imageNormalized
+        )
+        let topLeft = try mapper.map(
+            point: CoordinatePoint(x: visionBounds.minX, y: visionBounds.maxY),
+            from: .visionNormalized,
+            to: .imageNormalized
+        )
+        let topRight = try mapper.map(
+            point: CoordinatePoint(x: visionBounds.maxX, y: visionBounds.maxY),
+            from: .visionNormalized,
+            to: .imageNormalized
+        )
+
+        let right = try normalizedAxis(
+            from: bottomLeft,
+            to: bottomRight
+        )
+        let down = try normalizedAxis(
+            from: topLeft,
+            to: bottomLeft
+        )
+        let center = CoordinatePoint(
+            x: (bottomLeft.x + bottomRight.x + topLeft.x + topRight.x) / 4,
+            y: (bottomLeft.y + bottomRight.y + topLeft.y + topRight.y) / 4
+        )
+        return (center, right, down)
+    }
+
+    private func mapEyebrowSupport(
+        _ support: BeautyObservedEyebrowSupport,
+        faceCenter: CoordinatePoint,
+        rightAxis: SIMD2<Double>,
+        in visionBounds: CoordinateRect,
+        with mapper: CoordinateMapper
+    ) throws -> BeautyObservedEyebrowSupport {
+        let left = try mapEyebrowSide(
+            support.left,
+            declaredSide: .left,
+            faceCenter: faceCenter,
+            rightAxis: rightAxis,
+            in: visionBounds,
+            with: mapper
+        )
+        let right = try mapEyebrowSide(
+            support.right,
+            declaredSide: .right,
+            faceCenter: faceCenter,
+            rightAxis: rightAxis,
+            in: visionBounds,
+            with: mapper
+        )
+        return BeautyObservedEyebrowSupport(left: left, right: right)
+    }
+
+    private func mapEyebrowSide(
+        _ points: [CoordinatePoint]?,
+        declaredSide: BeautyObservedEyebrowSide,
+        faceCenter: CoordinatePoint,
+        rightAxis: SIMD2<Double>,
+        in visionBounds: CoordinateRect,
+        with mapper: CoordinateMapper
+    ) throws -> [CoordinatePoint]? {
+        guard let points, !points.isEmpty else { return nil }
+
+        let mapped = try mapPoints(points, in: visionBounds, with: mapper)
+        guard let first = mapped.first, let last = mapped.last else { return nil }
+
+        let centroidX = mapped.reduce(0.0) { $0 + $1.x } / Double(mapped.count)
+        let centroidY = mapped.reduce(0.0) { $0 + $1.y } / Double(mapped.count)
+        let centroidOffset = SIMD2<Double>(
+            centroidX - faceCenter.x,
+            centroidY - faceCenter.y
+        )
+        let centroidProjection = centroidOffset.x * rightAxis.x + centroidOffset.y * rightAxis.y
+        guard centroidProjection.isFinite, abs(centroidProjection) > 0.000_001 else {
+            return nil
+        }
+
+        let expectedSign: Double = declaredSide == .left ? -1 : 1
+        let sideMatches = (centroidProjection > 0) == (expectedSign > 0)
+
+        if mapped.count < 2 {
+            return sideMatches ? mapped : nil
+        }
+
+        let endpointDirection = SIMD2<Double>(
+            last.x - first.x,
+            last.y - first.y
+        )
+        let endpointProjection = endpointDirection.x * rightAxis.x + endpointDirection.y * rightAxis.y
+        guard endpointProjection.isFinite, abs(endpointProjection) > 0.000_001 else {
+            return nil
+        }
+        let endpointForward = (endpointProjection > 0) == (expectedSign > 0)
+
+        let canonical = sideMatches && endpointForward
+            ? mapped
+            : Array(mapped.reversed())
+        return canonical
+    }
+
     private func normalizedAxis(
         from start: CoordinatePoint,
         to end: CoordinatePoint
@@ -544,15 +701,31 @@ package struct VisionFaceDetector: Sendable {
         )
     }
 
+    private static func makeEyebrowTrace(
+        from region: VNFaceLandmarkRegion2D?
+    ) -> [CoordinatePoint]? {
+        guard let region else { return nil }
+        guard EyebrowPreflight.accepts(
+            pointCount: region.pointCount,
+            isOpenPath: region.pointsClassification == .openPath
+        ) else {
+            return nil
+        }
+        return region.normalizedPoints.map {
+            CoordinatePoint(x: Double($0.x), y: Double($0.y))
+        }
+    }
+
     private static func landmarks(
         from landmarks: VNFaceLandmarks2D?
     ) -> (
         landmarks: BeautyFaceLandmarks,
         observedEyeSupport: [BeautyObservedEyeSupport]?,
-        observedFaceSupport: BeautyObservedFaceSupport?
+        observedFaceSupport: BeautyObservedFaceSupport?,
+        observedEyebrowSupport: BeautyObservedEyebrowSupport?
     ) {
         guard let landmarks else {
-            return (BeautyFaceLandmarks(availableGroups: []), nil, nil)
+            return (BeautyFaceLandmarks(availableGroups: []), nil, nil, nil)
         }
 
         var groups: Set<BeautyLandmarkGroup> = []
@@ -584,10 +757,16 @@ package struct VisionFaceDetector: Sendable {
         let faceSupport = contour != nil || medianLine != nil
             ? BeautyObservedFaceSupport(contour: contour, medianLine: medianLine)
             : nil
+        let leftBrow = makeEyebrowTrace(from: landmarks.leftEyebrow)
+        let rightBrow = makeEyebrowTrace(from: landmarks.rightEyebrow)
+        let eyebrowSupport = leftBrow != nil || rightBrow != nil
+            ? BeautyObservedEyebrowSupport(left: leftBrow, right: rightBrow)
+            : nil
         return (
             BeautyFaceLandmarks(availableGroups: groups),
             supports.isEmpty ? nil : supports,
-            faceSupport
+            faceSupport,
+            eyebrowSupport
         )
     }
 
@@ -661,7 +840,8 @@ package struct VisionFaceDetector: Sendable {
                 ),
                 landmarks: payload.landmarks,
                 observedEyeSupport: payload.observedEyeSupport,
-                observedFaceSupport: payload.observedFaceSupport
+                observedFaceSupport: payload.observedFaceSupport,
+                observedEyebrowSupport: payload.observedEyebrowSupport
             )
         }
     }
