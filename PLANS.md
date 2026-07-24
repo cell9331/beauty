@@ -26,9 +26,25 @@
 
 ## 3. Active
 
-Milestone v1.12 passed its independent audit with 18/18 requirements, 4/4 phases, 11/11 integration seams, and 6/6 end-to-end flows. It is eligible for the milestone completion/archive workflow; three semantic-region rows remain future.
+No milestone is active. v1.12 is shipped, independently audited, and archived; start the next cycle with `$gsd-new-milestone` when a new scope is chosen.
 
 ## 4. Completed
+
+### C-2026-07-24-v1-12-milestone-completion
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-24 |
+| Scope | Completed the autonomous v1.12 lifecycle after the passed independent audit: archived ROADMAP, REQUIREMENTS, audit, and all Phase 45-48 artifacts; collapsed the live roadmap; evolved PROJECT/STATE; and recorded the milestone retrospective. |
+| Archive | `.planning/milestones/v1.12-ROADMAP.md`, `v1.12-REQUIREMENTS.md`, `v1.12-MILESTONE-AUDIT.md`, and `v1.12-phases/` preserve 4 phases, 20 plans, 20 summaries, and the full evidence history. |
+| Verification | The open-artifact audit is clear; archived requirements are checked 18/18; the milestone audit passes 4/4 phases, 11/11 integration seams, and 6/6 flows; all four Nyquist ledgers are compliant; `git diff --check` passes. |
+| Lifecycle result | The live roadmap now points to the v1.12 archive, `.planning/phases/` has no active milestone directory, the milestone-scoped root `REQUIREMENTS.md` is removed for fresh next-cycle definition, and root owners consistently report “awaiting next milestone.” |
+
+Outcome:
+
+- v1.12 ships exactly four contour-driven face rows; three semantic-region rows remain future and branch `脸型` remains partial.
+- No Demo/device/commercial/performance/packaging/shipping/launch-readiness claim was added.
+- The next authorized workflow is `$gsd-new-milestone`; no next scope is inferred.
 
 ### C-2026-07-24-v1-12-independent-milestone-audit
 
