@@ -212,6 +212,9 @@ None. The Wave 0 eyebrow fixtures (`eyebrowVisionRegionFixtures`, `eyebrowRegion
 - All three planned modified files exist.
 - RED commit `76df87a` and GREEN commit `f5f90cf` exist in git history.
 - All task acceptance gates and the plan-level focused verification commands passed.
+- BeautyDetectionTests: 66 executed, 2 opt-in Vision integration skips, 0 failures.
+- Phase 49 checker self-test: 42/42 passed.
+- `git diff --check`: passed.
 - No untracked generated artifact was introduced.
 
 ---
