@@ -30,13 +30,21 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
+| Status | `blocked` |
 | Milestone | v1.13 Eyebrow Geometry Controls |
 | Scope | SDK-SPM-only implementation of exactly seven `眉毛` rows: 上下、粗细、长短、间距、眉头间距、倾斜、眉峰. |
-| Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve the 52-field compatibility baseline and all shipped face/eye/nose/mouth output. |
+| Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve legacy 52-key compatibility and all shipped face/eye/nose/mouth output while the current model is exactly 59 stored fields. |
 | Requirements | 21/21 mapped across Phase 49-52; no unmapped requirement. |
 | Roadmap | Phase 49 contract/support → Phase 50 geometry/pipeline → Phase 51 strict output → Phase 52 safety/promotion. |
-| Current step | Plan 49-02 complete; execute `49-03-PLAN.md` for actual request-local Vision eyebrow capture and canonical mapping. |
+| Current step | Phase 49 owner/focused/checker/ASVS evidence is recorded, but closeout is blocked before full SwiftPM by missing `example-images/input/portraits/e1.png`; provision the authorized readable non-empty regular fixture, then rerun preflight and the full suite. |
+
+Phase 49 blocked closeout record (2026-07-24):
+
+- Plans 49-01 through 49-04 delivered the exact 59 stored/58 numeric public model, neutral legacy 52-key/source/reset/diff/equality/round-trip behavior, unchanged five-preset bytes, actual `leftEyebrow`/`rightEyebrow` capture from one request, exactly-once mapping, mapper-axis side/order canonicalization, and package-only request-scoped semantic attachment.
+- Final support constants are preflight 1...16 points; adapter 4...16 exact-bit-unique finite closed-unit points; face-relative chord 0.08...0.50; vertical span at most 0.25; projection epsilon 0.000001; whole-array reversal only. Left/right regions fail independently and all seven public fields remain runtime-inert.
+- Fresh focused evidence passes 37 parameter, 10 resource, 23 resolver, 66 detection with 2 opt-in skips, and 45 adapter tests with 1 opt-in skip. Checker self-tests pass 42/42, live checks pass 15/15, `git diff --check` passes, and ASVS L1 active-source/diff review has zero unresolved HIGH findings.
+- Exact blocker: `python3 .planning/phases/49-public-contract-and-observed-eyebrow-support/check_eyebrow_support_boundaries.py --preflight-fixtures` exits 1 with `required_fixture_missing_or_unsafe=1` because `example-images/input/portraits/e1.png` is absent. The full `swift test --package-path BeautySDK` command was not run after the failed prerequisite; Wave 0, Nyquist, and BROW-01/BROW-02/SUPP-01/SUPP-02/SUPP-03 phase-closeout status remain noncompliant/open.
+- No provider eligibility, effective caps/strengths, resolver/conflict/facade routing, visible output, renderer/gallery evidence, safety calibration, row/branch promotion, Phase 50-52 completion, v1.14-v1.16 completion, Demo/UI, device, commercial, performance, packaging, shipping, or release-readiness claim is made.
 
 Planned follow-on milestones:
 
