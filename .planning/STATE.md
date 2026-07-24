@@ -4,16 +4,16 @@ milestone: v1.13
 milestone_name: Eyebrow Geometry Controls
 current_phase: 49
 current_phase_name: public-contract-and-observed-eyebrow-support
-status: executing
-stopped_at: Completed 49-03-PLAN.md
-last_updated: "2026-07-24T16:26:00.000Z"
+status: blocked
+stopped_at: Blocked after 49-05-PLAN.md fixture preflight
+last_updated: "2026-07-24T08:59:42.000Z"
 last_activity: 2026-07-24
-last_activity_desc: Phase 49 execution started
+last_activity_desc: Phase 49 owner/focused/checker closeout recorded; full suite blocked by missing e1.png
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 5
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # Project State
@@ -27,10 +27,10 @@ See: `.planning/PROJECT.md` (updated 2026-07-24)
 
 ## Current Position
 
-Phase: 49 (public-contract-and-observed-eyebrow-support) — EXECUTING
-Plan: 3 of 5
-Status: Ready to execute
-Last activity: 2026-07-24 — Phase 49 execution started
+Phase: 49 (public-contract-and-observed-eyebrow-support) — BLOCKED
+Plan: 5 of 5
+Status: Fixture preflight blocked before full SwiftPM and requirement closeout
+Last activity: 2026-07-24 — Owner/focused/checker/ASVS evidence recorded; `example-images/input/portraits/e1.png` absent
 
 ### Phase 48 Face Safety and Scoped Closeout Result
 
@@ -248,6 +248,9 @@ Last activity: 2026-07-14
 | Phase 46 P04 | 8 min | 2 tasks | 4 files |
 | Phase 49 P01 | 8 min | 3 tasks | 6 files |
 | Phase 49 P02 | 8 min | 2 tasks | 4 files |
+| Phase 49 P03 | 8 min | 2 tasks | 3 files |
+| Phase 49 P04 | 8 min | 2 tasks | 2 files |
+| Phase 49 P05 | 9 min | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -362,6 +365,7 @@ Recent milestone-level outcomes:
 
 ### Blockers/Concerns
 
+- Phase 49 closeout is blocked because `example-images/input/portraits/e1.png` is absent; fixture preflight exits 1 with `required_fixture_missing_or_unsafe=1`. Full SwiftPM was not run after the failed prerequisite, and BROW-01/BROW-02/SUPP-01/SUPP-02/SUPP-03 remain open at the phase-closeout gate.
 - No active v1.12 blocker remains; all four phases and the independent milestone audit passed.
 - Deferred v2 `ADV-*` items remain outside v1 traceability and are tracked as `TD-007` in `PLANS.md`.
 - Manual release risks are now routed by Phase 21 and updated by Phases 23 through 25: `TD-008` has focused simulator camera pass evidence but physical iPhone checks remain blocked until hardware exists; `TD-009` remains Phase 22 visual evidence with screenshot rerun protocol; and `TD-010` keeps device, long-run, screenshot, optimized profiling, external-resource integrity, and commercial packaging work routed to later setup-specific checks.
@@ -385,10 +389,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-24T07:54:43.612Z
-Stopped at: Completed 49-02-PLAN.md
-Resume file: None
+Last session: 2026-07-24T08:59:42.000Z
+Stopped at: Blocked after 49-05-PLAN.md fixture preflight
+Resume file: `.planning/phases/49-public-contract-and-observed-eyebrow-support/49-05-SUMMARY.md`
 
 ## Operator Next Steps
 
-- Run `$gsd-discuss-phase 49` to lock v1.13 public semantics, observed-support invariants, and phase-specific implementation choices.
+- Provision the authorized readable non-empty regular `example-images/input/portraits/e1.png`, then rerun Phase 49 fixture preflight, full SwiftPM, live checker, owner/diff review, and ASVS HIGH review before closing requirements.
