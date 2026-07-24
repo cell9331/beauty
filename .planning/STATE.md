@@ -5,15 +5,15 @@ milestone_name: Eyebrow Geometry Controls
 current_phase: 50
 current_phase_name: Independent Eyebrow Geometry and Pipeline Integration
 status: executing
-stopped_at: Completed 50-04-PLAN.md
-last_updated: "2026-07-24T11:57:58.116Z"
+stopped_at: Completed 50-05-PLAN.md
+last_updated: "2026-07-24T12:24:00.000Z"
 last_activity: 2026-07-24
-last_activity_desc: Plan 50-04 exact eyebrow conflict ledger complete; Plan 50-05 ready
+last_activity_desc: Plan 50-05 combined safety, unified dispatch, and facade routing complete; Plan 50-06 ready
 progress:
   total_phases: 2
   completed_phases: 1
   total_plans: 11
-  completed_plans: 9
+  completed_plans: 10
 ---
 
 # Project State
@@ -28,9 +28,9 @@ See: `.planning/PROJECT.md` (updated 2026-07-24)
 ## Current Position
 
 Phase: 50 (Independent Eyebrow Geometry and Pipeline Integration) — EXECUTING
-Plan: 5 of 6
+Plan: 6 of 6
 Status: Ready to execute
-Last activity: 2026-07-24 — Plan 50-04 exact eyebrow conflict ledger complete; Plan 50-05 ready
+Last activity: 2026-07-24 — Plan 50-05 combined safety, unified dispatch, and facade routing complete; Plan 50-06 ready
 
 ### Phase 48 Face Safety and Scoped Closeout Result
 
@@ -254,6 +254,7 @@ Last activity: 2026-07-14
 | Phase 50 P01 | 8 min | 3 tasks | 3 files |
 | Phase 50 P03 | 7 min | 2 tasks | 4 files |
 | Phase 50 P04 | 7 min | 2 tasks | 2 files |
+| Phase 50 P05 | 10 min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -364,6 +365,7 @@ Recent milestone-level outcomes:
 - [Phase 50]: Plan 50-03 exposes eyebrow activity only as aggregate `.eyebrows` with fixed warning and metric labels.
 - [Phase 50]: Plan 50-03 applies exact reused scale `0.5` once in the resolver while keeping `EyebrowWarpProvider` stateless.
 - [Phase ?]: Phase 50 Plan 04 inserts all seven eyebrow fields between eye and nose in the shared conflict scale, total, and count inventories.
+- [Phase 50]: Plan 50-05 dispatches final providers once in Face→Chin→Eye→Eyebrow→Nose→Mouth order and keeps facade evidence aggregate-only.
 - [Phase ?]: The exact 13.45 total and seven 0.25 eyebrow caps remain provisional until Phase 52 calibration.
 
 ### Pending Todos

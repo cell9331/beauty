@@ -36,7 +36,7 @@
 | Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve legacy 52-key compatibility and all shipped face/eye/nose/mouth output while the current model is exactly 59 stored fields. |
 | Requirements | 21/21 mapped across Phase 49-52; no unmapped requirement. |
 | Roadmap | Phase 49 contract/support → Phase 50 geometry/pipeline → Phase 51 strict output → Phase 52 safety/promotion. |
-| Current step | Phase 50 Plans 50-01 through 50-04 complete; proceed sequentially to Plan 50-05 combined safety and unified dispatch. |
+| Current step | Phase 50 Plans 50-01 through 50-05 complete; Plan 50-06 fresh verification and owner closeout is next and has not been executed. |
 
 Phase 49 closeout record (2026-07-24):
 
@@ -53,6 +53,22 @@ Planned follow-on milestones:
 - v1.16: `去双下巴`, `去双下巴 Pro`, and narrow facial-feature closeout.
 
 ## 4. Completed
+
+### C-2026-07-24-phase-50-plan-05-combined-safety-and-unified-dispatch
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-24 |
+| Scope | Completed exact 44-field final-mask/provider agreement, representative eyebrow degradation, exactly-once unified dispatch, and seven redacted public-facade routes. |
+| Commits | RED convergence `768af68`; Task 01 completion `a91b9e3`; unified dispatch `b9e7d89`; facade routing `ea02f7d`. |
+| Verification | Combined 15/15, degradation 48/48, pipeline 3/3, facade 18/18, live boundary checker, and diff hygiene pass. |
+| Boundary | Full SwiftPM, owner synchronization, review, and Phase 50 closeout remain Plan 50-06; decoded output remains Phase 51 and final calibration/promotion remains Phase 52. |
+
+Outcome:
+
+- Exact final emissions, point count, and dispatch use stable Face→Chin→Eye→Eyebrow→Nose→Mouth order with one eyebrow provider call.
+- Side/pair/chord/apex, freshness, provider-empty, sequential, and concurrent evidence removes only dependent eyebrow work while safe siblings continue.
+- All seven public intents trigger one request-local detector/facade/pipeline route and expose only existing aggregate metrics and redacted degradation.
 
 ### C-2026-07-24-phase-50-plan-04-exact-eyebrow-conflict-ledger
 
