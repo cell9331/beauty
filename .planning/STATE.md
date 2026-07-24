@@ -4,11 +4,11 @@ milestone: v1.12
 milestone_name: Face Shape Remaining Capabilities
 current_phase: 47
 current_phase_name: Public-Facade Face Output Evidence
-status: verifying
-stopped_at: Phase 47 execution complete; independent quality hooks pending
-last_updated: "2026-07-24T01:35:00Z"
+status: verified
+stopped_at: Phase 47 reviewed, verified, validated, and security-audited; ready to transition
+last_updated: "2026-07-24T01:49:00Z"
 last_activity: 2026-07-24
-last_activity_desc: Phase 47 execution completed
+last_activity_desc: Phase 47 independent quality hooks passed
 progress:
   total_phases: 4
   completed_phases: 2
@@ -28,10 +28,10 @@ See: `.planning/PROJECT.md` (updated 2026-07-21)
 
 ## Current Position
 
-Phase: 47 (Public-Facade Face Output Evidence) — VERIFYING
+Phase: 47 (Public-Facade Face Output Evidence) — VERIFIED
 Plan: 3 of 3 complete
-Status: Execution complete; independent quality hooks pending
-Last activity: 2026-07-24 — Phase 47 execution completed
+Status: Review, goal verification, Nyquist, and ASVS L1 passed
+Last activity: 2026-07-24 — Phase 47 independent quality hooks passed
 
 ### Phase 47 Public-Facade Face Output Evidence Result
 
@@ -40,6 +40,7 @@ Last activity: 2026-07-24 — Phase 47 execution completed
 - Missing and malformed observed contour remove all four dependent fields through the public facade while an eligible shipped face sibling continues with aggregate-only diagnostics.
 - The descriptor-safe gallery is an exact 413-file renderer/output/gallery bijection; all generated output remains ignored, untracked, unstaged, and disposable.
 - Focused suites pass 15 renderer and 16 facade tests; full SwiftPM passes 371 with three opt-in Apple Vision skips. OUT-01 through OUT-03 are complete; Phase 48 safety and promotion work remains unchanged.
+- Standard review is clean, goal verification passes 16/16, Nyquist has 0 gaps, and ASVS L1 closes all 14 registered threats plus three repository governance inputs with `threats_open: 0`.
 
 ### Phase 46 Independent Contour and Chin Geometry Result
 
