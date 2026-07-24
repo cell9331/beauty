@@ -111,6 +111,12 @@ def live_checks(root: Path) -> None:
         raise BoundaryCheckFailure("aggregate eyebrow routing markers missing")
 
 
+def fixture_preflight(root: Path) -> None:
+    fixture = checked_path(root, "example-images/input/portraits/e1.png")
+    if fixture.is_symlink() or fixture.stat().st_size <= 0:
+        raise BoundaryCheckFailure("required fixture missing or unsafe")
+
+
 def self_test() -> None:
     root = repo_root(Path.cwd())
     pinned_contracts(root)
@@ -158,10 +164,14 @@ def main() -> int:
     modes = parser.add_mutually_exclusive_group()
     modes.add_argument("--self-test", action="store_true")
     modes.add_argument("--pre-implementation", action="store_true")
+    modes.add_argument("--preflight-fixtures", action="store_true")
     args = parser.parse_args()
     try:
         if args.self_test:
             self_test()
+        elif args.preflight_fixtures:
+            fixture_preflight(repo_root(Path.cwd()))
+            print("Phase 50 fixture preflight: passed")
         elif args.pre_implementation:
             pre_implementation_checks(repo_root(Path.cwd()))
             print("Phase 50 pre-implementation boundaries: passed")

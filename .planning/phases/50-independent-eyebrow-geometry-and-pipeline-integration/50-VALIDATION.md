@@ -1,9 +1,9 @@
 ---
 phase: 50
 slug: independent-eyebrow-geometry-and-pipeline-integration
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: complete
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-07-24
 ---
 
@@ -21,7 +21,7 @@ created: 2026-07-24
 | **Config file** | `BeautySDK/Package.swift` |
 | **Quick run command** | `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyEffectsTests.EyebrowWarpProviderTests` |
 | **Full suite command** | `swift test --package-path BeautySDK --disable-sandbox --jobs 1` |
-| **Estimated runtime** | Establish during Wave 0; commands are non-watch and single-job |
+| **Measured runtime** | Focused gate 70 s total; all BeautyEffects 22 s; full SwiftPM 76 s. Commands are non-watch and single-job. |
 
 ---
 
@@ -40,19 +40,19 @@ created: 2026-07-24
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 50-01-01 | 01 | 1 | GEOM-01–07, PIPE-01–02 | T-50-02, T-50-03 | Fail-closed privacy, scope, and exact-accounting boundary | static/adversarial | `python3 .planning/phases/50-independent-eyebrow-geometry-and-pipeline-integration/check_eyebrow_geometry_boundaries.py --self-test && python3 .planning/phases/50-independent-eyebrow-geometry-and-pipeline-integration/check_eyebrow_geometry_boundaries.py --pre-implementation` | ❌ W0 | ⬜ pending |
-| 50-01-02 | 01 | 1 | GEOM-01–07, PIPE-01 | T-50-01 | Canonical-source, brow-local, field-isolated RED provider contracts | unit | `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyEffectsTests.EyebrowWarpProviderTests` | ❌ W0 | ⬜ pending |
-| 50-01-03 | 01 | 1 | PIPE-01 | T-50-02 | Request-local fixtures expose no raw eyebrow support | unit | `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyCoreTests.BeautyEngineGeometryFacadeTests` | ✅ extend | ⬜ pending |
-| 50-02-01 | 02 | 2 | GEOM-01–03, PIPE-01 | T-50-04–06 | Finite canonical per-side emissions and local empty removal | unit | `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyEffectsTests.EyebrowWarpProviderTests` | ❌ W0 | ⬜ pending |
-| 50-02-02 | 02 | 2 | GEOM-04–07, PIPE-01 | T-50-04–06 | Pair/chord/apex prerequisites without fallback or disclosure | unit | `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyEffectsTests.EyebrowWarpProviderTests` | ❌ W0 | ⬜ pending |
-| 50-03-01 | 03 | 3 | GEOM-01–07, PIPE-01 | T-50-07, T-50-09 | Same-name capped routing with aggregate eyebrow domain | unit/integration | `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyEffectsTests.BeautyEffectResolverTests` | ✅ extend | ⬜ pending |
-| 50-03-02 | 03 | 3 | PIPE-01, PIPE-02 | T-50-07–09 | Freshness, local preflight, redacted metrics, and monotone 44-name convergence | unit/integration | `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyEffectsTests.BeautyEffectResolverTests` | ✅ extend | ⬜ pending |
-| 50-04-01 | 04 | 3 | PIPE-02 | T-50-10 | Seven eyebrow names occur exactly once in all conflict inventories | unit | `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyEffectsTests.GeometryConflictResolverTests` | ✅ extend | ⬜ pending |
-| 50-04-02 | 04 | 3 | PIPE-02 | T-50-11 | Exact provisional 13.45/44/one-scale arithmetic and polarity | unit | `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyEffectsTests.GeometryConflictResolverTests` | ✅ extend | ⬜ pending |
+| 50-01-01 | 01 | 1 | GEOM-01–07, PIPE-01–02 | T-50-02, T-50-03 | Fail-closed privacy, scope, and exact-accounting boundary | static/adversarial | `python3 .planning/phases/50-independent-eyebrow-geometry-and-pipeline-integration/check_eyebrow_geometry_boundaries.py --self-test` | ✅ | ✅ 4/4 |
+| 50-01-02 | 01 | 1 | GEOM-01–07, PIPE-01 | T-50-01 | Canonical-source, brow-local, field-isolated provider contracts | unit | `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyEffectsTests.EyebrowWarpProviderTests` | ✅ | ✅ 11/11 |
+| 50-01-03 | 01 | 1 | PIPE-01 | T-50-02 | Request-local fixtures expose no raw eyebrow support | unit | `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyCoreTests.BeautyEngineGeometryFacadeTests` | ✅ | ✅ 18/18 |
+| 50-02-01 | 02 | 2 | GEOM-01–03, PIPE-01 | T-50-04–06 | Finite canonical per-side emissions and local empty removal | unit | `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyEffectsTests.EyebrowWarpProviderTests` | ✅ | ✅ 11/11 |
+| 50-02-02 | 02 | 2 | GEOM-04–07, PIPE-01 | T-50-04–06 | Pair/chord/apex prerequisites without fallback or disclosure | unit | `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyEffectsTests.EyebrowWarpProviderTests` | ✅ | ✅ 11/11 |
+| 50-03-01 | 03 | 3 | GEOM-01–07, PIPE-01 | T-50-07, T-50-09 | Same-name capped routing with aggregate eyebrow domain | unit/integration | `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyEffectsTests.BeautyEffectResolverTests` | ✅ | ✅ 26/26 |
+| 50-03-02 | 03 | 3 | PIPE-01, PIPE-02 | T-50-07–09 | Freshness, local preflight, redacted metrics, and monotone 44-name convergence | unit/integration | same resolver command | ✅ | ✅ 26/26 |
+| 50-04-01 | 04 | 3 | PIPE-02 | T-50-10 | Seven eyebrow names occur exactly once in all conflict inventories | unit | `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyEffectsTests.GeometryConflictResolverTests` | ✅ | ✅ 14/14 |
+| 50-04-02 | 04 | 3 | PIPE-02 | T-50-11 | Exact provisional 13.45/44/one-scale arithmetic and polarity | unit | same conflict command | ✅ | ✅ 14/14 |
 | 50-05-01 | 05 | 4 | GEOM-01–07, PIPE-01–02 | T-50-12 | Field-local degradation and final-mask/provider agreement | unit/integration | `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyEffectsTests.CombinedEffectSafetyTests && swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyEffectsTests.MissingLandmarkDegradationTests` | ✅ extend | ✅ 15/15 + 48/48 |
 | 50-05-02 | 05 | 4 | PIPE-01, PIPE-02 | T-50-13 | Exactly-once eyebrow insertion in unified dispatch | integration | `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyEffectsTests.BeautyGeometryEffectPipelineTests` | ✅ extend | ✅ 3/3 |
 | 50-05-03 | 05 | 4 | GEOM-01–07, PIPE-01 | T-50-14 | Redacted public-facade routing and request isolation | integration | `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyCoreTests.BeautyEngineGeometryFacadeTests` | ✅ extend | ✅ 18/18 |
-| 50-06-01 | 06 | 5 | GEOM-01–07, PIPE-01–02 | T-50-15–17 | Fresh complete evidence; failed or stale output cannot become proof | full/static | `python3 .planning/phases/50-independent-eyebrow-geometry-and-pipeline-integration/check_eyebrow_geometry_boundaries.py --preflight-fixtures && python3 .planning/phases/50-independent-eyebrow-geometry-and-pipeline-integration/check_eyebrow_geometry_boundaries.py --self-test && python3 .planning/phases/50-independent-eyebrow-geometry-and-pipeline-integration/check_eyebrow_geometry_boundaries.py && swift test --package-path BeautySDK --disable-sandbox --jobs 1` | ✅ update | ⬜ pending |
+| 50-06-01 | 06 | 5 | GEOM-01–07, PIPE-01–02 | T-50-15–17 | Fresh complete evidence; failed or stale output cannot become proof | full/static | fixture + checker + focused + BeautyEffects + full SwiftPM gate below | ✅ | ✅ 433/433, 3 opt-in skips |
 | 50-06-02 | 06 | 5 | GEOM-01–07, PIPE-01–02 | T-50-16, T-50-17 | Owner contracts preserve privacy, boundaries, and downstream nonclaims | static | `python3 .planning/phases/50-independent-eyebrow-geometry-and-pipeline-integration/check_eyebrow_geometry_boundaries.py && rg -n "Phase 50|provisional|44|13\.45|Phase 51|Phase 52" ARCHITECTURE.md DESIGN.md SECURITY.md` | ✅ extend | ⬜ pending |
 | 50-06-03 | 06 | 5 | GEOM-01–07, PIPE-01–02 | T-50-15–17 | Reliability, acceptance, and ledger claims match fresh bounded evidence | static | `python3 .planning/phases/50-independent-eyebrow-geometry-and-pipeline-integration/check_eyebrow_geometry_boundaries.py && rg -n "Phase 50|GEOM-01|GEOM-07|PIPE-01|PIPE-02|Phase 51|Phase 52" RELIABILITY.md PRODUCT_SENSE.md PLANS.md` | ✅ extend | ⬜ pending |
 
@@ -60,11 +60,19 @@ created: 2026-07-24
 
 ## Wave 0 Requirements
 
-- [ ] `BeautySDK/Tests/BeautyEffectsTests/EyebrowWarpProviderTests.swift` — asymmetric paired, single-side, nil-apex, degenerate-chord, mirrored-direction, field-isolation, distinction, and immutable sibling fixtures.
-- [ ] `BeautySDK/Tests/BeautyCoreTests/BeautyEngineTestingSupport.swift` — valid raw eyebrow traces plus missing/malformed fixtures.
-- [ ] Existing resolver/conflict/combined fixtures — extend exact named inventory from 37 to 44 and replace Phase 49 runtime-inert evidence with explicit-zero neutrality plus positive Phase 50 routing.
-- [ ] `.planning/phases/50-independent-eyebrow-geometry-and-pipeline-integration/check_eyebrow_geometry_boundaries.py` — adversarial self-tests and live classified checks.
-- [ ] Preserve readable/non-empty `e1.png` fixture preflight before the full suite.
+- [x] `BeautySDK/Tests/BeautyEffectsTests/EyebrowWarpProviderTests.swift` — asymmetric paired, single-side, nil-apex, degenerate-chord, mirrored-direction, field-isolation, distinction, and immutable sibling fixtures.
+- [x] `BeautySDK/Tests/BeautyCoreTests/BeautyEngineTestingSupport.swift` — valid raw eyebrow traces plus missing/malformed fixtures.
+- [x] Existing resolver/conflict/combined fixtures — exact named inventory extended from 37 to 44 with explicit-zero neutrality and positive routing.
+- [x] Phase 50 checker — adversarial self-tests, fixture preflight, and live checks.
+- [x] Readable, nonempty, regular `e1.png` fixture preflight passed before the full suite.
+
+## Fresh Wave 5 Evidence — 2026-07-24
+
+All commands exited `0` on the local macOS host. Provider 11/11 (3 s), resolver 26/26 (4 s), conflict 14/14 (2 s), combined 15/15 (5 s), degradation 48/48 (17 s), pipeline 3/3 (2 s), and facade 18/18 (12 s) passed. The complete focused gate, including fixture/checker work, took 70 s. All `BeautyEffectsTests` passed 243 executed with one opt-in Apple Vision skip in 22 s. Full SwiftPM passed 433 executed with three opt-in Apple Vision skips and zero failures in 76 s.
+
+The fixture preflight, 4/4 adversarial checker self-tests, live checker, pinned `Package.swift` hash `6f03b078…` and unchanged Phase 49 checker hash `7a8716c…`, dependency/target/resource, public/SPI, reflection/persistence, network, Demo-source, generated-artifact containment, exact 59-row renderer/gallery inventory, unchanged seven `future` eyebrow ledger rows, scoped status/diff, and `git diff --check` gates passed. Ignored output/gallery directories remain untracked and unstaged.
+
+The recalled prohibitions against makeup/texture synthesis, synthetic or eye-derived substitution, and ethical/naturalness overclaim remain `unverified` secure-phase breadcrumbs. Passing source scans does not convert those statements into verified ethical descriptors.
 
 ---
 
@@ -76,11 +84,11 @@ All Phase 50 behaviors have automated source, unit, integration, facade, and bou
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Focused and full feedback latency measured and recorded
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Focused and full feedback latency measured and recorded
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** Phase 50 compiled SDK-core provider/routing validation approved. Phase 51 decoded output/gallery and Phase 52 final safety/promotion remain unapproved and untouched.
