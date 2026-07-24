@@ -160,6 +160,68 @@ final class BeautyEffectResolverTests: XCTestCase {
         }
     }
 
+    func testBROW02SevenNonzeroEyebrowFieldsRemainRuntimeInert() {
+        let baseline = BeautyParameters(
+            skinSmoothing: 0.18,
+            brightness: 0.12,
+            faceSlim: 0.19,
+            eyeSize: 0.17,
+            noseSlim: 0.16,
+            mouthSize: -0.15,
+            lipColor: 0.14,
+            filterId: "soft_clean",
+            filterIntensity: 0.13
+        )
+        let withEyebrows = BeautyParameters(
+            skinSmoothing: 0.18,
+            brightness: 0.12,
+            faceSlim: 0.19,
+            eyeSize: 0.17,
+            eyebrowYPosition: -0.71,
+            eyebrowThickness: -0.52,
+            eyebrowLength: -0.33,
+            eyebrowSpacing: 0.14,
+            eyebrowHeadSpacing: 0.35,
+            eyebrowTilt: 0.56,
+            eyebrowPeakDefinition: 0.77,
+            noseSlim: 0.16,
+            mouthSize: -0.15,
+            lipColor: 0.14,
+            filterId: "soft_clean",
+            filterIntensity: 0.13
+        )
+        let face = FaceGeometry.fixture
+
+        XCTAssertFalse(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(
+            eyebrowYPosition: -0.71,
+            eyebrowThickness: -0.52,
+            eyebrowLength: -0.33,
+            eyebrowSpacing: 0.14,
+            eyebrowHeadSpacing: 0.35,
+            eyebrowTilt: 0.56,
+            eyebrowPeakDefinition: 0.77
+        )))
+        XCTAssertEqual(
+            BeautyEffectResolver.requiresFaceGeometry(parameters: withEyebrows),
+            BeautyEffectResolver.requiresFaceGeometry(parameters: baseline)
+        )
+
+        let baselinePlan = BeautyEffectResolver.resolve(parameters: baseline, faceGeometry: face)
+        let eyebrowPlan = BeautyEffectResolver.resolve(parameters: withEyebrows, faceGeometry: face)
+
+        XCTAssertEqual(eyebrowPlan, baselinePlan)
+        XCTAssertEqual(eyebrowPlan.effectiveStrengths, baselinePlan.effectiveStrengths)
+        XCTAssertEqual(eyebrowPlan.activeDomains, baselinePlan.activeDomains)
+        XCTAssertEqual(eyebrowPlan.skippedDomains, baselinePlan.skippedDomains)
+        XCTAssertEqual(eyebrowPlan.warnings, baselinePlan.warnings)
+        XCTAssertEqual(eyebrowPlan.metrics, baselinePlan.metrics)
+        XCTAssertEqual(
+            BeautyGeometryEffectPipeline.controlPoints(for: eyebrowPlan.effectiveStrengths, face: face),
+            BeautyGeometryEffectPipeline.controlPoints(for: baselinePlan.effectiveStrengths, face: face)
+        )
+        assertRedacted(eyebrowPlan)
+    }
+
     func testGEOMFourFieldsRequireGeometryCapIndependentlyAndPreserveExplicitZeroPlan() {
         let omitted = BeautyParameters(
             faceSlim: 0.24,

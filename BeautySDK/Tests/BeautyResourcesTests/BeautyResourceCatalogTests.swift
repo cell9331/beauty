@@ -117,6 +117,31 @@ final class BeautyResourceCatalogTests: XCTestCase {
         }
     }
 
+    func testBROW02ExactlyFiveBundledPresetsDecodeSevenMissingEyebrowFieldsAsZero() throws {
+        let presets = try BeautyResourceCatalog.bundled().builtInPresets()
+
+        XCTAssertEqual(
+            presets.map(\.id),
+            ["natural", "clear", "refined", "male-natural", "id-photo-natural"]
+        )
+        XCTAssertEqual(presets.count, 5)
+        for preset in presets {
+            XCTAssertEqual(
+                [
+                    preset.parameters.eyebrowYPosition,
+                    preset.parameters.eyebrowThickness,
+                    preset.parameters.eyebrowLength,
+                    preset.parameters.eyebrowSpacing,
+                    preset.parameters.eyebrowHeadSpacing,
+                    preset.parameters.eyebrowTilt,
+                    preset.parameters.eyebrowPeakDefinition,
+                ],
+                Array(repeating: Float(0), count: 7),
+                preset.id
+            )
+        }
+    }
+
     func testEFFECT08PresetLookupIsDeterministicAndComplete() throws {
         let catalog = try BeautyResourceCatalog.bundled()
 

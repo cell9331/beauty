@@ -158,6 +158,78 @@ final class BeautyParametersTests: XCTestCase {
         }
     }
 
+    func testBROW02Complete59KeyRoundTripAndLegacy52PayloadRemainIndependentAndNeutral() throws {
+        let parameters = BeautyParameters(
+            skinSmoothing: 0.08,
+            chinLength: -0.19,
+            eyeTilt: -0.27,
+            eyebrowYPosition: -0.71,
+            eyebrowThickness: -0.52,
+            eyebrowLength: -0.33,
+            eyebrowSpacing: 0.14,
+            eyebrowHeadSpacing: 0.35,
+            eyebrowTilt: 0.56,
+            eyebrowPeakDefinition: 0.77,
+            mouthTilt: 0.28,
+            filterId: "clean_01",
+            filterIntensity: 0.39
+        )
+        let eyebrowKeys = [
+            "eyebrowYPosition", "eyebrowThickness", "eyebrowLength", "eyebrowSpacing",
+            "eyebrowHeadSpacing", "eyebrowTilt", "eyebrowPeakDefinition",
+        ]
+
+        let data = try JSONEncoder().encode(parameters)
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        let decoded = try JSONDecoder().decode(BeautyParameters.self, from: data)
+
+        XCTAssertEqual(object.count, 59)
+        XCTAssertEqual(Set(object.keys), Set(Mirror(reflecting: parameters).children.compactMap(\.label)))
+        XCTAssertEqual(decoded, parameters)
+        XCTAssertEqual(
+            [
+                decoded.eyebrowYPosition,
+                decoded.eyebrowThickness,
+                decoded.eyebrowLength,
+                decoded.eyebrowSpacing,
+                decoded.eyebrowHeadSpacing,
+                decoded.eyebrowTilt,
+                decoded.eyebrowPeakDefinition,
+            ],
+            [-0.71, -0.52, -0.33, 0.14, 0.35, 0.56, 0.77]
+        )
+
+        var legacy = object
+        for key in eyebrowKeys {
+            legacy.removeValue(forKey: key)
+        }
+        XCTAssertEqual(legacy.count, 52)
+        XCTAssertTrue(eyebrowKeys.allSatisfy { legacy[$0] == nil })
+
+        let legacyDecoded = try JSONDecoder().decode(
+            BeautyParameters.self,
+            from: JSONSerialization.data(withJSONObject: legacy)
+        )
+        XCTAssertEqual(
+            [
+                legacyDecoded.eyebrowYPosition,
+                legacyDecoded.eyebrowThickness,
+                legacyDecoded.eyebrowLength,
+                legacyDecoded.eyebrowSpacing,
+                legacyDecoded.eyebrowHeadSpacing,
+                legacyDecoded.eyebrowTilt,
+                legacyDecoded.eyebrowPeakDefinition,
+            ],
+            Array(repeating: Float(0), count: 7)
+        )
+        XCTAssertEqual(legacyDecoded.skinSmoothing, parameters.skinSmoothing)
+        XCTAssertEqual(legacyDecoded.chinLength, parameters.chinLength)
+        XCTAssertEqual(legacyDecoded.eyeTilt, parameters.eyeTilt)
+        XCTAssertEqual(legacyDecoded.mouthTilt, parameters.mouthTilt)
+        XCTAssertEqual(legacyDecoded.filterId, parameters.filterId)
+        XCTAssertEqual(legacyDecoded.filterIntensity, parameters.filterIntensity)
+    }
+
     func testFACE07FACE08FACE09FACE12PositiveOnlyInputsNormalizeIndependently() {
         let cases: [(name: String, value: Float, expected: Float)] = [
             ("negative", -1, 0),
