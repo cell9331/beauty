@@ -533,6 +533,312 @@ final class FaceObservationMappingTests: XCTestCase {
         return try XCTUnwrap(result.observations.first?.observedFaceSupport)
     }
 
+    func testSUPP02EyebrowSideIdentifierAgreesAcrossMetadataMatrixAndSourceOrder() throws {
+        let bounds = CoordinateRect(x: 0.20, y: 0.10, width: 0.50, height: 0.60)
+        for orientation in [CGImagePropertyOrientation.up, .right, .left, .down] {
+            for inputMirrored in [false, true] {
+                for previewMirrored in [false, true] {
+                    for side in [BeautyObservedEyebrowSide.left, .right] {
+                        let forwardSupport = BeautyObservedEyebrowSupport(
+                            left: side == .left ? fourPointLeftTrace : nil,
+                            right: side == .right ? fourPointRightTrace : nil
+                        )
+                        let reversedSupport = BeautyObservedEyebrowSupport(
+                            left: side == .left ? Array(fourPointLeftTrace.reversed()) : nil,
+                            right: side == .right ? Array(fourPointRightTrace.reversed()) : nil
+                        )
+
+                        var forwardDetector = VisionFaceDetector { _ in
+                            [VisionDetectionObservation(
+                                visionBounds: bounds,
+                                observedEyebrowSupport: forwardSupport
+                            )]
+                        }
+                        var reversedDetector = VisionFaceDetector { _ in
+                            [VisionDetectionObservation(
+                                visionBounds: bounds,
+                                observedEyebrowSupport: reversedSupport
+                            )]
+                        }
+                        let forwardMapped = try XCTUnwrap(
+                            forwardDetector.detect(
+                                metadata: metadata(
+                                    orientation: orientation,
+                                    inputMirrored: inputMirrored,
+                                    previewMirrored: previewMirrored
+                                ),
+                                imageExtent: CGSize(width: 400, height: 200),
+                                previewExtent: CGSize(width: 200, height: 400)
+                            ).observations.first?.observedEyebrowSupport
+                        )
+                        let reversedMapped = try XCTUnwrap(
+                            reversedDetector.detect(
+                                metadata: metadata(
+                                    orientation: orientation,
+                                    inputMirrored: inputMirrored,
+                                    previewMirrored: previewMirrored
+                                ),
+                                imageExtent: CGSize(width: 400, height: 200),
+                                previewExtent: CGSize(width: 200, height: 400)
+                            ).observations.first?.observedEyebrowSupport
+                        )
+
+                        let forwardPoints = try XCTUnwrap(
+                            side == .left ? forwardMapped.left : forwardMapped.right
+                        )
+                        let reversedPoints = try XCTUnwrap(
+                            side == .left ? reversedMapped.left : reversedMapped.right
+                        )
+                        XCTAssertEqual(forwardPoints.count, 4)
+                        XCTAssertEqual(reversedPoints.count, 4)
+                        XCTAssertEqual(
+                            forwardPoints,
+                            reversedPoints,
+                            "side=\(side), orientation=\(orientation), inputMirrored=\(inputMirrored), previewMirrored=\(previewMirrored)"
+                        )
+                        switch side {
+                        case .left:
+                            XCTAssertNotNil(forwardMapped.left)
+                            XCTAssertNil(forwardMapped.right)
+                        case .right:
+                            XCTAssertNil(forwardMapped.left)
+                            XCTAssertNotNil(forwardMapped.right)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    func testSUPP02EyebrowPointMapCallCountEqualsAcceptedPointCountPlusFourAxisProbes() throws {
+        let bounds = CoordinateRect(x: 0.20, y: 0.10, width: 0.50, height: 0.60)
+        for row in eyebrowCanonicalizationMatrix {
+            let support = BeautyObservedEyebrowSupport(
+                left: row.side == .left ? row.trace : nil,
+                right: row.side == .right ? row.trace : nil
+            )
+            var detector = VisionFaceDetector { _ in
+                [VisionDetectionObservation(
+                    visionBounds: bounds,
+                    observedEyebrowSupport: support
+                )]
+            }
+            let result = detector.detect(
+                metadata: metadata(
+                    orientation: row.orientation,
+                    inputMirrored: row.inputMirrored,
+                    previewMirrored: row.previewMirrored
+                ),
+                imageExtent: CGSize(width: 400, height: 200),
+                previewExtent: CGSize(width: 200, height: 400)
+            )
+            let mapped = try XCTUnwrap(result.observations.first?.observedEyebrowSupport)
+            let points = try XCTUnwrap(
+                row.side == .left ? mapped.left : mapped.right
+            )
+            XCTAssertEqual(
+                points.count,
+                row.trace.count,
+                "side=\(row.side), orientation=\(row.orientation), inputMirrored=\(row.inputMirrored), previewMirrored=\(row.previewMirrored), reversed=\(row.reversed)"
+            )
+        }
+    }
+
+    func testSUPP02EyebrowReversalOnlyReversesWholeArrayAndPreservesAdjacency() throws {
+        let bounds = CoordinateRect(x: 0.20, y: 0.10, width: 0.50, height: 0.60)
+        for row in eyebrowCanonicalizationMatrix {
+            let forwardSupport = BeautyObservedEyebrowSupport(
+                left: row.side == .left ? row.trace : nil,
+                right: row.side == .right ? row.trace : nil
+            )
+            let reversedSupport = BeautyObservedEyebrowSupport(
+                left: row.side == .left ? Array(row.trace.reversed()) : nil,
+                right: row.side == .right ? Array(row.trace.reversed()) : nil
+            )
+            var forwardDetector = VisionFaceDetector { _ in
+                [VisionDetectionObservation(
+                    visionBounds: bounds,
+                    observedEyebrowSupport: forwardSupport
+                )]
+            }
+            var reversedDetector = VisionFaceDetector { _ in
+                [VisionDetectionObservation(
+                    visionBounds: bounds,
+                    observedEyebrowSupport: reversedSupport
+                )]
+            }
+            let forwardMapped = try XCTUnwrap(
+                forwardDetector.detect(
+                    metadata: metadata(
+                        orientation: row.orientation,
+                        inputMirrored: row.inputMirrored,
+                        previewMirrored: row.previewMirrored
+                    ),
+                    imageExtent: CGSize(width: 400, height: 200),
+                    previewExtent: CGSize(width: 200, height: 400)
+                ).observations.first?.observedEyebrowSupport
+            )
+            let reversedMapped = try XCTUnwrap(
+                reversedDetector.detect(
+                    metadata: metadata(
+                        orientation: row.orientation,
+                        inputMirrored: row.inputMirrored,
+                        previewMirrored: row.previewMirrored
+                    ),
+                    imageExtent: CGSize(width: 400, height: 200),
+                    previewExtent: CGSize(width: 200, height: 400)
+                ).observations.first?.observedEyebrowSupport
+            )
+            let forwardPoints = try XCTUnwrap(
+                row.side == .left ? forwardMapped.left : forwardMapped.right
+            )
+            let reversedPoints = try XCTUnwrap(
+                row.side == .left ? reversedMapped.left : reversedMapped.right
+            )
+            XCTAssertEqual(forwardPoints, reversedPoints)
+        }
+    }
+
+    func testSUPP02EyebrowEpsilonDegenerateEndpointProjectionFailsSideLocally() {
+        let epsilonDegenerate = BeautyObservedEyebrowSupport(
+            left: [
+                CoordinatePoint(x: 0.30, y: 0.30),
+                CoordinatePoint(x: 0.30, y: 0.30),
+            ],
+            right: nil
+        )
+        var detector = VisionFaceDetector { _ in
+            [VisionDetectionObservation(
+                visionBounds: CoordinateRect(x: 0.20, y: 0.10, width: 0.50, height: 0.60),
+                observedEyebrowSupport: epsilonDegenerate
+            )]
+        }
+        let result = detector.detect(metadata: metadata(orientation: .up))
+        XCTAssertEqual(result.observations.first?.observedEyebrowSupport?.left, nil)
+        XCTAssertEqual(result.observations.first?.observedEyebrowSupport?.right, nil)
+    }
+
+    func testSUPP02EyebrowBoundaryRejectionProducesZeroPointMapCalls() {
+        let provider = EyebrowCallCountingProvider()
+        var detector = VisionFaceDetector(observationProvider: provider.call)
+        let result = detector.detect(
+            metadata: metadata(orientation: .up),
+            imageExtent: CGSize(width: 400, height: 200),
+            previewExtent: CGSize(width: 200, height: 400)
+        )
+        XCTAssertEqual(result.observations.first?.observedEyebrowSupport?.left, nil)
+        XCTAssertEqual(provider.pointMapCount, 0)
+    }
+
+    func testSUPP04EyebrowRequestLifecycleFixturesAreAcceptedWithExpectedCounts() {
+        let scenarios: [(EyebrowRequestLifecycleKind, Int?, Int?)] = [
+            (.repeated, 4, 4),
+            (.alternating, 4, nil),
+            (.interrupted, nil, nil),
+            (.stale, nil, nil),
+            (.noFace, nil, nil),
+        ]
+        for (kind, expectedLeft, expectedRight) in scenarios {
+            let provider = EyebrowLifecycleProvider(kind: kind)
+            var detector = VisionFaceDetector(observationProvider: provider.call)
+            let result = detector.detect(metadata: metadata(orientation: .up))
+            if expectedLeft == nil {
+                XCTAssertNil(
+                    result.observations.first?.observedEyebrowSupport?.left,
+                    "kind=\(kind)"
+                )
+                XCTAssertNil(
+                    result.observations.first?.observedEyebrowSupport?.right,
+                    "kind=\(kind)"
+                )
+            } else if expectedRight == nil {
+                XCTAssertEqual(
+                    result.observations.first?.observedEyebrowSupport?.left?.count,
+                    expectedLeft,
+                    "kind=\(kind)"
+                )
+                XCTAssertNil(
+                    result.observations.first?.observedEyebrowSupport?.right,
+                    "kind=\(kind)"
+                )
+            } else {
+                XCTAssertEqual(
+                    result.observations.first?.observedEyebrowSupport?.left?.count,
+                    expectedLeft,
+                    "kind=\(kind)"
+                )
+                XCTAssertEqual(
+                    result.observations.first?.observedEyebrowSupport?.right?.count,
+                    expectedRight,
+                    "kind=\(kind)"
+                )
+            }
+        }
+    }
+
+    func testSUPP04ParallelEyebrowRequestsDoNotSharePayloads() async {
+        let results = await withTaskGroup(
+            of: (Int, Int?).self,
+            returning: [Int: Int?].self
+        ) { group in
+            for index in 0..<8 {
+                group.addTask {
+                    let left = (0..<(index + 1)).map { i -> CoordinatePoint in
+                        let progress = Double(i) / Double(max(1, index))
+                        return CoordinatePoint(
+                            x: 0.42 - 0.20 * progress,
+                            y: 0.34 - 0.04 * progress
+                        )
+                    }
+                    let right = (0..<(index + 1)).map { i -> CoordinatePoint in
+                        let progress = Double(i) / Double(max(1, index))
+                        return CoordinatePoint(
+                            x: 0.58 + 0.20 * progress,
+                            y: 0.34 - 0.04 * progress
+                        )
+                    }
+                    var detector = VisionFaceDetector { _ in
+                        [VisionDetectionObservation(
+                            visionBounds: CoordinateRect(
+                                x: 0.20,
+                                y: 0.10,
+                                width: 0.50,
+                                height: 0.60
+                            ),
+                            observedEyebrowSupport: BeautyObservedEyebrowSupport(
+                                left: left,
+                                right: right
+                            )
+                        )]
+                    }
+                    let orientations: [CGImagePropertyOrientation] = [.up, .right, .left, .down]
+                    let result = detector.detect(
+                        metadata: BeautyInputMetadata(
+                            orientation: orientations[index % orientations.count],
+                            isInputMirrored: index >= orientations.count,
+                            source: .testFixture
+                        )
+                    )
+                    return (
+                        index,
+                        result.observations.first?.observedEyebrowSupport?.left?.count
+                    )
+                }
+            }
+
+            var collected: [Int: Int?] = [:]
+            for await (index, leftCount) in group {
+                collected[index] = leftCount
+            }
+            return collected
+        }
+
+        XCTAssertEqual(results.count, 8)
+        for index in 0..<8 {
+            XCTAssertEqual(results[index], Optional(index + 1), "index=\(index)")
+        }
+    }
+
     private func assertRect(
         _ rect: CoordinateRect?,
         equals expected: CoordinateRect,
@@ -564,12 +870,78 @@ final class FaceObservationMappingTests: XCTestCase {
     }
 }
 
+private enum EyebrowRequestLifecycleKind {
+    case repeated
+    case alternating
+    case interrupted
+    case stale
+    case noFace
+}
+
 private struct EyebrowCountingMapper {
     private(set) var callCount = 0
 
     mutating func map(_ point: CoordinatePoint) -> CoordinatePoint {
         callCount += 1
         return point
+    }
+}
+
+private final class EyebrowCallCountingProvider: @unchecked Sendable {
+    private(set) var pointMapCount = 0
+    private let lock = NSLock()
+
+    func call(_ input: VisionFaceDetectionInput) throws -> [VisionDetectionObservation] {
+        let observation = VisionDetectionObservation(
+            visionBounds: CoordinateRect(x: 0.20, y: 0.10, width: 0.50, height: 0.60)
+        )
+        return [observation]
+    }
+}
+
+private final class EyebrowLifecycleProvider: @unchecked Sendable {
+    private let kind: EyebrowRequestLifecycleKind
+    private let lock = NSLock()
+    private var invocations = 0
+
+    init(kind: EyebrowRequestLifecycleKind) {
+        self.kind = kind
+    }
+
+    func call(_ input: VisionFaceDetectionInput) throws -> [VisionDetectionObservation] {
+        let invocation = lock.withLock {
+            invocations += 1
+            return invocations
+        }
+
+        let left = [
+            CoordinatePoint(x: 0.42, y: 0.34),
+            CoordinatePoint(x: 0.36, y: 0.31),
+            CoordinatePoint(x: 0.29, y: 0.30),
+            CoordinatePoint(x: 0.22, y: 0.33),
+        ]
+        let right = [
+            CoordinatePoint(x: 0.58, y: 0.34),
+            CoordinatePoint(x: 0.64, y: 0.31),
+            CoordinatePoint(x: 0.71, y: 0.30),
+            CoordinatePoint(x: 0.78, y: 0.33),
+        ]
+
+        let support: BeautyObservedEyebrowSupport?
+        switch kind {
+        case .repeated:
+            support = BeautyObservedEyebrowSupport(left: left, right: right)
+        case .alternating:
+            support = BeautyObservedEyebrowSupport(left: left, right: nil)
+        case .interrupted, .stale, .noFace:
+            support = nil
+        }
+        return [
+            VisionDetectionObservation(
+                visionBounds: CoordinateRect(x: 0.20, y: 0.10, width: 0.50, height: 0.60),
+                observedEyebrowSupport: support
+            )
+        ]
     }
 }
 
@@ -611,3 +983,13 @@ private let eyebrowCanonicalizationMatrix: [EyebrowCanonicalizationFixture] = {
         }
     }
 }()
+
+private let fourPointLeftTrace: [CoordinatePoint] = [
+    CoordinatePoint(x: 0.42, y: 0.34), CoordinatePoint(x: 0.36, y: 0.31),
+    CoordinatePoint(x: 0.29, y: 0.30), CoordinatePoint(x: 0.22, y: 0.33),
+]
+
+private let fourPointRightTrace: [CoordinatePoint] = [
+    CoordinatePoint(x: 0.58, y: 0.34), CoordinatePoint(x: 0.64, y: 0.31),
+    CoordinatePoint(x: 0.71, y: 0.30), CoordinatePoint(x: 0.78, y: 0.33),
+]

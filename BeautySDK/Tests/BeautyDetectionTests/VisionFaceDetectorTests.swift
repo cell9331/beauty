@@ -373,7 +373,7 @@ final class VisionFaceDetectorTests: XCTestCase {
         let expectedObservation =
             "BeautyFaceObservation(landmarkGroupCount: 6, observedEyeSupportCount: 0, observedFaceSupportAvailable: true, observedFaceContourCount: 2, observedFaceMedianLineCount: 1, observedEyebrowSupportAvailable: false, observedLeftEyebrowCount: 0, observedRightEyebrowCount: 0)"
         let expectedVisionObservation =
-            "VisionDetectionObservation(landmarkGroupCount: 6, observedEyeSupportCount: 0, observedFaceSupportAvailable: true, observedFaceContourCount: 2, observedFaceMedianLineCount: 1)"
+            "VisionDetectionObservation(landmarkGroupCount: 6, observedEyeSupportCount: 0, observedFaceSupportAvailable: true, observedFaceContourCount: 2, observedFaceMedianLineCount: 1, observedEyebrowSupportAvailable: false, observedLeftEyebrowCount: 0, observedRightEyebrowCount: 0)"
 
         XCTAssertEqual(String(describing: support), expectedSupport)
         XCTAssertEqual(String(reflecting: support), expectedSupport)
@@ -410,6 +410,9 @@ final class VisionFaceDetectorTests: XCTestCase {
                 "observedFaceSupportAvailable",
                 "observedFaceContourCount",
                 "observedFaceMedianLineCount",
+                "observedEyebrowSupportAvailable",
+                "observedLeftEyebrowCount",
+                "observedRightEyebrowCount",
             ]
         )
 
@@ -610,6 +613,196 @@ final class VisionFaceDetectorTests: XCTestCase {
         XCTAssertFalse(eyebrowVisionRegionFixtures.contains { $0.propertyName == "leftEye" || $0.propertyName == "rightEye" })
     }
 
+    func testSUPP01EyebrowPreflightHonorsOpenPathAnd16PointCeilingAcrossPropertyNames() {
+        for fixture in eyebrowVisionRegionFixtures {
+            let isOpenPath = fixture.classification == .openPath
+            let expected = fixture.expectedMapperCalls > 0
+            XCTAssertEqual(
+                EyebrowPreflight.accepts(pointCount: fixture.pointCount, isOpenPath: isOpenPath),
+                expected,
+                "fixture: \(fixture.propertyName), count: \(fixture.pointCount), classification: \(fixture.classification)"
+            )
+        }
+    }
+
+    func testSUPP01EyebrowPreflightRejectsClosedAndDisconnectedClassifications() {
+        for classification in eyebrowRegionClassificationFixtures where classification != .openPath {
+            XCTAssertFalse(
+                EyebrowPreflight.accepts(pointCount: 8, isOpenPath: false),
+                "classification: \(classification)"
+            )
+            XCTAssertFalse(
+                EyebrowPreflight.accepts(pointCount: 16, isOpenPath: false),
+                "classification: \(classification) at boundary"
+            )
+            XCTAssertFalse(
+                EyebrowPreflight.accepts(pointCount: 1, isOpenPath: false),
+                "classification: \(classification) at single-point"
+            )
+        }
+    }
+
+    func testSUPP01InjectedEyebrowSupportMapsBothSidesAndKeepsMissingSideAbsent() {
+        let left = BeautyObservedEyebrowSupport(
+            left: [
+                CoordinatePoint(x: 0.30, y: 0.30),
+                CoordinatePoint(x: 0.40, y: 0.30),
+            ],
+            right: nil
+        )
+        let right = BeautyObservedEyebrowSupport(
+            left: nil,
+            right: [
+                CoordinatePoint(x: 0.60, y: 0.30),
+                CoordinatePoint(x: 0.70, y: 0.30),
+            ]
+        )
+        let both = BeautyObservedEyebrowSupport(
+            left: [CoordinatePoint(x: 0.30, y: 0.30), CoordinatePoint(x: 0.40, y: 0.30)],
+            right: [CoordinatePoint(x: 0.60, y: 0.30), CoordinatePoint(x: 0.70, y: 0.30)]
+        )
+
+        for (support, expectedLeft, expectedRight) in [
+            (left, true, false),
+            (right, false, true),
+            (both, true, true),
+        ] {
+            var detector = VisionFaceDetector { _ in
+                [VisionDetectionObservation(
+                    visionBounds: CoordinateRect(x: 0.10, y: 0.20, width: 0.80, height: 0.60),
+                    observedEyebrowSupport: support
+                )]
+            }
+            let result = detector.detect(metadata: metadata())
+            let mapped = result.observations[0].observedEyebrowSupport
+            XCTAssertEqual(mapped?.left != nil, expectedLeft)
+            XCTAssertEqual(mapped?.right != nil, expectedRight)
+        }
+    }
+
+    func testSUPP01VisionDetectionObservationExposesEyebrowAggregateOnlyDiagnostics() {
+        let visionObservation = VisionDetectionObservation(
+            stableID: "sensitive-stable-id",
+            confidence: 0.987_654_321,
+            visionBounds: CoordinateRect(
+                x: 0.123_456_789,
+                y: 0.234_567_891,
+                width: 0.345_678_912,
+                height: 0.456_789_123
+            ),
+            observedEyebrowSupport: BeautyObservedEyebrowSupport(
+                left: [
+                    CoordinatePoint(x: 0.123_456_789, y: 0.234_567_891),
+                    CoordinatePoint(x: 0.876_543_219, y: 0.345_678_912),
+                ],
+                right: [
+                    CoordinatePoint(x: 0.456_789_123, y: 0.567_891_234),
+                ]
+            )
+        )
+
+        let expected =
+            "VisionDetectionObservation(landmarkGroupCount: 6, observedEyeSupportCount: 0, observedFaceSupportAvailable: false, observedFaceContourCount: 0, observedFaceMedianLineCount: 0, observedEyebrowSupportAvailable: true, observedLeftEyebrowCount: 2, observedRightEyebrowCount: 1)"
+
+        XCTAssertEqual(String(describing: visionObservation), expected)
+        XCTAssertEqual(String(reflecting: visionObservation), expected)
+        XCTAssertEqual("\(visionObservation)", expected)
+
+        XCTAssertEqual(
+            Mirror(reflecting: visionObservation).children.compactMap(\.label),
+            [
+                "landmarkGroupCount",
+                "observedEyeSupportCount",
+                "observedFaceSupportAvailable",
+                "observedFaceContourCount",
+                "observedFaceMedianLineCount",
+                "observedEyebrowSupportAvailable",
+                "observedLeftEyebrowCount",
+                "observedRightEyebrowCount",
+            ]
+        )
+
+        var dumpOutput = ""
+        dump(visionObservation, to: &dumpOutput)
+
+        let diagnostic = [
+            String(describing: visionObservation),
+            String(reflecting: visionObservation),
+            dumpOutput,
+        ].joined(separator: "\n")
+
+        XCTAssertFalse(diagnostic.contains("sensitive-stable-id"))
+        XCTAssertFalse(diagnostic.contains("0.123456789"))
+        XCTAssertFalse(diagnostic.contains("0.234567891"))
+        XCTAssertFalse(diagnostic.contains("0.345678912"))
+        XCTAssertFalse(diagnostic.contains("0.456789123"))
+        XCTAssertFalse(diagnostic.contains("0.987654321"))
+        XCTAssertFalse(diagnostic.contains("CoordinatePoint"))
+        XCTAssertFalse(diagnostic.contains("CoordinateRect"))
+    }
+
+    func testSUPP01EyebrowSupportWithoutFiniteFaceBoundsFailsClosed() {
+        var detector = VisionFaceDetector { _ in
+            [VisionDetectionObservation(
+                observedEyebrowSupport: BeautyObservedEyebrowSupport(
+                    left: [CoordinatePoint(x: 0.20, y: 0.20)]
+                )
+            )]
+        }
+
+        let result = detector.detect(metadata: metadata())
+
+        XCTAssertEqual(result.observations, [])
+        XCTAssertEqual(result.summary.availability, .partial)
+        XCTAssertEqual(result.summary.reasons, [.mappingFailed])
+        XCTAssertFalse(String(describing: result.summary).contains("CoordinateRect"))
+    }
+
+    func testSUPP01EyebrowRequiresExactlyOneProviderInvocationAndNoSecondLandmarksRequest() {
+        let provider = EyebrowInvocationCountingProvider()
+        var detector = VisionFaceDetector(observationProvider: provider.call)
+
+        let first = detector.detect(metadata: metadata())
+        let second = detector.detect(metadata: metadata())
+
+        XCTAssertEqual(provider.invocationCount, 2)
+        XCTAssertEqual(provider.landmarkRequestCount, 2)
+        XCTAssertNil(first.observations.first?.observedEyebrowSupport)
+        XCTAssertNil(second.observations.first?.observedEyebrowSupport)
+    }
+
+    func testSUPP01EyeSupportCannotSatisfyEyebrowProvenance() {
+        let leftEye = BeautyObservedEyeSupport(
+            side: .left,
+            contour: [
+                CoordinatePoint(x: 0.18, y: 0.35),
+                CoordinatePoint(x: 0.22, y: 0.30),
+                CoordinatePoint(x: 0.28, y: 0.30),
+                CoordinatePoint(x: 0.32, y: 0.35),
+            ]
+        )
+        let rightEye = BeautyObservedEyeSupport(
+            side: .right,
+            contour: [
+                CoordinatePoint(x: 0.68, y: 0.35),
+                CoordinatePoint(x: 0.72, y: 0.30),
+                CoordinatePoint(x: 0.78, y: 0.30),
+                CoordinatePoint(x: 0.82, y: 0.35),
+            ]
+        )
+
+        var detector = VisionFaceDetector { _ in
+            [VisionDetectionObservation(
+                visionBounds: CoordinateRect(x: 0.10, y: 0.10, width: 0.80, height: 0.60),
+                observedEyeSupport: [leftEye, rightEye]
+            )]
+        }
+
+        let result = detector.detect(metadata: metadata())
+        XCTAssertNotNil(result.observations.first?.observedEyeSupport)
+        XCTAssertNil(result.observations.first?.observedEyebrowSupport)
+    }
+
     private func metadata() -> BeautyInputMetadata {
         BeautyInputMetadata(
             orientation: .up,
@@ -751,6 +944,32 @@ private final class FaceSupportObservationProvider: @unchecked Sendable {
             VisionDetectionObservation(
                 visionBounds: CoordinateRect(x: 0.10, y: 0.20, width: 0.80, height: 0.60),
                 observedFaceSupport: support
+            )
+        ]
+    }
+}
+
+private final class EyebrowInvocationCountingProvider: @unchecked Sendable {
+    private let lock = NSLock()
+    private var invocations = 0
+    private var landmarkRequests = 0
+
+    var invocationCount: Int {
+        lock.withLock { invocations }
+    }
+
+    var landmarkRequestCount: Int {
+        lock.withLock { landmarkRequests }
+    }
+
+    func call(_ input: VisionFaceDetectionInput) throws -> [VisionDetectionObservation] {
+        lock.withLock {
+            invocations += 1
+            landmarkRequests += 1
+        }
+        return [
+            VisionDetectionObservation(
+                visionBounds: CoordinateRect(x: 0.10, y: 0.20, width: 0.80, height: 0.60)
             )
         ]
     }
