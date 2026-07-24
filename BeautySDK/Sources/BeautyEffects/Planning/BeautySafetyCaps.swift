@@ -34,6 +34,15 @@ enum BeautySafetyCaps {
     static let outerCornerOpen: Float = 0.25
     static let eyeSymmetry: Float = 0.25
 
+    // Provisional Phase 50 eyebrow caps; Phase 52 owns final calibration.
+    static let eyebrowYPosition: Float = 0.25
+    static let eyebrowThickness: Float = 0.25
+    static let eyebrowLength: Float = 0.25
+    static let eyebrowSpacing: Float = 0.25
+    static let eyebrowHeadSpacing: Float = 0.25
+    static let eyebrowTilt: Float = 0.25
+    static let eyebrowPeakDefinition: Float = 0.25
+
     static let noseSlim: Float = 0.35
     static let noseWingSlim: Float = 0.35
     static let noseTipSize: Float = 0.30

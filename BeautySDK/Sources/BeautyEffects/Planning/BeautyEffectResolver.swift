@@ -32,6 +32,13 @@ public enum BeautyEffectResolver {
             normalized.innerCornerOpen,
             normalized.outerCornerOpen,
             normalized.eyeSymmetry,
+            normalized.eyebrowYPosition,
+            normalized.eyebrowThickness,
+            normalized.eyebrowLength,
+            normalized.eyebrowSpacing,
+            normalized.eyebrowHeadSpacing,
+            normalized.eyebrowTilt,
+            normalized.eyebrowPeakDefinition,
             normalized.noseSlim,
             normalized.noseWingSlim,
             normalized.noseTipSize,
@@ -149,6 +156,23 @@ public enum BeautyEffectResolver {
             strengths.eyeSymmetry
         )
 
+        strengths.eyebrowYPosition = capSigned(normalized.eyebrowYPosition, cap: BeautySafetyCaps.eyebrowYPosition, cappedCount: &cappedCount)
+        strengths.eyebrowThickness = capSigned(normalized.eyebrowThickness, cap: BeautySafetyCaps.eyebrowThickness, cappedCount: &cappedCount)
+        strengths.eyebrowLength = capSigned(normalized.eyebrowLength, cap: BeautySafetyCaps.eyebrowLength, cappedCount: &cappedCount)
+        strengths.eyebrowSpacing = capSigned(normalized.eyebrowSpacing, cap: BeautySafetyCaps.eyebrowSpacing, cappedCount: &cappedCount)
+        strengths.eyebrowHeadSpacing = capSigned(normalized.eyebrowHeadSpacing, cap: BeautySafetyCaps.eyebrowHeadSpacing, cappedCount: &cappedCount)
+        strengths.eyebrowTilt = capSigned(normalized.eyebrowTilt, cap: BeautySafetyCaps.eyebrowTilt, cappedCount: &cappedCount)
+        strengths.eyebrowPeakDefinition = capUnit(normalized.eyebrowPeakDefinition, cap: BeautySafetyCaps.eyebrowPeakDefinition, cappedCount: &cappedCount)
+        let hasRequestedEyebrowValues = anyNonZero(
+            strengths.eyebrowYPosition,
+            strengths.eyebrowThickness,
+            strengths.eyebrowLength,
+            strengths.eyebrowSpacing,
+            strengths.eyebrowHeadSpacing,
+            strengths.eyebrowTilt,
+            strengths.eyebrowPeakDefinition
+        )
+
         strengths.noseSlim = capUnit(normalized.noseSlim, cap: BeautySafetyCaps.noseSlim, cappedCount: &cappedCount)
         strengths.noseWingSlim = capUnit(normalized.noseWingSlim, cap: BeautySafetyCaps.noseWingSlim, cappedCount: &cappedCount)
         strengths.noseTipSize = capSigned(normalized.noseTipSize, cap: BeautySafetyCaps.noseTipSize, cappedCount: &cappedCount)
@@ -263,6 +287,7 @@ public enum BeautyEffectResolver {
         let faceProvider = FaceShapeWarpProvider()
         let chinProvider = ChinWarpProvider()
         let eyeProvider = EyeWarpProvider()
+        let eyebrowProvider = EyebrowWarpProvider()
         let noseProvider = NoseWarpProvider()
         let mouthProvider = MouthWarpProvider()
         if staleGeometry || noUsableFace {
@@ -276,6 +301,9 @@ public enum BeautyEffectResolver {
                 .fieldEmissions(face: faceGeometry, strengths: strengths)
                 .sanitizing(strengths)
             strengths = eyeProvider
+                .fieldEmissions(face: faceGeometry, strengths: strengths)
+                .sanitizing(strengths)
+            strengths = eyebrowProvider
                 .fieldEmissions(face: faceGeometry, strengths: strengths)
                 .sanitizing(strengths)
             strengths = noseProvider
@@ -338,7 +366,7 @@ public enum BeautyEffectResolver {
         )
         if !staleGeometry,
            let faceGeometry,
-           hasFaceShapeValues || hasMouthGeometryValues || hadRequestedNoseValues || hasRequestedEyeValues
+           hasFaceShapeValues || hasMouthGeometryValues || hadRequestedNoseValues || hasRequestedEyeValues || hasRequestedEyebrowValues
         {
             let conflict = Self.resolveGeometryConflict(
                 strengths: strengths,
@@ -346,6 +374,7 @@ public enum BeautyEffectResolver {
                 faceProvider: faceProvider,
                 chinProvider: chinProvider,
                 eyeProvider: eyeProvider,
+                eyebrowProvider: eyebrowProvider,
                 noseProvider: noseProvider,
                 mouthProvider: mouthProvider
             )
@@ -362,6 +391,9 @@ public enum BeautyEffectResolver {
         }
         let finalEyeEmissions = staleGeometry ? nil : faceGeometry.map {
             eyeProvider.fieldEmissions(face: $0, strengths: strengths)
+        }
+        let finalEyebrowEmissions = staleGeometry ? nil : faceGeometry.map {
+            eyebrowProvider.fieldEmissions(face: $0, strengths: strengths)
         }
         let finalNoseEmissions = staleGeometry ? nil : faceGeometry.map {
             noseProvider.fieldEmissions(face: $0, strengths: strengths)
@@ -427,6 +459,18 @@ public enum BeautyEffectResolver {
                 } else {
                     extraWarnings.append(Self.eyeSkippedWarning)
                 }
+            }
+        }
+        if hasRequestedEyebrowValues {
+            let points = finalEyebrowEmissions?.points ?? []
+            if points.isEmpty {
+                Self.zeroEyebrowStrengths(&strengths)
+                skippedDomains.insert(.eyebrows)
+                metrics["beauty.effects.skippedEyebrowDomains"] = 1
+                extraWarnings.append(Self.eyebrowSkippedWarning)
+            } else {
+                activeDomains.insert(.eyebrows)
+                geometryPointCount += points.count
             }
         }
         if hadRequestedNoseValues {
@@ -502,7 +546,7 @@ public enum BeautyEffectResolver {
 
         if noUsableFace {
             let skippedFaceDependentCount = skippedDomains
-                .intersection([.skin, .faceShape, .eyes, .nose, .mouth, .lipColor])
+                .intersection([.skin, .faceShape, .eyes, .eyebrows, .nose, .mouth, .lipColor])
                 .count
             if skippedFaceDependentCount > 0 {
                 metrics["beauty.effects.skippedFaceDomains"] = Double(skippedFaceDependentCount)
@@ -557,6 +601,7 @@ public enum BeautyEffectResolver {
         faceProvider: FaceShapeWarpProvider,
         chinProvider: ChinWarpProvider,
         eyeProvider: EyeWarpProvider,
+        eyebrowProvider: EyebrowWarpProvider,
         noseProvider: NoseWarpProvider,
         mouthProvider: MouthWarpProvider
     ) -> GeometryConflictResolution {
@@ -565,8 +610,8 @@ public enum BeautyEffectResolver {
         // A conflict scale can move a previously emitting field below its
         // provider threshold. Remove that work from the unscaled baseline and
         // recompute so final emissions and conflict evidence share one mask.
-        // Each pass can only remove fields from the exact 37-field inventory.
-        for _ in 0..<37 {
+        // Each pass can only remove fields from the exact 44-field inventory.
+        for _ in 0..<44 {
             let resolution = GeometryConflictResolver().resolve(strengths: retainedBaseline)
             var nextBaseline = faceProvider
                 .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
@@ -575,6 +620,9 @@ public enum BeautyEffectResolver {
                 .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
                 .sanitizing(nextBaseline)
             nextBaseline = eyeProvider
+                .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
+                .sanitizing(nextBaseline)
+            nextBaseline = eyebrowProvider
                 .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
                 .sanitizing(nextBaseline)
             nextBaseline = noseProvider
@@ -613,6 +661,16 @@ public enum BeautyEffectResolver {
         zeroLegacyNoseStrengths(&strengths)
         strengths.noseRootNarrowing = 0
         strengths.noseTipLift = 0
+    }
+
+    private static func zeroEyebrowStrengths(_ strengths: inout BeautyEffectiveStrengths) {
+        strengths.eyebrowYPosition = 0
+        strengths.eyebrowThickness = 0
+        strengths.eyebrowLength = 0
+        strengths.eyebrowSpacing = 0
+        strengths.eyebrowHeadSpacing = 0
+        strengths.eyebrowTilt = 0
+        strengths.eyebrowPeakDefinition = 0
     }
 
     private static func zeroLegacyNoseStrengths(_ strengths: inout BeautyEffectiveStrengths) {
@@ -698,6 +756,13 @@ public enum BeautyEffectResolver {
         BeautyValidationWarning(
             code: "nose_inputs_missing",
             message: "Nose geometry was skipped because required nose inputs were unavailable."
+        )
+    }
+
+    private static var eyebrowSkippedWarning: BeautyValidationWarning {
+        BeautyValidationWarning(
+            code: "eyebrow_inputs_missing",
+            message: "Eyebrow geometry was skipped because required eyebrow inputs were unavailable."
         )
     }
 

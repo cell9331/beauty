@@ -4,6 +4,7 @@ public enum BeautyEffectDomain: String, CaseIterable, Equatable, Hashable, Senda
     case filter
     case faceShape
     case eyes
+    case eyebrows
     case nose
     case mouth
     case lipColor

@@ -160,7 +160,7 @@ final class BeautyEffectResolverTests: XCTestCase {
         }
     }
 
-    func testBROW02SevenNonzeroEyebrowFieldsRemainRuntimeInert() {
+    func testBROW02ExplicitZeroEyebrowFieldsPreserveBaselinePlan() {
         let baseline = BeautyParameters(
             skinSmoothing: 0.18,
             brightness: 0.12,
@@ -177,13 +177,13 @@ final class BeautyEffectResolverTests: XCTestCase {
             brightness: 0.12,
             faceSlim: 0.19,
             eyeSize: 0.17,
-            eyebrowYPosition: -0.71,
-            eyebrowThickness: -0.52,
-            eyebrowLength: -0.33,
-            eyebrowSpacing: 0.14,
-            eyebrowHeadSpacing: 0.35,
-            eyebrowTilt: 0.56,
-            eyebrowPeakDefinition: 0.77,
+            eyebrowYPosition: 0,
+            eyebrowThickness: 0,
+            eyebrowLength: 0,
+            eyebrowSpacing: 0,
+            eyebrowHeadSpacing: 0,
+            eyebrowTilt: 0,
+            eyebrowPeakDefinition: 0,
             noseSlim: 0.16,
             mouthSize: -0.15,
             lipColor: 0.14,
@@ -193,13 +193,13 @@ final class BeautyEffectResolverTests: XCTestCase {
         let face = FaceGeometry.fixture
 
         XCTAssertFalse(BeautyEffectResolver.requiresFaceGeometry(parameters: BeautyParameters(
-            eyebrowYPosition: -0.71,
-            eyebrowThickness: -0.52,
-            eyebrowLength: -0.33,
-            eyebrowSpacing: 0.14,
-            eyebrowHeadSpacing: 0.35,
-            eyebrowTilt: 0.56,
-            eyebrowPeakDefinition: 0.77
+            eyebrowYPosition: 0,
+            eyebrowThickness: 0,
+            eyebrowLength: 0,
+            eyebrowSpacing: 0,
+            eyebrowHeadSpacing: 0,
+            eyebrowTilt: 0,
+            eyebrowPeakDefinition: 0
         )))
         XCTAssertEqual(
             BeautyEffectResolver.requiresFaceGeometry(parameters: withEyebrows),
