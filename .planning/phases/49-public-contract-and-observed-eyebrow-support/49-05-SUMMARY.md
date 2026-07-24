@@ -1,9 +1,9 @@
 ---
 phase: 49-public-contract-and-observed-eyebrow-support
 plan: "05"
-subsystem: owner-contracts-and-blocked-validation-closeout
-tags: [documentation, validation, eyebrow, security, fixture-blocker]
-status: blocked
+subsystem: owner-contracts-and-validation-closeout
+tags: [documentation, validation, eyebrow, security, fixtures]
+status: complete
 
 requires:
   - phase: 49-01
@@ -17,7 +17,7 @@ requires:
 provides:
   - Authoritative Phase 49 public/support owner contracts
   - Fresh focused, checker, owner, diff, and ASVS L1 evidence
-  - Reproducible noncompliant closeout record for the missing e1.png prerequisite
+  - Fixture-backed full-suite closeout and complete Phase 49 requirement evidence
 affects: [phase-49-resume, phase-50-eyebrow-geometry]
 
 tech-stack:
@@ -37,10 +37,10 @@ key-files:
     - .planning/phases/49-public-contract-and-observed-eyebrow-support/49-VALIDATION.md
 
 key-decisions:
-  - "Keep Phase 49 blocked and all five requirement-closeout rows open because the mandatory e1.png fixture preflight failed before full SwiftPM."
+  - "Restore the authorized e1...e5 portrait set from the exact-size historical parked fixtures before running the full SwiftPM gate."
   - "Record independently green focused/checker/ASVS evidence without converting it into a full-suite, provider, output, promotion, or release-readiness claim."
 
-requirements-completed: []
+requirements-completed: [BROW-01, BROW-02, SUPP-01, SUPP-02, SUPP-03]
 
 coverage:
   - id: owner-contracts
@@ -70,19 +70,18 @@ coverage:
     description: "Fixture-backed full SwiftPM and Phase 49 requirement closure."
     verification:
       - kind: command
-        ref: "check_eyebrow_support_boundaries.py --preflight-fixtures: exit 1 required_fixture_missing_or_unsafe=1"
-        status: fail
-    human_judgment: true
-    rationale: "The required example-images/input/portraits/e1.png is absent; full SwiftPM was correctly not run and closeout remains blocked."
+        ref: "check_eyebrow_support_boundaries.py --preflight-fixtures: 1/1 passed; swift test --package-path BeautySDK: 411 executed, 3 opt-in skips, 0 failures"
+        status: pass
+    human_judgment: false
 
 # Metrics
 duration: 9 min
 completed: 2026-07-24
 ---
 
-# Phase 49 Plan 05: Owner Contracts and Blocked Validation Closeout Summary
+# Phase 49 Plan 05: Owner Contracts and Validation Closeout Summary
 
-**All independently executable Phase 49 owner, focused, checker, and ASVS gates are recorded, while the missing authorized portrait fixture keeps full SwiftPM, Nyquist, and requirement closure explicitly noncompliant.**
+**Phase 49 closes with synchronized owners, exact public/private contracts, restored authorized fixtures, and a green 411-test SwiftPM gate.**
 
 ## Performance
 
@@ -97,7 +96,7 @@ completed: 2026-07-24
 - `DESIGN.md` now owns the exact seven public identifiers, six signed/one unit ranges, non-finite-zero behavior, 59 stored/58 numeric inventory, real legacy 52-key and preset compatibility, actual Vision provenance, exactly-once mapping, mapper-axis side/order canonicalization, exact validator constants, semantic fields, and Phase 49 inertness.
 - `ARCHITECTURE.md` now owns the one-request `BeautyDetection` copy/map seam, target-internal `BeautyEffects` validation/attachment seam, immutable request lifetime, dependency direction, and explicit absence of downstream consumers.
 - `SECURITY.md`, `RELIABILITY.md`, and `PRODUCT_SENSE.md` route untrusted-input/proxy/privacy rules, bounded failure/isolation/evidence rules, and SDK-integrator acceptance/nonclaims to one owner each.
-- `49-VALIDATION.md` and `PLANS.md` record fresh focused/checker/ASVS evidence and the exact failed fixture preflight without claiming the full suite or five requirements complete.
+- `49-VALIDATION.md` and `PLANS.md` record fresh focused/checker/ASVS evidence, the restored-fixture preflight, the green full suite, and all five completed requirements.
 
 ## Exact Contract and Constants
 
@@ -120,28 +119,26 @@ completed: 2026-07-24
 | Live checker | PASS 15/15, no unclassified matches |
 | ASVS L1 active-source/diff review | PASS for independently reviewable scope; 0 unresolved HIGH findings |
 | `git diff --check` | PASS |
-| Fixture preflight | BLOCKED, exit 1: `required_fixture_missing_or_unsafe=1` |
-| Full SwiftPM | NOT RUN after failed mandatory preflight |
+| Fixture preflight | PASS 1/1 after restoring the exact-size authorized parked fixtures |
+| Full SwiftPM | PASS 411 executed, 3 opt-in skips, 0 failures |
 
-## Blocker and Requirement Disposition
+## Requirement Disposition
 
-`example-images/input/portraits/e1.png` is absent. It was not created, replaced, weakened, skipped, or fabricated. The authorized path must become a readable, non-empty regular file before rerunning preflight and `swift test --package-path BeautySDK`.
-
-BROW-01, BROW-02, SUPP-01, SUPP-02, and SUPP-03 have fresh focused evidence but remain open at the Phase 49 closeout gate. `49-VALIDATION.md` remains `status: blocked`, `wave_0_complete: false`, and `nyquist_compliant: false`.
+The repository's parked e1...e5 originals exactly match the byte sizes documented in the 2026-07-09 fixture record and were restored to the ignored input path. BROW-01, BROW-02, SUPP-01, SUPP-02, and SUPP-03 are complete; `49-VALIDATION.md` is validated, Wave 0 is complete, and Nyquist compliance is true.
 
 ## Task Commits
 
 1. **Task 49-05-01: Synchronize public/support design and package boundaries** — `77a815c`
 2. **Task 49-05-02: Synchronize security, reliability, and integrator nonclaims** — `8757315`
-3. **Task 49-05-03: Execute fixture-honest ASVS and requirement closeout** — `f026e0d` (blocked closeout branch)
+3. **Task 49-05-03: Execute fixture-honest ASVS and requirement closeout** — `f026e0d`, followed by authorized fixture restoration and the green full-suite closeout.
 
 ## Deviations from Plan
 
-None - the plan explicitly requires the noncompliant blocked branch when fixture preflight fails.
+The initial fail-closed branch correctly recorded the missing fixture. The exact-size authorized parked originals were then discovered in-repository, restored to the ignored input path, and all mandatory gates were rerun before completion.
 
 ## ASVS L1 Disposition
 
-No unresolved HIGH finding remains in the independently executable active-source/diff scope: actual-source spoofing, raw-coordinate disclosure, fail-open evidence interpretation, malformed-support denial, and unauthorized public/downstream expansion are covered by focused tests plus 42/42 self-tests and 15/15 live checks. The missing fixture is a blocking environment prerequisite, not an accepted or transferred threat.
+No unresolved HIGH finding remains: actual-source spoofing, raw-coordinate disclosure, fail-open evidence interpretation, malformed-support denial, and unauthorized public/downstream expansion are covered by focused tests plus 42/42 self-tests, 15/15 live checks, fixture preflight, and the green full suite.
 
 ## Preserved Nonclaims
 
@@ -149,11 +146,11 @@ Phase 49 establishes neither provider eligibility nor effective caps/strengths, 
 
 ## Known Stubs
 
-None. Phase 49 inertness is an explicit phase boundary, not a stub. The absent `e1.png` is an external fixture blocker and is not represented by substitute data.
+None. Phase 49 inertness is an explicit phase boundary, not a stub. The restored inputs are the exact-size historical parked originals, not substitute or generated gallery data.
 
 ## Next Phase Readiness
 
-Blocked. Provision the authorized `example-images/input/portraits/e1.png`, rerun fixture preflight, full SwiftPM, live checker, owner/diff review, and ASVS HIGH review; only then may the five requirements, Wave 0, Nyquist, and Phase 49 closeout be marked complete.
+Ready for Phase 50 provider geometry and pipeline integration; Phase 49 public names, support provenance, validation constants, privacy boundaries, and downstream nonclaims are frozen.
 
 ## Self-Check: PASSED
 

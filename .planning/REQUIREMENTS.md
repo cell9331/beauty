@@ -12,9 +12,9 @@
 
 ### Private Observed Eyebrow Support
 
-- [ ] **SUPP-01**: A geometry-enabled request copies actual left/right Apple Vision eyebrow traces from the existing single selected-face landmarks request and maps each accepted point exactly once through the request-local coordinate metadata.
-- [ ] **SUPP-02**: Eyebrow traces are independently bounded, validated as open paths, canonicalized for side and inner/outer order across orientation and mirroring, and rejected locally when malformed without substituting eye contours or synthetic proxies.
-- [ ] **SUPP-03**: Raw and derived eyebrow support remains package-only, request-scoped, non-Codable, non-persistent, non-networked, and absent from public API and raw diagnostics; only fixed reasons and aggregate counts may escape.
+- [x] **SUPP-01**: A geometry-enabled request copies actual left/right Apple Vision eyebrow traces from the existing single selected-face landmarks request and maps each accepted point exactly once through the request-local coordinate metadata.
+- [x] **SUPP-02**: Eyebrow traces are independently bounded, validated as open paths, canonicalized for side and inner/outer order across orientation and mirroring, and rejected locally when malformed without substituting eye contours or synthetic proxies.
+- [x] **SUPP-03**: Raw and derived eyebrow support remains package-only, request-scoped, non-Codable, non-persistent, non-networked, and absent from public API and raw diagnostics; only fixed reasons and aggregate counts may escape.
 
 ### Independent Eyebrow Geometry
 
@@ -81,9 +81,9 @@
 | --- | --- | --- |
 | BROW-01 | Phase 49 | Complete |
 | BROW-02 | Phase 49 | Complete |
-| SUPP-01 | Phase 49 | Pending |
-| SUPP-02 | Phase 49 | Pending |
-| SUPP-03 | Phase 49 | Pending |
+| SUPP-01 | Phase 49 | Complete |
+| SUPP-02 | Phase 49 | Complete |
+| SUPP-03 | Phase 49 | Complete |
 | GEOM-01 | Phase 50 | Pending |
 | GEOM-02 | Phase 50 | Pending |
 | GEOM-03 | Phase 50 | Pending |

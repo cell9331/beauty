@@ -34,13 +34,13 @@
 
 **Requirements:** BROW-01, BROW-02, SUPP-01, SUPP-02, SUPP-03
 
-**Plans:** 2/5 plans executed
+**Plans:** 5/5 plans executed
 
 - [x] 49-01-PLAN.md
 - [x] 49-02-PLAN.md
-- [ ] 49-03-PLAN.md
-- [ ] 49-04-PLAN.md
-- [ ] 49-05-PLAN.md
+- [x] 49-03-PLAN.md
+- [x] 49-04-PLAN.md
+- [x] 49-05-PLAN.md
 
 **Success criteria:**
 
