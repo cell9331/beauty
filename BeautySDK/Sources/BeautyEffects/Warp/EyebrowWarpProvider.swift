@@ -102,7 +102,7 @@ struct EyebrowWarpProvider: WarpControlPointProvider {
         for index in trace.points.indices {
             let previous = trace.points[index == trace.points.startIndex ? index : trace.points.index(before: index)]
             let next = trace.points[index == trace.points.index(before: trace.points.endIndex) ? index : trace.points.index(after: index)]
-            guard let tangent = normalized(next - previous) else { return [] }
+            guard let tangent = normalized(next - previous) else { continue }
             let normal = SIMD2<Float>(-tangent.y, tangent.x)
             let center = trace.points[index]
             sources.append(center + normal * baseOffset)

@@ -95,6 +95,25 @@ final class EyebrowWarpProviderTests: XCTestCase {
         XCTAssertNotEqual(emissions.eyebrowThickness, emissions.eyebrowYPosition)
     }
 
+    func testGEOM02DegenerateAdjacencySkipsOnlyAffectedThicknessSample() {
+        let coincidentNeighbors = [
+            SIMD2<Float>(0.25, 0.40),
+            SIMD2<Float>(0.30, 0.36),
+            SIMD2<Float>(0.25, 0.40),
+            SIMD2<Float>(0.42, 0.37),
+            SIMD2<Float>(0.47, 0.41)
+        ]
+        let left = trace(leftSide: true, points: coincidentNeighbors, apexIndex: nil)
+        let emissions = EyebrowWarpProvider().fieldEmissions(
+            face: face(left: left),
+            strengths: thicknessStrength(0.25)
+        )
+
+        assertRenderable(emissions.eyebrowThickness)
+        XCTAssertEqual(emissions.eyebrowThickness.count, 8, "only the sample between coincident neighbors is omitted")
+        XCTAssertEqual(emissions.eyebrowThickness.count % 2, 0, "remaining samples stay balanced")
+    }
+
     func testGEOM03LengthNamedEmission() {
         let left = trace(leftSide: true)
         let emissions = EyebrowWarpProvider().fieldEmissions(face: face(left: left), strengths: lengthStrength(0.25))
