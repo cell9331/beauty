@@ -94,7 +94,7 @@ Plans:
 
 **Requirements:** OUT-01, OUT-02, OUT-03
 
-**Plans:** 3/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 
@@ -136,7 +136,7 @@ Plans:
 | --- | --- | --- | --- | --- |
 | 45. Public Contract and Observed Face Support | v1.12 | 5/5 | Complete    | 2026-07-23 |
 | 46. Independent Contour and Chin Geometry | v1.12 | 4/4 | Complete    | 2026-07-23 |
-| 47. Public-Facade Face Output Evidence | v1.12 | 3/3 | Complete | 2026-07-24 |
+| 47. Public-Facade Face Output Evidence | v1.12 | 3/3 | Complete    | 2026-07-24 |
 | 48. Face Safety and Scoped Closeout | v1.12 | 4 | Not started | — |
 
 ## Backlog
