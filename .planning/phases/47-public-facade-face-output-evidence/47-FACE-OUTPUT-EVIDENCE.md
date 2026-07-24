@@ -1,6 +1,6 @@
 # Phase 47 Face Output Evidence
 
-**Accepted:** 2026-07-24  
+**Accepted:** 2026-07-24
 **Scope:** public-facade saved-image evidence for `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, and `chinTaper`
 
 ## Result
