@@ -3,6 +3,147 @@ import BeautySDK
 
 // Requirement evidence: SDK-03, SDK-05.
 final class BeautyParametersTests: XCTestCase {
+    func testBROW01SignedFieldsNormalizeEveryFiniteAndNonFiniteBoundaryIndependently() {
+        let cases: [(name: String, value: Float, expected: Float)] = [
+            ("negative overflow", -2, -1),
+            ("negative edge", -1, -1),
+            ("zero", 0, 0),
+            ("positive edge", 1, 1),
+            ("positive overflow", 2, 1),
+            ("NaN", .nan, 0),
+            ("positive infinity", .infinity, 0),
+            ("negative infinity", -.infinity, 0),
+        ]
+        let fields: [(name: String, keyPath: KeyPath<BeautyParameters, Float>, make: (Float) -> BeautyParameters)] = [
+            ("eyebrowYPosition", \.eyebrowYPosition, { BeautyParameters(eyebrowYPosition: $0) }),
+            ("eyebrowThickness", \.eyebrowThickness, { BeautyParameters(eyebrowThickness: $0) }),
+            ("eyebrowLength", \.eyebrowLength, { BeautyParameters(eyebrowLength: $0) }),
+            ("eyebrowSpacing", \.eyebrowSpacing, { BeautyParameters(eyebrowSpacing: $0) }),
+            ("eyebrowHeadSpacing", \.eyebrowHeadSpacing, { BeautyParameters(eyebrowHeadSpacing: $0) }),
+            ("eyebrowTilt", \.eyebrowTilt, { BeautyParameters(eyebrowTilt: $0) }),
+        ]
+
+        for field in fields {
+            for testCase in cases {
+                XCTAssertEqual(
+                    field.make(testCase.value)[keyPath: field.keyPath],
+                    testCase.expected,
+                    accuracy: 0.0001,
+                    "\(field.name) \(testCase.name)"
+                )
+            }
+        }
+    }
+
+    func testBROW01PeakDefinitionNormalizesUnitAndNonFiniteBoundaries() {
+        let cases: [(name: String, value: Float, expected: Float)] = [
+            ("negative overflow", -2, 0),
+            ("negative edge", -1, 0),
+            ("zero", 0, 0),
+            ("positive edge", 1, 1),
+            ("positive overflow", 2, 1),
+            ("NaN", .nan, 0),
+            ("positive infinity", .infinity, 0),
+            ("negative infinity", -.infinity, 0),
+        ]
+
+        for testCase in cases {
+            XCTAssertEqual(
+                BeautyParameters(eyebrowPeakDefinition: testCase.value).eyebrowPeakDefinition,
+                testCase.expected,
+                accuracy: 0.0001,
+                "eyebrowPeakDefinition \(testCase.name)"
+            )
+        }
+    }
+
+    func testBROW01SevenFieldsRemainIndependentAcrossInitializationEqualityAndNormalization() {
+        let distinct = BeautyParameters(
+            eyebrowYPosition: -0.71,
+            eyebrowThickness: -0.52,
+            eyebrowLength: -0.33,
+            eyebrowSpacing: 0.14,
+            eyebrowHeadSpacing: 0.35,
+            eyebrowTilt: 0.56,
+            eyebrowPeakDefinition: 0.77
+        )
+        let reordered = BeautyParameters(
+            eyebrowYPosition: -0.52,
+            eyebrowThickness: -0.33,
+            eyebrowLength: 0.14,
+            eyebrowSpacing: 0.35,
+            eyebrowHeadSpacing: 0.56,
+            eyebrowTilt: 0.77,
+            eyebrowPeakDefinition: 0.71
+        )
+
+        XCTAssertNotEqual(distinct, reordered)
+        XCTAssertEqual(
+            [
+                distinct.eyebrowYPosition,
+                distinct.eyebrowThickness,
+                distinct.eyebrowLength,
+                distinct.eyebrowSpacing,
+                distinct.eyebrowHeadSpacing,
+                distinct.eyebrowTilt,
+                distinct.eyebrowPeakDefinition,
+            ],
+            [-0.71, -0.52, -0.33, 0.14, 0.35, 0.56, 0.77]
+        )
+
+        var mutable = distinct
+        mutable.eyebrowYPosition = -2
+        mutable.eyebrowThickness = 2
+        mutable.eyebrowLength = .nan
+        mutable.eyebrowSpacing = .infinity
+        mutable.eyebrowHeadSpacing = -.infinity
+        mutable.eyebrowTilt = -2
+        mutable.eyebrowPeakDefinition = -1
+
+        let normalized = mutable.normalized()
+        XCTAssertEqual(normalized.eyebrowYPosition, -1)
+        XCTAssertEqual(normalized.eyebrowThickness, 1)
+        XCTAssertEqual(normalized.eyebrowLength, 0)
+        XCTAssertEqual(normalized.eyebrowSpacing, 0)
+        XCTAssertEqual(normalized.eyebrowHeadSpacing, 0)
+        XCTAssertEqual(normalized.eyebrowTilt, -1)
+        XCTAssertEqual(normalized.eyebrowPeakDefinition, 0)
+        XCTAssertEqual(mutable.eyebrowYPosition, -2, "normalization returns a copy")
+        XCTAssertTrue(mutable.eyebrowLength.isNaN, "normalization does not mutate the source")
+    }
+
+    func testBROW02SourceDefaultsResetInventoryAndSnapshotDiffAreExact() {
+        let sourceStyle = BeautyParameters(faceSlim: 0.12, eyeSize: 0.23, filterId: "clean_01")
+        let reset = BeautyParameters()
+        let labels = Mirror(reflecting: sourceStyle).children.compactMap(\.label)
+        let eyebrowLabels = [
+            "eyebrowYPosition", "eyebrowThickness", "eyebrowLength", "eyebrowSpacing",
+            "eyebrowHeadSpacing", "eyebrowTilt", "eyebrowPeakDefinition",
+        ]
+
+        XCTAssertEqual(labels.count, 59)
+        XCTAssertEqual(labels.filter { $0 != "filterId" }.count, 58)
+        for label in eyebrowLabels {
+            XCTAssertEqual(labels.filter { $0 == label }.count, 1, "independent storage for \(label)")
+        }
+        XCTAssertEqual(
+            [
+                sourceStyle.eyebrowYPosition,
+                sourceStyle.eyebrowThickness,
+                sourceStyle.eyebrowLength,
+                sourceStyle.eyebrowSpacing,
+                sourceStyle.eyebrowHeadSpacing,
+                sourceStyle.eyebrowTilt,
+                sourceStyle.eyebrowPeakDefinition,
+            ],
+            Array(repeating: Float(0), count: 7)
+        )
+        XCTAssertEqual(sourceStyle, reset == sourceStyle ? reset : sourceStyle)
+        XCTAssertEqual(reset, BeautyParameters())
+        XCTAssertNotEqual(reset, BeautyParameters(eyebrowYPosition: 0.1))
+        XCTAssertNotEqual(reset, BeautyParameters(eyebrowPeakDefinition: 0.1))
+    }
+
     func testFACE07FACE08FACE09FACE12PositiveOnlyInputsNormalizeIndependently() {
         let cases: [(name: String, value: Float, expected: Float)] = [
             ("negative", -1, 0),
