@@ -14,11 +14,11 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Shipped version:** v1.11 Eye Remaining Geometry Controls on 2026-07-19.
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
-**Current milestone:** v1.12 Face Shape Remaining Capabilities has completed phase execution and is pending independent milestone audit.
+**Current milestone:** v1.12 Face Shape Remaining Capabilities passed its independent milestone audit and is ready for completion/archive.
 
 **Implementation state:** Phase 48 is complete. `BeautyParameters` is exactly 52 stored fields (51 numeric plus `filterId`); all nine face/chin geometry fields have final caps and fail-closed transitions, with one 37-field/11.70 retained baseline and at most 37 removals. Exactly `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴` are newly promoted; `去双下巴`/`去双下巴 Pro`/`发际线` remain future and branch `脸型` remains partial.
 
-**Verification state:** v1.12 phase verification passes with 132/132 focused tests, 375 full SDK tests with three opt-in skips, 413/413 public output, 70/70 boundary mutations, exact promotion/owner gates, clean review, and ASVS L1 `threats_open: 0`. Generated artifacts remain ignored/untracked; independent audit confirmation is pending and no Demo/device/commercial/performance/packaging/shipping/launch readiness is claimed.
+**Verification state:** v1.12 passed 18/18 requirements, 4/4 phases, 11/11 integration seams, and 6/6 flows. Evidence includes 375 full SDK tests with three opt-in skips, 413/413 public output, 70/70 boundary mutations, exact promotion/owner gates, clean review, and ASVS L1 `threats_open: 0`. Generated artifacts remain ignored/untracked; no Demo/device/commercial/performance/packaging/shipping/launch readiness is claimed.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
@@ -179,11 +179,11 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ### Active
 
-- [ ] Independent v1.12 milestone audit confirms the 18-requirement, 4-phase, integration, flow, and scope-honesty result before archive/tag/cleanup lifecycle claims.
+- [ ] Run the v1.12 completion/archive workflow and record only successful archive/tag/cleanup lifecycle actions.
 
 ### Validated
 
-- Four contour-driven `脸型` controls have independent product-neutral public semantics, private request-scoped support, named providers, strict public-facade output, exact final caps, exhaustive field-local transitions, exact 37-field convergence, and four-row promotion - Phases 45-48; independent v1.12 audit pending.
+- Four contour-driven `脸型` controls have independent product-neutral public semantics, private request-scoped support, named providers, strict public-facade output, exact final caps, exhaustive field-local transitions, exact 37-field convergence, four-row promotion, and an 18/18 independent v1.12 audit - Phases 45-48.
 - `去双下巴`, `去双下巴 Pro`, and `发际线` remain future, branch `脸型` remains partial, and Demo/device/commercial/performance/packaging/shipping/launch claims remain excluded - v1.12 phase verification.
 - Ten independent eye geometry controls with 48-field source/JSON compatibility, private validated contour/pupil support, fourteen named emissions, strict 385-output facade evidence, conservative degradation, exact ten-row promotion, and a 24/24 independent v1.11 audit - v1.11.
 - Eye-fat/redness retouch, Demo UI, external dependencies, network/cloud, and release-readiness claims remain explicitly outside the shipped v1.11 scope.

@@ -26,9 +26,26 @@
 
 ## 3. Active
 
-Milestone v1.12 phase execution is complete through Phase 48 and is ready for the independent milestone audit. The reduced scope contains 18 requirements for four contour-driven rows; three semantic-region rows remain future. SAFE-01 through SAFE-03 are complete, while DOC-01 implementation is complete and awaits independent audit confirmation.
+Milestone v1.12 passed its independent audit with 18/18 requirements, 4/4 phases, 11/11 integration seams, and 6/6 end-to-end flows. It is eligible for the milestone completion/archive workflow; three semantic-region rows remain future.
 
 ## 4. Completed
+
+### C-2026-07-24-v1-12-independent-milestone-audit
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-24 |
+| Scope | Independently audited the reduced-scope v1.12 result across original intent, 18 requirements, four phases, 20 plans/summaries, source/privacy boundaries, runtime, strict output, integration seams, flows, owners, and nonclaims. |
+| Requirements | FACE-07..09, FACE-12, SUPP-01..02, SUPP-04, GEOM-01..04, OUT-01..03, SAFE-01..03, and DOC-01 pass 18/18. |
+| Integration and flows | 11/11 cross-phase seams and 6/6 end-to-end flows pass with no critical gap, broken flow, orphaned requirement, or milestone-specific technical debt. |
+| Fresh evidence | Full SwiftPM passes 375 with three opt-in skips; live support boundary passes 13/13; Phase 48 self-test passes 70/70; strict output passes 413/413, 18/18, 49/49, 6/6, and 4/4. |
+| Result | `.planning/v1.12-MILESTONE-AUDIT.md` records `status: passed`. DOC-01 is complete; the milestone is eligible for archive/tag/cleanup lifecycle work. |
+
+Outcome:
+
+- Exactly four contour-driven rows remain implemented; three semantic-region rows remain future and branch `脸型` remains partial.
+- The audit normalized only two ROADMAP requirement-count cells; runtime and product scope did not change.
+- Archive, tag, cleanup, shipping, and launch actions are not claimed until their workflows succeed.
 
 ### C-2026-07-24-phase-48-face-safety-and-scoped-closeout
 
