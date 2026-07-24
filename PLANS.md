@@ -36,7 +36,7 @@
 | Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve legacy 52-key compatibility and all shipped face/eye/nose/mouth output while the current model is exactly 59 stored fields. |
 | Requirements | 21/21 mapped across Phase 49-52; no unmapped requirement. |
 | Roadmap | Phase 49 contract/support → Phase 50 geometry/pipeline → Phase 51 strict output → Phase 52 safety/promotion. |
-| Current step | Phase 50 Plan 50-01 complete; proceed sequentially to Plan 50-02 provider geometry. |
+| Current step | Phase 50 Plans 50-01 and 50-02 complete; proceed sequentially to Plan 50-03 resolver integration. |
 
 Phase 49 closeout record (2026-07-24):
 
@@ -53,6 +53,22 @@ Planned follow-on milestones:
 - v1.16: `去双下巴`, `去双下巴 Pro`, and narrow facial-feature closeout.
 
 ## 4. Completed
+
+### C-2026-07-24-phase-50-plan-02-independent-eyebrow-provider
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-24 |
+| Scope | Added seven effective eyebrow strength names plus direct canonical-trace vertical, thickness, length, pair spacing, head spacing, tilt, and stored-apex named emissions with field-local sanitization. |
+| Commits | Core provider `43d09d4`; remaining geometry and checker transition `739160d`. |
+| Verification | Focused provider suite passes 11/11; three Task 01 named filters pass independently; Phase 50 checker self-test passes 4/4; `git diff --check` passes. |
+| Boundary | Constants/cap remain provisional; no resolver, conflict, unified dispatch, facade, renderer/gallery, final safety, promotion, Demo/UI, dependency/resource/model/network, or release claim was added. |
+
+Outcome:
+
+- GEOM-01 through GEOM-07 now have distinct provider-owned work sourced only from sealed canonical eyebrow traces; only whole spacing requires both sides.
+- PIPE-01 has exact named emission arrays and field-local provider-empty sanitization, while resolver/facade integration remains Plan 50-03 and later work.
+- Invalid input fails closed before control-point creation and shipped face/chin/eye/nose/mouth provider arrays remain unchanged for eyebrow-only strengths.
 
 ### C-2026-07-24-phase-50-plan-01-eyebrow-geometry-wave-zero
 
