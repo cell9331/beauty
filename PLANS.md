@@ -36,7 +36,7 @@
 | Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve legacy 52-key compatibility and all shipped face/eye/nose/mouth output while the current model is exactly 59 stored fields. |
 | Requirements | 21/21 mapped across Phase 49-52; no unmapped requirement. |
 | Roadmap | Phase 49 contract/support → Phase 50 geometry/pipeline → Phase 51 strict output → Phase 52 safety/promotion. |
-| Current step | Phase 50 Plans 50-01 through 50-03 complete; proceed sequentially to Plan 50-04 conflict arithmetic. |
+| Current step | Phase 50 Plans 50-01 through 50-04 complete; proceed sequentially to Plan 50-05 combined safety and unified dispatch. |
 
 Phase 49 closeout record (2026-07-24):
 
@@ -53,6 +53,22 @@ Planned follow-on milestones:
 - v1.16: `去双下巴`, `去双下巴 Pro`, and narrow facial-feature closeout.
 
 ## 4. Completed
+
+### C-2026-07-24-phase-50-plan-04-exact-eyebrow-conflict-ledger
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-24 |
+| Scope | Added all seven eyebrow strengths exactly once to the shared scale, absolute-total, and retained-count inventories in stable eye→eyebrow→nose order. |
+| Commits | RED inventory evidence `b59f16d`; GREEN conflict integration `8eba1b7`; exact arithmetic evidence `80e6de8`. |
+| Verification | Focused conflict suite passes 14/14; source cardinality passes 7 scale and 14 total/count references; `git diff --check` passes. |
+| Boundary | The 0.25 eyebrow caps and 13.45 total remain provisional; provider/dispatch agreement, facade evidence, decoded output, final calibration, promotion, Demo/UI, and release claims remain later work. |
+
+Outcome:
+
+- The exact provider-eligible ledger is face/chin 3.35 + eye 4.10 + eyebrow 1.75 + nose 1.80 + mouth 2.45 = 13.45 across 44 distinct names.
+- Threshold 1.0 yields one shared scale of `1 / 13.45`, weakened count 44, final absolute total 1.0, and preserved polarity for all signed eyebrow values.
+- Seven one-field removals prove each absent/provider-ineligible eyebrow name contributes zero without changing unrelated signs or adding a brow-specific weakening path.
 
 ### C-2026-07-24-phase-50-plan-03-eyebrow-resolver-integration
 
