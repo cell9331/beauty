@@ -36,7 +36,7 @@
 | Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve the 52-field compatibility baseline and all shipped face/eye/nose/mouth output. |
 | Requirements | 21/21 mapped across Phase 49-52; no unmapped requirement. |
 | Roadmap | Phase 49 contract/support → Phase 50 geometry/pipeline → Phase 51 strict output → Phase 52 safety/promotion. |
-| Current step | Plan 49-01 complete; execute `49-02-PLAN.md` for the exact neutral 59-field public contract. |
+| Current step | Plan 49-02 complete; execute `49-03-PLAN.md` for actual request-local Vision eyebrow capture and canonical mapping. |
 
 Planned follow-on milestones:
 
@@ -45,6 +45,24 @@ Planned follow-on milestones:
 - v1.16: `去双下巴`, `去双下巴 Pro`, and narrow facial-feature closeout.
 
 ## 4. Completed
+
+### C-2026-07-24-phase-49-plan-02-neutral-public-eyebrow-contract
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-24 |
+| Scope | Expanded `BeautyParameters` to exactly 59 stored fields (58 numeric plus `filterId`) with six signed eyebrow values, one positive-only peak value, and zero-default finite normalization while keeping all seven values runtime-inert. |
+| TDD | Public contract RED/GREEN `91d8a4b`/`a36b99f`; compatibility, preset, and inertness evidence `41e3ff4`. |
+| Compatibility | Complete unequal 59-key JSON round-trips exactly; removing all seven eyebrow keys produces a real legacy 52-key payload that decodes seven zeros; historical 31/33/38/48/52 fixture meanings remain distinct. |
+| Verification | `BeautyParametersTests` 37/37, `BeautyResourceCatalogTests` 10/10, and `BeautyEffectResolverTests` 23/23 pass; checker self-tests pass 42/42; five pinned preset hashes are unchanged; `git diff --check` passes. |
+| Environment gate | Full SwiftPM remains not run under the inherited missing `example-images/input/portraits/e1.png` preflight; no full-suite green claim is made. |
+
+Outcome:
+
+- `eyebrowYPosition`, `eyebrowThickness`, `eyebrowLength`, `eyebrowSpacing`, `eyebrowHeadSpacing`, and `eyebrowTilt` are independent signed `-1...1` values; `eyebrowPeakDefinition` is independent `0...1`; all non-finite values become zero.
+- Exactly five bundled presets remain byte-identical, omit every eyebrow key, and decode seven zeros.
+- Nonzero eyebrow values do not trigger face geometry or alter effective strengths, domains, warnings, metrics, named emissions, or unified control points.
+- Provider/resolver production, facade, renderer/gallery, Demo/UI, resource, network, persistence, dependency, and product-promotion scope remains unchanged for Phase 50 and later.
 
 ### C-2026-07-24-phase-49-plan-01-eyebrow-wave-zero-safeguards
 

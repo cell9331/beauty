@@ -7,8 +7,8 @@
 
 ### Public Eyebrow Contract
 
-- [ ] **BROW-01**: An SDK integrator can request seven independent normalized eyebrow controls—vertical position, thickness, length, overall spacing, inner-head spacing, tilt, and peak definition—with zero-default product-neutral semantics.
-- [ ] **BROW-02**: Existing source calls, legacy 52-field JSON payloads, all bundled preset bytes, normalization, equality, reset, diff, and round-trip behavior remain compatible when the stored model expands to exactly 59 fields.
+- [x] **BROW-01**: An SDK integrator can request seven independent normalized eyebrow controls—vertical position, thickness, length, overall spacing, inner-head spacing, tilt, and peak definition—with zero-default product-neutral semantics.
+- [x] **BROW-02**: Existing source calls, legacy 52-field JSON payloads, all bundled preset bytes, normalization, equality, reset, diff, and round-trip behavior remain compatible when the stored model expands to exactly 59 fields.
 
 ### Private Observed Eyebrow Support
 
@@ -79,8 +79,8 @@
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| BROW-01 | Phase 49 | Pending |
-| BROW-02 | Phase 49 | Pending |
+| BROW-01 | Phase 49 | Complete |
+| BROW-02 | Phase 49 | Complete |
 | SUPP-01 | Phase 49 | Pending |
 | SUPP-02 | Phase 49 | Pending |
 | SUPP-03 | Phase 49 | Pending |

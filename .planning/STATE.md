@@ -5,15 +5,15 @@ milestone_name: Eyebrow Geometry Controls
 current_phase: 49
 current_phase_name: public-contract-and-observed-eyebrow-support
 status: executing
-stopped_at: Completed 49-01-PLAN.md
-last_updated: "2026-07-24T07:42:40.232Z"
+stopped_at: Completed 49-02-PLAN.md
+last_updated: "2026-07-24T07:54:59.434Z"
 last_activity: 2026-07-24
 last_activity_desc: Phase 49 execution started
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 5
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -28,7 +28,7 @@ See: `.planning/PROJECT.md` (updated 2026-07-24)
 ## Current Position
 
 Phase: 49 (public-contract-and-observed-eyebrow-support) — EXECUTING
-Plan: 2 of 5
+Plan: 3 of 5
 Status: Ready to execute
 Last activity: 2026-07-24 — Phase 49 execution started
 
@@ -247,6 +247,7 @@ Last activity: 2026-07-14
 | Phase 46 P03 | 11 min | 2 tasks | 3 files |
 | Phase 46 P04 | 8 min | 2 tasks | 4 files |
 | Phase 49 P01 | 8 min | 3 tasks | 6 files |
+| Phase 49 P02 | 8 min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -349,6 +350,9 @@ Recent milestone-level outcomes:
 - [Phase 46]: Phase 46 Plan 04 keeps all four new effective face/chin values zero-default with explicitly provisional 0.25 caps. — Phase 48 remains the final cap and dead-zone authority.
 - [Phase 46]: New contour/chin emissions require eligible observed support and never borrow the shipped seven-point compatibility proxy. — This preserves shipped vectors while enforcing GEOM field locality and support provenance.
 - [Phase 46]: Contour smoothing is all-or-nothing after mean-centering and one shared representable uniform scale. — Stored Float displacements must meet the exact ceiling, 1e-6 sum/mean and ratio tolerances, and strict roughness reduction without individual clamps.
+- [Phase 49]: Keep the first six eyebrow controls signed in -1...1 and eyebrowPeakDefinition positive-only in 0...1, with all non-finite values normalized to zero. — This preserves the exact public semantics while reusing the established finite clamp helpers.
+- [Phase 49]: Evolve BeautyParameters additively to exactly 59 stored fields while preserving historical 31/33/38/48/52 fixtures and unchanged preset bytes. — Real missing-key payloads prove compatibility without mutating historical resource bytes.
+- [Phase 49]: Keep all seven eyebrow values storage-only until Phase 50. — Phase 49 closes public compatibility without prematurely changing face-geometry triggers or resolver output.
 
 ### Pending Todos
 
@@ -381,8 +385,8 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-24T07:42:40.213Z
-Stopped at: Completed 49-01-PLAN.md
+Last session: 2026-07-24T07:54:43.612Z
+Stopped at: Completed 49-02-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
