@@ -123,7 +123,7 @@ Plans:
 
 **Requirements:** SAFE-01, SAFE-02, SAFE-03, DOC-01
 
-**Plans:** 4/6 plans executed
+**Plans:** 5/6 plans executed
 
 Plans:
 
@@ -145,7 +145,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 48-05-PLAN.md — Example-image and root-owner synchronization.
+- [x] 48-05-PLAN.md — Example-image and root-owner synchronization.
 
 **Wave 6** *(blocked on Wave 5 completion)*
 
