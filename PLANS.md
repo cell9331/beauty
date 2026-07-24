@@ -61,13 +61,14 @@ Planned follow-on milestones:
 | Completed | 2026-07-24 |
 | Scope | Six plans across five waves completed GEOM-01..GEOM-07 and PIPE-01/PIPE-02 at compiled SDK-core provider/routing scope. |
 | Decisions | Adopted A1 dedicated `.eyebrows`; A2 provisional seven `0.25` caps and `13.45` total; A3 provisional geometry constants; A4 image-Y/tilt sign; A5 endpoint/apex weights; A6 reused exact `0.5`; A7 phase-local checker. |
-| Verification | Fixture preflight; checker 4/4 self/live; focused 11/26/14/15/48/3/18; BeautyEffects 243 with one opt-in skip; full SwiftPM 433 with three opt-in skips; privacy/scope/artifact/ledger/diff gates pass. |
+| Verification | Fixture preflight; checker 4/4 self/live; focused 11/26/14/15/48/3/18; BeautyEffects 243 with one opt-in skip; full SwiftPM 433 with three opt-in skips; privacy/scope/artifact/ledger/diff gates pass. Post-review CR-01 regression passes the expanded provider suite 12/12; a fresh full SwiftPM attempt executed 434 with three opt-in skips and eight failures because `example-images/input/portraits/e1.png` is absent from the isolated worktree. |
 | Requirements | GEOM-01, GEOM-02, GEOM-03, GEOM-04, GEOM-05, GEOM-06, GEOM-07, PIPE-01, and PIPE-02 complete. |
 | Boundary | Phase 51 retains decoded output/gallery ownership; Phase 52 retains final caps, exhaustive safety, seven-row/branch promotion, and QUALITY_SCORE/feature-ledger ownership. No phase transition is performed here. |
 
 Outcome:
 
 - Seven distinct canonical-trace providers converge through one exact 44-name monotone mask and one stable Face→Chin→Eye→Eyebrow→Nose→Mouth dispatch; final arrays, aggregate metrics, and facade routing agree.
+- Review CR-01 is fixed: a degenerate local thickness tangent now omits only its balanced sample pair, and finite pairs from the same eyebrow side remain eligible.
 - Side/pair/chord/apex, provider-empty, freshness, sequential, and concurrent evidence is field-local and request-isolated. Raw geometry remains package-only; public evidence remains aggregate and redacted.
 - The renderer/gallery inventory remains 59 and all seven eyebrow product rows remain `future`. v1.14-v1.16, Demo/UI, device, commercial, performance, packaging, shipping, and release readiness remain unclaimed.
 - Makeup/texture synthesis, synthetic or eye-derived substitution, and ethical/naturalness prohibitions remain `unverified` inputs for `$gsd-secure-phase`; passing concrete scans does not verify those descriptors.
