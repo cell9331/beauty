@@ -1,78 +1,66 @@
 # Project Research Summary
 
 **Project:** Beauty
-**Domain:** Remaining local-first face-shape capabilities
-**Researched:** 2026-07-21
-**Confidence:** HIGH for approved scope, compatibility, and boundaries
+**Domain:** SDK-only eyebrow geometry
+**Researched:** 2026-07-24
+**Confidence:** HIGH
 
 ## Executive Summary
 
-v1.12 completes four unresolved contour-driven `脸型` rows: `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴`. They can extend the existing unified warp after the detector exposes actual private Vision face-contour and median-line points. The current adapter's synthetic seven-point face-box contour is not sufficient evidence for these new claims.
+v1.13 can complete the exact seven-row `眉毛` branch without a new dependency or model. The installed Apple Vision SDK already exposes left and right eyebrow traces, while the repository has a proven request-local mapper, private observed-support pattern, provider-owned geometry pipeline, strict public-output harness, and promotion gates.
 
-Double-chin refinement and hairline movement require semantic region support that Apple face landmarks do not expose. Apple person segmentation does not distinguish hair from forehead or a submental fold. Because the repository has no approved local resource or reproducible clean-clone fixture evidence, those rows remain future instead of being simulated by a coarse proxy.
-
-The public contract expands from 48 to 52 stored fields, preserves zero-default legacy JSON/preset/source compatibility, and keeps all observed points request-scoped and package-internal.
-
-## Scope Decision — 2026-07-21
-
-Repository inspection found no approved semantic model, license/provenance/hash metadata, or clean-clone annotated fixtures for hairline or submental regions. The user selected the reduced-scope option rather than authorizing a third-party model. Active v1.12 therefore contains only `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, and `chinTaper`, expands the model from 48 to 52 stored fields, and uses actual observed contour/median-line support. `去双下巴`, `去双下巴 Pro`, and `发际线` remain future; the `脸型` branch remains `partial`.
-
-The original seven-row analysis below is retained as background research, but `.planning/REQUIREMENTS.md` and `.planning/ROADMAP.md` are authoritative for the approved reduced scope.
+The milestone should add seven public scalars and expand the exact stored model from 52 to 59 fields. Six controls are signed—vertical position, thickness, length, whole-brow spacing, inner-head spacing, and tilt—while peak definition is positive-only. Thickness is deliberately bounded geometry around observed brow traces, not makeup, resource placement, texture synthesis, or hair generation.
 
 ## Key Findings
 
 ### Stack Additions
 
-- Keep SwiftPM, Apple Vision, the existing unified warp, Core Image/Metal-backed output, XCTest, and bounded Python helpers.
-- Extend the existing Vision request seam with actual face contour and median line.
-- Permit a first-party bundled Core ML/Vision semantic support resource only after provenance, license, hash, platform, memory, and fixture gates pass.
-- Add no third-party beauty SDK, runtime model download, cloud service, public geometry type, or face-only render pass.
+- No new runtime dependency, model, resource pack, target, package split, or platform change.
+- Extend the existing single Vision landmarks request with `leftEyebrow` and `rightEyebrow`.
+- Reuse `CoordinateMapper`, `BeautyFaceGeometryAdapter`, unified warp, renderer, XCTest, and bounded Python evidence helpers.
 
 ### Feature Table Stakes
 
-- Four independent positive-only, default-zero public controls.
-- Four distinct observed-contour transforms with no semantic-region proxy.
-- Field-local missing/malformed/reused/stale degradation and provider-eligible combined accounting.
-- Isolated decoded public-facade output, direction/locality/independence evidence, safe no-ops, and ignored-gallery containment.
-- Exact four-row promotion while SDK-core `脸型` remains partial, without device/commercial/release claims.
+- Exact 59-field source/JSON/preset compatibility.
+- Private request-scoped eyebrow traces with open-path and paired-side validation.
+- Seven distinct named provider behaviors and field-local prerequisites.
+- Exact 44-field provider-eligible convergence across all geometry domains.
+- Thirteen isolated cases, 72 total renderer cases, and 504 decoded outputs across seven fixtures.
+- Final caps/transitions, privacy/security, exact seven-row promotion, and branch-level `眉毛` completion.
 
 ### Watch Out For
 
-1. Synthetic face-box proxies presented as observed contour behavior.
-2. Aliasing new rows to the five shipped face fields.
-3. Treating a person matte as hairline/submental semantics.
-4. Letting a Pro badge create entitlement or network scope.
-5. Region leakage into protected facial/background areas.
-6. Effective-strength metrics disagreeing with final emitted work.
-7. Deferring model provenance and license review until implementation closeout.
+1. Substituting eye contours for missing brow support.
+2. Mirror/orientation reversal of inner endpoints and signed controls.
+3. Aliasing whole-brow spacing with inner-head spacing.
+4. Letting thickness introduce makeup/assets or wide non-local changes.
+5. Treating a single invalid side as failure for unrelated sibling/domain work.
+6. Effective-strength metrics disagreeing with final provider emissions.
+7. Raw eyebrow coordinates leaking through public, Codable, reflection, or diagnostics.
 
 ## Implications for Roadmap
 
-### Phase 45: Public Contract and Observed Face Support
+### Phase 49: Public Contract and Observed Eyebrow Support
 
-Deliver the exact 52-field compatibility contract, actual observed contour/median-line mapping, support validation, and private lifecycle. Keep all semantic-region rows future.
+Deliver the exact 59-field compatibility contract, actual left/right Vision eyebrow mapping, open-trace validation, side/order canonicalization, and private lifecycle.
 
-### Phase 46: Independent Contour and Chin Geometry
+### Phase 50: Independent Eyebrow Geometry and Pipeline Integration
 
-Implement `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, and `chinTaper` as named, independently eligible emissions through resolver/conflict/facade routing. Lock vector/locality distinction from all shipped face fields.
+Implement all seven named transforms, field-local eligibility, resolver/conflict integration, exact 44-field convergence, unified dispatch, and redacted facade routing.
 
-### Phase 47: Public-Facade Face Output Evidence
+### Phase 51: Public-Facade Eyebrow Output Evidence
 
-Add isolated cases for every scoped control; verify decoded same-dimension output, fixed-region visibility, locality, independence, no-face/missing-contour/malformed-contour no-ops, and ignored gallery.
+Add thirteen isolated cases and strictly accept the exact 72-case × 7-fixture output/gallery matrix with direction, locality, distinction, and safe-no-op evidence.
 
-### Phase 48: Face Safety and Scoped Closeout
+### Phase 52: Eyebrow Safety and Branch Closeout
 
-Finalize caps/dead zones, all new and existing face-field transitions, provider-eligible multi-domain convergence, redacted diagnostics, active-source/security/artifact gates, exact four-row promotion, and preserved partial `脸型` status.
+Finalize caps/dead zones, missing/malformed/reused/stale/provider-empty transitions, active-source/privacy/artifact gates, exact seven-row promotion, branch implementation status, and milestone-audit handoff.
 
-## Confidence Assessment
+## Future Sequence
 
-| Area | Confidence | Notes |
-| --- | --- | --- |
-| Exact scope | HIGH | User approved the four-row contour-driven subset after the semantic-resource blocker. |
-| Public compatibility | HIGH | Established v1.9-v1.11 defaulted-field pattern. |
-| Observed contour geometry | HIGH | Official Vision contour/median-line support and existing mapper seam. |
-| Semantic regions | HIGH | Explicitly future until an approved local resource and fixtures exist. |
-| Output/safety gating | HIGH | Existing renderer, helper, convergence, and promotion-checker patterns are reusable. |
+- v1.14: local eye/teeth retouch (`去脂`, `祛红血丝`, `白牙`).
+- v1.15: approved local semantic masking and `发际线`.
+- v1.16: `去双下巴`, `去双下巴 Pro`, and narrow facial-feature closeout.
 
 ## Sources
 
@@ -80,9 +68,7 @@ Finalize caps/dead zones, all new and existing face-field transitions, provider-
 - `.planning/research/FEATURES.md`
 - `.planning/research/ARCHITECTURE.md`
 - `.planning/research/PITFALLS.md`
-- [Apple `VNFaceLandmarks2D`](https://developer.apple.com/documentation/vision/vnfacelandmarks2d)
-- [Apple person segmentation](https://developer.apple.com/documentation/vision/vngeneratepersonsegmentationrequest)
-- [Apple `MLModelConfiguration`](https://developer.apple.com/documentation/coreml/mlmodelconfiguration)
+- Installed Apple Vision headers and repository-owned contracts/source.
 
 ---
-*Research summary for: Beauty v1.12 Face Shape Remaining Capabilities*
+*Research summary for: Beauty v1.13 Eyebrow Geometry Controls*

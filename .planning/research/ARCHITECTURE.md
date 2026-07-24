@@ -1,79 +1,71 @@
 # Architecture Research
 
-**Domain:** Private observed face and semantic-region support through the existing local-first facade
-**Researched:** 2026-07-21
-**Confidence:** HIGH for package boundaries; MEDIUM for the local semantic resource until Phase 45 proves feasibility
+**Domain:** Request-scoped eyebrow support through the existing geometry pipeline
+**Researched:** 2026-07-24
+**Confidence:** HIGH
 
 ## Recommended Architecture
 
 ```text
-BeautyParameters (7 new default-zero scalars)
+BeautyParameters (7 new default-zero scalars; 59 stored fields)
   -> existing BeautySDK geometry-required route
-  -> VisionFaceDetector
-       observed face contour + median line (mapped once)
-       optional local semantic-region request (only when needed)
-  -> BeautyFaceGeometryAdapter
-       validated canonical contour/centerline/submental/hairline support
-  -> BeautyEffectResolver
-       caps, freshness, per-field eligibility
-  -> named face-field emissions
-       FaceShapeWarpProvider: smooth / temple / cheekbone / basic double-chin
-       ChinWarpProvider: independent taper
-       region refinement: Pro double-chin / signed hairline
-  -> provider-eligible conflict convergence
-  -> existing unified render/facade output
+  -> existing single Vision face-landmarks request
+       leftEyebrow + rightEyebrow point copies
+  -> request-local CoordinateMapper exactly once
+  -> package-only observed eyebrow support
+  -> BeautyFaceGeometryAdapter validation/canonicalization
+  -> EyebrowWarpProvider (7 named field emissions)
+  -> BeautyEffectResolver + provider-eligible conflict convergence
+  -> existing unified BeautyGeometryEffectPipeline
   -> public image + fixed aggregate diagnostics
 ```
 
 ## Component Responsibilities
 
-| Component | v1.12 responsibility |
+| Component | v1.13 responsibility |
 | --- | --- |
-| `BeautyParameters` | Add seven independent values everywhere the manual 48-field model is constructed, decoded, encoded, normalized, diffed, or reset. |
-| `BeautyDetection` observation | Carry optional package-only mapped contour, median line, and semantic-region descriptor for the current request only. |
-| `VisionFaceDetector` | Extract and map actual `faceContour`/`medianLine`; invoke semantic support only for nonzero dependent fields and never log raw values. |
-| `BeautyFaceGeometryAdapter` | Validate finite bounds, count, winding/order, apex, lateral bands, centerline, mask dimensions/confidence, and cross-support consistency. |
-| Face providers | Produce seven named emissions/operations with independent prerequisites and no reuse of existing field IDs. |
-| Resolver/conflict loop | Remove unsupported/provider-empty work before final totals, counts, scales, warnings, metrics, and dispatch. |
-| Renderer/helper | Prove visibility, locality, direction, independence, basic-vs-refined difference, no-face/no-mask no-op, dimensions, decoding, and ignored-gallery containment. |
+| `BeautyParameters` | Add seven normalized values everywhere the manual 52-field model is initialized, decoded, encoded, diffed, reset, and tested. |
+| `BeautyDetection` | Carry optional left/right eyebrow traces as package-only request values and record only coarse availability/counts. |
+| `VisionFaceDetector` | Read eyebrow regions from the existing selected-face request, preflight point ceilings, and map accepted values once. |
+| `BeautyFaceGeometryAdapter` | Canonicalize side/order; validate finite bounds, uniqueness, span, separation, chord, curvature, eye-relative position, and pair consistency. |
+| `EyebrowWarpProvider` | Emit seven independently named local transforms without changing shipped eye/face arrays. |
+| Resolver/conflict loop | Apply caps/freshness, remove unsupported or provider-empty work, converge over the exact 44-field geometry inventory, and dispatch once. |
+| Renderer/helper | Prove 72-case/504-output visibility, locality, direction, distinctions, safe no-ops, and ignored gallery containment. |
 
 ## Architectural Invariants
 
-### One Coordinate Conversion Boundary
+### One Detection and Mapping Boundary
 
-Vision face landmarks are normalized to the face bounding box. Compose them into image space, then use the existing `CoordinateMapper` exactly once. Reject non-finite, out-of-range, duplicate, undersized, side-inverted, or centerline-inconsistent support before effects see it.
+Eyebrow regions come from the same `VNDetectFaceLandmarksRequest` and selected face as existing eye/face support. Accepted point values are composed from face-local Vision coordinates into image space and passed through `CoordinateMapper` exactly once.
 
-### Private Ephemeral Supports
+### Private Ephemeral Support
 
-Contours and masks remain package-only, non-Codable, non-public, non-diagnostic, non-persistent, and request-scoped. Public results expose only fixed availability/reason codes and aggregate counts.
+Raw eyebrow coordinates remain package-only, non-public, non-SPI, non-Codable, non-persistent, non-cached, non-networked, and absent from warnings/errors/metrics/descriptions/dumps. Only fixed reasons and aggregate counts are permitted.
 
-### Region Feasibility Gate
+### Open-Trace Validation
 
-Before downstream phases claim `去双下巴 Pro` or `发际线`, Phase 45 must prove a local support source with license/provenance, bundle hash, supported-platform behavior, bounded memory/output, semantic fixture eligibility, and no network. Failure blocks those rows; it must not be papered over with a face-box proxy.
+Eyebrows are open traces, not polygons. Validation must preserve adjacency and reject non-finite, out-of-bounds, duplicate-only, undersized, direction-degenerate, side-inverted, eye-crossing, or implausibly paired traces without sorting points or substituting eye contours.
 
 ### Field-Local Degradation
 
-- Missing observed contour removes contour-dependent new rows, not existing zero-default compatibility or face-agnostic effects.
-- Missing submental support removes double-chin fields only.
-- Missing hair/skin support removes `hairlineHeight` only.
-- Reused support is sign-preserving and conservatively scaled; stale support emits no dependent work.
-- Provider-empty fields are removed before final combined accounting.
+- Whole-pair spacing requires two valid brows.
+- Single-brow transforms may preserve an eligible side when the other side is invalid.
+- Missing or malformed support removes only dependent eyebrow work.
+- Reused/stale behavior is explicitly locked before promotion.
+- Provider-empty work contributes no effective strength, count, scale, metric, warning, or emitted point.
 
 ## Suggested Build Order
 
-1. Exact 55-field contract plus observed face/region support feasibility and privacy boundaries.
-2. Four independent contour/chin geometry controls and named emissions.
-3. Basic/refined double-chin plus signed hairline local-region pipeline.
-4. Public-facade output matrix, semantic/locality comparisons, and ignored gallery.
-5. Final caps, exhaustive transitions/convergence, active-source/security/resource gate, exact promotion, and branch closeout.
+1. Exact 59-field compatibility and request-scoped observed eyebrow support.
+2. Seven independent providers plus resolver/conflict/facade routing.
+3. Thirteen isolated public cases and strict 504-output helper/gallery evidence.
+4. Final caps/transitions/44-field convergence, active-source security, owner synchronization, and exact seven-row promotion.
 
 ## Sources
 
-- `ARCHITECTURE.md`, `DESIGN.md`, `SECURITY.md`, and `RELIABILITY.md` — owning repository contracts.
-- `BeautyFaceObservation.swift`, `VisionFaceDetector.swift`, `BeautyFaceGeometryAdapter.swift`, `FaceShapeWarpProvider.swift`, and `GeometryConflictResolver.swift` — current integration seams.
-- [Apple `VNFaceLandmarks2D`](https://developer.apple.com/documentation/vision/vnfacelandmarks2d) — face contour, median line, and coordinate convention.
-- [Apple Vision](https://developer.apple.com/documentation/vision) — local requests, normalized geometry, and segmentation APIs.
-- [Apple `MLComputeUnits`](https://developer.apple.com/documentation/coreml/mlcomputeunits) — local compute selection if an approved model is required.
+- Root `ARCHITECTURE.md`, `DESIGN.md`, `SECURITY.md`, `RELIABILITY.md`, and `PRODUCT_SENSE.md`.
+- `BeautyFaceObservation.swift`, `VisionFaceDetector.swift`, `BeautyFaceGeometryAdapter.swift`, existing providers/resolver/pipeline.
+- Installed `VNFaceLandmarks2D` eyebrow-region API.
 
 ---
-*Architecture research for: Beauty v1.12 Face Shape Remaining Capabilities*
+*Architecture research for: Beauty v1.13 Eyebrow Geometry Controls*

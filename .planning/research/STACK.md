@@ -1,52 +1,59 @@
 # Stack Research
 
-**Domain:** Local-first iOS SDK remaining face-shape capabilities
-**Researched:** 2026-07-21
-**Confidence:** HIGH for existing geometry stack; MEDIUM for submental/hairline support until a licensed local resource passes the feasibility gate
+**Domain:** Local-first SDK eyebrow geometry
+**Researched:** 2026-07-24
+**Confidence:** HIGH
 
 ## Recommended Stack
 
-| Technology | Version / baseline | Purpose | Decision |
+| Technology | Baseline | v1.13 role | Decision |
 | --- | --- | --- | --- |
-| Swift / SwiftPM | Existing Swift tools 6.0 package; observed Swift 6.3.3 | Public model, private support, providers, tests | Keep. No package split. |
-| Apple Vision face landmarks | Existing iOS 17+ baseline | Observed cheek-to-chin contour and median-line evidence | Extend the current request once; map private points through `CoordinateMapper`. |
-| Core ML + Vision request seam | Existing Apple frameworks | Optional first-party local hair/skin/submental semantic mask | Permit only a repository-approved bundled model with provenance, license, hash, finite output bounds, and no runtime download. |
-| Existing unified local warp | Repository implementation | Smooth contour, temple, cheekbone, pointed chin, basic lower-face shaping | Extend named face-field emissions; do not add a face-only render pass. |
-| Existing Core Image / Metal-backed output | Repository implementation | Mask-contained refinement and public-facade saved output | Reuse same-dimension render/output path and bounded helper pattern. |
-| XCTest + Python standard library | Existing tooling | Contract, support, degradation, strict output, gallery, boundary gates | Keep helpers self-contained and generated artifacts ignored. |
+| Swift / SwiftPM | Existing tools 6.0 package, iOS 17+, macOS 14+ | Public model, private support, providers, tests, renderer | Keep unchanged. |
+| Apple Vision `VNFaceLandmarks2D` | Installed iPhoneOS 26.5 SDK | `leftEyebrow` and `rightEyebrow` open traces | Extend the existing single landmarks request; add no second request. |
+| Existing `CoordinateMapper` | Repository implementation | Face-local Vision points to image-normalized support | Map accepted points exactly once with the same orientation/mirror metadata. |
+| Existing unified local warp | Repository implementation | Seven named eyebrow transforms | Extend provider-owned emissions; add no separate global render pass. |
+| Core Image / Metal-backed output | Repository implementation | Same-dimension public-facade evidence | Reuse the current local warp and renderer/helper/gallery pattern. |
+| XCTest + bounded Python helper | Existing tooling | Contract, degradation, output, security, artifact gates | Keep self-contained; generated images remain ignored. |
 
 ## Stack Decision
 
-Four rows (`面部流畅`, `太阳穴`, `颧骨`, `尖下巴`) can build on actual Vision face contour plus median-line evidence and the existing unified warp. The current repository only records face-contour availability and then synthesizes a seven-point contour from the face box; v1.12 must add private observed face support before claiming these rows independently.
+The installed Apple Vision headers expose `leftEyebrow` and `rightEyebrow` as `VNFaceLandmarkRegion2D` traces. v1.13 therefore needs no third-party runtime, model, download, or resource pack. The detector should copy only point values from the existing request, map them through the current request-local coordinate boundary, and discard framework objects immediately.
 
-Three rows (`去双下巴`, `去双下巴 Pro`, `发际线`) need region evidence that Apple face landmarks do not provide. Apple documents `faceContour` as cheek-to-chin only. Person segmentation isolates a person from background, not hair from forehead or a submental fold. Therefore these rows require a feasibility gate for a local, repository-approved semantic support implementation. A fabricated face-box region, runtime download, remote API, or unlicensed model is not acceptable completion evidence.
+All seven tools can be specified as bounded geometry over the observed traces:
 
-## What Not to Add
+- vertical position: whole-trace signed translation;
+- thickness: signed trace-normal expansion/compression of a protected local strip;
+- length: signed endpoint-local extension/contraction;
+- spacing: symmetric whole-brow horizontal translation;
+- inner-head spacing: inner-endpoint-local horizontal adjustment;
+- tilt: signed rotation about each brow center;
+- peak: positive-only apex definition relative to the local endpoint chord.
 
-| Avoid | Why | Use instead |
-| --- | --- | --- |
-| Third-party beauty SDK or cloud retouch | Violates local-first, supply-chain, and product ownership boundaries | Apple frameworks plus repository-owned providers/resources. |
-| Public/Codable raw contour or masks | Expands biometric-adjacent persistence and diagnostics | Request-scoped package-only support values. |
-| Alias new rows to `faceSlim`, `jawSlim`, `faceVShape`, or `chinLength` | Would borrow shipped evidence and make seven false product claims | Independent public scalars and named provider emissions. |
-| Treat person matte as a hairline/submental semantic mask | It only separates a person from background | Prove exact semantic eligibility or fail the feasibility gate. |
-| Runtime model download | Adds network, cache, integrity, versioning, and privacy behavior | Bundled, versioned, hash-verified local resource only. |
-| Tracked generated galleries | Bloats repository and may retain sensitive inputs | Existing ignored output/gallery roots plus artifact scans. |
+Thickness remains geometry, not eyebrow makeup, texture synthesis, hair generation, or an asset schema.
 
 ## Compatibility Contract
 
-- Preserve iOS 17+ and macOS 14+ package platforms unless a separately approved resource forces a change.
-- Expand the exact stored model from 48 to 55 fields: 54 numeric fields plus `filterId`.
-- Keep all seven new values zero by default; legacy 48-field JSON and bundled preset files remain neutral without textual edits.
-- `hairlineHeight` is signed; the other six public controls are positive-only.
-- `去双下巴 Pro` maps to a product-neutral independent refinement control, not entitlement or pricing state.
+- Expand `BeautyParameters` from 52 to exactly 59 stored fields: 58 numeric values plus `filterId`.
+- Keep all seven additions default-zero, finite-normalized, Codable, and source-compatible through defaulted initializer arguments.
+- Preserve bundled preset bytes and legacy 52-field payload neutrality.
+- Add no SwiftUI/Demo source, dependency, network/cloud path, account/commercial behavior, or tracked generated image.
+
+## What Not to Add
+
+| Avoid | Reason |
+| --- | --- |
+| Public/Codable eyebrow points | Raw geometry is biometric-adjacent and must remain request-scoped. |
+| Reusing eye contours as eyebrow support | It would fabricate support and blur field-local degradation. |
+| Makeup assets or texture synthesis | Outside the geometry-only v1.13 contract. |
+| Second Vision request | Duplicates work and can disagree with the selected face/request metadata. |
+| Runtime model/resource download | Unnecessary for Vision eyebrow traces and violates local-first scope. |
 
 ## Sources
 
-- [Apple `VNFaceLandmarks2D`](https://developer.apple.com/documentation/vision/vnfacelandmarks2d) — normalized regions, face contour, and median line.
-- [Apple `faceContour`](https://developer.apple.com/documentation/vision/vnfacelandmarks2d/facecontour) — contour covers left cheek through chin to right cheek, not hairline or submental semantics.
-- [Apple person segmentation](https://developer.apple.com/documentation/vision/vngeneratepersonsegmentationrequest) — person matte capability and quality-level trade-off.
-- [Apple `MLModelConfiguration`](https://developer.apple.com/documentation/coreml/mlmodelconfiguration) — local model configuration and compute-unit selection.
-- `BeautyFaceObservation.swift`, `VisionFaceDetector.swift`, `BeautyFaceGeometryAdapter.swift`, `FaceShapeWarpProvider.swift`, and `SECURITY.md` — current repository seams and boundaries.
+- Installed `Vision.framework/Headers/VNFaceLandmarks.h` — authoritative `leftEyebrow` and `rightEyebrow` region declarations.
+- `BeautySDK/Package.swift` — current SPM platforms, targets, dependencies, and resources.
+- `VisionFaceDetector.swift`, `BeautyFaceObservation.swift`, `BeautyFaceGeometryAdapter.swift` — current request-local mapping seam.
+- `GeometryConflictResolver.swift`, existing warp providers, renderer, and phase evidence — current geometry/output pattern.
 
 ---
-*Stack research for: Beauty v1.12 Face Shape Remaining Capabilities*
+*Stack research for: Beauty v1.13 Eyebrow Geometry Controls*
