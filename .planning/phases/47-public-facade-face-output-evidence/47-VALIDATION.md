@@ -1,7 +1,7 @@
 ---
 phase: 47
 slug: public-facade-face-output-evidence
-status: complete
+status: validated
 nyquist_compliant: true
 wave_0_complete: true
 created: 2026-07-23
@@ -127,3 +127,41 @@ downstream or future scope rather than hidden manual Phase 47 gates.
 - [x] `nyquist_compliant: true` and `wave_0_complete: true` are set only after execution.
 
 **Approval:** execution complete; ready for independent review, verification, Nyquist audit, and security audit
+
+---
+
+## Validation Audit 2026-07-24
+
+| Metric | Count |
+| --- | ---: |
+| Gaps found | 0 |
+| Resolved | 0 |
+| Escalated | 0 |
+
+The post-review Nyquist audit cross-referenced OUT-01 through OUT-03 against all six finalized plan tasks, the eight-row requirement map, both focused XCTest suites, the complete SwiftPM regression, the bounded helper and adversarial self-tests, the independently rerendered strict matrix, gallery publication, artifact containment, scope scans, the clean standard review, and the 16/16 goal verification.
+
+Coverage is complete at each required layer:
+
+- source contract: exact 59-case order, four isolated public fields, one shared facade call;
+- representative degradation: no-face plus missing/malformed observed contour with shipped-sibling continuation and redaction;
+- untrusted evidence boundary: descriptor/no-follow acquisition, identity/race checks, compressed/dimension/decoded budgets, strict PNG/JPEG validation;
+- decoded behavior: exact 413 inventory, dimensions, fixed visibility/locality, eligibility, nearest-neighbor distinction, ineligible and no-face no-ops;
+- publication boundary: exact duplicate-free renderer/output/gallery bijection and descriptor-safe atomic gallery;
+- closeout boundary: full regression, package/predecessor pins, generated-artifact containment, privacy/scope/no-promotion scans, and diff hygiene.
+
+No missing-test or manual-only Phase 47 gap remains. Final caps, exhaustive transition/convergence safety, exact row promotion, root owner synchronization, and partial branch closeout are explicit Phase 48 requirements rather than validation omissions.
+
+The standard review found no code finding. One pre-review trailing-space defect in the evidence document was removed by `b55c0ec`; the complete phase range and working tree pass `git diff --check`.
+
+## Validation Sign-Off
+
+- [x] Every finalized task has a focused automated command and executed evidence.
+- [x] Wave 0 contracts existed before strict output acceptance.
+- [x] Helper self-tests cover malformed input, inventory drift, races, dynamic contracts, and semantic false positives.
+- [x] Measurement and strict acceptance used separate clean renders.
+- [x] Source, facade, decoded-image, gallery, privacy/scope, and regression layers are all executable.
+- [x] Requirement coverage is exact for OUT-01 through OUT-03 with no orphan.
+- [x] No manual-only Phase 47 acceptance remains.
+- [x] `nyquist_compliant: true`, `wave_0_complete: true`, and `status: validated` are supported by fresh evidence.
+
+**Approval:** validated after post-review Nyquist audit — 2026-07-24
