@@ -137,3 +137,10 @@ Output, gallery, staging, and quarantine artifacts remain ignored and untracked.
 - All 18 visibility/locality, 49 fixed-neighbor, six ineligible-portrait, and four no-face checks pass.
 - One descriptor-safe publication produced exactly 413 ignored, untracked gallery PNGs with an exact renderer/gallery bijection.
 - The full aggregate record is `.planning/phases/47-public-facade-face-output-evidence/47-FACE-OUTPUT-EVIDENCE.md`. Final caps, exhaustive safety, promotion, root owners, branch `脸型`, and release-quality claims remain Phase 48 or future work.
+
+## Phase 48 Final Face Evidence
+
+- Phase 48 retains the exact 59-case renderer and 413/413 public-facade output inventory. The unchanged strict gates pass 18/18 visibility/locality, 49/49 fixed-neighbor, 6/6 ineligible portrait, and 4/4 no-face comparisons.
+- Final exact `0.25` caps and safety evidence authorize `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴`; `去双下巴`, `去双下巴 Pro`, and `发际线` remain future, so `脸型` stays `partial`.
+- The exact 413-file gallery and all output/gallery/staging/quarantine paths remain ignored, untracked, unstaged, non-symlinked, and disposable.
+- These automated artifacts do not prove device parity, subjective or commercial naturalness, optimized performance, packaging, shipping, launch readiness, or milestone audit/archive status.

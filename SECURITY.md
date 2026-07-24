@@ -540,3 +540,10 @@ Before merging any change touching these areas, update `SECURITY.md` if needed:
 - The privacy-manifest disposition is unchanged because Phase 46 adds no collected-data category, required-reason API, remote transfer, account behavior, tracking behavior, dependency, model, resource, target, public API, Demo import, renderer case, or generated evidence.
 - `check_face_geometry_boundaries.py` passes 24/24 adversarial self-tests and 14/14 live checks, including the pinned manifest and Phase 45 checker hashes, exact 7+2 ownership, exact 37-pass convergence, artifact containment, redaction, and future-row non-promotion.
 - Concrete source manifestations pass, and the independent ASVS L1 audit in `46-SECURITY.md` resolves the three repository-scoped governance statements about biometric profiling, synthetic-proxy representation, and silent deferred-feature activation with `threats_open: 0`. Phase 47 owns decoded output; Phase 48 owns final safety and promotion.
+
+### Phase 48 Face Safety Security Closeout
+
+- Phase 48 keeps observed contour/median/apex support package-only, request-scoped, immutable, non-Codable, non-persistent, non-networked, and absent from public/SPI API.
+- Public results contain only generic warnings and aggregate metrics. Any raw geometry, derived coordinate, provider object, framework object, image byte, or file path in diagnostics is prohibited.
+- The self-tested active-source boundary classifies all eight owners and fails closed on command errors, unclassified matches, persistence/cache/static state, internal Demo/renderer imports, dependency/model/resource/network/commercial drift, deferred semantic activation, and generated-artifact escape.
+- ASVS L1 closes 16/16 registered threats and 3/3 repository governance inputs at the HIGH blocking threshold; `threats_open: 0`.

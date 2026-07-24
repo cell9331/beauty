@@ -344,3 +344,9 @@ BeautyDemo sliders / presets
 - `BeautyEffectResolver` keeps one provider-eligible retained baseline across face, chin, eye, nose, and mouth. At most 37 monotone removal passes precede one final provider-array accounting step; the existing `BeautyGeometryEffectPipeline` remains the only warp path.
 - Detection supplies request-scoped observed contour/median evidence through the existing mapper and adapter. `BeautySDK` exposes only the established result, warnings, and aggregate metrics; no new public geometry type, facade method, target, dependency direction, render pass, or Demo import was introduced.
 - Fresh evidence passes 17 provider, 21 resolver, 13 conflict, 14 combined, 2 pipeline, 43 degradation, and 15 facade tests; full SwiftPM passes 368 tests with three explicit Apple Vision opt-in skips. Phase 47 owns decoded-output evidence, while Phase 48 owns final calibration, exhaustive matrices, and promotion.
+
+### Phase 48 Face Safety Architecture Closeout
+
+- Phase 48 preserves the public `BeautySDK` facade and the local-first dependency direction: `BeautyDetection` maps request evidence, package-internal `BeautyEffects` providers resolve nine face/chin fields, and the existing `BeautyRender` unified warp remains the only delivery path.
+- The exact active-source inventory is eight classified files. Observed support remains package-internal; no public geometry carrier, package target, external dependency, resource/model, network/cloud path, render pass, or new source owner exists.
+- The renderer imports only `BeautySDK`, and there is no Demo source or behavior change. Four blueprint rows are implemented while three semantic-region rows and branch `脸型` remain future/partial.

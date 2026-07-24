@@ -580,3 +580,9 @@ Before merging product-facing changes, verify:
 - Automated SDK evidence independently implements exactly `眼高`, `长度`, `提肌`, `眼瞳大小`, `眼神矫正`, `眼睑下至`, `倾斜`, `内眼角`, `外眼角`, and `对称`.
 - `去脂` and `祛红血丝` remain future retouch/color work, so branch `眼睛` remains `partial`.
 - Acceptance is limited to contract, provider, saved-output, exact safety/degradation, privacy, boundary, and owner evidence. It is not device parity, subjective/commercial approval, optimized performance, packaging, shipping, or launch readiness.
+
+### v1.12 Phase 48 Face Safety Acceptance
+
+- An SDK integrator can independently request `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴` through the existing public still-image facade, with exact final caps, field-local degradation, saved-output visibility/locality, and redacted aggregate evidence.
+- `去双下巴`, `去双下巴 Pro`, and `发际线` remain future until approved local semantic-region/segmentation implementations and reproducible clean-clone fixtures exist. Branch `脸型` remains `partial`.
+- Acceptance is automated at the SDK/source/output boundary only. It is not physical-device parity, subjective or commercial naturalness approval, optimized performance, Demo completion, packaging, shipping, launch readiness, or milestone lifecycle evidence.

@@ -530,3 +530,10 @@ SDK 1.0 readiness:
 - Unchanged strict saved-output evidence passes 385/385 decode/dimensions, 66/66 visibility, 6/6 direct tilt, 60/60 semantic distinctions, 132/132 portraits, and 11/11 no-face comparisons.
 - The boundary self-test passes 57/57 and live pre-promotion/promotion checks pass 13/13 and 14/14. Review status is clean with zero findings; ASVS L1 records `threats_open: 0`.
 - These automated scores do not replace device, subjective/commercial, optimized-performance, packaging, shipping, launch, or independent milestone-audit evidence.
+
+### v1.12 Phase 48 Face Safety Evidence Score
+
+- Fresh Phase 48 focused evidence passes 132/132; full SwiftPM passes 375 tests with three explicit opt-in Apple Vision skips and zero failures.
+- The unchanged strict output gate passes 413/413 decode/dimensions, 18/18 visibility/locality, 49/49 fixed-neighbor, 6/6 ineligible, and 4/4 no-face comparisons; the exact 413-file ignored gallery remains untracked and unstaged.
+- The boundary checker compiles, passes 70/70 self-test mutations, 17/17 pre-promotion checks, and 18/18 promotion checks. Standard review is clean; ASVS L1 records `threats_open: 0`.
+- Exactly four rows are promoted while three rows remain future and branch `脸型` remains partial. Scores gain no credit for device, subjective/commercial quality, optimized performance, Demo work, packaging, shipping, launch, or independent milestone-audit evidence.

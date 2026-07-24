@@ -731,3 +731,9 @@ These are known future design areas, not current first-version requirements:
 - The complete provider-eligible geometry inventory is exactly 37 fields with provisional full-cap total `11.70`. Total accumulation uses Double intermediates, one shared scale, an exact `0..<37` monotone ceiling, no re-entry, and final face/chin/eye/nose/mouth arrays as the sole point-accounting and unified-dispatch authority.
 - No-face and stale input zero the four new fields; eligible reused input applies exact non-eye `0.5` before provider eligibility. Missing contour disables all four, missing centerline disables taper only, and the seven-point compatibility proxy never authorizes a new field.
 - Phase 46 proves provider and facade routing only. Phase 47 owns decoded visibility/ROI/gallery evidence; Phase 48 owns final constants, exhaustive nine-face/37-field transitions, and product promotion.
+
+### Phase 48 Final Face Safety Contract
+
+- Phase 48 finalizes `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, and `chinTaper` at exact positive-only cap `0.25`; zero, negative, non-finite, and `<= Float.ulpOfOne` inputs are neutral without a new product dead zone.
+- The exact face/chin inventory is nine fields. Fresh eligible work uses field-local support; reused non-eye geometry scales by exact `0.5`; stale and no-face work is zero; missing/malformed contour removes the four additions and missing/malformed centerline additionally removes taper only.
+- One retained baseline covers exactly 37 geometry fields at total `11.70`. Named providers sanitize before and after one shared scale, the loop permits at most 37 monotone removals, and final provider arrays are the sole strength/count/domain/point/dispatch authority.

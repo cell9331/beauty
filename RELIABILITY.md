@@ -646,3 +646,10 @@ Before a release-like build:
 - All 14 eye strengths are recomputed per request. A fresh valid support emits eligible work; provider-empty work is removed from totals/domains/dispatch; missing pupil removes only pupil/gaze; reused, stale, and no-face complete-eye states zero eye strengths without stale-vector carryover.
 - Safe face/nose/mouth/color/filter siblings continue under mixed masks. Warnings and metrics remain aggregate/redacted.
 - One exact retained baseline converges monotonically through at most 28 eye/nose/mouth removals. A removed field cannot re-enter or be scaled twice.
+
+### Phase 48 Face Safety Reliability Closeout
+
+- All nine face/chin fields are recomputed per request. Eligible fresh support emits field-local work; eligible reused support applies exact `0.5`; stale and no-face states emit none and retain no prior vector, warning, metric, or active-domain state.
+- Missing or malformed contour and centerline evidence disables only dependent fields. `provider-empty` work is removed before totals, domains, warnings, metrics, point counts, and dispatch while valid siblings continue.
+- Exact 37-field convergence is monotone: each unsupported field can be removed once, no field re-enters, and no retained field is scaled twice. Safe color/filter and supported geometry siblings continue under degraded masks.
+- Fresh focused/full and strict-output gates pass without changing error, recovery, or performance claims.

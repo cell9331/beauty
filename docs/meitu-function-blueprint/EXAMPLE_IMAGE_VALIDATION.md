@@ -374,3 +374,11 @@ Phase 30 closes the safety and status gates for the existing-public-parameter ey
 - The authoritative post-`6e4704e` gaze proof is the package-internal aggregate pupil-to-own-center reduction; the helper's image-only mirror/dark-core inference remains rejected.
 - Exactly ten remaining geometry rows are promoted. `去脂` and `祛红血丝` remain future and branch `眼睛` remains `partial`.
 - Output/gallery files remain ignored and untracked. This automated evidence does not establish subjective naturalness, physical-device parity, commercial approval, packaging, shipping, or launch readiness.
+
+## Phase 48 Face Safety and Promotion Evidence
+
+- The unchanged public renderer has exactly 59 cases × 7 fixtures = 413 outputs. Fresh strict evidence passes 413/413 decode/dimensions, 18/18 visibility/locality, 49/49 fixed-neighbor distinctions, 6/6 ineligible portrait no-ops, and 4/4 no-face no-ops.
+- Phase 48 finalizes the four exact `0.25` caps and promotes exactly `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴` after exhaustive nine-field safety, exact 37-field convergence, clean review, and fail-closed privacy/status gates.
+- `去双下巴`, `去双下巴 Pro`, and `发际线` remain future; branch `脸型` remains `partial`.
+- The 413 output PNGs and exact 413-file gallery remain ignored, untracked, unstaged, and disposable. No new case or threshold was added in Phase 48.
+- This evidence does not establish subjective naturalness, physical-device parity, commercial approval, optimized performance, packaging, shipping, launch readiness, or milestone lifecycle completion.
