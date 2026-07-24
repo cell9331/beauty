@@ -44,6 +44,13 @@ struct GeometryConflictResolver: Sendable {
         weakened.innerCornerOpen *= scale
         weakened.outerCornerOpen *= scale
         weakened.eyeSymmetry *= scale
+        weakened.eyebrowYPosition *= scale
+        weakened.eyebrowThickness *= scale
+        weakened.eyebrowLength *= scale
+        weakened.eyebrowSpacing *= scale
+        weakened.eyebrowHeadSpacing *= scale
+        weakened.eyebrowTilt *= scale
+        weakened.eyebrowPeakDefinition *= scale
         weakened.noseSlim *= scale
         weakened.noseWingSlim *= scale
         weakened.noseTipSize *= scale
@@ -99,6 +106,13 @@ struct GeometryConflictResolver: Sendable {
             strengths.innerCornerOpen,
             strengths.outerCornerOpen,
             strengths.eyeSymmetry,
+            abs(strengths.eyebrowYPosition),
+            abs(strengths.eyebrowThickness),
+            abs(strengths.eyebrowLength),
+            abs(strengths.eyebrowSpacing),
+            abs(strengths.eyebrowHeadSpacing),
+            abs(strengths.eyebrowTilt),
+            strengths.eyebrowPeakDefinition,
             strengths.noseSlim,
             strengths.noseWingSlim,
             abs(strengths.noseTipSize),
@@ -142,6 +156,13 @@ struct GeometryConflictResolver: Sendable {
             strengths.innerCornerOpen,
             strengths.outerCornerOpen,
             strengths.eyeSymmetry,
+            abs(strengths.eyebrowYPosition),
+            abs(strengths.eyebrowThickness),
+            abs(strengths.eyebrowLength),
+            abs(strengths.eyebrowSpacing),
+            abs(strengths.eyebrowHeadSpacing),
+            abs(strengths.eyebrowTilt),
+            strengths.eyebrowPeakDefinition,
             strengths.noseSlim,
             strengths.noseWingSlim,
             abs(strengths.noseTipSize),
