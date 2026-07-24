@@ -1,19 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.12
-milestone_name: Face Shape Remaining Capabilities
-status: Awaiting next milestone
-stopped_at: Milestone v1.12 complete; next $gsd-new-milestone
-last_updated: "2026-07-24T02:56:52.689Z"
+milestone: v1.13
+milestone_name: Eyebrow Geometry Controls
+status: planning
+last_updated: "2026-07-24T04:18:20.254Z"
 last_activity: 2026-07-24
-last_activity_desc: Milestone v1.12 completed and archived
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 20
-  completed_plans: 20
-current_phase: 48
-current_phase_name: Face Safety and Scoped Closeout
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -27,10 +24,10 @@ See: `.planning/PROJECT.md` (updated 2026-07-24)
 
 ## Current Position
 
-Phase: Milestone v1.12 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-07-24 — Milestone v1.12 completed and archived
+Status: Defining requirements
+Last activity: 2026-07-24 — Milestone v1.13 started
 
 ### Phase 48 Face Safety and Scoped Closeout Result
 

@@ -26,7 +26,21 @@
 
 ## 3. Active
 
-No milestone is active. v1.12 is shipped, independently audited, and archived; start the next cycle with `$gsd-new-milestone` when a new scope is chosen.
+### A-2026-07-24-v1-13-eyebrow-geometry-controls
+
+| Field | Value |
+| --- | --- |
+| Status | `active` |
+| Milestone | v1.13 Eyebrow Geometry Controls |
+| Scope | SDK-SPM-only implementation of exactly seven `眉毛` rows: 上下、粗细、长短、间距、眉头间距、倾斜、眉峰. |
+| Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve the 52-field compatibility baseline and all shipped face/eye/nose/mouth output. |
+| Current step | Define v1.13 requirements and Phase 49-52 roadmap, then begin Phase 49 discussion/planning. |
+
+Planned follow-on milestones:
+
+- v1.14: `去脂`, `祛红血丝`, `白牙` through a reusable local retouch path.
+- v1.15: approved local semantic masking plus `发际线`.
+- v1.16: `去双下巴`, `去双下巴 Pro`, and narrow facial-feature closeout.
 
 ## 4. Completed
 
