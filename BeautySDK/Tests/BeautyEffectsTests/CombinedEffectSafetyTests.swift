@@ -62,7 +62,7 @@ final class CombinedEffectSafetyTests: XCTestCase {
         }
     }
 
-    func testSAFE02ConvergenceLoopHasExactThirtySevenRemovalCeiling() throws {
+    func testSAFE02ConvergenceLoopHasExactFortyFourRemovalCeiling() throws {
         let testURL = URL(fileURLWithPath: #filePath)
         let sourceURL = testURL
             .deletingLastPathComponent()
@@ -70,20 +70,21 @@ final class CombinedEffectSafetyTests: XCTestCase {
             .deletingLastPathComponent()
             .appendingPathComponent("Sources/BeautyEffects/Planning/BeautyEffectResolver.swift")
         let source = try String(contentsOf: sourceURL, encoding: .utf8)
-        XCTAssertEqual(source.components(separatedBy: "for _ in 0..<37").count - 1, 1)
+        XCTAssertEqual(source.components(separatedBy: "for _ in 0..<44").count - 1, 1)
+        XCTAssertEqual(source.components(separatedBy: "for _ in 0..<37").count - 1, 0)
         XCTAssertEqual(source.components(separatedBy: "for _ in 0..<28").count - 1, 0)
         XCTAssertTrue(source.contains("Each pass can only remove fields"))
         XCTAssertTrue(source.contains("strengths: resolution.strengths"))
         XCTAssertTrue(source.contains(".sanitizing(retainedBaseline)"))
     }
 
-    func testSAFE02AllThirtySevenFinalStrengthsMatchNamedProviderEmissionsAndDispatch() {
+    func testBROW06AllFortyFourFinalStrengthsMatchNamedProviderEmissions() {
         let face = phase48AllProviderGeometry
         let plan = BeautyEffectResolver.resolve(
             parameters: phase48AllGeometryParameters,
             faceGeometry: face
         )
-        let expectedScale: Float = 1 / 11.70
+        let expectedScale: Float = 1 / 13.45
         let faceEmissions = FaceShapeWarpProvider().fieldEmissions(
             face: face,
             strengths: plan.effectiveStrengths
@@ -93,6 +94,10 @@ final class CombinedEffectSafetyTests: XCTestCase {
             strengths: plan.effectiveStrengths
         )
         let eyeEmissions = EyeWarpProvider().fieldEmissions(
+            face: face,
+            strengths: plan.effectiveStrengths
+        )
+        let eyebrowEmissions = EyebrowWarpProvider().fieldEmissions(
             face: face,
             strengths: plan.effectiveStrengths
         )
@@ -114,7 +119,7 @@ final class CombinedEffectSafetyTests: XCTestCase {
                 return (name, value)
             }
         )
-        XCTAssertEqual(phase48GeometryFieldNames.count, 37)
+        XCTAssertEqual(phase48GeometryFieldNames.count, 44)
         for name in phase48GeometryFieldNames {
             XCTAssertNotEqual(reflectedValues[name], 0, name)
         }
@@ -134,6 +139,7 @@ final class CombinedEffectSafetyTests: XCTestCase {
         var sanitized = faceEmissions.sanitizing(plan.effectiveStrengths)
         sanitized = chinEmissions.sanitizing(sanitized)
         sanitized = eyeEmissions.sanitizing(sanitized)
+        sanitized = eyebrowEmissions.sanitizing(sanitized)
         sanitized = noseEmissions.sanitizing(sanitized)
         sanitized = mouthEmissions.sanitizing(sanitized)
         XCTAssertEqual(
@@ -146,6 +152,7 @@ final class CombinedEffectSafetyTests: XCTestCase {
             faceEmissions.points +
             chinEmissions.points +
             eyeEmissions.points +
+            eyebrowEmissions.points +
             noseEmissions.points +
             mouthEmissions.points
         XCTAssertEqual(
@@ -268,6 +275,13 @@ final class CombinedEffectSafetyTests: XCTestCase {
             gazeCorrection: 1,
             eyeTilt: -1,
             eyeSymmetry: 1,
+            eyebrowYPosition: -1,
+            eyebrowThickness: 1,
+            eyebrowLength: -1,
+            eyebrowSpacing: 1,
+            eyebrowHeadSpacing: -1,
+            eyebrowTilt: 1,
+            eyebrowPeakDefinition: 1,
             noseSlim: 1,
             mouthSize: -1,
             filterId: "soft_clean",
@@ -705,6 +719,8 @@ final class CombinedEffectSafetyTests: XCTestCase {
             "eyeLength", "upperEyelidLift", "pupilSize", "gazeCorrection",
             "lowerEyelidDrop", "eyeTilt", "innerCornerOpen", "outerCornerOpen",
             "eyeSymmetry", "noseSlim", "noseWingSlim", "noseTipSize", "noseBridge",
+            "eyebrowYPosition", "eyebrowThickness", "eyebrowLength", "eyebrowSpacing",
+            "eyebrowHeadSpacing", "eyebrowTilt", "eyebrowPeakDefinition",
             "noseRootNarrowing", "noseTipLift", "mouthSize", "mouthWidth", "smile",
             "mouthYPosition", "mouthTilt", "mouthXPosition", "lipPeakDefinition",
             "lipPlump",
