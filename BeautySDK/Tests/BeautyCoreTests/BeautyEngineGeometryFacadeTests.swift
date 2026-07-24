@@ -619,6 +619,89 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
         assertRedacted(result)
     }
 
+    func testBROW09SevenIndependentEyebrowFieldsRouteThroughRedactedPublicFacade() throws {
+        let rows: [(String, BeautyParameters)] = [
+            ("eyebrowYPosition", BeautyParameters(eyebrowYPosition: -1)),
+            ("eyebrowThickness", BeautyParameters(eyebrowThickness: 1)),
+            ("eyebrowLength", BeautyParameters(eyebrowLength: -1)),
+            ("eyebrowSpacing", BeautyParameters(eyebrowSpacing: 1)),
+            ("eyebrowHeadSpacing", BeautyParameters(eyebrowHeadSpacing: -1)),
+            ("eyebrowTilt", BeautyParameters(eyebrowTilt: 1)),
+            ("eyebrowPeakDefinition", BeautyParameters(eyebrowPeakDefinition: 1)),
+        ]
+
+        for (name, parameters) in rows {
+            let provider = SDKTestingFaceDetectionProvider([.pairedObservedEyebrows])
+            let engine = try BeautyEngine(faceDetectionProvider: provider)
+            let result = try engine.processResult(
+                image: Self.image,
+                metadata: BeautyInputMetadata(orientation: .up, source: .photo),
+                parameters: parameters
+            )
+
+            XCTAssertEqual(provider.invocationCount, 1, name)
+            XCTAssertEqual(result.output.extent, Self.image.extent, name)
+            XCTAssertEqual(result.detectionSummary?.availability, .usable, name)
+            XCTAssertEqual(result.detectionSummary?.faceCount, 1, name)
+            XCTAssertEqual(result.detectionSummary?.usedFaceCount, 1, name)
+            XCTAssertEqual(result.metrics["beauty.detection.geometryRequired"], 1, name)
+            XCTAssertEqual(result.metrics["beauty.effects.activeCount"], 1, name)
+            XCTAssertGreaterThan(result.metrics["beauty.effects.geometryPointCount"] ?? 0, 0, name)
+            XCTAssertFalse(result.warnings.contains { $0.code == "eyebrow_inputs_missing" }, name)
+            assertRedacted(result)
+            assertEyebrowFacadeRedacted(result, name: name)
+        }
+    }
+
+    func testBROW09SidePairMissingMalformedAndSequentialFixturesDegradeLocally() throws {
+        let perSide = BeautyParameters(eyebrowYPosition: 1)
+        let pairOnly = BeautyParameters(eyebrowSpacing: 1)
+        let metadata = BeautyInputMetadata(orientation: .up, source: .testFixture)
+        for fixture in [SDKTestingFaceDetectionFixture.leftOnlyObservedEyebrow, .rightOnlyObservedEyebrow] {
+            let sideProvider = SDKTestingFaceDetectionProvider([fixture])
+            let sideEngine = try BeautyEngine(faceDetectionProvider: sideProvider)
+            let sideResult = try sideEngine.processResult(image: Self.image, metadata: metadata, parameters: perSide)
+            XCTAssertGreaterThan(sideResult.metrics["beauty.effects.geometryPointCount"] ?? 0, 0)
+            XCTAssertEqual(sideResult.metrics["beauty.effects.activeCount"], 1)
+
+            let pairProvider = SDKTestingFaceDetectionProvider([fixture])
+            let pairEngine = try BeautyEngine(faceDetectionProvider: pairProvider)
+            let pairResult = try pairEngine.processResult(image: Self.image, metadata: metadata, parameters: pairOnly)
+            XCTAssertNil(pairResult.metrics["beauty.effects.geometryPointCount"])
+            XCTAssertEqual(pairResult.metrics["beauty.effects.skippedEyebrowDomains"], 1)
+            assertEyebrowFacadeRedacted(sideResult, name: "per-side")
+            assertEyebrowFacadeRedacted(pairResult, name: "pair-only")
+        }
+
+        for fixture in [SDKTestingFaceDetectionFixture.missingObservedEyebrows, .malformedObservedEyebrows] {
+            let provider = SDKTestingFaceDetectionProvider([fixture])
+            let engine = try BeautyEngine(faceDetectionProvider: provider)
+            let result = try engine.processResult(
+                image: Self.image,
+                metadata: metadata,
+                parameters: BeautyParameters(brightness: 0.2, eyebrowYPosition: 1)
+            )
+            XCTAssertEqual(result.output.extent, Self.image.extent)
+            XCTAssertEqual(result.metrics["beauty.effects.activeCount"], 1, "safe color sibling continues")
+            XCTAssertEqual(result.metrics["beauty.effects.skippedEyebrowDomains"], 1)
+            XCTAssertNil(result.metrics["beauty.effects.geometryPointCount"])
+            assertEyebrowFacadeRedacted(result, name: "missing or malformed")
+        }
+
+        let provider = SDKTestingFaceDetectionProvider([
+            .pairedObservedEyebrows, .missingObservedEyebrows, .pairedObservedEyebrows,
+        ])
+        let engine = try BeautyEngine(faceDetectionProvider: provider)
+        let first = try engine.processResult(image: Self.image, metadata: metadata, parameters: perSide)
+        let middle = try engine.processResult(image: Self.image, metadata: metadata, parameters: perSide)
+        let last = try engine.processResult(image: Self.image, metadata: metadata, parameters: perSide)
+        XCTAssertEqual(provider.invocationCount, 3)
+        XCTAssertGreaterThan(first.metrics["beauty.effects.geometryPointCount"] ?? 0, 0)
+        XCTAssertNil(middle.metrics["beauty.effects.geometryPointCount"])
+        XCTAssertEqual(last.metrics, first.metrics, "valid-missing-valid must not carry support")
+        XCTAssertEqual(last.warnings, first.warnings)
+    }
+
     private static let image = CIImage(color: CIColor(red: 0.35, green: 0.25, blue: 0.20, alpha: 1))
         .cropped(to: CGRect(x: 0, y: 0, width: 2, height: 2))
 
@@ -821,6 +904,27 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
                 file: file,
                 line: line
             )
+        }
+    }
+
+    private func assertEyebrowFacadeRedacted(
+        _ result: BeautyResult<CIImage>,
+        name: String,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        var dumped = ""
+        dump(result, to: &dumped)
+        let mirrorLabels = Mirror(reflecting: result).children.compactMap(\.label).joined(separator: " ")
+        let evidence = ([
+            String(describing: result), String(reflecting: result), dumped, mirrorLabels,
+        ] + result.warnings.map { "\($0.code) \($0.message)" } + Array(result.metrics.keys))
+            .joined(separator: " ").lowercased()
+        for term in [
+            "lefteyebrow", "righteyebrow", "endpoint", "center", "apex", "axis", "normal",
+            "vector", "controlpoint", "facegeometry", "eyebrowwarpprovider", "simd", "coordinate",
+        ] {
+            XCTAssertFalse(evidence.contains(term), "\(name): unexpected raw eyebrow term \(term)", file: file, line: line)
         }
     }
 }
