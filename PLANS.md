@@ -38,6 +38,12 @@
 | Roadmap | Phase 49 contract/support → Phase 50 geometry/pipeline → Phase 51 strict output → Phase 52 safety/promotion. |
 | Current step | Phase 50 Plans 50-01 through 50-06 are complete. Phase transition was intentionally not performed; Phase 51 remains the next planned owner of decoded output/gallery evidence. |
 
+Fixture-scope decision (2026-07-24):
+
+- The active renderer portrait corpus is reduced to the user-selected `example-images/input/portraits/e6.jpg` only. Byte-identical retired `e1.png` through `e5.png` remain preserved under `example-images/parked-portraits/` and are no longer renderer/test inputs.
+- Phase 51 OUT-02 is reduced from 504 outputs across seven fixtures to exactly 72 portrait outputs for `e6.jpg`; `no-face-gradient.png` remains separate negative safety evidence and is not included in the 72 portrait count.
+- Current fixture discovery and preflight must key off `e6.jpg`. Historical completion records retain their original multi-fixture counts and are not rewritten.
+
 Phase 49 closeout record (2026-07-24):
 
 - Plans 49-01 through 49-04 delivered the exact 59 stored/58 numeric public model, neutral legacy 52-key/source/reset/diff/equality/round-trip behavior, unchanged five-preset bytes, actual `leftEyebrow`/`rightEyebrow` capture from one request, exactly-once mapping, mapper-axis side/order canonicalization, and package-only request-scoped semantic attachment.

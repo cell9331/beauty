@@ -70,11 +70,6 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
     ]
 
     private static let fixtureNames = [
-        "portraits/e1.png",
-        "portraits/e2.png",
-        "portraits/e3.png",
-        "portraits/e4.png",
-        "portraits/e5.png",
         "portraits/e6.jpg",
         "negatives/no-face-gradient.png"
     ]

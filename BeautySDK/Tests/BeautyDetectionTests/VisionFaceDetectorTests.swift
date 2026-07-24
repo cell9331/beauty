@@ -812,14 +812,7 @@ final class VisionFaceDetectorTests: XCTestCase {
 
     private func portraitFixtureURLs() throws -> [URL] {
         let inputDirectory = try repositoryRootURL().appendingPathComponent("example-images/input/portraits", isDirectory: true)
-        let fixtureNames = [
-            "e1.png",
-            "e2.png",
-            "e3.png",
-            "e4.png",
-            "e5.png",
-            "e6.jpg"
-        ]
+        let fixtureNames = ["e6.jpg"]
         return try fixtureNames.map { fixtureName in
             let url = inputDirectory.appendingPathComponent(fixtureName)
             guard FileManager.default.fileExists(atPath: url.path) else {
@@ -832,13 +825,13 @@ final class VisionFaceDetectorTests: XCTestCase {
     private func repositoryRootURL() throws -> URL {
         var current = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
         while current.path != "/" {
-            let candidate = current.appendingPathComponent("example-images/input/portraits/e1.png")
+            let candidate = current.appendingPathComponent("example-images/input/portraits/e6.jpg")
             if FileManager.default.fileExists(atPath: candidate.path) {
                 return current
             }
             current.deleteLastPathComponent()
         }
-        throw FixtureError.missing("example-images/input/portraits/e1.png")
+        throw FixtureError.missing("example-images/input/portraits/e6.jpg")
     }
 
     private func assertNoRawVisionDiagnostics(

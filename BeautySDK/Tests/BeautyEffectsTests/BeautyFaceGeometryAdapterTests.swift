@@ -1890,7 +1890,7 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
     private func portraitFixtureURLs() throws -> [URL] {
         let directory = try repositoryRootURL()
             .appendingPathComponent("example-images/input/portraits", isDirectory: true)
-        return try ["e1.png", "e2.png", "e3.png", "e4.png", "e5.png", "e6.jpg"].map {
+        return try ["e6.jpg"].map {
             let url = directory.appendingPathComponent($0)
             guard FileManager.default.fileExists(atPath: url.path) else {
                 throw FaceFixtureError.missing
@@ -1903,7 +1903,7 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         var current = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
         while current.path != "/" {
             let fixture = current.appendingPathComponent(
-                "example-images/input/portraits/e1.png"
+                "example-images/input/portraits/e6.jpg"
             )
             if FileManager.default.fileExists(atPath: fixture.path) {
                 return current

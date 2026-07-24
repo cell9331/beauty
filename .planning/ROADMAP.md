@@ -21,7 +21,7 @@
 
 - [x] **Phase 49: Public Contract and Observed Eyebrow Support** — Exact 59-field compatibility, actual left/right Vision eyebrow mapping, open-trace validation, side/order canonicalization, and private lifecycle. (completed 2026-07-24)
 - [ ] **Phase 50: Independent Eyebrow Geometry and Pipeline Integration** — Seven distinct named transforms, field-local eligibility, exact 44-field convergence, unified dispatch, and redacted facade routing.
-- [ ] **Phase 51: Public-Facade Eyebrow Output Evidence** — Thirteen isolated cases, strict 504-output direction/locality/distinction evidence, safe no-ops, and ignored gallery containment.
+- [ ] **Phase 51: Public-Facade Eyebrow Output Evidence** — Thirteen isolated cases, strict single-portrait direction/locality/distinction evidence, safe no-ops, and ignored gallery containment.
 - [ ] **Phase 52: Eyebrow Safety and Branch Closeout** — Final caps, complete transitions, active-source/privacy gates, exact seven-row promotion, and implemented branch status.
 
 ## Phase Details
@@ -99,7 +99,7 @@
 **Success criteria:**
 
 1. The renderer adds exactly thirteen isolated cases—positive/negative cases for six signed controls plus one peak case—expanding the duplicate-free inventory from 59 to 72.
-2. A bounded strict helper accepts exactly 504 decoded same-dimension outputs across seven fixtures and proves visibility inside fixed brow regions with protected eyes, forehead, hair, background, and watermark locality.
+2. A bounded strict helper accepts exactly 72 decoded same-dimension outputs from the sole active portrait fixture `e6.jpg` and proves visibility inside fixed brow regions with protected eyes, forehead, hair, background, and watermark locality; the no-face negative remains separate safety evidence rather than part of this 72-output portrait count.
 3. Positive/negative directions remain distinct and all seven semantic families are distinguishable, including whole-brow spacing versus inner-head spacing and thickness versus peak.
 4. Representative no-face, missing, malformed, and partial-support cases remain safe; renderer/output/gallery inventories are bijective and all generated evidence remains ignored, untracked, unstaged, and disposable.
 

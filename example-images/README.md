@@ -5,7 +5,7 @@
 ## Directories
 
 - `input/`: committed source fixtures used by SDK tests and `BeautyExampleRenderer`.
-  - `input/portraits/`: portrait fixtures such as `e1.png` through `e6.jpg`.
+  - `input/portraits/`: the sole active portrait fixture `e6.jpg`.
   - `input/negatives/`: negative fixtures such as `no-face-gradient.png`.
 - `output/`: ignored flat generated renderer PNGs, named `{fixtureStem}__{caseId}.png`.
 - `gallery/`: ignored generated human-review view, grouped as `{featureFamily}/{caseId}/{fixtureStem}.png`.
@@ -13,7 +13,7 @@
 - `.gallery-quarantine/previous/`: ignored single-slot preservation of the prior gallery. The generator never traverses or deletes it.
 
 Generated `output/` and `gallery/` contents are local artifacts. Recreate them instead of committing PNGs.
-Committed `input/` fixtures should stay below 1 MB each; the current PNG portrait fixtures use a 900 px maximum edge, `e6.jpg` is a committed JPEG portrait fixture, and the no-face negative fixture is 64 px.
+Committed `input/` fixtures should stay below 1 MB each; `e6.jpg` is the sole active JPEG portrait fixture, the no-face negative fixture is 64 px, and retired `e1.png` through `e5.png` remain outside `input/` under `parked-portraits/`.
 
 ## Generate Output
 

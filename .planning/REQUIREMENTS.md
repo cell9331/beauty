@@ -34,7 +34,7 @@
 ### Public-Facade Output Evidence
 
 - [ ] **OUT-01**: `BeautyExampleRenderer` contains thirteen isolated eyebrow cases—both directions for six signed controls and one peak case—expanding the exact matrix from 59 to 72 cases without bypassing `BeautySDK`.
-- [ ] **OUT-02**: A bounded strict helper decodes all 504 expected outputs across seven fixtures, preserves dimensions, proves brow-local visibility and protected-region locality, preserves signed directions, and distinguishes all seven semantic families.
+- [ ] **OUT-02**: A bounded strict helper decodes all 72 expected portrait outputs from the sole active portrait fixture `e6.jpg`, preserves dimensions, proves brow-local visibility and protected-region locality, preserves signed directions, and distinguishes all seven semantic families; the no-face negative is verified separately.
 - [ ] **OUT-03**: No-face and representative missing/malformed/partial eyebrow inputs produce safe public results, while renderer/output/gallery inventories remain exact, descriptor-safe, ignored, untracked, unstaged, and disposable.
 
 ### Safety, Privacy, and Closeout

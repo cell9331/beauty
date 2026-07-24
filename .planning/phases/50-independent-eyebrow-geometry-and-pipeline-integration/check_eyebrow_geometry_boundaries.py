@@ -112,7 +112,7 @@ def live_checks(root: Path) -> None:
 
 
 def fixture_preflight(root: Path) -> None:
-    fixture = checked_path(root, "example-images/input/portraits/e1.png")
+    fixture = checked_path(root, "example-images/input/portraits/e6.jpg")
     if fixture.is_symlink() or fixture.stat().st_size <= 0:
         raise BoundaryCheckFailure("required fixture missing or unsafe")
 
