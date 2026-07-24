@@ -1534,6 +1534,240 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         )
     }
 
+    func testBrowSupportAttachmentPreservesFourPresenceCombinationsAndPairedEligibility() {
+        let absent = BeautyFaceGeometryAdapter.makeGeometry(
+            from: BeautyFaceObservation(imageBounds: bounds, landmarks: .complete)
+        )
+        XCTAssertNil(absent.observedEyebrowSupport)
+
+        let validObs = BeautyFaceObservation(
+            imageBounds: bounds,
+            landmarks: .complete,
+            observedEyebrowSupport: BeautyObservedEyebrowSupport(
+                left: browOpenTrace(count: 5, side: .left),
+                right: browOpenTrace(count: 5, side: .right)
+            )
+        )
+        let both = BeautyFaceGeometryAdapter.makeGeometry(from: validObs)
+        XCTAssertNotNil(both.observedEyebrowSupport?.left)
+        XCTAssertNotNil(both.observedEyebrowSupport?.right)
+        XCTAssertTrue(both.observedEyebrowSupport?.pairedEligible == true)
+        XCTAssertEqual(both.observedEyebrowSupport?.left?.side, .left)
+        XCTAssertEqual(both.observedEyebrowSupport?.right?.side, .right)
+
+        let leftOnlyObs = BeautyFaceObservation(
+            imageBounds: bounds,
+            landmarks: .complete,
+            observedEyebrowSupport: BeautyObservedEyebrowSupport(
+                left: browOpenTrace(count: 5, side: .left),
+                right: browInvalidPoints(side: .right)
+            )
+        )
+        let leftOnly = BeautyFaceGeometryAdapter.makeGeometry(from: leftOnlyObs)
+        XCTAssertNotNil(leftOnly.observedEyebrowSupport?.left)
+        XCTAssertNil(leftOnly.observedEyebrowSupport?.right)
+        XCTAssertFalse(leftOnly.observedEyebrowSupport?.pairedEligible == true)
+
+        let rightOnlyObs = BeautyFaceObservation(
+            imageBounds: bounds,
+            landmarks: .complete,
+            observedEyebrowSupport: BeautyObservedEyebrowSupport(
+                left: browInvalidPoints(side: .left),
+                right: browOpenTrace(count: 5, side: .right)
+            )
+        )
+        let rightOnly = BeautyFaceGeometryAdapter.makeGeometry(from: rightOnlyObs)
+        XCTAssertNil(rightOnly.observedEyebrowSupport?.left)
+        XCTAssertNotNil(rightOnly.observedEyebrowSupport?.right)
+        XCTAssertFalse(rightOnly.observedEyebrowSupport?.pairedEligible == true)
+
+        let neitherObs = BeautyFaceObservation(
+            imageBounds: bounds,
+            landmarks: .complete,
+            observedEyebrowSupport: BeautyObservedEyebrowSupport(
+                left: browInvalidPoints(side: .left),
+                right: browInvalidPoints(side: .right)
+            )
+        )
+        let neither = BeautyFaceGeometryAdapter.makeGeometry(from: neitherObs)
+        XCTAssertNil(neither.observedEyebrowSupport)
+    }
+
+    func testBrowMalformedLocalFailureNeverAffectsShippedGeometrySiblings() {
+        let baseline = BeautyFaceGeometryAdapter.makeGeometry(
+            from: BeautyFaceObservation(imageBounds: bounds, landmarks: .complete)
+        )
+        let validLeft = browOpenTrace(count: 5, side: .left)
+        let validRight = browOpenTrace(count: 5, side: .right)
+
+        let malformed: [BeautyObservedEyebrowSupport?] = [
+            BeautyObservedEyebrowSupport(left: nil, right: browInvalidPoints(side: .right)),
+            BeautyObservedEyebrowSupport(left: browInvalidPoints(side: .left), right: nil),
+            BeautyObservedEyebrowSupport(
+                left: browInvalidPoints(side: .left),
+                right: browInvalidPoints(side: .right)
+            ),
+            BeautyObservedEyebrowSupport(
+                left: browInvalidPoints(side: .left),
+                right: validRight
+            ),
+        ]
+
+        for support in malformed {
+            let observation = BeautyFaceObservation(
+                imageBounds: bounds,
+                landmarks: .complete,
+                observedEyebrowSupport: support
+            )
+            let geometry = BeautyFaceGeometryAdapter.makeGeometry(from: observation)
+            assertLegacyAndSiblingGeometryEqual(geometry, baseline)
+        }
+
+        let fullyValid = BeautyFaceGeometryAdapter.makeGeometry(
+            from: BeautyFaceObservation(
+                imageBounds: bounds,
+                landmarks: .complete,
+                observedEyebrowSupport: BeautyObservedEyebrowSupport(
+                    left: validLeft,
+                    right: validRight
+                )
+            )
+        )
+        XCTAssertNotNil(fullyValid.observedEyebrowSupport?.left)
+        XCTAssertNotNil(fullyValid.observedEyebrowSupport?.right)
+        XCTAssertTrue(fullyValid.observedEyebrowSupport?.pairedEligible == true)
+        assertLegacyAndSiblingGeometryEqual(fullyValid, baseline)
+
+        // Invalid eye order never suppresses valid eyebrow attachment.
+        let invalidEyeOrder = BeautyFaceGeometryAdapter.makeGeometry(
+            from: BeautyFaceObservation(
+                imageBounds: bounds,
+                landmarks: .complete,
+                observedEyeSupport: [
+                    BeautyObservedEyeSupport(
+                        side: .left,
+                        contour: self.contour(x: 0.58, y: 0.40)
+                    )
+                ],
+                observedEyeOrder: .invalid,
+                observedEyebrowSupport: BeautyObservedEyebrowSupport(
+                    left: validLeft,
+                    right: validRight
+                )
+            )
+        )
+        XCTAssertNotNil(invalidEyeOrder.observedEyebrowSupport?.left)
+        XCTAssertNotNil(invalidEyeOrder.observedEyebrowSupport?.right)
+        XCTAssertTrue(invalidEyeOrder.observedEyebrowSupport?.pairedEligible == true)
+        XCTAssertEqual(invalidEyeOrder.faceContour, baseline.faceContour)
+        XCTAssertEqual(invalidEyeOrder.nose, baseline.nose)
+        XCTAssertEqual(invalidEyeOrder.outerLips, baseline.outerLips)
+    }
+
+    func testBrowAlternatingLifecycleRetainsNoPriorSupport() {
+        let validObservation = BeautyFaceObservation(
+            imageBounds: bounds,
+            landmarks: .complete,
+            observedEyebrowSupport: BeautyObservedEyebrowSupport(
+                left: browOpenTrace(count: 5, side: .left),
+                right: browOpenTrace(count: 5, side: .right)
+            )
+        )
+        let invalidObservation = BeautyFaceObservation(
+            imageBounds: bounds,
+            landmarks: .complete,
+            observedEyebrowSupport: BeautyObservedEyebrowSupport(
+                left: browInvalidPoints(side: .left),
+                right: browInvalidPoints(side: .right)
+            )
+        )
+        let staleFace = BeautyFaceObservation(
+            landmarks: .missingRequiredGeometry
+        )
+        let noFace = BeautyFaceObservation(landmarks: .missingRequiredGeometry)
+
+        let first = BeautyFaceGeometryAdapter.makeGeometry(from: validObservation)
+        let middle = BeautyFaceGeometryAdapter.makeGeometry(from: invalidObservation)
+        let last = BeautyFaceGeometryAdapter.makeGeometry(from: validObservation)
+        XCTAssertNotNil(first.observedEyebrowSupport)
+        XCTAssertNil(middle.observedEyebrowSupport)
+        XCTAssertEqual(last.observedEyebrowSupport, first.observedEyebrowSupport)
+
+        let repeated = (0..<5).map { _ in
+            BeautyFaceGeometryAdapter.makeGeometry(from: validObservation)
+        }
+        for geometry in repeated {
+            XCTAssertNotNil(geometry.observedEyebrowSupport)
+            XCTAssertEqual(geometry.observedEyebrowSupport, first.observedEyebrowSupport)
+        }
+
+        let staleGeometry = BeautyFaceGeometryAdapter.makeGeometry(from: staleFace)
+        XCTAssertNil(staleGeometry.observedEyebrowSupport)
+
+        let noFaceGeometry = BeautyFaceGeometryAdapter.makeGeometry(from: noFace)
+        XCTAssertNil(noFaceGeometry.observedEyebrowSupport)
+    }
+
+    func testBrowIndependentParallelGeometryConstructionsAreStateless() throws {
+        let observation = BeautyFaceObservation(
+            imageBounds: bounds,
+            landmarks: .complete,
+            observedEyebrowSupport: BeautyObservedEyebrowSupport(
+                left: browOpenTrace(count: 5, side: .left),
+                right: browOpenTrace(count: 5, side: .right)
+            )
+        )
+        let first = BeautyFaceGeometryAdapter.makeGeometry(from: observation)
+        let second = BeautyFaceGeometryAdapter.makeGeometry(from: observation)
+        XCTAssertEqual(first.observedEyebrowSupport, second.observedEyebrowSupport)
+        XCTAssertEqual(
+            first.observedEyebrowSupport?.left?.points,
+            second.observedEyebrowSupport?.left?.points
+        )
+        XCTAssertEqual(
+            first.observedEyebrowSupport?.right?.points,
+            second.observedEyebrowSupport?.right?.points
+        )
+
+        // Independent observations with different counts must not share support.
+        let alternate = BeautyFaceObservation(
+            imageBounds: bounds,
+            landmarks: .complete,
+            observedEyebrowSupport: BeautyObservedEyebrowSupport(
+                left: browOpenTrace(count: 6, side: .left),
+                right: browOpenTrace(count: 4, side: .right)
+            )
+        )
+        let alternateGeometry = BeautyFaceGeometryAdapter.makeGeometry(from: alternate)
+        XCTAssertNotEqual(
+            first.observedEyebrowSupport?.left?.points.count,
+            alternateGeometry.observedEyebrowSupport?.left?.points.count
+        )
+        XCTAssertNotEqual(
+            first.observedEyebrowSupport?.right?.points.count,
+            alternateGeometry.observedEyebrowSupport?.right?.points.count
+        )
+    }
+
+    private func browInvalidPoints(side: BeautyObservedEyebrowSide) -> [CoordinatePoint] {
+        // Three-point trace fails the count envelope (4...16).
+        switch side {
+        case .left:
+            return [
+                CoordinatePoint(x: 0.42, y: 0.34),
+                CoordinatePoint(x: 0.32, y: 0.32),
+                CoordinatePoint(x: 0.22, y: 0.30),
+            ]
+        case .right:
+            return [
+                CoordinatePoint(x: 0.58, y: 0.34),
+                CoordinatePoint(x: 0.68, y: 0.32),
+                CoordinatePoint(x: 0.78, y: 0.30),
+            ]
+        }
+    }
+
+
     private func observation(left: [CoordinatePoint], right: [CoordinatePoint], pupils: ([CoordinatePoint]?, [CoordinatePoint]?) = (nil, nil)) -> BeautyFaceObservation {
         BeautyFaceObservation(
             imageBounds: bounds,
