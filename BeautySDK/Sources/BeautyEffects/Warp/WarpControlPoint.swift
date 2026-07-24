@@ -91,6 +91,65 @@ extension BeautyFaceSemanticSupport: CustomStringConvertible, CustomDebugStringC
     }
 }
 
+struct BeautyEyebrowSemanticTrace: Equatable, Sendable {
+    let side: BeautyObservedEyebrowSide
+    let points: [SIMD2<Float>]
+    let innerEndpoint: SIMD2<Float>
+    let outerEndpoint: SIMD2<Float>
+    let center: SIMD2<Float>
+    let apexIndex: Int?
+}
+
+extension BeautyEyebrowSemanticTrace: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+    var description: String {
+        "BeautyEyebrowSemanticTrace(side: \(side == .left ? "left" : "right"), pointCount: \(points.count), apexAvailable: \(apexIndex != nil))"
+    }
+
+    var debugDescription: String { description }
+
+    var customMirror: Mirror {
+        Mirror(
+            self,
+            children: [
+                "isLeft": side == .left,
+                "pointCount": points.count,
+                "apexAvailable": apexIndex != nil,
+            ],
+            displayStyle: .struct
+        )
+    }
+}
+
+struct BeautyEyebrowSemanticSupport: Equatable, Sendable {
+    let left: BeautyEyebrowSemanticTrace?
+    let right: BeautyEyebrowSemanticTrace?
+
+    var pairedEligible: Bool {
+        guard let left, let right else { return false }
+        return left.side != right.side
+    }
+}
+
+extension BeautyEyebrowSemanticSupport: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+    var description: String {
+        "BeautyEyebrowSemanticSupport(leftCount: \(left?.points.count ?? 0), rightCount: \(right?.points.count ?? 0), pairedEligible: \(pairedEligible))"
+    }
+
+    var debugDescription: String { description }
+
+    var customMirror: Mirror {
+        Mirror(
+            self,
+            children: [
+                "leftCount": left?.points.count ?? 0,
+                "rightCount": right?.points.count ?? 0,
+                "pairedEligible": pairedEligible,
+            ],
+            displayStyle: .struct
+        )
+    }
+}
+
 struct FaceBounds: Equatable, Sendable {
     let x: Float
     let y: Float
@@ -128,6 +187,7 @@ struct FaceGeometry: Equatable, Sendable {
     let leftEyeSupport: BeautyEyeSemanticSupport?
     let rightEyeSupport: BeautyEyeSemanticSupport?
     let freshness: LandmarkGeometryFreshness
+    let observedEyebrowSupport: BeautyEyebrowSemanticSupport?
 
     var leftEyeSemanticSupport: BeautyEyeSemanticSupport? { leftEyeSupport }
     var rightEyeSemanticSupport: BeautyEyeSemanticSupport? { rightEyeSupport }
@@ -147,7 +207,8 @@ struct FaceGeometry: Equatable, Sendable {
         innerLips: [SIMD2<Float>] = [],
         leftEyeSupport: BeautyEyeSemanticSupport? = nil,
         rightEyeSupport: BeautyEyeSemanticSupport? = nil,
-        freshness: LandmarkGeometryFreshness = .fresh
+        freshness: LandmarkGeometryFreshness = .fresh,
+        observedEyebrowSupport: BeautyEyebrowSemanticSupport? = nil
     ) {
         self.bounds = bounds
         self.faceContour = faceContour
@@ -164,6 +225,7 @@ struct FaceGeometry: Equatable, Sendable {
         self.leftEyeSupport = leftEyeSupport
         self.rightEyeSupport = rightEyeSupport
         self.freshness = freshness
+        self.observedEyebrowSupport = observedEyebrowSupport
     }
 
     var center: SIMD2<Float> {
@@ -195,7 +257,11 @@ extension FaceGeometry: CustomStringConvertible, CustomDebugStringConvertible, C
             + "observedEyeSupportCount: \(observedEyeSupportCount), "
             + "observedFaceSupportAvailable: \(observedFaceSupport != nil), "
             + "observedFaceContourCount: \(observedFaceSupport?.contour.count ?? 0), "
-            + "observedFaceMedianLineCount: \(observedFaceSupport?.medianLine?.count ?? 0))"
+            + "observedFaceMedianLineCount: \(observedFaceSupport?.medianLine?.count ?? 0), "
+            + "observedEyebrowSupportAvailable: \(observedEyebrowSupport != nil), "
+            + "observedLeftEyebrowCount: \(observedEyebrowSupport?.left?.points.count ?? 0), "
+            + "observedRightEyebrowCount: \(observedEyebrowSupport?.right?.points.count ?? 0), "
+            + "observedEyebrowPairedEligible: \(observedEyebrowSupport?.pairedEligible ?? false))"
     }
 
     var debugDescription: String {
@@ -211,6 +277,10 @@ extension FaceGeometry: CustomStringConvertible, CustomDebugStringConvertible, C
                 "observedFaceSupportAvailable": observedFaceSupport != nil,
                 "observedFaceContourCount": observedFaceSupport?.contour.count ?? 0,
                 "observedFaceMedianLineCount": observedFaceSupport?.medianLine?.count ?? 0,
+                "observedEyebrowSupportAvailable": observedEyebrowSupport != nil,
+                "observedLeftEyebrowCount": observedEyebrowSupport?.left?.points.count ?? 0,
+                "observedRightEyebrowCount": observedEyebrowSupport?.right?.points.count ?? 0,
+                "observedEyebrowPairedEligible": observedEyebrowSupport?.pairedEligible ?? false,
             ],
             displayStyle: .struct
         )

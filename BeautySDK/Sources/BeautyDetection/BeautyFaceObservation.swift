@@ -74,6 +74,39 @@ extension BeautyObservedFaceSupport: CustomStringConvertible, CustomDebugStringC
     }
 }
 
+package enum BeautyObservedEyebrowSide: Equatable, Sendable {
+    case left
+    case right
+}
+
+/// Request-scoped mapped evidence copied from actual Vision eyebrow regions.
+/// Left and right absence remain independent and diagnostics expose counts only.
+package struct BeautyObservedEyebrowSupport: Equatable, Sendable {
+    package let left: [CoordinatePoint]?
+    package let right: [CoordinatePoint]?
+
+    package init(left: [CoordinatePoint]? = nil, right: [CoordinatePoint]? = nil) {
+        self.left = left
+        self.right = right
+    }
+}
+
+extension BeautyObservedEyebrowSupport: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+    package var description: String {
+        "BeautyObservedEyebrowSupport(leftCount: \(left?.count ?? 0), rightCount: \(right?.count ?? 0))"
+    }
+
+    package var debugDescription: String { description }
+
+    package var customMirror: Mirror {
+        Mirror(
+            self,
+            children: ["leftCount": left?.count ?? 0, "rightCount": right?.count ?? 0],
+            displayStyle: .struct
+        )
+    }
+}
+
 package struct BeautyFaceObservation: Equatable, Sendable {
     package let stableID: String?
     package let confidence: Double
@@ -83,6 +116,7 @@ package struct BeautyFaceObservation: Equatable, Sendable {
     package let observedEyeSupport: [BeautyObservedEyeSupport]?
     package let observedEyeOrder: BeautyObservedEyeOrder?
     package let observedFaceSupport: BeautyObservedFaceSupport?
+    package let observedEyebrowSupport: BeautyObservedEyebrowSupport?
 
     package init(
         stableID: String? = nil,
@@ -92,7 +126,8 @@ package struct BeautyFaceObservation: Equatable, Sendable {
         landmarks: BeautyFaceLandmarks = .complete,
         observedEyeSupport: [BeautyObservedEyeSupport]? = nil,
         observedEyeOrder: BeautyObservedEyeOrder? = nil,
-        observedFaceSupport: BeautyObservedFaceSupport? = nil
+        observedFaceSupport: BeautyObservedFaceSupport? = nil,
+        observedEyebrowSupport: BeautyObservedEyebrowSupport? = nil
     ) {
         self.stableID = stableID
         self.confidence = confidence
@@ -102,6 +137,7 @@ package struct BeautyFaceObservation: Equatable, Sendable {
         self.observedEyeSupport = observedEyeSupport
         self.observedEyeOrder = observedEyeOrder
         self.observedFaceSupport = observedFaceSupport
+        self.observedEyebrowSupport = observedEyebrowSupport
     }
 }
 
@@ -112,7 +148,10 @@ extension BeautyFaceObservation: CustomStringConvertible, CustomDebugStringConve
             + "observedEyeSupportCount: \(observedEyeSupport?.count ?? 0), "
             + "observedFaceSupportAvailable: \(observedFaceSupport != nil), "
             + "observedFaceContourCount: \(observedFaceSupport?.contour?.count ?? 0), "
-            + "observedFaceMedianLineCount: \(observedFaceSupport?.medianLine?.count ?? 0))"
+            + "observedFaceMedianLineCount: \(observedFaceSupport?.medianLine?.count ?? 0), "
+            + "observedEyebrowSupportAvailable: \(observedEyebrowSupport != nil), "
+            + "observedLeftEyebrowCount: \(observedEyebrowSupport?.left?.count ?? 0), "
+            + "observedRightEyebrowCount: \(observedEyebrowSupport?.right?.count ?? 0))"
     }
 
     package var debugDescription: String {
@@ -128,6 +167,9 @@ extension BeautyFaceObservation: CustomStringConvertible, CustomDebugStringConve
                 "observedFaceSupportAvailable": observedFaceSupport != nil,
                 "observedFaceContourCount": observedFaceSupport?.contour?.count ?? 0,
                 "observedFaceMedianLineCount": observedFaceSupport?.medianLine?.count ?? 0,
+                "observedEyebrowSupportAvailable": observedEyebrowSupport != nil,
+                "observedLeftEyebrowCount": observedEyebrowSupport?.left?.count ?? 0,
+                "observedRightEyebrowCount": observedEyebrowSupport?.right?.count ?? 0,
             ],
             displayStyle: .struct
         )

@@ -1053,6 +1053,10 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
                 "observedFaceSupportAvailable",
                 "observedFaceContourCount",
                 "observedFaceMedianLineCount",
+                "observedEyebrowSupportAvailable",
+                "observedLeftEyebrowCount",
+                "observedRightEyebrowCount",
+                "observedEyebrowPairedEligible",
             ]
         )
 
@@ -1118,7 +1122,6 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
 
     func testEyebrowSupportContractsPreserveIndependentAbsenceAndPairedEligibility() {
         let leftPoints = eyebrowTrace(side: .left)
-        let rightPoints = eyebrowTrace(side: .right)
         let raw = BeautyObservedEyebrowSupport(left: leftPoints, right: nil)
         XCTAssertEqual(raw.left, leftPoints)
         XCTAssertNil(raw.right)
