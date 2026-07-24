@@ -205,6 +205,13 @@ public enum BeautyEffectResolver {
             strengths.templeFullness,
             strengths.cheekboneSlim,
             strengths.chinTaper,
+            strengths.eyebrowYPosition,
+            strengths.eyebrowThickness,
+            strengths.eyebrowLength,
+            strengths.eyebrowSpacing,
+            strengths.eyebrowHeadSpacing,
+            strengths.eyebrowTilt,
+            strengths.eyebrowPeakDefinition,
             strengths.noseSlim,
             strengths.noseWingSlim,
             strengths.noseTipSize,
@@ -708,6 +715,13 @@ public enum BeautyEffectResolver {
         strengths.templeFullness *= scale
         strengths.cheekboneSlim *= scale
         strengths.chinTaper *= scale
+        strengths.eyebrowYPosition *= scale
+        strengths.eyebrowThickness *= scale
+        strengths.eyebrowLength *= scale
+        strengths.eyebrowSpacing *= scale
+        strengths.eyebrowHeadSpacing *= scale
+        strengths.eyebrowTilt *= scale
+        strengths.eyebrowPeakDefinition *= scale
         strengths.noseSlim *= scale
         strengths.noseWingSlim *= scale
         strengths.noseTipSize *= scale
