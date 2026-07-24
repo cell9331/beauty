@@ -8,7 +8,60 @@ private struct Phase46GeometryFieldRow {
     let unscaled: Float
 }
 
+private let phase50EyebrowNames = [
+    "eyebrowYPosition",
+    "eyebrowThickness",
+    "eyebrowLength",
+    "eyebrowSpacing",
+    "eyebrowHeadSpacing",
+    "eyebrowTilt",
+    "eyebrowPeakDefinition",
+]
+
 final class GeometryConflictResolverTests: XCTestCase {
+    func testPIPE02SevenEyebrowFieldsScaleExactlyOnceAndPreservePolarity() throws {
+        let independent = strengths(
+            eyebrowYPosition: -1,
+            eyebrowThickness: 1,
+            eyebrowLength: -1,
+            eyebrowSpacing: 1,
+            eyebrowHeadSpacing: -1,
+            eyebrowTilt: 1,
+            eyebrowPeakDefinition: 1
+        )
+        let resolved = GeometryConflictResolver(totalThreshold: 0.25).resolve(strengths: independent)
+        let expectedScale: Float = 1 / 7
+
+        XCTAssertEqual(independent.geometryTotal, 1.75, accuracy: 0.000_001)
+        XCTAssertEqual(resolved.metrics["beauty.effects.weakenedCount"], 7)
+        XCTAssertEqual(
+            resolved.metrics["beauty.effects.geometryStrengthScale"] ?? 0,
+            Double(expectedScale),
+            accuracy: 0.000_001
+        )
+        for row in phase50EyebrowRows {
+            XCTAssertEqual(independent[keyPath: row.effectiveValue], row.unscaled, accuracy: 0.000_001, row.name)
+            XCTAssertEqual(
+                resolved.strengths[keyPath: row.effectiveValue],
+                row.unscaled * expectedScale,
+                accuracy: 0.000_001,
+                row.name
+            )
+            XCTAssertEqual(resolved.strengths[keyPath: row.effectiveValue].sign, row.unscaled.sign, row.name)
+        }
+
+        let sourceURL = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("Sources/BeautyEffects/Warp/GeometryConflictResolver.swift")
+        let source = try String(contentsOf: sourceURL, encoding: .utf8)
+        for name in phase50EyebrowNames {
+            XCTAssertEqual(source.components(separatedBy: "weakened.\(name) *= scale").count - 1, 1, "scale inventory: \(name)")
+            XCTAssertEqual(source.components(separatedBy: "strengths.\(name)").count - 1, 2, "total/count inventories: \(name)")
+        }
+    }
+
     func testCombinedHighFaceShapeStrengthsAreWeakenedBelowIndependentCappedSum() {
         let independent = strengths(
             faceSlim: 1,
@@ -467,6 +520,13 @@ final class GeometryConflictResolverTests: XCTestCase {
         innerCornerOpen: Float = 0,
         outerCornerOpen: Float = 0,
         eyeSymmetry: Float = 0,
+        eyebrowYPosition: Float = 0,
+        eyebrowThickness: Float = 0,
+        eyebrowLength: Float = 0,
+        eyebrowSpacing: Float = 0,
+        eyebrowHeadSpacing: Float = 0,
+        eyebrowTilt: Float = 0,
+        eyebrowPeakDefinition: Float = 0,
         noseSlim: Float = 0,
         noseWingSlim: Float = 0,
         noseTipSize: Float = 0,
@@ -506,6 +566,13 @@ final class GeometryConflictResolverTests: XCTestCase {
         strengths.innerCornerOpen = min(max(innerCornerOpen, 0), BeautySafetyCaps.innerCornerOpen)
         strengths.outerCornerOpen = min(max(outerCornerOpen, 0), BeautySafetyCaps.outerCornerOpen)
         strengths.eyeSymmetry = min(max(eyeSymmetry, 0), BeautySafetyCaps.eyeSymmetry)
+        strengths.eyebrowYPosition = min(max(eyebrowYPosition, -BeautySafetyCaps.eyebrowYPosition), BeautySafetyCaps.eyebrowYPosition)
+        strengths.eyebrowThickness = min(max(eyebrowThickness, -BeautySafetyCaps.eyebrowThickness), BeautySafetyCaps.eyebrowThickness)
+        strengths.eyebrowLength = min(max(eyebrowLength, -BeautySafetyCaps.eyebrowLength), BeautySafetyCaps.eyebrowLength)
+        strengths.eyebrowSpacing = min(max(eyebrowSpacing, -BeautySafetyCaps.eyebrowSpacing), BeautySafetyCaps.eyebrowSpacing)
+        strengths.eyebrowHeadSpacing = min(max(eyebrowHeadSpacing, -BeautySafetyCaps.eyebrowHeadSpacing), BeautySafetyCaps.eyebrowHeadSpacing)
+        strengths.eyebrowTilt = min(max(eyebrowTilt, -BeautySafetyCaps.eyebrowTilt), BeautySafetyCaps.eyebrowTilt)
+        strengths.eyebrowPeakDefinition = min(max(eyebrowPeakDefinition, 0), BeautySafetyCaps.eyebrowPeakDefinition)
         strengths.noseSlim = min(noseSlim, BeautySafetyCaps.noseSlim)
         strengths.noseWingSlim = min(noseWingSlim, BeautySafetyCaps.noseWingSlim)
         strengths.noseTipSize = min(max(noseTipSize, -BeautySafetyCaps.noseTipSize), BeautySafetyCaps.noseTipSize)
@@ -564,6 +631,18 @@ final class GeometryConflictResolverTests: XCTestCase {
             Phase46GeometryFieldRow(name: "lipPlump", effectiveValue: \.lipPlump, unscaled: BeautySafetyCaps.lipPlump),
         ]
     }
+
+    private var phase50EyebrowRows: [Phase46GeometryFieldRow] {
+        [
+            Phase46GeometryFieldRow(name: "eyebrowYPosition", effectiveValue: \.eyebrowYPosition, unscaled: -BeautySafetyCaps.eyebrowYPosition),
+            Phase46GeometryFieldRow(name: "eyebrowThickness", effectiveValue: \.eyebrowThickness, unscaled: BeautySafetyCaps.eyebrowThickness),
+            Phase46GeometryFieldRow(name: "eyebrowLength", effectiveValue: \.eyebrowLength, unscaled: -BeautySafetyCaps.eyebrowLength),
+            Phase46GeometryFieldRow(name: "eyebrowSpacing", effectiveValue: \.eyebrowSpacing, unscaled: BeautySafetyCaps.eyebrowSpacing),
+            Phase46GeometryFieldRow(name: "eyebrowHeadSpacing", effectiveValue: \.eyebrowHeadSpacing, unscaled: -BeautySafetyCaps.eyebrowHeadSpacing),
+            Phase46GeometryFieldRow(name: "eyebrowTilt", effectiveValue: \.eyebrowTilt, unscaled: BeautySafetyCaps.eyebrowTilt),
+            Phase46GeometryFieldRow(name: "eyebrowPeakDefinition", effectiveValue: \.eyebrowPeakDefinition, unscaled: BeautySafetyCaps.eyebrowPeakDefinition),
+        ]
+    }
 }
 
 private extension BeautyEffectiveStrengths {
@@ -592,6 +671,13 @@ private extension BeautyEffectiveStrengths {
             innerCornerOpen,
             outerCornerOpen,
             eyeSymmetry,
+            abs(eyebrowYPosition),
+            abs(eyebrowThickness),
+            abs(eyebrowLength),
+            abs(eyebrowSpacing),
+            abs(eyebrowHeadSpacing),
+            abs(eyebrowTilt),
+            eyebrowPeakDefinition,
             noseSlim,
             noseWingSlim,
             abs(noseTipSize),
