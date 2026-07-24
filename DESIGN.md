@@ -157,6 +157,16 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
 - `BeautyFaceGeometryAdapter` validates each canonical side independently as an exact-bit-unique finite closed-unit open path with **4...16** points, face-relative endpoint chord **0.08...0.50**, vertical span at most **0.25**, no non-adjacent segment intersection, and projection epsilon **0.000001**. A semantic trace preserves exact canonical points, inner/outer endpoints, arithmetic center, and only a unique interior apex above epsilon; apex is optional and not Phase 49 provider eligibility. `BeautyEyebrowSemanticSupport.left/right` remain independent optionals and `pairEligible` is true only when both distinct sides survive.
 - Raw `BeautyObservedEyebrowSupport` and derived `BeautyEyebrowSemanticSupport` are immutable, package/internal, non-Codable, request-scoped values attached as `observedEyebrowSupport` on the observation and `FaceGeometry`. Phase 49 keeps every new scalar inert: no face-geometry trigger, effective strength, provider, resolver/conflict case, facade route, render/output/gallery case, Demo/UI behavior, or row promotion exists. Phase 50 owns provider and routing behavior; Phases 51-52 own output and safety/promotion.
 
+### Phase 50 Independent Eyebrow Geometry Contract
+
+- The seven same-named effective strengths use provisional cap `0.25` once: signed `eyebrowYPosition`, `eyebrowThickness`, `eyebrowLength`, `eyebrowSpacing`, `eyebrowHeadSpacing`, and `eyebrowTilt`, plus positive-only `eyebrowPeakDefinition`. The provisional eyebrow subtotal is `1.75`; Phase 52, not this contract, owns final calibration.
+- Vertical translates every point of each eligible side by face-height `0.025`; thickness emits balanced normal-strip pairs from base half-width `0.012` with change `0.006`; length moves the final two canonical outer samples with weights `0.5/1` by face-width `0.025`. Their radii are respectively face-width `0.08`, `0.055`, and `0.07`, with falloff `2`.
+- Whole spacing requires two distinct eligible sides and translates their complete traces equally/oppositely on the center axis by face-width `0.025`. Head spacing is per-side, uses only the first two inner samples with weights `1/0.5`, and displacement `0.020`. Their radii are `0.08` and `0.06`; thus pair spacing and head spacing cannot alias.
+- Tilt is per-side, requires a finite nondegenerate canonical chord, rotates non-center samples around the stored center by provisional angle `0.12`, and uses radius `0.075`. Positive sign follows the existing image-Y convention and raises canonical outer tails. Peak is positive-only, requires the stored unique interior apex and nondegenerate chord-to-apex normal, uses apex-neighbor weights `0.5/1/0.5`, face-height displacement `0.012`, and radius `0.055`. No midpoint/extremum fallback exists.
+- All constants above are provisional Phase 50 choices. Inputs, derived vectors, radii, strengths, sources, and targets must be finite and bounded before control-point creation; epsilon is `0.000001`. Empty named arrays sanitize only their same-named strength. Per-side fields survive a missing sibling, while whole spacing alone requires the pair.
+- Exact convergence owns one 44-name monotone retained baseline: face/chin `3.35` + eye `4.10` + eyebrow `1.75` + nose `1.80` + mouth `2.45` = provisional `13.45`. At the threshold, one shared scale `1 / 13.45` preserves polarity, no removed field re-enters, and final named emissions are the sole source for active domains, warning/metric counts, total geometry points, and the one stable dispatch.
+- Fresh Phase 50 tests prove these mechanics and request isolation only. Phase 51 owns decoded visibility, direction, locality, distinction, ROI, and gallery evidence; Phase 52 owns final caps, exhaustive transitions, naturalness/safety conclusions, and row/branch promotion. No v1.14-v1.16 or UI/device/commercial/release behavior is implied.
+
 Rules:
 
 - `0` means no effect for numeric parameters unless the field is explicitly bidirectional.
@@ -164,7 +174,7 @@ Rules:
 - All setters or initializers must clamp invalid values before rendering.
 - `process` must not mutate the caller's parameter value.
 - Adding a public parameter requires updating this file and `PRODUCT_SENSE.md` acceptance criteria.
-- Complete makeup, background segmentation, body shape, teeth whitening, and remaining advanced retouch parameters are post-1.0 extensions; Phase 49 eyebrow values are public neutral storage until Phase 50 routing.
+- Complete makeup, background segmentation, body shape, teeth whitening, and remaining advanced retouch parameters are post-1.0 extensions; Phase 50 eyebrow values have provisional SDK-core provider/routing behavior only.
 
 ### 4.3 BeautyPreset
 
