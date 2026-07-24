@@ -2,17 +2,17 @@
 gsd_state_version: 1.0
 milestone: v1.13
 milestone_name: Eyebrow Geometry Controls
-current_phase: 50
-current_phase_name: Independent Eyebrow Geometry and Pipeline Integration
-status: executing
-stopped_at: Completed 50-06-PLAN.md; phase transition intentionally pending
-last_updated: "2026-07-24T12:36:10.000Z"
+current_phase: 51
+current_phase_name: Public-Facade Eyebrow Output Evidence
+status: planned
+stopped_at: Phase 51 planned in five waves; ready to execute 51-01-PLAN.md
+last_updated: "2026-07-24T13:32:46.000Z"
 last_activity: 2026-07-24
-last_activity_desc: Plan 50-06 fresh validation and owner closeout complete; phase remains 50 pending explicit transition
+last_activity_desc: Phase 51 planned with e6-only 72-portrait output and mandatory actual-image review contracts
 progress:
-  total_phases: 2
-  completed_phases: 1
-  total_plans: 11
+  total_phases: 4
+  completed_phases: 2
+  total_plans: 16
   completed_plans: 11
 ---
 
@@ -23,14 +23,21 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-24)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 50 — Independent Eyebrow Geometry and Pipeline Integration
+**Current focus:** Phase 51 — Public-Facade Eyebrow Output Evidence
 
 ## Current Position
 
-Phase: 50 (Independent Eyebrow Geometry and Pipeline Integration) — EXECUTING (all plans complete; not transitioned)
-Plan: 6 of 6
-Status: Plan complete; transition intentionally pending
-Last activity: 2026-07-24 — Plan 50-06 fresh validation and owner closeout complete
+Phase: 51 (Public-Facade Eyebrow Output Evidence) — PLANNED
+Plan: 0 of 5
+Status: Ready to execute Wave 1
+Last activity: 2026-07-24 — Five implementation plans, validation strategy, and complete source audit created
+
+### Phase 51 Public-Facade Eyebrow Output Plan
+
+- Wave 1 freezes exactly thirteen isolated public cases and representative public degradation; Wave 2 builds the bounded strict helper; Wave 3 performs separate measurement/strict renders plus mandatory actual-image review; Wave 4 publishes the exact ignored gallery; Wave 5 runs full validation and owner closeout.
+- The sole active portrait is `example-images/input/portraits/e6.jpg`; `e1.png` through `e5.png` remain parked. The strict portrait denominator is exactly 72 decoded e6 outputs. The separate no-face set contributes thirteen eyebrow safety comparisons, while the complete output/gallery bijection is 144 files.
+- Passing requires fixed brow/protected-region budgets, six signed directions, seven semantic families, and opening the baseline plus all thirteen actual e6 eyebrow outputs. A reversed, spilled, imperceptible, or collapsed visual result blocks the phase.
+- Final caps, exhaustive safety/transitions, seven-row promotion, branch `眉毛`, and broader release scope remain Phase 52 or later ownership.
 
 ### Phase 50 Independent Eyebrow Geometry and Pipeline Result
 
@@ -408,10 +415,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-24T11:57:58.093Z
-Stopped at: Completed 50-04-PLAN.md
+Last session: 2026-07-24T13:32:46.000Z
+Stopped at: Phase 51 planning complete; ready for 51-01-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
 
-- Discuss and plan Phase 50 geometry and pipeline integration from the sealed Phase 49 contract.
+- Execute Phase 51 Plans 51-01 through 51-05 in the declared five-wave order.

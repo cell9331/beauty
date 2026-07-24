@@ -36,13 +36,20 @@
 | Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve legacy 52-key compatibility and all shipped face/eye/nose/mouth output while the current model is exactly 59 stored fields. |
 | Requirements | 21/21 mapped across Phase 49-52; no unmapped requirement. |
 | Roadmap | Phase 49 contract/support → Phase 50 geometry/pipeline → Phase 51 strict output → Phase 52 safety/promotion. |
-| Current step | Phase 50 Plans 50-01 through 50-06 are complete. Phase transition was intentionally not performed; Phase 51 remains the next planned owner of decoded output/gallery evidence. |
+| Current step | Phase 50 is complete and transitioned. Phase 51 is planned as five sequential waves; execute `51-01-PLAN.md` next. |
 
 Fixture-scope decision (2026-07-24):
 
 - The active renderer portrait corpus is reduced to the user-selected `example-images/input/portraits/e6.jpg` only. Byte-identical retired `e1.png` through `e5.png` remain preserved under `example-images/parked-portraits/` and are no longer renderer/test inputs.
 - Phase 51 OUT-02 is reduced from 504 outputs across seven fixtures to exactly 72 portrait outputs for `e6.jpg`; `no-face-gradient.png` remains separate negative safety evidence and is not included in the 72 portrait count.
 - Current fixture discovery and preflight must key off `e6.jpg`. Historical completion records retain their original multi-fixture counts and are not rewritten.
+
+Phase 51 planning record (2026-07-24):
+
+- Plans `51-01` through `51-05` cover the exact renderer/degradation contract, bounded helper, separate measurement and clean strict acceptance, mandatory actual-image review, descriptor-safe gallery, and final owner/requirement closeout across five waves.
+- The strict denominator is exactly 72 decoded `e6.jpg` portrait outputs. Thirteen no-face eyebrow comparisons are reported separately; the complete 72-case × two-fixture output/gallery inventory is 144 disposable ignored files and must never be described as 144 portrait outputs.
+- `51-SOURCE-AUDIT.md` covers the ROADMAP goal, OUT-01..03, and D-01..D-16 with no missing item. `51-VALIDATION.md` requires fourteen actual files—the e6 baseline plus all thirteen eyebrow outputs—to be opened before any passing visual claim.
+- Final caps, exhaustive lifecycle/safety, seven-row promotion, branch `眉毛`, and broader release claims remain Phase 52 or later ownership.
 
 Phase 49 closeout record (2026-07-24):
 
