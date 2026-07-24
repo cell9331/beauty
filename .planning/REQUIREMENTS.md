@@ -28,9 +28,9 @@
 
 ### Public Output Evidence
 
-- [ ] **OUT-01**: The public `BeautySDK` facade has one isolated renderer case for each of the four new controls, with no case borrowing a shipped face field.
-- [ ] **OUT-02**: A bounded strict helper verifies decoded same-dimension output, fixed-region visibility, locality, and independence across the established fixture matrix.
-- [ ] **OUT-03**: No-face, missing-contour, and malformed-contour cases remain safe; generated output and galleries are ignored, untracked, and descriptor-safe.
+- [x] **OUT-01**: The public `BeautySDK` facade has one isolated renderer case for each of the four new controls, with no case borrowing a shipped face field.
+- [x] **OUT-02**: A bounded strict helper verifies decoded same-dimension output, fixed-region visibility, locality, and independence across the established fixture matrix.
+- [x] **OUT-03**: No-face, missing-contour, and malformed-contour cases remain safe; generated output and galleries are ignored, untracked, and descriptor-safe.
 
 ### Safety and Scoped Closeout
 
@@ -78,9 +78,9 @@
 | GEOM-02 | Phase 46 | Complete |
 | GEOM-03 | Phase 46 | Complete |
 | GEOM-04 | Phase 46 | Complete |
-| OUT-01 | Phase 47 | Pending |
-| OUT-02 | Phase 47 | Pending |
-| OUT-03 | Phase 47 | Pending |
+| OUT-01 | Phase 47 | Complete |
+| OUT-02 | Phase 47 | Complete |
+| OUT-03 | Phase 47 | Complete |
 | SAFE-01 | Phase 48 | Pending |
 | SAFE-02 | Phase 48 | Pending |
 | SAFE-03 | Phase 48 | Pending |
@@ -94,4 +94,4 @@
 
 ---
 *Requirements defined: 2026-07-21*
-*Last updated: 2026-07-21 after semantic-resource blocker rescope*
+*Last updated: 2026-07-24 after Phase 47 output-evidence completion*

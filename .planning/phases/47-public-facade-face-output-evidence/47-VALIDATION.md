@@ -1,9 +1,9 @@
 ---
 phase: 47
 slug: public-facade-face-output-evidence
-status: planned
-nyquist_compliant: false
-wave_0_complete: false
+status: complete
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-07-23
 ---
 
@@ -36,14 +36,14 @@ created: 2026-07-23
 
 | Task ID | Planned behavior | Requirement | Threats | Automated command | File exists | Status |
 |---|---|---|---|---|---|---|
-| 47-W0-01 | exact four-case renderer/source inventory | OUT-01 | T-47-01, T-47-02 | focused renderer XCTest and exact 59 source count | existing to extend | ⬜ pending |
-| 47-W0-02 | representative public degradation fixtures | OUT-03 | T-47-03, T-47-04 | focused facade XCTest plus pinned manifest and scoped privacy scans | existing to extend | ⬜ pending |
-| 47-HELP-01 | bounded decoder/inventory/self-tests | OUT-02, OUT-03 | T-47-05, T-47-06 | helper `--self-test` plus `py_compile` | new | ⬜ pending |
-| 47-OUT-01 | exact 413 same-dimension output matrix | OUT-01, OUT-02 | T-47-05, T-47-07 | clean renderer plus strict helper | new helper | ⬜ pending |
-| 47-OUT-02 | fixed visibility/locality/independence | OUT-02 | T-47-07, T-47-08 | strict helper family gates | new helper | ⬜ pending |
-| 47-OUT-03 | eligibility and no-face safe no-ops | OUT-02, OUT-03 | T-47-03, T-47-08 | strict helper plus facade XCTest | new/helper existing tests | ⬜ pending |
-| 47-GAL-01 | descriptor-safe exact gallery bijection | OUT-03 | T-47-09, T-47-10 | generator self-test, publication, 413/count/ignore scans | existing to extend | ⬜ pending |
-| 47-CLOSE-01 | full regression, privacy/scope, no-promotion | OUT-01, OUT-02, OUT-03 | T-47-11, T-47-SC | full SwiftPM, checker, helper, artifact/status/diff gates | planned | ⬜ pending |
+| 47-W0-01 | exact four-case renderer/source inventory | OUT-01 | T-47-01, T-47-02 | focused renderer XCTest and exact 59 source count | yes | ✅ passed |
+| 47-W0-02 | representative public degradation fixtures | OUT-03 | T-47-03, T-47-04 | focused facade XCTest plus pinned manifest and scoped privacy scans | yes | ✅ passed |
+| 47-HELP-01 | bounded decoder/inventory/self-tests | OUT-02, OUT-03 | T-47-05, T-47-06 | helper `--self-test` plus `py_compile` | yes | ✅ passed |
+| 47-OUT-01 | exact 413 same-dimension output matrix | OUT-01, OUT-02 | T-47-05, T-47-07 | clean renderer plus strict helper | yes | ✅ passed |
+| 47-OUT-02 | fixed visibility/locality/independence | OUT-02 | T-47-07, T-47-08 | strict helper family gates | yes | ✅ passed |
+| 47-OUT-03 | eligibility and no-face safe no-ops | OUT-02, OUT-03 | T-47-03, T-47-08 | strict helper plus facade XCTest | yes | ✅ passed |
+| 47-GAL-01 | descriptor-safe exact gallery bijection | OUT-03 | T-47-09, T-47-10 | generator self-test, publication, 413/count/ignore scans | yes | ✅ passed |
+| 47-CLOSE-01 | full regression, privacy/scope, no-promotion | OUT-01, OUT-02, OUT-03 | T-47-11, T-47-SC | full SwiftPM, checker, helper, artifact/status/diff gates | yes | ✅ passed |
 
 ## Exact Validation Matrices
 
@@ -88,10 +88,25 @@ created: 2026-07-23
 
 ## Wave 0 Requirements
 
-- [ ] Add exact four-case renderer inventory/source contract.
-- [ ] Add no-face, missing-contour, and malformed-contour facade fixtures/tests.
-- [ ] Create Phase 47 helper by adapting the latest bounded archived decoder.
-- [ ] Add self-tests for path, decode, inventory, threshold, locality, and stale-output failures before live acceptance.
+- [x] Add exact four-case renderer inventory/source contract.
+- [x] Add no-face, missing-contour, and malformed-contour facade fixtures/tests.
+- [x] Create Phase 47 helper by adapting the latest bounded archived decoder.
+- [x] Add self-tests for path, decode, inventory, threshold, locality, and stale-output failures before live acceptance.
+
+## Executed Evidence
+
+- Focused renderer regression: 15/15 tests passed.
+- Focused public geometry facade: 16/16 tests passed.
+- Full SwiftPM with `--jobs 1`: 371 tests executed, three opt-in Apple Vision integration skips, zero failures.
+- Helper self-test and workspace-safe `py_compile`: passed.
+- Final guarded clean render and strict helper: 413/413 decoded same-dimension PNGs; dimensions are 59 at 64×64, 236 at 506×900, 59 at 675×900, and 59 at 1728×2304.
+- Strict semantics: 18/18 eligible visibility/locality, 49/49 fixed-neighbor, 6/6 ineligible portrait no-op, and 4/4 no-face no-op comparisons passed.
+- Gallery generator self-test and one descriptor-safe publication: passed; exact renderer/output/gallery bijection is 59/413/413.
+- Output and gallery are ignored, untracked, unstaged, regular, duplicate-free, and contain zero non-ignored untracked artifacts; staging and quarantine slots are absent.
+- `BeautySDK/Package.swift` retains blob `6f03b078816ad1f7a426e3f70d4f57503f3152e9`; Phase 46 validation, verification, and security artifacts match their predecessor blobs.
+- Active-source scope scans found zero production provider/resolver/render-pass, Demo, root owner, feature-ledger, dependency, resource, network/cloud, commercial, or promotion changes.
+- Complete `e1a6cfc..HEAD` phase-range and working-tree diff hygiene passed after the single evidence-line trailing-space defect was removed in `b55c0ec`.
+- The managed filesystem sandbox initially denied Swift module-cache/CoreImage rendering access. The same final local renderer command was rerun with explicit approval outside that sandbox and passed; this is a host execution constraint, not a product failure.
 
 ## Manual-Only Verifications
 
@@ -102,13 +117,13 @@ downstream or future scope rather than hidden manual Phase 47 gates.
 
 ## Sign-Off Conditions
 
-- [ ] Every plan task has a focused automated command.
-- [ ] Wave 0 contracts exist before accepting output.
-- [ ] Helper self-tests fail closed on malformed and adversarial inputs.
-- [ ] Measurement and strict acceptance use separate clean renders.
-- [ ] Strict constants are fixed and non-dynamic.
-- [ ] Full SwiftPM, gallery, privacy/scope, no-promotion, and diff gates pass.
-- [ ] OUT-01 through OUT-03 have direct evidence.
-- [ ] `nyquist_compliant: true` and `wave_0_complete: true` are set only after execution.
+- [x] Every plan task has a focused automated command.
+- [x] Wave 0 contracts exist before accepting output.
+- [x] Helper self-tests fail closed on malformed and adversarial inputs.
+- [x] Measurement and strict acceptance use separate clean renders.
+- [x] Strict constants are fixed and non-dynamic.
+- [x] Full SwiftPM, gallery, privacy/scope, no-promotion, and diff gates pass.
+- [x] OUT-01 through OUT-03 have direct evidence.
+- [x] `nyquist_compliant: true` and `wave_0_complete: true` are set only after execution.
 
-**Approval:** pending execution
+**Approval:** execution complete; ready for independent review, verification, Nyquist audit, and security audit

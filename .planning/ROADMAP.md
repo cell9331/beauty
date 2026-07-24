@@ -20,7 +20,7 @@
 
 - [x] **Phase 45: Public Contract and Observed Face Support** — Exact 52-field compatibility, actual observed contour/median-line mapping, private validation, and blocker-honest exclusion of semantic-region rows. (completed 2026-07-23)
 - [x] **Phase 46: Independent Contour and Chin Geometry** — Distinct smooth-contour, temple, cheekbone, and chin-taper emissions through the existing resolver, conflict, warp, and facade pipeline. (completed 2026-07-23)
-- [ ] **Phase 47: Public-Facade Face Output Evidence** — Isolated renderer cases, decoded strict comparisons, safe no-ops, and ignored descriptor-safe gallery evidence for all four controls.
+- [x] **Phase 47: Public-Facade Face Output Evidence** — Isolated renderer cases, decoded strict comparisons, safe no-ops, and ignored descriptor-safe gallery evidence for all four controls. (completed 2026-07-24)
 - [ ] **Phase 48: Face Safety and Scoped Closeout** — Final caps, exhaustive field-local transitions, exact multi-domain convergence, four-row promotion, and preserved partial branch status.
 
 ## Phase Details
@@ -94,7 +94,7 @@ Plans:
 
 **Requirements:** OUT-01, OUT-02, OUT-03
 
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans executed
 
 Plans:
 
@@ -108,7 +108,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 47-03-PLAN.md — Publish the exact ignored gallery, synchronize evidence owners, and run final execution gates.
+- [x] 47-03-PLAN.md — Publish the exact ignored gallery, synchronize evidence owners, and run final execution gates.
 
 **Success criteria:**
 
@@ -136,7 +136,7 @@ Plans:
 | --- | --- | --- | --- | --- |
 | 45. Public Contract and Observed Face Support | v1.12 | 5/5 | Complete    | 2026-07-23 |
 | 46. Independent Contour and Chin Geometry | v1.12 | 4/4 | Complete    | 2026-07-23 |
-| 47. Public-Facade Face Output Evidence | v1.12 | 3 | Not started | — |
+| 47. Public-Facade Face Output Evidence | v1.12 | 3/3 | Complete | 2026-07-24 |
 | 48. Face Safety and Scoped Closeout | v1.12 | 4 | Not started | — |
 
 ## Backlog
@@ -147,4 +147,4 @@ Plans:
 - Demo UI, physical-device parity, commercial visual approval, optimized profiling, packaging, shipping, and launch-readiness evidence remain separately scoped.
 
 ---
-*Last updated: 2026-07-21 after semantic-resource blocker rescope*
+*Last updated: 2026-07-24 after Phase 47 execution*

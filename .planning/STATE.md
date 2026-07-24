@@ -4,17 +4,17 @@ milestone: v1.12
 milestone_name: Face Shape Remaining Capabilities
 current_phase: 47
 current_phase_name: Public-Facade Face Output Evidence
-status: executing
-stopped_at: Phase 47 Plan 02 complete; ready for exact ignored gallery publication
-last_updated: "2026-07-24T01:28:23Z"
-last_activity: 2026-07-23
-last_activity_desc: Phase 47 Plan 02 completed
+status: verifying
+stopped_at: Phase 47 execution complete; independent quality hooks pending
+last_updated: "2026-07-24T01:35:00Z"
+last_activity: 2026-07-24
+last_activity_desc: Phase 47 execution completed
 progress:
   total_phases: 4
   completed_phases: 2
   total_plans: 14
-  completed_plans: 13
-  percent: 93
+  completed_plans: 14
+  percent: 100
 ---
 
 # Project State
@@ -28,10 +28,18 @@ See: `.planning/PROJECT.md` (updated 2026-07-21)
 
 ## Current Position
 
-Phase: 47 (Public-Facade Face Output Evidence) — EXECUTING
-Plan: 3 of 3
-Status: Executing Phase 47
-Last activity: 2026-07-24 — Phase 47 Plan 02 completed
+Phase: 47 (Public-Facade Face Output Evidence) — VERIFYING
+Plan: 3 of 3 complete
+Status: Execution complete; independent quality hooks pending
+Last activity: 2026-07-24 — Phase 47 execution completed
+
+### Phase 47 Public-Facade Face Output Evidence Result
+
+- Exactly four isolated provisional `0.25` cases extend the public renderer to 59 cases while retaining one `BeautyEngine.processResult` route.
+- A bounded strict helper accepts 413/413 decoded same-dimension outputs with 18/18 eligible visibility/locality, 49/49 fixed-neighbor, 6/6 ineligible portrait no-op, and 4/4 no-face no-op comparisons.
+- Missing and malformed observed contour remove all four dependent fields through the public facade while an eligible shipped face sibling continues with aggregate-only diagnostics.
+- The descriptor-safe gallery is an exact 413-file renderer/output/gallery bijection; all generated output remains ignored, untracked, unstaged, and disposable.
+- Focused suites pass 15 renderer and 16 facade tests; full SwiftPM passes 371 with three opt-in Apple Vision skips. OUT-01 through OUT-03 are complete; Phase 48 safety and promotion work remains unchanged.
 
 ### Phase 46 Independent Contour and Chin Geometry Result
 

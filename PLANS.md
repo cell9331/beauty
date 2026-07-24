@@ -30,6 +30,23 @@ Milestone v1.12 autonomous execution is active from Phase 45. After the semantic
 
 ## 4. Completed
 
+### C-2026-07-24-phase-47-public-facade-face-output-evidence
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-24 |
+| Scope | Completed Phase 47 across Plans `47-01` through `47-03`: exact isolated public cases, representative facade degradation, bounded decoded output evidence, and descriptor-safe ignored gallery publication. |
+| Public output | Four provisional `0.25` cases extend the renderer from 55 to exactly 59 while retaining one public `BeautyEngine.processResult` call. The strict helper accepts 413/413 decoded same-dimension PNGs across seven fixtures. |
+| Semantics | Fixed shared face regions pass 18/18 eligible visibility/locality checks with no outside signal; eleven constant comparator families pass 49/49 distinctions. Six ineligible portrait pairs and all four no-face cases are exact safe no-ops. |
+| Degradation and artifacts | Missing/malformed observed contour removes all four new fields through the public facade while an eligible shipped sibling continues with aggregate-only diagnostics. Gallery publication is an exact 413-file renderer/output/gallery bijection; generated files are ignored, untracked, unstaged, and disposable. |
+| Verification | Focused suites pass 15 renderer and 16 facade tests. Full SwiftPM executes 371 with three opt-in Apple Vision skips and zero failures. Helper and gallery self-tests, final clean strict render, package/predecessor hashes, privacy/scope/no-promotion scans, artifact containment, and phase-range/working-tree diff hygiene pass. |
+
+Outcome:
+
+- OUT-01, OUT-02, and OUT-03 are complete with aggregate committed evidence in `47-FACE-OUTPUT-EVIDENCE.md`.
+- SAFE-01 through SAFE-03 and DOC-01 remain Phase 48. Final caps/dead zones, exhaustive transitions/convergence, exact four-row promotion, root owner synchronization, and branch-level `脸型` status are unchanged.
+- `去双下巴`, `去双下巴 Pro`, `发际线`, Demo/device/commercial/performance/packaging/shipping/readiness work, and whole-`脸型` completion remain future or partial.
+
 ### C-2026-07-23-phase-46-independent-contour-and-chin-geometry
 
 | Field | Value |
