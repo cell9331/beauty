@@ -36,7 +36,7 @@
 | Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve the 52-field compatibility baseline and all shipped face/eye/nose/mouth output. |
 | Requirements | 21/21 mapped across Phase 49-52; no unmapped requirement. |
 | Roadmap | Phase 49 contract/support → Phase 50 geometry/pipeline → Phase 51 strict output → Phase 52 safety/promotion. |
-| Current step | Run `$gsd-discuss-phase 49`, then plan and execute the first phase. |
+| Current step | Plan 49-01 complete; execute `49-02-PLAN.md` for the exact neutral 59-field public contract. |
 
 Planned follow-on milestones:
 
@@ -45,6 +45,22 @@ Planned follow-on milestones:
 - v1.16: `去双下巴`, `去双下巴 Pro`, and narrow facial-feature closeout.
 
 ## 4. Completed
+
+### C-2026-07-24-phase-49-plan-01-eyebrow-wave-zero-safeguards
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-24 |
+| Scope | Created the Phase 49 fail-closed boundary checker, immutable request-local raw/semantic eyebrow seams, and compiled Wave 0 preflight/canonicalization/topology/lifecycle fixture vocabulary without activating production mapping or providers. |
+| TDD | Checker RED/GREEN `0324355`/`472ea6e`; contract RED/GREEN `c8f2120`/`ea301ab`; fixture commit `d8c9ab3`. |
+| Verification | Checker self-tests pass 42/42; BeautyDetection executes 52 with 2 opt-in skips and 0 failures; adapter executes 36 with 1 opt-in skip and 0 failures; `git diff --check` passes. |
+| Environment gate | `example-images/input/portraits/e1.png` remains absent; exact fixture preflight exits nonzero and never reports the full suite green. |
+
+Outcome:
+
+- `BeautyObservedEyebrowSide`, `BeautyObservedEyebrowSupport`, `BeautyEyebrowSemanticTrace`, and `BeautyEyebrowSemanticSupport` are private, immutable, default-nil, and aggregate-only in diagnostics.
+- Exact 0/1/15/16/17 preflight rows, 32 canonicalization rows per side, 3/4/5/15/16/17 semantic rows, malformed topology categories, lifecycle cases, and eight parallel identities compile for Plans 49-03/49-04.
+- Provider/resolver/facade/renderer/Demo/promotion/dependency/model/resource/network/persistence and generated-artifact scope remains prohibited.
 
 ### C-2026-07-24-v1-12-milestone-completion
 

@@ -34,7 +34,13 @@
 
 **Requirements:** BROW-01, BROW-02, SUPP-01, SUPP-02, SUPP-03
 
-**Plans:** TBD
+**Plans:** 1/5 plans executed
+
+- [x] 49-01-PLAN.md
+- [ ] 49-02-PLAN.md
+- [ ] 49-03-PLAN.md
+- [ ] 49-04-PLAN.md
+- [ ] 49-05-PLAN.md
 
 **Success criteria:**
 
@@ -98,7 +104,7 @@
 
 | Phase | Milestone | Requirements | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 49. Public Contract and Observed Eyebrow Support | v1.13 | 5 | Not started | — |
+| 49. Public Contract and Observed Eyebrow Support | v1.13 | 5 | In Progress|  |
 | 50. Independent Eyebrow Geometry and Pipeline Integration | v1.13 | 9 | Not started | — |
 | 51. Public-Facade Eyebrow Output Evidence | v1.13 | 3 | Not started | — |
 | 52. Eyebrow Safety and Branch Closeout | v1.13 | 4 | Not started | — |
