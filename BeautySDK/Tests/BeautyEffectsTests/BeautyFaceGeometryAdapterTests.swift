@@ -1215,6 +1215,33 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         }
     }
 
+    /// Generates a valid inner-to-outer open polyline for one eyebrow side
+    /// with at least `count` points and bounded chord / vertical-span. Only
+    /// counts inside `minimumBrowPointCount...maximumBrowPointCount` produce
+    /// traces that should ever pass validation.
+    private func browOpenTrace(
+        count: Int,
+        side: BeautyObservedEyebrowSide
+    ) -> [CoordinatePoint] {
+        guard count >= 2 else { return [] }
+        switch side {
+        case .left:
+            return (0..<count).map { index in
+                let progress = Double(index) / Double(count - 1)
+                let x = 0.42 - 0.20 * progress
+                let y = 0.34 + 0.04 * (4 * progress * (1 - progress))
+                return CoordinatePoint(x: x, y: y)
+            }
+        case .right:
+            return (0..<count).map { index in
+                let progress = Double(index) / Double(count - 1)
+                let x = 0.58 + 0.20 * progress
+                let y = 0.34 + 0.04 * (4 * progress * (1 - progress))
+                return CoordinatePoint(x: x, y: y)
+            }
+        }
+    }
+
     private func semanticEyebrowTrace(side: BeautyObservedEyebrowSide) -> BeautyEyebrowSemanticTrace {
         let points = eyebrowTrace(side: side).map { SIMD2<Float>(Float($0.x), Float($0.y)) }
         return BeautyEyebrowSemanticTrace(
@@ -1242,6 +1269,279 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         XCTAssertEqual(rightOnly.right, validRight)
         XCTAssertFalse(leftOnly.pairedEligible)
         XCTAssertFalse(rightOnly.pairedEligible)
+    }
+
+    func testBrowOpenPathPurePredicatesLockInclusiveNumericBoundaries() {
+        XCTAssertFalse(BeautyFaceGeometryAdapter.browChordIsValid(0.079_999))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.browChordIsValid(0.08))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.browChordIsValid(0.08 + 0.000_001))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.browChordIsValid(0.50 - 0.000_001))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.browChordIsValid(0.50))
+        XCTAssertFalse(BeautyFaceGeometryAdapter.browChordIsValid(0.50 + 0.000_001))
+        XCTAssertFalse(BeautyFaceGeometryAdapter.browChordIsValid(0))
+        XCTAssertFalse(BeautyFaceGeometryAdapter.browChordIsValid(.nan))
+        XCTAssertFalse(BeautyFaceGeometryAdapter.browChordIsValid(.infinity))
+
+        XCTAssertTrue(BeautyFaceGeometryAdapter.browVerticalSpanIsValid(0))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.browVerticalSpanIsValid(0.249_999))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.browVerticalSpanIsValid(0.25))
+        XCTAssertFalse(BeautyFaceGeometryAdapter.browVerticalSpanIsValid(0.25 + 0.000_001))
+        XCTAssertFalse(BeautyFaceGeometryAdapter.browVerticalSpanIsValid(-0.000_001))
+        XCTAssertFalse(BeautyFaceGeometryAdapter.browVerticalSpanIsValid(.nan))
+        XCTAssertFalse(BeautyFaceGeometryAdapter.browVerticalSpanIsValid(.infinity))
+
+        XCTAssertFalse(BeautyFaceGeometryAdapter.browProjectionMagnitudeIsValid(0.000_000_999))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.browProjectionMagnitudeIsValid(0.000_001))
+        XCTAssertTrue(BeautyFaceGeometryAdapter.browProjectionMagnitudeIsValid(0.000_001_001))
+        XCTAssertFalse(BeautyFaceGeometryAdapter.browProjectionMagnitudeIsValid(0))
+        XCTAssertFalse(BeautyFaceGeometryAdapter.browProjectionMagnitudeIsValid(.nan))
+        XCTAssertFalse(BeautyFaceGeometryAdapter.browProjectionMagnitudeIsValid(.infinity))
+    }
+
+    func testBrowOpenPathCardinalityUniquenessAndUnitRangeRejectMalformedInput() {
+        let faceBounds = FaceBounds(x: 0.10, y: 0.10, width: 0.80, height: 0.80)
+        for entry in eyebrowSemanticCardinalityMatrix {
+            let validated = BeautyFaceGeometryAdapter.validatedBrowTrace(
+                browOpenTrace(count: entry.count, side: .left),
+                side: .left,
+                bounds: faceBounds
+            )
+            XCTAssertEqual(validated != nil, entry.eligible, "count=\(entry.count)")
+        }
+        XCTAssertEqual(
+            eyebrowSemanticCardinalityMatrix.map(\.count),
+            [3, 4, 5, 15, 16, 17]
+        )
+        XCTAssertEqual(
+            eyebrowSemanticCardinalityMatrix.map(\.eligible),
+            [false, true, true, true, true, false]
+        )
+
+        let validCount5 = browOpenTrace(count: 5, side: .left)
+        var adjacentDuplicate = validCount5
+        adjacentDuplicate[1] = adjacentDuplicate[0]
+        XCTAssertNil(
+            BeautyFaceGeometryAdapter.validatedBrowTrace(
+                adjacentDuplicate, side: .left, bounds: faceBounds
+            )
+        )
+
+        var repeatedEndpoint = validCount5
+        repeatedEndpoint[repeatedEndpoint.count - 1] = repeatedEndpoint[0]
+        XCTAssertNil(
+            BeautyFaceGeometryAdapter.validatedBrowTrace(
+                repeatedEndpoint, side: .left, bounds: faceBounds
+            )
+        )
+
+        var nonFinite = validCount5
+        nonFinite[1] = CoordinatePoint(x: .nan, y: nonFinite[1].y)
+        XCTAssertNil(
+            BeautyFaceGeometryAdapter.validatedBrowTrace(
+                nonFinite, side: .left, bounds: faceBounds
+            )
+        )
+
+        var infinity = validCount5
+        infinity[1] = CoordinatePoint(x: .infinity, y: infinity[1].y)
+        XCTAssertNil(
+            BeautyFaceGeometryAdapter.validatedBrowTrace(
+                infinity, side: .left, bounds: faceBounds
+            )
+        )
+
+        var outOfUnit = validCount5
+        outOfUnit[2] = CoordinatePoint(x: 1.000_001, y: outOfUnit[2].y)
+        XCTAssertNil(
+            BeautyFaceGeometryAdapter.validatedBrowTrace(
+                outOfUnit, side: .left, bounds: faceBounds
+            )
+        )
+
+        for value in [-0.000_001, 1.000_001] {
+            var candidate = validCount5
+            candidate[0] = CoordinatePoint(x: value, y: candidate[0].y)
+            XCTAssertNil(
+                BeautyFaceGeometryAdapter.validatedBrowTrace(
+                    candidate, side: .left, bounds: faceBounds
+                )
+            )
+        }
+
+        let identical = Array(repeating: CoordinatePoint(x: 0.50, y: 0.32), count: 5)
+        XCTAssertNil(
+            BeautyFaceGeometryAdapter.validatedBrowTrace(
+                identical, side: .left, bounds: faceBounds
+            )
+        )
+
+        let collinear = (0..<5).map { index in
+            CoordinatePoint(
+                x: 0.42 - 0.20 * Double(index) / 4,
+                y: 0.32
+            )
+        }
+        XCTAssertNil(
+            BeautyFaceGeometryAdapter.validatedBrowTrace(
+                collinear, side: .left, bounds: faceBounds
+            )
+        )
+
+        XCTAssertNil(
+            BeautyFaceGeometryAdapter.validatedBrowTrace(
+                nil, side: .left, bounds: faceBounds
+            )
+        )
+    }
+
+    func testBrowOpenPathValidationPreservesCanonicalAdjacencyAndRejectsReverseInnerToOuter() throws {
+        let faceBounds = FaceBounds(x: 0.10, y: 0.10, width: 0.80, height: 0.80)
+        let validLeft = browOpenTrace(count: 5, side: .left)
+        let validRight = browOpenTrace(count: 5, side: .right)
+        let reversedLeft = Array(validLeft.reversed())
+        let reversedRight = Array(validRight.reversed())
+
+        let validatedLeft = try XCTUnwrap(
+            BeautyFaceGeometryAdapter.validatedBrowTrace(
+                validLeft, side: .left, bounds: faceBounds
+            )
+        )
+        XCTAssertEqual(
+            validatedLeft.points,
+            validLeft.map { SIMD2<Float>(Float($0.x), Float($0.y)) }
+        )
+        XCTAssertEqual(validatedLeft.innerEndpoint, validatedLeft.points.first)
+        XCTAssertEqual(validatedLeft.outerEndpoint, validatedLeft.points.last)
+        let expectedCenter = validatedLeft.points.reduce(.zero, +)
+            / Float(validatedLeft.points.count)
+        XCTAssertEqual(validatedLeft.center, expectedCenter)
+        XCTAssertEqual(validatedLeft.side, .left)
+        XCTAssertEqual(validatedLeft.points.count, 5)
+        XCTAssertNotEqual(validatedLeft.innerEndpoint, validatedLeft.outerEndpoint)
+
+        let validatedRight = try XCTUnwrap(
+            BeautyFaceGeometryAdapter.validatedBrowTrace(
+                validRight, side: .right, bounds: faceBounds
+            )
+        )
+        XCTAssertEqual(validatedRight.side, .right)
+        XCTAssertEqual(
+            validatedRight.points,
+            validRight.map { SIMD2<Float>(Float($0.x), Float($0.y)) }
+        )
+
+        // The reversed arrangement still passes the open-path envelope but the
+        // semantic endpoints now point to the wrong canonical endpoint. The
+        // adapter preserves input order without rotation, so reversed input
+        // remains accepted and the only invariant is adjacency order.
+        XCTAssertNotNil(
+            BeautyFaceGeometryAdapter.validatedBrowTrace(
+                reversedLeft, side: .left, bounds: faceBounds
+            )
+        )
+        XCTAssertNotNil(
+            BeautyFaceGeometryAdapter.validatedBrowTrace(
+                reversedRight, side: .right, bounds: faceBounds
+            )
+        )
+    }
+
+    func testBrowOpenPathChordAndVerticalSpanBoundariesLockEqualAndExclusiveRows() {
+        let faceBounds = FaceBounds(x: 0.10, y: 0.10, width: 0.80, height: 0.80)
+        let base = browOpenTrace(count: 5, side: .left)
+
+        // Chord below the 0.08 face-width minimum fails.
+        var shortChord = base
+        shortChord[0] = CoordinatePoint(x: 0.36, y: 0.34)
+        shortChord[shortChord.count - 1] = CoordinatePoint(
+            x: 0.36 - 0.07,
+            y: shortChord[shortChord.count - 1].y
+        )
+        XCTAssertNil(
+            BeautyFaceGeometryAdapter.validatedBrowTrace(
+                shortChord, side: .left, bounds: faceBounds
+            )
+        )
+
+        // Chord at exactly 0.08 face-width passes.
+        var equalMinimumChord = base
+        equalMinimumChord[0] = CoordinatePoint(x: 0.36, y: 0.34)
+        equalMinimumChord[equalMinimumChord.count - 1] = CoordinatePoint(
+            x: 0.36 - Double(BeautyFaceGeometryAdapter.minimumBrowChord),
+            y: equalMinimumChord[equalMinimumChord.count - 1].y
+        )
+        XCTAssertNotNil(
+            BeautyFaceGeometryAdapter.validatedBrowTrace(
+                equalMinimumChord, side: .left, bounds: faceBounds
+            )
+        )
+
+        // Chord above 0.50 face-width fails.
+        var longChord = base
+        longChord[longChord.count - 1] = CoordinatePoint(
+            x: longChord[0].x - Double(BeautyFaceGeometryAdapter.maximumBrowChord) - 0.001,
+            y: longChord[longChord.count - 1].y
+        )
+        XCTAssertNil(
+            BeautyFaceGeometryAdapter.validatedBrowTrace(
+                longChord, side: .left, bounds: faceBounds
+            )
+        )
+
+        // Vertical span > 0.25 face-height fails.
+        var tallSpan = base
+        tallSpan[2] = CoordinatePoint(x: tallSpan[2].x, y: 0.05)
+        XCTAssertNil(
+            BeautyFaceGeometryAdapter.validatedBrowTrace(
+                tallSpan, side: .left, bounds: faceBounds
+            )
+        )
+
+        // Vertical span exactly 0.25 face-height passes.
+        let minimumBrowVerticalSpan = Double(
+            BeautyFaceGeometryAdapter.maximumBrowVerticalSpan
+        )
+        var equalVerticalSpan = base
+        equalVerticalSpan[0] = CoordinatePoint(x: equalVerticalSpan[0].x, y: 0.50)
+        equalVerticalSpan[equalVerticalSpan.count - 1] = CoordinatePoint(
+            x: equalVerticalSpan[equalVerticalSpan.count - 1].x,
+            y: 0.50 + minimumBrowVerticalSpan
+        )
+        XCTAssertNotNil(
+            BeautyFaceGeometryAdapter.validatedBrowTrace(
+                equalVerticalSpan, side: .left, bounds: faceBounds
+            )
+        )
+    }
+
+    func testBrowRejectsNonAdjacentOpenPathSegmentIntersections() {
+        let faceBounds = FaceBounds(x: 0.10, y: 0.10, width: 0.80, height: 0.80)
+        let bowTie = [
+            CoordinatePoint(x: 0.42, y: 0.32),
+            CoordinatePoint(x: 0.34, y: 0.31),
+            CoordinatePoint(x: 0.36, y: 0.30),
+            CoordinatePoint(x: 0.30, y: 0.34),
+            CoordinatePoint(x: 0.22, y: 0.32),
+        ]
+        XCTAssertNil(
+            BeautyFaceGeometryAdapter.validatedBrowTrace(
+                bowTie, side: .left, bounds: faceBounds
+            )
+        )
+
+        // The valid open path with no non-adjacent crossings still passes.
+        let validLeft = browOpenTrace(count: 5, side: .left)
+        XCTAssertNotNil(
+            BeautyFaceGeometryAdapter.validatedBrowTrace(
+                validLeft, side: .left, bounds: faceBounds
+            )
+        )
+        let validRight = browOpenTrace(count: 5, side: .right)
+        XCTAssertNotNil(
+            BeautyFaceGeometryAdapter.validatedBrowTrace(
+                validRight, side: .right, bounds: faceBounds
+            )
+        )
     }
 
     private func observation(left: [CoordinatePoint], right: [CoordinatePoint], pupils: ([CoordinatePoint]?, [CoordinatePoint]?) = (nil, nil)) -> BeautyFaceObservation {

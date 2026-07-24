@@ -37,6 +37,18 @@ enum BeautyFaceGeometryAdapter {
     static let maximumFaceApexDistance: Float = 0.40
     static let minimumFaceApexInteriorPointCount = 2
 
+    // Eyebrow support is an open inner-to-outer polyline per side. These
+    // fixed plausibility bounds are deliberately separate from the closed
+    // eye-contour topology above and the face-specific open-path topology
+    // below; they are support-validation ceilings only, not visual-effect
+    // caps.
+    static let minimumBrowPointCount = 4
+    static let maximumBrowPointCount = 16
+    static let minimumBrowChord: Float = 0.08
+    static let maximumBrowChord: Float = 0.50
+    static let maximumBrowVerticalSpan: Float = 0.25
+    static let minimumBrowProjectionMagnitude: Float = 0.000_001
+
     static func makeGeometry(from observation: BeautyFaceObservation) -> FaceGeometry {
         let bounds = makeBounds(from: observation)
         let landmarks = observation.landmarks.availableGroups
@@ -389,6 +401,47 @@ enum BeautyFaceGeometryAdapter {
     ) -> Bool {
         before >= minimumFaceApexInteriorPointCount
             && after >= minimumFaceApexInteriorPointCount
+    }
+
+    // MARK: - Brow-specific open-path validation
+
+    static func browChordIsValid(_ value: Float) -> Bool {
+        value.isFinite && (minimumBrowChord...maximumBrowChord).contains(value)
+    }
+
+    static func browVerticalSpanIsValid(_ value: Float) -> Bool {
+        value.isFinite
+            && value >= 0
+            && value <= maximumBrowVerticalSpan
+    }
+
+    static func browProjectionMagnitudeIsValid(_ value: Float) -> Bool {
+        value.isFinite && value >= minimumBrowProjectionMagnitude
+    }
+
+    /// Pure open-path validator for one canonical eyebrow side.
+    ///
+    /// Returns the produced `BeautyEyebrowSemanticTrace` when the input passes
+    /// every brow-specific envelope check; returns `nil` otherwise. The
+    /// validator never mutates or clamps the input points and never reorders
+    /// the canonical inner-to-outer adjacency produced by Plan 49-03.
+    static func validatedBrowTrace(
+        _ input: [CoordinatePoint]?,
+        side: BeautyObservedEyebrowSide,
+        bounds: FaceBounds
+    ) -> BeautyEyebrowSemanticTrace? {
+        nil
+    }
+
+    /// Validates the independently optional left and right sides and bundles
+    /// them into a `BeautyEyebrowSemanticSupport` envelope. Returns `nil` only
+    /// when neither side survives validation, so a valid left or right side
+    /// retains its semantic trace even if its sibling is malformed.
+    static func validatedBrowSupport(
+        _ observed: BeautyObservedEyebrowSupport?,
+        bounds: FaceBounds
+    ) -> BeautyEyebrowSemanticSupport? {
+        nil
     }
 
     static func validatedFaceContour(
