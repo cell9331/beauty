@@ -4,7 +4,7 @@ import Foundation
 
 enum BeautyGeometryEffectPipeline {
     static func controlPoints(for plan: BeautyEffectPlan, face: FaceGeometry) -> [WarpControlPoint] {
-        guard !plan.activeDomains.isDisjoint(with: [.faceShape, .eyes, .nose, .mouth]) else {
+        guard !plan.activeDomains.isDisjoint(with: [.faceShape, .eyes, .eyebrows, .nose, .mouth]) else {
             return []
         }
 
@@ -15,6 +15,7 @@ enum BeautyGeometryEffectPipeline {
         FaceShapeWarpProvider().makeControlPoints(face: face, strengths: strengths).points +
             ChinWarpProvider().makeControlPoints(face: face, strengths: strengths).points +
             EyeWarpProvider().makeControlPoints(face: face, strengths: strengths).points +
+            EyebrowWarpProvider().makeControlPoints(face: face, strengths: strengths).points +
             NoseWarpProvider().makeControlPoints(face: face, strengths: strengths).points +
             MouthWarpProvider().makeControlPoints(face: face, strengths: strengths).points
     }

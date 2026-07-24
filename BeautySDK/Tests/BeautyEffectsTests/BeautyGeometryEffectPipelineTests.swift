@@ -3,11 +3,12 @@ import CoreImage
 import Foundation
 import XCTest
 import BeautyCore
+@testable import BeautyDetection
 @testable import BeautyEffects
 
 final class BeautyGeometryEffectPipelineTests: XCTestCase {
     func testGEOMFinalNamedEmissionsDispatchOnceThroughExistingPipeline() {
-        let face = FaceGeometry.phase46AsymmetricComplete
+        let face = phase50AllProviderFace
         let plan = BeautyEffectResolver.resolve(
             parameters: BeautyParameters(
                 faceSlim: 0.10,
@@ -17,6 +18,7 @@ final class BeautyGeometryEffectPipelineTests: XCTestCase {
                 cheekboneSlim: 0.10,
                 chinTaper: 0.10,
                 eyeHeight: 0.10,
+                eyebrowYPosition: -0.10,
                 noseRootNarrowing: 0.10,
                 mouthYPosition: -0.10
             ),
@@ -32,6 +34,10 @@ final class BeautyGeometryEffectPipelineTests: XCTestCase {
             strengths: strengths
         )
         let eyeEmissions = EyeWarpProvider().fieldEmissions(
+            face: face,
+            strengths: strengths
+        )
+        let eyebrowEmissions = EyebrowWarpProvider().fieldEmissions(
             face: face,
             strengths: strengths
         )
@@ -51,6 +57,7 @@ final class BeautyGeometryEffectPipelineTests: XCTestCase {
         XCTAssertFalse(chinEmissions.chinLength.isEmpty)
         XCTAssertFalse(chinEmissions.chinTaper.isEmpty)
         XCTAssertFalse(eyeEmissions.eyeHeight.isEmpty)
+        XCTAssertFalse(eyebrowEmissions.eyebrowYPosition.isEmpty)
         XCTAssertFalse(noseEmissions.noseRootNarrowing.isEmpty)
         XCTAssertFalse(mouthEmissions.mouthYPosition.isEmpty)
 
@@ -58,6 +65,7 @@ final class BeautyGeometryEffectPipelineTests: XCTestCase {
             faceEmissions.points,
             chinEmissions.points,
             eyeEmissions.points,
+            eyebrowEmissions.points,
             noseEmissions.points,
             mouthEmissions.points,
         ]
@@ -68,7 +76,7 @@ final class BeautyGeometryEffectPipelineTests: XCTestCase {
         XCTAssertEqual(
             BeautyGeometryEffectPipeline.controlPoints(for: strengths, face: face),
             expected,
-            "Final named provider arrays must enter the existing face→chin→eye→nose→mouth order exactly once."
+            "Final named provider arrays must enter the existing face→chin→eye→eyebrow→nose→mouth order exactly once."
         )
         XCTAssertEqual(
             BeautyGeometryEffectPipeline.controlPoints(for: plan, face: face),
@@ -82,9 +90,32 @@ final class BeautyGeometryEffectPipelineTests: XCTestCase {
         )
         XCTAssertTrue(
             plan.activeDomains.isSuperset(
-                of: Set<BeautyEffectDomain>([.faceShape, .eyes, .nose, .mouth])
+                of: Set<BeautyEffectDomain>([.faceShape, .eyes, .eyebrows, .nose, .mouth])
             )
         )
+    }
+
+    func testBROW08EyebrowOnlyDispatchesOnceAndRemovedWorkDispatchesNothing() {
+        let face = phase50AllProviderFace
+        let active = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(eyebrowYPosition: 1),
+            faceGeometry: face
+        )
+        let expected = EyebrowWarpProvider().fieldEmissions(
+            face: face,
+            strengths: active.effectiveStrengths
+        ).eyebrowYPosition
+        XCTAssertFalse(expected.isEmpty)
+        XCTAssertEqual(BeautyGeometryEffectPipeline.controlPoints(for: active, face: face), expected)
+        XCTAssertEqual(active.metrics["beauty.effects.geometryPointCount"], Double(expected.count))
+
+        let removedFace = phase50Face(eyebrowSupport: nil)
+        let removed = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(eyebrowYPosition: 1),
+            faceGeometry: removedFace
+        )
+        XCTAssertFalse(removed.activeDomains.contains(.eyebrows))
+        XCTAssertTrue(BeautyGeometryEffectPipeline.controlPoints(for: removed, face: removedFace).isEmpty)
     }
 
     func testCIImageGeometryWarpMovesLocalPixelsWithoutGlobalColorBias() throws {
@@ -125,6 +156,51 @@ final class BeautyGeometryEffectPipelineTests: XCTestCase {
             pixelDistance(warpedAtTarget, baselineAtTarget)
         )
         XCTAssertEqual(warpedAtTarget.alpha, 255)
+    }
+
+    private var phase50AllProviderFace: FaceGeometry {
+        phase50Face(
+            eyebrowSupport: BeautyEyebrowSemanticSupport(
+                left: phase50Trace(side: .left),
+                right: phase50Trace(side: .right)
+            )
+        )
+    }
+
+    private func phase50Trace(side: BeautyObservedEyebrowSide) -> BeautyEyebrowSemanticTrace {
+        let points: [SIMD2<Float>] = side == .left
+            ? [.init(0.25, 0.40), .init(0.30, 0.36), .init(0.36, 0.34), .init(0.42, 0.37), .init(0.47, 0.41)]
+            : [.init(0.75, 0.40), .init(0.70, 0.36), .init(0.64, 0.34), .init(0.58, 0.37), .init(0.53, 0.41)]
+        return BeautyEyebrowSemanticTrace(
+            side: side,
+            points: points,
+            innerEndpoint: points[0],
+            outerEndpoint: points[points.count - 1],
+            center: points.reduce(.zero, +) / Float(points.count),
+            apexIndex: 2
+        )
+    }
+
+    private func phase50Face(eyebrowSupport: BeautyEyebrowSemanticSupport?) -> FaceGeometry {
+        let base = FaceGeometry.phase46AsymmetricComplete
+        return FaceGeometry(
+            bounds: base.bounds,
+            faceContour: base.faceContour,
+            observedFaceSupport: base.observedFaceSupport,
+            leftEye: base.leftEye,
+            rightEye: base.rightEye,
+            nose: base.nose,
+            noseRoot: base.noseRoot,
+            noseTip: base.noseTip,
+            outerLips: base.outerLips,
+            upperLips: base.upperLips,
+            lowerLips: base.lowerLips,
+            innerLips: base.innerLips,
+            leftEyeSupport: base.leftEyeSupport,
+            rightEyeSupport: base.rightEyeSupport,
+            freshness: .fresh,
+            observedEyebrowSupport: eyebrowSupport
+        )
     }
 
     private func gradientRGBABytes(width: Int, height: Int) -> [UInt8] {

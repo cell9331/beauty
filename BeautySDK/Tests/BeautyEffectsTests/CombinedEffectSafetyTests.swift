@@ -160,6 +160,13 @@ final class CombinedEffectSafetyTests: XCTestCase {
             noseEmissions.points +
             mouthEmissions.points
         XCTAssertEqual(
+            BeautyGeometryEffectPipeline.controlPoints(
+                for: plan.effectiveStrengths,
+                face: face
+            ),
+            expectedPoints
+        )
+        XCTAssertEqual(
             plan.metrics["beauty.effects.geometryPointCount"],
             Double(expectedPoints.count)
         )
