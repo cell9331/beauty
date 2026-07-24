@@ -1,9 +1,9 @@
 ---
 phase: 48
 slug: face-safety-and-scoped-closeout
-status: planned
+status: executing
 nyquist_compliant: false
-wave_0_complete: false
+wave_0_complete: true
 created: 2026-07-24
 ---
 
@@ -30,14 +30,14 @@ created: 2026-07-24
 
 | Task | Plan | Requirement | Automated evidence | Status |
 |---|---:|---|---|---|
-| 48-01-01 | 01 | SAFE-01 | cap + resolver focused suites | pending |
-| 48-01-02 | 01 | SAFE-01 | face provider + degradation suites | pending |
-| 48-01-03 | 01 | SAFE-01 | degradation + facade transition suites | pending |
-| 48-02-01 | 02 | SAFE-02 | conflict resolver exact arithmetic | pending |
-| 48-02-02 | 02 | SAFE-02 | combined/degradation final-mask equality | pending |
-| 48-03-01 | 03 | SAFE-03 | checker compile/self-test/default live | pending |
-| 48-03-02 | 03 | SAFE-01..03 | focused/full SwiftPM + Phase 47 strict/gallery | pending |
-| 48-03-03 | 03 | SAFE-03 | review/security/evidence source gates | pending |
+| 48-01-01 | 01 | SAFE-01 | cap + resolver focused suites | passed |
+| 48-01-02 | 01 | SAFE-01 | face provider + degradation suites | passed |
+| 48-01-03 | 01 | SAFE-01 | degradation + facade transition suites | passed |
+| 48-02-01 | 02 | SAFE-02 | conflict resolver exact arithmetic | passed |
+| 48-02-02 | 02 | SAFE-02 | combined/degradation final-mask equality | passed |
+| 48-03-01 | 03 | SAFE-03 | checker compile/self-test/default live | passed |
+| 48-03-02 | 03 | SAFE-01..03 | focused/full SwiftPM + Phase 47 strict/gallery | passed |
+| 48-03-03 | 03 | SAFE-03 | review/security/evidence source gates | passed |
 | 48-04-01 | 04 | DOC-01 | default pre-promotion gate | pending |
 | 48-04-02 | 04 | DOC-01 | exact four-owner promotion gate | pending |
 | 48-05-01 | 05 | DOC-01 | example owners + strict helper self-test | pending |
@@ -68,9 +68,9 @@ The strict live renderer/output gate is required in Plan 03. Its exact command a
 
 ## Wave 0 Requirements
 
-- [ ] Phase 48 boundary checker exists and passes self-test/default live.
-- [ ] Phase 48 safety evidence exists with fresh command counts.
-- [ ] Review, security, and verification artifacts exist before final sign-off.
+- [x] Phase 48 boundary checker exists and passes self-test/default live.
+- [x] Phase 48 safety evidence exists with fresh command counts.
+- [x] Review and security artifacts exist before promotion; verification remains Plan 06.
 - [x] Existing XCTest and Phase 47 output infrastructure require no installation.
 
 ## Manual-Only Verification
@@ -81,7 +81,7 @@ None. Subjective naturalness, physical-device parity, commercial approval, optim
 
 - [x] Every planned task has automated evidence.
 - [x] No three consecutive tasks lack automated verification.
-- [ ] Wave 0 dependencies complete.
+- [x] Wave 0 dependencies complete.
 - [ ] `nyquist_compliant: true` only after final execution.
 - [ ] Approval set to `passed` only after final verification.
 
