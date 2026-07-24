@@ -244,6 +244,71 @@ let cases = [
         parameters: BeautyParameters(eyeSymmetry: 0.25)
     ),
     RenderCase(
+        id: "eyebrowYPosition_plus0p25",
+        displayName: "eyebrowYPosition +0.25",
+        parameters: BeautyParameters(eyebrowYPosition: 0.25)
+    ),
+    RenderCase(
+        id: "eyebrowYPosition_minus0p25",
+        displayName: "eyebrowYPosition -0.25",
+        parameters: BeautyParameters(eyebrowYPosition: -0.25)
+    ),
+    RenderCase(
+        id: "eyebrowThickness_plus0p25",
+        displayName: "eyebrowThickness +0.25",
+        parameters: BeautyParameters(eyebrowThickness: 0.25)
+    ),
+    RenderCase(
+        id: "eyebrowThickness_minus0p25",
+        displayName: "eyebrowThickness -0.25",
+        parameters: BeautyParameters(eyebrowThickness: -0.25)
+    ),
+    RenderCase(
+        id: "eyebrowLength_plus0p25",
+        displayName: "eyebrowLength +0.25",
+        parameters: BeautyParameters(eyebrowLength: 0.25)
+    ),
+    RenderCase(
+        id: "eyebrowLength_minus0p25",
+        displayName: "eyebrowLength -0.25",
+        parameters: BeautyParameters(eyebrowLength: -0.25)
+    ),
+    RenderCase(
+        id: "eyebrowSpacing_plus0p25",
+        displayName: "eyebrowSpacing +0.25",
+        parameters: BeautyParameters(eyebrowSpacing: 0.25)
+    ),
+    RenderCase(
+        id: "eyebrowSpacing_minus0p25",
+        displayName: "eyebrowSpacing -0.25",
+        parameters: BeautyParameters(eyebrowSpacing: -0.25)
+    ),
+    RenderCase(
+        id: "eyebrowHeadSpacing_plus0p25",
+        displayName: "eyebrowHeadSpacing +0.25",
+        parameters: BeautyParameters(eyebrowHeadSpacing: 0.25)
+    ),
+    RenderCase(
+        id: "eyebrowHeadSpacing_minus0p25",
+        displayName: "eyebrowHeadSpacing -0.25",
+        parameters: BeautyParameters(eyebrowHeadSpacing: -0.25)
+    ),
+    RenderCase(
+        id: "eyebrowTilt_plus0p25",
+        displayName: "eyebrowTilt +0.25",
+        parameters: BeautyParameters(eyebrowTilt: 0.25)
+    ),
+    RenderCase(
+        id: "eyebrowTilt_minus0p25",
+        displayName: "eyebrowTilt -0.25",
+        parameters: BeautyParameters(eyebrowTilt: -0.25)
+    ),
+    RenderCase(
+        id: "eyebrowPeakDefinition_0p25",
+        displayName: "eyebrowPeakDefinition 0.25",
+        parameters: BeautyParameters(eyebrowPeakDefinition: 0.25)
+    ),
+    RenderCase(
         id: "noseSlim_0p35",
         displayName: "noseSlim 0.35",
         parameters: BeautyParameters(noseSlim: 0.35)

@@ -46,6 +46,19 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         "innerCornerOpen_0p25",
         "outerCornerOpen_0p25",
         "eyeSymmetry_0p25",
+        "eyebrowYPosition_plus0p25",
+        "eyebrowYPosition_minus0p25",
+        "eyebrowThickness_plus0p25",
+        "eyebrowThickness_minus0p25",
+        "eyebrowLength_plus0p25",
+        "eyebrowLength_minus0p25",
+        "eyebrowSpacing_plus0p25",
+        "eyebrowSpacing_minus0p25",
+        "eyebrowHeadSpacing_plus0p25",
+        "eyebrowHeadSpacing_minus0p25",
+        "eyebrowTilt_plus0p25",
+        "eyebrowTilt_minus0p25",
+        "eyebrowPeakDefinition_0p25",
         "noseSlim_0p35",
         "noseWingSlim_0p35",
         "noseTipSize_plus0p30",
@@ -91,6 +104,33 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
             )
         }
         XCTAssertEqual(source.components(separatedBy: "engine.processResult(").count - 1, 1)
+    }
+
+    func testPhase51EyebrowCasesUseExactlyOneMatchingPublicParameter() throws {
+        let signed = [
+            "eyebrowYPosition", "eyebrowThickness", "eyebrowLength",
+            "eyebrowSpacing", "eyebrowHeadSpacing", "eyebrowTilt",
+        ]
+        let allFields = signed + ["eyebrowPeakDefinition"]
+
+        for field in signed {
+            for direction in ["plus", "minus"] {
+                let caseID = "\(field)_\(direction)0p25"
+                let snippet = try rendererCaseSnippet(for: caseID, in: try rendererSource())
+                let expected = "\(field): \(direction == "plus" ? "0.25" : "-0.25")"
+                XCTAssertTrue(snippet.contains(expected), "Missing \(expected) in \(caseID)")
+                XCTAssertEqual(allFields.filter { snippet.contains("\($0):") }, [field])
+            }
+        }
+
+        let peak = try rendererCaseSnippet(for: "eyebrowPeakDefinition_0p25", in: try rendererSource())
+        XCTAssertTrue(peak.contains("eyebrowPeakDefinition: 0.25"))
+        XCTAssertEqual(allFields.filter { peak.contains("\($0):") }, ["eyebrowPeakDefinition"])
+        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 72)
+        XCTAssertEqual(Self.fixtureNames, ["portraits/e6.jpg", "negatives/no-face-gradient.png"])
+        for parked in 1...5 {
+            XCTAssertFalse(Self.fixtureNames.contains("portraits/e\(parked).png"))
+        }
     }
 
     func testFaceShapeComboCaseUsesOnlyPhase27FaceShapeParameters() throws {
@@ -214,8 +254,8 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         }
 
         let caseIDs = rendererCaseIDs(in: source)
-        XCTAssertEqual(caseIDs.count, 59)
-        XCTAssertEqual(Set(caseIDs).count, 59)
+        XCTAssertEqual(caseIDs.count, 72)
+        XCTAssertEqual(Set(caseIDs).count, 72)
         for deferred in [
             "doubleChin", "doubleChinPro", "hairline", "foreheadHairline",
             "faceCombo", "chinWidth", "faceLift",
@@ -303,8 +343,8 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         }
 
         let caseIDs = rendererCaseIDs(in: source)
-        XCTAssertEqual(caseIDs.count, 59)
-        XCTAssertEqual(Set(caseIDs).count, 59)
+        XCTAssertEqual(caseIDs.count, 72)
+        XCTAssertEqual(Set(caseIDs).count, 72)
         for alias in ["eyeCombo", "manualGaze", "perEyeAsymmetry"] {
             XCTAssertFalse(caseIDs.contains { $0 == alias || $0.hasPrefix("\(alias)_") })
             XCTAssertFalse(containsInitializerLabel(alias, in: source))
