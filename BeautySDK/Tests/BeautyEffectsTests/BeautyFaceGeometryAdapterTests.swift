@@ -1116,6 +1116,114 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         XCTAssertEqual(last.observedFaceSupport, first.observedFaceSupport)
     }
 
+    func testEyebrowSupportContractsPreserveIndependentAbsenceAndPairedEligibility() {
+        let leftPoints = eyebrowTrace(side: .left)
+        let rightPoints = eyebrowTrace(side: .right)
+        let raw = BeautyObservedEyebrowSupport(left: leftPoints, right: nil)
+        XCTAssertEqual(raw.left, leftPoints)
+        XCTAssertNil(raw.right)
+
+        let left = semanticEyebrowTrace(side: .left)
+        let right = semanticEyebrowTrace(side: .right)
+        XCTAssertFalse(BeautyEyebrowSemanticSupport(left: left, right: nil).pairedEligible)
+        XCTAssertTrue(BeautyEyebrowSemanticSupport(left: left, right: right).pairedEligible)
+        XCTAssertFalse(BeautyEyebrowSemanticSupport(left: left, right: left).pairedEligible)
+        assertSendable(raw)
+        assertSendable(left)
+    }
+
+    func testEyebrowSupportDefaultsNilWithoutChangingLegacyGeometry() {
+        let observation = BeautyFaceObservation(imageBounds: bounds, landmarks: .complete)
+        XCTAssertNil(observation.observedEyebrowSupport)
+
+        let baseline = BeautyFaceGeometryAdapter.makeGeometry(from: observation)
+        let explicit = FaceGeometry(
+            bounds: baseline.bounds,
+            faceContour: baseline.faceContour,
+            observedFaceSupport: baseline.observedFaceSupport,
+            leftEye: baseline.leftEye,
+            rightEye: baseline.rightEye,
+            nose: baseline.nose,
+            noseRoot: baseline.noseRoot,
+            noseTip: baseline.noseTip,
+            outerLips: baseline.outerLips,
+            upperLips: baseline.upperLips,
+            lowerLips: baseline.lowerLips,
+            innerLips: baseline.innerLips,
+            leftEyeSupport: baseline.leftEyeSupport,
+            rightEyeSupport: baseline.rightEyeSupport,
+            freshness: baseline.freshness,
+            observedEyebrowSupport: nil
+        )
+        XCTAssertEqual(explicit, baseline)
+        XCTAssertEqual(explicit.center, baseline.center)
+        XCTAssertEqual(explicit.freshness, baseline.freshness)
+    }
+
+    func testEyebrowSupportDiagnosticsExposeOnlyCountsAndBooleans() {
+        let raw = BeautyObservedEyebrowSupport(
+            left: eyebrowTrace(side: .left),
+            right: eyebrowTrace(side: .right)
+        )
+        let semantic = BeautyEyebrowSemanticSupport(
+            left: semanticEyebrowTrace(side: .left),
+            right: semanticEyebrowTrace(side: .right)
+        )
+        let observation = BeautyFaceObservation(observedEyebrowSupport: raw)
+        let geometry = FaceGeometry(
+            bounds: FaceBounds(x: 0.123_456, y: 0.234_567, width: 0.345_678, height: 0.456_789),
+            faceContour: [],
+            observedEyebrowSupport: semantic
+        )
+
+        var dumps = [String]()
+        for value in [String(describing: raw), String(reflecting: raw), String(describing: semantic), String(reflecting: semantic), String(describing: observation), String(describing: geometry)] {
+            dumps.append(value)
+        }
+        var rawDump = ""
+        var semanticDump = ""
+        var observationDump = ""
+        var geometryDump = ""
+        dump(raw, to: &rawDump)
+        dump(semantic, to: &semanticDump)
+        dump(observation, to: &observationDump)
+        dump(geometry, to: &geometryDump)
+        dumps += [rawDump, semanticDump, observationDump, geometryDump]
+
+        for diagnostic in dumps {
+            for prohibited in ["0.123456", "0.234567", "0.345678", "0.456789", "CoordinatePoint", "SIMD2", "points", "innerEndpoint", "outerEndpoint", "center", "apexIndex"] {
+                XCTAssertFalse(diagnostic.contains(prohibited), "diagnostic leaked \(prohibited): \(diagnostic)")
+            }
+        }
+    }
+
+    private func eyebrowTrace(side: BeautyObservedEyebrowSide) -> [CoordinatePoint] {
+        switch side {
+        case .left:
+            return [
+                CoordinatePoint(x: 0.42, y: 0.34), CoordinatePoint(x: 0.36, y: 0.31),
+                CoordinatePoint(x: 0.29, y: 0.30), CoordinatePoint(x: 0.22, y: 0.33),
+            ]
+        case .right:
+            return [
+                CoordinatePoint(x: 0.58, y: 0.34), CoordinatePoint(x: 0.64, y: 0.31),
+                CoordinatePoint(x: 0.71, y: 0.30), CoordinatePoint(x: 0.78, y: 0.33),
+            ]
+        }
+    }
+
+    private func semanticEyebrowTrace(side: BeautyObservedEyebrowSide) -> BeautyEyebrowSemanticTrace {
+        let points = eyebrowTrace(side: side).map { SIMD2<Float>(Float($0.x), Float($0.y)) }
+        return BeautyEyebrowSemanticTrace(
+            side: side,
+            points: points,
+            innerEndpoint: points[0],
+            outerEndpoint: points[points.count - 1],
+            center: points.reduce(.zero, +) / Float(points.count),
+            apexIndex: 1
+        )
+    }
+
     private func observation(left: [CoordinatePoint], right: [CoordinatePoint], pupils: ([CoordinatePoint]?, [CoordinatePoint]?) = (nil, nil)) -> BeautyFaceObservation {
         BeautyFaceObservation(
             imageBounds: bounds,
