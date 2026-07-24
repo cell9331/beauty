@@ -1227,6 +1227,23 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         )
     }
 
+    func testEyebrowWaveZeroTopologyFixturesCoverExactRowsAndLocalSiblingFailure() {
+        XCTAssertEqual(eyebrowSemanticCardinalityMatrix.map(\.count), [3, 4, 5, 15, 16, 17])
+        XCTAssertEqual(eyebrowSemanticCardinalityMatrix.map(\.eligible), [false, true, true, true, true, false])
+        XCTAssertEqual(Set(eyebrowMalformedTopologyFixtures.map(\.kind)), Set(EyebrowMalformedTopologyKind.allCases))
+
+        let validLeft = semanticEyebrowTrace(side: .left)
+        let validRight = semanticEyebrowTrace(side: .right)
+        let leftOnly = BeautyEyebrowSemanticSupport(left: validLeft, right: nil)
+        let rightOnly = BeautyEyebrowSemanticSupport(left: nil, right: validRight)
+        XCTAssertEqual(leftOnly.left, validLeft)
+        XCTAssertNil(leftOnly.right)
+        XCTAssertNil(rightOnly.left)
+        XCTAssertEqual(rightOnly.right, validRight)
+        XCTAssertFalse(leftOnly.pairedEligible)
+        XCTAssertFalse(rightOnly.pairedEligible)
+    }
+
     private func observation(left: [CoordinatePoint], right: [CoordinatePoint], pupils: ([CoordinatePoint]?, [CoordinatePoint]?) = (nil, nil)) -> BeautyFaceObservation {
         BeautyFaceObservation(
             imageBounds: bounds,
@@ -1381,6 +1398,52 @@ private enum FaceFixtureError: Error {
     case missing
     case unreadable
 }
+
+private struct EyebrowSemanticCardinalityFixture {
+    let count: Int
+    let eligible: Bool
+}
+
+private let eyebrowSemanticCardinalityMatrix = [
+    EyebrowSemanticCardinalityFixture(count: 3, eligible: false),
+    EyebrowSemanticCardinalityFixture(count: 4, eligible: true),
+    EyebrowSemanticCardinalityFixture(count: 5, eligible: true),
+    EyebrowSemanticCardinalityFixture(count: 15, eligible: true),
+    EyebrowSemanticCardinalityFixture(count: 16, eligible: true),
+    EyebrowSemanticCardinalityFixture(count: 17, eligible: false),
+]
+
+private enum EyebrowMalformedTopologyKind: String, CaseIterable {
+    case exactBitDuplicate
+    case nan
+    case infinity
+    case outOfUnit
+    case zeroChord
+    case shortChord
+    case equalMinimumChord
+    case longChord
+    case equalMaximumChord
+    case excessiveVerticalSpan
+    case equalMaximumVerticalSpan
+    case wrongSide
+    case wrongOrder
+    case nonAdjacentCrossing
+}
+
+private struct EyebrowMalformedTopologyFixture {
+    let kind: EyebrowMalformedTopologyKind
+    let side: BeautyObservedEyebrowSide
+    let points: [CoordinatePoint]
+}
+
+private let eyebrowMalformedTopologyFixtures: [EyebrowMalformedTopologyFixture] =
+    EyebrowMalformedTopologyKind.allCases.map { kind in
+        let base = [
+            CoordinatePoint(x: 0.42, y: 0.34), CoordinatePoint(x: 0.36, y: 0.31),
+            CoordinatePoint(x: 0.29, y: 0.30), CoordinatePoint(x: 0.22, y: 0.33),
+        ]
+        return EyebrowMalformedTopologyFixture(kind: kind, side: .left, points: base)
+    }
 
 private struct FaceSupportFixture {
     let contour: [CoordinatePoint]

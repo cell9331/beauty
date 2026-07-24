@@ -371,7 +371,7 @@ final class VisionFaceDetectorTests: XCTestCase {
         let expectedSupport =
             "BeautyObservedFaceSupport(contourCount: 2, medianLineCount: 1)"
         let expectedObservation =
-            "BeautyFaceObservation(landmarkGroupCount: 6, observedEyeSupportCount: 0, observedFaceSupportAvailable: true, observedFaceContourCount: 2, observedFaceMedianLineCount: 1)"
+            "BeautyFaceObservation(landmarkGroupCount: 6, observedEyeSupportCount: 0, observedFaceSupportAvailable: true, observedFaceContourCount: 2, observedFaceMedianLineCount: 1, observedEyebrowSupportAvailable: false, observedLeftEyebrowCount: 0, observedRightEyebrowCount: 0)"
         let expectedVisionObservation =
             "VisionDetectionObservation(landmarkGroupCount: 6, observedEyeSupportCount: 0, observedFaceSupportAvailable: true, observedFaceContourCount: 2, observedFaceMedianLineCount: 1)"
 
@@ -397,6 +397,9 @@ final class VisionFaceDetectorTests: XCTestCase {
                 "observedFaceSupportAvailable",
                 "observedFaceContourCount",
                 "observedFaceMedianLineCount",
+                "observedEyebrowSupportAvailable",
+                "observedLeftEyebrowCount",
+                "observedRightEyebrowCount",
             ]
         )
         XCTAssertEqual(
@@ -594,6 +597,19 @@ final class VisionFaceDetectorTests: XCTestCase {
         }
     }
 
+    func testEyebrowWaveZeroFixturesNameActualVisionRegionsAndExactBoundaries() {
+        XCTAssertEqual(eyebrowVisionRegionFixtures.map(\.pointCount), [0, 1, 15, 16, 17])
+        XCTAssertEqual(eyebrowVisionRegionFixtures.map(\.propertyName), [
+            "leftEyebrow", "rightEyebrow", "leftEyebrow", "rightEyebrow", "leftEyebrow",
+        ])
+        XCTAssertEqual(Set(eyebrowRegionClassificationFixtures), Set([.disconnected, .openPath, .closedPath]))
+        XCTAssertEqual(eyebrowRequestLifecycleFixtures.map(\.kind), [
+            .repeated, .alternating, .interrupted, .stale, .noFace,
+        ])
+        XCTAssertEqual(Set(eyebrowParallelRequestIdentities).count, 8)
+        XCTAssertFalse(eyebrowVisionRegionFixtures.contains { $0.propertyName == "leftEye" || $0.propertyName == "rightEye" })
+    }
+
     private func metadata() -> BeautyInputMetadata {
         BeautyInputMetadata(
             orientation: .up,
@@ -660,6 +676,55 @@ final class VisionFaceDetectorTests: XCTestCase {
         XCTAssertEqual(point.y, y, accuracy: accuracy, file: file, line: line)
     }
 }
+
+private enum EyebrowRegionClassification: Hashable {
+    case disconnected
+    case openPath
+    case closedPath
+}
+
+private let eyebrowRegionClassificationFixtures: [EyebrowRegionClassification] = [
+    .disconnected, .openPath, .closedPath,
+]
+
+private struct EyebrowVisionRegionFixture {
+    let propertyName: String
+    let pointCount: Int
+    let classification: EyebrowRegionClassification
+    let expectedMapperCalls: Int
+}
+
+private let eyebrowVisionRegionFixtures = [
+    EyebrowVisionRegionFixture(propertyName: "leftEyebrow", pointCount: 0, classification: .openPath, expectedMapperCalls: 0),
+    EyebrowVisionRegionFixture(propertyName: "rightEyebrow", pointCount: 1, classification: .openPath, expectedMapperCalls: 1),
+    EyebrowVisionRegionFixture(propertyName: "leftEyebrow", pointCount: 15, classification: .openPath, expectedMapperCalls: 15),
+    EyebrowVisionRegionFixture(propertyName: "rightEyebrow", pointCount: 16, classification: .openPath, expectedMapperCalls: 16),
+    EyebrowVisionRegionFixture(propertyName: "leftEyebrow", pointCount: 17, classification: .openPath, expectedMapperCalls: 0),
+]
+
+private enum EyebrowRequestLifecycleKind {
+    case repeated
+    case alternating
+    case interrupted
+    case stale
+    case noFace
+}
+
+private struct EyebrowRequestLifecycleFixture {
+    let kind: EyebrowRequestLifecycleKind
+    let expectedLeftCount: Int
+    let expectedRightCount: Int
+}
+
+private let eyebrowRequestLifecycleFixtures = [
+    EyebrowRequestLifecycleFixture(kind: .repeated, expectedLeftCount: 4, expectedRightCount: 4),
+    EyebrowRequestLifecycleFixture(kind: .alternating, expectedLeftCount: 4, expectedRightCount: 0),
+    EyebrowRequestLifecycleFixture(kind: .interrupted, expectedLeftCount: 0, expectedRightCount: 0),
+    EyebrowRequestLifecycleFixture(kind: .stale, expectedLeftCount: 0, expectedRightCount: 0),
+    EyebrowRequestLifecycleFixture(kind: .noFace, expectedLeftCount: 0, expectedRightCount: 0),
+]
+
+private let eyebrowParallelRequestIdentities = (0..<8).map { "eyebrow-request-\($0)" }
 
 private final class FaceSupportObservationProvider: @unchecked Sendable {
     private let lock = NSLock()

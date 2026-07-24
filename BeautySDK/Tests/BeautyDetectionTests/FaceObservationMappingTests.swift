@@ -474,6 +474,23 @@ final class FaceObservationMappingTests: XCTestCase {
         }
     }
 
+    func testEyebrowCanonicalizationFixtureMatrixIsExactAndSideIndependent() {
+        XCTAssertEqual(eyebrowCanonicalizationMatrix.count, 64)
+        XCTAssertEqual(eyebrowCanonicalizationMatrix.filter { $0.side == .left }.count, 32)
+        XCTAssertEqual(eyebrowCanonicalizationMatrix.filter { $0.side == .right }.count, 32)
+        XCTAssertEqual(Set(eyebrowCanonicalizationMatrix.map(\.orientation)), Set([.up, .right, .down, .left]))
+        XCTAssertEqual(Set(eyebrowCanonicalizationMatrix.map(\.inputMirrored)), Set([false, true]))
+        XCTAssertEqual(Set(eyebrowCanonicalizationMatrix.map(\.previewMirrored)), Set([false, true]))
+        XCTAssertEqual(Set(eyebrowCanonicalizationMatrix.map(\.reversed)), Set([false, true]))
+
+        var mapper = EyebrowCountingMapper()
+        let mapped = eyebrowCanonicalizationMatrix.prefix(16).map { row in
+            mapper.map(row.trace[0])
+        }
+        XCTAssertEqual(mapped.count, 16)
+        XCTAssertEqual(mapper.callCount, 16)
+    }
+
     private func metadata(
         orientation: CGImagePropertyOrientation,
         inputMirrored: Bool = false,
@@ -546,3 +563,51 @@ final class FaceObservationMappingTests: XCTestCase {
         XCTAssertEqual(point.y, y, accuracy: accuracy, file: file, line: line)
     }
 }
+
+private struct EyebrowCountingMapper {
+    private(set) var callCount = 0
+
+    mutating func map(_ point: CoordinatePoint) -> CoordinatePoint {
+        callCount += 1
+        return point
+    }
+}
+
+private struct EyebrowCanonicalizationFixture {
+    let side: BeautyObservedEyebrowSide
+    let orientation: CGImagePropertyOrientation
+    let inputMirrored: Bool
+    let previewMirrored: Bool
+    let reversed: Bool
+    let trace: [CoordinatePoint]
+}
+
+private let eyebrowCanonicalizationMatrix: [EyebrowCanonicalizationFixture] = {
+    let left = [
+        CoordinatePoint(x: 0.42, y: 0.34), CoordinatePoint(x: 0.36, y: 0.31),
+        CoordinatePoint(x: 0.29, y: 0.30), CoordinatePoint(x: 0.22, y: 0.33),
+    ]
+    let right = [
+        CoordinatePoint(x: 0.58, y: 0.34), CoordinatePoint(x: 0.64, y: 0.31),
+        CoordinatePoint(x: 0.71, y: 0.30), CoordinatePoint(x: 0.78, y: 0.33),
+    ]
+    return [BeautyObservedEyebrowSide.left, .right].flatMap { side in
+        [CGImagePropertyOrientation.up, .right, .down, .left].flatMap { orientation in
+            [false, true].flatMap { inputMirrored in
+                [false, true].flatMap { previewMirrored in
+                    [false, true].map { reversed in
+                        let original = side == .left ? left : right
+                        return EyebrowCanonicalizationFixture(
+                            side: side,
+                            orientation: orientation,
+                            inputMirrored: inputMirrored,
+                            previewMirrored: previewMirrored,
+                            reversed: reversed,
+                            trace: reversed ? Array(original.reversed()) : original
+                        )
+                    }
+                }
+            }
+        }
+    }
+}()
