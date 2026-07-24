@@ -59,6 +59,13 @@ public struct BeautyEffectiveStrengths: Equatable, Sendable {
     public var innerCornerOpen: Float = 0
     public var outerCornerOpen: Float = 0
     public var eyeSymmetry: Float = 0
+    public var eyebrowYPosition: Float = 0
+    public var eyebrowThickness: Float = 0
+    public var eyebrowLength: Float = 0
+    public var eyebrowSpacing: Float = 0
+    public var eyebrowHeadSpacing: Float = 0
+    public var eyebrowTilt: Float = 0
+    public var eyebrowPeakDefinition: Float = 0
     public var noseSlim: Float = 0
     public var noseWingSlim: Float = 0
     public var noseTipSize: Float = 0
