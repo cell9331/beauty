@@ -14,11 +14,11 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Shipped version:** v1.11 Eye Remaining Geometry Controls on 2026-07-19.
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
-**Current milestone:** v1.12 Face Shape Remaining Capabilities is in milestone planning.
+**Current milestone:** v1.12 Face Shape Remaining Capabilities has completed phase execution and is pending independent milestone audit.
 
-**Implementation state:** Phase 44 is complete. `BeautyParameters` is exactly 48 stored fields (47 numeric plus `filterId`); all fourteen eye geometry fields have final caps/dead zones and fail-closed transitions, with one 33-field/10.70 retained baseline and at most 28 removals. Exactly ten remaining eye geometry rows are newly promoted; `去脂`/`祛红血丝` remain future and branch `眼睛` remains partial.
+**Implementation state:** Phase 48 is complete. `BeautyParameters` is exactly 52 stored fields (51 numeric plus `filterId`); all nine face/chin geometry fields have final caps and fail-closed transitions, with one 37-field/11.70 retained baseline and at most 37 removals. Exactly `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴` are newly promoted; `去双下巴`/`去双下巴 Pro`/`发际线` remain future and branch `脸型` remains partial.
 
-**Verification state:** v1.11 passed its independent 24/24 requirement, 4/4 phase, 10/10 integration, and 6/6 flow audit. Evidence includes 314/314 full SDK tests, 385/385 public output, 57/57 boundary mutations, exact promotion/owner gates, clean review, and ASVS L1 `threats_open: 0`. Generated artifacts remain ignored/untracked; no Demo/device/commercial/performance/packaging/shipping/launch readiness is claimed.
+**Verification state:** v1.12 phase verification passes with 132/132 focused tests, 375 full SDK tests with three opt-in skips, 413/413 public output, 70/70 boundary mutations, exact promotion/owner gates, clean review, and ASVS L1 `threats_open: 0`. Generated artifacts remain ignored/untracked; independent audit confirmation is pending and no Demo/device/commercial/performance/packaging/shipping/launch readiness is claimed.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
@@ -179,13 +179,12 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ### Active
 
-- [ ] Four contour-driven `脸型` controls have independent product-neutral public semantics with zero-default source/JSON/preset compatibility.
-- [ ] Observed face-contour and centerline support stays local, request-scoped, validated, and private.
-- [ ] Each new control has independently distinguishable public-facade output and conservative field-local degradation evidence.
-- [ ] Exact caps, combined-geometry convergence, privacy boundaries, generated-artifact containment, and four-row ledger promotion pass while branch-level `脸型` remains partial.
+- [ ] Independent v1.12 milestone audit confirms the 18-requirement, 4-phase, integration, flow, and scope-honesty result before archive/tag/cleanup lifecycle claims.
 
 ### Validated
 
+- Four contour-driven `脸型` controls have independent product-neutral public semantics, private request-scoped support, named providers, strict public-facade output, exact final caps, exhaustive field-local transitions, exact 37-field convergence, and four-row promotion - Phases 45-48; independent v1.12 audit pending.
+- `去双下巴`, `去双下巴 Pro`, and `发际线` remain future, branch `脸型` remains partial, and Demo/device/commercial/performance/packaging/shipping/launch claims remain excluded - v1.12 phase verification.
 - Ten independent eye geometry controls with 48-field source/JSON compatibility, private validated contour/pupil support, fourteen named emissions, strict 385-output facade evidence, conservative degradation, exact ten-row promotion, and a 24/24 independent v1.11 audit - v1.11.
 - Eye-fat/redness retouch, Demo UI, external dependencies, network/cloud, and release-readiness claims remain explicitly outside the shipped v1.11 scope.
 - Exact v1.10 five-row mouth geometry slice, 38-field compatibility, final `0.25` caps, explicit private lip supports, 265/265 full tests, 308/308 output evidence, 17/17 audit, clean ASVS L1 boundaries, and conservative non-claims - Phases 38-40.

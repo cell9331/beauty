@@ -26,9 +26,27 @@
 
 ## 3. Active
 
-Milestone v1.12 autonomous execution is active from Phase 45. After the semantic-resource feasibility blocker, the user selected reduced scope: 18 requirements across Phases 45-48 for four contour-driven rows; three semantic-region rows remain future.
+Milestone v1.12 phase execution is complete through Phase 48 and is ready for the independent milestone audit. The reduced scope contains 18 requirements for four contour-driven rows; three semantic-region rows remain future. SAFE-01 through SAFE-03 are complete, while DOC-01 implementation is complete and awaits independent audit confirmation.
 
 ## 4. Completed
+
+### C-2026-07-24-phase-48-face-safety-and-scoped-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-24 |
+| Scope | Completed Phase 48 across Plans `48-01` through `48-06`: final exact caps, complete nine-field transitions, exact 37-field convergence, fail-closed boundaries, fresh immutable output evidence, exact four-row promotion, owner synchronization, and goal-backward verification. |
+| Safety | The four additions have exact final `0.25` caps. All nine face/chin fields have stateless fresh/reused/stale/no-face and field-local missing/malformed/provider-empty evidence; reused non-eye geometry scales by exact `0.5` and diagnostics remain aggregate/redacted. |
+| Convergence | The exact retained inventory is 37 fields at total `11.70` with one scale `1/11.70`, at most 37 monotone removals, no re-entry/double scaling, and exact final named-provider/dispatch agreement. |
+| Output and status | The unchanged strict gate passes 413/413 decoded outputs, 18/18 visibility/locality, 49/49 fixed-neighbor, 6/6 ineligible, and 4/4 no-face comparisons. Exactly `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴` are implemented; three semantic-region rows remain future and branch `脸型` remains partial. |
+| Verification | Focused suites pass 132/132; full SwiftPM executes 375 with three opt-in Apple Vision skips and zero failures. The boundary checker passes 70/70 self-tests, 17/17 pre-promotion, 18/18 promotion, and 24/24 owner gates. Review is clean; ASVS L1 records `threats_open: 0`; generated output/gallery remain ignored, untracked, and unstaged. |
+
+Outcome:
+
+- SAFE-01, SAFE-02, and SAFE-03 are complete with one-to-one runtime/static/output evidence.
+- DOC-01 implementation is complete; independent milestone-audit confirmation remains pending.
+- `去双下巴`, `去双下巴 Pro`, `发际线`, and whole-`脸型` completion remain future or partial.
+- No Demo/device/commercial/performance/packaging/shipping/launch-readiness, audit, archive, or tag completion is claimed by Phase 48.
 
 ### C-2026-07-24-phase-47-public-facade-face-output-evidence
 

@@ -1,8 +1,8 @@
 ---
 phase: 48
 slug: face-safety-and-scoped-closeout
-status: executing
-nyquist_compliant: false
+status: verified
+nyquist_compliant: true
 wave_0_complete: true
 created: 2026-07-24
 ---
@@ -38,12 +38,12 @@ created: 2026-07-24
 | 48-03-01 | 03 | SAFE-03 | checker compile/self-test/default live | passed |
 | 48-03-02 | 03 | SAFE-01..03 | focused/full SwiftPM + Phase 47 strict/gallery | passed |
 | 48-03-03 | 03 | SAFE-03 | review/security/evidence source gates | passed |
-| 48-04-01 | 04 | DOC-01 | default pre-promotion gate | pending |
-| 48-04-02 | 04 | DOC-01 | exact four-owner promotion gate | pending |
-| 48-05-01 | 05 | DOC-01 | example owners + strict helper self-test | pending |
-| 48-05-02 | 05 | SAFE-03,DOC-01 | six root-owner gates | pending |
-| 48-06-01 | 06 | SAFE-01..03,DOC-01 | requirement/ledger/verification cross-check | pending |
-| 48-06-02 | 06 | SAFE-01..03,DOC-01 | allow-promotion + full regression + roadmap analysis | pending |
+| 48-04-01 | 04 | DOC-01 | default pre-promotion gate | passed |
+| 48-04-02 | 04 | DOC-01 | exact four-owner promotion gate | passed |
+| 48-05-01 | 05 | DOC-01 | example owners + strict helper self-test | passed |
+| 48-05-02 | 05 | SAFE-03,DOC-01 | six root-owner gates | passed |
+| 48-06-01 | 06 | SAFE-01..03,DOC-01 | requirement/ledger/verification cross-check | passed |
+| 48-06-02 | 06 | SAFE-01..03,DOC-01 | allow-promotion + full regression + roadmap analysis | passed |
 
 ## Required Commands
 
@@ -82,7 +82,7 @@ None. Subjective naturalness, physical-device parity, commercial approval, optim
 - [x] Every planned task has automated evidence.
 - [x] No three consecutive tasks lack automated verification.
 - [x] Wave 0 dependencies complete.
-- [ ] `nyquist_compliant: true` only after final execution.
-- [ ] Approval set to `passed` only after final verification.
+- [x] `nyquist_compliant: true` only after final execution.
+- [x] Approval set to `passed` only after final verification.
 
-**Approval:** pending
+**Approval:** passed — 2026-07-24

@@ -123,7 +123,7 @@ Plans:
 
 **Requirements:** SAFE-01, SAFE-02, SAFE-03, DOC-01
 
-**Plans:** 5/6 plans executed
+**Plans:** 6/6 plans executed
 
 Plans:
 
@@ -149,7 +149,7 @@ Plans:
 
 **Wave 6** *(blocked on Wave 5 completion)*
 
-- [ ] 48-06-PLAN.md — Planning closeout, goal verification, and milestone-audit handoff.
+- [x] 48-06-PLAN.md — Planning closeout, goal verification, and milestone-audit handoff.
 
 **Success criteria:**
 
