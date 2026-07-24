@@ -36,7 +36,7 @@
 | Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve legacy 52-key compatibility and all shipped face/eye/nose/mouth output while the current model is exactly 59 stored fields. |
 | Requirements | 21/21 mapped across Phase 49-52; no unmapped requirement. |
 | Roadmap | Phase 49 contract/support → Phase 50 geometry/pipeline → Phase 51 strict output → Phase 52 safety/promotion. |
-| Current step | Phase 49 complete; proceed to Phase 50 geometry and pipeline integration. |
+| Current step | Phase 50 Plan 50-01 complete; proceed sequentially to Plan 50-02 provider geometry. |
 
 Phase 49 closeout record (2026-07-24):
 
@@ -53,6 +53,22 @@ Planned follow-on milestones:
 - v1.16: `去双下巴`, `去双下巴 Pro`, and narrow facial-feature closeout.
 
 ## 4. Completed
+
+### C-2026-07-24-phase-50-plan-01-eyebrow-geometry-wave-zero
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-24 |
+| Scope | Established the Phase 50 fail-closed pre-implementation boundary, seven deliberately RED named eyebrow-emission contract families, seventeen edge-category predicates, and request-local paired/partial/missing/malformed facade fixtures. |
+| Commits | Checker `0df267d`; RED contracts `cec2c4b`; request-local fixtures `511ab27`; RED diagnostic isolation `5b8b9f2`; summary `5ffc979`. |
+| Verification | Checker self-test 4/4 and pre-implementation mode pass; focused provider compilation is expected RED only on the absent eyebrow provider/effective-strength surface; the production `BeautySDK` target builds; diff hygiene passes. |
+| Boundary | No production provider, resolver/conflict/pipeline implementation, output/gallery evidence, final caps, promotion, dependency/resource/model/network behavior, or UI/device/commercial/release scope was added. |
+
+Outcome:
+
+- Plan 50-02 can implement the named provider and effective-strength surface against the committed RED contract.
+- GEOM-01 through GEOM-07 and PIPE-01 through PIPE-02 remain milestone requirements pending production implementation and later Phase 50 evidence; Plan 50-01 completes their Wave 0 contract work only.
+- Because SwiftPM compiles the whole test target before filtering, unrelated XCTest filters remain blocked by the intentional RED file until Plan 50-02 supplies the missing production surface; no facade-suite green claim is made.
 
 ### C-2026-07-24-phase-49-plan-02-neutral-public-eyebrow-contract
 
