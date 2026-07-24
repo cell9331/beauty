@@ -19,7 +19,7 @@ Beauty shaping covers face geometry and facial feature adjustments inspired by M
 | --- | --- | --- | --- | --- | --- |
 | `3D塑颜` | blocked-by-geometry-output | `BeautyEffects` | None | Symmetry, vertical, horizontal, tilt | Requires detection/render integration and public facade saved-image output before visible completion. |
 | `比例` | partial | `BeautyEffects` | `faceSmall` | Forehead, mid-face, philtrum, lower-face, short-face, head-face | Current provider/resolver evidence is partial; facade-visible geometry output is still required. |
-| `脸型` | partial | `BeautyEffects` | `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, `chinLength` | Smooth face, temple, cheekbone, double chin, pointed chin, hairline | Phase 28 completes only the scoped rows `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线`; remaining rows still need separate evidence. |
+| `脸型` | partial | `BeautyEffects` | Five prior fields plus independent `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, and `chinTaper` | `去双下巴`, `去双下巴 Pro`, `发际线` local semantic-region/segmentation design | Phase 28 covers six prior rows; Phase 45 contract/support, Phase 46 provider, Phase 47 public output, and Phase 48 final safety/privacy/boundaries independently implement `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴`. |
 | `眼睛` | partial | `BeautyEffects` | Four prior fields plus `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, signed `eyeTilt`, `innerCornerOpen`, `outerCornerOpen`, `eyeSymmetry` | `去脂`, `祛红血丝` local retouch/color design | Phases 29-30 cover four prior rows; Phase 41 contract/support, Phase 42 provider, Phase 43 public output, and Phase 44 final safety/boundaries independently implement the ten remaining geometry rows. |
 | `嘴唇` | partial | `BeautyEffects` | Geometry: `mouthSize`, `mouthWidth`, `smile`, `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, `lipPlump`; color-only: `lipColor` | `白牙` teeth-region segmentation/color retouch | Phase 40 promotes exactly 上下, 倾斜, 左右, M唇, and true 丰唇 after Phases 38-40 contract/output/safety evidence; branch remains partial because `白牙` is future. |
 | `鼻子` | implemented | `BeautyEffects` | `noseSlim`, `noseWingSlim`, signed `noseTipSize`, `noseBridge`, `noseRootNarrowing`, `noseTipLift` | No additional control is implied by the exact six-row taxonomy | Phases 31-32 and 35-37 implement exactly `大小`, `提升`, `鼻翼`, `山根`, `鼻梁`, and `鼻尖`; SDK-core branch complete with UI/device/commercial boundaries preserved. |
@@ -34,6 +34,12 @@ Phase 19 strengthens provider, resolver, degradation, cap, and redaction tests f
 Phase 28 adds public-facade saved-output evidence for six scoped face-shape rows: `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线`. The renderer/helper path records 102 ignored outputs and 30/30 top-region comparisons in `28-FACE-SHAPE-RENDERER-EVIDENCE.md`, with final closeout in `28-VERIFICATION.md`.
 
 `下颌线` remains a documented `jawSlim` alias and shares evidence with `下颌角`. The branch remains `partial` until the unscoped face-shape rows and broader `美型 / 五官` branches have their own SDK behavior and evidence.
+
+## Phase 48 Face Safety Evidence
+
+Phase 48 promotes exactly `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴` after Phase 45 public contract/private support, Phase 46 independent providers, Phase 47 strict public-output evidence, and Phase 48 final cap/degradation/convergence/privacy/boundary evidence. The exact current face/chin geometry inventory is nine fields.
+
+`去双下巴`, `去双下巴 Pro`, and `发际线` remain future because approved local semantic-region/segmentation implementations and reproducible clean-clone fixtures do not exist. Branch `脸型` stays `partial`; no Demo, device, commercial, performance, packaging, shipping, or launch-readiness claim is made.
 
 ## Phase 30 Eye Evidence
 
