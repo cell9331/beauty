@@ -123,7 +123,7 @@ Plans:
 
 **Requirements:** SAFE-01, SAFE-02, SAFE-03, DOC-01
 
-**Plans:** 2/6 plans executed
+**Plans:** 3/6 plans executed
 
 Plans:
 
@@ -137,7 +137,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 48-03-PLAN.md — Fail-closed boundary checker and fresh runtime/output/security evidence.
+- [x] 48-03-PLAN.md — Fail-closed boundary checker and fresh runtime/output/security evidence.
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
