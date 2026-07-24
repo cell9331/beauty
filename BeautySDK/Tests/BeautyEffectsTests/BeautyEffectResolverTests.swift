@@ -267,6 +267,62 @@ final class BeautyEffectResolverTests: XCTestCase {
         }
     }
 
+    func testSAFE01FinalFaceCapInputClassesAreExactAndRedacted() {
+        let inputs: [(name: String, value: Float, expected: Float, cappedCount: Double)] = [
+            ("zero", 0, 0, 0),
+            ("algorithmic neutral edge", Float.ulpOfOne, 0, 0),
+            ("exact cap", 0.25, 0.25, 0),
+            ("overflow", 1, 0.25, 1),
+            ("negative", -1, 0, 0),
+            ("nan", .nan, 0, 0),
+            ("positive infinity", .infinity, 0, 0),
+            ("negative infinity", -.infinity, 0, 0),
+        ]
+        let face = FaceGeometry.phase46AsymmetricComplete
+
+        XCTAssertEqual(phase46ResolverRows.count, 4)
+        XCTAssertEqual(Set(phase46ResolverRows.map(\.name)).count, 4)
+        for row in phase46ResolverRows {
+            for input in inputs {
+                let parameters = row.makeParameters(input.value)
+                let plan = BeautyEffectResolver.resolve(
+                    parameters: parameters,
+                    faceGeometry: face
+                )
+                let label = "\(row.name) \(input.name)"
+
+                XCTAssertEqual(
+                    plan.effectiveStrengths[keyPath: row.effectiveValue],
+                    input.expected,
+                    accuracy: 0.000_001,
+                    label
+                )
+                XCTAssertEqual(
+                    plan.metrics["beauty.effects.cappedCount"],
+                    input.cappedCount,
+                    label
+                )
+                XCTAssertEqual(
+                    plan.warnings.filter { $0.code == "beauty_strength_capped" }.count,
+                    input.cappedCount == 1 ? 1 : 0,
+                    label
+                )
+                XCTAssertEqual(
+                    row.emissionPoints(face, plan.effectiveStrengths).isEmpty,
+                    input.expected == 0,
+                    label
+                )
+                XCTAssertEqual(
+                    plan.activeDomains.contains(.faceShape),
+                    input.expected > 0,
+                    label
+                )
+                XCTAssertFalse(plan.skippedDomains.contains(.faceShape), label)
+                assertRedacted(plan)
+            }
+        }
+    }
+
     func testGEOMProviderEmptyFaceWorkIsRemovedBeforeDomainAndConflictAccounting() {
         let row = phase46ResolverRows[0]
         let face = FaceGeometry.phase46LocallyStraightContour

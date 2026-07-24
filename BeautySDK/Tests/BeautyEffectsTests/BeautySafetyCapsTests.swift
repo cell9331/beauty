@@ -3,6 +3,21 @@ import BeautyCore
 @testable import BeautyEffects
 
 final class BeautySafetyCapsTests: XCTestCase {
+    func testSAFE01FinalContourAndChinCapsAreExactlyPointTwoFive() {
+        let values: [(String, Float)] = [
+            ("faceContourSmooth", BeautySafetyCaps.faceContourSmooth),
+            ("templeFullness", BeautySafetyCaps.templeFullness),
+            ("cheekboneSlim", BeautySafetyCaps.cheekboneSlim),
+            ("chinTaper", BeautySafetyCaps.chinTaper),
+        ]
+
+        XCTAssertEqual(values.count, 4)
+        XCTAssertEqual(Set(values.map(\.0)).count, 4)
+        for (name, actual) in values {
+            XCTAssertEqual(actual, 0.25, accuracy: 0.000_001, name)
+        }
+    }
+
     func testEYE19FinalRemainingEyeCapsMatchExactContract() {
         let values: [(String, Float, Float)] = [
             ("eyeHeight", BeautySafetyCaps.eyeHeight, 0.35),

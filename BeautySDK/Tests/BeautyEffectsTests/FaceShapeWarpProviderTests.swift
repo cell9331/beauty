@@ -906,6 +906,14 @@ extension FaceGeometry {
         )
     )
 
+    static let phase48MalformedObservedContour = replacingObservedFaceSupport(
+        BeautyFaceSemanticSupport(
+            contour: [SIMD2<Float>(.infinity, .infinity)],
+            medianLine: [SIMD2<Float>(.infinity, .infinity)],
+            apexIndex: 0
+        )
+    )
+
     static let missingContour = FaceGeometry(
         bounds: FaceBounds(x: 0.30, y: 0.20, width: 0.40, height: 0.60),
         faceContour: []

@@ -11,7 +11,7 @@ enum BeautySafetyCaps {
     static let jawSlim: Float = 0.45
     static let chinLength: Float = 0.35
 
-    // Phase 46 provisional; Phase 48 owns final calibration/dead zones.
+    // Final evidence-backed contour/chin geometry caps (Phase 48).
     static let faceContourSmooth: Float = 0.25
     static let templeFullness: Float = 0.25
     static let cheekboneSlim: Float = 0.25

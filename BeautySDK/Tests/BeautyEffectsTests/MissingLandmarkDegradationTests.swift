@@ -35,6 +35,21 @@ private struct Phase46DegradationFieldRow {
     let requiredSupport: Phase46DegradationSupportClass
 }
 
+private enum Phase48FaceSupportClass: Equatable {
+    case compatibility
+    case contour
+    case contourAndCenterline
+}
+
+private struct Phase48FaceFieldRow {
+    let name: String
+    let parameter: WritableKeyPath<BeautyParameters, Float>
+    let effective: KeyPath<BeautyEffectiveStrengths, Float>
+    let emission: Phase46DegradationEmissionPath
+    let requiredSupport: Phase48FaceSupportClass
+    let requestedValue: Float
+}
+
 final class MissingLandmarkDegradationTests: XCTestCase {
     func testGEOMRepresentativeSupportAndFreshnessDegradationMatrix() {
         let parameters = phase46AllRequestedParameters
@@ -210,6 +225,100 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         assertRedacted(reused)
         assertRedacted(stale)
         assertRedacted(freshAgain)
+    }
+
+    func testSAFE01CompleteNineFieldFaceTransitionsAreFieldLocalAndStateless() {
+        let parameters = phase48AllFaceParameters
+        let freshFace = FaceGeometry.phase46AsymmetricComplete
+        let reusedFace = phase46Face(freshFace, freshness: .reused)
+        let staleFace = phase46Face(freshFace, freshness: .stale)
+        let fresh = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: freshFace)
+        let reused = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: reusedFace)
+        let stale = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: staleFace)
+        let noFace = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: nil)
+        let freshAgain = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: freshFace)
+
+        XCTAssertEqual(phase48FaceRows.count, 9)
+        XCTAssertEqual(Set(phase48FaceRows.map(\.name)).count, 9)
+        for row in phase48FaceRows {
+            XCTAssertEqual(
+                fresh.effectiveStrengths[keyPath: row.effective],
+                row.requestedValue,
+                accuracy: 0.000_001,
+                "fresh \(row.name)"
+            )
+            XCTAssertFalse(
+                row.emission.points(face: freshFace, strengths: fresh.effectiveStrengths).isEmpty,
+                "fresh \(row.name)"
+            )
+            XCTAssertEqual(
+                reused.effectiveStrengths[keyPath: row.effective],
+                row.requestedValue * 0.5,
+                accuracy: 0.000_001,
+                "reused \(row.name)"
+            )
+            XCTAssertFalse(
+                row.emission.points(face: reusedFace, strengths: reused.effectiveStrengths).isEmpty,
+                "reused \(row.name)"
+            )
+        }
+        XCTAssertEqual(reused.metrics["beauty.effects.reusedGeometryScale"], 0.5)
+
+        for (name, plan) in [("stale", stale), ("no face", noFace)] {
+            XCTAssertFalse(plan.activeDomains.contains(.faceShape), name)
+            XCTAssertTrue(plan.skippedDomains.contains(.faceShape), name)
+            XCTAssertNil(plan.metrics["beauty.effects.geometryPointCount"], name)
+            for row in phase48FaceRows where row.requiredSupport != .compatibility {
+                XCTAssertEqual(
+                    plan.effectiveStrengths[keyPath: row.effective],
+                    0,
+                    "\(name) \(row.name)"
+                )
+            }
+        }
+
+        let supportCases: [(String, FaceGeometry)] = [
+            ("observed contour missing", .phase46LegacyProxyOnly),
+            ("observed contour malformed", .phase48MalformedObservedContour),
+            ("centerline missing", .phase46CenterlineMissing),
+            ("centerline malformed", .phase46CenterlineIneligible),
+        ]
+        for (name, face) in supportCases {
+            let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: face)
+            for row in phase48FaceRows {
+                let shouldEmit: Bool
+                switch row.requiredSupport {
+                case .compatibility:
+                    shouldEmit = true
+                case .contour:
+                    shouldEmit = name.hasPrefix("centerline")
+                case .contourAndCenterline:
+                    shouldEmit = false
+                }
+                XCTAssertEqual(
+                    plan.effectiveStrengths[keyPath: row.effective] != 0,
+                    shouldEmit,
+                    "\(name) \(row.name)"
+                )
+                XCTAssertEqual(
+                    row.emission.points(face: face, strengths: plan.effectiveStrengths).isEmpty,
+                    !shouldEmit,
+                    "\(name) \(row.name)"
+                )
+            }
+            XCTAssertTrue(plan.activeDomains.contains(.faceShape), name)
+            XCTAssertFalse(plan.skippedDomains.contains(.faceShape), name)
+            assertRedacted(plan)
+        }
+
+        XCTAssertEqual(freshAgain, fresh)
+        XCTAssertEqual(
+            phase46NamedPoints(face: freshFace, strengths: freshAgain.effectiveStrengths),
+            phase46NamedPoints(face: freshFace, strengths: fresh.effectiveStrengths)
+        )
+        for plan in [fresh, reused, stale, noFace, freshAgain] {
+            assertRedacted(plan)
+        }
     }
 
     func testGEOMProviderEmptyNewFieldPreservesValidShippedSibling() {
@@ -1780,6 +1889,91 @@ final class MissingLandmarkDegradationTests: XCTestCase {
                 requiredSupport: .contourAndCenterline
             ),
         ]
+    }
+
+    private var phase48FaceRows: [Phase48FaceFieldRow] {
+        [
+            Phase48FaceFieldRow(
+                name: "faceSlim",
+                parameter: \.faceSlim,
+                effective: \.faceSlim,
+                emission: .face(\.faceSlim),
+                requiredSupport: .compatibility,
+                requestedValue: 0.05
+            ),
+            Phase48FaceFieldRow(
+                name: "faceSmall",
+                parameter: \.faceSmall,
+                effective: \.faceSmall,
+                emission: .face(\.faceSmall),
+                requiredSupport: .compatibility,
+                requestedValue: 0.05
+            ),
+            Phase48FaceFieldRow(
+                name: "faceVShape",
+                parameter: \.faceVShape,
+                effective: \.faceVShape,
+                emission: .face(\.faceVShape),
+                requiredSupport: .compatibility,
+                requestedValue: 0.05
+            ),
+            Phase48FaceFieldRow(
+                name: "jawSlim",
+                parameter: \.jawSlim,
+                effective: \.jawSlim,
+                emission: .face(\.jawSlim),
+                requiredSupport: .compatibility,
+                requestedValue: 0.05
+            ),
+            Phase48FaceFieldRow(
+                name: "chinLength",
+                parameter: \.chinLength,
+                effective: \.chinLength,
+                emission: .chin(\.chinLength),
+                requiredSupport: .compatibility,
+                requestedValue: -0.05
+            ),
+            Phase48FaceFieldRow(
+                name: "faceContourSmooth",
+                parameter: \.faceContourSmooth,
+                effective: \.faceContourSmooth,
+                emission: .face(\.faceContourSmooth),
+                requiredSupport: .contour,
+                requestedValue: 0.05
+            ),
+            Phase48FaceFieldRow(
+                name: "templeFullness",
+                parameter: \.templeFullness,
+                effective: \.templeFullness,
+                emission: .face(\.templeFullness),
+                requiredSupport: .contour,
+                requestedValue: 0.05
+            ),
+            Phase48FaceFieldRow(
+                name: "cheekboneSlim",
+                parameter: \.cheekboneSlim,
+                effective: \.cheekboneSlim,
+                emission: .face(\.cheekboneSlim),
+                requiredSupport: .contour,
+                requestedValue: 0.05
+            ),
+            Phase48FaceFieldRow(
+                name: "chinTaper",
+                parameter: \.chinTaper,
+                effective: \.chinTaper,
+                emission: .chin(\.chinTaper),
+                requiredSupport: .contourAndCenterline,
+                requestedValue: 0.05
+            ),
+        ]
+    }
+
+    private var phase48AllFaceParameters: BeautyParameters {
+        var parameters = BeautyParameters()
+        for row in phase48FaceRows {
+            parameters[keyPath: row.parameter] = row.requestedValue
+        }
+        return parameters
     }
 
     private var phase46AllRequestedParameters: BeautyParameters {
