@@ -32,7 +32,8 @@ CASE_GROUPS = {
     "face-shape": [
         "geometryBaseline_noop", "faceShapeCombo_0p35", "faceSlim_0p35",
         "faceSmall_0p35", "chinLength_plus0p30", "chinLength_minus0p30",
-        "faceVShape_0p35", "jawSlim_0p35",
+        "faceVShape_0p35", "jawSlim_0p35", "faceContourSmooth_0p25",
+        "templeFullness_0p25", "cheekboneSlim_0p25", "chinTaper_0p25",
     ],
     "eyes": [
         "eyeSize_0p35", "eyeDistance_plus0p25", "eyeDistance_minus0p25",

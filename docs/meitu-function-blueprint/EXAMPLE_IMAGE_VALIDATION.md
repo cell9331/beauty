@@ -6,7 +6,7 @@ This is the local visual-output gate for current public-facade renderer evidence
 
 Use real portrait fixtures from `example-images/input/`, run them through the `BeautySDK` public facade with `BeautyExampleRenderer`, and save visible outputs under `example-images/output/`.
 
-This validates the current skin, color, filter, Phase 27 geometry-output foundation, Phase 28 scoped face-shape renderer path, Phase 29 existing-eye-parameter path, and Phase 43 remaining-eye public-facade output path without adding SwiftUI screens, product routes, or broader branch completion scope.
+This validates the current skin, color, filter, Phase 27 geometry-output foundation, Phase 28 scoped face-shape renderer path, Phase 29 existing-eye-parameter path, Phase 43 remaining-eye path, and Phase 47 remaining-face public-facade output path without adding SwiftUI screens, product routes, or broader branch completion scope.
 
 ## Command
 
@@ -80,6 +80,15 @@ python3 .planning/phases/43-public-facade-eye-geometry-output-evidence/check_eye
   --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
 ```
 
+Run the Phase 47 remaining-face helper after the all-case renderer command:
+
+```bash
+python3 .planning/phases/47-public-facade-face-output-evidence/check_face_geometry_renderer_outputs.py \
+  --input example-images/input \
+  --output example-images/output \
+  --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
+```
+
 ## Output Rules
 
 - Output directory: `example-images/output/`.
@@ -104,6 +113,8 @@ python3 .planning/phases/43-public-facade-eye-geometry-output-evidence/check_eye
 - The Phase 39 helper verifies the discovered 44 × 7 = 308 matrix, 48/48 visibility, 18/18 signed-direction, 12/12 peak-independence, 18/18 plump-independence comparisons, and eight 64 × 64 no-face no-ops.
 - Phase 43 command results are recorded in `.planning/phases/43-public-facade-eye-geometry-output-evidence/43-EYE-OUTPUT-EVIDENCE.md`.
 - The Phase 43 helper verifies the discovered 55 × 7 = 385 matrix, 66/66 new-case visibility, 6/6 signed-tilt direct comparisons, 60/60 fixed semantic distinctions, complete aggregate eligibility inventory, and eleven 64 × 64 no-face no-ops. Gaze reduction is owned by the package-internal aggregate pupil-to-own-center evidence test; the helper's dark-core centroid experiment is adversarially self-tested but not accepted as fixture proof.
+- Phase 47 command results are recorded in `.planning/phases/47-public-facade-face-output-evidence/47-FACE-OUTPUT-EVIDENCE.md`.
+- The Phase 47 helper verifies the exact 59 × 7 = 413 matrix, 18/18 eligible visibility/locality comparisons, 49/49 fixed-neighbor distinctions, 6/6 ineligible portrait no-ops, and four 64 × 64 no-face no-ops. The exact 413-file gallery remains ignored and untracked.
 
 ## Current Built-In Cases
 
@@ -122,7 +133,6 @@ These cases are limited to effects that currently produce visible image output t
 | `filter_softClean_0p50` | Built-in `soft_clean` filter |
 | `filter_warmLight_0p50` | Built-in `warm_light` filter |
 | `skinCombo_0p50` | Combined basic skin parameters |
-| `geometryBaseline_noop` | No-geometry baseline using default parameters |
 | `faceShapeCombo_0p35` | Combined face-shape foundation case using `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, and `chinLength` |
 | `faceSlim_0p35` | Phase 28 `脸宽` evidence through existing `faceSlim` |
 | `faceSmall_0p35` | Phase 28 `小脸` evidence through existing `faceSmall` |
@@ -130,6 +140,10 @@ These cases are limited to effects that currently produce visible image output t
 | `chinLength_minus0p30` | Phase 28 `下巴长短` negative-direction evidence through existing `chinLength` |
 | `faceVShape_0p35` | Phase 28 `V脸` evidence through existing `faceVShape` |
 | `jawSlim_0p35` | Phase 28 `下颌角` and alias-backed `下颌线` evidence through existing `jawSlim` |
+| `faceContourSmooth_0p25` | Phase 47 isolated public-facade contour-smoothing output at provisional `0.25` |
+| `templeFullness_0p25` | Phase 47 isolated public-facade temple-fullness output at provisional `0.25` |
+| `cheekboneSlim_0p25` | Phase 47 isolated public-facade cheekbone-slim output at provisional `0.25` |
+| `chinTaper_0p25` | Phase 47 isolated public-facade chin-taper output at provisional `0.25` |
 | `eyeSize_0p35` | Phase 29 `大小` renderer evidence through existing `eyeSize` |
 | `eyeDistance_plus0p25` | Phase 29 positive-direction `眼距` renderer evidence through existing `eyeDistance` |
 | `eyeDistance_minus0p25` | Phase 29 negative-direction `眼距` renderer evidence through existing `eyeDistance` |
@@ -203,6 +217,16 @@ These cases are limited to effects that currently produce visible image output t
 - The package-internal `gazeCorrectionEvidence(face:strength:)` aggregate reports two eligible eyes with corrected pupil-to-own-center offset strictly below baseline, while neutral pupils no-op and contour tilt/asymmetry cannot alter the scalar. Contour, pupil/gaze, and measured-pair symmetry eligibility are each 6/6 portraits; the one explicit no-face fixture is excluded from those denominators and passes all eleven safe no-ops. The previous paired-eye RGB mirror score is retired because unrelated asymmetry could satisfy it.
 - The ignored gallery is an exact duplicate-free 55-case × seven-fixture bijection. No output or gallery PNG is tracked or staged.
 - These are observed public-facade output facts at provisional `0.25` inputs. Phase 44 retains final caps, exhaustive transitions/safety, active-source boundary closeout, exact ten-row promotion, and owner-ledger synchronization.
+
+## Phase 47 Remaining-Face Output Evidence Summary
+
+- The helper discovers exactly 59 live public renderer cases and seven recursive fixtures before fully decoding 413/413 regular same-dimension PNGs.
+- Four shared, watermark-safe top-origin regions are fixed across all fixtures: contour `(0.10,0.92,0.28,0.82)`, temple `(0.10,0.92,0.32,0.80)`, cheekbone `(0.20,0.82,0.24,0.65)`, and chin `(0.33,0.70,0.24,0.62)`.
+- Fixed visibility floors `(changed pixels / absolute RGB delta)` are `5000/15000`, `4000/18000`, `3500/20000`, and `1000/3000` respectively. All 18/18 eligible comparisons pass at a minimum 0.99 intended-region share with zero permitted outside signal.
+- Eligibility is fixed at `e2`-`e6` for contour/temple and `e2,e3,e5,e6` for cheekbone/chin. The six excluded portrait/field pairs are exact baseline no-ops rather than weak visibility passes.
+- Eleven constant comparator families pass 49/49 intended-region distinctions; all four new no-face outputs are exact no-ops in the fixed 2,048-pixel fallback.
+- Gallery publication enforces duplicate-free renderer set equality and produced exactly 413 ignored, untracked, unstaged review PNGs. Generated bytes remain disposable.
+- This closes saved-output evidence only. Phase 48 retains final caps, exhaustive degradation/transitions, exact four-row promotion, root owner synchronization, branch `脸型`, and all release-quality claims.
 
 ## Phase 30 Eye Safety Closeout Evidence
 

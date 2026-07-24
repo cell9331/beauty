@@ -36,7 +36,7 @@ The gallery groups current cases under:
 - `skin/`: `skinSmoothing_0p50`, `skinWhitening_0p50`, `skinRosy_0p40`, `skinSharpen_0p40`, `skinCombo_0p50`
 - `color/`: `brightness_plus0p25`, `contrast_plus0p25`
 - `filter/`: `filter_softClean_0p50`, `filter_warmLight_0p50`
-- `face-shape/`: `geometryBaseline_noop`, `faceShapeCombo_0p35`, `faceSlim_0p35`, `faceSmall_0p35`, `chinLength_plus0p30`, `chinLength_minus0p30`, `faceVShape_0p35`, `jawSlim_0p35`
+- `face-shape/`: `geometryBaseline_noop`, `faceShapeCombo_0p35`, `faceSlim_0p35`, `faceSmall_0p35`, `chinLength_plus0p30`, `chinLength_minus0p30`, `faceVShape_0p35`, `jawSlim_0p35`, `faceContourSmooth_0p25`, `templeFullness_0p25`, `cheekboneSlim_0p25`, `chinTaper_0p25`
 - `eyes/`: `eyeSize_0p35`, `eyeDistance_plus0p25`, `eyeDistance_minus0p25`, `eyeYPosition_plus0p20`, `eyeYPosition_minus0p20`, `eyeTailLift_0p25`
 - `eyes/` Phase 43 additions: `eyeHeight_0p25`, `eyeLength_0p25`, `upperEyelidLift_0p25`, `pupilSize_0p25`, `gazeCorrection_0p25`, `lowerEyelidDrop_0p25`, `eyeTilt_plus0p25`, `eyeTilt_minus0p25`, `innerCornerOpen_0p25`, `outerCornerOpen_0p25`, `eyeSymmetry_0p25`
 - `nose/`: `noseSlim_0p35`, `noseWingSlim_0p35`, `noseTipSize_plus0p30`, `noseTipSize_minus0p30`, `noseBridge_0p30`, `noseRootNarrowing_0p25`, `noseTipLift_0p25`
@@ -84,6 +84,19 @@ python3 .planning/phases/43-public-facade-eye-geometry-output-evidence/check_eye
 
 The helper discovers the live inventory before freezing exactly 55 cases × seven fixtures = 385 decoded same-dimension outputs. It gates eleven new cases in one fixed eye-local ROI at committed floors, proves positive/negative tilt polarity and nearest-neighbor family distinction, records six contour/pupil/symmetry-eligible portraits plus the explicit no-face safe-no-op pool, and keeps a self-tested dark-core centroid experiment separate from strict fixture acceptance. Automatic-gaze reduction is proven by the package-internal aggregate pupil-to-own-center evidence path; the retired RGB mirror score is not treated as gaze proof. Generated output and the exact 385-file gallery remain ignored and untracked. These are provisional public-facade output facts; Phase 44 owns final caps, exhaustive safety, boundary closeout, and exact promotion.
 
+Phase 47 remaining-face output evidence uses:
+
+```bash
+python3 .planning/phases/47-public-facade-face-output-evidence/check_face_geometry_renderer_outputs.py \
+  --input example-images/input \
+  --output example-images/output \
+  --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
+```
+
+The helper freezes exactly 59 cases × seven fixtures = 413 decoded same-dimension outputs. Four shared top-origin face regions use field-specific positive floors: contour `(0.10,0.92,0.28,0.82)` at `5000/15000`, temple `(0.10,0.92,0.32,0.80)` at `4000/18000`, cheekbone `(0.20,0.82,0.24,0.65)` at `3500/20000`, and chin `(0.33,0.70,0.24,0.62)` at `1000/3000` changed pixels / absolute RGB delta. Strict evidence passes 18/18 eligible visibility/locality comparisons, 49/49 fixed-neighbor distinctions, 6/6 ineligible portrait no-ops, and 4/4 no-face no-ops. The descriptor-safe gallery is an exact duplicate-free 413-file bijection; output and gallery remain ignored, untracked, and unstaged.
+
+These are provisional public-facade saved-output facts only. Phase 48 owns final caps, exhaustive safety/transitions, exact four-row promotion, owner synchronization, and branch closeout.
+
 Phase 36 remaining-nose output evidence uses:
 
 ```bash
@@ -115,3 +128,12 @@ The current gallery inventory is a duplicate-free exact bijection with all 44 re
 The unchanged renderer now has exactly 55 cases × 7 fixtures = 385 outputs. Strict live evidence passes 385/385 same-dimension decode, 66/66 visibility, 6/6 direct signed tilt, 60/60 semantic distinctions, 132/132 portrait comparisons, and 11/11 no-face no-ops. The post-`6e4704e` package aggregate proves pupil-to-own-center gaze reduction; image-only mirror evidence remains rejected.
 
 Output, gallery, staging, and quarantine artifacts remain ignored and untracked. Exactly ten remaining eye geometry rows are promoted; `去脂` and `祛红血丝` remain future and branch `眼睛` stays `partial`. These automated outputs do not establish subjective naturalness, physical-device parity, commercial approval, optimized performance, packaging, shipping, or launch readiness.
+
+## Phase 47 Remaining-Face Output Evidence
+
+- The public renderer contains exactly 59 cases and one shared `BeautyEngine.processResult` call; four isolated cases use provisional `0.25`.
+- A bounded strict helper accepts 413/413 regular, fully decoded, same-dimension PNGs with 16 MiB compressed, 4096 × 4096 dimension, and 64 MiB decoded budgets.
+- Eligibility is fixed at 5/6 portraits for contour/temple and 4/6 for cheekbone/chin. Accepted signal is entirely inside the fixed watermark-safe face regions; excluded pairs are exact no-ops.
+- All 18 visibility/locality, 49 fixed-neighbor, six ineligible-portrait, and four no-face checks pass.
+- One descriptor-safe publication produced exactly 413 ignored, untracked gallery PNGs with an exact renderer/gallery bijection.
+- The full aggregate record is `.planning/phases/47-public-facade-face-output-evidence/47-FACE-OUTPUT-EVIDENCE.md`. Final caps, exhaustive safety, promotion, root owners, branch `脸型`, and release-quality claims remain Phase 48 or future work.
