@@ -280,9 +280,9 @@ def check_public_geometry(root: Path, runner: Runner = default_runner) -> Result
     pattern = (
         r"(?:public|@_spi).*?(?:BeautyObservedFaceSupport|BeautyFaceSemanticSupport|"
         r"observedFaceSupport|ObservedFaceSupport|FaceSemanticSupport|"
-        r"(?:faceContour|medianLine).*(?:CoordinatePoint|SIMD[234]|coordinate|point|bounds|support))"
+        r"(?:leftEyebrow|rightEyebrow).*(?:CoordinatePoint|SIMD[234]|coordinate|point|bounds|support))"
     )
-    return rg_scan(root, "public/SPI face geometry", pattern, (SOURCE_ROOT,), runner=runner)
+    return rg_scan(root, "public/SPI eyebrow geometry", pattern, (SOURCE_ROOT,), runner=runner)
 
 
 APPROVED_CODABLE_PATHS = {
@@ -557,12 +557,56 @@ def check_artifacts(root: Path) -> Result:
     )
 
 
+def check_eyebrow_source_provenance(root: Path, runner: Runner = default_runner) -> Result:
+    required = ("leftEyebrow", "rightEyebrow", "BeautyObservedEyebrowSupport", "BeautyEyebrowSemanticSupport")
+    scopes = ("BeautySDK/Sources",)
+    for token in required:
+        outcome = run_search(("rg", "-n", "--no-heading", "--color", "never", token, *scopes), root, runner)
+        if outcome.state != "matches":
+            return Result("actual eyebrow source provenance", False, f"missing_marker={token}")
+    forbidden = rg_scan(
+        root,
+        "actual eyebrow source provenance",
+        r"syntheticEyebrow|generatedEyebrow|eyebrow.*(?:leftEye|rightEye)|(?:leftEye|rightEye).*eyebrow",
+        scopes,
+        runner=runner,
+    )
+    return Result(
+        "actual eyebrow source provenance",
+        forbidden.ok,
+        f"required_markers={len(required)}/{len(required)}; substitution_unclassified={int(not forbidden.ok)}",
+    )
+
+
+def check_phase49_scope(root: Path, runner: Runner = default_runner) -> Result:
+    pattern = (
+        r"eyebrow(?:Provider|Resolver|Renderer|Gallery|Facade|Promotion)|"
+        r"(?:provider|resolver|renderer|gallery|facade|promotion).*eyebrow"
+    )
+    return rg_scan(root, "Phase 49 downstream inertness", pattern, ("BeautySDK/Sources",), runner=runner)
+
+
+def check_fixture_preflight(root: Path) -> Result:
+    relative = "example-images/input/portraits/e1.png"
+    try:
+        fixture = safe_path(root, relative)
+        readable = os.access(fixture, os.R_OK)
+        nonempty = fixture.stat().st_size > 0
+    except Exception:
+        return Result("fixture preflight", False, "required_fixture_missing_or_unsafe=1")
+    return Result(
+        "fixture preflight",
+        readable and nonempty,
+        f"readable={int(readable)}; nonempty={int(nonempty)}; full_suite_run=0",
+    )
+
+
 def live_checks(root: Path, baseline: str = BASELINE_COMMIT) -> list[Result]:
     operations = (
         ("path/scope containment", lambda: check_paths(root)),
         ("manifest/Demo baseline", lambda: check_baseline(root, baseline)),
         ("public BeautyParameters inventory", lambda: check_public_inventory(root)),
-        ("public/SPI face geometry", lambda: check_public_geometry(root)),
+        ("public/SPI eyebrow geometry", lambda: check_public_geometry(root)),
         ("Codable/persistence allowlist", lambda: check_codable_persistence(root)),
         ("raw face diagnostic leakage", lambda: check_diagnostics(root)),
         ("network/cloud active-source paths", lambda: check_network(root)),
@@ -572,6 +616,8 @@ def live_checks(root: Path, baseline: str = BASELINE_COMMIT) -> list[Result]:
         ("deferred semantic-row scope", lambda: check_semantic_scope(root)),
         ("bundled preset byte/key neutrality", lambda: check_presets(root)),
         ("generated artifact containment", lambda: check_artifacts(root)),
+        ("actual eyebrow source provenance", lambda: check_eyebrow_source_provenance(root)),
+        ("Phase 49 downstream inertness", lambda: check_phase49_scope(root)),
     )
     return [result_from_exception(name, operation) for name, operation in operations]
 
@@ -644,7 +690,10 @@ def build_source_fixture(root: Path) -> Path:
     write_fixture(
         root,
         source,
-        "package struct BeautyObservedFaceSupport: Equatable, Sendable {}\n"
+        "package struct BeautyObservedEyebrowSupport: Equatable, Sendable {}\n"
+        "let leftEyebrow = true\n"
+        "let rightEyebrow = true\n"
+        "struct BeautyEyebrowSemanticSupport: Equatable, Sendable {}\n"
         "/// This value intentionally has no Codable or diagnostic representation.\n",
     )
     write_fixture(
@@ -767,7 +816,7 @@ def self_test() -> list[Result]:
             results.append(Result("self-test preset hash failure", not check_presets(root, expected).ok, "hash_mutation_rejected=1"))
             expected = build_preset_fixture(root)
             parsed = json.loads((root / first).read_text(encoding="utf-8"))
-            parsed["parameters"]["chinTaper"] = 0
+            parsed["parameters"]["eyebrowTilt"] = 0
             (root / first).write_text(json.dumps(parsed) + "\n", encoding="utf-8")
             expected[first] = hashlib.sha256((root / first).read_bytes()).hexdigest()
             results.append(Result("self-test preset key failure", not check_presets(root, expected).ok, "key_mutation_rejected=1"))
@@ -854,11 +903,50 @@ def self_test() -> list[Result]:
             source.write_text(source.read_text(encoding="utf-8") + "let doubleChin = true\n", encoding="utf-8")
             results.append(Result("self-test semantic scope failure", not check_semantic_scope(root).ok, "semantic_row_rejected=1"))
 
-    results.extend((
-        Result("self-test eyebrow source provenance mutation failure", False, "pending_source_gate=1"),
-        Result("self-test provider/resolver/renderer scope mutation failure", False, "pending_scope_gate=1"),
-        Result("self-test fixture preflight missing failure", False, "pending_preflight_gate=1"),
-    ))
+    with tempfile.TemporaryDirectory(prefix="phase49-eyebrow-") as temporary:
+        root = Path(temporary)
+        build_baseline_fixture(root)
+        source = build_source_fixture(root)
+        results.append(Result(
+            "self-test eyebrow source provenance positive",
+            check_eyebrow_source_provenance(root).ok,
+            "actual_markers_accepted=1",
+        ))
+        original = source.read_text(encoding="utf-8")
+        source.write_text(original.replace("leftEyebrow", "leftEye"), encoding="utf-8")
+        results.append(Result(
+            "self-test eyebrow source provenance mutation failure",
+            not check_eyebrow_source_provenance(root).ok,
+            "eye_substitution_rejected=1",
+        ))
+        source.write_text(original + "let syntheticEyebrowTrace = []\n", encoding="utf-8")
+        results.append(Result(
+            "self-test synthetic eyebrow mutation failure",
+            not check_eyebrow_source_provenance(root).ok,
+            "synthetic_trace_rejected=1",
+        ))
+        source.write_text(original + "let eyebrowProvider = true\n", encoding="utf-8")
+        results.append(Result(
+            "self-test provider/resolver/renderer scope mutation failure",
+            not check_phase49_scope(root).ok,
+            "downstream_activation_rejected=1",
+        ))
+
+    with tempfile.TemporaryDirectory(prefix="phase49-preflight-") as temporary:
+        root = Path(temporary)
+        results.append(Result(
+            "self-test fixture preflight missing failure",
+            not check_fixture_preflight(root).ok,
+            "missing_fixture_rejected=1",
+        ))
+        fixture = root / "example-images/input/portraits/e1.png"
+        fixture.parent.mkdir(parents=True)
+        fixture.write_bytes(b"fixture")
+        results.append(Result(
+            "self-test fixture preflight positive",
+            check_fixture_preflight(root).ok,
+            "readable_nonempty_fixture_accepted=1",
+        ))
 
     return results
 
@@ -875,6 +963,7 @@ def print_results(mode: str, results: Sequence[Result]) -> int:
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--self-test", action="store_true", help="run deterministic positive and adversarial fixtures")
+    parser.add_argument("--preflight-fixtures", action="store_true", help="verify the exact required fixture without running the full suite")
     parser.add_argument("--repo-root", type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
     if args.self_test:
@@ -883,6 +972,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         root = locate_repo(args.repo_root or Path(__file__).parent)
     except Exception as error:
         return print_results("startup", [Result("repository discovery", False, f"blocking_error={type(error).__name__}")])
+    if args.preflight_fixtures:
+        return print_results("fixture-preflight", [check_fixture_preflight(root)])
     return print_results("live", live_checks(root))
 
 
