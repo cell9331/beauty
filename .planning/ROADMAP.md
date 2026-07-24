@@ -123,13 +123,13 @@ Plans:
 
 **Requirements:** SAFE-01, SAFE-02, SAFE-03, DOC-01
 
-**Plans:** 0/6 plans complete
+**Plans:** 1/6 plans executed
 
 Plans:
 
 **Wave 1**
 
-- [ ] 48-01-PLAN.md — Final exact caps and exhaustive nine-field face safety/transitions.
+- [x] 48-01-PLAN.md — Final exact caps and exhaustive nine-field face safety/transitions.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -165,7 +165,7 @@ Plans:
 | 45. Public Contract and Observed Face Support | v1.12 | 5/5 | Complete    | 2026-07-23 |
 | 46. Independent Contour and Chin Geometry | v1.12 | 4/4 | Complete    | 2026-07-23 |
 | 47. Public-Facade Face Output Evidence | v1.12 | 3/3 | Complete    | 2026-07-24 |
-| 48. Face Safety and Scoped Closeout | v1.12 | 4 | Planned    |  |
+| 48. Face Safety and Scoped Closeout | v1.12 | 4 | In Progress|  |
 
 ## Backlog
 
