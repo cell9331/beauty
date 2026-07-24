@@ -1,6 +1,7 @@
 import CoreImage
 import XCTest
 import BeautyCore
+import BeautyDetection
 import BeautyResources
 @testable import BeautyEffects
 
@@ -61,7 +62,7 @@ final class CombinedEffectSafetyTests: XCTestCase {
         }
     }
 
-    func testGEOMConvergenceLoopHasExactThirtySevenRemovalCeiling() throws {
+    func testSAFE02ConvergenceLoopHasExactThirtySevenRemovalCeiling() throws {
         let testURL = URL(fileURLWithPath: #filePath)
         let sourceURL = testURL
             .deletingLastPathComponent()
@@ -74,6 +75,91 @@ final class CombinedEffectSafetyTests: XCTestCase {
         XCTAssertTrue(source.contains("Each pass can only remove fields"))
         XCTAssertTrue(source.contains("strengths: resolution.strengths"))
         XCTAssertTrue(source.contains(".sanitizing(retainedBaseline)"))
+    }
+
+    func testSAFE02AllThirtySevenFinalStrengthsMatchNamedProviderEmissionsAndDispatch() {
+        let face = phase48AllProviderGeometry
+        let plan = BeautyEffectResolver.resolve(
+            parameters: phase48AllGeometryParameters,
+            faceGeometry: face
+        )
+        let expectedScale: Float = 1 / 11.70
+        let faceEmissions = FaceShapeWarpProvider().fieldEmissions(
+            face: face,
+            strengths: plan.effectiveStrengths
+        )
+        let chinEmissions = ChinWarpProvider().fieldEmissions(
+            face: face,
+            strengths: plan.effectiveStrengths
+        )
+        let eyeEmissions = EyeWarpProvider().fieldEmissions(
+            face: face,
+            strengths: plan.effectiveStrengths
+        )
+        let noseEmissions = NoseWarpProvider().fieldEmissions(
+            face: face,
+            strengths: plan.effectiveStrengths
+        )
+        let mouthEmissions = MouthWarpProvider().fieldEmissions(
+            face: face,
+            strengths: plan.effectiveStrengths
+        )
+
+        let reflectedValues = Dictionary(
+            uniqueKeysWithValues: Mirror(reflecting: plan.effectiveStrengths).children.compactMap {
+                child -> (String, Float)? in
+                guard let name = child.label, let value = child.value as? Float else {
+                    return nil
+                }
+                return (name, value)
+            }
+        )
+        XCTAssertEqual(phase48GeometryFieldNames.count, 37)
+        for name in phase48GeometryFieldNames {
+            XCTAssertNotEqual(reflectedValues[name], 0, name)
+        }
+        XCTAssertEqual(plan.metrics["beauty.effects.weakenedCount"], 37)
+        XCTAssertEqual(
+            plan.metrics["beauty.effects.geometryStrengthScale"] ?? 0,
+            Double(expectedScale),
+            accuracy: 0.000_000_1
+        )
+        XCTAssertEqual(
+            plan.warnings.filter { $0.code == "combined_geometry_weakened" }.count,
+            1
+        )
+        XCTAssertTrue(plan.activeDomains.isSuperset(of: [.faceShape, .eyes, .nose, .mouth]))
+        XCTAssertTrue(plan.skippedDomains.intersection([.faceShape, .eyes, .nose, .mouth]).isEmpty)
+
+        var sanitized = faceEmissions.sanitizing(plan.effectiveStrengths)
+        sanitized = chinEmissions.sanitizing(sanitized)
+        sanitized = eyeEmissions.sanitizing(sanitized)
+        sanitized = noseEmissions.sanitizing(sanitized)
+        sanitized = mouthEmissions.sanitizing(sanitized)
+        XCTAssertEqual(
+            sanitized,
+            plan.effectiveStrengths,
+            "Every final nonzero field must own non-empty provider work from the same mask."
+        )
+
+        let expectedPoints =
+            faceEmissions.points +
+            chinEmissions.points +
+            eyeEmissions.points +
+            noseEmissions.points +
+            mouthEmissions.points
+        XCTAssertEqual(
+            BeautyGeometryEffectPipeline.controlPoints(
+                for: plan.effectiveStrengths,
+                face: face
+            ),
+            expectedPoints
+        )
+        XCTAssertEqual(
+            plan.metrics["beauty.effects.geometryPointCount"],
+            Double(expectedPoints.count)
+        )
+        assertCombinedMetadataRedacted(plan)
     }
 
     func testGEOMProviderEmptyFieldsNeverReenterAfterCombinedWeakening() {
@@ -567,6 +653,160 @@ final class CombinedEffectSafetyTests: XCTestCase {
             XCTAssertTrue(combined.activeDomains.isSuperset(of: [.faceShape, .eyes, .nose, .mouth, .lipColor]))
             assertCombinedMetadataRedacted(combined)
         }
+    }
+
+    private var phase48AllGeometryParameters: BeautyParameters {
+        BeautyParameters(
+            faceSlim: 1,
+            faceSmall: 1,
+            faceVShape: 1,
+            jawSlim: 1,
+            chinLength: -1,
+            faceContourSmooth: 1,
+            templeFullness: 1,
+            cheekboneSlim: 1,
+            chinTaper: 1,
+            eyeSize: 1,
+            eyeDistance: -1,
+            eyeYPosition: 1,
+            eyeTailLift: 1,
+            eyeHeight: 1,
+            eyeLength: 1,
+            upperEyelidLift: 1,
+            pupilSize: 1,
+            gazeCorrection: 1,
+            lowerEyelidDrop: 1,
+            eyeTilt: -1,
+            innerCornerOpen: 1,
+            outerCornerOpen: 1,
+            eyeSymmetry: 1,
+            noseSlim: 1,
+            noseWingSlim: 1,
+            noseTipSize: -1,
+            noseBridge: 1,
+            noseRootNarrowing: 1,
+            noseTipLift: 1,
+            mouthSize: -1,
+            mouthWidth: 1,
+            smile: 1,
+            mouthYPosition: -1,
+            mouthTilt: 1,
+            mouthXPosition: -1,
+            lipPeakDefinition: 1,
+            lipPlump: 1
+        )
+    }
+
+    private var phase48GeometryFieldNames: Set<String> {
+        [
+            "faceSlim", "faceSmall", "faceVShape", "jawSlim", "chinLength",
+            "faceContourSmooth", "templeFullness", "cheekboneSlim", "chinTaper",
+            "eyeSize", "eyeDistance", "eyeYPosition", "eyeTailLift", "eyeHeight",
+            "eyeLength", "upperEyelidLift", "pupilSize", "gazeCorrection",
+            "lowerEyelidDrop", "eyeTilt", "innerCornerOpen", "outerCornerOpen",
+            "eyeSymmetry", "noseSlim", "noseWingSlim", "noseTipSize", "noseBridge",
+            "noseRootNarrowing", "noseTipLift", "mouthSize", "mouthWidth", "smile",
+            "mouthYPosition", "mouthTilt", "mouthXPosition", "lipPeakDefinition",
+            "lipPlump",
+        ]
+    }
+
+    private var phase48AllProviderGeometry: FaceGeometry {
+        let base = FaceGeometry.phase46AsymmetricComplete
+        let observedContour = [
+            SIMD2<Float>(0.310, 0.360),
+            SIMD2<Float>(0.290, 0.440),
+            SIMD2<Float>(0.344, 0.520),
+            SIMD2<Float>(0.392, 0.620),
+            SIMD2<Float>(0.448, 0.730),
+            SIMD2<Float>(0.496, 0.800),
+            SIMD2<Float>(0.552, 0.710),
+            SIMD2<Float>(0.600, 0.600),
+            SIMD2<Float>(0.656, 0.490),
+            SIMD2<Float>(0.705, 0.410),
+            SIMD2<Float>(0.680, 0.340),
+        ]
+        let left = phase48EyeSupport(
+            side: .left,
+            contour: base.leftEye,
+            pupil: SIMD2<Float>(0.420, 0.380),
+            tilt: 0
+        )
+        let rightBase = phase48EyeSupport(
+            side: .right,
+            contour: base.rightEye,
+            pupil: SIMD2<Float>(0.580, 0.380),
+            tilt: 0.08
+        )
+        let right = BeautyEyeSemanticSupport(
+            side: rightBase.side,
+            contour: rightBase.contour,
+            upper: rightBase.upper,
+            lower: rightBase.lower,
+            inner: rightBase.inner,
+            outer: rightBase.outer,
+            corners: rightBase.corners,
+            center: rightBase.center,
+            pupil: rightBase.pupil,
+            span: SIMD2<Float>(rightBase.span.x + 0.01, rightBase.span.y),
+            tilt: rightBase.tilt
+        )
+        return FaceGeometry(
+            bounds: base.bounds,
+            faceContour: base.faceContour,
+            observedFaceSupport: BeautyFaceSemanticSupport(
+                contour: observedContour,
+                medianLine: base.observedFaceSupport?.medianLine,
+                apexIndex: 5
+            ),
+            leftEye: left.contour,
+            rightEye: right.contour,
+            nose: base.nose,
+            noseRoot: base.noseRoot,
+            noseTip: base.noseTip,
+            outerLips: base.outerLips,
+            upperLips: base.upperLips,
+            lowerLips: base.lowerLips,
+            innerLips: base.innerLips,
+            leftEyeSupport: left,
+            rightEyeSupport: right,
+            freshness: .fresh
+        )
+    }
+
+    private func phase48EyeSupport(
+        side: BeautyObservedEyeSide,
+        contour: [SIMD2<Float>],
+        pupil: SIMD2<Float>,
+        tilt: Float
+    ) -> BeautyEyeSemanticSupport {
+        let center = LandmarkGeometryHelper.center(of: contour)!
+        let upper = contour.filter { $0.y <= center.y }
+        let lower = contour.filter { $0.y >= center.y }
+        let outer = side == .left
+            ? contour.min { $0.x < $1.x }!
+            : contour.max { $0.x < $1.x }!
+        let inner = side == .left
+            ? contour.max { $0.x < $1.x }!
+            : contour.min { $0.x < $1.x }!
+        let xs = contour.map(\.x)
+        let ys = contour.map(\.y)
+        return BeautyEyeSemanticSupport(
+            side: side,
+            contour: contour,
+            upper: upper,
+            lower: lower,
+            inner: [inner],
+            outer: [outer],
+            corners: [outer, inner],
+            center: center,
+            pupil: pupil,
+            span: SIMD2<Float>(
+                xs.max()! - xs.min()!,
+                ys.max()! - ys.min()!
+            ),
+            tilt: tilt
+        )
     }
 
     private func assertCombinedMetadataRedacted(

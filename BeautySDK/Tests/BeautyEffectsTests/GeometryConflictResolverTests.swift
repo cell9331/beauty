@@ -146,7 +146,7 @@ final class GeometryConflictResolverTests: XCTestCase {
         XCTAssertEqual(resolved.strengths.lipPlump, 0.25 * expectedScale, accuracy: 0.000001)
     }
 
-    func testGEOMAllThirtySevenFieldsShareExactElevenPointSevenBaseline() {
+    func testSAFE02AllThirtySevenFieldsShareExactElevenPointSevenBaseline() {
         let independent = strengths(
             faceSlim: 1,
             faceSmall: 1,
@@ -195,6 +195,26 @@ final class GeometryConflictResolverTests: XCTestCase {
 
         XCTAssertEqual(rows.count, 37)
         XCTAssertEqual(Set(rows.map(\.name)).count, 37)
+        XCTAssertEqual(
+            rows.prefix(9).reduce(Float(0)) { $0 + abs($1.unscaled) },
+            3.35,
+            accuracy: 0.000_001
+        )
+        XCTAssertEqual(
+            rows.dropFirst(9).prefix(14).reduce(Float(0)) { $0 + abs($1.unscaled) },
+            4.10,
+            accuracy: 0.000_001
+        )
+        XCTAssertEqual(
+            rows.dropFirst(23).prefix(6).reduce(Float(0)) { $0 + abs($1.unscaled) },
+            1.80,
+            accuracy: 0.000_001
+        )
+        XCTAssertEqual(
+            rows.suffix(8).reduce(Float(0)) { $0 + abs($1.unscaled) },
+            2.45,
+            accuracy: 0.000_001
+        )
         XCTAssertEqual(expectedTotal, 11.70, accuracy: 0.000_001)
         XCTAssertEqual(independent.geometryTotal, expectedTotal, accuracy: 0.000_001)
         XCTAssertEqual(resolved.metrics["beauty.effects.weakenedCount"], 37)
