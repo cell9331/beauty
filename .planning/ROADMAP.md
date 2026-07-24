@@ -94,7 +94,7 @@ Plans:
 
 **Requirements:** OUT-01, OUT-02, OUT-03
 
-**Plans:** 1/3 plans executed
+**Plans:** 2/3 plans executed
 
 Plans:
 
@@ -104,7 +104,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 47-02-PLAN.md — Build the bounded strict helper and accept a clean 413-output face-local matrix.
+- [x] 47-02-PLAN.md — Build the bounded strict helper and accept a clean 413-output face-local matrix.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
