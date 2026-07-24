@@ -396,6 +396,7 @@ Current visual reference contracts:
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
+| Phase 49 freezes seven neutral eyebrow fields and accepts only actual request-scoped Apple Vision eyebrow traces. | Geometry phases need a compatibility-safe public contract and honest support provenance before providers, resolver routing, or output evidence can activate. | Verified in Phase 49; 411-test suite and boundary gates pass |
 | Product remains an SDK, not a standalone consumer app. | The user chose SDK plus complete Demo; v1 shipped reusable SDK boundaries and a validation Demo. | Good |
 | Demo should become a rich Meitu/Xingtu-style showcase. | v1 validated a broad Demo surface without making the Demo the primary product. | Good |
 | Demo uses modules only through the `BeautySDK` facade. | Facade-only Demo imports keep host integration realistic and are covered by tests/scans. | Good |
@@ -424,4 +425,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-07-24 after v1.13 milestone initialization*
+*Last updated: 2026-07-24 after Phase 49*

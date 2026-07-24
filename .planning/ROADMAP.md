@@ -19,7 +19,7 @@
 
 ## Phases
 
-- [ ] **Phase 49: Public Contract and Observed Eyebrow Support** — Exact 59-field compatibility, actual left/right Vision eyebrow mapping, open-trace validation, side/order canonicalization, and private lifecycle.
+- [x] **Phase 49: Public Contract and Observed Eyebrow Support** — Exact 59-field compatibility, actual left/right Vision eyebrow mapping, open-trace validation, side/order canonicalization, and private lifecycle. (completed 2026-07-24)
 - [ ] **Phase 50: Independent Eyebrow Geometry and Pipeline Integration** — Seven distinct named transforms, field-local eligibility, exact 44-field convergence, unified dispatch, and redacted facade routing.
 - [ ] **Phase 51: Public-Facade Eyebrow Output Evidence** — Thirteen isolated cases, strict 504-output direction/locality/distinction evidence, safe no-ops, and ignored gallery containment.
 - [ ] **Phase 52: Eyebrow Safety and Branch Closeout** — Final caps, complete transitions, active-source/privacy gates, exact seven-row promotion, and implemented branch status.
@@ -34,7 +34,7 @@
 
 **Requirements:** BROW-01, BROW-02, SUPP-01, SUPP-02, SUPP-03
 
-**Plans:** 5/5 plans executed
+**Plans:** 5/5 plans complete
 
 - [x] 49-01-PLAN.md
 - [x] 49-02-PLAN.md
@@ -104,7 +104,7 @@
 
 | Phase | Milestone | Requirements | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 49. Public Contract and Observed Eyebrow Support | v1.13 | 5 | In Progress|  |
+| 49. Public Contract and Observed Eyebrow Support | v1.13 | 5 | Complete    | 2026-07-24 |
 | 50. Independent Eyebrow Geometry and Pipeline Integration | v1.13 | 9 | Not started | — |
 | 51. Public-Facade Eyebrow Output Evidence | v1.13 | 3 | Not started | — |
 | 52. Eyebrow Safety and Branch Closeout | v1.13 | 4 | Not started | — |
