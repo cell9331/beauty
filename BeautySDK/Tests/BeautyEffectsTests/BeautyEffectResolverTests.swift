@@ -248,6 +248,45 @@ final class BeautyEffectResolverTests: XCTestCase {
         }
     }
 
+    func testBROW04FreshReusedStaleAndNoFaceLifecycleIsStateless() {
+        let parameters = BeautyParameters(eyebrowYPosition: 1)
+        let fresh = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: eyebrowResolverFace())
+        let reused = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: eyebrowResolverFace(freshness: .reused))
+        let stale = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: eyebrowResolverFace(freshness: .stale))
+        let noFace = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: nil)
+
+        XCTAssertEqual(fresh.effectiveStrengths.eyebrowYPosition, 0.25, accuracy: 0.000_001)
+        XCTAssertEqual(reused.effectiveStrengths.eyebrowYPosition, 0.125, accuracy: 0.000_001)
+        XCTAssertEqual(reused.metrics["beauty.effects.reusedGeometryScale"], 0.5)
+        XCTAssertEqual(stale.effectiveStrengths.eyebrowYPosition, 0)
+        XCTAssertEqual(noFace.effectiveStrengths.eyebrowYPosition, 0)
+        XCTAssertTrue(stale.skippedDomains.contains(.eyebrows))
+        XCTAssertTrue(noFace.skippedDomains.contains(.eyebrows))
+    }
+
+    func testBROW05ProviderEmptyRemovalIsFieldLocalAndAggregateOnly() {
+        let singleSide = eyebrowResolverFace(includeRight: false)
+        let mixed = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(eyebrowYPosition: 0.2, eyebrowSpacing: 0.2),
+            faceGeometry: singleSide
+        )
+        XCTAssertEqual(mixed.effectiveStrengths.eyebrowYPosition, 0.2, accuracy: 0.000_001)
+        XCTAssertEqual(mixed.effectiveStrengths.eyebrowSpacing, 0)
+        XCTAssertTrue(mixed.activeDomains.contains(.eyebrows))
+        XCTAssertNil(mixed.metrics["beauty.effects.skippedEyebrowDomains"])
+
+        let empty = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(eyebrowSpacing: 0.2),
+            faceGeometry: singleSide
+        )
+        XCTAssertEqual(empty.effectiveStrengths.eyebrowSpacing, 0)
+        XCTAssertTrue(empty.skippedDomains.contains(.eyebrows))
+        XCTAssertEqual(empty.metrics["beauty.effects.skippedEyebrowDomains"], 1)
+        XCTAssertEqual(empty.warnings.filter { $0.code == "eyebrow_inputs_missing" }.count, 1)
+        XCTAssertNil(empty.metrics["beauty.effects.geometryPointCount"])
+        assertRedacted(empty)
+    }
+
     func testGEOMFourFieldsRequireGeometryCapIndependentlyAndPreserveExplicitZeroPlan() {
         let omitted = BeautyParameters(
             faceSlim: 0.24,
