@@ -68,7 +68,7 @@
 
 ### 4.2 BeautyParameters
 
-`BeautyParameters` 是所有可调效果的唯一公共参数模型。Phase 45 后当前模型包含精确 **52 个 stored fields = 51 个 numeric fields + `filterId`**，覆盖基础皮肤、基础颜色、脸型、眼睛、鼻子、嘴巴和滤镜。
+`BeautyParameters` 是所有可调效果的唯一公共参数模型。Phase 49 后当前模型包含精确 **59 个 stored fields = 58 个 numeric fields + `filterId`**，覆盖基础皮肤、基础颜色、脸型、眼睛、鼻子、嘴巴、眉毛和滤镜。
 
 最低协议：
 
@@ -149,6 +149,14 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
 - `FaceGeometry.observedFaceSupport` is attached beside, and never substituted for, the exact seven-point synthetic `FaceGeometry.faceContour` compatibility proxy. A valid contour can remain contour-eligible when median or cross-support validation fails; invalid contour produces no observed semantic support. Existing face, eye, nose, and lip geometry remains unchanged.
 - Phase 45 stops at public storage and private support eligibility. None of the four new fields enters `requiresFaceGeometry`, effective strengths, safety caps, providers, conflict accounting, facade routing, renderer output, Demo behavior, or feature-ledger promotion. Phase 46 and later phases own those downstream contracts.
 
+### Phase 49 Public Eyebrow Contract and Observed-Support Design
+
+- The seven independent additions are signed `eyebrowYPosition`, `eyebrowThickness`, `eyebrowLength`, `eyebrowSpacing`, `eyebrowHeadSpacing`, and `eyebrowTilt` in `-1...1`, plus positive-only `eyebrowPeakDefinition` in `0...1`. Every value defaults to zero, finite overflow clamps to its range, and non-finite input normalizes to zero. The exact current model is **59 stored fields: 58 numeric fields plus `filterId`**. Complete unequal values round-trip and compare independently; reset, snapshot diff, and non-mutating normalization include all seven. Removing the seven keys reconstructs the compatible legacy 52-key payload, and the unchanged five bundled presets decode seven zeros; historical 31/33/38/48/52 counts remain historical fixtures.
+- `VisionFaceDetector` copies actual Apple Vision `leftEyebrow` and `rightEyebrow` coordinate values from the existing selected-face landmarks request. Each side is independently preflighted as a non-empty open path with at most 16 points before mapping; rejected sides map zero eyebrow points. Accepted points pass the request-local `CoordinateMapper` exactly once, with four fixed face-axis probes used only to derive mapper-consistent right/down axes.
+- Anatomical side is decided from the mapped side centroid on the mapper-derived right axis, and endpoint direction is inner-to-outer on the same axis. Canonicalization may reverse the whole array once and never sorts, closes, remaps, retries, or infers polygon winding. Eye contours, historical eye geometry, generated traces, and the synthetic face proxy are never eyebrow evidence.
+- `BeautyFaceGeometryAdapter` validates each canonical side independently as an exact-bit-unique finite closed-unit open path with **4...16** points, face-relative endpoint chord **0.08...0.50**, vertical span at most **0.25**, no non-adjacent segment intersection, and projection epsilon **0.000001**. A semantic trace preserves exact canonical points, inner/outer endpoints, arithmetic center, and only a unique interior apex above epsilon; apex is optional and not Phase 49 provider eligibility. `BeautyEyebrowSemanticSupport.left/right` remain independent optionals and `pairEligible` is true only when both distinct sides survive.
+- Raw `BeautyObservedEyebrowSupport` and derived `BeautyEyebrowSemanticSupport` are immutable, package/internal, non-Codable, request-scoped values attached as `observedEyebrowSupport` on the observation and `FaceGeometry`. Phase 49 keeps every new scalar inert: no face-geometry trigger, effective strength, provider, resolver/conflict case, facade route, render/output/gallery case, Demo/UI behavior, or row promotion exists. Phase 50 owns provider and routing behavior; Phases 51-52 own output and safety/promotion.
+
 Rules:
 
 - `0` means no effect for numeric parameters unless the field is explicitly bidirectional.
@@ -156,7 +164,7 @@ Rules:
 - All setters or initializers must clamp invalid values before rendering.
 - `process` must not mutate the caller's parameter value.
 - Adding a public parameter requires updating this file and `PRODUCT_SENSE.md` acceptance criteria.
-- Complete makeup, background segmentation, body shape, teeth whitening, eyebrows, and advanced eye/nose/mouth parameters are post-1.0 extensions.
+- Complete makeup, background segmentation, body shape, teeth whitening, and remaining advanced retouch parameters are post-1.0 extensions; Phase 49 eyebrow values are public neutral storage until Phase 50 routing.
 
 ### 4.3 BeautyPreset
 
