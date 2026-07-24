@@ -53,8 +53,8 @@ created: 2026-07-24
 | 50-05-02 | 05 | 4 | PIPE-01, PIPE-02 | T-50-13 | Exactly-once eyebrow insertion in unified dispatch | integration | `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyEffectsTests.BeautyGeometryEffectPipelineTests` | ✅ extend | ✅ 3/3 |
 | 50-05-03 | 05 | 4 | GEOM-01–07, PIPE-01 | T-50-14 | Redacted public-facade routing and request isolation | integration | `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyCoreTests.BeautyEngineGeometryFacadeTests` | ✅ extend | ✅ 18/18 |
 | 50-06-01 | 06 | 5 | GEOM-01–07, PIPE-01–02 | T-50-15–17 | Fresh complete evidence; failed or stale output cannot become proof | full/static | fixture + checker + focused + BeautyEffects + full SwiftPM gate below | ✅ | ✅ 433/433, 3 opt-in skips |
-| 50-06-02 | 06 | 5 | GEOM-01–07, PIPE-01–02 | T-50-16, T-50-17 | Owner contracts preserve privacy, boundaries, and downstream nonclaims | static | `python3 .planning/phases/50-independent-eyebrow-geometry-and-pipeline-integration/check_eyebrow_geometry_boundaries.py && rg -n "Phase 50|provisional|44|13\.45|Phase 51|Phase 52" ARCHITECTURE.md DESIGN.md SECURITY.md` | ✅ extend | ⬜ pending |
-| 50-06-03 | 06 | 5 | GEOM-01–07, PIPE-01–02 | T-50-15–17 | Reliability, acceptance, and ledger claims match fresh bounded evidence | static | `python3 .planning/phases/50-independent-eyebrow-geometry-and-pipeline-integration/check_eyebrow_geometry_boundaries.py && rg -n "Phase 50|GEOM-01|GEOM-07|PIPE-01|PIPE-02|Phase 51|Phase 52" RELIABILITY.md PRODUCT_SENSE.md PLANS.md` | ✅ extend | ⬜ pending |
+| 50-06-02 | 06 | 5 | GEOM-01–07, PIPE-01–02 | T-50-16, T-50-17 | Owner contracts preserve privacy, boundaries, and downstream nonclaims | static | owner checker/grep/diff command | ✅ | ✅ passed |
+| 50-06-03 | 06 | 5 | GEOM-01–07, PIPE-01–02 | T-50-15–17 | Reliability, acceptance, and ledger claims match fresh bounded evidence | static | owner checker/grep/diff command | ✅ | ✅ passed |
 
 ---
 

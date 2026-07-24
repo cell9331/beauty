@@ -36,7 +36,7 @@
 | Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve legacy 52-key compatibility and all shipped face/eye/nose/mouth output while the current model is exactly 59 stored fields. |
 | Requirements | 21/21 mapped across Phase 49-52; no unmapped requirement. |
 | Roadmap | Phase 49 contract/support → Phase 50 geometry/pipeline → Phase 51 strict output → Phase 52 safety/promotion. |
-| Current step | Phase 50 Plans 50-01 through 50-05 complete; Plan 50-06 fresh verification and owner closeout is next and has not been executed. |
+| Current step | Phase 50 Plans 50-01 through 50-06 are complete. Phase transition was intentionally not performed; Phase 51 remains the next planned owner of decoded output/gallery evidence. |
 
 Phase 49 closeout record (2026-07-24):
 
@@ -53,6 +53,24 @@ Planned follow-on milestones:
 - v1.16: `去双下巴`, `去双下巴 Pro`, and narrow facial-feature closeout.
 
 ## 4. Completed
+
+### C-2026-07-24-phase-50-independent-eyebrow-geometry-and-pipeline
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-24 |
+| Scope | Six plans across five waves completed GEOM-01..GEOM-07 and PIPE-01/PIPE-02 at compiled SDK-core provider/routing scope. |
+| Decisions | Adopted A1 dedicated `.eyebrows`; A2 provisional seven `0.25` caps and `13.45` total; A3 provisional geometry constants; A4 image-Y/tilt sign; A5 endpoint/apex weights; A6 reused exact `0.5`; A7 phase-local checker. |
+| Verification | Fixture preflight; checker 4/4 self/live; focused 11/26/14/15/48/3/18; BeautyEffects 243 with one opt-in skip; full SwiftPM 433 with three opt-in skips; privacy/scope/artifact/ledger/diff gates pass. |
+| Requirements | GEOM-01, GEOM-02, GEOM-03, GEOM-04, GEOM-05, GEOM-06, GEOM-07, PIPE-01, and PIPE-02 complete. |
+| Boundary | Phase 51 retains decoded output/gallery ownership; Phase 52 retains final caps, exhaustive safety, seven-row/branch promotion, and QUALITY_SCORE/feature-ledger ownership. No phase transition is performed here. |
+
+Outcome:
+
+- Seven distinct canonical-trace providers converge through one exact 44-name monotone mask and one stable Face→Chin→Eye→Eyebrow→Nose→Mouth dispatch; final arrays, aggregate metrics, and facade routing agree.
+- Side/pair/chord/apex, provider-empty, freshness, sequential, and concurrent evidence is field-local and request-isolated. Raw geometry remains package-only; public evidence remains aggregate and redacted.
+- The renderer/gallery inventory remains 59 and all seven eyebrow product rows remain `future`. v1.14-v1.16, Demo/UI, device, commercial, performance, packaging, shipping, and release readiness remain unclaimed.
+- Makeup/texture synthesis, synthetic or eye-derived substitution, and ethical/naturalness prohibitions remain `unverified` inputs for `$gsd-secure-phase`; passing concrete scans does not verify those descriptors.
 
 ### C-2026-07-24-phase-50-plan-05-combined-safety-and-unified-dispatch
 
