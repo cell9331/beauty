@@ -57,10 +57,10 @@
 
 **Requirements:** GEOM-01, GEOM-02, GEOM-03, GEOM-04, GEOM-05, GEOM-06, GEOM-07, PIPE-01, PIPE-02
 
-**Plans:** 0/6 plans executed
+**Plans:** 1/6 plans executed
 **Wave 1**
 
-- [ ] 50-01-PLAN.md
+- [x] 50-01-PLAN.md
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -125,7 +125,7 @@
 | Phase | Milestone | Requirements | Status | Completed |
 | --- | --- | --- | --- | --- |
 | 49. Public Contract and Observed Eyebrow Support | v1.13 | 5 | Complete    | 2026-07-24 |
-| 50. Independent Eyebrow Geometry and Pipeline Integration | v1.13 | 9 | Planned    |  |
+| 50. Independent Eyebrow Geometry and Pipeline Integration | v1.13 | 9 | In Progress|  |
 | 51. Public-Facade Eyebrow Output Evidence | v1.13 | 3 | Not started | — |
 | 52. Eyebrow Safety and Branch Closeout | v1.13 | 4 | Not started | — |
 
