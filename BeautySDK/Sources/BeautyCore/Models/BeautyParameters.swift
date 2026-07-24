@@ -38,6 +38,14 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
     public var outerCornerOpen: Float
     public var eyeSymmetry: Float
 
+    public var eyebrowYPosition: Float
+    public var eyebrowThickness: Float
+    public var eyebrowLength: Float
+    public var eyebrowSpacing: Float
+    public var eyebrowHeadSpacing: Float
+    public var eyebrowTilt: Float
+    public var eyebrowPeakDefinition: Float
+
     public var noseSlim: Float
     public var noseWingSlim: Float
     public var noseTipSize: Float
@@ -94,6 +102,13 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         case innerCornerOpen
         case outerCornerOpen
         case eyeSymmetry
+        case eyebrowYPosition
+        case eyebrowThickness
+        case eyebrowLength
+        case eyebrowSpacing
+        case eyebrowHeadSpacing
+        case eyebrowTilt
+        case eyebrowPeakDefinition
         case noseSlim
         case noseWingSlim
         case noseTipSize
@@ -149,6 +164,13 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         innerCornerOpen: Float = 0,
         outerCornerOpen: Float = 0,
         eyeSymmetry: Float = 0,
+        eyebrowYPosition: Float = 0,
+        eyebrowThickness: Float = 0,
+        eyebrowLength: Float = 0,
+        eyebrowSpacing: Float = 0,
+        eyebrowHeadSpacing: Float = 0,
+        eyebrowTilt: Float = 0,
+        eyebrowPeakDefinition: Float = 0,
         noseSlim: Float = 0,
         noseWingSlim: Float = 0,
         noseTipSize: Float = 0,
@@ -205,6 +227,14 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         self.innerCornerOpen = Self.clampUnit(innerCornerOpen)
         self.outerCornerOpen = Self.clampUnit(outerCornerOpen)
         self.eyeSymmetry = Self.clampUnit(eyeSymmetry)
+
+        self.eyebrowYPosition = Self.clampSigned(eyebrowYPosition)
+        self.eyebrowThickness = Self.clampSigned(eyebrowThickness)
+        self.eyebrowLength = Self.clampSigned(eyebrowLength)
+        self.eyebrowSpacing = Self.clampSigned(eyebrowSpacing)
+        self.eyebrowHeadSpacing = Self.clampSigned(eyebrowHeadSpacing)
+        self.eyebrowTilt = Self.clampSigned(eyebrowTilt)
+        self.eyebrowPeakDefinition = Self.clampUnit(eyebrowPeakDefinition)
 
         self.noseSlim = Self.clampUnit(noseSlim)
         self.noseWingSlim = Self.clampUnit(noseWingSlim)
@@ -265,6 +295,13 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             innerCornerOpen: try container.decodeFloatIfPresent(.innerCornerOpen),
             outerCornerOpen: try container.decodeFloatIfPresent(.outerCornerOpen),
             eyeSymmetry: try container.decodeFloatIfPresent(.eyeSymmetry),
+            eyebrowYPosition: try container.decodeFloatIfPresent(.eyebrowYPosition),
+            eyebrowThickness: try container.decodeFloatIfPresent(.eyebrowThickness),
+            eyebrowLength: try container.decodeFloatIfPresent(.eyebrowLength),
+            eyebrowSpacing: try container.decodeFloatIfPresent(.eyebrowSpacing),
+            eyebrowHeadSpacing: try container.decodeFloatIfPresent(.eyebrowHeadSpacing),
+            eyebrowTilt: try container.decodeFloatIfPresent(.eyebrowTilt),
+            eyebrowPeakDefinition: try container.decodeFloatIfPresent(.eyebrowPeakDefinition),
             noseSlim: try container.decodeFloatIfPresent(.noseSlim),
             noseWingSlim: try container.decodeFloatIfPresent(.noseWingSlim),
             noseTipSize: try container.decodeFloatIfPresent(.noseTipSize),
@@ -322,6 +359,13 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             innerCornerOpen: innerCornerOpen,
             outerCornerOpen: outerCornerOpen,
             eyeSymmetry: eyeSymmetry,
+            eyebrowYPosition: eyebrowYPosition,
+            eyebrowThickness: eyebrowThickness,
+            eyebrowLength: eyebrowLength,
+            eyebrowSpacing: eyebrowSpacing,
+            eyebrowHeadSpacing: eyebrowHeadSpacing,
+            eyebrowTilt: eyebrowTilt,
+            eyebrowPeakDefinition: eyebrowPeakDefinition,
             noseSlim: noseSlim,
             noseWingSlim: noseWingSlim,
             noseTipSize: noseTipSize,

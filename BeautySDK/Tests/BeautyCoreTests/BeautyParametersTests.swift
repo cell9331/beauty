@@ -138,10 +138,24 @@ final class BeautyParametersTests: XCTestCase {
             ],
             Array(repeating: Float(0), count: 7)
         )
-        XCTAssertEqual(sourceStyle, reset == sourceStyle ? reset : sourceStyle)
+        XCTAssertNotEqual(sourceStyle, reset)
         XCTAssertEqual(reset, BeautyParameters())
-        XCTAssertNotEqual(reset, BeautyParameters(eyebrowYPosition: 0.1))
-        XCTAssertNotEqual(reset, BeautyParameters(eyebrowPeakDefinition: 0.1))
+        let fieldSnapshots = [
+            BeautyParameters(eyebrowYPosition: 0.1),
+            BeautyParameters(eyebrowThickness: 0.2),
+            BeautyParameters(eyebrowLength: 0.3),
+            BeautyParameters(eyebrowSpacing: 0.4),
+            BeautyParameters(eyebrowHeadSpacing: 0.5),
+            BeautyParameters(eyebrowTilt: 0.6),
+            BeautyParameters(eyebrowPeakDefinition: 0.7),
+        ]
+        XCTAssertEqual(fieldSnapshots.count, 7)
+        for (index, snapshot) in fieldSnapshots.enumerated() {
+            XCTAssertNotEqual(reset, snapshot)
+            for other in fieldSnapshots.dropFirst(index + 1) {
+                XCTAssertNotEqual(snapshot, other)
+            }
+        }
     }
 
     func testFACE07FACE08FACE09FACE12PositiveOnlyInputsNormalizeIndependently() {
@@ -212,7 +226,7 @@ final class BeautyParametersTests: XCTestCase {
             "chinTaper",
         ]
 
-        XCTAssertEqual(labels.count, 52)
+        XCTAssertEqual(labels.count, 59)
         for field in expected {
             XCTAssertEqual(labels.filter { $0 == field }.count, 1, "independent storage for \(field)")
         }
@@ -237,7 +251,7 @@ final class BeautyParametersTests: XCTestCase {
         let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
         let decoded = try JSONDecoder().decode(BeautyParameters.self, from: data)
 
-        XCTAssertEqual(object.count, 52)
+        XCTAssertEqual(object.count, 59)
         XCTAssertEqual(decoded, parameters)
         XCTAssertEqual(
             Set([
@@ -252,7 +266,11 @@ final class BeautyParametersTests: XCTestCase {
         XCTAssertEqual(decoded.chinLength, -0.64, accuracy: 0.0001)
 
         var legacy = object
-        for key in ["faceContourSmooth", "templeFullness", "cheekboneSlim", "chinTaper"] {
+        for key in [
+            "faceContourSmooth", "templeFullness", "cheekboneSlim", "chinTaper",
+            "eyebrowYPosition", "eyebrowThickness", "eyebrowLength", "eyebrowSpacing",
+            "eyebrowHeadSpacing", "eyebrowTilt", "eyebrowPeakDefinition",
+        ] {
             legacy.removeValue(forKey: key)
         }
         XCTAssertEqual(legacy.count, 48)
@@ -378,7 +396,7 @@ final class BeautyParametersTests: XCTestCase {
             "eyeSymmetry",
         ]
 
-        XCTAssertEqual(labels.count, 52)
+        XCTAssertEqual(labels.count, 59)
         XCTAssertTrue(expected.isSubset(of: labels))
         XCTAssertEqual(expected.count, 10)
         for field in expected {
@@ -421,6 +439,8 @@ final class BeautyParametersTests: XCTestCase {
             "eyeHeight", "eyeLength", "upperEyelidLift", "pupilSize", "gazeCorrection",
             "lowerEyelidDrop", "eyeTilt", "innerCornerOpen", "outerCornerOpen", "eyeSymmetry",
             "faceContourSmooth", "templeFullness", "cheekboneSlim", "chinTaper",
+            "eyebrowYPosition", "eyebrowThickness", "eyebrowLength", "eyebrowSpacing",
+            "eyebrowHeadSpacing", "eyebrowTilt", "eyebrowPeakDefinition",
         ] {
             legacy.removeValue(forKey: key)
         }
@@ -470,7 +490,7 @@ final class BeautyParametersTests: XCTestCase {
         let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
         let decoded = try JSONDecoder().decode(BeautyParameters.self, from: data)
 
-        XCTAssertEqual(object.count, 52)
+        XCTAssertEqual(object.count, 59)
         XCTAssertEqual(decoded, parameters)
         XCTAssertEqual(decoded.eyeHeight, 0.21, accuracy: 0.0001)
         XCTAssertEqual(decoded.eyeLength, 0.32, accuracy: 0.0001)
@@ -515,7 +535,7 @@ final class BeautyParametersTests: XCTestCase {
     func testPhase38MOUTH01DefaultsAreZeroEffectAndExpose38StoredFields() {
         let parameters = BeautyParameters()
 
-        XCTAssertEqual(Mirror(reflecting: parameters).children.count, 52)
+        XCTAssertEqual(Mirror(reflecting: parameters).children.count, 59)
         XCTAssertEqual(parameters.skinSmoothing, 0)
         XCTAssertEqual(parameters.skinWhitening, 0)
         XCTAssertEqual(parameters.skinRosy, 0)
@@ -915,7 +935,7 @@ final class BeautyParametersTests: XCTestCase {
         let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
         let decoded = try JSONDecoder().decode(BeautyParameters.self, from: data)
 
-        XCTAssertEqual(object.count, 52)
+        XCTAssertEqual(object.count, 59)
         XCTAssertEqual(decoded, parameters)
         XCTAssertEqual(decoded.noseRootNarrowing, 0.21, accuracy: 0.0001)
         XCTAssertEqual(decoded.noseTipLift, 0.37, accuracy: 0.0001)
@@ -985,7 +1005,7 @@ final class BeautyParametersTests: XCTestCase {
         let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
         let decoded = try JSONDecoder().decode(BeautyParameters.self, from: data)
 
-        XCTAssertEqual(object.count, 52)
+        XCTAssertEqual(object.count, 59)
         XCTAssertEqual(decoded, parameters)
         XCTAssertEqual(decoded.mouthYPosition, -0.11, accuracy: 0.0001)
         XCTAssertEqual(decoded.mouthTilt, 0.22, accuracy: 0.0001)
