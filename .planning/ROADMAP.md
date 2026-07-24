@@ -123,6 +123,34 @@ Plans:
 
 **Requirements:** SAFE-01, SAFE-02, SAFE-03, DOC-01
 
+**Plans:** 0/6 plans complete
+
+Plans:
+
+**Wave 1**
+
+- [ ] 48-01-PLAN.md — Final exact caps and exhaustive nine-field face safety/transitions.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 48-02-PLAN.md — Exact 37-field one-baseline convergence and provider agreement.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 48-03-PLAN.md — Fail-closed boundary checker and fresh runtime/output/security evidence.
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 48-04-PLAN.md — Atomic exact four-row blueprint promotion.
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 48-05-PLAN.md — Example-image and root-owner synchronization.
+
+**Wave 6** *(blocked on Wave 5 completion)*
+
+- [ ] 48-06-PLAN.md — Planning closeout, goal verification, and milestone-audit handoff.
+
 **Success criteria:**
 
 1. Exact caps/dead zones and no-face, missing, malformed, provider-empty, fresh, reused, and stale transitions pass for all four new fields and the complete nine-field face inventory.
@@ -137,7 +165,7 @@ Plans:
 | 45. Public Contract and Observed Face Support | v1.12 | 5/5 | Complete    | 2026-07-23 |
 | 46. Independent Contour and Chin Geometry | v1.12 | 4/4 | Complete    | 2026-07-23 |
 | 47. Public-Facade Face Output Evidence | v1.12 | 3/3 | Complete    | 2026-07-24 |
-| 48. Face Safety and Scoped Closeout | v1.12 | 4 | Not started | — |
+| 48. Face Safety and Scoped Closeout | v1.12 | 4 | Planned    |  |
 
 ## Backlog
 
