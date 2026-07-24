@@ -448,6 +448,49 @@
 - Sessions: one autonomous v1.11 chain with phase resumptions and an independent milestone audit.
 - Notable: Runtime implementation and tests were stable; strict saved-output evidence and current-owner documentation synchronization dominated closeout time.
 
+## Milestone: v1.12 - Face Shape Remaining Capabilities
+
+**Shipped:** 2026-07-24
+**Phases:** 4 | **Plans:** 20
+
+### What Was Built
+
+- Added four independent positive-only face controls to an exact 52-field public model while preserving legacy source, JSON, preset, and shipped resolver behavior.
+- Added request-scoped, package-internal observed face contour and median support with bounded mapping, canonicalization, topology validation, and region-local fail-closed behavior.
+- Added four distinct contour/chin providers and one provider-eligible 37-field/11.70 convergence and dispatch path without changing shipped face/chin arrays.
+- Proved 59 public-facade cases across seven fixtures (413 outputs), strict face-local comparisons, safe no-ops, and ignored-gallery containment.
+- Locked final caps, complete nine-field transitions, redacted diagnostics, exact four-row promotion, synchronized owners, and an 18/18 independent audit while preserving three semantic-region blockers.
+
+### What Worked
+
+- Splitting public compatibility, observed support, provider behavior, saved-output evidence, and final promotion into separate phases kept provenance and completion claims independently testable.
+- RED-first provider/resolver/degradation contracts exposed missing routing before production changes and made the final 37-field accounting measurable.
+- Self-tested boundary checkers plus immutable aggregate evidence owners made the independent audit a deterministic rerun across runtime, privacy, output, and documentation.
+
+### What Was Inefficient
+
+- The original semantic-region scope required an early feasibility correction because no approved local model and clean-clone fixtures existed; recording that blocker before implementation prevented larger rework.
+- Code-review convergence in Phase 45 required several small topology and redaction fixes that would have been cheaper with adversarial open-path and reflection fixtures in the first plan.
+- The archive primitive moved canonical artifacts but still required explicit ROADMAP, PROJECT, STATE, PLANS, retrospective, requirements-removal, and tag lifecycle work.
+
+### Patterns Established
+
+- New observed face semantics must live beside, never replace, the shipped seven-point compatibility proxy.
+- Open-path biometric-adjacent support needs exact point ceilings, topology predicates, request-local lifetime, aggregate-only diagnostics, and structural-reflection redaction.
+- Promotion remains an atomic final transaction after public compatibility, provider eligibility, decoded output, safety transitions, active-source boundaries, owner synchronization, and independent audit all agree.
+
+### Key Lessons
+
+1. Run feasibility checks for semantic-resource rows before roadmap lock; when approved local resources are absent, narrow scope explicitly instead of substituting geometric proxies.
+2. Treat provider-eligible named emissions as the sole retained-set authority for totals, weakening, metrics, and dispatch.
+3. Keep lifecycle archive work explicit after the CLI move so root planning files cannot continue to advertise an already-shipped milestone as active.
+
+### Cost Observations
+
+- Model mix: quality profile across autonomous planning, implementation, review, verification, security, and lifecycle audit.
+- Sessions: one autonomous v1.12 chain with phase resumptions and an independent milestone audit.
+- Notable: Phase 45 review convergence dominated corrective work; later phases benefited from stable boundary checkers and exact owner gates.
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -464,6 +507,7 @@
 | v1.9 | autonomous | 3 | Added independent remaining-nose contracts, adversarial review loops, atomic six-row branch promotion, and a 15/15 audit. |
 | v1.10 | autonomous | 3 | Added independent remaining-mouth contracts, explicit private lip supports, strict 308-output evidence, and a 17/17 audit. |
 | v1.11 | autonomous | 4 | Added private observed eye support, fourteen named emissions, strict 385-output evidence, exact ten-row promotion, and a 24/24 audit. |
+| v1.12 | autonomous | 4 | Added private observed face support, four independent contour/chin providers, strict 413-output evidence, exact four-row promotion, and an 18/18 audit. |
 
 ### Cumulative Quality
 
@@ -479,6 +523,7 @@
 | v1.9 | 228 SDK tests, 252-output strict helper, adversarial boundary scans, and milestone audit | Requirement traceability 15/15 | No new third-party runtime dependency recorded for remaining-nose closeout. |
 | v1.10 | 265 SDK tests, 308-output strict helper, 63-case boundary self-test, and milestone audit | Requirement traceability 17/17 | No new third-party runtime dependency recorded for remaining-mouth closeout. |
 | v1.11 | 314 SDK tests, 385-output strict helper, 57-case boundary self-test, and milestone audit | Requirement traceability 24/24 | No new third-party runtime dependency recorded for remaining-eye closeout. |
+| v1.12 | 375 SDK tests, 413-output strict helper, 70-case boundary self-test, and milestone audit | Requirement traceability 18/18 | No new third-party runtime dependency recorded for remaining-face closeout. |
 
 ### Top Lessons (Verified Across Milestones)
 
@@ -488,3 +533,4 @@
 4. Blocker-honest evidence is useful only when paired with exact rerun commands and clear non-claims.
 5. Geometry-heavy status promotion should be staged: routing, saved-output foundation, then per-tool ledger promotion.
 6. Documentation closeout should scan all current owners and parent/child contracts in one pass before milestone audit.
+7. Semantic-resource feasibility must be established before roadmap lock; absent approved resources should produce an explicit reduced scope, not proxy evidence.

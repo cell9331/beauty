@@ -2,18 +2,17 @@
 gsd_state_version: 1.0
 milestone: v1.12
 milestone_name: Face Shape Remaining Capabilities
-current_phase: 48
-status: audited_ready_for_archive
-stopped_at: Independent v1.12 milestone audit passed; ready for completion/archive
-last_updated: "2026-07-24T02:54:47.000Z"
+status: Awaiting next milestone
+stopped_at: Milestone v1.12 complete; next $gsd-new-milestone
+last_updated: "2026-07-24T02:56:52.689Z"
 last_activity: 2026-07-24
-last_activity_desc: v1.12 independent audit passed 18/18 requirements
+last_activity_desc: Milestone v1.12 completed and archived
 progress:
   total_phases: 4
   completed_phases: 4
   total_plans: 20
   completed_plans: 20
-  percent: 100
+current_phase: 48
 current_phase_name: Face Safety and Scoped Closeout
 ---
 
@@ -21,17 +20,17 @@ current_phase_name: Face Safety and Scoped Closeout
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-07-21)
+See: `.planning/PROJECT.md` (updated 2026-07-24)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 48 — Face Safety and Scoped Closeout
+**Current focus:** Planning the next milestone
 
 ## Current Position
 
-Phase: 48 — Face Safety and Scoped Closeout
-Plan: 6 of 6 complete
-Status: Independent v1.12 audit passed; ready for completion/archive
-Last activity: 2026-07-24 — v1.12 passed 18/18 requirements, 11/11 integrations, and 6/6 flows
+Phase: Milestone v1.12 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-07-24 — Milestone v1.12 completed and archived
 
 ### Phase 48 Face Safety and Scoped Closeout Result
 
@@ -39,7 +38,7 @@ Last activity: 2026-07-24 — v1.12 passed 18/18 requirements, 11/11 integration
 - Exact 37-field convergence totals 11.70 with one scale, at most 37 monotone removals, and exact final named-provider/dispatch agreement.
 - Fresh evidence passes 132 focused and 375 full SwiftPM tests, unchanged 413/413 strict output, 70/70 boundary self-tests, clean review, and ASVS L1 `threats_open: 0`.
 - Exactly four rows are implemented; three semantic-region rows remain future and branch `脸型` remains partial.
-- SAFE-01 through SAFE-03 are complete. DOC-01 implementation is complete and pending independent audit confirmation; archive/tag/cleanup remain separate lifecycle steps.
+- SAFE-01 through SAFE-03 and DOC-01 are complete through the independent v1.12 audit; the milestone is archived.
 
 ### Phase 47 Public-Facade Face Output Evidence Result
 
@@ -358,7 +357,7 @@ Recent milestone-level outcomes:
 
 ### Blockers/Concerns
 
-- No active v1.10 blocker remains; all three phases and the independent milestone audit passed.
+- No active v1.12 blocker remains; all four phases and the independent milestone audit passed.
 - Deferred v2 `ADV-*` items remain outside v1 traceability and are tracked as `TD-007` in `PLANS.md`.
 - Manual release risks are now routed by Phase 21 and updated by Phases 23 through 25: `TD-008` has focused simulator camera pass evidence but physical iPhone checks remain blocked until hardware exists; `TD-009` remains Phase 22 visual evidence with screenshot rerun protocol; and `TD-010` keeps device, long-run, screenshot, optimized profiling, external-resource integrity, and commercial packaging work routed to later setup-specific checks.
 - `TD-005` is closed for current v1.4 evidence through explicit `PrivacyInfo.xcprivacy` deferral; reopen it if SDK/Demo behavior starts collecting data, uses required-reason APIs, adds third-party SDKs, adds network/cloud/analytics behavior, packages the example executable, or enters packaging/submission work.
@@ -375,14 +374,14 @@ Recent milestone-level outcomes:
 | Release QA | Real-device camera/Vision parity, visual naturalness, production render quality, performance budgets, and long-run hardware readiness | Partially promoted into v1.4 hardening scope; feature expansion remains deferred | v1.4 start |
 | SwiftUI visual fidelity | HTML-to-SwiftUI delta report, Home SwiftUI fidelity pass, Editor SwiftUI fidelity pass, and v1.2 visual QA closeout | Canceled from v1.2; may be reconsidered as a future milestone | 2026-06-26 |
 | Deferred Meitu product areas | Home/discovery, style resources, AI/background, video/body, account/gallery, search, premium access, commerce, account authorization | Deferred outside v1.3 core beauty modules | 2026-06-26 |
-| Broader Meitu shape groups | `白牙`, `比例`, `3D塑颜`, `眉毛`, and unscoped `脸型` rows. | v1.11 eye geometry rows completed; listed non-v1.11 rows remain deferred | v1.11 closeout |
+| Broader Meitu shape groups | `白牙`, `比例`, `3D塑颜`, `眉毛`, `去双下巴`, `去双下巴 Pro`, and `发际线`. | v1.12 contour-driven face rows completed; listed semantic/retouch rows remain deferred | v1.12 closeout |
 | Release/setup evidence | Physical-device camera/Vision parity, commercial visual review, screenshot reruns, optimized profiling, 600-second preview evidence, packaging review, and launch-readiness review | Deferred outside Phase 28 | Phase 28 closeout |
 | Codebase maps | Formal refresh of stale `.planning/codebase/*` maps | Deferred until explicitly scoped | Phase 21 |
 
 ## Session Continuity
 
-Last session: 2026-07-23T09:43:55.266Z
-Stopped at: Completed 46-04-PLAN.md
+Last session: 2026-07-24T02:56:52.689Z
+Stopped at: v1.12 milestone complete; next $gsd-new-milestone
 Resume file: None
 
 ## Operator Next Steps

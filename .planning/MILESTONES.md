@@ -1,5 +1,42 @@
 # Milestones
 
+## v1.12 Face Shape Remaining Capabilities (Shipped: 2026-07-24)
+
+**Delivered:** Four independent contour-driven face-shape controls with compatibility-safe public semantics, private observed support, strict facade-output evidence, conservative safety, and exact four-row promotion while preserving semantic-region blockers.
+
+**Phases completed:** 4 phases, 20 plans
+
+**Key accomplishments:**
+
+- Extended `BeautyParameters` from 48 to exactly 52 stored fields while preserving legacy source/JSON/preset neutrality and the shipped seven-point compatibility geometry.
+- Added bounded request-local Vision contour and median support with one coordinate-mapping boundary, face-specific open-path validation, region-local failure isolation, and no public/raw-coordinate exposure.
+- Added four distinct contour/chin providers and routed them through provider-owned eligibility, one exact 37-field/11.70 retained baseline, unified dispatch, and aggregate-only diagnostics.
+- Proved four isolated public cases across seven fixtures with 413/413 decoded outputs, fixed visibility/locality/independence comparisons, safe ineligible/no-face behavior, and an exact ignored gallery.
+- Locked exact `0.25` caps, complete nine-field transitions, bounded monotone convergence, fail-closed active-source/security gates, and atomic promotion of exactly `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴`.
+- Independent audit passed 18/18 requirements, 4/4 phases, 11/11 integration seams, 6/6 end-to-end flows, and all four Nyquist validation ledgers.
+
+**Stats:**
+
+- 148 files changed, 20,433 insertions, and 526 deletions from v1.11 through the independent v1.12 audit
+- 31,269 tracked Swift source/test lines at close, excluding `.build` output
+- 4 phases, 20 plans
+- Timeline: 2026-07-21 to 2026-07-24
+
+**Git range:** `6954abf` → final v1.12 lifecycle commit
+
+**Verification:** Fresh SwiftPM passed 375 tests with three opt-in Apple Vision skips; strict output passed 413/413 with 18/18 visibility/locality, 49/49 fixed-neighbor, 6/6 ineligible, and 4/4 no-face comparisons; the Phase 48 boundary checker passed 70/70 self-tests and all live promotion/owner gates; review was clean and ASVS L1 recorded `threats_open: 0`.
+
+**Archives:**
+
+- `.planning/milestones/v1.12-ROADMAP.md`
+- `.planning/milestones/v1.12-REQUIREMENTS.md`
+- `.planning/milestones/v1.12-MILESTONE-AUDIT.md`
+- `.planning/milestones/v1.12-phases/`
+
+**What's next:** Start a fresh milestone with `$gsd-new-milestone`; semantic-region face rows and release/device/commercial evidence remain separately scoped.
+
+---
+
 ## v1.11 Eye Remaining Geometry Controls (Shipped: 2026-07-19)
 
 **Phases completed:** 4 phases, 18 plans

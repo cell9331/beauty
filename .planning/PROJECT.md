@@ -12,9 +12,9 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ## Current State
 
-**Shipped version:** v1.11 Eye Remaining Geometry Controls on 2026-07-19.
+**Shipped version:** v1.12 Face Shape Remaining Capabilities on 2026-07-24.
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
-**Current milestone:** v1.12 Face Shape Remaining Capabilities passed its independent milestone audit and is ready for completion/archive.
+**Current milestone:** None; the repository is ready for the next milestone cycle.
 
 **Implementation state:** Phase 48 is complete. `BeautyParameters` is exactly 52 stored fields (51 numeric plus `filterId`); all nine face/chin geometry fields have final caps and fail-closed transitions, with one 37-field/11.70 retained baseline and at most 37 removals. Exactly `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴` are newly promoted; `去双下巴`/`去双下巴 Pro`/`发际线` remain future and branch `脸型` remains partial.
 
@@ -22,9 +22,11 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
-**Code size:** `BeautySDK` and `BeautyDemo` contain 22,678 tracked-source Swift lines in the v1.10 closeout count, excluding `.build` output.
+**Code size:** `BeautySDK` and `BeautyDemo` contain 31,269 tracked Swift source/test lines at v1.12 close, excluding `.build` output.
 
-## Current Milestone: v1.12 Face Shape Remaining Capabilities
+## Last Completed Milestone: v1.12 Face Shape Remaining Capabilities
+
+**Status:** Shipped, independently audited, and archived as of 2026-07-24.
 
 **Goal:** Complete the four unresolved contour-driven SDK-core `脸型` capabilities through independent product-neutral contracts, validated observed geometry, public-facade output, and conservative evidence-backed promotion.
 
@@ -179,7 +181,7 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ### Active
 
-- [ ] Run the v1.12 completion/archive workflow and record only successful archive/tag/cleanup lifecycle actions.
+(None — define fresh requirements with `$gsd-new-milestone` when the next scope is chosen.)
 
 ### Validated
 
@@ -385,7 +387,7 @@ Current visual reference contracts:
 | v1.9 closes the remaining `鼻子` branch with independent `山根` and `提升` semantics. | v1.7 deliberately left both tools unresolved; branch completion requires explicit public parameters and evidence rather than aliasing `山根` to `noseBridge` or borrowing prior outputs. | Completed in Phase 37; milestone audit passed |
 | v1.10 completes the remaining mouth geometry controls without absorbing teeth whitening. | The five unresolved geometry rows share the existing mouth warp/facade evidence path, while `白牙` needs a different teeth-region segmentation and retouch contract. | Completed in Phase 40; milestone audit passed |
 | v1.11 completes the remaining eye geometry controls without absorbing eye-fat or redness retouch. | Ten unresolved geometry rows can build on the eye warp/facade path, but pupil/gaze/symmetry require private observed support and field-local fail-closed behavior; `去脂` and `祛红血丝` need different retouch/color ownership. | Completed and archived in v1.11 |
-| v1.12 completes four contour-driven unresolved `脸型` rows and defers semantic-region rows rather than faking support. | The existing five face parameters cannot prove smooth-contour, temple, cheekbone, or pointed-chin behavior, while no approved semantic model/fixtures exist for double chin or hairline; the user selected reduced scope on 2026-07-21. | Pending v1.12 |
+| v1.12 completes four contour-driven unresolved `脸型` rows and defers semantic-region rows rather than faking support. | The existing five face parameters cannot prove smooth-contour, temple, cheekbone, or pointed-chin behavior, while no approved semantic model/fixtures exist for double chin or hairline; the user selected reduced scope on 2026-07-21. | Completed in Phase 48; milestone audit passed and archived |
 | v1.5 starts with geometry output foundation plus `脸型`, not all `美型 / 五官` groups. | The user chose the smallest first-principles slice: prove facade-visible geometry output first, then mark only the existing face-shape tools complete when evidence exists. | Completed and archived in v1.5 |
 
 ## Evolution
@@ -393,4 +395,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-07-21 after v1.12 milestone initialization*
+*Last updated: 2026-07-24 after v1.12 milestone completion*
