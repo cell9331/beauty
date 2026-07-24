@@ -460,19 +460,19 @@ XCTAssertEqual(
 | A6 | Reused eyebrow geometry follows the existing non-eye exact `0.5` scale rather than the eye-domain skip policy. | Freshness | If eyebrows should skip on reuse, degradation and combined metrics change; Phase 50 context says reuse follows the established freshness scale but does not name the domain policy. |
 | A7 | A new Phase 50 boundary checker should be created rather than modifying the historical Phase 49 no-activation checker. | Validation / Security | Without a phase-local checker, scope/privacy gates rely on dispersed shell scans; modifying Phase 49 would corrupt historical evidence. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Should active/skipped planning expose a dedicated `.eyebrows` domain?**
+1. **RESOLVED — active/skipped planning exposes a dedicated `.eyebrows` domain.**
    - What we know: `BeautyEffectDomain` currently has separate public cases for face, eyes, nose, and mouth; Phase 50 forbids eyebrow aliasing and requires resolver/facade routing. [VERIFIED: codebase grep — `BeautyEffectDomain.swift`, `50-CONTEXT.md`]
-   - What's unclear: CONTEXT.md does not explicitly say whether adding a non-geometry public enum case is permitted. [VERIFIED: codebase grep — `50-CONTEXT.md`]
-   - Recommendation: add `.eyebrows`; it exposes only an aggregate domain label, not raw geometry, and is the cleanest independent evidence. [ASSUMED]
+   - Resolution basis: CONTEXT.md leaves the non-geometry public enum case to planning discretion while forbidding semantic aliasing and raw-geometry exposure. [VERIFIED: codebase grep — `50-CONTEXT.md`]
+   - Adopted choice: add `.eyebrows`; it exposes only an aggregate domain label, not raw geometry, and is the cleanest independent evidence. Plans 50-03, 50-05, and 50-06 implement and verify this choice. [ASSUMED]
 
-2. **Does reused eyebrow support scale or skip?**
+2. **RESOLVED — reused eligible eyebrow support scales exactly once by resolver-owned `0.5`; it does not skip.**
    - What we know: current eye geometry skips reused support, while face/nose/mouth use exact `0.5`; Phase 50 says reused eligible geometry follows the established freshness scale exactly once. [VERIFIED: codebase grep — `BeautyEffectResolver.swift`, `50-CONTEXT.md`]
-   - What's unclear: the locked text does not explicitly classify eyebrows as eye-like or non-eye geometry. [VERIFIED: codebase grep — `50-CONTEXT.md`]
-   - Recommendation: apply the exact non-eye `0.5` scale once because the text says “scale” and requires eligible reused geometry; keep the provider stateless. [ASSUMED]
+   - Resolution basis: the locked text requires reused eligible geometry to follow the established freshness scale exactly once; eyebrow provider ownership makes the non-eye resolver policy the consistent fit. [VERIFIED: codebase grep — `50-CONTEXT.md`, `BeautyEffectResolver.swift`]
+   - Adopted choice: apply the exact non-eye `0.5` scale once in `BeautyEffectResolver` before shared conflict scaling because the text says “scale” and requires eligible reused geometry; `EyebrowWarpProvider` remains stateless and must not apply reuse scaling. Plans 50-03, 50-05, and 50-06 implement and verify this ownership. [ASSUMED]
 
-Neither question blocks planning if the recommended interpretation is recorded in the first plan and corresponding owner-document update. [ASSUMED]
+Both choices are resolved planning inputs for Phase 50 and are recorded in the plan set and corresponding owner-document updates. [ASSUMED]
 
 ## Environment Availability
 
