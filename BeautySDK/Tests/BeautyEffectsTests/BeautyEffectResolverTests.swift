@@ -222,6 +222,32 @@ final class BeautyEffectResolverTests: XCTestCase {
         assertRedacted(eyebrowPlan)
     }
 
+    func testBROW03SevenFieldsRequireGeometryCapAndActivateOnlyEyebrows() {
+        let face = eyebrowResolverFace()
+        let rows: [(String, BeautyParameters, KeyPath<BeautyEffectiveStrengths, Float>, Float)] = [
+            ("y positive", BeautyParameters(eyebrowYPosition: 1), \.eyebrowYPosition, 0.25),
+            ("y negative", BeautyParameters(eyebrowYPosition: -1), \.eyebrowYPosition, -0.25),
+            ("thickness", BeautyParameters(eyebrowThickness: 1), \.eyebrowThickness, 0.25),
+            ("length", BeautyParameters(eyebrowLength: 1), \.eyebrowLength, 0.25),
+            ("spacing", BeautyParameters(eyebrowSpacing: 1), \.eyebrowSpacing, 0.25),
+            ("head spacing", BeautyParameters(eyebrowHeadSpacing: 1), \.eyebrowHeadSpacing, 0.25),
+            ("tilt", BeautyParameters(eyebrowTilt: -1), \.eyebrowTilt, -0.25),
+            ("peak", BeautyParameters(eyebrowPeakDefinition: 1), \.eyebrowPeakDefinition, 0.25),
+        ]
+
+        for (name, parameters, keyPath, expected) in rows {
+            XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: parameters), name)
+            let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: face)
+            XCTAssertEqual(plan.effectiveStrengths[keyPath: keyPath], expected, accuracy: 0.000_001, name)
+            XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 1, name)
+            XCTAssertTrue(plan.activeDomains.contains(.eyebrows), name)
+            XCTAssertFalse(plan.activeDomains.contains(.eyes), name)
+            XCTAssertFalse(plan.activeDomains.contains(.faceShape), name)
+            XCTAssertGreaterThan(plan.metrics["beauty.effects.geometryPointCount"] ?? 0, 0, name)
+            assertRedacted(plan)
+        }
+    }
+
     func testGEOMFourFieldsRequireGeometryCapIndependentlyAndPreserveExplicitZeroPlan() {
         let omitted = BeautyParameters(
             faceSlim: 0.24,
@@ -816,6 +842,37 @@ final class BeautyEffectResolverTests: XCTestCase {
         for forbidden in ["land" + "mark", "control point", "control" + "Point", "bounding", "VNFace" + "Observation", "/private" + "/var", "image" + " bytes", "SI" + "MD", "[0."] {
             XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)", file: file, line: line)
         }
+    }
+
+    private func eyebrowResolverFace(
+        freshness: LandmarkGeometryFreshness = .fresh,
+        includeRight: Bool = true
+    ) -> FaceGeometry {
+        func trace(side: BeautyObservedEyebrowSide) -> BeautyEyebrowSemanticTrace {
+            let points: [SIMD2<Float>] = side == .left
+                ? [.init(0.25, 0.40), .init(0.30, 0.36), .init(0.36, 0.34), .init(0.42, 0.37), .init(0.47, 0.41)]
+                : [.init(0.75, 0.40), .init(0.70, 0.36), .init(0.64, 0.34), .init(0.58, 0.37), .init(0.53, 0.41)]
+            return BeautyEyebrowSemanticTrace(
+                side: side,
+                points: points,
+                innerEndpoint: points[0],
+                outerEndpoint: points[points.count - 1],
+                center: points.reduce(.zero, +) / Float(points.count),
+                apexIndex: 2
+            )
+        }
+        let left = trace(side: .left)
+        let right = includeRight ? trace(side: .right) : nil
+        return FaceGeometry(
+            bounds: FaceBounds(x: 0.1, y: 0.1, width: 0.8, height: 0.8),
+            faceContour: FaceGeometry.fixture.faceContour,
+            leftEye: FaceGeometry.fixture.leftEye,
+            rightEye: FaceGeometry.fixture.rightEye,
+            nose: FaceGeometry.fixture.nose,
+            outerLips: FaceGeometry.fixture.outerLips,
+            freshness: freshness,
+            observedEyebrowSupport: BeautyEyebrowSemanticSupport(left: left, right: right)
+        )
     }
 
     private var phase46ResolverRows: [Phase46ResolverFieldRow] {
