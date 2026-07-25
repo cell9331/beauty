@@ -783,6 +783,28 @@ def make_test_png(
 
 
 def run_self_tests() -> None:
+    # Phase 51 strict acceptance requires one immutable calibration object,
+    # four independently budgeted protected regions, and six semantic
+    # direction predicates.  This assertion is deliberately written before
+    # the implementation so the RED gate proves those contracts are absent.
+    validate_calibration_contract(FROZEN_CALIBRATION)
+    if tuple(FROZEN_CALIBRATION.protected_regions) != (
+        "eyes",
+        "forehead_hair",
+        "background",
+        "watermark",
+    ):
+        raise AssertionError("protected-region calibration inventory drifted")
+    if tuple(FROZEN_CALIBRATION.direction_floors) != (
+        "y_position",
+        "thickness",
+        "length",
+        "spacing",
+        "head_spacing",
+        "tilt",
+    ):
+        raise AssertionError("signed-direction calibration inventory drifted")
+
     with tempfile.TemporaryDirectory() as temporary:
         root = Path(temporary)
         source = root / "main.swift"
