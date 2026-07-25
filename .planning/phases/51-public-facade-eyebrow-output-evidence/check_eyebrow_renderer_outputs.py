@@ -435,7 +435,7 @@ def unfilter_scanline(row: bytearray, previous: bytearray, bpp: int, filter_type
         row[index] = value & 0xFF
 
 
-@lru_cache(maxsize=None)
+@lru_cache(maxsize=32)
 def decoded_rgb(path: Path) -> tuple[int, int, tuple[bytes, ...]]:
     payload = read_png_payload(path, f"output/{path.name}")
     channels = 4 if payload.color_type == 6 else 3
