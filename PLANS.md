@@ -51,6 +51,11 @@ Phase 51 planning record (2026-07-24):
 - `51-SOURCE-AUDIT.md` covers the ROADMAP goal, OUT-01..03, and D-01..D-16 with no missing item. `51-VALIDATION.md` requires fourteen actual files—the e6 baseline plus all thirteen eyebrow outputs—to be opened before any passing visual claim.
 - Final caps, exhaustive lifecycle/safety, seven-row promotion, branch `眉毛`, and broader release claims remain Phase 52 or later ownership.
 
+Phase 51 execution correction (2026-07-25):
+
+- The mandatory e6 actual-image route exposed two pre-output defects hidden by synthetic provider tests: the CPU bitmap warp inverted canonical top-left image Y, and live Apple Vision eyebrow outlines can present adjacent raw endpoints at the same anatomical end. The in-progress Phase 51 correction aligns bitmap sampling with `ImageNormalized` top-left/downward Y and stably orders the exactly-once mapped Vision eyebrow sample multiset by the mapper-derived face-right axis before adapter validation.
+- The correction preserves one detector request, actual left/right Vision provenance, independent side failure, the exact mapped sample multiset, package-only request lifetime, aggregate-only diagnostics, and the existing unified warp. It does not raise provisional caps, synthesize support, promote rows, or broaden Phase 51 ownership.
+
 Phase 49 closeout record (2026-07-24):
 
 - Plans 49-01 through 49-04 delivered the exact 59 stored/58 numeric public model, neutral legacy 52-key/source/reset/diff/equality/round-trip behavior, unchanged five-preset bytes, actual `leftEyebrow`/`rightEyebrow` capture from one request, exactly-once mapping, mapper-axis side/order canonicalization, and package-only request-scoped semantic attachment.

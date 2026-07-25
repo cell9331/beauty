@@ -514,7 +514,7 @@ enum BeautyFaceGeometryAdapter {
         return Set(points.map { BrowPointKey($0) }).count == points.count
     }
 
-    private static func browPathHasNonAdjacentIntersections(
+    static func browPathHasNonAdjacentIntersections(
         _ points: [CoordinatePoint]
     ) -> Bool {
         let segmentCount = points.count - 1

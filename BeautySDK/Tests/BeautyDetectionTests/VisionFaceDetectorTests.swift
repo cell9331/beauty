@@ -577,6 +577,48 @@ final class VisionFaceDetectorTests: XCTestCase {
         XCTAssertGreaterThan(completeSupportCount, 0, "Expected complete aggregate observed-face support")
     }
 
+    func testIntegrationDefaultStillImageProviderReportsObservedEyebrowAvailabilityWithoutRawPayload() throws {
+        guard ProcessInfo.processInfo.environment[
+            "BEAUTYSDK_RUN_VISION_INTEGRATION_TESTS"
+        ] == "1" else {
+            throw XCTSkip(
+                "Set BEAUTYSDK_RUN_VISION_INTEGRATION_TESTS=1 on the pinned Apple Vision host"
+            )
+        }
+        var detector = VisionFaceDetector()
+        var summaries: [String] = []
+        var pairedEyebrowCount = 0
+
+        for fixtureURL in try portraitFixtureURLs() {
+            guard let image = CIImage(contentsOf: fixtureURL, options: [.applyOrientationProperty: true]) else {
+                throw FixtureError.unreadable(fixtureURL.lastPathComponent)
+            }
+
+            let result = detector.detect(
+                image: image,
+                metadata: metadata(),
+                imageExtent: image.extent.size
+            )
+            let support = result.observations.first?.observedEyebrowSupport
+            let leftCount = support?.left?.count ?? 0
+            let rightCount = support?.right?.count ?? 0
+            summaries.append(
+                "\(fixtureURL.lastPathComponent):\(result.summary.availability.rawValue)"
+                    + ":left=\(leftCount):right=\(rightCount)"
+            )
+            assertNoRawVisionDiagnostics(in: String(describing: result.summary))
+            if leftCount >= 4, rightCount >= 4 {
+                pairedEyebrowCount += 1
+            }
+        }
+
+        XCTAssertGreaterThan(
+            pairedEyebrowCount,
+            0,
+            "Expected paired observed-eyebrow support; summaries=\(summaries.joined(separator: ","))"
+        )
+    }
+
     private func injectedFaceSupportFixtures() -> [BeautyObservedFaceSupport] {
         (0..<6).map { fixtureIndex in
             let contourCount = 7 + fixtureIndex

@@ -624,7 +624,6 @@ package struct VisionFaceDetector: Sendable {
         guard let points, !points.isEmpty else { return nil }
 
         let mapped = try mapPoints(points, in: visionBounds, with: mapper)
-        guard let first = mapped.first, let last = mapped.last else { return nil }
 
         let centroidX = mapped.reduce(0.0) { $0 + $1.x } / Double(mapped.count)
         let centroidY = mapped.reduce(0.0) { $0 + $1.y } / Double(mapped.count)
@@ -643,21 +642,31 @@ package struct VisionFaceDetector: Sendable {
         if mapped.count < 2 {
             return sideMatches ? mapped : nil
         }
+        guard sideMatches else { return nil }
 
-        let endpointDirection = SIMD2<Double>(
-            last.x - first.x,
-            last.y - first.y
-        )
-        let endpointProjection = endpointDirection.x * rightAxis.x + endpointDirection.y * rightAxis.y
-        guard endpointProjection.isFinite, abs(endpointProjection) > 0.000_001 else {
+        // Vision eyebrow regions are open, but their first and last samples
+        // can be adjacent points at the same anatomical end of a thick brow
+        // outline. Canonicalize every accepted sample by its projection onto
+        // the mapped face-right axis instead of treating provider endpoint
+        // order as an inner-to-outer centerline contract.
+        let projected = mapped.enumerated().map { index, point in
+            (
+                index: index,
+                point: point,
+                projection: point.x * rightAxis.x + point.y * rightAxis.y
+            )
+        }
+        guard projected.allSatisfy({ $0.projection.isFinite }) else {
             return nil
         }
-        let endpointForward = (endpointProjection > 0) == (expectedSign > 0)
-
-        let canonical = sideMatches && endpointForward
-            ? mapped
-            : Array(mapped.reversed())
-        return canonical
+        return projected.sorted { lhs, rhs in
+            if lhs.projection != rhs.projection {
+                return declaredSide == .left
+                    ? lhs.projection > rhs.projection
+                    : lhs.projection < rhs.projection
+            }
+            return lhs.index < rhs.index
+        }.map(\.point)
     }
 
     private func normalizedAxis(

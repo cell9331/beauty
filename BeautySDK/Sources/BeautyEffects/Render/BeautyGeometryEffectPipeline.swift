@@ -107,7 +107,10 @@ enum BeautyGeometryEffectPipeline {
     ) -> [UInt8] {
         var output = source
         for row in 0..<height {
-            let normalizedY = 1 - (Float(row) + 0.5) / Float(height)
+            // `FaceGeometry` and every `WarpControlPoint` use the SDK's
+            // canonical ImageNormalized space: top-left origin, y growing
+            // downward. The CPU bitmap row index follows that same contract.
+            let normalizedY = (Float(row) + 0.5) / Float(height)
             let columnRange = affectedColumnRange(forNormalizedY: normalizedY, width: width, points: points)
             guard let columnRange else {
                 continue
@@ -143,7 +146,7 @@ enum BeautyGeometryEffectPipeline {
 
                 sample = clamp(sample)
                 let sampleX = sample.x * Float(width - 1)
-                let sampleY = (1 - sample.y) * Float(height - 1)
+                let sampleY = sample.y * Float(height - 1)
                 writeInterpolatedPixel(
                     source: source,
                     output: &output,

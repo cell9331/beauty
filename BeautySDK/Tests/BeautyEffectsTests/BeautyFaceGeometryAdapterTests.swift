@@ -817,6 +817,90 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         )
     }
 
+    func testIntegrationCommittedPortraitFitsLockedEyebrowValidationEnvelope() throws {
+        guard ProcessInfo.processInfo.environment[
+            "BEAUTYSDK_RUN_VISION_INTEGRATION_TESTS"
+        ] == "1" else {
+            throw XCTSkip(
+                "Set BEAUTYSDK_RUN_VISION_INTEGRATION_TESTS=1 on the pinned Apple Vision host"
+            )
+        }
+        var detector = VisionFaceDetector()
+        var observedPairCount = 0
+        var validatedPairCount = 0
+
+        for fixtureURL in try portraitFixtureURLs() {
+            guard let image = CIImage(
+                contentsOf: fixtureURL,
+                options: [.applyOrientationProperty: true]
+            ) else {
+                throw FaceFixtureError.unreadable
+            }
+            let result = detector.detect(
+                image: image,
+                metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+                imageExtent: image.extent.size
+            )
+            for observation in result.observations {
+                guard let support = observation.observedEyebrowSupport,
+                      let left = support.left,
+                      let right = support.right,
+                      let rect = observation.imageBounds
+                else {
+                    continue
+                }
+                observedPairCount += 1
+                let bounds = FaceBounds(
+                    x: Float(rect.x),
+                    y: Float(rect.y),
+                    width: Float(rect.width),
+                    height: Float(rect.height)
+                )
+                for (side, points) in [("left", left), ("right", right)] {
+                    XCTAssertTrue((4...16).contains(points.count), "\(side): count")
+                    XCTAssertTrue(
+                        points.allSatisfy {
+                            $0.isFinite && (0...1).contains($0.x) && (0...1).contains($0.y)
+                        },
+                        "\(side): finite unit points"
+                    )
+                    XCTAssertFalse(
+                        BeautyFaceGeometryAdapter.browPathHasNonAdjacentIntersections(points),
+                        "\(side): self intersection"
+                    )
+                    let local = points.map {
+                        (
+                            x: ($0.x - Double(bounds.x)) / Double(bounds.width),
+                            y: ($0.y - Double(bounds.y)) / Double(bounds.height)
+                        )
+                    }
+                    let chord = Float(abs(local.last!.x - local.first!.x))
+                    let verticalSpan = Float(local.map(\.y).max()! - local.map(\.y).min()!)
+                    XCTAssertTrue(
+                        BeautyFaceGeometryAdapter.browChordIsValid(chord),
+                        "\(side): chord envelope, normalizedChord=\(chord)"
+                    )
+                    XCTAssertTrue(
+                        BeautyFaceGeometryAdapter.browVerticalSpanIsValid(verticalSpan),
+                        "\(side): vertical envelope"
+                    )
+                }
+                if BeautyFaceGeometryAdapter.makeGeometry(
+                    from: observation
+                ).observedEyebrowSupport?.pairedEligible == true {
+                    validatedPairCount += 1
+                }
+            }
+        }
+
+        XCTAssertGreaterThan(observedPairCount, 0, "expected observed eyebrow pair")
+        XCTAssertEqual(
+            validatedPairCount,
+            observedPairCount,
+            "aggregate eyebrow validation mismatch"
+        )
+    }
+
     func testFaceCrossSupportPurePredicatesLockInclusiveBoundaries() {
         XCTAssertFalse(BeautyFaceGeometryAdapter.faceMedianChordPositionIsValid(0.149_999))
         XCTAssertTrue(BeautyFaceGeometryAdapter.faceMedianChordPositionIsValid(0.15))

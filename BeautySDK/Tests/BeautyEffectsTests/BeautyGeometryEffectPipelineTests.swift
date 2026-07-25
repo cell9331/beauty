@@ -251,7 +251,7 @@ final class BeautyGeometryEffectPipelineTests: XCTestCase {
     ) -> (column: Int, row: Int) {
         (
             column: min(max(Int((point.x * Float(width - 1)).rounded()), 0), width - 1),
-            row: min(max(Int(((1 - point.y) * Float(height - 1)).rounded()), 0), height - 1)
+            row: min(max(Int((point.y * Float(height - 1)).rounded()), 0), height - 1)
         )
     }
 

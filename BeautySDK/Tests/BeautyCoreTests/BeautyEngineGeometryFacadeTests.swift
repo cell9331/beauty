@@ -653,6 +653,62 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
         }
     }
 
+    func testIntegrationCommittedPortraitRoutesAllEyebrowFieldsThroughPublicFacade() throws {
+        guard ProcessInfo.processInfo.environment[
+            "BEAUTYSDK_RUN_VISION_INTEGRATION_TESTS"
+        ] == "1" else {
+            throw XCTSkip(
+                "Set BEAUTYSDK_RUN_VISION_INTEGRATION_TESTS=1 on the pinned Apple Vision host"
+            )
+        }
+        let rows: [(String, BeautyParameters)] = [
+            ("eyebrowYPosition", BeautyParameters(eyebrowYPosition: 0.25)),
+            ("eyebrowThickness", BeautyParameters(eyebrowThickness: 0.25)),
+            ("eyebrowLength", BeautyParameters(eyebrowLength: 0.25)),
+            ("eyebrowSpacing", BeautyParameters(eyebrowSpacing: 0.25)),
+            ("eyebrowHeadSpacing", BeautyParameters(eyebrowHeadSpacing: 0.25)),
+            ("eyebrowTilt", BeautyParameters(eyebrowTilt: 0.25)),
+            ("eyebrowPeakDefinition", BeautyParameters(eyebrowPeakDefinition: 0.25)),
+        ]
+
+        for fixtureURL in try portraitFixtureURLs() {
+            let input = try fixtureImage(at: fixtureURL)
+            let baseline = try BeautyEngine(configuration: .default).processResult(
+                image: input,
+                metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+                parameters: BeautyParameters()
+            )
+            let baselineBytes = renderedRGBABytes(from: baseline.output)
+
+            for (name, parameters) in rows {
+                let result = try BeautyEngine(configuration: .default).processResult(
+                    image: input,
+                    metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+                    parameters: parameters
+                )
+
+                XCTAssertEqual(result.detectionSummary?.availability, .usable, name)
+                XCTAssertEqual(result.detectionSummary?.usedFaceCount, 1, name)
+                XCTAssertGreaterThan(
+                    result.metrics["beauty.effects.geometryPointCount"] ?? 0,
+                    0,
+                    name
+                )
+                XCTAssertFalse(
+                    result.warnings.contains { $0.code == "eyebrow_inputs_missing" },
+                    name
+                )
+                XCTAssertTrue(
+                    zip(renderedRGBABytes(from: result.output), baselineBytes)
+                        .contains { $0 != $1 },
+                    name
+                )
+                assertRedacted(result)
+                assertEyebrowFacadeRedacted(result, name: name)
+            }
+        }
+    }
+
     func testBROW09SidePairMissingMalformedAndSequentialFixturesDegradeLocally() throws {
         let perSide = BeautyParameters(eyebrowYPosition: 1)
         let pairOnly = BeautyParameters(eyebrowSpacing: 1)
