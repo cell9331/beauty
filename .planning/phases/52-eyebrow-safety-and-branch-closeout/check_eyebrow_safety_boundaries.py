@@ -678,8 +678,6 @@ def _validation_gate(text: str) -> Result:
         for task in range(1, task_count + 1)
     )
     task_rows = re.findall(r"^\| (52-\d{2}-\d{2}) \|", text, re.MULTILINE)
-    completed_ids = expected_ids[:19]
-    future_ids = expected_ids[19:]
     green_ids = {
         match.group(1) for match in re.finditer(
             r"^\| (52-\d{2}-\d{2}) \|[^\n]*\|\s*✅ green(?:[^|]*)\s*\|$",
@@ -696,12 +694,13 @@ def _validation_gate(text: str) -> Result:
     }
     active_ledger = (
         "status: in_progress" in text
-        and green_ids == set(completed_ids)
-        and pending_ids == set(future_ids)
+        and len(green_ids) in {19, 21}
+        and green_ids == set(expected_ids[:len(green_ids)])
+        and pending_ids == set(expected_ids[len(green_ids):])
     )
     complete_ledger = (
         "status: complete" in text
-        and green_ids == set(completed_ids + future_ids)
+        and green_ids == set(expected_ids)
         and not pending_ids
     )
     ok = (
