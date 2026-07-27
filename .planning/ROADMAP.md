@@ -15,14 +15,14 @@
 - ✅ **[v1.10 Mouth Remaining Geometry Controls](milestones/v1.10-ROADMAP.md)** — Phases 38-40, shipped 2026-07-14.
 - ✅ **[v1.11 Eye Remaining Geometry Controls](milestones/v1.11-ROADMAP.md)** — Phases 41-44, shipped 2026-07-19.
 - ✅ **[v1.12 Face Shape Remaining Capabilities](milestones/v1.12-ROADMAP.md)** — Phases 45-48, shipped 2026-07-24.
-- 🚧 **v1.13 Eyebrow Geometry Controls** — All ten Phase 52 execution plans are complete; independent Phase 52 re-verification is pending and milestone audit remains blocked.
+- 🚧 **v1.13 Eyebrow Geometry Controls** — All four phases and 26 plans are complete; Phase 52 independently verifies 16/16. The separately scoped milestone audit is next.
 
 ## Phases
 
 - [x] **Phase 49: Public Contract and Observed Eyebrow Support** — Exact 59-field compatibility, actual left/right Vision eyebrow mapping, open-trace validation, side/order canonicalization, and private lifecycle. (completed 2026-07-24)
 - [x] **Phase 50: Independent Eyebrow Geometry and Pipeline Integration** — Seven distinct named transforms, field-local eligibility, exact 44-field convergence, unified dispatch, and redacted facade routing. (completed 2026-07-24)
 - [x] **Phase 51: Public-Facade Eyebrow Output Evidence** — Thirteen isolated cases, strict single-portrait direction/locality/distinction evidence, safe no-ops, and ignored gallery containment. (completed 2026-07-27)
-- [ ] **Phase 52: Eyebrow Safety and Branch Closeout** — Final caps, complete transitions, active-source/privacy gates, exact seven-row promotion, and implemented branch status. Ten execution plans are complete; final status remains verifying pending independent re-verification.
+- [x] **Phase 52: Eyebrow Safety and Branch Closeout** — Final caps, complete transitions, active-source/privacy gates, exact seven-row promotion, and implemented branch status. Ten execution plans and independent 16/16 verification are complete. (completed 2026-07-27)
 
 ## Phase Details
 
@@ -131,7 +131,7 @@
 
 **Requirements:** SAFE-01, SAFE-02, SAFE-03, DOC-01
 
-**Plans:** 10/10 plans executed
+**Plans:** 10/10 plans complete
 
 **Wave 1**
 
@@ -177,7 +177,7 @@
 
 - [x] 52-10-PLAN.md — Resynchronize planning owners and run the final 35/35 pending-verification gate.
 
-Executor implementation and planning gates are complete across all ten plans. Phase 52 remains unchecked and `verifying` until an independent rerun replaces the existing `52-VERIFICATION.md` `gaps_found` verdict; the v1.13 milestone audit cannot start before that pass.
+Executor implementation and planning gates are complete across all ten plans. Independent re-verification passes 16/16 and closes the four prior gaps. The next workflow is the separate v1.13 milestone audit; no audit or lifecycle result is claimed here.
 
 **Success criteria:**
 
@@ -193,7 +193,7 @@ Executor implementation and planning gates are complete across all ten plans. Ph
 | 49. Public Contract and Observed Eyebrow Support | v1.13 | 5 | Complete    | 2026-07-24 |
 | 50. Independent Eyebrow Geometry and Pipeline Integration | v1.13 | 9 | Complete | 2026-07-24 |
 | 51. Public-Facade Eyebrow Output Evidence | v1.13 | 3 | Complete    | 2026-07-27 |
-| 52. Eyebrow Safety and Branch Closeout | v1.13 | 4 | Verifying |  |
+| 52. Eyebrow Safety and Branch Closeout | v1.13 | 4 | Complete | 2026-07-27 |
 
 ## Backlog
 
@@ -204,4 +204,4 @@ Executor implementation and planning gates are complete across all ten plans. Ph
 - SwiftUI/Demo UI, physical-device parity, commercial visual approval, optimized profiling, packaging, shipping, and launch-readiness evidence remain separately scoped.
 
 ---
-*Last updated: 2026-07-27 after all ten Phase 52 execution plans; independent re-verification pending and milestone audit blocked*
+*Last updated: 2026-07-27 after independent Phase 52 verification passed 16/16; v1.13 milestone audit pending*

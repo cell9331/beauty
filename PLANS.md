@@ -30,13 +30,13 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `verifying` |
+| Status | `active` |
 | Milestone | v1.13 Eyebrow Geometry Controls |
 | Scope | SDK-SPM-only implementation of exactly seven `眉毛` rows: 上下、粗细、长短、间距、眉头间距、倾斜、眉峰. |
 | Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve legacy 52-key compatibility and all shipped face/eye/nose/mouth output while the current model is exactly 59 stored fields. |
 | Requirements | 21/21 mapped across Phase 49-52; no unmapped requirement. |
 | Roadmap | Phase 49 contract/support → Phase 50 geometry/pipeline → Phase 51 strict output → Phase 52 safety/promotion. |
-| Current step | All ten Phase 52 execution plans are complete. Fresh production-path evidence is independently reviewed clean across 25 files with 0/0/0/0 findings; validation is exactly 23/23 green, and the final executor readiness checker passes exactly 35/35 with `verification=pending-independent`. `.planning/phases/52-eyebrow-safety-and-branch-closeout/52-VERIFICATION.md` remains independently owned and `gaps_found`; the next workflow is independent Phase 52 re-verification. The v1.13 milestone audit remains blocked. |
+| Current step | Phase 52 is independently verified `passed` at 16/16 after all ten execution plans, exact 23/23 Nyquist, clean 25-file review, 130/130 checker self-tests, fresh 450-test SwiftPM regression, strict 72/72 output evidence, and unchanged Demo/UI scope. The next workflow is the separately scoped independent v1.13 milestone audit. Audit, archive, tag, and cleanup are not yet claimed. |
 
 Fixture-scope decision (2026-07-24):
 
@@ -77,7 +77,7 @@ Phase 52 ten-plan gap-closeout record (2026-07-27):
 - The committed Wave 7 fixes exercise the production adapter, enter the real resolver/provider path before cancellation, preserve request-local sibling isolation, and prove monotone retained-mask removal with no re-entry. Wave 8 records the full 450-test SwiftPM and explicit simulator evidence without modifying `BeautyDemo`.
 - `.planning/phases/52-eyebrow-safety-and-branch-closeout/52-REVIEW.md` is independently authored after the fixes and is clean across 25 files with 0 critical, 0 warning, 0 info, and 0 total findings. The Nyquist ledger contains exactly 23 unique green task rows, and the final executor readiness checker passes exactly 35/35 with `verification=pending-independent`.
 - SAFE-01, SAFE-02, SAFE-03, and DOC-01 are implemented for exactly `上下`, `粗细`, `长短`, `间距`, `眉头间距`, `倾斜`, and `眉峰`, plus SDK-core branch `眉毛`. There is no SwiftUI/Demo change, no public raw eyebrow support, and diagnostics remain aggregate-only.
-- Phase 52 remains `verifying`: the existing independent `52-VERIFICATION.md` stays `gaps_found` until a fresh independent verifier reruns. The executor may establish readiness but cannot mark verification passed. The v1.13 milestone audit, archive, tag, cleanup, physical-device parity, commercial naturalness, optimized performance, packaging, shipping, launch, and release readiness remain blocked or unclaimed.
+- Independent `gsd-verifier` re-verification passes 16/16 and closes all four prior gaps with fresh adapter-valid fixture, in-flight cancellation, real retained-mask convergence, full regression, strict output, simulator, review, security, validation, owner, and nonclaim evidence. The separately scoped v1.13 milestone audit is now the next workflow; audit, archive, tag, cleanup, physical-device parity, commercial naturalness, optimized performance, packaging, shipping, launch, and release readiness remain unclaimed.
 
 Phase 49 closeout record (2026-07-24):
 
@@ -95,6 +95,22 @@ Planned follow-on milestones:
 
 ## 4. Completed
 
+### C-2026-07-27-phase-52-ten-plan-independent-verification
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-27 |
+| Scope | Completed all ten Phase 52 plans, including production-path proof repairs, fresh evidence, independent clean review, routed/planning owner synchronization, and final independent re-verification. |
+| Verification | Independent `gsd-verifier` passes 16/16 must-haves. Fresh evidence includes 450 SwiftPM tests with six conditional skips, eight focused suites, strict 72/72 portrait output plus thirteen separate no-face comparisons, 130/130 checker self-tests, 23/23 green Nyquist, clean 25-file review, simulator build/test, no `BeautyDemo` change, and diff hygiene. |
+| Requirements | SAFE-01, SAFE-02, SAFE-03, and DOC-01 are satisfied. |
+| Boundary | Phase 52 completion is SDK-core-only and does not claim milestone audit, archive, tag, cleanup, UI/device/commercial/performance/packaging/shipping/launch/release readiness. Next action: independent v1.13 milestone audit. |
+
+Outcome:
+
+- Exactly seven eyebrow rows and branch `眉毛` are implemented through private request-scoped support, aggregate-only diagnostics, exact final caps, one 44-field fixed point, and stable unified dispatch.
+- All prior verification gaps are closed through executable production-path evidence rather than planning assertions.
+- Phase 52 is accepted; milestone lifecycle remains a separate gated workflow.
+
 ### C-2026-07-27-phase-52-six-plan-closeout-superseded
 
 | Field | Value |
@@ -102,8 +118,8 @@ Planned follow-on milestones:
 | Completed | 2026-07-27 |
 | Scope | Historical Plans `52-01` through `52-06` completed exact final eyebrow caps, lifecycle/local-failure evidence, exact 44-field convergence, initial fail-closed gates, and seven-row/branch SDK-core promotion. This checkpoint was later superseded by the ten-plan gap-closeout workflow. |
 | Verification | Historical focused/full/output/gallery/image/security evidence remains valid for that checkpoint. Its clean-review and fourteen-task Nyquist claims are superseded by the current ten-plan record, exact 23-task ledger, and fresh independent review. |
-| Requirements | SAFE-01, SAFE-02, SAFE-03, and DOC-01 were recorded complete at the six-plan checkpoint; the current ten-plan workflow retains those implementation records while final acceptance remains pending independent Phase 52 re-verification. |
-| Boundary | This is a superseded historical checkpoint, not current Phase completion. Current status is `verifying`; the v1.13 milestone audit remains blocked until independent final re-verification passes. Audit, archive, tag, cleanup, UI/device/commercial/performance/packaging/shipping/launch/release readiness remain unclaimed. |
+| Requirements | SAFE-01, SAFE-02, SAFE-03, and DOC-01 were recorded complete at the six-plan checkpoint; the later ten-plan independent verification now supplies final Phase 52 acceptance. |
+| Boundary | This is a superseded historical checkpoint, not the final Phase 52 verdict. The current ten-plan verification passes; milestone audit, archive, tag, cleanup, UI/device/commercial/performance/packaging/shipping/launch/release readiness remain separate and unclaimed. |
 
 Outcome:
 

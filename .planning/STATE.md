@@ -2,16 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.13
 milestone_name: Eyebrow Geometry Controls
-current_phase: 52
-current_phase_name: eyebrow-safety-and-branch-closeout
-status: verifying
-stopped_at: Completed 52-10-PLAN.md; pending independent Phase 52 re-verification
-last_updated: "2026-07-27T09:56:25.000Z"
+status: ready_for_audit
+stopped_at: Phase 52 independently verified passed 16/16; v1.13 milestone audit pending
+last_updated: "2026-07-27T10:20:46.000Z"
 last_activity: 2026-07-27
-last_activity_desc: Phase 52 ten-plan execution complete with 23/23 Nyquist and 35/35 pending-independent readiness
+last_activity_desc: Phase 52 independent re-verification passed 16/16 and closed all prior gaps
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 26
   completed_plans: 26
   percent: 100
@@ -24,23 +22,23 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-27)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 52 — eyebrow-safety-and-branch-closeout
+**Current focus:** v1.13 independent milestone audit
 
 ## Current Position
 
-Phase: 52 (eyebrow-safety-and-branch-closeout) — VERIFYING
+Phase: 52 (eyebrow-safety-and-branch-closeout) — COMPLETE
 Plan: 10 of 10
-Status: Executor gates complete; pending independent Phase 52 re-verification
-Last activity: 2026-07-27 — All ten execution plans, 23/23 Nyquist rows, and the 35/35 pending-independent readiness gate passed
+Status: Independent verification passed 16/16; ready for the separately scoped v1.13 milestone audit
+Last activity: 2026-07-27 — Independent re-verification closed all four prior gaps
 
-### Phase 52 Eyebrow Safety and Branch Closeout Gap Status
+### Phase 52 Eyebrow Safety and Branch Closeout Result
 
-- Final verification remains independently owned and `gaps_found` at 12/16 until re-verification. Plan 52-07 supplies focused production-path WR-01/02/03 evidence, and Plan 52-08 supplies the full regression/simulator/security ledger.
+- Independent `gsd-verifier` re-verification passes 16/16 and closes the previous 12/16 report's four gaps with production-path evidence.
 - The independent post-fix 25-file `gsd-code-reviewer` report is clean 0/0/0/0 and newer than Waves 7–8.
 - Plans 52-09 and 52-10 synchronize all routed root and planning owners. The exact 23-task Nyquist ledger is complete, and the final executor readiness checker passes exactly 35/35 with `verification=pending-independent`.
 - Phase 52 implements exactly seven eyebrow rows and SDK-core branch `眉毛`, keeps raw support package-internal and request-scoped, exposes aggregate-only diagnostics, and changes no SwiftUI/Demo path.
-- `52-VERIFICATION.md` remains independently owned and `gaps_found` until the final verifier reruns. The executor must not write a passed status.
-- The next workflow is independent Phase 52 re-verification. The v1.13 milestone audit is blocked until that independent verifier passes.
+- Fresh verification passes eight focused suites, 450 SwiftPM tests with six conditional skips, strict 72/72 output plus thirteen no-face comparisons, 130/130 checker self-tests, simulator build/test, review/security/owner gates, and no-`BeautyDemo` scope checks.
+- `52-VERIFICATION.md` is independently owned and `passed`; the next workflow is the separate v1.13 milestone audit. Audit, archive, tag, and cleanup remain unclaimed.
 
 ### Phase 51 Public-Facade Eyebrow Output Result
 
@@ -157,7 +155,7 @@ Last activity: 2026-07-14
 **Velocity:**
 
 - Total phases completed: 30
-- Total plans completed: 130
+- Total plans completed: 140
 - Total tasks recorded from milestone summaries: at least 147
 - Milestone Swift LOC at close: 17,794 in the local closeout count across `BeautySDK` and `BeautyDemo`, including build-derived `.build` files observed during archive.
 
@@ -412,17 +410,17 @@ Recent milestone-level outcomes:
 - [Phase 52]: Keep example owners on exact reproduction, count, review, and disposable-artifact facts without changing renderer or calibration. — Preserves the example-image authority and unchanged Phase 51 helper/gallery contract.
 - [Phase 52]: Route mechanics, trust boundaries, recovery, user acceptance, and measured evidence to their existing root owners. — Avoids duplicating one deep invariant across unrelated owner documents.
 - [Phase 52]: Keep Phase 52 explicitly SDK-core-only; later milestones and readiness/lifecycle outcomes remain nonclaims. — Current automation does not establish UI, device, commercial, release, audit, archive, tag, or cleanup results.
-- [Phase 52]: Close exactly SAFE-01, SAFE-02, SAFE-03, and DOC-01 from final owner-linked Phase 52 evidence. — Independent Phase 52 re-verification is the next external workflow; milestone audit remains blocked until it passes, and phase execution does not claim audit or lifecycle completion.
+- [Phase 52]: Close exactly SAFE-01, SAFE-02, SAFE-03, and DOC-01 from final owner-linked Phase 52 evidence. — Independent Phase 52 re-verification passes 16/16; the separate milestone audit remains the next lifecycle gate.
 
 ### Pending Todos
 
-- Complete the final 35/35 executor readiness gate, then dispatch independent Phase 52 re-verification before any milestone audit.
+- Run the separately scoped independent v1.13 milestone audit; do not claim archive, tag, or cleanup before it passes.
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, screenshot reruns, packaging review, broader `美型 / 五官` slices, and automated visual diffs.
 
 ### Blockers/Concerns
 
-- Phase 52's existing independent `52-VERIFICATION.md` remains `gaps_found` even though the implementation fixes, fresh evidence, clean review, and owner synchronization are present; a fresh independent rerun must decide final acceptance. Milestone audit remains blocked.
+- No active Phase 52 implementation or verification blocker remains; independent re-verification passes 16/16. The v1.13 milestone audit has not yet run.
 - No active v1.12 blocker remains; all four phases and the independent milestone audit passed.
 - Deferred v2 `ADV-*` items remain outside v1 traceability and are tracked as `TD-007` in `PLANS.md`.
 - Manual release risks are now routed by Phase 21 and updated by Phases 23 through 25: `TD-008` has focused simulator camera pass evidence but physical iPhone checks remain blocked until hardware exists; `TD-009` remains Phase 22 visual evidence with screenshot rerun protocol; and `TD-010` keeps device, long-run, screenshot, optimized profiling, external-resource integrity, and commercial packaging work routed to later setup-specific checks.
@@ -446,10 +444,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-27T09:56:25.000Z
-Stopped at: Completed 52-10-PLAN.md; pending independent Phase 52 re-verification
+Last session: 2026-07-27T10:20:46.000Z
+Stopped at: Phase 52 independently verified passed 16/16; v1.13 milestone audit pending
 Resume file: None
 
 ## Operator Next Steps
 
-- Dispatch an independent Phase 52 verifier. Do not audit, archive, tag, or clean up before verification passes.
+- Run the independent v1.13 milestone audit. Do not archive, tag, or clean up before it passes.
