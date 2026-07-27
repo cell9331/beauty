@@ -1,9 +1,9 @@
 ---
 phase: 51
 slug: public-facade-eyebrow-output-evidence
-status: planned
+status: executing
 nyquist_compliant: false
-wave_0_complete: false
+wave_0_complete: true
 created: 2026-07-24
 ---
 
@@ -44,17 +44,17 @@ created: 2026-07-24
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command / Check | Status |
 | --- | --- | ---: | --- | --- | --- | --- | --- | --- |
-| 51-01-01 | 01 | 1 | OUT-01, OUT-03 | T-51-01–03 | Exact 72 public cases, e6-only portrait, no internal bypass | XCTest/static | Renderer regression + source cardinality + active fixture checks | planned |
-| 51-01-02 | 01 | 1 | OUT-03 | T-51-04–05 | Local degradation and aggregate-only diagnostics | XCTest | Public facade regression | planned |
-| 51-02-01 | 02 | 2 | OUT-02, OUT-03 | T-51-06–08, T-51-10 | Bounded exact inventory/decoder with retired-fixture rejection | Python self-test | Helper self-test + bytecode compilation | planned |
-| 51-02-02 | 02 | 2 | OUT-02 | T-51-09–11 | Fixed non-circular locality, sign, family, and no-face contracts | Python self-test | Helper semantic adversarial tests | planned |
-| 51-03-01 | 03 | 3 | OUT-02, OUT-03 | T-51-12–16 | Separate measurement/strict runs and exact denominator split | render/integration | Guarded clean render + strict helper + 144-file check | planned |
-| 51-03-02 | 03 | 3 | OUT-02 | T-51-17 | Actual opened-image review blocks contradictory visual claims | visual + regression | Fourteen evidence rows + provider suite + strict helper; end-of-phase human check | planned |
-| 51-04-01 | 04 | 4 | OUT-03 | T-51-18–21 | Exact descriptor-safe eyebrow gallery group | Python self-test | Gallery self-test + bytecode compilation | planned |
-| 51-04-02 | 04 | 4 | OUT-03 | T-51-18–22 | Exact ignored 144-file publication with no retired portraits | integration/static | Gallery publication + bijection + artifact scans | planned |
-| 51-05-01 | 05 | 5 | OUT-01, OUT-02, OUT-03 | T-51-23–27 | Fresh complete evidence and no pre-recorded green rows | full/integration/static | Focused + full + helper + strict + gallery + scans | planned |
-| 51-05-02 | 05 | 5 | OUT-01, OUT-02, OUT-03 | T-51-24–26 | Owner contracts preserve count, privacy, reliability, and Phase 52 boundaries | static/docs | Owner keyword/cardinality and diff gates | planned |
-| 51-05-03 | 05 | 5 | OUT-01, OUT-02, OUT-03 | T-51-24–27 | Close only OUT-01..03 and Phase 51 | static/ledger | Requirement/roadmap/state/product checks | planned |
+| 51-01-01 | 01 | 1 | OUT-01, OUT-03 | T-51-01–03 | Exact 72 public cases, e6-only portrait, no internal bypass | XCTest/static | Renderer regression + source cardinality + active fixture checks | passed — 72 cases, 13 eyebrow, one active portrait |
+| 51-01-02 | 01 | 1 | OUT-03 | T-51-04–05 | Local degradation and aggregate-only diagnostics | XCTest | Public facade regression | passed — 19 executed, 1 opt-in skip, 0 failures |
+| 51-02-01 | 02 | 2 | OUT-02, OUT-03 | T-51-06–08, T-51-10 | Bounded exact inventory/decoder with retired-fixture rejection | Python self-test | Helper self-test + bytecode compilation | passed |
+| 51-02-02 | 02 | 2 | OUT-02 | T-51-09–11 | Fixed non-circular locality, sign, family, and no-face contracts | Python self-test | Helper semantic adversarial tests | passed |
+| 51-03-01 | 03 | 3 | OUT-02, OUT-03 | T-51-12–16 | Separate measurement/strict runs and exact denominator split | render/integration | Guarded clean render + strict helper + 144-file check | passed — frozen strict calibration |
+| 51-03-02 | 03 | 3 | OUT-02 | T-51-17 | Actual opened-image review blocks contradictory visual claims | visual + regression | Fourteen evidence rows + provider suite + strict helper; end-of-phase human check | passed — 14/14 opened at original detail |
+| 51-04-01 | 04 | 4 | OUT-03 | T-51-18–21 | Exact descriptor-safe eyebrow gallery group | Python self-test | Gallery self-test + bytecode compilation | passed |
+| 51-04-02 | 04 | 4 | OUT-03 | T-51-18–22 | Exact ignored 144-file publication with no retired portraits | integration/static | Gallery publication + bijection + artifact scans | passed — 144/144 |
+| 51-05-01 | 05 | 5 | OUT-01, OUT-02, OUT-03 | T-51-23–27 | Fresh complete evidence and no pre-recorded green rows | full/integration/static | Focused + full + helper + strict + gallery + scans | passed — evidence below |
+| 51-05-02 | 05 | 5 | OUT-01, OUT-02, OUT-03 | T-51-24–26 | Owner contracts preserve count, privacy, reliability, and Phase 52 boundaries | static/docs | Owner keyword/cardinality and diff gates | pending owner synchronization |
+| 51-05-03 | 05 | 5 | OUT-01, OUT-02, OUT-03 | T-51-24–27 | Close only OUT-01..03 and Phase 51 | static/ledger | Requirement/roadmap/state/product checks | pending lifecycle synchronization |
 
 ## Wave 0 Requirements
 
@@ -63,7 +63,54 @@ created: 2026-07-24
 - [x] Archived Phase 43/47 bounded decoder and semantic-output helper patterns.
 - [x] Descriptor-safe `generate_gallery.py` self-test/publication infrastructure.
 - [x] Sole active portrait `example-images/input/portraits/e6.jpg` and separate negative fixture.
-- [ ] Phase 51 helper self-tests and strict semantic contract — created in Plan 51-02 before live acceptance.
+- [x] Phase 51 helper self-tests and strict semantic contract — created in Plan 51-02 before live acceptance.
+
+## Fresh Wave 5 Evidence — 2026-07-27
+
+All final commands ran from the repository root on the local macOS host.
+
+### Fixture, compiled, and helper gates
+
+- Fixture preflight passed: `e6.jpg` is the sole active portrait and is regular, nonempty, and non-symlink; `e1.png` through `e5.png` are present only under `parked-portraits/`.
+- `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyCoreTests.BeautyRendererOutputRegressionTests` passed 16/16 with zero skips.
+- `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyCoreTests.BeautyEngineGeometryFacadeTests` executed 19, passed 18, and skipped one explicitly opt-in Apple Vision integration test.
+- `swift test --package-path BeautySDK --disable-sandbox --jobs 1 --filter BeautyEffectsTests.EyebrowWarpProviderTests` passed 12/12.
+- Python bytecode compilation, the output-helper self-test, and the gallery-generator self-test all exited `0`.
+- The first full SwiftPM attempt honestly failed 1 of 438 tests: the Phase 51 projection-order correction had stopped rejecting a zero-extent eyebrow trace. A fail-closed face-axis extent guard restored the existing invariant; `FaceObservationMappingTests` then passed 23/23. The fresh full retry passed 438 executed with 6 explicit opt-in skips and 0 failures in 56.235 seconds.
+
+### Final guarded output and strict acceptance
+
+The final run resolved `example-images/output` to the exact repository output root, confirmed it was ignored, deleted only its descendants, and invoked:
+
+`DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/output`
+
+The renderer exited `0` and wrote exactly 144 nonempty PNGs: 72 `e6` portrait outputs and 72 separate no-face outputs. The strict helper then exited `0` without measurement mode:
+
+- portrait inventory and decoding: 72/72;
+- eyebrow visibility: 13/13;
+- signed direction: 6/6;
+- semantic family distinction: 21/21;
+- portrait direct comparisons: 40/40;
+- separate no-face no-op comparisons: 13/13;
+- frozen brow ROI: `(0.24, 0.76, 0.24, 0.43)`;
+- protected-region maxima remained within fixed ceilings.
+
+No 144-portrait claim is made: 144 is always the disposable two-fixture total.
+
+### Actual-image and gallery gates
+
+The committed evidence table enumerates exactly the baseline plus all thirteen `e6__eyebrow*.png` files. Every one was opened individually at original detail. The recorded observations distinguish signed pairs, whole spacing from head spacing, and thickness from peak while confirming brow-local changes and protected eyes/forehead-hair/background. `Visual review verdict: PASS` remains present and agrees with the fresh strict run.
+
+The published gallery contains exactly 144 regular PNGs and thirteen immediate eyebrow case directories. Reconstructed fixture-and-case names are a 144/144 bijection with output. No `e1`–`e5` artifact is accepted. Output, gallery, and bounded quarantine roots are ignored, untracked, and unstaged; staging is absent and quarantine is a non-symlink directory.
+
+### Privacy, dependency, and promotion scans
+
+- `BeautySDK/Package.swift` retained pinned hash `6f03b078816ad1f7a426e3f70d4f57503f3152e9`.
+- The Phase 51 range added zero public/open/SPI declarations and exposes zero raw eyebrow support/trace types publicly. The example renderer imports only the public `BeautySDK` product for SDK access and contains exactly one `engine.processResult` call.
+- The complete Phase 51 range added no Demo source, manifest/resolution change, resource/model/Metal asset, dependency, URL/session/network/cloud path, or commercial/release-ready behavior.
+- Product promotion ledgers are unchanged: all seven eyebrow rows and the `眉毛` branch remain `future`.
+- Aggregate metrics and generated filenames are the only committed output evidence; raw support points, decoded pixels, and generated image bytes remain absent.
+- Generated roots contain zero tracked, staged, or non-ignored files. `git diff --check` passed.
 
 ## Manual/Visual Verification Contract
 
@@ -71,13 +118,13 @@ Automated pixel gates are necessary but not sufficient. Plan 51-03 must open `e6
 
 ## Validation Sign-Off
 
-- [ ] Every task has an automated verification command.
-- [ ] Helper self-tests exist before measurement and strict acceptance.
-- [ ] Measurement and strict acceptance use separate guarded clean renders.
-- [ ] Exact 72 portrait / 13 negative / 144 total terminology is preserved.
-- [ ] Fourteen actual representative images are opened and reviewed.
-- [ ] Full SwiftPM, strict helper, gallery, artifact, privacy/scope, and diff gates pass.
+- [x] Every task has an automated verification command.
+- [x] Helper self-tests exist before measurement and strict acceptance.
+- [x] Measurement and strict acceptance use separate guarded clean renders.
+- [x] Exact 72 portrait / 13 negative / 144 total terminology is preserved.
+- [x] Fourteen actual representative images are opened and reviewed.
+- [x] Full SwiftPM, strict helper, gallery, artifact, privacy/scope, and diff gates pass.
 - [ ] OUT-01..03 close while SAFE-01..03 and DOC-01 remain open.
-- [ ] Set `status: complete`, `wave_0_complete: true`, and `nyquist_compliant: true` only after execution evidence fills every row.
+- [ ] Set `status: complete` and `nyquist_compliant: true` after owner and lifecycle synchronization fills the final two rows.
 
-**Approval:** Not yet approved; this is the pre-execution validation contract.
+**Approval:** Automated and actual-image output evidence is approved; final Phase 51 approval awaits owner and lifecycle synchronization. Effective caps, seven row and branch promotion, exhaustive safety, Demo/device/commercial/performance/packaging/shipping/release claims, SAFE-01..03, and DOC-01 remain Phase 52 or later work.
