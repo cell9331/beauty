@@ -131,7 +131,7 @@
 
 **Requirements:** SAFE-01, SAFE-02, SAFE-03, DOC-01
 
-**Plans:** 6/10 plans complete
+**Plans:** 7/10 plans executed
 
 **Wave 1**
 
@@ -159,7 +159,7 @@
 
 **Wave 7** *(gap closure; blocked on Wave 6 completion)*
 
-- [ ] 52-07-PLAN.md — Repair canonical fixtures, prove cancellation inside provider work, and trace real convergence removals.
+- [x] 52-07-PLAN.md — Repair canonical fixtures, prove cancellation inside provider work, and trace real convergence removals.
 
 **Wave 8** *(blocked on Wave 7 completion)*
 
@@ -191,7 +191,7 @@
 | 49. Public Contract and Observed Eyebrow Support | v1.13 | 5 | Complete    | 2026-07-24 |
 | 50. Independent Eyebrow Geometry and Pipeline Integration | v1.13 | 9 | Complete | 2026-07-24 |
 | 51. Public-Facade Eyebrow Output Evidence | v1.13 | 3 | Complete    | 2026-07-27 |
-| 52. Eyebrow Safety and Branch Closeout | v1.13 | 4 | In Progress | — |
+| 52. Eyebrow Safety and Branch Closeout | v1.13 | 4 | In Progress|  |
 
 ## Backlog
 
