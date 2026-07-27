@@ -1384,25 +1384,30 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         siblingsCompletedExpectation.expectedFulfillmentCount = 28
         let siblingsCompleted = Phase52RequestSignal(expectation: siblingsCompletedExpectation)
         let siblingGate = Phase52AsyncGate()
-        let interrupted = Task.detached { () -> Phase52RequestSnapshot in
-            let row = rows[0]
-            let plan = BeautyEffectResolver.resolve(
-                parameters: row.makeParameters(1),
-                faceGeometry: EyebrowSafetyFixtures.face(),
-                onProviderResolutionStarted: resolverEntered.signal,
-                onProviderWorkStarted: providerBarrier.enterAndWaitForRelease
-            )
-            return Phase52RequestSnapshot(
-                identity: interruptedIdentity,
-                fieldName: row.name,
-                effectiveStrength: plan.effectiveStrengths[keyPath: row.effectiveValue],
-                warningCodes: plan.warnings.map(\.code).sorted(),
-                eyebrowActive: plan.activeDomains.contains(.eyebrows),
-                eyebrowSkipped: plan.skippedDomains.contains(.eyebrows),
-                activeCount: plan.metrics["beauty.effects.activeCount"] ?? 0,
-                skippedEyebrowCount: plan.metrics["beauty.effects.skippedEyebrowDomains"] ?? 0,
-                geometryPointCount: plan.metrics["beauty.effects.geometryPointCount"] ?? 0
-            )
+        let interruptedQueue = DispatchQueue(label: "beauty.phase52.interrupted-request")
+        let interrupted = Task { () -> Phase52RequestSnapshot in
+            await withCheckedContinuation { continuation in
+                interruptedQueue.async {
+                    let row = rows[0]
+                    let plan = BeautyEffectResolver.resolve(
+                        parameters: row.makeParameters(1),
+                        faceGeometry: EyebrowSafetyFixtures.face(),
+                        onProviderResolutionStarted: resolverEntered.signal,
+                        onProviderWorkStarted: providerBarrier.enterAndWaitForRelease
+                    )
+                    continuation.resume(returning: Phase52RequestSnapshot(
+                        identity: interruptedIdentity,
+                        fieldName: row.name,
+                        effectiveStrength: plan.effectiveStrengths[keyPath: row.effectiveValue],
+                        warningCodes: plan.warnings.map(\.code).sorted(),
+                        eyebrowActive: plan.activeDomains.contains(.eyebrows),
+                        eyebrowSkipped: plan.skippedDomains.contains(.eyebrows),
+                        activeCount: plan.metrics["beauty.effects.activeCount"] ?? 0,
+                        skippedEyebrowCount: plan.metrics["beauty.effects.skippedEyebrowDomains"] ?? 0,
+                        geometryPointCount: plan.metrics["beauty.effects.geometryPointCount"] ?? 0
+                    ))
+                }
+            }
         }
 
         await fulfillment(
