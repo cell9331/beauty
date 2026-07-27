@@ -4,15 +4,15 @@ milestone: v1.13
 milestone_name: Eyebrow Geometry Controls
 current_phase: 52
 current_phase_name: eyebrow-safety-and-branch-closeout
-status: verifying
-stopped_at: Completed 52-06-PLAN.md; ready for independent v1.13 milestone audit
-last_updated: "2026-07-27T05:27:35.609Z"
+status: ready_to_execute
+stopped_at: Phase 52 gap plans 52-07 through 52-10 verified
+last_updated: "2026-07-27T06:30:00.000Z"
 last_activity: 2026-07-27
-last_activity_desc: Phase 52 completed and verified
+last_activity_desc: Phase 52 gap-closure plans verified
 progress:
   total_phases: 4
-  completed_phases: 4
-  total_plans: 22
+  completed_phases: 3
+  total_plans: 26
   completed_plans: 22
 ---
 
@@ -27,18 +27,18 @@ See: `.planning/PROJECT.md` (updated 2026-07-27)
 
 ## Current Position
 
-Phase: 52 (eyebrow-safety-and-branch-closeout) — COMPLETE
-Plan: 6 of 6
-Status: Ready for independent v1.13 milestone audit
-Last activity: 2026-07-27 — Phase 52 completed and verified
+Phase: 52 (eyebrow-safety-and-branch-closeout) — GAP CLOSURE PLANNED
+Plan: 6 of 10
+Status: Ready to execute Waves 7-8, then the independent review gate, Waves 9-10, and independent re-verification
+Last activity: 2026-07-27 — Phase 52 gap-closure plans verified
 
-### Phase 52 Eyebrow Safety and Branch Closeout Result
+### Phase 52 Eyebrow Safety and Branch Closeout Gap Status
 
-- Seven exact final `0.25` caps use `Float.ulpOfOne` only as the strength dead zone; bounded formulas, directions, overflow accounting, and exhaustive request-local lifecycle/local-failure/concurrency/interruption evidence pass.
-- The exact 44-field inventory totals `13.45`, scales once by `1 / 13.45`, removes monotonically without re-entry or double scaling, and agrees across final strengths, emissions, metrics, and Face→Chin→Eye→Eyebrow→Nose→Mouth dispatch.
-- Fresh evidence passes eight focused suites, 450 full SwiftPM tests with six opt-in skips, 72/72 portrait outputs, thirteen separate no-face comparisons, 144/144 output/gallery containment, and fourteen-image original-detail review.
-- Standard review is clean, fourteen-task Nyquist is complete, ASVS L1 records `threats_open: 0`, and exactly seven eyebrow rows plus branch `眉毛` are implemented at SDK-core scope.
-- SAFE-01, SAFE-02, SAFE-03, and DOC-01 are complete. The next step is only the independent v1.13 milestone audit; audit/archive/tag/cleanup and UI/device/commercial/performance/packaging/shipping/launch/release readiness remain unclaimed.
+- Final verification is `gaps_found` at 12/16 must-haves. The three disputed tests do not yet prove canonical adapter-valid fixtures, cancellation after actual provider entry, or late removal through the real retained-mask convergence lifecycle.
+- Plans 52-07 through 52-10 close WR-01 through WR-03, expand Nyquist coverage from fourteen historical tasks to 23/23 total tasks, and preserve an explicit no-UI-change contract.
+- Execution is staged: Waves 7-8 produce code and command evidence; an independent `gsd-code-reviewer` exclusively owns the fresh review; Waves 9-10 may synchronize owners and reach 35/35 only after that clean, fresh review.
+- `52-VERIFICATION.md` remains independently owned and `gaps_found` until the final verifier reruns. The executor must not write a passed status.
+- The independent v1.13 milestone audit is blocked until all four gap plans complete and Phase 52 independently verifies as passed.
 
 ### Phase 51 Public-Facade Eyebrow Output Result
 
@@ -410,13 +410,13 @@ Recent milestone-level outcomes:
 
 ### Pending Todos
 
-- Run the independent v1.13 milestone audit; do not infer archive, tag, cleanup, packaging, shipping, launch, or release readiness from Phase 52 completion.
+- Execute Phase 52 gap-closure Waves 7-8, run the independent review gate, execute Waves 9-10, and rerun independent verification before any milestone audit.
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, screenshot reruns, packaging review, broader `美型 / 五官` slices, and automated visual diffs.
 
 ### Blockers/Concerns
 
-- Phase 52 has no active blocker. All six plans and four requirements are complete; the independent v1.13 milestone audit remains a separate next step.
+- Phase 52 has four active verification gaps recorded in `52-VERIFICATION.md`; the milestone audit is blocked until the staged gap-closure and independent re-verification pass.
 - No active v1.12 blocker remains; all four phases and the independent milestone audit passed.
 - Deferred v2 `ADV-*` items remain outside v1 traceability and are tracked as `TD-007` in `PLANS.md`.
 - Manual release risks are now routed by Phase 21 and updated by Phases 23 through 25: `TD-008` has focused simulator camera pass evidence but physical iPhone checks remain blocked until hardware exists; `TD-009` remains Phase 22 visual evidence with screenshot rerun protocol; and `TD-010` keeps device, long-run, screenshot, optimized profiling, external-resource integrity, and commercial packaging work routed to later setup-specific checks.
@@ -440,10 +440,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-27T05:26:49.932Z
-Stopped at: Completed 52-06-PLAN.md; ready for independent v1.13 milestone audit
-Resume file: None
+Last session: 2026-07-27T06:30:00.000Z
+Stopped at: Phase 52 gap plans 52-07 through 52-10 verified
+Resume file: .planning/phases/52-eyebrow-safety-and-branch-closeout/52-07-PLAN.md
 
 ## Operator Next Steps
 
-- Run the independent v1.13 milestone audit. Do not archive, tag, or clean up until that audit is independently executed and passes.
+- Execute Phase 52 Waves 7-8, run the independent code-review gate, then execute Waves 9-10 and rerun the independent phase verifier. Do not audit, archive, tag, or clean up before it passes.

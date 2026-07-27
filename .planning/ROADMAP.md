@@ -15,14 +15,14 @@
 - ✅ **[v1.10 Mouth Remaining Geometry Controls](milestones/v1.10-ROADMAP.md)** — Phases 38-40, shipped 2026-07-14.
 - ✅ **[v1.11 Eye Remaining Geometry Controls](milestones/v1.11-ROADMAP.md)** — Phases 41-44, shipped 2026-07-19.
 - ✅ **[v1.12 Face Shape Remaining Capabilities](milestones/v1.12-ROADMAP.md)** — Phases 45-48, shipped 2026-07-24.
-- 🚧 **v1.13 Eyebrow Geometry Controls** — Phases 49-52 complete at SDK-core scope; independent milestone audit pending.
+- 🚧 **v1.13 Eyebrow Geometry Controls** — Phase 52 gap closure is planned after final verification found production-path evidence gaps; milestone audit is blocked.
 
 ## Phases
 
 - [x] **Phase 49: Public Contract and Observed Eyebrow Support** — Exact 59-field compatibility, actual left/right Vision eyebrow mapping, open-trace validation, side/order canonicalization, and private lifecycle. (completed 2026-07-24)
 - [x] **Phase 50: Independent Eyebrow Geometry and Pipeline Integration** — Seven distinct named transforms, field-local eligibility, exact 44-field convergence, unified dispatch, and redacted facade routing. (completed 2026-07-24)
 - [x] **Phase 51: Public-Facade Eyebrow Output Evidence** — Thirteen isolated cases, strict single-portrait direction/locality/distinction evidence, safe no-ops, and ignored gallery containment. (completed 2026-07-27)
-- [x] **Phase 52: Eyebrow Safety and Branch Closeout** — Final caps, complete transitions, active-source/privacy gates, exact seven-row promotion, and implemented branch status. (completed 2026-07-27)
+- [ ] **Phase 52: Eyebrow Safety and Branch Closeout** — Final caps, complete transitions, active-source/privacy gates, exact seven-row promotion, and implemented branch status. Gap closure in progress.
 
 ## Phase Details
 
@@ -57,7 +57,7 @@
 
 **Requirements:** GEOM-01, GEOM-02, GEOM-03, GEOM-04, GEOM-05, GEOM-06, GEOM-07, PIPE-01, PIPE-02
 
-**Plans:** 6/6 plans complete
+**Plans:** 6/10 plans complete
 **Wave 1**
 
 - [x] 50-01-PLAN.md
@@ -157,6 +157,26 @@
 
 - [x] 52-06-PLAN.md — Close planning/requirement/verification state and hand off to the independent milestone audit.
 
+**Wave 7** *(gap closure; blocked on Wave 6 completion)*
+
+- [ ] 52-07-PLAN.md — Repair canonical fixtures, prove cancellation inside provider work, and trace real convergence removals.
+
+**Wave 8** *(blocked on Wave 7 completion)*
+
+- [ ] 52-08-PLAN.md — Produce fresh regression, security, checker, simulator, and 23-task Nyquist evidence.
+
+**Independent review gate** *(required between Waves 8 and 9)*
+
+- `$gsd-code-review 52` exclusively owns the fresh review; Wave 9 must fail closed unless it is clean and newer than the Wave 7-8 commits.
+
+**Wave 9** *(blocked on Wave 8 and the independent review gate)*
+
+- [ ] 52-09-PLAN.md — Resynchronize routed root owners from independently reviewed evidence.
+
+**Wave 10** *(blocked on Wave 9 completion)*
+
+- [ ] 52-10-PLAN.md — Resynchronize planning owners and run the final 35/35 pending-verification gate.
+
 **Success criteria:**
 
 1. All seven controls have exact final caps/dead zones, correct signed or positive-only directionality, bounded radii, and no-face/missing/malformed/provider-empty/fresh/reused/stale/transition evidence.
@@ -171,7 +191,7 @@
 | 49. Public Contract and Observed Eyebrow Support | v1.13 | 5 | Complete    | 2026-07-24 |
 | 50. Independent Eyebrow Geometry and Pipeline Integration | v1.13 | 9 | Complete | 2026-07-24 |
 | 51. Public-Facade Eyebrow Output Evidence | v1.13 | 3 | Complete    | 2026-07-27 |
-| 52. Eyebrow Safety and Branch Closeout | v1.13 | 4 | Complete | 2026-07-27 |
+| 52. Eyebrow Safety and Branch Closeout | v1.13 | 4 | In Progress | — |
 
 ## Backlog
 
@@ -182,4 +202,4 @@
 - SwiftUI/Demo UI, physical-device parity, commercial visual approval, optimized profiling, packaging, shipping, and launch-readiness evidence remain separately scoped.
 
 ---
-*Last updated: 2026-07-27 after Phase 52 completion; independent v1.13 milestone audit pending*
+*Last updated: 2026-07-27 after Phase 52 gap-closure planning; milestone audit blocked pending independent re-verification*
