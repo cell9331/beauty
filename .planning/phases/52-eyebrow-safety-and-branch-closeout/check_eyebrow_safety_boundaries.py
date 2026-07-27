@@ -841,7 +841,7 @@ def build_source_fixture(root: Path) -> None:
 def build_status_fixture(root: Path, promoted: bool) -> None:
     status = "implemented" if promoted else "future"
     lineage = "Phase 49 Phase 50 Phase 51 Phase 52" if promoted else "None."
-    ledger = "\n".join(
+    ledger = "| `眉毛` | `IMG_0864.PNG`, `IMG_0865.PNG` | taxonomy inventory |\n" + "\n".join(
         f"| `眉毛` | {name} | {status} | {lineage} | scoped |"
         for name in TARGET_ROWS
     ) + "\n"
@@ -1262,7 +1262,11 @@ def self_test(root: Path) -> int:
 def _exact_eyebrow_taxonomy(ledger: str) -> Result:
     rows = [
         row for row in table_rows(ledger)
-        if len(row) >= 3 and row[0] == "眉毛"
+        if (
+            len(row) >= 3
+            and row[0] == "眉毛"
+            and row[2] in {"future", "partial", "blocked-by-geometry-output", "implemented"}
+        )
     ]
     names = [row[1] for row in rows]
     return Result(
