@@ -25,6 +25,64 @@ final class EyebrowWarpProviderTests: XCTestCase {
 
     private let bounds = FaceBounds(x: 0.1, y: 0.1, width: 0.8, height: 0.8)
 
+    func testSAFE01DeadZoneAdjacencyUsesStrengthBoundaryNotGeometryEpsilon() {
+        let provider = EyebrowWarpProvider()
+        let face = EyebrowSafetyFixtures.adjacentStrengthFace
+        let firstEligible = Float.ulpOfOne.nextUp
+
+        for row in EyebrowSafetyFixtures.rows {
+            for neutral in [Float.zero, Float.ulpOfOne] + (row.isSigned ? [-Float.ulpOfOne] : []) {
+                let emissions = provider.fieldEmissions(face: face, strengths: row.strengths(neutral))
+                XCTAssertTrue(row.emission(emissions).isEmpty, "\(row.name) neutral \(neutral)")
+            }
+
+            let positive = row.emission(provider.fieldEmissions(face: face, strengths: row.strengths(firstEligible)))
+            XCTAssertFalse(positive.isEmpty, "\(row.name) first representable magnitude above the dead zone")
+            XCTAssertTrue(positive.allSatisfy { $0.strength == firstEligible }, row.name)
+
+            if row.isSigned {
+                let negative = row.emission(provider.fieldEmissions(face: face, strengths: row.strengths(-firstEligible)))
+                XCTAssertFalse(negative.isEmpty, "\(row.name) negative first eligible magnitude")
+                XCTAssertEqual(negative.map(\.source), positive.map(\.source), row.name)
+                XCTAssertNotEqual(negative.map(\.target), positive.map(\.target), row.name)
+            }
+        }
+    }
+
+    func testSAFE01NamedFinalCapsRadiiBoundsAndUnavailableFixtures() {
+        let provider = EyebrowWarpProvider()
+        let eligibleFace = EyebrowSafetyFixtures.face()
+
+        for row in EyebrowSafetyFixtures.rows {
+            let points = row.emission(provider.fieldEmissions(
+                face: eligibleFace,
+                strengths: row.strengths(row.cap)
+            ))
+            XCTAssertFalse(points.isEmpty, row.name)
+            XCTAssertTrue(points.allSatisfy { point in
+                point.source.x.isFinite && point.source.y.isFinite &&
+                    point.target.x.isFinite && point.target.y.isFinite &&
+                    (0...1).contains(point.source.x) && (0...1).contains(point.source.y) &&
+                    (0...1).contains(point.target.x) && (0...1).contains(point.target.y) &&
+                    point.radius == eligibleFace.bounds.width * row.maximumRadiusFraction &&
+                    point.strength == row.cap
+            }, row.name)
+
+            let unavailable = EyebrowSafetyFixtures.unavailableFace(for: row.narrowestUnavailableFixture)
+            let missingPoints = row.emission(provider.fieldEmissions(
+                face: unavailable,
+                strengths: row.strengths(row.cap)
+            ))
+            XCTAssertTrue(missingPoints.isEmpty, "\(row.name) \(row.narrowestUnavailableFixture.rawValue)")
+
+            let overflow = row.emission(provider.fieldEmissions(
+                face: eligibleFace,
+                strengths: row.strengths(row.cap.nextUp)
+            ))
+            XCTAssertTrue(overflow.isEmpty, "public resolver must clamp before provider: \(row.name)")
+        }
+    }
+
     private func trace(
         leftSide: Bool,
         points: [SIMD2<Float>]? = nil,

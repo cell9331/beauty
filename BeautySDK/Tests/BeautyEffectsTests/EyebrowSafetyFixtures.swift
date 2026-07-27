@@ -187,12 +187,12 @@ enum EyebrowSafetyFixtures {
 
     static var adjacentStrengthFace: FaceGeometry {
         let leftPoints: [SIMD2<Float>] = [
-            .init(0.05, 0.00030), .init(0.14, 0.00016), .init(0.23, 0.00010),
-            .init(0.32, 0.00017), .init(0.41, 0.00031),
+            .init(0.05, 0.02030), .init(0.14, 0.02016), .init(0.23, 0.02010),
+            .init(0.32, 0.02017), .init(0.41, 0.02031),
         ]
         let rightPoints: [SIMD2<Float>] = [
-            .init(0.95, 0.00030), .init(0.86, 0.00016), .init(0.77, 0.00010),
-            .init(0.68, 0.00017), .init(0.59, 0.00031),
+            .init(0.95, 0.02030), .init(0.86, 0.02016), .init(0.77, 0.02010),
+            .init(0.68, 0.02017), .init(0.59, 0.02031),
         ]
         return FaceGeometry(
             bounds: FaceBounds(x: 0, y: 0, width: 1, height: 1),
