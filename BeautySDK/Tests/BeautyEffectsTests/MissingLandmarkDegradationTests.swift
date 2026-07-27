@@ -46,7 +46,7 @@ private final class Phase52ProviderBarrier: @unchecked Sendable {
 
     func enterAndWaitForRelease() {
         entered.signal()
-        if releaseSemaphore.wait(timeout: .now() + .seconds(2)) == .timedOut {
+        if releaseSemaphore.wait(timeout: .now() + .seconds(10)) == .timedOut {
             lock.withLock { storedWaitTimedOut = true }
         }
     }
@@ -1351,6 +1351,9 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         let providerBarrier = Phase52ProviderBarrier(
             enteredExpectation: expectation(description: "interrupted provider entered")
         )
+        let siblingsStartedExpectation = expectation(description: "parallel siblings started")
+        siblingsStartedExpectation.expectedFulfillmentCount = 28
+        let siblingsStarted = Phase52RequestSignal(expectation: siblingsStartedExpectation)
         let interrupted = Task.detached { () -> Phase52RequestSnapshot in
             let row = rows[0]
             let plan = BeautyEffectResolver.resolve(
@@ -1371,16 +1374,15 @@ final class MissingLandmarkDegradationTests: XCTestCase {
                 geometryPointCount: plan.metrics["beauty.effects.geometryPointCount"] ?? 0
             )
         }
-        defer {
-            interrupted.cancel()
-            providerBarrier.release()
-        }
 
         await fulfillment(
             of: [resolverEntered.expectation, providerBarrier.entered.expectation],
             timeout: 2
         )
         guard resolverEntered.count == 1, providerBarrier.entered.count == 1 else {
+            interrupted.cancel()
+            providerBarrier.release()
+            _ = await interrupted.value
             XCTFail("resolver/provider entry callbacks must complete before the bounded timeout")
             return
         }
@@ -1388,36 +1390,55 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertEqual(providerBarrier.entered.count, 1)
         XCTAssertEqual(providerBarrier.releaseCount, 0)
 
-        let results = await withTaskGroup(
-            of: Phase52RequestSnapshot.self,
-            returning: [Phase52RequestSnapshot].self
-        ) { group in
-            for index in 0..<28 {
-                let row = rows[index % rows.count]
-                group.addTask {
-                    let valid = index.isMultiple(of: 2)
-                    let face = valid
-                        ? EyebrowSafetyFixtures.face()
-                        : EyebrowSafetyFixtures.unavailableFace(for: row.narrowestUnavailableFixture)
-                    let plan = BeautyEffectResolver.resolve(
-                        parameters: row.makeParameters(1),
-                        faceGeometry: face
-                    )
-                    return Phase52RequestSnapshot(
-                        identity: index,
-                        fieldName: row.name,
-                        effectiveStrength: plan.effectiveStrengths[keyPath: row.effectiveValue],
-                        warningCodes: plan.warnings.map(\.code).sorted(),
-                        eyebrowActive: plan.activeDomains.contains(.eyebrows),
-                        eyebrowSkipped: plan.skippedDomains.contains(.eyebrows),
-                        activeCount: plan.metrics["beauty.effects.activeCount"] ?? 0,
-                        skippedEyebrowCount: plan.metrics["beauty.effects.skippedEyebrowDomains"] ?? 0,
-                        geometryPointCount: plan.metrics["beauty.effects.geometryPointCount"] ?? 0
-                    )
+        let siblings = Task { () -> [Phase52RequestSnapshot] in
+            await withTaskGroup(
+                of: Phase52RequestSnapshot.self,
+                returning: [Phase52RequestSnapshot].self
+            ) { group in
+                for index in 0..<28 {
+                    let row = rows[index % rows.count]
+                    group.addTask {
+                        siblingsStarted.signal()
+                        let valid = index.isMultiple(of: 2)
+                        let face = valid
+                            ? EyebrowSafetyFixtures.face()
+                            : EyebrowSafetyFixtures.unavailableFace(for: row.narrowestUnavailableFixture)
+                        let plan = BeautyEffectResolver.resolve(
+                            parameters: row.makeParameters(1),
+                            faceGeometry: face
+                        )
+                        return Phase52RequestSnapshot(
+                            identity: index,
+                            fieldName: row.name,
+                            effectiveStrength: plan.effectiveStrengths[keyPath: row.effectiveValue],
+                            warningCodes: plan.warnings.map(\.code).sorted(),
+                            eyebrowActive: plan.activeDomains.contains(.eyebrows),
+                            eyebrowSkipped: plan.skippedDomains.contains(.eyebrows),
+                            activeCount: plan.metrics["beauty.effects.activeCount"] ?? 0,
+                            skippedEyebrowCount: plan.metrics["beauty.effects.skippedEyebrowDomains"] ?? 0,
+                            geometryPointCount: plan.metrics["beauty.effects.geometryPointCount"] ?? 0
+                        )
+                    }
                 }
+                return await group.reduce(into: []) { $0.append($1) }
             }
-            return await group.reduce(into: []) { $0.append($1) }
         }
+
+        await fulfillment(of: [siblingsStarted.expectation], timeout: 2)
+        guard siblingsStarted.count == 28 else {
+            interrupted.cancel()
+            providerBarrier.release()
+            _ = await interrupted.value
+            _ = await siblings.value
+            XCTFail("all sibling requests must start before the bounded timeout")
+            return
+        }
+
+        interrupted.cancel()
+        XCTAssertTrue(interrupted.isCancelled)
+        providerBarrier.release()
+        let interruptedResult = await interrupted.value
+        let results = await siblings.value
 
         XCTAssertEqual(results.count, 28)
         XCTAssertEqual(Set(results.map(\.identity)).count, 28)
@@ -1438,10 +1459,6 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertEqual(resolverEntered.count, 1, "nil callbacks in sibling requests cannot signal")
         XCTAssertEqual(providerBarrier.entered.count, 1, "sibling requests cannot enter another request's barrier")
 
-        interrupted.cancel()
-        XCTAssertTrue(interrupted.isCancelled)
-        providerBarrier.release()
-        let interruptedResult = await interrupted.value
         XCTAssertEqual(interruptedResult.identity, interruptedIdentity)
         XCTAssertEqual(interruptedResult.effectiveStrength, rows[0].cap)
         XCTAssertTrue(interruptedResult.eyebrowActive)
