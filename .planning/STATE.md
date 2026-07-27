@@ -4,17 +4,17 @@ milestone: v1.13
 milestone_name: Eyebrow Geometry Controls
 current_phase: 52
 current_phase_name: eyebrow-safety-and-branch-closeout
-status: executing
-stopped_at: Completed 52-09-PLAN.md
-last_updated: "2026-07-27T09:47:30.000Z"
+status: verifying
+stopped_at: Phase 52 planning owners synchronized; final executor gate pending
+last_updated: "2026-07-27T09:52:27.000Z"
 last_activity: 2026-07-27
-last_activity_desc: Phase 52 Plan 09 synchronized cleanly reviewed root owners and reached 21/23 green tasks
+last_activity_desc: Phase 52 ten-plan owners synchronized with 22/23 green tasks; final readiness gate pending
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 26
-  completed_plans: 25
-  percent: 96
+  completed_plans: 26
+  percent: 100
 ---
 
 # Project State
@@ -28,18 +28,19 @@ See: `.planning/PROJECT.md` (updated 2026-07-27)
 
 ## Current Position
 
-Phase: 52 (eyebrow-safety-and-branch-closeout) — EXECUTING
-Plan: 9 of 10
-Status: Ready to execute Plan 52-10
-Last activity: 2026-07-27 — Plan 52-09 synchronized cleanly reviewed root owners and reached 21/23 green tasks
+Phase: 52 (eyebrow-safety-and-branch-closeout) — VERIFYING
+Plan: 10 of 10
+Status: Planning owners synchronized; final executor gate pending, then independent Phase 52 re-verification
+Last activity: 2026-07-27 — All ten execution plans are recorded and planning-owner synchronization reached 22/23 green tasks
 
 ### Phase 52 Eyebrow Safety and Branch Closeout Gap Status
 
 - Final verification remains independently owned and `gaps_found` at 12/16 until re-verification. Plan 52-07 supplies focused production-path WR-01/02/03 evidence, and Plan 52-08 supplies the full regression/simulator/security ledger.
 - The independent post-fix 25-file `gsd-code-reviewer` report is clean 0/0/0/0 and newer than Waves 7–8.
-- Plan 52-09 synchronized security, reliability, and quality owners; all seven routed owner modes pass and Nyquist execution is 21/23 green with only the two Wave 10 rows pending.
+- Plans 52-09 and 52-10 synchronize all routed root and planning owners. The exact 23-task Nyquist ledger is 22/23 green after the planning-owner gate; only the final 35/35 executor readiness row remains.
+- Phase 52 implements exactly seven eyebrow rows and SDK-core branch `眉毛`, keeps raw support package-internal and request-scoped, exposes aggregate-only diagnostics, and changes no SwiftUI/Demo path.
 - `52-VERIFICATION.md` remains independently owned and `gaps_found` until the final verifier reruns. The executor must not write a passed status.
-- The independent v1.13 milestone audit is blocked until all four gap plans complete and Phase 52 independently verifies as passed.
+- After the final executor readiness gate, the next workflow is independent Phase 52 re-verification. The v1.13 milestone audit is blocked until that independent verifier passes.
 
 ### Phase 51 Public-Facade Eyebrow Output Result
 
@@ -289,6 +290,7 @@ Last activity: 2026-07-14
 | Phase 52 P07 | 20min | 3 tasks | 7 files |
 | Phase 52 P08 | 13min | 2 tasks | 4 files |
 | Phase 52 P09 | 5min | 2 tasks | 5 files |
+| Phase 52 P10 | pending final gate | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -403,24 +405,24 @@ Recent milestone-level outcomes:
 - [Phase ?]: The exact 13.45 total and seven 0.25 eyebrow caps remain provisional until Phase 52 calibration.
 - [Phase 52]: Use BeautySafetyCaps as the only final eyebrow maximum authority, with one named binding per field evaluation. — Keeps provider acceptance, formula division, and final point validation on one exact source of truth.
 - [Phase 52]: Separate the exact Float.ulpOfOne strength dead zone from the 0.000001 geometry and topology validity tolerance. — Prevents eligible adjacent strength from being misclassified while retaining fail-closed geometry validation.
-- [Phase 52]: Keep the active Nyquist ledger at exactly eight green executed rows and six pending future rows; reserve fourteen green rows for the final complete ledger. — This preserves truthful execution status while recording complete planned coverage.
+- [Phase 52]: Keep one exact 23-task Nyquist ledger for all ten plans, progressing truthfully from 19 to 21 to 22 and finally 23 green rows. — Promotion readiness requires the complete 23/23 ledger; historical fourteen-task coverage is superseded.
 - [Phase 52]: Treat future-operation threat closure as verified fail-closed enforcement, not as evidence that promotion, owner closure, audit, archive, tag, or cleanup occurred. — Security closure proves the control blocks the operation until its owning plan, not that the operation ran.
 - [Phase 52]: Keep the fourteen-image PASS bounded to mechanical direction, locality, stability, and distinction; commercial naturalness and device/performance readiness remain nonclaims. — The original-detail review is acceptance evidence for the implemented controls only.
 - [Phase 52]: Promoted exactly seven eyebrow rows and branch 眉毛 at SDK-core scope after the Phase 49-52 evidence chain passed. — All seven child rows agreed across the exact four product owners; v1.14-v1.16 and UI/device/commercial/release/lifecycle claims remain future.
 - [Phase 52]: Keep example owners on exact reproduction, count, review, and disposable-artifact facts without changing renderer or calibration. — Preserves the example-image authority and unchanged Phase 51 helper/gallery contract.
 - [Phase 52]: Route mechanics, trust boundaries, recovery, user acceptance, and measured evidence to their existing root owners. — Avoids duplicating one deep invariant across unrelated owner documents.
 - [Phase 52]: Keep Phase 52 explicitly SDK-core-only; later milestones and readiness/lifecycle outcomes remain nonclaims. — Current automation does not establish UI, device, commercial, release, audit, archive, tag, or cleanup results.
-- [Phase 52]: Close exactly SAFE-01, SAFE-02, SAFE-03, and DOC-01 from final owner-linked Phase 52 evidence. — The independent v1.13 milestone audit remains a separate next step; phase completion does not claim audit or lifecycle completion.
+- [Phase 52]: Close exactly SAFE-01, SAFE-02, SAFE-03, and DOC-01 from final owner-linked Phase 52 evidence. — Independent Phase 52 re-verification is the next external workflow; milestone audit remains blocked until it passes, and phase execution does not claim audit or lifecycle completion.
 
 ### Pending Todos
 
-- Execute Phase 52 gap-closure Waves 7-8, run the independent review gate, execute Waves 9-10, and rerun independent verification before any milestone audit.
+- Complete the final 35/35 executor readiness gate, then dispatch independent Phase 52 re-verification before any milestone audit.
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, screenshot reruns, packaging review, broader `美型 / 五官` slices, and automated visual diffs.
 
 ### Blockers/Concerns
 
-- Phase 52 has four active verification gaps recorded in `52-VERIFICATION.md`; the milestone audit is blocked until the staged gap-closure and independent re-verification pass.
+- Phase 52's existing independent `52-VERIFICATION.md` remains `gaps_found` even though the implementation fixes, fresh evidence, clean review, and owner synchronization are present; a fresh independent rerun must decide final acceptance. Milestone audit remains blocked.
 - No active v1.12 blocker remains; all four phases and the independent milestone audit passed.
 - Deferred v2 `ADV-*` items remain outside v1 traceability and are tracked as `TD-007` in `PLANS.md`.
 - Manual release risks are now routed by Phase 21 and updated by Phases 23 through 25: `TD-008` has focused simulator camera pass evidence but physical iPhone checks remain blocked until hardware exists; `TD-009` remains Phase 22 visual evidence with screenshot rerun protocol; and `TD-010` keeps device, long-run, screenshot, optimized profiling, external-resource integrity, and commercial packaging work routed to later setup-specific checks.
@@ -444,10 +446,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-27T07:51:18.122Z
-Stopped at: Completed 52-09-PLAN.md
+Last session: 2026-07-27T09:52:27.000Z
+Stopped at: Phase 52 planning owners synchronized; final executor gate pending
 Resume file: None
 
 ## Operator Next Steps
 
-- Execute Plan 52-10 planning-owner synchronization and the exact 35/35 pending-verification gate, then dispatch an independent Phase 52 verifier. Do not audit, archive, tag, or clean up before verification passes.
+- Run the exact 35/35 pending-independent executor gate, then dispatch an independent Phase 52 verifier. Do not audit, archive, tag, or clean up before verification passes.
