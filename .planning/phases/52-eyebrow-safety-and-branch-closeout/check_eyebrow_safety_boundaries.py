@@ -667,33 +667,33 @@ def _security_gate(text: str) -> Result:
 
 
 def _validation_gate(text: str) -> Result:
-    task_rows = re.findall(r"^\| 52-0[1-6]-0[1-3] \|", text, re.MULTILINE)
-    completed_ids = (
-        "52-01-01", "52-01-02", "52-01-03",
-        "52-02-01", "52-02-02",
-        "52-03-01", "52-03-02", "52-03-03",
+    expected_ids = tuple(
+        f"52-{plan:02d}-{task:02d}"
+        for plan, task_count in (
+            (1, 3), (2, 2), (3, 3), (4, 2), (5, 2),
+            (6, 2), (7, 3), (8, 2), (9, 2), (10, 2),
+        )
+        for task in range(1, task_count + 1)
     )
-    future_ids = (
-        "52-04-01", "52-04-02",
-        "52-05-01", "52-05-02",
-        "52-06-01", "52-06-02",
-    )
+    task_rows = re.findall(r"^\| (52-\d{2}-\d{2}) \|", text, re.MULTILINE)
+    completed_ids = expected_ids[:19]
+    future_ids = expected_ids[19:]
     green_ids = {
         match.group(1) for match in re.finditer(
-            r"^\| (52-0[1-6]-0[1-3]) \|[^\n]*\|\s*✅ green\s*\|$",
+            r"^\| (52-\d{2}-\d{2}) \|[^\n]*\|\s*✅ green(?:[^|]*)\s*\|$",
             text,
             re.MULTILINE,
         )
     }
     pending_ids = {
         match.group(1) for match in re.finditer(
-            r"^\| (52-0[1-6]-0[1-3]) \|[^\n]*\|\s*⬜ pending\s*\|$",
+            r"^\| (52-\d{2}-\d{2}) \|[^\n]*\|\s*⬜ pending(?:[^|]*)\s*\|$",
             text,
             re.MULTILINE,
         )
     }
     active_ledger = (
-        "status: active" in text
+        "status: in_progress" in text
         and green_ids == set(completed_ids)
         and pending_ids == set(future_ids)
     )
@@ -703,15 +703,18 @@ def _validation_gate(text: str) -> Result:
         and not pending_ids
     )
     ok = (
-        len(task_rows) == 14
+        len(task_rows) == 23
+        and tuple(task_rows) == expected_ids
+        and len(set(task_rows)) == 23
         and (active_ledger or complete_ledger)
         and "nyquist_compliant: true" in text
         and "wave_0_complete: true" in text
+        and "task_coverage: 23/23" in text
     )
     return Result(
-        "fourteen-task Nyquist ledger",
+        "twenty-three-task Nyquist ledger",
         ok,
-        f"tasks={len(task_rows)}/14; green={len(green_ids)}; "
+        f"tasks={len(task_rows)}/23; green={len(green_ids)}; "
         f"pending={len(pending_ids)}; active_or_complete={int(active_ledger or complete_ledger)}; "
         f"nyquist={int('nyquist_compliant: true' in text)}",
     )
@@ -757,17 +760,23 @@ def planning_final_gate(root: Path) -> Result:
     for identifier in ("SAFE-01", "SAFE-02", "SAFE-03", "DOC-01"):
         if not re.search(rf"^- \[x\] \*\*{identifier}\*\*", requirements, re.MULTILINE):
             failures.append(identifier)
-    plans = re.findall(r"^- \[x\] 52-0[1-6]-PLAN\.md", roadmap, re.MULTILINE)
-    if len(plans) != 6:
-        failures.append(f"plans={len(plans)}/6")
-    if "status: passed" not in verification:
+    plans = re.findall(r"^- \[x\] 52-(?:0[1-9]|10)-PLAN\.md", roadmap, re.MULTILINE)
+    if len(plans) != 10:
+        failures.append(f"plans={len(plans)}/10")
+    independent_attribution = bool(re.search(
+        r"(?im)^_Verifier:[^\n]*gsd-verifier[^\n]*_$",
+        verification,
+    ))
+    if not re.search(r"(?m)^status:\s*gaps_found\s*$", verification):
         failures.append("verification")
+    if not independent_attribution:
+        failures.append("verification_attribution")
     if not re.search(r"(?i)independent.*milestone.*audit", verification):
         failures.append("audit_handoff")
     return Result(
         "planning completion/audit handoff",
         not failures,
-        "requirements=4/4; plans=6/6; verification=passed; audit=pending"
+        "requirements=4/4; plans=10/10; verification=pending-independent; audit=pending"
         if not failures else "; ".join(failures),
     )
 
@@ -1130,28 +1139,30 @@ def self_test(root: Path) -> int:
         require(_security_gate(security).ok, "security positive")
         require(not _security_gate(security.replace("threats_open: 0", "threats_open: 1")).ok,
                 "open security accepted")
-        validation_rows = "\n".join(
-            f"| 52-{plan:02d}-{task:02d} | x | ✅ green |"
-            for plan, task in (
-                (1, 1), (1, 2), (1, 3), (2, 1), (2, 2), (3, 1), (3, 2),
-                (3, 3), (4, 1), (4, 2), (5, 1), (5, 2), (6, 1), (6, 2),
+        validation_ids = tuple(
+            f"52-{plan:02d}-{task:02d}"
+            for plan, task_count in (
+                (1, 3), (2, 2), (3, 3), (4, 2), (5, 2),
+                (6, 2), (7, 3), (8, 2), (9, 2), (10, 2),
             )
+            for task in range(1, task_count + 1)
+        )
+        validation_rows = "\n".join(
+            f"| {task_id} | x | ✅ green |" for task_id in validation_ids
         )
         validation = (
             "status: complete\nnyquist_compliant: true\nwave_0_complete: true\n"
+            "task_coverage: 23/23\n"
             + validation_rows + "\n"
         )
         require(_validation_gate(validation).ok, "complete validation positive")
         active_rows = "\n".join(
-            f"| 52-{plan:02d}-{task:02d} | x | "
-            f"{'✅ green' if plan <= 3 else '⬜ pending'} |"
-            for plan, task in (
-                (1, 1), (1, 2), (1, 3), (2, 1), (2, 2), (3, 1), (3, 2),
-                (3, 3), (4, 1), (4, 2), (5, 1), (5, 2), (6, 1), (6, 2),
-            )
+            f"| {task_id} | x | {'✅ green' if index < 19 else '⬜ pending'} |"
+            for index, task_id in enumerate(validation_ids)
         )
         active_validation = (
-            "status: active\nnyquist_compliant: true\nwave_0_complete: true\n"
+            "status: in_progress\nnyquist_compliant: true\nwave_0_complete: true\n"
+            "task_coverage: 23/23\n"
             + active_rows + "\n"
         )
         require(_validation_gate(active_validation).ok, "active validation positive")
@@ -1184,19 +1195,24 @@ def self_test(root: Path) -> int:
             for identifier in ("SAFE-01", "SAFE-02", "SAFE-03", "DOC-01")
         )
         roadmap = "\n".join(
-            f"- [x] 52-{plan:02d}-PLAN.md" for plan in range(1, 7)
+            f"- [x] 52-{plan:02d}-PLAN.md" for plan in range(1, 11)
         )
         write_fixture(fixture, ".planning/REQUIREMENTS.md", requirements + "\n")
         write_fixture(fixture, ".planning/ROADMAP.md", roadmap + "\n")
         write_fixture(
             fixture,
             f"{PHASE_DIR}/52-VERIFICATION.md",
-            "status: passed\nindependent milestone audit remains pending\n",
+            "status: gaps_found\nindependent milestone audit remains pending\n"
+            "_Verifier: independent gsd-verifier_\n",
         )
         require(planning_final_gate(fixture).ok, "planning final positive")
         verification = fixture / PHASE_DIR / "52-VERIFICATION.md"
-        verification.write_text("status: failed\n", encoding="utf-8")
-        require(not planning_final_gate(fixture).ok, "failed verification accepted")
+        verification.write_text(
+            "status: passed\nexecutor authored\n"
+            "_Verifier: independent gsd-verifier_\n",
+            encoding="utf-8",
+        )
+        require(not planning_final_gate(fixture).ok, "executor-passed verification accepted")
 
         for relative in ("PLANS.md", ".planning/PROJECT.md", ".planning/STATE.md"):
             write_fixture(
@@ -1301,9 +1317,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         root = locate_repo(args.root)
         if args.self_test:
             return self_test(root)
-        promoted = args.check_promotion or args.check_owners or args.allow_promotion
-        results = live_checks(root, promoted)
-        if promoted:
+        governance_requested = (
+            args.check_promotion or args.check_owners or args.allow_promotion
+        )
+        # Phase 52's exact SDK-core product transaction is already committed.
+        # Default mode remains non-promoting/read-only, but validates that
+        # current promoted state instead of reconstructing the historical
+        # pre-promotion worktree.
+        results = live_checks(root, promoted=True)
+        if governance_requested:
             results.extend(governance_gate(root))
             results.append(_exact_eyebrow_taxonomy(read(root, BLUEPRINT_FILES[0])))
         if args.check_promotion:
@@ -1317,7 +1339,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "allow-promotion" if args.allow_promotion
             else "owners" if args.check_owners
             else "promotion" if args.check_promotion
-            else "pre-promotion"
+            else "live"
         )
         return print_results(mode, results)
     except Exception as error:
