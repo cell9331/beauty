@@ -1,7 +1,7 @@
 ---
 phase: 52
 slug: eyebrow-safety-and-branch-closeout
-status: active
+status: complete
 nyquist_compliant: true
 wave_0_complete: true
 created: 2026-07-27
@@ -51,12 +51,12 @@ created: 2026-07-27
 | 52-03-01 | 03 | 3 | SAFE-03, DOC-01 | T-52-13–18, T-52-22–23, T-52-SC | Fail-closed pre/post-promotion, owner, privacy, dependency, artifact, concurrency/interruption, and lifecycle checker | static + adversarial | Checker compile + self-test + default live | ✅ Wave 0 | ✅ green |
 | 52-03-02 | 03 | 3 | SAFE-01, SAFE-02, SAFE-03 | T-52-17–20, T-52-22 | Fresh runtime plus unchanged strict output/gallery, fourteen reopened images, and disposable artifact evidence | full + integration | Focused/full SwiftPM + guarded strict/gallery commands | ✅ reuse | ✅ green |
 | 52-03-03 | 03 | 3 | SAFE-03 | T-52-19, T-52-21, T-52-23 | Clean standard review, fourteen-task Nyquist coverage, ASVS L1 zero-open precondition, and unchanged pre-promotion state | review + security | Review/security/validation artifact gates | ✅ Wave 3 | ✅ green |
-| 52-04-01 | 04 | 4 | DOC-01 | T-52-24, T-52-26 | Fresh evidence reauthorizes only the exact eyebrow status transaction | static | Default checker + evidence/precondition gates | ❌ Wave 0 | ⬜ pending |
-| 52-04-02 | 04 | 4 | DOC-01 | T-52-25–27 | Exactly seven rows and branch `眉毛` become implemented at SDK-core scope; all nonclaims preserved | docs/static | Post-promotion checker mode | ❌ Wave 0 | ⬜ pending |
-| 52-05-01 | 05 | 5 | SAFE-03, DOC-01 | T-52-28 | Example owners retain exact 72/13/144 vocabulary, fourteen-file review, disposable artifacts, and final cap/safety result | docs/static | Example-owner checker mode + helper/gallery self-tests | ❌ Wave 0 | ⬜ pending |
-| 52-05-02 | 05 | 5 | SAFE-01, SAFE-02, SAFE-03, DOC-01 | T-52-29–30 | Routed root owners agree on caps, lifecycle, privacy, reliability, product, quality, and nonclaims | docs/static | Per-owner and aggregate owner checker modes | ❌ Wave 0 | ⬜ pending |
-| 52-06-01 | 06 | 6 | SAFE-01, SAFE-02, SAFE-03, DOC-01 | T-52-31–34 | Close exact requirements/plans only after executable evidence; independent audit remains pending | docs/static | Requirement/roadmap/state/plans checker modes | ❌ Wave 0 | ⬜ pending |
-| 52-06-02 | 06 | 6 | SAFE-01, SAFE-02, SAFE-03, DOC-01 | T-52-19, T-52-21, T-52-31–34 | Goal-backward verification and complete final gate hand off honestly to milestone audit | verify | Full final command bundle + final checker | ❌ Wave 6 | ⬜ pending |
+| 52-04-01 | 04 | 4 | DOC-01 | T-52-24, T-52-26 | Fresh evidence reauthorizes only the exact eyebrow status transaction | static | Default checker + evidence/precondition gates | ✅ Wave 0 | ✅ green |
+| 52-04-02 | 04 | 4 | DOC-01 | T-52-25–27 | Exactly seven rows and branch `眉毛` become implemented at SDK-core scope; all nonclaims preserved | docs/static | Post-promotion checker mode | ✅ Wave 0 | ✅ green |
+| 52-05-01 | 05 | 5 | SAFE-03, DOC-01 | T-52-28 | Example owners retain exact 72/13/144 vocabulary, fourteen-file review, disposable artifacts, and final cap/safety result | docs/static | Example-owner checker mode + helper/gallery self-tests | ✅ Wave 0 | ✅ green |
+| 52-05-02 | 05 | 5 | SAFE-01, SAFE-02, SAFE-03, DOC-01 | T-52-29–30 | Routed root owners agree on caps, lifecycle, privacy, reliability, product, quality, and nonclaims | docs/static | Per-owner and aggregate owner checker modes | ✅ Wave 0 | ✅ green |
+| 52-06-01 | 06 | 6 | SAFE-01, SAFE-02, SAFE-03, DOC-01 | T-52-31–34 | Close exact requirements/plans only after executable evidence; independent audit remains pending | docs/static | Requirement/roadmap/state/plans checker modes | ✅ Wave 0 | ✅ green |
+| 52-06-02 | 06 | 6 | SAFE-01, SAFE-02, SAFE-03, DOC-01 | T-52-19, T-52-21, T-52-31–34 | Goal-backward verification and complete final gate hand off honestly to milestone audit | verify | Full final command bundle + final checker | ✅ Wave 6 | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -79,6 +79,6 @@ Commercial naturalness, physical-device parity, long-run performance, packaging,
 - [x] No watch-mode flags.
 - [x] Normal focused feedback latency remains under 180 seconds.
 - [x] All SAFE/DOC requirements have automated coverage plus the inherited actual-image acceptance gate.
-- [x] `nyquist_compliant: true` records complete planned coverage; execution status remains green only for the eight tasks with fresh results.
+- [x] `nyquist_compliant: true` records complete planned coverage and all fourteen task rows are green only from their owning execution results.
 
-**Approval:** Nyquist coverage approved; Plan 52-04 through 52-06 execution remains pending.
+**Approval:** Nyquist coverage and execution are complete for all fourteen Phase 52 tasks. The only handoff is the separately executed independent v1.13 milestone audit.
