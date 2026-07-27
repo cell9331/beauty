@@ -60,30 +60,26 @@ REQUIRED_CASE_IDS = {
     *NEW_CASE_IDS,
 }
 
-# One global, top-origin normalized eye rectangle. These are committed inputs,
-# never derived from an accepting run.
-ROI_LEFT = 0.12
-ROI_RIGHT = 0.88
-ROI_TOP = 0.16
-ROI_BOTTOM = 0.48
+# Frozen e6-only normalized regions.  They use the SDK's canonical top-left
+# origin and exclude the renderer label.  The effect ROI contains both brows
+# across the measured signed extrema.  The four protected families are
+# deliberately disjoint from it and from one another.
+BROW_REGIONS = ((0.24, 0.76, 0.24, 0.43),)
+PROTECTED_REGION_RECTS = (
+    ("eyes", ((0.25, 0.75, 0.42, 0.50),)),
+    ("forehead_hair", ((0.18, 0.82, 0.08, 0.23),)),
+    ("background", ((0.00, 0.14, 0.08, 0.82), (0.86, 1.00, 0.08, 0.82))),
+    ("watermark", ((0.82, 0.98, 0.92, 0.985),)),
+)
 
-# Frozen after the one-time Phase 43 measurement run. The weakest required
-# visibility measured 909 changed pixels / 1,732 RGB delta and the weakest
-# semantic family measured 2,046 / 3,670. These floors retain deliberate
-# margins of 409 pixels / 732 RGB delta before a fresh accepting render.
-MIN_CHANGED_PIXELS = 1
-MIN_ABSOLUTE_RGB_DELTA = 1
-TILT_EVIDENCE_FIXTURE_STEM = "e6"
-TILT_SPLIT_Y = 0.32
-MIN_TILT_POLARITY_MARGIN = 0.0005
-
-# The public PNG fixtures do not contain a stable, independently observable
-# pupil displacement at the accepted ROI.  Keep this image-only metric as a
-# deterministic adversarial self-test, but do not promote it to strict proof;
-# the package-internal aggregate scalar in EyeWarpProviderTests is the EYE-18
-# gaze reduction gate.
-IMAGE_GAZE_ROIS = ((0.12, 0.88, 0.16, 0.48),)
-IMAGE_DARK_CORE_LUMINANCE_MAX = 80
+DARK_LUMINANCE_CEILING = 180.0
+LEFT_BROW_REGION = ((0.24, 0.50, 0.24, 0.43),)
+RIGHT_BROW_REGION = ((0.50, 0.76, 0.24, 0.43),)
+HEAD_GAP_REGION = ((0.44, 0.56, 0.24, 0.43),)
+LEFT_INNER_REGION = ((0.40, 0.50, 0.24, 0.43),)
+RIGHT_INNER_REGION = ((0.50, 0.60, 0.24, 0.43),)
+LEFT_OUTER_REGION = ((0.24, 0.35, 0.24, 0.43),)
+RIGHT_OUTER_REGION = ((0.65, 0.76, 0.24, 0.43),)
 
 
 class RendererOutputError(Exception):
@@ -111,6 +107,74 @@ class ComparisonMetrics:
     changed_pixels: int
     roi_pixels: int
     absolute_rgb_delta: int
+
+
+@dataclass(frozen=True)
+class ProtectedLimit:
+    name: str
+    maximum_changed_pixels: int
+    maximum_absolute_rgb_delta: int
+
+
+@dataclass(frozen=True)
+class DirectionLimit:
+    name: str
+    minimum_margin: float
+
+
+@dataclass(frozen=True)
+class Calibration:
+    visibility_changed_floor: int
+    visibility_delta_floor: int
+    family_changed_floor: int
+    family_delta_floor: int
+    protected_limits: tuple[ProtectedLimit, ...]
+    direction_limits: tuple[DirectionLimit, ...]
+
+    @property
+    def protected_regions(self) -> tuple[str, ...]:
+        return tuple(limit.name for limit in self.protected_limits)
+
+    @property
+    def direction_floors(self) -> tuple[str, ...]:
+        return tuple(limit.name for limit in self.direction_limits)
+
+
+@dataclass(frozen=True)
+class BrowSignature:
+    center_y: float
+    vertical_spread: float
+    horizontal_spread: float
+    deformation_vertical_extent: float
+    deformation_horizontal_extent: float
+    pair_spacing: float
+    head_gap_darkness: float
+    tail_lift: float
+
+
+# Frozen from the one-time Phase 51 measurement.  Floors sit below the
+# measured minima and ceilings above the measured maxima with explicit
+# positive margins; no accepting run derives or mutates these values.
+FROZEN_CALIBRATION = Calibration(
+    visibility_changed_floor=25_000,
+    visibility_delta_floor=175_000,
+    family_changed_floor=35_000,
+    family_delta_floor=450_000,
+    protected_limits=(
+        ProtectedLimit("eyes", 750, 1_500),
+        ProtectedLimit("forehead_hair", 32, 64),
+        ProtectedLimit("background", 32, 64),
+        ProtectedLimit("watermark", 32, 64),
+    ),
+    direction_limits=(
+        DirectionLimit("y_position", 0.000_20),
+        DirectionLimit("thickness", 0.002_50),
+        DirectionLimit("length", 0.050_00),
+        DirectionLimit("spacing", 0.002_50),
+        DirectionLimit("head_spacing", 0.004_00),
+        DirectionLimit("tilt", 0.002_50),
+    ),
+)
 
 
 @dataclass(frozen=True)
@@ -461,103 +525,186 @@ def comparable_top_region_rows(width: int, height: int) -> int:
     return max(0, height - int(math.ceil(padding * 2 + watermark_band)))
 
 
-def eye_roi(width: int, height: int) -> tuple[int, int, int, int]:
-    left = int(width * ROI_LEFT)
-    right = int(width * ROI_RIGHT)
-    top = int(height * ROI_TOP)
-    bottom = int(height * ROI_BOTTOM)
+def pixel_rectangles(
+    width: int,
+    height: int,
+    rectangles: tuple[tuple[float, float, float, float], ...],
+    label: str,
+) -> tuple[tuple[int, int, int, int], ...]:
     comparable_rows = comparable_top_region_rows(width, height)
-    if right <= left or bottom <= top:
-        raise RendererOutputError(f"invalid eye ROI for {width}x{height}")
-    if bottom > comparable_rows:
-        raise RendererOutputError(
-            f"eye ROI bottom {bottom} is not wholly above watermark boundary {comparable_rows} for {width}x{height}"
+    pixels: list[tuple[int, int, int, int]] = []
+    for left, right, top, bottom in rectangles:
+        if not (
+            all(math.isfinite(value) for value in (left, right, top, bottom))
+            and 0 <= left < right <= 1
+            and 0 <= top < bottom <= 1
+        ):
+            raise RendererOutputError(f"{label}: invalid normalized region")
+        pixel_rect = (
+            int(width * left),
+            int(width * right),
+            int(height * top),
+            int(height * bottom),
         )
-    return left, right, top, bottom
+        if pixel_rect[1] <= pixel_rect[0] or pixel_rect[3] <= pixel_rect[2]:
+            raise RendererOutputError(f"{label}: empty pixel region for {width}x{height}")
+        if label != "watermark" and pixel_rect[3] > comparable_rows:
+            raise RendererOutputError(
+                f"{label}: bottom {pixel_rect[3]} is not wholly above watermark boundary "
+                f"{comparable_rows} for {width}x{height}"
+            )
+        pixels.append(pixel_rect)
+    return tuple(pixels)
 
 
-def region_difference(reference_path: Path, candidate_path: Path) -> ComparisonMetrics:
+def region_difference(
+    reference_path: Path,
+    candidate_path: Path,
+    rectangles: tuple[tuple[float, float, float, float], ...] = BROW_REGIONS,
+    label: str = "brow",
+) -> ComparisonMetrics:
     width, height, reference_rows = decoded_rgb(reference_path)
     other_width, other_height, candidate_rows = decoded_rgb(candidate_path)
     if (width, height) != (other_width, other_height):
         raise RendererOutputError("comparison dimensions differ")
-    left, right, top, bottom = eye_roi(width, height)
-    changed = delta = 0
-    for row_index in range(top, bottom):
-        reference = reference_rows[row_index]
-        candidate = candidate_rows[row_index]
-        for column in range(left, right):
-            start = column * 3
-            first = reference[start : start + 3]
-            second = candidate[start : start + 3]
-            pixel_delta = sum(abs(first[channel] - second[channel]) for channel in range(3))
-            if pixel_delta:
-                changed += 1
-                delta += pixel_delta
-    return ComparisonMetrics(changed, (right - left) * (bottom - top), delta)
+    changed = delta = pixels = 0
+    for left, right, top, bottom in pixel_rectangles(width, height, rectangles, label):
+        pixels += (right - left) * (bottom - top)
+        for row_index in range(top, bottom):
+            first_segment = reference_rows[row_index][left * 3 : right * 3]
+            second_segment = candidate_rows[row_index][left * 3 : right * 3]
+            if first_segment == second_segment:
+                continue
+            for offset in range(0, len(first_segment), 3):
+                pixel_delta = (
+                    abs(first_segment[offset] - second_segment[offset])
+                    + abs(first_segment[offset + 1] - second_segment[offset + 1])
+                    + abs(first_segment[offset + 2] - second_segment[offset + 2])
+                )
+                if pixel_delta:
+                    changed += 1
+                    delta += pixel_delta
+    return ComparisonMetrics(changed, pixels, delta)
 
 
-def eye_delta_centroid_y(reference_path: Path, candidate_path: Path) -> float:
-    """Return the normalized vertical centroid of fixed-ROI RGB change."""
+def darkness_moments(
+    rows: tuple[bytes, ...],
+    width: int,
+    height: int,
+    rectangles: tuple[tuple[float, float, float, float], ...],
+    label: str,
+) -> tuple[float, float, float, float, float, int]:
+    total = weighted_x = weighted_y = weighted_x2 = weighted_y2 = 0.0
+    pixel_count = 0
+    for left, right, top, bottom in pixel_rectangles(width, height, rectangles, label):
+        pixel_count += (right - left) * (bottom - top)
+        for y in range(top, bottom):
+            row = rows[y]
+            normalized_y = (y + 0.5) / height
+            for x in range(left, right):
+                index = x * 3
+                red, green, blue = row[index : index + 3]
+                luminance = (54 * red + 183 * green + 19 * blue) / 256
+                weight = max(0.0, DARK_LUMINANCE_CEILING - luminance)
+                if weight == 0:
+                    continue
+                normalized_x = (x + 0.5) / width
+                total += weight
+                weighted_x += normalized_x * weight
+                weighted_y += normalized_y * weight
+                weighted_x2 += normalized_x * normalized_x * weight
+                weighted_y2 += normalized_y * normalized_y * weight
+    if total <= 0 or pixel_count <= 0:
+        raise RendererOutputError(f"{label}: no dark eyebrow evidence")
+    return total, weighted_x, weighted_y, weighted_x2, weighted_y2, pixel_count
+
+
+def dark_centroid(
+    rows: tuple[bytes, ...],
+    width: int,
+    height: int,
+    rectangles: tuple[tuple[float, float, float, float], ...],
+    label: str,
+) -> tuple[float, float]:
+    total, weighted_x, weighted_y, _, _, _ = darkness_moments(
+        rows, width, height, rectangles, label
+    )
+    return weighted_x / total, weighted_y / total
+
+
+def difference_extent(reference_path: Path, candidate_path: Path) -> tuple[float, float]:
+    """Return robust 5%-95% RGB-delta extents inside the frozen brow ROI."""
     width, height, reference_rows = decoded_rgb(reference_path)
     other_width, other_height, candidate_rows = decoded_rgb(candidate_path)
     if (width, height) != (other_width, other_height):
-        raise RendererOutputError("tilt comparison dimensions differ")
-    left, right, top, bottom = eye_roi(width, height)
-    weighted_y = total_delta = 0
-    for row_index in range(top, bottom):
-        reference = reference_rows[row_index]
-        candidate = candidate_rows[row_index]
-        for column in range(left, right):
-            start = column * 3
-            pixel_delta = sum(
-                abs(reference[start + channel] - candidate[start + channel])
-                for channel in range(3)
-            )
-            total_delta += pixel_delta
-            weighted_y += pixel_delta * row_index
-    if total_delta == 0:
-        raise RendererOutputError("tilt comparison has no changed eye-local pixels")
-    return weighted_y / total_delta / height
+        raise RendererOutputError("direction comparison dimensions differ")
+    x_weights = [0] * width
+    y_weights = [0] * height
+    total = 0
+    for left, right, top, bottom in pixel_rectangles(
+        width, height, BROW_REGIONS, "brow"
+    ):
+        for y in range(top, bottom):
+            for x in range(left, right):
+                index = x * 3
+                delta = sum(
+                    abs(reference_rows[y][index + channel] - candidate_rows[y][index + channel])
+                    for channel in range(3)
+                )
+                x_weights[x] += delta
+                y_weights[y] += delta
+                total += delta
+    if total <= 0:
+        raise RendererOutputError("direction comparison has no brow deformation")
+
+    def quantile(weights: list[int], fraction: float) -> int:
+        target = total * fraction
+        cumulative = 0
+        for index, weight in enumerate(weights):
+            cumulative += weight
+            if cumulative >= target:
+                return index
+        raise RendererOutputError("direction comparison quantile is unavailable")
+
+    return (
+        (quantile(x_weights, 0.95) - quantile(x_weights, 0.05)) / width,
+        (quantile(y_weights, 0.95) - quantile(y_weights, 0.05)) / height,
+    )
 
 
-def dark_core_centroid(
-    rows: tuple[bytes, ...], width: int, height: int, roi: tuple[float, float, float, float]
-) -> tuple[float, float] | None:
-    """Locate a bounded dark-core centroid in one fixed normalized eye ROI."""
-    left, right, top, bottom = roi
-    x0, x1 = int(width * left), int(width * right)
-    y0, y1 = int(height * top), int(height * bottom)
-    weight_total = weighted_x = weighted_y = 0
-    for y in range(y0, y1):
-        row = rows[y]
-        for x in range(x0, x1):
-            index = x * 3
-            red, green, blue = row[index : index + 3]
-            luminance = (54 * red + 183 * green + 19 * blue) / 256
-            if luminance > IMAGE_DARK_CORE_LUMINANCE_MAX:
-                continue
-            weight = IMAGE_DARK_CORE_LUMINANCE_MAX - luminance + 1
-            weight_total += weight
-            weighted_x += x * weight
-            weighted_y += y * weight
-    if weight_total == 0:
-        return None
-    return weighted_x / weight_total / width, weighted_y / weight_total / height
+def brow_signature(path: Path, baseline_path: Path) -> BrowSignature:
+    width, height, rows = decoded_rgb(path)
+    total, weighted_x, weighted_y, weighted_x2, weighted_y2, _ = darkness_moments(
+        rows, width, height, BROW_REGIONS, "brow signature"
+    )
+    center_x = weighted_x / total
+    center_y = weighted_y / total
+    horizontal_spread = math.sqrt(max(0.0, weighted_x2 / total - center_x * center_x))
+    vertical_spread = math.sqrt(max(0.0, weighted_y2 / total - center_y * center_y))
 
+    left_x, _ = dark_centroid(rows, width, height, LEFT_BROW_REGION, "left brow")
+    right_x, _ = dark_centroid(rows, width, height, RIGHT_BROW_REGION, "right brow")
+    head_total, _, _, _, _, head_pixels = darkness_moments(
+        rows, width, height, HEAD_GAP_REGION, "head gap"
+    )
+    _, left_inner_y = dark_centroid(rows, width, height, LEFT_INNER_REGION, "left inner brow")
+    _, right_inner_y = dark_centroid(rows, width, height, RIGHT_INNER_REGION, "right inner brow")
+    _, left_outer_y = dark_centroid(rows, width, height, LEFT_OUTER_REGION, "left outer brow")
+    _, right_outer_y = dark_centroid(rows, width, height, RIGHT_OUTER_REGION, "right outer brow")
+    deformation_horizontal_extent, deformation_vertical_extent = difference_extent(
+        baseline_path, path
+    )
 
-def dark_core_deviation(
-    rows: tuple[bytes, ...], width: int, height: int
-) -> float | None:
-    """Aggregate distance from each ROI's fixed neutral center, for self-tests only."""
-    total = 0.0
-    for left, right, top, bottom in IMAGE_GAZE_ROIS:
-        centroid = dark_core_centroid(rows, width, height, (left, right, top, bottom))
-        if centroid is None:
-            return None
-        neutral = ((left + right) / 2, (top + bottom) / 2)
-        total += math.hypot(centroid[0] - neutral[0], centroid[1] - neutral[1])
-    return total
+    return BrowSignature(
+        center_y=center_y,
+        vertical_spread=vertical_spread,
+        horizontal_spread=horizontal_spread,
+        deformation_vertical_extent=deformation_vertical_extent,
+        deformation_horizontal_extent=deformation_horizontal_extent,
+        pair_spacing=right_x - left_x,
+        head_gap_darkness=head_total / head_pixels / DARK_LUMINANCE_CEILING,
+        tail_lift=((left_inner_y - left_outer_y) + (right_inner_y - right_outer_y)) / 2,
+    )
 
 
 def watermark_safe_no_face_difference(reference_path: Path, candidate_path: Path) -> ComparisonMetrics:
@@ -632,7 +779,107 @@ def validate_matrix(output_dir: Path, case_ids: list[str], fixtures: list[Fixtur
     return outputs
 
 
+def validate_calibration_contract(calibration: Calibration) -> None:
+    protected_names = tuple(name for name, _ in PROTECTED_REGION_RECTS)
+    if calibration.protected_regions != protected_names:
+        raise AssertionError(
+            f"protected calibration names {calibration.protected_regions} != {protected_names}"
+        )
+    if len(set(calibration.protected_regions)) != 4:
+        raise AssertionError("protected calibration requires four unique regions")
+    if (
+        calibration.visibility_changed_floor <= 0
+        or calibration.visibility_delta_floor <= 0
+        or calibration.family_changed_floor <= 0
+        or calibration.family_delta_floor <= 0
+    ):
+        raise AssertionError("visibility/family calibration floors must be positive")
+    for limit in calibration.protected_limits:
+        if limit.maximum_changed_pixels < 0 or limit.maximum_absolute_rgb_delta < 0:
+            raise AssertionError(f"{limit.name}: protected ceilings must be nonnegative")
+    expected_directions = (
+        "y_position",
+        "thickness",
+        "length",
+        "spacing",
+        "head_spacing",
+        "tilt",
+    )
+    if calibration.direction_floors != expected_directions:
+        raise AssertionError(
+            f"direction calibration names {calibration.direction_floors} != {expected_directions}"
+        )
+    if any(limit.minimum_margin <= 0 for limit in calibration.direction_limits):
+        raise AssertionError("direction calibration floors must be positive")
+
+    all_regions = (("brow", BROW_REGIONS), *PROTECTED_REGION_RECTS)
+    for name, rectangles in all_regions:
+        if not rectangles:
+            raise AssertionError(f"{name}: region inventory is empty")
+        for rectangle in rectangles:
+            left, right, top, bottom = rectangle
+            if not (
+                all(math.isfinite(value) for value in rectangle)
+                and 0 <= left < right <= 1
+                and 0 <= top < bottom <= 1
+            ):
+                raise AssertionError(f"{name}: invalid normalized rectangle {rectangle}")
+
+
+def direction_metrics(signatures: dict[str, BrowSignature]) -> dict[str, float]:
+    return {
+        "y_position": signatures[Y_PLUS].center_y - signatures[Y_MINUS].center_y,
+        "thickness": (
+            signatures[THICKNESS_PLUS].deformation_vertical_extent
+            - signatures[THICKNESS_MINUS].deformation_vertical_extent
+        ),
+        "length": (
+            signatures[LENGTH_PLUS].deformation_horizontal_extent
+            - signatures[LENGTH_MINUS].deformation_horizontal_extent
+        ),
+        "spacing": signatures[SPACING_PLUS].pair_spacing - signatures[SPACING_MINUS].pair_spacing,
+        "head_spacing": (
+            signatures[HEAD_SPACING_MINUS].head_gap_darkness
+            - signatures[HEAD_SPACING_PLUS].head_gap_darkness
+        ),
+        "tilt": signatures[TILT_PLUS].tail_lift - signatures[TILT_MINUS].tail_lift,
+    }
+
+
+def require_direction_metrics(
+    observed: dict[str, float],
+    calibration: Calibration = FROZEN_CALIBRATION,
+) -> None:
+    for limit in calibration.direction_limits:
+        value = observed.get(limit.name)
+        if value is None or not math.isfinite(value) or value < limit.minimum_margin:
+            raise RendererOutputError(
+                f"signed direction {limit.name}: margin={value} below fixed floor "
+                f"{limit.minimum_margin:.8f}"
+            )
+
+
+def require_protected_metrics(
+    observed: dict[str, ComparisonMetrics],
+    calibration: Calibration = FROZEN_CALIBRATION,
+) -> None:
+    for limit in calibration.protected_limits:
+        metrics = observed.get(limit.name)
+        if metrics is None:
+            raise RendererOutputError(f"protected region {limit.name}: missing metrics")
+        if (
+            metrics.changed_pixels > limit.maximum_changed_pixels
+            or metrics.absolute_rgb_delta > limit.maximum_absolute_rgb_delta
+        ):
+            raise RendererOutputError(
+                f"protected region {limit.name}: changed={metrics.changed_pixels}, "
+                f"delta={metrics.absolute_rgb_delta} exceeds fixed ceilings "
+                f"{limit.maximum_changed_pixels}/{limit.maximum_absolute_rgb_delta}"
+            )
+
+
 def validate_outputs(input_dir: Path, output_dir: Path, renderer_source: Path, measure: bool) -> None:
+    validate_calibration_contract(FROZEN_CALIBRATION)
     case_ids = discover_case_ids(renderer_source)
     fixtures = discover_fixtures(input_dir)
     computed = len(case_ids) * len(fixtures)
@@ -648,7 +895,9 @@ def validate_outputs(input_dir: Path, output_dir: Path, renderer_source: Path, m
         )
 
     for fixture in portraits:
-        eye_roi(*fixture.dimensions)
+        pixel_rectangles(*fixture.dimensions, BROW_REGIONS, "brow")
+        for region_name, rectangles in PROTECTED_REGION_RECTS:
+            pixel_rectangles(*fixture.dimensions, rectangles, region_name)
 
     all_metrics: dict[str, list[ComparisonMetrics]] = {}
     for family in FAMILIES:
@@ -657,41 +906,67 @@ def validate_outputs(input_dir: Path, output_dir: Path, renderer_source: Path, m
             comparison = region_difference(
                 outputs[(fixture.stem, family.reference)], outputs[(fixture.stem, family.candidate)]
             )
+            if family.group == "visibility":
+                changed_floor = FROZEN_CALIBRATION.visibility_changed_floor
+                delta_floor = FROZEN_CALIBRATION.visibility_delta_floor
+            else:
+                changed_floor = FROZEN_CALIBRATION.family_changed_floor
+                delta_floor = FROZEN_CALIBRATION.family_delta_floor
             if not measure and (
-                comparison.changed_pixels < MIN_CHANGED_PIXELS
-                or comparison.absolute_rgb_delta < MIN_ABSOLUTE_RGB_DELTA
+                comparison.changed_pixels < changed_floor
+                or comparison.absolute_rgb_delta < delta_floor
             ):
                 raise RendererOutputError(
                     f"{family.name}/{fixture.stem}: changed={comparison.changed_pixels}, "
                     f"delta={comparison.absolute_rgb_delta} below fixed floors "
-                    f"{MIN_CHANGED_PIXELS}/{MIN_ABSOLUTE_RGB_DELTA}"
+                    f"{changed_floor}/{delta_floor}"
                 )
             metrics.append(comparison)
         if len(metrics) != EXPECTED_PORTRAIT_COUNT:
             raise RendererOutputError(f"{family.name}: {len(metrics)}/{EXPECTED_PORTRAIT_COUNT} comparisons")
         all_metrics[family.name] = metrics
 
-    portrait_stems = {fixture.stem for fixture in portraits}
-    for required_stem in (TILT_EVIDENCE_FIXTURE_STEM,):
-        if required_stem not in portrait_stems:
-            raise RendererOutputError("fixed eligibility evidence fixture is absent")
-
-    tilt_baseline = outputs[(TILT_EVIDENCE_FIXTURE_STEM, BASELINE_CASE_ID)]
-    tilt_plus_y = eye_delta_centroid_y(
-        tilt_baseline, outputs[(TILT_EVIDENCE_FIXTURE_STEM, TILT_PLUS)]
-    )
-    tilt_minus_y = eye_delta_centroid_y(
-        tilt_baseline, outputs[(TILT_EVIDENCE_FIXTURE_STEM, TILT_MINUS)]
-    )
-    if not measure and (
-        tilt_plus_y < TILT_SPLIT_Y + MIN_TILT_POLARITY_MARGIN
-        or tilt_minus_y > TILT_SPLIT_Y - MIN_TILT_POLARITY_MARGIN
-    ):
-        raise RendererOutputError(
-            f"tilt polarity failed fixed split/margin: plus={tilt_plus_y:.6f}, "
-            f"minus={tilt_minus_y:.6f}, split={TILT_SPLIT_Y:.6f}, "
-            f"margin={MIN_TILT_POLARITY_MARGIN:.6f}"
+    portrait = portraits[0]
+    baseline_path = outputs[(portrait.stem, BASELINE_CASE_ID)]
+    protected_maxima: dict[str, ComparisonMetrics] = {}
+    for region_name, rectangles in PROTECTED_REGION_RECTS:
+        comparisons = [
+            region_difference(
+                baseline_path,
+                outputs[(portrait.stem, case_id)],
+                rectangles,
+                region_name,
+            )
+            for case_id in NEW_CASE_IDS
+        ]
+        protected_maxima[region_name] = ComparisonMetrics(
+            changed_pixels=max(item.changed_pixels for item in comparisons),
+            roi_pixels=comparisons[0].roi_pixels,
+            absolute_rgb_delta=max(item.absolute_rgb_delta for item in comparisons),
         )
+    if not measure:
+        require_protected_metrics(protected_maxima)
+
+    signatures = {
+        case_id: brow_signature(outputs[(portrait.stem, case_id)], baseline_path)
+        for case_id in (
+            Y_PLUS,
+            Y_MINUS,
+            THICKNESS_PLUS,
+            THICKNESS_MINUS,
+            LENGTH_PLUS,
+            LENGTH_MINUS,
+            SPACING_PLUS,
+            SPACING_MINUS,
+            HEAD_SPACING_PLUS,
+            HEAD_SPACING_MINUS,
+            TILT_PLUS,
+            TILT_MINUS,
+        )
+    }
+    observed_directions = direction_metrics(signatures)
+    if not measure:
+        require_direction_metrics(observed_directions)
 
     no_face_fixture = no_face[0]
     if no_face_fixture.relative_path != "negatives/no-face-gradient.png":
@@ -714,15 +989,31 @@ def validate_outputs(input_dir: Path, output_dir: Path, renderer_source: Path, m
     print(f"matrix validation: {len(outputs)}/{computed} non-empty, fully decoded, same-dimension PNGs")
     for (width, height), fixture_count in sorted(dimensions.items()):
         print(f"dimensions {width}x{height}: {fixture_count * len(case_ids)} outputs")
+    print(f"brow ROI normalized rectangles: {BROW_REGIONS}")
     print(
-        f"ROI normalized x=[{ROI_LEFT:.2f},{ROI_RIGHT:.2f}), y=[{ROI_TOP:.2f},{ROI_BOTTOM:.2f}); "
-        f"fixed floors changed>={MIN_CHANGED_PIXELS}, absolute_rgb_delta>={MIN_ABSOLUTE_RGB_DELTA}; "
+        "fixed floors: "
+        f"visibility={FROZEN_CALIBRATION.visibility_changed_floor}/"
+        f"{FROZEN_CALIBRATION.visibility_delta_floor}; "
+        f"family={FROZEN_CALIBRATION.family_changed_floor}/"
+        f"{FROZEN_CALIBRATION.family_delta_floor}; "
         f"mode={'measurement' if measure else 'strict'}"
     )
-    print(
-        f"tilt polarity: plus_y={tilt_plus_y:.6f}; minus_y={tilt_minus_y:.6f}; "
-        f"fixed_split={TILT_SPLIT_Y:.6f}; margin={MIN_TILT_POLARITY_MARGIN:.6f}"
-    )
+    for limit in FROZEN_CALIBRATION.protected_limits:
+        metrics = protected_maxima[limit.name]
+        print(
+            f"protected {limit.name}: max_changed={metrics.changed_pixels}; "
+            f"max_absolute_rgb_delta={metrics.absolute_rgb_delta}; "
+            f"fixed_ceilings={limit.maximum_changed_pixels}/"
+            f"{limit.maximum_absolute_rgb_delta}"
+        )
+    direction_limit_by_name = {
+        limit.name: limit.minimum_margin for limit in FROZEN_CALIBRATION.direction_limits
+    }
+    for name, margin in observed_directions.items():
+        print(
+            f"signed direction {name}: observed_margin={margin:.8f}; "
+            f"fixed_floor={direction_limit_by_name[name]:.8f}"
+        )
     print(f"portrait outputs: {EXPECTED_PORTRAIT_OUTPUT_COUNT}/{EXPECTED_PORTRAIT_OUTPUT_COUNT}; no-face fixture separate")
     print("eligibility inventory: eyebrow=1/1; no_face=1/1")
     for family in FAMILIES:
@@ -748,6 +1039,10 @@ def validate_outputs(input_dir: Path, output_dir: Path, renderer_source: Path, m
     print("no-face 64x64 watermark-safe no-op comparisons: 13/13")
     print("cases: " + ", ".join(case_ids))
     print("fixtures: " + ", ".join(fixture.relative_path for fixture in fixtures))
+    if measure:
+        print("MEASUREMENT ONLY: thresholds were observed but no OUT-02 strict pass is claimed")
+    else:
+        print("STRICT ACCEPTANCE: frozen calibration satisfied")
 
 
 def expect_error(label: str, function, expected_fragment: str) -> None:
@@ -804,6 +1099,40 @@ def run_self_tests() -> None:
         "tilt",
     ):
         raise AssertionError("signed-direction calibration inventory drifted")
+    passing_directions = {
+        limit.name: limit.minimum_margin
+        for limit in FROZEN_CALIBRATION.direction_limits
+    }
+    require_direction_metrics(passing_directions)
+    for limit in FROZEN_CALIBRATION.direction_limits:
+        reversed_directions = dict(passing_directions)
+        reversed_directions[limit.name] = -limit.minimum_margin
+        expect_error(
+            f"reversed {limit.name}",
+            lambda values=reversed_directions: require_direction_metrics(values),
+            f"signed direction {limit.name}",
+        )
+    passing_protected = {
+        limit.name: ComparisonMetrics(
+            limit.maximum_changed_pixels,
+            max(1, limit.maximum_changed_pixels),
+            limit.maximum_absolute_rgb_delta,
+        )
+        for limit in FROZEN_CALIBRATION.protected_limits
+    }
+    require_protected_metrics(passing_protected)
+    for limit in FROZEN_CALIBRATION.protected_limits:
+        spilled = dict(passing_protected)
+        spilled[limit.name] = ComparisonMetrics(
+            limit.maximum_changed_pixels + 1,
+            max(1, limit.maximum_changed_pixels + 1),
+            limit.maximum_absolute_rgb_delta,
+        )
+        expect_error(
+            f"protected spill {limit.name}",
+            lambda values=spilled: require_protected_metrics(values),
+            f"protected region {limit.name}",
+        )
 
     with tempfile.TemporaryDirectory() as temporary:
         root = Path(temporary)
@@ -902,7 +1231,11 @@ def run_self_tests() -> None:
             lambda: read_png_payload(trailing_stream, "trailing"),
             "trailing compressed PNG data",
         )
-        expect_error("ROI watermark", lambda: eye_roi(100, 100), "not wholly above watermark")
+        expect_error(
+            "ROI watermark",
+            lambda: pixel_rectangles(100, 100, BROW_REGIONS, "brow"),
+            "not wholly above watermark",
+        )
 
         no_face_baseline = root / "no-face-baseline.png"
         no_face_candidate = root / "no-face-candidate.png"
@@ -913,7 +1246,8 @@ def run_self_tests() -> None:
             raise AssertionError(f"no-face fallback mismatch: {no_face_metrics}")
 
     print(
-        "self-test passed: duplicate IDs/stems, missing/extra/corrupt/symlink outputs, bounded PNG/JPEG decode, "
+        "self-test passed: frozen four-region/six-direction calibration, reversed/spill rejection, "
+        "duplicate IDs/stems, missing/extra/corrupt/symlink outputs, bounded PNG/JPEG decode, "
         "single-descriptor replacement/growth races, ROI/watermark rejection, and 2048-pixel no-face fallback"
     )
 
