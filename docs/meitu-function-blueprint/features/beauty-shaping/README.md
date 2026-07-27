@@ -23,7 +23,7 @@ Beauty shaping covers face geometry and facial feature adjustments inspired by M
 | `眼睛` | partial | `BeautyEffects` | Four prior fields plus `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, signed `eyeTilt`, `innerCornerOpen`, `outerCornerOpen`, `eyeSymmetry` | `去脂`, `祛红血丝` local retouch/color design | Phases 29-30 cover four prior rows; Phase 41 contract/support, Phase 42 provider, Phase 43 public output, and Phase 44 final safety/boundaries independently implement the ten remaining geometry rows. |
 | `嘴唇` | partial | `BeautyEffects` | Geometry: `mouthSize`, `mouthWidth`, `smile`, `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, `lipPlump`; color-only: `lipColor` | `白牙` teeth-region segmentation/color retouch | Phase 40 promotes exactly 上下, 倾斜, 左右, M唇, and true 丰唇 after Phases 38-40 contract/output/safety evidence; branch remains partial because `白牙` is future. |
 | `鼻子` | implemented | `BeautyEffects` | `noseSlim`, `noseWingSlim`, signed `noseTipSize`, `noseBridge`, `noseRootNarrowing`, `noseTipLift` | No additional control is implied by the exact six-row taxonomy | Phases 31-32 and 35-37 implement exactly `大小`, `提升`, `鼻翼`, `山根`, `鼻梁`, and `鼻尖`; SDK-core branch complete with UI/device/commercial boundaries preserved. |
-| `眉毛` | future | `BeautyEffects` | None | Position, thickness, length, distance, head distance, tilt, peak; resources only if explicitly designed | No v1.3 completion evidence until promoted. |
+| `眉毛` | implemented | `BeautyEffects` | `eyebrowYPosition`, `eyebrowThickness`, `eyebrowLength`, `eyebrowSpacing`, `eyebrowHeadSpacing`, `eyebrowTilt`, `eyebrowPeakDefinition` | No additional control or resource is implied by the exact seven-row SDK-core taxonomy | Phase 49 contract/support, Phase 50 independent providers/pipeline, Phase 51 public-facade output, and Phase 52 final safety/privacy/boundary evidence implement exactly `上下`, `粗细`, `长短`, `间距`, `眉头间距`, `倾斜`, and `眉峰`. |
 
 ## Phase 19 Evidence
 
@@ -54,6 +54,21 @@ Public-facade output for the four subtools is recorded in `29-EYE-RENDERER-EVIDE
 ## Phase 40 Mouth Geometry Evidence
 
 The exact SDK-core mouth geometry set is `mouthSize`, `mouthWidth`, `smile`, `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, and `lipPlump`. Phase 40 closes exact caps, eight-field degradation/transitions, fourteen-removal convergence, redacted diagnostics, and fail-closed source/artifact boundaries after Phase 39's 308-output evidence. `lipColor` remains color-only. The branch stays `partial` because `白牙` remains future.
+
+## Phase 52 Eyebrow Geometry Evidence
+
+Status: `implemented` at SDK-core scope.
+
+Phase 52 promotes exactly `上下`, `粗细`, `长短`, `间距`, `眉头间距`, `倾斜`,
+and `眉峰` after Phase 49 public contract/private observed support, Phase 50
+independent providers and unified pipeline, Phase 51 strict public-facade
+output, and Phase 52 exact cap/lifecycle/convergence/privacy/boundary evidence.
+The exact seven-row `眉毛` branch is `implemented` at SDK-core scope.
+
+The v1.14-v1.16 retouch, hairline, and double-chin scopes remain future. This
+status adds no SwiftUI or Demo UI, device parity, commercial-naturalness
+approval, optimized-performance, packaging, shipping, launch, independent
+milestone audit, archive, tag, or cleanup claim.
 
 ## Boundary
 
