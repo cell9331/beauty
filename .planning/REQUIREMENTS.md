@@ -44,7 +44,7 @@
 - [x] **SAFE-03**: Public/SPI, diagnostics, persistence, reflection, Demo imports, dependency, network/cloud, commercial, generated-artifact, and active-source gates fail closed with no unresolved high-severity issue.
 - [x] **DOC-01**: Current owners promote exactly `上下`, `粗细`, `长短`, `间距`, `眉头间距`, `倾斜`, and `眉峰`, mark branch-level `眉毛` implemented at SDK-core scope, and preserve v1.14-v1.16 plus UI/device/commercial/release nonclaims.
 
-SAFE-01, SAFE-02, SAFE-03, and DOC-01 are independently verified at 16/16 from fresh production-path evidence, a clean 25-file review, exact 23/23 green task traceability, ASVS L1 `threats_open: 0`, strict output, simulator regression, and synchronized owners. Phase 52 acceptance is complete; the separate v1.13 milestone audit has not yet run.
+SAFE-01, SAFE-02, SAFE-03, and DOC-01 are independently verified at 16/16 from fresh production-path evidence, a clean 25-file review, exact 23/23 green task traceability, ASVS L1 `threats_open: 0`, strict output, simulator regression, and synchronized owners. Phase 52 acceptance is complete; the separate v1.13 audit confirms all 21 requirements and reports only non-requirement governance/validation tech debt.
 
 ## Future Requirements
 
@@ -111,4 +111,4 @@ SAFE-01, SAFE-02, SAFE-03, and DOC-01 are independently verified at 16/16 from f
 
 ---
 *Requirements defined: 2026-07-24*
-*Last updated: 2026-07-27 after independent Phase 52 verification passed 16/16; v1.13 milestone audit pending*
+*Last updated: 2026-07-27 after the v1.13 audit confirmed 21/21 requirements and reported non-requirement governance/validation tech debt*

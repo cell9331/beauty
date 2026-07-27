@@ -18,7 +18,7 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Implementation state:** Phase 52 implementation and gap closure are complete across all ten execution plans. `BeautyParameters` remains exactly 59 stored fields (58 numeric plus `filterId`); seven eyebrow controls traverse private request-scoped observed support, independent providers, exact final `0.25` caps, one exact 44-field/13.45 convergence path, stable unified dispatch, and the public facade. Exactly `上下`, `粗细`, `长短`, `间距`, `眉头间距`, `倾斜`, and `眉峰`, plus branch `眉毛`, are implemented at SDK-core scope. No SwiftUI/Demo path changed, no public raw eyebrow support was added, and diagnostics remain aggregate-only.
 
-**Verification state:** Phase 52 independently passes 16/16 must-haves. Fresh evidence passes eight focused suites, 450 full SwiftPM tests with six opt-in skips, exact 44-field convergence, 72/72 decoded portrait outputs, thirteen separate no-face comparisons, fixed visibility/direction/distinction gates, fourteen original-detail image reviews, and exact ignored 144-file output/gallery inventories. The post-fix review is clean across 25 files with 0/0/0/0 findings; Nyquist is exactly 23/23 green; checker self-tests are 130/130; ASVS L1 records `threats_open: 0`; explicit simulator build/test and the no-`BeautyDemo` path gate pass. SAFE-01, SAFE-02, SAFE-03, and DOC-01 are satisfied. The next workflow is the separately scoped independent v1.13 milestone audit; audit/archive/tag/cleanup and Demo/device/commercial/performance/packaging/shipping/launch/release-readiness remain unclaimed.
+**Verification state:** Phase 52 independently passes 16/16 must-haves. Fresh evidence passes eight focused suites, 450 full SwiftPM tests with six opt-in skips, exact 44-field convergence, 72/72 decoded portrait outputs, thirteen separate no-face comparisons, fixed visibility/direction/distinction gates, fourteen original-detail image reviews, and exact ignored 144-file output/gallery inventories. The post-fix review is clean across 25 files with 0/0/0/0 findings; Nyquist is exactly 23/23 green; checker self-tests are 130/130; ASVS L1 records `threats_open: 0`; explicit simulator build/test and the no-`BeautyDemo` path gate pass. SAFE-01, SAFE-02, SAFE-03, and DOC-01 are satisfied. The independent v1.13 milestone audit reports `tech_debt` with requirements 21/21, integration 12/12, and flows 6/6: no product blocker remains, but Phase 50 human judgment and Phase 50/52 validation-status debt require explicit acceptance or remediation. Audit override/archive/tag/cleanup and Demo/device/commercial/performance/packaging/shipping/launch/release-readiness remain unclaimed.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
@@ -208,12 +208,14 @@ For v1.15-v1.16, any bundled Core ML resource must be local-only, redistributabl
 - [x] Keep raw eyebrow landmarks request-scoped, package-internal, non-persistent, non-networked, and aggregate-only in diagnostics.
 - [x] Keep v1.13 SDK-SPM-only with no SwiftUI or Demo UI changes.
 - [x] Run independent Phase 52 re-verification.
-- [ ] Run the separately scoped independent v1.13 milestone audit only after Phase 52 re-verification passes.
+- [x] Run the separately scoped independent v1.13 milestone audit after Phase 52 re-verification passes.
+- [ ] Accept or remediate the audit's explicit governance/validation tech debt before milestone closeout.
 
 ### Validated
 
 - Seven independent eyebrow controls have exact final `0.25` caps, exhaustive request-local degradation/transitions, exact 44-field/13.45 one-scale convergence, strict public-facade output, aggregate-only evidence, and exact seven-row plus branch `眉毛` SDK-core promotion - Phase 52.
-- SAFE-01, SAFE-02, SAFE-03, and DOC-01 are independently verified at 16/16 from fresh production-path evidence, a clean 25-file review, exact 23-task Nyquist coverage, ASVS L1 `threats_open: 0`, simulator regression, strict output, synchronized owners, and preserved nonclaims. Milestone audit remains separate and not yet run - Phase 52.
+- SAFE-01, SAFE-02, SAFE-03, and DOC-01 are independently verified at 16/16 from fresh production-path evidence, a clean 25-file review, exact 23-task Nyquist coverage, ASVS L1 `threats_open: 0`, simulator regression, strict output, synchronized owners, and preserved nonclaims - Phase 52.
+- v1.13 requirements pass 21/21 with integration 12/12 and flows 6/6; the milestone audit remains `tech_debt` only for explicit Phase 50 human judgment and Phase 50/52 validation-status reconciliation.
 - Four contour-driven `脸型` controls have independent product-neutral public semantics, private request-scoped support, named providers, strict public-facade output, exact final caps, exhaustive field-local transitions, exact 37-field convergence, four-row promotion, and an 18/18 independent v1.12 audit - Phases 45-48.
 - `去双下巴`, `去双下巴 Pro`, and `发际线` remain future, branch `脸型` remains partial, and Demo/device/commercial/performance/packaging/shipping/launch claims remain excluded - v1.12 phase verification.
 - Ten independent eye geometry controls with 48-field source/JSON compatibility, private validated contour/pupil support, fourteen named emissions, strict 385-output facade evidence, conservative degradation, exact ten-row promotion, and a 24/24 independent v1.11 audit - v1.11.
@@ -431,4 +433,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-07-27 after independent Phase 52 verification; v1.13 milestone audit pending*
+*Last updated: 2026-07-27 after the v1.13 milestone audit reported explicit tech debt pending disposition*

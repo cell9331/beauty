@@ -30,13 +30,13 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
+| Status | `blocked` |
 | Milestone | v1.13 Eyebrow Geometry Controls |
 | Scope | SDK-SPM-only implementation of exactly seven `眉毛` rows: 上下、粗细、长短、间距、眉头间距、倾斜、眉峰. |
 | Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve legacy 52-key compatibility and all shipped face/eye/nose/mouth output while the current model is exactly 59 stored fields. |
 | Requirements | 21/21 mapped across Phase 49-52; no unmapped requirement. |
 | Roadmap | Phase 49 contract/support → Phase 50 geometry/pipeline → Phase 51 strict output → Phase 52 safety/promotion. |
-| Current step | Phase 52 is independently verified `passed` at 16/16 after all ten execution plans, exact 23/23 Nyquist, clean 25-file review, 130/130 checker self-tests, fresh 450-test SwiftPM regression, strict 72/72 output evidence, and unchanged Demo/UI scope. The next workflow is the separately scoped independent v1.13 milestone audit. Audit, archive, tag, and cleanup are not yet claimed. |
+| Current step | The independent v1.13 milestone audit is complete with `status: tech_debt`: requirements 21/21, integration 12/12, and flows 6/6 have no blocker, but Phase 50 retains three explicit human judgment items and Phase 50/52 validation frontmatter uses `complete` rather than the current `validated` vocabulary. Milestone closeout is paused for an explicit accept-versus-remediate decision; archive, tag, and cleanup are not claimed. |
 
 Fixture-scope decision (2026-07-24):
 
@@ -94,6 +94,22 @@ Planned follow-on milestones:
 - v1.16: `去双下巴`, `去双下巴 Pro`, and narrow facial-feature closeout.
 
 ## 4. Completed
+
+### C-2026-07-27-v1-13-milestone-audit-tech-debt
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-27 |
+| Scope | Independently aggregated all four phase verifications, all 26 summaries, 21 requirement traceability rows, cross-phase source wiring, six end-to-end flows, and Nyquist discovery. |
+| Verification | Requirements 21/21, integration seams 12/12, and flows 6/6 are satisfied with zero critical gap. The integration checker reports complete runtime wiring and no orphaned export. |
+| Status | `tech_debt`: Phase 50 remains `human_needed` for three judgment-tier reviews; Phase 50/52 validation files are complete/green but not normalized to the current `validated` status vocabulary. |
+| Boundary | No audit override, archive, tag, cleanup, UI/device/commercial/performance/packaging/shipping/launch/release claim is made. An explicit accept-or-remediate decision is required before milestone closeout. |
+
+Outcome:
+
+- The complete public-contract → observed-support → provider/resolver → facade → strict-output → safety/promotion chain is wired.
+- All 21 v1.13 requirements are satisfied; the remaining items are governance/validation status debt rather than product gaps.
+- `.planning/v1.13-MILESTONE-AUDIT.md` is authoritative for the decision gate.
 
 ### C-2026-07-27-phase-52-ten-plan-independent-verification
 

@@ -15,7 +15,7 @@
 - ✅ **[v1.10 Mouth Remaining Geometry Controls](milestones/v1.10-ROADMAP.md)** — Phases 38-40, shipped 2026-07-14.
 - ✅ **[v1.11 Eye Remaining Geometry Controls](milestones/v1.11-ROADMAP.md)** — Phases 41-44, shipped 2026-07-19.
 - ✅ **[v1.12 Face Shape Remaining Capabilities](milestones/v1.12-ROADMAP.md)** — Phases 45-48, shipped 2026-07-24.
-- 🚧 **v1.13 Eyebrow Geometry Controls** — All four phases and 26 plans are complete; Phase 52 independently verifies 16/16. The separately scoped milestone audit is next.
+- ⚠️ **v1.13 Eyebrow Geometry Controls** — All four phases, 26 plans, and 21 requirements are complete; integration is 12/12 and flows are 6/6. The milestone audit reports `tech_debt` pending an explicit accept-or-remediate decision.
 
 ## Phases
 
@@ -204,4 +204,4 @@ Executor implementation and planning gates are complete across all ten plans. In
 - SwiftUI/Demo UI, physical-device parity, commercial visual approval, optimized profiling, packaging, shipping, and launch-readiness evidence remain separately scoped.
 
 ---
-*Last updated: 2026-07-27 after independent Phase 52 verification passed 16/16; v1.13 milestone audit pending*
+*Last updated: 2026-07-27 after the v1.13 milestone audit reported explicit tech debt pending disposition*

@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.13
 milestone_name: Eyebrow Geometry Controls
-status: ready_for_audit
-stopped_at: Phase 52 independently verified passed 16/16; v1.13 milestone audit pending
-last_updated: "2026-07-27T10:20:46.000Z"
+status: blocked
+stopped_at: v1.13 milestone audit reported tech_debt; accept-or-remediate decision pending
+last_updated: "2026-07-27T11:27:37.000Z"
 last_activity: 2026-07-27
-last_activity_desc: Phase 52 independent re-verification passed 16/16 and closed all prior gaps
+last_activity_desc: v1.13 audit confirmed 21/21 requirements, 12/12 integrations, and 6/6 flows with explicit tech debt
 progress:
   total_phases: 4
   completed_phases: 4
@@ -22,14 +22,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-27)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** v1.13 independent milestone audit
+**Current focus:** v1.13 audit tech-debt disposition
 
 ## Current Position
 
 Phase: 52 (eyebrow-safety-and-branch-closeout) — COMPLETE
 Plan: 10 of 10
-Status: Independent verification passed 16/16; ready for the separately scoped v1.13 milestone audit
-Last activity: 2026-07-27 — Independent re-verification closed all four prior gaps
+Status: Milestone audit is `tech_debt`; explicit accept-or-remediate decision required before closeout
+Last activity: 2026-07-27 — Audit confirmed 21/21 requirements, 12/12 integration seams, and 6/6 flows with zero critical gap
 
 ### Phase 52 Eyebrow Safety and Branch Closeout Result
 
@@ -414,13 +414,14 @@ Recent milestone-level outcomes:
 
 ### Pending Todos
 
-- Run the separately scoped independent v1.13 milestone audit; do not claim archive, tag, or cleanup before it passes.
+- Decide whether to accept the explicit audit tech debt or remediate Phase 50 human judgment plus Phase 50/52 validation status before closeout.
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, screenshot reruns, packaging review, broader `美型 / 五官` slices, and automated visual diffs.
 
 ### Blockers/Concerns
 
-- No active Phase 52 implementation or verification blocker remains; independent re-verification passes 16/16. The v1.13 milestone audit has not yet run.
+- The v1.13 milestone audit is `tech_debt`, not `passed`: Phase 50 remains `human_needed`, and Phase 50/52 validation ledgers use `complete` rather than the current `validated` status vocabulary. Closeout requires explicit disposition.
+- No active Phase 52 implementation or verification blocker remains; independent re-verification passes 16/16. The v1.13 audit's remaining items are governance/validation debt, not product gaps.
 - No active v1.12 blocker remains; all four phases and the independent milestone audit passed.
 - Deferred v2 `ADV-*` items remain outside v1 traceability and are tracked as `TD-007` in `PLANS.md`.
 - Manual release risks are now routed by Phase 21 and updated by Phases 23 through 25: `TD-008` has focused simulator camera pass evidence but physical iPhone checks remain blocked until hardware exists; `TD-009` remains Phase 22 visual evidence with screenshot rerun protocol; and `TD-010` keeps device, long-run, screenshot, optimized profiling, external-resource integrity, and commercial packaging work routed to later setup-specific checks.
@@ -444,10 +445,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-27T10:20:46.000Z
-Stopped at: Phase 52 independently verified passed 16/16; v1.13 milestone audit pending
+Last session: 2026-07-27T11:27:37.000Z
+Stopped at: v1.13 milestone audit reported tech_debt; accept-or-remediate decision pending
 Resume file: None
 
 ## Operator Next Steps
 
-- Run the independent v1.13 milestone audit. Do not archive, tag, or clean up before it passes.
+- Choose whether to accept the audit tech debt and continue closeout, or remediate it and rerun the audit. Do not archive, tag, or clean up before that decision.
