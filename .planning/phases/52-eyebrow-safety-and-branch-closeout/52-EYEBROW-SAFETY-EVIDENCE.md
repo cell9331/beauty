@@ -69,10 +69,13 @@ both commands exited 0 and `git diff --name-only -- BeautyDemo` was empty.
   `EyebrowWarpProvider.swift:47-54` fires the provider-owned callback after
   method entry and before support lookup. The targeted cancellation test at
   `MissingLandmarkDegradationTests.swift:1348-1458` waits for both entry
-  signals, holds that request on its own barrier, cancels, releases, then
-  requires typed discard before publication while 28 parallel and seven
-  subsequent identities retain local warnings, counts, metrics, and results.
-  The targeted test and full 51-test degradation suite passed.
+  signals, holds that request on its own barrier, cancels the caller, releases,
+  and verifies that the synchronous resolver completes one intact request-local
+  result while 28 parallel and seven subsequent identities retain local
+  warnings, counts, metrics, and results. The SDK has no asynchronous
+  publication owner: host code is responsible for deciding whether a completed
+  synchronous value may replace current state. The targeted test and full
+  51-test degradation suite passed.
 - **WR-03:** `BeautyEffectResolver.swift:644-691` invokes
   `onRetainedMaskIteration` from the real bounded loop after provider
   sanitization and records only scalar values and stable names. The seven-row

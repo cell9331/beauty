@@ -29,7 +29,7 @@ key-files:
     - .planning/phases/52-eyebrow-safety-and-branch-closeout/52-VERIFICATION.md
 key-decisions:
   - "Fixture construction must pass BeautyFaceGeometryAdapter before a semantic eyebrow trace reaches provider tests."
-  - "Cancellation observation stays internal, argument-free, nil by default, and request-local; publication checks cancellation only after real resolver/provider work returns."
+  - "Cancellation observation stays internal, argument-free, nil by default, and request-local; an already-entered synchronous resolver call completes intact, while host code owns any later publication decision."
   - "Retained-mask diagnostics expose only iteration indices, scalar strengths, and stable field names, never support geometry or request identity."
 patterns-established:
   - "Adapter-backed fixtures: test geometry uses the same validation gate as production mapping."
@@ -109,7 +109,7 @@ Each task was committed atomically:
 
 - Observation hooks remain internal and nil by default, so production callers allocate no synchronization or trace state.
 - The retained-mask trace is created only when an observer exists and contains no geometry, coordinates, support, or request identifiers.
-- Cancellation may allow already-entered synchronous work to finish, but a typed publication boundary discards it after cancellation.
+- Cancellation does not abort already-entered synchronous SDK work. The completed value remains request-local; asynchronous publication or generation checks belong to host code and are not Phase 52 SDK evidence.
 
 ## Deviations from Plan
 

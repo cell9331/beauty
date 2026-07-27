@@ -39,7 +39,7 @@ created: 2026-07-27
 | T-52-05 | Tampering | freshness transitions | high | mitigate | Fresh/reused/stale/no-face and both-direction valid-invalid-valid matrices prove stateless request-local outcomes. | closed |
 | T-52-06 | Information Disclosure | facade diagnostics | high | mitigate | Facade regressions and negative classifiers permit only fixed reasons and aggregate metrics, with no support/provider/coordinate/image detail. | closed |
 | T-52-07 | Denial of Service | sibling domains | high | mitigate | Every eyebrow failure row proves valid eyebrow siblings and unrelated face, eye, nose, mouth, color, and filter work continue. | closed |
-| T-52-08 | Tampering | parallel/interrupted execution | high | mitigate | Separate resolver-entry and provider-owned entry callbacks plus one request-local barrier prove cancellation only after real work begins; typed discard prevents publication, and 28 parallel plus seven subsequent identities retain local results and aggregates. | closed |
+| T-52-08 | Tampering | parallel/interrupted execution | high | mitigate | Separate resolver-entry and provider-owned entry callbacks plus one request-local barrier prove cancellation only after real synchronous work begins; that call completes as one intact request-local value, and 28 parallel plus seven subsequent identities retain local results and aggregates. Host publication remains outside the synchronous SDK contract. | closed |
 | T-52-09 | Tampering | 44-field inventory/arithmetic | high | mitigate | Exact cardinality, order, domain subtotals, 13.45 total, count 44, reciprocal scale, final total, and sign assertions pass. | closed |
 | T-52-10 | Tampering | retained-baseline convergence | high | mitigate | A nil-default internal trace observes the real `0..<44` retained-mask loop; every eyebrow row has a strictly nonzero scaled value, one removal, no re-entry, and an identical repeated fixed point. | closed |
 | T-52-11 | Tampering | provider-empty accounting | high | mitigate | Late-loss, pair, side, and reuse cases force final strengths, totals, counts, warnings, metrics, and names to share one mask. | closed |
@@ -102,7 +102,9 @@ created: 2026-07-27
 - **Request isolation (T-52-07-02 / T-52-08-04):** both observation callbacks
   are internal, nil by default, argument-free, and request-local. The provider
   barrier is test-owned; production nil paths allocate no barrier or shared
-  state, and cancellation publication is typed and fail closed.
+  state. Cancellation does not abort an already-entered synchronous SDK call;
+  the returned value stays request-local, while any asynchronous publication
+  or generation check belongs to the host.
 - **Aggregate redaction (T-52-07-03 / T-52-08-04):** retained-mask traces
   contain only iteration numbers, scalar strengths, removed names, and
   retained names. They contain no geometry, coordinates, support, image,

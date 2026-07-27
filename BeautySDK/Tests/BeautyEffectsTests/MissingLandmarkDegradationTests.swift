@@ -76,11 +76,6 @@ private struct Phase52RequestSnapshot: Sendable {
     let geometryPointCount: Double
 }
 
-private enum Phase52InterruptedOutcome: Sendable {
-    case discarded(identity: Int)
-    case completed(Phase52RequestSnapshot)
-}
-
 private enum Phase46DegradationSupportClass: Equatable {
     case contour
     case contourAndCenterline
@@ -1351,7 +1346,7 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         let interruptedIdentity = 10_001
         let resolverEntered = Phase52RequestSignal()
         let providerBarrier = Phase52ProviderBarrier()
-        let interrupted = Task.detached { () -> Phase52InterruptedOutcome in
+        let interrupted = Task.detached { () -> Phase52RequestSnapshot in
             let row = rows[0]
             let plan = BeautyEffectResolver.resolve(
                 parameters: row.makeParameters(1),
@@ -1359,10 +1354,7 @@ final class MissingLandmarkDegradationTests: XCTestCase {
                 onProviderResolutionStarted: resolverEntered.signal,
                 onProviderWorkStarted: providerBarrier.enterAndWaitForRelease
             )
-            guard !Task.isCancelled else {
-                return .discarded(identity: interruptedIdentity)
-            }
-            return .completed(Phase52RequestSnapshot(
+            return Phase52RequestSnapshot(
                 identity: interruptedIdentity,
                 fieldName: row.name,
                 effectiveStrength: plan.effectiveStrengths[keyPath: row.effectiveValue],
@@ -1372,7 +1364,7 @@ final class MissingLandmarkDegradationTests: XCTestCase {
                 activeCount: plan.metrics["beauty.effects.activeCount"] ?? 0,
                 skippedEyebrowCount: plan.metrics["beauty.effects.skippedEyebrowDomains"] ?? 0,
                 geometryPointCount: plan.metrics["beauty.effects.geometryPointCount"] ?? 0
-            ))
+            )
         }
 
         await resolverEntered.wait()
@@ -1434,13 +1426,15 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         interrupted.cancel()
         XCTAssertTrue(interrupted.isCancelled)
         providerBarrier.release()
-        let interruptedOutcome = await interrupted.value
-        switch interruptedOutcome {
-        case let .discarded(identity):
-            XCTAssertEqual(identity, interruptedIdentity)
-        case let .completed(snapshot):
-            XCTFail("cancelled request published a completed snapshot for \(snapshot.identity)")
-        }
+        let interruptedResult = await interrupted.value
+        XCTAssertEqual(interruptedResult.identity, interruptedIdentity)
+        XCTAssertEqual(interruptedResult.effectiveStrength, rows[0].cap)
+        XCTAssertTrue(interruptedResult.eyebrowActive)
+        XCTAssertFalse(interruptedResult.eyebrowSkipped)
+        XCTAssertFalse(interruptedResult.warningCodes.contains("eyebrow_inputs_missing"))
+        XCTAssertEqual(interruptedResult.activeCount, 1)
+        XCTAssertEqual(interruptedResult.skippedEyebrowCount, 0)
+        XCTAssertGreaterThan(interruptedResult.geometryPointCount, 0)
         XCTAssertEqual(providerBarrier.releaseCount, 1)
 
         for (offset, row) in rows.enumerated() {
