@@ -131,7 +131,7 @@
 
 **Requirements:** SAFE-01, SAFE-02, SAFE-03, DOC-01
 
-**Plans:** 4/6 plans executed
+**Plans:** 5/6 plans executed
 
 **Wave 1**
 
@@ -151,7 +151,7 @@
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 52-05-PLAN.md — Synchronize example-image and routed root contract owners.
+- [x] 52-05-PLAN.md — Synchronize example-image and routed root contract owners.
 
 **Wave 6** *(blocked on Wave 5 completion)*
 
@@ -171,7 +171,7 @@
 | 49. Public Contract and Observed Eyebrow Support | v1.13 | 5 | Complete    | 2026-07-24 |
 | 50. Independent Eyebrow Geometry and Pipeline Integration | v1.13 | 9 | Complete | 2026-07-24 |
 | 51. Public-Facade Eyebrow Output Evidence | v1.13 | 3 | Complete    | 2026-07-27 |
-| 52. Eyebrow Safety and Branch Closeout | v1.13 | 4 | In Progress |  |
+| 52. Eyebrow Safety and Branch Closeout | v1.13 | 4 | In Progress|  |
 
 ## Backlog
 

@@ -39,10 +39,10 @@
 
 ### Safety, Privacy, and Closeout
 
-- [ ] **SAFE-01**: All seven controls have evidence-backed exact caps, neutral/dead-zone behavior, correct signed or positive-only directionality, and bounded influence radii.
-- [ ] **SAFE-02**: No-face, missing, malformed, provider-empty, fresh, reused, stale, and valid-invalid-valid transitions degrade according to field prerequisites without stale carryover or suppression of safe siblings.
-- [ ] **SAFE-03**: Public/SPI, diagnostics, persistence, reflection, Demo imports, dependency, network/cloud, commercial, generated-artifact, and active-source gates fail closed with no unresolved high-severity issue.
-- [ ] **DOC-01**: Current owners promote exactly `上下`, `粗细`, `长短`, `间距`, `眉头间距`, `倾斜`, and `眉峰`, mark branch-level `眉毛` implemented at SDK-core scope, and preserve v1.14-v1.16 plus UI/device/commercial/release nonclaims.
+- [x] **SAFE-01**: All seven controls have evidence-backed exact caps, neutral/dead-zone behavior, correct signed or positive-only directionality, and bounded influence radii.
+- [x] **SAFE-02**: No-face, missing, malformed, provider-empty, fresh, reused, stale, and valid-invalid-valid transitions degrade according to field prerequisites without stale carryover or suppression of safe siblings.
+- [x] **SAFE-03**: Public/SPI, diagnostics, persistence, reflection, Demo imports, dependency, network/cloud, commercial, generated-artifact, and active-source gates fail closed with no unresolved high-severity issue.
+- [x] **DOC-01**: Current owners promote exactly `上下`, `粗细`, `长短`, `间距`, `眉头间距`, `倾斜`, and `眉峰`, mark branch-level `眉毛` implemented at SDK-core scope, and preserve v1.14-v1.16 plus UI/device/commercial/release nonclaims.
 
 ## Future Requirements
 
@@ -96,10 +96,10 @@
 | OUT-01 | Phase 51 | Complete |
 | OUT-02 | Phase 51 | Complete |
 | OUT-03 | Phase 51 | Complete |
-| SAFE-01 | Phase 52 | Pending |
-| SAFE-02 | Phase 52 | Pending |
-| SAFE-03 | Phase 52 | Pending |
-| DOC-01 | Phase 52 | Pending |
+| SAFE-01 | Phase 52 | Complete |
+| SAFE-02 | Phase 52 | Complete |
+| SAFE-03 | Phase 52 | Complete |
+| DOC-01 | Phase 52 | Complete |
 
 **Coverage:**
 
