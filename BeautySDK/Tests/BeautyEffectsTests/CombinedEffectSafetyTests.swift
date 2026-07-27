@@ -78,7 +78,7 @@ final class CombinedEffectSafetyTests: XCTestCase {
         XCTAssertTrue(source.contains(".sanitizing(retainedBaseline)"))
     }
 
-    func testBROW06AllFortyFourFinalStrengthsMatchNamedProviderEmissions() {
+    func testSAFE02AllFortyFourFinalStrengthsMatchNamedProviderEmissions() {
         let face = phase48AllProviderGeometry
         XCTAssertNotNil(face.observedEyebrowSupport)
         var eyebrowProbe = BeautyEffectiveStrengths()
@@ -123,8 +123,9 @@ final class CombinedEffectSafetyTests: XCTestCase {
                 return (name, value)
             }
         )
-        XCTAssertEqual(phase48GeometryFieldNames.count, 44)
-        for name in phase48GeometryFieldNames {
+        XCTAssertEqual(finalGeometryFieldNames.count, 44)
+        XCTAssertEqual(Set(finalGeometryFieldNames).count, 44)
+        for name in finalGeometryFieldNames {
             XCTAssertNotEqual(reflectedValues[name], 0, name)
         }
         XCTAssertEqual(plan.metrics["beauty.effects.weakenedCount"], 44)
@@ -137,8 +138,8 @@ final class CombinedEffectSafetyTests: XCTestCase {
             plan.warnings.filter { $0.code == "combined_geometry_weakened" }.count,
             1
         )
-        XCTAssertTrue(plan.activeDomains.isSuperset(of: [.faceShape, .eyes, .nose, .mouth]))
-        XCTAssertTrue(plan.skippedDomains.intersection([.faceShape, .eyes, .nose, .mouth]).isEmpty)
+        XCTAssertTrue(plan.activeDomains.isSuperset(of: [.faceShape, .eyes, .eyebrows, .nose, .mouth]))
+        XCTAssertTrue(plan.skippedDomains.intersection([.faceShape, .eyes, .eyebrows, .nose, .mouth]).isEmpty)
 
         var sanitized = faceEmissions.sanitizing(plan.effectiveStrengths)
         sanitized = chinEmissions.sanitizing(sanitized)
@@ -713,22 +714,6 @@ final class CombinedEffectSafetyTests: XCTestCase {
             lipPeakDefinition: 1,
             lipPlump: 1
         )
-    }
-
-    private var phase48GeometryFieldNames: Set<String> {
-        [
-            "faceSlim", "faceSmall", "faceVShape", "jawSlim", "chinLength",
-            "faceContourSmooth", "templeFullness", "cheekboneSlim", "chinTaper",
-            "eyeSize", "eyeDistance", "eyeYPosition", "eyeTailLift", "eyeHeight",
-            "eyeLength", "upperEyelidLift", "pupilSize", "gazeCorrection",
-            "lowerEyelidDrop", "eyeTilt", "innerCornerOpen", "outerCornerOpen",
-            "eyeSymmetry", "noseSlim", "noseWingSlim", "noseTipSize", "noseBridge",
-            "eyebrowYPosition", "eyebrowThickness", "eyebrowLength", "eyebrowSpacing",
-            "eyebrowHeadSpacing", "eyebrowTilt", "eyebrowPeakDefinition",
-            "noseRootNarrowing", "noseTipLift", "mouthSize", "mouthWidth", "smile",
-            "mouthYPosition", "mouthTilt", "mouthXPosition", "lipPeakDefinition",
-            "lipPlump",
-        ]
     }
 
     private var phase48AllProviderGeometry: FaceGeometry {

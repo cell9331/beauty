@@ -8,14 +8,19 @@ private struct Phase46GeometryFieldRow {
     let unscaled: Float
 }
 
-private let phase50EyebrowNames = [
-    "eyebrowYPosition",
-    "eyebrowThickness",
-    "eyebrowLength",
-    "eyebrowSpacing",
-    "eyebrowHeadSpacing",
-    "eyebrowTilt",
-    "eyebrowPeakDefinition",
+let finalGeometryFieldNames = [
+    "faceSlim", "faceSmall", "faceVShape", "jawSlim", "chinLength",
+    "faceContourSmooth", "templeFullness", "cheekboneSlim", "chinTaper",
+    "eyeSize", "eyeDistance", "eyeYPosition", "eyeTailLift", "eyeHeight",
+    "eyeLength", "upperEyelidLift", "pupilSize", "gazeCorrection",
+    "lowerEyelidDrop", "eyeTilt", "innerCornerOpen", "outerCornerOpen",
+    "eyeSymmetry",
+    "eyebrowYPosition", "eyebrowThickness", "eyebrowLength", "eyebrowSpacing",
+    "eyebrowHeadSpacing", "eyebrowTilt", "eyebrowPeakDefinition",
+    "noseSlim", "noseWingSlim", "noseTipSize", "noseBridge",
+    "noseRootNarrowing", "noseTipLift",
+    "mouthSize", "mouthWidth", "smile", "mouthYPosition", "mouthTilt",
+    "mouthXPosition", "lipPeakDefinition", "lipPlump",
 ]
 
 final class GeometryConflictResolverTests: XCTestCase {
@@ -39,7 +44,7 @@ final class GeometryConflictResolverTests: XCTestCase {
             Double(expectedScale),
             accuracy: 0.000_001
         )
-        for row in phase50EyebrowRows {
+        for row in finalEyebrowRows {
             XCTAssertEqual(independent[keyPath: row.effectiveValue], row.unscaled, accuracy: 0.000_001, row.name)
             XCTAssertEqual(
                 resolved.strengths[keyPath: row.effectiveValue],
@@ -56,7 +61,7 @@ final class GeometryConflictResolverTests: XCTestCase {
             .deletingLastPathComponent()
             .appendingPathComponent("Sources/BeautyEffects/Warp/GeometryConflictResolver.swift")
         let source = try String(contentsOf: sourceURL, encoding: .utf8)
-        for name in phase50EyebrowNames {
+        for name in finalGeometryFieldNames[23..<30] {
             XCTAssertEqual(source.components(separatedBy: "weakened.\(name) *= scale").count - 1, 1, "scale inventory: \(name)")
             XCTAssertEqual(source.components(separatedBy: "strengths.\(name)").count - 1, 2, "total/count inventories: \(name)")
         }
@@ -199,7 +204,7 @@ final class GeometryConflictResolverTests: XCTestCase {
         XCTAssertEqual(resolved.strengths.lipPlump, 0.25 * expectedScale, accuracy: 0.000001)
     }
 
-    func testPIPE02AllFortyFourFieldsShareExactProvisionalThirteenPointFourFiveBaseline() {
+    func testSAFE02FinalFortyFourFieldInventorySharesExactThirteenPointFourFiveBaseline() {
         let independent = strengths(
             faceSlim: 1,
             faceSmall: 1,
@@ -247,7 +252,7 @@ final class GeometryConflictResolverTests: XCTestCase {
             lipPlump: 1
         )
         let resolved = GeometryConflictResolver().resolve(strengths: independent)
-        let rows = Array(phase46GeometryRows.prefix(23)) + phase50EyebrowRows + Array(phase46GeometryRows.dropFirst(23))
+        let rows = finalGeometryRows
         let expectedTotal = Float(
             rows.reduce(0.0) { $0 + Double(abs($1.unscaled)) }
         )
@@ -255,6 +260,16 @@ final class GeometryConflictResolverTests: XCTestCase {
 
         XCTAssertEqual(rows.count, 44)
         XCTAssertEqual(Set(rows.map(\.name)).count, 44)
+        XCTAssertEqual(rows.map(\.name), finalGeometryFieldNames)
+        XCTAssertEqual(Array(rows[23..<30].map(\.name)), [
+            "eyebrowYPosition",
+            "eyebrowThickness",
+            "eyebrowLength",
+            "eyebrowSpacing",
+            "eyebrowHeadSpacing",
+            "eyebrowTilt",
+            "eyebrowPeakDefinition",
+        ])
         XCTAssertEqual(
             rows.prefix(9).reduce(Float(0)) { $0 + abs($1.unscaled) },
             3.35,
@@ -307,7 +322,7 @@ final class GeometryConflictResolverTests: XCTestCase {
             )
         }
 
-        for eyebrowRow in phase50EyebrowRows {
+        for eyebrowRow in finalEyebrowRows {
             var removed = independent
             removed[keyPath: eyebrowRow.effectiveValue] = 0
             let removedResolution = GeometryConflictResolver().resolve(strengths: removed)
@@ -335,12 +350,28 @@ final class GeometryConflictResolverTests: XCTestCase {
         XCTAssertTrue(providerIneligibleEyebrowBaseline.metrics.isEmpty)
 
         var belowThreshold = BeautyEffectiveStrengths()
-        belowThreshold.eyeHeight = 0.40
-        belowThreshold.eyeTilt = -0.30
-        let unchanged = GeometryConflictResolver().resolve(strengths: belowThreshold)
-        XCTAssertEqual(unchanged.strengths, belowThreshold)
-        XCTAssertTrue(unchanged.warnings.isEmpty)
-        XCTAssertTrue(unchanged.metrics.isEmpty)
+        belowThreshold.eyeHeight = Float(1).nextDown
+        var exactThreshold = BeautyEffectiveStrengths()
+        exactThreshold.eyeHeight = 1
+        var aboveThreshold = BeautyEffectiveStrengths()
+        aboveThreshold.eyeHeight = Float(1).nextUp
+
+        for adjacent in [belowThreshold, exactThreshold] {
+            let unchanged = GeometryConflictResolver().resolve(strengths: adjacent)
+            XCTAssertEqual(unchanged.strengths, adjacent)
+            XCTAssertTrue(unchanged.warnings.isEmpty)
+            XCTAssertTrue(unchanged.metrics.isEmpty)
+        }
+
+        let weakenedAbove = GeometryConflictResolver().resolve(strengths: aboveThreshold)
+        XCTAssertEqual(weakenedAbove.warnings.map(\.code), ["combined_geometry_weakened"])
+        XCTAssertEqual(weakenedAbove.metrics["beauty.effects.weakenedCount"], 1)
+        XCTAssertEqual(
+            weakenedAbove.metrics["beauty.effects.geometryStrengthScale"] ?? 0,
+            Double(1 / Float(1).nextUp),
+            accuracy: 0.000_000_1
+        )
+        XCTAssertEqual(weakenedAbove.strengths.geometryTotal, 1, accuracy: 0.000_000_1)
     }
 
     func testGEOMFourFieldsContributeExactlyOnceAndPreservePositiveDirection() {
@@ -671,7 +702,7 @@ final class GeometryConflictResolverTests: XCTestCase {
         ]
     }
 
-    private var phase50EyebrowRows: [Phase46GeometryFieldRow] {
+    private var finalEyebrowRows: [Phase46GeometryFieldRow] {
         [
             Phase46GeometryFieldRow(name: "eyebrowYPosition", effectiveValue: \.eyebrowYPosition, unscaled: -BeautySafetyCaps.eyebrowYPosition),
             Phase46GeometryFieldRow(name: "eyebrowThickness", effectiveValue: \.eyebrowThickness, unscaled: BeautySafetyCaps.eyebrowThickness),
@@ -681,6 +712,12 @@ final class GeometryConflictResolverTests: XCTestCase {
             Phase46GeometryFieldRow(name: "eyebrowTilt", effectiveValue: \.eyebrowTilt, unscaled: BeautySafetyCaps.eyebrowTilt),
             Phase46GeometryFieldRow(name: "eyebrowPeakDefinition", effectiveValue: \.eyebrowPeakDefinition, unscaled: BeautySafetyCaps.eyebrowPeakDefinition),
         ]
+    }
+
+    private var finalGeometryRows: [Phase46GeometryFieldRow] {
+        Array(phase46GeometryRows.prefix(23)) +
+            finalEyebrowRows +
+            Array(phase46GeometryRows.dropFirst(23))
     }
 }
 
