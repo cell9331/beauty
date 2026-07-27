@@ -131,7 +131,7 @@
 
 **Requirements:** SAFE-01, SAFE-02, SAFE-03, DOC-01
 
-**Plans:** 2/6 plans executed
+**Plans:** 3/6 plans executed
 
 **Wave 1**
 
@@ -143,7 +143,7 @@
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 52-03-PLAN.md — Build the fail-closed checker and obtain fresh runtime/output/review/Nyquist/security evidence.
+- [x] 52-03-PLAN.md — Build the fail-closed checker and obtain fresh runtime/output/review/Nyquist/security evidence.
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -171,7 +171,7 @@
 | 49. Public Contract and Observed Eyebrow Support | v1.13 | 5 | Complete    | 2026-07-24 |
 | 50. Independent Eyebrow Geometry and Pipeline Integration | v1.13 | 9 | Complete | 2026-07-24 |
 | 51. Public-Facade Eyebrow Output Evidence | v1.13 | 3 | Complete    | 2026-07-27 |
-| 52. Eyebrow Safety and Branch Closeout | v1.13 | 4 | In Progress|  |
+| 52. Eyebrow Safety and Branch Closeout | v1.13 | 4 | In Progress |  |
 
 ## Backlog
 
@@ -182,4 +182,4 @@
 - SwiftUI/Demo UI, physical-device parity, commercial visual approval, optimized profiling, packaging, shipping, and launch-readiness evidence remain separately scoped.
 
 ---
-*Last updated: 2026-07-27 after Phase 51 output-evidence closeout; Phase 52 remains unstarted*
+*Last updated: 2026-07-27 after Phase 52 Plan 03 safety-evidence preconditions; Plans 04-06 remain pending*
