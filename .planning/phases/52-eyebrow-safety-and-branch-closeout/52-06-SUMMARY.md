@@ -163,11 +163,26 @@ Each task was committed atomically:
   remained present.
 - **Committed in:** No tracked change; resolved within Task 52-06-02 execution.
 
+**2. [Rule 1 - Bug] Restored the verified Phase 52 roadmap status after canonical progress sync**
+- **Found during:** Post-summary canonical STATE/ROADMAP synchronization.
+- **Issue:** `roadmap.update-plan-progress 52` correctly counted six plans and
+  six summaries but labeled the already verified phase `In Progress`, because
+  the independent milestone audit remains pending.
+- **Fix:** Preserved the canonical 6/6 count while restoring the plan-owned
+  distinction: Phase 52 is `Complete`; milestone v1.13 remains active with its
+  independent audit pending.
+- **Files modified:** `.planning/ROADMAP.md`
+- **Verification:** Final checker, exact 6/6 count, passed
+  `52-VERIFICATION.md`, and lifecycle nonclaim gate distinguish phase
+  completion from milestone completion.
+- **Committed in:** Final planning-state synchronization commit.
+
 ---
 
-**Total deviations:** 1 auto-fixed (1 Rule 3 blocking issue).
-**Impact on plan:** The cleanup was required by the planned containment gate and
-changed no tracked source, evidence, calibration, or scope.
+**Total deviations:** 2 auto-fixed (1 Rule 1 bug, 1 Rule 3 blocking issue).
+**Impact on plan:** Both corrections preserve planned containment and the
+phase-versus-milestone boundary without changing source, calibration, product
+scope, or lifecycle claims.
 
 ## Issues Encountered
 
