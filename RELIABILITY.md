@@ -224,6 +224,14 @@ Phase 28 scoped face-shape behavior:
 - Final named emissions are the accounting oracle: effective strengths, active/skipped domains, fixed `eyebrow_inputs_missing` warning, aggregate `skippedEyebrowDomains`, weakened/capped counts, geometry point count, and the one Face→Chin→Eye→Eyebrow→Nose→Mouth dispatch agree. Diagnostics disclose no side, support, coordinate, chord, apex, or provider detail.
 - Fresh evidence passes provider 11/11, resolver 26/26, conflict 14/14, combined 15/15, degradation 48/48, pipeline 3/3, facade 18/18, BeautyEffects 243 with one opt-in skip, full SwiftPM 433 with three opt-in skips, and all fixture/checker/scope/diff gates. This proves compiled reliability only; Phase 51 owns decoded output and Phase 52 final caps/exhaustive safety/promotion. v1.14-v1.16 and UI/device/commercial/performance/packaging/shipping/release claims remain excluded.
 
+### Phase 51 Eyebrow Output Reliability Contract
+
+- A render gate must resolve the exact ignored output root before deleting descendants. Measurement and strict acceptance are separate guarded clean renders: measurement may derive provisional margins once, while strict mode accepts only the subsequently frozen calibration and may not rewrite it.
+- Denominators stay explicit: 72 `e6` portrait outputs, thirteen separate no-face eyebrow comparisons, and 144 total two-fixture output/gallery files. The strict gate also requires 13/13 visibility, 6/6 signed direction, 21/21 family distinctions, 40/40 portrait direct comparisons, and 13/13 no-face no-ops.
+- Fixture and publication checks fail closed on missing, empty, non-regular, symlinked, unexpected, or retired `e1`–`e5` inputs; exact output/gallery inventories and their reconstructed 144-name bijection must agree. Generated roots must remain ignored, untracked, unstaged, and contained.
+- Automated thresholds cannot overrule actual-image evidence. If original-detail review contradicts visibility, signed direction, brow locality, family distinction, or protected-region claims, validation records a gap and Phase 51 remains incomplete even when strict pixel gates pass.
+- Fresh closeout passes 438 SwiftPM tests with six opt-in skips after correcting a zero-extent projection regression, then passes the final clean render, frozen strict helper, gallery, containment, privacy/scope, and diff gates. Phase 52 still owns final caps, exhaustive safety, naturalness, promotion, and broader release claims.
+
 ### Phase 46 Face/Chin Provider Reliability Contract
 
 - Complete contour support permits smooth, temple, and cheekbone work; taper additionally requires an eligible median and interior apex. Missing/malformed centerline removes taper only, and proxy-only support removes all four while shipped face/chin siblings continue unchanged.

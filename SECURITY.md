@@ -149,6 +149,13 @@ Phase 28 face-shape privacy evidence recorded 2026-07-08:
 - Fresh fixture, adversarial/live checker, focused, 243-test BeautyEffects, 433-test full SwiftPM, public/SPI, persistence/reflection, network, Demo, dependency/resource, artifact, product-ledger, and diff gates pass. Phase 50 changes no privacy-manifest disposition and adds no dependency, target, model, resource, network/cloud path, public geometry, Demo/UI behavior, renderer/gallery case, or promotion.
 - The source scans do not verify ethical descriptors. The prohibitions against makeup/texture synthesis, synthetic/eye-derived substitution, and naturalness overclaim remain `unverified` breadcrumbs for `$gsd-secure-phase`. Phase 51 owns decoded output/gallery evidence; Phase 52 owns final caps, exhaustive safety, and promotion; v1.14-v1.16 plus UI/device/commercial/performance/packaging/shipping/release claims remain excluded.
 
+### Phase 51 Eyebrow Output-Evidence Security Boundary
+
+- The sole trusted portrait fixture name is `e6.jpg`, but its decoded image content and detected geometry remain untrusted inputs. Preflight requires one regular, nonempty, non-symlink active portrait and rejects retired `e1`–`e5` names; descriptor parsing and PNG/JPEG decoding enforce exact inventories, bounded dimensions/bytes, safe path components, and no repository escape.
+- Committed evidence contains only aggregate counts, fixed thresholds, generated filenames, and qualitative per-file observations. Raw support points, provider payloads, decoded pixels, source-image copies, stable geometry signatures, and generated image bytes must not enter documentation, diagnostics, or version control; original-detail review opens only the expected local output files.
+- Phase 51 output, gallery, staging, and bounded quarantine handling remains under ignored generated roots. Publication verifies exact source/destination containment, rejects symlinks and unexpected names, leaves no staging tree, and permits neither tracked, staged, nor non-ignored generated artifacts.
+- Passing output review does not authorize identity inference, naturalness/ethical claims, final caps, product promotion, runtime download, model/resource additions, network/cloud behavior, Demo exposure, or commercial/release readiness. Those boundaries remain Phase 52 or later.
+
 ## 3. Trust Boundaries
 
 ```text

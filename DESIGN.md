@@ -167,6 +167,12 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
 - Exact convergence owns one 44-name monotone retained baseline: face/chin `3.35` + eye `4.10` + eyebrow `1.75` + nose `1.80` + mouth `2.45` = provisional `13.45`. At the threshold, one shared scale `1 / 13.45` preserves polarity, no removed field re-enters, and final named emissions are the sole source for active domains, warning/metric counts, total geometry points, and the one stable dispatch.
 - Fresh Phase 50 tests prove these mechanics and request isolation only. Phase 51 owns decoded visibility, direction, locality, distinction, ROI, and gallery evidence; Phase 52 owns final caps, exhaustive transitions, naturalness/safety conclusions, and row/branch promotion. No v1.14-v1.16 or UI/device/commercial/release behavior is implied.
 
+### Phase 51 Eyebrow Output Evidence Contract
+
+- Phase 51 exercises thirteen provisional public cases: signed `±0.25` pairs for vertical position, thickness, length, whole spacing, head spacing, and tilt, plus positive-only `0.25` peak definition. These are evidence inputs, not final effective-cap decisions; Phase 52 owns cap calibration and any product promotion.
+- Strict evaluation uses the fixed `e6` brow ROI `(0.24, 0.76, 0.24, 0.43)` and separately fixed protected eye, forehead/hair, background, and watermark regions. Six signed predicates require opposite directed behavior; seven-family comparisons require vertical, thickness, length, whole spacing, head spacing, tilt, and peak to remain semantically distinct, including whole spacing versus head spacing and thickness versus peak.
+- Acceptance combines frozen non-circular pixel thresholds with original-detail review of the baseline and thirteen actual eyebrow images. Output evidence proves visible, brow-local, directed, distinct behavior for this fixture; it does not establish naturalness extrema, exhaustive transition safety, device parity, or final caps.
+
 Rules:
 
 - `0` means no effect for numeric parameters unless the field is explicitly bidirectional.
