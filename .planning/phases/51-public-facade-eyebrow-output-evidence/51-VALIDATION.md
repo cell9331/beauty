@@ -1,7 +1,7 @@
 ---
 phase: 51
 slug: public-facade-eyebrow-output-evidence
-status: complete
+status: validated
 nyquist_compliant: true
 wave_0_complete: true
 created: 2026-07-24
@@ -125,6 +125,17 @@ Automated pixel gates are necessary but not sufficient. Plan 51-03 must open `e6
 - [x] Fourteen actual representative images are opened and reviewed.
 - [x] Full SwiftPM, strict helper, gallery, artifact, privacy/scope, and diff gates pass.
 - [x] OUT-01..03 close while SAFE-01..03 and DOC-01 remain open.
-- [x] `status: complete` and `nyquist_compliant: true` are set after owner and lifecycle synchronization filled the final two rows.
+- [x] `status: validated` and `nyquist_compliant: true` are set after the post-verification Nyquist audit confirmed every requirement/task row is covered.
 
 **Approval:** Phase 51 automated, actual-image, owner, and lifecycle evidence is approved. Effective caps, seven row and branch promotion, exhaustive safety, Demo/device/commercial/performance/packaging/shipping/release claims, SAFE-01..03, and DOC-01 remain Phase 52 or later work.
+
+## Validation Audit 2026-07-27
+
+| Metric | Count |
+| --- | ---: |
+| Requirement gaps found | 0 |
+| Task rows audited | 11 |
+| Automated task rows covered | 11 |
+| Manual-only gaps | 0 |
+
+The post-verification Nyquist audit cross-referenced all five plans and summaries against the eleven task rows above. OUT-01, OUT-02, and OUT-03 each retain executed automated coverage; the mandatory fourteen-image review is an additional acceptance gate, not a substitute for automation. No test file or implementation change was required.
