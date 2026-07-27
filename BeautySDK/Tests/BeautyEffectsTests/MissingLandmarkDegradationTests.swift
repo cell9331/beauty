@@ -6,61 +6,62 @@ import BeautyDetection
 
 private final class Phase52RequestSignal: @unchecked Sendable {
     private let lock = NSLock()
+    let expectation: XCTestExpectation
     private var storedCount = 0
-    private var pendingSignals = 0
-    private var waiters: [CheckedContinuation<Void, Never>] = []
+
+    init(expectation: XCTestExpectation) {
+        self.expectation = expectation
+    }
 
     var count: Int {
         lock.withLock { storedCount }
     }
 
     func signal() {
-        let waiter = lock.withLock { () -> CheckedContinuation<Void, Never>? in
+        lock.withLock {
             storedCount += 1
-            if waiters.isEmpty {
-                pendingSignals += 1
-                return nil
-            }
-            return waiters.removeFirst()
         }
-        waiter?.resume()
-    }
-
-    func wait() async {
-        await withCheckedContinuation { continuation in
-            let consumeImmediately = lock.withLock {
-                if pendingSignals > 0 {
-                    pendingSignals -= 1
-                    return true
-                }
-                waiters.append(continuation)
-                return false
-            }
-            if consumeImmediately {
-                continuation.resume()
-            }
-        }
+        expectation.fulfill()
     }
 }
 
 private final class Phase52ProviderBarrier: @unchecked Sendable {
-    let entered = Phase52RequestSignal()
+    let entered: Phase52RequestSignal
     private let releaseSemaphore = DispatchSemaphore(value: 0)
     private let lock = NSLock()
     private var storedReleaseCount = 0
+    private var storedWaitTimedOut = false
+
+    init(enteredExpectation: XCTestExpectation) {
+        self.entered = Phase52RequestSignal(expectation: enteredExpectation)
+    }
 
     var releaseCount: Int {
         lock.withLock { storedReleaseCount }
     }
 
+    var waitTimedOut: Bool {
+        lock.withLock { storedWaitTimedOut }
+    }
+
     func enterAndWaitForRelease() {
         entered.signal()
-        releaseSemaphore.wait()
+        if releaseSemaphore.wait(timeout: .now() + .seconds(2)) == .timedOut {
+            lock.withLock { storedWaitTimedOut = true }
+        }
     }
 
     func release() {
-        lock.withLock { storedReleaseCount += 1 }
-        releaseSemaphore.signal()
+        let shouldSignal = lock.withLock {
+            guard storedReleaseCount == 0 else {
+                return false
+            }
+            storedReleaseCount = 1
+            return true
+        }
+        if shouldSignal {
+            releaseSemaphore.signal()
+        }
     }
 }
 
@@ -1344,8 +1345,12 @@ final class MissingLandmarkDegradationTests: XCTestCase {
     func testSAFE02ParallelCompletionOrderAndInterruptedWorkCannotLeakRequestState() async {
         let rows = EyebrowSafetyFixtures.rows
         let interruptedIdentity = 10_001
-        let resolverEntered = Phase52RequestSignal()
-        let providerBarrier = Phase52ProviderBarrier()
+        let resolverEntered = Phase52RequestSignal(
+            expectation: expectation(description: "interrupted resolver entered")
+        )
+        let providerBarrier = Phase52ProviderBarrier(
+            enteredExpectation: expectation(description: "interrupted provider entered")
+        )
         let interrupted = Task.detached { () -> Phase52RequestSnapshot in
             let row = rows[0]
             let plan = BeautyEffectResolver.resolve(
@@ -1366,9 +1371,19 @@ final class MissingLandmarkDegradationTests: XCTestCase {
                 geometryPointCount: plan.metrics["beauty.effects.geometryPointCount"] ?? 0
             )
         }
+        defer {
+            interrupted.cancel()
+            providerBarrier.release()
+        }
 
-        await resolverEntered.wait()
-        await providerBarrier.entered.wait()
+        await fulfillment(
+            of: [resolverEntered.expectation, providerBarrier.entered.expectation],
+            timeout: 2
+        )
+        guard resolverEntered.count == 1, providerBarrier.entered.count == 1 else {
+            XCTFail("resolver/provider entry callbacks must complete before the bounded timeout")
+            return
+        }
         XCTAssertEqual(resolverEntered.count, 1)
         XCTAssertEqual(providerBarrier.entered.count, 1)
         XCTAssertEqual(providerBarrier.releaseCount, 0)
@@ -1436,6 +1451,7 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertEqual(interruptedResult.skippedEyebrowCount, 0)
         XCTAssertGreaterThan(interruptedResult.geometryPointCount, 0)
         XCTAssertEqual(providerBarrier.releaseCount, 1)
+        XCTAssertFalse(providerBarrier.waitTimedOut)
 
         for (offset, row) in rows.enumerated() {
             let identity = 20_000 + offset
