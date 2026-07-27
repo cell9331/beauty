@@ -57,7 +57,7 @@
 
 **Requirements:** GEOM-01, GEOM-02, GEOM-03, GEOM-04, GEOM-05, GEOM-06, GEOM-07, PIPE-01, PIPE-02
 
-**Plans:** 6/10 plans complete
+**Plans:** 6/6 plans complete
 **Wave 1**
 
 - [x] 50-01-PLAN.md
@@ -131,7 +131,7 @@
 
 **Requirements:** SAFE-01, SAFE-02, SAFE-03, DOC-01
 
-**Plans:** 6/6 plans complete
+**Plans:** 6/10 plans complete
 
 **Wave 1**
 
