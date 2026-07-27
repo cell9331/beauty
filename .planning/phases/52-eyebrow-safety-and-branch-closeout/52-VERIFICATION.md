@@ -101,7 +101,18 @@ tests pass while failing to exercise the behavior named by their assertions.
   executed one test with zero failures. This closes the previously
   unclassified interruption edge against the full stateless lifecycle,
   field-local failure, concurrency-isolation, and aggregate-only diagnostic
-  contract. The report frontmatter remains `gaps_found` until WR-01/WR-03,
+  contract.
+- **WR-03 / SAFE-02 convergence mapping:** the late provider-empty test now
+  calls `BeautyEffectResolver.resolve(...onRetainedMaskIteration:)` for all
+  seven rows. Each row first emits from adapter-validated precision support,
+  enters the real bounded 44-pass loop with a strictly positive scaled value
+  below the provider dead zone and a one-quarter-value numeric tolerance, is
+  removed exactly once, stays absent from every later retained mask, and is
+  excluded from final strengths, named emissions, warnings, counts, totals,
+  metrics, and dispatch. A repeated production resolve yields an identical
+  trace and fixed point. The focused command executed one test with zero
+  failures.
+- The report frontmatter remains `gaps_found` until WR-01 evidence,
   independent review, and independent re-verification also complete.
 
 ## Goal Achievement

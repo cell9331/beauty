@@ -86,46 +86,158 @@ final class CombinedEffectSafetyTests: XCTestCase {
     }
 
     func testSAFE02EveryEyebrowRowIsRemovedMonotonicallyWhenSharedScaleMakesProviderEmpty() {
-        let provider = EyebrowWarpProvider()
-        let face = EyebrowSafetyFixtures.face()
+        let eyebrowProvider = EyebrowWarpProvider()
+        let faceProvider = FaceShapeWarpProvider()
+        let chinProvider = ChinWarpProvider()
+        let requestedMagnitude = Float.ulpOfOne.nextUp
 
         XCTAssertEqual(EyebrowSafetyFixtures.rows.count, 7)
         for row in EyebrowSafetyFixtures.rows {
-            let requested = row.isSigned ? -row.cap : row.cap
-            let retainedBaseline = row.strengths(requested)
-            let providerEmptyThreshold = Float.ulpOfOne / 2
+            let precisionFixture: FaceGeometry
+            if row.name == "eyebrowThickness" {
+                precisionFixture = EyebrowSafetyFixtures.adjacentThicknessFace
+            } else if row.name == "eyebrowTilt" {
+                precisionFixture = EyebrowSafetyFixtures.adjacentTiltFace
+            } else {
+                precisionFixture = EyebrowSafetyFixtures.adjacentStrengthFace
+            }
+            let face = lateRemovalPrecisionFace(eyebrowFixture: precisionFixture)
+            let requested = row.isSigned ? -requestedMagnitude : requestedMagnitude
+            var parameters = row.makeParameters(requested)
+            parameters.faceSlim = 1
+            parameters.faceSmall = 1
+            parameters.faceVShape = 1
+            parameters.jawSlim = 1
+            parameters.chinLength = -1
+
+            var preConflictStrengths = row.strengths(requested)
+            preConflictStrengths.faceSlim = BeautySafetyCaps.faceSlim
+            preConflictStrengths.faceSmall = BeautySafetyCaps.faceSmall
+            preConflictStrengths.faceVShape = BeautySafetyCaps.faceVShape
+            preConflictStrengths.jawSlim = BeautySafetyCaps.jawSlim
+            preConflictStrengths.chinLength = -BeautySafetyCaps.chinLength
+            let faceEmissions = faceProvider.fieldEmissions(
+                face: face,
+                strengths: preConflictStrengths
+            )
+            let chinEmissions = chinProvider.fieldEmissions(
+                face: face,
+                strengths: preConflictStrengths
+            )
+            XCTAssertFalse(faceEmissions.faceSlim.isEmpty, row.name)
+            XCTAssertFalse(faceEmissions.faceSmall.isEmpty, row.name)
+            XCTAssertFalse(faceEmissions.faceVShape.isEmpty, row.name)
+            XCTAssertFalse(faceEmissions.jawSlim.isEmpty, row.name)
+            XCTAssertFalse(chinEmissions.chinLength.isEmpty, row.name)
             XCTAssertFalse(
-                row.emission(provider.fieldEmissions(face: face, strengths: retainedBaseline)).isEmpty,
+                row.emission(eyebrowProvider.fieldEmissions(
+                    face: face,
+                    strengths: preConflictStrengths
+                )).isEmpty,
                 "\(row.name) must emit before the late shared scale."
             )
 
-            let lateResolution = GeometryConflictResolver(totalThreshold: providerEmptyThreshold)
-                .resolve(strengths: retainedBaseline)
-            XCTAssertEqual(lateResolution.metrics["beauty.effects.weakenedCount"], 1, row.name)
-            XCTAssertEqual(lateResolution.warnings.map(\.code), ["combined_geometry_weakened"], row.name)
+            func runProductionResolve() -> (
+                plan: BeautyEffectPlan,
+                iterations: [BeautyRetainedMaskIteration]
+            ) {
+                var iterations: [BeautyRetainedMaskIteration] = []
+                let plan = BeautyEffectResolver.resolve(
+                    parameters: parameters,
+                    faceGeometry: face,
+                    onRetainedMaskIteration: { iterations.append($0) }
+                )
+                return (plan, iterations)
+            }
+
+            let first = runProductionResolve()
+            XCTAssertGreaterThanOrEqual(first.iterations.count, 2, row.name)
             XCTAssertEqual(
-                abs(lateResolution.strengths[keyPath: row.effectiveValue]),
-                providerEmptyThreshold,
-                accuracy: Float.ulpOfOne,
+                first.iterations.map(\.iterationIndex),
+                Array(0..<first.iterations.count),
+                row.name
+            )
+            let removalIndices = first.iterations.indices.filter {
+                first.iterations[$0].removedFieldNames.contains(row.name)
+            }
+            XCTAssertEqual(removalIndices.count, 1, row.name)
+            guard let removalIndex = removalIndices.first else {
+                continue
+            }
+
+            let totalBeforeRemoval =
+                BeautySafetyCaps.faceSlim +
+                BeautySafetyCaps.faceSmall +
+                BeautySafetyCaps.faceVShape +
+                BeautySafetyCaps.jawSlim +
+                BeautySafetyCaps.chinLength +
+                requestedMagnitude
+            let expectedScaledMagnitude = requestedMagnitude / totalBeforeRemoval
+            let numericAccuracy = expectedScaledMagnitude / 4
+            XCTAssertGreaterThan(expectedScaledMagnitude, 0, row.name)
+            XCTAssertLessThan(numericAccuracy, expectedScaledMagnitude, row.name)
+            let observedScaledMagnitude = abs(
+                first.iterations[removalIndex]
+                    .scaledPreSanitizationStrengths[row.name] ?? 0
+            )
+            XCTAssertEqual(
+                observedScaledMagnitude,
+                expectedScaledMagnitude,
+                accuracy: numericAccuracy,
+                row.name
+            )
+            XCTAssertGreaterThan(observedScaledMagnitude, 0, row.name)
+            XCTAssertLessThanOrEqual(observedScaledMagnitude, Float.ulpOfOne, row.name)
+
+            for iteration in first.iterations[removalIndex...] {
+                XCTAssertFalse(iteration.retainedFieldNames.contains(row.name), row.name)
+            }
+            XCTAssertFalse(
+                first.iterations.dropFirst(removalIndex + 1).contains {
+                    $0.removedFieldNames.contains(row.name)
+                },
+                "\(row.name) must be removed once and never re-enter."
+            )
+
+            let plan = first.plan
+            let finalEyebrowEmissions = eyebrowProvider.fieldEmissions(
+                face: face,
+                strengths: plan.effectiveStrengths
+            )
+            XCTAssertEqual(plan.effectiveStrengths[keyPath: row.effectiveValue], 0, row.name)
+            XCTAssertTrue(row.emission(finalEyebrowEmissions).isEmpty, row.name)
+            XCTAssertFalse(plan.activeDomains.contains(.eyebrows), row.name)
+            XCTAssertTrue(plan.skippedDomains.contains(.eyebrows), row.name)
+            XCTAssertEqual(plan.metrics["beauty.effects.skippedEyebrowDomains"], 1, row.name)
+            XCTAssertEqual(
+                plan.warnings.filter { $0.code == "eyebrow_inputs_missing" }.count,
+                1,
+                row.name
+            )
+            XCTAssertEqual(
+                plan.warnings.filter { $0.code == "combined_geometry_weakened" }.count,
+                1,
                 row.name
             )
 
-            let lateEmissions = provider.fieldEmissions(
-                face: face,
-                strengths: lateResolution.strengths
-            )
-            XCTAssertTrue(row.emission(lateEmissions).isEmpty, row.name)
+            let finalGeometryValues = Mirror(reflecting: plan.effectiveStrengths).children
+                .compactMap { child -> Float? in
+                    guard let name = child.label,
+                          finalGeometryFieldNames.contains(name)
+                    else {
+                        return nil
+                    }
+                    return child.value as? Float
+                }
+            let finalCount = finalGeometryValues.filter { abs($0) > Float.ulpOfOne }.count
+            let finalTotal = finalGeometryValues.reduce(Float(0)) { $0 + abs($1) }
+            XCTAssertEqual(plan.metrics["beauty.effects.weakenedCount"], Double(finalCount), row.name)
+            XCTAssertEqual(finalTotal, 1, accuracy: 0.000_001, row.name)
+            assertFinalMaskMatchesNamedProviders(plan, face: face)
 
-            let removedBaseline = lateEmissions.sanitizing(retainedBaseline)
-            XCTAssertEqual(removedBaseline[keyPath: row.effectiveValue], 0, row.name)
-
-            let repeated = GeometryConflictResolver(totalThreshold: providerEmptyThreshold)
-                .resolve(strengths: removedBaseline)
-            XCTAssertEqual(repeated.strengths[keyPath: row.effectiveValue], 0, row.name)
-            XCTAssertTrue(
-                row.emission(provider.fieldEmissions(face: face, strengths: repeated.strengths)).isEmpty,
-                "\(row.name) must not re-enter after removal."
-            )
+            let repeated = runProductionResolve()
+            XCTAssertEqual(repeated.iterations, first.iterations, row.name)
+            XCTAssertEqual(repeated.plan, plan, row.name)
         }
     }
 
@@ -922,20 +1034,34 @@ final class CombinedEffectSafetyTests: XCTestCase {
         )
     }
 
+    private func lateRemovalPrecisionFace(
+        eyebrowFixture precision: FaceGeometry
+    ) -> FaceGeometry {
+        let base = phase48AllProviderGeometry
+        return FaceGeometry(
+            bounds: precision.bounds,
+            faceContour: base.faceContour,
+            observedFaceSupport: base.observedFaceSupport,
+            leftEye: base.leftEye,
+            rightEye: base.rightEye,
+            nose: base.nose,
+            noseRoot: base.noseRoot,
+            noseTip: base.noseTip,
+            outerLips: base.outerLips,
+            upperLips: base.upperLips,
+            lowerLips: base.lowerLips,
+            innerLips: base.innerLips,
+            leftEyeSupport: base.leftEyeSupport,
+            rightEyeSupport: base.rightEyeSupport,
+            freshness: .fresh,
+            observedEyebrowSupport: precision.observedEyebrowSupport
+        )
+    }
+
     private func phase50EyebrowTrace(
         side: BeautyObservedEyebrowSide
     ) -> BeautyEyebrowSemanticTrace {
-        let points: [SIMD2<Float>] = side == .left
-            ? [.init(0.25, 0.40), .init(0.30, 0.36), .init(0.36, 0.34), .init(0.42, 0.37), .init(0.47, 0.41)]
-            : [.init(0.75, 0.40), .init(0.70, 0.36), .init(0.64, 0.34), .init(0.58, 0.37), .init(0.53, 0.41)]
-        return BeautyEyebrowSemanticTrace(
-            side: side,
-            points: points,
-            innerEndpoint: points[0],
-            outerEndpoint: points[points.count - 1],
-            center: points.reduce(.zero, +) / Float(points.count),
-            apexIndex: 2
-        )
+        EyebrowSafetyFixtures.trace(side: side)
     }
 
     private func phase48EyeSupport(

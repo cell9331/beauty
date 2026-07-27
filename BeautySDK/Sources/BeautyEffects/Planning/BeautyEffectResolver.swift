@@ -1,6 +1,13 @@
 import BeautyCore
 import BeautyDetection
 
+struct BeautyRetainedMaskIteration: Equatable, Sendable {
+    let iterationIndex: Int
+    let scaledPreSanitizationStrengths: [String: Float]
+    let removedFieldNames: [String]
+    let retainedFieldNames: [String]
+}
+
 public enum BeautyEffectResolver {
     public static func resolve(parameters: BeautyParameters) -> BeautyEffectPlan {
         resolve(parameters: parameters, faceGeometry: nil, treatsMissingFaceAsNoFace: false)
@@ -71,14 +78,16 @@ public enum BeautyEffectResolver {
         parameters: BeautyParameters,
         faceGeometry: FaceGeometry?,
         onProviderResolutionStarted: (() -> Void)? = nil,
-        onProviderWorkStarted: (() -> Void)? = nil
+        onProviderWorkStarted: (() -> Void)? = nil,
+        onRetainedMaskIteration: ((BeautyRetainedMaskIteration) -> Void)? = nil
     ) -> BeautyEffectPlan {
         resolve(
             parameters: parameters,
             faceGeometry: faceGeometry,
             treatsMissingFaceAsNoFace: true,
             onProviderResolutionStarted: onProviderResolutionStarted,
-            onProviderWorkStarted: onProviderWorkStarted
+            onProviderWorkStarted: onProviderWorkStarted,
+            onRetainedMaskIteration: onRetainedMaskIteration
         )
     }
 
@@ -87,7 +96,8 @@ public enum BeautyEffectResolver {
         faceGeometry: FaceGeometry?,
         treatsMissingFaceAsNoFace: Bool,
         onProviderResolutionStarted: (() -> Void)? = nil,
-        onProviderWorkStarted: (() -> Void)? = nil
+        onProviderWorkStarted: (() -> Void)? = nil,
+        onRetainedMaskIteration: ((BeautyRetainedMaskIteration) -> Void)? = nil
     ) -> BeautyEffectPlan {
         let normalized = parameters.normalized()
         var activeDomains: Set<BeautyEffectDomain> = []
@@ -402,7 +412,8 @@ public enum BeautyEffectResolver {
                 eyeProvider: eyeProvider,
                 eyebrowProvider: eyebrowProvider,
                 noseProvider: noseProvider,
-                mouthProvider: mouthProvider
+                mouthProvider: mouthProvider,
+                onRetainedMaskIteration: onRetainedMaskIteration
             )
             strengths = conflict.strengths
             extraWarnings.append(contentsOf: conflict.warnings)
@@ -629,7 +640,8 @@ public enum BeautyEffectResolver {
         eyeProvider: EyeWarpProvider,
         eyebrowProvider: EyebrowWarpProvider,
         noseProvider: NoseWarpProvider,
-        mouthProvider: MouthWarpProvider
+        mouthProvider: MouthWarpProvider,
+        onRetainedMaskIteration: ((BeautyRetainedMaskIteration) -> Void)?
     ) -> GeometryConflictResolution {
         var retainedBaseline = strengths
 
@@ -637,7 +649,9 @@ public enum BeautyEffectResolver {
         // provider threshold. Remove that work from the unscaled baseline and
         // recompute so final emissions and conflict evidence share one mask.
         // Each pass can only remove fields from the exact 44-field inventory.
+        var iterationIndex = 0
         for _ in 0..<44 {
+            defer { iterationIndex += 1 }
             let resolution = GeometryConflictResolver().resolve(strengths: retainedBaseline)
             var nextBaseline = faceProvider
                 .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
@@ -657,6 +671,21 @@ public enum BeautyEffectResolver {
             nextBaseline = mouthProvider
                 .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
                 .sanitizing(nextBaseline)
+            if let onRetainedMaskIteration {
+                let priorNames = Set(Self.retainedGeometryFieldNames(in: retainedBaseline))
+                let retainedNames = Self.retainedGeometryFieldNames(in: nextBaseline)
+                let retainedNameSet = Set(retainedNames)
+                onRetainedMaskIteration(BeautyRetainedMaskIteration(
+                    iterationIndex: iterationIndex,
+                    scaledPreSanitizationStrengths: Self.geometryStrengthsByName(
+                        resolution.strengths
+                    ),
+                    removedFieldNames: Self.geometryFieldNames.filter {
+                        priorNames.contains($0) && !retainedNameSet.contains($0)
+                    },
+                    retainedFieldNames: retainedNames
+                ))
+            }
             if nextBaseline == retainedBaseline {
                 return resolution
             }
@@ -664,6 +693,44 @@ public enum BeautyEffectResolver {
         }
 
         return GeometryConflictResolver().resolve(strengths: retainedBaseline)
+    }
+
+    private static let geometryFieldNames = [
+        "faceSlim", "faceSmall", "faceVShape", "jawSlim", "chinLength",
+        "faceContourSmooth", "templeFullness", "cheekboneSlim", "chinTaper",
+        "eyeSize", "eyeDistance", "eyeYPosition", "eyeTailLift", "eyeHeight",
+        "eyeLength", "upperEyelidLift", "pupilSize", "gazeCorrection",
+        "lowerEyelidDrop", "eyeTilt", "innerCornerOpen", "outerCornerOpen",
+        "eyeSymmetry", "eyebrowYPosition", "eyebrowThickness", "eyebrowLength",
+        "eyebrowSpacing", "eyebrowHeadSpacing", "eyebrowTilt",
+        "eyebrowPeakDefinition", "noseSlim", "noseWingSlim", "noseTipSize",
+        "noseBridge", "noseRootNarrowing", "noseTipLift", "mouthSize",
+        "mouthWidth", "smile", "mouthYPosition", "mouthTilt", "mouthXPosition",
+        "lipPeakDefinition", "lipPlump",
+    ]
+
+    private static func geometryStrengthsByName(
+        _ strengths: BeautyEffectiveStrengths
+    ) -> [String: Float] {
+        let geometryNames = Set(geometryFieldNames)
+        return Dictionary(
+            uniqueKeysWithValues: Mirror(reflecting: strengths).children.compactMap { child in
+                guard let name = child.label,
+                      geometryNames.contains(name),
+                      let value = child.value as? Float
+                else {
+                    return nil
+                }
+                return (name, value)
+            }
+        )
+    }
+
+    private static func retainedGeometryFieldNames(
+        in strengths: BeautyEffectiveStrengths
+    ) -> [String] {
+        let values = geometryStrengthsByName(strengths)
+        return geometryFieldNames.filter { values[$0] != 0 }
     }
 
     private static func zeroEyeStrengths(_ strengths: inout BeautyEffectiveStrengths) {
