@@ -5,10 +5,10 @@ milestone_name: Eyebrow Geometry Controls
 current_phase: 52
 current_phase_name: eyebrow-safety-and-branch-closeout
 status: verifying
-stopped_at: Phase 52 planning owners synchronized; final executor gate pending
-last_updated: "2026-07-27T09:52:27.000Z"
+stopped_at: Phase 52 executor gates complete; pending independent re-verification
+last_updated: "2026-07-27T09:56:25.000Z"
 last_activity: 2026-07-27
-last_activity_desc: Phase 52 ten-plan owners synchronized with 22/23 green tasks; final readiness gate pending
+last_activity_desc: Phase 52 ten-plan execution complete with 23/23 Nyquist and 35/35 pending-independent readiness
 progress:
   total_phases: 4
   completed_phases: 3
@@ -30,17 +30,17 @@ See: `.planning/PROJECT.md` (updated 2026-07-27)
 
 Phase: 52 (eyebrow-safety-and-branch-closeout) — VERIFYING
 Plan: 10 of 10
-Status: Planning owners synchronized; final executor gate pending, then independent Phase 52 re-verification
-Last activity: 2026-07-27 — All ten execution plans are recorded and planning-owner synchronization reached 22/23 green tasks
+Status: Executor gates complete; pending independent Phase 52 re-verification
+Last activity: 2026-07-27 — All ten execution plans, 23/23 Nyquist rows, and the 35/35 pending-independent readiness gate passed
 
 ### Phase 52 Eyebrow Safety and Branch Closeout Gap Status
 
 - Final verification remains independently owned and `gaps_found` at 12/16 until re-verification. Plan 52-07 supplies focused production-path WR-01/02/03 evidence, and Plan 52-08 supplies the full regression/simulator/security ledger.
 - The independent post-fix 25-file `gsd-code-reviewer` report is clean 0/0/0/0 and newer than Waves 7–8.
-- Plans 52-09 and 52-10 synchronize all routed root and planning owners. The exact 23-task Nyquist ledger is 22/23 green after the planning-owner gate; only the final 35/35 executor readiness row remains.
+- Plans 52-09 and 52-10 synchronize all routed root and planning owners. The exact 23-task Nyquist ledger is complete, and the final executor readiness checker passes exactly 35/35 with `verification=pending-independent`.
 - Phase 52 implements exactly seven eyebrow rows and SDK-core branch `眉毛`, keeps raw support package-internal and request-scoped, exposes aggregate-only diagnostics, and changes no SwiftUI/Demo path.
 - `52-VERIFICATION.md` remains independently owned and `gaps_found` until the final verifier reruns. The executor must not write a passed status.
-- After the final executor readiness gate, the next workflow is independent Phase 52 re-verification. The v1.13 milestone audit is blocked until that independent verifier passes.
+- The next workflow is independent Phase 52 re-verification. The v1.13 milestone audit is blocked until that independent verifier passes.
 
 ### Phase 51 Public-Facade Eyebrow Output Result
 
@@ -290,7 +290,7 @@ Last activity: 2026-07-14
 | Phase 52 P07 | 20min | 3 tasks | 7 files |
 | Phase 52 P08 | 13min | 2 tasks | 4 files |
 | Phase 52 P09 | 5min | 2 tasks | 5 files |
-| Phase 52 P10 | pending final gate | 2 tasks | 5 files |
+| Phase 52 P10 | 6min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -446,10 +446,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-27T09:52:27.000Z
-Stopped at: Phase 52 planning owners synchronized; final executor gate pending
+Last session: 2026-07-27T09:56:25.000Z
+Stopped at: Phase 52 executor gates complete; pending independent re-verification
 Resume file: None
 
 ## Operator Next Steps
 
-- Run the exact 35/35 pending-independent executor gate, then dispatch an independent Phase 52 verifier. Do not audit, archive, tag, or clean up before verification passes.
+- Dispatch an independent Phase 52 verifier. Do not audit, archive, tag, or clean up before verification passes.
