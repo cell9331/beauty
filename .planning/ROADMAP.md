@@ -131,11 +131,11 @@
 
 **Requirements:** SAFE-01, SAFE-02, SAFE-03, DOC-01
 
-**Plans:** 6 plans
+**Plans:** 1/6 plans executed
 
 **Wave 1**
 
-- [ ] 52-01-PLAN.md — Freeze exact final caps and exhaustive seven-field lifecycle/local-failure behavior.
+- [x] 52-01-PLAN.md — Freeze exact final caps and exhaustive seven-field lifecycle/local-failure behavior.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -171,7 +171,7 @@
 | 49. Public Contract and Observed Eyebrow Support | v1.13 | 5 | Complete    | 2026-07-24 |
 | 50. Independent Eyebrow Geometry and Pipeline Integration | v1.13 | 9 | Complete | 2026-07-24 |
 | 51. Public-Facade Eyebrow Output Evidence | v1.13 | 3 | Complete    | 2026-07-27 |
-| 52. Eyebrow Safety and Branch Closeout | v1.13 | 4 | Not started | — |
+| 52. Eyebrow Safety and Branch Closeout | v1.13 | 4 | In Progress|  |
 
 ## Backlog
 

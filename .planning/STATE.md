@@ -5,15 +5,15 @@ milestone_name: Eyebrow Geometry Controls
 current_phase: 52
 current_phase_name: Eyebrow Safety and Branch Closeout
 status: executing
-stopped_at: Phase 52 planned; ready to execute 52-01-PLAN.md
-last_updated: "2026-07-27T03:01:40.654Z"
+stopped_at: Completed 52-01-PLAN.md; ready for 52-02-PLAN.md
+last_updated: "2026-07-27T03:23:21.404Z"
 last_activity: 2026-07-27
-last_activity_desc: Phase 52 planned in six serial waves; independent plan check passed
+last_activity_desc: Phase 52 execution started
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 22
-  completed_plans: 16
+  completed_plans: 17
 ---
 
 # Project State
@@ -23,14 +23,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-27)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 52 final eyebrow caps, exhaustive safety/convergence, and exact SDK-core promotion
+**Current focus:** Phase 52 — Eyebrow Safety and Branch Closeout
 
 ## Current Position
 
-Phase: 52 — Eyebrow Safety and Branch Closeout
-Plan: 0 of 6
+Phase: 52 (Eyebrow Safety and Branch Closeout) — EXECUTING
+Plan: 2 of 6
 Status: Ready to execute
-Last activity: 2026-07-27 — Phase 52 research, pattern map, validation strategy, six plans, and independent plan check complete
+Last activity: 2026-07-27 — Phase 52 execution started
 
 ### Phase 51 Public-Facade Eyebrow Output Result
 
@@ -271,6 +271,7 @@ Last activity: 2026-07-14
 | Phase 50 P03 | 7 min | 2 tasks | 4 files |
 | Phase 50 P04 | 7 min | 2 tasks | 2 files |
 | Phase 50 P05 | 10 min | 3 tasks | 5 files |
+| Phase 52 P01 | 15 min | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -383,6 +384,8 @@ Recent milestone-level outcomes:
 - [Phase ?]: Phase 50 Plan 04 inserts all seven eyebrow fields between eye and nose in the shared conflict scale, total, and count inventories.
 - [Phase 50]: Plan 50-05 dispatches final providers once in Face→Chin→Eye→Eyebrow→Nose→Mouth order and keeps facade evidence aggregate-only.
 - [Phase ?]: The exact 13.45 total and seven 0.25 eyebrow caps remain provisional until Phase 52 calibration.
+- [Phase 52]: Use BeautySafetyCaps as the only final eyebrow maximum authority, with one named binding per field evaluation. — Keeps provider acceptance, formula division, and final point validation on one exact source of truth.
+- [Phase 52]: Separate the exact Float.ulpOfOne strength dead zone from the 0.000001 geometry and topology validity tolerance. — Prevents eligible adjacent strength from being misclassified while retaining fail-closed geometry validation.
 
 ### Pending Todos
 
@@ -416,8 +419,8 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-27T03:01:40.654Z
-Stopped at: Phase 52 planned; ready to execute 52-01-PLAN.md
+Last session: 2026-07-27T03:23:21.379Z
+Stopped at: Completed 52-01-PLAN.md; ready for 52-02-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
