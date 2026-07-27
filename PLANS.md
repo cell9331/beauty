@@ -36,7 +36,7 @@
 | Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve legacy 52-key compatibility and all shipped face/eye/nose/mouth output while the current model is exactly 59 stored fields. |
 | Requirements | 21/21 mapped across Phase 49-52; no unmapped requirement. |
 | Roadmap | Phase 49 contract/support → Phase 50 geometry/pipeline → Phase 51 strict output → Phase 52 safety/promotion. |
-| Current step | Phase 52 is complete across all six plans. SAFE-01, SAFE-02, SAFE-03, and DOC-01 close from the exact final runtime, output, privacy/security, product, and owner evidence. The only next step is the separately executed independent v1.13 milestone audit. |
+| Current step | Phase 52 has ten plans: `52-01` through `52-08` are complete, while `52-09` and `52-10` remain pending. Validation has 23/23 planned task rows with 19/23 green. The independent post-Wave-8 review is `issues_found` with three warnings and final verification remains `gaps_found`; fix/re-review, Waves 9–10, and independent re-verification must pass before the v1.13 milestone audit is authorized. |
 
 Fixture-scope decision (2026-07-24):
 
@@ -63,13 +63,13 @@ Phase 51 closeout record (2026-07-27):
 - The final strict gate passes 72/72 portrait outputs, 13/13 visibility, 6/6 signed directions, 21/21 family distinctions, 40/40 direct portrait comparisons, and 13/13 separate no-face comparisons. Output/gallery bijection and ignored/untracked/unstaged containment pass.
 - OUT-01, OUT-02, and OUT-03 are complete. Provisional caps, SAFE-01..03, DOC-01, all seven `future` rows, branch `眉毛`, exhaustive safety, and Demo/device/commercial/performance/packaging/shipping/release scope remain unchanged for Phase 52 or later.
 
-Phase 52 closeout record (2026-07-27):
+Phase 52 superseded six-plan closeout record (2026-07-27):
 
 - Plans `52-01` through `52-06` freeze seven exact final `0.25` caps, the exact `Float.ulpOfOne` strength dead zone, six signed directions plus positive-only peak definition, bounded radii, and exhaustive no-face/missing/malformed/provider-empty/fresh/reused/stale/valid-invalid-valid behavior.
 - Exact combined geometry remains 44 unique fields totaling `13.45`, with one scale `1 / 13.45`, final total `1`, at most 44 monotone removals, no re-entry or second scaling pass, and final strengths/emissions/accounting/Face→Chin→Eye→Eyebrow→Nose→Mouth dispatch in agreement.
-- Fresh evidence passes eight focused suites, 450 full SwiftPM tests with six opt-in skips, the unchanged strict 72/72 portrait gate, thirteen separate no-face comparisons, 144/144 output/gallery containment, and the original-detail fourteen-image review. Standard review is clean, Nyquist covers all fourteen tasks, and ASVS L1 records `threats_open: 0`.
+- Fresh evidence at the original six-plan checkpoint passed eight focused suites, 450 full SwiftPM tests with six opt-in skips, the unchanged strict 72/72 portrait gate, thirteen separate no-face comparisons, 144/144 output/gallery containment, and the original-detail fourteen-image review. Its clean review and fourteen-task Nyquist statements were superseded by the committed Wave 7/8 gap workflow: the current independent review is `issues_found` with three warnings, validation is 23/23 planned and 19/23 green, and final verification remains `gaps_found`.
 - Exactly `上下`, `粗细`, `长短`, `间距`, `眉头间距`, `倾斜`, and `眉峰` plus branch `眉毛` are implemented at SDK-core scope. SAFE-01, SAFE-02, SAFE-03, and DOC-01 are complete across synchronized product, example, root-contract, and planning owners.
-- The next step is the independent v1.13 milestone audit. This closeout does not perform or claim that audit, archive, tag, cleanup, UI/Demo work, physical-device parity, commercial naturalness, optimized performance, packaging, shipping, launch, or release readiness.
+- The current next step is to close the three review warnings and obtain a fresh independent clean review, then execute Plans `52-09`/`52-10` and independent final re-verification. The v1.13 milestone audit remains blocked; audit, archive, tag, cleanup, UI/Demo work, physical-device parity, commercial naturalness, optimized performance, packaging, shipping, launch, and release readiness remain unclaimed.
 
 Phase 49 closeout record (2026-07-24):
 
@@ -87,15 +87,15 @@ Planned follow-on milestones:
 
 ## 4. Completed
 
-### C-2026-07-27-phase-52-eyebrow-safety-and-branch-closeout
+### C-2026-07-27-phase-52-six-plan-closeout-superseded
 
 | Field | Value |
 | --- | --- |
 | Completed | 2026-07-27 |
-| Scope | Six plans completed exact final eyebrow caps, exhaustive lifecycle/concurrency/local-failure evidence, exact 44-field convergence, fail-closed security/owner gates, seven-row and branch promotion, and planning verification. |
-| Verification | Eight focused suites pass; full SwiftPM 450 with six opt-in skips; strict 72/72 portrait, 13/13 visibility, 6/6 direction, 21/21 distinctions, 40/40 direct, thirteen separate no-face; output/gallery 144/144; fourteen-image review PASS; clean review; fourteen-task Nyquist; ASVS L1 `threats_open: 0`. |
-| Requirements | SAFE-01, SAFE-02, SAFE-03, and DOC-01 complete. |
-| Boundary | Phase completion hands off only to the independent v1.13 milestone audit. Audit, archive, tag, cleanup, UI/device/commercial/performance/packaging/shipping/launch/release readiness remain unclaimed. |
+| Scope | Historical Plans `52-01` through `52-06` completed exact final eyebrow caps, lifecycle/local-failure evidence, exact 44-field convergence, initial fail-closed gates, and seven-row/branch SDK-core promotion. This checkpoint was later superseded by the ten-plan gap-closeout workflow. |
+| Verification | Historical focused/full/output/gallery/image/security evidence remains valid for that checkpoint. Its clean-review and fourteen-task Nyquist claims are superseded: Plans `52-01`–`52-08` are complete, Plans `52-09`/`52-10` are pending, validation is 23/23 planned and 19/23 green, the independent review is `issues_found` with three warnings, and final verification is `gaps_found`. |
+| Requirements | SAFE-01, SAFE-02, SAFE-03, and DOC-01 were recorded complete at the six-plan checkpoint; current workflow closure remains pending the review, owner-sync, planning, and independent re-verification gates. |
+| Boundary | This is a superseded historical checkpoint, not current Phase completion. The v1.13 milestone audit remains blocked until Waves 9–10 and independent final re-verification pass; audit, archive, tag, cleanup, UI/device/commercial/performance/packaging/shipping/launch/release readiness remain unclaimed. |
 
 Outcome:
 
