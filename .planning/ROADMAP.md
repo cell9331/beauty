@@ -146,7 +146,7 @@
 | --- | --- | --- | --- | --- |
 | 49. Public Contract and Observed Eyebrow Support | v1.13 | 5 | Complete    | 2026-07-24 |
 | 50. Independent Eyebrow Geometry and Pipeline Integration | v1.13 | 9 | Complete | 2026-07-24 |
-| 51. Public-Facade Eyebrow Output Evidence | v1.13 | 3 | Complete | 2026-07-27 |
+| 51. Public-Facade Eyebrow Output Evidence | v1.13 | 3 | Complete    | 2026-07-27 |
 | 52. Eyebrow Safety and Branch Closeout | v1.13 | 4 | Not started | — |
 
 ## Backlog

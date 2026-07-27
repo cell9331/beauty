@@ -16,9 +16,9 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
 **Current milestone:** v1.13 Eyebrow Geometry Controls.
 
-**Implementation state:** Phase 48 is complete. `BeautyParameters` is exactly 52 stored fields (51 numeric plus `filterId`); all nine face/chin geometry fields have final caps and fail-closed transitions, with one 37-field/11.70 retained baseline and at most 37 removals. Exactly `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴` are newly promoted; `去双下巴`/`去双下巴 Pro`/`发际线` remain future and branch `脸型` remains partial.
+**Implementation state:** Phase 51 is complete. `BeautyParameters` is exactly 59 stored fields (58 numeric plus `filterId`); seven eyebrow controls traverse private request-scoped observed support, independent providers, one exact 44-field/13.45 provisional convergence path, unified dispatch, and the public facade. The renderer now has exactly 72 cases, including thirteen isolated eyebrow cases. Final caps, exhaustive transitions/convergence, and promotion remain Phase 52 work.
 
-**Verification state:** v1.12 passed 18/18 requirements, 4/4 phases, 11/11 integration seams, and 6/6 flows. Evidence includes 375 full SDK tests with three opt-in skips, 413/413 public output, 70/70 boundary mutations, exact promotion/owner gates, clean review, and ASVS L1 `threats_open: 0`. Generated artifacts remain ignored/untracked; no Demo/device/commercial/performance/packaging/shipping/launch readiness is claimed.
+**Verification state:** Phase 51 passes 438 full SwiftPM tests with six opt-in skips, 72/72 decoded portrait outputs, thirteen separate no-face no-ops, all fixed visibility/direction/distinction gates, fourteen original-detail image reviews, exact ignored 144-file output/gallery inventories, clean review, Nyquist `0` gaps, and ASVS L1 `28/28` closed threats. OUT-01 through OUT-03 are complete; SAFE-01 through SAFE-03 and DOC-01 remain open. No Demo/device/commercial/performance/packaging/shipping/launch readiness is claimed.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
@@ -397,6 +397,7 @@ Current visual reference contracts:
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
 | Phase 49 freezes seven neutral eyebrow fields and accepts only actual request-scoped Apple Vision eyebrow traces. | Geometry phases need a compatibility-safe public contract and honest support provenance before providers, resolver routing, or output evidence can activate. | Verified in Phase 49; 411-test suite and boundary gates pass |
+| Phase 51 accepts eyebrow output only through a separately rendered frozen strict gate plus actual-image review. | Generated labels or self-selected thresholds cannot prove brow-local direction and semantic distinction; the sole active portrait and no-face negative need distinct denominators. | Verified in Phase 51; 72/72 portrait outputs, thirteen no-face no-ops, fourteen opened images, and exact 144-file containment pass |
 | Product remains an SDK, not a standalone consumer app. | The user chose SDK plus complete Demo; v1 shipped reusable SDK boundaries and a validation Demo. | Good |
 | Demo should become a rich Meitu/Xingtu-style showcase. | v1 validated a broad Demo surface without making the Demo the primary product. | Good |
 | Demo uses modules only through the `BeautySDK` facade. | Facade-only Demo imports keep host integration realistic and are covered by tests/scans. | Good |
@@ -425,4 +426,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-07-24 after Phase 49*
+*Last updated: 2026-07-27 after Phase 51*

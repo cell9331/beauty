@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.13
 milestone_name: Eyebrow Geometry Controls
-current_phase: 51
-current_phase_name: Public-Facade Eyebrow Output Evidence
-status: complete
-stopped_at: Completed 51-05-PLAN.md; Phase 52 is next but unstarted
-last_updated: "2026-07-27T01:55:00.000Z"
+current_phase: 52
+current_phase_name: Eyebrow Safety and Branch Closeout
+status: planning
+stopped_at: Phase 51 complete; ready to discuss and plan Phase 52
+last_updated: "2026-07-27T02:15:07.104Z"
 last_activity: 2026-07-27
-last_activity_desc: Phase 51 completed with strict 72-portrait output, 13 no-face comparisons, 144-file gallery, and actual-image review
+last_activity_desc: Phase 51 complete, transitioned to Phase 52
 progress:
   total_phases: 4
   completed_phases: 3
@@ -20,17 +20,17 @@ progress:
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-07-24)
+See: `.planning/PROJECT.md` (updated 2026-07-27)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 51 complete; Phase 52 is the next bounded owner and has not started
+**Current focus:** Phase 52 final eyebrow caps, exhaustive safety/convergence, and exact SDK-core promotion
 
 ## Current Position
 
-Phase: 51 (Public-Facade Eyebrow Output Evidence) — COMPLETE
-Plan: 5 of 5
-Status: Phase complete; Phase 52 planning/execution not started
-Last activity: 2026-07-27 — OUT-01..03 closed after fresh regression, strict output, visual review, gallery, containment, and owner gates
+Phase: 52 — Eyebrow Safety and Branch Closeout
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-07-27 — Phase 51 complete, transitioned to Phase 52
 
 ### Phase 51 Public-Facade Eyebrow Output Result
 
@@ -386,13 +386,13 @@ Recent milestone-level outcomes:
 
 ### Pending Todos
 
-- Start the next milestone with `$gsd-new-milestone` when a new scope is chosen.
+- Discuss, plan, and execute Phase 52 as the final v1.13 phase.
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, screenshot reruns, packaging review, broader `美型 / 五官` slices, and automated visual diffs.
 
 ### Blockers/Concerns
 
-- Phase 49 has no active blocker. The exact historical e1...e5 fixtures were restored from the parked originals; preflight passes and full SwiftPM passes 411 tests with three opt-in skips and zero failures.
+- Phase 51 has no active blocker. The sole active e6 fixture, strict output matrix, original-detail review, gallery containment, Nyquist audit, and ASVS L1 audit all pass.
 - No active v1.12 blocker remains; all four phases and the independent milestone audit passed.
 - Deferred v2 `ADV-*` items remain outside v1 traceability and are tracked as `TD-007` in `PLANS.md`.
 - Manual release risks are now routed by Phase 21 and updated by Phases 23 through 25: `TD-008` has focused simulator camera pass evidence but physical iPhone checks remain blocked until hardware exists; `TD-009` remains Phase 22 visual evidence with screenshot rerun protocol; and `TD-010` keeps device, long-run, screenshot, optimized profiling, external-resource integrity, and commercial packaging work routed to later setup-specific checks.
@@ -416,10 +416,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-24T13:32:46.000Z
-Stopped at: Phase 51 planning complete; ready for 51-01-PLAN.md
+Last session: 2026-07-27T02:15:07.104Z
+Stopped at: Phase 51 complete; ready to discuss and plan Phase 52
 Resume file: None
 
 ## Operator Next Steps
 
-- Execute Phase 51 Plans 51-01 through 51-05 in the declared five-wave order.
+- Run Phase 52 smart discussion, planning, execution, verification, and milestone closeout under the active autonomous chain.
