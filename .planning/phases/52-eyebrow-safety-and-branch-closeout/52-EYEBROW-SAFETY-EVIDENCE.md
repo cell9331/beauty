@@ -108,3 +108,19 @@ contract, and disposable artifact containment at the tested repository state.
 All seven eyebrow status rows and the `眉毛` branch remain unpromoted here.
 Promotion requires the clean review, ASVS L1 record, complete validation
 precondition, and a fresh default checker run in Plan 52-04.
+
+## Final Owner and Planning Dispositions
+
+- Plan 52-04 promoted exactly `上下`, `粗细`, `长短`, `间距`, `眉头间距`,
+  `倾斜`, and `眉峰`, plus branch `眉毛`, at SDK-core scope across the four
+  product owners after fresh evidence reauthorization.
+- Plan 52-05 synchronized the two example owners and the routed architecture,
+  design, security, reliability, product, and quality owners without changing
+  renderer calibration or adding raw support/pixel evidence.
+- Plan 52-06 closes exactly SAFE-01, SAFE-02, SAFE-03, and DOC-01 and records
+  exactly six completed Phase 52 plans in requirements, roadmap, project,
+  state, and PLANS owners.
+- Goal-backward `52-VERIFICATION.md` is the final Phase 52 verdict. A passing
+  phase hands off only to the independent v1.13 milestone audit; it is not an
+  audit, archive, tag, cleanup, UI/device/commercial/performance/packaging,
+  shipping, launch, or release-readiness result.

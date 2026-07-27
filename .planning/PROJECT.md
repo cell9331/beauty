@@ -16,9 +16,9 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
 **Current milestone:** v1.13 Eyebrow Geometry Controls.
 
-**Implementation state:** Phase 51 is complete. `BeautyParameters` is exactly 59 stored fields (58 numeric plus `filterId`); seven eyebrow controls traverse private request-scoped observed support, independent providers, one exact 44-field/13.45 provisional convergence path, unified dispatch, and the public facade. The renderer now has exactly 72 cases, including thirteen isolated eyebrow cases. Final caps, exhaustive transitions/convergence, and promotion remain Phase 52 work.
+**Implementation state:** Phase 52 is complete across all six plans. `BeautyParameters` remains exactly 59 stored fields (58 numeric plus `filterId`); seven eyebrow controls traverse private request-scoped observed support, independent providers, exact final `0.25` caps, one exact 44-field/13.45 convergence path, stable unified dispatch, and the public facade. Exactly seven product rows and branch `眉毛` are implemented at SDK-core scope.
 
-**Verification state:** Phase 51 passes 438 full SwiftPM tests with six opt-in skips, 72/72 decoded portrait outputs, thirteen separate no-face no-ops, all fixed visibility/direction/distinction gates, fourteen original-detail image reviews, exact ignored 144-file output/gallery inventories, clean review, Nyquist `0` gaps, and ASVS L1 `28/28` closed threats. OUT-01 through OUT-03 are complete; SAFE-01 through SAFE-03 and DOC-01 remain open. No Demo/device/commercial/performance/packaging/shipping/launch readiness is claimed.
+**Verification state:** Phase 52 passes eight focused suites, 450 full SwiftPM tests with six opt-in skips, exact 44-field convergence, 72/72 decoded portrait outputs, thirteen separate no-face comparisons, all fixed visibility/direction/distinction gates, fourteen original-detail image reviews, exact ignored 144-file output/gallery inventories, clean review, fourteen-task Nyquist coverage, and ASVS L1 `threats_open: 0`. SAFE-01, SAFE-02, SAFE-03, and DOC-01 are complete. The next step is the independent v1.13 milestone audit; no audit/archive/tag/cleanup, Demo/device/commercial/performance/packaging/shipping/launch/release-readiness result is claimed.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
@@ -203,13 +203,16 @@ For v1.15-v1.16, any bundled Core ML resource must be local-only, redistributabl
 
 ### Active
 
-- [ ] Complete seven independent SDK-core eyebrow controls through public compatibility, private observed support, provider behavior, facade-visible output, safety, and exact ledger promotion.
-- [ ] Preserve existing source/JSON/preset compatibility and all shipped face/eye/nose/mouth output.
-- [ ] Keep raw eyebrow landmarks request-scoped, package-internal, non-persistent, non-networked, and aggregate-only in diagnostics.
-- [ ] Keep v1.13 SDK-SPM-only with no SwiftUI or Demo UI changes.
+- [x] Complete seven independent SDK-core eyebrow controls through public compatibility, private observed support, provider behavior, facade-visible output, safety, and exact ledger promotion.
+- [x] Preserve existing source/JSON/preset compatibility and all shipped face/eye/nose/mouth output.
+- [x] Keep raw eyebrow landmarks request-scoped, package-internal, non-persistent, non-networked, and aggregate-only in diagnostics.
+- [x] Keep v1.13 SDK-SPM-only with no SwiftUI or Demo UI changes.
+- [ ] Run the separately scoped independent v1.13 milestone audit.
 
 ### Validated
 
+- Seven independent eyebrow controls have exact final `0.25` caps, exhaustive request-local degradation/transitions, exact 44-field/13.45 one-scale convergence, strict public-facade output, aggregate-only evidence, and exact seven-row plus branch `眉毛` SDK-core promotion - Phase 52.
+- SAFE-01, SAFE-02, SAFE-03, and DOC-01 are complete with clean review, fourteen-task Nyquist coverage, ASVS L1 `threats_open: 0`, synchronized owners, and an explicit independent-milestone-audit handoff - Phase 52.
 - Four contour-driven `脸型` controls have independent product-neutral public semantics, private request-scoped support, named providers, strict public-facade output, exact final caps, exhaustive field-local transitions, exact 37-field convergence, four-row promotion, and an 18/18 independent v1.12 audit - Phases 45-48.
 - `去双下巴`, `去双下巴 Pro`, and `发际线` remain future, branch `脸型` remains partial, and Demo/device/commercial/performance/packaging/shipping/launch claims remain excluded - v1.12 phase verification.
 - Ten independent eye geometry controls with 48-field source/JSON compatibility, private validated contour/pupil support, fourteen named emissions, strict 385-output facade evidence, conservative degradation, exact ten-row promotion, and a 24/24 independent v1.11 audit - v1.11.
@@ -426,4 +429,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-07-27 after Phase 51*
+*Last updated: 2026-07-27 after Phase 52 closeout; independent v1.13 milestone audit pending*

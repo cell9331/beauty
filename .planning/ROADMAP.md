@@ -15,14 +15,14 @@
 - ✅ **[v1.10 Mouth Remaining Geometry Controls](milestones/v1.10-ROADMAP.md)** — Phases 38-40, shipped 2026-07-14.
 - ✅ **[v1.11 Eye Remaining Geometry Controls](milestones/v1.11-ROADMAP.md)** — Phases 41-44, shipped 2026-07-19.
 - ✅ **[v1.12 Face Shape Remaining Capabilities](milestones/v1.12-ROADMAP.md)** — Phases 45-48, shipped 2026-07-24.
-- 🚧 **v1.13 Eyebrow Geometry Controls** — Phases 49-52, SDK-SPM-only.
+- 🚧 **v1.13 Eyebrow Geometry Controls** — Phases 49-52 complete at SDK-core scope; independent milestone audit pending.
 
 ## Phases
 
 - [x] **Phase 49: Public Contract and Observed Eyebrow Support** — Exact 59-field compatibility, actual left/right Vision eyebrow mapping, open-trace validation, side/order canonicalization, and private lifecycle. (completed 2026-07-24)
 - [x] **Phase 50: Independent Eyebrow Geometry and Pipeline Integration** — Seven distinct named transforms, field-local eligibility, exact 44-field convergence, unified dispatch, and redacted facade routing. (completed 2026-07-24)
 - [x] **Phase 51: Public-Facade Eyebrow Output Evidence** — Thirteen isolated cases, strict single-portrait direction/locality/distinction evidence, safe no-ops, and ignored gallery containment. (completed 2026-07-27)
-- [ ] **Phase 52: Eyebrow Safety and Branch Closeout** — Final caps, complete transitions, active-source/privacy gates, exact seven-row promotion, and implemented branch status.
+- [x] **Phase 52: Eyebrow Safety and Branch Closeout** — Final caps, complete transitions, active-source/privacy gates, exact seven-row promotion, and implemented branch status. (completed 2026-07-27)
 
 ## Phase Details
 
@@ -131,7 +131,7 @@
 
 **Requirements:** SAFE-01, SAFE-02, SAFE-03, DOC-01
 
-**Plans:** 5/6 plans executed
+**Plans:** 6/6 plans complete
 
 **Wave 1**
 
@@ -155,7 +155,7 @@
 
 **Wave 6** *(blocked on Wave 5 completion)*
 
-- [ ] 52-06-PLAN.md — Close planning/requirement/verification state and hand off to the independent milestone audit.
+- [x] 52-06-PLAN.md — Close planning/requirement/verification state and hand off to the independent milestone audit.
 
 **Success criteria:**
 
@@ -171,7 +171,7 @@
 | 49. Public Contract and Observed Eyebrow Support | v1.13 | 5 | Complete    | 2026-07-24 |
 | 50. Independent Eyebrow Geometry and Pipeline Integration | v1.13 | 9 | Complete | 2026-07-24 |
 | 51. Public-Facade Eyebrow Output Evidence | v1.13 | 3 | Complete    | 2026-07-27 |
-| 52. Eyebrow Safety and Branch Closeout | v1.13 | 4 | In Progress|  |
+| 52. Eyebrow Safety and Branch Closeout | v1.13 | 4 | Complete | 2026-07-27 |
 
 ## Backlog
 
@@ -182,4 +182,4 @@
 - SwiftUI/Demo UI, physical-device parity, commercial visual approval, optimized profiling, packaging, shipping, and launch-readiness evidence remain separately scoped.
 
 ---
-*Last updated: 2026-07-27 after Phase 52 Plan 03 safety-evidence preconditions; Plans 04-06 remain pending*
+*Last updated: 2026-07-27 after Phase 52 completion; independent v1.13 milestone audit pending*

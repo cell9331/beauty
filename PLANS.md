@@ -36,7 +36,7 @@
 | Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve legacy 52-key compatibility and all shipped face/eye/nose/mouth output while the current model is exactly 59 stored fields. |
 | Requirements | 21/21 mapped across Phase 49-52; no unmapped requirement. |
 | Roadmap | Phase 49 contract/support → Phase 50 geometry/pipeline → Phase 51 strict output → Phase 52 safety/promotion. |
-| Current step | Phase 51 is complete across all five plans. Phase 52 is the next bounded owner for final caps, exhaustive safety, and promotion; it has not been started. |
+| Current step | Phase 52 is complete across all six plans. SAFE-01, SAFE-02, SAFE-03, and DOC-01 close from the exact final runtime, output, privacy/security, product, and owner evidence. The only next step is the separately executed independent v1.13 milestone audit. |
 
 Fixture-scope decision (2026-07-24):
 
@@ -63,6 +63,14 @@ Phase 51 closeout record (2026-07-27):
 - The final strict gate passes 72/72 portrait outputs, 13/13 visibility, 6/6 signed directions, 21/21 family distinctions, 40/40 direct portrait comparisons, and 13/13 separate no-face comparisons. Output/gallery bijection and ignored/untracked/unstaged containment pass.
 - OUT-01, OUT-02, and OUT-03 are complete. Provisional caps, SAFE-01..03, DOC-01, all seven `future` rows, branch `眉毛`, exhaustive safety, and Demo/device/commercial/performance/packaging/shipping/release scope remain unchanged for Phase 52 or later.
 
+Phase 52 closeout record (2026-07-27):
+
+- Plans `52-01` through `52-06` freeze seven exact final `0.25` caps, the exact `Float.ulpOfOne` strength dead zone, six signed directions plus positive-only peak definition, bounded radii, and exhaustive no-face/missing/malformed/provider-empty/fresh/reused/stale/valid-invalid-valid behavior.
+- Exact combined geometry remains 44 unique fields totaling `13.45`, with one scale `1 / 13.45`, final total `1`, at most 44 monotone removals, no re-entry or second scaling pass, and final strengths/emissions/accounting/Face→Chin→Eye→Eyebrow→Nose→Mouth dispatch in agreement.
+- Fresh evidence passes eight focused suites, 450 full SwiftPM tests with six opt-in skips, the unchanged strict 72/72 portrait gate, thirteen separate no-face comparisons, 144/144 output/gallery containment, and the original-detail fourteen-image review. Standard review is clean, Nyquist covers all fourteen tasks, and ASVS L1 records `threats_open: 0`.
+- Exactly `上下`, `粗细`, `长短`, `间距`, `眉头间距`, `倾斜`, and `眉峰` plus branch `眉毛` are implemented at SDK-core scope. SAFE-01, SAFE-02, SAFE-03, and DOC-01 are complete across synchronized product, example, root-contract, and planning owners.
+- The next step is the independent v1.13 milestone audit. This closeout does not perform or claim that audit, archive, tag, cleanup, UI/Demo work, physical-device parity, commercial naturalness, optimized performance, packaging, shipping, launch, or release readiness.
+
 Phase 49 closeout record (2026-07-24):
 
 - Plans 49-01 through 49-04 delivered the exact 59 stored/58 numeric public model, neutral legacy 52-key/source/reset/diff/equality/round-trip behavior, unchanged five-preset bytes, actual `leftEyebrow`/`rightEyebrow` capture from one request, exactly-once mapping, mapper-axis side/order canonicalization, and package-only request-scoped semantic attachment.
@@ -78,6 +86,22 @@ Planned follow-on milestones:
 - v1.16: `去双下巴`, `去双下巴 Pro`, and narrow facial-feature closeout.
 
 ## 4. Completed
+
+### C-2026-07-27-phase-52-eyebrow-safety-and-branch-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-27 |
+| Scope | Six plans completed exact final eyebrow caps, exhaustive lifecycle/concurrency/local-failure evidence, exact 44-field convergence, fail-closed security/owner gates, seven-row and branch promotion, and planning verification. |
+| Verification | Eight focused suites pass; full SwiftPM 450 with six opt-in skips; strict 72/72 portrait, 13/13 visibility, 6/6 direction, 21/21 distinctions, 40/40 direct, thirteen separate no-face; output/gallery 144/144; fourteen-image review PASS; clean review; fourteen-task Nyquist; ASVS L1 `threats_open: 0`. |
+| Requirements | SAFE-01, SAFE-02, SAFE-03, and DOC-01 complete. |
+| Boundary | Phase completion hands off only to the independent v1.13 milestone audit. Audit, archive, tag, cleanup, UI/device/commercial/performance/packaging/shipping/launch/release readiness remain unclaimed. |
+
+Outcome:
+
+- Seven exact final `0.25` caps and the complete request-local degradation and transition matrix agree with bounded provider formulas and aggregate-only diagnostics.
+- One 44-field retained mask totals `13.45`, scales once, removes monotonically, and agrees with final named emissions and stable unified dispatch.
+- Exactly seven eyebrow rows and branch `眉毛` are implemented at SDK-core scope across all owners; generated evidence remains ignored, untracked, unstaged, and disposable.
 
 ### C-2026-07-27-phase-51-public-facade-eyebrow-output-evidence
 

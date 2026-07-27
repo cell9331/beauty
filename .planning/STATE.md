@@ -4,16 +4,16 @@ milestone: v1.13
 milestone_name: Eyebrow Geometry Controls
 current_phase: 52
 current_phase_name: eyebrow-safety-and-branch-closeout
-status: executing
-stopped_at: Completed 52-05-PLAN.md; ready for 52-06-PLAN.md
+status: verifying
+stopped_at: Phase 52 complete; ready for independent v1.13 milestone audit
 last_updated: "2026-07-27T05:11:35.924Z"
 last_activity: 2026-07-27
-last_activity_desc: Phase 52 execution started
+last_activity_desc: Phase 52 completed and verified
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 22
-  completed_plans: 21
+  completed_plans: 22
 ---
 
 # Project State
@@ -27,10 +27,18 @@ See: `.planning/PROJECT.md` (updated 2026-07-27)
 
 ## Current Position
 
-Phase: 52 (eyebrow-safety-and-branch-closeout) — EXECUTING
-Plan: 5 of 6
-Status: Ready to execute
-Last activity: 2026-07-27 — Phase 52 execution started
+Phase: 52 (eyebrow-safety-and-branch-closeout) — COMPLETE
+Plan: 6 of 6
+Status: Ready for independent v1.13 milestone audit
+Last activity: 2026-07-27 — Phase 52 completed and verified
+
+### Phase 52 Eyebrow Safety and Branch Closeout Result
+
+- Seven exact final `0.25` caps use `Float.ulpOfOne` only as the strength dead zone; bounded formulas, directions, overflow accounting, and exhaustive request-local lifecycle/local-failure/concurrency/interruption evidence pass.
+- The exact 44-field inventory totals `13.45`, scales once by `1 / 13.45`, removes monotonically without re-entry or double scaling, and agrees across final strengths, emissions, metrics, and Face→Chin→Eye→Eyebrow→Nose→Mouth dispatch.
+- Fresh evidence passes eight focused suites, 450 full SwiftPM tests with six opt-in skips, 72/72 portrait outputs, thirteen separate no-face comparisons, 144/144 output/gallery containment, and fourteen-image original-detail review.
+- Standard review is clean, fourteen-task Nyquist is complete, ASVS L1 records `threats_open: 0`, and exactly seven eyebrow rows plus branch `眉毛` are implemented at SDK-core scope.
+- SAFE-01, SAFE-02, SAFE-03, and DOC-01 are complete. The next step is only the independent v1.13 milestone audit; audit/archive/tag/cleanup and UI/device/commercial/performance/packaging/shipping/launch/release readiness remain unclaimed.
 
 ### Phase 51 Public-Facade Eyebrow Output Result
 
@@ -400,13 +408,13 @@ Recent milestone-level outcomes:
 
 ### Pending Todos
 
-- Discuss, plan, and execute Phase 52 as the final v1.13 phase.
+- Run the independent v1.13 milestone audit; do not infer archive, tag, cleanup, packaging, shipping, launch, or release readiness from Phase 52 completion.
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, screenshot reruns, packaging review, broader `美型 / 五官` slices, and automated visual diffs.
 
 ### Blockers/Concerns
 
-- Phase 51 has no active blocker. The sole active e6 fixture, strict output matrix, original-detail review, gallery containment, Nyquist audit, and ASVS L1 audit all pass.
+- Phase 52 has no active blocker. All six plans and four requirements are complete; the independent v1.13 milestone audit remains a separate next step.
 - No active v1.12 blocker remains; all four phases and the independent milestone audit passed.
 - Deferred v2 `ADV-*` items remain outside v1 traceability and are tracked as `TD-007` in `PLANS.md`.
 - Manual release risks are now routed by Phase 21 and updated by Phases 23 through 25: `TD-008` has focused simulator camera pass evidence but physical iPhone checks remain blocked until hardware exists; `TD-009` remains Phase 22 visual evidence with screenshot rerun protocol; and `TD-010` keeps device, long-run, screenshot, optimized profiling, external-resource integrity, and commercial packaging work routed to later setup-specific checks.
@@ -431,9 +439,9 @@ Recent milestone-level outcomes:
 ## Session Continuity
 
 Last session: 2026-07-27T05:10:56.335Z
-Stopped at: Completed 52-05-PLAN.md; ready for 52-06-PLAN.md
+Stopped at: Phase 52 complete; ready for independent v1.13 milestone audit
 Resume file: None
 
 ## Operator Next Steps
 
-- Execute Phase 52 Plans 52-01 through 52-06 in the declared six-wave order, then run the independent v1.13 milestone audit.
+- Run the independent v1.13 milestone audit. Do not archive, tag, or clean up until that audit is independently executed and passes.
