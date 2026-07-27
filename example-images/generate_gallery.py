@@ -21,6 +21,23 @@ STAGING_NAME = ".gallery-staging"
 QUARANTINE_NAME = ".gallery-quarantine"
 QUARANTINE_ENTRY = "previous"
 MAX_GALLERY_SOURCE_BYTES = 16 * 1_024 * 1_024
+EXPECTED_CASE_COUNT = 72
+EXPECTED_FIXTURE_STEMS = ("no-face-gradient", "e6")
+EXPECTED_EYEBROW_CASE_IDS = (
+    "eyebrowYPosition_plus0p25",
+    "eyebrowYPosition_minus0p25",
+    "eyebrowThickness_plus0p25",
+    "eyebrowThickness_minus0p25",
+    "eyebrowLength_plus0p25",
+    "eyebrowLength_minus0p25",
+    "eyebrowSpacing_plus0p25",
+    "eyebrowSpacing_minus0p25",
+    "eyebrowHeadSpacing_plus0p25",
+    "eyebrowHeadSpacing_minus0p25",
+    "eyebrowTilt_plus0p25",
+    "eyebrowTilt_minus0p25",
+    "eyebrowPeakDefinition_0p25",
+)
 
 CASE_GROUPS = {
     "skin": [
@@ -43,6 +60,7 @@ CASE_GROUPS = {
         "eyeTilt_plus0p25", "eyeTilt_minus0p25", "innerCornerOpen_0p25",
         "outerCornerOpen_0p25", "eyeSymmetry_0p25",
     ],
+    "eyebrows": list(EXPECTED_EYEBROW_CASE_IDS),
     "nose": [
         "noseSlim_0p35", "noseWingSlim_0p35", "noseTipSize_plus0p30",
         "noseTipSize_minus0p30", "noseBridge_0p30", "noseRootNarrowing_0p25",
@@ -418,16 +436,29 @@ def display_path(path: Path) -> str:
 def discover_fixture_stems(input_dir: Path) -> list[str]:
     if not input_dir.is_dir():
         raise GalleryError(f"Input directory does not exist: {display_path(input_dir)}")
-    input_paths = sorted(
-        path for path in input_dir.rglob("*")
-        if path.is_file() and path.suffix.lower() in SUPPORTED_INPUT_EXTENSIONS
-    )
+    input_paths: list[Path] = []
+    for path in input_dir.rglob("*"):
+        if path.suffix.lower() not in SUPPORTED_INPUT_EXTENSIONS:
+            continue
+        try:
+            mode = path.lstat().st_mode
+        except OSError:
+            raise GalleryError(f"Input fixture is unreadable: {display_path(path)}") from None
+        if not stat.S_ISREG(mode):
+            raise GalleryError(f"Input fixture is not a regular file: {display_path(path)}")
+        input_paths.append(path)
+    input_paths.sort()
     if not input_paths:
         raise GalleryError(f"Input directory contains no supported images: {display_path(input_dir)}")
     stems = [path.stem for path in input_paths]
     duplicates = sorted(stem for stem, count in Counter(stems).items() if count > 1)
     if duplicates:
         raise GalleryError(f"Duplicate fixture stems are not supported: {', '.join(duplicates)}")
+    if tuple(stems) != EXPECTED_FIXTURE_STEMS:
+        raise GalleryError(
+            "Fixture inventory must be exactly no-face-gradient and e6; "
+            f"discovered {', '.join(stems)}"
+        )
     return stems
 
 
@@ -486,10 +517,53 @@ def _open_descriptor_count() -> int:
 
 
 def run_self_tests() -> None:
+    gallery_case_ids = [case_id for case_ids in CASE_GROUPS.values() for case_id in case_ids]
+    if tuple(CASE_GROUPS.get("eyebrows", ())) != EXPECTED_EYEBROW_CASE_IDS:
+        raise AssertionError("eyebrow gallery group drifted from the exact thirteen-case contract")
+    if len(gallery_case_ids) != EXPECTED_CASE_COUNT:
+        raise AssertionError(
+            f"gallery case count {len(gallery_case_ids)} != {EXPECTED_CASE_COUNT}"
+        )
+    renderer_case_ids = discover_renderer_case_ids(RENDERER_SOURCE)
+    if len(renderer_case_ids) != EXPECTED_CASE_COUNT:
+        raise AssertionError(
+            f"renderer case count {len(renderer_case_ids)} != {EXPECTED_CASE_COUNT}"
+        )
+    validate_case_inventory(gallery_case_ids, renderer_case_ids)
+
     expect_gallery_error(
         "duplicate renderer IDs", lambda: validate_case_inventory(["only"], ["only", "only"]),
         "Duplicate renderer case IDs",
     )
+
+    with tempfile.TemporaryDirectory() as temporary:
+        input_dir = Path(temporary) / "input"
+        (input_dir / "negatives").mkdir(parents=True)
+        (input_dir / "portraits").mkdir()
+        (input_dir / "negatives" / "no-face-gradient.png").write_bytes(b"negative")
+        (input_dir / "portraits" / "e6.jpg").write_bytes(b"portrait")
+        stems = discover_fixture_stems(input_dir)
+        if tuple(stems) != EXPECTED_FIXTURE_STEMS:
+            raise AssertionError(f"fixture stems {stems} != {EXPECTED_FIXTURE_STEMS}")
+        if len(gallery_case_ids) * len(stems) != 144:
+            raise AssertionError("gallery source/destination inventory is not exactly 144")
+
+        retired = input_dir / "portraits" / "e1.png"
+        retired.write_bytes(b"retired")
+        expect_gallery_error(
+            "retired portrait fixture",
+            lambda: discover_fixture_stems(input_dir),
+            "must be exactly no-face-gradient and e6",
+        )
+        retired.unlink()
+
+        linked = input_dir / "portraits" / "e1.png"
+        linked.symlink_to(input_dir / "portraits" / "e6.jpg")
+        expect_gallery_error(
+            "linked fixture",
+            lambda: discover_fixture_stems(input_dir),
+            "not a regular file",
+        )
 
     with tempfile.TemporaryDirectory() as temporary:
         repo, output = _make_test_repository(Path(temporary), old_gallery=False)
@@ -667,7 +741,8 @@ def run_self_tests() -> None:
                 displaced.rename(example)
 
     print(
-        "self-test passed: bounded leak-free descriptor acquisition, stable size-limited source copying, "
+        "self-test passed: exact 72-case/two-fixture/144-file inventory, thirteen-case eyebrow group, "
+        "retired/symlink fixture rejection, bounded leak-free descriptor acquisition, stable size-limited source copying, "
         "descriptor-relative staging/copy/publication, post-recreation "
         "ancestor-swap containment, non-traversed old gallery, bounded quarantine, repeated-run "
         "fail-closed behavior, external survival, duplicate renderer IDs"
