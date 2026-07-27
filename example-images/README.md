@@ -167,3 +167,11 @@ Output, gallery, staging, and quarantine artifacts remain ignored and untracked.
 - The baseline and all thirteen actual e6 eyebrow outputs were opened individually at original detail; the visual verdict passes direction, locality, protected-region stability, whole-spacing versus head-spacing, and thickness versus peak.
 - The descriptor-safe gallery publishes exactly 144 ignored regular PNGs with thirteen `eyebrows` case directories and no retired portrait entry.
 - Final caps, exhaustive safety, all seven row statuses, branch `眉毛`, device/commercial naturalness, performance, packaging, shipping, and release readiness remain Phase 52 or later ownership.
+
+## Phase 52 Final Eyebrow Example Contract
+
+- The guarded clean renderer/helper/gallery commands above remain authoritative and unchanged: one active `e6.jpg` portrait yields exactly 72 decoded portrait outputs, while thirteen no-face comparisons are reported separately.
+- The output tree and descriptor-safe gallery are an exact 144-file two-fixture bijection. Frozen acceptance remains 13/13 visibility/locality, 6/6 signed direction, 21/21 family distinction, and 40/40 direct portrait comparisons.
+- Fourteen actual images — the baseline and all thirteen eyebrow cases — were reopened at original detail after final-cap rendering and retain a PASS for direction, eyebrow locality, protected-region stability, whole-spacing versus head-spacing, and thickness versus peak.
+- Phase 52 finalizes every eyebrow maximum at exact `0.25` and promotes exactly `上下`, `粗细`, `长短`, `间距`, `眉头间距`, `倾斜`, and `眉峰`, plus branch `眉毛`, at SDK-core scope. No renderer case, fixture, helper, generator, or strict calibration changes.
+- Output, gallery, staging, and quarantine remain ignored, untracked, unstaged, and disposable. These artifacts do not prove UI/Demo completion, device parity, commercial naturalness, optimized performance, packaging, shipping, launch/release readiness, milestone audit, archive, tag, or cleanup.
