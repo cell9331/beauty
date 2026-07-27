@@ -2,16 +2,18 @@
 
 status: passed
 
-This record captures the fresh Phase 52 pre-promotion runtime, strict renderer,
-gallery, and actual-image review. It is mechanical acceptance evidence for
-SAFE-01, SAFE-02, and SAFE-03. It does not claim commercial naturalness,
+This record captures the fresh Phase 52 gap-closure runtime and simulator
+regression together with the unchanged strict renderer, gallery, and
+actual-image review. It is mechanical review input for SAFE-01, SAFE-02, and
+SAFE-03. Independent code review and independent final re-verification remain
+pending. It does not claim commercial naturalness,
 physical-device parity, long-run performance, packaging, shipping, launch,
 independent milestone audit, archive, tag, or cleanup completion.
 
 ## Provenance
 
 - Evidence date: 2026-07-27 (Asia/Shanghai)
-- Safety checker commit: `ed4d8c2`
+- Gap-closure checker commit: `7748f06`
 - `BeautySDK/Package.swift` repository state: `6f03b078816ad1f7a426e3f70d4f57503f3152e9`
 - Output root: `example-images/output`
 - Gallery root: `example-images/gallery`
@@ -27,6 +29,11 @@ full_swiftpm_failures: 0
 strict_helper_exit: 0
 gallery_exit: 0
 checker_default_exit: 0
+checker_self_test: 130/130
+demo_simulator_discovery: iPhone 17 Pro / iOS 26.5
+demo_simulator_build_exit: 0
+demo_simulator_test_exit: 0
+demo_diff_files: 0
 
 | Suite | Executed | Skipped | Failures |
 | --- | ---: | ---: | ---: |
@@ -42,6 +49,43 @@ checker_default_exit: 0
 The fresh full SwiftPM run executed 450 tests with 6 expected skips and zero
 failures. The fresh renderer produced 72/72 `e6` portrait cases and the
 thirteen separate no-face comparisons, for 144 disposable outputs total.
+
+The installed-simulator precheck found `iPhone 17 Pro` under the exact iOS
+26.5 runtime. The unchanged `BeautyDemo` scheme then built and tested with the
+explicit destination `platform=iOS Simulator,name=iPhone 17 Pro,OS=26.5`;
+both commands exited 0 and `git diff --name-only -- BeautyDemo` was empty.
+
+## WR-01 / WR-02 / WR-03 Closure Inputs
+
+- **WR-01:** `EyebrowSafetyFixtures.swift:127-177` routes reusable traces
+  through `BeautyFaceGeometryAdapter.validatedBrowTrace`, checks
+  inner-to-outer center distance, inclusive chord bounds, and vertical span.
+  `EyebrowWarpProviderTests.swift:95-142` covers exact `0.08`/`0.50`,
+  adjacent excluded values, deterministic equal-projection ordering, and
+  nil/empty/single/duplicate/non-finite local failure. The provider suite
+  executed 14 tests with zero failures.
+- **WR-02:** `BeautyEffectResolver.swift:80-100,216,338-344` owns separate
+  nil-default resolver/provider entry callbacks;
+  `EyebrowWarpProvider.swift:47-54` fires the provider-owned callback after
+  method entry and before support lookup. The targeted cancellation test at
+  `MissingLandmarkDegradationTests.swift:1348-1458` waits for both entry
+  signals, holds that request on its own barrier, cancels, releases, then
+  requires typed discard before publication while 28 parallel and seven
+  subsequent identities retain local warnings, counts, metrics, and results.
+  The targeted test and full 51-test degradation suite passed.
+- **WR-03:** `BeautyEffectResolver.swift:644-691` invokes
+  `onRetainedMaskIteration` from the real bounded loop after provider
+  sanitization and records only scalar values and stable names. The seven-row
+  test at `CombinedEffectSafetyTests.swift:88-240` proves pre-scale emission,
+  a strictly nonzero scaled value with one-quarter-value accuracy, one
+  monotone removal, no re-entry, final aggregate exclusion, and identical
+  repeated traces/fixed points. The targeted test and full 17-test combined
+  suite passed.
+
+The independent `52-REVIEW.md` remains unchanged at its earlier
+`issues_found` result until the separate post-Wave-8 reviewer reruns. The
+independent `52-VERIFICATION.md` remains `status: gaps_found`; this executor
+does not rewrite its verdict.
 
 ## Strict Output and Gallery Results
 
@@ -93,8 +137,8 @@ implementation, renderer, unchanged strict helper, and gallery publisher.
 | --- | --- |
 | `BeautySDK/Package.swift` | `504e5394fbb3f11b699e3f3237392e34d6f38653566dfb2a347a59c6b0b7b011` |
 | `BeautySDK/Sources/BeautyEffects/Planning/BeautySafetyCaps.swift` | `639fa96c0c3355ae7b9aac2a194a9229b7dd256f31bc0ae258c1a23a9a3bf776` |
-| `BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift` | `118517a0299025af80d849222edb5e364da6ea890afa4149c9db13622bb88fac` |
-| `BeautySDK/Sources/BeautyEffects/Warp/EyebrowWarpProvider.swift` | `eaf716a12a82a9c3e1c599a8b2458e479ee50586f2e5699966c95d41c8963122` |
+| `BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift` | `abf2c1366ef8268fc8eb11ee4e3efd75ef219e382b3ba02f1cab3fc4b37bd059` |
+| `BeautySDK/Sources/BeautyEffects/Warp/EyebrowWarpProvider.swift` | `79ca2c7d39d6b8ae5e1ceb21e08e8241ad51c2c2e9068af1ad919ae8f312d6ef` |
 | `BeautySDK/Sources/BeautyEffects/Render/BeautyGeometryEffectPipeline.swift` | `49de98f0552e1dac2a6efe616c0951c2450dcc122a05278cc39db4b2e018cc99` |
 | `BeautySDK/Sources/BeautyExampleRenderer/main.swift` | `dd361b0d72e04cd1d74e4c40184bd79a4e47295f8f3f7960cfcea9aab37e5b13` |
 | `.planning/phases/51-public-facade-eyebrow-output-evidence/check_eyebrow_renderer_outputs.py` | `4a3723091c907d791e1ab63138e0c801142f2d2dd1eaac320382ed8986f3a9f9` |
@@ -102,12 +146,14 @@ implementation, renderer, unchanged strict helper, and gallery publisher.
 
 ## Scope and Lifecycle
 
-The evidence confirms the final eyebrow caps, local-failure semantics,
-aggregate-only diagnostics, complete geometry convergence, strict output
-contract, and disposable artifact containment at the tested repository state.
-All seven eyebrow status rows and the `眉毛` branch remain unpromoted here.
-Promotion requires the clean review, ASVS L1 record, complete validation
-precondition, and a fresh default checker run in Plan 52-04.
+The evidence confirms the final eyebrow caps, corrected local-failure and
+request-isolation semantics, complete production convergence, unchanged
+strict output contract, simulator regression, and disposable artifact
+containment at the tested repository state. The seven rows and `眉毛` branch
+remain promoted only at the previously approved SDK-core scope. This Wave 8
+record authorizes no additional product mutation: independent code review,
+Waves 9–10 owner synchronization, and independent final re-verification are
+still pending.
 
 ## Final Owner and Planning Dispositions
 
@@ -120,7 +166,12 @@ precondition, and a fresh default checker run in Plan 52-04.
 - Plan 52-06 closes exactly SAFE-01, SAFE-02, SAFE-03, and DOC-01 and records
   exactly six completed Phase 52 plans in requirements, roadmap, project,
   state, and PLANS owners.
-- Goal-backward `52-VERIFICATION.md` is the final Phase 52 verdict. A passing
-  phase hands off only to the independent v1.13 milestone audit; it is not an
+- Plan 52-07 supplied command-derived closure inputs for WR-01/02/03; Plan
+  52-08 refreshed focused, full SwiftPM, checker, simulator, ASVS L1, and
+  exact 23-task Nyquist inputs.
+- Independent post-Wave-8 code review is pending and exclusively owns
+  `52-REVIEW.md`. Goal-backward `52-VERIFICATION.md` remains independently
+  owned and `gaps_found` until its final rerun. Only a later passing verdict
+  may hand off to the independent v1.13 milestone audit; this record is not an
   audit, archive, tag, cleanup, UI/device/commercial/performance/packaging,
   shipping, launch, or release-readiness result.
