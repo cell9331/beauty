@@ -43,13 +43,13 @@ created: 2026-07-27
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 | --- | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 52-01-01 | 01 | 1 | SAFE-01 | T-52-01–02 | One final cap authority; exact dead-zone/cap adjacency, overflow, direction, count, warning, and metric semantics | unit | Safety-cap + resolver focused suites | ✅ extend | ⬜ pending |
-| 52-01-02 | 01 | 1 | SAFE-01, SAFE-02 | T-52-01–04, T-52-07 | Seven-field finite/unit/radius and nil/single-side/missing/malformed/provider-empty matrix with no support fabrication | unit | Provider + degradation focused suites | ✅ extend | ⬜ pending |
-| 52-01-03 | 01 | 1 | SAFE-02 | T-52-05–08 | Stateless complete lifecycle/transitions, parallel/interrupted isolation, safe siblings, unchanged extent, aggregate-only facade diagnostics | integration | Degradation + facade focused suites | ✅ extend | ⬜ pending |
-| 52-02-01 | 02 | 2 | SAFE-01, SAFE-02 | T-52-09–10 | Exact 44-field inventory, 13.45/44/1÷13.45 arithmetic, threshold adjacency, and preserved signs | unit | Conflict + combined focused suites | ✅ extend | ⬜ pending |
-| 52-02-02 | 02 | 2 | SAFE-02 | T-52-10–12 | At most 44 monotone removals; final effective/emission/metric/dispatch equality | unit + integration | Resolver + pipeline focused suites | ✅ extend | ⬜ pending |
-| 52-03-01 | 03 | 3 | SAFE-03, DOC-01 | T-52-13–18, T-52-22–23, T-52-SC | Fail-closed pre/post-promotion, owner, privacy, dependency, artifact, concurrency/interruption, and lifecycle checker | static + adversarial | Checker compile + self-test + default live | ❌ Wave 0 | ⬜ pending |
-| 52-03-02 | 03 | 3 | SAFE-01, SAFE-02, SAFE-03 | T-52-17–20, T-52-22 | Fresh runtime plus unchanged strict output/gallery, fourteen reopened images, and disposable artifact evidence | full + integration | Focused/full SwiftPM + guarded strict/gallery commands | ✅ reuse | ⬜ pending |
+| 52-01-01 | 01 | 1 | SAFE-01 | T-52-01–02 | One final cap authority; exact dead-zone/cap adjacency, overflow, direction, count, warning, and metric semantics | unit | Safety-cap + resolver focused suites | ✅ extend | ✅ green |
+| 52-01-02 | 01 | 1 | SAFE-01, SAFE-02 | T-52-01–04, T-52-07 | Seven-field finite/unit/radius and nil/single-side/missing/malformed/provider-empty matrix with no support fabrication | unit | Provider + degradation focused suites | ✅ extend | ✅ green |
+| 52-01-03 | 01 | 1 | SAFE-02 | T-52-05–08 | Stateless complete lifecycle/transitions, parallel/interrupted isolation, safe siblings, unchanged extent, aggregate-only facade diagnostics | integration | Degradation + facade focused suites | ✅ extend | ✅ green |
+| 52-02-01 | 02 | 2 | SAFE-01, SAFE-02 | T-52-09–10 | Exact 44-field inventory, 13.45/44/1÷13.45 arithmetic, threshold adjacency, and preserved signs | unit | Conflict + combined focused suites | ✅ extend | ✅ green |
+| 52-02-02 | 02 | 2 | SAFE-02 | T-52-10–12 | At most 44 monotone removals; final effective/emission/metric/dispatch equality | unit + integration | Resolver + pipeline focused suites | ✅ extend | ✅ green |
+| 52-03-01 | 03 | 3 | SAFE-03, DOC-01 | T-52-13–18, T-52-22–23, T-52-SC | Fail-closed pre/post-promotion, owner, privacy, dependency, artifact, concurrency/interruption, and lifecycle checker | static + adversarial | Checker compile + self-test + default live | ✅ Wave 0 | ✅ green |
+| 52-03-02 | 03 | 3 | SAFE-01, SAFE-02, SAFE-03 | T-52-17–20, T-52-22 | Fresh runtime plus unchanged strict output/gallery, fourteen reopened images, and disposable artifact evidence | full + integration | Focused/full SwiftPM + guarded strict/gallery commands | ✅ reuse | ✅ green |
 | 52-03-03 | 03 | 3 | SAFE-03 | T-52-19, T-52-21, T-52-23 | Clean standard review, fourteen-task Nyquist coverage, ASVS L1 zero-open precondition, and unchanged pre-promotion state | review + security | Review/security/validation artifact gates | ❌ Wave 3 | ⬜ pending |
 | 52-04-01 | 04 | 4 | DOC-01 | T-52-24, T-52-26 | Fresh evidence reauthorizes only the exact eyebrow status transaction | static | Default checker + evidence/precondition gates | ❌ Wave 0 | ⬜ pending |
 | 52-04-02 | 04 | 4 | DOC-01 | T-52-25–27 | Exactly seven rows and branch `眉毛` become implemented at SDK-core scope; all nonclaims preserved | docs/static | Post-promotion checker mode | ❌ Wave 0 | ⬜ pending |
@@ -62,10 +62,10 @@ created: 2026-07-27
 
 ## Wave 0 Requirements
 
-- [ ] `check_eyebrow_safety_boundaries.py` — compose Phase 49/50 classified boundaries and add cap, convergence, promotion, owner, lifecycle, and adversarial command/path/status modes.
-- [ ] `BeautySDK/Tests/BeautyEffectsTests/EyebrowSafetyFixtures.swift` — one shared typed seven-field cap/dead-zone/radius/lifecycle/local-failure descriptor consumed by existing safety/resolver/provider/degradation tests.
-- [ ] Final Phase 52 late-removal/reused/mixed-sign rows in existing convergence/pipeline tests.
-- [ ] `52-EYEBROW-SAFETY-EVIDENCE.md`, `52-SECURITY.md`, and `52-VERIFICATION.md` — created only when their owning waves obtain real evidence.
+- [x] `check_eyebrow_safety_boundaries.py` — compose Phase 49/50 classified boundaries and add cap, convergence, promotion, owner, lifecycle, and adversarial command/path/status modes.
+- [x] `BeautySDK/Tests/BeautyEffectsTests/EyebrowSafetyFixtures.swift` — one shared typed seven-field cap/dead-zone/radius/lifecycle/local-failure descriptor consumed by existing safety/resolver/provider/degradation tests.
+- [x] Final Phase 52 late-removal/reused/mixed-sign rows in existing convergence/pipeline tests.
+- [ ] `52-EYEBROW-SAFETY-EVIDENCE.md`, `52-SECURITY.md`, and `52-VERIFICATION.md` — evidence created; security and final verification remain owned by their later waves.
 
 ## Manual-Only Verifications
 
