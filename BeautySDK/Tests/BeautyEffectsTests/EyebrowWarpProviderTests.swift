@@ -27,10 +27,17 @@ final class EyebrowWarpProviderTests: XCTestCase {
 
     func testSAFE01DeadZoneAdjacencyUsesStrengthBoundaryNotGeometryEpsilon() {
         let provider = EyebrowWarpProvider()
-        let face = EyebrowSafetyFixtures.adjacentStrengthFace
         let firstEligible = Float.ulpOfOne.nextUp
 
         for row in EyebrowSafetyFixtures.rows {
+            let face: FaceGeometry
+            if row.name == "eyebrowTilt" {
+                face = EyebrowSafetyFixtures.adjacentTiltFace
+            } else if row.name == "eyebrowThickness" {
+                face = EyebrowSafetyFixtures.adjacentThicknessFace
+            } else {
+                face = EyebrowSafetyFixtures.adjacentStrengthFace
+            }
             for neutral in [Float.zero, Float.ulpOfOne] + (row.isSigned ? [-Float.ulpOfOne] : []) {
                 let emissions = provider.fieldEmissions(face: face, strengths: row.strengths(neutral))
                 XCTAssertTrue(row.emission(emissions).isEmpty, "\(row.name) neutral \(neutral)")

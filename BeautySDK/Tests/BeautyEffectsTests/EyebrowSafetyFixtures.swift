@@ -187,12 +187,12 @@ enum EyebrowSafetyFixtures {
 
     static var adjacentStrengthFace: FaceGeometry {
         let leftPoints: [SIMD2<Float>] = [
-            .init(0.05, 0.02030), .init(0.14, 0.02016), .init(0.23, 0.02010),
-            .init(0.32, 0.02017), .init(0.41, 0.02031),
+            .init(0.0010, 0.01230), .init(0.0011, 0.01216), .init(0.0012, 0.01210),
+            .init(0.0013, 0.01217), .init(0.0014, 0.01231),
         ]
         let rightPoints: [SIMD2<Float>] = [
-            .init(0.95, 0.02030), .init(0.86, 0.02016), .init(0.77, 0.02010),
-            .init(0.68, 0.02017), .init(0.59, 0.02031),
+            .init(0.0030, 0.01230), .init(0.0029, 0.01216), .init(0.0028, 0.01210),
+            .init(0.0027, 0.01217), .init(0.0026, 0.01231),
         ]
         return FaceGeometry(
             bounds: FaceBounds(x: 0, y: 0, width: 1, height: 1),
@@ -200,6 +200,44 @@ enum EyebrowSafetyFixtures {
             observedEyebrowSupport: BeautyEyebrowSemanticSupport(
                 left: trace(side: .left, points: leftPoints),
                 right: trace(side: .right, points: rightPoints)
+            )
+        )
+    }
+
+    static var adjacentTiltFace: FaceGeometry {
+        let leftPoints: [SIMD2<Float>] = [
+            .init(0.05, 0.00030), .init(0.14, 0.00016), .init(0.23, 0.00010),
+            .init(0.32, 0.00017), .init(0.41, 0.00031),
+        ]
+        let rightPoints: [SIMD2<Float>] = [
+            .init(0.95, 0.00030), .init(0.86, 0.00016), .init(0.77, 0.00010),
+            .init(0.68, 0.00017), .init(0.59, 0.00031),
+        ]
+        return FaceGeometry(
+            bounds: FaceBounds(x: 0, y: 0, width: 1, height: 1),
+            faceContour: [.init(0, 0), .init(0.5, 1), .init(1, 0)],
+            observedEyebrowSupport: BeautyEyebrowSemanticSupport(
+                left: trace(side: .left, points: leftPoints),
+                right: trace(side: .right, points: rightPoints)
+            )
+        )
+    }
+
+    static var adjacentThicknessFace: FaceGeometry {
+        let leftPoints: [SIMD2<Float>] = [
+            .init(0.0010, 0.0121), .init(0.0011, 0.0121), .init(0.0012, 0.0121),
+            .init(0.0013, 0.0121), .init(0.0014, 0.0121),
+        ]
+        let rightPoints: [SIMD2<Float>] = [
+            .init(0.0030, 0.0121), .init(0.0029, 0.0121), .init(0.0028, 0.0121),
+            .init(0.0027, 0.0121), .init(0.0026, 0.0121),
+        ]
+        return FaceGeometry(
+            bounds: FaceBounds(x: 0, y: 0, width: 1, height: 1),
+            faceContour: [.init(0, 0), .init(0.5, 1), .init(1, 0)],
+            observedEyebrowSupport: BeautyEyebrowSemanticSupport(
+                left: trace(side: .left, points: leftPoints, apexIndex: nil),
+                right: trace(side: .right, points: rightPoints, apexIndex: nil)
             )
         )
     }
