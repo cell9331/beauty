@@ -758,6 +758,39 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
         XCTAssertEqual(last.warnings, first.warnings)
     }
 
+    func testSAFE02AllEyebrowNoFaceCasesPreserveExtentSafeDomainsAndAggregateRedaction() throws {
+        let rows: [(String, BeautyParameters)] = [
+            ("eyebrowYPosition", BeautyParameters(brightness: 0.2, eyebrowYPosition: 1, filterId: "soft_clean", filterIntensity: 0.2)),
+            ("eyebrowThickness", BeautyParameters(brightness: 0.2, eyebrowThickness: 1, filterId: "soft_clean", filterIntensity: 0.2)),
+            ("eyebrowLength", BeautyParameters(brightness: 0.2, eyebrowLength: 1, filterId: "soft_clean", filterIntensity: 0.2)),
+            ("eyebrowSpacing", BeautyParameters(brightness: 0.2, eyebrowSpacing: 1, filterId: "soft_clean", filterIntensity: 0.2)),
+            ("eyebrowHeadSpacing", BeautyParameters(brightness: 0.2, eyebrowHeadSpacing: 1, filterId: "soft_clean", filterIntensity: 0.2)),
+            ("eyebrowTilt", BeautyParameters(brightness: 0.2, eyebrowTilt: 1, filterId: "soft_clean", filterIntensity: 0.2)),
+            ("eyebrowPeakDefinition", BeautyParameters(brightness: 0.2, eyebrowPeakDefinition: 1, filterId: "soft_clean", filterIntensity: 0.2)),
+        ]
+
+        for (name, parameters) in rows {
+            let provider = SDKTestingFaceDetectionProvider([.noFace])
+            let engine = try BeautyEngine(faceDetectionProvider: provider)
+            let result = try engine.processResult(
+                image: Self.image,
+                metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+                parameters: parameters
+            )
+
+            XCTAssertEqual(provider.invocationCount, 1, name)
+            XCTAssertEqual(result.output.extent, Self.image.extent, name)
+            XCTAssertEqual(result.detectionSummary?.availability, .noFace, name)
+            XCTAssertEqual(result.metrics["beauty.effects.activeCount"], 2, name)
+            XCTAssertEqual(result.metrics["beauty.effects.skippedEyebrowDomains"], 1, name)
+            XCTAssertEqual(result.metrics["beauty.effects.cappedCount"], 1, name)
+            XCTAssertNil(result.metrics["beauty.effects.geometryPointCount"], name)
+            XCTAssertEqual(result.warnings.filter { $0.code == "beauty_strength_capped" }.count, 1, name)
+            assertRedacted(result)
+            assertEyebrowFacadeRedacted(result, name: name)
+        }
+    }
+
     private static let image = CIImage(color: CIColor(red: 0.35, green: 0.25, blue: 0.20, alpha: 1))
         .cropped(to: CGRect(x: 0, y: 0, width: 2, height: 2))
 

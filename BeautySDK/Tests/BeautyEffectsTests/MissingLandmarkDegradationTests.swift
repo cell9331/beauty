@@ -1196,6 +1196,126 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         }
     }
 
+    func testSAFE02ValidInvalidValidSevenRowLifecycleAndDirectionTransitionsAreStateless() {
+        let freshFace = EyebrowSafetyFixtures.face()
+        let reusedFace = EyebrowSafetyFixtures.face(freshness: .reused)
+        let staleFace = EyebrowSafetyFixtures.face(freshness: .stale)
+
+        for row in EyebrowSafetyFixtures.rows {
+            let positiveParameters = row.makeParameters(1)
+            let positive = BeautyEffectResolver.resolve(parameters: positiveParameters, faceGeometry: freshFace)
+            let reused = BeautyEffectResolver.resolve(parameters: positiveParameters, faceGeometry: reusedFace)
+            let stale = BeautyEffectResolver.resolve(parameters: positiveParameters, faceGeometry: staleFace)
+            let noFace = BeautyEffectResolver.resolve(parameters: positiveParameters, faceGeometry: nil)
+            let invalid = BeautyEffectResolver.resolve(
+                parameters: positiveParameters,
+                faceGeometry: EyebrowSafetyFixtures.unavailableFace(for: row.narrowestUnavailableFixture)
+            )
+            let recovered = BeautyEffectResolver.resolve(parameters: positiveParameters, faceGeometry: freshFace)
+
+            XCTAssertEqual(positive.effectiveStrengths[keyPath: row.effectiveValue], row.cap, row.name)
+            XCTAssertEqual(reused.effectiveStrengths[keyPath: row.effectiveValue], row.reusedStrength, row.name)
+            XCTAssertEqual(reused.metrics["beauty.effects.reusedGeometryScale"], 0.5, row.name)
+            XCTAssertEqual(stale.effectiveStrengths[keyPath: row.effectiveValue], 0, row.name)
+            XCTAssertEqual(noFace.effectiveStrengths[keyPath: row.effectiveValue], 0, row.name)
+            XCTAssertEqual(invalid.effectiveStrengths[keyPath: row.effectiveValue], 0, row.name)
+            XCTAssertEqual(recovered, positive, "\(row.name) valid-invalid-valid recovery")
+
+            if row.isSigned {
+                let negative = BeautyEffectResolver.resolve(
+                    parameters: row.makeParameters(-1),
+                    faceGeometry: freshFace
+                )
+                let positiveAgain = BeautyEffectResolver.resolve(
+                    parameters: positiveParameters,
+                    faceGeometry: freshFace
+                )
+                XCTAssertEqual(negative.effectiveStrengths[keyPath: row.effectiveValue], -row.cap, row.name)
+                XCTAssertEqual(positiveAgain, positive, "\(row.name) positive-negative-positive recovery")
+            }
+
+            for plan in [positive, reused, stale, noFace, invalid, recovered] {
+                assertRedacted(plan)
+            }
+        }
+    }
+
+    func testSAFE02PairFailurePreservesEyebrowAndUnrelatedSafeSiblings() {
+        let face = EyebrowSafetyFixtures.unavailableFace(for: .singleSide)
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(
+                brightness: 0.2,
+                faceSlim: 0.2,
+                eyeSize: 0.2,
+                eyebrowYPosition: 0.2,
+                eyebrowSpacing: 0.2,
+                noseSlim: 0.2,
+                mouthSize: 0.2,
+                lipColor: 0.2,
+                filterId: "soft_clean",
+                filterIntensity: 0.2
+            ),
+            faceGeometry: face
+        )
+
+        XCTAssertEqual(plan.effectiveStrengths.eyebrowSpacing, 0)
+        XCTAssertEqual(plan.effectiveStrengths.eyebrowYPosition, 0.2)
+        XCTAssertTrue(plan.activeDomains.isSuperset(of: [
+            .color, .filter, .faceShape, .eyes, .eyebrows, .nose, .mouth, .lipColor,
+        ]))
+        XCTAssertFalse(plan.skippedDomains.contains(.eyebrows))
+        XCTAssertGreaterThan(plan.metrics["beauty.effects.geometryPointCount"] ?? 0, 0)
+        assertRedacted(plan)
+    }
+
+    func testSAFE02ParallelCompletionOrderAndInterruptedWorkCannotLeakRequestState() async {
+        let rows = EyebrowSafetyFixtures.rows
+        let results = await withTaskGroup(
+            of: (Int, String, Float).self,
+            returning: [(Int, String, Float)].self
+        ) { group in
+            for index in 0..<28 {
+                let row = rows[index % rows.count]
+                group.addTask {
+                    if index.isMultiple(of: 3) { await Task.yield() }
+                    let valid = index.isMultiple(of: 2)
+                    let face = valid
+                        ? EyebrowSafetyFixtures.face()
+                        : EyebrowSafetyFixtures.unavailableFace(for: row.narrowestUnavailableFixture)
+                    let plan = BeautyEffectResolver.resolve(parameters: row.makeParameters(1), faceGeometry: face)
+                    return (index, row.name, plan.effectiveStrengths[keyPath: row.effectiveValue])
+                }
+            }
+            return await group.reduce(into: []) { $0.append($1) }
+        }
+
+        XCTAssertEqual(results.count, 28)
+        for (index, name, value) in results {
+            XCTAssertEqual(value, index.isMultiple(of: 2) ? 0.25 : 0, name)
+        }
+
+        let interrupted = Task { () throws -> Float in
+            try await Task.sleep(nanoseconds: 50_000_000)
+            let row = rows[0]
+            let plan = BeautyEffectResolver.resolve(parameters: row.makeParameters(1), faceGeometry: EyebrowSafetyFixtures.face())
+            return plan.effectiveStrengths[keyPath: row.effectiveValue]
+        }
+        interrupted.cancel()
+        do {
+            _ = try await interrupted.value
+            XCTFail("cancelled request unexpectedly completed")
+        } catch is CancellationError {
+            // Expected: no resolver/provider work from the interrupted task survives.
+        } catch {
+            XCTFail("unexpected interruption error: \(error)")
+        }
+
+        for row in rows {
+            let plan = BeautyEffectResolver.resolve(parameters: row.makeParameters(1), faceGeometry: EyebrowSafetyFixtures.face())
+            XCTAssertEqual(plan.effectiveStrengths[keyPath: row.effectiveValue], row.cap, row.name)
+        }
+    }
+
     private var phase50AllEyebrowParameters: BeautyParameters {
         BeautyParameters(
             eyebrowYPosition: -1,
