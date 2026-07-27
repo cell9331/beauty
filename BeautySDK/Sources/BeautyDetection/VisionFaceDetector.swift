@@ -659,6 +659,12 @@ package struct VisionFaceDetector: Sendable {
         guard projected.allSatisfy({ $0.projection.isFinite }) else {
             return nil
         }
+        guard let minimumProjection = projected.map(\.projection).min(),
+              let maximumProjection = projected.map(\.projection).max(),
+              maximumProjection - minimumProjection > 0.000_001
+        else {
+            return nil
+        }
         return projected.sorted { lhs, rhs in
             if lhs.projection != rhs.projection {
                 return declaredSide == .left
