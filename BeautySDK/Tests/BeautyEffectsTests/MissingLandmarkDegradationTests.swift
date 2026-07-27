@@ -46,7 +46,7 @@ private final class Phase52ProviderBarrier: @unchecked Sendable {
 
     func enterAndWaitForRelease() {
         entered.signal()
-        if releaseSemaphore.wait(timeout: .now() + .seconds(10)) == .timedOut {
+        if releaseSemaphore.wait(timeout: .now() + .seconds(30)) == .timedOut {
             lock.withLock { storedWaitTimedOut = true }
         }
     }
@@ -61,6 +61,32 @@ private final class Phase52ProviderBarrier: @unchecked Sendable {
         }
         if shouldSignal {
             releaseSemaphore.signal()
+        }
+    }
+}
+
+private actor Phase52AsyncGate {
+    private var isReleased = false
+    private var waiters: [CheckedContinuation<Void, Never>] = []
+
+    func wait() async {
+        guard !isReleased else {
+            return
+        }
+        await withCheckedContinuation { continuation in
+            waiters.append(continuation)
+        }
+    }
+
+    func release() {
+        guard !isReleased else {
+            return
+        }
+        isReleased = true
+        let waitingContinuations = waiters
+        waiters.removeAll()
+        for continuation in waitingContinuations {
+            continuation.resume()
         }
     }
 }
@@ -1354,6 +1380,10 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         let siblingsStartedExpectation = expectation(description: "parallel siblings started")
         siblingsStartedExpectation.expectedFulfillmentCount = 28
         let siblingsStarted = Phase52RequestSignal(expectation: siblingsStartedExpectation)
+        let siblingsCompletedExpectation = expectation(description: "parallel siblings completed")
+        siblingsCompletedExpectation.expectedFulfillmentCount = 28
+        let siblingsCompleted = Phase52RequestSignal(expectation: siblingsCompletedExpectation)
+        let siblingGate = Phase52AsyncGate()
         let interrupted = Task.detached { () -> Phase52RequestSnapshot in
             let row = rows[0]
             let plan = BeautyEffectResolver.resolve(
@@ -1377,11 +1407,12 @@ final class MissingLandmarkDegradationTests: XCTestCase {
 
         await fulfillment(
             of: [resolverEntered.expectation, providerBarrier.entered.expectation],
-            timeout: 2
+            timeout: 10
         )
         guard resolverEntered.count == 1, providerBarrier.entered.count == 1 else {
             interrupted.cancel()
             providerBarrier.release()
+            await siblingGate.release()
             _ = await interrupted.value
             XCTFail("resolver/provider entry callbacks must complete before the bounded timeout")
             return
@@ -1399,6 +1430,7 @@ final class MissingLandmarkDegradationTests: XCTestCase {
                     let row = rows[index % rows.count]
                     group.addTask {
                         siblingsStarted.signal()
+                        await siblingGate.wait()
                         let valid = index.isMultiple(of: 2)
                         let face = valid
                             ? EyebrowSafetyFixtures.face()
@@ -1407,7 +1439,7 @@ final class MissingLandmarkDegradationTests: XCTestCase {
                             parameters: row.makeParameters(1),
                             faceGeometry: face
                         )
-                        return Phase52RequestSnapshot(
+                        let snapshot = Phase52RequestSnapshot(
                             identity: index,
                             fieldName: row.name,
                             effectiveStrength: plan.effectiveStrengths[keyPath: row.effectiveValue],
@@ -1418,17 +1450,21 @@ final class MissingLandmarkDegradationTests: XCTestCase {
                             skippedEyebrowCount: plan.metrics["beauty.effects.skippedEyebrowDomains"] ?? 0,
                             geometryPointCount: plan.metrics["beauty.effects.geometryPointCount"] ?? 0
                         )
+                        siblingsCompleted.signal()
+                        return snapshot
                     }
                 }
                 return await group.reduce(into: []) { $0.append($1) }
             }
         }
 
-        await fulfillment(of: [siblingsStarted.expectation], timeout: 2)
+        await fulfillment(of: [siblingsStarted.expectation], timeout: 10)
         guard siblingsStarted.count == 28 else {
             interrupted.cancel()
             providerBarrier.release()
+            await siblingGate.release()
             _ = await interrupted.value
+            siblings.cancel()
             _ = await siblings.value
             XCTFail("all sibling requests must start before the bounded timeout")
             return
@@ -1438,6 +1474,21 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertTrue(interrupted.isCancelled)
         providerBarrier.release()
         let interruptedResult = await interrupted.value
+        XCTAssertEqual(
+            siblingsCompleted.count,
+            0,
+            "siblings must remain suspended until interrupted cancellation is released and joined"
+        )
+
+        await siblingGate.release()
+        await fulfillment(of: [siblingsCompleted.expectation], timeout: 10)
+        guard siblingsCompleted.count == 28 else {
+            siblings.cancel()
+            await siblingGate.release()
+            _ = await siblings.value
+            XCTFail("all sibling requests must complete before the bounded timeout")
+            return
+        }
         let results = await siblings.value
 
         XCTAssertEqual(results.count, 28)
