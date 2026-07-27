@@ -6,7 +6,7 @@ This is the local visual-output gate for current public-facade renderer evidence
 
 Use real portrait fixtures from `example-images/input/`, run them through the `BeautySDK` public facade with `BeautyExampleRenderer`, and save visible outputs under `example-images/output/`.
 
-This validates the current skin, color, filter, Phase 27 geometry-output foundation, Phase 28 scoped face-shape renderer path, Phase 29 existing-eye-parameter path, Phase 43 remaining-eye path, and Phase 47 remaining-face public-facade output path without adding SwiftUI screens, product routes, or broader branch completion scope.
+This validates the current skin, color, filter, Phase 27 geometry-output foundation, Phase 28 scoped face-shape renderer path, Phase 29 existing-eye-parameter path, Phase 43 remaining-eye path, Phase 47 remaining-face path, and Phase 51 eyebrow public-facade output path without adding SwiftUI screens, product routes, or broader branch completion scope.
 
 ## Command
 
@@ -89,6 +89,15 @@ python3 .planning/phases/47-public-facade-face-output-evidence/check_face_geomet
   --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
 ```
 
+Run the Phase 51 eyebrow helper after a guarded clean all-case renderer command:
+
+```bash
+python3 .planning/phases/51-public-facade-eyebrow-output-evidence/check_eyebrow_renderer_outputs.py \
+  --input example-images/input \
+  --output example-images/output \
+  --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
+```
+
 ## Output Rules
 
 - Output directory: `example-images/output/`.
@@ -115,6 +124,8 @@ python3 .planning/phases/47-public-facade-face-output-evidence/check_face_geomet
 - The Phase 43 helper verifies the discovered 55 × 7 = 385 matrix, 66/66 new-case visibility, 6/6 signed-tilt direct comparisons, 60/60 fixed semantic distinctions, complete aggregate eligibility inventory, and eleven 64 × 64 no-face no-ops. Gaze reduction is owned by the package-internal aggregate pupil-to-own-center evidence test; the helper's dark-core centroid experiment is adversarially self-tested but not accepted as fixture proof.
 - Phase 47 command results are recorded in `.planning/phases/47-public-facade-face-output-evidence/47-FACE-OUTPUT-EVIDENCE.md`.
 - The Phase 47 helper verifies the exact 59 × 7 = 413 matrix, 18/18 eligible visibility/locality comparisons, 49/49 fixed-neighbor distinctions, 6/6 ineligible portrait no-ops, and four 64 × 64 no-face no-ops. The exact 413-file gallery remains ignored and untracked.
+- Phase 51 command results and the fourteen-file original-detail review are recorded in `.planning/phases/51-public-facade-eyebrow-output-evidence/51-EYEBROW-OUTPUT-EVIDENCE.md`.
+- The Phase 51 helper verifies exactly 72 e6 portrait outputs, thirteen separate no-face comparisons, 13/13 visibility/locality, 6/6 signed direction, 21/21 family distinction, and 40/40 portrait direct comparisons. The complete output and gallery inventories are each exactly 144 ignored, untracked, unstaged, disposable PNGs.
 
 ## Current Built-In Cases
 
@@ -161,6 +172,19 @@ These cases are limited to effects that currently produce visible image output t
 | `innerCornerOpen_0p25` | Phase 43 observed public-facade `innerCornerOpen` output at provisional `0.25` |
 | `outerCornerOpen_0p25` | Phase 43 observed public-facade `outerCornerOpen` output at provisional `0.25` |
 | `eyeSymmetry_0p25` | Phase 43 observed measured-pair `eyeSymmetry` output at provisional `0.25` |
+| `eyebrowYPosition_plus0p25` | Phase 51 positive image-Y eyebrow-position output at provisional `0.25` |
+| `eyebrowYPosition_minus0p25` | Phase 51 negative image-Y eyebrow-position output at provisional `-0.25` |
+| `eyebrowThickness_plus0p25` | Phase 51 positive eyebrow-strip thickness output at provisional `0.25` |
+| `eyebrowThickness_minus0p25` | Phase 51 negative eyebrow-strip thickness output at provisional `-0.25` |
+| `eyebrowLength_plus0p25` | Phase 51 positive outer-end eyebrow-length output at provisional `0.25` |
+| `eyebrowLength_minus0p25` | Phase 51 negative outer-end eyebrow-length output at provisional `-0.25` |
+| `eyebrowSpacing_plus0p25` | Phase 51 positive whole-brow spacing output at provisional `0.25` |
+| `eyebrowSpacing_minus0p25` | Phase 51 negative whole-brow spacing output at provisional `-0.25` |
+| `eyebrowHeadSpacing_plus0p25` | Phase 51 positive inner-head spacing output at provisional `0.25` |
+| `eyebrowHeadSpacing_minus0p25` | Phase 51 negative inner-head spacing output at provisional `-0.25` |
+| `eyebrowTilt_plus0p25` | Phase 51 positive canonical outer-tail lift output at provisional `0.25` |
+| `eyebrowTilt_minus0p25` | Phase 51 negative canonical outer-tail lift output at provisional `-0.25` |
+| `eyebrowPeakDefinition_0p25` | Phase 51 positive apex-neighborhood definition output at provisional `0.25` |
 | `noseSlim_0p35` | Phase 31 `大小` renderer evidence through existing `noseSlim` |
 | `noseWingSlim_0p35` | Phase 31 `鼻翼` renderer evidence through existing `noseWingSlim` |
 | `noseTipSize_plus0p30` | Phase 31 positive-direction `鼻尖` renderer evidence through existing signed `noseTipSize` |
@@ -382,3 +406,12 @@ Phase 30 closes the safety and status gates for the existing-public-parameter ey
 - `去双下巴`, `去双下巴 Pro`, and `发际线` remain future; branch `脸型` remains `partial`.
 - The 413 output PNGs and exact 413-file gallery remain ignored, untracked, unstaged, and disposable. No new case or threshold was added in Phase 48.
 - This evidence does not establish subjective naturalness, physical-device parity, commercial approval, optimized performance, packaging, shipping, launch readiness, or milestone lifecycle completion.
+
+## Phase 51 Eyebrow Public-Facade Output Evidence
+
+- Active fixture discovery is fail-closed at the sole portrait `e6.jpg` plus the separate `no-face-gradient.png` negative; retired `e1.png` through `e5.png` remain parked and cannot enter output or gallery acceptance.
+- Thirteen isolated public cases expand the current renderer to exactly 72 while retaining one shared `BeautyEngine.processResult`/unified warp route.
+- A measurement-only guarded render selected fixed brow/protected-region and semantic thresholds. A later independently cleaned strict render accepts 72/72 decoded e6 portrait outputs, 13/13 visibility/locality, 6/6 signed directions, 21/21 positive-family distinctions, 40/40 total portrait comparisons, and 13/13 separately reported no-face no-ops.
+- The baseline plus all thirteen actual e6 eyebrow outputs were opened individually at original detail. The recorded visual verdict confirms visible opposite directions, brow-locality, protected eyes/forehead-hair/background, whole-spacing versus head-spacing separation, and thickness versus peak separation.
+- One descriptor-safe publication produced the exact 72-case × two-fixture = 144-file ignored gallery with thirteen `eyebrows` case directories and an exact duplicate-free renderer bijection. Generated bytes remain disposable and are neither tracked nor staged.
+- This closes Phase 51 saved-output evidence only. Phase 52 retains final caps, exhaustive lifecycle/convergence and safety, exact seven-row promotion, branch `眉毛`, and all device/commercial naturalness/performance/packaging/shipping/release claims.

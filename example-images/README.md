@@ -39,6 +39,7 @@ The gallery groups current cases under:
 - `face-shape/`: `geometryBaseline_noop`, `faceShapeCombo_0p35`, `faceSlim_0p35`, `faceSmall_0p35`, `chinLength_plus0p30`, `chinLength_minus0p30`, `faceVShape_0p35`, `jawSlim_0p35`, `faceContourSmooth_0p25`, `templeFullness_0p25`, `cheekboneSlim_0p25`, `chinTaper_0p25`
 - `eyes/`: `eyeSize_0p35`, `eyeDistance_plus0p25`, `eyeDistance_minus0p25`, `eyeYPosition_plus0p20`, `eyeYPosition_minus0p20`, `eyeTailLift_0p25`
 - `eyes/` Phase 43 additions: `eyeHeight_0p25`, `eyeLength_0p25`, `upperEyelidLift_0p25`, `pupilSize_0p25`, `gazeCorrection_0p25`, `lowerEyelidDrop_0p25`, `eyeTilt_plus0p25`, `eyeTilt_minus0p25`, `innerCornerOpen_0p25`, `outerCornerOpen_0p25`, `eyeSymmetry_0p25`
+- `eyebrows/`: `eyebrowYPosition_plus0p25`, `eyebrowYPosition_minus0p25`, `eyebrowThickness_plus0p25`, `eyebrowThickness_minus0p25`, `eyebrowLength_plus0p25`, `eyebrowLength_minus0p25`, `eyebrowSpacing_plus0p25`, `eyebrowSpacing_minus0p25`, `eyebrowHeadSpacing_plus0p25`, `eyebrowHeadSpacing_minus0p25`, `eyebrowTilt_plus0p25`, `eyebrowTilt_minus0p25`, `eyebrowPeakDefinition_0p25`
 - `nose/`: `noseSlim_0p35`, `noseWingSlim_0p35`, `noseTipSize_plus0p30`, `noseTipSize_minus0p30`, `noseBridge_0p30`, `noseRootNarrowing_0p25`, `noseTipLift_0p25`
 - `mouth/`: `mouthSize_plus0p35`, `mouthSize_minus0p35`, `mouthWidth_plus0p35`, `mouthWidth_minus0p35`, `smile_0p50`, `lipColor_0p50`
 - `mouth/` Phase 39 additions: `mouthYPosition_plus0p25`, `mouthYPosition_minus0p25`, `mouthTilt_plus0p25`, `mouthTilt_minus0p25`, `mouthXPosition_plus0p25`, `mouthXPosition_minus0p25`, `lipPeakDefinition_0p25`, `lipPlump_0p25`
@@ -97,6 +98,19 @@ The helper freezes exactly 59 cases × seven fixtures = 413 decoded same-dimensi
 
 These are provisional public-facade saved-output facts only. Phase 48 owns final caps, exhaustive safety/transitions, exact four-row promotion, owner synchronization, and branch closeout.
 
+Phase 51 eyebrow output evidence uses:
+
+```bash
+python3 .planning/phases/51-public-facade-eyebrow-output-evidence/check_eyebrow_renderer_outputs.py \
+  --input example-images/input \
+  --output example-images/output \
+  --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
+```
+
+The current contract has one active portrait, `e6.jpg`, and the separate `no-face-gradient.png` negative. The strict helper decodes exactly 72 e6 portrait outputs and reports thirteen no-face comparisons separately; the complete output and gallery inventories are each exactly 72 cases × two fixtures = 144 disposable PNGs. Fixed brow/protected regions pass 13/13 visibility/locality, 6/6 signed-direction, 21/21 family-distinction, 40/40 portrait-comparison, and 13/13 no-face gates. The baseline plus all thirteen actual eyebrow outputs were opened individually at original detail and passed the recorded direction/locality/family review in `51-EYEBROW-OUTPUT-EVIDENCE.md`.
+
+Gallery publication places all thirteen cases under `gallery/eyebrows/{caseId}/`, requires exact renderer equality, and rejects retired `e1`–`e5` stems. Output, gallery, staging, and quarantine locations remain ignored, untracked, unstaged, and disposable. Phase 52 retains final caps, exhaustive safety/transitions, seven-row promotion, branch `眉毛`, and broader quality/release claims.
+
 Phase 36 remaining-nose output evidence uses:
 
 ```bash
@@ -144,3 +158,12 @@ Output, gallery, staging, and quarantine artifacts remain ignored and untracked.
 - Final exact `0.25` caps and safety evidence authorize `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴`; `去双下巴`, `去双下巴 Pro`, and `发际线` remain future, so `脸型` stays `partial`.
 - The exact 413-file gallery and all output/gallery/staging/quarantine paths remain ignored, untracked, unstaged, non-symlinked, and disposable.
 - These automated artifacts do not prove device parity, subjective or commercial naturalness, optimized performance, packaging, shipping, launch readiness, or milestone audit/archive status.
+
+## Phase 51 Eyebrow Output Evidence
+
+- Exactly thirteen isolated public eyebrow cases expand the renderer to 72 cases without bypassing the single public facade/unified warp route.
+- The sole active portrait `e6.jpg` contributes 72/72 decoded portrait outputs; thirteen no-face comparisons are separate, and the complete output/gallery inventory is 144 files.
+- Frozen gates pass 13/13 visibility/locality, 6/6 signed directions, 21/21 semantic distinctions, 40/40 portrait comparisons, and 13/13 no-face no-ops.
+- The baseline and all thirteen actual e6 eyebrow outputs were opened individually at original detail; the visual verdict passes direction, locality, protected-region stability, whole-spacing versus head-spacing, and thickness versus peak.
+- The descriptor-safe gallery publishes exactly 144 ignored regular PNGs with thirteen `eyebrows` case directories and no retired portrait entry.
+- Final caps, exhaustive safety, all seven row statuses, branch `眉毛`, device/commercial naturalness, performance, packaging, shipping, and release readiness remain Phase 52 or later ownership.
