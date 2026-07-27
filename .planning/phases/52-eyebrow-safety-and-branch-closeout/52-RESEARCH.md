@@ -438,17 +438,13 @@ The Phase 52 checker should additionally compare `observed` with the exact seven
 
 All factual claims in this research were verified against locked phase context, current repository source/tests/docs, local tool probes, archived closeout artifacts, or official OWASP material. No `[ASSUMED]` claim is required. [VERIFIED: research source audit]
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **How many checker self-tests should be required?**
-   - What we know: Phase 44 and Phase 48 use adversarial mutation matrices, while Phase 52 must cover source, privacy, cap, convergence, status, owner, artifact, command-error, and lifecycle branches. [VERIFIED: archived checker source; `52-CONTEXT.md`]
-   - What's unclear: the exact final count cannot be known until the checker table is authored. [VERIFIED: checker does not yet exist]
-   - Recommendation: require one named mutation per failure branch and exact self-test cardinality at implementation time; do not copy an old numeric count as a target. [VERIFIED: archived checker pattern]
+   - **RESOLVED:** Checker self-test cardinality is implementation-derived from an explicit failure-branch inventory. Every enumerated branch must have at least one uniquely named adversarial mutation, and acceptance requires the checker to report exact equality between expected and observed cardinality. No historical numeric count may be copied as the Phase 52 target. [VERIFIED: archived checker pattern; `52-CONTEXT.md`]
 
 2. **Does Phase 52 itself claim milestone audit completion?**
-   - What we know: DOC-01 is satisfied by exact owner promotion, while audit/archive/tag/cleanup claims are explicitly deferred. [VERIFIED: `.planning/REQUIREMENTS.md`; `52-CONTEXT.md`]
-   - What's unclear: nothing material; the lifecycle boundary is locked. [VERIFIED: `52-CONTEXT.md`]
-   - Recommendation: close DOC-01 when the owner transaction and phase verification pass, then hand off to the independent milestone audit without claiming it completed. [VERIFIED: `52-CONTEXT.md`; archived Phase 48 handoff]
+   - **RESOLVED:** Phase 52 closes DOC-01 after the exact owner transaction and phase verification pass, then hands off to the independent milestone audit. Phase 52 never claims audit, archive, tag, or cleanup completion. [VERIFIED: `.planning/REQUIREMENTS.md`; `52-CONTEXT.md`; archived Phase 48 handoff]
 
 ## Environment Availability
 
