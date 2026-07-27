@@ -45,7 +45,12 @@ struct EyebrowWarpProvider: WarpControlPointProvider {
         )
     }
 
-    func fieldEmissions(face: FaceGeometry, strengths: BeautyEffectiveStrengths) -> EyebrowWarpFieldEmissions {
+    func fieldEmissions(
+        face: FaceGeometry,
+        strengths: BeautyEffectiveStrengths,
+        onProviderWorkStarted: (() -> Void)? = nil
+    ) -> EyebrowWarpFieldEmissions {
+        onProviderWorkStarted?()
         let traces = semanticTraces(in: face)
         let yPositionCap = BeautySafetyCaps.eyebrowYPosition
         let thicknessCap = BeautySafetyCaps.eyebrowThickness

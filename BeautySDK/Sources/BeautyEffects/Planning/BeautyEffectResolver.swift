@@ -67,14 +67,27 @@ public enum BeautyEffectResolver {
         )
     }
 
-    static func resolve(parameters: BeautyParameters, faceGeometry: FaceGeometry?) -> BeautyEffectPlan {
-        resolve(parameters: parameters, faceGeometry: faceGeometry, treatsMissingFaceAsNoFace: true)
+    static func resolve(
+        parameters: BeautyParameters,
+        faceGeometry: FaceGeometry?,
+        onProviderResolutionStarted: (() -> Void)? = nil,
+        onProviderWorkStarted: (() -> Void)? = nil
+    ) -> BeautyEffectPlan {
+        resolve(
+            parameters: parameters,
+            faceGeometry: faceGeometry,
+            treatsMissingFaceAsNoFace: true,
+            onProviderResolutionStarted: onProviderResolutionStarted,
+            onProviderWorkStarted: onProviderWorkStarted
+        )
     }
 
     private static func resolve(
         parameters: BeautyParameters,
         faceGeometry: FaceGeometry?,
-        treatsMissingFaceAsNoFace: Bool
+        treatsMissingFaceAsNoFace: Bool,
+        onProviderResolutionStarted: (() -> Void)? = nil,
+        onProviderWorkStarted: (() -> Void)? = nil
     ) -> BeautyEffectPlan {
         let normalized = parameters.normalized()
         var activeDomains: Set<BeautyEffectDomain> = []
@@ -189,6 +202,8 @@ public enum BeautyEffectResolver {
         strengths.lipPeakDefinition = capUnit(normalized.lipPeakDefinition, cap: BeautySafetyCaps.lipPeakDefinition, cappedCount: &cappedCount)
         strengths.lipPlump = capUnit(normalized.lipPlump, cap: BeautySafetyCaps.lipPlump, cappedCount: &cappedCount)
         strengths.lipColor = capUnit(normalized.lipColor, cap: BeautySafetyCaps.lipColor, cappedCount: &cappedCount)
+
+        onProviderResolutionStarted?()
 
         var extraWarnings: [BeautyValidationWarning] = []
         var appendedNoFaceWarning = false
@@ -311,7 +326,11 @@ public enum BeautyEffectResolver {
                 .fieldEmissions(face: faceGeometry, strengths: strengths)
                 .sanitizing(strengths)
             strengths = eyebrowProvider
-                .fieldEmissions(face: faceGeometry, strengths: strengths)
+                .fieldEmissions(
+                    face: faceGeometry,
+                    strengths: strengths,
+                    onProviderWorkStarted: onProviderWorkStarted
+                )
                 .sanitizing(strengths)
             strengths = noseProvider
                 .fieldEmissions(face: faceGeometry, strengths: strengths)

@@ -1,7 +1,85 @@
 import XCTest
+import Dispatch
 import BeautyCore
 import BeautyDetection
 @testable import BeautyEffects
+
+private final class Phase52RequestSignal: @unchecked Sendable {
+    private let lock = NSLock()
+    private var storedCount = 0
+    private var pendingSignals = 0
+    private var waiters: [CheckedContinuation<Void, Never>] = []
+
+    var count: Int {
+        lock.withLock { storedCount }
+    }
+
+    func signal() {
+        let waiter = lock.withLock { () -> CheckedContinuation<Void, Never>? in
+            storedCount += 1
+            if waiters.isEmpty {
+                pendingSignals += 1
+                return nil
+            }
+            return waiters.removeFirst()
+        }
+        waiter?.resume()
+    }
+
+    func wait() async {
+        await withCheckedContinuation { continuation in
+            let consumeImmediately = lock.withLock {
+                if pendingSignals > 0 {
+                    pendingSignals -= 1
+                    return true
+                }
+                waiters.append(continuation)
+                return false
+            }
+            if consumeImmediately {
+                continuation.resume()
+            }
+        }
+    }
+}
+
+private final class Phase52ProviderBarrier: @unchecked Sendable {
+    let entered = Phase52RequestSignal()
+    private let releaseSemaphore = DispatchSemaphore(value: 0)
+    private let lock = NSLock()
+    private var storedReleaseCount = 0
+
+    var releaseCount: Int {
+        lock.withLock { storedReleaseCount }
+    }
+
+    func enterAndWaitForRelease() {
+        entered.signal()
+        releaseSemaphore.wait()
+    }
+
+    func release() {
+        lock.withLock { storedReleaseCount += 1 }
+        releaseSemaphore.signal()
+    }
+}
+
+private struct Phase52RequestSnapshot: Sendable {
+    let identity: Int
+    let fieldName: String
+    let effectiveStrength: Float
+    let warningCodes: [String]
+    let eyebrowActive: Bool
+    let eyebrowSkipped: Bool
+    let activeCount: Double
+    let skippedEyebrowCount: Double
+    let geometryPointCount: Double
+}
+
+private enum Phase52InterruptedOutcome: Sendable {
+    case discarded(identity: Int)
+    case completed(Phase52RequestSnapshot)
+}
 
 private enum Phase46DegradationSupportClass: Equatable {
     case contour
@@ -1270,50 +1348,117 @@ final class MissingLandmarkDegradationTests: XCTestCase {
 
     func testSAFE02ParallelCompletionOrderAndInterruptedWorkCannotLeakRequestState() async {
         let rows = EyebrowSafetyFixtures.rows
+        let interruptedIdentity = 10_001
+        let resolverEntered = Phase52RequestSignal()
+        let providerBarrier = Phase52ProviderBarrier()
+        let interrupted = Task.detached { () -> Phase52InterruptedOutcome in
+            let row = rows[0]
+            let plan = BeautyEffectResolver.resolve(
+                parameters: row.makeParameters(1),
+                faceGeometry: EyebrowSafetyFixtures.face(),
+                onProviderResolutionStarted: resolverEntered.signal,
+                onProviderWorkStarted: providerBarrier.enterAndWaitForRelease
+            )
+            guard !Task.isCancelled else {
+                return .discarded(identity: interruptedIdentity)
+            }
+            return .completed(Phase52RequestSnapshot(
+                identity: interruptedIdentity,
+                fieldName: row.name,
+                effectiveStrength: plan.effectiveStrengths[keyPath: row.effectiveValue],
+                warningCodes: plan.warnings.map(\.code).sorted(),
+                eyebrowActive: plan.activeDomains.contains(.eyebrows),
+                eyebrowSkipped: plan.skippedDomains.contains(.eyebrows),
+                activeCount: plan.metrics["beauty.effects.activeCount"] ?? 0,
+                skippedEyebrowCount: plan.metrics["beauty.effects.skippedEyebrowDomains"] ?? 0,
+                geometryPointCount: plan.metrics["beauty.effects.geometryPointCount"] ?? 0
+            ))
+        }
+
+        await resolverEntered.wait()
+        await providerBarrier.entered.wait()
+        XCTAssertEqual(resolverEntered.count, 1)
+        XCTAssertEqual(providerBarrier.entered.count, 1)
+        XCTAssertEqual(providerBarrier.releaseCount, 0)
+
         let results = await withTaskGroup(
-            of: (Int, String, Float).self,
-            returning: [(Int, String, Float)].self
+            of: Phase52RequestSnapshot.self,
+            returning: [Phase52RequestSnapshot].self
         ) { group in
             for index in 0..<28 {
                 let row = rows[index % rows.count]
                 group.addTask {
-                    if index.isMultiple(of: 3) { await Task.yield() }
                     let valid = index.isMultiple(of: 2)
                     let face = valid
                         ? EyebrowSafetyFixtures.face()
                         : EyebrowSafetyFixtures.unavailableFace(for: row.narrowestUnavailableFixture)
-                    let plan = BeautyEffectResolver.resolve(parameters: row.makeParameters(1), faceGeometry: face)
-                    return (index, row.name, plan.effectiveStrengths[keyPath: row.effectiveValue])
+                    let plan = BeautyEffectResolver.resolve(
+                        parameters: row.makeParameters(1),
+                        faceGeometry: face
+                    )
+                    return Phase52RequestSnapshot(
+                        identity: index,
+                        fieldName: row.name,
+                        effectiveStrength: plan.effectiveStrengths[keyPath: row.effectiveValue],
+                        warningCodes: plan.warnings.map(\.code).sorted(),
+                        eyebrowActive: plan.activeDomains.contains(.eyebrows),
+                        eyebrowSkipped: plan.skippedDomains.contains(.eyebrows),
+                        activeCount: plan.metrics["beauty.effects.activeCount"] ?? 0,
+                        skippedEyebrowCount: plan.metrics["beauty.effects.skippedEyebrowDomains"] ?? 0,
+                        geometryPointCount: plan.metrics["beauty.effects.geometryPointCount"] ?? 0
+                    )
                 }
             }
             return await group.reduce(into: []) { $0.append($1) }
         }
 
         XCTAssertEqual(results.count, 28)
-        for (index, name, value) in results {
-            XCTAssertEqual(value, index.isMultiple(of: 2) ? 0.25 : 0, name)
+        XCTAssertEqual(Set(results.map(\.identity)).count, 28)
+        for result in results {
+            let valid = result.identity.isMultiple(of: 2)
+            XCTAssertEqual(result.effectiveStrength, valid ? 0.25 : 0, result.fieldName)
+            XCTAssertEqual(result.eyebrowActive, valid, result.fieldName)
+            XCTAssertEqual(result.eyebrowSkipped, !valid, result.fieldName)
+            XCTAssertEqual(result.activeCount, valid ? 1 : 0, result.fieldName)
+            XCTAssertEqual(result.skippedEyebrowCount, valid ? 0 : 1, result.fieldName)
+            XCTAssertEqual(result.geometryPointCount > 0, valid, result.fieldName)
+            XCTAssertEqual(
+                result.warningCodes.contains("eyebrow_inputs_missing"),
+                !valid,
+                result.fieldName
+            )
         }
+        XCTAssertEqual(resolverEntered.count, 1, "nil callbacks in sibling requests cannot signal")
+        XCTAssertEqual(providerBarrier.entered.count, 1, "sibling requests cannot enter another request's barrier")
 
-        let interrupted = Task { () throws -> Float in
-            try await Task.sleep(nanoseconds: 50_000_000)
-            let row = rows[0]
-            let plan = BeautyEffectResolver.resolve(parameters: row.makeParameters(1), faceGeometry: EyebrowSafetyFixtures.face())
-            return plan.effectiveStrengths[keyPath: row.effectiveValue]
-        }
         interrupted.cancel()
-        do {
-            _ = try await interrupted.value
-            XCTFail("cancelled request unexpectedly completed")
-        } catch is CancellationError {
-            // Expected: no resolver/provider work from the interrupted task survives.
-        } catch {
-            XCTFail("unexpected interruption error: \(error)")
+        XCTAssertTrue(interrupted.isCancelled)
+        providerBarrier.release()
+        let interruptedOutcome = await interrupted.value
+        switch interruptedOutcome {
+        case let .discarded(identity):
+            XCTAssertEqual(identity, interruptedIdentity)
+        case let .completed(snapshot):
+            XCTFail("cancelled request published a completed snapshot for \(snapshot.identity)")
         }
+        XCTAssertEqual(providerBarrier.releaseCount, 1)
 
-        for row in rows {
-            let plan = BeautyEffectResolver.resolve(parameters: row.makeParameters(1), faceGeometry: EyebrowSafetyFixtures.face())
+        for (offset, row) in rows.enumerated() {
+            let identity = 20_000 + offset
+            let plan = BeautyEffectResolver.resolve(
+                parameters: row.makeParameters(1),
+                faceGeometry: EyebrowSafetyFixtures.face()
+            )
             XCTAssertEqual(plan.effectiveStrengths[keyPath: row.effectiveValue], row.cap, row.name)
+            XCTAssertTrue(plan.activeDomains.contains(.eyebrows), "\(identity) \(row.name)")
+            XCTAssertFalse(plan.skippedDomains.contains(.eyebrows), "\(identity) \(row.name)")
+            XCTAssertFalse(plan.warnings.contains { $0.code == "eyebrow_inputs_missing" }, row.name)
+            XCTAssertGreaterThan(plan.metrics["beauty.effects.geometryPointCount"] ?? 0, 0, row.name)
+            assertRedacted(plan)
         }
+        XCTAssertEqual(resolverEntered.count, 1)
+        XCTAssertEqual(providerBarrier.entered.count, 1)
+        XCTAssertEqual(providerBarrier.releaseCount, 1)
     }
 
     private var phase50AllEyebrowParameters: BeautyParameters {

@@ -85,6 +85,25 @@ failures) and wave-by-wave Demo simulator build/test results are valuable
 regression evidence, but they do not close these gaps: all three defective
 tests pass while failing to exercise the behavior named by their assertions.
 
+## Gap-Closure Execution Evidence (Pending Independent Re-verification)
+
+- **WR-02 / SAFE-02 mapping:** `testSAFE02ParallelCompletionOrderAndInterruptedWorkCannotLeakRequestState`
+  now enters the real resolver, observes a separate provider-owned callback
+  from inside `EyebrowWarpProvider.fieldEmissions`, holds only that request on
+  a request-local barrier, cancels after both entry signals, releases after
+  cancellation, and classifies the returned work as a typed discarded result
+  before publication. Twenty-eight parallel identities and seven subsequent
+  identities verify local strengths, active/skipped state, warning summaries,
+  aggregate counts, and geometry totals while callback/release counts remain
+  isolated to the interrupted request.
+- The focused command
+  `swift test --filter MissingLandmarkDegradationTests/testSAFE02ParallelCompletionOrderAndInterruptedWorkCannotLeakRequestState`
+  executed one test with zero failures. This closes the previously
+  unclassified interruption edge against the full stateless lifecycle,
+  field-local failure, concurrency-isolation, and aggregate-only diagnostic
+  contract. The report frontmatter remains `gaps_found` until WR-01/WR-03,
+  independent review, and independent re-verification also complete.
+
 ## Goal Achievement
 
 ### Observable Truths
