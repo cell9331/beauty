@@ -6,6 +6,8 @@ bounded to the later Phase 52 plans:
 
 * --check-promotion validates the exact four-file product transaction.
 * --check-owners validates promoted product state plus selected routed owners.
+* --check-architecture/--check-design/--check-security/--check-reliability,
+  --check-product/--check-quality/--check-examples are bounded owner aliases.
 * --allow-promotion validates the complete final planning/lifecycle handoff.
 
 The checker is read-only.  Adversarial fixtures are created only below a
@@ -1308,6 +1310,22 @@ def main(argv: Sequence[str] | None = None) -> int:
     modes.add_argument("--check-promotion", action="store_true")
     modes.add_argument("--check-owners", action="store_true")
     modes.add_argument("--allow-promotion", action="store_true")
+    owner_aliases = {
+        "--check-architecture": "architecture",
+        "--check-design": "design",
+        "--check-security": "security",
+        "--check-reliability": "reliability",
+        "--check-product": "product",
+        "--check-quality": "quality",
+        "--check-examples": "example",
+    }
+    for flag, owner_name in owner_aliases.items():
+        modes.add_argument(
+            flag,
+            dest="owner_mode",
+            action="store_const",
+            const=owner_name,
+        )
     parser.add_argument("--owner", choices=OWNER_NAMES)
     parser.add_argument("--root", type=Path, default=Path.cwd())
     args = parser.parse_args(argv)
@@ -1318,7 +1336,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.self_test:
             return self_test(root)
         governance_requested = (
-            args.check_promotion or args.check_owners or args.allow_promotion
+            args.check_promotion
+            or args.check_owners
+            or args.owner_mode is not None
+            or args.allow_promotion
         )
         # Phase 52's exact SDK-core product transaction is already committed.
         # Default mode remains non-promoting/read-only, but validates that
@@ -1330,13 +1351,18 @@ def main(argv: Sequence[str] | None = None) -> int:
             results.append(_exact_eyebrow_taxonomy(read(root, BLUEPRINT_FILES[0])))
         if args.check_promotion:
             results.append(exact_promotion_worktree_gate(root))
-        if args.check_owners or args.allow_promotion:
-            selected = (args.owner,) if args.owner else OWNER_NAMES
+        if args.check_owners or args.owner_mode is not None or args.allow_promotion:
+            selected = (
+                (args.owner_mode,)
+                if args.owner_mode is not None
+                else (args.owner,) if args.owner else OWNER_NAMES
+            )
             results.extend(owner_gate(root, name) for name in selected)
         if args.allow_promotion:
             results.extend((planning_final_gate(root), lifecycle_gate(root)))
         mode = (
             "allow-promotion" if args.allow_promotion
+            else f"owner:{args.owner_mode}" if args.owner_mode is not None
             else "owners" if args.check_owners
             else "promotion" if args.check_promotion
             else "live"
