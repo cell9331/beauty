@@ -4,16 +4,17 @@ milestone: v1.13
 milestone_name: Eyebrow Geometry Controls
 current_phase: 52
 current_phase_name: eyebrow-safety-and-branch-closeout
-status: executing
-stopped_at: Completed 52-07-PLAN.md
-last_updated: "2026-07-27T07:37:21.855Z"
+status: awaiting_independent_review
+stopped_at: Completed 52-08-PLAN.md; awaiting independent code review
+last_updated: "2026-07-27T07:52:00.000Z"
 last_activity: 2026-07-27
-last_activity_desc: Phase 52 Plan 07 closed WR-01 through WR-03 with production-path tests
+last_activity_desc: Phase 52 Plan 08 produced fresh regression, security, and exact 23-task review inputs
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 26
-  completed_plans: 23
+  completed_plans: 24
+  percent: 92
 ---
 
 # Project State
@@ -28,15 +29,15 @@ See: `.planning/PROJECT.md` (updated 2026-07-27)
 ## Current Position
 
 Phase: 52 (eyebrow-safety-and-branch-closeout) — EXECUTING
-Plan: 7 of 10
-Status: Ready to execute Plan 52-08
-Last activity: 2026-07-27 — Plan 52-07 closed WR-01 through WR-03 with production-path tests
+Plan: 8 of 10
+Status: Awaiting independent post-Wave-8 code review
+Last activity: 2026-07-27 — Plan 52-08 produced fresh regression, security, and exact 23-task review inputs
 
 ### Phase 52 Eyebrow Safety and Branch Closeout Gap Status
 
-- Final verification remains independently owned and `gaps_found` at 12/16 until re-verification. Plan 52-07 now supplies focused production-path evidence for canonical adapter-valid fixtures, cancellation after actual provider entry, and late removal through the real retained-mask convergence lifecycle.
-- Plans 52-07 through 52-10 close WR-01 through WR-03, expand Nyquist coverage from fourteen historical tasks to 23/23 total tasks, and preserve an explicit no-UI-change contract.
-- Execution is staged: Waves 7-8 produce code and command evidence; an independent `gsd-code-reviewer` exclusively owns the fresh review; Waves 9-10 may synchronize owners and reach 35/35 only after that clean, fresh review.
+- Final verification remains independently owned and `gaps_found` at 12/16 until re-verification. Plan 52-07 supplies focused production-path WR-01/02/03 evidence.
+- Plan 52-08 passed the 450-test SwiftPM and explicit iOS 26.5 simulator ladders, refreshed ASVS L1 evidence, and expanded Nyquist execution to 19/23 green with four Wave 9/10 rows pending.
+- Execution is paused at the required role boundary: a separate `gsd-code-reviewer` exclusively owns the fresh review; Waves 9-10 may synchronize owners and reach 35/35 only after that review is clean and newer than Waves 7-8.
 - `52-VERIFICATION.md` remains independently owned and `gaps_found` until the final verifier reruns. The executor must not write a passed status.
 - The independent v1.13 milestone audit is blocked until all four gap plans complete and Phase 52 independently verifies as passed.
 
@@ -286,6 +287,7 @@ Last activity: 2026-07-14
 | Phase 52 P05 | 5 min | 2 tasks | 8 files |
 | Phase 52 P06 | 11 min | 2 tasks | 8 files |
 | Phase 52 P07 | 20min | 3 tasks | 7 files |
+| Phase 52 P08 | 13min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -441,10 +443,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-27T07:37:21.846Z
-Stopped at: Completed 52-07-PLAN.md
+Last session: 2026-07-27T07:51:18.122Z
+Stopped at: Completed 52-08-PLAN.md; awaiting independent code review
 Resume file: None
 
 ## Operator Next Steps
 
-- Execute Phase 52 Waves 7-8, run the independent code-review gate, then execute Waves 9-10 and rerun the independent phase verifier. Do not audit, archive, tag, or clean up before it passes.
+- Run the independent Phase 52 code-review gate. Only after a clean fresh review may Plans 52-09 and 52-10 execute, followed by independent phase re-verification. Do not audit, archive, tag, or clean up before it passes.
