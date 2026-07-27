@@ -118,6 +118,65 @@ final class BeautyGeometryEffectPipelineTests: XCTestCase {
         XCTAssertTrue(BeautyGeometryEffectPipeline.controlPoints(for: removed, face: removedFace).isEmpty)
     }
 
+    func testSAFE02SevenNamedEyebrowArraysAndUnifiedProvidersKeepStableExactlyOnceOrder() throws {
+        let face = EyebrowSafetyFixtures.face()
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(
+                eyebrowYPosition: -0.10,
+                eyebrowThickness: 0.10,
+                eyebrowLength: -0.10,
+                eyebrowSpacing: 0.10,
+                eyebrowHeadSpacing: -0.10,
+                eyebrowTilt: 0.10,
+                eyebrowPeakDefinition: 0.10
+            ),
+            faceGeometry: face
+        )
+        let emissions = EyebrowWarpProvider().fieldEmissions(
+            face: face,
+            strengths: plan.effectiveStrengths
+        )
+        let namedArrays = EyebrowSafetyFixtures.rows.map { $0.emission(emissions) }
+
+        XCTAssertEqual(EyebrowSafetyFixtures.rows.map(\.name), Array(finalGeometryFieldNames[23..<30]))
+        XCTAssertTrue(namedArrays.allSatisfy { !$0.isEmpty })
+        XCTAssertEqual(emissions.points, namedArrays.flatMap { $0 })
+        XCTAssertEqual(
+            BeautyGeometryEffectPipeline.controlPoints(for: plan, face: face),
+            namedArrays.flatMap { $0 }
+        )
+        XCTAssertEqual(
+            plan.metrics["beauty.effects.geometryPointCount"],
+            Double(namedArrays.reduce(0) { $0 + $1.count })
+        )
+
+        let sourceURL = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("Sources/BeautyEffects/Render/BeautyGeometryEffectPipeline.swift")
+        let source = try String(contentsOf: sourceURL, encoding: .utf8)
+        let providers = [
+            "FaceShapeWarpProvider()",
+            "ChinWarpProvider()",
+            "EyeWarpProvider()",
+            "EyebrowWarpProvider()",
+            "NoseWarpProvider()",
+            "MouthWarpProvider()",
+        ]
+        var previousOffset = source.startIndex
+        for provider in providers {
+            XCTAssertEqual(
+                source.components(separatedBy: "\(provider).makeControlPoints").count - 1,
+                1,
+                "\(provider) must dispatch exactly once."
+            )
+            let range = try XCTUnwrap(source.range(of: "\(provider).makeControlPoints"))
+            XCTAssertGreaterThanOrEqual(range.lowerBound, previousOffset, provider)
+            previousOffset = range.lowerBound
+        }
+    }
+
     func testCIImageGeometryWarpMovesLocalPixelsWithoutGlobalColorBias() throws {
         let width = 160
         let height = 160

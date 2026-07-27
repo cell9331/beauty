@@ -76,6 +76,143 @@ final class CombinedEffectSafetyTests: XCTestCase {
         XCTAssertTrue(source.contains("Each pass can only remove fields"))
         XCTAssertTrue(source.contains("strengths: resolution.strengths"))
         XCTAssertTrue(source.contains(".sanitizing(retainedBaseline)"))
+        XCTAssertEqual(
+            source.components(separatedBy: "let conflict = Self.resolveGeometryConflict(").count - 1,
+            1,
+            "All geometry domains must enter one shared convergence path."
+        )
+        XCTAssertFalse(source.contains("resolveEyebrowConflict"))
+        XCTAssertFalse(source.contains("eyebrowConflictScale"))
+    }
+
+    func testSAFE02EveryEyebrowRowIsRemovedMonotonicallyWhenSharedScaleMakesProviderEmpty() {
+        let provider = EyebrowWarpProvider()
+        let face = EyebrowSafetyFixtures.face()
+
+        XCTAssertEqual(EyebrowSafetyFixtures.rows.count, 7)
+        for row in EyebrowSafetyFixtures.rows {
+            let requested = row.isSigned ? -row.cap : row.cap
+            let retainedBaseline = row.strengths(requested)
+            let providerEmptyThreshold = Float.ulpOfOne / 2
+            XCTAssertFalse(
+                row.emission(provider.fieldEmissions(face: face, strengths: retainedBaseline)).isEmpty,
+                "\(row.name) must emit before the late shared scale."
+            )
+
+            let lateResolution = GeometryConflictResolver(totalThreshold: providerEmptyThreshold)
+                .resolve(strengths: retainedBaseline)
+            XCTAssertEqual(lateResolution.metrics["beauty.effects.weakenedCount"], 1, row.name)
+            XCTAssertEqual(lateResolution.warnings.map(\.code), ["combined_geometry_weakened"], row.name)
+            XCTAssertEqual(
+                abs(lateResolution.strengths[keyPath: row.effectiveValue]),
+                providerEmptyThreshold,
+                accuracy: Float.ulpOfOne,
+                row.name
+            )
+
+            let lateEmissions = provider.fieldEmissions(
+                face: face,
+                strengths: lateResolution.strengths
+            )
+            XCTAssertTrue(row.emission(lateEmissions).isEmpty, row.name)
+
+            let removedBaseline = lateEmissions.sanitizing(retainedBaseline)
+            XCTAssertEqual(removedBaseline[keyPath: row.effectiveValue], 0, row.name)
+
+            let repeated = GeometryConflictResolver(totalThreshold: providerEmptyThreshold)
+                .resolve(strengths: removedBaseline)
+            XCTAssertEqual(repeated.strengths[keyPath: row.effectiveValue], 0, row.name)
+            XCTAssertTrue(
+                row.emission(provider.fieldEmissions(face: face, strengths: repeated.strengths)).isEmpty,
+                "\(row.name) must not re-enter after removal."
+            )
+        }
+    }
+
+    func testSAFE02PairPerSideApexReuseAndRequestOrderShareOneFinalMask() {
+        let allEyebrows = BeautyParameters(
+            eyebrowYPosition: -1,
+            eyebrowThickness: 1,
+            eyebrowLength: -1,
+            eyebrowSpacing: 1,
+            eyebrowHeadSpacing: -1,
+            eyebrowTilt: 1,
+            eyebrowPeakDefinition: 1
+        )
+        let pairedFace = EyebrowSafetyFixtures.face()
+        let singleSideFace = EyebrowSafetyFixtures.face(
+            support: BeautyEyebrowSemanticSupport(
+                left: EyebrowSafetyFixtures.trace(side: .left),
+                right: nil
+            )
+        )
+        let missingApexFace = EyebrowSafetyFixtures.face(
+            support: BeautyEyebrowSemanticSupport(
+                left: EyebrowSafetyFixtures.trace(side: .left, apexIndex: nil),
+                right: EyebrowSafetyFixtures.trace(side: .right, apexIndex: nil)
+            )
+        )
+        let reusedFace = EyebrowSafetyFixtures.face(freshness: .reused)
+
+        let paired = BeautyEffectResolver.resolve(parameters: allEyebrows, faceGeometry: pairedFace)
+        let singleSide = BeautyEffectResolver.resolve(parameters: allEyebrows, faceGeometry: singleSideFace)
+        let missingApex = BeautyEffectResolver.resolve(parameters: allEyebrows, faceGeometry: missingApexFace)
+        let reused = BeautyEffectResolver.resolve(parameters: allEyebrows, faceGeometry: reusedFace)
+        let pairedAgain = BeautyEffectResolver.resolve(parameters: allEyebrows, faceGeometry: pairedFace)
+
+        XCTAssertEqual(pairedAgain, paired)
+        XCTAssertEqual(singleSide.effectiveStrengths.eyebrowSpacing, 0)
+        XCTAssertGreaterThan(singleSide.effectiveStrengths.eyebrowPeakDefinition, 0)
+        for row in EyebrowSafetyFixtures.rows where row.name != "eyebrowSpacing" {
+            XCTAssertNotEqual(singleSide.effectiveStrengths[keyPath: row.effectiveValue], 0, row.name)
+        }
+        XCTAssertEqual(missingApex.effectiveStrengths.eyebrowPeakDefinition, 0)
+        for row in EyebrowSafetyFixtures.rows where row.name != "eyebrowPeakDefinition" {
+            XCTAssertNotEqual(missingApex.effectiveStrengths[keyPath: row.effectiveValue], 0, row.name)
+        }
+
+        XCTAssertEqual(reused.metrics["beauty.effects.reusedGeometryScale"], 0.5)
+        XCTAssertNil(reused.metrics["beauty.effects.geometryStrengthScale"])
+        XCTAssertFalse(reused.warnings.contains { $0.code == "combined_geometry_weakened" })
+        for row in EyebrowSafetyFixtures.rows {
+            let requestedSign: Float = allEyebrows[keyPath: row.publicValue] < 0 ? -1 : 1
+            let expected = row.reusedStrength * requestedSign
+            XCTAssertEqual(
+                reused.effectiveStrengths[keyPath: row.effectiveValue],
+                expected,
+                accuracy: 0.000_001,
+                row.name
+            )
+        }
+
+        assertFinalMaskMatchesNamedProviders(paired, face: pairedFace)
+        assertFinalMaskMatchesNamedProviders(singleSide, face: singleSideFace)
+        assertFinalMaskMatchesNamedProviders(missingApex, face: missingApexFace)
+        assertFinalMaskMatchesNamedProviders(reused, face: reusedFace)
+
+        let mixedFirst = BeautyEffectResolver.resolve(
+            parameters: phase48AllGeometryParameters,
+            faceGeometry: phase48AllProviderGeometry
+        )
+        _ = BeautyEffectResolver.resolve(parameters: allEyebrows, faceGeometry: singleSideFace)
+        let mixedAfterDifferentRequest = BeautyEffectResolver.resolve(
+            parameters: phase48AllGeometryParameters,
+            faceGeometry: phase48AllProviderGeometry
+        )
+        _ = BeautyEffectResolver.resolve(parameters: allEyebrows, faceGeometry: missingApexFace)
+        let mixedAfterReverseOrder = BeautyEffectResolver.resolve(
+            parameters: phase48AllGeometryParameters,
+            faceGeometry: phase48AllProviderGeometry
+        )
+
+        XCTAssertEqual(mixedAfterDifferentRequest, mixedFirst)
+        XCTAssertEqual(mixedAfterReverseOrder, mixedFirst)
+        XCTAssertLessThan(mixedFirst.effectiveStrengths.chinLength, 0)
+        XCTAssertLessThan(mixedFirst.effectiveStrengths.eyeDistance, 0)
+        XCTAssertLessThan(mixedFirst.effectiveStrengths.eyebrowYPosition, 0)
+        XCTAssertLessThan(mixedFirst.effectiveStrengths.noseTipSize, 0)
+        XCTAssertLessThan(mixedFirst.effectiveStrengths.mouthSize, 0)
+        assertFinalMaskMatchesNamedProviders(mixedFirst, face: phase48AllProviderGeometry)
     }
 
     func testSAFE02AllFortyFourFinalStrengthsMatchNamedProviderEmissions() {
@@ -847,6 +984,85 @@ final class CombinedEffectSafetyTests: XCTestCase {
         for forbidden in ["VNFace" + "Observation", "bounding" + "Box", "land" + "mark", "/private" + "/var", "NSE" + "rror", "rawPreset" + "Json", "image" + " bytes", "SI" + "MD", "[0."] {
             XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)", file: file, line: line)
         }
+    }
+
+    private func assertFinalMaskMatchesNamedProviders(
+        _ plan: BeautyEffectPlan,
+        face: FaceGeometry,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let faceEmissions = FaceShapeWarpProvider().fieldEmissions(face: face, strengths: plan.effectiveStrengths)
+        let chinEmissions = ChinWarpProvider().fieldEmissions(face: face, strengths: plan.effectiveStrengths)
+        let eyeEmissions = EyeWarpProvider().fieldEmissions(face: face, strengths: plan.effectiveStrengths)
+        let eyebrowEmissions = EyebrowWarpProvider().fieldEmissions(face: face, strengths: plan.effectiveStrengths)
+        let noseEmissions = NoseWarpProvider().fieldEmissions(face: face, strengths: plan.effectiveStrengths)
+        let mouthEmissions = MouthWarpProvider().fieldEmissions(face: face, strengths: plan.effectiveStrengths)
+
+        var sanitized = faceEmissions.sanitizing(plan.effectiveStrengths)
+        sanitized = chinEmissions.sanitizing(sanitized)
+        sanitized = eyeEmissions.sanitizing(sanitized)
+        sanitized = eyebrowEmissions.sanitizing(sanitized)
+        sanitized = noseEmissions.sanitizing(sanitized)
+        sanitized = mouthEmissions.sanitizing(sanitized)
+        XCTAssertEqual(sanitized, plan.effectiveStrengths, file: file, line: line)
+
+        let reflectedValues = Dictionary(
+            uniqueKeysWithValues: Mirror(reflecting: plan.effectiveStrengths).children.compactMap {
+                child -> (String, Float)? in
+                guard let name = child.label, let value = child.value as? Float else { return nil }
+                return (name, value)
+            }
+        )
+        let finalValues = finalGeometryFieldNames.compactMap { reflectedValues[$0] }
+        XCTAssertEqual(finalValues.count, 44, file: file, line: line)
+        let finalCount = finalValues.filter { abs($0) > Float.ulpOfOne }.count
+        let finalTotal = finalValues.reduce(Float(0)) { $0 + abs($1) }
+
+        if let scale = plan.metrics["beauty.effects.geometryStrengthScale"] {
+            XCTAssertEqual(plan.metrics["beauty.effects.weakenedCount"], Double(finalCount), file: file, line: line)
+            XCTAssertEqual(plan.warnings.map(\.code).filter { $0 == "combined_geometry_weakened" }, ["combined_geometry_weakened"], file: file, line: line)
+            XCTAssertLessThan(scale, 1, file: file, line: line)
+            XCTAssertEqual(finalTotal, 1, accuracy: 0.000_001, file: file, line: line)
+        } else {
+            XCTAssertFalse(plan.warnings.contains { $0.code == "combined_geometry_weakened" }, file: file, line: line)
+            XCTAssertLessThanOrEqual(finalTotal, 1, file: file, line: line)
+        }
+
+        for row in EyebrowSafetyFixtures.rows {
+            XCTAssertEqual(
+                plan.effectiveStrengths[keyPath: row.effectiveValue] != 0,
+                !row.emission(eyebrowEmissions).isEmpty,
+                row.name,
+                file: file,
+                line: line
+            )
+        }
+        let expectedPoints =
+            faceEmissions.points +
+            chinEmissions.points +
+            eyeEmissions.points +
+            eyebrowEmissions.points +
+            noseEmissions.points +
+            mouthEmissions.points
+        XCTAssertEqual(
+            BeautyGeometryEffectPipeline.controlPoints(for: plan.effectiveStrengths, face: face),
+            expectedPoints,
+            file: file,
+            line: line
+        )
+        XCTAssertEqual(
+            plan.metrics["beauty.effects.geometryPointCount"],
+            Double(expectedPoints.count),
+            file: file,
+            line: line
+        )
+        let hasEyebrowWork = EyebrowSafetyFixtures.rows.contains {
+            plan.effectiveStrengths[keyPath: $0.effectiveValue] != 0
+        }
+        XCTAssertEqual(plan.activeDomains.contains(.eyebrows), hasEyebrowWork, file: file, line: line)
+        XCTAssertEqual(plan.skippedDomains.contains(.eyebrows), !hasEyebrowWork, file: file, line: line)
+        assertCombinedMetadataRedacted(plan, file: file, line: line)
     }
 
     private var providerEmptyGeometry: FaceGeometry {
