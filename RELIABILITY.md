@@ -677,3 +677,12 @@ Before a release-like build:
 - Missing or malformed contour and centerline evidence disables only dependent fields. `provider-empty` work is removed before totals, domains, warnings, metrics, point counts, and dispatch while valid siblings continue.
 - Exact 37-field convergence is monotone: each unsupported field can be removed once, no field re-enters, and no retained field is scaled twice. Safe color/filter and supported geometry siblings continue under degraded masks.
 - Fresh focused/full and strict-output gates pass without changing error, recovery, or performance claims.
+
+### Phase 52 Eyebrow Safety Reliability Closeout
+
+- All seven eyebrow results are stateless and recomputed per request. Eligible fresh support emits field-local work, eligible reused support applies exact `0.5` once, and stale or no-face input emits none without retaining a prior vector, warning, metric, or domain state.
+- Any missing or malformed side evidence disables only dependent side/pair/chord/apex fields; `provider-empty` work is removed from every final aggregate. Valid eyebrow siblings and unrelated face, eye, nose, mouth, color, and filter work continue safely.
+- Both-direction valid-invalid-valid sequences recover on the final valid request. Sequential, concurrent completion-order, and interrupted/cancelled requests preserve request identity and cannot leak state or partial results into a sibling request or later rerun.
+- The complete geometry set converges from one exact `13.45`/44-field retained baseline. At most 44 monotone removals occur; removed work cannot re-enter, retained work cannot be scaled twice, and final totals, counts, names, points, and dispatch agree.
+- Diagnostics expose only fixed reasons and aggregate counts/scales. Command errors, interruption, partial evidence, residue, or an unclassified subprocess result fail closed; recovery requires a clean bounded rerun rather than inferring success from prior output.
+- These gates establish deterministic failure and recovery behavior, not optimized-performance, device, long-run, commercial, packaging, shipping, launch, release, audit, archive, tag, or cleanup readiness.

@@ -544,3 +544,10 @@ SDK 1.0 readiness:
 - The final guarded clean render and frozen strict helper pass 72/72 `e6` portrait outputs, 13/13 visibility, 6/6 signed direction, 21/21 semantic distinctions, 40/40 direct portrait comparisons, and thirteen separately counted no-face no-ops.
 - Gallery publication is exactly 144 regular PNGs with thirteen eyebrow groups and a 144/144 output/gallery name bijection. Output, gallery, and bounded quarantine are ignored, untracked, and unstaged; staging is absent. Fourteen actual images were opened at original detail and the recorded visual verdict passes.
 - These counts close Phase 51 output evidence only. They do not raise quality credit for final caps, exhaustive safety, row/branch promotion, Demo/device/commercial naturalness, optimized performance, packaging, shipping, launch readiness, or Phase 52 completion.
+
+### v1.13 Phase 52 Eyebrow Safety Evidence Score
+
+- Fresh focused evidence passes caps 7/7, resolver 27/27, provider 14/14, degradation 51/51, conflict 14/14, combined 17/17, pipeline 4/4, and facade 20 executed with one opt-in skip. Full SwiftPM executes 450 tests with six expected skips and zero failures.
+- The unchanged frozen output gate passes 72/72 `e6` portraits, 13/13 visibility/locality, 6/6 signed direction, 21/21 semantic distinction, and 40/40 direct comparisons; thirteen no-face comparisons remain separate. Output and gallery are an exact ignored, untracked, unstaged 144-file bijection, and all fourteen actual images retain a recorded PASS.
+- The fail-closed checker passes 130/130 adversarial self-tests, standard review is clean with `unclassified_matches: 0`, the fourteen-task nyquist ledger is compliant at its truthful execution state, and ASVS L1 records `threats_open: 0`.
+- Exactly seven eyebrow rows and branch `眉毛` are implemented at SDK-core scope. Quality credit does not extend to v1.14-v1.16, UI/Demo, device, commercial naturalness, optimized performance, packaging, shipping, launch/release, independent milestone audit, archive, tag, or cleanup evidence.

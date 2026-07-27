@@ -370,3 +370,10 @@ BeautyDemo sliders / presets
 - Phase 51 adds thirteen isolated eyebrow cases inside the existing 72-case renderer inventory. Every case enters through the public `BeautySDK` facade, uses the one `BeautyEngine.processResult` call, and reaches the existing package-internal one-warp route; the renderer neither imports an internal target nor creates an eyebrow-specific render path.
 - The evidence matrix is one active portrait across all 72 cases plus a separate no-face fixture, yielding 144 disposable output/gallery files. Gallery grouping changes presentation only and creates no new package, dependency, model, resource, Demo owner, or runtime route.
 - Decoded visibility, direction, locality, family distinction, gallery containment, and actual-image review close output evidence only. Phase 52 retains final caps, exhaustive safety, seven row and `眉毛` branch promotion, and every Demo/device/commercial/performance/packaging/shipping/release decision.
+
+### Phase 52 Eyebrow Safety Architecture Closeout
+
+- The existing local dependency direction remains unchanged: public `BeautySDK` intent reaches `BeautyEffects`, which consumes only actual immutable request-local eyebrow evidence mapped by `BeautyDetection`; `BeautyRender` remains the single unified delivery owner.
+- `BeautySafetyCaps` is the sole maximum authority for all seven eyebrow evaluations. One package-internal eyebrow provider retains seven named emissions, and one resolver-owned 44-field inventory supplies final accounting without a second route or support substitute.
+- Final arrays enter the existing warp exactly once in stable Face → Chin → Eye → Eyebrow → Nose → Mouth order. No public geometry carrier, target, dependency, model, resource, render pass, facade method, source owner, or Demo import was added.
+- Phase 52 therefore closes the seven-field SDK-core architecture only. It adds no Demo or UI behavior and establishes no device, commercial, performance, packaging, shipping, release, audit, archive, tag, or cleanup state.

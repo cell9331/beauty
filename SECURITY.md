@@ -569,3 +569,11 @@ Before merging any change touching these areas, update `SECURITY.md` if needed:
 - Public results contain only generic warnings and aggregate metrics. Any raw geometry, derived coordinate, provider object, framework object, image byte, or file path in diagnostics is prohibited.
 - The self-tested active-source boundary classifies all eight owners and fails closed on command errors, unclassified matches, persistence/cache/static state, internal Demo/renderer imports, dependency/model/resource/network/commercial drift, deferred semantic activation, and generated-artifact escape.
 - ASVS L1 closes 16/16 registered threats and 3/3 repository governance inputs at the HIGH blocking threshold; `threats_open: 0`.
+
+### Phase 52 Eyebrow Safety Security Closeout
+
+- Actual eyebrow evidence remains immutable, request-scoped, package-only, non-Codable, and absent from public/SPI results. Fabricating it from eye geometry, mirroring a sibling, or substituting a synthetic face proxy is prohibited.
+- Any raw or derived support, coordinates, points, stable signatures, image bytes, provider detail, and filesystem paths must not cross reflection, description, diagnostics, persistence, cache, files, or network boundaries. Public failure evidence remains fixed and aggregate only.
+- Active-source and dependency classifiers fail closed on unclassified results, new targets/packages/models/resources, internal Demo/renderer imports, network/cloud/account/entitlement/commercial paths, or altered manifest ownership. The current privacy-manifest disposition is unchanged.
+- Output and gallery acquisition remains bounded, no-follow, descriptor-safe, and confined to the declared disposable artifact roots; tracked, staged, non-ignored, symlinked, escaped, partial, or residual publication state is rejected.
+- The Phase 52 ASVS L1 record closes every registered threat at the HIGH threshold with `threats_open: 0`. This security result does not assert device, commercial, performance, packaging, shipping, release, audit, archive, tag, or cleanup completion.

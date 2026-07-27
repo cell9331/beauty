@@ -607,3 +607,9 @@ Before merging product-facing changes, verify:
 - An SDK integrator can independently request `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴` through the existing public still-image facade, with exact final caps, field-local degradation, saved-output visibility/locality, and redacted aggregate evidence.
 - `去双下巴`, `去双下巴 Pro`, and `发际线` remain future until approved local semantic-region/segmentation implementations and reproducible clean-clone fixtures exist. Branch `脸型` remains `partial`.
 - Acceptance is automated at the SDK/source/output boundary only. It is not physical-device parity, subjective or commercial naturalness approval, optimized performance, Demo completion, packaging, shipping, launch readiness, or milestone lifecycle evidence.
+
+### v1.13 Phase 52 Eyebrow Safety Acceptance
+
+- An SDK integrator can independently request exactly seven implemented SDK-core controls through the existing public facade: `上下`, `粗细`, `长短`, `间距`, `眉头间距`, `倾斜`, and `眉峰`. Signed controls preserve both directions, whole spacing remains distinct from head spacing, and thickness remains distinct from peak definition.
+- User-verifiable acceptance requires final exact caps, request-local support, local degradation, complete combined-safety behavior, facade-visible direction/locality/distinction, fourteen-file original-detail review, and redacted aggregate diagnostics. Branch `眉毛` is implemented only at this SDK-core boundary.
+- v1.14-v1.16 remain future milestones. No SwiftUI or Demo UI, physical-device parity, commercial naturalness approval, optimized performance, packaging, shipping, launch or release readiness, independent milestone audit, archive, tag, or cleanup follows from Phase 52.
