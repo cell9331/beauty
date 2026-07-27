@@ -139,7 +139,7 @@ Each task was committed atomically:
 
 ---
 
-**Total deviations:** 1 auto-fixed (1 Rule 1 bug).  
+**Total deviations:** 1 auto-fixed (1 Rule 1 bug).
 **Impact on plan:** The correction makes the planned exact-seven classifier
 match the authoritative ledger structure without widening promotion scope; the
 product transaction itself remains exactly four files.
