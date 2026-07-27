@@ -88,24 +88,70 @@ final class EyebrowWarpProviderTests: XCTestCase {
             ))
             XCTAssertTrue(overflow.isEmpty, "public resolver must clamp before provider: \(row.name)")
         }
+
+        let unitBounds = FaceBounds(x: 0, y: 0, width: 1, height: 1)
+        let minimum = BeautyFaceGeometryAdapter.minimumBrowChord
+        let maximum = BeautyFaceGeometryAdapter.maximumBrowChord
+        let minimumTrace = EyebrowSafetyFixtures.validatedTrace(
+            side: .right,
+            points: boundaryPoints(chord: minimum),
+            bounds: unitBounds
+        )
+        let maximumTrace = EyebrowSafetyFixtures.validatedTrace(
+            side: .right,
+            points: boundaryPoints(chord: maximum),
+            bounds: unitBounds
+        )
+        XCTAssertNotNil(minimumTrace, "the exact 0.08 chord boundary is inclusive")
+        XCTAssertNotNil(maximumTrace, "the exact 0.50 chord boundary is inclusive")
+        XCTAssertNil(EyebrowSafetyFixtures.validatedTrace(
+            side: .right,
+            points: boundaryPoints(chord: minimum.nextDown),
+            bounds: unitBounds
+        ))
+        XCTAssertNil(EyebrowSafetyFixtures.validatedTrace(
+            side: .right,
+            points: boundaryPoints(chord: maximum.nextUp),
+            bounds: unitBounds
+        ))
+        XCTAssertEqual(minimumTrace?.innerEndpoint, boundaryPoints(chord: minimum).first)
+        XCTAssertEqual(minimumTrace?.outerEndpoint, boundaryPoints(chord: minimum).last)
+        XCTAssertNil(minimumTrace?.apexIndex, "equal projection keeps order but has no invented apex")
+
+        let invalidInputs: [[SIMD2<Float>]?] = [
+            nil,
+            [],
+            [.init(0.20, 0.20)],
+            [.init(0.20, 0.20), .init(0.20, 0.20), .init(0.30, 0.20), .init(0.40, 0.20)],
+            [.init(.nan, 0.20), .init(0.25, 0.19), .init(0.30, 0.18), .init(0.40, 0.20)],
+        ]
+        for invalid in invalidInputs {
+            XCTAssertNil(EyebrowSafetyFixtures.validatedTrace(
+                side: .right,
+                points: invalid,
+                bounds: unitBounds
+            ))
+        }
+        let validLeft = EyebrowSafetyFixtures.trace(side: .left)
+        let invalidRight = EyebrowSafetyFixtures.validatedTrace(
+            side: .right,
+            points: [.init(0.53, 0.40), .init(0.53, 0.40), .init(0.61, 0.34), .init(0.69, 0.40)]
+        )
+        let leftOnly = provider.fieldEmissions(
+            face: face(left: validLeft, right: invalidRight),
+            strengths: yStrength(0.25)
+        )
+        XCTAssertEqual(leftOnly.eyebrowYPosition.count, validLeft.points.count)
     }
 
-    private func trace(
-        leftSide: Bool,
-        points: [SIMD2<Float>]? = nil,
-        apexIndex: Int? = 2
-    ) -> BeautyEyebrowSemanticTrace {
-        let canonical = points ?? (leftSide
-            ? [SIMD2<Float>(0.25, 0.40), SIMD2<Float>(0.30, 0.36), SIMD2<Float>(0.36, 0.34), SIMD2<Float>(0.42, 0.37), SIMD2<Float>(0.47, 0.41)]
-            : [SIMD2<Float>(0.75, 0.40), SIMD2<Float>(0.70, 0.36), SIMD2<Float>(0.64, 0.34), SIMD2<Float>(0.58, 0.37), SIMD2<Float>(0.53, 0.41)])
-        return BeautyEyebrowSemanticTrace(
-            side: leftSide ? .left : .right,
-            points: canonical,
-            innerEndpoint: canonical[0],
-            outerEndpoint: canonical[canonical.count - 1],
-            center: canonical.reduce(SIMD2<Float>.zero, +) / Float(canonical.count),
-            apexIndex: apexIndex
-        )
+    private func boundaryPoints(chord: Float) -> [SIMD2<Float>] {
+        [
+            .init(0, 0.20),
+            .init(chord * 0.25, 0.20),
+            .init(chord * 0.50, 0.20),
+            .init(chord * 0.75, 0.20),
+            .init(chord, 0.20),
+        ]
     }
 
     private func face(
@@ -144,7 +190,10 @@ final class EyebrowWarpProviderTests: XCTestCase {
     }
 
     func testGEOM01VerticalPositionNamedEmission() {
-        let geometry = face(left: trace(leftSide: true), right: trace(leftSide: false))
+        let geometry = face(
+            left: EyebrowSafetyFixtures.trace(side: .left),
+            right: EyebrowSafetyFixtures.trace(side: .right)
+        )
         let positive = EyebrowWarpProvider().fieldEmissions(face: geometry, strengths: yStrength(0.25))
         let negative = EyebrowWarpProvider().fieldEmissions(face: geometry, strengths: yStrength(-0.25))
         assertRenderable(positive.eyebrowYPosition)
@@ -153,7 +202,10 @@ final class EyebrowWarpProviderTests: XCTestCase {
     }
 
     func testGEOM02ThicknessNamedEmission() {
-        let geometry = face(left: trace(leftSide: true), right: trace(leftSide: false))
+        let geometry = face(
+            left: EyebrowSafetyFixtures.trace(side: .left),
+            right: EyebrowSafetyFixtures.trace(side: .right)
+        )
         let emissions = EyebrowWarpProvider().fieldEmissions(face: geometry, strengths: thicknessStrength(0.25))
         assertRenderable(emissions.eyebrowThickness)
         XCTAssertEqual(emissions.eyebrowThickness.count % 2, 0, "balanced normal-strip samples")
@@ -161,34 +213,38 @@ final class EyebrowWarpProviderTests: XCTestCase {
     }
 
     func testGEOM02DegenerateAdjacencySkipsOnlyAffectedThicknessSample() {
-        let coincidentNeighbors = [
-            SIMD2<Float>(0.25, 0.40),
-            SIMD2<Float>(0.30, 0.36),
-            SIMD2<Float>(0.25, 0.40),
-            SIMD2<Float>(0.42, 0.37),
-            SIMD2<Float>(0.47, 0.41)
+        let locallyDegenerate = [
+            SIMD2<Float>(0.47, 0.40),
+            SIMD2<Float>(0.3900004, 0.36),
+            SIMD2<Float>(0.3900002, 0.3599999),
+            SIMD2<Float>(0.39, 0.3600001),
+            SIMD2<Float>(0.31, 0.40),
         ]
-        let left = trace(leftSide: true, points: coincidentNeighbors, apexIndex: nil)
+        let left = EyebrowSafetyFixtures.trace(
+            side: .left,
+            points: locallyDegenerate,
+            apexIndex: nil
+        )
         let emissions = EyebrowWarpProvider().fieldEmissions(
             face: face(left: left),
             strengths: thicknessStrength(0.25)
         )
 
         assertRenderable(emissions.eyebrowThickness)
-        XCTAssertEqual(emissions.eyebrowThickness.count, 8, "only the sample between coincident neighbors is omitted")
+        XCTAssertEqual(emissions.eyebrowThickness.count, 8, "only the locally degenerate tangent is omitted")
         XCTAssertEqual(emissions.eyebrowThickness.count % 2, 0, "remaining samples stay balanced")
     }
 
     func testGEOM03LengthNamedEmission() {
-        let left = trace(leftSide: true)
+        let left = EyebrowSafetyFixtures.trace(side: .left)
         let emissions = EyebrowWarpProvider().fieldEmissions(face: face(left: left), strengths: lengthStrength(0.25))
         assertRenderable(emissions.eyebrowLength)
         XCTAssertTrue(emissions.eyebrowLength.allSatisfy { $0.source != left.innerEndpoint })
     }
 
     func testGEOM04WholeSpacingNamedEmission() {
-        let left = trace(leftSide: true)
-        let right = trace(leftSide: false)
+        let left = EyebrowSafetyFixtures.trace(side: .left)
+        let right = EyebrowSafetyFixtures.trace(side: .right)
         let provider = EyebrowWarpProvider()
         let paired = provider.fieldEmissions(face: face(left: left, right: right), strengths: spacingStrength(0.25))
         let single = provider.fieldEmissions(face: face(left: left), strengths: spacingStrength(0.25))
@@ -199,7 +255,7 @@ final class EyebrowWarpProviderTests: XCTestCase {
     }
 
     func testGEOM05HeadSpacingNamedEmission() {
-        let left = trace(leftSide: true)
+        let left = EyebrowSafetyFixtures.trace(side: .left)
         let emissions = EyebrowWarpProvider().fieldEmissions(face: face(left: left), strengths: headSpacingStrength(0.25))
         assertRenderable(emissions.eyebrowHeadSpacing)
         XCTAssertTrue(emissions.eyebrowHeadSpacing.contains { $0.source == left.innerEndpoint })
@@ -208,7 +264,10 @@ final class EyebrowWarpProviderTests: XCTestCase {
 
     func testGEOM06TiltNamedEmission() {
         let provider = EyebrowWarpProvider()
-        let geometry = face(left: trace(leftSide: true), right: trace(leftSide: false))
+        let geometry = face(
+            left: EyebrowSafetyFixtures.trace(side: .left),
+            right: EyebrowSafetyFixtures.trace(side: .right)
+        )
         let positive = provider.fieldEmissions(face: geometry, strengths: tiltStrength(0.25)).eyebrowTilt
         let negative = provider.fieldEmissions(face: geometry, strengths: tiltStrength(-0.25)).eyebrowTilt
         assertRenderable(positive)
@@ -218,9 +277,18 @@ final class EyebrowWarpProviderTests: XCTestCase {
 
     func testGEOM07PeakNamedEmission() {
         let provider = EyebrowWarpProvider()
-        let eligible = provider.fieldEmissions(face: face(left: trace(leftSide: true)), strengths: peakStrength(0.25))
-        let noApex = provider.fieldEmissions(face: face(left: trace(leftSide: true, apexIndex: nil)), strengths: peakStrength(0.25))
-        let negative = provider.fieldEmissions(face: face(left: trace(leftSide: true)), strengths: peakStrength(-0.25))
+        let eligible = provider.fieldEmissions(
+            face: face(left: EyebrowSafetyFixtures.trace(side: .left)),
+            strengths: peakStrength(0.25)
+        )
+        let noApex = provider.fieldEmissions(
+            face: face(left: EyebrowSafetyFixtures.trace(side: .left, apexIndex: nil)),
+            strengths: peakStrength(0.25)
+        )
+        let negative = provider.fieldEmissions(
+            face: face(left: EyebrowSafetyFixtures.trace(side: .left)),
+            strengths: peakStrength(-0.25)
+        )
         assertRenderable(eligible.eyebrowPeakDefinition)
         XCTAssertTrue(noApex.eyebrowPeakDefinition.isEmpty)
         XCTAssertTrue(negative.eyebrowPeakDefinition.isEmpty, "peak is positive-only")
@@ -235,7 +303,10 @@ final class EyebrowWarpProviderTests: XCTestCase {
         var requested = BeautyEffectiveStrengths()
         requested.eyebrowYPosition = 0.25
         requested.eyebrowSpacing = 0.25
-        let emissions = EyebrowWarpProvider().fieldEmissions(face: face(left: trace(leftSide: true)), strengths: requested)
+        let emissions = EyebrowWarpProvider().fieldEmissions(
+            face: face(left: EyebrowSafetyFixtures.trace(side: .left)),
+            strengths: requested
+        )
         let sanitized = emissions.sanitizing(requested)
         XCTAssertEqual(sanitized.eyebrowYPosition, requested.eyebrowYPosition)
         XCTAssertEqual(sanitized.eyebrowSpacing, 0)
@@ -248,16 +319,28 @@ final class EyebrowWarpProviderTests: XCTestCase {
     }
 
     func testRequestAndConcurrencyIsolationUsesImmutableFixtures() {
-        let valid = face(left: trace(leftSide: true), right: trace(leftSide: false))
+        let valid = face(
+            left: EyebrowSafetyFixtures.trace(side: .left),
+            right: EyebrowSafetyFixtures.trace(side: .right)
+        )
         let missing = face()
-        let fixtures = [valid, missing, valid, face(left: trace(leftSide: true)), face(right: trace(leftSide: false))]
+        let fixtures = [
+            valid,
+            missing,
+            valid,
+            face(left: EyebrowSafetyFixtures.trace(side: .left)),
+            face(right: EyebrowSafetyFixtures.trace(side: .right)),
+        ]
         let values = fixtures.map { EyebrowWarpProvider().fieldEmissions(face: $0, strengths: yStrength(0.25)).points.count }
         XCTAssertEqual(values.filter { $0 == 0 }.count, 1)
         XCTAssertEqual(EyebrowWarpProvider().fieldEmissions(face: valid, strengths: yStrength(0.25)).points.count, 10)
     }
 
     func testEyebrowOnlyInputLeavesShippedProviderArraysByteEqual() {
-        let geometry = face(left: trace(leftSide: true), right: trace(leftSide: false))
+        let geometry = face(
+            left: EyebrowSafetyFixtures.trace(side: .left),
+            right: EyebrowSafetyFixtures.trace(side: .right)
+        )
         let baseline = BeautyEffectiveStrengths()
         var eyebrowOnly = baseline
         eyebrowOnly.eyebrowYPosition = 0.25

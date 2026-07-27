@@ -1,5 +1,6 @@
 import Foundation
 import BeautyCore
+import XCTest
 @testable import BeautyEffects
 @testable import BeautyDetection
 
@@ -30,6 +31,8 @@ struct EyebrowSafetyRow: @unchecked Sendable {
 }
 
 enum EyebrowSafetyFixtures {
+    private static let unitBounds = FaceBounds(x: 0, y: 0, width: 1, height: 1)
+
     static let rows: [EyebrowSafetyRow] = [
         EyebrowSafetyRow(
             name: "eyebrowYPosition",
@@ -121,22 +124,55 @@ enum EyebrowSafetyFixtures {
         BeautyEyebrowSemanticSupport(left: trace(side: .left), right: trace(side: .right))
     }
 
+    static func validatedTrace(
+        side: BeautyObservedEyebrowSide,
+        points: [SIMD2<Float>]?,
+        bounds: FaceBounds = FaceGeometry.fixture.bounds
+    ) -> BeautyEyebrowSemanticTrace? {
+        BeautyFaceGeometryAdapter.validatedBrowTrace(
+            points?.map { CoordinatePoint(x: Double($0.x), y: Double($0.y)) },
+            side: side,
+            bounds: bounds
+        )
+    }
+
     static func trace(
         side: BeautyObservedEyebrowSide,
         points: [SIMD2<Float>]? = nil,
-        apexIndex: Int? = 2
+        apexIndex: Int? = 2,
+        bounds: FaceBounds = FaceGeometry.fixture.bounds,
+        file: StaticString = #filePath,
+        line: UInt = #line
     ) -> BeautyEyebrowSemanticTrace {
-        let canonical = points ?? (side == .left
-            ? [.init(0.25, 0.40), .init(0.30, 0.36), .init(0.36, 0.34), .init(0.42, 0.37), .init(0.47, 0.41)]
-            : [.init(0.75, 0.40), .init(0.70, 0.36), .init(0.64, 0.34), .init(0.58, 0.37), .init(0.53, 0.41)])
-        return BeautyEyebrowSemanticTrace(
-            side: side,
-            points: canonical,
-            innerEndpoint: canonical[0],
-            outerEndpoint: canonical[canonical.count - 1],
-            center: canonical.reduce(.zero, +) / Float(canonical.count),
-            apexIndex: apexIndex
+        let canonical = points ?? canonicalPoints(side: side, hasApex: apexIndex != nil)
+        guard let validated = validatedTrace(side: side, points: canonical, bounds: bounds) else {
+            XCTFail("eyebrow fixture must pass production adapter validation", file: file, line: line)
+            return fallbackTrace(side: side, bounds: bounds)
+        }
+        let faceCenterX = bounds.x + bounds.width / 2
+        XCTAssertLessThan(
+            abs(validated.innerEndpoint.x - faceCenterX),
+            abs(validated.outerEndpoint.x - faceCenterX),
+            "eyebrow fixture must remain canonical inner-to-outer",
+            file: file,
+            line: line
         )
+        let relativeChord = abs(validated.outerEndpoint.x - validated.innerEndpoint.x) / bounds.width
+        XCTAssertTrue(
+            (BeautyFaceGeometryAdapter.minimumBrowChord...BeautyFaceGeometryAdapter.maximumBrowChord)
+                .contains(relativeChord),
+            file: file,
+            line: line
+        )
+        let yValues = validated.points.map(\.y)
+        let relativeVerticalSpan = (yValues.max()! - yValues.min()!) / bounds.height
+        XCTAssertLessThanOrEqual(
+            relativeVerticalSpan,
+            BeautyFaceGeometryAdapter.maximumBrowVerticalSpan,
+            file: file,
+            line: line
+        )
+        return validated
     }
 
     static func face(
@@ -174,7 +210,7 @@ enum EyebrowSafetyFixtures {
             let point = SIMD2<Float>(0.30, 0.40)
             let points = [point, point, point, point]
             return face(support: BeautyEyebrowSemanticSupport(
-                left: trace(side: .left, points: points, apexIndex: nil),
+                left: validatedTrace(side: .left, points: points),
                 right: nil
             ))
         case .missingApex:
@@ -187,58 +223,82 @@ enum EyebrowSafetyFixtures {
 
     static var adjacentStrengthFace: FaceGeometry {
         let leftPoints: [SIMD2<Float>] = [
-            .init(0.0010, 0.01230), .init(0.0011, 0.01216), .init(0.0012, 0.01210),
-            .init(0.0013, 0.01217), .init(0.0014, 0.01231),
+            .init(0.1815, 0.00130), .init(0.16125, 0.00116), .init(0.141, 0.00110),
+            .init(0.12075, 0.00117), .init(0.1005, 0.00131),
         ]
         let rightPoints: [SIMD2<Float>] = [
-            .init(0.0030, 0.01230), .init(0.0029, 0.01216), .init(0.0028, 0.01210),
-            .init(0.0027, 0.01217), .init(0.0026, 0.01231),
+            .init(0.8185, 0.00130), .init(0.83875, 0.00116), .init(0.859, 0.00110),
+            .init(0.87925, 0.00117), .init(0.8995, 0.00131),
         ]
         return FaceGeometry(
-            bounds: FaceBounds(x: 0, y: 0, width: 1, height: 1),
+            bounds: unitBounds,
             faceContour: [.init(0, 0), .init(0.5, 1), .init(1, 0)],
             observedEyebrowSupport: BeautyEyebrowSemanticSupport(
-                left: trace(side: .left, points: leftPoints),
-                right: trace(side: .right, points: rightPoints)
+                left: trace(side: .left, points: leftPoints, bounds: unitBounds),
+                right: trace(side: .right, points: rightPoints, bounds: unitBounds)
             )
         )
     }
 
     static var adjacentTiltFace: FaceGeometry {
         let leftPoints: [SIMD2<Float>] = [
-            .init(0.05, 0.00030), .init(0.14, 0.00016), .init(0.23, 0.00010),
-            .init(0.32, 0.00017), .init(0.41, 0.00031),
+            .init(0.1815, 0.00030), .init(0.16125, 0.00016), .init(0.141, 0.00010),
+            .init(0.12075, 0.00017), .init(0.1005, 0.00031),
         ]
         let rightPoints: [SIMD2<Float>] = [
-            .init(0.95, 0.00030), .init(0.86, 0.00016), .init(0.77, 0.00010),
-            .init(0.68, 0.00017), .init(0.59, 0.00031),
+            .init(0.8185, 0.00030), .init(0.83875, 0.00016), .init(0.859, 0.00010),
+            .init(0.87925, 0.00017), .init(0.8995, 0.00031),
         ]
         return FaceGeometry(
-            bounds: FaceBounds(x: 0, y: 0, width: 1, height: 1),
+            bounds: unitBounds,
             faceContour: [.init(0, 0), .init(0.5, 1), .init(1, 0)],
             observedEyebrowSupport: BeautyEyebrowSemanticSupport(
-                left: trace(side: .left, points: leftPoints),
-                right: trace(side: .right, points: rightPoints)
+                left: trace(side: .left, points: leftPoints, bounds: unitBounds),
+                right: trace(side: .right, points: rightPoints, bounds: unitBounds)
             )
         )
     }
 
     static var adjacentThicknessFace: FaceGeometry {
         let leftPoints: [SIMD2<Float>] = [
-            .init(0.0010, 0.0121), .init(0.0011, 0.0121), .init(0.0012, 0.0121),
-            .init(0.0013, 0.0121), .init(0.0014, 0.0121),
+            .init(0.1815, 0.0121), .init(0.16125, 0.0121), .init(0.141, 0.0121),
+            .init(0.12075, 0.0121), .init(0.1005, 0.0121),
         ]
         let rightPoints: [SIMD2<Float>] = [
-            .init(0.0030, 0.0121), .init(0.0029, 0.0121), .init(0.0028, 0.0121),
-            .init(0.0027, 0.0121), .init(0.0026, 0.0121),
+            .init(0.8185, 0.0121), .init(0.83875, 0.0121), .init(0.859, 0.0121),
+            .init(0.87925, 0.0121), .init(0.8995, 0.0121),
         ]
         return FaceGeometry(
-            bounds: FaceBounds(x: 0, y: 0, width: 1, height: 1),
+            bounds: unitBounds,
             faceContour: [.init(0, 0), .init(0.5, 1), .init(1, 0)],
             observedEyebrowSupport: BeautyEyebrowSemanticSupport(
-                left: trace(side: .left, points: leftPoints, apexIndex: nil),
-                right: trace(side: .right, points: rightPoints, apexIndex: nil)
+                left: trace(side: .left, points: leftPoints, apexIndex: nil, bounds: unitBounds),
+                right: trace(side: .right, points: rightPoints, apexIndex: nil, bounds: unitBounds)
             )
         )
+    }
+
+    private static func canonicalPoints(
+        side: BeautyObservedEyebrowSide,
+        hasApex: Bool
+    ) -> [SIMD2<Float>] {
+        let yValues: [Float] = hasApex
+            ? [0.41, 0.37, 0.34, 0.37, 0.41]
+            : [0.39, 0.38, 0.37, 0.36, 0.35]
+        let xValues: [Float] = side == .left
+            ? [0.47, 0.43, 0.39, 0.35, 0.31]
+            : [0.53, 0.57, 0.61, 0.65, 0.69]
+        return zip(xValues, yValues).map { SIMD2<Float>($0.0, $0.1) }
+    }
+
+    private static func fallbackTrace(
+        side: BeautyObservedEyebrowSide,
+        bounds: FaceBounds
+    ) -> BeautyEyebrowSemanticTrace {
+        let fallback = canonicalPoints(side: side, hasApex: true)
+        guard let validated = validatedTrace(side: side, points: fallback, bounds: bounds) else {
+            preconditionFailure("canonical eyebrow fixture must pass production validation")
+        }
+        return validated
     }
 }
