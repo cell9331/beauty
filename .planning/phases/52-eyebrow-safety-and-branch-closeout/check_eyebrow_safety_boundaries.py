@@ -655,7 +655,7 @@ def _security_gate(text: str) -> Result:
         and "threats_open: 0" in text
         and not open_threat
         and not high_open
-        and all(f"T-52-{number}" in text for number in range(1, 35))
+        and all(f"T-52-{number:02d}" in text for number in range(1, 35))
         and "T-52-SC" in text
     )
     return Result(
@@ -668,22 +668,51 @@ def _security_gate(text: str) -> Result:
 
 def _validation_gate(text: str) -> Result:
     task_rows = re.findall(r"^\| 52-0[1-6]-0[1-3] \|", text, re.MULTILINE)
-    passed_rows = re.findall(
-        r"^\| 52-0[1-6]-0[1-3] \|[^\n]*\|\s*✅ green\s*\|$",
-        text,
-        re.MULTILINE,
+    completed_ids = (
+        "52-01-01", "52-01-02", "52-01-03",
+        "52-02-01", "52-02-02",
+        "52-03-01", "52-03-02", "52-03-03",
+    )
+    future_ids = (
+        "52-04-01", "52-04-02",
+        "52-05-01", "52-05-02",
+        "52-06-01", "52-06-02",
+    )
+    green_ids = {
+        match.group(1) for match in re.finditer(
+            r"^\| (52-0[1-6]-0[1-3]) \|[^\n]*\|\s*✅ green\s*\|$",
+            text,
+            re.MULTILINE,
+        )
+    }
+    pending_ids = {
+        match.group(1) for match in re.finditer(
+            r"^\| (52-0[1-6]-0[1-3]) \|[^\n]*\|\s*⬜ pending\s*\|$",
+            text,
+            re.MULTILINE,
+        )
+    }
+    active_ledger = (
+        "status: active" in text
+        and green_ids == set(completed_ids)
+        and pending_ids == set(future_ids)
+    )
+    complete_ledger = (
+        "status: complete" in text
+        and green_ids == set(completed_ids + future_ids)
+        and not pending_ids
     )
     ok = (
         len(task_rows) == 14
-        and len(passed_rows) == 14
-        and "status: complete" in text
+        and (active_ledger or complete_ledger)
         and "nyquist_compliant: true" in text
         and "wave_0_complete: true" in text
     )
     return Result(
         "fourteen-task Nyquist ledger",
         ok,
-        f"tasks={len(task_rows)}/14; green={len(passed_rows)}/14; "
+        f"tasks={len(task_rows)}/14; green={len(green_ids)}; "
+        f"pending={len(pending_ids)}; active_or_complete={int(active_ledger or complete_ledger)}; "
         f"nyquist={int('nyquist_compliant: true' in text)}",
     )
 
@@ -1096,7 +1125,7 @@ def self_test(root: Path) -> int:
         require(not _review_gate("status: clean\nunclassified_matches: 1\n").ok, "unclassified review")
         security = (
             "asvs_level: 1\nthreats_open: 0\nT-52-SC\n"
-            + "\n".join(f"T-52-{number}" for number in range(1, 35))
+            + "\n".join(f"T-52-{number:02d}" for number in range(1, 35))
         )
         require(_security_gate(security).ok, "security positive")
         require(not _security_gate(security.replace("threats_open: 0", "threats_open: 1")).ok,
@@ -1112,9 +1141,28 @@ def self_test(root: Path) -> int:
             "status: complete\nnyquist_compliant: true\nwave_0_complete: true\n"
             + validation_rows + "\n"
         )
-        require(_validation_gate(validation).ok, "validation positive")
-        require(not _validation_gate(validation.replace("✅ green", "⬜ pending", 1)).ok,
-                "stale validation row accepted")
+        require(_validation_gate(validation).ok, "complete validation positive")
+        active_rows = "\n".join(
+            f"| 52-{plan:02d}-{task:02d} | x | "
+            f"{'✅ green' if plan <= 3 else '⬜ pending'} |"
+            for plan, task in (
+                (1, 1), (1, 2), (1, 3), (2, 1), (2, 2), (3, 1), (3, 2),
+                (3, 3), (4, 1), (4, 2), (5, 1), (5, 2), (6, 1), (6, 2),
+            )
+        )
+        active_validation = (
+            "status: active\nnyquist_compliant: true\nwave_0_complete: true\n"
+            + active_rows + "\n"
+        )
+        require(_validation_gate(active_validation).ok, "active validation positive")
+        require(
+            not _validation_gate(active_validation.replace("✅ green", "⬜ pending", 1)).ok,
+            "stale completed validation row accepted",
+        )
+        require(
+            not _validation_gate(active_validation.replace("⬜ pending", "✅ green", 1)).ok,
+            "premature future validation row accepted",
+        )
 
     # Owner, planning, and lifecycle modes classify their own mutations.
     with tempfile.TemporaryDirectory(prefix="phase52-owner-") as temporary:

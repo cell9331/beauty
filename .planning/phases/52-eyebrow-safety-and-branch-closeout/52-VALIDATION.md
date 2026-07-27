@@ -1,9 +1,9 @@
 ---
 phase: 52
 slug: eyebrow-safety-and-branch-closeout
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: active
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-07-27
 ---
 
@@ -50,7 +50,7 @@ created: 2026-07-27
 | 52-02-02 | 02 | 2 | SAFE-02 | T-52-10–12 | At most 44 monotone removals; final effective/emission/metric/dispatch equality | unit + integration | Resolver + pipeline focused suites | ✅ extend | ✅ green |
 | 52-03-01 | 03 | 3 | SAFE-03, DOC-01 | T-52-13–18, T-52-22–23, T-52-SC | Fail-closed pre/post-promotion, owner, privacy, dependency, artifact, concurrency/interruption, and lifecycle checker | static + adversarial | Checker compile + self-test + default live | ✅ Wave 0 | ✅ green |
 | 52-03-02 | 03 | 3 | SAFE-01, SAFE-02, SAFE-03 | T-52-17–20, T-52-22 | Fresh runtime plus unchanged strict output/gallery, fourteen reopened images, and disposable artifact evidence | full + integration | Focused/full SwiftPM + guarded strict/gallery commands | ✅ reuse | ✅ green |
-| 52-03-03 | 03 | 3 | SAFE-03 | T-52-19, T-52-21, T-52-23 | Clean standard review, fourteen-task Nyquist coverage, ASVS L1 zero-open precondition, and unchanged pre-promotion state | review + security | Review/security/validation artifact gates | ❌ Wave 3 | ⬜ pending |
+| 52-03-03 | 03 | 3 | SAFE-03 | T-52-19, T-52-21, T-52-23 | Clean standard review, fourteen-task Nyquist coverage, ASVS L1 zero-open precondition, and unchanged pre-promotion state | review + security | Review/security/validation artifact gates | ✅ Wave 3 | ✅ green |
 | 52-04-01 | 04 | 4 | DOC-01 | T-52-24, T-52-26 | Fresh evidence reauthorizes only the exact eyebrow status transaction | static | Default checker + evidence/precondition gates | ❌ Wave 0 | ⬜ pending |
 | 52-04-02 | 04 | 4 | DOC-01 | T-52-25–27 | Exactly seven rows and branch `眉毛` become implemented at SDK-core scope; all nonclaims preserved | docs/static | Post-promotion checker mode | ❌ Wave 0 | ⬜ pending |
 | 52-05-01 | 05 | 5 | SAFE-03, DOC-01 | T-52-28 | Example owners retain exact 72/13/144 vocabulary, fourteen-file review, disposable artifacts, and final cap/safety result | docs/static | Example-owner checker mode + helper/gallery self-tests | ❌ Wave 0 | ⬜ pending |
@@ -65,7 +65,7 @@ created: 2026-07-27
 - [x] `check_eyebrow_safety_boundaries.py` — compose Phase 49/50 classified boundaries and add cap, convergence, promotion, owner, lifecycle, and adversarial command/path/status modes.
 - [x] `BeautySDK/Tests/BeautyEffectsTests/EyebrowSafetyFixtures.swift` — one shared typed seven-field cap/dead-zone/radius/lifecycle/local-failure descriptor consumed by existing safety/resolver/provider/degradation tests.
 - [x] Final Phase 52 late-removal/reused/mixed-sign rows in existing convergence/pipeline tests.
-- [ ] `52-EYEBROW-SAFETY-EVIDENCE.md`, `52-SECURITY.md`, and `52-VERIFICATION.md` — evidence created; security and final verification remain owned by their later waves.
+- [x] `52-EYEBROW-SAFETY-EVIDENCE.md` and `52-SECURITY.md`; `52-VERIFICATION.md` remains explicitly owned by Wave 6 and has a complete automated row before that dependency is reached.
 
 ## Manual-Only Verifications
 
@@ -73,12 +73,12 @@ Commercial naturalness, physical-device parity, long-run performance, packaging,
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verification or an explicit Wave 0 dependency.
-- [ ] Sampling continuity: no three consecutive tasks lack automated verification.
-- [ ] Wave 0 covers all missing references before dependent promotion tasks.
-- [ ] No watch-mode flags.
-- [ ] Normal focused feedback latency remains under 180 seconds.
-- [ ] All SAFE/DOC requirements have automated coverage plus the inherited actual-image acceptance gate.
-- [ ] `nyquist_compliant: true` is set only after every task row has fresh evidence.
+- [x] All tasks have `<automated>` verification or an explicit Wave 0 dependency.
+- [x] Sampling continuity: no three consecutive tasks lack automated verification.
+- [x] Wave 0 covers all missing references before dependent promotion tasks.
+- [x] No watch-mode flags.
+- [x] Normal focused feedback latency remains under 180 seconds.
+- [x] All SAFE/DOC requirements have automated coverage plus the inherited actual-image acceptance gate.
+- [x] `nyquist_compliant: true` records complete planned coverage; execution status remains green only for the eight tasks with fresh results.
 
-**Approval:** pending execution.
+**Approval:** Nyquist coverage approved; Plan 52-04 through 52-06 execution remains pending.
