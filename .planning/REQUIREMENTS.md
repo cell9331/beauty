@@ -33,9 +33,9 @@
 
 ### Public-Facade Output Evidence
 
-- [ ] **OUT-01**: `BeautyExampleRenderer` contains thirteen isolated eyebrow cases—both directions for six signed controls and one peak case—expanding the exact matrix from 59 to 72 cases without bypassing `BeautySDK`.
-- [ ] **OUT-02**: A bounded strict helper decodes all 72 expected portrait outputs from the sole active portrait fixture `e6.jpg`, preserves dimensions, proves brow-local visibility and protected-region locality, preserves signed directions, and distinguishes all seven semantic families; the no-face negative is verified separately.
-- [ ] **OUT-03**: No-face and representative missing/malformed/partial eyebrow inputs produce safe public results, while renderer/output/gallery inventories remain exact, descriptor-safe, ignored, untracked, unstaged, and disposable.
+- [x] **OUT-01**: `BeautyExampleRenderer` contains thirteen isolated eyebrow cases—both directions for six signed controls and one peak case—expanding the exact matrix from 59 to 72 cases without bypassing `BeautySDK`.
+- [x] **OUT-02**: A bounded strict helper decodes all 72 expected portrait outputs from the sole active portrait fixture `e6.jpg`, preserves dimensions, proves brow-local visibility and protected-region locality, preserves signed directions, and distinguishes all seven semantic families; the no-face negative is verified separately.
+- [x] **OUT-03**: No-face and representative missing/malformed/partial eyebrow inputs produce safe public results, while renderer/output/gallery inventories remain exact, descriptor-safe, ignored, untracked, unstaged, and disposable.
 
 ### Safety, Privacy, and Closeout
 
@@ -93,9 +93,9 @@
 | GEOM-07 | Phase 50 | Complete |
 | PIPE-01 | Phase 50 | Complete |
 | PIPE-02 | Phase 50 | Complete |
-| OUT-01 | Phase 51 | Pending |
-| OUT-02 | Phase 51 | Pending |
-| OUT-03 | Phase 51 | Pending |
+| OUT-01 | Phase 51 | Complete |
+| OUT-02 | Phase 51 | Complete |
+| OUT-03 | Phase 51 | Complete |
 | SAFE-01 | Phase 52 | Pending |
 | SAFE-02 | Phase 52 | Pending |
 | SAFE-03 | Phase 52 | Pending |
@@ -109,4 +109,4 @@
 
 ---
 *Requirements defined: 2026-07-24*
-*Last updated: 2026-07-24 after v1.13 roadmap creation*
+*Last updated: 2026-07-27 after Phase 51 output-evidence closeout*

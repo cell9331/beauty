@@ -36,7 +36,7 @@
 | Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve legacy 52-key compatibility and all shipped face/eye/nose/mouth output while the current model is exactly 59 stored fields. |
 | Requirements | 21/21 mapped across Phase 49-52; no unmapped requirement. |
 | Roadmap | Phase 49 contract/support → Phase 50 geometry/pipeline → Phase 51 strict output → Phase 52 safety/promotion. |
-| Current step | Phase 50 is complete and transitioned. Phase 51 is planned as five sequential waves; execute `51-01-PLAN.md` next. |
+| Current step | Phase 51 is complete across all five plans. Phase 52 is the next bounded owner for final caps, exhaustive safety, and promotion; it has not been started. |
 
 Fixture-scope decision (2026-07-24):
 
@@ -56,6 +56,13 @@ Phase 51 execution correction (2026-07-25):
 - The mandatory e6 actual-image route exposed two pre-output defects hidden by synthetic provider tests: the CPU bitmap warp inverted canonical top-left image Y, and live Apple Vision eyebrow outlines can present adjacent raw endpoints at the same anatomical end. The in-progress Phase 51 correction aligns bitmap sampling with `ImageNormalized` top-left/downward Y and stably orders the exactly-once mapped Vision eyebrow sample multiset by the mapper-derived face-right axis before adapter validation.
 - The correction preserves one detector request, actual left/right Vision provenance, independent side failure, the exact mapped sample multiset, package-only request lifetime, aggregate-only diagnostics, and the existing unified warp. It does not raise provisional caps, synthesize support, promote rows, or broaden Phase 51 ownership.
 
+Phase 51 closeout record (2026-07-27):
+
+- Plans 51-01 through 51-05 add exactly thirteen isolated public cases to the 72-case renderer, a bounded strict helper, separately measured and frozen acceptance thresholds, original-detail review of fourteen actual `e6` files, and a descriptor-safe 144-file gallery.
+- Fresh focused evidence passes renderer 16/16, provider 12/12, and facade 18 pass plus one opt-in skip. The full SwiftPM retry passes 438 executed with six opt-in skips after restoring fail-closed rejection for a zero-extent eyebrow projection.
+- The final strict gate passes 72/72 portrait outputs, 13/13 visibility, 6/6 signed directions, 21/21 family distinctions, 40/40 direct portrait comparisons, and 13/13 separate no-face comparisons. Output/gallery bijection and ignored/untracked/unstaged containment pass.
+- OUT-01, OUT-02, and OUT-03 are complete. Provisional caps, SAFE-01..03, DOC-01, all seven `future` rows, branch `眉毛`, exhaustive safety, and Demo/device/commercial/performance/packaging/shipping/release scope remain unchanged for Phase 52 or later.
+
 Phase 49 closeout record (2026-07-24):
 
 - Plans 49-01 through 49-04 delivered the exact 59 stored/58 numeric public model, neutral legacy 52-key/source/reset/diff/equality/round-trip behavior, unchanged five-preset bytes, actual `leftEyebrow`/`rightEyebrow` capture from one request, exactly-once mapping, mapper-axis side/order canonicalization, and package-only request-scoped semantic attachment.
@@ -71,6 +78,22 @@ Planned follow-on milestones:
 - v1.16: `去双下巴`, `去双下巴 Pro`, and narrow facial-feature closeout.
 
 ## 4. Completed
+
+### C-2026-07-27-phase-51-public-facade-eyebrow-output-evidence
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-27 |
+| Scope | Five plans completed exact public renderer cases, bounded strict decoded evidence, mandatory actual-image review, descriptor-safe gallery publication, and owner/requirement closeout. |
+| Verification | Renderer 16/16; facade 18 pass plus one opt-in skip; provider 12/12; full SwiftPM 438 with six opt-in skips; strict 72/72 portrait, 13/13 visibility, 6/6 direction, 21/21 distinctions, 40/40 direct, 13/13 no-face; gallery 144/144; containment/privacy/scope/diff gates pass. |
+| Requirements | OUT-01, OUT-02, and OUT-03 complete. |
+| Boundary | Phase 52 remains the unstarted owner of final caps, exhaustive safety, seven-row and `眉毛` branch promotion, SAFE-01..03, and DOC-01. |
+
+Outcome:
+
+- All thirteen provisional eyebrow cases are visible, brow-local, signed as intended, and semantically distinct on the one authorized portrait through the existing public-facade/one-warp route.
+- The fourteen-file original-detail review agrees with frozen pixel evidence; exact count vocabulary keeps 72 portrait outputs separate from thirteen no-face comparisons and the 144-file two-fixture total.
+- Generated evidence is disposable and contained. No public raw geometry, internal-renderer bypass, dependency/model/resource/network/cloud/Demo behavior, product promotion, or release claim was introduced.
 
 ### C-2026-07-24-phase-50-independent-eyebrow-geometry-and-pipeline
 

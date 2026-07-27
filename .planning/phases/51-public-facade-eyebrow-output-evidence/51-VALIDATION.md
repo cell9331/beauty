@@ -1,8 +1,8 @@
 ---
 phase: 51
 slug: public-facade-eyebrow-output-evidence
-status: executing
-nyquist_compliant: false
+status: complete
+nyquist_compliant: true
 wave_0_complete: true
 created: 2026-07-24
 ---
@@ -53,8 +53,8 @@ created: 2026-07-24
 | 51-04-01 | 04 | 4 | OUT-03 | T-51-18–21 | Exact descriptor-safe eyebrow gallery group | Python self-test | Gallery self-test + bytecode compilation | passed |
 | 51-04-02 | 04 | 4 | OUT-03 | T-51-18–22 | Exact ignored 144-file publication with no retired portraits | integration/static | Gallery publication + bijection + artifact scans | passed — 144/144 |
 | 51-05-01 | 05 | 5 | OUT-01, OUT-02, OUT-03 | T-51-23–27 | Fresh complete evidence and no pre-recorded green rows | full/integration/static | Focused + full + helper + strict + gallery + scans | passed — evidence below |
-| 51-05-02 | 05 | 5 | OUT-01, OUT-02, OUT-03 | T-51-24–26 | Owner contracts preserve count, privacy, reliability, and Phase 52 boundaries | static/docs | Owner keyword/cardinality and diff gates | pending owner synchronization |
-| 51-05-03 | 05 | 5 | OUT-01, OUT-02, OUT-03 | T-51-24–27 | Close only OUT-01..03 and Phase 51 | static/ledger | Requirement/roadmap/state/product checks | pending lifecycle synchronization |
+| 51-05-02 | 05 | 5 | OUT-01, OUT-02, OUT-03 | T-51-24–26 | Owner contracts preserve count, privacy, reliability, and Phase 52 boundaries | static/docs | Owner keyword/cardinality and diff gates | passed — architecture/design/security/reliability owners synchronized |
+| 51-05-03 | 05 | 5 | OUT-01, OUT-02, OUT-03 | T-51-24–27 | Close only OUT-01..03 and Phase 51 | static/ledger | Requirement/roadmap/state/product checks | passed — OUT-01..03 and five plans closed; SAFE/DOC remain open |
 
 ## Wave 0 Requirements
 
@@ -124,7 +124,7 @@ Automated pixel gates are necessary but not sufficient. Plan 51-03 must open `e6
 - [x] Exact 72 portrait / 13 negative / 144 total terminology is preserved.
 - [x] Fourteen actual representative images are opened and reviewed.
 - [x] Full SwiftPM, strict helper, gallery, artifact, privacy/scope, and diff gates pass.
-- [ ] OUT-01..03 close while SAFE-01..03 and DOC-01 remain open.
-- [ ] Set `status: complete` and `nyquist_compliant: true` after owner and lifecycle synchronization fills the final two rows.
+- [x] OUT-01..03 close while SAFE-01..03 and DOC-01 remain open.
+- [x] `status: complete` and `nyquist_compliant: true` are set after owner and lifecycle synchronization filled the final two rows.
 
-**Approval:** Automated and actual-image output evidence is approved; final Phase 51 approval awaits owner and lifecycle synchronization. Effective caps, seven row and branch promotion, exhaustive safety, Demo/device/commercial/performance/packaging/shipping/release claims, SAFE-01..03, and DOC-01 remain Phase 52 or later work.
+**Approval:** Phase 51 automated, actual-image, owner, and lifecycle evidence is approved. Effective caps, seven row and branch promotion, exhaustive safety, Demo/device/commercial/performance/packaging/shipping/release claims, SAFE-01..03, and DOC-01 remain Phase 52 or later work.

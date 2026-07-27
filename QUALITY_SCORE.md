@@ -537,3 +537,10 @@ SDK 1.0 readiness:
 - The unchanged strict output gate passes 413/413 decode/dimensions, 18/18 visibility/locality, 49/49 fixed-neighbor, 6/6 ineligible, and 4/4 no-face comparisons; the exact 413-file ignored gallery remains untracked and unstaged.
 - The boundary checker compiles, passes 70/70 self-test mutations, 17/17 pre-promotion checks, and 18/18 promotion checks. Standard review is clean; ASVS L1 records `threats_open: 0`.
 - Exactly four rows are promoted while three rows remain future and branch `脸型` remains partial. Scores gain no credit for device, subjective/commercial quality, optimized performance, Demo work, packaging, shipping, launch, or independent milestone-audit evidence.
+
+### v1.13 Phase 51 Eyebrow Output Evidence Score
+
+- Fresh focused evidence passes renderer 16/16, provider 12/12, and facade 18 passes with one explicit opt-in Apple Vision integration skip. After a fail-closed zero-extent projection correction, the fresh full SwiftPM retry passes 438 executed with six opt-in skips and zero failures.
+- The final guarded clean render and frozen strict helper pass 72/72 `e6` portrait outputs, 13/13 visibility, 6/6 signed direction, 21/21 semantic distinctions, 40/40 direct portrait comparisons, and thirteen separately counted no-face no-ops.
+- Gallery publication is exactly 144 regular PNGs with thirteen eyebrow groups and a 144/144 output/gallery name bijection. Output, gallery, and bounded quarantine are ignored, untracked, and unstaged; staging is absent. Fourteen actual images were opened at original detail and the recorded visual verdict passes.
+- These counts close Phase 51 output evidence only. They do not raise quality credit for final caps, exhaustive safety, row/branch promotion, Demo/device/commercial naturalness, optimized performance, packaging, shipping, launch readiness, or Phase 52 completion.

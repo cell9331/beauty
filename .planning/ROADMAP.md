@@ -21,7 +21,7 @@
 
 - [x] **Phase 49: Public Contract and Observed Eyebrow Support** — Exact 59-field compatibility, actual left/right Vision eyebrow mapping, open-trace validation, side/order canonicalization, and private lifecycle. (completed 2026-07-24)
 - [x] **Phase 50: Independent Eyebrow Geometry and Pipeline Integration** — Seven distinct named transforms, field-local eligibility, exact 44-field convergence, unified dispatch, and redacted facade routing. (completed 2026-07-24)
-- [ ] **Phase 51: Public-Facade Eyebrow Output Evidence** — Thirteen isolated cases, strict single-portrait direction/locality/distinction evidence, safe no-ops, and ignored gallery containment.
+- [x] **Phase 51: Public-Facade Eyebrow Output Evidence** — Thirteen isolated cases, strict single-portrait direction/locality/distinction evidence, safe no-ops, and ignored gallery containment. (completed 2026-07-27)
 - [ ] **Phase 52: Eyebrow Safety and Branch Closeout** — Final caps, complete transitions, active-source/privacy gates, exact seven-row promotion, and implemented branch status.
 
 ## Phase Details
@@ -94,27 +94,27 @@
 
 **Requirements:** OUT-01, OUT-02, OUT-03
 
-**Plans:** 5 plans
+**Plans:** 5/5 plans complete
 
 **Wave 1**
 
-- [ ] 51-01-PLAN.md — Add the exact thirteen public eyebrow cases and representative facade degradation evidence.
+- [x] 51-01-PLAN.md — Add the exact thirteen public eyebrow cases and representative facade degradation evidence.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 51-02-PLAN.md — Build the bounded single-portrait decoder and non-circular semantic gate.
+- [x] 51-02-PLAN.md — Build the bounded single-portrait decoder and non-circular semantic gate.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 51-03-PLAN.md — Freeze measured thresholds, accept a clean e6 matrix, and open every representative eyebrow image.
+- [x] 51-03-PLAN.md — Freeze measured thresholds, accept a clean e6 matrix, and open every representative eyebrow image.
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 51-04-PLAN.md — Publish the exact descriptor-safe eyebrow gallery and live validation instructions.
+- [x] 51-04-PLAN.md — Publish the exact descriptor-safe eyebrow gallery and live validation instructions.
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 51-05-PLAN.md — Run final gates, synchronize owners, and close only OUT-01 through OUT-03.
+- [x] 51-05-PLAN.md — Run final gates, synchronize owners, and close only OUT-01 through OUT-03.
 
 **Success criteria:**
 
@@ -146,7 +146,7 @@
 | --- | --- | --- | --- | --- |
 | 49. Public Contract and Observed Eyebrow Support | v1.13 | 5 | Complete    | 2026-07-24 |
 | 50. Independent Eyebrow Geometry and Pipeline Integration | v1.13 | 9 | Complete | 2026-07-24 |
-| 51. Public-Facade Eyebrow Output Evidence | v1.13 | 3 | Planned | — |
+| 51. Public-Facade Eyebrow Output Evidence | v1.13 | 3 | Complete | 2026-07-27 |
 | 52. Eyebrow Safety and Branch Closeout | v1.13 | 4 | Not started | — |
 
 ## Backlog
@@ -158,4 +158,4 @@
 - SwiftUI/Demo UI, physical-device parity, commercial visual approval, optimized profiling, packaging, shipping, and launch-readiness evidence remain separately scoped.
 
 ---
-*Last updated: 2026-07-24 after Phase 51 planning and Phase 50 lifecycle transition*
+*Last updated: 2026-07-27 after Phase 51 output-evidence closeout; Phase 52 remains unstarted*
