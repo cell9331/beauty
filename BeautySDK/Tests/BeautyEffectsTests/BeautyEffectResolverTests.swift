@@ -13,6 +13,45 @@ private struct Phase46ResolverFieldRow {
 }
 
 final class BeautyEffectResolverTests: XCTestCase {
+    func testSAFE01EyebrowExactCapOverflowDirectionAndRedactionMatrix() {
+        let face = EyebrowSafetyFixtures.face()
+
+        for row in EyebrowSafetyFixtures.rows {
+            let exactDirections: [Float] = row.isSigned ? [row.cap, -row.cap] : [row.cap]
+            for input in exactDirections {
+                let plan = BeautyEffectResolver.resolve(parameters: row.makeParameters(input), faceGeometry: face)
+                XCTAssertEqual(plan.effectiveStrengths[keyPath: row.effectiveValue], input, row.name)
+                XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 0, row.name)
+                XCTAssertFalse(plan.warnings.contains { $0.code == "beauty_strength_capped" }, row.name)
+            }
+
+            let overflowDirections: [Float] = row.isSigned ? [row.cap.nextUp, -row.cap.nextUp, 1, -1] : [row.cap.nextUp, 1]
+            for input in overflowDirections {
+                let expected = row.isSigned && input < 0 ? -row.cap : row.cap
+                let plan = BeautyEffectResolver.resolve(parameters: row.makeParameters(input), faceGeometry: face)
+                XCTAssertEqual(plan.effectiveStrengths[keyPath: row.effectiveValue], expected, row.name)
+                XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 1, row.name)
+                XCTAssertEqual(plan.warnings.filter { $0.code == "beauty_strength_capped" }.count, 1, row.name)
+                assertRedacted(plan)
+            }
+
+            for input in [Float.nan, .infinity, -.infinity] {
+                let parameters = row.makeParameters(input)
+                let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: face)
+                XCTAssertEqual(parameters[keyPath: row.publicValue], 0, row.name)
+                XCTAssertEqual(plan.effectiveStrengths[keyPath: row.effectiveValue], 0, row.name)
+                XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 0, row.name)
+            }
+            if !row.isSigned {
+                let parameters = row.makeParameters(-1)
+                let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: face)
+                XCTAssertEqual(parameters[keyPath: row.publicValue], 0, row.name)
+                XCTAssertEqual(plan.effectiveStrengths[keyPath: row.effectiveValue], 0, row.name)
+                XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 0, row.name)
+            }
+        }
+    }
+
     func testDefaultParametersResolveToNoActiveDomains() {
         let plan = BeautyEffectResolver.resolve(parameters: BeautyParameters())
 

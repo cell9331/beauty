@@ -3,6 +3,37 @@ import BeautyCore
 @testable import BeautyEffects
 
 final class BeautySafetyCapsTests: XCTestCase {
+    func testSAFE01FinalEyebrowDescriptorIsExactlySevenUniqueRows() {
+        let rows = EyebrowSafetyFixtures.rows
+
+        XCTAssertEqual(rows.count, 7)
+        XCTAssertEqual(Set(rows.map(\.name)).count, 7)
+        XCTAssertEqual(Set(rows.map(\.narrowestUnavailableFixture)).count, 4)
+        XCTAssertEqual(rows.filter(\.isSigned).count, 6)
+        XCTAssertEqual(rows.filter { !$0.isSigned }.map(\.name), ["eyebrowPeakDefinition"])
+        XCTAssertEqual(rows.map(\.cap), Array(repeating: 0.25, count: 7))
+        XCTAssertEqual(rows.map(\.reusedStrength), Array(repeating: 0.125, count: 7))
+        XCTAssertEqual(rows.map(\.maximumRadiusFraction), [0.08, 0.055, 0.07, 0.08, 0.06, 0.075, 0.055])
+
+        for row in rows {
+            let parameters = row.makeParameters(row.isSigned ? -0.25 : 0.25)
+            XCTAssertEqual(parameters[keyPath: row.publicValue], row.isSigned ? -0.25 : 0.25, row.name)
+            XCTAssertEqual(row.strengths(row.cap)[keyPath: row.effectiveValue], row.cap, row.name)
+        }
+    }
+
+    func testSAFE01EyebrowCapOwnershipIsFinalAndHasNoProvisionalMarker() throws {
+        let packageRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let sourceURL = packageRoot.appendingPathComponent("Sources/BeautyEffects/Planning/BeautySafetyCaps.swift")
+        let source = try String(contentsOf: sourceURL, encoding: .utf8)
+
+        XCTAssertTrue(source.contains("Final evidence-backed eyebrow geometry caps (Phase 52)."))
+        XCTAssertFalse(source.contains("Provisional Phase 50 eyebrow caps"))
+    }
+
     func testSAFE01FinalContourAndChinCapsAreExactlyPointTwoFive() {
         let values: [(String, Float)] = [
             ("faceContourSmooth", BeautySafetyCaps.faceContourSmooth),
