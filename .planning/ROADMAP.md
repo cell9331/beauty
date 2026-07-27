@@ -131,7 +131,7 @@
 
 **Requirements:** SAFE-01, SAFE-02, SAFE-03, DOC-01
 
-**Plans:** 1/6 plans executed
+**Plans:** 2/6 plans executed
 
 **Wave 1**
 
@@ -139,7 +139,7 @@
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 52-02-PLAN.md — Freeze exact 44-field convergence, final named emissions, accounting, and dispatch agreement.
+- [x] 52-02-PLAN.md — Freeze exact 44-field convergence, final named emissions, accounting, and dispatch agreement.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
