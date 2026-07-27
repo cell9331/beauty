@@ -131,7 +131,7 @@
 
 **Requirements:** SAFE-01, SAFE-02, SAFE-03, DOC-01
 
-**Plans:** 3/6 plans executed
+**Plans:** 4/6 plans executed
 
 **Wave 1**
 
@@ -147,7 +147,7 @@
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 52-04-PLAN.md — Promote exactly seven eyebrow rows and branch `眉毛` atomically from fresh evidence.
+- [x] 52-04-PLAN.md — Promote exactly seven eyebrow rows and branch `眉毛` atomically from fresh evidence.
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
