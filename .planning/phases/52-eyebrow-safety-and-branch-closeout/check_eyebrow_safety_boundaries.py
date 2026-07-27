@@ -610,7 +610,7 @@ def evidence_content_gate(
     )
 
 
-def governance_gate(root: Path) -> list[Result]:
+def governance_gate(root: Path, require_complete_validation: bool = False) -> list[Result]:
     hashes = {relative: sha256_path(root, relative) for relative in PINNED_EVIDENCE_FILES}
     evidence = checked_result(
         "fresh runtime/output/visual evidence",
@@ -625,8 +625,11 @@ def governance_gate(root: Path) -> list[Result]:
         lambda: _security_gate(read(root, SECURITY_RECORD)),
     )
     validation = checked_result(
-        "fourteen-task Nyquist ledger",
-        lambda: _validation_gate(read(root, VALIDATION)),
+        "twenty-three-task Nyquist ledger",
+        lambda: _validation_gate(
+            read(root, VALIDATION),
+            require_complete=require_complete_validation,
+        ),
     )
     return [evidence, review, security, validation]
 
@@ -668,7 +671,7 @@ def _security_gate(text: str) -> Result:
     )
 
 
-def _validation_gate(text: str) -> Result:
+def _validation_gate(text: str, require_complete: bool = False) -> Result:
     expected_ids = tuple(
         f"52-{plan:02d}-{task:02d}"
         for plan, task_count in (
@@ -694,7 +697,7 @@ def _validation_gate(text: str) -> Result:
     }
     active_ledger = (
         "status: in_progress" in text
-        and len(green_ids) in {19, 21}
+        and len(green_ids) in {19, 21, 22}
         and green_ids == set(expected_ids[:len(green_ids)])
         and pending_ids == set(expected_ids[len(green_ids):])
     )
@@ -707,7 +710,7 @@ def _validation_gate(text: str) -> Result:
         len(task_rows) == 23
         and tuple(task_rows) == expected_ids
         and len(set(task_rows)) == 23
-        and (active_ledger or complete_ledger)
+        and (complete_ledger if require_complete else (active_ledger or complete_ledger))
         and "nyquist_compliant: true" in text
         and "wave_0_complete: true" in text
         and "task_coverage: 23/23" in text
@@ -716,7 +719,9 @@ def _validation_gate(text: str) -> Result:
         "twenty-three-task Nyquist ledger",
         ok,
         f"tasks={len(task_rows)}/23; green={len(green_ids)}; "
-        f"pending={len(pending_ids)}; active_or_complete={int(active_ledger or complete_ledger)}; "
+        f"pending={len(pending_ids)}; "
+        f"required_state={'complete' if require_complete else 'active-or-complete'}; "
+        f"state_ok={int(complete_ledger if require_complete else (active_ledger or complete_ledger))}; "
         f"nyquist={int('nyquist_compliant: true' in text)}",
     )
 
@@ -1156,7 +1161,10 @@ def self_test(root: Path) -> int:
             "task_coverage: 23/23\n"
             + validation_rows + "\n"
         )
-        require(_validation_gate(validation).ok, "complete validation positive")
+        require(
+            _validation_gate(validation, require_complete=True).ok,
+            "complete validation positive",
+        )
         active_rows = "\n".join(
             f"| {task_id} | x | {'✅ green' if index < 19 else '⬜ pending'} |"
             for index, task_id in enumerate(validation_ids)
@@ -1346,7 +1354,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         # pre-promotion worktree.
         results = live_checks(root, promoted=True)
         if governance_requested:
-            results.extend(governance_gate(root))
+            results.extend(
+                governance_gate(
+                    root,
+                    require_complete_validation=args.allow_promotion,
+                )
+            )
             results.append(_exact_eyebrow_taxonomy(read(root, BLUEPRINT_FILES[0])))
         if args.check_promotion:
             results.append(exact_promotion_worktree_gate(root))
