@@ -131,7 +131,7 @@
 
 **Requirements:** SAFE-01, SAFE-02, SAFE-03, DOC-01
 
-**Plans:** 8/10 plans executed
+**Plans:** 9/10 plans executed
 
 **Wave 1**
 
@@ -171,7 +171,7 @@
 
 **Wave 9** *(blocked on Wave 8 and the independent review gate)*
 
-- [ ] 52-09-PLAN.md — Resynchronize routed root owners from independently reviewed evidence.
+- [x] 52-09-PLAN.md — Resynchronize routed root owners from independently reviewed evidence.
 
 **Wave 10** *(blocked on Wave 9 completion)*
 
@@ -191,7 +191,7 @@
 | 49. Public Contract and Observed Eyebrow Support | v1.13 | 5 | Complete    | 2026-07-24 |
 | 50. Independent Eyebrow Geometry and Pipeline Integration | v1.13 | 9 | Complete | 2026-07-24 |
 | 51. Public-Facade Eyebrow Output Evidence | v1.13 | 3 | Complete    | 2026-07-27 |
-| 52. Eyebrow Safety and Branch Closeout | v1.13 | 8/10 | In Progress|  |
+| 52. Eyebrow Safety and Branch Closeout | v1.13 | 9/10 | In Progress|  |
 
 ## Backlog
 
