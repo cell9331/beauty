@@ -1,10 +1,12 @@
 ---
 phase: 52-eyebrow-safety-and-branch-closeout
-reviewed: 2026-07-27T05:38:53Z
+reviewed: 2026-07-27T07:59:47Z
+reviewer: independent-gsd-code-reviewer
 depth: standard
-files_reviewed: 24
+files_reviewed: 25
 files_reviewed_list:
   - ARCHITECTURE.md
+  - BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift
   - BeautySDK/Sources/BeautyEffects/Planning/BeautySafetyCaps.swift
   - BeautySDK/Sources/BeautyEffects/Warp/EyebrowWarpProvider.swift
   - BeautySDK/Tests/BeautyCoreTests/BeautyEngineGeometryFacadeTests.swift
@@ -38,107 +40,125 @@ status: issues_found
 
 # Phase 52: Code Review Report
 
-**Reviewed:** 2026-07-27T05:38:53Z
+**Reviewed:** 2026-07-27T07:59:47Z
+**Reviewer:** independent `gsd-code-reviewer`
 **Depth:** standard
-**Files Reviewed:** 24
+**Files Reviewed:** 25
 **Status:** issues_found
 
 ## Summary
 
-The final cap/provider implementation and the 44-field resolver/dispatch path are
-internally consistent, and no production security or privacy vulnerability was
-found. The review found three test-reliability defects: the shared eyebrow
-oracle constructs support that contradicts the production canonicalization and
-validation contract, the cancellation case exits before any resolver/provider
-work begins, and the late-removal test manually reproduces rather than executes
-the production convergence loop. These gaps weaken the evidence used to close
-SAFE-01 and SAFE-02.
+The fresh review confirms that the previous WR-01 fixture defect and WR-03
+convergence-test defect are closed: shared traces now traverse
+`BeautyFaceGeometryAdapter`, and the seven late-removal rows now observe the
+real resolver-owned 44-pass loop with a non-vacuous nonzero assertion. The
+focused provider suite and both targeted gap-closure tests pass.
+
+The previous WR-02 is only partially closed. Cancellation now occurs after
+real resolver/provider entry, but the only cancellation-aware publication
+check is still invented by the test after the synchronous resolver returns;
+no production request/publication boundary is exercised. The same test can
+also hang indefinitely if either observation callback regresses. Finally, the
+scoped root owner documents still describe the obsolete six-plan,
+fourteen-task, clean-review closeout and incorrectly route directly to the
+milestone audit despite the committed Wave 7/8 and pending Wave 9/10 and
+independent re-verification state.
 
 ## Narrative Findings (AI reviewer)
 
-### Warnings
+## Warnings
 
-#### WR-01: Shared safety fixtures violate the production eyebrow-support contract
-
-**Classification:** WARNING
-
-**File:** `/Users/yakangwang/codes/beauty/BeautySDK/Tests/BeautyEffectsTests/EyebrowSafetyFixtures.swift:129-138`
-
-**Issue:** The shared oracle labels the first point as `innerEndpoint`, but its
-default left trace runs from x `0.25` to `0.47` and its right trace runs from
-`0.75` to `0.53`. That is the opposite of the production mapper's canonical
-inner-to-outer order, which sorts the left side from the center outward and the
-right side from the center outward. Consequently, length and head-spacing
-tests exercise anatomically swapped endpoints while still passing because the
-expected values are derived from the same mislabeled fixture. The adjacency
-fixtures at lines 188-240 compound the gap: the strength and thickness traces
-have a `0.0004` chord even though the production adapter rejects chords below
-`0.08`. Direct `FaceGeometry` construction bypasses that trust boundary, so the
-tests call these fixtures eligible even though they cannot be produced by the
-real observation-to-geometry path.
-
-**Fix:** Build the shared traces through
-`BeautyFaceGeometryAdapter.validatedBrowTrace` (or an equivalent production
-mapping fixture), use adapter-valid chord/span values, and assert that the
-inner endpoint is closer to the face center than the outer endpoint along the
-face-right projection. Apply the same canonical fixture to
-`EyebrowWarpProviderTests` instead of maintaining its duplicated reversed
-trace helper.
-
-#### WR-02: Cancellation test cancels only an artificial sleep, not eyebrow work
+### WR-01: Cancellation evidence still invents the publication boundary in test code
 
 **Classification:** WARNING
 
-**File:** `/Users/yakangwang/codes/beauty/BeautySDK/Tests/BeautyEffectsTests/MissingLandmarkDegradationTests.swift:1297-1308`
+**File:** `/Users/yakangwang/codes/beauty/BeautySDK/Tests/BeautyEffectsTests/MissingLandmarkDegradationTests.swift:1354-1364`
 
-**Issue:** The task's first operation is a throwing `Task.sleep`, and the task
-is cancelled immediately. `Task.sleep` throws `CancellationError`, so execution
-never reaches `BeautyEffectResolver.resolve` at line 1300. The passing test
-therefore proves only that a cancelled sleep stops subsequent code; it does not
-exercise resolver, provider, facade, warning, metric, or support isolation
-during interrupted work, despite the test name and Phase 52 reliability
-contract claiming that coverage.
+**Related contract:** `/Users/yakangwang/codes/beauty/RELIABILITY.md:685`
 
-**Fix:** Use a deterministic barrier/continuation to signal that the task has
-entered the request path before cancellation, then allow the cancelled request
-to finish or discard its result and verify concurrent and subsequent request
-identities. If the synchronous resolver is intentionally not cancellable,
-state that narrower contract and test cancellation at the actual asynchronous
-facade boundary rather than before the resolver call.
+**Issue:** The new callbacks correctly prove that the detached task enters
+`BeautyEffectResolver` and `EyebrowWarpProvider`. However, after the provider
+barrier is released, the synchronous resolver completes normally and the test
+itself performs `guard !Task.isCancelled` before constructing its synthetic
+`Phase52RequestSnapshot`. The reviewed production path has observation
+callbacks but no cancellation-aware request/publication boundary corresponding
+to this guard. Consequently the test proves resolver/provider statelessness and
+test-wrapper discard, but it still does not prove the root reliability claim
+that an interrupted production request cannot publish a partial/stale result.
+A caller that publishes the synchronous result without duplicating this
+test-only guard is not covered.
 
-#### WR-03: Late provider-empty test bypasses the production convergence loop
+**Fix:** Exercise the actual asynchronous owner that decides whether a
+completed SDK result may replace current request state, cancel after real
+provider entry, and assert that the cancelled request cannot commit. If the
+SDK contract is intentionally synchronous and cancellation belongs entirely
+to host code, narrow `RELIABILITY.md` and Phase 52 evidence to request-local
+stateless completion, and stop treating the test-local `Task.isCancelled`
+guard as production cancellation evidence.
+
+### WR-02: The cancellation regression test has unbounded waits
 
 **Classification:** WARNING
 
-**File:** `/Users/yakangwang/codes/beauty/BeautySDK/Tests/BeautyEffectsTests/CombinedEffectSafetyTests.swift:88-128`
+**File:** `/Users/yakangwang/codes/beauty/BeautySDK/Tests/BeautyEffectsTests/MissingLandmarkDegradationTests.swift:29-42`
 
-**Issue:** The test that claims every eyebrow row is removed monotonically
-never calls `BeautyEffectResolver` or its 44-pass convergence function. It
-manually invokes `GeometryConflictResolver`, then manually calls provider
-sanitization, then invokes the conflict resolver again. A defect in the real
-retained-baseline update, provider order, loop termination, or final resolution
-would not fail this test. The numeric assertion is also ineffective:
-`providerEmptyThreshold` is half an ULP while the allowed accuracy is one full
-ULP, so an incorrect zero scaled strength satisfies the assertion and still
-produces the expected empty emission.
+**Related file:** `/Users/yakangwang/codes/beauty/BeautySDK/Tests/BeautyEffectsTests/MissingLandmarkDegradationTests.swift:56-59`
 
-**Fix:** Drive each row through the real resolver convergence path using
-adapter-valid precision-boundary geometry that emits before the production
-scale and becomes empty after it, or expose the convergence helper through a
-testable internal seam. Assert that the pre-sanitization scaled value is
-strictly nonzero with a tolerance smaller than the expected value, then verify
-the final public plan removes the field and that repeated resolution cannot
-re-enter it.
+**Issue:** `Phase52RequestSignal.wait()` suspends without a deadline and
+`Phase52ProviderBarrier.enterAndWaitForRelease()` blocks on an unbounded
+`DispatchSemaphore.wait()`. The test awaits both at lines 1378-1379 before it
+can cancel or release the detached task. A regression that removes or moves
+either callback therefore hangs the test process instead of producing a
+bounded assertion failure, which makes this safety gate unreliable in CI and
+can strand a worker indefinitely.
+
+**Fix:** Race each entry signal against a short test timeout (or use XCTest
+expectations with `fulfillment(of:timeout:)`), make the barrier wait bounded,
+and use `defer` to release/cancel the detached task on every failure path.
+Assert timeout as a normal test failure.
+
+### WR-03: Root owner records contradict the committed Phase 52 workflow state
+
+**Classification:** WARNING
+
+**File:** `/Users/yakangwang/codes/beauty/PLANS.md:39`
+
+**Related files:**
+
+- `/Users/yakangwang/codes/beauty/PLANS.md:66-72`
+- `/Users/yakangwang/codes/beauty/PLANS.md:90-98`
+- `/Users/yakangwang/codes/beauty/QUALITY_SCORE.md:548-553`
+
+**Issue:** The current owner ledger says Phase 52 completed only six plans and
+that the independent milestone audit is the sole next step. It also claims a
+clean review and a fourteen-task Nyquist ledger. The committed Wave 7/8
+summaries establish eight completed plans, the current validation artifact is
+23-task/19-green with Waves 9-10 pending, and independent final verification
+remains `gaps_found`. `QUALITY_SCORE.md` repeats the obsolete clean-review and
+fourteen-task claim. Because repository text is the system of record, these
+statements can prematurely route the project to milestone audit and conceal
+the remaining review/owner-sync/re-verification gates.
+
+**Fix:** Update the current Phase 52 status to the exact ten-plan workflow:
+Plans 52-01 through 52-08 completed, Plans 52-09/10 pending, validation 23/23
+planned with 19/23 executed green, and independent final verification pending.
+Record this review's actual verdict rather than a historical clean result.
+Keep the earlier six-plan closeout only as explicitly superseded history, and
+do not name milestone audit as the next step until Waves 9/10 and independent
+re-verification pass.
 
 ## Verification
 
-- Focused BeautyEffects review suites: 134 tests passed, 0 failures.
-- `BeautyEngineGeometryFacadeTests`: 20 tests executed, 1 explicit Apple Vision
-  integration skip, 0 failures.
-- No source files were modified by this review.
+- `EyebrowWarpProviderTests`: 14 tests passed, 0 failures.
+- `testSAFE02ParallelCompletionOrderAndInterruptedWorkCannotLeakRequestState`:
+  1 test passed, 0 failures.
+- `testSAFE02EveryEyebrowRowIsRemovedMonotonicallyWhenSharedScaleMakesProviderEmpty`:
+  1 test passed, 0 failures.
+- The review timestamp is later than commits `84bc447` and `0a63db8`.
+- No source file was modified by this review.
 
 ---
 
-_Reviewed: 2026-07-27T05:38:53Z_
-_Reviewer: the agent (gsd-code-reviewer)_
+_Reviewed: 2026-07-27T07:59:47Z_
+_Reviewer: independent gsd-code-reviewer_
 _Depth: standard_
