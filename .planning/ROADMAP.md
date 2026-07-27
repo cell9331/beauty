@@ -131,7 +131,31 @@
 
 **Requirements:** SAFE-01, SAFE-02, SAFE-03, DOC-01
 
-**Plans:** TBD
+**Plans:** 6 plans
+
+**Wave 1**
+
+- [ ] 52-01-PLAN.md — Freeze exact final caps and exhaustive seven-field lifecycle/local-failure behavior.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 52-02-PLAN.md — Freeze exact 44-field convergence, final named emissions, accounting, and dispatch agreement.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 52-03-PLAN.md — Build the fail-closed checker and obtain fresh runtime/output/review/Nyquist/security evidence.
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 52-04-PLAN.md — Promote exactly seven eyebrow rows and branch `眉毛` atomically from fresh evidence.
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 52-05-PLAN.md — Synchronize example-image and routed root contract owners.
+
+**Wave 6** *(blocked on Wave 5 completion)*
+
+- [ ] 52-06-PLAN.md — Close planning/requirement/verification state and hand off to the independent milestone audit.
 
 **Success criteria:**
 
