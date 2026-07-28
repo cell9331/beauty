@@ -1,7 +1,7 @@
 ---
 phase: 52
 slug: eyebrow-safety-and-branch-closeout
-status: complete
+status: validated
 nyquist_compliant: true
 wave_0_complete: true
 task_coverage: 23/23
@@ -297,6 +297,20 @@ Commercial naturalness, physical-device parity, long-run performance, packaging,
 - [x] Both Wave 9 rows are green from the fresh independent-review gate and routed owner-mode evidence.
 - [x] Both Wave 10 rows are green from planning-owner synchronization and the exact 35/35 pending-independent executor readiness gate.
 - [x] Independent post-Wave-8 code review is clean 0/0/0/0 and remains the exclusive owner of `52-REVIEW.md`.
-- [ ] Independent final Phase 52 re-verification is pending and remains the exclusive owner of `52-VERIFICATION.md`.
+- [x] Independent final Phase 52 re-verification passes 16/16 and remains the exclusive owner of `52-VERIFICATION.md`.
 
-**Coverage:** 23/23 Phase 52 tasks have explicit automated commands and expected results, and all 23 rows are green. The executor gate establishes readiness only: independent final Phase 52 re-verification is still pending, and milestone audit is not authorized until it passes.
+**Coverage:** 23/23 Phase 52 tasks have explicit automated commands and expected results, and all 23 rows are green. The executor gate established readiness; independent final Phase 52 re-verification subsequently passed 16/16. Milestone audit remains a separate lifecycle action.
+
+## Validation Audit Trail — 2026-07-28
+
+| Check | Result |
+| --- | --- |
+| Nyquist task ledger | PASS — exact 23/23 unique task rows and same-ID command registry remain green. |
+| Independent code review | PASS — fresh post-fix review is clean 0/0/0/0. |
+| Independent verifier | PASS — `52-VERIFICATION.md` is `status: passed`, 16/16 truths verified. |
+| Regression evidence | PASS — latest full SwiftPM run records 450 executed, six documented skips, and zero failures. |
+
+The validation lifecycle status is normalized from historical `complete` to
+the current `validated` vocabulary. Historical pre-verdict command text is
+retained as execution provenance; the current authoritative verdict is the
+independent passing verifier.
