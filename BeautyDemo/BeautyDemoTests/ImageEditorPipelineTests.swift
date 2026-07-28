@@ -59,6 +59,148 @@ final class ImageEditorPipelineTests: XCTestCase {
         XCTAssertEqual(snapshot.detectionSummary, .notRun)
     }
 
+    func testInputByteLimitAllowsExactDataAndRejectsOneByteOverBeforeDecodeThenRecovers() async throws {
+        let decodedKinds = LockedPhotoValues<ImageInputKind>()
+        let decoder = ImageInputDecoder { source in
+            decodedKinds.append(source.kind)
+            return DecodedImageInput(
+                source: source,
+                image: Self.testImage(red: 0.4),
+                metadata: source.metadata
+            )
+        }
+        let processor = StillImageProcessor { image, _, _ in
+            BeautyResult(output: image)
+        }
+        let pipeline = ImageEditorPipeline(
+            configuration: BeautyConfiguration(
+                maximumInputByteCount: 3,
+                maximumInputPixelCount: 4
+            ),
+            decoder: decoder,
+            processor: processor
+        )
+
+        pipeline.process(input: .photosPickerData(Data([1, 2, 3]), id: "exact"), parameters: .init())
+        await pipeline.waitUntilIdle()
+        let exactSnapshot = try XCTUnwrap(pipeline.state.latestSnapshot)
+        XCTAssertEqual(exactSnapshot.sourceID, "exact")
+        XCTAssertEqual(decodedKinds.values, [.photosPickerData])
+
+        pipeline.process(input: .photosPickerData(Data([1, 2, 3, 4]), id: "oversized"), parameters: .init())
+
+        XCTAssertEqual(pipeline.state.latestSnapshot, exactSnapshot)
+        XCTAssertEqual(pipeline.state.statusText, PhotoProcessingState.decodeFailureText)
+        XCTAssertEqual(decodedKinds.values, [.photosPickerData])
+        await pipeline.waitUntilIdle()
+
+        pipeline.process(input: .fixture(id: "recovered", image: Self.testImage(red: 0.8)), parameters: .init())
+        await pipeline.waitUntilIdle()
+
+        XCTAssertEqual(pipeline.state.latestSnapshot?.sourceID, "recovered")
+        XCTAssertNil(pipeline.state.statusText)
+        XCTAssertEqual(decodedKinds.values, [.photosPickerData, .fixture])
+    }
+
+    func testInputPixelLimitAllowsExactExtentAndRejectsOnePixelOverBeforeProcessOrRender() async throws {
+        let processorCalls = LockedPhotoCounter()
+        let renderCalls = LockedPhotoCounter()
+        let decoder = ImageInputDecoder { source in
+            let image = source.id == "oversized"
+                ? Self.testImage(width: 5, height: 1, red: 0.7)
+                : Self.testImage(width: 2, height: 2, red: 0.3)
+            return DecodedImageInput(source: source, image: image, metadata: source.metadata)
+        }
+        let processor = StillImageProcessor { image, _, _ in
+            _ = processorCalls.increment()
+            return BeautyResult(output: image)
+        }
+        let renderer = ImageDisplayRenderer { image in
+            _ = renderCalls.increment()
+            return try Self.render(image)
+        }
+        let pipeline = ImageEditorPipeline(
+            configuration: BeautyConfiguration(
+                maximumInputByteCount: 8,
+                maximumInputPixelCount: 4
+            ),
+            decoder: decoder,
+            processor: processor,
+            renderer: renderer
+        )
+
+        pipeline.process(input: .photosPickerData(Data([1]), id: "exact"), parameters: .init())
+        await pipeline.waitUntilIdle()
+        let exactSnapshot = try XCTUnwrap(pipeline.state.latestSnapshot)
+        XCTAssertEqual(processorCalls.current, 1)
+        XCTAssertEqual(renderCalls.current, 2)
+
+        pipeline.process(input: .photosPickerData(Data([2]), id: "oversized"), parameters: .init())
+        await pipeline.waitUntilIdle()
+
+        XCTAssertEqual(pipeline.state.latestSnapshot, exactSnapshot)
+        XCTAssertEqual(pipeline.state.statusText, PhotoProcessingState.decodeFailureText)
+        XCTAssertEqual(processorCalls.current, 1)
+        XCTAssertEqual(renderCalls.current, 2)
+
+        pipeline.process(input: .fixture(id: "recovered", image: Self.testImage(red: 0.9)), parameters: .init())
+        await pipeline.waitUntilIdle()
+        XCTAssertEqual(pipeline.state.latestSnapshot?.sourceID, "recovered")
+        XCTAssertEqual(processorCalls.current, 2)
+        XCTAssertEqual(renderCalls.current, 4)
+    }
+
+    func testStaleOversizedDecodedSelectionCannotReplaceLatestSuccess() async throws {
+        let staleStarted = expectation(description: "stale decode started")
+        let releaseStale = DispatchSemaphore(value: 0)
+        let processorCalls = LockedPhotoCounter()
+        let decoder = ImageInputDecoder { source in
+            if source.id == "stale-oversized" {
+                staleStarted.fulfill()
+                _ = releaseStale.wait(timeout: .now() + 2)
+                return DecodedImageInput(
+                    source: source,
+                    image: Self.testImage(width: 5, height: 1, red: 0.1),
+                    metadata: source.metadata
+                )
+            }
+            return DecodedImageInput(
+                source: source,
+                image: Self.testImage(red: 0.9),
+                metadata: source.metadata
+            )
+        }
+        let processor = StillImageProcessor { image, _, _ in
+            _ = processorCalls.increment()
+            return BeautyResult(output: image)
+        }
+        let pipeline = ImageEditorPipeline(
+            configuration: BeautyConfiguration(maximumInputPixelCount: 4),
+            decoder: decoder,
+            processor: processor,
+            processingQueue: DispatchQueue(
+                label: "beauty.demo.tests.concurrent-input-bounds",
+                attributes: .concurrent
+            )
+        )
+
+        pipeline.process(
+            input: .photosPickerData(Data([1]), id: "stale-oversized"),
+            parameters: .init()
+        )
+        await fulfillment(of: [staleStarted], timeout: 2)
+        pipeline.process(input: .fixture(id: "latest-valid"), parameters: .init())
+        await pipeline.waitUntilIdle()
+
+        XCTAssertEqual(pipeline.state.latestSnapshot?.sourceID, "latest-valid")
+        releaseStale.signal()
+        try await Task.sleep(for: .milliseconds(50))
+
+        XCTAssertEqual(pipeline.state.latestSnapshot?.sourceID, "latest-valid")
+        XCTAssertNil(pipeline.state.statusText)
+        XCTAssertEqual(processorCalls.current, 1)
+    }
+
     func testD08CancellationIsNoopAndShowsNoError() async throws {
         let pipeline = ImageEditorPipeline()
         pipeline.process(input: .fixture(id: "existing", image: Self.testImage(red: 0.1)), parameters: .init())
@@ -247,8 +389,20 @@ final class ImageEditorPipelineTests: XCTestCase {
     }
 
     nonisolated private static func testImage(red: CGFloat) -> CIImage {
+        testImage(width: 2, height: 2, red: red)
+    }
+
+    nonisolated private static func testImage(width: CGFloat, height: CGFloat, red: CGFloat) -> CIImage {
         CIImage(color: CIColor(red: red, green: 0.3, blue: 0.6, alpha: 1))
-            .cropped(to: CGRect(x: 0, y: 0, width: 2, height: 2))
+            .cropped(to: CGRect(x: 0, y: 0, width: width, height: height))
+    }
+
+    nonisolated private static func render(_ image: CIImage) throws -> CGImage {
+        let context = CIContext(options: [.workingColorSpace: CGColorSpaceCreateDeviceRGB()])
+        guard let result = context.createCGImage(image, from: image.extent) else {
+            throw BeautyError.invalidInput
+        }
+        return result
     }
 }
 
@@ -276,6 +430,10 @@ nonisolated private final class LockedPhotoCounter: @unchecked Sendable {
             value += 1
             return value
         }
+    }
+
+    var current: Int {
+        queue.sync { value }
     }
 }
 
