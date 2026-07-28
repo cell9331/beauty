@@ -167,6 +167,72 @@ final class BeautyEngineTests: XCTestCase {
         }
     }
 
+    func testInputPixelLimitAllowsExactCIImageBoundary() throws {
+        let image = CIImage(color: .red).cropped(to: CGRect(x: 0, y: 0, width: 2, height: 2))
+        let engine = try BeautyEngine(configuration: BeautyConfiguration(maximumInputPixelCount: 4))
+
+        let output = try engine.process(image: image, orientation: .up, parameters: .init())
+
+        XCTAssertEqual(output.extent, image.extent)
+    }
+
+    func testInputPixelLimitRejectsCIImageOnePixelOverBeforeResourceValidation() throws {
+        let image = CIImage(color: .red).cropped(to: CGRect(x: 0, y: 0, width: 5, height: 1))
+        let engine = try BeautyEngine(configuration: BeautyConfiguration(maximumInputPixelCount: 4))
+        let invalidResource = BeautyParameters(filterId: "missing_filter", filterIntensity: 1)
+
+        XCTAssertThrowsError(try engine.process(image: image, orientation: .up, parameters: invalidResource)) { error in
+            XCTAssertEqual(error as? BeautyError, .invalidInput)
+        }
+    }
+
+    func testInputPixelLimitRejectsInvalidAndOverflowShapedCIImageExtents() throws {
+        let engine = try BeautyEngine(configuration: BeautyConfiguration(maximumInputPixelCount: 4))
+        let images = [
+            CIImage.empty(),
+            CIImage(color: .red),
+            CIImage(color: .red).cropped(
+                to: CGRect(x: 0, y: 0, width: CGFloat.greatestFiniteMagnitude, height: 2)
+            )
+        ]
+
+        for image in images {
+            XCTAssertThrowsError(try engine.process(image: image, orientation: .up, parameters: .init())) { error in
+                XCTAssertEqual(error as? BeautyError, .invalidInput)
+            }
+        }
+    }
+
+    func testInputPixelLimitAllowsExactPixelBufferBoundary() throws {
+        let input = try PixelBufferFixtures.makeBGRA(
+            width: 2,
+            height: 2,
+            bytes: [UInt8](repeating: 64, count: 16)
+        )
+        let engine = try BeautyEngine(configuration: BeautyConfiguration(maximumInputPixelCount: 4))
+
+        let output = try engine.process(pixelBuffer: input, orientation: .up, parameters: .init())
+
+        XCTAssertEqual(CVPixelBufferGetWidth(output), 2)
+        XCTAssertEqual(CVPixelBufferGetHeight(output), 2)
+    }
+
+    func testInputPixelLimitRejectsPixelBufferOnePixelOverBeforeResourceValidation() throws {
+        let input = try PixelBufferFixtures.makeBGRA(
+            width: 5,
+            height: 1,
+            bytes: [UInt8](repeating: 64, count: 20)
+        )
+        let engine = try BeautyEngine(configuration: BeautyConfiguration(maximumInputPixelCount: 4))
+        let invalidResource = BeautyParameters(filterId: "missing_filter", filterIntensity: 1)
+
+        XCTAssertThrowsError(
+            try engine.process(pixelBuffer: input, orientation: .up, parameters: invalidResource)
+        ) { error in
+            XCTAssertEqual(error as? BeautyError, .invalidInput)
+        }
+    }
+
     func testResetIsIdempotentAndDoesNotMutateCallerParameters() throws {
         let parameters = BeautyParameters(skinSmoothing: 0.5)
         var copy = parameters

@@ -1,4 +1,5 @@
 import CoreGraphics
+import Foundation
 import XCTest
 import BeautySDK
 
@@ -14,6 +15,8 @@ final class BeautyConfigurationTests: XCTestCase {
         XCTAssertFalse(configuration.enablePerformanceLog)
         XCTAssertFalse(configuration.enableDebugMode)
         XCTAssertEqual(configuration.logLevel, .error)
+        XCTAssertEqual(configuration.maximumInputByteCount, 33_554_432)
+        XCTAssertEqual(configuration.maximumInputPixelCount, 50_000_000)
     }
 
     func testPERF03RenderQualityModesAreStableConfigurationContract() {
@@ -41,12 +44,26 @@ final class BeautyConfigurationTests: XCTestCase {
         let configuration = BeautyConfiguration(
             preferredProcessingSize: CGSize(width: CGFloat.nan, height: 720),
             maximumFaceCount: 0,
-            detectionFrameInterval: -4
+            detectionFrameInterval: -4,
+            maximumInputByteCount: 0,
+            maximumInputPixelCount: -1
         )
 
         XCTAssertNil(configuration.preferredProcessingSize)
         XCTAssertEqual(configuration.maximumFaceCount, 1)
         XCTAssertEqual(configuration.detectionFrameInterval, 1)
+        XCTAssertEqual(configuration.maximumInputByteCount, BeautyConfiguration.defaultMaximumInputByteCount)
+        XCTAssertEqual(configuration.maximumInputPixelCount, BeautyConfiguration.defaultMaximumInputPixelCount)
+    }
+
+    func testInputLimitsAcceptPositiveCustomValues() {
+        let configuration = BeautyConfiguration(
+            maximumInputByteCount: 128,
+            maximumInputPixelCount: 256
+        )
+
+        XCTAssertEqual(configuration.maximumInputByteCount, 128)
+        XCTAssertEqual(configuration.maximumInputPixelCount, 256)
     }
 
     func testConfigurationIsCodableAndSendable() throws {
@@ -61,6 +78,19 @@ final class BeautyConfigurationTests: XCTestCase {
         let decoded = try JSONDecoder().decode(BeautyConfiguration.self, from: data)
         XCTAssertEqual(decoded, configuration)
         assertSendable(decoded)
+    }
+
+    func testLegacyConfigurationJSONDecodesMissingInputLimitsToDefaults() throws {
+        let currentData = try JSONEncoder().encode(BeautyConfiguration.default)
+        var object = try XCTUnwrap(JSONSerialization.jsonObject(with: currentData) as? [String: Any])
+        object.removeValue(forKey: "maximumInputByteCount")
+        object.removeValue(forKey: "maximumInputPixelCount")
+        let legacyData = try JSONSerialization.data(withJSONObject: object)
+
+        let decoded = try JSONDecoder().decode(BeautyConfiguration.self, from: legacyData)
+
+        XCTAssertEqual(decoded.maximumInputByteCount, BeautyConfiguration.defaultMaximumInputByteCount)
+        XCTAssertEqual(decoded.maximumInputPixelCount, BeautyConfiguration.defaultMaximumInputPixelCount)
     }
 
     private func assertSendable<T: Sendable>(_ value: T) {
