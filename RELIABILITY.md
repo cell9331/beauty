@@ -591,6 +591,13 @@ Phase 3 input-pipeline evidence recorded 2026-06-12:
 - `InputPipelinePrivacyTests` verifies realtime Camera source has no `UIImage` conversion and no raw input/error copy in Phase 3 input paths.
 - The 2026-07-28 consolidation regressions invalidate an asynchronous camera start synchronously on stop, reject late authorized permission completion after the user leaves Camera mode, and map a current PhotosPicker `nil` transfer to the existing recoverable photo failure while ignoring stale completions.
 
+TD-012 production input-bound evidence recorded 2026-07-28:
+
+- Over-limit `CIImage` and `CVPixelBuffer` inputs return the existing typed `BeautyError.invalidInput` before resource validation or allocation-heavy processing; exact-limit and prior valid-input behavior remain green.
+- The Demo rejects oversized encoded bytes before decode and oversized decoded extents before processing/display render, preserves the previous snapshot with `Could not read that photo. Choose another image.`, and settles `waitUntilIdle`.
+- Generation checks remain authoritative: stale oversized work cannot replace a newer valid success, and a valid selection after either limit failure replaces the recoverable failure normally.
+- Focused evidence passes 23 SDK configuration/engine tests and 12 Demo pipeline tests; full regressions pass 457 SwiftPM tests with six expected skips and 118 Demo simulator tests with zero failures.
+
 Phase 4 detection/coordinate evidence recorded 2026-06-18:
 
 - `BeautyDetectionTests` covers face selection, Vision adapter seams, unavailable detector degradation, coordinate mapping, and observation mapping failures.

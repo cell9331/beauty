@@ -58,6 +58,8 @@
 | `enablePerformanceLog` | `Bool` | 是否采样性能日志。 |
 | `enableDebugMode` | `Bool` | 是否输出调试指标与中间信息。 |
 | `logLevel` | `BeautyLogLevel` | SDK 日志等级；默认 release 使用 `error`。 |
+| `maximumInputByteCount` | `Int` | 编码图像输入上限；默认 `33_554_432`（32 MiB）。 |
+| `maximumInputPixelCount` | `Int` | 解码图像与像素缓冲区的像素数上限；默认 `50_000_000`。 |
 
 规则：
 
@@ -65,6 +67,8 @@
 - 必须满足 `Sendable`。
 - 不能包含 SwiftUI、UIKit 或宿主 App 状态。
 - 图像方向、输入镜像、预览镜像是逐帧输入状态，不放入全局 configuration。
+- 两个输入上限都是尾部默认参数；非正自定义值回落到各自默认值，旧 JSON 缺少两个 key 时通过显式 `decodeIfPresent` 得到相同默认值。
+- 上限是拒绝边界而非处理策略：精确命中上限继续当前行为，超过上限返回 `BeautyError.invalidInput`；SDK 不借此缩放、降采样或重解释 `preferredProcessingSize`。
 
 ### 4.2 BeautyParameters
 

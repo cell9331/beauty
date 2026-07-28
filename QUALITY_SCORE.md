@@ -42,10 +42,10 @@ the current-state consolidation audit:
 | Root docs | 4 | All nine root owners exist. The consolidation audit corrected `ARCHITECTURE.md` so current pixel-buffer processing, still-image detection/geometry, and placeholder Render foundations match compiled code. | Keep current facts in root owners; keep milestone narratives in archives. |
 | Historical docs | 3 | `docs/README.md` remains the long-doc entry. `.planning/codebase/*` is explicitly stale background and historical phase/milestone artifacts are not current contracts. | Refresh codebase maps only in an explicitly scoped remap. |
 | GSD planning | 4 | v1.13 is shipped, independently audited, archived, cleaned up, and tagged. No milestone or root `.planning/REQUIREMENTS.md` is active. | Create requirements only through the next explicitly scoped milestone. |
-| SDK Package | 4 | The package/facade boundary is intact; `BeautyParameters` is exactly 59 stored fields (58 numeric plus `filterId`), and the v1.13 full SwiftPM baseline executes 450 tests successfully. | Resolve the generic `BeautyResult` sendability contract before treating all public result envelopes as concurrency-safe. |
+| SDK Package | 4 | The package/facade boundary is intact; `BeautyParameters` is exactly 59 stored fields (58 numeric plus `filterId`), and the current full SwiftPM suite executes 457 tests with six expected skips and zero failures. | Resolve the generic `BeautyResult` sendability contract before treating all public result envelopes as concurrency-safe. |
 | Demo App | 4 | Full Demo simulator tests pass on iPhone 17e / iOS 26.5. Focused consolidation tests cover stale camera starts, late permission completion, and nil/stale photo transfers. | Rerun screenshot, long-run preview, and physical-device protocols before corresponding claims. |
-| Tests | 4 | SwiftPM covers 450 cases; the Demo has full simulator coverage plus focused lifecycle/input regressions. v1.13 strict output, checker, review, and milestone-audit evidence remain archived and passing. | Add coverage for chosen future scope; preserve explicit hardware and UI-automation gaps. |
-| Security | 3 | Local-first, redaction, raw-geometry, dependency/network, and generated-artifact gates pass, but production image inputs still lack the configured maximum byte/pixel enforcement required by `SECURITY.md`. | Define the public input-limit/compatibility contract, then enforce it before decode/render allocation. |
+| Tests | 4 | SwiftPM executes 457 tests with six expected skips; the Demo passes 118 simulator tests and the 12-case focused photo pipeline suite. v1.13 strict output, checker, review, and milestone-audit evidence remain archived and passing. | Add coverage for chosen future scope; preserve explicit hardware and UI-automation gaps. |
+| Security | 4 | Local-first, redaction, raw-geometry, dependency/network, generated-artifact, and production input-bound gates pass. SDK image/pixel-buffer ceilings and Demo pre-decode/pre-render ceilings have exact-boundary, ordering, recovery, and stale-work regressions. | Retain the documented PhotosPicker pre-transfer allocation residual and re-evaluate only if the transfer API changes. |
 | Reliability | 3 | Backpressure, stale work, reset, detection degradation, and the repaired camera lifecycle are test-backed. Realtime geometry/Metal dispatch, 600-second preview, and device endurance are not current evidence. | Keep claims bounded and run the setup-specific long-run/device gates when authorized. |
 | Product acceptance | 4 | v1.13 closes exactly seven eyebrow rows plus branch `眉毛` at SDK-core scope after 21/21 requirements, 4/4 phases, 12/12 integrations, and 6/6 flows. | Do not infer Demo, device, commercial, packaging, or release readiness. |
 
@@ -263,6 +263,15 @@ Recorded 2026-07-14 in `35-VERIFICATION.md`, `36-VERIFICATION.md`, `37-NOSE-SAFE
 - ASVS L1 and active-source boundaries pass with a clean review and `threats_open: 0`.
 - Exactly `大小`, `提升`, `鼻翼`, `山根`, `鼻梁`, and `鼻尖` form the implemented six-row SDK-core branch. `山根` uses only `noseRootNarrowing`; `提升` uses only `noseTipLift`.
 - This Phase 37 quality result does not claim Demo/device/commercial/packaging/shipping/launch readiness, and the independent milestone audit remains pending.
+
+### 3.18 TD-012 Production Image Input Bounds
+
+Recorded 2026-07-28:
+
+- Focused SDK configuration/engine tests pass 23/23; focused `ImageEditorPipelineTests` pass 12/12 on iPhone 17e / iOS 26.5.
+- Full SwiftPM passes 457 tests with six expected skips and zero failures; the full `BeautyDemo` simulator suite passes 118/118.
+- Default 32 MiB encoded and 50,000,000-pixel ceilings, custom positive values, non-positive normalization, current/legacy Codable behavior, exact/one-over boundaries, fail-fast ordering, friendly recovery, and stale-work isolation are automated.
+- Security rises from 3 to 4 for this verified boundary only. Physical-device, screenshot, optimized-performance, 600-second, commercial, packaging, shipping, and release-readiness evidence remains unchanged.
 
 ## 4. Product Domain Scorecard
 
@@ -501,12 +510,11 @@ SDK 1.0 readiness:
 
 | Priority | Item | Why |
 | --- | --- | --- |
-| 1 | Define and enforce production image input byte/pixel ceilings. | Current code checks only non-empty finite dimensions, while `SECURITY.md` requires a configured maximum; threshold and compatibility choices need an explicit contract. |
-| 2 | Repair `BeautyResult<Output>` sendability without lying or silently breaking clients. | Unconditional `@unchecked Sendable` permits arbitrary non-sendable output types; the public API compatibility strategy needs a separate decision. |
-| 3 | Run dedicated 600-second preview and physical iPhone checks when setup is available. | Short simulator and fixture evidence cannot establish camera/Vision parity, memory, thermal, or endurance behavior. |
-| 4 | Rerun current Demo screenshot/UI evidence. | Model and simulator tests pass, but current layout screenshots and UI automation were not produced in this audit. |
-| 5 | Design external resource package trust before enabling dynamic packages. | Current bundled metadata/presets do not prove download, cache, checksum/signature, model, LUT, or package-integrity behavior. |
-| 6 | Defer formal `.planning/codebase/*` remap until explicitly scoped. | Current source, root contracts, and live planning owners remain authoritative over stale maps. |
+| 1 | Repair `BeautyResult<Output>` sendability without lying or silently breaking clients. | Unconditional `@unchecked Sendable` permits arbitrary non-sendable output types; the public API compatibility strategy needs a separate decision. |
+| 2 | Run dedicated 600-second preview and physical iPhone checks when setup is available. | Short simulator and fixture evidence cannot establish camera/Vision parity, memory, thermal, or endurance behavior. |
+| 3 | Rerun current Demo screenshot/UI evidence. | Model and simulator tests pass, but current layout screenshots and UI automation were not produced in this audit. |
+| 4 | Design external resource package trust before enabling dynamic packages. | Current bundled metadata/presets do not prove download, cache, checksum/signature, model, LUT, or package-integrity behavior. |
+| 5 | Defer formal `.planning/codebase/*` remap until explicitly scoped. | Current source, root contracts, and live planning owners remain authoritative over stale maps. |
 
 ## 15. Quality Decision Log
 
@@ -524,6 +532,7 @@ SDK 1.0 readiness:
 | 2026-06-10 | Build checks must use an explicit iOS Simulator destination. | The default `xcodebuild ... build` command can select an incompatible `My Mac` destination even when the iOS simulator build succeeds. |
 | 2026-06-10 | `.planning/PROJECT.md`, `.planning/STATE.md`, and `.planning/ROADMAP.md` are persistent GSD context; `.planning/REQUIREMENTS.md` exists only for an active milestone. | Prevents archived closeouts from failing a stale always-present requirement check. |
 | 2026-07-28 | Current-state scores are evidence-bounded rather than milestone-inherited. | Realtime and security scores were reduced where compiled paths or input-limit enforcement do not satisfy the owning contracts. |
+| 2026-07-28 | TD-012 raises Security from 3 to 4 after focused and full automated input-bound evidence passes. | Public SDK and Demo boundaries now reject oversized production inputs before the available expensive work while retaining the explicit PhotosPicker pre-transfer allocation residual. |
 | 2026-06-11 | Phase 2 raises Demo evidence through view-state tests, not UI automation. | The shell is deterministic before camera/photo input exists; later phases still need simulator UI workflows for permissions, compare, and media states. |
 | 2026-06-12 | Phase 3 raises Realtime Camera and Still Image Editing to score 3 through deterministic pipeline, privacy, and view-state tests. | The Camera/Photo input slice is now test-backed, while real hardware smoke, visual effects, and long-run performance remain later gates. |
 | 2026-06-22 | Phase 6 raises BeautyEffects and MVP effect domains to score 4 through resolver, provider, fixture, degradation, and Demo panel tests. | Deterministic automated evidence now exists; production render quality, hardware smoke, and manual naturalness review remain release-like gates. |

@@ -126,7 +126,7 @@ Acceptance:
 | Orientation | EXIF-oriented images process with correct face alignment. |
 | Quality | Image mode can use quality configuration independent from realtime preview. |
 | Loading | Large image processing shows loading state and does not block UI indefinitely. |
-| Error | Invalid image returns typed error and preserves previous output. |
+| Error | Invalid or configured-over-limit image input returns a typed SDK error; the Demo preserves the previous output, shows friendly recoverable copy, and accepts a later valid image. |
 | Compare | Before/after uses same crop/orientation and does not shift unexpectedly. |
 | Geometry intent | Geometry-triggering still-image parameters can activate detection through the public facade, with redacted degradation when no usable face exists. |
 | Geometry saved output | The SDK-only renderer can save same-dimension geometry foundation outputs through the public facade, with a no-geometry baseline, no-face evidence, and redacted degradation summaries. |
@@ -295,6 +295,7 @@ Recorded 2026-06-12:
 
 - Realtime Camera journey now has automated evidence for permission fallback, BGRA frame metadata, public `BeautyEngine.process(pixelBuffer:orientation:parameters:)` processing, no realtime `UIImage`, and bounded backpressure.
 - Still Image journey now has automated evidence for fixture input, PhotosPicker-data seam, loading state, decode failure preservation, stale-work handling, and before/after compare.
+- TD-012 adds exact-limit/one-over-limit evidence for PhotosPicker bytes, decoded image extents, and SDK pixel-buffer/image inputs; this is input hardening only and does not add a new product feature or claim pre-transfer PhotosPicker allocation control.
 - Respect-user-content acceptance is backed by purpose-string tests and static no-upload/no-network/raw-path scans in `InputPipelinePrivacyTests`.
 - Full Demo simulator suite passed with 55 XCTest cases for `platform=iOS Simulator,name=iPhone 17,OS=26.5`.
 

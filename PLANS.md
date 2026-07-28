@@ -32,6 +32,23 @@ authorize v1.14 or any other new scope.
 
 ## 4. Completed
 
+### C-2026-07-28-td-012-production-image-input-bounds
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-28 |
+| Scope | Closed TD-012 with additive public production input ceilings and fail-fast SDK/Demo enforcement; no product feature, image resizing, dependency, milestone, or readiness scope was added. |
+| Contract | `maximumInputByteCount` defaults to `33_554_432`; `maximumInputPixelCount` defaults to `50_000_000`. Both are trailing defaulted initializer arguments, non-positive values normalize to defaults, and legacy JSON without either key decodes compatibly. |
+| Enforcement | The SDK rejects over-limit `CIImage` and `CVPixelBuffer` dimensions as `BeautyError.invalidInput` before resource/detection/copy/render work. The Demo rejects PhotosPicker bytes before decode and decoded extents before SDK processing/display render while preserving snapshot, friendly recovery, and stale-generation behavior. |
+| Verification | Focused SDK command passes 23/23; focused `ImageEditorPipelineTests` passes 12/12 on iPhone 17e / iOS 26.5; full SwiftPM passes 457 tests with six expected skips; full Demo simulator tests pass 118/118; owner scans and diff hygiene pass. |
+| Residual | `loadTransferable(Data.self)` materializes Data before size is observable, so this closes post-transfer decode/render amplification without claiming pre-transfer allocation control. |
+
+Outcome:
+
+- Security evidence now supports score 4 for the configured image-input boundary.
+- TD-013, historical milestone archives, product inventory, and device/commercial/performance/packaging/release nonclaims remain unchanged.
+- No milestone is active; the repository still awaits an explicitly scoped next milestone.
+
 ### C-2026-07-28-current-state-consolidation-audit
 
 | Field | Value |
@@ -2983,7 +3000,7 @@ Outcome:
 | TD-009 | Manual Visual QA | The current environment builds and tests the Demo successfully, but this consolidation audit did not rerun screenshot capture, UI automation, or current layout review. | Preset/filter chips, controls, labels, badges, and panels could visually clip despite model-level tests. | Rerun the Phase 22 screenshot protocol on the current app before claiming current visual evidence. | `partial` |
 | TD-010 | Phase 6 Visual and Hardware QA | Phase 23 adds 720p timing, over-budget classification, short memory protocol, quality/reset/degradation/cap tests, and focused Demo camera pass evidence. Phase 24 adds renderer matrix, no-op fixture, 45-output invariant, and watermark-evidence regression gates for current skin/color/filter renderer outputs. Phase 25 closes privacy/security/resource implications for current behavior. Commercial visual review, production GPU quality, real camera parity, automated screenshot diffing, 600-second preview, physical iPhone evidence, external package-integrity, and commercial packaging evidence remain unproved. | Claims could overstate visual quality, device behavior, resource-package trust, or packaging state beyond current automated evidence. | Run screenshot, 600-second preview, physical iPhone, optimized profiling, external resource package, and packaging protocols only when setup and scope exist. | `partial/deferred` |
 | TD-011 | Stale Codebase Maps | Phase 21 read `.planning/codebase/*` and found stale maps that still describe missing SDK/tests despite current SwiftPM package and 141 passing SDK XCTest cases. | Future agents could follow obsolete codebase maps instead of current source, root docs, and `.planning` ledgers. | Treat maps as stale background only; defer formal `$gsd-map-codebase` refresh until explicitly scoped. | `deferred` |
-| TD-012 | Input Bounds | `BeautyEngine` and the Demo photo path reject empty/invalid images but do not enforce the configured maximum byte/pixel ceilings required by `SECURITY.md`. | A valid but oversized local image can cause excessive decode/render allocation or memory pressure. | Define public limit fields/defaults and compatibility behavior, then validate compressed bytes and decoded dimensions before expensive processing. | `open/design-required` |
+| TD-012 | Input Bounds | Public 32 MiB encoded and 50,000,000-pixel ceilings are source-/legacy-Codable-compatible and enforced at SDK plus current Demo boundaries. | PhotosPicker still materializes `Data` before the Demo can observe its size; downstream decode/render amplification is bounded. | Revisit only if a future transfer API exposes a pre-materialization size boundary. | `completed` |
 | TD-013 | Public Concurrency | `BeautyResult<Output>` unconditionally declares `@unchecked Sendable`, even when a caller instantiates it with an arbitrary non-sendable `Output`. | The public type promises cross-domain safety that its generic payload cannot guarantee. | Choose a source-compatible migration (conditional conformance, non-sendable media wrapper, or versioned API) and add compile-time concurrency coverage. | `open/api-decision` |
 
 ## 6. Plan Template

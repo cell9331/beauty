@@ -259,11 +259,14 @@ Required checks:
 - Reject images whose color space or pixel format cannot be rendered safely.
 - Avoid loading full-resolution images on the main thread.
 
-Current gap (2026-07-28 consolidation audit): production SDK/Demo image paths
-validate non-empty finite extents and pixel format, but no public configured
-byte/pixel ceiling is enforced before expensive decode/render allocation.
-`PLANS.md` TD-012 owns the required threshold and compatibility decision; until
-it closes, oversized-input resistance is not a passing security claim.
+Current production boundary (2026-07-28 TD-012 closeout):
+
+- `BeautyConfiguration.maximumInputByteCount` defaults to 32 MiB and the Demo rejects PhotosPicker `Data` above it before `CIImage` decode or processing-queue work.
+- `BeautyConfiguration.maximumInputPixelCount` defaults to 50,000,000 and the Demo rejects decoded extents above it before SDK processing or display rendering.
+- Both public `BeautyEngine.processResult` families validate positive, finite dimensions with division-based comparisons before resource validation, detection, effect planning, output-buffer copying, or rendering; exact-limit inputs remain accepted.
+- Rejection exposes only `BeautyError.invalidInput` at the SDK boundary and the existing friendly photo-failure copy in the Demo; bytes, dimensions, paths, framework errors, and image contents are not disclosed.
+
+Residual accepted risk: `PhotosPickerItem.loadTransferable(type: Data.self)` materializes the selected `Data` before the Demo can observe `Data.count`. The current boundary therefore prevents post-transfer decode/render amplification but does not claim pre-transfer allocation control.
 
 ### 6.3 Parameter Validation
 
