@@ -448,14 +448,17 @@ struct EditorShellView: View {
 
         Task {
             do {
-                if let data = try await item.loadTransferable(type: Data.self) {
-                    guard photoSelectionGeneration.isCurrent(selectionGeneration) else {
-                        return
-                    }
+                let data = try await item.loadTransferable(type: Data.self)
+                switch photoSelectionGeneration.resolve(data: data, for: selectionGeneration) {
+                case .data(let data):
                     imageEditorPipeline.process(
                         input: .photosPickerData(data),
                         parameters: parameterStore.parametersSnapshot
                     )
+                case .missingData:
+                    imageEditorPipeline.recordSelectionFailure()
+                case .stale:
+                    return
                 }
             } catch {
                 guard photoSelectionGeneration.isCurrent(selectionGeneration) else {
@@ -608,6 +611,12 @@ struct EditorShellView: View {
     }
 }
 
+enum PhotoSelectionResolution: Equatable, Sendable {
+    case data(Data)
+    case missingData
+    case stale
+}
+
 struct PhotoSelectionGeneration: Equatable, Sendable {
     private(set) var value: UInt64 = 0
 
@@ -618,6 +627,16 @@ struct PhotoSelectionGeneration: Equatable, Sendable {
 
     func isCurrent(_ generation: UInt64) -> Bool {
         generation == value
+    }
+
+    func resolve(data: Data?, for generation: UInt64) -> PhotoSelectionResolution {
+        guard isCurrent(generation) else {
+            return .stale
+        }
+        guard let data else {
+            return .missingData
+        }
+        return .data(data)
     }
 }
 

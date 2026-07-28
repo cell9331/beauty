@@ -38,7 +38,7 @@ Checklist:
 
 - [x] F-01 cancel stale asynchronous camera-session starts — lifecycle generation tests pass 6/6 in focused `CameraSessionControllerTests`.
 - [x] F-02 prevent late permission completion from starting camera outside Camera mode — focused permission-state tests cover the late authorized result boundary.
-- [ ] F-03 surface nil PhotosPicker transfers as recoverable selection failures.
+- [x] F-03 surface nil PhotosPicker transfers as recoverable selection failures — the selection resolver distinguishes current data, current nil, and stale completion.
 - [ ] F-04 align `ARCHITECTURE.md` with the current compiled runtime boundary.
 - [ ] F-05 repair current quality/planning owner drift and record unresolved design debt.
 

@@ -234,6 +234,9 @@ final class InputPipelinePrivacyTests: XCTestCase {
 
         XCTAssertFalse(generation.isCurrent(first))
         XCTAssertTrue(generation.isCurrent(second))
+        XCTAssertEqual(generation.resolve(data: Data([1]), for: first), .stale)
+        XCTAssertEqual(generation.resolve(data: nil, for: second), .missingData)
+        XCTAssertEqual(generation.resolve(data: Data([2]), for: second), .data(Data([2])))
     }
 
     func testD13FriendlyInputCopyIsPresentAndRawCopyIsAbsent() throws {
