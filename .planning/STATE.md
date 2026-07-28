@@ -4,9 +4,9 @@ milestone: v1.13
 milestone_name: Eyebrow Geometry Controls
 status: Awaiting next milestone
 stopped_at: Milestone v1.13 complete; next $gsd-new-milestone
-last_updated: "2026-07-28T03:24:48Z"
+last_updated: "2026-07-28T04:06:03Z"
 last_activity: 2026-07-28
-last_activity_desc: Current-state consolidation audit completed after v1.13 lifecycle closeout
+last_activity_desc: TD-012 production image input bounds implemented and verified after v1.13 lifecycle closeout
 progress:
   total_phases: 4
   completed_phases: 4
@@ -22,14 +22,21 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-28)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Awaiting the next explicit milestone after current-state consolidation
+**Current focus:** Awaiting the next explicit milestone after TD-012 input hardening
 
 ## Current Position
 
 Phase: Milestone v1.13 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-07-28 — Current-state consolidation audit completed; v1.13 remains shipped and no new milestone is active
+Last activity: 2026-07-28 — TD-012 production input bounds completed; v1.13 remains shipped and no new milestone is active
+
+### TD-012 Production Image Input Bounds Result
+
+- `BeautyConfiguration` now has source-compatible 32 MiB encoded and 50,000,000-pixel defaults, positive custom values, non-positive fallback, and legacy missing-key decoding.
+- SDK `CIImage` and `CVPixelBuffer` entry points reject over-limit dimensions as `BeautyError.invalidInput` before resource, detection, copy, or render work; the Demo rejects encoded bytes before decode and decoded extents before processing/display render.
+- Focused verification passes 23 SDK tests and 12 Demo pipeline tests. Full verification passes 457 SwiftPM tests with six expected skips and 118 Demo simulator tests with zero failures.
+- The PhotosPicker pre-transfer allocation residual remains explicit because `loadTransferable(Data.self)` materializes Data before its size is observable. TD-013 and all device, 600-second, screenshot, commercial, packaging, and release nonclaims remain unchanged.
 
 ### Phase 52 Eyebrow Safety and Branch Closeout Result
 
@@ -323,6 +330,7 @@ Full decision context is in `.planning/PROJECT.md`.
 
 Recent milestone-level outcomes:
 
+- TD-012 uses additive trailing configuration defaults and the existing `BeautyError.invalidInput`; input ceilings reject rather than resize, and no new milestone or product scope was activated.
 - Product remains a modular iOS SDK with a rich Demo validation app.
 - Demo remains facade-only and local-first.
 - v1.0 shipped core SDK/Demo capability and deferred advanced modules to future milestones.
@@ -424,6 +432,7 @@ Recent milestone-level outcomes:
 
 ### Blockers/Concerns
 
+- TD-012 is completed with focused/full automated evidence and is no longer a live concern. TD-013 remains the open public concurrency API decision.
 - No active v1.13 implementation, verification, review, validation, integration, flow, or audit blocker remains. The independent audit rerun passes with zero residual milestone debt.
 - No active v1.12 blocker remains; all four phases and the independent milestone audit passed.
 - Deferred v2 `ADV-*` items remain historical/backlog scope in the archived v1.0 requirements; `TD-007` is closed because no active root requirements file or current audit warning remains.
@@ -433,6 +442,12 @@ Recent milestone-level outcomes:
 - v1.1 reference screenshots are local analysis inputs, not licensed production assets; implementation should recreate structure and feel without copying commercial assets directly.
 - Phase 12-15 cancellation is intentional; do not treat canceled AUDIT, HSWIFT, ESWIFT, or VQA requirements as open blockers.
 - Geometry-heavy branches need face detection plus geometry rendering output before they can claim saved example-image visual completion; v1.5 promotes only the scoped six-row `脸型` slice after this evidence exists.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260728-gan | Resolve TD-012 production image input bounds | 2026-07-28 | 1ac8835 | [260728-gan-resolve-td-012-production-image-input-bo](./quick/260728-gan-resolve-td-012-production-image-input-bo/) |
 
 ## Deferred Items
 
@@ -448,8 +463,8 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-28T02:28:01.159Z
-Stopped at: Milestone v1.13 complete; next $gsd-new-milestone
+Last session: 2026-07-28T04:06:03Z
+Stopped at: TD-012 complete; next explicit milestone remains $gsd-new-milestone
 Resume file: None
 
 ## Operator Next Steps
