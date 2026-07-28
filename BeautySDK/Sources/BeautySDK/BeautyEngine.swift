@@ -49,8 +49,11 @@ public final class BeautyEngine {
         metadata: BeautyInputMetadata,
         parameters: BeautyParameters
     ) throws -> BeautyResult<CVPixelBuffer> {
+        try Self.validate(
+            pixelBuffer: pixelBuffer,
+            maximumPixelCount: configuration.maximumInputPixelCount
+        )
         _ = metadata
-        try Self.validate(pixelBuffer: pixelBuffer)
         let validated = try BeautySDKResources.validate(parameters: parameters)
         let plan = BeautyEffectResolver.resolve(parameters: validated)
         return BeautyResult(
@@ -85,9 +88,10 @@ public final class BeautyEngine {
         metadata: BeautyInputMetadata,
         parameters: BeautyParameters
     ) throws -> BeautyResult<CIImage> {
-        guard image.extent.isFiniteAndNonEmpty else {
-            throw BeautyError.invalidInput
-        }
+        try Self.validate(
+            image: image,
+            maximumPixelCount: configuration.maximumInputPixelCount
+        )
         let validated = try BeautySDKResources.validate(parameters: parameters)
         let route = resolveStillImageGeometry(
             image: image,
@@ -120,15 +124,56 @@ public final class BeautyEngine {
         configuration.enableFaceTracking ? .notRun : .disabled
     }
 
-    private static func validate(pixelBuffer: CVPixelBuffer) throws {
+    private static func validate(image: CIImage, maximumPixelCount: Int) throws {
+        let extent = image.extent
+        guard extent.isFiniteAndNonEmpty,
+              dimensionsAreWithinPixelLimit(
+                width: extent.width,
+                height: extent.height,
+                maximumPixelCount: maximumPixelCount
+              )
+        else {
+            throw BeautyError.invalidInput
+        }
+    }
+
+    private static func validate(pixelBuffer: CVPixelBuffer, maximumPixelCount: Int) throws {
         let width = CVPixelBufferGetWidth(pixelBuffer)
         let height = CVPixelBufferGetHeight(pixelBuffer)
-        guard width > 0, height > 0 else {
+        guard dimensionsAreWithinPixelLimit(
+            width: width,
+            height: height,
+            maximumPixelCount: maximumPixelCount
+        ) else {
             throw BeautyError.invalidInput
         }
         guard CVPixelBufferGetPixelFormatType(pixelBuffer) == kCVPixelFormatType_32BGRA else {
             throw BeautyError.unsupportedPixelFormat
         }
+    }
+
+    private static func dimensionsAreWithinPixelLimit(
+        width: Int,
+        height: Int,
+        maximumPixelCount: Int
+    ) -> Bool {
+        width > 0 &&
+            height > 0 &&
+            maximumPixelCount > 0 &&
+            width <= maximumPixelCount / height
+    }
+
+    private static func dimensionsAreWithinPixelLimit(
+        width: CGFloat,
+        height: CGFloat,
+        maximumPixelCount: Int
+    ) -> Bool {
+        width.isFinite &&
+            height.isFinite &&
+            width > 0 &&
+            height > 0 &&
+            maximumPixelCount > 0 &&
+            width <= CGFloat(maximumPixelCount) / height
     }
 }
 
