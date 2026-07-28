@@ -102,6 +102,43 @@ nonisolated struct DecodedImageInput: @unchecked Sendable {
     }
 }
 
+nonisolated struct ImageInputBounds: Sendable {
+    let maximumByteCount: Int
+    let maximumPixelCount: Int
+
+    init(configuration: BeautyConfiguration) {
+        maximumByteCount = configuration.maximumInputByteCount
+        maximumPixelCount = configuration.maximumInputPixelCount
+    }
+
+    func validate(_ source: ImageInputSource) throws {
+        guard source.kind == .photosPickerData else {
+            return
+        }
+        guard let data = source.data,
+              maximumByteCount > 0,
+              data.count <= maximumByteCount
+        else {
+            throw BeautyError.invalidInput
+        }
+    }
+
+    func validate(_ image: CIImage) throws {
+        let extent = image.extent
+        guard extent.origin.x.isFinite,
+              extent.origin.y.isFinite,
+              extent.width.isFinite,
+              extent.height.isFinite,
+              extent.width > 0,
+              extent.height > 0,
+              maximumPixelCount > 0,
+              extent.width <= CGFloat(maximumPixelCount) / extent.height
+        else {
+            throw BeautyError.invalidInput
+        }
+    }
+}
+
 nonisolated struct ImageProcessingSnapshot: @unchecked Sendable, Equatable {
     let sourceKind: ImageInputKind
     let sourceID: String

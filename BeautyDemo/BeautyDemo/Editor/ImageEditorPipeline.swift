@@ -39,9 +39,9 @@ nonisolated struct StillImageProcessor: Sendable {
         self.process = process
     }
 
-    static func beautyEngine() -> StillImageProcessor {
+    static func beautyEngine(configuration: BeautyConfiguration = .default) -> StillImageProcessor {
         do {
-            let processor = try BeautyEngineStillImageProcessor()
+            let processor = try BeautyEngineStillImageProcessor(configuration: configuration)
             return StillImageProcessor { image, metadata, parameters in
                 try processor.process(image: image, metadata: metadata, parameters: parameters)
             }
@@ -54,14 +54,24 @@ nonisolated struct StillImageProcessor: Sendable {
 }
 
 nonisolated final class ImageDisplayRenderer: @unchecked Sendable {
-    private let context: CIContext
+    private let context: CIContext?
+    private let renderOverride: (@Sendable (CIImage) throws -> CGImage)?
 
     nonisolated init(context: CIContext = CIContext(options: [.workingColorSpace: CGColorSpaceCreateDeviceRGB()])) {
         self.context = context
+        self.renderOverride = nil
+    }
+
+    nonisolated init(render: @escaping @Sendable (CIImage) throws -> CGImage) {
+        self.context = nil
+        self.renderOverride = render
     }
 
     func render(_ image: CIImage) throws -> CGImage {
-        guard let cgImage = context.createCGImage(image, from: image.extent) else {
+        if let renderOverride {
+            return try renderOverride(image)
+        }
+        guard let cgImage = context?.createCGImage(image, from: image.extent) else {
             throw BeautyError.invalidInput
         }
         return cgImage
@@ -75,6 +85,7 @@ final class ImageEditorPipeline: ObservableObject {
     private let decoder: ImageInputDecoder
     private let processor: StillImageProcessor
     private let renderer: ImageDisplayRenderer
+    private let inputBounds: ImageInputBounds
     private let processingQueue: DispatchQueue
     private var latestInput: ImageInputSource?
     private var generation: UInt64 = 0
@@ -82,14 +93,16 @@ final class ImageEditorPipeline: ObservableObject {
     private var idleContinuations: [CheckedContinuation<Void, Never>] = []
 
     init(
+        configuration: BeautyConfiguration = .default,
         decoder: ImageInputDecoder = .default,
-        processor: StillImageProcessor = .beautyEngine(),
+        processor: StillImageProcessor? = nil,
         renderer: ImageDisplayRenderer = ImageDisplayRenderer(),
         processingQueue: DispatchQueue = DispatchQueue(label: "beauty.demo.photo.pipeline", qos: .userInitiated)
     ) {
         self.decoder = decoder
-        self.processor = processor
+        self.processor = processor ?? .beautyEngine(configuration: configuration)
         self.renderer = renderer
+        self.inputBounds = ImageInputBounds(configuration: configuration)
         self.processingQueue = processingQueue
     }
 
@@ -100,14 +113,27 @@ final class ImageEditorPipeline: ObservableObject {
 
         latestInput = input
         generation &+= 1
-        let work = ImageProcessingWork(input: input, parameters: parameters, generation: generation)
         let previousSnapshot = state.latestSnapshot
+        do {
+            try inputBounds.validate(input)
+        } catch {
+            activeCount = 0
+            state = .failed(
+                previousSnapshot: previousSnapshot,
+                message: PhotoProcessingState.decodeFailureText
+            )
+            resumeIdleContinuationsIfNeeded()
+            return
+        }
+
+        let work = ImageProcessingWork(input: input, parameters: parameters, generation: generation)
         state = .loading(previousSnapshot: previousSnapshot)
         activeCount = 1
 
         let decoder = decoder
         let processor = processor
         let renderer = renderer
+        let inputBounds = inputBounds
         processingQueue.async {
             let result: ImageProcessingResult
             do {
@@ -119,6 +145,7 @@ final class ImageEditorPipeline: ObservableObject {
                     return
                 }
 
+                try inputBounds.validate(decoded.image)
                 let processingResult = try processor.process(decoded.image, decoded.metadata, work.parameters)
                 let snapshot = ImageProcessingSnapshot(
                     sourceKind: decoded.source.kind,
@@ -218,8 +245,8 @@ nonisolated private enum ImageProcessingResult: @unchecked Sendable {
 nonisolated private final class BeautyEngineStillImageProcessor: @unchecked Sendable {
     private let engine: BeautyEngine
 
-    nonisolated init() throws {
-        self.engine = try BeautyEngine(configuration: .default)
+    nonisolated init(configuration: BeautyConfiguration) throws {
+        self.engine = try BeautyEngine(configuration: configuration)
     }
 
     func process(
