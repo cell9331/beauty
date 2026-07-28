@@ -272,7 +272,7 @@ Current status boundaries:
 
 - `3D塑颜` remains `blocked-by-geometry-output`.
 - `比例`, `脸型`, `眼睛`, and `嘴唇` remain `partial`; exact six-row SDK-core `鼻子` is `implemented`.
-- `眉毛` and unpromoted branches remain `future`.
+- Exact seven-row SDK-core `眉毛` is `implemented`; all other unpromoted branches remain `future`. This scoped branch status does not alter the current v1.13 milestone-audit `tech_debt`/blocked closeout state and implies no SwiftUI/Demo UI, device, commercial-naturalness, performance, packaging, shipping, launch, archive, tag, or cleanup completion.
 - Phase 27 proves only the shared geometry output foundation with `faceShapeCombo_0p35`.
 - Phase 28 completes only the scoped `脸型` rows `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线`; branch-level `脸型` stays `partial`.
 - Phases 29 and 30 complete the existing-public-parameter eye slice: exactly `大小`, `上下`, `眼距`, and `眼尾上扬` are implemented, while branch-level `眼睛` remains `partial` because the remaining eye tools are future work.
