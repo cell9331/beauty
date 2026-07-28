@@ -1,11 +1,9 @@
 ---
 phase: 52-eyebrow-safety-and-branch-closeout
-reviewed: 2026-07-27T09:37:50Z
-reviewer: independent-gsd-code-reviewer
+reviewed: 2026-07-28T01:33:02Z
 depth: standard
-files_reviewed: 25
+files_reviewed: 18
 files_reviewed_list:
-  - ARCHITECTURE.md
   - BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift
   - BeautySDK/Sources/BeautyEffects/Planning/BeautySafetyCaps.swift
   - BeautySDK/Sources/BeautyEffects/Warp/EyebrowWarpProvider.swift
@@ -18,12 +16,6 @@ files_reviewed_list:
   - BeautySDK/Tests/BeautyEffectsTests/EyebrowWarpProviderTests.swift
   - BeautySDK/Tests/BeautyEffectsTests/GeometryConflictResolverTests.swift
   - BeautySDK/Tests/BeautyEffectsTests/MissingLandmarkDegradationTests.swift
-  - DESIGN.md
-  - PLANS.md
-  - PRODUCT_SENSE.md
-  - QUALITY_SCORE.md
-  - RELIABILITY.md
-  - SECURITY.md
   - docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md
   - docs/meitu-function-blueprint/FEATURE_MATRIX.md
   - docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md
@@ -32,87 +24,89 @@ files_reviewed_list:
   - example-images/README.md
 findings:
   critical: 0
-  warning: 0
+  warning: 2
   info: 0
-  total: 0
-status: clean
+  total: 2
+status: issues_found
 ---
 
 # Phase 52: Code Review Report
 
-**Reviewed:** 2026-07-27T09:37:50Z
-**Reviewer:** independent `gsd-code-reviewer`
+**Reviewed:** 2026-07-28T01:33:02Z
 **Depth:** standard
-**Files Reviewed:** 25
-**Status:** clean
+**Files Reviewed:** 18
+**Status:** issues_found
 
 ## Summary
 
-The dedicated-queue repair in commit `0a32c7d` closes the remaining
-cooperative-executor defect. The synchronous resolver and its provider-owned
-`DispatchSemaphore.wait` execute only on
-`DispatchQueue(label: "beauty.phase52.interrupted-request")`; the Swift task
-submits that work inside `withCheckedContinuation` and suspends until the
-queue closure resumes it. No Swift cooperative-executor worker performs the
-semaphore wait, including with `LIBDISPATCH_COOPERATIVE_POOL_STRICT=1`.
-
-Direct control-flow review found one continuation creation and one lexical
-resume after the nonthrowing synchronous resolver returns. Every explicit
-entry/start/completion timeout branch releases the provider and actor gates it
-can strand, cancels where applicable, and joins every task created on that
-path. Provider release is lock-protected and idempotent; its defensive wait is
-bounded at thirty seconds. The actor sibling gate serializes waiter
-registration and release, resumes each stored continuation exactly once,
-clears storage, makes repeated release harmless, and admits late waiters
-without retaining a continuation. The success path joins the interrupted
-request before releasing siblings and proves the sibling completion count is
-exactly zero at that boundary. XCTest entry, start, and completion waits are
-separately bounded at ten seconds.
-
-The earlier adapter-faithful fixture, production convergence trace, retained
-mask, request-isolation, cap, provider, facade, redaction, security, and
-privacy repairs remain correctly wired. Root owners designate this review as
-the authoritative source for volatile finding detail without copying a
-finding count. The staged pre-Wave-9 handoff retains exactly ten plans with
-`52-01` through `52-08` complete and `52-09`/`52-10` pending, exactly 23/23
-planned and 19/23 green validation rows, independent verification at
-`gaps_found`, and the blocked milestone-audit boundary. Wave 9 remains the
-owner of post-review status synchronization; this review does not execute or
-claim that wave.
-
-All reviewed files meet quality standards. No actionable correctness,
-security, privacy, or maintainability issue remains in the 25-file scope.
+The Swift implementation and its focused safety, degradation, convergence,
+facade, and dispatch tests are internally consistent. Direct review found no
+actionable correctness or security defect in the resolver, caps, or eyebrow
+provider. The current example-validation contract, however, contains two stale
+statements that disagree with the executable 72-case renderer inventory and the
+Phase 52 eyebrow promotion recorded elsewhere in the same scoped document.
 
 ## Narrative Findings (AI reviewer)
 
-No Critical, Warning, or Info findings.
+### WR-01 — WARNING: The canonical current-case table omits a live renderer case
+
+**File:** `docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md:130-208`
+
+**Issue:** The document says `BeautyExampleRenderer/main.swift` is canonical and
+the table must remain aligned with its executable case IDs, but the table has
+only 71 rows and omits the live `geometryBaseline_noop` case. The renderer and
+its inventory test both contain 72 cases, and this same document relies on that
+baseline in later comparisons. A consumer deriving expected output names from
+the documented current matrix will therefore produce an incomplete inventory
+and can misdiagnose the valid 144-file two-fixture output set as having an
+unexpected case.
+
+**Fix:** Add the missing baseline row in renderer order, immediately after
+`skinCombo_0p50`:
+
+```markdown
+| `geometryBaseline_noop` | No-geometry baseline using default parameters |
+```
+
+Alternatively, if the table intentionally excludes control cases, rename it
+and explicitly state that it contains 71 effect cases plus the separately
+required `geometryBaseline_noop`; do not continue calling it aligned with all
+executable case IDs.
+
+### WR-02 — WARNING: The “Current status boundaries” section still marks eyebrows future
+
+**File:** `docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md:270-274`
+
+**Issue:** The section is explicitly labeled as current, yet line 274 says the
+`眉毛` branch remains `future`. That contradicts the Phase 52 final acceptance
+in the same file, which promotes all seven eyebrow rows and the SDK-core branch,
+as well as the scoped feature matrix, shape ledger, and eyebrow README. This
+leaves two mutually exclusive current statuses in a contract document and can
+cause downstream planning or status tooling to regress a completed branch.
+
+**Fix:** Replace the stale bullet with the finalized scoped status while
+preserving the existing nonclaims, for example:
+
+```markdown
+- Exact seven-row SDK-core `眉毛` is `implemented`; no SwiftUI/Demo UI, device,
+  commercial-naturalness, performance, packaging, shipping, launch, audit,
+  archive, tag, or cleanup completion is implied.
+```
 
 ## Verification
 
-- The targeted interruption-order test passed 30/30 consecutive repetitions
-  with `LIBDISPATCH_COOPERATIVE_POOL_STRICT=1`.
-- The complete `MissingLandmarkDegradationTests` suite passed 51/51 under the
-  strict cooperative-pool setting.
-- The other seven focused suites passed under the same strict setting: 7 caps,
-  27 resolver, 14 provider, 14 conflict, 17 combined, 4 pipeline, and 20
-  facade tests with one documented opt-in skip.
-- The Phase 52 boundary checker passed exactly 130/130 adversarial self-tests;
-  its read-only live mode passed 20/20 checks.
-- Static ledger checks found exactly ten plans, eight summaries, 23 unique
-  validation rows, nineteen green rows, four pending Wave 9/10 rows, and
-  `52-VERIFICATION.md` at `status: gaps_found`. `PLANS.md` and
-  `QUALITY_SCORE.md` retain the authoritative-review reference, exact counts,
-  pending plan state, and blocked audit/nonclaim boundary without a volatile
-  review finding count.
-- Source and owner scans found no hardcoded secret, unsafe deserialization,
-  public/SPI geometry leak, raw-coordinate diagnostic, new dependency,
-  network/cloud path, or lifecycle overclaim in the reviewed scope.
-- `git diff --check` passed. The review timestamp postdates commit `0a32c7d`
-  (`2026-07-27T09:31:27Z`). No source, owner, evidence, security, validation,
-  verification, or summary artifact was modified.
+- `LIBDISPATCH_COOPERATIVE_POOL_STRICT=1 swift test --package-path BeautySDK
+  --filter 'BeautySafetyCapsTests|EyebrowWarpProviderTests|BeautyEffectResolverTests|GeometryConflictResolverTests|CombinedEffectSafetyTests|BeautyGeometryEffectPipelineTests|BeautyEngineGeometryFacadeTests|MissingLandmarkDegradationTests'`
+  passed 154 tests with one documented opt-in Vision integration skip and zero
+  failures.
+- Cross-file inspection confirmed the adapter validation, 44-field conflict
+  inventory, eyebrow pipeline dispatch, public parameter normalization, and
+  resolver accounting agree with the reviewed implementation.
+- The executable renderer inventory contains 72 unique case IDs, including
+  `geometryBaseline_noop`; the current-case Markdown table contains 71 rows.
 
 ---
 
-_Reviewed: 2026-07-27T09:37:50Z_
-_Reviewer: independent gsd-code-reviewer_
+_Reviewed: 2026-07-28T01:33:02Z_
+_Reviewer: the agent (gsd-code-reviewer)_
 _Depth: standard_
