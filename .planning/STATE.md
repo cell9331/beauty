@@ -34,7 +34,7 @@ Last activity: 2026-07-28 — Phase 50 human review passed 3/3, both target vali
 ### Phase 52 Eyebrow Safety and Branch Closeout Result
 
 - Independent `gsd-verifier` re-verification passes 16/16 and closes the previous 12/16 report's four gaps with production-path evidence.
-- The fresh post-document-fix 18-file `gsd-code-reviewer` report is clean 0/0/0/0; its focused regression executes 154 tests with one documented opt-in skip and zero failures.
+- The current 28-file review is clean 0/0/0/0: an independent 18-file `gsd-code-reviewer` base plus a clearly labeled 10-file inline checker/governance delta after the typed reviewer hit its platform usage limit. Focused regression executes 154 tests with one documented opt-in skip and zero failures.
 - Plans 52-09 and 52-10 synchronize all routed root and planning owners. The exact 23-task Nyquist ledger is green and now uses lifecycle `status: validated`; independent Phase 52 verification remains `passed` at 16/16.
 - The lifecycle-aware post-verification checker passes exactly 35/35 with `verification=passed` and the independent audit rerun still pending.
 - Phase 52 implements exactly seven eyebrow rows and SDK-core branch `眉毛`, keeps raw support package-internal and request-scoped, exposes aggregate-only diagnostics, and changes no SwiftUI/Demo path.

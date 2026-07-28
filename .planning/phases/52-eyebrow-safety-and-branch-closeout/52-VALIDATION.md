@@ -306,7 +306,7 @@ Commercial naturalness, physical-device parity, long-run performance, packaging,
 | Check | Result |
 | --- | --- |
 | Nyquist task ledger | PASS — exact 23/23 unique task rows and same-ID command registry remain green. |
-| Independent code review | PASS — fresh post-fix review is clean 0/0/0/0. |
+| Current code review | PASS — independent 18-file base plus labeled 10-file inline delta is clean 0/0/0/0. |
 | Independent verifier | PASS — `52-VERIFICATION.md` is `status: passed`, 16/16 truths verified. |
 | Regression evidence | PASS — latest full SwiftPM run records 450 executed, six documented skips, and zero failures. |
 
