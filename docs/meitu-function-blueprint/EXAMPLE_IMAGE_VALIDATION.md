@@ -144,6 +144,7 @@ These cases are limited to effects that currently produce visible image output t
 | `filter_softClean_0p50` | Built-in `soft_clean` filter |
 | `filter_warmLight_0p50` | Built-in `warm_light` filter |
 | `skinCombo_0p50` | Combined basic skin parameters |
+| `geometryBaseline_noop` | No-geometry baseline using default parameters |
 | `faceShapeCombo_0p35` | Combined face-shape foundation case using `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, and `chinLength` |
 | `faceSlim_0p35` | Phase 28 `脸宽` evidence through existing `faceSlim` |
 | `faceSmall_0p35` | Phase 28 `小脸` evidence through existing `faceSmall` |
