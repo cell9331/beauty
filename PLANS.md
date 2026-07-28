@@ -26,74 +26,27 @@
 
 ## 3. Active
 
-### A-2026-07-24-v1-13-eyebrow-geometry-controls
+No milestone is active. v1.13 is shipped, independently audited, archived,
+cleaned up, and ready for the annotated lifecycle tag. Start the next cycle
+with `$gsd-new-milestone` only after a new scope is explicitly chosen.
+
+## 4. Completed
+
+### C-2026-07-28-v1-13-milestone-completion
 
 | Field | Value |
 | --- | --- |
-| Status | `verifying` |
-| Milestone | v1.13 Eyebrow Geometry Controls |
-| Scope | SDK-SPM-only implementation of exactly seven `眉毛` rows: 上下、粗细、长短、间距、眉头间距、倾斜、眉峰. |
-| Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve legacy 52-key compatibility and all shipped face/eye/nose/mouth output while the current model is exactly 59 stored fields. |
-| Requirements | 21/21 mapped across Phase 49-52; no unmapped requirement. |
-| Roadmap | Phase 49 contract/support → Phase 50 geometry/pipeline → Phase 51 strict output → Phase 52 safety/promotion. |
-| Current step | The independent v1.13 audit rerun is `passed`: 21/21 requirements, 4/4 phase verifications, 12/12 integration seams, 6/6 flows, and 4/4 Nyquist ledgers pass with no gap or residual tech debt. Proceed with the user-authorized archive, tag, cleanup, and push lifecycle. |
+| Completed | 2026-07-28 |
+| Scope | Completed the v1.13 lifecycle after the passing independent audit: archived ROADMAP, REQUIREMENTS, audit, and all Phase 49-52 artifacts; collapsed the live roadmap; evolved PROJECT/STATE/MILESTONES; recorded the retrospective; and cleaned the active phase directory. |
+| Archive | `.planning/milestones/v1.13-ROADMAP.md`, `v1.13-REQUIREMENTS.md`, `v1.13-MILESTONE-AUDIT.md`, and `v1.13-phases/` preserve four phases, 26 plans, 26 summaries, 54 tasks, and the full evidence history. |
+| Verification | Open-artifact audit is clear; archived requirements are checked 21/21; milestone audit passes 4/4 phases, 12/12 integration seams, and 6/6 flows; all four Nyquist ledgers are compliant; cleanup moved exactly four phase directories and 86 files; `git diff --check` passes. |
+| Lifecycle result | The live roadmap points to the v1.13 archive, `.planning/phases/` has no active milestone directory, the milestone-scoped root `REQUIREMENTS.md` is removed for fresh next-cycle definition, and current owners report “awaiting next milestone.” |
 
-Fixture-scope decision (2026-07-24):
+Outcome:
 
-- The active renderer portrait corpus is reduced to the user-selected `example-images/input/portraits/e6.jpg` only. Byte-identical retired `e1.png` through `e5.png` remain preserved under `example-images/parked-portraits/` and are no longer renderer/test inputs.
-- Phase 51 OUT-02 is reduced from 504 outputs across seven fixtures to exactly 72 portrait outputs for `e6.jpg`; `no-face-gradient.png` remains separate negative safety evidence and is not included in the 72 portrait count.
-- Current fixture discovery and preflight must key off `e6.jpg`. Historical completion records retain their original multi-fixture counts and are not rewritten.
-
-Phase 51 planning record (2026-07-24):
-
-- Plans `51-01` through `51-05` cover the exact renderer/degradation contract, bounded helper, separate measurement and clean strict acceptance, mandatory actual-image review, descriptor-safe gallery, and final owner/requirement closeout across five waves.
-- The strict denominator is exactly 72 decoded `e6.jpg` portrait outputs. Thirteen no-face eyebrow comparisons are reported separately; the complete 72-case × two-fixture output/gallery inventory is 144 disposable ignored files and must never be described as 144 portrait outputs.
-- `51-SOURCE-AUDIT.md` covers the ROADMAP goal, OUT-01..03, and D-01..D-16 with no missing item. `51-VALIDATION.md` requires fourteen actual files—the e6 baseline plus all thirteen eyebrow outputs—to be opened before any passing visual claim.
-- Final caps, exhaustive lifecycle/safety, seven-row promotion, branch `眉毛`, and broader release claims remain Phase 52 or later ownership.
-
-Phase 51 execution correction (2026-07-25):
-
-- The mandatory e6 actual-image route exposed two pre-output defects hidden by synthetic provider tests: the CPU bitmap warp inverted canonical top-left image Y, and live Apple Vision eyebrow outlines can present adjacent raw endpoints at the same anatomical end. The in-progress Phase 51 correction aligns bitmap sampling with `ImageNormalized` top-left/downward Y and stably orders the exactly-once mapped Vision eyebrow sample multiset by the mapper-derived face-right axis before adapter validation.
-- The correction preserves one detector request, actual left/right Vision provenance, independent side failure, the exact mapped sample multiset, package-only request lifetime, aggregate-only diagnostics, and the existing unified warp. It does not raise provisional caps, synthesize support, promote rows, or broaden Phase 51 ownership.
-
-Phase 51 closeout record (2026-07-27):
-
-- Plans 51-01 through 51-05 add exactly thirteen isolated public cases to the 72-case renderer, a bounded strict helper, separately measured and frozen acceptance thresholds, original-detail review of fourteen actual `e6` files, and a descriptor-safe 144-file gallery.
-- Fresh focused evidence passes renderer 16/16, provider 12/12, and facade 18 pass plus one opt-in skip. The full SwiftPM retry passes 438 executed with six opt-in skips after restoring fail-closed rejection for a zero-extent eyebrow projection.
-- The final strict gate passes 72/72 portrait outputs, 13/13 visibility, 6/6 signed directions, 21/21 family distinctions, 40/40 direct portrait comparisons, and 13/13 separate no-face comparisons. Output/gallery bijection and ignored/untracked/unstaged containment pass.
-- OUT-01, OUT-02, and OUT-03 are complete. Provisional caps, SAFE-01..03, DOC-01, all seven `future` rows, branch `眉毛`, exhaustive safety, and Demo/device/commercial/performance/packaging/shipping/release scope remain unchanged for Phase 52 or later.
-
-Phase 52 superseded six-plan closeout record (2026-07-27):
-
-- Plans `52-01` through `52-06` freeze seven exact final `0.25` caps, the exact `Float.ulpOfOne` strength dead zone, six signed directions plus positive-only peak definition, bounded radii, and exhaustive no-face/missing/malformed/provider-empty/fresh/reused/stale/valid-invalid-valid behavior.
-- Exact combined geometry remains 44 unique fields totaling `13.45`, with one scale `1 / 13.45`, final total `1`, at most 44 monotone removals, no re-entry or second scaling pass, and final strengths/emissions/accounting/Face→Chin→Eye→Eyebrow→Nose→Mouth dispatch in agreement.
-- Fresh evidence at the original six-plan checkpoint passed eight focused suites, 450 full SwiftPM tests with six opt-in skips, the unchanged strict 72/72 portrait gate, thirteen separate no-face comparisons, 144/144 output/gallery containment, and the original-detail fourteen-image review. Its clean-review and fourteen-task Nyquist statements are historical and superseded by the ten-plan gap-closeout record below.
-- Exactly `上下`, `粗细`, `长短`, `间距`, `眉头间距`, `倾斜`, and `眉峰` plus branch `眉毛` are implemented at SDK-core scope. SAFE-01, SAFE-02, SAFE-03, and DOC-01 are complete across synchronized product, example, root-contract, and planning owners.
-- This remains a superseded historical checkpoint. Current status and handoff are owned by the ten-plan gap-closeout record below.
-
-Phase 52 ten-plan gap-closeout record (2026-07-27):
-
-- Plans `52-07` through `52-10` repair the three production-path proof gaps, refresh regression/simulator/security/Nyquist evidence, consume a fresh independent review, synchronize routed/root/planning owners, and prepare the final fail-closed readiness gate. All ten Phase 52 plans are now recorded in the roadmap.
-- The committed Wave 7 fixes exercise the production adapter, enter the real resolver/provider path before cancellation, preserve request-local sibling isolation, and prove monotone retained-mask removal with no re-entry. Wave 8 records the full 450-test SwiftPM and explicit simulator evidence without modifying `BeautyDemo`.
-- `.planning/phases/52-eyebrow-safety-and-branch-closeout/52-REVIEW.md` is clean across 28 current scoped files with 0 critical, 0 warning, 0 info, and 0 total findings: an independent 18-file base review plus a clearly labeled 10-file inline checker/governance delta after the typed reviewer hit its platform usage limit. The Nyquist ledger contains exactly 23 unique green task rows and is normalized to `validated`.
-- SAFE-01, SAFE-02, SAFE-03, and DOC-01 are implemented for exactly `上下`, `粗细`, `长短`, `间距`, `眉头间距`, `倾斜`, and `眉峰`, plus SDK-core branch `眉毛`. There is no SwiftUI/Demo change, no public raw eyebrow support, and diagnostics remain aggregate-only.
-- Independent `gsd-verifier` re-verification passes 16/16 and closes all four prior gaps with fresh adapter-valid fixture, in-flight cancellation, real retained-mask convergence, full regression, strict output, simulator, review, security, validation, owner, and nonclaim evidence. The separately scoped v1.13 milestone audit is now the next workflow; audit, archive, tag, cleanup, physical-device parity, commercial naturalness, optimized performance, packaging, shipping, launch, and release readiness remain unclaimed.
-
-Phase 49 closeout record (2026-07-24):
-
-- Plans 49-01 through 49-04 delivered the exact 59 stored/58 numeric public model, neutral legacy 52-key/source/reset/diff/equality/round-trip behavior, unchanged five-preset bytes, actual `leftEyebrow`/`rightEyebrow` capture from one request, exactly-once mapping, mapper-axis side/order canonicalization, and package-only request-scoped semantic attachment.
-- Final support constants are preflight 1...16 points; adapter 4...16 exact-bit-unique finite closed-unit points; face-relative chord 0.08...0.50; vertical span at most 0.25; projection epsilon 0.000001; whole-array reversal only. Left/right regions fail independently and all seven public fields remain runtime-inert.
-- Fresh focused evidence passes 37 parameter, 10 resource, 23 resolver, 66 detection with 2 opt-in skips, and 45 adapter tests with 1 opt-in skip. Checker self-tests pass 42/42, live checks pass 15/15, `git diff --check` passes, and ASVS L1 active-source/diff review has zero unresolved HIGH findings.
-- The authorized e1...e5 portrait set was restored from `example-images/parked-portraits/`; exact historical byte sizes match the committed 2026-07-09 fixture record. Preflight passes and full SwiftPM passes 411 tests with three opt-in Apple Vision skips and zero failures. Wave 0, Nyquist, and BROW-01/BROW-02/SUPP-01/SUPP-02/SUPP-03 are complete.
-- No provider eligibility, effective caps/strengths, resolver/conflict/facade routing, visible output, renderer/gallery evidence, safety calibration, row/branch promotion, Phase 50-52 completion, v1.14-v1.16 completion, Demo/UI, device, commercial, performance, packaging, shipping, or release-readiness claim is made.
-
-Planned follow-on milestones:
-
-- v1.14: `去脂`, `祛红血丝`, `白牙` through a reusable local retouch path.
-- v1.15: approved local semantic masking plus `发际线`.
-- v1.16: `去双下巴`, `去双下巴 Pro`, and narrow facial-feature closeout.
-
-## 4. Completed
+- v1.13 ships exactly seven eyebrow rows and branch `眉毛` at SDK-core scope.
+- No Demo/device/commercial/performance/packaging/shipping/launch-readiness claim was added.
+- The next workflow is `$gsd-new-milestone`; no future scope is inferred.
 
 ### C-2026-07-28-v1-13-milestone-audit-passed
 
@@ -118,7 +71,7 @@ Outcome:
 | Completed | 2026-07-28 |
 | Scope | Resolved the prior audit's two governance findings without changing SDK runtime behavior: dispositioned Phase 50's three human judgments and normalized Phase 50/52 validation lifecycle status. Fixed the two documentation review warnings and reran the independent Phase 52 review. |
 | Verification | Phase 50 human review passes 3/3; Phase 50 boundary self-test passes 4/4 and live mode passes; Phase 50 verification is `passed`; Phase 50/52 validation is `validated`; current Phase 52 review is clean across 28 files with 0/0/0/0 findings and 154 focused tests pass with one documented skip; checker self-test and live readiness pass 130/130 and 35/35. |
-| Status | Remediation complete; independent v1.13 milestone audit rerun pending. |
+| Status | Remediation completed; the subsequent independent v1.13 milestone audit rerun passed. |
 | Boundary | No audit override, archive, tag, cleanup, UI/device/commercial/performance/packaging/shipping/launch/release claim is made by remediation. |
 
 Outcome:

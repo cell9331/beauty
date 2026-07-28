@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.13
 milestone_name: Eyebrow Geometry Controls
-status: verifying
-stopped_at: v1.13 independent audit passed; archive/tag/cleanup pending
-last_updated: "2026-07-28T02:25:45.000Z"
+status: Awaiting next milestone
+stopped_at: Milestone v1.13 complete; next $gsd-new-milestone
+last_updated: "2026-07-28T02:28:01.159Z"
 last_activity: 2026-07-28
-last_activity_desc: v1.13 independent audit passed 21/21 requirements, 12/12 integrations, 6/6 flows, and 4/4 Nyquist
+last_activity_desc: Milestone v1.13 completed, audited, archived, and cleaned up
 progress:
   total_phases: 4
   completed_phases: 4
@@ -19,27 +19,27 @@ progress:
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-07-27)
+See: `.planning/PROJECT.md` (updated 2026-07-28)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** v1.13 milestone archive, tag, cleanup, and push
+**Current focus:** Planning the next milestone
 
 ## Current Position
 
-Phase: 52 (eyebrow-safety-and-branch-closeout) — COMPLETE
-Plan: 10 of 10
-Status: Independent milestone audit passed; lifecycle closeout pending
-Last activity: 2026-07-28 — Audit passed 21/21 requirements, 4/4 phases, 12/12 seams, 6/6 flows, and 4/4 Nyquist ledgers with no residual debt
+Phase: Milestone v1.13 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-07-28 — Milestone v1.13 completed, audited, archived, and cleaned up
 
 ### Phase 52 Eyebrow Safety and Branch Closeout Result
 
 - Independent `gsd-verifier` re-verification passes 16/16 and closes the previous 12/16 report's four gaps with production-path evidence.
 - The current 28-file review is clean 0/0/0/0: an independent 18-file `gsd-code-reviewer` base plus a clearly labeled 10-file inline checker/governance delta after the typed reviewer hit its platform usage limit. Focused regression executes 154 tests with one documented opt-in skip and zero failures.
 - Plans 52-09 and 52-10 synchronize all routed root and planning owners. The exact 23-task Nyquist ledger is green and now uses lifecycle `status: validated`; independent Phase 52 verification remains `passed` at 16/16.
-- The lifecycle-aware post-verification checker passes exactly 35/35 with `verification=passed` and the independent audit rerun still pending.
+- The lifecycle-aware post-verification checker passed exactly 35/35 with `verification=passed` before the independent audit rerun.
 - Phase 52 implements exactly seven eyebrow rows and SDK-core branch `眉毛`, keeps raw support package-internal and request-scoped, exposes aggregate-only diagnostics, and changes no SwiftUI/Demo path.
 - Fresh verification passes eight focused suites, 450 SwiftPM tests with six conditional skips, strict 72/72 output plus thirteen no-face comparisons, 130/130 checker self-tests, simulator build/test, review/security/owner gates, and no-`BeautyDemo` scope checks.
-- `52-VERIFICATION.md` is independently owned and `passed`; the separate v1.13 milestone audit also passes. Archive, tag, and cleanup remain the final lifecycle actions.
+- `52-VERIFICATION.md` is independently owned and `passed`; the separate v1.13 milestone audit also passes. Phase artifacts, roadmap, requirements, and audit are archived under `.planning/milestones/`.
 
 ### Phase 51 Public-Facade Eyebrow Output Result
 
@@ -47,14 +47,14 @@ Last activity: 2026-07-28 — Audit passed 21/21 requirements, 4/4 phases, 12/12
 - The frozen strict gate passes 72/72 `e6` portrait outputs, 13/13 visibility, 6/6 signed direction, 21/21 semantic distinctions, 40/40 direct portrait comparisons, and thirteen separately reported no-face no-ops.
 - The baseline plus all thirteen actual eyebrow images were opened at original detail and agree with automated locality/direction/distinction evidence. The exact output/gallery bijection is 144 ignored, untracked, unstaged disposable PNGs.
 - Focused suites pass renderer 16/16, provider 12/12, and facade 18 plus one opt-in skip; the full SwiftPM retry passes 438 executed with six opt-in skips after restoring fail-closed zero-extent projection handling.
-- OUT-01..03 are complete. Phase 52 remains the unstarted owner of provisional-cap replacement, exhaustive safety/transitions, seven-row and `眉毛` promotion, SAFE-01..03, DOC-01, and broader nonclaims.
+- OUT-01..03 are complete. Phase 52 subsequently completed final caps, exhaustive safety/transitions, seven-row and `眉毛` promotion, SAFE-01..03, DOC-01, and broader nonclaims.
 
 ### Phase 50 Independent Eyebrow Geometry and Pipeline Result
 
 - Seven distinct canonical-trace emissions route through provisional `0.25` caps, one exact 44-name/13.45 convergence mask, and one stable Face→Chin→Eye→Eyebrow→Nose→Mouth dispatch.
 - Field-local side/pair/chord/apex and provider-empty degradation, fresh/reused/stale/no-face lifecycle, and sequential/concurrent request isolation pass with aggregate-only diagnostics.
 - Fresh evidence passes provider 11, resolver 26, conflict 14, combined 15, degradation 48, pipeline 3, facade 18, BeautyEffects 243 with one opt-in skip, and full SwiftPM 433 with three opt-in skips.
-- GEOM-01..07 and PIPE-01/02 are complete at compiled SDK-core scope. Phase 51 retains decoded output/gallery; Phase 52 retains final caps, exhaustive safety, and promotion.
+- GEOM-01..07 and PIPE-01/02 are complete at compiled SDK-core scope. Phase 51 subsequently closed decoded output/gallery, and Phase 52 closed final caps, exhaustive safety, and promotion.
 - The delegated source judgment review passes 3/3: no eyebrow identity/recognition/authentication/profiling use, no synthetic/generated/eye-derived production substitute, and no silent downstream/UI/device/commercial/release scope claim. `50-VERIFICATION.md` is `passed` and `50-VALIDATION.md` is `validated`.
 
 ### Phase 48 Face Safety and Scoped Closeout Result
@@ -415,7 +415,7 @@ Recent milestone-level outcomes:
 
 ### Pending Todos
 
-- Complete the user-authorized v1.13 archive, tag, cleanup, and push lifecycle after the passing audit.
+- Start the next milestone only through a new explicit scope and `$gsd-new-milestone`.
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, screenshot reruns, packaging review, broader `美型 / 五官` slices, and automated visual diffs.
 
@@ -445,10 +445,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-28T02:25:45.000Z
-Stopped at: v1.13 independent audit passed; archive/tag/cleanup pending
+Last session: 2026-07-28T02:28:01.159Z
+Stopped at: Milestone v1.13 complete; next $gsd-new-milestone
 Resume file: None
 
 ## Operator Next Steps
 
-- Complete the user-authorized archive, annotated `v1.13` tag, cleanup, and push actions.
+- Start the next milestone with `$gsd-new-milestone` when a new scope is chosen.

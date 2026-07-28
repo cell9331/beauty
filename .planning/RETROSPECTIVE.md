@@ -491,6 +491,55 @@
 - Sessions: one autonomous v1.12 chain with phase resumptions and an independent milestone audit.
 - Notable: Phase 45 review convergence dominated corrective work; later phases benefited from stable boundary checkers and exact owner gates.
 
+## Milestone: v1.13 - Eyebrow Geometry Controls
+
+**Shipped:** 2026-07-28
+**Phases:** 4 | **Plans:** 26 | **Recorded tasks:** 54
+
+### What Was Built
+
+- Added seven compatibility-safe eyebrow controls to the exact 59-field public model.
+- Added actual request-scoped Vision eyebrow support with exactly-once mapping, open-path validation, and aggregate-only diagnostics.
+- Added seven distinct provider emissions through one exact 44-field/13.45 retained set and stable unified dispatch.
+- Added strict 72-portrait output evidence, thirteen separate no-face comparisons, fourteen actual-image reviews, and an ignored 144-file gallery.
+- Locked final caps, lifecycle/degradation/concurrency behavior, clean review, ASVS L1 boundaries, exact product promotion, and a passing 21/21 independent audit.
+
+### What Worked
+
+- Separating public contract, observed provenance, provider routing, decoded output, and final promotion kept every claim evidence-owned.
+- The real output route caught top-left image-Y and Vision endpoint-order defects that provider-only fixtures missed.
+- Production-path gap closure for adapter-valid fixtures, in-flight cancellation, and retained-mask tracing turned an initially weak verifier result into reproducible 16/16 acceptance.
+- The milestone audit surfaced governance-only debt before archive; explicit human judgment and validation normalization cleared it without changing runtime behavior.
+
+### What Was Inefficient
+
+- Phase 52's executor checker encoded a pre-verification lifecycle state, so post-verification owner synchronization initially reduced 35/35 to 31/35 until the gate was advanced and adversarially retested.
+- Two small example-document inconsistencies required a review/fix/re-review loop after implementation was otherwise complete.
+- The typed follow-up reviewer hit a platform usage limit, requiring a transparently labeled inline delta review instead of pretending independent coverage.
+- The milestone primitive generated an overlong accomplishment list and did not move phases; explicit cleanup and owner polishing remained necessary.
+
+### Patterns Established
+
+- Observed biometric-adjacent support needs a source-provenance judgment in addition to automated privacy scans when a plan explicitly reserves ethical/scope questions.
+- Lifecycle-aware checkers should model pre-verification, post-verification/pre-audit, and post-audit states explicitly rather than freezing one transition.
+- Current review reports must distinguish independent base review from any fallback delta review and pair both with executable evidence.
+- Cleanup must update runnable documentation paths when phase-owned helpers move into milestone archives.
+
+### Key Lessons
+
+1. Put production adapter validity into shared fixtures before provider tests become the main oracle.
+2. Exercise cancellation only after real request-owned work begins, then join and prove request isolation.
+3. Normalize validation lifecycle vocabulary during phase closeout, not at milestone audit.
+4. Treat archive tooling as a primitive: verify its output, then explicitly collapse live owners, move phases, update paths, and record the retrospective.
+
+### Cost Observations
+
+- Model mix: quality profile across implementation, review, verification, integration audit, and lifecycle closeout.
+- Sessions: one multi-day milestone with gap-closure and audit-remediation loops.
+- Notable: strict output and governance reconciliation dominated closeout after the runtime path stabilized.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -508,6 +557,7 @@
 | v1.10 | autonomous | 3 | Added independent remaining-mouth contracts, explicit private lip supports, strict 308-output evidence, and a 17/17 audit. |
 | v1.11 | autonomous | 4 | Added private observed eye support, fourteen named emissions, strict 385-output evidence, exact ten-row promotion, and a 24/24 audit. |
 | v1.12 | autonomous | 4 | Added private observed face support, four independent contour/chin providers, strict 413-output evidence, exact four-row promotion, and an 18/18 audit. |
+| v1.13 | autonomous | 4 | Added actual observed eyebrow support, seven distinct providers, strict 72-portrait evidence, exact eyebrow-branch promotion, and a 21/21 audit. |
 
 ### Cumulative Quality
 
@@ -524,6 +574,7 @@
 | v1.10 | 265 SDK tests, 308-output strict helper, 63-case boundary self-test, and milestone audit | Requirement traceability 17/17 | No new third-party runtime dependency recorded for remaining-mouth closeout. |
 | v1.11 | 314 SDK tests, 385-output strict helper, 57-case boundary self-test, and milestone audit | Requirement traceability 24/24 | No new third-party runtime dependency recorded for remaining-eye closeout. |
 | v1.12 | 375 SDK tests, 413-output strict helper, 70-case boundary self-test, and milestone audit | Requirement traceability 18/18 | No new third-party runtime dependency recorded for remaining-face closeout. |
+| v1.13 | 450 SDK tests, 72-portrait/13-no-face strict helper, 130-case boundary self-test, and milestone audit | Requirement traceability 21/21 | No new third-party runtime dependency recorded for eyebrow closeout. |
 
 ### Top Lessons (Verified Across Milestones)
 

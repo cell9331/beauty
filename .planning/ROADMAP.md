@@ -15,193 +15,35 @@
 - ✅ **[v1.10 Mouth Remaining Geometry Controls](milestones/v1.10-ROADMAP.md)** — Phases 38-40, shipped 2026-07-14.
 - ✅ **[v1.11 Eye Remaining Geometry Controls](milestones/v1.11-ROADMAP.md)** — Phases 41-44, shipped 2026-07-19.
 - ✅ **[v1.12 Face Shape Remaining Capabilities](milestones/v1.12-ROADMAP.md)** — Phases 45-48, shipped 2026-07-24.
-- 🚧 **v1.13 Eyebrow Geometry Controls** — All four phases, 26 plans, and 21 requirements are complete; the independent audit passes 21/21 requirements, 12/12 integrations, 6/6 flows, and 4/4 Nyquist ledgers. Archive/tag/cleanup are the remaining lifecycle steps.
+- ✅ **[v1.13 Eyebrow Geometry Controls](milestones/v1.13-ROADMAP.md)** — Phases 49-52, shipped 2026-07-28.
 
 ## Phases
 
-- [x] **Phase 49: Public Contract and Observed Eyebrow Support** — Exact 59-field compatibility, actual left/right Vision eyebrow mapping, open-trace validation, side/order canonicalization, and private lifecycle. (completed 2026-07-24)
-- [x] **Phase 50: Independent Eyebrow Geometry and Pipeline Integration** — Seven distinct named transforms, field-local eligibility, exact 44-field convergence, unified dispatch, and redacted facade routing. (completed 2026-07-24)
-- [x] **Phase 51: Public-Facade Eyebrow Output Evidence** — Thirteen isolated cases, strict single-portrait direction/locality/distinction evidence, safe no-ops, and ignored gallery containment. (completed 2026-07-27)
-- [x] **Phase 52: Eyebrow Safety and Branch Closeout** — Final caps, complete transitions, active-source/privacy gates, exact seven-row promotion, and implemented branch status. Ten execution plans and independent 16/16 verification are complete. (completed 2026-07-27)
+<details>
+<summary>✅ v1.13 Eyebrow Geometry Controls (Phases 49-52) — SHIPPED 2026-07-28</summary>
 
-## Phase Details
+- [x] Phase 49: Public Contract and Observed Eyebrow Support (5/5 plans) — completed 2026-07-24
+- [x] Phase 50: Independent Eyebrow Geometry and Pipeline Integration (6/6 plans) — completed 2026-07-24
+- [x] Phase 51: Public-Facade Eyebrow Output Evidence (5/5 plans) — completed 2026-07-27
+- [x] Phase 52: Eyebrow Safety and Branch Closeout (10/10 plans) — completed 2026-07-27
 
-### Phase 49: Public Contract and Observed Eyebrow Support
+</details>
 
-**Goal:** Establish compatibility-safe public eyebrow semantics and honest request-scoped support from actual Apple Vision eyebrow traces.
-
-**Depends on:** Nothing (first phase of v1.13)
-
-**Requirements:** BROW-01, BROW-02, SUPP-01, SUPP-02, SUPP-03
-
-**Plans:** 5/5 plans complete
-
-- [x] 49-01-PLAN.md
-- [x] 49-02-PLAN.md
-- [x] 49-03-PLAN.md
-- [x] 49-04-PLAN.md
-- [x] 49-05-PLAN.md
-
-**Success criteria:**
-
-1. `BeautyParameters` contains exactly 59 stored fields (58 numeric plus `filterId`); all seven additions default to zero, normalize finitely, round-trip, and preserve legacy 52-field JSON/source/preset neutrality.
-2. The existing single selected-face Vision landmarks request copies actual left/right eyebrow regions and maps accepted points exactly once through request-local orientation/mirror metadata.
-3. Eyebrow open traces are independently bounded, validated, and canonicalized for side and inner/outer order; malformed evidence fails locally and is never replaced by eye contours or synthetic proxies.
-4. Raw/derived eyebrow support remains package-only, ephemeral, non-Codable, non-persistent, non-networked, and aggregate-only in diagnostics; no provider/output/promotion claim is made in this phase.
-
-### Phase 50: Independent Eyebrow Geometry and Pipeline Integration
-
-**Goal:** Implement all seven eyebrow semantics as distinct provider-owned geometry through the existing resolver, conflict, warp, and public-facade path.
-
-**Depends on:** Phase 49
-
-**Requirements:** GEOM-01, GEOM-02, GEOM-03, GEOM-04, GEOM-05, GEOM-06, GEOM-07, PIPE-01, PIPE-02
-
-**Plans:** 6/6 plans complete
-**Wave 1**
-
-- [x] 50-01-PLAN.md
-
-**Wave 2** *(blocked on Wave 1 completion)*
-
-- [x] 50-02-PLAN.md
-
-**Wave 3** *(blocked on Wave 2 completion)*
-
-- [x] 50-03-PLAN.md
-- [x] 50-04-PLAN.md
-
-**Wave 4** *(blocked on Wave 3 completion)*
-
-- [x] 50-05-PLAN.md
-
-**Wave 5** *(blocked on Wave 4 completion)*
-
-- [x] 50-06-PLAN.md
-
-**Success criteria:**
-
-1. Vertical position, thickness, length, whole-brow spacing, inner-head spacing, tilt, and peak definition own independently testable vectors/local regions and do not modify shipped eye/face arrays.
-2. Paired versus per-side prerequisites are explicit; missing/malformed support and provider-empty work remove only dependent eyebrow fields while eligible siblings and safe independent domains continue.
-3. All seven named emissions traverse effective strengths, resolver/facade routing, one exact 44-field provider-eligible monotone convergence loop, and exactly-once unified dispatch with totals/counts/scales/metrics in agreement.
-4. Focused and full SwiftPM evidence passes without new dependency, model, resource pack, SwiftUI/Demo source, network/cloud path, commercial behavior, or raw geometry exposure.
-
-### Phase 51: Public-Facade Eyebrow Output Evidence
-
-**Goal:** Prove every eyebrow capability through decoded public-facade images with fixed brow-local direction, locality, and distinction evidence.
-
-**Depends on:** Phase 50
-
-**Requirements:** OUT-01, OUT-02, OUT-03
-
-**Plans:** 5/5 plans complete
-
-**Wave 1**
-
-- [x] 51-01-PLAN.md — Add the exact thirteen public eyebrow cases and representative facade degradation evidence.
-
-**Wave 2** *(blocked on Wave 1 completion)*
-
-- [x] 51-02-PLAN.md — Build the bounded single-portrait decoder and non-circular semantic gate.
-
-**Wave 3** *(blocked on Wave 2 completion)*
-
-- [x] 51-03-PLAN.md — Freeze measured thresholds, accept a clean e6 matrix, and open every representative eyebrow image.
-
-**Wave 4** *(blocked on Wave 3 completion)*
-
-- [x] 51-04-PLAN.md — Publish the exact descriptor-safe eyebrow gallery and live validation instructions.
-
-**Wave 5** *(blocked on Wave 4 completion)*
-
-- [x] 51-05-PLAN.md — Run final gates, synchronize owners, and close only OUT-01 through OUT-03.
-
-**Success criteria:**
-
-1. The renderer adds exactly thirteen isolated cases—positive/negative cases for six signed controls plus one peak case—expanding the duplicate-free inventory from 59 to 72.
-2. A bounded strict helper accepts exactly 72 decoded same-dimension outputs from the sole active portrait fixture `e6.jpg` and proves visibility inside fixed brow regions with protected eyes, forehead, hair, background, and watermark locality; the no-face negative remains separate safety evidence rather than part of this 72-output portrait count.
-3. Positive/negative directions remain distinct and all seven semantic families are distinguishable, including whole-brow spacing versus inner-head spacing and thickness versus peak.
-4. Representative no-face, missing, malformed, and partial-support cases remain safe; renderer/output/gallery inventories are bijective and all generated evidence remains ignored, untracked, unstaged, and disposable.
-
-### Phase 52: Eyebrow Safety and Branch Closeout
-
-**Goal:** Freeze conservative behavior and promote exactly the seven eyebrow rows only after runtime, output, privacy, and owner evidence agree.
-
-**Depends on:** Phase 51
-
-**Requirements:** SAFE-01, SAFE-02, SAFE-03, DOC-01
-
-**Plans:** 10/10 plans complete
-
-**Wave 1**
-
-- [x] 52-01-PLAN.md — Freeze exact final caps and exhaustive seven-field lifecycle/local-failure behavior.
-
-**Wave 2** *(blocked on Wave 1 completion)*
-
-- [x] 52-02-PLAN.md — Freeze exact 44-field convergence, final named emissions, accounting, and dispatch agreement.
-
-**Wave 3** *(blocked on Wave 2 completion)*
-
-- [x] 52-03-PLAN.md — Build the fail-closed checker and obtain fresh runtime/output/review/Nyquist/security evidence.
-
-**Wave 4** *(blocked on Wave 3 completion)*
-
-- [x] 52-04-PLAN.md — Promote exactly seven eyebrow rows and branch `眉毛` atomically from fresh evidence.
-
-**Wave 5** *(blocked on Wave 4 completion)*
-
-- [x] 52-05-PLAN.md — Synchronize example-image and routed root contract owners.
-
-**Wave 6** *(blocked on Wave 5 completion)*
-
-- [x] 52-06-PLAN.md — Close planning/requirement/verification state and hand off to the independent milestone audit.
-
-**Wave 7** *(gap closure; blocked on Wave 6 completion)*
-
-- [x] 52-07-PLAN.md — Repair canonical fixtures, prove cancellation inside provider work, and trace real convergence removals.
-
-**Wave 8** *(blocked on Wave 7 completion)*
-
-- [x] 52-08-PLAN.md — Produce fresh regression, security, checker, simulator, and 23-task Nyquist evidence.
-
-**Independent review gate** *(required between Waves 8 and 9)*
-
-- `$gsd-code-review 52` exclusively owns the fresh review; Wave 9 must fail closed unless it is clean and newer than the Wave 7-8 commits.
-
-**Wave 9** *(blocked on Wave 8 and the independent review gate)*
-
-- [x] 52-09-PLAN.md — Resynchronize routed root owners from independently reviewed evidence.
-
-**Wave 10** *(blocked on Wave 9 completion)*
-
-- [x] 52-10-PLAN.md — Resynchronize planning owners and run the final 35/35 pending-verification gate.
-
-Executor implementation and planning gates are complete across all ten plans. Independent re-verification passes 16/16 and closes the four prior gaps. The next workflow is the separate v1.13 milestone audit; no audit or lifecycle result is claimed here.
-
-**Success criteria:**
-
-1. All seven controls have exact final caps/dead zones, correct signed or positive-only directionality, bounded radii, and no-face/missing/malformed/provider-empty/fresh/reused/stale/transition evidence.
-2. Exact 44-field combined geometry retains one provider-eligible baseline with no re-entry or double scaling, and final strengths, totals, counts, scale, warnings, metrics, named emissions, and dispatch agree.
-3. Public/SPI, diagnostics, persistence, reflection, Demo imports, dependencies, network/cloud, commercial, generated-artifact, and active-source gates fail closed with no unresolved high-severity issue.
-4. Exactly `上下`, `粗细`, `长短`, `间距`, `眉头间距`, `倾斜`, and `眉峰` become implemented; branch-level `眉毛` becomes implemented at SDK-core scope while v1.14-v1.16 and all UI/device/commercial/release claims remain future.
+Earlier shipped milestones are preserved in their linked archives under `.planning/milestones/`.
 
 ## Progress
 
-| Phase | Milestone | Requirements | Status | Completed |
-| --- | --- | --- | --- | --- |
-| 49. Public Contract and Observed Eyebrow Support | v1.13 | 5 | Complete    | 2026-07-24 |
-| 50. Independent Eyebrow Geometry and Pipeline Integration | v1.13 | 9 | Complete | 2026-07-24 |
-| 51. Public-Facade Eyebrow Output Evidence | v1.13 | 3 | Complete    | 2026-07-27 |
-| 52. Eyebrow Safety and Branch Closeout | v1.13 | 4 | Complete | 2026-07-27 |
+| Milestone | Phases | Plans | Requirements | Audit | Status |
+| --- | ---: | ---: | ---: | --- | --- |
+| v1.13 Eyebrow Geometry Controls | 4/4 | 26/26 | 21/21 | passed: 12/12 integrations, 6/6 flows, 4/4 Nyquist | Shipped 2026-07-28 |
 
 ## Backlog
 
-- v1.14 implements `去脂`, `祛红血丝`, and `白牙` through a reusable local mask/color-retouch path.
-- v1.15 establishes an approved local semantic-region foundation and implements `发际线`.
-- v1.16 implements `去双下巴`, `去双下巴 Pro`, and closes the narrow 51-row facial-feature taxonomy.
+- v1.14: `去脂`, `祛红血丝`, and `白牙` through a reusable local mask/color-retouch path.
+- v1.15: approved local semantic masking plus `发际线`.
+- v1.16: `去双下巴`, `去双下巴 Pro`, and narrow facial-feature closeout.
 - `比例` and `3D塑颜` remain outside the narrow facial-feature sequence.
 - SwiftUI/Demo UI, physical-device parity, commercial visual approval, optimized profiling, packaging, shipping, and launch-readiness evidence remain separately scoped.
 
 ---
-*Last updated: 2026-07-27 after the v1.13 milestone audit reported explicit tech debt pending disposition*
+*Last updated: 2026-07-28 after v1.13 passed audit and lifecycle closeout*

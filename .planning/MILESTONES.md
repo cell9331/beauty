@@ -1,5 +1,41 @@
 # Milestones
 
+## v1.13 Eyebrow Geometry Controls (Shipped: 2026-07-28)
+
+**Delivered:** Seven independent SDK-core eyebrow controls with exact public compatibility, actual request-scoped Vision eyebrow support, distinct geometry, strict facade-output evidence, conservative safety, and exact branch promotion.
+
+**Phases completed:** 4 phases, 26 plans, 54 tasks
+
+**Key accomplishments:**
+
+- Extended `BeautyParameters` from 52 to exactly 59 stored fields while preserving legacy source/JSON/preset neutrality and all shipped face/eye/nose/mouth behavior.
+- Added bounded actual `leftEyebrow`/`rightEyebrow` Vision capture, exactly-once request-local mapping, canonical open-path validation, and package-only aggregate-redacted support.
+- Added seven distinct provider-owned eyebrow emissions and routed them through one exact 44-field/13.45 retained set, monotone convergence, and stable Face→Chin→Eye→Eyebrow→Nose→Mouth dispatch.
+- Proved thirteen isolated public-facade cases through 72/72 portrait output checks, thirteen separate no-face comparisons, fourteen original-detail image reviews, and exact ignored 144-file gallery containment.
+- Locked seven final `0.25` caps, request lifecycle/degradation/concurrency behavior, ASVS L1 zero-open-threat boundaries, clean review, exact 23/23 Phase 52 Nyquist, and atomic promotion of seven rows plus branch `眉毛`.
+- Independent audit passed 21/21 requirements, 4/4 canonical phase verifications, 12/12 integration seams, 6/6 end-to-end flows, and all four Nyquist ledgers after closing the initial governance-only debt.
+
+**Stats:**
+
+- 37,227 tracked Swift source/test lines at close, excluding `.build` output
+- 4 phases, 26 plans, 54 recorded tasks
+- Timeline: 2026-07-24 to 2026-07-28
+
+**Git range:** `d18aa41` → final v1.13 lifecycle commit
+
+**Verification:** Fresh full SwiftPM evidence passed 450 tests with six documented conditional skips; the focused final review rerun passed 154 tests with one skip; strict output passed 72/72 portrait plus thirteen no-face comparisons; the Phase 52 checker passed 130/130 self-tests and 35/35 pre-audit readiness; review was clean 0/0/0/0 and ASVS L1 recorded `threats_open: 0`.
+
+**Archives:**
+
+- `.planning/milestones/v1.13-ROADMAP.md`
+- `.planning/milestones/v1.13-REQUIREMENTS.md`
+- `.planning/milestones/v1.13-MILESTONE-AUDIT.md`
+- `.planning/milestones/v1.13-phases/`
+
+**What's next:** Start a fresh milestone with `$gsd-new-milestone`; v1.14-v1.16 and device/commercial/release evidence remain separately scoped.
+
+---
+
 ## v1.12 Face Shape Remaining Capabilities (Shipped: 2026-07-24)
 
 **Delivered:** Four independent contour-driven face-shape controls with compatibility-safe public semantics, private observed support, strict facade-output evidence, conservative safety, and exact four-row promotion while preserving semantic-region blockers.

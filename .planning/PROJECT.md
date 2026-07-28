@@ -12,19 +12,21 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ## Current State
 
-**Shipped version:** v1.12 Face Shape Remaining Capabilities on 2026-07-24.
+**Shipped version:** v1.13 Eyebrow Geometry Controls on 2026-07-28.
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
-**Current milestone:** v1.13 Eyebrow Geometry Controls.
+**Current milestone:** None — awaiting the next explicitly scoped milestone.
 
-**Implementation state:** Phase 52 implementation and gap closure are complete across all ten execution plans. `BeautyParameters` remains exactly 59 stored fields (58 numeric plus `filterId`); seven eyebrow controls traverse private request-scoped observed support, independent providers, exact final `0.25` caps, one exact 44-field/13.45 convergence path, stable unified dispatch, and the public facade. Exactly `上下`, `粗细`, `长短`, `间距`, `眉头间距`, `倾斜`, and `眉峰`, plus branch `眉毛`, are implemented at SDK-core scope. No SwiftUI/Demo path changed, no public raw eyebrow support was added, and diagnostics remain aggregate-only.
+**Implementation state:** v1.13 is shipped and archived. `BeautyParameters` remains exactly 59 stored fields (58 numeric plus `filterId`); seven eyebrow controls traverse private request-scoped observed support, independent providers, exact final `0.25` caps, one exact 44-field/13.45 convergence path, stable unified dispatch, and the public facade. Exactly `上下`, `粗细`, `长短`, `间距`, `眉头间距`, `倾斜`, and `眉峰`, plus branch `眉毛`, are implemented at SDK-core scope. No SwiftUI/Demo path changed, no public raw eyebrow support was added, and diagnostics remain aggregate-only.
 
-**Verification state:** Phase 52 independently passes 16/16 must-haves. Fresh evidence passes eight focused suites, 450 full SwiftPM tests with six opt-in skips, exact 44-field convergence, 72/72 decoded portrait outputs, thirteen separate no-face comparisons, fixed visibility/direction/distinction gates, fourteen original-detail image reviews, and exact ignored 144-file output/gallery inventories. The current review is clean across 28 scoped files with 0/0/0/0 findings—an independent 18-file base plus a clearly labeled 10-file inline checker/governance delta—and 154 focused tests pass with one documented skip; Nyquist is exactly 23/23 green; checker self-tests are 130/130 and post-verification live readiness is 35/35; ASVS L1 records `threats_open: 0`; explicit simulator build/test and the no-`BeautyDemo` path gate pass. SAFE-01, SAFE-02, SAFE-03, and DOC-01 are satisfied. The independent v1.13 audit rerun passes 21/21 requirements, 4/4 phase verifications, 12/12 integration seams, 6/6 flows, and 4/4 validation ledgers with no residual debt. Archive/tag/cleanup and Demo/device/commercial/performance/packaging/shipping/launch/release-readiness remain unclaimed until their owning lifecycle/evidence steps run.
+**Verification state:** Phase 52 independently passes 16/16 must-haves. Fresh evidence passes eight focused suites, 450 full SwiftPM tests with six opt-in skips, exact 44-field convergence, 72/72 decoded portrait outputs, thirteen separate no-face comparisons, fixed visibility/direction/distinction gates, fourteen original-detail image reviews, and exact ignored 144-file output/gallery inventories. The final review is clean across 28 scoped files with 0/0/0/0 findings; Nyquist is exactly 23/23 green; checker self-tests are 130/130 and pre-audit readiness is 35/35; ASVS L1 records `threats_open: 0`; explicit simulator build/test and the no-`BeautyDemo` path gate pass. The independent v1.13 audit passes 21/21 requirements, 4/4 phase verifications, 12/12 integration seams, 6/6 flows, and 4/4 validation ledgers with no residual debt. Archive and cleanup are complete. Device/commercial/performance/packaging/shipping/launch/release-readiness remain separate evidence scopes.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
-**Code size:** `BeautySDK` and `BeautyDemo` contain 31,269 tracked Swift source/test lines at v1.12 close, excluding `.build` output.
+**Code size:** `BeautySDK` and `BeautyDemo` contain 37,227 tracked Swift source/test lines at v1.13 close, excluding `.build` output.
 
-## Current Milestone: v1.13 Eyebrow Geometry Controls
+## Last Completed Milestone: v1.13 Eyebrow Geometry Controls
+
+**Status:** Shipped, independently audited, archived, and cleaned up as of 2026-07-28.
 
 **Goal:** Complete the exact seven-row SDK-core `眉毛` branch through compatibility-safe public controls, request-scoped observed eyebrow support, independent geometry behavior, public-facade output evidence, and conservative safety closeout.
 

@@ -101,7 +101,7 @@ These are provisional public-facade saved-output facts only. Phase 48 owns final
 Phase 51 eyebrow output evidence uses:
 
 ```bash
-python3 .planning/phases/51-public-facade-eyebrow-output-evidence/check_eyebrow_renderer_outputs.py \
+python3 .planning/milestones/v1.13-phases/51-public-facade-eyebrow-output-evidence/check_eyebrow_renderer_outputs.py \
   --input example-images/input \
   --output example-images/output \
   --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
@@ -109,7 +109,7 @@ python3 .planning/phases/51-public-facade-eyebrow-output-evidence/check_eyebrow_
 
 The current contract has one active portrait, `e6.jpg`, and the separate `no-face-gradient.png` negative. The strict helper decodes exactly 72 e6 portrait outputs and reports thirteen no-face comparisons separately; the complete output and gallery inventories are each exactly 72 cases × two fixtures = 144 disposable PNGs. Fixed brow/protected regions pass 13/13 visibility/locality, 6/6 signed-direction, 21/21 family-distinction, 40/40 portrait-comparison, and 13/13 no-face gates. The baseline plus all thirteen actual eyebrow outputs were opened individually at original detail and passed the recorded direction/locality/family review in `51-EYEBROW-OUTPUT-EVIDENCE.md`.
 
-Gallery publication places all thirteen cases under `gallery/eyebrows/{caseId}/`, requires exact renderer equality, and rejects retired `e1`–`e5` stems. Output, gallery, staging, and quarantine locations remain ignored, untracked, unstaged, and disposable. Phase 52 retains final caps, exhaustive safety/transitions, seven-row promotion, branch `眉毛`, and broader quality/release claims.
+Gallery publication places all thirteen cases under `gallery/eyebrows/{caseId}/`, requires exact renderer equality, and rejects retired `e1`–`e5` stems. Output, gallery, staging, and quarantine locations remain ignored, untracked, unstaged, and disposable. Phase 52 subsequently closed final caps, exhaustive safety/transitions, seven-row promotion, and branch `眉毛`; broader device/commercial/performance/packaging/shipping/launch-readiness claims remain out of scope.
 
 Phase 36 remaining-nose output evidence uses:
 
