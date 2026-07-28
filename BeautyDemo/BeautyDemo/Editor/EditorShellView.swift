@@ -471,7 +471,7 @@ struct EditorShellView: View {
         let state = await cameraPermissionClient.requestAccessIfNeeded()
         cameraPermissionState = state
 
-        guard state == .authorized else {
+        guard Self.shouldStartCamera(selectedMode: selectedInputMode, permissionState: state) else {
             cameraSessionController.stop()
             return
         }
@@ -483,6 +483,13 @@ struct EditorShellView: View {
                 parameters: parameterStore.parametersSnapshot
             )
         }
+    }
+
+    static func shouldStartCamera(
+        selectedMode: EditorInputMode?,
+        permissionState: CameraPermissionState
+    ) -> Bool {
+        selectedMode == .camera && permissionState == .authorized
     }
 
     static func modeViewState(selectedMode: EditorInputMode?) -> [BeautyModeItem] {

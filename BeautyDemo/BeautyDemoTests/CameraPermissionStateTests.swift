@@ -98,6 +98,33 @@ final class CameraPermissionStateTests: XCTestCase {
         XCTAssertEqual(previewState.primaryActionTitle, "Try Again")
         XCTAssertTrue(modeItems.first { $0.id == .photo }?.isEnabled == true)
     }
+
+    func testD14LatePermissionResultStartsCameraOnlyWhenCameraModeIsStillSelected() {
+        XCTAssertTrue(
+            EditorShellView.shouldStartCamera(
+                selectedMode: .camera,
+                permissionState: .authorized
+            )
+        )
+        XCTAssertFalse(
+            EditorShellView.shouldStartCamera(
+                selectedMode: .photo,
+                permissionState: .authorized
+            )
+        )
+        XCTAssertFalse(
+            EditorShellView.shouldStartCamera(
+                selectedMode: nil,
+                permissionState: .authorized
+            )
+        )
+        XCTAssertFalse(
+            EditorShellView.shouldStartCamera(
+                selectedMode: .camera,
+                permissionState: .denied
+            )
+        )
+    }
 }
 
 @MainActor
