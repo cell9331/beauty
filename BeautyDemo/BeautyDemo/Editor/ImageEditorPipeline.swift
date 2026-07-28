@@ -102,7 +102,10 @@ final class ImageEditorPipeline: ObservableObject {
         self.decoder = decoder
         self.processor = processor ?? .beautyEngine(configuration: configuration)
         self.renderer = renderer
-        self.inputBounds = ImageInputBounds(configuration: configuration)
+        self.inputBounds = ImageInputBounds(
+            maximumInputByteCount: configuration.maximumInputByteCount,
+            maximumInputPixelCount: configuration.maximumInputPixelCount
+        )
         self.processingQueue = processingQueue
     }
 

@@ -103,12 +103,12 @@ nonisolated struct DecodedImageInput: @unchecked Sendable {
 }
 
 nonisolated struct ImageInputBounds: Sendable {
-    let maximumByteCount: Int
-    let maximumPixelCount: Int
+    let maximumInputByteCount: Int
+    let maximumInputPixelCount: Int
 
-    init(configuration: BeautyConfiguration) {
-        maximumByteCount = configuration.maximumInputByteCount
-        maximumPixelCount = configuration.maximumInputPixelCount
+    init(maximumInputByteCount: Int, maximumInputPixelCount: Int) {
+        self.maximumInputByteCount = maximumInputByteCount
+        self.maximumInputPixelCount = maximumInputPixelCount
     }
 
     func validate(_ source: ImageInputSource) throws {
@@ -116,8 +116,8 @@ nonisolated struct ImageInputBounds: Sendable {
             return
         }
         guard let data = source.data,
-              maximumByteCount > 0,
-              data.count <= maximumByteCount
+              maximumInputByteCount > 0,
+              data.count <= maximumInputByteCount
         else {
             throw BeautyError.invalidInput
         }
@@ -131,8 +131,8 @@ nonisolated struct ImageInputBounds: Sendable {
               extent.height.isFinite,
               extent.width > 0,
               extent.height > 0,
-              maximumPixelCount > 0,
-              extent.width <= CGFloat(maximumPixelCount) / extent.height
+              maximumInputPixelCount > 0,
+              extent.width <= CGFloat(maximumInputPixelCount) / extent.height
         else {
             throw BeautyError.invalidInput
         }
