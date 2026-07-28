@@ -39,7 +39,7 @@ Checklist:
 - [x] F-01 cancel stale asynchronous camera-session starts — lifecycle generation tests pass 6/6 in focused `CameraSessionControllerTests`.
 - [x] F-02 prevent late permission completion from starting camera outside Camera mode — focused permission-state tests cover the late authorized result boundary.
 - [x] F-03 surface nil PhotosPicker transfers as recoverable selection failures — the selection resolver distinguishes current data, current nil, and stale completion.
-- [ ] F-04 align `ARCHITECTURE.md` with the current compiled runtime boundary.
+- [x] F-04 align `ARCHITECTURE.md` with the current compiled runtime boundary — current pixel-buffer, still-image, Detection/Effects, and Render foundation paths now match source ownership without implying nonexistent realtime geometry or Metal dispatch.
 - [ ] F-05 repair current quality/planning owner drift and record unresolved design debt.
 
 No product milestone is active. This consolidation audit changes no shipped

@@ -11,10 +11,11 @@
 
 - 已存在 `BeautyDemo/` Xcode Demo App。
 - 已存在 `BeautySDK/` Swift Package，包含 `BeautyCore`、`BeautyDetection`、`BeautyRender`、`BeautyEffects`、`BeautyResources` 和 public `BeautySDK` facade。
-- Phase 6 当前实现已让 `BeautyEffects` 承担效果解析、安全 cap、几何 provider、MVP 颜色/几何输出与降级 metadata；Demo 仍只通过 public `BeautySDK` facade 集成。
-- Phase 26 当前实现已让 public `BeautySDK` still-image facade 在几何参数需要时触发检测，并通过 package-only 检测观察值把一个 selected face 路由到 `BeautyEffects` 内部 `FaceGeometry` planning；public API 仍只暴露 redacted `BeautyDetectionSummary`、warnings 和 aggregate metrics。
-- Phase 27 当前实现已让 public still-image facade 通过内部 selected-face route 产生 same-dimension geometry saved-output evidence；2026-07-08 验证修正后，该 still-image 路径使用控制点驱动的局部 CIImage warp，而不是全局色偏代理；`BeautyExampleRenderer` 仍只 import `BeautySDK`，递归读取 committed `example-images/input/portraits/` 与 `input/negatives/` fixtures，generated PNGs 保持在 ignored flat `example-images/output/`，人工浏览视图保持在 ignored `example-images/gallery/`。
-- Phase 28 当前实现已为 scoped `脸型` existing-parameter slice 提供 SDK-only saved-output evidence 和空间形变回归测试；`BeautyExampleRenderer` 仍只通过 public `BeautySDK` facade 生成 ignored local outputs，未新增 Demo UI、public raw geometry surface 或新的 geometry group。
+- v1.13 当前 public 参数模型是精确 59 stored fields；`BeautyEffects` 拥有颜色/皮肤处理、44-field provider-eligible 几何解析、统一冲突弱化和内部几何输出，Demo 仍只通过 public `BeautySDK` facade 集成。
+- public still-image facade 仅在参数需要几何时运行 `VisionFaceDetector`，把一个 package-only selected observation 路由到 `BeautyEffects`；public API 只暴露 redacted `BeautyDetectionSummary`、warnings 和 aggregate metrics。
+- public pixel-buffer facade 当前不运行人脸检测或几何 provider。它校验 BGRA 输入、解析无需人脸的有效效果并通过 `BeautyColorEffectPipeline` 产生新的 `CVPixelBuffer`；实时几何、检测降频和 Metal warp 仍是未实现边界，不得由架构图暗示为现状。
+- still-image 几何通过内部 `BeautyGeometryEffectPipeline` 的局部 CIImage warp 合并输出；`BeautyRender.RenderGraph`、`CopyRenderPass`、`PixelBufferFactory` 和 placeholder `Warp.metal` 是已编译基础件，但当前 `BeautyEngine` 处理入口尚未调度 `RenderGraph` 或真实 Metal warp。
+- `BeautyExampleRenderer` 只 import `BeautySDK`，递归读取 committed fixtures，并把生成 PNG 保持为 ignored、untracked 的本地证据。
 - `docs/` 下存在历史规划资料，迁移后的根级文档优先级更高。
 
 ## 2. 顶层不变量
@@ -23,9 +24,9 @@
 | --- | --- | --- |
 | A1 | SDK 不包含 UI 页面 | SDK 内禁止 SwiftUI View、UIKit 页面、按钮、滑杆、相册页。 |
 | A2 | App 不访问 SDK 内部实现 | Demo App 只能依赖 `BeautySDK` 对外门面。 |
-| A3 | 实时渲染链路不经过 `UIImage` | 相机/视频帧必须走 `CMSampleBuffer`、`CVPixelBuffer`、`CVMetalTexture`、Metal。 |
+| A3 | 实时处理链路不经过 `UIImage` | 当前 Camera adapter 传递 `CMSampleBuffer` / `CVPixelBuffer`，SDK 返回新的 BGRA `CVPixelBuffer`；未来 Metal 化也不得引入 `UIImage` 中转。 |
 | A4 | 检测与渲染解耦 | Vision/Core ML 只产出内部检测模型，不直接编码 Metal pass。 |
-| A5 | 几何形变统一合并 | 眼、鼻、嘴、脸型生成控制点后进入统一 `FaceWarpPass`。 |
+| A5 | 几何形变统一合并 | 脸、下巴、眼、眉、鼻、嘴的控制点只进入现有内部 `BeautyGeometryEffectPipeline`；禁止按功能建立第二条 warp 路径。 |
 | A6 | 参数模型统一归一化 | 对外强度使用稳定范围，内部算法不得各自发明公共参数格式。 |
 | A7 | 资源加载集中管理 | LUT、妆容贴图、模型文件、shader 资源由资源层统一定位和校验。 |
 | A8 | 依赖只能向内层流动 | 任何 Target 不得反向 import 上层 Target。 |
@@ -92,10 +93,10 @@ BeautyDemo
 | Domain | 所属 Target | 职责 | 非职责 |
 | --- | --- | --- | --- |
 | Public SDK Facade | `BeautySDK` | `BeautyEngine`、对外配置、图片/视频/实时帧入口 | UI、具体页面状态 |
-| Core Types | `BeautyCore` | 参数、错误、坐标、帧模型、Phase 1 no-op `BeautyEngine`、协议、Sendable 值类型 | Vision/Metal 具体实现 |
-| Diagnostics | `BeautyCore/Diagnostics` | `BeautyLogger`、`BeautyLogEvent`、sink、错误上下文、可关闭本地诊断 | 独立后端服务、上传、业务埋点 |
-| Detection | `BeautyDetection` | 人脸检测、关键点解析、方向处理、点位平滑、检测降频 | 渲染 pass、UI 绘制 |
-| Render | `BeautyRender` | Metal 上下文、纹理缓存、RenderGraph、shader pass、LUT/CI 桥接 | 检测算法、SwiftUI 状态 |
+| Core Types | `BeautyCore` | 参数、错误、输入 metadata、结果/检测摘要、帧模型、warnings 和共享值类型 | Vision/Metal 具体实现、Engine 门面 |
+| Diagnostics | `BeautyCore/Diagnostics` | 错误上下文与 validation warning 值类型 | 尚未存在的 logger/sink、上传、业务埋点 |
+| Detection | `BeautyDetection` | Vision 人脸检测、关键点解析、坐标映射、多人脸选择、package-only observed support | 渲染 pass、UI 绘制、尚未实现的实时检测降频/平滑 |
+| Render | `BeautyRender` | `RenderGraph` / `RenderPass` 基础件、copy pass、pixel-buffer factory、placeholder shader 资源 | 当前 Engine 效果调度、检测算法、SwiftUI 状态 |
 | Effects | `BeautyEffects` | 美颜、滤镜、五官形变、妆容、分割效果的组合逻辑 | 独立 Package、UI 面板 |
 | Resources | `BeautyResources` | LUT、shader、妆容包、模型、资源版本与校验 | 业务下载策略、页面展示 |
 | Demo App | `BeautyDemo` | 相机页、预览、滑杆、预设面板、调试可视化 | SDK 内部实现 |
@@ -109,12 +110,11 @@ BeautyDemo
 - `BeautyParameters`
 - `BeautyConfiguration`
 - `BeautyError`
-- `BeautyEngine` Phase 1 no-op foundation
 - `BeautyFrame`
-- `FaceObservation`
-- `FaceLandmarks`
-- `WarpControlPoint`
-- 坐标系、方向、质量等级、日志事件、错误上下文的值类型
+- `BeautyInputMetadata`
+- `BeautyDetectionSummary`
+- `BeautyResult`
+- 渲染质量、日志等级、warnings 和错误上下文等跨模块值类型
 
 规则：
 
@@ -127,15 +127,14 @@ BeautyDemo
 
 检测域。负责把平台检测结果转换为 SDK 内部模型：
 
-- `FaceDetecting`
 - `VisionFaceDetector`
 - `CoordinateMapper`
-- `LandmarkSmoother`
-- 检测降频与多人脸排序策略
+- `FaceSelectionPolicy`
+- package-only `BeautyFaceObservation`、landmark group 与 observed-support values
 
 规则：
 
-- 输出只能是 `BeautyCore` 中的模型。
+- public 输出只能是 `BeautyCore` 中的模型；package-only 观察值由 `BeautyDetection` 自己拥有。
 - 不直接触发 render pass。
 - 不把 Vision 坐标泄漏到 `BeautySDK` 对外 API。
 - `VisionFaceDetector`、`CoordinateMapper`、`BeautyFaceObservation`、landmark groups 和 Vision bounding boxes 都停留在 `BeautyDetection` 内部。
@@ -145,21 +144,22 @@ BeautyDemo
 
 ### 6.3 BeautyRender
 
-渲染域。负责 GPU 上下文与 pass 调度：
+渲染域。当前提供 pass 抽象、copy 基础件、buffer factory 与 shader resource：
 
-- `MetalContext`
-- `TextureCache`
 - `RenderGraph`
 - `RenderPass`
 - `CopyRenderPass`
-- `FaceWarpPass`
+- `PixelBufferFactory`
 - `Shaders/Warp.metal`
-- LUT / Core Image 桥接
+
+当前 `Warp.metal` 是 copy placeholder，`RenderGraph` 尚未接入 public engine
+processing path。真实 Metal context、texture cache、pipeline state 和 warp pass
+只能在后续明确范围内加入，不能从文件名推断已经存在。
 
 规则：
 
 - 实时链路禁止 `UIImage` 中转。
-- Metal 资源由渲染层统一创建、复用和释放。
+- 未来 Metal 资源必须由渲染层统一创建、复用和释放。
 - Render pass 必须明确输入纹理、输出纹理、参数和失败模式。
 - 核心几何 shader 文件名统一为 `Warp.metal`。
 
@@ -176,7 +176,7 @@ BeautyDemo
 规则：
 
 - 五官功能是 `BeautyEffects` 内部模块，不拆成独立 Package。
-- 多个几何效果只产出控制点，统一交给 `FaceWarpPass`。
+- 多个几何效果只产出控制点，统一交给当前内部 `BeautyGeometryEffectPipeline`。
 - 新效果必须声明依赖：是否需要人脸点、资源、额外模型、额外 pass。
 - 算法级安全 cap、combined weakening、missing-landmark skip 和 stale/reused 降级只改变内部 effective strength，不收窄 public `BeautyParameters` 范围。
 - `BeautyEffects` 可以使用内部 `FaceGeometry`/`WarpControlPoint` 适配层，但不得把控制点、bounding box、landmark 或 provider 类型暴露给 `BeautySDK` public facade 或 Demo。
@@ -251,22 +251,26 @@ import BeautySDK
 Camera CMSampleBuffer
 → BeautyDemo adapter
 → BeautyEngine.processResult(pixelBuffer:metadata:parameters:)
-→ BeautyDetection produces FaceObservation
-→ BeautyEffects resolves active effects
-→ BeautyRender executes RenderGraph
-→ processed texture / pixel buffer
+→ validate BGRA input and filter reference
+→ BeautyEffects resolves face-independent work without selected geometry
+→ BeautyColorEffectPipeline creates a processed CVPixelBuffer
 → BeautyDemo preview
 ```
+
+当前实时路径不会调用 `VisionFaceDetector`、`RenderGraph` 或 Metal warp；需要
+人脸几何的字段会按无 geometry 上下文降级。上述能力若要进入实时路径，必须先
+建立独立的检测 freshness、backpressure、render ownership 和设备证据契约。
 
 离线图片路径：
 
 ```text
 Image input
 → BeautyEngine.processResult(image:metadata:parameters:)
-→ normalize to SDK frame model
-→ optional detection
-→ effects and render graph
-→ output image / pixel buffer
+→ validate finite non-empty CIImage extent and filter reference
+→ optional Vision detection only when parameters require face geometry
+→ BeautyEffects resolve + color/lip processing
+→ one internal local CIImage geometry pipeline when a selected face is usable
+→ output CIImage with redacted result metadata
 ```
 
 参数路径：
@@ -276,7 +280,7 @@ BeautyDemo sliders / presets
 → BeautyParameters
 → BeautyEngine.process(..., parameters:)
 → Effects read immutable snapshot
-→ RenderGraph receives normalized uniforms
+→ current color/geometry pipeline receives normalized effective strengths
 ```
 
 ## 8. 跨界限制
@@ -285,7 +289,7 @@ BeautyDemo sliders / presets
 | --- | --- | --- |
 | App → SDK | 调用 `BeautyEngine`、传入参数、接收结果 | 直接访问内部 Target、操作 `MTLCommandBuffer` |
 | SDK → App | 回调稳定结果、错误、指标 | 持有 ViewModel、调用 SwiftUI/UIKit 页面 |
-| Detection → Render | 通过 `FaceObservation` 间接协作 | 检测层创建 render pass |
+| Detection → Effects | 通过 package-only `BeautyFaceObservation` 间接协作 | 检测层创建 effect provider 或 render pass |
 | Effects → Render | 提供 pass 配置、控制点、uniform | 效果层私自管理全局 Metal 设备 |
 | Resources → Effects | 提供已校验资源句柄 | 效果层硬编码 bundle 路径 |
 | Core → Any | 定义共享类型 | 依赖上层实现 |
