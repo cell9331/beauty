@@ -1,7 +1,7 @@
 ---
 phase: 50
 slug: independent-eyebrow-geometry-and-pipeline-integration
-status: complete
+status: validated
 nyquist_compliant: true
 wave_0_complete: true
 created: 2026-07-24
@@ -72,7 +72,13 @@ All commands exited `0` on the local macOS host. Provider 11/11 (3 s), resolver 
 
 The fixture preflight, 4/4 adversarial checker self-tests, live checker, pinned `Package.swift` hash `6f03b078…` and unchanged Phase 49 checker hash `7a8716c…`, dependency/target/resource, public/SPI, reflection/persistence, network, Demo-source, generated-artifact containment, exact 59-row renderer/gallery inventory, unchanged seven `future` eyebrow ledger rows, scoped status/diff, and `git diff --check` gates passed. Ignored output/gallery directories remain untracked and unstaged.
 
-The recalled prohibitions against makeup/texture synthesis, synthetic or eye-derived substitution, and ethical/naturalness overclaim remain `unverified` secure-phase breadcrumbs. Passing source scans does not convert those statements into verified ethical descriptors.
+The three retained judgment-tier prohibitions were dispositioned on 2026-07-28
+in `50-HUMAN-REVIEW.md`: production support is not used for identity,
+recognition, authentication, or profiling; observed support has no synthetic,
+generated, eye-derived, or test-only production substitute; and Phase 50 does
+not claim downstream phase, future-milestone, UI/device/commercial, or release
+scope. The review is deliberately narrower than commercial naturalness or
+release readiness.
 
 ---
 
@@ -91,4 +97,21 @@ All Phase 50 behaviors have automated source, unit, integration, facade, and bou
 - [x] Focused and full feedback latency measured and recorded
 - [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** Phase 50 compiled SDK-core provider/routing validation approved. Phase 51 decoded output/gallery and Phase 52 final safety/promotion remain unapproved and untouched.
+**Approval:** Phase 50 compiled SDK-core provider/routing validation is
+validated. Phase 51 decoded output/gallery and Phase 52 final safety/promotion
+were subsequently completed and remain separately owned by their phase
+artifacts.
+
+## Validation Audit Trail — 2026-07-28
+
+| Check | Result |
+| --- | --- |
+| Nyquist frontmatter and task coverage | PASS — all declared task rows remain green and `nyquist_compliant: true`. |
+| Phase verifier | PASS — `50-VERIFICATION.md` is `status: passed` with 4/4 must-haves. |
+| Retained judgment-tier items | PASS — 3/3 recorded in `50-HUMAN-REVIEW.md`. |
+| Boundary checker | PASS — self-test 4/4 and live mode pass. |
+
+The validation lifecycle status is normalized from historical `complete` to
+the current `validated` vocabulary. Historical execution counts above remain
+the evidence recorded at Phase 50 closeout and are not rewritten as current
+Phase 52 counts.
