@@ -30,13 +30,13 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `blocked` |
+| Status | `verifying` |
 | Milestone | v1.13 Eyebrow Geometry Controls |
 | Scope | SDK-SPM-only implementation of exactly seven `眉毛` rows: 上下、粗细、长短、间距、眉头间距、倾斜、眉峰. |
 | Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve legacy 52-key compatibility and all shipped face/eye/nose/mouth output while the current model is exactly 59 stored fields. |
 | Requirements | 21/21 mapped across Phase 49-52; no unmapped requirement. |
 | Roadmap | Phase 49 contract/support → Phase 50 geometry/pipeline → Phase 51 strict output → Phase 52 safety/promotion. |
-| Current step | The independent v1.13 milestone audit is complete with `status: tech_debt`: requirements 21/21, integration 12/12, and flows 6/6 have no blocker, but Phase 50 retains three explicit human judgment items and Phase 50/52 validation frontmatter uses `complete` rather than the current `validated` vocabulary. Milestone closeout is paused for an explicit accept-versus-remediate decision; archive, tag, and cleanup are not claimed. |
+| Current step | The prior `tech_debt` audit findings are remediated: Phase 50's three delegated source judgments pass 3/3, Phase 50 verification is `passed`, Phase 50/52 validation is `validated`, the fresh Phase 52 re-review is clean, and the post-verification readiness checker passes 35/35. Rerun the independent v1.13 milestone audit before archive, tag, or cleanup. |
 
 Fixture-scope decision (2026-07-24):
 
@@ -75,7 +75,7 @@ Phase 52 ten-plan gap-closeout record (2026-07-27):
 
 - Plans `52-07` through `52-10` repair the three production-path proof gaps, refresh regression/simulator/security/Nyquist evidence, consume a fresh independent review, synchronize routed/root/planning owners, and prepare the final fail-closed readiness gate. All ten Phase 52 plans are now recorded in the roadmap.
 - The committed Wave 7 fixes exercise the production adapter, enter the real resolver/provider path before cancellation, preserve request-local sibling isolation, and prove monotone retained-mask removal with no re-entry. Wave 8 records the full 450-test SwiftPM and explicit simulator evidence without modifying `BeautyDemo`.
-- `.planning/phases/52-eyebrow-safety-and-branch-closeout/52-REVIEW.md` is independently authored after the fixes and is clean across 25 files with 0 critical, 0 warning, 0 info, and 0 total findings. The Nyquist ledger contains exactly 23 unique green task rows, and the final executor readiness checker passes exactly 35/35 with `verification=pending-independent`.
+- `.planning/phases/52-eyebrow-safety-and-branch-closeout/52-REVIEW.md` is freshly independently authored after the two documentation fixes and is clean across 18 current scoped files with 0 critical, 0 warning, 0 info, and 0 total findings. The Nyquist ledger contains exactly 23 unique green task rows and is normalized to `validated`.
 - SAFE-01, SAFE-02, SAFE-03, and DOC-01 are implemented for exactly `上下`, `粗细`, `长短`, `间距`, `眉头间距`, `倾斜`, and `眉峰`, plus SDK-core branch `眉毛`. There is no SwiftUI/Demo change, no public raw eyebrow support, and diagnostics remain aggregate-only.
 - Independent `gsd-verifier` re-verification passes 16/16 and closes all four prior gaps with fresh adapter-valid fixture, in-flight cancellation, real retained-mask convergence, full regression, strict output, simulator, review, security, validation, owner, and nonclaim evidence. The separately scoped v1.13 milestone audit is now the next workflow; audit, archive, tag, cleanup, physical-device parity, commercial naturalness, optimized performance, packaging, shipping, launch, and release readiness remain unclaimed.
 
@@ -94,6 +94,22 @@ Planned follow-on milestones:
 - v1.16: `去双下巴`, `去双下巴 Pro`, and narrow facial-feature closeout.
 
 ## 4. Completed
+
+### C-2026-07-28-v1-13-audit-tech-debt-remediation
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-28 |
+| Scope | Resolved the prior audit's two governance findings without changing SDK runtime behavior: dispositioned Phase 50's three human judgments and normalized Phase 50/52 validation lifecycle status. Fixed the two documentation review warnings and reran the independent Phase 52 review. |
+| Verification | Phase 50 human review passes 3/3; Phase 50 boundary self-test passes 4/4 and live mode passes; Phase 50 verification is `passed`; Phase 50/52 validation is `validated`; fresh Phase 52 review is clean across 18 files with 0/0/0/0 findings and 154 focused tests pass with one documented skip; checker self-test and live readiness pass 130/130 and 35/35. |
+| Status | Remediation complete; independent v1.13 milestone audit rerun pending. |
+| Boundary | No audit override, archive, tag, cleanup, UI/device/commercial/performance/packaging/shipping/launch/release claim is made by remediation. |
+
+Outcome:
+
+- Eyebrow support has no identity/recognition/authentication/profiling use, no synthetic/generated/eye-derived production substitute, and no Phase 50 downstream-scope overclaim.
+- The validation vocabulary now agrees with current lifecycle tooling while preserving historical execution evidence.
+- The prior `tech_debt` audit remains historical until the independent rerun replaces its verdict.
 
 ### C-2026-07-27-v1-13-milestone-audit-tech-debt
 
@@ -117,7 +133,7 @@ Outcome:
 | --- | --- |
 | Completed | 2026-07-27 |
 | Scope | Completed all ten Phase 52 plans, including production-path proof repairs, fresh evidence, independent clean review, routed/planning owner synchronization, and final independent re-verification. |
-| Verification | Independent `gsd-verifier` passes 16/16 must-haves. Fresh evidence includes 450 SwiftPM tests with six conditional skips, eight focused suites, strict 72/72 portrait output plus thirteen separate no-face comparisons, 130/130 checker self-tests, 23/23 green Nyquist, clean 25-file review, simulator build/test, no `BeautyDemo` change, and diff hygiene. |
+| Verification | Independent `gsd-verifier` passes 16/16 must-haves. Fresh evidence includes 450 SwiftPM tests with six conditional skips, eight focused suites, strict 72/72 portrait output plus thirteen separate no-face comparisons, 130/130 checker self-tests, 23/23 green Nyquist, a fresh clean 18-file re-review after documentation fixes, simulator build/test, no `BeautyDemo` change, and diff hygiene. |
 | Requirements | SAFE-01, SAFE-02, SAFE-03, and DOC-01 are satisfied. |
 | Boundary | Phase 52 completion is SDK-core-only and does not claim milestone audit, archive, tag, cleanup, UI/device/commercial/performance/packaging/shipping/launch/release readiness. Next action: independent v1.13 milestone audit. |
 
@@ -176,7 +192,7 @@ Outcome:
 - Review CR-01 is fixed: a degenerate local thickness tangent now omits only its balanced sample pair, and finite pairs from the same eyebrow side remain eligible.
 - Side/pair/chord/apex, provider-empty, freshness, sequential, and concurrent evidence is field-local and request-isolated. Raw geometry remains package-only; public evidence remains aggregate and redacted.
 - The renderer/gallery inventory remains 59 and all seven eyebrow product rows remain `future`. v1.14-v1.16, Demo/UI, device, commercial, performance, packaging, shipping, and release readiness remain unclaimed.
-- Makeup/texture synthesis, synthetic or eye-derived substitution, and ethical/naturalness prohibitions remain `unverified` inputs for `$gsd-secure-phase`; passing concrete scans does not verify those descriptors.
+- Makeup/texture synthesis, synthetic or eye-derived substitution, and ethical/scope prohibitions were retained as unverified at the original Phase 50 closeout. They were subsequently dispositioned 3/3 in `50-HUMAN-REVIEW.md` without adding commercial-naturalness or release-readiness claims.
 
 ### C-2026-07-24-phase-50-plan-05-combined-safety-and-unified-dispatch
 

@@ -702,7 +702,7 @@ def _validation_gate(text: str, require_complete: bool = False) -> Result:
         and pending_ids == set(expected_ids[len(green_ids):])
     )
     complete_ledger = (
-        "status: complete" in text
+        re.search(r"(?m)^status:\s*(?:complete|validated)\s*$", text) is not None
         and green_ids == set(expected_ids)
         and not pending_ids
     )
@@ -720,7 +720,7 @@ def _validation_gate(text: str, require_complete: bool = False) -> Result:
         ok,
         f"tasks={len(task_rows)}/23; green={len(green_ids)}; "
         f"pending={len(pending_ids)}; "
-        f"required_state={'complete' if require_complete else 'active-or-complete'}; "
+        f"required_state={'validated-or-complete' if require_complete else 'active-or-complete'}; "
         f"state_ok={int(complete_ledger if require_complete else (active_ledger or complete_ledger))}; "
         f"nyquist={int('nyquist_compliant: true' in text)}",
     )
@@ -773,7 +773,7 @@ def planning_final_gate(root: Path) -> Result:
         r"(?im)^_Verifier:[^\n]*gsd-verifier[^\n]*_$",
         verification,
     ))
-    if not re.search(r"(?m)^status:\s*gaps_found\s*$", verification):
+    if not re.search(r"(?m)^status:\s*passed\s*$", verification):
         failures.append("verification")
     if not independent_attribution:
         failures.append("verification_attribution")
@@ -782,7 +782,7 @@ def planning_final_gate(root: Path) -> Result:
     return Result(
         "planning completion/audit handoff",
         not failures,
-        "requirements=4/4; plans=10/10; verification=pending-independent; audit=pending"
+        "requirements=4/4; plans=10/10; verification=passed; audit=rerun-pending"
         if not failures else "; ".join(failures),
     )
 
@@ -798,11 +798,20 @@ def lifecycle_gate(root: Path, runner: Runner = default_runner) -> Result:
         r"archived as|tagged v1\.13|shipping complete|launch-ready)",
         owners,
     )
-    ok = tags.returncode == 0 and not tags.stdout.strip() and not audits and affirmative is None
+    audits_are_prior_tech_debt = all(
+        re.search(r"(?m)^status:\s*tech_debt\s*$", audit.read_text(encoding="utf-8"))
+        for audit in audits
+    )
+    ok = (
+        tags.returncode == 0
+        and not tags.stdout.strip()
+        and audits_are_prior_tech_debt
+        and affirmative is None
+    )
     return Result(
         "lifecycle/audit nonclaim",
         ok,
-        "independent audit, archive, tag, and cleanup remain separate"
+        "prior tech-debt audit may remain; audit rerun, archive, tag, and cleanup remain separate"
         if ok else "premature audit/tag/lifecycle claim",
     )
 
@@ -1211,17 +1220,16 @@ def self_test(root: Path) -> int:
         write_fixture(
             fixture,
             f"{PHASE_DIR}/52-VERIFICATION.md",
-            "status: gaps_found\nindependent milestone audit remains pending\n"
+            "status: passed\nindependent milestone audit remains pending\n"
             "_Verifier: independent gsd-verifier_\n",
         )
         require(planning_final_gate(fixture).ok, "planning final positive")
         verification = fixture / PHASE_DIR / "52-VERIFICATION.md"
         verification.write_text(
-            "status: passed\nexecutor authored\n"
-            "_Verifier: independent gsd-verifier_\n",
+            "status: passed\nexecutor authored\n",
             encoding="utf-8",
         )
-        require(not planning_final_gate(fixture).ok, "executor-passed verification accepted")
+        require(not planning_final_gate(fixture).ok, "non-independent verification accepted")
 
         for relative in ("PLANS.md", ".planning/PROJECT.md", ".planning/STATE.md"):
             write_fixture(
@@ -1229,6 +1237,11 @@ def self_test(root: Path) -> int:
                 relative,
                 "## Phase 52\nv1.13 independent milestone audit remains pending\n",
             )
+        write_fixture(
+            fixture,
+            ".planning/v1.13-MILESTONE-AUDIT.md",
+            "status: tech_debt\n",
+        )
         require(lifecycle_gate(fixture, fake(0)).ok, "lifecycle positive")
         (fixture / "PLANS.md").write_text(
             "## Phase 52\nv1.13 audit passed\n",
