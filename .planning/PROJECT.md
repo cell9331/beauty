@@ -26,7 +26,7 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ## Last Completed Milestone: v1.13 Eyebrow Geometry Controls
 
-**Status:** Shipped, independently audited, archived, and cleaned up as of 2026-07-28.
+**Status:** Shipped, independently audited, archived, cleaned up, and tagged as of 2026-07-28.
 
 **Goal:** Complete the exact seven-row SDK-core `眉毛` branch through compatibility-safe public controls, request-scoped observed eyebrow support, independent geometry behavior, public-facade output evidence, and conservative safety closeout.
 

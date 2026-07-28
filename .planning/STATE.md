@@ -6,7 +6,7 @@ status: Awaiting next milestone
 stopped_at: Milestone v1.13 complete; next $gsd-new-milestone
 last_updated: "2026-07-28T02:28:01.159Z"
 last_activity: 2026-07-28
-last_activity_desc: Milestone v1.13 completed, audited, archived, and cleaned up
+last_activity_desc: Milestone v1.13 completed, audited, archived, cleaned up, and tagged
 progress:
   total_phases: 4
   completed_phases: 4
@@ -29,7 +29,7 @@ See: `.planning/PROJECT.md` (updated 2026-07-28)
 Phase: Milestone v1.13 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-07-28 — Milestone v1.13 completed, audited, archived, and cleaned up
+Last activity: 2026-07-28 — Milestone v1.13 completed, audited, archived, cleaned up, and tagged
 
 ### Phase 52 Eyebrow Safety and Branch Closeout Result
 

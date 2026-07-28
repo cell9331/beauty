@@ -27,8 +27,9 @@
 ## 3. Active
 
 No milestone is active. v1.13 is shipped, independently audited, archived,
-cleaned up, and ready for the annotated lifecycle tag. Start the next cycle
-with `$gsd-new-milestone` only after a new scope is explicitly chosen.
+cleaned up, and recorded by the annotated `v1.13` lifecycle tag on the final
+commit. Start the next cycle with `$gsd-new-milestone` only after a new scope
+is explicitly chosen.
 
 ## 4. Completed
 
@@ -37,10 +38,10 @@ with `$gsd-new-milestone` only after a new scope is explicitly chosen.
 | Field | Value |
 | --- | --- |
 | Completed | 2026-07-28 |
-| Scope | Completed the v1.13 lifecycle after the passing independent audit: archived ROADMAP, REQUIREMENTS, audit, and all Phase 49-52 artifacts; collapsed the live roadmap; evolved PROJECT/STATE/MILESTONES; recorded the retrospective; and cleaned the active phase directory. |
+| Scope | Completed the v1.13 lifecycle after the passing independent audit: archived ROADMAP, REQUIREMENTS, audit, and all Phase 49-52 artifacts; collapsed the live roadmap; evolved PROJECT/STATE/MILESTONES; recorded the retrospective; cleaned the active phase directory; and prepared the final commit for the annotated `v1.13` tag. |
 | Archive | `.planning/milestones/v1.13-ROADMAP.md`, `v1.13-REQUIREMENTS.md`, `v1.13-MILESTONE-AUDIT.md`, and `v1.13-phases/` preserve four phases, 26 plans, 26 summaries, 54 tasks, and the full evidence history. |
 | Verification | Open-artifact audit is clear; archived requirements are checked 21/21; milestone audit passes 4/4 phases, 12/12 integration seams, and 6/6 flows; all four Nyquist ledgers are compliant; cleanup moved exactly four phase directories and 86 files; `git diff --check` passes. |
-| Lifecycle result | The live roadmap points to the v1.13 archive, `.planning/phases/` has no active milestone directory, the milestone-scoped root `REQUIREMENTS.md` is removed for fresh next-cycle definition, and current owners report “awaiting next milestone.” |
+| Lifecycle result | The live roadmap points to the v1.13 archive, `.planning/phases/` has no active milestone directory, the milestone-scoped root `REQUIREMENTS.md` is removed for fresh next-cycle definition, the annotated `v1.13` tag identifies the final lifecycle commit, and current owners report “awaiting next milestone.” |
 
 Outcome:
 
