@@ -59,6 +59,28 @@ final class CameraSessionControllerTests: XCTestCase {
         XCTAssertFalse(CameraSessionState.running.isUnavailableForPreview)
     }
 
+    func testD14StoppingInvalidatesPendingCameraStart() {
+        let lifecycle = CameraSessionLifecycle()
+        let pendingStart = lifecycle.beginStart()
+
+        XCTAssertTrue(lifecycle.permitsRunning(generation: pendingStart))
+
+        lifecycle.cancel()
+
+        XCTAssertFalse(lifecycle.permitsRunning(generation: pendingStart))
+    }
+
+    func testD14RestartDoesNotRevalidateOlderCameraStart() {
+        let lifecycle = CameraSessionLifecycle()
+        let olderStart = lifecycle.beginStart()
+        lifecycle.cancel()
+        let currentStart = lifecycle.beginStart()
+
+        XCTAssertNotEqual(olderStart, currentStart)
+        XCTAssertFalse(lifecycle.permitsRunning(generation: olderStart))
+        XCTAssertTrue(lifecycle.permitsRunning(generation: currentStart))
+    }
+
     private func makePixelBuffer(width: Int, height: Int) throws -> CVPixelBuffer {
         let attributes: [String: Any] = [
             kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,

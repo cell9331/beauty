@@ -26,10 +26,24 @@
 
 ## 3. Active
 
-No milestone is active. v1.13 is shipped, independently audited, archived,
-cleaned up, and recorded by the annotated `v1.13` lifecycle tag on the final
-commit. Start the next cycle with `$gsd-new-milestone` only after a new scope
-is explicitly chosen.
+### A-2026-07-28-current-state-consolidation-audit
+
+| Field | Value |
+| --- | --- |
+| Status | `active` |
+| Scope | Freeze feature expansion and audit the current production code, tests, root contracts, and live planning owners from first principles. Fix at most five clear medium-or-higher findings; route API/design decisions to Tech Debt. |
+| Baseline | Clean `main` at annotated `v1.13`; `audit-uat` has no active phase artifacts; full SwiftPM executes 450 tests successfully; full `BeautyDemo` simulator tests succeed on iPhone 17e / iOS 26.5. |
+
+Checklist:
+
+- [x] F-01 cancel stale asynchronous camera-session starts — lifecycle generation tests pass 6/6 in focused `CameraSessionControllerTests`.
+- [ ] F-02 prevent late permission completion from starting camera outside Camera mode.
+- [ ] F-03 surface nil PhotosPicker transfers as recoverable selection failures.
+- [ ] F-04 align `ARCHITECTURE.md` with the current compiled runtime boundary.
+- [ ] F-05 repair current quality/planning owner drift and record unresolved design debt.
+
+No product milestone is active. This consolidation audit changes no shipped
+feature inventory and does not authorize v1.14 or any other new scope.
 
 ## 4. Completed
 

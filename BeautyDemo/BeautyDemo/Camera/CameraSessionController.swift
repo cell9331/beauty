@@ -13,6 +13,7 @@ final class CameraSessionController: NSObject, ObservableObject {
     private let sessionQueue: DispatchQueue
     private let sampleQueue: DispatchQueue
     private let sampleSink = CameraSampleBufferSink()
+    private let lifecycle: CameraSessionLifecycle
 
     nonisolated static let requestedPixelFormat: OSType = kCVPixelFormatType_32BGRA
     nonisolated static let videoOutputSettings: [String: Any] = [
@@ -22,11 +23,13 @@ final class CameraSessionController: NSObject, ObservableObject {
     init(
         session: AVCaptureSession = AVCaptureSession(),
         sessionQueue: DispatchQueue = DispatchQueue(label: "beauty.demo.camera.session"),
-        sampleQueue: DispatchQueue = DispatchQueue(label: "beauty.demo.camera.frames")
+        sampleQueue: DispatchQueue = DispatchQueue(label: "beauty.demo.camera.frames"),
+        lifecycle: CameraSessionLifecycle = CameraSessionLifecycle()
     ) {
         self.session = session
         self.sessionQueue = sessionQueue
         self.sampleQueue = sampleQueue
+        self.lifecycle = lifecycle
         super.init()
     }
 
@@ -35,6 +38,7 @@ final class CameraSessionController: NSObject, ObservableObject {
             return
         }
 
+        let lifecycleGeneration = lifecycle.beginStart()
         state = .configuring
         sampleSink.onFrame = { frame in
             Task { @MainActor in
@@ -45,6 +49,7 @@ final class CameraSessionController: NSObject, ObservableObject {
         let session = session
         let sampleQueue = sampleQueue
         let sampleSink = sampleSink
+        let lifecycle = lifecycle
         let controller = self
 
         sessionQueue.async {
@@ -56,15 +61,24 @@ final class CameraSessionController: NSObject, ObservableObject {
 
             switch configurationResult {
             case .success:
+                guard lifecycle.permitsRunning(generation: lifecycleGeneration) else {
+                    return
+                }
                 if !session.isRunning {
                     session.startRunning()
                 }
 
                 Task { @MainActor in
+                    guard lifecycle.permitsRunning(generation: lifecycleGeneration) else {
+                        return
+                    }
                     controller.state = .running
                 }
             case .failure(let failure):
                 Task { @MainActor in
+                    guard lifecycle.permitsRunning(generation: lifecycleGeneration) else {
+                        return
+                    }
                     controller.state = failure == .noVideoDevice ? .unavailable : .failedSetup(failure)
                 }
             }
@@ -72,6 +86,7 @@ final class CameraSessionController: NSObject, ObservableObject {
     }
 
     func stop() {
+        lifecycle.cancel()
         guard state != .idle else {
             return
         }
@@ -166,6 +181,36 @@ final class CameraSessionController: NSObject, ObservableObject {
         }
 
         return .success(())
+    }
+}
+
+nonisolated final class CameraSessionLifecycle: @unchecked Sendable {
+    private let lock = NSLock()
+    private var generation: UInt64 = 0
+    private var wantsRunning = false
+
+    func beginStart() -> UInt64 {
+        lock.lock()
+        defer { lock.unlock() }
+
+        generation &+= 1
+        wantsRunning = true
+        return generation
+    }
+
+    func cancel() {
+        lock.lock()
+        defer { lock.unlock() }
+
+        generation &+= 1
+        wantsRunning = false
+    }
+
+    func permitsRunning(generation candidate: UInt64) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+
+        return wantsRunning && generation == candidate
     }
 }
 

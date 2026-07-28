@@ -34,6 +34,7 @@ Demo App 不负责：
 | F5 | 互斥页面状态用 enum，不用多个 Boolean。 | sheet、panel、mode 使用单一来源状态。 |
 | F6 | 每个交互控件有默认值、重置和可测试标识。 | UI 测试或预览可定位。 |
 | F7 | Debug UI 不能改变 SDK 输出结果。 | overlay 只读状态和指标。 |
+| F8 | 已停止或已切换模式的相机会话不能被迟到的异步配置结果重新启动。 | session start 使用可失效 lifecycle generation；stop 必须同步撤销未完成 start。 |
 
 ## 3. Recommended Directory
 
