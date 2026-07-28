@@ -36,7 +36,7 @@
 | Boundaries | No SwiftUI or Demo UI; no network/cloud behavior; no remote model; preserve legacy 52-key compatibility and all shipped face/eye/nose/mouth output while the current model is exactly 59 stored fields. |
 | Requirements | 21/21 mapped across Phase 49-52; no unmapped requirement. |
 | Roadmap | Phase 49 contract/support → Phase 50 geometry/pipeline → Phase 51 strict output → Phase 52 safety/promotion. |
-| Current step | The prior `tech_debt` audit findings are remediated: Phase 50's three delegated source judgments pass 3/3, Phase 50 verification is `passed`, Phase 50/52 validation is `validated`, the current 28-file Phase 52 review is clean, and the post-verification readiness checker passes 35/35. Rerun the independent v1.13 milestone audit before archive, tag, or cleanup. |
+| Current step | The independent v1.13 audit rerun is `passed`: 21/21 requirements, 4/4 phase verifications, 12/12 integration seams, 6/6 flows, and 4/4 Nyquist ledgers pass with no gap or residual tech debt. Proceed with the user-authorized archive, tag, cleanup, and push lifecycle. |
 
 Fixture-scope decision (2026-07-24):
 
@@ -95,6 +95,22 @@ Planned follow-on milestones:
 
 ## 4. Completed
 
+### C-2026-07-28-v1-13-milestone-audit-passed
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-28 |
+| Scope | Independently re-audited all Phase 49-52 canonical verifications, three-source requirement coverage, runtime/artifact seams, end-to-end flows, review/security evidence, Nyquist classification, and closure of all prior audit debt. |
+| Verification | 21/21 requirements, 4/4 phase verifications, 12/12 integration seams, 6/6 flows, 4/4 validation ledgers and 54/54 task rows pass; checker gates pass 4/4, 130/130, and pre-audit 35/35; review is clean 0/0/0/0 and security has zero open threats. |
+| Status | `passed`; zero blocker, zero warning, zero residual milestone tech debt. |
+| Boundary | The audit authorizes milestone lifecycle closeout only; physical-device/commercial/performance/packaging/shipping/launch/release-readiness remain separate evidence scopes. |
+
+Outcome:
+
+- All three findings from the prior `tech_debt` audit are closed and the old verdict is superseded.
+- The complete public-contract → Vision support → provider/resolver → public output → safety/promotion chain is wired with no orphaned export.
+- Archive, tag, cleanup, and push are now the remaining user-authorized actions.
+
 ### C-2026-07-28-v1-13-audit-tech-debt-remediation
 
 | Field | Value |
@@ -118,7 +134,7 @@ Outcome:
 | Completed | 2026-07-27 |
 | Scope | Independently aggregated all four phase verifications, all 26 summaries, 21 requirement traceability rows, cross-phase source wiring, six end-to-end flows, and Nyquist discovery. |
 | Verification | Requirements 21/21, integration seams 12/12, and flows 6/6 are satisfied with zero critical gap. The integration checker reports complete runtime wiring and no orphaned export. |
-| Status | `tech_debt`: Phase 50 remains `human_needed` for three judgment-tier reviews; Phase 50/52 validation files are complete/green but not normalized to the current `validated` status vocabulary. |
+| Status | Historical `tech_debt` verdict, superseded on 2026-07-28 after all three items were remediated and the independent audit rerun passed. |
 | Boundary | No audit override, archive, tag, cleanup, UI/device/commercial/performance/packaging/shipping/launch/release claim is made. An explicit accept-or-remediate decision is required before milestone closeout. |
 
 Outcome:

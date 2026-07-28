@@ -15,7 +15,7 @@
 - ✅ **[v1.10 Mouth Remaining Geometry Controls](milestones/v1.10-ROADMAP.md)** — Phases 38-40, shipped 2026-07-14.
 - ✅ **[v1.11 Eye Remaining Geometry Controls](milestones/v1.11-ROADMAP.md)** — Phases 41-44, shipped 2026-07-19.
 - ✅ **[v1.12 Face Shape Remaining Capabilities](milestones/v1.12-ROADMAP.md)** — Phases 45-48, shipped 2026-07-24.
-- ⚠️ **v1.13 Eyebrow Geometry Controls** — All four phases, 26 plans, and 21 requirements are complete; integration is 12/12 and flows are 6/6. The milestone audit reports `tech_debt` pending an explicit accept-or-remediate decision.
+- 🚧 **v1.13 Eyebrow Geometry Controls** — All four phases, 26 plans, and 21 requirements are complete; the independent audit passes 21/21 requirements, 12/12 integrations, 6/6 flows, and 4/4 Nyquist ledgers. Archive/tag/cleanup are the remaining lifecycle steps.
 
 ## Phases
 

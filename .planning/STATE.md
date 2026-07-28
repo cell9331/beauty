@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v1.13
 milestone_name: Eyebrow Geometry Controls
 status: verifying
-stopped_at: v1.13 audit tech debt remediated; independent audit rerun pending
-last_updated: "2026-07-28T02:01:35.000Z"
+stopped_at: v1.13 independent audit passed; archive/tag/cleanup pending
+last_updated: "2026-07-28T02:25:45.000Z"
 last_activity: 2026-07-28
-last_activity_desc: Audit debt remediated; Phase 52 checker passes 130/130 self-test and 35/35 live readiness
+last_activity_desc: v1.13 independent audit passed 21/21 requirements, 12/12 integrations, 6/6 flows, and 4/4 Nyquist
 progress:
   total_phases: 4
   completed_phases: 4
@@ -22,14 +22,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-27)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** v1.13 independent milestone audit rerun
+**Current focus:** v1.13 milestone archive, tag, cleanup, and push
 
 ## Current Position
 
 Phase: 52 (eyebrow-safety-and-branch-closeout) — COMPLETE
 Plan: 10 of 10
-Status: Prior audit tech debt remediated; independent audit rerun required before closeout
-Last activity: 2026-07-28 — Phase 50 human review passed 3/3, both target validation ledgers are `validated`, and fresh Phase 52 review is clean
+Status: Independent milestone audit passed; lifecycle closeout pending
+Last activity: 2026-07-28 — Audit passed 21/21 requirements, 4/4 phases, 12/12 seams, 6/6 flows, and 4/4 Nyquist ledgers with no residual debt
 
 ### Phase 52 Eyebrow Safety and Branch Closeout Result
 
@@ -39,7 +39,7 @@ Last activity: 2026-07-28 — Phase 50 human review passed 3/3, both target vali
 - The lifecycle-aware post-verification checker passes exactly 35/35 with `verification=passed` and the independent audit rerun still pending.
 - Phase 52 implements exactly seven eyebrow rows and SDK-core branch `眉毛`, keeps raw support package-internal and request-scoped, exposes aggregate-only diagnostics, and changes no SwiftUI/Demo path.
 - Fresh verification passes eight focused suites, 450 SwiftPM tests with six conditional skips, strict 72/72 output plus thirteen no-face comparisons, 130/130 checker self-tests, simulator build/test, review/security/owner gates, and no-`BeautyDemo` scope checks.
-- `52-VERIFICATION.md` is independently owned and `passed`; the next workflow is the separate v1.13 milestone audit. Audit, archive, tag, and cleanup remain unclaimed.
+- `52-VERIFICATION.md` is independently owned and `passed`; the separate v1.13 milestone audit also passes. Archive, tag, and cleanup remain the final lifecycle actions.
 
 ### Phase 51 Public-Facade Eyebrow Output Result
 
@@ -415,13 +415,13 @@ Recent milestone-level outcomes:
 
 ### Pending Todos
 
-- Rerun the independent v1.13 milestone audit after the completed governance/validation remediation; proceed to archive, tag, and cleanup only if it passes.
+- Complete the user-authorized v1.13 archive, tag, cleanup, and push lifecycle after the passing audit.
 - Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
 - Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, screenshot reruns, packaging review, broader `美型 / 五官` slices, and automated visual diffs.
 
 ### Blockers/Concerns
 
-- No active v1.13 implementation, verification, review, or validation blocker remains. The prior audit's governance/validation debt is remediated; the independent audit rerun is the remaining closeout gate.
+- No active v1.13 implementation, verification, review, validation, integration, flow, or audit blocker remains. The independent audit rerun passes with zero residual milestone debt.
 - No active v1.12 blocker remains; all four phases and the independent milestone audit passed.
 - Deferred v2 `ADV-*` items remain outside v1 traceability and are tracked as `TD-007` in `PLANS.md`.
 - Manual release risks are now routed by Phase 21 and updated by Phases 23 through 25: `TD-008` has focused simulator camera pass evidence but physical iPhone checks remain blocked until hardware exists; `TD-009` remains Phase 22 visual evidence with screenshot rerun protocol; and `TD-010` keeps device, long-run, screenshot, optimized profiling, external-resource integrity, and commercial packaging work routed to later setup-specific checks.
@@ -445,10 +445,10 @@ Recent milestone-level outcomes:
 
 ## Session Continuity
 
-Last session: 2026-07-28T02:01:35.000Z
-Stopped at: v1.13 audit tech debt remediated; independent audit rerun pending
+Last session: 2026-07-28T02:25:45.000Z
+Stopped at: v1.13 independent audit passed; archive/tag/cleanup pending
 Resume file: None
 
 ## Operator Next Steps
 
-- Rerun the independent v1.13 milestone audit. Archive, tag, and cleanup remain gated on a passing result.
+- Complete the user-authorized archive, annotated `v1.13` tag, cleanup, and push actions.
