@@ -4,9 +4,9 @@ milestone: v1.13
 milestone_name: Eyebrow Geometry Controls
 status: Awaiting next milestone
 stopped_at: Milestone v1.13 complete; next $gsd-new-milestone
-last_updated: "2026-07-28T02:28:01.159Z"
+last_updated: "2026-07-28T03:24:48Z"
 last_activity: 2026-07-28
-last_activity_desc: Milestone v1.13 completed, audited, archived, cleaned up, and tagged
+last_activity_desc: Current-state consolidation audit completed after v1.13 lifecycle closeout
 progress:
   total_phases: 4
   completed_phases: 4
@@ -22,14 +22,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-07-28)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Planning the next milestone
+**Current focus:** Awaiting the next explicit milestone after current-state consolidation
 
 ## Current Position
 
 Phase: Milestone v1.13 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-07-28 — Milestone v1.13 completed, audited, archived, cleaned up, and tagged
+Last activity: 2026-07-28 — Current-state consolidation audit completed; v1.13 remains shipped and no new milestone is active
 
 ### Phase 52 Eyebrow Safety and Branch Closeout Result
 
@@ -149,18 +149,19 @@ Last activity: 2026-07-28 — Milestone v1.13 completed, audited, archived, clea
 - Exactly `大小`, `宽度`, and `微笑` are implemented; branch-level `嘴唇` remains partial.
 - Final audit passed 11/11 requirements, 11/11 integration checks, and 5/5 flows; no device/commercial/packaging/launch-readiness claim.
 
-Last activity: 2026-07-14
-
-## Performance Metrics
+## Repository Inventory
 
 **Velocity:**
 
-- Total phases completed: 30
-- Total plans completed: 140
-- Total tasks recorded from milestone summaries: at least 147
-- Milestone Swift LOC at close: 17,794 in the local closeout count across `BeautySDK` and `BeautyDemo`, including build-derived `.build` files observed during archive.
+- Numbered lifecycle inventory: 52 phases, of which 48 completed and 4 (12-15) were intentionally canceled.
+- The repository retains 187 archived `*-PLAN.md` files across 45 completed phase directories; v1.1 Phases 8-10 retain verification rather than plan artifacts, so this file count is not mislabeled as an all-time plan total.
+- The annotated v1.13 close contains 36,649 tracked Swift source/test lines across `BeautySDK` and `BeautyDemo`, excluding `.build`; the consolidation audit's three focused Demo fixes bring the current total to 36,722.
+- Current milestone truth is the front matter plus `.planning/ROADMAP.md`; milestone totals and archive links are owned by `.planning/MILESTONES.md`.
 
-**By Phase:**
+**Historical partial phase table (through Phase 35):**
+
+This table is retained as a historical snapshot only. It is not the current
+phase count or the canonical roadmap.
 
 | Phase | Plans | Status |
 |-------|-------|--------|
@@ -200,7 +201,9 @@ Last activity: 2026-07-14
 | 34. Mouth Safety, Degradation, and Ledger Closeout | 3/3 | Complete |
 | 35. Public Contract and Independent Geometry | 4/4 | Complete |
 
-**Plan Performance:**
+**Selected historical plan timing rows:**
+
+These archive-derived rows are timing notes, not a complete plan inventory.
 
 | Plan | Duration | Tasks | Files |
 | --- | ---: | ---: | ---: |
@@ -423,7 +426,7 @@ Recent milestone-level outcomes:
 
 - No active v1.13 implementation, verification, review, validation, integration, flow, or audit blocker remains. The independent audit rerun passes with zero residual milestone debt.
 - No active v1.12 blocker remains; all four phases and the independent milestone audit passed.
-- Deferred v2 `ADV-*` items remain outside v1 traceability and are tracked as `TD-007` in `PLANS.md`.
+- Deferred v2 `ADV-*` items remain historical/backlog scope in the archived v1.0 requirements; `TD-007` is closed because no active root requirements file or current audit warning remains.
 - Manual release risks are now routed by Phase 21 and updated by Phases 23 through 25: `TD-008` has focused simulator camera pass evidence but physical iPhone checks remain blocked until hardware exists; `TD-009` remains Phase 22 visual evidence with screenshot rerun protocol; and `TD-010` keeps device, long-run, screenshot, optimized profiling, external-resource integrity, and commercial packaging work routed to later setup-specific checks.
 - `TD-005` is closed for current v1.4 evidence through explicit `PrivacyInfo.xcprivacy` deferral; reopen it if SDK/Demo behavior starts collecting data, uses required-reason APIs, adds third-party SDKs, adds network/cloud/analytics behavior, packages the example executable, or enters packaging/submission work.
 - Phase 23 focused Demo simulator camera tests pass in the current environment. Phase 22 screenshot evidence still carries the historical Metal Toolchain blocker until the screenshot protocol is rerun.
@@ -439,7 +442,7 @@ Recent milestone-level outcomes:
 | Release QA | Real-device camera/Vision parity, visual naturalness, production render quality, performance budgets, and long-run hardware readiness | Partially promoted into v1.4 hardening scope; feature expansion remains deferred | v1.4 start |
 | SwiftUI visual fidelity | HTML-to-SwiftUI delta report, Home SwiftUI fidelity pass, Editor SwiftUI fidelity pass, and v1.2 visual QA closeout | Canceled from v1.2; may be reconsidered as a future milestone | 2026-06-26 |
 | Deferred Meitu product areas | Home/discovery, style resources, AI/background, video/body, account/gallery, search, premium access, commerce, account authorization | Deferred outside v1.3 core beauty modules | 2026-06-26 |
-| Broader Meitu shape groups | `白牙`, `比例`, `3D塑颜`, `眉毛`, `去双下巴`, `去双下巴 Pro`, and `发际线`. | v1.12 contour-driven face rows completed; listed semantic/retouch rows remain deferred | v1.12 closeout |
+| Broader Meitu shape groups | `白牙`, `比例`, `3D塑颜`, `去双下巴`, `去双下巴 Pro`, and `发际线`. | v1.13 completed `眉毛`; listed semantic/retouch/proportion rows remain deferred | v1.13 closeout |
 | Release/setup evidence | Physical-device camera/Vision parity, commercial visual review, screenshot reruns, optimized profiling, 600-second preview evidence, packaging review, and launch-readiness review | Deferred outside Phase 28 | Phase 28 closeout |
 | Codebase maps | Formal refresh of stale `.planning/codebase/*` maps | Deferred until explicitly scoped | Phase 21 |
 

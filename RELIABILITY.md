@@ -589,6 +589,7 @@ Phase 3 input-pipeline evidence recorded 2026-06-12:
 - `CameraBeautyPipelineTests` verifies direct `CVPixelBuffer` processing, bounded in-flight work, stale pending-frame drops, latest parameter snapshots, and friendly pause copy.
 - `ImageEditorPipelineTests` verifies fixture and PhotosPicker-data processing, cancellation no-op, loading over the previous visual, decode failure preservation, and stale photo work ignored in favor of latest parameters.
 - `InputPipelinePrivacyTests` verifies realtime Camera source has no `UIImage` conversion and no raw input/error copy in Phase 3 input paths.
+- The 2026-07-28 consolidation regressions invalidate an asynchronous camera start synchronously on stop, reject late authorized permission completion after the user leaves Camera mode, and map a current PhotosPicker `nil` transfer to the existing recoverable photo failure while ignoring stale completions.
 
 Phase 4 detection/coordinate evidence recorded 2026-06-18:
 

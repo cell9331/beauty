@@ -22,7 +22,7 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
-**Code size:** `BeautySDK` and `BeautyDemo` contain 37,227 tracked Swift source/test lines at v1.13 close, excluding `.build` output.
+**Code size:** the annotated v1.13 close contains 36,649 tracked Swift source/test lines across `BeautySDK` and `BeautyDemo`, excluding `.build`; the consolidation audit raises the current working total to 36,722 after three focused Demo lifecycle/input fixes.
 
 ## Last Completed Milestone: v1.13 Eyebrow Geometry Controls
 
@@ -428,7 +428,7 @@ Current visual reference contracts:
 | v1.10 completes the remaining mouth geometry controls without absorbing teeth whitening. | The five unresolved geometry rows share the existing mouth warp/facade evidence path, while `白牙` needs a different teeth-region segmentation and retouch contract. | Completed in Phase 40; milestone audit passed |
 | v1.11 completes the remaining eye geometry controls without absorbing eye-fat or redness retouch. | Ten unresolved geometry rows can build on the eye warp/facade path, but pupil/gaze/symmetry require private observed support and field-local fail-closed behavior; `去脂` and `祛红血丝` need different retouch/color ownership. | Completed and archived in v1.11 |
 | v1.12 completes four contour-driven unresolved `脸型` rows and defers semantic-region rows rather than faking support. | The existing five face parameters cannot prove smooth-contour, temple, cheekbone, or pointed-chin behavior, while no approved semantic model/fixtures exist for double chin or hairline; the user selected reduced scope on 2026-07-21. | Completed in Phase 48; milestone audit passed and archived |
-| Complete the remaining narrow facial-feature taxonomy across v1.13-v1.16, beginning with eyebrows. | Eyebrow controls can reuse Apple Vision landmark and unified-warp infrastructure; local retouch follows next, while hairline/double-chin work remains gated on an approved local semantic-region resource. | Pending across v1.13-v1.16 |
+| Complete the remaining narrow facial-feature taxonomy across v1.13-v1.16, beginning with eyebrows. | Eyebrow controls reuse Apple Vision landmark and unified-warp infrastructure; local retouch follows next, while hairline/double-chin work remains gated on an approved local semantic-region resource. | v1.13 completed; v1.14-v1.16 remain unstarted |
 | v1.5 starts with geometry output foundation plus `脸型`, not all `美型 / 五官` groups. | The user chose the smallest first-principles slice: prove facade-visible geometry output first, then mark only the existing face-shape tools complete when evidence exists. | Completed and archived in v1.5 |
 
 ## Evolution

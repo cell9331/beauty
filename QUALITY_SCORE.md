@@ -34,19 +34,20 @@ Quality gate:
 
 ## 3. Current Snapshot
 
-Current repository state as of 2026-07-14 after Phase 37 exact nose safety, boundary, and SDK-core branch closeout:
+Current repository state as of 2026-07-28 after the shipped v1.13 lifecycle and
+the current-state consolidation audit:
 
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
-| Root docs | 4 | `AGENTS.md`, `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `PLANS.md`, and `QUALITY_SCORE.md` still exist as current owner docs. Phase 21 root placeholder scan found only historical `PLANS.md` verification prose, not unresolved contract placeholders. | Keep root docs synced when `.planning/PROJECT.md`, `.planning/ROADMAP.md`, implementation contracts, or Phase 22-25 evidence change. |
-| Historical docs | 3 | `docs/README.md` remains the long-doc entry. Phase 21 records `.planning/codebase/*` maps as stale background because they still contradict the current Swift package, tests, and planning ledgers. | Continue conflict scans and defer any formal `.planning/codebase/*` remap until explicitly scoped. |
-| GSD planning | 4 | v1.9 Phases 35-37 and all 11 plans are complete. Phase 37 validation is Nyquist compliant and verification passes 6/6 requirements; the independent milestone audit remains pending. | Run `$gsd-audit-milestone`; archive/tag/cleanup only after its independent result passes. |
-| SDK Package | 4 | `BeautySDK` retains the existing package/facade structure and exact 33-field public inventory (32 numeric plus `filterId`). Phase 37 full `swift test --package-path BeautySDK` passes 228/228 after six-field nose safety and convergence evidence. | Optimized profiling, physical-device checks, and packaging remain future gates. |
-| Demo App | 4 | Existing archived Demo evidence remains valid for shipped behavior. Phase 22 recorded blocker-form Home/editor review notes and no current v1.4 PNG screenshots. Phase 23 focused camera pipeline xcodebuild passed on `platform=iOS Simulator,name=iPhone 17,OS=26.5`; Phase 25 focused privacy/import xcodebuild passed with 17 tests, but screenshot and long-run routes were not rerun. | Rerun the screenshot protocol before claiming current screenshot evidence; keep physical iPhone checks blocked until hardware evidence exists. |
-| Tests | 4 | Phase 37 focused suites pass 103/103 and cover exact caps, all-six degradation/transitions/provider-empty handling, public no-face continuation, and exact retained-set convergence; full SwiftPM passes 228/228. | Add tests only for separately scoped future tools; retain device/Demo gaps explicitly. |
-| Security | 4 | Phase 37 fail-closed scans cover public/SPI raw geometry, forbidden imports, network/cloud, commercial paths, exact public inventory, dependencies, diagnostics, and tracked/staged generated artifacts; review is clean and `threats_open: 0`. | Reopen manifest, dependency, network, resource-integrity, and raw-geometry review when behavior changes or packaging starts. |
-| Reliability | 4 | All six nose fields fail closed for zero/no-face/missing/provider-empty/stale input, reused eligible geometry uses exact `0.5`, transitions carry no prior emissions, and provider-empty work is excluded from final convergence evidence. | Keep the 600-second preview, physical iPhone, screenshot, and optimized profiling routes future. |
-| Product acceptance | 4 | Phase 37 closes exactly the six-row SDK-core `鼻子` branch after fresh 228/228 full tests and unchanged 252/252 output with independent root/lift comparisons; Demo/device/commercial/packaging/launch claims remain excluded. | Run the independent v1.9 milestone audit; do not infer broader readiness. |
+| Root docs | 4 | All nine root owners exist. The consolidation audit corrected `ARCHITECTURE.md` so current pixel-buffer processing, still-image detection/geometry, and placeholder Render foundations match compiled code. | Keep current facts in root owners; keep milestone narratives in archives. |
+| Historical docs | 3 | `docs/README.md` remains the long-doc entry. `.planning/codebase/*` is explicitly stale background and historical phase/milestone artifacts are not current contracts. | Refresh codebase maps only in an explicitly scoped remap. |
+| GSD planning | 4 | v1.13 is shipped, independently audited, archived, cleaned up, and tagged. No milestone or root `.planning/REQUIREMENTS.md` is active. | Create requirements only through the next explicitly scoped milestone. |
+| SDK Package | 4 | The package/facade boundary is intact; `BeautyParameters` is exactly 59 stored fields (58 numeric plus `filterId`), and the v1.13 full SwiftPM baseline executes 450 tests successfully. | Resolve the generic `BeautyResult` sendability contract before treating all public result envelopes as concurrency-safe. |
+| Demo App | 4 | Full Demo simulator tests pass on iPhone 17e / iOS 26.5. Focused consolidation tests cover stale camera starts, late permission completion, and nil/stale photo transfers. | Rerun screenshot, long-run preview, and physical-device protocols before corresponding claims. |
+| Tests | 4 | SwiftPM covers 450 cases; the Demo has full simulator coverage plus focused lifecycle/input regressions. v1.13 strict output, checker, review, and milestone-audit evidence remain archived and passing. | Add coverage for chosen future scope; preserve explicit hardware and UI-automation gaps. |
+| Security | 3 | Local-first, redaction, raw-geometry, dependency/network, and generated-artifact gates pass, but production image inputs still lack the configured maximum byte/pixel enforcement required by `SECURITY.md`. | Define the public input-limit/compatibility contract, then enforce it before decode/render allocation. |
+| Reliability | 3 | Backpressure, stale work, reset, detection degradation, and the repaired camera lifecycle are test-backed. Realtime geometry/Metal dispatch, 600-second preview, and device endurance are not current evidence. | Keep claims bounded and run the setup-specific long-run/device gates when authorized. |
+| Product acceptance | 4 | v1.13 closes exactly seven eyebrow rows plus branch `眉毛` at SDK-core scope after 21/21 requirements, 4/4 phases, 12/12 integrations, and 6/6 flows. | Do not infer Demo, device, commercial, packaging, or release readiness. |
 
 ### 3.1 Phase 4 Final Verification
 
@@ -268,14 +269,15 @@ Recorded 2026-07-14 in `35-VERIFICATION.md`, `36-VERIFICATION.md`, `37-NOSE-SAFE
 | Domain | Target Score | Current | Required Evidence For 4+ |
 | --- | --- | --- | --- |
 | SDK Integration | 5 | 4 | App imports only `BeautySDK`; `BeautyEngine` init/process/reset compile and have typed errors. |
-| Realtime Camera | 5 | 4 | Camera frames process through SDK, no realtime `UIImage`, UI remains responsive in unit/pipeline tests, bounded backpressure is tested, permission fallback state is covered, and Phase 6 effects route through the shared engine path. |
+| Realtime Camera | 5 | 3 | Camera frames process off-main through a bounded latest-frame pipeline with no `UIImage`; lifecycle, permission, pause, and backpressure paths are tested. The current pixel-buffer facade has no Vision/geometry or Metal-warp dispatch, and device/long-run evidence is absent. |
 | Still Image Editing | 4 | 4 | Fixed fixture and PhotosPicker-data seam process through SDK, loading/error preservation is tested, compare state is covered, and Phase 6 image output has deterministic effect evidence. |
 | Presets | 4 | 4 | Built-in JSON presets decode, validate, apply deterministically, and sync UI controls. |
 | Skin Beauty | 4 | 4 | Default no-op, visible skin/color fixture output, high-strength safety caps, and no-face combined skip behavior are tested. |
-| Face Shape | 4 | 4 | Control points are generated safely, combined geometry weakens, no-face skips, and CIImage local warp evidence is tested. |
-| Eyes | 4 | 4 | Positive-only/signed inputs, exact caps, missing-eye skips, reused/stale eye-domain skips, combined weakening, and redacted aggregate evidence are tested; 161/161 outputs and 36/36 comparisons pass. Exactly four rows are implemented while branch-level `眼睛` remains partial. |
+| Face Shape | 4 | 4 | Nine public face/chin fields have provider, degradation, convergence, facade, and 413/413 strict output evidence; three semantic-region rows remain future and branch `脸型` remains partial. |
+| Eyes | 4 | 4 | Fourteen geometry rows have exact cap/degradation/convergence and 385/385 facade-output evidence; `去脂` and `祛红血丝` remain future and branch `眼睛` remains partial. |
 | Nose | 4 | 4 | Phase 37 passes 228/228 full SwiftPM plus unchanged 252/252 output, independent root/lift comparisons, exact `0.25` caps, all-six degradation/transitions, provider-empty removal, exactly-once convergence, redaction, and `threats_open: 0`. The exact six-row SDK-core `鼻子` branch is implemented; Demo/device/commercial readiness remains separate. |
-| Mouth | 4 | 4 | Phase 34 exact caps, signed normalization, exact-zero missing/no-face/stale geometry, reused `0.5`, independent lip-color policy, and combined matrix pass; observed 13/13 focused, 190/190 full SDK, and helper 238/238, 30/30, 12/12, 6/6. Branch `嘴唇` remains partial. |
+| Mouth | 4 | 4 | Eight geometry rows have exact cap/degradation/convergence and 308/308 facade-output evidence; `lipColor` remains color-only, `白牙` remains future, and branch `嘴唇` remains partial. |
+| Eyebrows | 4 | 4 | Seven independent rows have actual request-local support, exact `0.25` caps, 44-field convergence, 72/72 portrait output, thirteen no-face comparisons, and exact branch promotion. |
 | Filters | 4 | 4 | `filterId nil`, missing filter, intensity 0/1, metadata filter IDs, and Demo filter selection are covered; real LUT decode remains Phase 6+ render scope. |
 | Makeup | 3 | 0 | Resource manifest, missing-resource behavior, landmark attachment tests. |
 | Background / Segmentation | 3 | 0 | Mask edge fixtures, no-person fallback, device downgrade behavior. |
@@ -286,7 +288,7 @@ Recorded 2026-07-14 in `35-VERIFICATION.md`, `36-VERIFICATION.md`, `37-NOSE-SAFE
 
 | Layer | Target Score | Current | Required Evidence For 4+ |
 | --- | --- | --- | --- |
-| `BeautyCore` | 5 | 4 | Value models compile, `Sendable`, Codable tests, parameter normalization tests, typed errors, metadata/result summaries, and no-op engine tests exist. |
+| `BeautyCore` | 5 | 3 | Value/Codable/normalization/error contracts are tested, but generic `BeautyResult<Output>` currently uses unconditional `@unchecked Sendable`; the public concurrency claim needs a compatibility-safe redesign. |
 | `BeautyDetection` | 4 | 4 | Detector protocol, Vision adapter seams, face selection, coordinate mapper, mapping failures, and safe public summaries are tested. |
 | `BeautyRender` | 5 | 3 | `RenderGraph`, `RenderPass`, `CopyRenderPass`, `PixelBufferFactory`, and `Warp.metal` placeholder exist with copy/pass-order tests; Phase 6 adds deterministic MVP color/geometry proxy evidence through `BeautyEffects`. |
 | `BeautyEffects` | 4 | 4 | Effect resolver, safety caps, skin/color/filter output, face/eye/nose/mouth providers, lip color, combined weakening, no-face skips, missing-landmark degradation, and preset evidence are tested. |
@@ -298,7 +300,7 @@ Recorded 2026-07-14 in `35-VERIFICATION.md`, `36-VERIFICATION.md`, `37-NOSE-SAFE
 
 | Test Area | Target Score | Current | Minimum Coverage |
 | --- | --- | --- | --- |
-| Parameter tests | 5 | 3 | Defaults, 31 stored fields, ranges, NaN/infinity reset, Sendable, and Codable round trip. |
+| Parameter tests | 5 | 4 | Exact 59-field inventory, legacy 31/33/38/48/52 payload neutrality, independent storage, ranges, non-finite reset, `Sendable`, presets, and Codable round trips are covered. |
 | Preset tests | 4 | 4 | Decode, unknown fields, invalid ID, schema version, built-in registry, and missing filter resource typed errors. |
 | Coordinate tests | 5 | 4 | Front/back, portrait/landscape, EXIF orientation, input mirroring, preview mirroring, VisionNormalized, ImageNormalized, pixel, texture, and preview mapping tests exist. |
 | Detection tests | 4 | 4 | No face, low confidence, missing landmarks, mapping failure, face limit, selection stability, detector unavailable, timeout, reset, public still-image geometry gating, and selected-face routing coverage exists. |
@@ -362,7 +364,9 @@ Pass: no `UIImage` in realtime pipeline code. Still image UI adapters must be ex
 rg -n "fatalError|try!|as!" BeautySDK/Sources BeautyDemo/BeautyDemo 2>/dev/null
 ```
 
-Pass: no release-path crash shortcuts.
+Pass: no `fatalError` or `try!`; the sole `as!` is the UIKit structural cast in
+`CameraPreviewLayerView`, where the same class overrides `layerClass` to
+`AVCaptureVideoPreviewLayer.self`. Any additional match requires review.
 
 ## 10. Documentation Gardening Checks
 
@@ -417,10 +421,16 @@ rg -n "docs_""total\\.json" AGENTS.md ARCHITECTURE.md DESIGN.md FRONTEND.md SECU
 Pass: `docs_total.json` appears only as `docs/_source/docs_total.json` source-import context, not as a reading entry.
 
 ```bash
-test -f .planning/PROJECT.md && test -f .planning/STATE.md && test -f .planning/ROADMAP.md && test -f .planning/REQUIREMENTS.md
+test -f .planning/PROJECT.md && test -f .planning/STATE.md && test -f .planning/ROADMAP.md
+if rg -q '^\*\*Current milestone:\*\* None' .planning/PROJECT.md; then
+  test ! -e .planning/REQUIREMENTS.md
+else
+  test -f .planning/REQUIREMENTS.md
+fi
 ```
 
-Pass: GSD project, state, roadmap, and requirement tracking files exist and are updated as phases execute.
+Pass: project/state/roadmap owners exist; active requirements exist exactly when
+a milestone is active and are absent after an archived lifecycle closeout.
 
 ```bash
 rg --glob '!docs/_source/**' --glob '!docs/10_document_audit_report.md' -n "waitUntil""Completed|Beauty""Warp\\.metal|Beauty""Configuration|Beauty""Parameters|Beauty""Error|Beauty""Logger|BeautyCore/""Diagnostics" ARCHITECTURE.md DESIGN.md FRONTEND.md SECURITY.md RELIABILITY.md PRODUCT_SENSE.md docs
@@ -491,12 +501,12 @@ SDK 1.0 readiness:
 
 | Priority | Item | Why |
 | --- | --- | --- |
-| 1 | Run the independent v1.9 milestone audit. | Phase 37 is internally complete at 6/6, but audit, archive, tag, cleanup, packaging, and readiness have separate lifecycle owners. |
-| 2 | Run dedicated 600-second preview and physical iPhone checks when setup is available. | Phase 23 records a short fixture loop and focused simulator pass evidence, but long-run preview and device evidence remain blocked or not run. |
-| 3 | Rerun current Demo screenshot evidence. | Phase 22 completed the documented blocker path; current PNG capture still requires rerunning the exact build/test/screenshot commands and recording pass or blocker status. |
-| 4 | Design external resource package trust before enabling any dynamic packages. | Phase 25 covers bundled resources only; LUT, makeup, model, sticker, download, cache, checksum/signature, and package-integrity capability remain disabled. |
-| 5 | Keep renderer regression gates current when the renderer matrix changes. | Phase 27 protects the current 11-case matrix, 6 fixtures, and 66 ignored generated outputs; future renderer cases need matching tests, helper inventory, and evidence updates. |
-| 6 | Defer formal `.planning/codebase/*` remap until explicitly scoped. | Phase 21 and the Phase 22 drift warning found the maps stale; current source, root contracts, and `.planning` ledgers are authoritative. |
+| 1 | Define and enforce production image input byte/pixel ceilings. | Current code checks only non-empty finite dimensions, while `SECURITY.md` requires a configured maximum; threshold and compatibility choices need an explicit contract. |
+| 2 | Repair `BeautyResult<Output>` sendability without lying or silently breaking clients. | Unconditional `@unchecked Sendable` permits arbitrary non-sendable output types; the public API compatibility strategy needs a separate decision. |
+| 3 | Run dedicated 600-second preview and physical iPhone checks when setup is available. | Short simulator and fixture evidence cannot establish camera/Vision parity, memory, thermal, or endurance behavior. |
+| 4 | Rerun current Demo screenshot/UI evidence. | Model and simulator tests pass, but current layout screenshots and UI automation were not produced in this audit. |
+| 5 | Design external resource package trust before enabling dynamic packages. | Current bundled metadata/presets do not prove download, cache, checksum/signature, model, LUT, or package-integrity behavior. |
+| 6 | Defer formal `.planning/codebase/*` remap until explicitly scoped. | Current source, root contracts, and live planning owners remain authoritative over stale maps. |
 
 ## 15. Quality Decision Log
 
@@ -512,7 +522,8 @@ SDK 1.0 readiness:
 | 2026-05-25 | A score above `3` requires verification evidence. | Prevents optimistic scoring without tests or checks. |
 | 2026-05-25 | Historical `docs/` count as background, not current contract. | Root docs are now the Agent-first source of truth. |
 | 2026-06-10 | Build checks must use an explicit iOS Simulator destination. | The default `xcodebuild ... build` command can select an incompatible `My Mac` destination even when the iOS simulator build succeeds. |
-| 2026-06-10 | `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, and `.planning/REQUIREMENTS.md` are current GSD execution context. | Prevents future agents from relying only on historical docs or stale chat context. |
+| 2026-06-10 | `.planning/PROJECT.md`, `.planning/STATE.md`, and `.planning/ROADMAP.md` are persistent GSD context; `.planning/REQUIREMENTS.md` exists only for an active milestone. | Prevents archived closeouts from failing a stale always-present requirement check. |
+| 2026-07-28 | Current-state scores are evidence-bounded rather than milestone-inherited. | Realtime and security scores were reduced where compiled paths or input-limit enforcement do not satisfy the owning contracts. |
 | 2026-06-11 | Phase 2 raises Demo evidence through view-state tests, not UI automation. | The shell is deterministic before camera/photo input exists; later phases still need simulator UI workflows for permissions, compare, and media states. |
 | 2026-06-12 | Phase 3 raises Realtime Camera and Still Image Editing to score 3 through deterministic pipeline, privacy, and view-state tests. | The Camera/Photo input slice is now test-backed, while real hardware smoke, visual effects, and long-run performance remain later gates. |
 | 2026-06-22 | Phase 6 raises BeautyEffects and MVP effect domains to score 4 through resolver, provider, fixture, degradation, and Demo panel tests. | Deterministic automated evidence now exists; production render quality, hardware smoke, and manual naturalness review remain release-like gates. |

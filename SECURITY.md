@@ -259,6 +259,12 @@ Required checks:
 - Reject images whose color space or pixel format cannot be rendered safely.
 - Avoid loading full-resolution images on the main thread.
 
+Current gap (2026-07-28 consolidation audit): production SDK/Demo image paths
+validate non-empty finite extents and pixel format, but no public configured
+byte/pixel ceiling is enforced before expensive decode/render allocation.
+`PLANS.md` TD-012 owns the required threshold and compatibility decision; until
+it closes, oversized-input resistance is not a passing security claim.
+
 ### 6.3 Parameter Validation
 
 Required checks:

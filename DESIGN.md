@@ -671,6 +671,7 @@ Rules:
 
 - Public value models should be `Sendable`.
 - Do not use `@unchecked Sendable` for mutable reference types without a written isolation rule.
+- Generic result envelopes may claim `Sendable` only when their output contract makes cross-domain transfer safe. The current unconditional `BeautyResult<Output>: @unchecked Sendable` conformance is tracked as TD-013 and must not be used as proof that an arbitrary caller-supplied `Output` is thread-safe.
 - Main actor is only for UI state.
 - Detection may run on a detection queue or task.
 - Metal encoding runs on the render queue chosen by `BeautyRender`.

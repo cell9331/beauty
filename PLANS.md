@@ -26,26 +26,29 @@
 
 ## 3. Active
 
-### A-2026-07-28-current-state-consolidation-audit
+No product milestone or consolidation plan is active. v1.13 remains shipped;
+the current-state audit below changed no feature inventory and does not
+authorize v1.14 or any other new scope.
+
+## 4. Completed
+
+### C-2026-07-28-current-state-consolidation-audit
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
-| Scope | Freeze feature expansion and audit the current production code, tests, root contracts, and live planning owners from first principles. Fix at most five clear medium-or-higher findings; route API/design decisions to Tech Debt. |
-| Baseline | Clean `main` at annotated `v1.13`; `audit-uat` has no active phase artifacts; full SwiftPM executes 450 tests successfully; full `BeautyDemo` simulator tests succeed on iPhone 17e / iOS 26.5. |
+| Completed | 2026-07-28 |
+| Scope | Froze feature expansion; audited current production code, tests, root contracts, live planning owners, dependencies, privacy/reliability boundaries, and build paths from first principles. |
+| Classification | Seven medium-or-higher findings: F-01 through F-05 auto-fixable and fixed; F-06/F-07 require public design/API decisions and are recorded as TD-012/TD-013. |
+| Code fixes | Invalidated stale asynchronous camera starts; blocked late permission completion outside Camera mode; mapped current nil PhotosPicker transfers to the existing recoverable failure while ignoring stale completions. |
+| Document fixes | Corrected actual pixel-buffer/still-image/Render ownership, v1.13/current inventories, GSD requirement lifecycle, scores, repair queue, LOC, historical metrics labeling, stale tech-debt states, and the one intentional UIKit force-cast classification. |
+| Verification | Full SwiftPM executes 450/450 successfully; full `BeautyDemo` simulator tests succeed on iPhone 17e / iOS 26.5; focused camera-session tests pass 6/6, permission tests 7/7, and privacy/input tests 15/15; architecture/import/crash-classification/current-state/link/JSON/LOC/plan-inventory/diff-hygiene gates pass. |
 
-Checklist:
+Outcome:
 
-- [x] F-01 cancel stale asynchronous camera-session starts — lifecycle generation tests pass 6/6 in focused `CameraSessionControllerTests`.
-- [x] F-02 prevent late permission completion from starting camera outside Camera mode — focused permission-state tests cover the late authorized result boundary.
-- [x] F-03 surface nil PhotosPicker transfers as recoverable selection failures — the selection resolver distinguishes current data, current nil, and stale completion.
-- [x] F-04 align `ARCHITECTURE.md` with the current compiled runtime boundary — current pixel-buffer, still-image, Detection/Effects, and Render foundation paths now match source ownership without implying nonexistent realtime geometry or Metal dispatch.
-- [ ] F-05 repair current quality/planning owner drift and record unresolved design debt.
-
-No product milestone is active. This consolidation audit changes no shipped
-feature inventory and does not authorize v1.14 or any other new scope.
-
-## 4. Completed
+- Five auto-fixable findings are closed in five atomic F-ID commits.
+- Realtime Camera and Security quality scores are conservatively reduced to 3 where current compiled behavior or input-limit enforcement does not satisfy the target contract.
+- TD-012 owns production image bounds; TD-013 owns the public generic result sendability migration.
+- No historical archive, public feature inventory, v1.14 scope, device/commercial claim, packaging, or release-readiness status was changed.
 
 ### C-2026-07-28-v1-13-milestone-completion
 
@@ -2971,15 +2974,17 @@ Outcome:
 | --- | --- | --- | --- | --- | --- |
 | TD-001 | Project Structure | 根目录不是 Git 仓库，`.git` 位于 `BeautyDemo/` 下。 | 根级文档变更不一定被当前 Git 仓库追踪。 | 已将 `/Users/yakangwang/codes/beauty` 初始化为仓库根；原 `BeautyDemo` Git 历史已备份到 `.codex-backups/BeautyDemo_git_before_root_init_20260525_190709/`。 | `completed` |
 | TD-002 | SDK Package | `BeautySDK` Swift Package 尚未创建。 | 根级架构文档已定义目标结构，但代码仍只有 Demo 模板。 | Phase 1 已创建 SPM 与 facade / internal targets；后续按 roadmap 扩展真实检测、资源、效果和 Demo 集成。 | `completed` |
-| TD-003 | Demo UI | `BeautyDemo` 仍是默认 `Hello, world!` SwiftUI 模板。 | 无法验证产品旅程、参数面板、相机预览。 | 按 `FRONTEND.md` 建立 Demo App 目录与最小页面。 | `open` |
-| TD-004 | Tests | 尚无 SDK 单元测试、渲染测试、UI 测试。 | 质量评分和发布门禁暂只能靠文档检查。 | Phase 1 已创建 facade/core/render foundation XCTest；Detection、Resources、Effects、Demo UI、性能和长跑测试仍按后续阶段补齐。 | `partial` |
+| TD-003 | Demo UI | Historical initialization debt: `BeautyDemo` began as the default SwiftUI template. | None for the shipped shell; current Demo contains Home/editor, camera/photo, panels, compare, debug, and JSON flows. | Preserve facade-only integration and keep unsupported features visibly unavailable. | `completed` |
+| TD-004 | Tests | Automated SDK and Demo coverage now exists, including 450 SwiftPM cases plus full simulator tests; UI automation, physical-device, commercial visual, and long-run coverage remain incomplete. | Model/path correctness is strong, but release-like interaction and hardware behavior are not fully established. | Add only scope-driven regressions; run UI/device/long-run protocols before corresponding claims. | `partial` |
 | TD-005 | Privacy Manifest | Phase 25 `find BeautySDK BeautyDemo -name PrivacyInfo.xcprivacy -print` found no privacy manifest, and `25-SECURITY-CLOSEOUT.md` explicitly defers adding one for current SDK/Demo behavior. | Future collection, required-reason API usage, third-party SDKs, network/cloud/analytics behavior, packaged example executables, or packaging/submission work can reopen compliance risk. | Reopen the manifest review when behavior or distribution scope changes; run the recorded rerun protocol and `plutil` checks if a manifest is added. | `closed/current-evidence` |
 | TD-006 | Historical Docs | `docs/` 下历史长文档与根级文档存在重叠。 | Agent 可能读取到旧结论。 | 已将 `docs/README.md` 设为长文档入口，并在 `QUALITY_SCORE.md` 中加入旧文件名、source import JSON、关键术语一致性扫描规则。 | `completed` |
-| TD-007 | GSD Traceability | v2 `ADV-01` through `ADV-10` appear in `.planning/REQUIREMENTS.md` body but not its Traceability table; `phase.complete` warns about them. | GSD audits may continue surfacing deferred v2 IDs even though v1 SDK traceability is complete. | Decide whether deferred v2 requirements should be added to Traceability as Deferred or moved to a separate backlog table. | `open` |
+| TD-007 | GSD Traceability | Historical v2 `ADV-01` through `ADV-10` remain in archived `.planning/milestones/v1.0-REQUIREMENTS.md`, not in an active root requirements file. | No current audit warning or active traceability ambiguity remains after milestone archival. | Keep them historical/backlog-only unless a future milestone explicitly promotes one. | `completed` |
 | TD-008 | Manual Device QA | Phase 23 focused Demo camera xcodebuild passed on the iPhone 17 simulator, but no physical iPhone evidence exists and no 600-second preview route was collected. Phase 22 screenshot evidence still needs a current rerun. | Mirror/crop expectations, real detector behavior, and hardware endurance may differ from simulator and synthetic fixtures. | Keep physical iPhone checks `blocked` until device evidence is available; rerun screenshot and long-run protocols when setup exists. | `partial/blocked` |
-| TD-009 | Manual Visual QA | Phase 21 did not capture new screenshots or human visual smoke; current `xcodebuild` Demo build is blocked by missing Metal Toolchain. | Preset/filter chips, controls, labels, badges, and panels could visually clip despite model-level tests. | Phase 22 recorded exact local blocker evidence, no-PNG inventory, blocked per-state review notes, and rerun protocol in `.planning/evidence/v1.4/VISUAL-EVIDENCE.md`; actual screenshot pass evidence still requires installing the Metal Toolchain and rerunning the exact commands. | `completed-with-blocker` |
+| TD-009 | Manual Visual QA | The current environment builds and tests the Demo successfully, but this consolidation audit did not rerun screenshot capture, UI automation, or current layout review. | Preset/filter chips, controls, labels, badges, and panels could visually clip despite model-level tests. | Rerun the Phase 22 screenshot protocol on the current app before claiming current visual evidence. | `partial` |
 | TD-010 | Phase 6 Visual and Hardware QA | Phase 23 adds 720p timing, over-budget classification, short memory protocol, quality/reset/degradation/cap tests, and focused Demo camera pass evidence. Phase 24 adds renderer matrix, no-op fixture, 45-output invariant, and watermark-evidence regression gates for current skin/color/filter renderer outputs. Phase 25 closes privacy/security/resource implications for current behavior. Commercial visual review, production GPU quality, real camera parity, automated screenshot diffing, 600-second preview, physical iPhone evidence, external package-integrity, and commercial packaging evidence remain unproved. | Claims could overstate visual quality, device behavior, resource-package trust, or packaging state beyond current automated evidence. | Run screenshot, 600-second preview, physical iPhone, optimized profiling, external resource package, and packaging protocols only when setup and scope exist. | `partial/deferred` |
 | TD-011 | Stale Codebase Maps | Phase 21 read `.planning/codebase/*` and found stale maps that still describe missing SDK/tests despite current SwiftPM package and 141 passing SDK XCTest cases. | Future agents could follow obsolete codebase maps instead of current source, root docs, and `.planning` ledgers. | Treat maps as stale background only; defer formal `$gsd-map-codebase` refresh until explicitly scoped. | `deferred` |
+| TD-012 | Input Bounds | `BeautyEngine` and the Demo photo path reject empty/invalid images but do not enforce the configured maximum byte/pixel ceilings required by `SECURITY.md`. | A valid but oversized local image can cause excessive decode/render allocation or memory pressure. | Define public limit fields/defaults and compatibility behavior, then validate compressed bytes and decoded dimensions before expensive processing. | `open/design-required` |
+| TD-013 | Public Concurrency | `BeautyResult<Output>` unconditionally declares `@unchecked Sendable`, even when a caller instantiates it with an arbitrary non-sendable `Output`. | The public type promises cross-domain safety that its generic payload cannot guarantee. | Choose a source-compatible migration (conditional conformance, non-sendable media wrapper, or versioned API) and add compile-time concurrency coverage. | `open/api-decision` |
 
 ## 6. Plan Template
 
