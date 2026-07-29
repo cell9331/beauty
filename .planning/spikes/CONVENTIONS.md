@@ -35,6 +35,10 @@ New spikes follow these unless the question requires otherwise.
   uncertain landmarks, compare against the fixed baseline, exercise the
   geometric envelope independently of downstream color gates, preserve accepted
   baseline pixels or fail closed, and measure protected-region leakage.
+- When a soft mask is feathered or blurred inside a hard anatomical region,
+  intersect the result with that same hard region again before compositing.
+  Adaptive teeth and guarded sclera experiments both require this final clip to
+  prevent filtering from expanding selection into protected support.
 - Mechanics fixtures and rights-approved product evidence use separate explicit
   gate states; a valid mechanics bundle must never open the product gate.
 - External models stay outside the repository until their dataset, checkpoint,
