@@ -26,28 +26,31 @@
 
 ## 3. Active
 
-### P-2026-07-29-local-retouch-frontier-006-009-010
+No active plan. No product milestone is active; v1.13 remains shipped and the
+completed local-retouch frontier does not authorize v1.14 or any new feature
+scope.
+
+## 4. Completed
+
+### C-2026-07-29-local-retouch-frontier-006-009-010
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
-| Scope | Execute selected frontier Spikes 006, 009, and 010: a local licensed-fixture review gate, an adaptive deterministic teeth-mask comparison, and a sclera landmark-jitter safety envelope. |
-| Boundary | All work remains under `.planning/spikes/` and the isolated spike harness. No `BeautySDK`, `BeautyDemo`, public API, feature ledger, milestone, camera/pixel-buffer path, or product behavior is authorized or changed. |
-| Evidence gate | Existing AI-generated fixtures may validate mechanics and controlled perturbations only. Spike 006 cannot produce a product-feasibility verdict until licensed real positive/negative fixtures with complete rights metadata are supplied and reviewed. |
-| Decision rule | Spike 009 must beat the fixed deterministic mask without weakening closed-mouth/protected-region safety. Spike 010 must add an explicit fail-closed guard if realistic support perturbations can enter the protected iris/highlight envelope. |
+| Completed | 2026-07-29 |
+| Scope | Completed selected frontier Spikes 006, 009, and 010: an offline rights/asset/review/export gate, adaptive deterministic teeth-mask comparison, and color-independent sclera landmark-jitter safety grid. All changes remain under `.planning/spikes/` plus this ledger. |
+| Verdicts | Spike 006 is `PARTIAL`: the local gate works but no licensed real fixtures were supplied. Spike 009 is `PARTIAL`: adaptive seeded growth beats the fixed mask on mechanics fixtures but lacks licensed protected-tissue review. Spike 010 is narrowly `VALIDATED`: its guarded deterministic grid has zero iris/highlight leakage, while thresholds and useful coverage remain unvalidated for users. |
+| Teeth result | e6 strong coverage rises 4,711 → 7,396 (+57.0%) and e2 rises 462 → 805 (+74.2%), with zero dropped strong pixels, zero outside-mask changes, e3 closed-mouth zero, and no-face exit 1. |
+| Sclera result | The existing geometric envelope leaks into the unperturbed protected iris in 118/120 scenarios on each of e6/e2/e3. The guarded envelope leaks in 0/360 combined scenarios and has zero highlight leaks, but fails closed in 270/360 stress scenarios and retains only 28.6%–32.2% of baseline geometric eligibility. |
+| Product decision | Do not activate v1.14 or change production. The adaptive teeth path may enter licensed review; the unguarded Spike 003 sclera geometry must not be promoted unchanged; the conservative 0.30 aspect/0.14 width guard is a calibration starting point, not a production constant. `去脂` remains future. |
+| Verification | Rights/review core passes 9/9; isolated Swift release build and 13/13 self-tests pass; all retained JSON parses; 009/010 metric assertions pass; three review pages and JavaScript parse; runtime network, event allowlist, model/weight, production-boundary, and diff-hygiene scans pass; both no-face modes exit 1. |
+| Evidence | `.planning/spikes/006-licensed-fixture-review-gate/`, `.planning/spikes/009-adaptive-teeth-mask/`, `.planning/spikes/010-sclera-jitter-envelope/`, the shared isolated harness, manifest verdicts, local visual artifacts, and commits `75d6bbf`, `e549aea`, and `92624f2`. |
 
-Checklist:
+Outcome:
 
-- [x] Record the selected frontier definitions and risk order.
-- [x] Build and verify the offline rights/asset/review/export gate.
-- [x] Compare adaptive and fixed deterministic teeth masks, including negative cases.
-- [x] Quantify baseline and guarded sclera masks across deterministic support perturbations.
-- [ ] Record verdicts, refresh conventions if a pattern repeats, and close without activating v1.14.
-
-No product milestone is active. v1.13 remains shipped, and these frontier
-experiments do not authorize v1.14 or any other new feature scope.
-
-## 4. Completed
+- The next evidence step is fixture acquisition, not another production algorithm: obtain licensed real positive/negative teeth and sclera cases with complete rights metadata, then use Spike 006 for original-detail blind review.
+- Teeth review must measure side-tooth gain against lip/tongue/gum/braces/occlusion leakage. Sclera review must calibrate openness and uncertainty guards across partial closure, gaze, glasses/contacts, iris color, pose, redness, and demographic/illumination variation.
+- No repeated cross-spike implementation pattern required a `CONVENTIONS.md` change; per-feature decisions and rejected intermediate candidates are recorded in their authoritative Spike 009/010 READMEs.
+- No `BeautySDK`, `BeautyDemo`, public API, feature ledger, milestone, camera/pixel-buffer path, or product behavior changed.
 
 ### C-2026-07-29-local-retouch-spike-wrap-up
 
