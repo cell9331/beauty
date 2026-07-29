@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>v1.14 本地修饰可行性 Spike</title>
+  <style>
+    :root { color-scheme: dark; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #0b0c0e; color: #f4f1ea; }
+    header { max-width: 1120px; margin: 0 auto; padding: 56px 24px 24px; }
+    h1 { margin: 0 0 12px; font-size: clamp(28px, 5vw, 52px); letter-spacing: -.035em; }
+    header p { max-width: 760px; margin: 0; color: #aaa79f; line-height: 1.65; }
+    .summary { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .pill { border: 1px solid #34363b; border-radius: 999px; padding: 8px 12px; color: #cfcbc2; font-size: 13px; }
+    main { max-width: 1120px; margin: 0 auto; padding: 24px; display: grid; gap: 24px; }
+    article { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(260px, .55fr); overflow: hidden; border: 1px solid #292b30; border-radius: 22px; background: #131519; }
+    .compare { --pos: 50%; position: relative; min-height: 560px; background: #090a0c; overflow: hidden; }
+    .compare img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; user-select: none; }
+    .compare .after { clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+    .compare::after { content: ""; position: absolute; top: 0; bottom: 0; left: var(--pos); width: 1px; background: rgba(255,255,255,.85); pointer-events: none; }
+    .labels { position: absolute; inset: 16px 16px auto; display: flex; justify-content: space-between; z-index: 2; font-size: 12px; letter-spacing: .08em; }
+    .labels span { padding: 6px 8px; border-radius: 8px; background: rgba(0,0,0,.6); }
+    input[type=range] { position: absolute; inset: auto 18px 18px; width: calc(100% - 36px); z-index: 3; accent-color: #ff6c4b; }
+    .notes { padding: 28px; }
+    .kicker { margin: 0 0 8px; color: #ff8468; text-transform: uppercase; letter-spacing: .12em; font-size: 12px; font-weight: 700; }
+    h2 { margin: 0 0 12px; font-size: 24px; }
+    .verdict { display: inline-block; margin-bottom: 18px; border-radius: 8px; padding: 7px 9px; background: #22252a; color: #ddd8ce; font-size: 13px; }
+    .notes p { margin: 0 0 18px; color: #aaa79f; line-height: 1.6; }
+    .mask { width: 100%; border-radius: 12px; border: 1px solid #303239; background: #000; }
+    .metric { display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; margin: 18px 0; font-size: 13px; color: #aaa79f; }
+    .metric strong { color: #f4f1ea; font-weight: 600; }
+    footer { max-width: 1120px; margin: 0 auto; padding: 24px 24px 64px; color: #77756f; line-height: 1.6; }
+    @media (max-width: 780px) { article { grid-template-columns: 1fr; } .compare { min-height: 520px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>v1.14 本地修饰可行性</h1>
+    <p>拖动每张图底部滑杆比较原图与输出。红色图是局部遮罩叠加层。当前仓库样例为 AI 生成图，只能验证机制与边界，不能替代真实正反例的人审。</p>
+    <div class="summary">
+      <span class="pill">去脂：暂不进入里程碑</span>
+      <span class="pill">白牙：算法可行，分割/授权待解</span>
+      <span class="pill">祛红血丝：局部路径可行，真实样例待验</span>
+      <span class="pill">所有运行 changedOutsideMask = 0</span>
+    </div>
+  </header>
+  <main id="cards"></main>
+  <footer>视觉结论必须在 100% 原始细节下复核。此页面不代表公开 SDK、相机实时链路、设备性能或 v1.14 已获批准。</footer>
+  <script>
+    const root = '../../../';
+    const cards = [
+      {
+        id: '001a', title: '上眼睑色调/频率', verdict: 'PARTIAL · 对照胜出',
+        before: root + 'example-images/input/portraits/e6.jpg',
+        after: '../001-a-upper-lid-tone/artifacts/e6-release/after.png',
+        mask: '../001-a-upper-lid-tone/artifacts/e6-release/overlay.png',
+        text: '几何不动、纹理几乎完整保留，但样例没有真实“肿眼泡/上睑饱满”正例，无法证明产品语义。',
+        metrics: [['纹理能量比', '0.9996'], ['最大通道变化', '0.0667'], ['遮罩外变化', '0']]
+      },
+      {
+        id: '001b', title: '上眼睑局部形变', verdict: 'INVALIDATED',
+        before: root + 'example-images/input/portraits/e6.jpg',
+        after: '../001-b-upper-lid-warp/artifacts/e6-release/after.png',
+        mask: '../001-b-upper-lid-warp/artifacts/e6-release/overlay.png',
+        text: '边界固定且没有泄漏，但纹理能量下降约 7%，也没有比色调路线更清晰的“去脂”收益。',
+        metrics: [['纹理能量比', '0.9305'], ['最大通道变化', '0.1569'], ['遮罩外变化', '0']]
+      },
+      {
+        id: '002a', title: 'Vision + 颜色门控白牙', verdict: 'PARTIAL',
+        before: root + 'example-images/input/portraits/e6.jpg',
+        after: '../002-a-teeth-vision-color/artifacts/e6/after.png',
+        mask: '../002-a-teeth-vision-color/artifacts/e6/overlay.png',
+        text: '闭嘴与无脸能失败关闭，但宽笑只覆盖中央较亮牙齿，较暗侧牙覆盖不足。',
+        metrics: [['遮罩像素', '6,099'], ['最大通道变化', '0.0745'], ['遮罩外变化', '0']]
+      },
+      {
+        id: '002b', title: 'EasyPortrait Core ML 白牙', verdict: 'PARTIAL · 遮罩胜出/授权阻塞',
+        before: root + 'example-images/input/portraits/e6.jpg',
+        after: '../002-b-teeth-coreml/artifacts/e6-release/after.png',
+        mask: '../002-b-teeth-coreml/artifacts/e6-release/overlay.png',
+        text: '覆盖明显更完整，但非官方转换仓库无可见许可证；冷加载约 1.68 秒，模型不能进入仓库。',
+        metrics: [['遮罩像素', '9,572'], ['冷加载', '1,680.6 ms'], ['峰值 RSS', '197.8 MB']]
+      },
+      {
+        id: '003', title: '眼白红血丝局部遮罩', verdict: 'PARTIAL',
+        before: root + 'example-images/input/portraits/e6.jpg',
+        after: '../003-sclera-redness-mask/artifacts/e6-release/after.png',
+        mask: '../003-sclera-redness-mask/artifacts/e6-release/overlay.png',
+        text: '遮罩位于眼裂内并排除虹膜、瞳孔和高光；当前样例红血丝较弱，真实正例覆盖仍未证明。',
+        metrics: [['纹理能量比', '0.99993'], ['平均亮度变化', '-0.000025'], ['遮罩外变化', '0']]
+      },
+      {
+        id: '004', title: '白牙 + 眼白去红组合', verdict: 'PARTIAL · 变换机制通过',
+        before: root + 'example-images/input/portraits/e6.jpg',
+        after: '../004-local-color-retouch/artifacts/e6/after.png',
+        mask: '../004-local-color-retouch/artifacts/e6/overlay.png',
+        text: '两个不相交局部遮罩一次合成，不做全脸去色、不移动几何、不平滑皮肤。',
+        metrics: [['联合遮罩', '10,987 px'], ['最大通道变化', '0.0745'], ['遮罩外变化', '0']]
+      }
+    ];
+
+    const host = document.querySelector('#cards');
+    for (const item of cards) {
+      const article = document.createElement('article');
+      article.innerHTML = `
+        <div class="compare">
+          <div class="labels"><span>原图</span><span>输出</span></div>
+          <img src="${item.before}" alt="${item.title} 原图">
+          <img class="after" src="${item.after}" alt="${item.title} 输出">
+          <input aria-label="原图输出对比" type="range" min="0" max="100" value="50">
+        </div>
+        <section class="notes">
+          <p class="kicker">Spike ${item.id}</p>
+          <h2>${item.title}</h2>
+          <span class="verdict">${item.verdict}</span>
+          <p>${item.text}</p>
+          <div class="metric">${item.metrics.map(([k,v]) => `<span>${k}</span><strong>${v}</strong>`).join('')}</div>
+          <img class="mask" src="${item.mask}" alt="${item.title} 遮罩叠加">
+        </section>`;
+      const compare = article.querySelector('.compare');
+      article.querySelector('input').addEventListener('input', event => compare.style.setProperty('--pos', event.target.value + '%'));
+      host.appendChild(article);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "changedOutsideMask" : 0,
+  "changedPixels" : 7807,
+  "durationMilliseconds" : 122.94197082519531,
+  "faceCount" : 1,
+  "inputHeight" : 2304,
+  "inputWidth" : 1728,
+  "maskCoverage" : 0.002759643052340535,
+  "maskPixels" : 10987,
+  "maximumChannelDelta" : 0.07450980392156863,
+  "meanLuminanceDelta" : 0.009541129922058095,
+  "mode" : "integration",
+  "notes" : [
+    "Repeated 9 times after one Vision request; median color-pass time 2.647 ms.",
+    "This validates the isolated still-image harness only, not the public pixel-buffer path or realtime ownership.",
+    "Logs contain counts and timings only; raw coordinates, masks, and vein/teeth descriptors are absent."
+  ],
+  "peakResidentMegabytes" : 159.890625,
+  "supportPointCounts" : {
+    "innerLips" : 6,
+    "leftBrow" : 6,
+    "leftEye" : 6,
+    "pupils" : 2,
+    "rightBrow" : 6,
+    "rightEye" : 6
+  },
+  "textureEnergyRatio" : 1.0355590459395432
+}
