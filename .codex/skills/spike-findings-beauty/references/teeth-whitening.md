@@ -2,32 +2,59 @@
 
 ## Requirements
 
-- Separate teeth selection from the color transform.
-- `innerLips` is containment support, not a teeth label.
-- Closed mouth, no candidate, implausible candidate area, missing landmarks,
-  occlusion, or no face must fail closed.
-- Keep lip polygons, teeth masks, tensors, and geometry request-local and out of
-  public/persisted diagnostics.
+- Separate teeth selection from the bounded color transform.
+- Treat `innerLips` as high-confidence aperture support, not a complete teeth
+  label; the tested broad smile placed visible side teeth outside that polygon.
+- Closed mouth, missing seeds/landmarks, implausible mouth geometry or candidate
+  area, occlusion, and no face fail closed.
+- Keep lip polygons, teeth masks, candidate colors, tensors, and geometry
+  request-local and out of public or persisted diagnostics.
 - Do not vendor the tested EasyPortrait Core ML artifact unless the complete
   data/checkpoint/conversion/redistribution license chain is approved and pinned.
-- Product validation requires licensed real smiles and original-detail review.
+- Product validation requires rights-approved real smiles and original-detail
+  blind review through `references/licensed-fixture-evaluation.md`.
 
 ## How to Build It
 
-1. Define a private `TeethMaskProvider` boundary that consumes a still-image
+1. Define a private `TeethMaskProvider` that consumes a validated still-image
    request context and returns a request-local soft mask or a local no-op.
-2. Run Vision once and convert actual `innerLips` points to image coordinates.
-3. Use the inner-lip polygon as a hard containment envelope.
-4. Keep the deterministic mask as a fallback and executable safety baseline:
+2. Run Vision once and capture both `innerLips` and `outerLips` in image
+   coordinates. Missing either support set disables the adaptive provider.
+3. Build the fixed safety baseline inside a non-feathered `innerLips` polygon:
    combine luminance, saturation neutrality, and blue-floor scores, then reject
-   candidate ratios below 1.5% or above 94% of the inner-lip region.
-5. For product coverage, supply an owned or explicitly commercial-licensed
-   teeth segmenter. Pin its input size, orientation/crop contract, output name,
-   thresholding, feathering, model hash, provenance, and lifecycle ownership.
-6. Intersect every learned mask with mouth containment and validate lip, tongue,
-   gum, braces, and skin leakage before transformation.
-7. Apply whitening only inside the accepted mask. Reduce yellow excess, make a
-   small bounded luminance lift, then correct back toward the desired luminance:
+   candidate ratios below 1.5% or above 94%.
+4. Use accepted fixed-mask pixels above `0.15` as seeds. Never synthesize seeds
+   merely to improve coverage.
+5. Form the adaptive search envelope from the `outerLips` polygon, clipped to a
+   narrow vertical extension of the inner aperture. The experiment used a 10%
+   inner-aperture-height margin:
+
+```swift
+var region = try polygonMask(points: outerLips, featherRadius: 0)
+let innerMinY = innerLips.map(\.y).min()!
+let innerMaxY = innerLips.map(\.y).max()!
+let margin = max(1, (innerMaxY - innerMinY) * 0.10)
+for index in region.indices where region[index] > 0 {
+    let y = Double(index / width) + 0.5
+    if y < innerMinY - margin || y > innerMaxY + margin {
+        region[index] = 0
+    }
+}
+```
+
+6. Derive local candidate limits from the mouth rather than one global shade:
+   use an Otsu luminance split plus seed luminance/saturation percentiles, then
+   gate red/green and red/blue imbalance. Treat all coefficients as spike seeds,
+   not product constants.
+7. Flood eight-connected candidates starting from the fixed seeds. Keep only
+   connected pixels, feather locally, clip back to the narrow envelope, preserve
+   every accepted fixed pixel with `max(adaptive, fixed)`, and enforce the same
+   1.5%–94% plausibility range. Any failed invariant returns an empty mask.
+8. Keep the approved/pinned learned segmenter as a comparator, not a hidden
+   dependency. It must beat the adaptive path on licensed positives and
+   negatives after containment, cold-start, memory, and license review.
+9. Apply whitening only inside the accepted mask. Reduce yellow excess, add a
+   small bounded luminance lift, and correct toward the desired luminance:
 
 ```swift
 let local = mask[index] * strength
@@ -43,43 +70,51 @@ nextGreen += correction
 nextBlue += correction
 ```
 
-8. Measure mask coverage, `changedOutsideMask`, maximum channel delta, mean
-   luminance delta, texture energy, Vision/model timings, cold start, and peak
-   RSS in release on target devices.
-9. Build a licensed evaluation matrix covering wide and small smiles, darker
-   side teeth, yellow/gray tooth shades, lips, tongue, gums, braces, occlusion,
-   facial hair, closed mouths, pose, blur, compression, skin tone, and lighting.
+10. Compare fixed and adaptive masks on the same input. Require zero dropped
+    strong baseline pixels, zero outside-mask changes, closed-mouth/no-face
+    failure, and human judgments for side-tooth coverage and protected tissue.
+11. Evaluate wide/small smiles, darker side teeth, yellow/gray shades, lip,
+    tongue, gum, braces, occlusion, facial hair, closed mouth, pose, blur,
+    compression, skin tone, and lighting using rights-approved fixtures.
 
-The deterministic spike changed zero protected pixels and failed closed for a
-closed mouth/no face, but captured only 6,099 mask pixels on the broad smile.
-The learned candidate captured 9,572 and visibly improved side-tooth coverage.
+The adaptive mechanics run increased strong coverage from 4,711 to 7,396 pixels
+on e6 (+57.0%) and from 462 to 805 on e2 (+74.2%), dropped zero fixed pixels,
+changed zero pixels outside its mask, and stayed empty on e3/no-face. These are
+AI-fixture mechanics results, not product coverage evidence.
 
 ## What to Avoid
 
-- Do not treat the whole `innerLips` polygon as teeth.
+- Do not treat the whole `innerLips` or `outerLips` polygon as teeth.
+- Do not use Otsu or an adaptive threshold alone; it cannot distinguish lip,
+  tongue, or gum from teeth.
+- Do not repeat the rejected full-outer-lip growth path: it visibly selected an
+  upper-lip strip before the vertical envelope was added.
+- Do not relax fail-closed geometry/area gates merely to increase coverage.
 - Do not globally desaturate or brighten the face or mouth.
-- Do not relax the fail-closed gates merely to increase coverage.
 - Do not load a Core ML model per request; the research candidate showed a
   1,680.6 ms cold load versus 21.4 ms warm load and 15.8 ms warm inference.
-- Do not copy or redistribute `john-rocky/easyportrait-coreml`; the repository
+- Do not copy or redistribute `john-rocky/easyportrait-coreml`; its repository
   exposed no license during the audit and upstream uses a custom license PDF.
-- Do not interpret a clean AI-generated smile as demographic or product proof.
+- Do not interpret two clean AI-generated smiles as demographic or product proof.
 
 ## Constraints
 
-- Vision `innerLips` has six points in the tested fixtures and supplies coarse
-  containment, not tooth-level boundaries.
-- The deterministic mask is `PARTIAL`: safe but incomplete.
-- The tested Core ML mask is `PARTIAL`: technically better but license and
-  cold-start/resource blocked. The high-resolution cold run reached 197.8 MB
-  peak RSS.
-- `model-audit.txt` pins the research commit and hashes without copying weights.
+- Vision `innerLips` had six points and `outerLips` fourteen in the tested
+  fixtures; both are coarse support, not tooth-level labels.
+- The fixed path is `PARTIAL`: safe but incomplete. The adaptive path is also
+  `PARTIAL`: it wins the mechanics comparison but lacks licensed protected-
+  tissue and population review.
+- The EasyPortrait mask remains `PARTIAL`: technically broader but license,
+  conversion, cold-start, and resource blocked. The high-resolution cold run
+  reached 197.8 MB peak RSS.
+- The adaptive numeric thresholds are experimental calibration seeds.
 - The color transform is reusable only behind a validated mask provider.
 
 ## Origin
 
-Synthesized from spikes: 002a, 002b, 004
+Synthesized from spikes: 002a, 002b, 004, 009
 
 Source files available in:
 `sources/002a-teeth-vision-color/`, `sources/002b-teeth-coreml/`,
-`sources/004-local-color-retouch/`, and `sources/shared-retouch-lab/`.
+`sources/004-local-color-retouch/`, `sources/009-adaptive-teeth-mask/`, and
+`sources/shared-retouch-lab/`.

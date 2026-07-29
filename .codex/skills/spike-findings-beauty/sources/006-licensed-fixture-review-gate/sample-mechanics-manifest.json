@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "dataset": {
+    "dataset_id": "beauty_spike_mechanics_20260729",
+    "documentation_record_id": "docs_mechanics_only_001",
+    "intended_use": "internal_product_evaluation",
+    "retention_policy": "Local spike assets only; do not promote to product evidence."
+  },
+  "fixtures": [
+    {
+      "fixture_id": "teeth_positive_ai_001",
+      "feature": "teeth_whitening",
+      "polarity": "positive",
+      "rights_status": "mechanics_only",
+      "rights_record_id": "mechanics_only_ai_fixture",
+      "assets": {
+        "original": "assets/teeth-positive-original.jpg",
+        "mask": "assets/teeth-positive-mask.png",
+        "after": "assets/teeth-positive-after.png"
+      }
+    },
+    {
+      "fixture_id": "teeth_negative_ai_001",
+      "feature": "teeth_whitening",
+      "polarity": "negative",
+      "rights_status": "mechanics_only",
+      "rights_record_id": "mechanics_only_ai_fixture",
+      "assets": {
+        "original": "assets/teeth-negative-original.jpg",
+        "mask": "assets/teeth-negative-mask.png",
+        "after": "assets/teeth-negative-after.png"
+      }
+    }
+  ]
+}

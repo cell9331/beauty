@@ -27,10 +27,26 @@
 ## 3. Active
 
 No active plan. No product milestone is active; v1.13 remains shipped and the
-completed local-retouch frontier does not authorize v1.14 or any new feature
-scope.
+completed spike wrap-up does not authorize v1.14 or any new feature scope.
 
 ## 4. Completed
+
+### C-2026-07-29-local-retouch-frontier-wrap-up-006-009-010
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-29 |
+| Scope | Appended completed Spikes 006, 009, and 010 to the project-local `spike-findings-beauty` implementation blueprint without changing production source, API, feature inventory, milestone scope, or runtime behavior. |
+| Outputs | Added the licensed-fixture evaluation reference and exact 006 source; updated teeth and sclera references with adaptive growth, rejected full-envelope leakage, jitter safety, fail-closed calibration, and exact 009/010 sources; refreshed the exact shared Swift harness, skill index, wrap-up summary, and recurring conventions. |
+| Knowledge shape | The skill now covers ten processed spikes across five feature areas. Deterministic adaptive teeth may proceed to licensed review; the original sclera circle is an explicit landmine; the 0.30/0.14 guard is a calibration seed; mechanics and rights-approved evidence use separate gates. |
+| Verification | Twelve copied core files compare byte-for-byte with their spike owners; the copied Swift package builds in release using an external scratch path and passes 13/13 self-tests; the copied review core passes 9/9; copied JavaScript/JSON parse; processed inventory is 10/10; five references contain all blueprint sections; AGENTS route count is one; runtime network, generated-directory, media/model/binary, production-boundary, skill-frontmatter, source-path, and diff-hygiene checks pass. |
+| Boundary | No raw fixture media, review output, model/weight, build artifact, product code, public contract, realtime claim, or v1.14 activation was packaged. |
+
+Outcome:
+
+- Future teeth, sclera, local-mask, or fixture-evaluation planning will auto-load the updated project skill and see both the proven mechanics and rejected candidates.
+- `去脂` remains future; white-teeth and sclera-redness product planning remains gated on rights-approved positive/negative original-detail review.
+- The next material action is acquiring and documenting licensed real fixtures, not adding another algorithm or activating a milestone.
 
 ### C-2026-07-29-local-retouch-frontier-006-009-010
 

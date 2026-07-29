@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://beauty.invalid/spikes/licensed-fixture-manifest.schema.json",
+  "title": "Beauty local-retouch licensed fixture manifest",
+  "type": "object",
+  "required": ["schema_version", "dataset", "fixtures"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 1 },
+    "dataset": {
+      "type": "object",
+      "required": ["dataset_id", "documentation_record_id", "intended_use", "retention_policy"],
+      "additionalProperties": false,
+      "properties": {
+        "dataset_id": { "$ref": "#/$defs/opaqueID" },
+        "documentation_record_id": { "$ref": "#/$defs/opaqueID" },
+        "intended_use": { "const": "internal_product_evaluation" },
+        "retention_policy": { "type": "string", "minLength": 3 }
+      }
+    },
+    "fixtures": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["fixture_id", "feature", "polarity", "rights_status", "rights_record_id", "assets"],
+        "additionalProperties": false,
+        "properties": {
+          "fixture_id": { "$ref": "#/$defs/opaqueID" },
+          "feature": { "enum": ["teeth_whitening", "sclera_redness", "upper_eyelid_fullness"] },
+          "polarity": { "enum": ["positive", "negative"] },
+          "rights_status": { "enum": ["approved_internal_evaluation", "mechanics_only", "rejected"] },
+          "rights_record_id": { "$ref": "#/$defs/opaqueID" },
+          "assets": {
+            "type": "object",
+            "required": ["original", "mask", "after"],
+            "additionalProperties": false,
+            "properties": {
+              "original": { "$ref": "#/$defs/relativePath" },
+              "mask": { "$ref": "#/$defs/relativePath" },
+              "after": { "$ref": "#/$defs/relativePath" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "opaqueID": { "type": "string", "pattern": "^[A-Za-z0-9_-]{1,64}$" },
+    "relativePath": { "type": "string", "minLength": 1, "not": { "pattern": "(^[\\/]|\\.\\.|:|\\\\)" } }
+  }
+}

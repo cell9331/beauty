@@ -17,6 +17,8 @@ New spikes follow these unless the question requires otherwise.
   `events.json`; multi-mask passes may add named mask PNGs.
 - Comparison candidates share a number with `a`/`b` suffixes and use the same
   fixtures and support mask whenever possible.
+- Visually judged comparisons include a local `review.html`; binary media stays
+  disposable/ignored while source, aggregate metrics, and commands stay tracked.
 
 ## Patterns
 
@@ -29,6 +31,12 @@ New spikes follow these unless the question requires otherwise.
   logs contain aggregate counts and timings only.
 - AI-generated fixtures prove mechanics only. Product-feasibility verdicts need
   licensed real positive/negative fixtures and human original-detail review.
+- When selection expands beyond high-confidence landmark support or depends on
+  uncertain landmarks, compare against the fixed baseline, exercise the
+  geometric envelope independently of downstream color gates, preserve accepted
+  baseline pixels or fail closed, and measure protected-region leakage.
+- Mechanics fixtures and rights-approved product evidence use separate explicit
+  gate states; a valid mechanics bundle must never open the product gate.
 - External models stay outside the repository until their dataset, checkpoint,
   conversion, and redistribution license chain is approved and pinned.
 
@@ -36,5 +44,7 @@ New spikes follow these unless the question requires otherwise.
 
 - Swift Package Manager and Apple frameworks only for the shared harness.
 - `jq` validates metric and event schemas.
+- A static browser/File API reviewer is the preferred local evidence surface;
+  it must not upload media or add a server/network retention boundary.
 - External Core ML artifacts may be loaded by path for research, but must not be
   copied into the repository before legal and provenance approval.

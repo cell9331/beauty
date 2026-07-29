@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>自适应牙齿遮罩 · 固定基线对照</title>
+  <style>
+    :root { color-scheme: dark; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #0a0c0f; color: #f3f0e8; }
+    header, main { width: min(1240px, calc(100% - 36px)); margin: 0 auto; }
+    header { padding: 44px 0 22px; display: grid; gap: 20px; }
+    h1 { margin: 0; max-width: 850px; font-size: clamp(34px, 6vw, 64px); line-height: .98; letter-spacing: -.055em; }
+    p { margin: 0; max-width: 850px; color: #aba8a1; line-height: 1.65; }
+    .status { display: flex; flex-wrap: wrap; gap: 9px; }
+    .pill { border: 1px solid #343940; border-radius: 999px; padding: 8px 11px; background: #15191e; color: #c9c5bc; font-size: 12px; }
+    .pill.good { border-color: #285b42; color: #9be0b4; background: #12271c; }
+    nav { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+    button { border: 1px solid #343940; border-radius: 11px; padding: 10px 14px; background: #14181d; color: #dedad1; cursor: pointer; font: inherit; }
+    button[aria-selected="true"] { background: #f16f50; color: #160e0b; border-color: #f16f50; font-weight: 750; }
+    .summary { margin-bottom: 16px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border: 1px solid #292e35; border-radius: 16px; overflow: hidden; background: #12161a; }
+    .metric { padding: 15px; border-right: 1px solid #292e35; }
+    .metric:last-child { border-right: 0; }
+    .metric span { display: block; color: #8f928f; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+    .metric strong { display: block; margin-top: 7px; font-size: 22px; }
+    .compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    article { border: 1px solid #292e35; border-radius: 18px; overflow: hidden; background: #111519; }
+    article header { width: auto; padding: 16px 18px; display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid #292e35; }
+    h2 { margin: 0; font-size: 18px; }
+    article header span { color: #959791; font-size: 12px; }
+    .stage { aspect-ratio: 4 / 3; background: #050607; }
+    .stage img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px; }
+    .modes button { padding: 8px; font-size: 12px; }
+    .note { margin: 16px 0 44px; padding: 16px 18px; border-left: 3px solid #e2b252; background: #19170f; color: #c7b98e; line-height: 1.6; }
+    code { color: #f2aa91; }
+    @media (max-width: 780px) { .summary { grid-template-columns: 1fr 1fr; } .metric { border-bottom: 1px solid #292e35; } .compare { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>固定孔径，还是自适应扩展？</h1>
+      <p>同一张输入、同一颜色修饰，只比较遮罩。红色覆盖应从中央牙齿扩展到相连的侧牙，同时避开唇、舌与牙龈。所有图像均从本地 artifacts 读取。</p>
+    </div>
+    <div class="status"><span class="pill good">0 dropped strong pixels</span><span class="pill good">closed mouth → zero</span><span class="pill good">no-face → exit 1</span><span class="pill">mechanics only</span></div>
+    <nav aria-label="Fixture">
+      <button data-fixture="e6" aria-selected="true">e6 · wide smile</button>
+      <button data-fixture="e2" aria-selected="false">e2 · smile</button>
+      <button data-fixture="e3" aria-selected="false">e3 · closed mouth</button>
+    </nav>
+  </header>
+  <main>
+    <section class="summary" aria-label="Metrics">
+      <div class="metric"><span>Fixed strong</span><strong id="fixedMetric">4,711</strong></div>
+      <div class="metric"><span>Adaptive strong</span><strong id="adaptiveMetric">7,396</strong></div>
+      <div class="metric"><span>Added</span><strong id="addedMetric">+2,685</strong></div>
+      <div class="metric"><span>Dropped</span><strong id="droppedMetric">0</strong></div>
+      <div class="metric"><span>Outside changes</span><strong id="outsideMetric">0 / 0</strong></div>
+    </section>
+    <section class="compare">
+      <article data-side="fixed">
+        <header><h2>Fixed baseline</h2><span>Vision innerLips + absolute color</span></header>
+        <div class="stage"><img id="fixedImage" src="artifacts/e6/fixed-overlay.png" alt="Fixed mask overlay"></div>
+        <div class="modes"><button data-view="overlay" aria-selected="true">Overlay</button><button data-view="mask" aria-selected="false">Mask</button><button data-view="after" aria-selected="false">After</button></div>
+      </article>
+      <article data-side="adaptive">
+        <header><h2>Adaptive candidate</h2><span>local threshold + seeded connectivity</span></header>
+        <div class="stage"><img id="adaptiveImage" src="artifacts/e6/adaptive-overlay.png" alt="Adaptive mask overlay"></div>
+        <div class="modes"><button data-view="overlay" aria-selected="true">Overlay</button><button data-view="mask" aria-selected="false">Mask</button><button data-view="after" aria-selected="false">After</button></div>
+      </article>
+    </section>
+    <aside class="note"><strong>判读边界：</strong> e6/e2 是 AI 生成机制样例，不是产品人群证据。此页能证明扩展路径和闭口失败机制；唇、舌、牙龈、牙套、遮挡与肤色范围仍需通过 <code>Spike 006</code> 的授权真图盲审门。</aside>
+  </main>
+  <script>
+    (() => {
+      "use strict";
+      const fixtures = {
+        e6: { fixed: "4,711", adaptive: "7,396", added: "+2,685", dropped: "0", outside: "0 / 0" },
+        e2: { fixed: "462", adaptive: "805", added: "+343", dropped: "0", outside: "0 / 0" },
+        e3: { fixed: "0", adaptive: "0", added: "0", dropped: "0", outside: "0 / 0" },
+      };
+      let fixture = "e6";
+      const views = { fixed: "overlay", adaptive: "overlay" };
+      const $ = (id) => document.getElementById(id);
+      function render() {
+        const value = fixtures[fixture];
+        $("fixedMetric").textContent = value.fixed;
+        $("adaptiveMetric").textContent = value.adaptive;
+        $("addedMetric").textContent = value.added;
+        $("droppedMetric").textContent = value.dropped;
+        $("outsideMetric").textContent = value.outside;
+        for (const side of ["fixed", "adaptive"]) {
+          $(side + "Image").src = `artifacts/${fixture}/${side}-${views[side]}.png`;
+          document.querySelectorAll(`[data-side="${side}"] [data-view]`).forEach((button) => {
+            button.setAttribute("aria-selected", String(button.dataset.view === views[side]));
+          });
+        }
+        document.querySelectorAll("[data-fixture]").forEach((button) => {
+          button.setAttribute("aria-selected", String(button.dataset.fixture === fixture));
+        });
+      }
+      document.querySelectorAll("[data-fixture]").forEach((button) => button.addEventListener("click", () => {
+        fixture = button.dataset.fixture;
+        render();
+      }));
+      document.querySelectorAll("[data-side]").forEach((card) => card.querySelectorAll("[data-view]").forEach((button) => button.addEventListener("click", () => {
+        views[card.dataset.side] = button.dataset.view;
+        render();
+      })));
+      render();
+    })();
+  </script>
+</body>
+</html>

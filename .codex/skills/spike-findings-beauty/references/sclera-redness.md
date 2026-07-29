@@ -3,30 +3,52 @@
 ## Requirements
 
 - Require actual eye-contour and pupil support for each processed eye.
-- Missing/inaccurate/blinking/closed/occluded support fails closed per eye.
-- Protect iris, pupil, lashes, skin, and specular highlights.
-- Keep eye geometry, pupil position, raw sclera masks, and vein-like structure
-  request-local; diagnostics contain aggregates only.
-- Product validation requires licensed real redness positives and negatives.
+- Missing, inaccurate, blinking, closed, collapsed, occluded, or pupil-outside-
+  aperture support fails closed per eye.
+- Protect iris, pupil, lashes, skin, and specular highlights before evaluating
+  color; never rely on a dark iris failing the redness gate as safety proof.
+- Keep eye geometry, pupil position, raw sclera masks, perturbations, heatmaps,
+  and vein-like structure request-local; diagnostics contain aggregates only.
+- Product validation and guard calibration require rights-approved real redness
+  positives/negatives and original-detail review through
+  `references/licensed-fixture-evaluation.md`.
 
 ## How to Build It
 
 1. Run Vision once for the still image and retain a private request-local face
-   context.
-2. Rasterize each observed eye contour into a soft aperture mask.
-3. Require its pupil point. Estimate a conservative iris exclusion radius from
-   both aperture height and width:
+   context. Validate the left and right eyes independently.
+2. Rasterize each observed eye contour into an aperture mask and require its
+   pupil. Reject malformed or collapsed geometry rather than guessing support.
+3. Treat the original pupil-centered formula as a baseline, not a sufficient
+   production safety boundary:
 
 ```swift
 let eyeWidth = maxEyeX - minEyeX
 let eyeHeight = maxEyeY - minEyeY
+let baselineRadius = max(eyeHeight * 0.58, eyeWidth * 0.16)
+```
+
+4. Before any color score, apply a per-eye landmark guard. The proven mechanism
+   checks aperture aspect ratio and pupil containment, then inflates the iris
+   exclusion for accepted eyes:
+
+```swift
+guard eye.count >= 4, eyeWidth >= 2, eyeHeight > 0 else { return emptyMask }
+guard eyeHeight / eyeWidth >= calibratedMinimumAspectRatio,
+      pointInPolygon(pupil, polygon: eye)
+else { return emptyMask }
+
 let irisRadius = max(eyeHeight * 0.58, eyeWidth * 0.16)
+    + eyeWidth * calibratedUncertaintyFraction
 guard distance(pixelCenter, pupil) > irisRadius else { continue }
 ```
 
-4. Reject near-white specular highlights rather than shifting them.
-5. Inside the remaining aperture, combine a light/low-saturation sclera score
-   with a bounded red-excess score:
+5. Do not copy the experimental `0.30` aspect and `0.14` width values into
+   production. Calibrate them on licensed open/partial/blink and gaze data while
+   preserving zero protected leakage and measuring useful sclera retention.
+6. Reject near-white specular highlights before redness scoring.
+7. Inside the accepted geometric envelope, combine a light/low-saturation
+   sclera score with a bounded red-excess score:
 
 ```swift
 let scleraLikelihood = smoothstep(0.22, 0.68, light)
@@ -36,8 +58,9 @@ let rednessScore = smoothstep(0.008, 0.14, redness)
 mask[index] = aperture[index] * scleraLikelihood * rednessScore
 ```
 
-6. Feather the accepted mask locally. Never expand beyond the eye aperture.
-7. Reduce only the measured red excess, add a small compensating green/blue
+8. Feather locally without expanding beyond the guarded aperture. Compose only
+   accepted per-eye masks.
+9. Reduce only measured red excess, add a small compensating green/blue
    component, and restore original luminance:
 
 ```swift
@@ -49,39 +72,57 @@ var nextBlue = blue + redExcess * 0.13 * local
 let correction = originalLuminance - luminance(nextRed, nextGreen, nextBlue)
 ```
 
-8. Validate each eye separately and compose only accepted masks. Measure
-   protected-region leakage, luminance, texture, channel delta, mask coverage,
-   and release/device cost.
-9. Evaluate mild/severe redness, visible vessels, glasses, contacts, blink,
-   partial closure, makeup, lashes, blue/brown irises, side pose, low light,
-   highlights, blur, compression, and demographic/illumination diversity.
+10. Add a color-independent geometric safety oracle. Build an eligibility
+    envelope with the redness gate deliberately open, perturb pupil/contour
+    support, and compare every candidate against an unperturbed protected iris
+    plus input-derived highlight mask. The downstream color gate must never be
+    allowed to hide geometric leakage.
+11. Sweep horizontal/vertical pupil uncertainty and eye-height collapse. Record
+    aggregate scenario count, protected-leak scenarios/pixels, fail-closed
+    count, baseline eligibility, and retention; persist no coordinates.
+12. Evaluate mild/severe redness, vessels, glasses, contacts, blink, partial
+    closure, gaze, makeup, lashes, blue/brown irises, pose, low light,
+    highlights, blur, compression, and demographic/illumination diversity.
 
-The spike reported zero outside-mask changes, texture-energy ratios of 0.99993
-and 0.99955, and almost unchanged mean luminance on its two fixtures.
+The bounded grid showed why the guard is mandatory: the unguarded geometric
+envelope entered the protected iris in 118/120 scenarios on each of e6/e2/e3.
+The experimental guard produced zero iris/highlight leaks across 360 combined
+scenarios, but failed closed in 270 and retained only 28.6%–32.2% of baseline
+geometric eligibility. This validates the safety mechanism while leaving user
+calibration and useful coverage open.
 
 ## What to Avoid
 
-- Do not treat the whole eye aperture as sclera.
-- Do not edit within the pupil-centered iris exclusion.
-- Do not use global red-channel suppression or skin-based color normalization.
-- Do not guess a pupil when Vision support is absent or unreliable.
-- Do not log, cache, publish, or persist raw vessel-like masks or descriptors.
-- Do not claim redness coverage from fixtures that contain only weak positives.
+- Do not promote the original pupil circle unchanged; its clean static-fixture
+  appearance did not survive landmark perturbation.
+- Do not evaluate only the final redness mask as a safety oracle. Dark iris
+  pixels can conceal unsafe geometry by receiving a low redness score.
+- Do not treat the whole eye aperture as sclera or edit inside the guarded iris
+  exclusion.
+- Do not guess, reuse, or carry forward a pupil when support is absent or the
+  eye is blinking/collapsed.
+- Do not hardcode the spike's `0.30 / 0.14` guard as a user threshold.
+- Do not use global red-channel suppression or skin-based normalization.
+- Do not log, cache, publish, or persist vessel-like masks or descriptors.
+- Do not claim redness coverage from weak-positive or AI-generated fixtures.
 
 ## Constraints
 
-- Apple warns pupil landmarks may be inaccurate during a blink; fail closed.
-- The mask/transform mechanics are `PARTIAL`: containment is proven, real
-  positive coverage and naturalness are not.
-- The 1728×2304 release transform took 65.3 ms after detection in the spike;
-  this is macOS harness evidence, not an iOS device budget.
+- Apple warns pupil landmarks may be inaccurate during a blink; failure must be
+  local to the affected eye.
+- The original mask/color mechanics remain `PARTIAL`; real redness coverage and
+  naturalness are unproven.
+- The deterministic jitter envelope is narrowly `VALIDATED` for its bounded
+  grid, not for population thresholds, useful coverage, or product readiness.
+- The 1728×2304 release transform took 65.3 ms after detection in the original
+  harness; this is macOS evidence, not an iOS device budget.
 - Sclera vasculature may be identifying, so privacy treatment is stricter than
   ordinary transient color masks.
 
 ## Origin
 
-Synthesized from spikes: 003, 004
+Synthesized from spikes: 003, 004, 010
 
 Source files available in:
-`sources/003-sclera-redness-mask/`, `sources/004-local-color-retouch/`, and
-`sources/shared-retouch-lab/`.
+`sources/003-sclera-redness-mask/`, `sources/004-local-color-retouch/`,
+`sources/010-sclera-jitter-envelope/`, and `sources/shared-retouch-lab/`.
