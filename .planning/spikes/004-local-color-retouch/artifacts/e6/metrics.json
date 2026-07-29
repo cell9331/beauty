@@ -1,0 +1,27 @@
+{
+  "changedOutsideMask" : 0,
+  "changedPixels" : 7807,
+  "durationMilliseconds" : 151.6399383544922,
+  "faceCount" : 1,
+  "inputHeight" : 2304,
+  "inputWidth" : 1728,
+  "maskCoverage" : 0.002759643052340535,
+  "maskPixels" : 10987,
+  "maximumChannelDelta" : 0.07450980392156863,
+  "meanLuminanceDelta" : 0.009541129922058095,
+  "mode" : "combined-color",
+  "notes" : [
+    "Teeth and sclera corrections compose once over disjoint request-local masks.",
+    "The experiment intentionally excludes upper-lid work from the shared color pass."
+  ],
+  "peakResidentMegabytes" : 175.328125,
+  "supportPointCounts" : {
+    "innerLips" : 6,
+    "leftBrow" : 6,
+    "leftEye" : 6,
+    "pupils" : 2,
+    "rightBrow" : 6,
+    "rightEye" : 6
+  },
+  "textureEnergyRatio" : 1.0355590459395432
+}

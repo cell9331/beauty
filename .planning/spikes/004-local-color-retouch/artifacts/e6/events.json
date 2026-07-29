@@ -1,0 +1,33 @@
+[
+  {
+    "category" : "start",
+    "message" : "experiment started",
+    "metadata" : {
+      "mode" : "combined-color"
+    },
+    "timestamp" : "2026-07-29T06:52:50Z"
+  },
+  {
+    "category" : "detection",
+    "message" : "request-local landmark support captured",
+    "metadata" : {
+      "durationMs" : "60.424",
+      "faces" : "1",
+      "innerLipCount" : "6",
+      "leftEyeCount" : "6",
+      "rightEyeCount" : "6"
+    },
+    "timestamp" : "2026-07-29T06:52:50Z"
+  },
+  {
+    "category" : "result",
+    "message" : "experiment completed",
+    "metadata" : {
+      "changedOutsideMask" : "0",
+      "changedPixels" : "7807",
+      "durationMs" : "151.640",
+      "maskPixels" : "10987"
+    },
+    "timestamp" : "2026-07-29T06:52:51Z"
+  }
+]
