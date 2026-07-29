@@ -27,10 +27,27 @@
 ## 3. Active
 
 No product milestone or feasibility plan is active. v1.13 remains shipped;
-the completed local-retouch spikes below do not authorize v1.14 or any other
-new feature scope.
+the completed local-retouch spikes and packaged blueprint below do not
+authorize v1.14 or any other new feature scope.
 
 ## 4. Completed
+
+### C-2026-07-29-local-retouch-spike-wrap-up
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-29 |
+| Scope | Packaged all seven unprocessed local-retouch spikes into the project-local `spike-findings-beauty` implementation-blueprint skill without changing production source, public API, feature ledgers, milestone scope, or runtime behavior. |
+| Outputs | `.codex/skills/spike-findings-beauty/SKILL.md`; four feature-area references; exact copies of seven spike READMEs, the Core ML provenance audit, the visual-review source, and the shared Swift package; `.planning/spikes/WRAP-UP-SUMMARY.md`; and one AGENTS auto-load route. |
+| Knowledge shape | Upper-eyelid tone and invalidated warp are grouped as one constrained area; deterministic/learned teeth masks as one license-gated area; sclera masking as one privacy-sensitive area; local color and request integration as the validated still-image foundation. |
+| Conventions | Re-read all spike source and findings; the existing Swift 6, Apple-framework, release-metric, request-local-mask, aggregate-log, real-fixture, and external-model rules remain current with no contradictory newer pattern. |
+| Verification | All preserved sources compare byte-for-byte with their spike originals; every reference contains Requirements/How to Build/What to Avoid/Constraints/Origin; processed-spike count is 7; AGENTS route count is 1; no pending verdict, model/weight, or build artifact is packaged; copied review JavaScript parses; copied Swift package builds in release and self-tests pass 7/7; `git diff --check` passes. |
+
+Outcome:
+
+- Future implementation conversations can auto-load the exact non-negotiable gates, proven formulas, rejected warp, privacy rules, measured baselines, and preserved source without re-spiking.
+- The generated blueprint explicitly keeps `去脂` future, the EasyPortrait port research-only, real licensed fixtures mandatory, and all current evidence within the still-image boundary.
+- No milestone is active; frontier exploration, implementation planning, fixture acquisition, and model/legal approval remain separate explicit next actions.
 
 ### C-2026-07-29-v1-14-local-retouch-feasibility-spikes
 

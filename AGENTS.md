@@ -53,6 +53,8 @@ QUALITY_SCORE.md                  覆盖率、质量分与文档巡检规则
 | 计划推进、完成记录、技术债 | `PLANS.md` |
 | 测试覆盖、质量扫描、自动修复目标 | `QUALITY_SCORE.md` |
 
+- **Spike findings for beauty** (implementation patterns, constraints, gotchas) → `Skill("spike-findings-beauty")`
+
 ## 5. 历史资料
 
 `docs/README.md` 是长文档入口。当前可参考：
