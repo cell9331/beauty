@@ -40,7 +40,7 @@ Checklist:
 
 - [x] Record the selected frontier definitions and risk order.
 - [x] Build and verify the offline rights/asset/review/export gate.
-- [ ] Compare adaptive and fixed deterministic teeth masks, including negative cases.
+- [x] Compare adaptive and fixed deterministic teeth masks, including negative cases.
 - [ ] Quantify baseline and guarded sclera masks across deterministic support perturbations.
 - [ ] Record verdicts, refresh conventions if a pattern repeats, and close without activating v1.14.
 

@@ -1,0 +1,43 @@
+{
+  "adaptive" : {
+    "changedOutsideMask" : 0,
+    "changedPixels" : 1033,
+    "durationMilliseconds" : 4.5719146728515625,
+    "maskPixels" : 1063,
+    "maximumChannelDelta" : 0.058823529411764705,
+    "meanLuminanceDelta" : 0.010972047739840568,
+    "strongMaskPixels" : 805,
+    "textureEnergyRatio" : 1.0340157522130025
+  },
+  "adaptiveAddedPixels" : 343,
+  "adaptiveDroppedPixels" : 0,
+  "adaptiveStrongAreaRatio" : 0.4219077568134172,
+  "faceCount" : 1,
+  "fixed" : {
+    "changedOutsideMask" : 0,
+    "changedPixels" : 606,
+    "durationMilliseconds" : 5.030035972595215,
+    "maskPixels" : 608,
+    "maximumChannelDelta" : 0.058823529411764705,
+    "meanLuminanceDelta" : 0.012262370304587187,
+    "strongMaskPixels" : 462,
+    "textureEnergyRatio" : 1.0458856520943478
+  },
+  "innerLipPointCount" : 6,
+  "innerLipRegionPixels" : 608,
+  "inputHeight" : 900,
+  "inputWidth" : 506,
+  "mode" : "teeth-compare",
+  "mouthCandidateRegionPixels" : 1908,
+  "notes" : [
+    "The fixed mask is clipped to Vision inner-lip support; the adaptive path searches only inside an outer-lip-contained horizontal extension of the inner-lip aperture.",
+    "The adaptive path uses the fixed high-confidence mask as seeds, derives local brightness/chroma limits, and retains only connected candidates before compositing.",
+    "An empty fixed seed set, implausible region, or implausible adaptive area fails closed.",
+    "AI-generated fixtures validate mechanics only; useful coverage and protected-tissue judgments require licensed real review."
+  ],
+  "outerLipPointCount" : 14,
+  "peakResidentMegabytes" : 49.984375,
+  "strongIntersectionPixels" : 462,
+  "strongMaskIoU" : 0.5739130434782609,
+  "strongUnionPixels" : 805
+}

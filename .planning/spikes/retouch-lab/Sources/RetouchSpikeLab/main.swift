@@ -28,6 +28,7 @@ private struct FaceAnchors: Sendable {
     let leftBrow: [Point]
     let rightBrow: [Point]
     let innerLips: [Point]
+    let outerLips: [Point]
 }
 
 private struct LabEvent: Codable, Sendable {
@@ -51,6 +52,38 @@ private struct ExperimentMetrics: Codable, Sendable {
     let meanLuminanceDelta: Double
     let textureEnergyRatio: Double?
     let durationMilliseconds: Double
+    let peakResidentMegabytes: Double
+    let notes: [String]
+}
+
+private struct TeethVariantMetrics: Codable, Sendable {
+    let maskPixels: Int
+    let strongMaskPixels: Int
+    let changedPixels: Int
+    let changedOutsideMask: Int
+    let maximumChannelDelta: Double
+    let meanLuminanceDelta: Double
+    let textureEnergyRatio: Double?
+    let durationMilliseconds: Double
+}
+
+private struct TeethComparisonMetrics: Codable, Sendable {
+    let mode: String
+    let inputWidth: Int
+    let inputHeight: Int
+    let faceCount: Int
+    let innerLipPointCount: Int
+    let outerLipPointCount: Int
+    let innerLipRegionPixels: Int
+    let mouthCandidateRegionPixels: Int
+    let fixed: TeethVariantMetrics
+    let adaptive: TeethVariantMetrics
+    let adaptiveAddedPixels: Int
+    let adaptiveDroppedPixels: Int
+    let strongIntersectionPixels: Int
+    let strongUnionPixels: Int
+    let strongMaskIoU: Double
+    let adaptiveStrongAreaRatio: Double
     let peakResidentMegabytes: Double
     let notes: [String]
 }
@@ -218,7 +251,11 @@ private enum RetouchSpikeLab {
             let parsed = try ParsedArguments(Array(CommandLine.arguments.dropFirst()))
             if parsed.mode == "self-test" {
                 try runSelfTests()
-                print("SELF-TEST PASS: 7/7")
+                print("SELF-TEST PASS: 10/10")
+                return
+            }
+            if parsed.mode == "teeth-compare" {
+                try runTeethComparison(parsed)
                 return
             }
             try run(parsed)
@@ -362,6 +399,7 @@ private enum RetouchSpikeLab {
                 "leftBrow": detection.anchors.leftBrow.count,
                 "rightBrow": detection.anchors.rightBrow.count,
                 "innerLips": detection.anchors.innerLips.count,
+                "outerLips": detection.anchors.outerLips.count,
                 "pupils": [detection.anchors.leftPupil, detection.anchors.rightPupil].compactMap { $0 }.count,
             ],
             maskPixels: measured.maskPixels,
@@ -390,6 +428,136 @@ private enum RetouchSpikeLab {
         try writeMask(mask, width: input.width, height: input.height, to: outputURL.appendingPathComponent("mask.png"))
         try writePNG(overlay(input, mask: mask), to: outputURL.appendingPathComponent("overlay.png"))
         try writeJSON(metrics, to: outputURL.appendingPathComponent("metrics.json"))
+        try writeJSON(log.events, to: outputURL.appendingPathComponent("events.json"))
+        print(String(data: try JSONEncoder.pretty.encode(metrics), encoding: .utf8) ?? "")
+    }
+
+    private static func runTeethComparison(_ parsed: ParsedArguments) throws {
+        guard let inputPath = parsed.options["input"],
+              let outputPath = parsed.options["output"]
+        else {
+            throw LabError.invalidArguments("teeth-compare requires --input and --output")
+        }
+        let outputURL = URL(fileURLWithPath: outputPath, isDirectory: true)
+        try FileManager.default.createDirectory(at: outputURL, withIntermediateDirectories: true)
+        let log = EventLog()
+        log.add("start", "adaptive teeth comparison started", metadata: ["mode": parsed.mode])
+
+        let cgImage = try loadCGImage(URL(fileURLWithPath: inputPath))
+        let input = try Raster(cgImage: cgImage)
+        let detectionStart = Date()
+        let detection = try detectAnchors(cgImage: cgImage, width: input.width, height: input.height)
+        let hardRegion = try polygonMask(
+            width: input.width,
+            height: input.height,
+            points: detection.anchors.innerLips,
+            featherRadius: 0
+        )
+        let mouthCandidateRegion = try adaptiveMouthCandidateRegion(
+            width: input.width,
+            height: input.height,
+            innerLips: detection.anchors.innerLips,
+            outerLips: detection.anchors.outerLips
+        )
+        let regionPixels = hardRegion.lazy.filter { $0 > 0.5 }.count
+        let mouthCandidatePixels = mouthCandidateRegion.lazy.filter { $0 > 0.5 }.count
+        log.add(
+            "detection",
+            "request-local inner-lip support captured",
+            metadata: [
+                "faces": "\(detection.faceCount)",
+                "innerLipCount": "\(detection.anchors.innerLips.count)",
+                "outerLipCount": "\(detection.anchors.outerLips.count)",
+                "regionPixels": "\(regionPixels)",
+                "durationMs": formattedMilliseconds(Date().timeIntervalSince(detectionStart) * 1_000),
+            ]
+        )
+
+        let fixedStart = Date()
+        let fixedRaw = try heuristicTeethMask(input, innerLips: detection.anchors.innerLips)
+        let fixed = constrainMask(fixedRaw, to: hardRegion)
+        let fixedDuration = Date().timeIntervalSince(fixedStart) * 1_000
+
+        let adaptiveStart = Date()
+        let adaptive = try adaptiveTeethMask(
+            input,
+            innerLips: detection.anchors.innerLips,
+            candidateRegion: mouthCandidateRegion,
+            fixedSeedMask: fixed
+        )
+        let adaptiveDuration = Date().timeIntervalSince(adaptiveStart) * 1_000
+
+        let fixedOutput = whitenTeeth(input, mask: fixed, strength: 0.62)
+        let adaptiveOutput = whitenTeeth(input, mask: adaptive, strength: 0.62)
+        let fixedMeasurement = measure(before: input, after: fixedOutput, mask: fixed)
+        let adaptiveMeasurement = measure(before: input, after: adaptiveOutput, mask: adaptive)
+        let overlap = compareMasks(fixed, adaptive: adaptive, threshold: 0.15)
+
+        let fixedMetrics = TeethVariantMetrics(
+            maskPixels: fixedMeasurement.maskPixels,
+            strongMaskPixels: fixed.lazy.filter { $0 > 0.15 }.count,
+            changedPixels: fixedMeasurement.changedPixels,
+            changedOutsideMask: fixedMeasurement.changedOutsideMask,
+            maximumChannelDelta: fixedMeasurement.maximumChannelDelta,
+            meanLuminanceDelta: fixedMeasurement.meanLuminanceDelta,
+            textureEnergyRatio: fixedMeasurement.textureEnergyRatio,
+            durationMilliseconds: fixedDuration
+        )
+        let adaptiveMetrics = TeethVariantMetrics(
+            maskPixels: adaptiveMeasurement.maskPixels,
+            strongMaskPixels: adaptive.lazy.filter { $0 > 0.15 }.count,
+            changedPixels: adaptiveMeasurement.changedPixels,
+            changedOutsideMask: adaptiveMeasurement.changedOutsideMask,
+            maximumChannelDelta: adaptiveMeasurement.maximumChannelDelta,
+            meanLuminanceDelta: adaptiveMeasurement.meanLuminanceDelta,
+            textureEnergyRatio: adaptiveMeasurement.textureEnergyRatio,
+            durationMilliseconds: adaptiveDuration
+        )
+        let metrics = TeethComparisonMetrics(
+            mode: parsed.mode,
+            inputWidth: input.width,
+            inputHeight: input.height,
+            faceCount: detection.faceCount,
+            innerLipPointCount: detection.anchors.innerLips.count,
+            outerLipPointCount: detection.anchors.outerLips.count,
+            innerLipRegionPixels: regionPixels,
+            mouthCandidateRegionPixels: mouthCandidatePixels,
+            fixed: fixedMetrics,
+            adaptive: adaptiveMetrics,
+            adaptiveAddedPixels: overlap.added,
+            adaptiveDroppedPixels: overlap.dropped,
+            strongIntersectionPixels: overlap.intersection,
+            strongUnionPixels: overlap.union,
+            strongMaskIoU: overlap.union > 0 ? Double(overlap.intersection) / Double(overlap.union) : 1,
+            adaptiveStrongAreaRatio: mouthCandidatePixels > 0
+                ? Double(adaptiveMetrics.strongMaskPixels) / Double(mouthCandidatePixels)
+                : 0,
+            peakResidentMegabytes: peakResidentMegabytes(),
+            notes: [
+                "The fixed mask is clipped to Vision inner-lip support; the adaptive path searches only inside an outer-lip-contained horizontal extension of the inner-lip aperture.",
+                "The adaptive path uses the fixed high-confidence mask as seeds, derives local brightness/chroma limits, and retains only connected candidates before compositing.",
+                "An empty fixed seed set, implausible region, or implausible adaptive area fails closed.",
+                "AI-generated fixtures validate mechanics only; useful coverage and protected-tissue judgments require licensed real review.",
+            ]
+        )
+        log.add(
+            "result",
+            "adaptive teeth comparison completed",
+            metadata: [
+                "fixedStrongPixels": "\(fixedMetrics.strongMaskPixels)",
+                "adaptiveStrongPixels": "\(adaptiveMetrics.strongMaskPixels)",
+                "adaptiveAddedPixels": "\(overlap.added)",
+                "adaptiveDroppedPixels": "\(overlap.dropped)",
+            ]
+        )
+
+        try writePNG(fixedOutput, to: outputURL.appendingPathComponent("fixed-after.png"))
+        try writePNG(adaptiveOutput, to: outputURL.appendingPathComponent("adaptive-after.png"))
+        try writeMask(fixed, width: input.width, height: input.height, to: outputURL.appendingPathComponent("fixed-mask.png"))
+        try writeMask(adaptive, width: input.width, height: input.height, to: outputURL.appendingPathComponent("adaptive-mask.png"))
+        try writePNG(overlay(input, mask: fixed), to: outputURL.appendingPathComponent("fixed-overlay.png"))
+        try writePNG(overlay(input, mask: adaptive), to: outputURL.appendingPathComponent("adaptive-overlay.png"))
+        try writeJSON(metrics, to: outputURL.appendingPathComponent("comparison.json"))
         try writeJSON(log.events, to: outputURL.appendingPathComponent("events.json"))
         print(String(data: try JSONEncoder.pretty.encode(metrics), encoding: .utf8) ?? "")
     }
@@ -474,7 +642,8 @@ private func detectAnchors(cgImage: CGImage, width: Int, height: Int) throws -> 
             rightPupil: points(landmarks.rightPupil).first,
             leftBrow: points(landmarks.leftEyebrow),
             rightBrow: points(landmarks.rightEyebrow),
-            innerLips: points(landmarks.innerLips)
+            innerLips: points(landmarks.innerLips),
+            outerLips: points(landmarks.outerLips)
         ),
         faceCount: faces.count
     )
@@ -687,6 +856,214 @@ private func heuristicTeethMask(_ input: Raster, innerLips: [Point]) throws -> [
         return [Float](repeating: 0, count: mask.count)
     }
     return boxBlur(mask, width: input.width, height: input.height, radius: 1).map { clamp($0) }
+}
+
+private func adaptiveTeethMask(
+    _ input: Raster,
+    innerLips: [Point],
+    candidateRegion region: [Float],
+    fixedSeedMask: [Float]
+) throws -> [Float] {
+    let regionIndices = region.indices.filter { region[$0] > 0.5 }
+    let seedIndices = fixedSeedMask.indices.filter { fixedSeedMask[$0] > 0.15 && region[$0] > 0.5 }
+    guard regionIndices.count >= 12, seedIndices.count >= 2 else {
+        return [Float](repeating: 0, count: region.count)
+    }
+
+    let lipWidth = innerLips.map(\.x).max()! - innerLips.map(\.x).min()!
+    let lipHeight = innerLips.map(\.y).max()! - innerLips.map(\.y).min()!
+    guard lipWidth >= 4, lipHeight / lipWidth >= 0.07 else {
+        return [Float](repeating: 0, count: region.count)
+    }
+
+    var regionLuminance: [Float] = []
+    var seedLuminance: [Float] = []
+    var seedSaturation: [Float] = []
+    regionLuminance.reserveCapacity(regionIndices.count)
+    seedLuminance.reserveCapacity(seedIndices.count)
+    seedSaturation.reserveCapacity(seedIndices.count)
+    for index in regionIndices {
+        let color = pixelFeatures(input, index: index)
+        regionLuminance.append(color.light)
+    }
+    for index in seedIndices {
+        let color = pixelFeatures(input, index: index)
+        seedLuminance.append(color.light)
+        seedSaturation.append(color.saturation)
+    }
+
+    let split = otsuThreshold(regionLuminance)
+    let seedLow = percentile(seedLuminance, fraction: 0.10)
+    let seedQuarter = percentile(seedLuminance, fraction: 0.25)
+    let seedSaturationHigh = percentile(seedSaturation, fraction: 0.90)
+    let candidateLuminance = max(0.18, min(split, seedLow) - 0.14)
+    let candidateSaturation = min(0.62, max(0.32, seedSaturationHigh + 0.16))
+
+    var candidate = [Bool](repeating: false, count: region.count)
+    var score = [Float](repeating: 0, count: region.count)
+    for index in regionIndices {
+        let color = pixelFeatures(input, index: index)
+        let redGreen = color.red - color.green
+        let redBlue = color.red - color.blue
+        guard color.light >= candidateLuminance,
+              color.saturation <= candidateSaturation + 0.18,
+              redGreen <= 0.24,
+              redBlue <= 0.46
+        else { continue }
+        let brightness = smoothstep(candidateLuminance, max(candidateLuminance + 0.08, seedQuarter), color.light)
+        let neutrality = 1 - smoothstep(candidateSaturation, min(0.90, candidateSaturation + 0.22), color.saturation)
+        let redBalance = 1 - smoothstep(0.16, 0.34, redGreen)
+        let blueBalance = 1 - smoothstep(0.24, 0.46, redBlue)
+        let localScore = clamp(brightness * neutrality * redBalance * blueBalance)
+        score[index] = localScore
+        candidate[index] = localScore > 0.035
+    }
+    for index in seedIndices {
+        candidate[index] = true
+        score[index] = max(score[index], fixedSeedMask[index])
+    }
+
+    var connected = [Bool](repeating: false, count: region.count)
+    var queue = seedIndices
+    for index in seedIndices { connected[index] = true }
+    var cursor = 0
+    while cursor < queue.count {
+        let index = queue[cursor]
+        cursor += 1
+        let x = index % input.width
+        let y = index / input.width
+        for dy in -1...1 {
+            for dx in -1...1 where dx != 0 || dy != 0 {
+                let nextX = x + dx
+                let nextY = y + dy
+                guard nextX >= 0, nextX < input.width, nextY >= 0, nextY < input.height else { continue }
+                let next = nextY * input.width + nextX
+                if candidate[next], !connected[next] {
+                    connected[next] = true
+                    queue.append(next)
+                }
+            }
+        }
+    }
+
+    var adaptive = [Float](repeating: 0, count: region.count)
+    for index in regionIndices where connected[index] {
+        adaptive[index] = max(fixedSeedMask[index], score[index] * 0.90)
+    }
+    let blurred = constrainMask(
+        boxBlur(adaptive, width: input.width, height: input.height, radius: 1),
+        to: region
+    )
+    let fixedStrong = fixedSeedMask.lazy.filter { $0 > 0.15 }.count
+    let adaptiveStrong = blurred.lazy.filter { $0 > 0.15 }.count
+    let areaRatio = Double(adaptiveStrong) / Double(regionIndices.count)
+    guard adaptiveStrong >= fixedStrong, areaRatio >= 0.015, areaRatio <= 0.94 else {
+        return [Float](repeating: 0, count: region.count)
+    }
+    return zip(blurred, fixedSeedMask).map { clamp(max($0, $1)) }
+}
+
+private func adaptiveMouthCandidateRegion(
+    width: Int,
+    height: Int,
+    innerLips: [Point],
+    outerLips: [Point]
+) throws -> [Float] {
+    guard innerLips.count >= 3, outerLips.count >= 3 else {
+        throw LabError.missingSupport("inner and outer lips")
+    }
+    var region = try polygonMask(width: width, height: height, points: outerLips, featherRadius: 0)
+    let innerMinY = innerLips.map(\.y).min()!
+    let innerMaxY = innerLips.map(\.y).max()!
+    let margin = max(1, (innerMaxY - innerMinY) * 0.10)
+    let minimumY = innerMinY - margin
+    let maximumY = innerMaxY + margin
+    for index in region.indices where region[index] > 0 {
+        let y = Double(index / width) + 0.5
+        if y < minimumY || y > maximumY {
+            region[index] = 0
+        }
+    }
+    return region
+}
+
+private func constrainMask(_ mask: [Float], to region: [Float]) -> [Float] {
+    zip(mask, region).map { clamp($0 * $1) }
+}
+
+private func compareMasks(
+    _ fixed: [Float],
+    adaptive: [Float],
+    threshold: Float
+) -> (added: Int, dropped: Int, intersection: Int, union: Int) {
+    var added = 0
+    var dropped = 0
+    var intersection = 0
+    var union = 0
+    for index in fixed.indices {
+        let inFixed = fixed[index] > threshold
+        let inAdaptive = adaptive[index] > threshold
+        if inAdaptive && !inFixed { added += 1 }
+        if inFixed && !inAdaptive { dropped += 1 }
+        if inFixed && inAdaptive { intersection += 1 }
+        if inFixed || inAdaptive { union += 1 }
+    }
+    return (added, dropped, intersection, union)
+}
+
+private func pixelFeatures(
+    _ input: Raster,
+    index: Int
+) -> (red: Float, green: Float, blue: Float, light: Float, saturation: Float) {
+    let offset = index * 4
+    let red = Float(input.pixels[offset]) / 255
+    let green = Float(input.pixels[offset + 1]) / 255
+    let blue = Float(input.pixels[offset + 2]) / 255
+    let maximum = max(red, max(green, blue))
+    let minimum = min(red, min(green, blue))
+    let saturation = maximum > 0.001 ? (maximum - minimum) / maximum : 0
+    return (red, green, blue, luminance(red, green, blue), saturation)
+}
+
+private func percentile(_ values: [Float], fraction: Double) -> Float {
+    guard !values.isEmpty else { return 0 }
+    let sorted = values.sorted()
+    let bounded = min(1, max(0, fraction))
+    let index = Int((Double(sorted.count - 1) * bounded).rounded())
+    return sorted[index]
+}
+
+private func otsuThreshold(_ values: [Float], bins: Int = 128) -> Float {
+    guard values.count > 1, bins > 1 else { return values.first ?? 0 }
+    var histogram = [Int](repeating: 0, count: bins)
+    for value in values {
+        let bin = min(bins - 1, max(0, Int(clamp(value) * Float(bins - 1))))
+        histogram[bin] += 1
+    }
+    let total = Double(values.count)
+    let weightedTotal = histogram.enumerated().reduce(0.0) { partial, entry in
+        partial + Double(entry.offset * entry.element)
+    }
+    var backgroundWeight = 0.0
+    var backgroundSum = 0.0
+    var bestVariance = -1.0
+    var bestBin = 0
+    for bin in histogram.indices {
+        backgroundWeight += Double(histogram[bin])
+        if backgroundWeight == 0 { continue }
+        let foregroundWeight = total - backgroundWeight
+        if foregroundWeight == 0 { break }
+        backgroundSum += Double(bin * histogram[bin])
+        let backgroundMean = backgroundSum / backgroundWeight
+        let foregroundMean = (weightedTotal - backgroundSum) / foregroundWeight
+        let difference = backgroundMean - foregroundMean
+        let variance = backgroundWeight * foregroundWeight * difference * difference
+        if variance > bestVariance {
+            bestVariance = variance
+            bestBin = bin
+        }
+    }
+    return Float(bestBin) / Float(bins - 1)
 }
 
 private func coreMLTeethMask(
@@ -1006,4 +1383,41 @@ private func runSelfTests() throws {
         mask: polygon
     )
     try require(rednessMeasurement.changedOutsideMask == 0, "redness transform containment")
+
+    let innerLips = [Point(x: 10, y: 10), Point(x: 22, y: 10), Point(x: 22, y: 14), Point(x: 10, y: 14)]
+    let outerLips = [Point(x: 4, y: 7), Point(x: 28, y: 7), Point(x: 28, y: 17), Point(x: 4, y: 17)]
+    let candidateRegion = try adaptiveMouthCandidateRegion(
+        width: 32,
+        height: 24,
+        innerLips: innerLips,
+        outerLips: outerLips
+    )
+    try require(candidateRegion[8 * 32 + 16] == 0, "adaptive envelope excludes upper-lip band")
+    var fixedSeed = [Float](repeating: 0, count: 32 * 24)
+    for y in 11...13 {
+        for x in 13...19 { fixedSeed[y * 32 + x] = 1 }
+    }
+    var adaptiveInput = Raster(width: 32, height: 24, fill: (45, 22, 28, 255))
+    for y in 10...14 {
+        for x in 8...24 {
+            adaptiveInput.setRGB(x: x, y: y, red: 0.71, green: 0.63, blue: 0.47)
+        }
+    }
+    let adaptive = try adaptiveTeethMask(
+        adaptiveInput,
+        innerLips: innerLips,
+        candidateRegion: candidateRegion,
+        fixedSeedMask: fixedSeed
+    )
+    try require(
+        adaptive.filter { $0 > 0.15 }.count > fixedSeed.filter { $0 > 0.15 }.count,
+        "adaptive teeth grows connected neutral candidates"
+    )
+    let failedClosed = try adaptiveTeethMask(
+        adaptiveInput,
+        innerLips: innerLips,
+        candidateRegion: candidateRegion,
+        fixedSeedMask: [Float](repeating: 0, count: 32 * 24)
+    )
+    try require(failedClosed.allSatisfy { $0 == 0 }, "adaptive teeth requires fixed seeds")
 }

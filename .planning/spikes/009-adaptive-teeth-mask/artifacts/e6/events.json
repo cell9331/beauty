@@ -1,0 +1,33 @@
+[
+  {
+    "category" : "start",
+    "message" : "adaptive teeth comparison started",
+    "metadata" : {
+      "mode" : "teeth-compare"
+    },
+    "timestamp" : "2026-07-29T08:27:32Z"
+  },
+  {
+    "category" : "detection",
+    "message" : "request-local inner-lip support captured",
+    "metadata" : {
+      "durationMs" : "74.571",
+      "faces" : "1",
+      "innerLipCount" : "6",
+      "outerLipCount" : "14",
+      "regionPixels" : "5465"
+    },
+    "timestamp" : "2026-07-29T08:27:32Z"
+  },
+  {
+    "category" : "result",
+    "message" : "adaptive teeth comparison completed",
+    "metadata" : {
+      "adaptiveAddedPixels" : "2685",
+      "adaptiveDroppedPixels" : "0",
+      "adaptiveStrongPixels" : "7396",
+      "fixedStrongPixels" : "4711"
+    },
+    "timestamp" : "2026-07-29T08:27:32Z"
+  }
+]
