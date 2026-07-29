@@ -1,0 +1,28 @@
+{
+  "changedOutsideMask" : 0,
+  "changedPixels" : 2267,
+  "durationMilliseconds" : 65.32800197601318,
+  "faceCount" : 1,
+  "inputHeight" : 2304,
+  "inputWidth" : 1728,
+  "maskCoverage" : 0.0012277359825102882,
+  "maskPixels" : 4888,
+  "maximumChannelDelta" : 0.07058823529411765,
+  "meanLuminanceDelta" : -2.5336827660675245e-05,
+  "mode" : "sclera-redness",
+  "notes" : [
+    "Observed eye aperture is required and the pupil-centered iris exclusion is mandatory.",
+    "Specular highlights and pixels outside the eye aperture are protected.",
+    "Vein-like detail is neither logged nor persisted; only aggregate mask counts are emitted."
+  ],
+  "peakResidentMegabytes" : 144.6875,
+  "supportPointCounts" : {
+    "innerLips" : 6,
+    "leftBrow" : 6,
+    "leftEye" : 6,
+    "pupils" : 2,
+    "rightBrow" : 6,
+    "rightEye" : 6
+  },
+  "textureEnergyRatio" : 0.999929844347745
+}

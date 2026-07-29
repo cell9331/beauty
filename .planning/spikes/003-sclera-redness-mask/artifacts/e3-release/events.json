@@ -1,0 +1,33 @@
+[
+  {
+    "category" : "start",
+    "message" : "experiment started",
+    "metadata" : {
+      "mode" : "sclera-redness"
+    },
+    "timestamp" : "2026-07-29T06:55:59Z"
+  },
+  {
+    "category" : "detection",
+    "message" : "request-local landmark support captured",
+    "metadata" : {
+      "durationMs" : "74.447",
+      "faces" : "1",
+      "innerLipCount" : "6",
+      "leftEyeCount" : "6",
+      "rightEyeCount" : "6"
+    },
+    "timestamp" : "2026-07-29T06:55:59Z"
+  },
+  {
+    "category" : "result",
+    "message" : "experiment completed",
+    "metadata" : {
+      "changedOutsideMask" : "0",
+      "changedPixels" : "178",
+      "durationMs" : "5.464",
+      "maskPixels" : "500"
+    },
+    "timestamp" : "2026-07-29T06:55:59Z"
+  }
+]
