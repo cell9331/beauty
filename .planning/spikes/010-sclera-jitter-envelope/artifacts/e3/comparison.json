@@ -1,0 +1,71 @@
+{
+  "eyeCount" : 2,
+  "eyeVerticalScaleFractions" : [
+    1,
+    0.7,
+    0.4,
+    0.2
+  ],
+  "faceCount" : 1,
+  "guarded" : {
+    "baselineEligiblePixels" : 239,
+    "eligiblePixelsTotal" : 4502,
+    "failedClosedScenarioCount" : 90,
+    "highlightLeakPixelsTotal" : 0,
+    "highlightLeakScenarioCount" : 0,
+    "irisLeakPixelsTotal" : 0,
+    "irisLeakScenarioCount" : 0,
+    "maximumEligiblePixels" : 222,
+    "maximumIrisLeakPixels" : 0,
+    "meanEligiblePixels" : 37.516666666666666,
+    "minimumEligiblePixels" : 0,
+    "scenarioCount" : 120
+  },
+  "guardedBaselineRetentionRatio" : 0.28622754491017965,
+  "guardedFailedClosedByVerticalScale" : {
+    "0.20" : 30,
+    "0.40" : 30,
+    "0.70" : 30
+  },
+  "guardedIrisInflationWidthFraction" : 0.14,
+  "guardedMinimumAspectRatio" : 0.3,
+  "inputHeight" : 900,
+  "inputWidth" : 506,
+  "legacy" : {
+    "baselineEligiblePixels" : 835,
+    "eligiblePixelsTotal" : 32393,
+    "failedClosedScenarioCount" : 0,
+    "highlightLeakPixelsTotal" : 0,
+    "highlightLeakScenarioCount" : 0,
+    "irisLeakPixelsTotal" : 8858,
+    "irisLeakScenarioCount" : 118,
+    "maximumEligiblePixels" : 490,
+    "maximumIrisLeakPixels" : 187,
+    "meanEligiblePixels" : 269.94166666666666,
+    "minimumEligiblePixels" : 90,
+    "scenarioCount" : 120
+  },
+  "mode" : "sclera-jitter",
+  "notes" : [
+    "The study uses a color-independent geometric selection envelope so iris risk cannot be hidden by dark iris pixels failing the redness gate.",
+    "Protected iris truth is the unperturbed pupil-centered exclusion used by the existing baseline; specular pixels are independently protected from the input.",
+    "The guard fails closed below the minimum eye aspect ratio or when the perturbed pupil leaves the observed aperture.",
+    "Accepted guarded scenarios inflate the iris exclusion by a bounded landmark-uncertainty margin before any color candidate can be selected.",
+    "Only aggregate scenario/count metrics are persisted; raw pupils, contours, and per-scenario geometry remain request-local."
+  ],
+  "peakResidentMegabytes" : 61.25,
+  "pupilHorizontalShiftFractions" : [
+    -0.12,
+    -0.06,
+    0,
+    0.06,
+    0.12
+  ],
+  "pupilVerticalShiftFractions" : [
+    -0.08,
+    0,
+    0.08
+  ],
+  "scenarioCount" : 120,
+  "scenariosPerEye" : 60
+}

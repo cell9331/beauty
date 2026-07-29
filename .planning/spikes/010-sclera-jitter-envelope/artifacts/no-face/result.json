@@ -1,0 +1,6 @@
+{
+  "error": "No usable face landmarks were detected",
+  "exitCode": 1,
+  "mode": "sclera-jitter",
+  "result": "fail_closed"
+}

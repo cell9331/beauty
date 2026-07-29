@@ -1,0 +1,33 @@
+[
+  {
+    "category" : "start",
+    "message" : "sclera jitter study started",
+    "metadata" : {
+      "mode" : "sclera-jitter"
+    },
+    "timestamp" : "2026-07-29T08:50:37Z"
+  },
+  {
+    "category" : "detection",
+    "message" : "request-local eye support captured",
+    "metadata" : {
+      "durationMs" : "83.899",
+      "eyeCount" : "2",
+      "faces" : "1",
+      "pupilCount" : "2"
+    },
+    "timestamp" : "2026-07-29T08:50:37Z"
+  },
+  {
+    "category" : "result",
+    "message" : "sclera jitter study completed",
+    "metadata" : {
+      "durationMs" : "65.240",
+      "guardedFailClosedScenarios" : "90",
+      "guardedLeakScenarios" : "0",
+      "legacyLeakScenarios" : "118",
+      "scenarioCount" : "120"
+    },
+    "timestamp" : "2026-07-29T08:50:37Z"
+  }
+]
