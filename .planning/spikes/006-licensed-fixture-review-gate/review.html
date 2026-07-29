@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>本地修饰授权样例盲审门</title>
+  <style>
+    :root { color-scheme: dark; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #0b0d10; color: #f4f2ec; }
+    header, main { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+    header { padding: 48px 0 24px; }
+    h1 { margin: 0 0 10px; font-size: clamp(30px, 5vw, 52px); letter-spacing: -.04em; }
+    p { color: #aaa8a1; line-height: 1.6; }
+    .controls, .gate, .review, .empty { border: 1px solid #2c3036; border-radius: 18px; background: #14171b; }
+    .controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; padding: 20px; }
+    label.file { display: grid; gap: 8px; color: #cfcbc2; font-size: 13px; }
+    input[type=file] { padding: 12px; border: 1px dashed #444950; border-radius: 12px; background: #0f1114; }
+    .gate { margin-top: 18px; padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+    .badge { display: inline-flex; border-radius: 999px; padding: 8px 11px; font-size: 12px; font-weight: 700; letter-spacing: .06em; }
+    .closed { background: #4b2523; color: #ffb4a9; }
+    .open { background: #173b2a; color: #9ee7b8; }
+    .problems { margin: 10px 0 0; padding-left: 20px; color: #d5a99e; font-size: 13px; }
+    .review { margin: 18px 0 40px; overflow: hidden; }
+    .review-head { display: flex; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid #292d33; }
+    .images { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); min-height: 420px; background: #080a0c; }
+    figure { position: relative; margin: 0; border-right: 1px solid #20242a; }
+    figure:last-child { border-right: 0; }
+    figure img { width: 100%; height: 100%; object-fit: contain; position: absolute; inset: 0; }
+    figcaption { position: absolute; top: 12px; left: 12px; z-index: 2; padding: 6px 8px; border-radius: 8px; background: rgba(0,0,0,.7); font-size: 12px; }
+    form { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; padding: 20px; }
+    fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 8px; }
+    legend { margin-bottom: 7px; color: #aaa8a1; font-size: 12px; }
+    select, button { width: 100%; border: 1px solid #3a3f46; border-radius: 10px; padding: 10px; background: #101317; color: #f4f2ec; }
+    button { cursor: pointer; background: #f06e4f; border-color: #f06e4f; color: #17100e; font-weight: 700; }
+    button.secondary { background: #20242a; border-color: #353a42; color: #f4f2ec; }
+    button:disabled { opacity: .4; cursor: not-allowed; }
+    .actions { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .empty { margin-top: 18px; padding: 28px; text-align: center; }
+    @media (max-width: 820px) { .controls, form { grid-template-columns: 1fr; } .images { grid-template-columns: 1fr; min-height: 1100px; } figure { border-right: 0; border-bottom: 1px solid #20242a; } .actions { grid-column: auto; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>授权样例 · 本地盲审门</h1>
+    <p>先载入 JSON 清单，再选择资产目录。页面不发起网络请求；产品证据只有在所有样例授权为 <code>approved_internal_evaluation</code>、正反例齐全且资产完整时才解锁。</p>
+    <section class="controls">
+      <label class="file">1. Fixture manifest JSON<input id="manifestInput" type="file" accept="application/json,.json"></label>
+      <label class="file">2. Asset directory<input id="assetInput" type="file" webkitdirectory multiple></label>
+    </section>
+    <section class="gate">
+      <div><strong id="gateTitle">尚未载入</strong><ul class="problems" id="problems"></ul></div>
+      <span class="badge closed" id="gateBadge">GATE CLOSED</span>
+    </section>
+  </header>
+  <main>
+    <section class="empty" id="empty"><strong>等待本地清单与资产</strong><p>可先查看 <code>sample-mechanics-manifest.json</code>；它会被正确识别为仅限机制验证。</p></section>
+    <section class="review" id="review" hidden>
+      <div class="review-head"><strong id="itemLabel">Item</strong><span id="progressLabel">0 / 0</span></div>
+      <div class="images"><figure><figcaption>Before</figcaption><img id="originalImage" alt="Before"></figure><figure><figcaption>Mask</figcaption><img id="maskImage" alt="Mask"></figure><figure><figcaption>After</figcaption><img id="afterImage" alt="After"></figure></div>
+      <form id="reviewForm">
+        <fieldset><legend>目标是否存在</legend><select name="target_present" required><option value="true">是</option><option value="false">否</option></select></fieldset>
+        <fieldset><legend>遮罩覆盖 1–5</legend><select name="mask_coverage" required><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></fieldset>
+        <fieldset><legend>保护区泄漏</legend><select name="protected_leakage" required><option value="false">无</option><option value="true">有</option></select></fieldset>
+        <fieldset><legend>自然度 1–5</legend><select name="naturalness" required><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></fieldset>
+        <fieldset><legend>结构变化</legend><select name="structure_changed" required><option value="false">无</option><option value="true">有</option></select></fieldset>
+        <fieldset><legend>结论</legend><select name="decision" required><option value="accept">接受</option><option value="reject">拒绝</option></select></fieldset>
+        <fieldset><legend>原因码</legend><select name="reason_code" required><option value="none">无</option><option value="missed_target">漏目标</option><option value="protected_leakage">保护区泄漏</option><option value="unnatural_color">颜色不自然</option><option value="texture_loss">纹理损失</option><option value="structure_change">结构变化</option><option value="unsupported_input">不支持输入</option></select></fieldset>
+        <div class="actions"><button type="submit">保存并继续</button><button class="secondary" id="exportButton" type="button" disabled>导出脱敏评审 JSON</button></div>
+      </form>
+    </section>
+  </main>
+  <script src="review-core.js"></script>
+  <script>
+    (() => {
+      "use strict";
+      let manifest = null;
+      let assetFiles = new Map();
+      let fixtures = [];
+      let index = 0;
+      const reviews = [];
+      const objectURLs = [];
+      const events = [];
+      const $ = (id) => document.getElementById(id);
+
+      function log(category, metadata = {}) {
+        events.push({ timestamp: new Date().toISOString(), category, metadata });
+      }
+      function assetCandidates(file) {
+        const raw = file.webkitRelativePath || file.name;
+        const parts = raw.split("/");
+        return [raw, parts.slice(1).join("/"), file.name].filter(Boolean);
+      }
+      function clearURLs() { while (objectURLs.length) URL.revokeObjectURL(objectURLs.pop()); }
+      function assetURL(path) {
+        const file = assetFiles.get(path);
+        if (!file) return "";
+        const url = URL.createObjectURL(file);
+        objectURLs.push(url);
+        return url;
+      }
+      function refreshGate() {
+        if (!manifest) return;
+        const result = ReviewCore.validateManifest(manifest, [...assetFiles.keys()]);
+        $("gateTitle").textContent = result.productEvidenceReady ? "授权与资产门已通过" : (result.valid ? "清单有效；产品证据门仍关闭" : "清单无效");
+        $("gateBadge").textContent = result.productEvidenceReady ? "GATE OPEN" : "GATE CLOSED";
+        $("gateBadge").className = `badge ${result.productEvidenceReady ? "open" : "closed"}`;
+        $("problems").replaceChildren(...[...result.errors, ...result.warnings].map((text) => { const li = document.createElement("li"); li.textContent = text; return li; }));
+        if (result.valid && assetFiles.size > 0) beginReview();
+        log("gate_checked", { valid: String(result.valid), productEvidenceReady: String(result.productEvidenceReady), fixtureCount: String(result.counts.fixtures || 0) });
+      }
+      function beginReview() {
+        clearURLs();
+        fixtures = [...manifest.fixtures].sort((a, b) => a.fixture_id.localeCompare(b.fixture_id));
+        index = Math.min(index, Math.max(0, fixtures.length - 1));
+        $("empty").hidden = true;
+        $("review").hidden = false;
+        showFixture();
+      }
+      function showFixture() {
+        clearURLs();
+        const fixture = fixtures[index];
+        if (!fixture) return;
+        $("itemLabel").textContent = `${fixture.feature} · blinded item ${index + 1}`;
+        $("progressLabel").textContent = `${index + 1} / ${fixtures.length}`;
+        $("originalImage").src = assetURL(fixture.assets.original);
+        $("maskImage").src = assetURL(fixture.assets.mask);
+        $("afterImage").src = assetURL(fixture.assets.after);
+      }
+      function downloadJSON(value, filename) {
+        const blob = new Blob([JSON.stringify(value, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = filename;
+        anchor.click();
+        URL.revokeObjectURL(url);
+      }
+
+      $("manifestInput").addEventListener("change", async (event) => {
+        try {
+          manifest = JSON.parse(await event.target.files[0].text());
+          reviews.length = 0;
+          index = 0;
+          log("manifest_loaded", { fixtureCount: String(manifest.fixtures?.length || 0) });
+          refreshGate();
+        } catch (error) {
+          $("gateTitle").textContent = "清单读取失败";
+          $("problems").innerHTML = `<li>${error.message}</li>`;
+        }
+      });
+      $("assetInput").addEventListener("change", (event) => {
+        assetFiles = new Map();
+        for (const file of event.target.files) for (const key of assetCandidates(file)) assetFiles.set(key, file);
+        log("assets_loaded", { count: String(event.target.files.length) });
+        refreshGate();
+      });
+      $("reviewForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        const fixture = fixtures[index];
+        const review = {
+          fixture_id: fixture.fixture_id,
+          target_present: data.get("target_present") === "true",
+          mask_coverage: Number(data.get("mask_coverage")),
+          protected_leakage: data.get("protected_leakage") === "true",
+          naturalness: Number(data.get("naturalness")),
+          structure_changed: data.get("structure_changed") === "true",
+          decision: data.get("decision"),
+          reason_code: data.get("reason_code"),
+        };
+        const existing = reviews.findIndex((item) => item.fixture_id === fixture.fixture_id);
+        if (existing >= 0) reviews[existing] = review; else reviews.push(review);
+        log("review_saved", { completed: String(reviews.length) });
+        if (index < fixtures.length - 1) { index += 1; showFixture(); }
+        $("exportButton").disabled = reviews.length !== fixtures.length;
+      });
+      $("exportButton").addEventListener("click", () => {
+        const output = ReviewCore.buildSanitizedExport(manifest, reviews);
+        output.events = events.map((event) => ({ timestamp: event.timestamp, category: event.category, metadata: event.metadata }));
+        downloadJSON(output, `${manifest.dataset.dataset_id}-review.json`);
+        log("review_exported", { reviewCount: String(reviews.length) });
+      });
+    })();
+  </script>
+</body>
+</html>

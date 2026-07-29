@@ -26,9 +26,26 @@
 
 ## 3. Active
 
-No product milestone or feasibility plan is active. v1.13 remains shipped;
-the completed local-retouch spikes and packaged blueprint below do not
-authorize v1.14 or any other new feature scope.
+### P-2026-07-29-local-retouch-frontier-006-009-010
+
+| Field | Value |
+| --- | --- |
+| Status | `active` |
+| Scope | Execute selected frontier Spikes 006, 009, and 010: a local licensed-fixture review gate, an adaptive deterministic teeth-mask comparison, and a sclera landmark-jitter safety envelope. |
+| Boundary | All work remains under `.planning/spikes/` and the isolated spike harness. No `BeautySDK`, `BeautyDemo`, public API, feature ledger, milestone, camera/pixel-buffer path, or product behavior is authorized or changed. |
+| Evidence gate | Existing AI-generated fixtures may validate mechanics and controlled perturbations only. Spike 006 cannot produce a product-feasibility verdict until licensed real positive/negative fixtures with complete rights metadata are supplied and reviewed. |
+| Decision rule | Spike 009 must beat the fixed deterministic mask without weakening closed-mouth/protected-region safety. Spike 010 must add an explicit fail-closed guard if realistic support perturbations can enter the protected iris/highlight envelope. |
+
+Checklist:
+
+- [x] Record the selected frontier definitions and risk order.
+- [x] Build and verify the offline rights/asset/review/export gate.
+- [ ] Compare adaptive and fixed deterministic teeth masks, including negative cases.
+- [ ] Quantify baseline and guarded sclera masks across deterministic support perturbations.
+- [ ] Record verdicts, refresh conventions if a pattern repeats, and close without activating v1.14.
+
+No product milestone is active. v1.13 remains shipped, and these frontier
+experiments do not authorize v1.14 or any other new feature scope.
 
 ## 4. Completed
 

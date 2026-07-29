@@ -1,0 +1,42 @@
+{
+  "pass": true,
+  "checks": [
+    {
+      "name": "mechanics manifest is structurally valid",
+      "pass": true
+    },
+    {
+      "name": "mechanics manifest cannot open product gate",
+      "pass": true
+    },
+    {
+      "name": "approved positive and negative assets open gate",
+      "pass": true
+    },
+    {
+      "name": "absolute path is rejected",
+      "pass": true
+    },
+    {
+      "name": "duplicate fixture ID is rejected",
+      "pass": true
+    },
+    {
+      "name": "export contains every review",
+      "pass": true
+    },
+    {
+      "name": "export omits asset paths",
+      "pass": true
+    },
+    {
+      "name": "export omits rights record IDs",
+      "pass": true
+    },
+    {
+      "name": "export omits retention and documentation records",
+      "pass": true
+    }
+  ],
+  "checkCount": 9
+}
