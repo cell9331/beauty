@@ -1,0 +1,28 @@
+{
+  "changedOutsideMask" : 0,
+  "changedPixels" : 4489,
+  "durationMilliseconds" : 1.9840002059936523,
+  "faceCount" : 1,
+  "inputHeight" : 2304,
+  "inputWidth" : 1728,
+  "maskCoverage" : 0.002246997974537037,
+  "maskPixels" : 8946,
+  "maximumChannelDelta" : 0.1568627450980392,
+  "meanLuminanceDelta" : -0.00455354954746426,
+  "mode" : "upper-lid-warp",
+  "notes" : [
+    "Eye and eyebrow boundaries are fixed; sampling displacement is zero at every band edge.",
+    "This is a comparison candidate, not evidence of independent product semantics.",
+    "Mechanics-only until licensed real upper-eyelid fullness fixtures are reviewed."
+  ],
+  "peakResidentMegabytes" : 114.28125,
+  "supportPointCounts" : {
+    "innerLips" : 6,
+    "leftBrow" : 6,
+    "leftEye" : 6,
+    "pupils" : 2,
+    "rightBrow" : 6,
+    "rightEye" : 6
+  },
+  "textureEnergyRatio" : 0.9305483097310349
+}

@@ -1,0 +1,28 @@
+{
+  "changedOutsideMask" : 0,
+  "changedPixels" : 7560,
+  "durationMilliseconds" : 28.414011001586914,
+  "faceCount" : 1,
+  "inputHeight" : 2304,
+  "inputWidth" : 1728,
+  "maskCoverage" : 0.002246997974537037,
+  "maskPixels" : 8946,
+  "maximumChannelDelta" : 0.06666666666666667,
+  "meanLuminanceDelta" : 1.9324325102771885e-05,
+  "mode" : "upper-lid-tone",
+  "notes" : [
+    "Boundary-fixed band between observed eye and eyebrow support.",
+    "Low-frequency luminance is compressed; high-frequency pixel detail is retained additively.",
+    "Mechanics-only until licensed real upper-eyelid fullness fixtures are reviewed."
+  ],
+  "peakResidentMegabytes" : 144.6875,
+  "supportPointCounts" : {
+    "innerLips" : 6,
+    "leftBrow" : 6,
+    "leftEye" : 6,
+    "pupils" : 2,
+    "rightBrow" : 6,
+    "rightEye" : 6
+  },
+  "textureEnergyRatio" : 0.9996183497530031
+}

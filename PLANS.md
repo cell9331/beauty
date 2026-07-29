@@ -26,11 +26,29 @@
 
 ## 3. Active
 
-No product milestone or consolidation plan is active. v1.13 remains shipped;
-the current-state audit below changed no feature inventory and does not
-authorize v1.14 or any other new scope.
+No product milestone or feasibility plan is active. v1.13 remains shipped;
+the completed local-retouch spikes below do not authorize v1.14 or any other
+new feature scope.
 
 ## 4. Completed
+
+### C-2026-07-29-v1-14-local-retouch-feasibility-spikes
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-29 |
+| Scope | Completed seven isolated, non-product spikes for proposed `去脂`, `祛红血丝`, and `白牙` directions without changing `BeautySDK`, `BeautyDemo`, public API, feature ledgers, or the live pixel-buffer path. |
+| Verdicts | Upper-lid tone is `PARTIAL` and the comparison winner; boundary-fixed upper-lid warp is `INVALIDATED`; deterministic teeth, research Core ML teeth, sclera mask, and combined color are `PARTIAL`; the isolated still-image harness is `VALIDATED`. |
+| Product decision | Do not activate `去脂` or a v1.14 milestone. White-teeth and redness color transforms are technically viable, but production work remains gated on licensed real positive/negative fixtures plus either a legally approved pinned segmenter or an owned/evaluated mask provider. |
+| Verification | Swift debug and release builds pass; shared self-tests pass 7/7; all 15 retained artifact runs parse as valid JSON and report zero outside-mask changes; event-schema and sensitive-key scans pass; no Core ML model/weights are present in the repository; no-face input exits 1; review-page JavaScript syntax and `git diff --check` pass. |
+| Evidence | `.planning/spikes/MANIFEST.md`, seven per-spike READMEs, aggregate events/metrics, visual masks/overlays, a local comparison page, conventions, and an external-model provenance/hash audit. |
+
+Outcome:
+
+- Current `去脂` formulations do not demonstrate independent product semantics; the warp loses 7%–8% texture energy and is rejected rather than aliased to eye geometry.
+- Teeth segmentation is the main white-teeth blocker: Vision/color is fail-closed but incomplete, while EasyPortrait improves coverage and remains research-only because the conversion/license chain is not approved and cold load is material.
+- Landmark/pupil-protected sclera selection and both bounded color transforms remain promising, but AI-generated fixtures prove mechanics only; real positive/negative human review is the next gate.
+- No milestone is active; packaging these findings or acquiring approved fixtures/models requires a separate explicit next action.
 
 ### C-2026-07-28-td-012-production-image-input-bounds
 
