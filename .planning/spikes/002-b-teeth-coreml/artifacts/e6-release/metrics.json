@@ -1,0 +1,27 @@
+{
+  "changedOutsideMask" : 0,
+  "changedPixels" : 9518,
+  "durationMilliseconds" : 1771.4170217514038,
+  "faceCount" : 1,
+  "inputHeight" : 2304,
+  "inputWidth" : 1728,
+  "maskCoverage" : 0.0024042325745884776,
+  "maskPixels" : 9572,
+  "maximumChannelDelta" : 0.10196078431372549,
+  "meanLuminanceDelta" : 0.014703800175474685,
+  "mode" : "teeth-coreml",
+  "notes" : [
+    "EasyPortrait out3 teeth head, used from an external temporary clone.",
+    "Research-only: no model or weight is copied into the repository, and redistribution remains unapproved."
+  ],
+  "peakResidentMegabytes" : 197.765625,
+  "supportPointCounts" : {
+    "innerLips" : 6,
+    "leftBrow" : 6,
+    "leftEye" : 6,
+    "pupils" : 2,
+    "rightBrow" : 6,
+    "rightEye" : 6
+  },
+  "textureEnergyRatio" : 1.0156802535566172
+}

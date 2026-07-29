@@ -1,0 +1,43 @@
+[
+  {
+    "category" : "start",
+    "message" : "experiment started",
+    "metadata" : {
+      "mode" : "teeth-coreml"
+    },
+    "timestamp" : "2026-07-29T06:55:28Z"
+  },
+  {
+    "category" : "detection",
+    "message" : "request-local landmark support captured",
+    "metadata" : {
+      "durationMs" : "70.629",
+      "faces" : "1",
+      "innerLipCount" : "6",
+      "leftEyeCount" : "6",
+      "rightEyeCount" : "6"
+    },
+    "timestamp" : "2026-07-29T06:55:28Z"
+  },
+  {
+    "category" : "coreml",
+    "message" : "external research model completed",
+    "metadata" : {
+      "inferenceMs" : "79.256",
+      "loadMs" : "1680.584",
+      "outputs" : "9"
+    },
+    "timestamp" : "2026-07-29T06:55:30Z"
+  },
+  {
+    "category" : "result",
+    "message" : "experiment completed",
+    "metadata" : {
+      "changedOutsideMask" : "0",
+      "changedPixels" : "9518",
+      "durationMs" : "1771.417",
+      "maskPixels" : "9572"
+    },
+    "timestamp" : "2026-07-29T06:55:30Z"
+  }
+]

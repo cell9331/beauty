@@ -1,0 +1,27 @@
+{
+  "changedOutsideMask" : 0,
+  "changedPixels" : 5540,
+  "durationMilliseconds" : 42.58096218109131,
+  "faceCount" : 1,
+  "inputHeight" : 2304,
+  "inputWidth" : 1728,
+  "maskCoverage" : 0.001531907069830247,
+  "maskPixels" : 6099,
+  "maximumChannelDelta" : 0.07450980392156863,
+  "meanLuminanceDelta" : 0.013696026876791865,
+  "mode" : "teeth-heuristic",
+  "notes" : [
+    "Mask is constrained to actual Vision innerLips support and then gated by luminance/chroma.",
+    "Closed-mouth, no-candidate, or implausible-area cases must fail closed in production."
+  ],
+  "peakResidentMegabytes" : 129.578125,
+  "supportPointCounts" : {
+    "innerLips" : 6,
+    "leftBrow" : 6,
+    "leftEye" : 6,
+    "pupils" : 2,
+    "rightBrow" : 6,
+    "rightEye" : 6
+  },
+  "textureEnergyRatio" : 1.0515481812828462
+}
