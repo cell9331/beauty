@@ -27,9 +27,28 @@
 ## 3. Active
 
 No active plan. No product milestone is active; v1.13 remains shipped and the
-completed spike wrap-up does not authorize v1.14 or any new feature scope.
+completed Spike 011 does not authorize v1.14 or any new feature scope.
 
 ## 4. Completed
+
+### C-2026-07-29-spike-011-guarded-sclera-color-integration
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-29 |
+| Scope | Integrated Spike 010's per-eye hard guard with Spike 003/004's redness score, feathering, and byte-level bounded transform inside the isolated Swift harness; added native and locally color-adversarial grid evaluation without changing production source or API. |
+| Verdict | Narrowly `VALIDATED`: score only inside the hard envelope, feather locally, and then re-clip to the same envelope before compositing. The 0.30/0.14 guard remains a calibration seed, not a product constant. |
+| Safety result | Guarded final output changes 0 protected iris and 0 highlight pixels across 360 native plus 360 adversarial eye-scenarios. The legacy adversarial path changes protected pixels in 356/360 scenarios; e6 also exposes 9/120 native legacy leak scenarios. |
+| Coverage result | Guarded baselines retain nonzero mask/change candidates in both eyes on e6/e2/e3, with 1,868 / 223 / 144 candidate pixels and 38.2% / 24.6% / 28.8% legacy retention. The stress grid fails closed in 270/360 eye-scenarios. |
+| Verification | Release build and 16/16 self-tests pass; all aggregate JSON and metric assertions pass; no-face exits 1; all three event logs match exact allowlists and sensitive-key scan is clear; review JavaScript parses; e6/e2/e3 native masks and adversarial heatmaps were inspected at original detail; runtime network, production-boundary, and diff-hygiene checks pass. |
+| Evidence | `.planning/spikes/011-guarded-sclera-color-integration/`, updated shared harness, manifest verdict, aggregate events/metrics, local ignored visual artifacts, and the recurring post-feather hard-clip convention established by Spikes 009 and 011. |
+| Boundary | AI-generated fixtures prove mechanics only. Licensed real redness positives/negatives, original-detail blind review, threshold calibration, device performance, product ownership, realtime design, v1.14 activation, and public API remain unclaimed. |
+
+Outcome:
+
+- The original Spike 003 mask must not be promoted unchanged: native color can hide unsafe geometry, and the adversarial oracle demonstrates final-transform leakage rather than only envelope overlap.
+- A future still-image implementation may reuse the guarded ordering as a blueprint: validate per eye, build hard support, score color inside it, feather, re-clip, transform once, and persist aggregate diagnostics only.
+- The next durable action is wrapping Spike 011 into `spike-findings-beauty`; the next product-evidence action remains acquiring rights-approved real fixtures through Spike 006, not activating v1.14.
 
 ### C-2026-07-29-local-retouch-frontier-wrap-up-006-009-010
 

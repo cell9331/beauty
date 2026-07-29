@@ -1,0 +1,93 @@
+{
+  "eyeCount" : 2,
+  "eyeVerticalScaleFractions" : [
+    1,
+    0.7,
+    0.4,
+    0.2
+  ],
+  "faceCount" : 1,
+  "guarded" : {
+    "baselineNativeChangedOutsideMask" : 0,
+    "baselineNativeChangedPixels" : 1299,
+    "baselineNativeHighlightChangedPixels" : 0,
+    "baselineNativeMaskPixels" : 1868,
+    "baselineNativeMaskPixelsByEye" : {
+      "left" : 901,
+      "right" : 967
+    },
+    "baselineNativeProtectedChangedPixels" : 0,
+    "challengeChangedPixelsTotal" : 17551,
+    "challengeHighlightChangeScenarioCount" : 0,
+    "challengeHighlightChangedPixelsTotal" : 0,
+    "challengeMaskPixelsTotal" : 28878,
+    "challengeProtectedChangeScenarioCount" : 0,
+    "challengeProtectedChangedPixelsTotal" : 0,
+    "failedClosedEyeScenarioCount" : 90,
+    "nativeChangedPixelsTotal" : 17551,
+    "nativeHighlightChangeScenarioCount" : 0,
+    "nativeHighlightChangedPixelsTotal" : 0,
+    "nativeMaskPixelsTotal" : 28878,
+    "nativeProtectedChangeScenarioCount" : 0,
+    "nativeProtectedChangedPixelsTotal" : 0,
+    "scenarioCount" : 120
+  },
+  "guardedBaselineNativeMaskRetentionRatio" : 0.3821603927986907,
+  "guardedFailedClosedByVerticalScale" : {
+    "0.20" : 30,
+    "0.40" : 30,
+    "0.70" : 30
+  },
+  "guardedIrisInflationWidthFraction" : 0.14,
+  "guardedMinimumAspectRatio" : 0.3,
+  "inputHeight" : 2304,
+  "inputWidth" : 1728,
+  "legacy" : {
+    "baselineNativeChangedOutsideMask" : 0,
+    "baselineNativeChangedPixels" : 2267,
+    "baselineNativeHighlightChangedPixels" : 0,
+    "baselineNativeMaskPixels" : 4888,
+    "baselineNativeMaskPixelsByEye" : {
+      "left" : 2359,
+      "right" : 2529
+    },
+    "baselineNativeProtectedChangedPixels" : 0,
+    "challengeChangedPixelsTotal" : 142493,
+    "challengeHighlightChangeScenarioCount" : 0,
+    "challengeHighlightChangedPixelsTotal" : 0,
+    "challengeMaskPixelsTotal" : 220450,
+    "challengeProtectedChangeScenarioCount" : 119,
+    "challengeProtectedChangedPixelsTotal" : 65914,
+    "failedClosedEyeScenarioCount" : 0,
+    "nativeChangedPixelsTotal" : 70239,
+    "nativeHighlightChangeScenarioCount" : 0,
+    "nativeHighlightChangedPixelsTotal" : 0,
+    "nativeMaskPixelsTotal" : 150266,
+    "nativeProtectedChangeScenarioCount" : 9,
+    "nativeProtectedChangedPixelsTotal" : 96,
+    "scenarioCount" : 120
+  },
+  "mode" : "sclera-guarded-color",
+  "notes" : [
+    "Native inputs exercise the actual redness score and bounded transform; a request-local color-adversarial copy makes the unperturbed protected iris sclera-like red so appearance cannot hide geometric leakage.",
+    "The guarded path validates each eye independently, scores color only inside the hard envelope, feathers locally, and then clips the feathered mask back to the same envelope.",
+    "Protected-iris and highlight findings count final changed pixels, not only mask overlap.",
+    "The 0.30/0.14 guard values are deterministic calibration seeds from Spike 010, not product constants.",
+    "Only aggregate counts are persisted; contours, pupils, raw per-scenario masks, and color-adversarial geometry remain request-local."
+  ],
+  "peakResidentMegabytes" : 449.1875,
+  "pupilHorizontalShiftFractions" : [
+    -0.12,
+    -0.06,
+    0,
+    0.06,
+    0.12
+  ],
+  "pupilVerticalShiftFractions" : [
+    -0.08,
+    0,
+    0.08
+  ],
+  "scenarioCount" : 120,
+  "scenariosPerEye" : 60
+}

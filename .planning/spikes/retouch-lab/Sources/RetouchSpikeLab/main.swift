@@ -136,6 +136,70 @@ private struct ScleraJitterStudy {
     let scenarioCount: Int
 }
 
+private struct ScleraColorVariantMetrics: Codable, Sendable {
+    let scenarioCount: Int
+    let failedClosedEyeScenarioCount: Int
+    let nativeMaskPixelsTotal: Int
+    let nativeChangedPixelsTotal: Int
+    let nativeProtectedChangeScenarioCount: Int
+    let nativeProtectedChangedPixelsTotal: Int
+    let nativeHighlightChangeScenarioCount: Int
+    let nativeHighlightChangedPixelsTotal: Int
+    let challengeMaskPixelsTotal: Int
+    let challengeChangedPixelsTotal: Int
+    let challengeProtectedChangeScenarioCount: Int
+    let challengeProtectedChangedPixelsTotal: Int
+    let challengeHighlightChangeScenarioCount: Int
+    let challengeHighlightChangedPixelsTotal: Int
+    let baselineNativeMaskPixels: Int
+    let baselineNativeChangedPixels: Int
+    let baselineNativeChangedOutsideMask: Int
+    let baselineNativeProtectedChangedPixels: Int
+    let baselineNativeHighlightChangedPixels: Int
+    let baselineNativeMaskPixelsByEye: [String: Int]
+}
+
+private struct ScleraColorIntegrationMetrics: Codable, Sendable {
+    let mode: String
+    let inputWidth: Int
+    let inputHeight: Int
+    let faceCount: Int
+    let eyeCount: Int
+    let scenariosPerEye: Int
+    let scenarioCount: Int
+    let pupilHorizontalShiftFractions: [Double]
+    let pupilVerticalShiftFractions: [Double]
+    let eyeVerticalScaleFractions: [Double]
+    let guardedMinimumAspectRatio: Double
+    let guardedIrisInflationWidthFraction: Double
+    let guardedFailedClosedByVerticalScale: [String: Int]
+    let legacy: ScleraColorVariantMetrics
+    let guarded: ScleraColorVariantMetrics
+    let guardedBaselineNativeMaskRetentionRatio: Double
+    let peakResidentMegabytes: Double
+    let notes: [String]
+}
+
+private struct ScleraColorIntegrationStudy {
+    let legacy: ScleraColorVariantMetrics
+    let guarded: ScleraColorVariantMetrics
+    let legacyBaselineMask: [Float]
+    let guardedBaselineMask: [Float]
+    let legacyBaselineOutput: Raster
+    let guardedBaselineOutput: Raster
+    let challengeInput: Raster
+    let legacyChallengeBaselineMask: [Float]
+    let guardedChallengeBaselineMask: [Float]
+    let legacyChallengeBaselineOutput: Raster
+    let guardedChallengeBaselineOutput: Raster
+    let protectedMask: [Float]
+    let highlightMask: [Float]
+    let legacyChallengeLeakCounts: [Int]
+    let guardedChallengeLeakCounts: [Int]
+    let guardedFailedClosedByVerticalScale: [String: Int]
+    let scenarioCount: Int
+}
+
 private enum LabError: Error, CustomStringConvertible {
     case invalidArguments(String)
     case imageLoadFailed(String)
@@ -299,7 +363,7 @@ private enum RetouchSpikeLab {
             let parsed = try ParsedArguments(Array(CommandLine.arguments.dropFirst()))
             if parsed.mode == "self-test" {
                 try runSelfTests()
-                print("SELF-TEST PASS: 13/13")
+                print("SELF-TEST PASS: 16/16")
                 return
             }
             if parsed.mode == "teeth-compare" {
@@ -308,6 +372,10 @@ private enum RetouchSpikeLab {
             }
             if parsed.mode == "sclera-jitter" {
                 try runScleraJitter(parsed)
+                return
+            }
+            if parsed.mode == "sclera-guarded-color" {
+                try runScleraGuardedColor(parsed)
                 return
             }
             try run(parsed)
@@ -702,6 +770,110 @@ private enum RetouchSpikeLab {
         try writePNG(protectionOverlay(input, mask: study.protectedMask), to: outputURL.appendingPathComponent("protected-overlay.png"))
         try writePNG(leakHeatmapOverlay(input, counts: study.legacyLeakCounts), to: outputURL.appendingPathComponent("legacy-leak-heatmap.png"))
         try writePNG(leakHeatmapOverlay(input, counts: study.guardedLeakCounts), to: outputURL.appendingPathComponent("guarded-leak-heatmap.png"))
+        try writeJSON(metrics, to: outputURL.appendingPathComponent("comparison.json"))
+        try writeJSON(log.events, to: outputURL.appendingPathComponent("events.json"))
+        print(String(data: try JSONEncoder.pretty.encode(metrics), encoding: .utf8) ?? "")
+    }
+
+    private static func runScleraGuardedColor(_ parsed: ParsedArguments) throws {
+        guard let inputPath = parsed.options["input"],
+              let outputPath = parsed.options["output"]
+        else {
+            throw LabError.invalidArguments("sclera-guarded-color requires --input and --output")
+        }
+        let outputURL = URL(fileURLWithPath: outputPath, isDirectory: true)
+        try FileManager.default.createDirectory(at: outputURL, withIntermediateDirectories: true)
+        let log = EventLog()
+        log.add("start", "guarded sclera color integration started", metadata: ["mode": parsed.mode])
+
+        let cgImage = try loadCGImage(URL(fileURLWithPath: inputPath))
+        let input = try Raster(cgImage: cgImage)
+        let detectionStart = Date()
+        let detection = try detectAnchors(cgImage: cgImage, width: input.width, height: input.height)
+        let eyeCount = [detection.anchors.leftEye, detection.anchors.rightEye].filter { $0.count >= 4 }.count
+        log.add(
+            "detection",
+            "request-local eye support captured",
+            metadata: [
+                "faces": "\(detection.faceCount)",
+                "eyeCount": "\(eyeCount)",
+                "pupilCount": "\([detection.anchors.leftPupil, detection.anchors.rightPupil].compactMap { $0 }.count)",
+                "durationMs": formattedMilliseconds(Date().timeIntervalSince(detectionStart) * 1_000),
+            ]
+        )
+
+        let horizontalShifts = [-0.12, -0.06, 0.0, 0.06, 0.12]
+        let verticalShifts = [-0.08, 0.0, 0.08]
+        let verticalScales = [1.0, 0.70, 0.40, 0.20]
+        let minimumAspectRatio = 0.30
+        let inflationFraction = 0.14
+        let studyStart = Date()
+        let study = try scleraColorIntegrationStudy(
+            input,
+            anchors: detection.anchors,
+            horizontalShifts: horizontalShifts,
+            verticalShifts: verticalShifts,
+            verticalScales: verticalScales,
+            guardedMinimumAspectRatio: minimumAspectRatio,
+            guardedInflationFraction: inflationFraction
+        )
+        let baselineRetention = study.legacy.baselineNativeMaskPixels > 0
+            ? Double(study.guarded.baselineNativeMaskPixels) / Double(study.legacy.baselineNativeMaskPixels)
+            : 0
+        let metrics = ScleraColorIntegrationMetrics(
+            mode: parsed.mode,
+            inputWidth: input.width,
+            inputHeight: input.height,
+            faceCount: detection.faceCount,
+            eyeCount: eyeCount,
+            scenariosPerEye: horizontalShifts.count * verticalShifts.count * verticalScales.count,
+            scenarioCount: study.scenarioCount,
+            pupilHorizontalShiftFractions: horizontalShifts,
+            pupilVerticalShiftFractions: verticalShifts,
+            eyeVerticalScaleFractions: verticalScales,
+            guardedMinimumAspectRatio: minimumAspectRatio,
+            guardedIrisInflationWidthFraction: inflationFraction,
+            guardedFailedClosedByVerticalScale: study.guardedFailedClosedByVerticalScale,
+            legacy: study.legacy,
+            guarded: study.guarded,
+            guardedBaselineNativeMaskRetentionRatio: baselineRetention,
+            peakResidentMegabytes: peakResidentMegabytes(),
+            notes: [
+                "Native inputs exercise the actual redness score and bounded transform; a request-local color-adversarial copy makes the unperturbed protected iris sclera-like red so appearance cannot hide geometric leakage.",
+                "The guarded path validates each eye independently, scores color only inside the hard envelope, feathers locally, and then clips the feathered mask back to the same envelope.",
+                "Protected-iris and highlight findings count final changed pixels, not only mask overlap.",
+                "The 0.30/0.14 guard values are deterministic calibration seeds from Spike 010, not product constants.",
+                "Only aggregate counts are persisted; contours, pupils, raw per-scenario masks, and color-adversarial geometry remain request-local.",
+            ]
+        )
+        log.add(
+            "result",
+            "guarded sclera color integration completed",
+            metadata: [
+                "scenarioCount": "\(study.scenarioCount)",
+                "legacyChallengeProtectedChangeScenarios": "\(study.legacy.challengeProtectedChangeScenarioCount)",
+                "guardedChallengeProtectedChangeScenarios": "\(study.guarded.challengeProtectedChangeScenarioCount)",
+                "guardedFailClosedEyeScenarios": "\(study.guarded.failedClosedEyeScenarioCount)",
+                "guardedBaselineMaskPixels": "\(study.guarded.baselineNativeMaskPixels)",
+                "durationMs": formattedMilliseconds(Date().timeIntervalSince(studyStart) * 1_000),
+            ]
+        )
+
+        try writePNG(study.legacyBaselineOutput, to: outputURL.appendingPathComponent("legacy-after.png"))
+        try writePNG(study.guardedBaselineOutput, to: outputURL.appendingPathComponent("guarded-after.png"))
+        try writeMask(study.legacyBaselineMask, width: input.width, height: input.height, to: outputURL.appendingPathComponent("legacy-mask.png"))
+        try writeMask(study.guardedBaselineMask, width: input.width, height: input.height, to: outputURL.appendingPathComponent("guarded-mask.png"))
+        try writePNG(overlay(input, mask: study.legacyBaselineMask), to: outputURL.appendingPathComponent("legacy-overlay.png"))
+        try writePNG(overlay(input, mask: study.guardedBaselineMask), to: outputURL.appendingPathComponent("guarded-overlay.png"))
+        try writePNG(protectionOverlay(input, mask: study.protectedMask), to: outputURL.appendingPathComponent("protected-overlay.png"))
+        try writePNG(protectionOverlay(input, mask: study.highlightMask), to: outputURL.appendingPathComponent("highlight-overlay.png"))
+        try writePNG(study.challengeInput, to: outputURL.appendingPathComponent("challenge-input.png"))
+        try writePNG(study.legacyChallengeBaselineOutput, to: outputURL.appendingPathComponent("legacy-challenge-after.png"))
+        try writePNG(study.guardedChallengeBaselineOutput, to: outputURL.appendingPathComponent("guarded-challenge-after.png"))
+        try writeMask(study.legacyChallengeBaselineMask, width: input.width, height: input.height, to: outputURL.appendingPathComponent("legacy-challenge-mask.png"))
+        try writeMask(study.guardedChallengeBaselineMask, width: input.width, height: input.height, to: outputURL.appendingPathComponent("guarded-challenge-mask.png"))
+        try writePNG(leakHeatmapOverlay(input, counts: study.legacyChallengeLeakCounts), to: outputURL.appendingPathComponent("legacy-challenge-leak-heatmap.png"))
+        try writePNG(leakHeatmapOverlay(input, counts: study.guardedChallengeLeakCounts), to: outputURL.appendingPathComponent("guarded-challenge-leak-heatmap.png"))
         try writeJSON(metrics, to: outputURL.appendingPathComponent("comparison.json"))
         try writeJSON(log.events, to: outputURL.appendingPathComponent("events.json"))
         print(String(data: try JSONEncoder.pretty.encode(metrics), encoding: .utf8) ?? "")
@@ -1296,6 +1468,462 @@ private func scleraRednessMask(_ input: Raster, anchors: FaceAnchors) throws -> 
     return boxBlur(combined, width: input.width, height: input.height, radius: 1).map { clamp($0) }
 }
 
+private struct ScleraColorMaskResult {
+    let mask: [Float]
+    let failedClosed: Bool
+}
+
+private struct ScleraColorAccumulator {
+    var scenarioCount = 0
+    var failedClosedEyeScenarioCount = 0
+    var nativeMaskPixelsTotal = 0
+    var nativeChangedPixelsTotal = 0
+    var nativeProtectedChangeScenarioCount = 0
+    var nativeProtectedChangedPixelsTotal = 0
+    var nativeHighlightChangeScenarioCount = 0
+    var nativeHighlightChangedPixelsTotal = 0
+    var challengeMaskPixelsTotal = 0
+    var challengeChangedPixelsTotal = 0
+    var challengeProtectedChangeScenarioCount = 0
+    var challengeProtectedChangedPixelsTotal = 0
+    var challengeHighlightChangeScenarioCount = 0
+    var challengeHighlightChangedPixelsTotal = 0
+
+    mutating func recordNative(
+        maskPixels: Int,
+        changedPixels: Int,
+        protectedChangedPixels: Int,
+        highlightChangedPixels: Int,
+        failedClosed: Bool
+    ) {
+        scenarioCount += 1
+        if failedClosed { failedClosedEyeScenarioCount += 1 }
+        nativeMaskPixelsTotal += maskPixels
+        nativeChangedPixelsTotal += changedPixels
+        if protectedChangedPixels > 0 { nativeProtectedChangeScenarioCount += 1 }
+        nativeProtectedChangedPixelsTotal += protectedChangedPixels
+        if highlightChangedPixels > 0 { nativeHighlightChangeScenarioCount += 1 }
+        nativeHighlightChangedPixelsTotal += highlightChangedPixels
+    }
+
+    mutating func recordChallenge(
+        maskPixels: Int,
+        changedPixels: Int,
+        protectedChangedPixels: Int,
+        highlightChangedPixels: Int
+    ) {
+        challengeMaskPixelsTotal += maskPixels
+        challengeChangedPixelsTotal += changedPixels
+        if protectedChangedPixels > 0 { challengeProtectedChangeScenarioCount += 1 }
+        challengeProtectedChangedPixelsTotal += protectedChangedPixels
+        if highlightChangedPixels > 0 { challengeHighlightChangeScenarioCount += 1 }
+        challengeHighlightChangedPixelsTotal += highlightChangedPixels
+    }
+
+    func metrics(
+        baselineMeasurement: Measurement,
+        baselineProtectedChangedPixels: Int,
+        baselineHighlightChangedPixels: Int,
+        baselineMaskPixelsByEye: [String: Int]
+    ) -> ScleraColorVariantMetrics {
+        ScleraColorVariantMetrics(
+            scenarioCount: scenarioCount,
+            failedClosedEyeScenarioCount: failedClosedEyeScenarioCount,
+            nativeMaskPixelsTotal: nativeMaskPixelsTotal,
+            nativeChangedPixelsTotal: nativeChangedPixelsTotal,
+            nativeProtectedChangeScenarioCount: nativeProtectedChangeScenarioCount,
+            nativeProtectedChangedPixelsTotal: nativeProtectedChangedPixelsTotal,
+            nativeHighlightChangeScenarioCount: nativeHighlightChangeScenarioCount,
+            nativeHighlightChangedPixelsTotal: nativeHighlightChangedPixelsTotal,
+            challengeMaskPixelsTotal: challengeMaskPixelsTotal,
+            challengeChangedPixelsTotal: challengeChangedPixelsTotal,
+            challengeProtectedChangeScenarioCount: challengeProtectedChangeScenarioCount,
+            challengeProtectedChangedPixelsTotal: challengeProtectedChangedPixelsTotal,
+            challengeHighlightChangeScenarioCount: challengeHighlightChangeScenarioCount,
+            challengeHighlightChangedPixelsTotal: challengeHighlightChangedPixelsTotal,
+            baselineNativeMaskPixels: baselineMeasurement.maskPixels,
+            baselineNativeChangedPixels: baselineMeasurement.changedPixels,
+            baselineNativeChangedOutsideMask: baselineMeasurement.changedOutsideMask,
+            baselineNativeProtectedChangedPixels: baselineProtectedChangedPixels,
+            baselineNativeHighlightChangedPixels: baselineHighlightChangedPixels,
+            baselineNativeMaskPixelsByEye: baselineMaskPixelsByEye
+        )
+    }
+}
+
+private struct ScleraEyeSupport {
+    let label: String
+    let eye: [Point]
+    let pupil: Point
+    let eyeWidth: Double
+    let eyeHeight: Double
+    let protectedMask: [Float]
+    let highlightMask: [Float]
+}
+
+private func scleraColorScore(_ input: Raster, index: Int) -> Float {
+    let color = pixelFeatures(input, index: index)
+    let scleraLikelihood = smoothstep(0.22, 0.68, color.light)
+        * (1 - smoothstep(0.48, 0.85, color.saturation))
+    let redness = max(0, color.red - 0.83 * color.green - 0.17 * color.blue)
+    return clamp(scleraLikelihood * smoothstep(0.008, 0.14, redness))
+}
+
+private func legacyScleraColorMask(
+    _ input: Raster,
+    eye: [Point],
+    pupil: Point?
+) throws -> ScleraColorMaskResult {
+    guard eye.count >= 4, let pupil else {
+        return ScleraColorMaskResult(
+            mask: [Float](repeating: 0, count: input.width * input.height),
+            failedClosed: true
+        )
+    }
+    let eyeWidth = eye.map(\.x).max()! - eye.map(\.x).min()!
+    let eyeHeight = eye.map(\.y).max()! - eye.map(\.y).min()!
+    guard eyeWidth >= 2, eyeHeight > 0 else {
+        return ScleraColorMaskResult(
+            mask: [Float](repeating: 0, count: input.width * input.height),
+            failedClosed: true
+        )
+    }
+    let aperture = try polygonMask(width: input.width, height: input.height, points: eye, featherRadius: 1)
+    let irisRadius = max(eyeHeight * 0.58, eyeWidth * 0.16)
+    var scored = [Float](repeating: 0, count: aperture.count)
+    for index in aperture.indices where aperture[index] > 0.02 {
+        let x = Double(index % input.width) + 0.5
+        let y = Double(index / input.width) + 0.5
+        guard hypot(x - pupil.x, y - pupil.y) > irisRadius else { continue }
+        let color = pixelFeatures(input, index: index)
+        let isSpecular = color.red > 0.86 && color.green > 0.86 && color.blue > 0.86
+        guard !isSpecular else { continue }
+        scored[index] = aperture[index] * scleraColorScore(input, index: index)
+    }
+    return ScleraColorMaskResult(
+        mask: boxBlur(scored, width: input.width, height: input.height, radius: 1).map { clamp($0) },
+        failedClosed: false
+    )
+}
+
+private func guardedScleraColorMask(
+    _ input: Raster,
+    eye: [Point],
+    pupil: Point?,
+    minimumAspectRatio: Double,
+    irisInflationWidthFraction: Double
+) throws -> ScleraColorMaskResult {
+    guard let pupil else {
+        return ScleraColorMaskResult(
+            mask: [Float](repeating: 0, count: input.width * input.height),
+            failedClosed: true
+        )
+    }
+    let envelope = try geometricScleraEnvelope(
+        input,
+        eye: eye,
+        pupil: pupil,
+        minimumAspectRatio: minimumAspectRatio,
+        irisInflationWidthFraction: irisInflationWidthFraction
+    )
+    guard !envelope.failedClosed else {
+        return ScleraColorMaskResult(mask: envelope.mask, failedClosed: true)
+    }
+    var scored = [Float](repeating: 0, count: envelope.mask.count)
+    for index in envelope.mask.indices where envelope.mask[index] > 0.5 {
+        scored[index] = scleraColorScore(input, index: index)
+    }
+    let feathered = boxBlur(scored, width: input.width, height: input.height, radius: 1)
+    return ScleraColorMaskResult(
+        mask: constrainMask(feathered, to: envelope.mask),
+        failedClosed: false
+    )
+}
+
+private func scleraColorIntegrationStudy(
+    _ input: Raster,
+    anchors: FaceAnchors,
+    horizontalShifts: [Double],
+    verticalShifts: [Double],
+    verticalScales: [Double],
+    guardedMinimumAspectRatio: Double,
+    guardedInflationFraction: Double
+) throws -> ScleraColorIntegrationStudy {
+    let rawPairs = [
+        ("left", anchors.leftEye, anchors.leftPupil),
+        ("right", anchors.rightEye, anchors.rightPupil),
+    ]
+    var supports: [ScleraEyeSupport] = []
+    var protectedMask = [Float](repeating: 0, count: input.width * input.height)
+    var highlightMask = [Float](repeating: 0, count: input.width * input.height)
+    for (label, eye, optionalPupil) in rawPairs {
+        guard eye.count >= 4, let pupil = optionalPupil else { continue }
+        let eyeWidth = eye.map(\.x).max()! - eye.map(\.x).min()!
+        let eyeHeight = eye.map(\.y).max()! - eye.map(\.y).min()!
+        guard eyeWidth >= 2, eyeHeight >= 1 else { continue }
+        let aperture = try polygonMask(width: input.width, height: input.height, points: eye, featherRadius: 0)
+        let radius = max(eyeHeight * 0.58, eyeWidth * 0.16)
+        let eyeProtected = circularMaskWithinRegion(
+            width: input.width,
+            height: input.height,
+            center: pupil,
+            radius: radius,
+            region: aperture
+        )
+        let eyeHighlights = specularMask(input, region: aperture)
+        protectedMask = zip(protectedMask, eyeProtected).map { max($0, $1) }
+        highlightMask = zip(highlightMask, eyeHighlights).map { max($0, $1) }
+        supports.append(
+            ScleraEyeSupport(
+                label: label,
+                eye: eye,
+                pupil: pupil,
+                eyeWidth: eyeWidth,
+                eyeHeight: eyeHeight,
+                protectedMask: eyeProtected,
+                highlightMask: eyeHighlights
+            )
+        )
+    }
+    guard !supports.isEmpty else { throw LabError.missingSupport("eye contour and pupil") }
+
+    let challengeInput = scleraColorAdversarialInput(
+        input,
+        protectedMask: protectedMask,
+        highlightMask: highlightMask
+    )
+    var legacyAccumulator = ScleraColorAccumulator()
+    var guardedAccumulator = ScleraColorAccumulator()
+    var legacyBaselineMask = [Float](repeating: 0, count: input.width * input.height)
+    var guardedBaselineMask = [Float](repeating: 0, count: input.width * input.height)
+    var legacyChallengeBaselineMask = [Float](repeating: 0, count: input.width * input.height)
+    var guardedChallengeBaselineMask = [Float](repeating: 0, count: input.width * input.height)
+    var legacyBaselineByEye: [String: Int] = [:]
+    var guardedBaselineByEye: [String: Int] = [:]
+    var legacyChallengeLeakCounts = [Int](repeating: 0, count: input.width * input.height)
+    var guardedChallengeLeakCounts = [Int](repeating: 0, count: input.width * input.height)
+    var ignoredLeakCounts = [Int](repeating: 0, count: input.width * input.height)
+    var guardedFailedClosedByVerticalScale: [String: Int] = [:]
+
+    for support in supports {
+        for verticalScale in verticalScales {
+            let perturbedEye = verticallyScaledEye(support.eye, scale: verticalScale)
+            for verticalShift in verticalShifts {
+                for horizontalShift in horizontalShifts {
+                    let perturbedPupil = Point(
+                        x: support.pupil.x + horizontalShift * support.eyeWidth,
+                        y: support.pupil.y + verticalShift * support.eyeHeight
+                    )
+                    let legacyNative = try legacyScleraColorMask(input, eye: perturbedEye, pupil: perturbedPupil)
+                    let guardedNative = try guardedScleraColorMask(
+                        input,
+                        eye: perturbedEye,
+                        pupil: perturbedPupil,
+                        minimumAspectRatio: guardedMinimumAspectRatio,
+                        irisInflationWidthFraction: guardedInflationFraction
+                    )
+                    if guardedNative.failedClosed {
+                        guardedFailedClosedByVerticalScale[String(format: "%.2f", verticalScale), default: 0] += 1
+                    }
+                    let legacyNativeMeasurement = assessScleraRednessTransform(
+                        input,
+                        mask: legacyNative.mask,
+                        protectedMask: support.protectedMask,
+                        highlightMask: support.highlightMask,
+                        accumulateLeakCounts: false,
+                        leakCounts: &ignoredLeakCounts
+                    )
+                    let guardedNativeMeasurement = assessScleraRednessTransform(
+                        input,
+                        mask: guardedNative.mask,
+                        protectedMask: support.protectedMask,
+                        highlightMask: support.highlightMask,
+                        accumulateLeakCounts: false,
+                        leakCounts: &ignoredLeakCounts
+                    )
+                    legacyAccumulator.recordNative(
+                        maskPixels: legacyNativeMeasurement.maskPixels,
+                        changedPixels: legacyNativeMeasurement.changedPixels,
+                        protectedChangedPixels: legacyNativeMeasurement.protectedChangedPixels,
+                        highlightChangedPixels: legacyNativeMeasurement.highlightChangedPixels,
+                        failedClosed: legacyNative.failedClosed
+                    )
+                    guardedAccumulator.recordNative(
+                        maskPixels: guardedNativeMeasurement.maskPixels,
+                        changedPixels: guardedNativeMeasurement.changedPixels,
+                        protectedChangedPixels: guardedNativeMeasurement.protectedChangedPixels,
+                        highlightChangedPixels: guardedNativeMeasurement.highlightChangedPixels,
+                        failedClosed: guardedNative.failedClosed
+                    )
+
+                    let legacyChallenge = try legacyScleraColorMask(
+                        challengeInput,
+                        eye: perturbedEye,
+                        pupil: perturbedPupil
+                    )
+                    let guardedChallenge = try guardedScleraColorMask(
+                        challengeInput,
+                        eye: perturbedEye,
+                        pupil: perturbedPupil,
+                        minimumAspectRatio: guardedMinimumAspectRatio,
+                        irisInflationWidthFraction: guardedInflationFraction
+                    )
+                    let legacyChallengeMeasurement = assessScleraRednessTransform(
+                        challengeInput,
+                        mask: legacyChallenge.mask,
+                        protectedMask: support.protectedMask,
+                        highlightMask: support.highlightMask,
+                        accumulateLeakCounts: true,
+                        leakCounts: &legacyChallengeLeakCounts
+                    )
+                    let guardedChallengeMeasurement = assessScleraRednessTransform(
+                        challengeInput,
+                        mask: guardedChallenge.mask,
+                        protectedMask: support.protectedMask,
+                        highlightMask: support.highlightMask,
+                        accumulateLeakCounts: true,
+                        leakCounts: &guardedChallengeLeakCounts
+                    )
+                    legacyAccumulator.recordChallenge(
+                        maskPixels: legacyChallengeMeasurement.maskPixels,
+                        changedPixels: legacyChallengeMeasurement.changedPixels,
+                        protectedChangedPixels: legacyChallengeMeasurement.protectedChangedPixels,
+                        highlightChangedPixels: legacyChallengeMeasurement.highlightChangedPixels
+                    )
+                    guardedAccumulator.recordChallenge(
+                        maskPixels: guardedChallengeMeasurement.maskPixels,
+                        changedPixels: guardedChallengeMeasurement.changedPixels,
+                        protectedChangedPixels: guardedChallengeMeasurement.protectedChangedPixels,
+                        highlightChangedPixels: guardedChallengeMeasurement.highlightChangedPixels
+                    )
+
+                    if horizontalShift == 0, verticalShift == 0, verticalScale == 1 {
+                        legacyBaselineMask = zip(legacyBaselineMask, legacyNative.mask).map { max($0, $1) }
+                        guardedBaselineMask = zip(guardedBaselineMask, guardedNative.mask).map { max($0, $1) }
+                        legacyChallengeBaselineMask = zip(legacyChallengeBaselineMask, legacyChallenge.mask).map { max($0, $1) }
+                        guardedChallengeBaselineMask = zip(guardedChallengeBaselineMask, guardedChallenge.mask).map { max($0, $1) }
+                        legacyBaselineByEye[support.label] = legacyNativeMeasurement.maskPixels
+                        guardedBaselineByEye[support.label] = guardedNativeMeasurement.maskPixels
+                    }
+                }
+            }
+        }
+    }
+
+    let legacyBaselineOutput = reduceScleraRedness(input, mask: legacyBaselineMask, strength: 0.72)
+    let guardedBaselineOutput = reduceScleraRedness(input, mask: guardedBaselineMask, strength: 0.72)
+    let legacyChallengeBaselineOutput = reduceScleraRedness(
+        challengeInput,
+        mask: legacyChallengeBaselineMask,
+        strength: 0.72
+    )
+    let guardedChallengeBaselineOutput = reduceScleraRedness(
+        challengeInput,
+        mask: guardedChallengeBaselineMask,
+        strength: 0.72
+    )
+    let legacyBaselineMeasurement = measure(before: input, after: legacyBaselineOutput, mask: legacyBaselineMask)
+    let guardedBaselineMeasurement = measure(before: input, after: guardedBaselineOutput, mask: guardedBaselineMask)
+
+    return ScleraColorIntegrationStudy(
+        legacy: legacyAccumulator.metrics(
+            baselineMeasurement: legacyBaselineMeasurement,
+            baselineProtectedChangedPixels: changedPixelCount(before: input, after: legacyBaselineOutput, within: protectedMask),
+            baselineHighlightChangedPixels: changedPixelCount(before: input, after: legacyBaselineOutput, within: highlightMask),
+            baselineMaskPixelsByEye: legacyBaselineByEye
+        ),
+        guarded: guardedAccumulator.metrics(
+            baselineMeasurement: guardedBaselineMeasurement,
+            baselineProtectedChangedPixels: changedPixelCount(before: input, after: guardedBaselineOutput, within: protectedMask),
+            baselineHighlightChangedPixels: changedPixelCount(before: input, after: guardedBaselineOutput, within: highlightMask),
+            baselineMaskPixelsByEye: guardedBaselineByEye
+        ),
+        legacyBaselineMask: legacyBaselineMask,
+        guardedBaselineMask: guardedBaselineMask,
+        legacyBaselineOutput: legacyBaselineOutput,
+        guardedBaselineOutput: guardedBaselineOutput,
+        challengeInput: challengeInput,
+        legacyChallengeBaselineMask: legacyChallengeBaselineMask,
+        guardedChallengeBaselineMask: guardedChallengeBaselineMask,
+        legacyChallengeBaselineOutput: legacyChallengeBaselineOutput,
+        guardedChallengeBaselineOutput: guardedChallengeBaselineOutput,
+        protectedMask: protectedMask,
+        highlightMask: highlightMask,
+        legacyChallengeLeakCounts: legacyChallengeLeakCounts,
+        guardedChallengeLeakCounts: guardedChallengeLeakCounts,
+        guardedFailedClosedByVerticalScale: guardedFailedClosedByVerticalScale,
+        scenarioCount: legacyAccumulator.scenarioCount
+    )
+}
+
+private func scleraColorAdversarialInput(
+    _ input: Raster,
+    protectedMask: [Float],
+    highlightMask: [Float]
+) -> Raster {
+    var output = input
+    for index in protectedMask.indices where protectedMask[index] > 0.5 && highlightMask[index] <= 0.5 {
+        let x = index % input.width
+        let y = index / input.width
+        output.setRGB(x: x, y: y, red: 0.82, green: 0.55, blue: 0.55)
+    }
+    return output
+}
+
+private func changedPixelCount(before: Raster, after: Raster, within region: [Float]) -> Int {
+    var count = 0
+    for index in region.indices where region[index] > 0.5 {
+        let offset = index * 4
+        if (0..<3).contains(where: { before.pixels[offset + $0] != after.pixels[offset + $0] }) {
+            count += 1
+        }
+    }
+    return count
+}
+
+private struct ScleraTransformAssessment {
+    let maskPixels: Int
+    let changedPixels: Int
+    let protectedChangedPixels: Int
+    let highlightChangedPixels: Int
+}
+
+private func assessScleraRednessTransform(
+    _ input: Raster,
+    mask: [Float],
+    protectedMask: [Float],
+    highlightMask: [Float],
+    accumulateLeakCounts: Bool,
+    leakCounts: inout [Int]
+) -> ScleraTransformAssessment {
+    var maskPixels = 0
+    var changedPixels = 0
+    var protectedChangedPixels = 0
+    var highlightChangedPixels = 0
+    for index in mask.indices where mask[index] > 0.001 {
+        maskPixels += 1
+        let offset = index * 4
+        let reduced = reducedScleraPixel(input, index: index, localMask: mask[index], strength: 0.72)
+        let changed = input.pixels[offset] != reduced.0
+            || input.pixels[offset + 1] != reduced.1
+            || input.pixels[offset + 2] != reduced.2
+        if changed {
+            changedPixels += 1
+            let protected = protectedMask[index] > 0.5
+            let highlight = highlightMask[index] > 0.5
+            if protected { protectedChangedPixels += 1 }
+            if highlight { highlightChangedPixels += 1 }
+            if accumulateLeakCounts, protected || highlight { leakCounts[index] += 1 }
+        }
+    }
+    return ScleraTransformAssessment(
+        maskPixels: maskPixels,
+        changedPixels: changedPixels,
+        protectedChangedPixels: protectedChangedPixels,
+        highlightChangedPixels: highlightChangedPixels
+    )
+}
+
 private struct ScleraEnvelopeResult {
     let mask: [Float]
     let failedClosed: Bool
@@ -1582,24 +2210,35 @@ private func reduceScleraRedness(_ input: Raster, mask: [Float], strength: Float
     var output = input
     for index in mask.indices where mask[index] > 0.001 {
         let offset = index * 4
-        let red = Float(input.pixels[offset]) / 255
-        let green = Float(input.pixels[offset + 1]) / 255
-        let blue = Float(input.pixels[offset + 2]) / 255
-        let originalLuminance = luminance(red, green, blue)
-        let local = mask[index] * strength
-        let redExcess = max(0, red - (0.83 * green + 0.17 * blue))
-        var nextRed = red - redExcess * 0.76 * local
-        var nextGreen = green + redExcess * 0.08 * local
-        var nextBlue = blue + redExcess * 0.13 * local
-        let correction = originalLuminance - luminance(nextRed, nextGreen, nextBlue)
-        nextRed += correction
-        nextGreen += correction
-        nextBlue += correction
-        output.pixels[offset] = byte(nextRed)
-        output.pixels[offset + 1] = byte(nextGreen)
-        output.pixels[offset + 2] = byte(nextBlue)
+        let reduced = reducedScleraPixel(input, index: index, localMask: mask[index], strength: strength)
+        output.pixels[offset] = reduced.0
+        output.pixels[offset + 1] = reduced.1
+        output.pixels[offset + 2] = reduced.2
     }
     return output
+}
+
+private func reducedScleraPixel(
+    _ input: Raster,
+    index: Int,
+    localMask: Float,
+    strength: Float
+) -> (UInt8, UInt8, UInt8) {
+    let offset = index * 4
+    let red = Float(input.pixels[offset]) / 255
+    let green = Float(input.pixels[offset + 1]) / 255
+    let blue = Float(input.pixels[offset + 2]) / 255
+    let originalLuminance = luminance(red, green, blue)
+    let local = localMask * strength
+    let redExcess = max(0, red - (0.83 * green + 0.17 * blue))
+    var nextRed = red - redExcess * 0.76 * local
+    var nextGreen = green + redExcess * 0.08 * local
+    var nextBlue = blue + redExcess * 0.13 * local
+    let correction = originalLuminance - luminance(nextRed, nextGreen, nextBlue)
+    nextRed += correction
+    nextGreen += correction
+    nextBlue += correction
+    return (byte(nextRed), byte(nextGreen), byte(nextBlue))
 }
 
 private func overlay(_ input: Raster, mask: [Float]) -> Raster {
@@ -1895,6 +2534,29 @@ private func runSelfTests() throws {
     )
     try require(legacyRisk.irisLeak > 0, "legacy sclera envelope exposes shifted-iris risk")
     try require(guardedRisk.irisLeak == 0, "guarded sclera envelope protects shifted iris")
+    let challenge = scleraColorAdversarialInput(
+        eyeInput,
+        protectedMask: protected,
+        highlightMask: [Float](repeating: 0, count: 32 * 24)
+    )
+    let legacyColor = try legacyScleraColorMask(challenge, eye: eye, pupil: shiftedPupil)
+    let guardedColor = try guardedScleraColorMask(
+        challenge,
+        eye: eye,
+        pupil: shiftedPupil,
+        minimumAspectRatio: 0.30,
+        irisInflationWidthFraction: 0.14
+    )
+    let legacyColorOutput = reduceScleraRedness(challenge, mask: legacyColor.mask, strength: 0.72)
+    let guardedColorOutput = reduceScleraRedness(challenge, mask: guardedColor.mask, strength: 0.72)
+    try require(
+        changedPixelCount(before: challenge, after: legacyColorOutput, within: protected) > 0,
+        "legacy feathered color transform changes adversarial protected iris"
+    )
+    try require(
+        changedPixelCount(before: challenge, after: guardedColorOutput, within: protected) == 0,
+        "guarded feathered color transform remains clipped outside protected iris"
+    )
     let blinkEnvelope = try geometricScleraEnvelope(
         eyeInput,
         eye: verticallyScaledEye(eye, scale: 0.20),
@@ -1903,4 +2565,25 @@ private func runSelfTests() throws {
         irisInflationWidthFraction: 0.14
     )
     try require(blinkEnvelope.failedClosed && blinkEnvelope.mask.allSatisfy { $0 == 0 }, "blink-like eye fails closed")
+    let openColor = try guardedScleraColorMask(
+        eyeInput,
+        eye: eye,
+        pupil: pupil,
+        minimumAspectRatio: 0.30,
+        irisInflationWidthFraction: 0.14
+    )
+    let collapsedColor = try guardedScleraColorMask(
+        eyeInput,
+        eye: verticallyScaledEye(eye, scale: 0.20),
+        pupil: pupil,
+        minimumAspectRatio: 0.30,
+        irisInflationWidthFraction: 0.14
+    )
+    let independentUnion = zip(openColor.mask, collapsedColor.mask).map { max($0, $1) }
+    try require(
+        openColor.mask.contains { $0 > 0.001 }
+            && collapsedColor.failedClosed
+            && independentUnion == openColor.mask,
+        "collapsed eye fails closed without disabling accepted peer eye"
+    )
 }

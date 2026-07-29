@@ -1,0 +1,34 @@
+[
+  {
+    "category" : "start",
+    "message" : "guarded sclera color integration started",
+    "metadata" : {
+      "mode" : "sclera-guarded-color"
+    },
+    "timestamp" : "2026-07-29T09:53:45Z"
+  },
+  {
+    "category" : "detection",
+    "message" : "request-local eye support captured",
+    "metadata" : {
+      "durationMs" : "72.730",
+      "eyeCount" : "2",
+      "faces" : "1",
+      "pupilCount" : "2"
+    },
+    "timestamp" : "2026-07-29T09:53:46Z"
+  },
+  {
+    "category" : "result",
+    "message" : "guarded sclera color integration completed",
+    "metadata" : {
+      "durationMs" : "11003.299",
+      "guardedBaselineMaskPixels" : "1868",
+      "guardedChallengeProtectedChangeScenarios" : "0",
+      "guardedFailClosedEyeScenarios" : "90",
+      "legacyChallengeProtectedChangeScenarios" : "119",
+      "scenarioCount" : "120"
+    },
+    "timestamp" : "2026-07-29T09:53:57Z"
+  }
+]
