@@ -1,0 +1,57 @@
+{
+  "adaptiveTeethStrongPixels" : 0,
+  "baselineCrossMaskOverlapPixels" : 0,
+  "detectionRequestCount" : 1,
+  "eyeCount" : 2,
+  "faceCount" : 1,
+  "failureIsolation" : {
+    "injectedOverlapPixels" : 0,
+    "leftEyeRejectedMismatchPixels" : 0,
+    "overlapChangedPixels" : 0,
+    "overlapSuppressedPixels" : 0,
+    "rightEyeRejectedMismatchPixels" : 0,
+    "scleraRejectedMismatchPixels" : 0,
+    "teethRejectedMismatchPixels" : 0
+  },
+  "fixedTeethStrongPixels" : 0,
+  "fused" : {
+    "changedOutsideMask" : 0,
+    "changedPixels" : 94,
+    "highlightChangedPixels" : 0,
+    "maskPixels" : 144,
+    "maximumChannelDelta" : 0.0196078431372549,
+    "meanLuminanceDelta" : -5.546031576214415e-05,
+    "protectedIrisChangedPixels" : 0,
+    "textureEnergyRatio" : 1.0013475315937823
+  },
+  "fusedVsSequentialMismatchPixels" : 0,
+  "fusedVsStandaloneMismatchPixels" : 0,
+  "innerLipPointCount" : 6,
+  "inputHeight" : 900,
+  "inputWidth" : 506,
+  "leftScleraMaskPixels" : 56,
+  "legacy" : {
+    "changedOutsideMask" : 0,
+    "changedPixels" : 178,
+    "highlightChangedPixels" : 0,
+    "maskPixels" : 500,
+    "maximumChannelDelta" : 0.0196078431372549,
+    "meanLuminanceDelta" : -0.0002619947285153145,
+    "protectedIrisChangedPixels" : 0,
+    "textureEnergyRatio" : 0.9995479459092994
+  },
+  "legacyVsFusedMismatchPixels" : 117,
+  "medianFusedMilliseconds" : 0.7889270782470703,
+  "medianSequentialMilliseconds" : 0.2549886703491211,
+  "mode" : "guarded-local-composition",
+  "notes" : [
+    "One Vision request supplies private eye, pupil, inner-lip, and outer-lip support to both mask providers.",
+    "The fused pass reads every edited pixel from the original image; independent standalone outputs and the previous sequential ordering are byte-level correctness oracles when masks are disjoint.",
+    "Adaptive teeth and guarded sclera masks are hard-clipped by their providers before composition. Any cross-mask overlap suppresses both local edits at that pixel instead of choosing an implicit precedence.",
+    "Teeth, whole-sclera, left-eye, and right-eye failures are injected independently and compared with standalone expected outputs.",
+    "AI-generated fixtures validate composition mechanics only; useful coverage, naturalness, and the 0.30/0.14 sclera thresholds still require licensed real review."
+  ],
+  "outerLipPointCount" : 14,
+  "peakResidentMegabytes" : 82.578125,
+  "rightScleraMaskPixels" : 88
+}

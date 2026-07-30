@@ -27,9 +27,28 @@
 ## 3. Active
 
 No active plan. No product milestone is active; v1.13 remains shipped and the
-completed Spike 011 wrap-up does not authorize v1.14 or any new feature scope.
+completed Spike 012 does not authorize v1.14 or any new feature scope.
 
 ## 4. Completed
+
+### C-2026-07-30-spike-012-guarded-local-retouch-composition
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-30 |
+| Scope | Integrated Spike 009 adaptive teeth selection and Spike 011 guarded per-eye sclera selection behind one original-image color loop in the isolated Swift harness. Added independent standalone and sequential byte oracles, four local failure injections, and explicit fail-closed mask-overlap handling without changing production source or API. |
+| Verdict | Narrowly `VALIDATED`: one Vision request supplies both selectors; disjoint fused output exactly matches both oracles; rejected teeth, whole sclera, left eye, and right eye preserve every unaffected output; unexpected overlap keeps the original pixel. Product coverage, naturalness, and performance are not validated. |
+| Safety result | e6/e2/e3 have zero baseline cross-mask overlap, zero oracle mismatch, zero outside-union change, zero protected-iris/highlight change, and zero failure-isolation mismatch. e6/e2 each suppress exactly one injected overlap with zero changed collision pixels; e3 naturally has zero teeth candidates while retaining 56 + 88 sclera candidates. |
+| Performance result | The release CPU fused prototype measures 6.634 / 0.774 / 0.789 ms on e6/e2/e3 versus 2.570 / 0.290 / 0.255 ms for the sparse sequential loops. One-owner composition semantics pass, but ROI/Metal optimization and device budgets remain required before product planning. |
+| Verification | Release build and 19/19 self-tests pass; all three aggregate metric assertions and exact event allowlists pass; review JavaScript and asset references pass; no-face exits 1 with the expected message; masks and outputs were inspected including e6 at original detail; JSON/privacy/network/production-boundary/diff-hygiene scans pass. |
+| Evidence | `.planning/spikes/012-guarded-local-retouch-composition/`, aggregate e6/e2/e3 comparison/events JSON, local ignored visual artifacts, updated shared harness and manifest, and the recurring original-pixel/explicit-owner/fail-closed-overlap convention established by Spikes 004 and 012. |
+| Boundary | AI-generated fixtures prove mechanics only. Licensed real teeth/sclera positives and negatives, original-detail blind review, optimized ROI/Metal implementation, device profiling, realtime design, public ownership, v1.14 activation, and `去脂` remain outside this result. |
+
+Outcome:
+
+- Adaptive white-teeth and guarded sclera-redness can share a request-local still-image composition path without hidden ordering semantics or cross-region failure coupling.
+- The product gate remains unchanged: acquire rights-approved real evidence through Spike 006 before proposing white-teeth/redness scope; do not activate v1.14 from mechanics fixtures.
+- If this spike is wrapped into `spike-findings-beauty`, preserve the performance nonclaim and the explicit rule that unexpected mask overlap leaves the source pixel unchanged.
 
 ### C-2026-07-30-spike-011-wrap-up
 

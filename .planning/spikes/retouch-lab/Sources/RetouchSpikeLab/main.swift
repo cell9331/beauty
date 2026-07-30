@@ -200,6 +200,67 @@ private struct ScleraColorIntegrationStudy {
     let scenarioCount: Int
 }
 
+private struct LocalRetouchVariantMetrics: Codable, Sendable {
+    let maskPixels: Int
+    let changedPixels: Int
+    let changedOutsideMask: Int
+    let protectedIrisChangedPixels: Int
+    let highlightChangedPixels: Int
+    let maximumChannelDelta: Double
+    let meanLuminanceDelta: Double
+    let textureEnergyRatio: Double?
+}
+
+private struct LocalRetouchFailureMetrics: Codable, Sendable {
+    let teethRejectedMismatchPixels: Int
+    let scleraRejectedMismatchPixels: Int
+    let leftEyeRejectedMismatchPixels: Int
+    let rightEyeRejectedMismatchPixels: Int
+    let injectedOverlapPixels: Int
+    let overlapSuppressedPixels: Int
+    let overlapChangedPixels: Int
+}
+
+private struct LocalRetouchCompositionMetrics: Codable, Sendable {
+    let mode: String
+    let inputWidth: Int
+    let inputHeight: Int
+    let faceCount: Int
+    let detectionRequestCount: Int
+    let eyeCount: Int
+    let innerLipPointCount: Int
+    let outerLipPointCount: Int
+    let fixedTeethStrongPixels: Int
+    let adaptiveTeethStrongPixels: Int
+    let leftScleraMaskPixels: Int
+    let rightScleraMaskPixels: Int
+    let baselineCrossMaskOverlapPixels: Int
+    let fusedVsStandaloneMismatchPixels: Int
+    let fusedVsSequentialMismatchPixels: Int
+    let legacyVsFusedMismatchPixels: Int
+    let medianFusedMilliseconds: Double
+    let medianSequentialMilliseconds: Double
+    let legacy: LocalRetouchVariantMetrics
+    let fused: LocalRetouchVariantMetrics
+    let failureIsolation: LocalRetouchFailureMetrics
+    let peakResidentMegabytes: Double
+    let notes: [String]
+}
+
+private struct GuardedScleraPair {
+    let leftMask: [Float]
+    let rightMask: [Float]
+    let combinedMask: [Float]
+    let leftFailedClosed: Bool
+    let rightFailedClosed: Bool
+}
+
+private struct LocalRetouchCompositionResult {
+    let output: Raster
+    let unionMask: [Float]
+    let overlapPixels: Int
+}
+
 private enum LabError: Error, CustomStringConvertible {
     case invalidArguments(String)
     case imageLoadFailed(String)
@@ -363,7 +424,7 @@ private enum RetouchSpikeLab {
             let parsed = try ParsedArguments(Array(CommandLine.arguments.dropFirst()))
             if parsed.mode == "self-test" {
                 try runSelfTests()
-                print("SELF-TEST PASS: 16/16")
+                print("SELF-TEST PASS: 19/19")
                 return
             }
             if parsed.mode == "teeth-compare" {
@@ -376,6 +437,10 @@ private enum RetouchSpikeLab {
             }
             if parsed.mode == "sclera-guarded-color" {
                 try runScleraGuardedColor(parsed)
+                return
+            }
+            if parsed.mode == "guarded-local-composition" {
+                try runGuardedLocalComposition(parsed)
                 return
             }
             try run(parsed)
@@ -878,6 +943,265 @@ private enum RetouchSpikeLab {
         try writeJSON(log.events, to: outputURL.appendingPathComponent("events.json"))
         print(String(data: try JSONEncoder.pretty.encode(metrics), encoding: .utf8) ?? "")
     }
+
+    private static func runGuardedLocalComposition(_ parsed: ParsedArguments) throws {
+        guard let inputPath = parsed.options["input"],
+              let outputPath = parsed.options["output"]
+        else {
+            throw LabError.invalidArguments("guarded-local-composition requires --input and --output")
+        }
+        let iterations = max(1, Int(parsed.options["iterations"] ?? "9") ?? 9)
+        let outputURL = URL(fileURLWithPath: outputPath, isDirectory: true)
+        try FileManager.default.createDirectory(at: outputURL, withIntermediateDirectories: true)
+        let log = EventLog()
+        log.add("start", "guarded local-retouch composition started", metadata: ["mode": parsed.mode])
+
+        let cgImage = try loadCGImage(URL(fileURLWithPath: inputPath))
+        let input = try Raster(cgImage: cgImage)
+        let detectionStart = Date()
+        let detection = try detectAnchors(cgImage: cgImage, width: input.width, height: input.height)
+        let detectionDuration = Date().timeIntervalSince(detectionStart) * 1_000
+        let eyeCount = [
+            (detection.anchors.leftEye, detection.anchors.leftPupil),
+            (detection.anchors.rightEye, detection.anchors.rightPupil),
+        ].filter { $0.0.count >= 4 && $0.1 != nil }.count
+        log.add(
+            "detection",
+            "one request-local face context captured",
+            metadata: [
+                "faces": "\(detection.faceCount)",
+                "eyeCount": "\(eyeCount)",
+                "pupilCount": "\([detection.anchors.leftPupil, detection.anchors.rightPupil].compactMap { $0 }.count)",
+                "innerLipCount": "\(detection.anchors.innerLips.count)",
+                "outerLipCount": "\(detection.anchors.outerLips.count)",
+                "requestCount": "1",
+                "durationMs": formattedMilliseconds(detectionDuration),
+            ]
+        )
+
+        let experimentStart = Date()
+        let teeth = try adaptiveTeethSelection(input, anchors: detection.anchors)
+        let sclera = try guardedScleraPair(input, anchors: detection.anchors)
+        let protection = try scleraProtectionMasks(input, anchors: detection.anchors)
+        let fused = composeLocalRetouch(
+            input,
+            teethMask: teeth.adaptive,
+            scleraMask: sclera.combinedMask
+        )
+
+        let teethStandalone = whitenTeeth(input, mask: teeth.adaptive, strength: 0.62)
+        let scleraStandalone = reduceScleraRedness(input, mask: sclera.combinedMask, strength: 0.72)
+        let standaloneOracle = mergeStandaloneLocalRetouch(
+            original: input,
+            teethOutput: teethStandalone,
+            scleraOutput: scleraStandalone,
+            teethMask: teeth.adaptive,
+            scleraMask: sclera.combinedMask
+        )
+        let sequentialOracle = reduceScleraRedness(
+            whitenTeeth(input, mask: teeth.adaptive, strength: 0.62),
+            mask: sclera.combinedMask,
+            strength: 0.72
+        )
+
+        let legacyTeeth = try heuristicTeethMask(input, innerLips: detection.anchors.innerLips)
+        let legacySclera = try scleraRednessMask(input, anchors: detection.anchors)
+        let legacyUnion = zip(legacyTeeth, legacySclera).map { max($0, $1) }
+        let legacyOutput = reduceScleraRedness(
+            whitenTeeth(input, mask: legacyTeeth, strength: 0.62),
+            mask: legacySclera,
+            strength: 0.72
+        )
+
+        let zeroMask = [Float](repeating: 0, count: input.width * input.height)
+        let teethRejectedOutput = composeLocalRetouch(
+            input,
+            teethMask: zeroMask,
+            scleraMask: sclera.combinedMask
+        ).output
+        let scleraRejectedOutput = composeLocalRetouch(
+            input,
+            teethMask: teeth.adaptive,
+            scleraMask: zeroMask
+        ).output
+
+        let leftRejected = try guardedScleraPair(
+            input,
+            anchors: detection.anchors,
+            rejectLeft: true
+        )
+        let rightRejected = try guardedScleraPair(
+            input,
+            anchors: detection.anchors,
+            rejectRight: true
+        )
+        let leftRejectedOutput = composeLocalRetouch(
+            input,
+            teethMask: teeth.adaptive,
+            scleraMask: leftRejected.combinedMask
+        ).output
+        let rightRejectedOutput = composeLocalRetouch(
+            input,
+            teethMask: teeth.adaptive,
+            scleraMask: rightRejected.combinedMask
+        ).output
+        let leftRejectedScleraStandalone = reduceScleraRedness(
+            input,
+            mask: leftRejected.combinedMask,
+            strength: 0.72
+        )
+        let rightRejectedScleraStandalone = reduceScleraRedness(
+            input,
+            mask: rightRejected.combinedMask,
+            strength: 0.72
+        )
+        let leftRejectedOracle = mergeStandaloneLocalRetouch(
+            original: input,
+            teethOutput: teethStandalone,
+            scleraOutput: leftRejectedScleraStandalone,
+            teethMask: teeth.adaptive,
+            scleraMask: leftRejected.combinedMask
+        )
+        let rightRejectedOracle = mergeStandaloneLocalRetouch(
+            original: input,
+            teethOutput: teethStandalone,
+            scleraOutput: rightRejectedScleraStandalone,
+            teethMask: teeth.adaptive,
+            scleraMask: rightRejected.combinedMask
+        )
+
+        var injectedScleraMask = sclera.combinedMask
+        var injectedOverlapMask = zeroMask
+        if let overlapIndex = teeth.adaptive.firstIndex(where: { $0 > 0.15 }) {
+            injectedScleraMask[overlapIndex] = max(injectedScleraMask[overlapIndex], teeth.adaptive[overlapIndex])
+            injectedOverlapMask[overlapIndex] = 1
+        }
+        let overlapInjected = composeLocalRetouch(
+            input,
+            teethMask: teeth.adaptive,
+            scleraMask: injectedScleraMask
+        )
+
+        var fusedDurations: [Double] = []
+        var sequentialDurations: [Double] = []
+        var lastFused = fused.output
+        var lastSequential = sequentialOracle
+        for _ in 0..<iterations {
+            let fusedStart = Date()
+            lastFused = composeLocalRetouch(
+                input,
+                teethMask: teeth.adaptive,
+                scleraMask: sclera.combinedMask
+            ).output
+            fusedDurations.append(Date().timeIntervalSince(fusedStart) * 1_000)
+
+            let sequentialStart = Date()
+            lastSequential = reduceScleraRedness(
+                whitenTeeth(input, mask: teeth.adaptive, strength: 0.62),
+                mask: sclera.combinedMask,
+                strength: 0.72
+            )
+            sequentialDurations.append(Date().timeIntervalSince(sequentialStart) * 1_000)
+        }
+        let fusedVsStandalone = differentPixelCount(fused.output, standaloneOracle)
+        let fusedVsSequential = differentPixelCount(fused.output, sequentialOracle)
+        let benchmarkMismatch = differentPixelCount(lastFused, lastSequential)
+        let teethRejectedMismatch = differentPixelCount(teethRejectedOutput, scleraStandalone)
+        let scleraRejectedMismatch = differentPixelCount(scleraRejectedOutput, teethStandalone)
+        let leftRejectedMismatch = differentPixelCount(leftRejectedOutput, leftRejectedOracle)
+        let rightRejectedMismatch = differentPixelCount(rightRejectedOutput, rightRejectedOracle)
+        let failureMismatchTotal = teethRejectedMismatch
+            + scleraRejectedMismatch
+            + leftRejectedMismatch
+            + rightRejectedMismatch
+
+        let legacyMetrics = localRetouchVariantMetrics(
+            before: input,
+            after: legacyOutput,
+            mask: legacyUnion,
+            protectedMask: protection.protected,
+            highlightMask: protection.highlights
+        )
+        let fusedMetrics = localRetouchVariantMetrics(
+            before: input,
+            after: fused.output,
+            mask: fused.unionMask,
+            protectedMask: protection.protected,
+            highlightMask: protection.highlights
+        )
+        let failureMetrics = LocalRetouchFailureMetrics(
+            teethRejectedMismatchPixels: teethRejectedMismatch,
+            scleraRejectedMismatchPixels: scleraRejectedMismatch,
+            leftEyeRejectedMismatchPixels: leftRejectedMismatch,
+            rightEyeRejectedMismatchPixels: rightRejectedMismatch,
+            injectedOverlapPixels: overlapInjected.overlapPixels,
+            overlapSuppressedPixels: overlapInjected.overlapPixels,
+            overlapChangedPixels: changedPixelCount(
+                before: input,
+                after: overlapInjected.output,
+                within: injectedOverlapMask
+            )
+        )
+        let metrics = LocalRetouchCompositionMetrics(
+            mode: parsed.mode,
+            inputWidth: input.width,
+            inputHeight: input.height,
+            faceCount: detection.faceCount,
+            detectionRequestCount: 1,
+            eyeCount: eyeCount,
+            innerLipPointCount: detection.anchors.innerLips.count,
+            outerLipPointCount: detection.anchors.outerLips.count,
+            fixedTeethStrongPixels: teeth.fixed.lazy.filter { $0 > 0.15 }.count,
+            adaptiveTeethStrongPixels: teeth.adaptive.lazy.filter { $0 > 0.15 }.count,
+            leftScleraMaskPixels: sclera.leftMask.lazy.filter { $0 > 0.001 }.count,
+            rightScleraMaskPixels: sclera.rightMask.lazy.filter { $0 > 0.001 }.count,
+            baselineCrossMaskOverlapPixels: fused.overlapPixels,
+            fusedVsStandaloneMismatchPixels: fusedVsStandalone,
+            fusedVsSequentialMismatchPixels: max(fusedVsSequential, benchmarkMismatch),
+            legacyVsFusedMismatchPixels: differentPixelCount(legacyOutput, fused.output),
+            medianFusedMilliseconds: median(fusedDurations),
+            medianSequentialMilliseconds: median(sequentialDurations),
+            legacy: legacyMetrics,
+            fused: fusedMetrics,
+            failureIsolation: failureMetrics,
+            peakResidentMegabytes: peakResidentMegabytes(),
+            notes: [
+                "One Vision request supplies private eye, pupil, inner-lip, and outer-lip support to both mask providers.",
+                "The fused pass reads every edited pixel from the original image; independent standalone outputs and the previous sequential ordering are byte-level correctness oracles when masks are disjoint.",
+                "Adaptive teeth and guarded sclera masks are hard-clipped by their providers before composition. Any cross-mask overlap suppresses both local edits at that pixel instead of choosing an implicit precedence.",
+                "Teeth, whole-sclera, left-eye, and right-eye failures are injected independently and compared with standalone expected outputs.",
+                "AI-generated fixtures validate composition mechanics only; useful coverage, naturalness, and the 0.30/0.14 sclera thresholds still require licensed real review.",
+            ]
+        )
+        log.add(
+            "result",
+            "guarded local-retouch composition completed",
+            metadata: [
+                "adaptiveTeethPixels": "\(metrics.adaptiveTeethStrongPixels)",
+                "guardedScleraPixels": "\(metrics.leftScleraMaskPixels + metrics.rightScleraMaskPixels)",
+                "baselineOverlapPixels": "\(metrics.baselineCrossMaskOverlapPixels)",
+                "fusedMismatchPixels": "\(fusedVsStandalone + fusedVsSequential + benchmarkMismatch)",
+                "failureMismatchPixels": "\(failureMismatchTotal)",
+                "durationMs": formattedMilliseconds(Date().timeIntervalSince(experimentStart) * 1_000),
+            ]
+        )
+
+        try writePNG(legacyOutput, to: outputURL.appendingPathComponent("legacy-after.png"))
+        try writePNG(fused.output, to: outputURL.appendingPathComponent("fused-after.png"))
+        try writePNG(overlay(input, mask: legacyUnion), to: outputURL.appendingPathComponent("legacy-overlay.png"))
+        try writePNG(overlay(input, mask: fused.unionMask), to: outputURL.appendingPathComponent("fused-overlay.png"))
+        try writeMask(teeth.adaptive, width: input.width, height: input.height, to: outputURL.appendingPathComponent("adaptive-teeth-mask.png"))
+        try writeMask(sclera.combinedMask, width: input.width, height: input.height, to: outputURL.appendingPathComponent("guarded-sclera-mask.png"))
+        try writeMask(fused.unionMask, width: input.width, height: input.height, to: outputURL.appendingPathComponent("fused-union-mask.png"))
+        try writePNG(teethRejectedOutput, to: outputURL.appendingPathComponent("teeth-rejected-after.png"))
+        try writePNG(scleraRejectedOutput, to: outputURL.appendingPathComponent("sclera-rejected-after.png"))
+        try writePNG(leftRejectedOutput, to: outputURL.appendingPathComponent("left-eye-rejected-after.png"))
+        try writePNG(rightRejectedOutput, to: outputURL.appendingPathComponent("right-eye-rejected-after.png"))
+        try writePNG(overlapInjected.output, to: outputURL.appendingPathComponent("overlap-injected-after.png"))
+        try writeJSON(metrics, to: outputURL.appendingPathComponent("comparison.json"))
+        try writeJSON(log.events, to: outputURL.appendingPathComponent("events.json"))
+        print(String(data: try JSONEncoder.pretty.encode(metrics), encoding: .utf8) ?? "")
+    }
 }
 
 private extension JSONEncoder {
@@ -1280,6 +1604,37 @@ private func adaptiveTeethMask(
     return zip(blurred, fixedSeedMask).map { clamp(max($0, $1)) }
 }
 
+private func adaptiveTeethSelection(
+    _ input: Raster,
+    anchors: FaceAnchors
+) throws -> (fixed: [Float], adaptive: [Float]) {
+    let empty = [Float](repeating: 0, count: input.width * input.height)
+    guard anchors.innerLips.count >= 3, anchors.outerLips.count >= 3 else {
+        return (empty, empty)
+    }
+    let hardRegion = try polygonMask(
+        width: input.width,
+        height: input.height,
+        points: anchors.innerLips,
+        featherRadius: 0
+    )
+    let candidateRegion = try adaptiveMouthCandidateRegion(
+        width: input.width,
+        height: input.height,
+        innerLips: anchors.innerLips,
+        outerLips: anchors.outerLips
+    )
+    let fixedRaw = try heuristicTeethMask(input, innerLips: anchors.innerLips)
+    let fixed = constrainMask(fixedRaw, to: hardRegion)
+    let adaptive = try adaptiveTeethMask(
+        input,
+        innerLips: anchors.innerLips,
+        candidateRegion: candidateRegion,
+        fixedSeedMask: fixed
+    )
+    return (fixed, adaptive)
+}
+
 private func adaptiveMouthCandidateRegion(
     width: Int,
     height: Int,
@@ -1638,6 +1993,69 @@ private func guardedScleraColorMask(
         mask: constrainMask(feathered, to: envelope.mask),
         failedClosed: false
     )
+}
+
+private func guardedScleraPair(
+    _ input: Raster,
+    anchors: FaceAnchors,
+    rejectLeft: Bool = false,
+    rejectRight: Bool = false
+) throws -> GuardedScleraPair {
+    let left = try guardedScleraColorMask(
+        input,
+        eye: anchors.leftEye,
+        pupil: rejectLeft ? nil : anchors.leftPupil,
+        minimumAspectRatio: 0.30,
+        irisInflationWidthFraction: 0.14
+    )
+    let right = try guardedScleraColorMask(
+        input,
+        eye: anchors.rightEye,
+        pupil: rejectRight ? nil : anchors.rightPupil,
+        minimumAspectRatio: 0.30,
+        irisInflationWidthFraction: 0.14
+    )
+    return GuardedScleraPair(
+        leftMask: left.mask,
+        rightMask: right.mask,
+        combinedMask: zip(left.mask, right.mask).map { max($0, $1) },
+        leftFailedClosed: left.failedClosed,
+        rightFailedClosed: right.failedClosed
+    )
+}
+
+private func scleraProtectionMasks(
+    _ input: Raster,
+    anchors: FaceAnchors
+) throws -> (protected: [Float], highlights: [Float]) {
+    var protected = [Float](repeating: 0, count: input.width * input.height)
+    var highlights = protected
+    let supports = [
+        (anchors.leftEye, anchors.leftPupil),
+        (anchors.rightEye, anchors.rightPupil),
+    ]
+    for (eye, optionalPupil) in supports {
+        guard eye.count >= 4, let pupil = optionalPupil else { continue }
+        let eyeWidth = eye.map(\.x).max()! - eye.map(\.x).min()!
+        let eyeHeight = eye.map(\.y).max()! - eye.map(\.y).min()!
+        guard eyeWidth >= 2, eyeHeight >= 1 else { continue }
+        let aperture = try polygonMask(
+            width: input.width,
+            height: input.height,
+            points: eye,
+            featherRadius: 0
+        )
+        let eyeProtected = circularMaskWithinRegion(
+            width: input.width,
+            height: input.height,
+            center: pupil,
+            radius: max(eyeHeight * 0.58, eyeWidth * 0.16),
+            region: aperture
+        )
+        protected = zip(protected, eyeProtected).map { max($0, $1) }
+        highlights = zip(highlights, specularMask(input, region: aperture)).map { max($0, $1) }
+    }
+    return (protected, highlights)
 }
 
 private func scleraColorIntegrationStudy(
@@ -2185,25 +2603,36 @@ private func whitenTeeth(_ input: Raster, mask: [Float], strength: Float) -> Ras
     var output = input
     for index in mask.indices where mask[index] > 0.001 {
         let offset = index * 4
-        let red = Float(input.pixels[offset]) / 255
-        let green = Float(input.pixels[offset + 1]) / 255
-        let blue = Float(input.pixels[offset + 2]) / 255
-        let local = mask[index] * strength
-        let originalLuminance = luminance(red, green, blue)
-        let yellowExcess = max(0, (red + green) * 0.5 - blue)
-        var nextRed = red + 0.018 * local
-        var nextGreen = green + 0.018 * local
-        var nextBlue = blue + yellowExcess * 0.78 * local + 0.026 * local
-        let desiredLuminance = min(0.94, originalLuminance + 0.028 * local)
-        let correction = desiredLuminance - luminance(nextRed, nextGreen, nextBlue)
-        nextRed += correction
-        nextGreen += correction
-        nextBlue += correction
-        output.pixels[offset] = byte(nextRed)
-        output.pixels[offset + 1] = byte(nextGreen)
-        output.pixels[offset + 2] = byte(nextBlue)
+        let whitened = whitenedTeethPixel(input, index: index, localMask: mask[index], strength: strength)
+        output.pixels[offset] = whitened.0
+        output.pixels[offset + 1] = whitened.1
+        output.pixels[offset + 2] = whitened.2
     }
     return output
+}
+
+private func whitenedTeethPixel(
+    _ input: Raster,
+    index: Int,
+    localMask: Float,
+    strength: Float
+) -> (UInt8, UInt8, UInt8) {
+    let offset = index * 4
+    let red = Float(input.pixels[offset]) / 255
+    let green = Float(input.pixels[offset + 1]) / 255
+    let blue = Float(input.pixels[offset + 2]) / 255
+    let local = localMask * strength
+    let originalLuminance = luminance(red, green, blue)
+    let yellowExcess = max(0, (red + green) * 0.5 - blue)
+    var nextRed = red + 0.018 * local
+    var nextGreen = green + 0.018 * local
+    var nextBlue = blue + yellowExcess * 0.78 * local + 0.026 * local
+    let desiredLuminance = min(0.94, originalLuminance + 0.028 * local)
+    let correction = desiredLuminance - luminance(nextRed, nextGreen, nextBlue)
+    nextRed += correction
+    nextGreen += correction
+    nextBlue += correction
+    return (byte(nextRed), byte(nextGreen), byte(nextBlue))
 }
 
 private func reduceScleraRedness(_ input: Raster, mask: [Float], strength: Float) -> Raster {
@@ -2239,6 +2668,106 @@ private func reducedScleraPixel(
     nextGreen += correction
     nextBlue += correction
     return (byte(nextRed), byte(nextGreen), byte(nextBlue))
+}
+
+private func composeLocalRetouch(
+    _ input: Raster,
+    teethMask: [Float],
+    scleraMask: [Float]
+) -> LocalRetouchCompositionResult {
+    let count = input.width * input.height
+    let empty = [Float](repeating: 0, count: count)
+    guard teethMask.count == count, scleraMask.count == count else {
+        return LocalRetouchCompositionResult(
+            output: input,
+            unionMask: empty,
+            overlapPixels: 0
+        )
+    }
+
+    var union = empty
+    var output = input
+    var overlapPixels = 0
+    for index in 0..<count {
+        let teeth = clamp(teethMask[index])
+        let sclera = clamp(scleraMask[index])
+        if teeth > 0.001, sclera > 0.001 {
+            overlapPixels += 1
+            continue
+        }
+        union[index] = max(teeth, sclera)
+        let offset = index * 4
+        if teeth > 0.001 {
+            let pixel = whitenedTeethPixel(
+                input,
+                index: index,
+                localMask: teeth,
+                strength: 0.62
+            )
+            output.pixels[offset] = pixel.0
+            output.pixels[offset + 1] = pixel.1
+            output.pixels[offset + 2] = pixel.2
+        } else if sclera > 0.001 {
+            let pixel = reducedScleraPixel(
+                input,
+                index: index,
+                localMask: sclera,
+                strength: 0.72
+            )
+            output.pixels[offset] = pixel.0
+            output.pixels[offset + 1] = pixel.1
+            output.pixels[offset + 2] = pixel.2
+        }
+    }
+    return LocalRetouchCompositionResult(
+        output: output,
+        unionMask: union,
+        overlapPixels: overlapPixels
+    )
+}
+
+private func mergeStandaloneLocalRetouch(
+    original: Raster,
+    teethOutput: Raster,
+    scleraOutput: Raster,
+    teethMask: [Float],
+    scleraMask: [Float]
+) -> Raster {
+    let count = original.width * original.height
+    guard teethMask.count == count,
+          scleraMask.count == count,
+          teethOutput.width == original.width,
+          teethOutput.height == original.height,
+          scleraOutput.width == original.width,
+          scleraOutput.height == original.height
+    else { return original }
+    var output = original
+    for index in 0..<count {
+        let hasTeeth = clamp(teethMask[index]) > 0.001
+        let hasSclera = clamp(scleraMask[index]) > 0.001
+        guard hasTeeth != hasSclera else { continue }
+        let offset = index * 4
+        let source = hasTeeth ? teethOutput : scleraOutput
+        output.pixels[offset] = source.pixels[offset]
+        output.pixels[offset + 1] = source.pixels[offset + 1]
+        output.pixels[offset + 2] = source.pixels[offset + 2]
+    }
+    return output
+}
+
+private func differentPixelCount(_ first: Raster, _ second: Raster) -> Int {
+    guard first.width == second.width,
+          first.height == second.height,
+          first.pixels.count == second.pixels.count
+    else { return max(first.width * first.height, second.width * second.height) }
+    var count = 0
+    for index in 0..<(first.width * first.height) {
+        let offset = index * 4
+        if (0..<3).contains(where: { first.pixels[offset + $0] != second.pixels[offset + $0] }) {
+            count += 1
+        }
+    }
+    return count
 }
 
 private func overlay(_ input: Raster, mask: [Float]) -> Raster {
@@ -2343,6 +2872,26 @@ private func measure(before: Raster, after: Raster, mask: [Float]) -> Measuremen
         maximumChannelDelta: Double(maximumDelta) / 255,
         meanLuminanceDelta: luminanceSamples > 0 ? luminanceDelta / Double(luminanceSamples) : 0,
         textureEnergyRatio: beforeEnergy > 1e-8 ? afterEnergy / beforeEnergy : nil
+    )
+}
+
+private func localRetouchVariantMetrics(
+    before: Raster,
+    after: Raster,
+    mask: [Float],
+    protectedMask: [Float],
+    highlightMask: [Float]
+) -> LocalRetouchVariantMetrics {
+    let measurement = measure(before: before, after: after, mask: mask)
+    return LocalRetouchVariantMetrics(
+        maskPixels: measurement.maskPixels,
+        changedPixels: measurement.changedPixels,
+        changedOutsideMask: measurement.changedOutsideMask,
+        protectedIrisChangedPixels: changedPixelCount(before: before, after: after, within: protectedMask),
+        highlightChangedPixels: changedPixelCount(before: before, after: after, within: highlightMask),
+        maximumChannelDelta: measurement.maximumChannelDelta,
+        meanLuminanceDelta: measurement.meanLuminanceDelta,
+        textureEnergyRatio: measurement.textureEnergyRatio
     )
 }
 
@@ -2585,5 +3134,58 @@ private func runSelfTests() throws {
             && collapsedColor.failedClosed
             && independentUnion == openColor.mask,
         "collapsed eye fails closed without disabling accepted peer eye"
+    )
+
+    let compositionInput = Raster(width: 16, height: 16, fill: (205, 165, 135, 255))
+    var teethMask = [Float](repeating: 0, count: 16 * 16)
+    var scleraMask = teethMask
+    teethMask[5 * 16 + 5] = 0.8
+    scleraMask[10 * 16 + 10] = 0.7
+    let composed = composeLocalRetouch(
+        compositionInput,
+        teethMask: teethMask,
+        scleraMask: scleraMask
+    )
+    let standalone = mergeStandaloneLocalRetouch(
+        original: compositionInput,
+        teethOutput: whitenTeeth(compositionInput, mask: teethMask, strength: 0.62),
+        scleraOutput: reduceScleraRedness(compositionInput, mask: scleraMask, strength: 0.72),
+        teethMask: teethMask,
+        scleraMask: scleraMask
+    )
+    let sequential = reduceScleraRedness(
+        whitenTeeth(compositionInput, mask: teethMask, strength: 0.62),
+        mask: scleraMask,
+        strength: 0.72
+    )
+    try require(
+        differentPixelCount(composed.output, standalone) == 0
+            && differentPixelCount(composed.output, sequential) == 0,
+        "disjoint fused composition matches standalone and sequential oracles"
+    )
+    let rejectedTeeth = composeLocalRetouch(
+        compositionInput,
+        teethMask: [Float](repeating: 0, count: 16 * 16),
+        scleraMask: scleraMask
+    )
+    try require(
+        differentPixelCount(
+            rejectedTeeth.output,
+            reduceScleraRedness(compositionInput, mask: scleraMask, strength: 0.72)
+        ) == 0,
+        "rejected teeth region preserves accepted sclera result"
+    )
+    scleraMask[5 * 16 + 5] = 0.8
+    let overlap = composeLocalRetouch(
+        compositionInput,
+        teethMask: teethMask,
+        scleraMask: scleraMask
+    )
+    var overlapRegion = [Float](repeating: 0, count: 16 * 16)
+    overlapRegion[5 * 16 + 5] = 1
+    try require(
+        overlap.overlapPixels == 1
+            && changedPixelCount(before: compositionInput, after: overlap.output, within: overlapRegion) == 0,
+        "ambiguous cross-mask overlap suppresses both edits"
     )
 }
