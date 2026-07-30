@@ -39,6 +39,10 @@ New spikes follow these unless the question requires otherwise.
   intersect the result with that same hard region again before compositing.
   Adaptive teeth and guarded sclera experiments both require this final clip to
   prevent filtering from expanding selection into protected support.
+- When multiple accepted bounded color transforms share a frame, derive every
+  edited pixel from the original input under one explicit mask owner. Treat
+  unexpected cross-mask overlap as invalid support and keep the original pixel
+  rather than depending on transform order or an implicit priority.
 - Mechanics fixtures and rights-approved product evidence use separate explicit
   gate states; a valid mechanics bundle must never open the product gate.
 - External models stay outside the repository until their dataset, checkpoint,
