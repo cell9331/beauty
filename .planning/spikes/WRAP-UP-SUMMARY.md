@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-30
 
-**Spikes processed:** 11 total; 1 added in this append
+**Spikes processed:** 12 total; 1 added in this append
 
 **Feature areas:** upper-eyelid fullness, teeth whitening, sclera redness, still-image integration, licensed fixture evaluation
 
@@ -23,6 +23,7 @@
 | 009 | adaptive-teeth-mask | standard | `PARTIAL` — mechanics coverage winner | Teeth whitening |
 | 010 | sclera-jitter-envelope | standard | `VALIDATED` — bounded safety grid only | Sclera redness |
 | 011 | guarded-sclera-color-integration | standard | `VALIDATED` — bounded final-output grid only | Sclera redness / still-image integration |
+| 012 | guarded-local-retouch-composition | standard | `VALIDATED` — composition semantics only | Still-image integration |
 
 ## Key Findings
 
@@ -51,6 +52,14 @@
   pixels; the legacy adversarial path leaked in 356/360. The guard still failed
   closed in 270/360 stress scenarios and retained only 24.6%–38.2% of the legacy
   color mask, so product coverage and threshold calibration remain open.
+- Adaptive teeth and guarded sclera can share one request-local composition
+  path without hidden ordering or failure coupling. On e6/e2/e3 the fused
+  original-pixel output byte-matched independent standalone and sequential
+  oracles, changed zero pixels outside the union or protected iris/highlights,
+  and matched all teeth/whole-sclera/left-eye/right-eye failure expectations.
+  Injected cross-mask collisions retained the original pixel. The tested CPU
+  loop was 2.6–3.1× slower than sparse sequential loops, so this validates
+  ownership semantics—not performance, memory, or a device budget.
 - The offline review gate distinguishes `mechanics_only` from
   `approved_internal_evaluation`, requires complete positive/negative assets,
   and exports structured judgments without media, paths, rights records,
@@ -58,8 +67,9 @@
   real bundle has opened the product gate.
 - The shared still-image pattern remains: one Vision request, private
   request-local support/masks, independent regional/eye failure, hard
-  containment restored after filtering, bounded transforms composed once,
-  aggregate-only events, and no camera/pixel-buffer inference.
+  containment restored after filtering, one original-pixel owner per edit,
+  fail-closed unexpected overlap, aggregate-only events, and no camera/pixel-
+  buffer inference.
 - No v1.14 milestone, public API, production source, model/weight, or device-
   performance claim is authorized by these findings.
 
@@ -73,9 +83,11 @@ Future planning and implementation conversations should load
 - the mandatory sclera jitter guard, post-feather hard clip, and complementary
   color-independent plus adversarial final-output safety oracles;
 - the still-image integration/privacy boundary and per-eye failure ownership;
+- the original-pixel composition recipe, byte-level oracles, overlap rejection,
+  and explicit CPU performance nonclaim;
 - the rights-approved local fixture manifest, blind-review, and sanitized-export
   gate required before product planning.
 
-Exact source for Spikes 006/009/010/011 and the current 16-test Swift harness is
-preserved under the skill's `sources/` tree without media, model weights, or
-build artifacts.
+Exact source for Spikes 006/009/010/011/012 and the current 19-test Swift
+harness is preserved under the skill's `sources/` tree without media, model
+weights, or build artifacts.

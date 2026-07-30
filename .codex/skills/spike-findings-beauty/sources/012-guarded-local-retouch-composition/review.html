@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>白牙 + 祛红 · 本地安全组合</title>
+  <style>
+    :root { color-scheme: dark; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #0b0d10; color: #f2eee6; }
+    header, main { width: min(1260px, calc(100% - 36px)); margin: 0 auto; }
+    header { padding: 42px 0 22px; display: grid; gap: 18px; }
+    h1 { margin: 0; max-width: 960px; font-size: clamp(34px, 6vw, 64px); line-height: .98; letter-spacing: -.055em; }
+    p { margin: 0; max-width: 940px; color: #aaa9a3; line-height: 1.65; }
+    .badges, nav { display: flex; flex-wrap: wrap; gap: 8px; }
+    .badge { border: 1px solid #333941; border-radius: 999px; padding: 8px 11px; background: #15191e; color: #cbc7bf; font-size: 12px; }
+    .good { border-color: #285d44; background: #10251a; color: #9de2b7; }
+    .warn { border-color: #6b5025; background: #251c0f; color: #edc47c; }
+    button { border: 1px solid #353b43; border-radius: 11px; padding: 10px 14px; background: #15191e; color: #dfdbd2; cursor: pointer; font: inherit; }
+    button[aria-selected="true"] { background: #f27a57; color: #160e0a; border-color: #f27a57; font-weight: 750; }
+    .summary { margin-bottom: 16px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border: 1px solid #2a3037; border-radius: 16px; overflow: hidden; background: #12161a; }
+    .metric { padding: 15px; border-right: 1px solid #2a3037; }
+    .metric:last-child { border-right: 0; }
+    .metric span { display: block; color: #90938f; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+    .metric strong { display: block; margin-top: 7px; font-size: 22px; }
+    .compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    article { border: 1px solid #2a3037; border-radius: 18px; overflow: hidden; background: #12161a; }
+    article header { width: auto; padding: 16px 18px; display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid #2a3037; }
+    h2 { margin: 0; font-size: 18px; }
+    article header span { color: #969893; font-size: 12px; }
+    .stage { aspect-ratio: 4 / 3; background: #050607; }
+    .stage img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px; }
+    .modes button { padding: 8px; font-size: 12px; }
+    .legend { margin: 16px 0 44px; padding: 16px 18px; border-left: 3px solid #e3b456; background: #1a180f; color: #cbbd94; line-height: 1.65; }
+    @media (max-width: 780px) { .summary { grid-template-columns: 1fr 1fr; } .metric { border-bottom: 1px solid #2a3037; } .compare { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>两个局部效果，谁拥有最终像素？</h1>
+      <p>左侧是旧选择器的顺序输出；右侧把 adaptive teeth 与 guarded sclera 从原图一次组合。切换到遮罩查看两类区域是否分离，切换失败注入确认局部拒绝不会拖垮另一个效果。</p>
+    </div>
+    <div class="badges"><span class="badge good">oracle mismatch · 0</span><span class="badge good">protected changes · 0</span><span class="badge good">failure mismatch · 0</span><span class="badge warn">CPU prototype slower</span><span class="badge">AI mechanics only</span></div>
+    <nav aria-label="Fixture">
+      <button data-fixture="e6" aria-selected="true">e6 · wide smile</button>
+      <button data-fixture="e2" aria-selected="false">e2 · portrait</button>
+      <button data-fixture="e3" aria-selected="false">e3 · teeth fail-closed</button>
+    </nav>
+  </header>
+  <main>
+    <section class="summary" aria-label="Metrics">
+      <div class="metric"><span>Vision requests</span><strong>1</strong></div>
+      <div class="metric"><span>Adaptive teeth</span><strong id="teethMetric">7,396</strong></div>
+      <div class="metric"><span>Guarded sclera</span><strong id="scleraMetric">1,868</strong></div>
+      <div class="metric"><span>Baseline overlap</span><strong>0</strong></div>
+      <div class="metric"><span>Fused / sequential</span><strong id="timeMetric">6.63 / 2.57 ms</strong></div>
+    </section>
+    <section class="compare">
+      <article data-side="legacy">
+        <header><h2>Legacy path</h2><span>old masks · sequential transforms</span></header>
+        <div class="stage"><img id="legacyImage" src="artifacts/e6/legacy-after.png" alt="Legacy local-retouch result"></div>
+        <div class="modes"><button data-view="after" aria-selected="true">After</button><button data-view="overlay" aria-selected="false">Union mask</button><button data-view="teethRejected" aria-selected="false">Teeth rejected</button></div>
+      </article>
+      <article data-side="fused">
+        <header><h2>Guarded fused path</h2><span>original pixel · explicit owner</span></header>
+        <div class="stage"><img id="fusedImage" src="artifacts/e6/fused-after.png" alt="Guarded fused local-retouch result"></div>
+        <div class="modes"><button data-view="after" aria-selected="true">After</button><button data-view="overlay" aria-selected="false">Union mask</button><button data-view="scleraRejected" aria-selected="false">Sclera rejected</button><button data-view="teethMask" aria-selected="false">Teeth mask</button><button data-view="scleraMask" aria-selected="false">Sclera mask</button><button data-view="overlap" aria-selected="false">Overlap rejected</button></div>
+      </article>
+    </section>
+    <aside class="legend"><strong>读图：</strong>红色 overlay 只用于检查候选区域，不代表效果强度。e3 的 teeth mask 应为空，但两眼 sclera 仍保留候选，证明失败边界独立。e6/e2 的 overlap rejected 与正常结果肉眼几乎一致；指标确认被注入的单个冲突像素保持原图。这里验证的是组合机械性质，不是授权真人上的覆盖与自然度。</aside>
+  </main>
+  <script>
+    (() => {
+      "use strict";
+      const fixtures = {
+        e6: { teeth: "7,396", sclera: "1,868", time: "6.63 / 2.57 ms" },
+        e2: { teeth: "805", sclera: "223", time: "0.77 / 0.29 ms" },
+        e3: { teeth: "0", sclera: "144", time: "0.79 / 0.25 ms" }
+      };
+      let fixture = "e6";
+      const views = { legacy: "after", fused: "after" };
+      const $ = (id) => document.getElementById(id);
+      function imageName(side, view) {
+        if (side === "legacy") {
+          if (view === "overlay") return "legacy-overlay.png";
+          if (view === "teethRejected") return "teeth-rejected-after.png";
+          return "legacy-after.png";
+        }
+        if (view === "overlay") return "fused-overlay.png";
+        if (view === "scleraRejected") return "sclera-rejected-after.png";
+        if (view === "teethMask") return "adaptive-teeth-mask.png";
+        if (view === "scleraMask") return "guarded-sclera-mask.png";
+        if (view === "overlap") return "overlap-injected-after.png";
+        return "fused-after.png";
+      }
+      function render() {
+        $("teethMetric").textContent = fixtures[fixture].teeth;
+        $("scleraMetric").textContent = fixtures[fixture].sclera;
+        $("timeMetric").textContent = fixtures[fixture].time;
+        for (const side of ["legacy", "fused"]) {
+          $(side + "Image").src = `artifacts/${fixture}/${imageName(side, views[side])}`;
+          document.querySelectorAll(`[data-side="${side}"] [data-view]`).forEach((button) => button.setAttribute("aria-selected", String(button.dataset.view === views[side])));
+        }
+        document.querySelectorAll("[data-fixture]").forEach((button) => button.setAttribute("aria-selected", String(button.dataset.fixture === fixture)));
+      }
+      document.querySelectorAll("[data-fixture]").forEach((button) => button.addEventListener("click", () => { fixture = button.dataset.fixture; render(); }));
+      document.querySelectorAll("[data-side]").forEach((card) => card.querySelectorAll("[data-view]").forEach((button) => button.addEventListener("click", () => { views[card.dataset.side] = button.dataset.view; render(); })));
+      render();
+    })();
+  </script>
+</body>
+</html>

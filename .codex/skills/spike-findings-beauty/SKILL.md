@@ -1,6 +1,6 @@
 ---
 name: spike-findings-beauty
-description: Implementation blueprint from beauty's local-retouch spike experiments. Auto-load when planning or implementing still-image upper-eyelid fullness, teeth whitening, guarded sclera redness reduction, request-local masks, bounded color transforms, Vision/Core ML integration, privacy-safe diagnostics, adversarial safety oracles, or their model/license and real-fixture gates.
+description: Implementation blueprint from beauty's local-retouch spike experiments. Auto-load when planning or implementing still-image upper-eyelid fullness, teeth whitening, guarded sclera redness reduction, request-local masks, original-pixel color composition, fail-closed mask ownership, Vision/Core ML integration, privacy-safe diagnostics, adversarial safety oracles, or their model/license and real-fixture gates.
 ---
 
 <context>
@@ -14,7 +14,7 @@ techniques with a research-only Core ML candidate, built a rights-gated local
 review path, and measured protected-region leakage, landmark uncertainty,
 texture, luminance, privacy, latency, memory, and integration ownership.
 
-Spike sessions wrapped: 2026-07-29 (001a–005, then 006/009/010); 2026-07-30 (011 append)
+Spike sessions wrapped: 2026-07-29 (001a–005, then 006/009/010); 2026-07-30 (011 and 012 appends)
 </context>
 
 <requirements>
@@ -41,7 +41,7 @@ Spike sessions wrapped: 2026-07-29 (001a–005, then 006/009/010); 2026-07-30 (0
 | Upper-eyelid fullness | `references/upper-eyelid-fullness.md` | Preserve the tone/frequency experiment only; reject the tested warp and do not ship `去脂` without real positives. |
 | Teeth whitening | `references/teeth-whitening.md` | Seeded adaptive growth improves side-tooth mechanics without dropping the fixed baseline, but licensed protected-tissue review remains mandatory. |
 | Sclera redness | `references/sclera-redness.md` | Guard each eye before scoring, feather then re-clip to the hard envelope, and verify the final transform with a color-adversarial oracle; real calibration remains mandatory. |
-| Still-image integration | `references/still-image-integration.md` | Detect once, fail locally, preserve hard containment through filtering, compose bounded transforms once, and log only aggregate metrics. |
+| Still-image integration | `references/still-image-integration.md` | Detect once, fail locally, preserve hard containment, derive every accepted edit from the original pixel under one explicit mask owner, and reject unexpected overlap. |
 | Licensed fixture evaluation | `references/licensed-fixture-evaluation.md` | Product evidence opens only for complete rights-approved positive/negative bundles reviewed locally with a sanitized structured export. |
 
 ## Source Files
@@ -49,7 +49,7 @@ Spike sessions wrapped: 2026-07-29 (001a–005, then 006/009/010); 2026-07-30 (0
 Original spike READMEs, review tools, and the external-model audit are preserved
 in `sources/<spike-id>-<name>/`. The current exact shared Swift package is in
 `sources/shared-retouch-lab/`; local review sources are under their owning spike
-directories.
+directories. The current harness includes 19 deterministic self-tests.
 </findings_index>
 
 <metadata>
@@ -66,4 +66,5 @@ directories.
 - 009-adaptive-teeth-mask
 - 010-sclera-jitter-envelope
 - 011-guarded-sclera-color-integration
+- 012-guarded-local-retouch-composition
 </metadata>

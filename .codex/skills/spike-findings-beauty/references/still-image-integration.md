@@ -7,6 +7,9 @@
 - Detect support once per request, keep all masks private/request-local, and
   compose bounded transforms once.
 - Missing support degrades per region without contaminating accepted regions.
+- Derive every accepted color edit from the original pixel under one explicit
+  mask owner. Unexpected cross-mask overlap is invalid support and must retain
+  the original pixel instead of receiving an implicit priority.
 - Persist only aggregate counts/timings; never coordinates, masks, teeth
   geometry, pupil positions, tensors, or vein-like descriptors.
 - AI fixtures and macOS measurements prove mechanics only.
@@ -21,7 +24,8 @@ validated still image
   -> private request context (eye/brow/pupil/inner-lip support)
   -> independent fail-closed mask providers
        sclera: per-eye guard -> color score -> feather -> hard re-clip
-  -> bounded teeth and sclera color transforms
+  -> sanitize ownership (expected disjoint masks; overlap -> original pixel)
+  -> bounded teeth and sclera color transforms reading the original input
   -> one composite output
   -> aggregate-only metrics/events
 ```
@@ -39,9 +43,29 @@ validated still image
    globally.
 5. Intersect masks with their anatomical containment before scoring/growth and
    again after every blur or feather that can expand support. Keep masks disjoint
-   where expected and build a union only for measurement/compositing.
-6. Apply `whitenTeeth` and `reduceScleraRedness` to the original input, not to a
-   repeatedly accumulated frame. Compose the accepted results once.
+   where expected. At the composition boundary, clamp both masks and reject any
+   pixel claimed by both providers. Record only the aggregate overlap count and
+   keep the source pixel unchanged; do not choose teeth/sclera precedence.
+6. Factor the two bounded transforms into deterministic per-pixel functions.
+   Read from the original input and invoke exactly one accepted transform for
+   each owned pixel:
+
+```swift
+let teeth = clamp(teethMask[index])
+let sclera = clamp(scleraMask[index])
+if teeth > 0.001, sclera > 0.001 {
+    overlapPixels += 1
+    continue // preserve the original pixel
+}
+if teeth > 0.001 {
+    output[index] = whitenedTeethPixel(input, index: index, localMask: teeth)
+} else if sclera > 0.001 {
+    output[index] = reducedScleraPixel(input, index: index, localMask: sclera)
+}
+```
+
+   A sequential teeth-then-sclera frame is an oracle only while masks are
+   disjoint, never the ownership contract.
 7. Report only this allowlisted event shape:
 
 ```text
@@ -58,6 +82,12 @@ result:    maskPixels, changedPixels, changedOutsideMask, durationMs
    - sclera final output changes zero protected iris/highlight pixels under both
      color-independent geometry and request-local color-adversarial oracles;
    - failure of one eye leaves an accepted peer eye unchanged and active;
+   - fused disjoint output byte-matches independently transformed/merged
+     standalone outputs and the prior sequential ordering;
+   - zero teeth, zero whole-sclera, and rejected left/right eye injections each
+     byte-match the expected unaffected standalone output;
+   - expected baseline masks have zero overlap; an injected collision is
+     counted, suppressed, and byte-identical to the original pixel;
    - luminance and texture ratios remain within feature-specific reviewed bounds;
    - JSON event keys match an allowlist and sensitive-key scans remain empty;
    - no unapproved model/weights exist in the repository.
@@ -68,7 +98,12 @@ result:    maskPixels, changedPixels, changedOutsideMask, durationMs
 The release macOS harness measured a median color pass of 0.273 ms at 506×900
 and 2.647 ms at 1728×2304 after masks existed. The larger full integration run
 used 159.9 MB peak RSS and Vision took about 58.4 ms. These are baselines, not
-budgets or device claims.
+budgets or device claims. Spike 012's whole-frame CPU ownership prototype was
+correct but slower than the sparse sequential loops: 6.634 vs 2.570 ms at
+1728×2304, and 0.774–0.789 vs 0.255–0.290 ms at 506×900. Its 518 MB evidence-run
+peak retained multiple oracle frames and float masks. Preserve these as explicit
+performance nonclaims; use bounded ROI or Metal/Core Image and target-device
+profiling before proposing a product budget.
 
 ## What to Avoid
 
@@ -76,6 +111,8 @@ budgets or device claims.
   face detection.
 - Do not re-run Vision for each local effect.
 - Do not apply global color changes or repeatedly feed output back as input.
+- Do not resolve unexpected cross-mask overlap by transform order, max strength,
+  or an undocumented teeth/sclera priority. Invalid ownership remains original.
 - Do not let one region's missing support disable or corrupt another region.
 - Do not assume a pre-feather intersection is final containment; re-intersect
   the filtered mask with its hard anatomical envelope before compositing.
@@ -84,6 +121,9 @@ budgets or device claims.
 - Do not silently pick a face in production without a product/API decision.
 - Do not serialize raw support or include model paths/tensors in logs.
 - Do not benchmark debug builds or report macOS numbers as iOS performance.
+- Do not describe a single original-image composition loop as a speedup. The
+  tested Swift CPU implementation was 2.6–3.1× slower than sparse sequential
+  loops and requires a different production execution strategy.
 
 ## Constraints
 
@@ -94,15 +134,20 @@ budgets or device claims.
 - The guarded sclera ordering is validated only on a bounded mechanics grid. Its
   24.6%–38.2% legacy-mask retention and 270/360 fail-closed stress cases require
   licensed real-data calibration before product planning.
+- Original-pixel composition, regional/eye failure isolation, and fail-closed
+  overlap ownership are narrowly `VALIDATED` on three AI mechanics fixtures.
+  Product coverage, naturalness, optimized performance, memory, and device
+  budgets remain unvalidated.
 - Production code and public API were intentionally untouched by all spikes.
 - Binary visual artifacts stay local per repository policy; commands, source,
   metrics, and event logs preserve reproducibility.
 
 ## Origin
 
-Synthesized from spikes: 004, 005, 011
+Synthesized from spikes: 004, 005, 011, 012
 
 Source files available in:
 `sources/004-local-color-retouch/`, `sources/005-still-image-integration/`,
-`sources/011-guarded-sclera-color-integration/`, and
+`sources/011-guarded-sclera-color-integration/`,
+`sources/012-guarded-local-retouch-composition/`, and
 `sources/shared-retouch-lab/`.

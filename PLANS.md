@@ -27,9 +27,26 @@
 ## 3. Active
 
 No active plan. No product milestone is active; v1.13 remains shipped and the
-completed Spike 012 does not authorize v1.14 or any new feature scope.
+completed Spike 012 wrap-up does not authorize v1.14 or any new feature scope.
 
 ## 4. Completed
+
+### C-2026-07-30-spike-012-wrap-up
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-30 |
+| Scope | Appended completed Spike 012 to the project-local `spike-findings-beauty` implementation blueprint without changing production source, public API, feature inventory, milestone scope, or runtime behavior. |
+| Outputs | Added exact 012 README/review sources; refreshed the exact shared Swift harness; updated the still-image integration recipe with original-pixel ownership, byte-level composition/failure oracles, fail-closed overlap handling, and the CPU performance nonclaim; refreshed the skill trigger/index, processed inventory, and wrap-up summary. |
+| Knowledge shape | The skill now covers twelve processed spikes across the same five feature areas. Accepted local color edits derive from the original pixel under one explicit mask owner; unexpected teeth/sclera overlap retains the source pixel. This validates ownership mechanics only, not optimized execution. |
+| Verification | Four owner/copy sources compare byte-for-byte; the copied Swift package builds in release and passes 19/19 self-tests; the retained Spike 006 review core passes 9/9; the copied 012 review JavaScript parses; manifest, skill, and summary inventories are 12/12/12; all five references contain required blueprint sections; skill validation, AGENTS route count, runtime-network, generated-directory, media/model/binary, production-boundary, and diff-hygiene checks pass. |
+| Boundary | No fixture media, aggregate run artifact, model/weight, build output, product code, public contract, realtime claim, device budget, licensed-evidence claim, or v1.14 activation was packaged. AI fixtures remain mechanics-only and licensed real review remains mandatory. |
+
+Outcome:
+
+- Future local-retouch planning will auto-load the exact composition rule and will not infer that “one fused loop” is a performance win; the tested CPU path was 2.6–3.1× slower than sparse sequential loops.
+- The existing `CONVENTIONS.md` already records the recurring original-pixel/explicit-owner/fail-closed-overlap rule established by Spikes 004 and 012, so wrap-up added no duplicate convention or AGENTS route.
+- The next evidence-bearing action remains rights-approved real teeth/sclera positive/negative review through Spike 006; frontier exploration remains optional and does not activate v1.14.
 
 ### C-2026-07-30-spike-012-guarded-local-retouch-composition
 
