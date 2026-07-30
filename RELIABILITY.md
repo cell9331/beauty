@@ -242,6 +242,13 @@ Phase 28 scoped face-shape behavior:
 - Diagnostics remain fixed and aggregate-only. Fresh focused evidence passes 17 provider, 21 resolver, 13 conflict, 14 combined, 2 pipeline, 43 degradation, and 15 facade tests; `BeautyEffectsTests` passes 205 with one opt-in skip, full SwiftPM passes 368 with three opt-in skips, and boundary evidence passes 24/24 self-tests plus 14/14 live checks.
 - These gates prove provider/routing reliability, not decoded visibility, naturalness, final calibration, exhaustive safety, device parity, performance, packaging, shipping, or launch readiness. Phase 47 owns output evidence and Phase 48 owns final safety/promotion.
 
+### Phase 53 Canonical Still-Image Reliability Contract
+
+- D-18 retains the existing stable caller actions: malformed extent/orientation, over-ceiling or overflow-shaped dimensions, and nonopaque pixels throw payload-free `.invalidInput`; unknown, non-RGB, non-output-capable, or extended-range color semantics throw payload-free `.unsupportedPixelFormat`. No additive error case or framework payload is required.
+- Validation order is deterministic: decoded extent and ceiling, typed orientation, color/range allowlist, one orientation/mirror normalization, rechecked integral dimensions and checked allocation, one explicit-sRGB RGBA8 render, then opacity scan. Every rejection occurs before any Vision/support work; exact-ceiling input succeeds and a later valid request succeeds after invalid input because canonical pixels are request values rather than cached engine/static state.
+- The `CIContext` is reused by the canonicalizer while every returned pixel allocation remains request-owned. This is an ownership/recovery result only: it sets no latency, memory, device, cancellation, parallel-engine, or release budget. Encoded bytes, container metadata, gain maps, HDR, and transparent composite policy remain unobservable or unsupported nonclaims at the already-decoded facade.
+- Focused evidence is `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache swift test --package-path BeautySDK --filter BeautyCanonicalStillImageTests` (6/6), the Phase 53 checker self-test (6/6; `16 = 13 automated + 3 flagged`), and `git diff --check`.
+
 ## 7. Observability Model
 
 First-version diagnostics live in `BeautyCore/Diagnostics`; do not create a separate diagnostics package until another product actually shares it. Use three layers:

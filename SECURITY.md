@@ -156,6 +156,13 @@ Phase 28 face-shape privacy evidence recorded 2026-07-08:
 - Phase 51 output, gallery, staging, and bounded quarantine handling remains under ignored generated roots. Publication verifies exact source/destination containment, rejects symlinks and unexpected names, leaves no staging tree, and permits neither tracked, staged, nor non-ignored generated artifacts.
 - Passing output review does not authorize identity inference, naturalness/ethical claims, final caps, product promotion, runtime download, model/resource additions, network/cloud behavior, Demo exposure, or commercial/release readiness. Those boundaries remain Phase 52 or later.
 
+### Phase 53 Canonical Still-Image Input Security Boundary
+
+- D-06/D-07 preflights finite positive integral decoded extents and the configured pixel ceiling before integer conversion or allocation, validates EXIF raw values only in `1...8`, then accepts only known output-capable RGB spaces that are not extended-range. Oriented dimensions are checked again, and row/total RGBA8 byte counts use overflow-reporting multiplication before allocation.
+- One reused Core Image context names sRGB as both working and output color space and performs the only render into request-owned `.RGBA8` bytes. Orientation and input mirroring are consumed once, output origin is zero, and any rendered alpha byte other than `255` rejects the request; there is no compositing, background inference, or force-opaque path.
+- D-18 uses only payload-free `BeautyError.invalidInput` for extent/orientation/limit/overflow/alpha failures and `.unsupportedPixelFormat` for unknown, non-RGB, non-output-capable, or extended-range color semantics. Errors and the package-only carrier expose no metadata, path, dimensions, pixels, or support through public/SPI surfaces. The synthetic testing seam is package-only; no new SPI was added.
+- This decoded-`CIImage` boundary does not claim encoded-byte/container validation, gain-map discovery, HDR or transparent support, Vision invocation, masks, feature admission, realtime/pixel-buffer behavior, or same-engine concurrency. `BeautyCanonicalStillImageTests` passes 6/6, checker self-test passes 6/6 with exact `16 = 13 automated + 3 flagged`, and `git diff --check` passes.
+
 ## 3. Trust Boundaries
 
 ```text
