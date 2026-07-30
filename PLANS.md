@@ -26,9 +26,17 @@
 
 ## 3. Active
 
-No active plan. No product milestone is active; v1.13 remains shipped and the
-long-term authorized local portrait fixture does not by itself authorize v1.14
-or any new feature scope.
+### A-2026-07-30-v1-14-local-facial-retouch
+
+| Field | Value |
+| --- | --- |
+| Status | `planned` |
+| Scope | Milestone v1.14 establishes an SDK-SPM still-image local-retouch boundary and independently qualifies `白牙`, `祛红血丝`, and conditional `去脂` without adding SwiftUI/Demo, realtime/pixel-buffer, cloud, external-model, tracked-media, or release-readiness scope. |
+| Requirements | 41/41 requirements are uniquely mapped across canonical input/compatibility, rights-approved evidence, original-pixel composition, teeth, sclera, conditional upper-eyelid fullness, privacy/safety, public output, and exact promotion. |
+| Roadmap | Phase 53 canonical request foundation → Phase 54 evidence/eligibility decisions → Phase 55 composition core → Phase 56 independent teeth slice → Phase 57 guarded sclera plus conditional eyelid work → Phase 58 combined facade/safety/ledger/audit closeout. |
+| Feature gates | Teeth and sclera are independent peer slices. `去脂` requires genuine rights-approved positives/negatives plus a credible non-warp method; a closed gate adds no field, provider, renderer case, or inert route and keeps branch `眼睛` partial. |
+| Current evidence | The long-term authorized `p1.jpg` is usable for teeth containment and over-whitening review but is not a yellow-teeth, sclera-redness, or upper-eyelid-fullness positive. Feature promotion requires complete feature-specific positive/negative bundles and original-detail review. |
+| Next | Discuss and plan Phase 53 from PATH-01 through PATH-07 before changing production code. |
 
 ## 4. Completed
 

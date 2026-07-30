@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v1.14
 milestone_name: Local Facial Retouch
 status: planning
-last_updated: "2026-07-30T06:29:15.941Z"
+last_updated: "2026-07-30T14:54:27+08:00"
 last_activity: 2026-07-30
 progress:
-  total_phases: 0
+  total_phases: 6
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,454 +17,68 @@ progress:
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-07-28)
+See: `.planning/PROJECT.md` (updated 2026-07-30)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Awaiting the next explicit milestone after TD-012 input hardening
+**Current focus:** Phase 53 — Canonical Still-Image Contract and Private Request Foundation
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-07-30 — Milestone v1.14 started
+Phase: 53 of 58 (milestone phase 1 of 6)
+Plan: Not planned
+Status: Ready to plan
+Last activity: 2026-07-30 — v1.14 roadmap created with 41/41 requirement coverage
 
-### TD-012 Production Image Input Bounds Result
+Progress: [░░░░░░░░░░] 0%
 
-- `BeautyConfiguration` now has source-compatible 32 MiB encoded and 50,000,000-pixel defaults, positive custom values, non-positive fallback, and legacy missing-key decoding.
-- SDK `CIImage` and `CVPixelBuffer` entry points reject over-limit dimensions as `BeautyError.invalidInput` before resource, detection, copy, or render work; the Demo rejects encoded bytes before decode and decoded extents before processing/display render.
-- Focused verification passes 23 SDK tests and 12 Demo pipeline tests. Full verification passes 457 SwiftPM tests with six expected skips and 118 Demo simulator tests with zero failures.
-- The PhotosPicker pre-transfer allocation residual remains explicit because `loadTransferable(Data.self)` materializes Data before its size is observable. TD-013 and all device, 600-second, screenshot, commercial, packaging, and release nonclaims remain unchanged.
+## Performance Metrics
 
-### Phase 52 Eyebrow Safety and Branch Closeout Result
+**Current milestone:**
 
-- Independent `gsd-verifier` re-verification passes 16/16 and closes the previous 12/16 report's four gaps with production-path evidence.
-- The current 28-file review is clean 0/0/0/0: an independent 18-file `gsd-code-reviewer` base plus a clearly labeled 10-file inline checker/governance delta after the typed reviewer hit its platform usage limit. Focused regression executes 154 tests with one documented opt-in skip and zero failures.
-- Plans 52-09 and 52-10 synchronize all routed root and planning owners. The exact 23-task Nyquist ledger is green and now uses lifecycle `status: validated`; independent Phase 52 verification remains `passed` at 16/16.
-- The lifecycle-aware post-verification checker passed exactly 35/35 with `verification=passed` before the independent audit rerun.
-- Phase 52 implements exactly seven eyebrow rows and SDK-core branch `眉毛`, keeps raw support package-internal and request-scoped, exposes aggregate-only diagnostics, and changes no SwiftUI/Demo path.
-- Fresh verification passes eight focused suites, 450 SwiftPM tests with six conditional skips, strict 72/72 output plus thirteen no-face comparisons, 130/130 checker self-tests, simulator build/test, review/security/owner gates, and no-`BeautyDemo` scope checks.
-- `52-VERIFICATION.md` is independently owned and `passed`; the separate v1.13 milestone audit also passes. Phase artifacts, roadmap, requirements, and audit are archived under `.planning/milestones/`.
+- Total plans completed: 0
+- Average duration: —
+- Total execution time: 0 hours
 
-### Phase 51 Public-Facade Eyebrow Output Result
+| Phase | Plans | Total | Avg/Plan |
+| --- | ---: | --- | --- |
+| 53-58 | 0 | TBD | — |
 
-- Thirteen isolated public cases extend the renderer to exactly 72 cases through one `BeautyEngine.processResult` route; no public raw support or internal-renderer bypass was added.
-- The frozen strict gate passes 72/72 `e6` portrait outputs, 13/13 visibility, 6/6 signed direction, 21/21 semantic distinctions, 40/40 direct portrait comparisons, and thirteen separately reported no-face no-ops.
-- The baseline plus all thirteen actual eyebrow images were opened at original detail and agree with automated locality/direction/distinction evidence. The exact output/gallery bijection is 144 ignored, untracked, unstaged disposable PNGs.
-- Focused suites pass renderer 16/16, provider 12/12, and facade 18 plus one opt-in skip; the full SwiftPM retry passes 438 executed with six opt-in skips after restoring fail-closed zero-extent projection handling.
-- OUT-01..03 are complete. Phase 52 subsequently completed final caps, exhaustive safety/transitions, seven-row and `眉毛` promotion, SAFE-01..03, DOC-01, and broader nonclaims.
-
-### Phase 50 Independent Eyebrow Geometry and Pipeline Result
-
-- Seven distinct canonical-trace emissions route through provisional `0.25` caps, one exact 44-name/13.45 convergence mask, and one stable Face→Chin→Eye→Eyebrow→Nose→Mouth dispatch.
-- Field-local side/pair/chord/apex and provider-empty degradation, fresh/reused/stale/no-face lifecycle, and sequential/concurrent request isolation pass with aggregate-only diagnostics.
-- Fresh evidence passes provider 11, resolver 26, conflict 14, combined 15, degradation 48, pipeline 3, facade 18, BeautyEffects 243 with one opt-in skip, and full SwiftPM 433 with three opt-in skips.
-- GEOM-01..07 and PIPE-01/02 are complete at compiled SDK-core scope. Phase 51 subsequently closed decoded output/gallery, and Phase 52 closed final caps, exhaustive safety, and promotion.
-- The delegated source judgment review passes 3/3: no eyebrow identity/recognition/authentication/profiling use, no synthetic/generated/eye-derived production substitute, and no silent downstream/UI/device/commercial/release scope claim. `50-VERIFICATION.md` is `passed` and `50-VALIDATION.md` is `validated`.
-
-### Phase 48 Face Safety and Scoped Closeout Result
-
-- Four exact final `0.25` caps and the complete nine-field stateless fresh/reused/stale/no-face/missing/malformed/provider-empty matrix pass.
-- Exact 37-field convergence totals 11.70 with one scale, at most 37 monotone removals, and exact final named-provider/dispatch agreement.
-- Fresh evidence passes 132 focused and 375 full SwiftPM tests, unchanged 413/413 strict output, 70/70 boundary self-tests, clean review, and ASVS L1 `threats_open: 0`.
-- Exactly four rows are implemented; three semantic-region rows remain future and branch `脸型` remains partial.
-- SAFE-01 through SAFE-03 and DOC-01 are complete through the independent v1.12 audit; the milestone is archived.
-
-### Phase 47 Public-Facade Face Output Evidence Result
-
-- Exactly four isolated provisional `0.25` cases extend the public renderer to 59 cases while retaining one `BeautyEngine.processResult` route.
-- A bounded strict helper accepts 413/413 decoded same-dimension outputs with 18/18 eligible visibility/locality, 49/49 fixed-neighbor, 6/6 ineligible portrait no-op, and 4/4 no-face no-op comparisons.
-- Missing and malformed observed contour remove all four dependent fields through the public facade while an eligible shipped face sibling continues with aggregate-only diagnostics.
-- The descriptor-safe gallery is an exact 413-file renderer/output/gallery bijection; all generated output remains ignored, untracked, unstaged, and disposable.
-- Focused suites pass 15 renderer and 16 facade tests; full SwiftPM passes 371 with three opt-in Apple Vision skips. OUT-01 through OUT-03 are complete; Phase 48 safety and promotion work remains unchanged.
-- Standard review is clean, goal verification passes 16/16, Nyquist has 0 gaps, and ASVS L1 closes all 14 registered threats plus three repository governance inputs with `threats_open: 0`.
-
-### Phase 46 Independent Contour and Chin Geometry Result
-
-- Four independent observed-support providers now emit local contour smoothing, upper-lateral temple fullness, mid-lateral cheekbone slimming, and centerline-gated apex-neighbor chin taper without changing the five shipped face/chin arrays.
-- Provider-empty work is removed before final evidence; exact 37-field monotone convergence totals 11.70, reused input scales by exact 0.5, and no-face/stale work zeros safely.
-- Focused evidence passes 17 provider, 21 resolver, 13 conflict, 14 combined, 2 pipeline, 43 degradation, and 15 facade tests; full SwiftPM passes 368 with 3 opt-in skips.
-- Standard review is clean, goal verification passes 18/18, Nyquist has 0 gaps, and ASVS L1 closes all 19 threats plus the three repository-scoped governance inputs.
-- Phase 47 owns decoded output/ROI/gallery evidence; Phase 48 owns final caps, exhaustive safety, four-row promotion, and partial-branch closeout.
-
-### Phase 44 Eye Geometry Safety and Ledger Closeout Result
-
-- Final ten-field caps/dead zones and all fourteen-field no-face/missing/malformed/provider-empty/fresh/reused/stale behavior pass with redacted diagnostics.
-- Exact retained arithmetic is total 10.70, count 33, scale 1/10.70 with at most 28 monotonic removals and no re-entry/double scaling.
-- Full SwiftPM passes 314/314; strict output remains 385/385; boundary self-test passes 57/57 and live promotion/owner gates pass.
-- Exactly ten remaining geometry rows are promoted; `去脂`/`祛红血丝` remain future and branch `眼睛` remains partial.
-- EYE-19 through EYE-23 and DOC-01 are complete through the independent v1.11 audit. Archive/tag/cleanup remain lifecycle steps and are not claimed here.
-
-### Phase 43 Public-Facade Eye Geometry Output Evidence Result
-
-- Exactly eleven isolated public eye cases extend the renderer from 44 to 55 cases while retaining the single `BeautySDK` facade route.
-- Fresh focused evidence passes 13/13 and the full SwiftPM suite passes 305/305.
-- A bounded strict helper passes 385/385 decoded same-dimension outputs, 66/66 visibility comparisons, 6/6 direct signed-tilt comparisons, 60/60 semantic distinctions, a fixed gaze-reduction gate, and 11/11 no-face no-ops.
-- The descriptor-safe gallery publishes exactly 385 ignored, untracked regular PNGs with an exact renderer/gallery bijection.
-- EYE-16 through EYE-18 are complete. Final caps, exhaustive safety/transitions, active-source boundaries, exact ten-row promotion, DOC-01 owner synchronization, and branch status remain Phase 44.
-
-### Phase 40 Mouth Geometry Safety and Ledger Closeout Result
-
-- Final exact `0.25` caps and signed/positive-only semantics pass for `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, and `lipPlump`.
-- All-eight mouth degradation/transitions and exact face/eye/six-nose/eight-mouth provider-eligible convergence pass; reused eligible geometry scales by exact `0.5`.
-- Fresh focused evidence passes 106 cases, full SwiftPM passes 265/265, and unchanged strict output evidence passes 308/308 with ignored/untracked artifacts.
-- Standard review is clean; ASVS L1 records `threats_open: 0`; the self-tested promotion boundary passes 63/63 mutation cases and all live checks.
-- Exactly five new geometry rows are implemented; `白牙` remains future and branch-level `嘴唇` remains partial. The independent v1.10 audit passed 17/17 requirements and the milestone is archived.
-
-### Phase 39 Public-Facade Mouth Geometry Output Evidence Result
-
-- Eight isolated cases extend the renderer to exactly 44; focused regression passes 11/11 and full SwiftPM passes 260/260.
-- Fresh strict evidence passes 308/308 decoded same-dimension outputs, 48 visibility, 18 signed-direction, 12 peak-independence, 18 plump-independence, and 8/8 no-face no-ops.
-- Gallery publication produced exactly 308 ignored, untracked regular PNGs through the hardened duplicate-free descriptor-safe bijection.
-- Standard review is clean after bounding JPEG fixture dimensions; ASVS L1 records `threats_open: 0`; MOUTH-09 through MOUTH-11 are complete.
-- All five new rows and branch-level `嘴唇` remain unpromoted; final caps, exhaustive safety/boundaries, and exact promotion remain Phase 40.
-
-### Phase 38 Public Contract and Lip-Support Geometry Result
-
-- `BeautyParameters` is exactly 38 stored fields = 37 numeric plus `filterId`; the five new controls preserve legacy 33-field JSON, bundled-preset, and defaulted initializer compatibility.
-- Optional coarse `innerLips` availability and default-empty private upper/lower/inner supports preserve outer-only face usability and the unchanged public/raw-geometry boundary.
-- Eight independently eligible mouth geometry emissions route through provisional `0.25` caps, exact reused `0.5`, provider-owned sanitization, and an exact fourteen-removal convergence bound.
-- Fresh evidence passed 152/152 focused and 259/259 full SwiftPM tests; the 21-file standard code review is clean and ASVS L1 records `threats_open: 0`.
-- MOUTH-01 through MOUTH-08 are complete; Phase 39 now supplies saved output/ROI evidence. Final caps, exhaustive safety, product-row promotion, and milestone completion remain Phase 40 work.
-
-### Phase 36 Public-Facade Output Evidence Result
-
-- Fresh focused renderer tests passed 10/10 and the full SwiftPM suite passed 220/220.
-- A guarded clean render and strict helper passed 36 cases × 7 fixtures = 252/252 decoded same-dimension outputs; clean gallery generation wrote exactly 252 ignored, untracked PNGs.
-- Fixed ROI evidence passed 12/12 new-field-to-baseline, 6/6 root-to-bridge, and 12/12 lift-to-signed-tip comparisons; representative no-face extent/no-op and facade redaction passed.
-- ASVS L1 records `threats_open: 0`; schema drift, dependency/import/privacy, generated-artifact, no-promotion, and diff-hygiene gates passed.
-- Phase 37 passes 103/103 focused and 228/228 full SwiftPM tests plus the unchanged 252/252 output gate; review is clean and `threats_open: 0`.
-- Exactly `山根` and `提升` are newly implemented from independent evidence; the exact six-row SDK-core `鼻子` branch is implemented.
-- The independent v1.9 audit passed 15/15 requirements, 12/12 integrations, and 5/5 flows; archive/tag/cleanup are lifecycle records, not Demo/device/commercial/packaging/shipping/launch claims.
-
-### Phase 35 Public Contract and Independent Geometry Result
-
-- `35-VERIFICATION.md` records fresh 106/106 focused and 219/219 full XCTest cases with zero failures; the final 24-file code review is clean.
-- `BeautyParameters` is exactly 33 stored fields = 32 numeric plus `filterId`; independent `noseRootNarrowing` and `noseTipLift` use default/non-finite zero and provisional `0.25` caps.
-- Package-internal explicit `noseRoot` / `noseTip` supports drive independent horizontal-root and vertical-tip vectors without legacy fallback; reused scale is exact `0.5` (`0.125` at either new cap).
-- Public/SPI, diagnostics, dependency, network/commercial, renderer/Demo, artifact, archive, and no-promotion gates are green. No Demo build was required because Demo source was unchanged.
-- `山根`, `提升`, and branch-level `鼻子` remain unpromoted/partial. Phase 36 owns renderer/helper/gallery/ROI evidence; Phase 37 owns cap calibration, exhaustive safety/boundaries, and promotion.
-
-### Phase 34 Mouth Safety, Degradation, and Ledger Closeout Result
-
-- Exact caps and signed semantics passed; missing/no-face/stale mouth geometry is exact zero.
-- Reused geometry uses exact `0.5` sign-preserving scaling; eligible stale/reused `lipColor` stays unscaled and color-only.
-- Combined face/eye/nose weakening covers all mouth geometry directions and excludes `lipColor`.
-- 13/13 focused and 190/190 full SDK tests passed; helper passed at 238/238, 30/30, 12/12, and 6/6.
-- Exactly `大小`, `宽度`, and `微笑` are implemented; branch-level `嘴唇` remains partial.
-- Final audit passed 11/11 requirements, 11/11 integration checks, and 5/5 flows; no device/commercial/packaging/launch-readiness claim.
-
-## Repository Inventory
-
-**Velocity:**
-
-- Numbered lifecycle inventory: 52 phases, of which 48 completed and 4 (12-15) were intentionally canceled.
-- The repository retains 187 archived `*-PLAN.md` files across 45 completed phase directories; v1.1 Phases 8-10 retain verification rather than plan artifacts, so this file count is not mislabeled as an all-time plan total.
-- The annotated v1.13 close contains 36,649 tracked Swift source/test lines across `BeautySDK` and `BeautyDemo`, excluding `.build`; the consolidation audit's three focused Demo fixes bring the current total to 36,722.
-- Current milestone truth is the front matter plus `.planning/ROADMAP.md`; milestone totals and archive links are owned by `.planning/MILESTONES.md`.
-
-**Historical partial phase table (through Phase 35):**
-
-This table is retained as a historical snapshot only. It is not the current
-phase count or the canonical roadmap.
-
-| Phase | Plans | Status |
-|-------|-------|--------|
-| 1. SDK Foundation and Public Facade | 4/4 | Complete |
-| 2. Demo Integration Shell | 3/3 | Complete |
-| 3. Realtime and Still Input Slice | 4/4 | Complete |
-| 4. Detection and Coordinate Safety | 5/5 | Complete |
-| 5. Filters, Presets, and Resource Flow | 4/4 | Complete |
-| 6. Core Beauty Effects | 5/5 | Complete |
-| 7. Rich Demo QA Surface | 3/3 | Complete |
-| 8. Meitu Home Rebuild | 4/4 | Complete |
-| 9. Meitu Editor Tool Panel | 4/4 | Complete |
-| 10. Home-to-Editor Flow and v1.1 QA | 3/3 | Complete |
-| 11. HTML Reference Baselines | 4/4 | Complete |
-| 12. HTML-to-SwiftUI Delta Contract | 0/3 | Canceled |
-| 13. Home SwiftUI Fidelity Pass | 0/3 | Canceled |
-| 14. Editor SwiftUI Fidelity Pass | 0/3 | Canceled |
-| 15. v1.2 Visual QA and Closeout | 0/3 | Canceled |
-| 16. Example Image Validation Harness | 2/2 | Complete |
-| 17. Core Beauty Contracts and Module Boundaries | 2/2 | Complete |
-| 18. Skin Retouch Core Modules | 3/3 | Complete |
-| 19. Beauty Shaping Core Modules | 5/5 | Complete |
-| 20. Core Module Closeout | 2/2 | Complete |
-| 21. Baseline Audit and Quality Ledger Refresh | 2/2 | Complete |
-| 22. Automated Demo QA and Screenshot Evidence | 2/2 | Complete |
-| 23. Performance and Reliability Gates | 5/5 | Complete |
-| 24. Renderer Output Regression Hardening | 3/3 | Complete |
-| 25. Security, Distribution Review, and Closeout | 3/3 | Complete |
-| 26. Geometry Facade and Landmark Routing Foundation | 4/4 | Complete |
-| 27. Geometry Render Output and Verification Harness | 4/4 | Complete |
-| 28. Face Shape Slice Completion and Documentation Closeout | 4/4 | Complete |
-| 29. Eye Renderer Output Evidence | 4/4 | Complete |
-| 30. Eye Safety, Ledger, and Closeout | 7/7 | Complete |
-| 31. Nose Renderer Output Evidence | 4/4 | Complete |
-| 32. Nose Safety, Ledger, and Closeout | 7/7 | Complete |
-| 33. Mouth Renderer Output Evidence | 3/3 | Complete |
-| 34. Mouth Safety, Degradation, and Ledger Closeout | 3/3 | Complete |
-| 35. Public Contract and Independent Geometry | 4/4 | Complete |
-
-**Selected historical plan timing rows:**
-
-These archive-derived rows are timing notes, not a complete plan inventory.
-
-| Plan | Duration | Tasks | Files |
-| --- | ---: | ---: | ---: |
-| Phase 18 P1 | 8 min | 2 tasks | 2 files |
-| Phase 18 P2 | 117 min | 3 tasks | 10 files |
-| Phase 18 P3 | 19 min | 3 tasks | 6 files |
-| Phase 19 P01 | 12 min | 2 tasks | 1 files |
-| Phase 19 P02 | 4 min | 2 tasks | 4 files |
-| Phase 19 P03 | 3 min | 2 tasks | 4 files |
-| Phase 19 P04 | 3 min | 2 tasks | 5 files |
-| Phase 19 P05 | 5 min | 2 tasks | 4 files |
-| Phase 20 P01 | 11 min | 2 tasks | 10 files |
-| Phase 20 P02 | 14 min | 3 tasks | 7 files |
-| Phase 23 P01 | 6 min | 2 tasks | 2 files |
-| Phase 23 P02 | 5 min | 2 tasks | 2 files |
-| Phase 23 P03 | 4 min | 2 tasks | 4 files |
-| Phase 23 P04 | 5 min | 2 tasks | 2 files |
-| Phase 23 P05 | 4 min | 2 tasks | 5 files |
-| Phase 24 P01 | 4 min | 2 tasks | 1 file |
-| Phase 24 P02 | 6 min | 2 tasks | 3 files |
-| Phase 24 P03 | 10 min | 2 tasks | 7 files |
-| Phase 25 P01 | 12 min | 2 tasks | 3 files |
-| Phase 25 P02 | 5 min | 2 tasks | 2 files |
-| Phase 25 P03 | 10 min | 2 tasks | 9 files |
-| Phase 27 P01 | 15 min | 2 tasks | 5 files |
-| Phase 27 P02 | 5 min | 2 tasks | 5 files |
-| Phase 27 P03 | 5 min | 2 tasks | 4 files |
-| Phase 27 P04 | final evidence | 2 tasks | docs and ledgers |
-| Phase 28 P01 | 16 min | 2 tasks | 3 files |
-| Phase 28 P02 | 5 min | 2 tasks | 5 files |
-| Phase 28 P03 | 6 min | 2 tasks | 2 files |
-| Phase 29 P01 | 8 min | 2 tasks | 3 files |
-| Phase 29 P02 | 5 min | 2 tasks | 3 files |
-| Phase 29 P03 | 15 min | 2 tasks | 3 files |
-| Phase 29 P04 | planning closeout | 2 tasks | ledgers |
-| Phase 30 P01 | 48 min | 2 tasks | 4 files |
-| Phase 30 P02 | 5 min | 3 tasks | 6 files |
-| Phase 30 P03 | 15 min | 2 tasks | 5 files |
-| Phase 30 P04 | 5 min | 2 tasks | 5 files |
-| Phase 30 P05 | 8 min | 2 tasks | 5 files |
-| Phase 30 P06 | 4 min | 2 tasks | 2 files |
-| Phase 30 P07 | 8 min | 2 tasks | 6 files |
-| Phase 35 P01 | 3 min | 2 tasks | 6 files |
-| Phase 35 P02 | 6 min | 2 tasks | 5 files |
-| Phase 35 P03 | 5 min | 3 tasks | 7 files |
-| Phase 35 P04 | 11 min | 2 tasks | 12 files |
-| Phase 36 P01 | 3 min | 2 tasks | 2 files |
-| Phase 36 P02 | 10 min | 2 tasks | 2 files |
-| Phase 36 P03 | final evidence | 2 tasks | 10 files |
-| Phase 37 P01 | 9 min | 3 tasks | 6 files |
-| Phase 37 P02 | 8 min | 2 tasks | 4 files |
-| Phase 37 P03 | 12 min | 2 tasks | 6 files |
-| Phase 41 P01 | 7min | 2 tasks | 3 files |
-| Phase 43 P01 | 6 min | 2 tasks | 2 files |
-| Phase 43 P02 | 48 min | 2 tasks | 2 files |
-| Phase 43 P03 | 10 min | 2 tasks | 10 files |
-| Phase 44 P01 | 8 min | 4 tasks | 7 files |
-| Phase 44 P02 | 10 | 3 tasks | 3 files |
-| Phase 44 P03 | 20 | 3 tasks | 5 files |
-| Phase 44 P04 | 5 | 2 tasks | 4 files |
-| Phase 44 P05 | 8 | 2 tasks | 8 files |
-| Phase 45 P01 | 23 min | 2 tasks | 4 files |
-| Phase 45 P02 | 5 min | 2 tasks | 5 files |
-| Phase 45 P03 | 11 min | 2 tasks | 4 files |
-| Phase 45 P04 | 16 min | 2 tasks | 2 files |
-| Phase 45 P05 | 7 min | 2 tasks | 7 files |
-| Phase 46 P01 | 13 min | 2 tasks | 2 files |
-| Phase 46 P02 | 8min | 2 tasks | 3 files |
-| Phase 46 P03 | 11 min | 2 tasks | 3 files |
-| Phase 46 P04 | 8 min | 2 tasks | 4 files |
-| Phase 49 P01 | 8 min | 3 tasks | 6 files |
-| Phase 49 P02 | 8 min | 2 tasks | 4 files |
-| Phase 49 P03 | 8 min | 2 tasks | 3 files |
-| Phase 49 P04 | 8 min | 2 tasks | 2 files |
-| Phase 49 P05 | 9 min | 3 tasks | 8 files |
-| Phase 50 P01 | 8 min | 3 tasks | 3 files |
-| Phase 50 P03 | 7 min | 2 tasks | 4 files |
-| Phase 50 P04 | 7 min | 2 tasks | 2 files |
-| Phase 50 P05 | 10 min | 3 tasks | 5 files |
-| Phase 52 P01 | 15 min | 3 tasks | 8 files |
-| Phase 52 P02 | 8 min | 2 tasks | 3 files |
-| Phase 52 P03 | 40 min | 3 tasks | 5 files |
-| Phase 52 P04 | 4 min | 2 tasks | 5 files |
-| Phase 52 P05 | 5 min | 2 tasks | 8 files |
-| Phase 52 P06 | 11 min | 2 tasks | 8 files |
-| Phase 52 P07 | 20min | 3 tasks | 7 files |
-| Phase 52 P08 | 13min | 2 tasks | 4 files |
-| Phase 52 P09 | 5min | 2 tasks | 5 files |
-| Phase 52 P10 | 9min | 2 tasks | 7 files |
+Historical milestone metrics remain in `.planning/MILESTONES.md` and archived roadmaps.
 
 ## Accumulated Context
 
-### Phase 33-34 Mouth Slice Result
-
-- Phase 33 passed 238/238 output invariants, 30/30 portrait mouth-region geometry comparisons, 12/12 signed comparisons, and 6/6 lip-color containment checks across 34 cases × 7 fixtures.
-- Phase 34 passed 13/13 focused tests and the 190-test full SDK suite. Missing/no-face/stale mouth geometry zeros all three strengths, reused geometry retains exact `0.5`, eligible stale/reused `lipColor` follows its independent color-domain policy, and combined weakening preserves both signed directions.
-- Fail-closed boundary scans passed for raw geometry, internal imports, network/cloud, commercial paths, dependencies, public 31-field inventory, sign loss, and generated artifacts; review is clean and `threats_open: 0`.
-- Exactly `大小`, `宽度`, and `微笑` are implemented. `上下`, `倾斜`, `左右`, `M唇`, true `丰唇`, `白牙`, and branch-level `嘴唇` remain partial/future. The final audit passed 11/11 requirements, 11/11 integration checks, and 5/5 flows; v1.8 is archived.
-
-### Phase 31-32 Nose Slice Result
-
-- Phase 31 passed 196/196 output invariants, 30/30 portrait nose comparisons, 6/6 signed tip comparisons, and ignored gallery containment across 28 cases × 7 fixtures.
-- Phase 32 passed all seven required focused suites and a fresh 186-test full SDK suite. Missing/stale nose geometry zeros all four strengths, reused geometry retains exact `0.5`, no-face safe domains continue, and combined weakening preserves both tip directions.
-- Fail-closed boundary scans passed for raw geometry, internal imports, network/cloud, commercial paths, dependencies, public 31-field inventory, sign loss, and generated artifacts; review is clean and `threats_open: 0`.
-- Exactly `大小`, `鼻翼`, `鼻梁`, and `鼻尖` are implemented. `山根`, `提升`, and branch-level `鼻子` remain partial/future. The final audit passed 9/9 requirements, 9/9 integration checks, and 5/5 flows; next step is archive/tag/cleanup.
-
-### Phase 30 Eye Safety, Ledger, and Closeout Result
-
-- Observed focused tests and the 178-test full SDK suite passed; the unchanged renderer helper passed 161/161 outputs and 36/36 portrait comparisons.
-- Boundary and security gates passed for raw geometry, internal imports, network/cloud, commercial entitlement paths, the 31-field inventory, exact VIP classification, and untracked generated artifacts; `threats_open: 0`.
-- Exactly `大小`, `上下`, `眼距`, and `眼尾上扬` are implemented. Branch-level `眼睛` remains `partial`, with future eye tools and setup-specific device, visual, packaging, and readiness work still deferred.
-- Command evidence is recorded in `30-EYE-SAFETY-EVIDENCE.md`. The final milestone audit passed 9/9 requirements, 9/9 integration checks, and 5/5 flows; v1.6 is archived and the next workflow is `$gsd-new-milestone`.
-
 ### Decisions
 
-Full decision context is in `.planning/PROJECT.md`.
+Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 
-Recent milestone-level outcomes:
-
-- TD-012 uses additive trailing configuration defaults and the existing `BeautyError.invalidInput`; input ceilings reject rather than resize, and no new milestone or product scope was activated.
-- Product remains a modular iOS SDK with a rich Demo validation app.
-- Demo remains facade-only and local-first.
-- v1.0 shipped core SDK/Demo capability and deferred advanced modules to future milestones.
-- v1.1 replaced the old SDK-dashboard first screen with a Meitu-style Home and editor panel based on `meituxiuxiu/HOME_MAP.md` and `meituxiuxiu/FUNCTION_MAP.md`.
-- v1.1 preserved camera/photo processing, compare/debug/JSON behavior, and facade-only `BeautySDK` integration while keeping unsupported Meitu reference capabilities disabled/static.
-- v1.2 retained only the inspectable static HTML references for Home and Editor; the delta report and SwiftUI fidelity passes were canceled on 2026-06-26.
-- v1.3 narrows scope to core beauty only: beauty shaping, skin retouch, and minimal editor support. Home/discovery, resource/style systems, AI/background, video/body, and account/gallery are deferred.
-- v1.3 should not write new SwiftUI screens; it should prepare, design, encapsulate, implement, and verify SDK-level core beauty modules.
-- Direct validation should run code modules against `example-images/input/` and save parameter-labeled, watermarked outputs under ignored `example-images/out/`.
-- Phase 16 reran `BeautyExampleRenderer` build/run evidence, confirmed `e2__skinWhitening_0p50.png` dimensions match `example-images/input/e2.png`, and kept generated PNGs out of git.
-- Release-readiness visual quality, hardware parity, performance budgets, and long-run reliability remain separate QA scope.
-- Phase 18 completed Basic skin retouch work behind existing SDK boundaries: focused Basic skin, resolver, and engine tests passed; all current Basic skin renderer cases wrote ignored local outputs; representative output dimensions, labels, and factual visual observations passed; future skin-retouch branches remain future.
-- Phase 19 completed beauty-shaping core-module evidence behind SDK boundaries: branch docs and ownership exist, promoted partial branches have provider/resolver/degradation/cap/redaction XCTest evidence, full `swift test --package-path BeautySDK` passed with 141 tests, final API/UI/renderer/status/redaction scans passed, and geometry-heavy saved-image output remains deferred until public facade detection plus geometry rendering exists.
-- Phase 20 completed v1.3 core module closeout: editor-shell support is documented as Demo-owned no-new-UI app-side behavior, full `swift test --package-path BeautySDK` passed with 141 tests, `BeautyExampleRenderer` built and ran all current skin/color/filter cases, 45 ignored renderer outputs were non-empty and same-dimension, no public parameter/import/UI/renderer/status drift was found, and `20-VERIFICATION.md` preserves geometry saved-output and release-hardening limitations.
-- v1.4 focuses on stability, QA, performance, security, and technical-debt cleanup. It does not add product-area breadth, public parameter fields, hidden remote-processing behavior, paid-account flows, or broad UI redesign.
-- v1.4 uses Phase 21 through Phase 25 and keeps existing `.planning/phases/` history directories in place.
-- Phase 21 Plan 21-01 captured the current baseline in `.planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-BASELINE-AUDIT.md`: SDK tests pass with 141 XCTest cases, `BeautyExampleRenderer` builds and writes 45 ignored outputs, boundary/privacy scans pass, and Demo simulator build/test evidence is blocked by the missing local Metal Toolchain.
-- Phase 21 Plan 21-02 refreshed `QUALITY_SCORE.md` from the baseline, closed AUD-01 through AUD-04, and routes TD-005 to Phase 25, TD-008 to Phases 22/23 with physical iPhone evidence blocked until hardware exists, TD-009 to Phase 22, and TD-010 across Phases 22/23/24/25.
-- Phase 22 completed automated Demo QA evidence through the allowed blocker-honest path: `.planning/evidence/v1.4/VISUAL-EVIDENCE.md` records exact iPhone 17 build/test commands, the missing Metal Toolchain blocker, route/model disabled-honesty scans, blocked per-state review notes, no current v1.4 PNG screenshots, and rerun protocol.
-- Phase 23 completed performance and reliability evidence in `.planning/phases/23-performance-and-reliability-gates/23-PERFORMANCE-EVIDENCE.md`: focused SDK performance evidence passed with 3 tests, full SDK SwiftPM passed with 148 tests, focused Demo camera xcodebuild passed, 720p timings are recorded as over-budget baseline evidence, redaction/no-overclaim scans passed, and physical iPhone plus 600-second preview evidence remains blocked or not run.
-- Phase 24 planning produced three executable plans across two waves: `24-01` focused SwiftPM renderer matrix and pre-watermark no-op fixture regression tests, `24-02` renderer build/run plus 45-output invariant evidence and example-image validation docs, and `24-03` geometry/no-overclaim closeout plus root/planning ledger synchronization.
-- Phase 24 completed renderer output regression hardening: focused renderer regression tests passed with 2 tests, full SDK SwiftPM passed with 150 tests, `BeautyExampleRenderer` built and regenerated 45 ignored local PNG outputs, `check_renderer_outputs.py` verified all expected outputs, and `24-VERIFICATION.md` records passed geometry/no-overclaim scans while keeping geometry saved-output deferred.
-- Phase 25 planning produced three executable plans across two waves: `25-01` privacy manifest assessment, active security scans, required-reason classification, and conditional manifest disposition; `25-02` resource trust review, focused resource tests, and external-resource boundary evidence; and `25-03` final ledger synchronization, blocker/deferred table, traceability, and conservative closeout wording.
-- Phase 25 completed security, distribution review, and closeout: privacy manifest addition is explicitly deferred for current SDK/Demo behavior, active-source security scans and focused Demo privacy/import tests pass, bundled-resource trust is verified, `QUALITY_SCORE.md` and security ledgers are synchronized, and SEC-01 through SEC-04 plus DOC-01 through DOC-03 are complete.
-- v1.4 milestone audit passed in `.planning/v1.4-MILESTONE-AUDIT.md`: all 24 requirements, 5 phases, 5 integration checks, 5 flows, and 5/5 Nyquist validation files are satisfied. Phase 21 and Phase 22 validation-document drift was cleaned on 2026-07-03 by updating their `VALIDATION.md` files to final status with audit trails.
-- v1.5 is scoped to SDK geometry output foundation plus the `脸型` existing-parameter slice only. Phase 26 covers public facade geometry activation and privacy-safe landmark routing, Phase 27 covers saved-output geometry evidence and degradation verification, and Phase 28 covers `脸型` tool completion plus ledger/documentation closeout.
-- Phase 26 completed the public still-image geometry facade/routing foundation: `BeautyEngine.processResult(image:metadata:parameters:)` now runs geometry-triggered detection only when needed, routes one package-only selected face into internal geometry planning, preserves no-geometry and disabled-tracking compatibility, and records only redacted summaries, warnings, and aggregate metrics. `26-VERIFICATION.md` passed focused facade/detector/effects tests, full SDK SwiftPM tests with 159 tests, raw-geometry/redaction scans, renderer-case exclusion, and `SHAPE_FEATURE_LEDGER.md` implemented-status guard.
-- Phase 27 completed saved-output geometry foundation evidence: `BeautyExampleRenderer` now includes `geometryBaseline_noop` and `faceShapeCombo_0p35`, writes 66 ignored PNG outputs across 6 fixtures and 11 cases, and `check_geometry_renderer_outputs.py` verifies 66/66 outputs, same dimensions, 5/5 portrait geometry-vs-baseline top-region comparisons, and no-face output presence. `27-VERIFICATION.md` records focused degradation tests, full SDK SwiftPM tests with 167 tests, redaction scans, renderer scope scans, Demo import scans, and the guard that `SHAPE_FEATURE_LEDGER.md` face-shape rows remain unpromoted.
-- Phase 28 completed the scoped `脸型` existing-parameter slice: renderer cases `faceSlim_0p35`, `faceSmall_0p35`, `chinLength_plus0p30`, `chinLength_minus0p30`, `faceVShape_0p35`, and `jawSlim_0p35` produce public-facade saved-output evidence; `check_face_shape_renderer_outputs.py` verifies 102/102 outputs and 30/30 top-region comparisons; focused safety/degradation/redaction tests and scans pass; `SHAPE_FEATURE_LEDGER.md` promotes exactly `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线` while branch-level `脸型` remains partial.
-- Phase 29 completed public-facade renderer evidence for existing eye parameters: renderer and gallery commands generated 161 ignored PNG outputs, the Phase 29 helper verified 161/161 outputs and 36/36 top-region eye comparisons, focused/full SDK tests passed, and generated artifacts remained ignored. Phase 30 subsequently closed the safety, boundary, and ledger gates.
-- Phase 30 completed all seven sequential plans covering public eye normalization/caps, missing/reused/stale eye degradation, combined weakening, full renderer/security evidence, atomic four-row promotion, owning contract updates, and final planning-ledger closeout. The full SDK suite passed with 178 tests; exactly `大小`, `上下`, `眼距`, and `眼尾上扬` are implemented while branch-level `眼睛` remains `partial`.
-- Phase 31 completed public-facade nose renderer/helper/gallery evidence with 196/196 outputs, 30/30 portrait comparisons, and distinct signed `noseTipSize` output.
-- Phase 32 completed exact caps, fail-closed missing/stale behavior, reused `0.5`, safe no-face continuation, combined weakening, boundary scans, exact four-row promotion, and all current-owner contracts; the full SDK suite passed 186 tests.
-- `.planning/codebase/*` maps are stale background for v1.4 and should not override current source, root docs, or `.planning` ledgers.
-- [Phase 35]: Keep both new nose fields as independent positive-only storage with defaulted source-compatible initializer arguments. — This preserves the frozen Phase 35 contract without aliasing legacy nose behavior.
-- [Phase 35]: Keep bundled preset JSON unchanged and prove compatibility through missing-key zero decoding. — Editing explicit zero keys would hide the legacy payload behavior being verified.
-- [Phase 35]: Use independent 0.25 caps provisionally for both new values. — Phase 37 owns final calibration after output evidence.
-- [Phase 35]: Keep root and tip supports explicit and package-internal rather than deriving them from the legacy nose proxy. — This preserves provenance and prevents either new field from aliasing shipped behavior.
-- [Phase 35]: Validate root and tip supports before clamping and share those validators with support availability. — Malformed biometric-adjacent geometry must fail closed and resolver routing must agree with provider emission.
-- [Phase 35]: Limit the legacy nose center guard to legacy fields. — Valid explicit root or tip support must remain usable when the legacy proxy is absent.
-- [Phase 35]: Sanitize unsupported root and tip requests independently before using the same NoseWarpProvider, preserving valid sibling and legacy nose work. — Prevents legacy vector borrowing while retaining compatible aggregate nose behavior.
-- [Phase 35]: Converge conflict weakening with provider-owned per-field nose and mouth emissions before final metrics and dispatch. — Retained fields only decrease across the bounded nine-field loop, so effective strengths, total, scale, weakened count, and emitted work agree while Phase 37 still owns the exhaustive six-nose-field matrix.
-- [Phase 37]: Exact combined geometry evidence uses one provider-eligible retained baseline across all face, eye, mouth, and six-field nose work. — All exact totals, counts, scales, effective strengths, domains, warnings, and final provider emissions passed without production changes; provider-empty work contributes zero times.
-- [Phase 41]: Phase 41-01 stores exactly ten default-zero eye scalars with finite normalization and preserves legacy 38-key payload neutrality.
-- [Phase 41]: Phase 41-01 defers provider transforms to Phase 42; zero-default regression covers only the existing four shipped eye controls.
-- [Phase 45]: Keep observed contour/median evidence in one immutable package-only value with independent optional regions. — Preserves region-local absence and request-lifetime privacy without an all-or-nothing carrier.
-- [Phase 45]: Attach internal observed face semantics beside FaceGeometry.faceContour; never substitute for the exact seven-point compatibility path. — Prevents observed support from changing shipped face behavior or misrepresenting the synthetic proxy.
-- [Phase 45]: Lock face-specific open-path bounds in test fixtures without reusing eye topology constants or polygon-area evidence. — Face contour and median support are open paths with independently researched topology.
-- [Phase 45]: Keep all four additions as independent clampUnit-backed stored values while preserving signed chinLength. — This freezes distinct positive-only public semantics without aliasing the shipped signed chin control.
-- [Phase 45]: Defer requiresFaceGeometry, effective strengths, caps, providers, and routing for the four new intents to Phase 46. — Phase 45 owns compatibility-safe storage only, so nonzero intent must remain unrouted.
-- [Phase 45]: Preserve bundled preset bytes and prove compatibility through missing-key zero decoding. — Explicit zero keys would hide the legacy preset compatibility behavior.
-- [Phase 45]: Keep actual contour and median capture in the single existing Vision landmarks request and copy only CoordinatePoint values. — This preserves exactly one detector request and retains no Vision framework region object.
-- [Phase 45]: Preflight contour and median independently at fixed 32-point and 16-point ceilings so valid siblings survive malformed input. — Bounded region-local failure prevents optional support from erasing the selected face or valid sibling region.
-- [Phase 45]: Canonicalize observed open paths with mapper-derived right/down axes and whole-array reversal only. — The same metadata governs point mapping and semantic direction while preserving adjacency.
-- [Phase 45]: Keep the complete A1 face-support envelope unchanged. — All six committed portraits passed aggregate contour, median, and cross-support validation.
-- [Phase 45]: Preserve contour-only semantic eligibility when median or cross-support validation fails. — A valid observed contour remains honest evidence even when centerline evidence is unavailable or inconsistent.
-- [Phase 45]: Attach observed semantic support beside existing geometry siblings without a provider consumer. — Phase 45 owns validation and compatibility isolation; provider routing remains Phase 46.
-- [Phase 45]: Keep Phase 45 contract details in their routed owners — DESIGN owns mechanics, SECURITY trust prohibitions, RELIABILITY lifecycle/failure behavior, PRODUCT_SENSE acceptance, and PLANS execution history.
-- [Phase 45]: Require the complete executable closeout gate before validation completion — Every focused suite, both checker modes, full SwiftPM, active-source review, and diff hygiene must pass before planned commands become evidence.
-- [Phase 45]: Keep the four face controls storage-only until Phase 46 — Observed support remains separate from the exact seven-point compatibility proxy, so Phase 45 closes compatibility and eligibility without overstating output.
-- [Phase 46]: Keep the Wave 0 provider suite deliberately RED until face/chin named emissions, effective fields, and provisional caps are implemented downstream.
-- [Phase 46]: Use an eleven-point asymmetric observed contour, a sloped three-point median, and apex index 5 for direct source ownership contracts.
-- [Phase 46]: Pin Phase 45 privacy and scope owners while keeping bespoke ethical prohibitions flagged rather than fabricating verified descriptors.
-- [Phase 46]: Keep Phase 46 Plan 02 focused suites deliberately RED until downstream plans add the four effective values, provisional caps, named emissions, resolver lifecycle, and exact 37-pass convergence loop.
-- [Phase 46]: Represent the complete geometry inventory as one exact 37-row key-path ledger totaling 11.70 so no aggregate alias can hide an omitted or duplicated field.
-- [Phase 46]: Use a minimally perturbed locally straight observed contour to specify a field that emits before weakening but becomes provider-empty after the shared scale.
-- [Phase 46]: Keep the degradation, dispatch, and facade suites deliberately RED until Plans 46-04 and 46-05 add the missing production routing. — Plan 46-03 owns executable contracts only and must not edit production source.
-- [Phase 46]: Use the stable concatenation of final named provider arrays as the sole exactly-once unified-dispatch oracle. — Direct arrays expose omissions and duplicate dispatch that aggregate geometry counts could hide.
-- [Phase 46]: Restrict public-facade route evidence to deterministic aggregate metrics and redacted summaries. — Observed support coordinates, framework types, filesystem details, and provider internals remain non-public.
-- [Phase 46]: Phase 46 Plan 04 keeps all four new effective face/chin values zero-default with explicitly provisional 0.25 caps. — Phase 48 remains the final cap and dead-zone authority.
-- [Phase 46]: New contour/chin emissions require eligible observed support and never borrow the shipped seven-point compatibility proxy. — This preserves shipped vectors while enforcing GEOM field locality and support provenance.
-- [Phase 46]: Contour smoothing is all-or-nothing after mean-centering and one shared representable uniform scale. — Stored Float displacements must meet the exact ceiling, 1e-6 sum/mean and ratio tolerances, and strict roughness reduction without individual clamps.
-- [Phase 49]: Keep the first six eyebrow controls signed in -1...1 and eyebrowPeakDefinition positive-only in 0...1, with all non-finite values normalized to zero. — This preserves the exact public semantics while reusing the established finite clamp helpers.
-- [Phase 49]: Evolve BeautyParameters additively to exactly 59 stored fields while preserving historical 31/33/38/48/52 fixtures and unchanged preset bytes. — Real missing-key payloads prove compatibility without mutating historical resource bytes.
-- [Phase 49]: Keep all seven eyebrow values storage-only until Phase 50. — Phase 49 closes public compatibility without prematurely changing face-geometry triggers or resolver output.
-- [Phase 50]: Plan 50-01 keeps the eyebrow provider contracts deliberately RED and leaves production satisfaction of GEOM-01 through GEOM-07 and PIPE-01 through PIPE-02 to later Phase 50 implementation plans.
-- [Phase 50]: Eyebrow facade fixtures remain immutable and request-local through the existing selected-face adapter with no public or SPI raw-coordinate result carrier.
-- [Phase 50]: Plan 50-03 exposes eyebrow activity only as aggregate `.eyebrows` with fixed warning and metric labels.
-- [Phase 50]: Plan 50-03 applies exact reused scale `0.5` once in the resolver while keeping `EyebrowWarpProvider` stateless.
-- [Phase ?]: Phase 50 Plan 04 inserts all seven eyebrow fields between eye and nose in the shared conflict scale, total, and count inventories.
-- [Phase 50]: Plan 50-05 dispatches final providers once in Face→Chin→Eye→Eyebrow→Nose→Mouth order and keeps facade evidence aggregate-only.
-- [Phase ?]: The exact 13.45 total and seven 0.25 eyebrow caps remain provisional until Phase 52 calibration.
-- [Phase 52]: Use BeautySafetyCaps as the only final eyebrow maximum authority, with one named binding per field evaluation. — Keeps provider acceptance, formula division, and final point validation on one exact source of truth.
-- [Phase 52]: Separate the exact Float.ulpOfOne strength dead zone from the 0.000001 geometry and topology validity tolerance. — Prevents eligible adjacent strength from being misclassified while retaining fail-closed geometry validation.
-- [Phase 52]: Keep one exact 23-task Nyquist ledger for all ten plans, progressing truthfully from 19 to 21 to 22 and finally 23 green rows. — Promotion readiness requires the complete 23/23 ledger; historical fourteen-task coverage is superseded.
-- [Phase 52]: Treat future-operation threat closure as verified fail-closed enforcement, not as evidence that promotion, owner closure, audit, archive, tag, or cleanup occurred. — Security closure proves the control blocks the operation until its owning plan, not that the operation ran.
-- [Phase 52]: Keep the fourteen-image PASS bounded to mechanical direction, locality, stability, and distinction; commercial naturalness and device/performance readiness remain nonclaims. — The original-detail review is acceptance evidence for the implemented controls only.
-- [Phase 52]: Promoted exactly seven eyebrow rows and branch 眉毛 at SDK-core scope after the Phase 49-52 evidence chain passed. — All seven child rows agreed across the exact four product owners; v1.14-v1.16 and UI/device/commercial/release/lifecycle claims remain future.
-- [Phase 52]: Keep example owners on exact reproduction, count, review, and disposable-artifact facts without changing renderer or calibration. — Preserves the example-image authority and unchanged Phase 51 helper/gallery contract.
-- [Phase 52]: Route mechanics, trust boundaries, recovery, user acceptance, and measured evidence to their existing root owners. — Avoids duplicating one deep invariant across unrelated owner documents.
-- [Phase 52]: Keep Phase 52 explicitly SDK-core-only; later milestones and readiness/lifecycle outcomes remain nonclaims. — Current automation does not establish UI, device, commercial, release, audit, archive, tag, or cleanup results.
-- [Phase 52]: Close exactly SAFE-01, SAFE-02, SAFE-03, and DOC-01 from final owner-linked Phase 52 evidence. — Independent Phase 52 re-verification passes 16/16; the separate milestone audit remains the next lifecycle gate.
+- Teeth and sclera are independent peer slices; neither borrows evidence or blocks the other.
+- `去脂` is acquisition-first and conditional. A closed evidence/design gate adds no field, provider, renderer case, or inert route and keeps `眼睛` partial.
+- Every admitted effect uses one canonical opaque still image, at most one selected-face Vision request, request-local private support, and one original-pixel composition owner.
+- Transparent input and all realtime/pixel-buffer, UI, cloud, external-model, tracked-media, device/commercial/performance-budget/packaging/release claims remain outside v1.14.
 
 ### Pending Todos
 
-- Start the next milestone only through a new explicit scope and `$gsd-new-milestone`.
-- Preserve v1.4 boundaries in future work: no new product-feature breadth, no public API expansion by default, no hidden network/cloud behavior, and no broad UI redesign without a new scoped phase.
-- Convert remaining hardening candidates into measurable evidence or documented blockers in later phases: physical iPhone camera/Vision parity, commercial visual review, optimized performance profiling, memory/thermal checks, privacy manifest re-review on behavior/package changes, screenshot reruns, packaging review, broader `美型 / 五官` slices, and automated visual diffs.
+- Plan Phase 53 from its seven mapped requirements and five success criteria.
+- Begin rights-approved feature-specific fixture acquisition early; promotion remains blocked until Phase 54 records the relevant passing gate.
 
 ### Blockers/Concerns
 
-- TD-012 is completed with focused/full automated evidence and is no longer a live concern. TD-013 remains the open public concurrency API decision.
-- No active v1.13 implementation, verification, review, validation, integration, flow, or audit blocker remains. The independent audit rerun passes with zero residual milestone debt.
-- No active v1.12 blocker remains; all four phases and the independent milestone audit passed.
-- Deferred v2 `ADV-*` items remain historical/backlog scope in the archived v1.0 requirements; `TD-007` is closed because no active root requirements file or current audit warning remains.
-- Manual release risks are now routed by Phase 21 and updated by Phases 23 through 25: `TD-008` has focused simulator camera pass evidence but physical iPhone checks remain blocked until hardware exists; `TD-009` remains Phase 22 visual evidence with screenshot rerun protocol; and `TD-010` keeps device, long-run, screenshot, optimized profiling, external-resource integrity, and commercial packaging work routed to later setup-specific checks.
-- `TD-005` is closed for current v1.4 evidence through explicit `PrivacyInfo.xcprivacy` deferral; reopen it if SDK/Demo behavior starts collecting data, uses required-reason APIs, adds third-party SDKs, adds network/cloud/analytics behavior, packages the example executable, or enters packaging/submission work.
-- Phase 23 focused Demo simulator camera tests pass in the current environment. Phase 22 screenshot evidence still carries the historical Metal Toolchain blocker until the screenshot protocol is rerun.
-- v1.1 reference screenshots are local analysis inputs, not licensed production assets; implementation should recreate structure and feel without copying commercial assets directly.
-- Phase 12-15 cancellation is intentional; do not treat canceled AUDIT, HSWIFT, ESWIFT, or VQA requirements as open blockers.
-- Geometry-heavy branches need face detection plus geometry rendering output before they can claim saved example-image visual completion; v1.5 promotes only the scoped six-row `脸型` slice after this evidence exists.
-
-### Quick Tasks Completed
-
-| # | Description | Date | Commit | Directory |
-|---|-------------|------|--------|-----------|
-| 260728-gan | Resolve TD-012 production image input bounds | 2026-07-28 | 1ac8835 | [260728-gan-resolve-td-012-production-image-input-bo](./quick/260728-gan-resolve-td-012-production-image-input-bo/) |
+- Teeth still lacks a genuine discoloration positive and complete independent positive/negative bundle.
+- Sclera still lacks a genuine redness positive and complete independent positive/negative bundle.
+- `去脂` lacks both genuine upper-eyelid-fullness evidence and an approved credible non-warp design; absence is the required result if either remains missing.
+- TD-013 public generic-result sendability remains an open API decision outside this milestone and must not be silently absorbed by local-retouch work.
 
 ## Deferred Items
 
 | Category | Item | Status | Deferred At |
-|----------|------|--------|-------------|
-| Advanced beauty | Makeup, segmentation, body shaping, stickers, AI style, video export, commercial SDK distribution | Deferred to v2+ | Initialization |
-| Release QA | Real-device camera/Vision parity, visual naturalness, production render quality, performance budgets, and long-run hardware readiness | Partially promoted into v1.4 hardening scope; feature expansion remains deferred | v1.4 start |
-| SwiftUI visual fidelity | HTML-to-SwiftUI delta report, Home SwiftUI fidelity pass, Editor SwiftUI fidelity pass, and v1.2 visual QA closeout | Canceled from v1.2; may be reconsidered as a future milestone | 2026-06-26 |
-| Deferred Meitu product areas | Home/discovery, style resources, AI/background, video/body, account/gallery, search, premium access, commerce, account authorization | Deferred outside v1.3 core beauty modules | 2026-06-26 |
-| Broader Meitu shape groups | `白牙`, `比例`, `3D塑颜`, `去双下巴`, `去双下巴 Pro`, and `发际线`. | v1.13 completed `眉毛`; listed semantic/retouch/proportion rows remain deferred | v1.13 closeout |
-| Release/setup evidence | Physical-device camera/Vision parity, commercial visual review, screenshot reruns, optimized profiling, 600-second preview evidence, packaging review, and launch-readiness review | Deferred outside Phase 28 | Phase 28 closeout |
-| Codebase maps | Formal refresh of stale `.planning/codebase/*` maps | Deferred until explicitly scoped | Phase 21 |
+| --- | --- | --- | --- |
+| v1.15 | Approved local semantic masking and `发际线` | Future | v1.14 roadmap |
+| v1.16 | `去双下巴`, `去双下巴 Pro`, and narrow taxonomy closeout | Future | v1.14 roadmap |
+| Separate evidence | UI, realtime/pixel-buffer, transparent/HDR, model/cloud, device/commercial/performance/packaging/release work | Out of v1.14 | v1.14 roadmap |
+| Repository debt | TD-013 concurrency decision and formal stale-codebase-map refresh | Deferred | Existing PLANS.md ledger |
 
 ## Session Continuity
 
-Last session: 2026-07-28T04:06:03Z
-Stopped at: TD-012 complete; next explicit milestone remains $gsd-new-milestone
+Last session: 2026-07-30
+Stopped at: Roadmap, first-phase position, and 41/41 traceability initialized
 Resume file: None
-
-## Operator Next Steps
-
-- Start the next milestone with `$gsd-new-milestone` when a new scope is chosen.

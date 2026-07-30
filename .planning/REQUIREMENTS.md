@@ -95,15 +95,60 @@ absent feature rather than an inert public field or proxy implementation.
 
 ## Traceability
 
-Roadmap creation maps every v1.14 requirement to exactly one phase.
+Every v1.14 requirement maps to exactly one execution phase. Teeth and sclera
+remain independent peer gates; `去脂` has a distinct evidence decision and adds
+no implementation surface when that decision is closed.
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
+| PATH-01 | Phase 53 | Pending |
+| PATH-02 | Phase 53 | Pending |
+| PATH-03 | Phase 53 | Pending |
+| PATH-04 | Phase 53 | Pending |
+| PATH-05 | Phase 53 | Pending |
+| PATH-06 | Phase 53 | Pending |
+| PATH-07 | Phase 53 | Pending |
+| EVID-01 | Phase 54 | Pending |
+| EVID-02 | Phase 54 | Pending |
+| EVID-03 | Phase 54 | Pending |
+| EVID-04 | Phase 54 | Pending |
+| EVID-05 | Phase 54 | Pending |
+| COMP-01 | Phase 55 | Pending |
+| COMP-02 | Phase 55 | Pending |
+| COMP-03 | Phase 55 | Pending |
+| COMP-04 | Phase 55 | Pending |
+| COMP-05 | Phase 55 | Pending |
+| TEETH-01 | Phase 56 | Pending |
+| TEETH-02 | Phase 56 | Pending |
+| TEETH-03 | Phase 56 | Pending |
+| TEETH-04 | Phase 56 | Pending |
+| TEETH-05 | Phase 56 | Pending |
+| TEETH-06 | Phase 56 | Pending |
+| SCLERA-01 | Phase 57 | Pending |
+| SCLERA-02 | Phase 57 | Pending |
+| SCLERA-03 | Phase 57 | Pending |
+| SCLERA-04 | Phase 57 | Pending |
+| SCLERA-05 | Phase 57 | Pending |
+| SCLERA-06 | Phase 57 | Pending |
+| LID-01 | Phase 54 | Pending |
+| LID-02 | Phase 57 | Pending |
+| LID-03 | Phase 57 | Pending |
+| LID-04 | Phase 57 | Pending |
+| LID-05 | Phase 57 | Pending |
+| SAFE-01 | Phase 58 | Pending |
+| SAFE-02 | Phase 58 | Pending |
+| SAFE-03 | Phase 58 | Pending |
+| OUT-01 | Phase 58 | Pending |
+| OUT-02 | Phase 58 | Pending |
+| OUT-03 | Phase 58 | Pending |
+| OUT-04 | Phase 58 | Pending |
 
 **Coverage:**
 - v1.14 requirements: 41 total
-- Mapped to phases: 0
-- Unmapped: 41 ⚠️
+- Mapped to phases: 41
+- Unmapped: 0
+- Duplicate mappings: 0
+- Coverage: 41/41 ✓
 
 ---
 *Requirements defined: 2026-07-30*
