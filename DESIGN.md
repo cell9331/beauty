@@ -177,6 +177,12 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
 - Strict evaluation uses the fixed `e6` brow ROI `(0.24, 0.76, 0.24, 0.43)` and separately fixed protected eye, forehead/hair, background, and watermark regions. Six signed predicates require opposite directed behavior; seven-family comparisons require vertical, thickness, length, whole spacing, head spacing, tilt, and peak to remain semantically distinct, including whole spacing versus head spacing and thickness versus peak.
 - Acceptance combines frozen non-circular pixel thresholds with original-detail review of the baseline and thirteen actual eyebrow images. Output evidence proves visible, brow-local, directed, distinct behavior for this fixture; it does not establish naturalness extrema, exhaustive transition safety, device parity, or final caps.
 
+### Phase 53 Canonical Still-Image Carrier Contract
+
+- D-05/D-17 uses exactly one package-only `BeautyCanonicalStillImage` value in `BeautyCore`; no target or reversed dependency is added. The immutable carrier owns one RGBA8 `Data` backing plus exact positive `width`, `height`, and `rowBytes`, and checked multiplication requires `rowBytes == width * 4` and `data.count == rowBytes * height` before a view exists.
+- The carrier accepts only normalized `.up`, not-input-mirrored metadata and opaque bytes. Its zero-origin `CIImage` view is created directly over the same owned data using `.RGBA8` and an explicit sRGB color space. It is non-Codable, has no exported/SPI byte or diagnostic representation, and keeps canonical pixels request-owned.
+- `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache swift test --package-path BeautySDK --filter BeautyCanonicalStillImageTests` passes 6/6 after the carrier landed; the production validate/orient/color-manage boundary remains owned by Plan 53-02 Task 2.
+
 Rules:
 
 - `0` means no effect for numeric parameters unless the field is explicitly bidirectional.
