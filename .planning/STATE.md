@@ -5,15 +5,15 @@ milestone_name: Local Facial Retouch
 current_phase: 53
 current_phase_name: Canonical Still-Image Contract and Private Request Foundation
 status: executing
-stopped_at: Completed 53-01-PLAN.md
-last_updated: "2026-07-30T09:03:08.575Z"
+stopped_at: Completed 53-02-PLAN.md
+last_updated: "2026-07-30T09:31:33.579Z"
 last_activity: 2026-07-30
 last_activity_desc: Phase 53 execution started
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 6
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: `.planning/PROJECT.md` (updated 2026-07-30)
 ## Current Position
 
 Phase: 53 (Canonical Still-Image Contract and Private Request Foundation) — EXECUTING
-Plan: 2 of 6
+Plan: 3 of 6
 Status: Ready to execute
 Last activity: 2026-07-30 — Phase 53 execution started
 
-Progress: [██░░░░░░░░] 17%
+Progress: [███░░░░░░░] 33%
 
 ## Performance Metrics
 
@@ -52,6 +52,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | Phase 53 P01 | 19 min | 3 tasks | 8 files |
+| Phase 53 P02 | 19 min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -63,6 +64,8 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 - `去脂` is acquisition-first and conditional. A closed evidence/design gate adds no field, provider, renderer case, or inert route and keeps `眼睛` partial.
 - Every admitted effect uses one canonical opaque still image, at most one selected-face Vision request, request-local private support, and one original-pixel composition owner.
 - Transparent input and all realtime/pixel-buffer, UI, cloud, external-model, tracked-media, device/commercial/performance-budget/packaging/release claims remain outside v1.14.
+- [Phase 53]: Canonical still rejection reuses invalidInput and unsupportedPixelFormat — The existing payload-free cases express the two stable caller actions without leaking decoded image facts.
+- [Phase 53]: Canonicalization reuses one explicit-sRGB context while pixels remain request-owned — Context reuse avoids repeated setup without caching or sharing portrait pixels across requests.
 
 ### Pending Todos
 
@@ -87,6 +90,6 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 
 ## Session Continuity
 
-Last session: 2026-07-30T09:03:08.569Z
-Stopped at: Completed 53-01-PLAN.md
+Last session: 2026-07-30T09:31:03.090Z
+Stopped at: Completed 53-02-PLAN.md
 Resume file: None
