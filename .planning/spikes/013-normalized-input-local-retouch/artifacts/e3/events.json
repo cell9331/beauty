@@ -1,0 +1,26 @@
+[
+  {
+    "category" : "start",
+    "message" : "normalized input contract started",
+    "metadata" : {
+      "mode" : "normalized-input-contract"
+    },
+    "timestamp" : "2026-07-30T03:18:26Z"
+  },
+  {
+    "category" : "result",
+    "message" : "normalized input contract completed",
+    "metadata" : {
+      "alphaMismatchPixels" : "0",
+      "durationMs" : "536.785",
+      "maximumOrientationAnchorDelta" : "0.000000",
+      "orientationMismatchPixels" : "0",
+      "orientationTopologyMismatchPixels" : "0",
+      "p3MaximumInputDelta" : "1",
+      "p3TopologyMismatchPixels" : "15",
+      "rejectedInputCount" : "2",
+      "variantCount" : "10"
+    },
+    "timestamp" : "2026-07-30T03:18:27Z"
+  }
+]

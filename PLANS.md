@@ -27,9 +27,29 @@
 ## 3. Active
 
 No active plan. No product milestone is active; v1.13 remains shipped and the
-completed Spike 012 wrap-up does not authorize v1.14 or any new feature scope.
+completed Spike 013 does not authorize v1.14 or any new feature scope.
 
 ## 4. Completed
+
+### C-2026-07-30-spike-013-normalized-input-local-retouch
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-30 |
+| Scope | Added an isolated ImageIO/Core Image canonical input boundary and exercised adaptive-teeth plus guarded-sclera composition across all eight EXIF rotation/mirror values, an 8-bit Display-P3 round trip, transparent borders, invalid orientation, non-RGB input, and no-face behavior. Production normalization and public contracts remain unchanged. |
+| Verdict | `PARTIAL`: all lossless EXIF variants normalize to byte-identical input, Vision anchors, masks, alpha, and output; alpha/outside-mask preservation and invalid/non-RGB/no-face failure pass. The stricter cross-profile topology requirement fails because one-byte P3 round-trip differences move Vision anchors and mask edges. |
+| Orientation result | Across e6/e2/e3, all 24 encoded EXIF/mirror runs report zero input/output/alpha/topology mismatch and zero anchor delta after canonical up-oriented sRGB RGBA8 normalization. |
+| Sensitivity result | P3 round trips stay within 1 input byte but fresh Vision anchors move 0.53–1.56 px, causing 8/15/76 strong-mask topology differences and 9/4/13 maximum output-byte deltas on e2/e3/e6. Holding canonical anchors fixed reduces topology differences to 3/0/11 and output maxima to 2/1/2, isolating detector sensitivity as the larger contributor. Transparent borders preserve alpha/outside pixels but move anchors 0.77–4.89 px; fixed anchors restore zero topology difference. |
+| Verification | Official Apple research recorded; release build and 23/23 self-tests pass; e6/e2/e3 metric assertions and exact event allowlists pass; invalid orientation/non-RGB reject before Vision; no-face exits 1; review JavaScript/assets pass; canonical/oriented/P3/alpha outputs were visually inspected; JSON/privacy/network/production-boundary/diff-hygiene checks pass. |
+| Evidence | `.planning/spikes/013-normalized-input-local-retouch/`, aggregate comparison/events JSON, local ignored visual artifacts, updated shared isolated harness, manifest verdict, and this ledger. |
+| Boundary | AI fixtures and synthetic profile/alpha variants prove mechanics only. Production must retain one orientation/color owner but still needs a transparent-input policy, HDR/gain-map work, licensed real stability/naturalness review, optimized memory, target-device profiling, and explicit bounded—not byte-identical—cross-profile acceptance. |
+
+Outcome:
+
+- Future still-image local-retouch work must normalize once before both Vision and rendering; passing orientation independently to only one side is not an acceptable ownership model.
+- Do not promise identical masks for equivalent 8-bit color-profile encodings. Use containment and bounded output/stability criteria, and evaluate detector drift on rights-approved real inputs.
+- Transparent canvas/background handling is a product input decision: either composite against a declared background before detection or reject unsupported alpha semantics. This spike does not choose or implement that production policy.
+- No new convention is added because canonical input normalization is established by the production security/design contract but appears in only this one spike session.
 
 ### C-2026-07-30-spike-012-wrap-up
 
