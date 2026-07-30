@@ -11,13 +11,13 @@ absent feature rather than an inert public field or proxy implementation.
 
 ### Still-Image Path and Compatibility
 
-- [ ] **PATH-01**: An SDK integrator can request admitted local-retouch effects through the existing public still-image `BeautySDK` facade without importing an internal target.
-- [ ] **PATH-02**: An accepted local-retouch input is validated and rendered once into one opaque, up-oriented, explicitly managed sRGB RGBA8 image shared by Vision, mask providers, and rendering.
-- [ ] **PATH-03**: Transparent, malformed-orientation, non-RGB, oversized, or otherwise unsupported local-retouch input fails before Vision or local-mask creation with a typed, privacy-safe outcome.
-- [ ] **PATH-04**: All admitted local-retouch effects share at most one existing selected-face Vision landmarks request and one exactly-once mapping boundary per still-image request.
-- [ ] **PATH-05**: A realtime or pixel-buffer request cannot activate v1.14 local retouch and preserves the previously shipped safe behavior without hidden frame state.
-- [ ] **PATH-06**: Legacy 59-field source construction, JSON, bundled presets, default values, and all shipped face/eye/brow/nose/mouth/color output remain neutral and compatible when local-retouch fields are absent or zero.
-- [ ] **PATH-07**: Every admitted public local-retouch field is independent, positive-only, finite-normalized, default-zero, and receives an exact stored-field and legacy-payload compatibility contract.
+- [x] **PATH-01**: An SDK integrator can request admitted local-retouch effects through the existing public still-image `BeautySDK` facade without importing an internal target.
+- [x] **PATH-02**: An accepted local-retouch input is validated and rendered once into one opaque, up-oriented, explicitly managed sRGB RGBA8 image shared by Vision, mask providers, and rendering.
+- [x] **PATH-03**: Transparent, malformed-orientation, non-RGB, oversized, or otherwise unsupported local-retouch input fails before Vision or local-mask creation with a typed, privacy-safe outcome.
+- [x] **PATH-04**: All admitted local-retouch effects share at most one existing selected-face Vision landmarks request and one exactly-once mapping boundary per still-image request.
+- [x] **PATH-05**: A realtime or pixel-buffer request cannot activate v1.14 local retouch and preserves the previously shipped safe behavior without hidden frame state.
+- [x] **PATH-06**: Legacy 59-field source construction, JSON, bundled presets, default values, and all shipped face/eye/brow/nose/mouth/color output remain neutral and compatible when local-retouch fields are absent or zero.
+- [x] **PATH-07**: Every admitted public local-retouch field is independent, positive-only, finite-normalized, default-zero, and receives an exact stored-field and legacy-payload compatibility contract.
 
 ### Rights-Approved Evidence
 
@@ -101,13 +101,13 @@ no implementation surface when that decision is closed.
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| PATH-01 | Phase 53 | Pending |
-| PATH-02 | Phase 53 | Pending |
-| PATH-03 | Phase 53 | Pending |
-| PATH-04 | Phase 53 | Pending |
-| PATH-05 | Phase 53 | Pending |
-| PATH-06 | Phase 53 | Pending |
-| PATH-07 | Phase 53 | Pending |
+| PATH-01 | Phase 53 | Complete |
+| PATH-02 | Phase 53 | Complete |
+| PATH-03 | Phase 53 | Complete |
+| PATH-04 | Phase 53 | Complete |
+| PATH-05 | Phase 53 | Complete |
+| PATH-06 | Phase 53 | Complete |
+| PATH-07 | Phase 53 | Complete |
 | EVID-01 | Phase 54 | Pending |
 | EVID-02 | Phase 54 | Pending |
 | EVID-03 | Phase 54 | Pending |
@@ -144,6 +144,7 @@ no implementation surface when that decision is closed.
 | OUT-04 | Phase 58 | Pending |
 
 **Coverage:**
+
 - v1.14 requirements: 41 total
 - Mapped to phases: 41
 - Unmapped: 0

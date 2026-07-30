@@ -46,75 +46,100 @@ Earlier shipped milestones are preserved in their linked archives under `.planni
 ## Phase Details
 
 ### Phase 53: Canonical Still-Image Contract and Private Request Foundation
+
 **Goal**: SDK integrators can invoke any admitted v1.14 effect through one compatibility-safe still-image request whose validation, pixels, selected face, and private support have a single owner.
 **Depends on**: Phase 52 (shipped v1.13 baseline)
 **Requirements**: PATH-01, PATH-02, PATH-03, PATH-04, PATH-05, PATH-06, PATH-07
 **Success Criteria** (what must be TRUE):
+
   1. An integrator can request admitted local retouch through the existing public still-image `BeautySDK` facade, while realtime and pixel-buffer requests preserve their previously shipped behavior and cannot activate v1.14 retouch.
   2. Every accepted local-retouch still image becomes one opaque, up-oriented, explicitly managed sRGB RGBA8 raster shared by Vision, private support providers, and rendering.
   3. Transparent, malformed-orientation, non-RGB, oversized, and otherwise unsupported inputs return typed privacy-safe outcomes before Vision or local-mask creation.
   4. A still-image request with any admitted effect performs at most one selected-face landmarks request and one mapping pass, and no mapped support survives or crosses the request.
   5. Legacy 59-field source construction, JSON, presets, defaults, and shipped output remain neutral; every field that is later admitted is independent, positive-only, finite-normalized, default-zero, and counted by an exact compatibility contract.
-**Plans**: TBD
+
+**Plans**: 1/6 plans executed
+
+- [x] 53-01-PLAN.md
+- [ ] 53-02-PLAN.md
+- [ ] 53-03-PLAN.md
+- [ ] 53-04-PLAN.md
+- [ ] 53-05-PLAN.md
+- [ ] 53-06-PLAN.md
 
 ### Phase 54: Rights-Approved Evidence and Eligibility Decisions
+
 **Goal**: Each candidate feature has an auditable, independent go/no-go decision before its visible implementation can be promoted.
 **Depends on**: Phase 53; rights acquisition may begin during Phase 53, but eligibility resolves here
 **Requirements**: EVID-01, EVID-02, EVID-03, EVID-04, EVID-05, LID-01
 **Success Criteria** (what must be TRUE):
+
   1. Each candidate feature's product gate opens only for a complete opaque rights-approved bundle containing genuine positive and negative cases with original, mask, after, and predeclared-polarity evidence.
   2. Mechanics-only and synthetic fixtures can still exercise deterministic safety checks but contribute nothing to product-effectiveness or naturalness aggregates.
   3. A reviewer can perform the frozen blinded original-detail review and persist only opaque identifiers, structured judgments, fixed reason codes, decisions, and aggregates—never media, paths, rights records, raw support, or freeform text.
   4. Teeth, sclera, and upper-eyelid eligibility are decided separately, so a closed or failed gate cannot lend evidence to or block a qualified sibling.
   5. `去脂` receives a deterministic go/no-go decision only after genuine upper-eyelid-fullness positives/negatives and a credible independent non-warp design are both reviewed.
+
 **Plans**: TBD
 
 ### Phase 55: Original-Pixel Composition and Failure-Isolation Core
+
 **Goal**: Admitted providers can contribute bounded local edits without sequential feedback, ambiguous ownership, or cross-region failure coupling.
 **Depends on**: Phase 54 (eligibility decisions may remain closed)
 **Requirements**: COMP-01, COMP-02, COMP-03, COMP-04, COMP-05
 **Success Criteria** (what must be TRUE):
+
   1. Teeth, each sclera eye, and any admitted eyelid band independently accept or abstain at the smallest anatomical unit without disabling eligible siblings or shipped face-agnostic effects.
   2. Every accepted edit is derived from immutable original canonical pixels under exactly one request-local mask owner, never from another effect's output.
   3. Hard anatomical envelopes remain authoritative after growth, blur, and feathering, and every pixel outside the final owned union stays byte-identical to the canonical source.
   4. An unexpected cross-provider overlap increments only an aggregate count and leaves the source pixel unchanged, with no priority rule or double edit.
   5. Fused disjoint output byte-matches standalone/merged oracles, and injected teeth, whole-sclera, left-eye, or right-eye failure leaves every unaffected result unchanged.
+
 **Plans**: TBD
 
 ### Phase 56: Independent Teeth Whitening Slice
+
 **Goal**: An independently eligible `白牙` slice reaches the public facade with conservative tooth-only output, or remains unpromoted without affecting other candidates.
 **Depends on**: Phase 55 and the teeth decision from Phase 54; no sclera or eyelid evidence is accepted
 **Requirements**: TEETH-01, TEETH-02, TEETH-03, TEETH-04, TEETH-05, TEETH-06
 **Success Criteria** (what must be TRUE):
+
   1. If and only if the teeth gate passes, an integrator receives an independent `teethWhitening` control that cannot alias global whitening, brightness, lip color, or geometry.
   2. Qualified support starts from actual mapped lip context, retains the conservative fixed strong baseline, and grows only connected color-qualified candidates inside a hard mouth-local envelope.
   3. Deterministic and rights-approved challenge cases show zero changes to lips, tongue, gums, braces, facial hair, skin, and all pixels outside the owned teeth mask.
   4. Genuine discoloration positives receive bounded yellow-excess and luminance improvement with natural texture, shading, edges, and color, while already-light, closed, occluded, unsupported, no-face, and unsafe cases abstain or remain natural.
   5. Public-facade output, strict saved-output evidence, original-detail review, privacy checks, regression tests, and the exact `白牙`/`嘴唇` ledger all reach the same independent promotion decision.
+
 **Plans**: TBD
 
 ### Phase 57: Guarded Sclera Slice and Conditional Upper-Eyelid Work
+
 **Goal**: `祛红血丝` qualifies through independent per-eye safety and evidence, while `去脂` is either separately proven as a non-warp effect or remains entirely absent and future.
 **Depends on**: Phase 55 and the sclera/upper-eyelid decisions from Phase 54; does not depend on teeth qualification
 **Requirements**: SCLERA-01, SCLERA-02, SCLERA-03, SCLERA-04, SCLERA-05, SCLERA-06, LID-02, LID-03, LID-04, LID-05
 **Success Criteria** (what must be TRUE):
+
   1. If and only if its own gate passes, an integrator receives an independent `scleraRednessReduction` control that cannot alias whitening, brightness, eye geometry, or skin color.
   2. Each eye independently validates actual eye and pupil support, builds a hard guarded sclera envelope, scores redness only inside it, feathers, re-clips, and can fail without disabling an eligible peer eye.
   3. Color-independent geometry and color-adversarial final-output oracles both show zero changes to iris, pupil, highlights, lashes, skin, and outside-mask pixels across blink, gaze, eyewear, occlusion, and malformed-support challenges.
   4. Genuine redness positives receive bounded red-excess reduction with natural luminance and vessel/detail variation, while closed, occluded, unsupported, or unsafe eyes abstain without guessed or stale support; facade output, review, privacy, regression, and exact ledger evidence agree.
   5. A closed `去脂` gate leaves no `upperEyelidFullnessReduction` field, provider, renderer case, or inert route and keeps `去脂` future plus `眼睛` partial; an open gate must instead prove a distinct public-facade non-warp effect that preserves eye/brow geometry, aperture, crease, texture, and identity and rejects lift, smoothing, eye-bag, dark-circle, or warp substitutes.
+
 **Plans**: TBD
 
 ### Phase 58: Combined Facade, Safety, Ledger, and Audit Closeout
+
 **Goal**: The independently admitted v1.14 rows work together through the public facade and close with conservative privacy, compatibility, regression, ledger, and audit evidence.
 **Depends on**: Phase 56 and Phase 57 admitted outcomes; a closed feature gate is a valid input to closeout
 **Requirements**: SAFE-01, SAFE-02, SAFE-03, OUT-01, OUT-02, OUT-03, OUT-04
 **Success Criteria** (what must be TRUE):
+
   1. Every admitted feature is exercised only through the public facade by isolated renderer cases, a bounded strict decoded-output helper, disposable ignored review artifacts, and original-detail inspection.
   2. Combined teeth and sclera requests preserve standalone/fused equivalence, collision-to-source behavior, shipped color/geometry output, and exact inventory/default compatibility.
   3. Repeated, parallel, canceled, no-face, missing-support, malformed-support, and mixed-feature requests retain no prior pixels, masks, landmarks, pupils, or vein-like detail and expose only allowlisted aggregate reason codes, counts, and timings.
   4. Local-retouch output preserves dimensions, canonical orientation/alpha/color contracts, safe-domain continuation, typed errors, and deterministic no-op behavior.
   5. Full SwiftPM and opt-in Vision integration, privacy/resource/network scans, adversarial safety, owner checks, and independent verification pass before ledgers promote exactly the qualified rows; `嘴唇` closes only with qualified `白牙`, `眼睛` closes only with both qualified eye rows, and no Demo, realtime, tracked-media, device, commercial, performance-budget, packaging, shipping, or launch claim is inferred.
+
 **Plans**: TBD
 
 ## Coverage
@@ -136,7 +161,7 @@ All 41 v1.14 requirements map to exactly one phase: 41 mapped, 0 duplicated, 0 u
 
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
-| 53. Canonical Still-Image Contract and Private Request Foundation | 0/TBD | Not started | - |
+| 53. Canonical Still-Image Contract and Private Request Foundation | 1/6 | In Progress|  |
 | 54. Rights-Approved Evidence and Eligibility Decisions | 0/TBD | Not started | - |
 | 55. Original-Pixel Composition and Failure-Isolation Core | 0/TBD | Not started | - |
 | 56. Independent Teeth Whitening Slice | 0/TBD | Not started | - |
