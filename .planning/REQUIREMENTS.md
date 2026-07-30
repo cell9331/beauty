@@ -1,0 +1,110 @@
+# Requirements: Beauty v1.14 Local Facial Retouch
+
+**Defined:** 2026-07-30
+**Core Value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
+
+## v1.14 Requirements
+
+Requirements are independently gated. Passing one visible feature never
+borrows evidence from another, and a failed conditional gate must result in an
+absent feature rather than an inert public field or proxy implementation.
+
+### Still-Image Path and Compatibility
+
+- [ ] **PATH-01**: An SDK integrator can request admitted local-retouch effects through the existing public still-image `BeautySDK` facade without importing an internal target.
+- [ ] **PATH-02**: An accepted local-retouch input is validated and rendered once into one opaque, up-oriented, explicitly managed sRGB RGBA8 image shared by Vision, mask providers, and rendering.
+- [ ] **PATH-03**: Transparent, malformed-orientation, non-RGB, oversized, or otherwise unsupported local-retouch input fails before Vision or local-mask creation with a typed, privacy-safe outcome.
+- [ ] **PATH-04**: All admitted local-retouch effects share at most one existing selected-face Vision landmarks request and one exactly-once mapping boundary per still-image request.
+- [ ] **PATH-05**: A realtime or pixel-buffer request cannot activate v1.14 local retouch and preserves the previously shipped safe behavior without hidden frame state.
+- [ ] **PATH-06**: Legacy 59-field source construction, JSON, bundled presets, default values, and all shipped face/eye/brow/nose/mouth/color output remain neutral and compatible when local-retouch fields are absent or zero.
+- [ ] **PATH-07**: Every admitted public local-retouch field is independent, positive-only, finite-normalized, default-zero, and receives an exact stored-field and legacy-payload compatibility contract.
+
+### Rights-Approved Evidence
+
+- [ ] **EVID-01**: Each visible feature has its own opaque, rights-approved local evaluation bundle containing at least one genuine positive and one negative with complete original/mask/after assets and predeclared polarity.
+- [ ] **EVID-02**: Mechanics-only or synthetic fixtures are excluded from product-effectiveness and naturalness aggregates even when they remain eligible for deterministic safety tests.
+- [ ] **EVID-03**: Review criteria are frozen before a blinded local original-detail review records structured target presence, mask coverage, protected leakage, naturalness, structure change, decision, and fixed reason code.
+- [ ] **EVID-04**: Persistent review export contains only opaque fixture/feature/polarity identifiers, structured judgments, decisions, and aggregates; it contains no media, paths, rights records, raw geometry, masks, or freeform reviewer text.
+- [ ] **EVID-05**: Failure to acquire or validate a feature's positive/negative bundle closes only that feature's product gate and does not block an independently qualified sibling.
+
+### Request-Local Composition
+
+- [ ] **COMP-01**: Teeth, each sclera eye, and any admitted upper-eyelid provider validate support and fail closed at the smallest anatomical unit without disabling eligible siblings or shipped face-agnostic effects.
+- [ ] **COMP-02**: Every accepted local color edit is derived from immutable original canonical pixels under exactly one request-local mask owner rather than from another effect's output.
+- [ ] **COMP-03**: Every hard anatomical envelope is re-applied after growth, blur, or feathering, and pixels outside the final owned union remain byte-identical to the original canonical input.
+- [ ] **COMP-04**: Any unexpected cross-provider mask overlap is counted only in aggregate and preserves the original pixel instead of receiving a priority or sequential double edit.
+- [ ] **COMP-05**: Fused output byte-matches independently computed standalone/merged oracles for disjoint accepted masks and preserves unaffected output under teeth, whole-sclera, left-eye, and right-eye failure injection.
+
+### Teeth Whitening (`白牙`)
+
+- [ ] **TEETH-01**: If and only if its feature gate passes, an SDK integrator receives an independent `teethWhitening` control that cannot alias global whitening, brightness, lip color, or another geometry/color field.
+- [ ] **TEETH-02**: Qualified tooth support uses actual mapped lip context, retains the conservative fixed strong baseline, and may grow only connected color-qualified candidates inside a hard mouth-local containment envelope.
+- [ ] **TEETH-03**: Teeth whitening changes zero pixels in lips, tongue, gums, braces, facial hair, skin, or outside the owned teeth mask across deterministic and rights-approved challenge cases.
+- [ ] **TEETH-04**: Qualified discoloration positives receive bounded yellow-excess reduction and luminance lift while preserving enamel texture, shading, edges, and natural color at original-detail review.
+- [ ] **TEETH-05**: Already-light teeth, closed/occluded/unsupported mouths, missing inner lips, no-face inputs, and unsafe candidates abstain or remain natural without guessing support.
+- [ ] **TEETH-06**: The public facade, saved-output helper, review bundle, privacy gates, regression suite, and exact ledger independently agree before `白牙` or branch `嘴唇` can be promoted.
+
+### Guarded Sclera Redness Reduction (`祛红血丝`)
+
+- [ ] **SCLERA-01**: If and only if its feature gate passes, an SDK integrator receives an independent `scleraRednessReduction` control that cannot alias global whitening, brightness, eye geometry, or skin color.
+- [ ] **SCLERA-02**: Each eye independently validates actual eye/pupil support, constructs a hard sclera envelope with guarded iris exclusion, scores redness only inside that envelope, feathers, and re-clips before composition.
+- [ ] **SCLERA-03**: Native-color-independent geometry and color-adversarial final-output oracles both prove zero changes to iris, pupil, protected highlights, lashes, skin, and outside-mask pixels.
+- [ ] **SCLERA-04**: Qualified redness positives receive bounded red-excess reduction while retaining natural luminance, vessel/detail variation, and non-porcelain appearance at original-detail review.
+- [ ] **SCLERA-05**: Blink, closure, gaze, glasses/contacts, missing or implausible pupil/eye support, strong highlights, occlusion, and one-eye rejection fail locally without guessed or stale support and without disabling an eligible peer eye.
+- [ ] **SCLERA-06**: The public facade, saved-output helper, per-eye safety/challenge matrix, review bundle, privacy gates, regression suite, and exact ledger independently agree before `祛红血丝` can be promoted.
+
+### Conditional Upper-Eyelid Fullness Reduction (`去脂`)
+
+- [ ] **LID-01**: The milestone records a deterministic go/no-go decision for `去脂` only after a complete rights-approved genuine upper-eyelid-fullness positive/negative bundle and a credible independent non-warp design are reviewed.
+- [ ] **LID-02**: If the gate is closed, no public `upperEyelidFullnessReduction` field, provider, renderer case, or inert runtime route is added, `去脂` remains `future`, and branch `眼睛` remains `partial`.
+- [ ] **LID-03**: If the gate opens, the admitted positive-only control reduces reviewed upper-eyelid fullness without moving the eye or brow, changing aperture, erasing crease/texture, globally smoothing skin, treating eye bags/dark circles, or altering identity.
+- [ ] **LID-04**: `eyeHeight`, `upperEyelidLift`, brow translation, global smoothing, dark-circle/eye-bag behavior, and any vertical/interior eye warp are rejected as `去脂` substitutes by source, geometry-invariance, and original-detail gates.
+- [ ] **LID-05**: An admitted `去脂` slice must pass its own public-facade output, positive/negative naturalness review, texture/structure preservation, privacy, regression, and exact ledger gates before promotion.
+
+### Privacy, Reliability, and Promotion
+
+- [ ] **SAFE-01**: Raw landmarks, lip/teeth geometry, pupils, sclera or eyelid masks, vein-like descriptors, image bytes, fixture paths, and reviewer identity never appear in public/SPI/Codable state, persistence, network traffic, logs, metrics, or tracked artifacts.
+- [ ] **SAFE-02**: Repeated, parallel, canceled, no-face, missing-support, malformed-support, and mixed-feature requests retain no prior masks or support and return only allowlisted aggregate reason codes, counts, and timings.
+- [ ] **SAFE-03**: Local-retouch output preserves input dimensions, orientation contract, alpha policy, color-space contract, safe-domain continuation, typed errors, and deterministic no-op behavior.
+- [ ] **OUT-01**: Every admitted feature is exercised only through the public facade by isolated renderer cases, a bounded strict decoded-output helper, ignored disposable gallery/review artifacts, and original-detail image inspection.
+- [ ] **OUT-02**: Combined teeth and sclera requests preserve standalone/fused equivalence, collision-to-original behavior, all shipped color/geometry effects, and exact public inventory/default compatibility.
+- [ ] **OUT-03**: Full SwiftPM, opt-in Apple Vision integration, privacy/resource/network scans, adversarial safety tests, owner-document checks, and an independent verification pass before any feature is marked complete.
+- [ ] **OUT-04**: Product and branch ledgers promote exactly the independently passed rows: qualified `白牙` may close `嘴唇`; `眼睛` closes only if both qualified `祛红血丝` and qualified `去脂` pass; no broader device, commercial, packaging, shipping, or launch claim is inferred.
+
+## Future Requirements
+
+### Additional Input and Runtime Modes
+
+- **FUTURE-01**: Realtime/pixel-buffer local retouch has an explicit temporal-state, scheduling, latency, backpressure, and device-performance design.
+- **FUTURE-02**: Transparent, HDR, gain-map, extended-range, and multi-face local retouch have explicit compositing, color, selection, ownership, and alignment contracts.
+- **FUTURE-03**: A learned segmentation resource is considered only after dataset/checkpoint/conversion/redistribution rights, checksums, package size, cold/warm performance, and measured superiority are independently approved.
+- **FUTURE-04**: Demo controls, presets, screenshots, physical-device parity, commercial visual approval, optimized performance budgets, packaging, shipping, and launch readiness are separately scoped.
+
+## Out of Scope
+
+| Feature | Reason |
+| --- | --- |
+| Realtime and pixel-buffer local retouch | Spike and architecture evidence cover still images only; temporal scheduling and device budgets need a separate milestone. |
+| Transparent/HDR/gain-map input | Vision alignment and restoration semantics are not yet owned; v1.14 rejects unsupported alpha before analysis. |
+| Proxy `去脂` through geometry or smoothing | Eye/brow motion, aperture changes, global smoothing, eye bags, and dark circles are different semantics; the tested warp was invalidated. |
+| Third-party beauty SDK, unapproved Core ML model, remote model download, or cloud processing | No dependency is needed for the deterministic path, and no approved license/resource chain exists. |
+| Public or persisted portrait-derived support | Raw masks, geometry, pupils, teeth and vein-like detail are request-local sensitive implementation data. |
+| SwiftUI/Demo UI and product presets | v1.14 is SDK-SPM-only; UI behavior and screenshots require a separate contract. |
+| Tracked portrait, mask, before/after, gallery, or model binaries | Visual evidence remains local, ignored, privacy-minimized, and reproducible from code plus rights records. |
+| Demographic, commercial, device, performance-budget, packaging, distribution, shipping, or launch readiness | Rights-approved internal evaluation and SDK correctness do not establish those claims. |
+
+## Traceability
+
+Roadmap creation maps every v1.14 requirement to exactly one phase.
+
+| Requirement | Phase | Status |
+| --- | --- | --- |
+
+**Coverage:**
+- v1.14 requirements: 41 total
+- Mapped to phases: 0
+- Unmapped: 41 ⚠️
+
+---
+*Requirements defined: 2026-07-30*
+*Last updated: 2026-07-30 after automated v1.14 research synthesis*
