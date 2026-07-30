@@ -107,6 +107,41 @@ extension BeautyObservedEyebrowSupport: CustomStringConvertible, CustomDebugStri
     }
 }
 
+/// Request-scoped mapped evidence copied from Vision's actual lip regions.
+///
+/// Outer and inner support are independently optional so malformed or missing
+/// samples in either region cannot erase a valid sibling. The value is
+/// package-only, immutable, non-Codable, and exposes only aggregate counts in
+/// diagnostics.
+package struct BeautyObservedLipSupport: Equatable, Sendable {
+    package let outer: [CoordinatePoint]?
+    package let inner: [CoordinatePoint]?
+
+    package init(
+        outer: [CoordinatePoint]? = nil,
+        inner: [CoordinatePoint]? = nil
+    ) {
+        self.outer = outer
+        self.inner = inner
+    }
+}
+
+extension BeautyObservedLipSupport: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+    package var description: String {
+        "BeautyObservedLipSupport(outerCount: \(outer?.count ?? 0), innerCount: \(inner?.count ?? 0))"
+    }
+
+    package var debugDescription: String { description }
+
+    package var customMirror: Mirror {
+        Mirror(
+            self,
+            children: ["outerCount": outer?.count ?? 0, "innerCount": inner?.count ?? 0],
+            displayStyle: .struct
+        )
+    }
+}
+
 package struct BeautyFaceObservation: Equatable, Sendable {
     package let stableID: String?
     package let confidence: Double
@@ -117,6 +152,7 @@ package struct BeautyFaceObservation: Equatable, Sendable {
     package let observedEyeOrder: BeautyObservedEyeOrder?
     package let observedFaceSupport: BeautyObservedFaceSupport?
     package let observedEyebrowSupport: BeautyObservedEyebrowSupport?
+    package let observedLipSupport: BeautyObservedLipSupport?
 
     package init(
         stableID: String? = nil,
@@ -127,7 +163,8 @@ package struct BeautyFaceObservation: Equatable, Sendable {
         observedEyeSupport: [BeautyObservedEyeSupport]? = nil,
         observedEyeOrder: BeautyObservedEyeOrder? = nil,
         observedFaceSupport: BeautyObservedFaceSupport? = nil,
-        observedEyebrowSupport: BeautyObservedEyebrowSupport? = nil
+        observedEyebrowSupport: BeautyObservedEyebrowSupport? = nil,
+        observedLipSupport: BeautyObservedLipSupport? = nil
     ) {
         self.stableID = stableID
         self.confidence = confidence
@@ -138,6 +175,7 @@ package struct BeautyFaceObservation: Equatable, Sendable {
         self.observedEyeOrder = observedEyeOrder
         self.observedFaceSupport = observedFaceSupport
         self.observedEyebrowSupport = observedEyebrowSupport
+        self.observedLipSupport = observedLipSupport
     }
 }
 
@@ -151,7 +189,9 @@ extension BeautyFaceObservation: CustomStringConvertible, CustomDebugStringConve
             + "observedFaceMedianLineCount: \(observedFaceSupport?.medianLine?.count ?? 0), "
             + "observedEyebrowSupportAvailable: \(observedEyebrowSupport != nil), "
             + "observedLeftEyebrowCount: \(observedEyebrowSupport?.left?.count ?? 0), "
-            + "observedRightEyebrowCount: \(observedEyebrowSupport?.right?.count ?? 0))"
+            + "observedRightEyebrowCount: \(observedEyebrowSupport?.right?.count ?? 0), "
+            + "observedOuterLipCount: \(observedLipSupport?.outer?.count ?? 0), "
+            + "observedInnerLipCount: \(observedLipSupport?.inner?.count ?? 0))"
     }
 
     package var debugDescription: String {
@@ -170,6 +210,8 @@ extension BeautyFaceObservation: CustomStringConvertible, CustomDebugStringConve
                 "observedEyebrowSupportAvailable": observedEyebrowSupport != nil,
                 "observedLeftEyebrowCount": observedEyebrowSupport?.left?.count ?? 0,
                 "observedRightEyebrowCount": observedEyebrowSupport?.right?.count ?? 0,
+                "observedOuterLipCount": observedLipSupport?.outer?.count ?? 0,
+                "observedInnerLipCount": observedLipSupport?.inner?.count ?? 0,
             ],
             displayStyle: .struct
         )

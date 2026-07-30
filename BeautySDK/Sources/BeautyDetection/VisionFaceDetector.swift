@@ -13,6 +13,15 @@ enum EyebrowPreflight {
     }
 }
 
+package enum LipRegionPreflight {
+    package static let maximumPointCount = 32
+    package static let minimumPointCount = 1
+
+    package static func accepts(pointCount: Int) -> Bool {
+        (minimumPointCount...maximumPointCount).contains(pointCount)
+    }
+}
+
 package struct VisionDetectionObservation: Equatable, Sendable {
     package let stableID: String?
     package let confidence: Double
@@ -22,6 +31,7 @@ package struct VisionDetectionObservation: Equatable, Sendable {
     package let observedEyeSupport: [BeautyObservedEyeSupport]?
     package let observedFaceSupport: BeautyObservedFaceSupport?
     package let observedEyebrowSupport: BeautyObservedEyebrowSupport?
+    package let observedLipSupport: BeautyObservedLipSupport?
 
     package init(
         stableID: String? = nil,
@@ -31,7 +41,8 @@ package struct VisionDetectionObservation: Equatable, Sendable {
         landmarks: BeautyFaceLandmarks = .complete,
         observedEyeSupport: [BeautyObservedEyeSupport]? = nil,
         observedFaceSupport: BeautyObservedFaceSupport? = nil,
-        observedEyebrowSupport: BeautyObservedEyebrowSupport? = nil
+        observedEyebrowSupport: BeautyObservedEyebrowSupport? = nil,
+        observedLipSupport: BeautyObservedLipSupport? = nil
     ) {
         self.stableID = stableID
         self.confidence = confidence
@@ -41,6 +52,7 @@ package struct VisionDetectionObservation: Equatable, Sendable {
         self.observedEyeSupport = observedEyeSupport
         self.observedFaceSupport = observedFaceSupport
         self.observedEyebrowSupport = observedEyebrowSupport
+        self.observedLipSupport = observedLipSupport
     }
 }
 
@@ -54,7 +66,9 @@ extension VisionDetectionObservation: CustomStringConvertible, CustomDebugString
             + "observedFaceMedianLineCount: \(observedFaceSupport?.medianLine?.count ?? 0), "
             + "observedEyebrowSupportAvailable: \(observedEyebrowSupport != nil), "
             + "observedLeftEyebrowCount: \(observedEyebrowSupport?.left?.count ?? 0), "
-            + "observedRightEyebrowCount: \(observedEyebrowSupport?.right?.count ?? 0))"
+            + "observedRightEyebrowCount: \(observedEyebrowSupport?.right?.count ?? 0), "
+            + "observedOuterLipCount: \(observedLipSupport?.outer?.count ?? 0), "
+            + "observedInnerLipCount: \(observedLipSupport?.inner?.count ?? 0))"
     }
 
     package var debugDescription: String {
@@ -73,6 +87,8 @@ extension VisionDetectionObservation: CustomStringConvertible, CustomDebugString
                 "observedEyebrowSupportAvailable": observedEyebrowSupport != nil,
                 "observedLeftEyebrowCount": observedEyebrowSupport?.left?.count ?? 0,
                 "observedRightEyebrowCount": observedEyebrowSupport?.right?.count ?? 0,
+                "observedOuterLipCount": observedLipSupport?.outer?.count ?? 0,
+                "observedInnerLipCount": observedLipSupport?.inner?.count ?? 0,
             ],
             displayStyle: .struct
         )
@@ -369,6 +385,29 @@ package struct VisionFaceDetector: Sendable {
             observedEyebrowSupport = nil
         }
 
+        let observedLipSupport: BeautyObservedLipSupport?
+        if let support = detection.observedLipSupport,
+           let visionBounds = detection.visionBounds,
+           visionBounds.isFinite,
+           visionBounds.width > 0,
+           visionBounds.height > 0 {
+            let outer = mapLipRegion(
+                support.outer,
+                in: visionBounds,
+                with: mapper
+            )
+            let inner = mapLipRegion(
+                support.inner,
+                in: visionBounds,
+                with: mapper
+            )
+            observedLipSupport = outer != nil || inner != nil
+                ? BeautyObservedLipSupport(outer: outer, inner: inner)
+                : nil
+        } else {
+            observedLipSupport = nil
+        }
+
         return BeautyFaceObservation(
                 stableID: detection.stableID,
                 confidence: detection.confidence,
@@ -378,7 +417,8 @@ package struct VisionFaceDetector: Sendable {
                 observedEyeSupport: observedEyeSupport,
                 observedEyeOrder: observedEyeOrder,
                 observedFaceSupport: observedFaceSupport,
-                observedEyebrowSupport: observedEyebrowSupport
+                observedEyebrowSupport: observedEyebrowSupport,
+                observedLipSupport: observedLipSupport
             )
     }
 
@@ -514,6 +554,25 @@ package struct VisionFaceDetector: Sendable {
             return nil
         }
         return projection > 0 ? mapped : Array(mapped.reversed())
+    }
+
+    private func mapLipRegion(
+        _ points: [CoordinatePoint]?,
+        in visionBounds: CoordinateRect,
+        with mapper: CoordinateMapper
+    ) -> [CoordinatePoint]? {
+        guard let points,
+              LipRegionPreflight.accepts(pointCount: points.count),
+              points.allSatisfy({
+                  $0.isFinite
+                      && (0...1).contains($0.x)
+                      && (0...1).contains($0.y)
+              })
+        else {
+            return nil
+        }
+
+        return try? mapPoints(points, in: visionBounds, with: mapper)
     }
 
     private func mappedFaceAxes(
@@ -737,10 +796,11 @@ package struct VisionFaceDetector: Sendable {
         landmarks: BeautyFaceLandmarks,
         observedEyeSupport: [BeautyObservedEyeSupport]?,
         observedFaceSupport: BeautyObservedFaceSupport?,
-        observedEyebrowSupport: BeautyObservedEyebrowSupport?
+        observedEyebrowSupport: BeautyObservedEyebrowSupport?,
+        observedLipSupport: BeautyObservedLipSupport?
     ) {
         guard let landmarks else {
-            return (BeautyFaceLandmarks(availableGroups: []), nil, nil, nil)
+            return (BeautyFaceLandmarks(availableGroups: []), nil, nil, nil, nil)
         }
 
         var groups: Set<BeautyLandmarkGroup> = []
@@ -777,11 +837,17 @@ package struct VisionFaceDetector: Sendable {
         let eyebrowSupport = leftBrow != nil || rightBrow != nil
             ? BeautyObservedEyebrowSupport(left: leftBrow, right: rightBrow)
             : nil
+        let outerLips = makePoints(from: landmarks.outerLips)
+        let innerLips = makePoints(from: landmarks.innerLips)
+        let lipSupport = outerLips != nil || innerLips != nil
+            ? BeautyObservedLipSupport(outer: outerLips, inner: innerLips)
+            : nil
         return (
             BeautyFaceLandmarks(availableGroups: groups),
             supports.isEmpty ? nil : supports,
             faceSupport,
-            eyebrowSupport
+            eyebrowSupport,
+            lipSupport
         )
     }
 
@@ -856,7 +922,8 @@ package struct VisionFaceDetector: Sendable {
                 landmarks: payload.landmarks,
                 observedEyeSupport: payload.observedEyeSupport,
                 observedFaceSupport: payload.observedFaceSupport,
-                observedEyebrowSupport: payload.observedEyebrowSupport
+                observedEyebrowSupport: payload.observedEyebrowSupport,
+                observedLipSupport: payload.observedLipSupport
             )
         }
     }

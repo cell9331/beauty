@@ -371,9 +371,9 @@ final class VisionFaceDetectorTests: XCTestCase {
         let expectedSupport =
             "BeautyObservedFaceSupport(contourCount: 2, medianLineCount: 1)"
         let expectedObservation =
-            "BeautyFaceObservation(landmarkGroupCount: 6, observedEyeSupportCount: 0, observedFaceSupportAvailable: true, observedFaceContourCount: 2, observedFaceMedianLineCount: 1, observedEyebrowSupportAvailable: false, observedLeftEyebrowCount: 0, observedRightEyebrowCount: 0)"
+            "BeautyFaceObservation(landmarkGroupCount: 6, observedEyeSupportCount: 0, observedFaceSupportAvailable: true, observedFaceContourCount: 2, observedFaceMedianLineCount: 1, observedEyebrowSupportAvailable: false, observedLeftEyebrowCount: 0, observedRightEyebrowCount: 0, observedOuterLipCount: 0, observedInnerLipCount: 0)"
         let expectedVisionObservation =
-            "VisionDetectionObservation(landmarkGroupCount: 6, observedEyeSupportCount: 0, observedFaceSupportAvailable: true, observedFaceContourCount: 2, observedFaceMedianLineCount: 1, observedEyebrowSupportAvailable: false, observedLeftEyebrowCount: 0, observedRightEyebrowCount: 0)"
+            "VisionDetectionObservation(landmarkGroupCount: 6, observedEyeSupportCount: 0, observedFaceSupportAvailable: true, observedFaceContourCount: 2, observedFaceMedianLineCount: 1, observedEyebrowSupportAvailable: false, observedLeftEyebrowCount: 0, observedRightEyebrowCount: 0, observedOuterLipCount: 0, observedInnerLipCount: 0)"
 
         XCTAssertEqual(String(describing: support), expectedSupport)
         XCTAssertEqual(String(reflecting: support), expectedSupport)
@@ -400,6 +400,8 @@ final class VisionFaceDetectorTests: XCTestCase {
                 "observedEyebrowSupportAvailable",
                 "observedLeftEyebrowCount",
                 "observedRightEyebrowCount",
+                "observedOuterLipCount",
+                "observedInnerLipCount",
             ]
         )
         XCTAssertEqual(
@@ -413,6 +415,8 @@ final class VisionFaceDetectorTests: XCTestCase {
                 "observedEyebrowSupportAvailable",
                 "observedLeftEyebrowCount",
                 "observedRightEyebrowCount",
+                "observedOuterLipCount",
+                "observedInnerLipCount",
             ]
         )
 
@@ -744,7 +748,7 @@ final class VisionFaceDetectorTests: XCTestCase {
         )
 
         let expected =
-            "VisionDetectionObservation(landmarkGroupCount: 6, observedEyeSupportCount: 0, observedFaceSupportAvailable: false, observedFaceContourCount: 0, observedFaceMedianLineCount: 0, observedEyebrowSupportAvailable: true, observedLeftEyebrowCount: 2, observedRightEyebrowCount: 1)"
+            "VisionDetectionObservation(landmarkGroupCount: 6, observedEyeSupportCount: 0, observedFaceSupportAvailable: false, observedFaceContourCount: 0, observedFaceMedianLineCount: 0, observedEyebrowSupportAvailable: true, observedLeftEyebrowCount: 2, observedRightEyebrowCount: 1, observedOuterLipCount: 0, observedInnerLipCount: 0)"
 
         XCTAssertEqual(String(describing: visionObservation), expected)
         XCTAssertEqual(String(reflecting: visionObservation), expected)
@@ -761,6 +765,8 @@ final class VisionFaceDetectorTests: XCTestCase {
                 "observedEyebrowSupportAvailable",
                 "observedLeftEyebrowCount",
                 "observedRightEyebrowCount",
+                "observedOuterLipCount",
+                "observedInnerLipCount",
             ]
         )
 
