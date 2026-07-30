@@ -1,18 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.13
-milestone_name: Eyebrow Geometry Controls
-status: Awaiting next milestone
-stopped_at: Milestone v1.13 complete; next $gsd-new-milestone
-last_updated: "2026-07-28T04:06:03Z"
-last_activity: 2026-07-28
-last_activity_desc: TD-012 production image input bounds implemented and verified after v1.13 lifecycle closeout
+milestone: v1.14
+milestone_name: Local Facial Retouch
+status: planning
+last_updated: "2026-07-30T06:29:15.941Z"
+last_activity: 2026-07-30
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 26
-  completed_plans: 26
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -26,10 +24,10 @@ See: `.planning/PROJECT.md` (updated 2026-07-28)
 
 ## Current Position
 
-Phase: Milestone v1.13 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-07-28 — TD-012 production input bounds completed; v1.13 remains shipped and no new milestone is active
+Status: Defining requirements
+Last activity: 2026-07-30 — Milestone v1.14 started
 
 ### TD-012 Production Image Input Bounds Result
 
