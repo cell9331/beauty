@@ -261,6 +261,80 @@ private struct LocalRetouchCompositionResult {
     let overlapPixels: Int
 }
 
+private struct NormalizedOrientationVariantMetrics: Codable, Sendable {
+    let orientationRawValue: UInt32
+    let encodedWidth: Int
+    let encodedHeight: Int
+    let normalizedWidth: Int
+    let normalizedHeight: Int
+    let inputMismatchPixels: Int
+    let inputAlphaMismatchPixels: Int
+    let maximumInputChannelDelta: Int
+    let maximumAnchorDeltaPixels: Double
+    let teethStrongTopologyMismatchPixels: Int
+    let scleraStrongTopologyMismatchPixels: Int
+    let outputMismatchPixels: Int
+    let outputAlphaMismatchPixels: Int
+    let maximumOutputChannelDelta: Int
+}
+
+private struct NormalizedColorVariantMetrics: Codable, Sendable {
+    let sourceColorSpace: String
+    let normalizedColorSpace: String
+    let inputMismatchPixels: Int
+    let maximumInputChannelDelta: Int
+    let maximumAnchorDeltaPixels: Double
+    let teethStrongTopologyMismatchPixels: Int
+    let scleraStrongTopologyMismatchPixels: Int
+    let fixedAnchorTeethStrongTopologyMismatchPixels: Int
+    let fixedAnchorScleraStrongTopologyMismatchPixels: Int
+    let outputMismatchPixels: Int
+    let maximumOutputChannelDelta: Int
+    let fixedAnchorMaximumOutputChannelDelta: Int
+    let changedOutsideMask: Int
+}
+
+private struct NormalizedAlphaVariantMetrics: Codable, Sendable {
+    let transparentInputPixels: Int
+    let normalizedAlphaMismatchPixels: Int
+    let outputAlphaMismatchPixels: Int
+    let transparentRGBChangedPixels: Int
+    let maximumAnchorDeltaPixels: Double
+    let teethStrongTopologyMismatchPixels: Int
+    let scleraStrongTopologyMismatchPixels: Int
+    let fixedAnchorTeethStrongTopologyMismatchPixels: Int
+    let fixedAnchorScleraStrongTopologyMismatchPixels: Int
+    let changedOutsideMask: Int
+}
+
+private struct NormalizedInputMetrics: Codable, Sendable {
+    let mode: String
+    let inputWidth: Int
+    let inputHeight: Int
+    let faceCount: Int
+    let detectionRequestCount: Int
+    let orientationVariantCount: Int
+    let orientationVariants: [NormalizedOrientationVariantMetrics]
+    let orientationMismatchPixelsTotal: Int
+    let orientationTopologyMismatchPixelsTotal: Int
+    let maximumOrientationAnchorDeltaPixels: Double
+    let displayP3: NormalizedColorVariantMetrics
+    let transparentBorder: NormalizedAlphaVariantMetrics
+    let invalidOrientationFailedClosed: Bool
+    let nonRGBInputFailedClosed: Bool
+    let peakResidentMegabytes: Double
+    let notes: [String]
+}
+
+private struct LocalRetouchEvidence {
+    let input: Raster
+    let detection: DetectionResult
+    let teethMask: [Float]
+    let scleraMask: [Float]
+    let output: Raster
+    let unionMask: [Float]
+}
+
 private enum LabError: Error, CustomStringConvertible {
     case invalidArguments(String)
     case imageLoadFailed(String)
@@ -269,6 +343,8 @@ private enum LabError: Error, CustomStringConvertible {
     case missingSupport(String)
     case modelLoadFailed(String)
     case modelOutputMissing
+    case invalidImageOrientation
+    case unsupportedImageColorModel
 
     var description: String {
         switch self {
@@ -279,6 +355,8 @@ private enum LabError: Error, CustomStringConvertible {
         case let .missingSupport(name): return "Missing required support: \(name)"
         case let .modelLoadFailed(path): return "Unable to load Core ML model: \(path)"
         case .modelOutputMissing: return "Core ML teeth output out3 was not returned"
+        case .invalidImageOrientation: return "Invalid image orientation metadata"
+        case .unsupportedImageColorModel: return "Unsupported image color model"
         }
     }
 }
@@ -298,7 +376,7 @@ private struct Raster: Sendable {
             height: height,
             bitsPerComponent: 8,
             bytesPerRow: width * 4,
-            space: CGColorSpaceCreateDeviceRGB(),
+            space: CGColorSpace(name: CGColorSpace.sRGB)!,
             bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Big.rawValue
         ) else {
             throw LabError.imageLoadFailed("bitmap context")
@@ -327,7 +405,7 @@ private struct Raster: Sendable {
                   bitsPerComponent: 8,
                   bitsPerPixel: 32,
                   bytesPerRow: width * 4,
-                  space: CGColorSpaceCreateDeviceRGB(),
+                  space: CGColorSpace(name: CGColorSpace.sRGB)!,
                   bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
                       .union(.byteOrder32Big),
                   provider: provider,
@@ -424,7 +502,7 @@ private enum RetouchSpikeLab {
             let parsed = try ParsedArguments(Array(CommandLine.arguments.dropFirst()))
             if parsed.mode == "self-test" {
                 try runSelfTests()
-                print("SELF-TEST PASS: 19/19")
+                print("SELF-TEST PASS: 23/23")
                 return
             }
             if parsed.mode == "teeth-compare" {
@@ -441,6 +519,10 @@ private enum RetouchSpikeLab {
             }
             if parsed.mode == "guarded-local-composition" {
                 try runGuardedLocalComposition(parsed)
+                return
+            }
+            if parsed.mode == "normalized-input-contract" {
+                try runNormalizedInputContract(parsed)
                 return
             }
             try run(parsed)
@@ -1202,6 +1284,298 @@ private enum RetouchSpikeLab {
         try writeJSON(log.events, to: outputURL.appendingPathComponent("events.json"))
         print(String(data: try JSONEncoder.pretty.encode(metrics), encoding: .utf8) ?? "")
     }
+
+    private static func runNormalizedInputContract(_ parsed: ParsedArguments) throws {
+        guard let inputPath = parsed.options["input"],
+              let outputPath = parsed.options["output"]
+        else {
+            throw LabError.invalidArguments("normalized-input-contract requires --input and --output")
+        }
+        let outputURL = URL(fileURLWithPath: outputPath, isDirectory: true)
+        try FileManager.default.createDirectory(at: outputURL, withIntermediateDirectories: true)
+        let log = EventLog()
+        log.add("start", "normalized input contract started", metadata: ["mode": parsed.mode])
+        let started = Date()
+        let context = canonicalImageContext()
+
+        let sourceCanonical = try normalizedImage(
+            at: URL(fileURLWithPath: inputPath),
+            context: context
+        )
+        let referenceData = try encodedImageData(
+            sourceCanonical,
+            orientationRaw: CGImagePropertyOrientation.up.rawValue,
+            typeIdentifier: UTType.tiff.identifier
+        )
+        let referenceImage = try normalizedImage(data: referenceData, context: context)
+        let reference = try localRetouchEvidence(referenceImage)
+
+        var orientationMetrics: [NormalizedOrientationVariantMetrics] = []
+        var orientationSixRaw: CGImage?
+        var orientationSixEvidence: LocalRetouchEvidence?
+        for orientationRaw in UInt32(1)...UInt32(8) {
+            let encodedPixels = try inverseOrientedImage(
+                referenceImage,
+                targetOrientationRaw: orientationRaw,
+                context: context
+            )
+            let data = try encodedImageData(
+                encodedPixels,
+                orientationRaw: orientationRaw,
+                typeIdentifier: UTType.tiff.identifier
+            )
+            let normalized = try normalizedImage(data: data, context: context)
+            let evidence = try localRetouchEvidence(normalized)
+            let inputRaster = try Raster(cgImage: normalized)
+            let metric = NormalizedOrientationVariantMetrics(
+                orientationRawValue: orientationRaw,
+                encodedWidth: encodedPixels.width,
+                encodedHeight: encodedPixels.height,
+                normalizedWidth: normalized.width,
+                normalizedHeight: normalized.height,
+                inputMismatchPixels: differentPixelCount(reference.input, inputRaster),
+                inputAlphaMismatchPixels: alphaMismatchCount(reference.input, inputRaster),
+                maximumInputChannelDelta: maximumRGBChannelDelta(reference.input, inputRaster),
+                maximumAnchorDeltaPixels: maximumAnchorDelta(
+                    reference.detection.anchors,
+                    evidence.detection.anchors
+                ),
+                teethStrongTopologyMismatchPixels: maskTopologyMismatchCount(
+                    reference.teethMask,
+                    evidence.teethMask,
+                    threshold: 0.15
+                ),
+                scleraStrongTopologyMismatchPixels: maskTopologyMismatchCount(
+                    reference.scleraMask,
+                    evidence.scleraMask,
+                    threshold: 0.15
+                ),
+                outputMismatchPixels: differentPixelCount(reference.output, evidence.output),
+                outputAlphaMismatchPixels: alphaMismatchCount(reference.output, evidence.output),
+                maximumOutputChannelDelta: maximumRGBChannelDelta(reference.output, evidence.output)
+            )
+            orientationMetrics.append(metric)
+            if orientationRaw == CGImagePropertyOrientation.right.rawValue {
+                orientationSixRaw = encodedPixels
+                orientationSixEvidence = evidence
+            }
+        }
+
+        guard let displayP3 = CGColorSpace(name: CGColorSpace.displayP3),
+              let sRGB = CGColorSpace(name: CGColorSpace.sRGB)
+        else { throw LabError.imageLoadFailed("system color spaces") }
+        let p3EncodedPixels = try colorConvertedImage(
+            referenceImage,
+            colorSpace: displayP3,
+            context: context
+        )
+        let p3Data = try encodedImageData(
+            p3EncodedPixels,
+            orientationRaw: CGImagePropertyOrientation.up.rawValue,
+            typeIdentifier: UTType.tiff.identifier
+        )
+        let p3NormalizedImage = try normalizedImage(data: p3Data, context: context)
+        let p3Evidence = try localRetouchEvidence(p3NormalizedImage)
+        let p3FixedAnchorEvidence = try localRetouchEvidence(
+            p3NormalizedImage,
+            fixedAnchors: reference.detection.anchors
+        )
+        let p3Input = try Raster(cgImage: p3NormalizedImage)
+        let p3Metrics = NormalizedColorVariantMetrics(
+            sourceColorSpace: "Display P3",
+            normalizedColorSpace: "sRGB RGBA8",
+            inputMismatchPixels: differentPixelCount(reference.input, p3Input),
+            maximumInputChannelDelta: maximumRGBChannelDelta(reference.input, p3Input),
+            maximumAnchorDeltaPixels: maximumAnchorDelta(
+                reference.detection.anchors,
+                p3Evidence.detection.anchors
+            ),
+            teethStrongTopologyMismatchPixels: maskTopologyMismatchCount(
+                reference.teethMask,
+                p3Evidence.teethMask,
+                threshold: 0.15
+            ),
+            scleraStrongTopologyMismatchPixels: maskTopologyMismatchCount(
+                reference.scleraMask,
+                p3Evidence.scleraMask,
+                threshold: 0.15
+            ),
+            fixedAnchorTeethStrongTopologyMismatchPixels: maskTopologyMismatchCount(
+                reference.teethMask,
+                p3FixedAnchorEvidence.teethMask,
+                threshold: 0.15
+            ),
+            fixedAnchorScleraStrongTopologyMismatchPixels: maskTopologyMismatchCount(
+                reference.scleraMask,
+                p3FixedAnchorEvidence.scleraMask,
+                threshold: 0.15
+            ),
+            outputMismatchPixels: differentPixelCount(reference.output, p3Evidence.output),
+            maximumOutputChannelDelta: maximumRGBChannelDelta(reference.output, p3Evidence.output),
+            fixedAnchorMaximumOutputChannelDelta: maximumRGBChannelDelta(
+                reference.output,
+                p3FixedAnchorEvidence.output
+            ),
+            changedOutsideMask: measure(
+                before: p3Evidence.input,
+                after: p3Evidence.output,
+                mask: p3Evidence.unionMask
+            ).changedOutsideMask
+        )
+
+        var alphaSource = try Raster(cgImage: referenceImage)
+        applyTransparentBorder(to: &alphaSource)
+        let alphaSourceImage = try alphaSource.makeCGImage()
+        let alphaData = try encodedImageData(
+            alphaSourceImage,
+            orientationRaw: CGImagePropertyOrientation.up.rawValue,
+            typeIdentifier: UTType.tiff.identifier
+        )
+        let alphaNormalizedImage = try normalizedImage(data: alphaData, context: context)
+        let alphaEvidence = try localRetouchEvidence(alphaNormalizedImage)
+        let alphaFixedAnchorEvidence = try localRetouchEvidence(
+            alphaNormalizedImage,
+            fixedAnchors: reference.detection.anchors
+        )
+        let alphaInput = try Raster(cgImage: alphaNormalizedImage)
+        let transparentRegion = alphaInput.pixels.indices.reduce(into: [Float](repeating: 0, count: alphaInput.width * alphaInput.height)) { region, offset in
+            guard offset % 4 == 3, alphaInput.pixels[offset] == 0 else { return }
+            region[offset / 4] = 1
+        }
+        let alphaMetrics = NormalizedAlphaVariantMetrics(
+            transparentInputPixels: transparentRegion.lazy.filter { $0 > 0.5 }.count,
+            normalizedAlphaMismatchPixels: alphaMismatchCount(alphaSource, alphaInput),
+            outputAlphaMismatchPixels: alphaMismatchCount(alphaEvidence.input, alphaEvidence.output),
+            transparentRGBChangedPixels: changedPixelCount(
+                before: alphaEvidence.input,
+                after: alphaEvidence.output,
+                within: transparentRegion
+            ),
+            maximumAnchorDeltaPixels: maximumAnchorDelta(
+                reference.detection.anchors,
+                alphaEvidence.detection.anchors
+            ),
+            teethStrongTopologyMismatchPixels: maskTopologyMismatchCount(
+                reference.teethMask,
+                alphaEvidence.teethMask,
+                threshold: 0.15
+            ),
+            scleraStrongTopologyMismatchPixels: maskTopologyMismatchCount(
+                reference.scleraMask,
+                alphaEvidence.scleraMask,
+                threshold: 0.15
+            ),
+            fixedAnchorTeethStrongTopologyMismatchPixels: maskTopologyMismatchCount(
+                reference.teethMask,
+                alphaFixedAnchorEvidence.teethMask,
+                threshold: 0.15
+            ),
+            fixedAnchorScleraStrongTopologyMismatchPixels: maskTopologyMismatchCount(
+                reference.scleraMask,
+                alphaFixedAnchorEvidence.scleraMask,
+                threshold: 0.15
+            ),
+            changedOutsideMask: measure(
+                before: alphaEvidence.input,
+                after: alphaEvidence.output,
+                mask: alphaEvidence.unionMask
+            ).changedOutsideMask
+        )
+
+        let invalidOrientationFailedClosed: Bool
+        do {
+            _ = try normalizedImage(
+                referenceImage,
+                orientationRaw: 9,
+                context: context,
+                destinationColorSpace: sRGB
+            )
+            invalidOrientationFailedClosed = false
+        } catch LabError.invalidImageOrientation {
+            invalidOrientationFailedClosed = true
+        }
+        let nonRGBInputFailedClosed: Bool
+        do {
+            _ = try normalizedImage(
+                makeGrayTestImage(),
+                orientationRaw: CGImagePropertyOrientation.up.rawValue,
+                context: context,
+                destinationColorSpace: sRGB
+            )
+            nonRGBInputFailedClosed = false
+        } catch LabError.unsupportedImageColorModel {
+            nonRGBInputFailedClosed = true
+        }
+
+        let orientationMismatchTotal = orientationMetrics.reduce(0) {
+            $0 + $1.inputMismatchPixels + $1.outputMismatchPixels
+                + $1.inputAlphaMismatchPixels + $1.outputAlphaMismatchPixels
+        }
+        let orientationTopologyMismatchTotal = orientationMetrics.reduce(0) {
+            $0 + $1.teethStrongTopologyMismatchPixels + $1.scleraStrongTopologyMismatchPixels
+        }
+        let maximumOrientationAnchorDelta = orientationMetrics
+            .map(\.maximumAnchorDeltaPixels)
+            .max() ?? 0
+        let metrics = NormalizedInputMetrics(
+            mode: parsed.mode,
+            inputWidth: reference.input.width,
+            inputHeight: reference.input.height,
+            faceCount: reference.detection.faceCount,
+            detectionRequestCount: orientationMetrics.count + 2,
+            orientationVariantCount: orientationMetrics.count,
+            orientationVariants: orientationMetrics,
+            orientationMismatchPixelsTotal: orientationMismatchTotal,
+            orientationTopologyMismatchPixelsTotal: orientationTopologyMismatchTotal,
+            maximumOrientationAnchorDeltaPixels: maximumOrientationAnchorDelta,
+            displayP3: p3Metrics,
+            transparentBorder: alphaMetrics,
+            invalidOrientationFailedClosed: invalidOrientationFailedClosed,
+            nonRGBInputFailedClosed: nonRGBInputFailedClosed,
+            peakResidentMegabytes: peakResidentMegabytes(),
+            notes: [
+                "ImageIO orientation metadata is validated before Core Image rotates or mirrors source pixels into an up-oriented sRGB RGBA8 image.",
+                "All eight lossless TIFF orientation representations are compared against one encoded canonical oracle before Vision, mask selection, and composition.",
+                "Display P3 is color-managed back to sRGB; bounded channel deltas and strong-mask topology are reported both with a fresh Vision result and with canonical anchors held fixed to separate detector sensitivity from color-score sensitivity.",
+                "The alpha case uses a transparent border outside the face. Composition must preserve every alpha byte and transparent RGB pixel; fixed-anchor metrics isolate any detector response to the changed canvas boundary.",
+                "Invalid EXIF orientation and non-RGB source models fail closed before Vision. Events persist aggregate counts and deltas only.",
+                "This isolated macOS experiment does not change or validate the production normalizer, HDR, device performance, or product readiness.",
+            ]
+        )
+        log.add(
+            "result",
+            "normalized input contract completed",
+            metadata: [
+                "variantCount": "\(metrics.orientationVariantCount + 2)",
+                "orientationMismatchPixels": "\(metrics.orientationMismatchPixelsTotal)",
+                "orientationTopologyMismatchPixels": "\(metrics.orientationTopologyMismatchPixelsTotal)",
+                "maximumOrientationAnchorDelta": String(format: "%.6f", metrics.maximumOrientationAnchorDeltaPixels),
+                "p3MaximumInputDelta": "\(metrics.displayP3.maximumInputChannelDelta)",
+                "p3TopologyMismatchPixels": "\(metrics.displayP3.teethStrongTopologyMismatchPixels + metrics.displayP3.scleraStrongTopologyMismatchPixels)",
+                "alphaMismatchPixels": "\(metrics.transparentBorder.outputAlphaMismatchPixels)",
+                "rejectedInputCount": "\([metrics.invalidOrientationFailedClosed, metrics.nonRGBInputFailedClosed].filter { $0 }.count)",
+                "durationMs": formattedMilliseconds(Date().timeIntervalSince(started) * 1_000),
+            ]
+        )
+
+        try writePNG(reference.input, to: outputURL.appendingPathComponent("canonical-input.png"))
+        try writePNG(reference.output, to: outputURL.appendingPathComponent("canonical-after.png"))
+        try writePNG(overlay(reference.input, mask: reference.unionMask), to: outputURL.appendingPathComponent("canonical-overlay.png"))
+        if let orientationSixRaw {
+            try writePNG(try Raster(cgImage: orientationSixRaw), to: outputURL.appendingPathComponent("orientation-6-encoded-pixels.png"))
+        }
+        if let orientationSixEvidence {
+            try writePNG(orientationSixEvidence.output, to: outputURL.appendingPathComponent("orientation-6-normalized-after.png"))
+            try writePNG(overlay(orientationSixEvidence.input, mask: orientationSixEvidence.unionMask), to: outputURL.appendingPathComponent("orientation-6-normalized-overlay.png"))
+        }
+        try writePNG(p3Input, to: outputURL.appendingPathComponent("display-p3-normalized-input.png"))
+        try writePNG(p3Evidence.output, to: outputURL.appendingPathComponent("display-p3-normalized-after.png"))
+        try writePNG(alphaEvidence.input, to: outputURL.appendingPathComponent("transparent-border-input.png"))
+        try writePNG(alphaEvidence.output, to: outputURL.appendingPathComponent("transparent-border-after.png"))
+        try writeJSON(metrics, to: outputURL.appendingPathComponent("comparison.json"))
+        try writeJSON(log.events, to: outputURL.appendingPathComponent("events.json"))
+        print(String(data: try JSONEncoder.pretty.encode(metrics), encoding: .utf8) ?? "")
+    }
 }
 
 private extension JSONEncoder {
@@ -1219,6 +1593,271 @@ private func loadCGImage(_ url: URL) throws -> CGImage {
         throw LabError.imageLoadFailed(url.path)
     }
     return image
+}
+
+private func canonicalImageContext() -> CIContext {
+    let sRGB = CGColorSpace(name: CGColorSpace.sRGB)!
+    return CIContext(options: [
+        .workingColorSpace: sRGB,
+        .outputColorSpace: sRGB,
+        .useSoftwareRenderer: true,
+        .cacheIntermediates: false,
+    ])
+}
+
+private func normalizedImage(at url: URL, context: CIContext) throws -> CGImage {
+    guard let source = CGImageSourceCreateWithURL(url as CFURL, nil) else {
+        throw LabError.imageLoadFailed(url.path)
+    }
+    return try normalizedImage(source: source, context: context)
+}
+
+private func normalizedImage(data: Data, context: CIContext) throws -> CGImage {
+    guard let source = CGImageSourceCreateWithData(data as CFData, nil) else {
+        throw LabError.imageLoadFailed("encoded image data")
+    }
+    return try normalizedImage(source: source, context: context)
+}
+
+private func normalizedImage(source: CGImageSource, context: CIContext) throws -> CGImage {
+    guard let rawImage = CGImageSourceCreateImageAtIndex(source, 0, nil) else {
+        throw LabError.imageLoadFailed("image source frame")
+    }
+    let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as NSDictionary?
+    let orientationRaw = (properties?[kCGImagePropertyOrientation] as? NSNumber)?.uint32Value
+        ?? CGImagePropertyOrientation.up.rawValue
+    guard let sRGB = CGColorSpace(name: CGColorSpace.sRGB) else {
+        throw LabError.imageLoadFailed("sRGB color space")
+    }
+    return try normalizedImage(
+        rawImage,
+        orientationRaw: orientationRaw,
+        context: context,
+        destinationColorSpace: sRGB
+    )
+}
+
+private func normalizedImage(
+    _ rawImage: CGImage,
+    orientationRaw: UInt32,
+    context: CIContext,
+    destinationColorSpace: CGColorSpace
+) throws -> CGImage {
+    guard (CGImagePropertyOrientation.up.rawValue...CGImagePropertyOrientation.left.rawValue)
+        .contains(orientationRaw)
+    else {
+        throw LabError.invalidImageOrientation
+    }
+    guard let sourceColorSpace = rawImage.colorSpace,
+          sourceColorSpace.model == .rgb
+    else { throw LabError.unsupportedImageColorModel }
+    let source = CIImage(cgImage: rawImage, options: [.colorSpace: sourceColorSpace])
+    let oriented = source.oriented(forExifOrientation: Int32(orientationRaw))
+    let extent = oriented.extent.integral
+    guard extent.width > 0,
+          extent.height > 0,
+          extent.width.isFinite,
+          extent.height.isFinite
+    else { throw LabError.imageLoadFailed("normalized extent") }
+    guard let image = context.createCGImage(
+        oriented,
+        from: extent,
+        format: .RGBA8,
+        colorSpace: destinationColorSpace
+    ) else { throw LabError.imageLoadFailed("normalized render") }
+    return image
+}
+
+private func encodedImageData(
+    _ image: CGImage,
+    orientationRaw: UInt32,
+    typeIdentifier: String
+) throws -> Data {
+    let data = NSMutableData()
+    guard let destination = CGImageDestinationCreateWithData(
+        data,
+        typeIdentifier as CFString,
+        1,
+        nil
+    ) else { throw LabError.imageWriteFailed("encoded image data") }
+    let properties = [
+        kCGImagePropertyOrientation: NSNumber(value: orientationRaw),
+    ] as CFDictionary
+    CGImageDestinationAddImage(destination, image, properties)
+    guard CGImageDestinationFinalize(destination) else {
+        throw LabError.imageWriteFailed("encoded image data")
+    }
+    return data as Data
+}
+
+private func inverseOrientedImage(
+    _ canonical: CGImage,
+    targetOrientationRaw: UInt32,
+    context: CIContext
+) throws -> CGImage {
+    let inverseRaw: UInt32
+    switch targetOrientationRaw {
+    case 1, 2, 3, 4, 5, 7: inverseRaw = targetOrientationRaw
+    case 6: inverseRaw = 8
+    case 8: inverseRaw = 6
+    default: throw LabError.invalidImageOrientation
+    }
+    guard let colorSpace = canonical.colorSpace else {
+        throw LabError.unsupportedImageColorModel
+    }
+    let source = CIImage(cgImage: canonical, options: [.colorSpace: colorSpace])
+    let inverse = source.oriented(forExifOrientation: Int32(inverseRaw))
+    let extent = inverse.extent.integral
+    guard let image = context.createCGImage(
+        inverse,
+        from: extent,
+        format: .RGBA8,
+        colorSpace: colorSpace
+    ) else { throw LabError.imageLoadFailed("inverse orientation render") }
+    return image
+}
+
+private func colorConvertedImage(
+    _ image: CGImage,
+    colorSpace: CGColorSpace,
+    context: CIContext
+) throws -> CGImage {
+    guard let sourceColorSpace = image.colorSpace else {
+        throw LabError.unsupportedImageColorModel
+    }
+    let source = CIImage(cgImage: image, options: [.colorSpace: sourceColorSpace])
+    guard let converted = context.createCGImage(
+        source,
+        from: source.extent.integral,
+        format: .RGBA8,
+        colorSpace: colorSpace
+    ) else { throw LabError.imageLoadFailed("color-space render") }
+    return converted
+}
+
+private func applyTransparentBorder(to raster: inout Raster) {
+    let border = max(2, min(raster.width, raster.height) / 18)
+    for y in 0..<raster.height {
+        for x in 0..<raster.width where x < border || x >= raster.width - border || y < border || y >= raster.height - border {
+            let offset = raster.offset(x: x, y: y)
+            raster.pixels[offset] = 0
+            raster.pixels[offset + 1] = 0
+            raster.pixels[offset + 2] = 0
+            raster.pixels[offset + 3] = 0
+        }
+    }
+}
+
+private func makeGrayTestImage() throws -> CGImage {
+    let bytes = Data([0, 85, 170, 255]) as CFData
+    guard let provider = CGDataProvider(data: bytes),
+          let image = CGImage(
+              width: 2,
+              height: 2,
+              bitsPerComponent: 8,
+              bitsPerPixel: 8,
+              bytesPerRow: 2,
+              space: CGColorSpaceCreateDeviceGray(),
+              bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue),
+              provider: provider,
+              decode: nil,
+              shouldInterpolate: false,
+              intent: .defaultIntent
+          )
+    else { throw LabError.imageLoadFailed("gray test image") }
+    return image
+}
+
+private func localRetouchEvidence(_ image: CGImage) throws -> LocalRetouchEvidence {
+    let input = try Raster(cgImage: image)
+    let detection = try detectAnchors(cgImage: image, width: input.width, height: input.height)
+    return try localRetouchEvidence(input, detection: detection)
+}
+
+private func localRetouchEvidence(
+    _ image: CGImage,
+    fixedAnchors: FaceAnchors
+) throws -> LocalRetouchEvidence {
+    let input = try Raster(cgImage: image)
+    return try localRetouchEvidence(
+        input,
+        detection: DetectionResult(anchors: fixedAnchors, faceCount: 1)
+    )
+}
+
+private func localRetouchEvidence(
+    _ input: Raster,
+    detection: DetectionResult
+) throws -> LocalRetouchEvidence {
+    let teeth = try adaptiveTeethSelection(input, anchors: detection.anchors)
+    let sclera = try guardedScleraPair(input, anchors: detection.anchors)
+    let composition = composeLocalRetouch(
+        input,
+        teethMask: teeth.adaptive,
+        scleraMask: sclera.combinedMask
+    )
+    return LocalRetouchEvidence(
+        input: input,
+        detection: detection,
+        teethMask: teeth.adaptive,
+        scleraMask: sclera.combinedMask,
+        output: composition.output,
+        unionMask: composition.unionMask
+    )
+}
+
+private func maximumRGBChannelDelta(_ first: Raster, _ second: Raster) -> Int {
+    guard first.width == second.width,
+          first.height == second.height,
+          first.pixels.count == second.pixels.count
+    else { return 255 }
+    var maximum = 0
+    for index in 0..<(first.width * first.height) {
+        let offset = index * 4
+        for channel in 0..<3 {
+            maximum = max(
+                maximum,
+                abs(Int(first.pixels[offset + channel]) - Int(second.pixels[offset + channel]))
+            )
+        }
+    }
+    return maximum
+}
+
+private func alphaMismatchCount(_ first: Raster, _ second: Raster) -> Int {
+    guard first.width == second.width,
+          first.height == second.height,
+          first.pixels.count == second.pixels.count
+    else { return max(first.width * first.height, second.width * second.height) }
+    var count = 0
+    for index in 0..<(first.width * first.height) where first.pixels[index * 4 + 3] != second.pixels[index * 4 + 3] {
+        count += 1
+    }
+    return count
+}
+
+private func maskTopologyMismatchCount(
+    _ first: [Float],
+    _ second: [Float],
+    threshold: Float
+) -> Int {
+    guard first.count == second.count else { return max(first.count, second.count) }
+    var count = 0
+    for index in first.indices where (first[index] > threshold) != (second[index] > threshold) {
+        count += 1
+    }
+    return count
+}
+
+private func maximumAnchorDelta(_ first: FaceAnchors, _ second: FaceAnchors) -> Double {
+    let firstPoints = first.leftEye + first.rightEye + first.leftBrow + first.rightBrow
+        + first.innerLips + first.outerLips + [first.leftPupil, first.rightPupil].compactMap { $0 }
+    let secondPoints = second.leftEye + second.rightEye + second.leftBrow + second.rightBrow
+        + second.innerLips + second.outerLips + [second.leftPupil, second.rightPupil].compactMap { $0 }
+    guard firstPoints.count == secondPoints.count else { return 1_000_000 }
+    return zip(firstPoints, secondPoints).map { firstPoint, secondPoint in
+        hypot(firstPoint.x - secondPoint.x, firstPoint.y - secondPoint.y)
+    }.max() ?? 0
 }
 
 private func writePNG(_ raster: Raster, to url: URL) throws {
@@ -3187,5 +3826,88 @@ private func runSelfTests() throws {
         overlap.overlapPixels == 1
             && changedPixelCount(before: compositionInput, after: overlap.output, within: overlapRegion) == 0,
         "ambiguous cross-mask overlap suppresses both edits"
+    )
+
+    let imageContext = canonicalImageContext()
+    var asymmetric = Raster(width: 7, height: 5, fill: (0, 0, 0, 255))
+    for y in 0..<asymmetric.height {
+        for x in 0..<asymmetric.width {
+            asymmetric.setRGB(
+                x: x,
+                y: y,
+                red: Float(x + 1) / 9,
+                green: Float(y + 1) / 7,
+                blue: Float(x + y + 1) / 13
+            )
+        }
+    }
+    let asymmetricImage = try asymmetric.makeCGImage()
+    let orientationReference = try normalizedImage(
+        asymmetricImage,
+        orientationRaw: CGImagePropertyOrientation.up.rawValue,
+        context: imageContext,
+        destinationColorSpace: CGColorSpace(name: CGColorSpace.sRGB)!
+    )
+    let orientationReferenceRaster = try Raster(cgImage: orientationReference)
+    var orientationMismatch = 0
+    for orientationRaw in UInt32(1)...UInt32(8) {
+        let raw = try inverseOrientedImage(
+            orientationReference,
+            targetOrientationRaw: orientationRaw,
+            context: imageContext
+        )
+        let data = try encodedImageData(
+            raw,
+            orientationRaw: orientationRaw,
+            typeIdentifier: UTType.tiff.identifier
+        )
+        let normalized = try normalizedImage(data: data, context: imageContext)
+        orientationMismatch += differentPixelCount(
+            orientationReferenceRaster,
+            try Raster(cgImage: normalized)
+        )
+    }
+    try require(orientationMismatch == 0, "all EXIF orientation and mirror cases normalize exactly")
+    let invalidOrientationRejected: Bool
+    do {
+        _ = try normalizedImage(
+            orientationReference,
+            orientationRaw: 9,
+            context: imageContext,
+            destinationColorSpace: CGColorSpace(name: CGColorSpace.sRGB)!
+        )
+        invalidOrientationRejected = false
+    } catch LabError.invalidImageOrientation {
+        invalidOrientationRejected = true
+    }
+    try require(invalidOrientationRejected, "invalid EXIF orientation fails closed")
+    let grayRejected: Bool
+    do {
+        _ = try normalizedImage(
+            makeGrayTestImage(),
+            orientationRaw: CGImagePropertyOrientation.up.rawValue,
+            context: imageContext,
+            destinationColorSpace: CGColorSpace(name: CGColorSpace.sRGB)!
+        )
+        grayRejected = false
+    } catch LabError.unsupportedImageColorModel {
+        grayRejected = true
+    }
+    try require(grayRejected, "non-RGB input fails closed")
+    var alphaCompositionInput = Raster(width: 8, height: 8, fill: (80, 70, 60, 128))
+    alphaCompositionInput.pixels[3] = 0
+    alphaCompositionInput.pixels[0] = 0
+    alphaCompositionInput.pixels[1] = 0
+    alphaCompositionInput.pixels[2] = 0
+    var alphaTeethMask = [Float](repeating: 0, count: 64)
+    alphaTeethMask[4 * 8 + 4] = 0.7
+    let alphaComposition = composeLocalRetouch(
+        alphaCompositionInput,
+        teethMask: alphaTeethMask,
+        scleraMask: [Float](repeating: 0, count: 64)
+    )
+    try require(
+        alphaMismatchCount(alphaCompositionInput, alphaComposition.output) == 0,
+        "local composition preserves alpha bytes"
     )
 }

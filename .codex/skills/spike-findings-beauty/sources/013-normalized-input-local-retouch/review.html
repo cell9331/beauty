@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>本地修饰 · 输入归一化边界</title>
+  <style>
+    :root { color-scheme: dark; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #090c10; color: #f2efe8; }
+    header, main { width: min(1260px, calc(100% - 36px)); margin: 0 auto; }
+    header { padding: 42px 0 22px; display: grid; gap: 18px; }
+    h1 { margin: 0; max-width: 980px; font-size: clamp(34px, 6vw, 64px); line-height: .98; letter-spacing: -.055em; }
+    p { margin: 0; max-width: 960px; color: #a9aaa7; line-height: 1.65; }
+    .badges, nav, .modes { display: flex; flex-wrap: wrap; gap: 8px; }
+    .badge { border: 1px solid #343a43; border-radius: 999px; padding: 8px 11px; background: #14191f; color: #cbc8c0; font-size: 12px; }
+    .good { border-color: #285e45; background: #10261a; color: #9ee4b9; }
+    .warn { border-color: #735225; background: #281d0f; color: #efc47a; }
+    button { border: 1px solid #353c45; border-radius: 11px; padding: 10px 14px; background: #151a20; color: #dfdbd2; cursor: pointer; font: inherit; }
+    button[aria-selected="true"] { background: #ee7755; color: #170e0a; border-color: #ee7755; font-weight: 750; }
+    .summary { margin-bottom: 16px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border: 1px solid #2a3038; border-radius: 16px; overflow: hidden; background: #11161b; }
+    .metric { padding: 15px; border-right: 1px solid #2a3038; }
+    .metric:last-child { border-right: 0; }
+    .metric span { display: block; color: #90938f; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+    .metric strong { display: block; margin-top: 7px; font-size: 22px; }
+    .modes { margin-bottom: 14px; }
+    .compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    article { border: 1px solid #2a3038; border-radius: 18px; overflow: hidden; background: #11161b; }
+    article header { width: auto; padding: 16px 18px; display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid #2a3038; }
+    h2 { margin: 0; font-size: 18px; }
+    article header span { color: #959893; font-size: 12px; }
+    .stage { aspect-ratio: 4 / 3; background: #030506; }
+    .stage img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .legend { margin: 16px 0 44px; padding: 16px 18px; border-left: 3px solid #e0ad4f; background: #1b170e; color: #cbbc91; line-height: 1.65; }
+    @media (max-width: 780px) { .summary { grid-template-columns: 1fr 1fr; } .metric { border-bottom: 1px solid #2a3038; } .compare { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>看起来一样，检测结果也一样吗？</h1>
+      <p>EXIF 方向可以无损归一化；色彩量化和透明画布则会影响 Vision。这里把编码像素、归一化结果和最终本地修饰并排展示，同时明确区分“坐标错误”与“检测器对轻微输入变化敏感”。</p>
+    </div>
+    <div class="badges"><span class="badge good">EXIF 8/8 exact</span><span class="badge good">alpha changes · 0</span><span class="badge good">outside-mask · 0</span><span class="badge warn">profile topology not exact</span><span class="badge">PARTIAL · mechanics only</span></div>
+    <nav aria-label="Fixture">
+      <button data-fixture="e6" aria-selected="true">e6 · high resolution</button>
+      <button data-fixture="e2" aria-selected="false">e2 · portrait</button>
+      <button data-fixture="e3" aria-selected="false">e3 · blue iris</button>
+    </nav>
+  </header>
+  <main>
+    <section class="summary" aria-label="Metrics">
+      <div class="metric"><span>EXIF mismatch</span><strong>0</strong></div>
+      <div class="metric"><span>P3 input max Δ</span><strong>1 / 255</strong></div>
+      <div class="metric"><span>P3 anchor Δ</span><strong id="p3Anchor">1.559 px</strong></div>
+      <div class="metric"><span>P3 topology</span><strong id="p3Topology">76 / 11</strong></div>
+      <div class="metric"><span>Alpha anchor Δ</span><strong id="alphaAnchor">4.886 px</strong></div>
+    </section>
+    <div class="modes" aria-label="Comparison mode">
+      <button data-view="orientation" aria-selected="true">EXIF orientation 6</button>
+      <button data-view="canonical" aria-selected="false">Canonical</button>
+      <button data-view="p3" aria-selected="false">Display P3 round trip</button>
+      <button data-view="alpha" aria-selected="false">Transparent border</button>
+    </div>
+    <section class="compare">
+      <article>
+        <header><h2 id="leftTitle">Encoded pixels</h2><span id="leftNote">metadata says rotate right</span></header>
+        <div class="stage"><img id="leftImage" src="artifacts/e6/orientation-6-encoded-pixels.png" alt="Encoded or changed input"></div>
+      </article>
+      <article>
+        <header><h2 id="rightTitle">Normalized result</h2><span id="rightNote">canonical sRGB RGBA8 · Vision up</span></header>
+        <div class="stage"><img id="rightImage" src="artifacts/e6/orientation-6-normalized-after.png" alt="Normalized local-retouch result"></div>
+      </article>
+    </section>
+    <aside class="legend"><strong>读图：</strong>EXIF 6 左图的像素本身是侧置的，元数据归一化后与 canonical 逐字节一致。P3 页面肉眼几乎相同，但指标中的 fresh/fixed topology 证明 1/255 的颜色差异既会碰到颜色阈值，也会让 Vision 锚点漂移。透明边框保持 alpha 与外部 RGB 不变；fixed-anchor 差异为零，说明剩余遮罩变化来自检测器对画布边界的响应。</aside>
+  </main>
+  <script>
+    (() => {
+      "use strict";
+      const fixtures = {
+        e6: { p3Anchor: "1.559 px", p3Topology: "76 / 11", alphaAnchor: "4.886 px" },
+        e2: { p3Anchor: "0.533 px", p3Topology: "8 / 3", alphaAnchor: "1.362 px" },
+        e3: { p3Anchor: "0.765 px", p3Topology: "15 / 0", alphaAnchor: "0.771 px" }
+      };
+      const views = {
+        orientation: { left: "orientation-6-encoded-pixels.png", right: "orientation-6-normalized-after.png", leftTitle: "Encoded pixels", leftNote: "metadata says rotate right", rightTitle: "Normalized result", rightNote: "byte-exact canonical output" },
+        canonical: { left: "canonical-input.png", right: "canonical-after.png", leftTitle: "Canonical input", leftNote: "up · sRGB RGBA8", rightTitle: "Canonical result", rightNote: "reference mask and transform" },
+        p3: { left: "display-p3-normalized-input.png", right: "display-p3-normalized-after.png", leftTitle: "P3 → sRGB input", leftNote: "maximum input Δ = 1", rightTitle: "Fresh Vision result", rightNote: "bounded but not topology-identical" },
+        alpha: { left: "transparent-border-input.png", right: "transparent-border-after.png", leftTitle: "Transparent canvas", leftNote: "outer border alpha = 0", rightTitle: "Alpha-preserving result", rightNote: "alpha and outside-mask changes = 0" }
+      };
+      let fixture = "e6";
+      let view = "orientation";
+      const $ = (id) => document.getElementById(id);
+      function render() {
+        const metric = fixtures[fixture];
+        const selected = views[view];
+        $("p3Anchor").textContent = metric.p3Anchor;
+        $("p3Topology").textContent = metric.p3Topology;
+        $("alphaAnchor").textContent = metric.alphaAnchor;
+        $("leftImage").src = `artifacts/${fixture}/${selected.left}`;
+        $("rightImage").src = `artifacts/${fixture}/${selected.right}`;
+        for (const key of ["leftTitle", "leftNote", "rightTitle", "rightNote"]) $(key).textContent = selected[key];
+        document.querySelectorAll("[data-fixture]").forEach((button) => button.setAttribute("aria-selected", String(button.dataset.fixture === fixture)));
+        document.querySelectorAll("[data-view]").forEach((button) => button.setAttribute("aria-selected", String(button.dataset.view === view)));
+      }
+      document.querySelectorAll("[data-fixture]").forEach((button) => button.addEventListener("click", () => { fixture = button.dataset.fixture; render(); }));
+      document.querySelectorAll("[data-view]").forEach((button) => button.addEventListener("click", () => { view = button.dataset.view; render(); }));
+      render();
+    })();
+  </script>
+</body>
+</html>

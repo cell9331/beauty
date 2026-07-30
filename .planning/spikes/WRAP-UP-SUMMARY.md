@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-30
 
-**Spikes processed:** 12 total; 1 added in this append
+**Spikes processed:** 13 total; 1 added in this append
 
 **Feature areas:** upper-eyelid fullness, teeth whitening, sclera redness, still-image integration, licensed fixture evaluation
 
@@ -24,6 +24,7 @@
 | 010 | sclera-jitter-envelope | standard | `VALIDATED` — bounded safety grid only | Sclera redness |
 | 011 | guarded-sclera-color-integration | standard | `VALIDATED` — bounded final-output grid only | Sclera redness / still-image integration |
 | 012 | guarded-local-retouch-composition | standard | `VALIDATED` — composition semantics only | Still-image integration |
+| 013 | normalized-input-local-retouch | standard | `PARTIAL` — EXIF/alpha mechanics pass; exact cross-profile topology fails | Still-image integration |
 
 ## Key Findings
 
@@ -60,12 +61,26 @@
   Injected cross-mask collisions retained the original pixel. The tested CPU
   loop was 2.6–3.1× slower than sparse sequential loops, so this validates
   ownership semantics—not performance, memory, or a device budget.
+- The encoded-input handoff now has one tested owner: validate EXIF/RGB
+  metadata, orient and color-manage once into up-oriented sRGB RGBA8, then give
+  the same pixels to Vision with `.up` and to rendering. Across e6/e2/e3, all
+  24 lossless orientation/mirror cases byte-matched input, anchors, masks,
+  alpha, and output. This is an exact orientation contract, not a claim about
+  every image format.
+- Exact mask identity across color-profile or background variants is a rejected
+  assumption. A one-byte Display-P3 round-trip difference moved Vision anchors
+  by 0.53–1.56 px and created 8/15/76 topology differences; transparent borders
+  moved anchors by 0.77–4.89 px. Fixed-anchor oracles reduced P3 topology drift
+  to 3/0/11 and alpha drift to zero, isolating detector sensitivity as the
+  larger contributor. Product acceptance needs bounded containment/output
+  stability and a declared composite-or-reject alpha policy.
 - The offline review gate distinguishes `mechanics_only` from
   `approved_internal_evaluation`, requires complete positive/negative assets,
   and exports structured judgments without media, paths, rights records,
   geometry, or freeform text. Its pure core passes 9/9 checks, but no licensed
   real bundle has opened the product gate.
-- The shared still-image pattern remains: one Vision request, private
+- The shared still-image pattern is: normalize orientation/color once, apply a
+  declared transparent-input policy, issue one Vision request, keep private
   request-local support/masks, independent regional/eye failure, hard
   containment restored after filtering, one original-pixel owner per edit,
   fail-closed unexpected overlap, aggregate-only events, and no camera/pixel-
@@ -85,9 +100,12 @@ Future planning and implementation conversations should load
 - the still-image integration/privacy boundary and per-eye failure ownership;
 - the original-pixel composition recipe, byte-level oracles, overlap rejection,
   and explicit CPU performance nonclaim;
+- the canonical EXIF/color normalization recipe, fixed-anchor sensitivity
+  oracle, bounded cross-profile acceptance, and unresolved alpha/HDR/device
+  boundaries;
 - the rights-approved local fixture manifest, blind-review, and sanitized-export
   gate required before product planning.
 
-Exact source for Spikes 006/009/010/011/012 and the current 19-test Swift
+Exact source for Spikes 006/009/010/011/012/013 and the current 23-test Swift
 harness is preserved under the skill's `sources/` tree without media, model
 weights, or build artifacts.

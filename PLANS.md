@@ -31,6 +31,23 @@ completed Spike 013 does not authorize v1.14 or any new feature scope.
 
 ## 4. Completed
 
+### C-2026-07-30-spike-013-wrap-up
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-30 |
+| Scope | Appended completed Spike 013 to the project-local `spike-findings-beauty` implementation blueprint without changing production source, public API, feature inventory, milestone scope, or runtime behavior. |
+| Outputs | Added exact 013 README/review sources; refreshed the exact shared Swift harness; updated the still-image integration recipe with one EXIF/color owner, explicit RGB rejection, transparent-input policy ownership, fixed-anchor sensitivity isolation, and bounded cross-profile acceptance; refreshed the skill trigger/index, processed inventory, and wrap-up summary. |
+| Knowledge shape | The skill now covers thirteen processed spikes across the same five feature areas. All eight lossless EXIF orientations are exact after one canonical render, while equivalent color-profile and background variants require bounded detector/output stability rather than topology identity. Transparent input remains a product composite-or-reject decision. |
+| Verification | Four owner/copy sources compare byte-for-byte; the copied Swift package builds in release and passes 23/23 self-tests; the retained Spike 006 review core passes 9/9; copied 013 review JavaScript parses; manifest, skill, and summary inventories are 13/13/13; all five references contain required blueprint sections; skill validation, AGENTS route count, runtime-network, generated-directory, media/model/binary, production-boundary, and diff-hygiene checks pass. |
+| Boundary | No fixture media, aggregate run artifact, model/weight, build output, product code, public contract, realtime claim, device budget, licensed-evidence claim, transparent-input policy, HDR/gain-map support, or v1.14 activation was packaged. AI fixtures remain mechanics-only and licensed real review remains mandatory. |
+
+Outcome:
+
+- Future still-image local-retouch planning will auto-load the normalize-once contract and the fixed-anchor oracle that separates Vision drift from color-score/transform drift.
+- Exact cross-profile mask topology is preserved as an invalidated acceptance assumption; product criteria must instead bound containment, landmark/output stability, and naturalness on rights-approved inputs.
+- `CONVENTIONS.md` remains unchanged because canonical input normalization appears in only Spike 013. The existing AGENTS route remains the single project entry for the skill.
+
 ### C-2026-07-30-spike-013-normalized-input-local-retouch
 
 | Field | Value |
