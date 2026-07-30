@@ -11,9 +11,9 @@ download path, or image bytes in Git.
 | Fixture ID | `portrait_001` |
 | Local path | `example-images/input/portraits/p1.jpg` |
 | Rights status | `approved_internal_evaluation` |
-| Rights record ID | `user_authorization_20260730_001` |
+| Rights record ID | `user_authorization_20260730_002` |
 | Authorization date | 2026-07-30 |
-| Source assertion | User supplied the real portrait and explicitly confirmed ownership of all required copyright, portrait/likeness, and related permissions. |
+| Source assertion | User supplied the replacement smiling portrait and explicitly confirmed ownership of all required copyright, portrait/likeness, and related permissions, including long-term use. |
 | Permitted use | Ongoing local automated/manual SDK tests, algorithm evaluation, and derivative before/mask/after review for this project. |
 | Retention | Local project workspace until the user revokes permission; raw and generated image files remain Git-ignored and must not be committed. |
 
@@ -30,6 +30,11 @@ redness, or upper-eyelid fullness, a feature-specific review manifest must mark
 it positive or negative, include complete original/mask/after assets, and apply
 predeclared acceptance criteria. One portrait cannot establish population
 coverage, calibration, demographic robustness, or commercial naturalness.
+
+The visible smile and exposed teeth make this fixture appropriate for teeth-mask
+containment and over-whitening review. Its already-light teeth do not establish
+a yellow/dark-teeth positive, and the image is not automatically a redness or
+upper-eyelid-fullness positive.
 
 ## Disabled Fixtures
 

@@ -20,7 +20,7 @@ authorization records carry the durable contract without publishing the media.
 
 Generated `output/` and `gallery/` contents are local artifacts. Recreate them
 instead of committing PNGs. The active `p1.jpg` is a metadata-sanitized
-2316×3088 JPEG below the existing 16 MiB acquisition ceiling; GPS, capture time,
+2628×1778 JPEG below the existing 16 MiB acquisition ceiling; GPS, capture time,
 device, and orientation metadata are absent. The no-face negative fixture is
 64 px. Authorization and evidence limits are recorded in
 `FIXTURE_AUTHORIZATION.md`.
@@ -36,10 +36,11 @@ device, and orientation metadata are absent. The no-face negative fixture is
 - `e1.png` through `e5.png` and `e6.jpg` are parked and forbidden from future
   input discovery. Their prior outputs/gallery were moved under
   `parked-generated/2026-07-30-e6/`.
-- Authorization makes `p1.jpg` eligible for internal evaluation. It is one
-  neutral portrait, not automatically a positive or negative for teeth
-  whitening, sclera redness, or upper-eyelid fullness, and cannot alone open a
-  feature product gate.
+- Authorization makes `p1.jpg` eligible for internal evaluation. Its exposed
+  smile is useful for teeth-mask containment and over-whitening review, but its
+  already-light teeth are not automatically a yellow-teeth positive. It is not
+  automatically a positive or negative for sclera redness or upper-eyelid
+  fullness and cannot alone open any feature product gate.
 
 The Phase 51/52 `e6` counts below are retained as historical evidence only.
 They do not override the current `p1` fixture inventory and must not be reused

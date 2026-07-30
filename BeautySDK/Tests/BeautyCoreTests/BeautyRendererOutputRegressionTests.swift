@@ -154,8 +154,8 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual((properties[kCGImagePropertyPixelWidth] as? NSNumber)?.intValue, 2316)
-        XCTAssertEqual((properties[kCGImagePropertyPixelHeight] as? NSNumber)?.intValue, 3088)
+        XCTAssertEqual((properties[kCGImagePropertyPixelWidth] as? NSNumber)?.intValue, 2628)
+        XCTAssertEqual((properties[kCGImagePropertyPixelHeight] as? NSNumber)?.intValue, 1778)
         XCTAssertNil(properties[kCGImagePropertyGPSDictionary])
         XCTAssertNil(properties[kCGImagePropertyTIFFDictionary])
         XCTAssertNil(properties[kCGImagePropertyOrientation])

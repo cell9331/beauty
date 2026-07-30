@@ -27,10 +27,28 @@
 ## 3. Active
 
 No active plan. No product milestone is active; v1.13 remains shipped and the
-authorized local portrait fixture does not by itself authorize v1.14 or any new
-feature scope.
+long-term authorized local portrait fixture does not by itself authorize v1.14
+or any new feature scope.
 
 ## 4. Completed
+
+### C-2026-07-30-authorized-smile-fixture-replacement
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-30 |
+| Scope | Permanently replaced the opaque local `portrait_001` pixels with the newly supplied smiling portrait, deleted the prior project-local `p1` copy instead of parking it, preserved the active `p1.jpg` path, re-sanitized image metadata, and updated the authorization, dimension, product, quality, and test contracts. Disabled `e1`–`e6` fixtures remain outside active discovery. |
+| Local asset | `example-images/input/portraits/p1.jpg` is now a 2628×1778, 1,587,765-byte Display P3 JPEG. It remains local and Git-ignored. The source download remains user-owned and is not copied into tracked history. |
+| Rights and privacy | Rights record `user_authorization_20260730_002` records the user's explicit copyright, portrait/likeness, derivative, long-term local-test, and no-planned-replacement authorization without naming the subject or source file. Re-encoding removed GPS, TIFF, orientation, capture/device, author/copyright, and screenshot/user-comment metadata. |
+| SDK verification | Fixture/gallery self-tests pass with exactly `p1` plus `no-face-gradient` active and `e1`–`e6` rejected. `BeautyRendererOutputRegressionTests` passes 17/17; opt-in Vision/detection/facade/adapter coverage passes 95/95; full SwiftPM passes 458 tests with six documented opt-in skips. A public renderer smoke run writes only the p1 and no-face `geometryBaseline_noop` outputs, preserving 2628×1778 and 64×64 extents. |
+| Local-retouch evidence | Apple Vision provides one usable face with inner/outer lips. Adaptive teeth support contains 13,709 strong pixels versus 9,320 for the fixed baseline with zero outside-mask changes. Guarded fused composition contains 16,639 mask pixels with zero outside, iris, or highlight changes and zero fused/sequential or fail-closed mismatches. Original-detail review found the whitening restrained and the overlay confined to visible teeth without obvious lip or gum spill. Sclera support is weak/asymmetric on this portrait (left rejected, right 640 pixels), so no redness-positive claim is made. |
+| Boundary | The exposed smile makes this a durable rights-approved teeth-containment and over-whitening fixture. Its already-light teeth are not a yellow/dark-teeth positive; its eyes and eyelids are not established redness or upper-eyelid-fullness positives. Product feasibility still requires additional rights-approved feature-specific positives/negatives and human original-detail review. |
+
+Outcome:
+
+- Future local tests may keep using this exact opaque `p1.jpg` fixture without another authorization round unless its use expands beyond the recorded internal-evaluation scope.
+- The prior project-local neutral portrait is gone and is not an alternate input or parked fallback.
+- This replacement materially improves white-teeth containment review while leaving the v1.14 activation and population/calibration gates closed.
 
 ### C-2026-07-30-authorized-portrait-fixture-cutover
 
