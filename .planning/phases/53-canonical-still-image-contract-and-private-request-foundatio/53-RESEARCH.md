@@ -411,7 +411,7 @@ Security enforcement is enabled at ASVS L1 in `.planning/config.json`. [VERIFIED
 |---|---|---|---|
 | - | None. Recommendations are derived from locked decisions, live source/tests, the validated project spike, or cited Apple documentation. | - | - |
 
-## Open Questions / Explicit Residuals
+## Open Questions / Explicit Residuals (RESOLVED)
 
 1. **Encoded input observability is intentionally incomplete.** The public SDK accepts `CIImage`, so Phase 53 cannot enforce `maximumInputByteCount`, inspect the original container's malformed orientation value, or prove gain-map absence after host decoding. Plan acceptance around observable decoded properties and document this limitation; do not add a Data/URL overload because the public entry decision is locked. [VERIFIED: live facade and Apple `CIImage.properties` documentation]
 2. **Same-engine concurrent invocation is not a Phase 53 claim.** TD-013 keeps generic-result/sendability work outside the milestone, while `BeautyEngine` currently owns mutable detector selection state. Prove that request support has no shared owner and that independent request values do not cross; do not broaden the plan into engine concurrency redesign. [VERIFIED: `STATE.md`, `PLANS.md`, and codebase grep]

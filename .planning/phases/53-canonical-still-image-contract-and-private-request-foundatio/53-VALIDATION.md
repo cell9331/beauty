@@ -2,7 +2,6 @@
 phase: 53
 slug: canonical-still-image-contract-and-private-request-foundation
 # status lifecycle: draft (seeded by plan-phase) → validated (set by validate-phase §6)
-# audit-milestone §5.5 distinguishes NOT-VALIDATED (draft) from PARTIAL (validated + nyquist_compliant: false) (#2117)
 status: draft
 nyquist_compliant: false
 wave_0_complete: false
@@ -11,69 +10,75 @@ created: 2026-07-30
 
 # Phase 53 — Validation Strategy
 
-> Per-phase validation contract for feedback sampling during execution.
-
----
+> Exact pending validation map for the six-plan, nine-task execution set.
 
 ## Test Infrastructure
 
 | Property | Value |
-|----------|-------|
-| **Framework** | XCTest through Swift Package Manager (Swift tools 6.0) |
-| **Config file** | `BeautySDK/Package.swift` |
-| **Quick run command** | `swift test --package-path BeautySDK --filter BeautyCanonicalStillImageTests` |
-| **Full suite command** | `swift test --package-path BeautySDK` |
-| **Estimated runtime** | ~180 seconds for the full suite; focused filters provide task-level feedback |
+|---|---|
+| Framework | XCTest through Swift Package Manager (Swift tools 6.0) plus the standard-library Python boundary checker |
+| Config file | `BeautySDK/Package.swift` |
+| Fast sample | One task-owned filter/check below; each targets `<30s` on an incremental build |
+| Final-only phase gate | `swift test --package-path BeautySDK` (approximately 180 seconds), run only by task `53-06-01` |
+| Diff hygiene | `git diff --check`, mandatory in every GREEN task completion command and the final-only gate |
 
----
+## Sampling Contract
 
-## Sampling Rate
+- Use the exact task-owned fast sample below after the task's implementation edit; do not run the full SwiftPM suite during tasks `53-01-01` through `53-05-01`.
+- Wave 0 tasks create the missing specifications/checker first. GREEN tasks name their exact Wave 0 dependency in the map.
+- A task's PLAN `<verify>` may chain additional focused regressions, but the map below identifies its `<30s` feedback sample.
+- Task `53-06-01` alone owns the approximately 180-second full suite, live checker, evidence capture, validation promotion, and final `git diff --check`.
+- All rows remain pending until execution records actual command results. No task may be inferred green from a later task.
+- Security target is OWASP ASVS Level 1 with `block_on: HIGH`; any failed or unverified HIGH mitigation blocks its task, plan, and phase completion.
 
-- **After every task commit:** Run the focused XCTest class named in that task plus `git diff --check`
-- **After every plan wave:** Run the focused Phase 53 suites plus existing parameter, resource, facade, detector, mapping, selection, and renderer regressions named below
-- **Before `$gsd-verify-work`:** `swift test --package-path BeautySDK` must be green
-- **Max feedback latency:** 180 seconds for a focused/wave check; the full suite is the phase gate
+## Exact Per-Task Verification Map
 
----
+| Actual task ID | Plan | Wave | Plan dependency | Wave 0 dependency | Requirements | `<30s` task feedback sample / final-only gate | Status |
+|---|---:|---:|---|---|---|---|---|
+| `53-01-01` | `53-01` | 0 | `[]` | Creates `BeautyCanonicalStillImageTests` and checker | PATH-02, PATH-03 | `python3 .planning/phases/53-canonical-still-image-contract-and-private-request-foundatio/check_still_image_foundation_boundaries.py --self-test` then expected-RED `swift test --package-path BeautySDK --filter BeautyCanonicalStillImageTests` | ⬜ pending |
+| `53-01-02` | `53-01` | 0 | `[]` | Creates `BeautyEngineLocalRetouchFoundationTests` | PATH-01, PATH-04, PATH-05 | Expected-RED `swift test --package-path BeautySDK --filter BeautyEngineLocalRetouchFoundationTests` | ⬜ pending |
+| `53-01-03` | `53-01` | 0 | `[]` | Creates `StillImageRequestSupportTests`; extends compatibility suites | PATH-04, PATH-06, PATH-07 | Expected-RED `swift test --package-path BeautySDK --filter StillImageRequestSupportTests`; separately sample `swift test --package-path BeautySDK --filter BeautyParametersTests` | ⬜ pending |
+| `53-02-01` | `53-02` | 1 | `[53-01]` | `53-01-01` | PATH-02 | `swift test --package-path BeautySDK --filter 'BeautyCanonicalStillImageTests/testCarrier' && git diff --check` | ⬜ pending |
+| `53-02-02` | `53-02` | 1 | `[53-01]` | `53-01-01` | PATH-02, PATH-03 | `swift test --package-path BeautySDK --filter BeautyCanonicalStillImageTests && git diff --check` | ⬜ pending |
+| `53-03-01` | `53-03` | 2 | `[53-02]` | `53-01-03` | PATH-04 | `swift test --package-path BeautySDK --filter StillImageRequestSupportTests && git diff --check` | ⬜ pending |
+| `53-04-01` | `53-04` | 3 | `[53-03]` | `53-01-02`, `53-01-03` | PATH-01, PATH-04, PATH-05 | `swift test --package-path BeautySDK --filter BeautyEngineLocalRetouchFoundationTests && git diff --check` | ⬜ pending |
+| `53-05-01` | `53-05` | 4 | `[53-04]` | `53-01-02`, `53-01-03` | PATH-02, PATH-06 | `swift test --package-path BeautySDK --filter BeautyRendererOutputRegressionTests && git diff --check` | ⬜ pending |
+| `53-06-01` | `53-06` | 5 | `[53-05]` | `53-01-01`, `53-01-02`, `53-01-03` | PATH-01..PATH-07 | **FINAL ONLY:** checker self/live modes, named focused suites, `swift test --package-path BeautySDK`, then `git diff --check`, exactly as specified in `53-06-PLAN.md` | ⬜ pending |
 
-## Per-Task Verification Map
+Task count equality: **9 actual XML task IDs = 9 validation rows = 3 Wave 0 + 6 GREEN/final tasks**.
 
-| Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
-|---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 53-01-W0 | 01 | 0 | PATH-02, PATH-03 | T-53-01, T-53-02, T-53-03 | Reject invalid size/orientation/color/range/alpha before Vision; canonical output is one opaque zero-origin sRGB RGBA8 raster | unit/adversarial | `swift test --package-path BeautySDK --filter BeautyCanonicalStillImageTests` | ❌ W0 | ⬜ pending |
-| 53-02-W0 | 02 | 0 | PATH-04 | T-53-04, T-53-05 | Actual lip/eye/brow/face support remains package-only and request-local; one detector/mapping pass; no stale support | detection integration | `swift test --package-path BeautySDK --filter StillImageRequestSupportTests` | ❌ W0 | ⬜ pending |
-| 53-03-W0 | 03 | 0 | PATH-01, PATH-05 | T-53-06 | Existing public image facade owns admission; pixel-buffer/realtime paths cannot construct or invoke local request support | facade regression | `swift test --package-path BeautySDK --filter BeautyEngineLocalRetouchFoundationTests` | ❌ W0 | ⬜ pending |
-| 53-03-COMPAT | 03 | 1 | PATH-06, PATH-07 | — | No Phase 53 candidate field/provider/renderer case; exact 59-field, legacy payload, preset, default, and no-local output behavior remains neutral | compatibility/regression | `swift test --package-path BeautySDK --filter BeautyParametersTests && swift test --package-path BeautySDK --filter BeautyResourceCatalogTests && swift test --package-path BeautySDK --filter BeautyRendererOutputRegressionTests` | ✅ extend | ⬜ pending |
-| 53-WAVE-GATE | all | each | PATH-01..PATH-07 | T-53-01..T-53-06 | Focused foundation, detector, metadata, geometry, selection, resource, parameter, facade, and output regressions all pass | integration/regression | `swift test --package-path BeautySDK --filter BeautyCanonicalStillImageTests && swift test --package-path BeautySDK --filter BeautyEngineLocalRetouchFoundationTests && swift test --package-path BeautySDK --filter StillImageRequestSupportTests && swift test --package-path BeautySDK --filter BeautyEngineMetadataCompatibilityTests && swift test --package-path BeautySDK --filter BeautyEngineGeometryFacadeTests && swift test --package-path BeautySDK --filter VisionFaceDetectorTests && swift test --package-path BeautySDK --filter FaceObservationMappingTests && swift test --package-path BeautySDK --filter FaceSelectionPolicyTests` | mixed | ⬜ pending |
+## Wave 0 Deliverables
 
-*Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
+- [ ] `53-01-01` creates `BeautySDK/Tests/BeautyCoreTests/BeautyCanonicalStillImageTests.swift` plus `check_still_image_foundation_boundaries.py`, including `PATH02-UNCLASSIFIED`, `PATH03-UNCLASSIFIED`, and the exact edge manifest.
+- [ ] `53-01-02` creates `BeautySDK/Tests/BeautyCoreTests/BeautyEngineLocalRetouchFoundationTests.swift` for public-facade admission, exact order/counts, safe continuation, and pixel-buffer isolation.
+- [ ] `53-01-03` creates `BeautySDK/Tests/BeautyDetectionTests/StillImageRequestSupportTests.swift` and extends exact 59-field/five-preset/no-candidate/no-local compatibility coverage.
+- [ ] Edge manifest equality is exact: **16 = 13 automated + 3 flagged assumptions**; flagged IDs are `PATH01-CONCURRENCY`, `PATH04-CONCURRENCY`, and `PATH05-CONCURRENCY`.
 
----
+## Final-Only Phase Gate
 
-## Wave 0 Requirements
+Task `53-06-01` must run, record, and keep green in this order:
 
-- [ ] `BeautySDK/Tests/BeautyCoreTests/BeautyCanonicalStillImageTests.swift` — synthetic orientation/color/alpha/ceiling/error-order cases for PATH-02 and PATH-03
-- [ ] `BeautySDK/Tests/BeautyCoreTests/BeautyEngineLocalRetouchFoundationTests.swift` — public-facade admission, safe continuation, exactly-once collaborator, and pixel-buffer isolation cases for PATH-01, PATH-04, and PATH-05
-- [ ] `BeautySDK/Tests/BeautyDetectionTests/StillImageRequestSupportTests.swift` — actual mapped-lip provenance, aggregate diagnostics, valid-invalid-valid isolation, and independent request-value cases for PATH-04
-- [ ] Extend `BeautyParametersTests.swift`, `BeautyResourceCatalogTests.swift`, and public-facade/output regressions with exact-59/no-candidate/no-local byte-neutral assertions for PATH-06 and PATH-07
-- [ ] Add a focused static/source-boundary assertion only if direct XCTest cannot prove no public/SPI raw support, no pixel-buffer local call, and no candidate API inventory
-
----
+1. Boundary checker `--self-test`, including the exact 16-row equality and mutation cases.
+2. Boundary checker live mode over active source.
+3. Named Phase 53 focused suites and compatibility regressions.
+4. `swift test --package-path BeautySDK` — the only full-suite invocation in the plan set.
+5. `git diff --check`.
+6. ASVS Level 1 HIGH mitigation review: every HIGH row verified by its named command; any failed/unverified row blocks validation promotion.
+7. Create `53-FOUNDATION-EVIDENCE.md`, then and only then set `status: validated`, `nyquist_compliant: true`, and `wave_0_complete: true`.
 
 ## Manual-Only Verifications
 
-All Phase 53 behaviors have automated verification. Rights-approved original-detail naturalness review belongs to Phase 54 and later visible-feature phases, not this foundation phase.
-
----
+None. Rights-approved original-detail naturalness review belongs to Phase 54 and later visible-feature phases, not this foundation phase.
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 180s for focused/wave checks
-- [ ] Full SwiftPM suite, privacy/public-surface scans, exact 59-field/preset inventory, and no-candidate-provider checks pass at the phase gate
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [ ] All nine actual XML task IDs have one pending map row with real plan/wave/dependency data.
+- [ ] Every task has an automated sample; tasks `53-01-01` through `53-05-01` target `<30s` feedback.
+- [ ] Full SwiftPM appears only in final task `53-06-01`.
+- [ ] Every Wave 0 consumer names its dependency.
+- [ ] Exact edge equality is 16 = 13 automated + 3 flagged; no missing/duplicate/extra ID.
+- [ ] Every plan states OWASP ASVS Level 1, `block_on: HIGH`, named mitigation verification, and completion prohibition for failed/unverified HIGH items.
+- [ ] Final-only command includes `git diff --check`.
+- [ ] All statuses remain `⬜ pending` until execution evidence exists.
 
 **Approval:** pending
