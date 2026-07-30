@@ -58,11 +58,11 @@ Earlier shipped milestones are preserved in their linked archives under `.planni
   4. A still-image request with any admitted effect performs at most one selected-face landmarks request and one mapping pass, and no mapped support survives or crosses the request.
   5. Legacy 59-field source construction, JSON, presets, defaults, and shipped output remain neutral; every field that is later admitted is independent, positive-only, finite-normalized, default-zero, and counted by an exact compatibility contract.
 
-**Plans**: 2/6 plans executed
+**Plans**: 3/6 plans executed
 
 - [x] 53-01-PLAN.md
 - [x] 53-02-PLAN.md
-- [ ] 53-03-PLAN.md
+- [x] 53-03-PLAN.md
 - [ ] 53-04-PLAN.md
 - [ ] 53-05-PLAN.md
 - [ ] 53-06-PLAN.md
@@ -161,7 +161,7 @@ All 41 v1.14 requirements map to exactly one phase: 41 mapped, 0 duplicated, 0 u
 
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
-| 53. Canonical Still-Image Contract and Private Request Foundation | 2/6 | In Progress|  |
+| 53. Canonical Still-Image Contract and Private Request Foundation | 3/6 | In Progress|  |
 | 54. Rights-Approved Evidence and Eligibility Decisions | 0/TBD | Not started | - |
 | 55. Original-Pixel Composition and Failure-Isolation Core | 0/TBD | Not started | - |
 | 56. Independent Teeth Whitening Slice | 0/TBD | Not started | - |
