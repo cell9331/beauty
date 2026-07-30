@@ -83,7 +83,7 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
     ]
 
     private static let fixtureNames = [
-        "portraits/e6.jpg",
+        "portraits/p1.jpg",
         "negatives/no-face-gradient.png"
     ]
 
@@ -127,10 +127,61 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         XCTAssertTrue(peak.contains("eyebrowPeakDefinition: 0.25"))
         XCTAssertEqual(allFields.filter { peak.contains("\($0):") }, ["eyebrowPeakDefinition"])
         XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 72)
-        XCTAssertEqual(Self.fixtureNames, ["portraits/e6.jpg", "negatives/no-face-gradient.png"])
+        XCTAssertEqual(Self.fixtureNames, ["portraits/p1.jpg", "negatives/no-face-gradient.png"])
         for parked in 1...5 {
             XCTAssertFalse(Self.fixtureNames.contains("portraits/e\(parked).png"))
         }
+        XCTAssertFalse(Self.fixtureNames.contains("portraits/e6.jpg"))
+    }
+
+    func testActivePortraitFixtureIsAuthorizedLocalInputWithSanitizedMetadata() throws {
+        let root = try repositoryRootURL()
+        let active = root.appendingPathComponent("example-images/input/portraits/p1.jpg")
+        let authorization = root.appendingPathComponent("example-images/FIXTURE_AUTHORIZATION.md")
+        let parkedDirectory = root.appendingPathComponent("example-images/parked-portraits", isDirectory: true)
+
+        XCTAssertTrue(FileManager.default.fileExists(atPath: active.path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: authorization.path))
+        let attributes = try FileManager.default.attributesOfItem(atPath: active.path)
+        let byteCount = (attributes[.size] as? NSNumber)?.intValue ?? 0
+        XCTAssertGreaterThan(byteCount, 0)
+        XCTAssertLessThanOrEqual(byteCount, 16 * 1_024 * 1_024)
+
+        guard let source = CGImageSourceCreateWithURL(active as CFURL, nil),
+              let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any]
+        else {
+            XCTFail("p1.jpg must be a readable image fixture")
+            return
+        }
+
+        XCTAssertEqual((properties[kCGImagePropertyPixelWidth] as? NSNumber)?.intValue, 2316)
+        XCTAssertEqual((properties[kCGImagePropertyPixelHeight] as? NSNumber)?.intValue, 3088)
+        XCTAssertNil(properties[kCGImagePropertyGPSDictionary])
+        XCTAssertNil(properties[kCGImagePropertyTIFFDictionary])
+        XCTAssertNil(properties[kCGImagePropertyOrientation])
+        let metadata = String(describing: properties).lowercased()
+        for forbidden in [
+            "latitude", "longitude", "datetime", "hostcomputer", "iphone",
+            "artist", "author", "copyright", "makernote",
+        ] {
+            XCTAssertFalse(metadata.contains(forbidden), "p1.jpg leaked metadata token: \(forbidden)")
+        }
+
+        for parked in 1...5 {
+            let fileName = "e\(parked).png"
+            XCTAssertFalse(FileManager.default.fileExists(
+                atPath: root.appendingPathComponent("example-images/input/portraits/\(fileName)").path
+            ))
+            XCTAssertTrue(FileManager.default.fileExists(
+                atPath: parkedDirectory.appendingPathComponent(fileName).path
+            ))
+        }
+        XCTAssertFalse(FileManager.default.fileExists(
+            atPath: root.appendingPathComponent("example-images/input/portraits/e6.jpg").path
+        ))
+        XCTAssertTrue(FileManager.default.fileExists(
+            atPath: parkedDirectory.appendingPathComponent("e6.jpg").path
+        ))
     }
 
     func testFaceShapeComboCaseUsesOnlyPhase27FaceShapeParameters() throws {

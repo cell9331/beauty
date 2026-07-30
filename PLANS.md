@@ -27,9 +27,27 @@
 ## 3. Active
 
 No active plan. No product milestone is active; v1.13 remains shipped and the
-completed Spike 013 does not authorize v1.14 or any new feature scope.
+authorized local portrait fixture does not by itself authorize v1.14 or any new
+feature scope.
 
 ## 4. Completed
+
+### C-2026-07-30-authorized-portrait-fixture-cutover
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-30 |
+| Scope | Replaced the sole active local portrait fixture with the user-authorized real portrait supplied on 2026-07-30. Stored a metadata-sanitized copy as opaque `p1.jpg`; moved `e6.jpg` beside the already parked `e1`–`e5`; moved the prior 660 MB `e6` output/gallery snapshot outside active paths; updated active tests, gallery discovery, privacy/reliability/product/quality contracts, and a non-identifying authorization record. |
+| Local assets | `example-images/input/portraits/p1.jpg` is a 2316×3088, 2,484,953-byte local/Git-ignored JPEG. `example-images/parked-portraits/` contains exactly `e1.png`–`e5.png` plus `e6.jpg`. Prior output/gallery trees are retained under `example-images/parked-generated/2026-07-30-e6/`. Binary assets are not committed. |
+| Privacy | The supplied source contained precise GPS plus capture-time/device metadata. The active copy was re-encoded without GPS, TIFF device/time, author, copyright, or orientation fields. Tracked text contains no original download path, coordinates, subject name, or image hash. `example-images/FIXTURE_AUTHORIZATION.md` records only opaque fixture/right IDs, the user's permission statement, local-use scope, retention, and evidence limits. |
+| Verification | Active discovery reports exactly `no-face-gradient` and `p1`; `e1`–`e6` rejection and symlink/size/publication self-tests pass; local-ignore, source-path/GPS-leak, metadata, inventory, and diff checks pass. `BeautyRendererOutputRegressionTests` passes 17/17; opt-in Vision/facade/adapter integration passes 95/95; the renamed local-authorized integration tests pass 3/3; full SwiftPM passes 458 tests with six documented opt-in skips; a public renderer smoke run writes only `p1__geometryBaseline_noop.png` and the no-face peer, preserving p1 at 2316×3088. |
+| Boundary | Authorization permits future local testing and derivative review, but this single neutral/closed-mouth portrait is not automatically a teeth, sclera-redness, or upper-eyelid positive/negative. It does not establish population coverage, calibration, commercial naturalness, device performance, or v1.14 activation. Feature-specific before/mask/after review and additional positives/negatives remain required. |
+
+Outcome:
+
+- Future active SDK and gallery discovery uses only `p1.jpg`; all `e1`–`e6` portraits are disabled and retained only for historical reference outside `input/`.
+- The user's broad permission is now durable as a privacy-minimized text contract while the actual portrait and derivatives remain local and ignored.
+- The real portrait is proven usable by Apple Vision for face, contour, eye, pupil, lip, and eyebrow integration, but its neutral expression means it is primarily a general/negative fixture until feature-specific polarity is reviewed.
 
 ### C-2026-07-30-spike-013-wrap-up
 

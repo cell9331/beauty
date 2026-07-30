@@ -1,19 +1,49 @@
 # Example Images
 
-`example-images` stores committed renderer fixtures, flat machine outputs, and a generated review gallery.
+`example-images` stores local renderer fixtures, flat machine outputs, and a
+generated review gallery. Binary portraits remain Git-ignored; text policy and
+authorization records carry the durable contract without publishing the media.
 
 ## Directories
 
-- `input/`: committed source fixtures used by SDK tests and `BeautyExampleRenderer`.
-  - `input/portraits/`: the sole active portrait fixture `e6.jpg`.
+- `input/`: local source fixtures used by SDK tests and `BeautyExampleRenderer`.
+  - `input/portraits/`: the sole active portrait fixture `p1.jpg`.
   - `input/negatives/`: negative fixtures such as `no-face-gradient.png`.
+- `parked-portraits/`: disabled historical portraits `e1` through `e6`; fixture
+  discovery must never read this directory.
+- `parked-generated/`: disabled output/gallery snapshots retained outside the
+  active generation paths.
 - `output/`: ignored flat generated renderer PNGs, named `{fixtureStem}__{caseId}.png`.
 - `gallery/`: ignored generated human-review view, grouped as `{featureFamily}/{caseId}/{fixtureStem}.png`.
 - `.gallery-staging/`: ignored fail-closed publication slot. A leftover means a prior run did not publish and blocks another run.
 - `.gallery-quarantine/previous/`: ignored single-slot preservation of the prior gallery. The generator never traverses or deletes it.
 
-Generated `output/` and `gallery/` contents are local artifacts. Recreate them instead of committing PNGs.
-Committed `input/` fixtures should stay below 1 MB each; `e6.jpg` is the sole active JPEG portrait fixture, the no-face negative fixture is 64 px, and retired `e1.png` through `e5.png` remain outside `input/` under `parked-portraits/`.
+Generated `output/` and `gallery/` contents are local artifacts. Recreate them
+instead of committing PNGs. The active `p1.jpg` is a metadata-sanitized
+2316×3088 JPEG below the existing 16 MiB acquisition ceiling; GPS, capture time,
+device, and orientation metadata are absent. The no-face negative fixture is
+64 px. Authorization and evidence limits are recorded in
+`FIXTURE_AUTHORIZATION.md`.
+
+## Current Authorized Fixture
+
+- `p1.jpg` is the only portrait allowed under `input/`. The user confirmed on
+  2026-07-30 that the project has copyright, portrait/likeness, derivative, and
+  future local test permission for this real portrait.
+- The active copy uses opaque fixture ID `portrait_001`, contains no source
+  filename or identity label, remains local/Git-ignored, and has image metadata
+  stripped before storage.
+- `e1.png` through `e5.png` and `e6.jpg` are parked and forbidden from future
+  input discovery. Their prior outputs/gallery were moved under
+  `parked-generated/2026-07-30-e6/`.
+- Authorization makes `p1.jpg` eligible for internal evaluation. It is one
+  neutral portrait, not automatically a positive or negative for teeth
+  whitening, sclera redness, or upper-eyelid fullness, and cannot alone open a
+  feature product gate.
+
+The Phase 51/52 `e6` counts below are retained as historical evidence only.
+They do not override the current `p1` fixture inventory and must not be reused
+as current-input claims.
 
 ## Generate Output
 

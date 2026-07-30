@@ -750,7 +750,7 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
 
     // Opt-in live Vision integration smoke. Standard unit runs skip before
     // any repository-local fixture discovery or Apple Vision invocation.
-    func testIntegrationCommittedPortraitAggregateFitsLockedFaceValidationEnvelope() throws {
+    func testIntegrationLocalAuthorizedPortraitAggregateFitsLockedFaceValidationEnvelope() throws {
         guard ProcessInfo.processInfo.environment[
             "BEAUTYSDK_RUN_VISION_INTEGRATION_TESTS"
         ] == "1" else {
@@ -817,7 +817,7 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         )
     }
 
-    func testIntegrationCommittedPortraitFitsLockedEyebrowValidationEnvelope() throws {
+    func testIntegrationLocalAuthorizedPortraitFitsLockedEyebrowValidationEnvelope() throws {
         guard ProcessInfo.processInfo.environment[
             "BEAUTYSDK_RUN_VISION_INTEGRATION_TESTS"
         ] == "1" else {
@@ -1974,7 +1974,7 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
     private func portraitFixtureURLs() throws -> [URL] {
         let directory = try repositoryRootURL()
             .appendingPathComponent("example-images/input/portraits", isDirectory: true)
-        return try ["e6.jpg"].map {
+        return try ["p1.jpg"].map {
             let url = directory.appendingPathComponent($0)
             guard FileManager.default.fileExists(atPath: url.path) else {
                 throw FaceFixtureError.missing
@@ -1987,7 +1987,7 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         var current = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
         while current.path != "/" {
             let fixture = current.appendingPathComponent(
-                "example-images/input/portraits/e6.jpg"
+                "example-images/input/portraits/p1.jpg"
             )
             if FileManager.default.fileExists(atPath: fixture.path) {
                 return current

@@ -22,7 +22,7 @@ QUARANTINE_NAME = ".gallery-quarantine"
 QUARANTINE_ENTRY = "previous"
 MAX_GALLERY_SOURCE_BYTES = 16 * 1_024 * 1_024
 EXPECTED_CASE_COUNT = 72
-EXPECTED_FIXTURE_STEMS = ("no-face-gradient", "e6")
+EXPECTED_FIXTURE_STEMS = ("no-face-gradient", "p1")
 EXPECTED_EYEBROW_CASE_IDS = (
     "eyebrowYPosition_plus0p25",
     "eyebrowYPosition_minus0p25",
@@ -83,7 +83,7 @@ class GalleryError(Exception):
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--input", default="example-images/input", help="Committed source fixture directory.")
+    parser.add_argument("--input", default="example-images/input", help="Local source fixture directory.")
     parser.add_argument("--output", default="example-images/output", help="Flat generated renderer output directory.")
     parser.add_argument("--gallery", default="example-images/gallery", help="Generated human-review gallery directory.")
     parser.add_argument("--self-test", action="store_true", help="Run deterministic negative-path checks.")
@@ -456,7 +456,7 @@ def discover_fixture_stems(input_dir: Path) -> list[str]:
         raise GalleryError(f"Duplicate fixture stems are not supported: {', '.join(duplicates)}")
     if tuple(stems) != EXPECTED_FIXTURE_STEMS:
         raise GalleryError(
-            "Fixture inventory must be exactly no-face-gradient and e6; "
+            "Fixture inventory must be exactly no-face-gradient and p1; "
             f"discovered {', '.join(stems)}"
         )
     return stems
@@ -541,24 +541,25 @@ def run_self_tests() -> None:
         (input_dir / "negatives").mkdir(parents=True)
         (input_dir / "portraits").mkdir()
         (input_dir / "negatives" / "no-face-gradient.png").write_bytes(b"negative")
-        (input_dir / "portraits" / "e6.jpg").write_bytes(b"portrait")
+        (input_dir / "portraits" / "p1.jpg").write_bytes(b"portrait")
         stems = discover_fixture_stems(input_dir)
         if tuple(stems) != EXPECTED_FIXTURE_STEMS:
             raise AssertionError(f"fixture stems {stems} != {EXPECTED_FIXTURE_STEMS}")
         if len(gallery_case_ids) * len(stems) != 144:
             raise AssertionError("gallery source/destination inventory is not exactly 144")
 
-        retired = input_dir / "portraits" / "e1.png"
-        retired.write_bytes(b"retired")
-        expect_gallery_error(
-            "retired portrait fixture",
-            lambda: discover_fixture_stems(input_dir),
-            "must be exactly no-face-gradient and e6",
-        )
-        retired.unlink()
+        for retired_name in ("e1.png", "e6.jpg"):
+            retired = input_dir / "portraits" / retired_name
+            retired.write_bytes(b"retired")
+            expect_gallery_error(
+                f"retired portrait fixture {retired_name}",
+                lambda: discover_fixture_stems(input_dir),
+                "must be exactly no-face-gradient and p1",
+            )
+            retired.unlink()
 
         linked = input_dir / "portraits" / "e1.png"
-        linked.symlink_to(input_dir / "portraits" / "e6.jpg")
+        linked.symlink_to(input_dir / "portraits" / "p1.jpg")
         expect_gallery_error(
             "linked fixture",
             lambda: discover_fixture_stems(input_dir),
