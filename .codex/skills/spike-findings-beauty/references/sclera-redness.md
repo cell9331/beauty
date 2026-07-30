@@ -58,8 +58,17 @@ let rednessScore = smoothstep(0.008, 0.14, redness)
 mask[index] = aperture[index] * scleraLikelihood * rednessScore
 ```
 
-8. Feather locally without expanding beyond the guarded aperture. Compose only
-   accepted per-eye masks.
+8. Feather locally, then intersect the result with the same hard envelope again.
+   A pre-filter intersection is insufficient because blur can expand nonzero
+   weights back into the iris, aperture exterior, or excluded highlights:
+
+```swift
+let feathered = boxBlur(scoredMask, width: width, height: height, radius: 1)
+let finalMask = zip(feathered, hardEnvelope).map { clamp($0 * $1) }
+```
+
+   Compose only accepted per-eye masks. One eye returning an empty mask must not
+   disable or reuse support for its accepted peer.
 9. Reduce only measured red excess, add a small compensating green/blue
    component, and restore original luminance:
 
@@ -77,10 +86,16 @@ let correction = originalLuminance - luminance(nextRed, nextGreen, nextBlue)
     support, and compare every candidate against an unperturbed protected iris
     plus input-derived highlight mask. The downstream color gate must never be
     allowed to hide geometric leakage.
-11. Sweep horizontal/vertical pupil uncertainty and eye-height collapse. Record
+11. Add a second, final-output oracle. Recolor only request-local protected
+    non-highlight iris pixels to a sclera-like red, recompute the actual mask and
+    bounded transform, and count byte-level changes inside the unperturbed
+    protected iris/highlight truth. This proves that score, feather, final clip,
+    and transform remain safe together instead of trusting a dark native iris.
+12. Sweep horizontal/vertical pupil uncertainty and eye-height collapse. Record
     aggregate scenario count, protected-leak scenarios/pixels, fail-closed
-    count, baseline eligibility, and retention; persist no coordinates.
-12. Evaluate mild/severe redness, vessels, glasses, contacts, blink, partial
+    count, baseline eligibility, final changed pixels, and retention; persist no
+    coordinates or adversarial pixels.
+13. Evaluate mild/severe redness, vessels, glasses, contacts, blink, partial
     closure, gaze, makeup, lashes, blue/brown irises, pose, low light,
     highlights, blur, compression, and demographic/illumination diversity.
 
@@ -91,12 +106,24 @@ scenarios, but failed closed in 270 and retained only 28.6%–32.2% of baseline
 geometric eligibility. This validates the safety mechanism while leaving user
 calibration and useful coverage open.
 
+The final integration grid confirmed why both oracles are necessary. On native
+e2/e3, the legacy color gate showed no protected changes, but coloring the
+protected iris red exposed final legacy-transform leakage in 356/360 combined
+eye-scenarios. Guard-before-score plus post-feather re-clipping changed zero
+protected iris/highlight pixels across 360 native and 360 adversarial scenarios,
+kept nonzero candidates in both eyes on all three mechanics fixtures, and kept
+`changedOutsideMask == 0`. It still failed closed in 270/360 stress scenarios
+and retained only 24.6%–38.2% of the legacy baseline color mask.
+
 ## What to Avoid
 
 - Do not promote the original pupil circle unchanged; its clean static-fixture
   appearance did not survive landmark perturbation.
-- Do not evaluate only the final redness mask as a safety oracle. Dark iris
-  pixels can conceal unsafe geometry by receiving a low redness score.
+- Do not evaluate only the native final redness mask as a safety oracle. Dark
+  iris pixels can conceal unsafe geometry by receiving a low redness score; use
+  both the color-independent envelope and the adversarial final-output oracle.
+- Do not blur a guarded score and composite it directly. Re-clip after every
+  feather/blur operation that can expand support beyond a hard anatomical mask.
 - Do not treat the whole eye aperture as sclera or edit inside the guarded iris
   exclusion.
 - Do not guess, reuse, or carry forward a pupil when support is absent or the
@@ -110,8 +137,8 @@ calibration and useful coverage open.
 
 - Apple warns pupil landmarks may be inaccurate during a blink; failure must be
   local to the affected eye.
-- The original mask/color mechanics remain `PARTIAL`; real redness coverage and
-  naturalness are unproven.
+- Guarded mask/color ordering is narrowly `VALIDATED` for the deterministic
+  final-output grid; real redness coverage and naturalness remain unproven.
 - The deterministic jitter envelope is narrowly `VALIDATED` for its bounded
   grid, not for population thresholds, useful coverage, or product readiness.
 - The 1728×2304 release transform took 65.3 ms after detection in the original
@@ -121,8 +148,10 @@ calibration and useful coverage open.
 
 ## Origin
 
-Synthesized from spikes: 003, 004, 010
+Synthesized from spikes: 003, 004, 010, 011
 
 Source files available in:
 `sources/003-sclera-redness-mask/`, `sources/004-local-color-retouch/`,
-`sources/010-sclera-jitter-envelope/`, and `sources/shared-retouch-lab/`.
+`sources/010-sclera-jitter-envelope/`,
+`sources/011-guarded-sclera-color-integration/`, and
+`sources/shared-retouch-lab/`.

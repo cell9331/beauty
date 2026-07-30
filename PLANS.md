@@ -27,9 +27,26 @@
 ## 3. Active
 
 No active plan. No product milestone is active; v1.13 remains shipped and the
-completed Spike 011 does not authorize v1.14 or any new feature scope.
+completed Spike 011 wrap-up does not authorize v1.14 or any new feature scope.
 
 ## 4. Completed
+
+### C-2026-07-30-spike-011-wrap-up
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-07-30 |
+| Scope | Appended completed Spike 011 to the project-local `spike-findings-beauty` implementation blueprint without changing production source, public API, feature inventory, milestone scope, or runtime behavior. |
+| Outputs | Updated the existing sclera-redness and still-image-integration references with guard-before-score, post-feather hard re-clipping, per-eye failure independence, and complementary geometry/adversarial final-output oracles; added exact 011 README/review sources; refreshed the exact shared Swift harness; updated the processed inventory and wrap-up summary. |
+| Knowledge shape | The skill now covers eleven processed spikes across the same five feature areas. Guarded sclera mechanics require validate-per-eye → hard envelope → local score → feather → hard re-clip → one bounded transform; the 0.30/0.14 values and useful coverage remain real-data calibration questions. |
+| Verification | Four copied sources compare byte-for-byte with their owners; the copied Swift package builds in release and passes 16/16 self-tests; processed and summary inventories are 11/11; all five references contain the required blueprint sections; the 011 review JavaScript parses; the retained 006 review core still passes 9/9; AGENTS routing count remains one; runtime-network, generated-directory, media/model/binary, pending-verdict, production-boundary, and diff-hygiene checks pass. |
+| Boundary | No fixture media, challenge image, mask, heatmap, model/weight, build artifact, product code, public contract, realtime claim, device budget, or v1.14 activation was packaged. AI fixtures remain mechanics-only and licensed real evaluation remains mandatory. |
+
+Outcome:
+
+- Future sclera implementation planning will auto-load the proven final-mask ordering and will not mistake native dark-iris color rejection for geometric safety.
+- `CONVENTIONS.md` already contains the cross-feature post-filter hard-clip rule established by Spikes 009 and 011, so no duplicate convention or AGENTS route was added during wrap-up.
+- The next evidence-bearing action remains acquiring rights-approved real sclera positives/negatives for the Spike 006 local blind-review gate; frontier exploration is optional and does not activate v1.14.
 
 ### C-2026-07-29-spike-011-guarded-sclera-color-integration
 
