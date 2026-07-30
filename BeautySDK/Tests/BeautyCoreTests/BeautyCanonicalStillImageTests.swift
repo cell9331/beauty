@@ -72,8 +72,8 @@ final class BeautyCanonicalStillImageTests: XCTestCase {
         let harness = SDKTestingCanonicalStillImageHarness(maximumPixelCount: 16)
         let extents: [SDKTestingCanonicalFixture] = [
             .extent(.zero),
-            .extent(CGRect(x: 0, y: 0, width: .nan, height: 1)),
-            .extent(CGRect(x: 0, y: 0, width: .infinity, height: 1)),
+            .extent(CGRect(x: 0, y: 0, width: CGFloat.nan, height: 1)),
+            .extent(CGRect(x: 0, y: 0, width: CGFloat.infinity, height: 1)),
             .extent(CGRect(x: 0, y: 0, width: 1.5, height: 2)),
             .extent(CGRect(x: 0, y: 0, width: 4, height: 5)), // one over 16
             .overflowShaped(width: Int.max, height: Int.max, bytesPerPixel: 4),
@@ -136,5 +136,56 @@ final class BeautyCanonicalStillImageTests: XCTestCase {
         XCTAssertTrue(["invalidInput", "unsupportedPixelFormat"].contains(error.description),
                       "typed rejection must carry no dimensions, paths, metadata, or portrait detail")
         return true
+    }
+}
+
+private enum Phase53MissingCanonicalSeam: Error { case absent }
+
+private indirect enum SDKTestingCanonicalFixture {
+    case asymmetricRGBA8(width: Int, height: Int)
+    case displayP3RGBA8(width: Int, height: Int)
+    case rgba8(width: Int, height: Int, alpha: UInt8)
+    case nilColorSpace(width: Int, height: Int)
+    case gray8(width: Int, height: Int)
+    case cmyk8(width: Int, height: Int)
+    case unknownColorModel(width: Int, height: Int)
+    case extendedRangeRGB(width: Int, height: Int)
+    case extent(CGRect)
+    case overflowShaped(width: Int, height: Int, bytesPerPixel: Int)
+    case losslessEncoding(of: SDKTestingCanonicalFixture, orientation: CGImagePropertyOrientation, mirrored: Bool)
+}
+
+private struct SDKTestingCanonicalResult {
+    let extent: CGRect
+    let orientation: CGImagePropertyOrientation
+    let pixelFormat: String
+    let colorSpace: String
+    let isOpaque: Bool
+    let backingIdentity: Int
+    let visionBackingIdentity: Int
+    let renderBackingIdentity: Int
+    let rgba8Digest: String
+    let claimsCrossProfileLandmarkOrMaskTopologyIdentity: Bool
+}
+
+private final class SDKTestingCanonicalStillImageHarness {
+    let detectorInvocationCount = 0
+    let supportInvocationCount = 0
+    init(maximumPixelCount: Int) { _ = maximumPixelCount }
+    func canonicalize(
+        fixture: SDKTestingCanonicalFixture,
+        orientation: CGImagePropertyOrientation,
+        isInputMirrored: Bool
+    ) throws -> SDKTestingCanonicalResult {
+        _ = (fixture, orientation, isInputMirrored)
+        throw Phase53MissingCanonicalSeam.absent
+    }
+    func canonicalize(
+        fixture: SDKTestingCanonicalFixture,
+        rawExifOrientation: Int,
+        isInputMirrored: Bool
+    ) throws -> SDKTestingCanonicalResult {
+        _ = (fixture, rawExifOrientation, isInputMirrored)
+        throw Phase53MissingCanonicalSeam.absent
     }
 }

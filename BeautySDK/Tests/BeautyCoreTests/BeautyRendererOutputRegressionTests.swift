@@ -953,3 +953,14 @@ private enum RegressionTestError: Error, CustomStringConvertible {
         }
     }
 }
+
+extension BeautyRendererOutputRegressionTests {
+    func testPhase53NoLocalCandidateRendererCasesRemainAbsent() throws {
+        let source = try rendererSource()
+        XCTAssertEqual(rendererCaseIDs(in: source), Self.expectedRendererCaseIDs)
+        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 72)
+        for forbidden in ["teethWhitening", "scleraRednessReduction", "upperEyelidFullnessReduction"] {
+            XCTAssertFalse(source.contains(forbidden), forbidden)
+        }
+    }
+}

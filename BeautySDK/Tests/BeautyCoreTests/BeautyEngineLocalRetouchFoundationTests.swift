@@ -95,8 +95,9 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
     func testIndependentEngineValuesDoNotCrossPayloads() async throws {
         async let first = SDKTestingLocalRetouchFoundationHarness.runIndependent(valueID: 11)
         async let second = SDKTestingLocalRetouchFoundationHarness.runIndependent(valueID: 22)
-        let values = try await [first, second]
-        XCTAssertEqual(Set(values), Set([11, 22]))
+        let firstValue = try await first
+        let secondValue = try await second
+        XCTAssertEqual(Set([firstValue, secondValue]), Set([11, 22]))
     }
 
     func testPixelBufferOverloadsAndResetPerformZeroLocalFoundationWork() throws {
@@ -126,5 +127,48 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         XCTAssertFalse(flags.contains("same-engine-parallel-safe"))
         // TD-013 and mutable selected-face policy intentionally keep same-engine
         // concurrency and cooperative cancellation outside Phase 53's claim.
+    }
+}
+
+private enum Phase53MissingLocalFoundationSeam: Error { case absent }
+private enum SDKTestingStillImageFacadeEntry { case process, processResult }
+private enum SDKTestingLocalRetouchEvent: Equatable { case canonicalize, detectAndMap, makeRequestContext, render }
+private enum SDKTestingLocalSupportFixture { case noFace, missingSupport }
+private enum SDKTestingLocalSupportSequence { case available(valueID: Int), malformed }
+private struct SDKTestingLocalResult {
+    let rgba8Bytes: [UInt8]
+    let extent: CGRect
+    let aggregateSupportValueID: Int?
+}
+private final class SDKTestingLocalRetouchFoundationHarness {
+    static let productionAdmissionCount = 0
+    static let productionAdmissionNames: [String] = []
+    let canonicalizeCount = 0
+    let detectAndMapCount = 0
+    let makeRequestContextCount = 0
+    let renderCount = 0
+    let localProviderCount = 0
+    let retainedRequestContextCount = 0
+    let events: [SDKTestingLocalRetouchEvent] = []
+    let pixelBufferSummaryAvailability = "notRun"
+    init(admittedPrivateDemandCount: Int) { _ = admittedPrivateDemandCount }
+    init(admittedPrivateDemandCount: Int, supportFixture: SDKTestingLocalSupportFixture) {
+        _ = (admittedPrivateDemandCount, supportFixture)
+    }
+    init(admittedPrivateDemandCount: Int, supportSequence: [SDKTestingLocalSupportSequence]) {
+        _ = (admittedPrivateDemandCount, supportSequence)
+    }
+    func invoke(entry: SDKTestingStillImageFacadeEntry, image: CIImage, parameters: BeautyParameters) throws -> SDKTestingLocalResult {
+        _ = (entry, image, parameters)
+        throw Phase53MissingLocalFoundationSeam.absent
+    }
+    func invokePixelBuffer(parameters: BeautyParameters) throws -> SDKTestingLocalResult {
+        _ = parameters
+        throw Phase53MissingLocalFoundationSeam.absent
+    }
+    func reset() {}
+    static func runIndependent(valueID: Int) async throws -> Int {
+        _ = valueID
+        throw Phase53MissingLocalFoundationSeam.absent
     }
 }

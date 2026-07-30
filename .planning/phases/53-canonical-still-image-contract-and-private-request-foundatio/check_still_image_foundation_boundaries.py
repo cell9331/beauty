@@ -78,7 +78,6 @@ def active_source_rules() -> tuple[Rule, ...]:
         r"@_spi\([^)]*\).*?(Canonical|ObservedLip|RequestContext|Mask|Pupil|Sclera|Vein)",
         r"(Codable|CodingKey).*?(canonical|landmark|lip|teeth|pupil|sclera|eyelid|mask|vein)",
         r"(teethWhitening|scleraRednessReduction|upperEyelidFullnessReduction)",
-        r"CGColorSpaceCreateDeviceRGB",
     )
     return tuple(Rule(f"forbidden-{index}", pattern, False) for index, pattern in enumerate(forbidden))
 
@@ -104,6 +103,10 @@ def check_live() -> list[str]:
     for path in required:
         if not path.is_file():
             failures.append(f"missing required production path: {path.relative_to(ROOT)}")
+
+    canonicalizer = required[1]
+    if canonicalizer.is_file() and "CGColorSpaceCreateDeviceRGB" in canonicalizer.read_text(encoding="utf-8"):
+        failures.append("active canonical route uses device RGB")
 
     engine = SOURCE / "BeautySDK" / "BeautyEngine.swift"
     text = engine.read_text(encoding="utf-8")

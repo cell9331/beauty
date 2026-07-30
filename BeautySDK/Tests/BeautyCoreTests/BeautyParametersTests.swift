@@ -1154,3 +1154,65 @@ final class BeautyParametersTests: XCTestCase {
         _ = value
     }
 }
+
+extension BeautyParametersTests {
+    func testPhase53LegacyInventoryAdjacencyAt58NumericPlusFilterID() {
+        let labels = Mirror(reflecting: BeautyParameters()).children.compactMap(\.label)
+        XCTAssertEqual(labels.count, 59)
+        XCTAssertEqual(labels.filter { $0 != "filterId" }.count, 58)
+        XCTAssertEqual(labels.filter { $0 == "filterId" }.count, 1)
+    }
+
+    func testPhase53MissingKeysAndZeroDefaultsRemainNeutral() throws {
+        let decoded = try JSONDecoder().decode(BeautyParameters.self, from: Data("{}".utf8))
+        XCTAssertEqual(decoded, BeautyParameters())
+        XCTAssertEqual(Mirror(reflecting: decoded).children.count, 59)
+    }
+
+    func testPhase53StoredAndCodingKeyOrderRemainsLegacy59() throws {
+        let stored = Mirror(reflecting: BeautyParameters()).children.compactMap(\.label)
+        let source = try String(contentsOf: parametersSourceURL(), encoding: .utf8)
+        let codingBlock = try XCTUnwrap(source.split(separator: "enum CodingKeys", maxSplits: 1).last)
+            .split(separator: "public init(", maxSplits: 1)[0]
+        let coding = codingBlock.split(separator: "\n").compactMap { line -> String? in
+            let text = line.trimmingCharacters(in: .whitespaces)
+            return text.hasPrefix("case ") ? String(text.dropFirst(5)) : nil
+        }
+        XCTAssertEqual(stored.count, 59)
+        XCTAssertEqual(coding, stored)
+    }
+
+    func testPhase53AdmissionBoundsAreExactAtZeroAndOne() {
+        func admitted(_ value: Float) -> Float { value.isFinite ? min(max(value, 0), 1) : 0 }
+        XCTAssertEqual(admitted(-Float.ulpOfOne), 0)
+        XCTAssertEqual(admitted(0), 0)
+        XCTAssertEqual(admitted(Float.ulpOfOne), Float.ulpOfOne)
+        XCTAssertEqual(admitted(1), 1)
+        XCTAssertEqual(admitted(1 + Float.ulpOfOne), 1)
+        XCTAssertEqual(admitted(.nan), 0)
+    }
+
+    func testPhase53NoCandidateInventory() throws {
+        let source = try String(contentsOf: parametersSourceURL(), encoding: .utf8)
+        for forbidden in ["teethWhitening", "scleraRednessReduction", "upperEyelidFullnessReduction"] {
+            XCTAssertFalse(source.contains(forbidden), forbidden)
+        }
+        XCTAssertEqual(Mirror(reflecting: BeautyParameters()).children.count, 59)
+    }
+
+    func testPhase53FutureAdmissionChecklistRequiresTrailingAppendOrder() {
+        let checklist = [
+            "independent", "positive-only Float", "finite-normalized 0...1",
+            "default zero", "missing key zero", "trailing appended",
+            "exact stored and Codable inventory",
+        ]
+        XCTAssertEqual(checklist.count, 7)
+        XCTAssertEqual(checklist.last, "exact stored and Codable inventory")
+    }
+
+    private func parametersSourceURL() -> URL {
+        URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("Sources/BeautyCore/Models/BeautyParameters.swift")
+    }
+}

@@ -215,3 +215,19 @@ final class BeautyResourceCatalogTests: XCTestCase {
         }
     }
 }
+
+extension BeautyResourceCatalogTests {
+    func testPhase53PresetInventoryRemainsExactlyFiveWithoutCandidateKeys() throws {
+        let presets = try BeautyResourceCatalog.bundled().builtInPresets()
+        XCTAssertEqual(presets.map(\.id), ["natural", "clear", "refined", "male-natural", "id-photo-natural"])
+        XCTAssertEqual(presets.count, 5)
+        for preset in presets {
+            let object = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(preset.parameters)) as? [String: Any])
+            XCTAssertEqual(Mirror(reflecting: preset.parameters).children.count, 59)
+            XCTAssertEqual(object.count, preset.parameters.filterId == nil ? 58 : 59)
+            for forbidden in ["teethWhitening", "scleraRednessReduction", "upperEyelidFullnessReduction"] {
+                XCTAssertNil(object[forbidden], "\(preset.id): \(forbidden)")
+            }
+        }
+    }
+}
