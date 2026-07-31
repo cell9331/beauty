@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src blob:; connect-src 'none'; font-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>本地证据盲审</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      background: #0B0D10;
+      color: #F4F2EC;
+    }
+
+    * { box-sizing: border-box; }
+    html { overflow-x: hidden; }
+    body { margin: 0; background: #0B0D10; color: #F4F2EC; font-size: 16px; line-height: 1.5; overflow-x: hidden; }
+    button, input, select { font: inherit; }
+    button, input[type="file"], select { min-height: 44px; }
+    button, select, input[type="file"] { border: 1px solid #3A3F46; border-radius: 8px; background: #0B0D10; color: #F4F2EC; }
+    button { padding: 8px 16px; cursor: pointer; font-weight: 600; }
+    button:disabled, input:disabled { cursor: not-allowed; opacity: .5; }
+    button.primary, .view-toggle[aria-pressed="true"] { border-color: #F06E4F; background: #F06E4F; color: #0B0D10; }
+    button.secondary { background: #14171B; }
+    :focus-visible { outline: 3px solid #F06E4F; outline-offset: 2px; }
+    [hidden] { display: none !important; }
+
+    .page-shell { width: min(100%, 1200px); margin: 0 auto; padding: 32px; }
+    header { padding: 48px 0 32px; }
+    h1 { margin: 0 0 16px; font-size: 32px; font-weight: 600; line-height: 1.2; }
+    h2 { margin: 0 0 16px; font-size: 20px; font-weight: 600; line-height: 1.3; }
+    p { margin: 0; color: #AAA8A1; overflow-wrap: anywhere; word-break: break-word; }
+    .privacy-line { margin-bottom: 8px; }
+    .privacy-badge { display: inline-block; padding: 4px 8px; border: 1px solid #3A3F46; border-radius: 16px; color: #F4F2EC; font-size: 13px; font-weight: 600; line-height: 1.4; }
+
+    main { display: grid; gap: 24px; padding-bottom: 64px; }
+    .surface { border: 1px solid #3A3F46; border-radius: 16px; background: #14171B; padding: 24px; min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
+    .loader-grid { display: grid; grid-template-columns: repeat(2, minmax(280px, 1fr)); gap: 16px; }
+    .file-field { display: grid; gap: 8px; color: #F4F2EC; font-size: 13px; font-weight: 600; line-height: 1.4; }
+    input[type="file"] { width: 100%; padding: 8px; font-size: 16px; font-weight: 400; }
+
+    #validation-summary:focus { outline: 3px solid #F06E4F; outline-offset: 2px; }
+    .validation-body { display: grid; gap: 8px; }
+    .validation-body ul { margin: 0; padding-left: 24px; color: #FFB4A9; }
+    .status-line { min-height: 24px; color: #AAA8A1; }
+
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    th, td { padding: 16px 8px; border-bottom: 1px solid #3A3F46; text-align: left; vertical-align: top; overflow-wrap: anywhere; word-break: break-word; }
+    th { font-size: 13px; font-weight: 600; line-height: 1.4; color: #AAA8A1; }
+    tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+    .gate-badge { display: inline-block; padding: 4px 8px; border-radius: 8px; font-size: 13px; font-weight: 600; line-height: 1.4; }
+    .gate-badge.closed { background: #4B2523; color: #FFB4A9; }
+    .gate-badge.open { background: #173B2A; color: #9EE7B8; }
+    .gate-reasons, .gate-counts { margin-top: 8px; color: #AAA8A1; font-size: 13px; font-weight: 400; line-height: 1.4; }
+
+    #review-workspace { padding: 0; overflow: hidden; }
+    .review-header { display: flex; align-items: start; justify-content: space-between; gap: 16px; padding: 24px; border-bottom: 1px solid #3A3F46; }
+    #review-progress { color: #AAA8A1; }
+    .view-controls, .pane-tabs, .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .view-controls { padding: 16px 24px; border-bottom: 1px solid #3A3F46; }
+    .pane-tabs { display: none; padding: 16px 24px 0; }
+    .comparison-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); min-height: 480px; background: #0B0D10; }
+    .comparison-pane { display: grid; grid-template-rows: auto 1fr; min-width: 0; border-right: 1px solid #3A3F46; }
+    .comparison-pane:last-child { border-right: 0; }
+    .pane-label { padding: 8px 16px; background: #14171B; font-size: 13px; font-weight: 600; line-height: 1.4; }
+    .comparison-scroller { position: relative; min-height: 440px; overflow: hidden; overscroll-behavior: contain; }
+    .comparison-scroller img { display: block; image-rendering: auto; }
+    .comparison-grid.fit .comparison-scroller img { width: 100%; height: 100%; object-fit: contain; position: absolute; inset: 0; }
+    .comparison-grid.actual .comparison-scroller { overflow: auto; }
+    .comparison-grid.actual .comparison-scroller img { width: auto; height: auto; max-width: none; max-height: none; }
+
+    #judgment-form { display: grid; gap: 24px; padding: 24px; }
+    #judgment-form fieldset { margin: 0; padding: 0; border: 0; }
+    #judgment-form legend { margin-bottom: 16px; font-size: 20px; font-weight: 600; line-height: 1.3; }
+    .judgment-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .judgment-field { display: grid; align-content: start; gap: 8px; min-width: 0; }
+    .judgment-field label { font-size: 13px; font-weight: 600; line-height: 1.4; }
+    .judgment-field select { width: 100%; padding: 8px; }
+    .field-help { color: #AAA8A1; font-size: 13px; font-weight: 400; line-height: 1.4; }
+    #form-alert { min-height: 24px; color: #FFB4A9; }
+    .actions { justify-content: flex-end; }
+    .actions button { min-width: 160px; }
+
+    .export-panel { display: grid; gap: 16px; }
+    .export-panel button { justify-self: start; }
+
+    dialog { width: min(calc(100% - 32px), 480px); padding: 24px; border: 1px solid #3A3F46; border-radius: 16px; background: #14171B; color: #F4F2EC; }
+    dialog::backdrop { background: rgba(11, 13, 16, .8); }
+    dialog .actions { margin-top: 24px; }
+
+    @media (max-width: 768px) {
+      .page-shell { padding: 24px; }
+      .loader-grid, .judgment-grid { grid-template-columns: 1fr; }
+      #feature-gates, #feature-gates thead, #feature-gates tbody { display: block; }
+      #feature-gates thead { position: absolute; width: 1px; height: 1px; overflow: hidden; }
+      #feature-gates tr { display: grid; gap: 8px; padding: 16px 0; border-bottom: 1px solid #3A3F46; }
+      #feature-gates tbody tr:last-child { border-bottom: 0; }
+      #feature-gates th, #feature-gates td { display: block; padding: 0; border: 0; }
+      .pane-tabs { display: flex; }
+      .comparison-grid { display: block; min-height: 480px; }
+      .comparison-pane { display: none; border-right: 0; }
+      .comparison-pane.mobile-visible { display: grid; }
+      .review-header { display: grid; }
+    }
+
+    @media (max-width: 480px) {
+      .page-shell { padding: 16px; }
+      header { padding: 32px 0 24px; }
+      .surface, .review-header, #judgment-form { padding: 16px; }
+      .view-controls, .pane-tabs { padding-left: 16px; padding-right: 16px; }
+      .actions { display: grid; grid-template-columns: 1fr; }
+      .actions button, .export-panel button { width: 100%; min-width: 0; }
+    }
+
+    @media (max-width: 320px) {
+      .page-shell { padding: 16px; }
+      .surface { border-radius: 8px; }
+      .view-controls, .pane-tabs { display: grid; grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto; transition: none; animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header>
+      <h1 id="page-heading" tabindex="-1">本地证据盲审</h1>
+      <p class="privacy-line">文件只在当前浏览器标签页中读取，不会上传或保留。</p>
+      <span class="privacy-badge">不会上传</span>
+    </header>
+
+    <main>
+      <section class="surface" aria-labelledby="loader-heading">
+        <h2 id="loader-heading">载入本地材料</h2>
+        <div class="loader-grid">
+          <label class="file-field" for="manifest-input">1. 选择评审清单
+            <input id="manifest-input" type="file" accept="application/json,.json">
+          </label>
+          <label class="file-field" for="asset-directory-input">2. 选择本地资产目录
+            <input id="asset-directory-input" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png" webkitdirectory multiple>
+          </label>
+        </div>
+      </section>
+
+      <section id="validation-summary" class="surface" tabindex="-1" aria-labelledby="validation-heading">
+        <h2 id="validation-heading">等待本地评审材料</h2>
+        <div class="validation-body">
+          <p id="validation-guidance">选择清单和资产目录后开始。页面不会显示文件名或路径。</p>
+          <ul id="validation-problems" role="alert"></ul>
+          <p id="session-status" class="status-line" role="status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <section class="surface" aria-labelledby="gates-heading">
+        <h2 id="gates-heading">独立证据门</h2>
+        <table id="feature-gates">
+          <thead><tr><th scope="col">功能</th><th scope="col">状态</th><th scope="col">计数与原因</th></tr></thead>
+          <tbody>
+            <tr id="gate-teeth-whitening"><th scope="row">白牙</th><td><span class="gate-badge closed">证据门已关闭</span></td><td><div class="gate-counts">正例 0 · 反例 0 · 已评审 0</div><div class="gate-reasons">尚未校验</div></td></tr>
+            <tr id="gate-sclera-redness"><th scope="row">祛红血丝</th><td><span class="gate-badge closed">证据门已关闭</span></td><td><div class="gate-counts">正例 0 · 反例 0 · 已评审 0</div><div class="gate-reasons">尚未校验</div></td></tr>
+            <tr id="gate-upper-eyelid-fullness"><th scope="row">去脂</th><td><span class="gate-badge closed">证据门已关闭</span></td><td><div class="gate-counts">正例 0 · 反例 0 · 已评审 0</div><div class="gate-reasons">尚未校验</div></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="review-workspace" class="surface" aria-labelledby="review-item-heading" hidden>
+        <div class="review-header">
+          <div><h2 id="review-item-heading" tabindex="-1">盲审项目</h2><p id="review-feature">功能</p></div>
+          <p id="review-progress">项目 0 / 0 · 已完成 0 / 0</p>
+        </div>
+        <div class="view-controls" aria-label="图像缩放方式">
+          <button id="view-fit" class="view-toggle" type="button" aria-pressed="true">适合窗口</button>
+          <button id="view-actual" class="view-toggle secondary" type="button" aria-pressed="false">100%</button>
+        </div>
+        <div class="pane-tabs" role="tablist" aria-label="比较图像">
+          <button id="tab-original" type="button" role="tab" aria-selected="true">原图</button>
+          <button id="tab-mask" type="button" role="tab" aria-selected="false">遮罩</button>
+          <button id="tab-after" type="button" role="tab" aria-selected="false">处理后</button>
+        </div>
+        <div id="comparison-grid" class="comparison-grid fit">
+          <figure id="comparison-original" class="comparison-pane mobile-visible"><figcaption class="pane-label">原图</figcaption><div class="comparison-scroller"><img id="image-original" alt="原图"></div></figure>
+          <figure id="comparison-mask" class="comparison-pane"><figcaption class="pane-label">遮罩</figcaption><div class="comparison-scroller"><img id="image-mask" alt="遮罩"></div></figure>
+          <figure id="comparison-after" class="comparison-pane"><figcaption class="pane-label">处理后</figcaption><div class="comparison-scroller"><img id="image-after" alt="处理后"></div></figure>
+        </div>
+
+        <form id="judgment-form" autocomplete="off" novalidate>
+          <fieldset>
+            <legend>结构化判断</legend>
+            <div class="judgment-grid">
+              <div class="judgment-field"><label for="target_present">原图中是否存在目标状态？</label><select id="target_present" name="target_present" required><option value="" selected>请选择</option><option value="true">是</option><option value="false">否</option></select></div>
+              <div class="judgment-field"><label for="mask_coverage">遮罩覆盖目标的程度</label><select id="mask_coverage" name="mask_coverage" required><option value="" selected>请选择</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select><span class="field-help">1 = 未覆盖，3 = 部分覆盖，5 = 完整且边界准确</span></div>
+              <div class="judgment-field"><label for="protected_leakage">是否改动了保护区域？</label><select id="protected_leakage" name="protected_leakage" required><option value="" selected>请选择</option><option value="false">无</option><option value="true">有</option></select></div>
+              <div class="judgment-field"><label for="naturalness">处理结果自然度</label><select id="naturalness" name="naturalness" required><option value="" selected>请选择</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select><span class="field-help">1 = 明显不自然，3 = 可见瑕疵，5 = 自然且保留细节</span></div>
+              <div class="judgment-field"><label for="structure_changed">是否出现结构变化？</label><select id="structure_changed" name="structure_changed" required><option value="" selected>请选择</option><option value="false">无</option><option value="true">有</option></select></div>
+              <div class="judgment-field"><label for="decision">本项目结论</label><select id="decision" name="decision" required><option value="" selected>请选择</option><option value="accept">接受</option><option value="reject">拒绝</option></select></div>
+              <div class="judgment-field"><label for="reason_code">固定原因</label><select id="reason_code" name="reason_code" required><option value="" selected>请选择</option><option value="none">无</option><option value="target_mismatch">目标状态不符</option><option value="insufficient_mask_coverage">遮罩覆盖不足</option><option value="protected_leakage">保护区域泄漏</option><option value="unnatural_result">结果不自然</option><option value="texture_loss">纹理损失</option><option value="structure_change">结构变化</option><option value="unsupported_input">输入不受支持</option></select></div>
+            </div>
+          </fieldset>
+          <p id="form-alert" role="alert"></p>
+          <div class="actions"><button id="previous-item" class="secondary" type="button">上一个项目</button><button id="save-and-next" class="primary" type="submit">保存并继续</button></div>
+        </form>
+      </section>
+
+      <section class="surface export-panel" aria-labelledby="export-heading">
+        <h2 id="export-heading">导出评审结果</h2>
+        <p>仅导出固定结构化判断、独立证据门决定与聚合计数，不包含媒体、路径、权利记录或自由文本。</p>
+        <button id="export-review" class="primary" type="button" disabled>导出脱敏评审 JSON</button>
+        <p id="export-feedback" role="alert"></p>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="replace-session-dialog" aria-labelledby="replace-dialog-heading" aria-describedby="replace-dialog-copy">
+    <h2 id="replace-dialog-heading">确认重新载入</h2>
+    <p id="replace-dialog-copy">重新载入会清除本标签页内尚未导出的评审。继续？</p>
+    <div class="actions"><button id="keep-current" class="secondary" type="button">保留当前评审</button><button id="confirm-replace" class="primary" type="button">继续载入</button></div>
+  </dialog>
+
+  <script src="54-evidence-core.js"></script>
+  <script src="54-review-controller.js"></script>
+</body>
+</html>

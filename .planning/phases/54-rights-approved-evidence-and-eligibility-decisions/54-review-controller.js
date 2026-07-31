@@ -1,0 +1,542 @@
+(function runLocalEvidenceReviewer() {
+  "use strict";
+
+  const ReviewCore = globalThis.ReviewCore;
+  const FEATURE_ORDER = [
+    "teeth_whitening",
+    "sclera_redness",
+    "upper_eyelid_fullness",
+  ];
+  const FIELD_NAMES = [
+    "target_present",
+    "mask_coverage",
+    "protected_leakage",
+    "naturalness",
+    "structure_changed",
+    "decision",
+    "reason_code",
+  ];
+  const FIXED_COPY = Object.freeze({
+    manifest_loading: "正在检查本地清单…",
+    assets_loading: "正在核对本地资产…",
+    invalid: "无法开始评审。请修正下列清单或资产问题后重新选择。",
+    ready: "材料校验完成，可以开始盲审。",
+    export_success: "脱敏评审 JSON 已下载。页面不会保留副本。",
+    export_failure: "导出失败。请完成所有必填判断并重试。",
+  });
+  const REASON_COPY = Object.freeze({
+    invalid_json: "清单不是有效的 JSON。",
+    invalid_path: "清单包含不受支持的资产位置。",
+    unsupported_enum: "清单包含不支持的字段值。",
+    duplicate_fixture_id: "清单包含重复的项目标识。",
+    missing_asset: "项目缺少完整的原图、遮罩或处理后资产。",
+    invalid_asset_type: "本地资产必须是匹配扩展名的 JPEG 或 PNG 图像。",
+    asset_size_invalid: "本地资产超出允许的大小。",
+    decode_failed: "本地资产无法作为图像读取。",
+    dimension_invalid: "本地资产的图像尺寸不受支持。",
+    dimension_mismatch: "同一项目的三张图像尺寸必须一致。",
+    manifest_size_invalid: "评审清单超出允许的大小。",
+    invalid_manifest: "评审清单结构不符合要求。",
+    incomplete_asset_triple: "项目缺少完整的原图、遮罩或处理后资产。",
+    missing_genuine_positive: "当前功能缺少合格的真实正例。",
+    missing_genuine_negative: "当前功能缺少合格的真实反例。",
+    unapproved_fixture: "当前功能包含未获批准的评审材料。",
+    review_incomplete: "当前功能仍有项目尚未完成评审。",
+    review_rejected: "当前功能包含未通过冻结规则的项目。",
+    non_warp_design_unqualified: "去脂的非形变方案尚未通过资格审查。",
+    review_invalid: "请完成七项结构化判断，并修正不一致的结论。",
+    unsupported_browser: "当前浏览器不支持所需的本地文件读取能力。",
+  });
+  const FEATURE_LABELS = Object.freeze({
+    teeth_whitening: "白牙",
+    sclera_redness: "祛红血丝",
+    upper_eyelid_fullness: "去脂",
+  });
+  const MIME_BY_EXTENSION = Object.freeze({
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    png: "image/png",
+  });
+  const EXPORT_FILENAME = "beauty-evidence-review-v1.json";
+
+  const element = (id) => document.getElementById(id);
+  const manifestInput = element("manifest-input");
+  const assetInput = element("asset-directory-input");
+  const workspace = element("review-workspace");
+  const exportButton = element("export-review");
+  const comparisonGrid = element("comparison-grid");
+  const comparisonScrollers = Array.from(document.querySelectorAll(".comparison-scroller"));
+  const imageElements = [element("image-original"), element("image-mask"), element("image-after")];
+
+  const initialState = Object.freeze({
+    phase: "waiting",
+    gate_status: "not_validated",
+    workspace: "hidden",
+    export: "disabled",
+  });
+
+  let manifest = null;
+  let activeSnapshot = null;
+  let assetFiles = new Map();
+  let reviewableRows = [];
+  let selectedIndex = 0;
+  let completedCount = 0;
+  let activeObjectURLs = [];
+  let decodedDimensions = new Map();
+  const savedReviews = new Map();
+
+  function fixedCopyForReason(reason) {
+    return REASON_COPY[reason] || REASON_COPY.invalid_manifest;
+  }
+
+  function friendlyFeatureLabel(feature) {
+    return FEATURE_LABELS[feature] || "功能";
+  }
+
+  function blindedItemLabel(position, total) {
+    return `项目 ${position} / ${total}`;
+  }
+
+  function replaceProblems(reasons) {
+    const items = reasons.map((reason) => {
+      const item = document.createElement("li");
+      item.textContent = fixedCopyForReason(reason);
+      return item;
+    });
+    element("validation-problems").replaceChildren(...items);
+  }
+
+  function setValidation(heading, guidance, reasons, status) {
+    element("validation-heading").textContent = heading;
+    element("validation-guidance").textContent = guidance;
+    replaceProblems(reasons);
+    element("session-status").textContent = status;
+  }
+
+  function focusValidationHeading() {
+    element("validation-summary").focus();
+  }
+
+  function setInputsDisabled(disabled) {
+    manifestInput.disabled = disabled;
+    assetInput.disabled = disabled;
+  }
+
+  function disableReview() {
+    workspace.hidden = true;
+  }
+
+  function disableExport() {
+    exportButton.disabled = true;
+  }
+
+  function enableExport() {
+    exportButton.disabled = false;
+  }
+
+  function resetJudgmentForm() {
+    element("judgment-form").reset();
+    for (const field of FIELD_NAMES) element(field).selectedIndex = 0;
+    element("form-alert").textContent = "";
+  }
+
+  function revokeActiveObjectURLs() {
+    for (const url of activeObjectURLs) URL.revokeObjectURL(url);
+    activeObjectURLs = [];
+    for (const image of imageElements) image.removeAttribute("src");
+  }
+
+  function closeInitialState() {
+    revokeActiveObjectURLs();
+    disableReview();
+    disableExport();
+    resetJudgmentForm();
+    renderInitialGates();
+    setValidation(
+      "等待本地评审材料",
+      "选择清单和资产目录后开始。页面不会显示文件名或路径。",
+      [],
+      "",
+    );
+  }
+
+  function renderInitialGates() {
+    for (const feature of FEATURE_ORDER) {
+      renderGate(feature, {
+        status: "closed",
+        reasons: ["not_validated"],
+        positive: 0,
+        negative: 0,
+        reviewed: 0,
+      });
+    }
+  }
+
+  function renderGate(feature, presentation) {
+    const row = element(`gate-${feature.replaceAll("_", "-")}`);
+    const badge = row.querySelector(".gate-badge");
+    const counts = row.querySelector(".gate-counts");
+    const reasons = row.querySelector(".gate-reasons");
+    const isOpen = presentation.status === "open";
+    badge.textContent = isOpen ? "证据门已开启" : "证据门已关闭";
+    badge.classList.toggle("open", isOpen);
+    badge.classList.toggle("closed", !isOpen);
+    counts.textContent = `正例 ${presentation.positive} · 反例 ${presentation.negative} · 已评审 ${presentation.reviewed}`;
+    reasons.textContent = presentation.reasons[0] === "not_validated"
+      ? "尚未校验"
+      : presentation.reasons.map(fixedCopyForReason).join(" ");
+  }
+
+  function presentationForSnapshot(snapshot) {
+    let decision;
+    if (snapshot.ready && savedReviews.size === snapshot.selected_rows.length) {
+      const reviews = snapshot.selected_rows.map((row) => savedReviews.get(row.fixture_id));
+      decision = ReviewCore.evaluateFeature(snapshot, reviews, designQualificationFor(snapshot.feature));
+    } else if (snapshot.ready) {
+      decision = {
+        status: "closed",
+        reasons: ["review_incomplete"],
+        reviewed_count: savedReviews.size,
+      };
+    } else {
+      decision = ReviewCore.evaluateFeature(snapshot, [], designQualificationFor(snapshot.feature));
+    }
+    return {
+      status: decision.status,
+      reasons: decision.reasons,
+      positive: snapshot.product_counts.positive,
+      negative: snapshot.product_counts.negative,
+      reviewed: decision.reviewed_count,
+    };
+  }
+
+  function designQualificationFor(feature) {
+    if (feature !== "upper_eyelid_fullness") return undefined;
+    return {
+      feature: "upper_eyelid_fullness",
+      reviewed: false,
+      decision: "unqualified",
+      method_class: "invalidated_interior_warp",
+    };
+  }
+
+  function renderActiveGate() {
+    if (activeSnapshot) renderGate(activeSnapshot.feature, presentationForSnapshot(activeSnapshot));
+  }
+
+  function readFileText(file) {
+    if (typeof file.text === "function") return file.text();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.addEventListener("load", () => resolve(typeof reader.result === "string" ? reader.result : ""));
+      reader.addEventListener("error", () => reject(new Error("read_failed")));
+      reader.readAsText(file, "utf-8");
+    });
+  }
+
+  function classifyCoreReason(reason) {
+    if (reason === "asset_key_invalid") return "invalid_path";
+    if (reason === "fixture_id_duplicate") return "duplicate_fixture_id";
+    if (reason.endsWith("_invalid") || reason === "polarity_not_predeclared") return "unsupported_enum";
+    return reason;
+  }
+
+  function selectedRootRelativeKey(file) {
+    const relative = String(file["webkitRelativePath"] || "");
+    const segments = relative.split("/");
+    if (segments.length < 2) return null;
+    const key = segments.slice(1).join("/");
+    const normalized = ReviewCore.normalizeRelativeAssetKey(key);
+    return normalized.valid ? normalized.key : null;
+  }
+
+  function fileMatchesKey(file, key) {
+    const suffix = key.split(".").at(-1).toLowerCase();
+    return Object.hasOwn(MIME_BY_EXTENSION, suffix) && file.type === MIME_BY_EXTENSION[suffix];
+  }
+
+  function buildExactFileIndex(files) {
+    const next = new Map();
+    const reasons = [];
+    for (const file of files) {
+      const key = selectedRootRelativeKey(file);
+      if (key === null) {
+        reasons.push("invalid_path");
+        continue;
+      }
+      if (next.has(key)) {
+        reasons.push("missing_asset");
+        continue;
+      }
+      if (!fileMatchesKey(file, key)) {
+        reasons.push("invalid_asset_type");
+        continue;
+      }
+      if (!Number.isSafeInteger(file.size) || file.size < 1 || file.size > ReviewCore.constants.max_asset_bytes) {
+        reasons.push("asset_size_invalid");
+        continue;
+      }
+      next.set(key, file);
+    }
+    return { files: next, reasons: [...new Set(reasons)] };
+  }
+
+  function decodeImage(file) {
+    return new Promise((resolve) => {
+      const temporaryURL = URL.createObjectURL(file);
+      const image = new Image();
+      const finish = (value) => {
+        URL.revokeObjectURL(temporaryURL);
+        resolve(value);
+      };
+      image.addEventListener("load", () => finish({
+        valid: image.naturalWidth > 0
+          && image.naturalHeight > 0
+          && image.naturalWidth <= 4096
+          && image.naturalHeight <= 4096,
+        naturalWidth: image.naturalWidth,
+        naturalHeight: image.naturalHeight,
+      }), { once: true });
+      image.addEventListener("error", () => finish({ valid: false, decode: false }), { once: true });
+      image.src = temporaryURL;
+    });
+  }
+
+  async function validateReviewableRows(snapshot) {
+    const rows = [];
+    const reasons = [];
+    const dimensions = new Map();
+    for (const row of snapshot.selected_rows) {
+      const keys = [row.assets.original, row.assets.mask, row.assets.after];
+      const files = keys.map((key) => assetFiles.get(key));
+      if (files.some((file) => file === undefined)) {
+        reasons.push("missing_asset");
+        continue;
+      }
+      const decoded = [];
+      for (const file of files) decoded.push(await decodeImage(file));
+      if (decoded.some((item) => item.decode === false)) {
+        reasons.push("decode_failed");
+        continue;
+      }
+      if (decoded.some((item) => item.valid !== true)) {
+        reasons.push("dimension_invalid");
+        continue;
+      }
+      const [first, second, third] = decoded;
+      if (first.naturalWidth !== second.naturalWidth
+        || first.naturalWidth !== third.naturalWidth
+        || first.naturalHeight !== second.naturalHeight
+        || first.naturalHeight !== third.naturalHeight) {
+        reasons.push("dimension_mismatch");
+        continue;
+      }
+      rows.push(row);
+      dimensions.set(row.fixture_id, { width: first.naturalWidth, height: first.naturalHeight });
+    }
+    rows.sort((left, right) => left.fixture_id < right.fixture_id ? -1 : left.fixture_id > right.fixture_id ? 1 : 0);
+    return { rows, dimensions, reasons: [...new Set(reasons)] };
+  }
+
+  function renderProgress() {
+    const total = reviewableRows.length;
+    element("review-progress").textContent = `${blindedItemLabel(selectedIndex + 1, total)} · 已完成 ${completedCount} / ${total}`;
+  }
+
+  function createActiveObjectURLs(row) {
+    revokeActiveObjectURLs();
+    const files = [row.assets.original, row.assets.mask, row.assets.after].map((key) => assetFiles.get(key));
+    activeObjectURLs = files.map((file) => URL.createObjectURL(file));
+    imageElements.forEach((image, index) => { image.src = activeObjectURLs[index]; });
+  }
+
+  function restoreJudgment() {
+    resetJudgmentForm();
+  }
+
+  function renderCurrentRow() {
+    const row = reviewableRows[selectedIndex];
+    if (!row) {
+      revokeActiveObjectURLs();
+      disableReview();
+      return;
+    }
+    workspace.hidden = false;
+    element("review-item-heading").textContent = `盲审项目 ${selectedIndex + 1}`;
+    element("review-feature").textContent = friendlyFeatureLabel(row.feature);
+    renderProgress();
+    createActiveObjectURLs(row);
+    restoreJudgment();
+    element("previous-item").disabled = selectedIndex === 0;
+    element("save-and-next").textContent = selectedIndex === reviewableRows.length - 1 ? "保存评审" : "保存并继续";
+  }
+
+  async function acceptAssetFiles(files) {
+    setInputsDisabled(true);
+    disableReview();
+    disableExport();
+    setValidation("正在核对本地资产…", "正在核对本地资产…", [], FIXED_COPY.assets_loading);
+    const indexed = buildExactFileIndex(files);
+    assetFiles = indexed.files;
+    if (!manifest) {
+      setInputsDisabled(false);
+      setValidation("等待本地评审材料", "请先选择评审清单。", indexed.reasons, "");
+      return;
+    }
+    const snapshot = ReviewCore.createReviewSnapshot(manifest, [...assetFiles.keys()]);
+    if (!snapshot.valid) {
+      setInputsDisabled(false);
+      setValidation(FIXED_COPY.invalid, FIXED_COPY.invalid, snapshot.reasons.map(classifyCoreReason), "");
+      focusValidationHeading();
+      return;
+    }
+    activeSnapshot = snapshot;
+    const decoded = await validateReviewableRows(snapshot);
+    reviewableRows = decoded.rows;
+    decodedDimensions = decoded.dimensions;
+    selectedIndex = 0;
+    const reasons = [...new Set([...indexed.reasons, ...decoded.reasons])];
+    renderActiveGate();
+    setInputsDisabled(false);
+    if (reviewableRows.length === 0) {
+      disableReview();
+      setValidation(
+        reasons.length > 0 ? FIXED_COPY.invalid : "等待本地评审材料",
+        reasons.length > 0 ? FIXED_COPY.invalid : "选择清单和资产目录后开始。页面不会显示文件名或路径。",
+        reasons,
+        "partial",
+      );
+      if (reasons.length > 0) focusValidationHeading();
+      return;
+    }
+    setValidation(
+      reasons.length > 0 ? FIXED_COPY.invalid : FIXED_COPY.ready,
+      reasons.length > 0 ? FIXED_COPY.invalid : FIXED_COPY.ready,
+      reasons,
+      reasons.length > 0 ? "partial" : FIXED_COPY.ready,
+    );
+    renderCurrentRow();
+    element("review-item-heading").focus();
+  }
+
+  async function acceptManifestFile(file) {
+    setInputsDisabled(true);
+    disableReview();
+    disableExport();
+    setValidation("正在检查本地清单…", "正在检查本地清单…", [], FIXED_COPY.manifest_loading);
+    if (!Number.isSafeInteger(file.size) || file.size < 1 || file.size > ReviewCore.constants.max_manifest_bytes) {
+      setInputsDisabled(false);
+      setValidation(FIXED_COPY.invalid, FIXED_COPY.invalid, ["manifest_size_invalid"], "");
+      focusValidationHeading();
+      return;
+    }
+    let parsed;
+    try {
+      parsed = JSON.parse(await readFileText(file));
+    } catch (_) {
+      setInputsDisabled(false);
+      setValidation(FIXED_COPY.invalid, FIXED_COPY.invalid, ["invalid_json"], "");
+      focusValidationHeading();
+      return;
+    }
+    const validation = ReviewCore.validateManifest(parsed);
+    if (!validation.valid) {
+      setInputsDisabled(false);
+      const reasons = validation.reasons.map(classifyCoreReason);
+      setValidation(FIXED_COPY.invalid, FIXED_COPY.invalid, reasons, "");
+      focusValidationHeading();
+      return;
+    }
+    manifest = parsed;
+    activeSnapshot = null;
+    reviewableRows = [];
+    selectedIndex = 0;
+    resetJudgmentForm();
+    setInputsDisabled(false);
+    if (assetFiles.size > 0) {
+      await acceptAssetFiles([...assetFiles.values()]);
+      return;
+    }
+    const waitingSnapshot = ReviewCore.createReviewSnapshot(manifest, []);
+    activeSnapshot = waitingSnapshot;
+    renderActiveGate();
+    setValidation("等待本地评审材料", "请选择本地资产目录。", [], "waiting");
+  }
+
+  function collectJudgment() {
+    const row = reviewableRows[selectedIndex];
+    if (!row || FIELD_NAMES.some((field) => element(field).value === "")) return null;
+    return {
+      fixture_id: row.fixture_id,
+      target_present: element("target_present").value === "true",
+      mask_coverage: Number(element("mask_coverage").value),
+      protected_leakage: element("protected_leakage").value === "true",
+      naturalness: Number(element("naturalness").value),
+      structure_changed: element("structure_changed").value === "true",
+      decision: element("decision").value,
+      reason_code: element("reason_code").value,
+    };
+  }
+
+  function validateReviewCandidate(review) {
+    return review !== null && ReviewCore.validateReview(activeSnapshot, review).valid;
+  }
+
+  function focusFirstInvalid() {
+    const first = FIELD_NAMES.find((field) => element(field).value === "");
+    element(first || FIELD_NAMES[0]).focus();
+  }
+
+  function advanceOnce() {
+    if (selectedIndex < reviewableRows.length - 1) selectedIndex += 1;
+  }
+
+  function synchronizeScroll(source) {
+    if (!comparisonGrid.classList.contains("actual")) return;
+    for (const scroller of comparisonScrollers) {
+      if (scroller === source) continue;
+      scroller.scrollLeft = source.scrollLeft;
+      scroller.scrollTop = source.scrollTop;
+    }
+  }
+
+  function setViewMode(actual) {
+    comparisonGrid.classList.toggle("actual", actual);
+    comparisonGrid.classList.toggle("fit", !actual);
+    element("view-fit").setAttribute("aria-pressed", String(!actual));
+    element("view-actual").setAttribute("aria-pressed", String(actual));
+  }
+
+  function showMobilePane(paneID, tabID) {
+    for (const pane of document.querySelectorAll(".comparison-pane")) pane.classList.remove("mobile-visible");
+    for (const tab of document.querySelectorAll('[role="tab"]')) tab.setAttribute("aria-selected", "false");
+    element(paneID).classList.add("mobile-visible");
+    element(tabID).setAttribute("aria-selected", "true");
+  }
+
+  manifestInput.addEventListener("change", () => {
+    const file = manifestInput.files && manifestInput.files[0];
+    if (file) void acceptManifestFile(file);
+  });
+  assetInput.addEventListener("change", () => {
+    const files = assetInput.files ? Array.from(assetInput.files) : [];
+    if (files.length > 0) void acceptAssetFiles(files);
+  });
+  element("view-fit").addEventListener("click", () => setViewMode(false));
+  element("view-actual").addEventListener("click", () => setViewMode(true));
+  element("tab-original").addEventListener("click", () => showMobilePane("comparison-original", "tab-original"));
+  element("tab-mask").addEventListener("click", () => showMobilePane("comparison-mask", "tab-mask"));
+  element("tab-after").addEventListener("click", () => showMobilePane("comparison-after", "tab-after"));
+  for (const scroller of comparisonScrollers) scroller.addEventListener("scroll", () => synchronizeScroll(scroller));
+  globalThis.addEventListener("pagehide", revokeActiveObjectURLs);
+
+  void initialState;
+  void decodedDimensions;
+  void EXPORT_FILENAME;
+  void validateReviewCandidate;
+  void focusFirstInvalid;
+  void advanceOnce;
+  void enableExport;
+  closeInitialState();
+  element("page-heading").focus();
+})();
