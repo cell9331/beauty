@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://beauty.invalid/phase-54/evidence-manifest.schema.json",
+  "title": "Beauty Phase 54 one-feature evidence manifest",
+  "type": "object",
+  "required": ["schema_version", "feature", "fixtures"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "feature": {
+      "$ref": "#/$defs/feature"
+    },
+    "fixtures": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "$ref": "#/$defs/fixture"
+      }
+    }
+  },
+  "$defs": {
+    "feature": {
+      "enum": [
+        "teeth_whitening",
+        "sclera_redness",
+        "upper_eyelid_fullness"
+      ]
+    },
+    "opaqueID": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,64}$"
+    },
+    "relativeAssetKey": {
+      "type": "string",
+      "minLength": 3,
+      "pattern": "^[^/\\\\:\\u0000]+(?:/[^/\\\\:\\u0000]+)+$",
+      "not": {
+        "pattern": "(?:^|/)\\.{1,2}(?:/|$)"
+      }
+    },
+    "assets": {
+      "type": "object",
+      "required": ["original", "mask", "after"],
+      "additionalProperties": false,
+      "properties": {
+        "original": {
+          "$ref": "#/$defs/relativeAssetKey"
+        },
+        "mask": {
+          "$ref": "#/$defs/relativeAssetKey"
+        },
+        "after": {
+          "$ref": "#/$defs/relativeAssetKey"
+        }
+      }
+    },
+    "fixture": {
+      "type": "object",
+      "required": [
+        "fixture_id",
+        "feature",
+        "polarity",
+        "expected_target_present",
+        "polarity_predeclared",
+        "rights_status",
+        "rights_record_id",
+        "evidence_role",
+        "assets"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "fixture_id": {
+          "$ref": "#/$defs/opaqueID"
+        },
+        "feature": {
+          "$ref": "#/$defs/feature"
+        },
+        "polarity": {
+          "enum": ["positive", "negative"]
+        },
+        "expected_target_present": {
+          "type": "boolean"
+        },
+        "polarity_predeclared": {
+          "const": true
+        },
+        "rights_status": {
+          "enum": [
+            "approved_internal_evaluation",
+            "mechanics_only",
+            "rejected"
+          ]
+        },
+        "rights_record_id": {
+          "$ref": "#/$defs/opaqueID"
+        },
+        "evidence_role": {
+          "enum": [
+            "genuine_candidate",
+            "mechanics_only",
+            "synthetic",
+            "ai_generated",
+            "disabled",
+            "parked",
+            "historical"
+          ]
+        },
+        "assets": {
+          "$ref": "#/$defs/assets"
+        }
+      }
+    }
+  }
+}
