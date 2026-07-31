@@ -63,6 +63,18 @@
     "assets",
   ];
   const ASSET_FIELDS = ["original", "mask", "after"];
+  const REVIEW_KEYS = [
+    "fixture_id",
+    "target_present",
+    "mask_coverage",
+    "protected_leakage",
+    "naturalness",
+    "structure_changed",
+    "decision",
+    "reason_code",
+  ];
+  const DESIGN_KEYS = ["feature", "reviewed", "decision", "method_class"];
+  const REVIEW_FEATURE = Symbol("phase54_review_feature");
   const OPAQUE_ID = /^[A-Za-z0-9_-]{1,64}$/;
   const MAX_ROWS = 64;
   const MAX_MANIFEST_BYTES = 65_536;
@@ -245,6 +257,9 @@
       .map(copyFixture)
       .sort((left, right) => left.fixture_id < right.fixture_id ? -1 : left.fixture_id > right.fixture_id ? 1 : 0);
     const excludedRows = manifest.fixtures.length - selectedRows.length;
+    const unapprovedGenuineRows = manifest.fixtures.filter(
+      (row) => row.evidence_role === "genuine_candidate" && row.rights_status !== "approved_internal_evaluation",
+    ).length;
     const positive = selectedRows.filter((row) => row.polarity === "positive").length;
     const negative = selectedRows.filter((row) => row.polarity === "negative").length;
     const missingAssets = selectedRows.reduce((count, row) => count + ASSET_FIELDS.reduce(
@@ -255,12 +270,12 @@
     if (positive === 0) reasons.push("missing_genuine_positive");
     if (negative === 0) reasons.push("missing_genuine_negative");
     if (missingAssets > 0) reasons.push("incomplete_asset_triple");
-    if (excludedRows > 0) reasons.push("unapproved_fixture");
+    if (unapprovedGenuineRows > 0) reasons.push("unapproved_fixture");
 
     return deepFreeze({
       valid: true,
       feature: manifest.feature,
-      ready: positive > 0 && negative > 0 && missingAssets === 0,
+      ready: positive > 0 && negative > 0 && missingAssets === 0 && unapprovedGenuineRows === 0,
       reasons: uniqueReasons(reasons),
       selected_rows: selectedRows,
       excluded_counts: {
@@ -276,20 +291,283 @@
     });
   }
 
-  function validateReview() {
-    return invalidResult(["review_not_validated"]);
+  function findSnapshotRow(snapshot, fixtureID) {
+    if (!isPlainObject(snapshot) || snapshot.valid !== true || !FEATURES.includes(snapshot.feature)
+      || !Array.isArray(snapshot.selected_rows)) return null;
+    return snapshot.selected_rows.find(
+      (row) => row.fixture_id === fixtureID && row.feature === snapshot.feature,
+    ) || null;
   }
 
-  function rowPasses() {
-    return false;
+  function reviewShapeValid(review) {
+    return hasExactKeys(review, REVIEW_KEYS)
+      && typeof review.fixture_id === "string"
+      && OPAQUE_ID.test(review.fixture_id)
+      && typeof review.target_present === "boolean"
+      && Number.isInteger(review.mask_coverage)
+      && review.mask_coverage >= 1
+      && review.mask_coverage <= 5
+      && typeof review.protected_leakage === "boolean"
+      && Number.isInteger(review.naturalness)
+      && review.naturalness >= 1
+      && review.naturalness <= 5
+      && typeof review.structure_changed === "boolean"
+      && ["accept", "reject"].includes(review.decision)
+      && REVIEW_REASONS.includes(review.reason_code);
   }
 
-  function evaluateFeature() {
-    throw new Error("review_not_implemented");
+  function structuredReasonMatches(row, review) {
+    if (review.reason_code === "none") return review.decision === "accept";
+    if (review.decision !== "reject") return false;
+    switch (review.reason_code) {
+      case "target_mismatch":
+        return review.target_present !== row.expected_target_present;
+      case "insufficient_mask_coverage":
+        return row.polarity === "positive" && review.mask_coverage < 4;
+      case "protected_leakage":
+        return review.protected_leakage === true;
+      case "unnatural_result":
+        return review.naturalness < 4;
+      case "structure_change":
+        return review.structure_changed === true;
+      case "texture_loss":
+      case "unsupported_input":
+        return true;
+      default:
+        return false;
+    }
   }
 
-  function buildDurableExport() {
-    throw new Error("export_not_implemented");
+  function rowPasses(row, review) {
+    if (!isPlainObject(row) || !reviewShapeValid(review) || review.fixture_id !== row.fixture_id) return false;
+    const common = review.target_present === row.expected_target_present
+      && review.protected_leakage === false
+      && review.naturalness >= 4
+      && review.structure_changed === false
+      && review.decision === "accept"
+      && review.reason_code === "none";
+    if (row.polarity === "positive") {
+      return row.expected_target_present === true
+        && review.target_present === true
+        && review.mask_coverage >= 4
+        && common;
+    }
+    return row.polarity === "negative" && common;
+  }
+
+  function validateReview(snapshot, review) {
+    const reasons = [];
+    if (!reviewShapeValid(review)) return invalidResult(["review_shape_invalid"]);
+    const row = findSnapshotRow(snapshot, review.fixture_id);
+    if (row === null) reasons.push("review_fixture_invalid");
+    if (row !== null && !structuredReasonMatches(row, review)) reasons.push("review_reason_invalid");
+    if (row !== null && review.decision === "accept" && !rowPasses(row, review)) {
+      reasons.push("review_acceptance_invalid");
+    }
+    return reasons.length > 0
+      ? invalidResult(reasons)
+      : deepFreeze({ valid: true, reasons: [] });
+  }
+
+  function copiedReview(review) {
+    return {
+      fixture_id: review.fixture_id,
+      target_present: review.target_present,
+      mask_coverage: review.mask_coverage,
+      protected_leakage: review.protected_leakage,
+      naturalness: review.naturalness,
+      structure_changed: review.structure_changed,
+      decision: review.decision,
+      reason_code: review.reason_code,
+    };
+  }
+
+  function requireExactReviews(snapshot, reviews) {
+    if (!Array.isArray(reviews)) throw new Error("review_set_invalid");
+    if (reviews[REVIEW_FEATURE] !== undefined && reviews[REVIEW_FEATURE] !== snapshot.feature) {
+      throw new Error("review_feature_invalid");
+    }
+    if (reviews[REVIEW_FEATURE] === undefined && Object.isExtensible(reviews)) {
+      Object.defineProperty(reviews, REVIEW_FEATURE, {
+        value: snapshot.feature,
+        enumerable: false,
+        configurable: false,
+        writable: false,
+      });
+    }
+    const expected = new Map(snapshot.selected_rows.map((row) => [row.fixture_id, row]));
+    const seen = new Set();
+    const copied = [];
+    for (const review of reviews) {
+      if (!isPlainObject(review) || typeof review.fixture_id !== "string"
+        || !expected.has(review.fixture_id) || seen.has(review.fixture_id)) {
+        throw new Error("review_set_invalid");
+      }
+      const validation = validateReview(snapshot, review);
+      if (!validation.valid) throw new Error("review_invalid");
+      seen.add(review.fixture_id);
+      copied.push(copiedReview(review));
+    }
+    if (seen.size !== expected.size) throw new Error("review_set_incomplete");
+    copied.sort((left, right) => left.fixture_id < right.fixture_id ? -1 : left.fixture_id > right.fixture_id ? 1 : 0);
+    return copied;
+  }
+
+  function designQualifies(value) {
+    return hasExactKeys(value, DESIGN_KEYS)
+      && value.feature === "upper_eyelid_fullness"
+      && value.reviewed === true
+      && value.decision === "qualified"
+      && value.method_class === "independent_nonwarp";
+  }
+
+  function evaluateFeature(snapshot, reviews, designQualification) {
+    if (!isPlainObject(snapshot) || snapshot.valid !== true || !FEATURES.includes(snapshot.feature)
+      || !Array.isArray(snapshot.selected_rows) || !isPlainObject(snapshot.product_counts)) {
+      throw new Error("feature_snapshot_invalid");
+    }
+    if (snapshot.selected_rows.some((row) => row.feature !== snapshot.feature)) {
+      throw new Error("feature_snapshot_invalid");
+    }
+
+    let acceptedCount = 0;
+    let rejectedCount = 0;
+    let reviewedCount = 0;
+    const reasons = snapshot.ready === true ? [] : uniqueReasons(Array.isArray(snapshot.reasons) ? snapshot.reasons : []);
+
+    if (snapshot.ready === true) {
+      const exactReviews = requireExactReviews(snapshot, reviews);
+      reviewedCount = exactReviews.length;
+      for (const review of exactReviews) {
+        const row = findSnapshotRow(snapshot, review.fixture_id);
+        if (rowPasses(row, review)) acceptedCount += 1;
+        else rejectedCount += 1;
+      }
+      if (rejectedCount > 0) reasons.push("review_rejected");
+    } else if (!Array.isArray(reviews)) {
+      throw new Error("review_set_invalid");
+    }
+
+    if (snapshot.feature === "upper_eyelid_fullness" && !designQualifies(designQualification)) {
+      reasons.push("non_warp_design_unqualified");
+    }
+    const orderedReasons = uniqueReasons(reasons);
+    return deepFreeze({
+      feature: snapshot.feature,
+      status: orderedReasons.length === 0 ? "open" : "closed",
+      reasons: orderedReasons,
+      eligible_count: snapshot.product_counts.eligible,
+      reviewed_count: reviewedCount,
+      accepted_count: acceptedCount,
+      rejected_count: rejectedCount,
+      naturalness_weight: reviewedCount,
+    });
+  }
+
+  function projectedSnapshot(value) {
+    if (!isPlainObject(value)) throw new Error("feature_snapshot_invalid");
+    return {
+      valid: value.valid,
+      feature: value.feature,
+      ready: value.ready,
+      reasons: Array.isArray(value.reasons) ? [...value.reasons] : [],
+      selected_rows: Array.isArray(value.selected_rows) ? value.selected_rows.map((row) => ({
+        fixture_id: row.fixture_id,
+        feature: row.feature,
+        polarity: row.polarity,
+        expected_target_present: row.expected_target_present,
+      })) : [],
+      product_counts: isPlainObject(value.product_counts) ? {
+        positive: value.product_counts.positive,
+        negative: value.product_counts.negative,
+        eligible: value.product_counts.eligible,
+        naturalness_weight: value.product_counts.naturalness_weight,
+      } : null,
+    };
+  }
+
+  function projectedDesign(value) {
+    if (!isPlainObject(value)) return value;
+    return {
+      feature: value.feature,
+      reviewed: value.reviewed,
+      decision: value.decision,
+      method_class: value.method_class,
+    };
+  }
+
+  function buildDurableExport(featureInputs) {
+    if (!Array.isArray(featureInputs) || featureInputs.length !== FEATURES.length) {
+      throw new Error("feature_inputs_invalid");
+    }
+    const byFeature = new Map();
+    for (const input of featureInputs) {
+      if (!isPlainObject(input) || !isPlainObject(input.snapshot) || byFeature.has(input.snapshot.feature)) {
+        throw new Error("feature_inputs_invalid");
+      }
+      byFeature.set(input.snapshot.feature, input);
+    }
+    if (FEATURES.some((feature) => !byFeature.has(feature))) throw new Error("feature_inputs_invalid");
+
+    const featureDecisions = [];
+    const durableReviews = [];
+    const aggregates = [];
+    for (const feature of FEATURES) {
+      const input = byFeature.get(feature);
+      const snapshot = projectedSnapshot(input.snapshot);
+      if (snapshot.feature !== feature) throw new Error("feature_inputs_invalid");
+      const reviews = Array.isArray(input.reviews) ? input.reviews.map(copiedReview) : input.reviews;
+      const design = projectedDesign(input.design_qualification);
+      const decision = evaluateFeature(snapshot, reviews, design);
+      featureDecisions.push({
+        feature: decision.feature,
+        status: decision.status,
+        reasons: [...decision.reasons],
+        eligible_count: decision.eligible_count,
+        reviewed_count: decision.reviewed_count,
+        accepted_count: decision.accepted_count,
+        rejected_count: decision.rejected_count,
+        naturalness_weight: decision.naturalness_weight,
+      });
+
+      if (snapshot.ready === true) {
+        const exactReviews = requireExactReviews(snapshot, reviews);
+        for (const review of exactReviews) {
+          const row = findSnapshotRow(snapshot, review.fixture_id);
+          durableReviews.push({
+            fixture_id: row.fixture_id,
+            feature: row.feature,
+            polarity: row.polarity,
+            target_present: review.target_present,
+            mask_coverage: review.mask_coverage,
+            protected_leakage: review.protected_leakage,
+            naturalness: review.naturalness,
+            structure_changed: review.structure_changed,
+            decision: review.decision,
+            reason_code: review.reason_code,
+          });
+        }
+      }
+      aggregates.push({
+        feature: decision.feature,
+        eligible_count: decision.eligible_count,
+        reviewed_count: decision.reviewed_count,
+        accepted_count: decision.accepted_count,
+        rejected_count: decision.rejected_count,
+        naturalness_weight: decision.naturalness_weight,
+      });
+    }
+    durableReviews.sort((left, right) => {
+      const featureDifference = FEATURES.indexOf(left.feature) - FEATURES.indexOf(right.feature);
+      if (featureDifference !== 0) return featureDifference;
+      return left.fixture_id < right.fixture_id ? -1 : left.fixture_id > right.fixture_id ? 1 : 0;
+    });
+    return deepFreeze({
+      schema_version: 1,
+      feature_decisions: featureDecisions,
+      reviews: durableReviews,
+      aggregates,
+    });
   }
 
   function serializeDurableExport(featureInputs) {
