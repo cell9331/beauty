@@ -43,11 +43,24 @@ extension BeautyEngine {
             )
         }
 
+        let purpose: VisionFaceDetector.DetectionPurpose
+        switch (requiresFaceGeometry, requiresLocalSupport) {
+        case (true, true):
+            purpose = .geometryAndLocalSupport
+        case (true, false):
+            purpose = .geometry
+        case (false, true):
+            purpose = .localSupport
+        case (false, false):
+            preconditionFailure("detection purpose requires geometry or local support")
+        }
+
         let detection = faceDetector.detect(
             image: image,
             metadata: metadata,
             imageExtent: imageExtent,
-            configuration: configuration
+            configuration: configuration,
+            purpose: purpose
         )
         let plan = BeautyEffectResolver.resolve(
             parameters: parameters,

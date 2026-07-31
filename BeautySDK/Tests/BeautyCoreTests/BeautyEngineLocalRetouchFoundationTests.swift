@@ -98,6 +98,30 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         }
     }
 
+    func testValidLipSupportSurvivesEachUnrelatedGeometryOmission() throws {
+        XCTAssertEqual(
+            SDKTestingLocalRetouchFoundationHarness.unrelatedGeometryOmissionFixtureCount,
+            4
+        )
+        for omissionIndex in
+            0..<SDKTestingLocalRetouchFoundationHarness.unrelatedGeometryOmissionFixtureCount
+        {
+            let harness = try SDKTestingLocalRetouchFoundationHarness(
+                admittedPrivateDemandCount: 1,
+                unrelatedGeometryOmissionIndex: omissionIndex
+            )
+            let result = try harness.invoke(
+                entry: .processResult,
+                image: Self.image,
+                parameters: .init()
+            )
+
+            XCTAssertEqual(result.aggregateSupportValueID, omissionIndex + 1)
+            XCTAssertEqual(harness.detectAndMapCount, 1)
+            XCTAssertEqual(harness.requestOwnerCreationCount, 1)
+        }
+    }
+
     func testInvalidCanonicalInputStopsBeforeVisionAndContext() throws {
         let harness = try SDKTestingLocalRetouchFoundationHarness(admittedPrivateDemandCount: 1)
         let transparent = CIImage(color: CIColor(red: 0.2, green: 0.4, blue: 0.6, alpha: 0.5))

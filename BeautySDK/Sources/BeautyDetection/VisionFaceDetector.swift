@@ -120,6 +120,12 @@ package struct VisionFaceDetectionInput: @unchecked Sendable {
 }
 
 package struct VisionFaceDetector: Sendable {
+    package enum DetectionPurpose: Sendable {
+        case geometry
+        case localSupport
+        case geometryAndLocalSupport
+    }
+
     package enum Failure: Error, Equatable, Sendable {
         case detectorUnavailable
         case detectionTimedOut
@@ -144,14 +150,16 @@ package struct VisionFaceDetector: Sendable {
         metadata: BeautyInputMetadata,
         imageExtent: CGSize = CGSize(width: 1, height: 1),
         previewExtent: CGSize? = nil,
-        configuration: BeautyConfiguration = .default
+        configuration: BeautyConfiguration = .default,
+        purpose: DetectionPurpose = .geometry
     ) -> VisionFaceDetectionResult {
         detect(
             image: nil,
             metadata: metadata,
             imageExtent: imageExtent,
             previewExtent: previewExtent,
-            configuration: configuration
+            configuration: configuration,
+            purpose: purpose
         )
     }
 
@@ -160,7 +168,8 @@ package struct VisionFaceDetector: Sendable {
         metadata: BeautyInputMetadata,
         imageExtent: CGSize = CGSize(width: 1, height: 1),
         previewExtent: CGSize? = nil,
-        configuration: BeautyConfiguration = .default
+        configuration: BeautyConfiguration = .default,
+        purpose: DetectionPurpose = .geometry
     ) -> VisionFaceDetectionResult {
         guard configuration.enableFaceTracking else {
             selectionPolicy.reset()
@@ -181,7 +190,8 @@ package struct VisionFaceDetector: Sendable {
                 metadata: metadata,
                 imageExtent: imageExtent,
                 previewExtent: previewExtent,
-                configuration: configuration
+                configuration: configuration,
+                purpose: purpose
             )
         } catch let failure as Failure {
             selectionPolicy.reset()
@@ -207,7 +217,8 @@ package struct VisionFaceDetector: Sendable {
         metadata: BeautyInputMetadata,
         imageExtent: CGSize,
         previewExtent: CGSize?,
-        configuration: BeautyConfiguration
+        configuration: BeautyConfiguration,
+        purpose: DetectionPurpose
     ) -> VisionFaceDetectionResult {
         guard !detections.isEmpty else {
             selectionPolicy.reset()
@@ -220,8 +231,16 @@ package struct VisionFaceDetector: Sendable {
             )
         }
 
-        let usableDetections = detections.filter { detection in
-            detection.confidence >= minimumConfidence && detection.landmarks.hasRequiredGeometry
+        let confidenceEligible = detections.filter { detection in
+            detection.confidence >= minimumConfidence
+        }
+        let usableDetections = confidenceEligible.filter { detection in
+            switch purpose {
+            case .geometry:
+                detection.landmarks.hasRequiredGeometry
+            case .localSupport, .geometryAndLocalSupport:
+                true
+            }
         }
 
         guard !usableDetections.isEmpty else {

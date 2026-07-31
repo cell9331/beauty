@@ -624,6 +624,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         case noFace
         case missingSupport
         case available(valueID: Int)
+        case availableMissingUnrelatedGeometry(valueID: Int, omissionIndex: Int)
         case malformed
     }
 
@@ -756,7 +757,8 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             fixtureIndex += 1
             let fixture = fixtures[index]
             switch fixture {
-            case .available(let valueID):
+            case .available(let valueID),
+                 .availableMissingUnrelatedGeometry(let valueID, _):
                 currentAggregateSupportValueID = valueID
                 currentRequestIsMalformed = false
             case .malformed:
@@ -776,21 +778,45 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             return [Self.observation(observedLipSupport: nil)]
         case .available:
             return [Self.observation(observedLipSupport: Self.validLipSupport)]
+        case .availableMissingUnrelatedGeometry(_, let omissionIndex):
+            return [Self.observation(
+                observedLipSupport: Self.validLipSupport,
+                landmarks: Self.landmarksOmittingUnrelatedGeometry(at: omissionIndex)
+            )]
         case .malformed:
             return [Self.observation(observedLipSupport: Self.malformedLipSupport)]
         }
     }
 
     private static func observation(
-        observedLipSupport: BeautyObservedLipSupport?
+        observedLipSupport: BeautyObservedLipSupport?,
+        landmarks: BeautyFaceLandmarks = .complete
     ) -> VisionDetectionObservation {
         VisionDetectionObservation(
             stableID: "phase-53-opaque-fixture",
             confidence: 0.96,
             normalizedArea: 0.24,
             visionBounds: CoordinateRect(x: 0.30, y: 0.20, width: 0.40, height: 0.60),
-            landmarks: .complete,
+            landmarks: landmarks,
             observedLipSupport: observedLipSupport
+        )
+    }
+
+    private static func landmarksOmittingUnrelatedGeometry(
+        at index: Int
+    ) -> BeautyFaceLandmarks {
+        let unrelatedGroups: [BeautyLandmarkGroup] = [
+            .faceContour,
+            .leftEye,
+            .rightEye,
+            .nose,
+        ]
+        guard unrelatedGroups.indices.contains(index) else {
+            return .complete
+        }
+        return BeautyFaceLandmarks(
+            availableGroups: Set(BeautyLandmarkGroup.allCases)
+                .subtracting([unrelatedGroups[index]])
         )
     }
 
@@ -831,6 +857,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     }
 
     public static let productionAdmissionNames: [String] = []
+    public static let unrelatedGeometryOmissionFixtureCount = 4
 
     public var canonicalizeCount: Int { hooks.canonicalizeCount }
     public var detectAndMapCount: Int { hooks.detectAndMapCount }
@@ -880,6 +907,21 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             }
         }
         try self.init(admittedPrivateDemandCount: admittedPrivateDemandCount, fixtures: fixtures)
+    }
+
+    public convenience init(
+        admittedPrivateDemandCount: Int,
+        unrelatedGeometryOmissionIndex: Int
+    ) throws {
+        try self.init(
+            admittedPrivateDemandCount: admittedPrivateDemandCount,
+            fixtures: [
+                .availableMissingUnrelatedGeometry(
+                    valueID: unrelatedGeometryOmissionIndex + 1,
+                    omissionIndex: unrelatedGeometryOmissionIndex
+                ),
+            ]
+        )
     }
 
     private init(
