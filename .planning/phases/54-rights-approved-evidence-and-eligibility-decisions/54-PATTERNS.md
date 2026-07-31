@@ -23,7 +23,8 @@ the packaged `.codex/skills/.../006-*` source in place.
 | `54-evidence-manifest.schema.json` | config / schema | file-I/O validation | `.codex/skills/spike-findings-beauty/sources/006-licensed-fixture-review-gate/fixture-manifest.schema.json` | role-match; contract must be tightened |
 | `54-evidence-core.js` | service / utility | transform + request-response | `.codex/skills/spike-findings-beauty/sources/006-licensed-fixture-review-gate/review-core.js` | strong role/data-flow match; unsafe details must be replaced |
 | `54-evidence-core.test.js` | test | batch mutation | `.codex/skills/spike-findings-beauty/sources/006-licensed-fixture-review-gate/test-review-core.js` | role-match; use `node:test` instead of the spike's bespoke harness |
-| `54-review.html` | component / controller | event-driven + local file-I/O | `.codex/skills/spike-findings-beauty/sources/006-licensed-fixture-review-gate/review.html` | strong UI-flow match; Phase 54 UI-SPEC supersedes presentation/persistence details |
+| `54-review.html` | component / document | semantic static presentation | `.codex/skills/spike-findings-beauty/sources/006-licensed-fixture-review-gate/review.html` | strong layout-flow match; Phase 54 UI-SPEC and strict CSP supersede details |
+| `54-review-controller.js` | controller | event-driven + local file-I/O | controller portion of `.codex/skills/spike-findings-beauty/sources/006-licensed-fixture-review-gate/review.html` | role/data-flow match; split externally so `script-src 'self'` remains executable |
 | `check_phase54_evidence_boundaries.py` | utility / policy gate | batch source/file scan | `.planning/phases/53-canonical-still-image-contract-and-private-request-foundatio/check_still_image_foundation_boundaries.py` | exact repository checker pattern |
 | `54-EVIDENCE-DECISIONS.json` | model / ledger | deterministic projection | no exact current analog | research/context-owned schema |
 | `54-EVIDENCE-EVALUATION.md` | evidence record | batch report | `.planning/phases/53-canonical-still-image-contract-and-private-request-foundatio/53-FOUNDATION-EVIDENCE.md` | role-match |
@@ -155,14 +156,17 @@ duplicate/missing/extra review, score bounds/fractions, each failed acceptance
 criterion, sibling borrowing, export forbidden sentinels, UI source tokens, and
 all eyelid prerequisite combinations.
 
-### `54-review.html` (component/controller, event-driven local file-I/O)
+### `54-review.html` + `54-review-controller.js` (component/controller, event-driven local file-I/O)
 
 **Analog:** `.codex/skills/spike-findings-beauty/sources/006-licensed-fixture-review-gate/review.html`
 
-**Local selection and static layout** (lines 1-60): retain a single static
-document, native manifest file input, native `webkitdirectory` input, a dark
-image-first surface, and three original/mask/after panes. Apply
-`54-UI-SPEC.md` as the exact visual/copy/accessibility authority.
+**Local selection and static layout** (lines 1-60): retain a static document,
+native manifest file input, native `webkitdirectory` input, a dark image-first
+surface, and three original/mask/after panes. Keep semantic/CSS markup in
+`54-review.html`, load the phase-local core and external
+`54-review-controller.js` in that order, and forbid inline script so
+`script-src 'self'` remains enforceable. Apply `54-UI-SPEC.md` as the exact
+visual/copy/accessibility authority.
 
 **Browser-mediated asset ownership:** use only selected `File` objects and
 active-row `URL.createObjectURL` values. Revoke all three on navigation,
@@ -351,7 +355,8 @@ names. Two exports of identical structured inputs must be byte-identical.
 2. **Pure contract:** add schema and `54-evidence-core.js`; make structural,
    eligibility, frozen-review, independent-reducer, deterministic-export, and
    privacy tests green.
-3. **Offline reviewer:** add `54-review.html` against `54-UI-SPEC.md`; implement
+3. **Offline reviewer:** add `54-review.html` plus external
+   `54-review-controller.js` against `54-UI-SPEC.md`; implement strict CSP,
    File API validation, exact key resolution, blinded Fit/100% review, object
    URL lifecycle, redacted state, fixed export, accessibility/responsive
    contract, and static/browser smoke.

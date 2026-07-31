@@ -289,7 +289,8 @@ a network boundary. [VERIFIED: `54-CONTEXT.md` Phase Boundary/D-12]
 .planning/phases/54-rights-approved-evidence-and-eligibility-decisions/
 ├── 54-evidence-manifest.schema.json       # phase-owned local-input contract
 ├── 54-evidence-core.js                    # pure validation/review/gate/export logic
-├── 54-review.html                         # static offline reviewer
+├── 54-review.html                         # static offline semantic/CSS shell with strict CSP
+├── 54-review-controller.js                # external same-directory File API/DOM controller
 ├── 54-evidence-core.test.js               # built-in Node test + mutation matrix
 ├── check_phase54_evidence_boundaries.py   # privacy/scope/source checker
 └── 54-EVIDENCE-DECISIONS.json             # tracked aggregate-only 3-row output
@@ -394,7 +395,8 @@ row unreviewable and the gate closed.
 | Component | Owns | Must Not Own |
 | --- | --- | --- |
 | `54-evidence-core.js` | enums, exact validation, immutable snapshots, row predicates, feature reducers, allowlist export | DOM, file reads, network, persistence, product SDK behavior |
-| `54-review.html` | local file selection, 100% image inspection, explicit form state, redacted status, object-URL cleanup, fixed-name download | eligibility policy, mutable thresholds, path/name display, `innerHTML`, storage, network |
+| `54-review.html` | semantic markup, approved CSS, strict CSP, external phase-local script order | inline script/handlers, eligibility policy, mutable thresholds, path/name display, storage, network |
+| `54-review-controller.js` | local file selection, 100% image inspection, explicit form state, redacted status, object-URL cleanup, fixed-name download | eligibility policy, mutable thresholds, path/name display, `innerHTML`, storage, network |
 | `54-evidence-core.test.js` | clean and adversarial fixtures, mutation matrix, exact export shape | real media or rights IDs |
 | `check_phase54_evidence_boundaries.py` | forbidden source/API tokens, exact artifact shape, allowed-path/source drift, Git media policy, mutation self-test | image processing or product eligibility logic |
 | `54-EVIDENCE-DECISIONS.json` | three fixed feature records, fixed decisions/reasons, permitted aggregate counts | paths, media, rights/docs IDs, timestamps, events, reviewers, hashes, geometry, freeform |
@@ -793,7 +795,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/URL/revokeObjectURL_static]
 | --- | --- | --- | --- |
 | — | None. All prescriptive decisions are locked by Phase 54 context, verified against repository sources, or cited to current web standards/security guidance. | — | — |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 No planning-blocking question remains. [VERIFIED: `54-CONTEXT.md` status
 `Ready for planning`]
