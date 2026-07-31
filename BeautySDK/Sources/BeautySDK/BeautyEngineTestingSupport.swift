@@ -946,7 +946,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     public var retainedMappedPointCount: Int {
         hooks.retainedMappedPointCount
     }
-    public var reusedCanonicalizerAndContextAcrossRequests: Bool {
+    public var reusedNormalizationOwnerAcrossRequests: Bool {
         hooks.reusedCanonicalizerAndContextAcrossRequests
     }
 

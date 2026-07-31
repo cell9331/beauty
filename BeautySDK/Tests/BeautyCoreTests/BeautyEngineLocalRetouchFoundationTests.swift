@@ -69,7 +69,7 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
 
         XCTAssertEqual(harness.canonicalizerConstructionCount, 1)
         XCTAssertEqual(harness.canonicalizeCount, 2)
-        XCTAssertTrue(harness.reusedCanonicalizerAndContextAcrossRequests)
+        XCTAssertTrue(harness.reusedNormalizationOwnerAcrossRequests)
     }
 
     func testAdmittedDetectorAndRendererShareCanonicalCarrierAndExplicitSRGB() throws {
