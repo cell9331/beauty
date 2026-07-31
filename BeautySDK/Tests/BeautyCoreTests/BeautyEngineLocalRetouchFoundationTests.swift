@@ -56,6 +56,24 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         )
     }
 
+    func testAdmittedDetectorAndRendererShareCanonicalCarrierAndExplicitSRGB() throws {
+        let harness = try SDKTestingLocalRetouchFoundationHarness(admittedPrivateDemandCount: 1)
+        let result = try harness.invoke(
+            entry: .processResult,
+            image: Self.image,
+            parameters: .init(brightness: 0.10, faceSlim: 0.25)
+        )
+
+        XCTAssertEqual(harness.canonicalizeCount, 1)
+        XCTAssertEqual(harness.detectAndMapCount, 1)
+        XCTAssertEqual(harness.requestOwnerCreationCount, 1)
+        XCTAssertEqual(harness.renderCount, 1)
+        XCTAssertTrue(harness.canonicalConsumerIdentityMatched)
+        XCTAssertTrue(harness.usedExplicitSRGBRender)
+        XCTAssertEqual(result.width, 2)
+        XCTAssertEqual(result.height, 2)
+    }
+
     func testDuplicateOrReorderedFoundationEventsFailExactTraceOracle() {
         let expected: [SDKTestingLocalRetouchEvent] = [
             .canonicalize, .detectAndMap, .makeRequestContext, .render,

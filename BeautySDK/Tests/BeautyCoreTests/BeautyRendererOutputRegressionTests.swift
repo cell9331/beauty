@@ -688,6 +688,20 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
             )
 
             XCTAssertEqual(result.output.extent, input.extent, "\(fixtureName) changed extent before watermark")
+            XCTAssertEqual(result.warnings, [], "\(fixtureName) changed no-admission warnings")
+            XCTAssertEqual(
+                result.metrics,
+                [
+                    "beauty.effects.activeCount": 0,
+                    "beauty.effects.cappedCount": 0,
+                ],
+                "\(fixtureName) changed no-admission metrics"
+            )
+            XCTAssertEqual(
+                result.detectionSummary,
+                .notRun,
+                "\(fixtureName) changed no-admission detection summary"
+            )
             XCTAssertEqual(
                 try renderedRGBABytes(from: result.output, named: fixtureName),
                 try renderedRGBABytes(from: input, named: fixtureName),
