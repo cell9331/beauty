@@ -940,10 +940,10 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     public var lastMappingInvocationCount: Int {
         hooks.lastMappingInvocationCount
     }
-    public var lastMappedPointCount: Int {
+    public var lastMappedCoordinateCount: Int {
         hooks.lastMappedPointCount
     }
-    public var retainedMappedPointCount: Int {
+    public var retainedMappedCoordinateCount: Int {
         hooks.retainedMappedPointCount
     }
     public var reusedNormalizationOwnerAcrossRequests: Bool {
