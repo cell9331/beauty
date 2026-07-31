@@ -10,19 +10,23 @@ import BeautyEffects
 public final class BeautyEngine {
     public let configuration: BeautyConfiguration
     var faceDetector: VisionFaceDetector
+    private let localRetouchTestingHooks: BeautyLocalRetouchTestingHooks?
     private var resetGeneration: UInt64 = 0
 
     public init(configuration: BeautyConfiguration = .default) throws {
         self.configuration = configuration
         self.faceDetector = VisionFaceDetector()
+        self.localRetouchTestingHooks = nil
     }
 
     package init(
         configuration: BeautyConfiguration = .default,
-        faceDetector: VisionFaceDetector
+        faceDetector: VisionFaceDetector,
+        localRetouchTestingHooks: BeautyLocalRetouchTestingHooks? = nil
     ) throws {
         self.configuration = configuration
         self.faceDetector = faceDetector
+        self.localRetouchTestingHooks = localRetouchTestingHooks
     }
 
     /// Returns an SDK-created output pixel buffer that is readable for the current processing result lifecycle.
@@ -93,12 +97,77 @@ public final class BeautyEngine {
             maximumPixelCount: configuration.maximumInputPixelCount
         )
         let validated = try BeautySDKResources.validate(parameters: parameters)
+
+        let productionAdmission = BeautyEffectResolver.localRetouchAdmission(
+            parameters: validated
+        )
+        let admission = localRetouchTestingHooks.map {
+            BeautyLocalRetouchAdmission(opaqueDemandCount: $0.admittedPrivateDemandCount)
+        } ?? productionAdmission
+
+        guard admission.isEmpty == false else {
+            return legacyStillImageResult(
+                image: image,
+                metadata: metadata,
+                parameters: validated
+            )
+        }
+
+        localRetouchTestingHooks?.beginStillRequest()
+        defer { localRetouchTestingHooks?.finishStillRequest() }
+        localRetouchTestingHooks?.record(.canonicalize)
+        let canonical = try BeautyStillImageCanonicalizer().canonicalize(
+            image: image,
+            metadata: metadata,
+            maximumPixelCount: configuration.maximumInputPixelCount
+        )
+
+        localRetouchTestingHooks?.record(.detectAndMap)
+        let route = resolveStillImageGeometry(
+            image: canonical.ciImage,
+            metadata: canonical.metadata,
+            imageExtent: CGSize(width: canonical.width, height: canonical.height),
+            parameters: validated,
+            requiresLocalSupport: true
+        )
+
+        if localRetouchTestingHooks?.consumeMalformedRequest() == true {
+            throw BeautyError.invalidInput
+        }
+
+        localRetouchTestingHooks?.record(.makeRequestContext)
+        let requestContext = BeautyStillImageRequestContext(
+            canonicalImage: canonical,
+            selectedFaceObservation: route.selectedFaceObservation
+        )
+        localRetouchTestingHooks?.recordRequestContext(requestContext)
+
+        localRetouchTestingHooks?.record(.render)
+        let output = BeautyColorEffectPipeline.apply(
+            to: requestContext.canonicalImage.ciImage,
+            plan: route.plan,
+            selectedFaceObservation: requestContext.selectedFaceObservation
+        )
+        return BeautyResult(
+            output: output,
+            warnings: route.plan.warnings,
+            metrics: route.plan.metrics,
+            detectionSummary: route.detectionSummary
+        )
+    }
+
+    private func legacyStillImageResult(
+        image: CIImage,
+        metadata: BeautyInputMetadata,
+        parameters: BeautyParameters
+    ) -> BeautyResult<CIImage> {
         let route = resolveStillImageGeometry(
             image: image,
             metadata: metadata,
             imageExtent: image.extent.size,
-            parameters: validated
+            parameters: parameters
         )
+        localRetouchTestingHooks?.record(.render)
         return BeautyResult(
             output: BeautyColorEffectPipeline.apply(
                 to: image,

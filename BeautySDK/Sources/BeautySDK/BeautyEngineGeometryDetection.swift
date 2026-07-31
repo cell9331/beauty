@@ -15,9 +15,11 @@ extension BeautyEngine {
         image: CIImage? = nil,
         metadata: BeautyInputMetadata,
         imageExtent: CGSize,
-        parameters: BeautyParameters
+        parameters: BeautyParameters,
+        requiresLocalSupport: Bool = false
     ) -> BeautyEngineGeometryRoute {
-        guard BeautyEffectResolver.requiresFaceGeometry(parameters: parameters) else {
+        let requiresFaceGeometry = BeautyEffectResolver.requiresFaceGeometry(parameters: parameters)
+        guard requiresFaceGeometry || requiresLocalSupport else {
             return BeautyEngineGeometryRoute(
                 plan: BeautyEffectResolver.resolve(parameters: parameters),
                 detectionSummary: initialDetectionSummary,
@@ -31,7 +33,11 @@ extension BeautyEngine {
                 selectedFaceObservation: nil
             )
             return BeautyEngineGeometryRoute(
-                plan: withDetectionMetrics(plan, summary: .disabled, geometryRequired: true),
+                plan: withDetectionMetrics(
+                    plan,
+                    summary: .disabled,
+                    geometryRequired: requiresFaceGeometry
+                ),
                 detectionSummary: .disabled,
                 selectedFaceObservation: nil
             )
@@ -48,7 +54,11 @@ extension BeautyEngine {
             selectedFaceObservation: detection.observations.first
         )
         return BeautyEngineGeometryRoute(
-            plan: withDetectionMetrics(plan, summary: detection.summary, geometryRequired: true),
+            plan: withDetectionMetrics(
+                plan,
+                summary: detection.summary,
+                geometryRequired: requiresFaceGeometry
+            ),
             detectionSummary: detection.summary,
             selectedFaceObservation: detection.observations.first
         )

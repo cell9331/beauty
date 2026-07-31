@@ -8,8 +8,19 @@ import XCTest
 /// Wave 0 facade specification. Candidate identities and portrait-derived data
 /// are deliberately absent; injected demand is only an opaque integer count.
 final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
-    private static let image = CIImage(color: CIColor(red: 0.2, green: 0.4, blue: 0.6, alpha: 1))
-        .cropped(to: CGRect(x: 0, y: 0, width: 2, height: 2))
+    private static let image: CIImage = {
+        let colorSpace = CGColorSpace(name: CGColorSpace.sRGB)!
+        return CIImage(
+            bitmapData: Data([
+                51, 102, 153, 255, 51, 102, 153, 255,
+                51, 102, 153, 255, 51, 102, 153, 255,
+            ]),
+            bytesPerRow: 8,
+            size: CGSize(width: 2, height: 2),
+            format: .RGBA8,
+            colorSpace: colorSpace
+        )
+    }()
 
     func testBothExistingCIImageFacadeEntriesReachOnlyTheInjectedPrivateRoute() throws {
         for entry in [SDKTestingStillImageFacadeEntry.process, .processResult] {
@@ -17,7 +28,7 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
             _ = try harness.invoke(entry: entry, image: Self.image, parameters: .init(brightness: 0.1))
             XCTAssertEqual(harness.canonicalizeCount, 1)
             XCTAssertEqual(harness.detectAndMapCount, 1)
-            XCTAssertEqual(harness.makeRequestContextCount, 1)
+            XCTAssertEqual(harness.requestOwnerCreationCount, 1)
             XCTAssertEqual(harness.renderCount, 1)
         }
     }
@@ -30,9 +41,9 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
             _ = try harness.invoke(entry: .processResult, image: Self.image, parameters: .init())
             XCTAssertEqual(harness.canonicalizeCount, expected)
             XCTAssertEqual(harness.detectAndMapCount, expected)
-            XCTAssertEqual(harness.makeRequestContextCount, expected)
+            XCTAssertEqual(harness.requestOwnerCreationCount, expected)
             XCTAssertEqual(harness.renderCount, 1)
-            XCTAssertEqual(harness.retainedRequestContextCount, 0)
+            XCTAssertEqual(harness.retainedRequestOwnerCount, 0)
         }
     }
 
@@ -63,7 +74,7 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
                 admittedPrivateDemandCount: 1,
                 supportFixture: fixture
             ).invoke(entry: .processResult, image: Self.image, parameters: .init(brightness: 0.15))
-            XCTAssertEqual(requested.rgba8Bytes, baseline.rgba8Bytes)
+            XCTAssertEqual(requested.outputDigest, baseline.outputDigest)
             XCTAssertEqual(requested.extent, baseline.extent)
         }
     }
@@ -74,7 +85,7 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
             .cropped(to: CGRect(x: 0, y: 0, width: 2, height: 2))
         XCTAssertThrowsError(try harness.invoke(entry: .processResult, image: transparent, parameters: .init()))
         XCTAssertEqual(harness.detectAndMapCount, 0)
-        XCTAssertEqual(harness.makeRequestContextCount, 0)
+        XCTAssertEqual(harness.requestOwnerCreationCount, 0)
         XCTAssertEqual(harness.renderCount, 0)
     }
 
@@ -89,7 +100,7 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         XCTAssertEqual(first.aggregateSupportValueID, 101)
         XCTAssertEqual(third.aggregateSupportValueID, 303)
         XCTAssertNotEqual(first.aggregateSupportValueID, third.aggregateSupportValueID)
-        XCTAssertEqual(harness.retainedRequestContextCount, 0)
+        XCTAssertEqual(harness.retainedRequestOwnerCount, 0)
     }
 
     func testIndependentEngineValuesDoNotCrossPayloads() async throws {
@@ -106,9 +117,9 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         harness.reset()
         XCTAssertEqual(harness.canonicalizeCount, 0)
         XCTAssertEqual(harness.detectAndMapCount, 0)
-        XCTAssertEqual(harness.makeRequestContextCount, 0)
+        XCTAssertEqual(harness.requestOwnerCreationCount, 0)
         XCTAssertEqual(harness.localProviderCount, 0)
-        XCTAssertEqual(harness.retainedRequestContextCount, 0)
+        XCTAssertEqual(harness.retainedRequestOwnerCount, 0)
         XCTAssertEqual(harness.pixelBufferSummaryAvailability, "notRun")
     }
 
@@ -127,48 +138,5 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         XCTAssertFalse(flags.contains("same-engine-parallel-safe"))
         // TD-013 and mutable selected-face policy intentionally keep same-engine
         // concurrency and cooperative cancellation outside Phase 53's claim.
-    }
-}
-
-private enum Phase53MissingLocalFoundationSeam: Error { case absent }
-private enum SDKTestingStillImageFacadeEntry { case process, processResult }
-private enum SDKTestingLocalRetouchEvent: Equatable { case canonicalize, detectAndMap, makeRequestContext, render }
-private enum SDKTestingLocalSupportFixture { case noFace, missingSupport }
-private enum SDKTestingLocalSupportSequence { case available(valueID: Int), malformed }
-private struct SDKTestingLocalResult {
-    let rgba8Bytes: [UInt8]
-    let extent: CGRect
-    let aggregateSupportValueID: Int?
-}
-private final class SDKTestingLocalRetouchFoundationHarness {
-    static let productionAdmissionCount = 0
-    static let productionAdmissionNames: [String] = []
-    let canonicalizeCount = 0
-    let detectAndMapCount = 0
-    let makeRequestContextCount = 0
-    let renderCount = 0
-    let localProviderCount = 0
-    let retainedRequestContextCount = 0
-    let events: [SDKTestingLocalRetouchEvent] = []
-    let pixelBufferSummaryAvailability = "notRun"
-    init(admittedPrivateDemandCount: Int) { _ = admittedPrivateDemandCount }
-    init(admittedPrivateDemandCount: Int, supportFixture: SDKTestingLocalSupportFixture) {
-        _ = (admittedPrivateDemandCount, supportFixture)
-    }
-    init(admittedPrivateDemandCount: Int, supportSequence: [SDKTestingLocalSupportSequence]) {
-        _ = (admittedPrivateDemandCount, supportSequence)
-    }
-    func invoke(entry: SDKTestingStillImageFacadeEntry, image: CIImage, parameters: BeautyParameters) throws -> SDKTestingLocalResult {
-        _ = (entry, image, parameters)
-        throw Phase53MissingLocalFoundationSeam.absent
-    }
-    func invokePixelBuffer(parameters: BeautyParameters) throws -> SDKTestingLocalResult {
-        _ = parameters
-        throw Phase53MissingLocalFoundationSeam.absent
-    }
-    func reset() {}
-    static func runIndependent(valueID: Int) async throws -> Int {
-        _ = valueID
-        throw Phase53MissingLocalFoundationSeam.absent
     }
 }

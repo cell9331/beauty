@@ -4,6 +4,7 @@ import CoreImage
 import ImageIO
 import BeautyCore
 import BeautyDetection
+import BeautyEffects
 
 private let phase46ObservedContour = [
     CoordinatePoint(x: 0.025, y: 0.733_333_333),
@@ -527,5 +528,412 @@ package final class SDKTestingCanonicalStillImageHarness: @unchecked Sendable {
             (partial ^ UInt64(byte)) &* 1_099_511_628_211
         }
         return String(hash, radix: 16)
+    }
+}
+
+// MARK: - Phase 53 request-local foundation testing seam
+
+@_spi(Testing) public enum SDKTestingStillImageFacadeEntry: Sendable {
+    case process
+    case processResult
+}
+
+@_spi(Testing) public enum SDKTestingLocalRetouchEvent: Equatable, Sendable {
+    case canonicalize
+    case detectAndMap
+    case makeRequestContext
+    case render
+}
+
+@_spi(Testing) public enum SDKTestingLocalSupportFixture: Sendable {
+    case noFace
+    case missingSupport
+}
+
+@_spi(Testing) public enum SDKTestingLocalSupportSequence: Sendable {
+    case available(valueID: Int)
+    case malformed
+}
+
+@_spi(Testing) public struct SDKTestingLocalResult: Sendable {
+    public let outputDigest: String
+    public let extent: CGRect
+    public let aggregateSupportValueID: Int?
+}
+
+package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
+    package enum Fixture: Sendable {
+        case noFace
+        case missingSupport
+        case available(valueID: Int)
+        case malformed
+    }
+
+    package let admittedPrivateDemandCount: Int
+
+    private let lock = NSLock()
+    private let fixtures: [Fixture]
+    private var fixtureIndex = 0
+    private var eventsValue: [SDKTestingLocalRetouchEvent] = []
+    private var canonicalizeCountValue = 0
+    private var detectAndMapCountValue = 0
+    private var makeRequestContextCountValue = 0
+    private var renderCountValue = 0
+    private var activeRequestContextCountValue = 0
+    private var currentAggregateSupportValueID: Int?
+    private var lastAggregateSupportValueIDValue: Int?
+    private var currentRequestIsMalformed = false
+
+    package init(admittedPrivateDemandCount: Int, fixtures: [Fixture]) {
+        self.admittedPrivateDemandCount = max(0, admittedPrivateDemandCount)
+        self.fixtures = fixtures.isEmpty ? [.missingSupport] : fixtures
+    }
+
+    package var events: [SDKTestingLocalRetouchEvent] { withLock { eventsValue } }
+    package var canonicalizeCount: Int { withLock { canonicalizeCountValue } }
+    package var detectAndMapCount: Int { withLock { detectAndMapCountValue } }
+    package var makeRequestContextCount: Int { withLock { makeRequestContextCountValue } }
+    package var renderCount: Int { withLock { renderCountValue } }
+    package var activeRequestContextCount: Int { withLock { activeRequestContextCountValue } }
+    package var lastAggregateSupportValueID: Int? { withLock { lastAggregateSupportValueIDValue } }
+
+    package func beginStillRequest() {
+        withLock {
+            currentAggregateSupportValueID = nil
+            lastAggregateSupportValueIDValue = nil
+            currentRequestIsMalformed = false
+            activeRequestContextCountValue = 0
+        }
+    }
+
+    package func finishStillRequest() {
+        withLock {
+            currentAggregateSupportValueID = nil
+            currentRequestIsMalformed = false
+            activeRequestContextCountValue = 0
+        }
+    }
+
+    package func record(_ event: SDKTestingLocalRetouchEvent) {
+        withLock {
+            eventsValue.append(event)
+            switch event {
+            case .canonicalize:
+                canonicalizeCountValue += 1
+            case .detectAndMap:
+                detectAndMapCountValue += 1
+            case .makeRequestContext:
+                makeRequestContextCountValue += 1
+            case .render:
+                renderCountValue += 1
+            }
+        }
+    }
+
+    package func recordRequestContext(_ context: BeautyStillImageRequestContext) {
+        withLock {
+            activeRequestContextCountValue = 1
+            let hasMappedSupport = context.selectedFaceObservation?.observedLipSupport != nil
+            lastAggregateSupportValueIDValue = hasMappedSupport
+                ? currentAggregateSupportValueID
+                : nil
+            _ = context.redactedSummary.description
+        }
+    }
+
+    package func consumeMalformedRequest() -> Bool {
+        withLock { currentRequestIsMalformed }
+    }
+
+    package func makeObservationProvider() -> VisionFaceDetector.ObservationProvider {
+        { [self] _ in
+            nextObservations()
+        }
+    }
+
+    private func nextObservations() -> [VisionDetectionObservation] {
+        let fixture: Fixture = withLock {
+            let index = min(fixtureIndex, fixtures.count - 1)
+            fixtureIndex += 1
+            let fixture = fixtures[index]
+            switch fixture {
+            case .available(let valueID):
+                currentAggregateSupportValueID = valueID
+                currentRequestIsMalformed = false
+            case .malformed:
+                currentAggregateSupportValueID = nil
+                currentRequestIsMalformed = true
+            case .noFace, .missingSupport:
+                currentAggregateSupportValueID = nil
+                currentRequestIsMalformed = false
+            }
+            return fixture
+        }
+
+        switch fixture {
+        case .noFace:
+            return []
+        case .missingSupport:
+            return [Self.observation(observedLipSupport: nil)]
+        case .available:
+            return [Self.observation(observedLipSupport: Self.validLipSupport)]
+        case .malformed:
+            return [Self.observation(observedLipSupport: Self.malformedLipSupport)]
+        }
+    }
+
+    private static func observation(
+        observedLipSupport: BeautyObservedLipSupport?
+    ) -> VisionDetectionObservation {
+        VisionDetectionObservation(
+            stableID: "phase-53-opaque-fixture",
+            confidence: 0.96,
+            normalizedArea: 0.24,
+            visionBounds: CoordinateRect(x: 0.30, y: 0.20, width: 0.40, height: 0.60),
+            landmarks: .complete,
+            observedLipSupport: observedLipSupport
+        )
+    }
+
+    private static let validLipSupport = BeautyObservedLipSupport(
+        outer: [
+            CoordinatePoint(x: 0.20, y: 0.50),
+            CoordinatePoint(x: 0.50, y: 0.20),
+            CoordinatePoint(x: 0.80, y: 0.50),
+            CoordinatePoint(x: 0.50, y: 0.80),
+        ],
+        inner: [
+            CoordinatePoint(x: 0.35, y: 0.50),
+            CoordinatePoint(x: 0.50, y: 0.38),
+            CoordinatePoint(x: 0.65, y: 0.50),
+        ]
+    )
+
+    private static let malformedLipSupport = BeautyObservedLipSupport(
+        outer: [CoordinatePoint(x: -1, y: 0.5)],
+        inner: [CoordinatePoint(x: 2, y: 0.5)]
+    )
+
+    @discardableResult
+    private func withLock<T>(_ body: () -> T) -> T {
+        lock.lock()
+        defer { lock.unlock() }
+        return body()
+    }
+}
+
+@_spi(Testing) public final class SDKTestingLocalRetouchFoundationHarness: @unchecked Sendable {
+    private let hooks: BeautyLocalRetouchTestingHooks
+    private let engine: BeautyEngine
+    private var pixelBufferSummaryAvailabilityValue = "notRun"
+
+    public static var productionAdmissionCount: Int {
+        BeautyEffectResolver.localRetouchAdmission(parameters: .init()).isEmpty ? 0 : 1
+    }
+
+    public static let productionAdmissionNames: [String] = []
+
+    public var canonicalizeCount: Int { hooks.canonicalizeCount }
+    public var detectAndMapCount: Int { hooks.detectAndMapCount }
+    public var requestOwnerCreationCount: Int {
+        hooks.makeRequestContextCount
+    }
+    public var renderCount: Int { hooks.renderCount }
+    public var localProviderCount: Int { 0 }
+    public var retainedRequestOwnerCount: Int {
+        hooks.activeRequestContextCount
+    }
+    public var events: [SDKTestingLocalRetouchEvent] { hooks.events }
+    public var pixelBufferSummaryAvailability: String { pixelBufferSummaryAvailabilityValue }
+
+    public convenience init(admittedPrivateDemandCount: Int) throws {
+        try self.init(
+            admittedPrivateDemandCount: admittedPrivateDemandCount,
+            fixtures: [.available(valueID: 1)]
+        )
+    }
+
+    public convenience init(
+        admittedPrivateDemandCount: Int,
+        supportFixture: SDKTestingLocalSupportFixture
+    ) throws {
+        let fixture: BeautyLocalRetouchTestingHooks.Fixture = switch supportFixture {
+        case .noFace: .noFace
+        case .missingSupport: .missingSupport
+        }
+        try self.init(admittedPrivateDemandCount: admittedPrivateDemandCount, fixtures: [fixture])
+    }
+
+    public convenience init(
+        admittedPrivateDemandCount: Int,
+        supportSequence: [SDKTestingLocalSupportSequence]
+    ) throws {
+        let fixtures = supportSequence.map { fixture in
+            switch fixture {
+            case .available(let valueID):
+                BeautyLocalRetouchTestingHooks.Fixture.available(valueID: valueID)
+            case .malformed:
+                BeautyLocalRetouchTestingHooks.Fixture.malformed
+            }
+        }
+        try self.init(admittedPrivateDemandCount: admittedPrivateDemandCount, fixtures: fixtures)
+    }
+
+    private init(
+        admittedPrivateDemandCount: Int,
+        fixtures: [BeautyLocalRetouchTestingHooks.Fixture]
+    ) throws {
+        let hooks = BeautyLocalRetouchTestingHooks(
+            admittedPrivateDemandCount: admittedPrivateDemandCount,
+            fixtures: fixtures
+        )
+        self.hooks = hooks
+        self.engine = try BeautyEngine(
+            configuration: .default,
+            faceDetector: VisionFaceDetector(observationProvider: hooks.makeObservationProvider()),
+            localRetouchTestingHooks: hooks
+        )
+    }
+
+    public func invoke(
+        entry: SDKTestingStillImageFacadeEntry,
+        image: CIImage,
+        parameters: BeautyParameters
+    ) throws -> SDKTestingLocalResult {
+        let output: CIImage
+        switch entry {
+        case .process:
+            output = try engine.process(image: image, orientation: .up, parameters: parameters)
+        case .processResult:
+            output = try engine.processResult(
+                image: image,
+                metadata: BeautyInputMetadata(
+                    orientation: .up,
+                    isInputMirrored: false,
+                    isPreviewMirrored: false,
+                    source: .photo
+                ),
+                parameters: parameters
+            ).output
+        }
+        return SDKTestingLocalResult(
+            outputDigest: try Self.outputDigest(output),
+            extent: output.extent,
+            aggregateSupportValueID: hooks.lastAggregateSupportValueID
+        )
+    }
+
+    public func invokePixelBuffer(parameters: BeautyParameters) throws -> SDKTestingLocalResult {
+        let pixelBuffer = try Self.makePixelBuffer()
+        let result = try engine.processResult(
+            pixelBuffer: pixelBuffer,
+            metadata: BeautyInputMetadata(
+                orientation: .up,
+                isInputMirrored: false,
+                isPreviewMirrored: false,
+                source: .camera
+            ),
+            parameters: parameters
+        )
+        pixelBufferSummaryAvailabilityValue =
+            result.detectionSummary?.availability.rawValue ?? "notRun"
+        return SDKTestingLocalResult(
+            outputDigest: "",
+            extent: CGRect(x: 0, y: 0, width: 2, height: 2),
+            aggregateSupportValueID: nil
+        )
+    }
+
+    public func reset() {
+        engine.reset()
+    }
+
+    public static func runIndependent(valueID: Int) async throws -> Int {
+        let harness = try SDKTestingLocalRetouchFoundationHarness(
+            admittedPrivateDemandCount: 1,
+            supportSequence: [.available(valueID: valueID)]
+        )
+        let image = try makeOpaqueSRGBImage()
+        let result = try harness.invoke(entry: .processResult, image: image, parameters: .init())
+        guard let aggregateSupportValueID = result.aggregateSupportValueID else {
+            throw BeautyError.invalidInput
+        }
+        return aggregateSupportValueID
+    }
+
+    private static func outputDigest(_ image: CIImage) throws -> String {
+        let bounds = image.extent.integral
+        guard bounds.width > 0,
+              bounds.height > 0,
+              bounds.width <= CGFloat(Int.max),
+              bounds.height <= CGFloat(Int.max),
+              let colorSpace = CGColorSpace(name: CGColorSpace.sRGB)
+        else {
+            throw BeautyError.invalidInput
+        }
+        let width = Int(bounds.width)
+        let height = Int(bounds.height)
+        let (rowBytes, rowOverflow) = width.multipliedReportingOverflow(by: 4)
+        let (byteCount, byteOverflow) = rowBytes.multipliedReportingOverflow(by: height)
+        guard rowOverflow == false, byteOverflow == false else {
+            throw BeautyError.invalidInput
+        }
+        var bytes = [UInt8](repeating: 0, count: byteCount)
+        let context = CIContext(options: [
+            .workingColorSpace: colorSpace,
+            .outputColorSpace: colorSpace,
+        ])
+        context.render(
+            image,
+            toBitmap: &bytes,
+            rowBytes: rowBytes,
+            bounds: bounds,
+            format: .RGBA8,
+            colorSpace: colorSpace
+        )
+        var hash: UInt64 = 1_469_598_103_934_665_603
+        for byte in bytes {
+            hash ^= UInt64(byte)
+            hash &*= 1_099_511_628_211
+        }
+        return String(hash, radix: 16)
+    }
+
+    private static func makeOpaqueSRGBImage() throws -> CIImage {
+        guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
+            throw BeautyError.unsupportedPixelFormat
+        }
+        return CIImage(
+            bitmapData: Data([
+                51, 102, 153, 255, 51, 102, 153, 255,
+                51, 102, 153, 255, 51, 102, 153, 255,
+            ]),
+            bytesPerRow: 8,
+            size: CGSize(width: 2, height: 2),
+            format: .RGBA8,
+            colorSpace: colorSpace
+        )
+    }
+
+    private static func makePixelBuffer() throws -> CVPixelBuffer {
+        var pixelBuffer: CVPixelBuffer?
+        let status = CVPixelBufferCreate(
+            kCFAllocatorDefault,
+            2,
+            2,
+            kCVPixelFormatType_32BGRA,
+            nil,
+            &pixelBuffer
+        )
+        guard status == kCVReturnSuccess, let pixelBuffer else {
+            throw BeautyError.invalidInput
+        }
+        CVPixelBufferLockBaseAddress(pixelBuffer, [])
+        defer { CVPixelBufferUnlockBaseAddress(pixelBuffer, []) }
+        guard let baseAddress = CVPixelBufferGetBaseAddress(pixelBuffer) else {
+            throw BeautyError.invalidInput
+        }
+        memset(baseAddress, 255, CVPixelBufferGetDataSize(pixelBuffer))
+        return pixelBuffer
     }
 }

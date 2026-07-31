@@ -64,6 +64,15 @@ public enum BeautyEffectResolver {
         )
     }
 
+    /// Phase 53 production admission is deliberately exact-empty. Future
+    /// phases may populate this inventory only after their evidence gates pass.
+    package static func localRetouchAdmission(
+        parameters: BeautyParameters
+    ) -> BeautyLocalRetouchAdmission {
+        _ = parameters
+        return .none
+    }
+
     package static func resolve(
         parameters: BeautyParameters,
         selectedFaceObservation: BeautyFaceObservation?
