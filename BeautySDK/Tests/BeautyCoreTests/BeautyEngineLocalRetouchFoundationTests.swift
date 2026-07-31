@@ -127,6 +127,34 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
             )
 
             XCTAssertEqual(result.aggregateSupportValueID, omissionIndex + 1)
+            XCTAssertEqual(result.detectionAvailability, "usable")
+            XCTAssertEqual(result.detectionReasons, [])
+            XCTAssertEqual(harness.detectAndMapCount, 1)
+            XCTAssertEqual(harness.requestOwnerCreationCount, 1)
+        }
+    }
+
+    func testCombinedGeometryAndLocalSupportReportsPurposeAwarePartialDegradation() throws {
+        XCTAssertEqual(
+            SDKTestingLocalRetouchFoundationHarness.unrelatedGeometryOmissionFixtureCount,
+            4
+        )
+        for omissionIndex in
+            0..<SDKTestingLocalRetouchFoundationHarness.unrelatedGeometryOmissionFixtureCount
+        {
+            let harness = try SDKTestingLocalRetouchFoundationHarness(
+                admittedPrivateDemandCount: 1,
+                unrelatedGeometryOmissionIndex: omissionIndex
+            )
+            let result = try harness.invoke(
+                entry: .processResult,
+                image: Self.image,
+                parameters: .init(faceSlim: 0.2)
+            )
+
+            XCTAssertEqual(result.aggregateSupportValueID, omissionIndex + 1)
+            XCTAssertEqual(result.detectionAvailability, "partial")
+            XCTAssertEqual(result.detectionReasons, ["missingLandmarks"])
             XCTAssertEqual(harness.detectAndMapCount, 1)
             XCTAssertEqual(harness.requestOwnerCreationCount, 1)
         }

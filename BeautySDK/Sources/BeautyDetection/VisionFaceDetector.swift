@@ -260,7 +260,7 @@ package struct VisionFaceDetector: Sendable {
             selectionPolicy.reset()
             return VisionFaceDetectionResult(
                 observations: [],
-                summary: degradedSummary(for: detections)
+                summary: degradedSummary(for: detections, purpose: purpose)
             )
         }
 
@@ -300,7 +300,36 @@ package struct VisionFaceDetector: Sendable {
         let selection = selectionPolicy.select(from: observations, configuration: configuration)
         return VisionFaceDetectionResult(
             observations: selection.selectedFaces,
-            summary: selection.summary
+            summary: purposeAwareSummary(
+                selection.summary,
+                selectedFaces: selection.selectedFaces,
+                purpose: purpose
+            )
+        )
+    }
+
+    private func purposeAwareSummary(
+        _ summary: BeautyDetectionSummary,
+        selectedFaces: [BeautyFaceObservation],
+        purpose: DetectionPurpose
+    ) -> BeautyDetectionSummary {
+        guard purpose == .geometryAndLocalSupport,
+              selectedFaces.contains(where: { $0.landmarks.hasRequiredGeometry == false })
+        else {
+            return summary
+        }
+
+        var reasons = summary.reasons
+        if reasons.contains(.missingLandmarks) == false {
+            reasons.append(.missingLandmarks)
+        }
+        return BeautyDetectionSummary(
+            availability: .partial,
+            reasons: reasons,
+            faceCount: summary.faceCount,
+            usedFaceCount: summary.usedFaceCount,
+            detectionDurationMs: summary.detectionDurationMs,
+            mappingDurationMs: summary.mappingDurationMs
         )
     }
 
@@ -899,7 +928,19 @@ package struct VisionFaceDetector: Sendable {
         }
     }
 
-    private func degradedSummary(for detections: [VisionDetectionObservation]) -> BeautyDetectionSummary {
+    private func degradedSummary(
+        for detections: [VisionDetectionObservation],
+        purpose: DetectionPurpose
+    ) -> BeautyDetectionSummary {
+        if purpose != .geometry {
+            return BeautyDetectionSummary(
+                availability: .lowConfidence,
+                reasons: [.lowConfidenceFace],
+                faceCount: detections.count,
+                usedFaceCount: 0
+            )
+        }
+
         let hasRequiredGeometry = detections.contains { $0.landmarks.hasRequiredGeometry }
         if hasRequiredGeometry {
             return BeautyDetectionSummary(

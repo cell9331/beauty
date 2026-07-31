@@ -610,6 +610,8 @@ package final class SDKTestingCanonicalStillImageHarness: @unchecked Sendable {
     public let width: Int
     public let height: Int
     public let aggregateSupportValueID: Int?
+    public let detectionAvailability: String?
+    public let detectionReasons: [String]
 }
 
 package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
@@ -961,11 +963,13 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         parameters: BeautyParameters
     ) throws -> SDKTestingLocalResult {
         let output: CIImage
+        let detectionSummary: BeautyDetectionSummary?
         switch entry {
         case .process:
             output = try engine.process(image: image, orientation: .up, parameters: parameters)
+            detectionSummary = nil
         case .processResult:
-            output = try engine.processResult(
+            let result = try engine.processResult(
                 image: image,
                 metadata: BeautyInputMetadata(
                     orientation: .up,
@@ -974,13 +978,17 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
                     source: .photo
                 ),
                 parameters: parameters
-            ).output
+            )
+            output = result.output
+            detectionSummary = result.detectionSummary
         }
         return SDKTestingLocalResult(
             outputDigest: try Self.outputDigest(output),
             width: Int(output.extent.width),
             height: Int(output.extent.height),
-            aggregateSupportValueID: hooks.lastAggregateSupportValueID
+            aggregateSupportValueID: hooks.lastAggregateSupportValueID,
+            detectionAvailability: detectionSummary?.availability.rawValue,
+            detectionReasons: detectionSummary?.reasons.map(\.rawValue) ?? []
         )
     }
 
@@ -1002,7 +1010,9 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             outputDigest: "",
             width: 2,
             height: 2,
-            aggregateSupportValueID: nil
+            aggregateSupportValueID: nil,
+            detectionAvailability: result.detectionSummary?.availability.rawValue,
+            detectionReasons: result.detectionSummary?.reasons.map(\.rawValue) ?? []
         )
     }
 
