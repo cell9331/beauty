@@ -116,6 +116,12 @@ package final class BeautyStillImageCanonicalizer: @unchecked Sendable {
             y: -orientedBounds.minY
         ))
         let zeroOriginBounds = CGRect(x: 0, y: 0, width: width, height: height)
+        try validateExactOpacity(
+            zeroOriginImage,
+            bounds: zeroOriginBounds,
+            context: context,
+            colorSpace: sRGB
+        )
         rgba8Data.withUnsafeMutableBytes { storage in
             guard let baseAddress = storage.baseAddress else {
                 return
@@ -144,6 +150,42 @@ package final class BeautyStillImageCanonicalizer: @unchecked Sendable {
             rowBytes: rowBytes,
             metadata: normalizedMetadata
         )
+    }
+
+    private func validateExactOpacity(
+        _ image: CIImage,
+        bounds: CGRect,
+        context: CIContext,
+        colorSpace: CGColorSpace
+    ) throws {
+        let minimumAlphaImage = image.applyingFilter(
+            "CIAreaMinimumAlpha",
+            parameters: [kCIInputExtentKey: CIVector(cgRect: bounds)]
+        )
+        let reductionBounds = minimumAlphaImage.extent.integral
+        guard reductionBounds.width == 1,
+              reductionBounds.height == 1
+        else {
+            throw BeautyError.invalidInput
+        }
+
+        var minimumAlphaPixel = [Float](repeating: 0, count: 4)
+        minimumAlphaPixel.withUnsafeMutableBytes { storage in
+            guard let baseAddress = storage.baseAddress else {
+                return
+            }
+            context.render(
+                minimumAlphaImage,
+                toBitmap: baseAddress,
+                rowBytes: MemoryLayout<Float>.stride * 4,
+                bounds: reductionBounds,
+                format: .RGBAf,
+                colorSpace: colorSpace
+            )
+        }
+        guard minimumAlphaPixel[3] == 1 else {
+            throw BeautyError.invalidInput
+        }
     }
 
     private func validateDecodedExtent(_ extent: CGRect, maximumPixelCount: Int) throws {

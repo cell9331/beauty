@@ -257,6 +257,8 @@ package indirect enum SDKTestingCanonicalFixture: Sendable {
     case asymmetricRGBA8(width: Int, height: Int)
     case displayP3RGBA8(width: Int, height: Int)
     case rgba8(width: Int, height: Int, alpha: UInt8)
+    case rgbaFloat(width: Int, height: Int, alpha: Float)
+    case rgbaFloatWithOneNearOpaquePixel(width: Int, height: Int, alpha: Float)
     case nilColorSpace(width: Int, height: Int)
     case gray8(width: Int, height: Int)
     case cmyk8(width: Int, height: Int)
@@ -374,6 +376,33 @@ package final class SDKTestingCanonicalStillImageHarness: @unchecked Sendable {
         case .rgba8(let width, let height, let alpha):
             return Input(
                 image: try Self.bitmapImage(width: width, height: height, alpha: alpha, colorSpace: Self.sRGB()),
+                colorSemantics: .image,
+                extentOverride: nil
+            )
+        case .rgbaFloat(let width, let height, let alpha):
+            return Input(
+                image: try Self.floatingPointImage(
+                    width: width,
+                    height: height,
+                    alphas: Array(repeating: alpha, count: width * height),
+                    colorSpace: Self.sRGB()
+                ),
+                colorSemantics: .image,
+                extentOverride: nil
+            )
+        case .rgbaFloatWithOneNearOpaquePixel(let width, let height, let alpha):
+            var alphas = Array(repeating: Float(1), count: width * height)
+            guard alphas.isEmpty == false else {
+                throw BeautyError.invalidInput
+            }
+            alphas[alphas.count / 2] = alpha
+            return Input(
+                image: try Self.floatingPointImage(
+                    width: width,
+                    height: height,
+                    alphas: alphas,
+                    colorSpace: Self.sRGB()
+                ),
                 colorSemantics: .image,
                 extentOverride: nil
             )
@@ -496,6 +525,34 @@ package final class SDKTestingCanonicalStillImageHarness: @unchecked Sendable {
             bytesPerRow: rowBytes,
             size: CGSize(width: width, height: height),
             format: .RGBA8,
+            colorSpace: colorSpace
+        )
+    }
+
+    private static func floatingPointImage(
+        width: Int,
+        height: Int,
+        alphas: [Float],
+        colorSpace: CGColorSpace
+    ) throws -> CIImage {
+        guard width > 0,
+              height > 0,
+              alphas.count == width * height
+        else {
+            throw BeautyError.invalidInput
+        }
+
+        var pixels = [Float]()
+        pixels.reserveCapacity(alphas.count * 4)
+        for alpha in alphas {
+            pixels.append(contentsOf: [0.25, 0.50, 0.75, alpha])
+        }
+        let data = pixels.withUnsafeBytes { Data($0) }
+        return CIImage(
+            bitmapData: data,
+            bytesPerRow: width * MemoryLayout<Float>.stride * 4,
+            size: CGSize(width: width, height: height),
+            format: .RGBAf,
             colorSpace: colorSpace
         )
     }

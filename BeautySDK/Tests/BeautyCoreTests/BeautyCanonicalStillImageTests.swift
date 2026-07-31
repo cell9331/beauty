@@ -135,6 +135,25 @@ final class BeautyCanonicalStillImageTests: XCTestCase {
         }
     }
 
+    func testNearOpaqueFloatingAlphaFailsBeforeLossyRGBA8RenderAndVision() {
+        let harness = SDKTestingCanonicalStillImageHarness(maximumPixelCount: 64)
+        let fixtures: [SDKTestingCanonicalFixture] = [
+            .rgbaFloat(width: 2, height: 2, alpha: 0.999),
+            .rgbaFloat(width: 2, height: 2, alpha: Float(1).nextDown),
+            .rgbaFloatWithOneNearOpaquePixel(width: 3, height: 2, alpha: 0.999),
+        ]
+
+        for fixture in fixtures {
+            XCTAssertThrowsError(try harness.canonicalize(
+                fixture: fixture,
+                orientation: .up,
+                isInputMirrored: false
+            )) { XCTAssertTrue(Self.isPayloadFreeAllowlistedError($0)) }
+            XCTAssertEqual(harness.detectorInvocationCount, 0)
+            XCTAssertEqual(harness.supportInvocationCount, 0)
+        }
+    }
+
     private static func isPayloadFreeAllowlistedError(_ error: Error) -> Bool {
         guard let error = error as? BeautyError else { return false }
         XCTAssertTrue(error == .invalidInput || error == .unsupportedPixelFormat)
