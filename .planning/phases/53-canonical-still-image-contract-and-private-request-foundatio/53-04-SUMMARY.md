@@ -102,6 +102,7 @@ status: complete
 ## Task Commits
 
 1. **Task 1: Route feature-neutral admitted still requests through one stack-local context** - `3e9908f` (feat)
+2. **Post-wave privacy gate: Replace public CGRect evidence with aggregate dimensions** - `0ceb4b5` (fix)
 
 ## Verification
 
@@ -109,6 +110,7 @@ status: complete
 - All 11 `BeautyEngineLocalRetouchFoundationTests` ran and passed.
 - `check_still_image_foundation_boundaries.py` passed in live mode.
 - Checker self-test passed 6/6 with exact `16 = 13 automated + 3 flagged`.
+- The iPhone 17e / iOS 26.5 Demo build and full simulator test suite passed after the post-wave privacy fix.
 - `git diff --check` passed.
 
 ## Deviations from Plan
@@ -121,6 +123,7 @@ status: complete
 
 - The first SwiftPM run inside the filesystem sandbox failed at manifest sandbox setup. The established `/private/tmp` module-cache convention was used for the successful focused runs.
 - The live boundary checker rejected Testing properties whose implementation lines contained `RequestContext`; the public SPI names were made feature-neutral while retaining exact internal counters.
+- The first post-wave Demo test run found that public `CGRect` evidence violated the existing public-detection geometry scan. The SPI now reports only integer width/height aggregates; the focused privacy test and the full Demo simulator suite then passed.
 
 ## Next Phase Readiness
 
@@ -134,6 +137,7 @@ status: complete
 - Task commit `3e9908f` exists and contains no tracked deletion.
 - All 11 foundation tests and the focused compatibility/geometry suites pass.
 - The live boundary checker and six-case checker self-test pass.
+- Demo build and the complete simulator test suite pass on iPhone 17e / iOS 26.5.
 - Production admission inventory is exactly empty; source scans show no candidate field/provider/renderer case and no pixel-buffer/reset local-foundation route.
 - Testing SPI exposes no canonical bytes or mapped support.
 - `git diff --check` passes.
