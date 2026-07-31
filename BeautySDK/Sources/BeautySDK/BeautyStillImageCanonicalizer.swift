@@ -15,6 +15,10 @@ package final class BeautyStillImageCanonicalizer: @unchecked Sendable {
     private let context: CIContext?
     private let sRGB: CGColorSpace?
 
+    package var contextIdentity: ObjectIdentifier? {
+        context.map(ObjectIdentifier.init)
+    }
+
     package init() {
         let sRGB = CGColorSpace(name: CGColorSpace.sRGB)
         self.sRGB = sRGB

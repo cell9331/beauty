@@ -647,6 +647,8 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     private var detectorViewIdentity: ObjectIdentifier?
     private var rendererBackingIdentity: Int?
     private var rendererUsesExplicitSRGB = false
+    private var canonicalizerIdentities: [ObjectIdentifier] = []
+    private var canonicalizerContextIdentities: [ObjectIdentifier] = []
 
     package init(admittedPrivateDemandCount: Int, fixtures: [Fixture]) {
         self.admittedPrivateDemandCount = max(0, admittedPrivateDemandCount)
@@ -669,6 +671,14 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         }
     }
     package var usedExplicitSRGBRender: Bool { withLock { rendererUsesExplicitSRGB } }
+    package var reusedCanonicalizerAndContextAcrossRequests: Bool {
+        withLock {
+            canonicalizerIdentities.count >= 2 &&
+                Set(canonicalizerIdentities).count == 1 &&
+                canonicalizerContextIdentities.count == canonicalizerIdentities.count &&
+                Set(canonicalizerContextIdentities).count == 1
+        }
+    }
 
     package func beginStillRequest() {
         withLock {
@@ -696,6 +706,15 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         withLock {
             currentCanonicalBackingIdentity = carrier.backingIdentity
             currentCanonicalViewIdentity = ObjectIdentifier(carrier.ciImage)
+        }
+    }
+
+    package func recordCanonicalizer(_ canonicalizer: BeautyStillImageCanonicalizer) {
+        withLock {
+            canonicalizerIdentities.append(ObjectIdentifier(canonicalizer))
+            if let contextIdentity = canonicalizer.contextIdentity {
+                canonicalizerContextIdentities.append(contextIdentity)
+            }
         }
     }
 
@@ -875,6 +894,9 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         hooks.canonicalConsumerIdentityMatched
     }
     public var usedExplicitSRGBRender: Bool { hooks.usedExplicitSRGBRender }
+    public var reusedCanonicalizerAndContextAcrossRequests: Bool {
+        hooks.reusedCanonicalizerAndContextAcrossRequests
+    }
 
     public convenience init(admittedPrivateDemandCount: Int) throws {
         try self.init(

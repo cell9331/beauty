@@ -56,6 +56,16 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         )
     }
 
+    func testSequentialAdmittedRequestsReuseEngineCanonicalizerAndContext() throws {
+        let harness = try SDKTestingLocalRetouchFoundationHarness(admittedPrivateDemandCount: 1)
+
+        _ = try harness.invoke(entry: .processResult, image: Self.image, parameters: .init())
+        _ = try harness.invoke(entry: .processResult, image: Self.image, parameters: .init())
+
+        XCTAssertEqual(harness.canonicalizeCount, 2)
+        XCTAssertTrue(harness.reusedCanonicalizerAndContextAcrossRequests)
+    }
+
     func testAdmittedDetectorAndRendererShareCanonicalCarrierAndExplicitSRGB() throws {
         let harness = try SDKTestingLocalRetouchFoundationHarness(admittedPrivateDemandCount: 1)
         let result = try harness.invoke(
