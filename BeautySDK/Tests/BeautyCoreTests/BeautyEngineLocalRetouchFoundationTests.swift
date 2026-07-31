@@ -75,7 +75,8 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
                 supportFixture: fixture
             ).invoke(entry: .processResult, image: Self.image, parameters: .init(brightness: 0.15))
             XCTAssertEqual(requested.outputDigest, baseline.outputDigest)
-            XCTAssertEqual(requested.extent, baseline.extent)
+            XCTAssertEqual(requested.width, baseline.width)
+            XCTAssertEqual(requested.height, baseline.height)
         }
     }
 

@@ -557,7 +557,8 @@ package final class SDKTestingCanonicalStillImageHarness: @unchecked Sendable {
 
 @_spi(Testing) public struct SDKTestingLocalResult: Sendable {
     public let outputDigest: String
-    public let extent: CGRect
+    public let width: Int
+    public let height: Int
     public let aggregateSupportValueID: Int?
 }
 
@@ -818,7 +819,8 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         }
         return SDKTestingLocalResult(
             outputDigest: try Self.outputDigest(output),
-            extent: output.extent,
+            width: Int(output.extent.width),
+            height: Int(output.extent.height),
             aggregateSupportValueID: hooks.lastAggregateSupportValueID
         )
     }
@@ -839,7 +841,8 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             result.detectionSummary?.availability.rawValue ?? "notRun"
         return SDKTestingLocalResult(
             outputDigest: "",
-            extent: CGRect(x: 0, y: 0, width: 2, height: 2),
+            width: 2,
+            height: 2,
             aggregateSupportValueID: nil
         )
     }
