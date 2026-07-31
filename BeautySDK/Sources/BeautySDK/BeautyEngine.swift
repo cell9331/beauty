@@ -10,14 +10,17 @@ import BeautyEffects
 public final class BeautyEngine {
     public let configuration: BeautyConfiguration
     var faceDetector: VisionFaceDetector
-    private let stillImageCanonicalizer: BeautyStillImageCanonicalizer
     private let localRetouchTestingHooks: BeautyLocalRetouchTestingHooks?
+    private lazy var stillImageCanonicalizer: BeautyStillImageCanonicalizer = {
+        let canonicalizer = BeautyStillImageCanonicalizer()
+        localRetouchTestingHooks?.recordCanonicalizerConstruction()
+        return canonicalizer
+    }()
     private var resetGeneration: UInt64 = 0
 
     public init(configuration: BeautyConfiguration = .default) throws {
         self.configuration = configuration
         self.faceDetector = VisionFaceDetector()
-        self.stillImageCanonicalizer = BeautyStillImageCanonicalizer()
         self.localRetouchTestingHooks = nil
     }
 
@@ -28,7 +31,6 @@ public final class BeautyEngine {
     ) throws {
         self.configuration = configuration
         self.faceDetector = faceDetector
-        self.stillImageCanonicalizer = BeautyStillImageCanonicalizer()
         self.localRetouchTestingHooks = localRetouchTestingHooks
     }
 

@@ -38,7 +38,9 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
             let harness = try SDKTestingLocalRetouchFoundationHarness(
                 admittedPrivateDemandCount: demandCount
             )
+            XCTAssertEqual(harness.canonicalizerConstructionCount, 0)
             _ = try harness.invoke(entry: .processResult, image: Self.image, parameters: .init())
+            XCTAssertEqual(harness.canonicalizerConstructionCount, expected)
             XCTAssertEqual(harness.canonicalizeCount, expected)
             XCTAssertEqual(harness.detectAndMapCount, expected)
             XCTAssertEqual(harness.requestOwnerCreationCount, expected)
@@ -62,6 +64,7 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         _ = try harness.invoke(entry: .processResult, image: Self.image, parameters: .init())
         _ = try harness.invoke(entry: .processResult, image: Self.image, parameters: .init())
 
+        XCTAssertEqual(harness.canonicalizerConstructionCount, 1)
         XCTAssertEqual(harness.canonicalizeCount, 2)
         XCTAssertTrue(harness.reusedCanonicalizerAndContextAcrossRequests)
     }
@@ -220,8 +223,10 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
 
     func testPixelBufferOverloadsAndResetPerformZeroLocalFoundationWork() throws {
         let harness = try SDKTestingLocalRetouchFoundationHarness(admittedPrivateDemandCount: 1)
+        XCTAssertEqual(harness.canonicalizerConstructionCount, 0)
         _ = try harness.invokePixelBuffer(parameters: .init(brightness: 0.1))
         harness.reset()
+        XCTAssertEqual(harness.canonicalizerConstructionCount, 0)
         XCTAssertEqual(harness.canonicalizeCount, 0)
         XCTAssertEqual(harness.detectAndMapCount, 0)
         XCTAssertEqual(harness.requestOwnerCreationCount, 0)

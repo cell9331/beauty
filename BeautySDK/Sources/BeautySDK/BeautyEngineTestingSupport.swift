@@ -644,6 +644,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     private var rendererUsesExplicitSRGB = false
     private var canonicalizerIdentities: [ObjectIdentifier] = []
     private var canonicalizerContextIdentities: [ObjectIdentifier] = []
+    private var canonicalizerConstructionCountValue = 0
 
     package init(admittedPrivateDemandCount: Int, fixtures: [Fixture]) {
         self.admittedPrivateDemandCount = max(0, admittedPrivateDemandCount)
@@ -666,6 +667,9 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         }
     }
     package var usedExplicitSRGBRender: Bool { withLock { rendererUsesExplicitSRGB } }
+    package var canonicalizerConstructionCount: Int {
+        withLock { canonicalizerConstructionCountValue }
+    }
     package var reusedCanonicalizerAndContextAcrossRequests: Bool {
         withLock {
             canonicalizerIdentities.count >= 2 &&
@@ -710,6 +714,12 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             if let contextIdentity = canonicalizer.contextIdentity {
                 canonicalizerContextIdentities.append(contextIdentity)
             }
+        }
+    }
+
+    package func recordCanonicalizerConstruction() {
+        withLock {
+            canonicalizerConstructionCountValue += 1
         }
     }
 
@@ -889,6 +899,9 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         hooks.canonicalConsumerIdentityMatched
     }
     public var usedExplicitSRGBRender: Bool { hooks.usedExplicitSRGBRender }
+    public var canonicalizerConstructionCount: Int {
+        hooks.canonicalizerConstructionCount
+    }
     public var reusedCanonicalizerAndContextAcrossRequests: Bool {
         hooks.reusedCanonicalizerAndContextAcrossRequests
     }
