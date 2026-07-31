@@ -584,6 +584,11 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     private var currentAggregateSupportValueID: Int?
     private var lastAggregateSupportValueIDValue: Int?
     private var currentRequestIsMalformed = false
+    private var currentCanonicalBackingIdentity: Int?
+    private var currentCanonicalViewIdentity: ObjectIdentifier?
+    private var detectorViewIdentity: ObjectIdentifier?
+    private var rendererBackingIdentity: Int?
+    private var rendererUsesExplicitSRGB = false
 
     package init(admittedPrivateDemandCount: Int, fixtures: [Fixture]) {
         self.admittedPrivateDemandCount = max(0, admittedPrivateDemandCount)
@@ -597,6 +602,15 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     package var renderCount: Int { withLock { renderCountValue } }
     package var activeRequestContextCount: Int { withLock { activeRequestContextCountValue } }
     package var lastAggregateSupportValueID: Int? { withLock { lastAggregateSupportValueIDValue } }
+    package var canonicalConsumerIdentityMatched: Bool {
+        withLock {
+            currentCanonicalBackingIdentity != nil &&
+                currentCanonicalBackingIdentity == rendererBackingIdentity &&
+                currentCanonicalViewIdentity != nil &&
+                currentCanonicalViewIdentity == detectorViewIdentity
+        }
+    }
+    package var usedExplicitSRGBRender: Bool { withLock { rendererUsesExplicitSRGB } }
 
     package func beginStillRequest() {
         withLock {
@@ -604,6 +618,11 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             lastAggregateSupportValueIDValue = nil
             currentRequestIsMalformed = false
             activeRequestContextCountValue = 0
+            currentCanonicalBackingIdentity = nil
+            currentCanonicalViewIdentity = nil
+            detectorViewIdentity = nil
+            rendererBackingIdentity = nil
+            rendererUsesExplicitSRGB = false
         }
     }
 
@@ -612,6 +631,23 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             currentAggregateSupportValueID = nil
             currentRequestIsMalformed = false
             activeRequestContextCountValue = 0
+        }
+    }
+
+    package func recordCanonicalCarrier(_ carrier: BeautyCanonicalStillImage) {
+        withLock {
+            currentCanonicalBackingIdentity = carrier.backingIdentity
+            currentCanonicalViewIdentity = ObjectIdentifier(carrier.ciImage)
+        }
+    }
+
+    package func recordCanonicalRasterize(
+        carrier: BeautyCanonicalStillImage,
+        colorSpace: CGColorSpace
+    ) {
+        withLock {
+            rendererBackingIdentity = carrier.backingIdentity
+            rendererUsesExplicitSRGB = colorSpace.name == CGColorSpace.sRGB
         }
     }
 
@@ -647,8 +683,13 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     }
 
     package func makeObservationProvider() -> VisionFaceDetector.ObservationProvider {
-        { [self] _ in
-            nextObservations()
+        { [self] input in
+            if let stillImage = input.stillImage {
+                withLock {
+                    detectorViewIdentity = ObjectIdentifier(stillImage)
+                }
+            }
+            return nextObservations()
         }
     }
 
@@ -746,6 +787,10 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     }
     public var events: [SDKTestingLocalRetouchEvent] { hooks.events }
     public var pixelBufferSummaryAvailability: String { pixelBufferSummaryAvailabilityValue }
+    public var canonicalConsumerIdentityMatched: Bool {
+        hooks.canonicalConsumerIdentityMatched
+    }
+    public var usedExplicitSRGBRender: Bool { hooks.usedExplicitSRGBRender }
 
     public convenience init(admittedPrivateDemandCount: Int) throws {
         try self.init(

@@ -1,6 +1,7 @@
 import CoreGraphics
 import CoreImage
 import Foundation
+import BeautyCore
 
 enum BeautyGeometryEffectPipeline {
     static func controlPoints(for plan: BeautyEffectPlan, face: FaceGeometry) -> [WarpControlPoint] {
@@ -40,6 +41,45 @@ enum BeautyGeometryEffectPipeline {
 
     /// Deterministic still-image warp used until the production Metal FaceWarpPass consumes control points directly.
     static func applyMVPProxy(to image: CIImage, plan: BeautyEffectPlan, face: FaceGeometry) -> CIImage {
+        applyMVPProxy(
+            to: image,
+            plan: plan,
+            face: face,
+            colorSpace: CGColorSpaceCreateDeviceRGB()
+        )
+    }
+
+    /// Admitted still-image geometry consumes the canonical carrier and names
+    /// sRGB explicitly. The legacy overload above retains its shipped device-RGB
+    /// behavior for exact inactive compatibility.
+    package static func applyMVPProxy(
+        to image: CIImage,
+        canonicalImage: BeautyCanonicalStillImage,
+        plan: BeautyEffectPlan,
+        face: FaceGeometry,
+        onRasterize: ((BeautyCanonicalStillImage, CGColorSpace) -> Void)? = nil
+    ) -> CIImage {
+        guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
+            return image.cropped(to: canonicalImage.ciImage.extent)
+        }
+        return applyMVPProxy(
+            to: image,
+            plan: plan,
+            face: face,
+            colorSpace: colorSpace,
+            onRasterize: {
+                onRasterize?(canonicalImage, colorSpace)
+            }
+        )
+    }
+
+    private static func applyMVPProxy(
+        to image: CIImage,
+        plan: BeautyEffectPlan,
+        face: FaceGeometry,
+        colorSpace: CGColorSpace,
+        onRasterize: (() -> Void)? = nil
+    ) -> CIImage {
         let points = controlPoints(for: plan, face: face).compactMap(RenderableWarpPoint.init)
         guard !points.isEmpty else {
             return image.cropped(to: image.extent)
@@ -56,13 +96,13 @@ enum BeautyGeometryEffectPipeline {
             return image.cropped(to: extent)
         }
 
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
         let rowBytes = width * 4
         var source = [UInt8](repeating: 0, count: rowBytes * height)
         let context = CIContext(options: [
             .workingColorSpace: colorSpace,
             .outputColorSpace: colorSpace
         ])
+        onRasterize?()
         source.withUnsafeMutableBytes { rawBytes in
             guard let baseAddress = rawBytes.baseAddress else {
                 return

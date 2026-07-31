@@ -106,7 +106,47 @@ public enum BeautyColorEffectPipeline {
         return apply(to: image, plan: plan, face: face)
     }
 
+    package static func apply(
+        to canonicalImage: BeautyCanonicalStillImage,
+        plan: BeautyEffectPlan,
+        selectedFaceObservation: BeautyFaceObservation?,
+        onCanonicalRasterize: ((BeautyCanonicalStillImage, CGColorSpace) -> Void)? = nil
+    ) -> CIImage {
+        let face = selectedFaceObservation.map(BeautyFaceGeometryAdapter.makeGeometry(from:))
+        var output = applyColorEffects(
+            to: canonicalImage.ciImage,
+            plan: plan,
+            face: face
+        )
+
+        if let face {
+            output = BeautyGeometryEffectPipeline.applyMVPProxy(
+                to: output,
+                canonicalImage: canonicalImage,
+                plan: plan,
+                face: face,
+                onRasterize: onCanonicalRasterize
+            )
+        }
+
+        return output.cropped(to: canonicalImage.ciImage.extent)
+    }
+
     static func apply(to image: CIImage, plan: BeautyEffectPlan, face: FaceGeometry?) -> CIImage {
+        var output = applyColorEffects(to: image, plan: plan, face: face)
+
+        if let face {
+            output = BeautyGeometryEffectPipeline.applyMVPProxy(to: output, plan: plan, face: face)
+        }
+
+        return output.cropped(to: image.extent)
+    }
+
+    private static func applyColorEffects(
+        to image: CIImage,
+        plan: BeautyEffectPlan,
+        face: FaceGeometry?
+    ) -> CIImage {
         var output = image
 
         if plan.hasVisibleColorOutput {
@@ -148,11 +188,7 @@ public enum BeautyColorEffectPipeline {
             output = applyLipColor(to: output, plan: plan, face: face)
         }
 
-        if let face {
-            output = BeautyGeometryEffectPipeline.applyMVPProxy(to: output, plan: plan, face: face)
-        }
-
-        return output.cropped(to: image.extent)
+        return output
     }
 
     private static func transform(

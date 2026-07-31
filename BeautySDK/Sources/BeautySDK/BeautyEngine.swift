@@ -121,6 +121,7 @@ public final class BeautyEngine {
             metadata: metadata,
             maximumPixelCount: configuration.maximumInputPixelCount
         )
+        localRetouchTestingHooks?.recordCanonicalCarrier(canonical)
 
         localRetouchTestingHooks?.record(.detectAndMap)
         let route = resolveStillImageGeometry(
@@ -144,9 +145,15 @@ public final class BeautyEngine {
 
         localRetouchTestingHooks?.record(.render)
         let output = BeautyColorEffectPipeline.apply(
-            to: requestContext.canonicalImage.ciImage,
+            to: requestContext.canonicalImage,
             plan: route.plan,
-            selectedFaceObservation: requestContext.selectedFaceObservation
+            selectedFaceObservation: requestContext.selectedFaceObservation,
+            onCanonicalRasterize: { [localRetouchTestingHooks] carrier, colorSpace in
+                localRetouchTestingHooks?.recordCanonicalRasterize(
+                    carrier: carrier,
+                    colorSpace: colorSpace
+                )
+            }
         )
         return BeautyResult(
             output: output,
