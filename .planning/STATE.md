@@ -5,15 +5,15 @@ milestone_name: Local Facial Retouch
 current_phase: 53
 current_phase_name: Canonical Still-Image Contract and Private Request Foundation
 status: executing
-stopped_at: Completed 53-03-PLAN.md
-last_updated: "2026-07-30T09:45:34.630Z"
+stopped_at: Completed 53-04-PLAN.md
+last_updated: "2026-07-31T06:58:23.291Z"
 last_activity: 2026-07-30
 last_activity_desc: Phase 53 execution started
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 6
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: `.planning/PROJECT.md` (updated 2026-07-30)
 ## Current Position
 
 Phase: 53 (Canonical Still-Image Contract and Private Request Foundation) — EXECUTING
-Plan: 4 of 6
+Plan: 5 of 6
 Status: Ready to execute
 Last activity: 2026-07-30 — Phase 53 execution started
 
-Progress: [█████░░░░░] 50%
+Progress: [███████░░░] 67%
 
 ## Performance Metrics
 
@@ -54,6 +54,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 53 P01 | 19 min | 3 tasks | 8 files |
 | Phase 53 P02 | 19 min | 2 tasks | 9 files |
 | Phase 53 P03 | 9min | 1 tasks | 8 files |
+| Phase 53 P04 | 49min | 1 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,9 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 - [Phase 53]: Extend existing Detection observations in place for actual lip support; add no second Vision request, mapper, target, or proxy. — The existing selected-face mapping boundary already owns the request-local provenance required by D-17.
 - [Phase 53]: Preflight outer and inner lips independently at 1...32 finite closed-unit points before one mapping pass. — Region-local rejection preserves valid sibling support and the selected face.
 - [Phase 53]: Expose only aggregate outer/inner lip counts; raw support remains package-only, immutable, non-Codable, and request-local. — This mitigates T-53-04 without adding public or SPI geometry.
+- [Phase 53]: Keep production local-retouch admission exact-empty; opaque positive Testing demand collapses to one shared canonical request. — Phase 54 evidence gates must admit features independently, while Phase 53 proves routing without a candidate surface.
+- [Phase 53]: Own canonical pixels and selected mapped support in one stack-local non-Codable request context. — Request-local ownership prevents stale or crossed portrait support and keeps diagnostics aggregate-only.
+- [Phase 53]: Keep pixel-buffer and reset paths structurally free of the local still-image foundation. — v1.14 is still-image-only and cannot broaden realtime behavior.
 
 ### Pending Todos
 
@@ -94,6 +98,6 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 
 ## Session Continuity
 
-Last session: 2026-07-30T09:45:11.192Z
-Stopped at: Completed 53-03-PLAN.md
+Last session: 2026-07-31T06:58:23.286Z
+Stopped at: Completed 53-04-PLAN.md
 Resume file: None
