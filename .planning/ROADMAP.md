@@ -24,7 +24,7 @@ v1.14 establishes one SDK-SPM still-image local-retouch boundary, qualifies feat
 
 ## Phases
 
-- [ ] **Phase 53: Canonical Still-Image Contract and Private Request Foundation** - Give every admitted retouch effect one compatible facade entry, one opaque canonical raster, and one request-local selected-face support owner.
+- [x] **Phase 53: Canonical Still-Image Contract and Private Request Foundation** - Give every admitted retouch effect one compatible facade entry, one opaque canonical raster, and one request-local selected-face support owner. (completed 2026-07-31)
 - [ ] **Phase 54: Rights-Approved Evidence and Eligibility Decisions** - Decide each visible feature independently from complete rights-approved positive/negative evidence and frozen review criteria.
 - [ ] **Phase 55: Original-Pixel Composition and Failure-Isolation Core** - Prove one mask owner, hard containment, overlap-to-source behavior, and smallest-unit degradation before visible effects compose.
 - [ ] **Phase 56: Independent Teeth Whitening Slice** - Ship `白牙` only if its own containment, naturalness, facade-output, privacy, and evidence gates pass.
@@ -58,7 +58,7 @@ Earlier shipped milestones are preserved in their linked archives under `.planni
   4. A still-image request with any admitted effect performs at most one selected-face landmarks request and one mapping pass, and no mapped support survives or crosses the request.
   5. Legacy 59-field source construction, JSON, presets, defaults, and shipped output remain neutral; every field that is later admitted is independent, positive-only, finite-normalized, default-zero, and counted by an exact compatibility contract.
 
-**Plans**: 4/6 plans executed
+**Plans**: 6/6 plans executed
 
 - [x] 53-01-PLAN.md
 - [x] 53-02-PLAN.md
@@ -161,7 +161,7 @@ All 41 v1.14 requirements map to exactly one phase: 41 mapped, 0 duplicated, 0 u
 
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
-| 53. Canonical Still-Image Contract and Private Request Foundation | 6/6 | Complete | 2026-07-31 |
+| 53. Canonical Still-Image Contract and Private Request Foundation | 6/6 | Complete    | 2026-07-31 |
 | 54. Rights-Approved Evidence and Eligibility Decisions | 0/TBD | Not started | - |
 | 55. Original-Pixel Composition and Failure-Isolation Core | 0/TBD | Not started | - |
 | 56. Independent Teeth Whitening Slice | 0/TBD | Not started | - |
