@@ -45,7 +45,7 @@
     review_rejected: "当前功能包含未通过冻结规则的项目。",
     non_warp_design_unqualified: "去脂的非形变方案尚未通过资格审查。",
     review_invalid: "请完成七项结构化判断，并修正不一致的结论。",
-    unsupported_browser: "当前浏览器不支持所需的本地文件读取能力。",
+    capability_unavailable: "当前环境不支持所需的本地文件读取能力。",
   });
   const FEATURE_LABELS = Object.freeze({
     teeth_whitening: "白牙",
@@ -64,6 +64,7 @@
   const assetInput = element("asset-directory-input");
   const workspace = element("review-workspace");
   const exportButton = element("export-review");
+  const replaceDialog = element("replace-session-dialog");
   const comparisonGrid = element("comparison-grid");
   const comparisonScrollers = Array.from(document.querySelectorAll(".comparison-scroller"));
   const imageElements = [element("image-original"), element("image-mask"), element("image-after")];
@@ -83,7 +84,33 @@
   let completedCount = 0;
   let activeObjectURLs = [];
   let decodedDimensions = new Map();
+  let hasBlockingAssetErrors = false;
+  let pendingReplacement = null;
+  let replacementInitiator = null;
   const savedReviews = new Map();
+  const featureSnapshots = new Map();
+
+  function closedSnapshot(feature) {
+    const currentReasons = {
+      teeth_whitening: ["missing_genuine_positive"],
+      sclera_redness: ["missing_genuine_positive", "incomplete_asset_triple"],
+      upper_eyelid_fullness: ["missing_genuine_positive"],
+    };
+    return Object.freeze({
+      valid: true,
+      feature,
+      ready: false,
+      reasons: Object.freeze([...currentReasons[feature]]),
+      selected_rows: Object.freeze([]),
+      excluded_counts: Object.freeze({ rows: 0, naturalness_weight: 0 }),
+      product_counts: Object.freeze({ positive: 0, negative: 0, eligible: 0, naturalness_weight: 0 }),
+    });
+  }
+
+  function resetFeatureSnapshots() {
+    featureSnapshots.clear();
+    for (const feature of FEATURE_ORDER) featureSnapshots.set(feature, closedSnapshot(feature));
+  }
 
   function fixedCopyForReason(reason) {
     return REASON_COPY[reason] || REASON_COPY.invalid_manifest;
@@ -151,6 +178,7 @@
     disableReview();
     disableExport();
     resetJudgmentForm();
+    resetFeatureSnapshots();
     renderInitialGates();
     setValidation(
       "等待本地评审材料",
@@ -222,6 +250,13 @@
 
   function renderActiveGate() {
     if (activeSnapshot) renderGate(activeSnapshot.feature, presentationForSnapshot(activeSnapshot));
+  }
+
+  function renderResolvedGates() {
+    for (const feature of FEATURE_ORDER) {
+      const snapshot = featureSnapshots.get(feature);
+      renderGate(feature, presentationForSnapshot(snapshot));
+    }
   }
 
   function readFileText(file) {
@@ -352,6 +387,16 @@
 
   function restoreJudgment() {
     resetJudgmentForm();
+    const row = reviewableRows[selectedIndex];
+    const review = row ? savedReviews.get(row.fixture_id) : undefined;
+    if (!review) return;
+    element("target_present").value = String(review.target_present);
+    element("mask_coverage").value = String(review.mask_coverage);
+    element("protected_leakage").value = String(review.protected_leakage);
+    element("naturalness").value = String(review.naturalness);
+    element("structure_changed").value = String(review.structure_changed);
+    element("decision").value = review.decision;
+    element("reason_code").value = review.reason_code;
   }
 
   function renderCurrentRow() {
@@ -391,12 +436,14 @@
       return;
     }
     activeSnapshot = snapshot;
+    featureSnapshots.set(snapshot.feature, snapshot);
     const decoded = await validateReviewableRows(snapshot);
     reviewableRows = decoded.rows;
     decodedDimensions = decoded.dimensions;
     selectedIndex = 0;
     const reasons = [...new Set([...indexed.reasons, ...decoded.reasons])];
-    renderActiveGate();
+    hasBlockingAssetErrors = reasons.length > 0;
+    renderResolvedGates();
     setInputsDisabled(false);
     if (reviewableRows.length === 0) {
       disableReview();
@@ -451,6 +498,10 @@
     activeSnapshot = null;
     reviewableRows = [];
     selectedIndex = 0;
+    completedCount = 0;
+    savedReviews.clear();
+    hasBlockingAssetErrors = false;
+    resetFeatureSnapshots();
     resetJudgmentForm();
     setInputsDisabled(false);
     if (assetFiles.size > 0) {
@@ -459,7 +510,8 @@
     }
     const waitingSnapshot = ReviewCore.createReviewSnapshot(manifest, []);
     activeSnapshot = waitingSnapshot;
-    renderActiveGate();
+    featureSnapshots.set(waitingSnapshot.feature, waitingSnapshot);
+    renderResolvedGates();
     setValidation("等待本地评审材料", "请选择本地资产目录。", [], "waiting");
   }
 
@@ -491,6 +543,175 @@
     if (selectedIndex < reviewableRows.length - 1) selectedIndex += 1;
   }
 
+  function reviewsComplete() {
+    return reviewableRows.length > 0
+      && completedCount === reviewableRows.length
+      && !hasBlockingAssetErrors;
+  }
+
+  function reviewsForSnapshot(snapshot) {
+    if (snapshot !== activeSnapshot || snapshot.ready !== true) return [];
+    return snapshot.selected_rows.map((row) => savedReviews.get(row.fixture_id));
+  }
+
+  function decisionsResolved() {
+    try {
+      for (const feature of FEATURE_ORDER) {
+        const snapshot = featureSnapshots.get(feature);
+        ReviewCore.evaluateFeature(snapshot, reviewsForSnapshot(snapshot), designQualificationFor(feature));
+      }
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function updateExportAvailability() {
+    if (reviewsComplete() && decisionsResolved()) enableExport();
+    else disableExport();
+  }
+
+  function saveCurrentReview(event) {
+    event.preventDefault();
+    const review = collectJudgment();
+    if (!validateReviewCandidate(review)) {
+      element("form-alert").textContent = fixedCopyForReason("review_invalid");
+      focusFirstInvalid();
+      return;
+    }
+    savedReviews.set(review.fixture_id, Object.freeze({ ...review }));
+    completedCount = savedReviews.size;
+    element("form-alert").textContent = "";
+    renderActiveGate();
+    updateExportAvailability();
+    if (selectedIndex < reviewableRows.length - 1) {
+      advanceOnce();
+      renderCurrentRow();
+      element("review-item-heading").focus();
+    } else {
+      renderProgress();
+      restoreJudgment();
+      element("session-status").textContent = "所有可评审项目均已完成。";
+    }
+  }
+
+  function moveToPreviousItem() {
+    if (selectedIndex === 0) return;
+    selectedIndex -= 1;
+    renderCurrentRow();
+    element("review-item-heading").focus();
+  }
+
+  function featureInputsForExport() {
+    return FEATURE_ORDER.map((feature) => {
+      const snapshot = featureSnapshots.get(feature);
+      return {
+        snapshot,
+        reviews: reviewsForSnapshot(snapshot),
+        design_qualification: designQualificationFor(feature),
+      };
+    });
+  }
+
+  function exportReview() {
+    if (!reviewsComplete() || !decisionsResolved()) {
+      element("export-feedback").textContent = FIXED_COPY.export_failure;
+      return;
+    }
+    let blobURL = null;
+    try {
+      const bytes = ReviewCore.serializeDurableExport(featureInputsForExport());
+      const blob = new Blob([bytes], { type: "application/json" });
+      blobURL = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = blobURL;
+      anchor.download = EXPORT_FILENAME;
+      anchor.click();
+      URL.revokeObjectURL(blobURL);
+      blobURL = null;
+      revokeActiveObjectURLs();
+      renderCurrentRow();
+      element("export-feedback").textContent = FIXED_COPY.export_success;
+    } catch (_) {
+      if (blobURL !== null) URL.revokeObjectURL(blobURL);
+      element("export-feedback").textContent = FIXED_COPY.export_failure;
+    }
+  }
+
+  function teardownSession() {
+    revokeActiveObjectURLs();
+    manifest = null;
+    activeSnapshot = null;
+    assetFiles = new Map();
+    reviewableRows = [];
+    selectedIndex = 0;
+    completedCount = 0;
+    decodedDimensions = new Map();
+    hasBlockingAssetErrors = false;
+    savedReviews.clear();
+    manifestInput.value = "";
+    assetInput.value = "";
+    closeInitialState();
+  }
+
+  function restoreInitiatorFocus() {
+    if (replacementInitiator) replacementInitiator.focus();
+    replacementInitiator = null;
+  }
+
+  function keepCurrentSession() {
+    if (replacementInitiator) replacementInitiator.value = "";
+    replaceDialog.returnValue = "keep";
+    replaceDialog.close();
+    pendingReplacement = null;
+    restoreInitiatorFocus();
+  }
+
+  async function processReplacement(replacement) {
+    if (replacement.kind === "manifest") await acceptManifestFile(replacement.files[0]);
+    else await acceptAssetFiles(replacement.files);
+  }
+
+  function confirmReplacement() {
+    const replacement = pendingReplacement;
+    replaceDialog.returnValue = "replace";
+    replaceDialog.close();
+    pendingReplacement = null;
+    teardownSession();
+    restoreInitiatorFocus();
+    if (replacement) void processReplacement(replacement);
+  }
+
+  function requestReplacement(kind, files, initiator) {
+    if (savedReviews.size === 0) {
+      void processReplacement({ kind, files });
+      return;
+    }
+    pendingReplacement = { kind, files };
+    replacementInitiator = initiator;
+    replaceDialog.showModal();
+    element("keep-current").focus();
+  }
+
+  function trapDialogFocus(event) {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      keepCurrentSession();
+      return;
+    }
+    if (event.key !== "Tab") return;
+    const controls = Array.from(replaceDialog.querySelectorAll("button"));
+    const first = controls[0];
+    const last = controls.at(-1);
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
   function synchronizeScroll(source) {
     if (!comparisonGrid.classList.contains("actual")) return;
     for (const scroller of comparisonScrollers) {
@@ -516,11 +737,21 @@
 
   manifestInput.addEventListener("change", () => {
     const file = manifestInput.files && manifestInput.files[0];
-    if (file) void acceptManifestFile(file);
+    if (file) requestReplacement("manifest", [file], manifestInput);
   });
   assetInput.addEventListener("change", () => {
     const files = assetInput.files ? Array.from(assetInput.files) : [];
-    if (files.length > 0) void acceptAssetFiles(files);
+    if (files.length > 0) requestReplacement("assets", files, assetInput);
+  });
+  element("judgment-form").addEventListener("submit", saveCurrentReview);
+  element("previous-item").addEventListener("click", moveToPreviousItem);
+  exportButton.addEventListener("click", exportReview);
+  element("keep-current").addEventListener("click", keepCurrentSession);
+  element("confirm-replace").addEventListener("click", confirmReplacement);
+  replaceDialog.addEventListener("keydown", trapDialogFocus);
+  replaceDialog.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    keepCurrentSession();
   });
   element("view-fit").addEventListener("click", () => setViewMode(false));
   element("view-actual").addEventListener("click", () => setViewMode(true));
@@ -532,11 +763,7 @@
 
   void initialState;
   void decodedDimensions;
-  void EXPORT_FILENAME;
-  void validateReviewCandidate;
-  void focusFirstInvalid;
-  void advanceOnce;
-  void enableExport;
+  void element("replace-session-dialog");
   closeInitialState();
   element("page-heading").focus();
 })();
