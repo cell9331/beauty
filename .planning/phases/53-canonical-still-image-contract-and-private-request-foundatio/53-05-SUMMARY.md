@@ -116,10 +116,19 @@ status: complete
 - **Verification:** The focused identity test and live privacy/boundary checker pass.
 - **Committed in:** `21f6a60`
 
+**2. [Rule 1 - Bug] Restored stable STATE frontmatter after SDK normalization drift**
+
+- **Found during:** Plan tracking closeout
+- **Issue:** `state.advance-plan` / `state.update-progress` rewrote established milestone/current-phase/activity fields, reported an inconsistent zero percent, and left the human-readable progress bar at 67%.
+- **Fix:** Preserved the pre-plan milestone/current-phase/activity schema, retained the intended Plan 6 position and five completed plans, and synchronized the progress bar to 83%.
+- **Files modified:** `.planning/STATE.md`
+- **Verification:** The final diff contains only the intended Plan 53-05 position, metric, decisions, session, and progress changes.
+- **Committed in:** final tracking commit
+
 ---
 
-**Total deviations:** 1 auto-fixed (1 missing critical).
-**Impact on plan:** The existing test seam gained only privacy-safe acceptance evidence; production scope and ownership remained unchanged.
+**Total deviations:** 2 auto-fixed (1 missing critical, 1 state-tracking bug).
+**Impact on plan:** The existing test seam gained only privacy-safe acceptance evidence, and tracking was repaired without changing production scope or ownership.
 
 ## Issues Encountered
 

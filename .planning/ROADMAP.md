@@ -64,7 +64,7 @@ Earlier shipped milestones are preserved in their linked archives under `.planni
 - [x] 53-02-PLAN.md
 - [x] 53-03-PLAN.md
 - [x] 53-04-PLAN.md
-- [ ] 53-05-PLAN.md
+- [x] 53-05-PLAN.md
 - [ ] 53-06-PLAN.md
 
 ### Phase 54: Rights-Approved Evidence and Eligibility Decisions

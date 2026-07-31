@@ -5,15 +5,15 @@ milestone_name: Local Facial Retouch
 current_phase: 53
 current_phase_name: Canonical Still-Image Contract and Private Request Foundation
 status: executing
-stopped_at: Completed 53-04-PLAN.md
-last_updated: "2026-07-31T06:58:23.291Z"
+stopped_at: Completed 53-05-PLAN.md
+last_updated: "2026-07-31T07:11:57.492Z"
 last_activity: 2026-07-30
 last_activity_desc: Phase 53 execution started
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 6
-  completed_plans: 4
+  completed_plans: 5
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: `.planning/PROJECT.md` (updated 2026-07-30)
 ## Current Position
 
 Phase: 53 (Canonical Still-Image Contract and Private Request Foundation) — EXECUTING
-Plan: 5 of 6
+Plan: 6 of 6
 Status: Ready to execute
 Last activity: 2026-07-30 — Phase 53 execution started
 
-Progress: [███████░░░] 67%
+Progress: [████████░░] 83%
 
 ## Performance Metrics
 
@@ -55,6 +55,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 53 P02 | 19 min | 2 tasks | 9 files |
 | Phase 53 P03 | 9min | 1 tasks | 8 files |
 | Phase 53 P04 | 49min | 1 tasks | 13 files |
+| Phase 53 P05 | 7 min | 1 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,10 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 - [Phase 53]: Keep production local-retouch admission exact-empty; opaque positive Testing demand collapses to one shared canonical request. — Phase 54 evidence gates must admit features independently, while Phase 53 proves routing without a candidate surface.
 - [Phase 53]: Own canonical pixels and selected mapped support in one stack-local non-Codable request context. — Request-local ownership prevents stale or crossed portrait support and keeps diagnostics aggregate-only.
 - [Phase 53]: Keep pixel-buffer and reset paths structurally free of the local still-image foundation. — v1.14 is still-image-only and cannot broaden realtime behavior.
+- [Phase 53]: Admitted rendering accepts the canonical carrier itself; the legacy CIImage overload remains the exact-empty production route. — Keeps one-raster ownership explicit without changing inactive callers.
+- [Phase 53]: Admitted geometry rasterization uses explicit sRGB while inactive device-RGB behavior remains compatibility-locked. — Prevents a second device-dependent color interpretation on the canonical route.
+- [Phase 53]: Testing exposes only aggregate carrier-identity and sRGB booleans; raw identities, bytes, and support remain private. — Proves the HIGH mitigations without expanding diagnostics.
+- [Phase 53]: Phase 55 retains original-pixel composition, mask ownership, and overlap failure semantics. — Phase 53 finishes transport only and must not absorb composition architecture.
 
 ### Pending Todos
 
@@ -98,6 +103,6 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 
 ## Session Continuity
 
-Last session: 2026-07-31T06:58:23.286Z
-Stopped at: Completed 53-04-PLAN.md
+Last session: 2026-07-31T07:11:57.489Z
+Stopped at: Completed 53-05-PLAN.md
 Resume file: None
