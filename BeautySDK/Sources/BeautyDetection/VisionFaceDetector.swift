@@ -131,18 +131,28 @@ package struct VisionFaceDetector: Sendable {
         case detectionTimedOut
     }
 
+    package enum MappingEvent: Sendable {
+        case requestStarted
+        case lipRegionMapped(slot: Int, pointCount: Int)
+        case requestFinished
+    }
+
     package typealias ObservationProvider = @Sendable (VisionFaceDetectionInput) throws -> [VisionDetectionObservation]
+    package typealias MappingObserver = @Sendable (MappingEvent) -> Void
 
     private let minimumConfidence: Double
     private let observationProvider: ObservationProvider
+    private let mappingObserver: MappingObserver?
     private var selectionPolicy: FaceSelectionPolicy
 
     package init(
         minimumConfidence: Double = 0.5,
-        observationProvider: @escaping ObservationProvider = VisionFaceDetector.defaultObservationProvider
+        observationProvider: @escaping ObservationProvider = VisionFaceDetector.defaultObservationProvider,
+        mappingObserver: MappingObserver? = nil
     ) {
         self.minimumConfidence = minimumConfidence
         self.observationProvider = observationProvider
+        self.mappingObserver = mappingObserver
         self.selectionPolicy = FaceSelectionPolicy()
     }
 
@@ -171,6 +181,9 @@ package struct VisionFaceDetector: Sendable {
         configuration: BeautyConfiguration = .default,
         purpose: DetectionPurpose = .geometry
     ) -> VisionFaceDetectionResult {
+        mappingObserver?(.requestStarted)
+        defer { mappingObserver?(.requestFinished) }
+
         guard configuration.enableFaceTracking else {
             selectionPolicy.reset()
             return VisionFaceDetectionResult(observations: [], summary: .disabled)
@@ -412,11 +425,13 @@ package struct VisionFaceDetector: Sendable {
            visionBounds.height > 0 {
             let outer = mapLipRegion(
                 support.outer,
+                slot: 0,
                 in: visionBounds,
                 with: mapper
             )
             let inner = mapLipRegion(
                 support.inner,
+                slot: 1,
                 in: visionBounds,
                 with: mapper
             )
@@ -577,6 +592,7 @@ package struct VisionFaceDetector: Sendable {
 
     private func mapLipRegion(
         _ points: [CoordinatePoint]?,
+        slot: Int,
         in visionBounds: CoordinateRect,
         with mapper: CoordinateMapper
     ) -> [CoordinatePoint]? {
@@ -591,7 +607,11 @@ package struct VisionFaceDetector: Sendable {
             return nil
         }
 
-        return try? mapPoints(points, in: visionBounds, with: mapper)
+        guard let mapped = try? mapPoints(points, in: visionBounds, with: mapper) else {
+            return nil
+        }
+        mappingObserver?(.lipRegionMapped(slot: slot, pointCount: mapped.count))
+        return mapped
     }
 
     private func mappedFaceAxes(

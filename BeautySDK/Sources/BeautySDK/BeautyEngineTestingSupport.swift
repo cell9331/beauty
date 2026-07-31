@@ -283,9 +283,6 @@ package struct SDKTestingCanonicalResult: Sendable {
     package let pixelFormat: String
     package let colorSpace: String
     package let isOpaque: Bool
-    package let backingIdentity: Int
-    package let visionBackingIdentity: Int
-    package let renderBackingIdentity: Int
     package let rgba8Digest: String
     package let claimsCrossProfileLandmarkOrMaskTopologyIdentity: Bool
 }
@@ -331,7 +328,6 @@ package final class SDKTestingCanonicalStillImageHarness: @unchecked Sendable {
             inputColorSemantics: input.colorSemantics,
             extentOverride: input.extentOverride
         )
-        let identity = carrier.backingIdentity
         return SDKTestingCanonicalResult(
             extent: carrier.ciImage.extent,
             width: carrier.width,
@@ -342,9 +338,6 @@ package final class SDKTestingCanonicalStillImageHarness: @unchecked Sendable {
             pixelFormat: "RGBA8",
             colorSpace: "sRGB",
             isOpaque: true,
-            backingIdentity: identity,
-            visionBackingIdentity: identity,
-            renderBackingIdentity: identity,
             rgba8Digest: Self.digest(carrier.rgba8Data),
             claimsCrossProfileLandmarkOrMaskTopologyIdentity: false
         )

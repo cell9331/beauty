@@ -31,8 +31,6 @@ final class BeautyCanonicalStillImageTests: XCTestCase {
         XCTAssertEqual(result.pixelFormat, "RGBA8")
         XCTAssertEqual(result.colorSpace, "sRGB")
         XCTAssertTrue(result.isOpaque)
-        XCTAssertEqual(result.backingIdentity, result.visionBackingIdentity)
-        XCTAssertEqual(result.backingIdentity, result.renderBackingIdentity)
     }
 
     func testAllEightOrientationsAndMirrorVariantsNormalizeIdentically() throws {

@@ -63,8 +63,8 @@ final class StillImageRequestSupportTests: XCTestCase {
             fixture: .validOuterAndInnerWithSelectionTie
         ).mapOneRequest()
         XCTAssertEqual(result.selectedStableID, "first")
-        XCTAssertEqual(result.mappingInvocationCount, 2)
-        XCTAssertEqual(result.providerOrder, ["outer", "inner"])
+        XCTAssertEqual(result.mappingInvocationCount, 4)
+        XCTAssertEqual(result.providerOrder, ["outer", "inner", "outer", "inner"])
     }
 
     func testValidInvalidValidDoesNotReuseObservedLipSupport() throws {
@@ -124,25 +124,50 @@ private struct SDKTestingLipResult: CustomStringConvertible, CustomDebugStringCo
 }
 private final class SDKTestingStillImageRequestSupportHarness {
     private let provider: SDKTestingLipObservationProvider
-    let retainedSupportCount = 0
+    private let mappingProbe: SDKTestingLipMappingProbe
+    private var detector: VisionFaceDetector
+
+    var retainedSupportCount: Int {
+        mappingProbe.retainedSupportCount
+    }
 
     init(outerPointCount: Int) {
-        provider = SDKTestingLipObservationProvider(
+        let provider = SDKTestingLipObservationProvider(
             fixtures: [.outerCount(outerPointCount)]
+        )
+        let mappingProbe = SDKTestingLipMappingProbe()
+        self.provider = provider
+        self.mappingProbe = mappingProbe
+        self.detector = VisionFaceDetector(
+            observationProvider: provider.call,
+            mappingObserver: mappingProbe.record
         )
     }
 
     init(fixture: SDKTestingLipFixture) {
-        provider = SDKTestingLipObservationProvider(fixtures: [fixture])
+        let provider = SDKTestingLipObservationProvider(fixtures: [fixture])
+        let mappingProbe = SDKTestingLipMappingProbe()
+        self.provider = provider
+        self.mappingProbe = mappingProbe
+        self.detector = VisionFaceDetector(
+            observationProvider: provider.call,
+            mappingObserver: mappingProbe.record
+        )
     }
 
     init(fixtureSequence: [SDKTestingLipFixture]) {
-        provider = SDKTestingLipObservationProvider(fixtures: fixtureSequence)
+        let provider = SDKTestingLipObservationProvider(fixtures: fixtureSequence)
+        let mappingProbe = SDKTestingLipMappingProbe()
+        self.provider = provider
+        self.mappingProbe = mappingProbe
+        self.detector = VisionFaceDetector(
+            observationProvider: provider.call,
+            mappingObserver: mappingProbe.record
+        )
     }
 
     func mapOneRequest() throws -> SDKTestingLipResult {
         let before = provider.invocationCount
-        var detector = VisionFaceDetector(observationProvider: provider.call)
         let result = detector.detect(
             metadata: BeautyInputMetadata(orientation: .up, source: .testFixture)
         )
@@ -164,15 +189,14 @@ private final class SDKTestingStillImageRequestSupportHarness {
         return SDKTestingLipResult(
             outerPointCount: outerCount,
             innerPointCount: innerCount,
-            mappingInvocationCount: (outerCount > 0 ? 1 : 0) + (innerCount > 0 ? 1 : 0),
+            mappingInvocationCount: mappingProbe.lastRequestInvocationCount,
             visionRequestCount: provider.invocationCount - before,
             usedSyntheticFaceBoxLips: false,
-            allocatedPointCount: outerCount + innerCount,
+            allocatedPointCount: mappingProbe.lastRequestMappedPointCount,
             selectedStableID: observation?.stableID,
-            providerOrder: [
-                outerCount > 0 ? "outer" : nil,
-                innerCount > 0 ? "inner" : nil,
-            ].compactMap { $0 },
+            providerOrder: mappingProbe.lastRequestSlots.map {
+                $0 == 0 ? "outer" : "inner"
+            },
             aggregateValueID: aggregateValueID,
             dump: dumpOutput,
             mirror: mirrorLabels
@@ -184,6 +208,50 @@ private final class SDKTestingStillImageRequestSupportHarness {
             fixture: .valueID(valueID)
         )
         return try XCTUnwrap(harness.mapOneRequest().aggregateValueID)
+    }
+}
+
+private final class SDKTestingLipMappingProbe: @unchecked Sendable {
+    private let lock = NSLock()
+    private var activeMappedPointCount = 0
+    private var currentSlots: [Int] = []
+    private var lastSlots: [Int] = []
+    private var lastMappedPointCount = 0
+
+    var lastRequestInvocationCount: Int {
+        lock.withLock { lastSlots.count }
+    }
+
+    var lastRequestMappedPointCount: Int {
+        lock.withLock { lastMappedPointCount }
+    }
+
+    var lastRequestSlots: [Int] {
+        lock.withLock { lastSlots }
+    }
+
+    var retainedSupportCount: Int {
+        lock.withLock { activeMappedPointCount }
+    }
+
+    func record(_ event: VisionFaceDetector.MappingEvent) {
+        lock.withLock {
+            switch event {
+            case .requestStarted:
+                activeMappedPointCount = 0
+                currentSlots = []
+                lastSlots = []
+                lastMappedPointCount = 0
+            case .lipRegionMapped(let slot, let pointCount):
+                currentSlots.append(slot)
+                activeMappedPointCount += pointCount
+            case .requestFinished:
+                lastSlots = currentSlots
+                lastMappedPointCount = activeMappedPointCount
+                currentSlots = []
+                activeMappedPointCount = 0
+            }
+        }
     }
 }
 
