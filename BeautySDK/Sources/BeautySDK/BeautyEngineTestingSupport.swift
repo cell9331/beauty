@@ -645,6 +645,10 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     private var canonicalizerIdentities: [ObjectIdentifier] = []
     private var canonicalizerContextIdentities: [ObjectIdentifier] = []
     private var canonicalizerConstructionCountValue = 0
+    private var activeMappingInvocationCountValue = 0
+    private var activeMappedPointCountValue = 0
+    private var lastMappingInvocationCountValue = 0
+    private var lastMappedPointCountValue = 0
 
     package init(admittedPrivateDemandCount: Int, fixtures: [Fixture]) {
         self.admittedPrivateDemandCount = max(0, admittedPrivateDemandCount)
@@ -669,6 +673,15 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     package var usedExplicitSRGBRender: Bool { withLock { rendererUsesExplicitSRGB } }
     package var canonicalizerConstructionCount: Int {
         withLock { canonicalizerConstructionCountValue }
+    }
+    package var lastMappingInvocationCount: Int {
+        withLock { lastMappingInvocationCountValue }
+    }
+    package var lastMappedPointCount: Int {
+        withLock { lastMappedPointCountValue }
+    }
+    package var retainedMappedPointCount: Int {
+        withLock { activeMappedPointCountValue }
     }
     package var reusedCanonicalizerAndContextAcrossRequests: Bool {
         withLock {
@@ -772,6 +785,28 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
                 }
             }
             return nextObservations()
+        }
+    }
+
+    package func makeMappingObserver() -> VisionFaceDetector.MappingObserver {
+        { [self] event in
+            withLock {
+                switch event {
+                case .requestStarted:
+                    activeMappingInvocationCountValue = 0
+                    activeMappedPointCountValue = 0
+                    lastMappingInvocationCountValue = 0
+                    lastMappedPointCountValue = 0
+                case .lipRegionMapped(_, let pointCount):
+                    activeMappingInvocationCountValue += 1
+                    activeMappedPointCountValue += pointCount
+                case .requestFinished:
+                    lastMappingInvocationCountValue = activeMappingInvocationCountValue
+                    lastMappedPointCountValue = activeMappedPointCountValue
+                    activeMappingInvocationCountValue = 0
+                    activeMappedPointCountValue = 0
+                }
+            }
         }
     }
 
@@ -902,6 +937,15 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     public var canonicalizerConstructionCount: Int {
         hooks.canonicalizerConstructionCount
     }
+    public var lastMappingInvocationCount: Int {
+        hooks.lastMappingInvocationCount
+    }
+    public var lastMappedPointCount: Int {
+        hooks.lastMappedPointCount
+    }
+    public var retainedMappedPointCount: Int {
+        hooks.retainedMappedPointCount
+    }
     public var reusedCanonicalizerAndContextAcrossRequests: Bool {
         hooks.reusedCanonicalizerAndContextAcrossRequests
     }
@@ -965,7 +1009,10 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         self.hooks = hooks
         self.engine = try BeautyEngine(
             configuration: .default,
-            faceDetector: VisionFaceDetector(observationProvider: hooks.makeObservationProvider()),
+            faceDetector: VisionFaceDetector(
+                observationProvider: hooks.makeObservationProvider(),
+                mappingObserver: hooks.makeMappingObserver()
+            ),
             localRetouchTestingHooks: hooks
         )
     }
