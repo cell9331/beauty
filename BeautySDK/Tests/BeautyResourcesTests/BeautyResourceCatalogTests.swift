@@ -1,5 +1,6 @@
 import BeautyCore
 import BeautyResources
+import CryptoKit
 import XCTest
 
 // Requirement evidence: EFFECT-03, EFFECT-08, SEC-03.
@@ -229,5 +230,39 @@ extension BeautyResourceCatalogTests {
                 XCTAssertNil(object[forbidden], "\(preset.id): \(forbidden)")
             }
         }
+    }
+
+    func testPhase53PresetSourceHashesRemainExact() throws {
+        let expectedHashes = [
+            "clear.json": "58327c8ef8cc8323d4a6e4d98754d8c9bf797b348804ca2a308c4c39e00856f8",
+            "id-photo-natural.json": "d6d2d3e5872ae0aa25823c4d76e07057ecdfa336818cd116509627995941c609",
+            "male-natural.json": "1c6e632e8740602fa662c42e41cf9709eec29b3138bf58df43fad40d8b5d0c08",
+            "natural.json": "bd102ec3643f1625d561af66fd0e7fb67c33fe5061720600907ed3fd931a08da",
+            "refined.json": "67f238fddf8d9dc08bc8b24121af25d11f9caf8a85b905cf83a47b0dff675722",
+        ]
+        let presetDirectory = repositoryRootURL()
+            .appendingPathComponent("BeautySDK/Sources/BeautyResources/Resources/Presets")
+        let actualNames = try FileManager.default.contentsOfDirectory(
+            at: presetDirectory,
+            includingPropertiesForKeys: nil
+        )
+            .filter { $0.pathExtension == "json" }
+            .map(\.lastPathComponent)
+            .sorted()
+
+        XCTAssertEqual(actualNames, expectedHashes.keys.sorted())
+        for fileName in actualNames {
+            let data = try Data(contentsOf: presetDirectory.appendingPathComponent(fileName))
+            let hash = SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+            XCTAssertEqual(hash, expectedHashes[fileName], fileName)
+        }
+    }
+
+    private func repositoryRootURL() -> URL {
+        URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
     }
 }

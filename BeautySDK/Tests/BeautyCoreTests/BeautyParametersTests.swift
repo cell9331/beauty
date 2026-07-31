@@ -1157,10 +1157,21 @@ final class BeautyParametersTests: XCTestCase {
 
 extension BeautyParametersTests {
     func testPhase53LegacyInventoryAdjacencyAt58NumericPlusFilterID() {
-        let labels = Mirror(reflecting: BeautyParameters()).children.compactMap(\.label)
+        let defaults = BeautyParameters()
+        let children = Array(Mirror(reflecting: defaults).children)
+        let labels = children.compactMap(\.label)
         XCTAssertEqual(labels.count, 59)
         XCTAssertEqual(labels.filter { $0 != "filterId" }.count, 58)
         XCTAssertEqual(labels.filter { $0 == "filterId" }.count, 1)
+        XCTAssertTrue(
+            children.allSatisfy { child in
+                if child.label == "filterId" {
+                    return child.value as? String == nil
+                }
+                return child.value as? Float == 0
+            },
+            "All 58 numeric defaults and filterId must retain their exact neutral values"
+        )
     }
 
     func testPhase53MissingKeysAndZeroDefaultsRemainNeutral() throws {
@@ -1180,6 +1191,31 @@ extension BeautyParametersTests {
         }
         XCTAssertEqual(stored.count, 59)
         XCTAssertEqual(coding, stored)
+
+        let encoded = try XCTUnwrap(
+            JSONSerialization.jsonObject(
+                with: JSONEncoder().encode(BeautyParameters(filterId: "phase53-inventory"))
+            ) as? [String: Any]
+        )
+        XCTAssertEqual(encoded.count, 59)
+        XCTAssertEqual(Set(encoded.keys), Set(stored))
+    }
+
+    func testPhase53LegacySourceConstructionRemainsNeutral() {
+        let legacySourceCall = BeautyParameters(
+            skinSmoothing: 0.2,
+            eyeSize: 0.3,
+            noseBridge: 0.1,
+            lipColor: 0.4,
+            filterId: "soft_clean"
+        )
+
+        XCTAssertEqual(legacySourceCall.skinSmoothing, 0.2)
+        XCTAssertEqual(legacySourceCall.eyeSize, 0.3)
+        XCTAssertEqual(legacySourceCall.noseBridge, 0.1)
+        XCTAssertEqual(legacySourceCall.lipColor, 0.4)
+        XCTAssertEqual(legacySourceCall.filterId, "soft_clean")
+        XCTAssertEqual(Mirror(reflecting: legacySourceCall).children.count, 59)
     }
 
     func testPhase53AdmissionBoundsAreExactAtZeroAndOne() {
