@@ -65,7 +65,7 @@ Earlier shipped milestones are preserved in their linked archives under `.planni
 - [x] 53-03-PLAN.md
 - [x] 53-04-PLAN.md
 - [x] 53-05-PLAN.md
-- [ ] 53-06-PLAN.md
+- [x] 53-06-PLAN.md
 
 ### Phase 54: Rights-Approved Evidence and Eligibility Decisions
 
@@ -161,7 +161,7 @@ All 41 v1.14 requirements map to exactly one phase: 41 mapped, 0 duplicated, 0 u
 
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
-| 53. Canonical Still-Image Contract and Private Request Foundation | 4/6 | In Progress|  |
+| 53. Canonical Still-Image Contract and Private Request Foundation | 6/6 | Complete | 2026-07-31 |
 | 54. Rights-Approved Evidence and Eligibility Decisions | 0/TBD | Not started | - |
 | 55. Original-Pixel Composition and Failure-Isolation Core | 0/TBD | Not started | - |
 | 56. Independent Teeth Whitening Slice | 0/TBD | Not started | - |
