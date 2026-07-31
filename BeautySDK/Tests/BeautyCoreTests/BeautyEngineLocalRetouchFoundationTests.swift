@@ -142,6 +142,32 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         XCTAssertEqual(harness.renderCount, 0)
     }
 
+    func testNearOpaqueCanonicalInputStopsAtProductionBoundaryBeforeVisionAndContext() throws {
+        let fixtures = [
+            try Self.floatingPointImage(width: 2, height: 2, alphas: [
+                0.999, 0.999,
+                0.999, 0.999,
+            ]),
+            try Self.floatingPointImage(width: 2, height: 2, alphas: [
+                1, 1,
+                1, Float(1).nextDown,
+            ]),
+        ]
+
+        for image in fixtures {
+            let harness = try SDKTestingLocalRetouchFoundationHarness(admittedPrivateDemandCount: 1)
+            XCTAssertThrowsError(
+                try harness.invoke(entry: .processResult, image: image, parameters: .init())
+            ) { error in
+                XCTAssertEqual(error as? BeautyError, .invalidInput)
+            }
+            XCTAssertEqual(harness.canonicalizeCount, 1)
+            XCTAssertEqual(harness.detectAndMapCount, 0)
+            XCTAssertEqual(harness.requestOwnerCreationCount, 0)
+            XCTAssertEqual(harness.renderCount, 0)
+        }
+    }
+
     func testValidInvalidValidDoesNotReuseRequestSupport() throws {
         let harness = try SDKTestingLocalRetouchFoundationHarness(
             admittedPrivateDemandCount: 1,
@@ -191,5 +217,33 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         XCTAssertFalse(flags.contains("same-engine-parallel-safe"))
         // TD-013 and mutable selected-face policy intentionally keep same-engine
         // concurrency and cooperative cancellation outside Phase 53's claim.
+    }
+
+    private static func floatingPointImage(
+        width: Int,
+        height: Int,
+        alphas: [Float]
+    ) throws -> CIImage {
+        guard width > 0,
+              height > 0,
+              alphas.count == width * height,
+              let colorSpace = CGColorSpace(name: CGColorSpace.sRGB)
+        else {
+            throw BeautyError.invalidInput
+        }
+
+        var pixels: [Float] = []
+        pixels.reserveCapacity(alphas.count * 4)
+        for alpha in alphas {
+            pixels.append(contentsOf: [0.25, 0.50, 0.75, alpha])
+        }
+        let data = pixels.withUnsafeBytes { Data($0) }
+        return CIImage(
+            bitmapData: data,
+            bytesPerRow: width * MemoryLayout<Float>.stride * 4,
+            size: CGSize(width: width, height: height),
+            format: .RGBAf,
+            colorSpace: colorSpace
+        )
     }
 }
