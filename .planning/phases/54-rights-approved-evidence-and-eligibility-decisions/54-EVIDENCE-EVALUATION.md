@@ -48,8 +48,8 @@ Actual results:
 | JSON syntax | 2/2 files pass |
 | Evidence core | 30 tests passed; 0 failed/skipped/todo |
 | Reviewer contract | 36 tests passed; 0 failed/skipped/todo |
-| Boundary checker self-test | 112/112 cases pass; ASVS HIGH 6/6; UI `27 = 8 + 19` |
-| Boundary checker live | pass; ASVS HIGH 6/6; UI `27 = 8 + 19` |
+| Boundary checker self-test | Review-fix iteration 1 adds canonical threat-inventory mutations; current command must report derived ASVS HIGH `8/8`; UI remains `27 = 8 + 19` |
+| Boundary checker live | Review-fix iteration 1 derives the ASVS HIGH denominator from `54-THREAT-INVENTORY.json`; current command must report `8/8` |
 | SwiftPM | 500 executed; 6 documented opt-in Apple Vision integration skips; 0 failures |
 | BeautyDemo build | explicit iPhone 17e / iOS 26.5 build exits 0 |
 | BeautyDemo tests | explicit iPhone 17e / iOS 26.5 test exits 0; 118/118 tests pass |
@@ -163,6 +163,7 @@ codebase remap.
 | T-54-05 denial of service | PASS | Bounded PNG/JPEG header parsing rejects malformed, over-4096, and over-16,000,000-pixel inputs before any `Image` or object URL; instrumentation plus bounded decode/dimension matching pass |
 | T-54-06 production-scope tampering | PASS | Production/Spike/owner/scope checker plus 500-test SwiftPM and 118-test Demo regressions |
 | T-54-07 evidence repudiation | PASS | Exact `27 = 8 + 19`, seven explicit judgments, deterministic fixed-name export, actual-count record |
+| T-54-08 local-review disclosure | PASS | Canonical threat inventory maps the owner privacy boundary; local-only, ephemeral, redacted, no-network/storage, and export-by-construction checks remain required |
 
 No HIGH mitigation failed, was waived, or remained unverified.
 

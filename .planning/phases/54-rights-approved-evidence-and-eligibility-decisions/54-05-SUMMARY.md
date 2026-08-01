@@ -98,7 +98,7 @@ unsupported feature.**
 
 ## ASVS Level 1 HIGH Gate
 
-All T-54-01 through T-54-07 HIGH mitigations pass. No HIGH row failed, was
+All canonical T-54-01 through T-54-08 HIGH mitigations pass. No HIGH row failed, was
 waived, or remained unverified.
 
 ## Decisions Made

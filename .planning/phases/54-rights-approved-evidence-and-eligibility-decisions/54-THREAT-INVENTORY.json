@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "active_high_ids": [
+    "T-54-01",
+    "T-54-02",
+    "T-54-03",
+    "T-54-04",
+    "T-54-05",
+    "T-54-06",
+    "T-54-07",
+    "T-54-08"
+  ],
+  "threats": [
+    { "id": "T-54-01", "severity": "HIGH", "status": "active", "disposition": "mitigate" },
+    { "id": "T-54-02", "severity": "HIGH", "status": "active", "disposition": "mitigate" },
+    { "id": "T-54-03", "severity": "HIGH", "status": "active", "disposition": "mitigate" },
+    { "id": "T-54-04", "severity": "HIGH", "status": "active", "disposition": "mitigate" },
+    { "id": "T-54-05", "severity": "HIGH", "status": "active", "disposition": "mitigate" },
+    { "id": "T-54-06", "severity": "HIGH", "status": "active", "disposition": "mitigate" },
+    { "id": "T-54-07", "severity": "HIGH", "status": "active", "disposition": "mitigate" },
+    { "id": "T-54-08", "severity": "HIGH", "status": "active", "disposition": "mitigate" }
+  ],
+  "retired_or_merged": []
+}

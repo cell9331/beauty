@@ -24,7 +24,7 @@ created: 2026-07-31
 | Boundary checker | `check_phase54_evidence_boundaries.py --self-test` plus exact Wave 0 `--expect-wave0-red`, `--core`, `--ui`, `--ledger`, `--owners`, `--scope`, and default live modes |
 | UI equality | Exact closed inventory: **27 = 8 UI consideration truths + 19 UI acceptance criteria** |
 | Final-only regression | Full SwiftPM and explicit iPhone 17e/iOS 26.5 Demo build/test run only in `54-05-01` |
-| Security | OWASP ASVS Level 1, `block_on: HIGH`; any failed/not-run/unverified HIGH row blocks its task/plan/phase |
+| Security | OWASP ASVS Level 1, `block_on: HIGH`; canonical `54-THREAT-INVENTORY.json` derives the active HIGH denominator (currently 8); any failed/not-run/unverified HIGH row blocks its task/plan/phase |
 | Diff hygiene | `git diff --check` in every GREEN task and the final gate |
 
 ## Sampling Contract
@@ -189,7 +189,7 @@ must not be promoted.
 - [x] Mutation coverage includes every research matrix item.
 - [x] UI equality is exactly 27 = 8 + 19 with no missing/duplicate/extra row.
 - [x] EVID-01..05 and LID-01 each have core, boundary, and final evidence.
-- [x] Every plan declares ASVS Level 1, `block_on: HIGH`, and named mitigation commands.
+- [x] Every plan declares ASVS Level 1, `block_on: HIGH`, and named mitigation commands; canonical inventory maps active T-54-01…T-54-08 with no retired/merged IDs currently recorded.
 - [x] Current closed decisions are inventory-derived and record both missing polarities for zero eligible/review rows, plus the independent upper-eyelid design gap.
 - [x] No sensitive local artifact, SDK/Demo behavior, or unsupported readiness claim is added.
 - [x] `54-EVIDENCE-EVALUATION.md` exists before validation fields change.

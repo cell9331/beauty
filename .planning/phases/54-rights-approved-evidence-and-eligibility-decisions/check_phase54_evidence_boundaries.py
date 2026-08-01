@@ -26,6 +26,7 @@ UI_TEST = PHASE / "54-review.contract.test.js"
 HTML = PHASE / "54-review.html"
 CONTROLLER = PHASE / "54-review-controller.js"
 LEDGER = PHASE / "54-EVIDENCE-DECISIONS.json"
+THREAT_INVENTORY = PHASE / "54-THREAT-INVENTORY.json"
 LOCAL_REVIEW_ROOT = ROOT / "example-images" / "local-retouch-review"
 SPIKE_006 = ROOT / ".codex" / "skills" / "spike-findings-beauty" / "sources" / "006-licensed-fixture-review-gate"
 
@@ -64,6 +65,8 @@ UI_CONSIDERATIONS = tuple(f"UI-CONSIDERATION-{index:02d}" for index in range(1, 
 UI_ACCEPTANCE = tuple(f"UI-AC-{index:02d}" for index in range(1, 20))
 EXPECTED_UI_ROWS = frozenset((*UI_CONSIDERATIONS, *UI_ACCEPTANCE))
 EXPECTED_SPIKE_DIGEST = "c5edde15396d5a3d1052f5bfc183d3ac4beb75e11ee4f364c1caaec28cc7a891"
+THREAT_INVENTORY_KEYS = ("schema_version", "active_high_ids", "threats", "retired_or_merged")
+THREAT_KEYS = ("id", "severity", "status", "disposition")
 
 FORBIDDEN_EXPORT_KEYS = frozenset(
     {
@@ -205,6 +208,34 @@ def validate_ui_inventory(rows: Iterable[str]) -> None:
         raise AssertionError("ui_row_equality")
     if len(materialized) != 27:
         raise AssertionError("ui_row_total")
+
+
+def validate_threat_inventory(value: Any) -> tuple[str, ...]:
+    if not isinstance(value, dict) or tuple(value) != THREAT_INVENTORY_KEYS:
+        raise AssertionError("threat_inventory_shape")
+    if type(value.get("schema_version")) is not int or value["schema_version"] != 1:
+        raise AssertionError("threat_inventory_schema")
+    active_ids = value.get("active_high_ids")
+    threats = value.get("threats")
+    retired = value.get("retired_or_merged")
+    if (not isinstance(active_ids, list) or not active_ids
+            or any(not isinstance(item, str) or not re.fullmatch(r"T-54-\d{2}", item) for item in active_ids)
+            or len(active_ids) != len(set(active_ids))):
+        raise AssertionError("threat_inventory_ids")
+    if not isinstance(threats, list) or len(threats) != len(active_ids):
+        raise AssertionError("threat_inventory_rows")
+    rows = []
+    for threat in threats:
+        if not isinstance(threat, dict) or tuple(threat) != THREAT_KEYS:
+            raise AssertionError("threat_inventory_row_shape")
+        if threat["severity"] != "HIGH" or threat["status"] != "active" or threat["disposition"] != "mitigate":
+            raise AssertionError("threat_inventory_row_status")
+        rows.append(threat["id"])
+    if rows != active_ids or not isinstance(retired, list):
+        raise AssertionError("threat_inventory_row_ids")
+    if any(not isinstance(item, dict) or tuple(item) != ("id", "replacement", "reason") for item in retired):
+        raise AssertionError("threat_inventory_retired_shape")
+    return tuple(active_ids)
 
 
 def validate_html_document(text: str) -> None:
@@ -438,6 +469,18 @@ def check_ledger() -> list[str]:
         return [f"ledger:{error}"]
 
 
+def check_threat_inventory() -> list[str]:
+    if not THREAT_INVENTORY.is_file():
+        return ["threats:missing_inventory"]
+    try:
+        ids = validate_threat_inventory(parse_json(THREAT_INVENTORY))
+        if len(ids) < 1:
+            return ["threats:empty_inventory"]
+        return []
+    except (RuntimeError, AssertionError) as error:
+        return [f"threats:{error}"]
+
+
 def check_ignore() -> list[str]:
     failures: list[str] = []
     ignore = ROOT / ".gitignore"
@@ -515,7 +558,7 @@ def check_scope() -> list[str]:
 
 
 def check_all() -> list[str]:
-    return sorted(set((*check_core(), *check_ui(), *check_ledger(), *check_ignore(), *check_owners(), *check_scope())))
+    return sorted(set((*check_core(), *check_ui(), *check_ledger(), *check_threat_inventory(), *check_ignore(), *check_owners(), *check_scope())))
 
 
 def must_fail(action, name: str) -> None:
@@ -528,7 +571,26 @@ def must_fail(action, name: str) -> None:
 
 def self_test() -> None:
     validate_ui_inventory((*UI_CONSIDERATIONS, *UI_ACCEPTANCE))
-    cases = 1
+    clean_threats = {
+        "schema_version": 1,
+        "active_high_ids": [f"T-54-{index:02d}" for index in range(1, 9)],
+        "threats": [
+            {"id": f"T-54-{index:02d}", "severity": "HIGH", "status": "active", "disposition": "mitigate"}
+            for index in range(1, 9)
+        ],
+        "retired_or_merged": [],
+    }
+    assert validate_threat_inventory(clean_threats) == tuple(clean_threats["active_high_ids"])
+    cases = 2
+    for mutation_name, mutate in [
+        ("missing_high", lambda value: value["threats"].pop()),
+        ("extra_high", lambda value: value["threats"].append({"id": "T-54-09", "severity": "HIGH", "status": "active", "disposition": "mitigate"})),
+        ("retired_mapping_shape", lambda value: value.update({"retired_or_merged": [{"id": "T-54-07"}]})),
+    ]:
+        candidate = json.loads(json.dumps(clean_threats))
+        mutate(candidate)
+        must_fail(lambda candidate=candidate: validate_threat_inventory(candidate), mutation_name)
+        cases += 1
 
     for returncode, stdout, stderr, expected in [(0, "hit\n", "", "match"), (1, "", "", "clean")]:
         assert classify_scan(returncode, stdout, stderr) == expected
@@ -676,7 +738,7 @@ def self_test() -> None:
         "uiConsiderations": 8,
         "uiAcceptance": 19,
         "asvsLevel": 1,
-        "highMitigations": 6,
+        "highMitigations": len(clean_threats["active_high_ids"]),
     }, sort_keys=True))
 
 
@@ -718,7 +780,7 @@ def main() -> int:
     elif args.ui:
         failures = check_ui()
     elif args.ledger:
-        failures = [*check_ledger(), *check_ignore()]
+        failures = [*check_ledger(), *check_ignore(), *check_threat_inventory()]
     elif args.owners:
         failures = check_owners()
     elif args.scope:
@@ -728,7 +790,8 @@ def main() -> int:
     if failures:
         print_failures(sorted(set(failures)))
         return 1
-    print(json.dumps({"status": "pass", "mode": "live", "uiRows": "27 = 8 + 19", "asvsHigh": "6/6"}, sort_keys=True))
+    high_ids = validate_threat_inventory(parse_json(THREAT_INVENTORY))
+    print(json.dumps({"status": "pass", "mode": "live", "uiRows": "27 = 8 + 19", "asvsHigh": f"{len(high_ids)}/{len(high_ids)}"}, sort_keys=True))
     return 0
 
 
