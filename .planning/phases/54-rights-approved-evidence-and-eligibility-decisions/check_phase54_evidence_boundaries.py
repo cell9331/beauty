@@ -33,6 +33,31 @@ EXPECTED_REASONS = {
     "sclera_redness": ["missing_genuine_positive", "incomplete_asset_triple"],
     "upper_eyelid_fullness": ["missing_genuine_positive", "non_warp_design_unqualified"],
 }
+DECISION_KEYS = (
+    "feature",
+    "status",
+    "reasons",
+    "eligible_count",
+    "reviewed_count",
+    "accepted_count",
+    "rejected_count",
+    "naturalness_weight",
+)
+AGGREGATE_KEYS = (
+    "feature",
+    "eligible_count",
+    "reviewed_count",
+    "accepted_count",
+    "rejected_count",
+    "naturalness_weight",
+)
+ZERO_VALUE_KEYS = (
+    "eligible_count",
+    "reviewed_count",
+    "accepted_count",
+    "rejected_count",
+    "naturalness_weight",
+)
 UI_CONSIDERATIONS = tuple(f"UI-CONSIDERATION-{index:02d}" for index in range(1, 9))
 UI_ACCEPTANCE = tuple(f"UI-AC-{index:02d}" for index in range(1, 20))
 EXPECTED_UI_ROWS = frozenset((*UI_CONSIDERATIONS, *UI_ACCEPTANCE))
@@ -244,29 +269,49 @@ def validate_ledger_object(value: Any) -> list[str]:
         return ["ledger:not_object"]
     if list(value) != ["schema_version", "feature_decisions", "reviews", "aggregates"]:
         failures.append("ledger:top_level_allowlist")
-    if value.get("schema_version") != 1:
+    if type(value.get("schema_version")) is not int or value.get("schema_version") != 1:
         failures.append("ledger:schema_version")
     decisions = value.get("feature_decisions")
-    if not isinstance(decisions, list) or [row.get("feature") for row in decisions if isinstance(row, dict)] != FEATURE_ORDER:
+    if not isinstance(decisions, list) or len(decisions) != len(FEATURE_ORDER):
         failures.append("ledger:feature_order")
     else:
-        for row in decisions:
+        for index, (row, expected_feature) in enumerate(zip(decisions, FEATURE_ORDER)):
+            if not isinstance(row, dict):
+                failures.append(f"ledger:decision_not_object:{index}")
+                continue
             feature = row.get("feature")
-            if row.get("status") != "closed":
+            label = feature if isinstance(feature, str) else str(index)
+            if list(row) != list(DECISION_KEYS):
+                failures.append(f"ledger:decision_allowlist:{label}")
+            if feature != expected_feature:
+                failures.append("ledger:feature_order")
+                continue
+            if not isinstance(row.get("status"), str) or row.get("status") != "closed":
                 failures.append(f"ledger:status:{feature}")
-            if row.get("reasons") != EXPECTED_REASONS[feature]:
+            reasons = row.get("reasons")
+            if not isinstance(reasons, list) or reasons != EXPECTED_REASONS[feature] or any(not isinstance(reason, str) for reason in reasons):
                 failures.append(f"ledger:reasons:{feature}")
-            for key, item in row.items():
-                if key.endswith("_count") or key == "naturalness_weight":
-                    if item != 0:
-                        failures.append(f"ledger:nonzero_count:{feature}")
+            if any(type(row.get(key)) is not int or row.get(key) != 0 for key in ZERO_VALUE_KEYS):
+                failures.append(f"ledger:nonzero_count:{feature}")
     if value.get("reviews") != []:
         failures.append("ledger:reviews_not_empty")
     aggregates = value.get("aggregates")
-    if not isinstance(aggregates, list) or [row.get("feature") for row in aggregates if isinstance(row, dict)] != FEATURE_ORDER:
+    if not isinstance(aggregates, list) or len(aggregates) != len(FEATURE_ORDER):
         failures.append("ledger:aggregate_order")
-    elif any(item != 0 for row in aggregates for key, item in row.items() if key != "feature"):
-        failures.append("ledger:aggregate_nonzero")
+    else:
+        for index, (row, expected_feature) in enumerate(zip(aggregates, FEATURE_ORDER)):
+            if not isinstance(row, dict):
+                failures.append(f"ledger:aggregate_not_object:{index}")
+                continue
+            feature = row.get("feature")
+            label = feature if isinstance(feature, str) else str(index)
+            if list(row) != list(AGGREGATE_KEYS):
+                failures.append(f"ledger:aggregate_allowlist:{label}")
+            if feature != expected_feature:
+                failures.append("ledger:aggregate_order")
+                continue
+            if any(type(row.get(key)) is not int or row.get(key) != 0 for key in ZERO_VALUE_KEYS):
+                failures.append(f"ledger:aggregate_nonzero:{feature}")
     walk_export(value, failures)
     return sorted(set(failures))
 
@@ -587,11 +632,14 @@ def self_test() -> None:
         assert scan_patterns(sample, FORBIDDEN_REVIEWER_PATTERNS), sample
         cases += 1
 
-    for unsafe in ["raw error value", "/Users/private/item.png", "rights_record_opaque"]:
+    for collection, index, key, value, expected_failure in [
+        ("feature_decisions", 0, "source_uri", "opaque", "ledger:decision_allowlist:teeth_whitening"),
+        ("feature_decisions", 1, "reviewerName", "anonymous", "ledger:decision_allowlist:sclera_redness"),
+        ("aggregates", 2, "status_detail", "/Users/private/item.png", "ledger:aggregate_allowlist:upper_eyelid_fullness"),
+    ]:
         candidate = json.loads(json.dumps(clean_ledger))
-        candidate["aggregates"][0]["status"] = unsafe
-        if unsafe.startswith("/Users"):
-            assert validate_ledger_object(candidate)
+        candidate[collection][index][key] = value
+        assert expected_failure in validate_ledger_object(candidate)
         cases += 1
 
     print(json.dumps({
