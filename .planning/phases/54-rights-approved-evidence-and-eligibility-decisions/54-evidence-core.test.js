@@ -184,9 +184,9 @@ test("constants freeze the Phase 54 enum and safety inventories", () => {
 
 test("core-owned baseline snapshots remain branded, frozen, and deterministically closed", () => {
   const expected = {
-    teeth_whitening: ["missing_genuine_positive"],
-    sclera_redness: ["missing_genuine_positive", "incomplete_asset_triple"],
-    upper_eyelid_fullness: ["missing_genuine_positive", "non_warp_design_unqualified"],
+    teeth_whitening: ["missing_genuine_positive", "missing_genuine_negative"],
+    sclera_redness: ["missing_genuine_positive", "missing_genuine_negative"],
+    upper_eyelid_fullness: ["missing_genuine_positive", "missing_genuine_negative", "non_warp_design_unqualified"],
   };
   for (const feature of FEATURE_ORDER) {
     const snapshot = core.createClosedSnapshot(feature);
@@ -195,6 +195,17 @@ test("core-owned baseline snapshots remain branded, frozen, and deterministicall
     assert.throws(() => core.evaluateFeature(clone(snapshot), []), /feature_snapshot_invalid/);
   }
   assert.throws(() => core.createClosedSnapshot("unsupported"), /feature_invalid/);
+});
+
+test("empty inventory derives both missing polarities without feature-specific baseline exceptions", () => {
+  for (const feature of FEATURE_ORDER) {
+    const decision = core.evaluateFeature(core.createClosedSnapshot(feature), []);
+    assert.equal(decision.eligible_count, 0);
+    assert.equal(decision.reviewed_count, 0);
+    assert.ok(decision.reasons.includes("missing_genuine_positive"), feature);
+    assert.ok(decision.reasons.includes("missing_genuine_negative"), feature);
+    assert.equal(decision.reasons.includes("incomplete_asset_triple"), false, feature);
+  }
 });
 
 test("bundle accepts one complete genuine approved positive and negative", () => {

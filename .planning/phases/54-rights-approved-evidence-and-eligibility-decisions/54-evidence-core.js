@@ -94,11 +94,6 @@
   const canonicalSnapshots = new WeakSet();
   const reviewSnapshots = new WeakMap();
   const trustedAuthorizationRegistries = new WeakSet();
-  const BASE_CLOSED_REASONS = {
-    teeth_whitening: ["missing_genuine_positive"],
-    sclera_redness: ["missing_genuine_positive", "incomplete_asset_triple"],
-    upper_eyelid_fullness: ["missing_genuine_positive"],
-  };
 
   function deepFreeze(value) {
     if (value === null || typeof value !== "object" || Object.isFrozen(value)) return value;
@@ -316,6 +311,15 @@
       && grant.evidence_classification === row.evidence_role);
   }
 
+  function deriveInventoryReasons({ declaredPositive, declaredNegative, missingAssets, unapprovedGenuineRows }) {
+    const reasons = [];
+    if (declaredPositive === 0) reasons.push("missing_genuine_positive");
+    if (declaredNegative === 0) reasons.push("missing_genuine_negative");
+    if (missingAssets > 0) reasons.push("incomplete_asset_triple");
+    if (unapprovedGenuineRows > 0) reasons.push("unapproved_fixture");
+    return uniqueReasons(reasons);
+  }
+
   function createReviewSnapshot(manifest, availableAssetKeys, authorizationRegistry) {
     const validation = validateManifest(manifest);
     if (!validation.valid) return invalidResult(validation.reasons);
@@ -352,17 +356,18 @@
       (rowCount, field) => rowCount + (inventory.keys.has(row.assets[field]) ? 0 : 1),
       0,
     ), 0);
-    const reasons = [];
-    if (declaredPositive === 0) reasons.push("missing_genuine_positive");
-    if (declaredNegative === 0) reasons.push("missing_genuine_negative");
-    if (missingAssets > 0) reasons.push("incomplete_asset_triple");
-    if (unapprovedGenuineRows > 0) reasons.push("unapproved_fixture");
+    const reasons = deriveInventoryReasons({
+      declaredPositive,
+      declaredNegative,
+      missingAssets,
+      unapprovedGenuineRows,
+    });
 
     const snapshot = deepFreeze({
       valid: true,
       feature: manifest.feature,
       ready: declaredPositive > 0 && declaredNegative > 0 && missingAssets === 0 && unapprovedGenuineRows === 0,
-      reasons: uniqueReasons(reasons),
+      reasons,
       review_rows: reviewRows,
       selected_rows: selectedRows,
       excluded_counts: {
@@ -382,11 +387,17 @@
 
   function createClosedSnapshot(feature) {
     if (!FEATURES.includes(feature)) throw new Error("feature_invalid");
+    const reasons = deriveInventoryReasons({
+      declaredPositive: 0,
+      declaredNegative: 0,
+      missingAssets: 0,
+      unapprovedGenuineRows: 0,
+    });
     const snapshot = deepFreeze({
       valid: true,
       feature,
       ready: false,
-      reasons: [...BASE_CLOSED_REASONS[feature]],
+      reasons,
       review_rows: [],
       selected_rows: [],
       excluded_counts: { rows: 0, naturalness_weight: 0 },

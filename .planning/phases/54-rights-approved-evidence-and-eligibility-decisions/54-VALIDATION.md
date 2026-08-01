@@ -42,8 +42,9 @@ created: 2026-07-31
   convert an unrun earlier row to passed.
 - Sensitive manifests/media/downloads/smoke files stay under ignored
   `example-images/local-retouch-review/` and never appear in tracked evidence.
-- Closed current teeth/sclera/upper-eyelid decisions are expected assertions,
-  not failure waivers.
+- Closed current teeth/sclera/upper-eyelid decisions are derived from the
+  explicit validated inventory, not feature-specific baseline assertions or
+  failure waivers. Zero eligible/review rows require both missing polarities.
 
 ## Exact Per-Task Verification Map
 
@@ -189,7 +190,7 @@ must not be promoted.
 - [x] UI equality is exactly 27 = 8 + 19 with no missing/duplicate/extra row.
 - [x] EVID-01..05 and LID-01 each have core, boundary, and final evidence.
 - [x] Every plan declares ASVS Level 1, `block_on: HIGH`, and named mitigation commands.
-- [x] Current closed decisions match D-10/D-11/D-16 and are recorded as success.
+- [x] Current closed decisions are inventory-derived and record both missing polarities for zero eligible/review rows, plus the independent upper-eyelid design gap.
 - [x] No sensitive local artifact, SDK/Demo behavior, or unsupported readiness claim is added.
 - [x] `54-EVIDENCE-EVALUATION.md` exists before validation fields change.
 

@@ -98,11 +98,11 @@ contain only `feature`, `status`, `reasons`, four count fields, and
 `naturalness_weight`; aggregate rows omit status/reasons. `reviews` is empty and
 all counts/weights are zero.
 
-The mechanics smoke export correctly adds `missing_genuine_negative` to the
-teeth closure because that disposable bundle supplies neither genuine polarity.
-It does not replace the durable repository product ledger, whose authorized
-portrait supplies the bounded teeth-negative/containment context but not a
-genuine yellow-teeth positive.
+The mechanics smoke and durable repository export both derive their reasons
+from their validated eligible/review inventories. The authorized portrait is
+only possible teeth-negative context: without its complete teeth-specific
+triple and frozen accepted review, it supplies neither an eligible row nor a
+discharged negative prerequisite.
 
 ## Current Durable Eligibility Ledger
 
@@ -110,9 +110,9 @@ The authoritative `54-EVIDENCE-DECISIONS.json` remains exactly:
 
 | Feature | Status | Reasons | Eligible / reviewed / accepted / rejected | Naturalness weight |
 |---|---|---|---:|---:|
-| `teeth_whitening` | closed | `missing_genuine_positive` | 0 / 0 / 0 / 0 | 0 |
-| `sclera_redness` | closed | `missing_genuine_positive`, `incomplete_asset_triple` | 0 / 0 / 0 / 0 | 0 |
-| `upper_eyelid_fullness` | closed | `missing_genuine_positive`, `non_warp_design_unqualified` | 0 / 0 / 0 / 0 | 0 |
+| `teeth_whitening` | closed | `missing_genuine_positive`, `missing_genuine_negative` | 0 / 0 / 0 / 0 | 0 |
+| `sclera_redness` | closed | `missing_genuine_positive`, `missing_genuine_negative` | 0 / 0 / 0 / 0 | 0 |
+| `upper_eyelid_fullness` | closed | `missing_genuine_positive`, `missing_genuine_negative`, `non_warp_design_unqualified` | 0 / 0 / 0 / 0 | 0 |
 
 The row order is fixed, `reviews` is empty, every feature owns its own counts and
 reasons, and there is no cross-feature aggregate or sibling borrowing.

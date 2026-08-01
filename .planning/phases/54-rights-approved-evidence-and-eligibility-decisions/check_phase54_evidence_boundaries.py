@@ -31,9 +31,9 @@ SPIKE_006 = ROOT / ".codex" / "skills" / "spike-findings-beauty" / "sources" / "
 
 FEATURE_ORDER = ["teeth_whitening", "sclera_redness", "upper_eyelid_fullness"]
 EXPECTED_REASONS = {
-    "teeth_whitening": ["missing_genuine_positive"],
-    "sclera_redness": ["missing_genuine_positive", "incomplete_asset_triple"],
-    "upper_eyelid_fullness": ["missing_genuine_positive", "non_warp_design_unqualified"],
+    "teeth_whitening": ["missing_genuine_positive", "missing_genuine_negative"],
+    "sclera_redness": ["missing_genuine_positive", "missing_genuine_negative"],
+    "upper_eyelid_fullness": ["missing_genuine_positive", "missing_genuine_negative", "non_warp_design_unqualified"],
 }
 DECISION_KEYS = (
     "feature",

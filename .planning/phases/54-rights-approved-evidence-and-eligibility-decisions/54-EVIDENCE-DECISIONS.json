@@ -5,7 +5,8 @@
       "feature": "teeth_whitening",
       "status": "closed",
       "reasons": [
-        "missing_genuine_positive"
+        "missing_genuine_positive",
+        "missing_genuine_negative"
       ],
       "eligible_count": 0,
       "reviewed_count": 0,
@@ -18,7 +19,7 @@
       "status": "closed",
       "reasons": [
         "missing_genuine_positive",
-        "incomplete_asset_triple"
+        "missing_genuine_negative"
       ],
       "eligible_count": 0,
       "reviewed_count": 0,
@@ -31,6 +32,7 @@
       "status": "closed",
       "reasons": [
         "missing_genuine_positive",
+        "missing_genuine_negative",
         "non_warp_design_unqualified"
       ],
       "eligible_count": 0,
