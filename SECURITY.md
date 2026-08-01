@@ -169,6 +169,13 @@ Phase 28 face-shape privacy evidence recorded 2026-07-08:
 - T-53-04/T-53-05 keep the selected observation inside one stack-local non-Codable context and reduce diagnostics to aggregate counts. Request cleanup runs on both success and throw; no-face/missing support continues safe shipped color work, malformed fixtures fail closed, and a later valid request receives only its own aggregate synthetic identity. Same-engine concurrency and cooperative cancellation remain explicitly unverified under TD-013.
 - Final ASVS Level 1 review verifies every HIGH row T-53-01 through T-53-06: checker self/live modes pass, the 83-test named foundation/compatibility gate passes, the 18-test inactive renderer regression passes, and full SwiftPM passes 495 tests with six documented opt-in skips and zero failures. The skips are unrelated Vision integrations and do not skip any HIGH mitigation; raw portrait support remains package/request-local and aggregate-only.
 
+### Phase 54 Local Evidence Review Security Boundary
+
+- EVID-01/EVID-02 treat every selected local manifest, media file, asset key, declared role, and review value as untrusted. Validation uses exact safe relative keys, opaque identifiers, bounded rows/bytes/dimensions, complete original-mask-after triples, exact feature/polarity enums, and a rights-status/evidence-role positive allowlist; basename repair, traversal, aliases, active formats, and undeclared polarity fail closed.
+- EVID-03/LID-01 keep review state session-local and ephemeral. The reviewer uses local File/object URLs only, revokes them on replacement/reset, renders fixed text through safe DOM APIs, exposes redacted fixed reason codes, and permits no network, external resource, form submission, clipboard, worker, cookie, local/session storage, IndexedDB, cache, service worker, or tracked media path.
+- The exact Git boundary `example-images/local-retouch-review/` is ignored and must remain untracked. D-15/D-16 durable output is constructed by positive allowlist from aggregate decision/count fields only; it excludes media, filenames/paths, rights records, reviewer identity, timestamps, session/event metadata, notes/freeform text, raw errors, and geometry.
+- T-54-01 through T-54-06 remain ASVS Level 1 HIGH gates. Phase 54 adds no SDK or Demo import of the review core, no provider/renderer/preset/admission route, no cloud/model/dependency, and no change to Phase 53 exact-empty production admission.
+
 ## 3. Trust Boundaries
 
 ```text
