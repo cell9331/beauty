@@ -2,9 +2,9 @@
 phase: 54
 slug: rights-approved-evidence-and-eligibility-decisions
 # status lifecycle: draft (plan-phase) -> validated (Plan 54-05 after exact evidence)
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: validated
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-07-31
 ---
 
@@ -49,31 +49,31 @@ created: 2026-07-31
 
 | Actual task ID | Plan | Wave | Plan dependency | Wave 0 dependency | Requirements | Focused sample / final-only gate | Status |
 |---|---:|---:|---|---|---|---|---|
-| `54-01-01` | `54-01` | 0 | `[]` | Creates core mutation suite | EVID-01..05, LID-01 | Syntax check plus exact `RED_MISSING_ARTIFACT:54-evidence-core.js` oracle; arbitrary nonzero failures are rejected | pending |
-| `54-01-02` | `54-01` | 0 | `[]` | Creates UI contract suite and checker | EVID-03..05, LID-01 | Python/JS syntax, checker `--self-test` + exact `--expect-wave0-red`, and exact absent HTML/controller RED marker | pending |
-| `54-02-01` | `54-02` | 1 | `[54-01]` | `54-01-01` | EVID-01, EVID-02 | Node pattern `bundle|manifest|path|identity|role|rights|eligibility|snapshot|portrait`, JS/JSON syntax, checker `--core` | pending |
-| `54-02-02` | `54-02` | 1 | `[54-01]` | `54-01-01` | EVID-03..05, LID-01 | Complete `54-evidence-core.test.js`, checker `--core` | pending |
-| `54-03-01` | `54-03` | 2 | `[54-02]` | `54-01-02` | EVID-01, EVID-03, EVID-04 | UI pattern `initial|local-only|redacted|blinded|detail|asset|loader|gate|comparison|empty|loading|error|populated|partial`, checker `--ui` | pending |
-| `54-03-02` | `54-03` | 2 | `[54-02]` | `54-01-01`, `54-01-02` | EVID-02..05, LID-01 | Complete UI/core Node suites, checker `--ui`, exact `27 = 8 + 19` | pending |
-| `54-04-01` | `54-04` | 3 | `[54-03]` | `54-01-01`, `54-01-02` | EVID-01, EVID-02, EVID-04, EVID-05, LID-01 | JSON parse, checker `--ledger`, Git ignore/untracked proof | pending |
-| `54-04-02` | `54-04` | 3 | `[54-03]` | `54-01-02` | EVID-01..05, LID-01 | checker `--owners`, `--scope`, and default implementation live mode | pending |
-| `54-05-01` | `54-05` | 4 | `[54-04]` | `54-01-01`, `54-01-02` | EVID-01..05, LID-01 | **FINAL ONLY:** complete Node/checker/browser/full SwiftPM/Demo/schema/UI/diff gate from `54-05-PLAN.md` | pending |
+| `54-01-01` | `54-01` | 0 | `[]` | Creates core mutation suite | EVID-01..05, LID-01 | Syntax check plus exact `RED_MISSING_ARTIFACT:54-evidence-core.js` oracle; arbitrary nonzero failures are rejected | passed |
+| `54-01-02` | `54-01` | 0 | `[]` | Creates UI contract suite and checker | EVID-03..05, LID-01 | Python/JS syntax, checker `--self-test` + exact `--expect-wave0-red`, and exact absent HTML/controller RED marker | passed |
+| `54-02-01` | `54-02` | 1 | `[54-01]` | `54-01-01` | EVID-01, EVID-02 | Node pattern `bundle|manifest|path|identity|role|rights|eligibility|snapshot|portrait`, JS/JSON syntax, checker `--core` | passed |
+| `54-02-02` | `54-02` | 1 | `[54-01]` | `54-01-01` | EVID-03..05, LID-01 | Complete `54-evidence-core.test.js`, checker `--core` | passed |
+| `54-03-01` | `54-03` | 2 | `[54-02]` | `54-01-02` | EVID-01, EVID-03, EVID-04 | UI pattern `initial|local-only|redacted|blinded|detail|asset|loader|gate|comparison|empty|loading|error|populated|partial`, checker `--ui` | passed |
+| `54-03-02` | `54-03` | 2 | `[54-02]` | `54-01-01`, `54-01-02` | EVID-02..05, LID-01 | Complete UI/core Node suites, checker `--ui`, exact `27 = 8 + 19` | passed |
+| `54-04-01` | `54-04` | 3 | `[54-03]` | `54-01-01`, `54-01-02` | EVID-01, EVID-02, EVID-04, EVID-05, LID-01 | JSON parse, checker `--ledger`, Git ignore/untracked proof | passed |
+| `54-04-02` | `54-04` | 3 | `[54-03]` | `54-01-02` | EVID-01..05, LID-01 | checker `--owners`, `--scope`, and default implementation live mode | passed |
+| `54-05-01` | `54-05` | 4 | `[54-04]` | `54-01-01`, `54-01-02` | EVID-01..05, LID-01 | **FINAL ONLY:** complete Node/checker/browser/full SwiftPM/Demo/schema/UI/diff gate from `54-05-PLAN.md` | passed |
 
 Task count equality: **9 actual XML task IDs = 9 validation rows = 2 Wave 0 + 6 focused GREEN + 1 final closeout**.
 
 ## Wave 0 Deliverables
 
-- [ ] `54-01-01` creates `54-evidence-core.test.js` with the complete path,
+- [x] `54-01-01` creates `54-evidence-core.test.js` with the complete path,
   identity, schema, enum, completeness, product-exclusion, frozen-review,
   independent-reducer, eyelid-conjunction, export, and privacy mutation matrix.
-- [ ] `54-01-02` creates `54-review.contract.test.js` and
+- [x] `54-01-02` creates `54-review.contract.test.js` and
   `check_phase54_evidence_boundaries.py`, including every network/storage/DOM,
   Git, current-ledger, production-scope, packaged-spike, owner, and scanner-error
   mutation. Its RED oracle names the absent HTML/controller pair exactly and
   rejects syntax, discovery, subprocess, scanner, or unclassified failures.
-- [ ] Checker self-test freezes exact UI equality **27 = 8 considerations + 19
+- [x] Checker self-test freezes exact UI equality **27 = 8 considerations + 19
   acceptance criteria**, rejecting missing, duplicate, extra, or reclassified IDs.
-- [ ] Wave 0 tests contain only opaque synthetic in-memory data and write no
+- [x] Wave 0 tests contain only opaque synthetic in-memory data and write no
   media, path, rights, reviewer, timestamp, or generated artifact.
 
 ## Requirement-to-Evidence Map
@@ -181,16 +181,16 @@ must not be promoted.
 
 ## Validation Sign-Off
 
-- [ ] All nine actual task IDs have one exact map row.
-- [ ] Every task has an automated sample and records its own result.
-- [ ] Full SwiftPM and Demo build/test appear only in `54-05-01`.
-- [ ] Every GREEN task names its Wave 0 dependency.
-- [ ] Mutation coverage includes every research matrix item.
-- [ ] UI equality is exactly 27 = 8 + 19 with no missing/duplicate/extra row.
-- [ ] EVID-01..05 and LID-01 each have core, boundary, and final evidence.
-- [ ] Every plan declares ASVS Level 1, `block_on: HIGH`, and named mitigation commands.
-- [ ] Current closed decisions match D-10/D-11/D-16 and are recorded as success.
-- [ ] No sensitive local artifact, SDK/Demo behavior, or unsupported readiness claim is added.
-- [ ] `54-EVIDENCE-EVALUATION.md` exists before validation fields change.
+- [x] All nine actual task IDs have one exact map row.
+- [x] Every task has an automated sample and records its own result.
+- [x] Full SwiftPM and Demo build/test appear only in `54-05-01`.
+- [x] Every GREEN task names its Wave 0 dependency.
+- [x] Mutation coverage includes every research matrix item.
+- [x] UI equality is exactly 27 = 8 + 19 with no missing/duplicate/extra row.
+- [x] EVID-01..05 and LID-01 each have core, boundary, and final evidence.
+- [x] Every plan declares ASVS Level 1, `block_on: HIGH`, and named mitigation commands.
+- [x] Current closed decisions match D-10/D-11/D-16 and are recorded as success.
+- [x] No sensitive local artifact, SDK/Demo behavior, or unsupported readiness claim is added.
+- [x] `54-EVIDENCE-EVALUATION.md` exists before validation fields change.
 
-**Approval:** pending execution evidence
+**Approval:** validated by `54-EVIDENCE-EVALUATION.md`; all nine task rows and every ASVS Level 1 HIGH mitigation passed.
