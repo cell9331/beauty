@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "feature_decisions": [
+    {
+      "feature": "teeth_whitening",
+      "status": "closed",
+      "reasons": [
+        "missing_genuine_positive"
+      ],
+      "eligible_count": 0,
+      "reviewed_count": 0,
+      "accepted_count": 0,
+      "rejected_count": 0,
+      "naturalness_weight": 0
+    },
+    {
+      "feature": "sclera_redness",
+      "status": "closed",
+      "reasons": [
+        "missing_genuine_positive",
+        "incomplete_asset_triple"
+      ],
+      "eligible_count": 0,
+      "reviewed_count": 0,
+      "accepted_count": 0,
+      "rejected_count": 0,
+      "naturalness_weight": 0
+    },
+    {
+      "feature": "upper_eyelid_fullness",
+      "status": "closed",
+      "reasons": [
+        "missing_genuine_positive",
+        "non_warp_design_unqualified"
+      ],
+      "eligible_count": 0,
+      "reviewed_count": 0,
+      "accepted_count": 0,
+      "rejected_count": 0,
+      "naturalness_weight": 0
+    }
+  ],
+  "reviews": [],
+  "aggregates": [
+    {
+      "feature": "teeth_whitening",
+      "eligible_count": 0,
+      "reviewed_count": 0,
+      "accepted_count": 0,
+      "rejected_count": 0,
+      "naturalness_weight": 0
+    },
+    {
+      "feature": "sclera_redness",
+      "eligible_count": 0,
+      "reviewed_count": 0,
+      "accepted_count": 0,
+      "rejected_count": 0,
+      "naturalness_weight": 0
+    },
+    {
+      "feature": "upper_eyelid_fullness",
+      "eligible_count": 0,
+      "reviewed_count": 0,
+      "accepted_count": 0,
+      "rejected_count": 0,
+      "naturalness_weight": 0
+    }
+  ]
+}

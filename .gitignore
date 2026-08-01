@@ -51,3 +51,6 @@ example-images/.gallery-quarantine/
 *.[gG][lL][bB]
 *.[gG][lL][tT][fF]
 *.[cC][uU][bB][eE]
+
+# Phase 54 local-only evidence review bundles and session exports.
+example-images/local-retouch-review/
