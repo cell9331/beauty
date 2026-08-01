@@ -303,6 +303,7 @@ test("UI-AC-08 progress navigation restores revisions and confirms replacement",
 });
 
 test("UI-AC-09 mechanics exclusion uses core product counts only", () => {
+  assert.match(controller, /snapshot\.review_rows\s*\|\|\s*snapshot\.selected_rows/);
   assert.match(controller, /product_counts/);
   assert.doesNotMatch(controller, /mechanics[^\n]*(?:\+\+|\+=)|naturalness[^\n]*mechanics/i);
 });

@@ -217,14 +217,18 @@
 
   function presentationForSnapshot(snapshot) {
     let decision;
-    if (snapshot.ready && savedReviews.size === snapshot.selected_rows.length) {
+    const selectedReviewCount = snapshot.selected_rows.reduce(
+      (count, row) => count + (savedReviews.has(row.fixture_id) ? 1 : 0),
+      0,
+    );
+    if (snapshot.ready && selectedReviewCount === snapshot.selected_rows.length) {
       const reviews = snapshot.selected_rows.map((row) => savedReviews.get(row.fixture_id));
       decision = ReviewCore.evaluateFeature(snapshot, reviews, designQualificationFor(snapshot.feature));
     } else if (snapshot.ready) {
       decision = {
         status: "closed",
         reasons: ["review_incomplete"],
-        reviewed_count: savedReviews.size,
+        reviewed_count: selectedReviewCount,
       };
     } else {
       decision = ReviewCore.evaluateFeature(snapshot, [], designQualificationFor(snapshot.feature));
@@ -341,7 +345,7 @@
     const rows = [];
     const reasons = [];
     const dimensions = new Map();
-    for (const row of snapshot.selected_rows) {
+    for (const row of snapshot.review_rows || snapshot.selected_rows) {
       const keys = [row.assets.original, row.assets.mask, row.assets.after];
       const files = keys.map((key) => assetFiles.get(key));
       if (files.some((file) => file === undefined)) {

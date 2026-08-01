@@ -252,11 +252,13 @@
     const inventory = classifyAvailableAssetKeys(availableAssetKeys);
     if (!inventory.valid) return invalidResult(inventory.reasons);
 
-    const selectedRows = manifest.fixtures
-      .filter((row) => row.rights_status === "approved_internal_evaluation" && row.evidence_role === "genuine_candidate")
+    const reviewRows = manifest.fixtures
       .map(copyFixture)
       .sort((left, right) => left.fixture_id < right.fixture_id ? -1 : left.fixture_id > right.fixture_id ? 1 : 0);
-    const excludedRows = manifest.fixtures.length - selectedRows.length;
+    const selectedRows = reviewRows.filter(
+      (row) => row.rights_status === "approved_internal_evaluation" && row.evidence_role === "genuine_candidate",
+    );
+    const excludedRows = reviewRows.length - selectedRows.length;
     const unapprovedGenuineRows = manifest.fixtures.filter(
       (row) => row.evidence_role === "genuine_candidate" && row.rights_status !== "approved_internal_evaluation",
     ).length;
@@ -277,6 +279,7 @@
       feature: manifest.feature,
       ready: positive > 0 && negative > 0 && missingAssets === 0 && unapprovedGenuineRows === 0,
       reasons: uniqueReasons(reasons),
+      review_rows: reviewRows,
       selected_rows: selectedRows,
       excluded_counts: {
         rows: excludedRows,
@@ -294,7 +297,8 @@
   function findSnapshotRow(snapshot, fixtureID) {
     if (!isPlainObject(snapshot) || snapshot.valid !== true || !FEATURES.includes(snapshot.feature)
       || !Array.isArray(snapshot.selected_rows)) return null;
-    return snapshot.selected_rows.find(
+    const reviewRows = Array.isArray(snapshot.review_rows) ? snapshot.review_rows : snapshot.selected_rows;
+    return reviewRows.find(
       (row) => row.fixture_id === fixtureID && row.feature === snapshot.feature,
     ) || null;
   }

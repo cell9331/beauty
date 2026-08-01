@@ -271,6 +271,7 @@ test("roles and rights exclude mechanics synthetic AI disabled parked historical
     value.fixtures[0].evidence_role = role;
     const snap = core.createReviewSnapshot(value, ASSET_KEYS);
     assert.equal(snap.valid, true, `${rights}/${role} remains a tooling-valid row`);
+    assert.equal(snap.review_rows.some((row) => row.fixture_id === "case_positive"), true);
     assert.equal(snap.selected_rows.some((row) => row.fixture_id === "case_positive"), false);
     assert.equal(snap.product_counts.eligible, 1);
     assert.equal(snap.product_counts.naturalness_weight, 0);
@@ -414,6 +415,9 @@ test("all selected genuine rows must pass without mechanics denominator or natur
     }),
   ]);
   const snap = snapshotFor(value, [...ASSET_KEYS, "assets/tool-original.png", "assets/tool-mask.png", "assets/tool-after.png"]);
+  const mechanicsRow = snap.review_rows.find((row) => row.fixture_id === "tooling_row");
+  assert.ok(mechanicsRow, "mechanics row remains available to the local reviewer");
+  assert.equal(core.validateReview(snap, review(mechanicsRow)).valid, true);
   const reviews = snap.selected_rows.map((row) => review(row));
   const accepted = core.evaluateFeature(snap, reviews);
   assert.equal(accepted.status, "open");
