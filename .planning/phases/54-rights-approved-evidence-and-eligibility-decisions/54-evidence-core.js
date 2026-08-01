@@ -90,6 +90,7 @@
   const MAX_MANIFEST_BYTES = 65_536;
   const MAX_ASSET_BYTES = 16 * 1024 * 1024;
   const MAX_DECODED_DIMENSION = 4096;
+  const MAX_DECODED_PIXELS = 16_000_000;
   const canonicalSnapshots = new WeakSet();
   const reviewSnapshots = new WeakMap();
   const trustedAuthorizationRegistries = new WeakSet();
@@ -120,6 +121,7 @@
     max_manifest_bytes: MAX_MANIFEST_BYTES,
     max_asset_bytes: MAX_ASSET_BYTES,
     max_decoded_dimension: MAX_DECODED_DIMENSION,
+    max_decoded_pixels: MAX_DECODED_PIXELS,
     permitted_use: PERMITTED_USE,
     genuine_classification: GENUINE_CLASSIFICATION,
   });

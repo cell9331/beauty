@@ -160,7 +160,7 @@ codebase remap.
 | T-54-02 review tampering/repudiation | PASS | Core-issued snapshot-bound reviews, independent reducers, ledger tests, browser save/revisit/replacement checks |
 | T-54-03 information disclosure | PASS | Recursive allowlists, downloaded-export scan, redacted DOM, ignored/untracked proof, URL/reload lifecycle smoke |
 | T-54-04 privilege/network escalation | PASS | CSP and no-network/storage/external/unsafe-DOM static/live and browser checks |
-| T-54-05 denial of service | PASS | Budget/decode/dimension mutations and bounded browser failure-state smoke |
+| T-54-05 denial of service | PASS | Bounded PNG/JPEG header parsing rejects malformed, over-4096, and over-16,000,000-pixel inputs before any `Image` or object URL; instrumentation plus bounded decode/dimension matching pass |
 | T-54-06 production-scope tampering | PASS | Production/Spike/owner/scope checker plus 500-test SwiftPM and 118-test Demo regressions |
 | T-54-07 evidence repudiation | PASS | Exact `27 = 8 + 19`, seven explicit judgments, deterministic fixed-name export, actual-count record |
 

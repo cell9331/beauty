@@ -106,7 +106,7 @@ Task count equality: **9 actual XML task IDs = 9 validation rows = 2 Wave 0 + 6 
 2. `UI-AC-02`: local-only operation.
 3. `UI-AC-03`: redacted invalid input.
 4. `UI-AC-04`: blinded display.
-5. `UI-AC-05`: original detail.
+5. `UI-AC-05`: original detail after bounded PNG/JPEG header and pixel-budget preflight.
 6. `UI-AC-06`: required judgments.
 7. `UI-AC-07`: no implicit approval.
 8. `UI-AC-08`: progress and navigation.

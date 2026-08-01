@@ -8,7 +8,8 @@ const assert = require("node:assert/strict");
 const HTML_PATH = path.join(__dirname, "54-review.html");
 const CONTROLLER_PATH = path.join(__dirname, "54-review-controller.js");
 const AUTHORIZATION_PATH = path.join(__dirname, "54-rights-authorization-registry.js");
-const missing = [HTML_PATH, CONTROLLER_PATH, AUTHORIZATION_PATH]
+const IMAGE_SAFETY_PATH = path.join(__dirname, "54-image-safety.js");
+const missing = [HTML_PATH, CONTROLLER_PATH, AUTHORIZATION_PATH, IMAGE_SAFETY_PATH]
   .filter((candidate) => !fs.existsSync(candidate))
   .map((candidate) => path.basename(candidate));
 if (missing.length > 0) {
@@ -18,7 +19,9 @@ if (missing.length > 0) {
 const html = fs.readFileSync(HTML_PATH, "utf8");
 const controller = fs.readFileSync(CONTROLLER_PATH, "utf8");
 const authorization = fs.readFileSync(AUTHORIZATION_PATH, "utf8");
-const source = `${html}\n${authorization}\n${controller}`;
+const imageSafetySource = fs.readFileSync(IMAGE_SAFETY_PATH, "utf8");
+const imageSafety = require(IMAGE_SAFETY_PATH);
+const source = `${html}\n${authorization}\n${imageSafetySource}\n${controller}`;
 
 const UI_CONSIDERATIONS = [
   "UI-CONSIDERATION-01",
@@ -183,8 +186,12 @@ test("document policy and external same-directory scripts are exact", () => {
   assert.doesNotMatch(html, /\son[a-z]+\s*=/i);
   const coreIndex = html.indexOf('src="54-evidence-core.js"');
   const authorizationIndex = html.indexOf('src="54-rights-authorization-registry.js"');
+  const imageSafetyIndex = html.indexOf('src="54-image-safety.js"');
   const controllerIndex = html.indexOf('src="54-review-controller.js"');
-  assert.ok(coreIndex >= 0 && authorizationIndex > coreIndex && controllerIndex > authorizationIndex);
+  assert.ok(coreIndex >= 0
+    && authorizationIndex > coreIndex
+    && imageSafetyIndex > authorizationIndex
+    && controllerIndex > imageSafetyIndex);
   assertContainsAll(authorization, [
     "createTrustedAuthorizationRegistry",
     "rights_record_id",
@@ -301,9 +308,88 @@ test("UI-AC-04 blinded display exposes only item number feature and generic pane
 });
 
 test("UI-AC-05 original detail validates decode dimensions and synchronized fit actual views", () => {
-  assertContainsAll(controller, ["naturalWidth", "naturalHeight", "4096", "synchronizeScroll"], "detail validation");
+  assertContainsAll(source, ["naturalWidth", "naturalHeight", "max_decoded_dimension", "max_decoded_pixels", "synchronizeScroll"], "detail validation");
   assertContainsAll(html, ["适合窗口", "100%"], "view modes");
   assert.match(html, /image-rendering:\s*auto/i);
+});
+
+function pngHeader(width, height) {
+  const bytes = new Uint8Array(24);
+  bytes.set([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A], 0);
+  bytes.set([0x49, 0x48, 0x44, 0x52], 12);
+  new DataView(bytes.buffer).setUint32(16, width, false);
+  new DataView(bytes.buffer).setUint32(20, height, false);
+  return bytes;
+}
+
+function jpegHeader(width, height) {
+  return Uint8Array.from([
+    0xFF, 0xD8,
+    0xFF, 0xC0, 0x00, 0x11, 0x08,
+    (height >>> 8) & 0xFF, height & 0xFF,
+    (width >>> 8) & 0xFF, width & 0xFF,
+    0x03, 0x01, 0x11, 0x00, 0x02, 0x11, 0x00, 0x03, 0x11, 0x00,
+  ]);
+}
+
+function fakeFile(bytes, type) {
+  return {
+    size: bytes.byteLength,
+    type,
+    slice(start, end) {
+      const sliced = bytes.slice(start, end);
+      return { arrayBuffer: async () => sliced.buffer };
+    },
+  };
+}
+
+test("oversized PNG and JPEG headers reject before Image or object URL creation", async () => {
+  const limits = { maxDimension: 4096, maxPixels: 16_000_000 };
+  for (const [label, file] of [
+    ["PNG dimension", fakeFile(pngHeader(4097, 1), "image/png")],
+    ["JPEG dimension", fakeFile(jpegHeader(1, 4097), "image/jpeg")],
+    ["PNG pixels", fakeFile(pngHeader(4096, 4096), "image/png")],
+  ]) {
+    let imageCount = 0;
+    let objectURLCount = 0;
+    const result = await imageSafety.inspectAndDecode(file, limits, {
+      ImageCtor: function InstrumentedImage() { imageCount += 1; },
+      createObjectURL() { objectURLCount += 1; return "blob:test"; },
+      revokeObjectURL() {},
+    });
+    assert.equal(result.valid, false, label);
+    assert.equal(result.header, false, label);
+    assert.equal(imageCount, 0, `${label}: no decoder allocation`);
+    assert.equal(objectURLCount, 0, `${label}: no object URL`);
+  }
+});
+
+test("bounded PNG and JPEG headers proceed to one instrumented decode", async () => {
+  const limits = { maxDimension: 4096, maxPixels: 16_000_000 };
+  for (const [file, width, height] of [
+    [fakeFile(pngHeader(800, 600), "image/png"), 800, 600],
+    [fakeFile(jpegHeader(640, 480), "image/jpeg"), 640, 480],
+  ]) {
+    let objectURLCount = 0;
+    let revokeCount = 0;
+    class InstrumentedImage {
+      constructor() {
+        this.naturalWidth = width;
+        this.naturalHeight = height;
+        this.listeners = new Map();
+      }
+      addEventListener(name, callback) { this.listeners.set(name, callback); }
+      set src(_) { this.listeners.get("load")(); }
+    }
+    const result = await imageSafety.inspectAndDecode(file, limits, {
+      ImageCtor: InstrumentedImage,
+      createObjectURL() { objectURLCount += 1; return "blob:test"; },
+      revokeObjectURL() { revokeCount += 1; },
+    });
+    assert.deepEqual(result, { valid: true, naturalWidth: width, naturalHeight: height });
+    assert.equal(objectURLCount, 1);
+    assert.equal(revokeCount, 1);
+  }
 });
 
 test("UI-AC-06 required judgments save exact fields focus first invalid and advance once", () => {

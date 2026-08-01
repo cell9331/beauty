@@ -3,6 +3,7 @@
 
   const ReviewCore = globalThis.ReviewCore;
   const RightsAuthorizationRegistry = globalThis.RightsAuthorizationRegistry;
+  const ImageSafety = globalThis.ImageSafety;
   const FEATURE_ORDER = [
     "teeth_whitening",
     "sclera_redness",
@@ -341,23 +342,9 @@
   }
 
   function decodeImage(file) {
-    return new Promise((resolve) => {
-      const temporaryURL = URL.createObjectURL(file);
-      const image = new Image();
-      const finish = (value) => {
-        URL.revokeObjectURL(temporaryURL);
-        resolve(value);
-      };
-      image.addEventListener("load", () => finish({
-        valid: image.naturalWidth > 0
-          && image.naturalHeight > 0
-          && image.naturalWidth <= 4096
-          && image.naturalHeight <= 4096,
-        naturalWidth: image.naturalWidth,
-        naturalHeight: image.naturalHeight,
-      }), { once: true });
-      image.addEventListener("error", () => finish({ valid: false, decode: false }), { once: true });
-      image.src = temporaryURL;
+    return ImageSafety.inspectAndDecode(file, {
+      maxDimension: ReviewCore.constants.max_decoded_dimension,
+      maxPixels: ReviewCore.constants.max_decoded_pixels,
     });
   }
 
@@ -376,6 +363,10 @@
       for (const file of files) decoded.push(await decodeImage(file));
       if (decoded.some((item) => item.decode === false)) {
         reasons.push("decode_failed");
+        continue;
+      }
+      if (decoded.some((item) => item.header === false)) {
+        reasons.push("dimension_invalid");
         continue;
       }
       if (decoded.some((item) => item.valid !== true)) {

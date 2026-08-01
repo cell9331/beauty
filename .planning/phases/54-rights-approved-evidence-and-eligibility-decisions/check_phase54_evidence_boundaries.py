@@ -20,6 +20,7 @@ PHASE = ROOT / ".planning" / "phases" / "54-rights-approved-evidence-and-eligibi
 CORE_TEST = PHASE / "54-evidence-core.test.js"
 CORE = PHASE / "54-evidence-core.js"
 AUTHORIZATION_REGISTRY = PHASE / "54-rights-authorization-registry.js"
+IMAGE_SAFETY = PHASE / "54-image-safety.js"
 SCHEMA = PHASE / "54-evidence-manifest.schema.json"
 UI_TEST = PHASE / "54-review.contract.test.js"
 HTML = PHASE / "54-review.html"
@@ -389,21 +390,27 @@ def check_ui() -> list[str]:
         failures.append("ui:missing_html")
     if not CONTROLLER.is_file():
         failures.append("ui:missing_controller")
-    if not HTML.is_file() or not CONTROLLER.is_file():
+    if not IMAGE_SAFETY.is_file():
+        failures.append("ui:missing_image_safety")
+    if not HTML.is_file() or not CONTROLLER.is_file() or not IMAGE_SAFETY.is_file():
         return failures
     try:
         html = read_utf8(HTML)
         controller = read_utf8(CONTROLLER)
+        image_safety = read_utf8(IMAGE_SAFETY)
         completed = run_command(["node", "--check", str(CONTROLLER)])
         if completed.returncode != 0:
             failures.append("ui:javascript_syntax")
+        completed = run_command(["node", "--check", str(IMAGE_SAFETY)])
+        if completed.returncode != 0:
+            failures.append("ui:image_safety_syntax")
         try:
             validate_html_document(html)
         except AssertionError:
             failures.append("ui:malformed_html")
         if "Content-Security-Policy" not in html or "connect-src 'none'" not in html or "script-src 'self'" not in html:
             failures.append("ui:csp")
-        if scan_patterns(f"{html}\n{controller}", FORBIDDEN_REVIEWER_PATTERNS):
+        if scan_patterns(f"{html}\n{image_safety}\n{controller}", FORBIDDEN_REVIEWER_PATTERNS):
             failures.append("ui:forbidden_runtime")
         for selector in (
             "manifest-input", "asset-directory-input", "validation-summary", "feature-gates",
@@ -414,6 +421,9 @@ def check_ui() -> list[str]:
         for anchor in ["ReviewCore", "createObjectURL", "revokeObjectURL", "beauty-evidence-review-v1.json"]:
             if anchor not in controller:
                 failures.append(f"ui:missing_anchor:{anchor}")
+        for anchor in ["parseImageHeader", "inspectAndDecode", "MAX_HEADER_BYTES", "maxPixels"]:
+            if anchor not in image_safety:
+                failures.append(f"ui:image_safety_anchor:{anchor}")
     except RuntimeError as error:
         failures.append(f"ui:{error}")
     return failures

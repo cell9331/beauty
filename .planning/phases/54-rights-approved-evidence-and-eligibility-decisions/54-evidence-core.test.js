@@ -179,6 +179,7 @@ test("constants freeze the Phase 54 enum and safety inventories", () => {
   assert.equal(core.constants.max_manifest_bytes, 65_536);
   assert.equal(core.constants.max_asset_bytes, 16 * 1024 * 1024);
   assert.equal(core.constants.max_decoded_dimension, 4096);
+  assert.equal(core.constants.max_decoded_pixels, 16_000_000);
 });
 
 test("core-owned baseline snapshots remain branded, frozen, and deterministically closed", () => {
