@@ -74,6 +74,17 @@
     "reason_code",
   ];
   const DESIGN_KEYS = ["feature", "reviewed", "decision", "method_class"];
+  const AUTHORIZATION_REGISTRY_KEYS = ["schema_version", "grants"];
+  const AUTHORIZATION_GRANT_KEYS = [
+    "rights_record_id",
+    "fixture_id",
+    "feature",
+    "polarity",
+    "permitted_use",
+    "evidence_classification",
+  ];
+  const PERMITTED_USE = "internal_product_evaluation";
+  const GENUINE_CLASSIFICATION = "genuine_candidate";
   const OPAQUE_ID = /^[A-Za-z0-9_-]{1,64}$/;
   const MAX_ROWS = 64;
   const MAX_MANIFEST_BYTES = 65_536;
@@ -81,6 +92,7 @@
   const MAX_DECODED_DIMENSION = 4096;
   const canonicalSnapshots = new WeakSet();
   const reviewSnapshots = new WeakMap();
+  const trustedAuthorizationRegistries = new WeakSet();
   const BASE_CLOSED_REASONS = {
     teeth_whitening: ["missing_genuine_positive"],
     sclera_redness: ["missing_genuine_positive", "incomplete_asset_triple"],
@@ -108,6 +120,8 @@
     max_manifest_bytes: MAX_MANIFEST_BYTES,
     max_asset_bytes: MAX_ASSET_BYTES,
     max_decoded_dimension: MAX_DECODED_DIMENSION,
+    permitted_use: PERMITTED_USE,
+    genuine_classification: GENUINE_CLASSIFICATION,
   });
 
   function isPlainObject(value) {
@@ -252,22 +266,78 @@
     };
   }
 
-  function createReviewSnapshot(manifest, availableAssetKeys) {
+  function createTrustedAuthorizationRegistry(value) {
+    if (!hasExactKeys(value, AUTHORIZATION_REGISTRY_KEYS)
+      || value.schema_version !== 1
+      || !Array.isArray(value.grants)
+      || value.grants.length > MAX_ROWS) {
+      throw new Error("authorization_registry_invalid");
+    }
+    const rightsRecordIDs = new Set();
+    const fixtureBindings = new Set();
+    const grants = value.grants.map((grant) => {
+      if (!hasExactKeys(grant, AUTHORIZATION_GRANT_KEYS)
+        || !OPAQUE_ID.test(grant.rights_record_id)
+        || !OPAQUE_ID.test(grant.fixture_id)
+        || !FEATURES.includes(grant.feature)
+        || !POLARITIES.includes(grant.polarity)
+        || grant.permitted_use !== PERMITTED_USE
+        || grant.evidence_classification !== GENUINE_CLASSIFICATION) {
+        throw new Error("authorization_registry_invalid");
+      }
+      const fixtureBinding = `${grant.fixture_id}\0${grant.feature}\0${grant.polarity}`;
+      if (rightsRecordIDs.has(grant.rights_record_id) || fixtureBindings.has(fixtureBinding)) {
+        throw new Error("authorization_registry_invalid");
+      }
+      rightsRecordIDs.add(grant.rights_record_id);
+      fixtureBindings.add(fixtureBinding);
+      return {
+        rights_record_id: grant.rights_record_id,
+        fixture_id: grant.fixture_id,
+        feature: grant.feature,
+        polarity: grant.polarity,
+        permitted_use: grant.permitted_use,
+        evidence_classification: grant.evidence_classification,
+      };
+    });
+    const registry = deepFreeze({ schema_version: 1, grants });
+    trustedAuthorizationRegistries.add(registry);
+    return registry;
+  }
+
+  function authorizationMatches(row, registry) {
+    return registry.grants.some((grant) => grant.rights_record_id === row.rights_record_id
+      && grant.fixture_id === row.fixture_id
+      && grant.feature === row.feature
+      && grant.polarity === row.polarity
+      && grant.permitted_use === PERMITTED_USE
+      && grant.evidence_classification === row.evidence_role);
+  }
+
+  function createReviewSnapshot(manifest, availableAssetKeys, authorizationRegistry) {
     const validation = validateManifest(manifest);
     if (!validation.valid) return invalidResult(validation.reasons);
     const inventory = classifyAvailableAssetKeys(availableAssetKeys);
     if (!inventory.valid) return invalidResult(inventory.reasons);
+    if (!trustedAuthorizationRegistries.has(authorizationRegistry)) {
+      return invalidResult(["authorization_registry_invalid"]);
+    }
 
     const reviewRows = manifest.fixtures
-      .filter((row) => row.rights_status !== "rejected")
+      .filter((row) => row.rights_status !== "rejected"
+        && (row.evidence_role !== GENUINE_CLASSIFICATION
+          || authorizationMatches(row, authorizationRegistry)))
       .map(copyFixture)
       .sort((left, right) => left.fixture_id < right.fixture_id ? -1 : left.fixture_id > right.fixture_id ? 1 : 0);
     const selectedRows = reviewRows.filter(
-      (row) => row.rights_status === "approved_internal_evaluation" && row.evidence_role === "genuine_candidate",
+      (row) => row.rights_status === "approved_internal_evaluation"
+        && row.evidence_role === GENUINE_CLASSIFICATION,
     );
     const excludedRows = manifest.fixtures.length - selectedRows.length;
     const unapprovedGenuineRows = manifest.fixtures.filter(
-      (row) => row.evidence_role === "genuine_candidate" && row.rights_status !== "approved_internal_evaluation",
+      (row) => row.evidence_role === GENUINE_CLASSIFICATION
+        && (row.rights_status !== "approved_internal_evaluation"
+          || !authorizationMatches(row, authorizationRegistry)),
     ).length;
     const declaredPositive = selectedRows.filter((row) => row.polarity === "positive").length;
     const declaredNegative = selectedRows.filter((row) => row.polarity === "negative").length;
@@ -605,6 +675,7 @@
     constants,
     validateManifest,
     normalizeRelativeAssetKey,
+    createTrustedAuthorizationRegistry,
     createClosedSnapshot,
     createReviewSnapshot,
     createReview,

@@ -7,7 +7,8 @@ const assert = require("node:assert/strict");
 
 const HTML_PATH = path.join(__dirname, "54-review.html");
 const CONTROLLER_PATH = path.join(__dirname, "54-review-controller.js");
-const missing = [HTML_PATH, CONTROLLER_PATH]
+const AUTHORIZATION_PATH = path.join(__dirname, "54-rights-authorization-registry.js");
+const missing = [HTML_PATH, CONTROLLER_PATH, AUTHORIZATION_PATH]
   .filter((candidate) => !fs.existsSync(candidate))
   .map((candidate) => path.basename(candidate));
 if (missing.length > 0) {
@@ -16,7 +17,8 @@ if (missing.length > 0) {
 
 const html = fs.readFileSync(HTML_PATH, "utf8");
 const controller = fs.readFileSync(CONTROLLER_PATH, "utf8");
-const source = `${html}\n${controller}`;
+const authorization = fs.readFileSync(AUTHORIZATION_PATH, "utf8");
+const source = `${html}\n${authorization}\n${controller}`;
 
 const UI_CONSIDERATIONS = [
   "UI-CONSIDERATION-01",
@@ -180,8 +182,18 @@ test("document policy and external same-directory scripts are exact", () => {
   assert.doesNotMatch(html, /<script\b(?![^>]*\bsrc=)[^>]*>/i);
   assert.doesNotMatch(html, /\son[a-z]+\s*=/i);
   const coreIndex = html.indexOf('src="54-evidence-core.js"');
+  const authorizationIndex = html.indexOf('src="54-rights-authorization-registry.js"');
   const controllerIndex = html.indexOf('src="54-review-controller.js"');
-  assert.ok(coreIndex >= 0 && controllerIndex > coreIndex);
+  assert.ok(coreIndex >= 0 && authorizationIndex > coreIndex && controllerIndex > authorizationIndex);
+  assertContainsAll(authorization, [
+    "createTrustedAuthorizationRegistry",
+    "rights_record_id",
+    "fixture_id",
+    "feature",
+    "polarity",
+    "permitted_use",
+    "evidence_classification",
+  ], "trusted authorization registry");
 });
 
 test("approved fixed copy and judgment labels are present", () => {
@@ -402,6 +414,7 @@ test("UI-AC-10 independent gates evaluate fixed feature snapshots separately", (
 
 test("UI-AC-11 frozen acceptance is delegated to immutable ReviewCore snapshot", () => {
   assert.match(controller, /ReviewCore\.createReviewSnapshot/);
+  assert.match(controller, /RightsAuthorizationRegistry/);
   assert.doesNotMatch(controller, /mask_coverage\s*[<>]=?\s*4|naturalness\s*[<>]=?\s*4/);
   assert.doesNotMatch(controller, /rowPasses\s*=|function\s+rowPasses/);
 });

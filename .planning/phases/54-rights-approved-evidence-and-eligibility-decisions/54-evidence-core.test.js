@@ -95,8 +95,25 @@ function issuedReviews(snapshot) {
   return snapshot.selected_rows.map((row) => issuedReview(snapshot, row));
 }
 
-function snapshotFor(value = manifest(), keys = ASSET_KEYS) {
-  const snapshot = core.createReviewSnapshot(value, keys);
+function authorizationRegistryFor(value = manifest()) {
+  return core.createTrustedAuthorizationRegistry({
+    schema_version: 1,
+    grants: value.fixtures
+      .filter((row) => row.rights_status === "approved_internal_evaluation"
+        && row.evidence_role === "genuine_candidate")
+      .map((row) => ({
+        rights_record_id: row.rights_record_id,
+        fixture_id: row.fixture_id,
+        feature: row.feature,
+        polarity: row.polarity,
+        permitted_use: "internal_product_evaluation",
+        evidence_classification: "genuine_candidate",
+      })),
+  });
+}
+
+function snapshotFor(value = manifest(), keys = ASSET_KEYS, registry = authorizationRegistryFor(value)) {
+  const snapshot = core.createReviewSnapshot(value, keys, registry);
   assert.equal(snapshot.valid, true);
   return snapshot;
 }
@@ -187,6 +204,70 @@ test("bundle accepts one complete genuine approved positive and negative", () =>
   assert.deepEqual(snap.selected_rows.map((row) => row.fixture_id), ["case_negative", "case_positive"]);
 });
 
+test("trusted authorization is independent and bound to record fixture feature polarity use and classification", () => {
+  const approved = manifest();
+  const registry = authorizationRegistryFor(approved);
+  assert.ok(deepFrozen(registry));
+
+  const mutations = [
+    ["invented rights record", (value) => { value.fixtures[0].rights_record_id = "invented_rights"; }],
+    ["mismatched fixture", (value) => { value.fixtures[0].fixture_id = "invented_fixture"; }],
+    ["mismatched feature", (value) => {
+      value.feature = "sclera_redness";
+      for (const row of value.fixtures) row.feature = "sclera_redness";
+    }],
+    ["mismatched polarity", (value) => {
+      value.fixtures[0].polarity = "negative";
+      value.fixtures[0].expected_target_present = false;
+    }],
+    ["reused grant", (value) => {
+      value.fixtures[1].rights_record_id = value.fixtures[0].rights_record_id;
+    }],
+  ];
+  for (const [label, mutate] of mutations) {
+    const value = clone(approved);
+    mutate(value);
+    const snapshot = core.createReviewSnapshot(value, ASSET_KEYS, registry);
+    assert.equal(snapshot.valid, true, label);
+    assert.equal(snapshot.ready, false, label);
+    assert.ok(snapshot.reasons.includes("unapproved_fixture"), label);
+    assert.ok(snapshot.selected_rows.length < value.fixtures.length, label);
+  }
+
+  const selfPromoted = manifest("teeth_whitening", [fixture("promoted", "positive", {
+    rights_record_id: "invented_rights",
+    evidence_role: "genuine_candidate",
+  })]);
+  const selfPromotedSnapshot = core.createReviewSnapshot(selfPromoted, ASSET_KEYS.slice(0, 3), registry);
+  assert.equal(selfPromotedSnapshot.ready, false);
+  assert.deepEqual(selfPromotedSnapshot.selected_rows, []);
+  assert.ok(selfPromotedSnapshot.reasons.includes("unapproved_fixture"));
+
+  assert.deepEqual(
+    core.createReviewSnapshot(approved, ASSET_KEYS, clone(registry)).reasons,
+    ["authorization_registry_invalid"],
+    "a manifest cannot manufacture a trusted registry by copying its shape",
+  );
+});
+
+test("trusted authorization registry rejects duplicate and malformed grants", () => {
+  const base = authorizationRegistryFor(manifest());
+  assert.throws(() => core.createTrustedAuthorizationRegistry({
+    schema_version: 1,
+    grants: [base.grants[0], { ...base.grants[1], rights_record_id: base.grants[0].rights_record_id }],
+  }), /authorization_registry_invalid/);
+  for (const [field, value] of [
+    ["permitted_use", "commercial_release"],
+    ["evidence_classification", "synthetic"],
+  ]) {
+    const grant = { ...base.grants[0], [field]: value };
+    assert.throws(
+      () => core.createTrustedAuthorizationRegistry({ schema_version: 1, grants: [grant] }),
+      /authorization_registry_invalid/,
+    );
+  }
+});
+
 test("path mutations reject absolute traversal dot backslash colon NUL and empty keys", () => {
   const mutations = [
     "/absolute.png",
@@ -224,17 +305,19 @@ test("asset identity rejects duplicate normalized keys basename collisions exact
   duplicate.fixtures[1].assets.mask = duplicate.fixtures[0].assets.mask;
   assertInvalid(duplicate, "duplicate declared asset key");
 
-  const snap = core.createReviewSnapshot(manifest(), [
+  const value = manifest();
+  const registry = authorizationRegistryFor(value);
+  const snap = core.createReviewSnapshot(value, [
     ...ASSET_KEYS,
     "other/p-original.png",
-  ]);
+  ], registry);
   assert.equal(snap.valid, false, "basename collision is not repaired into an alias");
 
-  const mismatch = core.createReviewSnapshot(manifest(), ASSET_KEYS.map((key) => `bundle/${key}`));
+  const mismatch = core.createReviewSnapshot(value, ASSET_KEYS.map((key) => `bundle/${key}`), registry);
   assert.equal(mismatch.ready, false, "selected-root-relative keys must match exactly");
   assert.ok(mismatch.reasons.includes("incomplete_asset_triple"));
 
-  const absent = core.createReviewSnapshot(manifest(), []);
+  const absent = core.createReviewSnapshot(value, [], registry);
   assert.equal(absent.ready, false, "no selected directory closes readiness");
 });
 
@@ -302,7 +385,7 @@ test("completeness mutations reject missing triple members but valid partial pol
     const only = manifest("teeth_whitening", [fixture(`only_${polarity}`, polarity)]);
     const result = validation(only);
     assert.equal(result.valid, true, `missing ${polarity === "positive" ? "negative" : "positive"} is structurally valid`);
-    const snap = core.createReviewSnapshot(only, polarity === "positive" ? ASSET_KEYS.slice(0, 3) : ASSET_KEYS.slice(3));
+    const snap = snapshotFor(only, polarity === "positive" ? ASSET_KEYS.slice(0, 3) : ASSET_KEYS.slice(3));
     assert.equal(snap.ready, false);
     assert.ok(snap.reasons.includes(polarity === "positive" ? "missing_genuine_negative" : "missing_genuine_positive"));
   }
@@ -332,7 +415,7 @@ test("roles and rights exclude mechanics synthetic AI disabled parked historical
     const value = manifest();
     value.fixtures[0].rights_status = rights;
     value.fixtures[0].evidence_role = role;
-    const snap = core.createReviewSnapshot(value, ASSET_KEYS);
+    const snap = snapshotFor(value, ASSET_KEYS);
     assert.equal(snap.valid, true, `${rights}/${role} remains a tooling-valid row`);
     assert.equal(
       snap.review_rows.some((row) => row.fixture_id === "case_positive"),
@@ -352,7 +435,7 @@ test("portrait authorization alone never supplies a positive or product row", ()
     evidence_role: "historical",
   });
   const value = manifest("teeth_whitening", [authorized, fixture("case_negative", "negative")]);
-  const snap = core.createReviewSnapshot(value, ASSET_KEYS);
+  const snap = snapshotFor(value, ASSET_KEYS);
   assert.equal(snap.ready, false);
   assert.equal(snap.product_counts.positive, 0);
   assert.ok(snap.reasons.includes("missing_genuine_positive"));
@@ -360,7 +443,7 @@ test("portrait authorization alone never supplies a positive or product row", ()
   const qualifiedNegative = manifest("teeth_whitening", [
     fixture("portrait_001", "negative"),
   ]);
-  const negativeSnap = core.createReviewSnapshot(qualifiedNegative, ASSET_KEYS.slice(3));
+  const negativeSnap = snapshotFor(qualifiedNegative, ASSET_KEYS.slice(3));
   assert.equal(negativeSnap.product_counts.negative, 1);
   assert.equal(negativeSnap.product_counts.positive, 0);
   assert.equal(negativeSnap.ready, false);
@@ -626,8 +709,8 @@ test("fabricated ready snapshots cannot open direct evaluation or durable export
 test("sibling positive or negative cannot satisfy a feature-local missing polarity", () => {
   const teethOnlyNegative = manifest("teeth_whitening", [fixture("teeth_negative", "negative")]);
   const scleraOnlyPositive = manifest("sclera_redness", [fixture("sclera_positive", "positive")]);
-  const teethSnap = core.createReviewSnapshot(teethOnlyNegative, ASSET_KEYS.slice(3));
-  const scleraSnap = core.createReviewSnapshot(scleraOnlyPositive, ASSET_KEYS.slice(0, 3));
+  const teethSnap = snapshotFor(teethOnlyNegative, ASSET_KEYS.slice(3));
+  const scleraSnap = snapshotFor(scleraOnlyPositive, ASSET_KEYS.slice(0, 3));
   assert.ok(teethSnap.reasons.includes("missing_genuine_positive"));
   assert.ok(scleraSnap.reasons.includes("missing_genuine_negative"));
   assert.equal(teethSnap.product_counts.positive, 0);
@@ -636,7 +719,7 @@ test("sibling positive or negative cannot satisfy a feature-local missing polari
 
 test("upper eyelid evidence and credible independent non-warp design are a conjunction", () => {
   const missingEvidence = manifest("upper_eyelid_fullness", [fixture("lid_negative", "negative")]);
-  const snap = core.createReviewSnapshot(missingEvidence, ASSET_KEYS.slice(3));
+  const snap = snapshotFor(missingEvidence, ASSET_KEYS.slice(3));
   const qualified = { feature: "upper_eyelid_fullness", reviewed: true, decision: "qualified", method_class: "independent_nonwarp" };
   const closedEvidence = core.evaluateFeature(snap, [], qualified);
   assert.equal(closedEvidence.status, "closed");

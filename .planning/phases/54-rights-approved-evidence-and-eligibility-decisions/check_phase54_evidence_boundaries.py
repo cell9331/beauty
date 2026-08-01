@@ -19,6 +19,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[3]
 PHASE = ROOT / ".planning" / "phases" / "54-rights-approved-evidence-and-eligibility-decisions"
 CORE_TEST = PHASE / "54-evidence-core.test.js"
 CORE = PHASE / "54-evidence-core.js"
+AUTHORIZATION_REGISTRY = PHASE / "54-rights-authorization-registry.js"
 SCHEMA = PHASE / "54-evidence-manifest.schema.json"
 UI_TEST = PHASE / "54-review.contract.test.js"
 HTML = PHASE / "54-review.html"
@@ -359,6 +360,22 @@ def check_core() -> list[str]:
             ]:
                 if anchor not in text:
                     failures.append(f"core:missing_anchor:{anchor}")
+        except RuntimeError as error:
+            failures.append(f"core:{error}")
+    if not AUTHORIZATION_REGISTRY.is_file():
+        failures.append("core:missing_authorization_registry")
+    else:
+        try:
+            registry_text = read_utf8(AUTHORIZATION_REGISTRY)
+            completed = run_command(["node", "--check", str(AUTHORIZATION_REGISTRY)])
+            if completed.returncode != 0:
+                failures.append("core:authorization_registry_syntax")
+            for anchor in (
+                "createTrustedAuthorizationRegistry", "rights_record_id", "fixture_id",
+                "feature", "polarity", "permitted_use", "evidence_classification",
+            ):
+                if anchor not in registry_text:
+                    failures.append(f"core:authorization_registry_anchor:{anchor}")
         except RuntimeError as error:
             failures.append(f"core:{error}")
     return failures

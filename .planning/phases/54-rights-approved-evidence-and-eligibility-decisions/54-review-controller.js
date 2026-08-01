@@ -2,6 +2,7 @@
   "use strict";
 
   const ReviewCore = globalThis.ReviewCore;
+  const RightsAuthorizationRegistry = globalThis.RightsAuthorizationRegistry;
   const FEATURE_ORDER = [
     "teeth_whitening",
     "sclera_redness",
@@ -452,7 +453,11 @@
       setValidation("等待本地评审材料", "请先选择评审清单。", indexed.reasons, "");
       return;
     }
-    const snapshot = ReviewCore.createReviewSnapshot(manifest, [...assetFiles.keys()]);
+    const snapshot = ReviewCore.createReviewSnapshot(
+      manifest,
+      [...assetFiles.keys()],
+      RightsAuthorizationRegistry,
+    );
     if (!snapshot.valid) {
       setInputsDisabled(false);
       setValidation(FIXED_COPY.invalid, FIXED_COPY.invalid, snapshot.reasons.map(classifyCoreReason), "");
@@ -533,7 +538,7 @@
       await acceptAssetFiles([...assetFiles.values()]);
       return;
     }
-    const waitingSnapshot = ReviewCore.createReviewSnapshot(manifest, []);
+    const waitingSnapshot = ReviewCore.createReviewSnapshot(manifest, [], RightsAuthorizationRegistry);
     activeSnapshot = waitingSnapshot;
     featureSnapshots.set(waitingSnapshot.feature, waitingSnapshot);
     renderResolvedGates();
