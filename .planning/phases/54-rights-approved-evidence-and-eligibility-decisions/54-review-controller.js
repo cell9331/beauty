@@ -91,20 +91,7 @@
   const featureSnapshots = new Map();
 
   function closedSnapshot(feature) {
-    const currentReasons = {
-      teeth_whitening: ["missing_genuine_positive"],
-      sclera_redness: ["missing_genuine_positive", "incomplete_asset_triple"],
-      upper_eyelid_fullness: ["missing_genuine_positive"],
-    };
-    return Object.freeze({
-      valid: true,
-      feature,
-      ready: false,
-      reasons: Object.freeze([...currentReasons[feature]]),
-      selected_rows: Object.freeze([]),
-      excluded_counts: Object.freeze({ rows: 0, naturalness_weight: 0 }),
-      product_counts: Object.freeze({ positive: 0, negative: 0, eligible: 0, naturalness_weight: 0 }),
-    });
+    return ReviewCore.createClosedSnapshot(feature);
   }
 
   function resetFeatureSnapshots() {
@@ -188,6 +175,35 @@
     );
   }
 
+  function clearReviewSessionState() {
+    revokeActiveObjectURLs();
+    activeSnapshot = null;
+    reviewableRows = [];
+    selectedIndex = 0;
+    completedCount = 0;
+    decodedDimensions = new Map();
+    hasBlockingAssetErrors = false;
+    savedReviews.clear();
+    resetJudgmentForm();
+    resetFeatureSnapshots();
+    renderInitialGates();
+  }
+
+  function invalidateManifestCandidateState() {
+    const replacesExistingManifest = manifest !== null;
+    clearReviewSessionState();
+    manifest = null;
+    if (replacesExistingManifest) {
+      assetFiles = new Map();
+      assetInput.value = "";
+    }
+  }
+
+  function invalidateAssetCandidateState() {
+    clearReviewSessionState();
+    assetFiles = new Map();
+  }
+
   function renderInitialGates() {
     for (const feature of FEATURE_ORDER) {
       renderGate(feature, {
@@ -217,6 +233,9 @@
 
   function presentationForSnapshot(snapshot) {
     let decision;
+    const decodedProductRows = snapshot === activeSnapshot
+      ? snapshot.selected_rows.filter((row) => decodedDimensions.has(row.fixture_id))
+      : snapshot.selected_rows;
     const selectedReviewCount = snapshot.selected_rows.reduce(
       (count, row) => count + (savedReviews.has(row.fixture_id) ? 1 : 0),
       0,
@@ -236,8 +255,8 @@
     return {
       status: decision.status,
       reasons: decision.reasons,
-      positive: snapshot.product_counts.positive,
-      negative: snapshot.product_counts.negative,
+      positive: decodedProductRows.filter((row) => row.polarity === "positive").length,
+      negative: decodedProductRows.filter((row) => row.polarity === "negative").length,
       reviewed: decision.reviewed_count,
     };
   }
@@ -421,6 +440,7 @@
   }
 
   async function acceptAssetFiles(files) {
+    invalidateAssetCandidateState();
     setInputsDisabled(true);
     disableReview();
     disableExport();
@@ -471,6 +491,7 @@
   }
 
   async function acceptManifestFile(file) {
+    invalidateManifestCandidateState();
     setInputsDisabled(true);
     disableReview();
     disableExport();
@@ -534,8 +555,13 @@
     };
   }
 
-  function validateReviewCandidate(review) {
-    return review !== null && ReviewCore.validateReview(activeSnapshot, review).valid;
+  function issueReviewCandidate(review) {
+    if (review === null) return null;
+    try {
+      return ReviewCore.createReview(activeSnapshot, review);
+    } catch (_) {
+      return null;
+    }
   }
 
   function focusFirstInvalid() {
@@ -577,13 +603,13 @@
 
   function saveCurrentReview(event) {
     event.preventDefault();
-    const review = collectJudgment();
-    if (!validateReviewCandidate(review)) {
+    const review = issueReviewCandidate(collectJudgment());
+    if (review === null) {
       element("form-alert").textContent = fixedCopyForReason("review_invalid");
       focusFirstInvalid();
       return;
     }
-    savedReviews.set(review.fixture_id, Object.freeze({ ...review }));
+    savedReviews.set(review.fixture_id, review);
     completedCount = savedReviews.size;
     element("form-alert").textContent = "";
     renderActiveGate();
@@ -642,22 +668,6 @@
     }
   }
 
-  function teardownSession() {
-    revokeActiveObjectURLs();
-    manifest = null;
-    activeSnapshot = null;
-    assetFiles = new Map();
-    reviewableRows = [];
-    selectedIndex = 0;
-    completedCount = 0;
-    decodedDimensions = new Map();
-    hasBlockingAssetErrors = false;
-    savedReviews.clear();
-    manifestInput.value = "";
-    assetInput.value = "";
-    closeInitialState();
-  }
-
   function restoreInitiatorFocus() {
     if (replacementInitiator) replacementInitiator.focus();
     replacementInitiator = null;
@@ -671,19 +681,24 @@
     restoreInitiatorFocus();
   }
 
-  async function processReplacement(replacement) {
-    if (replacement.kind === "manifest") await acceptManifestFile(replacement.files[0]);
-    else await acceptAssetFiles(replacement.files);
+  async function processReplacement(replacement, focusTarget = null) {
+    try {
+      if (replacement.kind === "manifest") await acceptManifestFile(replacement.files[0]);
+      else await acceptAssetFiles(replacement.files);
+    } finally {
+      if (focusTarget) focusTarget.focus();
+    }
   }
 
   function confirmReplacement() {
     const replacement = pendingReplacement;
+    const focusTarget = replacementInitiator;
     replaceDialog.returnValue = "replace";
     replaceDialog.close();
     pendingReplacement = null;
-    teardownSession();
-    restoreInitiatorFocus();
-    if (replacement) void processReplacement(replacement);
+    replacementInitiator = null;
+    if (replacement) void processReplacement(replacement, focusTarget);
+    else if (focusTarget) focusTarget.focus();
   }
 
   function requestReplacement(kind, files, initiator) {

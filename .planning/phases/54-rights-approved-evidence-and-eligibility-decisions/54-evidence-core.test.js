@@ -87,6 +87,14 @@ function review(row, overrides = {}) {
   };
 }
 
+function issuedReview(snapshot, row, overrides = {}) {
+  return core.createReview(snapshot, review(row, overrides));
+}
+
+function issuedReviews(snapshot) {
+  return snapshot.selected_rows.map((row) => issuedReview(snapshot, row));
+}
+
 function snapshotFor(value = manifest(), keys = ASSET_KEYS) {
   const snapshot = core.createReviewSnapshot(value, keys);
   assert.equal(snapshot.valid, true);
@@ -125,11 +133,24 @@ function assertReviewInvalid(snapshot, candidate, label) {
 function acceptedFeature(feature = "teeth_whitening") {
   const value = manifest(feature);
   const snap = snapshotFor(value);
-  const reviews = snap.selected_rows.map((row) => review(row));
+  const reviews = issuedReviews(snap);
   const decision = core.evaluateFeature(snap, reviews, feature === "upper_eyelid_fullness"
     ? { feature, reviewed: true, decision: "qualified", method_class: "independent_nonwarp" }
     : undefined);
   return { value, snap, reviews, decision };
+}
+
+function unevaluatedFeature(feature = "teeth_whitening") {
+  const value = manifest(feature);
+  const snap = snapshotFor(value);
+  return {
+    value,
+    snap,
+    reviews: issuedReviews(snap),
+    design_qualification: feature === "upper_eyelid_fullness"
+      ? { feature, reviewed: true, decision: "qualified", method_class: "independent_nonwarp" }
+      : undefined,
+  };
 }
 
 test("constants freeze the Phase 54 enum and safety inventories", () => {
@@ -141,6 +162,21 @@ test("constants freeze the Phase 54 enum and safety inventories", () => {
   assert.equal(core.constants.max_manifest_bytes, 65_536);
   assert.equal(core.constants.max_asset_bytes, 16 * 1024 * 1024);
   assert.equal(core.constants.max_decoded_dimension, 4096);
+});
+
+test("core-owned baseline snapshots remain branded, frozen, and deterministically closed", () => {
+  const expected = {
+    teeth_whitening: ["missing_genuine_positive"],
+    sclera_redness: ["missing_genuine_positive", "incomplete_asset_triple"],
+    upper_eyelid_fullness: ["missing_genuine_positive", "non_warp_design_unqualified"],
+  };
+  for (const feature of FEATURE_ORDER) {
+    const snapshot = core.createClosedSnapshot(feature);
+    assert.ok(deepFrozen(snapshot));
+    assert.deepEqual(core.evaluateFeature(snapshot, []).reasons, expected[feature]);
+    assert.throws(() => core.evaluateFeature(clone(snapshot), []), /feature_snapshot_invalid/);
+  }
+  assert.throws(() => core.createClosedSnapshot("unsupported"), /feature_invalid/);
 });
 
 test("bundle accepts one complete genuine approved positive and negative", () => {
@@ -200,6 +236,33 @@ test("asset identity rejects duplicate normalized keys basename collisions exact
 
   const absent = core.createReviewSnapshot(manifest(), []);
   assert.equal(absent.ready, false, "no selected directory closes readiness");
+});
+
+test("incomplete asset rows stay closed and never count as eligible in evaluation or export", () => {
+  const oneAssetMissing = ASSET_KEYS.filter((key) => key !== "assets/p-after.png");
+  const snapshot = snapshotFor(manifest(), oneAssetMissing);
+  assert.equal(snapshot.ready, false);
+  assert.deepEqual(snapshot.reasons, ["incomplete_asset_triple"]);
+  assert.equal(snapshot.product_counts.positive, 0, "incomplete positive is not presented as eligible");
+  assert.equal(snapshot.product_counts.negative, 1, "polarity ledger remains intact");
+  assert.equal(snapshot.product_counts.eligible, 1, "only the complete negative row is eligible");
+  const decision = core.evaluateFeature(snapshot, []);
+  assert.equal(decision.status, "closed");
+  assert.deepEqual(decision.reasons, ["incomplete_asset_triple"]);
+  assert.equal(decision.eligible_count, 1);
+
+  const inputs = FEATURE_ORDER.map((feature) => ({
+    snapshot: snapshotFor(manifest(feature), []),
+    reviews: [],
+    design_qualification: feature === "upper_eyelid_fullness"
+      ? { feature, reviewed: true, decision: "qualified", method_class: "independent_nonwarp" }
+      : undefined,
+  }));
+  const durable = core.buildDurableExport(inputs);
+  assert.deepEqual(durable.feature_decisions.map((row) => row.status), ["closed", "closed", "closed"]);
+  assert.deepEqual(durable.feature_decisions.map((row) => row.eligible_count), [0, 0, 0]);
+  assert.deepEqual(durable.aggregates.map((row) => row.eligible_count), [0, 0, 0]);
+  assert.deepEqual(durable.reviews, []);
 });
 
 test("manifest mutations reject unsupported enums mixed features missing rights and undeclared polarity", () => {
@@ -271,8 +334,13 @@ test("roles and rights exclude mechanics synthetic AI disabled parked historical
     value.fixtures[0].evidence_role = role;
     const snap = core.createReviewSnapshot(value, ASSET_KEYS);
     assert.equal(snap.valid, true, `${rights}/${role} remains a tooling-valid row`);
-    assert.equal(snap.review_rows.some((row) => row.fixture_id === "case_positive"), true);
+    assert.equal(
+      snap.review_rows.some((row) => row.fixture_id === "case_positive"),
+      rights !== "rejected",
+      `${rights}/${role} respects the local-review rights boundary`,
+    );
     assert.equal(snap.selected_rows.some((row) => row.fixture_id === "case_positive"), false);
+    assert.equal(snap.excluded_counts.rows, 1);
     assert.equal(snap.product_counts.eligible, 1);
     assert.equal(snap.product_counts.naturalness_weight, 0);
   }
@@ -319,7 +387,7 @@ test("snapshot copies stable-sorts and deeply freezes pre-review policy and rows
 
 test("review set rejects duplicate missing and extra reviews", () => {
   const snap = snapshotFor();
-  const reviews = snap.selected_rows.map((row) => review(row));
+  const reviews = issuedReviews(snap);
   assert.equal(core.evaluateFeature(snap, reviews).status, "open");
   assert.throws(() => core.evaluateFeature(snap, reviews.slice(1)), /review/i);
   assert.throws(() => core.evaluateFeature(snap, [...reviews, reviews[0]]), /review/i);
@@ -418,14 +486,16 @@ test("all selected genuine rows must pass without mechanics denominator or natur
   const mechanicsRow = snap.review_rows.find((row) => row.fixture_id === "tooling_row");
   assert.ok(mechanicsRow, "mechanics row remains available to the local reviewer");
   assert.equal(core.validateReview(snap, review(mechanicsRow)).valid, true);
-  const reviews = snap.selected_rows.map((row) => review(row));
+  const reviews = issuedReviews(snap);
   const accepted = core.evaluateFeature(snap, reviews);
   assert.equal(accepted.status, "open");
   assert.equal(accepted.eligible_count, 2);
   assert.equal(accepted.reviewed_count, 2);
   assert.equal(accepted.naturalness_weight, 2);
 
-  reviews[0] = review(snap.selected_rows[0], { decision: "reject", reason_code: "unsupported_input" });
+  reviews[0] = issuedReview(snap, snap.selected_rows[0], {
+    decision: "reject", reason_code: "unsupported_input",
+  });
   const rejected = core.evaluateFeature(snap, reviews);
   assert.equal(rejected.status, "closed");
   assert.ok(rejected.reasons.includes("review_rejected"));
@@ -439,10 +509,118 @@ test("three feature reducers isolate rows counts reviews reasons and status", ()
   assert.throws(() => core.evaluateFeature(teeth.snap, sclera.reviews), /review|feature/i);
 
   const scleraBefore = clone(sclera.decision);
-  teeth.reviews[0] = review(teeth.snap.selected_rows[0], { decision: "reject", reason_code: "unsupported_input" });
+  teeth.reviews[0] = issuedReview(teeth.snap, teeth.snap.selected_rows[0], {
+    decision: "reject", reason_code: "unsupported_input",
+  });
   const teethAfter = core.evaluateFeature(teeth.snap, teeth.reviews);
   assert.equal(teethAfter.status, "closed");
   assert.deepEqual(core.evaluateFeature(sclera.snap, sclera.reviews), scleraBefore);
+});
+
+test("mutable and frozen review arrays cannot be borrowed across direct feature evaluation", () => {
+  for (const freeze of [false, true]) {
+    const teeth = unevaluatedFeature("teeth_whitening");
+    const sclera = unevaluatedFeature("sclera_redness");
+    const reviews = freeze ? Object.freeze(teeth.reviews) : teeth.reviews;
+    assert.equal(core.evaluateFeature(teeth.snap, reviews).status, "open");
+    assert.throws(
+      () => core.evaluateFeature(sclera.snap, reviews),
+      /review_feature_invalid/,
+      `${freeze ? "frozen" : "mutable"} arrays retain feature provenance`,
+    );
+  }
+});
+
+test("durable export preserves mutable and frozen review provenance before allowlist copying", () => {
+  for (const freeze of [false, true]) {
+    const inputs = FEATURE_ORDER.map((feature) => unevaluatedFeature(feature));
+    const borrowed = freeze ? Object.freeze(inputs[0].reviews) : inputs[0].reviews;
+    inputs[0].reviews = borrowed;
+    inputs[1].reviews = borrowed;
+    assert.throws(
+      () => core.buildDurableExport(inputs.map(({ snap, reviews, design_qualification }) => ({
+        snapshot: snap,
+        reviews,
+        design_qualification,
+      }))),
+      /review_feature_invalid/,
+      `${freeze ? "frozen" : "mutable"} source provenance survives export copying`,
+    );
+  }
+});
+
+test("cloned review carriers lose issuance and cannot satisfy sibling or source snapshots", () => {
+  const inputs = FEATURE_ORDER.map((feature) => unevaluatedFeature(feature));
+  const cloned = Object.freeze(inputs[0].reviews.map((row) => Object.freeze({ ...row })));
+  assert.throws(() => core.evaluateFeature(inputs[0].snap, cloned), /review_feature_invalid/);
+  for (const input of inputs) input.reviews = cloned.map((row) => Object.freeze({ ...row }));
+  assert.throws(
+    () => core.buildDurableExport(inputs.map(({ snap, reviews, design_qualification }) => ({
+      snapshot: snap,
+      reviews,
+      design_qualification,
+    }))),
+    /review_feature_invalid/,
+  );
+});
+
+test("issued review carriers are bound to one exact snapshot and cannot survive same-feature replacement", () => {
+  const first = unevaluatedFeature("teeth_whitening");
+  const replacementManifest = manifest("teeth_whitening", [
+    fixture("case_positive", "positive", {
+      rights_record_id: "replacement_positive_right",
+      assets: {
+        original: "replacement/p-original.png",
+        mask: "replacement/p-mask.png",
+        after: "replacement/p-after.png",
+      },
+    }),
+    fixture("case_negative", "negative", {
+      rights_record_id: "replacement_negative_right",
+      assets: {
+        original: "replacement/n-original.jpg",
+        mask: "replacement/n-mask.png",
+        after: "replacement/n-after.jpg",
+      },
+    }),
+  ]);
+  const replacementKeys = replacementManifest.fixtures.flatMap((row) => Object.values(row.assets));
+  const secondSnapshot = snapshotFor(replacementManifest, replacementKeys);
+  assert.throws(
+    () => core.evaluateFeature(secondSnapshot, first.reviews),
+    /review_feature_invalid/,
+  );
+  const secondReviews = issuedReviews(secondSnapshot);
+  assert.equal(core.evaluateFeature(secondSnapshot, secondReviews).status, "open");
+});
+
+test("fabricated ready snapshots cannot open direct evaluation or durable export", () => {
+  const teeth = unevaluatedFeature("teeth_whitening");
+  const fabricatedSnapshots = [
+    clone(teeth.snap),
+    Object.assign(clone(teeth.snap), { ready: false, reasons: [] }),
+    Object.assign(clone(teeth.snap), {
+      product_counts: { positive: 1, negative: 1, eligible: 999, naturalness_weight: 0 },
+    }),
+    Object.assign(clone(teeth.snap), { selected_rows: [], review_rows: [] }),
+  ];
+  for (const fabricated of fabricatedSnapshots) {
+    assert.throws(
+      () => core.evaluateFeature(fabricated, fabricated.selected_rows.length === 0 ? [] : teeth.reviews),
+      /feature_snapshot_invalid/,
+    );
+  }
+
+  const inputs = FEATURE_ORDER.map((feature) => unevaluatedFeature(feature));
+  inputs[1].snap = clone(inputs[1].snap);
+  assert.throws(
+    () => core.buildDurableExport(inputs.map(({ snap, reviews, design_qualification }) => ({
+      snapshot: snap,
+      reviews,
+      design_qualification,
+    }))),
+    /feature_snapshot_invalid/,
+  );
 });
 
 test("sibling positive or negative cannot satisfy a feature-local missing polarity", () => {
@@ -502,8 +680,8 @@ test("upper eyelid invalidated warp and geometry smoothing dark-circle eye-bag s
 test("export constructs exact allowlists and stable deterministic bytes", () => {
   const inputs = FEATURE_ORDER.map((feature) => acceptedFeature(feature));
   const richInputs = inputs.map(({ snap, reviews }) => ({
-    snapshot: { ...snap, dataset_id: "forbidden_dataset", path: "forbidden/path" },
-    reviews: reviews.map((row) => ({ ...row, reviewer: "forbidden_reviewer", notes: "forbidden_notes" })),
+    snapshot: snap,
+    reviews,
     design_qualification: snap.feature === "upper_eyelid_fullness"
       ? { feature: snap.feature, reviewed: true, decision: "qualified", method_class: "independent_nonwarp", timestamp: "forbidden_time" }
       : undefined,
@@ -542,16 +720,20 @@ test("export rejects time session event arguments and recursively excludes priva
     "raw_error",
   ];
   const rich = inputs.map(({ snap, reviews }) => ({
-    snapshot: Object.assign({}, snap, Object.fromEntries(sentinels.map((key) => [key, `SENTINEL_${key}`]))),
-    reviews: reviews.map((row) => Object.assign(
-      {},
-      row,
-      Object.fromEntries(sentinels.map((key) => [key, `SENTINEL_${key}`])),
-    )),
+    snapshot: snap,
+    reviews,
     design_qualification: snap.feature === "upper_eyelid_fullness"
       ? Object.assign({ feature: snap.feature, reviewed: true, decision: "qualified", method_class: "independent_nonwarp" }, Object.fromEntries(sentinels.map((key) => [key, `SENTINEL_${key}`])))
       : undefined,
   }));
+  for (const { snap, reviews } of inputs) {
+    const candidate = Object.assign(
+      {},
+      reviews[0],
+      Object.fromEntries(sentinels.map((key) => [key, `SENTINEL_${key}`])),
+    );
+    assert.throws(() => core.createReview(snap, candidate), /review_invalid/);
+  }
   const serialized = core.serializeDurableExport(rich);
   for (const key of sentinels) {
     assert.ok(!serialized.includes(`SENTINEL_${key}`), `forbidden sentinel ${key}`);

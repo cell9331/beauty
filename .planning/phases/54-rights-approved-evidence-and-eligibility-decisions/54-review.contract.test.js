@@ -126,6 +126,14 @@ function assertNoForbiddenRuntime(text) {
   for (const pattern of forbidden) assert.doesNotMatch(text, pattern);
 }
 
+function functionSource(name) {
+  const start = controller.indexOf(`function ${name}(`);
+  assert.notEqual(start, -1, `missing function ${name}`);
+  const following = controller.slice(start + 1);
+  const next = following.search(/\n  (?:async )?function /);
+  return controller.slice(start, next === -1 ? controller.length : start + 1 + next);
+}
+
 test("closed inventory is exactly 27 = 8 considerations + 19 acceptance criteria", () => {
   assert.equal(UI_CONSIDERATIONS.length, 8);
   assert.equal(UI_ACCEPTANCE.length, 19);
@@ -288,11 +296,11 @@ test("UI-AC-05 original detail validates decode dimensions and synchronized fit 
 
 test("UI-AC-06 required judgments save exact fields focus first invalid and advance once", () => {
   assertContainsAll(controller, FIELD_NAMES, "judgment fields");
-  assertContainsAll(controller, ["collectJudgment", "validateReview", "focusFirstInvalid", "advanceOnce"], "save flow");
+  assertContainsAll(controller, ["collectJudgment", "issueReviewCandidate", "focusFirstInvalid", "advanceOnce"], "save flow");
 });
 
 test("UI-AC-07 no implicit approval delegates reason consistency to core", () => {
-  assert.match(controller, /ReviewCore\.validateReview/);
+  assert.match(controller, /ReviewCore\.createReview/);
   assert.doesNotMatch(controller, /decision\s*:\s*["']accept["']/);
   assert.doesNotMatch(controller, /reason_code\s*:\s*["']none["']/);
 });
@@ -302,10 +310,88 @@ test("UI-AC-08 progress navigation restores revisions and confirms replacement",
   assertContainsAll(controller, ["showModal", "returnValue", "restoreInitiatorFocus"], "replacement");
 });
 
-test("UI-AC-09 mechanics exclusion uses core product counts only", () => {
+test("manifest replacement invalidates prior session before every fail-closed check", () => {
+  const acceptance = functionSource("acceptManifestFile");
+  const assetAcceptance = functionSource("acceptAssetFiles");
+  const invalidation = functionSource("invalidateManifestCandidateState");
+  const clearState = functionSource("clearReviewSessionState");
+  assert.ok(
+    acceptance.indexOf("invalidateManifestCandidateState()") < acceptance.indexOf("file.size"),
+    "oversized manifest cannot retain the prior session",
+  );
+  assert.ok(
+    acceptance.indexOf("invalidateManifestCandidateState()") < acceptance.indexOf("JSON.parse"),
+    "invalid JSON cannot retain the prior session",
+  );
+  assert.ok(
+    acceptance.indexOf("invalidateManifestCandidateState()") < acceptance.indexOf("ReviewCore.validateManifest"),
+    "schema-invalid manifest cannot retain the prior session",
+  );
+  assertContainsAll(invalidation, [
+    "replacesExistingManifest = manifest !== null",
+    "clearReviewSessionState()",
+    "manifest = null",
+    "assetFiles = new Map()",
+    'assetInput.value = ""',
+  ], "manifest invalidation");
+  assertContainsAll(clearState, [
+    "revokeActiveObjectURLs()",
+    "activeSnapshot = null",
+    "reviewableRows = []",
+    "savedReviews.clear()",
+    "resetJudgmentForm()",
+    "resetFeatureSnapshots()",
+  ], "session invalidation");
+  assert.ok(
+    assetAcceptance.indexOf("if (!manifest)") < assetAcceptance.indexOf("ReviewCore.createReviewSnapshot"),
+    "a later asset selection cannot evaluate against a rejected prior manifest",
+  );
+});
+
+test("replacement confirmation preserves dialog choice focus and type-specific valid reload", () => {
+  const confirmation = functionSource("confirmReplacement");
+  const processing = functionSource("processReplacement");
+  const assetAcceptance = functionSource("acceptAssetFiles");
+  assertContainsAll(confirmation, [
+    'returnValue = "replace"',
+    "pendingReplacement = null",
+    "focusTarget = replacementInitiator",
+    "replacementInitiator = null",
+    "processReplacement(replacement, focusTarget)",
+  ], "confirmed replacement");
+  assert.doesNotMatch(confirmation, /teardownSession\s*\(/);
+  assertContainsAll(processing, ["acceptManifestFile", "acceptAssetFiles"], "replacement dispatch");
+  assert.ok(
+    processing.indexOf("await acceptManifestFile") < processing.indexOf("focusTarget.focus()")
+      && processing.indexOf("await acceptAssetFiles") < processing.indexOf("focusTarget.focus()"),
+    "confirmed replacement restores focus only after the async load reaches a terminal state",
+  );
+  assert.ok(
+    assetAcceptance.indexOf("invalidateAssetCandidateState()") < assetAcceptance.indexOf("buildExactFileIndex"),
+    "asset replacement clears old media and reviews before indexing new files",
+  );
+  assertContainsAll(functionSource("keepCurrentSession"), [
+    'returnValue = "keep"',
+    "pendingReplacement = null",
+    "restoreInitiatorFocus()",
+  ], "keep-current dialog behavior");
+});
+
+test("UI-AC-09 mechanics exclusion uses decoded selected product rows only", () => {
   assert.match(controller, /snapshot\.review_rows\s*\|\|\s*snapshot\.selected_rows/);
-  assert.match(controller, /product_counts/);
+  assert.match(controller, /ReviewCore\.createClosedSnapshot\(feature\)/);
+  assert.match(controller, /decodedProductRows/);
+  assert.match(controller, /snapshot\.selected_rows\.filter/);
+  assert.match(controller, /decodedDimensions\.has\(row\.fixture_id\)/);
   assert.doesNotMatch(controller, /mechanics[^\n]*(?:\+\+|\+=)|naturalness[^\n]*mechanics/i);
+});
+
+test("UI-AC-09 reviews are core-issued and clones cannot enter saved product state", () => {
+  const issue = functionSource("issueReviewCandidate");
+  const save = functionSource("saveCurrentReview");
+  assertContainsAll(issue, ["ReviewCore.createReview(activeSnapshot, review)", "return null"], "review issuance");
+  assert.match(save, /savedReviews\.set\(review\.fixture_id, review\)/);
+  assert.doesNotMatch(save, /Object\.freeze\(\{\s*\.\.\.review\s*\}\)/);
 });
 
 test("UI-AC-10 independent gates evaluate fixed feature snapshots separately", () => {

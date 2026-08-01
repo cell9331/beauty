@@ -74,12 +74,18 @@
     "reason_code",
   ];
   const DESIGN_KEYS = ["feature", "reviewed", "decision", "method_class"];
-  const REVIEW_FEATURE = Symbol("phase54_review_feature");
   const OPAQUE_ID = /^[A-Za-z0-9_-]{1,64}$/;
   const MAX_ROWS = 64;
   const MAX_MANIFEST_BYTES = 65_536;
   const MAX_ASSET_BYTES = 16 * 1024 * 1024;
   const MAX_DECODED_DIMENSION = 4096;
+  const canonicalSnapshots = new WeakSet();
+  const reviewSnapshots = new WeakMap();
+  const BASE_CLOSED_REASONS = {
+    teeth_whitening: ["missing_genuine_positive"],
+    sclera_redness: ["missing_genuine_positive", "incomplete_asset_triple"],
+    upper_eyelid_fullness: ["missing_genuine_positive"],
+  };
 
   function deepFreeze(value) {
     if (value === null || typeof value !== "object" || Object.isFrozen(value)) return value;
@@ -253,31 +259,37 @@
     if (!inventory.valid) return invalidResult(inventory.reasons);
 
     const reviewRows = manifest.fixtures
+      .filter((row) => row.rights_status !== "rejected")
       .map(copyFixture)
       .sort((left, right) => left.fixture_id < right.fixture_id ? -1 : left.fixture_id > right.fixture_id ? 1 : 0);
     const selectedRows = reviewRows.filter(
       (row) => row.rights_status === "approved_internal_evaluation" && row.evidence_role === "genuine_candidate",
     );
-    const excludedRows = reviewRows.length - selectedRows.length;
+    const excludedRows = manifest.fixtures.length - selectedRows.length;
     const unapprovedGenuineRows = manifest.fixtures.filter(
       (row) => row.evidence_role === "genuine_candidate" && row.rights_status !== "approved_internal_evaluation",
     ).length;
-    const positive = selectedRows.filter((row) => row.polarity === "positive").length;
-    const negative = selectedRows.filter((row) => row.polarity === "negative").length;
+    const declaredPositive = selectedRows.filter((row) => row.polarity === "positive").length;
+    const declaredNegative = selectedRows.filter((row) => row.polarity === "negative").length;
+    const completeSelectedRows = selectedRows.filter(
+      (row) => ASSET_FIELDS.every((field) => inventory.keys.has(row.assets[field])),
+    );
+    const positive = completeSelectedRows.filter((row) => row.polarity === "positive").length;
+    const negative = completeSelectedRows.filter((row) => row.polarity === "negative").length;
     const missingAssets = selectedRows.reduce((count, row) => count + ASSET_FIELDS.reduce(
       (rowCount, field) => rowCount + (inventory.keys.has(row.assets[field]) ? 0 : 1),
       0,
     ), 0);
     const reasons = [];
-    if (positive === 0) reasons.push("missing_genuine_positive");
-    if (negative === 0) reasons.push("missing_genuine_negative");
+    if (declaredPositive === 0) reasons.push("missing_genuine_positive");
+    if (declaredNegative === 0) reasons.push("missing_genuine_negative");
     if (missingAssets > 0) reasons.push("incomplete_asset_triple");
     if (unapprovedGenuineRows > 0) reasons.push("unapproved_fixture");
 
-    return deepFreeze({
+    const snapshot = deepFreeze({
       valid: true,
       feature: manifest.feature,
-      ready: positive > 0 && negative > 0 && missingAssets === 0 && unapprovedGenuineRows === 0,
+      ready: declaredPositive > 0 && declaredNegative > 0 && missingAssets === 0 && unapprovedGenuineRows === 0,
       reasons: uniqueReasons(reasons),
       review_rows: reviewRows,
       selected_rows: selectedRows,
@@ -288,14 +300,33 @@
       product_counts: {
         positive,
         negative,
-        eligible: selectedRows.length,
+        eligible: completeSelectedRows.length,
         naturalness_weight: 0,
       },
     });
+    canonicalSnapshots.add(snapshot);
+    return snapshot;
+  }
+
+  function createClosedSnapshot(feature) {
+    if (!FEATURES.includes(feature)) throw new Error("feature_invalid");
+    const snapshot = deepFreeze({
+      valid: true,
+      feature,
+      ready: false,
+      reasons: [...BASE_CLOSED_REASONS[feature]],
+      review_rows: [],
+      selected_rows: [],
+      excluded_counts: { rows: 0, naturalness_weight: 0 },
+      product_counts: { positive: 0, negative: 0, eligible: 0, naturalness_weight: 0 },
+    });
+    canonicalSnapshots.add(snapshot);
+    return snapshot;
   }
 
   function findSnapshotRow(snapshot, fixtureID) {
-    if (!isPlainObject(snapshot) || snapshot.valid !== true || !FEATURES.includes(snapshot.feature)
+    if (!canonicalSnapshots.has(snapshot) || !isPlainObject(snapshot) || snapshot.valid !== true
+      || !FEATURES.includes(snapshot.feature)
       || !Array.isArray(snapshot.selected_rows)) return null;
     const reviewRows = Array.isArray(snapshot.review_rows) ? snapshot.review_rows : snapshot.selected_rows;
     return reviewRows.find(
@@ -386,19 +417,28 @@
     };
   }
 
-  function requireExactReviews(snapshot, reviews) {
+  function claimReviewProvenance(snapshot, reviews) {
     if (!Array.isArray(reviews)) throw new Error("review_set_invalid");
-    if (reviews[REVIEW_FEATURE] !== undefined && reviews[REVIEW_FEATURE] !== snapshot.feature) {
-      throw new Error("review_feature_invalid");
+    for (const review of reviews) {
+      if (review === null || typeof review !== "object"
+        || reviewSnapshots.get(review) !== snapshot) {
+        throw new Error("review_feature_invalid");
+      }
     }
-    if (reviews[REVIEW_FEATURE] === undefined && Object.isExtensible(reviews)) {
-      Object.defineProperty(reviews, REVIEW_FEATURE, {
-        value: snapshot.feature,
-        enumerable: false,
-        configurable: false,
-        writable: false,
-      });
-    }
+  }
+
+  function createReview(snapshot, candidate) {
+    if (!canonicalSnapshots.has(snapshot)) throw new Error("feature_snapshot_invalid");
+    const validation = validateReview(snapshot, candidate);
+    if (!validation.valid) throw new Error("review_invalid");
+    const issued = deepFreeze(copiedReview(candidate));
+    reviewSnapshots.set(issued, snapshot);
+    return issued;
+  }
+
+  function requireExactReviews(snapshot, reviews) {
+    if (!canonicalSnapshots.has(snapshot)) throw new Error("feature_snapshot_invalid");
+    claimReviewProvenance(snapshot, reviews);
     const expected = new Map(snapshot.selected_rows.map((row) => [row.fixture_id, row]));
     const seen = new Set();
     const copied = [];
@@ -426,7 +466,8 @@
   }
 
   function evaluateFeature(snapshot, reviews, designQualification) {
-    if (!isPlainObject(snapshot) || snapshot.valid !== true || !FEATURES.includes(snapshot.feature)
+    if (!canonicalSnapshots.has(snapshot) || !isPlainObject(snapshot)
+      || snapshot.valid !== true || !FEATURES.includes(snapshot.feature)
       || !Array.isArray(snapshot.selected_rows) || !isPlainObject(snapshot.product_counts)) {
       throw new Error("feature_snapshot_invalid");
     }
@@ -448,7 +489,7 @@
         else rejectedCount += 1;
       }
       if (rejectedCount > 0) reasons.push("review_rejected");
-    } else if (!Array.isArray(reviews)) {
+    } else if (!Array.isArray(reviews) || reviews.length !== 0) {
       throw new Error("review_set_invalid");
     }
 
@@ -466,28 +507,6 @@
       rejected_count: rejectedCount,
       naturalness_weight: reviewedCount,
     });
-  }
-
-  function projectedSnapshot(value) {
-    if (!isPlainObject(value)) throw new Error("feature_snapshot_invalid");
-    return {
-      valid: value.valid,
-      feature: value.feature,
-      ready: value.ready,
-      reasons: Array.isArray(value.reasons) ? [...value.reasons] : [],
-      selected_rows: Array.isArray(value.selected_rows) ? value.selected_rows.map((row) => ({
-        fixture_id: row.fixture_id,
-        feature: row.feature,
-        polarity: row.polarity,
-        expected_target_present: row.expected_target_present,
-      })) : [],
-      product_counts: isPlainObject(value.product_counts) ? {
-        positive: value.product_counts.positive,
-        negative: value.product_counts.negative,
-        eligible: value.product_counts.eligible,
-        naturalness_weight: value.product_counts.naturalness_weight,
-      } : null,
-    };
   }
 
   function projectedDesign(value) {
@@ -518,9 +537,13 @@
     const aggregates = [];
     for (const feature of FEATURES) {
       const input = byFeature.get(feature);
-      const snapshot = projectedSnapshot(input.snapshot);
+      const snapshot = input.snapshot;
       if (snapshot.feature !== feature) throw new Error("feature_inputs_invalid");
-      const reviews = Array.isArray(input.reviews) ? input.reviews.map(copiedReview) : input.reviews;
+      if (!canonicalSnapshots.has(snapshot)) {
+        throw new Error("feature_snapshot_invalid");
+      }
+      const reviews = input.reviews;
+      if (snapshot.ready === true) claimReviewProvenance(snapshot, reviews);
       const design = projectedDesign(input.design_qualification);
       const decision = evaluateFeature(snapshot, reviews, design);
       featureDecisions.push({
@@ -582,7 +605,9 @@
     constants,
     validateManifest,
     normalizeRelativeAssetKey,
+    createClosedSnapshot,
     createReviewSnapshot,
+    createReview,
     validateReview,
     rowPasses,
     evaluateFeature,
