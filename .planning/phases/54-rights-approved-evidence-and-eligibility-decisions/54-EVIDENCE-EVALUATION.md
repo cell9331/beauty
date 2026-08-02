@@ -1,27 +1,27 @@
 ---
 phase: 54
 plan: "05"
-status: passed
+status: pending_post_fix_verification
 security_standard: OWASP ASVS Level 1
 block_on: HIGH
-recorded: 2026-08-01
+recorded: 2026-08-02
 ---
 
 # Phase 54 Evidence Evaluation
 
 ## Result
 
-Phase 54 passes its final evidence gate with three independent, deterministic
-closed feature decisions. The result is a successful fail-closed eligibility
-decision, not a product admission: the production admission inventory remains
-empty and no candidate field, provider, renderer case, preset, Demo route,
-realtime path, tracked media, or release-readiness claim was added.
+Phase 54 is pending post-fix verification. Iteration 2 changed the media-binding
+and browser failure-recovery boundaries after the 2026-08-01 evidence was
+recorded. The closed ledger and exact-empty production admission remain the
+current safe state, but the historical browser, full SwiftPM, Demo, and ASVS
+sign-off below cannot be presented as current evidence.
 
-## Exact Automated Gate
+## Historical Automated Gate — Superseded
 
-The final `54-05-01` command set was run on 2026-08-01 from the repository root.
-Every command exited 0 except `verify.codebase-drift`, whose directive is the
-known nonblocking historical warning classified below.
+The following `54-05-01` command set was run on 2026-08-01 against pre-fix
+source. It is retained for audit provenance only and must be rerun before this
+evaluation can return to `passed`.
 
 ```bash
 node --check .planning/phases/54-rights-approved-evidence-and-eligibility-decisions/54-evidence-core.js
@@ -40,7 +40,7 @@ node /Users/yakangwang/.antigravity_cockpit/instances/codex/cli-037507efedd7/gsd
 git diff --check
 ```
 
-Actual results:
+Historical results (not current verification):
 
 | Gate | Actual result |
 |---|---|
@@ -62,7 +62,7 @@ integrations: one local authorized portrait eyebrow facade test, two face/
 eyebrow validation-envelope tests, and three default still-image detector tests.
 They do not satisfy or bypass a Phase 54 HIGH mitigation.
 
-## Direct `file://` Browser Smoke
+## Historical Direct `file://` Browser Smoke — Fresh Confirmation Required
 
 The reviewer was opened directly at:
 
@@ -77,8 +77,9 @@ example-images/local-retouch-review/manifests/mechanics-smoke.json
 example-images/local-retouch-review/bundle/
 ```
 
-On 2026-08-01 the user completed and explicitly passed the interactive browser
-check. The confirmed groups covered:
+On 2026-08-01 the user completed the interactive browser check against the old
+boundary. Those observations do not confirm the iteration-2 digest binding or
+failure recovery and must be repeated. The historical groups covered:
 
 - initial/empty/loading/error/partial/populated and zero/one/many/long-text
   behavior, fixed blinded labels, all seven initially unselected required
@@ -152,7 +153,7 @@ the previously recorded warning only: `PRODUCT_SENSE.md`, `example-images`, and
 path in the warning set, so it is nonblocking and does not authorize an automatic
 codebase remap.
 
-## ASVS Level 1 HIGH Sign-Off
+## Historical ASVS Level 1 HIGH Sign-Off — Not Current
 
 | Threat | Result | Evidence |
 |---|---|---|
@@ -165,7 +166,20 @@ codebase remap.
 | T-54-07 evidence repudiation | PASS | Exact `27 = 8 + 19`, seven explicit judgments, deterministic fixed-name export, actual-count record |
 | T-54-08 local-review disclosure | PASS | Canonical threat inventory maps the owner privacy boundary; local-only, ephemeral, redacted, no-network/storage, and export-by-construction checks remain required |
 
-No HIGH mitigation failed, was waived, or remained unverified.
+These PASS rows describe the pre-fix run only. Current HIGH sign-off is pending
+the complete live checker, direct-`file://` smoke, full regressions, and fresh
+human confirmation required by `54-VALIDATION.md`.
+
+## Exact Rerun Required
+
+The orchestrator must rerun the current 33-test core suite, 38-test reviewer
+contract suite, 119-case checker self-test, complete live checker, direct
+`file://` browser smoke, full SwiftPM, explicit iPhone 17e/iOS 26.5 Demo build
+and tests, schema/UI gates, and `git diff --check`. Human confirmation must cover
+the exact blinded media, fail-closed digest/path/triple/target substitutions,
+fixed redacted recovery from slice/arrayBuffer/object-URL/Image failures, both
+inputs re-enabled, and a later valid replacement. New timestamps and actual
+counts belong here only after those steps complete.
 
 ## Explicit Nonclaims
 

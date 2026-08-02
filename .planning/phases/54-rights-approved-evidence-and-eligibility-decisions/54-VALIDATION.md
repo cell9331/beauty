@@ -2,13 +2,19 @@
 phase: 54
 slug: rights-approved-evidence-and-eligibility-decisions
 # status lifecycle: draft (plan-phase) -> validated (Plan 54-05 after exact evidence)
-status: validated
-nyquist_compliant: true
+status: draft
+nyquist_compliant: false
 wave_0_complete: true
 created: 2026-07-31
 ---
 
 # Phase 54 — Validation Strategy
+
+> **Iteration-2 status: pending post-fix verification.** The CR-01 media-digest
+> binding and WR-01 recovery changes alter the browser security boundary. The
+> historical 2026-08-01 results below are retained as provenance only and do not
+> validate the current source. Promotion requires the exact final-only rerun and
+> fresh human browser confirmation listed below.
 
 > Exact pending validation map for the five-plan, nine-task execution set. A
 > deterministic closed feature gate is a successful expected result; an invalid,
@@ -58,7 +64,7 @@ created: 2026-07-31
 | `54-03-02` | `54-03` | 2 | `[54-02]` | `54-01-01`, `54-01-02` | EVID-02..05, LID-01 | Complete UI/core Node suites, checker `--ui`, exact `27 = 8 + 19` | passed |
 | `54-04-01` | `54-04` | 3 | `[54-03]` | `54-01-01`, `54-01-02` | EVID-01, EVID-02, EVID-04, EVID-05, LID-01 | JSON parse, checker `--ledger`, Git ignore/untracked proof | passed |
 | `54-04-02` | `54-04` | 3 | `[54-03]` | `54-01-02` | EVID-01..05, LID-01 | checker `--owners`, `--scope`, and default implementation live mode | passed |
-| `54-05-01` | `54-05` | 4 | `[54-04]` | `54-01-01`, `54-01-02` | EVID-01..05, LID-01 | **FINAL ONLY:** complete Node/checker/browser/full SwiftPM/Demo/schema/UI/diff gate from `54-05-PLAN.md` | passed |
+| `54-05-01` | `54-05` | 4 | `[54-04]` | `54-01-01`, `54-01-02` | EVID-01..05, LID-01 | **FINAL ONLY:** complete Node/checker/browser/full SwiftPM/Demo/schema/UI/diff gate from `54-05-PLAN.md` | pending post-fix verification |
 
 Task count equality: **9 actual XML task IDs = 9 validation rows = 2 Wave 0 + 6 focused GREEN + 1 final closeout**.
 
@@ -173,12 +179,17 @@ The checker must fail closed on:
 Checker failures remain redacted: report fixed rule names/counts, never matched
 contents or sensitive local paths.
 
-## Manual-Only Verifications
+## Required Post-Fix Verification
 
-None. The original-detail/UI smoke is tool-driven by the execution agent through
-the available browser-control capability. If that capability or a required
-interaction cannot run, its HIGH mitigation remains unverified and validation
-must not be promoted.
+The orchestrator must rerun the complete core/UI suites (expected inventory: 33
+core and 38 reviewer-contract tests), checker self-test and complete live mode,
+direct-`file://` smoke with the ignored disposable bundle, full SwiftPM, explicit
+iPhone 17e/iOS 26.5 Demo build and test, schema drift, UI safety, and diff hygiene.
+The browser operator must freshly confirm blinded original-detail rendering,
+digest mismatch closure, slice/arrayBuffer/object-URL/Image failure recovery,
+both inputs re-enabled after each failure, and a later valid replacement. If the
+browser capability or any interaction is unavailable, every affected HIGH row
+remains unverified and validation must not be promoted.
 
 ## Validation Sign-Off
 
@@ -188,10 +199,10 @@ must not be promoted.
 - [x] Every GREEN task names its Wave 0 dependency.
 - [x] Mutation coverage includes every research matrix item.
 - [x] UI equality is exactly 27 = 8 + 19 with no missing/duplicate/extra row.
-- [x] EVID-01..05 and LID-01 each have core, boundary, and final evidence.
+- [ ] EVID-01..05 and LID-01 have fresh post-fix core, boundary, browser, and final-regression evidence.
 - [x] Every plan declares ASVS Level 1, `block_on: HIGH`, and named mitigation commands; canonical inventory maps active T-54-01…T-54-08 with no retired/merged IDs currently recorded.
 - [x] Current closed decisions are inventory-derived and record both missing polarities for zero eligible/review rows, plus the independent upper-eyelid design gap.
 - [x] No sensitive local artifact, SDK/Demo behavior, or unsupported readiness claim is added.
-- [x] `54-EVIDENCE-EVALUATION.md` exists before validation fields change.
+- [ ] `54-EVIDENCE-EVALUATION.md` is refreshed only after all post-fix gates and human confirmation pass.
 
-**Approval:** validated by `54-EVIDENCE-EVALUATION.md`; all nine task rows and every ASVS Level 1 HIGH mitigation passed.
+**Approval:** pending post-fix verification; the historical evaluation is not current evidence for the modified browser boundary.
