@@ -80,12 +80,16 @@
     "fixture_id",
     "feature",
     "polarity",
+    "expected_target_present",
     "permitted_use",
     "evidence_classification",
+    "assets",
   ];
+  const AUTHORIZED_ASSET_KEYS = ["key", "sha256"];
   const PERMITTED_USE = "internal_product_evaluation";
   const GENUINE_CLASSIFICATION = "genuine_candidate";
   const OPAQUE_ID = /^[A-Za-z0-9_-]{1,64}$/;
+  const SHA256 = /^[a-f0-9]{64}$/;
   const MAX_ROWS = 64;
   const MAX_MANIFEST_BYTES = 65_536;
   const MAX_ASSET_BYTES = 16 * 1024 * 1024;
@@ -227,14 +231,17 @@
       : deepFreeze({ valid: true, reasons: [] });
   }
 
-  function classifyAvailableAssetKeys(values) {
+  function classifyAvailableAssets(values) {
     if (!Array.isArray(values)) return invalidResult(["asset_inventory_invalid"]);
-    const keys = new Set();
+    const assets = new Map();
     const basenames = new Map();
     for (const raw of values) {
-      const normalized = normalizeRelativeAssetKey(raw);
-      if (!normalized.valid || keys.has(normalized.key)) return invalidResult(["asset_inventory_invalid"]);
-      keys.add(normalized.key);
+      if (!hasExactKeys(raw, AUTHORIZED_ASSET_KEYS) || !SHA256.test(raw.sha256)) {
+        return invalidResult(["asset_inventory_invalid"]);
+      }
+      const normalized = normalizeRelativeAssetKey(raw.key);
+      if (!normalized.valid || assets.has(normalized.key)) return invalidResult(["asset_inventory_invalid"]);
+      assets.set(normalized.key, raw.sha256);
       const basename = normalized.key.split("/").at(-1);
       const previous = basenames.get(basename);
       if (previous !== undefined && previous !== normalized.key) {
@@ -242,7 +249,7 @@
       }
       basenames.set(basename, normalized.key);
     }
-    return { valid: true, keys };
+    return { valid: true, assets };
   }
 
   function copyFixture(row) {
@@ -278,8 +285,13 @@
         || !OPAQUE_ID.test(grant.fixture_id)
         || !FEATURES.includes(grant.feature)
         || !POLARITIES.includes(grant.polarity)
+        || typeof grant.expected_target_present !== "boolean"
         || grant.permitted_use !== PERMITTED_USE
-        || grant.evidence_classification !== GENUINE_CLASSIFICATION) {
+        || grant.evidence_classification !== GENUINE_CLASSIFICATION
+        || !hasExactKeys(grant.assets, ASSET_FIELDS)
+        || ASSET_FIELDS.some((field) => !hasExactKeys(grant.assets[field], AUTHORIZED_ASSET_KEYS)
+          || !normalizeRelativeAssetKey(grant.assets[field].key).valid
+          || !SHA256.test(grant.assets[field].sha256))) {
         throw new Error("authorization_registry_invalid");
       }
       const fixtureBinding = `${grant.fixture_id}\0${grant.feature}\0${grant.polarity}`;
@@ -293,8 +305,13 @@
         fixture_id: grant.fixture_id,
         feature: grant.feature,
         polarity: grant.polarity,
+        expected_target_present: grant.expected_target_present,
         permitted_use: grant.permitted_use,
         evidence_classification: grant.evidence_classification,
+        assets: Object.fromEntries(ASSET_FIELDS.map((field) => [field, {
+          key: grant.assets[field].key,
+          sha256: grant.assets[field].sha256,
+        }])),
       };
     });
     const registry = deepFreeze({ schema_version: 1, grants });
@@ -302,13 +319,29 @@
     return registry;
   }
 
-  function authorizationMatches(row, registry) {
+  function authorizationGrantFor(row, registry) {
     return registry.grants.some((grant) => grant.rights_record_id === row.rights_record_id
       && grant.fixture_id === row.fixture_id
       && grant.feature === row.feature
       && grant.polarity === row.polarity
+      && grant.expected_target_present === row.expected_target_present
       && grant.permitted_use === PERMITTED_USE
-      && grant.evidence_classification === row.evidence_role);
+      && grant.evidence_classification === row.evidence_role
+      && ASSET_FIELDS.every((field) => grant.assets[field].key === row.assets[field]));
+  }
+
+  function mediaDigestsMatch(row, registry, inventory) {
+    const grant = registry.grants.find((candidate) => candidate.rights_record_id === row.rights_record_id
+      && candidate.fixture_id === row.fixture_id
+      && candidate.feature === row.feature
+      && candidate.polarity === row.polarity
+      && candidate.expected_target_present === row.expected_target_present
+      && candidate.permitted_use === PERMITTED_USE
+      && candidate.evidence_classification === row.evidence_role
+      && ASSET_FIELDS.every((field) => candidate.assets[field].key === row.assets[field]));
+    return grant !== undefined && ASSET_FIELDS.every(
+      (field) => inventory.assets.get(row.assets[field]) === grant.assets[field].sha256,
+    );
   }
 
   function deriveInventoryReasons({ declaredPositive, declaredNegative, missingAssets, unapprovedGenuineRows }) {
@@ -323,37 +356,46 @@
   function createReviewSnapshot(manifest, availableAssetKeys, authorizationRegistry) {
     const validation = validateManifest(manifest);
     if (!validation.valid) return invalidResult(validation.reasons);
-    const inventory = classifyAvailableAssetKeys(availableAssetKeys);
+    const inventory = classifyAvailableAssets(availableAssetKeys);
     if (!inventory.valid) return invalidResult(inventory.reasons);
     if (!trustedAuthorizationRegistries.has(authorizationRegistry)) {
       return invalidResult(["authorization_registry_invalid"]);
     }
 
+    const policyAuthorizedRows = manifest.fixtures.filter(
+      (row) => row.rights_status === "approved_internal_evaluation"
+        && row.evidence_role === GENUINE_CLASSIFICATION
+        && authorizationGrantFor(row, authorizationRegistry),
+    );
     const reviewRows = manifest.fixtures
       .filter((row) => row.rights_status !== "rejected"
         && (row.evidence_role !== GENUINE_CLASSIFICATION
-          || authorizationMatches(row, authorizationRegistry)))
+          || (authorizationGrantFor(row, authorizationRegistry)
+            && mediaDigestsMatch(row, authorizationRegistry, inventory))))
       .map(copyFixture)
       .sort((left, right) => left.fixture_id < right.fixture_id ? -1 : left.fixture_id > right.fixture_id ? 1 : 0);
     const selectedRows = reviewRows.filter(
       (row) => row.rights_status === "approved_internal_evaluation"
-        && row.evidence_role === GENUINE_CLASSIFICATION,
+        && row.evidence_role === GENUINE_CLASSIFICATION
+        && mediaDigestsMatch(row, authorizationRegistry, inventory),
     );
     const excludedRows = manifest.fixtures.length - selectedRows.length;
     const unapprovedGenuineRows = manifest.fixtures.filter(
       (row) => row.evidence_role === GENUINE_CLASSIFICATION
         && (row.rights_status !== "approved_internal_evaluation"
-          || !authorizationMatches(row, authorizationRegistry)),
+          || (!authorizationGrantFor(row, authorizationRegistry)
+            || (ASSET_FIELDS.every((field) => inventory.assets.has(row.assets[field]))
+              && !mediaDigestsMatch(row, authorizationRegistry, inventory)))),
     ).length;
-    const declaredPositive = selectedRows.filter((row) => row.polarity === "positive").length;
-    const declaredNegative = selectedRows.filter((row) => row.polarity === "negative").length;
+    const declaredPositive = policyAuthorizedRows.filter((row) => row.polarity === "positive").length;
+    const declaredNegative = policyAuthorizedRows.filter((row) => row.polarity === "negative").length;
     const completeSelectedRows = selectedRows.filter(
-      (row) => ASSET_FIELDS.every((field) => inventory.keys.has(row.assets[field])),
+      (row) => ASSET_FIELDS.every((field) => inventory.assets.has(row.assets[field])),
     );
     const positive = completeSelectedRows.filter((row) => row.polarity === "positive").length;
     const negative = completeSelectedRows.filter((row) => row.polarity === "negative").length;
-    const missingAssets = selectedRows.reduce((count, row) => count + ASSET_FIELDS.reduce(
-      (rowCount, field) => rowCount + (inventory.keys.has(row.assets[field]) ? 0 : 1),
+    const missingAssets = policyAuthorizedRows.reduce((count, row) => count + ASSET_FIELDS.reduce(
+      (rowCount, field) => rowCount + (inventory.assets.has(row.assets[field]) ? 0 : 1),
       0,
     ), 0);
     const reasons = deriveInventoryReasons({

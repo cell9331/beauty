@@ -389,6 +389,7 @@ def check_core() -> list[str]:
             for anchor in [
                 "ReviewCore", "validateManifest", "normalizeRelativeAssetKey", "createReviewSnapshot",
                 "validateReview", "rowPasses", "evaluateFeature", "buildDurableExport", "serializeDurableExport",
+                "expected_target_present", "sha256", "mediaDigestsMatch",
             ]:
                 if anchor not in text:
                     failures.append(f"core:missing_anchor:{anchor}")
@@ -402,10 +403,7 @@ def check_core() -> list[str]:
             completed = run_command(["node", "--check", str(AUTHORIZATION_REGISTRY)])
             if completed.returncode != 0:
                 failures.append("core:authorization_registry_syntax")
-            for anchor in (
-                "createTrustedAuthorizationRegistry", "rights_record_id", "fixture_id",
-                "feature", "polarity", "permitted_use", "evidence_classification",
-            ):
+            for anchor in ("createTrustedAuthorizationRegistry", "grants: []", "SHA-256", "expected-target policy"):
                 if anchor not in registry_text:
                     failures.append(f"core:authorization_registry_anchor:{anchor}")
         except RuntimeError as error:
@@ -452,9 +450,12 @@ def check_ui() -> list[str]:
         for anchor in ["ReviewCore", "createObjectURL", "revokeObjectURL", "beauty-evidence-review-v1.json"]:
             if anchor not in controller:
                 failures.append(f"ui:missing_anchor:{anchor}")
-        for anchor in ["parseImageHeader", "inspectAndDecode", "MAX_HEADER_BYTES", "maxPixels"]:
+        for anchor in ["parseImageHeader", "inspectAndDecode", "sha256Hex", "MAX_HEADER_BYTES", "maxPixels"]:
             if anchor not in image_safety:
                 failures.append(f"ui:image_safety_anchor:{anchor}")
+        for anchor in ["inspectAssetFiles", "sha256", "ReviewCore.createReviewSnapshot"]:
+            if anchor not in controller:
+                failures.append(f"ui:media_binding_anchor:{anchor}")
     except RuntimeError as error:
         failures.append(f"ui:{error}")
     return failures

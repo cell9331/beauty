@@ -72,11 +72,21 @@
     });
   }
 
+  async function sha256Hex(file, environment) {
+    const fullBytes = typeof file.arrayBuffer === "function"
+      ? await file.arrayBuffer()
+      : await file.slice(0, file.size).arrayBuffer();
+    const subtle = environment.cryptoSubtle || globalObject.crypto.subtle;
+    const digest = new Uint8Array(await subtle.digest("SHA-256", fullBytes));
+    return Array.from(digest, (value) => value.toString(16).padStart(2, "0")).join("");
+  }
+
   async function inspectAndDecode(file, limits, environment = {}) {
     const headerSlice = file.slice(0, Math.min(file.size, MAX_HEADER_BYTES));
     const headerBytes = await headerSlice.arrayBuffer();
     const header = parseImageHeader(headerBytes, file.type, limits);
     if (!header.valid) return { valid: false, header: false };
+    const sha256 = await sha256Hex(file, environment);
 
     const ImageCtor = environment.ImageCtor || globalObject.Image;
     const createObjectURL = environment.createObjectURL || globalObject.URL.createObjectURL.bind(globalObject.URL);
@@ -93,6 +103,7 @@
           && image.naturalHeight === header.naturalHeight,
         naturalWidth: header.naturalWidth,
         naturalHeight: header.naturalHeight,
+        sha256,
       }), { once: true });
       image.addEventListener("error", () => finish({ valid: false, decode: false }), { once: true });
       image.src = temporaryURL;

@@ -6,15 +6,8 @@
 
   globalObject.RightsAuthorizationRegistry = ReviewCore.createTrustedAuthorizationRegistry({
     schema_version: 1,
-    grants: [
-      {
-        rights_record_id: "user_authorization_20260730_002",
-        fixture_id: "portrait_001",
-        feature: "teeth_whitening",
-        polarity: "negative",
-        permitted_use: "internal_product_evaluation",
-        evidence_classification: "genuine_candidate",
-      },
-    ],
+    // Product-evidence grants stay empty until a complete local triple has
+    // independently pinned keys, SHA-256 digests, and expected-target policy.
+    grants: [],
   });
 })(typeof globalThis !== "undefined" ? globalThis : this);

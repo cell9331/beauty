@@ -2,6 +2,7 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
+const crypto = require("node:crypto");
 const test = require("node:test");
 const assert = require("node:assert/strict");
 
@@ -194,12 +195,9 @@ test("document policy and external same-directory scripts are exact", () => {
     && controllerIndex > imageSafetyIndex);
   assertContainsAll(authorization, [
     "createTrustedAuthorizationRegistry",
-    "rights_record_id",
-    "fixture_id",
-    "feature",
-    "polarity",
-    "permitted_use",
-    "evidence_classification",
+    "grants: []",
+    "SHA-256",
+    "expected-target policy",
   ], "trusted authorization registry");
 });
 
@@ -340,6 +338,7 @@ function fakeFile(bytes, type) {
       const sliced = bytes.slice(start, end);
       return { arrayBuffer: async () => sliced.buffer };
     },
+    arrayBuffer: async () => bytes.buffer,
   };
 }
 
@@ -386,7 +385,12 @@ test("bounded PNG and JPEG headers proceed to one instrumented decode", async ()
       createObjectURL() { objectURLCount += 1; return "blob:test"; },
       revokeObjectURL() { revokeCount += 1; },
     });
-    assert.deepEqual(result, { valid: true, naturalWidth: width, naturalHeight: height });
+    assert.deepEqual(result, {
+      valid: true,
+      naturalWidth: width,
+      naturalHeight: height,
+      sha256: crypto.createHash("sha256").update(new Uint8Array(await file.arrayBuffer())).digest("hex"),
+    });
     assert.equal(objectURLCount, 1);
     assert.equal(revokeCount, 1);
   }
@@ -444,6 +448,11 @@ test("manifest replacement invalidates prior session before every fail-closed ch
     assetAcceptance.indexOf("if (!manifest)") < assetAcceptance.indexOf("ReviewCore.createReviewSnapshot"),
     "a later asset selection cannot evaluate against a rejected prior manifest",
   );
+  assert.ok(
+    assetAcceptance.indexOf("await inspectAssetFiles()") < assetAcceptance.indexOf("ReviewCore.createReviewSnapshot"),
+    "media digests and decode facts are fixed before product-evidence selection",
+  );
+  assertContainsAll(functionSource("inspectAssetFiles"), ["sha256", "inventory.push", "decodeImage"], "trusted media digest preflight");
 });
 
 test("replacement confirmation preserves dialog choice focus and type-specific valid reload", () => {

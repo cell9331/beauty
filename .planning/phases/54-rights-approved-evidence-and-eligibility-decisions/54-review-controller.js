@@ -348,7 +348,21 @@
     });
   }
 
-  async function validateReviewableRows(snapshot) {
+  async function inspectAssetFiles() {
+    const inspections = new Map();
+    const inventory = [];
+    const reasons = [];
+    for (const [key, file] of assetFiles) {
+      const inspected = await decodeImage(file);
+      inspections.set(key, inspected);
+      if (inspected.decode === false) reasons.push("decode_failed");
+      else if (inspected.header === false || inspected.valid !== true) reasons.push("dimension_invalid");
+      else inventory.push({ key, sha256: inspected.sha256 });
+    }
+    return { inspections, inventory, reasons: [...new Set(reasons)] };
+  }
+
+  function validateReviewableRows(snapshot, inspections) {
     const rows = [];
     const reasons = [];
     const dimensions = new Map();
@@ -359,8 +373,7 @@
         reasons.push("missing_asset");
         continue;
       }
-      const decoded = [];
-      for (const file of files) decoded.push(await decodeImage(file));
+      const decoded = keys.map((key) => inspections.get(key));
       if (decoded.some((item) => item.decode === false)) {
         reasons.push("decode_failed");
         continue;
@@ -444,9 +457,10 @@
       setValidation("等待本地评审材料", "请先选择评审清单。", indexed.reasons, "");
       return;
     }
+    const inspected = await inspectAssetFiles();
     const snapshot = ReviewCore.createReviewSnapshot(
       manifest,
-      [...assetFiles.keys()],
+      inspected.inventory,
       RightsAuthorizationRegistry,
     );
     if (!snapshot.valid) {
@@ -457,11 +471,11 @@
     }
     activeSnapshot = snapshot;
     featureSnapshots.set(snapshot.feature, snapshot);
-    const decoded = await validateReviewableRows(snapshot);
+    const decoded = validateReviewableRows(snapshot, inspected.inspections);
     reviewableRows = decoded.rows;
     decodedDimensions = decoded.dimensions;
     selectedIndex = 0;
-    const reasons = [...new Set([...indexed.reasons, ...decoded.reasons])];
+    const reasons = [...new Set([...indexed.reasons, ...inspected.reasons, ...decoded.reasons])];
     hasBlockingAssetErrors = reasons.length > 0;
     renderResolvedGates();
     setInputsDisabled(false);

@@ -2,6 +2,7 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
+const crypto = require("node:crypto");
 const test = require("node:test");
 const assert = require("node:assert/strict");
 
@@ -43,6 +44,14 @@ const ASSET_KEYS = [
   "assets/n-mask.png",
   "assets/n-after.jpg",
 ];
+
+function digestFor(key) {
+  return crypto.createHash("sha256").update(key).digest("hex");
+}
+
+function assetInventory(keys = ASSET_KEYS) {
+  return keys.map((key) => ({ key, sha256: digestFor(key) }));
+}
 
 function fixture(id, polarity, overrides = {}) {
   const prefix = polarity === "positive" ? "p" : "n";
@@ -106,14 +115,19 @@ function authorizationRegistryFor(value = manifest()) {
         fixture_id: row.fixture_id,
         feature: row.feature,
         polarity: row.polarity,
+        expected_target_present: row.expected_target_present,
         permitted_use: "internal_product_evaluation",
         evidence_classification: "genuine_candidate",
+        assets: Object.fromEntries(Object.entries(row.assets).map(([field, key]) => [field, {
+          key,
+          sha256: digestFor(key),
+        }])),
       })),
   });
 }
 
 function snapshotFor(value = manifest(), keys = ASSET_KEYS, registry = authorizationRegistryFor(value)) {
-  const snapshot = core.createReviewSnapshot(value, keys, registry);
+  const snapshot = core.createReviewSnapshot(value, assetInventory(keys), registry);
   assert.equal(snapshot.valid, true);
   return snapshot;
 }
@@ -232,6 +246,14 @@ test("trusted authorization is independent and bound to record fixture feature p
       value.fixtures[0].polarity = "negative";
       value.fixtures[0].expected_target_present = false;
     }],
+    ["manifest-controlled expected target", (value) => {
+      value.fixtures[0].expected_target_present = !value.fixtures[0].expected_target_present;
+    }],
+    ["swapped media triples", (value) => {
+      const firstAssets = value.fixtures[0].assets;
+      value.fixtures[0].assets = value.fixtures[1].assets;
+      value.fixtures[1].assets = firstAssets;
+    }],
     ["reused grant", (value) => {
       value.fixtures[1].rights_record_id = value.fixtures[0].rights_record_id;
     }],
@@ -239,24 +261,42 @@ test("trusted authorization is independent and bound to record fixture feature p
   for (const [label, mutate] of mutations) {
     const value = clone(approved);
     mutate(value);
-    const snapshot = core.createReviewSnapshot(value, ASSET_KEYS, registry);
+    const snapshot = core.createReviewSnapshot(value, assetInventory(), registry);
     assert.equal(snapshot.valid, true, label);
     assert.equal(snapshot.ready, false, label);
     assert.ok(snapshot.reasons.includes("unapproved_fixture"), label);
     assert.ok(snapshot.selected_rows.length < value.fixtures.length, label);
   }
 
+  const rekeyed = clone(approved);
+  rekeyed.fixtures[0].assets.original = "assets/rekeyed-original.png";
+  const rekeyedInventory = assetInventory();
+  rekeyedInventory[0] = {
+    key: "assets/rekeyed-original.png",
+    sha256: digestFor("assets/rekeyed-original.png"),
+  };
+  const rekeyedSnapshot = core.createReviewSnapshot(rekeyed, rekeyedInventory, registry);
+  assert.equal(rekeyedSnapshot.ready, false, "asset keys remain untrusted lookup hints");
+  assert.ok(rekeyedSnapshot.reasons.includes("unapproved_fixture"));
+
+  const substitutedBytes = assetInventory();
+  substitutedBytes[0] = { ...substitutedBytes[0], sha256: "f".repeat(64) };
+  const substitutedSnapshot = core.createReviewSnapshot(approved, substitutedBytes, registry);
+  assert.equal(substitutedSnapshot.ready, false, "substituted bytes under an approved key fail closed");
+  assert.ok(substitutedSnapshot.reasons.includes("unapproved_fixture"));
+  assert.equal(substitutedSnapshot.selected_rows.some((row) => row.fixture_id === "case_positive"), false);
+
   const selfPromoted = manifest("teeth_whitening", [fixture("promoted", "positive", {
     rights_record_id: "invented_rights",
     evidence_role: "genuine_candidate",
   })]);
-  const selfPromotedSnapshot = core.createReviewSnapshot(selfPromoted, ASSET_KEYS.slice(0, 3), registry);
+  const selfPromotedSnapshot = core.createReviewSnapshot(selfPromoted, assetInventory(ASSET_KEYS.slice(0, 3)), registry);
   assert.equal(selfPromotedSnapshot.ready, false);
   assert.deepEqual(selfPromotedSnapshot.selected_rows, []);
   assert.ok(selfPromotedSnapshot.reasons.includes("unapproved_fixture"));
 
   assert.deepEqual(
-    core.createReviewSnapshot(approved, ASSET_KEYS, clone(registry)).reasons,
+    core.createReviewSnapshot(approved, assetInventory(), clone(registry)).reasons,
     ["authorization_registry_invalid"],
     "a manifest cannot manufacture a trusted registry by copying its shape",
   );
@@ -271,8 +311,18 @@ test("trusted authorization registry rejects duplicate and malformed grants", ()
   for (const [field, value] of [
     ["permitted_use", "commercial_release"],
     ["evidence_classification", "synthetic"],
+    ["expected_target_present", "yes"],
   ]) {
     const grant = { ...base.grants[0], [field]: value };
+    assert.throws(
+      () => core.createTrustedAuthorizationRegistry({ schema_version: 1, grants: [grant] }),
+      /authorization_registry_invalid/,
+    );
+  }
+  for (const grant of [
+    { ...base.grants[0], assets: { ...base.grants[0].assets, original: { ...base.grants[0].assets.original, sha256: "0" } } },
+    { ...base.grants[0], assets: { ...base.grants[0].assets, mask: { ...base.grants[0].assets.mask, key: "../mask.png" } } },
+  ]) {
     assert.throws(
       () => core.createTrustedAuthorizationRegistry({ schema_version: 1, grants: [grant] }),
       /authorization_registry_invalid/,
@@ -319,13 +369,14 @@ test("asset identity rejects duplicate normalized keys basename collisions exact
 
   const value = manifest();
   const registry = authorizationRegistryFor(value);
-  const snap = core.createReviewSnapshot(value, [
+  const snap = core.createReviewSnapshot(value, assetInventory([
     ...ASSET_KEYS,
     "other/p-original.png",
-  ], registry);
+  ]), registry);
   assert.equal(snap.valid, false, "basename collision is not repaired into an alias");
 
-  const mismatch = core.createReviewSnapshot(value, ASSET_KEYS.map((key) => `bundle/${key}`), registry);
+  const mismatchKeys = ASSET_KEYS.map((key) => `bundle/${key}`);
+  const mismatch = core.createReviewSnapshot(value, assetInventory(mismatchKeys), registry);
   assert.equal(mismatch.ready, false, "selected-root-relative keys must match exactly");
   assert.ok(mismatch.reasons.includes("incomplete_asset_triple"));
 
