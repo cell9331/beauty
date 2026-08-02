@@ -67,6 +67,17 @@ EXPECTED_UI_ROWS = frozenset((*UI_CONSIDERATIONS, *UI_ACCEPTANCE))
 EXPECTED_SPIKE_DIGEST = "c5edde15396d5a3d1052f5bfc183d3ac4beb75e11ee4f364c1caaec28cc7a891"
 THREAT_INVENTORY_KEYS = ("schema_version", "active_high_ids", "threats", "retired_or_merged")
 THREAT_KEYS = ("id", "severity", "status", "disposition")
+CANONICAL_HIGH_IDS = tuple(f"T-54-{index:02d}" for index in range(1, 9))
+MITIGATION_GATES = {
+    "T-54-01": "core:authorization_and_media_binding",
+    "T-54-02": "core:immutable_review_predicate",
+    "T-54-03": "core:durable_export_allowlist",
+    "T-54-04": "scope:production_absence",
+    "T-54-05": "ui:bounded_image_preflight",
+    "T-54-06": "ui:local_only_and_git_isolation",
+    "T-54-07": "ledger:derived_feature_decisions",
+    "T-54-08": "ui:redacted_ephemeral_review",
+}
 
 FORBIDDEN_EXPORT_KEYS = frozenset(
     {
@@ -222,6 +233,8 @@ def validate_threat_inventory(value: Any) -> tuple[str, ...]:
             or any(not isinstance(item, str) or not re.fullmatch(r"T-54-\d{2}", item) for item in active_ids)
             or len(active_ids) != len(set(active_ids))):
         raise AssertionError("threat_inventory_ids")
+    if tuple(active_ids) != CANONICAL_HIGH_IDS:
+        raise AssertionError("threat_inventory_canonical_ids")
     if not isinstance(threats, list) or len(threats) != len(active_ids):
         raise AssertionError("threat_inventory_rows")
     rows = []
@@ -235,6 +248,8 @@ def validate_threat_inventory(value: Any) -> tuple[str, ...]:
         raise AssertionError("threat_inventory_row_ids")
     if any(not isinstance(item, dict) or tuple(item) != ("id", "replacement", "reason") for item in retired):
         raise AssertionError("threat_inventory_retired_shape")
+    if tuple(MITIGATION_GATES) != CANONICAL_HIGH_IDS:
+        raise AssertionError("threat_mitigation_gate_ids")
     return tuple(active_ids)
 
 
@@ -586,6 +601,15 @@ def self_test() -> None:
     for mutation_name, mutate in [
         ("missing_high", lambda value: value["threats"].pop()),
         ("extra_high", lambda value: value["threats"].append({"id": "T-54-09", "severity": "HIGH", "status": "active", "disposition": "mitigate"})),
+        ("coordinated_missing_high", lambda value: (value["active_high_ids"].pop(), value["threats"].pop())),
+        ("coordinated_extra_high", lambda value: (
+            value["active_high_ids"].append("T-54-09"),
+            value["threats"].append({"id": "T-54-09", "severity": "HIGH", "status": "active", "disposition": "mitigate"}),
+        )),
+        ("coordinated_replacement_high", lambda value: (
+            value["active_high_ids"].__setitem__(0, "T-54-09"),
+            value["threats"][0].__setitem__("id", "T-54-09"),
+        )),
         ("retired_mapping_shape", lambda value: value.update({"retired_or_merged": [{"id": "T-54-07"}]})),
     ]:
         candidate = json.loads(json.dumps(clean_threats))
@@ -791,8 +815,12 @@ def main() -> int:
     if failures:
         print_failures(sorted(set(failures)))
         return 1
-    high_ids = validate_threat_inventory(parse_json(THREAT_INVENTORY))
-    print(json.dumps({"status": "pass", "mode": "live", "uiRows": "27 = 8 + 19", "asvsHigh": f"{len(high_ids)}/{len(high_ids)}"}, sort_keys=True))
+    result = {"status": "pass", "mode": "live", "uiRows": "27 = 8 + 19"}
+    if not any((args.core, args.ui, args.ledger, args.owners, args.scope)):
+        high_ids = validate_threat_inventory(parse_json(THREAT_INVENTORY))
+        result["asvsHigh"] = f"{len(high_ids)}/{len(CANONICAL_HIGH_IDS)}"
+        result["mitigationGates"] = [MITIGATION_GATES[threat_id] for threat_id in high_ids]
+    print(json.dumps(result, sort_keys=True))
     return 0
 
 
