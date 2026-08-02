@@ -363,7 +363,7 @@ test("oversized PNG and JPEG headers reject before Image or object URL creation"
   }
 });
 
-test("bounded PNG and JPEG headers proceed to one instrumented decode", async () => {
+test("bounded headers decode and slice buffer URL Image failures recover for a later valid replacement", async () => {
   const limits = { maxDimension: 4096, maxPixels: 16_000_000 };
   for (const [file, width, height] of [
     [fakeFile(pngHeader(800, 600), "image/png"), 800, 600],
@@ -394,6 +394,35 @@ test("bounded PNG and JPEG headers proceed to one instrumented decode", async ()
     assert.equal(objectURLCount, 1);
     assert.equal(revokeCount, 1);
   }
+
+  const valid = fakeFile(pngHeader(800, 600), "image/png");
+  const baseEnvironment = {
+    ImageCtor: class ValidImage {
+      constructor() { this.naturalWidth = 800; this.naturalHeight = 600; this.listeners = new Map(); }
+      addEventListener(name, callback) { this.listeners.set(name, callback); }
+      set src(_) { this.listeners.get("load")(); }
+    },
+    createObjectURL() { return "blob:test"; },
+    revokeObjectURL() {},
+  };
+  const failures = [
+    ["slice", { ...valid, slice() { throw new Error("sensitive"); } }, baseEnvironment],
+    ["arrayBuffer", { ...valid, slice() { return { arrayBuffer: async () => { throw new Error("sensitive"); } }; } }, baseEnvironment],
+    ["object URL", valid, { ...baseEnvironment, createObjectURL() { throw new Error("sensitive"); } }],
+    ["Image", valid, { ...baseEnvironment, ImageCtor: class BrokenImage { constructor() { throw new Error("sensitive"); } } }],
+  ];
+  for (const [label, file, environment] of failures) {
+    assert.deepEqual(
+      await imageSafety.inspectAndDecode(file, limits, environment),
+      { valid: false, read: false },
+      label,
+    );
+  }
+  assert.equal(
+    (await imageSafety.inspectAndDecode(valid, limits, baseEnvironment)).valid,
+    true,
+    "a later valid replacement recovers without stale failure state",
+  );
 });
 
 test("UI-AC-06 required judgments save exact fields focus first invalid and advance once", () => {
@@ -468,6 +497,7 @@ test("replacement confirmation preserves dialog choice focus and type-specific v
   ], "confirmed replacement");
   assert.doesNotMatch(confirmation, /teardownSession\s*\(/);
   assertContainsAll(processing, ["acceptManifestFile", "acceptAssetFiles"], "replacement dispatch");
+  assertContainsAll(assetAcceptance, ["try {", "catch (_)", "finally", "setInputsDisabled(false)", "local_read_failed"], "fixed asset-read recovery");
   assert.ok(
     processing.indexOf("await acceptManifestFile") < processing.indexOf("focusTarget.focus()")
       && processing.indexOf("await acceptAssetFiles") < processing.indexOf("focusTarget.focus()"),

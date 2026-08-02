@@ -48,6 +48,7 @@
     non_warp_design_unqualified: "去脂的非形变方案尚未通过资格审查。",
     review_invalid: "请完成七项结构化判断，并修正不一致的结论。",
     capability_unavailable: "当前环境不支持所需的本地文件读取能力。",
+    local_read_failed: "本地资产读取失败。请重新选择评审材料。",
   });
   const FEATURE_LABELS = Object.freeze({
     teeth_whitening: "白牙",
@@ -355,7 +356,8 @@
     for (const [key, file] of assetFiles) {
       const inspected = await decodeImage(file);
       inspections.set(key, inspected);
-      if (inspected.decode === false) reasons.push("decode_failed");
+      if (inspected.read === false) reasons.push("local_read_failed");
+      else if (inspected.decode === false) reasons.push("decode_failed");
       else if (inspected.header === false || inspected.valid !== true) reasons.push("dimension_invalid");
       else inventory.push({ key, sha256: inspected.sha256 });
     }
@@ -450,6 +452,7 @@
     disableReview();
     disableExport();
     setValidation("正在核对本地资产…", "正在核对本地资产…", [], FIXED_COPY.assets_loading);
+    try {
     const indexed = buildExactFileIndex(files);
     assetFiles = indexed.files;
     if (!manifest) {
@@ -498,6 +501,13 @@
     );
     renderCurrentRow();
     element("review-item-heading").focus();
+    } catch (_) {
+      invalidateAssetCandidateState();
+      setValidation(FIXED_COPY.invalid, FIXED_COPY.invalid, ["local_read_failed"], "");
+      focusValidationHeading();
+    } finally {
+      setInputsDisabled(false);
+    }
   }
 
   async function acceptManifestFile(file) {
