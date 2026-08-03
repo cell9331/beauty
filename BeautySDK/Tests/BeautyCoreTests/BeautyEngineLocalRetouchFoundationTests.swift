@@ -292,6 +292,80 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionNames, [])
     }
 
+    func testPhase56ClosedTeethGateKeepsLiteralNoneAndBothStillEntriesInactive() throws {
+        let repositoryRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent()
+            .deletingLastPathComponent().deletingLastPathComponent()
+        let resolverSource = try String(
+            contentsOf: repositoryRoot.appendingPathComponent(
+                "BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift"
+            ),
+            encoding: .utf8
+        )
+        let normalizedResolver = resolverSource
+            .components(separatedBy: .whitespacesAndNewlines)
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
+        XCTAssertTrue(normalizedResolver.contains(
+            "package static func localRetouchAdmission( parameters: BeautyParameters ) -> " +
+            "BeautyLocalRetouchAdmission { _ = parameters return .none }"
+        ))
+        XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionCount, 0)
+        XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionNames, [])
+
+        let engine = try BeautyEngine(configuration: .default)
+        let processOutput = try engine.process(
+            image: Self.image,
+            orientation: .up,
+            parameters: .init()
+        )
+        let resultOutput = try engine.processResult(
+            image: Self.image,
+            metadata: BeautyInputMetadata(orientation: .up, source: .photo),
+            parameters: .init()
+        )
+        let sourceBytes = try Self.renderedRGBA8(Self.image)
+        XCTAssertEqual(processOutput.extent, Self.image.extent)
+        XCTAssertEqual(resultOutput.output.extent, Self.image.extent)
+        XCTAssertEqual(try Self.renderedRGBA8(processOutput), sourceBytes)
+        XCTAssertEqual(try Self.renderedRGBA8(resultOutput.output), sourceBytes)
+        XCTAssertEqual(resultOutput.warnings, [])
+        XCTAssertEqual(resultOutput.metrics, [
+            "beauty.effects.activeCount": 0,
+            "beauty.effects.cappedCount": 0,
+        ])
+        XCTAssertEqual(resultOutput.detectionSummary, .notRun)
+
+        let processColor = try engine.process(
+            image: Self.image,
+            orientation: .up,
+            parameters: .init(brightness: 0.15)
+        )
+        let resultColor = try engine.processResult(
+            image: Self.image,
+            metadata: BeautyInputMetadata(orientation: .up, source: .photo),
+            parameters: .init(brightness: 0.15)
+        )
+        let processColorBytes = try Self.renderedRGBA8(processColor)
+        XCTAssertEqual(processColorBytes, try Self.renderedRGBA8(resultColor.output))
+        XCTAssertNotEqual(processColorBytes, sourceBytes)
+        XCTAssertEqual(resultColor.detectionSummary, .notRun)
+    }
+
+    func testPhase56PixelBufferAndResetStayOutsideClosedTeethRoute() throws {
+        let harness = try SDKTestingLocalRetouchFoundationHarness(admittedPrivateDemandCount: 0)
+        _ = try harness.invokePixelBuffer(parameters: .init(skinWhitening: 0.1))
+        harness.reset()
+        XCTAssertEqual(harness.canonicalizerConstructionCount, 0)
+        XCTAssertEqual(harness.canonicalizeCount, 0)
+        XCTAssertEqual(harness.detectAndMapCount, 0)
+        XCTAssertEqual(harness.requestOwnerCreationCount, 0)
+        XCTAssertEqual(harness.localProviderCount, 0)
+        XCTAssertEqual(harness.retainedRequestOwnerCount, 0)
+        XCTAssertEqual(harness.pixelBufferSummaryAvailability, "notRun")
+        XCTAssertEqual(harness.compositionObservation.compositionInvocationCount, 0)
+    }
+
     func testConcurrencyNonclaimsRemainFlaggedNotPassedClaims() {
         let flags = Set([
             "PATH01-CONCURRENCY",

@@ -1236,6 +1236,52 @@ extension BeautyParametersTests {
         XCTAssertEqual(Mirror(reflecting: BeautyParameters()).children.count, 59)
     }
 
+    func testPhase56ClosedTeethGateKeepsPublicAndCodableSurfaceExact() throws {
+        let defaults = BeautyParameters()
+        let stored = Mirror(reflecting: defaults).children.compactMap(\.label)
+        let source = try String(contentsOf: parametersSourceURL(), encoding: .utf8)
+        let codingBlock = try XCTUnwrap(source.split(separator: "enum CodingKeys", maxSplits: 1).last)
+            .split(separator: "public init(", maxSplits: 1)[0]
+        let coding = codingBlock.split(separator: "\n").compactMap { line -> String? in
+            let text = line.trimmingCharacters(in: .whitespaces)
+            return text.hasPrefix("case ") ? String(text.dropFirst(5)) : nil
+        }
+        let encoded = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: JSONEncoder().encode(defaults)) as? [String: Any]
+        )
+        let decoded = try JSONDecoder().decode(BeautyParameters.self, from: Data("{}".utf8))
+        let candidateNames = [
+            "teethWhitening", "teethWhite", "toothWhitening", "teethBrightness",
+        ]
+
+        XCTAssertEqual(stored.count, 59)
+        XCTAssertEqual(coding, stored)
+        XCTAssertEqual(encoded.count, 58)
+        XCTAssertEqual(Set(encoded.keys), Set(stored).subtracting(["filterId"]))
+        XCTAssertEqual(decoded, defaults)
+        XCTAssertEqual(Mirror(reflecting: decoded).children.count, 59)
+        for forbidden in candidateNames {
+            XCTAssertFalse(stored.contains(forbidden), forbidden)
+            XCTAssertFalse(coding.contains(forbidden), forbidden)
+            XCTAssertNil(encoded[forbidden], forbidden)
+            XCTAssertFalse(source.contains(forbidden), forbidden)
+        }
+
+        let legacySourceCall = BeautyParameters(
+            skinWhitening: 0.2,
+            brightness: 0.1,
+            mouthWidth: 0.3,
+            lipColor: 0.4,
+            filterId: "soft_clean"
+        )
+        XCTAssertEqual(legacySourceCall.skinWhitening, 0.2)
+        XCTAssertEqual(legacySourceCall.brightness, 0.1)
+        XCTAssertEqual(legacySourceCall.mouthWidth, 0.3)
+        XCTAssertEqual(legacySourceCall.lipColor, 0.4)
+        XCTAssertEqual(legacySourceCall.filterId, "soft_clean")
+        XCTAssertEqual(Mirror(reflecting: legacySourceCall).children.count, 59)
+    }
+
     func testPhase53FutureAdmissionChecklistRequiresTrailingAppendOrder() {
         let checklist = [
             "independent", "positive-only Float", "finite-normalized 0...1",
