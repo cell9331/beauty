@@ -18,7 +18,7 @@ requires:
 provides:
   - current final evidence for all nine Phase 55 task rows, five requirements, twenty decisions, and seven HIGH threats
   - validated Nyquist ledger and synchronized architecture, design, security, reliability, product, quality, and plan owners
-  - full 532-test SwiftPM and explicit 118-test Demo regression evidence with exact-empty production admission
+  - original closeout 532-test SwiftPM and explicit 118-test Demo regression evidence with exact-empty production admission; superseded by the post-review 534-test SDK result below
 affects: [56, 57, 58, still-image-local-retouch, composition-governance]
 
 tech-stack:
@@ -56,7 +56,7 @@ completed: 2026-08-03
 
 # Phase 55 Plan 05: Final Composition Validation and Owner Closeout Summary
 
-**Validated original-pixel composition mechanics with exact 9/9 task traceability, seven green HIGH mitigations, 532-test SDK and 118-test Demo regressions, and no production feature admission.**
+**Validated original-pixel composition mechanics with exact 9/9 task traceability, seven green HIGH mitigations, post-review 534-test SDK and retained 118-test Demo regressions, and no production feature admission.**
 
 ## Performance
 
@@ -93,11 +93,11 @@ Each task was committed atomically:
 ## Verification Results
 
 - Syntax and discovery passed for the Swift composer, Python checker, and exact seven-row threat inventory.
-- `BeautyLocalRetouchCompositionTests`: **20/20**.
-- `BeautyEngineLocalRetouchCompositionTests|BeautyEngineLocalRetouchFoundationTests`: **28/28**.
+- Original closeout `BeautyLocalRetouchCompositionTests`: **20/20**; post-review re-verification: **21/21**.
+- Original closeout `BeautyEngineLocalRetouchCompositionTests|BeautyEngineLocalRetouchFoundationTests`: **28/28**; post-review re-verification: **29/29**.
 - `BeautyParametersTests|BeautyResourceCatalogTests|BeautyRendererOutputRegressionTests`: **74/74**, preserving exact **59 fields / 5 presets / 72 renderer cases**.
 - Checker historical synthetic self-test: **44 cases** at initial closeout; superseded by the post-review 27-case self-test with 14 executable live-Swift fixture mutations. Live mode names T-55-01…07 and passes all seven HIGH mitigations.
-- Full SwiftPM: **532 executed**, six documented opt-in Vision skips, zero failures. None of the skips owns a T-55 mitigation.
+- Original closeout full SwiftPM: **532 executed**; post-review re-verification: **534 executed**, six documented opt-in Vision skips, zero failures. None of the skips owns a T-55 mitigation.
 - Explicit iPhone 17e/iOS 26.5 Demo build passed; xcresult summary reports **118/118**, zero failures/skips.
 - Schema drift and UI safety gates passed. The generic decision command exited successfully but skipped the custom paired decision syntax; an exact repository scan independently verifies context and plan coverage at **20/20**.
 - Exact XML-task/validation equality is **9/9**, requirement coverage COMP-01…05 is **5/5**, decision coverage is **20/20**, and HIGH coverage is **7/7**.

@@ -24,8 +24,10 @@ findings:
   warning: 3
   info: 0
   total: 5
-status: issues_found
-verdict: blocked
+resolved: 5
+remaining: 0
+status: clean
+verdict: pass
 ---
 
 # Phase 55: Code Review Report
@@ -33,16 +35,16 @@ verdict: blocked
 **Reviewed:** 2026-08-03T08:10:18Z
 **Depth:** deep
 **Files Reviewed:** 15
-**Status:** issues_found
-**Verdict:** BLOCKED — two HIGH findings invalidate T-55-01/T-55-02 and COMP-01/COMP-02 until fixed and re-reviewed.
+**Status:** clean after review-fix re-verification
+**Verdict:** PASS — all five findings are resolved; independent phase verification remains the next workflow gate.
 
 ## Summary
 
 The Phase 55 production, facade, Testing SPI, unit/facade tests, mutation checker, root contracts, all five plans/summaries, context, research, validation/evidence/threat artifacts, and the Phase 54 closed decision ledger were reviewed against commits `a8635cf..989e825`.
 
-The Q16 blend, hard re-clip, collision-to-source reduction, alpha preservation, no-change carrier reuse, exact-empty production admission, and current sequential facade tests behave as intended. Focused reruns passed 20/20 composer tests, 28/28 facade/foundation tests, checker syntax, checker 44-case self-test, and live checker mode.
+The original review found two blocking authorization/isolation defects and three warnings. The review-fix pass replaces address-only authorization with strong lifetime-retained identity objects, validates proposals before consuming issuance slots, serializes complete Testing-harness transactions, mutates temporary copies of the live Swift implementation, and synchronizes the active workflow owners.
 
-Those green gates do not cover two blocking authorization/isolation defects. Authorization is represented only by lifetime-unsafe `ObjectIdentifier` addresses, and malformed issuance consumes the shared unit budget before validation. The checker currently requires the unsafe identity pattern and mutates only a synthetic contract, so it reports all HIGH rows green despite both defects.
+Post-fix re-verification passes 21/21 composer tests, 29/29 facade/foundation tests, 74/74 compatibility tests, the 27-case checker self-test including 14 executable live-Swift mutations, checker live mode, full SwiftPM at 534 executed with six documented opt-in Vision skips, and explicit iPhone 17e/iOS 26.5 Demo build/test. Production admission remains exact-empty.
 
 ## Narrative Findings (AI reviewer)
 
@@ -54,6 +56,8 @@ Those green gates do not cover two blocking authorization/isolation defects. Aut
 
 **Related:** `BeautySDK/Sources/BeautyEffects/Render/BeautyLocalRetouchComposition.swift:29-41, 79, 142-163`; `.planning/phases/55-original-pixel-composition-and-failure-isolation-core/check_phase55_composition_boundaries.py:319-334`
 
+**Disposition:** FIXED in `e02f2ed`. Canonical bindings and composition units retain strong opaque identity objects and compare them with `===`; a 2,048-iteration stale-unit carrier/owner churn regression passes.
+
 **Issue:** Both source and owner authorization store only `ObjectIdentifier` values. `BeautyLocalRetouchUnit` retains neither the canonical storage nor the owner identity object, so both referenced objects can be destroyed while the unit remains `Sendable`. Swift guarantees an object identifier is unique only during that object's lifetime; allocator addresses can be reused. A stale unit can therefore compare equal to a later request's source/owner after address reuse, especially because tokens restart at `1` for every owner and identical layouts are common. That breaks exact-current-request authorization (COMP-02 / T-55-01) and can apply old target pixels to a new image. A focused allocator probe during review observed reuse independently for both storage-shaped and owner-identity class instances.
 
 **Fix:** Keep strong opaque identity tokens in the binding/unit and compare the referenced objects by identity, rather than persisting their addresses. For example, let canonical storage own an immutable `@unchecked Sendable` identity object, let `BeautyCanonicalPixelSourceBinding` retain that object strongly, and implement equality using `lhs.identity === rhs.identity` plus the checked layout. Likewise, store a strong `BeautyLocalRetouchOwnerIdentity` reference in each unit and compare with `===`. Add a churn regression that retains a stale unit while repeatedly destroying/recreating carriers and owners, and remove the checker's requirement that authorization be represented by a bare `ObjectIdentifier`.
@@ -63,6 +67,8 @@ Those green gates do not cover two blocking authorization/isolation defects. Aut
 **File:** `BeautySDK/Sources/BeautyEffects/Render/BeautyLocalRetouchComposition.swift:112-130`
 
 **Related:** `BeautySDK/Sources/BeautyEffects/Render/BeautyLocalRetouchComposition.swift:158-169`; `BeautySDK/Tests/BeautyEffectsTests/BeautyLocalRetouchCompositionTests.swift:83-117`
+
+**Disposition:** FIXED in `3f52edd`. Proposal preflight now precedes slot/token consumption, and 128 malformed/effective-empty attempts no longer prevent a valid sibling from issuing and composing.
 
 **Issue:** `makeUnit` increments `nextToken` and `issuedTokens` without validating whether proposals are empty, over-budget, duplicated, or out of range. Those checks occur only later in `compose`. Consequently, one malformed producer can call `makeUnit` `effectiveUnitLimit` times with invalid proposals and exhaust every token; a subsequent valid sibling receives `nil` and never reaches composition. The existing test actually issues three malformed units and confirms they consume slots, but stops before proving a later valid sibling after full exhaustion. This contradicts COMP-01/D-55-07/D-55-13: malformed work is not isolated to its unit because it can suppress unrelated valid work. It also invalidates the T-55-02 bounded-input claim.
 
@@ -76,6 +82,8 @@ Those green gates do not cover two blocking authorization/isolation defects. Aut
 
 **Related:** `BeautySDK/Sources/BeautySDK/BeautyEngine.swift:121-166`
 
+**Disposition:** FIXED in `34733ef`. The Testing harness serializes each complete invocation/reset transaction and a 32-request same-harness parallel regression passes. The broader public same-engine concurrency nonclaim remains tracked separately under TD-013.
+
 **Issue:** `BeautyLocalRetouchTestingHooks` and the public Testing harness claim unchecked Sendability, but a still request is a multi-call transaction over shared `currentCompositionScenario`, source-match state, latest observation, fixture indices, and lifecycle cleanup. Each accessor takes a lock separately; the complete `beginStillRequest -> hasOpaqueCompositionScenario -> makeOpaqueCompositionUnits -> recordComposition -> finishStillRequest` sequence is not serialized. Two concurrent calls through one Sendable harness can overwrite or clear each other's scenario and observation, producing cross-request units/results even without a memory data race. The current concurrency test uses two independent harnesses and explicitly does not exercise same-engine calls.
 
 **Fix:** Either remove the unchecked Sendable promise from the harness while same-engine concurrency is unsupported, serialize the entire `invoke` operation, or key all hook state by an immutable request ID passed through every lifecycle operation. Add a same-harness parallel test if Sendability is retained.
@@ -83,6 +91,8 @@ Those green gates do not cover two blocking authorization/isolation defects. Aut
 ### WR-02 [WARNING]: The “44 mutation” checker does not mutate the live implementation and enshrines the unsafe identity scheme
 
 **File:** `.planning/phases/55-original-pixel-composition-and-failure-isolation-core/check_phase55_composition_boundaries.py:311-349, 497-602`
+
+**Disposition:** FIXED in `34bdd7d`. The checker accepts `--root`, copies live package/test/Demo/inventory fixtures, and its 27-case self-test includes 14 executable mutations of the live Swift fixtures/classifier rather than a synthetic contract.
 
 **Issue:** Live checks are mostly substring/regex anchors, while `--self-test` mutates a separate `SyntheticContract`. None of the 44 cases changes a temporary copy of the actual Swift implementation and reruns the real classifier. For T-55-01 the checker specifically requires `ObjectIdentifier`, so the lifetime-unsafe implementation in CR-01 is reported as green. Logic inversions such as changing source-binding equality from `==` to `!=` retain the required strings and still pass checker live mode. The evidence and root contracts therefore overstate the checker as adversarial proof of all seven HIGH mitigations.
 
@@ -92,12 +102,14 @@ Those green gates do not cover two blocking authorization/isolation defects. Aut
 
 **File:** `PLANS.md:39`
 
+**Disposition:** FIXED in `61ee39e`. `PLANS.md`, `STATE.md`, and `ROADMAP.md` now route through review-fix re-verification and independent verification before Phase 56.
+
 **Issue:** The `Next` row says to execute Plans 55-01 through 55-05, while the same active ledger records Wave 4 validation complete at line 46 and `.planning/STATE.md` says review/verification is next. This violates the repository's single-record traceability rule and can route a later agent into re-executing completed work.
 
 **Fix:** Change `Next` to the current review/fix/re-verification step (and then Phase 56 only after Phase 55 review and verification pass), keeping it synchronized with `STATE.md` and `ROADMAP.md`.
 
 ---
 
-_Reviewed: 2026-08-03T08:10:18Z_
+_Reviewed: 2026-08-03T08:10:18Z; fixes re-verified: 2026-08-03T08:32:44Z_
 _Reviewer: the agent (gsd-code-reviewer)_
 _Depth: deep_

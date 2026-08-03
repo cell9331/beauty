@@ -27,12 +27,12 @@ The final-only gate ran on the repository's framework-capable macOS host on
 | Swift syntax | `swiftc -parse BeautySDK/Sources/BeautyEffects/Render/BeautyLocalRetouchComposition.swift` | PASS |
 | Checker syntax | `PYTHONPYCACHEPREFIX=/private/tmp/beauty-phase55-pycache python3 -m py_compile .planning/phases/55-original-pixel-composition-and-failure-isolation-core/check_phase55_composition_boundaries.py` | PASS |
 | Threat JSON | `python3 -m json.tool .planning/phases/55-original-pixel-composition-and-failure-isolation-core/55-THREAT-INVENTORY.json` | PASS; exact ordered seven HIGH rows |
-| Composition | `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-phase55-clang-module-cache swift test --package-path BeautySDK --filter BeautyLocalRetouchCompositionTests` | PASS, 20/20, zero failures/skips |
-| Facade and foundation | Same SwiftPM prefix with `--filter 'BeautyEngineLocalRetouchCompositionTests|BeautyEngineLocalRetouchFoundationTests'` | PASS, 28/28, zero failures/skips: 12 composition plus 16 foundation |
+| Composition | `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-phase55-reviewfix-clang-module-cache swift test --package-path BeautySDK --jobs 1 --filter BeautyLocalRetouchCompositionTests` | PASS, 21/21, zero failures/skips |
+| Facade and foundation | Same SwiftPM prefix with `--filter 'BeautyEngineLocalRetouchCompositionTests|BeautyEngineLocalRetouchFoundationTests'` | PASS, 29/29, zero failures/skips: 12 composition plus 17 foundation |
 | Compatibility | Same SwiftPM prefix with `--filter 'BeautyParametersTests|BeautyResourceCatalogTests|BeautyRendererOutputRegressionTests'` | PASS, 74/74, zero failures/skips: 44 + 12 + 18 |
 | Checker mutations | `python3 .../check_phase55_composition_boundaries.py --self-test` | PASS, 27-case self-test: 14 executable mutations of temporary copies of the live Swift fixtures/classifier, seven threat-inventory mutations, scanner outcome cases, and clean baselines; exact T-55-01…07 denominator |
 | Checker live | `python3 .../check_phase55_composition_boundaries.py` | PASS; T-55-01…07 all named and green |
-| Full SDK | `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-phase55-clang-module-cache swift test --package-path BeautySDK` | PASS, 532 executed, six documented opt-in Vision skips, zero failures |
+| Full SDK | `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-phase55-reviewfix-clang-module-cache swift test --package-path BeautySDK --jobs 1` | PASS, 534 executed, six documented opt-in Vision skips, zero failures |
 | Demo build | `xcodebuild -quiet -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17e,OS=26.5' build` | PASS; one non-failing destination metadata warning |
 | Demo test | Same Xcode command with `test` | PASS; xcresult summary 118/118, zero failures/skips |
 | Schema drift | Phase 55 `verify.schema-drift --raw` | PASS; no schema files, ORM drift, or blocking result |
@@ -57,9 +57,9 @@ contains exactly the same nine unique rows:
 | 55-02-01 | Source identity, checked layout, and local invalid-unit behavior in the 14-test focused suite; source-binding checker mode | PASS |
 | 55-02-02 | Request-local issuance, cap, foreign/duplicate token, duplicate-claim, and sibling-retention behavior in the same 14-test focused suite | PASS |
 | 55-03-01 | Deterministic blend/reclip focused slice 3/3; composition checker mode | PASS |
-| 55-03-02 | Complete mechanics suite 20/20; privacy checker mode; the historical 44-case synthetic denominator is superseded by the post-review 27-case live-fixture self-test | PASS |
+| 55-03-02 | Complete mechanics suite 21/21; privacy checker mode; the historical 44-case synthetic denominator is superseded by the post-review 27-case live-fixture self-test | PASS |
 | 55-04-01 | Facade compose-once slice 2/2 plus foundation 16/16; facade checker mode | PASS |
-| 55-04-02 | Combined facade/foundation 28/28 and compatibility 74/74; live/privacy checker modes | PASS |
+| 55-04-02 | Combined facade/foundation 29/29 and compatibility 74/74; live/privacy checker modes | PASS |
 | 55-05-01 | Complete final host gate, owner synchronization, and evidence closeout recorded here | PASS |
 
 Requirement assignment is exact COMP-01 through COMP-05, 5/5. Context and

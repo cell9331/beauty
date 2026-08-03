@@ -633,6 +633,6 @@ Before merging product-facing changes, verify:
 
 ### v1.14 Phase 55 Feature-Neutral Composition Acceptance
 
-- Phase 55 accepts deterministic original-pixel composition mechanics only: exact canonical-source binding, hard-reclipped ownership, collision-to-source, smallest-unit failure isolation, request recovery, and aggregate-only facade evidence are automated.
+- Phase 55 accepts deterministic original-pixel composition mechanics only: lifetime-retained exact canonical-source/owner binding, validation before issuance consumption, hard-reclipped ownership, collision-to-source, smallest-unit failure isolation, request recovery, and aggregate-only facade evidence are automated.
 - All three Phase 54 product decisions remain closed with exact absence and zero product weight. Production admission is empty, so no visible teeth whitening, sclera redness reduction, eyelid fullness, candidate field, provider, renderer case, preset, Demo control, or realtime behavior is available.
 - The tiny opaque fixture results do not establish feature effectiveness, naturalness, device quality, optimized performance, commercial suitability, packaging, shipping, launch, or release readiness. Future feature slices must independently satisfy their evidence and product gates before admission.
