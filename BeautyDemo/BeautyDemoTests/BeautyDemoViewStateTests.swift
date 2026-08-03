@@ -77,6 +77,60 @@ final class BeautyDemoViewStateTests: XCTestCase {
     }
 
     @MainActor
+    func testPhase56ClosedTeethGatePreservesDisabledTaxonomyWithoutControlOrResetRoute() throws {
+        let lips = MeituEditorCategory.category(id: .lips)
+        XCTAssertEqual(lips.title, "嘴唇")
+        XCTAssertEqual(lips.tools.map(\.id), [
+            "lips.size", "lips.width", "lips.upDown", "lips.tilt", "lips.leftRight",
+            "lips.mShape", "lips.full", "lips.smile", "lips.teeth",
+        ])
+        let teeth = try XCTUnwrap(lips.tools.last)
+        XCTAssertEqual(teeth.id, "lips.teeth")
+        XCTAssertEqual(teeth.title, "白牙")
+        XCTAssertEqual(teeth.systemImageName, "sparkles")
+        XCTAssertNil(teeth.badge)
+        XCTAssertFalse(teeth.isSupported)
+        XCTAssertNil(teeth.controlID)
+        XCTAssertEqual(teeth.unavailableReason, "v1.1 暂未实现该美图参考功能")
+
+        let panel = MeituEditorToolPanelView.viewState(
+            selectedCategoryID: .lips,
+            selectedToolID: teeth.id,
+            displayValue: 0,
+            compareTitle: "对比",
+            debugTitle: "调试"
+        )
+        XCTAssertEqual(panel.selectedTool, teeth)
+        XCTAssertEqual(panel.selectedValue, 0)
+        XCTAssertEqual(panel.sliderRange, .enhancement)
+
+        let controlIDs = Set(BeautyControlID.allCases.map(\.rawValue))
+        for forbidden in ["teethWhitening", "teethWhite", "toothWhitening", "teethBrightness"] {
+            XCTAssertFalse(controlIDs.contains(forbidden), forbidden)
+        }
+
+        let store = BeautyParameterStore()
+        let before = store.parametersSnapshot
+        XCTAssertNil(teeth.controlID)
+        XCTAssertEqual(store.parametersSnapshot, before)
+
+        let subcategory = FacialFeatureSubcategory.subcategory(id: .teeth)
+        XCTAssertEqual(subcategory.title, "Teeth")
+        XCTAssertFalse(subcategory.availability.isEnabled)
+        XCTAssertEqual(subcategory.availability.badge, "Not in v1")
+        XCTAssertEqual(subcategory.availability.reason, "Teeth whitening is not included in v1.")
+        let state = BeautyPanelView.viewState(
+            categoryID: .facialFeatures,
+            selectedSubcategoryID: .teeth,
+            status: .idle
+        )
+        XCTAssertFalse(state.activeAvailability.isEnabled)
+        XCTAssertTrue(state.controls.isEmpty)
+        XCTAssertTrue(state.disabledControls.isEmpty)
+        XCTAssertFalse(state.showsResetAll)
+    }
+
+    @MainActor
     func testV11MeituPanelSliderWritesSupportedParameterOnly() {
         let store = BeautyParameterStore()
         var categoryID: MeituEditorCategoryID = .faceShape

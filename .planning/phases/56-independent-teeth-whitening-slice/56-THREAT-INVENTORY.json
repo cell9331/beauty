@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "security_standard": "OWASP ASVS Level 1",
+  "block_on": "HIGH",
+  "threats": [
+    {
+      "id": "T-56-01",
+      "stride": ["Spoofing", "Tampering"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["exact_phase54_teeth_authority", "closed_reasons_and_zero_counts"]
+    },
+    {
+      "id": "T-56-02",
+      "stride": ["Elevation of Privilege", "Tampering"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["no_public_spi_or_codable_teeth_surface", "no_production_provider_renderer_or_preset_route"]
+    },
+    {
+      "id": "T-56-03",
+      "stride": ["Elevation of Privilege", "Tampering"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["literal_empty_production_admission", "no_alias_or_inert_route"]
+    },
+    {
+      "id": "T-56-04",
+      "stride": ["Tampering"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["exact_disabled_demo_taxonomy", "no_control_slider_processor_or_reset_mapping"]
+    },
+    {
+      "id": "T-56-05",
+      "stride": ["Information Disclosure"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["fixed_rule_only_checker_output", "no_sensitive_portrait_support_or_review_payload"]
+    },
+    {
+      "id": "T-56-06",
+      "stride": ["Tampering", "Repudiation"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["exact_future_teeth_ledger", "exact_partial_lips_branch_without_sibling_borrowing"]
+    },
+    {
+      "id": "T-56-07",
+      "stride": ["Tampering", "Denial of Service"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["exact_59_5_72_compatibility", "missing_parse_and_scanner_fail_closed"]
+    }
+  ]
+}
