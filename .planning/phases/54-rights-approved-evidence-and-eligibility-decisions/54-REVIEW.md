@@ -1,6 +1,6 @@
 ---
 phase: 54-rights-approved-evidence-and-eligibility-decisions
-reviewed: 2026-08-01T13:47:32Z
+reviewed: 2026-08-03T02:30:49Z
 depth: standard
 files_reviewed: 6
 files_reviewed_list:
@@ -11,88 +11,51 @@ files_reviewed_list:
   - RELIABILITY.md
   - SECURITY.md
 findings:
-  critical: 3
-  warning: 2
+  critical: 0
+  warning: 0
   info: 0
-  total: 5
-status: issues_found
+  total: 0
+status: clean
 ---
 
 # Phase 54: Code Review Report
 
-**Reviewed:** 2026-08-01T13:47:32Z
+**Reviewed:** 2026-08-03T02:30:49Z
 **Depth:** standard
 **Files Reviewed:** 6
-**Status:** issues_found
+**Status:** clean
 
 ## Summary
 
-The six changed contract files were reviewed against the Phase 54 core, browser controller, schema, tests, checker, decision ledger, and execution artifacts. Existing automated gates pass, but they encode rather than detect several unsafe assumptions. The most serious issues are that an untrusted manifest can self-assert the provenance that opens a feature gate, image bounds are enforced only after browser decoding has already begun, and the durable teeth decision suppresses a missing-negative gap despite recording zero eligible or reviewed evidence.
+This post-loop confirmation re-reviewed the persisted six-file scope and independently traced final fix commit `7481a81` together with the earlier Phase 54 review-fix commits through the evidence core, trusted authorization registry, image-safety layer, browser controller, tests, boundary checker, canonical threat inventory, durable ledger, and pending validation artifacts.
 
-Verification rerun during review:
+The final display-stage fix is complete. Display URLs are created under temporary ownership and published only after all three source assignments succeed. Second/third URL-creation and source-assignment failures revoke every acquired URL, clear all image sources, leave controller URL ownership empty, clear the review session, disable review/export, show only the fixed `local_read_failed` result, and focus the validation summary. Save-and-next and previous-item flows stop after the failed render. A later valid installation successfully publishes exactly three replacement URLs.
 
-- `node --test .../54-evidence-core.test.js .../54-review.contract.test.js` — 66/66 passed.
-- `python3 .../check_phase54_evidence_boundaries.py` — reported `pass`, `ASVS HIGH 6/6`.
-- A direct Node reproduction using an invented rights record produced `status: open` with two accepted rows.
+All earlier findings remain resolved:
+
+- Trusted grants bind rights record, fixture, feature, polarity, expected-target policy, permitted use, evidence classification, exact original/mask/after keys, and SHA-256 byte digests computed before selection. Direct digest substitution and target-policy drift remained fail closed.
+- Header/full-byte, preflight object-URL, and image-construction failures return fixed redacted results; controller asset acceptance clears partial state and re-enables both inputs in `finally`.
+- The checker independently pins the exact ordered T-54-01 through T-54-08 set. Coordinated missing, extra, and replacement mutations were rejected, complete live mode alone reported the named `8/8` gates, and partial modes emitted no ASVS denominator.
+- The durable three-feature ledger remains independently closed with zero eligible/reviewed/accepted/rejected counts and zero naturalness weight. Export and Git-isolation boundaries remain intact.
+- PLANS, QUALITY_SCORE, VALIDATION, and EVIDENCE-EVALUATION continue to mark full regression, direct-`file://` browser confirmation, and final HIGH sign-off as pending. Historical SwiftPM, Demo, schema/UI, browser, and diff results are not represented as current evidence.
+
+Focused verification rerun during this review:
+
+- Four JavaScript syntax checks and three JSON parses passed.
+- `node --test 54-evidence-core.test.js 54-review.contract.test.js` passed 71/71 (33 core + 38 reviewer tests).
+- Boundary checker self-test passed 119 cases; complete live mode reported the exact eight named gates and `8/8`; `--core` and `--ui` modes omitted `asvsHigh`.
+- Direct display-failure probes passed for second/third URL creation and second/third source assignment, including cleanup, fixed redacted terminal state, save/previous containment, empty controller ownership, and later valid recovery.
+- Direct evidence mutations closed digest substitution and target-policy drift; coordinated canonical-threat missing/extra/replacement mutations were rejected.
+- `git diff --check` and the exact ignored/untracked local-review probe passed.
+
+All reviewed files meet quality standards at standard depth. No issues found.
 
 ## Narrative Findings (AI reviewer)
 
-## Critical Issues
-
-### CR-01: Bundle-controlled provenance can authorize its own product gate
-
-**Classification:** BLOCKER
-
-**File:** `/Users/yakangwang/codes/beauty/SECURITY.md:174`
-
-**Issue:** The contract says the selected manifest, declared role, and local media are untrusted while also claiming that the rights/evidence allowlist establishes genuine rights-approved evidence. The implementation only checks that `rights_status` equals `approved_internal_evaluation`, `evidence_role` equals `genuine_candidate`, and `rights_record_id` matches an opaque-ID regex (`54-evidence-core.js:183-198,255-267`). All three values come from the same untrusted manifest; no trusted authorization inventory is consulted and the ID is not bound to the fixture, feature, polarity, or permitted use. A direct reproduction with `rights_record_id: "invented_rights"` yielded a ready snapshot and an open teeth gate after structurally valid reviews. Therefore the EVID-01 claim in `PRODUCT_SENSE.md:521`, the T-54-01 claim in `SECURITY.md:177`, and the evidence credit in `QUALITY_SCORE.md:586` are not established.
-
-**Fix:** Make provenance an independent trusted input. Resolve every manifest row against a locally controlled authorization registry or signed record, and bind the grant to at least fixture ID, feature, permitted use, and evidence classification. Treat bundle `rights_status` and `evidence_role` as assertions to cross-check, not authority. Add mutations proving invented IDs, mismatched fixtures/features, reused grants, and self-promoted synthetic rows remain closed; then rerun the HIGH gate before restoring the owner-document claims.
-
-### CR-02: Dimension limits run after potentially hostile image decoding
-
-**Classification:** BLOCKER
-
-**File:** `/Users/yakangwang/codes/beauty/SECURITY.md:174`
-
-**Issue:** The security contract claims bounded media dimensions and a passed denial-of-service boundary, but `54-review-controller.js:342-359` creates an `Image`, assigns the untrusted blob URL, and waits for `load` before checking `naturalWidth`/`naturalHeight <= 4096`. A small compressed PNG/JPEG can declare extremely large dimensions and force decoder allocation or resource exhaustion before the bound is evaluated. The 16 MiB compressed-file limit does not bound decoded memory. Consequently T-54-05 is not mitigated even though `QUALITY_SCORE.md:589` and the Phase 54 evaluation report it green.
-
-**Fix:** Parse bounded PNG/JPEG headers from `File.slice(...)` before creating any image/object URL, reject dimensions and checked `width * height` pixel counts outside policy, and only then invoke browser decoding. Add adversarial header fixtures whose compressed bytes are within 16 MiB but dimensions/pixel counts exceed the ceiling, with instrumentation proving no `Image` or object URL is created for rejected inputs.
-
-### CR-03: The teeth ledger silently treats an unreviewed negative prerequisite as satisfied
-
-**Classification:** BLOCKER
-
-**File:** `/Users/yakangwang/codes/beauty/PRODUCT_SENSE.md:522`
-
-**Issue:** The owner documents call the teeth reasons exactly `[missing_genuine_positive]` while simultaneously recording `eligible_count == 0`, `reviewed_count == 0`, and no durable reviews (`PLANS.md:52`, `QUALITY_SCORE.md:587`, `RELIABILITY.md:264`). Phase decision D-04 says the authorized portrait may count as a teeth negative only after a complete teeth-specific original/mask/after triple and a frozen review pass. Neither exists in the ledger. The inconsistency is introduced by the hard-coded `BASE_CLOSED_REASONS`/`createClosedSnapshot` path (`54-evidence-core.js:84-88,311-321`), which reports zero positive and zero negative product counts but omits `missing_genuine_negative`. This makes the durable decision non-derived and can mislead downstream phases into treating the negative prerequisite as already discharged.
-
-**Fix:** Derive all current decisions from an explicit validated inventory rather than feature-specific baseline constants. With the current zero-eligible/zero-review inventory, teeth must include both `missing_genuine_positive` and `missing_genuine_negative`. Alternatively, if the portrait is meant to satisfy the negative prerequisite, add its complete approved triple and frozen accepted review so the nonzero counts and durable review substantiate that result. Update the checker and all four owner documents from the regenerated ledger.
-
-## Warnings
-
-### WR-01: The claimed `6/6` HIGH inventory omits declared HIGH threats
-
-**Classification:** WARNING
-
-**File:** `/Users/yakangwang/codes/beauty/SECURITY.md:177`
-
-**Issue:** The security owner says only T-54-01 through T-54-06 are HIGH and `QUALITY_SCORE.md:586,589`/`PLANS.md:50,53` attest `6/6`. Phase 54's own final plan declares T-54-07 HIGH (`54-05-PLAN.md:98-104`), and Plan 54-04 separately declares T-54-08 HIGH (`54-04-PLAN.md:135-140`). The checker hard-codes `highMitigations: 6` and `asvsHigh: "6/6"` (`check_phase54_evidence_boundaries.py:651-652,704`) instead of deriving the inventory. The evidence evaluation even lists T-54-07 as PASS while retaining the contradictory `6/6` count. This makes the block-on-HIGH attestation non-auditable and can hide future threat-model drift.
-
-**Fix:** Establish one canonical Phase 54 threat inventory, explicitly map any merged/retired IDs, and derive checker totals from it. Include every active HIGH ID in final sign-off (including the Plan 54-04 owner/privacy threat or a documented mapping), add a mutation for missing/extra IDs, and correct the counts in SECURITY, QUALITY_SCORE, and PLANS.
-
-### WR-02: SECURITY understates the durable export's contents
-
-**Classification:** WARNING
-
-**File:** `/Users/yakangwang/codes/beauty/SECURITY.md:176`
-
-**Issue:** The contract says durable output is constructed from aggregate decision/count fields only. For a ready bundle, `buildDurableExport` also emits per-fixture opaque ID, feature, polarity, and seven structured review judgments (`54-evidence-core.js:560-575`), as permitted by PRODUCT_SENSE and the Phase 54 UI contract. The current repository ledger happens to have an empty `reviews` array, but that does not make the serializer aggregate-only. The inaccurate security description can lead reviewers to approve storage or sharing under a stricter privacy assumption than the implementation provides.
-
-**Fix:** State the actual allowlist: feature decisions, permitted per-fixture structured reviews, and aggregates, with all forbidden media/path/rights/freeform fields excluded. If aggregate-only persistence is the intended security boundary, remove durable review rows from the serializer and update the product/UI contract and tests accordingly.
+No Critical, Warning, or Info findings.
 
 ---
 
-_Reviewed: 2026-08-01T13:47:32Z_
+_Reviewed: 2026-08-03T02:30:49Z_
 _Reviewer: the agent (gsd-code-reviewer)_
 _Depth: standard_
