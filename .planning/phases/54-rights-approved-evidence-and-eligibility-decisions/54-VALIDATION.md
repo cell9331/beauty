@@ -10,11 +10,10 @@ created: 2026-07-31
 
 # Phase 54 — Validation Strategy
 
-> **Iteration-2 status: pending post-fix verification.** The CR-01 media-digest
-> binding and WR-01 recovery changes alter the browser security boundary. The
-> historical 2026-08-01 results below are retained as provenance only and do not
-> validate the current source. Promotion requires the exact final-only rerun and
-> fresh human browser confirmation listed below.
+> **Post-fix status: automated gates passed; fresh browser confirmation pending.**
+> Current 33/38 focused suites, 119 checker cases, exact live `8/8`, 500-test
+> SwiftPM, 118-test Demo, schema/UI/diff gates, and clean review passed on
+> 2026-08-03. Promotion still requires the fresh human `file://` smoke below.
 
 > Exact pending validation map for the five-plan, nine-task execution set. A
 > deterministic closed feature gate is a successful expected result; an invalid,
@@ -181,15 +180,16 @@ contents or sensitive local paths.
 
 ## Required Post-Fix Verification
 
-The orchestrator must rerun the complete core/UI suites (expected inventory: 33
-core and 38 reviewer-contract tests), checker self-test and complete live mode,
-direct-`file://` smoke with the ignored disposable bundle, full SwiftPM, explicit
-iPhone 17e/iOS 26.5 Demo build and test, schema drift, UI safety, and diff hygiene.
-The browser operator must freshly confirm blinded original-detail rendering,
-digest mismatch closure, slice/arrayBuffer/object-URL/Image failure recovery,
-both inputs re-enabled after each failure, and a later valid replacement. If the
-browser capability or any interaction is unavailable, every affected HIGH row
-remains unverified and validation must not be promoted.
+The automated rerun is complete: 33 core + 38 reviewer tests, 119 checker
+self-tests, complete live exact `8/8`, 500 SwiftPM tests with six documented
+opt-in skips and zero failures, iPhone 17e/iOS 26.5 Demo build plus 118/118
+tests, schema/UI gates, clean review, and diff hygiene all pass. The remaining
+browser operator confirmation must cover blinded original-detail rendering,
+invalid/wrong replacement recovery with both inputs re-enabled, later valid
+replacement, transactional URL cleanup/navigation containment, export/revisit,
+and reload/responsive behavior. In-app automation could not navigate the local
+`file://` URL under browser policy, so validation remains unpromoted until the
+human smoke passes.
 
 ## Validation Sign-Off
 
@@ -199,10 +199,10 @@ remains unverified and validation must not be promoted.
 - [x] Every GREEN task names its Wave 0 dependency.
 - [x] Mutation coverage includes every research matrix item.
 - [x] UI equality is exactly 27 = 8 + 19 with no missing/duplicate/extra row.
-- [ ] EVID-01..05 and LID-01 have fresh post-fix core, boundary, browser, and final-regression evidence.
+- [ ] EVID-01..05 and LID-01 have fresh post-fix core, boundary, browser, and final-regression evidence (all automated evidence passes; browser confirmation pending).
 - [x] Every plan declares ASVS Level 1, `block_on: HIGH`, and named mitigation commands; canonical inventory maps active T-54-01…T-54-08 with no retired/merged IDs currently recorded.
 - [x] Current closed decisions are inventory-derived and record both missing polarities for zero eligible/review rows, plus the independent upper-eyelid design gap.
 - [x] No sensitive local artifact, SDK/Demo behavior, or unsupported readiness claim is added.
 - [ ] `54-EVIDENCE-EVALUATION.md` is refreshed only after all post-fix gates and human confirmation pass.
 
-**Approval:** pending post-fix verification; the historical evaluation is not current evidence for the modified browser boundary.
+**Approval:** pending fresh human `file://` confirmation only; all current automated gates and the clean review pass.

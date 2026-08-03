@@ -4,18 +4,45 @@ plan: "05"
 status: pending_post_fix_verification
 security_standard: OWASP ASVS Level 1
 block_on: HIGH
-recorded: 2026-08-02
+recorded: 2026-08-03
 ---
 
 # Phase 54 Evidence Evaluation
 
 ## Result
 
-Phase 54 is pending post-fix verification. Iteration 2 changed the media-binding
-and browser failure-recovery boundaries after the 2026-08-01 evidence was
-recorded. The closed ledger and exact-empty production admission remain the
-current safe state, but the historical browser, full SwiftPM, Demo, and ASVS
-sign-off below cannot be presented as current evidence.
+Phase 54 is pending only the fresh direct-`file://` human browser confirmation.
+The final post-fix code review is clean and every automated gate was rerun on
+2026-08-03 against current source. The closed ledger and exact-empty production
+admission remain the current safe state. The in-app browser automation surface
+refused local `file://` navigation under its URL policy, so it cannot replace the
+required human-local interaction evidence.
+
+## Current Post-Fix Automated Gate — Passed
+
+The exact current gate was rerun after review-fix commits through `7481a81` and
+the clean confirmation review in `9576a3a`:
+
+| Gate | Current result |
+|---|---|
+| JavaScript syntax | 4/4 runtime files pass |
+| JSON syntax | schema, decision ledger, and threat inventory pass |
+| Evidence core | 33/33 pass; 0 failed/skipped/todo |
+| Reviewer contract | 38/38 pass; 0 failed/skipped/todo |
+| Combined Node | 71/71 pass |
+| Boundary checker self-test | 119/119 pass; exact UI `27 = 8 + 19` |
+| Boundary checker live | pass; exact named T-54-01…T-54-08 gates and `8/8` |
+| SwiftPM | 500 executed; 6 documented opt-in Apple Vision skips; 0 failures |
+| BeautyDemo build | explicit iPhone 17e / iOS 26.5 build exits 0 |
+| BeautyDemo tests | xcresult summary: 118 passed, 0 failed, 0 skipped |
+| Schema drift | pass; no schema drift |
+| UI safety | pass; no blocking frontend/UI drift |
+| Code review | clean; 0 Critical, 0 Warning, 0 Info |
+| Diff/ignore hygiene | pass |
+
+`verify.codebase-drift` remains the separately classified historical warning
+for exactly `PRODUCT_SENSE.md`, `example-images`, and `meituxiuxiu`, with no
+Phase 54 source path. No remap was performed.
 
 ## Historical Automated Gate — Superseded
 
@@ -166,20 +193,21 @@ codebase remap.
 | T-54-07 evidence repudiation | PASS | Exact `27 = 8 + 19`, seven explicit judgments, deterministic fixed-name export, actual-count record |
 | T-54-08 local-review disclosure | PASS | Canonical threat inventory maps the owner privacy boundary; local-only, ephemeral, redacted, no-network/storage, and export-by-construction checks remain required |
 
-These PASS rows describe the pre-fix run only. Current HIGH sign-off is pending
-the complete live checker, direct-`file://` smoke, full regressions, and fresh
-human confirmation required by `54-VALIDATION.md`.
+These PASS rows describe the pre-fix browser run. Current automated HIGH
+evidence is green at the exact named `8/8`, but final sign-off remains pending
+the direct-`file://` smoke and fresh human confirmation required by
+`54-VALIDATION.md`.
 
-## Exact Rerun Required
+## Remaining Exact Verification
 
-The orchestrator must rerun the current 33-test core suite, 38-test reviewer
-contract suite, 119-case checker self-test, complete live checker, direct
-`file://` browser smoke, full SwiftPM, explicit iPhone 17e/iOS 26.5 Demo build
-and tests, schema/UI gates, and `git diff --check`. Human confirmation must cover
-the exact blinded media, fail-closed digest/path/triple/target substitutions,
-fixed redacted recovery from slice/arrayBuffer/object-URL/Image failures, both
-inputs re-enabled, and a later valid replacement. New timestamps and actual
-counts belong here only after those steps complete.
+All automated items above are current and passed. The only remaining item is a
+fresh direct-`file://` smoke using the ignored mechanics bundle. Human
+confirmation must cover blinded three-pane media and Fit/100%, fixed redacted
+recovery after an invalid/wrong replacement with both inputs re-enabled, later
+valid replacement, save/revisit/export, navigation containment, and reload/
+responsive behavior. The in-app automation attempt on 2026-08-03 was blocked by
+the browser's local-file URL policy; this is not a product failure and is not
+treated as browser evidence.
 
 ## Explicit Nonclaims
 
