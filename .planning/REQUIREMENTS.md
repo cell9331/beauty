@@ -37,12 +37,12 @@ absent feature rather than an inert public field or proxy implementation.
 
 ### Teeth Whitening (`白牙`)
 
-- [ ] **TEETH-01**: If and only if its feature gate passes, an SDK integrator receives an independent `teethWhitening` control that cannot alias global whitening, brightness, lip color, or another geometry/color field.
-- [ ] **TEETH-02**: Qualified tooth support uses actual mapped lip context, retains the conservative fixed strong baseline, and may grow only connected color-qualified candidates inside a hard mouth-local containment envelope.
-- [ ] **TEETH-03**: Teeth whitening changes zero pixels in lips, tongue, gums, braces, facial hair, skin, or outside the owned teeth mask across deterministic and rights-approved challenge cases.
-- [ ] **TEETH-04**: Qualified discoloration positives receive bounded yellow-excess reduction and luminance lift while preserving enamel texture, shading, edges, and natural color at original-detail review.
-- [ ] **TEETH-05**: Already-light teeth, closed/occluded/unsupported mouths, missing inner lips, no-face inputs, and unsafe candidates abstain or remain natural without guessing support.
-- [ ] **TEETH-06**: The public facade, saved-output helper, review bundle, privacy gates, regression suite, and exact ledger independently agree before `白牙` or branch `嘴唇` can be promoted.
+- [x] **TEETH-01**: If and only if its feature gate passes, an SDK integrator receives an independent `teethWhitening` control that cannot alias global whitening, brightness, lip color, or another geometry/color field.
+- [x] **TEETH-02**: Qualified tooth support uses actual mapped lip context, retains the conservative fixed strong baseline, and may grow only connected color-qualified candidates inside a hard mouth-local containment envelope.
+- [x] **TEETH-03**: Teeth whitening changes zero pixels in lips, tongue, gums, braces, facial hair, skin, or outside the owned teeth mask across deterministic and rights-approved challenge cases.
+- [x] **TEETH-04**: Qualified discoloration positives receive bounded yellow-excess reduction and luminance lift while preserving enamel texture, shading, edges, and natural color at original-detail review.
+- [x] **TEETH-05**: Already-light teeth, closed/occluded/unsupported mouths, missing inner lips, no-face inputs, and unsafe candidates abstain or remain natural without guessing support.
+- [x] **TEETH-06**: The public facade, saved-output helper, review bundle, privacy gates, regression suite, and exact ledger independently agree before `白牙` or branch `嘴唇` can be promoted.
 
 ### Guarded Sclera Redness Reduction (`祛红血丝`)
 
@@ -118,12 +118,12 @@ no implementation surface when that decision is closed.
 | COMP-03 | Phase 55 | Complete |
 | COMP-04 | Phase 55 | Complete |
 | COMP-05 | Phase 55 | Complete |
-| TEETH-01 | Phase 56 | Pending |
-| TEETH-02 | Phase 56 | Pending |
-| TEETH-03 | Phase 56 | Pending |
-| TEETH-04 | Phase 56 | Pending |
-| TEETH-05 | Phase 56 | Pending |
-| TEETH-06 | Phase 56 | Pending |
+| TEETH-01 | Phase 56 | Complete |
+| TEETH-02 | Phase 56 | Complete |
+| TEETH-03 | Phase 56 | Complete |
+| TEETH-04 | Phase 56 | Complete |
+| TEETH-05 | Phase 56 | Complete |
+| TEETH-06 | Phase 56 | Complete |
 | SCLERA-01 | Phase 57 | Pending |
 | SCLERA-02 | Phase 57 | Pending |
 | SCLERA-03 | Phase 57 | Pending |
