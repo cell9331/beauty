@@ -1,4 +1,7 @@
+import BeautyCore
+import BeautyEffects
 import Foundation
+import ImageIO
 import XCTest
 
 /// Wave 0 specification for the feature-neutral original-pixel composer.
@@ -44,6 +47,61 @@ final class BeautyLocalRetouchCompositionTests: XCTestCase {
             XCTFail("RED_MISSING_ARTIFACT:BeautyLocalRetouchComposition.swift")
             return
         }
+    }
+
+    func testProductionExactCarrierBindingAndCheckedOffsetsRejectForeignWorkLocally() throws {
+        let source = try productionCanonical(bytes: Self.source, width: 3, height: 2)
+        let copiedSource = source
+        let foreignSource = try productionCanonical(bytes: Self.source, width: 3, height: 2)
+
+        XCTAssertEqual(source.pixelSourceBinding, copiedSource.pixelSourceBinding)
+        XCTAssertNotEqual(source.pixelSourceBinding, foreignSource.pixelSourceBinding)
+
+        let owner = BeautyLocalRetouchCompositionOwner(source: source)
+        let foreignOwner = BeautyLocalRetouchCompositionOwner(source: foreignSource)
+        let valid = try XCTUnwrap(owner.makeUnit(proposals: [productionProposal(0)]))
+        let foreign = try XCTUnwrap(foreignOwner.makeUnit(proposals: [productionProposal(1)]))
+        let negativeIndex = try XCTUnwrap(owner.makeUnit(proposals: [productionProposal(-1)]))
+        let overflowingIndex = try XCTUnwrap(owner.makeUnit(proposals: [productionProposal(Int.max)]))
+
+        let result = try owner.compose([foreign, negativeIndex, overflowingIndex, valid])
+        XCTAssertEqual(result.canonicalImage.pixelSourceBinding, source.pixelSourceBinding)
+        XCTAssertEqual(
+            result.summary,
+            BeautyLocalRetouchCompositionSummary(acceptedUnitCount: 1, rejectedUnitCount: 3)
+        )
+    }
+
+    func testProductionIssuanceCapsDuplicateTokensAndRawDuplicatesPreserveValidSibling() throws {
+        var pixels: [UInt8] = []
+        for value in 0..<16 {
+            pixels.append(contentsOf: [
+                UInt8(value), UInt8(value + 1), UInt8(value + 2), UInt8.max,
+            ])
+        }
+        let source = try productionCanonical(bytes: pixels, width: 16, height: 1)
+        let owner = BeautyLocalRetouchCompositionOwner(source: source)
+
+        let duplicated = try XCTUnwrap(owner.makeUnit(proposals: [productionProposal(0)]))
+        let rawDuplicate = try XCTUnwrap(owner.makeUnit(proposals: [
+            productionProposal(1, hard: false, weight: 65_536),
+            productionProposal(1, weight: 0),
+        ]))
+        let overBudget = try XCTUnwrap(owner.makeUnit(proposals: [
+            productionProposal(2), productionProposal(3), productionProposal(4),
+        ]))
+        let valid = try XCTUnwrap(owner.makeUnit(proposals: [productionProposal(5)]))
+
+        let result = try owner.compose([duplicated, duplicated, rawDuplicate, overBudget, valid])
+        XCTAssertEqual(
+            result.summary,
+            BeautyLocalRetouchCompositionSummary(acceptedUnitCount: 1, rejectedUnitCount: 4)
+        )
+
+        for index in 4..<8 {
+            XCTAssertNotNil(owner.makeUnit(proposals: [productionProposal(index + 2)]))
+        }
+        XCTAssertNil(owner.makeUnit(proposals: [productionProposal(15)]))
     }
 
     func testQ16EndpointsMidpointClampRoundHalfUpAndSourceAlphaAreLiteral() throws {
@@ -263,6 +321,38 @@ final class BeautyLocalRetouchCompositionTests: XCTestCase {
 }
 
 private extension BeautyLocalRetouchCompositionTests {
+    func productionCanonical(
+        bytes: [UInt8],
+        width: Int,
+        height: Int
+    ) throws -> BeautyCanonicalStillImage {
+        try BeautyCanonicalStillImage(
+            rgba8Data: Data(bytes),
+            width: width,
+            height: height,
+            rowBytes: width * 4,
+            metadata: BeautyInputMetadata(
+                orientation: .up,
+                source: .testFixture
+            )
+        )
+    }
+
+    func productionProposal(
+        _ pixelIndex: Int,
+        hard: Bool = true,
+        weight: UInt32 = 65_536
+    ) -> BeautyLocalPixelProposal {
+        BeautyLocalPixelProposal(
+            pixelIndex: pixelIndex,
+            isInsideHardEnvelope: hard,
+            softWeightQ16: weight,
+            targetRed: 200,
+            targetGreen: 201,
+            targetBlue: 202
+        )
+    }
+
     struct Proposal {
         let rawIndex: Int
         let isInsideHardEnvelope: Bool

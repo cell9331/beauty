@@ -3,6 +3,15 @@ import CoreImage
 import Foundation
 import ImageIO
 
+/// Exact package-level authorization for pixels owned by one canonical carrier.
+package struct BeautyCanonicalPixelSourceBinding: Equatable, Sendable {
+    package let storageIdentity: ObjectIdentifier
+    package let width: Int
+    package let height: Int
+    package let rowBytes: Int
+    package let byteCount: Int
+}
+
 /// One request-owned, normalized still-image raster for package-internal consumers.
 ///
 /// The carrier deliberately has no exported or SPI byte surface and no diagnostic
@@ -82,6 +91,16 @@ package struct BeautyCanonicalStillImage: @unchecked Sendable {
 
     package var backingIdentity: Int {
         ObjectIdentifier(storage).hashValue
+    }
+
+    package var pixelSourceBinding: BeautyCanonicalPixelSourceBinding {
+        BeautyCanonicalPixelSourceBinding(
+            storageIdentity: ObjectIdentifier(storage),
+            width: width,
+            height: height,
+            rowBytes: rowBytes,
+            byteCount: storage.rgba8Data.count
+        )
     }
 
     private final class Storage: @unchecked Sendable {
