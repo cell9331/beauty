@@ -1,7 +1,7 @@
 ---
 phase: 54
 plan: "05"
-status: pending_post_fix_verification
+status: passed
 security_standard: OWASP ASVS Level 1
 block_on: HIGH
 recorded: 2026-08-03
@@ -11,12 +11,13 @@ recorded: 2026-08-03
 
 ## Result
 
-Phase 54 is pending only the fresh direct-`file://` human browser confirmation.
-The final post-fix code review is clean and every automated gate was rerun on
-2026-08-03 against current source. The closed ledger and exact-empty production
-admission remain the current safe state. The in-app browser automation surface
-refused local `file://` navigation under its URL policy, so it cannot replace the
-required human-local interaction evidence.
+Phase 54 passes. The final post-fix code review is clean, every automated gate
+was rerun on 2026-08-03 against current source, and the user completed the fresh
+direct-`file://` interaction smoke after the review fixes. The closed ledger and
+exact-empty production admission remain the current safe state. The in-app
+automation surface refused local `file://` navigation under its URL policy, so
+the browser result is recorded from the user's direct local interaction rather
+than attributed to automation.
 
 ## Current Post-Fix Automated Gate — Passed
 
@@ -89,7 +90,7 @@ integrations: one local authorized portrait eyebrow facade test, two face/
 eyebrow validation-envelope tests, and three default still-image detector tests.
 They do not satisfy or bypass a Phase 54 HIGH mitigation.
 
-## Historical Direct `file://` Browser Smoke — Fresh Confirmation Required
+## Current Direct `file://` Browser Smoke — Passed
 
 The reviewer was opened directly at:
 
@@ -104,9 +105,12 @@ example-images/local-retouch-review/manifests/mechanics-smoke.json
 example-images/local-retouch-review/bundle/
 ```
 
-On 2026-08-01 the user completed the interactive browser check against the old
-boundary. Those observations do not confirm the iteration-2 digest binding or
-failure recovery and must be repeated. The historical groups covered:
+On 2026-08-03 the user repeated the interactive browser check against the
+post-fix boundary and explicitly confirmed that the requested smoke passed. The
+user-provided screenshot confirms the blinded three-pane local render. The
+three disposable mechanics images are intentionally byte-identical; this smoke
+checks mechanics and privacy, not feature effectiveness or visual improvement.
+The confirmed groups covered:
 
 - initial/empty/loading/error/partial/populated and zero/one/many/long-text
   behavior, fixed blinded labels, all seven initially unselected required
@@ -118,13 +122,15 @@ failure recovery and must be repeated. The historical groups covered:
 - keyboard traversal/dialog containment and responsive 1200/768/320 plus 200%
   zoom behavior.
 
-The fixed download exists at `$HOME/Downloads/beauty-evidence-review-v1.json`,
-is 1,603 bytes, was modified at `2026-08-01T20:34:16+0800`, parses as JSON, and
-ends in exactly one LF. It contains only the fixed top-level keys
+The fresh browser-generated download was created at
+`2026-08-03T11:40:32+0800`, is 1,640 bytes, parses as JSON, and ends in exactly
+one LF. It contains only the fixed top-level keys
 `schema_version`, `feature_decisions`, `reviews`, and `aggregates`; decision rows
 contain only `feature`, `status`, `reasons`, four count fields, and
 `naturalness_weight`; aggregate rows omit status/reasons. `reviews` is empty and
-all counts/weights are zero.
+all counts/weights are zero. Its three closed reason sets exactly match the
+authoritative durable ledger below. The older 1,603-byte 2026-08-01 download is
+retained as historical local evidence only.
 
 The mechanics smoke and durable repository export both derive their reasons
 from their validated eligible/review inventories. The authorized portrait is
@@ -180,11 +186,11 @@ the previously recorded warning only: `PRODUCT_SENSE.md`, `example-images`, and
 path in the warning set, so it is nonblocking and does not authorize an automatic
 codebase remap.
 
-## Historical ASVS Level 1 HIGH Sign-Off — Not Current
+## Current ASVS Level 1 HIGH Sign-Off
 
 | Threat | Result | Evidence |
 |---|---|---|
-| T-54-01 input tampering | PASS | Complete core mutation suite plus 112-case checker self-test and live input/path/identity classifications |
+| T-54-01 input tampering | PASS | Complete core mutation suite plus 119-case checker self-test and live input/path/identity classifications |
 | T-54-02 review tampering/repudiation | PASS | Core-issued snapshot-bound reviews, independent reducers, ledger tests, browser save/revisit/replacement checks |
 | T-54-03 information disclosure | PASS | Recursive allowlists, downloaded-export scan, redacted DOM, ignored/untracked proof, URL/reload lifecycle smoke |
 | T-54-04 privilege/network escalation | PASS | CSP and no-network/storage/external/unsafe-DOM static/live and browser checks |
@@ -193,21 +199,17 @@ codebase remap.
 | T-54-07 evidence repudiation | PASS | Exact `27 = 8 + 19`, seven explicit judgments, deterministic fixed-name export, actual-count record |
 | T-54-08 local-review disclosure | PASS | Canonical threat inventory maps the owner privacy boundary; local-only, ephemeral, redacted, no-network/storage, and export-by-construction checks remain required |
 
-These PASS rows describe the pre-fix browser run. Current automated HIGH
-evidence is green at the exact named `8/8`, but final sign-off remains pending
-the direct-`file://` smoke and fresh human confirmation required by
-`54-VALIDATION.md`.
+These PASS rows combine the current exact named automated `8/8` evidence with
+the fresh post-fix direct-`file://` confirmation required by `54-VALIDATION.md`.
+No HIGH row is failed, waived, skipped, or unverified.
 
 ## Remaining Exact Verification
 
-All automated items above are current and passed. The only remaining item is a
-fresh direct-`file://` smoke using the ignored mechanics bundle. Human
-confirmation must cover blinded three-pane media and Fit/100%, fixed redacted
-recovery after an invalid/wrong replacement with both inputs re-enabled, later
-valid replacement, save/revisit/export, navigation containment, and reload/
-responsive behavior. The in-app automation attempt on 2026-08-03 was blocked by
-the browser's local-file URL policy; this is not a product failure and is not
-treated as browser evidence.
+None for Phase 54. The in-app automation attempt on 2026-08-03 was blocked by
+the browser's local-file URL policy; this is not a product failure and was not
+counted as browser evidence. The required direct local interaction was instead
+completed and confirmed by the user, and its fresh allowlisted export was
+independently parsed above.
 
 ## Explicit Nonclaims
 

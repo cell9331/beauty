@@ -2,20 +2,21 @@
 phase: 54
 slug: rights-approved-evidence-and-eligibility-decisions
 # status lifecycle: draft (plan-phase) -> validated (Plan 54-05 after exact evidence)
-status: draft
-nyquist_compliant: false
+status: validated
+nyquist_compliant: true
 wave_0_complete: true
 created: 2026-07-31
 ---
 
 # Phase 54 — Validation Strategy
 
-> **Post-fix status: automated gates passed; fresh browser confirmation pending.**
-> Current 33/38 focused suites, 119 checker cases, exact live `8/8`, 500-test
-> SwiftPM, 118-test Demo, schema/UI/diff gates, and clean review passed on
-> 2026-08-03. Promotion still requires the fresh human `file://` smoke below.
+> **Post-fix status: validated.**
+> Current 33/33 core and 38/38 reviewer suites, 119 checker cases, exact live
+> `8/8`, 500-test SwiftPM, 118-test Demo, schema/UI/diff gates, and clean review passed on
+> 2026-08-03. The fresh human direct-`file://` smoke and 1,640-byte allowlisted
+> export also passed on 2026-08-03.
 
-> Exact pending validation map for the five-plan, nine-task execution set. A
+> Exact validated map for the five-plan, nine-task execution set. A
 > deterministic closed feature gate is a successful expected result; an invalid,
 > unverified, privacy-leaking, cross-feature, or scope-drifting result is not.
 
@@ -63,7 +64,7 @@ created: 2026-07-31
 | `54-03-02` | `54-03` | 2 | `[54-02]` | `54-01-01`, `54-01-02` | EVID-02..05, LID-01 | Complete UI/core Node suites, checker `--ui`, exact `27 = 8 + 19` | passed |
 | `54-04-01` | `54-04` | 3 | `[54-03]` | `54-01-01`, `54-01-02` | EVID-01, EVID-02, EVID-04, EVID-05, LID-01 | JSON parse, checker `--ledger`, Git ignore/untracked proof | passed |
 | `54-04-02` | `54-04` | 3 | `[54-03]` | `54-01-02` | EVID-01..05, LID-01 | checker `--owners`, `--scope`, and default implementation live mode | passed |
-| `54-05-01` | `54-05` | 4 | `[54-04]` | `54-01-01`, `54-01-02` | EVID-01..05, LID-01 | **FINAL ONLY:** complete Node/checker/browser/full SwiftPM/Demo/schema/UI/diff gate from `54-05-PLAN.md` | pending post-fix verification |
+| `54-05-01` | `54-05` | 4 | `[54-04]` | `54-01-01`, `54-01-02` | EVID-01..05, LID-01 | **FINAL ONLY:** complete Node/checker/browser/full SwiftPM/Demo/schema/UI/diff gate from `54-05-PLAN.md` | passed |
 
 Task count equality: **9 actual XML task IDs = 9 validation rows = 2 Wave 0 + 6 focused GREEN + 1 final closeout**.
 
@@ -178,18 +179,17 @@ The checker must fail closed on:
 Checker failures remain redacted: report fixed rule names/counts, never matched
 contents or sensitive local paths.
 
-## Required Post-Fix Verification
+## Completed Post-Fix Verification
 
 The automated rerun is complete: 33 core + 38 reviewer tests, 119 checker
 self-tests, complete live exact `8/8`, 500 SwiftPM tests with six documented
 opt-in skips and zero failures, iPhone 17e/iOS 26.5 Demo build plus 118/118
-tests, schema/UI gates, clean review, and diff hygiene all pass. The remaining
-browser operator confirmation must cover blinded original-detail rendering,
-invalid/wrong replacement recovery with both inputs re-enabled, later valid
-replacement, transactional URL cleanup/navigation containment, export/revisit,
-and reload/responsive behavior. In-app automation could not navigate the local
-`file://` URL under browser policy, so validation remains unpromoted until the
-human smoke passes.
+tests, schema/UI gates, clean review, and diff hygiene all pass. The user also
+confirmed blinded original-detail rendering, invalid/wrong replacement recovery
+with both inputs re-enabled, later valid replacement, transactional URL cleanup/
+navigation containment, export/revisit, and reload/responsive behavior. In-app
+automation could not navigate the local `file://` URL under browser policy; the
+direct human smoke and independently parsed fresh export supply that evidence.
 
 ## Validation Sign-Off
 
@@ -199,10 +199,11 @@ human smoke passes.
 - [x] Every GREEN task names its Wave 0 dependency.
 - [x] Mutation coverage includes every research matrix item.
 - [x] UI equality is exactly 27 = 8 + 19 with no missing/duplicate/extra row.
-- [ ] EVID-01..05 and LID-01 have fresh post-fix core, boundary, browser, and final-regression evidence (all automated evidence passes; browser confirmation pending).
+- [x] EVID-01..05 and LID-01 have fresh post-fix core, boundary, browser, and final-regression evidence.
 - [x] Every plan declares ASVS Level 1, `block_on: HIGH`, and named mitigation commands; canonical inventory maps active T-54-01…T-54-08 with no retired/merged IDs currently recorded.
 - [x] Current closed decisions are inventory-derived and record both missing polarities for zero eligible/review rows, plus the independent upper-eyelid design gap.
 - [x] No sensitive local artifact, SDK/Demo behavior, or unsupported readiness claim is added.
-- [ ] `54-EVIDENCE-EVALUATION.md` is refreshed only after all post-fix gates and human confirmation pass.
+- [x] `54-EVIDENCE-EVALUATION.md` is refreshed only after all post-fix gates and human confirmation pass.
 
-**Approval:** pending fresh human `file://` confirmation only; all current automated gates and the clean review pass.
+**Approval:** validated on 2026-08-03; all current automated gates, clean review,
+fresh human direct-`file://` confirmation, and allowlisted export inspection pass.

@@ -37,7 +37,7 @@ patterns-established:
 requirements-completed: [EVID-01, EVID-02, EVID-03, EVID-04, EVID-05, LID-01]
 
 duration: 1h 15min
-completed: 2026-08-01
+completed: 2026-08-03
 status: complete
 ---
 
@@ -50,17 +50,17 @@ unsupported feature.**
 ## Performance
 
 - **Duration:** 1h 15min, including the user browser checkpoint
-- **Completed:** 2026-08-01
+- **Completed:** 2026-08-03 (post-fix revalidation)
 - **Tasks:** 1
 - **Files modified:** 4
 
 ## Accomplishments
 
-- Completed the direct `file://` reviewer smoke with explicit user confirmation
+- Repeated the direct `file://` reviewer smoke after all review fixes with explicit user confirmation
   for Fit/100%, required-field focus, replacement/reset, keyboard/dialog,
   responsive/200% zoom, deterministic export, and URL/privacy behavior.
-- Published the exact 30/30 core, 36/36 reviewer, 112/112 checker, ASVS HIGH
-  6/6, SwiftPM 500/6-skip/0-failure, and Demo 118/118 results.
+- Published the current exact 33/33 core, 38/38 reviewer, 119/119 checker, ASVS
+  HIGH 8/8, SwiftPM 500/6-skip/0-failure, and Demo 118/118 results.
 - Promoted all nine validation rows only after the evidence record existed and
   set `status: validated`, `nyquist_compliant: true`, and
   `wave_0_complete: true`.
@@ -84,10 +84,10 @@ unsupported feature.**
 ## Gate Results
 
 - JavaScript and JSON syntax checks pass.
-- Evidence core passes 30/30; reviewer contract passes 36/36.
-- Boundary checker self-test passes 112/112 with exact UI `27 = 8 + 19`; live
-  mode passes with ASVS HIGH 6/6.
-- Direct local browser smoke passes; the fixed 1,603-byte export parses, ends in
+- Evidence core passes 33/33; reviewer contract passes 38/38.
+- Boundary checker self-test passes 119/119 with exact UI `27 = 8 + 19`; live
+  mode passes with ASVS HIGH 8/8.
+- Fresh direct local browser smoke passes; the 1,640-byte export parses, ends in
   one LF, contains exact nested allowlists, empty reviews, and zero aggregates.
 - Full SwiftPM executes 500 tests with six documented opt-in Apple Vision skips
   and zero failures.
@@ -103,9 +103,9 @@ waived, or remained unverified.
 
 ## Decisions Made
 
-- The mechanics smoke export's additional missing-teeth-negative reason is
-  bundle-local test behavior; the durable product ledger retains the exact
-  repository-derived teeth reason `missing_genuine_positive`.
+- The fresh mechanics smoke export exactly matches the durable ledger's closed
+  reason sets and zero counts; byte-identical mechanics media proves UI behavior
+  only and supplies no feature-effectiveness evidence.
 - Missing licensed feature evidence is a valid closed result and must remain an
   exact-absence input for Phases 55–58.
 
@@ -153,4 +153,4 @@ None. The one-time direct browser verification is complete.
 
 ---
 *Phase: 54-rights-approved-evidence-and-eligibility-decisions*
-*Completed: 2026-08-01*
+*Completed: 2026-08-03 after post-fix revalidation*
