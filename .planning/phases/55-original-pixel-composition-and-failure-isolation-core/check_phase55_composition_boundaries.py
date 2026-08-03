@@ -282,9 +282,11 @@ def common_failures() -> set[str]:
     facade_anchors = (
         "testExactRequestContextSourceComposesOnce",
         "testOpaqueObservationIsAggregateOnlyAndDigestFree",
-        "BothExistingCIImageEntries", "sourceBindingMatched", "invocationCount",
-        "BrightnessAndFilterContinuation", "ValidInvalidValid", "PixelBufferAndReset",
-        "productionAdmissionCount", "changedOutsideUnionPixelCount",
+        "BothExistingCIImageEntries", "sourceBindingMatched", "compositionInvocationCount",
+        "BrightnessAndFilterContinuation", "ValidInvalidValid", "ThrownRequestClearsObservation",
+        "PixelBufferAndReset", "ExistingFoundationTrace", "CollisionPreservesSourcePixel",
+        "OpaqueWholeRegionAndSubunitFailures", "noFace", "missingSupport",
+        "productionAdmissionCount", "changedOutsideUnionPixelCount", "renderedRGBA8",
     )
     if any(anchor not in facade_text for anchor in facade_anchors):
         failures.add("R55-FACADE-SPECS")
@@ -412,7 +414,7 @@ def privacy_failures() -> set[str]:
 
 
 def live_failures() -> set[str]:
-    failures = composition_failures()
+    failures = privacy_failures()
     if failures:
         return failures
 
@@ -439,6 +441,16 @@ def live_failures() -> set[str]:
     )
     if observation_fields != expected_observation_fields or "outputDigest" in support_text:
         failures.add("R55-SPI-PRIVACY")
+    hook_section = engine_section(
+        support_text,
+        "package final class BeautyLocalRetouchTestingHooks",
+        "@_spi(Testing) public final class SDKTestingLocalRetouchFoundationHarness",
+    )
+    if not hook_section or re.search(
+        r"private\s+var\s+[^\n]*(BeautyLocalRetouchUnit|BeautyCanonicalStillImage|BeautyLocalRetouchCompositionResult|CIImage|Data)",
+        hook_section,
+    ):
+        failures.add("R55-REQUEST-RETENTION")
     composition_spi = "\n".join(
         line for line in support_text.splitlines()
         if "SDKTestingLocalComposition" in line
