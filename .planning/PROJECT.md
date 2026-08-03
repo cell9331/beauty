@@ -228,6 +228,8 @@ For v1.15-v1.16, any bundled Core ML resource must be local-only, redistributabl
 
 ### Validated
 
+- Phase 53 establishes one opaque canonical still-image carrier, normalize-once validation, one selected-face request/mapping boundary, request-local private lip support, exact legacy compatibility, and exact-empty production admission with no realtime/Demo expansion.
+- Phase 54 establishes an independently auditable fail-closed eligibility system: trusted grant/media bindings, zero-weight mechanics fixtures, frozen blinded structured review, exact allowlisted export, three independent closed feature decisions, Nyquist validation, ASVS HIGH `8/8`, and independent verification `19/19`.
 - Seven independent eyebrow controls have exact final `0.25` caps, exhaustive request-local degradation/transitions, exact 44-field/13.45 one-scale convergence, strict public-facade output, aggregate-only evidence, and exact seven-row plus branch `眉毛` SDK-core promotion - Phase 52.
 - SAFE-01, SAFE-02, SAFE-03, and DOC-01 are independently verified at 16/16 from fresh production-path evidence, a clean 28-file current review, exact 23-task Nyquist coverage, ASVS L1 `threats_open: 0`, simulator regression, strict output, synchronized owners, and preserved nonclaims - Phase 52.
 - v1.13 independently passes 21/21 requirements, 4/4 canonical phase verifications, 12/12 integrations, 6/6 flows, and 4/4 Nyquist ledgers after closing all prior audit debt.
@@ -423,8 +425,8 @@ Current visual reference contracts:
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| v1.14 uses a staged local-retouch milestone: teeth and sclera may ship independently, while upper-eyelid fullness remains gated. | Teeth and guarded sclera mechanics have distinct bounded paths; the tested eyelid warp is invalid and no real positive bundle yet supports promotion. | Pending — requirements and roadmap must preserve the gate instead of forcing three-feature completion |
-| v1.14 rejects transparent still inputs until an explicit composite policy is approved. | Preserving alpha bytes does not stabilize Vision landmarks when canvas/background changes; fail-closed rejection is the safest bounded default. | Pending — production acceptance must test rejection before Vision or local masks |
+| v1.14 uses a staged local-retouch milestone: teeth and sclera may ship independently, while upper-eyelid fullness remains gated. | Teeth and guarded sclera mechanics have distinct bounded paths; the tested eyelid warp is invalid and no real positive bundle yet supports promotion. | Verified through Phase 54 — all three gates are independently closed and later phases must preserve exact absence unless independently qualified |
+| v1.14 rejects transparent still inputs until an explicit composite policy is approved. | Preserving alpha bytes does not stabilize Vision landmarks when canvas/background changes; fail-closed rejection is the safest bounded default. | Verified in Phase 53 — rejection occurs before Vision/local-mask work and remains outside Phase 54 evidence admission |
 | Phase 52 acceptance requires production-path proofs plus an independent post-gap verifier, not executor readiness alone. | The first verification exposed adapter-invalid fixtures, pre-work cancellation, manual convergence approximation, and owner disagreement despite earlier green executor evidence. | Verified in Phase 52; all four gaps closed and independent re-verification passes 16/16 |
 | Phase 49 freezes seven neutral eyebrow fields and accepts only actual request-scoped Apple Vision eyebrow traces. | Geometry phases need a compatibility-safe public contract and honest support provenance before providers, resolver routing, or output evidence can activate. | Verified in Phase 49; 411-test suite and boundary gates pass |
 | Phase 51 accepts eyebrow output only through a separately rendered frozen strict gate plus actual-image review. | Generated labels or self-selected thresholds cannot prove brow-local direction and semantic distinction; the sole active portrait and no-face negative need distinct denominators. | Verified in Phase 51; 72/72 portrait outputs, thirteen no-face no-ops, fourteen opened images, and exact 144-file containment pass |
@@ -448,7 +450,7 @@ Current visual reference contracts:
 | v1.10 completes the remaining mouth geometry controls without absorbing teeth whitening. | The five unresolved geometry rows share the existing mouth warp/facade evidence path, while `白牙` needs a different teeth-region segmentation and retouch contract. | Completed in Phase 40; milestone audit passed |
 | v1.11 completes the remaining eye geometry controls without absorbing eye-fat or redness retouch. | Ten unresolved geometry rows can build on the eye warp/facade path, but pupil/gaze/symmetry require private observed support and field-local fail-closed behavior; `去脂` and `祛红血丝` need different retouch/color ownership. | Completed and archived in v1.11 |
 | v1.12 completes four contour-driven unresolved `脸型` rows and defers semantic-region rows rather than faking support. | The existing five face parameters cannot prove smooth-contour, temple, cheekbone, or pointed-chin behavior, while no approved semantic model/fixtures exist for double chin or hairline; the user selected reduced scope on 2026-07-21. | Completed in Phase 48; milestone audit passed and archived |
-| Complete the remaining narrow facial-feature taxonomy across v1.13-v1.16, beginning with eyebrows. | Eyebrow controls reuse Apple Vision landmark and unified-warp infrastructure; local retouch follows next, while hairline/double-chin work remains gated on an approved local semantic-region resource. | v1.13 completed; v1.14-v1.16 remain unstarted |
+| Complete the remaining narrow facial-feature taxonomy across v1.13-v1.16, beginning with eyebrows. | Eyebrow controls reuse Apple Vision landmark and unified-warp infrastructure; local retouch follows next, while hairline/double-chin work remains gated on an approved local semantic-region resource. | v1.13 completed; v1.14 Phases 53-54 complete; v1.15-v1.16 remain unstarted |
 | v1.5 starts with geometry output foundation plus `脸型`, not all `美型 / 五官` groups. | The user chose the smallest first-principles slice: prove facade-visible geometry output first, then mark only the existing face-shape tools complete when evidence exists. | Completed and archived in v1.5 |
 
 ## Evolution
@@ -456,4 +458,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-07-30 after starting v1.14 Local Facial Retouch*
+*Last updated: 2026-08-03 after Phase 54 evidence and eligibility validation*

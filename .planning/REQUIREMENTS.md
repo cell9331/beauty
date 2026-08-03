@@ -21,11 +21,11 @@ absent feature rather than an inert public field or proxy implementation.
 
 ### Rights-Approved Evidence
 
-- [ ] **EVID-01**: Each visible feature has its own opaque, rights-approved local evaluation bundle containing at least one genuine positive and one negative with complete original/mask/after assets and predeclared polarity.
-- [ ] **EVID-02**: Mechanics-only or synthetic fixtures are excluded from product-effectiveness and naturalness aggregates even when they remain eligible for deterministic safety tests.
-- [ ] **EVID-03**: Review criteria are frozen before a blinded local original-detail review records structured target presence, mask coverage, protected leakage, naturalness, structure change, decision, and fixed reason code.
-- [ ] **EVID-04**: Persistent review export contains only opaque fixture/feature/polarity identifiers, structured judgments, decisions, and aggregates; it contains no media, paths, rights records, raw geometry, masks, or freeform reviewer text.
-- [ ] **EVID-05**: Failure to acquire or validate a feature's positive/negative bundle closes only that feature's product gate and does not block an independently qualified sibling.
+- [x] **EVID-01**: Each visible feature has its own opaque, rights-approved local evaluation bundle containing at least one genuine positive and one negative with complete original/mask/after assets and predeclared polarity.
+- [x] **EVID-02**: Mechanics-only or synthetic fixtures are excluded from product-effectiveness and naturalness aggregates even when they remain eligible for deterministic safety tests.
+- [x] **EVID-03**: Review criteria are frozen before a blinded local original-detail review records structured target presence, mask coverage, protected leakage, naturalness, structure change, decision, and fixed reason code.
+- [x] **EVID-04**: Persistent review export contains only opaque fixture/feature/polarity identifiers, structured judgments, decisions, and aggregates; it contains no media, paths, rights records, raw geometry, masks, or freeform reviewer text.
+- [x] **EVID-05**: Failure to acquire or validate a feature's positive/negative bundle closes only that feature's product gate and does not block an independently qualified sibling.
 
 ### Request-Local Composition
 
@@ -55,7 +55,7 @@ absent feature rather than an inert public field or proxy implementation.
 
 ### Conditional Upper-Eyelid Fullness Reduction (`去脂`)
 
-- [ ] **LID-01**: The milestone records a deterministic go/no-go decision for `去脂` only after a complete rights-approved genuine upper-eyelid-fullness positive/negative bundle and a credible independent non-warp design are reviewed.
+- [x] **LID-01**: The milestone records a deterministic go/no-go decision for `去脂` only after a complete rights-approved genuine upper-eyelid-fullness positive/negative bundle and a credible independent non-warp design are reviewed.
 - [ ] **LID-02**: If the gate is closed, no public `upperEyelidFullnessReduction` field, provider, renderer case, or inert runtime route is added, `去脂` remains `future`, and branch `眼睛` remains `partial`.
 - [ ] **LID-03**: If the gate opens, the admitted positive-only control reduces reviewed upper-eyelid fullness without moving the eye or brow, changing aperture, erasing crease/texture, globally smoothing skin, treating eye bags/dark circles, or altering identity.
 - [ ] **LID-04**: `eyeHeight`, `upperEyelidLift`, brow translation, global smoothing, dark-circle/eye-bag behavior, and any vertical/interior eye warp are rejected as `去脂` substitutes by source, geometry-invariance, and original-detail gates.
@@ -108,11 +108,11 @@ no implementation surface when that decision is closed.
 | PATH-05 | Phase 53 | Complete |
 | PATH-06 | Phase 53 | Complete |
 | PATH-07 | Phase 53 | Complete |
-| EVID-01 | Phase 54 | Pending |
-| EVID-02 | Phase 54 | Pending |
-| EVID-03 | Phase 54 | Pending |
-| EVID-04 | Phase 54 | Pending |
-| EVID-05 | Phase 54 | Pending |
+| EVID-01 | Phase 54 | Complete |
+| EVID-02 | Phase 54 | Complete |
+| EVID-03 | Phase 54 | Complete |
+| EVID-04 | Phase 54 | Complete |
+| EVID-05 | Phase 54 | Complete |
 | COMP-01 | Phase 55 | Pending |
 | COMP-02 | Phase 55 | Pending |
 | COMP-03 | Phase 55 | Pending |
@@ -130,7 +130,7 @@ no implementation surface when that decision is closed.
 | SCLERA-04 | Phase 57 | Pending |
 | SCLERA-05 | Phase 57 | Pending |
 | SCLERA-06 | Phase 57 | Pending |
-| LID-01 | Phase 54 | Pending |
+| LID-01 | Phase 54 | Complete |
 | LID-02 | Phase 57 | Pending |
 | LID-03 | Phase 57 | Pending |
 | LID-04 | Phase 57 | Pending |
