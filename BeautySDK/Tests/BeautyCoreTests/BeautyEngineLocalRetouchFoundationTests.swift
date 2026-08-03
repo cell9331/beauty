@@ -108,7 +108,10 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
                 admittedPrivateDemandCount: 1,
                 supportFixture: fixture
             ).invoke(entry: .processResult, image: Self.image, parameters: .init(brightness: 0.15))
-            XCTAssertEqual(requested.outputDigest, baseline.outputDigest)
+            XCTAssertEqual(
+                try Self.renderedRGBA8(requested.output),
+                try Self.renderedRGBA8(baseline.output)
+            )
             XCTAssertEqual(requested.width, baseline.width)
             XCTAssertEqual(requested.height, baseline.height)
         }
@@ -290,5 +293,31 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
             format: .RGBAf,
             colorSpace: colorSpace
         )
+    }
+
+    private static func renderedRGBA8(_ image: CIImage) throws -> [UInt8] {
+        let bounds = image.extent.integral
+        guard bounds.width > 0,
+              bounds.height > 0,
+              let colorSpace = CGColorSpace(name: CGColorSpace.sRGB)
+        else {
+            throw BeautyError.invalidInput
+        }
+        let width = Int(bounds.width)
+        let height = Int(bounds.height)
+        let rowBytes = width * 4
+        var bytes = [UInt8](repeating: 0, count: rowBytes * height)
+        CIContext(options: [
+            .workingColorSpace: colorSpace,
+            .outputColorSpace: colorSpace,
+        ]).render(
+            image,
+            toBitmap: &bytes,
+            rowBytes: rowBytes,
+            bounds: bounds,
+            format: .RGBA8,
+            colorSpace: colorSpace
+        )
+        return bytes
     }
 }

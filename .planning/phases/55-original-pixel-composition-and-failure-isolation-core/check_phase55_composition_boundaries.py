@@ -174,6 +174,14 @@ def package_let_fields(text: str, start: str, end: str) -> tuple[str, ...]:
     return tuple(re.findall(r"^\s*package let\s+([A-Za-z][A-Za-z0-9]*)\s*:", text[start_index:end_index], re.MULTILINE))
 
 
+def public_let_fields(text: str, start: str, end: str) -> tuple[str, ...]:
+    start_index = text.find(start)
+    end_index = text.find(end, start_index + len(start)) if start_index >= 0 else -1
+    if start_index < 0 or end_index < 0:
+        return ()
+    return tuple(re.findall(r"^\s*public let\s+([A-Za-z][A-Za-z0-9]*)\s*:", text[start_index:end_index], re.MULTILINE))
+
+
 def engine_section(text: str, start: str, end: str) -> str:
     start_index = text.find(start)
     end_index = text.find(end, start_index + len(start)) if start_index >= 0 else -1
@@ -272,8 +280,8 @@ def common_failures() -> set[str]:
 
     facade_text = FACADE_TEST.read_text(encoding="utf-8")
     facade_anchors = (
-        "RED_MISSING_ARTIFACT:SDKTestingLocalRetouchCompositionScenario",
-        "RED_MISSING_ARTIFACT:SDKTestingLocalRetouchCompositionResult",
+        "testExactRequestContextSourceComposesOnce",
+        "testOpaqueObservationIsAggregateOnlyAndDigestFree",
         "BothExistingCIImageEntries", "sourceBindingMatched", "invocationCount",
         "BrightnessAndFilterContinuation", "ValidInvalidValid", "PixelBufferAndReset",
         "productionAdmissionCount", "changedOutsideUnionPixelCount",
@@ -418,11 +426,22 @@ def live_failures() -> set[str]:
         failures.add("R55-CORE-ANCHORS")
     support_text = TESTING_SUPPORT.read_text(encoding="utf-8")
     engine_text = ENGINE.read_text(encoding="utf-8")
-    if "SDKTestingLocalRetouchCompositionScenario" not in support_text or "SDKTestingLocalRetouchCompositionResult" not in support_text:
+    if "SDKTestingLocalCompositionScenario" not in support_text or "SDKTestingLocalCompositionObservation" not in support_text:
         failures.add("R55-FACADE-SEAM")
+    observation_fields = public_let_fields(
+        support_text,
+        "public struct SDKTestingLocalCompositionObservation",
+        "public enum SDKTestingLocalSupportFixture",
+    )
+    expected_observation_fields = (
+        "width", "height", "compositionInvocationCount", "sourceBindingMatched",
+        *EXPECTED_SUMMARY_FIELDS,
+    )
+    if observation_fields != expected_observation_fields or "outputDigest" in support_text:
+        failures.add("R55-SPI-PRIVACY")
     composition_spi = "\n".join(
         line for line in support_text.splitlines()
-        if "SDKTestingLocalRetouchComposition" in line
+        if "SDKTestingLocalComposition" in line
         or any(field in line for field in (
             "acceptedUnitCount", "rejectedUnitCount", "ownedPixelCount",
             "changedPixelCount", "changedOutsideUnionPixelCount", "collisionPixelCount",
@@ -432,6 +451,12 @@ def live_failures() -> set[str]:
     if re.search(r"pixelIndex|coordinate|mask|token|owner|bytes?|digest|path|rawError", composition_spi, re.IGNORECASE):
         failures.add("R55-SPI-PRIVACY")
     if "BeautyLocalRetouchComposition" not in engine_text + support_text:
+        failures.add("R55-ORPHAN")
+    if not re.search(
+        r"BeautyLocalRetouchCompositionOwner\s*\(\s*source:\s*requestContext\.canonicalImage\s*\)",
+        engine_text,
+        re.DOTALL,
+    ) or "compositionOwner.compose(units)" not in engine_text:
         failures.add("R55-ORPHAN")
     return failures
 

@@ -149,9 +149,29 @@ public final class BeautyEngine {
         )
         localRetouchTestingHooks?.recordRequestContext(requestContext)
 
+        let renderCarrier: BeautyCanonicalStillImage
+        if let localRetouchTestingHooks,
+           localRetouchTestingHooks.hasOpaqueCompositionScenario
+        {
+            let compositionOwner = BeautyLocalRetouchCompositionOwner(
+                source: requestContext.canonicalImage
+            )
+            let units = localRetouchTestingHooks.makeOpaqueCompositionUnits(
+                using: compositionOwner,
+                source: requestContext.canonicalImage,
+                expectedSource: canonical
+            )
+            localRetouchTestingHooks.record(.compose)
+            let compositionResult = try compositionOwner.compose(units)
+            localRetouchTestingHooks.recordComposition(compositionResult)
+            renderCarrier = compositionResult.canonicalImage
+        } else {
+            renderCarrier = requestContext.canonicalImage
+        }
+
         localRetouchTestingHooks?.record(.render)
         let output = BeautyColorEffectPipeline.apply(
-            to: requestContext.canonicalImage,
+            to: renderCarrier,
             plan: route.plan,
             selectedFaceObservation: requestContext.selectedFaceObservation,
             onCanonicalRasterize: { [localRetouchTestingHooks] carrier, colorSpace in

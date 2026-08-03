@@ -1,4 +1,6 @@
 import Foundation
+import CoreImage
+import ImageIO
 import XCTest
 @_spi(Testing) import BeautySDK
 
@@ -6,12 +8,42 @@ import XCTest
 /// every observable value is a dimension, Boolean, invocation count, or one of
 /// the six aggregate composition counters.
 final class BeautyEngineLocalRetouchCompositionTests: XCTestCase {
-    func testOpaqueCompositionHookIsTheFirstExactFacadeRedSeam() {
-        XCTFail("RED_MISSING_ARTIFACT:SDKTestingLocalRetouchCompositionScenario")
+    func testExactRequestContextSourceComposesOnce() throws {
+        let harness = try SDKTestingLocalRetouchFoundationHarness(
+            admittedPrivateDemandCount: 1,
+            compositionScenario: .disjoint
+        )
+        _ = try harness.invoke(entry: .processResult, image: try Self.image(), parameters: .init())
+
+        XCTAssertEqual(
+            harness.events,
+            [.canonicalize, .detectAndMap, .makeRequestContext, .compose, .render]
+        )
+        XCTAssertEqual(harness.compositionObservation.compositionInvocationCount, 1)
+        XCTAssertTrue(harness.compositionObservation.sourceBindingMatched)
     }
 
-    func testOpaqueCompositionResultIsTheSecondExactFacadeRedSeam() {
-        XCTFail("RED_MISSING_ARTIFACT:SDKTestingLocalRetouchCompositionResult")
+    func testOpaqueObservationIsAggregateOnlyAndDigestFree() throws {
+        let harness = try SDKTestingLocalRetouchFoundationHarness(
+            admittedPrivateDemandCount: 1,
+            compositionScenario: .disjoint
+        )
+        _ = try harness.invoke(entry: .processResult, image: try Self.image(), parameters: .init())
+        let labels = Set(
+            Mirror(reflecting: harness.compositionObservation).children.compactMap(\.label)
+        )
+        XCTAssertEqual(labels, [
+            "width",
+            "height",
+            "compositionInvocationCount",
+            "sourceBindingMatched",
+            "acceptedUnitCount",
+            "rejectedUnitCount",
+            "ownedPixelCount",
+            "changedPixelCount",
+            "changedOutsideUnionPixelCount",
+            "collisionPixelCount",
+        ])
     }
 
     func testBothExistingCIImageEntriesConsumeOneCanonicalBackingOnce() {
@@ -102,6 +134,22 @@ final class BeautyEngineLocalRetouchCompositionTests: XCTestCase {
 }
 
 private extension BeautyEngineLocalRetouchCompositionTests {
+    static func image() throws -> CIImage {
+        guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
+            throw BeautyError.unsupportedPixelFormat
+        }
+        return CIImage(
+            bitmapData: Data([
+                51, 102, 153, 255, 51, 102, 153, 255,
+                51, 102, 153, 255, 51, 102, 153, 255,
+            ]),
+            bytesPerRow: 8,
+            size: CGSize(width: 2, height: 2),
+            format: .RGBA8,
+            colorSpace: colorSpace
+        )
+    }
+
     enum OpaqueScenario {
         case accepted
         case absent

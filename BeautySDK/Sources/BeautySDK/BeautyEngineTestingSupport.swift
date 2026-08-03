@@ -592,7 +592,56 @@ package final class SDKTestingCanonicalStillImageHarness: @unchecked Sendable {
     case canonicalize
     case detectAndMap
     case makeRequestContext
+    case compose
     case render
+}
+
+@_spi(Testing) public enum SDKTestingLocalCompositionScenario: Sendable {
+    case disjoint
+    case collision
+    case invalidUnit
+    case empty
+    case firstUnitAbsent
+    case pairedUnitsAbsent
+    case secondUnitAbsent
+    case thirdUnitAbsent
+}
+
+@_spi(Testing) public struct SDKTestingLocalCompositionObservation: Equatable, Sendable {
+    public let width: Int
+    public let height: Int
+    public let compositionInvocationCount: Int
+    public let sourceBindingMatched: Bool
+    public let acceptedUnitCount: Int
+    public let rejectedUnitCount: Int
+    public let ownedPixelCount: Int
+    public let changedPixelCount: Int
+    public let changedOutsideUnionPixelCount: Int
+    public let collisionPixelCount: Int
+
+    public init(
+        width: Int = 0,
+        height: Int = 0,
+        compositionInvocationCount: Int = 0,
+        sourceBindingMatched: Bool = false,
+        acceptedUnitCount: Int = 0,
+        rejectedUnitCount: Int = 0,
+        ownedPixelCount: Int = 0,
+        changedPixelCount: Int = 0,
+        changedOutsideUnionPixelCount: Int = 0,
+        collisionPixelCount: Int = 0
+    ) {
+        self.width = width
+        self.height = height
+        self.compositionInvocationCount = compositionInvocationCount
+        self.sourceBindingMatched = sourceBindingMatched
+        self.acceptedUnitCount = acceptedUnitCount
+        self.rejectedUnitCount = rejectedUnitCount
+        self.ownedPixelCount = ownedPixelCount
+        self.changedPixelCount = changedPixelCount
+        self.changedOutsideUnionPixelCount = changedOutsideUnionPixelCount
+        self.collisionPixelCount = collisionPixelCount
+    }
 }
 
 @_spi(Testing) public enum SDKTestingLocalSupportFixture: Sendable {
@@ -605,8 +654,8 @@ package final class SDKTestingCanonicalStillImageHarness: @unchecked Sendable {
     case malformed
 }
 
-@_spi(Testing) public struct SDKTestingLocalResult: Sendable {
-    public let outputDigest: String
+@_spi(Testing) public struct SDKTestingLocalResult: @unchecked Sendable {
+    public let output: CIImage
     public let width: Int
     public let height: Int
     public let aggregateSupportValueID: Int?
@@ -627,7 +676,12 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
 
     private let lock = NSLock()
     private let fixtures: [Fixture]
+    private let compositionScenarios: [SDKTestingLocalCompositionScenario?]
     private var fixtureIndex = 0
+    private var compositionScenarioIndex = 0
+    private var currentCompositionScenario: SDKTestingLocalCompositionScenario?
+    private var currentCompositionSourceBindingMatched = false
+    private var lastCompositionObservationValue = SDKTestingLocalCompositionObservation()
     private var eventsValue: [SDKTestingLocalRetouchEvent] = []
     private var canonicalizeCountValue = 0
     private var detectAndMapCountValue = 0
@@ -650,9 +704,14 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     private var lastMappingInvocationCountValue = 0
     private var lastMappedPointCountValue = 0
 
-    package init(admittedPrivateDemandCount: Int, fixtures: [Fixture]) {
+    package init(
+        admittedPrivateDemandCount: Int,
+        fixtures: [Fixture],
+        compositionScenarios: [SDKTestingLocalCompositionScenario?] = [nil]
+    ) {
         self.admittedPrivateDemandCount = max(0, admittedPrivateDemandCount)
         self.fixtures = fixtures.isEmpty ? [.missingSupport] : fixtures
+        self.compositionScenarios = compositionScenarios.isEmpty ? [nil] : compositionScenarios
     }
 
     package var events: [SDKTestingLocalRetouchEvent] { withLock { eventsValue } }
@@ -680,6 +739,12 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     package var lastMappedPointCount: Int {
         withLock { lastMappedPointCountValue }
     }
+    package var compositionObservation: SDKTestingLocalCompositionObservation {
+        withLock { lastCompositionObservationValue }
+    }
+    package var hasOpaqueCompositionScenario: Bool {
+        withLock { currentCompositionScenario != nil }
+    }
     package var retainedMappedPointCount: Int {
         withLock { activeMappedPointCountValue }
     }
@@ -694,6 +759,11 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
 
     package func beginStillRequest() {
         withLock {
+            let scenarioIndex = min(compositionScenarioIndex, compositionScenarios.count - 1)
+            currentCompositionScenario = compositionScenarios[scenarioIndex]
+            compositionScenarioIndex += 1
+            currentCompositionSourceBindingMatched = false
+            lastCompositionObservationValue = SDKTestingLocalCompositionObservation()
             currentAggregateSupportValueID = nil
             lastAggregateSupportValueIDValue = nil
             currentRequestIsMalformed = false
@@ -708,6 +778,8 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
 
     package func finishStillRequest() {
         withLock {
+            currentCompositionScenario = nil
+            currentCompositionSourceBindingMatched = false
             currentAggregateSupportValueID = nil
             currentRequestIsMalformed = false
             activeRequestContextCountValue = 0
@@ -756,9 +828,90 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
                 detectAndMapCountValue += 1
             case .makeRequestContext:
                 makeRequestContextCountValue += 1
+            case .compose:
+                break
             case .render:
                 renderCountValue += 1
             }
+        }
+    }
+
+    package func makeOpaqueCompositionUnits(
+        using owner: BeautyLocalRetouchCompositionOwner,
+        source: BeautyCanonicalStillImage,
+        expectedSource: BeautyCanonicalStillImage
+    ) -> [BeautyLocalRetouchUnit] {
+        let scenario = withLock {
+            currentCompositionSourceBindingMatched =
+                source.pixelSourceBinding == expectedSource.pixelSourceBinding
+            return currentCompositionScenario
+        }
+        guard let scenario else {
+            return []
+        }
+
+        func proposal(_ pixelIndex: Int, _ red: UInt8, _ green: UInt8, _ blue: UInt8)
+            -> BeautyLocalPixelProposal
+        {
+            BeautyLocalPixelProposal(
+                pixelIndex: pixelIndex,
+                isInsideHardEnvelope: true,
+                softWeightQ16: 65_536,
+                targetRed: red,
+                targetGreen: green,
+                targetBlue: blue
+            )
+        }
+
+        func unit(_ proposal: BeautyLocalPixelProposal) -> BeautyLocalRetouchUnit? {
+            owner.makeUnit(proposals: [proposal])
+        }
+
+        let first = { unit(proposal(0, 201, 41, 11)) }
+        let second = { unit(proposal(1, 21, 211, 61)) }
+        let third = { unit(proposal(2, 71, 31, 221)) }
+
+        switch scenario {
+        case .disjoint:
+            return [first(), second(), third()].compactMap { $0 }
+        case .collision:
+            return [
+                unit(proposal(0, 201, 41, 11)),
+                unit(proposal(0, 21, 211, 61)),
+                unit(proposal(1, 71, 31, 221)),
+            ].compactMap { $0 }
+        case .invalidUnit:
+            return [first(), unit(proposal(Int.max, 1, 2, 3)), third()].compactMap { $0 }
+        case .empty:
+            return []
+        case .firstUnitAbsent:
+            return [second(), third()].compactMap { $0 }
+        case .pairedUnitsAbsent:
+            return [first()].compactMap { $0 }
+        case .secondUnitAbsent:
+            return [first(), third()].compactMap { $0 }
+        case .thirdUnitAbsent:
+            return [first(), second()].compactMap { $0 }
+        }
+    }
+
+    package func recordComposition(
+        _ result: BeautyLocalRetouchCompositionResult
+    ) {
+        withLock {
+            let summary = result.summary
+            lastCompositionObservationValue = SDKTestingLocalCompositionObservation(
+                width: result.canonicalImage.width,
+                height: result.canonicalImage.height,
+                compositionInvocationCount: 1,
+                sourceBindingMatched: currentCompositionSourceBindingMatched,
+                acceptedUnitCount: summary.acceptedUnitCount,
+                rejectedUnitCount: summary.rejectedUnitCount,
+                ownedPixelCount: summary.ownedPixelCount,
+                changedPixelCount: summary.changedPixelCount,
+                changedOutsideUnionPixelCount: summary.changedOutsideUnionPixelCount,
+                collisionPixelCount: summary.collisionPixelCount
+            )
         }
     }
 
@@ -949,28 +1102,41 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     public var reusedNormalizationOwnerAcrossRequests: Bool {
         hooks.reusedCanonicalizerAndContextAcrossRequests
     }
+    public var compositionObservation: SDKTestingLocalCompositionObservation {
+        hooks.compositionObservation
+    }
 
-    public convenience init(admittedPrivateDemandCount: Int) throws {
+    public convenience init(
+        admittedPrivateDemandCount: Int,
+        compositionScenario: SDKTestingLocalCompositionScenario? = nil
+    ) throws {
         try self.init(
             admittedPrivateDemandCount: admittedPrivateDemandCount,
-            fixtures: [.available(valueID: 1)]
+            fixtures: [.available(valueID: 1)],
+            compositionScenarios: [compositionScenario]
         )
     }
 
     public convenience init(
         admittedPrivateDemandCount: Int,
-        supportFixture: SDKTestingLocalSupportFixture
+        supportFixture: SDKTestingLocalSupportFixture,
+        compositionScenario: SDKTestingLocalCompositionScenario? = nil
     ) throws {
         let fixture: BeautyLocalRetouchTestingHooks.Fixture = switch supportFixture {
         case .noFace: .noFace
         case .missingSupport: .missingSupport
         }
-        try self.init(admittedPrivateDemandCount: admittedPrivateDemandCount, fixtures: [fixture])
+        try self.init(
+            admittedPrivateDemandCount: admittedPrivateDemandCount,
+            fixtures: [fixture],
+            compositionScenarios: [compositionScenario]
+        )
     }
 
     public convenience init(
         admittedPrivateDemandCount: Int,
-        supportSequence: [SDKTestingLocalSupportSequence]
+        supportSequence: [SDKTestingLocalSupportSequence],
+        compositionScenarios: [SDKTestingLocalCompositionScenario?] = [nil]
     ) throws {
         let fixtures = supportSequence.map { fixture in
             switch fixture {
@@ -980,7 +1146,11 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
                 BeautyLocalRetouchTestingHooks.Fixture.malformed
             }
         }
-        try self.init(admittedPrivateDemandCount: admittedPrivateDemandCount, fixtures: fixtures)
+        try self.init(
+            admittedPrivateDemandCount: admittedPrivateDemandCount,
+            fixtures: fixtures,
+            compositionScenarios: compositionScenarios
+        )
     }
 
     public convenience init(
@@ -994,17 +1164,20 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
                     valueID: unrelatedGeometryOmissionIndex + 1,
                     omissionIndex: unrelatedGeometryOmissionIndex
                 ),
-            ]
+            ],
+            compositionScenarios: [nil]
         )
     }
 
     private init(
         admittedPrivateDemandCount: Int,
-        fixtures: [BeautyLocalRetouchTestingHooks.Fixture]
+        fixtures: [BeautyLocalRetouchTestingHooks.Fixture],
+        compositionScenarios: [SDKTestingLocalCompositionScenario?]
     ) throws {
         let hooks = BeautyLocalRetouchTestingHooks(
             admittedPrivateDemandCount: admittedPrivateDemandCount,
-            fixtures: fixtures
+            fixtures: fixtures,
+            compositionScenarios: compositionScenarios
         )
         self.hooks = hooks
         self.engine = try BeautyEngine(
@@ -1043,7 +1216,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             detectionSummary = result.detectionSummary
         }
         return SDKTestingLocalResult(
-            outputDigest: try Self.outputDigest(output),
+            output: output,
             width: Int(output.extent.width),
             height: Int(output.extent.height),
             aggregateSupportValueID: hooks.lastAggregateSupportValueID,
@@ -1052,7 +1225,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         )
     }
 
-    public func invokePixelBuffer(parameters: BeautyParameters) throws -> SDKTestingLocalResult {
+    public func invokePixelBuffer(parameters: BeautyParameters) throws {
         let pixelBuffer = try Self.makePixelBuffer()
         let result = try engine.processResult(
             pixelBuffer: pixelBuffer,
@@ -1066,14 +1239,6 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         )
         pixelBufferSummaryAvailabilityValue =
             result.detectionSummary?.availability.rawValue ?? "notRun"
-        return SDKTestingLocalResult(
-            outputDigest: "",
-            width: 2,
-            height: 2,
-            aggregateSupportValueID: nil,
-            detectionAvailability: result.detectionSummary?.availability.rawValue,
-            detectionReasons: result.detectionSummary?.reasons.map(\.rawValue) ?? []
-        )
     }
 
     public func reset() {
@@ -1091,44 +1256,6 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             throw BeautyError.invalidInput
         }
         return aggregateSupportValueID
-    }
-
-    private static func outputDigest(_ image: CIImage) throws -> String {
-        let bounds = image.extent.integral
-        guard bounds.width > 0,
-              bounds.height > 0,
-              bounds.width <= CGFloat(Int.max),
-              bounds.height <= CGFloat(Int.max),
-              let colorSpace = CGColorSpace(name: CGColorSpace.sRGB)
-        else {
-            throw BeautyError.invalidInput
-        }
-        let width = Int(bounds.width)
-        let height = Int(bounds.height)
-        let (rowBytes, rowOverflow) = width.multipliedReportingOverflow(by: 4)
-        let (byteCount, byteOverflow) = rowBytes.multipliedReportingOverflow(by: height)
-        guard rowOverflow == false, byteOverflow == false else {
-            throw BeautyError.invalidInput
-        }
-        var bytes = [UInt8](repeating: 0, count: byteCount)
-        let context = CIContext(options: [
-            .workingColorSpace: colorSpace,
-            .outputColorSpace: colorSpace,
-        ])
-        context.render(
-            image,
-            toBitmap: &bytes,
-            rowBytes: rowBytes,
-            bounds: bounds,
-            format: .RGBA8,
-            colorSpace: colorSpace
-        )
-        var hash: UInt64 = 1_469_598_103_934_665_603
-        for byte in bytes {
-            hash ^= UInt64(byte)
-            hash &*= 1_099_511_628_211
-        }
-        return String(hash, radix: 16)
     }
 
     private static func makeOpaqueSRGBImage() throws -> CIImage {
