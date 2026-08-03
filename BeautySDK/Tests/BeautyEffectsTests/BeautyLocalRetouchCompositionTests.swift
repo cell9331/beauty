@@ -65,10 +65,18 @@ final class BeautyLocalRetouchCompositionTests: XCTestCase {
         let overflowingIndex = try XCTUnwrap(owner.makeUnit(proposals: [productionProposal(Int.max)]))
 
         let result = try owner.compose([foreign, negativeIndex, overflowingIndex, valid])
-        XCTAssertEqual(result.canonicalImage.pixelSourceBinding, source.pixelSourceBinding)
+        var expected = Self.source
+        expected.replaceSubrange(0..<3, with: [200, 201, 202])
+        XCTAssertEqual(Array(result.canonicalImage.rgba8Data), expected)
+        XCTAssertEqual(result.canonicalImage.metadata, source.metadata)
         XCTAssertEqual(
             result.summary,
-            BeautyLocalRetouchCompositionSummary(acceptedUnitCount: 1, rejectedUnitCount: 3)
+            BeautyLocalRetouchCompositionSummary(
+                acceptedUnitCount: 1,
+                rejectedUnitCount: 3,
+                ownedPixelCount: 1,
+                changedPixelCount: 1
+            )
         )
     }
 
@@ -95,7 +103,12 @@ final class BeautyLocalRetouchCompositionTests: XCTestCase {
         let result = try owner.compose([duplicated, duplicated, rawDuplicate, overBudget, valid])
         XCTAssertEqual(
             result.summary,
-            BeautyLocalRetouchCompositionSummary(acceptedUnitCount: 1, rejectedUnitCount: 4)
+            BeautyLocalRetouchCompositionSummary(
+                acceptedUnitCount: 1,
+                rejectedUnitCount: 4,
+                ownedPixelCount: 1,
+                changedPixelCount: 1
+            )
         )
 
         for index in 4..<8 {
@@ -206,6 +219,143 @@ final class BeautyLocalRetouchCompositionTests: XCTestCase {
             XCTAssertEqual(Array(result.canonicalImage.rgba8Data), Self.independentlyMergedABC)
             XCTAssertEqual(result.summary, expectedSummary)
         }
+    }
+
+    func testProductionTwoAndThreeOwnerCollisionToSourceIsCountedOnce() throws {
+        let sourceBytes = productionSixteenPixelSource()
+        let source = try productionCanonical(bytes: sourceBytes, width: 16, height: 1)
+        let owner = BeautyLocalRetouchCompositionOwner(source: source)
+        let a = try XCTUnwrap(owner.makeUnit(proposals: [
+            productionProposal(1, target: (210, 211, 212)),
+            productionProposal(2, target: (171, 21, 191)),
+        ]))
+        let b = try XCTUnwrap(owner.makeUnit(proposals: [
+            productionProposal(1, target: (220, 221, 222)),
+            productionProposal(3, target: (201, 202, 203)),
+        ]))
+        let c = try XCTUnwrap(owner.makeUnit(proposals: [
+            productionProposal(1, target: (230, 231, 232)),
+            productionProposal(4, target: (1, 241, 251)),
+        ]))
+
+        var expectedTwo = sourceBytes
+        expectedTwo.replaceSubrange(8..<11, with: [171, 21, 191])
+        expectedTwo.replaceSubrange(12..<15, with: [201, 202, 203])
+        let two = try owner.compose([b, a])
+        XCTAssertEqual(Array(two.canonicalImage.rgba8Data), expectedTwo)
+        XCTAssertEqual(
+            two.summary,
+            BeautyLocalRetouchCompositionSummary(
+                acceptedUnitCount: 2,
+                ownedPixelCount: 2,
+                changedPixelCount: 2,
+                collisionPixelCount: 1
+            )
+        )
+
+        var expectedThree = expectedTwo
+        expectedThree.replaceSubrange(16..<19, with: [1, 241, 251])
+        for units in [[a, b, c], [c, b, a], [b, a, c]] {
+            let result = try owner.compose(units)
+            XCTAssertEqual(Array(result.canonicalImage.rgba8Data), expectedThree)
+            XCTAssertEqual(
+                result.summary,
+                BeautyLocalRetouchCompositionSummary(
+                    acceptedUnitCount: 3,
+                    ownedPixelCount: 3,
+                    changedPixelCount: 3,
+                    collisionPixelCount: 1
+                )
+            )
+        }
+
+        let collisionOnly = try owner.compose([
+            try XCTUnwrap(owner.makeUnit(proposals: [productionProposal(5)])),
+            try XCTUnwrap(owner.makeUnit(proposals: [productionProposal(5)])),
+        ])
+        XCTAssertEqual(collisionOnly.canonicalImage.pixelSourceBinding, source.pixelSourceBinding)
+        XCTAssertEqual(Array(collisionOnly.canonicalImage.rgba8Data), sourceBytes)
+        XCTAssertEqual(
+            collisionOnly.summary,
+            BeautyLocalRetouchCompositionSummary(acceptedUnitCount: 2, collisionPixelCount: 1)
+        )
+    }
+
+    func testProductionOpaqueFailureMatrixPreservesEveryAcceptedSibling() throws {
+        let sourceBytes = productionSixteenPixelSource()
+        let source = try productionCanonical(bytes: sourceBytes, width: 16, height: 1)
+        let foreignSource = try productionCanonical(bytes: sourceBytes, width: 16, height: 1)
+        let owner = BeautyLocalRetouchCompositionOwner(source: source)
+        let foreignOwner = BeautyLocalRetouchCompositionOwner(source: foreignSource)
+        let a = try XCTUnwrap(owner.makeUnit(proposals: [productionProposal(0, target: (11, 121, 31))]))
+        let b = try XCTUnwrap(owner.makeUnit(proposals: [productionProposal(2, target: (170, 20, 190))]))
+        let c = try XCTUnwrap(owner.makeUnit(proposals: [productionProposal(4, target: (0, 240, 250))]))
+        let invalidA = try XCTUnwrap(foreignOwner.makeUnit(proposals: [productionProposal(0)]))
+        let invalidB = try XCTUnwrap(foreignOwner.makeUnit(proposals: [productionProposal(2)]))
+        let invalidC = try XCTUnwrap(foreignOwner.makeUnit(proposals: [productionProposal(4)]))
+        let invalidFuture = try XCTUnwrap(foreignOwner.makeUnit(proposals: [productionProposal(6)]))
+
+        var expectedA = sourceBytes
+        expectedA.replaceSubrange(0..<3, with: [11, 121, 31])
+        var expectedB = sourceBytes
+        expectedB.replaceSubrange(8..<11, with: [170, 20, 190])
+        var expectedC = sourceBytes
+        expectedC.replaceSubrange(16..<19, with: [0, 240, 250])
+        var expectedAB = expectedA
+        expectedAB.replaceSubrange(8..<11, with: [170, 20, 190])
+        var expectedAC = expectedA
+        expectedAC.replaceSubrange(16..<19, with: [0, 240, 250])
+        var expectedBC = expectedB
+        expectedBC.replaceSubrange(16..<19, with: [0, 240, 250])
+        var expectedABC = expectedAB
+        expectedABC.replaceSubrange(16..<19, with: [0, 240, 250])
+
+        XCTAssertEqual(Array(try owner.compose([invalidA, b, c]).canonicalImage.rgba8Data), expectedBC)
+        XCTAssertEqual(Array(try owner.compose([a, invalidB, invalidC]).canonicalImage.rgba8Data), expectedA)
+        XCTAssertEqual(Array(try owner.compose([a, invalidB, c]).canonicalImage.rgba8Data), expectedAC)
+        XCTAssertEqual(Array(try owner.compose([a, b, invalidC]).canonicalImage.rgba8Data), expectedAB)
+        let futureRejected = try owner.compose([a, b, c, invalidFuture])
+        XCTAssertEqual(Array(futureRejected.canonicalImage.rgba8Data), expectedABC)
+        XCTAssertEqual(
+            futureRejected.summary,
+            BeautyLocalRetouchCompositionSummary(
+                acceptedUnitCount: 3,
+                rejectedUnitCount: 1,
+                ownedPixelCount: 3,
+                changedPixelCount: 3
+            )
+        )
+    }
+
+    func testProductionEmptyAndValidInvalidValidCallsRetainNoState() throws {
+        let sourceBytes = productionSixteenPixelSource()
+        let source = try productionCanonical(bytes: sourceBytes, width: 16, height: 1)
+        let foreignSource = try productionCanonical(bytes: sourceBytes, width: 16, height: 1)
+        let owner = BeautyLocalRetouchCompositionOwner(source: source)
+        let foreignOwner = BeautyLocalRetouchCompositionOwner(source: foreignSource)
+        let a = try XCTUnwrap(owner.makeUnit(proposals: [productionProposal(0, target: (11, 121, 31))]))
+        let b = try XCTUnwrap(owner.makeUnit(proposals: [productionProposal(2, target: (170, 20, 190))]))
+        let c = try XCTUnwrap(owner.makeUnit(proposals: [productionProposal(4, target: (0, 240, 250))]))
+        let invalidA = try XCTUnwrap(foreignOwner.makeUnit(proposals: [productionProposal(0)]))
+        let invalidB = try XCTUnwrap(foreignOwner.makeUnit(proposals: [productionProposal(2)]))
+        let invalidC = try XCTUnwrap(foreignOwner.makeUnit(proposals: [productionProposal(4)]))
+
+        var expected = sourceBytes
+        expected.replaceSubrange(0..<3, with: [11, 121, 31])
+        expected.replaceSubrange(8..<11, with: [170, 20, 190])
+        expected.replaceSubrange(16..<19, with: [0, 240, 250])
+
+        let empty = try owner.compose([])
+        let first = try owner.compose([a, b, c])
+        let middle = try owner.compose([invalidA, invalidB, invalidC])
+        let third = try owner.compose([c, a, b])
+        XCTAssertEqual(empty.canonicalImage.pixelSourceBinding, source.pixelSourceBinding)
+        XCTAssertEqual(empty.summary, BeautyLocalRetouchCompositionSummary())
+        XCTAssertEqual(Array(first.canonicalImage.rgba8Data), expected)
+        XCTAssertEqual(Array(middle.canonicalImage.rgba8Data), sourceBytes)
+        XCTAssertEqual(middle.summary, BeautyLocalRetouchCompositionSummary(rejectedUnitCount: 3))
+        XCTAssertEqual(Array(third.canonicalImage.rgba8Data), expected)
+        XCTAssertEqual(third.summary, first.summary)
     }
 
     func testQ16EndpointsMidpointClampRoundHalfUpAndSourceAlphaAreLiteral() throws {
@@ -421,6 +571,10 @@ final class BeautyLocalRetouchCompositionTests: XCTestCase {
             "changedOutsideUnionPixelCount",
             "collisionPixelCount",
         ])
+        let productionLabels = Set(
+            Mirror(reflecting: BeautyLocalRetouchCompositionSummary()).children.compactMap(\.label)
+        )
+        XCTAssertEqual(productionLabels, labels)
     }
 }
 
@@ -440,6 +594,18 @@ private extension BeautyLocalRetouchCompositionTests {
                 source: .testFixture
             )
         )
+    }
+
+    func productionSixteenPixelSource() -> [UInt8] {
+        var bytes: [UInt8] = []
+        bytes.reserveCapacity(64)
+        for value in 0..<16 {
+            bytes.append(UInt8(value))
+            bytes.append(UInt8(value + 1))
+            bytes.append(UInt8(value + 2))
+            bytes.append(UInt8.max)
+        }
+        return bytes
     }
 
     func productionProposal(

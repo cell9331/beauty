@@ -33,6 +33,14 @@ FACADE_TEST = ROOT / "BeautySDK" / "Tests" / "BeautyCoreTests" / "BeautyEngineLo
 INVENTORY = PHASE / "55-THREAT-INVENTORY.json"
 
 THREAT_IDS = tuple(f"T-55-{index:02d}" for index in range(1, 8))
+EXPECTED_SUMMARY_FIELDS = (
+    "acceptedUnitCount",
+    "rejectedUnitCount",
+    "ownedPixelCount",
+    "changedPixelCount",
+    "changedOutsideUnionPixelCount",
+    "collisionPixelCount",
+)
 CANDIDATE_NAMES = (
     "teethWhitening",
     "scleraRednessReduction",
@@ -156,6 +164,14 @@ def extract_coding_keys(text: str) -> tuple[str, ...]:
     if match is None:
         return ()
     return tuple(re.findall(r"^\s*case\s+([A-Za-z][A-Za-z0-9]*)\s*$", match.group(1), re.MULTILINE))
+
+
+def package_let_fields(text: str, start: str, end: str) -> tuple[str, ...]:
+    start_index = text.find(start)
+    end_index = text.find(end, start_index + len(start)) if start_index >= 0 else -1
+    if start_index < 0 or end_index < 0:
+        return ()
+    return tuple(re.findall(r"^\s*package let\s+([A-Za-z][A-Za-z0-9]*)\s*:", text[start_index:end_index], re.MULTILINE))
 
 
 def engine_section(text: str, start: str, end: str) -> str:
@@ -329,12 +345,58 @@ def composition_failures() -> set[str]:
         return failures
     source_text = COMPOSITION.read_text(encoding="utf-8")
     required_anchors = (
-        "rgba8Data", "65_536", "32_768", "collisionPixelCount",
+        "rgba8Data", "sourceData", "acceptedClaims.sort", "claimsAreInDeterministicOrder",
+        "effectiveWeightQ16", "65_536", "32_768", "collisionPixelCount",
+        "if changedPixelCount == 0", "throw BeautyError.invalidInput",
     )
     if any(anchor not in source_text for anchor in required_anchors):
         failures.add("R55-CORE-ANCHORS")
     if re.search(r"\b(Float|Double)\b|CIFilter|CIColor|sequential|priority|maxWeight|lastWrite", source_text, re.IGNORECASE):
         failures.add("R55-DETERMINISM")
+    if re.search(r"source\s*:\s*outputData", source_text):
+        failures.add("R55-ORIGINAL-SOURCE")
+
+    unit_text = UNIT_TEST.read_text(encoding="utf-8")
+    production_anchors = (
+        "testQ16LiteralBlendAndAlpha",
+        "testHardReclipZeroWeightAndOutsideUnionIdentity",
+        "testStandaloneMergedFusedAndPermutedOutputs",
+        "testProductionTwoAndThreeOwnerCollisionToSourceIsCountedOnce",
+        "testProductionOpaqueFailureMatrixPreservesEveryAcceptedSibling",
+        "testProductionEmptyAndValidInvalidValidCallsRetainNoState",
+        "pixelSourceBinding, source.pixelSourceBinding",
+    )
+    if any(anchor not in unit_text for anchor in production_anchors):
+        failures.add("R55-PRODUCTION-ORACLES")
+    return failures
+
+
+def privacy_failures() -> set[str]:
+    failures = composition_failures()
+    if failures:
+        return failures
+
+    source_text = COMPOSITION.read_text(encoding="utf-8")
+    summary_fields = package_let_fields(
+        source_text,
+        "package struct BeautyLocalRetouchCompositionSummary",
+        "package struct BeautyLocalRetouchCompositionResult",
+    )
+    result_fields = package_let_fields(
+        source_text,
+        "package struct BeautyLocalRetouchCompositionResult",
+        "package final class BeautyLocalRetouchCompositionOwner",
+    )
+    if summary_fields != EXPECTED_SUMMARY_FIELDS or result_fields != ("canonicalImage", "summary"):
+        failures.add("R55-SUMMARY-SHAPE")
+    if re.search(
+        r"\b(Codable|CustomStringConvertible|CustomDebugStringConvertible)\b|"
+        r"\b(description|debugDescription|digest)\b|"
+        r"\b(teeth|sclera|eyelid|pupil|landmark|coordinate|mask)\b",
+        source_text,
+        re.IGNORECASE,
+    ):
+        failures.add("R55-CORE-PRIVACY")
     return failures
 
 
@@ -387,6 +449,8 @@ class SyntheticContract:
     renderer_ids: tuple[str, ...]
     facade: str
     unit_specs: str
+    summary_fields: tuple[str, ...]
+    result_fields: tuple[str, ...]
     scanner_state: str = "clean"
 
 
@@ -407,6 +471,8 @@ def synthetic_baseline() -> SyntheticContract:
         renderer_ids=EXPECTED_RENDERER_IDS,
         facade="BeautyLocalRetouchComposition ValidInvalidValid PixelBufferAndReset",
         unit_specs="DuplicateRawIndex DuplicateOpaqueUnitToken TwoAndThreeOwnerCollision EveryPermutation",
+        summary_fields=EXPECTED_SUMMARY_FIELDS,
+        result_fields=("canonicalImage", "summary"),
     )
 
 
@@ -428,6 +494,8 @@ def synthetic_failures(contract: SyntheticContract) -> set[str]:
     if "ValidInvalidValid" not in contract.facade or "PixelBufferAndReset" not in contract.facade: failures.add("R55-FACADE-SPECS")
     if any(anchor not in contract.unit_specs for anchor in ("DuplicateRawIndex", "DuplicateOpaqueUnitToken", "TwoAndThreeOwnerCollision", "EveryPermutation")): failures.add("R55-UNIT-SPECS")
     if any(anchor not in contract.source for anchor in ("pixelSourceBinding", "ObjectIdentifier", "maximumUnitCount", "effectiveUnitLimit", "maximumClaimsPerUnit", "multipliedReportingOverflow", "addingReportingOverflow", "issuedTokens", "tokenFrequency", "rawIndices", "isInsideHardEnvelope", "collisionPixelCount", "rgba8Data", "65_536", "32_768")): failures.add("R55-CORE-ANCHORS")
+    if contract.summary_fields != EXPECTED_SUMMARY_FIELDS or contract.result_fields != ("canonicalImage", "summary"): failures.add("R55-SUMMARY-SHAPE")
+    if re.search(r"\b(teeth|sclera|eyelid|pupil|landmark|coordinate|mask|digest)\b", contract.source, re.IGNORECASE): failures.add("R55-CORE-PRIVACY")
     return failures
 
 
@@ -471,6 +539,9 @@ def self_test() -> int:
         (replace(baseline, facade="ValidInvalidValid PixelBufferAndReset"), "R55-ORPHAN"),
         (replace(baseline, facade="BeautyLocalRetouchComposition PixelBufferAndReset"), "R55-FACADE-SPECS"),
         (replace(baseline, unit_specs=baseline.unit_specs.replace("EveryPermutation", "")), "R55-UNIT-SPECS"),
+        (replace(baseline, summary_fields=baseline.summary_fields[:-1]), "R55-SUMMARY-SHAPE"),
+        (replace(baseline, result_fields=("canonicalImage", "summary", "digest")), "R55-SUMMARY-SHAPE"),
+        (replace(baseline, source=baseline.source + " teeth"), "R55-CORE-PRIVACY"),
     )
     for mutation, expected_rule in mutations:
         assert expected_rule in synthetic_failures(mutation), expected_rule
@@ -525,7 +596,7 @@ def main() -> int:
         if args.composition:
             return emit("composition", composition_failures())
         if args.privacy:
-            return emit("privacy", composition_failures())
+            return emit("privacy", privacy_failures())
         if args.facade:
             return emit("facade", live_failures())
         return emit("live", live_failures())

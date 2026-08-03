@@ -180,6 +180,7 @@ package final class BeautyLocalRetouchCompositionOwner {
         var outputData = sourceData
         var ownedPixelCount = 0
         var changedPixelCount = 0
+        var collisionPixelCount = 0
         var claimIndex = 0
 
         while claimIndex < acceptedClaims.count {
@@ -190,9 +191,8 @@ package final class BeautyLocalRetouchCompositionOwner {
             } while claimIndex < acceptedClaims.count
                 && acceptedClaims[claimIndex].proposal.pixelIndex == pixelIndex
 
-            // Plan 55-03-02 owns collision accounting. Task 55-03-01 only
-            // composes a pixel when exactly one preflighted unit owns it.
             guard claimIndex - groupStart == 1 else {
+                collisionPixelCount += 1
                 continue
             }
 
@@ -250,7 +250,8 @@ package final class BeautyLocalRetouchCompositionOwner {
                 acceptedUnitCount: acceptedUnitCount,
                 rejectedUnitCount: rejectedUnitCount,
                 ownedPixelCount: ownedPixelCount,
-                changedPixelCount: changedPixelCount
+                changedPixelCount: changedPixelCount,
+                collisionPixelCount: collisionPixelCount
             )
         )
     }
