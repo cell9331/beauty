@@ -39,7 +39,7 @@ patterns-established:
 
 requirements-completed: [COMP-01, COMP-02, COMP-03, COMP-04, COMP-05]
 
-duration: 7min
+duration: 12min
 completed: 2026-08-03
 ---
 
@@ -49,9 +49,9 @@ completed: 2026-08-03
 
 ## Performance
 
-- **Duration:** 7 min
+- **Duration:** 12 min
 - **Started:** 2026-08-03T07:12:39Z
-- **Completed:** 2026-08-03T07:19:33Z
+- **Completed:** 2026-08-03T07:24:12Z
 - **Tasks:** 2
 - **Files modified:** 4
 
@@ -59,8 +59,9 @@ completed: 2026-08-03
 
 - Implemented UInt64 Q16 round-half-up blending from immutable canonical RGB, preserving canonical alpha and every unowned byte while reusing the exact source carrier when no RGB changes.
 - Added deterministic sorted sparse ownership reduction: unique claims blend once, while two or three owners at one pixel preserve source and increment exactly one aggregate collision count without dropping adjacent sibling work.
+- Bounded duplicate-token frequency storage to the at-most-eight locally issued tokens, so arbitrarily many foreign units abstain without growing request-owned frequency state or suppressing a valid local sibling.
 - Added production-backed literal endpoint/midpoint/clamp, disjoint permutation, two/three-owner collision, foreign/duplicate/effective-empty abstention, opaque failure-matrix, empty-call, and valid-invalid-valid recovery coverage.
-- Strengthened checker `--composition` and `--privacy` modes to require production oracles, original-source anchors, exact six-field summary/two-field result shapes, and feature-neutral non-Codable diagnostics; 43 mutation cases pass.
+- Strengthened checker `--composition` and `--privacy` modes to require production oracles, original-source and bounded-frequency anchors, exact six-field summary/two-field result shapes, and feature-neutral non-Codable diagnostics; 44 mutation cases pass.
 
 ## Task Commits
 
@@ -68,6 +69,7 @@ Each task was committed atomically:
 
 1. **Task 55-03-01: Compose uniquely owned pixels once from canonical RGB with hard re-clipping** — `a108690` (feat)
 2. **Task 55-03-02: Suppress collisions pixel-locally and isolate every invalid or absent opaque unit** — `7902f2b` (feat)
+3. **Task 55-03-02 security follow-up: Bound duplicate-token accounting to issued local tokens** — `4849622` (fix)
 
 ## Files Created/Modified
 
@@ -80,7 +82,7 @@ Each task was committed atomically:
 
 - Exact Task 55-03-01 focused command: 3/3 tests passed; checker `--composition` passed T-55-01…07; diff hygiene passed.
 - Exact Task 55-03-02 command: complete `BeautyLocalRetouchCompositionTests` passed 20/20; checker `--privacy` passed T-55-01…07; diff hygiene passed.
-- Checker Python syntax passed and `--self-test` passed 43 mutation cases.
+- Checker Python syntax passed and `--self-test` passed 44 mutation cases.
 - Full SwiftPM and Demo regression remain intentionally reserved for Plan 55-05.
 
 ## Decisions Made
@@ -101,10 +103,18 @@ Each task was committed atomically:
 - **Verification:** Python syntax, 43-case self-test, `--composition`, and `--privacy` all pass.
 - **Committed in:** `7902f2b`
 
+**2. [Rule 2 - Missing Critical] Bounded duplicate-token frequency storage**
+- **Found during:** Final T-55-02 threat-surface scan after Task 55-03-02
+- **Issue:** `Dictionary(grouping: units)` retained every supplied unit in frequency buckets even though only at most eight locally issued tokens can ever be accepted, allowing foreign input to grow request-owned accounting unnecessarily.
+- **Fix:** Count only exact-source, exact-owner, issued local tokens in a saturated frequency dictionary bounded by `effectiveUnitLimit`; all foreign units still abstain individually and a valid local sibling remains accepted.
+- **Files modified:** `BeautyLocalRetouchComposition.swift`, `BeautyLocalRetouchCompositionTests.swift`, and the Phase 55 checker.
+- **Verification:** The 20-test suite includes ten foreign units plus one retained valid sibling; checker self-test rejects unbounded grouping and passes 44 mutation cases.
+- **Committed in:** `4849622`
+
 ---
 
-**Total deviations:** 1 auto-fixed (1 missing critical)
-**Impact on plan:** The change makes the plan-required privacy gate substantive without expanding production or product scope.
+**Total deviations:** 2 auto-fixed (2 missing critical)
+**Impact on plan:** Both changes close plan-owned HIGH privacy/allocation gaps without expanding production or product scope.
 
 ## Issues Encountered
 
@@ -127,7 +137,7 @@ None - no external service configuration required.
 ## Self-Check: PASSED
 
 - All three implementation/verification artifacts, `PLANS.md`, and this summary exist.
-- Task commits `a108690` and `7902f2b` are present in repository history.
+- Task commits `a108690`, `7902f2b`, and `4849622` are present in repository history.
 - Both exact plan verification commands, checker self-test, and final diff hygiene pass.
 
 ---
