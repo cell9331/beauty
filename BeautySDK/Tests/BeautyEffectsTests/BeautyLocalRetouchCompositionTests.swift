@@ -104,6 +104,110 @@ final class BeautyLocalRetouchCompositionTests: XCTestCase {
         XCTAssertNil(owner.makeUnit(proposals: [productionProposal(15)]))
     }
 
+    func testQ16LiteralBlendAndAlpha() throws {
+        let source = try productionCanonical(bytes: Self.source, width: 3, height: 2)
+        let owner = BeautyLocalRetouchCompositionOwner(source: source)
+        let midpoint = try XCTUnwrap(owner.makeUnit(proposals: [
+            productionProposal(0, weight: 32_768, target: (11, 221, 31)),
+        ]))
+        let full = try XCTUnwrap(owner.makeUnit(proposals: [
+            productionProposal(2, target: (170, 20, 190)),
+        ]))
+        let clamped = try XCTUnwrap(owner.makeUnit(proposals: [
+            productionProposal(4, weight: UInt32.max, target: (0, 240, 250)),
+        ]))
+        let unchanged = try XCTUnwrap(owner.makeUnit(proposals: [
+            productionProposal(5, target: (160, 170, 180)),
+        ]))
+
+        let midpointResult = try owner.compose([midpoint])
+        XCTAssertEqual(Array(midpointResult.canonicalImage.rgba8Data), Self.standaloneA)
+        XCTAssertEqual(
+            midpointResult.summary,
+            BeautyLocalRetouchCompositionSummary(
+                acceptedUnitCount: 1,
+                ownedPixelCount: 1,
+                changedPixelCount: 1
+            )
+        )
+        XCTAssertEqual(Array(try owner.compose([full]).canonicalImage.rgba8Data), Self.standaloneB)
+        XCTAssertEqual(Array(try owner.compose([clamped]).canonicalImage.rgba8Data), Self.standaloneC)
+
+        let unchangedResult = try owner.compose([unchanged])
+        XCTAssertEqual(unchangedResult.canonicalImage.pixelSourceBinding, source.pixelSourceBinding)
+        XCTAssertEqual(
+            unchangedResult.summary,
+            BeautyLocalRetouchCompositionSummary(acceptedUnitCount: 1, ownedPixelCount: 1)
+        )
+        XCTAssertEqual(
+            stride(from: 3, to: midpointResult.canonicalImage.byteCount, by: 4)
+                .map { midpointResult.canonicalImage.rgba8Data[$0] },
+            [255, 255, 255, 255, 255, 255]
+        )
+    }
+
+    func testHardReclipZeroWeightAndOutsideUnionIdentity() throws {
+        let source = try productionCanonical(bytes: Self.source, width: 3, height: 2)
+        let owner = BeautyLocalRetouchCompositionOwner(source: source)
+        let hardFalse = try XCTUnwrap(owner.makeUnit(proposals: [
+            productionProposal(1, hard: false, target: (255, 255, 255)),
+        ]))
+        let zeroWeight = try XCTUnwrap(owner.makeUnit(proposals: [
+            productionProposal(3, weight: 0, target: (255, 255, 255)),
+        ]))
+        let accepted = try XCTUnwrap(owner.makeUnit(proposals: [
+            productionProposal(0, weight: 32_768, target: (11, 221, 31)),
+        ]))
+
+        let result = try owner.compose([hardFalse, zeroWeight, accepted])
+        XCTAssertEqual(Array(result.canonicalImage.rgba8Data), Self.standaloneA)
+        XCTAssertEqual(
+            result.summary,
+            BeautyLocalRetouchCompositionSummary(
+                acceptedUnitCount: 1,
+                rejectedUnitCount: 2,
+                ownedPixelCount: 1,
+                changedPixelCount: 1
+            )
+        )
+        XCTAssertEqual(
+            Array(result.canonicalImage.rgba8Data[4..<Self.source.count]),
+            Array(Self.source[4..<Self.source.count])
+        )
+    }
+
+    func testStandaloneMergedFusedAndPermutedOutputs() throws {
+        let source = try productionCanonical(bytes: Self.source, width: 3, height: 2)
+        let owner = BeautyLocalRetouchCompositionOwner(source: source)
+        let a = try XCTUnwrap(owner.makeUnit(proposals: [
+            productionProposal(0, weight: 32_768, target: (11, 221, 31)),
+        ]))
+        let b = try XCTUnwrap(owner.makeUnit(proposals: [
+            productionProposal(2, target: (170, 20, 190)),
+        ]))
+        let c = try XCTUnwrap(owner.makeUnit(proposals: [
+            productionProposal(4, weight: UInt32.max, target: (0, 240, 250)),
+        ]))
+
+        XCTAssertEqual(Array(try owner.compose([a]).canonicalImage.rgba8Data), Self.standaloneA)
+        XCTAssertEqual(Array(try owner.compose([b]).canonicalImage.rgba8Data), Self.standaloneB)
+        XCTAssertEqual(Array(try owner.compose([c]).canonicalImage.rgba8Data), Self.standaloneC)
+
+        let expectedSummary = BeautyLocalRetouchCompositionSummary(
+            acceptedUnitCount: 3,
+            ownedPixelCount: 3,
+            changedPixelCount: 3
+        )
+        for units in [
+            [a, b, c], [a, c, b], [b, a, c],
+            [b, c, a], [c, a, b], [c, b, a],
+        ] {
+            let result = try owner.compose(units)
+            XCTAssertEqual(Array(result.canonicalImage.rgba8Data), Self.independentlyMergedABC)
+            XCTAssertEqual(result.summary, expectedSummary)
+        }
+    }
+
     func testQ16EndpointsMidpointClampRoundHalfUpAndSourceAlphaAreLiteral() throws {
         let zero = try compose([
             unit("A", proposals: [proposal(0, weight: 0, target: (255, 255, 255))]),
@@ -341,15 +445,16 @@ private extension BeautyLocalRetouchCompositionTests {
     func productionProposal(
         _ pixelIndex: Int,
         hard: Bool = true,
-        weight: UInt32 = 65_536
+        weight: UInt32 = 65_536,
+        target: (UInt8, UInt8, UInt8) = (200, 201, 202)
     ) -> BeautyLocalPixelProposal {
         BeautyLocalPixelProposal(
             pixelIndex: pixelIndex,
             isInsideHardEnvelope: hard,
             softWeightQ16: weight,
-            targetRed: 200,
-            targetGreen: 201,
-            targetBlue: 202
+            targetRed: target.0,
+            targetGreen: target.1,
+            targetBlue: target.2
         )
     }
 
