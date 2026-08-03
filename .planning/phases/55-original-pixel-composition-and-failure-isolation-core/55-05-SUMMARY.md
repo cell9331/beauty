@@ -87,7 +87,7 @@ Each task was committed atomically:
 - `SECURITY.md` — owns request-local package privacy, digest-free six-count observation, and T-55-01…07 HIGH closure.
 - `RELIABILITY.md` — owns checked bounds, local abstention, unrelated-effect continuation, recovery, and bounded claims.
 - `PRODUCT_SENSE.md` — owns mechanics-only acceptance, exact product absence, and no effectiveness/naturalness claim.
-- `QUALITY_SCORE.md` — owns actual 9/5/20/7 traceability and 20/28/74/44/532/118 gate counts with bounded credit.
+- `QUALITY_SCORE.md` — owns actual 9/5/20/7 traceability and current focused/checker/full gate counts with bounded credit.
 - `PLANS.md` — records Wave 4 closeout and retains all three Phase 54 closures as exact absence.
 
 ## Verification Results
@@ -96,7 +96,7 @@ Each task was committed atomically:
 - `BeautyLocalRetouchCompositionTests`: **20/20**.
 - `BeautyEngineLocalRetouchCompositionTests|BeautyEngineLocalRetouchFoundationTests`: **28/28**.
 - `BeautyParametersTests|BeautyResourceCatalogTests|BeautyRendererOutputRegressionTests`: **74/74**, preserving exact **59 fields / 5 presets / 72 renderer cases**.
-- Checker mutation self-test: **44/44**; live mode names T-55-01…07 and passes all seven HIGH mitigations.
+- Checker historical synthetic self-test: **44 cases** at initial closeout; superseded by the post-review 27-case self-test with 14 executable live-Swift fixture mutations. Live mode names T-55-01…07 and passes all seven HIGH mitigations.
 - Full SwiftPM: **532 executed**, six documented opt-in Vision skips, zero failures. None of the skips owns a T-55 mitigation.
 - Explicit iPhone 17e/iOS 26.5 Demo build passed; xcresult summary reports **118/118**, zero failures/skips.
 - Schema drift and UI safety gates passed. The generic decision command exited successfully but skipped the custom paired decision syntax; an exact repository scan independently verifies context and plan coverage at **20/20**.

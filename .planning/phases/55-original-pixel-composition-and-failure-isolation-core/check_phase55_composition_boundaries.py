@@ -8,29 +8,42 @@ import copy
 import json
 import pathlib
 import re
+import shutil
 import subprocess
 import sys
-from dataclasses import dataclass, replace
+import tempfile
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[3]
-PHASE = ROOT / ".planning" / "phases" / "55-original-pixel-composition-and-failure-isolation-core"
-PACKAGE = ROOT / "BeautySDK" / "Package.swift"
-SOURCE_ROOT = ROOT / "BeautySDK" / "Sources"
-DEMO_ROOT = ROOT / "BeautyDemo" / "BeautyDemo"
-PARAMETERS = SOURCE_ROOT / "BeautyCore" / "Models" / "BeautyParameters.swift"
-MANIFEST = SOURCE_ROOT / "BeautyResources" / "Resources" / "manifest.json"
-PRESET_ROOT = SOURCE_ROOT / "BeautyResources" / "Resources" / "Presets"
-RENDERER = SOURCE_ROOT / "BeautyExampleRenderer" / "main.swift"
-ENGINE = SOURCE_ROOT / "BeautySDK" / "BeautyEngine.swift"
-TESTING_SUPPORT = SOURCE_ROOT / "BeautySDK" / "BeautyEngineTestingSupport.swift"
-ADMISSION = SOURCE_ROOT / "BeautyEffects" / "Planning" / "BeautyLocalRetouchAdmission.swift"
-RESOLVER = SOURCE_ROOT / "BeautyEffects" / "Planning" / "BeautyEffectResolver.swift"
-COMPOSITION = SOURCE_ROOT / "BeautyEffects" / "Render" / "BeautyLocalRetouchComposition.swift"
-CANONICAL = SOURCE_ROOT / "BeautyCore" / "Models" / "BeautyCanonicalStillImage.swift"
-UNIT_TEST = ROOT / "BeautySDK" / "Tests" / "BeautyEffectsTests" / "BeautyLocalRetouchCompositionTests.swift"
-FACADE_TEST = ROOT / "BeautySDK" / "Tests" / "BeautyCoreTests" / "BeautyEngineLocalRetouchCompositionTests.swift"
-INVENTORY = PHASE / "55-THREAT-INVENTORY.json"
+
+
+def configure_root(root: pathlib.Path) -> None:
+    global ROOT, PHASE, PACKAGE, SOURCE_ROOT, DEMO_ROOT, PARAMETERS, MANIFEST
+    global PRESET_ROOT, RENDERER, ENGINE, TESTING_SUPPORT, ADMISSION, RESOLVER
+    global COMPOSITION, CANONICAL, UNIT_TEST, FACADE_TEST, FOUNDATION_TEST, INVENTORY
+
+    ROOT = root.resolve()
+    PHASE = ROOT / ".planning" / "phases" / "55-original-pixel-composition-and-failure-isolation-core"
+    PACKAGE = ROOT / "BeautySDK" / "Package.swift"
+    SOURCE_ROOT = ROOT / "BeautySDK" / "Sources"
+    DEMO_ROOT = ROOT / "BeautyDemo" / "BeautyDemo"
+    PARAMETERS = SOURCE_ROOT / "BeautyCore" / "Models" / "BeautyParameters.swift"
+    MANIFEST = SOURCE_ROOT / "BeautyResources" / "Resources" / "manifest.json"
+    PRESET_ROOT = SOURCE_ROOT / "BeautyResources" / "Resources" / "Presets"
+    RENDERER = SOURCE_ROOT / "BeautyExampleRenderer" / "main.swift"
+    ENGINE = SOURCE_ROOT / "BeautySDK" / "BeautyEngine.swift"
+    TESTING_SUPPORT = SOURCE_ROOT / "BeautySDK" / "BeautyEngineTestingSupport.swift"
+    ADMISSION = SOURCE_ROOT / "BeautyEffects" / "Planning" / "BeautyLocalRetouchAdmission.swift"
+    RESOLVER = SOURCE_ROOT / "BeautyEffects" / "Planning" / "BeautyEffectResolver.swift"
+    COMPOSITION = SOURCE_ROOT / "BeautyEffects" / "Render" / "BeautyLocalRetouchComposition.swift"
+    CANONICAL = SOURCE_ROOT / "BeautyCore" / "Models" / "BeautyCanonicalStillImage.swift"
+    UNIT_TEST = ROOT / "BeautySDK" / "Tests" / "BeautyEffectsTests" / "BeautyLocalRetouchCompositionTests.swift"
+    FACADE_TEST = ROOT / "BeautySDK" / "Tests" / "BeautyCoreTests" / "BeautyEngineLocalRetouchCompositionTests.swift"
+    FOUNDATION_TEST = ROOT / "BeautySDK" / "Tests" / "BeautyCoreTests" / "BeautyEngineLocalRetouchFoundationTests.swift"
+    INVENTORY = PHASE / "55-THREAT-INVENTORY.json"
+
+
+configure_root(ROOT)
 
 THREAT_IDS = tuple(f"T-55-{index:02d}" for index in range(1, 8))
 EXPECTED_SUMMARY_FIELDS = (
@@ -155,7 +168,7 @@ def validate_inventory(document: object) -> bool:
 def required_common_paths() -> tuple[pathlib.Path, ...]:
     return (
         PACKAGE, PARAMETERS, MANIFEST, RENDERER, ENGINE, TESTING_SUPPORT,
-        ADMISSION, RESOLVER, UNIT_TEST, FACADE_TEST, INVENTORY,
+        ADMISSION, RESOLVER, UNIT_TEST, FACADE_TEST, FOUNDATION_TEST, INVENTORY,
     )
 
 
@@ -318,13 +331,15 @@ def source_binding_failures() -> set[str]:
     canonical_text = CANONICAL.read_text(encoding="utf-8")
     required_source_anchors = (
         "package ", "BeautyCanonicalStillImage", "pixelSourceBinding",
-        "ObjectIdentifier", "maximumUnitCount = 8", "effectiveUnitLimit",
+        "BeautyLocalRetouchOwnerIdentity", "ownerIdentity: BeautyLocalRetouchOwnerIdentity",
+        "unit.ownerIdentity === ownerIdentity", "maximumUnitCount = 8", "effectiveUnitLimit",
         "maximumClaimsPerUnit", "multipliedReportingOverflow",
         "addingReportingOverflow", "issuedTokens", "tokenFrequency",
         "rawIndices", "isInsideHardEnvelope",
     )
     required_canonical_anchors = (
-        "BeautyCanonicalPixelSourceBinding", "ObjectIdentifier(storage)",
+        "BeautyCanonicalPixelSourceIdentity", "lhs.identity === rhs.identity",
+        "identity: storage.pixelSourceIdentity",
         "pixelSourceBinding", "width: width", "height: height",
         "rowBytes: rowBytes", "byteCount: storage.rgba8Data.count",
     )
@@ -332,6 +347,15 @@ def source_binding_failures() -> set[str]:
         failures.add("R55-SOURCE-BINDING")
     if any(anchor not in canonical_text for anchor in required_canonical_anchors):
         failures.add("R55-CANONICAL-BINDING")
+    if "storageIdentity: ObjectIdentifier" in canonical_text or "ownerIdentity: ObjectIdentifier" in source_text:
+        failures.add("R55-IDENTITY-LIFETIME")
+    if not re.search(
+        r"lhs\.identity\s*===\s*rhs\.identity[\s\S]*"
+        r"unit\.ownerIdentity\s*===\s*ownerIdentity[\s\S]*"
+        r"unit\.sourceBinding\s*==\s*sourceBinding",
+        canonical_text + "\n" + source_text,
+    ):
+        failures.add("R55-IDENTITY-LIFETIME")
     if re.search(r"\b(public|open)\b|@_spi|\bCodable\b", source_text):
         failures.add("R55-CORE-ACCESS")
     if re.search(r"URLSession|NWConnection|UserDefaults|FileHandle|NSKeyedArchiver|\bprint\s*\(|Logger\.", source_text):
@@ -342,6 +366,8 @@ def source_binding_failures() -> set[str]:
         "import BeautyEffects", "BeautyLocalRetouchCompositionOwner",
         "testProductionExactCarrierBindingAndCheckedOffsetsRejectForeignWorkLocally",
         "testProductionIssuanceCapsDuplicateTokensAndRawDuplicatesPreserveValidSibling",
+        "testProductionStaleUnitCannotAuthorizeAcrossCarrierAndOwnerChurn",
+        "for _ in 0..<2_048",
         "XCTAssertNotEqual(source.pixelSourceBinding, foreignSource.pixelSourceBinding)",
     )
     if any(anchor not in unit_text for anchor in production_test_anchors):
@@ -354,6 +380,36 @@ def composition_failures() -> set[str]:
     if failures:
         return failures
     source_text = COMPOSITION.read_text(encoding="utf-8")
+    make_unit = engine_section(source_text, "package func makeUnit(", "package func compose(")
+    preflight_index = make_unit.find("preflightedClaims(proposals")
+    issuance_index = make_unit.find("issuedTokens.count")
+    token_increment_index = make_unit.find("nextToken += 1")
+    if not make_unit or min(preflight_index, issuance_index, token_increment_index) < 0 \
+            or not preflight_index < issuance_index < token_increment_index:
+        failures.add("R55-ISSUANCE-PREFLIGHT")
+    unit_text = UNIT_TEST.read_text(encoding="utf-8")
+    issuance_test_anchors = (
+        "malformedProposals", "maximumUnitCount * 16",
+        "XCTAssertNil(owner.makeUnit", "let valid = try XCTUnwrap(owner.makeUnit",
+    )
+    if any(anchor not in unit_text for anchor in issuance_test_anchors):
+        failures.add("R55-ISSUANCE-PREFLIGHT")
+    if not re.search(
+        r"rawIndices\.insert\(proposal\.pixelIndex\)\.inserted",
+        source_text,
+    ) or not re.search(r"tokenFrequency\[unit\.token\]\s*==\s*1", source_text):
+        failures.add("R55-DUPLICATE-REJECTION")
+    if not re.search(
+        r"if\s+proposal\.isInsideHardEnvelope,\s*proposal\.softWeightQ16\s*>\s*0",
+        source_text,
+    ):
+        failures.add("R55-HARD-RECLIP")
+    if not re.search(
+        r"guard\s+claimIndex\s*-\s*groupStart\s*==\s*1\s+else\s*\{\s*"
+        r"collisionPixelCount\s*\+=\s*1\s*continue",
+        source_text,
+    ):
+        failures.add("R55-COLLISION-SUPPRESSION")
     required_anchors = (
         "rgba8Data", "sourceData", "acceptedClaims.sort", "claimsAreInDeterministicOrder",
         "effectiveWeightQ16", "65_536", "32_768", "collisionPixelCount",
@@ -368,7 +424,6 @@ def composition_failures() -> set[str]:
     if "Dictionary(grouping: units)" in source_text:
         failures.add("R55-UNIT-BOUNDS")
 
-    unit_text = UNIT_TEST.read_text(encoding="utf-8")
     production_anchors = (
         "testQ16LiteralBlendAndAlpha",
         "testHardReclipZeroWeightAndOutsideUnionIdentity",
@@ -470,77 +525,63 @@ def live_failures() -> set[str]:
         re.DOTALL,
     ) or "compositionOwner.compose(units)" not in engine_text:
         failures.add("R55-ORPHAN")
-    return failures
-
-
-@dataclass(frozen=True)
-class SyntheticContract:
-    required_files: frozenset[str]
-    source: str
-    spi: str
-    candidates: str
-    package_targets: frozenset[str]
-    has_external_dependency: bool
-    demo: str
-    realtime: str
-    stored_fields: tuple[str, ...]
-    coding_keys: tuple[str, ...]
-    presets: tuple[str, ...]
-    renderer_ids: tuple[str, ...]
-    facade: str
-    unit_specs: str
-    summary_fields: tuple[str, ...]
-    result_fields: tuple[str, ...]
-    scanner_state: str = "clean"
-
-
-def synthetic_baseline() -> SyntheticContract:
-    fields = tuple([f"field{index}" for index in range(58)] + ["filterId"])
-    return SyntheticContract(
-        required_files=frozenset({"source", "unit", "facade", "inventory"}),
-        source="package struct Core pixelSourceBinding ObjectIdentifier maximumUnitCount effectiveUnitLimit maximumClaimsPerUnit multipliedReportingOverflow addingReportingOverflow issuedTokens tokenFrequency rawIndices isInsideHardEnvelope collisionPixelCount rgba8Data 65_536 32_768",
-        spi="Scenario Result sourceBindingMatched invocationCount acceptedUnitCount rejectedUnitCount ownedPixelCount changedPixelCount changedOutsideUnionPixelCount collisionPixelCount",
-        candidates="",
-        package_targets=frozenset(EXPECTED_TARGETS),
-        has_external_dependency=False,
-        demo="",
-        realtime="",
-        stored_fields=fields,
-        coding_keys=fields,
-        presets=EXPECTED_PRESETS,
-        renderer_ids=EXPECTED_RENDERER_IDS,
-        facade="BeautyLocalRetouchComposition ValidInvalidValid PixelBufferAndReset",
-        unit_specs="DuplicateRawIndex DuplicateOpaqueUnitToken TwoAndThreeOwnerCollision EveryPermutation",
-        summary_fields=EXPECTED_SUMMARY_FIELDS,
-        result_fields=("canonicalImage", "summary"),
+    foundation_text = FOUNDATION_TEST.read_text(encoding="utf-8")
+    harness_section = engine_section(
+        support_text,
+        "@_spi(Testing) public final class SDKTestingLocalRetouchFoundationHarness",
+        "private static func makeOpaqueSRGBImage",
     )
-
-
-def synthetic_failures(contract: SyntheticContract) -> set[str]:
-    failures: set[str] = set()
-    if contract.required_files != frozenset({"source", "unit", "facade", "inventory"}): failures.add("R55-REQUIRED")
-    if contract.scanner_state != "clean": failures.add("R55-SCANNER")
-    if re.search(r"\bpublic\b|@_spi|Codable", contract.source): failures.add("R55-CORE-ACCESS")
-    if re.search(r"URLSession|UserDefaults|FileHandle|Logger", contract.source): failures.add("R55-PRIVACY")
-    if re.search(r"pixelIndex|mask|token|owner|byte|digest|path|rawError", contract.spi, re.IGNORECASE): failures.add("R55-SPI-PRIVACY")
-    if contract.candidates: failures.add("R55-CANDIDATE")
-    if contract.package_targets != EXPECTED_TARGETS or contract.has_external_dependency: failures.add("R55-PACKAGE")
-    if contract.demo: failures.add("R55-DEMO")
-    if contract.realtime: failures.add("R55-REALTIME")
-    if len(contract.stored_fields) != 59 or contract.coding_keys != contract.stored_fields: failures.add("R55-FIELDS")
-    if contract.presets != EXPECTED_PRESETS: failures.add("R55-PRESETS")
-    if contract.renderer_ids != EXPECTED_RENDERER_IDS: failures.add("R55-RENDERER")
-    if "BeautyLocalRetouchComposition" not in contract.facade: failures.add("R55-ORPHAN")
-    if "ValidInvalidValid" not in contract.facade or "PixelBufferAndReset" not in contract.facade: failures.add("R55-FACADE-SPECS")
-    if any(anchor not in contract.unit_specs for anchor in ("DuplicateRawIndex", "DuplicateOpaqueUnitToken", "TwoAndThreeOwnerCollision", "EveryPermutation")): failures.add("R55-UNIT-SPECS")
-    if any(anchor not in contract.source for anchor in ("pixelSourceBinding", "ObjectIdentifier", "maximumUnitCount", "effectiveUnitLimit", "maximumClaimsPerUnit", "multipliedReportingOverflow", "addingReportingOverflow", "issuedTokens", "tokenFrequency", "rawIndices", "isInsideHardEnvelope", "collisionPixelCount", "rgba8Data", "65_536", "32_768")): failures.add("R55-CORE-ANCHORS")
-    if contract.summary_fields != EXPECTED_SUMMARY_FIELDS or contract.result_fields != ("canonicalImage", "summary"): failures.add("R55-SUMMARY-SHAPE")
-    if re.search(r"\b(teeth|sclera|eyelid|pupil|landmark|coordinate|mask|digest)\b", contract.source, re.IGNORECASE): failures.add("R55-CORE-PRIVACY")
-    if "Dictionary(grouping: units)" in contract.source: failures.add("R55-UNIT-BOUNDS")
+    if (
+        not harness_section
+        or "private let invocationLock = NSLock()" not in harness_section
+        or not re.search(
+            r"public func invoke\([\s\S]*?invocationLock\.lock\(\)[\s\S]*?"
+            r"defer \{ invocationLock\.unlock\(\) \}",
+            harness_section,
+        )
+        or "testSameHarnessParallelInvocationsSerializeCompleteRequestTransactions" not in foundation_text
+        or "withThrowingTaskGroup" not in foundation_text
+    ):
+        failures.add("R55-HARNESS-SERIALIZATION")
     return failures
+
+
+def copy_live_fixture(source_root: pathlib.Path, destination_root: pathlib.Path) -> None:
+    (destination_root / "BeautySDK").mkdir(parents=True)
+    shutil.copy2(source_root / "BeautySDK" / "Package.swift", destination_root / "BeautySDK" / "Package.swift")
+    shutil.copytree(source_root / "BeautySDK" / "Sources", destination_root / "BeautySDK" / "Sources")
+    shutil.copytree(source_root / "BeautySDK" / "Tests", destination_root / "BeautySDK" / "Tests")
+    shutil.copytree(source_root / "BeautyDemo" / "BeautyDemo", destination_root / "BeautyDemo" / "BeautyDemo")
+    fixture_phase = destination_root / ".planning" / "phases" / PHASE.name
+    fixture_phase.mkdir(parents=True)
+    shutil.copy2(INVENTORY, fixture_phase / INVENTORY.name)
+
+
+def assert_live_mutation(
+    fixture_root: pathlib.Path,
+    relative_path: str,
+    original: str,
+    replacement: str,
+    expected_rule: str,
+    *,
+    replace_all: bool = False,
+) -> None:
+    path = fixture_root / relative_path
+    baseline = path.read_text(encoding="utf-8")
+    if original not in baseline:
+        raise AssertionError(f"mutation target missing: {expected_rule}")
+    mutated = baseline.replace(original, replacement) if replace_all else baseline.replace(original, replacement, 1)
+    path.write_text(mutated, encoding="utf-8")
+    try:
+        failures = live_failures()
+        if expected_rule not in failures:
+            raise AssertionError(f"live mutation accepted: {expected_rule}")
+    finally:
+        path.write_text(baseline, encoding="utf-8")
 
 
 def self_test() -> int:
+    original_root = ROOT
     cases = 0
     assert classify_rg(0, "match\n", "") == "match"; cases += 1
     assert classify_rg(1, "", "") == "clean"; cases += 1
@@ -560,44 +601,40 @@ def self_test() -> int:
         assert not validate_inventory(mutation), threat_id
         cases += 1
 
-    baseline = synthetic_baseline()
-    assert synthetic_failures(baseline) == set(); cases += 1
-    mutations = (
-        (replace(baseline, required_files=frozenset({"source", "unit", "facade"})), "R55-REQUIRED"),
-        (replace(baseline, scanner_state="error"), "R55-SCANNER"),
-        (replace(baseline, source=baseline.source + " public"), "R55-CORE-ACCESS"),
-        (replace(baseline, source=baseline.source + " URLSession"), "R55-PRIVACY"),
-        (replace(baseline, spi=baseline.spi + " outputDigest"), "R55-SPI-PRIVACY"),
-        (replace(baseline, candidates="teethWhitening"), "R55-CANDIDATE"),
-        (replace(baseline, package_targets=baseline.package_targets | {"Extra"}), "R55-PACKAGE"),
-        (replace(baseline, has_external_dependency=True), "R55-PACKAGE"),
-        (replace(baseline, demo="BeautyLocalRetouchComposition"), "R55-DEMO"),
-        (replace(baseline, realtime="compose"), "R55-REALTIME"),
-        (replace(baseline, stored_fields=baseline.stored_fields[:-1]), "R55-FIELDS"),
-        (replace(baseline, coding_keys=tuple(reversed(baseline.coding_keys))), "R55-FIELDS"),
-        (replace(baseline, presets=baseline.presets[:-1]), "R55-PRESETS"),
-        (replace(baseline, renderer_ids=baseline.renderer_ids[:-1]), "R55-RENDERER"),
-        (replace(baseline, facade="ValidInvalidValid PixelBufferAndReset"), "R55-ORPHAN"),
-        (replace(baseline, facade="BeautyLocalRetouchComposition PixelBufferAndReset"), "R55-FACADE-SPECS"),
-        (replace(baseline, unit_specs=baseline.unit_specs.replace("EveryPermutation", "")), "R55-UNIT-SPECS"),
-        (replace(baseline, summary_fields=baseline.summary_fields[:-1]), "R55-SUMMARY-SHAPE"),
-        (replace(baseline, result_fields=("canonicalImage", "summary", "digest")), "R55-SUMMARY-SHAPE"),
-        (replace(baseline, source=baseline.source + " teeth"), "R55-CORE-PRIVACY"),
-        (replace(baseline, source=baseline.source + " Dictionary(grouping: units)"), "R55-UNIT-BOUNDS"),
-    )
-    for mutation, expected_rule in mutations:
-        assert expected_rule in synthetic_failures(mutation), expected_rule
-        cases += 1
-
-    for anchor in (
-        "pixelSourceBinding", "ObjectIdentifier", "maximumUnitCount",
-        "effectiveUnitLimit", "maximumClaimsPerUnit",
-        "multipliedReportingOverflow", "addingReportingOverflow",
-        "issuedTokens", "tokenFrequency", "rawIndices",
-    ):
-        mutation = replace(baseline, source=baseline.source.replace(anchor, ""))
-        assert "R55-CORE-ANCHORS" in synthetic_failures(mutation), anchor
-        cases += 1
+    with tempfile.TemporaryDirectory(prefix="beauty-phase55-checker-") as temporary:
+        fixture_root = pathlib.Path(temporary)
+        copy_live_fixture(original_root, fixture_root)
+        configure_root(fixture_root)
+        try:
+            assert live_failures() == set(); cases += 1
+            mutations = (
+                ("BeautySDK/Sources/BeautyCore/Models/BeautyCanonicalStillImage.swift", "lhs.identity === rhs.identity", "lhs.identity !== rhs.identity", "R55-IDENTITY-LIFETIME", False),
+                ("BeautySDK/Sources/BeautyEffects/Render/BeautyLocalRetouchComposition.swift", "unit.ownerIdentity === ownerIdentity", "unit.ownerIdentity !== ownerIdentity", "R55-IDENTITY-LIFETIME", True),
+                ("BeautySDK/Sources/BeautyEffects/Render/BeautyLocalRetouchComposition.swift", "unit.sourceBinding == sourceBinding", "unit.sourceBinding != sourceBinding", "R55-IDENTITY-LIFETIME", True),
+                ("BeautySDK/Sources/BeautyEffects/Render/BeautyLocalRetouchComposition.swift", "preflightedClaims(proposals, token: 0, pixelCount: pixelCount) != nil", "true", "R55-ISSUANCE-PREFLIGHT", False),
+                ("BeautySDK/Sources/BeautyEffects/Render/BeautyLocalRetouchComposition.swift", "rawIndices.insert(proposal.pixelIndex).inserted", "rawIndices.contains(proposal.pixelIndex) == false", "R55-DUPLICATE-REJECTION", False),
+                ("BeautySDK/Sources/BeautyEffects/Render/BeautyLocalRetouchComposition.swift", "tokenFrequency[unit.token] == 1", "tokenFrequency[unit.token] != 0", "R55-DUPLICATE-REJECTION", False),
+                ("BeautySDK/Sources/BeautyEffects/Render/BeautyLocalRetouchComposition.swift", "if proposal.isInsideHardEnvelope, proposal.softWeightQ16 > 0", "if true, proposal.softWeightQ16 > 0", "R55-HARD-RECLIP", False),
+                ("BeautySDK/Sources/BeautyEffects/Render/BeautyLocalRetouchComposition.swift", "guard claimIndex - groupStart == 1 else", "guard claimIndex - groupStart >= 1 else", "R55-COLLISION-SUPPRESSION", False),
+                ("BeautySDK/Sources/BeautyEffects/Render/BeautyLocalRetouchComposition.swift", "source: sourceData[pixelOffset]", "source: outputData[pixelOffset]", "R55-ORIGINAL-SOURCE", False),
+                ("BeautySDK/Tests/BeautyEffectsTests/BeautyLocalRetouchCompositionTests.swift", "testProductionStaleUnitCannotAuthorizeAcrossCarrierAndOwnerChurn", "testRemovedLifetimeRegression", "R55-SOURCE-TESTS", False),
+                ("BeautySDK/Tests/BeautyEffectsTests/BeautyLocalRetouchCompositionTests.swift", "maximumUnitCount * 16", "maximumUnitCount - 1", "R55-ISSUANCE-PREFLIGHT", False),
+                ("BeautySDK/Sources/BeautySDK/BeautyEngineTestingSupport.swift", "private let invocationLock = NSLock()", "", "R55-HARNESS-SERIALIZATION", False),
+                ("BeautySDK/Sources/BeautyEffects/Render/BeautyLocalRetouchComposition.swift", "package struct BeautyLocalPixelProposal", "public struct BeautyLocalPixelProposal", "R55-CORE-ACCESS", False),
+                ("BeautySDK/Sources/BeautyCore/Models/BeautyCanonicalStillImage.swift", "private final class BeautyCanonicalPixelSourceIdentity", "private final class teethWhitening", "R55-CANDIDATE", False),
+            )
+            for relative_path, original, replacement, expected_rule, replace_all in mutations:
+                assert_live_mutation(
+                    fixture_root,
+                    relative_path,
+                    original,
+                    replacement,
+                    expected_rule,
+                    replace_all=replace_all,
+                )
+                cases += 1
+        finally:
+            configure_root(original_root)
 
     print(json.dumps({"highThreatIds": THREAT_IDS, "mutationCaseCount": cases, "status": "pass"}, sort_keys=True))
     return 0
@@ -620,6 +657,7 @@ def emit(mode: str, failures: set[str]) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--root", type=pathlib.Path)
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--self-test", action="store_true")
     group.add_argument("--expect-wave0-red", action="store_true")
@@ -629,6 +667,8 @@ def main() -> int:
     group.add_argument("--facade", action="store_true")
     args = parser.parse_args()
     try:
+        if args.root is not None:
+            configure_root(args.root)
         if args.self_test:
             return self_test()
         if args.expect_wave0_red:

@@ -720,7 +720,7 @@ Before a release-like build:
 
 ### Phase 55 Composition Reliability Closeout
 
-- Checked dimensions, row layout, total counts, offsets, issuance caps, and bounded claim frequency reject malformed work before allocation or ownership reduction. A bad unit abstains locally; accepted siblings and unrelated shipped color/filter work continue.
+- Checked dimensions, row layout, total counts, offsets, issuance caps, and bounded claim frequency reject malformed work before allocation or ownership reduction. Proposal validation occurs before slot/token consumption, so repeated malformed/effective-empty attempts cannot starve a later valid sibling. A bad unit abstains locally; accepted siblings and unrelated shipped color/filter work continue.
 - Composition is stateless per request. Empty, valid-invalid-valid, thrown-call cleanup, both CIImage entries, no-face/missing-support continuation, and pixel-buffer/reset zero-work behavior are executable and green.
-- Current gates pass 20/20 composer tests, 28/28 facade/foundation tests, 74/74 compatibility tests, 44/44 checker mutations, 532 full SwiftPM tests with six unrelated opt-in Vision skips, and 118/118 Demo simulator tests. No HIGH mitigation is skipped.
+- The post-review checker passes a 27-case self-test, including 14 executable live-Swift fixture mutations; the earlier 44-case synthetic count is historical only. Current focused/full regression counts are recorded in the Phase 55 evidence artifact. No HIGH mitigation is skipped.
 - These results establish bounded deterministic mechanics and recovery only. They set no realtime, latency, memory, device-quality, optimized-performance, naturalness, commercial, packaging, shipping, or release-readiness guarantee.

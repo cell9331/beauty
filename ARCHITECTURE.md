@@ -392,7 +392,7 @@ BeautyDemo sliders / presets
 
 ### Phase 55 Feature-Neutral Composition Architecture
 
-- `BeautyEffects` owns one package-internal original-pixel composer. It accepts only units bound to the current canonical storage, returns one canonical carrier plus six aggregate counts, and has no feature-named provider or public/SPI mechanics surface.
+- `BeautyEffects` owns one package-internal original-pixel composer. It accepts only units that strongly retain the current canonical-storage and request-owner identities and match them by object identity plus checked layout; bare allocator addresses never authorize work. It returns one canonical carrier plus six aggregate counts and has no feature-named provider or public/SPI mechanics surface.
 - `BeautySDK` owns the sole facade adjacency: an opaque Testing-only scenario may construct one request-local owner from `BeautyStillImageRequestContext.canonicalImage`, invoke the composer once, then pass the returned carrier into the existing render handoff. Production admission remains literal empty.
 - Dependency direction and package inventory are unchanged. No target, dependency, model, resource, provider, renderer case, preset, Demo import, realtime route, or pixel-buffer/reset composition call is added.
-- Final evidence passes the 20-test composer suite, 28-test facade/foundation suite, 74-test compatibility suite, 44-case checker self-test, 532-test full SwiftPM gate with six opt-in skips, and explicit iPhone 17e/iOS 26.5 Demo build plus 118/118 tests.
+- The post-review checker passes a 27-case self-test, including 14 executable mutations of temporary copies of the live Swift fixtures/classifier; the earlier 44-case synthetic count is historical only. Focused/full regression counts are recorded in the Phase 55 evidence artifact.

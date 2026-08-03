@@ -593,6 +593,6 @@ SDK 1.0 readiness:
 ### v1.14 Phase 55 Composition Core Evidence Score
 
 - Exact task/validation traceability is 9/9; COMP-01 through COMP-05 are 5/5; paired context/plan decisions D-01/D-55-01 through D-20/D-55-20 are 20/20; T-55-01 through T-55-07 are 7/7 machine-green HIGH mitigations.
-- Fresh focused gates pass composer 20/20, facade/foundation 28/28, and compatibility 74/74 with exact 59 stored/CodingKey fields, five presets, and 72 renderer cases. The checker passes 44/44 mutations and live classification.
+- The post-review checker passes a 27-case self-test, including 14 executable mutations of temporary copies of the actual Swift fixtures/classifier, plus live classification. This supersedes the historical 44-case synthetic-contract count; current focused regression counts are recorded in the Phase 55 evidence artifact.
 - Full SwiftPM passes 532 executed with six documented opt-in Vision skips and zero failures. Explicit iPhone 17e/iOS 26.5 Demo build passes, and the xcresult-backed Demo suite passes 118/118 with zero failures/skips; schema, UI, and diff gates are green.
 - Credit is limited to private feature-neutral composition mechanics, facade adjacency, privacy shape, and recovery. It does not admit a candidate or raise product, UI, realtime, device, naturalness, optimized-performance, commercial, packaging, shipping, launch, or release-readiness scores.

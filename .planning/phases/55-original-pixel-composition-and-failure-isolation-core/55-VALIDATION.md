@@ -64,8 +64,8 @@ checking.
 | --- | ---: | --- | --- | --- |
 | `55-01-01` | 0 | COMP-01..05 | Unit RED matrix compiles; exact missing composition artifact oracle; literal byte tables cover source binding, Q16, hard reclip, duplicates, collision, failure isolation, order, and recovery | passed |
 | `55-01-02` | 0 | COMP-01..05 | Facade/checker RED harness; checker self-test mutates every T-55/UI/scope/compatibility rule and names only planned missing seams | passed |
-| `55-02-01` | 1 | COMP-02, COMP-03 | Exact canonical storage binding plus checked dimensions/row/byte/index arithmetic; quick suite and checker source mode | passed |
-| `55-02-02` | 1 | COMP-01, COMP-02, COMP-04 | Opaque request-local token issuance, unit caps, foreign/duplicate token and raw duplicate claim rejection; quick suite | passed |
+| `55-02-01` | 1 | COMP-02, COMP-03 | Strong lifetime-retained canonical identity binding plus checked dimensions/row/byte/index arithmetic; quick suite and checker source mode | passed |
+| `55-02-02` | 1 | COMP-01, COMP-02, COMP-04 | Opaque request-local identity/token issuance after proposal validation, unit caps, foreign/duplicate token and raw duplicate claim rejection; quick suite | passed |
 | `55-03-01` | 2 | COMP-02..05 | Hard reclip, zero-weight elimination, exact Q16 blend, original-alpha preservation, stable order-independent ownership reduction; quick suite | passed |
 | `55-03-02` | 2 | COMP-01, COMP-03..05 | Pixel-local collision-to-source, local invalid-unit abstention, aggregate-only summary, literal standalone/merge/fused/failure oracles; quick suite + checker privacy mode | passed |
 | `55-04-01` | 3 | COMP-01, COMP-02, COMP-05 | Opaque Testing activation consumes the exact request-context canonical source, composes once, exposes aggregates only, and leaves production admission empty | passed |
@@ -121,8 +121,8 @@ Task count target: **9 actual XML task IDs = 9 validation rows = 2 Wave 0 +
 
 | ID | Threat | Required mitigation/evidence |
 | --- | --- | --- |
-| T-55-01 | Foreign or stale source spoofing | Exact canonical storage binding plus foreign byte-equal carrier negative test |
-| T-55-02 | Count/index/offset overflow or allocation denial | Reporting-overflow arithmetic, bounded unit/claim totals, mutation tests for every arithmetic guard |
+| T-55-01 | Foreign or stale source spoofing | Strong lifetime-retained canonical/owner identities, identity equality, foreign byte-equal negative test, and stale-unit carrier/owner churn regression |
+| T-55-02 | Count/index/offset overflow or allocation denial | Proposal validation before slot/token consumption, reporting-overflow arithmetic, bounded unit/claim totals, and malformed-attempt starvation regression |
 | T-55-03 | Duplicate/token/order tampering | Pre-filter duplicate rejection, duplicate-token frequency rejection, all input permutations byte/summary equal |
 | T-55-04 | Hidden overlap priority or double edit | 2/3-owner collision-to-source, one aggregate count per collision pixel, no anatomy/strength/order priority source branch |
 | T-55-05 | Mask/pixel/owner/digest disclosure | Package-only non-Codable units; no public/SPI raw claims or stable output digest; exact aggregate allowlist and source scans |

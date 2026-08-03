@@ -8,7 +8,7 @@ requires:
   - phase: 55-01
     provides: literal mechanics RED specifications and fail-closed T-55 checker
 provides:
-  - exact ObjectIdentifier-backed canonical pixel source binding
+  - strong lifetime-retained canonical pixel source identity binding
   - package-only request-local proposal, unit, token, owner, result, and six-count summary values
   - bounded issuance and checked unit-local preflight
   - source-binding checker mode with mutation coverage

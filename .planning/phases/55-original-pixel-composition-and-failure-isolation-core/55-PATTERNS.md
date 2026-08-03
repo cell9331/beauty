@@ -70,7 +70,7 @@ package var rgba8Data: Data { storage.rgba8Data }
 package var backingIdentity: Int { ObjectIdentifier(storage).hashValue }
 ```
 
-Bind every unit to the current carrier's checked dimensions and immutable backing. The live carrier is the sole source of original bytes. A proposal must never accept an unverified second raster or read a sibling's output. Prefer checked multiplication/addition (`multipliedReportingOverflow`, `addingReportingOverflow`) before buffer sizing or `pixelIndex * 4`; reject the smallest unit on proposal-structure failure. A malformed canonical carrier is already a request-level typed error and must not be reconstructed here.
+Bind every unit to the current carrier with a strongly retained opaque storage-owned identity compared by `===` plus checked dimensions and layout. Strongly retain and identity-compare the request-local owner token too; bare allocator addresses are not authorization. The live carrier is the sole source of original bytes. A proposal must never accept an unverified second raster or read a sibling's output. Prefer checked multiplication/addition (`multipliedReportingOverflow`, `addingReportingOverflow`) before buffer sizing or `pixelIndex * 4`; reject the smallest unit on proposal-structure failure before consuming an issuance slot/token. A malformed canonical carrier is already a request-level typed error and must not be reconstructed here.
 
 **Composition blueprint** (`still-image-integration.md` lines 71-95):
 

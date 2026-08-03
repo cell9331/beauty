@@ -30,7 +30,7 @@ The final-only gate ran on the repository's framework-capable macOS host on
 | Composition | `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-phase55-clang-module-cache swift test --package-path BeautySDK --filter BeautyLocalRetouchCompositionTests` | PASS, 20/20, zero failures/skips |
 | Facade and foundation | Same SwiftPM prefix with `--filter 'BeautyEngineLocalRetouchCompositionTests|BeautyEngineLocalRetouchFoundationTests'` | PASS, 28/28, zero failures/skips: 12 composition plus 16 foundation |
 | Compatibility | Same SwiftPM prefix with `--filter 'BeautyParametersTests|BeautyResourceCatalogTests|BeautyRendererOutputRegressionTests'` | PASS, 74/74, zero failures/skips: 44 + 12 + 18 |
-| Checker mutations | `python3 .../check_phase55_composition_boundaries.py --self-test` | PASS, 44/44 mutation cases; exact T-55-01…07 denominator |
+| Checker mutations | `python3 .../check_phase55_composition_boundaries.py --self-test` | PASS, 27-case self-test: 14 executable mutations of temporary copies of the live Swift fixtures/classifier, seven threat-inventory mutations, scanner outcome cases, and clean baselines; exact T-55-01…07 denominator |
 | Checker live | `python3 .../check_phase55_composition_boundaries.py` | PASS; T-55-01…07 all named and green |
 | Full SDK | `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-phase55-clang-module-cache swift test --package-path BeautySDK` | PASS, 532 executed, six documented opt-in Vision skips, zero failures |
 | Demo build | `xcodebuild -quiet -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17e,OS=26.5' build` | PASS; one non-failing destination metadata warning |
@@ -57,7 +57,7 @@ contains exactly the same nine unique rows:
 | 55-02-01 | Source identity, checked layout, and local invalid-unit behavior in the 14-test focused suite; source-binding checker mode | PASS |
 | 55-02-02 | Request-local issuance, cap, foreign/duplicate token, duplicate-claim, and sibling-retention behavior in the same 14-test focused suite | PASS |
 | 55-03-01 | Deterministic blend/reclip focused slice 3/3; composition checker mode | PASS |
-| 55-03-02 | Complete mechanics suite 20/20; privacy checker mode; mutation denominator 44/44 | PASS |
+| 55-03-02 | Complete mechanics suite 20/20; privacy checker mode; the historical 44-case synthetic denominator is superseded by the post-review 27-case live-fixture self-test | PASS |
 | 55-04-01 | Facade compose-once slice 2/2 plus foundation 16/16; facade checker mode | PASS |
 | 55-04-02 | Combined facade/foundation 28/28 and compatibility 74/74; live/privacy checker modes | PASS |
 | 55-05-01 | Complete final host gate, owner synchronization, and evidence closeout recorded here | PASS |
@@ -105,8 +105,8 @@ package target, dependency, or production activation surface.
 
 | Threat | Disposition | Current machine evidence |
 | --- | --- | --- |
-| T-55-01 | mitigated | Exact storage identity, foreign equal-content rejection, and facade source match pass |
-| T-55-02 | mitigated | Checked dimensions/layout/arithmetic, bounded issuance/claims, mutation coverage, and full regression pass |
+| T-55-01 | mitigated | Strong lifetime-retained canonical/owner identity equality, foreign equal-content rejection, 2,048-iteration stale-unit churn, and facade source match pass |
+| T-55-02 | mitigated | Proposal validation precedes slot/token consumption; checked dimensions/layout/arithmetic, 128 malformed/effective-empty attempts followed by a valid sibling, bounded issuance/claims, and mutation coverage pass |
 | T-55-03 | mitigated | Pre-filter duplicate rejection, duplicate-unit rejection, and permutation equality pass |
 | T-55-04 | mitigated | Two/three-owner collision-to-source and one-count aggregation pass; no priority branch is admitted |
 | T-55-05 | mitigated | Package-only non-Codable mechanics, exact six-count observation, and no SPI digest/mechanics disclosure pass |

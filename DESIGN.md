@@ -792,7 +792,7 @@ These are known future design areas, not current first-version requirements:
 
 ### Phase 55 Original-Pixel Composition Contract
 
-- Every contribution is bound to the exact immutable canonical storage and reads source RGB only; no accepted contribution reads an earlier contribution or output. RGB blending is integer-defined Q16 with clamp and round-half-up, while source alpha is preserved exactly.
+- Every contribution strongly retains opaque canonical-storage and request-owner identities, matches them with `===` plus checked layout, and reads source RGB only; a stale unit cannot become current through allocator-address reuse. Proposal structure is validated before any issuance slot or token is consumed, so malformed/effective-empty attempts cannot starve a valid sibling. No accepted contribution reads an earlier contribution or output. RGB blending is integer-defined Q16 with clamp and round-half-up, while source alpha is preserved exactly.
 - The final soft weight is re-intersected with hard containment. Zero-effective work is unowned, and every byte outside the final owned union remains canonical.
 - Malformed, foreign, over-budget, duplicate-claim, or duplicate-unit work abstains at its smallest independently rejectable unit. Two or more accepted owners at one pixel suppress every local write there, preserve the source pixel, and add exactly one collision-pixel aggregate; unique neighboring work remains eligible.
 - Composition is order-independent and request-local. Empty and valid-invalid-valid sequences retain no work, output, or summary, and the exact-empty production admission preserves the shipped no-admission result.

@@ -82,7 +82,7 @@ Each task was committed atomically:
 - Task 55-04-01 focused tests passed **2/2**; the complete Phase 53 foundation suite passed **16/16**; checker `--facade` and diff hygiene passed.
 - The final combined facade/foundation command passed **28/28** with zero failures and skips.
 - Parameter/resource/renderer compatibility passed **74/74**: 44 parameter tests, 12 resource tests, and 18 renderer regressions, preserving exact **59 fields / 5 presets / 72 renderer cases**.
-- Checker `--facade`, `--privacy`, and default live modes passed all named T-55-01…07 HIGH rows; mutation self-test remained **44/44**.
+- Checker `--facade`, `--privacy`, and default live modes passed all named T-55-01…07 HIGH rows; the historical **44-case synthetic** self-test is superseded by the post-review live-fixture checker.
 - Source scans found no Testing `outputDigest`, old RED seam, closed candidate identifier, or production/Demo/realtime composition route.
 - Full SwiftPM and Demo regression remain intentionally reserved for Plan 55-05.
 

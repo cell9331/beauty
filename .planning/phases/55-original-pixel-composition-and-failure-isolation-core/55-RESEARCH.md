@@ -246,13 +246,13 @@ No feature provider, renderer case, parameter, CodingKey, preset, Demo file, rea
 
 ### Pattern 1: Exact Source Binding and Request-Local Token Issuance
 
-Add a package-only `BeautyCanonicalPixelSourceBinding` containing `ObjectIdentifier(storage)`, width, height, rowBytes, and byteCount, created only by `BeautyCanonicalStillImage`. The composition owner captures that binding and canonical value; every issued unit stores the binding plus a monotonically issued opaque token. A unit from a different owner/source rejects locally even when dimensions and bytes happen to match. Repeating one token in the compose input rejects every occurrence of that duplicated token while unrelated unique units remain eligible. [VERIFIED: design derivation from `BeautyCanonicalStillImage.swift` and locked source-binding/duplicate decisions]
+Add a package-only `BeautyCanonicalPixelSourceBinding` that strongly retains an opaque identity object owned by canonical storage plus width, height, rowBytes, and byteCount. Compare the retained objects with `===`; do not persist their addresses as bare `ObjectIdentifier` values because allocator reuse after deallocation can authorize stale work. The composition owner captures that binding and canonical value; every issued unit strongly retains the request-local owner identity plus a monotonically issued opaque token. A unit from a different owner/source rejects locally even when dimensions and bytes happen to match. Repeating one token in the compose input rejects every occurrence of that duplicated token while unrelated unique units remain eligible. [VERIFIED: post-review implementation and lifetime-churn regression]
 
 Recommended type seam:
 
 ```swift
 package struct BeautyCanonicalPixelSourceBinding: Equatable, Sendable {
-    package let storageIdentity: ObjectIdentifier
+    private let identity: BeautyCanonicalPixelSourceIdentity
     package let width: Int
     package let height: Int
     package let rowBytes: Int
@@ -276,7 +276,7 @@ package final class BeautyLocalRetouchCompositionOwner {
 }
 ```
 
-Use an effective issuance limit of `min(maximumUnitCount, pixelCount)`. The static eight-unit ceiling covers the milestone's five conceptual smallest units (one mouth unit, two eye units, and up to two future eyelid bands) with bounded headroom, while the pixel-count minimum keeps tiny mechanics rasters arithmetically bounded; this is an internal mechanics ceiling, not a public feature inventory or product-capability claim. [VERIFIED: design choice under `55-CONTEXT.md` discretion and COMP-01 scenarios]
+Use an effective issuance limit of `min(maximumUnitCount, pixelCount)`. Validate empty/effective-empty, over-cap, duplicate-index, index/offset, and hard-envelope proposal structure before consuming any slot or token, so arbitrarily many malformed attempts cannot starve a later valid sibling. The static eight-unit ceiling covers the milestone's five conceptual smallest units (one mouth unit, two eye units, and up to two future eyelid bands) with bounded headroom, while the pixel-count minimum keeps tiny mechanics rasters arithmetically bounded; this is an internal mechanics ceiling, not a public feature inventory or product-capability claim. [VERIFIED: post-review starvation regression and design choice under `55-CONTEXT.md` discretion]
 
 ### Pattern 2: Unit-Local Preflight Before Ownership
 
@@ -326,7 +326,7 @@ Use public Testing SPI only for scenario selection and a redacted result contain
 - **Sequential composition:** it feeds one effect's output to another and creates overlap order semantics; blend only from canonical source. [VERIFIED: Spike 012 README]
 - **Max-weight/priority/last-write collision resolution:** it hides corrupt ownership; all competing proposals must be suppressed at that pixel. [VERIFIED: COMP-04]
 - **Pre-feather-only clipping:** filtering can expand support; hard containment must be checked on the final weight presented to the composer. [VERIFIED: still-image integration reference]
-- **Hash-value source identity:** `backingIdentity` currently exposes an `Int` hash for tests; source binding should carry exact `ObjectIdentifier`, not equality of hash values. [VERIFIED: `BeautyCanonicalStillImage.swift`, design analysis]
+- **Address-only source identity:** `backingIdentity` remains an `Int` hash solely for older observational tests. Authorization must strongly retain an opaque storage-owned identity and compare it with `===`; neither hashes nor bare `ObjectIdentifier` addresses are lifetime-safe authorization. [VERIFIED: post-review lifetime-churn regression]
 - **Dense whole-frame owner arrays:** they allocate by the 50,000,000-pixel input ceiling despite sparse facial work; use bounded sorted proposals. [VERIFIED: `BeautyConfiguration.swift`, design analysis]
 - **Shared/static composition owner:** it permits stale masks/claims across requests; construct it after request context creation and release it before facade return. [VERIFIED: SAFE request-local contracts and `55-CONTEXT.md`]
 

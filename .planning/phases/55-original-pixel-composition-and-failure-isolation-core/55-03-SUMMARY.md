@@ -61,7 +61,7 @@ completed: 2026-08-03
 - Added deterministic sorted sparse ownership reduction: unique claims blend once, while two or three owners at one pixel preserve source and increment exactly one aggregate collision count without dropping adjacent sibling work.
 - Bounded duplicate-token frequency storage to the at-most-eight locally issued tokens, so arbitrarily many foreign units abstain without growing request-owned frequency state or suppressing a valid local sibling.
 - Added production-backed literal endpoint/midpoint/clamp, disjoint permutation, two/three-owner collision, foreign/duplicate/effective-empty abstention, opaque failure-matrix, empty-call, and valid-invalid-valid recovery coverage.
-- Strengthened checker `--composition` and `--privacy` modes to require production oracles, original-source and bounded-frequency anchors, exact six-field summary/two-field result shapes, and feature-neutral non-Codable diagnostics; 44 mutation cases pass.
+- Strengthened checker `--composition` and `--privacy` modes to require production oracles, original-source and bounded-frequency anchors, exact six-field summary/two-field result shapes, and feature-neutral non-Codable diagnostics. Its historical 44-case synthetic self-test is superseded by the post-review live-fixture checker recorded in `55-COMPOSITION-EVIDENCE.md`.
 
 ## Task Commits
 
@@ -82,7 +82,7 @@ Each task was committed atomically:
 
 - Exact Task 55-03-01 focused command: 3/3 tests passed; checker `--composition` passed T-55-01…07; diff hygiene passed.
 - Exact Task 55-03-02 command: complete `BeautyLocalRetouchCompositionTests` passed 20/20; checker `--privacy` passed T-55-01…07; diff hygiene passed.
-- Checker Python syntax passed and `--self-test` passed 44 mutation cases.
+- Checker Python syntax passed; the historical 44-case synthetic result is superseded by the post-review live-fixture self-test.
 - Full SwiftPM and Demo regression remain intentionally reserved for Plan 55-05.
 
 ## Decisions Made
@@ -108,7 +108,7 @@ Each task was committed atomically:
 - **Issue:** `Dictionary(grouping: units)` retained every supplied unit in frequency buckets even though only at most eight locally issued tokens can ever be accepted, allowing foreign input to grow request-owned accounting unnecessarily.
 - **Fix:** Count only exact-source, exact-owner, issued local tokens in a saturated frequency dictionary bounded by `effectiveUnitLimit`; all foreign units still abstain individually and a valid local sibling remains accepted.
 - **Files modified:** `BeautyLocalRetouchComposition.swift`, `BeautyLocalRetouchCompositionTests.swift`, and the Phase 55 checker.
-- **Verification:** The 20-test suite includes ten foreign units plus one retained valid sibling; checker self-test rejects unbounded grouping and passes 44 mutation cases.
+- **Verification:** The 20-test suite includes ten foreign units plus one retained valid sibling; the checker rejects unbounded grouping. Current live-fixture mutation evidence is recorded in `55-COMPOSITION-EVIDENCE.md`.
 - **Committed in:** `4849622`
 
 ---
