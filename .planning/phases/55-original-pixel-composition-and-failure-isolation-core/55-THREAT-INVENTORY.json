@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "security_standard": "OWASP ASVS Level 1",
+  "block_on": "HIGH",
+  "threats": [
+    {
+      "id": "T-55-01",
+      "stride": ["Spoofing", "Tampering"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["exact_source_storage_binding", "foreign_byte_equal_carrier_rejection"]
+    },
+    {
+      "id": "T-55-02",
+      "stride": ["Tampering", "Denial of Service"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["checked_dimension_count_index_offset_arithmetic", "bounded_unit_and_claim_totals"]
+    },
+    {
+      "id": "T-55-03",
+      "stride": ["Tampering"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["prefilter_duplicate_index_rejection", "duplicate_token_rejection", "all_permutation_equality"]
+    },
+    {
+      "id": "T-55-04",
+      "stride": ["Tampering"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["two_and_three_owner_collision_to_source", "one_count_per_collision_pixel", "no_priority_resolution"]
+    },
+    {
+      "id": "T-55-05",
+      "stride": ["Information Disclosure"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["package_only_non_codable_mechanics", "aggregate_only_testing_observation", "no_stable_output_digest"]
+    },
+    {
+      "id": "T-55-06",
+      "stride": ["Tampering", "Information Disclosure"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["valid_invalid_valid_nonretention", "pixel_buffer_zero_work", "reset_zero_work"]
+    },
+    {
+      "id": "T-55-07",
+      "stride": ["Elevation of Privilege", "Tampering"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["exact_empty_production_admission", "exact_59_5_72_compatibility", "no_candidate_demo_dependency_route"]
+    }
+  ]
+}
