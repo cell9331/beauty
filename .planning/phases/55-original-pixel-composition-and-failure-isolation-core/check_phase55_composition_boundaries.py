@@ -27,6 +27,7 @@ TESTING_SUPPORT = SOURCE_ROOT / "BeautySDK" / "BeautyEngineTestingSupport.swift"
 ADMISSION = SOURCE_ROOT / "BeautyEffects" / "Planning" / "BeautyLocalRetouchAdmission.swift"
 RESOLVER = SOURCE_ROOT / "BeautyEffects" / "Planning" / "BeautyEffectResolver.swift"
 COMPOSITION = SOURCE_ROOT / "BeautyEffects" / "Render" / "BeautyLocalRetouchComposition.swift"
+CANONICAL = SOURCE_ROOT / "BeautyCore" / "Models" / "BeautyCanonicalStillImage.swift"
 UNIT_TEST = ROOT / "BeautySDK" / "Tests" / "BeautyEffectsTests" / "BeautyLocalRetouchCompositionTests.swift"
 FACADE_TEST = ROOT / "BeautySDK" / "Tests" / "BeautyCoreTests" / "BeautyEngineLocalRetouchCompositionTests.swift"
 INVENTORY = PHASE / "55-THREAT-INVENTORY.json"
@@ -250,7 +251,7 @@ def common_failures() -> set[str]:
     )
     if any(anchor not in unit_text for anchor in unit_anchors):
         failures.add("R55-UNIT-SPECS")
-    if re.search(r"@testable\s+import\s+BeautyEffects|import\s+BeautyEffects", unit_text):
+    if "referenceBlend" not in unit_text or "independentlyMergedABC" not in unit_text:
         failures.add("R55-ORACLE")
 
     facade_text = FACADE_TEST.read_text(encoding="utf-8")
@@ -281,10 +282,65 @@ def wave0_failures() -> set[str]:
     return failures
 
 
-def live_failures() -> set[str]:
+def source_binding_failures() -> set[str]:
     failures = common_failures()
-    if not COMPOSITION.is_file():
+    if not COMPOSITION.is_file() or not CANONICAL.is_file():
         failures.add("R55-COMPOSITION")
+        return failures
+
+    source_text = COMPOSITION.read_text(encoding="utf-8")
+    canonical_text = CANONICAL.read_text(encoding="utf-8")
+    required_source_anchors = (
+        "package ", "BeautyCanonicalStillImage", "pixelSourceBinding",
+        "ObjectIdentifier", "maximumUnitCount = 8", "effectiveUnitLimit",
+        "maximumClaimsPerUnit", "multipliedReportingOverflow",
+        "addingReportingOverflow", "issuedTokens", "tokenFrequency",
+        "rawIndices", "isInsideHardEnvelope",
+    )
+    required_canonical_anchors = (
+        "BeautyCanonicalPixelSourceBinding", "ObjectIdentifier(storage)",
+        "pixelSourceBinding", "width: width", "height: height",
+        "rowBytes: rowBytes", "byteCount: storage.rgba8Data.count",
+    )
+    if any(anchor not in source_text for anchor in required_source_anchors):
+        failures.add("R55-SOURCE-BINDING")
+    if any(anchor not in canonical_text for anchor in required_canonical_anchors):
+        failures.add("R55-CANONICAL-BINDING")
+    if re.search(r"\b(public|open)\b|@_spi|\bCodable\b", source_text):
+        failures.add("R55-CORE-ACCESS")
+    if re.search(r"URLSession|NWConnection|UserDefaults|FileHandle|NSKeyedArchiver|\bprint\s*\(|Logger\.", source_text):
+        failures.add("R55-PRIVACY")
+
+    unit_text = UNIT_TEST.read_text(encoding="utf-8")
+    production_test_anchors = (
+        "import BeautyEffects", "BeautyLocalRetouchCompositionOwner",
+        "testProductionExactCarrierBindingAndCheckedOffsetsRejectForeignWorkLocally",
+        "testProductionIssuanceCapsDuplicateTokensAndRawDuplicatesPreserveValidSibling",
+        "XCTAssertNotEqual(source.pixelSourceBinding, foreignSource.pixelSourceBinding)",
+    )
+    if any(anchor not in unit_text for anchor in production_test_anchors):
+        failures.add("R55-SOURCE-TESTS")
+    return failures
+
+
+def composition_failures() -> set[str]:
+    failures = source_binding_failures()
+    if failures:
+        return failures
+    source_text = COMPOSITION.read_text(encoding="utf-8")
+    required_anchors = (
+        "rgba8Data", "65_536", "32_768", "collisionPixelCount",
+    )
+    if any(anchor not in source_text for anchor in required_anchors):
+        failures.add("R55-CORE-ANCHORS")
+    if re.search(r"\b(Float|Double)\b|CIFilter|CIColor|sequential|priority|maxWeight|lastWrite", source_text, re.IGNORECASE):
+        failures.add("R55-DETERMINISM")
+    return failures
+
+
+def live_failures() -> set[str]:
+    failures = composition_failures()
+    if failures:
         return failures
 
     source_text = COMPOSITION.read_text(encoding="utf-8")
@@ -295,13 +351,6 @@ def live_failures() -> set[str]:
     )
     if any(anchor not in source_text for anchor in required_anchors):
         failures.add("R55-CORE-ANCHORS")
-    if re.search(r"\b(public|open)\b|@_spi|\bCodable\b", source_text):
-        failures.add("R55-CORE-ACCESS")
-    if re.search(r"\b(Float|Double)\b|CIFilter|CIColor|sequential|priority|maxWeight|lastWrite", source_text, re.IGNORECASE):
-        failures.add("R55-DETERMINISM")
-    if re.search(r"URLSession|NWConnection|UserDefaults|FileHandle|NSKeyedArchiver|\bprint\s*\(|Logger\.", source_text):
-        failures.add("R55-PRIVACY")
-
     support_text = TESTING_SUPPORT.read_text(encoding="utf-8")
     engine_text = ENGINE.read_text(encoding="utf-8")
     if "SDKTestingLocalRetouchCompositionScenario" not in support_text or "SDKTestingLocalRetouchCompositionResult" not in support_text:
@@ -345,7 +394,7 @@ def synthetic_baseline() -> SyntheticContract:
     fields = tuple([f"field{index}" for index in range(58)] + ["filterId"])
     return SyntheticContract(
         required_files=frozenset({"source", "unit", "facade", "inventory"}),
-        source="package struct Core multipliedReportingOverflow addingReportingOverflow isInsideHardEnvelope collisionPixelCount rgba8Data 65_536 32_768",
+        source="package struct Core pixelSourceBinding ObjectIdentifier maximumUnitCount effectiveUnitLimit maximumClaimsPerUnit multipliedReportingOverflow addingReportingOverflow issuedTokens tokenFrequency rawIndices isInsideHardEnvelope collisionPixelCount rgba8Data 65_536 32_768",
         spi="Scenario Result sourceBindingMatched invocationCount acceptedUnitCount rejectedUnitCount ownedPixelCount changedPixelCount changedOutsideUnionPixelCount collisionPixelCount",
         candidates="",
         package_targets=frozenset(EXPECTED_TARGETS),
@@ -378,7 +427,7 @@ def synthetic_failures(contract: SyntheticContract) -> set[str]:
     if "BeautyLocalRetouchComposition" not in contract.facade: failures.add("R55-ORPHAN")
     if "ValidInvalidValid" not in contract.facade or "PixelBufferAndReset" not in contract.facade: failures.add("R55-FACADE-SPECS")
     if any(anchor not in contract.unit_specs for anchor in ("DuplicateRawIndex", "DuplicateOpaqueUnitToken", "TwoAndThreeOwnerCollision", "EveryPermutation")): failures.add("R55-UNIT-SPECS")
-    if any(anchor not in contract.source for anchor in ("multipliedReportingOverflow", "addingReportingOverflow", "isInsideHardEnvelope", "collisionPixelCount", "rgba8Data", "65_536", "32_768")): failures.add("R55-CORE-ANCHORS")
+    if any(anchor not in contract.source for anchor in ("pixelSourceBinding", "ObjectIdentifier", "maximumUnitCount", "effectiveUnitLimit", "maximumClaimsPerUnit", "multipliedReportingOverflow", "addingReportingOverflow", "issuedTokens", "tokenFrequency", "rawIndices", "isInsideHardEnvelope", "collisionPixelCount", "rgba8Data", "65_536", "32_768")): failures.add("R55-CORE-ANCHORS")
     return failures
 
 
@@ -422,10 +471,19 @@ def self_test() -> int:
         (replace(baseline, facade="ValidInvalidValid PixelBufferAndReset"), "R55-ORPHAN"),
         (replace(baseline, facade="BeautyLocalRetouchComposition PixelBufferAndReset"), "R55-FACADE-SPECS"),
         (replace(baseline, unit_specs=baseline.unit_specs.replace("EveryPermutation", "")), "R55-UNIT-SPECS"),
-        (replace(baseline, source=baseline.source.replace("addingReportingOverflow", "")), "R55-CORE-ANCHORS"),
     )
     for mutation, expected_rule in mutations:
         assert expected_rule in synthetic_failures(mutation), expected_rule
+        cases += 1
+
+    for anchor in (
+        "pixelSourceBinding", "ObjectIdentifier", "maximumUnitCount",
+        "effectiveUnitLimit", "maximumClaimsPerUnit",
+        "multipliedReportingOverflow", "addingReportingOverflow",
+        "issuedTokens", "tokenFrequency", "rawIndices",
+    ):
+        mutation = replace(baseline, source=baseline.source.replace(anchor, ""))
+        assert "R55-CORE-ANCHORS" in synthetic_failures(mutation), anchor
         cases += 1
 
     print(json.dumps({"highThreatIds": THREAT_IDS, "mutationCaseCount": cases, "status": "pass"}, sort_keys=True))
@@ -452,12 +510,24 @@ def main() -> int:
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--self-test", action="store_true")
     group.add_argument("--expect-wave0-red", action="store_true")
+    group.add_argument("--source-binding", action="store_true")
+    group.add_argument("--composition", action="store_true")
+    group.add_argument("--privacy", action="store_true")
+    group.add_argument("--facade", action="store_true")
     args = parser.parse_args()
     try:
         if args.self_test:
             return self_test()
         if args.expect_wave0_red:
             return emit("wave0-red", wave0_failures())
+        if args.source_binding:
+            return emit("source-binding", source_binding_failures())
+        if args.composition:
+            return emit("composition", composition_failures())
+        if args.privacy:
+            return emit("privacy", composition_failures())
+        if args.facade:
+            return emit("facade", live_failures())
         return emit("live", live_failures())
     except (OSError, ValueError, KeyError, TypeError, ScannerFailure, AssertionError):
         return emit("internal", {"R55-UNCLASSIFIED"})
