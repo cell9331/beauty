@@ -30,6 +30,33 @@ EXPECTED_PRESETS = (
     "male-natural",
     "id-photo-natural",
 )
+DECISION_KEYS = (
+    "feature",
+    "status",
+    "reasons",
+    "eligible_count",
+    "reviewed_count",
+    "accepted_count",
+    "rejected_count",
+    "naturalness_weight",
+)
+ZERO_VALUE_KEYS = (
+    "eligible_count",
+    "reviewed_count",
+    "accepted_count",
+    "rejected_count",
+    "naturalness_weight",
+)
+EXPECTED_TEETH_DECISION = {
+    "feature": "teeth_whitening",
+    "status": "closed",
+    "reasons": ["missing_genuine_positive", "missing_genuine_negative"],
+    "eligible_count": 0,
+    "reviewed_count": 0,
+    "accepted_count": 0,
+    "rejected_count": 0,
+    "naturalness_weight": 0,
+}
 
 
 def configure_root(root: pathlib.Path) -> None:
@@ -167,29 +194,49 @@ def privacy_inventory_failure(document: object) -> bool:
     return contains_forbidden_key(document)
 
 
-def gate_failures() -> set[str]:
-    failures: set[str] = set()
+def decision_failures() -> set[str]:
     try:
         document = read_json(DECISIONS)
-        rows = [
-            row for row in document.get("feature_decisions", [])
-            if isinstance(row, dict) and row.get("feature") == "teeth_whitening"
-        ]
-    except (OSError, json.JSONDecodeError, AttributeError, TypeError):
+    except (OSError, json.JSONDecodeError, UnicodeError):
         return {"R56-GATE"}
-    expected = {
-        "feature": "teeth_whitening",
-        "status": "closed",
-        "reasons": ["missing_genuine_positive", "missing_genuine_negative"],
-        "eligible_count": 0,
-        "reviewed_count": 0,
-        "accepted_count": 0,
-        "rejected_count": 0,
-        "naturalness_weight": 0,
-    }
-    if rows != [expected]:
-        failures.add("R56-GATE")
-    return failures
+
+    if not isinstance(document, dict):
+        return {"R56-GATE"}
+    rows = document.get("feature_decisions")
+    if not isinstance(rows, list):
+        return {"R56-GATE"}
+
+    exact_rows = [
+        row for row in rows
+        if isinstance(row, dict) and row.get("feature") == "teeth_whitening"
+    ]
+    teeth_like_rows = [
+        row for row in rows
+        if isinstance(row, dict)
+        and isinstance(row.get("feature"), str)
+        and re.search(r"teeth|tooth", row["feature"], re.IGNORECASE)
+    ]
+    if len(exact_rows) != 1 or teeth_like_rows != exact_rows:
+        return {"R56-GATE"}
+
+    row = exact_rows[0]
+    if tuple(row) != DECISION_KEYS:
+        return {"R56-GATE"}
+    if row != EXPECTED_TEETH_DECISION:
+        return {"R56-GATE"}
+    if type(row["status"]) is not str:
+        return {"R56-GATE"}
+    if (
+        type(row["reasons"]) is not list
+        or any(type(reason) is not str for reason in row["reasons"])
+        or any(type(row[key]) is not int for key in ZERO_VALUE_KEYS)
+    ):
+        return {"R56-GATE"}
+    return set()
+
+
+def gate_failures() -> set[str]:
+    return decision_failures()
 
 
 def compatibility_failures() -> set[str]:
@@ -347,6 +394,104 @@ def assert_mutation(
         path.write_text(baseline, encoding="utf-8")
 
 
+def assert_decision_document(document: object, expected_rule: str = "R56-GATE") -> None:
+    baseline = DECISIONS.read_text(encoding="utf-8")
+    DECISIONS.write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    try:
+        if expected_rule not in live_failures():
+            raise AssertionError("decision mutation accepted")
+    finally:
+        DECISIONS.write_text(baseline, encoding="utf-8")
+
+
+def decision_mutation_documents(document: dict[str, object]) -> tuple[dict[str, object], ...]:
+    mutations: list[dict[str, object]] = []
+
+    def append_row_mutation(key: str, value: object) -> None:
+        mutation = copy.deepcopy(document)
+        mutation["feature_decisions"][0][key] = value
+        mutations.append(mutation)
+
+    append_row_mutation("status", "eligible")
+    append_row_mutation("status", "passed")
+    append_row_mutation("reasons", ["missing_genuine_negative"])
+    append_row_mutation("reasons", ["missing_genuine_positive"])
+    append_row_mutation("reasons", [*EXPECTED_TEETH_DECISION["reasons"], "borrowed_sibling"])
+    append_row_mutation("reasons", list(reversed(EXPECTED_TEETH_DECISION["reasons"])))
+    for key in ZERO_VALUE_KEYS:
+        append_row_mutation(key, 1)
+
+    renamed = copy.deepcopy(document)
+    renamed["feature_decisions"][0]["feature"] = "teeth_whitening_v2"
+    mutations.append(renamed)
+    duplicate = copy.deepcopy(document)
+    duplicate["feature_decisions"].append(copy.deepcopy(EXPECTED_TEETH_DECISION))
+    mutations.append(duplicate)
+    deleted = copy.deepcopy(document)
+    del deleted["feature_decisions"][0]
+    mutations.append(deleted)
+    extra = copy.deepcopy(document)
+    extra["feature_decisions"].append({**EXPECTED_TEETH_DECISION, "feature": "tooth_whitening"})
+    mutations.append(extra)
+    missing_key = copy.deepcopy(document)
+    del missing_key["feature_decisions"][0]["naturalness_weight"]
+    mutations.append(missing_key)
+    extra_key = copy.deepcopy(document)
+    extra_key["feature_decisions"][0]["candidate_count"] = 0
+    mutations.append(extra_key)
+    wrong_status_type = copy.deepcopy(document)
+    wrong_status_type["feature_decisions"][0]["status"] = ["closed"]
+    mutations.append(wrong_status_type)
+    wrong_reasons_type = copy.deepcopy(document)
+    wrong_reasons_type["feature_decisions"][0]["reasons"] = "missing_genuine_positive"
+    mutations.append(wrong_reasons_type)
+    wrong_count_type = copy.deepcopy(document)
+    wrong_count_type["feature_decisions"][0]["eligible_count"] = False
+    mutations.append(wrong_count_type)
+    wrong_row_shape = copy.deepcopy(document)
+    wrong_row_shape["feature_decisions"][0] = ["teeth_whitening"]
+    mutations.append(wrong_row_shape)
+    wrong_collection_shape = copy.deepcopy(document)
+    wrong_collection_shape["feature_decisions"] = {"teeth_whitening": EXPECTED_TEETH_DECISION}
+    mutations.append(wrong_collection_shape)
+    return tuple(mutations)
+
+
+def assert_decision_input_failures() -> int:
+    cases = 0
+    baseline = DECISIONS.read_text(encoding="utf-8")
+    document = json.loads(baseline)
+    for mutation in decision_mutation_documents(document):
+        assert_decision_document(mutation)
+        cases += 1
+
+    DECISIONS.write_text("{malformed", encoding="utf-8")
+    try:
+        assert live_failures() == {"R56-GATE"}
+        cases += 1
+    finally:
+        DECISIONS.write_text(baseline, encoding="utf-8")
+
+    missing = DECISIONS.with_suffix(".json.missing")
+    DECISIONS.rename(missing)
+    try:
+        assert live_failures() == {"R56-REQUIRED"}
+        cases += 1
+    finally:
+        missing.rename(DECISIONS)
+
+    unreadable = DECISIONS.with_suffix(".json.saved")
+    DECISIONS.rename(unreadable)
+    DECISIONS.mkdir()
+    try:
+        assert live_failures() == {"R56-GATE"}
+        cases += 1
+    finally:
+        DECISIONS.rmdir()
+        unreadable.rename(DECISIONS)
+    return cases
+
+
 def self_test(only: str | None) -> int:
     original_root = ROOT
     cases = 0
@@ -372,10 +517,6 @@ def self_test(only: str | None) -> int:
         cases += 1
 
     mutations = {
-        "T-56-01": (
-            ".planning/phases/54-rights-approved-evidence-and-eligibility-decisions/54-EVIDENCE-DECISIONS.json",
-            '"status": "closed"', '"status": "eligible"', "R56-GATE",
-        ),
         "T-56-02": (
             "BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift",
             "public var skinSmoothing: Float", "public var teethWhitening: Float\n    public var skinSmoothing: Float", "R56-PUBLIC",
@@ -412,8 +553,11 @@ def self_test(only: str | None) -> int:
             assert live_failures() == set()
             cases += 1
             for threat_id in selected:
-                assert_mutation(fixture_root, *mutations[threat_id])
-                cases += 1
+                if threat_id == "T-56-01":
+                    cases += assert_decision_input_failures()
+                else:
+                    assert_mutation(fixture_root, *mutations[threat_id])
+                    cases += 1
 
             if only is None:
                 missing = fixture_root / "BeautySDK" / "Sources" / "BeautyEffects" / "Planning" / "BeautyLocalRetouchAdmission.swift"
@@ -457,6 +601,7 @@ def main() -> int:
     parser.add_argument("--root", type=pathlib.Path)
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--only", choices=THREAT_IDS)
+    parser.add_argument("--decision", action="store_true")
     args = parser.parse_args()
     try:
         if args.root is not None:
@@ -465,6 +610,8 @@ def main() -> int:
             return emit("arguments", {"R56-UNCLASSIFIED"})
         if args.self_test:
             return self_test(args.only)
+        if args.decision:
+            return emit("decision", decision_failures())
         return emit("live", live_failures())
     except (OSError, ValueError, KeyError, TypeError, ScannerFailure, AssertionError, json.JSONDecodeError):
         return emit("internal", {"R56-UNCLASSIFIED"})
