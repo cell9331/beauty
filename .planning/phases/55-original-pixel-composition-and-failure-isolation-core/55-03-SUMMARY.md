@@ -37,7 +37,7 @@ patterns-established:
   - "Ownership reduction: preflight every unit, remove zero/outside claims, sort effective claims, then process each pixel group exactly once."
   - "Failure isolation: foreign, duplicate, malformed, and effective-empty units abstain while unrelated accepted claims compose unchanged."
 
-requirements-completed: [COMP-01, COMP-02, COMP-03, COMP-04, COMP-05]
+requirements-completed: [COMP-03, COMP-04]
 
 duration: 12min
 completed: 2026-08-03
