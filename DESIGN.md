@@ -789,3 +789,10 @@ These are known future design areas, not current first-version requirements:
 - Fresh support enables only fields whose typed side, pair, chord, or apex prerequisite is present. Eligible reused geometry applies exact `0.5` once; stale and no-face input are zero. Missing, malformed, or provider-empty evidence removes only dependent work, and a later fresh request recomputes eligibility without retained state.
 - One 44-field retained mask covers 9 face/chin + 14 eye + 7 eyebrow + 6 nose + 8 mouth fields. The exact full-cap total is `13.45`; one shared scale is `1 / 13.45`, signs are preserved, and the `0..<44` loop permits only monotone removal with no re-entry or double scaling.
 - Final named emissions are the common authority for effective strengths, totals, counts, domains, warnings, metrics, point accounting, and unified dispatch.
+
+### Phase 55 Original-Pixel Composition Contract
+
+- Every contribution is bound to the exact immutable canonical storage and reads source RGB only; no accepted contribution reads an earlier contribution or output. RGB blending is integer-defined Q16 with clamp and round-half-up, while source alpha is preserved exactly.
+- The final soft weight is re-intersected with hard containment. Zero-effective work is unowned, and every byte outside the final owned union remains canonical.
+- Malformed, foreign, over-budget, duplicate-claim, or duplicate-unit work abstains at its smallest independently rejectable unit. Two or more accepted owners at one pixel suppress every local write there, preserve the source pixel, and add exactly one collision-pixel aggregate; unique neighboring work remains eligible.
+- Composition is order-independent and request-local. Empty and valid-invalid-valid sequences retain no work, output, or summary, and the exact-empty production admission preserves the shipped no-admission result.

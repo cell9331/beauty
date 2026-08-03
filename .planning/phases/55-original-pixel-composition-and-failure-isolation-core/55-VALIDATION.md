@@ -1,9 +1,9 @@
 ---
 phase: 55
 slug: original-pixel-composition-and-failure-isolation-core
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: validated
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-08-03
 security_standard: OWASP ASVS Level 1
 block_on: HIGH
@@ -11,7 +11,7 @@ block_on: HIGH
 
 # Phase 55 — Validation Strategy
 
-> Draft validation architecture for a feature-neutral composition foundation.
+> Validated architecture for a feature-neutral composition foundation.
 > A deterministic exact-empty production outcome is expected: mechanics tests
 > may exercise package wiring, but no named feature field/provider/renderer/
 > preset/admission route may appear while all Phase 54 gates remain closed.
@@ -62,34 +62,34 @@ checking.
 
 | Planned task ID | Wave | Requirements | Required focused evidence | Status |
 | --- | ---: | --- | --- | --- |
-| `55-01-01` | 0 | COMP-01..05 | Unit RED matrix compiles; exact missing composition artifact oracle; literal byte tables cover source binding, Q16, hard reclip, duplicates, collision, failure isolation, order, and recovery | pending |
-| `55-01-02` | 0 | COMP-01..05 | Facade/checker RED harness; checker self-test mutates every T-55/UI/scope/compatibility rule and names only planned missing seams | pending |
-| `55-02-01` | 1 | COMP-02, COMP-03 | Exact canonical storage binding plus checked dimensions/row/byte/index arithmetic; quick suite and checker source mode | pending |
-| `55-02-02` | 1 | COMP-01, COMP-02, COMP-04 | Opaque request-local token issuance, unit caps, foreign/duplicate token and raw duplicate claim rejection; quick suite | pending |
-| `55-03-01` | 2 | COMP-02..05 | Hard reclip, zero-weight elimination, exact Q16 blend, original-alpha preservation, stable order-independent ownership reduction; quick suite | pending |
-| `55-03-02` | 2 | COMP-01, COMP-03..05 | Pixel-local collision-to-source, local invalid-unit abstention, aggregate-only summary, literal standalone/merge/fused/failure oracles; quick suite + checker privacy mode | pending |
-| `55-04-01` | 3 | COMP-01, COMP-02, COMP-05 | Opaque Testing activation consumes the exact request-context canonical source, composes once, exposes aggregates only, and leaves production admission empty | pending |
-| `55-04-02` | 3 | COMP-01, COMP-05 | Both public CIImage entries, unrelated color continuation, valid-invalid-valid recovery, pixel-buffer/reset zero work, exact no-admission compatibility | pending |
-| `55-05-01` | 4 | COMP-01..05 | Complete unit/facade/checker/compatibility/full SwiftPM/Demo/schema/UI/codebase/diff/ASVS/traceability/owner-doc gate | pending |
+| `55-01-01` | 0 | COMP-01..05 | Unit RED matrix compiles; exact missing composition artifact oracle; literal byte tables cover source binding, Q16, hard reclip, duplicates, collision, failure isolation, order, and recovery | passed |
+| `55-01-02` | 0 | COMP-01..05 | Facade/checker RED harness; checker self-test mutates every T-55/UI/scope/compatibility rule and names only planned missing seams | passed |
+| `55-02-01` | 1 | COMP-02, COMP-03 | Exact canonical storage binding plus checked dimensions/row/byte/index arithmetic; quick suite and checker source mode | passed |
+| `55-02-02` | 1 | COMP-01, COMP-02, COMP-04 | Opaque request-local token issuance, unit caps, foreign/duplicate token and raw duplicate claim rejection; quick suite | passed |
+| `55-03-01` | 2 | COMP-02..05 | Hard reclip, zero-weight elimination, exact Q16 blend, original-alpha preservation, stable order-independent ownership reduction; quick suite | passed |
+| `55-03-02` | 2 | COMP-01, COMP-03..05 | Pixel-local collision-to-source, local invalid-unit abstention, aggregate-only summary, literal standalone/merge/fused/failure oracles; quick suite + checker privacy mode | passed |
+| `55-04-01` | 3 | COMP-01, COMP-02, COMP-05 | Opaque Testing activation consumes the exact request-context canonical source, composes once, exposes aggregates only, and leaves production admission empty | passed |
+| `55-04-02` | 3 | COMP-01, COMP-05 | Both public CIImage entries, unrelated color continuation, valid-invalid-valid recovery, pixel-buffer/reset zero work, exact no-admission compatibility | passed |
+| `55-05-01` | 4 | COMP-01..05 | Complete unit/facade/checker/compatibility/full SwiftPM/Demo/schema/UI/codebase/diff/ASVS/traceability/owner-doc gate | passed |
 
 Task count target: **9 actual XML task IDs = 9 validation rows = 2 Wave 0 +
 6 focused GREEN + 1 final closeout**.
 
 ## Wave 0 Deliverables
 
-- [ ] `BeautyLocalRetouchCompositionTests.swift` freezes literal-byte mechanics
+- [x] `BeautyLocalRetouchCompositionTests.swift` freezes literal-byte mechanics
   for COMP-01 through COMP-05 without importing production helpers into its
   expected-value oracle.
-- [ ] `BeautyEngineLocalRetouchCompositionTests.swift` freezes same-canonical
+- [x] `BeautyEngineLocalRetouchCompositionTests.swift` freezes same-canonical
   facade adjacency, unrelated-effect continuation, opaque aggregate output,
   recovery, and no production/pixel-buffer/reset route.
-- [ ] `check_phase55_composition_boundaries.py` self-tests clean and mutated
+- [x] `check_phase55_composition_boundaries.py` self-tests clean and mutated
   fixtures and fails closed on missing files, scanner errors, and unclassified
   subprocess outcomes.
-- [ ] A canonical `55-THREAT-INVENTORY.json` (or an equivalently exact checker
+- [x] A canonical `55-THREAT-INVENTORY.json` (or an equivalently exact checker
   inventory if the planner proves no separate file is needed) pins every active
   HIGH row with no count-only denominator.
-- [ ] Wave 0 inputs remain tiny opaque in-memory bytes; no real media, masks,
+- [x] Wave 0 inputs remain tiny opaque in-memory bytes; no real media, masks,
   coordinates, output digest, stable portrait identifier, or anatomy-specific
   production symbol is added.
 
@@ -173,14 +173,15 @@ Task `55-05-01` must execute and record:
 
 ## Validation Sign-Off
 
-- [ ] Final PLAN XML task count equals this validation table exactly.
-- [ ] Wave 0 tests/checker exist and fail only through exact planned missing seams.
-- [ ] COMP-01..05 have current behavior-level byte/failure/facade evidence.
-- [ ] Every active T-55 HIGH row is named and machine-green; no waiver exists.
-- [ ] Exact-empty production admission and 59/5/72 compatibility are unchanged.
-- [ ] No sensitive support/digest, candidate surface, Demo/realtime route, or unsupported readiness claim is added.
-- [ ] Full SwiftPM and explicit Demo regression pass in a framework-capable host context.
-- [ ] `55-COMPOSITION-EVIDENCE.md` exists with actual command/count evidence before validation promotion.
+- [x] Final PLAN XML task count equals this validation table exactly.
+- [x] Wave 0 tests/checker exist and fail only through exact planned missing seams.
+- [x] COMP-01..05 have current behavior-level byte/failure/facade evidence.
+- [x] Every active T-55 HIGH row is named and machine-green; no waiver exists.
+- [x] Exact-empty production admission and 59/5/72 compatibility are unchanged.
+- [x] No sensitive support/digest, candidate surface, Demo/realtime route, or unsupported readiness claim is added.
+- [x] Full SwiftPM and explicit Demo regression pass in a framework-capable host context.
+- [x] `55-COMPOSITION-EVIDENCE.md` exists with actual command/count evidence before validation promotion.
 
-**Approval:** pending Wave 0, implementation, complete final regression, and
-independent phase verification.
+**Approval:** validated after all nine task rows, five requirements, twenty
+decisions, seven HIGH mitigations, focused/final regressions, and owner evidence
+passed. Independent phase verification remains a downstream lifecycle gate.

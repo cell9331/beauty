@@ -630,3 +630,9 @@ Before merging product-facing changes, verify:
 - An SDK integrator can independently request exactly seven implemented SDK-core controls through the existing public facade: `上下`, `粗细`, `长短`, `间距`, `眉头间距`, `倾斜`, and `眉峰`. Signed controls preserve both directions, whole spacing remains distinct from head spacing, and thickness remains distinct from peak definition.
 - User-verifiable acceptance requires final exact caps, request-local support, local degradation, complete combined-safety behavior, facade-visible direction/locality/distinction, fourteen-file original-detail review, and redacted aggregate diagnostics. Branch `眉毛` is implemented only at this SDK-core boundary.
 - v1.14-v1.16 remain future milestones. No SwiftUI or Demo UI, physical-device parity, commercial naturalness approval, optimized performance, packaging, shipping, launch or release readiness, independent milestone audit, archive, tag, or cleanup follows from Phase 52.
+
+### v1.14 Phase 55 Feature-Neutral Composition Acceptance
+
+- Phase 55 accepts deterministic original-pixel composition mechanics only: exact canonical-source binding, hard-reclipped ownership, collision-to-source, smallest-unit failure isolation, request recovery, and aggregate-only facade evidence are automated.
+- All three Phase 54 product decisions remain closed with exact absence and zero product weight. Production admission is empty, so no visible teeth whitening, sclera redness reduction, eyelid fullness, candidate field, provider, renderer case, preset, Demo control, or realtime behavior is available.
+- The tiny opaque fixture results do not establish feature effectiveness, naturalness, device quality, optimized performance, commercial suitability, packaging, shipping, launch, or release readiness. Future feature slices must independently satisfy their evidence and product gates before admission.

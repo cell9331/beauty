@@ -717,3 +717,10 @@ Before a release-like build:
 - Diagnostics expose only fixed reasons and aggregate counts/scales. Command errors, interruption, partial evidence, residue, or an unclassified subprocess result fail closed; recovery requires a clean bounded rerun rather than inferring success from prior output.
 - Exact commands and source anchors are recorded in `52-EYEBROW-SAFETY-EVIDENCE.md`; the ASVS L1 boundary is recorded in `52-SECURITY.md`; the independent post-fix `52-REVIEW.md` is clean 0/0/0/0; independent Phase 52 re-verification passes 16/16 with no remaining gap.
 - These gates establish verified SDK-core phase completion and deterministic failure/recovery behavior, not UI/Demo behavior, optimized-performance, device, long-run, commercial, packaging, shipping, launch, release, milestone-audit, archive, tag, or cleanup readiness.
+
+### Phase 55 Composition Reliability Closeout
+
+- Checked dimensions, row layout, total counts, offsets, issuance caps, and bounded claim frequency reject malformed work before allocation or ownership reduction. A bad unit abstains locally; accepted siblings and unrelated shipped color/filter work continue.
+- Composition is stateless per request. Empty, valid-invalid-valid, thrown-call cleanup, both CIImage entries, no-face/missing-support continuation, and pixel-buffer/reset zero-work behavior are executable and green.
+- Current gates pass 20/20 composer tests, 28/28 facade/foundation tests, 74/74 compatibility tests, 44/44 checker mutations, 532 full SwiftPM tests with six unrelated opt-in Vision skips, and 118/118 Demo simulator tests. No HIGH mitigation is skipped.
+- These results establish bounded deterministic mechanics and recovery only. They set no realtime, latency, memory, device-quality, optimized-performance, naturalness, commercial, packaging, shipping, or release-readiness guarantee.
