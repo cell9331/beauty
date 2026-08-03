@@ -61,10 +61,10 @@ final class BeautyLocalRetouchCompositionTests: XCTestCase {
         let foreignOwner = BeautyLocalRetouchCompositionOwner(source: foreignSource)
         let valid = try XCTUnwrap(owner.makeUnit(proposals: [productionProposal(0)]))
         let foreign = try XCTUnwrap(foreignOwner.makeUnit(proposals: [productionProposal(1)]))
-        let negativeIndex = try XCTUnwrap(owner.makeUnit(proposals: [productionProposal(-1)]))
-        let overflowingIndex = try XCTUnwrap(owner.makeUnit(proposals: [productionProposal(Int.max)]))
+        XCTAssertNil(owner.makeUnit(proposals: [productionProposal(-1)]))
+        XCTAssertNil(owner.makeUnit(proposals: [productionProposal(Int.max)]))
 
-        let result = try owner.compose([foreign, negativeIndex, overflowingIndex, valid])
+        let result = try owner.compose([foreign, valid])
         var expected = Self.source
         expected.replaceSubrange(0..<3, with: [200, 201, 202])
         XCTAssertEqual(Array(result.canonicalImage.rgba8Data), expected)
@@ -73,7 +73,7 @@ final class BeautyLocalRetouchCompositionTests: XCTestCase {
             result.summary,
             BeautyLocalRetouchCompositionSummary(
                 acceptedUnitCount: 1,
-                rejectedUnitCount: 3,
+                rejectedUnitCount: 1,
                 ownedPixelCount: 1,
                 changedPixelCount: 1
             )
@@ -126,27 +126,34 @@ final class BeautyLocalRetouchCompositionTests: XCTestCase {
         let owner = BeautyLocalRetouchCompositionOwner(source: source)
 
         let duplicated = try XCTUnwrap(owner.makeUnit(proposals: [productionProposal(0)]))
-        let rawDuplicate = try XCTUnwrap(owner.makeUnit(proposals: [
-            productionProposal(1, hard: false, weight: 65_536),
-            productionProposal(1, weight: 0),
-        ]))
-        let overBudget = try XCTUnwrap(owner.makeUnit(proposals: [
-            productionProposal(2), productionProposal(3), productionProposal(4),
-        ]))
+        let malformedProposals: [[BeautyLocalPixelProposal]] = [
+            [],
+            [productionProposal(1, hard: false)],
+            [productionProposal(1, weight: 0)],
+            [productionProposal(-1)],
+            [productionProposal(Int.max)],
+            [productionProposal(1), productionProposal(1)],
+            [productionProposal(2), productionProposal(3), productionProposal(4)],
+        ]
+        for attempt in 0..<(BeautyLocalRetouchCompositionOwner.maximumUnitCount * 16) {
+            XCTAssertNil(owner.makeUnit(
+                proposals: malformedProposals[attempt % malformedProposals.count]
+            ))
+        }
         let valid = try XCTUnwrap(owner.makeUnit(proposals: [productionProposal(5)]))
 
-        let result = try owner.compose([duplicated, duplicated, rawDuplicate, overBudget, valid])
+        let result = try owner.compose([duplicated, duplicated, valid])
         XCTAssertEqual(
             result.summary,
             BeautyLocalRetouchCompositionSummary(
                 acceptedUnitCount: 1,
-                rejectedUnitCount: 4,
+                rejectedUnitCount: 2,
                 ownedPixelCount: 1,
                 changedPixelCount: 1
             )
         )
 
-        for index in 4..<8 {
+        for index in 0..<6 {
             XCTAssertNotNil(owner.makeUnit(proposals: [productionProposal(index + 2)]))
         }
         XCTAssertNil(owner.makeUnit(proposals: [productionProposal(15)]))
@@ -216,23 +223,24 @@ final class BeautyLocalRetouchCompositionTests: XCTestCase {
     func testHardReclipZeroWeightAndOutsideUnionIdentity() throws {
         let source = try productionCanonical(bytes: Self.source, width: 3, height: 2)
         let owner = BeautyLocalRetouchCompositionOwner(source: source)
-        let hardFalse = try XCTUnwrap(owner.makeUnit(proposals: [
+        let hardFalse = owner.makeUnit(proposals: [
             productionProposal(1, hard: false, target: (255, 255, 255)),
-        ]))
-        let zeroWeight = try XCTUnwrap(owner.makeUnit(proposals: [
+        ])
+        let zeroWeight = owner.makeUnit(proposals: [
             productionProposal(3, weight: 0, target: (255, 255, 255)),
-        ]))
+        ])
+        XCTAssertNil(hardFalse)
+        XCTAssertNil(zeroWeight)
         let accepted = try XCTUnwrap(owner.makeUnit(proposals: [
             productionProposal(0, weight: 32_768, target: (11, 221, 31)),
         ]))
 
-        let result = try owner.compose([hardFalse, zeroWeight, accepted])
+        let result = try owner.compose([accepted])
         XCTAssertEqual(Array(result.canonicalImage.rgba8Data), Self.standaloneA)
         XCTAssertEqual(
             result.summary,
             BeautyLocalRetouchCompositionSummary(
                 acceptedUnitCount: 1,
-                rejectedUnitCount: 2,
                 ownedPixelCount: 1,
                 changedPixelCount: 1
             )

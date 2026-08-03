@@ -112,7 +112,9 @@ package final class BeautyLocalRetouchCompositionOwner {
     package func makeUnit(
         proposals: [BeautyLocalPixelProposal]
     ) -> BeautyLocalRetouchUnit? {
-        guard pixelCount != nil,
+        guard let pixelCount,
+              proposals.count <= maximumClaimsPerUnit,
+              preflightedClaims(proposals, token: 0, pixelCount: pixelCount) != nil,
               issuedTokens.count < effectiveUnitLimit,
               nextToken < UInt64.max
         else {
@@ -159,9 +161,11 @@ package final class BeautyLocalRetouchCompositionOwner {
                   issuedTokens.contains(unit.token),
                   unit.ownerIdentity === ownerIdentity,
                   unit.sourceBinding == sourceBinding,
-                  !unit.proposals.isEmpty,
-                  unit.proposals.count <= maximumClaimsPerUnit,
-                  let effectiveClaims = preflightedClaims(unit, pixelCount: pixelCount)
+                  let effectiveClaims = preflightedClaims(
+                    unit.proposals,
+                    token: unit.token,
+                    pixelCount: pixelCount
+                  )
             else {
                 rejectedUnitCount += 1
                 continue
@@ -253,13 +257,20 @@ package final class BeautyLocalRetouchCompositionOwner {
     }
 
     private func preflightedClaims(
-        _ unit: BeautyLocalRetouchUnit,
+        _ proposals: [BeautyLocalPixelProposal],
+        token: UInt64,
         pixelCount: Int
     ) -> [BeautyPreflightedLocalRetouchClaim]? {
+        guard !proposals.isEmpty,
+              proposals.count <= maximumClaimsPerUnit
+        else {
+            return nil
+        }
+
         var rawIndices = Set<Int>()
         var effectiveClaims: [BeautyPreflightedLocalRetouchClaim] = []
 
-        for proposal in unit.proposals {
+        for proposal in proposals {
             guard proposal.pixelIndex >= 0,
                   proposal.pixelIndex < pixelCount,
                   rawIndices.insert(proposal.pixelIndex).inserted
@@ -277,7 +288,7 @@ package final class BeautyLocalRetouchCompositionOwner {
             if proposal.isInsideHardEnvelope, proposal.softWeightQ16 > 0 {
                 effectiveClaims.append(
                     BeautyPreflightedLocalRetouchClaim(
-                        token: unit.token,
+                        token: token,
                         proposal: proposal,
                         effectiveWeightQ16: min(UInt64(proposal.softWeightQ16), 65_536)
                     )

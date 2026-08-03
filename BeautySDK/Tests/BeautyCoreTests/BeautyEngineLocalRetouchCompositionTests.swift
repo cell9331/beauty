@@ -133,7 +133,7 @@ final class BeautyEngineLocalRetouchCompositionTests: XCTestCase {
             XCTAssertEqual(invalidBytes, siblingBytes)
             XCTAssertNotEqual(invalidBytes, uncoloredBytes)
             XCTAssertEqual(invalid.compositionObservation.acceptedUnitCount, 2)
-            XCTAssertEqual(invalid.compositionObservation.rejectedUnitCount, 1)
+            XCTAssertEqual(invalid.compositionObservation.rejectedUnitCount, 0)
             XCTAssertEqual(invalid.compositionObservation.changedPixelCount, 2)
         }
     }
@@ -180,7 +180,7 @@ final class BeautyEngineLocalRetouchCompositionTests: XCTestCase {
         XCTAssertEqual(firstObservation.acceptedUnitCount, 3)
         XCTAssertEqual(firstObservation.rejectedUnitCount, 0)
         XCTAssertEqual(middleObservation.acceptedUnitCount, 2)
-        XCTAssertEqual(middleObservation.rejectedUnitCount, 1)
+        XCTAssertEqual(middleObservation.rejectedUnitCount, 0)
         XCTAssertEqual(middleObservation.collisionPixelCount, 0)
         XCTAssertEqual(thirdObservation.acceptedUnitCount, 3)
         XCTAssertEqual(thirdObservation.rejectedUnitCount, 0)
