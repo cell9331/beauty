@@ -26,7 +26,7 @@ package struct BeautyLocalPixelProposal: Equatable, Sendable {
     }
 }
 
-private final class BeautyLocalRetouchOwnerIdentity {}
+private final class BeautyLocalRetouchOwnerIdentity: @unchecked Sendable {}
 
 private struct BeautyPreflightedLocalRetouchClaim {
     let token: UInt64
@@ -35,7 +35,7 @@ private struct BeautyPreflightedLocalRetouchClaim {
 }
 
 package struct BeautyLocalRetouchUnit: Sendable {
-    fileprivate let ownerIdentity: ObjectIdentifier
+    fileprivate let ownerIdentity: BeautyLocalRetouchOwnerIdentity
     fileprivate let sourceBinding: BeautyCanonicalPixelSourceBinding
     fileprivate let token: UInt64
     fileprivate let proposals: [BeautyLocalPixelProposal]
@@ -122,7 +122,7 @@ package final class BeautyLocalRetouchCompositionOwner {
         nextToken += 1
         issuedTokens.insert(nextToken)
         return BeautyLocalRetouchUnit(
-            ownerIdentity: ObjectIdentifier(ownerIdentity),
+            ownerIdentity: ownerIdentity,
             sourceBinding: sourceBinding,
             token: nextToken,
             proposals: proposals
@@ -139,10 +139,9 @@ package final class BeautyLocalRetouchCompositionOwner {
             )
         }
 
-        let localOwnerIdentity = ObjectIdentifier(ownerIdentity)
         var tokenFrequency: [UInt64: Int] = [:]
         tokenFrequency.reserveCapacity(effectiveUnitLimit)
-        for unit in units where unit.ownerIdentity == localOwnerIdentity
+        for unit in units where unit.ownerIdentity === ownerIdentity
             && unit.sourceBinding == sourceBinding
             && issuedTokens.contains(unit.token)
         {
@@ -158,7 +157,7 @@ package final class BeautyLocalRetouchCompositionOwner {
         for unit in units {
             guard tokenFrequency[unit.token] == 1,
                   issuedTokens.contains(unit.token),
-                  unit.ownerIdentity == localOwnerIdentity,
+                  unit.ownerIdentity === ownerIdentity,
                   unit.sourceBinding == sourceBinding,
                   !unit.proposals.isEmpty,
                   unit.proposals.count <= maximumClaimsPerUnit,

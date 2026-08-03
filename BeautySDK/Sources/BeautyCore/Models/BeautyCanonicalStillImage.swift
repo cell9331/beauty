@@ -3,13 +3,40 @@ import CoreImage
 import Foundation
 import ImageIO
 
+private final class BeautyCanonicalPixelSourceIdentity: @unchecked Sendable {}
+
 /// Exact package-level authorization for pixels owned by one canonical carrier.
 package struct BeautyCanonicalPixelSourceBinding: Equatable, Sendable {
-    package let storageIdentity: ObjectIdentifier
+    private let identity: BeautyCanonicalPixelSourceIdentity
     package let width: Int
     package let height: Int
     package let rowBytes: Int
     package let byteCount: Int
+
+    fileprivate init(
+        identity: BeautyCanonicalPixelSourceIdentity,
+        width: Int,
+        height: Int,
+        rowBytes: Int,
+        byteCount: Int
+    ) {
+        self.identity = identity
+        self.width = width
+        self.height = height
+        self.rowBytes = rowBytes
+        self.byteCount = byteCount
+    }
+
+    package static func == (
+        lhs: BeautyCanonicalPixelSourceBinding,
+        rhs: BeautyCanonicalPixelSourceBinding
+    ) -> Bool {
+        lhs.identity === rhs.identity
+            && lhs.width == rhs.width
+            && lhs.height == rhs.height
+            && lhs.rowBytes == rhs.rowBytes
+            && lhs.byteCount == rhs.byteCount
+    }
 }
 
 /// One request-owned, normalized still-image raster for package-internal consumers.
@@ -95,7 +122,7 @@ package struct BeautyCanonicalStillImage: @unchecked Sendable {
 
     package var pixelSourceBinding: BeautyCanonicalPixelSourceBinding {
         BeautyCanonicalPixelSourceBinding(
-            storageIdentity: ObjectIdentifier(storage),
+            identity: storage.pixelSourceIdentity,
             width: width,
             height: height,
             rowBytes: rowBytes,
@@ -104,6 +131,7 @@ package struct BeautyCanonicalStillImage: @unchecked Sendable {
     }
 
     private final class Storage: @unchecked Sendable {
+        let pixelSourceIdentity = BeautyCanonicalPixelSourceIdentity()
         let rgba8Data: Data
         let image: CIImage
 

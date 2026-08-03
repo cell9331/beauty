@@ -80,6 +80,41 @@ final class BeautyLocalRetouchCompositionTests: XCTestCase {
         )
     }
 
+    func testProductionStaleUnitCannotAuthorizeAcrossCarrierAndOwnerChurn() throws {
+        let sourceBytes = productionSixteenPixelSource()
+        let staleUnit: BeautyLocalRetouchUnit = try {
+            let staleSource = try productionCanonical(bytes: sourceBytes, width: 16, height: 1)
+            let staleOwner = BeautyLocalRetouchCompositionOwner(source: staleSource)
+            return try XCTUnwrap(staleOwner.makeUnit(proposals: [
+                productionProposal(0, target: (255, 0, 0)),
+            ]))
+        }()
+
+        for _ in 0..<2_048 {
+            try autoreleasepool {
+                let currentSource = try productionCanonical(bytes: sourceBytes, width: 16, height: 1)
+                let currentOwner = BeautyLocalRetouchCompositionOwner(source: currentSource)
+                let currentUnit = try XCTUnwrap(currentOwner.makeUnit(proposals: [
+                    productionProposal(1, target: (0, 255, 0)),
+                ]))
+                let result = try currentOwner.compose([staleUnit, currentUnit])
+
+                var expected = sourceBytes
+                expected.replaceSubrange(4..<7, with: [0, 255, 0])
+                XCTAssertEqual(Array(result.canonicalImage.rgba8Data), expected)
+                XCTAssertEqual(
+                    result.summary,
+                    BeautyLocalRetouchCompositionSummary(
+                        acceptedUnitCount: 1,
+                        rejectedUnitCount: 1,
+                        ownedPixelCount: 1,
+                        changedPixelCount: 1
+                    )
+                )
+            }
+        }
+    }
+
     func testProductionIssuanceCapsDuplicateTokensAndRawDuplicatesPreserveValidSibling() throws {
         var pixels: [UInt8] = []
         for value in 0..<16 {
