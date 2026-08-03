@@ -57,14 +57,25 @@ EXPECTED_TEETH_DECISION = {
     "rejected_count": 0,
     "naturalness_weight": 0,
 }
+EXPECTED_MATRIX_ROW = "| Beauty shaping | 嘴唇 | partial | `BeautyEffects` | `BeautyDetection` mouth landmarks, `BeautyRender` unified warp | Geometry: `mouthSize`/大小, `mouthWidth`/宽度, `smile`/微笑, `mouthYPosition`/上下, `mouthTilt`/倾斜, `mouthXPosition`/左右, `lipPeakDefinition`/M唇, and `lipPlump`/丰唇; `lipColor` remains color-only. | `白牙` still needs teeth-region segmentation and color-retouch design. | Phases 33-34 cover three shipped rows; Phases 38-40 independently cover the five remaining geometry rows through contract, output, exact safety, privacy, and boundary evidence. | Phase 40 promotes exactly five rows; the branch remains partial solely because `白牙` is future. |"
+EXPECTED_LEDGER_ROW = "| `嘴唇` | 白牙 | future | None. | Needs local teeth segmentation/retouch design. |"
+EXPECTED_PRODUCT_ANCHOR = "- Current decisions are derived from the explicit empty eligible/review inventory and independently closed: teeth and sclera each record `missing_genuine_positive` plus `missing_genuine_negative`; upper-eyelid fullness records both missing polarities plus `non_warp_design_unqualified`. Each row has zero eligible/reviewed/accepted/rejected counts and zero naturalness weight. Authorization or possible negative context alone discharges no prerequisite; one sibling can open later without promoting another."
+EXPECTED_QUALITY_ANCHOR = "- The repository decision ledger is regenerated from an explicit empty eligible/review inventory. Its three independent rows have zero eligible/reviewed/accepted/rejected counts and zero naturalness weight; teeth and sclera each record both missing genuine polarities, while upper-eyelid fullness also records `non_warp_design_unqualified`."
+FORBIDDEN_ANATOMY_PATTERN = r"(?i)\b(?:teeth|tooth|dental|oral)[A-Za-z0-9_]*\b"
+FORBIDDEN_ALIAS_PATTERN = (
+    r"(?is)(?:teeth|tooth|dental|oral).{0,120}"
+    r"(?:skinWhitening|brightness|lipColor|mouth|lip|opaque|composition|sibling|candidate)|"
+    r"(?:skinWhitening|brightness|lipColor|mouth|lip|opaque|composition|sibling|candidate).{0,120}"
+    r"(?:teeth|tooth|dental|oral)"
+)
 
 
 def configure_root(root: pathlib.Path) -> None:
     global ROOT, PHASE, PACKAGE, SOURCES, PARAMETERS, MANIFEST, PRESETS, RENDERER
     global RESOLVER, ADMISSION, ENGINE, TESTING_SUPPORT, PARAMETER_TEST
     global RESOURCE_TEST, RENDERER_TEST, FOUNDATION_TEST, DEMO_SOURCE, DEMO_CATEGORY
-    global DEMO_CONTROL, DEMO_PANEL, DEMO_TEST, FEATURE_MATRIX, SHAPE_LEDGER
-    global DECISIONS, INVENTORY
+    global DEMO_CONTROL, DEMO_PANEL, DEMO_STORE, DEMO_TEST, FEATURE_MATRIX
+    global SHAPE_LEDGER, PRODUCT_SENSE, QUALITY_SCORE, DECISIONS, INVENTORY, EVIDENCE
 
     ROOT = root.resolve()
     PHASE = ROOT / ".planning" / "phases" / PHASE_NAME
@@ -86,11 +97,15 @@ def configure_root(root: pathlib.Path) -> None:
     DEMO_CATEGORY = ROOT / "BeautyDemo" / "BeautyDemo" / "Panel" / "BeautyCategoryModels.swift"
     DEMO_CONTROL = ROOT / "BeautyDemo" / "BeautyDemo" / "Panel" / "BeautyControlDescriptor.swift"
     DEMO_PANEL = ROOT / "BeautyDemo" / "BeautyDemo" / "Editor" / "MeituEditorToolPanelView.swift"
+    DEMO_STORE = ROOT / "BeautyDemo" / "BeautyDemo" / "State" / "BeautyParameterStore.swift"
     DEMO_TEST = ROOT / "BeautyDemo" / "BeautyDemoTests" / "BeautyDemoViewStateTests.swift"
     FEATURE_MATRIX = ROOT / "docs" / "meitu-function-blueprint" / "FEATURE_MATRIX.md"
     SHAPE_LEDGER = ROOT / "docs" / "meitu-function-blueprint" / "SHAPE_FEATURE_LEDGER.md"
+    PRODUCT_SENSE = ROOT / "PRODUCT_SENSE.md"
+    QUALITY_SCORE = ROOT / "QUALITY_SCORE.md"
     DECISIONS = ROOT / ".planning" / "phases" / "54-rights-approved-evidence-and-eligibility-decisions" / "54-EVIDENCE-DECISIONS.json"
     INVENTORY = PHASE / "56-THREAT-INVENTORY.json"
+    EVIDENCE = PHASE / "56-TEETH-CLOSED-GATE-EVIDENCE.md"
 
 
 configure_root(ROOT)
@@ -151,7 +166,8 @@ def required_paths() -> tuple[pathlib.Path, ...]:
         PACKAGE, PARAMETERS, MANIFEST, PRESETS, RENDERER, RESOLVER, ADMISSION,
         ENGINE, TESTING_SUPPORT, PARAMETER_TEST, RESOURCE_TEST, RENDERER_TEST,
         FOUNDATION_TEST, DEMO_SOURCE, DEMO_CATEGORY, DEMO_CONTROL, DEMO_PANEL,
-        DEMO_TEST, FEATURE_MATRIX, SHAPE_LEDGER, DECISIONS, INVENTORY,
+        DEMO_STORE, DEMO_TEST, FEATURE_MATRIX, SHAPE_LEDGER, PRODUCT_SENSE,
+        QUALITY_SCORE, DECISIONS, INVENTORY, EVIDENCE,
     )
 
 
@@ -256,14 +272,85 @@ def compatibility_failures() -> set[str]:
     renderer_ids = tuple(re.findall(r'\bid:\s*"([^"]+)"', RENDERER.read_text(encoding="utf-8")))
     if len(expected_ids) != 72 or len(set(expected_ids)) != 72 or renderer_ids != expected_ids:
         failures.add("R56-COMPATIBILITY")
+
+    exact_test_anchors = {
+        PARAMETER_TEST: (
+            "XCTAssertEqual(stored.count, 59)",
+            "XCTAssertEqual(coding, stored)",
+            "XCTAssertEqual(encoded.count, 58)",
+            'Set(stored).subtracting(["filterId"])',
+            "XCTAssertEqual(Mirror(reflecting: decoded).children.count, 59)",
+        ),
+        RESOURCE_TEST: (
+            'let expectedIDs = ["natural", "clear", "refined", "male-natural", "id-photo-natural"]',
+            "XCTAssertEqual(presets.count, 5)",
+            "XCTAssertEqual(Mirror(reflecting: preset.parameters).children.count, 59)",
+        ),
+        RENDERER_TEST: (
+            "XCTAssertEqual(Self.expectedRendererCaseIDs.count, 72)",
+            "XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 72)",
+            'XCTAssertTrue(Self.expectedRendererCaseIDs.contains("skinWhitening_0p50"))',
+            'XCTAssertTrue(Self.expectedRendererCaseIDs.contains("brightness_plus0p25"))',
+            'XCTAssertTrue(Self.expectedRendererCaseIDs.contains("lipColor_0p50"))',
+            'XCTAssertTrue(Self.expectedRendererCaseIDs.contains("mouthWidth_plus0p35"))',
+            'XCTAssertEqual(source.components(separatedBy: "engine.processResult(").count - 1, 1)',
+        ),
+        FOUNDATION_TEST: (
+            "XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionCount, 0)",
+            "XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionNames, [])",
+            "XCTAssertEqual(resultOutput.warnings, [])",
+            '"beauty.effects.activeCount": 0',
+            '"beauty.effects.cappedCount": 0',
+            "XCTAssertEqual(resultOutput.detectionSummary, .notRun)",
+            "XCTAssertEqual(harness.localProviderCount, 0)",
+            "XCTAssertEqual(harness.pixelBufferSummaryAvailability, \"notRun\")",
+            "XCTAssertEqual(harness.compositionObservation.compositionInvocationCount, 0)",
+        ),
+    }
+    for path, anchors in exact_test_anchors.items():
+        text = path.read_text(encoding="utf-8")
+        if any(anchor not in text for anchor in anchors):
+            failures.add("R56-COMPATIBILITY")
+    exact_test_counts = {
+        (PARAMETER_TEST, "XCTAssertEqual(stored.count, 59)"): 2,
+        (RESOURCE_TEST, "XCTAssertEqual(presets.count, 5)"): 6,
+        (RENDERER_TEST, "XCTAssertEqual(Self.expectedRendererCaseIDs.count, 72)"): 2,
+    }
+    for (path, anchor), expected_count in exact_test_counts.items():
+        if path.read_text(encoding="utf-8").count(anchor) != expected_count:
+            failures.add("R56-COMPATIBILITY")
     return failures
 
 
 def production_failures() -> set[str]:
     failures: set[str] = set()
     pattern = "|".join(map(re.escape, CANDIDATE_NAMES))
-    if run_rg(pattern, (SOURCES,)) == "match":
+    if run_rg(FORBIDDEN_ANATOMY_PATTERN, (SOURCES,)) == "match":
         failures.add("R56-PUBLIC")
+
+    package_text = PACKAGE.read_text(encoding="utf-8")
+    if re.search(FORBIDDEN_ANATOMY_PATTERN, package_text):
+        failures.add("R56-PUBLIC")
+    if any(
+        re.search(FORBIDDEN_ANATOMY_PATTERN, path.name)
+        for path in SOURCES.rglob("*")
+    ):
+        failures.add("R56-PUBLIC")
+    preset_names = tuple(path.name for path in PRESETS.iterdir())
+    if any(re.search(FORBIDDEN_ANATOMY_PATTERN, name) for name in preset_names):
+        failures.add("R56-PUBLIC")
+    if run_rg(FORBIDDEN_ANATOMY_PATTERN, (PRESETS,), glob="*.json") == "match":
+        failures.add("R56-PUBLIC")
+    manifest_text = MANIFEST.read_text(encoding="utf-8")
+    if re.search(FORBIDDEN_ANATOMY_PATTERN, manifest_text):
+        failures.add("R56-PUBLIC")
+
+    alias_text = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in (PARAMETERS, RESOLVER, ADMISSION, ENGINE, TESTING_SUPPORT, RENDERER)
+    )
+    if re.search(FORBIDDEN_ALIAS_PATTERN, alias_text):
+        failures.add("R56-ALIAS")
 
     resolver_text = RESOLVER.read_text(encoding="utf-8")
     admission_text = ADMISSION.read_text(encoding="utf-8")
@@ -310,7 +397,29 @@ def demo_failures() -> set[str]:
 
     control_text = DEMO_CONTROL.read_text(encoding="utf-8")
     panel_text = DEMO_PANEL.read_text(encoding="utf-8")
-    if any(name in control_text + panel_text for name in CANDIDATE_NAMES):
+    store_text = DEMO_STORE.read_text(encoding="utf-8")
+    if (
+        control_text.count(".teeth") != 1
+        or "case .eyebrows, .teeth, .hairline:" not in control_text
+        or any(name in control_text + panel_text + store_text for name in CANDIDATE_NAMES)
+        or re.search(r"(?i)\b(?:tooth|dental|oral)[A-Za-z0-9_]*\b", control_text + panel_text + store_text)
+    ):
+        failures.add("R56-DEMO")
+    test_text = DEMO_TEST.read_text(encoding="utf-8")
+    demo_test_anchors = (
+        '"lips.mShape", "lips.full", "lips.smile", "lips.teeth"',
+        "XCTAssertFalse(teeth.isSupported)",
+        "XCTAssertNil(teeth.controlID)",
+        'XCTAssertEqual(teeth.unavailableReason, "v1.1 暂未实现该美图参考功能")',
+        "XCTAssertFalse(state.activeAvailability.isEnabled)",
+        "XCTAssertTrue(state.controls.isEmpty)",
+        "XCTAssertTrue(state.disabledControls.isEmpty)",
+        "XCTAssertFalse(state.showsResetAll)",
+    )
+    if (
+        any(anchor not in test_text for anchor in demo_test_anchors)
+        or test_text.count("XCTAssertNil(teeth.controlID)") != 2
+    ):
         failures.add("R56-DEMO")
     return failures
 
@@ -319,13 +428,55 @@ def ledger_failures() -> set[str]:
     failures: set[str] = set()
     matrix = FEATURE_MATRIX.read_text(encoding="utf-8")
     ledger = SHAPE_LEDGER.read_text(encoding="utf-8")
+    product = PRODUCT_SENSE.read_text(encoding="utf-8")
+    quality = QUALITY_SCORE.read_text(encoding="utf-8")
     if (
-        "| Beauty shaping | 嘴唇 | partial |" not in matrix
-        or "the branch remains partial solely because `白牙` is future" not in matrix
-        or "| `嘴唇` | 白牙 | future | None. |" not in ledger
+        matrix.count(EXPECTED_MATRIX_ROW) != 1
+        or ledger.count(EXPECTED_LEDGER_ROW) != 1
+        or product.count(EXPECTED_PRODUCT_ANCHOR) != 1
+        or quality.count(EXPECTED_QUALITY_ANCHOR) != 1
     ):
         failures.add("R56-LEDGER")
     return failures
+
+
+def evidence_failures() -> set[str]:
+    text = EVIDENCE.read_text(encoding="utf-8")
+    required = (
+        "status: draft",
+        "TEETH-01 | `false_branch_exact_absence`",
+        "TEETH-02 | `not_applicable_closed_gate`",
+        "TEETH-03 | `not_applicable_closed_gate`",
+        "TEETH-04 | `not_applicable_closed_gate`",
+        "TEETH-05 | `not_applicable_closed_gate`",
+        "TEETH-06 | `no_promotion`",
+        "59 / 5 / 72",
+        "literal `.none`",
+        "`lips.teeth` / `白牙` remains disabled",
+        "`白牙 = future`",
+        "`嘴唇 = partial`",
+        "56-01-01",
+        "56-02-01",
+        "56-02-02",
+        "56-03-01",
+        "T-56-01",
+        "T-56-07",
+        "pending",
+    )
+    if any(item not in text for item in required):
+        return {"R56-EVIDENCE"}
+    if re.search(r"/(?:Users|private|Volumes|home)/", text, re.IGNORECASE):
+        return {"R56-PRIVACY"}
+    if re.search(r"\b[a-f0-9]{64}\b|\.(?:jpg|jpeg|png|heic)\b", text, re.IGNORECASE):
+        return {"R56-PRIVACY"}
+    if re.search(
+        r"(?im)^\s*(?:[-*]\s*)?(?:portrait_?path|file_?name|sha(?:256)?|hash|"
+        r"rights(?:_record)?|reviewer|media|mask|coordinates?|pixels?|digest|"
+        r"raw_?(?:match|error))\s*[:=|]",
+        text,
+    ):
+        return {"R56-PRIVACY"}
+    return set()
 
 
 def live_failures() -> set[str]:
@@ -347,7 +498,18 @@ def live_failures() -> set[str]:
     failures.update(production_failures())
     failures.update(demo_failures())
     failures.update(ledger_failures())
+    failures.update(evidence_failures())
     return failures
+
+
+def classified_live_failures() -> set[str]:
+    try:
+        return live_failures()
+    except (
+        OSError, UnicodeError, ValueError, KeyError, TypeError,
+        ScannerFailure, AssertionError, json.JSONDecodeError,
+    ):
+        return {"R56-UNCLASSIFIED"}
 
 
 def copy_live_fixture(source_root: pathlib.Path, destination_root: pathlib.Path) -> None:
@@ -367,8 +529,11 @@ def copy_live_fixture(source_root: pathlib.Path, destination_root: pathlib.Path)
     for relative in (
         "docs/meitu-function-blueprint/FEATURE_MATRIX.md",
         "docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md",
+        "PRODUCT_SENSE.md",
+        "QUALITY_SCORE.md",
         ".planning/phases/54-rights-approved-evidence-and-eligibility-decisions/54-EVIDENCE-DECISIONS.json",
         f".planning/phases/{PHASE_NAME}/56-THREAT-INVENTORY.json",
+        f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md",
     ):
         destination = destination_root / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
@@ -388,7 +553,7 @@ def assert_mutation(
         raise AssertionError("mutation anchor absent")
     path.write_text(baseline.replace(original, replacement, 1), encoding="utf-8")
     try:
-        if expected_rule not in live_failures():
+        if expected_rule not in classified_live_failures():
             raise AssertionError("live mutation accepted")
     finally:
         path.write_text(baseline, encoding="utf-8")
@@ -398,7 +563,7 @@ def assert_decision_document(document: object, expected_rule: str = "R56-GATE") 
     baseline = DECISIONS.read_text(encoding="utf-8")
     DECISIONS.write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     try:
-        if expected_rule not in live_failures():
+        if expected_rule not in classified_live_failures():
             raise AssertionError("decision mutation accepted")
     finally:
         DECISIONS.write_text(baseline, encoding="utf-8")
@@ -492,6 +657,37 @@ def assert_decision_input_failures() -> int:
     return cases
 
 
+def assert_missing_fixture(path: pathlib.Path, expected_rule: str) -> None:
+    moved = path.with_name(f"{path.name}.missing")
+    path.rename(moved)
+    try:
+        if expected_rule not in classified_live_failures():
+            raise AssertionError("missing fixture accepted")
+    finally:
+        moved.rename(path)
+
+
+def assert_added_file(path: pathlib.Path, contents: str, expected_rule: str) -> None:
+    if path.exists():
+        raise AssertionError("added-file fixture already exists")
+    path.write_text(contents, encoding="utf-8")
+    try:
+        if expected_rule not in classified_live_failures():
+            raise AssertionError("added fixture accepted")
+    finally:
+        path.unlink()
+
+
+def assert_malformed_json(path: pathlib.Path) -> None:
+    baseline = path.read_text(encoding="utf-8")
+    path.write_text("{malformed", encoding="utf-8")
+    try:
+        if "R56-UNCLASSIFIED" not in classified_live_failures():
+            raise AssertionError("malformed JSON accepted")
+    finally:
+        path.write_text(baseline, encoding="utf-8")
+
+
 def self_test(only: str | None) -> int:
     original_root = ROOT
     cases = 0
@@ -518,30 +714,71 @@ def self_test(only: str | None) -> int:
 
     mutations = {
         "T-56-02": (
-            "BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift",
-            "public var skinSmoothing: Float", "public var teethWhitening: Float\n    public var skinSmoothing: Float", "R56-PUBLIC",
+            ("BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift", "public var skinSmoothing: Float", "public var teethWhitening: Float\n    public var skinSmoothing: Float", "R56-PUBLIC"),
+            ("BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift", "case skinSmoothing", "case teethWhitening\n        case skinSmoothing", "R56-PUBLIC"),
+            ("BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift", "skinSmoothing: Float = 0,", "teethWhitening: Float = 0,\n        skinSmoothing: Float = 0,", "R56-PUBLIC"),
+            ("BeautySDK/Sources/BeautyExampleRenderer/main.swift", 'id: "skinWhitening_0p50",', 'id: "teethWhitening_savedOutput",', "R56-PUBLIC"),
+            ("BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift", "let mouthProvider = MouthWarpProvider()", "let teethMaskProvider = MouthWarpProvider()\n        let mouthProvider = MouthWarpProvider()", "R56-PUBLIC"),
+            ("BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift", "struct BeautyRetainedMaskIteration", "struct TeethWhiteningTransform {}\n\nstruct BeautyRetainedMaskIteration", "R56-PUBLIC"),
+            ("BeautySDK/Sources/BeautySDK/BeautyEngineTestingSupport.swift", "public static let productionAdmissionNames: [String] = []", 'public static let productionAdmissionNames = ["teeth_whitening"]', "R56-PUBLIC"),
+            ("BeautySDK/Sources/BeautySDK/BeautyEngine.swift", "private var resetGeneration: UInt64 = 0", "private var teethRealtimeResetRoute: UInt64 = 0\n    private var resetGeneration: UInt64 = 0", "R56-PUBLIC"),
+            ("BeautySDK/Sources/BeautyEffects/Planning/BeautyLocalRetouchAdmission.swift", "opaqueDemandCount: 0", "opaqueDemandCount: 1", "R56-ADMISSION"),
+            ("BeautySDK/Sources/BeautyResources/Resources/Presets/natural.json", '"parameters": {', '"parameters": {\n    "teethWhitening": 0.5,', "R56-PUBLIC"),
+            ("BeautySDK/Sources/BeautyResources/Resources/manifest.json", '"presets": [', '"teethWhiteningResource": "model",\n  "presets": [', "R56-PUBLIC"),
+            ("BeautySDK/Package.swift", '.target(name: "BeautyCore"),', '.target(name: "TeethWhiteningModel"),\n        .target(name: "BeautyCore"),', "R56-PUBLIC"),
+            ("BeautySDK/Sources/BeautySDK/BeautyEngine.swift", "import Foundation", "import Foundation\n// teethWhitening network storage model route", "R56-PUBLIC"),
+            ("BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift", "return .none", "// inert teethWhitening route\n        return .none", "R56-PUBLIC"),
         ),
         "T-56-03": (
-            "BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift",
-            "return .none", "return BeautyLocalRetouchAdmission(opaqueDemandCount: 1)", "R56-ADMISSION",
+            ("BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift", "import BeautyCore", "import BeautyCore\n// teethWhitening aliases skinWhitening", "R56-ALIAS"),
+            ("BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift", "import BeautyDetection", "import BeautyDetection\n// teethWhitening aliases brightness", "R56-ALIAS"),
+            ("BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift", "public enum BeautyEffectResolver", "// lipColor aliases teethWhitening\npublic enum BeautyEffectResolver", "R56-ALIAS"),
+            ("BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift", "struct BeautyRetainedMaskIteration", "// mouth geometry aliases teethWhitening\nstruct BeautyRetainedMaskIteration", "R56-ALIAS"),
+            ("BeautySDK/Sources/BeautySDK/BeautyEngineTestingSupport.swift", "private let invocationLock = NSLock()", "// opaque composition aliases teethWhitening\n    private let invocationLock = NSLock()", "R56-ALIAS"),
+            ("BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift", "return .none", "// teethWhitening aliases sibling candidate\n        return .none", "R56-ALIAS"),
+            ("BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift", "return .none", "return BeautyLocalRetouchAdmission(opaqueDemandCount: 1)", "R56-ADMISSION"),
         ),
         "T-56-04": (
-            "BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift",
-            'unsupported("lips.teeth", title: "白牙", icon: "sparkles")',
-            'supported("lips.teeth", title: "白牙", icon: "sparkles", controlID: .lipColor)',
-            "R56-DEMO",
+            ("BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift", 'unsupported("lips.teeth", title: "白牙", icon: "sparkles")', 'supported("lips.teeth", title: "白牙", icon: "sparkles", controlID: .lipColor)', "R56-DEMO"),
+            ("BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift", 'unsupported("lips.teeth", title: "白牙", icon: "sparkles")', 'unsupported("lips.teeth.renamed", title: "白牙", icon: "sparkles")', "R56-DEMO"),
+            ("BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift", 'unsupported("lips.teeth", title: "白牙", icon: "sparkles")', 'unsupported("lips.teeth", title: "牙齿美白", icon: "sparkles")', "R56-DEMO"),
+            ("BeautyDemo/BeautyDemo/Panel/BeautyCategoryModels.swift", 'id: .teeth,\n            title: "Teeth",\n            availability: .disabled(', 'id: .teeth,\n            title: "Teeth",\n            availability: .available /* enabled teeth */ (', "R56-DEMO"),
+            ("BeautyDemo/BeautyDemo/Panel/BeautyControlDescriptor.swift", "case skinSmoothing", "case teethWhitening\n    case skinSmoothing", "R56-DEMO"),
+            ("BeautyDemo/BeautyDemo/State/BeautyParameterStore.swift", "case custom", "case teethWhitening\n    case custom", "R56-DEMO"),
+            ("BeautyDemo/BeautyDemo/Editor/MeituEditorToolPanelView.swift", "let range = selectedTool.controlID", "let teethWhitening = selectedTool.controlID\n        let range = selectedTool.controlID", "R56-DEMO"),
+            ("BeautyDemo/BeautyDemo/Panel/BeautyControlDescriptor.swift", "case .eyebrows, .teeth, .hairline:", "case .eyebrows, .hairline:\n            return []\n        case .teeth:\n            return mouthControls", "R56-DEMO"),
+            ("BeautyDemo/BeautyDemoTests/BeautyDemoViewStateTests.swift", "XCTAssertNil(teeth.controlID)", "XCTAssertEqual(teeth.controlID, .lipColor)", "R56-DEMO"),
         ),
         "T-56-05": (
-            f".planning/phases/{PHASE_NAME}/56-THREAT-INVENTORY.json",
-            '"schema_version": 1,', '"schema_version": 1,\n  "portrait_path": "sensitive",', "R56-PRIVACY",
+            (f".planning/phases/{PHASE_NAME}/56-THREAT-INVENTORY.json", '"schema_version": 1,', '"schema_version": 1,\n  "portrait_path": "sensitive",', "R56-PRIVACY"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: draft", "status: draft\nportrait_path: /Users/subject/portrait", "R56-PRIVACY"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: draft", "status: draft\nhash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "R56-PRIVACY"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: draft", "status: draft\nrights_record: internal", "R56-PRIVACY"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: draft", "status: draft\nmedia: portrait.png", "R56-PRIVACY"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: draft", "status: draft\nmask: encoded", "R56-PRIVACY"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: draft", "status: draft\ncoordinate: 1,2", "R56-PRIVACY"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: draft", "status: draft\npixel: 42", "R56-PRIVACY"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: draft", "status: draft\ndigest: stable-output", "R56-PRIVACY"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: draft", "status: draft\nraw_match: source-line", "R56-PRIVACY"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: draft", "status: draft\nraw_error: scanner-detail", "R56-PRIVACY"),
         ),
         "T-56-06": (
-            "docs/meitu-function-blueprint/FEATURE_MATRIX.md",
-            "| Beauty shaping | 嘴唇 | partial |", "| Beauty shaping | 嘴唇 | implemented |", "R56-LEDGER",
+            ("docs/meitu-function-blueprint/FEATURE_MATRIX.md", "| Beauty shaping | 嘴唇 | partial |", "| Beauty shaping | 嘴唇 | implemented |", "R56-LEDGER"),
+            ("docs/meitu-function-blueprint/FEATURE_MATRIX.md", "the branch remains partial solely because `白牙` is future", "the branch is complete using sibling evidence", "R56-LEDGER"),
+            ("docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md", "| `嘴唇` | 白牙 | future | None. |", "| `嘴唇` | 白牙 | implemented | sibling evidence |", "R56-LEDGER"),
+            ("docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md", "Needs local teeth segmentation/retouch design.", "Borrow Phase 55 composition evidence.", "R56-LEDGER"),
+            ("PRODUCT_SENSE.md", "one sibling can open later without promoting another", "one sibling opens and promotes teeth", "R56-LEDGER"),
+            ("QUALITY_SCORE.md", "teeth and sclera each record both missing genuine polarities", "teeth borrows sclera evidence", "R56-LEDGER"),
         ),
         "T-56-07": (
-            "BeautySDK/Sources/BeautyExampleRenderer/main.swift",
-            'id: "lipPlump_0p25"', 'id: "lipPlumpRemoved_0p25"', "R56-COMPATIBILITY",
+            ("BeautySDK/Sources/BeautyExampleRenderer/main.swift", 'id: "lipPlump_0p25"', 'id: "lipPlumpRemoved_0p25"', "R56-COMPATIBILITY"),
+            ("BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift", "public var skinSmoothing: Float", "public var skinSmoothingRenamed: Float", "R56-COMPATIBILITY"),
+            ("BeautySDK/Sources/BeautyResources/Resources/manifest.json", '"id": "natural"', '"id": "natural-swapped"', "R56-COMPATIBILITY"),
+            ("BeautySDK/Tests/BeautyCoreTests/BeautyParametersTests.swift", "XCTAssertEqual(stored.count, 59)", "XCTAssertEqual(stored.count, 58)", "R56-COMPATIBILITY"),
+            ("BeautySDK/Tests/BeautyResourcesTests/BeautyResourceCatalogTests.swift", "XCTAssertEqual(presets.count, 5)", "XCTAssertGreaterThanOrEqual(presets.count, 5)", "R56-COMPATIBILITY"),
+            ("BeautySDK/Tests/BeautyCoreTests/BeautyRendererOutputRegressionTests.swift", "XCTAssertEqual(Self.expectedRendererCaseIDs.count, 72)", "XCTAssertGreaterThanOrEqual(Self.expectedRendererCaseIDs.count, 72)", "R56-COMPATIBILITY"),
+            ("BeautySDK/Tests/BeautyCoreTests/BeautyEngineLocalRetouchFoundationTests.swift", "XCTAssertEqual(resultOutput.warnings, [])", "XCTAssertNotNil(resultOutput.warnings)", "R56-COMPATIBILITY"),
+            ("BeautySDK/Tests/BeautyCoreTests/BeautyEngineLocalRetouchFoundationTests.swift", "XCTAssertEqual(resultOutput.detectionSummary, .notRun)", "XCTAssertNotNil(resultOutput.detectionSummary)", "R56-COMPATIBILITY"),
         ),
     }
     selected = THREAT_IDS if only is None else (only,)
@@ -556,18 +793,19 @@ def self_test(only: str | None) -> int:
                 if threat_id == "T-56-01":
                     cases += assert_decision_input_failures()
                 else:
-                    assert_mutation(fixture_root, *mutations[threat_id])
-                    cases += 1
+                    for mutation in mutations[threat_id]:
+                        assert_mutation(fixture_root, *mutation)
+                        cases += 1
 
-            if only is None:
-                missing = fixture_root / "BeautySDK" / "Sources" / "BeautyEffects" / "Planning" / "BeautyLocalRetouchAdmission.swift"
-                moved = missing.with_suffix(".swift.missing")
-                missing.rename(moved)
-                try:
-                    assert live_failures() == {"R56-REQUIRED"}
+                if threat_id == "T-56-02":
+                    assert_added_file(PRESETS / "teeth-whitening.json", "{}\n", "R56-PUBLIC")
                     cases += 1
-                finally:
-                    moved.rename(missing)
+                if threat_id == "T-56-07":
+                    assert_missing_fixture(ADMISSION, "R56-REQUIRED")
+                    assert_missing_fixture(PARAMETER_TEST, "R56-REQUIRED")
+                    assert_malformed_json(MANIFEST)
+                    cases += 3
+
         finally:
             configure_root(original_root)
 
