@@ -724,3 +724,9 @@ Before a release-like build:
 - Composition is stateless per request. Empty, valid-invalid-valid, thrown-call cleanup, both CIImage entries, no-face/missing-support continuation, and pixel-buffer/reset zero-work behavior are executable and green.
 - The post-review checker passes a 27-case self-test, including 14 executable live-Swift fixture mutations; the earlier 44-case synthetic count is historical only. Current focused/full regression counts are recorded in the Phase 55 evidence artifact. No HIGH mitigation is skipped.
 - These results establish bounded deterministic mechanics and recovery only. They set no realtime, latency, memory, device-quality, optimized-performance, naturalness, commercial, packaging, shipping, or release-readiness guarantee.
+
+### Phase 56 Closed Teeth Reliability Closeout
+
+- Closed-gate evaluation is deterministic and fail-closed: malformed, missing, renamed, duplicated, competing, nonzero, parse-failed, scanner-failed, or unclassified authority/source inputs cannot become a pass.
+- Both existing still-image entries, exact no-admission bytes/warnings/metrics/detection summary, unrelated shipped effects, valid-invalid-valid recovery, and pixel-buffer/reset zero local-retouch work remain unchanged. Production admission is literal `.none`.
+- The final gate passes 96 focused SDK tests, the 97-case checker, 539 full SwiftPM tests with six opt-in Vision skips, and 119/119 explicit Simulator tests. These results establish closed-route stability only, not a tooth algorithm, output, device/performance, naturalness, commercial, shipping, or release guarantee.

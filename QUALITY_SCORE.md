@@ -596,3 +596,9 @@ SDK 1.0 readiness:
 - The post-review checker passes a 27-case self-test, including 14 executable mutations of temporary copies of the actual Swift fixtures/classifier, plus live classification. This supersedes the historical 44-case synthetic-contract count; current focused regression counts are recorded in the Phase 55 evidence artifact.
 - Post-fix focused gates pass composition 21/21, facade/foundation 29/29, and compatibility 74/74. Full SwiftPM passes 534 executed with six documented opt-in Vision skips and zero failures. Explicit iPhone 17e/iOS 26.5 Demo build/test passes; the retained xcresult-backed Demo denominator is 118/118 with zero failures/skips. Schema, UI, and diff gates are green.
 - Credit is limited to private feature-neutral composition mechanics, facade adjacency, privacy shape, and recovery. It does not admit a candidate or raise product, UI, realtime, device, naturalness, optimized-performance, commercial, packaging, shipping, launch, or release-readiness scores.
+
+### v1.14 Phase 56 Closed Teeth Evidence Score
+
+- Exact traceability passes 5/5 task rows, TEETH-01 through TEETH-06 6/6 conditional dispositions, D-56-01 through D-56-16 16/16, and T-56-01 through T-56-07 7/7 machine-green HIGH mitigations.
+- Focused SwiftPM passes 96/96; the checker passes 97 aggregate mutation/scanner/inventory cases plus all seven per-threat modes and live 59/5/72 classification. Full SwiftPM executes 539 tests with six documented opt-in Vision skips and zero failures; explicit iPhone 17e/iOS 26.5 Demo build passes and Demo tests pass 119/119.
+- Quality credit is limited to exact closed-gate enforcement, compatibility, privacy, and regression safety. TEETH-02 through TEETH-05 remain `not_applicable_closed_gate`; no algorithm, containment, effectiveness, naturalness, image review, device/performance, commercial, packaging, shipping, launch, or release credit is added.

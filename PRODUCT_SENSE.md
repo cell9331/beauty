@@ -636,3 +636,9 @@ Before merging product-facing changes, verify:
 - Phase 55 accepts deterministic original-pixel composition mechanics only: lifetime-retained exact canonical-source/owner binding, validation before issuance consumption, hard-reclipped ownership, collision-to-source, smallest-unit failure isolation, request recovery, and aggregate-only facade evidence are automated.
 - All three Phase 54 product decisions remain closed with exact absence and zero product weight. Production admission is empty, so no visible teeth whitening, sclera redness reduction, eyelid fullness, candidate field, provider, renderer case, preset, Demo control, or realtime behavior is available.
 - The tiny opaque fixture results do not establish feature effectiveness, naturalness, device quality, optimized performance, commercial suitability, packaging, shipping, launch, or release readiness. Future feature slices must independently satisfy their evidence and product gates before admission.
+
+### v1.14 Phase 56 Closed Teeth Acceptance
+
+- The immutable Phase 54 teeth decision remains closed because both genuine polarities are missing and every eligibility/review/naturalness total is zero. The accepted conditional result is exact absence: no public `teethWhitening` field or alias, no product route, and no saved-output effect.
+- Production admission remains literal `.none`; compatibility remains 59 fields, five presets, and 72 renderer cases. The static `白牙` taxonomy stays disabled, `白牙` stays `future`, and branch `嘴唇` stays `partial` without borrowing sibling evidence.
+- TEETH-02 through TEETH-05 are `not_applicable_closed_gate`, not algorithm, containment, safety, effectiveness, or naturalness claims. No file selection, image review, Demo interaction, device/performance, commercial, packaging, shipping, launch, or release acceptance follows.

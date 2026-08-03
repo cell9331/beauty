@@ -1,9 +1,9 @@
 ---
 phase: 56
 slug: independent-teeth-whitening-slice
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: validated
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-08-03
 security_standard: OWASP ASVS Level 1
 block_on: HIGH
@@ -56,32 +56,32 @@ checking.
 
 | Planned task ID | Wave | Requirements | Required focused evidence | Status |
 | --- | ---: | --- | --- | --- |
-| `56-01-01` | 0 | TEETH-01, TEETH-06 | Exact XCTest inventory for no public/stored/CodingKey/SPI/alias route, literal `.none` production admission, unchanged still facade/no-admission output, 59 fields, five presets, 72 renderer cases | pending |
-| `56-01-02` | 0 | TEETH-01..06 | Disabled `白牙` Demo taxonomy and future/partial ledger tests plus checker/threat inventory; self-test rejects every named T-56 mutation and scanner/missing-file failures | pending |
-| `56-02-01` | 1 | TEETH-01..06 | Live checker derives the exact closed teeth row from Phase 54, pins both missing-polarity reasons and zero counts/weight, and rejects status/reason/count/row tampering | pending |
-| `56-02-02` | 1 | TEETH-01, TEETH-06 | Live checker proves no provider/transform/render-plan/renderer/preset/resource/dependency/model/admission/Demo activation, no aliasing, exact compatibility totals, and exact ledger no-promotion | pending |
-| `56-03-01` | 2 | TEETH-01..06 | Final focused/checker/full SwiftPM/Demo/schema/UI/codebase/diff/ASVS/traceability/owner-doc gate; creates canonical closed-gate evidence and promotes validation | pending |
+| `56-01-01` | 0 | TEETH-01, TEETH-06 | Exact XCTest inventory for no public/stored/CodingKey/SPI/alias route, literal `.none` production admission, unchanged still facade/no-admission output, 59 fields, five presets, 72 renderer cases | passed — 96-suite focused denominator owner |
+| `56-01-02` | 0 | TEETH-01..06 | Disabled `白牙` Demo taxonomy and future/partial ledger tests plus checker/threat inventory; self-test rejects every named T-56 mutation and scanner/missing-file failures | passed — 28/28 focused Demo and initial checker owner |
+| `56-02-01` | 1 | TEETH-01..06 | Live checker derives the exact closed teeth row from Phase 54, pins both missing-polarity reasons and zero counts/weight, and rejects status/reason/count/row tampering | passed — exact row and T-56-01 matrix owner |
+| `56-02-02` | 1 | TEETH-01, TEETH-06 | Live checker proves no provider/transform/render-plan/renderer/preset/resource/dependency/model/admission/Demo activation, no aliasing, exact compatibility totals, and exact ledger no-promotion | passed — 97-case aggregate matrix owner |
+| `56-03-01` | 2 | TEETH-01..06 | Final focused/checker/full SwiftPM/Demo/schema/UI/codebase/diff/ASVS/traceability/owner-doc gate; creates canonical closed-gate evidence and promotes validation | passed — 96 focused, 539 full with 6 skips, 119/119 Demo, all GSD gates green |
 
 Task count target: **5 actual XML task IDs = 5 validation rows = 2 Wave 0 +
 2 focused live-gate tasks + 1 final closeout**.
 
 ## Wave 0 Deliverables
 
-- [ ] Existing SDK compatibility tests are extended or phase-named to pin the
+- [x] Existing SDK compatibility tests are extended or phase-named to pin the
   false branch without duplicating the full 59/5/72 oracle.
-- [ ] Facade tests pin both still-image public entries, unrelated shipped-color
+- [x] Facade tests pin both still-image public entries, unrelated shipped-color
   continuation, exact no-admission output/warnings/metrics/detection summary,
   and pixel-buffer/reset zero local-retouch work.
-- [ ] Demo tests preserve exactly the static disabled
+- [x] Demo tests preserve exactly the static disabled
   `unsupported("lips.teeth", title: "白牙", ...)` taxonomy row and reject an
   active control, binding, processor mapping, slider, or availability change.
-- [ ] `check_phase56_teeth_boundaries.py` self-tests temporary copies of real
+- [x] `check_phase56_teeth_boundaries.py` self-tests temporary copies of real
   source, test, upstream decision, and ledger fixtures and fails closed for
   missing files, malformed JSON, scanner errors, and unclassified subprocess
   results.
-- [ ] `56-THREAT-INVENTORY.json` pins every active HIGH row by exact ID and gate,
+- [x] `56-THREAT-INVENTORY.json` pins every active HIGH row by exact ID and gate,
   not by count alone.
-- [ ] Tests/checker artifacts contain no portrait path/hash, rights/grant
+- [x] Tests/checker artifacts contain no portrait path/hash, rights/grant
   payload, mask, coordinate, pixel, output digest, raw source match, or raw
   exception text.
 
@@ -170,20 +170,21 @@ Task `56-03-01` must execute and record:
 
 ## Validation Sign-Off
 
-- [ ] Final PLAN XML task count equals this validation table exactly.
-- [ ] Wave 0 tests/checker exist and pass clean fixtures while rejecting every
+- [x] Final PLAN XML task count equals this validation table exactly: 5/5.
+- [x] Wave 0 tests/checker exist and pass clean fixtures while rejecting every
   named live mutation.
-- [ ] TEETH-01..06 have exact conditional dispositions with no implementation
+- [x] TEETH-01..06 have exact conditional dispositions with no implementation
   claim for TEETH-02..05.
-- [ ] Every active T-56 HIGH row is named and machine-green; no waiver exists.
-- [ ] Exact-empty production admission, disabled Demo taxonomy, future/partial
+- [x] Every active T-56 HIGH row is named and machine-green; no waiver exists.
+- [x] Exact-empty production admission, disabled Demo taxonomy, future/partial
   ledgers, and 59/5/72 compatibility are unchanged.
-- [ ] No sensitive support/digest, candidate surface, image review, Demo/
+- [x] No sensitive support/digest, candidate surface, image review, Demo/
   realtime route, or unsupported readiness claim is added.
-- [ ] Full SwiftPM and explicit Demo regression pass in the known-good host
+- [x] Full SwiftPM and explicit Demo regression pass in the known-good host
   context.
-- [ ] `56-TEETH-CLOSED-GATE-EVIDENCE.md` exists with actual command/count
+- [x] `56-TEETH-CLOSED-GATE-EVIDENCE.md` exists with actual command/count
   evidence before validation promotion.
 
-**Approval:** pending all five task rows, six requirements, sixteen decisions,
-seven HIGH mitigations, focused/final regressions, and owner evidence.
+**Approval:** validated — all five task rows, six requirements, sixteen
+decisions, seven HIGH mitigations, focused/final regressions, and owner evidence
+are current and green. This closes only the conditional false branch.

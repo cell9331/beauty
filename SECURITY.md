@@ -615,3 +615,9 @@ Before merging any change touching these areas, update `SECURITY.md` if needed:
 - The Testing boundary is digest-free and mechanics-free: it exposes only the existing public CIImage output, dimensions, one source-match Boolean, one invocation count, and exactly six aggregate counts. It carries no support payload, source identity, claim detail, raw error, or generated media.
 - The fail-closed checker passes a 27-case self-test, including 14 executable mutations of temporary copies of the live Swift fixtures/classifier, and names T-55-01 through T-55-07 as seven machine-green HIGH mitigations. Exact-empty admission plus 59/5/72 compatibility and focused/full regressions block candidate, provider, renderer, preset, Demo, realtime, model, network, resource, target, or dependency drift.
 - The privacy-manifest disposition is unchanged. Phase 55 introduces no collected-data category, required-reason API, remote transfer, account behavior, tracking behavior, dependency, or production feature activation.
+
+### Phase 56 Closed Teeth Security Boundary
+
+- The exact Phase 54 teeth row is the sole admission authority. Identity, ordered reasons, strict zero counts/weight, and row shape fail closed under mutation; sibling or mechanics evidence cannot reopen it.
+- T-56-01 through T-56-07 are seven machine-green HIGH mitigations. The 97-case live-fixture matrix rejects public/SPI/Codable activation, aliases or inert routes, admission/provider/renderer/preset/resource/dependency/model changes, active Demo mapping, privacy disclosure, ledger promotion, missing fixtures, parse errors, and unclassified scanner outcomes.
+- Durable results expose only fixed IDs, allowlisted status/reasons, zero aggregates, and compatibility/test totals. They contain no media location or identity, support geometry, output identity, grant/reviewer payload, raw source match, or raw scanner error; the privacy-manifest disposition remains unchanged.
