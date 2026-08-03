@@ -566,12 +566,92 @@ test("UI-AC-15 export privacy never previews or copies rich input", () => {
   assert.doesNotMatch(controller, /navigator\.clipboard|execCommand\s*\(\s*["']copy/i);
 });
 
-test("UI-AC-16 ephemeral media owns at most three active URLs and revokes every lifecycle", () => {
+test("UI-AC-16 display URLs install transactionally, fail redacted, and recover", () => {
   assert.match(controller, /activeObjectURLs/);
   assert.match(controller, /URL\.createObjectURL/);
   assert.match(controller, /URL\.revokeObjectURL/);
   assertContainsAll(controller, ["revokeActiveObjectURLs", "pagehide", "export"], "URL lifecycle");
   assert.doesNotMatch(source, /localStorage|sessionStorage|indexedDB/);
+
+  const creation = functionSource("createActiveObjectURLs");
+  const failure = functionSource("enterLocalReadFailure");
+  const render = functionSource("renderCurrentRow");
+  assertContainsAll(creation, [
+    "ImageSafety.installDisplayObjectURLs",
+    "if (!installed.valid)",
+    "enterLocalReadFailure()",
+    "activeObjectURLs = [...installed.urls]",
+    "return true",
+  ], "transactional display install");
+  assert.ok(
+    creation.indexOf("if (!installed.valid)") < creation.indexOf("activeObjectURLs = [...installed.urls]"),
+    "temporary URLs cannot become active before all three sources install",
+  );
+  assertContainsAll(failure, [
+    "invalidateAssetCandidateState()",
+    "disableReview()",
+    "disableExport()",
+    '["local_read_failed"]',
+    "focusValidationHeading()",
+  ], "fixed redacted display failure");
+  assert.match(render, /if \(!createActiveObjectURLs\(row\)\) return false/);
+
+  const files = [{ id: "original" }, { id: "mask" }, { id: "after" }];
+  const makeImages = (throwOnAssignment = 0) => {
+    let assignmentCount = 0;
+    return files.map(() => {
+      let sourceValue = null;
+      return {
+        get src() { return sourceValue; },
+        set src(value) {
+          assignmentCount += 1;
+          if (assignmentCount === throwOnAssignment) throw new Error("sensitive_source_failure");
+          sourceValue = value;
+        },
+        removeAttribute(name) { if (name === "src") sourceValue = null; },
+      };
+    });
+  };
+
+  for (const throwOnCreation of [2, 3]) {
+    const created = [];
+    const revoked = [];
+    const images = makeImages();
+    const failed = imageSafety.installDisplayObjectURLs(files, images, {
+      createObjectURL(file) {
+        if (created.length + 1 === throwOnCreation) throw new Error("sensitive_creation_failure");
+        const url = `blob:${file.id}`;
+        created.push(url);
+        return url;
+      },
+      revokeObjectURL(url) { revoked.push(url); },
+    });
+    assert.deepEqual(failed, { valid: false, urls: [] }, `creation ${throwOnCreation}`);
+    assert.deepEqual(revoked, created, `creation ${throwOnCreation}: revoke every temporary URL`);
+    assert.deepEqual(images.map((image) => image.src), [null, null, null], `creation ${throwOnCreation}: clear sources`);
+
+    const recovered = imageSafety.installDisplayObjectURLs(files, images, {
+      createObjectURL(file) { return `blob:recovered-${file.id}`; },
+      revokeObjectURL() {},
+    });
+    assert.deepEqual(recovered, {
+      valid: true,
+      urls: ["blob:recovered-original", "blob:recovered-mask", "blob:recovered-after"],
+    }, `creation ${throwOnCreation}: later valid render`);
+    assert.deepEqual(images.map((image) => image.src), recovered.urls, `creation ${throwOnCreation}: recovered sources`);
+  }
+
+  for (const throwOnAssignment of [2, 3]) {
+    const revoked = [];
+    const images = makeImages(throwOnAssignment);
+    const failed = imageSafety.installDisplayObjectURLs(files, images, {
+      createObjectURL(file) { return `blob:${file.id}`; },
+      revokeObjectURL(url) { revoked.push(url); },
+    });
+    assert.deepEqual(failed, { valid: false, urls: [] }, `assignment ${throwOnAssignment}`);
+    assert.deepEqual(revoked, ["blob:original", "blob:mask", "blob:after"]);
+    assert.deepEqual(images.map((image) => image.src), [null, null, null]);
+  }
 });
 
 test("UI-AC-17 accessibility preserves labels focus ring dialog trap and restoration", () => {

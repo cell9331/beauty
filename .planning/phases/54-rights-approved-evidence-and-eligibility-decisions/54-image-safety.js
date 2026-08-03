@@ -124,7 +124,42 @@
     }
   }
 
-  const api = Object.freeze({ parseImageHeader, inspectAndDecode });
+  function installDisplayObjectURLs(files, images, environment = {}) {
+    const temporaryURLs = [];
+    let revokeObjectURL = null;
+    const clearSources = () => {
+      if (!Array.isArray(images)) return;
+      for (const image of images) {
+        try { image.removeAttribute("src"); } catch (_) { /* keep clearing siblings */ }
+      }
+    };
+
+    try {
+      if (!Array.isArray(files) || files.length !== 3
+        || !Array.isArray(images) || images.length !== 3) throw new Error("invalid_display_triple");
+      const createObjectURL = environment.createObjectURL
+        || globalObject.URL.createObjectURL.bind(globalObject.URL);
+      revokeObjectURL = environment.revokeObjectURL
+        || globalObject.URL.revokeObjectURL.bind(globalObject.URL);
+      for (const file of files) {
+        const url = createObjectURL(file);
+        if (typeof url !== "string" || url.length === 0) throw new Error("invalid_object_url");
+        temporaryURLs.push(url);
+      }
+      images.forEach((image, index) => { image.src = temporaryURLs[index]; });
+      return Object.freeze({ valid: true, urls: Object.freeze([...temporaryURLs]) });
+    } catch (_) {
+      if (revokeObjectURL !== null) {
+        for (const url of temporaryURLs) {
+          try { revokeObjectURL(url); } catch (_) { /* attempt every owned URL */ }
+        }
+      }
+      clearSources();
+      return Object.freeze({ valid: false, urls: Object.freeze([]) });
+    }
+  }
+
+  const api = Object.freeze({ parseImageHeader, inspectAndDecode, installDisplayObjectURLs });
   globalObject.ImageSafety = api;
   if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);

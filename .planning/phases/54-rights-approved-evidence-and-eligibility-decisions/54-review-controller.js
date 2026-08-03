@@ -158,9 +158,13 @@
   }
 
   function revokeActiveObjectURLs() {
-    for (const url of activeObjectURLs) URL.revokeObjectURL(url);
+    for (const url of activeObjectURLs) {
+      try { URL.revokeObjectURL(url); } catch (_) { /* attempt every owned URL */ }
+    }
     activeObjectURLs = [];
-    for (const image of imageElements) image.removeAttribute("src");
+    for (const image of imageElements) {
+      try { image.removeAttribute("src"); } catch (_) { /* keep clearing siblings */ }
+    }
   }
 
   function closeInitialState() {
@@ -411,8 +415,21 @@
   function createActiveObjectURLs(row) {
     revokeActiveObjectURLs();
     const files = [row.assets.original, row.assets.mask, row.assets.after].map((key) => assetFiles.get(key));
-    activeObjectURLs = files.map((file) => URL.createObjectURL(file));
-    imageElements.forEach((image, index) => { image.src = activeObjectURLs[index]; });
+    const installed = ImageSafety.installDisplayObjectURLs(files, imageElements);
+    if (!installed.valid) {
+      enterLocalReadFailure();
+      return false;
+    }
+    activeObjectURLs = [...installed.urls];
+    return true;
+  }
+
+  function enterLocalReadFailure() {
+    invalidateAssetCandidateState();
+    disableReview();
+    disableExport();
+    setValidation(FIXED_COPY.invalid, FIXED_COPY.invalid, ["local_read_failed"], "");
+    focusValidationHeading();
   }
 
   function restoreJudgment() {
@@ -440,10 +457,11 @@
     element("review-item-heading").textContent = `盲审项目 ${selectedIndex + 1}`;
     element("review-feature").textContent = friendlyFeatureLabel(row.feature);
     renderProgress();
-    createActiveObjectURLs(row);
+    if (!createActiveObjectURLs(row)) return false;
     restoreJudgment();
     element("previous-item").disabled = selectedIndex === 0;
     element("save-and-next").textContent = selectedIndex === reviewableRows.length - 1 ? "保存评审" : "保存并继续";
+    return true;
   }
 
   async function acceptAssetFiles(files) {
@@ -499,8 +517,7 @@
       reasons,
       reasons.length > 0 ? "partial" : FIXED_COPY.ready,
     );
-    renderCurrentRow();
-    element("review-item-heading").focus();
+    if (renderCurrentRow()) element("review-item-heading").focus();
     } catch (_) {
       invalidateAssetCandidateState();
       setValidation(FIXED_COPY.invalid, FIXED_COPY.invalid, ["local_read_failed"], "");
@@ -636,8 +653,7 @@
     updateExportAvailability();
     if (selectedIndex < reviewableRows.length - 1) {
       advanceOnce();
-      renderCurrentRow();
-      element("review-item-heading").focus();
+      if (renderCurrentRow()) element("review-item-heading").focus();
     } else {
       renderProgress();
       restoreJudgment();
@@ -648,8 +664,7 @@
   function moveToPreviousItem() {
     if (selectedIndex === 0) return;
     selectedIndex -= 1;
-    renderCurrentRow();
-    element("review-item-heading").focus();
+    if (renderCurrentRow()) element("review-item-heading").focus();
   }
 
   function featureInputsForExport() {
