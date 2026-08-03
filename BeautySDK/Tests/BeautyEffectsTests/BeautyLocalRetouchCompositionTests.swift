@@ -115,6 +115,25 @@ final class BeautyLocalRetouchCompositionTests: XCTestCase {
             XCTAssertNotNil(owner.makeUnit(proposals: [productionProposal(index + 2)]))
         }
         XCTAssertNil(owner.makeUnit(proposals: [productionProposal(15)]))
+
+        let foreignOwners = try (0..<10).map { _ in
+            BeautyLocalRetouchCompositionOwner(
+                source: try productionCanonical(bytes: pixels, width: 16, height: 1)
+            )
+        }
+        let foreignUnits = try foreignOwners.map { foreignOwner in
+            try XCTUnwrap(foreignOwner.makeUnit(proposals: [productionProposal(7)]))
+        }
+        let oversizedInput = try owner.compose(foreignUnits + [valid])
+        XCTAssertEqual(
+            oversizedInput.summary,
+            BeautyLocalRetouchCompositionSummary(
+                acceptedUnitCount: 1,
+                rejectedUnitCount: 10,
+                ownedPixelCount: 1,
+                changedPixelCount: 1
+            )
+        )
     }
 
     func testQ16LiteralBlendAndAlpha() throws {

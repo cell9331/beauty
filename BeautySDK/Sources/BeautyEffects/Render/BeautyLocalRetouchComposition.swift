@@ -28,11 +28,6 @@ package struct BeautyLocalPixelProposal: Equatable, Sendable {
 
 private final class BeautyLocalRetouchOwnerIdentity {}
 
-private struct BeautyLocalRetouchUnitTokenKey: Hashable {
-    let ownerIdentity: ObjectIdentifier
-    let token: UInt64
-}
-
 private struct BeautyPreflightedLocalRetouchClaim {
     let token: UInt64
     let proposal: BeautyLocalPixelProposal
@@ -144,24 +139,26 @@ package final class BeautyLocalRetouchCompositionOwner {
             )
         }
 
-        let tokenFrequency = Dictionary(grouping: units) { unit in
-            BeautyLocalRetouchUnitTokenKey(
-                ownerIdentity: unit.ownerIdentity,
-                token: unit.token
-            )
-        }.mapValues(\.count)
+        let localOwnerIdentity = ObjectIdentifier(ownerIdentity)
+        var tokenFrequency: [UInt64: Int] = [:]
+        tokenFrequency.reserveCapacity(effectiveUnitLimit)
+        for unit in units where unit.ownerIdentity == localOwnerIdentity
+            && unit.sourceBinding == sourceBinding
+            && issuedTokens.contains(unit.token)
+        {
+            // Duplicate detection only needs a saturated frequency. Restricting
+            // keys to issued local tokens keeps this allocation bounded by the
+            // request owner's effective unit limit even for foreign input.
+            tokenFrequency[unit.token] = min((tokenFrequency[unit.token] ?? 0) + 1, 2)
+        }
         var acceptedUnitCount = 0
         var rejectedUnitCount = 0
         var acceptedClaims: [BeautyPreflightedLocalRetouchClaim] = []
 
         for unit in units {
-            let tokenKey = BeautyLocalRetouchUnitTokenKey(
-                ownerIdentity: unit.ownerIdentity,
-                token: unit.token
-            )
-            guard tokenFrequency[tokenKey] == 1,
+            guard tokenFrequency[unit.token] == 1,
                   issuedTokens.contains(unit.token),
-                  unit.ownerIdentity == ObjectIdentifier(ownerIdentity),
+                  unit.ownerIdentity == localOwnerIdentity,
                   unit.sourceBinding == sourceBinding,
                   !unit.proposals.isEmpty,
                   unit.proposals.count <= maximumClaimsPerUnit,

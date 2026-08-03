@@ -355,6 +355,8 @@ def composition_failures() -> set[str]:
         failures.add("R55-DETERMINISM")
     if re.search(r"source\s*:\s*outputData", source_text):
         failures.add("R55-ORIGINAL-SOURCE")
+    if "Dictionary(grouping: units)" in source_text:
+        failures.add("R55-UNIT-BOUNDS")
 
     unit_text = UNIT_TEST.read_text(encoding="utf-8")
     production_anchors = (
@@ -365,6 +367,7 @@ def composition_failures() -> set[str]:
         "testProductionOpaqueFailureMatrixPreservesEveryAcceptedSibling",
         "testProductionEmptyAndValidInvalidValidCallsRetainNoState",
         "pixelSourceBinding, source.pixelSourceBinding",
+        "oversizedInput",
     )
     if any(anchor not in unit_text for anchor in production_anchors):
         failures.add("R55-PRODUCTION-ORACLES")
@@ -496,6 +499,7 @@ def synthetic_failures(contract: SyntheticContract) -> set[str]:
     if any(anchor not in contract.source for anchor in ("pixelSourceBinding", "ObjectIdentifier", "maximumUnitCount", "effectiveUnitLimit", "maximumClaimsPerUnit", "multipliedReportingOverflow", "addingReportingOverflow", "issuedTokens", "tokenFrequency", "rawIndices", "isInsideHardEnvelope", "collisionPixelCount", "rgba8Data", "65_536", "32_768")): failures.add("R55-CORE-ANCHORS")
     if contract.summary_fields != EXPECTED_SUMMARY_FIELDS or contract.result_fields != ("canonicalImage", "summary"): failures.add("R55-SUMMARY-SHAPE")
     if re.search(r"\b(teeth|sclera|eyelid|pupil|landmark|coordinate|mask|digest)\b", contract.source, re.IGNORECASE): failures.add("R55-CORE-PRIVACY")
+    if "Dictionary(grouping: units)" in contract.source: failures.add("R55-UNIT-BOUNDS")
     return failures
 
 
@@ -542,6 +546,7 @@ def self_test() -> int:
         (replace(baseline, summary_fields=baseline.summary_fields[:-1]), "R55-SUMMARY-SHAPE"),
         (replace(baseline, result_fields=("canonicalImage", "summary", "digest")), "R55-SUMMARY-SHAPE"),
         (replace(baseline, source=baseline.source + " teeth"), "R55-CORE-PRIVACY"),
+        (replace(baseline, source=baseline.source + " Dictionary(grouping: units)"), "R55-UNIT-BOUNDS"),
     )
     for mutation, expected_rule in mutations:
         assert expected_rule in synthetic_failures(mutation), expected_rule
