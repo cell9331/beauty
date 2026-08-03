@@ -117,7 +117,7 @@ Earlier shipped milestones are preserved in their linked archives under `.planni
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 55-04-PLAN.md — Prove same-request facade adjacency through opaque Testing-only wiring while production admission remains empty.
+- [x] 55-04-PLAN.md — Prove same-request facade adjacency through opaque Testing-only wiring while production admission remains empty.
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -191,7 +191,7 @@ All 41 v1.14 requirements map to exactly one phase: 41 mapped, 0 duplicated, 0 u
 | --- | --- | --- | --- |
 | 53. Canonical Still-Image Contract and Private Request Foundation | 6/6 | Complete    | 2026-07-31 |
 | 54. Rights-Approved Evidence and Eligibility Decisions | 5/5 | Complete    | 2026-08-03 |
-| 55. Original-Pixel Composition and Failure-Isolation Core | 2/5 | In Progress | - |
+| 55. Original-Pixel Composition and Failure-Isolation Core | 4/5 | In Progress | - |
 | 56. Independent Teeth Whitening Slice | 0/TBD | Not started | - |
 | 57. Guarded Sclera Slice and Conditional Upper-Eyelid Work | 0/TBD | Not started | - |
 | 58. Combined Facade, Safety, Ledger, and Audit Closeout | 0/TBD | Not started | - |

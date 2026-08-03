@@ -5,15 +5,15 @@ milestone_name: Local Facial Retouch
 current_phase: 55
 current_phase_name: Original-Pixel Composition and Failure-Isolation Core
 status: executing
-stopped_at: Completed 55-03-PLAN.md
-last_updated: "2026-08-03T07:21:49.174Z"
+stopped_at: Completed 55-04-PLAN.md
+last_updated: "2026-08-03T07:39:21.664Z"
 last_activity: 2026-08-03 — Plan 55-03 completed deterministic Q16 original-pixel composition, collision-to-source, and unit-local failure isolation
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 16
-  completed_plans: 14
-  percent: 88
+  completed_plans: 15
+  percent: 94
 ---
 
 # Project State
@@ -28,26 +28,26 @@ See: `.planning/PROJECT.md` (updated 2026-08-03)
 ## Current Position
 
 Phase: 55 — Original-Pixel Composition and Failure-Isolation Core
-Plan: 3 of 5 complete (55-01 through 55-03)
+Plan: 4 of 5 complete (55-01 through 55-04)
 Status: In progress
-Last activity: 2026-08-03 — Plan 55-03 completed deterministic Q16 original-pixel composition, collision-to-source, and unit-local failure isolation
+Last activity: 2026-08-03 — Plan 55-04 completed opaque Testing-only facade composition, lifecycle isolation, and digest-free observation
 
-Progress: [█████████░] 14/16 plans (88%)
+Progress: [█████████░] 15/16 plans (94%)
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Total plans completed: 14
-- Average duration: 19.0 min
-- Total execution time: 4h 26min
+- Total plans completed: 15
+- Average duration: 18.4 min
+- Total execution time: 4h 36min
 
 | Phase | Plans | Total | Avg/Plan |
 | --- | ---: | --- | --- |
-| 53-58 | 14 | 4h 26min | 19.0 min |
+| 53-58 | 15 | 4h 36min | 18.4 min |
 | 53 | 6 | 1h 50min | 18.3 min |
 | 54 | 5 | 2h 03min | 24.6 min |
-| 55 | 3 | 33min | 11.0 min |
+| 55 | 4 | 43min | 10.8 min |
 
 Historical milestone metrics remain in `.planning/MILESTONES.md` and archived roadmaps.
 **Per-Plan Metrics:**
@@ -68,6 +68,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 55 P01 | 11min | 2 tasks | 5 files |
 | Phase 55 P02 | 10min | 2 tasks | 4 files |
 | Phase 55 P03 | 12min | 2 tasks | 4 files |
+| Phase 55 P04 | 10min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -85,10 +86,13 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 - [Phase 55]: Every accepted local RGB channel blends from immutable canonical bytes with deterministic UInt64 Q16 round-half-up arithmetic. — Prevents sequential feedback and platform-dependent output.
 - [Phase 55]: Two or more accepted units at one pixel preserve canonical source and increment exactly one aggregate collision count. — Unexpected overlap cannot create hidden order or strength priority.
 - [Phase 55]: No-change compositions reuse the exact captured canonical carrier; diagnostics remain the exact six aggregate counts. — Preserves source identity and prevents mechanics disclosure.
+- [Phase 55]: The facade constructs one request-local composer directly from BeautyStillImageRequestContext.canonicalImage only under an optional opaque Testing scenario.
+- [Phase 55]: Testing forwards the public CIImage for test-local explicit-sRGB byte comparison; composition diagnostics expose no digest or mechanics.
+- [Phase 55]: Nil composition scenarios retain the four-event Phase 53 trace; active scenarios add exactly one compose event before render.
 
 ### Pending Todos
 
-- Continue Plans 55-04 through 55-05 serially without adding a visible candidate route.
+- Continue Plan 55-05 without adding a visible candidate route.
 - Preserve exact absence in Phases 56 and 57 unless a later independently trusted evidence decision changes the current closed ledger.
 
 ### Blockers/Concerns
@@ -109,6 +113,6 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 
 ## Session Continuity
 
-Last session: 2026-08-03T07:21:49.168Z
-Stopped at: Completed 55-03-PLAN.md
+Last session: 2026-08-03T07:39:21.658Z
+Stopped at: Completed 55-04-PLAN.md
 Resume file: None
