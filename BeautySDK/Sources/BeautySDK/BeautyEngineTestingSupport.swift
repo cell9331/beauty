@@ -1060,6 +1060,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
 }
 
 @_spi(Testing) public final class SDKTestingLocalRetouchFoundationHarness: @unchecked Sendable {
+    private let invocationLock = NSLock()
     private let hooks: BeautyLocalRetouchTestingHooks
     private let engine: BeautyEngine
     private var pixelBufferSummaryAvailabilityValue = "notRun"
@@ -1071,39 +1072,43 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     public static let productionAdmissionNames: [String] = []
     public static let unrelatedGeometryOmissionFixtureCount = 4
 
-    public var canonicalizeCount: Int { hooks.canonicalizeCount }
-    public var detectAndMapCount: Int { hooks.detectAndMapCount }
+    public var canonicalizeCount: Int { withInvocationLock { hooks.canonicalizeCount } }
+    public var detectAndMapCount: Int { withInvocationLock { hooks.detectAndMapCount } }
     public var requestOwnerCreationCount: Int {
-        hooks.makeRequestContextCount
+        withInvocationLock { hooks.makeRequestContextCount }
     }
-    public var renderCount: Int { hooks.renderCount }
+    public var renderCount: Int { withInvocationLock { hooks.renderCount } }
     public var localProviderCount: Int { 0 }
     public var retainedRequestOwnerCount: Int {
-        hooks.activeRequestContextCount
+        withInvocationLock { hooks.activeRequestContextCount }
     }
-    public var events: [SDKTestingLocalRetouchEvent] { hooks.events }
-    public var pixelBufferSummaryAvailability: String { pixelBufferSummaryAvailabilityValue }
+    public var events: [SDKTestingLocalRetouchEvent] { withInvocationLock { hooks.events } }
+    public var pixelBufferSummaryAvailability: String {
+        withInvocationLock { pixelBufferSummaryAvailabilityValue }
+    }
     public var canonicalConsumerIdentityMatched: Bool {
-        hooks.canonicalConsumerIdentityMatched
+        withInvocationLock { hooks.canonicalConsumerIdentityMatched }
     }
-    public var usedExplicitSRGBRender: Bool { hooks.usedExplicitSRGBRender }
+    public var usedExplicitSRGBRender: Bool {
+        withInvocationLock { hooks.usedExplicitSRGBRender }
+    }
     public var canonicalizerConstructionCount: Int {
-        hooks.canonicalizerConstructionCount
+        withInvocationLock { hooks.canonicalizerConstructionCount }
     }
     public var lastMappingInvocationCount: Int {
-        hooks.lastMappingInvocationCount
+        withInvocationLock { hooks.lastMappingInvocationCount }
     }
     public var lastMappedCoordinateCount: Int {
-        hooks.lastMappedPointCount
+        withInvocationLock { hooks.lastMappedPointCount }
     }
     public var retainedMappedCoordinateCount: Int {
-        hooks.retainedMappedPointCount
+        withInvocationLock { hooks.retainedMappedPointCount }
     }
     public var reusedNormalizationOwnerAcrossRequests: Bool {
-        hooks.reusedCanonicalizerAndContextAcrossRequests
+        withInvocationLock { hooks.reusedCanonicalizerAndContextAcrossRequests }
     }
     public var compositionObservation: SDKTestingLocalCompositionObservation {
-        hooks.compositionObservation
+        withInvocationLock { hooks.compositionObservation }
     }
 
     public convenience init(
@@ -1195,6 +1200,9 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         image: CIImage,
         parameters: BeautyParameters
     ) throws -> SDKTestingLocalResult {
+        invocationLock.lock()
+        defer { invocationLock.unlock() }
+
         let output: CIImage
         let detectionSummary: BeautyDetectionSummary?
         switch entry {
@@ -1226,6 +1234,9 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     }
 
     public func invokePixelBuffer(parameters: BeautyParameters) throws {
+        invocationLock.lock()
+        defer { invocationLock.unlock() }
+
         let pixelBuffer = try Self.makePixelBuffer()
         let result = try engine.processResult(
             pixelBuffer: pixelBuffer,
@@ -1242,7 +1253,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     }
 
     public func reset() {
-        engine.reset()
+        withInvocationLock { engine.reset() }
     }
 
     public static func runIndependent(valueID: Int) async throws -> Int {
@@ -1256,6 +1267,13 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             throw BeautyError.invalidInput
         }
         return aggregateSupportValueID
+    }
+
+    @discardableResult
+    private func withInvocationLock<T>(_ body: () throws -> T) rethrows -> T {
+        invocationLock.lock()
+        defer { invocationLock.unlock() }
+        return try body()
     }
 
     private static func makeOpaqueSRGBImage() throws -> CIImage {

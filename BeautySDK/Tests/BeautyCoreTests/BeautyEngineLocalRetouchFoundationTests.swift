@@ -236,6 +236,43 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         XCTAssertEqual(Set([firstValue, secondValue]), Set([11, 22]))
     }
 
+    func testSameHarnessParallelInvocationsSerializeCompleteRequestTransactions() async throws {
+        let expectedValueIDs = Set(1...32)
+        let harness = try SDKTestingLocalRetouchFoundationHarness(
+            admittedPrivateDemandCount: 1,
+            supportSequence: expectedValueIDs.sorted().map { .available(valueID: $0) }
+        )
+
+        let observedValueIDs = try await withThrowingTaskGroup(of: Int.self) { group in
+            for _ in expectedValueIDs {
+                group.addTask {
+                    let result = try harness.invoke(
+                        entry: .processResult,
+                        image: Self.image,
+                        parameters: .init()
+                    )
+                    guard let valueID = result.aggregateSupportValueID else {
+                        throw BeautyError.invalidInput
+                    }
+                    return valueID
+                }
+            }
+
+            var values = Set<Int>()
+            for try await valueID in group {
+                values.insert(valueID)
+            }
+            return values
+        }
+
+        XCTAssertEqual(observedValueIDs, expectedValueIDs)
+        XCTAssertEqual(harness.canonicalizeCount, expectedValueIDs.count)
+        XCTAssertEqual(harness.detectAndMapCount, expectedValueIDs.count)
+        XCTAssertEqual(harness.requestOwnerCreationCount, expectedValueIDs.count)
+        XCTAssertEqual(harness.renderCount, expectedValueIDs.count)
+        XCTAssertEqual(harness.retainedRequestOwnerCount, 0)
+    }
+
     func testPixelBufferOverloadsAndResetPerformZeroLocalFoundationWork() throws {
         let harness = try SDKTestingLocalRetouchFoundationHarness(admittedPrivateDemandCount: 1)
         XCTAssertEqual(harness.canonicalizerConstructionCount, 0)
