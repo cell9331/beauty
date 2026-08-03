@@ -138,9 +138,9 @@ Earlier shipped milestones are preserved in their linked archives under `.planni
   4. Genuine discoloration positives receive bounded yellow-excess and luminance improvement with natural texture, shading, edges, and color, while already-light, closed, occluded, unsupported, no-face, and unsafe cases abstain or remain natural.
   5. Public-facade output, strict saved-output evidence, original-detail review, privacy checks, regression tests, and the exact `白牙`/`嘴唇` ledger all reach the same independent promotion decision.
 
-**Plans**: 3 serial plans / 5 tasks
+**Plans**: 1/3 plans executed
 
-- [ ] `56-01-PLAN.md` — Freeze SDK/facade/59-5-72 exact absence, the disabled Demo taxonomy, and the seven-row fail-closed checker/threat inventory.
+- [x] `56-01-PLAN.md` — Freeze SDK/facade/59-5-72 exact absence, the disabled Demo taxonomy, and the seven-row fail-closed checker/threat inventory.
 - [ ] `56-02-PLAN.md` — Enforce the immutable closed Phase 54 teeth row and complete production/API/Demo/ledger/privacy live mutations plus a draft evidence projection.
 - [ ] `56-03-PLAN.md` — Run final-only SwiftPM/Demo/security/traceability gates, seal closed-gate evidence, and synchronize owner documents.
 
@@ -198,7 +198,7 @@ All 41 v1.14 requirements map to exactly one phase: 41 mapped, 0 duplicated, 0 u
 | 53. Canonical Still-Image Contract and Private Request Foundation | 6/6 | Complete    | 2026-07-31 |
 | 54. Rights-Approved Evidence and Eligibility Decisions | 5/5 | Complete    | 2026-08-03 |
 | 55. Original-Pixel Composition and Failure-Isolation Core | 5/5 | Complete    | 2026-08-03 |
-| 56. Independent Teeth Whitening Slice | 0/TBD | Not started | - |
+| 56. Independent Teeth Whitening Slice | 1/3 | In Progress | - |
 | 57. Guarded Sclera Slice and Conditional Upper-Eyelid Work | 0/TBD | Not started | - |
 | 58. Combined Facade, Safety, Ledger, and Audit Closeout | 0/TBD | Not started | - |
 
