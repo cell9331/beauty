@@ -101,7 +101,24 @@ Earlier shipped milestones are preserved in their linked archives under `.planni
   4. An unexpected cross-provider overlap increments only an aggregate count and leaves the source pixel unchanged, with no priority rule or double edit.
   5. Fused disjoint output byte-matches standalone/merged oracles, and injected teeth, whole-sclera, left-eye, or right-eye failure leaves every unaffected result unchanged.
 
-**Plans**: TBD
+**Plans**: 5 plans
+
+**Wave 0**
+- [ ] 55-01-PLAN.md — Freeze literal-byte composition/facade RED contracts and the fail-closed T-55 boundary checker.
+
+**Wave 1** *(blocked on Wave 0 completion)*
+- [ ] 55-02-PLAN.md — Bind opaque request-local units to the exact canonical source and validate them with checked arithmetic.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [ ] 55-03-PLAN.md — Implement deterministic Q16 original-pixel composition, hard re-clipping, collision-to-source, and unit-local abstention.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [ ] 55-04-PLAN.md — Prove same-request facade adjacency through opaque Testing-only wiring while production admission remains empty.
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [ ] 55-05-PLAN.md — Run final-only regression/security gates, seal evidence, and synchronize contract-owner documents.
+
+**Cross-cutting constraints:** exact-empty production admission; immutable current-request source ownership; OWASP ASVS Level 1 with every T-55 HIGH row blocking; aggregate-only digest-free observations; no candidate field/provider/renderer/preset/Demo/realtime/pixel-buffer route; full SwiftPM and Demo regression only in Wave 4.
 
 ### Phase 56: Independent Teeth Whitening Slice
 

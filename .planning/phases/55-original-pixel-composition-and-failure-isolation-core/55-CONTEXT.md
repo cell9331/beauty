@@ -28,85 +28,85 @@ naturalness evidence.
 
 ### Admission and Package Boundary
 
-- Keep `BeautyEffectResolver.localRetouchAdmission(parameters:)` and
+- **D-01 / D-55-01:** Keep `BeautyEffectResolver.localRetouchAdmission(parameters:)` and
   `BeautyLocalRetouchAdmission.none` exact-empty in production. A closed Phase
   54 decision must not create an inert candidate route.
-- Implement only package-internal, feature-neutral composition values and one
+- **D-02 / D-55-02:** Implement only package-internal, feature-neutral composition values and one
   request-local owner. No type or diagnostic may expose teeth, sclera, eyelid,
   mask coordinates, pixels, landmarks, pupils, or owner identities publicly,
   through SPI, Codable, persistence, or logs.
-- Wire the core far enough that package tests prove it consumes the same
+- **D-03 / D-55-03:** Wire the core far enough that package tests prove it consumes the same
   `BeautyCanonicalStillImage` carried by `BeautyStillImageRequestContext` and
   cannot be orphaned. Any facade-path activation is opaque/testing-only and
   must remain unreachable from production parameters, presets, Demo, and
   pixel-buffer/reset routes.
-- Preserve the shipped no-admission path byte-for-byte and structurally. Local
+- **D-04 / D-55-04:** Preserve the shipped no-admission path byte-for-byte and structurally. Local
   composition failure must never suppress unrelated existing face-agnostic
   color/filter work.
 
 ### Immutable Original-Pixel and Contribution Contract
 
-- Every accepted local pixel proposal is bound to the immutable canonical
+- **D-05 / D-55-05:** Every accepted local pixel proposal is bound to the immutable canonical
   `rgba8Data` owned by the current request. The composition core reads source
   pixels only from that carrier; it never reads another contribution's output
   or a partially composed frame.
-- Each contribution represents one smallest independently rejectable unit and
+- **D-06 / D-55-06:** Each contribution represents one smallest independently rejectable unit and
   carries enough source binding for the core to prove that its proposals refer
   to the current canonical dimensions and original bytes. Exact representation
   is implementation discretion; trust-by-call-order or an unverified second
   raster is not acceptable.
-- Validate all dimensions, counts, indices, arithmetic, weights, and source
+- **D-07 / D-55-07:** Validate all dimensions, counts, indices, arithmetic, weights, and source
   bindings before accepting a unit. Structural failure rejects that unit as an
   abstention without throwing away valid siblings. A failure of the canonical
   carrier itself remains a request-level typed failure.
-- Keep composition deterministic and order-independent. Use an integer-defined
+- **D-08 / D-55-08:** Keep composition deterministic and order-independent. Use an integer-defined
   RGBA8 blend/rounding contract, preserve canonical alpha, and avoid
   device-dependent color conversion or unordered reduction behavior.
 
 ### Hard Containment and Single Ownership
 
-- A contribution distinguishes its hard anatomical envelope from its final
+- **D-09 / D-55-09:** A contribution distinguishes its hard anatomical envelope from its final
   soft/feathered weight. The composition boundary clamps the weight and
   re-intersects it with the hard envelope after all provider-side growth, blur,
   or feathering; pre-filter containment is never treated as sufficient.
-- A valid pixel has zero or one effective owner. A duplicate claim within one
+- **D-10 / D-55-10:** A valid pixel has zero or one effective owner. A duplicate claim within one
   unit is structurally invalid for that unit rather than silently merged.
-- If two or more accepted units claim the same pixel, suppress every local
+- **D-11 / D-55-11:** If two or more accepted units claim the same pixel, suppress every local
   proposal at that pixel, copy the canonical source pixel unchanged, and
   increment one aggregate collision-pixel count. Do not select by array order,
   strength, max weight, anatomy, provider priority, or last write.
-- Every pixel outside the final owned union remains byte-identical to canonical
+- **D-12 / D-55-12:** Every pixel outside the final owned union remains byte-identical to canonical
   source. A zero-weight proposal is unowned and cannot affect output or counts.
 
 ### Smallest-Unit Failure Isolation
 
-- Treat teeth, each sclera eye, and any future eyelid band as independently
+- **D-13 / D-55-13:** Treat teeth, each sclera eye, and any future eyelid band as independently
   accept-or-abstain units without implementing those named providers in this
   phase.
-- A teeth-unit failure removes only teeth work. A left- or right-eye failure
+- **D-14 / D-55-14:** A teeth-unit failure removes only teeth work. A left- or right-eye failure
   removes only that eye. A whole-sclera/provider failure is represented by both
   eye units abstaining while unrelated teeth or future eyelid units remain
   unchanged.
-- Collision suppression is pixel-local rather than a whole-unit rejection;
+- **D-15 / D-55-15:** Collision suppression is pixel-local rather than a whole-unit rejection;
   noncolliding pixels from every otherwise valid unit still compose from the
   original source.
-- Deterministic failure injection must prove that standalone accepted siblings
+- **D-16 / D-55-16:** Deterministic failure injection must prove that standalone accepted siblings
   byte-match their portions of fused output and that valid-invalid-valid
   requests retain no prior pixels, claims, masks, or summary state.
 
 ### Verification, Privacy, and Nonclaims
 
-- Author Wave 0 tests before implementation for COMP-01 through COMP-05. Use
+- **D-17 / D-55-17:** Author Wave 0 tests before implementation for COMP-01 through COMP-05. Use
   tiny opaque mechanics-only canonical rasters and independently authored
   expected byte arrays, not captured output from the system under test.
-- Freeze byte-level oracles for standalone, explicitly merged, fused disjoint,
+- **D-18 / D-55-18:** Freeze byte-level oracles for standalone, explicitly merged, fused disjoint,
   duplicate-claim, cross-owner collision, outside-union identity, hard
   re-clipping, and teeth/whole-sclera/left-eye/right-eye failure scenarios.
-- Keep observations package-only and aggregate-only: accepted/rejected unit
+- **D-19 / D-55-19:** Keep observations package-only and aggregate-only: accepted/rejected unit
   counts, owned/changed/outside-union/collision pixel counts, and bounded timing
   only where already allowed. Do not expose masks, coordinates, source/output
   pixels, anatomy labels, local paths, or raw errors.
-- Treat the Spike 012 whole-frame CPU measurements as mechanics baselines, not
+- **D-20 / D-55-20:** Treat the Spike 012 whole-frame CPU measurements as mechanics baselines, not
   a performance win or device budget. Phase 55 may choose bounded sparse/ROI or
   dense implementation based on correctness and allocation safety, but claims
   no device, latency, memory, commercial, packaging, shipping, or release result.
