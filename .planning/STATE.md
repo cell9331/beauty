@@ -5,15 +5,15 @@ milestone_name: Local Facial Retouch
 current_phase: 55
 current_phase_name: Original-Pixel Composition and Failure-Isolation Core
 status: executing
-stopped_at: Completed 55-02-PLAN.md
-last_updated: "2026-08-03T07:08:50.000Z"
-last_activity: 2026-08-03 — Plan 55-02 bound opaque units to exact canonical storage with checked request-local preflight
+stopped_at: Completed 55-03-PLAN.md
+last_updated: "2026-08-03T07:21:49.174Z"
+last_activity: 2026-08-03 — Plan 55-03 completed deterministic Q16 original-pixel composition, collision-to-source, and unit-local failure isolation
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 16
-  completed_plans: 13
-  percent: 81
+  completed_plans: 14
+  percent: 88
 ---
 
 # Project State
@@ -28,26 +28,26 @@ See: `.planning/PROJECT.md` (updated 2026-08-03)
 ## Current Position
 
 Phase: 55 — Original-Pixel Composition and Failure-Isolation Core
-Plan: 2 of 5 complete (55-01 through 55-02)
+Plan: 3 of 5 complete (55-01 through 55-03)
 Status: In progress
-Last activity: 2026-08-03 — Plan 55-02 bound opaque units to exact canonical storage with checked request-local preflight
+Last activity: 2026-08-03 — Plan 55-03 completed deterministic Q16 original-pixel composition, collision-to-source, and unit-local failure isolation
 
-Progress: [████████░░] 13/16 plans (81%)
+Progress: [█████████░] 14/16 plans (88%)
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Total plans completed: 13
-- Average duration: 19.5 min
-- Total execution time: 4h 14min
+- Total plans completed: 14
+- Average duration: 18.6 min
+- Total execution time: 4h 21min
 
 | Phase | Plans | Total | Avg/Plan |
 | --- | ---: | --- | --- |
-| 53-58 | 13 | 4h 14min | 19.5 min |
+| 53-58 | 14 | 4h 21min | 18.6 min |
 | 53 | 6 | 1h 50min | 18.3 min |
 | 54 | 5 | 2h 03min | 24.6 min |
-| 55 | 2 | 21min | 10.5 min |
+| 55 | 3 | 28min | 9.3 min |
 
 Historical milestone metrics remain in `.planning/MILESTONES.md` and archived roadmaps.
 **Per-Plan Metrics:**
@@ -67,6 +67,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 54 P05 | 75 min | 1 tasks | 4 files |
 | Phase 55 P01 | 11min | 2 tasks | 5 files |
 | Phase 55 P02 | 10min | 2 tasks | 4 files |
+| Phase 55 P03 | 7min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -81,10 +82,12 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 - Transparent input and all realtime/pixel-buffer, UI, cloud, external-model, tracked-media, device/commercial/performance-budget/packaging/release claims remain outside v1.14.
 - [Phase 55]: Wave 0 RED suites stay compile-clean and fail only at exact named missing composition seams. — This preserves executable contract coverage without adding production behavior before Plans 55-02 through 55-04.
 - [Phase 55]: Phase 55 boundary output is limited to fixed rule IDs and counts. — Source matches, bytes, indices, paths, and raw scanner errors remain private while checks still fail closed.
+- [Phase 55]: Every accepted local RGB channel blends from immutable canonical bytes with deterministic UInt64 Q16 round-half-up arithmetic. — Prevents sequential feedback and platform-dependent output.
+- [Phase 55]: Two or more accepted units at one pixel preserve canonical source and increment exactly one aggregate collision count. — Unexpected overlap cannot create hidden order or strength priority.
+- [Phase 55]: No-change compositions reuse the exact captured canonical carrier; diagnostics remain the exact six aggregate counts. — Preserves source identity and prevents mechanics disclosure.
 
 ### Pending Todos
 
-- Execute Plan 55-03 to complete deterministic Q16 composition, collision-to-source, and smallest-unit failure isolation.
 - Continue Plans 55-04 through 55-05 serially without adding a visible candidate route.
 - Preserve exact absence in Phases 56 and 57 unless a later independently trusted evidence decision changes the current closed ledger.
 
@@ -106,6 +109,6 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 
 ## Session Continuity
 
-Last session: 2026-08-03T07:08:50.000Z
-Stopped at: Completed 55-02-PLAN.md
+Last session: 2026-08-03T07:21:49.168Z
+Stopped at: Completed 55-03-PLAN.md
 Resume file: None

@@ -29,11 +29,11 @@ absent feature rather than an inert public field or proxy implementation.
 
 ### Request-Local Composition
 
-- [ ] **COMP-01**: Teeth, each sclera eye, and any admitted upper-eyelid provider validate support and fail closed at the smallest anatomical unit without disabling eligible siblings or shipped face-agnostic effects.
-- [ ] **COMP-02**: Every accepted local color edit is derived from immutable original canonical pixels under exactly one request-local mask owner rather than from another effect's output.
-- [ ] **COMP-03**: Every hard anatomical envelope is re-applied after growth, blur, or feathering, and pixels outside the final owned union remain byte-identical to the original canonical input.
-- [ ] **COMP-04**: Any unexpected cross-provider mask overlap is counted only in aggregate and preserves the original pixel instead of receiving a priority or sequential double edit.
-- [ ] **COMP-05**: Fused output byte-matches independently computed standalone/merged oracles for disjoint accepted masks and preserves unaffected output under teeth, whole-sclera, left-eye, and right-eye failure injection.
+- [x] **COMP-01**: Teeth, each sclera eye, and any admitted upper-eyelid provider validate support and fail closed at the smallest anatomical unit without disabling eligible siblings or shipped face-agnostic effects.
+- [x] **COMP-02**: Every accepted local color edit is derived from immutable original canonical pixels under exactly one request-local mask owner rather than from another effect's output.
+- [x] **COMP-03**: Every hard anatomical envelope is re-applied after growth, blur, or feathering, and pixels outside the final owned union remain byte-identical to the original canonical input.
+- [x] **COMP-04**: Any unexpected cross-provider mask overlap is counted only in aggregate and preserves the original pixel instead of receiving a priority or sequential double edit.
+- [x] **COMP-05**: Fused output byte-matches independently computed standalone/merged oracles for disjoint accepted masks and preserves unaffected output under teeth, whole-sclera, left-eye, and right-eye failure injection.
 
 ### Teeth Whitening (`白牙`)
 
@@ -113,11 +113,11 @@ no implementation surface when that decision is closed.
 | EVID-03 | Phase 54 | Complete |
 | EVID-04 | Phase 54 | Complete |
 | EVID-05 | Phase 54 | Complete |
-| COMP-01 | Phase 55 | Pending |
-| COMP-02 | Phase 55 | Pending |
-| COMP-03 | Phase 55 | Pending |
-| COMP-04 | Phase 55 | Pending |
-| COMP-05 | Phase 55 | Pending |
+| COMP-01 | Phase 55 | Complete |
+| COMP-02 | Phase 55 | Complete |
+| COMP-03 | Phase 55 | Complete |
+| COMP-04 | Phase 55 | Complete |
+| COMP-05 | Phase 55 | Complete |
 | TEETH-01 | Phase 56 | Pending |
 | TEETH-02 | Phase 56 | Pending |
 | TEETH-03 | Phase 56 | Pending |

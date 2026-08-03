@@ -113,7 +113,7 @@ Earlier shipped milestones are preserved in their linked archives under `.planni
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 55-03-PLAN.md — Implement deterministic Q16 original-pixel composition, hard re-clipping, collision-to-source, and unit-local abstention.
+- [x] 55-03-PLAN.md — Implement deterministic Q16 original-pixel composition, hard re-clipping, collision-to-source, and unit-local abstention.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
