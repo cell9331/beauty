@@ -22,6 +22,12 @@ CANDIDATE_NAMES = (
     "teethWhite",
     "toothWhitening",
     "teethBrightness",
+    "enamelWhitening",
+    "enamelWhite",
+    "enamelBrightness",
+    "dentitionWhitening",
+    "dentitionWhite",
+    "dentitionBrightness",
 )
 EXPECTED_EVIDENCE_FRONTMATTER = {
     "phase": 56,
@@ -77,11 +83,12 @@ EXPECTED_LEDGER_ROW = "| `嘴唇` | 白牙 | future | None. | Needs local teeth 
 EXPECTED_PRODUCT_ANCHOR = "- Current decisions are derived from the explicit empty eligible/review inventory and independently closed: teeth and sclera each record `missing_genuine_positive` plus `missing_genuine_negative`; upper-eyelid fullness records both missing polarities plus `non_warp_design_unqualified`. Each row has zero eligible/reviewed/accepted/rejected counts and zero naturalness weight. Authorization or possible negative context alone discharges no prerequisite; one sibling can open later without promoting another."
 EXPECTED_QUALITY_ANCHOR = "- The repository decision ledger is regenerated from an explicit empty eligible/review inventory. Its three independent rows have zero eligible/reviewed/accepted/rejected counts and zero naturalness weight; teeth and sclera each record both missing genuine polarities, while upper-eyelid fullness also records `non_warp_design_unqualified`."
 FORBIDDEN_ANATOMY_PATTERN = r"(?i)\b(?:teeth|tooth|dental|oral)[A-Za-z0-9_]*\b"
+FORBIDDEN_SYNONYM_PATTERN = r"(?i)\b(?:enamel|dentition)[A-Za-z0-9_]*\b"
 FORBIDDEN_ALIAS_PATTERN = (
-    r"(?is)(?:teeth|tooth|dental|oral).{0,120}"
+    r"(?is)(?:teeth|tooth|dental|oral|enamel|dentition).{0,120}"
     r"(?:skinWhitening|brightness|lipColor|mouth|lip|opaque|composition|sibling|candidate)|"
     r"(?:skinWhitening|brightness|lipColor|mouth|lip|opaque|composition|sibling|candidate).{0,120}"
-    r"(?:teeth|tooth|dental|oral)"
+    r"(?:teeth|tooth|dental|oral|enamel|dentition)"
 )
 
 
@@ -339,25 +346,40 @@ def compatibility_failures() -> set[str]:
 
 def production_failures() -> set[str]:
     failures: set[str] = set()
-    pattern = "|".join(map(re.escape, CANDIDATE_NAMES))
     if run_rg(FORBIDDEN_ANATOMY_PATTERN, (SOURCES,)) == "match":
         failures.add("R56-PUBLIC")
 
+    synonym_sensitive_paths = (
+        PARAMETERS, RESOLVER, ADMISSION, ENGINE, TESTING_SUPPORT, RENDERER,
+    )
+    synonym_sensitive_text = "\n".join(
+        path.read_text(encoding="utf-8") for path in synonym_sensitive_paths
+    )
+    if re.search(FORBIDDEN_SYNONYM_PATTERN, synonym_sensitive_text):
+        failures.add("R56-PUBLIC")
+
     package_text = PACKAGE.read_text(encoding="utf-8")
-    if re.search(FORBIDDEN_ANATOMY_PATTERN, package_text):
+    if re.search(FORBIDDEN_ANATOMY_PATTERN, package_text) or re.search(FORBIDDEN_SYNONYM_PATTERN, package_text):
         failures.add("R56-PUBLIC")
     if any(
         re.search(FORBIDDEN_ANATOMY_PATTERN, path.name)
+        or re.search(FORBIDDEN_SYNONYM_PATTERN, path.name)
         for path in SOURCES.rglob("*")
     ):
         failures.add("R56-PUBLIC")
     preset_names = tuple(path.name for path in PRESETS.iterdir())
-    if any(re.search(FORBIDDEN_ANATOMY_PATTERN, name) for name in preset_names):
+    if any(
+        re.search(FORBIDDEN_ANATOMY_PATTERN, name)
+        or re.search(FORBIDDEN_SYNONYM_PATTERN, name)
+        for name in preset_names
+    ):
         failures.add("R56-PUBLIC")
     if run_rg(FORBIDDEN_ANATOMY_PATTERN, (PRESETS,), glob="*.json") == "match":
         failures.add("R56-PUBLIC")
+    if run_rg(FORBIDDEN_SYNONYM_PATTERN, (PRESETS,), glob="*.json") == "match":
+        failures.add("R56-PUBLIC")
     manifest_text = MANIFEST.read_text(encoding="utf-8")
-    if re.search(FORBIDDEN_ANATOMY_PATTERN, manifest_text):
+    if re.search(FORBIDDEN_ANATOMY_PATTERN, manifest_text) or re.search(FORBIDDEN_SYNONYM_PATTERN, manifest_text):
         failures.add("R56-PUBLIC")
 
     alias_text = "\n".join(
@@ -413,11 +435,14 @@ def demo_failures() -> set[str]:
     control_text = DEMO_CONTROL.read_text(encoding="utf-8")
     panel_text = DEMO_PANEL.read_text(encoding="utf-8")
     store_text = DEMO_STORE.read_text(encoding="utf-8")
+    active_demo_text = control_text + panel_text + store_text
+    synonym_demo_text = demo_text + category_text + active_demo_text
     if (
         control_text.count(".teeth") != 1
         or "case .eyebrows, .teeth, .hairline:" not in control_text
-        or any(name in control_text + panel_text + store_text for name in CANDIDATE_NAMES)
-        or re.search(r"(?i)\b(?:tooth|dental|oral)[A-Za-z0-9_]*\b", control_text + panel_text + store_text)
+        or any(name in active_demo_text for name in CANDIDATE_NAMES)
+        or re.search(r"(?i)\b(?:tooth|dental|oral)[A-Za-z0-9_]*\b", active_demo_text)
+        or re.search(FORBIDDEN_SYNONYM_PATTERN, synonym_demo_text)
     ):
         failures.add("R56-DEMO")
     test_text = DEMO_TEST.read_text(encoding="utf-8")
@@ -823,6 +848,9 @@ def self_test(only: str | None) -> int:
             ("BeautySDK/Package.swift", '.target(name: "BeautyCore"),', '.target(name: "TeethWhiteningModel"),\n        .target(name: "BeautyCore"),', "R56-PUBLIC"),
             ("BeautySDK/Sources/BeautySDK/BeautyEngine.swift", "import Foundation", "import Foundation\n// teethWhitening network storage model route", "R56-PUBLIC"),
             ("BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift", "return .none", "// inert teethWhitening route\n        return .none", "R56-PUBLIC"),
+            ("BeautySDK/Sources/BeautySDK/BeautyEngineTestingSupport.swift", "public static let productionAdmissionNames: [String] = []", "public static let enamelBrightness: [String] = []\n    public static let productionAdmissionNames: [String] = []", "R56-PUBLIC"),
+            ("BeautySDK/Sources/BeautyExampleRenderer/main.swift", 'id: "skinWhitening_0p50",', 'id: "enamelWhite_savedOutput",', "R56-PUBLIC"),
+            ("BeautySDK/Sources/BeautyResources/Resources/Presets/natural.json", '"parameters": {', '"parameters": {\n    "dentitionWhitening": 0.5,', "R56-PUBLIC"),
         ),
         "T-56-03": (
             ("BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift", "import BeautyCore", "import BeautyCore\n// teethWhitening aliases skinWhitening", "R56-ALIAS"),
@@ -832,6 +860,7 @@ def self_test(only: str | None) -> int:
             ("BeautySDK/Sources/BeautySDK/BeautyEngineTestingSupport.swift", "private let invocationLock = NSLock()", "// opaque composition aliases teethWhitening\n    private let invocationLock = NSLock()", "R56-ALIAS"),
             ("BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift", "return .none", "// teethWhitening aliases sibling candidate\n        return .none", "R56-ALIAS"),
             ("BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift", "return .none", "return BeautyLocalRetouchAdmission(opaqueDemandCount: 1)", "R56-ADMISSION"),
+            ("BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift", "public enum BeautyEffectResolver", "private func enamelWhitening(_ parameters: BeautyParameters) -> Float {\n    parameters.skinWhitening\n}\n\npublic enum BeautyEffectResolver", "R56-ALIAS"),
         ),
         "T-56-04": (
             ("BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift", 'unsupported("lips.teeth", title: "白牙", icon: "sparkles")', 'supported("lips.teeth", title: "白牙", icon: "sparkles", controlID: .lipColor)', "R56-DEMO"),
@@ -843,6 +872,7 @@ def self_test(only: str | None) -> int:
             ("BeautyDemo/BeautyDemo/Editor/MeituEditorToolPanelView.swift", "let range = selectedTool.controlID", "let teethWhitening = selectedTool.controlID\n        let range = selectedTool.controlID", "R56-DEMO"),
             ("BeautyDemo/BeautyDemo/Panel/BeautyControlDescriptor.swift", "case .eyebrows, .teeth, .hairline:", "case .eyebrows, .hairline:\n            return []\n        case .teeth:\n            return mouthControls", "R56-DEMO"),
             ("BeautyDemo/BeautyDemoTests/BeautyDemoViewStateTests.swift", "XCTAssertNil(teeth.controlID)", "XCTAssertEqual(teeth.controlID, .lipColor)", "R56-DEMO"),
+            ("BeautyDemo/BeautyDemo/Panel/BeautyControlDescriptor.swift", "case skinSmoothing", "case dentitionBrightness\n    case skinSmoothing", "R56-DEMO"),
         ),
         "T-56-05": (
             (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: validated", "status: draft", "R56-EVIDENCE"),
