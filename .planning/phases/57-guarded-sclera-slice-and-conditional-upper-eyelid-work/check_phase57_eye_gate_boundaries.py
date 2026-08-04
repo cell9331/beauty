@@ -96,6 +96,9 @@ EYELID_TOKENS = (
 )
 EYELID_TOKEN_PATTERN = "(?:" + "|".join(map(re.escape, EYELID_TOKENS)) + ")"
 EYELID_PATTERN = rf"(?i)\b{EYELID_TOKEN_PATTERN}[A-Za-z0-9_]*\b"
+EYELID_IDENTITY_PATTERN = (
+    rf"(?:{EYELID_TOKEN_PATTERN}[A-Za-z0-9_]*|去脂|eyes\.fat)"
+)
 PROXY_PATTERN = (
     r"(?i)\b(?:eyeHeight|upperEyelidLift|eyebrowYPosition|"
     r"brow(?:Translation|Movement|Lift|Warp)|eyeAperture|eyeSize|eyeWarp|"
@@ -365,7 +368,9 @@ def source_failures() -> set[str]:
     if re.search(SCLERA_ALIAS_PATTERN, f"{source_text}\n{supplemental_text}"):
         failures.add("R57-SCLERA")
 
-    candidate = f"(?:{SCLERA_PATTERN.replace('(?i)', '')}|{EYELID_PATTERN.replace('(?i)', '')})"
+    candidate = (
+        rf"(?:{SCLERA_TOKEN_PATTERN}[A-Za-z0-9_]*|{EYELID_IDENTITY_PATTERN})"
+    )
     relation = re.compile(
         rf"(?:{candidate}.{{0,200}}{PROXY_PATTERN.replace('(?i)', '')}|{PROXY_PATTERN.replace('(?i)', '')}.{{0,200}}{candidate})",
         re.IGNORECASE | re.DOTALL,
@@ -1152,20 +1157,30 @@ def assert_proxy_relation_failures() -> int:
         "opaqueCompositionScenario",
     )
     relation_forms = (
-        "package let upperEyelidFullnessReduction = {target}\n",
-        "// {target} aliases upperEyelidFullnessReduction\n",
-        "package func upperEyelidFullnessReduction() {{ _ = {target} }}\n",
-        "// route upperEyelidFullnessReduction maps to {target}\n",
-        "// evidence: {target} proves upperEyelidFullnessReduction\n",
+        "// assignment: {candidate} = {target}\n",
+        "// forwarding: {candidate} forwards to {target}\n",
+        "// comment: {target} implements {candidate}\n",
+        "// mapping: {candidate} maps to {target}\n",
+        "// route: {candidate} uses {target}\n",
+        "// evidence: {target} proves {candidate}\n",
     )
     neutral_root = SOURCES / "NeutralPhase57Proxy"
-    for index, target in enumerate(relation_targets):
-        form = relation_forms[index % len(relation_forms)]
+    for target_index, target in enumerate(relation_targets):
         cases += assert_added_file_rules(
-            neutral_root / f"Relation{index}.swift",
-            form.format(target=target),
+            neutral_root / f"CanonicalRelation{target_index}.swift",
+            f"package let upperEyelidFullness = {target}\n",
             expected,
         )
+    for identity_index, identity in enumerate(("去脂", "eyes.fat")):
+        for target_index, target in enumerate(relation_targets):
+            for form_index, form in enumerate(relation_forms):
+                cases += assert_added_file_rules(
+                    neutral_root / (
+                        f"OwnedIdentity{identity_index}_{target_index}_{form_index}.swift"
+                    ),
+                    form.format(candidate=identity, target=target),
+                    ("R57-PROXY",),
+                )
 
     cases += assert_clean_added_file(
         neutral_root / "ProxyOnly.swift",
