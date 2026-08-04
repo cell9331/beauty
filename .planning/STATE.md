@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.14
 milestone_name: Local Facial Retouch
-current_phase: 57
-current_phase_name: Guarded Sclera Slice and Conditional Upper-Eyelid Work
-status: executing
-stopped_at: Completed 57-04-PLAN.md
-last_updated: "2026-08-04T03:19:24.897Z"
+current_phase: 58
+current_phase_name: Combined Facade, Safety, Ledger, and Audit Closeout
+status: planning
+stopped_at: Phase 57 independently verified; ready to discuss Phase 58
+last_updated: "2026-08-04T06:18:57.439Z"
 last_activity: 2026-08-04
-last_activity_desc: Phase 57 final closed eye-gate evidence and owner closeout complete
+last_activity_desc: Phase 57 complete, transitioned to Phase 58
 progress:
   total_phases: 6
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 23
   completed_plans: 23
 ---
@@ -23,16 +23,16 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-08-04)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 57 — Guarded Sclera Slice and Conditional Upper-Eyelid Work
+**Current focus:** Phase 58 — Combined Facade, Safety, Ledger, and Audit Closeout
 
 ## Current Position
 
-Phase: 57 — Guarded Sclera Slice and Conditional Upper-Eyelid Work
-Plan: 4 of 4
-Status: Ready for independent review and verification
-Last activity: 2026-08-04 — Phase 57 final closed eye-gate evidence and owner closeout complete
+Phase: 58 — Combined Facade, Safety, Ledger, and Audit Closeout
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-08-04 — Phase 57 complete, transitioned to Phase 58
 
-Progress: [███████░░░] 4/6 phases (67%)
+Progress: [████████░░] 5/6 phases (83%)
 
 ## Performance Metrics
 
@@ -119,14 +119,15 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 
 ### Pending Todos
 
-- Run independent Phase 57 code review and goal-backward verification without marking the phase complete early.
-- Preserve all 519 post-verification-gap mutation cases, exact `.none`/59/5/72, disabled Demo rows, future/future/partial ledgers, and exact conditional dispositions through verification.
+- Discuss and plan Phase 58 from the verified Phase 53–57 contracts, then run the combined facade, safety, ledger, and audit closeout.
+- Preserve all 519 Phase 57 post-verification-gap mutation cases, exact `.none`/59/5/72, disabled Demo rows, future/future/partial ledgers, and exact conditional dispositions through milestone closeout.
 
 ### Blockers/Concerns
 
 - [Phase 54] Teeth lacks a genuine discoloration positive and complete independent positive/negative bundle; its product gate is closed.
 - [Phase 54] Sclera lacks a genuine redness positive and complete independent positive/negative bundle; its product gate is closed.
 - [Phase 54] `去脂` lacks genuine upper-eyelid-fullness evidence and an approved credible non-warp design; exact absence is required.
+- [Phase 57→58] The finalized Phase 57 owner-equality checker intentionally binds the pre-transition `STATE.md` lifecycle and now reports fixed `R57-COMPAT` after the canonical Phase 58 transition. Phase 58 must add a strict completed-state audit path without weakening owner deletion, contradiction, or count checks before milestone audit.
 - TD-013 public generic-result sendability remains an open API decision outside this milestone and must not be silently absorbed by local-retouch work.
 
 ## Deferred Items
@@ -140,6 +141,6 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 
 ## Session Continuity
 
-Last session: 2026-08-04T03:19:24.890Z
-Stopped at: Completed 57-04-PLAN.md
+Last session: 2026-08-04T06:18:57.439Z
+Stopped at: Phase 57 independently verified; ready to discuss Phase 58
 Resume file: None

@@ -28,7 +28,7 @@ v1.14 establishes one SDK-SPM still-image local-retouch boundary, qualifies feat
 - [x] **Phase 54: Rights-Approved Evidence and Eligibility Decisions** - Decide each visible feature independently from complete rights-approved positive/negative evidence and frozen review criteria. (completed 2026-08-03)
 - [x] **Phase 55: Original-Pixel Composition and Failure-Isolation Core** - Prove one mask owner, hard containment, overlap-to-source behavior, and smallest-unit degradation before visible effects compose. (completed 2026-08-03)
 - [x] **Phase 56: Independent Teeth Whitening Slice** - Ship `白牙` only if its own containment, naturalness, facade-output, privacy, and evidence gates pass. (completed 2026-08-04)
-- [ ] **Phase 57: Guarded Sclera Slice and Conditional Upper-Eyelid Work** - Qualify `祛红血丝` per eye and either deliver a separately proven non-warp `去脂` slice or record its complete absence.
+- [x] **Phase 57: Guarded Sclera Slice and Conditional Upper-Eyelid Work** - Qualify `祛红血丝` per eye and either deliver a separately proven non-warp `去脂` slice or record its complete absence. (completed 2026-08-04)
 - [ ] **Phase 58: Combined Facade, Safety, Ledger, and Audit Closeout** - Verify the admitted set together without weakening standalone evidence, privacy, compatibility, or scope boundaries.
 
 <details>
@@ -222,7 +222,7 @@ All 41 v1.14 requirements map to exactly one phase: 41 mapped, 0 duplicated, 0 u
 | 54. Rights-Approved Evidence and Eligibility Decisions | 5/5 | Complete    | 2026-08-03 |
 | 55. Original-Pixel Composition and Failure-Isolation Core | 5/5 | Complete    | 2026-08-03 |
 | 56. Independent Teeth Whitening Slice | 3/3 | Complete    | 2026-08-04 |
-| 57. Guarded Sclera Slice and Conditional Upper-Eyelid Work | 4/4 | In Progress|  |
+| 57. Guarded Sclera Slice and Conditional Upper-Eyelid Work | 4/4 | Complete    | 2026-08-04 |
 | 58. Combined Facade, Safety, Ledger, and Audit Closeout | 0/TBD | Not started | - |
 
 ## Backlog
