@@ -1368,6 +1368,30 @@ extension BeautyParametersTests {
         XCTAssertEqual(checklist.last, "exact stored and Codable inventory")
     }
 
+    func testPhase58ZeroAdmissionKeepsExact59FieldSourceCodingAndEncodedShape() throws {
+        let source = try String(contentsOf: parametersSourceURL(), encoding: .utf8)
+        let defaults = BeautyParameters()
+        let stored = Mirror(reflecting: defaults).children.compactMap(\.label)
+        let codingBlock = try XCTUnwrap(source.split(separator: "enum CodingKeys", maxSplits: 1).last)
+        let coding = stored.filter { codingBlock.contains($0) }
+        let encoded = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: JSONEncoder().encode(defaults)) as? [String: Any]
+        )
+        let candidates = [
+            "teethWhitening", "scleraRednessReduction", "upperEyelidFullnessReduction",
+        ]
+
+        XCTAssertEqual(stored.count, 59)
+        XCTAssertEqual(coding, stored)
+        XCTAssertEqual(encoded.count, 58)
+        XCTAssertEqual(Set(encoded.keys), Set(stored).subtracting(["filterId"]))
+        for candidate in candidates {
+            XCTAssertFalse(stored.contains(candidate), candidate)
+            XCTAssertFalse(coding.contains(candidate), candidate)
+            XCTAssertNil(encoded[candidate], candidate)
+        }
+    }
+
     private func parametersSourceURL() -> URL {
         URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()

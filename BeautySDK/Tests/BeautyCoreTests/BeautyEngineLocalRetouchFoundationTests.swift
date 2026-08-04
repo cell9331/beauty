@@ -431,6 +431,110 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         XCTAssertEqual(harness.compositionObservation.compositionInvocationCount, 0)
     }
 
+    func testPhase58ZeroAdmissionConjunctionPreservesBothFacadesAndCanonicalNoOp() throws {
+        let resolverSource = try String(
+            contentsOf: Self.repositoryRoot.appendingPathComponent(
+                "BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift"
+            ),
+            encoding: .utf8
+        )
+        let normalizedResolver = resolverSource
+            .components(separatedBy: .whitespacesAndNewlines)
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
+        XCTAssertTrue(normalizedResolver.contains(
+            "package static func localRetouchAdmission( parameters: BeautyParameters ) -> " +
+            "BeautyLocalRetouchAdmission { _ = parameters return .none }"
+        ))
+        XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionCount, 0)
+        XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionNames, [])
+
+        let sourceBytes = try Self.renderedRGBA8(Self.image)
+        let engine = try BeautyEngine(configuration: .default)
+        let processOutput = try engine.process(
+            image: Self.image,
+            orientation: .up,
+            parameters: .init()
+        )
+        let resultOutput = try engine.processResult(
+            image: Self.image,
+            metadata: BeautyInputMetadata(orientation: .up, source: .photo),
+            parameters: .init()
+        )
+
+        for output in [processOutput, resultOutput.output] {
+            XCTAssertEqual(output.extent, Self.image.extent)
+            XCTAssertEqual(try Self.renderedRGBA8(output), sourceBytes)
+        }
+        XCTAssertEqual(resultOutput.warnings, [])
+        XCTAssertEqual(resultOutput.detectionSummary, .notRun)
+        XCTAssertEqual(resultOutput.metrics, [
+            "beauty.effects.activeCount": 0,
+            "beauty.effects.cappedCount": 0,
+        ])
+
+        let transparent = CIImage(
+            color: CIColor(red: 0.1, green: 0.2, blue: 0.3, alpha: 0.5)
+        ).cropped(to: Self.image.extent)
+        let invalidHarness = try SDKTestingLocalRetouchFoundationHarness(
+            admittedPrivateDemandCount: 1
+        )
+        XCTAssertThrowsError(
+            try invalidHarness.invoke(
+                entry: .processResult,
+                image: transparent,
+                parameters: .init()
+            )
+        ) { error in
+            XCTAssertEqual(error as? BeautyError, .unsupportedPixelFormat)
+            XCTAssertEqual(Array(Mirror(reflecting: error).children).count, 0)
+        }
+    }
+
+    func testPhase58CanceledCallerDiscardsCompletedPublicationThenFreshRequestPublishes() async throws {
+        let harness = try SDKTestingLocalRetouchFoundationHarness(
+            admittedPrivateDemandCount: 1,
+            supportSequence: [.available(valueID: 101), .available(valueID: 202)]
+        )
+        let completed = try harness.invoke(
+            entry: .processResult,
+            image: Self.image,
+            parameters: .init()
+        )
+        let gate = Phase58PublicationGate()
+        let publication = Task { () -> Phase58PublicationOutcome in
+            await gate.markInvocationCompletedAndWaitForRelease()
+            guard !Task.isCancelled else { return .discarded }
+            return .published(completed.aggregateSupportValueID)
+        }
+
+        await gate.waitUntilInvocationCompleted()
+        publication.cancel()
+        await gate.release()
+
+        let canceledOutcome = await publication.value
+        XCTAssertEqual(canceledOutcome, .discarded)
+        XCTAssertEqual(harness.canonicalizeCount, 1)
+        XCTAssertEqual(harness.detectAndMapCount, 1)
+        XCTAssertEqual(harness.requestOwnerCreationCount, 1)
+        XCTAssertEqual(harness.renderCount, 1)
+        XCTAssertEqual(harness.retainedMappedCoordinateCount, 0)
+        XCTAssertEqual(harness.retainedRequestOwnerCount, 0)
+
+        let fresh = try harness.invoke(
+            entry: .processResult,
+            image: Self.image,
+            parameters: .init()
+        )
+        XCTAssertEqual(fresh.aggregateSupportValueID, 202)
+        XCTAssertEqual(harness.canonicalizeCount, 2)
+        XCTAssertEqual(harness.detectAndMapCount, 2)
+        XCTAssertEqual(harness.requestOwnerCreationCount, 2)
+        XCTAssertEqual(harness.renderCount, 2)
+        XCTAssertEqual(harness.retainedMappedCoordinateCount, 0)
+        XCTAssertEqual(harness.retainedRequestOwnerCount, 0)
+    }
+
     func testConcurrencyNonclaimsRemainFlaggedNotPassedClaims() {
         let flags = Set([
             "PATH01-CONCURRENCY",
@@ -471,6 +575,12 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         )
     }
 
+    private static var repositoryRoot: URL {
+        URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent()
+            .deletingLastPathComponent().deletingLastPathComponent()
+    }
+
     private static func renderedRGBA8(_ image: CIImage) throws -> [UInt8] {
         let bounds = image.extent.integral
         guard bounds.width > 0,
@@ -495,5 +605,36 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
             colorSpace: colorSpace
         )
         return bytes
+    }
+}
+
+private enum Phase58PublicationOutcome: Equatable, Sendable {
+    case discarded
+    case published(Int?)
+}
+
+private actor Phase58PublicationGate {
+    private var invocationCompleted = false
+    private var released = false
+    private var completionWaiters: [CheckedContinuation<Void, Never>] = []
+    private var releaseWaiters: [CheckedContinuation<Void, Never>] = []
+
+    func markInvocationCompletedAndWaitForRelease() async {
+        invocationCompleted = true
+        completionWaiters.forEach { $0.resume() }
+        completionWaiters.removeAll()
+        guard !released else { return }
+        await withCheckedContinuation { releaseWaiters.append($0) }
+    }
+
+    func waitUntilInvocationCompleted() async {
+        guard !invocationCompleted else { return }
+        await withCheckedContinuation { completionWaiters.append($0) }
+    }
+
+    func release() {
+        released = true
+        releaseWaiters.forEach { $0.resume() }
+        releaseWaiters.removeAll()
     }
 }

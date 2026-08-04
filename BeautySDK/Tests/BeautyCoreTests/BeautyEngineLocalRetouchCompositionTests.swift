@@ -239,6 +239,27 @@ final class BeautyEngineLocalRetouchCompositionTests: XCTestCase {
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionCount, 0)
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionNames, [])
     }
+
+    func testPhase58FeatureNeutralCompositionPublishesOnlySixAggregateCounters() throws {
+        let harness = try makeHarness(.disjoint)
+        _ = try invoke(harness, entry: .processResult)
+        let observation = harness.compositionObservation
+
+        let counters = [
+            observation.acceptedUnitCount,
+            observation.rejectedUnitCount,
+            observation.ownedPixelCount,
+            observation.changedPixelCount,
+            observation.changedOutsideUnionPixelCount,
+            observation.collisionPixelCount,
+        ]
+        XCTAssertEqual(counters, [3, 0, 3, 3, 0, 0])
+        XCTAssertEqual(counters.count, 6)
+        XCTAssertTrue(observation.sourceBindingMatched)
+        XCTAssertEqual(observation.compositionInvocationCount, 1)
+        XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionCount, 0)
+        XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionNames, [])
+    }
 }
 
 private extension BeautyEngineLocalRetouchCompositionTests {

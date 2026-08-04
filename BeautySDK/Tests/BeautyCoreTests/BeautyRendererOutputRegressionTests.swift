@@ -1058,4 +1058,26 @@ extension BeautyRendererOutputRegressionTests {
         }
         XCTAssertEqual(source.components(separatedBy: "engine.processResult(").count - 1, 1)
     }
+
+    func testPhase58ZeroAdmissionKeepsExact72RendererCasesAndNoOutputRoute() throws {
+        let source = try rendererSource()
+        let candidates = [
+            "teethWhitening", "scleraRednessReduction", "upperEyelidFullnessReduction",
+        ]
+
+        XCTAssertEqual(rendererCaseIDs(in: source), Self.expectedRendererCaseIDs)
+        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 72)
+        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 72)
+        for candidate in candidates {
+            XCTAssertFalse(containsInitializerLabel(candidate, in: source), candidate)
+            XCTAssertFalse(source.contains("\"\(candidate)\""), candidate)
+            XCTAssertFalse(
+                Self.expectedRendererCaseIDs.contains {
+                    $0 == candidate || $0.hasPrefix("\(candidate)_")
+                },
+                candidate
+            )
+        }
+        XCTAssertEqual(source.components(separatedBy: "engine.processResult(").count - 1, 1)
+    }
 }
