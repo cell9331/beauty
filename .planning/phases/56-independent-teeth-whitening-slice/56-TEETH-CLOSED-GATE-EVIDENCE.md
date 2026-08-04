@@ -60,10 +60,10 @@ or mechanics result contributes admission weight.
 | HIGH gate | Result | Per-threat self-test total |
 | --- | --- | ---: |
 | T-56-01 | passed | 38 |
-| T-56-02 | passed | 28 |
-| T-56-03 | passed | 20 |
-| T-56-04 | passed | 22 |
-| T-56-05 | passed | 24 |
+| T-56-02 | passed | 31 |
+| T-56-03 | passed | 21 |
+| T-56-04 | passed | 23 |
+| T-56-05 | passed | 31 |
 | T-56-06 | passed | 19 |
 | T-56-07 | passed | 24 |
 
@@ -75,7 +75,7 @@ unrun, stale, count-only, waived, or unclassified result is accepted.
 | Gate family | Actual result |
 | --- | --- |
 | Focused SwiftPM exact-absence suites | 96 executed, 0 failures, 0 skips |
-| Boundary checker aggregate self-test | 97 mutation/scanner/inventory cases passed |
+| Boundary checker aggregate self-test | 109 mutation/scanner/inventory cases passed |
 | Boundary checker live mode | passed; 59 fields, 5 presets, 72 renderer cases, 7 HIGH IDs |
 | Full SwiftPM | 539 executed, 0 failures, 6 documented opt-in Vision skips |
 | Explicit Simulator build | passed on iPhone 17e / iOS 26.5; existing empty-supported-platform diagnostic was non-fatal |
@@ -85,6 +85,12 @@ unrun, stale, count-only, waived, or unclassified result is accepted.
 | Task / requirement / HIGH equality | 5/5 tasks, 6/6 requirements, 7/7 HIGH rows |
 | Codebase drift classification | only the exact three-owner historical warning set; no Phase 56 source path |
 | Diff hygiene | passed |
+
+Post-review reruns structurally reject downgraded, missing, duplicated, or
+malformed evidence frontmatter, pending final results, affirmative candidate
+promotion/readiness contradictions, and context-specific `enamel`/`dentition`
+aliases across production, Testing, renderer, preset, and Demo fixtures. The
+canonical requirement ledger records the exact six closed-gate dispositions.
 
 ## Privacy Allowlist and Nonclaims
 

@@ -1,23 +1,23 @@
 ---
 phase: 56
-reviewed: 2026-08-03
-status: needs_fixes
+reviewed: 2026-08-04
+status: clean
 baseline: 43f35f6
-head: 4eb75e3
+head: 5235f0c
 review_standard: bugs, security, fail-closed behavior, test quality, privacy, contract drift
-findings: 3
-blockers: 2
-warnings: 1
+findings: 0
+blockers: 0
+warnings: 0
+resolved_findings: 3
 ---
 
 # Phase 56 Code Review
 
 ## Verdict
 
-**NEEDS FIXES.** Current repository tests and final regressions pass, but the
-Phase 56 boundary checker has two reproducible false-green paths that invalidate
-its fail-closed claim. Requirement bookkeeping also needs a clearer distinction
-between a completed conditional contract and an implemented positive branch.
+**CLEAN AFTER FIXES.** All three findings are resolved, every expanded
+live-fixture mutation is rejected, and the complete post-fix regression gate is
+green. Production SDK and Demo behavior remain unchanged.
 
 ## Findings
 
@@ -54,6 +54,12 @@ while permitting explicit nonclaims. Add real-fixture mutations for lifecycle
 downgrade, missing/duplicate frontmatter, pending result, and contradictory
 promotion prose.
 
+**Resolution:** Resolved by `0f411b5`. The checker now parses the exact fixed
+frontmatter shape, requires all finalized sections, distinguishes explicit
+nonclaims from affirmative promotion/readiness contradictions, and exercises
+downgrade, missing, duplicate, malformed, pending, and contradictory live
+evidence mutations. T-56-05 now passes 31 cases.
+
 ### CR-56-02 — BLOCKER — `enamelWhitening` bypasses the candidate and alias boundary
 
 **Location:** checker constants and `production_failures()` in
@@ -81,6 +87,12 @@ fixture-specific checks rather than a repository-wide ban. Add real-source
 mutations for an internal resolver helper, Testing SPI name, renderer/preset
 name, and Demo control name using the synonym family.
 
+**Resolution:** Resolved by `89cf570`. Context-specific production and Demo
+surfaces now cover `enamel` and `dentition` stems plus six explicit camel-case
+aliases without applying a repository-wide prose/test ban. Live resolver,
+Testing SPI, renderer, preset, and Demo control mutations all fail closed;
+T-56-02/T-56-03/T-56-04 pass 31/21/23 cases.
+
 ### CR-56-03 — WARNING — Completed requirement marks can be misread as positive-branch implementation
 
 **Location:** `.planning/REQUIREMENTS.md`, TEETH-01 through TEETH-06 checklist
@@ -102,22 +114,31 @@ branch shipped. In the traceability table, record TEETH-01 as complete through
 `not_applicable_closed_gate`, and TEETH-06 as complete through `no_promotion`.
 Do not alter the requirement wording or claim implementation.
 
+**Resolution:** Resolved by `5235f0c`. The canonical checklist now explains
+that a checked conditional row records branch resolution, and the traceability
+table records TEETH-01 as `false_branch_exact_absence`, TEETH-02..05 as
+`not_applicable_closed_gate`, and TEETH-06 as `no_promotion` without changing
+the requirement wording.
+
 ## Evidence Reviewed
 
 - Focused Phase 56 SDK suite: 96/96 passed.
-- Current checker aggregate: 97/97 passed; current live mode reports exact
-  59/5/72 and seven HIGH IDs.
+- Current checker aggregate: 109/109 passed; per-threat totals are
+  38/31/21/23/31/19/24; current live mode reports exact 59/5/72 and seven HIGH
+  IDs.
 - Full recorded Phase 56 regression: 539 SwiftPM tests executed with six
   documented opt-in skips and zero failures; Demo 119/119.
-- Independent temporary-fixture review reproductions: evidence lifecycle
-  downgrade accepted, contradictory promotion accepted, and
-  `enamelWhitening` internal alias accepted.
-- Production source remains unchanged at review time; the defects are checker
-  and canonical-state enforcement gaps.
+- Focused Demo view-state tests pass 28/28; explicit full Demo tests pass
+  119/119 after a successful build.
+- Schema and UI gates are clear; decision coverage is 16/16 and post-plan
+  coverage is 22/22. Codebase drift is only the recorded historical
+  `PRODUCT_SENSE.md`, `example-images`, and `meituxiuxiu` warning set.
+- Production source remains unchanged; all fixes are checker, evidence, and
+  canonical requirement bookkeeping.
 
-## Fix Gate
+## Post-Fix Gate
 
-After fixes, rerun:
+Completed reruns:
 
 1. Python syntax and exact threat inventory parse.
 2. Checker aggregate, live, and every T-56-01..07 mode with the expanded
@@ -129,4 +150,7 @@ After fixes, rerun:
 6. Refresh evidence, validation, QUALITY_SCORE, SECURITY, PLANS, and this review
    with actual post-fix counts; do not reuse pre-fix results.
 
-**Review status:** fixes required before independent phase verification.
+All six rows passed with fresh post-fix results. Diff hygiene is green and all
+seven HIGH mitigations remain blocking and machine-green.
+
+**Review status:** clean after fixes; ready for independent phase verification.

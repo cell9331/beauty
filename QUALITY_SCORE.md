@@ -600,5 +600,5 @@ SDK 1.0 readiness:
 ### v1.14 Phase 56 Closed Teeth Evidence Score
 
 - Exact traceability passes 5/5 task rows, TEETH-01 through TEETH-06 6/6 conditional dispositions, D-56-01 through D-56-16 16/16, and T-56-01 through T-56-07 7/7 machine-green HIGH mitigations.
-- Focused SwiftPM passes 96/96; the checker passes 97 aggregate mutation/scanner/inventory cases plus all seven per-threat modes and live 59/5/72 classification. Full SwiftPM executes 539 tests with six documented opt-in Vision skips and zero failures; explicit iPhone 17e/iOS 26.5 Demo build passes and Demo tests pass 119/119.
+- Post-review focused SwiftPM passes 96/96 and focused Demo passes 28/28; the checker passes 109 aggregate mutation/scanner/inventory cases, per-threat totals `38 / 31 / 21 / 23 / 31 / 19 / 24`, all seven modes, and live 59/5/72 classification. Full SwiftPM executes 539 tests with six documented opt-in Vision skips and zero failures; explicit iPhone 17e/iOS 26.5 Demo build passes and Demo tests pass 119/119.
 - Quality credit is limited to exact closed-gate enforcement, compatibility, privacy, and regression safety. TEETH-02 through TEETH-05 remain `not_applicable_closed_gate`; no algorithm, containment, effectiveness, naturalness, image review, device/performance, commercial, packaging, shipping, launch, or release credit is added.
