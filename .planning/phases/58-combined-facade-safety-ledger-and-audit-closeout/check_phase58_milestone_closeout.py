@@ -864,7 +864,7 @@ def evidence_failures() -> set[str]:
             return {RULES["T-58-08"]}
     if "Phase 58 checker `251 / 0 / 0`; per-HIGH `80 / 33 / 37 / 34 / 28 / 31 / 4 / 4`" not in evidence:
         return {RULES["T-58-08"]}
-    if "Phase 58 aggregate `262 / 0 / 0`; per-HIGH `80 / 33 / 37 / 34 / 28 / 31 / 11 / 8`" not in evidence:
+    if "Phase 58 aggregate `276 / 0 / 0`; per-HIGH `80 / 33 / 37 / 34 / 28 / 31 / 25 / 8`" not in evidence:
         return {RULES["T-58-08"]}
     if "frozen pre-transition self-test `519 / 0 / 0`" not in evidence:
         return {RULES["T-58-08"]}
@@ -1477,6 +1477,18 @@ def assert_phase57_matrix() -> int:
     )
     for path, mutation in mutations:
         cases += assert_fixture_mutation("T-58-07", mutation)
+    for path in (
+        PHASE57_CHECKER, PHASE57_VERIFICATION, PHASE57_EVIDENCE,
+        PHASE57_VALIDATION, PHASE57_INVENTORY,
+        ROOT / ".planning" / "STATE.md", ROOT / ".planning" / "ROADMAP.md",
+    ):
+        relative = path.relative_to(ROOT)
+        cases += assert_fixture_mutation(
+            "T-58-07", lambda relative=relative: (ROOT / relative).unlink()
+        )
+        cases += assert_fixture_mutation(
+            "T-58-07", lambda relative=relative: (ROOT / relative).write_bytes(b"\xff\xfe")
+        )
     cases += assert_forced_scanner("T-58-07")
     return cases
 

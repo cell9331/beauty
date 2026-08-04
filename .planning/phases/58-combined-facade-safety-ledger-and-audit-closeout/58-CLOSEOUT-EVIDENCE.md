@@ -33,7 +33,7 @@ are closed, so the admitted and promoted sets are exactly empty.
 | `58-02-01` | passed | lifecycle `60 / 0 / 0`; retained request owners `0` |
 | `58-02-02` | passed | Phase 58 checker `251 / 0 / 0`; per-HIGH `80 / 33 / 37 / 34 / 28 / 31 / 4 / 4` |
 | `58-03-01` | passed | frozen pre-transition self-test `519 / 0 / 0`; current completed-state adapter passed |
-| `58-03-02` | passed | Phase 58 aggregate `262 / 0 / 0`; per-HIGH `80 / 33 / 37 / 34 / 28 / 31 / 11 / 8` |
+| `58-03-02` | passed | Phase 58 aggregate `276 / 0 / 0`; per-HIGH `80 / 33 / 37 / 34 / 28 / 31 / 25 / 8` |
 | `58-04-01` | pending | final automated conjunction pending |
 
 ## HIGH Results
@@ -68,7 +68,7 @@ are closed, so the admitted and promoted sets are exactly empty.
 | --- | --- | ---: | ---: | ---: |
 | focused SDK | passed | 156 | 0 | 0 |
 | focused Demo | passed | 30 | 0 | 0 |
-| Phase 58 aggregate HIGH | passed | 262 | 0 | 0 |
+| Phase 58 aggregate HIGH | passed | 276 | 0 | 0 |
 | full SwiftPM | pending | 0 | 0 | 0 |
 | opt-in Vision | pending | 0 | 0 | 0 |
 | full Demo | pending | 0 | 0 | 0 |

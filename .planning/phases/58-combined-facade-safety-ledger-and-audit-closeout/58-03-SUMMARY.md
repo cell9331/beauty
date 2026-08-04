@@ -57,7 +57,7 @@ completed: 2026-08-04
 
 - Added a strict adapter that verifies the frozen Phase 57 checker blob against revision `4125b75`, requires current decision/sclera/eyelid green modes, accepts only the exact current `R57-COMPAT` default, and independently validates all completed Phase 57 owners.
 - Exercised the verified pre-transition checker in a disposable Git fixture with exact per-threat totals `65 / 68 / 90 / 143 / 23 / 81 / 7 / 42` and aggregate `519` cases without changing the frozen checker.
-- Completed T-58-07 and T-58-08 real-fixture mutation, missing/unreadable, scanner, evidence-lifecycle, owner-equality, raw-error, and fixed Vision-summary classification paths. Phase 58 self-test passes `262` aggregate cases with per-threat totals `80 / 33 / 37 / 34 / 28 / 31 / 11 / 8`.
+- Completed T-58-07 and T-58-08 real-fixture mutation, missing/unreadable, scanner, evidence-lifecycle, owner-equality, raw-error, and fixed Vision-summary classification paths. Phase 58 self-test passes `276` aggregate cases with per-threat totals `80 / 33 / 37 / 34 / 28 / 31 / 25 / 8`.
 - Updated draft evidence with actual Phase 58 task/HIGH aggregates, exact owner equality, and explicit pending final-only lifecycle gates.
 
 ## Task Commits
@@ -95,8 +95,8 @@ Plan 58-04 can run the final full SwiftPM, six-test opt-in Vision, full Demo, GS
 
 ## Self-Check: PASSED
 
-- `58-03-SUMMARY.md` exists and both task commits `8860584` and `4b27e2a` are present.
-- Python compilation, `git diff --check`, frozen Phase 57 byte equality, decision mode, lifecycle mode, live mode, aggregate `262` self-test, all eight per-threat modes, and Vision-summary fixed-output classification passed.
+- `58-03-SUMMARY.md` exists and task commits `8860584` and `4b27e2a` are present.
+- Python compilation, `git diff --check`, frozen Phase 57 byte equality, decision mode, lifecycle mode, live mode, aggregate `276` self-test, all eight per-threat modes, and Vision-summary fixed-output classification passed.
 
 ---
 *Phase: 58-combined-facade-safety-ledger-and-audit-closeout*
