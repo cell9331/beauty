@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
 import copy
+import io
 import json
 import pathlib
 import re
@@ -114,6 +116,22 @@ EXPECTED_PRESETS = (
 EXPECTED_MATRIX_ROW = "| Beauty shaping | 眼睛 | partial | `BeautyEffects` | `BeautyDetection` observed eye contours/pupils, `BeautyRender` unified warp | Four prior controls plus `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, signed `eyeTilt`, `innerCornerOpen`, `outerCornerOpen`, and `eyeSymmetry`; fourteen geometry rows implemented. | `去脂` and `祛红血丝` remain future local retouch/color slices. | Phases 29-30 cover four prior rows; Phase 41 contract/support, Phase 42 provider behavior, Phase 43 public output, and Phase 44 exact safety/privacy/boundary evidence independently cover the ten new rows. | Uses SDK domain `eyes`; branch remains partial solely because the two retouch rows are future. |"
 EXPECTED_LID_ROW = "| `眼睛` | 去脂 | future | None. | Needs local retouch/segmentation design; no cloud AI by default. |"
 EXPECTED_SCLERA_ROW = "| `眼睛` | 祛红血丝 | future | None. | Needs local color/segmentation retouch design. |"
+EVIDENCE_REQUIREMENTS = (
+    "SCLERA-01", "SCLERA-02", "SCLERA-03", "SCLERA-04", "SCLERA-05",
+    "SCLERA-06", "LID-02", "LID-03", "LID-04", "LID-05",
+)
+EVIDENCE_FRONTMATTER_KEYS = (
+    "phase", "status", "security_standard", "block_on", "requirements",
+)
+EVIDENCE_COMMON_SECTIONS = (
+    "# Phase 57 Closed Eye-Gates Evidence",
+    "## Immutable Decision Projections",
+    "## Requirement Dispositions",
+    "## Exact Invariants",
+    "## Task and HIGH Results",
+    "## Decision Coverage",
+    "## Privacy Allowlist and Nonclaims",
+)
 
 
 def configure_root(root: pathlib.Path) -> None:
@@ -121,7 +139,8 @@ def configure_root(root: pathlib.Path) -> None:
     global RESOLVER, ADMISSION, ENGINE, TESTING_SUPPORT, DEMO_ROOT
     global PARAMETER_TEST, RESOURCE_TEST, RENDERER_TEST, FOUNDATION_TEST
     global DEMO_SOURCE, DEMO_CONTROL, DEMO_PANEL, DEMO_STORE, DEMO_TEST
-    global FEATURE_MATRIX, SHAPE_LEDGER, DECISIONS, INVENTORY
+    global FEATURE_MATRIX, SHAPE_LEDGER, PRODUCT_SENSE, SECURITY, RELIABILITY
+    global QUALITY_SCORE, REQUIREMENTS, DECISIONS, INVENTORY, EVIDENCE, VALIDATION
 
     ROOT = root.resolve()
     PHASE = ROOT / ".planning" / "phases" / PHASE_NAME
@@ -147,8 +166,15 @@ def configure_root(root: pathlib.Path) -> None:
     DEMO_TEST = ROOT / "BeautyDemo" / "BeautyDemoTests" / "BeautyDemoViewStateTests.swift"
     FEATURE_MATRIX = ROOT / "docs" / "meitu-function-blueprint" / "FEATURE_MATRIX.md"
     SHAPE_LEDGER = ROOT / "docs" / "meitu-function-blueprint" / "SHAPE_FEATURE_LEDGER.md"
+    PRODUCT_SENSE = ROOT / "PRODUCT_SENSE.md"
+    SECURITY = ROOT / "SECURITY.md"
+    RELIABILITY = ROOT / "RELIABILITY.md"
+    QUALITY_SCORE = ROOT / "QUALITY_SCORE.md"
+    REQUIREMENTS = ROOT / ".planning" / "REQUIREMENTS.md"
     DECISIONS = ROOT / ".planning" / "phases" / "54-rights-approved-evidence-and-eligibility-decisions" / "54-EVIDENCE-DECISIONS.json"
     INVENTORY = PHASE / "57-THREAT-INVENTORY.json"
+    EVIDENCE = PHASE / "57-CLOSED-EYE-GATES-EVIDENCE.md"
+    VALIDATION = PHASE / "57-VALIDATION.md"
 
 
 configure_root(ROOT)
@@ -212,7 +238,8 @@ def required_paths() -> tuple[pathlib.Path, ...]:
         ADMISSION, ENGINE, TESTING_SUPPORT, PARAMETER_TEST,
         RESOURCE_TEST, RENDERER_TEST, FOUNDATION_TEST, DEMO_SOURCE, DEMO_CONTROL,
         DEMO_PANEL, DEMO_STORE, DEMO_TEST, FEATURE_MATRIX, SHAPE_LEDGER,
-        DECISIONS, INVENTORY,
+        PRODUCT_SENSE, SECURITY, RELIABILITY, QUALITY_SCORE, REQUIREMENTS,
+        DECISIONS, INVENTORY, EVIDENCE, VALIDATION,
     )
 
 
@@ -313,6 +340,7 @@ def classified_live_failures() -> set[str]:
     except (
         OSError, UnicodeError, ValueError, KeyError, TypeError,
         ScannerFailure, AssertionError, json.JSONDecodeError,
+        subprocess.SubprocessError,
     ):
         return {"R57-AUTH", "R57-COMPAT"}
 
@@ -358,24 +386,83 @@ def compatibility_failures() -> set[str]:
         resource_test = read_text(RESOURCE_TEST)
         renderer_test = read_text(RENDERER_TEST)
         foundation_test = read_text(FOUNDATION_TEST)
-        resolver = " ".join(read_text(RESOLVER).split())
+        resolver_source = read_text(RESOLVER)
+        resolver = " ".join(resolver_source.split())
+        manifest = read_json(MANIFEST)
+        renderer_source = read_text(RENDERER)
         preset_names = tuple(sorted(path.name for path in PRESETS.glob("*.json")))
-    except (OSError, UnicodeError):
+    except (OSError, UnicodeError, json.JSONDecodeError):
         return {"R57-COMPAT"}
-    if len(extract_coding_keys(parameters)) != 59:
+    stored = tuple(re.findall(
+        r"^\s*public var\s+([A-Za-z][A-Za-z0-9]*)\s*:", parameters, re.MULTILINE,
+    ))
+    if len(stored) != 59 or extract_coding_keys(parameters) != stored or stored.count("filterId") != 1:
         return {"R57-COMPAT"}
-    if len(expected_renderer_ids(renderer_test)) != 72 or preset_names != EXPECTED_PRESETS:
+    expected_ids = expected_renderer_ids(renderer_test)
+    renderer_ids = tuple(re.findall(r'\bid:\s*"([^"]+)"', renderer_source))
+    manifest_ids = tuple(
+        row.get("id") for row in manifest.get("presets", [])
+        if isinstance(row, dict)
+    ) if isinstance(manifest, dict) else ()
+    if (
+        len(expected_ids) != 72
+        or len(set(expected_ids)) != 72
+        or renderer_ids != expected_ids
+        or preset_names != EXPECTED_PRESETS
+        or manifest_ids != ("natural", "clear", "refined", "male-natural", "id-photo-natural")
+    ):
         return {"R57-COMPAT"}
-    if "return .none" not in resolver:
+    if (
+        re.search(
+            r"localRetouchAdmission\s*\(\s*parameters:[^\)]*\)[^{]*\{\s*"
+            r"_\s*=\s*parameters\s*return\s+\.none\s*\}",
+            resolver_source,
+            re.DOTALL,
+        ) is None
+        or "return .none" not in resolver
+    ):
         return {"R57-COMPAT"}
-    required_anchors = (
-        (parameter_test, "testPhase57ClosedEyeRetouchGatesKeepPublicAndCodableSurfaceExact"),
-        (resource_test, "testPhase57ClosedEyeRetouchGatesAddNoPresetKeyOrResource"),
-        (renderer_test, "testPhase57ClosedEyeRetouchGatesKeepRendererAndSavedOutputSurfaceExact"),
-        (foundation_test, "testPhase57ClosedEyeRetouchGatesKeepLiteralNoneAndStillEntriesInactive"),
-        (foundation_test, "testPhase57PixelBufferResetAndOpaqueMechanicsStayOutsideEyeCandidates"),
-    )
-    return {"R57-COMPAT"} if any(anchor not in text for text, anchor in required_anchors) else set()
+    required_anchors = {
+        parameter_test: (
+            "testPhase57ClosedEyeRetouchGatesKeepPublicAndCodableSurfaceExact",
+            "XCTAssertEqual(stored.count, 59)",
+            "XCTAssertEqual(coding, stored)",
+            "XCTAssertEqual(encoded.count, 58)",
+            'Set(stored).subtracting(["filterId"])',
+            "XCTAssertEqual(Mirror(reflecting: shippedDomains).children.count, 59)",
+        ),
+        resource_test: (
+            "testPhase57ClosedEyeRetouchGatesAddNoPresetKeyOrResource",
+            'let expectedIDs = ["natural", "clear", "refined", "male-natural", "id-photo-natural"]',
+            "XCTAssertEqual(presets.count, 5)",
+            "XCTAssertEqual(Mirror(reflecting: preset.parameters).children.count, 59)",
+        ),
+        renderer_test: (
+            "testPhase57ClosedEyeRetouchGatesKeepRendererAndSavedOutputSurfaceExact",
+            "XCTAssertEqual(Self.expectedRendererCaseIDs.count, 72)",
+            "XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 72)",
+            '"skinSmoothing_0p50", "eyeHeight_0p25", "upperEyelidLift_0p25"',
+            'XCTAssertEqual(source.components(separatedBy: "engine.processResult(").count - 1, 1)',
+        ),
+        foundation_test: (
+            "testPhase57ClosedEyeRetouchGatesKeepLiteralNoneAndStillEntriesInactive",
+            "testPhase57PixelBufferResetAndOpaqueMechanicsStayOutsideEyeCandidates",
+            "XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionCount, 0)",
+            "XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionNames, [])",
+            "XCTAssertEqual(resultOutput.warnings, [])",
+            "XCTAssertEqual(resultOutput.detectionSummary, .notRun)",
+            "XCTAssertEqual(harness.localProviderCount, 0)",
+            'XCTAssertEqual(harness.pixelBufferSummaryAvailability, "notRun")',
+            "XCTAssertEqual(harness.compositionObservation.compositionInvocationCount, 0)",
+        ),
+    }
+    if any(
+        anchor not in text
+        for text, anchors in required_anchors.items()
+        for anchor in anchors
+    ):
+        return {"R57-COMPAT"}
+    return set()
 
 
 def demo_failures() -> set[str]:
@@ -393,9 +480,36 @@ def demo_failures() -> set[str]:
         return {"R57-DEMO"}
     if source.index(required[0]) >= source.index(required[1]):
         return {"R57-DEMO"}
-    if "testPhase57ClosedEyeRetouchGatesPreserveDisabledRowsAndProxyIndependence" not in test:
+    test_anchors = (
+        "testPhase57ClosedEyeRetouchGatesPreserveDisabledRowsAndProxyIndependence",
+        '"eyes.fat", "eyes.liftMuscle", "eyes.pupil", "eyes.gaze", "eyes.lowerLid"',
+        '"eyes.tailLift", "eyes.tilt", "eyes.redness", "eyes.innerCorner"',
+        'XCTAssertEqual(fat.title, "去脂")',
+        'XCTAssertEqual(fat.systemImageName, "minus.circle")',
+        "XCTAssertEqual(fat.badge, .free)",
+        "XCTAssertFalse(fat.isSupported)",
+        "XCTAssertNil(fat.controlID)",
+        'XCTAssertEqual(redness.title, "祛红血丝")',
+        'XCTAssertEqual(redness.systemImageName, "drop")',
+        "XCTAssertEqual(redness.badge, .free)",
+        "XCTAssertFalse(redness.isSupported)",
+        "XCTAssertNil(redness.controlID)",
+        'XCTAssertEqual(fat.unavailableReason, "v1.1 暂未实现该美图参考功能")',
+        'XCTAssertEqual(redness.unavailableReason, "v1.1 暂未实现该美图参考功能")',
+        '"eyes.size": .eyeSize',
+        '"eyes.upDown": .eyeYPosition',
+        '"eyes.distance": .eyeDistance',
+        '"eyes.tailLift": .eyeTailLift',
+    )
+    if any(anchor not in test for anchor in test_anchors):
         return {"R57-DEMO"}
-    if re.search(SCLERA_PATTERN, boundary) or re.search(EYELID_PATTERN, boundary):
+    if test.count("XCTAssertNil(fat.controlID)") != 2 or test.count("XCTAssertNil(redness.controlID)") != 2:
+        return {"R57-DEMO"}
+    if (
+        re.search(SCLERA_PATTERN, boundary)
+        or re.search(EYELID_PATTERN, boundary)
+        or re.search(r"(?i)eyes\.(?:fat|redness)|去脂|祛红血丝", boundary)
+    ):
         return {"R57-DEMO"}
     return set()
 
@@ -437,6 +551,208 @@ def inventory_failures() -> set[str]:
     return failures
 
 
+def parse_evidence_frontmatter(text: str) -> tuple[dict[str, object], str] | None:
+    lines = text.splitlines()
+    if not lines or lines[0] != "---":
+        return None
+    try:
+        closing = lines.index("---", 1)
+    except ValueError:
+        return None
+    if closing <= 1:
+        return None
+
+    parsed: dict[str, object] = {}
+    for line in lines[1:closing]:
+        match = re.fullmatch(r"([a-z_]+):\s*(.+)", line)
+        if match is None:
+            return None
+        key, raw = match.groups()
+        if key in parsed or key not in EVIDENCE_FRONTMATTER_KEYS:
+            return None
+        if key == "phase":
+            if re.fullmatch(r"[0-9]+", raw) is None:
+                return None
+            parsed[key] = int(raw)
+        elif key == "requirements":
+            requirement_match = re.fullmatch(r"\[([^\]]*)\]", raw)
+            if requirement_match is None:
+                return None
+            parsed[key] = tuple(
+                item.strip() for item in requirement_match.group(1).split(",")
+                if item.strip()
+            )
+        else:
+            parsed[key] = raw
+    if tuple(parsed) != EVIDENCE_FRONTMATTER_KEYS:
+        return None
+    body = "\n".join(lines[closing + 1:])
+    if re.search(
+        r"(?m)^---\s*$\n(?:phase|status|security_standard|block_on|requirements)\s*:",
+        body,
+    ):
+        return None
+    return parsed, body
+
+
+def has_affirmative_eye_candidate_claim(text: str) -> bool:
+    candidate = (
+        r"(?:sclera(?:\s+redness\s+reduction|RednessReduction)|祛红血丝|"
+        r"upper[- ]eyelid(?:\s+fullness\s+reduction|FullnessReduction)|去脂)"
+    )
+    status = (
+        r"(?:implemented|promoted|released|shipped|production-ready|"
+        r"release-ready|launch-ready|ready\s+for\s+(?:release|shipping|launch))"
+    )
+    direct = re.compile(
+        rf"(?i){candidate}.{{0,64}}\b(?:is|are|was|were|has|have)\s+"
+        rf"(?!not\b|never\b)(?:been\s+)?{status}\b"
+    )
+    active = re.compile(rf"(?i)\b{status}\b.{{0,64}}{candidate}")
+    for sentence in re.split(r"[.!?\n]+", text):
+        if direct.search(sentence):
+            return True
+        match = active.search(sentence)
+        if match is not None:
+            prefix = sentence[max(0, match.start() - 16):match.start()]
+            if re.search(r"(?i)\b(?:not|never|no)\s*$", prefix) is None:
+                return True
+    return False
+
+
+def evidence_failures() -> set[str]:
+    try:
+        text = read_text(EVIDENCE)
+    except (OSError, UnicodeError):
+        return {"R57-COMPAT"}
+    parsed = parse_evidence_frontmatter(text)
+    if parsed is None:
+        return {"R57-PRIVACY", "R57-COMPAT"}
+    frontmatter, body = parsed
+    status = frontmatter.get("status")
+    if (
+        frontmatter.get("phase") != 57
+        or status not in ("draft", "validated")
+        or frontmatter.get("security_standard") != "OWASP ASVS Level 1"
+        or frontmatter.get("block_on") != "HIGH"
+        or frontmatter.get("requirements") != EVIDENCE_REQUIREMENTS
+    ):
+        return {"R57-COMPAT"}
+
+    required_dispositions = (
+        "SCLERA-01 | `false_branch_exact_absence`",
+        "SCLERA-02 | `not_applicable_closed_gate`",
+        "SCLERA-03 | `not_applicable_closed_gate`",
+        "SCLERA-04 | `not_applicable_closed_gate`",
+        "SCLERA-05 | `not_applicable_closed_gate`",
+        "SCLERA-06 | `no_promotion`",
+        "LID-02 | `closed_branch_exact_absence`",
+        "LID-03 | `not_applicable_closed_gate`",
+        "LID-04 | `proxy_rejection_enforced`",
+        "LID-05 | `not_applicable_closed_gate`",
+    )
+    required_invariants = (
+        "`sclera_redness` | `closed`",
+        "`upper_eyelid_fullness` | `closed`",
+        "`0 / 0 / 0 / 0 / 0`",
+        "`59 / 5 / 72`",
+        "literal `.none`",
+        "`eyes.redness` / `祛红血丝`",
+        "`eyes.fat` / `去脂`",
+        "`祛红血丝 = future`",
+        "`去脂 = future`",
+        "`眼睛 = partial`",
+    )
+    required_ids = tuple(
+        [
+            "57-01-01", "57-01-02", "57-02-01", "57-02-02",
+            "57-03-01", "57-03-02", "57-04-01",
+        ]
+        + list(THREAT_IDS)
+        + [f"D-57-{index:02d}" for index in range(1, 21)]
+    )
+    if (
+        any(body.count(section) != 1 for section in EVIDENCE_COMMON_SECTIONS)
+        or any(item not in body for item in required_dispositions)
+        or any(item not in body for item in required_invariants)
+        or any(identifier not in body for identifier in required_ids)
+        or has_affirmative_eye_candidate_claim(body)
+    ):
+        return {"R57-PRIVACY", "R57-COMPAT"}
+
+    if status == "draft":
+        if body.count("## Pending Final Automated Evidence") != 1:
+            return {"R57-COMPAT"}
+        if "57-04-01` | pending" not in body or body.count("Final regression: pending") != 1:
+            return {"R57-COMPAT"}
+    else:
+        if (
+            body.count("## Final Automated Evidence") != 1
+            or re.search(r"(?im)^\s*(?:[-*]\s*)?.*\bpending\b", body)
+        ):
+            return {"R57-COMPAT"}
+
+    privacy_payload = re.compile(
+        r"(?im)^\s*(?:[-*]\s*)?(?:portrait(?:_path)?|file(?:_name|_path)?|"
+        r"sha(?:256)?|hash|grant|rights(?:_record)?|reviewer|image|media|"
+        r"eye|pupil|iris|landmark|coordinates?|mask|vein(?:_descriptor)?|"
+        r"pixels?|digest|raw_?(?:match|error)|freeform(?:_payload)?)\s*[:=|]"
+    )
+    if (
+        re.search(r"/(?:Users|private|Volumes|home)/", text, re.IGNORECASE)
+        or re.search(r"\b[a-f0-9]{64}\b|\.(?:jpg|jpeg|png|heic)\b", text, re.IGNORECASE)
+        or privacy_payload.search(text)
+    ):
+        return {"R57-PRIVACY"}
+    return set()
+
+
+def validation_lifecycle_failures() -> set[str]:
+    try:
+        validation = read_text(VALIDATION)
+        requirements = read_text(REQUIREMENTS)
+    except (OSError, UnicodeError):
+        return {"R57-COMPAT"}
+    evidence = parse_evidence_frontmatter(read_text(EVIDENCE))
+    if evidence is None:
+        return {"R57-COMPAT"}
+    status = evidence[0]["status"]
+    task_ids = (
+        "57-01-01", "57-01-02", "57-02-01", "57-02-02",
+        "57-03-01", "57-03-02", "57-04-01",
+    )
+    if any(
+        len(re.findall(rf"(?m)^\| `{re.escape(task)}` \|", validation)) != 1
+        for task in task_ids
+    ):
+        return {"R57-COMPAT"}
+    if status == "draft":
+        if "status: draft" not in validation or "nyquist_compliant: false" not in validation:
+            return {"R57-COMPAT"}
+        for requirement in EVIDENCE_REQUIREMENTS:
+            if f"- [ ] **{requirement}**" not in requirements or f"| {requirement} | Phase 57 | Pending |" not in requirements:
+                return {"R57-COMPAT"}
+    else:
+        if "status: validated" not in validation or "nyquist_compliant: true" not in validation:
+            return {"R57-COMPAT"}
+        dispositions = {
+            "SCLERA-01": "false_branch_exact_absence",
+            "SCLERA-02": "not_applicable_closed_gate",
+            "SCLERA-03": "not_applicable_closed_gate",
+            "SCLERA-04": "not_applicable_closed_gate",
+            "SCLERA-05": "not_applicable_closed_gate",
+            "SCLERA-06": "no_promotion",
+            "LID-02": "closed_branch_exact_absence",
+            "LID-03": "not_applicable_closed_gate",
+            "LID-04": "proxy_rejection_enforced",
+            "LID-05": "not_applicable_closed_gate",
+        }
+        for requirement, disposition in dispositions.items():
+            if f"- [x] **{requirement}**" not in requirements or f"| {requirement} | Phase 57 | Complete — `{disposition}` |" not in requirements:
+                return {"R57-COMPAT"}
+    return set()
+
+
 def live_failures() -> set[str]:
     failures: set[str] = set()
     if any(not path.exists() for path in required_paths()):
@@ -447,6 +763,8 @@ def live_failures() -> set[str]:
     failures.update(demo_failures())
     failures.update(ledger_failures())
     failures.update(inventory_failures())
+    failures.update(evidence_failures())
+    failures.update(validation_lifecycle_failures())
     return failures
 
 
@@ -844,6 +1162,223 @@ def assert_proxy_relation_failures() -> int:
     return cases
 
 
+def assert_demo_surface_failures() -> int:
+    cases = 0
+    fat = 'unsupported("eyes.fat", title: "去脂", icon: "minus.circle", badge: .free)'
+    redness = 'unsupported("eyes.redness", title: "祛红血丝", icon: "drop", badge: .free)'
+    mutations = (
+        ("BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift", fat, "", "R57-DEMO"),
+        ("BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift", fat, fat.replace("eyes.fat", "eyes.fat.renamed"), "R57-DEMO"),
+        ("BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift", fat, fat.replace("去脂", "眼睑塑形"), "R57-DEMO"),
+        ("BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift", fat, fat.replace("minus.circle", "eye"), "R57-DEMO"),
+        ("BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift", fat, fat.replace(", badge: .free", ""), "R57-DEMO"),
+        ("BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift", fat, 'supported("eyes.fat", title: "去脂", icon: "minus.circle", badge: .free, controlID: .eyeSize)', "R57-DEMO"),
+        ("BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift", redness, "", "R57-DEMO"),
+        ("BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift", redness, redness.replace("eyes.redness", "eyes.redness.renamed"), "R57-DEMO"),
+        ("BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift", redness, redness.replace("祛红血丝", "眼白提亮"), "R57-DEMO"),
+        ("BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift", redness, redness.replace("drop", "eye"), "R57-DEMO"),
+        ("BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift", redness, redness.replace(", badge: .free", ""), "R57-DEMO"),
+        ("BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift", redness, 'supported("eyes.redness", title: "祛红血丝", icon: "drop", badge: .free, controlID: .brightness)', "R57-DEMO"),
+        ("BeautyDemo/BeautyDemo/Panel/BeautyControlDescriptor.swift", "enum BeautyControlID: String, CaseIterable, Hashable, Sendable {\n    case skinSmoothing", "enum BeautyControlID: String, CaseIterable, Hashable, Sendable {\n    case upperEyelidFullnessReduction\n    case skinSmoothing", "R57-DEMO"),
+        ("BeautyDemo/BeautyDemo/Editor/MeituEditorToolPanelView.swift", "        let range = selectedTool.controlID", "        let upperEyelidFullnessReduction = selectedTool.controlID\n        let range = selectedTool.controlID", "R57-DEMO"),
+        ("BeautyDemo/BeautyDemo/State/BeautyParameterStore.swift", "    case custom", "    case scleraRednessReduction\n    case custom", "R57-DEMO"),
+        ("BeautyDemo/BeautyDemo/State/BeautyParameterStore.swift", "    func reset(_ controlID: BeautyControlID) {", "    // eyes.fat reset mapping\n    func reset(_ controlID: BeautyControlID) {", "R57-DEMO"),
+        ("BeautyDemo/BeautyDemoTests/BeautyDemoViewStateTests.swift", "        XCTAssertFalse(fat.isSupported)", "        XCTAssertTrue(fat.isSupported)", "R57-DEMO"),
+        ("BeautyDemo/BeautyDemoTests/BeautyDemoViewStateTests.swift", "        XCTAssertFalse(redness.isSupported)\n        XCTAssertNil(redness.controlID)", "        XCTAssertFalse(redness.isSupported)\n        XCTAssertEqual(redness.controlID, .brightness)", "R57-DEMO"),
+    )
+    for index, mutation in enumerate(mutations):
+        try:
+            cases += assert_file_mutation(*mutation)
+        except AssertionError as error:
+            raise AssertionError(f"Demo mutation {index} failed closed-check") from error
+
+    baseline = read_text(DEMO_SOURCE)
+    fat_line = f"                {fat},"
+    redness_line = f"                {redness},"
+    if baseline.count(fat_line) != 1 or baseline.count(redness_line) != 1:
+        raise AssertionError("Demo reorder anchors are not unique")
+    reordered = baseline.replace(fat_line + "\n", "", 1)
+    reordered = reordered.replace(redness_line, redness_line + "\n" + fat_line, 1)
+    DEMO_SOURCE.write_text(reordered, encoding="utf-8")
+    try:
+        if "R57-DEMO" not in classified_live_failures():
+            raise AssertionError("Demo row reorder accepted")
+        cases += 1
+    finally:
+        DEMO_SOURCE.write_text(baseline, encoding="utf-8")
+    return cases
+
+
+def assert_evidence_text_mutation(original: str, replacement: str, expected_rule: str) -> int:
+    baseline = read_text(EVIDENCE)
+    if baseline.count(original) != 1:
+        raise AssertionError("evidence mutation anchor is not unique")
+    EVIDENCE.write_text(baseline.replace(original, replacement, 1), encoding="utf-8")
+    try:
+        if expected_rule not in classified_live_failures():
+            raise AssertionError("evidence mutation accepted")
+    finally:
+        EVIDENCE.write_text(baseline, encoding="utf-8")
+    return 1
+
+
+def assert_evidence_and_privacy_failures() -> int:
+    cases = 0
+    title = "# Phase 57 Closed Eye-Gates Evidence"
+    structural = (
+        ("status: draft", "status: validated", "R57-COMPAT"),
+        ("status: draft", "status draft", "R57-COMPAT"),
+        ("status: draft", "status: draft\nstatus: draft", "R57-COMPAT"),
+        ("block_on: HIGH", "block_on HIGH", "R57-COMPAT"),
+        ("## Immutable Decision Projections", "", "R57-COMPAT"),
+        ("## Exact Invariants", "## Exact Invariants\n\n## Exact Invariants", "R57-COMPAT"),
+        ("Final regression: pending", "Final regression: passed", "R57-COMPAT"),
+        (title, title + "\n\nUpper-eyelid fullness reduction is implemented and shipped.", "R57-PRIVACY"),
+        (title, title + "\n\nSclera redness reduction is production-ready.", "R57-PRIVACY"),
+    )
+    for index, (original, replacement, expected) in enumerate(structural):
+        try:
+            cases += assert_evidence_text_mutation(original, replacement, expected)
+        except AssertionError as error:
+            raise AssertionError(f"Evidence structural mutation {index} failed closed-check") from error
+
+    sensitive_payloads = (
+        "portrait_path: /Users/subject/portrait",
+        "hash: " + "a" * 64,
+        "grant: internal",
+        "rights_record: internal",
+        "reviewer: person",
+        "image: portrait.png",
+        "media: local",
+        "eye: support",
+        "pupil: 1,2",
+        "iris: protected",
+        "landmark: 1,2",
+        "coordinate: 1,2",
+        "mask: encoded",
+        "vein_descriptor: raw",
+        "pixel: 42",
+        "digest: stable",
+        "raw_match: source-line",
+        "raw_error: scanner-detail",
+        "freeform_payload: private",
+    )
+    for payload in sensitive_payloads:
+        cases += assert_evidence_text_mutation(title, f"{title}\n\n{payload}", "R57-PRIVACY")
+
+    baseline = read_text(EVIDENCE)
+    validated = (
+        baseline.replace("status: draft", "status: validated", 1)
+        .replace("## Pending Final Automated Evidence", "## Final Automated Evidence", 1)
+        .replace("pending", "passed")
+    )
+    EVIDENCE.write_text(validated, encoding="utf-8")
+    try:
+        if evidence_failures():
+            raise AssertionError("structurally valid final evidence rejected")
+        cases += 1
+        EVIDENCE.write_text(validated.replace("status: validated", "status: draft", 1), encoding="utf-8")
+        if "R57-COMPAT" not in evidence_failures():
+            raise AssertionError("final-to-draft lifecycle downgrade accepted")
+        cases += 1
+    finally:
+        EVIDENCE.write_text(baseline, encoding="utf-8")
+
+    emit_cases = (
+        (set(), 0, "mode=live status=passed rules=none\n"),
+        ({"R57-PRIVACY"}, 1, "mode=live status=blocked rules=R57-PRIVACY\n"),
+        ({"private source match"}, 1, "mode=live status=blocked rules=R57-COMPAT\n"),
+    )
+    for failures, expected_code, expected_output in emit_cases:
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            actual_code = emit("live", failures)
+        if actual_code != expected_code or output.getvalue() != expected_output:
+            raise AssertionError("checker output escaped fixed rule allowlist")
+        cases += 1
+    return cases
+
+
+def assert_ledger_surface_failures() -> int:
+    mutations = (
+        ("docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md", EXPECTED_LID_ROW, EXPECTED_LID_ROW.replace("future", "implemented"), "R57-LEDGER"),
+        ("docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md", EXPECTED_SCLERA_ROW, EXPECTED_SCLERA_ROW.replace("future", "implemented"), "R57-LEDGER"),
+        ("docs/meitu-function-blueprint/FEATURE_MATRIX.md", EXPECTED_MATRIX_ROW, EXPECTED_MATRIX_ROW.replace("| partial |", "| implemented |"), "R57-LEDGER"),
+        ("docs/meitu-function-blueprint/FEATURE_MATRIX.md", "branch remains partial solely because the two retouch rows are future", "branch closes using sibling evidence", "R57-LEDGER"),
+        ("docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md", "Needs local retouch/segmentation design; no cloud AI by default.", "Borrow teeth and sclera composition evidence.", "R57-LEDGER"),
+        ("docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md", "| `眼睛` | 去脂 | future |", "| `眼睛` | 眼高 | future |", "R57-LEDGER"),
+        ("docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md", "Needs local color/segmentation retouch design.", "Borrow upper-eyelid evidence.", "R57-LEDGER"),
+    )
+    cases = 0
+    for mutation in mutations:
+        cases += assert_file_mutation(*mutation)
+    return cases
+
+
+def assert_missing_fixture(path: pathlib.Path, expected_rule: str) -> int:
+    moved = path.with_name(f"{path.name}.missing")
+    path.rename(moved)
+    try:
+        if expected_rule not in classified_live_failures():
+            raise AssertionError("missing fixture accepted")
+    finally:
+        moved.rename(path)
+    return 1
+
+
+def assert_unreadable_fixture(path: pathlib.Path, expected_rule: str) -> int:
+    moved = path.with_name(f"{path.name}.saved")
+    path.rename(moved)
+    path.mkdir()
+    try:
+        if expected_rule not in classified_live_failures():
+            raise AssertionError("unreadable fixture accepted")
+    finally:
+        path.rmdir()
+        moved.rename(path)
+    return 1
+
+
+def assert_compatibility_and_scanner_failures() -> int:
+    mutations = (
+        ("BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift", "    public var skinSmoothing: Float", "    public var skinSmoothingRenamed: Float", "R57-COMPAT"),
+        ("BeautySDK/Sources/BeautyResources/Resources/manifest.json", '"id": "natural"', '"id": "natural-renamed"', "R57-COMPAT"),
+        ("BeautySDK/Sources/BeautyExampleRenderer/main.swift", 'id: "skinSmoothing_0p50"', 'id: "skinSmoothing_removed"', "R57-COMPAT"),
+        ("BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift", "        return .none", "        return BeautyLocalRetouchAdmission(opaqueDemandCount: 0)", "R57-COMPAT"),
+        ("BeautySDK/Tests/BeautyCoreTests/BeautyParametersTests.swift", "XCTAssertEqual(Mirror(reflecting: shippedDomains).children.count, 59)", "XCTAssertGreaterThanOrEqual(Mirror(reflecting: shippedDomains).children.count, 59)", "R57-COMPAT"),
+        ("BeautySDK/Tests/BeautyResourcesTests/BeautyResourceCatalogTests.swift", "testPhase57ClosedEyeRetouchGatesAddNoPresetKeyOrResource", "testPhase57WeakenedPresetInventory", "R57-COMPAT"),
+        ("BeautySDK/Tests/BeautyCoreTests/BeautyRendererOutputRegressionTests.swift", '"skinSmoothing_0p50", "eyeHeight_0p25", "upperEyelidLift_0p25"', '"skinSmoothing_0p50", "eyeHeight_0p25"', "R57-COMPAT"),
+        ("BeautySDK/Tests/BeautyCoreTests/BeautyEngineLocalRetouchFoundationTests.swift", "testPhase57ClosedEyeRetouchGatesKeepLiteralNoneAndStillEntriesInactive", "testPhase57WeakenedStillEntries", "R57-COMPAT"),
+        (f".planning/phases/{PHASE_NAME}/57-VALIDATION.md", "| `57-03-02` | 2 |", "| `57-03-02-weakened` | 2 |", "R57-COMPAT"),
+        (f".planning/phases/{PHASE_NAME}/57-CLOSED-EYE-GATES-EVIDENCE.md", "status: draft", "status: validated", "R57-COMPAT"),
+    )
+    cases = 0
+    for mutation in mutations:
+        cases += assert_file_mutation(*mutation)
+    for path in (PARAMETERS, DECISIONS, EVIDENCE, VALIDATION):
+        cases += assert_missing_fixture(path, "R57-COMPAT")
+    cases += assert_unreadable_fixture(EVIDENCE, "R57-COMPAT")
+    for code in (2, 127):
+        try:
+            classify_rg(code, "", "scanner failed")
+        except ScannerFailure:
+            cases += 1
+        else:
+            raise AssertionError("unclassified scanner return accepted")
+
+    original = run_rg
+    try:
+        globals()["run_rg"] = lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            subprocess.SubprocessError("private scanner failure")
+        )
+        if classified_live_failures() != {"R57-AUTH", "R57-COMPAT"}:
+            raise AssertionError("unclassified subprocess was not fail closed")
+        cases += 1
+    finally:
+        globals()["run_rg"] = original
+    return cases
+
+
 def assert_decision_document(document: object) -> int:
     baseline = read_text(DECISIONS)
     DECISIONS.write_text(
@@ -1038,22 +1573,13 @@ def self_test(only: str | None) -> int:
                 elif threat == "T-57-04":
                     total += assert_proxy_relation_failures()
                 elif threat == "T-57-05":
-                    total += assert_mutation(fixture, threat, lambda: replace_once(DEMO_SOURCE, 'unsupported("eyes.redness", title: "祛红血丝", icon: "drop", badge: .free)', 'supported("eyes.redness", title: "祛红血丝", icon: "drop", badge: .free, controlID: .eyeSize)'))
+                    total += assert_demo_surface_failures()
                 elif threat == "T-57-06":
-                    document = read_json(INVENTORY)
-                    document["portrait_path"] = "redacted"
-                    total += assert_mutation(fixture, threat, lambda: INVENTORY.write_text(json.dumps(document), encoding="utf-8"))
+                    total += assert_evidence_and_privacy_failures()
                 elif threat == "T-57-07":
-                    total += assert_mutation(fixture, threat, lambda: replace_once(SHAPE_LEDGER, EXPECTED_LID_ROW, EXPECTED_LID_ROW.replace("future", "implemented")))
+                    total += assert_ledger_surface_failures()
                 elif threat == "T-57-08":
-                    missing = PARAMETERS
-                    total += assert_mutation(fixture, threat, missing.unlink)
-                    try:
-                        classify_rg(2, "", "scanner failed")
-                    except ScannerFailure:
-                        total += 1
-                    else:
-                        raise AssertionError("scanner failure was not classified")
+                    total += assert_compatibility_and_scanner_failures()
     finally:
         configure_root(original_root)
     print(f"self-test status=passed threats={len(selected)} cases={total}")
@@ -1061,6 +1587,9 @@ def self_test(only: str | None) -> int:
 
 
 def emit(mode: str, failures: set[str]) -> int:
+    allowed = set(RULES.values())
+    if not failures.issubset(allowed):
+        failures = {"R57-COMPAT"}
     if failures:
         print(f"mode={mode} status=blocked rules={','.join(sorted(failures))}")
         return 1
