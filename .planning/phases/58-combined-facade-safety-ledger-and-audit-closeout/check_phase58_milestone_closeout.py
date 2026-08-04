@@ -57,7 +57,12 @@ PHASE57_CHECKER_SHA256 = (
     "13246e8c2e49dc6a569ee1d72dcc0eb302cf550f2769837a2221854bc470d428"
 )
 CANDIDATE_PATTERN = (
-    r"teethWhitening|scleraRednessReduction|upperEyelidFullnessReduction"
+    r"(?i)teeth(?:Whitening|_whitening)|enamel(?:Whitening|_whitening)|"
+    r"dentition(?:Whitening|_whitening)|sclera(?:Redness|_redness|Whitening|_whitening)|"
+    r"conjunctiv(?:a|al)(?:Redness|_redness|Whitening|_whitening)|"
+    r"ocular(?:Redness|_redness|Whitening|_whitening)|"
+    r"upper(?:Eyelid|_eyelid|Lid|_lid)(?:Fullness|_fullness|Fat|_fat|Defatting|_defatting)|"
+    r"(?:remove|defat)(?:Upper)?(?:Eyelid|Lid)Fat"
 )
 SENSITIVE_PATTERN = (
     r"retainedScleraMask|persistedScleraMask|rawLandmarks|reviewerIdentity|"
@@ -69,18 +74,50 @@ LIFETIME_FORBIDDEN_PATTERN = (
     r"globalSupportCache|staticRequestContext|persistedRequestSupport|"
     r"crossRequestMaskStore|retainedAnatomyObservation|rawRequestFailureOutput"
 )
+EXPECTED_PRESETS = (
+    "clear.json", "id-photo-natural.json", "male-natural.json", "natural.json",
+    "refined.json",
+)
+DEMO_DISABLED_ROWS = (
+    'unsupported("eyes.fat", title: "去脂", icon: "minus.circle", badge: .free)',
+    'unsupported("eyes.redness", title: "祛红血丝", icon: "drop", badge: .free)',
+    'unsupported("lips.teeth", title: "白牙", icon: "sparkles")',
+)
+SHAPE_FUTURE_ROWS = (
+    "| `眼睛` | 去脂 | future | None. | Needs local retouch/segmentation design; no cloud AI by default. |",
+    "| `眼睛` | 祛红血丝 | future | None. | Needs local color/segmentation retouch design. |",
+    "| `嘴唇` | 白牙 | future | None. | Needs local teeth segmentation/retouch design. |",
+)
+MATRIX_PARTIAL_PREFIXES = (
+    "| Beauty shaping | 眼睛 | partial |",
+    "| Beauty shaping | 嘴唇 | partial |",
+)
+PRIVACY_FORBIDDEN_PATTERN = (
+    r"publicRawLandmarks|spiSupportCoordinates|codableRequestMask|"
+    r"persistedScleraMask|networkReviewerPayload|loggedPupilPosition|"
+    r"metricVeinDescriptor|trackedImageBytes|durableFixturePath|"
+    r"durableImageDigest|durableSourceToken|rawScannerError|rawSourceMatch"
+)
 
 
 def configure_root(root: pathlib.Path) -> None:
-    global ROOT, PHASE, SOURCES, RESOLVER, FOUNDATION_TEST, COMPOSITION_TEST
+    global ROOT, PHASE, PACKAGE, SOURCES, PARAMETERS, MANIFEST, PRESETS, RENDERER
+    global RESOLVER, ENGINE, TESTING_SUPPORT, FOUNDATION_TEST, COMPOSITION_TEST, CANONICAL_TEST
     global PARAMETER_TEST, RESOURCE_TEST, RENDERER_TEST, DEMO_SOURCE, DEMO_TEST
-    global DECISIONS, FEATURE_MATRIX, SHAPE_LEDGER, PHASE57_CHECKER
+    global DEMO_ROOT, DECISIONS, FEATURE_MATRIX, SHAPE_LEDGER, PHASE57_CHECKER
     global PHASE57_VERIFICATION, INVENTORY, EVIDENCE
 
     ROOT = root.resolve()
     PHASE = ROOT / ".planning" / "phases" / PHASE_NAME
+    PACKAGE = ROOT / "BeautySDK" / "Package.swift"
     SOURCES = ROOT / "BeautySDK" / "Sources"
+    PARAMETERS = SOURCES / "BeautyCore" / "Models" / "BeautyParameters.swift"
+    MANIFEST = SOURCES / "BeautyResources" / "Resources" / "manifest.json"
+    PRESETS = SOURCES / "BeautyResources" / "Resources" / "Presets"
+    RENDERER = SOURCES / "BeautyExampleRenderer" / "main.swift"
     RESOLVER = SOURCES / "BeautyEffects" / "Planning" / "BeautyEffectResolver.swift"
+    ENGINE = SOURCES / "BeautySDK" / "BeautyEngine.swift"
+    TESTING_SUPPORT = SOURCES / "BeautySDK" / "BeautyEngineTestingSupport.swift"
     FOUNDATION_TEST = (
         ROOT / "BeautySDK" / "Tests" / "BeautyCoreTests" /
         "BeautyEngineLocalRetouchFoundationTests.swift"
@@ -88,6 +125,10 @@ def configure_root(root: pathlib.Path) -> None:
     COMPOSITION_TEST = (
         ROOT / "BeautySDK" / "Tests" / "BeautyCoreTests" /
         "BeautyEngineLocalRetouchCompositionTests.swift"
+    )
+    CANONICAL_TEST = (
+        ROOT / "BeautySDK" / "Tests" / "BeautyCoreTests" /
+        "BeautyCanonicalStillImageTests.swift"
     )
     PARAMETER_TEST = (
         ROOT / "BeautySDK" / "Tests" / "BeautyCoreTests" /
@@ -102,6 +143,7 @@ def configure_root(root: pathlib.Path) -> None:
         "BeautyRendererOutputRegressionTests.swift"
     )
     DEMO_SOURCE = ROOT / "BeautyDemo" / "BeautyDemo" / "Editor" / "MeituEditorToolModels.swift"
+    DEMO_ROOT = ROOT / "BeautyDemo" / "BeautyDemo"
     DEMO_TEST = ROOT / "BeautyDemo" / "BeautyDemoTests" / "BeautyDemoViewStateTests.swift"
     DECISIONS = (
         ROOT / ".planning" / "phases" /
@@ -152,6 +194,20 @@ def read_text(path: pathlib.Path) -> str:
 
 def read_json(path: pathlib.Path) -> object:
     return json.loads(read_text(path))
+
+
+def extract_coding_keys(text: str) -> tuple[str, ...]:
+    match = re.search(r"enum CodingKeys[^\{]*\{(.*?)\n\s*\}", text, re.DOTALL)
+    if match is None:
+        return ()
+    return tuple(re.findall(
+        r"^\s*case\s+([A-Za-z][A-Za-z0-9]*)\s*$", match.group(1), re.MULTILINE,
+    ))
+
+
+def expected_renderer_ids(text: str) -> tuple[str, ...]:
+    match = re.search(r"expectedRendererCaseIDs\s*=\s*\[(.*?)\n\s*\]", text, re.DOTALL)
+    return () if match is None else tuple(re.findall(r'"([^"]+)"', match.group(1)))
 
 
 def expected_inventory() -> dict[str, object]:
@@ -226,6 +282,16 @@ def authority_failures() -> set[str]:
     if [row.get("feature") for row in aggregates] != list(FEATURES):
         return {RULES["T-58-01"]}
     for feature, decision, aggregate in zip(FEATURES, decisions, aggregates):
+        if tuple(decision) != (
+            "feature", "status", "reasons", "eligible_count", "reviewed_count",
+            "accepted_count", "rejected_count", "naturalness_weight",
+        ):
+            return {RULES["T-58-01"]}
+        if tuple(aggregate) != (
+            "feature", "eligible_count", "reviewed_count", "accepted_count",
+            "rejected_count", "naturalness_weight",
+        ):
+            return {RULES["T-58-01"]}
         if decision.get("status") != "closed" or decision.get("reasons") != EXPECTED_REASONS[feature]:
             return {RULES["T-58-01"]}
         if any(type(decision.get(key)) is not int or decision.get(key) != 0 for key in ZERO_KEYS):
@@ -243,20 +309,65 @@ def authority_failures() -> set[str]:
         return {RULES["T-58-01"]}
     if run_rg(CANDIDATE_PATTERN, (SOURCES,)) == "match":
         return {RULES["T-58-01"]}
+    supplemental = "\n".join(
+        [read_text(PACKAGE), read_text(MANIFEST)]
+        + [read_text(path) for path in sorted(PRESETS.glob("*.json"))]
+    )
+    if re.search(CANDIDATE_PATTERN, supplemental):
+        return {RULES["T-58-01"]}
     return set()
 
 
 def privacy_failures() -> set[str]:
-    if run_rg(SENSITIVE_PATTERN, (SOURCES,)) == "match":
+    source_files = tuple(sorted(SOURCES.rglob("*.swift")))
+    source_text = "\n".join(read_text(path) for path in source_files)
+    testing_support = read_text(TESTING_SUPPORT)
+    if any(marker not in testing_support for marker in (
+        "@_spi(Testing) public struct SDKTestingLocalResult",
+        "public let aggregateSupportValueID: Int?",
+        "public let detectionAvailability: String?",
+        "public let detectionReasons: [String]",
+        "@_spi(Testing) public struct SDKTestingLocalCompositionObservation",
+        "public let collisionPixelCount: Int",
+    )):
+        return {RULES["T-58-02"]}
+    durable_text = "\n".join((
+        read_text(FOUNDATION_TEST), read_text(COMPOSITION_TEST), read_text(EVIDENCE),
+    ))
+    if re.search(PRIVACY_FORBIDDEN_PATTERN, source_text, re.IGNORECASE):
+        return {RULES["T-58-02"]}
+    if re.search(PRIVACY_FORBIDDEN_PATTERN, durable_text, re.IGNORECASE):
+        return {RULES["T-58-02"]}
+    boundary_patterns = (
+        r"(?is)(?:public|@_spi\([^)]*\)).{0,120}(?:raw(?:Landmarks|Pixels)|"
+        r"(?:sclera|eyelid|teeth|pupil|vein)[A-Za-z0-9_]*(?:Mask|Coordinates|Geometry))",
+        r"(?is)(?:UserDefaults|FileManager|write\s*\(|URLSession|URLRequest).{0,160}"
+        r"(?:landmark|pupil|sclera|eyelid|teeth|mask|vein|reviewer|digest|sourceToken)",
+        r"(?is)(?:print|logger|metric|warning).{0,120}"
+        r"(?:rawLandmark|pupilPosition|scleraMask|eyelidMask|teethGeometry|veinDescriptor)",
+    )
+    if any(re.search(pattern, source_text) for pattern in boundary_patterns):
         return {RULES["T-58-02"]}
     evidence = read_text(EVIDENCE)
     if re.search(SENSITIVE_PATTERN, evidence):
         return {RULES["T-58-02"]}
+    if re.search(
+        r"(?im)^\s*(?:[-*]\s*)?(?:raw|fixture|image|reviewer|source)[A-Za-z _-]*"
+        r"(?:path|digest|token|match|error|identity|bytes?)\s*[:=|]",
+        evidence,
+    ):
+        return {RULES["T-58-02"]}
     required = (
         "Durable output is limited to fixed requirement, task, threat, rule, disposition,",
         "raw error, or scanner text",
+        "testPhase58NoFaceAndMissingSupportPublishOnlyAllowlistedAggregateReasons",
+        "testPhase58FeatureNeutralCompositionPublishesOnlySixAggregateCounters",
     )
-    if any(marker not in evidence for marker in required):
+    combined = evidence + read_text(FOUNDATION_TEST) + read_text(COMPOSITION_TEST)
+    if any(marker not in combined for marker in required):
+        return {RULES["T-58-02"]}
+    forbidden_suffixes = {".png", ".jpg", ".jpeg", ".heic", ".tiff", ".mlmodel", ".bin"}
+    if any(path.suffix.lower() in forbidden_suffixes for path in PHASE.rglob("*")):
         return {RULES["T-58-02"]}
     return set()
 
@@ -336,11 +447,58 @@ def lifetime_failures() -> set[str]:
 
 
 def compatibility_failures() -> set[str]:
+    parameters = read_text(PARAMETERS)
+    stored = tuple(re.findall(
+        r"^\s*public var\s+([A-Za-z][A-Za-z0-9]*)\s*:", parameters, re.MULTILINE,
+    ))
+    if (
+        len(stored) != 59
+        or len(set(stored)) != 59
+        or stored.count("filterId") != 1
+        or extract_coding_keys(parameters) != stored
+    ):
+        return {RULES["T-58-04"]}
+
+    manifest = read_json(MANIFEST)
+    preset_names = tuple(sorted(path.name for path in PRESETS.glob("*.json")))
+    manifest_ids = tuple(
+        row.get("id") for row in manifest.get("presets", [])
+        if isinstance(row, dict)
+    ) if isinstance(manifest, dict) else ()
+    if (
+        preset_names != EXPECTED_PRESETS
+        or manifest_ids != ("natural", "clear", "refined", "male-natural", "id-photo-natural")
+    ):
+        return {RULES["T-58-04"]}
+
+    renderer_test = read_text(RENDERER_TEST)
+    expected_ids = expected_renderer_ids(renderer_test)
+    renderer_ids = tuple(re.findall(r'\bid:\s*"([^"]+)"', read_text(RENDERER)))
+    if len(expected_ids) != 72 or len(set(expected_ids)) != 72 or renderer_ids != expected_ids:
+        return {RULES["T-58-04"]}
+
+    engine = read_text(ENGINE)
+    if len(re.findall(r"public func process\(\s*image:\s*CIImage", engine)) != 1:
+        return {RULES["T-58-04"]}
+    if len(re.findall(r"public func processResult\(\s*image:\s*CIImage", engine)) != 1:
+        return {RULES["T-58-04"]}
+    if ".package(" in read_text(PACKAGE):
+        return {RULES["T-58-04"]}
+
     owners = {
+        CANONICAL_TEST: (
+            "testCarrierOwnsOneZeroOriginUpSRGBRGBA8Raster",
+            "testAllEightOrientationsAndMirrorVariantsNormalizeIdentically",
+            "testDisplayP3ConvertsToSRGBWithoutTopologyIdentityClaim",
+            "testPartialAndZeroAlphaFailBeforeVisionWithoutCompositingOrForcingOpaque",
+            "testMalformedOrientationAndUnsupportedColorSemanticsFailBeforeVision",
+        ),
         FOUNDATION_TEST: (
             "testPhase58ZeroAdmissionConjunctionPreservesBothFacadesAndCanonicalNoOp",
             "let processOutput = try engine.process(",
             "let resultOutput = try engine.processResult(",
+            "testPixelBufferOverloadsAndResetPerformZeroLocalFoundationWork",
+            "XCTAssertEqual(error as? BeautyError, .unsupportedPixelFormat)",
         ),
         COMPOSITION_TEST: (
             "testPhase58FeatureNeutralCompositionPublishesOnlySixAggregateCounters",
@@ -357,17 +515,49 @@ def compatibility_failures() -> set[str]:
         RENDERER_TEST: (
             "testPhase58ZeroAdmissionKeepsExact72RendererCasesAndNoOutputRoute",
             "XCTAssertEqual(Self.expectedRendererCaseIDs.count, 72)",
+            "XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 72)",
         ),
     }
     for path, markers in owners.items():
         source = read_text(path)
         if any(source.count(marker) < 1 for marker in markers):
             return {RULES["T-58-04"]}
+    if run_rg(CANDIDATE_PATTERN, (SOURCES,)) == "match":
+        return {RULES["T-58-04"]}
     return set()
 
 
 def output_failures() -> set[str]:
     if run_rg(CANDIDATE_PATTERN, (SOURCES,)) == "match":
+        return {RULES["T-58-05"]}
+    supplemental = "\n".join(
+        [read_text(PACKAGE), read_text(MANIFEST)]
+        + [read_text(path) for path in sorted(PRESETS.glob("*.json"))]
+    )
+    if re.search(CANDIDATE_PATTERN, supplemental):
+        return {RULES["T-58-05"]}
+
+    demo_parts = []
+    for path in sorted(DEMO_ROOT.rglob("*.swift")):
+        text = read_text(path)
+        if path == DEMO_SOURCE:
+            for row in DEMO_DISABLED_ROWS:
+                text = text.replace(row, "", 1)
+        demo_parts.append(text)
+    if re.search(
+        r"(?i)eyes\.(?:fat|redness)|lips\.teeth|白牙|祛红血丝|去脂|" +
+        CANDIDATE_PATTERN.replace("(?i)", ""),
+        "\n".join(demo_parts),
+    ):
+        return {RULES["T-58-05"]}
+
+    owned_text = "\n".join(read_text(path) for path in sorted(SOURCES.rglob("*.swift")))
+    if re.search(
+        r"visibleCandidateOutput|candidateSavedOutputHelper|candidateGalleryRoute|"
+        r"candidateReviewRoute|combinedTeethScleraRequest|featureNamedOpaqueMechanics",
+        owned_text,
+        re.IGNORECASE,
+    ):
         return {RULES["T-58-05"]}
     evidence = read_text(EVIDENCE)
     required = (
@@ -378,35 +568,43 @@ def output_failures() -> set[str]:
     )
     if any(marker not in evidence for marker in required):
         return {RULES["T-58-05"]}
+    if re.search(
+        r"OUT-(?:01|02).{0,100}(?:implemented positive branch|admitted feature route|"
+        r"visible output passed|product effect passed|passed positive branch)|"
+        r"Phase 55.{0,100}(?:product evidence|feature effectiveness|naturalness passed)",
+        evidence,
+        re.IGNORECASE | re.DOTALL,
+    ):
+        return {RULES["T-58-05"]}
     return set()
 
 
 def promotion_failures() -> set[str]:
     demo = read_text(DEMO_SOURCE)
-    rows = (
-        'unsupported("lips.teeth", title: "白牙", icon: "sparkles")',
-        'unsupported("eyes.fat", title: "去脂", icon: "minus.circle", badge: .free)',
-        'unsupported("eyes.redness", title: "祛红血丝", icon: "drop", badge: .free)',
-    )
-    if any(demo.count(row) != 1 for row in rows):
+    if any(demo.count(row) != 1 for row in DEMO_DISABLED_ROWS):
         return {RULES["T-58-06"]}
     demo_test = read_text(DEMO_TEST)
-    if "testPhase58ZeroPromotionPreservesExactlyThreeDisabledLocalRetouchRows" not in demo_test:
+    demo_markers = (
+        "testPhase58ZeroPromotionPreservesExactlyThreeDisabledLocalRetouchRows",
+        "XCTAssertEqual(candidates.count, 3)",
+        "XCTAssertFalse(tool.isSupported)",
+        "XCTAssertNil(tool.controlID)",
+        "XCTAssertNil(panel.selectedTool.controlID)",
+        "XCTAssertTrue(candidates.allSatisfy { $0.controlID == nil })",
+        "XCTAssertEqual(store.parametersSnapshot, before)",
+    )
+    if any(marker not in demo_test for marker in demo_markers):
         return {RULES["T-58-06"]}
     shape = read_text(SHAPE_LEDGER)
-    shape_rows = (
-        "| `眼睛` | 去脂 | future | None. |",
-        "| `眼睛` | 祛红血丝 | future | None. |",
-        "| `嘴唇` | 白牙 | future | None. |",
-    )
     matrix = read_text(FEATURE_MATRIX)
-    if any(shape.count(row) != 1 for row in shape_rows):
+    if any(shape.count(row) != 1 for row in SHAPE_FUTURE_ROWS):
         return {RULES["T-58-06"]}
-    if matrix.count("| Beauty shaping | 眼睛 | partial |") != 1:
+    if any(matrix.count(row) != 1 for row in MATRIX_PARTIAL_PREFIXES):
         return {RULES["T-58-06"]}
-    if matrix.count("| Beauty shaping | 嘴唇 | partial |") != 1:
+    evidence = read_text(EVIDENCE)
+    if evidence.count("| OUT-04 | `zero_row_promotion` | promoted rows `0` |") != 1:
         return {RULES["T-58-06"]}
-    if "| OUT-04 | `zero_row_promotion` | promoted rows `0` |" not in read_text(EVIDENCE):
+    if evidence.count("admitted and promoted sets are exactly empty") != 1:
         return {RULES["T-58-06"]}
     return set()
 
@@ -507,8 +705,9 @@ def classified_failures(
 
 def fixture_paths() -> tuple[pathlib.Path, ...]:
     return (
-        SOURCES, FOUNDATION_TEST, COMPOSITION_TEST, PARAMETER_TEST, RESOURCE_TEST,
-        RENDERER_TEST, DEMO_SOURCE, DEMO_TEST, DECISIONS, FEATURE_MATRIX,
+        PACKAGE, SOURCES, FOUNDATION_TEST, COMPOSITION_TEST, CANONICAL_TEST,
+        PARAMETER_TEST, RESOURCE_TEST, RENDERER_TEST, DEMO_ROOT, DEMO_TEST,
+        DECISIONS, FEATURE_MATRIX,
         SHAPE_LEDGER, PHASE57_CHECKER, PHASE57_VERIFICATION, INVENTORY, EVIDENCE,
     )
 
@@ -584,6 +783,23 @@ def assert_fixture_mutation(threat: str, mutate: object) -> int:
             mutate()
             if classified_failures(only=threat) != {RULES[threat]}:
                 raise AssertionError("mutation accepted")
+    finally:
+        configure_root(original_root)
+    return 1
+
+
+def assert_forced_scanner(threat: str) -> int:
+    original_root = ROOT
+    try:
+        with tempfile.TemporaryDirectory(prefix="phase58-closeout-") as temporary:
+            fixture = pathlib.Path(temporary)
+            configure_root(original_root)
+            copy_fixture(fixture)
+            configure_root(fixture)
+            if classified_failures(
+                only=threat, force_scanner_error=threat
+            ) != {RULES[threat]}:
+                raise AssertionError("unclassified scanner accepted")
     finally:
         configure_root(original_root)
     return 1
@@ -713,14 +929,346 @@ def assert_lifetime_matrix() -> int:
     return cases
 
 
+def append_text(path: pathlib.Path, payload: str) -> None:
+    path.write_text(read_text(path) + payload, encoding="utf-8")
+
+
+def write_decision_mutation(mutator: object) -> None:
+    document = read_json(DECISIONS)
+    mutator(document)
+    DECISIONS.write_text(json.dumps(document), encoding="utf-8")
+
+
+def assert_authority_matrix() -> int:
+    cases = 0
+    document_mutators = [
+        lambda document: document.__setitem__("schema_version", 2),
+        lambda document: document.__setitem__("reviews", [{}]),
+        lambda document: document.__setitem__("competing_authority", []),
+        lambda document: document["feature_decisions"].reverse(),
+        lambda document: document["aggregates"].reverse(),
+    ]
+    for feature_index, feature in enumerate(FEATURES):
+        document_mutators.extend((
+            lambda document, index=feature_index: document["feature_decisions"].pop(index),
+            lambda document, index=feature_index: document["feature_decisions"].append(
+                dict(document["feature_decisions"][index])
+            ),
+            lambda document, index=feature_index: document["feature_decisions"][index].__setitem__(
+                "feature", "renamed_feature"
+            ),
+            lambda document, index=feature_index: document["feature_decisions"][index].__setitem__(
+                "status", "open"
+            ),
+            lambda document, index=feature_index: document["feature_decisions"][index].__setitem__(
+                "reasons", list(reversed(document["feature_decisions"][index]["reasons"]))
+            ),
+            lambda document, index=feature_index: document["aggregates"].pop(index),
+            lambda document, index=feature_index: document["aggregates"].append(
+                dict(document["aggregates"][index])
+            ),
+        ))
+        for key in ZERO_KEYS:
+            document_mutators.extend((
+                lambda document, index=feature_index, key=key: document["feature_decisions"][index].__setitem__(key, 1),
+                lambda document, index=feature_index, key=key: document["aggregates"][index].__setitem__(key, 1),
+            ))
+        document_mutators.extend((
+            lambda document, index=feature_index: document["feature_decisions"][index].__setitem__("borrowed_mechanics", True),
+            lambda document, index=feature_index: document["aggregates"][index].__setitem__("borrowed_sibling", True),
+        ))
+
+    for mutator in document_mutators:
+        cases += assert_fixture_mutation(
+            "T-58-01", lambda mutator=mutator: write_decision_mutation(mutator)
+        )
+
+    cases += assert_fixture_mutation(
+        "T-58-01",
+        lambda: mutate_text(RESOLVER, "return .none", "return BeautyLocalRetouchAdmission(opaqueDemandCount: 1)"),
+    )
+    for index, candidate in enumerate((
+        "let teethWhitening = true\n",
+        "let enamel_whitening = true\n",
+        "let scleraRednessReduction = true\n",
+        "let conjunctival_redness = true\n",
+        "let upperEyelidFullnessReduction = true\n",
+        "let upper_lid_fat = true\n",
+    )):
+        cases += assert_fixture_mutation(
+            "T-58-01",
+            lambda index=index, candidate=candidate: (
+                (SOURCES / "NeutralPhase58Authority").mkdir(parents=True, exist_ok=True),
+                (SOURCES / "NeutralPhase58Authority" / f"Candidate{index}.swift").write_text(
+                    candidate, encoding="utf-8"
+                ),
+            ),
+        )
+    cases += assert_fixture_mutation(
+        "T-58-01", lambda: append_text(PACKAGE, "\n// teeth_whitening\n")
+    )
+    cases += assert_fixture_mutation(
+        "T-58-01", lambda: append_text(MANIFEST, "\n\"sclera_redness\"\n")
+    )
+    for path_getter in (lambda: DECISIONS, lambda: RESOLVER, lambda: PACKAGE, lambda: MANIFEST):
+        cases += assert_fixture_mutation(
+            "T-58-01", lambda path_getter=path_getter: path_getter().unlink()
+        )
+        cases += assert_fixture_mutation(
+            "T-58-01", lambda path_getter=path_getter: path_getter().write_bytes(b"\xff\xfe")
+        )
+    cases += assert_forced_scanner("T-58-01")
+    return cases
+
+
+def assert_privacy_matrix() -> int:
+    cases = 0
+    forbidden = (
+        "public var publicRawLandmarks: [Float] = []\n",
+        "@_spi(Testing) public var spiSupportCoordinates: [Float] { [] }\n",
+        "struct Leak: Codable { let codableRequestMask: [UInt8] }\n",
+        "private var persistedScleraMask: [UInt8] = []\n",
+        "private var networkReviewerPayload: Data?\n",
+        "private var loggedPupilPosition: CGPoint?\n",
+        "private var metricVeinDescriptor: Double = 0\n",
+        "private var trackedImageBytes: Data?\n",
+        "private var durableFixturePath: String?\n",
+        "private var durableImageDigest: String?\n",
+        "private var durableSourceToken: String?\n",
+    )
+    for index, payload in enumerate(forbidden):
+        cases += assert_fixture_mutation(
+            "T-58-02",
+            lambda index=index, payload=payload: (
+                (SOURCES / "NeutralPhase58Privacy").mkdir(parents=True, exist_ok=True),
+                (SOURCES / "NeutralPhase58Privacy" / f"Leak{index}.swift").write_text(
+                    payload, encoding="utf-8"
+                ),
+            ),
+        )
+
+    boundary_payloads = (
+        "public var rawPixels: [UInt8] = []\n",
+        "@_spi(Testing) public var scleraCoordinates: [Float] { [] }\n",
+        "let persisted = UserDefaults.standard; let pupilPosition = \"private\"\n",
+        "let request = URLRequest(url: URL(string: \"https://invalid\")!); let teethGeometry = []\n",
+        "print(\"rawLandmark\")\n",
+    )
+    for index, payload in enumerate(boundary_payloads):
+        cases += assert_fixture_mutation(
+            "T-58-02",
+            lambda index=index, payload=payload: (
+                (SOURCES / "NeutralPhase58Privacy").mkdir(parents=True, exist_ok=True),
+                (SOURCES / "NeutralPhase58Privacy" / f"Boundary{index}.swift").write_text(
+                    payload, encoding="utf-8"
+                ),
+            ),
+        )
+
+    for marker in (
+        "durableFixturePath: /private/fixture",
+        "durableImageDigest: deadbeef",
+        "durableSourceToken: request-1",
+        "rawScannerError: private failure",
+        "rawSourceMatch: source line",
+        "reviewer identity: private",
+        "image bytes: 0102",
+    ):
+        cases += assert_fixture_mutation(
+            "T-58-02", lambda marker=marker: append_text(EVIDENCE, f"\n{marker}\n")
+        )
+
+    cases += assert_fixture_mutation(
+        "T-58-02",
+        lambda: (PHASE / "tracked-output.png").write_bytes(b"not-an-image"),
+    )
+    for path_getter in (lambda: TESTING_SUPPORT, lambda: FOUNDATION_TEST, lambda: COMPOSITION_TEST, lambda: EVIDENCE):
+        cases += assert_fixture_mutation(
+            "T-58-02", lambda path_getter=path_getter: path_getter().unlink()
+        )
+        cases += assert_fixture_mutation(
+            "T-58-02", lambda path_getter=path_getter: path_getter().write_bytes(b"\xff\xfe")
+        )
+    cases += assert_forced_scanner("T-58-02")
+    return cases
+
+
+def assert_compatibility_matrix() -> int:
+    cases = 0
+    mutations = (
+        (lambda: PARAMETERS, "public var skinSmoothing:", "var skinSmoothing:"),
+        (lambda: PARAMETERS, "case skinSmoothing", "case removedSkinSmoothing"),
+        (lambda: ENGINE, "public func process(\n        image: CIImage", "func process(\n        image: CIImage"),
+        (lambda: ENGINE, "public func processResult(\n        image: CIImage", "func processResult(\n        image: CIImage"),
+        (lambda: CANONICAL_TEST, "testCarrierOwnsOneZeroOriginUpSRGBRGBA8Raster", "testRemovedCarrierContract"),
+        (lambda: CANONICAL_TEST, "testAllEightOrientationsAndMirrorVariantsNormalizeIdentically", "testRemovedOrientationContract"),
+        (lambda: CANONICAL_TEST, "testDisplayP3ConvertsToSRGBWithoutTopologyIdentityClaim", "testRemovedColorContract"),
+        (lambda: FOUNDATION_TEST, "testPhase58ZeroAdmissionConjunctionPreservesBothFacadesAndCanonicalNoOp", "testRemovedNoopContract"),
+        (lambda: FOUNDATION_TEST, "testPixelBufferOverloadsAndResetPerformZeroLocalFoundationWork", "testRemovedNonstillContract"),
+        (lambda: PARAMETER_TEST, "testPhase58ZeroAdmissionKeepsExact59FieldSourceCodingAndEncodedShape", "testRemovedParameterContract"),
+        (lambda: RESOURCE_TEST, "testPhase58ZeroAdmissionKeepsExactFivePresetSourcesAndNoCandidateKeys", "testRemovedPresetContract"),
+        (lambda: RENDERER_TEST, "testPhase58ZeroAdmissionKeepsExact72RendererCasesAndNoOutputRoute", "testRemovedRendererContract"),
+        (lambda: RENDERER, 'id: "skinSmoothing_0p50"', 'id: "changed_0p50"'),
+        (lambda: PACKAGE, "import PackageDescription", "import PackageDescription\n// .package(url: \"https://invalid\")"),
+    )
+    for path_getter, old, new in mutations:
+        cases += assert_fixture_mutation(
+            "T-58-04",
+            lambda path_getter=path_getter, old=old, new=new: mutate_text(path_getter(), old, new),
+        )
+
+    cases += assert_fixture_mutation(
+        "T-58-04", lambda: (PRESETS / "natural.json").unlink()
+    )
+    cases += assert_fixture_mutation(
+        "T-58-04", lambda: (PRESETS / "extra.json").write_text("{}", encoding="utf-8")
+    )
+    cases += assert_fixture_mutation(
+        "T-58-04",
+        lambda: write_json_mutation(MANIFEST, lambda document: document["presets"].pop()),
+    )
+    for path_getter in (
+        lambda: PARAMETERS, lambda: MANIFEST, lambda: RENDERER, lambda: ENGINE,
+        lambda: CANONICAL_TEST, lambda: PARAMETER_TEST, lambda: RESOURCE_TEST,
+        lambda: RENDERER_TEST,
+    ):
+        cases += assert_fixture_mutation(
+            "T-58-04", lambda path_getter=path_getter: path_getter().unlink()
+        )
+        cases += assert_fixture_mutation(
+            "T-58-04", lambda path_getter=path_getter: path_getter().write_bytes(b"\xff\xfe")
+        )
+    cases += assert_forced_scanner("T-58-04")
+    return cases
+
+
+def write_json_mutation(path: pathlib.Path, mutator: object) -> None:
+    document = read_json(path)
+    mutator(document)
+    path.write_text(json.dumps(document), encoding="utf-8")
+
+
+def assert_output_matrix() -> int:
+    cases = 0
+    candidates = (
+        "let teethWhitening = true\n", "let enamel_whitening = true\n",
+        "let scleraRednessReduction = true\n", "let conjunctival_redness = true\n",
+        "let upperEyelidFullnessReduction = true\n", "let upper_lid_fat = true\n",
+        "let visibleCandidateOutput = true\n", "let candidateSavedOutputHelper = true\n",
+        "let candidateGalleryRoute = true\n", "let candidateReviewRoute = true\n",
+        "let combinedTeethScleraRequest = true\n", "let featureNamedOpaqueMechanics = true\n",
+    )
+    for index, payload in enumerate(candidates):
+        cases += assert_fixture_mutation(
+            "T-58-05",
+            lambda index=index, payload=payload: (
+                (SOURCES / "NeutralPhase58Output").mkdir(parents=True, exist_ok=True),
+                (SOURCES / "NeutralPhase58Output" / f"Route{index}.swift").write_text(
+                    payload, encoding="utf-8"
+                ),
+            ),
+        )
+    cases += assert_fixture_mutation(
+        "T-58-05", lambda: append_text(PACKAGE, "\n// upper_eyelid_fullness\n")
+    )
+    cases += assert_fixture_mutation(
+        "T-58-05", lambda: append_text(MANIFEST, "\n\"teeth_whitening\"\n")
+    )
+    cases += assert_fixture_mutation(
+        "T-58-05", lambda: append_text(PRESETS / "natural.json", "\n\"sclera_redness\"\n")
+    )
+    cases += assert_fixture_mutation(
+        "T-58-05",
+        lambda: (
+            (DEMO_ROOT / "NeutralPhase58Output.swift").write_text(
+                'let route = "lips.teeth"\n', encoding="utf-8"
+            )
+        ),
+    )
+    evidence_mutations = (
+        ("| OUT-01 | `not_applicable_zero_admitted_features_exact_absence` |", "| OUT-01 | `implemented positive branch` |"),
+        ("| OUT-02 | `not_applicable_zero_admitted_pair_exact_absence` |", "| OUT-02 | `passed positive branch` |"),
+        ("Phase 55 composition remains feature-neutral", "Phase 55 composition is product evidence"),
+        ("candidate, admitted,\n  pair, output, saved-output helper, gallery, and review surfaces are empty", "candidate output exists"),
+    )
+    for old, new in evidence_mutations:
+        cases += assert_fixture_mutation(
+            "T-58-05", lambda old=old, new=new: mutate_text(EVIDENCE, old, new)
+        )
+    for path_getter in (lambda: SOURCES, lambda: PACKAGE, lambda: MANIFEST, lambda: EVIDENCE):
+        cases += assert_fixture_mutation(
+            "T-58-05", lambda path_getter=path_getter: shutil.rmtree(path_getter()) if path_getter().is_dir() else path_getter().unlink()
+        )
+        if not path_getter().is_dir():
+            cases += assert_fixture_mutation(
+                "T-58-05", lambda path_getter=path_getter: path_getter().write_bytes(b"\xff\xfe")
+            )
+    cases += assert_forced_scanner("T-58-05")
+    return cases
+
+
+def assert_promotion_matrix() -> int:
+    cases = 0
+    for row in DEMO_DISABLED_ROWS:
+        cases += assert_fixture_mutation(
+            "T-58-06", lambda row=row: mutate_text(DEMO_SOURCE, row, "")
+        )
+        cases += assert_fixture_mutation(
+            "T-58-06", lambda row=row: mutate_text(DEMO_SOURCE, row, row + "\n" + row)
+        )
+        cases += assert_fixture_mutation(
+            "T-58-06", lambda row=row: mutate_text(DEMO_SOURCE, row, row.replace("unsupported(", "supported("))
+        )
+    for marker in (
+        "testPhase58ZeroPromotionPreservesExactlyThreeDisabledLocalRetouchRows",
+        "XCTAssertEqual(candidates.count, 3)",
+        "XCTAssertFalse(tool.isSupported)",
+        "XCTAssertNil(tool.controlID)",
+    ):
+        cases += assert_fixture_mutation(
+            "T-58-06", lambda marker=marker: mutate_text(DEMO_TEST, marker, "removedPromotionMarker")
+        )
+    for row in SHAPE_FUTURE_ROWS:
+        cases += assert_fixture_mutation(
+            "T-58-06", lambda row=row: mutate_text(SHAPE_LEDGER, row, row.replace("future", "implemented"))
+        )
+    for prefix in MATRIX_PARTIAL_PREFIXES:
+        cases += assert_fixture_mutation(
+            "T-58-06", lambda prefix=prefix: mutate_text(FEATURE_MATRIX, prefix, prefix.replace("partial", "complete"))
+        )
+    cases += assert_fixture_mutation(
+        "T-58-06", lambda: mutate_text(EVIDENCE, "promoted rows `0`", "promoted rows `1`")
+    )
+    cases += assert_fixture_mutation(
+        "T-58-06", lambda: mutate_text(EVIDENCE, "admitted and promoted sets are exactly empty", "admitted and promoted sets are nonempty")
+    )
+    for path_getter in (lambda: DEMO_SOURCE, lambda: DEMO_TEST, lambda: SHAPE_LEDGER, lambda: FEATURE_MATRIX, lambda: EVIDENCE):
+        cases += assert_fixture_mutation(
+            "T-58-06", lambda path_getter=path_getter: path_getter().unlink()
+        )
+        cases += assert_fixture_mutation(
+            "T-58-06", lambda path_getter=path_getter: path_getter().write_bytes(b"\xff\xfe")
+        )
+    cases += assert_forced_scanner("T-58-06")
+    return cases
+
+
 def self_test(only: str | None) -> int:
     selected = THREAT_IDS if only is None else (only,)
     original_root = ROOT
     cases = 0
     try:
         for threat in selected:
-            if threat == "T-58-03":
-                cases += assert_lifetime_matrix()
+            complete_matrices = {
+                "T-58-01": assert_authority_matrix,
+                "T-58-02": assert_privacy_matrix,
+                "T-58-03": assert_lifetime_matrix,
+                "T-58-04": assert_compatibility_matrix,
+                "T-58-05": assert_output_matrix,
+                "T-58-06": assert_promotion_matrix,
+            }
+            if threat in complete_matrices:
+                cases += complete_matrices[threat]()
                 continue
             with tempfile.TemporaryDirectory(prefix="phase58-closeout-") as temporary:
                 fixture = pathlib.Path(temporary)
@@ -784,16 +1332,21 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=pathlib.Path)
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--decision", action="store_true")
     parser.add_argument("--only", choices=THREAT_IDS)
     arguments = parser.parse_args()
     if arguments.root is not None:
         configure_root(arguments.root)
     if arguments.only is not None and not arguments.self_test:
         parser.error("--only requires --self-test")
-    mode = "self-test" if arguments.self_test else "live"
+    if arguments.self_test and arguments.decision:
+        parser.error("--self-test and --decision are mutually exclusive")
+    mode = "self-test" if arguments.self_test else "decision" if arguments.decision else "live"
     try:
         if arguments.self_test:
             return self_test(arguments.only)
+        if arguments.decision:
+            return emit(mode, classified_failures(only="T-58-01"))
         return emit(mode, classified_failures())
     except Exception:
         return emit(mode, {RULES["T-58-08"]})
