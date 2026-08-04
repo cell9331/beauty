@@ -159,7 +159,12 @@ Earlier shipped milestones are preserved in their linked archives under `.planni
   4. Genuine redness positives receive bounded red-excess reduction with natural luminance and vessel/detail variation, while closed, occluded, unsupported, or unsafe eyes abstain without guessed or stale support; facade output, review, privacy, regression, and exact ledger evidence agree.
   5. A closed `去脂` gate leaves no `upperEyelidFullnessReduction` field, provider, renderer case, or inert route and keeps `去脂` future plus `眼睛` partial; an open gate must instead prove a distinct public-facade non-warp effect that preserves eye/brow geometry, aperture, crease, texture, and identity and rejects lift, smoothing, eye-bag, dark-circle, or warp substitutes.
 
-**Plans**: 2/4 plans executed
+**Plans**: 3/4 plans executed
+
+- [x] 57-01-PLAN.md
+- [x] 57-02-PLAN.md
+- [x] 57-03-PLAN.md
+- [ ] 57-04-PLAN.md
 
 **Wave 0**
 
@@ -217,7 +222,7 @@ All 41 v1.14 requirements map to exactly one phase: 41 mapped, 0 duplicated, 0 u
 | 54. Rights-Approved Evidence and Eligibility Decisions | 5/5 | Complete    | 2026-08-03 |
 | 55. Original-Pixel Composition and Failure-Isolation Core | 5/5 | Complete    | 2026-08-03 |
 | 56. Independent Teeth Whitening Slice | 3/3 | Complete    | 2026-08-04 |
-| 57. Guarded Sclera Slice and Conditional Upper-Eyelid Work | 2/4 | In Progress|  |
+| 57. Guarded Sclera Slice and Conditional Upper-Eyelid Work | 3/4 | In Progress|  |
 | 58. Combined Facade, Safety, Ledger, and Audit Closeout | 0/TBD | Not started | - |
 
 ## Backlog
