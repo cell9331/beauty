@@ -197,7 +197,7 @@ Earlier shipped milestones are preserved in their linked archives under `.planni
   4. Local-retouch output preserves dimensions, canonical orientation/alpha/color contracts, safe-domain continuation, typed errors, and deterministic no-op behavior.
   5. Full SwiftPM and opt-in Vision integration, privacy/resource/network scans, adversarial safety, owner checks, and independent verification pass before ledgers promote exactly the qualified rows; `嘴唇` closes only with qualified `白牙`, `眼睛` closes only with both qualified eye rows, and no Demo, realtime, tracked-media, device, commercial, performance-budget, packaging, shipping, or launch claim is inferred.
 
-**Plans**: 2/4 plans executed
+**Plans**: 3/4 plans executed
 
 **Wave 0**
 
@@ -209,7 +209,7 @@ Earlier shipped milestones are preserved in their linked archives under `.planni
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] `58-03-PLAN.md` — Audit the frozen Phase 57 pretransition/current lifecycle and complete all HIGH/evidence/owner mutation modes.
+- [x] `58-03-PLAN.md` — Audit the frozen Phase 57 pretransition/current lifecycle and complete all HIGH/evidence/owner mutation modes.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 

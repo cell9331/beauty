@@ -14,7 +14,7 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Shipped version:** v1.13 Eyebrow Geometry Controls on 2026-07-28.
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
-**Current milestone:** v1.14 Local Facial Retouch — Phases 53–57 complete; Phase 58 combined facade, safety, ledger, and audit closeout is in execution (Plans 58-01/58-02 complete).
+**Current milestone:** v1.14 Local Facial Retouch — Phases 53–57 complete; Phase 58 combined facade, safety, ledger, and audit closeout is in execution (Plans 58-01/58-03 complete).
 
 **Implementation state:** v1.13 is shipped and archived. v1.14 now owns one compatible canonical still-image request foundation, a feature-neutral original-pixel composition core, and validated exact-absence teeth, sclera, and upper-eyelid slices. Strong request-local identity, checked pre-issuance validation, deterministic Q16 blending, post-filter hard containment, collision-to-source behavior, aggregate-only diagnostics, and opaque Testing-only facade adjacency remain feature-neutral. `BeautyParameters` remains exactly 59 stored fields (58 numeric plus `filterId`), production local-retouch admission remains literal empty, and no teeth, sclera, or upper-eyelid candidate surface exists because all three independent Phase 54 evidence gates are closed.
 
