@@ -349,13 +349,12 @@ def production_failures() -> set[str]:
     if run_rg(FORBIDDEN_ANATOMY_PATTERN, (SOURCES,)) == "match":
         failures.add("R56-PUBLIC")
 
-    synonym_sensitive_paths = (
-        PARAMETERS, RESOLVER, ADMISSION, ENGINE, TESTING_SUPPORT, RENDERER,
-    )
-    synonym_sensitive_text = "\n".join(
-        path.read_text(encoding="utf-8") for path in synonym_sensitive_paths
-    )
-    if re.search(FORBIDDEN_SYNONYM_PATTERN, synonym_sensitive_text):
+    # The production boundary is the complete Swift source tree, not a list of
+    # currently known integration owners. A neutrally named provider file must
+    # not bypass the closed gate merely because it did not exist when this
+    # checker was authored. Tests, Demo taxonomy, and documentation remain
+    # outside this source-only scan and keep their context-specific allowlists.
+    if run_rg(FORBIDDEN_SYNONYM_PATTERN, (SOURCES,)) == "match":
         failures.add("R56-PUBLIC")
 
     package_text = PACKAGE.read_text(encoding="utf-8")
@@ -382,11 +381,14 @@ def production_failures() -> set[str]:
     if re.search(FORBIDDEN_ANATOMY_PATTERN, manifest_text) or re.search(FORBIDDEN_SYNONYM_PATTERN, manifest_text):
         failures.add("R56-PUBLIC")
 
-    alias_text = "\n".join(
-        path.read_text(encoding="utf-8")
-        for path in (PARAMETERS, RESOLVER, ADMISSION, ENGINE, TESTING_SUPPORT, RENDERER)
+    source_swift_texts = tuple(
+        path.read_text(encoding="utf-8") for path in SOURCES.rglob("*.swift")
     )
-    if re.search(FORBIDDEN_ALIAS_PATTERN, alias_text):
+    if any(
+        re.search(FORBIDDEN_ALIAS_PATTERN, text)
+        or re.search(FORBIDDEN_SYNONYM_PATTERN, text)
+        for text in source_swift_texts
+    ):
         failures.add("R56-ALIAS")
 
     resolver_text = RESOLVER.read_text(encoding="utf-8")
@@ -787,12 +789,17 @@ def assert_missing_fixture(path: pathlib.Path, expected_rule: str) -> None:
         moved.rename(path)
 
 
-def assert_added_file(path: pathlib.Path, contents: str, expected_rule: str) -> None:
+def assert_added_file(
+    path: pathlib.Path,
+    contents: str,
+    expected_rules: str | tuple[str, ...],
+) -> None:
     if path.exists():
         raise AssertionError("added-file fixture already exists")
     path.write_text(contents, encoding="utf-8")
     try:
-        if expected_rule not in classified_live_failures():
+        required = (expected_rules,) if isinstance(expected_rules, str) else expected_rules
+        if not set(required).issubset(classified_live_failures()):
             raise AssertionError("added fixture accepted")
     finally:
         path.unlink()
@@ -931,6 +938,19 @@ def self_test(only: str | None) -> int:
 
                 if threat_id == "T-56-02":
                     assert_added_file(PRESETS / "teeth-whitening.json", "{}\n", "R56-PUBLIC")
+                    cases += 1
+                    assert_added_file(
+                        SOURCES / "BeautyEffects" / "Planning" / "LocalColorProvider.swift",
+                        "package func enamelWhitening() {}\n",
+                        ("R56-PUBLIC", "R56-ALIAS"),
+                    )
+                    cases += 1
+                if threat_id == "T-56-03":
+                    assert_added_file(
+                        SOURCES / "BeautyEffects" / "Planning" / "LocalColorProvider.swift",
+                        "package func dentitionWhitening() {}\n",
+                        ("R56-PUBLIC", "R56-ALIAS"),
+                    )
                     cases += 1
                 if threat_id == "T-56-07":
                     assert_missing_fixture(ADMISSION, "R56-REQUIRED")
