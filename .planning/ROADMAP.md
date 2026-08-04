@@ -159,7 +159,25 @@ Earlier shipped milestones are preserved in their linked archives under `.planni
   4. Genuine redness positives receive bounded red-excess reduction with natural luminance and vessel/detail variation, while closed, occluded, unsupported, or unsafe eyes abstain without guessed or stale support; facade output, review, privacy, regression, and exact ledger evidence agree.
   5. A closed `去脂` gate leaves no `upperEyelidFullnessReduction` field, provider, renderer case, or inert route and keeps `去脂` future plus `眼睛` partial; an open gate must instead prove a distinct public-facade non-warp effect that preserves eye/brow geometry, aperture, crease, texture, and identity and rejects lift, smoothing, eye-bag, dark-circle, or warp substitutes.
 
-**Plans**: TBD
+**Plans**: 4 plans
+
+**Wave 0**
+
+- [ ] `57-01-PLAN.md` — Freeze SDK/facade/59-5-72 exact absence, the two disabled Demo rows, proxy-domain preservation, and the eight-row fail-closed checker/threat inventory.
+
+**Wave 1** *(blocked on Wave 0 completion)*
+
+- [ ] `57-02-PLAN.md` — Enforce the two immutable independent Phase 54 rows and complete the whole-production sclera activation/alias matrix with draft evidence.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] `57-03-PLAN.md` — Complete upper-eyelid canonical/synonym and LID-04 proxy rejection plus Demo/privacy/ledger/compatibility/evidence/scanner matrices.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] `57-04-PLAN.md` — Run final-only SwiftPM/Demo/security/traceability gates, seal both closed projections, and synchronize requirement and root owners.
+
+**Cross-cutting constraints:** two independent exact conditional false branches; SCLERA-02..05 and LID-03/LID-05 are `not_applicable_closed_gate`, SCLERA-06 is `no_promotion`, and LID-04 is affirmative `proxy_rejection_enforced`; literal `.none`, 59/5/72, both still facades, disabled `祛红血丝`/`去脂`, future/future/partial ledgers, and valid shipped eye/color domains remain exact; OWASP ASVS Level 1 with all T-57 HIGH rows blocking; no production feature route, browser/file/image/human review, or full SwiftPM/complete Demo regression before `57-04-01`.
 
 ### Phase 58: Combined Facade, Safety, Ledger, and Audit Closeout
 
@@ -199,7 +217,7 @@ All 41 v1.14 requirements map to exactly one phase: 41 mapped, 0 duplicated, 0 u
 | 54. Rights-Approved Evidence and Eligibility Decisions | 5/5 | Complete    | 2026-08-03 |
 | 55. Original-Pixel Composition and Failure-Isolation Core | 5/5 | Complete    | 2026-08-03 |
 | 56. Independent Teeth Whitening Slice | 3/3 | Complete    | 2026-08-04 |
-| 57. Guarded Sclera Slice and Conditional Upper-Eyelid Work | 0/TBD | Not started | - |
+| 57. Guarded Sclera Slice and Conditional Upper-Eyelid Work | 0/4 | Planned | - |
 | 58. Combined Facade, Safety, Ledger, and Audit Closeout | 0/TBD | Not started | - |
 
 ## Backlog
