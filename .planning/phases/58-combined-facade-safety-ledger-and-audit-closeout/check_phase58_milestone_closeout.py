@@ -75,14 +75,65 @@ PHASE57_CURRENT_MODES = (
     ("eyelid", (0, "mode=eyelid status=passed rules=none\n")),
     (None, (1, "mode=live status=blocked rules=R57-COMPAT\n")),
 )
-CANDIDATE_PATTERN = (
-    r"(?i)teeth(?:Whitening|_whitening)|enamel(?:Whitening|_whitening)|"
-    r"dentition(?:Whitening|_whitening)|sclera(?:Redness|_redness|Whitening|_whitening)|"
-    r"conjunctiv(?:a|al)(?:Redness|_redness|Whitening|_whitening)|"
-    r"ocular(?:Redness|_redness|Whitening|_whitening)|"
-    r"upper(?:Eyelid|_eyelid|Lid|_lid)(?:Fullness|_fullness|Fat|_fat|Defatting|_defatting)|"
-    r"(?:remove|defat)(?:Upper)?(?:Eyelid|Lid)Fat"
+# Keep one exact candidate inventory for every Phase 58 source, output, and
+# Demo scan. These identities are copied from the closed Phase 56/57 ledgers;
+# adding a new spelling here is an intentional audit-contract change.
+TEETH_IDENTITIES = (
+    "teethWhitening", "teethWhite", "toothWhitening", "teethBrightness",
+    "enamelWhitening", "enamelWhite", "enamelBrightness",
+    "dentitionWhitening", "dentitionWhite", "dentitionBrightness",
+    "teeth_whitening", "teeth_white", "tooth_whitening", "teeth_brightness",
+    "enamel_whitening", "enamel_white", "enamel_brightness",
+    "dentition_whitening", "dentition_white", "dentition_brightness",
 )
+SCLERA_IDENTITIES = (
+    "scleraRedness", "scleraRednessReduction", "scleraWhitening", "scleraWhite",
+    "scleraBrightness", "whitenSclera", "eyeRedness", "eyeRednessReduction",
+    "redEye", "redEyeReduction", "conjunctivaRedness",
+    "conjunctivaRednessReduction", "conjunctivalRedness",
+    "conjunctivalRednessReduction", "conjunctivaWhitening",
+    "conjunctivalWhitening", "ocularRedness", "ocularRednessReduction",
+    "ocularWhitening", "bloodshotReduction", "bloodshotEyeCorrection",
+    "sclera_redness", "sclera_redness_reduction", "sclera_whitening",
+    "sclera_white", "sclera_brightness", "whiten_sclera", "eye_redness",
+    "eye_redness_reduction", "red_eye", "red_eye_reduction",
+    "conjunctiva_redness", "conjunctiva_redness_reduction",
+    "conjunctival_redness", "conjunctival_redness_reduction",
+    "conjunctiva_whitening", "conjunctival_whitening", "ocular_redness",
+    "ocular_redness_reduction", "ocular_whitening", "bloodshot_reduction",
+    "bloodshot_eye_correction",
+)
+EYELID_IDENTITIES = (
+    "upperEyelidFullness", "upperLidFullness", "eyelidFullness", "lidFullness",
+    "upperEyelidFullnessReduction", "upperLidFullnessReduction",
+    "eyelidFullnessReduction", "lidFullnessReduction",
+    "upperEyelidFullnessRemoval", "upperLidFullnessRemoval",
+    "eyelidFullnessRemoval", "lidFullnessRemoval", "upperEyelidFat",
+    "upperLidFat", "eyelidFat", "lidFat", "upperEyelidFatReduction",
+    "upperLidFatReduction", "eyelidFatReduction", "lidFatReduction",
+    "upperEyelidFatRemoval", "upperLidFatRemoval", "eyelidFatRemoval",
+    "lidFatRemoval", "removeUpperEyelidFat", "removeEyelidFat",
+    "removeUpperLidFat", "removeLidFat", "upperEyelidDefatting",
+    "upperLidDefatting", "eyelidDefatting", "lidDefatting",
+    "defatUpperEyelid", "defatEyelid", "defatUpperLid", "defatLid",
+    "upper_eyelid_fullness", "upper_lid_fullness", "eyelid_fullness",
+    "lid_fullness", "upper_eyelid_fullness_reduction",
+    "upper_lid_fullness_reduction", "eyelid_fullness_reduction",
+    "lid_fullness_reduction", "upper_eyelid_fullness_removal",
+    "upper_lid_fullness_removal", "eyelid_fullness_removal",
+    "lid_fullness_removal", "upper_eyelid_fat", "upper_lid_fat",
+    "eyelid_fat", "lid_fat", "upper_eyelid_fat_reduction",
+    "upper_lid_fat_reduction", "eyelid_fat_reduction", "lid_fat_reduction",
+    "upper_eyelid_fat_removal", "upper_lid_fat_removal",
+    "eyelid_fat_removal", "lid_fat_removal", "remove_upper_eyelid_fat",
+    "remove_eyelid_fat", "remove_upper_lid_fat", "remove_lid_fat",
+    "upper_eyelid_defatting", "upper_lid_defatting", "eyelid_defatting",
+    "lid_defatting", "defat_upper_eyelid", "defat_eyelid", "defat_upper_lid",
+    "defat_lid",
+)
+OWNED_IDENTITIES = ("lips.teeth", "eyes.redness", "eyes.fat", "白牙", "祛红血丝", "去脂")
+CANDIDATE_IDENTITIES = TEETH_IDENTITIES + SCLERA_IDENTITIES + EYELID_IDENTITIES + OWNED_IDENTITIES
+CANDIDATE_PATTERN = r"(?i)(?:" + "|".join(map(re.escape, CANDIDATE_IDENTITIES)) + r")[A-Za-z0-9_]*"
 SENSITIVE_PATTERN = (
     r"retainedScleraMask|persistedScleraMask|rawLandmarks|reviewerIdentity|"
     r"fixturePath|imageDigest|rawScannerError|publicSupportCoordinates"
@@ -117,6 +168,29 @@ PRIVACY_FORBIDDEN_PATTERN = (
     r"metricVeinDescriptor|trackedImageBytes|durableFixturePath|"
     r"durableImageDigest|durableSourceToken|rawScannerError|rawSourceMatch"
 )
+
+# Names carrying anatomy/support payloads are denied by default when they
+# cross a public/SPI, Codable, persistence, network, logging, or metrics
+# boundary. Fixed aggregate counters are the only explicit exceptions.
+PRIVACY_PAYLOAD_TOKENS = re.compile(
+    r"(?i)(?:landmark|support|geometry|point|observation|mask|vein|pupil|"
+    r"sclera|eyelid|teeth|anatomy)"
+)
+PRIVACY_ALLOWED_NAMES = {
+    "aggregateSupportValueID", "detectionAvailability", "detectionReasons",
+    "compositionObservation", "SDKTestingLocalCompositionObservation",
+    # Public shaping controls are not support payloads.
+    "upperEyelidLift", "pupilSize", "lowerEyelidDrop",
+}
+PRIVACY_DECLARATION_PATTERN = re.compile(
+    r"(?im)^\s*(?P<visibility>(?:@_spi\([^)]*\)\s*)?(?:public|package|private|internal)?\s*)"
+    r"(?:private\(set\)\s+)?(?:var|let)\s+(?P<name>[A-Za-z][A-Za-z0-9_]*)"
+)
+PRIVACY_CODABLE_PATTERN = re.compile(
+    r"(?is)\b(?:struct|class)\s+[A-Za-z][A-Za-z0-9_]*\s*:[^{]*\bCodable\b[^{}]*\{(?P<body>[^{}]*)\}"
+)
+
+MUTATION_TEST_MODE = False
 
 
 def configure_root(root: pathlib.Path) -> None:
@@ -292,6 +366,7 @@ def authority_failures() -> set[str]:
     if (
         not isinstance(document, dict)
         or tuple(document) != ("schema_version", "feature_decisions", "reviews", "aggregates")
+        or type(document.get("schema_version")) is not int
         or document.get("schema_version") != 1
         or document.get("reviews") != []
     ):
@@ -361,6 +436,27 @@ def privacy_failures() -> set[str]:
         return {RULES["T-58-02"]}
     if re.search(PRIVACY_FORBIDDEN_PATTERN, durable_text, re.IGNORECASE):
         return {RULES["T-58-02"]}
+    for match in PRIVACY_DECLARATION_PATTERN.finditer(source_text):
+        name = match.group("name")
+        visibility = match.group("visibility").lower()
+        if name in PRIVACY_ALLOWED_NAMES or not PRIVACY_PAYLOAD_TOKENS.search(name):
+            continue
+        # Package-private request-local support is allowed. Any public/SPI
+        # declaration, or durable-boundary prefix, is a forbidden payload.
+        lowered = name.lower()
+        durable_prefix = lowered.startswith((
+            "raw", "public", "spi", "codable", "persisted", "network",
+            "logged", "metric", "durable", "tracked",
+        ))
+        if "public" in visibility or "@_spi" in visibility or durable_prefix:
+            return {RULES["T-58-02"]}
+    for match in PRIVACY_CODABLE_PATTERN.finditer(source_text):
+        for declaration in re.finditer(
+            r"\b(?:var|let)\s+([A-Za-z][A-Za-z0-9_]*)", match.group("body")
+        ):
+            name = declaration.group(1)
+            if name not in PRIVACY_ALLOWED_NAMES and PRIVACY_PAYLOAD_TOKENS.search(name):
+                return {RULES["T-58-02"]}
     boundary_patterns = (
         r"(?is)(?:public|@_spi\([^)]*\)).{0,120}(?:raw(?:Landmarks|Pixels)|"
         r"(?:sclera|eyelid|teeth|pupil|vein)[A-Za-z0-9_]*(?:Mask|Coordinates|Geometry))",
@@ -395,6 +491,29 @@ def privacy_failures() -> set[str]:
     return set()
 
 
+def swift_test_function_bodies(source: str) -> dict[str, str]:
+    """Return XCTest bodies with comments removed for non-vacuous checks."""
+    without_comments = re.sub(
+        r"//[^\n]*|/\*.*?\*/", "", source, flags=re.DOTALL
+    )
+    result: dict[str, str] = {}
+    for match in re.finditer(
+        r"\bfunc\s+(test[A-Za-z0-9_]+)\s*\([^)]*\)[^{]*\{", without_comments
+    ):
+        depth = 1
+        index = match.end()
+        while index < len(without_comments) and depth:
+            character = without_comments[index]
+            if character == "{":
+                depth += 1
+            elif character == "}":
+                depth -= 1
+            index += 1
+        if depth == 0:
+            result[match.group(1)] = without_comments[match.end():index - 1]
+    return result
+
+
 def lifetime_failures() -> set[str]:
     foundation = read_text(FOUNDATION_TEST)
     composition = read_text(COMPOSITION_TEST)
@@ -425,11 +544,30 @@ def lifetime_failures() -> set[str]:
         "XCTAssertEqual(harness.compositionObservation, SDKTestingLocalCompositionObservation())",
         "XCTAssertEqual(harness.compositionObservation.changedOutsideUnionPixelCount, 0)",
     )
-    if any(foundation.count(marker) != 1 for marker in required_foundation_methods):
+    foundation_bodies = swift_test_function_bodies(foundation)
+    composition_bodies = swift_test_function_bodies(composition)
+    if any(
+        method not in foundation_bodies or foundation_bodies[method].count("XCTAssert") < 1
+        for method in required_foundation_methods
+    ):
         return {RULES["T-58-03"]}
-    if any(marker not in foundation for marker in required_foundation_fragments):
+    if any(
+        not any(marker in body for body in foundation_bodies.values())
+        for marker in required_foundation_fragments
+    ):
         return {RULES["T-58-03"]}
-    if any(composition.count(marker) < 1 for marker in required_composition):
+    composition_methods = tuple(
+        marker for marker in required_composition if marker.startswith("test")
+    )
+    if any(
+        method not in composition_bodies or composition_bodies[method].count("XCTAssert") < 1
+        for method in composition_methods
+    ):
+        return {RULES["T-58-03"]}
+    if any(
+        not any(marker in body for body in composition_bodies.values())
+        for marker in required_composition if marker.startswith("XCTAssert")
+    ):
         return {RULES["T-58-03"]}
 
     result_segment = support.split(
@@ -656,6 +794,16 @@ def _phase57_git_blob() -> bytes:
     return completed.stdout
 
 
+def _git_repository_available(root: pathlib.Path) -> bool:
+    completed = subprocess.run(
+        ["git", "-C", str(root), "rev-parse", "--git-dir"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return completed.returncode == 0 and not completed.stderr and bool(completed.stdout.strip())
+
+
 def _extract_phase57_revision(destination: pathlib.Path) -> pathlib.Path:
     """Extract a verified Git revision read-only into a disposable root."""
     completed = subprocess.run(
@@ -668,12 +816,49 @@ def _extract_phase57_revision(destination: pathlib.Path) -> pathlib.Path:
         raise RuntimeError("verified revision unavailable")
     with tarfile.open(fileobj=io.BytesIO(completed.stdout), mode="r:") as archive:
         members = archive.getmembers()
-        for member in members:
-            name = pathlib.PurePosixPath(member.name)
-            if name.is_absolute() or ".." in name.parts:
-                raise RuntimeError("unsafe revision member")
+        _validate_phase57_archive_members(members)
         archive.extractall(destination, members=members)
     return destination
+
+
+def _validate_phase57_archive_members(members: list[tarfile.TarInfo]) -> None:
+    for member in members:
+        name = pathlib.PurePosixPath(member.name)
+        if name.is_absolute() or ".." in name.parts:
+            raise RuntimeError("unsafe revision member")
+        if member.issym() or member.islnk():
+            raise RuntimeError("unsafe revision link member")
+
+
+def assert_archive_member_safety() -> int:
+    for member in (
+        tarfile.TarInfo("phase/checker.py"),
+        tarfile.TarInfo("../outside"),
+    ):
+        if member.name.startswith(".."):
+            expected = "unsafe revision member"
+        else:
+            member.type = tarfile.SYMTYPE
+            member.linkname = "/outside"
+            expected = "unsafe revision link member"
+        try:
+            _validate_phase57_archive_members([member])
+        except RuntimeError as error:
+            if str(error) != expected:
+                raise AssertionError("unexpected archive safety error") from error
+        else:
+            raise AssertionError("unsafe archive member accepted")
+    hard_link = tarfile.TarInfo("phase/fixture.py")
+    hard_link.type = tarfile.LNKTYPE
+    hard_link.linkname = "../../outside"
+    try:
+        _validate_phase57_archive_members([hard_link])
+    except RuntimeError as error:
+        if str(error) != "unsafe revision link member":
+            raise AssertionError("unexpected hard-link safety error") from error
+    else:
+        raise AssertionError("unsafe hard-link member accepted")
+    return 3
 
 
 def _phase57_pretransition_ok() -> bool:
@@ -768,6 +953,18 @@ def _phase57_owner_failures() -> bool:
         return False
     if roadmap.count("- [x] **Phase 57:") != 1 or roadmap.count("**Plans**: 4/4 plans executed") != 1:
         return False
+    # Phase 58 lifecycle owners must agree across roadmap and state; a
+    # checklist/metric contradiction blocks the completed-state adapter.
+    if (
+        roadmap.count("- [x] `58-04-PLAN.md`") != 1
+        or roadmap.count("**Plans**: 4/4 executed") != 1
+        or state.count("total_plans: 27") != 1
+        or state.count("completed_plans: 27") != 1
+        or state.count("Total plans completed: 27") != 1
+        or state.count("| 53-58 | 27 |") != 1
+        or state.count("| 58 | 4 |") != 1
+    ):
+        return False
     if state.count("current_phase: 58") != 1 or state.count("current_phase_name: Combined Facade, Safety, Ledger, and Audit Closeout") != 1 or state.count("status: executing") != 1:
         return False
     requirement_ids = ("SCLERA-01", "SCLERA-02", "SCLERA-03", "SCLERA-04", "SCLERA-05", "SCLERA-06", "LID-02", "LID-03", "LID-04", "LID-05")
@@ -787,16 +984,19 @@ def _phase57_owner_failures() -> bool:
 
 def phase57_failures() -> set[str]:
     try:
+        repository_available = _git_repository_available(ROOT)
+        if not repository_available and not MUTATION_TEST_MODE:
+            return {RULES["T-58-07"]}
         digest = hashlib.sha256(PHASE57_CHECKER.read_bytes()).hexdigest()
         if digest != PHASE57_CHECKER_SHA256:
             return {RULES["T-58-07"]}
-        if (ROOT / ".git").exists() and PHASE57_CHECKER.read_bytes() != _phase57_git_blob():
+        if repository_available and PHASE57_CHECKER.read_bytes() != _phase57_git_blob():
             return {RULES["T-58-07"]}
         if not _phase57_current_modes_ok() or not _phase57_owner_failures():
             return {RULES["T-58-07"]}
-        # The Git fixture is exercised only from the real repository. Temporary
-        # mutation copies retain the same current-state subprocess contract.
-        if (ROOT / ".git").exists() and not _phase57_pretransition_ok():
+        # Non-Git roots are accepted only from explicit self-test mutation
+        # fixtures; live and lifecycle modes always require the 519-case proof.
+        if repository_available and not _phase57_pretransition_ok():
             return {RULES["T-58-07"]}
     except Exception:
         return {RULES["T-58-07"]}
@@ -983,6 +1183,9 @@ def mutate_representative(threat: str) -> None:
 
 def assert_fixture_mutation(threat: str, mutate: object) -> int:
     original_root = ROOT
+    global MUTATION_TEST_MODE
+    previous_mutation_mode = MUTATION_TEST_MODE
+    MUTATION_TEST_MODE = True
     try:
         with tempfile.TemporaryDirectory(prefix="phase58-closeout-") as temporary:
             fixture = pathlib.Path(temporary)
@@ -996,11 +1199,15 @@ def assert_fixture_mutation(threat: str, mutate: object) -> int:
                 raise AssertionError("mutation accepted")
     finally:
         configure_root(original_root)
+        MUTATION_TEST_MODE = previous_mutation_mode
     return 1
 
 
 def assert_forced_scanner(threat: str) -> int:
     original_root = ROOT
+    global MUTATION_TEST_MODE
+    previous_mutation_mode = MUTATION_TEST_MODE
+    MUTATION_TEST_MODE = True
     try:
         with tempfile.TemporaryDirectory(prefix="phase58-closeout-") as temporary:
             fixture = pathlib.Path(temporary)
@@ -1013,6 +1220,7 @@ def assert_forced_scanner(threat: str) -> int:
                 raise AssertionError("unclassified scanner accepted")
     finally:
         configure_root(original_root)
+        MUTATION_TEST_MODE = previous_mutation_mode
     return 1
 
 
@@ -1154,6 +1362,9 @@ def assert_authority_matrix() -> int:
     cases = 0
     document_mutators = [
         lambda document: document.__setitem__("schema_version", 2),
+        lambda document: document.__setitem__("schema_version", True),
+        lambda document: document.__setitem__("schema_version", None),
+        lambda document: document.__setitem__("schema_version", "1"),
         lambda document: document.__setitem__("reviews", [{}]),
         lambda document: document.__setitem__("competing_authority", []),
         lambda document: document["feature_decisions"].reverse(),
@@ -1198,14 +1409,8 @@ def assert_authority_matrix() -> int:
         "T-58-01",
         lambda: mutate_text(RESOLVER, "return .none", "return BeautyLocalRetouchAdmission(opaqueDemandCount: 1)"),
     )
-    for index, candidate in enumerate((
-        "let teethWhitening = true\n",
-        "let enamel_whitening = true\n",
-        "let scleraRednessReduction = true\n",
-        "let conjunctival_redness = true\n",
-        "let upperEyelidFullnessReduction = true\n",
-        "let upper_lid_fat = true\n",
-    )):
+    for index, identity in enumerate(CANDIDATE_IDENTITIES):
+        candidate = f"let {identity} = true\n"
         cases += assert_fixture_mutation(
             "T-58-01",
             lambda index=index, candidate=candidate: (
@@ -1260,6 +1465,9 @@ def assert_privacy_matrix() -> int:
 
     boundary_payloads = (
         "public var rawPixels: [UInt8] = []\n",
+        "public var publicLandmarkSupport: [Float] = []\n",
+        "@_spi(Testing) public var spiPointObservation: [Float] { [] }\n",
+        "struct Leak: Codable { let publicGeometryPayload: [Float] }\n",
         "@_spi(Testing) public var scleraCoordinates: [Float] { [] }\n",
         "let persisted = UserDefaults.standard; let pupilPosition = \"private\"\n",
         "let request = URLRequest(url: URL(string: \"https://invalid\")!); let teethGeometry = []\n",
@@ -1361,10 +1569,9 @@ def write_json_mutation(path: pathlib.Path, mutator: object) -> None:
 
 def assert_output_matrix() -> int:
     cases = 0
-    candidates = (
-        "let teethWhitening = true\n", "let enamel_whitening = true\n",
-        "let scleraRednessReduction = true\n", "let conjunctival_redness = true\n",
-        "let upperEyelidFullnessReduction = true\n", "let upper_lid_fat = true\n",
+    candidates = tuple(
+        f"let {identity} = true\n" for identity in CANDIDATE_IDENTITIES
+    ) + (
         "let visibleCandidateOutput = true\n", "let candidateSavedOutputHelper = true\n",
         "let candidateGalleryRoute = true\n", "let candidateReviewRoute = true\n",
         "let combinedTeethScleraRequest = true\n", "let featureNamedOpaqueMechanics = true\n",
@@ -1467,6 +1674,7 @@ def assert_promotion_matrix() -> int:
 def assert_phase57_matrix() -> int:
     """Exercise real current Phase 57 owners without touching the frozen checker."""
     cases = 0
+    cases += assert_archive_member_safety()
     mutations = (
         (PHASE57_CHECKER, lambda: append_text(PHASE57_CHECKER, "\n# phase58 checker mutation\n")),
         (PHASE57_VERIFICATION, lambda: mutate_text(PHASE57_VERIFICATION, "status: passed", "status: gaps_found")),
