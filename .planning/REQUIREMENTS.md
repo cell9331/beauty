@@ -37,6 +37,12 @@ absent feature rather than an inert public field or proxy implementation.
 
 ### Teeth Whitening (`白牙`)
 
+A checked conditional requirement records that its gate branch was resolved;
+it does not by itself mean the positive branch was implemented or shipped. For
+Phase 56, the closed evidence gate resolves TEETH-01 through exact absence,
+TEETH-02 through TEETH-05 as not applicable while closed, and TEETH-06 through
+an exact no-promotion decision.
+
 - [x] **TEETH-01**: If and only if its feature gate passes, an SDK integrator receives an independent `teethWhitening` control that cannot alias global whitening, brightness, lip color, or another geometry/color field.
 - [x] **TEETH-02**: Qualified tooth support uses actual mapped lip context, retains the conservative fixed strong baseline, and may grow only connected color-qualified candidates inside a hard mouth-local containment envelope.
 - [x] **TEETH-03**: Teeth whitening changes zero pixels in lips, tongue, gums, braces, facial hair, skin, or outside the owned teeth mask across deterministic and rights-approved challenge cases.
@@ -118,12 +124,12 @@ no implementation surface when that decision is closed.
 | COMP-03 | Phase 55 | Complete |
 | COMP-04 | Phase 55 | Complete |
 | COMP-05 | Phase 55 | Complete |
-| TEETH-01 | Phase 56 | Complete |
-| TEETH-02 | Phase 56 | Complete |
-| TEETH-03 | Phase 56 | Complete |
-| TEETH-04 | Phase 56 | Complete |
-| TEETH-05 | Phase 56 | Complete |
-| TEETH-06 | Phase 56 | Complete |
+| TEETH-01 | Phase 56 | Complete — `false_branch_exact_absence` |
+| TEETH-02 | Phase 56 | Complete — `not_applicable_closed_gate` |
+| TEETH-03 | Phase 56 | Complete — `not_applicable_closed_gate` |
+| TEETH-04 | Phase 56 | Complete — `not_applicable_closed_gate` |
+| TEETH-05 | Phase 56 | Complete — `not_applicable_closed_gate` |
+| TEETH-06 | Phase 56 | Complete — `no_promotion` |
 | SCLERA-01 | Phase 57 | Pending |
 | SCLERA-02 | Phase 57 | Pending |
 | SCLERA-03 | Phase 57 | Pending |
