@@ -43,12 +43,23 @@ status: all_fixed
 ## Post-Fix Verification
 
 - Checker syntax and inventory JSON parse passed.
-- Aggregate checker passed 109/109; live mode passed exact 59/5/72; T-56-01 through T-56-07 passed 38/31/21/23/31/19/24 cases.
+- Aggregate checker passed 111/111 after verification fix `8cf422f`; live mode passed exact 59/5/72; T-56-01 through T-56-07 passed 38/32/22/23/31/19/24 cases.
 - Focused SDK passed 96/96 and focused Demo passed 28/28.
 - Full SwiftPM passed 539 tests with six documented opt-in Vision skips; explicit iPhone 17e/iOS 26.5 Demo build passed and tests passed 119/119.
 - Schema/UI gates passed; decision coverage passed 16/16; post-plan coverage passed 22/22; diff hygiene passed.
 - Codebase drift remained only the historical `PRODUCT_SENSE.md`, `example-images`, and `meituxiuxiu` warning set.
 - Evidence, validation, summary, SECURITY, QUALITY_SCORE, PLANS, and REVIEW were refreshed in `cee1dce`.
+
+## Subsequent Verification Repair
+
+Independent verification found that the initial synonym hardening still named
+six production owners. Commit `8cf422f` closes that bypass by scanning every
+Swift file under `BeautySDK/Sources` and by creating a neutrally named
+`LocalColorProvider.swift` mutation in both T-56-02 and T-56-03. The mutation
+must return both `R56-PUBLIC` and `R56-ALIAS`. The refreshed denominator is
+111 aggregate cases with per-threat totals
+`38 / 32 / 22 / 23 / 31 / 19 / 24`; production SDK and Demo source remain
+unchanged.
 
 ---
 

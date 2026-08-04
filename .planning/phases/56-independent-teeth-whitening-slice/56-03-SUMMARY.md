@@ -47,7 +47,7 @@ completed: 2026-08-03
 
 # Phase 56 Plan 03: Closed Teeth Validation Summary
 
-**Validated the independently closed teeth gate with 539-test SDK and 119-test Demo regressions, a 109-case post-review live-fixture checker, exact 59/5/72 compatibility, and synchronized no-promotion owners**
+**Validated the independently closed teeth gate with 539-test SDK and 119-test Demo regressions, a 111-case post-verification live-fixture checker, exact 59/5/72 compatibility, and synchronized no-promotion owners**
 
 ## Performance
 
@@ -82,7 +82,7 @@ Each task was committed atomically:
 ## Verification Results
 
 - Focused SwiftPM exact-absence suites: **96/96 passed**, zero skips.
-- Checker syntax/JSON: passed; aggregate self-test **109/109**; live mode exact **59/5/72**; T-56-01 through T-56-07 per-threat totals **38 / 31 / 21 / 23 / 31 / 19 / 24**, all passed.
+- Checker syntax/JSON: passed; aggregate self-test **111/111**; live mode exact **59/5/72**; T-56-01 through T-56-07 per-threat totals **38 / 32 / 22 / 23 / 31 / 19 / 24**, all passed. T-56-02/T-56-03 include a neutrally named production-file alias mutation across the complete Swift source boundary.
 - Full SwiftPM: **539 executed**, **6 documented opt-in Vision skips**, zero failures.
 - Explicit iPhone 17e / iOS 26.5 Demo: build passed; complete tests **119/119 passed**, zero skips. Xcode's existing empty-supported-platform diagnostic was non-fatal.
 - GSD gates: schema drift clear; UI gate clear with no frontend obligation; decision coverage **16/16**; post-plan coverage **22/22**; task/validation **5/5**; requirements **6/6**; HIGH mitigations **7/7**; diff hygiene passed.

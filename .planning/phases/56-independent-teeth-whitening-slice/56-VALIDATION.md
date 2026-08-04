@@ -59,7 +59,7 @@ checking.
 | `56-01-01` | 0 | TEETH-01, TEETH-06 | Exact XCTest inventory for no public/stored/CodingKey/SPI/alias route, literal `.none` production admission, unchanged still facade/no-admission output, 59 fields, five presets, 72 renderer cases | passed — 96-suite focused denominator owner |
 | `56-01-02` | 0 | TEETH-01..06 | Disabled `白牙` Demo taxonomy and future/partial ledger tests plus checker/threat inventory; self-test rejects every named T-56 mutation and scanner/missing-file failures | passed — 28/28 focused Demo and initial checker owner |
 | `56-02-01` | 1 | TEETH-01..06 | Live checker derives the exact closed teeth row from Phase 54, pins both missing-polarity reasons and zero counts/weight, and rejects status/reason/count/row tampering | passed — exact row and T-56-01 matrix owner |
-| `56-02-02` | 1 | TEETH-01, TEETH-06 | Live checker proves no provider/transform/render-plan/renderer/preset/resource/dependency/model/admission/Demo activation, no aliasing, exact compatibility totals, and exact ledger no-promotion | passed — 109-case post-review aggregate matrix owner |
+| `56-02-02` | 1 | TEETH-01, TEETH-06 | Live checker proves no provider/transform/render-plan/renderer/preset/resource/dependency/model/admission/Demo activation, no aliasing, exact compatibility totals, and exact ledger no-promotion | passed — 111-case post-verification aggregate matrix owner |
 | `56-03-01` | 2 | TEETH-01..06 | Final focused/checker/full SwiftPM/Demo/schema/UI/codebase/diff/ASVS/traceability/owner-doc gate; creates canonical closed-gate evidence and promotes validation | passed — 96 focused, 539 full with 6 skips, 119/119 Demo, all GSD gates green |
 
 Task count target: **5 actual XML task IDs = 5 validation rows = 2 Wave 0 +
@@ -114,8 +114,8 @@ Task count target: **5 actual XML task IDs = 5 validation rows = 2 Wave 0 +
 | ID | Threat | Required mitigation/evidence |
 | --- | --- | --- |
 | T-56-01 | Upstream gate authority tampering | Exact Phase 54 row parser plus live mutations of status, reasons, counts, weight, row identity, JSON shape, and missing/unreadable input |
-| T-56-02 | Premature public or production activation | Exact field/CodingKey/SPI/admission/provider/renderer/preset/resource/dependency/model absence scans plus context-specific `enamel`/`dentition` Testing, renderer, and preset mutations |
-| T-56-03 | Alias or inert-route smuggling | Candidate alias set including `enamel`/`dentition`, initializer/default/JSON/Testing scans, literal `.none`, and live resolver mutations that route through an existing whitening/color/geometry control |
+| T-56-02 | Premature public or production activation | Exact field/CodingKey/SPI/admission/provider/renderer/preset/resource/dependency/model absence scans plus an all-production-Swift `enamel`/`dentition` content boundary and live neutrally named provider mutation |
+| T-56-03 | Alias or inert-route smuggling | Candidate alias set including `enamel`/`dentition`, initializer/default/JSON/Testing scans, literal `.none`, live resolver mutations, and a new-file alias mutation that routes through the complete production source boundary |
 | T-56-04 | Demo activation disguised as taxonomy | Preserve the exact disabled row while mutations adding binding/control/slider/processor/enabled availability fail |
 | T-56-05 | Evidence lifecycle or privacy disclosure | Structurally exact finalized frontmatter/sections, affirmative contradiction rejection, fixed status/reason/count/total allowlist, and no paths, hashes, rights payload, media, masks, coordinates, pixels, digests, raw matches, or raw errors |
 | T-56-06 | Ledger promotion or sibling borrowing | Exact `白牙 = future` and `嘴唇 = partial` assertions; mutations of status, branch closure, or sibling evidence fail |
@@ -136,6 +136,8 @@ The checker must fail closed on:
   transform, render-plan field, renderer case, preset, resource, dependency,
   model, admission, active Demo mapping, realtime/pixel-buffer/reset route, or
   inert zero-work branch;
+- `enamel`/`dentition` content in any `BeautySDK/Sources/**/*.swift` file,
+  including a neutrally named file not listed by existing integration owners;
 - aliasing teeth to global whitening, brightness, lip color, mouth/lip geometry,
   another feature, or Phase 55 opaque Testing mechanics;
 - Phase 54 status/reason/count/weight drift, eligibility reinterpretation, use
@@ -187,7 +189,7 @@ Task `56-03-01` must execute and record:
 
 **Approval:** validated — all five task rows, six requirements, sixteen
 decisions, seven HIGH mitigations, focused/final regressions, and owner evidence
-are current and green. Post-review reruns pass 109 aggregate checker cases,
-per-threat totals `38 / 31 / 21 / 23 / 31 / 19 / 24`, focused SDK 96/96,
+are current and green. Post-verification reruns pass 111 aggregate checker cases,
+per-threat totals `38 / 32 / 22 / 23 / 31 / 19 / 24`, focused SDK 96/96,
 focused Demo 28/28, full SwiftPM 539 with six documented skips, and Demo
 119/119. This closes only the conditional false branch.

@@ -4,6 +4,7 @@ reviewed: 2026-08-04
 status: clean
 baseline: 43f35f6
 head: 5235f0c
+verification_fix: 8cf422f
 review_standard: bugs, security, fail-closed behavior, test quality, privacy, contract drift
 findings: 0
 blockers: 0
@@ -123,8 +124,9 @@ the requirement wording.
 ## Evidence Reviewed
 
 - Focused Phase 56 SDK suite: 96/96 passed.
-- Current checker aggregate: 109/109 passed; per-threat totals are
-  38/31/21/23/31/19/24; current live mode reports exact 59/5/72 and seven HIGH
+- Current checker aggregate after the independent-verification repair: 111/111
+  passed; per-threat totals are 38/32/22/23/31/19/24; current live mode reports
+  exact 59/5/72 and seven HIGH
   IDs.
 - Full recorded Phase 56 regression: 539 SwiftPM tests executed with six
   documented opt-in skips and zero failures; Demo 119/119.
@@ -152,5 +154,12 @@ Completed reruns:
 
 All six rows passed with fresh post-fix results. Diff hygiene is green and all
 seven HIGH mitigations remain blocking and machine-green.
+
+Independent verification subsequently found that the synonym scan covered six
+known owners rather than every production Swift file. Fix `8cf422f` broadens
+that boundary to all `BeautySDK/Sources/**/*.swift` files and adds the same
+neutrally named provider-file mutation to T-56-02 and T-56-03. The aggregate
+matrix is now 111/111 with per-threat totals
+`38 / 32 / 22 / 23 / 31 / 19 / 24`; no SDK or Demo production source changed.
 
 **Review status:** clean after fixes; ready for independent phase verification.
