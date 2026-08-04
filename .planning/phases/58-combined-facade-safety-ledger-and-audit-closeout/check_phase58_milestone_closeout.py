@@ -495,30 +495,82 @@ def privacy_failures() -> set[str]:
 
 def swift_test_function_bodies(source: str) -> dict[str, str]:
     """Return XCTest bodies with comments removed for non-vacuous checks."""
-    without_comments = re.sub(
-        r"//[^\n]*|/\*.*?\*/", "", source, flags=re.DOTALL
-    )
-    without_strings = re.sub(
-        r'""".*?"""|"(?:\\.|[^"\\])*"',
-        lambda match: " " * len(match.group(0)),
-        without_comments,
-        flags=re.DOTALL,
-    )
+    masked: list[str] = []
+    index = 0
+    mode = "code"
+    while index < len(source):
+        if mode == "code":
+            if source.startswith("//", index):
+                masked.extend((" ", " "))
+                index += 2
+                mode = "line-comment"
+            elif source.startswith("/*", index):
+                masked.extend((" ", " "))
+                index += 2
+                mode = "block-comment"
+            elif source.startswith('"""', index):
+                masked.extend((" ", " ", " "))
+                index += 3
+                mode = "multiline-string"
+            elif source[index] == '"':
+                masked.append(" ")
+                index += 1
+                mode = "string"
+            else:
+                masked.append(source[index])
+                index += 1
+        elif mode == "line-comment":
+            if source[index] == "\n":
+                masked.append("\n")
+                index += 1
+                mode = "code"
+            else:
+                masked.append(" ")
+                index += 1
+        elif mode == "block-comment":
+            if source.startswith("*/", index):
+                masked.extend((" ", " "))
+                index += 2
+                mode = "code"
+            else:
+                masked.append("\n" if source[index] == "\n" else " ")
+                index += 1
+        elif mode == "string":
+            if source[index] == "\\" and index + 1 < len(source):
+                masked.extend((" ", "\n" if source[index + 1] == "\n" else " "))
+                index += 2
+            elif source[index] == '"':
+                masked.append(" ")
+                index += 1
+                mode = "code"
+            else:
+                masked.append("\n" if source[index] == "\n" else " ")
+                index += 1
+        else:
+            if source.startswith('"""', index):
+                masked.extend((" ", " ", " "))
+                index += 3
+                mode = "code"
+            else:
+                masked.append("\n" if source[index] == "\n" else " ")
+                index += 1
+    without_comments_and_strings = "".join(masked)
     result: dict[str, str] = {}
     for match in re.finditer(
-        r"\bfunc\s+(test[A-Za-z0-9_]+)\s*\([^)]*\)[^{]*\{", without_strings
+        r"\bfunc\s+(test[A-Za-z0-9_]+)\s*\([^)]*\)[^{]*\{",
+        without_comments_and_strings,
     ):
         depth = 1
         index = match.end()
-        while index < len(without_strings) and depth:
-            character = without_strings[index]
+        while index < len(without_comments_and_strings) and depth:
+            character = without_comments_and_strings[index]
             if character == "{":
                 depth += 1
             elif character == "}":
                 depth -= 1
             index += 1
         if depth == 0:
-            result[match.group(1)] = without_strings[match.end():index - 1]
+            result[match.group(1)] = without_comments_and_strings[match.end():index - 1]
     return result
 
 
