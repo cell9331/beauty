@@ -131,6 +131,52 @@ EVIDENCE_COMMON_SECTIONS = (
     "## Decision Coverage",
     "## Privacy Allowlist and Nonclaims",
 )
+EXPECTED_EVIDENCE_DECISION_ROWS = (
+    (
+        "`sclera_redness`", "`closed`",
+        "`missing_genuine_positive`, `missing_genuine_negative`",
+        "`0 / 0 / 0 / 0 / 0`",
+    ),
+    (
+        "`upper_eyelid_fullness`", "`closed`",
+        "`missing_genuine_positive`, `missing_genuine_negative`, `non_warp_design_unqualified`",
+        "`0 / 0 / 0 / 0 / 0`",
+    ),
+)
+EXPECTED_EVIDENCE_DISPOSITION_ROWS = (
+    ("SCLERA-01", "`false_branch_exact_absence`", "No public, Codable, Testing, admission, provider, renderer, preset, saved-output, or active Demo route."),
+    ("SCLERA-02", "`not_applicable_closed_gate`", "No per-eye support, envelope, scoring, feathering, or re-clipping implementation claim."),
+    ("SCLERA-03", "`not_applicable_closed_gate`", "No protected-region containment or safety-result claim."),
+    ("SCLERA-04", "`not_applicable_closed_gate`", "No redness effectiveness or naturalness-result claim."),
+    ("SCLERA-05", "`not_applicable_closed_gate`", "No classifier, abstention, or peer-eye-isolation implementation claim."),
+    ("SCLERA-06", "`no_promotion`", "Facade, output, evidence, privacy, regression, Demo, and ledger owners agree that no product route is promoted."),
+    ("LID-02", "`closed_branch_exact_absence`", "No field, provider, renderer, preset, admission, saved-output, or active Demo route."),
+    ("LID-03", "`not_applicable_closed_gate`", "No qualified non-warp effect or identity/detail-preservation claim."),
+    ("LID-04", "`proxy_rejection_enforced`", "Existing eye geometry, brow, smoothing, dark-circle, eye-bag, aperture, and warp domains remain independent and cannot represent `去脂`."),
+    ("LID-05", "`not_applicable_closed_gate`", "No admitted facade, naturalness, output, privacy, or promotion claim."),
+)
+EXPECTED_EVIDENCE_TASK_ROWS = (
+    ("`57-01-01`", "passed — SDK, facade, compatibility, and proxy-domain exact absence"),
+    ("`57-01-02`", "passed — disabled Demo rows, ledgers, and initial HIGH checker"),
+    ("`57-02-01`", "passed — exact independent Phase 54 parser; 65 mutation/input cases"),
+    ("`57-02-02`", "passed — complete sclera production and synonym matrix; 32 cases"),
+    ("`57-03-01`", "passed — 27 upper-eyelid activation/synonym cases and 19 candidate-to-proxy cases"),
+    ("`57-03-02`", "passed — 19 Demo, 33 privacy/evidence/output, 7 ledger, and 18 compatibility/scanner cases; focused SDK 101/101 and Demo 29/29"),
+    ("`57-04-01`", "passed — final focused/full regression, traceability, validation, evidence, and owner closeout"),
+)
+EXPECTED_EVIDENCE_HIGH_ROWS = tuple(
+    (f"T-57-{index:02d}", result)
+    for index, result in enumerate((
+        "passed — 65 exact-authority cases",
+        "passed — 32 whole-production sclera cases",
+        "passed — 27 whole-production upper-eyelid cases",
+        "passed — 19 bidirectional proxy-relation and proxy-only-control cases",
+        "passed — 19 disabled-Demo and active-route cases",
+        "passed — 33 structural lifecycle, privacy, contradiction, and fixed-output cases",
+        "passed — 7 future/future/partial promotion and borrowing cases",
+        "passed — 18 compatibility/evidence/scanner cases plus final regression",
+    ), start=1)
+)
 
 
 def configure_root(root: pathlib.Path) -> None:
@@ -605,11 +651,13 @@ def parse_evidence_frontmatter(text: str) -> tuple[dict[str, object], str] | Non
 
 def has_affirmative_eye_candidate_claim(text: str) -> bool:
     candidate = (
-        r"(?:sclera(?:\s+redness\s+reduction|RednessReduction)|祛红血丝|"
-        r"upper[- ]eyelid(?:\s+fullness\s+reduction|FullnessReduction)|去脂)"
+        r"(?:sclera(?:[ _-]+redness(?:[ _-]+reduction)?|Redness(?:Reduction)?)|"
+        r"conjunctiva(?:l)?[ _-]+redness|ocular[ _-]+redness|祛红血丝|"
+        r"upper[- _]eyelid(?:[- _]+fullness(?:[- _]+reduction)?|Fullness(?:Reduction)?)|"
+        r"upper_eyelid_fullness|去脂)"
     )
     status = (
-        r"(?:implemented|promoted|released|shipped|production-ready|"
+        r"(?:active|enabled|available|open|implemented|promoted|released|shipped|production-ready|"
         r"release-ready|launch-ready|ready\s+for\s+(?:release|shipping|launch))"
     )
     direct = re.compile(
@@ -617,6 +665,11 @@ def has_affirmative_eye_candidate_claim(text: str) -> bool:
         rf"(?!not\b|never\b)(?:been\s+)?{status}\b"
     )
     active = re.compile(rf"(?i)\b{status}\b.{{0,64}}{candidate}")
+    table_fragment = re.compile(
+        rf"(?i)(?:{candidate}.{{0,160}}\b{status}\b|\b{status}\b.{{0,160}}{candidate})"
+    )
+    if any(line.startswith("|") and table_fragment.search(line) for line in text.splitlines()):
+        return True
     for sentence in re.split(r"[.!?\n]+", text):
         if direct.search(sentence):
             return True
@@ -626,6 +679,70 @@ def has_affirmative_eye_candidate_claim(text: str) -> bool:
             if re.search(r"(?i)\b(?:not|never|no)\s*$", prefix) is None:
                 return True
     return False
+
+
+def evidence_section(body: str, heading: str) -> str | None:
+    marker = f"{heading}\n"
+    if body.count(marker) != 1:
+        return None
+    remainder = body.split(marker, 1)[1]
+    match = re.search(r"(?m)^##\s+", remainder)
+    return remainder if match is None else remainder[:match.start()]
+
+
+def evidence_tables(section: str) -> tuple[tuple[tuple[str, ...], ...], ...] | None:
+    tables: list[tuple[tuple[str, ...], ...]] = []
+    current: list[tuple[str, ...]] = []
+    for line in section.splitlines():
+        if line.startswith("|") and line.endswith("|"):
+            current.append(tuple(cell.strip() for cell in line[1:-1].split("|")))
+        elif current:
+            tables.append(tuple(current))
+            current = []
+    if current:
+        tables.append(tuple(current))
+    for table in tables:
+        if len(table) < 3 or any(cell != "---" for cell in table[1]):
+            return None
+        width = len(table[0])
+        if any(len(row) != width for row in table):
+            return None
+    return tuple(tables)
+
+
+def exact_evidence_tables(body: str) -> bool:
+    decision = evidence_section(body, "## Immutable Decision Projections")
+    dispositions = evidence_section(body, "## Requirement Dispositions")
+    results = evidence_section(body, "## Task and HIGH Results")
+    if decision is None or dispositions is None or results is None:
+        return False
+    decision_tables = evidence_tables(decision)
+    disposition_tables = evidence_tables(dispositions)
+    result_tables = evidence_tables(results)
+    return (
+        decision_tables == ((
+            ("Feature", "Status", "Ordered reasons", "Eligible / reviewed / accepted / rejected / naturalness weight"),
+            ("---", "---", "---", "---"),
+            *EXPECTED_EVIDENCE_DECISION_ROWS,
+        ),)
+        and disposition_tables == ((
+            ("Requirement", "Final disposition", "Validated outcome"),
+            ("---", "---", "---"),
+            *EXPECTED_EVIDENCE_DISPOSITION_ROWS,
+        ),)
+        and result_tables == (
+            (
+                ("Task", "Final result"),
+                ("---", "---"),
+                *EXPECTED_EVIDENCE_TASK_ROWS,
+            ),
+            (
+                ("HIGH gate", "Final machine result"),
+                ("---", "---"),
+                *EXPECTED_EVIDENCE_HIGH_ROWS,
+            ),
+        )
+    )
 
 
 def evidence_failures() -> set[str]:
@@ -684,6 +801,7 @@ def evidence_failures() -> set[str]:
         or any(item not in body for item in required_dispositions)
         or any(item not in body for item in required_invariants)
         or any(identifier not in body for identifier in required_ids)
+        or not exact_evidence_tables(body)
         or has_affirmative_eye_candidate_claim(body)
     ):
         return {"R57-PRIVACY", "R57-COMPAT"}
@@ -1287,6 +1405,24 @@ def assert_evidence_and_privacy_failures() -> int:
         (lifecycle_anchor, lifecycle_replacement, "R57-COMPAT"),
         (title, title + "\n\nUpper-eyelid fullness reduction is implemented and shipped.", "R57-PRIVACY"),
         (title, title + "\n\nSclera redness reduction is production-ready.", "R57-PRIVACY"),
+        (title, title + "\n\nSclera redness reduction is active in production.", "R57-PRIVACY"),
+        (title, title + "\n\nSclera redness reduction is enabled.", "R57-PRIVACY"),
+        (title, title + "\n\nUpper-eyelid fullness reduction is available.", "R57-PRIVACY"),
+        (title, title + "\n\nUpper-eyelid fullness reduction is open.", "R57-PRIVACY"),
+        (title, title + "\n\n| sclera_redness | open |", "R57-PRIVACY"),
+        (title, title + "\n\n| upper_eyelid_fullness | enabled |", "R57-PRIVACY"),
+        (
+            "| `sclera_redness` | `closed` | `missing_genuine_positive`, `missing_genuine_negative` | `0 / 0 / 0 / 0 / 0` |",
+            "| `sclera_redness` | `closed` | `missing_genuine_positive`, `missing_genuine_negative` | `0 / 0 / 0 / 0 / 0` |\n"
+            "| `sclera_redness` | `open` | None | `1 / 1 / 1 / 0 / 1` |",
+            "R57-PRIVACY",
+        ),
+        (
+            "| `upper_eyelid_fullness` | `closed` | `missing_genuine_positive`, `missing_genuine_negative`, `non_warp_design_unqualified` | `0 / 0 / 0 / 0 / 0` |",
+            "| `upper_eyelid_fullness` | `closed` | `missing_genuine_positive`, `missing_genuine_negative`, `non_warp_design_unqualified` | `0 / 0 / 0 / 0 / 0` |\n"
+            "| `upper_eyelid_fullness` | `available` | None | `1 / 1 / 1 / 0 / 1` |",
+            "R57-PRIVACY",
+        ),
     )
     for index, (original, replacement, expected) in enumerate(structural):
         try:
