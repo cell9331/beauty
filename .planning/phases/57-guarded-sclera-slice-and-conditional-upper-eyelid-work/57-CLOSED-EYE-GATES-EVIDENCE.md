@@ -64,31 +64,31 @@ no admission or naturalness weight.
 | `57-01-01` | passed — SDK, facade, compatibility, and proxy-domain exact absence |
 | `57-01-02` | passed — disabled Demo rows, ledgers, and initial HIGH checker |
 | `57-02-01` | passed — exact independent Phase 54 parser; 65 mutation/input cases |
-| `57-02-02` | passed — complete sclera production and synonym matrix; 32 cases |
-| `57-03-01` | passed — 27 upper-eyelid activation/synonym cases and 19 candidate-to-proxy cases |
-| `57-03-02` | passed — 19 Demo, 33 privacy/evidence/output, 7 ledger, and 18 compatibility/scanner cases; focused SDK 101/101 and Demo 29/29 |
+| `57-02-02` | passed — complete sclera production and synonym matrix; 38 cases |
+| `57-03-01` | passed — 35 upper-eyelid activation/synonym cases and 199 candidate-to-proxy cases |
+| `57-03-02` | passed — 23 Demo, 81 privacy/evidence/output, 7 ledger, and 42 compatibility/scanner/owner cases; focused SDK 101/101 and Demo 29/29 |
 | `57-04-01` | passed — final focused/full regression, traceability, validation, evidence, and owner closeout |
 
 | HIGH gate | Final machine result |
 | --- | --- |
 | T-57-01 | passed — 65 exact-authority cases |
-| T-57-02 | passed — 32 whole-production sclera cases |
-| T-57-03 | passed — 27 whole-production upper-eyelid cases |
-| T-57-04 | passed — 19 bidirectional proxy-relation and proxy-only-control cases |
-| T-57-05 | passed — 19 disabled-Demo and active-route cases |
-| T-57-06 | passed — 33 structural lifecycle, privacy, contradiction, and fixed-output cases |
+| T-57-02 | passed — 38 whole-production sclera cases |
+| T-57-03 | passed — 35 whole-production upper-eyelid cases |
+| T-57-04 | passed — 199 owned-identity proxy-relation and proxy-only-control cases |
+| T-57-05 | passed — 23 recursive disabled-Demo and active-route cases |
+| T-57-06 | passed — 81 exact-schema lifecycle, privacy, contradiction, and fixed-output cases |
 | T-57-07 | passed — 7 future/future/partial promotion and borrowing cases |
-| T-57-08 | passed — 18 compatibility/evidence/scanner cases plus final regression |
+| T-57-08 | passed — 42 compatibility/evidence/scanner/owner cases plus final regression |
 
 All eight HIGH identities passed independently. The aggregate checker passed
-220 cases and live/decision modes returned `rules=none`.
+490 cases and live/decision modes returned `rules=none`.
 
 ## Final Automated Evidence
 
 - Python syntax and the exact eight-row HIGH JSON inventory passed.
 - Final focused SwiftPM executed 141 tests with zero failures.
-- Checker aggregate self-test passed 220 cases; per-threat totals were
-  `65 / 32 / 27 / 19 / 19 / 33 / 7 / 18`; decision and live modes passed.
+- Checker aggregate self-test passed 490 cases; per-threat totals were
+  `65 / 38 / 35 / 199 / 23 / 81 / 7 / 42`; decision and live modes passed.
 - Full SwiftPM executed 544 tests with six documented opt-in Vision skips and
   zero failures.
 - Explicit iPhone 17e / iOS 26.5 Demo build passed; the complete Demo suite

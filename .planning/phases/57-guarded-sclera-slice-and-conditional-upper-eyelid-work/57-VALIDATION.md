@@ -62,7 +62,7 @@ or update this table one-for-one with the final XML task IDs before plan check.
 | `57-02-02` | 1 | SCLERA-01..06 | Complete whole-production sclera canonical/synonym/provider/renderer/preset/admission/Demo mutations; SCLERA false-branch/N/A/no-promotion evidence | passed |
 | `57-03-01` | 2 | LID-02..05 | Complete whole-production upper-eyelid canonical/synonym and neutral-file mutations plus affirmative LID-04 proxy-coupling rejection while shipped eye domains remain intact | passed |
 | `57-03-02` | 2 | SCLERA-01..06, LID-02..05 | Complete structural evidence/privacy/Demo/ledger/compatibility/scanner matrix and combined two-row projection with no cross-feature borrowing | passed |
-| `57-04-01` | 3 | SCLERA-01..06, LID-02..05 | Final focused 141/141, checker 220, full SwiftPM 544 with six opt-in skips, Demo build plus 120/120, schema/UI/traceability/diff/ASVS/owner gate | passed |
+| `57-04-01` | 3 | SCLERA-01..06, LID-02..05 | Final focused 141/141, checker 490, full SwiftPM 544 with six opt-in skips, Demo build plus 120/120, schema/UI/traceability/diff/ASVS/owner gate | passed |
 
 Task count target: **7 XML task IDs = 7 validation rows = 2 Wave 0 + 4
 focused enforcement tasks + 1 final closeout**.

@@ -120,7 +120,7 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 ### Pending Todos
 
 - Run independent Phase 57 code review and goal-backward verification without marking the phase complete early.
-- Preserve all 220 mutation cases, exact `.none`/59/5/72, disabled Demo rows, future/future/partial ledgers, and exact conditional dispositions through review fixes.
+- Preserve all 490 post-review mutation cases, exact `.none`/59/5/72, disabled Demo rows, future/future/partial ledgers, and exact conditional dispositions through verification.
 
 ### Blockers/Concerns
 

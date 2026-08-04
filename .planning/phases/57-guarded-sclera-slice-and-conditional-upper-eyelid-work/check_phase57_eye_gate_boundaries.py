@@ -133,7 +133,7 @@ EVIDENCE_COMMON_SECTIONS = (
     "## Privacy Allowlist and Nonclaims",
 )
 EXPECTED_VALIDATED_EVIDENCE_SHA256 = (
-    "a0e6c1ef927165927f61de6f18fd6c07028156e8da4f6313bfc5eb4e11e0fa68"
+    "c2da3720491d0d9fe6a2c52263a6465c8ea32462b87c4519b4b4dfce28470f3b"
 )
 EXPECTED_EVIDENCE_DECISION_ROWS = (
     (
@@ -163,22 +163,22 @@ EXPECTED_EVIDENCE_TASK_ROWS = (
     ("`57-01-01`", "passed — SDK, facade, compatibility, and proxy-domain exact absence"),
     ("`57-01-02`", "passed — disabled Demo rows, ledgers, and initial HIGH checker"),
     ("`57-02-01`", "passed — exact independent Phase 54 parser; 65 mutation/input cases"),
-    ("`57-02-02`", "passed — complete sclera production and synonym matrix; 32 cases"),
-    ("`57-03-01`", "passed — 27 upper-eyelid activation/synonym cases and 19 candidate-to-proxy cases"),
-    ("`57-03-02`", "passed — 19 Demo, 33 privacy/evidence/output, 7 ledger, and 18 compatibility/scanner cases; focused SDK 101/101 and Demo 29/29"),
+    ("`57-02-02`", "passed — complete sclera production and synonym matrix; 38 cases"),
+    ("`57-03-01`", "passed — 35 upper-eyelid activation/synonym cases and 199 candidate-to-proxy cases"),
+    ("`57-03-02`", "passed — 23 Demo, 81 privacy/evidence/output, 7 ledger, and 42 compatibility/scanner/owner cases; focused SDK 101/101 and Demo 29/29"),
     ("`57-04-01`", "passed — final focused/full regression, traceability, validation, evidence, and owner closeout"),
 )
 EXPECTED_EVIDENCE_HIGH_ROWS = tuple(
     (f"T-57-{index:02d}", result)
     for index, result in enumerate((
         "passed — 65 exact-authority cases",
-        "passed — 32 whole-production sclera cases",
-        "passed — 27 whole-production upper-eyelid cases",
-        "passed — 19 bidirectional proxy-relation and proxy-only-control cases",
-        "passed — 19 disabled-Demo and active-route cases",
-        "passed — 33 structural lifecycle, privacy, contradiction, and fixed-output cases",
+        "passed — 38 whole-production sclera cases",
+        "passed — 35 whole-production upper-eyelid cases",
+        "passed — 199 owned-identity proxy-relation and proxy-only-control cases",
+        "passed — 23 recursive disabled-Demo and active-route cases",
+        "passed — 81 exact-schema lifecycle, privacy, contradiction, and fixed-output cases",
         "passed — 7 future/future/partial promotion and borrowing cases",
-        "passed — 18 compatibility/evidence/scanner cases plus final regression",
+        "passed — 42 compatibility/evidence/scanner/owner cases plus final regression",
     ), start=1)
 )
 
@@ -189,7 +189,8 @@ def configure_root(root: pathlib.Path) -> None:
     global PARAMETER_TEST, RESOURCE_TEST, RENDERER_TEST, FOUNDATION_TEST
     global DEMO_SOURCE, DEMO_CONTROL, DEMO_PANEL, DEMO_STORE, DEMO_TEST
     global FEATURE_MATRIX, SHAPE_LEDGER, PRODUCT_SENSE, SECURITY, RELIABILITY
-    global QUALITY_SCORE, REQUIREMENTS, DECISIONS, INVENTORY, EVIDENCE, VALIDATION
+    global QUALITY_SCORE, PLANS, ROADMAP, STATE, REQUIREMENTS
+    global DECISIONS, INVENTORY, EVIDENCE, VALIDATION
 
     ROOT = root.resolve()
     PHASE = ROOT / ".planning" / "phases" / PHASE_NAME
@@ -219,6 +220,9 @@ def configure_root(root: pathlib.Path) -> None:
     SECURITY = ROOT / "SECURITY.md"
     RELIABILITY = ROOT / "RELIABILITY.md"
     QUALITY_SCORE = ROOT / "QUALITY_SCORE.md"
+    PLANS = ROOT / "PLANS.md"
+    ROADMAP = ROOT / ".planning" / "ROADMAP.md"
+    STATE = ROOT / ".planning" / "STATE.md"
     REQUIREMENTS = ROOT / ".planning" / "REQUIREMENTS.md"
     DECISIONS = ROOT / ".planning" / "phases" / "54-rights-approved-evidence-and-eligibility-decisions" / "54-EVIDENCE-DECISIONS.json"
     INVENTORY = PHASE / "57-THREAT-INVENTORY.json"
@@ -288,7 +292,7 @@ def required_paths() -> tuple[pathlib.Path, ...]:
         RESOURCE_TEST, RENDERER_TEST, FOUNDATION_TEST, DEMO_SOURCE, DEMO_CONTROL,
         DEMO_PANEL, DEMO_STORE, DEMO_TEST, FEATURE_MATRIX, SHAPE_LEDGER,
         PRODUCT_SENSE, SECURITY, RELIABILITY, QUALITY_SCORE, REQUIREMENTS,
-        DECISIONS, INVENTORY, EVIDENCE, VALIDATION,
+        PLANS, ROADMAP, STATE, DECISIONS, INVENTORY, EVIDENCE, VALIDATION,
     )
 
 
@@ -893,6 +897,91 @@ def validation_lifecycle_failures() -> set[str]:
     return set()
 
 
+def owner_failures() -> set[str]:
+    owner_anchors = {
+        PRODUCT_SENSE: (
+            "### v1.14 Phase 57 Closed Eye-Retouch Acceptance",
+            "The independent Phase 54 sclera and upper-eyelid rows remain closed.",
+            "Production admission remains literal `.none`; compatibility remains 59 fields, five presets, and 72 renderer cases. The exact disabled `祛红血丝` and `去脂` rows",
+            "LID-04 is affirmative `proxy_rejection_enforced`.",
+        ),
+        SECURITY: (
+            "### Phase 57 Closed Eye-Retouch Security Boundary",
+            "The exact Phase 54 `sclera_redness` and `upper_eyelid_fullness` rows are the sole independent authorities.",
+            "The 490-case live-fixture matrix recursively scans every production Swift file",
+            "Durable output is fixed-ID and aggregate-only",
+        ),
+        RELIABILITY: (
+            "### Phase 57 Closed Eye-Retouch Reliability Closeout",
+            "Authority, fixture, parser, scanner, and evidence lifecycle handling is deterministic and fail closed.",
+            "Both still-image facade entries, literal `.none`, exact 59/5/72 inventories",
+            "the 490-case checker with per-threat totals `65 / 38 / 35 / 199 / 23 / 81 / 7 / 42`",
+        ),
+        QUALITY_SCORE: (
+            "### v1.14 Phase 57 Closed Eye-Retouch Evidence Score",
+            "Exact traceability passes 7/7 task rows",
+            "The post-review checker passes 490 aggregate live-fixture mutation/scanner/inventory/owner cases",
+            "Quality credit is limited to independent exact closed-gate enforcement",
+        ),
+        PLANS: (
+            "| Phase 57 final closed eye-gate closeout |",
+            "the checker passes 490 aggregate cases with per-threat totals `65 / 38 / 35 / 199 / 23 / 81 / 7 / 42`",
+            "Independent review and verification remain the phase lifecycle owners before Phase 58.",
+        ),
+        ROADMAP: (
+            "### Phase 57: Guarded Sclera Slice and Conditional Upper-Eyelid Work",
+            "**Plans**: 4/4 plans executed",
+            "- [x] `57-03-PLAN.md` — Complete upper-eyelid canonical/synonym and LID-04 proxy rejection",
+            "- [x] `57-04-PLAN.md` — Run final-only SwiftPM/Demo/security/traceability gates",
+        ),
+        STATE: (
+            "current_phase: 57",
+            "status: executing",
+            "Status: Ready for independent review and verification",
+            "Preserve all 490 post-review mutation cases",
+        ),
+        REQUIREMENTS: tuple(
+            [f"- [x] **{requirement}**" for requirement in EVIDENCE_REQUIREMENTS]
+            + [
+                "| SCLERA-01 | Phase 57 | Complete — `false_branch_exact_absence` |",
+                "| SCLERA-06 | Phase 57 | Complete — `no_promotion` |",
+                "| LID-02 | Phase 57 | Complete — `closed_branch_exact_absence` |",
+                "| LID-04 | Phase 57 | Complete — `proxy_rejection_enforced` |",
+                "| LID-05 | Phase 57 | Complete — `not_applicable_closed_gate` |",
+            ]
+        ),
+        FEATURE_MATRIX: (EXPECTED_MATRIX_ROW,),
+        SHAPE_LEDGER: (EXPECTED_LID_ROW, EXPECTED_SCLERA_ROW),
+        VALIDATION: (
+            "status: validated",
+            "nyquist_compliant: true",
+            "Final focused 141/141, checker 490",
+            "T-57-08 | Compatibility/evidence/scanner failure misclassified as green",
+        ),
+    }
+    try:
+        texts = {path: read_text(path) for path in owner_anchors}
+    except (OSError, UnicodeError):
+        return {"R57-COMPAT"}
+    if any(
+        text.count(anchor) != 1
+        for path, anchors in owner_anchors.items()
+        for text in (texts[path],)
+        for anchor in anchors
+    ):
+        return {"R57-COMPAT"}
+    if (
+        re.search(r"(?m)^- \[ \] `57-0[1-4]-PLAN\.md`", texts[ROADMAP])
+        or re.search(r"(?m)^Status: (?:Phase complete|Verified)$", texts[STATE])
+        or has_affirmative_eye_candidate_claim(texts[PRODUCT_SENSE])
+        or has_affirmative_eye_candidate_claim(texts[SECURITY])
+        or has_affirmative_eye_candidate_claim(texts[RELIABILITY])
+        or has_affirmative_eye_candidate_claim(texts[QUALITY_SCORE])
+    ):
+        return {"R57-COMPAT"}
+    return set()
+
+
 def live_failures() -> set[str]:
     failures: set[str] = set()
     if any(not path.exists() for path in required_paths()):
@@ -905,6 +994,7 @@ def live_failures() -> set[str]:
     failures.update(inventory_failures())
     failures.update(evidence_failures())
     failures.update(validation_lifecycle_failures())
+    failures.update(owner_failures())
     return failures
 
 
@@ -1637,6 +1727,33 @@ def assert_compatibility_and_scanner_failures() -> int:
         cases += 1
     finally:
         globals()["run_rg"] = original
+
+    owner_mutations = (
+        ("PRODUCT_SENSE.md", "### v1.14 Phase 57 Closed Eye-Retouch Acceptance", "", "R57-COMPAT"),
+        ("PRODUCT_SENSE.md", "remain closed. `scleraRednessReduction`", "are open. `scleraRednessReduction`", "R57-COMPAT"),
+        ("SECURITY.md", "### Phase 57 Closed Eye-Retouch Security Boundary", "", "R57-COMPAT"),
+        ("SECURITY.md", "The 490-case live-fixture matrix", "The 489-case live-fixture matrix", "R57-COMPAT"),
+        ("RELIABILITY.md", "### Phase 57 Closed Eye-Retouch Reliability Closeout", "", "R57-COMPAT"),
+        ("RELIABILITY.md", "Both still-image facade entries, literal `.none`", "Both still-image facade entries admit eye retouch", "R57-COMPAT"),
+        ("QUALITY_SCORE.md", "### v1.14 Phase 57 Closed Eye-Retouch Evidence Score", "", "R57-COMPAT"),
+        ("QUALITY_SCORE.md", "The post-review checker passes 490 aggregate", "The post-review checker passes 489 aggregate", "R57-COMPAT"),
+        ("PLANS.md", "| Phase 57 final closed eye-gate closeout |", "| Phase 57 stale closeout |", "R57-COMPAT"),
+        ("PLANS.md", "the checker passes 490 aggregate cases", "the checker passes 489 aggregate cases", "R57-COMPAT"),
+        (".planning/ROADMAP.md", "### Phase 57: Guarded Sclera Slice and Conditional Upper-Eyelid Work", "", "R57-COMPAT"),
+        (".planning/ROADMAP.md", "**Plans**: 4/4 plans executed", "**Plans**: 3/4 plans executed", "R57-COMPAT"),
+        (".planning/STATE.md", "current_phase: 57", "current_phase: 58", "R57-COMPAT"),
+        (".planning/STATE.md", "Status: Ready for independent review and verification", "Status: Phase complete", "R57-COMPAT"),
+        (".planning/REQUIREMENTS.md", "- [x] **SCLERA-01**", "- [ ] **SCLERA-01**", "R57-COMPAT"),
+        (".planning/REQUIREMENTS.md", "| LID-04 | Phase 57 | Complete — `proxy_rejection_enforced` |", "| LID-04 | Phase 57 | Complete — `implemented` |", "R57-COMPAT"),
+        ("docs/meitu-function-blueprint/FEATURE_MATRIX.md", EXPECTED_MATRIX_ROW, "", "R57-COMPAT"),
+        ("docs/meitu-function-blueprint/FEATURE_MATRIX.md", "| Beauty shaping | 眼睛 | partial |", "| Beauty shaping | 眼睛 | implemented |", "R57-COMPAT"),
+        ("docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md", EXPECTED_LID_ROW, "", "R57-COMPAT"),
+        ("docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md", "| `眼睛` | 祛红血丝 | future |", "| `眼睛` | 祛红血丝 | implemented |", "R57-COMPAT"),
+        (".planning/ROADMAP.md", "**Plans**: 4/4 plans executed", "**Plans**: 4/4 plans executed\n\n**Plans**: 4/4 plans executed", "R57-COMPAT"),
+        (".planning/REQUIREMENTS.md", "| SCLERA-06 | Phase 57 | Complete — `no_promotion` |", "| SCLERA-06 | Phase 57 | Complete — `no_promotion` |\n| SCLERA-06 | Phase 57 | Complete — `no_promotion` |", "R57-COMPAT"),
+    )
+    for mutation in owner_mutations:
+        cases += assert_file_mutation(*mutation)
     return cases
 
 

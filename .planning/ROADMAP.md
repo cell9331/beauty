@@ -176,11 +176,11 @@ Earlier shipped milestones are preserved in their linked archives under `.planni
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] `57-03-PLAN.md` — Complete upper-eyelid canonical/synonym and LID-04 proxy rejection plus Demo/privacy/ledger/compatibility/evidence/scanner matrices.
+- [x] `57-03-PLAN.md` — Complete upper-eyelid canonical/synonym and LID-04 proxy rejection plus Demo/privacy/ledger/compatibility/evidence/scanner matrices.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] `57-04-PLAN.md` — Run final-only SwiftPM/Demo/security/traceability gates, seal both closed projections, and synchronize requirement and root owners.
+- [x] `57-04-PLAN.md` — Run final-only SwiftPM/Demo/security/traceability gates, seal both closed projections, and synchronize requirement and root owners.
 
 **Cross-cutting constraints:** two independent exact conditional false branches; SCLERA-02..05 and LID-03/LID-05 are `not_applicable_closed_gate`, SCLERA-06 is `no_promotion`, and LID-04 is affirmative `proxy_rejection_enforced`; literal `.none`, 59/5/72, both still facades, disabled `祛红血丝`/`去脂`, future/future/partial ledgers, and valid shipped eye/color domains remain exact; OWASP ASVS Level 1 with all T-57 HIGH rows blocking; no production feature route, browser/file/image/human review, or full SwiftPM/complete Demo regression before `57-04-01`.
 
