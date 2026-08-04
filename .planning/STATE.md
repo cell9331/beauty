@@ -5,15 +5,15 @@ milestone_name: Local Facial Retouch
 current_phase: 57
 current_phase_name: Guarded Sclera Slice and Conditional Upper-Eyelid Work
 status: executing
-stopped_at: Completed 57-01-PLAN.md
-last_updated: "2026-08-04T02:31:39.287Z"
+stopped_at: Completed 57-02-PLAN.md
+last_updated: "2026-08-04T02:44:46.953Z"
 last_activity: 2026-08-04
-last_activity_desc: Phase 57 Wave 0 closed-eye boundaries complete
+last_activity_desc: Phase 57 Wave 1 authority and closed-sclera matrices complete
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 23
-  completed_plans: 20
+  completed_plans: 21
 ---
 
 # Project State
@@ -28,9 +28,9 @@ See: `.planning/PROJECT.md` (updated 2026-08-04)
 ## Current Position
 
 Phase: 57 — Guarded Sclera Slice and Conditional Upper-Eyelid Work
-Plan: 1 of 4
-Status: In progress
-Last activity: 2026-08-04 — Phase 57 Wave 0 closed-eye boundaries complete
+Plan: 2 of 4
+Status: Ready to execute
+Last activity: 2026-08-04 — Phase 57 Wave 1 authority and closed-sclera matrices complete
 
 Progress: [███████░░░] 4/6 phases (67%)
 
@@ -38,18 +38,18 @@ Progress: [███████░░░] 4/6 phases (67%)
 
 **Current milestone:**
 
-- Total plans completed: 20
-- Average duration: 18.9 min
-- Total execution time: 6h 17min
+- Total plans completed: 21
+- Average duration: 18.3 min
+- Total execution time: 6h 25min
 
 | Phase | Plans | Total | Avg/Plan |
 | --- | ---: | --- | --- |
-| 53-58 | 20 | 6h 17min | 18.9 min |
+| 53-58 | 21 | 6h 25min | 18.3 min |
 | 53 | 6 | 1h 50min | 18.3 min |
 | 54 | 5 | 2h 03min | 24.6 min |
 | 55 | 5 | 58min | 11.6 min |
 | 56 | 3 | 1h 15min | 25.0 min |
-| 57 | 1 | 11min | 11.0 min |
+| 57 | 2 | 19min | 9.5 min |
 
 Historical milestone metrics remain in `.planning/MILESTONES.md` and archived roadmaps.
 **Per-Plan Metrics:**
@@ -76,6 +76,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 56 P02 | 27min | 2 tasks | 2 files |
 | Phase 56 P03 | 34min | 1 tasks | 7 files |
 | Phase 57 P01 | 11min | 2 tasks | 7 files |
+| Phase 57 P02 | 8min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -106,11 +107,14 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 - [Phase 56]: Regression credit is limited to closed-route enforcement, compatibility, privacy, and recovery. — Generic composition mechanics contribute no teeth eligibility weight or visible-effect claim.
 - [Phase 57]: Both independently closed eye-retouch rows are enforced as exact product absence while legitimate shipped eye and smoothing domains remain unchanged.
 - [Phase 57]: Candidate-to-proxy relationships fail closed across every production Swift file; proxy-only source remains a required clean control.
+- [Phase 57]: Exact Phase 54 eye rows use identity-selected authority projection — Prevents array-position or competing Phase 57 eligibility authority.
+- [Phase 57]: Sclera absence scans complete production and supplemental surfaces — Neutral-file and package/resource/Demo mutations cannot bypass selected filenames.
+- [Phase 57]: Closed-eye evidence remains draft through Plan 57-04 — Later HIGH, regression, traceability, and owner gates remain visibly pending.
 
 ### Pending Todos
 
-- Execute Phase 57 Plan 02 by extending the shared checker with exact dual-authority and whole-production sclera mutation coverage.
-- Preserve Wave 0 exact absence, disabled taxonomy, and proxy-only clean controls while later plans complete evidence and final-only gates.
+- Execute Phase 57 Plan 03 by completing upper-eyelid activation, semantic proxy-coupling, evidence/privacy, Demo, ledger, compatibility, and scanner matrices.
+- Preserve Wave 0 exact absence and Wave 1 authority/sclera gates while keeping the evidence draft and requirement owners pending until Plan 57-04.
 
 ### Blockers/Concerns
 
@@ -130,6 +134,6 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 
 ## Session Continuity
 
-Last session: 2026-08-04T02:31:39.281Z
-Stopped at: Completed 57-01-PLAN.md
+Last session: 2026-08-04T02:44:46.947Z
+Stopped at: Completed 57-02-PLAN.md
 Resume file: None
