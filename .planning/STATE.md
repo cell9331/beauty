@@ -4,16 +4,16 @@ milestone: v1.14
 milestone_name: Local Facial Retouch
 current_phase: 57
 current_phase_name: Guarded Sclera Slice and Conditional Upper-Eyelid Work
-status: planning
-stopped_at: Phase 57 closed-gate context captured; research and planning pending
-last_updated: "2026-08-04T01:46:42.175Z"
+status: executing
+stopped_at: Completed 57-01-PLAN.md
+last_updated: "2026-08-04T02:31:39.287Z"
 last_activity: 2026-08-04
-last_activity_desc: Phase 57 auto-discussion complete
+last_activity_desc: Phase 57 Wave 0 closed-eye boundaries complete
 progress:
   total_phases: 6
   completed_phases: 4
-  total_plans: 19
-  completed_plans: 19
+  total_plans: 23
+  completed_plans: 20
 ---
 
 # Project State
@@ -28,9 +28,9 @@ See: `.planning/PROJECT.md` (updated 2026-08-04)
 ## Current Position
 
 Phase: 57 — Guarded Sclera Slice and Conditional Upper-Eyelid Work
-Plan: Not started
-Status: Ready to research and plan
-Last activity: 2026-08-04 — Phase 57 auto-discussion complete
+Plan: 1 of 4
+Status: In progress
+Last activity: 2026-08-04 — Phase 57 Wave 0 closed-eye boundaries complete
 
 Progress: [███████░░░] 4/6 phases (67%)
 
@@ -38,17 +38,18 @@ Progress: [███████░░░] 4/6 phases (67%)
 
 **Current milestone:**
 
-- Total plans completed: 19
-- Average duration: 19.3 min
-- Total execution time: 6h 06min
+- Total plans completed: 20
+- Average duration: 18.9 min
+- Total execution time: 6h 17min
 
 | Phase | Plans | Total | Avg/Plan |
 | --- | ---: | --- | --- |
-| 53-58 | 19 | 6h 06min | 19.3 min |
+| 53-58 | 20 | 6h 17min | 18.9 min |
 | 53 | 6 | 1h 50min | 18.3 min |
 | 54 | 5 | 2h 03min | 24.6 min |
 | 55 | 5 | 58min | 11.6 min |
 | 56 | 3 | 1h 15min | 25.0 min |
+| 57 | 1 | 11min | 11.0 min |
 
 Historical milestone metrics remain in `.planning/MILESTONES.md` and archived roadmaps.
 **Per-Plan Metrics:**
@@ -74,6 +75,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 56 P01 | 14min | 2 tasks | 7 files |
 | Phase 56 P02 | 27min | 2 tasks | 2 files |
 | Phase 56 P03 | 34min | 1 tasks | 7 files |
+| Phase 57 P01 | 11min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -102,11 +104,13 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 - [Phase 56]: Immutable teeth authority is validated by exact identity and row shape. — Malformed, missing, renamed, duplicate, competing, or nonzero variants fail closed.
 - [Phase 56]: The independently closed teeth contract completes only its conditional false branch. — TEETH-01 is exact absence, TEETH-02 through TEETH-05 are not_applicable_closed_gate, and TEETH-06 is no_promotion.
 - [Phase 56]: Regression credit is limited to closed-route enforcement, compatibility, privacy, and recovery. — Generic composition mechanics contribute no teeth eligibility weight or visible-effect claim.
+- [Phase 57]: Both independently closed eye-retouch rows are enforced as exact product absence while legitimate shipped eye and smoothing domains remain unchanged.
+- [Phase 57]: Candidate-to-proxy relationships fail closed across every production Swift file; proxy-only source remains a required clean control.
 
 ### Pending Todos
 
-- Discuss and plan Phase 57 from the independently closed sclera and upper-eyelid decisions; do not borrow Phase 56 evidence or add an inert route.
-- Preserve Phase 56 exact absence while Phase 57 validates its own conditional false branches.
+- Execute Phase 57 Plan 02 by extending the shared checker with exact dual-authority and whole-production sclera mutation coverage.
+- Preserve Wave 0 exact absence, disabled taxonomy, and proxy-only clean controls while later plans complete evidence and final-only gates.
 
 ### Blockers/Concerns
 
@@ -126,6 +130,6 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 
 ## Session Continuity
 
-Last session: 2026-08-04T01:46:42.175Z
-Stopped at: Phase 57 closed-gate context captured; research and planning pending
+Last session: 2026-08-04T02:31:39.281Z
+Stopped at: Completed 57-01-PLAN.md
 Resume file: None
