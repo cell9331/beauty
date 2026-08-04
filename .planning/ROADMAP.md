@@ -197,7 +197,27 @@ Earlier shipped milestones are preserved in their linked archives under `.planni
   4. Local-retouch output preserves dimensions, canonical orientation/alpha/color contracts, safe-domain continuation, typed errors, and deterministic no-op behavior.
   5. Full SwiftPM and opt-in Vision integration, privacy/resource/network scans, adversarial safety, owner checks, and independent verification pass before ledgers promote exactly the qualified rows; `嘴唇` closes only with qualified `白牙`, `眼睛` closes only with both qualified eye rows, and no Demo, realtime, tracked-media, device, commercial, performance-budget, packaging, shipping, or launch claim is inferred.
 
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+
+**Wave 0**
+
+- [ ] `58-01-PLAN.md` — Freeze focused zero-admission SDK/Demo specifications and establish the exact eight-row fail-closed audit boundary.
+
+**Wave 1** *(blocked on Wave 0 completion)*
+
+- [ ] `58-02-PLAN.md` — Complete request-lifetime, privacy, compatibility, output-absence, and zero-promotion real-fixture matrices.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] `58-03-PLAN.md` — Audit the frozen Phase 57 pretransition/current lifecycle and complete all HIGH/evidence/owner mutation modes.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] `58-04-PLAN.md` — Run final-only full SwiftPM, exact six-test opt-in Vision, full Demo, checker/GSD/owner gates, and seal execution evidence for external review/verifier.
+
+**Cross-cutting constraints:** the admitted and promoted visible sets are exactly empty; OUT-01/OUT-02 use explicit not-applicable exact-absence dispositions; literal `.none`, 59/5/72, both CIImage facades, feature-neutral Phase 55 mechanics, three disabled Demo rows, future/future/future, partial/partial, and the frozen Phase 57 519-case checker remain exact; OWASP ASVS Level 1 with all T-58 HIGH rows blocking; no production feature route, browser/file/image/human review, TD-013, release claim, or full SwiftPM/opt-in Vision/complete Demo before `58-04-01`; code review/fix, independent verification, phase transition, and milestone audit remain external post-execution lifecycle.
 
 ## Coverage
 
@@ -223,7 +243,7 @@ All 41 v1.14 requirements map to exactly one phase: 41 mapped, 0 duplicated, 0 u
 | 55. Original-Pixel Composition and Failure-Isolation Core | 5/5 | Complete    | 2026-08-03 |
 | 56. Independent Teeth Whitening Slice | 3/3 | Complete    | 2026-08-04 |
 | 57. Guarded Sclera Slice and Conditional Upper-Eyelid Work | 4/4 | Complete    | 2026-08-04 |
-| 58. Combined Facade, Safety, Ledger, and Audit Closeout | 0/TBD | Not started | - |
+| 58. Combined Facade, Safety, Ledger, and Audit Closeout | 0/4 | Not started | - |
 
 ## Backlog
 
