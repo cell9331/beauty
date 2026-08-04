@@ -1282,6 +1282,55 @@ extension BeautyParametersTests {
         XCTAssertEqual(Mirror(reflecting: legacySourceCall).children.count, 59)
     }
 
+    func testPhase57ClosedEyeRetouchGatesKeepPublicAndCodableSurfaceExact() throws {
+        let defaults = BeautyParameters()
+        let stored = Mirror(reflecting: defaults).children.compactMap(\.label)
+        let source = try String(contentsOf: parametersSourceURL(), encoding: .utf8)
+        let codingBlock = try XCTUnwrap(source.split(separator: "enum CodingKeys", maxSplits: 1).last)
+            .split(separator: "public init(", maxSplits: 1)[0]
+        let coding = codingBlock.split(separator: "\n").compactMap { line -> String? in
+            let text = line.trimmingCharacters(in: .whitespaces)
+            return text.hasPrefix("case ") ? String(text.dropFirst(5)) : nil
+        }
+        let encoded = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: JSONEncoder().encode(defaults)) as? [String: Any]
+        )
+        let decoded = try JSONDecoder().decode(BeautyParameters.self, from: Data("{}".utf8))
+        let candidateNames = [
+            "scleraRednessReduction", "scleraWhitening", "conjunctivaRednessReduction",
+            "ocularRednessReduction", "bloodshotReduction", "upperEyelidFullnessReduction",
+            "upperEyelidFatReduction", "eyelidFullnessReduction", "lidFatReduction",
+        ]
+
+        XCTAssertEqual(stored.count, 59)
+        XCTAssertEqual(coding, stored)
+        XCTAssertEqual(encoded.count, 58)
+        XCTAssertEqual(Set(encoded.keys), Set(stored).subtracting(["filterId"]))
+        XCTAssertEqual(decoded, defaults)
+        for forbidden in candidateNames {
+            XCTAssertFalse(stored.contains(forbidden), forbidden)
+            XCTAssertFalse(coding.contains(forbidden), forbidden)
+            XCTAssertNil(encoded[forbidden], forbidden)
+            XCTAssertFalse(source.contains(forbidden), forbidden)
+        }
+
+        let shippedDomains = BeautyParameters(
+            skinSmoothing: 0.1,
+            brightness: 0.1,
+            eyeSize: 0.2,
+            eyeHeight: 0.3,
+            upperEyelidLift: 0.4,
+            eyebrowYPosition: 0.7
+        )
+        XCTAssertEqual(shippedDomains.skinSmoothing, 0.1)
+        XCTAssertEqual(shippedDomains.eyeSize, 0.2)
+        XCTAssertEqual(shippedDomains.eyeHeight, 0.3)
+        XCTAssertEqual(shippedDomains.upperEyelidLift, 0.4)
+        XCTAssertEqual(shippedDomains.eyebrowYPosition, 0.7)
+        XCTAssertEqual(shippedDomains.brightness, 0.1)
+        XCTAssertEqual(Mirror(reflecting: shippedDomains).children.count, 59)
+    }
+
     func testPhase53FutureAdmissionChecklistRequiresTrailingAppendOrder() {
         let checklist = [
             "independent", "positive-only Float", "finite-normalized 0...1",

@@ -290,6 +290,40 @@ extension BeautyResourceCatalogTests {
         XCTAssertEqual(fileNames, expectedIDs.map { "\($0).json" }.sorted())
     }
 
+    func testPhase57ClosedEyeRetouchGatesAddNoPresetKeyOrResource() throws {
+        let presets = try BeautyResourceCatalog.bundled().builtInPresets()
+        let expectedIDs = ["natural", "clear", "refined", "male-natural", "id-photo-natural"]
+        let candidateNames = [
+            "scleraRednessReduction", "scleraWhitening", "conjunctivaRednessReduction",
+            "ocularRednessReduction", "bloodshotReduction", "upperEyelidFullnessReduction",
+            "upperEyelidFatReduction", "eyelidFullnessReduction", "lidFatReduction",
+        ]
+
+        XCTAssertEqual(presets.map(\.id), expectedIDs)
+        XCTAssertEqual(presets.count, 5)
+        for preset in presets {
+            let object = try XCTUnwrap(
+                JSONSerialization.jsonObject(with: JSONEncoder().encode(preset.parameters)) as? [String: Any]
+            )
+            XCTAssertEqual(Mirror(reflecting: preset.parameters).children.count, 59)
+            XCTAssertEqual(object.count, preset.parameters.filterId == nil ? 58 : 59)
+            for forbidden in candidateNames {
+                XCTAssertNil(object[forbidden], "\(preset.id): \(forbidden)")
+            }
+        }
+
+        let presetDirectory = repositoryRootURL()
+            .appendingPathComponent("BeautySDK/Sources/BeautyResources/Resources/Presets")
+        let fileNames = try FileManager.default.contentsOfDirectory(
+            at: presetDirectory,
+            includingPropertiesForKeys: nil
+        )
+            .filter { $0.pathExtension == "json" }
+            .map(\.lastPathComponent)
+            .sorted()
+        XCTAssertEqual(fileNames, expectedIDs.map { "\($0).json" }.sorted())
+    }
+
     private func repositoryRootURL() -> URL {
         URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent()

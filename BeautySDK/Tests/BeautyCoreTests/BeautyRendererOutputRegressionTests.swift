@@ -1002,4 +1002,33 @@ extension BeautyRendererOutputRegressionTests {
         XCTAssertTrue(Self.expectedRendererCaseIDs.contains("mouthWidth_plus0p35"))
         XCTAssertEqual(source.components(separatedBy: "engine.processResult(").count - 1, 1)
     }
+
+    func testPhase57ClosedEyeRetouchGatesKeepRendererAndSavedOutputSurfaceExact() throws {
+        let source = try rendererSource()
+        let candidateNames = [
+            "scleraRednessReduction", "scleraWhitening", "conjunctivaRednessReduction",
+            "ocularRednessReduction", "bloodshotReduction", "upperEyelidFullnessReduction",
+            "upperEyelidFatReduction", "eyelidFullnessReduction", "lidFatReduction",
+        ]
+
+        XCTAssertEqual(rendererCaseIDs(in: source), Self.expectedRendererCaseIDs)
+        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 72)
+        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 72)
+        for forbidden in candidateNames {
+            XCTAssertFalse(
+                Self.expectedRendererCaseIDs.contains { $0 == forbidden || $0.hasPrefix("\(forbidden)_") },
+                forbidden
+            )
+            XCTAssertFalse(containsInitializerLabel(forbidden, in: source), forbidden)
+            XCTAssertFalse(source.contains("\"\(forbidden)\""), forbidden)
+        }
+
+        for shipped in [
+            "skinSmoothing_0p50", "eyeHeight_0p25", "upperEyelidLift_0p25",
+            "eyebrowYPosition_plus0p25",
+        ] {
+            XCTAssertTrue(Self.expectedRendererCaseIDs.contains(shipped), shipped)
+        }
+        XCTAssertEqual(source.components(separatedBy: "engine.processResult(").count - 1, 1)
+    }
 }
