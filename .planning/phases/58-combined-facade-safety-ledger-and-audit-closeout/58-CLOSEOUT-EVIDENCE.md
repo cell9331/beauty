@@ -16,9 +16,9 @@ are closed, so the admitted and promoted sets are exactly empty.
 
 | Requirement | Exact disposition | Current result |
 | --- | --- | --- |
-| SAFE-01 | `privacy_boundary_enforced` | pending final automated conjunction |
-| SAFE-02 | `request_local_nonretention_enforced` | pending complete lifecycle matrix |
-| SAFE-03 | `closed_set_noop_compatibility_enforced` | pending final automated conjunction |
+| SAFE-01 | `privacy_boundary_enforced` | privacy allowlist and whole-source mutation matrix passed |
+| SAFE-02 | `request_local_nonretention_enforced` | lifecycle matrix passed; publication discard remains caller-local |
+| SAFE-03 | `closed_set_noop_compatibility_enforced` | focused compatibility and no-op matrix passed |
 | OUT-01 | `not_applicable_zero_admitted_features_exact_absence` | zero candidate output/helper/gallery/review routes |
 | OUT-02 | `not_applicable_zero_admitted_pair_exact_absence` | zero constructible candidate pairs; mechanics remain neutral |
 | OUT-03 | `full_automated_audit_and_independent_verification` | pending final gates, review, and verifier |
@@ -30,10 +30,10 @@ are closed, so the admitted and promoted sets are exactly empty.
 | --- | --- | --- |
 | `58-01-01` | passed | focused SDK `156 / 0 / 0` |
 | `58-01-02` | passed | focused Demo `30 / 0 / 0`; representative HIGH audit `32 / 0 / 0` |
-| `58-02-01` | pending | lifecycle matrix pending |
-| `58-02-02` | pending | authority/privacy/compatibility/output/ledger matrices pending |
-| `58-03-01` | pending | frozen completed-state adapter pending |
-| `58-03-02` | pending | complete HIGH/evidence/owner audit pending |
+| `58-02-01` | passed | lifecycle `60 / 0 / 0`; retained request owners `0` |
+| `58-02-02` | passed | Phase 58 checker `251 / 0 / 0`; per-HIGH `80 / 33 / 37 / 34 / 28 / 31 / 4 / 4` |
+| `58-03-01` | passed | frozen pre-transition self-test `519 / 0 / 0`; current completed-state adapter passed |
+| `58-03-02` | passed | Phase 58 aggregate `262 / 0 / 0`; per-HIGH `80 / 33 / 37 / 34 / 28 / 31 / 11 / 8` |
 | `58-04-01` | pending | final automated conjunction pending |
 
 ## HIGH Results
@@ -46,8 +46,8 @@ are closed, so the admitted and promoted sets are exactly empty.
 | T-58-04 | passed | representative mutation plus missing/unreadable/scanner `4 / 0 / 0` |
 | T-58-05 | passed | representative mutation plus missing/unreadable/scanner `4 / 0 / 0` |
 | T-58-06 | passed | representative mutation plus missing/unreadable/scanner `4 / 0 / 0` |
-| T-58-07 | passed | representative mutation plus missing/unreadable/scanner `4 / 0 / 0` |
-| T-58-08 | passed | representative mutation plus missing/unreadable/scanner `4 / 0 / 0` |
+| T-58-07 | passed | completed-state adapter and owner mutation matrix; frozen `519 / 0 / 0` |
+| T-58-08 | passed | evidence lifecycle, raw-error, scanner, and owner matrix |
 
 ## Exact Invariants
 
@@ -68,13 +68,30 @@ are closed, so the admitted and promoted sets are exactly empty.
 | --- | --- | ---: | ---: | ---: |
 | focused SDK | passed | 156 | 0 | 0 |
 | focused Demo | passed | 30 | 0 | 0 |
-| Phase 58 aggregate HIGH | passed | 32 | 0 | 0 |
+| Phase 58 aggregate HIGH | passed | 262 | 0 | 0 |
 | full SwiftPM | pending | 0 | 0 | 0 |
 | opt-in Vision | pending | 0 | 0 | 0 |
 | full Demo | pending | 0 | 0 | 0 |
 | code review/fix | pending | 0 | 0 | 0 |
 | independent verifier | pending | 0 | 0 | 0 |
 | separate milestone audit | pending | 0 | 0 | 0 |
+
+The final-only lifecycle remains pending until the separate full regression,
+opt-in Vision, Demo, review, verifier, and milestone-audit owners are current.
+
+## Owner Equality
+
+Phase 57 completed owners remain independently exact after transition: its
+verification is `passed` at `12/12`, evidence is `validated`, the eight HIGH
+rows and ten dispositions are unique, the pre-transition checker fixture is
+`519` cases with frozen per-threat totals, the current checker default is the
+fixed compatibility result, and Phase 58 is the active lifecycle owner.
+
+## Pending Final Lifecycle
+
+Final automated conjunction, code review/fix, independent verifier, and the
+separate milestone audit remain pending. This draft cannot promote a feature,
+branch, release, or lifecycle archive.
 
 ## Decision Coverage
 
