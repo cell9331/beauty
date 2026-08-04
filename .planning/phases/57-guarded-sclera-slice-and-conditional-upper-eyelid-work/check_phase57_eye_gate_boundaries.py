@@ -68,9 +68,23 @@ EXPECTED_DECISIONS = {
     },
 }
 SCLERA_PATTERN = (
-    r"(?i)\b(?:sclera(?:RednessReduction|Whitening|White|Brightness)|"
-    r"whitenSclera|conjunctiva(?:RednessReduction|Whitening)|"
-    r"ocularRednessReduction|bloodshotReduction)\b"
+    r"(?i)\b(?:sclera(?:RednessReduction|_redness|Whitening|White|Brightness)|"
+    r"whitenSclera|eyeRednessReduction|redEyeReduction|"
+    r"conjunctiva(?:l)?(?:RednessReduction|Whitening)|"
+    r"ocular(?:RednessReduction|Whitening)|"
+    r"bloodshot(?:Reduction|EyeCorrection))[A-Za-z0-9_]*\b"
+)
+SCLERA_ALIAS_PATTERN = (
+    r"(?is)(?:sclera(?:RednessReduction|_redness|Whitening|White|Brightness)|"
+    r"eyeRednessReduction|redEyeReduction|conjunctiva(?:l)?(?:RednessReduction|Whitening)|"
+    r"ocular(?:RednessReduction|Whitening)|bloodshot(?:Reduction|EyeCorrection))"
+    r".{0,160}(?:skinWhitening|brightness|skinColor|eyeHeight|upperEyelidLift|"
+    r"teethWhitening|upperEyelidFullnessReduction|opaque|composition|mechanics)|"
+    r"(?:skinWhitening|brightness|skinColor|eyeHeight|upperEyelidLift|teethWhitening|"
+    r"upperEyelidFullnessReduction|opaque|composition|mechanics).{0,160}"
+    r"(?:sclera(?:RednessReduction|_redness|Whitening|White|Brightness)|"
+    r"eyeRednessReduction|redEyeReduction|conjunctiva(?:l)?(?:RednessReduction|Whitening)|"
+    r"ocular(?:RednessReduction|Whitening)|bloodshot(?:Reduction|EyeCorrection))"
 )
 EYELID_PATTERN = (
     r"(?i)\b(?:upperEyelid(?:Fullness|Fat)Reduction|"
@@ -91,23 +105,30 @@ EXPECTED_SCLERA_ROW = "| `眼睛` | 祛红血丝 | future | None. | Needs local 
 
 
 def configure_root(root: pathlib.Path) -> None:
-    global ROOT, PHASE, SOURCES, PARAMETERS, PRESETS, RENDERER, RESOLVER
+    global ROOT, PHASE, PACKAGE, SOURCES, PARAMETERS, MANIFEST, PRESETS, RENDERER
+    global RESOLVER, ADMISSION, ENGINE, TESTING_SUPPORT, DEMO_ROOT
     global PARAMETER_TEST, RESOURCE_TEST, RENDERER_TEST, FOUNDATION_TEST
     global DEMO_SOURCE, DEMO_CONTROL, DEMO_PANEL, DEMO_STORE, DEMO_TEST
     global FEATURE_MATRIX, SHAPE_LEDGER, DECISIONS, INVENTORY
 
     ROOT = root.resolve()
     PHASE = ROOT / ".planning" / "phases" / PHASE_NAME
+    PACKAGE = ROOT / "BeautySDK" / "Package.swift"
     SOURCES = ROOT / "BeautySDK" / "Sources"
     PARAMETERS = SOURCES / "BeautyCore" / "Models" / "BeautyParameters.swift"
+    MANIFEST = SOURCES / "BeautyResources" / "Resources" / "manifest.json"
     PRESETS = SOURCES / "BeautyResources" / "Resources" / "Presets"
     RENDERER = SOURCES / "BeautyExampleRenderer" / "main.swift"
     RESOLVER = SOURCES / "BeautyEffects" / "Planning" / "BeautyEffectResolver.swift"
+    ADMISSION = SOURCES / "BeautyEffects" / "Planning" / "BeautyLocalRetouchAdmission.swift"
+    ENGINE = SOURCES / "BeautySDK" / "BeautyEngine.swift"
+    TESTING_SUPPORT = SOURCES / "BeautySDK" / "BeautyEngineTestingSupport.swift"
     PARAMETER_TEST = ROOT / "BeautySDK" / "Tests" / "BeautyCoreTests" / "BeautyParametersTests.swift"
     RESOURCE_TEST = ROOT / "BeautySDK" / "Tests" / "BeautyResourcesTests" / "BeautyResourceCatalogTests.swift"
     RENDERER_TEST = ROOT / "BeautySDK" / "Tests" / "BeautyCoreTests" / "BeautyRendererOutputRegressionTests.swift"
     FOUNDATION_TEST = ROOT / "BeautySDK" / "Tests" / "BeautyCoreTests" / "BeautyEngineLocalRetouchFoundationTests.swift"
     DEMO_SOURCE = ROOT / "BeautyDemo" / "BeautyDemo" / "Editor" / "MeituEditorToolModels.swift"
+    DEMO_ROOT = ROOT / "BeautyDemo" / "BeautyDemo"
     DEMO_CONTROL = ROOT / "BeautyDemo" / "BeautyDemo" / "Panel" / "BeautyControlDescriptor.swift"
     DEMO_PANEL = ROOT / "BeautyDemo" / "BeautyDemo" / "Editor" / "MeituEditorToolPanelView.swift"
     DEMO_STORE = ROOT / "BeautyDemo" / "BeautyDemo" / "State" / "BeautyParameterStore.swift"
@@ -175,7 +196,8 @@ def expected_inventory() -> dict[str, object]:
 
 def required_paths() -> tuple[pathlib.Path, ...]:
     return (
-        SOURCES, PARAMETERS, PRESETS, RENDERER, RESOLVER, PARAMETER_TEST,
+        PACKAGE, SOURCES, PARAMETERS, MANIFEST, PRESETS, RENDERER, RESOLVER,
+        ADMISSION, ENGINE, TESTING_SUPPORT, PARAMETER_TEST,
         RESOURCE_TEST, RENDERER_TEST, FOUNDATION_TEST, DEMO_SOURCE, DEMO_CONTROL,
         DEMO_PANEL, DEMO_STORE, DEMO_TEST, FEATURE_MATRIX, SHAPE_LEDGER,
         DECISIONS, INVENTORY,
@@ -290,9 +312,20 @@ def source_failures() -> set[str]:
             failures.add("R57-SCLERA")
         if run_rg(EYELID_PATTERN, (SOURCES,)) == "match":
             failures.add("R57-EYELID")
-        source_text = "\n".join(read_text(path) for path in sorted(SOURCES.rglob("*.swift")))
+        source_files = tuple(sorted(SOURCES.rglob("*.swift")))
+        source_text = "\n".join(read_text(path) for path in source_files)
+        supplemental_text = "\n".join(
+            [read_text(PACKAGE), read_text(MANIFEST)]
+            + [read_text(path) for path in sorted(PRESETS.glob("*.json"))]
+            + [read_text(path) for path in sorted(DEMO_ROOT.rglob("*.swift"))]
+        )
     except (OSError, UnicodeError, ScannerFailure):
         return {"R57-SCLERA", "R57-EYELID", "R57-COMPAT"}
+
+    if re.search(SCLERA_PATTERN, supplemental_text):
+        failures.add("R57-SCLERA")
+    if re.search(SCLERA_ALIAS_PATTERN, f"{source_text}\n{supplemental_text}"):
+        failures.add("R57-SCLERA")
 
     candidate = f"(?:{SCLERA_PATTERN.replace('(?i)', '')}|{EYELID_PATTERN.replace('(?i)', '')})"
     relation = re.compile(
@@ -429,6 +462,155 @@ def assert_mutation(root: pathlib.Path, threat: str, mutate) -> int:
     if expected not in failures:
         raise AssertionError(f"{threat} did not produce {expected}")
     return 1
+
+
+def assert_file_mutation(
+    relative_path: str,
+    original: str,
+    replacement: str,
+    expected_rule: str,
+) -> int:
+    path = ROOT / relative_path
+    baseline = read_text(path)
+    if baseline.count(original) != 1:
+        raise AssertionError("mutation anchor is not unique")
+    path.write_text(baseline.replace(original, replacement, 1), encoding="utf-8")
+    try:
+        if expected_rule not in classified_live_failures():
+            raise AssertionError("live mutation accepted")
+    finally:
+        path.write_text(baseline, encoding="utf-8")
+    return 1
+
+
+def assert_added_file(path: pathlib.Path, contents: str, expected_rule: str) -> int:
+    if path.exists():
+        raise AssertionError("added-file fixture already exists")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(contents, encoding="utf-8")
+    try:
+        if expected_rule not in classified_live_failures():
+            raise AssertionError("neutral-file mutation accepted")
+    finally:
+        path.unlink()
+    return 1
+
+
+def assert_sclera_surface_failures() -> int:
+    cases = 0
+    mutations = (
+        (
+            "BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift",
+            "    public var skinSmoothing: Float",
+            "    public var scleraRednessReduction: Float\n    public var skinSmoothing: Float",
+        ),
+        (
+            "BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift",
+            "        case skinSmoothing",
+            "        case scleraRednessReduction\n        case skinSmoothing",
+        ),
+        (
+            "BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift",
+            "        skinSmoothing: Float = 0,",
+            "        scleraRednessReduction: Float = 0,\n        skinSmoothing: Float = 0,",
+        ),
+        (
+            "BeautySDK/Sources/BeautySDK/BeautyEngineTestingSupport.swift",
+            "    public static let productionAdmissionNames: [String] = []",
+            '    public static let productionAdmissionNames = ["sclera_redness"]',
+        ),
+        (
+            "BeautySDK/Sources/BeautyEffects/Planning/BeautyLocalRetouchAdmission.swift",
+            "    package static let none = BeautyLocalRetouchAdmission(opaqueDemandCount: 0)",
+            "    package static let scleraRednessReduction = BeautyLocalRetouchAdmission(opaqueDemandCount: 1)\n    package static let none = BeautyLocalRetouchAdmission(opaqueDemandCount: 0)",
+        ),
+        (
+            "BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift",
+            "struct BeautyRetainedMaskIteration",
+            "struct ScleraRednessReductionProvider {}\n\nstruct BeautyRetainedMaskIteration",
+        ),
+        (
+            "BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift",
+            "        return .none",
+            "        // scleraRednessReduction production admission\n        return BeautyLocalRetouchAdmission(opaqueDemandCount: 1)",
+        ),
+        (
+            "BeautySDK/Sources/BeautyExampleRenderer/main.swift",
+            '        id: "skinWhitening_0p50",',
+            '        id: "scleraRednessReduction_savedOutput",',
+        ),
+        (
+            "BeautySDK/Sources/BeautyResources/Resources/Presets/natural.json",
+            '  "parameters": {',
+            '  "parameters": {\n    "ocularRednessReduction": 0.5,',
+        ),
+        (
+            "BeautySDK/Sources/BeautyResources/Resources/manifest.json",
+            '  "presets": [',
+            '  "scleraWhiteningResource": "model",\n  "presets": [',
+        ),
+        (
+            "BeautySDK/Package.swift",
+            '        .target(name: "BeautyCore"),',
+            '        .target(name: "ConjunctivalRednessReductionModel"),\n        .target(name: "BeautyCore"),',
+        ),
+        (
+            "BeautySDK/Sources/BeautySDK/BeautyEngine.swift",
+            "import Foundation",
+            "import Foundation\n// bloodshotEyeCorrection network storage model route",
+        ),
+        (
+            "BeautySDK/Sources/BeautySDK/BeautyEngine.swift",
+            "    private var resetGeneration: UInt64 = 0",
+            "    private var scleraRednessReductionRealtimeReset: UInt64 = 0\n    private var resetGeneration: UInt64 = 0",
+        ),
+        (
+            "BeautySDK/Sources/BeautySDK/BeautyEngine.swift",
+            "import CoreVideo",
+            "import CoreVideo\n// eyeRednessReduction pixelBuffer route",
+        ),
+        (
+            "BeautySDK/Sources/BeautySDK/BeautyEngineTestingSupport.swift",
+            "    private let invocationLock = NSLock()",
+            "    // opaque composition mechanics alias scleraRednessReduction\n    private let invocationLock = NSLock()",
+        ),
+        (
+            "BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift",
+            'unsupported("eyes.redness", title: "祛红血丝", icon: "drop", badge: .free)',
+            'supported("eyes.redness", title: "祛红血丝", icon: "drop", badge: .free, controlID: .skinWhitening) // scleraRednessReduction',
+        ),
+    )
+    for relative_path, original, replacement in mutations:
+        cases += assert_file_mutation(
+            relative_path, original, replacement, "R57-SCLERA",
+        )
+
+    neutral_families = (
+        ("Canonical.swift", "package func scleraRednessReduction() {}\n"),
+        ("EyeRed.swift", "package func eyeRednessReduction() {}\n"),
+        ("RedEye.swift", "package func redEyeReduction() {}\n"),
+        ("Conjunctiva.swift", "package func conjunctivaRednessReduction() {}\n"),
+        ("Conjunctival.swift", "package func conjunctivalRednessReduction() {}\n"),
+        ("Ocular.swift", "package func ocularRednessReduction() {}\n"),
+        ("Bloodshot.swift", "package func bloodshotEyeCorrection() {}\n"),
+        ("Whitening.swift", "package func scleraWhitening() {}\n"),
+    )
+    neutral_root = SOURCES / "NeutralPhase57"
+    for filename, contents in neutral_families:
+        cases += assert_added_file(neutral_root / filename, contents, "R57-SCLERA")
+
+    alias_targets = (
+        "skinWhitening", "brightness", "skinColor", "eyeHeight",
+        "upperEyelidLift", "teethWhitening",
+        "upperEyelidFullnessReduction", "opaqueCompositionMechanics",
+    )
+    for index, target in enumerate(alias_targets):
+        cases += assert_added_file(
+            neutral_root / f"Alias{index}.swift",
+            f"package func scleraRednessReductionAlias() {{ _ = \"{target}\" }}\n",
+            "R57-SCLERA",
+        )
+    return cases
 
 
 def assert_decision_document(document: object) -> int:
@@ -619,9 +801,7 @@ def self_test(only: str | None) -> int:
                 if threat == "T-57-01":
                     total += assert_decision_input_failures()
                 elif threat == "T-57-02":
-                    target = SOURCES / "Neutral" / "TonePolicy.swift"
-                    target.parent.mkdir(parents=True, exist_ok=True)
-                    total += assert_mutation(fixture, threat, lambda: target.write_text("struct TonePolicy { let scleraWhitening: Float }\n", encoding="utf-8"))
+                    total += assert_sclera_surface_failures()
                 elif threat == "T-57-03":
                     target = SOURCES / "Neutral" / "TexturePolicy.swift"
                     target.parent.mkdir(parents=True, exist_ok=True)
