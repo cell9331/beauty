@@ -294,9 +294,12 @@ extension BeautyResourceCatalogTests {
         let presets = try BeautyResourceCatalog.bundled().builtInPresets()
         let expectedIDs = ["natural", "clear", "refined", "male-natural", "id-photo-natural"]
         let candidateNames = [
-            "scleraRednessReduction", "scleraWhitening", "conjunctivaRednessReduction",
-            "ocularRednessReduction", "bloodshotReduction", "upperEyelidFullnessReduction",
-            "upperEyelidFatReduction", "eyelidFullnessReduction", "lidFatReduction",
+            "scleraRedness", "scleraRednessReduction", "scleraWhitening", "eyeRedness",
+            "redEye", "conjunctivaRedness", "conjunctivalRedness", "ocularRedness",
+            "bloodshotReduction", "bloodshotEyeCorrection", "upperEyelidFullness",
+            "upperLidFullness", "eyelidFullness", "lidFullness", "upperEyelidFat",
+            "upperLidFat", "eyelidFat", "lidFat", "removeUpperEyelidFat",
+            "upperEyelidDefatting", "defatUpperEyelid",
         ]
 
         XCTAssertEqual(presets.map(\.id), expectedIDs)

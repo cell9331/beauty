@@ -69,37 +69,33 @@ EXPECTED_DECISIONS = {
         "naturalness_weight": 0,
     },
 }
-SCLERA_PATTERN = (
-    r"(?i)\b(?:sclera(?:RednessReduction|_redness|Whitening|White|Brightness)|"
-    r"whitenSclera|eyeRednessReduction|redEyeReduction|"
-    r"conjunctiva(?:l)?(?:RednessReduction|Whitening)|"
-    r"ocular(?:RednessReduction|Whitening)|"
-    r"bloodshot(?:Reduction|EyeCorrection))[A-Za-z0-9_]*\b"
+SCLERA_TOKENS = (
+    "scleraRedness", "sclera_redness", "scleraWhitening", "scleraWhite",
+    "scleraBrightness", "whitenSclera", "eyeRedness", "redEye",
+    "conjunctivaRedness", "conjunctivalRedness", "conjunctivaWhitening",
+    "conjunctivalWhitening", "ocularRedness", "ocularWhitening",
+    "bloodshotReduction", "bloodshotEyeCorrection",
 )
+SCLERA_TOKEN_PATTERN = "(?:" + "|".join(map(re.escape, SCLERA_TOKENS)) + ")"
+SCLERA_PATTERN = rf"(?i)\b{SCLERA_TOKEN_PATTERN}[A-Za-z0-9_]*\b"
 SCLERA_ALIAS_PATTERN = (
-    r"(?is)(?:sclera(?:RednessReduction|_redness|Whitening|White|Brightness)|"
-    r"eyeRednessReduction|redEyeReduction|conjunctiva(?:l)?(?:RednessReduction|Whitening)|"
-    r"ocular(?:RednessReduction|Whitening)|bloodshot(?:Reduction|EyeCorrection))"
+    rf"(?is){SCLERA_TOKEN_PATTERN}"
     r".{0,160}(?:skinWhitening|brightness|skinColor|eyeHeight|upperEyelidLift|"
     r"teethWhitening|upperEyelidFullnessReduction|opaque|composition|mechanics)|"
     r"(?:skinWhitening|brightness|skinColor|eyeHeight|upperEyelidLift|teethWhitening|"
     r"upperEyelidFullnessReduction|opaque|composition|mechanics).{0,160}"
-    r"(?:sclera(?:RednessReduction|_redness|Whitening|White|Brightness)|"
-    r"eyeRednessReduction|redEyeReduction|conjunctiva(?:l)?(?:RednessReduction|Whitening)|"
-    r"ocular(?:RednessReduction|Whitening)|bloodshot(?:Reduction|EyeCorrection))"
+    rf"{SCLERA_TOKEN_PATTERN}"
 )
-EYELID_PATTERN = (
-    r"(?i)\b(?:upperEyelidFullness(?:Reduction|Removal)|"
-    r"upperLidFullness(?:Reduction|Removal)|"
-    r"eyelidFullness(?:Reduction|Removal)|lidFullness(?:Reduction|Removal)|"
-    r"upperEyelidFat(?:Reduction|Removal)|upperLidFat(?:Reduction|Removal)|"
-    r"eyelidFat(?:Reduction|Removal)|lidFat(?:Reduction|Removal)|"
-    r"remove(?:Upper)?EyelidFat|removeUpperLidFat|removeLidFat|"
-    r"(?:upperEyelid|upperLid|eyelid|lid)Defatting|"
-    r"defat(?:Upper)?Eyelid|defatUpperLid|defatLid|"
-    r"upper_eyelid_fullness|upper_lid_fullness|eyelid_fat|lid_fat)"
-    r"[A-Za-z0-9_]*\b"
+EYELID_TOKENS = (
+    "upperEyelidFullness", "upperLidFullness", "eyelidFullness", "lidFullness",
+    "upperEyelidFat", "upperLidFat", "eyelidFat", "lidFat",
+    "removeUpperEyelidFat", "removeEyelidFat", "removeUpperLidFat", "removeLidFat",
+    "upperEyelidDefatting", "upperLidDefatting", "eyelidDefatting", "lidDefatting",
+    "defatUpperEyelid", "defatEyelid", "defatUpperLid", "defatLid",
+    "upper_eyelid_fullness", "upper_lid_fullness", "eyelid_fat", "lid_fat",
 )
+EYELID_TOKEN_PATTERN = "(?:" + "|".join(map(re.escape, EYELID_TOKENS)) + ")"
+EYELID_PATTERN = rf"(?i)\b{EYELID_TOKEN_PATTERN}[A-Za-z0-9_]*\b"
 PROXY_PATTERN = (
     r"(?i)\b(?:eyeHeight|upperEyelidLift|eyebrowYPosition|"
     r"brow(?:Translation|Movement|Lift|Warp)|eyeAperture|eyeSize|eyeWarp|"
@@ -969,6 +965,12 @@ def assert_sclera_surface_failures() -> int:
         )
 
     neutral_families = (
+        ("Direct.swift", "package var scleraRedness: Float = 0\n"),
+        ("ConjunctivaDirect.swift", "package var conjunctivaRedness: Float = 0\n"),
+        ("ConjunctivalDirect.swift", "package var conjunctivalRedness: Float = 0\n"),
+        ("OcularDirect.swift", "package var ocularRedness: Float = 0\n"),
+        ("EyeDirect.swift", "package var eyeRedness: Float = 0\n"),
+        ("RedEyeDirect.swift", "package var redEye: Float = 0\n"),
         ("Canonical.swift", "package func scleraRednessReduction() {}\n"),
         ("EyeRed.swift", "package func eyeRednessReduction() {}\n"),
         ("RedEye.swift", "package func redEyeReduction() {}\n"),
@@ -1086,6 +1088,14 @@ def assert_eyelid_surface_failures() -> int:
         )
 
     neutral_families = (
+        ("UpperEyelidFullnessDirect.swift", "package var upperEyelidFullness: Float = 0\n"),
+        ("UpperLidFullnessDirect.swift", "package var upperLidFullness: Float = 0\n"),
+        ("EyelidFullnessDirect.swift", "package var eyelidFullness: Float = 0\n"),
+        ("LidFullnessDirect.swift", "package var lidFullness: Float = 0\n"),
+        ("UpperEyelidFatDirect.swift", "package var upperEyelidFat: Float = 0\n"),
+        ("UpperLidFatDirect.swift", "package var upperLidFat: Float = 0\n"),
+        ("EyelidFatDirect.swift", "package var eyelidFat: Float = 0\n"),
+        ("LidFatDirect.swift", "package var lidFat: Float = 0\n"),
         ("Canonical.swift", "package func upperEyelidFullnessReduction() {}\n"),
         ("UpperLidFull.swift", "package func upperLidFullnessRemoval() {}\n"),
         ("EyelidFull.swift", "package func eyelidFullnessReduction() {}\n"),

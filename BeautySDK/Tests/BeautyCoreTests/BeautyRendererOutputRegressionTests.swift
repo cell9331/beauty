@@ -1006,9 +1006,12 @@ extension BeautyRendererOutputRegressionTests {
     func testPhase57ClosedEyeRetouchGatesKeepRendererAndSavedOutputSurfaceExact() throws {
         let source = try rendererSource()
         let candidateNames = [
-            "scleraRednessReduction", "scleraWhitening", "conjunctivaRednessReduction",
-            "ocularRednessReduction", "bloodshotReduction", "upperEyelidFullnessReduction",
-            "upperEyelidFatReduction", "eyelidFullnessReduction", "lidFatReduction",
+            "scleraRedness", "scleraRednessReduction", "scleraWhitening", "eyeRedness",
+            "redEye", "conjunctivaRedness", "conjunctivalRedness", "ocularRedness",
+            "bloodshotReduction", "bloodshotEyeCorrection", "upperEyelidFullness",
+            "upperLidFullness", "eyelidFullness", "lidFullness", "upperEyelidFat",
+            "upperLidFat", "eyelidFat", "lidFat", "removeUpperEyelidFat",
+            "upperEyelidDefatting", "defatUpperEyelid",
         ]
 
         XCTAssertEqual(rendererCaseIDs(in: source), Self.expectedRendererCaseIDs)

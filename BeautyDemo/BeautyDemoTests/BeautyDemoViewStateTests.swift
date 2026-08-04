@@ -184,8 +184,12 @@ final class BeautyDemoViewStateTests: XCTestCase {
 
         let controlIDs = Set(BeautyControlID.allCases.map(\.rawValue))
         for forbidden in [
-            "scleraRednessReduction", "scleraWhitening", "bloodshotReduction",
-            "upperEyelidFullnessReduction", "upperEyelidFatReduction", "lidFatReduction",
+            "scleraRedness", "scleraRednessReduction", "scleraWhitening", "eyeRedness",
+            "redEye", "conjunctivaRedness", "conjunctivalRedness", "ocularRedness",
+            "bloodshotReduction", "bloodshotEyeCorrection", "upperEyelidFullness",
+            "upperLidFullness", "eyelidFullness", "lidFullness", "upperEyelidFat",
+            "upperLidFat", "eyelidFat", "lidFat", "removeUpperEyelidFat",
+            "upperEyelidDefatting", "defatUpperEyelid",
         ] {
             XCTAssertFalse(controlIDs.contains(forbidden), forbidden)
         }

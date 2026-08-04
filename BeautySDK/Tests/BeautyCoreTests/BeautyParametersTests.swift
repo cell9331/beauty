@@ -1297,9 +1297,12 @@ extension BeautyParametersTests {
         )
         let decoded = try JSONDecoder().decode(BeautyParameters.self, from: Data("{}".utf8))
         let candidateNames = [
-            "scleraRednessReduction", "scleraWhitening", "conjunctivaRednessReduction",
-            "ocularRednessReduction", "bloodshotReduction", "upperEyelidFullnessReduction",
-            "upperEyelidFatReduction", "eyelidFullnessReduction", "lidFatReduction",
+            "scleraRedness", "scleraRednessReduction", "scleraWhitening", "eyeRedness",
+            "redEye", "conjunctivaRedness", "conjunctivalRedness", "ocularRedness",
+            "bloodshotReduction", "bloodshotEyeCorrection", "upperEyelidFullness",
+            "upperLidFullness", "eyelidFullness", "lidFullness", "upperEyelidFat",
+            "upperLidFat", "eyelidFat", "lidFat", "removeUpperEyelidFat",
+            "upperEyelidDefatting", "defatUpperEyelid",
         ]
 
         XCTAssertEqual(stored.count, 59)
