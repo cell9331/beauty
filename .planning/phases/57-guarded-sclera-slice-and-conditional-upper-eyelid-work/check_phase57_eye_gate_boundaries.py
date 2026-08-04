@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import pathlib
 import re
@@ -29,6 +30,13 @@ RULES = {
 DECISION_KEYS = (
     "feature", "status", "reasons", "eligible_count", "reviewed_count",
     "accepted_count", "rejected_count", "naturalness_weight",
+)
+AGGREGATE_KEYS = (
+    "feature", "eligible_count", "reviewed_count", "accepted_count",
+    "rejected_count", "naturalness_weight",
+)
+FEATURE_ORDER = (
+    "teeth_whitening", "sclera_redness", "upper_eyelid_fullness",
 )
 ZERO_KEYS = (
     "eligible_count", "reviewed_count", "accepted_count", "rejected_count",
@@ -199,14 +207,59 @@ def authority_failures() -> set[str]:
         document = read_json(DECISIONS)
     except (OSError, UnicodeError, json.JSONDecodeError):
         return {"R57-AUTH"}
-    if not isinstance(document, dict) or set(document) != {"schema_version", "feature_decisions", "reviews", "aggregates"}:
+    if (
+        not isinstance(document, dict)
+        or tuple(document) != ("schema_version", "feature_decisions", "reviews", "aggregates")
+    ):
         return {"R57-AUTH"}
-    if document.get("schema_version") != 1 or document.get("reviews") != []:
+    if type(document.get("schema_version")) is not int or document.get("schema_version") != 1:
+        return {"R57-AUTH"}
+    if document.get("reviews") != []:
         return {"R57-AUTH"}
     rows = document.get("feature_decisions")
     aggregates = document.get("aggregates")
-    if not isinstance(rows, list) or not isinstance(aggregates, list):
+    if (
+        not isinstance(rows, list)
+        or len(rows) != len(FEATURE_ORDER)
+        or not isinstance(aggregates, list)
+        or len(aggregates) != len(FEATURE_ORDER)
+    ):
         return {"R57-AUTH"}
+    row_features = tuple(row.get("feature") if isinstance(row, dict) else None for row in rows)
+    aggregate_features = tuple(
+        row.get("feature") if isinstance(row, dict) else None for row in aggregates
+    )
+    if row_features != FEATURE_ORDER or aggregate_features != FEATURE_ORDER:
+        return {"R57-AUTH"}
+
+    candidate_family = re.compile(
+        r"(?i)sclera|conjunct|ocular|bloodshot|upper.?eyelid|upper.?lid|lid.?fat|lid.?full",
+    )
+    candidate_rows = [
+        row for row in rows
+        if isinstance(row, dict)
+        and isinstance(row.get("feature"), str)
+        and candidate_family.search(row["feature"])
+    ]
+    if tuple(row.get("feature") for row in candidate_rows) != FEATURE_ORDER[1:]:
+        return {"R57-AUTH"}
+
+    for row in rows:
+        if not isinstance(row, dict) or tuple(row) != DECISION_KEYS:
+            return {"R57-AUTH"}
+        if type(row.get("status")) is not str:
+            return {"R57-AUTH"}
+        reasons = row.get("reasons")
+        if type(reasons) is not list or any(type(reason) is not str for reason in reasons):
+            return {"R57-AUTH"}
+        if any(type(row.get(key)) is not int for key in ZERO_KEYS):
+            return {"R57-AUTH"}
+    for row in aggregates:
+        if not isinstance(row, dict) or tuple(row) != AGGREGATE_KEYS:
+            return {"R57-AUTH"}
+        if any(type(row.get(key)) is not int for key in ZERO_KEYS):
+            return {"R57-AUTH"}
+
     for feature, expected in EXPECTED_DECISIONS.items():
         matching = [row for row in rows if isinstance(row, dict) and row.get("feature") == feature]
         if len(matching) != 1 or tuple(matching[0]) != DECISION_KEYS or matching[0] != expected:
@@ -218,6 +271,16 @@ def authority_failures() -> set[str]:
         if [item for item in aggregates if isinstance(item, dict) and item.get("feature") == feature] != [expected_aggregate]:
             return {"R57-AUTH"}
     return set()
+
+
+def classified_live_failures() -> set[str]:
+    try:
+        return live_failures()
+    except (
+        OSError, UnicodeError, ValueError, KeyError, TypeError,
+        ScannerFailure, AssertionError, json.JSONDecodeError,
+    ):
+        return {"R57-AUTH", "R57-COMPAT"}
 
 
 def source_failures() -> set[str]:
@@ -368,6 +431,177 @@ def assert_mutation(root: pathlib.Path, threat: str, mutate) -> int:
     return 1
 
 
+def assert_decision_document(document: object) -> int:
+    baseline = read_text(DECISIONS)
+    DECISIONS.write_text(
+        json.dumps(document, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    try:
+        if "R57-AUTH" not in classified_live_failures():
+            raise AssertionError("decision mutation accepted")
+    finally:
+        DECISIONS.write_text(baseline, encoding="utf-8")
+    return 1
+
+
+def decision_mutation_documents(document: dict[str, object]) -> tuple[object, ...]:
+    mutations: list[object] = []
+
+    def row_mutation(feature: str, key: str, value: object) -> None:
+        mutation = copy.deepcopy(document)
+        row = next(item for item in mutation["feature_decisions"] if item["feature"] == feature)
+        row[key] = value
+        mutations.append(mutation)
+
+    for feature, expected in EXPECTED_DECISIONS.items():
+        row_mutation(feature, "status", "eligible")
+        row_mutation(feature, "status", "passed")
+        row_mutation(feature, "reasons", expected["reasons"][:-1])
+        row_mutation(feature, "reasons", [*expected["reasons"], "borrowed_sibling"])
+        row_mutation(feature, "reasons", list(reversed(expected["reasons"])))
+        row_mutation(feature, "reasons", "missing_genuine_positive")
+        for key in ZERO_KEYS:
+            row_mutation(feature, key, 1)
+        row_mutation(feature, "eligible_count", False)
+        row_mutation(feature, "status", ["closed"])
+
+        renamed = copy.deepcopy(document)
+        row = next(item for item in renamed["feature_decisions"] if item["feature"] == feature)
+        row["feature"] = f"{feature}_v2"
+        mutations.append(renamed)
+
+        duplicate = copy.deepcopy(document)
+        row = next(item for item in duplicate["feature_decisions"] if item["feature"] == feature)
+        duplicate["feature_decisions"].append(copy.deepcopy(row))
+        mutations.append(duplicate)
+
+        missing = copy.deepcopy(document)
+        missing["feature_decisions"] = [
+            item for item in missing["feature_decisions"] if item["feature"] != feature
+        ]
+        mutations.append(missing)
+
+        lookalike = copy.deepcopy(document)
+        lookalike["feature_decisions"].append({
+            **copy.deepcopy(expected),
+            "feature": "ocular_redness" if feature == "sclera_redness" else "upper_lid_fat",
+        })
+        mutations.append(lookalike)
+
+        missing_key = copy.deepcopy(document)
+        row = next(item for item in missing_key["feature_decisions"] if item["feature"] == feature)
+        del row["naturalness_weight"]
+        mutations.append(missing_key)
+
+        extra_key = copy.deepcopy(document)
+        row = next(item for item in extra_key["feature_decisions"] if item["feature"] == feature)
+        row["borrowed_count"] = 0
+        mutations.append(extra_key)
+
+        for key in ZERO_KEYS:
+            aggregate_nonzero = copy.deepcopy(document)
+            aggregate = next(
+                item for item in aggregate_nonzero["aggregates"]
+                if item["feature"] == feature
+            )
+            aggregate[key] = 1
+            mutations.append(aggregate_nonzero)
+
+        aggregate_extra = copy.deepcopy(document)
+        aggregate = next(item for item in aggregate_extra["aggregates"] if item["feature"] == feature)
+        aggregate["status"] = "closed"
+        mutations.append(aggregate_extra)
+
+    reordered = copy.deepcopy(document)
+    reordered["feature_decisions"].reverse()
+    mutations.append(reordered)
+    aggregate_reordered = copy.deepcopy(document)
+    aggregate_reordered["aggregates"].reverse()
+    mutations.append(aggregate_reordered)
+    borrowed = copy.deepcopy(document)
+    sclera = next(item for item in borrowed["feature_decisions"] if item["feature"] == "sclera_redness")
+    eyelid = next(item for item in borrowed["feature_decisions"] if item["feature"] == "upper_eyelid_fullness")
+    sclera["reasons"] = eyelid["reasons"]
+    mutations.append(borrowed)
+    substituted = copy.deepcopy(document)
+    substituted["feature_decisions"][1], substituted["feature_decisions"][2] = (
+        substituted["feature_decisions"][2], substituted["feature_decisions"][1]
+    )
+    mutations.append(substituted)
+    competing = copy.deepcopy(document)
+    competing["feature_decisions"][0] = copy.deepcopy(EXPECTED_DECISIONS["sclera_redness"])
+    mutations.append(competing)
+    reviews = copy.deepcopy(document)
+    reviews["reviews"] = [{"feature": "sclera_redness"}]
+    mutations.append(reviews)
+    top_level_extra = copy.deepcopy(document)
+    top_level_extra["source"] = "competing"
+    mutations.append(top_level_extra)
+    wrong_schema = copy.deepcopy(document)
+    wrong_schema["schema_version"] = True
+    mutations.append(wrong_schema)
+    wrong_rows = copy.deepcopy(document)
+    wrong_rows["feature_decisions"] = {"sclera_redness": EXPECTED_DECISIONS["sclera_redness"]}
+    mutations.append(wrong_rows)
+    wrong_aggregates = copy.deepcopy(document)
+    wrong_aggregates["aggregates"] = None
+    mutations.append(wrong_aggregates)
+    return tuple(mutations)
+
+
+def assert_decision_input_failures() -> int:
+    cases = 0
+    baseline = read_text(DECISIONS)
+    document = json.loads(baseline)
+    for mutation in decision_mutation_documents(document):
+        cases += assert_decision_document(mutation)
+
+    DECISIONS.write_text("{malformed", encoding="utf-8")
+    try:
+        if authority_failures() != {"R57-AUTH"}:
+            raise AssertionError("malformed decision input accepted")
+        cases += 1
+    finally:
+        DECISIONS.write_text(baseline, encoding="utf-8")
+
+    saved = DECISIONS.with_suffix(".json.saved")
+    DECISIONS.rename(saved)
+    try:
+        if "R57-COMPAT" not in classified_live_failures():
+            raise AssertionError("missing decision fixture accepted")
+        cases += 1
+    finally:
+        saved.rename(DECISIONS)
+
+    DECISIONS.rename(saved)
+    DECISIONS.mkdir()
+    try:
+        if "R57-AUTH" not in classified_live_failures():
+            raise AssertionError("unreadable decision fixture accepted")
+        cases += 1
+    finally:
+        DECISIONS.rmdir()
+        saved.rename(DECISIONS)
+
+    try:
+        classify_rg(2, "", "scanner failed")
+    except ScannerFailure:
+        cases += 1
+    else:
+        raise AssertionError("unclassified scanner outcome accepted")
+
+    original = authority_failures
+    try:
+        globals()["authority_failures"] = lambda: (_ for _ in ()).throw(ValueError("private"))
+        if classified_live_failures() != {"R57-AUTH", "R57-COMPAT"}:
+            raise AssertionError("parser exception was not classified")
+        cases += 1
+    finally:
+        globals()["authority_failures"] = original
+    return cases
+
+
 def self_test(only: str | None) -> int:
     selected = THREAT_IDS if only is None else (only,)
     original_root = ROOT
@@ -383,9 +617,7 @@ def self_test(only: str | None) -> int:
                     raise AssertionError("clean fixture failed")
 
                 if threat == "T-57-01":
-                    document = read_json(DECISIONS)
-                    document["feature_decisions"][1]["status"] = "eligible"
-                    total += assert_mutation(fixture, threat, lambda: DECISIONS.write_text(json.dumps(document), encoding="utf-8"))
+                    total += assert_decision_input_failures()
                 elif threat == "T-57-02":
                     target = SOURCES / "Neutral" / "TonePolicy.swift"
                     target.parent.mkdir(parents=True, exist_ok=True)
@@ -434,6 +666,8 @@ def main() -> int:
     parser.add_argument("--root", type=pathlib.Path)
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--only", choices=THREAT_IDS)
+    parser.add_argument("--decision", action="store_true")
+    parser.add_argument("--sclera", action="store_true")
     arguments = parser.parse_args()
     if arguments.root is not None:
         configure_root(arguments.root)
@@ -441,6 +675,10 @@ def main() -> int:
         parser.error("--only requires --self-test")
     if arguments.self_test:
         return self_test(arguments.only)
+    if arguments.decision:
+        return emit("decision", authority_failures())
+    if arguments.sclera:
+        return emit("sclera", source_failures() & {"R57-SCLERA"})
     return emit("live", live_failures())
 
 
