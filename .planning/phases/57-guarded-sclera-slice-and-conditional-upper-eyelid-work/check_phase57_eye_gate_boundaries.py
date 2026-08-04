@@ -87,13 +87,25 @@ SCLERA_ALIAS_PATTERN = (
     r"ocular(?:RednessReduction|Whitening)|bloodshot(?:Reduction|EyeCorrection))"
 )
 EYELID_PATTERN = (
-    r"(?i)\b(?:upperEyelid(?:Fullness|Fat)Reduction|"
-    r"(?:upper)?eyelidFullnessReduction|(?:upper)?eyelidFatReduction|"
-    r"lidFullnessReduction|lidFatReduction|remove(?:Upper)?EyelidFat)\b"
+    r"(?i)\b(?:upperEyelidFullness(?:Reduction|Removal)|"
+    r"upperLidFullness(?:Reduction|Removal)|"
+    r"eyelidFullness(?:Reduction|Removal)|lidFullness(?:Reduction|Removal)|"
+    r"upperEyelidFat(?:Reduction|Removal)|upperLidFat(?:Reduction|Removal)|"
+    r"eyelidFat(?:Reduction|Removal)|lidFat(?:Reduction|Removal)|"
+    r"remove(?:Upper)?EyelidFat|removeUpperLidFat|removeLidFat|"
+    r"(?:upperEyelid|upperLid|eyelid|lid)Defatting|"
+    r"defat(?:Upper)?Eyelid|defatUpperLid|defatLid|"
+    r"upper_eyelid_fullness|upper_lid_fullness|eyelid_fat|lid_fat)"
+    r"[A-Za-z0-9_]*\b"
 )
 PROXY_PATTERN = (
-    r"(?i)\b(?:eyeHeight|upperEyelidLift|eyebrowYPosition|skinSmoothing|"
-    r"darkCircle(?:Removal)?|eyeBag(?:Removal)?|eyeSize|eyeWarp)\b"
+    r"(?i)\b(?:eyeHeight|upperEyelidLift|eyebrowYPosition|"
+    r"brow(?:Translation|Movement|Lift|Warp)|eyeAperture|eyeSize|eyeWarp|"
+    r"verticalEyeWarp|interiorEyeWarp|eyeVerticalWarp|eyeInteriorWarp|"
+    r"skinSmoothing|globalSmoothing|darkCircle(?:Removal)?|"
+    r"eyeBag(?:Removal)?|scleraRednessReduction|teethWhitening|"
+    r"opaque(?:Composition|Scenario|Mechanics|Demand|Unit)|"
+    r"compositionScenario)[A-Za-z0-9_]*\b"
 )
 EXPECTED_PRESETS = (
     "clear.json", "id-photo-natural.json", "male-natural.json", "natural.json",
@@ -324,6 +336,8 @@ def source_failures() -> set[str]:
 
     if re.search(SCLERA_PATTERN, supplemental_text):
         failures.add("R57-SCLERA")
+    if re.search(EYELID_PATTERN, supplemental_text):
+        failures.add("R57-EYELID")
     if re.search(SCLERA_ALIAS_PATTERN, f"{source_text}\n{supplemental_text}"):
         failures.add("R57-SCLERA")
 
@@ -483,6 +497,26 @@ def assert_file_mutation(
     return 1
 
 
+def assert_file_rules(
+    relative_path: str,
+    original: str,
+    replacement: str,
+    expected_rules: tuple[str, ...],
+) -> int:
+    path = ROOT / relative_path
+    baseline = read_text(path)
+    if baseline.count(original) != 1:
+        raise AssertionError("mutation anchor is not unique")
+    path.write_text(baseline.replace(original, replacement, 1), encoding="utf-8")
+    try:
+        failures = classified_live_failures()
+        if not set(expected_rules).issubset(failures):
+            raise AssertionError("live relation mutation accepted")
+    finally:
+        path.write_text(baseline, encoding="utf-8")
+    return 1
+
+
 def assert_added_file(path: pathlib.Path, contents: str, expected_rule: str) -> int:
     if path.exists():
         raise AssertionError("added-file fixture already exists")
@@ -491,6 +525,37 @@ def assert_added_file(path: pathlib.Path, contents: str, expected_rule: str) -> 
     try:
         if expected_rule not in classified_live_failures():
             raise AssertionError("neutral-file mutation accepted")
+    finally:
+        path.unlink()
+    return 1
+
+
+def assert_added_file_rules(
+    path: pathlib.Path,
+    contents: str,
+    expected_rules: tuple[str, ...],
+) -> int:
+    if path.exists():
+        raise AssertionError("added-file fixture already exists")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(contents, encoding="utf-8")
+    try:
+        failures = classified_live_failures()
+        if not set(expected_rules).issubset(failures):
+            raise AssertionError("neutral-file relation mutation accepted")
+    finally:
+        path.unlink()
+    return 1
+
+
+def assert_clean_added_file(path: pathlib.Path, contents: str) -> int:
+    if path.exists():
+        raise AssertionError("clean control fixture already exists")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(contents, encoding="utf-8")
+    try:
+        if classified_live_failures():
+            raise AssertionError("legitimate proxy-only control rejected")
     finally:
         path.unlink()
     return 1
@@ -610,6 +675,172 @@ def assert_sclera_surface_failures() -> int:
             f"package func scleraRednessReductionAlias() {{ _ = \"{target}\" }}\n",
             "R57-SCLERA",
         )
+    return cases
+
+
+def assert_eyelid_surface_failures() -> int:
+    cases = 0
+    mutations = (
+        (
+            "BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift",
+            "    public var skinSmoothing: Float",
+            "    public var upperEyelidFullnessReduction: Float\n    public var skinSmoothing: Float",
+        ),
+        (
+            "BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift",
+            "        case skinSmoothing",
+            "        case upperEyelidFullnessReduction\n        case skinSmoothing",
+        ),
+        (
+            "BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift",
+            "        skinSmoothing: Float = 0,",
+            "        upperEyelidFullnessReduction: Float = 0,\n        skinSmoothing: Float = 0,",
+        ),
+        (
+            "BeautySDK/Sources/BeautySDK/BeautyEngineTestingSupport.swift",
+            "    public static let productionAdmissionNames: [String] = []",
+            '    public static let productionAdmissionNames = ["upper_eyelid_fullness"]',
+        ),
+        (
+            "BeautySDK/Sources/BeautyEffects/Planning/BeautyLocalRetouchAdmission.swift",
+            "    package static let none = BeautyLocalRetouchAdmission(opaqueDemandCount: 0)",
+            "    package static let upperEyelidFullnessReduction = BeautyLocalRetouchAdmission(opaqueDemandCount: 1)\n    package static let none = BeautyLocalRetouchAdmission(opaqueDemandCount: 0)",
+        ),
+        (
+            "BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift",
+            "struct BeautyRetainedMaskIteration",
+            "struct UpperEyelidFullnessReductionProvider {}\n\nstruct BeautyRetainedMaskIteration",
+        ),
+        (
+            "BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift",
+            "        return .none",
+            "        // lidFullnessReduction production admission\n        return BeautyLocalRetouchAdmission(opaqueDemandCount: 1)",
+        ),
+        (
+            "BeautySDK/Sources/BeautyExampleRenderer/main.swift",
+            '        id: "skinWhitening_0p50",',
+            '        id: "upperLidFullnessRemoval_savedOutput",',
+        ),
+        (
+            "BeautySDK/Sources/BeautyResources/Resources/Presets/natural.json",
+            '  "parameters": {',
+            '  "parameters": {\n    "eyelidFatReduction": 0.5,',
+        ),
+        (
+            "BeautySDK/Sources/BeautyResources/Resources/manifest.json",
+            '  "presets": [',
+            '  "upperEyelidDefattingResource": "model",\n  "presets": [',
+        ),
+        (
+            "BeautySDK/Package.swift",
+            '        .target(name: "BeautyCore"),',
+            '        .target(name: "LidFatReductionModel"),\n        .target(name: "BeautyCore"),',
+        ),
+        (
+            "BeautySDK/Sources/BeautySDK/BeautyEngine.swift",
+            "import Foundation",
+            "import Foundation\n// eyelidFullnessRemoval network storage model route",
+        ),
+        (
+            "BeautySDK/Sources/BeautySDK/BeautyEngine.swift",
+            "    private var resetGeneration: UInt64 = 0",
+            "    private var removeUpperEyelidFatRealtimeReset: UInt64 = 0\n    private var resetGeneration: UInt64 = 0",
+        ),
+        (
+            "BeautySDK/Sources/BeautySDK/BeautyEngine.swift",
+            "import CoreVideo",
+            "import CoreVideo\n// defatUpperEyelid pixelBuffer route",
+        ),
+        (
+            "BeautySDK/Sources/BeautySDK/BeautyEngineTestingSupport.swift",
+            "    private let invocationLock = NSLock()",
+            "    // opaque composition scenario route upperLidFatRemoval\n    private let invocationLock = NSLock()",
+        ),
+        (
+            "BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift",
+            'unsupported("eyes.fat", title: "去脂", icon: "minus.circle", badge: .free)',
+            'supported("eyes.fat", title: "去脂", icon: "minus.circle", badge: .free, controlID: .eyeHeight) // upperEyelidFullnessReduction',
+        ),
+    )
+    for relative_path, original, replacement in mutations:
+        cases += assert_file_mutation(
+            relative_path, original, replacement, "R57-EYELID",
+        )
+
+    neutral_families = (
+        ("Canonical.swift", "package func upperEyelidFullnessReduction() {}\n"),
+        ("UpperLidFull.swift", "package func upperLidFullnessRemoval() {}\n"),
+        ("EyelidFull.swift", "package func eyelidFullnessReduction() {}\n"),
+        ("LidFull.swift", "package func lidFullnessRemoval() {}\n"),
+        ("UpperEyelidFat.swift", "package func upperEyelidFatReduction() {}\n"),
+        ("UpperLidFat.swift", "package func upperLidFatRemoval() {}\n"),
+        ("EyelidFat.swift", "package func eyelidFatReduction() {}\n"),
+        ("LidFat.swift", "package func lidFatRemoval() {}\n"),
+        ("Remove.swift", "package func removeUpperEyelidFat() {}\n"),
+        ("Defatting.swift", "package func upperEyelidDefatting() {}\n"),
+        ("Defat.swift", "package func defatUpperEyelid() {}\n"),
+    )
+    neutral_root = SOURCES / "NeutralPhase57Eyelid"
+    for filename, contents in neutral_families:
+        cases += assert_added_file(neutral_root / filename, contents, "R57-EYELID")
+    return cases
+
+
+def assert_proxy_relation_failures() -> int:
+    cases = 0
+    expected = ("R57-EYELID", "R57-PROXY")
+    actual_mutations = (
+        (
+            "BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift",
+            "import BeautyCore",
+            "import BeautyCore\n// upperEyelidFullnessReduction aliases eyeHeight",
+        ),
+        (
+            "BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectResolver.swift",
+            "import BeautyDetection",
+            "import BeautyDetection\n// upperEyelidLift maps to lidFullnessRemoval",
+        ),
+        (
+            "BeautySDK/Sources/BeautySDK/BeautyEngineTestingSupport.swift",
+            "    private let invocationLock = NSLock()",
+            "    // opaqueCompositionScenario evidence for upperEyelidFullnessReduction\n    private let invocationLock = NSLock()",
+        ),
+    )
+    for relative_path, original, replacement in actual_mutations:
+        cases += assert_file_rules(relative_path, original, replacement, expected)
+
+    relation_targets = (
+        "eyeHeight", "upperEyelidLift", "eyebrowYPosition", "browTranslation",
+        "browMovement", "eyeAperture", "verticalEyeWarp", "interiorEyeWarp",
+        "skinSmoothing", "globalSmoothing", "darkCircleRemoval",
+        "eyeBagRemoval", "scleraRednessReduction", "teethWhitening",
+        "opaqueCompositionScenario",
+    )
+    relation_forms = (
+        "package let upperEyelidFullnessReduction = {target}\n",
+        "// {target} aliases upperEyelidFullnessReduction\n",
+        "package func upperEyelidFullnessReduction() {{ _ = {target} }}\n",
+        "// route upperEyelidFullnessReduction maps to {target}\n",
+        "// evidence: {target} proves upperEyelidFullnessReduction\n",
+    )
+    neutral_root = SOURCES / "NeutralPhase57Proxy"
+    for index, target in enumerate(relation_targets):
+        form = relation_forms[index % len(relation_forms)]
+        cases += assert_added_file_rules(
+            neutral_root / f"Relation{index}.swift",
+            form.format(target=target),
+            expected,
+        )
+
+    cases += assert_clean_added_file(
+        neutral_root / "ProxyOnly.swift",
+        "package struct ProxyOnly {\n"
+        "  let eyeHeight: Float\n  let upperEyelidLift: Float\n"
+        "  let eyebrowYPosition: Float\n  let browTranslation: Float\n"
+        "  let eyeAperture: Float\n  let verticalEyeWarp: Float\n"
+        "  let skinSmoothing: Float\n  let darkCircleRemoval: Float\n"
+        "  let eyeBagRemoval: Float\n}\n",
+    )
     return cases
 
 
@@ -803,13 +1034,9 @@ def self_test(only: str | None) -> int:
                 elif threat == "T-57-02":
                     total += assert_sclera_surface_failures()
                 elif threat == "T-57-03":
-                    target = SOURCES / "Neutral" / "TexturePolicy.swift"
-                    target.parent.mkdir(parents=True, exist_ok=True)
-                    total += assert_mutation(fixture, threat, lambda: target.write_text("struct TexturePolicy { let upperEyelidFullnessReduction: Float }\n", encoding="utf-8"))
+                    total += assert_eyelid_surface_failures()
                 elif threat == "T-57-04":
-                    target = SOURCES / "Neutral" / "Mapping.swift"
-                    target.parent.mkdir(parents=True, exist_ok=True)
-                    total += assert_mutation(fixture, threat, lambda: target.write_text("func upperEyelidFullnessReduction(_ p: BeautyParameters) -> Float { p.upperEyelidLift }\n", encoding="utf-8"))
+                    total += assert_proxy_relation_failures()
                 elif threat == "T-57-05":
                     total += assert_mutation(fixture, threat, lambda: replace_once(DEMO_SOURCE, 'unsupported("eyes.redness", title: "祛红血丝", icon: "drop", badge: .free)', 'supported("eyes.redness", title: "祛红血丝", icon: "drop", badge: .free, controlID: .eyeSize)'))
                 elif threat == "T-57-06":
@@ -848,6 +1075,7 @@ def main() -> int:
     parser.add_argument("--only", choices=THREAT_IDS)
     parser.add_argument("--decision", action="store_true")
     parser.add_argument("--sclera", action="store_true")
+    parser.add_argument("--eyelid", action="store_true")
     arguments = parser.parse_args()
     if arguments.root is not None:
         configure_root(arguments.root)
@@ -859,6 +1087,8 @@ def main() -> int:
         return emit("decision", authority_failures())
     if arguments.sclera:
         return emit("sclera", source_failures() & {"R57-SCLERA"})
+    if arguments.eyelid:
+        return emit("eyelid", source_failures() & {"R57-EYELID", "R57-PROXY"})
     return emit("live", live_failures())
 
 
