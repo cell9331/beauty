@@ -11,8 +11,8 @@ status: all_fixed
 
 # Phase 58: Code Review Fix Report
 
-**Fixed at:** 2026-08-04T12:00:00+08:00  
-**Source review:** `58-REVIEW.md`  
+**Fixed at:** 2026-08-04T12:00:00+08:00
+**Source review:** `58-REVIEW.md`
 **Iteration:** 1
 
 **Summary:**
@@ -61,18 +61,18 @@ status: all_fixed
 ### WR-02: Lifecycle coverage is lexical marker presence, not executable test coverage
 
 **Files modified:** `check_phase58_milestone_closeout.py`  
-**Commit:** `8f52670`  
+**Commit:** `8f52670`, `67a1da1`, `aeaf49d`
 **Applied fix:** Parse Swift XCTest function bodies with comments removed and require each lifecycle owner to contain executable assertions and required fragments; no final lifecycle command is run by intermediate modes.
 
 ## Verification
 
 - `python3 -m py_compile check_phase58_milestone_closeout.py`
-- Focused self-tests: T-58-01 219, T-58-02 36, T-58-03 37, T-58-04 34, T-58-05 162, T-58-06 31, T-58-07 28, T-58-08 8 cases passed.
+- Focused self-tests: T-58-01 219, T-58-02 36, T-58-03 37, T-58-04 34, T-58-05 164, T-58-06 31, T-58-07 28, T-58-08 8 cases passed.
 - Decision, lifecycle, and live checker modes passed.
 - `git diff --check` passed.
 
 ---
 
-_Fixed: 2026-08-04T12:00:00+08:00_  
-_Fixer: the agent (gsd-code-fixer)_  
+_Fixed: 2026-08-04T12:00:00+08:00_
+_Fixer: the agent (gsd-code-fixer)_
 _Iteration: 1_
