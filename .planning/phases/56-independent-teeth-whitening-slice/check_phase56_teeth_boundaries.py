@@ -23,6 +23,21 @@ CANDIDATE_NAMES = (
     "toothWhitening",
     "teethBrightness",
 )
+EXPECTED_EVIDENCE_FRONTMATTER = {
+    "phase": 56,
+    "status": "validated",
+    "security_standard": "OWASP ASVS Level 1",
+    "block_on": "HIGH",
+    "requirements": tuple(f"TEETH-{index:02d}" for index in range(1, 7)),
+}
+REQUIRED_EVIDENCE_SECTIONS = (
+    "## Immutable Decision Projection",
+    "## Requirement Dispositions",
+    "## Exact Invariants",
+    "## Task and HIGH Results",
+    "## Current Automated Evidence",
+    "## Privacy Allowlist and Nonclaims",
+)
 EXPECTED_PRESETS = (
     "natural",
     "clear",
@@ -440,10 +455,82 @@ def ledger_failures() -> set[str]:
     return failures
 
 
+def parse_evidence_frontmatter(text: str) -> tuple[dict[str, object], str] | None:
+    """Parse the fixed Phase 56 frontmatter without accepting YAML ambiguity."""
+    lines = text.splitlines()
+    if not lines or lines[0] != "---":
+        return None
+    try:
+        closing_index = lines.index("---", 1)
+    except ValueError:
+        return None
+    if closing_index <= 1:
+        return None
+
+    parsed: dict[str, object] = {}
+    for line in lines[1:closing_index]:
+        match = re.fullmatch(r"([a-z_]+):\s*(.+)", line)
+        if match is None:
+            return None
+        key, raw_value = match.groups()
+        if key in parsed or key not in EXPECTED_EVIDENCE_FRONTMATTER:
+            return None
+        if key == "phase":
+            if re.fullmatch(r"[0-9]+", raw_value) is None:
+                return None
+            parsed[key] = int(raw_value)
+        elif key == "requirements":
+            requirement_match = re.fullmatch(r"\[([^\]]*)\]", raw_value)
+            if requirement_match is None:
+                return None
+            parsed[key] = tuple(
+                item.strip() for item in requirement_match.group(1).split(",")
+                if item.strip()
+            )
+        else:
+            parsed[key] = raw_value
+
+    body = "\n".join(lines[closing_index + 1:])
+    if re.search(
+        r"(?m)^---\s*$\n(?:phase|status|security_standard|block_on|requirements)\s*:",
+        body,
+    ):
+        return None
+    return parsed, body
+
+
+def has_affirmative_closed_candidate_claim(text: str) -> bool:
+    candidate = r"(?:teeth\s+whitening|teethWhitening|白牙)"
+    status = (
+        r"(?:implemented|promoted|released|shipped|production-ready|"
+        r"release-ready|launch-ready|ready\s+for\s+(?:release|shipping|launch))"
+    )
+    direct = re.compile(
+        rf"(?i)\b{candidate}\b.{{0,48}}\b(?:is|are|was|were|has|have)\s+"
+        rf"(?!not\b|never\b)(?:been\s+)?{status}\b"
+    )
+    active = re.compile(rf"(?i)\b{status}\b.{{0,48}}\b{candidate}\b")
+    for sentence in re.split(r"[.!?\n]+", text):
+        if direct.search(sentence):
+            return True
+        active_match = active.search(sentence)
+        if active_match is not None:
+            prefix = sentence[max(0, active_match.start() - 12):active_match.start()]
+            if re.search(r"(?i)\b(?:not|never)\s*$", prefix) is None:
+                return True
+    return False
+
+
 def evidence_failures() -> set[str]:
     text = EVIDENCE.read_text(encoding="utf-8")
+    parsed = parse_evidence_frontmatter(text)
+    if parsed is None:
+        return {"R56-EVIDENCE"}
+    frontmatter, body = parsed
+    if frontmatter != EXPECTED_EVIDENCE_FRONTMATTER:
+        return {"R56-EVIDENCE"}
+
     required = (
-        "status: draft",
         "TEETH-01 | `false_branch_exact_absence`",
         "TEETH-02 | `not_applicable_closed_gate`",
         "TEETH-03 | `not_applicable_closed_gate`",
@@ -456,14 +543,22 @@ def evidence_failures() -> set[str]:
         "`白牙 = future`",
         "`嘴唇 = partial`",
         "56-01-01",
+        "56-01-02",
         "56-02-01",
         "56-02-02",
         "56-03-01",
         "T-56-01",
         "T-56-07",
-        "pending",
     )
-    if any(item not in text for item in required):
+    if (
+        any(item not in body for item in required)
+        or any(body.count(section) != 1 for section in REQUIRED_EVIDENCE_SECTIONS)
+        or re.search(
+            r"(?im)^\s*(?:[-*]\s*)?(?:final\s+)?(?:status|result)\s*:\s*pending\b",
+            body,
+        )
+        or has_affirmative_closed_candidate_claim(body)
+    ):
         return {"R56-EVIDENCE"}
     if re.search(r"/(?:Users|private|Volumes|home)/", text, re.IGNORECASE):
         return {"R56-PRIVACY"}
@@ -750,17 +845,24 @@ def self_test(only: str | None) -> int:
             ("BeautyDemo/BeautyDemoTests/BeautyDemoViewStateTests.swift", "XCTAssertNil(teeth.controlID)", "XCTAssertEqual(teeth.controlID, .lipColor)", "R56-DEMO"),
         ),
         "T-56-05": (
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: validated", "status: draft", "R56-EVIDENCE"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "---\nphase: 56\nstatus: validated\nsecurity_standard: OWASP ASVS Level 1\nblock_on: HIGH\nrequirements: [TEETH-01, TEETH-02, TEETH-03, TEETH-04, TEETH-05, TEETH-06]\n---\n", "", "R56-EVIDENCE"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: validated", "status: validated\nstatus: validated", "R56-EVIDENCE"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "block_on: HIGH", "block_on HIGH", "R56-EVIDENCE"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "# Phase 56 Teeth Closed-Gate Evidence", "---\nphase: 56\nstatus: validated\nsecurity_standard: OWASP ASVS Level 1\nblock_on: HIGH\nrequirements: [TEETH-01, TEETH-02, TEETH-03, TEETH-04, TEETH-05, TEETH-06]\n---\n\n# Phase 56 Teeth Closed-Gate Evidence", "R56-EVIDENCE"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "All seven rows are HIGH, mitigated, and machine-green.", "Final result: pending.\n\nAll seven rows are HIGH, mitigated, and machine-green.", "R56-EVIDENCE"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "Generic composition mechanics do not constitute a teeth feature and add\nno product credit.", "Generic composition mechanics do not constitute a teeth feature and add\nno product credit.\n\nTeeth whitening is implemented and released.", "R56-EVIDENCE"),
             (f".planning/phases/{PHASE_NAME}/56-THREAT-INVENTORY.json", '"schema_version": 1,', '"schema_version": 1,\n  "portrait_path": "sensitive",', "R56-PRIVACY"),
-            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: draft", "status: draft\nportrait_path: /Users/subject/portrait", "R56-PRIVACY"),
-            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: draft", "status: draft\nhash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "R56-PRIVACY"),
-            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: draft", "status: draft\nrights_record: internal", "R56-PRIVACY"),
-            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: draft", "status: draft\nmedia: portrait.png", "R56-PRIVACY"),
-            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: draft", "status: draft\nmask: encoded", "R56-PRIVACY"),
-            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: draft", "status: draft\ncoordinate: 1,2", "R56-PRIVACY"),
-            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: draft", "status: draft\npixel: 42", "R56-PRIVACY"),
-            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: draft", "status: draft\ndigest: stable-output", "R56-PRIVACY"),
-            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: draft", "status: draft\nraw_match: source-line", "R56-PRIVACY"),
-            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "status: draft", "status: draft\nraw_error: scanner-detail", "R56-PRIVACY"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "# Phase 56 Teeth Closed-Gate Evidence", "# Phase 56 Teeth Closed-Gate Evidence\n\nportrait_path: /Users/subject/portrait", "R56-PRIVACY"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "# Phase 56 Teeth Closed-Gate Evidence", "# Phase 56 Teeth Closed-Gate Evidence\n\nhash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "R56-PRIVACY"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "# Phase 56 Teeth Closed-Gate Evidence", "# Phase 56 Teeth Closed-Gate Evidence\n\nrights_record: internal", "R56-PRIVACY"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "# Phase 56 Teeth Closed-Gate Evidence", "# Phase 56 Teeth Closed-Gate Evidence\n\nmedia: portrait.png", "R56-PRIVACY"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "# Phase 56 Teeth Closed-Gate Evidence", "# Phase 56 Teeth Closed-Gate Evidence\n\nmask: encoded", "R56-PRIVACY"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "# Phase 56 Teeth Closed-Gate Evidence", "# Phase 56 Teeth Closed-Gate Evidence\n\ncoordinate: 1,2", "R56-PRIVACY"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "# Phase 56 Teeth Closed-Gate Evidence", "# Phase 56 Teeth Closed-Gate Evidence\n\npixel: 42", "R56-PRIVACY"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "# Phase 56 Teeth Closed-Gate Evidence", "# Phase 56 Teeth Closed-Gate Evidence\n\ndigest: stable-output", "R56-PRIVACY"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "# Phase 56 Teeth Closed-Gate Evidence", "# Phase 56 Teeth Closed-Gate Evidence\n\nraw_match: source-line", "R56-PRIVACY"),
+            (f".planning/phases/{PHASE_NAME}/56-TEETH-CLOSED-GATE-EVIDENCE.md", "# Phase 56 Teeth Closed-Gate Evidence", "# Phase 56 Teeth Closed-Gate Evidence\n\nraw_error: scanner-detail", "R56-PRIVACY"),
         ),
         "T-56-06": (
             ("docs/meitu-function-blueprint/FEATURE_MATRIX.md", "| Beauty shaping | 嘴唇 | partial |", "| Beauty shaping | 嘴唇 | implemented |", "R56-LEDGER"),

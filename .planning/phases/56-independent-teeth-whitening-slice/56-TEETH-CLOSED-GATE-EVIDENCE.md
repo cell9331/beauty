@@ -1,5 +1,5 @@
 ---
-phase: 56-independent-teeth-whitening-slice
+phase: 56
 status: validated
 security_standard: OWASP ASVS Level 1
 block_on: HIGH
@@ -8,9 +8,9 @@ requirements: [TEETH-01, TEETH-02, TEETH-03, TEETH-04, TEETH-05, TEETH-06]
 
 # Phase 56 Teeth Closed-Gate Evidence
 
-This is a validated projection of the immutable Phase 54 `teeth_whitening`
-decision, not a second eligibility authority. Wave 1 recorded `status: draft`
-with pending final slots; the current final-only gate supersedes that state.
+This is the finalized validated projection of the immutable Phase 54
+`teeth_whitening` decision, not a second eligibility authority. Earlier wave
+state is historical and cannot override this exact final lifecycle.
 
 ## Immutable Decision Projection
 
