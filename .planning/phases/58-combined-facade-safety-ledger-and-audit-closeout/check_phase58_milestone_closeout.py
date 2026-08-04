@@ -134,8 +134,46 @@ EYELID_IDENTITIES = (
     "defat_lid",
 )
 OWNED_IDENTITIES = ("lips.teeth", "eyes.redness", "eyes.fat", "白牙", "祛红血丝", "去脂")
-CANDIDATE_IDENTITIES = TEETH_IDENTITIES + SCLERA_IDENTITIES + EYELID_IDENTITIES + OWNED_IDENTITIES
-CANDIDATE_PATTERN = r"(?i)(?:" + "|".join(map(re.escape, CANDIDATE_IDENTITIES)) + r")[A-Za-z0-9_]*"
+# Human-readable aliases are part of the same canonical identity inventory as
+# code-style tokens. Keep them explicit so a route cannot evade the scanner by
+# changing only separators or capitalization.
+SPACED_IDENTITIES = (
+    "teeth whitening", "teeth white", "tooth whitening", "teeth brightness",
+    "enamel whitening", "enamel white", "enamel brightness",
+    "dentition whitening", "dentition white", "dentition brightness",
+    "whiten teeth", "sclera redness", "sclera redness reduction",
+    "sclera whitening", "sclera white", "sclera brightness", "whiten sclera",
+    "eye redness", "eye redness reduction", "red eye", "red eye reduction",
+    "conjunctiva redness", "conjunctiva redness reduction",
+    "conjunctival redness", "conjunctival redness reduction",
+    "conjunctiva whitening", "conjunctival whitening", "ocular redness",
+    "ocular redness reduction", "ocular whitening", "bloodshot reduction",
+    "bloodshot eye correction", "upper eyelid fullness", "upper lid fullness",
+    "eyelid fullness", "lid fullness", "upper eyelid fullness reduction",
+    "upper lid fullness reduction", "eyelid fullness reduction",
+    "lid fullness reduction", "upper eyelid fullness removal",
+    "upper lid fullness removal", "eyelid fullness removal",
+    "lid fullness removal", "upper eyelid fat", "upper lid fat", "eyelid fat",
+    "lid fat", "upper eyelid fat reduction", "upper lid fat reduction",
+    "eyelid fat reduction", "lid fat reduction", "upper eyelid fat removal",
+    "upper lid fat removal", "eyelid fat removal", "lid fat removal",
+    "remove upper eyelid fat", "remove eyelid fat", "remove upper lid fat",
+    "remove lid fat", "upper eyelid defatting", "upper lid defatting",
+    "eyelid defatting", "lid defatting", "defat upper eyelid", "defat eyelid",
+    "defat upper lid", "defat lid",
+)
+CANDIDATE_IDENTITIES = (
+    TEETH_IDENTITIES + SCLERA_IDENTITIES + EYELID_IDENTITIES + OWNED_IDENTITIES
+    + SPACED_IDENTITIES
+)
+CANDIDATE_PATTERN = (
+    r"(?i)(?:^|[^A-Za-z0-9_])(?:"
+    + "|".join(map(re.escape, CANDIDATE_IDENTITIES))
+    + r")[A-Za-z0-9_]*(?:$|[^A-Za-z0-9_])"
+)
+DEMO_CANDIDATE_COPY_ALLOWLIST = (
+    "Teeth whitening is not included in v1.",
+)
 SENSITIVE_PATTERN = (
     r"retainedScleraMask|persistedScleraMask|rawLandmarks|reviewerIdentity|"
     r"fixturePath|imageDigest|rawScannerError|publicSupportCoordinates"
@@ -175,12 +213,13 @@ PRIVACY_FORBIDDEN_PATTERN = (
 # cross a public/SPI, Codable, persistence, network, logging, or metrics
 # boundary. Fixed aggregate counters are the only explicit exceptions.
 PRIVACY_PAYLOAD_TOKENS = re.compile(
-    r"(?i)(?:landmark|support|geometry|point|observation|mask|vein|pupil|"
+    r"(?i)(?:landmark|support|geometry|point|points|coordinate|coordinates|observation|mask|vein|pupil|"
     r"sclera|eyelid|teeth|anatomy)"
 )
 PRIVACY_ALLOWED_NAMES = {
     "aggregateSupportValueID", "detectionAvailability", "detectionReasons",
     "compositionObservation", "SDKTestingLocalCompositionObservation",
+    "lastMappedCoordinateCount", "retainedMappedCoordinateCount",
     # Public shaping controls are not support payloads.
     "upperEyelidLift", "pupilSize", "lowerEyelidDrop",
 }
@@ -461,11 +500,12 @@ def privacy_failures() -> set[str]:
                 return {RULES["T-58-02"]}
     boundary_patterns = (
         r"(?is)(?:public|@_spi\([^)]*\)).{0,120}(?:raw(?:Landmarks|Pixels)|"
-        r"(?:sclera|eyelid|teeth|pupil|vein)[A-Za-z0-9_]*(?:Mask|Coordinates|Geometry))",
+        r"(?:sclera|eyelid|teeth|pupil|vein)[A-Za-z0-9_]*(?:Mask|Coordinates|Geometry)|"
+        r"\b(?:coordinates?|points?|geometry)\b)",
         r"(?is)(?:UserDefaults|FileManager|write\s*\(|URLSession|URLRequest).{0,160}"
-        r"(?:landmark|pupil|sclera|eyelid|teeth|mask|vein|reviewer|digest|sourceToken)",
-        r"(?is)(?:print|logger|metric|warning).{0,120}"
-        r"(?:rawLandmark|pupilPosition|scleraMask|eyelidMask|teethGeometry|veinDescriptor)",
+        r"(?:landmark|pupil|sclera|eyelid|teeth|mask|vein|\b(?:coordinates?|points?|geometry)\b|reviewer|digest|sourceToken)",
+        r"(?is)(?:print|logger).{0,120}"
+        r"(?:rawLandmark|pupilPosition|scleraMask|eyelidMask|teethGeometry|\b(?:coordinates?|points?|geometry)\b|veinDescriptor)",
     )
     if any(re.search(pattern, source_text) for pattern in boundary_patterns):
         return {RULES["T-58-02"]}
@@ -574,6 +614,35 @@ def swift_test_function_bodies(source: str) -> dict[str, str]:
     return result
 
 
+def swift_assertion_calls(body: str) -> tuple[str, ...]:
+    """Return real XCTest assertion call names, excluding fake identifiers."""
+    if re.search(r"\b(?:func|var|let)\s+XCTAssert[A-Za-z0-9_]*\b", body):
+        return ()
+    return tuple(
+        match.group(1)
+        for match in re.finditer(
+            r"(?<![A-Za-z0-9_])(XCTAssert[A-Za-z0-9_]*)\s*\(", body
+        )
+    )
+
+
+def swift_contains_assertion(body: str, expression: str) -> bool:
+    """Match an exact assertion expression without accepting fakeXCTAssert names."""
+    standalone_body = re.sub(
+        r"(?<=[A-Za-z0-9_])XCTAssert", "NO_ASSERT_IDENTIFIER", body
+    )
+    compact_body = re.sub(r"\s+", "", standalone_body)
+    compact_expression = re.sub(r"\s+", "", expression)
+    if compact_expression not in compact_body:
+        return False
+    call_name = compact_expression.split("(", 1)[0]
+    return bool(
+        re.search(
+            r"(?<![A-Za-z0-9_])" + re.escape(call_name) + r"\s*\(", body
+        )
+    )
+
+
 def lifetime_failures() -> set[str]:
     foundation = read_text(FOUNDATION_TEST)
     composition = read_text(COMPOSITION_TEST)
@@ -591,11 +660,15 @@ def lifetime_failures() -> set[str]:
     required_foundation_fragments = (
         "supportSequence: [.available(valueID: 101), .available(valueID: 202)]",
         "publication.cancel()",
-        "XCTAssertEqual(canceledOutcome, .discarded)",
-        "XCTAssertEqual(fresh.aggregateSupportValueID, 202)",
         "let expectedValueIDs = Set(1...32)",
         "Self.assertNoRetainedRequestSupport(harness)",
     )
+    required_foundation_assertions = {
+        "testPhase58CanceledCallerDiscardsCompletedPublicationThenFreshRequestPublishes": (
+            "XCTAssertEqual(canceledOutcome, .discarded)",
+            "XCTAssertEqual(fresh.aggregateSupportValueID, 202)",
+        ),
+    }
     required_composition = (
         "testValidInvalidValidRequestsResetEveryCompositionObservation",
         "testThrownRequestClearsObservationBeforeThirdValidRequest",
@@ -607,7 +680,7 @@ def lifetime_failures() -> set[str]:
     foundation_bodies = swift_test_function_bodies(foundation)
     composition_bodies = swift_test_function_bodies(composition)
     if any(
-        method not in foundation_bodies or foundation_bodies[method].count("XCTAssert") < 1
+        method not in foundation_bodies or not swift_assertion_calls(foundation_bodies[method])
         for method in required_foundation_methods
     ):
         return {RULES["T-58-03"]}
@@ -616,16 +689,21 @@ def lifetime_failures() -> set[str]:
         for marker in required_foundation_fragments
     ):
         return {RULES["T-58-03"]}
+    if any(
+        not all(swift_contains_assertion(foundation_bodies[method], marker) for marker in markers)
+        for method, markers in required_foundation_assertions.items()
+    ):
+        return {RULES["T-58-03"]}
     composition_methods = tuple(
         marker for marker in required_composition if marker.startswith("test")
     )
     if any(
-        method not in composition_bodies or composition_bodies[method].count("XCTAssert") < 1
+        method not in composition_bodies or not swift_assertion_calls(composition_bodies[method])
         for method in composition_methods
     ):
         return {RULES["T-58-03"]}
     if any(
-        not any(marker in body for body in composition_bodies.values())
+        not any(swift_contains_assertion(body, marker) for body in composition_bodies.values())
         for marker in required_composition if marker.startswith("XCTAssert")
     ):
         return {RULES["T-58-03"]}
@@ -764,6 +842,8 @@ def output_failures() -> set[str]:
         if path == DEMO_SOURCE:
             for row in DEMO_DISABLED_ROWS:
                 text = text.replace(row, "", 1)
+        for copy in DEMO_CANDIDATE_COPY_ALLOWLIST:
+            text = text.replace(copy, "", 1)
         demo_parts.append(text)
     if re.search(
         r"(?i)eyes\.(?:fat|redness)|lips\.teeth|白牙|祛红血丝|去脂|" +
@@ -1026,6 +1106,10 @@ def _phase57_owner_failures() -> bool:
     ):
         return False
     if state.count("current_phase: 58") != 1 or state.count("current_phase_name: Combined Facade, Safety, Ledger, and Audit Closeout") != 1 or state.count("status: executing") != 1:
+        return False
+    if state.count(
+        "last_activity_desc: Phase 58 Plan 04 complete; automated closeout and owner gates pass; external review/verifier/audit remain next lifecycle gates"
+    ) != 1:
         return False
     requirement_ids = ("SCLERA-01", "SCLERA-02", "SCLERA-03", "SCLERA-04", "SCLERA-05", "SCLERA-06", "LID-02", "LID-03", "LID-04", "LID-05")
     if any(requirements.count(f"- [x] **{identifier}**") != 1 for identifier in requirement_ids):
@@ -1312,6 +1396,14 @@ def assert_lifetime_matrix() -> int:
                 FOUNDATION_TEST, marker, f"removedLifetimeMarker{index}"
             ),
         )
+    cases += assert_fixture_mutation(
+        "T-58-03",
+        lambda: mutate_text(
+            FOUNDATION_TEST,
+            "XCTAssertEqual(canceledOutcome, .discarded)",
+            "fakeXCTAssertEqual(canceledOutcome, .discarded)",
+        ),
+    )
 
     composition_markers = (
         "testValidInvalidValidRequestsResetEveryCompositionObservation",
@@ -1493,6 +1585,15 @@ def assert_authority_matrix() -> int:
         cases += assert_fixture_mutation(
             "T-58-01", lambda path_getter=path_getter: path_getter().write_bytes(b"\xff\xfe")
         )
+    cases += assert_fixture_mutation(
+        "T-58-01",
+        lambda: (
+            (SOURCES / "NeutralPhase58Authority").mkdir(parents=True, exist_ok=True),
+            (SOURCES / "NeutralPhase58Authority" / "SpacedRoute.swift").write_text(
+                'let route = "TeEtH wHiTeNiNg"\n', encoding="utf-8"
+            ),
+        ),
+    )
     cases += assert_forced_scanner("T-58-01")
     return cases
 
@@ -1532,6 +1633,12 @@ def assert_privacy_matrix() -> int:
         "let persisted = UserDefaults.standard; let pupilPosition = \"private\"\n",
         "let request = URLRequest(url: URL(string: \"https://invalid\")!); let teethGeometry = []\n",
         "print(\"rawLandmark\")\n",
+        "public var coordinates: [Float] = []\n",
+        "@_spi(Testing) public var points: [Float] { [] }\n",
+        "struct Leak: Codable { let geometry: [Float] }\n",
+        "let persisted = UserDefaults.standard; let coordinates = [Float]()\n",
+        "let request = URLRequest(url: URL(string: \"https://invalid\")!); let point = [Float]()\n",
+        "print(\"coordinates\")\n",
     )
     for index, payload in enumerate(boundary_payloads):
         cases += assert_fixture_mutation(
@@ -1663,6 +1770,14 @@ def assert_output_matrix() -> int:
             )
         ),
     )
+    cases += assert_fixture_mutation(
+        "T-58-05",
+        lambda: (
+            (DEMO_ROOT / "NeutralPhase58SpacedOutput.swift").write_text(
+                'let route = "teeth whitening"\n', encoding="utf-8"
+            )
+        ),
+    )
     evidence_mutations = (
         ("| OUT-01 | `not_applicable_zero_admitted_features_exact_absence` |", "| OUT-01 | `implemented positive branch` |"),
         ("| OUT-02 | `not_applicable_zero_admitted_pair_exact_absence` |", "| OUT-02 | `passed positive branch` |"),
@@ -1746,6 +1861,14 @@ def assert_phase57_matrix() -> int:
         (ROOT / ".planning" / "STATE.md", lambda: mutate_text(ROOT / ".planning" / "STATE.md", "current_phase: 58", "current_phase: 57")),
         (ROOT / ".planning" / "ROADMAP.md", lambda: mutate_text(ROOT / ".planning" / "ROADMAP.md", "**Plans**: 4/4 plans executed", "**Plans**: 3/4 plans executed")),
         (ROOT / ".planning" / "REQUIREMENTS.md", lambda: mutate_text(ROOT / ".planning" / "REQUIREMENTS.md", "- [x] **SCLERA-01**", "- [ ] **SCLERA-01**")),
+        (
+            ROOT / ".planning" / "STATE.md",
+            lambda: mutate_text(
+                ROOT / ".planning" / "STATE.md",
+                "last_activity_desc: Phase 58 Plan 04 complete; automated closeout and owner gates pass; external review/verifier/audit remain next lifecycle gates",
+                "last_activity_desc: Phase 58 Plan 03 complete; strict Phase 57 adapter and all HIGH audit modes pass",
+            ),
+        ),
     )
     for path, mutation in mutations:
         cases += assert_fixture_mutation("T-58-07", mutation)
