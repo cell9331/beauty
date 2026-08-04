@@ -1,9 +1,9 @@
 ---
 phase: 57
 slug: guarded-sclera-slice-and-conditional-upper-eyelid-work
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: validated
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-08-04
 security_standard: OWASP ASVS Level 1
 block_on: HIGH
@@ -56,33 +56,33 @@ or update this table one-for-one with the final XML task IDs before plan check.
 
 | Planned task ID | Wave | Requirements | Required focused evidence | Status |
 | --- | ---: | --- | --- | --- |
-| `57-01-01` | 0 | SCLERA-01, SCLERA-06, LID-02, LID-04 | Exact SDK/facade tests: no canonical/synonym field/CodingKey/SPI/saved-output/admission route, literal `.none`, both still entries, exact 59/5/72, unchanged shipped eye/color behavior and pixel-buffer/reset isolation | pending |
-| `57-01-02` | 0 | SCLERA-01..06, LID-02..05 | Exact disabled `eyes.redness`/`eyes.fat` Demo rows, future/future/partial ledgers, proxy independence tests, eight-row HIGH inventory, and representative whole-source live mutations | pending |
-| `57-02-01` | 1 | SCLERA-01..06, LID-02..05 | Exact identity-selected Phase 54 sclera/eyelid rows, independent reason/count/design semantics, malformed/missing/duplicate/renamed/competing input mutations | pending |
-| `57-02-02` | 1 | SCLERA-01..06 | Complete whole-production sclera canonical/synonym/provider/renderer/preset/admission/Demo mutations; SCLERA false-branch/N/A/no-promotion evidence draft | pending |
-| `57-03-01` | 2 | LID-02..05 | Complete whole-production upper-eyelid canonical/synonym and neutral-file mutations plus affirmative LID-04 proxy-coupling rejection while shipped eye domains remain intact | pending |
-| `57-03-02` | 2 | SCLERA-01..06, LID-02..05 | Complete structural evidence/privacy/Demo/ledger/compatibility/scanner matrix and combined two-row draft projection with no cross-feature borrowing | pending |
-| `57-04-01` | 3 | SCLERA-01..06, LID-02..05 | Final focused/checker/full SwiftPM/Demo/schema/UI/codebase/diff/ASVS/traceability/owner gate; finalize evidence and validation only after every row is current green | pending |
+| `57-01-01` | 0 | SCLERA-01, SCLERA-06, LID-02, LID-04 | Exact SDK/facade tests: no canonical/synonym field/CodingKey/SPI/saved-output/admission route, literal `.none`, both still entries, exact 59/5/72, unchanged shipped eye/color behavior and pixel-buffer/reset isolation | passed |
+| `57-01-02` | 0 | SCLERA-01..06, LID-02..05 | Exact disabled `eyes.redness`/`eyes.fat` Demo rows, future/future/partial ledgers, proxy independence tests, eight-row HIGH inventory, and representative whole-source live mutations | passed |
+| `57-02-01` | 1 | SCLERA-01..06, LID-02..05 | Exact identity-selected Phase 54 sclera/eyelid rows, independent reason/count/design semantics, malformed/missing/duplicate/renamed/competing input mutations | passed |
+| `57-02-02` | 1 | SCLERA-01..06 | Complete whole-production sclera canonical/synonym/provider/renderer/preset/admission/Demo mutations; SCLERA false-branch/N/A/no-promotion evidence | passed |
+| `57-03-01` | 2 | LID-02..05 | Complete whole-production upper-eyelid canonical/synonym and neutral-file mutations plus affirmative LID-04 proxy-coupling rejection while shipped eye domains remain intact | passed |
+| `57-03-02` | 2 | SCLERA-01..06, LID-02..05 | Complete structural evidence/privacy/Demo/ledger/compatibility/scanner matrix and combined two-row projection with no cross-feature borrowing | passed |
+| `57-04-01` | 3 | SCLERA-01..06, LID-02..05 | Final focused 141/141, checker 220, full SwiftPM 544 with six opt-in skips, Demo build plus 120/120, schema/UI/traceability/diff/ASVS/owner gate | passed |
 
 Task count target: **7 XML task IDs = 7 validation rows = 2 Wave 0 + 4
 focused enforcement tasks + 1 final closeout**.
 
 ## Wave 0 Deliverables
 
-- [ ] Existing SDK tests pin both canonical candidate names and context-specific
+- [x] Existing SDK tests pin both canonical candidate names and context-specific
   synonyms without duplicating the complete 59/5/72 inventories.
-- [ ] Facade tests pin literal `.none`, both CIImage entries, no-admission output
+- [x] Facade tests pin literal `.none`, both CIImage entries, no-admission output
   and diagnostics, unrelated shipped effects, recovery, and pixel-buffer/reset
   zero work.
-- [ ] Demo tests preserve the exact disabled `eyes.redness` and `eyes.fat` rows,
+- [x] Demo tests preserve the exact disabled `eyes.redness` and `eyes.fat` rows,
   order/badges/copy, nil active mappings, and existing shipped eye controls.
-- [ ] Tests explicitly preserve independent `eyeHeight`, `upperEyelidLift`,
+- [x] Tests explicitly preserve independent `eyeHeight`, `upperEyelidLift`,
   brow, smoothing, dark-circle, and eye-bag behavior while rejecting any source,
   label, mapping, or evidence coupling to upper-eyelid fullness/`去脂`.
-- [ ] `check_phase57_eye_gate_boundaries.py` uses structural finalized-evidence
+- [x] `check_phase57_eye_gate_boundaries.py` uses structural finalized-evidence
   parsing, tri-state scanners, complete production Swift scanning including new
   neutral filenames, stable rule-only output, and real-fixture mutations.
-- [ ] `57-THREAT-INVENTORY.json` pins ordered T-57-01..08 identities and
+- [x] `57-THREAT-INVENTORY.json` pins ordered T-57-01..08 identities and
   executable gates; no count-only validation exists.
 
 ## Requirement Dispositions
@@ -174,18 +174,20 @@ Task `57-04-01` must execute and record:
 
 ## Validation Sign-Off
 
-- [ ] Final PLAN XML task count equals seven validation rows.
-- [ ] Wave 0 tests/checker accept clean fixtures and reject every named live
+- [x] Final PLAN XML task count equals seven validation rows.
+- [x] Wave 0 tests/checker accept clean fixtures and reject every named live
   mutation, including neutral-file candidates and semantic proxy coupling.
-- [ ] All ten requirements have exact honest conditional dispositions.
-- [ ] Every T-57 HIGH identity is individually machine-green with no waiver.
-- [ ] Literal `.none`, 59/5/72, both facades, disabled Demo rows, and
+- [x] All ten requirements have exact honest conditional dispositions.
+- [x] Every T-57 HIGH identity is individually machine-green with no waiver.
+- [x] Literal `.none`, 59/5/72, both facades, disabled Demo rows, and
   future/future/partial ledgers remain exact.
-- [ ] No sensitive support/output, candidate route, human/image review, or
+- [x] No sensitive support/output, candidate route, human/image review, or
   unsupported product/readiness claim is added.
-- [ ] Full SwiftPM and explicit Demo regression pass in the known-good host.
-- [ ] Canonical evidence exists with actual results before validation/owner
+- [x] Full SwiftPM and explicit Demo regression pass in the known-good host.
+- [x] Canonical evidence exists with actual results before validation/owner
   promotion.
 
-**Approval:** pending seven task rows, ten requirements, twenty decisions, eight
-HIGH mitigations, focused/final regressions, and synchronized owner evidence.
+**Approval:** passed — seven task rows, ten requirements, twenty decisions,
+eight HIGH mitigations, focused/final regressions, and synchronized owner
+evidence are current green. Validation credits exact absence, proxy rejection,
+privacy, compatibility, and recovery only.

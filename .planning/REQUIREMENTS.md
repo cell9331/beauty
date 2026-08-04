@@ -52,20 +52,20 @@ an exact no-promotion decision.
 
 ### Guarded Sclera Redness Reduction (`祛红血丝`)
 
-- [ ] **SCLERA-01**: If and only if its feature gate passes, an SDK integrator receives an independent `scleraRednessReduction` control that cannot alias global whitening, brightness, eye geometry, or skin color.
-- [ ] **SCLERA-02**: Each eye independently validates actual eye/pupil support, constructs a hard sclera envelope with guarded iris exclusion, scores redness only inside that envelope, feathers, and re-clips before composition.
-- [ ] **SCLERA-03**: Native-color-independent geometry and color-adversarial final-output oracles both prove zero changes to iris, pupil, protected highlights, lashes, skin, and outside-mask pixels.
-- [ ] **SCLERA-04**: Qualified redness positives receive bounded red-excess reduction while retaining natural luminance, vessel/detail variation, and non-porcelain appearance at original-detail review.
-- [ ] **SCLERA-05**: Blink, closure, gaze, glasses/contacts, missing or implausible pupil/eye support, strong highlights, occlusion, and one-eye rejection fail locally without guessed or stale support and without disabling an eligible peer eye.
-- [ ] **SCLERA-06**: The public facade, saved-output helper, per-eye safety/challenge matrix, review bundle, privacy gates, regression suite, and exact ledger independently agree before `祛红血丝` can be promoted.
+- [x] **SCLERA-01**: If and only if its feature gate passes, an SDK integrator receives an independent `scleraRednessReduction` control that cannot alias global whitening, brightness, eye geometry, or skin color.
+- [x] **SCLERA-02**: Each eye independently validates actual eye/pupil support, constructs a hard sclera envelope with guarded iris exclusion, scores redness only inside that envelope, feathers, and re-clips before composition.
+- [x] **SCLERA-03**: Native-color-independent geometry and color-adversarial final-output oracles both prove zero changes to iris, pupil, protected highlights, lashes, skin, and outside-mask pixels.
+- [x] **SCLERA-04**: Qualified redness positives receive bounded red-excess reduction while retaining natural luminance, vessel/detail variation, and non-porcelain appearance at original-detail review.
+- [x] **SCLERA-05**: Blink, closure, gaze, glasses/contacts, missing or implausible pupil/eye support, strong highlights, occlusion, and one-eye rejection fail locally without guessed or stale support and without disabling an eligible peer eye.
+- [x] **SCLERA-06**: The public facade, saved-output helper, per-eye safety/challenge matrix, review bundle, privacy gates, regression suite, and exact ledger independently agree before `祛红血丝` can be promoted.
 
 ### Conditional Upper-Eyelid Fullness Reduction (`去脂`)
 
 - [x] **LID-01**: The milestone records a deterministic go/no-go decision for `去脂` only after a complete rights-approved genuine upper-eyelid-fullness positive/negative bundle and a credible independent non-warp design are reviewed.
-- [ ] **LID-02**: If the gate is closed, no public `upperEyelidFullnessReduction` field, provider, renderer case, or inert runtime route is added, `去脂` remains `future`, and branch `眼睛` remains `partial`.
-- [ ] **LID-03**: If the gate opens, the admitted positive-only control reduces reviewed upper-eyelid fullness without moving the eye or brow, changing aperture, erasing crease/texture, globally smoothing skin, treating eye bags/dark circles, or altering identity.
-- [ ] **LID-04**: `eyeHeight`, `upperEyelidLift`, brow translation, global smoothing, dark-circle/eye-bag behavior, and any vertical/interior eye warp are rejected as `去脂` substitutes by source, geometry-invariance, and original-detail gates.
-- [ ] **LID-05**: An admitted `去脂` slice must pass its own public-facade output, positive/negative naturalness review, texture/structure preservation, privacy, regression, and exact ledger gates before promotion.
+- [x] **LID-02**: If the gate is closed, no public `upperEyelidFullnessReduction` field, provider, renderer case, or inert runtime route is added, `去脂` remains `future`, and branch `眼睛` remains `partial`.
+- [x] **LID-03**: If the gate opens, the admitted positive-only control reduces reviewed upper-eyelid fullness without moving the eye or brow, changing aperture, erasing crease/texture, globally smoothing skin, treating eye bags/dark circles, or altering identity.
+- [x] **LID-04**: `eyeHeight`, `upperEyelidLift`, brow translation, global smoothing, dark-circle/eye-bag behavior, and any vertical/interior eye warp are rejected as `去脂` substitutes by source, geometry-invariance, and original-detail gates.
+- [x] **LID-05**: An admitted `去脂` slice must pass its own public-facade output, positive/negative naturalness review, texture/structure preservation, privacy, regression, and exact ledger gates before promotion.
 
 ### Privacy, Reliability, and Promotion
 
@@ -130,17 +130,17 @@ no implementation surface when that decision is closed.
 | TEETH-04 | Phase 56 | Complete — `not_applicable_closed_gate` |
 | TEETH-05 | Phase 56 | Complete — `not_applicable_closed_gate` |
 | TEETH-06 | Phase 56 | Complete — `no_promotion` |
-| SCLERA-01 | Phase 57 | Pending |
-| SCLERA-02 | Phase 57 | Pending |
-| SCLERA-03 | Phase 57 | Pending |
-| SCLERA-04 | Phase 57 | Pending |
-| SCLERA-05 | Phase 57 | Pending |
-| SCLERA-06 | Phase 57 | Pending |
+| SCLERA-01 | Phase 57 | Complete — `false_branch_exact_absence` |
+| SCLERA-02 | Phase 57 | Complete — `not_applicable_closed_gate` |
+| SCLERA-03 | Phase 57 | Complete — `not_applicable_closed_gate` |
+| SCLERA-04 | Phase 57 | Complete — `not_applicable_closed_gate` |
+| SCLERA-05 | Phase 57 | Complete — `not_applicable_closed_gate` |
+| SCLERA-06 | Phase 57 | Complete — `no_promotion` |
 | LID-01 | Phase 54 | Complete |
-| LID-02 | Phase 57 | Pending |
-| LID-03 | Phase 57 | Pending |
-| LID-04 | Phase 57 | Pending |
-| LID-05 | Phase 57 | Pending |
+| LID-02 | Phase 57 | Complete — `closed_branch_exact_absence` |
+| LID-03 | Phase 57 | Complete — `not_applicable_closed_gate` |
+| LID-04 | Phase 57 | Complete — `proxy_rejection_enforced` |
+| LID-05 | Phase 57 | Complete — `not_applicable_closed_gate` |
 | SAFE-01 | Phase 58 | Pending |
 | SAFE-02 | Phase 58 | Pending |
 | SAFE-03 | Phase 58 | Pending |

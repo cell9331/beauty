@@ -1225,14 +1225,24 @@ def assert_evidence_text_mutation(original: str, replacement: str, expected_rule
 def assert_evidence_and_privacy_failures() -> int:
     cases = 0
     title = "# Phase 57 Closed Eye-Gates Evidence"
+    baseline = read_text(EVIDENCE)
+    is_draft = "status: draft" in baseline
+    status_anchor = "status: draft" if is_draft else "status: validated"
+    opposite_status = "status: validated" if is_draft else "status: draft"
+    lifecycle_anchor = (
+        "Final regression: pending" if is_draft else "## Final Automated Evidence"
+    )
+    lifecycle_replacement = (
+        "Final regression: passed" if is_draft else "## Pending Final Automated Evidence"
+    )
     structural = (
-        ("status: draft", "status: validated", "R57-COMPAT"),
-        ("status: draft", "status draft", "R57-COMPAT"),
-        ("status: draft", "status: draft\nstatus: draft", "R57-COMPAT"),
+        (status_anchor, opposite_status, "R57-COMPAT"),
+        (status_anchor, status_anchor.replace(":", "", 1), "R57-COMPAT"),
+        (status_anchor, f"{status_anchor}\n{status_anchor}", "R57-COMPAT"),
         ("block_on: HIGH", "block_on HIGH", "R57-COMPAT"),
         ("## Immutable Decision Projections", "", "R57-COMPAT"),
         ("## Exact Invariants", "## Exact Invariants\n\n## Exact Invariants", "R57-COMPAT"),
-        ("Final regression: pending", "Final regression: passed", "R57-COMPAT"),
+        (lifecycle_anchor, lifecycle_replacement, "R57-COMPAT"),
         (title, title + "\n\nUpper-eyelid fullness reduction is implemented and shipped.", "R57-PRIVACY"),
         (title, title + "\n\nSclera redness reduction is production-ready.", "R57-PRIVACY"),
     )
@@ -1266,8 +1276,7 @@ def assert_evidence_and_privacy_failures() -> int:
     for payload in sensitive_payloads:
         cases += assert_evidence_text_mutation(title, f"{title}\n\n{payload}", "R57-PRIVACY")
 
-    baseline = read_text(EVIDENCE)
-    validated = (
+    validated = baseline if not is_draft else (
         baseline.replace("status: draft", "status: validated", 1)
         .replace("## Pending Final Automated Evidence", "## Final Automated Evidence", 1)
         .replace("pending", "passed")
@@ -1340,6 +1349,9 @@ def assert_unreadable_fixture(path: pathlib.Path, expected_rule: str) -> int:
 
 
 def assert_compatibility_and_scanner_failures() -> int:
+    evidence = read_text(EVIDENCE)
+    evidence_status = "status: validated" if "status: validated" in evidence else "status: draft"
+    opposite_status = "status: draft" if evidence_status == "status: validated" else "status: validated"
     mutations = (
         ("BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift", "    public var skinSmoothing: Float", "    public var skinSmoothingRenamed: Float", "R57-COMPAT"),
         ("BeautySDK/Sources/BeautyResources/Resources/manifest.json", '"id": "natural"', '"id": "natural-renamed"', "R57-COMPAT"),
@@ -1350,7 +1362,7 @@ def assert_compatibility_and_scanner_failures() -> int:
         ("BeautySDK/Tests/BeautyCoreTests/BeautyRendererOutputRegressionTests.swift", '"skinSmoothing_0p50", "eyeHeight_0p25", "upperEyelidLift_0p25"', '"skinSmoothing_0p50", "eyeHeight_0p25"', "R57-COMPAT"),
         ("BeautySDK/Tests/BeautyCoreTests/BeautyEngineLocalRetouchFoundationTests.swift", "testPhase57ClosedEyeRetouchGatesKeepLiteralNoneAndStillEntriesInactive", "testPhase57WeakenedStillEntries", "R57-COMPAT"),
         (f".planning/phases/{PHASE_NAME}/57-VALIDATION.md", "| `57-03-02` | 2 |", "| `57-03-02-weakened` | 2 |", "R57-COMPAT"),
-        (f".planning/phases/{PHASE_NAME}/57-CLOSED-EYE-GATES-EVIDENCE.md", "status: draft", "status: validated", "R57-COMPAT"),
+        (f".planning/phases/{PHASE_NAME}/57-CLOSED-EYE-GATES-EVIDENCE.md", evidence_status, opposite_status, "R57-COMPAT"),
     )
     cases = 0
     for mutation in mutations:
