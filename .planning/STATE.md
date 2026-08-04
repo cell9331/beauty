@@ -5,15 +5,15 @@ milestone_name: Local Facial Retouch
 current_phase: 58
 current_phase_name: Combined Facade, Safety, Ledger, and Audit Closeout
 status: executing
-stopped_at: Completed 58-03-PLAN.md
-last_updated: "2026-08-04T08:23:00.000Z"
+stopped_at: Completed 58-04-PLAN.md
+last_updated: "2026-08-04T08:57:04.908Z"
 last_activity: 2026-08-04
 last_activity_desc: Phase 58 Plan 03 complete; strict Phase 57 adapter and all HIGH audit modes pass
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 27
-  completed_plans: 26
+  completed_plans: 27
 ---
 
 # Project State
@@ -28,9 +28,9 @@ See: `.planning/PROJECT.md` (updated 2026-08-04)
 ## Current Position
 
 Phase: 58 (Combined Facade, Safety, Ledger, and Audit Closeout) — EXECUTING
-Plan: 2 of 4
-Status: Ready to execute
-Last activity: 2026-08-04 — Phase 58 Plan 03 complete; strict Phase 57 adapter and all HIGH audit modes pass
+Plan: 4 of 4
+Status: Ready for external review and independent verification
+Last activity: 2026-08-04 — Phase 58 Plan 04 automated closeout validated; external review/verifier/audit remain next lifecycle gates
 
 Progress: [████████░░] 5/6 phases (83%)
 
@@ -83,6 +83,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 58 P01 | 20min | 2 tasks | 9 files |
 | Phase 58 P02 | 20min | 2 tasks | 3 files |
 | Phase 58 P03 | 2h | 2 tasks | 3 files |
+| Phase 58 P04 | 25 min | 1 task | 11 files |
 
 ## Accumulated Context
 
@@ -123,6 +124,7 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 - [Phase 58]: Cancellation evidence is caller publication discard after one intact synchronous opaque invocation; it neither aborts SDK work nor resolves TD-013.
 - [Phase 58]: The Phase 58 checker enforces the empty admitted/promotion sets without becoming a second eligibility authority.
 - [Phase 58]: Draft evidence contains fixed IDs and aggregate counts only; final suites, review, verifier, and milestone lifecycle remain pending.
+- [Phase 58]: Validated zero-admission automated closeout passes full SwiftPM, exact opt-in Vision, full Demo, checker, and owner gates; external review/verifier/audit remain next lifecycle steps.
 
 ### Pending Todos
 
@@ -148,6 +150,6 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 
 ## Session Continuity
 
-Last session: 2026-08-04T07:20:52.265Z
-Stopped at: Completed 58-01-PLAN.md
+Last session: 2026-08-04T08:57:04.908Z
+Stopped at: Completed 58-04-PLAN.md
 Resume file: None
