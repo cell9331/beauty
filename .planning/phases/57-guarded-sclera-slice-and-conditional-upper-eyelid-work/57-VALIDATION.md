@@ -59,10 +59,10 @@ or update this table one-for-one with the final XML task IDs before plan check.
 | `57-01-01` | 0 | SCLERA-01, SCLERA-06, LID-02, LID-04 | Exact SDK/facade tests: no canonical/synonym field/CodingKey/SPI/saved-output/admission route, literal `.none`, both still entries, exact 59/5/72, unchanged shipped eye/color behavior and pixel-buffer/reset isolation | passed |
 | `57-01-02` | 0 | SCLERA-01..06, LID-02..05 | Exact disabled `eyes.redness`/`eyes.fat` Demo rows, future/future/partial ledgers, proxy independence tests, eight-row HIGH inventory, and representative whole-source live mutations | passed |
 | `57-02-01` | 1 | SCLERA-01..06, LID-02..05 | Exact identity-selected Phase 54 sclera/eyelid rows, independent reason/count/design semantics, malformed/missing/duplicate/renamed/competing input mutations | passed |
-| `57-02-02` | 1 | SCLERA-01..06 | Complete whole-production sclera canonical/synonym/provider/renderer/preset/admission/Demo mutations; SCLERA false-branch/N/A/no-promotion evidence | passed |
-| `57-03-01` | 2 | LID-02..05 | Complete whole-production upper-eyelid canonical/synonym and neutral-file mutations plus affirmative LID-04 proxy-coupling rejection while shipped eye domains remain intact | passed |
+| `57-02-02` | 1 | SCLERA-01..06 | Complete 44-identity whole-production sclera camelCase/snake_case/Demo-ID/Chinese/provider/renderer/preset/admission matrix; SCLERA false-branch/N/A/no-promotion evidence | passed |
+| `57-03-01` | 2 | LID-02..05 | Complete 74-identity whole-production upper-eyelid camelCase/snake_case/Demo-ID/Chinese matrix plus affirmative all-identity LID-04 proxy-coupling rejection while shipped eye domains remain intact | passed |
 | `57-03-02` | 2 | SCLERA-01..06, LID-02..05 | Complete structural evidence/privacy/Demo/ledger/compatibility/scanner matrix and combined two-row projection with no cross-feature borrowing | passed |
-| `57-04-01` | 3 | SCLERA-01..06, LID-02..05 | Final focused 141/141, checker 490, full SwiftPM 544 with six opt-in skips, Demo build plus 120/120, schema/UI/traceability/diff/ASVS/owner gate | passed |
+| `57-04-01` | 3 | SCLERA-01..06, LID-02..05 | Final focused 141/141, checker 519, full SwiftPM 544 with six opt-in skips, Demo build plus 120/120, schema/UI/traceability/diff/ASVS/owner gate | passed |
 
 Task count target: **7 XML task IDs = 7 validation rows = 2 Wave 0 + 4
 focused enforcement tasks + 1 final closeout**.
@@ -106,8 +106,8 @@ focused enforcement tasks + 1 final closeout**.
 | --- | --- |
 | Authorities | Exact unique `sclera_redness` row with two ordered missing reasons and zeros; exact unique `upper_eyelid_fullness` row with two missing reasons plus `non_warp_design_unqualified` and zeros; no sibling/teeth borrowing |
 | Public surface | No canonical/synonym stored field, initializer, CodingKey, encoded/default/reflection key, public/SPI candidate, saved-output helper, provider, transform, renderer, preset, resource, model, dependency, or inert route |
-| Sclera aliases | Reject eye/conjunctiva/ocular/bloodshot/red-eye/sclera-whitening candidate routes and aliases to global whitening, brightness, skin color, eye geometry, or teeth |
-| Eyelid aliases | Reject lid/eyelid fat/fullness removal routes and aliases to other candidates or generic Testing mechanics |
+| Sclera aliases | Reject the complete 44-identity camelCase/snake_case family, including `conjunctiva_redness`, `conjunctival_redness`, `ocular_redness`, `sclera_whitening`, `eyes.redness`, and `祛红血丝`, plus aliases to global whitening, brightness, skin color, eye geometry, or teeth |
+| Eyelid aliases | Reject the complete 74-identity camelCase/snake_case family, including `upper_eyelid_fat`, `eyelid_fullness`, `eyes.fat`, and `去脂`, plus aliases to other candidates or generic Testing mechanics |
 | LID-04 proxies | Preserve shipped `eyeHeight`, `upperEyelidLift`, brow translation, smoothing, dark-circle, eye-bag, aperture/warp domains; reject any coupling/name/comment/mapping/evidence that represents them as `去脂` |
 | Runtime/compatibility | Literal `.none`; exact 59 stored/CodingKey fields, five presets/hashes, 72 renderer cases; both still facades/no-admission behavior unchanged; no realtime/pixel-buffer/reset local work |
 | Demo | Exact disabled `eyes.redness` / `祛红血丝` and `eyes.fat` / `去脂` rows and order/badges; no active control/binding/store/processor/reset/availability route |
@@ -119,9 +119,9 @@ focused enforcement tasks + 1 final closeout**.
 | ID | Threat | Required mitigation/evidence |
 | --- | --- | --- |
 | T-57-01 | Decision authority tampering/cross-feature borrowing | Exact two-row identity/shape/reason/count parser and complete malformed/missing/duplicate/renamed/competing/independence mutations |
-| T-57-02 | Sclera public/production activation or alias | Whole-production canonical/synonym scan, neutral-file provider/transform mutations, literal `.none`, saved-output/preset/Demo absence |
-| T-57-03 | Upper-eyelid public/production activation or alias | Whole-production lid/fat/fullness scan, neutral-file mutations, no field/provider/renderer/preset/admission/Demo route |
-| T-57-04 | Warp/smoothing/eye-feature proxy substitution | Exact shipped-domain allowlist plus coupling mutations for eyeHeight, upperEyelidLift, brow, smoothing, eye-bag, dark-circle, aperture, and warp |
+| T-57-02 | Sclera public/production activation or alias | Whole-production 44-identity camelCase/snake_case/Demo-ID/Chinese scan, neutral-file provider/transform mutations, literal `.none`, saved-output/preset/Demo absence |
+| T-57-03 | Upper-eyelid public/production activation or alias | Whole-production 74-identity camelCase/snake_case/Demo-ID/Chinese scan, neutral-file mutations, no field/provider/renderer/preset/admission/Demo route |
+| T-57-04 | Warp/smoothing/eye-feature proxy substitution | Every one of the 118 candidate identities is relation-tested while the exact shipped-domain allowlist preserves eyeHeight, upperEyelidLift, brow, smoothing, eye-bag, dark-circle, aperture, and warp |
 | T-57-05 | Demo activation hidden behind future taxonomy | Exact two disabled rows and mutations for control/binding/store/processor/reset/enabled availability/order/copy drift |
 | T-57-06 | Eye-support/evidence privacy disclosure | Fixed allowlist; reject portrait/review/right paths, eye/pupil/iris/landmark/mask/vein/pixel/digest/raw-match/raw-error data |
 | T-57-07 | Ledger promotion or sibling/teeth borrowing | Exact future/future/partial rows and product-owner statements; promotion/branch closure/borrow mutations fail |
@@ -189,5 +189,8 @@ Task `57-04-01` must execute and record:
 
 **Approval:** passed — seven task rows, ten requirements, twenty decisions,
 eight HIGH mitigations, focused/final regressions, and synchronized owner
-evidence are current green. Validation credits exact absence, proxy rejection,
-privacy, compatibility, and recovery only.
+evidence are current green. The independent verification-gap rerun additionally
+passes the four-suite focused SwiftPM selection 101/101 and the named disabled
+Demo boundary 1/1 after mirroring all 118 candidate identities. Validation
+credits exact absence, proxy rejection, privacy, compatibility, and recovery
+only.

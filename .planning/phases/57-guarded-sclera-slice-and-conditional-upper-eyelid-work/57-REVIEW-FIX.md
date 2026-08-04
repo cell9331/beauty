@@ -65,7 +65,7 @@ verification_status: pending_independent_verifier
 
 **Files modified:** checker, ROADMAP, STATE, evidence, validation, PLANS, SECURITY, RELIABILITY, and QUALITY_SCORE  
 **Commit:** `c32dd07`  
-**Applied fix:** Adds exact unique anchors for every Phase 57 owner, owner deletion/duplication/contradiction mutations, repairs both stale ROADMAP boxes, and synchronizes the 490-case post-review evidence.
+**Applied fix:** Adds exact unique anchors for every Phase 57 owner, owner deletion/duplication/contradiction mutations, repairs both stale ROADMAP boxes, and synchronizes the initial 490-case post-review evidence.
 
 ## Skipped Issues
 
@@ -75,7 +75,12 @@ None.
 
 - Python syntax: passed.
 - Checker live: `mode=live status=passed rules=none`.
-- Checker self-test: 490/490; exact per-threat totals `65 / 38 / 35 / 199 / 23 / 81 / 7 / 42`.
+- Checker self-test after the independent verification-gap fix: 519/519; exact
+  per-threat totals `65 / 68 / 90 / 143 / 23 / 81 / 7 / 42`.
+- The completed identity inventory now contains 44 sclera and 74 upper-eyelid
+  camelCase, snake_case, dotted Demo-ID, and owned Chinese identities. Every
+  identity is exercised in a neutral production file and a proxy relation;
+  only the exact two disabled Demo taxonomy declarations are allowlisted.
 - Focused Swift Phase 57 tests: 5/5 passed.
 - Focused Demo Phase 57 test on iPhone 17e / iOS 26.5: 1/1 passed.
 - The broader 101-test Swift filter had eight failures caused by missing ignored `example-images` fixtures in the isolated worktree; every Phase 57 test in that run passed. Canonical full regression remains owned by the independent verifier from the primary workspace.

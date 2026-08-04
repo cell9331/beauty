@@ -70,36 +70,78 @@ EXPECTED_DECISIONS = {
         "naturalness_weight": 0,
     },
 }
-SCLERA_TOKENS = (
-    "scleraRedness", "sclera_redness", "scleraWhitening", "scleraWhite",
-    "scleraBrightness", "whitenSclera", "eyeRedness", "redEye",
-    "conjunctivaRedness", "conjunctivalRedness", "conjunctivaWhitening",
-    "conjunctivalWhitening", "ocularRedness", "ocularWhitening",
-    "bloodshotReduction", "bloodshotEyeCorrection",
+SCLERA_CAMEL_TOKENS = (
+    "scleraRedness", "scleraRednessReduction", "scleraWhitening", "scleraWhite",
+    "scleraBrightness", "whitenSclera", "eyeRedness", "eyeRednessReduction",
+    "redEye", "redEyeReduction", "conjunctivaRedness",
+    "conjunctivaRednessReduction", "conjunctivalRedness",
+    "conjunctivalRednessReduction", "conjunctivaWhitening",
+    "conjunctivalWhitening", "ocularRedness", "ocularRednessReduction",
+    "ocularWhitening", "bloodshotReduction", "bloodshotEyeCorrection",
 )
+SCLERA_SNAKE_TOKENS = (
+    "sclera_redness", "sclera_redness_reduction", "sclera_whitening",
+    "sclera_white", "sclera_brightness", "whiten_sclera", "eye_redness",
+    "eye_redness_reduction", "red_eye", "red_eye_reduction",
+    "conjunctiva_redness", "conjunctiva_redness_reduction",
+    "conjunctival_redness", "conjunctival_redness_reduction",
+    "conjunctiva_whitening", "conjunctival_whitening", "ocular_redness",
+    "ocular_redness_reduction", "ocular_whitening", "bloodshot_reduction",
+    "bloodshot_eye_correction",
+)
+SCLERA_OWNED_IDENTITIES = ("eyes.redness", "祛红血丝")
+SCLERA_TOKENS = SCLERA_CAMEL_TOKENS + SCLERA_SNAKE_TOKENS
 SCLERA_TOKEN_PATTERN = "(?:" + "|".join(map(re.escape, SCLERA_TOKENS)) + ")"
-SCLERA_PATTERN = rf"(?i)\b{SCLERA_TOKEN_PATTERN}[A-Za-z0-9_]*\b"
+SCLERA_OWNED_PATTERN = "(?:" + "|".join(map(re.escape, SCLERA_OWNED_IDENTITIES)) + ")"
+SCLERA_IDENTITY_PATTERN = (
+    rf"(?:{SCLERA_TOKEN_PATTERN}[A-Za-z0-9_]*|{SCLERA_OWNED_PATTERN})"
+)
+SCLERA_PATTERN = rf"(?i){SCLERA_IDENTITY_PATTERN}"
 SCLERA_ALIAS_PATTERN = (
-    rf"(?is){SCLERA_TOKEN_PATTERN}"
+    rf"(?is){SCLERA_IDENTITY_PATTERN}"
     r".{0,160}(?:skinWhitening|brightness|skinColor|eyeHeight|upperEyelidLift|"
     r"teethWhitening|upperEyelidFullnessReduction|opaque|composition|mechanics)|"
     r"(?:skinWhitening|brightness|skinColor|eyeHeight|upperEyelidLift|teethWhitening|"
     r"upperEyelidFullnessReduction|opaque|composition|mechanics).{0,160}"
-    rf"{SCLERA_TOKEN_PATTERN}"
+    rf"{SCLERA_IDENTITY_PATTERN}"
 )
-EYELID_TOKENS = (
+EYELID_CAMEL_TOKENS = (
     "upperEyelidFullness", "upperLidFullness", "eyelidFullness", "lidFullness",
+    "upperEyelidFullnessReduction", "upperLidFullnessReduction",
+    "eyelidFullnessReduction", "lidFullnessReduction",
+    "upperEyelidFullnessRemoval", "upperLidFullnessRemoval",
+    "eyelidFullnessRemoval", "lidFullnessRemoval",
     "upperEyelidFat", "upperLidFat", "eyelidFat", "lidFat",
+    "upperEyelidFatReduction", "upperLidFatReduction", "eyelidFatReduction",
+    "lidFatReduction", "upperEyelidFatRemoval", "upperLidFatRemoval",
+    "eyelidFatRemoval", "lidFatRemoval",
     "removeUpperEyelidFat", "removeEyelidFat", "removeUpperLidFat", "removeLidFat",
     "upperEyelidDefatting", "upperLidDefatting", "eyelidDefatting", "lidDefatting",
     "defatUpperEyelid", "defatEyelid", "defatUpperLid", "defatLid",
-    "upper_eyelid_fullness", "upper_lid_fullness", "eyelid_fat", "lid_fat",
 )
+EYELID_SNAKE_TOKENS = (
+    "upper_eyelid_fullness", "upper_lid_fullness", "eyelid_fullness",
+    "lid_fullness", "upper_eyelid_fullness_reduction",
+    "upper_lid_fullness_reduction", "eyelid_fullness_reduction",
+    "lid_fullness_reduction", "upper_eyelid_fullness_removal",
+    "upper_lid_fullness_removal", "eyelid_fullness_removal",
+    "lid_fullness_removal", "upper_eyelid_fat", "upper_lid_fat", "eyelid_fat",
+    "lid_fat", "upper_eyelid_fat_reduction", "upper_lid_fat_reduction",
+    "eyelid_fat_reduction", "lid_fat_reduction", "upper_eyelid_fat_removal",
+    "upper_lid_fat_removal", "eyelid_fat_removal", "lid_fat_removal",
+    "remove_upper_eyelid_fat", "remove_eyelid_fat", "remove_upper_lid_fat",
+    "remove_lid_fat", "upper_eyelid_defatting", "upper_lid_defatting",
+    "eyelid_defatting", "lid_defatting", "defat_upper_eyelid", "defat_eyelid",
+    "defat_upper_lid", "defat_lid",
+)
+EYELID_OWNED_IDENTITIES = ("eyes.fat", "去脂")
+EYELID_TOKENS = EYELID_CAMEL_TOKENS + EYELID_SNAKE_TOKENS
 EYELID_TOKEN_PATTERN = "(?:" + "|".join(map(re.escape, EYELID_TOKENS)) + ")"
-EYELID_PATTERN = rf"(?i)\b{EYELID_TOKEN_PATTERN}[A-Za-z0-9_]*\b"
+EYELID_OWNED_PATTERN = "(?:" + "|".join(map(re.escape, EYELID_OWNED_IDENTITIES)) + ")"
 EYELID_IDENTITY_PATTERN = (
-    rf"(?:{EYELID_TOKEN_PATTERN}[A-Za-z0-9_]*|去脂|eyes\.fat)"
+    rf"(?:{EYELID_TOKEN_PATTERN}[A-Za-z0-9_]*|{EYELID_OWNED_PATTERN})"
 )
+EYELID_PATTERN = rf"(?i){EYELID_IDENTITY_PATTERN}"
 PROXY_PATTERN = (
     r"(?i)\b(?:eyeHeight|upperEyelidLift|eyebrowYPosition|"
     r"brow(?:Translation|Movement|Lift|Warp)|eyeAperture|eyeSize|eyeWarp|"
@@ -133,7 +175,7 @@ EVIDENCE_COMMON_SECTIONS = (
     "## Privacy Allowlist and Nonclaims",
 )
 EXPECTED_VALIDATED_EVIDENCE_SHA256 = (
-    "c2da3720491d0d9fe6a2c52263a6465c8ea32462b87c4519b4b4dfce28470f3b"
+    "454a59301d507bec376b7691c056fb6048611d9f4aaec4e6e32365976a094f6f"
 )
 EXPECTED_EVIDENCE_DECISION_ROWS = (
     (
@@ -163,8 +205,8 @@ EXPECTED_EVIDENCE_TASK_ROWS = (
     ("`57-01-01`", "passed — SDK, facade, compatibility, and proxy-domain exact absence"),
     ("`57-01-02`", "passed — disabled Demo rows, ledgers, and initial HIGH checker"),
     ("`57-02-01`", "passed — exact independent Phase 54 parser; 65 mutation/input cases"),
-    ("`57-02-02`", "passed — complete sclera production and synonym matrix; 38 cases"),
-    ("`57-03-01`", "passed — 35 upper-eyelid activation/synonym cases and 199 candidate-to-proxy cases"),
+    ("`57-02-02`", "passed — complete sclera identity matrix; 68 cases"),
+    ("`57-03-01`", "passed — 90 upper-eyelid identity cases and 143 candidate-to-proxy cases"),
     ("`57-03-02`", "passed — 23 Demo, 81 privacy/evidence/output, 7 ledger, and 42 compatibility/scanner/owner cases; focused SDK 101/101 and Demo 29/29"),
     ("`57-04-01`", "passed — final focused/full regression, traceability, validation, evidence, and owner closeout"),
 )
@@ -172,9 +214,9 @@ EXPECTED_EVIDENCE_HIGH_ROWS = tuple(
     (f"T-57-{index:02d}", result)
     for index, result in enumerate((
         "passed — 65 exact-authority cases",
-        "passed — 38 whole-production sclera cases",
-        "passed — 35 whole-production upper-eyelid cases",
-        "passed — 199 owned-identity proxy-relation and proxy-only-control cases",
+        "passed — 68 whole-production sclera identity cases",
+        "passed — 90 whole-production upper-eyelid identity cases",
+        "passed — 143 complete-identity proxy-relation and proxy-only-control cases",
         "passed — 23 recursive disabled-Demo and active-route cases",
         "passed — 81 exact-schema lifecycle, privacy, contradiction, and fixed-output cases",
         "passed — 7 future/future/partial promotion and borrowing cases",
@@ -259,9 +301,9 @@ def run_rg(pattern: str, paths: tuple[pathlib.Path, ...], glob: str = "*.swift")
 def expected_inventory() -> dict[str, object]:
     rows = (
         ("T-57-01", ["Spoofing", "Tampering"], "57-02-01", ["exact_phase54_dual_authority", "independent_closed_reasons_and_zero_counts"]),
-        ("T-57-02", ["Elevation of Privilege", "Tampering"], "57-02-02", ["no_sclera_candidate_or_alias", "no_sclera_provider_renderer_preset_admission_or_output_route"]),
-        ("T-57-03", ["Elevation of Privilege", "Tampering"], "57-03-01", ["no_upper_eyelid_candidate_or_alias", "no_upper_eyelid_provider_renderer_preset_admission_or_output_route"]),
-        ("T-57-04", ["Elevation of Privilege", "Tampering"], "57-03-01", ["candidate_proxy_coupling_rejected", "legitimate_proxy_only_domains_preserved"]),
+        ("T-57-02", ["Elevation of Privilege", "Tampering"], "57-02-02", ["complete_camel_snake_demo_id_chinese_sclera_identity_set", "no_sclera_provider_renderer_preset_admission_or_output_route"]),
+        ("T-57-03", ["Elevation of Privilege", "Tampering"], "57-03-01", ["complete_camel_snake_demo_id_chinese_upper_eyelid_identity_set", "no_upper_eyelid_provider_renderer_preset_admission_or_output_route"]),
+        ("T-57-04", ["Elevation of Privilege", "Tampering"], "57-03-01", ["every_candidate_identity_proxy_coupling_rejected", "legitimate_proxy_only_domains_preserved"]),
         ("T-57-05", ["Tampering"], "57-01-02+57-03-02", ["exact_disabled_demo_rows", "no_control_binding_store_processor_reset_or_availability_route"]),
         ("T-57-06", ["Information Disclosure"], "57-03-02", ["fixed_rule_only_output", "no_sensitive_eye_support_review_or_pixel_payload"]),
         ("T-57-07", ["Tampering", "Repudiation"], "57-03-02", ["exact_future_future_partial_ledgers", "no_sibling_or_teeth_borrowing"]),
@@ -410,8 +452,19 @@ def source_failures() -> set[str]:
         supplemental_text = "\n".join(
             [read_text(PACKAGE), read_text(MANIFEST)]
             + [read_text(path) for path in sorted(PRESETS.glob("*.json"))]
-            + [read_text(path) for path in sorted(DEMO_ROOT.rglob("*.swift"))]
         )
+        demo_parts = []
+        disabled_demo_rows = (
+            'unsupported("eyes.fat", title: "去脂", icon: "minus.circle", badge: .free)',
+            'unsupported("eyes.redness", title: "祛红血丝", icon: "drop", badge: .free)',
+        )
+        for path in sorted(DEMO_ROOT.rglob("*.swift")):
+            text = read_text(path)
+            if path == DEMO_SOURCE:
+                for row in disabled_demo_rows:
+                    text = text.replace(row, "", 1)
+            demo_parts.append(text)
+        demo_route_text = "\n".join(demo_parts)
     except (OSError, UnicodeError, ScannerFailure):
         return {"R57-SCLERA", "R57-EYELID", "R57-COMPAT"}
 
@@ -419,12 +472,14 @@ def source_failures() -> set[str]:
         failures.add("R57-SCLERA")
     if re.search(EYELID_PATTERN, supplemental_text):
         failures.add("R57-EYELID")
+    if re.search(SCLERA_PATTERN, demo_route_text):
+        failures.add("R57-SCLERA")
+    if re.search(EYELID_PATTERN, demo_route_text):
+        failures.add("R57-EYELID")
     if re.search(SCLERA_ALIAS_PATTERN, f"{source_text}\n{supplemental_text}"):
         failures.add("R57-SCLERA")
 
-    candidate = (
-        rf"(?:{SCLERA_TOKEN_PATTERN}[A-Za-z0-9_]*|{EYELID_IDENTITY_PATTERN})"
-    )
+    candidate = rf"(?:{SCLERA_IDENTITY_PATTERN}|{EYELID_IDENTITY_PATTERN})"
     relation = re.compile(
         rf"(?:{candidate}.{{0,200}}{PROXY_PATTERN.replace('(?i)', '')}|{PROXY_PATTERN.replace('(?i)', '')}.{{0,200}}{candidate})",
         re.IGNORECASE | re.DOTALL,
@@ -908,24 +963,24 @@ def owner_failures() -> set[str]:
         SECURITY: (
             "### Phase 57 Closed Eye-Retouch Security Boundary",
             "The exact Phase 54 `sclera_redness` and `upper_eyelid_fullness` rows are the sole independent authorities.",
-            "The 490-case live-fixture matrix recursively scans every production Swift file",
+            "The 519-case live-fixture matrix recursively scans every production Swift file",
             "Durable output is fixed-ID and aggregate-only",
         ),
         RELIABILITY: (
             "### Phase 57 Closed Eye-Retouch Reliability Closeout",
             "Authority, fixture, parser, scanner, and evidence lifecycle handling is deterministic and fail closed.",
             "Both still-image facade entries, literal `.none`, exact 59/5/72 inventories",
-            "the 490-case checker with per-threat totals `65 / 38 / 35 / 199 / 23 / 81 / 7 / 42`",
+            "the 519-case checker with per-threat totals `65 / 68 / 90 / 143 / 23 / 81 / 7 / 42`",
         ),
         QUALITY_SCORE: (
             "### v1.14 Phase 57 Closed Eye-Retouch Evidence Score",
             "Exact traceability passes 7/7 task rows",
-            "The post-review checker passes 490 aggregate live-fixture mutation/scanner/inventory/owner cases",
+            "The post-verification-gap checker passes 519 aggregate live-fixture mutation/scanner/inventory/owner cases",
             "Quality credit is limited to independent exact closed-gate enforcement",
         ),
         PLANS: (
             "| Phase 57 final closed eye-gate closeout |",
-            "the checker passes 490 aggregate cases with per-threat totals `65 / 38 / 35 / 199 / 23 / 81 / 7 / 42`",
+            "the checker passes 519 aggregate cases with per-threat totals `65 / 68 / 90 / 143 / 23 / 81 / 7 / 42`",
             "Independent review and verification remain the phase lifecycle owners before Phase 58.",
         ),
         ROADMAP: (
@@ -938,7 +993,7 @@ def owner_failures() -> set[str]:
             "current_phase: 57",
             "status: executing",
             "Status: Ready for independent review and verification",
-            "Preserve all 490 post-review mutation cases",
+            "Preserve all 519 post-verification-gap mutation cases",
         ),
         REQUIREMENTS: tuple(
             [f"- [x] **{requirement}**" for requirement in EVIDENCE_REQUIREMENTS]
@@ -955,7 +1010,7 @@ def owner_failures() -> set[str]:
         VALIDATION: (
             "status: validated",
             "nyquist_compliant: true",
-            "Final focused 141/141, checker 490",
+            "Final focused 141/141, checker 519",
             "T-57-08 | Compatibility/evidence/scanner failure misclassified as green",
         ),
     }
@@ -1198,25 +1253,13 @@ def assert_sclera_surface_failures() -> int:
             relative_path, original, replacement, "R57-SCLERA",
         )
 
-    neutral_families = (
-        ("Direct.swift", "package var scleraRedness: Float = 0\n"),
-        ("ConjunctivaDirect.swift", "package var conjunctivaRedness: Float = 0\n"),
-        ("ConjunctivalDirect.swift", "package var conjunctivalRedness: Float = 0\n"),
-        ("OcularDirect.swift", "package var ocularRedness: Float = 0\n"),
-        ("EyeDirect.swift", "package var eyeRedness: Float = 0\n"),
-        ("RedEyeDirect.swift", "package var redEye: Float = 0\n"),
-        ("Canonical.swift", "package func scleraRednessReduction() {}\n"),
-        ("EyeRed.swift", "package func eyeRednessReduction() {}\n"),
-        ("RedEye.swift", "package func redEyeReduction() {}\n"),
-        ("Conjunctiva.swift", "package func conjunctivaRednessReduction() {}\n"),
-        ("Conjunctival.swift", "package func conjunctivalRednessReduction() {}\n"),
-        ("Ocular.swift", "package func ocularRednessReduction() {}\n"),
-        ("Bloodshot.swift", "package func bloodshotEyeCorrection() {}\n"),
-        ("Whitening.swift", "package func scleraWhitening() {}\n"),
-    )
     neutral_root = SOURCES / "NeutralPhase57"
-    for filename, contents in neutral_families:
-        cases += assert_added_file(neutral_root / filename, contents, "R57-SCLERA")
+    for index, identity in enumerate(SCLERA_TOKENS + SCLERA_OWNED_IDENTITIES):
+        cases += assert_added_file(
+            neutral_root / f"Candidate{index}.swift",
+            f'package let phase57Candidate{index} = "{identity}"\n',
+            "R57-SCLERA",
+        )
 
     alias_targets = (
         "skinWhitening", "brightness", "skinColor", "eyeHeight",
@@ -1321,30 +1364,13 @@ def assert_eyelid_surface_failures() -> int:
             relative_path, original, replacement, "R57-EYELID",
         )
 
-    neutral_families = (
-        ("UpperEyelidFullnessDirect.swift", "package var upperEyelidFullness: Float = 0\n"),
-        ("UpperLidFullnessDirect.swift", "package var upperLidFullness: Float = 0\n"),
-        ("EyelidFullnessDirect.swift", "package var eyelidFullness: Float = 0\n"),
-        ("LidFullnessDirect.swift", "package var lidFullness: Float = 0\n"),
-        ("UpperEyelidFatDirect.swift", "package var upperEyelidFat: Float = 0\n"),
-        ("UpperLidFatDirect.swift", "package var upperLidFat: Float = 0\n"),
-        ("EyelidFatDirect.swift", "package var eyelidFat: Float = 0\n"),
-        ("LidFatDirect.swift", "package var lidFat: Float = 0\n"),
-        ("Canonical.swift", "package func upperEyelidFullnessReduction() {}\n"),
-        ("UpperLidFull.swift", "package func upperLidFullnessRemoval() {}\n"),
-        ("EyelidFull.swift", "package func eyelidFullnessReduction() {}\n"),
-        ("LidFull.swift", "package func lidFullnessRemoval() {}\n"),
-        ("UpperEyelidFat.swift", "package func upperEyelidFatReduction() {}\n"),
-        ("UpperLidFat.swift", "package func upperLidFatRemoval() {}\n"),
-        ("EyelidFat.swift", "package func eyelidFatReduction() {}\n"),
-        ("LidFat.swift", "package func lidFatRemoval() {}\n"),
-        ("Remove.swift", "package func removeUpperEyelidFat() {}\n"),
-        ("Defatting.swift", "package func upperEyelidDefatting() {}\n"),
-        ("Defat.swift", "package func defatUpperEyelid() {}\n"),
-    )
     neutral_root = SOURCES / "NeutralPhase57Eyelid"
-    for filename, contents in neutral_families:
-        cases += assert_added_file(neutral_root / filename, contents, "R57-EYELID")
+    for index, identity in enumerate(EYELID_TOKENS + EYELID_OWNED_IDENTITIES):
+        cases += assert_added_file(
+            neutral_root / f"Candidate{index}.swift",
+            f'package let phase57Candidate{index} = "{identity}"\n',
+            "R57-EYELID",
+        )
     return cases
 
 
@@ -1393,16 +1419,25 @@ def assert_proxy_relation_failures() -> int:
             f"package let upperEyelidFullness = {target}\n",
             expected,
         )
-    for identity_index, identity in enumerate(("去脂", "eyes.fat")):
-        for target_index, target in enumerate(relation_targets):
-            for form_index, form in enumerate(relation_forms):
-                cases += assert_added_file_rules(
-                    neutral_root / (
-                        f"OwnedIdentity{identity_index}_{target_index}_{form_index}.swift"
-                    ),
-                    form.format(candidate=identity, target=target),
-                    ("R57-PROXY",),
-                )
+    all_identities = (
+        tuple((identity, "R57-SCLERA") for identity in SCLERA_TOKENS + SCLERA_OWNED_IDENTITIES)
+        + tuple((identity, "R57-EYELID") for identity in EYELID_TOKENS + EYELID_OWNED_IDENTITIES)
+    )
+    for identity_index, (identity, candidate_rule) in enumerate(all_identities):
+        cases += assert_added_file_rules(
+            neutral_root / f"IdentityRelation{identity_index}.swift",
+            relation_forms[identity_index % len(relation_forms)].format(
+                candidate=identity,
+                target=relation_targets[identity_index % len(relation_targets)],
+            ),
+            (candidate_rule, "R57-PROXY"),
+        )
+    for form_index, form in enumerate(relation_forms):
+        cases += assert_added_file_rules(
+            neutral_root / f"OwnedForm{form_index}.swift",
+            form.format(candidate="去脂", target="eyeHeight"),
+            ("R57-EYELID", "R57-PROXY"),
+        )
 
     cases += assert_clean_added_file(
         neutral_root / "ProxyOnly.swift",
@@ -1732,13 +1767,13 @@ def assert_compatibility_and_scanner_failures() -> int:
         ("PRODUCT_SENSE.md", "### v1.14 Phase 57 Closed Eye-Retouch Acceptance", "", "R57-COMPAT"),
         ("PRODUCT_SENSE.md", "remain closed. `scleraRednessReduction`", "are open. `scleraRednessReduction`", "R57-COMPAT"),
         ("SECURITY.md", "### Phase 57 Closed Eye-Retouch Security Boundary", "", "R57-COMPAT"),
-        ("SECURITY.md", "The 490-case live-fixture matrix", "The 489-case live-fixture matrix", "R57-COMPAT"),
+        ("SECURITY.md", "The 519-case live-fixture matrix", "The 518-case live-fixture matrix", "R57-COMPAT"),
         ("RELIABILITY.md", "### Phase 57 Closed Eye-Retouch Reliability Closeout", "", "R57-COMPAT"),
         ("RELIABILITY.md", "Both still-image facade entries, literal `.none`", "Both still-image facade entries admit eye retouch", "R57-COMPAT"),
         ("QUALITY_SCORE.md", "### v1.14 Phase 57 Closed Eye-Retouch Evidence Score", "", "R57-COMPAT"),
-        ("QUALITY_SCORE.md", "The post-review checker passes 490 aggregate", "The post-review checker passes 489 aggregate", "R57-COMPAT"),
+        ("QUALITY_SCORE.md", "The post-verification-gap checker passes 519 aggregate", "The post-verification-gap checker passes 518 aggregate", "R57-COMPAT"),
         ("PLANS.md", "| Phase 57 final closed eye-gate closeout |", "| Phase 57 stale closeout |", "R57-COMPAT"),
-        ("PLANS.md", "the checker passes 490 aggregate cases", "the checker passes 489 aggregate cases", "R57-COMPAT"),
+        ("PLANS.md", "the checker passes 519 aggregate cases", "the checker passes 518 aggregate cases", "R57-COMPAT"),
         (".planning/ROADMAP.md", "### Phase 57: Guarded Sclera Slice and Conditional Upper-Eyelid Work", "", "R57-COMPAT"),
         (".planning/ROADMAP.md", "**Plans**: 4/4 plans executed", "**Plans**: 3/4 plans executed", "R57-COMPAT"),
         (".planning/STATE.md", "current_phase: 57", "current_phase: 58", "R57-COMPAT"),

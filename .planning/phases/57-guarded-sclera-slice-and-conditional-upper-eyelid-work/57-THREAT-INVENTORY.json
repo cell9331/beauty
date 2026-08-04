@@ -17,7 +17,7 @@
       "severity": "HIGH",
       "disposition": "mitigate",
       "owner": "57-02-02",
-      "gates": ["no_sclera_candidate_or_alias", "no_sclera_provider_renderer_preset_admission_or_output_route"]
+      "gates": ["complete_camel_snake_demo_id_chinese_sclera_identity_set", "no_sclera_provider_renderer_preset_admission_or_output_route"]
     },
     {
       "id": "T-57-03",
@@ -25,7 +25,7 @@
       "severity": "HIGH",
       "disposition": "mitigate",
       "owner": "57-03-01",
-      "gates": ["no_upper_eyelid_candidate_or_alias", "no_upper_eyelid_provider_renderer_preset_admission_or_output_route"]
+      "gates": ["complete_camel_snake_demo_id_chinese_upper_eyelid_identity_set", "no_upper_eyelid_provider_renderer_preset_admission_or_output_route"]
     },
     {
       "id": "T-57-04",
@@ -33,7 +33,7 @@
       "severity": "HIGH",
       "disposition": "mitigate",
       "owner": "57-03-01",
-      "gates": ["candidate_proxy_coupling_rejected", "legitimate_proxy_only_domains_preserved"]
+      "gates": ["every_candidate_identity_proxy_coupling_rejected", "legitimate_proxy_only_domains_preserved"]
     },
     {
       "id": "T-57-05",
