@@ -82,9 +82,11 @@ TEETH_IDENTITIES = (
     "teethWhitening", "teethWhite", "toothWhitening", "teethBrightness",
     "enamelWhitening", "enamelWhite", "enamelBrightness",
     "dentitionWhitening", "dentitionWhite", "dentitionBrightness",
+    "whitenTeeth",
     "teeth_whitening", "teeth_white", "tooth_whitening", "teeth_brightness",
     "enamel_whitening", "enamel_white", "enamel_brightness",
     "dentition_whitening", "dentition_white", "dentition_brightness",
+    "whiten_teeth",
 )
 SCLERA_IDENTITIES = (
     "scleraRedness", "scleraRednessReduction", "scleraWhitening", "scleraWhite",
