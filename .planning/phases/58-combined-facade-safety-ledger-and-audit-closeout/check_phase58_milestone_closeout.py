@@ -5,12 +5,14 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import pathlib
 import re
 import shutil
 import subprocess
 import sys
+import tarfile
 import tempfile
 
 
@@ -55,6 +57,23 @@ TASK_IDS = (
 )
 PHASE57_CHECKER_SHA256 = (
     "13246e8c2e49dc6a569ee1d72dcc0eb302cf550f2769837a2221854bc470d428"
+)
+PHASE57_REVISION = "4125b75"
+PHASE57_SELF_TEST_TOTALS = {
+    "T-57-01": 65,
+    "T-57-02": 68,
+    "T-57-03": 90,
+    "T-57-04": 143,
+    "T-57-05": 23,
+    "T-57-06": 81,
+    "T-57-07": 7,
+    "T-57-08": 42,
+}
+PHASE57_CURRENT_MODES = (
+    ("decision", (0, "mode=decision status=passed rules=none\n")),
+    ("sclera", (0, "mode=sclera status=passed rules=none\n")),
+    ("eyelid", (0, "mode=eyelid status=passed rules=none\n")),
+    (None, (1, "mode=live status=blocked rules=R57-COMPAT\n")),
 )
 CANDIDATE_PATTERN = (
     r"(?i)teeth(?:Whitening|_whitening)|enamel(?:Whitening|_whitening)|"
@@ -105,7 +124,8 @@ def configure_root(root: pathlib.Path) -> None:
     global RESOLVER, ENGINE, TESTING_SUPPORT, FOUNDATION_TEST, COMPOSITION_TEST, CANONICAL_TEST
     global PARAMETER_TEST, RESOURCE_TEST, RENDERER_TEST, DEMO_SOURCE, DEMO_TEST
     global DEMO_ROOT, DECISIONS, FEATURE_MATRIX, SHAPE_LEDGER, PHASE57_CHECKER
-    global PHASE57_VERIFICATION, INVENTORY, EVIDENCE
+    global PHASE57_VERIFICATION, PHASE57_EVIDENCE, PHASE57_VALIDATION
+    global PHASE57_INVENTORY, INVENTORY, EVIDENCE
 
     ROOT = root.resolve()
     PHASE = ROOT / ".planning" / "phases" / PHASE_NAME
@@ -158,6 +178,9 @@ def configure_root(root: pathlib.Path) -> None:
         "check_phase57_eye_gate_boundaries.py"
     )
     PHASE57_VERIFICATION = PHASE57_CHECKER.with_name("57-VERIFICATION.md")
+    PHASE57_EVIDENCE = PHASE57_CHECKER.with_name("57-CLOSED-EYE-GATES-EVIDENCE.md")
+    PHASE57_VALIDATION = PHASE57_CHECKER.with_name("57-VALIDATION.md")
+    PHASE57_INVENTORY = PHASE57_CHECKER.with_name("57-THREAT-INVENTORY.json")
     INVENTORY = PHASE / "58-THREAT-INVENTORY.json"
     EVIDENCE = PHASE / "58-CLOSEOUT-EVIDENCE.md"
 
@@ -609,17 +632,173 @@ def promotion_failures() -> set[str]:
     return set()
 
 
-def phase57_failures() -> set[str]:
-    digest = hashlib.sha256(PHASE57_CHECKER.read_bytes()).hexdigest()
+def _phase57_subprocess(arguments: tuple[str, ...], root: pathlib.Path) -> tuple[int, str, str]:
+    """Run a frozen checker mode while retaining no subprocess diagnostics."""
+    completed = subprocess.run(
+        [sys.executable, str(root / PHASE57_CHECKER.relative_to(ROOT)), *arguments],
+        cwd=root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    return completed.returncode, completed.stdout, completed.stderr
+
+
+def _phase57_git_blob() -> bytes:
+    completed = subprocess.run(
+        ["git", "show", f"{PHASE57_REVISION}:{PHASE57_CHECKER.relative_to(ROOT)}"],
+        cwd=ROOT,
+        capture_output=True,
+        check=False,
+    )
+    if completed.returncode != 0 or completed.stderr or not completed.stdout:
+        raise RuntimeError("frozen checker blob unavailable")
+    return completed.stdout
+
+
+def _extract_phase57_revision(destination: pathlib.Path) -> pathlib.Path:
+    """Extract a verified Git revision read-only into a disposable root."""
+    completed = subprocess.run(
+        ["git", "archive", PHASE57_REVISION],
+        cwd=ROOT,
+        capture_output=True,
+        check=False,
+    )
+    if completed.returncode != 0 or completed.stderr or not completed.stdout:
+        raise RuntimeError("verified revision unavailable")
+    with tarfile.open(fileobj=io.BytesIO(completed.stdout), mode="r:") as archive:
+        members = archive.getmembers()
+        for member in members:
+            name = pathlib.PurePosixPath(member.name)
+            if name.is_absolute() or ".." in name.parts:
+                raise RuntimeError("unsafe revision member")
+        archive.extractall(destination, members=members)
+    return destination
+
+
+def _phase57_pretransition_ok() -> bool:
+    with tempfile.TemporaryDirectory(prefix="phase58-phase57-verified-") as temporary:
+        fixture = _extract_phase57_revision(pathlib.Path(temporary))
+        checker = fixture / PHASE57_CHECKER.relative_to(ROOT)
+        # The frozen checker executes a full mutation matrix per threat. Run
+        # the eight independent modes concurrently so this adapter remains a
+        # bounded audit step while still requiring every exact denominator.
+        processes = {
+            threat: subprocess.Popen(
+                [sys.executable, str(checker), "--self-test", "--only", threat],
+                cwd=fixture,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            for threat in PHASE57_SELF_TEST_TOTALS
+        }
+        results = {threat: process.communicate() for threat, process in processes.items()}
+        total = 0
+        for threat, expected_total in PHASE57_SELF_TEST_TOTALS.items():
+            process = processes[threat]
+            stdout, stderr = results[threat]
+            expected = f"self-test status=passed threats=1 cases={expected_total}\n"
+            if (process.returncode, stdout, stderr) != (0, expected, ""):
+                return False
+            total += expected_total
+        if total != 519:
+            return False
+        return checker.is_file()
+
+
+def _phase57_current_modes_ok() -> bool:
+    for mode, expected in PHASE57_CURRENT_MODES:
+        arguments = () if mode is None else (f"--{mode}",)
+        code, stdout, stderr = _phase57_subprocess(arguments, ROOT)
+        if (code, stdout, stderr) != (expected[0], expected[1], ""):
+            return False
+    return True
+
+
+def _phase57_owner_failures() -> bool:
+    """Validate Phase 57's completed owners after the Phase 58 transition."""
     verification = read_text(PHASE57_VERIFICATION)
-    if digest != PHASE57_CHECKER_SHA256:
-        return {RULES["T-58-07"]}
-    required = (
-        "status: passed", "score: 12/12 must-haves verified",
-        "Aggregate 519/519", "65 / 68 / 90 / 143 / 23 / 81 / 7 / 42",
+    evidence = read_text(PHASE57_EVIDENCE)
+    validation = read_text(PHASE57_VALIDATION)
+    inventory = read_json(PHASE57_INVENTORY)
+    roadmap = read_text(ROOT / ".planning" / "ROADMAP.md")
+    state = read_text(ROOT / ".planning" / "STATE.md")
+    requirements = read_text(ROOT / ".planning" / "REQUIREMENTS.md")
+
+    verification_markers = (
+        "status: passed", "score: 12/12 must-haves verified", "Aggregate 519/519",
+        "65 / 68 / 90 / 143 / 23 / 81 / 7 / 42", "exact 44-sclera and\n74-upper-eyelid inventories",
         "Human Verification Required\n\nNone.",
     )
-    if any(marker not in verification for marker in required):
+    if any(verification.count(marker) < 1 for marker in verification_markers):
+        return False
+    if evidence.count("status: validated") != 1 or evidence.count("# Phase 57 Closed Eye-Gates Evidence") != 1:
+        return False
+    dispositions = (
+        ("SCLERA-01", "false_branch_exact_absence"),
+        ("SCLERA-02", "not_applicable_closed_gate"),
+        ("SCLERA-03", "not_applicable_closed_gate"),
+        ("SCLERA-04", "not_applicable_closed_gate"),
+        ("SCLERA-05", "not_applicable_closed_gate"),
+        ("SCLERA-06", "no_promotion"),
+        ("LID-02", "closed_branch_exact_absence"),
+        ("LID-03", "not_applicable_closed_gate"),
+        ("LID-04", "proxy_rejection_enforced"),
+        ("LID-05", "not_applicable_closed_gate"),
+    )
+    if any(evidence.count(f"{identifier} | `{value}`") != 1 for identifier, value in dispositions):
+        return False
+    if any(evidence.count(f"| T-57-{index:02d} | passed") != 1 for index in range(1, 9)):
+        return False
+    if not (
+        validation.count("status: validated") == 1
+        and validation.count("nyquist_compliant: true") == 1
+        and all(validation.count(f"| `57-{phase}-{task:02d}` |") == 1 for phase, task in (("01", 1), ("01", 2), ("02", 1), ("02", 2), ("03", 1), ("03", 2), ("04", 1)))
+        and all(re.search(rf"(?m)^\| `57-{phase}-{task:02d}` \|.*\| passed \|$", validation) for phase, task in (("01", 1), ("01", 2), ("02", 1), ("02", 2), ("03", 1), ("03", 2), ("04", 1)))
+    ):
+        return False
+    if not isinstance(inventory, dict) or inventory.get("schema_version") != 1 or inventory.get("security_standard") != "OWASP ASVS Level 1" or inventory.get("block_on") != "HIGH":
+        return False
+    rows = inventory.get("threats")
+    if not isinstance(rows, list) or len(rows) != 8:
+        return False
+    expected_ids = [f"T-57-{index:02d}" for index in range(1, 9)]
+    if [row.get("id") for row in rows] != expected_ids or any(row.get("severity") != "HIGH" or row.get("disposition") != "mitigate" for row in rows):
+        return False
+    if roadmap.count("- [x] **Phase 57:") != 1 or roadmap.count("**Plans**: 4/4 plans executed") != 1:
+        return False
+    if state.count("current_phase: 58") != 1 or state.count("current_phase_name: Combined Facade, Safety, Ledger, and Audit Closeout") != 1 or state.count("status: executing") != 1:
+        return False
+    requirement_ids = ("SCLERA-01", "SCLERA-02", "SCLERA-03", "SCLERA-04", "SCLERA-05", "SCLERA-06", "LID-02", "LID-03", "LID-04", "LID-05")
+    if any(requirements.count(f"- [x] **{identifier}**") != 1 for identifier in requirement_ids):
+        return False
+    if any(requirements.count(f"| {identifier} | Phase 57 | Complete") != 1 for identifier in requirement_ids):
+        return False
+    root_anchors = {
+        ROOT / "PRODUCT_SENSE.md": ("### v1.14 Phase 57 Closed Eye-Retouch Acceptance", "The independent Phase 54 sclera and upper-eyelid rows remain closed."),
+        ROOT / "SECURITY.md": ("### Phase 57 Closed Eye-Retouch Security Boundary", "The exact Phase 54 `sclera_redness` and `upper_eyelid_fullness` rows are the sole independent authorities."),
+        ROOT / "RELIABILITY.md": ("### Phase 57 Closed Eye-Retouch Reliability Closeout", "Authority, fixture, parser, scanner, and evidence lifecycle handling is deterministic and fail closed."),
+        ROOT / "QUALITY_SCORE.md": ("### v1.14 Phase 57 Closed Eye-Retouch Evidence Score", "Exact traceability passes 7/7 task rows"),
+        ROOT / "PLANS.md": ("| Phase 57 final closed eye-gate closeout |", "the checker passes 519 aggregate cases with per-threat totals `65 / 68 / 90 / 143 / 23 / 81 / 7 / 42`"),
+    }
+    return all(all(read_text(path).count(marker) == 1 for marker in markers) for path, markers in root_anchors.items())
+
+
+def phase57_failures() -> set[str]:
+    try:
+        digest = hashlib.sha256(PHASE57_CHECKER.read_bytes()).hexdigest()
+        if digest != PHASE57_CHECKER_SHA256:
+            return {RULES["T-58-07"]}
+        if (ROOT / ".git").exists() and PHASE57_CHECKER.read_bytes() != _phase57_git_blob():
+            return {RULES["T-58-07"]}
+        if not _phase57_current_modes_ok() or not _phase57_owner_failures():
+            return {RULES["T-58-07"]}
+        # The Git fixture is exercised only from the real repository. Temporary
+        # mutation copies retain the same current-state subprocess contract.
+        if (ROOT / ".git").exists() and not _phase57_pretransition_ok():
+            return {RULES["T-58-07"]}
+    except Exception:
         return {RULES["T-58-07"]}
     return set()
 
@@ -660,6 +839,7 @@ def evidence_failures() -> set[str]:
         "## Requirement Dispositions", "## Task Results", "## HIGH Results",
         "## Exact Invariants", "## Final Automated Evidence",
         "## Decision Coverage", "## Privacy Allowlist and Nonclaims",
+        "## Owner Equality", "## Pending Final Lifecycle",
     )
     if any(evidence.count(section) != 1 for section in sections):
         return {RULES["T-58-08"]}
@@ -671,6 +851,28 @@ def evidence_failures() -> set[str]:
     if any(evidence.count(f"| {threat} |") != 1 for threat in THREAT_IDS):
         return {RULES["T-58-08"]}
     if "D-58-01 through D-58-20" not in evidence:
+        return {RULES["T-58-08"]}
+    expected_task_status = {
+        "58-01-01": "passed", "58-01-02": "passed", "58-02-01": "passed",
+        "58-02-02": "passed", "58-03-01": "passed", "58-03-02": "passed",
+        "58-04-01": "pending",
+    }
+    if frontmatter["status"] == "validated" and re.search(r"(?im)\bpending\b", evidence):
+        return {RULES["T-58-08"]}
+    for task, status in expected_task_status.items():
+        if evidence.count(f"| `{task}` | {status} |") != 1:
+            return {RULES["T-58-08"]}
+    if "Phase 58 checker `251 / 0 / 0`; per-HIGH `80 / 33 / 37 / 34 / 28 / 31 / 4 / 4`" not in evidence:
+        return {RULES["T-58-08"]}
+    if "Phase 58 aggregate `262 / 0 / 0`; per-HIGH `80 / 33 / 37 / 34 / 28 / 31 / 11 / 8`" not in evidence:
+        return {RULES["T-58-08"]}
+    if "frozen pre-transition self-test `519 / 0 / 0`" not in evidence:
+        return {RULES["T-58-08"]}
+    if re.search(r"(?im)^\| (?:full SwiftPM|opt-in Vision|full Demo|code review/fix|independent verifier|separate milestone audit) \| passed \|", evidence):
+        return {RULES["T-58-08"]}
+    if re.search(r"(?i)(?:implemented|active in production|production-ready|release-ready|launch-ready|promoted feature|shipped feature)", evidence):
+        return {RULES["T-58-08"]}
+    if re.search(r"(?im)(?:rawScannerError|raw scanner|stderr|traceback|subprocess output|scanner output|/Users/|/private/)", evidence):
         return {RULES["T-58-08"]}
     return set()
 
@@ -708,7 +910,12 @@ def fixture_paths() -> tuple[pathlib.Path, ...]:
         PACKAGE, SOURCES, FOUNDATION_TEST, COMPOSITION_TEST, CANONICAL_TEST,
         PARAMETER_TEST, RESOURCE_TEST, RENDERER_TEST, DEMO_ROOT, DEMO_TEST,
         DECISIONS, FEATURE_MATRIX,
-        SHAPE_LEDGER, PHASE57_CHECKER, PHASE57_VERIFICATION, INVENTORY, EVIDENCE,
+        SHAPE_LEDGER, PHASE57_CHECKER, PHASE57_VERIFICATION, PHASE57_EVIDENCE,
+        PHASE57_VALIDATION, PHASE57_INVENTORY, INVENTORY, EVIDENCE,
+        ROOT / "PRODUCT_SENSE.md", ROOT / "SECURITY.md", ROOT / "RELIABILITY.md",
+        ROOT / "QUALITY_SCORE.md", ROOT / "PLANS.md",
+        ROOT / ".planning" / "ROADMAP.md", ROOT / ".planning" / "STATE.md",
+        ROOT / ".planning" / "REQUIREMENTS.md",
     )
 
 
@@ -1253,6 +1460,45 @@ def assert_promotion_matrix() -> int:
     return cases
 
 
+def assert_phase57_matrix() -> int:
+    """Exercise real current Phase 57 owners without touching the frozen checker."""
+    cases = 0
+    mutations = (
+        (PHASE57_CHECKER, lambda: append_text(PHASE57_CHECKER, "\n# phase58 checker mutation\n")),
+        (PHASE57_VERIFICATION, lambda: mutate_text(PHASE57_VERIFICATION, "status: passed", "status: gaps_found")),
+        (PHASE57_VERIFICATION, lambda: mutate_text(PHASE57_VERIFICATION, "score: 12/12 must-haves verified", "score: 11/12 must-haves verified")),
+        (PHASE57_EVIDENCE, lambda: mutate_text(PHASE57_EVIDENCE, "status: validated", "status: draft")),
+        (PHASE57_EVIDENCE, lambda: append_text(PHASE57_EVIDENCE, "\n| T-57-01 | passed | duplicate\n")),
+        (PHASE57_VALIDATION, lambda: mutate_text(PHASE57_VALIDATION, "status: validated", "status: draft")),
+        (PHASE57_INVENTORY, lambda: write_json_mutation(PHASE57_INVENTORY, lambda document: document["threats"].pop())),
+        (ROOT / ".planning" / "STATE.md", lambda: mutate_text(ROOT / ".planning" / "STATE.md", "current_phase: 58", "current_phase: 57")),
+        (ROOT / ".planning" / "ROADMAP.md", lambda: mutate_text(ROOT / ".planning" / "ROADMAP.md", "**Plans**: 4/4 plans executed", "**Plans**: 3/4 plans executed")),
+        (ROOT / ".planning" / "REQUIREMENTS.md", lambda: mutate_text(ROOT / ".planning" / "REQUIREMENTS.md", "- [x] **SCLERA-01**", "- [ ] **SCLERA-01**")),
+    )
+    for path, mutation in mutations:
+        cases += assert_fixture_mutation("T-58-07", mutation)
+    cases += assert_forced_scanner("T-58-07")
+    return cases
+
+
+def assert_evidence_matrix() -> int:
+    """Exercise evidence lifecycle, raw-error, and fixed-output boundaries."""
+    cases = 0
+    mutations = (
+        lambda: mutate_text(EVIDENCE, "status: draft", "status: validated"),
+        lambda: mutate_text(EVIDENCE, "## Requirement Dispositions", "## Requirement Dispositions\n## Requirement Dispositions"),
+        lambda: mutate_text(EVIDENCE, "| `58-03-01` | passed", "| `58-03-01` | pending"),
+        lambda: append_text(EVIDENCE, "\nrawScannerError: hidden\n"),
+        lambda: append_text(EVIDENCE, "\n/Users/private/location\n"),
+        lambda: append_text(EVIDENCE, "\nfeature output is implemented\n"),
+        lambda: write_json_mutation(INVENTORY, lambda document: document["threats"].append(dict(document["threats"][0]))),
+    )
+    for mutation in mutations:
+        cases += assert_fixture_mutation("T-58-08", mutation)
+    cases += assert_forced_scanner("T-58-08")
+    return cases
+
+
 def self_test(only: str | None) -> int:
     selected = THREAT_IDS if only is None else (only,)
     original_root = ROOT
@@ -1266,6 +1512,8 @@ def self_test(only: str | None) -> int:
                 "T-58-04": assert_compatibility_matrix,
                 "T-58-05": assert_output_matrix,
                 "T-58-06": assert_promotion_matrix,
+                "T-58-07": assert_phase57_matrix,
+                "T-58-08": assert_evidence_matrix,
             }
             if threat in complete_matrices:
                 cases += complete_matrices[threat]()
@@ -1328,25 +1576,49 @@ def emit(mode: str, failures: set[str]) -> int:
     return 0
 
 
+def emit_vision_summary() -> int:
+    """Classify final opt-in Vision output without echoing command text."""
+    try:
+        payload = sys.stdin.read()
+        match = re.fullmatch(r"executed=(\d+) skipped=(\d+) failed=(\d+)\n?", payload)
+        if match is None:
+            raise ValueError("unknown summary")
+        executed, skipped, failed = (int(value) for value in match.groups())
+        if (executed, skipped, failed) != (6, 0, 0):
+            print("mode=vision-summary status=blocked rules=R58-EVIDENCE")
+            return 1
+        print("mode=vision-summary status=passed executed=6 skipped=0 failed=0")
+        return 0
+    except Exception:
+        print("mode=vision-summary status=blocked rules=R58-EVIDENCE")
+        return 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=pathlib.Path)
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--decision", action="store_true")
+    parser.add_argument("--lifecycle", action="store_true")
+    parser.add_argument("--vision-summary", action="store_true")
     parser.add_argument("--only", choices=THREAT_IDS)
     arguments = parser.parse_args()
     if arguments.root is not None:
         configure_root(arguments.root)
     if arguments.only is not None and not arguments.self_test:
         parser.error("--only requires --self-test")
-    if arguments.self_test and arguments.decision:
-        parser.error("--self-test and --decision are mutually exclusive")
-    mode = "self-test" if arguments.self_test else "decision" if arguments.decision else "live"
+    if sum(bool(value) for value in (arguments.self_test, arguments.decision, arguments.lifecycle, arguments.vision_summary)) > 1:
+        parser.error("checker modes are mutually exclusive")
+    if arguments.vision_summary:
+        return emit_vision_summary()
+    mode = "self-test" if arguments.self_test else "decision" if arguments.decision else "lifecycle" if arguments.lifecycle else "live"
     try:
         if arguments.self_test:
             return self_test(arguments.only)
         if arguments.decision:
             return emit(mode, classified_failures(only="T-58-01"))
+        if arguments.lifecycle:
+            return emit(mode, classified_failures(only="T-58-07"))
         return emit(mode, classified_failures())
     except Exception:
         return emit(mode, {RULES["T-58-08"]})
