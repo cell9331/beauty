@@ -4,11 +4,11 @@ milestone: v1.14
 milestone_name: Local Facial Retouch
 current_phase: 58
 current_phase_name: Combined Facade, Safety, Ledger, and Audit Closeout
-status: planning
-stopped_at: Phase 57 independently verified; ready to discuss Phase 58
+status: discussed
+stopped_at: Phase 58 discussion complete; ready to plan
 last_updated: "2026-08-04T06:18:57.439Z"
 last_activity: 2026-08-04
-last_activity_desc: Phase 57 complete, transitioned to Phase 58
+last_activity_desc: Phase 58 autonomous discussion complete; zero-admission closeout branch locked
 progress:
   total_phases: 6
   completed_phases: 5
@@ -29,8 +29,8 @@ See: `.planning/PROJECT.md` (updated 2026-08-04)
 
 Phase: 58 — Combined Facade, Safety, Ledger, and Audit Closeout
 Plan: Not started
-Status: Ready to plan
-Last activity: 2026-08-04 — Phase 57 complete, transitioned to Phase 58
+Status: Discussion complete; ready to plan
+Last activity: 2026-08-04 — Phase 58 autonomous discussion complete; zero-admission closeout branch locked
 
 Progress: [████████░░] 5/6 phases (83%)
 
@@ -119,7 +119,7 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 
 ### Pending Todos
 
-- Discuss and plan Phase 58 from the verified Phase 53–57 contracts, then run the combined facade, safety, ledger, and audit closeout.
+- Plan Phase 58 from D-58-01..20, then run the combined facade, safety, ledger, and audit closeout.
 - Preserve all 519 Phase 57 post-verification-gap mutation cases, exact `.none`/59/5/72, disabled Demo rows, future/future/partial ledgers, and exact conditional dispositions through milestone closeout.
 
 ### Blockers/Concerns
@@ -142,5 +142,5 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 ## Session Continuity
 
 Last session: 2026-08-04T06:18:57.439Z
-Stopped at: Phase 57 independently verified; ready to discuss Phase 58
+Stopped at: Phase 58 discussion complete; ready to plan
 Resume file: None
