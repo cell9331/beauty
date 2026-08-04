@@ -464,7 +464,8 @@ def compatibility_failures() -> set[str]:
 def demo_failures() -> set[str]:
     try:
         source = read_text(DEMO_SOURCE)
-        boundary = "\n".join(read_text(path) for path in (DEMO_CONTROL, DEMO_PANEL, DEMO_STORE))
+        demo_files = tuple(sorted(DEMO_ROOT.rglob("*.swift")))
+        demo_text = {path: read_text(path) for path in demo_files}
         test = read_text(DEMO_TEST)
     except (OSError, UnicodeError):
         return {"R57-DEMO"}
@@ -501,12 +502,18 @@ def demo_failures() -> set[str]:
         return {"R57-DEMO"}
     if test.count("XCTAssertNil(fat.controlID)") != 2 or test.count("XCTAssertNil(redness.controlID)") != 2:
         return {"R57-DEMO"}
-    if (
-        re.search(SCLERA_PATTERN, boundary)
-        or re.search(EYELID_PATTERN, boundary)
-        or re.search(r"(?i)eyes\.(?:fat|redness)|去脂|祛红血丝", boundary)
-    ):
-        return {"R57-DEMO"}
+    identity = re.compile(r"(?i)eyes\.(?:fat|redness)\b|去脂|祛红血丝")
+    for path, text in demo_text.items():
+        residual = text
+        if path == DEMO_SOURCE:
+            for row in required:
+                residual = residual.replace(row, "", 1)
+        if (
+            identity.search(residual)
+            or re.search(SCLERA_PATTERN, residual)
+            or re.search(EYELID_PATTERN, residual)
+        ):
+            return {"R57-DEMO"}
     return set()
 
 
@@ -1216,6 +1223,16 @@ def assert_demo_surface_failures() -> int:
         cases += 1
     finally:
         DEMO_SOURCE.write_text(baseline, encoding="utf-8")
+
+    neutral_demo = DEMO_ROOT / "NeutralPhase57Demo"
+    neutral_routes = (
+        ("FatID.swift", '("eyes.fat", BeautyControlID.eyeHeight)\n'),
+        ("FatTitle.swift", '("去脂", BeautyControlID.upperEyelidLift)\n'),
+        ("RednessID.swift", '("eyes.redness", BeautyControlID.brightness)\n'),
+        ("RednessTitle.swift", '("祛红血丝", BeautyControlID.skinWhitening)\n'),
+    )
+    for filename, contents in neutral_routes:
+        cases += assert_added_file(neutral_demo / filename, contents, "R57-DEMO")
     return cases
 
 
