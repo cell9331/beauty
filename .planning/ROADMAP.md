@@ -197,13 +197,11 @@ Earlier shipped milestones are preserved in their linked archives under `.planni
   4. Local-retouch output preserves dimensions, canonical orientation/alpha/color contracts, safe-domain continuation, typed errors, and deterministic no-op behavior.
   5. Full SwiftPM and opt-in Vision integration, privacy/resource/network scans, adversarial safety, owner checks, and independent verification pass before ledgers promote exactly the qualified rows; `嘴唇` closes only with qualified `白牙`, `眼睛` closes only with both qualified eye rows, and no Demo, realtime, tracked-media, device, commercial, performance-budget, packaging, shipping, or launch claim is inferred.
 
-**Plans**: 4 plans
-
-Plans:
+**Plans**: 1/4 plans executed
 
 **Wave 0**
 
-- [ ] `58-01-PLAN.md` — Freeze focused zero-admission SDK/Demo specifications and establish the exact eight-row fail-closed audit boundary.
+- [x] `58-01-PLAN.md` — Freeze focused zero-admission SDK/Demo specifications and establish the exact eight-row fail-closed audit boundary.
 
 **Wave 1** *(blocked on Wave 0 completion)*
 
@@ -243,7 +241,7 @@ All 41 v1.14 requirements map to exactly one phase: 41 mapped, 0 duplicated, 0 u
 | 55. Original-Pixel Composition and Failure-Isolation Core | 5/5 | Complete    | 2026-08-03 |
 | 56. Independent Teeth Whitening Slice | 3/3 | Complete    | 2026-08-04 |
 | 57. Guarded Sclera Slice and Conditional Upper-Eyelid Work | 4/4 | Complete    | 2026-08-04 |
-| 58. Combined Facade, Safety, Ledger, and Audit Closeout | 0/4 | Not started | - |
+| 58. Combined Facade, Safety, Ledger, and Audit Closeout | 1/4 | In Progress | - |
 
 ## Backlog
 

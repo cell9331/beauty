@@ -4,16 +4,16 @@ milestone: v1.14
 milestone_name: Local Facial Retouch
 current_phase: 58
 current_phase_name: Combined Facade, Safety, Ledger, and Audit Closeout
-status: discussed
-stopped_at: Phase 58 discussion complete; ready to plan
-last_updated: "2026-08-04T06:18:57.439Z"
+status: executing
+stopped_at: Completed 58-01-PLAN.md
+last_updated: "2026-08-04T07:20:52.271Z"
 last_activity: 2026-08-04
-last_activity_desc: Phase 58 autonomous discussion complete; zero-admission closeout branch locked
+last_activity_desc: Phase 58 Plan 01 complete; zero-admission closeout boundary frozen
 progress:
   total_phases: 6
   completed_phases: 5
-  total_plans: 23
-  completed_plans: 23
+  total_plans: 27
+  completed_plans: 24
 ---
 
 # Project State
@@ -27,10 +27,10 @@ See: `.planning/PROJECT.md` (updated 2026-08-04)
 
 ## Current Position
 
-Phase: 58 — Combined Facade, Safety, Ledger, and Audit Closeout
-Plan: Not started
-Status: Discussion complete; ready to plan
-Last activity: 2026-08-04 — Phase 58 autonomous discussion complete; zero-admission closeout branch locked
+Phase: 58 (Combined Facade, Safety, Ledger, and Audit Closeout) — EXECUTING
+Plan: 2 of 4
+Status: Ready to execute
+Last activity: 2026-08-04 — Phase 58 Plan 01 complete; zero-admission closeout boundary frozen
 
 Progress: [████████░░] 5/6 phases (83%)
 
@@ -38,18 +38,19 @@ Progress: [████████░░] 5/6 phases (83%)
 
 **Current milestone:**
 
-- Total plans completed: 23
-- Average duration: 17.9 min
-- Total execution time: 6h 51min
+- Total plans completed: 24
+- Average duration: 18.0 min
+- Total execution time: 7h 11min
 
 | Phase | Plans | Total | Avg/Plan |
 | --- | ---: | --- | --- |
-| 53-58 | 23 | 6h 51min | 17.9 min |
+| 53-58 | 24 | 7h 11min | 18.0 min |
 | 53 | 6 | 1h 50min | 18.3 min |
 | 54 | 5 | 2h 03min | 24.6 min |
 | 55 | 5 | 58min | 11.6 min |
 | 56 | 3 | 1h 15min | 25.0 min |
 | 57 | 4 | 45min | 11.3 min |
+| 58 | 1 | 20min | 20.0 min |
 
 Historical milestone metrics remain in `.planning/MILESTONES.md` and archived roadmaps.
 **Per-Plan Metrics:**
@@ -79,6 +80,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 57 P02 | 8min | 2 tasks | 2 files |
 | Phase 57 P03 | 17min | 2 tasks | 3 files |
 | Phase 57 P04 | 9min | 1 tasks | 9 files |
+| Phase 58 P01 | 20min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -116,10 +118,13 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 - [Phase 57]: The draft/final evidence parser exposes only fixed identifiers and blocks lifecycle downgrade, sensitive payloads, and unknown checker output.
 - [Phase 57]: The two independent closed branches complete exact absence only; LID-04 proxy rejection is affirmative while positive feature work remains unclaimed.
 - [Phase 57]: Validated evidence remains fixed-ID and aggregate-only, with no image-review, product-effect, or readiness credit.
+- [Phase 58]: Cancellation evidence is caller publication discard after one intact synchronous opaque invocation; it neither aborts SDK work nor resolves TD-013.
+- [Phase 58]: The Phase 58 checker enforces the empty admitted/promotion sets without becoming a second eligibility authority.
+- [Phase 58]: Draft evidence contains fixed IDs and aggregate counts only; final suites, review, verifier, and milestone lifecycle remain pending.
 
 ### Pending Todos
 
-- Plan Phase 58 from D-58-01..20, then run the combined facade, safety, ledger, and audit closeout.
+- Execute Plans 58-02 through 58-04, then run the combined facade, safety, ledger, and audit closeout.
 - Preserve all 519 Phase 57 post-verification-gap mutation cases, exact `.none`/59/5/72, disabled Demo rows, future/future/partial ledgers, and exact conditional dispositions through milestone closeout.
 
 ### Blockers/Concerns
@@ -141,6 +146,6 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 
 ## Session Continuity
 
-Last session: 2026-08-04T06:18:57.439Z
-Stopped at: Phase 58 discussion complete; ready to plan
+Last session: 2026-08-04T07:20:52.265Z
+Stopped at: Completed 58-01-PLAN.md
 Resume file: None
