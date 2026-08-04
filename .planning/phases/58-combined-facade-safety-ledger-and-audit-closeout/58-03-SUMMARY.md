@@ -63,7 +63,7 @@ completed: 2026-08-04
 ## Task Commits
 
 1. **Task 1: Implement the frozen Phase 57 pretransition and completed-state adapter** — `8860584` (feat)
-2. **Task 2: Complete all HIGH, evidence lifecycle, scanner, owner, and aggregate audit modes** — `4b27e2a` (test)
+2. **Task 2: Complete all HIGH, evidence lifecycle, scanner, owner, and aggregate audit modes** — `4b27e2a`, `3a66993` (test)
 
 ## Files Created/Modified
 
@@ -95,7 +95,7 @@ Plan 58-04 can run the final full SwiftPM, six-test opt-in Vision, full Demo, GS
 
 ## Self-Check: PASSED
 
-- `58-03-SUMMARY.md` exists and task commits `8860584` and `4b27e2a` are present.
+- `58-03-SUMMARY.md` exists and task commits `8860584`, `4b27e2a`, and `3a66993` are present.
 - Python compilation, `git diff --check`, frozen Phase 57 byte equality, decision mode, lifecycle mode, live mode, aggregate `276` self-test, all eight per-threat modes, and Vision-summary fixed-output classification passed.
 
 ---
