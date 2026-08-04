@@ -498,21 +498,27 @@ def swift_test_function_bodies(source: str) -> dict[str, str]:
     without_comments = re.sub(
         r"//[^\n]*|/\*.*?\*/", "", source, flags=re.DOTALL
     )
+    without_strings = re.sub(
+        r'""".*?"""|"(?:\\.|[^"\\])*"',
+        lambda match: " " * len(match.group(0)),
+        without_comments,
+        flags=re.DOTALL,
+    )
     result: dict[str, str] = {}
     for match in re.finditer(
-        r"\bfunc\s+(test[A-Za-z0-9_]+)\s*\([^)]*\)[^{]*\{", without_comments
+        r"\bfunc\s+(test[A-Za-z0-9_]+)\s*\([^)]*\)[^{]*\{", without_strings
     ):
         depth = 1
         index = match.end()
-        while index < len(without_comments) and depth:
-            character = without_comments[index]
+        while index < len(without_strings) and depth:
+            character = without_strings[index]
             if character == "{":
                 depth += 1
             elif character == "}":
                 depth -= 1
             index += 1
         if depth == 0:
-            result[match.group(1)] = without_comments[match.end():index - 1]
+            result[match.group(1)] = without_strings[match.end():index - 1]
     return result
 
 
