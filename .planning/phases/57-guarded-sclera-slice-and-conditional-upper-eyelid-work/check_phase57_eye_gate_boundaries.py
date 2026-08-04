@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import contextlib
 import copy
+import hashlib
 import io
 import json
 import pathlib
@@ -130,6 +131,9 @@ EVIDENCE_COMMON_SECTIONS = (
     "## Task and HIGH Results",
     "## Decision Coverage",
     "## Privacy Allowlist and Nonclaims",
+)
+EXPECTED_VALIDATED_EVIDENCE_SHA256 = (
+    "a0e6c1ef927165927f61de6f18fd6c07028156e8da4f6313bfc5eb4e11e0fa68"
 )
 EXPECTED_EVIDENCE_DECISION_ROWS = (
     (
@@ -806,6 +810,16 @@ def evidence_failures() -> set[str]:
     ):
         return {"R57-PRIVACY", "R57-COMPAT"}
 
+    if (
+        status == "validated"
+        and hashlib.sha256(body.encode("utf-8")).hexdigest()
+        != EXPECTED_VALIDATED_EVIDENCE_SHA256
+    ):
+        # Final evidence is an exact aggregate-only document. Any unrecognized
+        # paragraph, bullet, quote, or table cell fails closed before it can
+        # retain request-local support or contradict a closed decision.
+        return {"R57-PRIVACY", "R57-COMPAT"}
+
     if status == "draft":
         if body.count("## Pending Final Automated Evidence") != 1:
             return {"R57-COMPAT"}
@@ -1453,6 +1467,32 @@ def assert_evidence_and_privacy_failures() -> int:
     )
     for payload in sensitive_payloads:
         cases += assert_evidence_text_mutation(title, f"{title}\n\n{payload}", "R57-PRIVACY")
+
+    sensitive_families = (
+        "pupil coordinates were (12, 34)",
+        "iris support was retained",
+        "landmark points were observed",
+        "mask bytes were captured",
+        "pixel samples were retained",
+        "reviewer identity was recorded",
+        "raw scanner output was preserved",
+        "portrait path was /private/tmp/subject",
+        "output digest was captured",
+        "vein descriptors were retained",
+    )
+    shapes = (
+        "Observed {payload}.",
+        "- Observed {payload}.",
+        "> Observed {payload}.",
+        "| private observation | {payload} |",
+    )
+    for family in sensitive_families:
+        for shape in shapes:
+            cases += assert_evidence_text_mutation(
+                title,
+                f"{title}\n\n{shape.format(payload=family)}",
+                "R57-PRIVACY",
+            )
 
     validated = baseline if not is_draft else (
         baseline.replace("status: draft", "status: validated", 1)
