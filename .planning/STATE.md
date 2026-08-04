@@ -5,15 +5,15 @@ milestone_name: Local Facial Retouch
 current_phase: 58
 current_phase_name: Combined Facade, Safety, Ledger, and Audit Closeout
 status: executing
-stopped_at: Completed 58-01-PLAN.md
-last_updated: "2026-08-04T07:20:52.271Z"
+stopped_at: Completed 58-02-PLAN.md
+last_updated: "2026-08-04T07:47:00.000Z"
 last_activity: 2026-08-04
-last_activity_desc: Phase 58 Plan 01 complete; zero-admission closeout boundary frozen
+last_activity_desc: Phase 58 Plan 02 complete; request-lifetime and zero-promotion closeout matrices pass
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 27
-  completed_plans: 24
+  completed_plans: 25
 ---
 
 # Project State
@@ -30,7 +30,7 @@ See: `.planning/PROJECT.md` (updated 2026-08-04)
 Phase: 58 (Combined Facade, Safety, Ledger, and Audit Closeout) — EXECUTING
 Plan: 2 of 4
 Status: Ready to execute
-Last activity: 2026-08-04 — Phase 58 Plan 01 complete; zero-admission closeout boundary frozen
+Last activity: 2026-08-04 — Phase 58 Plan 02 complete; request-lifetime and zero-promotion closeout matrices pass
 
 Progress: [████████░░] 5/6 phases (83%)
 
@@ -38,19 +38,19 @@ Progress: [████████░░] 5/6 phases (83%)
 
 **Current milestone:**
 
-- Total plans completed: 24
+- Total plans completed: 25
 - Average duration: 18.0 min
 - Total execution time: 7h 11min
 
 | Phase | Plans | Total | Avg/Plan |
 | --- | ---: | --- | --- |
-| 53-58 | 24 | 7h 11min | 18.0 min |
+| 53-58 | 25 | 7h 31min | 18.1 min |
 | 53 | 6 | 1h 50min | 18.3 min |
 | 54 | 5 | 2h 03min | 24.6 min |
 | 55 | 5 | 58min | 11.6 min |
 | 56 | 3 | 1h 15min | 25.0 min |
 | 57 | 4 | 45min | 11.3 min |
-| 58 | 1 | 20min | 20.0 min |
+| 58 | 2 | 40min | 20.0 min |
 
 Historical milestone metrics remain in `.planning/MILESTONES.md` and archived roadmaps.
 **Per-Plan Metrics:**
@@ -81,6 +81,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 57 P03 | 17min | 2 tasks | 3 files |
 | Phase 57 P04 | 9min | 1 tasks | 9 files |
 | Phase 58 P01 | 20min | 2 tasks | 9 files |
+| Phase 58 P02 | 20min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -124,7 +125,7 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 
 ### Pending Todos
 
-- Execute Plans 58-02 through 58-04, then run the combined facade, safety, ledger, and audit closeout.
+- Execute Plans 58-03 through 58-04, then run the combined facade, safety, ledger, and audit closeout.
 - Preserve all 519 Phase 57 post-verification-gap mutation cases, exact `.none`/59/5/72, disabled Demo rows, future/future/partial ledgers, and exact conditional dispositions through milestone closeout.
 
 ### Blockers/Concerns
