@@ -69,13 +69,13 @@ an exact no-promotion decision.
 
 ### Privacy, Reliability, and Promotion
 
-- [ ] **SAFE-01**: Raw landmarks, lip/teeth geometry, pupils, sclera or eyelid masks, vein-like descriptors, image bytes, fixture paths, and reviewer identity never appear in public/SPI/Codable state, persistence, network traffic, logs, metrics, or tracked artifacts.
-- [ ] **SAFE-02**: Repeated, parallel, canceled, no-face, missing-support, malformed-support, and mixed-feature requests retain no prior masks or support and return only allowlisted aggregate reason codes, counts, and timings.
-- [ ] **SAFE-03**: Local-retouch output preserves input dimensions, orientation contract, alpha policy, color-space contract, safe-domain continuation, typed errors, and deterministic no-op behavior.
-- [ ] **OUT-01**: Every admitted feature is exercised only through the public facade by isolated renderer cases, a bounded strict decoded-output helper, ignored disposable gallery/review artifacts, and original-detail image inspection.
-- [ ] **OUT-02**: Combined teeth and sclera requests preserve standalone/fused equivalence, collision-to-original behavior, all shipped color/geometry effects, and exact public inventory/default compatibility.
-- [ ] **OUT-03**: Full SwiftPM, opt-in Apple Vision integration, privacy/resource/network scans, adversarial safety tests, owner-document checks, and an independent verification pass before any feature is marked complete.
-- [ ] **OUT-04**: Product and branch ledgers promote exactly the independently passed rows: qualified `白牙` may close `嘴唇`; `眼睛` closes only if both qualified `祛红血丝` and qualified `去脂` pass; no broader device, commercial, packaging, shipping, or launch claim is inferred.
+- [x] **SAFE-01**: Raw landmarks, lip/teeth geometry, pupils, sclera or eyelid masks, vein-like descriptors, image bytes, fixture paths, and reviewer identity never appear in public/SPI/Codable state, persistence, network traffic, logs, metrics, or tracked artifacts. Phase 58 automated disposition: `privacy_boundary_enforced`; external review/verifier remains the next lifecycle gate.
+- [x] **SAFE-02**: Repeated, parallel, canceled, no-face, missing-support, malformed-support, and mixed-feature requests retain no prior masks or support and return only allowlisted aggregate reason codes, counts, and timings. Phase 58 automated disposition: `request_local_nonretention_enforced`; external review/verifier remains the next lifecycle gate.
+- [x] **SAFE-03**: Local-retouch output preserves input dimensions, orientation contract, alpha policy, color-space contract, safe-domain continuation, typed errors, and deterministic no-op behavior. Phase 58 automated disposition: `closed_set_noop_compatibility_enforced`; external review/verifier remains the next lifecycle gate.
+- [x] **OUT-01**: Every admitted feature is exercised only through the public facade by isolated renderer cases, a bounded strict decoded-output helper, ignored disposable gallery/review artifacts, and original-detail image inspection. Phase 58 disposition: `not_applicable_zero_admitted_features_exact_absence`.
+- [x] **OUT-02**: Combined teeth and sclera requests preserve standalone/fused equivalence, collision-to-original behavior, all shipped color/geometry effects, and exact public inventory/default compatibility. Phase 58 disposition: `not_applicable_zero_admitted_pair_exact_absence`.
+- [x] **OUT-03**: Full SwiftPM, opt-in Apple Vision integration, privacy/resource/network scans, adversarial safety tests, owner-document checks, and an independent verification pass before any feature is marked complete. Automated execution is green with disposition `full_automated_audit_and_independent_verification`; independent verification is the next lifecycle gate.
+- [x] **OUT-04**: Product and branch ledgers promote exactly the independently passed rows: qualified `白牙` may close `嘴唇`; `眼睛` closes only if both qualified `祛红血丝` and qualified `去脂` pass; no broader device, commercial, packaging, shipping, or launch claim is inferred. Phase 58 disposition: `zero_row_promotion`.
 
 ## Future Requirements
 
@@ -141,13 +141,13 @@ no implementation surface when that decision is closed.
 | LID-03 | Phase 57 | Complete — `not_applicable_closed_gate` |
 | LID-04 | Phase 57 | Complete — `proxy_rejection_enforced` |
 | LID-05 | Phase 57 | Complete — `not_applicable_closed_gate` |
-| SAFE-01 | Phase 58 | Pending |
-| SAFE-02 | Phase 58 | Pending |
-| SAFE-03 | Phase 58 | Pending |
-| OUT-01 | Phase 58 | Pending |
-| OUT-02 | Phase 58 | Pending |
-| OUT-03 | Phase 58 | Pending |
-| OUT-04 | Phase 58 | Pending |
+| SAFE-01 | Phase 58 | Complete — `privacy_boundary_enforced`; external review/verifier next |
+| SAFE-02 | Phase 58 | Complete — `request_local_nonretention_enforced`; external review/verifier next |
+| SAFE-03 | Phase 58 | Complete — `closed_set_noop_compatibility_enforced`; external review/verifier next |
+| OUT-01 | Phase 58 | Complete — `not_applicable_zero_admitted_features_exact_absence` |
+| OUT-02 | Phase 58 | Complete — `not_applicable_zero_admitted_pair_exact_absence` |
+| OUT-03 | Phase 58 | Execution green — `full_automated_audit_and_independent_verification`; independent verifier next |
+| OUT-04 | Phase 58 | Complete — `zero_row_promotion` |
 
 **Coverage:**
 

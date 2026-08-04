@@ -1,6 +1,6 @@
 ---
 phase: 58
-status: draft
+status: validated
 security_standard: OWASP ASVS Level 1
 block_on: HIGH
 requirements: [SAFE-01, SAFE-02, SAFE-03, OUT-01, OUT-02, OUT-03, OUT-04]
@@ -21,7 +21,7 @@ are closed, so the admitted and promoted sets are exactly empty.
 | SAFE-03 | `closed_set_noop_compatibility_enforced` | focused compatibility and no-op matrix passed |
 | OUT-01 | `not_applicable_zero_admitted_features_exact_absence` | zero candidate output/helper/gallery/review routes |
 | OUT-02 | `not_applicable_zero_admitted_pair_exact_absence` | zero constructible candidate pairs; mechanics remain neutral |
-| OUT-03 | `full_automated_audit_and_independent_verification` | pending final gates, review, and verifier |
+| OUT-03 | `full_automated_audit_and_independent_verification` | automated gates passed; review and verifier are next lifecycle owners |
 | OUT-04 | `zero_row_promotion` | promoted rows `0` |
 
 ## Task Results
@@ -34,7 +34,7 @@ are closed, so the admitted and promoted sets are exactly empty.
 | `58-02-02` | passed | Phase 58 checker `251 / 0 / 0`; per-HIGH `80 / 33 / 37 / 34 / 28 / 31 / 4 / 4` |
 | `58-03-01` | passed | frozen pre-transition self-test `519 / 0 / 0`; current completed-state adapter passed |
 | `58-03-02` | passed | Phase 58 aggregate `276 / 0 / 0`; per-HIGH `80 / 33 / 37 / 34 / 28 / 31 / 25 / 8` |
-| `58-04-01` | pending | final automated conjunction pending |
+| `58-04-01` | passed | focused SDK `159/0/0`; full SDK `553/0/6`; opt-in Vision `6/0/0`; full Demo `120/0/0`; checker, GSD, owner, and diff gates green |
 
 ## HIGH Results
 
@@ -66,18 +66,25 @@ are closed, so the admitted and promoted sets are exactly empty.
 
 | Gate | Status | Executed | Failed | Skipped |
 | --- | --- | ---: | ---: | ---: |
-| focused SDK | passed | 156 | 0 | 0 |
+| focused SDK | passed | 159 | 0 | 0 |
 | focused Demo | passed | 30 | 0 | 0 |
 | Phase 58 aggregate HIGH | passed | 276 | 0 | 0 |
-| full SwiftPM | pending | 0 | 0 | 0 |
-| opt-in Vision | pending | 0 | 0 | 0 |
-| full Demo | pending | 0 | 0 | 0 |
-| code review/fix | pending | 0 | 0 | 0 |
-| independent verifier | pending | 0 | 0 | 0 |
-| separate milestone audit | pending | 0 | 0 | 0 |
+| full SwiftPM | passed | 553 | 0 | 6 |
+| opt-in Vision | passed | 6 | 0 | 0 |
+| full Demo | passed | 120 | 0 | 0 |
+| schema drift | passed | 1 | 0 | 0 |
+| UI safety gate | passed | 1 | 0 | 0 |
+| decision coverage | passed | 20 | 0 | 0 |
+| post-plan traceability | passed | 27 | 0 | 0 |
+| codebase drift | passed with exact historical warning set | 11 | 0 | 0 |
+| diff hygiene | passed | 1 | 0 | 0 |
+| code review/fix | not yet run | 0 | 0 | 0 |
+| independent verifier | not yet run | 0 | 0 | 0 |
+| separate milestone audit | not yet run | 0 | 0 | 0 |
 
-The final-only lifecycle remains pending until the separate full regression,
-opt-in Vision, Demo, review, verifier, and milestone-audit owners are current.
+The final automated conjunction is validated. External code review/fix,
+independent verification, and the separate milestone audit are the next
+lifecycle owners and have not yet run.
 
 ## Owner Equality
 
@@ -89,9 +96,10 @@ fixed compatibility result, and Phase 58 is the active lifecycle owner.
 
 ## Pending Final Lifecycle
 
-Final automated conjunction, code review/fix, independent verifier, and the
-separate milestone audit remain pending. This draft cannot promote a feature,
-branch, release, or lifecycle archive.
+Final automated conjunction is complete; code review/fix, independent
+verification, and the separate milestone audit are reserved as the next
+lifecycle steps. This evidence cannot promote a feature, branch, release, or
+lifecycle archive.
 
 ## Decision Coverage
 

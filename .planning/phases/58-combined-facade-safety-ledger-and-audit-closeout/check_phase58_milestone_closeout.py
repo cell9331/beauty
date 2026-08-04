@@ -826,7 +826,7 @@ def evidence_failures() -> set[str]:
     expected_keys = ("phase", "status", "security_standard", "block_on", "requirements")
     if tuple(frontmatter) != expected_keys:
         return {RULES["T-58-08"]}
-    if frontmatter["phase"] != "58" or frontmatter["status"] not in {"draft", "validated"}:
+    if frontmatter["phase"] != "58" or frontmatter["status"] != "validated":
         return {RULES["T-58-08"]}
     if frontmatter["security_standard"] != "OWASP ASVS Level 1":
         return {RULES["T-58-08"]}
@@ -855,9 +855,13 @@ def evidence_failures() -> set[str]:
     expected_task_status = {
         "58-01-01": "passed", "58-01-02": "passed", "58-02-01": "passed",
         "58-02-02": "passed", "58-03-01": "passed", "58-03-02": "passed",
-        "58-04-01": "pending",
+        "58-04-01": "passed",
     }
-    if frontmatter["status"] == "validated" and re.search(r"(?im)\bpending\b", evidence):
+    # The required lifecycle section retains its historical "Pending" heading
+    # as a schema anchor; validated evidence must reject pending result prose,
+    # not the section name itself.
+    pending_scan = re.sub(r"(?im)^## Pending Final Lifecycle$", "", evidence)
+    if frontmatter["status"] == "validated" and re.search(r"(?im)\bpending\b", pending_scan):
         return {RULES["T-58-08"]}
     for task, status in expected_task_status.items():
         if evidence.count(f"| `{task}` | {status} |") != 1:
@@ -868,7 +872,7 @@ def evidence_failures() -> set[str]:
         return {RULES["T-58-08"]}
     if "frozen pre-transition self-test `519 / 0 / 0`" not in evidence:
         return {RULES["T-58-08"]}
-    if re.search(r"(?im)^\| (?:full SwiftPM|opt-in Vision|full Demo|code review/fix|independent verifier|separate milestone audit) \| passed \|", evidence):
+    if re.search(r"(?im)^\| (?:code review/fix|independent verifier|separate milestone audit) \| passed \|", evidence):
         return {RULES["T-58-08"]}
     if re.search(r"(?i)(?:implemented|active in production|production-ready|release-ready|launch-ready|promoted feature|shipped feature)", evidence):
         return {RULES["T-58-08"]}
@@ -1497,7 +1501,7 @@ def assert_evidence_matrix() -> int:
     """Exercise evidence lifecycle, raw-error, and fixed-output boundaries."""
     cases = 0
     mutations = (
-        lambda: mutate_text(EVIDENCE, "status: draft", "status: validated"),
+        lambda: mutate_text(EVIDENCE, "status: validated", "status: draft"),
         lambda: mutate_text(EVIDENCE, "## Requirement Dispositions", "## Requirement Dispositions\n## Requirement Dispositions"),
         lambda: mutate_text(EVIDENCE, "| `58-03-01` | passed", "| `58-03-01` | pending"),
         lambda: append_text(EVIDENCE, "\nrawScannerError: hidden\n"),

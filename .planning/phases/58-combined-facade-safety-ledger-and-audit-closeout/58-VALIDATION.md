@@ -1,7 +1,7 @@
 ---
 phase: 58
-status: draft
-nyquist_compliant: false
+status: validated
+nyquist_compliant: true
 asvs_level: 1
 block_on: HIGH
 plans: 4
@@ -44,32 +44,32 @@ task IDs one-for-one.
 
 | Planned task ID | Wave | Requirements | Required focused evidence | Status |
 | --- | ---: | --- | --- | --- |
-| `58-01-01` | 0 | SAFE-01..03, OUT-01, OUT-02, OUT-04 | Freeze focused SDK specifications for privacy shape, request-local sequences, cancellation publication discard, deterministic closed-set no-op, exact absence of candidate/pair/output routes, literal `.none`, 59/5/72, and both facades | pending |
-| `58-01-02` | 0 | SAFE-01..03, OUT-01..04 | Freeze exact three disabled Demo rows/nil mappings, create ordered T-58-01..08 HIGH inventory, configurable-root checker with representative real-fixture mutations, and draft fixed-ID evidence | pending |
-| `58-02-01` | 1 | SAFE-02, SAFE-03 | Complete repeated, valid-invalid-valid, independent parallel, serialized same-harness, no-face, missing/malformed, throw/recovery, unrelated-effect, canceled-publication-discard, and fresh-request lifecycle matrix without TD-013/cooperative-abort claims | pending |
-| `58-02-02` | 1 | SAFE-01, SAFE-03, OUT-01, OUT-02, OUT-04 | Complete privacy/no-op/typed-error/canonical/59-5-72/facade/non-still, output/helper/gallery/review absence, Demo/ledger zero-promotion, persistence/network/resource/artifact, and scope-nonclaim matrices | pending |
-| `58-03-01` | 2 | SAFE-01..03, OUT-03 | Strict completed-state adapter: freeze Phase 57 checker bytes, three green modes, 519 pre-transition self-test, exact current default R57-COMPAT, and exact current owner/evidence/ledger lifecycle | pending |
-| `58-03-02` | 2 | SAFE-01..03, OUT-01..04 | Complete every HIGH live mutation, missing/unreadable/scanner/raw-error case, Phase 58 evidence lifecycle, current owner equality, aggregate/per-threat modes, and draft evidence totals | pending |
-| `58-04-01` | 3 | SAFE-01..03, OUT-01..04 | Final-only focused/checker/Phase53-58/full SwiftPM/6-test opt-in Vision/full Demo/privacy/resource/network/artifact/GSD/traceability/diff/ASVS/owner gate; validate evidence, requirements, root owners only after current green | pending |
+| `58-01-01` | 0 | SAFE-01..03, OUT-01, OUT-02, OUT-04 | Freeze focused SDK specifications for privacy shape, request-local sequences, cancellation publication discard, deterministic closed-set no-op, exact absence of candidate/pair/output routes, literal `.none`, 59/5/72, and both facades | passed |
+| `58-01-02` | 0 | SAFE-01..03, OUT-01..04 | Freeze exact three disabled Demo rows/nil mappings, create ordered T-58-01..08 HIGH inventory, configurable-root checker with representative real-fixture mutations, and draft fixed-ID evidence | passed |
+| `58-02-01` | 1 | SAFE-02, SAFE-03 | Complete repeated, valid-invalid-valid, independent parallel, serialized same-harness, no-face, missing/malformed, throw/recovery, unrelated-effect, canceled-publication-discard, and fresh-request lifecycle matrix without TD-013/cooperative-abort claims | passed |
+| `58-02-02` | 1 | SAFE-01, SAFE-03, OUT-01, OUT-02, OUT-04 | Complete privacy/no-op/typed-error/canonical/59-5-72/facade/non-still, output/helper/gallery/review absence, Demo/ledger zero-promotion, persistence/network/resource/artifact, and scope-nonclaim matrices | passed |
+| `58-03-01` | 2 | SAFE-01..03, OUT-03 | Strict completed-state adapter: freeze Phase 57 checker bytes, three green modes, 519 pre-transition self-test, exact current default R57-COMPAT, and exact current owner/evidence/ledger lifecycle | passed |
+| `58-03-02` | 2 | SAFE-01..03, OUT-01..04 | Complete every HIGH live mutation, missing/unreadable/scanner/raw-error case, Phase 58 evidence lifecycle, current owner equality, aggregate/per-threat modes, and draft evidence totals | passed |
+| `58-04-01` | 3 | SAFE-01..03, OUT-01..04 | Final-only focused/checker/Phase53-58/full SwiftPM/6-test opt-in Vision/full Demo/privacy/resource/network/artifact/GSD/traceability/diff/ASVS/owner gate; validate evidence, requirements, root owners only after current green | passed |
 
 Task count target: **7 XML tasks = 7 validation rows = 2 Wave 0 + 4
 focused enforcement tasks + 1 final closeout task**.
 
 ## Wave 0 Deliverables
 
-- [ ] XCTest freezes the exact empty admitted-feature set without adding a
+- [x] XCTest freezes the exact empty admitted-feature set without adding a
   production candidate seam.
-- [ ] Cancellation is host publication discard around one intact synchronous
+- [x] Cancellation is host publication discard around one intact synchronous
   Testing invocation, followed by zero-retention fresh work.
-- [ ] Existing canonical, request, composition, compatibility, and Demo owners
+- [x] Existing canonical, request, composition, compatibility, and Demo owners
   gain only Phase 58 boundary assertions; legitimate shipped color/geometry
   behavior remains allowed.
-- [ ] `58-THREAT-INVENTORY.json` has ordered unique T-58-01..08 identities,
+- [x] `58-THREAT-INVENTORY.json` has ordered unique T-58-01..08 identities,
   ASVS Level 1, and `block_on: HIGH`.
-- [ ] `check_phase58_milestone_closeout.py` supports configurable-root
+- [x] `check_phase58_milestone_closeout.py` supports configurable-root
   real-fixture mutation, tri-state scanning, fixed-rule subprocess output, and
   no count-only success.
-- [ ] Draft evidence records only fixed identities, dispositions, aggregate
+- [x] Draft evidence records only fixed identities, dispositions, aggregate
   counts, and explicit nonclaims.
 
 ## Requirement Dispositions
@@ -140,15 +140,16 @@ new structural drift appears.
 
 ## Validation Sign-Off
 
-- [ ] Four serial plans contain exactly seven XML tasks and seven validation rows.
-- [ ] All seven dispositions and all twenty decisions have executable owners.
-- [ ] All eight HIGH identities are individually machine-green with no waiver.
-- [ ] Phase 57 completed-state audit is strict without changing the frozen checker.
-- [ ] Full SwiftPM, six-test opt-in Vision, and full Demo are current green.
-- [ ] Zero feature rows and zero branches are promoted.
-- [ ] No sensitive payload, image/human review, or unsupported scope claim exists.
-- [ ] Canonical evidence and root owners synchronize only after every prior gate.
+- [x] Four serial plans contain exactly seven XML tasks and seven validation rows.
+- [x] All seven dispositions and all twenty decisions have executable owners.
+- [x] All eight HIGH identities are individually machine-green with no waiver.
+- [x] Phase 57 completed-state audit is strict without changing the frozen checker.
+- [x] Full SwiftPM, six-test opt-in Vision, and full Demo are current green.
+- [x] Zero feature rows and zero branches are promoted.
+- [x] No sensitive payload, image/human review, or unsupported scope claim exists.
+- [x] Canonical evidence and root owners synchronize only after every prior gate.
 
-**Approval:** pending seven task rows, seven requirements, twenty decisions,
-eight HIGH mitigations, full automated gates, review/fix, and independent
-verification.
+**Approval:** Automated execution is validated for seven task rows, seven
+requirements, twenty decisions, eight HIGH mitigations, full regression, and
+owner gates. External review/fix and independent verification are the next
+lifecycle gates.
