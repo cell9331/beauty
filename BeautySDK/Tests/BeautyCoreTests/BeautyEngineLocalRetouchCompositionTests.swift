@@ -260,6 +260,45 @@ final class BeautyEngineLocalRetouchCompositionTests: XCTestCase {
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionCount, 0)
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionNames, [])
     }
+
+    func testPhase58ThrownMiddleRequestResetsCountersAndFreshRequestContinuesUnrelatedEffects() throws {
+        let harness = try SDKTestingLocalRetouchFoundationHarness(
+            admittedPrivateDemandCount: 1,
+            supportSequence: [
+                .available(valueID: 801),
+                .malformed,
+                .available(valueID: 803),
+            ],
+            compositionScenarios: [.disjoint, .collision, .thirdUnitAbsent]
+        )
+        let parameters = BeautyParameters(
+            brightness: 0.15,
+            filterId: "soft_clean",
+            filterIntensity: 0.5
+        )
+
+        let first = try invoke(harness, entry: .processResult, parameters: parameters)
+        XCTAssertEqual(first.aggregateSupportValueID, 801)
+        XCTAssertEqual(harness.compositionObservation.acceptedUnitCount, 3)
+        XCTAssertEqual(harness.compositionObservation.changedPixelCount, 3)
+        XCTAssertEqual(harness.retainedRequestOwnerCount, 0)
+
+        XCTAssertThrowsError(try invoke(harness, entry: .processResult, parameters: parameters))
+        XCTAssertEqual(harness.compositionObservation, SDKTestingLocalCompositionObservation())
+        XCTAssertEqual(harness.retainedRequestOwnerCount, 0)
+
+        let fresh = try invoke(harness, entry: .processResult, parameters: parameters)
+        XCTAssertEqual(fresh.aggregateSupportValueID, 803)
+        XCTAssertNotEqual(try renderedRGBA8(fresh.output), Self.thirdAbsentBytes)
+        XCTAssertEqual(harness.compositionObservation.compositionInvocationCount, 1)
+        XCTAssertEqual(harness.compositionObservation.acceptedUnitCount, 2)
+        XCTAssertEqual(harness.compositionObservation.rejectedUnitCount, 0)
+        XCTAssertEqual(harness.compositionObservation.ownedPixelCount, 2)
+        XCTAssertEqual(harness.compositionObservation.changedPixelCount, 2)
+        XCTAssertEqual(harness.compositionObservation.changedOutsideUnionPixelCount, 0)
+        XCTAssertEqual(harness.compositionObservation.collisionPixelCount, 0)
+        XCTAssertEqual(harness.retainedRequestOwnerCount, 0)
+    }
 }
 
 private extension BeautyEngineLocalRetouchCompositionTests {

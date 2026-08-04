@@ -535,6 +535,83 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         XCTAssertEqual(harness.retainedRequestOwnerCount, 0)
     }
 
+    func testPhase58CompleteRequestLocalLifecycleRetainsNoSupportBetweenTransactions() throws {
+        let harness = try SDKTestingLocalRetouchFoundationHarness(
+            admittedPrivateDemandCount: 1,
+            supportSequence: [
+                .available(valueID: 701),
+                .malformed,
+                .available(valueID: 703),
+            ]
+        )
+
+        let first = try harness.invoke(
+            entry: .processResult,
+            image: Self.image,
+            parameters: .init(brightness: 0.15)
+        )
+        XCTAssertEqual(first.aggregateSupportValueID, 701)
+        XCTAssertEqual(first.detectionAvailability, "usable")
+        XCTAssertEqual(first.detectionReasons, [])
+        XCTAssertEqual(harness.lastMappingInvocationCount, 2)
+        XCTAssertEqual(harness.lastMappedCoordinateCount, 7)
+        Self.assertNoRetainedRequestSupport(harness)
+
+        XCTAssertThrowsError(
+            try harness.invoke(
+                entry: .processResult,
+                image: Self.image,
+                parameters: .init(brightness: 0.15)
+            )
+        ) { error in
+            XCTAssertEqual(error as? BeautyError, .invalidInput)
+            XCTAssertEqual(error.localizedDescription, "invalidInput")
+            XCTAssertEqual(Array(Mirror(reflecting: error).children).count, 0)
+        }
+        XCTAssertEqual(harness.lastMappingInvocationCount, 0)
+        XCTAssertEqual(harness.lastMappedCoordinateCount, 0)
+        Self.assertNoRetainedRequestSupport(harness)
+
+        let fresh = try harness.invoke(
+            entry: .processResult,
+            image: Self.image,
+            parameters: .init(brightness: 0.15)
+        )
+        XCTAssertEqual(fresh.aggregateSupportValueID, 703)
+        XCTAssertNotEqual(fresh.aggregateSupportValueID, first.aggregateSupportValueID)
+        XCTAssertEqual(fresh.detectionAvailability, "usable")
+        XCTAssertEqual(fresh.detectionReasons, [])
+        XCTAssertEqual(harness.lastMappingInvocationCount, 2)
+        XCTAssertEqual(harness.lastMappedCoordinateCount, 7)
+        Self.assertNoRetainedRequestSupport(harness)
+    }
+
+    func testPhase58NoFaceAndMissingSupportPublishOnlyAllowlistedAggregateReasons() throws {
+        let expected: [(SDKTestingLocalSupportFixture, String, [String])] = [
+            (.noFace, "noFace", ["noFaceDetected"]),
+            (.missingSupport, "usable", []),
+        ]
+
+        for (fixture, availability, reasons) in expected {
+            let harness = try SDKTestingLocalRetouchFoundationHarness(
+                admittedPrivateDemandCount: 1,
+                supportFixture: fixture
+            )
+            let result = try harness.invoke(
+                entry: .processResult,
+                image: Self.image,
+                parameters: .init(brightness: 0.15)
+            )
+
+            XCTAssertNil(result.aggregateSupportValueID)
+            XCTAssertEqual(result.detectionAvailability, availability)
+            XCTAssertEqual(result.detectionReasons, reasons)
+            XCTAssertEqual(result.width, 2)
+            XCTAssertEqual(result.height, 2)
+            Self.assertNoRetainedRequestSupport(harness)
+        }
+    }
+
     func testConcurrencyNonclaimsRemainFlaggedNotPassedClaims() {
         let flags = Set([
             "PATH01-CONCURRENCY",
@@ -605,6 +682,15 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
             colorSpace: colorSpace
         )
         return bytes
+    }
+
+    private static func assertNoRetainedRequestSupport(
+        _ harness: SDKTestingLocalRetouchFoundationHarness,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(harness.retainedRequestOwnerCount, 0, file: file, line: line)
+        XCTAssertEqual(harness.retainedMappedCoordinateCount, 0, file: file, line: line)
     }
 }
 

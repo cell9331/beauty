@@ -63,6 +63,12 @@ SENSITIVE_PATTERN = (
     r"retainedScleraMask|persistedScleraMask|rawLandmarks|reviewerIdentity|"
     r"fixturePath|imageDigest|rawScannerError|publicSupportCoordinates"
 )
+LIFETIME_FORBIDDEN_PATTERN = (
+    r"Phase58CooperativeAbort|claimsCooperativeAbort|abortSDKWork|"
+    r"TD013Resolved|genericResultSendabilityResolved|publicResultIsSendable|"
+    r"globalSupportCache|staticRequestContext|persistedRequestSupport|"
+    r"crossRequestMaskStore|retainedAnatomyObservation|rawRequestFailureOutput"
+)
 
 
 def configure_root(root: pathlib.Path) -> None:
@@ -256,17 +262,75 @@ def privacy_failures() -> set[str]:
 
 
 def lifetime_failures() -> set[str]:
-    source = read_text(FOUNDATION_TEST)
-    required = (
+    foundation = read_text(FOUNDATION_TEST)
+    composition = read_text(COMPOSITION_TEST)
+    support = read_text(
+        SOURCES / "BeautySDK" / "BeautyEngineTestingSupport.swift"
+    )
+    required_foundation_methods = (
+        "testValidInvalidValidDoesNotReuseRequestSupport",
+        "testIndependentEngineValuesDoNotCrossPayloads",
+        "testSameHarnessParallelInvocationsSerializeCompleteRequestTransactions",
         "testPhase58CanceledCallerDiscardsCompletedPublicationThenFreshRequestPublishes",
+        "testPhase58CompleteRequestLocalLifecycleRetainsNoSupportBetweenTransactions",
+        "testPhase58NoFaceAndMissingSupportPublishOnlyAllowlistedAggregateReasons",
+    )
+    required_foundation_fragments = (
         "supportSequence: [.available(valueID: 101), .available(valueID: 202)]",
         "publication.cancel()",
         "XCTAssertEqual(canceledOutcome, .discarded)",
         "XCTAssertEqual(fresh.aggregateSupportValueID, 202)",
-        "XCTAssertEqual(harness.retainedRequestOwnerCount, 0)",
+        "let expectedValueIDs = Set(1...32)",
+        "Self.assertNoRetainedRequestSupport(harness)",
     )
-    forbidden = ("Phase58CooperativeAbort", "TD-013 resolved", "claimsCooperativeAbort")
-    if any(marker not in source for marker in required) or any(marker in source for marker in forbidden):
+    required_composition = (
+        "testValidInvalidValidRequestsResetEveryCompositionObservation",
+        "testThrownRequestClearsObservationBeforeThirdValidRequest",
+        "testAbsentAndMalformedLocalWorkPreserveUnrelatedBrightnessAndFilterContinuation",
+        "testPhase58ThrownMiddleRequestResetsCountersAndFreshRequestContinuesUnrelatedEffects",
+        "XCTAssertEqual(harness.compositionObservation, SDKTestingLocalCompositionObservation())",
+        "XCTAssertEqual(harness.compositionObservation.changedOutsideUnionPixelCount, 0)",
+    )
+    if any(foundation.count(marker) != 1 for marker in required_foundation_methods):
+        return {RULES["T-58-03"]}
+    if any(marker not in foundation for marker in required_foundation_fragments):
+        return {RULES["T-58-03"]}
+    if any(composition.count(marker) < 1 for marker in required_composition):
+        return {RULES["T-58-03"]}
+
+    result_segment = support.split(
+        "@_spi(Testing) public struct SDKTestingLocalResult", 1
+    )[1].split("package final class BeautyLocalRetouchTestingHooks", 1)[0]
+    result_labels = re.findall(r"public let ([A-Za-z0-9_]+):", result_segment)
+    if result_labels != [
+        "output", "width", "height", "aggregateSupportValueID",
+        "detectionAvailability", "detectionReasons",
+    ]:
+        return {RULES["T-58-03"]}
+
+    observation_segment = support.split(
+        "@_spi(Testing) public struct SDKTestingLocalCompositionObservation", 1
+    )[1].split("@_spi(Testing) public enum SDKTestingLocalSupportFixture", 1)[0]
+    observation_labels = re.findall(r"public let ([A-Za-z0-9_]+):", observation_segment)
+    if observation_labels != [
+        "width", "height", "compositionInvocationCount", "sourceBindingMatched",
+        "acceptedUnitCount", "rejectedUnitCount", "ownedPixelCount",
+        "changedPixelCount", "changedOutsideUnionPixelCount", "collisionPixelCount",
+    ]:
+        return {RULES["T-58-03"]}
+
+    serialization_markers = (
+        "private let invocationLock = NSLock()",
+        "invocationLock.lock()\n        defer { invocationLock.unlock() }",
+    )
+    if any(marker not in support for marker in serialization_markers):
+        return {RULES["T-58-03"]}
+
+    scanned = "\n".join((support, foundation, composition, read_text(EVIDENCE)))
+    if (
+        re.search(LIFETIME_FORBIDDEN_PATTERN, scanned, re.IGNORECASE)
+        or run_rg(LIFETIME_FORBIDDEN_PATTERN, (SOURCES,)) == "match"
+    ):
         return {RULES["T-58-03"]}
     return set()
 
@@ -507,12 +571,157 @@ def mutate_representative(threat: str) -> None:
         INVENTORY.write_text(json.dumps(document), encoding="utf-8")
 
 
+def assert_fixture_mutation(threat: str, mutate: object) -> int:
+    original_root = ROOT
+    try:
+        with tempfile.TemporaryDirectory(prefix="phase58-closeout-") as temporary:
+            fixture = pathlib.Path(temporary)
+            configure_root(original_root)
+            copy_fixture(fixture)
+            configure_root(fixture)
+            if classified_failures(only=threat):
+                raise AssertionError("clean fixture failed")
+            mutate()
+            if classified_failures(only=threat) != {RULES[threat]}:
+                raise AssertionError("mutation accepted")
+    finally:
+        configure_root(original_root)
+    return 1
+
+
+def mutate_text(path: pathlib.Path, old: str, new: str) -> None:
+    source = read_text(path)
+    if old not in source:
+        raise AssertionError("mutation marker missing")
+    path.write_text(source.replace(old, new, 1), encoding="utf-8")
+
+
+def assert_lifetime_matrix() -> int:
+    cases = 0
+
+    foundation_markers = (
+        "testValidInvalidValidDoesNotReuseRequestSupport",
+        "testIndependentEngineValuesDoNotCrossPayloads",
+        "testSameHarnessParallelInvocationsSerializeCompleteRequestTransactions",
+        "testPhase58CanceledCallerDiscardsCompletedPublicationThenFreshRequestPublishes",
+        "testPhase58CompleteRequestLocalLifecycleRetainsNoSupportBetweenTransactions",
+        "testPhase58NoFaceAndMissingSupportPublishOnlyAllowlistedAggregateReasons",
+        "let expectedValueIDs = Set(1...32)",
+        "XCTAssertEqual(canceledOutcome, .discarded)",
+        "XCTAssertEqual(fresh.aggregateSupportValueID, 202)",
+    )
+    for index, marker in enumerate(foundation_markers):
+        cases += assert_fixture_mutation(
+            "T-58-03",
+            lambda marker=marker, index=index: mutate_text(
+                FOUNDATION_TEST, marker, f"removedLifetimeMarker{index}"
+            ),
+        )
+
+    composition_markers = (
+        "testValidInvalidValidRequestsResetEveryCompositionObservation",
+        "testThrownRequestClearsObservationBeforeThirdValidRequest",
+        "testAbsentAndMalformedLocalWorkPreserveUnrelatedBrightnessAndFilterContinuation",
+        "testPhase58ThrownMiddleRequestResetsCountersAndFreshRequestContinuesUnrelatedEffects",
+    )
+    for index, marker in enumerate(composition_markers):
+        cases += assert_fixture_mutation(
+            "T-58-03",
+            lambda marker=marker, index=index: mutate_text(
+                COMPOSITION_TEST, marker, f"removedCompositionMarker{index}"
+            ),
+        )
+
+    support_file = lambda: SOURCES / "BeautySDK" / "BeautyEngineTestingSupport.swift"
+    support_mutations = (
+        ("private let invocationLock = NSLock()", "private let alteredLock = NSLock()"),
+        ("public let detectionReasons: [String]", "public let anatomyObservation: [String]"),
+        ("public let collisionPixelCount: Int", "public let rawPixelIdentity: Int"),
+    )
+    for old, new in support_mutations:
+        cases += assert_fixture_mutation(
+            "T-58-03",
+            lambda old=old, new=new: mutate_text(support_file(), old, new),
+        )
+
+    forbidden_sources = (
+        "private static var globalSupportCache = [Int: Any]()\n",
+        "private static var staticRequestContext: Any?\n",
+        "private var persistedRequestSupport: Any?\n",
+        "private var crossRequestMaskStore = [Int: Any]()\n",
+        "private var retainedAnatomyObservation: Any?\n",
+    )
+    for index, payload in enumerate(forbidden_sources):
+        cases += assert_fixture_mutation(
+            "T-58-03",
+            lambda index=index, payload=payload: (
+                (SOURCES / "NeutralPhase58" / f"Lifetime{index}.swift").parent.mkdir(
+                    parents=True, exist_ok=True
+                ),
+                (SOURCES / "NeutralPhase58" / f"Lifetime{index}.swift").write_text(
+                    payload, encoding="utf-8"
+                ),
+            ),
+        )
+
+    overclaims = (
+        "Phase58CooperativeAbort",
+        "claimsCooperativeAbort",
+        "abortSDKWork",
+        "TD013Resolved",
+        "genericResultSendabilityResolved",
+        "publicResultIsSendable",
+        "rawRequestFailureOutput",
+    )
+    for marker in overclaims:
+        cases += assert_fixture_mutation(
+            "T-58-03",
+            lambda marker=marker: EVIDENCE.write_text(
+                read_text(EVIDENCE) + f"\n{marker}\n", encoding="utf-8"
+            ),
+        )
+
+    for path_getter in (
+        lambda: FOUNDATION_TEST,
+        lambda: COMPOSITION_TEST,
+        support_file,
+        lambda: EVIDENCE,
+    ):
+        cases += assert_fixture_mutation(
+            "T-58-03", lambda path_getter=path_getter: path_getter().unlink()
+        )
+        cases += assert_fixture_mutation(
+            "T-58-03",
+            lambda path_getter=path_getter: path_getter().write_bytes(b"\xff\xfe"),
+        )
+
+    original_root = ROOT
+    try:
+        with tempfile.TemporaryDirectory(prefix="phase58-closeout-") as temporary:
+            fixture = pathlib.Path(temporary)
+            configure_root(original_root)
+            copy_fixture(fixture)
+            configure_root(fixture)
+            if classified_failures(
+                only="T-58-03", force_scanner_error="T-58-03"
+            ) != {RULES["T-58-03"]}:
+                raise AssertionError("unclassified scanner accepted")
+            cases += 1
+    finally:
+        configure_root(original_root)
+
+    return cases
+
+
 def self_test(only: str | None) -> int:
     selected = THREAT_IDS if only is None else (only,)
     original_root = ROOT
     cases = 0
     try:
         for threat in selected:
+            if threat == "T-58-03":
+                cases += assert_lifetime_matrix()
+                continue
             with tempfile.TemporaryDirectory(prefix="phase58-closeout-") as temporary:
                 fixture = pathlib.Path(temporary)
                 configure_root(original_root)
