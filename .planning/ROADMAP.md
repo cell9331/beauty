@@ -115,7 +115,7 @@ Earlier shipped milestones are preserved in their linked archives under `.planni
 
 - [x] 55-03-PLAN.md — Implement deterministic Q16 original-pixel composition, hard re-clipping, collision-to-source, and unit-local abstention.
 
-**Wave 3** *(blocked on Wave 2 completion)*
+**Wave 3**
 
 - [x] 55-04-PLAN.md — Prove same-request facade adjacency through opaque Testing-only wiring while production admission remains empty.
 
@@ -218,7 +218,7 @@ Earlier shipped milestones are preserved in their linked archives under `.planni
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] `58-04-PLAN.md` — Run final-only full SwiftPM, exact six-test opt-in Vision, full Demo, checker/GSD/owner gates, and seal execution evidence for external review/verifier.
+- [x] `58-04-PLAN.md` — Run final-only full SwiftPM, exact six-test opt-in Vision, full Demo, checker/GSD/owner gates, and seal execution evidence for external review/verifier.
 
 **Cross-cutting constraints:** the admitted and promoted visible sets are exactly empty; OUT-01/OUT-02 use explicit not-applicable exact-absence dispositions; literal `.none`, 59/5/72, both CIImage facades, feature-neutral Phase 55 mechanics, three disabled Demo rows, future/future/future, partial/partial, and the frozen Phase 57 519-case checker remain exact; OWASP ASVS Level 1 with all T-58 HIGH rows blocking; no production feature route, browser/file/image/human review, TD-013, release claim, or full SwiftPM/opt-in Vision/complete Demo before `58-04-01`; code review/fix, independent verification, phase transition, and milestone audit remain external post-execution lifecycle.
 

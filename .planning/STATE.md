@@ -38,19 +38,19 @@ Progress: [████████░░] 5/6 phases (83%)
 
 **Current milestone:**
 
-- Total plans completed: 26
+- Total plans completed: 27
 - Average duration: 18.0 min
 - Total execution time: 7h 11min
 
 | Phase | Plans | Total | Avg/Plan |
 | --- | ---: | --- | --- |
-| 53-58 | 26 | 9h 31min | 21.9 min |
+| 53-58 | 27 | 9h 31min | 21.2 min |
 | 53 | 6 | 1h 50min | 18.3 min |
 | 54 | 5 | 2h 03min | 24.6 min |
 | 55 | 5 | 58min | 11.6 min |
 | 56 | 3 | 1h 15min | 25.0 min |
 | 57 | 4 | 45min | 11.3 min |
-| 58 | 3 | 2h 40min | 53.3 min |
+| 58 | 4 | 3h 05min | 46.3 min |
 
 Historical milestone metrics remain in `.planning/MILESTONES.md` and archived roadmaps.
 **Per-Plan Metrics:**
