@@ -851,9 +851,9 @@ def validation_lifecycle_failures() -> set[str]:
     try:
         validation = read_text(VALIDATION)
         requirements = read_text(REQUIREMENTS)
+        evidence = parse_evidence_frontmatter(read_text(EVIDENCE))
     except (OSError, UnicodeError):
         return {"R57-COMPAT"}
-    evidence = parse_evidence_frontmatter(read_text(EVIDENCE))
     if evidence is None:
         return {"R57-COMPAT"}
     status = evidence[0]["status"]
@@ -1566,6 +1566,29 @@ def assert_unreadable_fixture(path: pathlib.Path, expected_rule: str) -> int:
     return 1
 
 
+def assert_cli_unreadable_fixture(path: pathlib.Path, expected_output: str) -> int:
+    moved = path.with_name(f"{path.name}.cli-saved")
+    path.rename(moved)
+    path.mkdir()
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(pathlib.Path(__file__).resolve()), "--root", str(ROOT)],
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        if (
+            completed.returncode != 1
+            or completed.stdout != expected_output
+            or completed.stderr != ""
+        ):
+            raise AssertionError("CLI unreadable fixture escaped fixed output")
+    finally:
+        path.rmdir()
+        moved.rename(path)
+    return 1
+
+
 def assert_compatibility_and_scanner_failures() -> int:
     evidence = read_text(EVIDENCE)
     evidence_status = "status: validated" if "status: validated" in evidence else "status: draft"
@@ -1588,6 +1611,14 @@ def assert_compatibility_and_scanner_failures() -> int:
     for path in (PARAMETERS, DECISIONS, EVIDENCE, VALIDATION):
         cases += assert_missing_fixture(path, "R57-COMPAT")
     cases += assert_unreadable_fixture(EVIDENCE, "R57-COMPAT")
+    cases += assert_cli_unreadable_fixture(
+        EVIDENCE,
+        "mode=live status=blocked rules=R57-COMPAT\n",
+    )
+    cases += assert_cli_unreadable_fixture(
+        VALIDATION,
+        "mode=live status=blocked rules=R57-COMPAT\n",
+    )
     for code in (2, 127):
         try:
             classify_rg(code, "", "scanner failed")
@@ -1840,15 +1871,35 @@ def main() -> int:
         configure_root(arguments.root)
     if arguments.only is not None and not arguments.self_test:
         parser.error("--only requires --self-test")
+    mode = "live"
     if arguments.self_test:
-        return self_test(arguments.only)
-    if arguments.decision:
-        return emit("decision", authority_failures())
-    if arguments.sclera:
-        return emit("sclera", source_failures() & {"R57-SCLERA"})
-    if arguments.eyelid:
-        return emit("eyelid", source_failures() & {"R57-EYELID", "R57-PROXY"})
-    return emit("live", live_failures())
+        mode = "self-test"
+    elif arguments.decision:
+        mode = "decision"
+    elif arguments.sclera:
+        mode = "sclera"
+    elif arguments.eyelid:
+        mode = "eyelid"
+
+    try:
+        if mode == "self-test":
+            return self_test(arguments.only)
+        if mode == "decision":
+            return emit(mode, authority_failures())
+        if mode == "sclera":
+            return emit(mode, source_failures() & {"R57-SCLERA"})
+        if mode == "eyelid":
+            return emit(mode, source_failures() & {"R57-EYELID", "R57-PROXY"})
+        return emit(mode, live_failures())
+    except Exception:
+        fixed = {
+            "decision": {"R57-AUTH"},
+            "sclera": {"R57-SCLERA"},
+            "eyelid": {"R57-EYELID", "R57-PROXY"},
+            "self-test": {"R57-COMPAT"},
+            "live": {"R57-AUTH", "R57-COMPAT"},
+        }
+        return emit(mode, fixed[mode])
 
 
 if __name__ == "__main__":
