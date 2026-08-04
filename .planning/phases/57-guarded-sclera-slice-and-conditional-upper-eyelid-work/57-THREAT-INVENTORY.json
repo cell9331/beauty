@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "security_standard": "OWASP ASVS Level 1",
+  "block_on": "HIGH",
+  "threats": [
+    {
+      "id": "T-57-01",
+      "stride": ["Spoofing", "Tampering"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "owner": "57-02-01",
+      "gates": ["exact_phase54_dual_authority", "independent_closed_reasons_and_zero_counts"]
+    },
+    {
+      "id": "T-57-02",
+      "stride": ["Elevation of Privilege", "Tampering"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "owner": "57-02-02",
+      "gates": ["no_sclera_candidate_or_alias", "no_sclera_provider_renderer_preset_admission_or_output_route"]
+    },
+    {
+      "id": "T-57-03",
+      "stride": ["Elevation of Privilege", "Tampering"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "owner": "57-03-01",
+      "gates": ["no_upper_eyelid_candidate_or_alias", "no_upper_eyelid_provider_renderer_preset_admission_or_output_route"]
+    },
+    {
+      "id": "T-57-04",
+      "stride": ["Elevation of Privilege", "Tampering"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "owner": "57-03-01",
+      "gates": ["candidate_proxy_coupling_rejected", "legitimate_proxy_only_domains_preserved"]
+    },
+    {
+      "id": "T-57-05",
+      "stride": ["Tampering"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "owner": "57-01-02+57-03-02",
+      "gates": ["exact_disabled_demo_rows", "no_control_binding_store_processor_reset_or_availability_route"]
+    },
+    {
+      "id": "T-57-06",
+      "stride": ["Information Disclosure"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "owner": "57-03-02",
+      "gates": ["fixed_rule_only_output", "no_sensitive_eye_support_review_or_pixel_payload"]
+    },
+    {
+      "id": "T-57-07",
+      "stride": ["Tampering", "Repudiation"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "owner": "57-03-02",
+      "gates": ["exact_future_future_partial_ledgers", "no_sibling_or_teeth_borrowing"]
+    },
+    {
+      "id": "T-57-08",
+      "stride": ["Tampering", "Denial of Service"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "owner": "57-03-02+57-04-01",
+      "gates": ["exact_59_5_72_facade_and_evidence_owners", "missing_malformed_and_scanner_fail_closed"]
+    }
+  ]
+}

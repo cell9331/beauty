@@ -131,6 +131,72 @@ final class BeautyDemoViewStateTests: XCTestCase {
     }
 
     @MainActor
+    func testPhase57ClosedEyeRetouchGatesPreserveDisabledRowsAndProxyIndependence() throws {
+        let eyes = MeituEditorCategory.category(id: .eyes)
+        XCTAssertEqual(eyes.title, "眼睛")
+        XCTAssertEqual(eyes.tools.map(\.id), [
+            "eyes.size", "eyes.upDown", "eyes.height", "eyes.length", "eyes.distance",
+            "eyes.fat", "eyes.liftMuscle", "eyes.pupil", "eyes.gaze", "eyes.lowerLid",
+            "eyes.tailLift", "eyes.tilt", "eyes.redness", "eyes.innerCorner",
+            "eyes.outerCorner", "eyes.symmetry",
+        ])
+
+        let fat = try XCTUnwrap(eyes.tools.first { $0.id == "eyes.fat" })
+        XCTAssertEqual(fat.title, "去脂")
+        XCTAssertEqual(fat.systemImageName, "minus.circle")
+        XCTAssertEqual(fat.badge, .free)
+        XCTAssertFalse(fat.isSupported)
+        XCTAssertNil(fat.controlID)
+        XCTAssertEqual(fat.unavailableReason, "v1.1 暂未实现该美图参考功能")
+
+        let redness = try XCTUnwrap(eyes.tools.first { $0.id == "eyes.redness" })
+        XCTAssertEqual(redness.title, "祛红血丝")
+        XCTAssertEqual(redness.systemImageName, "drop")
+        XCTAssertEqual(redness.badge, .free)
+        XCTAssertFalse(redness.isSupported)
+        XCTAssertNil(redness.controlID)
+        XCTAssertEqual(redness.unavailableReason, "v1.1 暂未实现该美图参考功能")
+
+        for candidate in [fat, redness] {
+            let panel = MeituEditorToolPanelView.viewState(
+                selectedCategoryID: .eyes,
+                selectedToolID: candidate.id,
+                displayValue: 0,
+                compareTitle: "对比",
+                debugTitle: "调试"
+            )
+            XCTAssertEqual(panel.selectedTool, candidate)
+            XCTAssertEqual(panel.selectedValue, 0)
+            XCTAssertNil(panel.selectedTool.controlID)
+        }
+
+        let supportedMappings: [String: BeautyControlID] = [
+            "eyes.size": .eyeSize,
+            "eyes.upDown": .eyeYPosition,
+            "eyes.distance": .eyeDistance,
+            "eyes.tailLift": .eyeTailLift,
+        ]
+        for (toolID, controlID) in supportedMappings {
+            let tool = try XCTUnwrap(eyes.tools.first { $0.id == toolID })
+            XCTAssertTrue(tool.isSupported)
+            XCTAssertEqual(tool.controlID, controlID)
+        }
+
+        let controlIDs = Set(BeautyControlID.allCases.map(\.rawValue))
+        for forbidden in [
+            "scleraRednessReduction", "scleraWhitening", "bloodshotReduction",
+            "upperEyelidFullnessReduction", "upperEyelidFatReduction", "lidFatReduction",
+        ] {
+            XCTAssertFalse(controlIDs.contains(forbidden), forbidden)
+        }
+        let store = BeautyParameterStore()
+        let before = store.parametersSnapshot
+        XCTAssertNil(fat.controlID)
+        XCTAssertNil(redness.controlID)
+        XCTAssertEqual(store.parametersSnapshot, before)
+    }
+
+    @MainActor
     func testV11MeituPanelSliderWritesSupportedParameterOnly() {
         let store = BeautyParameterStore()
         var categoryID: MeituEditorCategoryID = .faceShape
