@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "security_standard": "OWASP ASVS Level 1",
+  "block_on": "HIGH",
+  "threats": [
+    {
+      "id": "T-58-01",
+      "stride": ["Tampering", "Elevation of Privilege"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "owner": "58-02-02",
+      "final_rerun_owner": "58-04-01",
+      "gates": ["exact_phase54_authority", "literal_empty_admission"]
+    },
+    {
+      "id": "T-58-02",
+      "stride": ["Information Disclosure"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "owner": "58-02-02",
+      "final_rerun_owner": "58-04-01",
+      "gates": ["no_sensitive_support_payload", "fixed_aggregate_output"]
+    },
+    {
+      "id": "T-58-03",
+      "stride": ["Information Disclosure", "Tampering"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "owner": "58-02-01",
+      "final_rerun_owner": "58-04-01",
+      "gates": ["request_local_nonretention", "publication_discard_without_abort_claim"]
+    },
+    {
+      "id": "T-58-04",
+      "stride": ["Tampering", "Denial of Service"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "owner": "58-02-02",
+      "final_rerun_owner": "58-04-01",
+      "gates": ["canonical_noop_and_typed_error", "exact_59_5_72_facades_and_nonstill"]
+    },
+    {
+      "id": "T-58-05",
+      "stride": ["Spoofing", "Repudiation"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "owner": "58-02-02",
+      "final_rerun_owner": "58-04-01",
+      "gates": ["exact_out01_out02_absence", "feature_neutral_mechanics_nonclaim"]
+    },
+    {
+      "id": "T-58-06",
+      "stride": ["Repudiation", "Elevation of Privilege"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "owner": "58-02-02",
+      "final_rerun_owner": "58-04-01",
+      "gates": ["exact_three_disabled_demo_rows", "zero_row_ledger_promotion"]
+    },
+    {
+      "id": "T-58-07",
+      "stride": ["Tampering"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "owner": "58-03-01",
+      "final_rerun_owner": "58-04-01",
+      "gates": ["frozen_phase57_lifecycle", "completed_owner_equality"]
+    },
+    {
+      "id": "T-58-08",
+      "stride": ["Information Disclosure", "Denial of Service"],
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "owner": "58-03-02",
+      "final_rerun_owner": "58-04-01",
+      "gates": ["strict_evidence_and_scanner", "final_owner_and_gate_equality"]
+    }
+  ]
+}

@@ -225,6 +225,69 @@ final class BeautyDemoViewStateTests: XCTestCase {
     }
 
     @MainActor
+    func testPhase58ZeroPromotionPreservesExactlyThreeDisabledLocalRetouchRows() throws {
+        let expected: [
+            (category: MeituEditorCategoryID, id: String, title: String,
+             icon: String, badge: MeituEditorToolBadge?)
+        ] = [
+            (.lips, "lips.teeth", "白牙", "sparkles", nil),
+            (.eyes, "eyes.fat", "去脂", "minus.circle", .free),
+            (.eyes, "eyes.redness", "祛红血丝", "drop", .free),
+        ]
+        let allTools = MeituEditorCategory.all.flatMap(\.tools)
+        let candidateIDs = Set(expected.map(\.id))
+        let candidates = allTools.filter { candidateIDs.contains($0.id) }
+
+        XCTAssertEqual(candidates.count, 3)
+        XCTAssertEqual(Set(candidates.map(\.id)), candidateIDs)
+        for row in expected {
+            let category = MeituEditorCategory.category(id: row.category)
+            let tool = try XCTUnwrap(category.tools.first { $0.id == row.id })
+            XCTAssertEqual(tool.title, row.title)
+            XCTAssertEqual(tool.systemImageName, row.icon)
+            XCTAssertEqual(tool.badge, row.badge)
+            XCTAssertFalse(tool.isSupported)
+            XCTAssertNil(tool.controlID)
+            XCTAssertEqual(tool.unavailableReason, "v1.1 暂未实现该美图参考功能")
+
+            let panel = MeituEditorToolPanelView.viewState(
+                selectedCategoryID: row.category,
+                selectedToolID: row.id,
+                displayValue: 0,
+                compareTitle: "对比",
+                debugTitle: "调试"
+            )
+            XCTAssertEqual(panel.selectedTool, tool)
+            XCTAssertEqual(panel.selectedValue, 0)
+            XCTAssertNil(panel.selectedTool.controlID)
+        }
+
+        XCTAssertEqual(
+            MeituEditorCategory.category(id: .lips).tools.map(\.id).firstIndex(of: "lips.teeth"),
+            8
+        )
+        XCTAssertEqual(
+            MeituEditorCategory.category(id: .eyes).tools.map(\.id).firstIndex(of: "eyes.fat"),
+            5
+        )
+        XCTAssertEqual(
+            MeituEditorCategory.category(id: .eyes).tools.map(\.id).firstIndex(of: "eyes.redness"),
+            12
+        )
+
+        let controlIDs = Set(BeautyControlID.allCases.map(\.rawValue))
+        for forbidden in [
+            "teethWhitening", "scleraRednessReduction", "upperEyelidFullnessReduction",
+        ] {
+            XCTAssertFalse(controlIDs.contains(forbidden), forbidden)
+        }
+        let store = BeautyParameterStore()
+        let before = store.parametersSnapshot
+        XCTAssertTrue(candidates.allSatisfy { $0.controlID == nil })
+        XCTAssertEqual(store.parametersSnapshot, before)
+    }
+
+    @MainActor
     func testV11MeituPanelSliderWritesSupportedParameterOnly() {
         let store = BeautyParameterStore()
         var categoryID: MeituEditorCategoryID = .faceShape
