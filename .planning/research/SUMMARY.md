@@ -1,218 +1,179 @@
 # Project Research Summary
 
-**Project:** Beauty v1.14 Local Facial Retouch
-**Domain:** Local-first still-image facial retouch SDK for iOS/macOS
-**Researched:** 2026-07-30
-**Confidence:** HIGH for architecture, scope, and safety mechanics; MEDIUM for teeth/sclera product readiness; LOW for `去脂` readiness
+**Project:** Beauty
+**Domain:** Local-first iOS still-image teeth whitening and sclera redness reduction
+**Researched:** 2026-08-05
+**Confidence:** HIGH for architecture/safety; MEDIUM for calibration pending genuine evidence
+**Execution note:** Completed inline because this Codex session exposed no GSD subagent dispatch tool; no typed researcher/synthesizer guarantees were available.
 
 ## Executive Summary
 
-Beauty v1.14 should be built as a conservative extension of the existing Swift package, not as a new subsystem. The milestone's durable product is a shared still-image local-retouch boundary: normalize one opaque input once to an up-oriented sRGB RGBA8 raster, run one selected-face Vision landmarks request, keep all anatomy and masks private to that request, and let one composer derive accepted local edits from immutable original pixels. Apple Vision, ImageIO, Core Graphics, Core Image, SwiftPM, and the existing `BeautySDK`/`BeautyDetection`/`BeautyEffects` seams are sufficient; no external dependency, model, cloud service, new package target, Demo UI, or realtime route is justified.
+v1.15 should add no new dependency, model, detector request, image normalization path, or composition engine. The technically sound path is to activate the v1.14 foundation in two strictly serial, independently qualified slices: complete `白牙` evidence and production behavior first, close its public-output/safety/promotion gates, then repeat the same lifecycle for per-eye `祛红血丝`. Apple Vision lip, eye, and pupil landmarks are coarse request-local support, not semantic masks; each provider must conservatively derive its own target candidates inside hard anatomical envelopes.
 
-The visible scope must be promoted feature by feature. Teeth whitening and guarded sclera redness reduction are independent vertical slices and may ship independently after their own rights-approved positive and negative bundles, deterministic containment/safety gates, public-facade output, and original-detail review pass. Synthetic and spike fixtures prove mechanics, not naturalness or target effectiveness. `去脂` is not a required sibling: it remains absent and `future` unless genuine upper-eyelid-fullness positives and negatives validate a distinct non-warp implementation that preserves geometry, crease, texture, and identity. It must never alias eye lift, brow movement, smoothing, dark-circle/eye-bag behavior, or the invalidated warp.
+The dominant risk is not implementing a color formula. It is promoting from insufficient real evidence or allowing protected-region leakage that ordinary image colors hide. `portrait_002` is useful candidate context but does not open either gate. Each feature still needs a genuine positive and negative with complete original/mask/after assets, predeclared polarity, frozen structured original-detail review, and an independent decision. Teeth must protect lip, gum, tongue, braces, hair, skin, texture, and already-light negatives. Sclera must fail independently per eye and prove iris/pupil/highlight/lash/skin safety with both color-independent and recolored-iris final-output oracles.
 
-The primary risks are misaligned input ownership, anatomical leakage, hidden transform ordering, sensitive diagnostic persistence, and evidence overclaiming. Mitigate them with transparent-input rejection before Vision, actual mapped lip/eye/pupil support from the single request, hard envelopes re-applied after feathering, per-eye/per-region failure isolation, overlap-to-original composition, aggregate-only diagnostics, and independent promotion ledgers. Correctness comes before optimization; target-device profiling may later select bounded ROI, Core Image, or Metal execution without changing the ownership oracle.
+The roadmap should therefore be evidence-first and serial: teeth evidence → teeth implementation → teeth output/safety/promotion → sclera evidence → sclera implementation → sclera output/safety/promotion → combined closeout. `去脂`, Demo activation, realtime/pixel-buffer, external model/cloud, tracked portrait media, device/commercial/performance-budget/packaging/shipping/launch work remain outside v1.15.
 
 ## Key Findings
 
 ### Recommended Stack
 
-Keep the current Swift 6 / SwiftPM package graph and deployment baselines (iOS 17+, macOS 14+). Use Apple Vision's existing `VNDetectFaceLandmarksRequest` once per eligible still-image request; ImageIO/Core Graphics/Core Image own validation, EXIF orientation, explicit sRGB RGBA8 canonicalization, and facade-compatible restoration. Extend the existing package targets rather than adding a `BeautyRetouch` target or dependency: `BeautySDK` orchestrates, `BeautyDetection` maps request-local support, and `BeautyEffects` owns retouch semantics, masks, transforms, and composition.
+Keep the current Swift/SwiftPM package and existing Apple Vision/Core Image path. Reuse one canonical explicit-sRGB RGBA8 image, one selected-face landmark request, actual request-local lip/eye/pupil support, and the v1.14 immutable-original composition owner. Add deterministic feature-specific providers and bounded color transforms in `BeautyEffects`, append public fields in `BeautyCore` only after their own gates pass, and verify via existing XCTest, boundary checkers, local ignored review tooling, and `BeautyExampleRenderer`.
 
 **Core technologies:**
 
-- **Swift + SwiftPM:** public zero-default scalars, immutable request context, typed degradation, and XCTest within the current package graph.
-- **Apple Vision:** one selected-face landmarks request supplying actual inner/outer lips, eye contours, pupils, and only conditionally eyebrows; nullable support is never assumed usable.
-- **ImageIO + Core Graphics + Core Image:** one canonical opaque up-oriented sRGB RGBA8 raster shared by detection and rendering, using a reused `CIContext`.
-- **Existing Beauty package seams:** `BeautySDK` facade, `BeautyDetection` mapper, and `BeautyEffects` providers/composer preserve established dependency direction and public redaction.
-- **XCTest and local review harness:** verify compatibility, one-request routing, masks, collisions, privacy, facade output, and rights-approved original/mask/after review without tracking portrait artifacts.
-
-No dependency installation, model resource, remote configuration, new target, or deployment-target raise is recommended. Add exactly two public stored scalars if teeth and sclera pass (59 to 61 fields); add a 62nd for upper-eyelid fullness only if its separate gate passes. All admitted fields are positive-only, finite-normalized, default-zero, and source/JSON/preset compatible.
+- Swift/SwiftPM — existing public contracts, providers, deterministic transforms, and tests.
+- Apple Vision — one request supplying optional lip, eye-contour, and pupil support; no second request or beta-revision migration.
+- Core Image — existing reused context and explicit-sRGB canonical/output ownership.
+- v1.14 local-retouch composer — immutable source, hard containment, local abstention, and collision-to-source behavior.
 
 ### Expected Features
 
-**Must have (table stakes):**
+**Must have:**
 
-- **Canonical still-image processing:** one validated opaque input feeds both Vision and render; transparent, malformed, or unsupported non-RGB local-retouch input rejects before analysis.
-- **One deterministic selected face:** one Vision request and one request-local observation serve all enabled face-dependent effects; no per-feature retry, stale support, or silent multi-face expansion.
-- **Independent conservative controls:** teeth and sclera have separate public semantics, caps, evidence, diagnostics, and promotion decisions; valid sibling work continues when a region or eye fails.
-- **Original-pixel composition:** providers produce bounded masks/results, while one owner composes from original canonical pixels and restores original pixels for any unexpected mask overlap.
-- **Natural protected-region behavior:** immutable anatomical envelopes, bounded transforms, post-feather hard re-clipping, zero outside-mask change, and strict teeth/iris/highlight/skin protection.
-- **Private transient support:** landmarks, pupils, masks, vein-like detail, pixels, asset paths, and review media remain request-local and unpersisted; only fixed reason codes and aggregate counts/timings may escape.
-- **Evidence-backed promotion:** each feature requires public-facade output plus complete rights-approved P+/P- bundles, predeclared blinded 100%-detail review, regression/privacy gates, synchronized ledgers, and independent audit.
+- Independent rights-approved positive/negative evidence and promotion authority per feature.
+- Independent positive-only zero-default public fields with source/Codable/preset compatibility.
+- Conservative target mask, hard post-filter containment, bounded source-derived color transform, and natural no-op behavior.
+- Teeth protected-tissue safety and sclera per-eye protected-region/adversarial safety.
+- Isolated public-facade saved output, original-detail review, full regression, privacy, and exact ledger promotion.
+- Combined requests that preserve standalone equivalence and source pixels on unexpected overlap.
 
-**Should have (competitive):**
+**Should have:**
 
-- **Teeth whitening:** seeded adaptive selection inside actual lip support, conservative yellow-excess reduction and bounded luminance lift, preserved enamel texture/shading, and safe abstention for closed/occluded/unsupported mouths.
-- **Guarded sclera redness reduction:** left/right eligibility and failure isolation, guard-before-color-score, uncertainty-inflated iris exclusion, highlight protection, and both geometric and adversarial final-output safety oracles.
-- **Smallest-unit degradation:** invalid teeth, left eye, right eye, or conditional eyelid band becomes a local no-op without disabling eligible peers or existing shipped effects.
-- **Evidence honesty:** independently qualified teeth can close the `嘴唇` branch; redness alone does not close `眼睛`; exact ledger status follows exact rows.
+- Side-tooth adaptive connected growth without dropping the fixed strong baseline.
+- Independent left/right eye failure and recovery.
+- Aggregate-only reason/timing/count diagnostics and complete request nonretention.
 
-**Conditional / defer beyond the qualified v1.14 slice:**
+**Defer:**
 
-- **`去脂` / upper-eyelid fullness:** add only after genuine rights-approved positives and negatives prove an independent non-warp tone/frequency or other semantically valid method; otherwise add no public field/provider and keep `眼睛` partial.
-- **Realtime/pixel-buffer retouch, transparent/HDR/gain-map input, multi-face/per-face controls, learned segmentation, Demo UI/presets, commercial/device/packaging/launch claims:** separate future scopes with their own contracts and evidence.
+- `去脂`, learned segmentation, Demo activation, realtime/pixel-buffer, transparent/HDR/multi-face expansion, device optimization, and release claims.
 
 ### Architecture Approach
 
-The architecture is a single canonical request pipeline with requirement-aware detection and independent providers behind one composition owner. `BeautySDK` validates and canonicalizes once, `BeautyDetection` runs at most one selected-face request and returns immutable mapped support, and `BeautyEffects` validates feature-local context, creates masks, applies bounded original-pixel transforms, resolves collisions, then hands the composed canonical image to the existing unified geometry pipeline once. The facade restores presentation and exposes only the image plus redacted aggregate outcomes. Masks and support die with the request.
+Public intent enters the existing still-image facade, which canonicalizes once and maps one selected face. A teeth provider or two independent sclera-eye units consume only that request context, create hard-clipped ephemeral proposals, and send source-bound edits to the existing composer. The composer is the only owner of overlap and final source-derived blending. Rendering/public reconstruction remains existing infrastructure. Evidence tooling is an offline admission authority and never becomes a runtime dependency.
 
 **Major components:**
 
-1. **CanonicalStillImageNormalizer** — validates extent/pixel ceiling/input type, rejects transparency, applies EXIF orientation/mirroring once, renders explicit sRGB RGBA8 once, and owns inverse presentation restoration.
-2. **Requirement-aware selected-face detection** — runs zero or one `VNDetectFaceLandmarksRequest`, maps actual lip/eye/pupil/brow values once, and preserves existing deterministic face selection.
-3. **LocalRetouchRequestContextAdapter** — validates package-private request support without synthesizing, persisting, or exposing anatomy.
-4. **Independent mask providers** — teeth and per-eye sclera providers (plus only a gated future eyelid provider) return accepted request-local regions or precise local no-ops; they do not write pixels.
-5. **LocalRetouchCompositionOwner** — clamps/re-clips ownership, reads immutable original pixels, composes disjoint results, restores original pixels on collision, and emits aggregates only.
-6. **Existing facade and geometry pipeline** — preserve base color/lip behavior, run local color retouch once, apply existing unified geometry once, restore output contract, and retain legacy result compatibility.
+1. Feature-specific evidence decision — grants, media completeness, polarity, structured review, and exact admission outcome.
+2. Public field + admission — append-only compatibility and exact nonzero private demand.
+3. Request-local provider + bounded transform — tooth unit or independent eye units.
+4. Existing composition/facade output — one immutable source, one owner per pixel, aggregate-only summary.
+5. Standalone and combined verification — protected regions, naturalness, lifecycle, privacy, compatibility, and ledger equality.
 
 ### Critical Pitfalls
 
-1. **Shipping proxy `去脂`** — make real-positive acquisition and a non-warp geometry/detail gate a hard go/no-go; omit the public field and runtime route when it fails.
-2. **Calling mechanics product evidence** — keep M/S fixtures out of P+/P- aggregates; require feature-specific rights, polarity, complete assets, frozen criteria, and blinded local review.
-3. **Whitening a mouth aperture or the wrong color polarity** — seed connected tooth candidates within a narrow lip-supported envelope, preserve fixed safe support, protect oral tissue, reduce measured yellow excess, and cap luminance/detail loss.
-4. **Letting native iris color hide sclera leakage** — guard geometry before color scoring and require both color-independent protected-region truth and adversarial recolored-iris final-output oracles.
-5. **Feather escape and sequential ownership** — retain immutable hard envelopes, re-clip after every spatial operation, make all transforms read original pixels, and preserve source pixels on any overlap.
-6. **Multiple input/detection owners** — canonicalize once, pass `.up` to the sole Vision request, and render the same pixels; never repeat detection per provider or reuse stale observations.
-7. **Sensitive support or evidence leakage** — prohibit public/SPI/Codable masks and geometry, diagnostic coordinates/paths/free text, tracked media, network review, and stable cross-request identifiers.
-8. **Mistaking correct CPU composition for performant composition** — establish the byte-level oracle first, then profile release builds on supported iPhones and optimize bounded ROIs/contexts/kernels without weakening ownership.
+1. **Candidate status mistaken for product evidence** — require complete feature-specific positive/negative bundles before any production route.
+2. **Vision polygon mistaken for target segmentation** — use support only, then derive conservative candidates and re-clip after filtering.
+3. **Native colors hide sclera leakage** — require color-independent geometry and recolored-iris final-output oracles.
+4. **Weak strength hides a bad mask** — prove containment at maximum admitted strength independently of transform tuning.
+5. **Teeth and sclera become coupled** — keep separate fields, evidence, providers, failure units, output cases, and promotion decisions.
+6. **Private mechanics mistaken for a completed product** — public facade, saved output, human review, regression, and ledgers all must agree.
 
 ## Implications for Roadmap
 
-Research supports six accountable phases. Rights acquisition should begin concurrently with foundation work, but no visible feature may promote before its bundle is complete. Teeth and sclera remain peer vertical slices; `去脂` is a conditional decision, not a dependency.
+### Suggested Phase 59: Teeth Evidence and Admission Contract
 
-### Phase 1: Contract, Canonical Input, and Private Request Foundation
+**Rationale:** Production cannot begin until candidate inputs become a complete rights-approved positive/negative bundle and an exact decision.
+**Delivers:** Frozen review criteria; complete teeth bundle; teeth-only decision; public/compatibility RED contracts; no sclera or `去脂` route.
+**Avoids:** Candidate-as-proof and evidence borrowing.
 
-**Rationale:** Every mask, transform, and compatibility claim depends on one shared raster and one selected-face owner. This is the highest-impact integration risk and must stabilize before feature calibration.
+### Suggested Phase 60: Teeth Provider and Production Integration
 
-**Delivers:** Conditional public-field staging rules; legacy/default neutrality; canonical opaque sRGB RGBA8 input and restoration; all-eight EXIF coverage; transparent-input rejection before Vision; requirement-aware zero/one Vision request; actual mapped lip/eye/pupil support; aggregate-only degradation and request-local lifetime tests.
+**Rationale:** Mask selection must be separable from the color transform and facade wiring.
+**Delivers:** Positive-only field, exact admission, lip-supported fixed+adaptive provider, hard mouth containment, bounded immutable-original transform, local abstention.
+**Avoids:** Whole-aperture whitening, global brightness, protected-tissue leakage, and Testing-only behavior.
 
-**Addresses:** TS-01 through TS-06 and TS-09; still-image-only facade behavior.
+### Suggested Phase 61: Teeth Output, Safety, and Promotion
 
-**Avoids:** Split orientation/color ownership, repeated detection, stale support, hidden realtime activation, sensitive diagnostic leakage, and premature inert `去脂` API.
+**Rationale:** Internal mechanics do not complete an SDK feature.
+**Delivers:** Isolated public-facade renderer/decoder evidence, protected-tissue and negative/challenge matrix, original-detail review, full regression, exact `白牙` promotion and mouth-branch disposition.
+**Avoids:** Over-whitening and premature ledger activation.
 
-### Phase 2: Rights-Approved Evidence and Feature Eligibility Gates
+### Suggested Phase 62: Sclera Evidence and Admission Contract
 
-**Rationale:** Fixture polarity and review criteria must exist before tuning; otherwise mechanics fixtures and the current already-light portrait will bias thresholds and create false product claims.
+**Rationale:** Sclera starts only after teeth closes and requires independent positive/negative evidence.
+**Delivers:** Complete sclera bundle, per-eye review criteria, exact sclera decision, public/compatibility RED contracts; no reuse of teeth proof.
+**Avoids:** Coupled qualification and weak-positive claims.
 
-**Delivers:** Per-feature rights manifests; genuine teeth/sclera P+ and P- bundles; protected-tissue/challenge matrices; frozen naturalness/safety judgments; sanitized review export; explicit `去脂` go/no-go based on genuine fullness fixtures and a credible independent non-warp design.
+### Suggested Phase 63: Guarded Per-Eye Sclera Production Integration
 
-**Addresses:** TS-10, evidence classification, independent promotion, and exact branch-status rules.
+**Rationale:** Eye safety depends on support validation before color scoring and local side failure.
+**Delivers:** Positive-only field, exact admission, independent eye units, guarded iris/highlight exclusions, redness score, feather + hard re-clip, bounded immutable-original transform.
+**Avoids:** Whole-eye whitening, guessed pupils, cross-eye repair, and blur leakage.
 
-**Avoids:** Mechanics-as-product proof, post-hoc polarity, demographic/commercial overclaims, unlicensed assets/models, and all-or-nothing milestone coupling.
+### Suggested Phase 64: Sclera Output, Adversarial Safety, and Promotion
 
-### Phase 3: Original-Pixel Composition and Failure-Isolation Core
+**Rationale:** Native-color output alone cannot prove iris/highlight safety.
+**Delivers:** Public-facade renderer/decoder evidence, geometry-open and recolored-iris grids, blink/gaze/glasses/highlight challenges, original-detail review, full regression, exact `祛红血丝` promotion and honest eye-branch partial disposition because `去脂` remains future.
+**Avoids:** Hidden protected leakage and false eye-branch closure.
 
-**Rationale:** Composition policy is a shared correctness primitive and should be proved with injected masks before anatomy providers can mutate production output.
+### Suggested Phase 65: Combined Facade, Privacy, and Milestone Closeout
 
-**Delivers:** Provider/composer protocol; immutable original/base dual inputs; hard-envelope sanitization; collision-to-original policy; standalone-versus-fused oracle; left/right/feature failure injection; outside-union equality; aggregate ownership diagnostics.
-
-**Addresses:** TS-06 through TS-09 and the shared foundation required by every admitted retouch.
-
-**Avoids:** Sequential output feedback, transform-order priority, double edits, feather leakage, global failure coupling, and mask persistence.
-
-### Phase 4: Teeth Whitening Vertical Slice and Independent Gate
-
-**Rationale:** Teeth is the lower-risk visible slice and can deliver an independently shippable result while validating the complete provider-to-facade workflow.
-
-**Delivers:** `teethWhitening` contract if eligible; actual-lip-support adapter; conservative fixed seeds plus connected adaptive growth; bounded yellow/luminance transform from original pixels; protected oral-tissue/no-face/closed-mouth/occlusion tests; public-facade output; rights-approved P+/P- review and independent promotion decision.
-
-**Addresses:** `白牙`, mouth branch closeout when passed, adaptive side-tooth coverage, already-light abstention/naturalness, and compatibility.
-
-**Avoids:** Whole-aperture masks, lost fixed support, lip/tongue/gum/braces leakage, chalky/blue output, and borrowing sclera evidence.
-
-### Phase 5: Guarded Sclera Vertical Slice and Conditional Eyelid Decision
-
-**Rationale:** Sclera needs more difficult per-eye geometry and calibration, while upper-eyelid work should begin only if Phase 2 opens its gate. Combining the decision point here preserves independent shipability without inventing a proxy.
-
-**Delivers:** `scleraRednessReduction` contract if eligible; guard-before-score per-eye provider; iris/highlight exclusions; post-feather re-clipping; dual safety oracles; peer-eye isolation; bounded red-excess transform; public-facade output and P+/P- review. If and only if eligible, add and validate a separate `upperEyelidFullnessReduction` non-warp vertical slice; otherwise record its absence and keep `眼睛` partial.
-
-**Addresses:** `祛红血丝`, conditional `去脂`, individual eye failure, natural vessel/detail retention, and honest eye-branch status.
-
-**Avoids:** Whole-eye whitening, native-color-hidden iris leakage, peer-eye coupling, eye/brow warp aliases, texture erasure, and blocking qualified teeth/redness on `去脂`.
-
-### Phase 6: Combined Facade Closeout, Device Profiling, and Independent Promotion
-
-**Rationale:** Only after standalone slices are correct can mixed effects, compatibility, privacy, performance, and exact documentation status be evaluated without obscuring ownership failures.
-
-**Delivers:** Teeth+sclera standalone/fused equivalence; injected overlap suppression; mixed color/lip/44-field geometry regression; facade dimensions/orientation/no-op guarantees; static privacy/resource/network scans; target-iPhone stage timing and peak-memory evidence; bounded execution optimization if needed; synchronized ledgers and independent milestone audit. Promote only each passing feature.
-
-**Addresses:** Full v1.14 qualified slice, exact public-field count, regression, evidence, privacy, performance measurement, and branch ledgers.
-
-**Avoids:** Scope creep into realtime/UI/cloud/HDR/model work, unsupported speed claims, tracked sensitive artifacts, broad release/commercial claims, and false whole-branch completion.
+**Rationale:** Two standalone features must coexist without sharing state, output order, evidence, or failure.
+**Delivers:** Standalone/fused equivalence, overlap-to-source, injected mouth/left-eye/right-eye failures, repeated/parallel/reset isolation, compatibility, Demo-disabled honesty, owner-ledger equality, full regression, independent verification, and milestone audit readiness.
+**Avoids:** Cross-feature coupling, stale masks, and broad release claims.
 
 ### Phase Ordering Rationale
 
-- Canonical pixels, face selection, private support, and public compatibility precede masks because every downstream coordinate and safety assertion depends on them.
-- Evidence acquisition starts early and independently because rights/polarity scarcity, not code mechanics, is the largest product-readiness uncertainty.
-- Composition is proven before feature providers so failure isolation and ownership do not become emergent behavior of sequential filters.
-- Teeth and sclera are complete peer vertical slices with their own ship gates; neither borrows evidence or failure from the other.
-- `去脂` is evaluated after acquisition and never sits on the critical path for teeth/sclera. A failed gate produces no public/API implementation, not an inert placeholder.
-- Mixed-effect, device, security, ledger, and audit closeout comes last because it validates the admitted set rather than predetermining it.
+- Evidence precedes production for each feature.
+- Teeth completes before sclera production begins, matching the user's requested one-by-one execution.
+- Each feature receives a separate implementation phase and a separate output/safety/promotion phase.
+- Combined work is last and cannot substitute for standalone evidence.
+- Continued numbering starts at Phase 59 because v1.14 ended at Phase 58.
 
 ### Research Flags
 
-Phases likely needing deeper research during planning:
+Phases likely needing deeper phase research:
 
-- **Phase 2:** fixture acquisition, rights/polarity schema, and predeclared human-review sampling remain the dominant non-code uncertainty.
-- **Phase 4:** teeth candidate thresholds and natural yellow/luminance caps require calibration on genuine discoloration positives and protected-tissue negatives.
-- **Phase 5:** sclera guard/coverage calibration needs genuine redness/challenge bundles; any `去脂` work requires a dedicated research phase because algorithm readiness is LOW.
-- **Phase 6:** target-iPhone profiling should research the execution primitive only if the correctness-first bounded path misses an explicit measured budget.
+- **Phase 59:** Determine whether available local assets truly satisfy genuine teeth-positive and negative polarity, and freeze bounded naturalness criteria before outputs are reviewed.
+- **Phase 62:** Determine whether available local assets truly satisfy genuine sclera-redness and normal-sclera polarity per eye; calibrate conservative guard seeds without treating them as constants.
+- **Phase 64:** Specify the exact adversarial eye matrix and useful-coverage acceptance on rights-approved real inputs.
 
-Phases with established patterns that can normally skip research-phase:
+Phases with established patterns:
 
-- **Phase 1:** Apple APIs, existing package seams, Spike 013, and project contracts already define normalization, one-request routing, compatibility, and privacy invariants.
-- **Phase 3:** original/base composition, collision suppression, request-local ownership, and fault-injection oracles are well specified by spike and architecture evidence.
-- **Phase 6 security/regression closeout:** existing Beauty package tests, scans, renderer evidence, and milestone-audit conventions are established; only performance escalation is conditional research.
+- **Phases 60 and 63:** Local spike blueprints and v1.14 architecture define the provider/composer ordering; phase planning should focus on production seams and tests.
+- **Phase 65:** Existing v1.14 composition, lifecycle, privacy, compatibility, and audit patterns are reusable.
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
-|------|------------|-------|
-| Stack | HIGH | Existing package graph and Apple platform APIs are verified; no dependency or target migration is needed. Exact production CPU/Core Image/Metal execution remains profile-driven. |
-| Features | MEDIUM | Scope, semantics, and independent gates are strong. Teeth and sclera still lack complete genuine P+/P- review; `去脂` readiness is LOW. |
-| Architecture | HIGH | Canonical input, one request, request-local support, independent providers, one composer, and fail-closed overlap are supported by repository seams and spikes. Mixed existing-effect ordering still needs visual regression. |
-| Pitfalls | HIGH | Project spikes and current contracts strongly establish integration, safety, privacy, and overclaim hazards. Product calibration and device performance remain empirical. |
+| --- | --- | --- |
+| Stack | HIGH | Existing frameworks and package seams already compile and passed v1.14 verification; no new dependency is needed. |
+| Features | HIGH for required contracts; MEDIUM for thresholds | User scope is explicit and research supports separate evidence, containment, and naturalness. |
+| Architecture | HIGH | v1.14 implemented and audited the exact canonical/request/composition foundation. |
+| Pitfalls | HIGH | Most failure modes were observed in local spikes or are stated by official Vision behavior. |
 
-**Overall confidence:** MEDIUM-HIGH. The foundation and roadmap boundaries are clear; which visible rows ultimately promote depends on evidence not yet acquired.
+**Overall confidence:** HIGH for roadmap shape; MEDIUM for eventual product qualification until genuine positive/negative review passes.
 
 ### Gaps to Address
 
-- **Teeth product evidence:** acquire genuine yellow/gray discoloration positives plus already-light, protected-tissue, occlusion, brace, pose, blur, and lighting negatives; freeze naturalness and detail bounds before review.
-- **Sclera product evidence:** acquire genuine mild/severe redness positives and clear/blink/gaze/iris/highlight/glasses/contact/occlusion negatives; calibrate useful coverage without relaxing zero-leak safety.
-- **Upper-eyelid feasibility:** no genuine positive currently proves a useful non-warp result. Treat this as a gate, not scheduled implementation; omit the field if unresolved.
-- **Canonical input compatibility:** confirm all-eight EXIF equivalence, bounded P3-to-sRGB fresh/fixed-anchor stability, facade presentation restoration, pixel ceilings, and opaque rejection on production paths.
-- **Mixed-effect visual order:** verify existing base color/lip, local retouch, and unified geometry ordering on facade outputs without changing ownership semantics.
-- **Target-device budgets:** establish explicit supported-iPhone release-mode latency and peak-memory targets before selecting ROI/Core Image/Metal optimization; macOS/simulator spikes are not device evidence.
-- **Exact admitted field and ledger inventory:** freeze 61 fields for teeth+sclera or 62 only if `去脂` independently passes; synchronize branch status to the rows that actually pass.
+- **Teeth bundle completeness:** `portrait_002` is candidate-only; confirm genuine discoloration polarity, an already-light negative, complete mask/after assets, and structured review.
+- **Sclera bundle completeness:** confirm genuine redness per eye and a normal negative; candidate visibility is not a decision.
+- **Calibration:** adaptive teeth thresholds and sclera `0.30 / 0.14` guard values remain spike seeds, not production constants.
+- **Naturalness:** define bounded color/texture/detail criteria before viewing candidate after-images.
+- **Device performance:** deliberately deferred; do not convert macOS or test-harness timings into an iOS budget claim.
 
 ## Sources
 
-### Primary (HIGH confidence)
+### Primary
 
-- [STACK.md](./STACK.md) — platform stack, target ownership, public-field staging, alternatives, compatibility, and execution gates.
-- [FEATURES.md](./FEATURES.md) — table stakes, feature semantics, evidence classes, independent promotion, MVP boundary, and requirement seeds.
-- [ARCHITECTURE.md](./ARCHITECTURE.md) — canonical request flow, component ownership, verification seams, build order, and anti-patterns.
-- [PITFALLS.md](./PITFALLS.md) — critical failure modes, hard promotion gates, recovery, phase accountability, and nonclaims.
-- [PROJECT.md](../PROJECT.md) — authoritative v1.14 milestone goal, constraints, requirements, and current evidence limitations.
-- Repository `ARCHITECTURE.md`, `DESIGN.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, and `QUALITY_SCORE.md` — current package, privacy, reliability, UX, evidence, and quality contracts.
-- `.codex/skills/spike-findings-beauty/` references — thirteen mechanics spikes, canonical-input integration, teeth/sclera/upper-eyelid findings, licensed-fixture rules, invalidated warp, and original-pixel composition oracle.
-- `BeautySDK/Package.swift` and current `BeautySDK`, `BeautyDetection`, and `BeautyEffects` sources — existing dependency graph, facade, one-request detection, mapping, resolver, render, and test seams.
+- [Apple: VNDetectFaceLandmarksRequest](https://developer.apple.com/documentation/vision/vndetectfacelandmarksrequest) — face-landmark request ownership and revisions.
+- [Apple: innerLips](https://developer.apple.com/documentation/vision/vnfacelandmarks2d/innerlips) — lip aperture support semantics.
+- [Apple: rightPupil](https://developer.apple.com/documentation/vision/vnfacelandmarks2d/rightpupil) — blink inaccuracy warning.
+- [Apple: CIContext](https://developer.apple.com/documentation/coreimage/cicontext) — color management and context reuse.
+- [Application of digital imaging in tooth whitening randomized controlled trials](https://pubmed.ncbi.nlm.nih.gov/19681252/) — repeatable L*, a*, b* digital tooth-color assessment.
+- [Development of a customized whiteness index for dentistry](https://pubmed.ncbi.nlm.nih.gov/26778404/) — perception-oriented whiteness measurement.
+- [A New Scale for the Assessment of Conjunctival Bulbar Redness](https://pmc.ncbi.nlm.nih.gov/articles/PMC6574084/) — digital region-specific redness grading.
+- [Shape Constrained Network for Eye Segmentation in the Wild](https://openaccess.thecvf.com/content_WACV_2020/papers/Luo_Shape_Constrained_Network_for_Eye_Segmentation_in_the_Wild_WACV_2020_paper.pdf) — sclera/iris segmentation difficulty in unconstrained images.
+- [On the use of multispectral conjunctival vasculature as a soft biometric](https://www.cse.msu.edu/~rossarun/pubs/CrihalmeanuRossMSConjunctiva_WACV2011.pdf) — privacy sensitivity of conjunctival vasculature.
 
-### Official Platform Sources (HIGH confidence)
+### Repository Authority
 
-- [Apple VNDetectFaceLandmarksRequest](https://developer.apple.com/documentation/vision/vndetectfacelandmarksrequest) and [VNFaceLandmarks2D](https://developer.apple.com/documentation/vision/vnfacelandmarks2d) — request behavior and nullable lip/eye/pupil/brow landmark support.
-- [Apple VNImageRequestHandler](https://developer.apple.com/documentation/vision/vnimagerequesthandler) — still-image request handling with explicit orientation.
-- [Apple CGImagePropertyOrientation](https://developer.apple.com/documentation/imageio/cgimagepropertyorientation) — EXIF/TIFF rotation and mirroring semantics.
-- [Apple CIContext](https://developer.apple.com/documentation/coreimage/cicontext) and [CIBlendWithMask](https://developer.apple.com/documentation/coreimage/ciblendwithmask) — explicit color/format rendering, context reuse, and mask-based composition primitives.
-- Installed Xcode 26.6 / Apple SDK 26.5 headers — locally verified availability and pupil/blink caveats; these are research tooling evidence, not a deployment-target increase.
-
-### Empirical / Pending Validation (MEDIUM to LOW confidence)
-
-- Spike mechanics and adversarial fixtures — strong for containment and failure invariants, not sufficient for product effectiveness, demographics, or commercial quality.
-- Current rights-approved exposed-smile portrait — prospective already-light teeth containment/over-whitening negative only when bundled and reviewed; not a teeth discoloration, sclera-redness, or upper-eyelid-fullness positive.
-- macOS/simulator timing and memory measurements — baseline diagnostics only; target-iPhone release profiling remains required before any performance claim.
+- `.planning/milestones/v1.14-MILESTONE-AUDIT.md`
+- `.planning/milestones/v1.14-REQUIREMENTS.md`
+- `.codex/skills/spike-findings-beauty/`
+- Root `ARCHITECTURE.md`, `DESIGN.md`, `SECURITY.md`, `RELIABILITY.md`, and `PRODUCT_SENSE.md`
 
 ---
-*Research completed: 2026-07-30*
+*Research completed: 2026-08-05*
 *Ready for roadmap: yes*
