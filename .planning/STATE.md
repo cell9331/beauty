@@ -1,19 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.14
-milestone_name: Local Facial Retouch
-status: Awaiting next milestone
-stopped_at: Completed 58-04-PLAN.md
-last_updated: "2026-08-05T01:30:38.938Z"
+milestone: v1.15
+milestone_name: Independent Teeth and Sclera Retouch
+status: planning
+last_updated: "2026-08-05T02:20:36.032Z"
 last_activity: 2026-08-05
-last_activity_desc: Milestone v1.14 completed and archived
 progress:
-  total_phases: 6
-  completed_phases: 6
-  total_plans: 27
-  completed_plans: 27
-current_phase: 58
-current_phase_name: Combined Facade, Safety, Ledger, and Audit Closeout
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -27,10 +24,10 @@ See: `.planning/PROJECT.md` (updated 2026-08-04)
 
 ## Current Position
 
-Phase: Milestone v1.14 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-08-05 — Milestone v1.14 completed and archived
+Status: Defining requirements
+Last activity: 2026-08-05 — Milestone v1.15 started
 
 ## Performance Metrics
 
