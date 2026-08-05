@@ -78,7 +78,10 @@ format and the mechanics run reports zero changes outside the computed mask.
 The first submitted Spike 006 review export failed the frozen Phase 54
 predicate, so it is not canonical evidence. The canonical Phase 59 row remains
 closed until a replacement Phase 54 review and independent decision are
-recorded. The local manifest and media remain Git-ignored.
+recorded. Direct visual feedback additionally found the yellow-positive color
+change too subtle despite acceptable mask containment; the shared transform
+must be calibrated before review is repeated. The local manifest and media
+remain Git-ignored.
 
 ## Disabled Fixtures
 

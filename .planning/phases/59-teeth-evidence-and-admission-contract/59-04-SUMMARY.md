@@ -86,3 +86,14 @@ has a target-state mismatch and insufficient naturalness. The export was not
 passed to the Phase 54 serializer, the canonical ledger was not edited, and
 the production boundary remains closed. A fresh review must use the Phase 54
 reviewer and record judgments that match the observed images.
+
+## Human Visual Feedback: Positive Effect Insufficient
+
+The user subsequently confirmed that the yellow-teeth positive does not look
+visibly whiter, although the computed mask appears correctly contained. This
+matches the small positive-run mean luminance delta of `0.00969`: the current
+problem is the conservative color transform, not the mask boundary. The
+positive therefore cannot pass product evidence. The next mechanics task is to
+calibrate the transform against this exact positive while preserving the
+already-light negative near-no-op and zero outside-mask changes; no production
+or Phase 60 admission is authorized by this feedback.

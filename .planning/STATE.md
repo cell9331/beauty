@@ -6,7 +6,7 @@ status: blocked
 stopped_at: Phase 59 closed evidence gate; waiting for genuine teeth positive/negative bundle
 last_updated: "2026-08-05T15:01:38+08:00"
 last_activity: 2026-08-05
-last_activity_desc: First teeth review export failed the frozen Phase 54 predicate; canonical decision remains closed pending a replacement review
+last_activity_desc: Human review confirmed the yellow-positive transform is too subtle despite correct mask containment; canonical decision remains closed
 progress:
   total_phases: 7
   completed_phases: 0
@@ -62,7 +62,7 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- A user-authorized genuine teeth positive/negative bundle is staged locally with complete assets and a passing manifest/mechanics preflight. The first submitted Spike 006 export is not canonical and fails the frozen acceptance predicate; the canonical row remains closed until a replacement Phase 54 review and independent decision.
+- A user-authorized genuine teeth positive/negative bundle is staged locally with complete assets and a passing manifest/mechanics preflight. The first submitted Spike 006 export is not canonical and fails the frozen acceptance predicate; direct visual feedback confirms the positive color change is insufficient while the mask looks correct. The canonical row remains closed until transform calibration, a replacement Phase 54 review, and an independent decision.
 - The shared teeth mechanics harness is hardened and passes 23/23 self-tests, but this does not satisfy the genuine evidence gate or prove protected-tissue naturalness.
 - Sclera still lacks a rights-approved genuine redness positive and normal-sclera negative complete bundle; `portrait_002` may exercise per-eye mechanics only.
 - Spike thresholds remain calibration seeds, not product constants.
@@ -80,5 +80,5 @@ None found under `.planning/todos/pending/`.
 ## Session Continuity
 
 Last session: 2026-08-05
-Stopped at: Phase 59 closed evidence gate; first review export rejected by frozen predicate, waiting for a replacement Phase 54 review before reopening the open branch
+Stopped at: Phase 59 closed evidence gate; positive transform calibration is required before replacement Phase 54 review and reopening the open branch
 Resume file: `.planning/phases/59-teeth-evidence-and-admission-contract/59-VERIFICATION.md`

@@ -76,3 +76,9 @@ before canonical ingestion. It is a Spike 006 export rather than the Phase 54
 allowlisted durable export, and its `accept`/`none` judgments conflict with the
 frozen positive/negative thresholds. No canonical decision or production file
 was changed.
+
+The user's direct visual check then found insufficient visible whitening on the
+yellow positive while accepting the mask containment. This is a failed
+positive-effect observation, not a passed review: mask containment alone does
+not establish whitening effectiveness. Transform calibration and a replacement
+blinded review remain required.
