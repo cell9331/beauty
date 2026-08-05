@@ -36,6 +36,34 @@ containment and over-whitening review. Its already-light teeth do not establish
 a yellow/dark-teeth positive, and the image is not automatically a redness or
 upper-eyelid-fullness positive.
 
+## Local Retouch Candidate
+
+| Field | Value |
+| --- | --- |
+| Fixture ID | `portrait_002` |
+| Local path | `example-images/local-retouch-review/candidates/portrait_002/original.png` |
+| Rights status | `mechanics_only` |
+| Authorization date | 2026-08-05 |
+| Candidate features | `teeth_whitening`, `sclera_redness` |
+| Candidate role | Positive-target mechanics candidate for each feature's independent experiment. |
+| Asset status | Original only; feature-specific mask and after assets are not yet registered. |
+| Permitted use | Local candidate input and derivative before/mask/after review for `teeth_whitening` and `sclera_redness`. |
+| Product status | Candidate only; not an active renderer fixture and not a feature-gate or promotion decision. |
+
+This candidate is kept under the ignored local review boundary so it does not
+change the exact active renderer inventory or the closed production admission.
+Its visible teeth and eye redness make it suitable for feature-specific review,
+but polarity, masks, after images, and original-detail acceptance must still be
+recorded independently for each feature.
+
+The same original may seed two feature-specific candidate rows, but the rows do
+not share masks, after images, judgments, or admission outcomes. Intake review
+observed visible tooth yellowing and visible scleral redness. Embedded C2PA
+provenance declares `trainedAlgorithmicMedia`, so this image is AI-generated and
+may validate mechanics only. It contributes zero genuine-positive,
+effectiveness, naturalness, or production-admission weight even after derivative
+assets are added.
+
 ## Disabled Fixtures
 
 `e1.png` through `e5.png` and `e6.jpg` are retained only under

@@ -13,6 +13,8 @@ authorization records carry the durable contract without publishing the media.
   discovery must never read this directory.
 - `parked-generated/`: disabled output/gallery snapshots retained outside the
   active generation paths.
+- `local-retouch-review/`: ignored local-only candidate and before/mask/after
+  review material. It is never traversed by active renderer fixture discovery.
 - `output/`: ignored flat generated renderer PNGs, named `{fixtureStem}__{caseId}.png`.
 - `gallery/`: ignored generated human-review view, grouped as `{featureFamily}/{caseId}/{fixtureStem}.png`.
 - `.gallery-staging/`: ignored fail-closed publication slot. A leftover means a prior run did not publish and blocks another run.
@@ -41,6 +43,20 @@ device, and orientation metadata are absent. The no-face negative fixture is
   already-light teeth are not automatically a yellow-teeth positive. It is not
   automatically a positive or negative for sclera redness or upper-eyelid
   fullness and cannot alone open any feature product gate.
+
+## Current Local-Retouch Candidate
+
+- `portrait_002/original.png` is registered under the ignored
+  `local-retouch-review/candidates/` boundary as an original-only positive-target
+  mechanics candidate for both `teeth_whitening` and `sclera_redness`.
+- Its embedded C2PA provenance declares `trainedAlgorithmicMedia`; it can drive
+  algorithm, mask, transform, and failure-isolation experiments but cannot count
+  as a genuine positive or support product-effectiveness/naturalness admission.
+- Each feature must produce and bind its own mask, after image, polarity row,
+  structured original-detail judgment, and admission decision. A result from one
+  feature does not qualify or block the other.
+- The candidate is not copied into `input/`, does not change the active renderer
+  inventory, and does not activate either production feature.
 
 The Phase 51/52 `e6` counts below are retained as historical evidence only.
 They do not override the current `p1` fixture inventory and must not be reused

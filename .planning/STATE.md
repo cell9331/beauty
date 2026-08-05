@@ -4,9 +4,9 @@ milestone: v1.15
 milestone_name: Independent Teeth and Sclera Retouch
 status: ready_to_plan
 stopped_at: Roadmap approved; ready for Phase 59
-last_updated: "2026-08-05T10:56:43+08:00"
+last_updated: "2026-08-05T11:31:25+08:00"
 last_activity: 2026-08-05
-last_activity_desc: v1.15 roadmap approved with 40/40 requirements mapped
+last_activity_desc: portrait_002 registered as a C2PA-declared AI mechanics candidate for teeth and sclera
 progress:
   total_phases: 7
   completed_phases: 0
@@ -31,7 +31,7 @@ See: `.planning/PROJECT.md` (updated 2026-08-05)
 Phase: 59 of 65 (Teeth Evidence and Admission Contract)
 Plan: —
 Status: Ready to discuss or plan Phase 59
-Last activity: 2026-08-05 — Approved v1.15 roadmap with 7 phases and 40/40 mapped requirements
+Last activity: 2026-08-05 — Registered `portrait_002` as a C2PA-declared AI mechanics candidate for independent teeth and sclera work
 
 Progress: ░░░░░░░░░░ 0%
 
@@ -50,7 +50,8 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 ### Decisions
 
 - Complete and independently verify `白牙` before any production `祛红血丝` field, provider, or admission route.
-- Each feature requires its own genuine rights-approved positive/negative original/mask/after bundle and structured original-detail decision; `portrait_002` remains candidate-only.
+- `portrait_002/original.png` is an original-only, C2PA-declared AI positive-target mechanics candidate for both features; it has zero genuine-evidence or admission weight.
+- Sharing the candidate original does not share masks, after images, judgments, or admission outcomes between teeth and sclera.
 - Reuse the v1.14 canonical request, one Vision mapping, request-local support, immutable-original composition, hard re-clipping, and collision-to-source boundaries.
 - `去脂` stays entirely future; no geometry, warp, smoothing, eye-bag, or dark-circle substitute is allowed.
 - v1.15 remains SDK-core and still-image only with no Demo activation, realtime/pixel-buffer, model/cloud, tracked portrait media, or release-readiness claim.
@@ -61,8 +62,8 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- Teeth cannot enter production until a genuine discoloration positive and already-light/negative complete bundle passes frozen review.
-- Sclera cannot enter production until a separate genuine redness positive and normal-sclera negative complete bundle passes per-eye review.
+- Teeth still lacks a rights-approved genuine discoloration positive and already-light negative complete bundle; `portrait_002` may exercise mechanics only.
+- Sclera still lacks a rights-approved genuine redness positive and normal-sclera negative complete bundle; `portrait_002` may exercise per-eye mechanics only.
 - Spike thresholds remain calibration seeds, not product constants.
 - Existing TD-013 generic-result sendability remains outside v1.15.
 
