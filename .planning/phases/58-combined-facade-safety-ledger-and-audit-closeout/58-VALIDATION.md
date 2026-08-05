@@ -132,7 +132,8 @@ Only `58-04-01` may run or claim:
 4. Complete Phase 53–58 checkers, privacy/resource/network/artifact scans,
    GSD schema/UI/decision/traceability gates, diff hygiene, and root equality.
 5. Validated evidence, requirement/root synchronization, and adversarial
-  code-review/fix; independent verification remains required.
+  code-review/fix and independent verification; the separate milestone audit
+  remains required before archive.
 
 The known historical `PRODUCT_SENSE.md`, `example-images`, and `meituxiuxiu`
 codebase-map warning remains nonblocking only if its path set is exact and no
@@ -147,9 +148,9 @@ new structural drift appears.
 - [x] Full SwiftPM, six-test opt-in Vision, and full Demo are current green.
 - [x] Zero feature rows and zero branches are promoted.
 - [x] No sensitive payload, image/human review, or unsupported scope claim exists.
-- [x] Canonical evidence, adversarial review/fix, and root owners synchronize only after every prior gate; independent verification remains the final phase owner gate.
+- [x] Canonical evidence, adversarial review/fix, independent verification, and root owners synchronize only after every prior gate; the separate milestone audit remains the final archive gate.
 
-**Approval:** Automated execution and adversarial review/fix are validated for
-seven task rows, seven requirements, twenty decisions, eight HIGH mitigations,
-full regression, and owner gates. Independent verification is the next
-lifecycle gate.
+**Approval:** Automated execution, adversarial review/fix, and independent
+verification are validated for seven task rows, seven requirements, twenty
+decisions, eight HIGH mitigations, full regression, and owner gates. The
+separate milestone audit is the next lifecycle gate.

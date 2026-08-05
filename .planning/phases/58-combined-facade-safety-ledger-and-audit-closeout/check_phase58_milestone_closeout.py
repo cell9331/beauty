@@ -1218,7 +1218,7 @@ def evidence_failures() -> set[str]:
         return {RULES["T-58-08"]}
     if "frozen pre-transition self-test `519 / 0 / 0`" not in evidence:
         return {RULES["T-58-08"]}
-    if re.search(r"(?im)^\| (?:independent verifier|separate milestone audit) \| passed \|", evidence):
+    if re.search(r"(?im)^\| separate milestone audit \| passed \|", evidence):
         return {RULES["T-58-08"]}
     if re.search(r"(?i)(?:implemented|active in production|production-ready|release-ready|launch-ready|promoted feature|shipped feature)", evidence):
         return {RULES["T-58-08"]}

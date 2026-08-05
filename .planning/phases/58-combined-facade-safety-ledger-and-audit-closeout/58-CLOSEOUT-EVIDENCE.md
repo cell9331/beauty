@@ -21,7 +21,7 @@ are closed, so the admitted and promoted sets are exactly empty.
 | SAFE-03 | `closed_set_noop_compatibility_enforced` | focused compatibility and no-op matrix passed |
 | OUT-01 | `not_applicable_zero_admitted_features_exact_absence` | zero candidate output/helper/gallery/review routes |
 | OUT-02 | `not_applicable_zero_admitted_pair_exact_absence` | zero constructible candidate pairs; mechanics remain neutral |
-| OUT-03 | `full_automated_audit_and_independent_verification` | automated gates and adversarial review/fix passed; independent verifier is next lifecycle owner |
+| OUT-03 | `full_automated_audit_and_independent_verification` | automated gates, adversarial review/fix, and independent verification passed; separate milestone audit is next lifecycle owner |
 | OUT-04 | `zero_row_promotion` | promoted rows `0` |
 
 ## Task Results
@@ -80,12 +80,12 @@ are closed, so the admitted and promoted sets are exactly empty.
 | diff hygiene | passed | 1 | 0 | 0 |
 | Phase 58 post-review checker recheck | passed | 703 | 0 | 0 |
 | code review/fix | passed | 1 | 0 | 0 |
-| independent verifier | not yet run | 0 | 0 | 0 |
+| independent verifier | passed | 1 | 0 | 0 |
 | separate milestone audit | not yet run | 0 | 0 | 0 |
 
-The final automated conjunction and adversarial code review/fix are validated.
-Independent verification and the separate milestone audit are the next
-lifecycle owners and have not yet run.
+The final automated conjunction, adversarial code review/fix, and independent
+verification are validated. The separate milestone audit is the next
+lifecycle owner and has not yet run.
 The Phase 58 post-review checker recheck `703 / 0 / 0`; per-HIGH `288 / 42 / 38 / 34 / 233 / 31 / 29 / 8` is passed.
 
 ## Owner Equality
@@ -94,14 +94,14 @@ Phase 57 completed owners remain independently exact after transition: its
 verification is `passed` at `12/12`, evidence is `validated`, the eight HIGH
 rows and ten dispositions are unique, the pre-transition checker fixture is
 `519` cases with frozen per-threat totals, the current checker default is the
-fixed compatibility result, and Phase 58 is the active lifecycle owner.
+fixed compatibility result, and Phase 58 is a completed lifecycle owner
+awaiting the separate milestone audit.
 
 ## Pending Final Lifecycle
 
-Final automated conjunction and code review/fix are complete; independent
-verification and the separate milestone audit are reserved as the next
-lifecycle steps. This evidence cannot promote a feature, branch, release, or
-lifecycle archive.
+Final automated conjunction, code review/fix, and independent verification are
+complete; the separate milestone audit is reserved as the next lifecycle step.
+This evidence cannot promote a feature, branch, release, or lifecycle archive.
 
 ## Decision Coverage
 
