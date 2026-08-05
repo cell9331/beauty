@@ -633,3 +633,9 @@ Before merging any change touching these areas, update `SECURITY.md` if needed:
 - T-58-01 through T-58-08 are machine-green under OWASP ASVS Level 1 with fixed-ID aggregate output: Phase 58 checker `276 / 0 / 0`, per-HIGH `80 / 33 / 37 / 34 / 28 / 31 / 25 / 8`, and frozen Phase 57 pre-transition `519 / 0 / 0` through the strict adapter.
 - Privacy remains request-local and aggregate-only. Full SwiftPM executes `553` tests with six expected opt-in Vision skips; the separate Vision gate executes exactly `6 / 0 / 0`; Demo build/tests pass `120 / 0 / 0`. No support, landmark, pupil, mask, pixel, path, digest, reviewer, raw error, or scanner payload is durable.
 - Production admission remains literal `.none`, exact compatibility remains `59 / 5 / 72`, both still facades remain present, and all three visible rows stay disabled/future with zero promotion. External review/fix and independent verification are not yet run and are required before lifecycle transition; no release or milestone-audit claim is made.
+
+### v1.15 Phase 59 Teeth Evidence Admission Boundary
+
+- The canonical Phase 54 `teeth_whitening` row remains closed with both missing genuine polarity reasons, zero counts, and zero naturalness weight. The Phase 59 checker rejects mutations that forge an open row, activate a public or admission route, borrow sibling/mechanics evidence, or introduce an inert compatibility field.
+- Durable Phase 59 artifacts contain only opaque IDs, fixed judgments/reasons, decisions, counts, and threat gates. Media, paths, hashes, rights records, masks, geometry, pixels, reviewer identity, and raw scanner/error output remain absent.
+- All eight Phase 59 HIGH threats are green in self-test and live modes. No production teeth provider/mask/transform/renderer/output, sclera-redness surface, or `去脂` surface exists; the disabled Demo taxonomy remains a non-route.

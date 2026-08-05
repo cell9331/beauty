@@ -15,7 +15,7 @@
 ### Rights-Approved Feature Evidence
 
 - [ ] **EVID-06**: Each feature has its own complete rights-approved local bundle containing at least one genuine target-positive and one target-negative with original, mask, after, predeclared polarity, expected target, and exact media binding.
-- [ ] **EVID-07**: Candidate-only, authorization-only, synthetic, AI-generated, mechanics, and sibling-feature rows contribute zero product-effectiveness, naturalness, or admission weight until they independently satisfy the complete feature bundle contract.
+- [x] **EVID-07**: Candidate-only, authorization-only, synthetic, AI-generated, mechanics, and sibling-feature rows contribute zero product-effectiveness, naturalness, or admission weight until they independently satisfy the complete feature bundle contract.
 - [ ] **EVID-08**: Feature-specific containment, protected-region, target-improvement, texture/detail, structure-change, naturalness, and no-op criteria are frozen before blinded original-detail review begins.
 - [ ] **EVID-09**: Persistent review output contains only opaque fixture/feature/polarity IDs, structured judgments, fixed reasons, decisions, and aggregates; it contains no media, path, rights record, reviewer identity, raw support, mask, geometry, pixel, or freeform text.
 - [ ] **EVID-10**: Teeth and sclera receive separate exact go/no-go decisions, and a closed decision creates exact feature absence rather than an inert field or placeholder route.
@@ -97,7 +97,7 @@ completion.
 | SEQ-03 | Phase 65 | Pending |
 | SEQ-04 | Phase 65 | Pending |
 | EVID-06 | Phase 62 | Pending |
-| EVID-07 | Phase 59 | Pending |
+| EVID-07 | Phase 59 | Validated in closed branch |
 | EVID-08 | Phase 62 | Pending |
 | EVID-09 | Phase 62 | Pending |
 | EVID-10 | Phase 62 | Pending |

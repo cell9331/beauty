@@ -614,3 +614,9 @@ SDK 1.0 readiness:
 - Exact traceability is `7/7` task rows, `7/7` dispositions, `20/20` decisions, and `8/8` machine-green HIGH identities. The Phase 58 checker passes `276` aggregate cases with per-threat totals `80 / 33 / 37 / 34 / 28 / 31 / 25 / 8`; the frozen Phase 57 fixture remains `519/519`.
 - Full SwiftPM executes `553` with six expected Vision skips and zero failures; the separate opt-in Vision gate executes `6/0/0`; explicit iPhone 17e/iOS 26.5 Demo build/tests pass `120/120`. Schema/UI/decision/traceability/diff and exact historical drift gates are green.
 - Quality credit is limited to exact zero-admission enforcement, privacy, request-local recovery, compatibility, and regression safety. External review/fix, independent verifier, and milestone audit remain lifecycle work; no feature-effect, naturalness, device, performance, commercial, packaging, shipping, launch, or release credit is added.
+
+### v1.15 Phase 59 Closed Teeth Evidence Score
+
+- Phase 59 records a valid closed branch, not a feature promotion. The canonical teeth row has two missing-polarity reasons, zero counts/weight, and no open admission. EVID-07 is validated; SEQ-01 remains pending; TEETH-07/08 are `not_applicable_closed_gate`.
+- Measured automation is green: 5/5 contract tests, 19 checker mutation cases, 8/8 HIGH modes, focused SDK 135/135, full SwiftPM 553/0/6, Demo build success, and full Demo 121/0/0. JSON and diff hygiene also pass.
+- Quality credit is limited to evidence exclusion, exact absence, privacy, compatibility, and regression safety. No algorithm, output, effectiveness, naturalness, device, performance, commercial, packaging, shipping, launch, or release credit is added. The genuine evidence bundle remains the blocker.

@@ -796,3 +796,9 @@ These are known future design areas, not current first-version requirements:
 - The final soft weight is re-intersected with hard containment. Zero-effective work is unowned, and every byte outside the final owned union remains canonical.
 - Malformed, foreign, over-budget, duplicate-claim, or duplicate-unit work abstains at its smallest independently rejectable unit. Two or more accepted owners at one pixel suppress every local write there, preserve the source pixel, and add exactly one collision-pixel aggregate; unique neighboring work remains eligible.
 - Composition is order-independent and request-local. Empty and valid-invalid-valid sequences retain no work, output, or summary, and the exact-empty production admission preserves the shipped no-admission result.
+
+### v1.15 Phase 59 Teeth Evidence Admission Boundary
+
+- The current Phase 54 teeth decision is `closed` for both missing genuine polarities. The closed result owns exact absence: `BeautyParameters` keeps its current 59-field compatibility inventory, `BeautyEffectResolver` keeps literal `.none`, and no inert `teethWhitening` field or admission demand exists.
+- An open branch remains conditional on a complete rights-approved genuine positive/negative original/mask/after bundle, frozen criteria, and independent original-detail review. If that gate opens later, the public change must remain one append-only positive-only normalized scalar and one teeth-only demand; raw evidence/support stays request-local and package-private.
+- Phase 59 does not define a provider, mask, transform, renderer output, Demo route, realtime path, sclera redness field, or `去脂` proxy.

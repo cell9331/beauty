@@ -654,3 +654,9 @@ Before merging product-facing changes, verify:
 - The admitted and promoted visible feature sets remain exactly empty under the Phase 54 authority. `白牙`, `祛红血丝`, and `去脂` remain disabled/future, while `嘴唇` and `眼睛` remain partial; no sibling or feature-neutral mechanics evidence is promotion credit.
 - The final automated conjunction is green: full SwiftPM `553/0/6`, opt-in Vision `6/0/0`, full iPhone 17e/iOS 26.5 Demo `120/0/0`, Phase 53–58 checker/GSD/owner/diff gates green, and the historical codebase drift remains the exact nonblocking `PRODUCT_SENSE.md`/`example-images`/`meituxiuxiu` set.
 - This establishes bounded SDK-core safety, compatibility, request-local recovery, and exact absence only. External code review/fix, independent verification, and the separate milestone audit are the next lifecycle gates; no visible-effect, image-review, device, performance, commercial, packaging, shipping, launch, or release claim follows.
+
+### v1.15 Phase 59 Teeth Evidence Admission Acceptance
+
+- Phase 59 verifies only the closed evidence branch: the current teeth decision lacks both genuine polarities, so `白牙` remains future, the `嘴唇` branch remains partial, and the existing disabled Demo taxonomy remains honest.
+- `portrait_002` is a mechanics-only AI candidate and contributes zero product, naturalness, or admission weight. No visible whitening, field, provider, output, naturalness, commercial, or release claim follows.
+- The next product gate is a rights-approved genuine discolored positive and already-light negative with complete bound assets and frozen blinded original-detail review. Only an independently open decision may start the teeth production slice.

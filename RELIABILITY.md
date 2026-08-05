@@ -742,3 +742,8 @@ Before a release-like build:
 - Request-local repeated, parallel, serialized, valid-invalid-valid, no-face, malformed, thrown-recovery, unrelated-continuation, and caller-publication-discard cases retain zero support owners and publish only fixed aggregate counters/reasons; no cooperative-abort or TD-013 claim is introduced.
 - Final execution is green across focused and full SDK, exact opt-in Vision `6/0/0`, and full Demo `120/0/0`; canonical/no-op behavior retains dimensions, alpha/color/orientation contracts, typed payload-free errors, and safe-domain continuation with exact `59/5/72` compatibility.
 - The remaining lifecycle is external code review/fix followed by independent verification and milestone audit. These automated reliability results do not establish visible effect quality, naturalness, device, performance, commercial, packaging, shipping, launch, or release readiness.
+
+### v1.15 Phase 59 Closed Evidence Reliability
+
+- Missing or incomplete genuine teeth evidence fails closed as a valid decision: no parameter field, demand, provider, output, or Demo route is created. The current Phase 54 row remains the sole authority.
+- The Phase 59 contract/checker and existing SDK/Demo regressions verify exact zero-admission behavior, sanitized durable state, no sibling borrowing, and stable legacy behavior. A later valid evidence bundle must reopen this phase before any downstream production work.

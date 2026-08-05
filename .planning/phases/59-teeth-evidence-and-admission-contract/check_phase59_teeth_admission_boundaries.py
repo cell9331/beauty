@@ -237,6 +237,9 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--live", action="store_true")
+    parser.add_argument("--decision", action="store_true")
+    parser.add_argument("--evidence-gate", action="store_true")
+    parser.add_argument("--privacy", action="store_true")
     parser.add_argument("--repo-root", type=pathlib.Path)
     args = parser.parse_args()
     if args.repo_root is not None:
@@ -245,7 +248,22 @@ def main() -> int:
         if args.self_test:
             print(json.dumps({"mutationCaseCount": self_test(), "status": "pass"}, sort_keys=True))
             return 0
-        failures = live_failures()
+        if args.decision:
+            failures = decision_failures()
+        elif args.evidence_gate:
+            failures = decision_failures()
+            if not CONTRACT.is_file() or not INVENTORY.is_file():
+                failures.add("T-59-08")
+            else:
+                contract = CONTRACT.read_text(encoding="utf-8")
+                if not re.search(r"phase:\s*59", contract) or not re.search(r"decision:\s*closed", contract):
+                    failures.add("T-59-03")
+                if not exact_threat_inventory(read_json(INVENTORY)):
+                    failures.add("T-59-08")
+        elif args.privacy:
+            failures = privacy_failures()
+        else:
+            failures = live_failures()
         if failures:
             print(json.dumps({"failedRuleIds": sorted(failures), "status": "fail"}, sort_keys=True))
             return 1

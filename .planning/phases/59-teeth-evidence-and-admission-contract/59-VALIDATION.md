@@ -1,9 +1,9 @@
 ---
 phase: 59
 slug: teeth-evidence-and-admission-contract
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: validated
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-08-05
 security_standard: OWASP ASVS Level 1
 block_on: HIGH
@@ -46,15 +46,15 @@ block_on: HIGH
 
 | Actual task ID | Wave | Requirements | Automated evidence | Manual/evidence gate | Status |
 | --- | ---: | --- | --- | --- | --- |
-| `59-01-01` | 1 | SEQ-01, EVID-07, TEETH-07, TEETH-08 | Node syntax/tests, checker self-test, exact Phase 54 authority parsing, privacy allowlist, fail-closed scanner mutations | None | pending |
-| `59-01-02` | 1 | SEQ-01, EVID-07 | Canonical ledger decision and checker live mode | Supply a real complete rights-approved bundle if absent; perform frozen blinded original-detail review | pending / blocking precondition |
-| `59-01-03` | 1 | SEQ-01, EVID-07 | Sanitized ledger/evidence projection and exact sibling-row preservation | Review decision must be `open` before public branch | pending |
-| `59-02-01` | 2 | TEETH-07 | Focused `BeautyParametersTests` with exact 60-field inventory, normalization, Codable, legacy decode, source-call compatibility | None | pending |
-| `59-02-02` | 2 | TEETH-08 | Focused resolver matrix and one-demand lifecycle assertion | None | pending |
-| `59-03-01` | 3 | SEQ-01, TEETH-07, TEETH-08 | Preset, renderer/facade, lifecycle, and Demo boundary tests | None | pending |
-| `59-03-02` | 3 | SEQ-01, EVID-07, TEETH-07, TEETH-08 | Phase checker live mode, exact inventories, sanitized evidence/validation records | None | pending |
-| `59-04-01` | 4 | SEQ-01, EVID-07, TEETH-07, TEETH-08 | Requirements/decision/task/threat equality, privacy/scope, owner consistency | None | pending |
-| `59-04-02` | 4 | SEQ-01, EVID-07, TEETH-07, TEETH-08 | Full SwiftPM, explicit Demo build/test, checker, GSD gates, diff hygiene | None | pending |
+| `59-01-01` | 1 | SEQ-01, EVID-07, TEETH-07, TEETH-08 | Node syntax/tests, checker self-test, exact Phase 54 authority parsing, privacy allowlist, fail-closed scanner mutations | None | passed; closed branch |
+| `59-01-02` | 1 | SEQ-01, EVID-07 | Canonical ledger decision and checker live mode | Supply a real complete rights-approved bundle if absent; perform frozen blinded original-detail review | blocked; external evidence precondition |
+| `59-01-03` | 1 | SEQ-01, EVID-07 | Sanitized ledger/evidence projection and exact sibling-row preservation | Review decision must be `open` before public branch | passed; closed projection |
+| `59-02-01` | 2 | TEETH-07 | Focused `BeautyParametersTests` with exact 59-field inventory, normalization, Codable, legacy decode, source-call compatibility | None | not_applicable_closed_gate |
+| `59-02-02` | 2 | TEETH-08 | Focused resolver matrix and one-demand lifecycle assertion | None | not_applicable_closed_gate |
+| `59-03-01` | 3 | SEQ-01, TEETH-07, TEETH-08 | Preset, renderer/facade, lifecycle, and Demo boundary tests | None | passed; exact absence |
+| `59-03-02` | 3 | SEQ-01, EVID-07, TEETH-07, TEETH-08 | Phase checker live mode, exact inventories, sanitized evidence/validation records | None | passed; closed branch |
+| `59-04-01` | 4 | SEQ-01, EVID-07, TEETH-07, TEETH-08 | Requirements/decision/task/threat equality, privacy/scope, owner consistency | None | passed; blocker recorded |
+| `59-04-02` | 4 | SEQ-01, EVID-07, TEETH-07, TEETH-08 | Full SwiftPM, explicit Demo build/test, checker, GSD gates, diff hygiene | None | passed; downstream blocked |
 
 Task count equality target: **9 XML task IDs = 9 validation rows**. Every task
 has an automated command; the real evidence gate is separately marked as a
@@ -72,7 +72,7 @@ manual precondition rather than being inferred from a synthetic fixture.
 
 ## Final-Only Gate
 
-`59-04-02` must run, in order:
+`59-04-02` ran, in order:
 
 1. Phase 59 checker self-test and live mode, including exact canonical ledger
    decision and all T-59 HIGH mutations.
@@ -83,9 +83,9 @@ manual precondition rather than being inferred from a synthetic fixture.
    validation / threat / owner equality.
 5. `git diff --check` and final sanitized evidence/validation promotion.
 
-If the canonical row is still closed, the final record must explicitly report
-the blocker and preserve exact absence; it must not mark TEETH-07/08 complete or
-claim an open admission branch.
+The canonical row is still closed. The final record reports the blocker and
+preserves exact absence; TEETH-07/08 are not marked complete and no open
+admission branch is claimed.
 
 ## Privacy and Scope Rules
 

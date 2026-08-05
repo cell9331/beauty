@@ -30,14 +30,25 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
+| Status | `blocked` |
 | Scope | Start milestone v1.15 to complete still-image SDK-core `白牙` first and independently complete `祛红血丝` second, while keeping `去脂` future and preserving all v1.14 canonical-input, request-local, composition, privacy, compatibility, and fail-closed boundaries. |
 | Research | Four inline GSD research dimensions: stack, features, architecture, and pitfalls. Dedicated GSD subagents are unavailable in this session, so the orchestrator owns the artifacts and records the fallback. |
 | Evidence gate | `portrait_002/original.png` is registered as an original-only, C2PA-declared AI mechanics candidate for both features and retains zero genuine-evidence or admission weight. Each feature still needs its own complete rights-approved genuine positive/negative original/mask/after bundle, predeclared polarity, structured original-detail review, and independent promotion decision. |
 | Order | Teeth evidence and production slice → teeth verification/promotion → sclera evidence and per-eye production slice → sclera verification/promotion → combined regression and milestone audit. |
 | Exclusions | `去脂`; realtime/pixel-buffer; SwiftUI/Demo activation; external model/cloud; tracked portrait media; device/commercial/performance-budget/packaging/shipping/launch claims. |
-| Current | Milestone start, five research artifacts, 40 requirements, and the continued-numbering seven-phase roadmap are approved; 40/40 requirements map exactly once across Phases 59–65. The new `portrait_002` original is registered for independent teeth and sclera mechanics without opening or contributing evidence weight to either gate. |
-| Next | Run `$gsd-discuss-phase 59` to resolve the real teeth evidence inputs and exact admission contract before implementation planning. |
+| Current | Phase 59's four execution plans and sanitized evidence contract are recorded. The canonical teeth row remains closed for both missing genuine polarities; `portrait_002` is mechanics-only with zero weight. The closed branch, exact absence, eight HIGH threat gates, SDK/Demo regressions, and routed owner records are verified. |
+| Next | Acquire one complete rights-approved genuine discolored-teeth positive and one genuine already-light negative, freeze criteria, run blinded original-detail review, then reopen Phase 59. Do not start Phase 60 or any sclera production phase before an independent open decision. |
+
+### C-2026-08-05-v1-15-phase-59-closed-evidence-gate
+
+| Field | Value |
+| --- | --- |
+| Status | `blocked` |
+| Scope | Phase 59 teeth evidence/admission contract, exact closed branch, privacy/security boundaries, and compatibility-preserving verification. |
+| Decision | Phase 54's `teeth_whitening` row remains `closed` with `missing_genuine_positive` and `missing_genuine_negative`; counts and naturalness weight are zero. No field, admission demand, provider, output, or Demo route was added. |
+| Verification | Contract tests 5/5; checker 19 mutation cases and 8/8 HIGH modes; focused SDK 135/135; full SwiftPM 553/0/6; Demo build passed; full Demo 121/0/0; JSON and diff checks passed. |
+| Blocker | The genuine positive/negative original/mask/after bundle and frozen blinded original-detail review are external preconditions. This is a valid closed branch, not a `白牙` promotion. |
+| Resume | Reopen Phase 59 from `59-VERIFICATION.md` after the evidence bundle is supplied and independently reviewed. |
 
 ## 3A. Archived Active Ledger
 
