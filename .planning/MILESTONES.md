@@ -1,5 +1,58 @@
 # Milestones
 
+## v1.14 Local Facial Retouch (Shipped: 2026-08-05)
+
+**Phases completed:** 6 phases, 27 plans, 46 tasks
+
+**Key accomplishments:**
+
+- Compile-clean Wave 0 RED contracts for one opaque canonical still image, one request-local Vision/mapping boundary, and exact legacy compatibility without adding production or candidate surface
+- One checked request-owned sRGB RGBA8 raster now consumes decoded still-image orientation, mirroring, color conversion, and opacity policy exactly once before Vision
+- Actual Vision outer/inner lip samples now share the existing selected-face request and mapper with independent preflight, local failure, and aggregate-only diagnostics
+- The existing CIImage facade now has one exact-empty-gated canonical request route with stack-local selected support, exact ordering, safe degradation, and structural realtime isolation
+- Admitted still rendering now consumes the detector-shared canonical carrier with explicit sRGB geometry rasterization while the exact inactive facade result remains unchanged
+- Exact 59-field/five-preset legacy neutrality, fail-closed privacy boundaries, and all Phase 53 HIGH mitigations are green while production feature admission remains empty
+- Dependency-free Node specifications now freeze every evidence and reviewer behavior before implementation, while a standard-library checker proves exact Wave 0 RED, 27-row UI equality, privacy, scope, and all six ASVS Level 1 HIGH mitigations.
+- A dependency-free browser/Node core now turns bounded one-feature manifests into frozen genuine-evidence snapshots, isolated eligibility decisions, and byte-stable privacy-safe exports.
+- A dependency-free local reviewer now validates user-selected evidence, presents only blinded original-detail triples, records the frozen structured schema, and exports deterministic closed or open feature decisions without network, persistence, or sensitive metadata.
+- Three independent aggregate-only eligibility records now consume missing evidence as deterministic fail-closed outcomes, with sensitive review material kept local and every authoritative owner preserving exact production absence.
+- Literal Q16/original-byte and failure-isolation RED oracles, opaque facade lifecycle contracts, and a 31-case fail-closed checker with exact T-55-01…07 HIGH ownership
+- The feature-neutral composer now accepts only bounded units issued for the exact current canonical storage and rejects malformed or foreign work locally.
+- Canonical RGBA8 pixels now compose through deterministic Q16 RGB blending with hard re-clipping, collision-to-source ownership, exact alpha preservation, and aggregate-only failure isolation.
+- The existing still-image facade now proves one exact-source composition handoff through opaque Testing-only activation while production admission, compatibility inventories, and realtime paths remain unchanged.
+- Validated original-pixel composition mechanics with exact 9/9 task traceability, seven green HIGH mitigations, post-review 534-test SDK and retained 118-test Demo regressions, and no production feature admission.
+- Exact 59/5/72 SDK compatibility, literal-empty admission, disabled teeth Demo taxonomy, and a 21-case fail-closed checker covering all seven HIGH threat identities
+- Exact Phase 54 decision parsing plus a 97-case live-fixture mutation matrix blocks teeth activation, aliasing, Demo enablement, privacy leakage, ledger promotion, and compatibility drift while evidence remains draft
+- Validated the independently closed teeth gate with 539-test SDK and 119-test Demo regressions, a 111-case post-verification live-fixture checker, exact 59/5/72 compatibility, and synchronized no-promotion owners
+- Exact 59/5/72 SDK compatibility, literal-empty admission, two disabled Demo rows, and a fail-closed checker covering all eight eye-retouch HIGH threat identities
+- Exact two-row Phase 54 authority enforcement plus 32 whole-production sclera activation and alias mutations, with a deliberately unpromoted evidence draft
+- Whole-production upper-eyelid and semantic proxy rejection plus 220-case combined Demo, privacy, ledger, compatibility, and scanner enforcement with a deliberately draft evidence projection
+- Validated two independent closed eye-retouch gates with exact absence, active `去脂` proxy rejection, and full current SDK/Demo/security evidence
+- Exact empty SDK admission, host publication discard, 59/5/72 compatibility, three disabled Demo rows, and an eight-HIGH fail-closed closeout checker
+- Complete request-local lifecycle, privacy, compatibility, output-absence, and zero-promotion matrices
+- Frozen Phase 57 completed-state reconciliation with exact 519-case pre-transition evidence and complete Phase 58 HIGH mutation coverage
+- Validated zero-admission execution evidence with full SDK/Vision/Demo regression and synchronized safety, reliability, product, quality, and requirement owners
+
+**Verification:** Milestone audit passed `41/41` requirements, `6/6` phases,
+`9/9` integration seams, `5/5` flows, and `6/6` Nyquist ledgers. Phase 58
+independent verification passed `12/12`; full SwiftPM passed `553/0/6`, opt-in
+Vision `6/0/0`, Demo `120/0/0`, and the post-review checker `703/0/0`.
+
+**Scope boundary:** Production local-retouch admission and promotion remain
+exactly empty. TD-013, visual/device/performance/commercial/packaging/shipping/
+launch evidence remain deferred or out of scope.
+
+**Archives:**
+
+- `.planning/milestones/v1.14-ROADMAP.md`
+- `.planning/milestones/v1.14-REQUIREMENTS.md`
+- `.planning/milestones/v1.14-MILESTONE-AUDIT.md`
+- `.planning/milestones/v1.14-phases/`
+
+**What's next:** Start a fresh milestone with `$gsd-new-milestone`.
+
+---
+
 ## v1.13 Eyebrow Geometry Controls (Shipped: 2026-07-28)
 
 **Delivered:** Seven independent SDK-core eyebrow controls with exact public compatibility, actual request-scoped Vision eyebrow support, distinct geometry, strict facade-output evidence, conservative safety, and exact branch promotion.

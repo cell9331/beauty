@@ -540,6 +540,66 @@
 
 ---
 
+## Milestone: v1.14 — Local Facial Retouch
+
+**Shipped:** 2026-08-05
+**Phases:** 6 | **Plans:** 27
+
+### What Was Built
+
+- Established a canonical still-image/request-local boundary with exact legacy
+  compatibility and no realtime or pixel-buffer expansion.
+- Built feature-neutral original-pixel composition and failure isolation while
+  preserving literal-empty production admission.
+- Closed teeth, sclera, and upper-eyelid feature gates independently from
+  insufficient evidence, preserving disabled taxonomy rows and zero promotion.
+- Completed adversarial safety review/fix, independent verification `12/12`,
+  full SwiftPM/Demo regression, and a `41/41` milestone audit.
+
+### What Worked
+
+- Exact aggregate-only checker outputs kept sensitive source and fixture data
+  out of diagnostics while still exercising live mutation cases.
+- The frozen Phase 57 adapter plus a strict completed-state path preserved prior
+  provenance across the combined closeout.
+- Sequential wave ownership and final-only full regression prevented premature
+  claims and made the archive decision reproducible.
+
+### What Was Inefficient
+
+- The checker lifecycle initially encoded the pre-verifier state, requiring
+  adversarial fixes and a second document reconciliation before archive.
+- Archive tooling required explicit root-owner cleanup, roadmap collapsing, and
+  phase-directory verification after the primitive completed.
+
+### Patterns Established
+
+- Exact-empty admission is a valid positive closeout outcome when evidence
+  gates are closed; mechanics remain testable only behind opaque Testing hooks.
+- Lifecycle evidence must distinguish plan checkpoint, review/fix, independent
+  verification, milestone audit, and archive states.
+- Cross-phase audit reports should map integration seams to requirements and
+  explicitly state when no product E2E flow is expected by design.
+
+### Key Lessons
+
+1. Keep evidence, verification, and archive lifecycle states synchronized before
+   invoking milestone completion.
+2. Preserve frozen prior-phase checkers byte-for-byte and add compatibility
+   adapters for post-transition owners.
+3. Treat closed feature gates as exact absence requirements, not invitations to
+   add inert fields or proxy behavior.
+
+### Cost Observations
+
+- Model mix: autonomous implementation, adversarial review, verification,
+  integration audit, and lifecycle closeout.
+- Sessions: one multi-day milestone with review and lifecycle reconciliation.
+- Notable: checker hardening and owner synchronization consumed more closeout
+  time than the stable runtime path.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -558,6 +618,7 @@
 | v1.11 | autonomous | 4 | Added private observed eye support, fourteen named emissions, strict 385-output evidence, exact ten-row promotion, and a 24/24 audit. |
 | v1.12 | autonomous | 4 | Added private observed face support, four independent contour/chin providers, strict 413-output evidence, exact four-row promotion, and an 18/18 audit. |
 | v1.13 | autonomous | 4 | Added actual observed eyebrow support, seven distinct providers, strict 72-portrait evidence, exact eyebrow-branch promotion, and a 21/21 audit. |
+| v1.14 | autonomous | 6 | Added exact-empty still-image retouch safety boundaries, original-pixel mechanics, independent closed feature gates, and a 41/41 audit. |
 
 ### Cumulative Quality
 
@@ -575,6 +636,7 @@
 | v1.11 | 314 SDK tests, 385-output strict helper, 57-case boundary self-test, and milestone audit | Requirement traceability 24/24 | No new third-party runtime dependency recorded for remaining-eye closeout. |
 | v1.12 | 375 SDK tests, 413-output strict helper, 70-case boundary self-test, and milestone audit | Requirement traceability 18/18 | No new third-party runtime dependency recorded for remaining-face closeout. |
 | v1.13 | 450 SDK tests, 72-portrait/13-no-face strict helper, 130-case boundary self-test, and milestone audit | Requirement traceability 21/21 | No new third-party runtime dependency recorded for eyebrow closeout. |
+| v1.14 | 553 SwiftPM tests (six expected Vision skips), 6 opt-in Vision tests, 120 Demo tests, and 703-case post-review checker | Requirement traceability 41/41 | No new third-party runtime dependency; production feature admission remains exact-empty. |
 
 ### Top Lessons (Verified Across Milestones)
 

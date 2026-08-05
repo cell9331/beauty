@@ -2,17 +2,17 @@
 gsd_state_version: 1.0
 milestone: v1.14
 milestone_name: Local Facial Retouch
-current_phase: 58
-status: completed
+status: Awaiting next milestone
 stopped_at: Completed 58-04-PLAN.md
-last_updated: "2026-08-05T01:21:00.079Z"
+last_updated: "2026-08-05T01:30:38.938Z"
 last_activity: 2026-08-05
-last_activity_desc: Phase 58 complete
+last_activity_desc: Milestone v1.14 completed and archived
 progress:
   total_phases: 6
   completed_phases: 6
   total_plans: 27
   completed_plans: 27
+current_phase: 58
 current_phase_name: Combined Facade, Safety, Ledger, and Audit Closeout
 ---
 
@@ -27,12 +27,10 @@ See: `.planning/PROJECT.md` (updated 2026-08-04)
 
 ## Current Position
 
-Phase: 58
-Plan: Not started
-Status: All phases complete
-Last activity: 2026-08-05 — Phase 58 complete
-
-Progress: [██████████] 6/6 phases (100%)
+Phase: Milestone v1.14 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-08-05 — Milestone v1.14 completed and archived
 
 ## Performance Metrics
 
@@ -153,3 +151,7 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 Last session: 2026-08-04T08:57:04.908Z
 Stopped at: Completed 58-04-PLAN.md
 Resume file: None
+
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone
