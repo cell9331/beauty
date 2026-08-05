@@ -84,10 +84,10 @@ focused enforcement tasks + 1 final closeout task**.
 | OUT-03 | `full_automated_audit_and_independent_verification` |
 | OUT-04 | `zero_row_promotion` |
 
-OUT-03 phase evidence may record the automated gate as green, but phase
-transition remains blocked until the separate review/fix workflow and
-independent `gsd-verifier` pass. No feature row is promoted before then—or at
-all in the zero-admission branch.
+OUT-03 phase evidence records the automated gate and adversarial review/fix as
+green, but phase transition remains blocked until the independent
+`gsd-verifier` passes. No feature row is promoted before then—or at all in the
+zero-admission branch.
 
 ## Exact Closeout Matrix
 
@@ -131,8 +131,8 @@ Only `58-04-01` may run or claim:
 3. Explicit iPhone 17e/iOS 26.5 Demo build and full tests.
 4. Complete Phase 53–58 checkers, privacy/resource/network/artifact scans,
    GSD schema/UI/decision/traceability gates, diff hygiene, and root equality.
-5. Validated evidence, requirement/root synchronization, and readiness for the
-   separate code review/fix plus independent verifier.
+5. Validated evidence, requirement/root synchronization, and adversarial
+  code-review/fix; independent verification remains required.
 
 The known historical `PRODUCT_SENSE.md`, `example-images`, and `meituxiuxiu`
 codebase-map warning remains nonblocking only if its path set is exact and no
@@ -147,9 +147,9 @@ new structural drift appears.
 - [x] Full SwiftPM, six-test opt-in Vision, and full Demo are current green.
 - [x] Zero feature rows and zero branches are promoted.
 - [x] No sensitive payload, image/human review, or unsupported scope claim exists.
-- [x] Canonical evidence and root owners synchronize only after every prior gate.
+- [x] Canonical evidence, adversarial review/fix, and root owners synchronize only after every prior gate; independent verification remains the final phase owner gate.
 
-**Approval:** Automated execution is validated for seven task rows, seven
-requirements, twenty decisions, eight HIGH mitigations, full regression, and
-owner gates. External review/fix and independent verification are the next
-lifecycle gates.
+**Approval:** Automated execution and adversarial review/fix are validated for
+seven task rows, seven requirements, twenty decisions, eight HIGH mitigations,
+full regression, and owner gates. Independent verification is the next
+lifecycle gate.

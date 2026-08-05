@@ -34,17 +34,17 @@ Quality gate:
 
 ## 3. Current Snapshot
 
-Current repository state as of 2026-07-28 after the shipped v1.13 lifecycle and
-the current-state consolidation audit:
+Current repository state as of 2026-08-04 after the v1.14 Phase 58 automated
+closeout and adversarial checker review/fix:
 
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
 | Root docs | 4 | All nine root owners exist. The consolidation audit corrected `ARCHITECTURE.md` so current pixel-buffer processing, still-image detection/geometry, and placeholder Render foundations match compiled code. | Keep current facts in root owners; keep milestone narratives in archives. |
 | Historical docs | 3 | `docs/README.md` remains the long-doc entry. `.planning/codebase/*` is explicitly stale background and historical phase/milestone artifacts are not current contracts. | Refresh codebase maps only in an explicitly scoped remap. |
-| GSD planning | 4 | v1.13 is shipped, independently audited, archived, cleaned up, and tagged. No milestone or root `.planning/REQUIREMENTS.md` is active. | Create requirements only through the next explicitly scoped milestone. |
-| SDK Package | 4 | The package/facade boundary is intact; `BeautyParameters` is exactly 59 stored fields (58 numeric plus `filterId`), and the current full SwiftPM suite executes 458 tests with six expected skips and zero failures. | Resolve the generic `BeautyResult` sendability contract before treating all public result envelopes as concurrency-safe. |
-| Demo App | 4 | Full Demo simulator tests pass on iPhone 17e / iOS 26.5. Focused consolidation tests cover stale camera starts, late permission completion, and nil/stale photo transfers. | Rerun screenshot, long-run preview, and physical-device protocols before corresponding claims. |
-| Tests | 4 | SwiftPM executes 458 tests with six expected skips; the Demo passes 118 simulator tests and the 12-case focused photo pipeline suite. v1.13 strict output, checker, review, and milestone-audit evidence remain archived and passing. | Add coverage for chosen future scope; preserve explicit hardware and UI-automation gaps. |
+| GSD planning | 4 | v1.14 Phase 58 automated closeout and adversarial review/fix are green with exact zero admission/promotion; the independent verifier and milestone audit remain explicit lifecycle gates. | Complete verifier/audit before archiving; do not infer release readiness. |
+| SDK Package | 4 | The package/facade boundary is intact; `BeautyParameters` is exactly 59 stored fields (58 numeric plus `filterId`), and Phase 58 full SwiftPM executes 553 tests with six expected Vision skips and zero failures. | Resolve the generic `BeautyResult` sendability contract before treating all public result envelopes as concurrency-safe. |
+| Demo App | 4 | Phase 58 full Demo simulator tests pass 120/120 on iPhone 17e / iOS 26.5. Focused consolidation tests cover stale camera starts, late permission completion, and nil/stale photo transfers. | Rerun screenshot, long-run preview, and physical-device protocols before corresponding claims. |
+| Tests | 4 | Phase 58 records full SwiftPM `553/0/6`, opt-in Vision `6/0/0`, full Demo `120/0/0`, and a post-review checker recheck `703/0/0`; no product feature or visual-effect claim is inferred. | Complete independent verifier/audit; preserve explicit hardware and UI-automation gaps. |
 | Security | 4 | Local-first, redaction, raw-geometry, dependency/network, generated-artifact, and production input-bound gates pass. SDK image/pixel-buffer ceilings and Demo pre-decode/pre-render ceilings have exact-boundary, ordering, recovery, and stale-work regressions. | Retain the documented PhotosPicker pre-transfer allocation residual and re-evaluate only if the transfer API changes. |
 | Reliability | 3 | Backpressure, stale work, reset, detection degradation, and the repaired camera lifecycle are test-backed. Realtime geometry/Metal dispatch, 600-second preview, and device endurance are not current evidence. | Keep claims bounded and run the setup-specific long-run/device gates when authorized. |
 | Product acceptance | 4 | v1.13 closes exactly seven eyebrow rows plus branch `眉毛` at SDK-core scope after 21/21 requirements, 4/4 phases, 12/12 integrations, and 6/6 flows. | Do not infer Demo, device, commercial, packaging, or release readiness. |

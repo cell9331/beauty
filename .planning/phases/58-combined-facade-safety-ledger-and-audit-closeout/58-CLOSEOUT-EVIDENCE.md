@@ -21,7 +21,7 @@ are closed, so the admitted and promoted sets are exactly empty.
 | SAFE-03 | `closed_set_noop_compatibility_enforced` | focused compatibility and no-op matrix passed |
 | OUT-01 | `not_applicable_zero_admitted_features_exact_absence` | zero candidate output/helper/gallery/review routes |
 | OUT-02 | `not_applicable_zero_admitted_pair_exact_absence` | zero constructible candidate pairs; mechanics remain neutral |
-| OUT-03 | `full_automated_audit_and_independent_verification` | automated gates passed; review and verifier are next lifecycle owners |
+| OUT-03 | `full_automated_audit_and_independent_verification` | automated gates and adversarial review/fix passed; independent verifier is next lifecycle owner |
 | OUT-04 | `zero_row_promotion` | promoted rows `0` |
 
 ## Task Results
@@ -78,13 +78,15 @@ are closed, so the admitted and promoted sets are exactly empty.
 | post-plan traceability | passed | 27 | 0 | 0 |
 | codebase drift | passed with exact historical warning set | 11 | 0 | 0 |
 | diff hygiene | passed | 1 | 0 | 0 |
-| code review/fix | not yet run | 0 | 0 | 0 |
+| Phase 58 post-review checker recheck | passed | 703 | 0 | 0 |
+| code review/fix | passed | 1 | 0 | 0 |
 | independent verifier | not yet run | 0 | 0 | 0 |
 | separate milestone audit | not yet run | 0 | 0 | 0 |
 
-The final automated conjunction is validated. External code review/fix,
-independent verification, and the separate milestone audit are the next
+The final automated conjunction and adversarial code review/fix are validated.
+Independent verification and the separate milestone audit are the next
 lifecycle owners and have not yet run.
+The Phase 58 post-review checker recheck `703 / 0 / 0`; per-HIGH `288 / 42 / 38 / 34 / 233 / 31 / 29 / 8` is passed.
 
 ## Owner Equality
 
@@ -96,8 +98,8 @@ fixed compatibility result, and Phase 58 is the active lifecycle owner.
 
 ## Pending Final Lifecycle
 
-Final automated conjunction is complete; code review/fix, independent
-verification, and the separate milestone audit are reserved as the next
+Final automated conjunction and code review/fix are complete; independent
+verification and the separate milestone audit are reserved as the next
 lifecycle steps. This evidence cannot promote a feature, branch, release, or
 lifecycle archive.
 

@@ -1214,9 +1214,11 @@ def evidence_failures() -> set[str]:
         return {RULES["T-58-08"]}
     if "Phase 58 aggregate `276 / 0 / 0`; per-HIGH `80 / 33 / 37 / 34 / 28 / 31 / 25 / 8`" not in evidence:
         return {RULES["T-58-08"]}
+    if "Phase 58 post-review checker recheck `703 / 0 / 0`; per-HIGH `288 / 42 / 38 / 34 / 233 / 31 / 29 / 8`" not in evidence:
+        return {RULES["T-58-08"]}
     if "frozen pre-transition self-test `519 / 0 / 0`" not in evidence:
         return {RULES["T-58-08"]}
-    if re.search(r"(?im)^\| (?:code review/fix|independent verifier|separate milestone audit) \| passed \|", evidence):
+    if re.search(r"(?im)^\| (?:independent verifier|separate milestone audit) \| passed \|", evidence):
         return {RULES["T-58-08"]}
     if re.search(r"(?i)(?:implemented|active in production|production-ready|release-ready|launch-ready|promoted feature|shipped feature)", evidence):
         return {RULES["T-58-08"]}
