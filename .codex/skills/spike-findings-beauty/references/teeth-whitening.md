@@ -64,18 +64,22 @@ for index in region.indices where region[index] > 0 {
 ```swift
 let originalLuminance = luminance(red, green, blue)
 let yellowExcess = max(0, (red + green) * 0.5 - blue)
-let yellowCorrection = smoothstep(0.08, 0.18, yellowExcess)
+let yellowCorrection = smoothstep(0.08, 0.14, yellowExcess)
 let local = mask[index] * strength * yellowCorrection
 guard local > 0.001 else { return sourcePixel }
 var nextRed = red + 0.018 * local
 var nextGreen = green + 0.018 * local
-var nextBlue = blue + yellowExcess * 0.78 * local
-let desired = min(0.94, originalLuminance + 0.028 * local)
+var nextBlue = blue + yellowExcess * 1.05 * local
+let desired = min(0.94, originalLuminance + 0.045 * local)
 let correction = desired - luminance(nextRed, nextGreen, nextBlue)
 nextRed += correction
 nextGreen += correction
 nextBlue += correction
 ```
+
+These coefficients are mechanics calibration seeds after the authorized yellow
+positive revealed that the prior transform was too subtle. They preserve the
+explicit lightly warm no-op threshold and are not production constants.
 
 10. Compare fixed and adaptive masks on the same input. Require zero dropped
     strong baseline pixels, zero outside-mask changes, closed-mouth/no-face

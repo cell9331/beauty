@@ -49,7 +49,7 @@ Spike sessions wrapped: 2026-07-29 (001a–005, then 006/009/010); 2026-07-30 (0
 Original spike READMEs, review tools, and the external-model audit are preserved
 in `sources/<spike-id>-<name>/`. The current exact shared Swift package is in
 `sources/shared-retouch-lab/`; local review sources are under their owning spike
-directories. The current harness includes 23 deterministic self-tests.
+directories. The current harness includes 24 deterministic self-tests.
 </findings_index>
 
 <metadata>

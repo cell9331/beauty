@@ -502,7 +502,7 @@ private enum RetouchSpikeLab {
             let parsed = try ParsedArguments(Array(CommandLine.arguments.dropFirst()))
             if parsed.mode == "self-test" {
                 try runSelfTests()
-                print("SELF-TEST PASS: 23/23")
+                print("SELF-TEST PASS: 24/24")
                 return
             }
             if parsed.mode == "teeth-compare" {
@@ -3271,15 +3271,17 @@ private func whitenedTeethPixel(
     // A neutral/already-light tooth is a negative control for this transform.
     // The previous unconditional blue and luminance lifts changed those
     // pixels even when there was no yellow cast to correct.
-    let yellowCorrection = smoothstep(0.08, 0.18, yellowExcess)
+    // Keep lightly warm enamel on the explicit no-op side of the gate, while
+    // giving materially yellow teeth a visible but still bounded correction.
+    let yellowCorrection = smoothstep(0.08, 0.14, yellowExcess)
     let local = localMask * strength * yellowCorrection
     guard local > 0.001 else {
         return (input.pixels[offset], input.pixels[offset + 1], input.pixels[offset + 2])
     }
     var nextRed = red + 0.018 * local
     var nextGreen = green + 0.018 * local
-    var nextBlue = blue + yellowExcess * 0.78 * local
-    let desiredLuminance = min(0.94, originalLuminance + 0.028 * local)
+    var nextBlue = blue + yellowExcess * 1.05 * local
+    let desiredLuminance = min(0.94, originalLuminance + 0.045 * local)
     let correction = desiredLuminance - luminance(nextRed, nextGreen, nextBlue)
     nextRed += correction
     nextGreen += correction
@@ -3647,6 +3649,13 @@ private func runSelfTests() throws {
     let measurement = measure(before: input, after: whitened, mask: polygon)
     try require(measurement.changedPixels > 0, "teeth transform changes mask")
     try require(measurement.changedOutsideMask == 0, "teeth transform containment")
+    guard let maskedIndex = polygon.indices.first(where: { polygon[$0] > 0.99 }) else {
+        throw LabError.invalidArguments("SELF-TEST FAIL: missing strong teeth-mask sample")
+    }
+    let maskedOffset = maskedIndex * 4
+    let yellowBefore = max(0, (Float(input.pixels[maskedOffset]) + Float(input.pixels[maskedOffset + 1])) * 0.5 - Float(input.pixels[maskedOffset + 2])) / 255
+    let yellowAfter = max(0, (Float(whitened.pixels[maskedOffset]) + Float(whitened.pixels[maskedOffset + 1])) * 0.5 - Float(whitened.pixels[maskedOffset + 2])) / 255
+    try require(yellowAfter < yellowBefore - 0.03, "teeth transform reduces material yellow excess")
     let alreadyLight = Raster(width: 16, height: 16, fill: (245, 245, 245, 255))
     let alreadyLightOutput = whitenTeeth(alreadyLight, mask: polygon, strength: 0.6)
     let alreadyLightMeasurement = measure(

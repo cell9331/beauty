@@ -80,7 +80,9 @@ predicate, so it is not canonical evidence. The canonical Phase 59 row remains
 closed until a replacement Phase 54 review and independent decision are
 recorded. Direct visual feedback additionally found the yellow-positive color
 change too subtle despite acceptable mask containment; the shared transform
-must be calibrated before review is repeated. The local manifest and media
+has now been recalibrated and the local after assets refreshed. The harness
+passes 24/24 self-tests with zero outside-mask changes on both fixtures, but a
+replacement Phase 54 review remains required. The local manifest and media
 remain Git-ignored.
 
 ## Disabled Fixtures
