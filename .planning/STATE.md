@@ -4,9 +4,9 @@ milestone: v1.15
 milestone_name: Independent Teeth and Sclera Retouch
 status: blocked
 stopped_at: Phase 59 closed evidence gate; waiting for genuine teeth positive/negative bundle
-last_updated: "2026-08-05T13:36:00+08:00"
+last_updated: "2026-08-05T14:17:22+08:00"
 last_activity: 2026-08-05
-last_activity_desc: Phase 59 closed branch verified; no open teeth admission or production field was added
+last_activity_desc: Phase 59 closed branch and mechanics retest reverified; no open teeth admission or production field was added
 progress:
   total_phases: 7
   completed_phases: 0
@@ -63,6 +63,7 @@ None found under `.planning/todos/pending/`.
 ### Blockers/Concerns
 
 - Teeth still lacks a rights-approved genuine discoloration positive and already-light negative complete bundle; `portrait_002` may exercise mechanics only. Phase 59's closed branch is verified, but no production field or admission route may be added until this gate opens.
+- The shared teeth mechanics harness is hardened and passes 23/23 self-tests, but this does not satisfy the genuine evidence gate or prove protected-tissue naturalness.
 - Sclera still lacks a rights-approved genuine redness positive and normal-sclera negative complete bundle; `portrait_002` may exercise per-eye mechanics only.
 - Spike thresholds remain calibration seeds, not product constants.
 - Existing TD-013 generic-result sendability remains outside v1.15.
@@ -79,5 +80,5 @@ None found under `.planning/todos/pending/`.
 ## Session Continuity
 
 Last session: 2026-08-05
-Stopped at: Phase 59 closed evidence gate; acquire and review the genuine teeth bundle before reopening the open branch
+Stopped at: Phase 59 closed evidence gate; mechanics and checker reverified, still waiting to acquire and review the genuine teeth bundle before reopening the open branch
 Resume file: `.planning/phases/59-teeth-evidence-and-admission-contract/59-VERIFICATION.md`
