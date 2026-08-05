@@ -52,3 +52,25 @@ licensed original-detail review before any production teeth provider or output
 claim. The AI candidate remains mechanics-only and the authorized comparison
 remains a mechanics negative candidate until a feature-specific manifest and
 frozen review decide otherwise.
+
+## Post-close Real Teeth Bundle Intake
+
+The user subsequently supplied two authorized local portraits: one declared as
+the genuine discolored-teeth positive and one as the genuine already-light
+negative. The ignored bundle under
+`example-images/local-retouch-review/teeth-evidence-20260805/` contains a
+complete original/mask/after triple for each fixture. Pure manifest validation
+reports `valid=true`, `productEvidenceReady=true`, two approved fixtures, one
+positive, one negative, and zero missing assets.
+
+The mechanics rerun against the new bundle reports:
+
+| Fixture / path | Strong mask | Changed pixels | Mean luminance delta | Outside computed mask |
+| --- | ---: | ---: | ---: | ---: |
+| `teeth_fixture_001` / adaptive positive | 4,793 | 5,421 | 0.00969 | 0 |
+| `teeth_fixture_002` / adaptive negative | 4,712 | 1,983 | 0.00133 | 0 |
+
+The offline reviewer page could not be opened in the current browser because
+its local `file://` URL is blocked by browser policy; no local server or upload
+workaround was used. A human frozen-criteria blinded review is therefore still
+pending, and the canonical Phase 59 decision remains closed.

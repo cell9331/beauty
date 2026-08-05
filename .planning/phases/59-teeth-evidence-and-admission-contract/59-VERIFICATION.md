@@ -61,3 +61,12 @@ expansion in the visual check, and yellow-excess gating reduced the comparison
 mean luminance delta to 0.00239. These remain provider/safety work requiring
 licensed original-detail review; they are not silently promoted as Phase 59
 evidence or production behavior.
+
+## Post-close Intake Update
+
+Two user-authorized real teeth fixtures are now present in the ignored local
+bundle with one positive, one negative, and complete original/mask/after assets.
+The pure reviewer core validates the manifest and asset inventory, and the
+adaptive mechanics run reports zero outside-mask changes on both fixtures.
+The canonical row is still closed because the frozen-criteria blinded
+original-detail review and independent decision have not yet been recorded.

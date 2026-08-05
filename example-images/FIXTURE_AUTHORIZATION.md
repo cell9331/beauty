@@ -64,6 +64,21 @@ may validate mechanics only. It contributes zero genuine-positive,
 effectiveness, naturalness, or production-admission weight even after derivative
 assets are added.
 
+## Phase 59 Teeth Evidence Intake
+
+| Fixture ID | Polarity | Local bundle path | Rights status | Asset status |
+| --- | --- | --- | --- | --- |
+| `teeth_fixture_001` | `positive` | `example-images/local-retouch-review/teeth-evidence-20260805/fixture_001/` | `approved_internal_evaluation` | `original/mask/after` present |
+| `teeth_fixture_002` | `negative` | `example-images/local-retouch-review/teeth-evidence-20260805/fixture_002/` | `approved_internal_evaluation` | `original/mask/after` present |
+
+The user supplied these two real portrait fixtures and confirmed authorization
+for local internal evaluation and derivative review. The adaptive harness
+generated the local mask/after assets; both fixtures are the same 1254×1254
+format and the mechanics run reports zero changes outside the computed mask.
+The bundle is ready for frozen-criteria blinded original-detail review, but the
+canonical Phase 59 row remains closed until that review and independent
+decision are recorded. The local manifest and media remain Git-ignored.
+
 ## Disabled Fixtures
 
 `e1.png` through `e5.png` and `e6.jpg` are retained only under
