@@ -3280,7 +3280,10 @@ private func whitenedTeethPixel(
     }
     var nextRed = red + 0.018 * local
     var nextGreen = green + 0.018 * local
-    var nextBlue = blue + yellowExcess * 1.05 * local
+    // Neutralize most of the material yellow cast without increasing the
+    // luminance target. Keeping this independent from the brightness lift
+    // avoids a chalky result while making the color correction visible.
+    var nextBlue = blue + yellowExcess * 1.45 * local
     let desiredLuminance = min(0.94, originalLuminance + 0.045 * local)
     let correction = desiredLuminance - luminance(nextRed, nextGreen, nextBlue)
     nextRed += correction
@@ -3655,7 +3658,10 @@ private func runSelfTests() throws {
     let maskedOffset = maskedIndex * 4
     let yellowBefore = max(0, (Float(input.pixels[maskedOffset]) + Float(input.pixels[maskedOffset + 1])) * 0.5 - Float(input.pixels[maskedOffset + 2])) / 255
     let yellowAfter = max(0, (Float(whitened.pixels[maskedOffset]) + Float(whitened.pixels[maskedOffset + 1])) * 0.5 - Float(whitened.pixels[maskedOffset + 2])) / 255
-    try require(yellowAfter < yellowBefore - 0.03, "teeth transform reduces material yellow excess")
+    try require(
+        yellowAfter < yellowBefore * 0.35,
+        "teeth transform removes most material yellow excess"
+    )
     let alreadyLight = Raster(width: 16, height: 16, fill: (245, 245, 245, 255))
     let alreadyLightOutput = whitenTeeth(alreadyLight, mask: polygon, strength: 0.6)
     let alreadyLightMeasurement = measure(

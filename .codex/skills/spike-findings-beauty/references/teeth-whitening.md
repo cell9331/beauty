@@ -69,7 +69,9 @@ let local = mask[index] * strength * yellowCorrection
 guard local > 0.001 else { return sourcePixel }
 var nextRed = red + 0.018 * local
 var nextGreen = green + 0.018 * local
-var nextBlue = blue + yellowExcess * 1.05 * local
+// Neutralize most of the material yellow cast independently from the bounded
+// luminance target, so stronger de-yellowing does not create chalky teeth.
+var nextBlue = blue + yellowExcess * 1.45 * local
 let desired = min(0.94, originalLuminance + 0.045 * local)
 let correction = desired - luminance(nextRed, nextGreen, nextBlue)
 nextRed += correction

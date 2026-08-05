@@ -98,7 +98,7 @@ calibrate the transform against this exact positive while preserving the
 already-light negative near-no-op and zero outside-mask changes; no production
 or Phase 60 admission is authorized by this feedback.
 
-## Calibrated Candidate Rerun
+## First Calibrated Candidate Rerun
 
 The shared harness now keeps the material-yellow threshold at `0.08` so lightly
 warm enamel remains a no-op, but shortens the upper transition and increases
@@ -115,3 +115,21 @@ The positive after image has been refreshed in the ignored local bundle for a
 new human comparison. The negative remains bounded but is not automatically
 accepted; the replacement review must still determine whether its visible
 change is suitably near no-op.
+
+## Residual-Yellow Candidate Rerun
+
+The user found the first calibrated positive still too yellow. The next
+candidate therefore keeps the `0.08` material-yellow/no-op threshold and the
+`0.045` luminance target unchanged, but increases only the bounded yellow
+neutralization. This targets the rejected color cast without solving it by
+making every accepted pixel brighter. The refreshed bundle now reports:
+
+| Fixture / path | Changed pixels | Mean luminance delta | Texture energy ratio | Outside computed mask |
+| --- | ---: | ---: | ---: | ---: |
+| `teeth_fixture_001` / adaptive positive | 5,573 | 0.01647 | 1.03478 | 0 |
+| `teeth_fixture_002` / adaptive negative | 2,126 | 0.00335 | 0.97580 | 0 |
+
+The latest positive is visibly less yellow while the luminance delta is
+slightly lower than the prior candidate; the negative remains bounded. This
+is still a mechanics candidate awaiting frozen blinded review, not evidence
+that opens the canonical row.

@@ -78,9 +78,11 @@ format and the mechanics run reports zero changes outside the computed mask.
 The first submitted Spike 006 review export failed the frozen Phase 54
 predicate, so it is not canonical evidence. The canonical Phase 59 row remains
 closed until a replacement Phase 54 review and independent decision are
-recorded. Direct visual feedback additionally found the yellow-positive color
-change too subtle despite acceptable mask containment; the shared transform
-has now been recalibrated and the local after assets refreshed. The harness
+recorded. Direct visual feedback first found the yellow-positive change too
+subtle and then found residual yellow in the brighter candidate despite
+acceptable mask containment. The shared transform has now been recalibrated a
+second time by strengthening yellow neutralization without raising its
+luminance target, and the local after assets have been refreshed. The harness
 passes 24/24 self-tests with zero outside-mask changes on both fixtures, but a
 replacement Phase 54 review remains required. The local manifest and media
 remain Git-ignored.

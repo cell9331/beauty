@@ -62,8 +62,8 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- A user-authorized genuine teeth positive/negative bundle is staged locally with complete assets. The transform has been recalibrated after human feedback: 24/24 harness tests pass, the yellow positive is stronger, the negative remains bounded, and both have zero outside-mask changes. The first submitted Spike 006 export is not canonical; the canonical row remains closed until a replacement Phase 54 review and independent decision.
-- The shared teeth mechanics harness is hardened and passes 23/23 self-tests, but this does not satisfy the genuine evidence gate or prove protected-tissue naturalness.
+- A user-authorized genuine teeth positive/negative bundle is staged locally with complete assets. The transform has been recalibrated twice after human feedback: 24/24 harness tests pass, the latest candidate removes more residual yellow without increasing its luminance target, the negative remains bounded, and both have zero outside-mask changes. The first submitted Spike 006 export is not canonical; the canonical row remains closed until a replacement Phase 54 review and independent decision.
+- The shared teeth mechanics harness is hardened and passes 24/24 self-tests, but this does not satisfy the genuine evidence gate or prove protected-tissue naturalness.
 - Sclera still lacks a rights-approved genuine redness positive and normal-sclera negative complete bundle; `portrait_002` may exercise per-eye mechanics only.
 - Spike thresholds remain calibration seeds, not product constants.
 - Existing TD-013 generic-result sendability remains outside v1.15.

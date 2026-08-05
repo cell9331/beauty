@@ -83,8 +83,11 @@ positive-effect observation, not a passed review: mask containment alone does
 not establish whitening effectiveness. Transform calibration and a replacement
 blinded review remain required.
 
-The mechanics-only transform has since been recalibrated: the harness passes
-24/24 self-tests, the real yellow positive moves from mean luminance delta
-`0.00969` to `0.01678`, and both the positive and already-light negative retain
-zero outside-mask changes. This makes a replacement visual review possible; it
-does not open the canonical decision or establish the negative's naturalness.
+The mechanics-only transform has since been recalibrated twice in response to
+direct visual feedback. The latest candidate keeps the luminance target and
+lightly-warm no-op gate fixed while strengthening only yellow neutralization.
+The harness passes 24/24 self-tests; the real yellow positive reports mean
+luminance delta `0.01647` and texture energy ratio `1.03478`, while the
+already-light negative reports `0.00335` and `0.97580`. Both retain zero
+outside-mask changes. This makes a replacement visual review possible; it does
+not open the canonical decision or establish either result's naturalness.
