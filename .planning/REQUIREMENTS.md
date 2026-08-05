@@ -85,14 +85,61 @@
 
 ## Traceability
 
-Roadmap phase mappings are intentionally pending until the v1.15 roadmap is approved.
+Every v1.15 requirement maps to exactly one execution phase. Phase assignment
+records the phase in which the complete requirement becomes true; earlier
+phases may establish prerequisite evidence or RED contracts without claiming
+completion.
+
+| Requirement | Phase | Status |
+| --- | --- | --- |
+| SEQ-01 | Phase 59 | Pending |
+| SEQ-02 | Phase 65 | Pending |
+| SEQ-03 | Phase 65 | Pending |
+| SEQ-04 | Phase 65 | Pending |
+| EVID-06 | Phase 62 | Pending |
+| EVID-07 | Phase 59 | Pending |
+| EVID-08 | Phase 62 | Pending |
+| EVID-09 | Phase 62 | Pending |
+| EVID-10 | Phase 62 | Pending |
+| TEETH-07 | Phase 59 | Pending |
+| TEETH-08 | Phase 59 | Pending |
+| TEETH-09 | Phase 60 | Pending |
+| TEETH-10 | Phase 60 | Pending |
+| TEETH-11 | Phase 60 | Pending |
+| TEETH-12 | Phase 60 | Pending |
+| TEETH-13 | Phase 60 | Pending |
+| TEETH-14 | Phase 60 | Pending |
+| TEETH-15 | Phase 61 | Pending |
+| TEETH-16 | Phase 61 | Pending |
+| SCLERA-07 | Phase 62 | Pending |
+| SCLERA-08 | Phase 62 | Pending |
+| SCLERA-09 | Phase 63 | Pending |
+| SCLERA-10 | Phase 63 | Pending |
+| SCLERA-11 | Phase 63 | Pending |
+| SCLERA-12 | Phase 63 | Pending |
+| SCLERA-13 | Phase 63 | Pending |
+| SCLERA-14 | Phase 64 | Pending |
+| SCLERA-15 | Phase 64 | Pending |
+| SCLERA-16 | Phase 64 | Pending |
+| SCLERA-17 | Phase 64 | Pending |
+| SCLERA-18 | Phase 64 | Pending |
+| SAFE-04 | Phase 65 | Pending |
+| SAFE-05 | Phase 65 | Pending |
+| SAFE-06 | Phase 65 | Pending |
+| SAFE-07 | Phase 65 | Pending |
+| OUT-05 | Phase 64 | Pending |
+| OUT-06 | Phase 65 | Pending |
+| OUT-07 | Phase 65 | Pending |
+| OUT-08 | Phase 65 | Pending |
+| OUT-09 | Phase 65 | Pending |
 
 **Coverage:**
 
 - v1.15 requirements: 40 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 40
+- Mapped to phases: 40
+- Unmapped: 0 ✓
+- Duplicate mappings: 0 ✓
 
 ---
 *Requirements defined: 2026-08-05*
-*Last updated: 2026-08-05 after v1.15 research synthesis*
+*Last updated: 2026-08-05 after v1.15 roadmap creation*
