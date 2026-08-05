@@ -24,3 +24,25 @@ Final verification:
 
 No real portrait bundle, output, effectiveness, naturalness, device,
 performance, commercial, packaging, shipping, or release claim is made.
+
+## Additional Mechanics Smoke Run
+
+The existing shared Swift harness was rebuilt and run against the local
+candidate `portrait_002` with `teeth-compare`, then against the authorized
+already-light comparison fixture `portrait_001`. The run produced disposable
+local before/mask/after images and retained only these aggregate findings:
+
+| Fixture / path | Strong mask | Changed pixels | Outside computed mask | Finding |
+| --- | ---: | ---: | ---: | --- |
+| `portrait_002` / fixed | 545 | 4,570 | 0 | Detects central yellow teeth; limited coverage |
+| `portrait_002` / adaptive | 11,149 | 15,179 | 0 | Expands coverage, but visual overlay includes the upper-lip rim |
+| `portrait_001` / fixed | 9,320 | 9,938 | 0 | Over-whitens an already-light comparison fixture |
+| `portrait_001` / adaptive | 13,709 | 15,245 | 0 | Further over-whitening; adaptive lip-boundary concern remains |
+
+`outside computed mask == 0` only proves composition stayed inside the
+algorithm's own mask; it does not prove that the mask is anatomically teeth-
+only. The local review therefore found a Phase 60 safety issue: protected-lip
+ownership and already-light negative no-op behavior need to be addressed before
+any production teeth provider or output claim. The AI candidate remains
+mechanics-only and the authorized comparison remains a mechanics negative
+candidate until a feature-specific manifest and frozen review decide otherwise.

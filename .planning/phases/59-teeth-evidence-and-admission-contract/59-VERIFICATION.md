@@ -52,3 +52,9 @@ Reopen Phase 59 only after receiving one complete, rights-approved genuine
 discolored-teeth positive and one genuine already-light negative, each with
 opaque binding to original/mask/after assets and predeclared polarity/target.
 Freeze and run the original-detail review before changing the canonical row.
+
+The post-close mechanics smoke also exposed two follow-ups for Phase 60: the
+adaptive candidate can include the upper-lip rim on `portrait_002`, and both
+paths visibly over-whiten the already-light `portrait_001` comparison. These
+are recorded as provider/safety work, not silently promoted as Phase 59
+evidence or production behavior.
