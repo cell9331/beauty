@@ -12,9 +12,10 @@ status: valid-but-closed
 The Phase 54 evidence core and its aggregate decision ledger remain the sole
 authority. The current `teeth_whitening` row is closed with the ordered reasons
 `missing_genuine_positive` and `missing_genuine_negative`; all product and
-naturalness counts are zero. The row is not opened by this phase because the
-repository has no rights-approved genuine discolored-teeth positive and
-already-light negative bundle.
+naturalness counts are zero. A user-authorized local positive/negative bundle
+now exists, but the first submitted review export came from the Spike 006
+reviewer and failed the frozen Phase 54 acceptance predicate, so it has not
+opened the row or changed the canonical ledger.
 
 `portrait_002` is a C2PA-declared AI mechanics candidate. It may support local
 mechanics experiments, but it contributes zero product-effectiveness,

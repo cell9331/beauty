@@ -48,7 +48,7 @@ block_on: HIGH
 | Actual task ID | Wave | Requirements | Automated evidence | Manual/evidence gate | Status |
 | --- | ---: | --- | --- | --- | --- |
 | `59-01-01` | 1 | SEQ-01, EVID-07, TEETH-07, TEETH-08 | Node syntax/tests, checker self-test, exact Phase 54 authority parsing, privacy allowlist, fail-closed scanner mutations | None | passed; closed branch |
-| `59-01-02` | 1 | SEQ-01, EVID-07 | Canonical ledger decision and checker live mode | Perform frozen blinded original-detail review on the supplied complete bundle | blocked; manual review pending |
+| `59-01-02` | 1 | SEQ-01, EVID-07 | Canonical ledger decision and checker live mode | Re-run frozen blinded original-detail review in the Phase 54 reviewer; the first Spike 006 export failed the frozen predicate | blocked; canonical review replacement pending |
 | `59-01-03` | 1 | SEQ-01, EVID-07 | Sanitized ledger/evidence projection and exact sibling-row preservation | Review decision must be `open` before public branch | passed; closed projection |
 | `59-02-01` | 2 | TEETH-07 | Focused `BeautyParametersTests` with exact 59-field inventory, normalization, Codable, legacy decode, source-call compatibility | None | not_applicable_closed_gate |
 | `59-02-02` | 2 | TEETH-08 | Focused resolver matrix and one-demand lifecycle assertion | None | not_applicable_closed_gate |

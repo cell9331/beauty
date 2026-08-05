@@ -75,9 +75,10 @@ The user supplied these two real portrait fixtures and confirmed authorization
 for local internal evaluation and derivative review. The adaptive harness
 generated the local mask/after assets; both fixtures are the same 1254×1254
 format and the mechanics run reports zero changes outside the computed mask.
-The bundle is ready for frozen-criteria blinded original-detail review, but the
-canonical Phase 59 row remains closed until that review and independent
-decision are recorded. The local manifest and media remain Git-ignored.
+The first submitted Spike 006 review export failed the frozen Phase 54
+predicate, so it is not canonical evidence. The canonical Phase 59 row remains
+closed until a replacement Phase 54 review and independent decision are
+recorded. The local manifest and media remain Git-ignored.
 
 ## Disabled Fixtures
 

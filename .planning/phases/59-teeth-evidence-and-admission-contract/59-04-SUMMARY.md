@@ -74,3 +74,15 @@ The offline reviewer page could not be opened in the current browser because
 its local `file://` URL is blocked by browser policy; no local server or upload
 workaround was used. A human frozen-criteria blinded review is therefore still
 pending, and the canonical Phase 59 decision remains closed.
+
+## Submitted Review Export Rejected by Frozen Predicate
+
+The user supplied `teeth_evidence_20260805-review.json`. It is valid as a
+Spike 006 sanitized export, but it is not the Phase 54 durable export shape:
+it contains `dataset_id`, `generated_at`, and `events`. Its two `accept`/
+`none` judgments also fail the frozen predicate: the positive has insufficient
+mask coverage and insufficient naturalness, while the already-light negative
+has a target-state mismatch and insufficient naturalness. The export was not
+passed to the Phase 54 serializer, the canonical ledger was not edited, and
+the production boundary remains closed. A fresh review must use the Phase 54
+reviewer and record judgments that match the observed images.
