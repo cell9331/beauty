@@ -23,7 +23,7 @@ current_phase_name: Combined Facade, Safety, Ledger, and Audit Closeout
 See: `.planning/PROJECT.md` (updated 2026-08-04)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 58 — Combined Facade, Safety, Ledger, and Audit Closeout
+**Current focus:** Planning next milestone
 
 ## Current Position
 
