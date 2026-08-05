@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v1.14
 milestone_name: Local Facial Retouch
 current_phase: 58
-current_phase_name: Combined Facade, Safety, Ledger, and Audit Closeout
-status: executing
+status: completed
 stopped_at: Completed 58-04-PLAN.md
-last_updated: "2026-08-04T08:57:04.908Z"
-last_activity: 2026-08-04
-last_activity_desc: Phase 58 Plan 04 complete; automated closeout and owner gates pass; external review/verifier/audit remain next lifecycle gates
+last_updated: "2026-08-05T01:21:00.079Z"
+last_activity: 2026-08-05
+last_activity_desc: Phase 58 complete
 progress:
   total_phases: 6
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 27
   completed_plans: 27
+current_phase_name: Combined Facade, Safety, Ledger, and Audit Closeout
 ---
 
 # Project State
@@ -27,12 +27,12 @@ See: `.planning/PROJECT.md` (updated 2026-08-04)
 
 ## Current Position
 
-Phase: 58 (Combined Facade, Safety, Ledger, and Audit Closeout) — EXECUTING
-Plan: 4 of 4
-Status: Ready for external review and independent verification
-Last activity: 2026-08-04 — Phase 58 Plan 04 automated closeout validated; external review/verifier/audit remain next lifecycle gates
+Phase: 58
+Plan: Not started
+Status: All phases complete
+Last activity: 2026-08-05 — Phase 58 complete
 
-Progress: [████████░░] 5/6 phases (83%)
+Progress: [██████████] 6/6 phases (100%)
 
 ## Performance Metrics
 
@@ -50,7 +50,7 @@ Progress: [████████░░] 5/6 phases (83%)
 | 55 | 5 | 58min | 11.6 min |
 | 56 | 3 | 1h 15min | 25.0 min |
 | 57 | 4 | 45min | 11.3 min |
-| 58 | 4 | 3h 05min | 46.3 min |
+| 58 | 4 | - | - |
 
 Historical milestone metrics remain in `.planning/MILESTONES.md` and archived roadmaps.
 **Per-Plan Metrics:**
@@ -123,20 +123,20 @@ Decisions are logged in `.planning/PROJECT.md`. Current roadmap constraints:
 - [Phase 57]: Validated evidence remains fixed-ID and aggregate-only, with no image-review, product-effect, or readiness credit.
 - [Phase 58]: Cancellation evidence is caller publication discard after one intact synchronous opaque invocation; it neither aborts SDK work nor resolves TD-013.
 - [Phase 58]: The Phase 58 checker enforces the empty admitted/promotion sets without becoming a second eligibility authority.
-- [Phase 58]: Draft evidence contains fixed IDs and aggregate counts only; final suites, review, verifier, and milestone lifecycle remain pending.
-- [Phase 58]: Validated zero-admission automated closeout passes full SwiftPM, exact opt-in Vision, full Demo, checker, and owner gates; external review/verifier/audit remain next lifecycle steps.
+- [Phase 58]: Validated evidence contains fixed IDs and aggregate counts only; final suites, adversarial review/fix, and independent verification are complete before milestone audit.
+- [Phase 58]: Zero-admission closeout passes full SwiftPM, exact opt-in Vision, full Demo, checker, owner, review/fix, and independent-verifier gates; the separate milestone audit remains next.
 
 ### Pending Todos
 
-- Execute Plan 58-04, then run the combined facade, safety, ledger, and audit closeout.
-- Preserve all 519 Phase 57 post-verification-gap mutation cases, exact `.none`/59/5/72, disabled Demo rows, future/future/partial ledgers, and exact conditional dispositions through milestone closeout.
+- Run the separate v1.14 milestone audit and archive transition; preserve the
+  exact zero-admission boundary and all fixed aggregate-only evidence.
 
 ### Blockers/Concerns
 
 - [Phase 54] Teeth lacks a genuine discoloration positive and complete independent positive/negative bundle; its product gate is closed.
 - [Phase 54] Sclera lacks a genuine redness positive and complete independent positive/negative bundle; its product gate is closed.
 - [Phase 54] `去脂` lacks genuine upper-eyelid-fullness evidence and an approved credible non-warp design; exact absence is required.
-- [Phase 57→58] The finalized Phase 57 owner-equality checker intentionally binds the pre-transition `STATE.md` lifecycle and now reports fixed `R57-COMPAT` after the canonical Phase 58 transition. Phase 58 must add a strict completed-state audit path without weakening owner deletion, contradiction, or count checks before milestone audit.
+- [Phase 57→58] The finalized Phase 57 owner-equality checker remains byte-identical and reports fixed `R57-COMPAT` after the canonical Phase 58 transition; the strict completed-state audit, review/fix, and independent verification all pass without weakening owner deletion, contradiction, or count checks before milestone audit.
 - TD-013 public generic-result sendability remains an open API decision outside this milestone and must not be silently absorbed by local-retouch work.
 
 ## Deferred Items

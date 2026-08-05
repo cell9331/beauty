@@ -29,7 +29,7 @@ v1.14 establishes one SDK-SPM still-image local-retouch boundary, qualifies feat
 - [x] **Phase 55: Original-Pixel Composition and Failure-Isolation Core** - Prove one mask owner, hard containment, overlap-to-source behavior, and smallest-unit degradation before visible effects compose. (completed 2026-08-03)
 - [x] **Phase 56: Independent Teeth Whitening Slice** - Ship `白牙` only if its own containment, naturalness, facade-output, privacy, and evidence gates pass. (completed 2026-08-04)
 - [x] **Phase 57: Guarded Sclera Slice and Conditional Upper-Eyelid Work** - Qualify `祛红血丝` per eye and either deliver a separately proven non-warp `去脂` slice or record its complete absence. (completed 2026-08-04)
-- [ ] **Phase 58: Combined Facade, Safety, Ledger, and Audit Closeout** - Verify the admitted set together without weakening standalone evidence, privacy, compatibility, or scope boundaries.
+- [x] **Phase 58: Combined Facade, Safety, Ledger, and Audit Closeout** - Verify the admitted set together without weakening standalone evidence, privacy, compatibility, or scope boundaries. (completed 2026-08-05)
 
 <details>
 <summary>✅ v1.13 Eyebrow Geometry Controls (Phases 49-52) — SHIPPED 2026-07-28</summary>
@@ -220,7 +220,7 @@ Earlier shipped milestones are preserved in their linked archives under `.planni
 
 - [x] `58-04-PLAN.md` — Run final-only full SwiftPM, exact six-test opt-in Vision, full Demo, checker/GSD/owner gates, and seal execution evidence for external review/verifier.
 
-**Cross-cutting constraints:** the admitted and promoted visible sets are exactly empty; OUT-01/OUT-02 use explicit not-applicable exact-absence dispositions; literal `.none`, 59/5/72, both CIImage facades, feature-neutral Phase 55 mechanics, three disabled Demo rows, future/future/future, partial/partial, and the frozen Phase 57 519-case checker remain exact; OWASP ASVS Level 1 with all T-58 HIGH rows blocking; no production feature route, browser/file/image/human review, TD-013, release claim, or full SwiftPM/opt-in Vision/complete Demo before `58-04-01`; code review/fix, independent verification, phase transition, and milestone audit remain external post-execution lifecycle.
+**Cross-cutting constraints:** the admitted and promoted visible sets are exactly empty; OUT-01/OUT-02 use explicit not-applicable exact-absence dispositions; literal `.none`, 59/5/72, both CIImage facades, feature-neutral Phase 55 mechanics, three disabled Demo rows, future/future/future, partial/partial, and the frozen Phase 57 519-case checker remain exact; OWASP ASVS Level 1 with all T-58 HIGH rows blocking; no production feature route, browser/file/image/human review, TD-013, release claim, or full SwiftPM/opt-in Vision/complete Demo scope expansion is inferred; automated closeout, adversarial code review/fix, and independent verification pass, while the separate milestone audit remains the final lifecycle gate.
 
 ## Coverage
 
@@ -246,7 +246,7 @@ All 41 v1.14 requirements map to exactly one phase: 41 mapped, 0 duplicated, 0 u
 | 55. Original-Pixel Composition and Failure-Isolation Core | 5/5 | Complete    | 2026-08-03 |
 | 56. Independent Teeth Whitening Slice | 3/3 | Complete    | 2026-08-04 |
 | 57. Guarded Sclera Slice and Conditional Upper-Eyelid Work | 4/4 | Complete    | 2026-08-04 |
-| 58. Combined Facade, Safety, Ledger, and Audit Closeout | 4/4 | In Progress | - |
+| 58. Combined Facade, Safety, Ledger, and Audit Closeout | 4/4 | Complete    | 2026-08-05 |
 
 ## Backlog
 
