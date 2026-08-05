@@ -1,78 +1,67 @@
 ---
 phase: 59
-status: validated
-security_standard: OWASP ASVS Level 1
-block_on: HIGH
-requirements: [SEQ-01, EVID-07, TEETH-07, TEETH-08]
+feature: teeth_whitening
 decision: closed
+status: valid-but-closed
 ---
 
-# Phase 59 Teeth Evidence and Admission Contract
+# Phase 59 — Teeth Evidence and Admission Contract
 
-## Decision
+## Authority and current decision
 
-The canonical Phase 54 `teeth_whitening` row is a valid closed decision. The
-real, rights-approved genuine positive/negative bundle is absent, so this
-phase records no product-effectiveness, naturalness, visible-output, or open-
-admission claim. `portrait_002` remains a mechanics-only candidate with zero
-product weight.
+The Phase 54 evidence core and its aggregate decision ledger remain the sole
+authority. The current `teeth_whitening` row is closed with the ordered reasons
+`missing_genuine_positive` and `missing_genuine_negative`; all product and
+naturalness counts are zero. The row is not opened by this phase because the
+repository has no rights-approved genuine discolored-teeth positive and
+already-light negative bundle.
 
-## Evidence Authority
+`portrait_002` is a C2PA-declared AI mechanics candidate. It may support local
+mechanics experiments, but it contributes zero product-effectiveness,
+naturalness, and admission weight. Sharing its original does not share a mask,
+after image, review, or decision with another feature.
 
-Phase 54 `54-EVIDENCE-DECISIONS.json` is the only durable evidence authority.
-A future teeth bundle may open only when both polarities are independently
-bound to genuine original/mask/after triples, each has approved internal
-evaluation rights, polarity and target are predeclared, and frozen structured
-review criteria are satisfied. Candidate, synthetic, AI/mechanics,
-authorization-only, rejected, historical, and sibling rows never satisfy this
-gate.
+## Open-branch admission contract
 
-The closed projection must retain exactly these fixed reasons and zero
-aggregates:
+An open decision requires, for the same `teeth_whitening` feature:
 
-```text
-feature: teeth_whitening
-status: closed
-reasons: missing_genuine_positive, missing_genuine_negative
-eligible_count: 0
-reviewed_count: 0
-accepted_count: 0
-rejected_count: 0
-naturalness_weight: 0
-```
+- one genuine discolored-teeth positive and one genuine already-light negative;
+- opaque fixture IDs, predeclared polarity and expected target;
+- approved-internal-evaluation rights for each fixture;
+- an exact bound original/mask/after triple for each fixture;
+- criteria frozen before blinded original-detail review; and
+- structured target presence/improvement, mask coverage, protected-tissue
+  leakage, naturalness, structure-change, decision, and fixed reason-code fields.
 
-## Admission Boundary
+Only the existing Phase 54 serializer may persist an accepted open decision.
+Missing, incomplete, unapproved, failed, candidate-only, synthetic,
+mechanics-only, historical, rejected, or sibling rows remain a valid closed
+decision. A closed decision never creates an inert field or route.
 
-The only public intent introduced by the phase is one trailing positive-only
-`Float`, `teethWhitening`, normalized to finite `0...1` with default `0`.
-Only a normalized nonzero value may produce one package-private opaque local-
-retouch demand. The evidence decision remains the authority for any future
-promotion; this scalar and demand do not implement a provider, mask, color
-transform, renderer output, saved-image route, realtime route, or Demo control.
+Durable output is a positive allowlist containing only opaque IDs, fixed
+judgments/reasons, decisions, and aggregate counts. Local media, paths, rights
+records, hashes, masks, geometry, pixels, reviewer identity, raw scanner output,
+and freeform text are not durable evidence.
 
-The package-private carrier exposes only emptiness. Raw geometry, masks,
-candidate colors, evidence, rights, review, provider state, and gate state are
-request-local and absent from public, Codable, persistence, diagnostics, and
-network-facing state.
+## Runtime boundary
 
-## Frozen Review and Durable Output
+When the independent decision is open, the downstream SDK contract may add one
+trailing, positive-only, finite-normalized, default-zero `teethWhitening` scalar
+and derive one opaque request-local teeth demand from its normalized nonzero
+value. Missing/zero/non-finite normalized input and all global-color, lip-color,
+geometry, Testing, sibling, alias, and `去脂` signals remain neutral. This phase
+does not implement a provider, mask, transform, renderer output, Demo mapping,
+realtime/pixel-buffer path, model, network route, or promotion.
 
-Before any real review, criteria are frozen for target presence/improvement,
-mask coverage, protected-tissue leakage, naturalness, structure change,
-decision, and fixed reason code. Durable records contain only opaque IDs,
-fixed judgments/reasons, decisions, and aggregates. Local media and review
-support remain disposable and are not committed.
+The current closed decision keeps production at the existing exact-empty
+boundary. `scleraRednessReduction`, `去脂`, and every downstream teeth surface
+remain absent.
 
-## Exact Absence
+## Verification disposition
 
-Phase 59 keeps `scleraRednessReduction` and `去脂` absent from production
-model fields, CodingKeys, source construction, presets, providers, renderer
-cases, admission routes, resources, and active Demo mappings. The existing
-disabled `白牙`, `祛红血丝`, and `去脂` taxonomy rows remain disabled. Visible
-teeth output and protected-tissue safety are Phase 60/61 claims.
-
-## Threat Coverage
-
-The ordered HIGH threat inventory is in `59-THREAT-INVENTORY.json`; the
-standard-library checker owns its executable mutation matrix. Missing evidence,
-malformed records, scanner errors, and boundary additions fail closed.
+The checker and validation records must distinguish `closed` from `open`; a
+closed result is successful fail-closed evidence, not a failed test and not a
+claim of product effectiveness. Phase 60/61 may proceed only after this exact
+decision is independently open and the scalar/admission contract is actually
+present. No synthetic fixture or threshold inferred from mechanics output may
+change that disposition.

@@ -3,13 +3,13 @@
   "security_standard": "OWASP ASVS Level 1",
   "block_on": "HIGH",
   "threats": [
-    {"id": "T-59-01", "stride": ["Spoofing", "Tampering"], "severity": "HIGH", "disposition": "mitigate", "gates": ["phase54_teeth_authority", "closed_reasons_and_zero_aggregates"]},
-    {"id": "T-59-02", "stride": ["Tampering", "Information Disclosure"], "severity": "HIGH", "disposition": "mitigate", "gates": ["positive_allowlist_durable_output", "no_raw_evidence_state"]},
-    {"id": "T-59-03", "stride": ["Tampering"], "severity": "HIGH", "disposition": "mitigate", "gates": ["frozen_review_criteria", "candidate_and_sibling_zero_weight"]},
-    {"id": "T-59-04", "stride": ["Elevation of Privilege", "Tampering"], "severity": "HIGH", "disposition": "mitigate", "gates": ["scalar_only_public_surface", "opaque_single_demand"]},
-    {"id": "T-59-05", "stride": ["Tampering"], "severity": "HIGH", "disposition": "mitigate", "gates": ["exact_sclera_and_eyelid_absence", "no_provider_or_renderer_route"]},
-    {"id": "T-59-06", "stride": ["Tampering"], "severity": "HIGH", "disposition": "mitigate", "gates": ["disabled_demo_taxonomy", "no_active_control_mapping"]},
-    {"id": "T-59-07", "stride": ["Information Disclosure"], "severity": "HIGH", "disposition": "mitigate", "gates": ["privacy_safe_phase_records", "aggregate_only_checker_output"]},
-    {"id": "T-59-08", "stride": ["Denial of Service", "Tampering"], "severity": "HIGH", "disposition": "mitigate", "gates": ["missing_input_fail_closed", "scanner_errors_fail_closed"]}
+    {"id": "T-59-01", "severity": "HIGH", "disposition": "mitigate", "gates": ["canonical decision identity", "closed reasons", "sibling preservation"]},
+    {"id": "T-59-02", "severity": "HIGH", "disposition": "mitigate", "gates": ["frozen criteria", "pre-review contract", "no post-output tuning"]},
+    {"id": "T-59-03", "severity": "HIGH", "disposition": "mitigate", "gates": ["closed/open branch", "no inert route", "serializer-only transition"]},
+    {"id": "T-59-04", "severity": "HIGH", "disposition": "mitigate", "gates": ["append-only compatibility", "legacy decode", "neutral presets"]},
+    {"id": "T-59-05", "severity": "HIGH", "disposition": "mitigate", "gates": ["teeth-only admission", "alias rejection", "sclera/去脂 absence"]},
+    {"id": "T-59-06", "severity": "HIGH", "disposition": "mitigate", "gates": ["opaque Demo boundary", "disabled taxonomy", "no raw evidence"]},
+    {"id": "T-59-07", "severity": "HIGH", "disposition": "mitigate", "gates": ["no provider", "no renderer", "no realtime/model/network"]},
+    {"id": "T-59-08", "severity": "HIGH", "disposition": "mitigate", "gates": ["owner synchronization", "verification/state", "fail-closed scanner"]}
   ]
 }

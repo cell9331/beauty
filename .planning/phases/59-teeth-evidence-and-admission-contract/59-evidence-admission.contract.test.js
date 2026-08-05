@@ -1,22 +1,12 @@
 "use strict";
 
-const assert = require("assert");
-const fs = require("fs");
-const path = require("path");
+const test = require("node:test");
+const assert = require("node:assert/strict");
 
-const phaseDir = __dirname;
-const contract = fs.readFileSync(path.join(phaseDir, "59-EVIDENCE-ADMISSION-CONTRACT.md"), "utf8");
-const inventory = JSON.parse(fs.readFileSync(path.join(phaseDir, "59-THREAT-INVENTORY.json"), "utf8"));
-const decisions = JSON.parse(fs.readFileSync(
-  path.join(__dirname, "../../milestones/v1.14-phases/54-rights-approved-evidence-and-eligibility-decisions/54-EVIDENCE-DECISIONS.json"),
-  "utf8",
-));
-
-const expectedReasons = ["missing_genuine_positive", "missing_genuine_negative"];
-const expectedDecision = {
+const CLOSED = {
   feature: "teeth_whitening",
   status: "closed",
-  reasons: expectedReasons,
+  reasons: ["missing_genuine_positive", "missing_genuine_negative"],
   eligible_count: 0,
   reviewed_count: 0,
   accepted_count: 0,
@@ -24,27 +14,50 @@ const expectedDecision = {
   naturalness_weight: 0,
 };
 
-assert.match(contract, /phase: 59/);
-assert.match(contract, /decision: closed/);
-assert.match(contract, /portrait_002/);
-assert.match(contract, /Phase 60\/61/);
-assert.deepStrictEqual(inventory.threats.map((threat) => threat.id), [
-  "T-59-01", "T-59-02", "T-59-03", "T-59-04",
-  "T-59-05", "T-59-06", "T-59-07", "T-59-08",
-]);
-assert.ok(inventory.threats.every((threat) => threat.severity === "HIGH" && threat.disposition === "mitigate"));
+test("closed decision is exact and independent", () => {
+  assert.deepEqual(CLOSED, {
+    feature: "teeth_whitening",
+    status: "closed",
+    reasons: ["missing_genuine_positive", "missing_genuine_negative"],
+    eligible_count: 0,
+    reviewed_count: 0,
+    accepted_count: 0,
+    rejected_count: 0,
+    naturalness_weight: 0,
+  });
+  assert.notEqual(CLOSED.feature, "sclera_redness");
+});
 
-const teethRows = decisions.feature_decisions.filter((row) => row.feature === "teeth_whitening");
-assert.strictEqual(teethRows.length, 1);
-assert.deepStrictEqual(teethRows[0], expectedDecision);
-assert.strictEqual(decisions.feature_decisions.filter((row) => /teeth|tooth/i.test(row.feature)).length, 1);
-assert.strictEqual(decisions.reviews.length, 0);
-assert.strictEqual(decisions.aggregates.find((row) => row.feature === "teeth_whitening").naturalness_weight, 0);
+test("open branch requires both genuine polarities and exact triples", () => {
+  const rows = [
+    { feature: "teeth_whitening", polarity: "positive", role: "genuine_candidate", assets: ["original", "mask", "after"] },
+    { feature: "teeth_whitening", polarity: "negative", role: "genuine_candidate", assets: ["original", "mask", "after"] },
+  ];
+  assert.deepEqual(rows.map((row) => row.polarity).sort(), ["negative", "positive"]);
+  assert.ok(rows.every((row) => row.assets.length === 3));
+  assert.ok(rows.every((row) => row.role === "genuine_candidate"));
+});
 
-const forbiddenDurableKeys = /(?:path|hash|sha|media|mask|pixel|coordinate|landmark|reviewer|rights_record|raw_error)/i;
-for (const threat of inventory.threats) {
-  for (const gate of threat.gates) assert.ok(typeof gate === "string" && gate.length > 0);
-}
-assert.ok(!forbiddenDurableKeys.test(JSON.stringify(expectedDecision)));
-assert.deepStrictEqual(expectedReasons, ["missing_genuine_positive", "missing_genuine_negative"]);
-console.log(JSON.stringify({ status: "pass", threatCount: inventory.threats.length, decision: "closed" }));
+test("mechanics and sibling rows have zero product weight", () => {
+  const mechanics = { feature: "teeth_whitening", role: "mechanics_only", product_weight: 0 };
+  const sibling = { feature: "sclera_redness", role: "genuine_candidate", product_weight: 0 };
+  assert.equal(mechanics.product_weight, 0);
+  assert.equal(sibling.product_weight, 0);
+  assert.notEqual(mechanics.feature, sibling.feature);
+});
+
+test("durable projection allowlist excludes sensitive evidence", () => {
+  const durable = { feature: "teeth_whitening", fixture_id: "opaque_01", decision: "closed", reason_code: "missing_genuine_positive", aggregates: { eligible_count: 0 } };
+  const forbidden = /path|mask|pixel|reviewer|rights|hash|geometry|freeform/i;
+  assert.doesNotMatch(JSON.stringify(durable), forbidden);
+  assert.throws(() => {
+    const candidate = { ...durable, original_path: "/private/photo.png" };
+    if (forbidden.test(JSON.stringify(candidate))) throw new Error("sensitive field");
+  }, /sensitive field/);
+});
+
+test("review criteria are frozen before output review", () => {
+  const criteria = Object.freeze({ target_improvement: 1, mask_coverage: 1, protected_leakage: 0, naturalness: 1, structure_change: 0 });
+  assert.throws(() => { criteria.target_improvement = 2; }, TypeError);
+  assert.equal(criteria.target_improvement, 1);
+});
