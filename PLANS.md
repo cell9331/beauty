@@ -26,17 +26,32 @@
 
 ## 3. Active
 
-### A-2026-07-30-v1-14-local-facial-retouch
+### A-2026-08-05-v1-15-independent-teeth-sclera-retouch
 
 | Field | Value |
 | --- | --- |
 | Status | `active` |
+| Scope | Start milestone v1.15 to complete still-image SDK-core `白牙` first and independently complete `祛红血丝` second, while keeping `去脂` future and preserving all v1.14 canonical-input, request-local, composition, privacy, compatibility, and fail-closed boundaries. |
+| Research | Four inline GSD research dimensions: stack, features, architecture, and pitfalls. Dedicated GSD subagents are unavailable in this session, so the orchestrator owns the artifacts and records the fallback. |
+| Evidence gate | `portrait_002` remains candidate-only. Each feature needs its own complete rights-approved genuine positive/negative original/mask/after bundle, predeclared polarity, structured original-detail review, and independent promotion decision. |
+| Order | Teeth evidence and production slice → teeth verification/promotion → sclera evidence and per-eye production slice → sclera verification/promotion → combined regression and milestone audit. |
+| Exclusions | `去脂`; realtime/pixel-buffer; SwiftUI/Demo activation; external model/cloud; tracked portrait media; device/commercial/performance-budget/packaging/shipping/launch claims. |
+| Current | Milestone start, five research artifacts, 40 requirements, and the continued-numbering seven-phase roadmap are approved; 40/40 requirements map exactly once across Phases 59–65. |
+| Next | Run `$gsd-discuss-phase 59` to resolve the real teeth evidence inputs and exact admission contract before implementation planning. |
+
+## 3A. Archived Active Ledger
+
+### A-2026-07-30-v1-14-local-facial-retouch
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
 | Scope | Milestone v1.14 establishes an SDK-SPM still-image local-retouch boundary and independently qualifies `白牙`, `祛红血丝`, and conditional `去脂` without adding SwiftUI/Demo, realtime/pixel-buffer, cloud, external-model, tracked-media, or release-readiness scope. |
 | Requirements | 41/41 requirements are uniquely mapped across canonical input/compatibility, rights-approved evidence, original-pixel composition, teeth, sclera, conditional upper-eyelid fullness, privacy/safety, public output, and exact promotion. |
 | Roadmap | Phase 53 canonical request foundation → Phase 54 evidence/eligibility decisions → Phase 55 composition core → Phase 56 independent teeth slice → Phase 57 guarded sclera plus conditional eyelid work → Phase 58 combined facade/safety/ledger/audit closeout. |
 | Feature gates | Teeth and sclera are independent peer slices. `去脂` requires genuine rights-approved positives/negatives plus a credible non-warp method; a closed gate adds no field, provider, renderer case, or inert route and keeps branch `眼睛` partial. |
 | Current evidence | The long-term authorized `p1.jpg` is usable for teeth containment and over-whitening review but is not a yellow-teeth, sclera-redness, or upper-eyelid-fullness positive. Feature promotion requires complete feature-specific positive/negative bundles and original-detail review. |
-| Next | Run the separate v1.14 milestone audit and archive transition; no visible product promotion is implied. |
+| Next | Completed: the separate v1.14 milestone audit passed and the milestone was archived and tagged `v1.14`; no visible product promotion was inferred. |
 | Phase 57 discussion | Auto-discuss resolves both independent Phase 54 rows to exact conditional false branches: `scleraRednessReduction` and `upperEyelidFullnessReduction` remain absent; SCLERA-02..05 plus LID-03/LID-05 are `not_applicable_closed_gate`; SCLERA-06 is `no_promotion`; LID-04 actively rejects coupling to `eyeHeight`, `upperEyelidLift`, brow/warp, smoothing, eye-bag, or dark-circle proxies. The exact disabled `祛红血丝`/`去脂` Demo rows, both future ledger rows, and branch `眼睛 = partial` remain unchanged. No file selection, browser/image review, human checkpoint, or production/inert route is authorized. |
 | Phase 57 Wave 0 exact absence | Plan 57-01 extends the existing SDK/Demo owners without changing production: focused SwiftPM passes 101/101 with exact 59 fields, five presets, 72 renderer cases, literal `.none`, both still entries, shipped proxy-only behavior, and zero pixel-buffer/reset local work; focused iPhone 17e/iOS 26.5 Demo passes 29/29 while preserving the exact disabled `eyes.fat`/`去脂` and `eyes.redness`/`祛红血丝` rows with nil active mappings. The configurable whole-source checker compiles, accepts clean and legitimate proxy-only fixtures, passes nine representative aggregate mutation/scanner cases, and every T-57-01…08 HIGH identity passes independently with fixed rule-only output. Production source, Phase 54 authority, ledgers, evidence status, media, browser/file review, and requirement owners remain unchanged. |
 | Phase 57 Wave 1 authority and sclera closure | Plan 57-02 enforces the immutable full Phase 54 ledger while selecting the independently closed sclera/upper-eyelid rows by exact identity: T-57-01 passes 65 live malformed/shape/type/reason/zero/aggregate/competing/borrowing/input/scanner cases. Whole-production T-57-02 passes 32 public/Codable/Testing/admission/provider/renderer/preset/resource/package/network/storage/Demo/realtime/pixel-buffer/reset plus eight synonym-family and eight alias-target mutations. The aggregate checker passes 104 cases and clean live mode passes. `57-CLOSED-EYE-GATES-EVIDENCE.md` remains explicitly draft with later HIGH/final gates pending; production, Demo behavior, Phase 54 authority, ledgers, validation, requirement owners, media, browser/file review, and root contract owners remain unchanged. |
