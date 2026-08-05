@@ -29,20 +29,26 @@ performance, commercial, packaging, shipping, or release claim is made.
 
 The existing shared Swift harness was rebuilt and run against the local
 candidate `portrait_002` with `teeth-compare`, then against the authorized
-already-light comparison fixture `portrait_001`. The run produced disposable
-local before/mask/after images and retained only these aggregate findings:
+already-light comparison fixture `portrait_001`. The first run reproduced an
+upper-rim expansion and over-whitening. The harness was then tightened locally:
+the adaptive envelope now has a 5% upper safety inset and 10% lower extension,
+and whitening requires material yellow excess with neutral/light no-op tests.
+The final run produced disposable local before/mask/after images and retained
+only these aggregate findings:
 
 | Fixture / path | Strong mask | Changed pixels | Outside computed mask | Finding |
 | --- | ---: | ---: | ---: | --- |
-| `portrait_002` / fixed | 545 | 4,570 | 0 | Detects central yellow teeth; limited coverage |
-| `portrait_002` / adaptive | 11,149 | 15,179 | 0 | Expands coverage, but visual overlay includes the upper-lip rim |
-| `portrait_001` / fixed | 9,320 | 9,938 | 0 | Over-whitens an already-light comparison fixture |
-| `portrait_001` / adaptive | 13,709 | 15,245 | 0 | Further over-whitening; adaptive lip-boundary concern remains |
+| `portrait_002` / fixed | 545 | 4,478 | 0 | Detects central yellow teeth; limited coverage |
+| `portrait_002` / adaptive | 9,814 | 12,416 | 0 | Expands coverage after the upper safety inset; yellow teeth visibly improve |
+| `portrait_001` / fixed | 9,320 | 3,935 | 0 | Already-light comparison is substantially closer to no-op |
+| `portrait_001` / adaptive | 13,453 | 7,043 | 0 | Preserves coverage with low mean luminance delta (0.00239) |
 
 `outside computed mask == 0` only proves composition stayed inside the
 algorithm's own mask; it does not prove that the mask is anatomically teeth-
-only. The local review therefore found a Phase 60 safety issue: protected-lip
-ownership and already-light negative no-op behavior need to be addressed before
-any production teeth provider or output claim. The AI candidate remains
-mechanics-only and the authorized comparison remains a mechanics negative
-candidate until a feature-specific manifest and frozen review decide otherwise.
+only. The local rerun no longer showed the prior isolated upper-lip expansion,
+and the already-light comparison is visually near no-op, but protected-lip
+ownership and true negative behavior still require Phase 60 safety work and
+licensed original-detail review before any production teeth provider or output
+claim. The AI candidate remains mechanics-only and the authorized comparison
+remains a mechanics negative candidate until a feature-specific manifest and
+frozen review decide otherwise.

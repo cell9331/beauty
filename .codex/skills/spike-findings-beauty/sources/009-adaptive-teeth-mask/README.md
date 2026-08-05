@@ -83,15 +83,15 @@ PNG masks remain local disposable spike artifacts.
 3. Tried adaptive growth across the full outer-lip polygon. Coverage improved,
    but a visible strip of upper lip was selected, so that version was rejected.
 4. Restricted the search to the outer-lip polygon intersected with a small
-   vertical extension of the inner-lip aperture. Fixed-mask pixels seed an
-   eight-connected flood through candidates scored by local Otsu/percentile
-   luminance and chroma limits.
+   vertical envelope: a 5% upper safety inset and a 10% lower extension of the
+   inner-lip aperture. Fixed-mask pixels seed an eight-connected flood through
+   candidates scored by local Otsu/percentile luminance and chroma limits.
 5. Preserved the fixed mask with `max(fixed, adaptive)`, clipped the final mask
    to the candidate envelope, and retained the 1.5%–94% plausibility guard.
    Missing seeds and implausible geometry fail closed.
-6. Added three deterministic self-tests for upper-lip exclusion, connected
-   candidate growth, and empty-seed failure, bringing the shared harness to
-   10/10 self-tests.
+6. Added deterministic self-tests for the upper-lip safety inset, connected
+   candidate growth, empty-seed failure, and already-light whitening no-op;
+   the shared harness now passes 23/23 self-tests.
 
 ## Results
 
@@ -107,7 +107,7 @@ The final overlays visibly cover the side teeth on e6 and e2 without the upper
 lip leakage seen in the rejected full-envelope attempt. Both transforms report
 zero changes outside their own masks; e3 remains zero, and the no-face input
 exits 1 with `No usable face landmarks were detected`. Release build and all
-10 shared harness self-tests pass.
+23 shared harness self-tests pass.
 
 This clears the narrow deterministic mechanics question but not product
 feasibility. The fixtures are AI-generated, there are only two positive smiles,

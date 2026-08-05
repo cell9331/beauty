@@ -53,8 +53,11 @@ discolored-teeth positive and one genuine already-light negative, each with
 opaque binding to original/mask/after assets and predeclared polarity/target.
 Freeze and run the original-detail review before changing the canonical row.
 
-The post-close mechanics smoke also exposed two follow-ups for Phase 60: the
-adaptive candidate can include the upper-lip rim on `portrait_002`, and both
-paths visibly over-whiten the already-light `portrait_001` comparison. These
-are recorded as provider/safety work, not silently promoted as Phase 59
+The post-close mechanics smoke initially exposed two provider follow-ups for
+Phase 60: an adaptive upper-lip-rim expansion on `portrait_002` and excessive
+change on the already-light `portrait_001` comparison. The shared harness was
+then tightened and rerun: its upper safety inset removed the isolated rim
+expansion in the visual check, and yellow-excess gating reduced the comparison
+mean luminance delta to 0.00239. These remain provider/safety work requiring
+licensed original-detail review; they are not silently promoted as Phase 59
 evidence or production behavior.

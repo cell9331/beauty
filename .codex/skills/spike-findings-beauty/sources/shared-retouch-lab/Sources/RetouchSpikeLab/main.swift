@@ -801,7 +801,7 @@ private enum RetouchSpikeLab {
                 : 0,
             peakResidentMegabytes: peakResidentMegabytes(),
             notes: [
-                "The fixed mask is clipped to Vision inner-lip support; the adaptive path searches only inside an outer-lip-contained horizontal extension of the inner-lip aperture.",
+                "The fixed mask is clipped to Vision inner-lip support; the adaptive path searches only inside an outer-lip-contained envelope with an upper safety inset and lower aperture extension.",
                 "The adaptive path uses the fixed high-confidence mask as seeds, derives local brightness/chroma limits, and retains only connected candidates before compositing.",
                 "An empty fixed seed set, implausible region, or implausible adaptive area fails closed.",
                 "AI-generated fixtures validate mechanics only; useful coverage and protected-tissue judgments require licensed real review.",
@@ -2286,9 +2286,15 @@ private func adaptiveMouthCandidateRegion(
     var region = try polygonMask(width: width, height: height, points: outerLips, featherRadius: 0)
     let innerMinY = innerLips.map(\.y).min()!
     let innerMaxY = innerLips.map(\.y).max()!
-    let margin = max(1, (innerMaxY - innerMinY) * 0.10)
-    let minimumY = innerMinY - margin
-    let maximumY = innerMaxY + margin
+    let apertureHeight = innerMaxY - innerMinY
+    let upperInset = max(1, apertureHeight * 0.05)
+    let lowerMargin = max(1, apertureHeight * 0.10)
+    // Vision's upper inner-lip edge is the safest ceiling available to this
+    // mechanics-only provider. A symmetric extension admitted a thin strip of
+    // upper lip on portrait_002, so preserve lateral/lower coverage without
+    // searching above the aperture.
+    let minimumY = innerMinY + upperInset
+    let maximumY = innerMaxY + lowerMargin
     for index in region.indices where region[index] > 0 {
         let y = Double(index / width) + 0.5
         if y < minimumY || y > maximumY {
@@ -3260,12 +3266,19 @@ private func whitenedTeethPixel(
     let red = Float(input.pixels[offset]) / 255
     let green = Float(input.pixels[offset + 1]) / 255
     let blue = Float(input.pixels[offset + 2]) / 255
-    let local = localMask * strength
     let originalLuminance = luminance(red, green, blue)
     let yellowExcess = max(0, (red + green) * 0.5 - blue)
+    // A neutral/already-light tooth is a negative control for this transform.
+    // The previous unconditional blue and luminance lifts changed those
+    // pixels even when there was no yellow cast to correct.
+    let yellowCorrection = smoothstep(0.08, 0.18, yellowExcess)
+    let local = localMask * strength * yellowCorrection
+    guard local > 0.001 else {
+        return (input.pixels[offset], input.pixels[offset + 1], input.pixels[offset + 2])
+    }
     var nextRed = red + 0.018 * local
     var nextGreen = green + 0.018 * local
-    var nextBlue = blue + yellowExcess * 0.78 * local + 0.026 * local
+    var nextBlue = blue + yellowExcess * 0.78 * local
     let desiredLuminance = min(0.94, originalLuminance + 0.028 * local)
     let correction = desiredLuminance - luminance(nextRed, nextGreen, nextBlue)
     nextRed += correction
@@ -3634,6 +3647,18 @@ private func runSelfTests() throws {
     let measurement = measure(before: input, after: whitened, mask: polygon)
     try require(measurement.changedPixels > 0, "teeth transform changes mask")
     try require(measurement.changedOutsideMask == 0, "teeth transform containment")
+    let alreadyLight = Raster(width: 16, height: 16, fill: (245, 245, 245, 255))
+    let alreadyLightOutput = whitenTeeth(alreadyLight, mask: polygon, strength: 0.6)
+    let alreadyLightMeasurement = measure(
+        before: alreadyLight,
+        after: alreadyLightOutput,
+        mask: polygon
+    )
+    try require(alreadyLightMeasurement.changedPixels == 0, "already-light teeth are a no-op")
+    let lightlyWarm = Raster(width: 16, height: 16, fill: (235, 230, 220, 255))
+    let lightlyWarmOutput = whitenTeeth(lightlyWarm, mask: polygon, strength: 0.6)
+    let lightlyWarmMeasurement = measure(before: lightlyWarm, after: lightlyWarmOutput, mask: polygon)
+    try require(lightlyWarmMeasurement.changedPixels == 0, "lightly warm teeth below correction threshold are a no-op")
     let reduced = reduceScleraRedness(
         Raster(width: 16, height: 16, fill: (210, 150, 150, 255)),
         mask: polygon,
@@ -3655,6 +3680,9 @@ private func runSelfTests() throws {
         outerLips: outerLips
     )
     try require(candidateRegion[8 * 32 + 16] == 0, "adaptive envelope excludes upper-lip band")
+    try require(candidateRegion[9 * 32 + 16] == 0, "adaptive envelope respects upper aperture edge")
+    try require(candidateRegion[10 * 32 + 16] == 0, "adaptive envelope has an upper safety inset")
+    try require(candidateRegion[11 * 32 + 16] > 0, "adaptive envelope retains seeded aperture")
     var fixedSeed = [Float](repeating: 0, count: 32 * 24)
     for y in 11...13 {
         for x in 13...19 { fixedSeed[y * 32 + x] = 1 }

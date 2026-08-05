@@ -26,17 +26,20 @@
 4. Use accepted fixed-mask pixels above `0.15` as seeds. Never synthesize seeds
    merely to improve coverage.
 5. Form the adaptive search envelope from the `outerLips` polygon, clipped to a
-   narrow vertical extension of the inner aperture. The experiment used a 10%
-   inner-aperture-height margin:
+   narrow vertical extension of the inner aperture. Keep a small upper safety
+   inset because the upper inner-lip edge is the safest available ceiling, and
+   retain a 10% lower extension for lateral/occluded tooth coverage:
 
 ```swift
 var region = try polygonMask(points: outerLips, featherRadius: 0)
 let innerMinY = innerLips.map(\.y).min()!
 let innerMaxY = innerLips.map(\.y).max()!
-let margin = max(1, (innerMaxY - innerMinY) * 0.10)
+let apertureHeight = innerMaxY - innerMinY
+let upperInset = max(1, apertureHeight * 0.05)
+let lowerMargin = max(1, apertureHeight * 0.10)
 for index in region.indices where region[index] > 0 {
     let y = Double(index / width) + 0.5
-    if y < innerMinY - margin || y > innerMaxY + margin {
+    if y < innerMinY + upperInset || y > innerMaxY + lowerMargin {
         region[index] = 0
     }
 }
@@ -53,16 +56,20 @@ for index in region.indices where region[index] > 0 {
 8. Keep the approved/pinned learned segmenter as a comparator, not a hidden
    dependency. It must beat the adaptive path on licensed positives and
    negatives after containment, cold-start, memory, and license review.
-9. Apply whitening only inside the accepted mask. Reduce yellow excess, add a
-   small bounded luminance lift, and correct toward the desired luminance:
+9. Apply whitening only inside the accepted mask. Require a material yellow
+   excess before changing a pixel, reduce that excess, add a small bounded
+   luminance lift, and correct toward the desired luminance. Neutral and
+   lightly warm already-light pixels are explicit no-op controls:
 
 ```swift
-let local = mask[index] * strength
 let originalLuminance = luminance(red, green, blue)
 let yellowExcess = max(0, (red + green) * 0.5 - blue)
+let yellowCorrection = smoothstep(0.08, 0.18, yellowExcess)
+let local = mask[index] * strength * yellowCorrection
+guard local > 0.001 else { return sourcePixel }
 var nextRed = red + 0.018 * local
 var nextGreen = green + 0.018 * local
-var nextBlue = blue + yellowExcess * 0.78 * local + 0.026 * local
+var nextBlue = blue + yellowExcess * 0.78 * local
 let desired = min(0.94, originalLuminance + 0.028 * local)
 let correction = desired - luminance(nextRed, nextGreen, nextBlue)
 nextRed += correction
