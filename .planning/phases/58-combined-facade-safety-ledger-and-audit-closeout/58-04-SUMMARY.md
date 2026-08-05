@@ -33,7 +33,7 @@ key-files:
     - PLANS.md
 
 key-decisions:
-  - "Validated evidence requires all implementation-owned gates to be green while external review, independent verification, and milestone audit remain explicitly unrun lifecycle steps."
+  - "At the Plan 58-04 execution checkpoint, validated evidence required all implementation-owned gates to be green while external review, independent verification, and milestone audit were explicitly unrun lifecycle steps."
   - "The Phase 58 evidence checker accepts its required Pending Final Lifecycle schema heading without treating that heading as pending result prose."
   - "Phase 56's current post-transition compatibility result is preserved; its verified pre-transition revision remains the 111-case historical pass and no frozen Phase 57 checker was edited."
 
@@ -71,7 +71,7 @@ completed: 2026-08-04
 
 - Focused SDK passed **159/159**, full SwiftPM passed **553 executed / 0 failed / 6 skipped**, opt-in Vision passed exactly **6/0/0**, and the explicit iPhone 17e/iOS 26.5 Demo build/tests passed **120/120**.
 - Phase 53–58 checker conjunction, Phase 58 aggregate **276/276** with per-HIGH `80 / 33 / 37 / 34 / 28 / 31 / 25 / 8`, frozen Phase 57 **519/519**, all eight individual HIGH modes, schema/UI/decision/traceability/diff gates, and exact historical codebase drift classification passed.
-- Evidence and validation are `validated` with exact seven task rows, seven dispositions, twenty decisions, eight HIGH identities, literal `.none`, `59/5/72`, both facades, disabled/future/partial ledgers, and zero admitted/promoted rows. External code review/fix, independent verification, and milestone audit are explicitly not yet run.
+- At the Plan 58-04 execution checkpoint, evidence and validation were `validated` with exact seven task rows, seven dispositions, twenty decisions, eight HIGH identities, literal `.none`, `59/5/72`, both facades, disabled/future/partial ledgers, and zero admitted/promoted rows; subsequent review/fix and independent verification are recorded below.
 
 ## Task Commits
 
@@ -86,7 +86,7 @@ completed: 2026-08-04
 
 ## Decisions Made
 
-- Evidence status is validated only for the automated execution conjunction; external review, verifier, and milestone audit remain the next lifecycle gates.
+- At the Plan 58-04 execution checkpoint, evidence status was validated only for the automated execution conjunction; the post-plan lifecycle reconciliation below records the later review/fix and verifier results.
 - The required `Pending Final Lifecycle` heading remains a schema anchor, while validated evidence rejects pending result prose.
 - The historical Phase 56 checker self-test remains **111/111** at revision `8cf422f`; the current post-transition checker reports its fixed compatibility state without changing Phase 56 or the frozen Phase 57 checker.
 
@@ -127,7 +127,7 @@ None - no external service configuration required.
 ## Next Phase Readiness
 
 - Automated Phase 58 execution is ready for the external code-review/fix workflow and independent `gsd-verifier`.
-- Do not mark the phase complete, run a milestone audit, archive/tag/cleanup, or claim release readiness until those lifecycle owners produce their canonical results.
+- At the Plan 58-04 execution checkpoint, do not mark the phase complete, run a milestone audit, archive/tag/cleanup, or claim release readiness until those lifecycle owners produce their canonical results.
 
 ## Self-Check: PASSED
 
