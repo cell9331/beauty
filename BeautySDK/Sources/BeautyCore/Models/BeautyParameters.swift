@@ -65,6 +65,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
 
     public var filterId: String?
     public var filterIntensity: Float
+    public var teethWhitening: Float
 
     enum CodingKeys: String, CodingKey {
         case skinSmoothing
@@ -126,6 +127,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         case lipColor
         case filterId
         case filterIntensity
+        case teethWhitening
     }
 
     public init(
@@ -187,7 +189,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         lipPlump: Float = 0,
         lipColor: Float = 0,
         filterId: String? = nil,
-        filterIntensity: Float = 0
+        filterIntensity: Float = 0,
+        teethWhitening: Float = 0
     ) {
         self.skinSmoothing = Self.clampUnit(skinSmoothing)
         self.skinWhitening = Self.clampUnit(skinWhitening)
@@ -255,6 +258,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
 
         self.filterId = filterId
         self.filterIntensity = Self.clampUnit(filterIntensity)
+        self.teethWhitening = Self.clampUnit(teethWhitening)
     }
 
     public init(from decoder: Decoder) throws {
@@ -318,7 +322,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             lipPlump: try container.decodeFloatIfPresent(.lipPlump),
             lipColor: try container.decodeFloatIfPresent(.lipColor),
             filterId: try container.decodeIfPresent(String.self, forKey: .filterId),
-            filterIntensity: try container.decodeFloatIfPresent(.filterIntensity)
+            filterIntensity: try container.decodeFloatIfPresent(.filterIntensity),
+            teethWhitening: try container.decodeFloatIfPresent(.teethWhitening)
         )
     }
 
@@ -382,7 +387,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             lipPlump: lipPlump,
             lipColor: lipColor,
             filterId: filterId,
-            filterIntensity: filterIntensity
+            filterIntensity: filterIntensity,
+            teethWhitening: teethWhitening
         )
     }
 

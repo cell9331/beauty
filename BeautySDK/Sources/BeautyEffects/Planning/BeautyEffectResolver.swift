@@ -64,13 +64,16 @@ public enum BeautyEffectResolver {
         )
     }
 
-    /// Phase 53 production admission is deliberately exact-empty. Future
-    /// phases may populate this inventory only after their evidence gates pass.
+    /// Phase 59 admits one request-local opaque demand for the independently
+    /// qualified teeth intent. The carrier deliberately remains feature-neutral
+    /// until a later provider phase owns masks and output.
     package static func localRetouchAdmission(
         parameters: BeautyParameters
     ) -> BeautyLocalRetouchAdmission {
-        _ = parameters
-        return .none
+        let normalized = parameters.normalized()
+        return normalized.teethWhitening > 0
+            ? BeautyLocalRetouchAdmission(opaqueDemandCount: 1)
+            : .none
     }
 
     package static func resolve(

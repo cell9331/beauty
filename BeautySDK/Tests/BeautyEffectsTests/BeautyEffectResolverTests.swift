@@ -61,6 +61,62 @@ final class BeautyEffectResolverTests: XCTestCase {
         XCTAssertEqual(plan.metrics["beauty.effects.activeCount"], 0)
     }
 
+    func testPhase59OnlyDirectPositiveTeethIntentAdmitsOneOpaqueDemand() throws {
+        for value in [Float.ulpOfOne, 0.25, 1] {
+            let admission = BeautyEffectResolver.localRetouchAdmission(
+                parameters: BeautyParameters(teethWhitening: value)
+            )
+            XCTAssertFalse(admission.isEmpty, "positive teeth value (value)")
+        }
+
+        for value in [Float(0), -Float.ulpOfOne, -1, .nan, .infinity, -.infinity] {
+            let admission = BeautyEffectResolver.localRetouchAdmission(
+                parameters: BeautyParameters(teethWhitening: value)
+            )
+            XCTAssertTrue(admission.isEmpty, "normalized-away teeth value (value)")
+        }
+    }
+
+    func testPhase59ForbiddenInputsStayNeutralForTeethAdmission() throws {
+        let unrelated = [
+            BeautyParameters(
+                skinWhitening: 1,
+                brightness: 1,
+                contrast: 1,
+                saturation: 1,
+                temperature: 1,
+                tint: 1,
+                exposure: 1,
+                highlight: 1,
+                shadow: 1,
+                faceSlim: 1,
+                eyeHeight: 1,
+                upperEyelidLift: 1,
+                mouthSize: 1,
+                lipColor: 1,
+                filterId: "soft_clean",
+                filterIntensity: 1
+            ),
+            BeautyParameters(eyeSize: 1, noseSlim: 1, lipPlump: 1),
+        ]
+        for parameters in unrelated {
+            XCTAssertTrue(
+                BeautyEffectResolver.localRetouchAdmission(parameters: parameters).isEmpty
+            )
+        }
+
+        for alias in [
+            "teethWhite", "toothWhitening", "teethBrightness", "teeth_whitening", "lips.teeth", "白牙",
+        ] {
+            let data = try JSONSerialization.data(withJSONObject: [alias: 1])
+            let parameters = try JSONDecoder().decode(BeautyParameters.self, from: data)
+            XCTAssertTrue(
+                BeautyEffectResolver.localRetouchAdmission(parameters: parameters).isEmpty,
+                alias
+            )
+        }
+    }
+
     func testSkinValuesKeepPublicRangeButResolveToCappedEffectiveStrengths() {
         let parameters = BeautyParameters(
             skinSmoothing: 1,

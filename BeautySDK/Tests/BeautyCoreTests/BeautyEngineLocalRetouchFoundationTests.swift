@@ -292,7 +292,7 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionNames, [])
     }
 
-    func testPhase56ClosedTeethGateKeepsLiteralNoneAndBothStillEntriesInactive() throws {
+    func testPhase59TeethAdmissionKeepsOpaqueFoundationAndBothStillEntriesInactive() throws {
         let repositoryRoot = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent()
             .deletingLastPathComponent().deletingLastPathComponent()
@@ -306,10 +306,9 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
             .components(separatedBy: .whitespacesAndNewlines)
             .filter { !$0.isEmpty }
             .joined(separator: " ")
-        XCTAssertTrue(normalizedResolver.contains(
-            "package static func localRetouchAdmission( parameters: BeautyParameters ) -> " +
-            "BeautyLocalRetouchAdmission { _ = parameters return .none }"
-        ))
+        XCTAssertTrue(normalizedResolver.contains("let normalized = parameters.normalized()"))
+        XCTAssertTrue(normalizedResolver.contains("normalized.teethWhitening > 0"))
+        XCTAssertTrue(normalizedResolver.contains("BeautyLocalRetouchAdmission(opaqueDemandCount: 1)"))
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionCount, 0)
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionNames, [])
 
@@ -366,7 +365,7 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         XCTAssertEqual(harness.compositionObservation.compositionInvocationCount, 0)
     }
 
-    func testPhase57ClosedEyeRetouchGatesKeepLiteralNoneAndStillEntriesInactive() throws {
+    func testPhase57ClosedEyeRetouchGatesKeepSiblingRoutesAbsentAndStillEntriesInactive() throws {
         let repositoryRoot = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent()
             .deletingLastPathComponent().deletingLastPathComponent()
@@ -380,10 +379,9 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
             .components(separatedBy: .whitespacesAndNewlines)
             .filter { !$0.isEmpty }
             .joined(separator: " ")
-        XCTAssertTrue(normalizedResolver.contains(
-            "package static func localRetouchAdmission( parameters: BeautyParameters ) -> " +
-            "BeautyLocalRetouchAdmission { _ = parameters return .none }"
-        ))
+        XCTAssertTrue(normalizedResolver.contains("let normalized = parameters.normalized()"))
+        XCTAssertTrue(normalizedResolver.contains("normalized.teethWhitening > 0"))
+        XCTAssertTrue(normalizedResolver.contains("BeautyLocalRetouchAdmission(opaqueDemandCount: 1)"))
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionCount, 0)
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionNames, [])
 
@@ -442,10 +440,9 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
             .components(separatedBy: .whitespacesAndNewlines)
             .filter { !$0.isEmpty }
             .joined(separator: " ")
-        XCTAssertTrue(normalizedResolver.contains(
-            "package static func localRetouchAdmission( parameters: BeautyParameters ) -> " +
-            "BeautyLocalRetouchAdmission { _ = parameters return .none }"
-        ))
+        XCTAssertTrue(normalizedResolver.contains("let normalized = parameters.normalized()"))
+        XCTAssertTrue(normalizedResolver.contains("normalized.teethWhitening > 0"))
+        XCTAssertTrue(normalizedResolver.contains("BeautyLocalRetouchAdmission(opaqueDemandCount: 1)"))
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionCount, 0)
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionNames, [])
 

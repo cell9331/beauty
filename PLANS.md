@@ -36,8 +36,8 @@
 | Evidence gate | The AI-generated mechanics candidate remains zero-weight product evidence. A separate genuine teeth positive/negative pair now has complete triples and is being bound to the Phase 54 ReviewCore with opaque in-memory authorization projections and fixed structured judgments. Sclera still requires its own independent evidence pair and decision. |
 | Order | Teeth evidence and production slice → teeth verification/promotion → sclera evidence and per-eye production slice → sclera verification/promotion → combined regression and milestone audit. |
 | Exclusions | `去脂`; realtime/pixel-buffer; SwiftUI/Demo activation; external model/cloud; tracked portrait media; device/commercial/performance-budget/packaging/shipping/launch claims. |
-| Current | Plan 59-05 completed the private ReviewCore binding, policy-only intake record, serializer-produced teeth decision, and tracked/staged privacy gate. The latest disposable mechanics candidate passes 24/24 harness self-tests with zero outside-mask changes; the initial external review export remains invalid and has no canonical weight. |
-| Next | Execute 59-06, then the exact-open checker, root-owner synchronization, and final Phase 59 regression/lifecycle handoff. Do not start Phase 60 or any sclera production phase before all Phase 59 gates pass. |
+| Current | Plans 59-05 and 59-06 completed the private ReviewCore binding, policy-only intake record, serializer-produced open teeth decision, trailing `teethWhitening` compatibility contract, and one-demand admission seam. The latest disposable mechanics candidate passes 24/24 harness self-tests with zero outside-mask changes; no provider or output behavior was added. |
+| Next | Execute 59-07 exact-open checker/compatibility/privacy, then root-owner synchronization and final Phase 59 regression/lifecycle handoff. Do not start Phase 60 or any sclera production phase before all Phase 59 gates pass. |
 
 ### C-2026-08-05-v1-15-phase-59-closed-evidence-gate
 
