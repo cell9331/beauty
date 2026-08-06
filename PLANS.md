@@ -30,14 +30,14 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `blocked` |
+| Status | `active` |
 | Scope | Start milestone v1.15 to complete still-image SDK-core `白牙` first and independently complete `祛红血丝` second, while keeping `去脂` future and preserving all v1.14 canonical-input, request-local, composition, privacy, compatibility, and fail-closed boundaries. |
 | Research | Four inline GSD research dimensions: stack, features, architecture, and pitfalls. Dedicated GSD subagents are unavailable in this session, so the orchestrator owns the artifacts and records the fallback. |
-| Evidence gate | `portrait_002/original.png` is registered as an original-only, C2PA-declared AI mechanics candidate for both features and retains zero genuine-evidence or admission weight. Each feature still needs its own complete rights-approved genuine positive/negative original/mask/after bundle, predeclared polarity, structured original-detail review, and independent promotion decision. |
+| Evidence gate | The AI-generated mechanics candidate remains zero-weight product evidence. A separate genuine teeth positive/negative pair now has complete triples and is being bound to the Phase 54 ReviewCore with opaque in-memory authorization projections and fixed structured judgments. Sclera still requires its own independent evidence pair and decision. |
 | Order | Teeth evidence and production slice → teeth verification/promotion → sclera evidence and per-eye production slice → sclera verification/promotion → combined regression and milestone audit. |
 | Exclusions | `去脂`; realtime/pixel-buffer; SwiftUI/Demo activation; external model/cloud; tracked portrait media; device/commercial/performance-budget/packaging/shipping/launch claims. |
-| Current | Phase 59's four execution plans and sanitized evidence contract are recorded. The canonical teeth row remains closed; `portrait_002` is mechanics-only with zero weight. After two rounds of human feedback, the authorized real teeth bundle has refreshed local after assets: the latest candidate strengthens residual-yellow neutralization without raising its luminance target, the negative remains bounded, all 24 harness self-tests pass, and both runs have zero outside-mask changes. The first Spike 006 export remains invalid and has no canonical weight. |
-| Next | Re-run the formal Phase 54 blinded review on the refreshed local after assets and ingest only its allowlisted export. Do not start Phase 60 or any sclera production phase before an independent open decision. |
+| Current | Plan 59-05 completed the private ReviewCore binding, policy-only intake record, serializer-produced teeth decision, and tracked/staged privacy gate. The latest disposable mechanics candidate passes 24/24 harness self-tests with zero outside-mask changes; the initial external review export remains invalid and has no canonical weight. |
+| Next | Execute 59-06, then the exact-open checker, root-owner synchronization, and final Phase 59 regression/lifecycle handoff. Do not start Phase 60 or any sclera production phase before all Phase 59 gates pass. |
 
 ### C-2026-08-05-v1-15-phase-59-closed-evidence-gate
 

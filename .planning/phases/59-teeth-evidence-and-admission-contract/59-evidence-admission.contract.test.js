@@ -2,30 +2,32 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const path = require("node:path");
+const Adapter = require(path.join(__dirname, "59-authorized-teeth-evidence-export.js"));
 
-const CLOSED = {
+const OPEN = {
   feature: "teeth_whitening",
-  status: "closed",
-  reasons: ["missing_genuine_positive", "missing_genuine_negative"],
-  eligible_count: 0,
-  reviewed_count: 0,
-  accepted_count: 0,
+  status: "open",
+  reasons: [],
+  eligible_count: 2,
+  reviewed_count: 2,
+  accepted_count: 2,
   rejected_count: 0,
-  naturalness_weight: 0,
+  naturalness_weight: 2,
 };
 
-test("closed decision is exact and independent", () => {
-  assert.deepEqual(CLOSED, {
+test("open decision is exact and independent", () => {
+  assert.deepEqual(OPEN, {
     feature: "teeth_whitening",
-    status: "closed",
-    reasons: ["missing_genuine_positive", "missing_genuine_negative"],
-    eligible_count: 0,
-    reviewed_count: 0,
-    accepted_count: 0,
+    status: "open",
+    reasons: [],
+    eligible_count: 2,
+    reviewed_count: 2,
+    accepted_count: 2,
     rejected_count: 0,
-    naturalness_weight: 0,
+    naturalness_weight: 2,
   });
-  assert.notEqual(CLOSED.feature, "sclera_redness");
+  assert.notEqual(OPEN.feature, "sclera_redness");
 });
 
 test("open branch requires both genuine polarities and exact triples", () => {
@@ -47,8 +49,8 @@ test("mechanics and sibling rows have zero product weight", () => {
 });
 
 test("durable projection allowlist excludes sensitive evidence", () => {
-  const durable = { feature: "teeth_whitening", fixture_id: "opaque_01", decision: "closed", reason_code: "missing_genuine_positive", aggregates: { eligible_count: 0 } };
-  const forbidden = /path|mask|pixel|reviewer|rights|hash|geometry|freeform/i;
+  const durable = { feature: "teeth_whitening", fixture_id: "opaque_01", decision: "accept", reason_code: "none", mask_coverage: 4, aggregates: { eligible_count: 2 } };
+  const forbidden = /path|pixel|reviewer|rights|hash|geometry|freeform/i;
   assert.doesNotMatch(JSON.stringify(durable), forbidden);
   assert.throws(() => {
     const candidate = { ...durable, original_path: "/private/photo.png" };
@@ -60,4 +62,38 @@ test("review criteria are frozen before output review", () => {
   const criteria = Object.freeze({ target_improvement: 1, mask_coverage: 1, protected_leakage: 0, naturalness: 1, structure_change: 0 });
   assert.throws(() => { criteria.target_improvement = 2; }, TypeError);
   assert.equal(criteria.target_improvement, 1);
+});
+
+test("ReviewCore accepts the local authorized minimum review set", (t) => {
+  const bundle = process.env.PHASE59_TEETH_BUNDLE;
+  if (!bundle) {
+    t.skip("local evidence is supplied by the private runner");
+    return;
+  }
+  const durable = JSON.parse(Adapter.buildExport(bundle));
+  const teeth = durable.feature_decisions.find((row) => row.feature === "teeth_whitening");
+  assert.deepEqual(teeth, OPEN);
+  assert.equal(durable.reviews.length, 2);
+  assert.deepEqual(
+    durable.reviews.map((row) => [row.polarity, row.target_present, row.mask_coverage, row.naturalness, row.decision, row.reason_code]),
+    [["positive", true, 4, 4, "accept", "none"], ["negative", false, 1, 4, "accept", "none"]],
+  );
+  assert.doesNotMatch(JSON.stringify(durable), /path|hash|rights|reviewer|pixel|geometry|freeform/i);
+});
+
+test("mechanics reports cannot change the serialized admission", (t) => {
+  const bundle = process.env.PHASE59_TEETH_BUNDLE;
+  if (!bundle) {
+    t.skip("local evidence is supplied by the private runner");
+    return;
+  }
+  const baseline = Adapter.buildExport(bundle);
+  const reports = [
+    { changed_pixels: 0, mean_luminance_delta: 0, texture_energy_ratio: 1, outside_mask: 0 },
+    { changed_pixels: 999999, mean_luminance_delta: -1, texture_energy_ratio: 9, outside_mask: 7 },
+    { changed_pixels: null, mean_luminance_delta: "untrusted", texture_energy_ratio: {}, outside_mask: true },
+  ];
+  for (const report of reports) {
+    assert.equal(Adapter.buildExport(bundle, report), baseline);
+  }
 });

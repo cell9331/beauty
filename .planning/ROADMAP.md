@@ -49,7 +49,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
   3. A nonzero effective teeth value creates exactly teeth demand; global color, lip color, geometry, Testing hooks, sclera intent, missing/zero legacy fields, and aliases cannot activate it.
   4. No production `scleraRednessReduction` or `去脂` field, provider, renderer case, preset, admission route, or active Demo mapping exists when this phase closes.
 
-**Plans**: 4 recorded; open branch blocked on external genuine evidence bundle
+**Plans**: 9 recorded; Plan 59-05 completed, Plans 59-06 through 59-09 pending
 
 ### Phase 60: Teeth Provider and Production Integration
 
@@ -147,7 +147,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
-| 59. Teeth Evidence and Admission Contract | 4 recorded / 0 promoted | Blocked — canonical teeth evidence row remains closed | 2026-08-05 (closed branch only) |
+| 59. Teeth Evidence and Admission Contract | 5/9 plans complete / 0 promoted | Active — canonical teeth evidence row is open; production slice and closeout remain pending | - |
 | 60. Teeth Provider and Production Integration | 0/TBD | Not started | - |
 | 61. Teeth Output, Safety, and Independent Closeout | 0/TBD | Not started | - |
 | 62. Sclera Evidence and Admission Contract | 0/TBD | Not started | - |
