@@ -949,6 +949,32 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         }
     }
 
+    package func recordTeethProvider(
+        _ result: BeautyTeethWhiteningProviderResult?,
+        source: BeautyCanonicalStillImage,
+        expectedSource: BeautyCanonicalStillImage
+    ) {
+        withLock {
+            currentCompositionSourceBindingMatched =
+                source.pixelSourceBinding == expectedSource.pixelSourceBinding
+            let summary = result?.summary ?? BeautyTeethWhiteningProviderSummary()
+            lastTeethProviderObservationValue = SDKTestingTeethProviderObservation(
+                invocationCount: 1,
+                issuedUnitCount: result == nil ? 0 : 1,
+                abstentionCount: result == nil ? 1 : 0,
+                fixedStrongPixelCount: summary.fixedStrongPixelCount,
+                finalStrongPixelCount: summary.finalStrongPixelCount,
+                droppedFixedStrongPixelCount: summary.droppedFixedStrongPixelCount
+            )
+        }
+    }
+
+    package func clearTeethProviderObservation() {
+        withLock {
+            lastTeethProviderObservationValue = SDKTestingTeethProviderObservation()
+        }
+    }
+
     package func recordRequestContext(_ context: BeautyStillImageRequestContext) {
         withLock {
             activeRequestContextCountValue = 1

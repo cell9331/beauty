@@ -58,6 +58,7 @@ public final class BeautyEngine {
         metadata: BeautyInputMetadata,
         parameters: BeautyParameters
     ) throws -> BeautyResult<CVPixelBuffer> {
+        localRetouchTestingHooks?.clearTeethProviderObservation()
         try Self.validate(
             pixelBuffer: pixelBuffer,
             maximumPixelCount: configuration.maximumInputPixelCount
@@ -97,6 +98,7 @@ public final class BeautyEngine {
         metadata: BeautyInputMetadata,
         parameters: BeautyParameters
     ) throws -> BeautyResult<CIImage> {
+        localRetouchTestingHooks?.clearTeethProviderObservation()
         try Self.validate(
             image: image,
             maximumPixelCount: configuration.maximumInputPixelCount
@@ -106,9 +108,11 @@ public final class BeautyEngine {
         let productionAdmission = BeautyEffectResolver.localRetouchAdmission(
             parameters: validated
         )
-        let admission = localRetouchTestingHooks.map {
-            BeautyLocalRetouchAdmission(opaqueDemandCount: $0.admittedPrivateDemandCount)
-        } ?? productionAdmission
+        let admission = productionAdmission.isEmpty
+            ? localRetouchTestingHooks.map {
+                BeautyLocalRetouchAdmission(opaqueDemandCount: $0.admittedPrivateDemandCount)
+            } ?? productionAdmission
+            : productionAdmission
 
         guard admission.isEmpty == false else {
             return legacyStillImageResult(
@@ -149,21 +153,41 @@ public final class BeautyEngine {
         )
         localRetouchTestingHooks?.recordRequestContext(requestContext)
 
+        let hasDirectTeethIntent = validated.teethWhitening > 0
+        let hasOpaqueCompositionScenario =
+            localRetouchTestingHooks?.hasOpaqueCompositionScenario == true
         let renderCarrier: BeautyCanonicalStillImage
-        if let localRetouchTestingHooks,
-           localRetouchTestingHooks.hasOpaqueCompositionScenario
-        {
+        if hasDirectTeethIntent || hasOpaqueCompositionScenario {
             let compositionOwner = BeautyLocalRetouchCompositionOwner(
                 source: requestContext.canonicalImage
             )
-            let units = localRetouchTestingHooks.makeOpaqueCompositionUnits(
-                using: compositionOwner,
-                source: requestContext.canonicalImage,
-                expectedSource: canonical
-            )
-            localRetouchTestingHooks.record(.compose)
+            var units: [BeautyLocalRetouchUnit] = []
+            if hasDirectTeethIntent {
+                let providerResult = BeautyTeethWhiteningProvider.makeResult(
+                    source: requestContext.canonicalImage,
+                    lipSupport: requestContext.selectedFaceObservation?.observedLipSupport,
+                    strength: validated.teethWhitening,
+                    owner: compositionOwner
+                )
+                localRetouchTestingHooks?.recordTeethProvider(
+                    providerResult,
+                    source: requestContext.canonicalImage,
+                    expectedSource: canonical
+                )
+                if let providerResult {
+                    units.append(providerResult.unit)
+                }
+            }
+            if let localRetouchTestingHooks, hasOpaqueCompositionScenario {
+                units.append(contentsOf: localRetouchTestingHooks.makeOpaqueCompositionUnits(
+                    using: compositionOwner,
+                    source: requestContext.canonicalImage,
+                    expectedSource: canonical
+                ))
+            }
+            localRetouchTestingHooks?.record(.compose)
             let compositionResult = try compositionOwner.compose(units)
-            localRetouchTestingHooks.recordComposition(compositionResult)
+            localRetouchTestingHooks?.recordComposition(compositionResult)
             renderCarrier = compositionResult.canonicalImage
         } else {
             renderCarrier = requestContext.canonicalImage
@@ -214,6 +238,7 @@ public final class BeautyEngine {
     }
 
     public func reset() {
+        localRetouchTestingHooks?.clearTeethProviderObservation()
         resetGeneration &+= 1
         faceDetector.resetTracking()
     }

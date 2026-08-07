@@ -38,7 +38,7 @@ ENGINE_TEST_RELATIVE = Path(
 PRIVATE_TEST_RELATIVE = Path(
     "BeautySDK/Tests/BeautyCoreTests/BeautyTeethWhiteningRealFixtureTests.swift"
 )
-DEMO_MODEL_RELATIVE = Path("BeautyDemo/BeautyDemo/MeituEditorToolModels.swift")
+DEMO_MODEL_RELATIVE = Path("BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift")
 
 
 class CheckFailure(Exception):

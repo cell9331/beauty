@@ -36,8 +36,8 @@ Demo.
 | `60-01-02` | 1 | TEETH-12, TEETH-13, TEETH-14 | RED transform, protected-tissue, no-op, recovery, private-fixture contracts | passed as RED; missing provider observation/wiring only |
 | `60-02-01` | 2 | TEETH-09, TEETH-10, TEETH-11 | Provider implementation and focused selection tests | passed; 12/12 provider tests |
 | `60-02-02` | 2 | TEETH-11, TEETH-12, TEETH-13 | Source-derived target unit, composition, containment tests | passed; 33/33 provider + composition tests and 49 checker assertions |
-| `60-03-01` | 3 | TEETH-09, TEETH-12, TEETH-14 | One-request production facade wiring and unrelated-effect continuation | planned |
-| `60-03-02` | 3 | TEETH-09, TEETH-14 | No-face/missing/malformed/already-light/recovery/parallel/reset tests | planned |
+| `60-03-01` | 3 | TEETH-09, TEETH-12, TEETH-14 | One-request production facade wiring and unrelated-effect continuation | passed; 49/49 focused facade/foundation/composition tests |
+| `60-03-02` | 3 | TEETH-09, TEETH-14 | No-face/missing/malformed/already-light/recovery/parallel/reset tests | passed; 10/10 integration tests and 36 checker assertions |
 | `60-04-01` | 4 | TEETH-12, TEETH-13, TEETH-14 | Private genuine pair, checker self/live/per-threat, privacy | planned |
 | `60-04-02` | 4 | TEETH-09, TEETH-10, TEETH-11, TEETH-12, TEETH-13, TEETH-14 | Full SDK/Demo regression, owners, requirements, lifecycle handoff | planned |
 

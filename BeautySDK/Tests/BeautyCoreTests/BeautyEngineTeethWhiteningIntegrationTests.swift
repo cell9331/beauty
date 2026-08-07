@@ -28,6 +28,7 @@ final class BeautyEngineTeethWhiteningIntegrationTests: XCTestCase {
             XCTAssertEqual(harness.providerObservation.abstentionCount, 0)
             XCTAssertEqual(harness.providerObservation.droppedFixedStrongPixelCount, 0)
             XCTAssertEqual(harness.compositionObservation.compositionInvocationCount, 1)
+            XCTAssertTrue(harness.compositionObservation.sourceBindingMatched)
             XCTAssertEqual(harness.compositionObservation.acceptedUnitCount, 1)
             XCTAssertGreaterThan(harness.compositionObservation.changedPixelCount, 0)
             XCTAssertEqual(
@@ -61,14 +62,21 @@ final class BeautyEngineTeethWhiteningIntegrationTests: XCTestCase {
         _ = try harness.invoke(
             entry: .processResult,
             image: try yellowMouthImage(),
+            parameters: BeautyParameters(teethWhitening: 1)
+        )
+        XCTAssertEqual(harness.providerObservation.issuedUnitCount, 1)
+
+        _ = try harness.invoke(
+            entry: .processResult,
+            image: try yellowMouthImage(),
             parameters: .init()
         )
 
-        XCTAssertEqual(harness.canonicalizeCount, 0)
-        XCTAssertEqual(harness.detectAndMapCount, 0)
-        XCTAssertEqual(harness.requestOwnerCreationCount, 0)
+        XCTAssertEqual(harness.canonicalizeCount, 1)
+        XCTAssertEqual(harness.detectAndMapCount, 1)
+        XCTAssertEqual(harness.requestOwnerCreationCount, 1)
         XCTAssertEqual(harness.providerObservation.invocationCount, 0)
-        XCTAssertEqual(harness.compositionObservation.compositionInvocationCount, 0)
+        XCTAssertEqual(harness.renderCount, 2)
     }
 
     func testNoFaceAndMissingSupportAbstainLocallyAfterOneProviderAttempt() throws {
@@ -145,6 +153,7 @@ final class BeautyEngineTeethWhiteningIntegrationTests: XCTestCase {
             image: image,
             parameters: parameters
         ))
+        XCTAssertEqual(harness.providerObservation.invocationCount, 0)
         _ = try harness.invoke(entry: .processResult, image: image, parameters: parameters)
 
         XCTAssertEqual(harness.providerObservation.invocationCount, 1)
@@ -158,15 +167,44 @@ final class BeautyEngineTeethWhiteningIntegrationTests: XCTestCase {
         let harness = try SDKTestingLocalRetouchFoundationHarness(
             admittedPrivateDemandCount: 0
         )
-        try harness.invokePixelBuffer(parameters: BeautyParameters(teethWhitening: 1))
+        let image = try yellowMouthImage()
+        let parameters = BeautyParameters(teethWhitening: 1)
+        _ = try harness.invoke(entry: .processResult, image: image, parameters: parameters)
+        XCTAssertEqual(harness.providerObservation.issuedUnitCount, 1)
+
+        try harness.invokePixelBuffer(parameters: parameters)
+        XCTAssertEqual(harness.providerObservation.invocationCount, 0)
+
+        _ = try harness.invoke(entry: .processResult, image: image, parameters: parameters)
+        XCTAssertEqual(harness.providerObservation.issuedUnitCount, 1)
         harness.reset()
 
         XCTAssertEqual(harness.providerObservation.invocationCount, 0)
-        XCTAssertEqual(harness.canonicalizeCount, 0)
-        XCTAssertEqual(harness.detectAndMapCount, 0)
-        XCTAssertEqual(harness.requestOwnerCreationCount, 0)
-        XCTAssertEqual(harness.compositionObservation.compositionInvocationCount, 0)
+        XCTAssertEqual(harness.canonicalizeCount, 2)
+        XCTAssertEqual(harness.detectAndMapCount, 2)
+        XCTAssertEqual(harness.requestOwnerCreationCount, 2)
         XCTAssertEqual(harness.pixelBufferSummaryAvailability, "notRun")
+    }
+
+    func testProductionAndOpaqueTestingUnitsShareOneOwnerAndOneComposition() throws {
+        let harness = try SDKTestingLocalRetouchFoundationHarness(
+            admittedPrivateDemandCount: 0,
+            compositionScenario: .disjoint
+        )
+        _ = try harness.invoke(
+            entry: .processResult,
+            image: try yellowMouthImage(),
+            parameters: BeautyParameters(teethWhitening: 1)
+        )
+
+        XCTAssertEqual(harness.providerObservation.issuedUnitCount, 1)
+        XCTAssertEqual(harness.compositionObservation.compositionInvocationCount, 1)
+        XCTAssertEqual(harness.compositionObservation.acceptedUnitCount, 4)
+        XCTAssertEqual(harness.compositionObservation.rejectedUnitCount, 0)
+        XCTAssertEqual(
+            harness.events,
+            [.canonicalize, .detectAndMap, .makeRequestContext, .compose, .render]
+        )
     }
 
     func testIndependentParallelRequestsKeepProviderAndSourceOwnershipIsolated() async throws {
@@ -215,8 +253,11 @@ final class BeautyEngineTeethWhiteningIntegrationTests: XCTestCase {
             bytes[offset + 2] = 30
             bytes[offset + 3] = .max
         }
-        for y in 31...38 {
-            for x in 26...38 {
+        // Keep dark mouth pixels around the enamel patch so this fixture proves
+        // the provider's strong-area gate instead of presenting a synthetic
+        // 100%-tooth aperture.
+        for y in 32...33 {
+            for x in 29...34 {
                 let offset = (y * width + x) * 4
                 bytes[offset] = color.0
                 bytes[offset + 1] = color.1
