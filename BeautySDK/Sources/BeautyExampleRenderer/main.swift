@@ -418,6 +418,11 @@ let cases = [
         id: "teethWhitening_1p00",
         displayName: "teethWhitening 1.00",
         parameters: BeautyParameters(teethWhitening: 1)
+    ),
+    RenderCase(
+        id: "scleraRednessReduction_1p00",
+        displayName: "scleraRednessReduction 1.00",
+        parameters: BeautyParameters(scleraRednessReduction: 1)
     )
 ]
 

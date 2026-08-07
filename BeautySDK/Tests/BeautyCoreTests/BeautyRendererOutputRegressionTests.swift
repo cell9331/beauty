@@ -80,7 +80,8 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         "mouthXPosition_minus0p25",
         "lipPeakDefinition_0p25",
         "lipPlump_0p25",
-        "teethWhitening_1p00"
+        "teethWhitening_1p00",
+        "scleraRednessReduction_1p00"
     ]
 
     private static let fixtureNames = [
@@ -127,7 +128,7 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         let peak = try rendererCaseSnippet(for: "eyebrowPeakDefinition_0p25", in: try rendererSource())
         XCTAssertTrue(peak.contains("eyebrowPeakDefinition: 0.25"))
         XCTAssertEqual(allFields.filter { peak.contains("\($0):") }, ["eyebrowPeakDefinition"])
-        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 73)
+        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 74)
         XCTAssertEqual(Self.fixtureNames, ["portraits/p1.jpg", "negatives/no-face-gradient.png"])
         for parked in 1...5 {
             XCTAssertFalse(Self.fixtureNames.contains("portraits/e\(parked).png"))
@@ -306,8 +307,8 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         }
 
         let caseIDs = rendererCaseIDs(in: source)
-        XCTAssertEqual(caseIDs.count, 73)
-        XCTAssertEqual(Set(caseIDs).count, 73)
+        XCTAssertEqual(caseIDs.count, 74)
+        XCTAssertEqual(Set(caseIDs).count, 74)
         for deferred in [
             "doubleChin", "doubleChinPro", "hairline", "foreheadHairline",
             "faceCombo", "chinWidth", "faceLift",
@@ -395,8 +396,8 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         }
 
         let caseIDs = rendererCaseIDs(in: source)
-        XCTAssertEqual(caseIDs.count, 73)
-        XCTAssertEqual(Set(caseIDs).count, 73)
+        XCTAssertEqual(caseIDs.count, 74)
+        XCTAssertEqual(Set(caseIDs).count, 74)
         for alias in ["eyeCombo", "manualGaze", "perEyeAsymmetry"] {
             XCTAssertFalse(caseIDs.contains { $0 == alias || $0.hasPrefix("\(alias)_") })
             XCTAssertFalse(containsInitializerLabel(alias, in: source))
@@ -970,13 +971,24 @@ private enum RegressionTestError: Error, CustomStringConvertible {
 }
 
 extension BeautyRendererOutputRegressionTests {
-    func testPhase62ScleraIntentAddsNoRendererCase() throws {
+    func testPhase64ScleraOutputUsesExactlyOnePublicScalarAndPresentationFreeMode() throws {
         let source = try rendererSource()
+        let caseID = "scleraRednessReduction_1p00"
+        let snippet = try rendererCaseSnippet(for: caseID, in: source)
+
         XCTAssertEqual(rendererCaseIDs(in: source), Self.expectedRendererCaseIDs)
-        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 73)
-        for forbidden in ["scleraRednessReduction", "upperEyelidFullnessReduction"] {
-            XCTAssertFalse(source.contains(forbidden), forbidden)
+        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 74)
+        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 74)
+        XCTAssertEqual(Self.expectedRendererCaseIDs.filter { $0 == caseID }.count, 1)
+        XCTAssertTrue(snippet.contains("BeautyParameters(scleraRednessReduction: 1)"))
+        XCTAssertEqual(["scleraRednessReduction:"].filter { snippet.contains($0) }, ["scleraRednessReduction:"])
+        for forbidden in ["scleraRedness", "scleraWhitening", "eyeRednessReduction"] {
+            XCTAssertFalse(containsInitializerLabel(forbidden, in: source), forbidden)
+            XCTAssertFalse(source.contains("\"\(forbidden)\""), forbidden)
         }
+        XCTAssertFalse(containsInitializerLabel("upperEyelidFullnessReduction", in: source))
+        XCTAssertTrue(source.contains("--no-watermark"))
+        XCTAssertEqual(source.components(separatedBy: "engine.processResult(").count - 1, 1)
     }
 
     func testPhase61TeethOutputUsesExactlyOnePublicScalarAndPresentationFreeMode() throws {
@@ -985,8 +997,8 @@ extension BeautyRendererOutputRegressionTests {
         let snippet = try rendererCaseSnippet(for: caseID, in: source)
 
         XCTAssertEqual(rendererCaseIDs(in: source), Self.expectedRendererCaseIDs)
-        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 73)
-        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 73)
+        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 74)
+        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 74)
         XCTAssertEqual(Self.expectedRendererCaseIDs.filter { $0 == caseID }.count, 1)
         XCTAssertTrue(snippet.contains("BeautyParameters(teethWhitening: 1)"))
         XCTAssertEqual(["teethWhitening:"].filter { snippet.contains($0) }, ["teethWhitening:"])
@@ -1003,20 +1015,9 @@ extension BeautyRendererOutputRegressionTests {
         XCTAssertEqual(source.components(separatedBy: "engine.processResult(").count - 1, 1)
     }
 
-    func testPhase57ClosedEyeRetouchGatesKeepRendererAndSavedOutputSurfaceExact() throws {
+    func testDeferredUpperEyelidGateKeepsRendererAndSavedOutputSurfaceAbsent() throws {
         let source = try rendererSource()
         let candidateNames = [
-            "scleraRedness", "scleraRednessReduction", "scleraWhitening", "scleraWhite",
-            "scleraBrightness", "whitenSclera", "eyeRedness", "eyeRednessReduction",
-            "redEye", "redEyeReduction", "conjunctivaRedness", "conjunctivaRednessReduction",
-            "conjunctivalRedness", "conjunctivalRednessReduction", "conjunctivaWhitening", "conjunctivalWhitening",
-            "ocularRedness", "ocularRednessReduction", "ocularWhitening", "bloodshotReduction",
-            "bloodshotEyeCorrection", "sclera_redness", "sclera_redness_reduction", "sclera_whitening",
-            "sclera_white", "sclera_brightness", "whiten_sclera", "eye_redness",
-            "eye_redness_reduction", "red_eye", "red_eye_reduction", "conjunctiva_redness",
-            "conjunctiva_redness_reduction", "conjunctival_redness", "conjunctival_redness_reduction", "conjunctiva_whitening",
-            "conjunctival_whitening", "ocular_redness", "ocular_redness_reduction", "ocular_whitening",
-            "bloodshot_reduction", "bloodshot_eye_correction", "eyes.redness", "祛红血丝",
             "upperEyelidFullness", "upperLidFullness", "eyelidFullness", "lidFullness",
             "upperEyelidFullnessReduction", "upperLidFullnessReduction", "eyelidFullnessReduction", "lidFullnessReduction",
             "upperEyelidFullnessRemoval", "upperLidFullnessRemoval", "eyelidFullnessRemoval", "lidFullnessRemoval",
@@ -1039,8 +1040,8 @@ extension BeautyRendererOutputRegressionTests {
         ]
 
         XCTAssertEqual(rendererCaseIDs(in: source), Self.expectedRendererCaseIDs)
-        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 73)
-        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 73)
+        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 74)
+        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 74)
         for forbidden in candidateNames {
             XCTAssertFalse(
                 Self.expectedRendererCaseIDs.contains { $0 == forbidden || $0.hasPrefix("\(forbidden)_") },
@@ -1059,16 +1060,15 @@ extension BeautyRendererOutputRegressionTests {
         XCTAssertEqual(source.components(separatedBy: "engine.processResult(").count - 1, 1)
     }
 
-    func testPhase61OneTeethOutputRouteKeepsSiblingCandidatesAbsent() throws {
+    func testIndependentLocalRetouchOutputRoutesKeepUpperEyelidCandidateAbsent() throws {
         let source = try rendererSource()
-        let candidates = [
-            "scleraRednessReduction", "upperEyelidFullnessReduction",
-        ]
+        let candidates = ["upperEyelidFullnessReduction"]
 
         XCTAssertEqual(rendererCaseIDs(in: source), Self.expectedRendererCaseIDs)
-        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 73)
-        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 73)
+        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 74)
+        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 74)
         XCTAssertTrue(Self.expectedRendererCaseIDs.contains("teethWhitening_1p00"))
+        XCTAssertTrue(Self.expectedRendererCaseIDs.contains("scleraRednessReduction_1p00"))
         for candidate in candidates {
             XCTAssertFalse(containsInitializerLabel(candidate, in: source), candidate)
             XCTAssertFalse(source.contains("\"\(candidate)\""), candidate)
