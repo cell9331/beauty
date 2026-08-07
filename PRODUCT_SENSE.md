@@ -764,3 +764,27 @@ Command-level evidence is recorded in [Phase 62 verification](.planning/phases/6
   launch or release readiness.
 
 Command-level evidence is recorded in [Phase 63 verification](.planning/phases/63-guarded-per-eye-sclera-production-integration/63-VERIFICATION.md).
+
+### v1.15 Phase 64 Sclera Output and Eye-Branch Acceptance
+
+- An SDK integrator's direct positive `scleraRednessReduction` intent now has
+  strict saved public-facade output. The required matrix independently covers
+  an authorized visible-redness positive, a normal/already-low-redness
+  negative and no-face, each at baseline and active intent.
+- Acceptance requires conservative visible positive improvement, negative
+  naturalness, exact no-face no-op, per-eye peer independence, exact
+  dimensions/alpha, zero reviewed-mask exterior or protected-anatomy change,
+  bounded color/luminance and retained detail. Fresh original-detail review
+  passes with no post-review tuning.
+- Phases 62, 63 and 64 form one non-borrowed sclera chain. Exactly
+  `祛红血丝` is `implemented`; aggregate branch `眼睛` remains `partial`
+  solely because `去脂` remains future.
+- The Demo still displays `白牙`, `祛红血丝` and `去脂` as disabled rows with
+  nil mappings. Compatibility is exactly 61 public fields, five neutral presets
+  and 74 renderer cases.
+- Two authorized fixtures establish the minimum frozen positive/negative gate,
+  not population sufficiency. No realtime/pixel-buffer, target-device quality
+  or performance, commercial approval, packaging, shipping, launch or release-
+  readiness acceptance follows.
+
+Command-level evidence is recorded in [Phase 64 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-REVIEW.md), and [security disposition](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SECURITY.md).

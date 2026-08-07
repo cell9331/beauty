@@ -849,3 +849,27 @@ Command-level evidence is recorded in [Phase 62 verification](.planning/phases/6
   commercial approval, packaging, shipping, launch or release readiness.
 
 Command-level evidence is recorded in [Phase 63 verification](.planning/phases/63-guarded-per-eye-sclera-production-integration/63-VERIFICATION.md).
+
+### v1.15 Phase 64 Standalone Sclera Output Reliability Closeout
+
+- The public renderer advances from 73 to exactly 74 cases through one direct
+  `scleraRednessReduction_1p00` case. Public fields remain 61 and neutral
+  presets remain five.
+- Six fresh positive/negative/no-face baseline and active outputs pass strict
+  decoding. The positive improves at least one eye within frozen red-excess,
+  luminance, channel, alpha, texture and containment bounds; the normal
+  negative stays within frozen no-op/naturalness limits; no-face is byte exact.
+- Five adversarial tests cover color-independent protected truth,
+  recolored-protected final output, malformed peer support,
+  valid-invalid-valid recovery and parallel request isolation. Provider 11/11
+  and facade integration 9/9 preserve affected-eye-only failure and unrelated
+  work continuation.
+- Full SwiftPM executes 617 tests with zero failures and eight documented
+  non-required opt-in skips. The unchanged Demo builds and passes 121/121 on
+  iPhone 17e / iOS 26.5 with no skips.
+- These results establish bounded still-image standalone output and recovery,
+  not realtime endurance, target-device performance budgets, population
+  coverage, commercial approval, packaging, shipping, launch or release
+  readiness.
+
+Command-level evidence is recorded in [Phase 64 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SCLERA-OUTPUT-EVIDENCE.md) and [verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).

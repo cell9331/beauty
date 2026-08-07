@@ -743,3 +743,26 @@ Command-level evidence is recorded in [Phase 62 security](.planning/phases/62-sc
   recolored-protected-anatomy output proof plus exact `祛红血丝` promotion.
 
 Command-level evidence is recorded in [Phase 63 security](.planning/phases/63-guarded-per-eye-sclera-production-integration/63-SECURITY.md) and [verification](.planning/phases/63-guarded-per-eye-sclera-production-integration/63-VERIFICATION.md).
+
+### v1.15 Phase 64 Sclera Output Security Closeout
+
+- T-64-01 through T-64-08 are eight machine-green HIGH mitigations with zero
+  open findings. Exact renderer inventory, bounded PNG decoding, adversarial
+  protection, final output, review, privacy, product owners and lifecycle are
+  independently checked.
+- Required output execution discovers only the ignored authorized bundle,
+  stages disposable originals under an ignored directory, renders six exact
+  facade outputs and emits fixed aggregate status. Bounded decoding rejects
+  unexpected names, dimensions, sizes, alpha, malformed PNGs and symlinks.
+- Geometry truth is independent of candidate color. Final-output tests prove
+  zero changed pixels in iris, pupil, highlights, lash margin, skin and
+  aperture exterior after score, feather, hard re-clip, transform and
+  composition.
+- Review records only fixed categorical judgments. Tracked/staged state
+  contains no media, locator, digest, rights detail, reviewer identity, support,
+  mask, geometry, pixel data, raw metric or child error.
+- Promotion changes exactly `眼睛 | 祛红血丝`; it does not activate Demo,
+  realtime/pixel-buffer, external model, network or `去脂` surfaces and does not
+  authorize broader device, commercial or release claims.
+
+Command-level evidence is recorded in [Phase 64 security](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SECURITY.md), [review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-REVIEW.md), and [verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).

@@ -925,3 +925,28 @@ Command-level evidence is recorded in [Phase 62 verification](.planning/phases/6
   73 renderer cases and three disabled local-retouch Demo rows.
 
 Command-level evidence is recorded in [Phase 63 verification](.planning/phases/63-guarded-per-eye-sclera-production-integration/63-VERIFICATION.md).
+
+### v1.15 Phase 64 Standalone Sclera Output and Promotion Contract
+
+- The public example renderer now has exactly 74 unique cases. The sole new
+  case is direct `scleraRednessReduction_1p00`; it reaches the production
+  still-image facade and never uses Testing-only admission. Comparison-only
+  `--no-watermark` handling does not alter the default renderer path.
+- The required authorized matrix contains positive, negative and no-face
+  originals at baseline and active intent. Strict decoded comparison owns exact
+  dimensions/alpha, positive per-eye red-excess improvement, bounded luminance
+  and channel movement, retained texture, negative stability, exact no-face
+  no-op and zero reviewed-mask exterior change.
+- Color-independent geometry perturbation and recolored-protected final-output
+  oracles cover iris, pupil, highlights, lash margin, skin and aperture
+  exterior. Malformed-peer, valid-invalid-valid and parallel tests retain the
+  Phase 63 request-local, affected-eye-only abstention contract.
+- Product owners promote exactly `眼睛 | 祛红血丝`. Aggregate branch `眼睛`
+  remains `partial` solely because `去脂` is future; both rows remain disabled
+  and nil-mapped in the Demo.
+- Compatibility is exactly 61 public fields, five byte-stable neutral presets
+  and 74 renderer cases. This contract adds no realtime/pixel-buffer route,
+  model, network dependency, public anatomy, device/commercial approval,
+  packaging, shipping, launch or release-readiness claim.
+
+Command-level evidence is recorded in [Phase 64 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-REVIEW.md), and [verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).

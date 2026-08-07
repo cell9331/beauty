@@ -20,7 +20,7 @@ Beauty shaping covers face geometry and facial feature adjustments inspired by M
 | `3D塑颜` | blocked-by-geometry-output | `BeautyEffects` | None | Symmetry, vertical, horizontal, tilt | Requires detection/render integration and public facade saved-image output before visible completion. |
 | `比例` | partial | `BeautyEffects` | `faceSmall` | Forehead, mid-face, philtrum, lower-face, short-face, head-face | Current provider/resolver evidence is partial; facade-visible geometry output is still required. |
 | `脸型` | partial | `BeautyEffects` | Five prior fields plus independent `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, and `chinTaper` | `去双下巴`, `去双下巴 Pro`, `发际线` local semantic-region/segmentation design | Phase 28 covers six prior rows; Phase 45 contract/support, Phase 46 provider, Phase 47 public output, and Phase 48 final safety/privacy/boundaries independently implement `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴`. |
-| `眼睛` | partial | `BeautyEffects` | Four prior fields plus `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, signed `eyeTilt`, `innerCornerOpen`, `outerCornerOpen`, `eyeSymmetry` | `去脂`, `祛红血丝` local retouch/color design | Phases 29-30 cover four prior rows; Phase 41 contract/support, Phase 42 provider, Phase 43 public output, and Phase 44 final safety/boundaries independently implement the ten remaining geometry rows. |
+| `眼睛` | partial | `BeautyEffects` | Four prior fields plus `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, signed `eyeTilt`, `innerCornerOpen`, `outerCornerOpen`, `eyeSymmetry`, and still-image `scleraRednessReduction` | `去脂` local retouch/segmentation design | Phases 29-44 cover fourteen geometry rows; Phases 62-64 independently admit, implement, verify and promote `祛红血丝`. |
 | `嘴唇` | implemented | `BeautyEffects` | Geometry: `mouthSize`, `mouthWidth`, `smile`, `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, `lipPlump`; still-image color: `teethWhitening`; independent color-only: `lipColor` | No remaining child row in the exact mouth taxonomy; broader delivery surfaces require separate evidence. | Phases 33-40 implement all eight geometry rows. Phase 59 opens rights-approved teeth evidence/admission, Phase 60 adds the bounded request-local provider/integration, and Phase 61 closes strict public output, adversarial safety, original-detail review, and exact `白牙` promotion. |
 | `鼻子` | implemented | `BeautyEffects` | `noseSlim`, `noseWingSlim`, signed `noseTipSize`, `noseBridge`, `noseRootNarrowing`, `noseTipLift` | No additional control is implied by the exact six-row taxonomy | Phases 31-32 and 35-37 implement exactly `大小`, `提升`, `鼻翼`, `山根`, `鼻梁`, and `鼻尖`; SDK-core branch complete with UI/device/commercial boundaries preserved. |
 | `眉毛` | implemented | `BeautyEffects` | `eyebrowYPosition`, `eyebrowThickness`, `eyebrowLength`, `eyebrowSpacing`, `eyebrowHeadSpacing`, `eyebrowTilt`, `eyebrowPeakDefinition` | No additional control or resource is implied by the exact seven-row SDK-core taxonomy | Phase 49 contract/support, Phase 50 independent providers/pipeline, Phase 51 public-facade output, and Phase 52 final safety/privacy/boundary evidence implement exactly `上下`, `粗细`, `长短`, `间距`, `眉头间距`, `倾斜`, and `眉峰`. |
@@ -46,6 +46,20 @@ Phase 48 promotes exactly `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴`
 Phase 30 implements exactly four existing-parameter eye subtools: `大小`, `上下`, `眼距`, and `眼尾上扬`. The `眼睛` branch remains `partial` because eye height, length, pupil, gaze, lids, redness, corners, symmetry, eye-fat, and other future tools still require separate product-neutral design and evidence.
 
 Phase 44 promotes exactly `眼高`, `长度`, `提肌`, `眼瞳大小`, `眼神矫正`, `眼睑下至`, `倾斜`, `内眼角`, `外眼角`, and `对称` after Phase 41 contract/support, Phase 42 provider, Phase 43 public output, and Phase 44 final safety/privacy/boundary evidence. Together with the four Phase 30 rows, fourteen geometry rows are implemented. `去脂` and `祛红血丝` remain future, so branch `眼睛` stays `partial`; no device, commercial, performance, packaging, shipping, or launch claim is made.
+
+## Phase 64 Sclera Redness Closeout
+
+Phase 62 independently opens the authorized positive/negative sclera decision
+and appends the positive-only `scleraRednessReduction` intent. Phase 63 adds the
+actual-contour/actual-pupil guarded per-eye provider through one canonical
+request and immutable-source composition. Phase 64 adds the exact public output
+case, passes the six-output matrix, color-independent and recolored-protected
+oracles, fresh original-detail review, privacy/security and full regression,
+then promotes exactly `祛红血丝`.
+
+The Demo row remains disabled with no active mapping. `去脂` remains future, so
+aggregate branch `眼睛` stays `partial`; no population, realtime, device,
+commercial, packaging, shipping, launch or release-readiness claim is made.
 
 Phase 32 implemented exactly four legacy nose subtools: `大小`, `鼻翼`, `鼻梁`, and signed `鼻尖`, while deliberately leaving `山根` and `提升` unresolved. Phases 35-36 established their independent contract/output chain; Phase 37 implements `山根` through `noseRootNarrowing` and `提升` through `noseTipLift`, without borrowing `noseBridge` or signed `noseTipSize` evidence, and closes the exact six-row SDK-core `鼻子` branch with device and commercial boundaries preserved.
 

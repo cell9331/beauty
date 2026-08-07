@@ -13,8 +13,8 @@ Eye tools include size, vertical position, eye height, length, distance, fat rem
 - Primary owner: `BeautyEffects`.
 - Dependencies: `BeautyDetection` eye landmarks and `BeautyRender` unified warp output.
 - Current public `BeautyParameters` geometry coverage is exactly the four prior fields plus `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, signed `eyeTilt`, `innerCornerOpen`, `outerCornerOpen`, and `eyeSymmetry`.
-- Future needs are local retouch/color design for `去脂` and `祛红血丝` only; they are not geometry aliases.
-- Evidence status: Phases 29-30 cover the four prior rows. Phase 41 contract/support, Phase 42 provider behavior, Phase 43 public-facade output, and Phase 44 exact safety/privacy/boundary evidence independently implement `眼高`, `长度`, `提肌`, `眼瞳大小`, `眼神矫正`, `眼睑下至`, `倾斜`, `内眼角`, `外眼角`, and `对称`. Branch status remains `partial` because the two retouch rows remain future.
+- Still-image `scleraRednessReduction` independently implements `祛红血丝`; the only future need is local retouch/segmentation design for `去脂`.
+- Evidence status: Phases 29-44 implement all fourteen geometry rows. Phase 62 owns independent sclera evidence/admission, Phase 63 owns guarded actual-support provider integration, and Phase 64 owns strict public output, adversarial protected-anatomy proof, original-detail review and exact `祛红血丝` promotion. Branch status remains `partial` solely because `去脂` is future.
 
 ## Boundary
 
@@ -35,3 +35,15 @@ Do not persist eye landmarks or expose eye geometry in public debug output.
 - Exactly ten independent geometry rows are added to the four prior implemented rows; `去脂` and `祛红血丝` remain future and branch `眼睛` remains `partial`.
 - Phase 41 owns scalar contract and observed support, Phase 42 owns provider transforms, Phase 43 owns public saved output, and Phase 44 owns final caps, fourteen-field degradation, 33-field/10.70 conflict arithmetic, 28-removal convergence, privacy, and boundary authorization.
 - This is SDK automated evidence, not physical-device parity, subjective naturalness, commercial approval, packaging, shipping, or launch readiness.
+
+## Phase 64 Sclera Redness Closeout
+
+- `祛红血丝` is `implemented` through independent Phase 62 evidence/admission,
+  Phase 63 guarded per-eye production integration, and Phase 64 standalone
+  public output, color-independent/recolored-protected safety, original-detail
+  review, privacy and full regression.
+- The provider remains request-local and per-eye: unsafe support abstains only
+  that eye; iris, pupil, highlights, lashes, skin and aperture exterior remain
+  exact; output derives from immutable source pixels.
+- Renderer inventory is exactly 74, while the Demo row stays disabled and nil-
+  mapped. `去脂` remains future, so branch `眼睛` remains `partial`.
