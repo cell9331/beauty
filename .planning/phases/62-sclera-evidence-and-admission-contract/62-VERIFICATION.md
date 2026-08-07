@@ -1,9 +1,10 @@
 ---
 phase: 62
 status: passed
-verified_base: 29c98df
+verified_base: c0d70da
 verified_at: 2026-08-07
 owner_changes_verified: true
+summary_changes_verified: true
 requirements: [EVID-06, EVID-08, EVID-09, EVID-10, SCLERA-07, SCLERA-08]
 must_haves_verified: 15
 must_haves_total: 15
