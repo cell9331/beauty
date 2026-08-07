@@ -59,6 +59,46 @@ private let phase50MalformedObservedEyebrow = [
     CoordinatePoint(x: 0.27, y: 0.37),
 ]
 
+private func phase63ObservedEyeContour(centerX: Double) -> [CoordinatePoint] {
+    (0..<16).map { index in
+        let angle = Double(index) * 2 * .pi / 16
+        return CoordinatePoint(
+            x: centerX + 0.18 * cos(angle),
+            y: 0.55 + 0.12 * sin(angle)
+        )
+    }
+}
+
+private let phase63ObservedLeftEye = BeautyObservedEyeSupport(
+    side: .left,
+    contour: phase63ObservedEyeContour(centerX: 0.30),
+    pupil: [CoordinatePoint(x: 0.30, y: 0.55)]
+)
+
+private let phase63ObservedRightEye = BeautyObservedEyeSupport(
+    side: .right,
+    contour: phase63ObservedEyeContour(centerX: 0.70),
+    pupil: [CoordinatePoint(x: 0.70, y: 0.55)]
+)
+
+private let phase63MalformedObservedRightEye = BeautyObservedEyeSupport(
+    side: .right,
+    contour: phase63ObservedEyeContour(centerX: 0.70),
+    pupil: nil
+)
+
+private let phase63ReversedObservedLeftEye = BeautyObservedEyeSupport(
+    side: .left,
+    contour: phase63ObservedEyeContour(centerX: 0.70),
+    pupil: [CoordinatePoint(x: 0.70, y: 0.55)]
+)
+
+private let phase63ReversedObservedRightEye = BeautyObservedEyeSupport(
+    side: .right,
+    contour: phase63ObservedEyeContour(centerX: 0.30),
+    pupil: [CoordinatePoint(x: 0.30, y: 0.55)]
+)
+
 @_spi(Testing) public enum SDKTestingFaceDetectionFixture: Sendable {
     case usableFace
     case missingObservedFaceContour
@@ -673,6 +713,39 @@ package final class SDKTestingCanonicalStillImageHarness: @unchecked Sendable {
     }
 }
 
+/// Fixed aggregate observation for one request-local sclera provider call.
+/// No contour, pupil, mask, color, pixel or stable identity leaves the hook.
+@_spi(Testing) public struct SDKTestingScleraProviderObservation: Equatable, Sendable {
+    public let invocationCount: Int
+    public let issuedUnitCount: Int
+    public let acceptedLeftEyeCount: Int
+    public let acceptedRightEyeCount: Int
+    public let abstentionCount: Int
+
+    public init(
+        invocationCount: Int = 0,
+        issuedUnitCount: Int = 0,
+        acceptedLeftEyeCount: Int = 0,
+        acceptedRightEyeCount: Int = 0,
+        abstentionCount: Int = 0
+    ) {
+        self.invocationCount = invocationCount
+        self.issuedUnitCount = issuedUnitCount
+        self.acceptedLeftEyeCount = acceptedLeftEyeCount
+        self.acceptedRightEyeCount = acceptedRightEyeCount
+        self.abstentionCount = abstentionCount
+    }
+}
+
+@_spi(Testing) public enum SDKTestingScleraEyeSupport: Sendable {
+    case paired
+    case leftOnly
+    case rightOnly
+    case leftValidRightMalformed
+    case invalidOrder
+    case noFace
+}
+
 @_spi(Testing) public enum SDKTestingLocalSupportFixture: Sendable {
     case noFace
     case missingSupport
@@ -699,6 +772,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         case available(valueID: Int)
         case availableMissingUnrelatedGeometry(valueID: Int, omissionIndex: Int)
         case malformed
+        case scleraEyes(SDKTestingScleraEyeSupport)
     }
 
     package let admittedPrivateDemandCount: Int
@@ -712,6 +786,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     private var currentCompositionSourceBindingMatched = false
     private var lastCompositionObservationValue = SDKTestingLocalCompositionObservation()
     private var lastTeethProviderObservationValue = SDKTestingTeethProviderObservation()
+    private var lastScleraProviderObservationValue = SDKTestingScleraProviderObservation()
     private var eventsValue: [SDKTestingLocalRetouchEvent] = []
     private var canonicalizeCountValue = 0
     private var detectAndMapCountValue = 0
@@ -775,6 +850,9 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     package var teethProviderObservation: SDKTestingTeethProviderObservation {
         withLock { lastTeethProviderObservationValue }
     }
+    package var scleraProviderObservation: SDKTestingScleraProviderObservation {
+        withLock { lastScleraProviderObservationValue }
+    }
     package var hasOpaqueCompositionScenario: Bool {
         withLock { currentCompositionScenario != nil }
     }
@@ -798,6 +876,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             currentCompositionSourceBindingMatched = false
             lastCompositionObservationValue = SDKTestingLocalCompositionObservation()
             lastTeethProviderObservationValue = SDKTestingTeethProviderObservation()
+            lastScleraProviderObservationValue = SDKTestingScleraProviderObservation()
             currentAggregateSupportValueID = nil
             lastAggregateSupportValueIDValue = nil
             currentRequestIsMalformed = false
@@ -975,6 +1054,31 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         }
     }
 
+    package func recordScleraProvider(
+        _ result: BeautyScleraRednessProviderResult,
+        source: BeautyCanonicalStillImage,
+        expectedSource: BeautyCanonicalStillImage
+    ) {
+        withLock {
+            currentCompositionSourceBindingMatched =
+                source.pixelSourceBinding == expectedSource.pixelSourceBinding
+            let summary = result.summary
+            lastScleraProviderObservationValue = SDKTestingScleraProviderObservation(
+                invocationCount: 1,
+                issuedUnitCount: result.units.count,
+                acceptedLeftEyeCount: summary.leftOutcome == .accepted ? 1 : 0,
+                acceptedRightEyeCount: summary.rightOutcome == .accepted ? 1 : 0,
+                abstentionCount: max(0, 2 - summary.acceptedEyeCount)
+            )
+        }
+    }
+
+    package func clearScleraProviderObservation() {
+        withLock {
+            lastScleraProviderObservationValue = SDKTestingScleraProviderObservation()
+        }
+    }
+
     package func recordRequestContext(_ context: BeautyStillImageRequestContext) {
         withLock {
             activeRequestContextCountValue = 1
@@ -1039,6 +1143,9 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             case .noFace, .missingSupport:
                 currentAggregateSupportValueID = nil
                 currentRequestIsMalformed = false
+            case .scleraEyes:
+                currentAggregateSupportValueID = nil
+                currentRequestIsMalformed = false
             }
             return fixture
         }
@@ -1057,11 +1164,36 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             )]
         case .malformed:
             return [Self.observation(observedLipSupport: Self.malformedLipSupport)]
+        case .scleraEyes(let support):
+            switch support {
+            case .paired:
+                return [Self.observation(
+                    observedEyeSupport: [phase63ObservedRightEye, phase63ObservedLeftEye],
+                    observedLipSupport: Self.validLipSupport
+                )]
+            case .leftOnly:
+                return [Self.observation(observedEyeSupport: [phase63ObservedLeftEye])]
+            case .rightOnly:
+                return [Self.observation(observedEyeSupport: [phase63ObservedRightEye])]
+            case .leftValidRightMalformed:
+                return [Self.observation(observedEyeSupport: [
+                    phase63ObservedLeftEye,
+                    phase63MalformedObservedRightEye,
+                ])]
+            case .invalidOrder:
+                return [Self.observation(observedEyeSupport: [
+                    phase63ReversedObservedLeftEye,
+                    phase63ReversedObservedRightEye,
+                ])]
+            case .noFace:
+                return []
+            }
         }
     }
 
     private static func observation(
-        observedLipSupport: BeautyObservedLipSupport?,
+        observedEyeSupport: [BeautyObservedEyeSupport]? = nil,
+        observedLipSupport: BeautyObservedLipSupport? = nil,
         landmarks: BeautyFaceLandmarks = .complete
     ) -> VisionDetectionObservation {
         VisionDetectionObservation(
@@ -1070,6 +1202,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             normalizedArea: 0.24,
             visionBounds: CoordinateRect(x: 0.30, y: 0.20, width: 0.40, height: 0.60),
             landmarks: landmarks,
+            observedEyeSupport: observedEyeSupport,
             observedLipSupport: observedLipSupport
         )
     }
@@ -1173,6 +1306,9 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     public var providerObservation: SDKTestingTeethProviderObservation {
         withInvocationLock { hooks.teethProviderObservation }
     }
+    public var scleraProviderObservation: SDKTestingScleraProviderObservation {
+        withInvocationLock { hooks.scleraProviderObservation }
+    }
 
     public convenience init(
         admittedPrivateDemandCount: Int,
@@ -1217,6 +1353,18 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         try self.init(
             admittedPrivateDemandCount: admittedPrivateDemandCount,
             fixtures: fixtures,
+            compositionScenarios: compositionScenarios
+        )
+    }
+
+    public convenience init(
+        admittedPrivateDemandCount: Int,
+        eyeSupportSequence: [SDKTestingScleraEyeSupport],
+        compositionScenarios: [SDKTestingLocalCompositionScenario?] = [nil]
+    ) throws {
+        try self.init(
+            admittedPrivateDemandCount: admittedPrivateDemandCount,
+            fixtures: eyeSupportSequence.map { .scleraEyes($0) },
             compositionScenarios: compositionScenarios
         )
     }

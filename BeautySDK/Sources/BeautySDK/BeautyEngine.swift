@@ -59,6 +59,7 @@ public final class BeautyEngine {
         parameters: BeautyParameters
     ) throws -> BeautyResult<CVPixelBuffer> {
         localRetouchTestingHooks?.clearTeethProviderObservation()
+        localRetouchTestingHooks?.clearScleraProviderObservation()
         try Self.validate(
             pixelBuffer: pixelBuffer,
             maximumPixelCount: configuration.maximumInputPixelCount
@@ -99,6 +100,7 @@ public final class BeautyEngine {
         parameters: BeautyParameters
     ) throws -> BeautyResult<CIImage> {
         localRetouchTestingHooks?.clearTeethProviderObservation()
+        localRetouchTestingHooks?.clearScleraProviderObservation()
         try Self.validate(
             image: image,
             maximumPixelCount: configuration.maximumInputPixelCount
@@ -154,10 +156,11 @@ public final class BeautyEngine {
         localRetouchTestingHooks?.recordRequestContext(requestContext)
 
         let hasDirectTeethIntent = validated.teethWhitening > 0
+        let hasDirectScleraIntent = validated.scleraRednessReduction > 0
         let hasOpaqueCompositionScenario =
             localRetouchTestingHooks?.hasOpaqueCompositionScenario == true
         let renderCarrier: BeautyCanonicalStillImage
-        if hasDirectTeethIntent || hasOpaqueCompositionScenario {
+        if hasDirectTeethIntent || hasDirectScleraIntent || hasOpaqueCompositionScenario {
             let compositionOwner = BeautyLocalRetouchCompositionOwner(
                 source: requestContext.canonicalImage
             )
@@ -177,6 +180,21 @@ public final class BeautyEngine {
                 if let providerResult {
                     units.append(providerResult.unit)
                 }
+            }
+            if hasDirectScleraIntent {
+                let providerResult = BeautyScleraRednessProvider.makeResult(
+                    source: requestContext.canonicalImage,
+                    eyeSupport: requestContext.selectedFaceObservation?.observedEyeSupport,
+                    eyeOrder: requestContext.selectedFaceObservation?.observedEyeOrder,
+                    strength: validated.scleraRednessReduction,
+                    owner: compositionOwner
+                )
+                localRetouchTestingHooks?.recordScleraProvider(
+                    providerResult,
+                    source: requestContext.canonicalImage,
+                    expectedSource: canonical
+                )
+                units.append(contentsOf: providerResult.units)
             }
             if let localRetouchTestingHooks, hasOpaqueCompositionScenario {
                 units.append(contentsOf: localRetouchTestingHooks.makeOpaqueCompositionUnits(
@@ -239,6 +257,7 @@ public final class BeautyEngine {
 
     public func reset() {
         localRetouchTestingHooks?.clearTeethProviderObservation()
+        localRetouchTestingHooks?.clearScleraProviderObservation()
         resetGeneration &+= 1
         faceDetector.resetTracking()
     }

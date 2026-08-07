@@ -490,53 +490,35 @@ package struct VisionFaceDetector: Sendable {
         visionBounds: CoordinateRect,
         mapper: CoordinateMapper
     ) -> BeautyObservedEyeOrder {
-        guard supports.count == 2,
-              let left = supports.first(where: { $0.side == .left }),
-              let right = supports.first(where: { $0.side == .right }),
-              supports.filter({ $0.side == .left }).count == 1,
-              supports.filter({ $0.side == .right }).count == 1,
-              let leftCenter = centroid(left.contour),
-              let rightCenter = centroid(right.contour)
+        guard (1...2).contains(supports.count),
+              Set(supports.map(\.side)).count == supports.count,
+              let axes = try? mappedFaceCenterAndAxes(
+                  in: visionBounds,
+                  with: mapper
+              )
         else {
             return .invalid
         }
 
-        let localOrigin = CoordinatePoint(x: visionBounds.x, y: visionBounds.y)
-        let localRight = CoordinatePoint(
-            x: visionBounds.x + visionBounds.width,
-            y: visionBounds.y
-        )
-        guard let mappedOrigin = try? mapper.map(
-            point: localOrigin,
-            from: .visionNormalized,
-            to: .imageNormalized
-        ), let mappedRight = try? mapper.map(
-            point: localRight,
-            from: .visionNormalized,
-            to: .imageNormalized
-        ) else {
-            return .invalid
+        for support in supports {
+            guard let center = centroid(support.contour) else {
+                return .invalid
+            }
+            let offset = SIMD2<Double>(
+                center.x - axes.center.x,
+                center.y - axes.center.y
+            )
+            let projection = offset.x * axes.right.x + offset.y * axes.right.y
+            let expectedSign: Double = support.side == .left ? -1 : 1
+            guard projection.isFinite,
+                  abs(projection) > 0.000_001,
+                  (projection > 0) == (expectedSign > 0)
+            else {
+                return .invalid
+            }
         }
 
-        let axis = SIMD2<Float>(
-            Float(mappedRight.x - mappedOrigin.x),
-            Float(mappedRight.y - mappedOrigin.y)
-        )
-        let axisLength = hypot(axis.x, axis.y)
-        let separation = SIMD2<Float>(
-            Float(rightCenter.x - leftCenter.x),
-            Float(rightCenter.y - leftCenter.y)
-        )
-        guard axis.x.isFinite, axis.y.isFinite,
-              separation.x.isFinite, separation.y.isFinite,
-              axisLength.isFinite, axisLength > 0
-        else {
-            return .invalid
-        }
-
-        let anatomicalAxis = axis / axisLength
-        let projection = separation.x * anatomicalAxis.x + separation.y * anatomicalAxis.y
-        return projection > 0.000001 ? .canonical : .invalid
+        return .canonical
     }
 
     private func centroid(_ points: [CoordinatePoint]) -> CoordinatePoint? {

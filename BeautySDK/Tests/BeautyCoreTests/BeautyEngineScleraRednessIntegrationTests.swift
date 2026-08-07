@@ -11,7 +11,7 @@ final class BeautyEngineScleraRednessIntegrationTests: XCTestCase {
             )
             _ = try harness.invoke(
                 entry: entry,
-                image: redEyeImage(),
+                image: try Self.redEyeImage(),
                 parameters: BeautyParameters(scleraRednessReduction: 1)
             )
 
@@ -27,28 +27,28 @@ final class BeautyEngineScleraRednessIntegrationTests: XCTestCase {
     }
 
     func testTeethScleraAndBothActivateIndependentlyButShareOneOwner() throws {
-        let teethOnly = try makeHarness()
+        let teethOnly = try Self.makeHarness()
         _ = try teethOnly.invoke(
             entry: .processResult,
-            image: redEyeImage(),
+            image: try Self.redEyeImage(),
             parameters: BeautyParameters(teethWhitening: 1)
         )
         XCTAssertEqual(teethOnly.providerObservation.invocationCount, 1)
         XCTAssertEqual(teethOnly.scleraProviderObservation.invocationCount, 0)
 
-        let scleraOnly = try makeHarness()
+        let scleraOnly = try Self.makeHarness()
         _ = try scleraOnly.invoke(
             entry: .processResult,
-            image: redEyeImage(),
+            image: try Self.redEyeImage(),
             parameters: BeautyParameters(scleraRednessReduction: 1)
         )
         XCTAssertEqual(scleraOnly.providerObservation.invocationCount, 0)
         XCTAssertEqual(scleraOnly.scleraProviderObservation.invocationCount, 1)
 
-        let both = try makeHarness()
+        let both = try Self.makeHarness()
         _ = try both.invoke(
             entry: .processResult,
-            image: redEyeImage(),
+            image: try Self.redEyeImage(),
             parameters: BeautyParameters(teethWhitening: 1, scleraRednessReduction: 1)
         )
         XCTAssertEqual(both.providerObservation.invocationCount, 1)
@@ -64,7 +64,7 @@ final class BeautyEngineScleraRednessIntegrationTests: XCTestCase {
             )
             _ = try harness.invoke(
                 entry: .processResult,
-                image: redEyeImage(),
+                image: try Self.redEyeImage(),
                 parameters: BeautyParameters(scleraRednessReduction: 1)
             )
             XCTAssertEqual(harness.scleraProviderObservation.invocationCount, 1)
@@ -80,7 +80,7 @@ final class BeautyEngineScleraRednessIntegrationTests: XCTestCase {
         for expectedUnits in [2, 0, 0, 2] {
             _ = try harness.invoke(
                 entry: .processResult,
-                image: redEyeImage(),
+                image: try Self.redEyeImage(),
                 parameters: BeautyParameters(scleraRednessReduction: 1)
             )
             XCTAssertEqual(harness.scleraProviderObservation.issuedUnitCount, expectedUnits)
@@ -96,14 +96,14 @@ final class BeautyEngineScleraRednessIntegrationTests: XCTestCase {
         )
         _ = try harness.invoke(
             entry: .processResult,
-            image: redEyeImage(),
+            image: try Self.redEyeImage(),
             parameters: BeautyParameters()
         )
         XCTAssertEqual(harness.scleraProviderObservation.invocationCount, 0)
 
         _ = try harness.invoke(
             entry: .processResult,
-            image: redEyeImage(),
+            image: try Self.redEyeImage(),
             parameters: BeautyParameters(scleraRednessReduction: 1)
         )
         XCTAssertEqual(harness.scleraProviderObservation.invocationCount, 1)
@@ -117,10 +117,10 @@ final class BeautyEngineScleraRednessIntegrationTests: XCTestCase {
         let observations = try await withThrowingTaskGroup(of: (Int, Int).self) { group in
             for _ in 0..<12 {
                 group.addTask {
-                    let harness = try self.makeHarness()
+                    let harness = try Self.makeHarness()
                     _ = try harness.invoke(
                         entry: .processResult,
-                        image: self.redEyeImage(),
+                        image: try Self.redEyeImage(),
                         parameters: BeautyParameters(scleraRednessReduction: 1)
                     )
                     return (
@@ -135,15 +135,33 @@ final class BeautyEngineScleraRednessIntegrationTests: XCTestCase {
         XCTAssertTrue(observations.allSatisfy { $0 == 1 && $1 == 2 })
     }
 
-    private func makeHarness() throws -> SDKTestingLocalRetouchFoundationHarness {
+    private static func makeHarness() throws -> SDKTestingLocalRetouchFoundationHarness {
         try SDKTestingLocalRetouchFoundationHarness(
             admittedPrivateDemandCount: 0,
             eyeSupportSequence: [.paired]
         )
     }
 
-    private func redEyeImage() -> CIImage {
-        CIImage(color: CIColor(red: 0.82, green: 0.59, blue: 0.59, alpha: 1))
-            .cropped(to: CGRect(x: 0, y: 0, width: 80, height: 48))
+    private static func redEyeImage() throws -> CIImage {
+        let width = 80
+        let height = 48
+        var bytes = Array(repeating: UInt8(0), count: width * height * 4)
+        for index in 0..<(width * height) {
+            let offset = index * 4
+            bytes[offset] = 209
+            bytes[offset + 1] = 150
+            bytes[offset + 2] = 150
+            bytes[offset + 3] = .max
+        }
+        guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
+            throw BeautyError.unsupportedPixelFormat
+        }
+        return CIImage(
+            bitmapData: Data(bytes),
+            bytesPerRow: width * 4,
+            size: CGSize(width: width, height: height),
+            format: .RGBA8,
+            colorSpace: colorSpace
+        )
     }
 }
