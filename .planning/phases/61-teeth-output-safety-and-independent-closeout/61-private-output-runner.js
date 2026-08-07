@@ -13,6 +13,7 @@ const PRIVATE_PARENT = path.join(
 const WORK_ROOT = path.join(PRIVATE_PARENT, ["phase61", "teeth", "output"].join("-"));
 const INPUT_ROOT = path.join(WORK_ROOT, "input");
 const OUTPUT_ROOT = path.join(WORK_ROOT, "output");
+const REVIEW_ROOT = path.join(WORK_ROOT, "review");
 const RENDERER_SOURCE = path.join(ROOT, "BeautySDK", "Sources", "BeautyExampleRenderer", "main.swift");
 const HELPER = path.join(__dirname, "check_teeth_renderer_outputs.py");
 const NO_FACE = path.join(ROOT, "example-images", "input", "negatives", "no-face-gradient.png");
@@ -21,8 +22,8 @@ const MAX_FILE_BYTES = 16 * 1024 * 1024;
 const MAX_CHILD_BUFFER = 1024 * 1024;
 const CASES = ["geometryBaseline_noop", "teethWhitening_1p00"];
 
-function fixed(status) {
-  process.stdout.write(`${JSON.stringify({ status, outputs: status === "pass" ? 6 : 0 })}\n`);
+function fixed(status, extra = {}) {
+  process.stdout.write(`${JSON.stringify({ status, outputs: status === "pass" ? 6 : 0, ...extra })}\n`);
 }
 
 function run(command, args, options = {}) {
@@ -58,6 +59,11 @@ function assertContained(parent, child) {
 }
 
 function assertNoSymlinkComponents(target, floor = ROOT) {
+  if (!fs.existsSync(floor)) throw new Error("component_floor_missing");
+  const floorMetadata = fs.lstatSync(floor);
+  if (!floorMetadata.isDirectory() || floorMetadata.isSymbolicLink()) {
+    throw new Error("component_floor_unsafe");
+  }
   const relative = path.relative(floor, target);
   if (relative.startsWith("..") || path.isAbsolute(relative)) throw new Error("component_escape");
   let current = floor;
@@ -241,15 +247,33 @@ function verify(bundle) {
   }
 }
 
+function prepareOpaqueReview() {
+  fs.mkdirSync(REVIEW_ROOT, { mode: 0o700 });
+  const roles = require("node:crypto").randomInt(0, 2) === 0
+    ? ["positive", "negative"]
+    : ["negative", "positive"];
+  for (const [index, role] of roles.entries()) {
+    const slot = index === 0 ? "A" : "B";
+    const baseline = boundedRegularBytes(path.join(OUTPUT_ROOT, `${role}__${CASES[0]}.png`));
+    const active = boundedRegularBytes(path.join(OUTPUT_ROOT, `${role}__${CASES[1]}.png`));
+    writeExclusiveRegular(path.join(REVIEW_ROOT, `${slot}__baseline.png`), baseline);
+    writeExclusiveRegular(path.join(REVIEW_ROOT, `${slot}__active.png`), active);
+  }
+}
+
 function main() {
   try {
-    if (process.env.PHASE61_REQUIRE_LOCAL_EVIDENCE !== "1" || process.argv.length !== 2) {
+    const argv = process.argv.slice(2);
+    const prepareReview = argv.length === 1 && argv[0] === "--prepare-review";
+    if (process.env.PHASE61_REQUIRE_LOCAL_EVIDENCE !== "1"
+      || (argv.length !== 0 && !prepareReview)) {
       throw new Error("required_private_mode_missing");
     }
     const { bundle, originals } = discoverBundle();
     assertNoSymlinkComponents(PRIVATE_PARENT);
     removeValidatedTree(WORK_ROOT);
-    fs.mkdirSync(INPUT_ROOT, { recursive: true, mode: 0o700 });
+    fs.mkdirSync(WORK_ROOT, { mode: 0o700 });
+    fs.mkdirSync(INPUT_ROOT, { mode: 0o700 });
     fs.mkdirSync(OUTPUT_ROOT, { mode: 0o700 });
     writeExclusiveRegular(path.join(INPUT_ROOT, "positive.png"), originals.get("positive").bytes);
     writeExclusiveRegular(path.join(INPUT_ROOT, "negative.png"), originals.get("negative").bytes);
@@ -257,8 +281,9 @@ function main() {
     assertGeneratedArtifactsPrivate();
     for (const caseID of CASES) render(caseID);
     verify(bundle);
+    if (prepareReview) prepareOpaqueReview();
     assertGeneratedArtifactsPrivate();
-    fixed("pass");
+    fixed("pass", prepareReview ? { review_ready: true, review_items: 4 } : {});
   } catch (_) {
     fixed("fail");
     process.exitCode = 1;
