@@ -99,12 +99,12 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
   4. A nonzero effective sclera value creates exactly sclera demand; color, whitening, geometry, Testing hooks, teeth intent, `去脂` proxies, missing/zero legacy fields, and aliases cannot activate it.
   5. A closed or malformed sclera evidence decision produces exact sclera absence without rolling back the already completed teeth slice.
 
-**Plans**: 3/5 plans executed
+**Plans**: 4/5 plans executed
 
 - [x] 62-01-PLAN.md — freeze contract, closed-state checker, validation and HIGH inventory
 - [x] 62-02-PLAN.md — prepare private adapter/runner and closed privacy proof
 - [x] 62-03-PLAN.md — intake real pair, guarded review and serializer-open decision
-- [ ] 62-04-PLAN.md — append scalar and independent opaque demand
+- [x] 62-04-PLAN.md — append scalar and independent opaque demand
 - [ ] 62-05-PLAN.md — exact-open regression, owner sync and lifecycle handoff
 
 ### Phase 63: Guarded Per-Eye Sclera Production Integration
@@ -161,7 +161,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 | 59. Teeth Evidence and Admission Contract | 9/9 plans complete / intent admitted / 0 visible promoted | Complete — exact-open evidence, scalar, one demand, privacy, and regression pass | 2026-08-07 |
 | 60. Teeth Provider and Production Integration | 4/4 plans complete / provider verified / 0 visible promoted | Complete — genuine pair, bounded provider, integration, privacy, and regression pass | 2026-08-07 |
 | 61. Teeth Output, Safety, and Independent Closeout | 4/4 | Complete    | 2026-08-07 |
-| 62. Sclera Evidence and Admission Contract | 3/5 | In progress — exact-open evidence passed; Plan 62-04 intent admission next | - |
+| 62. Sclera Evidence and Admission Contract | 4/5 | In progress — scalar and independent demand admitted; Plan 62-05 final verification next | - |
 | 63. Guarded Per-Eye Sclera Production Integration | 0/TBD | Not started | - |
 | 64. Sclera Output, Adversarial Safety, and Independent Closeout | 0/TBD | Not started | - |
 | 65. Combined Facade, Privacy, and Milestone Closeout | 0/TBD | Not started | - |
