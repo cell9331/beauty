@@ -739,3 +739,28 @@ Command-level evidence is recorded in [Phase 61 output evidence](.planning/phase
   launch or release readiness.
 
 Command-level evidence is recorded in [Phase 62 verification](.planning/phases/62-sclera-evidence-and-admission-contract/62-VERIFICATION.md).
+
+### v1.15 Phase 63 Guarded Sclera Integration Acceptance
+
+- An SDK integrator may now request conservative still-image sclera redness
+  reduction through the existing public scalar. Current actual left/right eye
+  support is independently validated; unsafe or absent support produces an
+  exact local no-op instead of guessed, mirrored or stale work.
+- Accepted work is limited to a pre-score hard sclera envelope and a bounded
+  immutable-source red-excess transform. The authorized redness positive and
+  normal negative pass the frozen aggregate native-Vision gate with zero
+  reviewed-mask escape, while alpha, channel movement, luminance and detail stay
+  within their predeclared bounds.
+- This is provider-integration acceptance, not final visible product
+  acceptance. Phase 64 still owns public renderer/saved-output proof,
+  color-independent and recolored-protected-anatomy adversarial matrices,
+  fresh original-detail visual review and exact `祛红血丝` promotion.
+- `祛红血丝` therefore remains `future` and disabled in the Demo; `去脂`
+  remains future and aggregate `眼睛` remains partial. Compatibility stays at
+  61 fields, five neutral presets, 73 renderer cases and three disabled local-
+  retouch rows.
+- The minimum pair does not establish population sufficiency, realtime,
+  target-device quality/performance, commercial approval, packaging, shipping,
+  launch or release readiness.
+
+Command-level evidence is recorded in [Phase 63 verification](.planning/phases/63-guarded-per-eye-sclera-production-integration/63-VERIFICATION.md).

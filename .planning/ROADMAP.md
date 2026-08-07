@@ -31,7 +31,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 - [x] **Phase 60: Teeth Provider and Production Integration** - Deliver conservative lip-supported tooth selection and bounded immutable-original whitening through the production still-image path.
 - [x] **Phase 61: Teeth Output, Safety, and Independent Closeout** - Prove public-facade visibility, protected-tissue safety, naturalness, regression, and exact `白牙` promotion before any sclera production work. (completed 2026-08-07)
 - [x] **Phase 62: Sclera Evidence and Admission Contract** - Independently qualify genuine redness/normal evidence and add one compatibility-safe sclera-only public intent after teeth closes. (completed 2026-08-07)
-- [ ] **Phase 63: Guarded Per-Eye Sclera Production Integration** - Deliver independent left/right eye guards, hard sclera ownership, and bounded original-pixel redness reduction.
+- [x] **Phase 63: Guarded Per-Eye Sclera Production Integration** - Deliver independent left/right eye guards, hard sclera ownership, and bounded original-pixel redness reduction. (completed 2026-08-07)
 - [ ] **Phase 64: Sclera Output, Adversarial Safety, and Independent Closeout** - Prove public-facade per-eye behavior, native and adversarial protected-region safety, naturalness, regression, and exact `祛红血丝` promotion.
 - [ ] **Phase 65: Combined Facade, Privacy, and Milestone Closeout** - Verify both independently admitted features together, preserve all v1.14 boundaries, keep `去脂` absent, and prepare the audited milestone close.
 
@@ -125,7 +125,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 - [x] 63-01-PLAN.md — RED per-eye contracts, frozen private bounds and eight-HIGH checker
 - [x] 63-02-PLAN.md — guarded per-eye provider and immutable-source transform
 - [x] 63-03-PLAN.md — one-request production integration and lifecycle isolation
-- [ ] 63-04-PLAN.md — private actual-Vision gate, full regression and Phase 64 handoff
+- [x] 63-04-PLAN.md — private actual-Vision gate, full regression and Phase 64 handoff
 
 ### Phase 64: Sclera Output, Adversarial Safety, and Independent Closeout
 
@@ -167,7 +167,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 | 60. Teeth Provider and Production Integration | 4/4 plans complete / provider verified / 0 visible promoted | Complete — genuine pair, bounded provider, integration, privacy, and regression pass | 2026-08-07 |
 | 61. Teeth Output, Safety, and Independent Closeout | 4/4 | Complete    | 2026-08-07 |
 | 62. Sclera Evidence and Admission Contract | 5/5 | Complete — independent evidence, 61st scalar, direct demand, privacy and regression pass | 2026-08-07 |
-| 63. Guarded Per-Eye Sclera Production Integration | 3/4 | In progress — engine lifecycle and peer isolation green; private actual-Vision closeout next | - |
+| 63. Guarded Per-Eye Sclera Production Integration | 4/4 | Complete — guarded provider, actual-Vision evidence, privacy and regression pass; no promotion | 2026-08-07 |
 | 64. Sclera Output, Adversarial Safety, and Independent Closeout | 0/TBD | Not started | - |
 | 65. Combined Facade, Privacy, and Milestone Closeout | 0/TBD | Not started | - |
 

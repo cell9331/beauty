@@ -36,8 +36,8 @@
 | Evidence gate | The mechanics-only candidate remains zero-weight product evidence. Separate genuine teeth and sclera pairs each passed Phase 54 ReviewCore and the exact serializer gate; upper-eyelid fullness remains independently closed. |
 | Order | Teeth evidence and production slice → teeth verification/promotion → sclera evidence and per-eye production slice → sclera verification/promotion → combined regression and milestone audit. |
 | Exclusions | `去脂`; realtime/pixel-buffer; SwiftUI/Demo activation; external model/cloud; tracked portrait media; device/commercial/performance-budget/packaging/shipping/launch claims. |
-| Current | Phase 62 is complete at 5/5: independent sclera evidence is exact open, `scleraRednessReduction` is the trailing 61st scalar, direct teeth/sclera demand is `0/1/1/2`, and private evidence, 8/8 HIGH, full SDK/Demo and privacy gates pass without provider/output/promotion expansion. |
-| Next | Discuss and plan Phase 63 guarded per-eye sclera production integration. It may add request-local provider/support/mask work only; public output, Demo activation and exact `祛红血丝` promotion remain Phase 64 scope. |
+| Current | Phase 63 is complete at 4/4: actual current per-eye support, guard-before-score, post-filter reclip, bounded source-only transform, shared composition, peer isolation, private native-Vision evidence, 8/8 HIGH and full SDK/Demo gates pass. `祛红血丝` remains unpromoted. |
+| Next | Discuss and plan Phase 64 sclera output, adversarial safety and independent closeout. It alone may add public renderer/output proof, recolored-protected-anatomy checks, final visual review and exact `祛红血丝` promotion. |
 
 ## 3A. Archived Active Ledger
 
@@ -90,6 +90,18 @@
 | Phase 54 closeout | Three review-fix passes bind grants to trusted expected-target policy and exact original/mask/after keys plus SHA-256 byte digests, recover every local-read/display-URL failure transactionally, and independently pin T-54-01…T-54-08. Final standard review is clean. Current automation passes 33/33 core, 38/38 reviewer, 119/119 checker, named live `8/8`, 500 SwiftPM tests with six documented skips, explicit iPhone 17e/iOS 26.5 Demo build and 118/118 tests, schema/UI/diff gates. The fresh user-confirmed direct-`file://` smoke and independently parsed 1,640-byte allowlisted export pass. The three-feature ledger remains closed with zero review/product weight and no SDK/Demo/realtime/media/release admission; Phase 54 validation is complete. |
 
 ## 4. Completed
+
+### C-2026-08-07-v1-15-phase-63-sclera-provider-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-08-07 |
+| Scope | Implemented the package-only stateless zero-to-two-unit sclera provider, actual current per-eye ownership, pre-score hard guard, bounded immutable-source redness transform and one-request Engine integration without activating Demo, realtime, model or network surfaces. |
+| Safety | Finite simple contour and actual pupil validation, 12% contour erosion, conservative circular pupil/iris exclusion, expanded highlight/lash guards, score-inside-only, radius-one hard reclip, Q16-once composition, collision-to-source and affected-eye-only abstention are enforced. |
+| Evidence | The final authorized positive/negative native-Vision gate passes with zero reviewed-mask escape. Provider/integration 20/20, checker mutations 8/8, live 8/8 and all eight isolated HIGH modes pass. |
+| Verification | Full SwiftPM 612/0/8; explicit iPhone 17e / iOS 26.5 Demo build and 121/0/0 tests; decisions 16/16, requirements 5/5, tasks 8/8, threats 8/8, plans 4/4; tracked/staged privacy, syntax, JSON, inventory and diff gates pass. |
+| Requirements | SCLERA-09 through SCLERA-13 verified. Phase 64 alone owns strict public output, adversarial final-output safety, new original-detail review and exact `祛红血丝` promotion. |
+| Boundary | This is bounded provider integration, not final visible product acceptance, population sufficiency, realtime/device/performance readiness, commercial quality, packaging, shipping, launch or release readiness. `去脂` remains future. |
 
 ### C-2026-08-07-v1-15-phase-61-teeth-output-closeout
 

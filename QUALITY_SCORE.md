@@ -34,20 +34,20 @@ Quality gate:
 
 ## 3. Current Snapshot
 
-Current repository state as of 2026-08-07 after the v1.15 Phase 62 independent
-sclera evidence and intent-admission gates:
+Current repository state as of 2026-08-07 after the v1.15 Phase 63 guarded
+per-eye sclera production-integration gates:
 
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
 | Root docs | 4 | All nine root owners exist. The consolidation audit corrected `ARCHITECTURE.md` so current pixel-buffer processing, still-image detection/geometry, and placeholder Render foundations match compiled code. | Keep current facts in root owners; keep milestone narratives in archives. |
 | Historical docs | 3 | `docs/README.md` remains the long-doc entry. `.planning/codebase/*` is explicitly stale background and historical phase/milestone artifacts are not current contracts. | Refresh codebase maps only in an explicitly scoped remap. |
-| GSD planning | 4 | Phase 62 is complete at 5/5 plans, 10/10 task rows, six verified requirements, canonical verification, and eight green HIGH owners. | Begin Phase 63 guarded per-eye provider planning without adding output or promotion scope. |
-| SDK Package | 4 | The package/facade boundary is intact; teeth output remains bounded and the trailing sclera intent advances the public contract to exactly 61 fields with independent `0/1/1/2` demand. | Preserve evidence/intent separation while Phase 63 adds only request-local guarded provider work. |
+| GSD planning | 4 | Phase 63 is complete at 4/4 plans, 8/8 task rows, five verified requirements, 16/16 decisions and eight green HIGH owners. | Begin Phase 64 output/adversarial planning without borrowing provider-only credit. |
+| SDK Package | 4 | The package/facade boundary is intact; one request-local sclera provider emits independently guarded per-eye units through the existing immutable-source composer while the public inventory remains 61 fields. | Preserve provider/output separation while Phase 64 adds only explicitly verified public output. |
 | Demo App | 4 | The unchanged Demo builds and passes 121/121 on iPhone 17e / iOS 26.5; teeth, sclera-redness, and `去脂` rows remain disabled with nil mappings. | Preserve disabled taxonomy until each later output/promotion gate passes. |
-| Tests | 4 | Required private evidence and ledger reproduction pass; focused admission passes 87/87, full SwiftPM 590/0/7, and full Demo 121/121. All Phase 62 required gates ran explicitly. | Add provider tests before any sclera output credit. |
-| Security | 4 | Exact schema, fixed-output private execution, tracked/staged privacy, 144 rejected mutations and 8/8 Phase 62 HIGH owners pass with zero open HIGH. | Keep support, masks, output and promotion absent until their owning phases pass. |
+| Tests | 4 | Required private native-Vision evidence passes; focused provider/integration passes 20/20, full SwiftPM 612/0/8, and full Demo 121/121. All Phase 63 required gates ran explicitly. | Add strict public output and adversarial tests before promotion credit. |
+| Security | 4 | Guard-before-score, post-filter reclip, fixed-output private execution, tracked/staged privacy, eight rejected mutations and 8/8 Phase 63 HIGH owners pass with zero open HIGH. | Keep raw anatomy private and product/output promotion absent until Phase 64 passes. |
 | Reliability | 3 | Backpressure, stale work, reset, detection degradation, and the repaired camera lifecycle are test-backed. Realtime geometry/Metal dispatch, 600-second preview, and device endurance are not current evidence. | Keep claims bounded and run the setup-specific long-run/device gates when authorized. |
-| Product acceptance | 4 | Phase 62 accepts only independent sclera scalar intent; `祛红血丝` remains future/disabled while `白牙` output and aggregate `嘴唇` remain unchanged. | Do not infer visible sclera output, Demo, population, realtime, device, commercial, packaging, or release readiness. |
+| Product acceptance | 4 | Phase 63 accepts bounded provider integration only; `祛红血丝` remains future/disabled while `白牙` output and aggregate `嘴唇` remain unchanged. | Do not infer final visible sclera output, promotion, population, realtime, device, commercial, packaging, or release readiness. |
 
 ### 3.1 Phase 4 Final Verification
 
@@ -691,3 +691,24 @@ Command-level evidence is recorded in [Phase 61 verification](.planning/phases/6
   launch or release credit is added.
 
 Command-level evidence is recorded in [Phase 62 verification](.planning/phases/62-sclera-evidence-and-admission-contract/62-VERIFICATION.md).
+
+### v1.15 Phase 63 Guarded Sclera Provider Score
+
+- Exact traceability passes 4/4 plans, 8/8 task rows, SCLERA-09 through
+  SCLERA-13 5/5, D-01 through D-16 16/16 and T-63-01 through T-63-08 8/8
+  machine-green HIGH mitigations with zero open findings.
+- The final private native-Vision pair passes through fixed-output execution;
+  provider/integration passes 20/20; checker self/live and eight isolated
+  threat modes pass. Acceptance bounds remain unchanged and tracked evidence is
+  aggregate-only.
+- Full SwiftPM executes 612 tests with eight documented non-required opt-in
+  skips and zero failures. Explicit iPhone 17e / iOS 26.5 Demo build succeeds
+  and tests pass 121/121 with no skips. Python, JSON, privacy, inventory and diff
+  gates pass.
+- Quality credit is limited to current-support ownership, per-eye guard,
+  immutable-source transform, peer isolation, recovery, compatibility and
+  privacy. No strict public output, adversarial recolored-anatomy proof, final
+  visual review, product promotion, population, realtime, device/performance,
+  commercial, packaging, shipping, launch or release credit is added.
+
+Command-level evidence is recorded in [Phase 63 verification](.planning/phases/63-guarded-per-eye-sclera-production-integration/63-VERIFICATION.md).

@@ -716,3 +716,30 @@ Command-level evidence is recorded in [Phase 61 security](.planning/phases/61-te
   authorized by this closeout.
 
 Command-level evidence is recorded in [Phase 62 security](.planning/phases/62-sclera-evidence-and-admission-contract/62-SECURITY.md) and [verification](.planning/phases/62-sclera-evidence-and-admission-contract/62-VERIFICATION.md).
+
+### v1.15 Phase 63 Sclera Provider Security Closeout
+
+- Current mapped contour and actual-pupil values remain package-only,
+  non-Codable, request-local, non-persistent and non-networked. Public/SPI
+  diagnostics expose only fixed aggregate outcomes and counts, never support,
+  masks, colors, pixels, paths or framework objects.
+- Geometry owns protection before color: contour-band, pupil/iris, highlights,
+  lash/margin, skin and exterior are excluded before score; radius-one
+  softening is clipped back to the identical hard envelope. A dark native iris
+  or an empty color score cannot substitute for geometric containment.
+- Side ambiguity, malformed support, duplicate ownership and stale/cross-eye
+  repair fail closed. A valid peer may continue only from its own current
+  support, and Testing names, aliases, Demo labels, global effects and `去脂`
+  cannot activate production sclera work.
+- T-63-01 through T-63-08 are eight machine-green HIGH mitigations with zero
+  open findings. Checker self-test rejects eight isolated mutations; live
+  discovery and every individual threat mode pass.
+- The final authorized positive/negative native-Vision gate passes through the
+  fixed-output private runner with zero reviewed-mask escape. Tracked and staged
+  state contains no media, locator, digest, rights detail, identity, review
+  prose, support, mask, geometry, pixel data, raw metric or raw child error.
+- Renderer, Demo, realtime/pixel-buffer, external model, network and promotion
+  surfaces remain unchanged. Phase 64 alone owns color-independent and
+  recolored-protected-anatomy output proof plus exact `祛红血丝` promotion.
+
+Command-level evidence is recorded in [Phase 63 security](.planning/phases/63-guarded-per-eye-sclera-production-integration/63-SECURITY.md) and [verification](.planning/phases/63-guarded-per-eye-sclera-production-integration/63-VERIFICATION.md).

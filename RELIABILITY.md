@@ -824,3 +824,28 @@ Command-level evidence is recorded in [Phase 61 output evidence](.planning/phase
   shipping, launch or release readiness.
 
 Command-level evidence is recorded in [Phase 62 verification](.planning/phases/62-sclera-evidence-and-admission-contract/62-VERIFICATION.md).
+
+### v1.15 Phase 63 Per-Eye Sclera Reliability Closeout
+
+- One direct sclera intent invokes one provider after the existing canonical
+  request context. Zero, one or two accepted eye units join the same one-pass
+  immutable-source composition used by teeth without another canonicalizer,
+  Vision request or output feedback loop.
+- Missing/no-face support, blink or closure, severe gaze, glare, occlusion,
+  malformed contour/pupil, empty envelope and empty material score preserve
+  source pixels for only the affected eye. A valid peer and unrelated eligible
+  teeth/color work continue independently.
+- Valid-invalid-valid, thrown canonical requests, reset, pixel-buffer calls,
+  repeated requests and independent parallel engines retain no prior contour,
+  pupil, mask, proposal, target, output or summary. Fixed aggregate observations
+  are cleared at every call boundary.
+- The required native-Vision positive/negative gate, 20 focused provider and
+  integration tests, eight isolated HIGH modes, full 612-test SwiftPM suite and
+  explicit 121-test Demo suite pass with zero failures. Eight existing
+  non-required SwiftPM host/private opt-ins remain documented skips.
+- These results establish still-image request recovery and bounded per-eye
+  provider behavior only. They do not establish strict public output, realtime
+  endurance, target-device performance budgets, population coverage,
+  commercial approval, packaging, shipping, launch or release readiness.
+
+Command-level evidence is recorded in [Phase 63 verification](.planning/phases/63-guarded-per-eye-sclera-production-integration/63-VERIFICATION.md).

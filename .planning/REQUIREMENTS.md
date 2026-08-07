@@ -37,11 +37,11 @@
 
 - [x] **SCLERA-07**: Only after the teeth slice is independently complete and the sclera evidence decision passes, an SDK integrator receives an independent positive-only finite-normalized default-zero `scleraRednessReduction` field with append-only source, Codable, preset, and legacy-payload compatibility.
 - [x] **SCLERA-08**: Sclera admission derives only from the nonzero effective `scleraRednessReduction` value and cannot be activated by whitening, brightness, skin color, eye geometry, Testing hooks, teeth intent, or `去脂` proxies.
-- [ ] **SCLERA-09**: The sclera provider consumes actual mapped request-local eye-contour and pupil support from the one canonical Vision request and independently validates the left and right eyes.
-- [ ] **SCLERA-10**: Each accepted eye constructs a hard sclera envelope that excludes iris, pupil, protected highlights, lashes, skin, and aperture exterior before any redness score is evaluated.
-- [ ] **SCLERA-11**: Redness is scored only inside the accepted hard envelope; any blur or feather is followed by re-clipping to the same hard envelope before composition.
-- [ ] **SCLERA-12**: The bounded transform derives every changed RGB value from the immutable canonical source, reduces only measured red excess, restores natural luminance, and preserves vessel/detail variation and non-porcelain color.
-- [ ] **SCLERA-13**: Blink, closure, gaze, glasses/contacts, occlusion, strong highlight, collapsed contour, missing or implausible pupil, malformed support, and one-eye rejection fail only the affected eye without guessing, mirroring, caching, or reusing peer/stale support.
+- [x] **SCLERA-09**: The sclera provider consumes actual mapped request-local eye-contour and pupil support from the one canonical Vision request and independently validates the left and right eyes.
+- [x] **SCLERA-10**: Each accepted eye constructs a hard sclera envelope that excludes iris, pupil, protected highlights, lashes, skin, and aperture exterior before any redness score is evaluated.
+- [x] **SCLERA-11**: Redness is scored only inside the accepted hard envelope; any blur or feather is followed by re-clipping to the same hard envelope before composition.
+- [x] **SCLERA-12**: The bounded transform derives every changed RGB value from the immutable canonical source, reduces only measured red excess, restores natural luminance, and preserves vessel/detail variation and non-porcelain color.
+- [x] **SCLERA-13**: Blink, closure, gaze, glasses/contacts, occlusion, strong highlight, collapsed contour, missing or implausible pupil, malformed support, and one-eye rejection fail only the affected eye without guessing, mirroring, caching, or reusing peer/stale support.
 - [ ] **SCLERA-14**: A color-independent open-redness geometry oracle proves zero candidate overlap with the unperturbed protected iris, pupil, highlight, lash, skin, and outside-aperture truth across bounded contour/pupil perturbations.
 - [ ] **SCLERA-15**: A recolored-protected-iris final-output oracle proves that the real score, feather, hard re-clip, bounded transform, and composition together change zero protected iris/pupil/highlight pixels.
 - [ ] **SCLERA-16**: Genuine redness positives show predeclared bounded per-eye target improvement, while normal negatives and unsafe or unsupported eyes abstain or remain natural at maximum admitted strength.
@@ -113,11 +113,11 @@ completion.
 | TEETH-16 | Phase 61 | Complete |
 | SCLERA-07 | Phase 62 | Complete; trailing 61st finite-normalized scalar |
 | SCLERA-08 | Phase 62 | Complete; direct independent `0/1/1/2` admission |
-| SCLERA-09 | Phase 63 | Pending |
-| SCLERA-10 | Phase 63 | Pending |
-| SCLERA-11 | Phase 63 | Pending |
-| SCLERA-12 | Phase 63 | Pending |
-| SCLERA-13 | Phase 63 | Pending |
+| SCLERA-09 | Phase 63 | Verified; one canonical Vision request and current actual per-eye support |
+| SCLERA-10 | Phase 63 | Verified; pre-score protected hard envelope |
+| SCLERA-11 | Phase 63 | Verified; score-inside and post-filter identical-envelope reclip |
+| SCLERA-12 | Phase 63 | Verified; bounded immutable-source transform and retained detail/alpha |
+| SCLERA-13 | Phase 63 | Verified; affected-eye abstention, peer continuation and recovery |
 | SCLERA-14 | Phase 64 | Pending |
 | SCLERA-15 | Phase 64 | Pending |
 | SCLERA-16 | Phase 64 | Pending |
@@ -142,4 +142,4 @@ completion.
 
 ---
 *Requirements defined: 2026-08-05*
-*Last updated: 2026-08-07 after Phase 62 independent sclera evidence and intent verification*
+*Last updated: 2026-08-07 after Phase 63 guarded per-eye sclera provider verification*

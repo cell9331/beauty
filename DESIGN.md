@@ -889,3 +889,39 @@ Command-level evidence is recorded in [Phase 61 output evidence](.planning/phase
   may add guarded per-eye provider work.
 
 Command-level evidence is recorded in [Phase 62 verification](.planning/phases/62-sclera-evidence-and-admission-contract/62-VERIFICATION.md).
+
+### v1.15 Phase 63 Guarded Per-Eye Sclera Provider Contract
+
+- A direct positive `scleraRednessReduction` request consumes only the current
+  canonical carrier plus the selected observation's mapped eye support and
+  canonical anatomical order. The existing request performs one canonicalize,
+  one Vision detect/map, one request-context creation and one composition; the
+  provider cannot issue another request, mirror or cache support, or borrow a
+  peer eye.
+- Each declared side is validated independently as one finite, simple,
+  noncollapsed contour with exactly one finite, contained and plausible actual
+  pupil. Ambiguous order or duplicate sides rejects all sclera work; missing or
+  malformed support rejects only that eye.
+- The pre-score hard envelope is a 12% checked-ROI contour erosion minus an
+  actual-pupil-centered circular exclusion whose radius is
+  `max(0.58 × eyeHeight, 0.16 × eyeWidth) + 0.14 × eyeWidth`, plus expanded
+  near-white highlight and dark lash/margin exclusions. The circle is no
+  smaller than the already-reviewed guard; empty envelopes abstain.
+- Source luminance/low saturation and measured positive red excess are scored
+  only inside the hard envelope. Radius-one softening is clipped back to that
+  same binary envelope before every proposal, so exterior, skin and protected
+  anatomy cannot enter through filtering.
+- Full-strength targets derive only from immutable canonical RGB, cap effective
+  transform strength at `0.52`, preserve alpha and constrain luminance movement
+  to `0.018`. The existing Q16 owner applies soft weight exactly once and
+  preserves source pixels on collisions.
+- The provider emits stable left-then-right zero, one or two units with fixed
+  aggregate outcomes only. Teeth and sclera activate independently but share
+  one request-local composition owner. Pixel-buffer, reset, Demo, realtime,
+  model and network routes contain no sclera provider work.
+- Phase 63 establishes bounded production integration, not public renderer
+  output, adversarial recolored-anatomy proof, final visual acceptance or
+  product promotion. Compatibility remains 61 fields, five neutral presets,
+  73 renderer cases and three disabled local-retouch Demo rows.
+
+Command-level evidence is recorded in [Phase 63 verification](.planning/phases/63-guarded-per-eye-sclera-production-integration/63-VERIFICATION.md).

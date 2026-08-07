@@ -1,7 +1,7 @@
 ---
 phase: 63
 slug: guarded-per-eye-sclera-production-integration
-status: draft
+status: passed
 nyquist_compliant: true
 wave_0_complete: true
 created: 2026-08-07
@@ -45,8 +45,8 @@ requirements: [SCLERA-09, SCLERA-10, SCLERA-11, SCLERA-12, SCLERA-13]
 | 63-02-02 | 02 | 2 | SCLERA-11/12 | T-63-04/05 | post-feather containment and immutable-source target/Q16 once | XCTest + checker | provider/composition filters | green; 32/32 plus 4/4 provider HIGH |
 | 63-03-01 | 03 | 3 | SCLERA-09/13 | T-63-01/02/06 | one provider request, stable units, teeth/sclera shared composition | XCTest | engine integration filters | green; 45/45 task-one focus |
 | 63-03-02 | 03 | 3 | SCLERA-09/13 | T-63-02/06/08 | per-eye failure/recovery and deferred-route absence | XCTest + checker | lifecycle filters + integration mode | green; 94/94, one opt-in skip, plus 4/4 integration HIGH |
-| 63-04-01 | 04 | 4 | SCLERA-10/11/12/13 | T-63-03/04/05/07 | private actual-Vision positive/negative frozen bounds and privacy | private XCTest + checker | Phase 62 runner + eight threats | pending |
-| 63-04-02 | 04 | 4 | all five | T-63-01...08 | full regression, owners and Phase 64-only handoff | full regression | SwiftPM + Demo + inventories | pending |
+| 63-04-01 | 04 | 4 | SCLERA-10/11/12/13 | T-63-03/04/05/07 | private actual-Vision positive/negative frozen bounds and privacy | private XCTest + checker | Phase 62 runner + eight threats | green; final private pair, self/live and 8/8 HIGH |
+| 63-04-02 | 04 | 4 | all five | T-63-01...08 | full regression, owners and Phase 64-only handoff | full regression | SwiftPM + Demo + inventories | green; SDK 612/0/8, Demo 121/0/0, exact inventories |
 
 Task count equality target: **8 task IDs = 8 validation rows**.
 
@@ -91,6 +91,6 @@ aggregate checks. Phase 64 owns new final visual review.
 - [x] No watch-mode command is used.
 - [x] `nyquist_compliant: true` is set.
 - [x] Wave 0 contracts are implemented and green/expected RED as appropriate.
-- [ ] All eight HIGH threats and final regressions pass.
+- [x] All eight HIGH threats and final regressions pass.
 
-**Approval:** pending execution
+**Approval:** passed 2026-08-07; Phase 64-only handoff
