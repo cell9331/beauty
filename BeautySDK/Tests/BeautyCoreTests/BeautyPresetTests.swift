@@ -90,6 +90,30 @@ final class BeautyPresetTests: XCTestCase {
         XCTAssertEqual(preset.parameters.skinSmoothing, 0.18, accuracy: 0.0001)
         XCTAssertEqual(preset.parameters.filterId, "soft_clean")
         XCTAssertEqual(preset.parameters.filterIntensity, 0.25, accuracy: 0.0001)
+        XCTAssertEqual(preset.parameters.teethWhitening, 0, accuracy: 0.0001)
+    }
+
+    func testPhase59LegacyPresetWithoutTeethKeyRemainsNeutral() throws {
+        let data = Data(
+            #"""
+            {
+              "schemaVersion": 1,
+              "id": "legacy-neutral",
+              "version": 1,
+              "displayName": "Legacy Neutral",
+              "parameters": {
+                "skinWhitening": 0.2,
+                "lipColor": 0.3
+              }
+            }
+            """#.utf8
+        )
+
+        let preset = try BeautyPreset.decode(from: data)
+
+        XCTAssertEqual(preset.parameters.skinWhitening, 0.2, accuracy: 0.0001)
+        XCTAssertEqual(preset.parameters.lipColor, 0.3, accuracy: 0.0001)
+        XCTAssertEqual(preset.parameters.teethWhitening, 0, accuracy: 0.0001)
     }
 
     func testEFFECT08UnsupportedSchemaVersionReturnsTypedError() {

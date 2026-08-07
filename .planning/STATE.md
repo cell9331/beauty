@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.15
 milestone_name: Independent Teeth and Sclera Retouch
 status: active
-stopped_at: Plan 59-06 completed; continue with Plan 59-07
-last_updated: "2026-08-06T16:28:03+08:00"
-last_activity: 2026-08-06
-last_activity_desc: One trailing teeth intent and opaque admission demand passed compatibility, forbidden-input, lifecycle, and preset gates
+stopped_at: Plan 59-07 completed; continue with Plan 59-08
+last_updated: "2026-08-07T11:52:00+08:00"
+last_activity: 2026-08-07
+last_activity_desc: Exact-open evidence, compatibility, privacy, and all eight isolated HIGH gates passed
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 9
-  completed_plans: 6
+  completed_plans: 7
   percent: 0
 current_phase: 59
 current_phase_name: Teeth Evidence and Admission Contract
@@ -29,9 +29,9 @@ See: `.planning/PROJECT.md` (updated 2026-08-05)
 ## Current Position
 
 Phase: 59 of 65 (Teeth Evidence and Admission Contract)
-Plan: 59-06 completed; 59-07 next
+Plan: 59-07 completed; 59-08 next
 Status: Active — canonical teeth evidence and one intent seam are open; provider/output remain pending
-Last activity: 2026-08-06 — 60-field compatibility, 118 focused seam tests, and production-absence scan passed
+Last activity: 2026-08-07 — 235 checker mutations, 44 focused SDK tests, 30 Demo tests, and eight isolated HIGH gates passed
 
 Progress: ░░░░░░░░░░ 0%
 
@@ -79,6 +79,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-06
-Stopped at: Plan 59-06 completed; continue Plan 59-07
-Resume file: `.planning/phases/59-teeth-evidence-and-admission-contract/59-07-PLAN.md`
+Last session: 2026-08-07
+Stopped at: Plan 59-07 completed; continue Plan 59-08
+Resume file: `.planning/phases/59-teeth-evidence-and-admission-contract/59-08-PLAN.md`

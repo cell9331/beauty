@@ -1,68 +1,70 @@
 ---
 phase: 59
 feature: teeth_whitening
-decision: closed
-status: valid-but-closed
+decision: open
+status: admitted-intent-only
+requirements: [SEQ-01, EVID-07, TEETH-07, TEETH-08]
 ---
 
 # Phase 59 — Teeth Evidence and Admission Contract
 
-## Authority and current decision
+## Authority and exact decision
 
-The Phase 54 evidence core and its aggregate decision ledger remain the sole
-authority. The current `teeth_whitening` row is closed with the ordered reasons
-`missing_genuine_positive` and `missing_genuine_negative`; all product and
-naturalness counts are zero. A user-authorized local positive/negative bundle
-now exists, but the first submitted review export came from the Spike 006
-reviewer and failed the frozen Phase 54 acceptance predicate, so it has not
-opened the row or changed the canonical ledger.
+The Phase 54 evidence core remains the sole evidence authority. The Phase 54 serializer
+has emitted one exact open `teeth_whitening` decision: two eligible,
+two reviewed, two accepted, zero rejected, and naturalness weight two. Its two
+structured reviews are the opaque positive and negative rows accepted under
+criteria frozen before review. The decision has no reasons.
 
-`portrait_002` is a C2PA-declared AI mechanics candidate. It may support local
-mechanics experiments, but it contributes zero product-effectiveness,
-naturalness, and admission weight. Sharing its original does not share a mask,
-after image, review, or decision with another feature.
+`sclera_redness` remains closed at zero weight with the two missing-genuine-row
+reasons. `upper_eyelid_fullness` remains closed at zero weight with those two
+reasons plus `non_warp_design_unqualified`. Sibling, mechanics-only, synthetic,
+historical, or candidate evidence cannot contribute to the teeth decision.
 
-## Open-branch admission contract
+The canonical ledger is an aggregate allowlist. It contains only schema version,
+opaque fixture and feature identities, polarity, fixed judgments, fixed reason
+codes, decisions, and aggregate counts. `mask_coverage` and
+`protected_leakage` are allowed fixed judgments. Media, local locators, hashes,
+rights details, raw masks, geometry, pixels, coordinates, reviewer identity,
+free text, scanner matches, and raw errors are prohibited.
 
-An open decision requires, for the same `teeth_whitening` feature:
+## Runtime admission boundary
 
-- one genuine discolored-teeth positive and one genuine already-light negative;
-- opaque fixture IDs, predeclared polarity and expected target;
-- approved-internal-evaluation rights for each fixture;
-- an exact bound original/mask/after triple for each fixture;
-- criteria frozen before blinded original-detail review; and
-- structured target presence/improvement, mask coverage, protected-tissue
-  leakage, naturalness, structure-change, decision, and fixed reason-code fields.
+The open row authorizes exactly one append-only SDK intent seam:
 
-Only the existing Phase 54 serializer may persist an accepted open decision.
-Missing, incomplete, unapproved, failed, candidate-only, synthetic,
-mechanics-only, historical, rejected, or sibling rows remain a valid closed
-decision. A closed decision never creates an inert field or route.
+- `BeautyParameters.teethWhitening` is the trailing 60th stored/CodingKey/
+  initializer field, defaults to zero, decodes missing legacy input as zero, and
+  normalizes non-finite or negative input to zero and finite positive input to
+  `0...1`.
+- Only direct `normalized.teethWhitening > 0` creates one
+  `BeautyLocalRetouchAdmission(opaqueDemandCount: 1)`; every other input returns
+  `.none`.
+- Global whitening/color, lips, geometry, Testing hooks, aliases, siblings, and
+  `去脂` cannot create this demand.
 
-Durable output is a positive allowlist containing only opaque IDs, fixed
-judgments/reasons, decisions, and aggregate counts. Local media, paths, rights
-records, hashes, masks, geometry, pixels, reviewer identity, raw scanner output,
-and freeform text are not durable evidence.
+The scalar represents qualified intent, not pixels. Phase 59 makes the explicit
+nonclaims: no provider, no renderer output, no Demo mapping, and no product promotion.
+It also adds no mask owner, transform, saved-image behavior,
+realtime/pixel-buffer route, model, network route, visible-effectiveness claim,
+provider-safety claim, or release claim.
 
-## Runtime boundary
+## Compatibility and privacy
 
-When the independent decision is open, the downstream SDK contract may add one
-trailing, positive-only, finite-normalized, default-zero `teethWhitening` scalar
-and derive one opaque request-local teeth demand from its normalized nonzero
-value. Missing/zero/non-finite normalized input and all global-color, lip-color,
-geometry, Testing, sibling, alias, and `去脂` signals remain neutral. This phase
-does not implement a provider, mask, transform, renderer output, Demo mapping,
-realtime/pixel-buffer path, model, network route, or promotion.
+All five preset resources retain their baseline bytes and omit the new key, so
+they decode to zero. The public example renderer remains exactly 72 cases with
+no local-retouch case. The Demo keeps `lips.teeth`, `eyes.redness`, and
+`eyes.fat` as disabled taxonomy rows with nil controls.
 
-The current closed decision keeps production at the existing exact-empty
-boundary. `scleraRednessReduction`, `去脂`, and every downstream teeth surface
-remain absent.
+Local evidence is rediscovered only by the private runner. It injects the local
+bundle into one child process, reproduces the canonical serializer bytes, and
+returns fixed aggregate status. Tracked and staged privacy scanning must pass
+without emitting paths, matched text, local evidence identifiers, or evidence
+digests.
 
-## Verification disposition
+## Lifecycle
 
-The checker and validation records must distinguish `closed` from `open`; a
-closed result is successful fail-closed evidence, not a failed test and not a
-claim of product effectiveness. Phase 60/61 may proceed only after this exact
-decision is independently open and the scalar/admission contract is actually
-present. No synthetic fixture or threshold inferred from mechanics output may
-change that disposition.
+Every T-59-01 through T-59-08 HIGH gate is blocking. Phase 60 may begin only
+after the exact open ledger, trailing scalar, one-demand route, compatibility
+inventories, privacy scan, owner synchronization, and final regression all pass.
+Any missing file, parse error, scanner ambiguity, unknown threat mode, extra
+surface, or contract drift fails closed.

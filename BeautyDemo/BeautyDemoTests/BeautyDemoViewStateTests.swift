@@ -77,7 +77,7 @@ final class BeautyDemoViewStateTests: XCTestCase {
     }
 
     @MainActor
-    func testPhase56ClosedTeethGatePreservesDisabledTaxonomyWithoutControlOrResetRoute() throws {
+    func testPhase59OpenTeethIntentPreservesDisabledTaxonomyWithoutControlOrResetRoute() throws {
         let lips = MeituEditorCategory.category(id: .lips)
         XCTAssertEqual(lips.title, "嘴唇")
         XCTAssertEqual(lips.tools.map(\.id), [
@@ -225,7 +225,7 @@ final class BeautyDemoViewStateTests: XCTestCase {
     }
 
     @MainActor
-    func testPhase58ZeroPromotionPreservesExactlyThreeDisabledLocalRetouchRows() throws {
+    func testPhase59OpenTeethIntentPreservesExactlyThreeDisabledLocalRetouchRows() throws {
         let expected: [
             (category: MeituEditorCategoryID, id: String, title: String,
              icon: String, badge: MeituEditorToolBadge?)

@@ -3,13 +3,53 @@
   "security_standard": "OWASP ASVS Level 1",
   "block_on": "HIGH",
   "threats": [
-    {"id": "T-59-01", "severity": "HIGH", "disposition": "mitigate", "gates": ["canonical decision identity", "closed reasons", "sibling preservation"]},
-    {"id": "T-59-02", "severity": "HIGH", "disposition": "mitigate", "gates": ["frozen criteria", "pre-review contract", "no post-output tuning"]},
-    {"id": "T-59-03", "severity": "HIGH", "disposition": "mitigate", "gates": ["closed/open branch", "no inert route", "serializer-only transition"]},
-    {"id": "T-59-04", "severity": "HIGH", "disposition": "mitigate", "gates": ["append-only compatibility", "legacy decode", "neutral presets"]},
-    {"id": "T-59-05", "severity": "HIGH", "disposition": "mitigate", "gates": ["teeth-only admission", "alias rejection", "sclera/去脂 absence"]},
-    {"id": "T-59-06", "severity": "HIGH", "disposition": "mitigate", "gates": ["opaque Demo boundary", "disabled taxonomy", "no raw evidence"]},
-    {"id": "T-59-07", "severity": "HIGH", "disposition": "mitigate", "gates": ["no provider", "no renderer", "no realtime/model/network"]},
-    {"id": "T-59-08", "severity": "HIGH", "disposition": "mitigate", "gates": ["owner synchronization", "verification/state", "fail-closed scanner"]}
+    {
+      "id": "T-59-01",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["canonical open decision", "exact counts", "closed sibling preservation"]
+    },
+    {
+      "id": "T-59-02",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["frozen criteria", "exact structured reviews", "serializer provenance"]
+    },
+    {
+      "id": "T-59-03",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["open evidence branch", "trailing scalar", "one opaque demand"]
+    },
+    {
+      "id": "T-59-04",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["append-only compatibility", "legacy decode", "neutral presets"]
+    },
+    {
+      "id": "T-59-05",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["teeth-only admission", "alias rejection", "sclera/去脂 absence"]
+    },
+    {
+      "id": "T-59-06",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["schema allowlist", "disabled Demo taxonomy", "tracked/staged privacy"]
+    },
+    {
+      "id": "T-59-07",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["no provider", "no renderer output", "no realtime/model/network"]
+    },
+    {
+      "id": "T-59-08",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["owner synchronization", "17-task lifecycle", "fail-closed scanner"]
+    }
   ]
 }

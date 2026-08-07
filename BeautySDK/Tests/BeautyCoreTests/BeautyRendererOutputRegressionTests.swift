@@ -978,7 +978,7 @@ extension BeautyRendererOutputRegressionTests {
         }
     }
 
-    func testPhase56ClosedTeethGateKeepsRendererAndSavedOutputSurfaceExact() throws {
+    func testPhase59OpenTeethIntentKeepsRendererAndSavedOutputSurfaceExact() throws {
         let source = try rendererSource()
         let candidateNames = [
             "teethWhitening", "teethWhite", "toothWhitening", "teethBrightness",
@@ -1059,7 +1059,7 @@ extension BeautyRendererOutputRegressionTests {
         XCTAssertEqual(source.components(separatedBy: "engine.processResult(").count - 1, 1)
     }
 
-    func testPhase58ZeroAdmissionKeepsExact72RendererCasesAndNoOutputRoute() throws {
+    func testPhase59OneDemandAdmissionKeepsExact72RendererCasesAndNoOutputRoute() throws {
         let source = try rendererSource()
         let candidates = [
             "teethWhitening", "scleraRednessReduction", "upperEyelidFullnessReduction",
