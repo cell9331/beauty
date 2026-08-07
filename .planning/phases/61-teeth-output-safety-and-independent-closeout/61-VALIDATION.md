@@ -3,7 +3,7 @@ phase: 61
 slug: teeth-output-safety-and-independent-closeout
 status: draft
 nyquist_compliant: true
-wave_0_complete: false
+wave_0_complete: true
 created: 2026-08-07
 security_standard: OWASP ASVS Level 1
 block_on: HIGH
@@ -30,8 +30,8 @@ activate the Demo or authorize sclera/upper-eyelid work.
 
 | Task ID | Plan | Wave | Requirement | Threat ref | Automated evidence | Status |
 | --- | --- | ---: | --- | --- | --- | --- |
-| 61-01-01 | 01 | 1 | TEETH-15 | T-61-01, T-61-02 | RED exact 73-case/public-only/six-output contracts; helper self-test | pending |
-| 61-01-02 | 01 | 1 | TEETH-16 | T-61-03–T-61-08 | RED adversarial/review/promotion contracts; checker isolated mutations | pending |
+| 61-01-01 | 01 | 1 | TEETH-15 | T-61-01, T-61-02 | Exact 73-case/public-only/six-output contracts; 18/18 helper self-tests; expected renderer RED on missing production case/flag | executed |
+| 61-01-02 | 01 | 1 | TEETH-16 | T-61-03–T-61-08 | Six adversarial/recovery tests; 8/8 checker mutations; default pre-promotion live pass | executed |
 | 61-02-01 | 02 | 2 | TEETH-15 | T-61-01 | Renderer case, no-watermark mode, exact regression suites | pending |
 | 61-02-02 | 02 | 2 | TEETH-15 | T-61-02, T-61-06 | Private runner, strict six-output live pass, artifact/privacy checks | pending |
 | 61-03-01 | 03 | 3 | TEETH-16 | T-61-03, T-61-04 | Geometry perturbation, recolored protected output, recovery suites | pending |
@@ -76,4 +76,3 @@ Passing Phase 61 means the still-image SDK-core teeth slice is independently
 complete. It does not claim population validation, realtime support, device
 performance, commercial readiness, packaging, shipping, launch, sclera output,
 or upper-eyelid fullness reduction.
-
