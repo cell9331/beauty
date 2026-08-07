@@ -40,6 +40,7 @@ let arguments = CommandLine.arguments
 let inputDirectory = value(after: "--input", in: arguments) ?? "example-images/input"
 let outputDirectory = value(after: "--output", in: arguments) ?? "example-images/output"
 let selectedCase = value(after: "--case", in: arguments)
+let suppressWatermark = arguments.contains("--no-watermark")
 
 let cases = [
     RenderCase(
@@ -412,6 +413,11 @@ let cases = [
         id: "lipPlump_0p25",
         displayName: "lipPlump 0.25",
         parameters: BeautyParameters(lipPlump: 0.25)
+    ),
+    RenderCase(
+        id: "teethWhitening_1p00",
+        displayName: "teethWhitening 1.00",
+        parameters: BeautyParameters(teethWhitening: 1)
     )
 ]
 
@@ -455,12 +461,17 @@ do {
                 throw ExampleRendererError.renderFailed(relativePath(imageURL, from: inputURL))
             }
 
-            let watermark = watermarkText(for: renderCase, result: result)
-            let watermarked = try drawWatermark(watermark, on: cgImage)
+            let rendered: NSBitmapImageRep
+            if suppressWatermark {
+                rendered = NSBitmapImageRep(cgImage: cgImage)
+            } else {
+                let watermark = watermarkText(for: renderCase, result: result)
+                rendered = try drawWatermark(watermark, on: cgImage)
+            }
             let baseName = imageURL.deletingPathExtension().lastPathComponent
             let outputName = "\(baseName)__\(renderCase.id).png"
             let destination = outputURL.appendingPathComponent(outputName)
-            guard let png = watermarked.pngData() else {
+            guard let png = rendered.pngData() else {
                 throw ExampleRendererError.pngEncodingFailed(outputName)
             }
             try png.write(to: destination, options: .atomic)

@@ -21,7 +21,7 @@ STAGING_NAME = ".gallery-staging"
 QUARANTINE_NAME = ".gallery-quarantine"
 QUARANTINE_ENTRY = "previous"
 MAX_GALLERY_SOURCE_BYTES = 16 * 1_024 * 1_024
-EXPECTED_CASE_COUNT = 72
+EXPECTED_CASE_COUNT = 73
 EXPECTED_FIXTURE_STEMS = ("no-face-gradient", "p1")
 EXPECTED_EYEBROW_CASE_IDS = (
     "eyebrowYPosition_plus0p25",
@@ -74,6 +74,7 @@ CASE_GROUPS = {
         "mouthXPosition_plus0p25", "mouthXPosition_minus0p25",
         "lipPeakDefinition_0p25", "lipPlump_0p25",
     ],
+    "teeth": ["teethWhitening_1p00"],
 }
 
 
@@ -545,8 +546,8 @@ def run_self_tests() -> None:
         stems = discover_fixture_stems(input_dir)
         if tuple(stems) != EXPECTED_FIXTURE_STEMS:
             raise AssertionError(f"fixture stems {stems} != {EXPECTED_FIXTURE_STEMS}")
-        if len(gallery_case_ids) * len(stems) != 144:
-            raise AssertionError("gallery source/destination inventory is not exactly 144")
+        if len(gallery_case_ids) * len(stems) != 146:
+            raise AssertionError("gallery source/destination inventory is not exactly 146")
 
         for retired_name in ("e1.png", "e6.jpg"):
             retired = input_dir / "portraits" / retired_name
@@ -742,7 +743,7 @@ def run_self_tests() -> None:
                 displaced.rename(example)
 
     print(
-        "self-test passed: exact 72-case/two-fixture/144-file inventory, thirteen-case eyebrow group, "
+        "self-test passed: exact 73-case/two-fixture/146-file inventory, thirteen-case eyebrow group, "
         "retired/symlink fixture rejection, bounded leak-free descriptor acquisition, stable size-limited source copying, "
         "descriptor-relative staging/copy/publication, post-recreation "
         "ancestor-swap containment, non-traversed old gallery, bounded quarantine, repeated-run "
