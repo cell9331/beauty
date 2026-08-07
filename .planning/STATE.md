@@ -4,16 +4,16 @@ milestone: v1.15
 milestone_name: Independent Teeth and Sclera Retouch
 current_phase: 65
 current_phase_name: Combined Facade, Privacy, and Milestone Closeout
-status: ready
-stopped_at: Phase 65 planned; Wave 1 ready
-last_updated: "2026-08-08T06:40:00.000Z"
+status: verifying
+stopped_at: Phase 65 independently verified; separate v1.15 audit next
+last_updated: "2026-08-07T23:05:32.000Z"
 last_activity: 2026-08-08
 last_activity_desc: Phase 65 combined facade and milestone closeout planned
 progress:
   total_phases: 7
   completed_phases: 6
-  total_plans: 30
-  completed_plans: 30
+  total_plans: 34
+  completed_plans: 33
 ---
 
 # Project State
@@ -23,14 +23,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-08-07)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 65 — Combined Facade, Privacy, and Milestone Closeout (4 plans ready)
+**Current focus:** Phase 65 — Separate v1.15 milestone audit after green implementation verification
 
 ## Current Position
 
 Phase: 65 — Combined Facade, Privacy, and Milestone Closeout
-Plan: 0 of TBD
-Status: Ready for execution
-Last activity: 2026-08-08 — Phase 65 planned as four serial combined/privacy/audit waves
+Plan: 4 of 4, task 1 of 2 verified
+Status: Separate milestone audit pending
+Last activity: 2026-08-08 — Phase 65 implementation, privacy and full regression independently verified
 
 Progress: █████████░ [█████████░] 86% of milestone phases complete
 
@@ -38,7 +38,7 @@ Progress: █████████░ [█████████░] 86% of
 
 **Current milestone:**
 
-- Total plans completed: 30
+- Total plans completed: 33
 - Average duration: —
 - Total execution time: —
 

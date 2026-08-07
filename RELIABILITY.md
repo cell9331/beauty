@@ -873,3 +873,27 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
   readiness.
 
 Command-level evidence is recorded in [Phase 64 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SCLERA-OUTPUT-EVIDENCE.md) and [verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).
+
+### v1.15 Phase 65 Combined Facade Reliability Closeout
+
+- Combined teeth+sclera output byte-matches independently merged standalone
+  output for disjoint ownership and preserves canonical source on collision.
+  Injected teeth, whole-sclera and individual-eye failure retains every
+  unaffected unit.
+- Valid-invalid-valid, thrown-middle, no-face, malformed, repeated, parallel,
+  cancellation, reset and pixel-buffer boundary tests clear request-local
+  state before later recovery. Dimensions, orientation, opaque alpha, explicit
+  sRGB, typed payload-free errors and deterministic no-op behavior remain
+  unchanged.
+- Six focused suites pass 94/94. Full SwiftPM executes 630 tests with zero
+  failures and eight documented non-required skips; explicit iPhone 17e / iOS
+  26.5 Demo tests pass 121/121 with no skips and the build succeeds.
+- Both standalone private output matrices pass 6/6, two independent private
+  native-Vision suites pass, and all six non-private Vision integration methods
+  execute in selected suites that pass 95/95.
+- This establishes bounded still-image SDK-core reliability only. It does not
+  establish realtime endurance, target-device performance budgets, population
+  coverage, commercial approval, packaging, shipping, launch or release
+  readiness.
+
+Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-CLOSEOUT-EVIDENCE.md) and [verification](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).

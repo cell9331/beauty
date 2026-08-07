@@ -766,3 +766,26 @@ Command-level evidence is recorded in [Phase 63 security](.planning/phases/63-gu
   authorize broader device, commercial or release claims.
 
 Command-level evidence is recorded in [Phase 64 security](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SECURITY.md), [review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-REVIEW.md), and [verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).
+
+### v1.15 Phase 65 Combined Privacy and Security Closeout
+
+- T-65-01 through T-65-08 are machine-green HIGH owners with zero open
+  findings. Authority, byte composition, failure isolation, exact inventory,
+  aggregate privacy, deferred-surface absence, network/resource boundaries and
+  lifecycle owners are checked independently.
+- Public, SPI and Codable state contain no landmarks, pupils, lip/eye support,
+  masks, candidate colors, vessel-like descriptors, image bytes, fixture
+  locators or reviewer identity. Diagnostics are fixed allowlisted aggregate
+  counters and booleans only.
+- Request preparation clears composition, provider and canonical-carrier
+  observations before any input validation. Reset, no-face, malformed,
+  throwing, repeated and parallel requests cannot reuse earlier support,
+  proposals, pixels or summaries.
+- Required private teeth and sclera output and native-Vision gates remain
+  independently owned. Tracked/staged privacy, exact shipped-resource and
+  production network/model scans pass without persisting local evidence.
+- The complete upper-eyelid/`去脂` production identity family remains absent.
+  No realtime, active Demo, model download, cloud processing, archive, tag,
+  shipping or release authority follows from this security closeout.
+
+Command-level evidence is recorded in [Phase 65 security](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-SECURITY.md), [review](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-REVIEW.md), and [verification](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).

@@ -788,3 +788,25 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
   readiness acceptance follows.
 
 Command-level evidence is recorded in [Phase 64 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-REVIEW.md), and [security disposition](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SECURITY.md).
+
+### v1.15 Phase 65 Combined Product Acceptance
+
+- An SDK integrator may request `白牙`, `祛红血丝`, or both through the public
+  still-image facade. Combined use preserves each independently accepted result
+  and unaffected peer work under local provider failure.
+- Product equality is exact: `嘴唇 | 白牙` and aggregate `嘴唇` are
+  `implemented`; `眼睛 | 祛红血丝` is `implemented`; aggregate `眼睛` is
+  `partial` solely because `去脂` remains `future`.
+- Compatibility remains 61 public fields, five neutral presets, 74 renderer
+  cases and three disabled nil-mapped Demo rows. Combined acceptance adds no UI
+  control, preset, alias, proxy or hidden route.
+- Standalone and combined public output, independent private evidence,
+  protected-region safety, failure isolation, recovery, privacy, full
+  regression and owner equality agree. A separate milestone audit remains the
+  final requirement before completion readiness.
+- Minimum authorized pairs do not establish population sufficiency. No
+  realtime/pixel-buffer, target-device quality/performance, commercial
+  approval, Demo activation, packaging, shipping, launch or release-readiness
+  acceptance follows.
+
+Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-CLOSEOUT-EVIDENCE.md) and [verification](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).

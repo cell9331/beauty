@@ -1,6 +1,6 @@
 ---
 phase: 65
-status: security-ready
+status: verified
 evidence_scope: aggregate-only
 combined_facade_tests: 13
 combined_integration_tests: 34
@@ -13,6 +13,12 @@ renderer_cases: 74
 public_fields: 61
 neutral_presets: 5
 disabled_local_retouch_demo_rows: 3
+full_swiftpm_tests: 630
+full_swiftpm_failures: 0
+full_swiftpm_expected_skips: 8
+demo_tests: 121
+demo_failures: 0
+demo_skips: 0
 ---
 
 # Phase 65 Combined Closeout Evidence
@@ -79,7 +85,14 @@ disabled_local_retouch_demo_rows: 3
 | HIGH gates | self-test 8/8; live and isolated 8/8 |
 | Exact inventories | 61 fields / 5 presets / 74 renderer cases / 3 disabled Demo rows |
 
-This is aggregate-only security-ready evidence. Full SDK/Demo regression,
-independent phase verification and the separate milestone audit remain
-required. Deterministic synthetic bytes carry no effectiveness, naturalness,
-admission or product-promotion weight.
+## Full Regression
+
+- Full SwiftPM passes 630 executed tests with zero failures and eight
+  documented non-required skips.
+- Explicit iPhone 17e / iOS 26.5 Demo tests pass 121/121 with no skips and the
+  corresponding build succeeds.
+- Independent Phase 65 verification passes after owner synchronization. The
+  separate milestone audit remains required before completion readiness.
+
+This is aggregate-only verified evidence. Deterministic synthetic bytes carry
+no effectiveness, naturalness, admission or product-promotion weight.

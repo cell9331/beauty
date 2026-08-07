@@ -950,3 +950,26 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
   packaging, shipping, launch or release-readiness claim.
 
 Command-level evidence is recorded in [Phase 64 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-REVIEW.md), and [verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).
+
+### v1.15 Phase 65 Combined Facade Closeout Contract
+
+- Direct teeth and sclera intent remain independently admitted and use one
+  canonical still-image request owner. Their combined output equals an
+  independent merge of the two standalone outputs wherever ownership is
+  disjoint; any contested pixel preserves canonical source.
+- Teeth, whole-sclera, left-eye and right-eye failure are separate units. A
+  failing unit cannot suppress a qualified sibling or peer eye, and no-face,
+  malformed, repeated, parallel, reset, cancellation and early-invalid calls
+  can reuse prior request state.
+- Every facade invocation clears aggregate observations and current canonical
+  carrier state before validation. A later valid request recovers from an
+  invalid or throwing request without stale pixels, support or summaries.
+- Public compatibility closes at exactly 61 fields, five neutral presets and
+  74 renderer cases. The Demo retains three disabled nil-mapped local-retouch
+  rows; `白牙` and `祛红血丝` are implemented, while `去脂` remains future and
+  aggregate `眼睛` remains partial solely for that reason.
+- No realtime/pixel-buffer local retouch, public anatomy, model, network,
+  active Demo route, device/commercial approval, packaging, shipping, launch
+  or release-readiness contract is added.
+
+Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-CLOSEOUT-EVIDENCE.md) and [verification](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).

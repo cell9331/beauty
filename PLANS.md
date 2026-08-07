@@ -30,14 +30,14 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
+| Status | `verifying` |
 | Scope | Start milestone v1.15 to complete still-image SDK-core `白牙` first and independently complete `祛红血丝` second, while keeping `去脂` future and preserving all v1.14 canonical-input, request-local, composition, privacy, compatibility, and fail-closed boundaries. |
 | Research | Four inline GSD research dimensions: stack, features, architecture, and pitfalls. Dedicated GSD subagents are unavailable in this session, so the orchestrator owns the artifacts and records the fallback. |
 | Evidence gate | The mechanics-only candidate remains zero-weight product evidence. Separate genuine teeth and sclera pairs each passed Phase 54 ReviewCore and the exact serializer gate; upper-eyelid fullness remains independently closed. |
 | Order | Teeth evidence and production slice → teeth verification/promotion → sclera evidence and per-eye production slice → sclera verification/promotion → combined regression and milestone audit. |
 | Exclusions | `去脂`; realtime/pixel-buffer; SwiftUI/Demo activation; external model/cloud; tracked portrait media; device/commercial/performance-budget/packaging/shipping/launch claims. |
-| Current | Phase 65 is planned as four serial waves: freeze actual-provider combined byte/failure contracts and eight HIGH owners; complete merge/collision/recovery; close privacy/compatibility/private/opt-in/review; then run full regression, independent phase verification and a separate milestone audit. |
-| Next | Execute Phase 65 Wave 1 RED contracts. Combined behavior uses the two existing public scalars with exact 61/5/74 compatibility; it adds no new visual tuning, renderer case, Demo activation or `去脂` route. |
+| Current | Phase 65 implementation and independent verification pass: combined byte/failure/recovery, privacy, compatibility, private/opt-in Vision, code review, full SwiftPM 630/0/8 and Demo build plus 121/0/0 agree at exact 61/5/74/3 ownership. |
+| Next | Run the separate v1.15 milestone audit. OUT-09 and completion readiness remain open; no archive, tag, cleanup, shipping or release claim is authorized. |
 
 ## 3A. Archived Active Ledger
 

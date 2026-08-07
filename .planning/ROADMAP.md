@@ -162,9 +162,9 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 
 **Plans**: 4 plans
 
-- [ ] 65-01-PLAN.md — RED combined byte/failure contracts and eight-HIGH checker
-- [ ] 65-02-PLAN.md — actual-provider combined facade, collision and lifecycle isolation
-- [ ] 65-03-PLAN.md — privacy/compatibility/private/opt-in gates and security review
+- [x] 65-01-PLAN.md — RED combined byte/failure contracts and eight-HIGH checker
+- [x] 65-02-PLAN.md — actual-provider combined facade, collision and lifecycle isolation
+- [x] 65-03-PLAN.md — privacy/compatibility/private/opt-in gates and security review
 - [ ] 65-04-PLAN.md — full regression, independent phase verification and separate milestone audit
 
 ## Progress
@@ -179,6 +179,6 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 | 62. Sclera Evidence and Admission Contract | 5/5 | Complete — independent evidence, 61st scalar, direct demand, privacy and regression pass | 2026-08-07 |
 | 63. Guarded Per-Eye Sclera Production Integration | 4/4 | Complete — guarded provider, actual-Vision evidence, privacy and regression pass; no promotion | 2026-08-07 |
 | 64. Sclera Output, Adversarial Safety, and Independent Closeout | 4/4 | Complete — public output, adversarial safety, exact promotion and independent regression pass | 2026-08-08 |
-| 65. Combined Facade, Privacy, and Milestone Closeout | 0/4 | Planned — combined byte/failure, privacy, full regression and separate audit pending | - |
+| 65. Combined Facade, Privacy, and Milestone Closeout | 3/4 | Verifying — implementation/full regression pass; separate audit pending | - |
 
 Earlier phase details are preserved in their linked milestone archives under `.planning/milestones/`.

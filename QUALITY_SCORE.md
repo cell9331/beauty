@@ -734,3 +734,25 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
   added.
 
 Command-level evidence is recorded in [Phase 64 verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).
+
+### v1.15 Phase 65 Combined Closeout Evidence Score
+
+- Phase execution reaches 4 plans, 8 task rows, 11 Phase 65 requirements, eight
+  machine-green HIGH owners and zero open findings. The separate audit remains
+  the final milestone-controlled task until it independently passes.
+- Combined closeout passes 13/13; combined plus feature integration 34/34;
+  composition/foundation 73/73; six focused suites 94/94. Checker self, live
+  and all eight isolated modes pass, as does the retained teeth helper 19/19.
+- Both private standalone output matrices pass 6/6; two independent private
+  native-Vision suites pass; six non-private Vision methods execute with their
+  selected suites at 95/95. Tracked/staged privacy scans 1,440 files.
+- Full SwiftPM executes 630 tests with zero failures and eight documented
+  non-required skips. Explicit iPhone 17e / iOS 26.5 Demo build succeeds and
+  tests pass 121/121 with no skips. Exact inventory remains 61/5/74 with three
+  disabled Demo rows.
+- Quality credit is limited to bounded still-image SDK-core standalone and
+  combined behavior, privacy, compatibility, recovery and exact product owner
+  state. No population, realtime, device/performance, commercial, packaging,
+  shipping, launch or release credit is added.
+
+Command-level evidence is recorded in [Phase 65 verification](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).
