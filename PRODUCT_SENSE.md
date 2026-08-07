@@ -715,3 +715,27 @@ Command-level evidence is recorded in [Phase 60 verification](.planning/phases/6
   readiness acceptance follows.
 
 Command-level evidence is recorded in [Phase 61 output evidence](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-TEETH-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-REVIEW.md), and [security disposition](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-SECURITY.md).
+
+### v1.15 Phase 62 Sclera Evidence and Intent Acceptance
+
+- A separately authorized genuine visible-redness positive and normal/already-
+  low-redness negative pass the frozen guarded original-detail review. The
+  canonical sclera decision is independently open at `2/2/2/0/2`; teeth and
+  `去脂` supply no credit.
+- An SDK integrator may construct, encode, decode, default and normalize the
+  trailing `scleraRednessReduction` scalar. Direct positive sclera intent adds
+  one independent request demand; unrelated effects, aliases, teeth intent,
+  Demo labels and `去脂` proxies cannot activate or multiply it.
+- This is intent acceptance, not visible `祛红血丝`. There is no sclera
+  provider, per-eye support/guard, mask, color transform, renderer case, saved
+  output or active Demo control. The three local-retouch Demo rows remain
+  disabled with nil mappings and branch `眼睛` remains partial.
+- Compatibility remains five neutral presets and 73 renderer cases; existing
+  teeth output is unchanged when both intents are present. Phase 63 must
+  independently establish guarded per-eye production behavior, and Phase 64
+  must establish public output, adversarial safety and exact promotion.
+- The minimum pair does not establish population sufficiency, realtime,
+  target-device quality/performance, commercial approval, packaging, shipping,
+  launch or release readiness.
+
+Command-level evidence is recorded in [Phase 62 verification](.planning/phases/62-sclera-evidence-and-admission-contract/62-VERIFICATION.md).

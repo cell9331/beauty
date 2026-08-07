@@ -36,8 +36,8 @@
 | Evidence gate | The mechanics-only candidate remains zero-weight product evidence. Separate genuine teeth and sclera pairs each passed Phase 54 ReviewCore and the exact serializer gate; upper-eyelid fullness remains independently closed. |
 | Order | Teeth evidence and production slice → teeth verification/promotion → sclera evidence and per-eye production slice → sclera verification/promotion → combined regression and milestone audit. |
 | Exclusions | `去脂`; realtime/pixel-buffer; SwiftUI/Demo activation; external model/cloud; tracked portrait media; device/commercial/performance-budget/packaging/shipping/launch claims. |
-| Current | Phase 62 Plan 04 is complete: `scleraRednessReduction` is the trailing 61st default-zero scalar, and direct teeth/sclera intent independently produces opaque demand cardinalities `0/1/1/2`. One canonical request is shared; no sclera provider, renderer output or Demo mapping exists. |
-| Next | Execute Plan 62-05: move every checker mode to the exact-open branch, rerun private evidence/privacy plus full SDK and Demo regression, synchronize owner documents and close Phase 62. |
+| Current | Phase 62 is complete at 5/5: independent sclera evidence is exact open, `scleraRednessReduction` is the trailing 61st scalar, direct teeth/sclera demand is `0/1/1/2`, and private evidence, 8/8 HIGH, full SDK/Demo and privacy gates pass without provider/output/promotion expansion. |
+| Next | Discuss and plan Phase 63 guarded per-eye sclera production integration. It may add request-local provider/support/mask work only; public output, Demo activation and exact `祛红血丝` promotion remain Phase 64 scope. |
 
 ## 3A. Archived Active Ledger
 

@@ -1,8 +1,8 @@
 ---
 phase: 62
 slug: sclera-evidence-and-admission-contract
-status: draft
-nyquist_compliant: false
+status: passed
+nyquist_compliant: true
 wave_0_complete: true
 created: 2026-08-07
 security_standard: OWASP ASVS Level 1
@@ -49,7 +49,7 @@ requirements: [EVID-06, EVID-08, EVID-09, EVID-10, SCLERA-07, SCLERA-08]
 | 62-04-01 | 04 | 4 | SCLERA-07 | T-62-03/04 | XCTest | model/Codable/preset compatibility filters | green |
 | 62-04-02 | 04 | 4 | SCLERA-08 | T-62-03/05/07 | XCTest | resolver/lifecycle/provider-absence filters | green |
 | 62-05-01 | 05 | 5 | all six | T-62-01...08 | mutation/privacy | exact-open live, privacy and isolated threat modes | green |
-| 62-05-02 | 05 | 5 | all six | T-62-04/06/07/08 | regression | full SwiftPM, Demo, owner/lifecycle checks | blocked: task 62-05-01 |
+| 62-05-02 | 05 | 5 | all six | T-62-04/06/07/08 | regression | full SwiftPM, Demo, owner/lifecycle checks | green |
 
 Task count equality target: **10 task IDs = 10 validation rows**.
 
@@ -94,6 +94,6 @@ Wave 0 is complete only after Plan 62-02 passes. It does not open sclera.
 - [x] Wave 0 contract, runner and mutation checker are green.
 - [x] Licensed positive/negative original-detail review is accepted.
 - [x] All eight HIGH threats pass in isolation.
-- [ ] Full SDK and Demo regression is green.
+- [x] Full SDK and Demo regression is green.
 
-**Approval:** pending full post-owner regression and verification
+**Approval:** passed — all ten task rows and eight HIGH owners are green

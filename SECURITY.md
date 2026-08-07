@@ -692,3 +692,27 @@ Command-level evidence is recorded in [Phase 60 security](.planning/phases/60-te
   models/dependencies, network paths, and release surfaces remain absent.
 
 Command-level evidence is recorded in [Phase 61 security](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-SECURITY.md) and [review fix](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-REVIEW-FIX.md).
+
+### v1.15 Phase 62 Sclera Intent Security Closeout
+
+- T-62-01 through T-62-08 are eight machine-green HIGH mitigations with zero
+  open findings. Exact-open decision, fixed-review, aggregate, sibling,
+  compatibility, admission, downstream-absence, privacy and lifecycle owners
+  are checked independently.
+- The self-test rejects 144 one-field decision/review/aggregate, model,
+  admission, alias/proxy, sibling, privacy, downstream and lifecycle mutations.
+  Decision, privacy, live and all eight isolated modes emit fixed path-free
+  results and fail closed on child/scanner errors.
+- Required private execution discovers one fully ignored authorized sclera
+  bundle and reproduces canonical serializer bytes without exposing its
+  locator or asset values. Durable records retain only opaque IDs, fixed
+  judgments/reasons, decisions and aggregates.
+- Public/Codable state exposes only the bounded scalar. Support, masks,
+  anatomy, colors, image data, rights detail, reviewer identity and raw review
+  or mechanics data remain absent from tracked, staged, diagnostic,
+  persistence and network surfaces.
+- No sclera provider, support, mask, transform, renderer output, Demo mapping,
+  realtime path, external model, network route or product promotion is
+  authorized by this closeout.
+
+Command-level evidence is recorded in [Phase 62 security](.planning/phases/62-sclera-evidence-and-admission-contract/62-SECURITY.md) and [verification](.planning/phases/62-sclera-evidence-and-admission-contract/62-VERIFICATION.md).

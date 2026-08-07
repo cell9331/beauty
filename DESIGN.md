@@ -866,3 +866,26 @@ Command-level evidence is recorded in [Phase 60 verification](.planning/phases/6
   readiness claim.
 
 Command-level evidence is recorded in [Phase 61 output evidence](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-TEETH-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-REVIEW.md), and [security disposition](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-SECURITY.md).
+
+### v1.15 Phase 62 Sclera Evidence and Intent Admission Contract
+
+- Phase 54 serialization independently holds teeth and sclera open at exact
+  `2/2/2/0/2` decisions with two fixed reviews apiece; upper-eyelid fullness
+  remains exact closed. Teeth, mechanics and `去脂` contribute no sclera weight.
+- `BeautyParameters` now has exactly 61 stored/CodingKey/initializer fields:
+  60 `Float` values plus optional `filterId`. The trailing
+  `scleraRednessReduction` value defaults and missing-key decodes to zero,
+  rejects negative/non-finite input to zero and clamps finite positive input to
+  `0...1`.
+- `BeautyEffectResolver.localRetouchAdmission(parameters:)` normalizes once.
+  Direct positive teeth and sclera values independently add one feature-neutral
+  opaque demand, yielding exact cardinalities `0/1/1/2`; aliases, global
+  effects, geometry, Testing names, Demo labels and `去脂` cannot contribute.
+- Any nonempty demand count still owns one canonical still-image request.
+  Sclera-only intent has no provider, support, mask, transform, composition
+  unit or visible output; both intents preserve the existing teeth output.
+- Compatibility is exactly five byte-stable neutral presets, 73 renderer cases
+  with no sclera case, and three disabled nil-mapped Demo rows. Phase 63 alone
+  may add guarded per-eye provider work.
+
+Command-level evidence is recorded in [Phase 62 verification](.planning/phases/62-sclera-evidence-and-admission-contract/62-VERIFICATION.md).

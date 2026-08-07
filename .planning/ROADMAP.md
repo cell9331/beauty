@@ -30,7 +30,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 - [x] **Phase 59: Teeth Evidence and Admission Contract** - Turn a complete genuine teeth bundle into one compatibility-safe teeth-only public intent while keeping sclera and `去脂` absent.
 - [x] **Phase 60: Teeth Provider and Production Integration** - Deliver conservative lip-supported tooth selection and bounded immutable-original whitening through the production still-image path.
 - [x] **Phase 61: Teeth Output, Safety, and Independent Closeout** - Prove public-facade visibility, protected-tissue safety, naturalness, regression, and exact `白牙` promotion before any sclera production work. (completed 2026-08-07)
-- [ ] **Phase 62: Sclera Evidence and Admission Contract** - Independently qualify genuine redness/normal evidence and add one compatibility-safe sclera-only public intent after teeth closes.
+- [x] **Phase 62: Sclera Evidence and Admission Contract** - Independently qualify genuine redness/normal evidence and add one compatibility-safe sclera-only public intent after teeth closes. (completed 2026-08-07)
 - [ ] **Phase 63: Guarded Per-Eye Sclera Production Integration** - Deliver independent left/right eye guards, hard sclera ownership, and bounded original-pixel redness reduction.
 - [ ] **Phase 64: Sclera Output, Adversarial Safety, and Independent Closeout** - Prove public-facade per-eye behavior, native and adversarial protected-region safety, naturalness, regression, and exact `祛红血丝` promotion.
 - [ ] **Phase 65: Combined Facade, Privacy, and Milestone Closeout** - Verify both independently admitted features together, preserve all v1.14 boundaries, keep `去脂` absent, and prepare the audited milestone close.
@@ -99,13 +99,13 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
   4. A nonzero effective sclera value creates exactly sclera demand; color, whitening, geometry, Testing hooks, teeth intent, `去脂` proxies, missing/zero legacy fields, and aliases cannot activate it.
   5. A closed or malformed sclera evidence decision produces exact sclera absence without rolling back the already completed teeth slice.
 
-**Plans**: 4/5 plans executed
+**Plans**: 5/5 plans executed
 
 - [x] 62-01-PLAN.md — freeze contract, closed-state checker, validation and HIGH inventory
 - [x] 62-02-PLAN.md — prepare private adapter/runner and closed privacy proof
 - [x] 62-03-PLAN.md — intake real pair, guarded review and serializer-open decision
 - [x] 62-04-PLAN.md — append scalar and independent opaque demand
-- [ ] 62-05-PLAN.md — exact-open regression, owner sync and lifecycle handoff
+- [x] 62-05-PLAN.md — exact-open regression, owner sync and lifecycle handoff
 
 ### Phase 63: Guarded Per-Eye Sclera Production Integration
 
@@ -161,8 +161,8 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 | 59. Teeth Evidence and Admission Contract | 9/9 plans complete / intent admitted / 0 visible promoted | Complete — exact-open evidence, scalar, one demand, privacy, and regression pass | 2026-08-07 |
 | 60. Teeth Provider and Production Integration | 4/4 plans complete / provider verified / 0 visible promoted | Complete — genuine pair, bounded provider, integration, privacy, and regression pass | 2026-08-07 |
 | 61. Teeth Output, Safety, and Independent Closeout | 4/4 | Complete    | 2026-08-07 |
-| 62. Sclera Evidence and Admission Contract | 4/5 | In progress — scalar and independent demand admitted; Plan 62-05 final verification next | - |
-| 63. Guarded Per-Eye Sclera Production Integration | 0/TBD | Not started | - |
+| 62. Sclera Evidence and Admission Contract | 5/5 | Complete — independent evidence, 61st scalar, direct demand, privacy and regression pass | 2026-08-07 |
+| 63. Guarded Per-Eye Sclera Production Integration | 0/TBD | Ready — Phase 62 exact-open verification passed | - |
 | 64. Sclera Output, Adversarial Safety, and Independent Closeout | 0/TBD | Not started | - |
 | 65. Combined Facade, Privacy, and Milestone Closeout | 0/TBD | Not started | - |
 

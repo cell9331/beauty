@@ -14,11 +14,11 @@
 
 ### Rights-Approved Feature Evidence
 
-- [ ] **EVID-06**: Each feature has its own complete rights-approved local bundle containing at least one genuine target-positive and one target-negative with original, mask, after, predeclared polarity, expected target, and exact media binding.
+- [x] **EVID-06**: Each feature has its own complete rights-approved local bundle containing at least one genuine target-positive and one target-negative with original, mask, after, predeclared polarity, expected target, and exact media binding.
 - [x] **EVID-07**: Candidate-only, authorization-only, synthetic, AI-generated, mechanics, and sibling-feature rows contribute zero product-effectiveness, naturalness, or admission weight until they independently satisfy the complete feature bundle contract.
-- [ ] **EVID-08**: Feature-specific containment, protected-region, target-improvement, texture/detail, structure-change, naturalness, and no-op criteria are frozen before blinded original-detail review begins.
-- [ ] **EVID-09**: Persistent review output contains only opaque fixture/feature/polarity IDs, structured judgments, fixed reasons, decisions, and aggregates; it contains no media, path, rights record, reviewer identity, raw support, mask, geometry, pixel, or freeform text.
-- [ ] **EVID-10**: Teeth and sclera receive separate exact go/no-go decisions, and a closed decision creates exact feature absence rather than an inert field or placeholder route.
+- [x] **EVID-08**: Feature-specific containment, protected-region, target-improvement, texture/detail, structure-change, naturalness, and no-op criteria are frozen before blinded original-detail review begins.
+- [x] **EVID-09**: Persistent review output contains only opaque fixture/feature/polarity IDs, structured judgments, fixed reasons, decisions, and aggregates; it contains no media, path, rights record, reviewer identity, raw support, mask, geometry, pixel, or freeform text.
+- [x] **EVID-10**: Teeth and sclera receive separate exact go/no-go decisions, and a closed decision creates exact feature absence rather than an inert field or placeholder route.
 
 ### Teeth Whitening (`白牙`)
 
@@ -35,8 +35,8 @@
 
 ### Guarded Sclera Redness Reduction (`祛红血丝`)
 
-- [ ] **SCLERA-07**: Only after the teeth slice is independently complete and the sclera evidence decision passes, an SDK integrator receives an independent positive-only finite-normalized default-zero `scleraRednessReduction` field with append-only source, Codable, preset, and legacy-payload compatibility.
-- [ ] **SCLERA-08**: Sclera admission derives only from the nonzero effective `scleraRednessReduction` value and cannot be activated by whitening, brightness, skin color, eye geometry, Testing hooks, teeth intent, or `去脂` proxies.
+- [x] **SCLERA-07**: Only after the teeth slice is independently complete and the sclera evidence decision passes, an SDK integrator receives an independent positive-only finite-normalized default-zero `scleraRednessReduction` field with append-only source, Codable, preset, and legacy-payload compatibility.
+- [x] **SCLERA-08**: Sclera admission derives only from the nonzero effective `scleraRednessReduction` value and cannot be activated by whitening, brightness, skin color, eye geometry, Testing hooks, teeth intent, or `去脂` proxies.
 - [ ] **SCLERA-09**: The sclera provider consumes actual mapped request-local eye-contour and pupil support from the one canonical Vision request and independently validates the left and right eyes.
 - [ ] **SCLERA-10**: Each accepted eye constructs a hard sclera envelope that excludes iris, pupil, protected highlights, lashes, skin, and aperture exterior before any redness score is evaluated.
 - [ ] **SCLERA-11**: Redness is scored only inside the accepted hard envelope; any blur or feather is followed by re-clipping to the same hard envelope before composition.
@@ -96,11 +96,11 @@ completion.
 | SEQ-02 | Phase 65 | Pending |
 | SEQ-03 | Phase 65 | Pending |
 | SEQ-04 | Phase 65 | Pending |
-| EVID-06 | Phase 62 | Pending |
+| EVID-06 | Phase 62 | Complete; independent authorized teeth and sclera pairs |
 | EVID-07 | Phase 59 | Verified; zero-weight exclusions preserved |
-| EVID-08 | Phase 62 | Pending |
-| EVID-09 | Phase 62 | Pending |
-| EVID-10 | Phase 62 | Pending |
+| EVID-08 | Phase 62 | Complete; feature-specific criteria frozen before review |
+| EVID-09 | Phase 62 | Complete; fixed durable allowlist and tracked/staged privacy |
+| EVID-10 | Phase 62 | Complete; independent exact decisions and fail-closed siblings |
 | TEETH-07 | Phase 59 | Verified |
 | TEETH-08 | Phase 59 | Verified |
 | TEETH-09 | Phase 60 | Verified; one canonical Vision request and actual complete lip support |
@@ -111,8 +111,8 @@ completion.
 | TEETH-14 | Phase 60 | Verified; genuine positive/negative and local-abstention gates |
 | TEETH-15 | Phase 61 | Complete |
 | TEETH-16 | Phase 61 | Complete |
-| SCLERA-07 | Phase 62 | Pending |
-| SCLERA-08 | Phase 62 | Pending |
+| SCLERA-07 | Phase 62 | Complete; trailing 61st finite-normalized scalar |
+| SCLERA-08 | Phase 62 | Complete; direct independent `0/1/1/2` admission |
 | SCLERA-09 | Phase 63 | Pending |
 | SCLERA-10 | Phase 63 | Pending |
 | SCLERA-11 | Phase 63 | Pending |
@@ -142,4 +142,4 @@ completion.
 
 ---
 *Requirements defined: 2026-08-05*
-*Last updated: 2026-08-07 after Phase 61 independent teeth-output verification*
+*Last updated: 2026-08-07 after Phase 62 independent sclera evidence and intent verification*

@@ -799,3 +799,28 @@ Command-level evidence is recorded in [Phase 60 verification](.planning/phases/6
   release readiness.
 
 Command-level evidence is recorded in [Phase 61 output evidence](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-TEETH-OUTPUT-EVIDENCE.md) and [original-detail review](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-REVIEW.md).
+
+### v1.15 Phase 62 Sclera Intent Reliability Closeout
+
+- The exact serializer-open row is re-derived through required private
+  execution after runtime changes. Missing, ambiguous, malformed, substituted,
+  rejected or byte-divergent evidence fails closed without changing teeth or
+  upper-eyelid state.
+- Sclera intent is default-zero, finite-normalized and request-local. None,
+  teeth-only, sclera-only and combined requests produce exact demand counts
+  `0/1/1/2`, while every nonempty count shares one canonical request rather
+  than multiplying Vision or request-owner work.
+- Sclera-only requests perform canonical foundation work but issue no provider
+  or composition unit and preserve source output. Combined intent produces the
+  same teeth output as teeth-only; generic no-face, malformed, valid-invalid-
+  valid, repeated, parallel, reset and pixel-buffer boundaries remain intact.
+- Compatibility remains 61 fields, five byte-stable neutral presets, 73
+  renderer cases and three disabled Demo rows. Full SwiftPM executes 590 tests
+  with zero failures and seven documented non-required opt-in skips; explicit
+  iPhone 17e / iOS 26.5 Demo tests pass 121/121.
+- These results establish evidence and intent-admission reliability only, not
+  sclera provider effectiveness, visible output, realtime/device endurance,
+  performance budgets, population coverage, commercial approval, packaging,
+  shipping, launch or release readiness.
+
+Command-level evidence is recorded in [Phase 62 verification](.planning/phases/62-sclera-evidence-and-admission-contract/62-VERIFICATION.md).
