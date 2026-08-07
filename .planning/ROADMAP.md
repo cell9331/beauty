@@ -28,7 +28,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 **Phase Numbering:** Continuous from v1.14; this milestone starts at Phase 59.
 
 - [x] **Phase 59: Teeth Evidence and Admission Contract** - Turn a complete genuine teeth bundle into one compatibility-safe teeth-only public intent while keeping sclera and `去脂` absent.
-- [ ] **Phase 60: Teeth Provider and Production Integration** - Deliver conservative lip-supported tooth selection and bounded immutable-original whitening through the production still-image path.
+- [x] **Phase 60: Teeth Provider and Production Integration** - Deliver conservative lip-supported tooth selection and bounded immutable-original whitening through the production still-image path.
 - [ ] **Phase 61: Teeth Output, Safety, and Independent Closeout** - Prove public-facade visibility, protected-tissue safety, naturalness, regression, and exact `白牙` promotion before any sclera production work.
 - [ ] **Phase 62: Sclera Evidence and Admission Contract** - Independently qualify genuine redness/normal evidence and add one compatibility-safe sclera-only public intent after teeth closes.
 - [ ] **Phase 63: Guarded Per-Eye Sclera Production Integration** - Deliver independent left/right eye guards, hard sclera ownership, and bounded original-pixel redness reduction.
@@ -64,7 +64,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
   4. Accepted tooth pixels receive only bounded yellow-excess reduction and small luminance correction derived from immutable canonical source pixels while preserving alpha, texture, shading, edges, and natural color.
   5. Already-light, closed, occluded, no-face, missing-support, malformed, implausible, and unsafe mouths abstain locally without stale support or suppression of unrelated eligible output.
 
-**Plans**: 4 plans / 8 tasks across contract, provider, integration, and final closeout waves
+**Plans**: 4/4 completed; bounded provider verified 2026-08-07
 
 ### Phase 61: Teeth Output, Safety, and Independent Closeout
 
@@ -148,7 +148,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
 | 59. Teeth Evidence and Admission Contract | 9/9 plans complete / intent admitted / 0 visible promoted | Complete — exact-open evidence, scalar, one demand, privacy, and regression pass | 2026-08-07 |
-| 60. Teeth Provider and Production Integration | 0/4 | Planned — Plan 60-01 Wave 0 contracts next; provider/output still absent | - |
+| 60. Teeth Provider and Production Integration | 4/4 plans complete / provider verified / 0 visible promoted | Complete — genuine pair, bounded provider, integration, privacy, and regression pass | 2026-08-07 |
 | 61. Teeth Output, Safety, and Independent Closeout | 0/TBD | Not started | - |
 | 62. Sclera Evidence and Admission Contract | 0/TBD | Not started | - |
 | 63. Guarded Per-Eye Sclera Production Integration | 0/TBD | Not started | - |

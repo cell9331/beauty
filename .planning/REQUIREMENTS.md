@@ -24,12 +24,12 @@
 
 - [x] **TEETH-07**: After the teeth evidence decision passes, an SDK integrator receives an independent positive-only finite-normalized default-zero `teethWhitening` field with append-only source, Codable, preset, and legacy-payload compatibility.
 - [x] **TEETH-08**: Teeth admission derives only from the nonzero effective `teethWhitening` value and cannot be activated by global whitening, brightness, lip color, geometry, Testing hooks, or sclera intent.
-- [ ] **TEETH-09**: The teeth provider consumes actual mapped request-local inner- and outer-lip support from the one canonical Vision request and fails closed when either required support or mouth geometry is missing, malformed, implausible, closed, or occluded.
-- [ ] **TEETH-10**: The provider retains a conservative fixed strong teeth baseline and may add only connected color-qualified candidates grown from accepted seeds inside a narrow hard mouth-local envelope.
-- [ ] **TEETH-11**: Growth, blur, and feathering cannot escape the hard mouth-local envelope, and accepted fixed baseline pixels are never dropped merely to increase adaptive coverage.
-- [ ] **TEETH-12**: Teeth whitening changes zero pixels in lips, tongue, gums, braces, facial hair, skin, and every pixel outside the final owned teeth mask across deterministic and rights-approved challenge cases.
-- [ ] **TEETH-13**: The bounded transform derives every changed RGB value from the immutable canonical source, reduces measured yellow excess, applies only a small capped luminance correction, and preserves alpha, enamel texture, shading, edges, and natural color.
-- [ ] **TEETH-14**: Genuine discoloration positives show predeclared bounded target improvement, while already-light negatives, unsafe candidates, no-face input, and missing-support input abstain or remain natural at maximum admitted strength.
+- [x] **TEETH-09**: The teeth provider consumes actual mapped request-local inner- and outer-lip support from the one canonical Vision request and fails closed when either required support or mouth geometry is missing, malformed, implausible, closed, or occluded.
+- [x] **TEETH-10**: The provider retains a conservative fixed strong teeth baseline and may add only connected color-qualified candidates grown from accepted seeds inside a narrow hard mouth-local envelope.
+- [x] **TEETH-11**: Growth, blur, and feathering cannot escape the hard mouth-local envelope, and accepted fixed baseline pixels are never dropped merely to increase adaptive coverage.
+- [x] **TEETH-12**: Teeth whitening changes zero pixels in lips, tongue, gums, braces, facial hair, skin, and every pixel outside the final owned teeth mask across deterministic and rights-approved challenge cases.
+- [x] **TEETH-13**: The bounded transform derives every changed RGB value from the immutable canonical source, reduces measured yellow excess, applies only a small capped luminance correction, and preserves alpha, enamel texture, shading, edges, and natural color.
+- [x] **TEETH-14**: Genuine discoloration positives show predeclared bounded target improvement, while already-light negatives, unsafe candidates, no-face input, and missing-support input abstain or remain natural at maximum admitted strength.
 - [ ] **TEETH-15**: Isolated public-facade renderer cases and a strict decoded-output helper prove visible tooth-local behavior, same dimensions, expected no-ops, and zero protected/outside changes without relying on Testing-only composition hooks.
 - [ ] **TEETH-16**: Teeth evidence, provider tests, protected-tissue matrix, original-detail review, compatibility, privacy, full regression, exact product ledger, and independent verification all agree before `白牙` is promoted or branch `嘴唇` is closed.
 
@@ -103,12 +103,12 @@ completion.
 | EVID-10 | Phase 62 | Pending |
 | TEETH-07 | Phase 59 | Verified |
 | TEETH-08 | Phase 59 | Verified |
-| TEETH-09 | Phase 60 | Pending |
-| TEETH-10 | Phase 60 | Pending |
-| TEETH-11 | Phase 60 | Pending |
-| TEETH-12 | Phase 60 | Pending |
-| TEETH-13 | Phase 60 | Pending |
-| TEETH-14 | Phase 60 | Pending |
+| TEETH-09 | Phase 60 | Verified; one canonical Vision request and actual complete lip support |
+| TEETH-10 | Phase 60 | Verified; fixed baseline plus seed-connected qualified growth |
+| TEETH-11 | Phase 60 | Verified; post-filter hard re-clip and zero baseline drops |
+| TEETH-12 | Phase 60 | Verified; deterministic and authorized containment/protected gates |
+| TEETH-13 | Phase 60 | Verified; bounded immutable-source transform and preserved detail/alpha |
+| TEETH-14 | Phase 60 | Verified; genuine positive/negative and local-abstention gates |
 | TEETH-15 | Phase 61 | Pending |
 | TEETH-16 | Phase 61 | Pending |
 | SCLERA-07 | Phase 62 | Pending |
@@ -142,4 +142,4 @@ completion.
 
 ---
 *Requirements defined: 2026-08-05*
-*Last updated: 2026-08-07 after Phase 59 exact-open intent verification*
+*Last updated: 2026-08-07 after Phase 60 bounded teeth-provider verification*

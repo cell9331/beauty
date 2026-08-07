@@ -34,18 +34,18 @@ Quality gate:
 
 ## 3. Current Snapshot
 
-Current repository state as of 2026-08-07 after the v1.15 Phase 59 exact-open
-evidence, scalar/admission, compatibility, and privacy gates:
+Current repository state as of 2026-08-07 after the v1.15 Phase 60 bounded
+teeth-provider, production-integration, genuine-evidence, and privacy gates:
 
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
 | Root docs | 4 | All nine root owners exist. The consolidation audit corrected `ARCHITECTURE.md` so current pixel-buffer processing, still-image detection/geometry, and placeholder Render foundations match compiled code. | Keep current facts in root owners; keep milestone narratives in archives. |
 | Historical docs | 3 | `docs/README.md` remains the long-doc entry. `.planning/codebase/*` is explicitly stale background and historical phase/milestone artifacts are not current contracts. | Refresh codebase maps only in an explicitly scoped remap. |
-| GSD planning | 4 | Phase 59 is complete at 9/9 plans, 17/17 task rows, 16/16 decisions, four exact requirement dispositions, and eight green HIGH owners. | Plan Phase 60 only; keep sclera blocked through Phase 61. |
-| SDK Package | 4 | The package/facade boundary is intact; `BeautyParameters` is exactly 60 stored fields (59 `Float` plus optional `filterId`), with trailing default-zero `teethWhitening` and one package-private opaque demand. | Keep provider/output behavior in Phase 60/61 and resolve TD-013 separately. |
-| Demo App | 4 | Phase 59 focused Demo tests pass 30/30 on iPhone 17e / iOS 26.5; the teeth, sclera-redness, and `去脂` taxonomy rows remain disabled with nil mappings. | Preserve disabled taxonomy until each later output/promotion gate passes. |
-| Tests | 4 | Phase 59 evidence contracts pass 9/9, focused SDK passes 147/147, full SwiftPM executes 558 with 0 failures and 6 expected skips, full Demo passes 121/121, and the checker rejects 235 mutations with 8/8 isolated HIGH modes. | Add Phase 60 provider tests without converting these intent checks into output claims. |
-| Security | 4 | Exact ReviewCore serialization, structured-schema allowlists, closed siblings, fixed-output private resolution, and tracked/staged privacy scanning pass without adding a provider/output surface. | Keep local evidence private and rerun all eight HIGH modes at final closeout. |
+| GSD planning | 4 | Phase 60 is complete at 4/4 plans, 8/8 task rows, 16/16 decisions, six verified requirements, and eight green HIGH owners. | Plan Phase 61 only; keep sclera blocked until teeth promotion closes. |
+| SDK Package | 4 | The package/facade boundary is intact; direct positive teeth intent now reaches one stateless package provider and request-local composition unit while the 60-field public contract remains unchanged. | Prove strict public output and final promotion in Phase 61; resolve TD-013 separately. |
+| Demo App | 4 | The unchanged Demo builds and passes 121/121 on iPhone 17e / iOS 26.5; teeth, sclera-redness, and `去脂` rows remain disabled with nil mappings. | Preserve disabled taxonomy until each later output/promotion gate passes. |
+| Tests | 4 | Provider/integration contracts pass, private genuine evidence passes, full SwiftPM executes 581 with 0 failures and 7 expected skips, full Demo passes 121/121, and the checker passes 8 mutations, 99 live assertions, and 8/8 isolated HIGH modes. | Add Phase 61 strict decoded-output and adversarial final-review evidence. |
+| Security | 4 | Complete support, hard re-clipping, immutable-source composition, aggregate-only diagnostics, fixed-output private execution, and tracked/staged privacy all pass with zero open HIGH threats. | Re-run the independent output/promotion security conjunction in Phase 61. |
 | Reliability | 3 | Backpressure, stale work, reset, detection degradation, and the repaired camera lifecycle are test-backed. Realtime geometry/Metal dispatch, 600-second preview, and device endurance are not current evidence. | Keep claims bounded and run the setup-specific long-run/device gates when authorized. |
 | Product acceptance | 4 | v1.13 closes exactly seven eyebrow rows plus branch `眉毛` at SDK-core scope after 21/21 requirements, 4/4 phases, 12/12 integrations, and 6/6 flows. | Do not infer Demo, device, commercial, packaging, or release readiness. |
 
@@ -623,3 +623,28 @@ SDK 1.0 readiness:
 - Quality credit is limited to exact evidence admission, scalar compatibility, binary request intent, privacy, and downstream absence. The mechanics-only candidate adds no product credit. Phase 60 provider safety and Phase 61 public output remain unrun, and no visible-effect, population, device, performance, commercial, packaging, shipping, launch, or release credit is added.
 
 Command-level evidence is recorded in the [Phase 59 validation strategy](.planning/phases/59-teeth-evidence-and-admission-contract/59-VALIDATION.md) and [exact-open boundary summary](.planning/phases/59-teeth-evidence-and-admission-contract/59-07-SUMMARY.md).
+
+### v1.15 Phase 60 Teeth Provider Evidence Score
+
+- Exact traceability passes 4/4 plans, 8/8 task rows, TEETH-09 through
+  TEETH-14 6/6, D-01 through D-16 16/16, and T-60-01 through T-60-08 8/8
+  machine-green HIGH mitigations.
+- Provider tests pass 12/12; provider plus composition passes 33/33; the final
+  integration suite passes 10/10. The broader integration/foundation/
+  composition set passes 49/49, while integration/foundation/metadata/geometry
+  compatibility executes 59 with zero failures and one existing opt-in skip.
+- The authorized private genuine pair passes frozen positive, negative,
+  containment, texture, alpha, and bounded-color gates through fixed-output
+  execution. The checker passes 8/8 mutation cases, 99 live assertions, and all
+  eight isolated HIGH modes with per-threat totals `11 / 14 / 10 / 18 / 7 / 6 /
+  21 / 12`.
+- Full SwiftPM executes 581 tests with seven documented opt-in skips and zero
+  failures. Explicit iPhone 17e / iOS 26.5 Demo build succeeds and tests pass
+  121/121 with no skips.
+- Quality credit is limited to the package-only still-image provider, bounded
+  transform, request-local integration, genuine-pair aggregate bounds,
+  compatibility, privacy, and recovery. Phase 61 public-output evidence and
+  exact promotion remain unrun; no population, realtime, device/performance,
+  commercial, packaging, shipping, launch, or release credit is added.
+
+Command-level evidence is recorded in [Phase 60 verification](.planning/phases/60-teeth-provider-and-production-integration/60-VERIFICATION.md).

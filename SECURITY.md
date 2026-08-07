@@ -642,3 +642,29 @@ Before merging any change touching these areas, update `SECURITY.md` if needed:
 - The production boundary is exactly 60 stored/CodingKey/initializer fields, five byte-stable neutral presets, 72 renderer cases, and three disabled Demo rows with nil mappings. No provider, mask/transform, renderer/output behavior, active Demo mapping, realtime/pixel-buffer route, model/network path, sclera surface, or `去脂` surface exists. Phase 60 and Phase 61 remain separately gated.
 
 Command-level evidence is recorded in the [Phase 59 validation strategy](.planning/phases/59-teeth-evidence-and-admission-contract/59-VALIDATION.md) and [exact-open boundary summary](.planning/phases/59-teeth-evidence-and-admission-contract/59-07-SUMMARY.md).
+
+### v1.15 Phase 60 Teeth Provider Security Boundary
+
+- Mapped lip polygons, masks, candidate colors, proposals, source bindings, and
+  outputs remain package-private, non-Codable, request-local, non-persistent,
+  non-networked, and absent from public results and diagnostics. The Testing
+  seam exposes exactly six aggregate counters and no geometry, pixels, colors,
+  fixture detail, or identity.
+- Polygon, area, connectivity, hard-envelope, source-binding, checked-arithmetic,
+  protected-color, and immutable-source validation fail at the smallest local
+  unit. Missing or malformed support never triggers synthetic geometry, a
+  second Vision request, a cache, or a request failure for unrelated effects.
+- Authorized genuine cases execute only through the fixed-output private runner.
+  Tracked and staged records contain no local locator, media name, digest,
+  rights detail, review identity, raw metric, image, geometry, or pixel data.
+- T-60-01 through T-60-08 are eight machine-green HIGH mitigations. The checker
+  passes 8/8 mutation cases, 99 live assertions, and every isolated threat mode;
+  `threats_open: 0`. It also enforces continued absence of Demo activation,
+  realtime/pixel-buffer local retouch, sibling production fields, external
+  models/dependencies, network paths, and release surfaces.
+- The privacy-manifest disposition is unchanged because this phase adds no data
+  collection, tracking, remote transfer, account behavior, required-reason API,
+  or third-party dependency. Phase 61 remains the independent public-output and
+  promotion security gate.
+
+Command-level evidence is recorded in [Phase 60 security](.planning/phases/60-teeth-provider-and-production-integration/60-SECURITY.md) and [verification](.planning/phases/60-teeth-provider-and-production-integration/60-VERIFICATION.md).

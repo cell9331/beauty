@@ -1,9 +1,9 @@
 ---
 phase: 60
 slug: teeth-provider-and-production-integration
-status: planned
+status: completed
 nyquist_compliant: true
-wave_0_complete: false
+wave_0_complete: true
 created: 2026-08-07
 security_standard: OWASP ASVS Level 1
 block_on: HIGH
@@ -38,8 +38,8 @@ Demo.
 | `60-02-02` | 2 | TEETH-11, TEETH-12, TEETH-13 | Source-derived target unit, composition, containment tests | passed; 33/33 provider + composition tests and 49 checker assertions |
 | `60-03-01` | 3 | TEETH-09, TEETH-12, TEETH-14 | One-request production facade wiring and unrelated-effect continuation | passed; 49/49 focused facade/foundation/composition tests |
 | `60-03-02` | 3 | TEETH-09, TEETH-14 | No-face/missing/malformed/already-light/recovery/parallel/reset tests | passed; 10/10 integration tests and 36 checker assertions |
-| `60-04-01` | 4 | TEETH-12, TEETH-13, TEETH-14 | Private genuine pair, checker self/live/per-threat, privacy | planned |
-| `60-04-02` | 4 | TEETH-09, TEETH-10, TEETH-11, TEETH-12, TEETH-13, TEETH-14 | Full SDK/Demo regression, owners, requirements, lifecycle handoff | planned |
+| `60-04-01` | 4 | TEETH-12, TEETH-13, TEETH-14 | Private genuine pair, checker self/live/per-threat, privacy | passed; fixed-output genuine gate, 8 mutations, 99 live checks, 8/8 HIGH modes |
+| `60-04-02` | 4 | TEETH-09, TEETH-10, TEETH-11, TEETH-12, TEETH-13, TEETH-14 | Full SDK/Demo regression, owners, requirements, lifecycle handoff | passed; SwiftPM 581/0/7, Demo 121/0/0, 16/16 decisions |
 
 Task count equality target: **8 plan task IDs = 8 validation rows**.
 

@@ -36,8 +36,8 @@
 | Evidence gate | The mechanics-only candidate remains zero-weight product evidence. The separate genuine teeth pair has passed the Phase 54 ReviewCore and exact serializer gate; sclera still requires its own independent evidence pair and decision. |
 | Order | Teeth evidence and production slice → teeth verification/promotion → sclera evidence and per-eye production slice → sclera verification/promotion → combined regression and milestone audit. |
 | Exclusions | `去脂`; realtime/pixel-buffer; SwiftUI/Demo activation; external model/cloud; tracked portrait media; device/commercial/performance-budget/packaging/shipping/launch claims. |
-| Current | Phase 60 planning is complete: 16/16 decisions and TEETH-09...14 map to four serial plans, eight executable tasks, and eight blocking HIGH threats. The design reuses the one canonical Vision request, actual mapped inner/outer lip support, fixed-baseline-plus-connected-growth selection, hard re-clip, immutable-source composition, and the existing private authorized pair. No provider source or output behavior has been added yet. |
-| Next | Execute Plan 60-01 Wave 0 deterministic, lifecycle, private-fixture, and checker contracts, then implement provider and production wiring in Plans 60-02/03. Plan 60-04 alone may close the phase and route to Phase 61; Phase 62 and production sclera remain blocked. |
+| Current | Phase 60 is complete: direct positive teeth intent now reaches one stateless package provider through the existing canonical/Vision request, actual inner/outer lip support, fixed-baseline-plus-connected-growth mask, hard re-clip, immutable-source transform, and one request-local composition. TEETH-09...14, 16/16 decisions, 8/8 tasks, the authorized genuine pair, and all eight HIGH gates pass. |
+| Next | Discuss and plan Phase 61 strict public-facade decoded output, adversarial protected-region safety, original-detail final review, regression, and exact `白牙` promotion. Phase 62 and all production sclera work remain blocked until Phase 61 closes. |
 
 ## 3A. Archived Active Ledger
 
@@ -90,6 +90,18 @@
 | Phase 54 closeout | Three review-fix passes bind grants to trusted expected-target policy and exact original/mask/after keys plus SHA-256 byte digests, recover every local-read/display-URL failure transactionally, and independently pin T-54-01…T-54-08. Final standard review is clean. Current automation passes 33/33 core, 38/38 reviewer, 119/119 checker, named live `8/8`, 500 SwiftPM tests with six documented skips, explicit iPhone 17e/iOS 26.5 Demo build and 118/118 tests, schema/UI/diff gates. The fresh user-confirmed direct-`file://` smoke and independently parsed 1,640-byte allowlisted export pass. The three-feature ledger remains closed with zero review/product weight and no SDK/Demo/realtime/media/release admission; Phase 54 validation is complete. |
 
 ## 4. Completed
+
+### C-2026-08-07-v1-15-phase-60-teeth-provider-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-08-07 |
+| Scope | Implemented the package-only stateless teeth selector, bounded immutable-source transform, and direct-intent still-image Engine integration without activating Demo, realtime, sibling, model, or network surfaces. |
+| Safety | Complete actual mapped lips, simple/nested/plausible geometry, fixed `1.5%...94%` baseline, seed-connected growth, post-filter hard re-clip, protected-color no-ops, source-only targets, one Q16 mask owner, collision-to-source, and request-local recovery are enforced. |
+| Evidence | The authorized genuine positive/negative pair passes fixed-output aggregate bounds. Provider 12/12, provider+composition 33/33, integration 10/10, focused facade/foundation/composition 49/49, and compatibility 59 tests with one existing opt-in skip pass. |
+| Verification | Full SwiftPM 581/0/7; Demo build and 121/0/0 tests on iPhone 17e / iOS 26.5; checker 8/8 mutations, live 99, eight isolated HIGH modes; decisions 16/16; tracked/staged privacy, syntax, inventory, and diff hygiene passed. |
+| Requirements | TEETH-09 through TEETH-14 verified. Phase 61 alone owns strict public output, adversarial final review, and exact `白牙` promotion; Phase 62 and production sclera remain blocked. |
+| Boundary | This is a bounded provider result, not final product promotion, population sufficiency, realtime/device/performance readiness, commercial quality, packaging, shipping, launch, or release readiness. |
 
 ### C-2026-08-07-v1-15-phase-59-open-intent-closeout
 

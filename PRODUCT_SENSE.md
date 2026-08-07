@@ -663,3 +663,29 @@ Before merging product-facing changes, verify:
 - Phase 60 must independently establish tooth-local provider containment, bounded color change, failure behavior, and naturalness. Phase 61 must independently establish public-facade saved output, adversarial safety, regression, and promotion. Phase 59 proves neither provider safety nor visible effectiveness and makes no population, device, performance, commercial, packaging, shipping, launch, or release-readiness claim.
 
 Command-level evidence is recorded in the [Phase 59 validation strategy](.planning/phases/59-teeth-evidence-and-admission-contract/59-VALIDATION.md) and [exact-open boundary summary](.planning/phases/59-teeth-evidence-and-admission-contract/59-07-SUMMARY.md).
+
+### v1.15 Phase 60 Teeth Provider Acceptance
+
+- An SDK integrator's positive `teethWhitening` intent now performs conservative
+  package-internal still-image work from the one current Vision request and
+  actual mapped lips. The provider retains a fixed tooth baseline, permits only
+  seed-connected mouth-local growth, hard re-clips after filtering, and derives
+  bounded color targets from original canonical pixels.
+- Deterministic cases prove exact protection for lip, tongue, gum, brace, facial
+  hair, skin, alpha, and all pixels outside the final owned mask. Missing or
+  unsafe support and already-light teeth abstain locally without suppressing
+  unrelated eligible color output.
+- The authorized genuine positive and negative cases pass the frozen aggregate
+  improvement, naturalness/no-op, containment, texture, alpha, and bounded-color
+  criteria through fixed-output private execution. This establishes Phase 60's
+  provider gate, not final visible product promotion or population sufficiency.
+- Compatibility remains 60 fields, five neutral presets, 72 renderer cases, and
+  exactly three disabled local-retouch Demo rows with nil mappings. `白牙`
+  remains disabled/unpromoted, branch `嘴唇` remains partial, `祛红血丝` and
+  `去脂` remain future/disabled, and production sclera stays blocked.
+- Phase 61 must independently prove strict decoded public-facade output,
+  adversarial protected-region safety, original-detail final review, regression,
+  and exact product-ledger promotion. No device, performance-budget, commercial,
+  packaging, shipping, launch, or release-readiness claim follows from Phase 60.
+
+Command-level evidence is recorded in [Phase 60 verification](.planning/phases/60-teeth-provider-and-production-integration/60-VERIFICATION.md).

@@ -3,18 +3,18 @@ gsd_state_version: 1.0
 milestone: v1.15
 milestone_name: Independent Teeth and Sclera Retouch
 status: active
-stopped_at: Phase 60 planned; execute Plan 60-01 Wave 0 contracts
-last_updated: "2026-08-07T13:10:00+08:00"
+stopped_at: Phase 60 complete; discuss and plan Phase 61 output/safety closeout
+last_updated: "2026-08-07T13:40:00+08:00"
 last_activity: 2026-08-07
-last_activity_desc: Phase 60 planned as four serial waves with eight tasks and eight blocking HIGH gates
+last_activity_desc: Phase 60 completed with bounded provider, genuine pair, eight HIGH gates, and full SDK/Demo regression
 progress:
   total_phases: 7
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 13
-  completed_plans: 9
-  percent: 14
-current_phase: 60
-current_phase_name: Teeth Provider and Production Integration
+  completed_plans: 13
+  percent: 29
+current_phase: 61
+current_phase_name: Teeth Output, Safety, and Independent Closeout
 ---
 
 # Project State
@@ -24,22 +24,22 @@ current_phase_name: Teeth Provider and Production Integration
 See: `.planning/PROJECT.md` (updated 2026-08-05)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 60 — Teeth Provider and Production Integration
+**Current focus:** Phase 61 — Teeth Output, Safety, and Independent Closeout
 
 ## Current Position
 
-Phase: 60 of 65 (Teeth Provider and Production Integration)
-Plan: 60-01 of 4 planned plans
-Status: Ready — execute Wave 0 provider/integration/private-fixture contracts
-Last activity: 2026-08-07 — 16/16 Phase 60 decisions and all 6 requirements map to 4 plans / 8 tasks / 8 HIGH gates
+Phase: 61 of 65 (Teeth Output, Safety, and Independent Closeout)
+Plan: Not planned
+Status: Ready — discuss and plan strict output, adversarial safety, final review, and promotion
+Last activity: 2026-08-07 — Phase 60 passed 4/4 plans, 8/8 tasks, 16/16 decisions, 6/6 requirements, and 8/8 HIGH gates
 
-Progress: █░░░░░░░░░ 14%
+Progress: ███░░░░░░░ 29%
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Total plans completed: 9
+- Total plans completed: 13
 - Average duration: —
 - Total execution time: —
 
@@ -62,7 +62,7 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- Teeth intent is independently evidence-qualified, but Phase 60 has not yet implemented or proved the provider, protected-tissue containment, bounded transform, abstention, or naturalness behavior.
+- Teeth intent and the bounded package provider are independently verified, but Phase 61 has not yet proved strict public-facade decoded output, adversarial final safety, original-detail promotion review, or exact product-ledger promotion.
 - Sclera still lacks a rights-approved genuine redness positive and normal-sclera negative complete bundle; the mechanics-only candidate may exercise per-eye mechanics only.
 - Spike thresholds remain calibration seeds, not product constants.
 - Existing TD-013 generic-result sendability remains outside v1.15.
@@ -79,5 +79,5 @@ None found under `.planning/todos/pending/`.
 ## Session Continuity
 
 Last session: 2026-08-07
-Stopped at: Phase 60 planning complete; execute Plan 60-01
-Resume file: `.planning/phases/60-teeth-provider-and-production-integration/60-01-PLAN.md`
+Stopped at: Phase 60 complete; discuss and plan Phase 61
+Resume file: `.planning/ROADMAP.md` Phase 61

@@ -806,3 +806,36 @@ These are known future design areas, not current first-version requirements:
 - Phase 59 admits intent only. It defines no provider, mask owner, transform, renderer/output behavior, Demo activation, realtime/pixel-buffer route, model/network path, sclera surface, or `去脂` proxy. Phase 60 owns provider integration and Phase 61 owns public-output/safety closeout.
 
 Command-level evidence is recorded in the [Phase 59 validation strategy](.planning/phases/59-teeth-evidence-and-admission-contract/59-VALIDATION.md) and [exact-open boundary summary](.planning/phases/59-teeth-evidence-and-admission-contract/59-07-SUMMARY.md).
+
+### v1.15 Phase 60 Teeth Provider Contract
+
+- A direct positive normalized `teethWhitening` value enters the existing
+  still-image local-retouch branch. The provider consumes the current
+  `BeautyStillImageRequestContext` canonical carrier and selected observation's
+  actual mapped inner/outer lip support; it cannot canonicalize, invoke Vision,
+  infer support from face bounds, or retain support between requests.
+- Finite unit-space polygons must be simple, non-degenerate, nested, and mouth-
+  plausible. A fixed inner-lip tooth baseline is accepted only within the
+  `1.5%...94%` strong-area interval. Adaptive coverage starts from fixed pixels
+  above `0.15`, retains only eight-connected color-qualified growth, applies a
+  radius-one filter, re-clips to the hard mouth envelope, and cannot drop a
+  fixed strong pixel.
+- The package-only transform scales public input by a maximum effective `0.62`,
+  requires material yellow excess across the fixed `0.08...0.14` gate, applies
+  the locked `1.45` neutralization factor, and limits luminance correction to
+  the small `0.018` lift / `0.045` target. Targets derive only from immutable
+  canonical RGB; neutral, already-light, lightly warm, protected red/saturated,
+  and unchanged pixels are exact no-ops.
+- One request-local `BeautyLocalRetouchCompositionOwner` issues at most one
+  teeth unit. Targets do not embed mask strength; the existing integer Q16
+  composer applies soft weight exactly once, preserves alpha and unowned bytes,
+  and resolves collisions to source. Testing-only units may share that owner
+  but cannot activate or suppress production teeth work.
+- The production order is exactly canonicalize, one detect/map, request context,
+  optional provider unit, one compose, then existing render. Pixel-buffer,
+  reset, Demo, sibling, model, and network routes contain no teeth provider
+  work. Renderer inventory remains 72 cases and the Demo retains three disabled
+  local-retouch rows. Phase 61 still owns strict public-output proof and product
+  promotion.
+
+Command-level evidence is recorded in [Phase 60 verification](.planning/phases/60-teeth-provider-and-production-integration/60-VERIFICATION.md).

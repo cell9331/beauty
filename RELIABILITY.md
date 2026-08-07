@@ -751,3 +751,27 @@ Before a release-like build:
 - Phase 59 has no provider, mask/transform, renderer/output behavior, Demo activation, realtime/pixel-buffer route, model/network route, sclera surface, or `去脂` surface. Phase 60 must establish provider recovery/safety and Phase 61 must establish public output and closeout; current evidence makes no population, device, performance, commercial, shipping, or release claim.
 
 Command-level evidence is recorded in the [Phase 59 validation strategy](.planning/phases/59-teeth-evidence-and-admission-contract/59-VALIDATION.md) and [exact-open boundary summary](.planning/phases/59-teeth-evidence-and-admission-contract/59-07-SUMMARY.md).
+
+### v1.15 Phase 60 Teeth Provider Reliability
+
+- Every direct positive still-image request attempts the provider exactly once
+  after the existing canonicalize/detect/map/context sequence and composes once,
+  even when no unit is issued. No-face, missing/partial support, malformed or
+  implausible geometry, unsafe area, no accepted seed, protected color, and
+  already-light input are teeth-local abstentions; unrelated eligible render
+  work continues.
+- The provider is stateless and every owner, mask, proposal, result, and summary
+  is stack/request-local. Valid-malformed-valid, success-zero-intent, repeated,
+  reset, pixel-buffer, and sixteen independent parallel-engine cases prove that
+  prior provider observations are cleared and no support or ownership crosses a
+  request boundary.
+- Production admission takes precedence over Testing-only opaque demand. Hooks
+  cannot activate or suppress direct teeth work; when both are present, all
+  units share one owner and one deterministic composition transaction.
+- Full SwiftPM passes 581 tests with zero failures and seven documented explicit
+  opt-in skips. The unchanged Demo builds on iPhone 17e / iOS 26.5 and passes
+  121/121 tests. These results establish bounded still-image recovery only, not
+  realtime, device endurance, optimized performance, commercial naturalness,
+  packaging, shipping, launch, or release readiness.
+
+Command-level evidence is recorded in [Phase 60 verification](.planning/phases/60-teeth-provider-and-production-integration/60-VERIFICATION.md).
