@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "security_standard": "OWASP ASVS Level 1",
+  "block_on": "HIGH",
+  "threats": [
+    {
+      "id": "T-61-01",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["exact public renderer case", "no Testing-only activation", "one production facade route"]
+    },
+    {
+      "id": "T-61-02",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["bounded no-follow decoder", "exact six-output inventory", "ignored regular artifact containment"]
+    },
+    {
+      "id": "T-61-03",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["color-independent protected truth", "bounded geometry perturbations", "zero candidate overlap"]
+    },
+    {
+      "id": "T-61-04",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["recolored protected truth", "real final-output path", "exact protected and exterior RGBA identity"]
+    },
+    {
+      "id": "T-61-05",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["frozen genuine metrics", "blinded original-detail review", "no post-review tuning"]
+    },
+    {
+      "id": "T-61-06",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["fixed-output private runner", "aggregate-only durable evidence", "tracked and staged privacy"]
+    },
+    {
+      "id": "T-61-07",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["pre-promotion exact owners", "atomic 白牙 and 嘴唇 update", "sibling status preservation"]
+    },
+    {
+      "id": "T-61-08",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["all required gates non-skipped", "post-promotion independent verification", "Phase 62 sequence block"]
+    }
+  ]
+}
