@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "security_standard": "OWASP ASVS Level 1",
+  "block_on": "HIGH",
+  "threats": [
+    {
+      "id": "T-63-01",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["exact-open prerequisite", "one canonical Vision request", "actual request-local support only"]
+    },
+    {
+      "id": "T-63-02",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["canonical side ownership", "contour and actual-pupil preflight", "peer-eye failure isolation"]
+    },
+    {
+      "id": "T-63-03",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["pre-score hard envelope", "iris/pupil/highlight/lash/skin/exterior exclusion", "empty-envelope abstention"]
+    },
+    {
+      "id": "T-63-04",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["score only inside guard", "post-feather hard re-clip", "explicit proposal membership"]
+    },
+    {
+      "id": "T-63-05",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["immutable-source bounded transform", "luminance/detail/alpha preservation", "Q16 weight exactly once"]
+    },
+    {
+      "id": "T-63-06",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["one shared composition owner", "teeth/sclera activation isolation", "valid-invalid-valid and parallel recovery"]
+    },
+    {
+      "id": "T-63-07",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["private fixed-output genuine pair", "aggregate-only diagnostics", "tracked and staged privacy"]
+    },
+    {
+      "id": "T-63-08",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["no renderer/Demo/realtime/model/network/promotion", "exact inventories and owners", "Phase 64-only handoff"]
+    }
+  ]
+}
+
