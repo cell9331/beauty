@@ -3,6 +3,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
+const os = require("node:os");
 const path = require("node:path");
 
 const ROOT = path.resolve(__dirname, "..", "..", "..");
@@ -14,6 +15,8 @@ const LEDGER_PATH = path.join(
   ROOT,
   ".planning/milestones/v1.14-phases/54-rights-approved-evidence-and-eligibility-decisions/54-EVIDENCE-DECISIONS.json",
 );
+const ADAPTER = require(path.join(__dirname, "62-authorized-sclera-evidence-export.js"));
+const RUNNER = require(path.join(__dirname, "62-private-evidence-runner.js"));
 
 const OPEN_COUNTS = {
   eligible_count: 2,
@@ -82,6 +85,71 @@ function ledger() {
 
 function byFeature(rows) {
   return Object.fromEntries(rows.map((row) => [row.feature, row]));
+}
+
+function acceptedReview(targetPresent) {
+  return {
+    target_present: targetPresent,
+    mask_coverage: targetPresent ? 4 : 1,
+    protected_leakage: false,
+    naturalness: 4,
+    structure_changed: false,
+    decision: "accept",
+    reason_code: "none",
+  };
+}
+
+function localManifest() {
+  return {
+    schema_version: 1,
+    fixtures: [
+      {
+        fixture_id: "sclera_fixture_001",
+        feature: "sclera_redness",
+        polarity: "positive",
+        expected_target_present: true,
+        rights_status: "approved_internal_evaluation",
+        rights_record_id: "approved_sclera_001",
+        assets: {
+          original: "fixture_001/original.png",
+          mask: "fixture_001/mask.png",
+          after: "fixture_001/after.png",
+        },
+        review: acceptedReview(true),
+      },
+      {
+        fixture_id: "sclera_fixture_002",
+        feature: "sclera_redness",
+        polarity: "negative",
+        expected_target_present: false,
+        rights_status: "approved_internal_evaluation",
+        rights_record_id: "approved_sclera_002",
+        assets: {
+          original: "fixture_002/original.png",
+          mask: "fixture_002/mask.png",
+          after: "fixture_002/after.png",
+        },
+        review: acceptedReview(false),
+      },
+    ],
+  };
+}
+
+function withTemporaryBundle(callback) {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "phase62-contract-"));
+  try {
+    for (const fixture of ["fixture_001", "fixture_002"]) {
+      fs.mkdirSync(path.join(directory, fixture));
+      for (const asset of ["original.png", "mask.png", "after.png"]) {
+        fs.writeFileSync(path.join(directory, fixture, asset), Buffer.from([1, 2, 3]));
+      }
+    }
+    const manifest = localManifest();
+    fs.writeFileSync(path.join(directory, "manifest.json"), JSON.stringify(manifest));
+    return callback(directory, manifest);
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
 }
 
 test("current canonical rows are independently exact", () => {
@@ -228,3 +296,96 @@ test("threat inventory is exactly eight ordered blocking HIGH mitigations", () =
   assert.ok(inventory.threats.every((row) => row.severity === "HIGH" && row.disposition === "mitigate"));
 });
 
+test("private locator keys reject absolute, traversal, platform, drive, and NUL forms", () => {
+  assert.equal(RUNNER.safeRelativeKey("fixture_001/original.png"), true);
+  assert.equal(ADAPTER.safeRelativeKey("fixture_002/after.png"), true);
+  for (const value of [
+    "/private/original.png", "../original.png", "fixture/../original.png",
+    "fixture\\original.png", "C:/original.png", "fixture/\0original.png", "./original.png",
+  ]) {
+    assert.equal(RUNNER.safeRelativeKey(value), false, value);
+    assert.equal(ADAPTER.safeRelativeKey(value), false, value);
+  }
+});
+
+test("discovery shape requires two distinct sclera identities and both polarities", () => {
+  const valid = localManifest();
+  assert.equal(RUNNER.manifestShape(valid), true);
+  const mutations = [
+    (value) => { value.fixtures[0].feature = "teeth_whitening"; },
+    (value) => { value.fixtures[1].fixture_id = value.fixtures[0].fixture_id; },
+    (value) => { value.fixtures[1].polarity = "positive"; },
+    (value) => { value.fixtures.pop(); },
+  ];
+  for (const mutate of mutations) {
+    const candidate = structuredClone(valid);
+    mutate(candidate);
+    assert.equal(RUNNER.manifestShape(candidate), false);
+  }
+});
+
+test("local fixed review rejects extra prose, invalid scores, leakage, and target drift", () => {
+  assert.doesNotThrow(() => ADAPTER.validateReview(acceptedReview(true), true));
+  const mutations = [
+    (value) => { value[["review", "er_note"].join("")] = "not durable"; },
+    (value) => { value.mask_coverage = 0; },
+    (value) => { value.naturalness = 6; },
+    (value) => { value.protected_leakage = true; },
+    (value) => { value.target_present = false; },
+  ];
+  for (const mutate of mutations) {
+    const candidate = acceptedReview(true);
+    mutate(candidate);
+    assert.throws(() => ADAPTER.validateReview(candidate, true));
+  }
+});
+
+test("adapter rejects mechanics-only, incomplete, wrong-rights, and linked inputs without ledger writes", () => {
+  const canonicalBefore = fs.readFileSync(LEDGER_PATH);
+  withTemporaryBundle((directory, manifest) => {
+    const mechanics = structuredClone(manifest);
+    mechanics.fixtures[0].evidence_role = "mechanics_only";
+    fs.writeFileSync(path.join(directory, "manifest.json"), JSON.stringify(mechanics));
+    assert.throws(() => ADAPTER.loadCanonicalInput(directory), /local_manifest_fixture_invalid/);
+
+    const wrongRights = structuredClone(manifest);
+    wrongRights.fixtures[0].rights_status = "unknown";
+    fs.writeFileSync(path.join(directory, "manifest.json"), JSON.stringify(wrongRights));
+    assert.throws(() => ADAPTER.loadCanonicalInput(directory), /local_manifest_fixture_invalid/);
+
+    fs.writeFileSync(path.join(directory, "manifest.json"), JSON.stringify(manifest));
+    fs.rmSync(path.join(directory, "fixture_001", "mask.png"));
+    assert.throws(() => ADAPTER.loadCanonicalInput(directory), /local_asset_missing/);
+    fs.symlinkSync("after.png", path.join(directory, "fixture_001", "mask.png"));
+    assert.throws(() => ADAPTER.loadCanonicalInput(directory), /local_asset_missing/);
+  });
+  assert.deepEqual(fs.readFileSync(LEDGER_PATH), canonicalBefore);
+});
+
+test("bounded nofollow reader rejects symlinks, empty files, and over-limit files", () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "phase62-bounds-"));
+  try {
+    const regular = path.join(directory, "regular.bin");
+    const empty = path.join(directory, "empty.bin");
+    const linked = path.join(directory, "linked.bin");
+    fs.writeFileSync(regular, Buffer.from([1, 2, 3]));
+    fs.writeFileSync(empty, Buffer.alloc(0));
+    fs.symlinkSync("regular.bin", linked);
+    assert.deepEqual(RUNNER.readBoundedRegular(regular, 3), Buffer.from([1, 2, 3]));
+    assert.throws(() => RUNNER.readBoundedRegular(regular, 2));
+    assert.throws(() => RUNNER.readBoundedRegular(empty, 3));
+    assert.throws(() => RUNNER.readBoundedRegular(linked, 3));
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test("privacy classifier rejects local locator, reviewer prose, and in-memory digest", () => {
+  const locator = ["/Us", "ers/test/", "Down", "loads/private-sclera.png"].join("");
+  const prose = ["review", "er_note"].join("") + ": private judgment";
+  const digest = "d".repeat(64);
+  assert.equal(RUNNER.containsSensitiveContent(locator, "PLANS.md"), true);
+  assert.equal(RUNNER.containsSensitiveContent(prose, "PLANS.md"), true);
+  assert.equal(RUNNER.containsSensitiveContent(`opaque ${digest}`, "PLANS.md", new Set([digest])), true);
+  assert.equal(RUNNER.containsSensitiveContent("aggregate-only closed evidence policy", "PLANS.md"), false);
+});
