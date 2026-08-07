@@ -140,7 +140,12 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
   4. Genuine redness positives improve within predeclared per-eye bounds, while normal negatives and blink/gaze/glasses/highlight/occlusion challenges remain natural under blinded original-detail review.
   5. Production tests, native/adversarial matrices, compatibility, privacy, full regression, review/fix, independent verification, and owning ledgers promote exactly `祛红血丝`; `眼睛` remains partial because `去脂` remains future.
 
-**Plans**: TBD
+**Plans**: 4 plans
+
+- [ ] 64-01-PLAN.md — RED public-output/adversarial contracts and eight-HIGH checker
+- [ ] 64-02-PLAN.md — exact public renderer case and private six-output matrix
+- [ ] 64-03-PLAN.md — protected-anatomy oracles, original-detail review and security closeout
+- [ ] 64-04-PLAN.md — full conjunction, exact promotion and independent verification
 
 ### Phase 65: Combined Facade, Privacy, and Milestone Closeout
 

@@ -36,8 +36,8 @@
 | Evidence gate | The mechanics-only candidate remains zero-weight product evidence. Separate genuine teeth and sclera pairs each passed Phase 54 ReviewCore and the exact serializer gate; upper-eyelid fullness remains independently closed. |
 | Order | Teeth evidence and production slice → teeth verification/promotion → sclera evidence and per-eye production slice → sclera verification/promotion → combined regression and milestone audit. |
 | Exclusions | `去脂`; realtime/pixel-buffer; SwiftUI/Demo activation; external model/cloud; tracked portrait media; device/commercial/performance-budget/packaging/shipping/launch claims. |
-| Current | Phase 63 is complete at 4/4: actual current per-eye support, guard-before-score, post-filter reclip, bounded source-only transform, shared composition, peer isolation, private native-Vision evidence, 8/8 HIGH and full SDK/Demo gates pass. `祛红血丝` remains unpromoted. |
-| Next | Discuss and plan Phase 64 sclera output, adversarial safety and independent closeout. It alone may add public renderer/output proof, recolored-protected-anatomy checks, final visual review and exact `祛红血丝` promotion. |
+| Current | Phase 64 is planned as four serial waves: freeze strict public-output/adversarial contracts, add one exact public renderer case and required six-output matrix, close color-independent/recolored-protected-anatomy plus fresh original-detail review, then promote exactly `祛红血丝` only after the full conjunction and independent rerun. |
+| Next | Execute Phase 64 Wave 1 RED contracts. Phase 63 guard constants remain frozen; `祛红血丝` stays unpromoted until every Phase 64 gate passes. |
 
 ## 3A. Archived Active Ledger
 

@@ -5,7 +5,7 @@ milestone_name: Independent Teeth and Sclera Retouch
 current_phase: 64
 current_phase_name: Sclera Output, Adversarial Safety, and Independent Closeout
 status: ready
-stopped_at: Phase 63 complete; Phase 64 discussion ready
+stopped_at: Phase 64 planned; Wave 1 ready
 last_updated: "2026-08-07T11:58:00.000Z"
 last_activity: 2026-08-07
 last_activity_desc: Phase 63 guarded per-eye sclera provider independently verified
@@ -23,7 +23,7 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-08-07)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 64 — Sclera Output, Adversarial Safety, and Independent Closeout
+**Current focus:** Phase 64 — Sclera Output, Adversarial Safety, and Independent Closeout (4 plans ready)
 
 ## Current Position
 
@@ -103,5 +103,5 @@ None found under `.planning/todos/pending/`.
 ## Session Continuity
 
 Last session: 2026-08-07T11:58:00.000Z
-Stopped at: Phase 63 complete; Phase 64 discussion ready
+Stopped at: Phase 64 planned; Wave 1 ready
 Resume file: None

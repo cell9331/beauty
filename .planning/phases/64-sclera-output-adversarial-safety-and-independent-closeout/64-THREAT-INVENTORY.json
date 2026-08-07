@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "security_standard": "OWASP ASVS Level 1",
+  "block_on": "HIGH",
+  "threats": [
+    {"id":"T-64-01","severity":"HIGH","disposition":"mitigate","gates":["exact public sclera case","one public facade route","no Testing activation"]},
+    {"id":"T-64-02","severity":"HIGH","disposition":"mitigate","gates":["bounded no-follow decoder","exact six-output inventory","ignored artifact containment"]},
+    {"id":"T-64-03","severity":"HIGH","disposition":"mitigate","gates":["color-independent protected truth","bounded contour/pupil perturbations","zero candidate overlap"]},
+    {"id":"T-64-04","severity":"HIGH","disposition":"mitigate","gates":["score-attractive protected recolor","real final-output path","exact protected/exterior RGBA"]},
+    {"id":"T-64-05","severity":"HIGH","disposition":"mitigate","gates":["frozen genuine bounds","blinded original-detail review","no post-review tuning"]},
+    {"id":"T-64-06","severity":"HIGH","disposition":"mitigate","gates":["fixed-output private runner","aggregate-only evidence","tracked/staged privacy"]},
+    {"id":"T-64-07","severity":"HIGH","disposition":"mitigate","gates":["pre-promotion exact owners","atomic 祛红血丝 update","眼睛 partial and 去脂 future"]},
+    {"id":"T-64-08","severity":"HIGH","disposition":"mitigate","gates":["all gates non-skipped","post-promotion verification","Phase 65 sequence block"]}
+  ]
+}
