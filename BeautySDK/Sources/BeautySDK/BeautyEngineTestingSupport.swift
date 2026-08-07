@@ -59,12 +59,17 @@ private let phase50MalformedObservedEyebrow = [
     CoordinatePoint(x: 0.27, y: 0.37),
 ]
 
-private func phase63ObservedEyeContour(centerX: Double) -> [CoordinatePoint] {
+private func phase63ObservedEyeContour(
+    centerX: Double,
+    centerY: Double = 0.72,
+    radiusX: Double = 0.18,
+    radiusY: Double = 0.12
+) -> [CoordinatePoint] {
     (0..<16).map { index in
         let angle = Double(index) * 2 * .pi / 16
         return CoordinatePoint(
-            x: centerX + 0.18 * cos(angle),
-            y: 0.55 + 0.12 * sin(angle)
+            x: centerX + radiusX * cos(angle),
+            y: centerY + radiusY * sin(angle)
         )
     }
 }
@@ -72,13 +77,13 @@ private func phase63ObservedEyeContour(centerX: Double) -> [CoordinatePoint] {
 private let phase63ObservedLeftEye = BeautyObservedEyeSupport(
     side: .left,
     contour: phase63ObservedEyeContour(centerX: 0.30),
-    pupil: [CoordinatePoint(x: 0.30, y: 0.55)]
+    pupil: [CoordinatePoint(x: 0.30, y: 0.72)]
 )
 
 private let phase63ObservedRightEye = BeautyObservedEyeSupport(
     side: .right,
     contour: phase63ObservedEyeContour(centerX: 0.70),
-    pupil: [CoordinatePoint(x: 0.70, y: 0.55)]
+    pupil: [CoordinatePoint(x: 0.70, y: 0.72)]
 )
 
 private let phase63MalformedObservedRightEye = BeautyObservedEyeSupport(
@@ -87,16 +92,34 @@ private let phase63MalformedObservedRightEye = BeautyObservedEyeSupport(
     pupil: nil
 )
 
+private let phase63MalformedObservedLeftEye = BeautyObservedEyeSupport(
+    side: .left,
+    contour: phase63ObservedEyeContour(centerX: 0.30),
+    pupil: nil
+)
+
+private let phase63BlinkObservedRightEye = BeautyObservedEyeSupport(
+    side: .right,
+    contour: phase63ObservedEyeContour(centerX: 0.70, radiusY: 0.02),
+    pupil: [CoordinatePoint(x: 0.70, y: 0.72)]
+)
+
+private let phase63SevereGazeObservedRightEye = BeautyObservedEyeSupport(
+    side: .right,
+    contour: phase63ObservedEyeContour(centerX: 0.70),
+    pupil: [CoordinatePoint(x: 0.53, y: 0.72)]
+)
+
 private let phase63ReversedObservedLeftEye = BeautyObservedEyeSupport(
     side: .left,
     contour: phase63ObservedEyeContour(centerX: 0.70),
-    pupil: [CoordinatePoint(x: 0.70, y: 0.55)]
+    pupil: [CoordinatePoint(x: 0.70, y: 0.72)]
 )
 
 private let phase63ReversedObservedRightEye = BeautyObservedEyeSupport(
     side: .right,
     contour: phase63ObservedEyeContour(centerX: 0.30),
-    pupil: [CoordinatePoint(x: 0.30, y: 0.55)]
+    pupil: [CoordinatePoint(x: 0.30, y: 0.72)]
 )
 
 @_spi(Testing) public enum SDKTestingFaceDetectionFixture: Sendable {
@@ -742,6 +765,11 @@ package final class SDKTestingCanonicalStillImageHarness: @unchecked Sendable {
     case leftOnly
     case rightOnly
     case leftValidRightMalformed
+    case rightValidLeftMalformed
+    case leftValidRightBlink
+    case leftValidRightSevereGaze
+    case leftValidRightGlare
+    case leftValidRightOccluded
     case invalidOrder
     case noFace
 }
@@ -1172,14 +1200,40 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
                     observedLipSupport: Self.validLipSupport
                 )]
             case .leftOnly:
-                return [Self.observation(observedEyeSupport: [phase63ObservedLeftEye])]
+                return [Self.observation(
+                    observedEyeSupport: [phase63ObservedLeftEye],
+                    observedLipSupport: Self.validLipSupport
+                )]
             case .rightOnly:
-                return [Self.observation(observedEyeSupport: [phase63ObservedRightEye])]
+                return [Self.observation(
+                    observedEyeSupport: [phase63ObservedRightEye],
+                    observedLipSupport: Self.validLipSupport
+                )]
             case .leftValidRightMalformed:
                 return [Self.observation(observedEyeSupport: [
                     phase63ObservedLeftEye,
                     phase63MalformedObservedRightEye,
-                ])]
+                ], observedLipSupport: Self.validLipSupport)]
+            case .rightValidLeftMalformed:
+                return [Self.observation(observedEyeSupport: [
+                    phase63MalformedObservedLeftEye,
+                    phase63ObservedRightEye,
+                ], observedLipSupport: Self.validLipSupport)]
+            case .leftValidRightBlink:
+                return [Self.observation(observedEyeSupport: [
+                    phase63ObservedLeftEye,
+                    phase63BlinkObservedRightEye,
+                ], observedLipSupport: Self.validLipSupport)]
+            case .leftValidRightSevereGaze:
+                return [Self.observation(observedEyeSupport: [
+                    phase63ObservedLeftEye,
+                    phase63SevereGazeObservedRightEye,
+                ], observedLipSupport: Self.validLipSupport)]
+            case .leftValidRightGlare, .leftValidRightOccluded:
+                return [Self.observation(
+                    observedEyeSupport: [phase63ObservedLeftEye, phase63ObservedRightEye],
+                    observedLipSupport: Self.validLipSupport
+                )]
             case .invalidOrder:
                 return [Self.observation(observedEyeSupport: [
                     phase63ReversedObservedLeftEye,

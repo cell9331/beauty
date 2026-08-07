@@ -38,7 +38,7 @@ final class BeautyEngineTeethWhiteningIntegrationTests: XCTestCase {
         }
     }
 
-    func testPhase62ScleraIntentUsesOneCanonicalRequestWithoutProviderOrOutput() throws {
+    func testPhase63UnsupportedScleraObservationStillUsesOneProviderAndOneEmptyComposition() throws {
         let image = try yellowMouthImage()
         let harness = try SDKTestingLocalRetouchFoundationHarness(
             admittedPrivateDemandCount: 0
@@ -54,16 +54,18 @@ final class BeautyEngineTeethWhiteningIntegrationTests: XCTestCase {
         XCTAssertEqual(harness.requestOwnerCreationCount, 1)
         XCTAssertEqual(harness.renderCount, 1)
         XCTAssertEqual(harness.providerObservation.invocationCount, 0)
-        XCTAssertEqual(harness.compositionObservation.compositionInvocationCount, 0)
+        XCTAssertEqual(harness.scleraProviderObservation.invocationCount, 1)
+        XCTAssertEqual(harness.scleraProviderObservation.issuedUnitCount, 0)
+        XCTAssertEqual(harness.compositionObservation.compositionInvocationCount, 1)
         XCTAssertEqual(
             harness.events,
-            [.canonicalize, .detectAndMap, .makeRequestContext, .render]
+            [.canonicalize, .detectAndMap, .makeRequestContext, .compose, .render]
         )
         XCTAssertEqual(try render(result.output), try render(image))
         XCTAssertEqual(harness.retainedRequestOwnerCount, 0)
     }
 
-    func testPhase62BothIntentsShareOneRequestAndPreserveTeethOutput() throws {
+    func testPhase63BothIntentsShareOneRequestAndPreserveTeethWhenScleraAbstains() throws {
         let image = try yellowMouthImage()
         let teethHarness = try SDKTestingLocalRetouchFoundationHarness(
             admittedPrivateDemandCount: 0
@@ -91,6 +93,8 @@ final class BeautyEngineTeethWhiteningIntegrationTests: XCTestCase {
         XCTAssertEqual(bothHarness.requestOwnerCreationCount, 1)
         XCTAssertEqual(bothHarness.providerObservation.invocationCount, 1)
         XCTAssertEqual(bothHarness.providerObservation.issuedUnitCount, 1)
+        XCTAssertEqual(bothHarness.scleraProviderObservation.invocationCount, 1)
+        XCTAssertEqual(bothHarness.scleraProviderObservation.issuedUnitCount, 0)
         XCTAssertEqual(bothHarness.compositionObservation.compositionInvocationCount, 1)
         XCTAssertEqual(bothHarness.compositionObservation.acceptedUnitCount, 1)
         XCTAssertEqual(
