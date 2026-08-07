@@ -26,6 +26,7 @@ PRESETS_RELATIVE = Path("BeautySDK/Sources/BeautyResources/Resources/Presets")
 RENDERER_RELATIVE = Path("BeautySDK/Sources/BeautyExampleRenderer/main.swift")
 DEMO_RELATIVE = Path("BeautyDemo/BeautyDemo")
 PRIVATE_RUNNER_RELATIVE = PHASE_RELATIVE / "62-private-evidence-runner.js"
+EVIDENCE_EXPORT_RELATIVE = PHASE_RELATIVE / "62-authorized-sclera-evidence-export.js"
 BASELINE_COMMIT = "5793d1b"
 
 ROOT_KEYS = frozenset({"schema_version", "feature_decisions", "reviews", "aggregates"})
@@ -55,6 +56,57 @@ CLOSED_COUNTS = {
     "rejected_count": 0,
     "naturalness_weight": 0,
 }
+FEATURE_ORDER = ("teeth_whitening", "sclera_redness", "upper_eyelid_fullness")
+EXPECTED_OPEN_REVIEWS = (
+    {
+        "fixture_id": "teeth_fixture_001",
+        "feature": "teeth_whitening",
+        "polarity": "positive",
+        "target_present": True,
+        "mask_coverage": 4,
+        "protected_leakage": False,
+        "naturalness": 4,
+        "structure_changed": False,
+        "decision": "accept",
+        "reason_code": "none",
+    },
+    {
+        "fixture_id": "teeth_fixture_002",
+        "feature": "teeth_whitening",
+        "polarity": "negative",
+        "target_present": False,
+        "mask_coverage": 1,
+        "protected_leakage": False,
+        "naturalness": 4,
+        "structure_changed": False,
+        "decision": "accept",
+        "reason_code": "none",
+    },
+    {
+        "fixture_id": "sr_fixture_001",
+        "feature": "sclera_redness",
+        "polarity": "positive",
+        "target_present": True,
+        "mask_coverage": 4,
+        "protected_leakage": False,
+        "naturalness": 4,
+        "structure_changed": False,
+        "decision": "accept",
+        "reason_code": "none",
+    },
+    {
+        "fixture_id": "sr_fixture_002",
+        "feature": "sclera_redness",
+        "polarity": "negative",
+        "target_present": False,
+        "mask_coverage": 1,
+        "protected_leakage": False,
+        "naturalness": 4,
+        "structure_changed": False,
+        "decision": "accept",
+        "reason_code": "none",
+    },
+)
 
 
 ROOT = Path.cwd()
@@ -123,11 +175,15 @@ def decision_errors(document: object, *, sclera_open: bool = False) -> list[str]
         return ["ledger.root_schema"]
     decisions = rows_by_feature(document.get("feature_decisions"))
     aggregates = rows_by_feature(document.get("aggregates"))
-    expected_features = {"teeth_whitening", "sclera_redness", "upper_eyelid_fullness"}
+    expected_features = set(FEATURE_ORDER)
     if decisions is None or set(decisions) != expected_features:
         errors.append("ledger.decision_identity")
+    elif [row.get("feature") for row in document["feature_decisions"]] != list(FEATURE_ORDER):
+        errors.append("ledger.decision_order")
     if aggregates is None or set(aggregates) != expected_features:
         errors.append("ledger.aggregate_identity")
+    elif [row.get("feature") for row in document["aggregates"]] != list(FEATURE_ORDER):
+        errors.append("ledger.aggregate_order")
     if decisions is not None and set(decisions) == expected_features:
         expected = {
             "teeth_whitening": exact_decision("teeth_whitening", opened=True),
@@ -145,33 +201,22 @@ def decision_errors(document: object, *, sclera_open: bool = False) -> list[str]
             if aggregates.get(feature) != {"feature": feature, **counts}:
                 errors.append(f"ledger.aggregate.{feature}")
     reviews = document.get("reviews")
-    expected_review_count = 4 if sclera_open else 2
-    if not isinstance(reviews, list) or len(reviews) != expected_review_count:
+    expected_reviews = list(EXPECTED_OPEN_REVIEWS if sclera_open else EXPECTED_OPEN_REVIEWS[:2])
+    if not isinstance(reviews, list) or len(reviews) != len(expected_reviews):
         errors.append("ledger.review_count")
     elif any(not isinstance(row, dict) or set(row) != REVIEW_KEYS for row in reviews):
         errors.append("ledger.review_schema")
     else:
-        features = [row.get("feature") for row in reviews]
-        expected_order = ["teeth_whitening", "teeth_whitening"]
-        if sclera_open:
-            expected_order += ["sclera_redness", "sclera_redness"]
-        if features != expected_order:
-            errors.append("ledger.review_order")
-        grouped = {
-            feature: [row for row in reviews if row.get("feature") == feature]
-            for feature in expected_features
-        }
-        for feature, rows in grouped.items():
-            expected = 2 if feature == "teeth_whitening" or (feature == "sclera_redness" and sclera_open) else 0
-            if len(rows) != expected:
-                errors.append(f"ledger.review_identity.{feature}")
-            if rows and {row.get("polarity") for row in rows} != {"positive", "negative"}:
-                errors.append(f"ledger.review_polarity.{feature}")
+        if reviews != expected_reviews:
+            errors.append("ledger.review_exact")
+        fixture_ids = [row.get("fixture_id") for row in reviews]
+        if len(set(fixture_ids)) != len(fixture_ids):
+            errors.append("ledger.review_identity")
     return sorted(set(errors))
 
 
 def privacy_schema_errors(document: object) -> list[str]:
-    errors = decision_errors(document, sclera_open=False)
+    errors = decision_errors(document, sclera_open=True)
     if not isinstance(document, dict):
         return sorted(set(errors + ["privacy.document_shape"]))
     for row in document.get("feature_decisions", []):
@@ -227,11 +272,14 @@ def private_result_errors(
     return sorted(set(errors))
 
 
-def private_scan_errors() -> list[str]:
+def private_scan_errors(*, closed: bool = False) -> list[str]:
     errors: list[str] = []
     runner = ROOT / PRIVATE_RUNNER_RELATIVE
     commands = (
-        (["--scan-tracked-staged", "--closed"], frozenset({"status", "tracked_file_count"})),
+        (
+            ["--scan-tracked-staged", "--closed"] if closed else ["--scan-tracked-staged"],
+            frozenset({"status", "tracked_file_count"}),
+        ),
         (["--self-test"], frozenset({"status", "mutation_rejections"})),
     )
     for arguments, expected_keys in commands:
@@ -271,6 +319,42 @@ def private_scan_errors() -> list[str]:
     return sorted(set(errors))
 
 
+def private_verification_errors() -> list[str]:
+    errors: list[str] = []
+    runner = ROOT / PRIVATE_RUNNER_RELATIVE
+    commands = (
+        ["--verify-bundle"],
+        [
+            "--",
+            "node",
+            str(ROOT / EVIDENCE_EXPORT_RELATIVE),
+            "--verify-ledger",
+            str(ROOT / LEDGER_RELATIVE),
+        ],
+    )
+    for arguments in commands:
+        try:
+            result = subprocess.run(
+                ["node", str(runner), *arguments],
+                cwd=ROOT,
+                check=False,
+                capture_output=True,
+                text=True,
+                timeout=150,
+            )
+        except (OSError, subprocess.SubprocessError):
+            errors.append("evidence.private_execution")
+            continue
+        result_errors = private_result_errors(
+            result.returncode,
+            result.stdout,
+            result.stderr,
+            expected_keys=frozenset({"status"}),
+        )
+        errors.extend(f"evidence.{rule}" for rule in result_errors)
+    return sorted(set(errors))
+
+
 def public_fields(source: str) -> list[str]:
     head = source.split("enum CodingKeys", maxsplit=1)[0]
     return re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9_]*):", head, re.MULTILINE)
@@ -296,14 +380,16 @@ def model_errors(source: str, *, sclera_open: bool = False) -> list[str]:
     if fields[-len(expected_tail):] != expected_tail:
         errors.append("model.tail_order")
     if sclera_open:
-        required = (
-            "public var scleraRednessReduction: Float",
-            "scleraRednessReduction: Float = 0",
-            "self.scleraRednessReduction = Self.clampUnit(scleraRednessReduction)",
-            "decodeFloatIfPresent(.scleraRednessReduction)",
-        )
-        if any(token not in source for token in required):
-            errors.append("model.sclera_plumbing")
+        required = {
+            "model.sclera_storage": "public var scleraRednessReduction: Float",
+            "model.sclera_default": "scleraRednessReduction: Float = 0",
+            "model.sclera_clamp": "self.scleraRednessReduction = Self.clampUnit(scleraRednessReduction)",
+            "model.sclera_decode": "decodeFloatIfPresent(.scleraRednessReduction)",
+            "model.sclera_normalized_copy": "scleraRednessReduction: scleraRednessReduction",
+        }
+        for rule, token in required.items():
+            if source.count(token) != 1:
+                errors.append(rule)
     elif "scleraRednessReduction" in source:
         errors.append("model.premature_sclera")
     return sorted(set(errors))
@@ -335,12 +421,20 @@ def admission_errors(source: str, *, sclera_open: bool = False) -> list[str]:
     if "let normalized = parameters.normalized()" not in body:
         errors.append("admission.not_normalized")
     if sclera_open:
+        if body.count("let normalized = parameters.normalized()") != 1:
+            errors.append("admission.normalize_count")
         if body.count("normalized.teethWhitening > 0") != 1:
             errors.append("admission.teeth_direct")
         if body.count("normalized.scleraRednessReduction > 0") != 1:
             errors.append("admission.sclera_direct")
-        if "opaqueDemandCount" not in body:
-            errors.append("admission.opaque_count")
+        if body.count("var opaqueDemandCount = 0") != 1:
+            errors.append("admission.count_initialization")
+        if body.count("opaqueDemandCount += 1") != 2:
+            errors.append("admission.count_increment")
+        if body.count("BeautyLocalRetouchAdmission(opaqueDemandCount: opaqueDemandCount)") != 1:
+            errors.append("admission.count_return")
+        if ".none" in body:
+            errors.append("admission.branch_suppression")
     else:
         if body.count("normalized.teethWhitening > 0") != 1 or body.count("opaqueDemandCount: 1") != 1:
             errors.append("admission.teeth_baseline")
@@ -348,10 +442,17 @@ def admission_errors(source: str, *, sclera_open: bool = False) -> list[str]:
             errors.append("admission.premature_sclera")
     forbidden = (
         "skinWhitening", "brightness", "eyeSize", "upperEyelidLift", "lipColor",
-        "eyes.redness", "祛红血丝", "去脂", "bloodshot", "sclera_redness",
+        "teethWhite", "toothWhitening", "teethBrightness", "teeth_whitening",
+        "scleraRedness", "scleraWhitening", "scleraBrightness", "whitenSclera",
+        "eyeRedness", "eyeRednessReduction", "redEyeReduction",
+        "conjunctivaRednessReduction", "ocularRednessReduction", "bloodshotReduction",
+        "sclera_redness_reduction", "eyes.redness", "lips.teeth", "eyes.fat",
+        "admittedPrivateDemandCount", "productionAdmissionCount",
+        "白牙", "祛红血丝", "去脂", "bloodshot", "sclera_redness",
     )
     for token in forbidden:
-        if token in body:
+        escaped = re.escape(token)
+        if re.search(rf"(?<![A-Za-z0-9_]){escaped}(?![A-Za-z0-9_])", body):
             errors.append("admission.forbidden_input")
             break
     return sorted(set(errors))
@@ -443,10 +544,18 @@ def production_errors(files: dict[str, str] | None = None) -> list[str]:
                 files[str(path.relative_to(ROOT))] = path.read_text(encoding="utf-8")
             except (OSError, UnicodeError):
                 return ["production.source_unreadable"]
+    allowed_scalar_files = {str(PARAMETERS_RELATIVE), str(RESOLVER_RELATIVE)}
+    scalar_files = {
+        relative for relative, source in files.items()
+        if "scleraRednessReduction" in source
+    }
+    if scalar_files != allowed_scalar_files:
+        errors.append("production.sclera_surface")
     combined = "\n".join(files.values())
     for token in (
-        "scleraRednessReduction", "ScleraRedness", "ScleraProvider", "ScleraMask",
-        "Bloodshot", "bloodshot_reduction", "guardedSclera",
+        "ScleraRedness", "ScleraProvider", "ScleraMask", "ScleraTransform",
+        "ScleraRenderer", "Bloodshot", "bloodshot_reduction", "guardedSclera",
+        "scleraSupport", "scleraMask", "scleraOutput", "scleraModel", "scleraNetwork",
     ):
         if token in combined:
             errors.append("production.premature_sclera")
@@ -516,15 +625,19 @@ def live_inputs() -> dict[str, object]:
 def threat_errors(threat_id: str, inputs: dict[str, object] | None = None) -> list[str]:
     values = live_inputs() if inputs is None else inputs
     if threat_id == "T-62-01":
-        return decision_errors(values["ledger"], sclera_open=False)
+        return decision_errors(values["ledger"], sclera_open=True) + private_verification_errors()
     if threat_id == "T-62-02":
-        return contract_errors(str(values["contract"]))
+        return contract_errors(str(values["contract"])) + decision_errors(values["ledger"], sclera_open=True)
     if threat_id == "T-62-03":
-        return model_errors(str(values["parameters"]), sclera_open=False) + admission_errors(str(values["resolver"]), sclera_open=False)
+        return (
+            decision_errors(values["ledger"], sclera_open=True)
+            + model_errors(str(values["parameters"]), sclera_open=True)
+            + admission_errors(str(values["resolver"]), sclera_open=True)
+        )
     if threat_id == "T-62-04":
-        return model_errors(str(values["parameters"]), sclera_open=False) + preset_errors()
+        return model_errors(str(values["parameters"]), sclera_open=True) + preset_errors()
     if threat_id == "T-62-05":
-        return admission_errors(str(values["resolver"]), sclera_open=False) + demo_errors(str(values["demo"]))
+        return admission_errors(str(values["resolver"]), sclera_open=True) + demo_errors(str(values["demo"]))
     if threat_id == "T-62-06":
         return privacy_schema_errors(values["ledger"]) + private_scan_errors()
     if threat_id == "T-62-07":
@@ -559,51 +672,142 @@ def self_test() -> int:
     ledger = inputs["ledger"]
     if not isinstance(ledger, dict):
         raise AssertionError("baseline_ledger_invalid")
-    if private_scan_errors():
+    if decision_errors(ledger, sclera_open=True):
+        raise AssertionError("baseline_decision_invalid")
+    if private_scan_errors() or private_verification_errors():
         raise AssertionError("baseline_private_scan_invalid")
+    mutation_rejections = 0
+
+    def reject(name: str, validator: Callable[[], list[str]]) -> None:
+        nonlocal mutation_rejections
+        assert_rejected(name, validator)
+        mutation_rejections += 1
+
+    def altered(value: object) -> object:
+        if isinstance(value, bool):
+            return not value
+        if isinstance(value, int):
+            return value + 1
+        if isinstance(value, str):
+            return f"{value}_mutated"
+        if isinstance(value, list):
+            return [*value, "mutated"]
+        return "mutated"
 
     mutated = copy.deepcopy(ledger)
-    mutated["feature_decisions"][1]["status"] = "open"
-    assert_rejected("T-62-01", lambda: decision_errors(mutated, sclera_open=False))
+    mutated["schema_version"] = 2
+    reject("T-62-01.root", lambda value=mutated: decision_errors(value, sclera_open=True))
+    for collection in ("feature_decisions", "reviews", "aggregates"):
+        rows = ledger[collection]
+        for row_index, row in enumerate(rows):
+            for key, value in row.items():
+                mutated = copy.deepcopy(ledger)
+                mutated[collection][row_index][key] = altered(value)
+                reject(
+                    f"T-62-01.{collection}.{row_index}.{key}",
+                    lambda value=mutated: decision_errors(value, sclera_open=True),
+                )
+        mutated = copy.deepcopy(ledger)
+        mutated[collection] = list(reversed(mutated[collection]))
+        reject(
+            f"T-62-01.{collection}.order",
+            lambda value=mutated: decision_errors(value, sclera_open=True),
+        )
+        mutated = copy.deepcopy(ledger)
+        mutated[collection] = mutated[collection][:-1]
+        reject(
+            f"T-62-01.{collection}.missing",
+            lambda value=mutated: decision_errors(value, sclera_open=True),
+        )
+        mutated = copy.deepcopy(ledger)
+        mutated[collection].append(copy.deepcopy(mutated[collection][0]))
+        reject(
+            f"T-62-01.{collection}.duplicate",
+            lambda value=mutated: decision_errors(value, sclera_open=True),
+        )
 
-    assert_rejected(
-        "T-62-02",
-        lambda: contract_errors(str(inputs["contract"]).replace("review_frozen: true", "review_frozen: false")),
-    )
-
-    assert_rejected(
-        "T-62-03",
-        lambda: model_errors(
-            str(inputs["parameters"]).replace(
-                "public var teethWhitening: Float",
-                "public var teethWhitening: Float\n    public var scleraRednessReduction: Float",
-            ),
-            sclera_open=False,
+    reject(
+        "T-62-02.frozen",
+        lambda: contract_errors(
+            str(inputs["contract"]).replace("review_frozen: true", "review_frozen: false")
         ),
     )
 
-    altered_parameters = str(inputs["parameters"]).replace(
-        "public var teethWhitening: Float",
-        "public var renamedTeethWhitening: Float",
+    parameters = str(inputs["parameters"])
+    for token in (
+        "public var scleraRednessReduction: Float",
+        "case scleraRednessReduction",
+        "scleraRednessReduction: Float = 0",
+        "self.scleraRednessReduction = Self.clampUnit(scleraRednessReduction)",
+        "decodeFloatIfPresent(.scleraRednessReduction)",
+        "scleraRednessReduction: scleraRednessReduction",
+    ):
+        reject(
+            f"T-62-03.model.{token[:12]}",
+            lambda value=parameters.replace(token, "MUTATED_TOKEN", 1): model_errors(
+                value, sclera_open=True
+            ),
+        )
+    reject(
+        "T-62-04.model_order",
+        lambda: model_errors(
+            parameters.replace(
+                "    public var teethWhitening: Float\n    public var scleraRednessReduction: Float",
+                "    public var scleraRednessReduction: Float\n    public var teethWhitening: Float",
+                1,
+            ),
+            sclera_open=True,
+        ),
     )
-    assert_rejected("T-62-04", lambda: model_errors(altered_parameters, sclera_open=False))
 
-    altered_resolver = str(inputs["resolver"]).replace(
-        "normalized.teethWhitening > 0",
-        "normalized.teethWhitening > 0 || normalized.skinWhitening > 0",
-    )
-    assert_rejected("T-62-05", lambda: admission_errors(altered_resolver, sclera_open=False))
+    resolver = str(inputs["resolver"])
+    for name, changed in (
+        ("normalize", resolver.replace("let normalized = parameters.normalized()", "let normalized = parameters")),
+        ("teeth", resolver.replace("normalized.teethWhitening > 0", "false", 1)),
+        ("sclera", resolver.replace("normalized.scleraRednessReduction > 0", "false", 1)),
+        ("increment", resolver.replace("opaqueDemandCount += 1", "opaqueDemandCount += 2", 1)),
+        (
+            "return",
+            resolver.replace(
+                "BeautyLocalRetouchAdmission(opaqueDemandCount: opaqueDemandCount)",
+                "BeautyLocalRetouchAdmission(opaqueDemandCount: 1)",
+                1,
+            ),
+        ),
+    ):
+        reject(
+            f"T-62-05.{name}",
+            lambda value=changed: admission_errors(value, sclera_open=True),
+        )
+    for token in (
+        "skinWhitening", "brightness", "eyeSize", "upperEyelidLift", "lipColor",
+        "teethWhite", "toothWhitening", "teethBrightness", "teeth_whitening",
+        "scleraRedness", "scleraWhitening", "scleraBrightness", "whitenSclera",
+        "eyeRedness", "eyeRednessReduction", "redEyeReduction",
+        "conjunctivaRednessReduction", "ocularRednessReduction", "bloodshotReduction",
+        "sclera_redness_reduction", "eyes.redness", "lips.teeth", "eyes.fat",
+        "admittedPrivateDemandCount", "productionAdmissionCount",
+        "白牙", "祛红血丝", "去脂",
+    ):
+        altered_resolver = resolver.replace(
+            "let normalized = parameters.normalized()",
+            f"let forbidden = \"{token}\"\n        let normalized = parameters.normalized()",
+        )
+        reject(
+            f"T-62-05.alias.{token}",
+            lambda value=altered_resolver: admission_errors(value, sclera_open=True),
+        )
 
     mutated = copy.deepcopy(ledger)
     mutated["reviews"][0]["reviewer_note"] = "opaque"
-    assert_rejected("T-62-06", lambda: privacy_schema_errors(mutated))
+    reject("T-62-06.schema", lambda: privacy_schema_errors(mutated))
     for name, result in (
         ("runner_nonzero", (1, '{"status":"fail"}\n', "")),
         ("runner_stderr", (0, '{"status":"pass","tracked_file_count":1}\n', "scanner failure")),
         ("runner_malformed", (0, "not-json\n", "")),
         ("runner_extra", (0, '{"status":"pass","tracked_file_count":1,"detail":"private"}\n', "")),
     ):
-        assert_rejected(
+        reject(
             f"T-62-06.{name}",
             lambda value=result: private_result_errors(
                 *value,
@@ -611,9 +815,17 @@ def self_test() -> int:
             ),
         )
 
-    assert_rejected(
-        "T-62-07",
+    reject(
+        "T-62-07.provider",
         lambda: production_errors({"Synthetic.swift": "struct ScleraProvider {}"}),
+    )
+    reject(
+        "T-62-07.renderer",
+        lambda: renderer_errors(str(inputs["renderer"]) + '\nid: "scleraRednessReduction_1p00"'),
+    )
+    reject(
+        "T-62-07.demo",
+        lambda: demo_errors(str(inputs["demo"]) + "\ncase scleraRednessReduction"),
     )
 
     missing_task_plans = list(inputs["plans"])
@@ -623,13 +835,38 @@ def self_test() -> int:
         missing_task_plans[-1],
         flags=re.DOTALL,
     )
-    assert_rejected(
-        "T-62-08",
+    reject(
+        "T-62-08.task",
         lambda: lifecycle_errors(missing_task_plans, inputs["inventory"], str(inputs["validation"])),
     )
+    altered_inventory = copy.deepcopy(inputs["inventory"])
+    altered_inventory["threats"][0]["severity"] = "MEDIUM"
+    reject(
+        "T-62-08.threat",
+        lambda: lifecycle_errors(list(inputs["plans"]), altered_inventory, str(inputs["validation"])),
+    )
+    reject(
+        "T-62-08.validation",
+        lambda: lifecycle_errors(
+            list(inputs["plans"]),
+            inputs["inventory"],
+            str(inputs["validation"]).replace("| 62-05-02 |", "| missing |", 1),
+        ),
+    )
 
-    emit("pass", mode="self-test", check_count=8, mutation_rejections=8)
+    emit("pass", mode="self-test", check_count=8, mutation_rejections=mutation_rejections)
     return 0
+
+
+def historical_closed_fixture_errors() -> list[str]:
+    ledger = read_json(LEDGER_RELATIVE)
+    if not isinstance(ledger, dict):
+        return ["closed.fixture_source"]
+    fixture = copy.deepcopy(ledger)
+    fixture["feature_decisions"][1] = exact_decision("sclera_redness", opened=False)
+    fixture["reviews"] = fixture["reviews"][:2]
+    fixture["aggregates"][1] = {"feature": "sclera_redness", **CLOSED_COUNTS}
+    return decision_errors(fixture, sclera_open=False)
 
 
 def emit(
@@ -678,16 +915,23 @@ def main() -> int:
             )
             return 0 if not errors else 1
         if args.decision:
-            errors = decision_errors(read_json(LEDGER_RELATIVE), sclera_open=False)
+            errors = (
+                decision_errors(read_json(LEDGER_RELATIVE), sclera_open=True)
+                + private_verification_errors()
+            )
             mode = "decision"
-            count = 1
+            count = 3
         elif args.privacy:
             errors = privacy_schema_errors(read_json(LEDGER_RELATIVE)) + private_scan_errors()
             mode = "privacy"
             count = 3
+        elif args.closed:
+            errors = historical_closed_fixture_errors()
+            mode = "closed"
+            count = 1
         else:
             count, errors = all_errors()
-            mode = "closed" if args.closed else "live"
+            mode = "live"
         emit("pass" if not errors else "fail", mode=mode, check_count=count, failures=errors)
         return 0 if not errors else 1
     except (AssertionError, OSError, subprocess.SubprocessError):

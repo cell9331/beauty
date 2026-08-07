@@ -155,3 +155,11 @@ T-62-01 through T-62-08 are all HIGH. A missing real pair, changed criterion,
 unissued review, sibling mismatch, privacy leak, scanner/tool error, skipped
 private gate, premature runtime surface, compatibility drift or downstream
 implementation keeps Phase 62 incomplete and Phase 63 blocked.
+
+The final checker `--decision`, `--privacy` and `--live` modes require this
+exact-open branch, fresh private serializer reproduction, the 61-field model,
+independent `0/1/1/2` admission, unchanged `5/73/three-disabled`
+compatibility, and downstream sclera absence. The `--closed` mode validates
+only the explicit historical closed fixture; it is not an alternate live
+repository state. Every isolated T-62 owner and all fail-closed mutations must
+pass before lifecycle transition.

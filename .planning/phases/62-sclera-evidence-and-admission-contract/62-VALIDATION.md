@@ -48,7 +48,7 @@ requirements: [EVID-06, EVID-08, EVID-09, EVID-10, SCLERA-07, SCLERA-08]
 | 62-03-02 | 03 | 3 | EVID-06, EVID-09, EVID-10 | T-62-01/02/06 | private | ReviewCore open export + exact ledger bytes | green |
 | 62-04-01 | 04 | 4 | SCLERA-07 | T-62-03/04 | XCTest | model/Codable/preset compatibility filters | green |
 | 62-04-02 | 04 | 4 | SCLERA-08 | T-62-03/05/07 | XCTest | resolver/lifecycle/provider-absence filters | green |
-| 62-05-01 | 05 | 5 | all six | T-62-01...08 | mutation/privacy | exact-open live, privacy and isolated threat modes | blocked: plan 62-04 |
+| 62-05-01 | 05 | 5 | all six | T-62-01...08 | mutation/privacy | exact-open live, privacy and isolated threat modes | green |
 | 62-05-02 | 05 | 5 | all six | T-62-04/06/07/08 | regression | full SwiftPM, Demo, owner/lifecycle checks | blocked: task 62-05-01 |
 
 Task count equality target: **10 task IDs = 10 validation rows**.
@@ -93,7 +93,7 @@ Wave 0 is complete only after Plan 62-02 passes. It does not open sclera.
 - [x] Sampling continuity has no three consecutive manual-only tasks.
 - [x] Wave 0 contract, runner and mutation checker are green.
 - [x] Licensed positive/negative original-detail review is accepted.
-- [ ] All eight HIGH threats pass in isolation.
+- [x] All eight HIGH threats pass in isolation.
 - [ ] Full SDK and Demo regression is green.
 
-**Approval:** pending licensed sclera pair and completed execution
+**Approval:** pending full post-owner regression and verification
