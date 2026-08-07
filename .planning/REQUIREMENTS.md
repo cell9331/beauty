@@ -30,8 +30,8 @@
 - [x] **TEETH-12**: Teeth whitening changes zero pixels in lips, tongue, gums, braces, facial hair, skin, and every pixel outside the final owned teeth mask across deterministic and rights-approved challenge cases.
 - [x] **TEETH-13**: The bounded transform derives every changed RGB value from the immutable canonical source, reduces measured yellow excess, applies only a small capped luminance correction, and preserves alpha, enamel texture, shading, edges, and natural color.
 - [x] **TEETH-14**: Genuine discoloration positives show predeclared bounded target improvement, while already-light negatives, unsafe candidates, no-face input, and missing-support input abstain or remain natural at maximum admitted strength.
-- [ ] **TEETH-15**: Isolated public-facade renderer cases and a strict decoded-output helper prove visible tooth-local behavior, same dimensions, expected no-ops, and zero protected/outside changes without relying on Testing-only composition hooks.
-- [ ] **TEETH-16**: Teeth evidence, provider tests, protected-tissue matrix, original-detail review, compatibility, privacy, full regression, exact product ledger, and independent verification all agree before `白牙` is promoted or branch `嘴唇` is closed.
+- [x] **TEETH-15**: Isolated public-facade renderer cases and a strict decoded-output helper prove visible tooth-local behavior, same dimensions, expected no-ops, and zero protected/outside changes without relying on Testing-only composition hooks.
+- [x] **TEETH-16**: Teeth evidence, provider tests, protected-tissue matrix, original-detail review, compatibility, privacy, full regression, exact product ledger, and independent verification all agree before `白牙` is promoted or branch `嘴唇` is closed.
 
 ### Guarded Sclera Redness Reduction (`祛红血丝`)
 
@@ -109,8 +109,8 @@ completion.
 | TEETH-12 | Phase 60 | Verified; deterministic and authorized containment/protected gates |
 | TEETH-13 | Phase 60 | Verified; bounded immutable-source transform and preserved detail/alpha |
 | TEETH-14 | Phase 60 | Verified; genuine positive/negative and local-abstention gates |
-| TEETH-15 | Phase 61 | Pending |
-| TEETH-16 | Phase 61 | Pending |
+| TEETH-15 | Phase 61 | Complete |
+| TEETH-16 | Phase 61 | Complete |
 | SCLERA-07 | Phase 62 | Pending |
 | SCLERA-08 | Phase 62 | Pending |
 | SCLERA-09 | Phase 63 | Pending |
@@ -142,4 +142,4 @@ completion.
 
 ---
 *Requirements defined: 2026-08-05*
-*Last updated: 2026-08-07 after Phase 60 bounded teeth-provider verification*
+*Last updated: 2026-08-07 after Phase 61 independent teeth-output verification*

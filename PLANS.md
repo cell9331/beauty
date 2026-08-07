@@ -36,8 +36,8 @@
 | Evidence gate | The mechanics-only candidate remains zero-weight product evidence. The separate genuine teeth pair has passed the Phase 54 ReviewCore and exact serializer gate; sclera still requires its own independent evidence pair and decision. |
 | Order | Teeth evidence and production slice → teeth verification/promotion → sclera evidence and per-eye production slice → sclera verification/promotion → combined regression and milestone audit. |
 | Exclusions | `去脂`; realtime/pixel-buffer; SwiftUI/Demo activation; external model/cloud; tracked portrait media; device/commercial/performance-budget/packaging/shipping/launch claims. |
-| Current | Phase 61 implementation, strict 6/6 public-output matrix, adversarial protection, original-detail review, 8/8 HIGH disposition, and exact `白牙` plus aggregate `嘴唇` product-owner promotion are complete. The separate post-promotion regression and canonical lifecycle verification are in progress; no required gate is borrowed or skipped. |
-| Next | Finish independent post-promotion Phase 61 verification and lifecycle synchronization. Only then may Phase 62 begin independent sclera evidence/admission work; production sclera implementation remains blocked. |
+| Current | Phase 61 is independently complete: strict 6/6 public output, adversarial protected-region identity, original-detail review, 8/8 HIGH disposition, exact `白牙` plus aggregate `嘴唇` promotion, post-promotion SwiftPM 587/0/7, Demo 121/121, privacy, and canonical verification all pass. |
+| Next | Begin Phase 62 discussion and planning for independent sclera evidence/admission only. Production sclera implementation remains blocked until the Phase 62 serializer decision independently opens; `去脂` stays future. |
 
 ## 3A. Archived Active Ledger
 
@@ -90,6 +90,18 @@
 | Phase 54 closeout | Three review-fix passes bind grants to trusted expected-target policy and exact original/mask/after keys plus SHA-256 byte digests, recover every local-read/display-URL failure transactionally, and independently pin T-54-01…T-54-08. Final standard review is clean. Current automation passes 33/33 core, 38/38 reviewer, 119/119 checker, named live `8/8`, 500 SwiftPM tests with six documented skips, explicit iPhone 17e/iOS 26.5 Demo build and 118/118 tests, schema/UI/diff gates. The fresh user-confirmed direct-`file://` smoke and independently parsed 1,640-byte allowlisted export pass. The three-feature ledger remains closed with zero review/product weight and no SDK/Demo/realtime/media/release admission; Phase 54 validation is complete. |
 
 ## 4. Completed
+
+### C-2026-08-07-v1-15-phase-61-teeth-output-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-08-07 |
+| Scope | Closed the bounded still-image SDK-core teeth slice through one exact public renderer case, strict decoded saved output, adversarial final-output safety, original-detail review, exact product promotion, and separate post-promotion verification. |
+| Product delta | Promoted only `嘴唇 | 白牙` and aggregate branch `嘴唇` to `implemented`. `眼睛` remains `partial`; `祛红血丝` and `去脂` remain `future`; all three local-retouch Demo rows remain disabled with nil mappings. |
+| Evidence | Required positive/negative/no-face baseline/active matrix passes 6/6; renderer 21/21, provider 12/12, integration 10/10, adversarial 6/6, helper 18/18, checker mutations 8/8, live post assertions 64, and all eight isolated HIGH modes pass. |
+| Verification | Post-promotion full SwiftPM 587/0/7; explicit iPhone 17e / iOS 26.5 Demo build and 121/121 tests; Phase 60 retained checker 8 mutations/99 live; tracked/staged privacy 1,357 files; syntax, JSON, artifact, owner, and diff gates pass. |
+| Requirements | TEETH-15 and TEETH-16 verified. Phase 62 may start independent sclera evidence/admission work but may not borrow teeth evidence or begin production sclera implementation before its own decision opens. |
+| Boundary | No population sufficiency, realtime/pixel-buffer, target-device quality/performance, commercial approval, packaging, shipping, launch, release readiness, production sclera, or upper-eyelid result is claimed. |
 
 ### C-2026-08-07-v1-15-phase-60-teeth-provider-closeout
 

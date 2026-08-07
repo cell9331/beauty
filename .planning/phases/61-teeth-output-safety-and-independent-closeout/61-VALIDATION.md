@@ -1,7 +1,7 @@
 ---
 phase: 61
 slug: teeth-output-safety-and-independent-closeout
-status: draft
+status: completed
 nyquist_compliant: true
 wave_0_complete: true
 created: 2026-08-07
@@ -36,8 +36,8 @@ activate the Demo or authorize sclera/upper-eyelid work.
 | 61-02-02 | 02 | 2 | TEETH-15 | T-61-02, T-61-06 | Required private public-facade 6/6 pass; aggregate evidence; artifact/privacy checks | executed |
 | 61-03-01 | 03 | 3 | TEETH-16 | T-61-03, T-61-04 | 6/6 geometry/recolor/recovery, 12/12 provider, 10/10 facade; no production change | executed |
 | 61-03-02 | 03 | 3 | TEETH-16 | T-61-05, T-61-06 | Fresh 6/6 strict run, four-item blinded original-detail pass, 8/8 HIGH closed | executed |
-| 61-04-01 | 04 | 4 | TEETH-16 | T-61-06–T-61-08 | Pre-promotion full conjunction and exact atomic owner update | pending |
-| 61-04-02 | 04 | 4 | TEETH-15, TEETH-16 | T-61-01–T-61-08 | Post-promotion checker, full regression, independent verification | pending |
+| 61-04-01 | 04 | 4 | TEETH-16 | T-61-06–T-61-08 | Pre-promotion full conjunction and exact atomic owner update | executed |
+| 61-04-02 | 04 | 4 | TEETH-15, TEETH-16 | T-61-01–T-61-08 | Post-promotion checker, full regression, independent verification | executed |
 
 Task count equality target: **8 plan task IDs = 8 validation rows**.
 

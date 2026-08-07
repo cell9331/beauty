@@ -41,13 +41,13 @@ output, safety review, and exact product-owner promotion gates:
 | --- | --- | --- | --- |
 | Root docs | 4 | All nine root owners exist. The consolidation audit corrected `ARCHITECTURE.md` so current pixel-buffer processing, still-image detection/geometry, and placeholder Render foundations match compiled code. | Keep current facts in root owners; keep milestone narratives in archives. |
 | Historical docs | 3 | `docs/README.md` remains the long-doc entry. `.planning/codebase/*` is explicitly stale background and historical phase/milestone artifacts are not current contracts. | Refresh codebase maps only in an explicitly scoped remap. |
-| GSD planning | 4 | Phase 61 has 4/4 planned owners and 8/8 task rows; implementation, review, exact promotion, and all eight HIGH owners are green, with independent post-promotion lifecycle verification pending. | Finish canonical Phase 61 verification before starting Phase 62 sclera evidence/admission. |
+| GSD planning | 4 | Phase 61 is complete at 4/4 plans, 8/8 task rows, TEETH-15/16, canonical verification, and eight green HIGH owners. | Discuss and plan Phase 62 independent sclera evidence/admission only. |
 | SDK Package | 4 | The package/facade boundary is intact; direct positive teeth intent reaches one stateless request-local provider/composition unit, and one exact public renderer case proves saved output while the 60-field public contract remains unchanged. | Preserve the bounded teeth slice; resolve TD-013 separately and do not start sclera production before its evidence gate. |
 | Demo App | 4 | The unchanged Demo builds and passes 121/121 on iPhone 17e / iOS 26.5; teeth, sclera-redness, and `去脂` rows remain disabled with nil mappings. | Preserve disabled taxonomy until each later output/promotion gate passes. |
-| Tests | 4 | Provider/integration, exact 73-case renderer, strict private 6/6 output, protected-region adversarial, original-detail review, full SwiftPM, and full Demo gates pass before promotion; independent post-promotion repetition is pending. | Record exact final counts in canonical Phase 61 verification; no required private/visual gate may be skipped. |
-| Security | 4 | Hard containment, immutable-source composition, bounded decoding, symlink-safe ignored output, aggregate-only diagnostics, tracked/staged privacy, and 8/8 Phase 61 HIGH owners pass with zero open HIGH. | Preserve exact promotion and rerun the same conjunction after promotion. |
+| Tests | 4 | Post-promotion renderer/provider/integration/adversarial focused tests pass 49/49, strict private output 6/6, full SwiftPM 587/0/7, and full Demo 121/121; no required private or visual gate was skipped. | Preserve teeth regression while Phase 62 establishes independent sclera evidence. |
+| Security | 4 | Hard containment, immutable-source composition, bounded decoding, symlink-safe ignored output, aggregate-only diagnostics, tracked/staged privacy, and 8/8 Phase 61 HIGH owners pass with zero open HIGH. | Keep sclera closed until its own evidence/admission conjunction passes. |
 | Reliability | 3 | Backpressure, stale work, reset, detection degradation, and the repaired camera lifecycle are test-backed. Realtime geometry/Metal dispatch, 600-second preview, and device endurance are not current evidence. | Keep claims bounded and run the setup-specific long-run/device gates when authorized. |
-| Product acceptance | 4 | v1.13 closes exactly seven eyebrow rows plus branch `眉毛` at SDK-core scope after 21/21 requirements, 4/4 phases, 12/12 integrations, and 6/6 flows. | Do not infer Demo, device, commercial, packaging, or release readiness. |
+| Product acceptance | 4 | Phase 61 promotes exactly `白牙` and closes aggregate branch `嘴唇` at bounded SDK-core still-image scope after non-borrowed evidence, provider, output, safety, and review gates. | Do not infer Demo, population, realtime, device, commercial, packaging, or release readiness. |
 
 ### 3.1 Phase 4 Final Verification
 
@@ -648,3 +648,25 @@ Command-level evidence is recorded in the [Phase 59 validation strategy](.planni
   commercial, packaging, shipping, launch, or release credit is added.
 
 Command-level evidence is recorded in [Phase 60 verification](.planning/phases/60-teeth-provider-and-production-integration/60-VERIFICATION.md).
+
+### v1.15 Phase 61 Teeth Output and Promotion Evidence Score
+
+- Exact traceability passes 4/4 plans, 8/8 task rows, TEETH-15/16 2/2, and
+  T-61-01 through T-61-08 8/8 machine-green HIGH mitigations with zero open
+  findings.
+- Post-promotion focused execution passes renderer 21/21, provider 12/12,
+  integration 10/10, and adversarial final-output 6/6. The strict helper passes
+  18/18; the required positive/negative/no-face matrix passes 6/6; the checker
+  passes 8/8 mutation probes, 64 live post assertions, and all eight isolated
+  threat modes.
+- Full SwiftPM executes 587 tests with seven documented opt-in skips and zero
+  failures. Explicit iPhone 17e / iOS 26.5 Demo build succeeds and tests pass
+  121/121 with no skips. The retained Phase 60 checker passes 8 mutations and
+  99 live assertions; tracked/staged privacy scans 1,357 files successfully.
+- Quality credit is limited to the bounded still-image SDK-core teeth output,
+  original-detail review, exact `白牙`/`嘴唇` promotion, compatibility, privacy,
+  protected-region safety, and recovery. No population, realtime, device/
+  performance, commercial, packaging, shipping, launch, release, sclera, or
+  upper-eyelid credit is added.
+
+Command-level evidence is recorded in [Phase 61 verification](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-VERIFICATION.md).
