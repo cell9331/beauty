@@ -14,6 +14,43 @@ from pathlib import Path
 PHASE_DIR = Path(".planning/phases/65-combined-facade-privacy-and-milestone-closeout")
 THREATS = tuple(f"T-65-{index:02d}" for index in range(1, 9))
 MILESTONE_AUDIT = Path(".planning/milestones/v1.15-MILESTONE-AUDIT.md")
+TEXT_SUFFIXES = {".swift", ".metal", ".json", ".plist"}
+EXPECTED_SHIPPED_RESOURCES = {
+    "BeautySDK/Sources/BeautyRender/Shaders/Warp.metal",
+    "BeautySDK/Sources/BeautyResources/Resources/Presets/clear.json",
+    "BeautySDK/Sources/BeautyResources/Resources/Presets/id-photo-natural.json",
+    "BeautySDK/Sources/BeautyResources/Resources/Presets/male-natural.json",
+    "BeautySDK/Sources/BeautyResources/Resources/Presets/natural.json",
+    "BeautySDK/Sources/BeautyResources/Resources/Presets/refined.json",
+    "BeautySDK/Sources/BeautyResources/Resources/manifest.json",
+}
+EYELID_IDENTITIES = (
+    "upperEyelidFullness", "upperLidFullness", "eyelidFullness", "lidFullness",
+    "upperEyelidFullnessReduction", "upperLidFullnessReduction",
+    "eyelidFullnessReduction", "lidFullnessReduction",
+    "upperEyelidFullnessRemoval", "upperLidFullnessRemoval",
+    "eyelidFullnessRemoval", "lidFullnessRemoval",
+    "upperEyelidFat", "upperLidFat", "eyelidFat", "lidFat",
+    "upperEyelidFatReduction", "upperLidFatReduction", "eyelidFatReduction",
+    "lidFatReduction", "upperEyelidFatRemoval", "upperLidFatRemoval",
+    "eyelidFatRemoval", "lidFatRemoval", "removeUpperEyelidFat",
+    "removeEyelidFat", "removeUpperLidFat", "removeLidFat",
+    "upperEyelidDefatting", "upperLidDefatting", "eyelidDefatting", "lidDefatting",
+    "defatUpperEyelid", "defatEyelid", "defatUpperLid", "defatLid",
+    "upper_eyelid_fullness", "upper_lid_fullness", "eyelid_fullness",
+    "lid_fullness", "upper_eyelid_fullness_reduction",
+    "upper_lid_fullness_reduction", "eyelid_fullness_reduction",
+    "lid_fullness_reduction", "upper_eyelid_fullness_removal",
+    "upper_lid_fullness_removal", "eyelid_fullness_removal",
+    "lid_fullness_removal", "upper_eyelid_fat", "upper_lid_fat", "eyelid_fat",
+    "lid_fat", "upper_eyelid_fat_reduction", "upper_lid_fat_reduction",
+    "eyelid_fat_reduction", "lid_fat_reduction", "upper_eyelid_fat_removal",
+    "upper_lid_fat_removal", "eyelid_fat_removal", "lid_fat_removal",
+    "remove_upper_eyelid_fat", "remove_eyelid_fat", "remove_upper_lid_fat",
+    "remove_lid_fat", "upper_eyelid_defatting", "upper_lid_defatting",
+    "eyelid_defatting", "lid_defatting", "defat_upper_eyelid", "defat_eyelid",
+    "defat_upper_lid", "defat_lid", "eyes.fat", "去脂",
+)
 
 
 class CheckError(Exception):
@@ -43,6 +80,35 @@ def git_names(*args: str) -> list[str]:
     if result.returncode != 0:
         raise CheckError("git inventory failed")
     return [line for line in result.stdout.splitlines() if line]
+
+
+def production_inventory() -> tuple[str, set[str]]:
+    files = [Path("BeautySDK/Package.swift")]
+    for root in (Path("BeautySDK/Sources"), Path("BeautyDemo/BeautyDemo")):
+        try:
+            files.extend(
+                path for path in root.rglob("*")
+                if path.is_file() and not any(part.startswith(".") for part in path.parts)
+            )
+        except OSError as error:
+            raise CheckError("production inventory unavailable") from error
+    resource_names = {
+        path.as_posix()
+        for path in files
+        if "/Resources/" in path.as_posix() or "/Shaders/" in path.as_posix()
+    }
+    text_parts = []
+    for path in sorted(set(files)):
+        if path.suffix.lower() in TEXT_SUFFIXES or path.name == "Package.swift":
+            value = read(path)
+            if path == Path("BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift"):
+                value = value.replace(
+                    'unsupported("eyes.fat", title: "去脂", icon: "minus.circle", badge: .free)',
+                    "",
+                    1,
+                )
+            text_parts.append(value)
+    return "\n".join(text_parts), resource_names
 
 
 def validate_independent_authority(text: str) -> None:
@@ -106,6 +172,8 @@ def validate_failure_matrix(text: str) -> None:
         "ThrownCombinedRequest",
         "ParallelCombinedRequests",
         "ResetAndPixelBuffer",
+        "CombinedNoFaceAbstains",
+        "EarlyInvalidCombinedRequest",
         "retainedRequestOwnerCount",
         "retainedMappedCoordinateCount",
     ):
@@ -156,7 +224,22 @@ def inventory_checks() -> int:
     return 10
 
 
-def validate_privacy(names: list[str], phase_text: str, combined_test: str) -> None:
+def observation_fields(text: str, struct_name: str) -> tuple[str, ...]:
+    match = re.search(
+        rf"public struct {re.escape(struct_name)}:[^{{]+\{{(.*?)\n\}}",
+        text,
+        re.DOTALL,
+    )
+    require(match is not None, "aggregate observation missing")
+    return tuple(re.findall(r"^    public let ([A-Za-z][A-Za-z0-9]*):", match.group(1), re.MULTILINE))
+
+
+def validate_privacy(
+    names: list[str],
+    phase_text: str,
+    combined_test: str,
+    testing_support: str,
+) -> None:
     for name in names:
         require("local-retouch-review/" not in name, "private/generated media tracked or staged")
     for forbidden in (
@@ -174,6 +257,27 @@ def validate_privacy(names: list[str], phase_text: str, combined_test: str) -> N
     require("CombinedObservationsExposeFixedAggregatesOnly" in combined_test, "aggregate privacy test missing")
     for token in ("coordinate", "pupil", "mask", "candidatecolor", "owneridentity"):
         require(f'"{token}"' in combined_test, "sensitive diagnostic guard incomplete")
+    expected_fields = {
+        "SDKTestingLocalCompositionObservation": (
+            "width", "height", "compositionInvocationCount", "sourceBindingMatched",
+            "acceptedUnitCount", "rejectedUnitCount", "ownedPixelCount",
+            "changedPixelCount", "changedOutsideUnionPixelCount", "collisionPixelCount",
+        ),
+        "SDKTestingTeethProviderObservation": (
+            "invocationCount", "issuedUnitCount", "abstentionCount",
+            "fixedStrongPixelCount", "finalStrongPixelCount", "droppedFixedStrongPixelCount",
+        ),
+        "SDKTestingScleraProviderObservation": (
+            "invocationCount", "issuedUnitCount", "acceptedLeftEyeCount",
+            "acceptedRightEyeCount", "abstentionCount",
+        ),
+    }
+    for struct_name, fields in expected_fields.items():
+        require(observation_fields(testing_support, struct_name) == fields, "diagnostic field allowlist drift")
+        declaration = re.search(rf"public struct {struct_name}: ([^{{]+)", testing_support)
+        require(declaration is not None, "diagnostic declaration missing")
+        for forbidden_protocol in ("Codable", "Encodable", "Decodable", "CustomStringConvertible"):
+            require(forbidden_protocol not in declaration.group(1), "diagnostic serialization surface added")
 
 
 def privacy_checks() -> int:
@@ -182,31 +286,44 @@ def privacy_checks() -> int:
         git_names("ls-files") + git_names("diff", "--cached", "--name-only"),
         phase_text,
         read(Path("BeautySDK/Tests/BeautyCoreTests/BeautyEngineCombinedLocalRetouchCloseoutTests.swift")),
+        read(Path("BeautySDK/Sources/BeautySDK/BeautyEngineTestingSupport.swift")),
     )
     return 8
 
 
-def validate_deferred_scope(parameters: str, renderer: str, demo: str) -> None:
-    for forbidden in (
-        "upperEyelidFullnessReduction",
-        "upperEyelidFatReduction",
-        "eyeFatReduction",
-        "defatting",
-    ):
-        require(forbidden not in parameters and forbidden not in renderer, "去脂 proxy surface added")
+def validate_deferred_scope(
+    parameters: str,
+    renderer: str,
+    demo: str,
+    production_text: str,
+    resource_names: set[str],
+) -> None:
+    require(len(EYELID_IDENTITIES) == 74 and len(set(EYELID_IDENTITIES)) == 74, "去脂 identity inventory drift")
+    for forbidden in EYELID_IDENTITIES:
+        pattern = re.compile(rf"(?<![A-Za-z0-9_]){re.escape(forbidden)}(?![A-Za-z0-9_])", re.IGNORECASE)
+        require(pattern.search(production_text) is None, "去脂 proxy surface added")
     require('unsupported("eyes.fat", title: "去脂"' in demo, "去脂 Demo row activated")
     require('unsupported("eyes.redness", title: "祛红血丝"' in demo, "sclera Demo row activated")
     require('unsupported("lips.teeth", title: "白牙"' in demo, "teeth Demo row activated")
-    production = "\n".join((parameters, renderer))
-    for forbidden in ("URLSession", "http://", "https://", "CoreML", "MLModel"):
-        require(forbidden not in production, "network/model surface added")
+    for retained_proxy in ("eyeHeight", "upperEyelidLift"):
+        require(retained_proxy in production_text, "legitimate proxy domain removed")
+    for forbidden in (
+        "URLSession", "http://", "https://", "import CoreML", "MLModel",
+        "VNCoreML", ".mlmodel", ".mlpackage",
+    ):
+        require(forbidden not in production_text, "network/model surface added")
+        require(all(forbidden.lower() not in name.lower() for name in resource_names), "model resource added")
+    require(resource_names == EXPECTED_SHIPPED_RESOURCES, "shipped resource inventory mismatch")
 
 
 def deferred_checks() -> int:
+    production_text, resource_names = production_inventory()
     validate_deferred_scope(
         read(Path("BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift")),
         read(Path("BeautySDK/Sources/BeautyExampleRenderer/main.swift")),
         read(Path("BeautyDemo/BeautyDemo/Editor/MeituEditorToolModels.swift")),
+        production_text,
+        resource_names,
     )
     return 9
 
@@ -230,15 +347,27 @@ def owner_checks() -> int:
     return 8
 
 
+def validate_lifecycle_inventory(inventory: object) -> None:
+    require(isinstance(inventory, dict), "threat inventory malformed")
+    threats = inventory.get("threats", [])
+    require(isinstance(threats, list), "threat inventory malformed")
+    require(
+        [item.get("id") for item in threats if isinstance(item, dict)] == list(THREATS),
+        "threat inventory mismatch",
+    )
+    require(
+        all(isinstance(item, dict) and item.get("severity") == "HIGH" for item in threats),
+        "non-HIGH disposition",
+    )
+
+
 def lifecycle_checks(mode: str) -> int:
     plans = sorted(PHASE_DIR.glob("65-??-PLAN.md"))
     require(len(plans) == 4, "plan inventory mismatch")
     tasks = re.findall(r'<task id="([^"]+)"', "\n".join(read(path) for path in plans))
     require(tasks == [f"65-{plan:02d}-{task:02d}" for plan in range(1, 5) for task in range(1, 3)], "task inventory mismatch")
     inventory = json.loads(read(PHASE_DIR / "65-THREAT-INVENTORY.json"))
-    threats = inventory.get("threats", [])
-    require([item.get("id") for item in threats] == list(THREATS), "threat inventory mismatch")
-    require(all(item.get("severity") == "HIGH" for item in threats), "non-HIGH disposition")
+    validate_lifecycle_inventory(inventory)
     if mode in ("close", "final"):
         verification = read(PHASE_DIR / "65-VERIFICATION.md")
         require("status: passed" in verification and "40/40" in verification, "phase verification not canonical")
@@ -275,7 +404,7 @@ def run_self_test() -> int:
     ))
     probe(lambda: validate_combined_test(combined, False), lambda: validate_combined_test(combined.replace("independentMerge", "missing"), False))
 
-    failures = "InjectedTeethFailure InjectedWholeScleraFailure InjectedLeftAndRightEyeFailures ValidInvalidValid ThrownCombinedRequest ParallelCombinedRequests ResetAndPixelBuffer retainedRequestOwnerCount retainedMappedCoordinateCount"
+    failures = "InjectedTeethFailure InjectedWholeScleraFailure InjectedLeftAndRightEyeFailures ValidInvalidValid ThrownCombinedRequest ParallelCombinedRequests ResetAndPixelBuffer CombinedNoFaceAbstains EarlyInvalidCombinedRequest retainedRequestOwnerCount retainedMappedCoordinateCount"
     probe(lambda: validate_failure_matrix(failures), lambda: validate_failure_matrix(failures.replace("ThrownCombinedRequest", "missing")))
 
     parameters = "\n".join(f"    public var field{index}: Float" for index in range(61))
@@ -284,9 +413,45 @@ def run_self_test() -> int:
     probe(lambda: validate_inventory(parameters, renderer, demo, 5), lambda: validate_inventory(parameters, renderer, demo, 4))
 
     private_test = 'CombinedObservationsExposeFixedAggregatesOnly "coordinate" "pupil" "mask" "candidatecolor" "owneridentity"'
-    probe(lambda: validate_privacy([], "clean", private_test), lambda: validate_privacy([], "/Users/private", private_test))
+    testing_support = "\n".join((
+        "@_spi(Testing) public struct SDKTestingLocalCompositionObservation: Equatable, Sendable {",
+        *[f"    public let {field}: Int" for field in (
+            "width", "height", "compositionInvocationCount", "sourceBindingMatched",
+            "acceptedUnitCount", "rejectedUnitCount", "ownedPixelCount",
+            "changedPixelCount", "changedOutsideUnionPixelCount", "collisionPixelCount",
+        )],
+        "}",
+        "@_spi(Testing) public struct SDKTestingTeethProviderObservation: Equatable, Sendable {",
+        *[f"    public let {field}: Int" for field in (
+            "invocationCount", "issuedUnitCount", "abstentionCount", "fixedStrongPixelCount",
+            "finalStrongPixelCount", "droppedFixedStrongPixelCount",
+        )],
+        "}",
+        "@_spi(Testing) public struct SDKTestingScleraProviderObservation: Equatable, Sendable {",
+        *[f"    public let {field}: Int" for field in (
+            "invocationCount", "issuedUnitCount", "acceptedLeftEyeCount",
+            "acceptedRightEyeCount", "abstentionCount",
+        )],
+        "}",
+    ))
+    probe(
+        lambda: validate_privacy([], "clean", private_test, testing_support),
+        lambda: validate_privacy([], "/Users/private", private_test, testing_support),
+    )
 
-    probe(lambda: validate_deferred_scope(parameters, renderer, demo), lambda: validate_deferred_scope(parameters + "\nupperEyelidFatReduction", renderer, demo))
+    proxy_text = "eyeHeight upperEyelidLift"
+    probe(
+        lambda: validate_deferred_scope(
+            parameters, renderer, demo, proxy_text, EXPECTED_SHIPPED_RESOURCES,
+        ),
+        lambda: validate_deferred_scope(
+            parameters,
+            renderer,
+            demo,
+            proxy_text + "\nupperEyelidFatReduction",
+            EXPECTED_SHIPPED_RESOURCES,
+        ),
+    )
 
     ledger = "| `眼睛` | 去脂 | future |\n| `眼睛` | 祛红血丝 | implemented |\n| `嘴唇` | 白牙 | implemented |"
     matrix = "| Beauty shaping | 眼睛 | partial |\n| Beauty shaping | 嘴唇 | implemented |"
@@ -294,14 +459,11 @@ def run_self_test() -> int:
     probe(lambda: validate_owner_state(ledger, matrix, requirements), lambda: validate_owner_state(ledger.replace("白牙 | implemented", "白牙 | future"), matrix, requirements))
 
     good_inventory = {"threats": [{"id": item, "severity": "HIGH"} for item in THREATS]}
-    require(len(good_inventory["threats"]) == 8, "self-test inventory setup failed")
     bad_inventory = {"threats": good_inventory["threats"][:-1]}
-    try:
-        require([item["id"] for item in bad_inventory["threats"]] == list(THREATS), "threat inventory mismatch")
-    except CheckError:
-        probes.append(True)
-    else:
-        raise CheckError("threat mutation accepted")
+    probe(
+        lambda: validate_lifecycle_inventory(good_inventory),
+        lambda: validate_lifecycle_inventory(bad_inventory),
+    )
 
     require(len(probes) == 8 and all(probes), "self-test denominator mismatch")
     print(json.dumps({"status": "pass", "self_tests": 8, "threats": 8}, separators=(",", ":")))
@@ -342,7 +504,7 @@ def main() -> int:
             mode = "final" if args.final else "close" if args.close_phase else "live"
             run_live(mode, args.threat)
         return 0
-    except (CheckError, json.JSONDecodeError, subprocess.TimeoutExpired):
+    except (CheckError, json.JSONDecodeError, subprocess.TimeoutExpired, OSError, UnicodeError):
         print(json.dumps({"status": "fail", "reason": "phase65_gate_failed"}, separators=(",", ":")))
         return 1
 
