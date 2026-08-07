@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "security_standard": "OWASP ASVS Level 1",
+  "block_on": "HIGH",
+  "threats": [
+    {
+      "id": "T-62-01",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["exact sclera pair", "feature-local identity joins", "teeth and eyelid preservation"]
+    },
+    {
+      "id": "T-62-02",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["frozen review criteria", "ReviewCore-issued judgments", "no mechanics admission weight"]
+    },
+    {
+      "id": "T-62-03",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["open-decision prerequisite", "trailing scalar", "independent opaque demand"]
+    },
+    {
+      "id": "T-62-04",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["append-only 61-field compatibility", "legacy decode", "five neutral presets"]
+    },
+    {
+      "id": "T-62-05",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["direct sclera-only admission", "alias and proxy rejection", "teeth independence"]
+    },
+    {
+      "id": "T-62-06",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["durable schema allowlist", "fixed-output tracked and staged scan", "disabled Demo taxonomy"]
+    },
+    {
+      "id": "T-62-07",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["guarded private derivatives", "no production provider or output", "no realtime model or network"]
+    },
+    {
+      "id": "T-62-08",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["ten-task lifecycle equality", "isolated threat modes", "fail-closed scanner and tool status"]
+    }
+  ]
+}
