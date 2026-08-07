@@ -32,8 +32,8 @@ Demo.
 
 | Task ID | Wave | Requirements | Automated evidence | Status |
 | --- | ---: | --- | --- | --- |
-| `60-01-01` | 1 | TEETH-09, TEETH-10, TEETH-11 | RED support, geometry, baseline, growth, hard-envelope tests | planned |
-| `60-01-02` | 1 | TEETH-12, TEETH-13, TEETH-14 | RED transform, protected-tissue, no-op, recovery, private-fixture contracts | planned |
+| `60-01-01` | 1 | TEETH-09, TEETH-10, TEETH-11 | RED support, geometry, baseline, growth, hard-envelope tests | passed as RED; missing provider/transform seams only |
+| `60-01-02` | 1 | TEETH-12, TEETH-13, TEETH-14 | RED transform, protected-tissue, no-op, recovery, private-fixture contracts | passed as RED; missing provider observation/wiring only |
 | `60-02-01` | 2 | TEETH-09, TEETH-10, TEETH-11 | Provider implementation and focused selection tests | planned |
 | `60-02-02` | 2 | TEETH-11, TEETH-12, TEETH-13 | Source-derived target unit, composition, containment tests | planned |
 | `60-03-01` | 3 | TEETH-09, TEETH-12, TEETH-14 | One-request production facade wiring and unrelated-effect continuation | planned |
