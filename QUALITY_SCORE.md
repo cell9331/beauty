@@ -34,20 +34,20 @@ Quality gate:
 
 ## 3. Current Snapshot
 
-Current repository state as of 2026-08-07 after the v1.15 Phase 63 guarded
-per-eye sclera production-integration gates:
+Current repository state as of 2026-08-08 after the v1.15 Phase 64 standalone
+sclera output, adversarial safety, review, and exact-promotion gates:
 
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
 | Root docs | 4 | All nine root owners exist. The consolidation audit corrected `ARCHITECTURE.md` so current pixel-buffer processing, still-image detection/geometry, and placeholder Render foundations match compiled code. | Keep current facts in root owners; keep milestone narratives in archives. |
 | Historical docs | 3 | `docs/README.md` remains the long-doc entry. `.planning/codebase/*` is explicitly stale background and historical phase/milestone artifacts are not current contracts. | Refresh codebase maps only in an explicitly scoped remap. |
-| GSD planning | 4 | Phase 63 is complete at 4/4 plans, 8/8 task rows, five verified requirements, 16/16 decisions and eight green HIGH owners. | Begin Phase 64 output/adversarial planning without borrowing provider-only credit. |
-| SDK Package | 4 | The package/facade boundary is intact; one request-local sclera provider emits independently guarded per-eye units through the existing immutable-source composer while the public inventory remains 61 fields. | Preserve provider/output separation while Phase 64 adds only explicitly verified public output. |
-| Demo App | 4 | The unchanged Demo builds and passes 121/121 on iPhone 17e / iOS 26.5; teeth, sclera-redness, and `去脂` rows remain disabled with nil mappings. | Preserve disabled taxonomy until each later output/promotion gate passes. |
-| Tests | 4 | Required private native-Vision evidence passes; focused provider/integration passes 20/20, full SwiftPM 612/0/8, and full Demo 121/121. All Phase 63 required gates ran explicitly. | Add strict public output and adversarial tests before promotion credit. |
-| Security | 4 | Guard-before-score, post-filter reclip, fixed-output private execution, tracked/staged privacy, eight rejected mutations and 8/8 Phase 63 HIGH owners pass with zero open HIGH. | Keep raw anatomy private and product/output promotion absent until Phase 64 passes. |
+| GSD planning | 4 | Phase 64 is complete at 4/4 plans, 8/8 task rows, six verified requirements, 21/21 decisions and eight green HIGH owners. | Begin Phase 65 combined-facade and milestone closeout without borrowing standalone evidence. |
+| SDK Package | 4 | The package/facade boundary is intact; standalone sclera output reaches the public renderer through one request-local guarded provider while the exact inventory is 61 public fields, five neutral presets, and 74 renderer cases. | Preserve standalone semantics while Phase 65 proves combined output and failure isolation. |
+| Demo App | 4 | The unchanged Demo builds and passes 121/121 on iPhone 17e / iOS 26.5; teeth, sclera-redness, and `去脂` rows remain disabled with nil mappings. | Preserve disabled taxonomy through milestone closeout. |
+| Tests | 4 | Required private output passes 6/6; focused renderer/adversarial/provider/facade passes 21/5/11/9, full SwiftPM 617/0/8, and full Demo 121/121. All Phase 64 required gates ran explicitly. | Add combined teeth+sclera facade and injected-failure matrices in Phase 65. |
+| Security | 4 | Bounded decoding, color-independent and recolored-protected oracles, fixed-output private execution, tracked/staged privacy, eight rejected mutations and 8/8 Phase 64 HIGH owners pass with zero open HIGH. | Preserve raw-anatomy privacy and prove cross-feature isolation before milestone closeout. |
 | Reliability | 3 | Backpressure, stale work, reset, detection degradation, and the repaired camera lifecycle are test-backed. Realtime geometry/Metal dispatch, 600-second preview, and device endurance are not current evidence. | Keep claims bounded and run the setup-specific long-run/device gates when authorized. |
-| Product acceptance | 4 | Phase 63 accepts bounded provider integration only; `祛红血丝` remains future/disabled while `白牙` output and aggregate `嘴唇` remain unchanged. | Do not infer final visible sclera output, promotion, population, realtime, device, commercial, packaging, or release readiness. |
+| Product acceptance | 4 | `祛红血丝` is implemented at bounded SDK-core still-image scope after a non-borrowed Phase 62-64 chain; `眼睛` remains partial solely because `去脂` is future, and Demo stays disabled. | Do not infer population, realtime, device, commercial, packaging, or release readiness. |
 
 ### 3.1 Phase 4 Final Verification
 
@@ -712,3 +712,25 @@ Command-level evidence is recorded in [Phase 62 verification](.planning/phases/6
   commercial, packaging, shipping, launch or release credit is added.
 
 Command-level evidence is recorded in [Phase 63 verification](.planning/phases/63-guarded-per-eye-sclera-production-integration/63-VERIFICATION.md).
+
+### v1.15 Phase 64 Sclera Output and Promotion Evidence Score
+
+- Exact traceability passes 4/4 plans, 8/8 task rows, SCLERA-14 through
+  SCLERA-18 plus OUT-05 6/6, D-01 through D-21 21/21 and T-64-01 through
+  T-64-08 8/8 machine-green HIGH mitigations with zero open findings.
+- Post-promotion execution passes renderer 21/21, adversarial 5/5, provider
+  11/11 and facade 9/9. The strict helper passes 14/14; the required
+  positive/negative/no-face output matrix passes 6/6; native Vision and the
+  fresh four-item original-detail review pass without post-review tuning.
+- Full SwiftPM executes 617 tests with eight documented non-required opt-in
+  skips and zero failures. Explicit iPhone 17e / iOS 26.5 Demo build succeeds
+  and tests pass 121/121 with no skips. Checker self/post/eight isolated modes,
+  tracked/staged privacy over 1,424 files, JSON, inventory and diff gates pass.
+- Quality credit is limited to bounded standalone still-image SDK-core sclera
+  output, protected-anatomy identity, peer/recovery isolation, exact
+  `祛红血丝` promotion, compatibility and privacy. `眼睛` remains partial due
+  to future `去脂`; no combined-facade, population, realtime, device/
+  performance, commercial, packaging, shipping, launch or release credit is
+  added.
+
+Command-level evidence is recorded in [Phase 64 verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).

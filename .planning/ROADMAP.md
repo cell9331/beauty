@@ -32,7 +32,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 - [x] **Phase 61: Teeth Output, Safety, and Independent Closeout** - Prove public-facade visibility, protected-tissue safety, naturalness, regression, and exact `白牙` promotion before any sclera production work. (completed 2026-08-07)
 - [x] **Phase 62: Sclera Evidence and Admission Contract** - Independently qualify genuine redness/normal evidence and add one compatibility-safe sclera-only public intent after teeth closes. (completed 2026-08-07)
 - [x] **Phase 63: Guarded Per-Eye Sclera Production Integration** - Deliver independent left/right eye guards, hard sclera ownership, and bounded original-pixel redness reduction. (completed 2026-08-07)
-- [ ] **Phase 64: Sclera Output, Adversarial Safety, and Independent Closeout** - Prove public-facade per-eye behavior, native and adversarial protected-region safety, naturalness, regression, and exact `祛红血丝` promotion.
+- [x] **Phase 64: Sclera Output, Adversarial Safety, and Independent Closeout** - Prove public-facade per-eye behavior, native and adversarial protected-region safety, naturalness, regression, and exact `祛红血丝` promotion. (completed 2026-08-08)
 - [ ] **Phase 65: Combined Facade, Privacy, and Milestone Closeout** - Verify both independently admitted features together, preserve all v1.14 boundaries, keep `去脂` absent, and prepare the audited milestone close.
 
 ## Phase Details
@@ -140,12 +140,12 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
   4. Genuine redness positives improve within predeclared per-eye bounds, while normal negatives and blink/gaze/glasses/highlight/occlusion challenges remain natural under blinded original-detail review.
   5. Production tests, native/adversarial matrices, compatibility, privacy, full regression, review/fix, independent verification, and owning ledgers promote exactly `祛红血丝`; `眼睛` remains partial because `去脂` remains future.
 
-**Plans**: 4 plans
+**Plans**: 4/4 completed; independently verified 2026-08-08
 
-- [ ] 64-01-PLAN.md — RED public-output/adversarial contracts and eight-HIGH checker
-- [ ] 64-02-PLAN.md — exact public renderer case and private six-output matrix
-- [ ] 64-03-PLAN.md — protected-anatomy oracles, original-detail review and security closeout
-- [ ] 64-04-PLAN.md — full conjunction, exact promotion and independent verification
+- [x] 64-01-PLAN.md — RED public-output/adversarial contracts and eight-HIGH checker
+- [x] 64-02-PLAN.md — exact public renderer case and private six-output matrix
+- [x] 64-03-PLAN.md — protected-anatomy oracles, original-detail review and security closeout
+- [x] 64-04-PLAN.md — full conjunction, exact promotion and independent verification
 
 ### Phase 65: Combined Facade, Privacy, and Milestone Closeout
 

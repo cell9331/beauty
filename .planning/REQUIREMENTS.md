@@ -42,11 +42,11 @@
 - [x] **SCLERA-11**: Redness is scored only inside the accepted hard envelope; any blur or feather is followed by re-clipping to the same hard envelope before composition.
 - [x] **SCLERA-12**: The bounded transform derives every changed RGB value from the immutable canonical source, reduces only measured red excess, restores natural luminance, and preserves vessel/detail variation and non-porcelain color.
 - [x] **SCLERA-13**: Blink, closure, gaze, glasses/contacts, occlusion, strong highlight, collapsed contour, missing or implausible pupil, malformed support, and one-eye rejection fail only the affected eye without guessing, mirroring, caching, or reusing peer/stale support.
-- [ ] **SCLERA-14**: A color-independent open-redness geometry oracle proves zero candidate overlap with the unperturbed protected iris, pupil, highlight, lash, skin, and outside-aperture truth across bounded contour/pupil perturbations.
-- [ ] **SCLERA-15**: A recolored-protected-iris final-output oracle proves that the real score, feather, hard re-clip, bounded transform, and composition together change zero protected iris/pupil/highlight pixels.
-- [ ] **SCLERA-16**: Genuine redness positives show predeclared bounded per-eye target improvement, while normal negatives and unsafe or unsupported eyes abstain or remain natural at maximum admitted strength.
-- [ ] **SCLERA-17**: Isolated public-facade renderer cases and a strict decoded-output helper prove visible per-eye behavior, peer-eye independence, same dimensions, expected no-ops, and zero protected/outside changes.
-- [ ] **SCLERA-18**: Sclera evidence, per-eye provider tests, native/adversarial safety matrices, original-detail review, compatibility, privacy, full regression, exact product ledger, and independent verification all agree before `祛红血丝` is promoted; branch `眼睛` remains partial because `去脂` is future.
+- [x] **SCLERA-14**: A color-independent open-redness geometry oracle proves zero candidate overlap with the unperturbed protected iris, pupil, highlight, lash, skin, and outside-aperture truth across bounded contour/pupil perturbations.
+- [x] **SCLERA-15**: A recolored-protected-iris final-output oracle proves that the real score, feather, hard re-clip, bounded transform, and composition together change zero protected iris/pupil/highlight pixels.
+- [x] **SCLERA-16**: Genuine redness positives show predeclared bounded per-eye target improvement, while normal negatives and unsafe or unsupported eyes abstain or remain natural at maximum admitted strength.
+- [x] **SCLERA-17**: Isolated public-facade renderer cases and a strict decoded-output helper prove visible per-eye behavior, peer-eye independence, same dimensions, expected no-ops, and zero protected/outside changes.
+- [x] **SCLERA-18**: Sclera evidence, per-eye provider tests, native/adversarial safety matrices, original-detail review, compatibility, privacy, full regression, exact product ledger, and independent verification all agree before `祛红血丝` is promoted; branch `眼睛` remains partial because `去脂` is future.
 
 ### Shared Safety, Compatibility, and Closeout
 
@@ -54,7 +54,7 @@
 - [ ] **SAFE-05**: Repeated, parallel, canceled, reset, no-face, malformed-support, and mixed-feature requests retain no prior pixels, masks, support, proposals, or summaries and recover on a later valid request with only allowlisted aggregate diagnostics.
 - [ ] **SAFE-06**: Local-retouch output preserves canonical dimensions, orientation, opaque-alpha policy, explicit-sRGB contract, typed payload-free errors, deterministic no-op behavior, and unrelated eligible face/color output.
 - [ ] **SAFE-07**: The exact stored-field, CodingKey, source-construction, preset, renderer, Demo-taxonomy, and admission inventories advance only for independently admitted teeth and sclera surfaces while every legacy zero/missing payload remains neutral.
-- [ ] **OUT-05**: Standalone teeth and standalone sclera requests are each verified only through the public `BeautySDK` facade by isolated output cases, strict decoded comparisons, disposable ignored review artifacts, and original-detail inspection.
+- [x] **OUT-05**: Standalone teeth and standalone sclera requests are each verified only through the public `BeautySDK` facade by isolated output cases, strict decoded comparisons, disposable ignored review artifacts, and original-detail inspection.
 - [ ] **OUT-06**: A combined teeth+sclera request byte-matches independently merged standalone oracles for disjoint masks, preserves the canonical source on any cross-provider collision, and keeps unaffected output under injected teeth, whole-sclera, left-eye, and right-eye failure.
 - [ ] **OUT-07**: Full SwiftPM, opt-in Apple Vision integration, Demo compatibility, privacy/resource/network scans, adversarial safety, active-source and owner-document checks, code review/fix, and independent verification pass before milestone closeout.
 - [ ] **OUT-08**: Product ledgers promote exactly independently passed `白牙` and `祛红血丝`; `嘴唇` may close after qualified `白牙`, while `眼睛` remains partial with `去脂` future, and no broader device, commercial, packaging, shipping, or launch claim is inferred.
@@ -118,16 +118,16 @@ completion.
 | SCLERA-11 | Phase 63 | Verified; score-inside and post-filter identical-envelope reclip |
 | SCLERA-12 | Phase 63 | Verified; bounded immutable-source transform and retained detail/alpha |
 | SCLERA-13 | Phase 63 | Verified; affected-eye abstention, peer continuation and recovery |
-| SCLERA-14 | Phase 64 | Pending |
-| SCLERA-15 | Phase 64 | Pending |
-| SCLERA-16 | Phase 64 | Pending |
-| SCLERA-17 | Phase 64 | Pending |
-| SCLERA-18 | Phase 64 | Pending |
+| SCLERA-14 | Phase 64 | Verified; color-independent protected truth remains exact |
+| SCLERA-15 | Phase 64 | Verified; recolored-protected final output remains exact |
+| SCLERA-16 | Phase 64 | Verified; positive improvement and negative/unsafe naturalness pass |
+| SCLERA-17 | Phase 64 | Complete; standalone public-facade output passes strict decoding |
+| SCLERA-18 | Phase 64 | Complete; non-borrowed conjunction and exact promotion pass |
 | SAFE-04 | Phase 65 | Pending |
 | SAFE-05 | Phase 65 | Pending |
 | SAFE-06 | Phase 65 | Pending |
 | SAFE-07 | Phase 65 | Pending |
-| OUT-05 | Phase 64 | Pending |
+| OUT-05 | Phase 64 | Complete; standalone teeth and sclera facade outputs independently verified |
 | OUT-06 | Phase 65 | Pending |
 | OUT-07 | Phase 65 | Pending |
 | OUT-08 | Phase 65 | Pending |

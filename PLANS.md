@@ -36,8 +36,8 @@
 | Evidence gate | The mechanics-only candidate remains zero-weight product evidence. Separate genuine teeth and sclera pairs each passed Phase 54 ReviewCore and the exact serializer gate; upper-eyelid fullness remains independently closed. |
 | Order | Teeth evidence and production slice → teeth verification/promotion → sclera evidence and per-eye production slice → sclera verification/promotion → combined regression and milestone audit. |
 | Exclusions | `去脂`; realtime/pixel-buffer; SwiftUI/Demo activation; external model/cloud; tracked portrait media; device/commercial/performance-budget/packaging/shipping/launch claims. |
-| Current | Phase 64 is planned as four serial waves: freeze strict public-output/adversarial contracts, add one exact public renderer case and required six-output matrix, close color-independent/recolored-protected-anatomy plus fresh original-detail review, then promote exactly `祛红血丝` only after the full conjunction and independent rerun. |
-| Next | Execute Phase 64 Wave 1 RED contracts. Phase 63 guard constants remain frozen; `祛红血丝` stays unpromoted until every Phase 64 gate passes. |
+| Current | Phase 64 is complete: exact 74-case standalone public output, required 6/6 matrix, protected-anatomy oracles, original-detail review, eight HIGH owners, exact `祛红血丝` promotion and independent 617-test SDK / 121-test Demo rerun all pass. |
+| Next | Discuss and plan Phase 65 combined-facade, privacy and milestone closeout. Preserve independent teeth/sclera authority, keep `去脂` absent and leave all local-retouch Demo rows disabled. |
 
 ## 3A. Archived Active Ledger
 
@@ -90,6 +90,18 @@
 | Phase 54 closeout | Three review-fix passes bind grants to trusted expected-target policy and exact original/mask/after keys plus SHA-256 byte digests, recover every local-read/display-URL failure transactionally, and independently pin T-54-01…T-54-08. Final standard review is clean. Current automation passes 33/33 core, 38/38 reviewer, 119/119 checker, named live `8/8`, 500 SwiftPM tests with six documented skips, explicit iPhone 17e/iOS 26.5 Demo build and 118/118 tests, schema/UI/diff gates. The fresh user-confirmed direct-`file://` smoke and independently parsed 1,640-byte allowlisted export pass. The three-feature ledger remains closed with zero review/product weight and no SDK/Demo/realtime/media/release admission; Phase 54 validation is complete. |
 
 ## 4. Completed
+
+### C-2026-08-08-v1-15-phase-64-sclera-output-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-08-08 |
+| Scope | Closed the bounded still-image SDK-core sclera slice through one exact public renderer case, strict decoded saved output, adversarial protected-anatomy safety, fresh original-detail review, exact product promotion and separate post-promotion verification. |
+| Product delta | Promoted only `眼睛 | 祛红血丝` to `implemented`. Aggregate `眼睛` remains `partial` solely because `去脂` is future; all three local-retouch Demo rows remain disabled with nil mappings. |
+| Evidence | Required positive/negative/no-face baseline/active matrix 6/6; renderer 21/21; helper 14/14; adversarial/provider/facade 5/11/9; actual Vision private pair; four-item visual review; checker 8/8 mutations and all eight isolated HIGH modes pass. |
+| Verification | Post-promotion full SwiftPM 617/0/8; explicit iPhone 17e / iOS 26.5 Demo build and 121/0/0 tests; tracked/staged privacy scans 1,424 files; exact 61 fields, five presets and 74 renderer cases; syntax, JSON and diff gates pass. |
+| Requirements | SCLERA-14 through SCLERA-18 and OUT-05 verified. Phase 65 may start combined teeth+sclera closeout but may not borrow either standalone feature's evidence or relax its guards. |
+| Boundary | No population sufficiency, realtime/pixel-buffer, target-device quality/performance, commercial approval, Demo activation, external model/network, packaging, shipping, launch or release readiness is claimed. |
 
 ### C-2026-08-07-v1-15-phase-63-sclera-provider-closeout
 
