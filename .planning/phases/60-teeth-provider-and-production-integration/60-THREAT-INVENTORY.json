@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "security_standard": "OWASP ASVS Level 1",
+  "block_on": "HIGH",
+  "threats": [
+    {
+      "id": "T-60-01",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["one canonical request", "actual inner/outer support", "no fallback/cache"]
+    },
+    {
+      "id": "T-60-02",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["support preflight", "fixed baseline", "seed-connected adaptive growth"]
+    },
+    {
+      "id": "T-60-03",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["hard envelope", "post-filter re-clip", "protected-tissue containment"]
+    },
+    {
+      "id": "T-60-04",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["immutable source", "bounded de-yellowing", "already-light no-op"]
+    },
+    {
+      "id": "T-60-05",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["one composition owner", "collision-to-source", "failure isolation"]
+    },
+    {
+      "id": "T-60-06",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["valid-invalid-valid", "parallel/interrupted isolation", "pixel-buffer/reset absence"]
+    },
+    {
+      "id": "T-60-07",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["private fixed-output fixtures", "aggregate-only diagnostics", "tracked/staged privacy"]
+    },
+    {
+      "id": "T-60-08",
+      "severity": "HIGH",
+      "disposition": "mitigate",
+      "gates": ["Demo/sibling/model/network absence", "owner synchronization", "Phase 61-only handoff"]
+    }
+  ]
+}

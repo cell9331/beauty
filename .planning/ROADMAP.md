@@ -64,7 +64,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
   4. Accepted tooth pixels receive only bounded yellow-excess reduction and small luminance correction derived from immutable canonical source pixels while preserving alpha, texture, shading, edges, and natural color.
   5. Already-light, closed, occluded, no-face, missing-support, malformed, implausible, and unsafe mouths abstain locally without stale support or suppression of unrelated eligible output.
 
-**Plans**: TBD
+**Plans**: 4 plans / 8 tasks across contract, provider, integration, and final closeout waves
 
 ### Phase 61: Teeth Output, Safety, and Independent Closeout
 
@@ -148,7 +148,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
 | 59. Teeth Evidence and Admission Contract | 9/9 plans complete / intent admitted / 0 visible promoted | Complete — exact-open evidence, scalar, one demand, privacy, and regression pass | 2026-08-07 |
-| 60. Teeth Provider and Production Integration | 0/TBD | Next — planning may begin; provider/output still absent | - |
+| 60. Teeth Provider and Production Integration | 0/4 | Planned — Plan 60-01 Wave 0 contracts next; provider/output still absent | - |
 | 61. Teeth Output, Safety, and Independent Closeout | 0/TBD | Not started | - |
 | 62. Sclera Evidence and Admission Contract | 0/TBD | Not started | - |
 | 63. Guarded Per-Eye Sclera Production Integration | 0/TBD | Not started | - |

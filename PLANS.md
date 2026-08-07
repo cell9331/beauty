@@ -36,8 +36,8 @@
 | Evidence gate | The mechanics-only candidate remains zero-weight product evidence. The separate genuine teeth pair has passed the Phase 54 ReviewCore and exact serializer gate; sclera still requires its own independent evidence pair and decision. |
 | Order | Teeth evidence and production slice → teeth verification/promotion → sclera evidence and per-eye production slice → sclera verification/promotion → combined regression and milestone audit. |
 | Exclusions | `去脂`; realtime/pixel-buffer; SwiftUI/Demo activation; external model/cloud; tracked portrait media; device/commercial/performance-budget/packaging/shipping/launch claims. |
-| Current | Phase 59 is complete at 9/9 plans: the serializer-open teeth decision, trailing `teethWhitening`, one opaque demand, 60/5/72 compatibility, disabled Demo taxonomy, owner synchronization, privacy, full SwiftPM 558/0/6, full Demo 121/0/0, 235-mutation checker, 16/16 decisions, and all eight HIGH gates pass. No provider or output behavior was added. |
-| Next | Plan and execute Phase 60 teeth provider integration only. Phase 62 and all production sclera work remain blocked until Phase 61 independently verifies and closes teeth output. |
+| Current | Phase 60 planning is complete: 16/16 decisions and TEETH-09...14 map to four serial plans, eight executable tasks, and eight blocking HIGH threats. The design reuses the one canonical Vision request, actual mapped inner/outer lip support, fixed-baseline-plus-connected-growth selection, hard re-clip, immutable-source composition, and the existing private authorized pair. No provider source or output behavior has been added yet. |
+| Next | Execute Plan 60-01 Wave 0 deterministic, lifecycle, private-fixture, and checker contracts, then implement provider and production wiring in Plans 60-02/03. Plan 60-04 alone may close the phase and route to Phase 61; Phase 62 and production sclera remain blocked. |
 
 ## 3A. Archived Active Ledger
 

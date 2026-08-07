@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.15
 milestone_name: Independent Teeth and Sclera Retouch
 status: active
-stopped_at: Phase 59 completed; Phase 60 is the sole next phase
-last_updated: "2026-08-07T12:02:00+08:00"
+stopped_at: Phase 60 planned; execute Plan 60-01 Wave 0 contracts
+last_updated: "2026-08-07T13:10:00+08:00"
 last_activity: 2026-08-07
-last_activity_desc: Phase 59 exact-open intent closed with full SDK/Demo regression and Phase 60-only handoff
+last_activity_desc: Phase 60 planned as four serial waves with eight tasks and eight blocking HIGH gates
 progress:
   total_phases: 7
   completed_phases: 1
-  total_plans: 9
+  total_plans: 13
   completed_plans: 9
   percent: 14
 current_phase: 60
@@ -29,9 +29,9 @@ See: `.planning/PROJECT.md` (updated 2026-08-05)
 ## Current Position
 
 Phase: 60 of 65 (Teeth Provider and Production Integration)
-Plan: Not yet planned
-Status: Ready — Phase 59 exact-open intent passed; provider/output remain unimplemented
-Last activity: 2026-08-07 — full SwiftPM 558/0/6, Demo 121/0/0, 235 checker mutations, and 8/8 HIGH gates passed
+Plan: 60-01 of 4 planned plans
+Status: Ready — execute Wave 0 provider/integration/private-fixture contracts
+Last activity: 2026-08-07 — 16/16 Phase 60 decisions and all 6 requirements map to 4 plans / 8 tasks / 8 HIGH gates
 
 Progress: █░░░░░░░░░ 14%
 
@@ -79,5 +79,5 @@ None found under `.planning/todos/pending/`.
 ## Session Continuity
 
 Last session: 2026-08-07
-Stopped at: Phase 59 completed; begin Phase 60 planning
-Resume file: `.planning/ROADMAP.md`
+Stopped at: Phase 60 planning complete; execute Plan 60-01
+Resume file: `.planning/phases/60-teeth-provider-and-production-integration/60-01-PLAN.md`
