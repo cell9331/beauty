@@ -16,8 +16,8 @@ requirements: [SEQ-02, SEQ-03, SEQ-04, SAFE-04, SAFE-05, SAFE-06, SAFE-07, OUT-0
 | --- | --- | ---: | --- | --- | --- |
 | 65-01-01 | 01 | 1 | SEQ-02, SAFE-05, SAFE-06, OUT-06 | 10 RED actual-provider/merge/collision/failure/lifecycle contracts; three exact Wave 2 gaps identified | executed |
 | 65-01-02 | 01 | 1 | SEQ-03/04, SAFE-04/07, OUT-07/08/09 | 8/8 HIGH checker mutations; live 72 assertions pass | executed |
-| 65-02-01 | 02 | 2 | SEQ-02, SAFE-06/07, OUT-06 | Both public entries, independent byte merge, one request/composition, exact output contract | pending |
-| 65-02-02 | 02 | 2 | SAFE-05/06, OUT-06 | teeth/whole-sclera/left/right failures, collision, recovery, parallel/reset/pixel-buffer | pending |
+| 65-02-01 | 02 | 2 | SEQ-02, SAFE-06/07, OUT-06 | 11/11 both-entry actual-provider byte merge, one request/composition, dimensions/alpha/sRGB | executed |
+| 65-02-02 | 02 | 2 | SAFE-05/06, OUT-06 | 71/71 collision, four failures, recovery, cancellation, parallel/reset/pixel-buffer matrix | executed |
 | 65-03-01 | 03 | 3 | SAFE-04/07, SEQ-03/04 | privacy/compat/resource/network/proxy scans and aggregate-only diagnostics | pending |
 | 65-03-02 | 03 | 3 | OUT-07/08 | independent private/opt-in/focused gates, code review/fix, 8/8 HIGH security | pending |
 | 65-04-01 | 04 | 4 | OUT-07/08 | full SwiftPM/Demo, owner equality, root/lifecycle sync and independent phase verification | pending |
