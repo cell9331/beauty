@@ -239,7 +239,7 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
     private var leftSupport: BeautyObservedEyeSupport {
         BeautyObservedEyeSupport(
             side: .left,
-            contour: rectangle(minX: 0.10, minY: 0.36, maxX: 0.42, maxY: 0.64),
+            contour: eyeContour(centerX: 0.2625),
             pupil: [CoordinatePoint(x: 0.26, y: 0.50)]
         )
     }
@@ -247,9 +247,19 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
     private var rightSupport: BeautyObservedEyeSupport {
         BeautyObservedEyeSupport(
             side: .right,
-            contour: rectangle(minX: 0.58, minY: 0.36, maxX: 0.90, maxY: 0.64),
+            contour: eyeContour(centerX: 0.7375),
             pupil: [CoordinatePoint(x: 0.74, y: 0.50)]
         )
+    }
+
+    private func eyeContour(centerX: Double) -> [CoordinatePoint] {
+        (0..<16).map { index in
+            let angle = Double(index) * 2 * .pi / 16
+            return CoordinatePoint(
+                x: centerX + 0.1625 * cos(angle),
+                y: 0.50 + 0.1458 * sin(angle)
+            )
+        }
     }
 
     private struct EyeFixture {
@@ -350,4 +360,3 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
         0.2126 * Double(red) / 255 + 0.7152 * Double(green) / 255 + 0.0722 * Double(blue) / 255
     }
 }
-
