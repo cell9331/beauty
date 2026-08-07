@@ -644,6 +644,35 @@ package final class SDKTestingCanonicalStillImageHarness: @unchecked Sendable {
     }
 }
 
+/// Aggregate-only observation for the package teeth provider.
+///
+/// The value deliberately carries no support, mask, color, pixel, fixture, or
+/// identity data. Production wiring records one request at a time.
+@_spi(Testing) public struct SDKTestingTeethProviderObservation: Equatable, Sendable {
+    public let invocationCount: Int
+    public let issuedUnitCount: Int
+    public let abstentionCount: Int
+    public let fixedStrongPixelCount: Int
+    public let finalStrongPixelCount: Int
+    public let droppedFixedStrongPixelCount: Int
+
+    public init(
+        invocationCount: Int = 0,
+        issuedUnitCount: Int = 0,
+        abstentionCount: Int = 0,
+        fixedStrongPixelCount: Int = 0,
+        finalStrongPixelCount: Int = 0,
+        droppedFixedStrongPixelCount: Int = 0
+    ) {
+        self.invocationCount = invocationCount
+        self.issuedUnitCount = issuedUnitCount
+        self.abstentionCount = abstentionCount
+        self.fixedStrongPixelCount = fixedStrongPixelCount
+        self.finalStrongPixelCount = finalStrongPixelCount
+        self.droppedFixedStrongPixelCount = droppedFixedStrongPixelCount
+    }
+}
+
 @_spi(Testing) public enum SDKTestingLocalSupportFixture: Sendable {
     case noFace
     case missingSupport
@@ -682,6 +711,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     private var currentCompositionScenario: SDKTestingLocalCompositionScenario?
     private var currentCompositionSourceBindingMatched = false
     private var lastCompositionObservationValue = SDKTestingLocalCompositionObservation()
+    private var lastTeethProviderObservationValue = SDKTestingTeethProviderObservation()
     private var eventsValue: [SDKTestingLocalRetouchEvent] = []
     private var canonicalizeCountValue = 0
     private var detectAndMapCountValue = 0
@@ -742,6 +772,9 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     package var compositionObservation: SDKTestingLocalCompositionObservation {
         withLock { lastCompositionObservationValue }
     }
+    package var teethProviderObservation: SDKTestingTeethProviderObservation {
+        withLock { lastTeethProviderObservationValue }
+    }
     package var hasOpaqueCompositionScenario: Bool {
         withLock { currentCompositionScenario != nil }
     }
@@ -764,6 +797,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             compositionScenarioIndex += 1
             currentCompositionSourceBindingMatched = false
             lastCompositionObservationValue = SDKTestingLocalCompositionObservation()
+            lastTeethProviderObservationValue = SDKTestingTeethProviderObservation()
             currentAggregateSupportValueID = nil
             lastAggregateSupportValueIDValue = nil
             currentRequestIsMalformed = false
@@ -1109,6 +1143,9 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     }
     public var compositionObservation: SDKTestingLocalCompositionObservation {
         withInvocationLock { hooks.compositionObservation }
+    }
+    public var providerObservation: SDKTestingTeethProviderObservation {
+        withInvocationLock { hooks.teethProviderObservation }
     }
 
     public convenience init(

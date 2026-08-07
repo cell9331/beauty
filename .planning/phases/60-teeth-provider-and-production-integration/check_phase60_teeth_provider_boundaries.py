@@ -164,7 +164,7 @@ def check_t60_03(snapshot: Snapshot) -> CheckResult:
         (
             "hardEnvelope",
             "constrainToHardEnvelope",
-            "hardEnvelope = constrainToHardEnvelope",
+            "finalMask = constrainToHardEnvelope",
             "boxBlur",
             "droppedFixedStrongPixelCount",
             "PostFilterHardReclip",
@@ -434,7 +434,8 @@ package enum BeautyTeethWhiteningProvider {
     _ = lipSupport.outer; _ = lipSupport.inner
     let fixedStrongPixelCount = 4
     let adaptiveStrongPixelCount = connectedCandidates.count
-    let hardEnvelope = constrainToHardEnvelope(boxBlur(connectedCandidates))
+    let hardEnvelope = connectedCandidates
+    let finalMask = constrainToHardEnvelope(boxBlur(connectedCandidates), hardEnvelope: hardEnvelope)
     let droppedFixedStrongPixelCount = 0
     _ = owner.makeUnit(proposals: [])
   }
@@ -517,8 +518,8 @@ def self_test() -> int:
         (
             "T-60-03",
             PROVIDER_RELATIVE,
-            "let hardEnvelope = constrainToHardEnvelope(boxBlur(connectedCandidates))",
-            "let hardEnvelope = boxBlur(connectedCandidates)",
+            "let finalMask = constrainToHardEnvelope(boxBlur(connectedCandidates), hardEnvelope: hardEnvelope)",
+            "let finalMask = boxBlur(connectedCandidates)",
         ),
         ("T-60-04", TRANSFORM_RELATIVE, "1.45", "2.40"),
         ("T-60-05", PROVIDER_RELATIVE, "owner.makeUnit", "owner.removedUnit"),
