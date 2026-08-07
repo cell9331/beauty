@@ -142,4 +142,4 @@ completion.
 
 ---
 *Requirements defined: 2026-08-05*
-*Last updated: 2026-08-07 after Phase 63 guarded per-eye sclera provider verification*
+*Last updated: 2026-08-08 after Phase 64 standalone sclera output verification and Phase 65 planning*

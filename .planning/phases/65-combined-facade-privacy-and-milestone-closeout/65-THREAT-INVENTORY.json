@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "security_standard": "OWASP ASVS Level 1",
+  "block_on": "HIGH",
+  "threats": [
+    {"id":"T-65-01","severity":"HIGH","disposition":"mitigate","gates":["independent intent/evidence/provider/output owners","no sibling or synthetic borrowing","exact sequence history"]},
+    {"id":"T-65-02","severity":"HIGH","disposition":"mitigate","gates":["public combined facade","independent standalone merge oracle","collision-to-source and order independence"]},
+    {"id":"T-65-03","severity":"HIGH","disposition":"mitigate","gates":["four explicit failure quadrants","valid-invalid-valid and thrown recovery","parallel/reset/pixel-buffer/cancellation isolation"]},
+    {"id":"T-65-04","severity":"HIGH","disposition":"mitigate","gates":["exact 61/5/74/three-disabled inventories","dimensions/orientation/alpha/sRGB","typed no-op and unrelated-effect continuation"]},
+    {"id":"T-65-05","severity":"HIGH","disposition":"mitigate","gates":["aggregate-only public/SPI diagnostics","tracked/staged privacy","persistence/log/metric/network/resource absence"]},
+    {"id":"T-65-06","severity":"HIGH","disposition":"mitigate","gates":["去脂 and proxy absence","no Demo/realtime/model/network activation","no broad release claim"]},
+    {"id":"T-65-07","severity":"HIGH","disposition":"mitigate","gates":["exact product-owner equality","40/40 traceability","canonical phase verification before lifecycle close"]},
+    {"id":"T-65-08","severity":"HIGH","disposition":"mitigate","gates":["all focused/private/opt-in/full gates non-skipped","code review/fix","separate milestone audit before OUT-09"]}
+  ]
+}

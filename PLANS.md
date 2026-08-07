@@ -36,8 +36,8 @@
 | Evidence gate | The mechanics-only candidate remains zero-weight product evidence. Separate genuine teeth and sclera pairs each passed Phase 54 ReviewCore and the exact serializer gate; upper-eyelid fullness remains independently closed. |
 | Order | Teeth evidence and production slice → teeth verification/promotion → sclera evidence and per-eye production slice → sclera verification/promotion → combined regression and milestone audit. |
 | Exclusions | `去脂`; realtime/pixel-buffer; SwiftUI/Demo activation; external model/cloud; tracked portrait media; device/commercial/performance-budget/packaging/shipping/launch claims. |
-| Current | Phase 64 is complete: exact 74-case standalone public output, required 6/6 matrix, protected-anatomy oracles, original-detail review, eight HIGH owners, exact `祛红血丝` promotion and independent 617-test SDK / 121-test Demo rerun all pass. |
-| Next | Discuss and plan Phase 65 combined-facade, privacy and milestone closeout. Preserve independent teeth/sclera authority, keep `去脂` absent and leave all local-retouch Demo rows disabled. |
+| Current | Phase 65 is planned as four serial waves: freeze actual-provider combined byte/failure contracts and eight HIGH owners; complete merge/collision/recovery; close privacy/compatibility/private/opt-in/review; then run full regression, independent phase verification and a separate milestone audit. |
+| Next | Execute Phase 65 Wave 1 RED contracts. Combined behavior uses the two existing public scalars with exact 61/5/74 compatibility; it adds no new visual tuning, renderer case, Demo activation or `去脂` route. |
 
 ## 3A. Archived Active Ledger
 

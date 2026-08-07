@@ -160,7 +160,12 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
   4. Public/SPI/Codable state, persistence, logs, metrics, network traffic, and tracked artifacts contain no raw support, masks, pupils, candidate colors, vein-like detail, image bytes, paths, or reviewer identity; `去脂` and all excluded runtime/UI/model/release surfaces remain absent.
   5. Full SwiftPM, opt-in Vision, Demo compatibility, security/privacy/resource/network/adversarial checks, code review/fix, owner equality, independent verification, 40/40 traceability, integrations, standalone/combined flows, and a separate milestone audit all agree before archive/tag.
 
-**Plans**: TBD
+**Plans**: 4 plans
+
+- [ ] 65-01-PLAN.md — RED combined byte/failure contracts and eight-HIGH checker
+- [ ] 65-02-PLAN.md — actual-provider combined facade, collision and lifecycle isolation
+- [ ] 65-03-PLAN.md — privacy/compatibility/private/opt-in gates and security review
+- [ ] 65-04-PLAN.md — full regression, independent phase verification and separate milestone audit
 
 ## Progress
 
@@ -173,7 +178,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 | 61. Teeth Output, Safety, and Independent Closeout | 4/4 | Complete    | 2026-08-07 |
 | 62. Sclera Evidence and Admission Contract | 5/5 | Complete — independent evidence, 61st scalar, direct demand, privacy and regression pass | 2026-08-07 |
 | 63. Guarded Per-Eye Sclera Production Integration | 4/4 | Complete — guarded provider, actual-Vision evidence, privacy and regression pass; no promotion | 2026-08-07 |
-| 64. Sclera Output, Adversarial Safety, and Independent Closeout | 0/TBD | Not started | - |
-| 65. Combined Facade, Privacy, and Milestone Closeout | 0/TBD | Not started | - |
+| 64. Sclera Output, Adversarial Safety, and Independent Closeout | 4/4 | Complete — public output, adversarial safety, exact promotion and independent regression pass | 2026-08-08 |
+| 65. Combined Facade, Privacy, and Milestone Closeout | 0/4 | Planned — combined byte/failure, privacy, full regression and separate audit pending | - |
 
 Earlier phase details are preserved in their linked milestone archives under `.planning/milestones/`.

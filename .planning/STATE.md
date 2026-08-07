@@ -5,10 +5,10 @@ milestone_name: Independent Teeth and Sclera Retouch
 current_phase: 65
 current_phase_name: Combined Facade, Privacy, and Milestone Closeout
 status: ready
-stopped_at: Phase 64 complete; Phase 65 discussion ready
-last_updated: "2026-08-08T06:25:00.000Z"
+stopped_at: Phase 65 planned; Wave 1 ready
+last_updated: "2026-08-08T06:40:00.000Z"
 last_activity: 2026-08-08
-last_activity_desc: Phase 64 standalone sclera output independently promoted and verified
+last_activity_desc: Phase 65 combined facade and milestone closeout planned
 progress:
   total_phases: 7
   completed_phases: 6
@@ -23,14 +23,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-08-07)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 65 — Combined Facade, Privacy, and Milestone Closeout (discussion ready)
+**Current focus:** Phase 65 — Combined Facade, Privacy, and Milestone Closeout (4 plans ready)
 
 ## Current Position
 
 Phase: 65 — Combined Facade, Privacy, and Milestone Closeout
 Plan: 0 of TBD
-Status: Ready for discussion and planning
-Last activity: 2026-08-08 — Phase 64 passed standalone public output, adversarial safety, visual review, exact promotion, and independent regression
+Status: Ready for execution
+Last activity: 2026-08-08 — Phase 65 planned as four serial combined/privacy/audit waves
 
 Progress: █████████░ [█████████░] 86% of milestone phases complete
 
@@ -84,6 +84,8 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 - Phase 63 Wave 4 closes the final native-Vision pair, eight HIGH owners, 612-test SDK and 121-test Demo conjunction; SCLERA-09 through SCLERA-13 are verified without renderer or product promotion.
 - Phase 64 closes the standalone sclera slice at 74 renderer cases through a required 6/6 output matrix, 5/5 adversarial protected-anatomy tests, fresh four-item original-detail review, eight green HIGH owners, full 617-test SDK and 121-test Demo regression.
 - Exactly `祛红血丝` is promoted. Aggregate `眼睛` remains partial solely because `去脂` is future; all local-retouch Demo rows remain disabled.
+- Phase 65 is planned as four serial waves: freeze combined byte/failure and eight-HIGH contracts; complete actual-provider merge/collision/recovery; close privacy/compatibility/private/opt-in/review; then independently verify and run a separate milestone audit.
+- Combined behavior adds no renderer case or product control: exact compatibility remains 61 fields, five presets and 74 renderer cases while the public-facade XCTest owns the joint request.
 - Teeth evidence, support, review, and promotion contribute no sclera or `去脂` credit.
 - v1.15 remains SDK-core and still-image only with no Demo activation, realtime/pixel-buffer, model/cloud, tracked portrait media, or release-readiness claim.
 
@@ -108,6 +110,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-08T06:25:00.000Z
-Stopped at: Phase 64 complete; Phase 65 discussion ready
+Last session: 2026-08-08T06:40:00.000Z
+Stopped at: Phase 65 planned; Wave 1 ready
 Resume file: None
