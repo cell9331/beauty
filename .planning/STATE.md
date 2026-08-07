@@ -5,15 +5,15 @@ milestone_name: Independent Teeth and Sclera Retouch
 current_phase: 63
 current_phase_name: Guarded Per-Eye Sclera Production Integration
 status: executing
-stopped_at: Completed 63-02; ready to execute 63-03
-last_updated: "2026-08-07T10:46:50.000Z"
+stopped_at: Completed 63-03; ready to execute 63-04
+last_updated: "2026-08-07T10:58:23.000Z"
 last_activity: 2026-08-07
-last_activity_desc: Phase 63 guarded per-eye provider and transform completed
+last_activity_desc: Phase 63 one-request engine lifecycle and peer isolation completed
 progress:
   total_phases: 7
   completed_phases: 4
   total_plans: 26
-  completed_plans: 22
+  completed_plans: 25
 ---
 
 # Project State
@@ -28,9 +28,9 @@ See: `.planning/PROJECT.md` (updated 2026-08-07)
 ## Current Position
 
 Phase: 63 — Guarded Per-Eye Sclera Production Integration
-Plan: 2 of 4
-Status: Executing; Wave 3 engine integration ready
-Last activity: 2026-08-07 — Phase 63 per-eye guard, source transform and 32 focused checks passed
+Plan: 3 of 4
+Status: Executing; Wave 4 private actual-Vision and full closeout ready
+Last activity: 2026-08-07 — Phase 63 lifecycle, peer isolation and 94 focused checks passed
 
 Progress: ██████░░░░ [██████░░░░] 57% of milestone phases complete
 
@@ -38,7 +38,7 @@ Progress: ██████░░░░ [██████░░░░] 57% of
 
 **Current milestone:**
 
-- Total plans completed: 19
+- Total plans completed: 25
 - Average duration: —
 - Total execution time: —
 
@@ -56,6 +56,9 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 62 P03 | — | 2 tasks | 5 files |
 | Phase 62 P04 | — | 2 tasks | 13 files |
 | Phase 62 P05 | — | 2 tasks | 14 files |
+| Phase 63 P01 | — | 2 tasks | 4 files |
+| Phase 63 P02 | 6m | 2 tasks | 3 files |
+| Phase 63 P03 | 7m | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -72,6 +75,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 - Phase 63 is planned as four serial waves: RED contracts/checker, provider/transform, engine lifecycle integration, then private actual-Vision and full closeout.
 - Phase 63 Wave 1 freezes per-eye anatomy, transform, lifecycle and private aggregate contracts; the eight HIGH checker mutations pass.
 - Phase 63 Wave 2 adds a stateless zero-to-two-unit provider with guard-before-score, post-feather reclip and immutable-source red-excess correction.
+- Phase 63 Wave 3 connects exactly one sclera provider to the current still-image request, shares one composition owner with teeth and proves per-eye recovery without deferred-route activation.
 - Teeth evidence, support, review, and promotion contribute no sclera or `去脂` credit.
 - v1.15 remains SDK-core and still-image only with no Demo activation, realtime/pixel-buffer, model/cloud, tracked portrait media, or release-readiness claim.
 
@@ -81,7 +85,7 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- The two-row sclera evidence gate and intent admission are satisfied; Phase 63 production implementation is the active work.
+- The two-row sclera evidence gate, intent admission, provider and engine lifecycle are satisfied; private actual-Vision and full Phase 63 closeout are active.
 - Spike thresholds remain calibration seeds, not product constants.
 - Existing TD-013 generic-result sendability remains outside v1.15.
 
@@ -96,6 +100,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-07T10:46:50.000Z
-Stopped at: Completed 63-02; ready to execute 63-03
+Last session: 2026-08-07T10:58:23.000Z
+Stopped at: Completed 63-03; ready to execute 63-04
 Resume file: None

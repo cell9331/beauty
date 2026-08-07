@@ -124,7 +124,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 
 - [x] 63-01-PLAN.md — RED per-eye contracts, frozen private bounds and eight-HIGH checker
 - [x] 63-02-PLAN.md — guarded per-eye provider and immutable-source transform
-- [ ] 63-03-PLAN.md — one-request production integration and lifecycle isolation
+- [x] 63-03-PLAN.md — one-request production integration and lifecycle isolation
 - [ ] 63-04-PLAN.md — private actual-Vision gate, full regression and Phase 64 handoff
 
 ### Phase 64: Sclera Output, Adversarial Safety, and Independent Closeout
@@ -167,7 +167,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 | 60. Teeth Provider and Production Integration | 4/4 plans complete / provider verified / 0 visible promoted | Complete — genuine pair, bounded provider, integration, privacy, and regression pass | 2026-08-07 |
 | 61. Teeth Output, Safety, and Independent Closeout | 4/4 | Complete    | 2026-08-07 |
 | 62. Sclera Evidence and Admission Contract | 5/5 | Complete — independent evidence, 61st scalar, direct demand, privacy and regression pass | 2026-08-07 |
-| 63. Guarded Per-Eye Sclera Production Integration | 2/4 | In progress — guarded provider/transform green; engine integration next | - |
+| 63. Guarded Per-Eye Sclera Production Integration | 3/4 | In progress — engine lifecycle and peer isolation green; private actual-Vision closeout next | - |
 | 64. Sclera Output, Adversarial Safety, and Independent Closeout | 0/TBD | Not started | - |
 | 65. Combined Facade, Privacy, and Milestone Closeout | 0/TBD | Not started | - |
 
