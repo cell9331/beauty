@@ -56,7 +56,10 @@ function parseNulInventory(value) {
   if (content === "") return [];
   if (!content.endsWith("\0")) throw new Error("inventory_nul_terminator_missing");
   const files = content.slice(0, -1).split("\0");
-  if (files.some((file) => !safeRelativeKey(file)) || new Set(files).size !== files.length) {
+  const safeInventoryEntry = (file) => file.endsWith("/")
+    ? safeRelativeKey(file.slice(0, -1))
+    : safeRelativeKey(file);
+  if (files.some((file) => !safeInventoryEntry(file)) || new Set(files).size !== files.length) {
     throw new Error("inventory_entry_invalid");
   }
   return files;

@@ -395,6 +395,7 @@ test("NUL inventories and candidate selection fail on malformed or ambiguous inp
   assert.deepEqual(RUNNER.parseNulInventory(Buffer.from("one/manifest.json\0two/file.png\0")), [
     "one/manifest.json", "two/file.png",
   ]);
+  assert.deepEqual(RUNNER.parseNulInventory("ignored-directory/\0"), ["ignored-directory/"]);
   for (const inventory of ["one\0two", "one\0one\0", "../one\0", "one\\two\0"]) {
     assert.throws(() => RUNNER.parseNulInventory(inventory));
   }
