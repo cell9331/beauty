@@ -1,6 +1,6 @@
 ---
 phase: 65
-status: verified
+status: completion-ready
 evidence_scope: aggregate-only
 combined_facade_tests: 13
 combined_integration_tests: 34
@@ -92,7 +92,9 @@ demo_skips: 0
 - Explicit iPhone 17e / iOS 26.5 Demo tests pass 121/121 with no skips and the
   corresponding build succeeds.
 - Independent Phase 65 verification passes after owner synchronization. The
-  separate milestone audit remains required before completion readiness.
+  separate milestone audit passes 40/40 requirements, 12/12 integration seams
+  and 7/7 end-to-end flows with no blocker or orphan.
 
-This is aggregate-only verified evidence. Deterministic synthetic bytes carry
-no effectiveness, naturalness, admission or product-promotion weight.
+This is aggregate-only completion-ready evidence. It does not archive, tag,
+ship or establish release readiness. Deterministic synthetic bytes carry no
+effectiveness, naturalness, admission or product-promotion weight.

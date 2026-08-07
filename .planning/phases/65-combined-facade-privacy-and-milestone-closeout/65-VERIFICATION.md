@@ -57,7 +57,8 @@ Product equality is exact: `白牙` and aggregate `嘴唇` are implemented;
 and 74 renderer cases; all three local-retouch Demo rows remain disabled and
 nil-mapped.
 
-This phase verification does not itself close OUT-09 and does not archive,
-tag, clean up, ship or establish release readiness. The separate v1.15
-milestone audit must independently confirm all 40 requirements and deferred
-nonclaims before the milestone becomes completion-ready.
+This phase verification did not itself close OUT-09 and does not archive, tag,
+clean up, ship or establish release readiness. The subsequent separate v1.15
+milestone audit independently confirms all 40 requirements and deferred
+nonclaims, so the milestone is now completion-ready without being archived or
+tagged.

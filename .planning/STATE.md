@@ -4,16 +4,16 @@ milestone: v1.15
 milestone_name: Independent Teeth and Sclera Retouch
 current_phase: 65
 current_phase_name: Combined Facade, Privacy, and Milestone Closeout
-status: verifying
-stopped_at: Phase 65 independently verified; separate v1.15 audit next
-last_updated: "2026-08-07T23:05:32.000Z"
+status: completion_ready
+stopped_at: v1.15 audit passed; explicit milestone completion command next
+last_updated: "2026-08-07T23:08:24.000Z"
 last_activity: 2026-08-08
-last_activity_desc: Phase 65 combined facade and milestone closeout planned
+last_activity_desc: v1.15 separate milestone audit passed at 40/40
 progress:
   total_phases: 7
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 34
-  completed_plans: 33
+  completed_plans: 34
 ---
 
 # Project State
@@ -23,22 +23,22 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-08-07)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 65 — Separate v1.15 milestone audit after green implementation verification
+**Current focus:** v1.15 completion-ready after separate audit; archive/tag requires an explicit completion command
 
 ## Current Position
 
 Phase: 65 — Combined Facade, Privacy, and Milestone Closeout
-Plan: 4 of 4, task 1 of 2 verified
-Status: Separate milestone audit pending
-Last activity: 2026-08-08 — Phase 65 implementation, privacy and full regression independently verified
+Plan: 4 of 4 complete
+Status: Milestone audit passed; completion-ready, not archived or tagged
+Last activity: 2026-08-08 — v1.15 audit passed all 40 requirements, 12 integration seams and seven end-to-end flows
 
-Progress: █████████░ [█████████░] 86% of milestone phases complete
+Progress: ██████████ 100% of milestone phases complete
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Total plans completed: 33
+- Total plans completed: 34
 - Average duration: —
 - Total execution time: —
 
@@ -64,6 +64,10 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 64 P02 | — | 2 tasks | 6 files |
 | Phase 64 P03 | — | 2 tasks | 5 files |
 | Phase 64 P04 | — | 2 tasks | 15 files |
+| Phase 65 P01 | — | 2 tasks | 5 files |
+| Phase 65 P02 | — | 2 tasks | 6 files |
+| Phase 65 P03 | — | 2 tasks | 9 files |
+| Phase 65 P04 | — | 2 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -84,7 +88,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 - Phase 63 Wave 4 closes the final native-Vision pair, eight HIGH owners, 612-test SDK and 121-test Demo conjunction; SCLERA-09 through SCLERA-13 are verified without renderer or product promotion.
 - Phase 64 closes the standalone sclera slice at 74 renderer cases through a required 6/6 output matrix, 5/5 adversarial protected-anatomy tests, fresh four-item original-detail review, eight green HIGH owners, full 617-test SDK and 121-test Demo regression.
 - Exactly `祛红血丝` is promoted. Aggregate `眼睛` remains partial solely because `去脂` is future; all local-retouch Demo rows remain disabled.
-- Phase 65 is planned as four serial waves: freeze combined byte/failure and eight-HIGH contracts; complete actual-provider merge/collision/recovery; close privacy/compatibility/private/opt-in/review; then independently verify and run a separate milestone audit.
+- Phase 65 closes all four waves: combined byte/failure/recovery, privacy/compatibility/private/opt-in review, full regression, independent phase verification and the separate 40/40 milestone audit pass.
 - Combined behavior adds no renderer case or product control: exact compatibility remains 61 fields, five presets and 74 renderer cases while the public-facade XCTest owns the joint request.
 - Teeth evidence, support, review, and promotion contribute no sclera or `去脂` credit.
 - v1.15 remains SDK-core and still-image only with no Demo activation, realtime/pixel-buffer, model/cloud, tracked portrait media, or release-readiness claim.
@@ -95,9 +99,8 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- Phase 64 standalone output is complete; Phase 65 alone owns combined teeth+sclera byte/oracle equality, injected cross-feature failure isolation, milestone privacy/regression and final audit readiness.
-- Phase 63/64 guard constants, independent evidence and exact product rows are frozen; Phase 65 may combine but cannot borrow or relax either feature's authority.
-- Existing TD-013 generic-result sendability remains outside v1.15.
+- No v1.15 blocker remains. Existing TD-013 generic-result sendability remains outside this milestone.
+- Archive, tag, cleanup, shipping and release claims remain unauthorized until a separate explicit lifecycle command.
 
 ## Deferred Items
 
@@ -110,6 +113,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-08T06:40:00.000Z
-Stopped at: Phase 65 planned; Wave 1 ready
+Last session: 2026-08-08T07:08:24.000Z
+Stopped at: v1.15 audit passed; explicit milestone completion command next
 Resume file: None

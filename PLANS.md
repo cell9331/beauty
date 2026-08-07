@@ -26,20 +26,22 @@
 
 ## 3. Active
 
+No active implementation plan. v1.15 is audited and completion-ready; archive,
+tag and cleanup require an explicit milestone-completion command.
+
+## 3A. Archived Active Ledger
+
 ### A-2026-08-05-v1-15-independent-teeth-sclera-retouch
 
 | Field | Value |
 | --- | --- |
-| Status | `verifying` |
-| Scope | Start milestone v1.15 to complete still-image SDK-core `白牙` first and independently complete `祛红血丝` second, while keeping `去脂` future and preserving all v1.14 canonical-input, request-local, composition, privacy, compatibility, and fail-closed boundaries. |
-| Research | Four inline GSD research dimensions: stack, features, architecture, and pitfalls. Dedicated GSD subagents are unavailable in this session, so the orchestrator owns the artifacts and records the fallback. |
-| Evidence gate | The mechanics-only candidate remains zero-weight product evidence. Separate genuine teeth and sclera pairs each passed Phase 54 ReviewCore and the exact serializer gate; upper-eyelid fullness remains independently closed. |
-| Order | Teeth evidence and production slice → teeth verification/promotion → sclera evidence and per-eye production slice → sclera verification/promotion → combined regression and milestone audit. |
-| Exclusions | `去脂`; realtime/pixel-buffer; SwiftUI/Demo activation; external model/cloud; tracked portrait media; device/commercial/performance-budget/packaging/shipping/launch claims. |
-| Current | Phase 65 implementation and independent verification pass: combined byte/failure/recovery, privacy, compatibility, private/opt-in Vision, code review, full SwiftPM 630/0/8 and Demo build plus 121/0/0 agree at exact 61/5/74/3 ownership. |
-| Next | Run the separate v1.15 milestone audit. OUT-09 and completion readiness remain open; no archive, tag, cleanup, shipping or release claim is authorized. |
-
-## 3A. Archived Active Ledger
+| Status | `completed` |
+| Scope | Completed independent bounded still-image SDK-core `白牙` then `祛红血丝`, preserving canonical input, request-local ownership, original-pixel composition, privacy, compatibility and fail-closed behavior. |
+| Evidence | Separate genuine teeth and sclera pairs, standalone 6/6 output matrices, private native-Vision gates, original-detail reviews and exact product promotions pass without borrowed sibling credit. |
+| Combined | Both public facade entries pass independent standalone merge, collision-to-source, four failure units, no-stale recovery and unrelated-work preservation. |
+| Verification | Full SwiftPM 630/0/8; Demo build plus 121/0/0; focused 94/94; checker HIGH 8/8; separate audit 40/40 requirements, 12/12 seams and 7/7 flows. |
+| Product | `白牙` and aggregate `嘴唇` are implemented; `祛红血丝` is implemented; aggregate `眼睛` remains partial solely because `去脂` is future. Exact compatibility is 61 fields, five presets, 74 renderer cases and three disabled Demo rows. |
+| Boundary | Completion-ready only. No Demo activation, realtime/pixel-buffer, population/device/performance/commercial approval, model/network, packaging, shipping, launch, archive, tag or release claim. |
 
 ### A-2026-07-30-v1-14-local-facial-retouch
 
@@ -90,6 +92,18 @@
 | Phase 54 closeout | Three review-fix passes bind grants to trusted expected-target policy and exact original/mask/after keys plus SHA-256 byte digests, recover every local-read/display-URL failure transactionally, and independently pin T-54-01…T-54-08. Final standard review is clean. Current automation passes 33/33 core, 38/38 reviewer, 119/119 checker, named live `8/8`, 500 SwiftPM tests with six documented skips, explicit iPhone 17e/iOS 26.5 Demo build and 118/118 tests, schema/UI/diff gates. The fresh user-confirmed direct-`file://` smoke and independently parsed 1,640-byte allowlisted export pass. The three-feature ledger remains closed with zero review/product weight and no SDK/Demo/realtime/media/release admission; Phase 54 validation is complete. |
 
 ## 4. Completed
+
+### C-2026-08-08-v1-15-combined-audited-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-08-08 |
+| Scope | Closed Phase 65 and audited v1.15 after independently completing teeth, then sclera, then their combined public still-image facade behavior. |
+| Integration | Combined output matches an independent standalone merge; collisions preserve source; teeth, whole-sclera, left-eye and right-eye failure retain unaffected work; lifecycle recovery reuses no prior state. |
+| Verification | Combined 13/13; focused 94/94; private output 6/6 per feature; two private native-Vision suites; opt-in suites 95/95; full SwiftPM 630/0/8; Demo build and 121/0/0; HIGH 8/8. |
+| Audit | 40/40 requirements, 7/7 phases, 12/12 cross-phase seams and 7/7 end-to-end flows pass with no blocker, orphan or open HIGH. |
+| Product | Exact 61/5/74/3 compatibility; `白牙` and `祛红血丝` implemented; `嘴唇` implemented; `眼睛` partial solely because `去脂` is future. |
+| Boundary | The milestone is completion-ready but is not archived, tagged, cleaned up, shipped or release-ready. |
 
 ### C-2026-08-08-v1-15-phase-64-sclera-output-closeout
 

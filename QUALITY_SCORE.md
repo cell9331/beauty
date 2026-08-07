@@ -738,8 +738,8 @@ Command-level evidence is recorded in [Phase 64 verification](.planning/phases/6
 ### v1.15 Phase 65 Combined Closeout Evidence Score
 
 - Phase execution reaches 4 plans, 8 task rows, 11 Phase 65 requirements, eight
-  machine-green HIGH owners and zero open findings. The separate audit remains
-  the final milestone-controlled task until it independently passes.
+  machine-green HIGH owners and zero open findings. The separate audit passes
+  40/40 requirements, 7/7 phases, 12/12 integration seams and 7/7 flows.
 - Combined closeout passes 13/13; combined plus feature integration 34/34;
   composition/foundation 73/73; six focused suites 94/94. Checker self, live
   and all eight isolated modes pass, as does the retained teeth helper 19/19.

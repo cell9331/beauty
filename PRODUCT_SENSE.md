@@ -802,8 +802,8 @@ Command-level evidence is recorded in [Phase 64 output evidence](.planning/phase
   control, preset, alias, proxy or hidden route.
 - Standalone and combined public output, independent private evidence,
   protected-region safety, failure isolation, recovery, privacy, full
-  regression and owner equality agree. A separate milestone audit remains the
-  final requirement before completion readiness.
+  regression and owner equality agree. The separate 40/40 milestone audit also
+  passes, making v1.15 completion-ready without archive, tag or release claim.
 - Minimum authorized pairs do not establish population sufficiency. No
   realtime/pixel-buffer, target-device quality/performance, commercial
   approval, Demo activation, packaging, shipping, launch or release-readiness

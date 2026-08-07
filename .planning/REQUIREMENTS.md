@@ -58,7 +58,7 @@
 - [x] **OUT-06**: A combined teeth+sclera request byte-matches independently merged standalone oracles for disjoint masks, preserves the canonical source on any cross-provider collision, and keeps unaffected output under injected teeth, whole-sclera, left-eye, and right-eye failure.
 - [x] **OUT-07**: Full SwiftPM, opt-in Apple Vision integration, Demo compatibility, privacy/resource/network scans, adversarial safety, active-source and owner-document checks, code review/fix, and independent verification pass before milestone closeout.
 - [x] **OUT-08**: Product ledgers promote exactly independently passed `白牙` and `祛红血丝`; `嘴唇` may close after qualified `白牙`, while `眼睛` remains partial with `去脂` future, and no broader device, commercial, packaging, shipping, or launch claim is inferred.
-- [ ] **OUT-09**: An independent milestone audit verifies 100% requirement traceability, canonical phase verification, cross-feature integration, standalone and combined end-to-end flows, and all deferred nonclaims before v1.15 is archived or tagged.
+- [x] **OUT-09**: An independent milestone audit verifies 100% requirement traceability, canonical phase verification, cross-feature integration, standalone and combined end-to-end flows, and all deferred nonclaims before v1.15 is archived or tagged.
 
 ## Future Requirements
 
@@ -131,7 +131,7 @@ completion.
 | OUT-06 | Phase 65 | Complete; independent merge, collision-to-source and four failure units verified |
 | OUT-07 | Phase 65 | Complete; full regression, private/opt-in, privacy, review and verification pass |
 | OUT-08 | Phase 65 | Complete; exact implemented/deferred product equality and nonclaims verified |
-| OUT-09 | Phase 65 | Pending |
+| OUT-09 | Phase 65 | Complete; separate v1.15 audit passes 40/40 with no blocker or orphan |
 
 **Coverage:**
 
@@ -139,9 +139,9 @@ completion.
 - Mapped to phases: 40
 - Unmapped: 0 ✓
 - Duplicate mappings: 0 ✓
-- Completed before separate milestone audit: 39/40
-- Audit-controlled requirement pending: OUT-09
+- Completed after separate milestone audit: 40/40
+- Audit-controlled requirement OUT-09: passed
 
 ---
 *Requirements defined: 2026-08-05*
-*Last updated: 2026-08-08 after independent Phase 65 verification; separate v1.15 audit pending*
+*Last updated: 2026-08-08 after independent Phase 65 verification and separate v1.15 audit*

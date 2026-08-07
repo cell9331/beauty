@@ -17,7 +17,7 @@
 - ✅ **[v1.12 Face Shape Remaining Capabilities](milestones/v1.12-ROADMAP.md)** — Phases 45-48, shipped 2026-07-24.
 - ✅ **[v1.13 Eyebrow Geometry Controls](milestones/v1.13-ROADMAP.md)** — Phases 49-52, shipped 2026-07-28.
 - ✅ **[v1.14 Local Facial Retouch](milestones/v1.14-ROADMAP.md)** — Phases 53-58, shipped 2026-08-05.
-- 📋 **v1.15 Independent Teeth and Sclera Retouch** — Phases 59-65, planned.
+- ✅ **v1.15 Independent Teeth and Sclera Retouch** — Phases 59-65, audited and completion-ready 2026-08-08; not archived or tagged.
 
 ## Overview
 
@@ -33,7 +33,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 - [x] **Phase 62: Sclera Evidence and Admission Contract** - Independently qualify genuine redness/normal evidence and add one compatibility-safe sclera-only public intent after teeth closes. (completed 2026-08-07)
 - [x] **Phase 63: Guarded Per-Eye Sclera Production Integration** - Deliver independent left/right eye guards, hard sclera ownership, and bounded original-pixel redness reduction. (completed 2026-08-07)
 - [x] **Phase 64: Sclera Output, Adversarial Safety, and Independent Closeout** - Prove public-facade per-eye behavior, native and adversarial protected-region safety, naturalness, regression, and exact `祛红血丝` promotion. (completed 2026-08-08)
-- [ ] **Phase 65: Combined Facade, Privacy, and Milestone Closeout** - Verify both independently admitted features together, preserve all v1.14 boundaries, keep `去脂` absent, and prepare the audited milestone close.
+- [x] **Phase 65: Combined Facade, Privacy, and Milestone Closeout** - Verify both independently admitted features together, preserve all v1.14 boundaries, keep `去脂` absent, and prepare the audited milestone close. (completed 2026-08-08)
 
 ## Phase Details
 
@@ -165,7 +165,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 - [x] 65-01-PLAN.md — RED combined byte/failure contracts and eight-HIGH checker
 - [x] 65-02-PLAN.md — actual-provider combined facade, collision and lifecycle isolation
 - [x] 65-03-PLAN.md — privacy/compatibility/private/opt-in gates and security review
-- [ ] 65-04-PLAN.md — full regression, independent phase verification and separate milestone audit
+- [x] 65-04-PLAN.md — full regression, independent phase verification and separate milestone audit
 
 ## Progress
 
@@ -179,6 +179,6 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 | 62. Sclera Evidence and Admission Contract | 5/5 | Complete — independent evidence, 61st scalar, direct demand, privacy and regression pass | 2026-08-07 |
 | 63. Guarded Per-Eye Sclera Production Integration | 4/4 | Complete — guarded provider, actual-Vision evidence, privacy and regression pass; no promotion | 2026-08-07 |
 | 64. Sclera Output, Adversarial Safety, and Independent Closeout | 4/4 | Complete — public output, adversarial safety, exact promotion and independent regression pass | 2026-08-08 |
-| 65. Combined Facade, Privacy, and Milestone Closeout | 3/4 | Verifying — implementation/full regression pass; separate audit pending | - |
+| 65. Combined Facade, Privacy, and Milestone Closeout | 4/4 | Complete — combined facade, privacy, full regression, phase verification and separate audit pass | 2026-08-08 |
 
 Earlier phase details are preserved in their linked milestone archives under `.planning/milestones/`.
