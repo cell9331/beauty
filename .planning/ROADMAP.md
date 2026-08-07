@@ -79,11 +79,11 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
   4. Owning product and quality ledgers promote exactly `白牙`, close `嘴唇` only if every gate agrees, and preserve disabled `祛红血丝`/`去脂` plus partial `眼睛` status.
   5. Phase 62 cannot begin production sclera work unless the canonical Phase 61 verification records the teeth slice complete with no borrowed or conditional evidence.
 
-**Plans**: 2/4 plans executed
+**Plans**: 3/4 plans executed
 
 - [x] 61-01-PLAN.md
 - [x] 61-02-PLAN.md
-- [ ] 61-03-PLAN.md
+- [x] 61-03-PLAN.md
 - [ ] 61-04-PLAN.md
 
 ### Phase 62: Sclera Evidence and Admission Contract
@@ -154,7 +154,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 | --- | --- | --- | --- |
 | 59. Teeth Evidence and Admission Contract | 9/9 plans complete / intent admitted / 0 visible promoted | Complete — exact-open evidence, scalar, one demand, privacy, and regression pass | 2026-08-07 |
 | 60. Teeth Provider and Production Integration | 4/4 plans complete / provider verified / 0 visible promoted | Complete — genuine pair, bounded provider, integration, privacy, and regression pass | 2026-08-07 |
-| 61. Teeth Output, Safety, and Independent Closeout | 2/4 | In Progress|  |
+| 61. Teeth Output, Safety, and Independent Closeout | 3/4 | In Progress|  |
 | 62. Sclera Evidence and Admission Contract | 0/TBD | Not started | - |
 | 63. Guarded Per-Eye Sclera Production Integration | 0/TBD | Not started | - |
 | 64. Sclera Output, Adversarial Safety, and Independent Closeout | 0/TBD | Not started | - |
