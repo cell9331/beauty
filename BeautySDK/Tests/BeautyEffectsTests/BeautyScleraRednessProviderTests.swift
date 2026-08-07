@@ -288,7 +288,7 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
             let angle = Double(index) * 2 * .pi / 16
             return CoordinatePoint(
                 x: centerX + 0.1625 * cos(angle),
-                y: 0.50 + 0.1458 * sin(angle)
+                y: 0.50 + 0.0833 * sin(angle)
             )
         }
     }

@@ -59,13 +59,26 @@ final class BeautyScleraRednessRealFixtureTests: XCTestCase {
                 width: canonical.width,
                 height: canonical.height
             )
-
-            guard measurement.alphaChangedPixelCount == 0,
-                  measurement.changedOutsideReviewedMask == 0,
-                  (0.82...1.18).contains(measurement.textureEnergyRatio),
-                  measurement.maximumChannelDelta <= 44
-            else {
-                XCTFail("private_common_bounds_failed")
+            guard measurement.alphaChangedPixelCount == 0 else {
+                XCTFail("private_alpha_bound_failed")
+                return
+            }
+            guard measurement.changedOutsideReviewedMask == 0 else {
+                XCTFail(containmentFailureCode(
+                    before: Array(canonical.rgba8Data),
+                    after: Array(output),
+                    reviewedMask: Array(mask),
+                    width: canonical.width,
+                    height: canonical.height
+                ))
+                return
+            }
+            guard (0.82...1.18).contains(measurement.textureEnergyRatio) else {
+                XCTFail("private_texture_bound_failed")
+                return
+            }
+            guard measurement.maximumChannelDelta <= 44 else {
+                XCTFail("private_channel_bound_failed")
                 return
             }
             if fixture.polarity == "positive" {
@@ -207,6 +220,45 @@ final class BeautyScleraRednessRealFixtureTests: XCTestCase {
 
     private func redExcess(_ bytes: [UInt8], _ offset: Int) -> Double {
         max(0, Double(bytes[offset]) / 255 - max(Double(bytes[offset + 1]), Double(bytes[offset + 2])) / 255)
+    }
+
+    private func containmentFailureCode(
+        before: [UInt8],
+        after: [UInt8],
+        reviewedMask: [UInt8],
+        width: Int,
+        height: Int
+    ) -> String {
+        let inside: (Int) -> Bool = { index in
+            let offset = index * 4
+            return max(reviewedMask[offset], max(reviewedMask[offset + 1], reviewedMask[offset + 2])) > 2
+        }
+        let changedOutside = (0..<(width * height)).filter { index in
+            let offset = index * 4
+            return !inside(index) && before[offset..<(offset + 3)] != after[offset..<(offset + 3)]
+        }
+        for radius in [1, 2, 4] {
+            let allNearReviewedMask = changedOutside.allSatisfy { index in
+                let x = index % width
+                let y = index / width
+                for deltaY in -radius...radius {
+                    for deltaX in -radius...radius {
+                        let peerX = x + deltaX
+                        let peerY = y + deltaY
+                        if peerX >= 0, peerY >= 0, peerX < width, peerY < height,
+                           inside(peerY * width + peerX)
+                        {
+                            return true
+                        }
+                    }
+                }
+                return false
+            }
+            if allNearReviewedMask {
+                return "private_containment_edge_\(radius)_failed"
+            }
+        }
+        return "private_containment_broad_failed"
     }
 
     private func textureEnergy(_ bytes: [UInt8], _ mask: [UInt8], _ width: Int, _ height: Int) -> Double {

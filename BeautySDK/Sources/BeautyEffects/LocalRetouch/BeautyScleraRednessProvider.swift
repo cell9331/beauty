@@ -253,12 +253,15 @@ package enum BeautyScleraRednessProvider {
         polygon: ValidatedEyePolygon,
         grid: EyeMaskGrid
     ) -> [Bool] {
-        let radiusX = max(2.5, polygon.bounds.width * Double(grid.sourceWidth) * 0.27)
-        let radiusY = max(2.0, polygon.bounds.height * Double(grid.sourceHeight) * 0.40)
+        let eyeWidth = polygon.bounds.width * Double(grid.sourceWidth)
+        let eyeHeight = polygon.bounds.height * Double(grid.sourceHeight)
+        // Keep the actual-pupil exclusion at least as conservative as the
+        // reviewed guard before applying the additional contour/color guards.
+        let radius = max(2.5, max(eyeHeight * 0.58, eyeWidth * 0.16) + eyeWidth * 0.14)
         return (0..<grid.pixelCount).map { index in
-            let dx = (grid.pixelCenterX(index) - pupil.x * Double(grid.sourceWidth)) / radiusX
-            let dy = (grid.pixelCenterY(index) - pupil.y * Double(grid.sourceHeight)) / radiusY
-            return dx * dx + dy * dy <= 1
+            let dx = grid.pixelCenterX(index) - pupil.x * Double(grid.sourceWidth)
+            let dy = grid.pixelCenterY(index) - pupil.y * Double(grid.sourceHeight)
+            return dx * dx + dy * dy <= radius * radius
         }
     }
 

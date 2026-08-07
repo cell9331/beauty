@@ -62,8 +62,8 @@ private let phase50MalformedObservedEyebrow = [
 private func phase63ObservedEyeContour(
     centerX: Double,
     centerY: Double = 0.72,
-    radiusX: Double = 0.18,
-    radiusY: Double = 0.12
+    radiusX: Double = 0.24,
+    radiusY: Double = 0.06
 ) -> [CoordinatePoint] {
     (0..<16).map { index in
         let angle = Double(index) * 2 * .pi / 16
@@ -76,50 +76,50 @@ private func phase63ObservedEyeContour(
 
 private let phase63ObservedLeftEye = BeautyObservedEyeSupport(
     side: .left,
-    contour: phase63ObservedEyeContour(centerX: 0.30),
-    pupil: [CoordinatePoint(x: 0.30, y: 0.72)]
+    contour: phase63ObservedEyeContour(centerX: 0.25),
+    pupil: [CoordinatePoint(x: 0.25, y: 0.72)]
 )
 
 private let phase63ObservedRightEye = BeautyObservedEyeSupport(
     side: .right,
-    contour: phase63ObservedEyeContour(centerX: 0.70),
-    pupil: [CoordinatePoint(x: 0.70, y: 0.72)]
+    contour: phase63ObservedEyeContour(centerX: 0.75),
+    pupil: [CoordinatePoint(x: 0.75, y: 0.72)]
 )
 
 private let phase63MalformedObservedRightEye = BeautyObservedEyeSupport(
     side: .right,
-    contour: phase63ObservedEyeContour(centerX: 0.70),
+    contour: phase63ObservedEyeContour(centerX: 0.75),
     pupil: nil
 )
 
 private let phase63MalformedObservedLeftEye = BeautyObservedEyeSupport(
     side: .left,
-    contour: phase63ObservedEyeContour(centerX: 0.30),
+    contour: phase63ObservedEyeContour(centerX: 0.25),
     pupil: nil
 )
 
 private let phase63BlinkObservedRightEye = BeautyObservedEyeSupport(
     side: .right,
-    contour: phase63ObservedEyeContour(centerX: 0.70, radiusY: 0.02),
-    pupil: [CoordinatePoint(x: 0.70, y: 0.72)]
+    contour: phase63ObservedEyeContour(centerX: 0.75, radiusY: 0.02),
+    pupil: [CoordinatePoint(x: 0.75, y: 0.72)]
 )
 
 private let phase63SevereGazeObservedRightEye = BeautyObservedEyeSupport(
     side: .right,
-    contour: phase63ObservedEyeContour(centerX: 0.70),
-    pupil: [CoordinatePoint(x: 0.53, y: 0.72)]
+    contour: phase63ObservedEyeContour(centerX: 0.75),
+    pupil: [CoordinatePoint(x: 0.54, y: 0.72)]
 )
 
 private let phase63ReversedObservedLeftEye = BeautyObservedEyeSupport(
     side: .left,
-    contour: phase63ObservedEyeContour(centerX: 0.70),
-    pupil: [CoordinatePoint(x: 0.70, y: 0.72)]
+    contour: phase63ObservedEyeContour(centerX: 0.75),
+    pupil: [CoordinatePoint(x: 0.75, y: 0.72)]
 )
 
 private let phase63ReversedObservedRightEye = BeautyObservedEyeSupport(
     side: .right,
-    contour: phase63ObservedEyeContour(centerX: 0.30),
-    pupil: [CoordinatePoint(x: 0.30, y: 0.72)]
+    contour: phase63ObservedEyeContour(centerX: 0.25),
+    pupil: [CoordinatePoint(x: 0.25, y: 0.72)]
 )
 
 @_spi(Testing) public enum SDKTestingFaceDetectionFixture: Sendable {
@@ -1250,11 +1250,14 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         observedLipSupport: BeautyObservedLipSupport? = nil,
         landmarks: BeautyFaceLandmarks = .complete
     ) -> VisionDetectionObservation {
-        VisionDetectionObservation(
+        let visionBounds = observedEyeSupport == nil
+            ? CoordinateRect(x: 0.30, y: 0.20, width: 0.40, height: 0.60)
+            : CoordinateRect(x: 0.05, y: 0.20, width: 0.90, height: 0.60)
+        return VisionDetectionObservation(
             stableID: "phase-53-opaque-fixture",
             confidence: 0.96,
-            normalizedArea: 0.24,
-            visionBounds: CoordinateRect(x: 0.30, y: 0.20, width: 0.40, height: 0.60),
+            normalizedArea: visionBounds.area,
+            visionBounds: visionBounds,
             landmarks: landmarks,
             observedEyeSupport: observedEyeSupport,
             observedLipSupport: observedLipSupport
