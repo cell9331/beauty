@@ -93,6 +93,17 @@ tag and cleanup require an explicit milestone-completion command.
 
 ## 4. Completed
 
+### C-2026-08-08-v1-15-phase-63-verification-refresh
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-08-08 |
+| Scope | Refreshed Phase 63 canonical verification after its final summary had a newer filesystem timestamp than the already-passed report. No implementation plan or production behavior was re-executed or changed. |
+| Human gate | Conversational UAT passed 8/8, including confirmation that the pre-frozen per-eye guard, reclip and immutable-source contracts were not weakened. |
+| Fresh evidence | Standard 10-file review clean; focused provider/integration/mapping 44/44; required private native-Vision pair passed; full current SwiftPM 630/0/8; `git diff --check` passed. |
+| Threat transition | T-63-01 through T-63-07 remain green. Historical T-63-08 now observes Phase 64's authorized renderer/promotion; the Phase 64 post-promotion and Phase 65 final checkers pass, so this is not a regression or override. |
+| Result | `63-VERIFICATION.md` is fresh against `63-04-SUMMARY.md` and remains `status: passed` with all 11/11 must-haves and five requirements verified. |
+
 ### C-2026-08-08-v1-15-combined-audited-closeout
 
 | Field | Value |

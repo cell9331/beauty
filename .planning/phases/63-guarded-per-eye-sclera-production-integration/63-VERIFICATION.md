@@ -1,9 +1,11 @@
 ---
 phase: 63
 status: passed
-verified_base: 213ce12
-verified_at: 2026-08-07
+verified_base: f54df12
+verified_at: 2026-08-08T07:34:15+08:00
 summary_reconciled: true
+latest_summary_verified: 63-04-SUMMARY.md
+uat: 8/8
 requirements: [SCLERA-09, SCLERA-10, SCLERA-11, SCLERA-12, SCLERA-13]
 must_haves_verified: 11
 must_haves_total: 11
@@ -24,6 +26,30 @@ Phase 64 output/promotion credit is borrowed.
 The eight full-suite skips are existing explicit Apple Vision or private-host
 opt-ins. They are not required-gate skips: the Phase 63 authorized native-Vision
 pair ran separately through the required fixed-output private runner.
+
+## Fresh verification against the completed repository
+
+The report was refreshed after `63-04-SUMMARY.md` and the Phase 63 UAT so the
+canonical status reflects the latest summary rather than an older file mtime.
+The refresh rechecked the current code, not just the historical closeout commit:
+
+| Fresh gate | Result |
+| --- | --- |
+| Phase 63 UAT | 8/8 passed, including the frozen-contract confirmation |
+| Standard scoped code review | 10 files, clean, no open finding |
+| Focused provider/integration/face mapping | 44/44 passed |
+| Required private native-Vision pair | fixed-output runner passed |
+| Full current SwiftPM | 630 executed, 0 failures, 8 documented opt-in skips |
+| Phase 63 HIGH owners still applicable after later phases | T-63-01 through T-63-07 passed independently |
+| Authorized later-scope transition | Phase 64 post-promotion checker passed; Phase 65 final checker passed |
+| Working-tree syntax | `git diff --check` passed |
+
+Historical owner T-63-08 asserted that Phase 64's renderer and product
+promotion were still absent during Phase 63. It now fails the old live checker
+only because Phase 64 subsequently added and independently verified that exact
+renderer/promotion. The current Phase 64 and Phase 65 closeout checkers pass,
+so this is an authorized lifecycle transition rather than a Phase 63
+regression or verification override.
 
 ## Containment correction and final private gate
 
