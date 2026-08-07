@@ -66,6 +66,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
     public var filterId: String?
     public var filterIntensity: Float
     public var teethWhitening: Float
+    public var scleraRednessReduction: Float
 
     enum CodingKeys: String, CodingKey {
         case skinSmoothing
@@ -128,6 +129,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         case filterId
         case filterIntensity
         case teethWhitening
+        case scleraRednessReduction
     }
 
     public init(
@@ -190,7 +192,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         lipColor: Float = 0,
         filterId: String? = nil,
         filterIntensity: Float = 0,
-        teethWhitening: Float = 0
+        teethWhitening: Float = 0,
+        scleraRednessReduction: Float = 0
     ) {
         self.skinSmoothing = Self.clampUnit(skinSmoothing)
         self.skinWhitening = Self.clampUnit(skinWhitening)
@@ -259,6 +262,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         self.filterId = filterId
         self.filterIntensity = Self.clampUnit(filterIntensity)
         self.teethWhitening = Self.clampUnit(teethWhitening)
+        self.scleraRednessReduction = Self.clampUnit(scleraRednessReduction)
     }
 
     public init(from decoder: Decoder) throws {
@@ -323,7 +327,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             lipColor: try container.decodeFloatIfPresent(.lipColor),
             filterId: try container.decodeIfPresent(String.self, forKey: .filterId),
             filterIntensity: try container.decodeFloatIfPresent(.filterIntensity),
-            teethWhitening: try container.decodeFloatIfPresent(.teethWhitening)
+            teethWhitening: try container.decodeFloatIfPresent(.teethWhitening),
+            scleraRednessReduction: try container.decodeFloatIfPresent(.scleraRednessReduction)
         )
     }
 
@@ -388,7 +393,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             lipColor: lipColor,
             filterId: filterId,
             filterIntensity: filterIntensity,
-            teethWhitening: teethWhitening
+            teethWhitening: teethWhitening,
+            scleraRednessReduction: scleraRednessReduction
         )
     }
 

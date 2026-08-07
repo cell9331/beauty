@@ -121,8 +121,8 @@ final class BeautyParametersTests: XCTestCase {
             "eyebrowHeadSpacing", "eyebrowTilt", "eyebrowPeakDefinition",
         ]
 
-        XCTAssertEqual(labels.count, 60)
-        XCTAssertEqual(labels.filter { $0 != "filterId" }.count, 59)
+        XCTAssertEqual(labels.count, 61)
+        XCTAssertEqual(labels.filter { $0 != "filterId" }.count, 60)
         for label in eyebrowLabels {
             XCTAssertEqual(labels.filter { $0 == label }.count, 1, "independent storage for \(label)")
         }
@@ -158,7 +158,7 @@ final class BeautyParametersTests: XCTestCase {
         }
     }
 
-    func testBROW02Complete60KeyRoundTripAndLegacy53PayloadRemainIndependentAndNeutral() throws {
+    func testBROW02Complete61KeyRoundTripAndLegacy53PayloadRemainIndependentAndNeutral() throws {
         let parameters = BeautyParameters(
             skinSmoothing: 0.08,
             chinLength: -0.19,
@@ -183,7 +183,7 @@ final class BeautyParametersTests: XCTestCase {
         let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
         let decoded = try JSONDecoder().decode(BeautyParameters.self, from: data)
 
-        XCTAssertEqual(object.count, 60)
+        XCTAssertEqual(object.count, 61)
         XCTAssertEqual(Set(object.keys), Set(Mirror(reflecting: parameters).children.compactMap(\.label)))
         XCTAssertEqual(decoded, parameters)
         XCTAssertEqual(
@@ -203,6 +203,7 @@ final class BeautyParametersTests: XCTestCase {
         for key in eyebrowKeys {
             legacy.removeValue(forKey: key)
         }
+        legacy.removeValue(forKey: "scleraRednessReduction")
         XCTAssertEqual(legacy.count, 53)
         XCTAssertTrue(eyebrowKeys.allSatisfy { legacy[$0] == nil })
 
@@ -298,7 +299,7 @@ final class BeautyParametersTests: XCTestCase {
             "chinTaper",
         ]
 
-        XCTAssertEqual(labels.count, 60)
+        XCTAssertEqual(labels.count, 61)
         for field in expected {
             XCTAssertEqual(labels.filter { $0 == field }.count, 1, "independent storage for \(field)")
         }
@@ -323,7 +324,7 @@ final class BeautyParametersTests: XCTestCase {
         let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
         let decoded = try JSONDecoder().decode(BeautyParameters.self, from: data)
 
-        XCTAssertEqual(object.count, 60)
+        XCTAssertEqual(object.count, 61)
         XCTAssertEqual(decoded, parameters)
         XCTAssertEqual(
             Set([
@@ -342,7 +343,7 @@ final class BeautyParametersTests: XCTestCase {
             "faceContourSmooth", "templeFullness", "cheekboneSlim", "chinTaper",
             "eyebrowYPosition", "eyebrowThickness", "eyebrowLength", "eyebrowSpacing",
             "eyebrowHeadSpacing", "eyebrowTilt", "eyebrowPeakDefinition",
-            "teethWhitening",
+            "teethWhitening", "scleraRednessReduction",
         ] {
             legacy.removeValue(forKey: key)
         }
@@ -469,7 +470,7 @@ final class BeautyParametersTests: XCTestCase {
             "eyeSymmetry",
         ]
 
-        XCTAssertEqual(labels.count, 60)
+        XCTAssertEqual(labels.count, 61)
         XCTAssertTrue(expected.isSubset(of: labels))
         XCTAssertEqual(expected.count, 10)
         for field in expected {
@@ -514,7 +515,7 @@ final class BeautyParametersTests: XCTestCase {
             "faceContourSmooth", "templeFullness", "cheekboneSlim", "chinTaper",
             "eyebrowYPosition", "eyebrowThickness", "eyebrowLength", "eyebrowSpacing",
             "eyebrowHeadSpacing", "eyebrowTilt", "eyebrowPeakDefinition",
-            "teethWhitening",
+            "teethWhitening", "scleraRednessReduction",
         ] {
             legacy.removeValue(forKey: key)
         }
@@ -564,7 +565,7 @@ final class BeautyParametersTests: XCTestCase {
         let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
         let decoded = try JSONDecoder().decode(BeautyParameters.self, from: data)
 
-        XCTAssertEqual(object.count, 60)
+        XCTAssertEqual(object.count, 61)
         XCTAssertEqual(decoded, parameters)
         XCTAssertEqual(decoded.eyeHeight, 0.21, accuracy: 0.0001)
         XCTAssertEqual(decoded.eyeLength, 0.32, accuracy: 0.0001)
@@ -609,7 +610,7 @@ final class BeautyParametersTests: XCTestCase {
     func testPhase38MOUTH01DefaultsAreZeroEffectAndExpose38StoredFields() {
         let parameters = BeautyParameters()
 
-        XCTAssertEqual(Mirror(reflecting: parameters).children.count, 60)
+        XCTAssertEqual(Mirror(reflecting: parameters).children.count, 61)
         XCTAssertEqual(parameters.skinSmoothing, 0)
         XCTAssertEqual(parameters.skinWhitening, 0)
         XCTAssertEqual(parameters.skinRosy, 0)
@@ -1009,7 +1010,7 @@ final class BeautyParametersTests: XCTestCase {
         let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
         let decoded = try JSONDecoder().decode(BeautyParameters.self, from: data)
 
-        XCTAssertEqual(object.count, 60)
+        XCTAssertEqual(object.count, 61)
         XCTAssertEqual(decoded, parameters)
         XCTAssertEqual(decoded.noseRootNarrowing, 0.21, accuracy: 0.0001)
         XCTAssertEqual(decoded.noseTipLift, 0.37, accuracy: 0.0001)
@@ -1079,7 +1080,7 @@ final class BeautyParametersTests: XCTestCase {
         let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
         let decoded = try JSONDecoder().decode(BeautyParameters.self, from: data)
 
-        XCTAssertEqual(object.count, 60)
+        XCTAssertEqual(object.count, 61)
         XCTAssertEqual(decoded, parameters)
         XCTAssertEqual(decoded.mouthYPosition, -0.11, accuracy: 0.0001)
         XCTAssertEqual(decoded.mouthTilt, 0.22, accuracy: 0.0001)
@@ -1162,8 +1163,8 @@ extension BeautyParametersTests {
         let defaults = BeautyParameters()
         let children = Array(Mirror(reflecting: defaults).children)
         let labels = children.compactMap(\.label)
-        XCTAssertEqual(labels.count, 60)
-        XCTAssertEqual(labels.filter { $0 != "filterId" }.count, 59)
+        XCTAssertEqual(labels.count, 61)
+        XCTAssertEqual(labels.filter { $0 != "filterId" }.count, 60)
         XCTAssertEqual(labels.filter { $0 == "filterId" }.count, 1)
         XCTAssertTrue(
             children.allSatisfy { child in
@@ -1172,17 +1173,17 @@ extension BeautyParametersTests {
                 }
                 return child.value as? Float == 0
             },
-            "All 59 numeric defaults and filterId must retain their exact neutral values"
+            "All 60 numeric defaults and filterId must retain their exact neutral values"
         )
     }
 
     func testPhase53MissingKeysAndZeroDefaultsRemainNeutral() throws {
         let decoded = try JSONDecoder().decode(BeautyParameters.self, from: Data("{}".utf8))
         XCTAssertEqual(decoded, BeautyParameters())
-        XCTAssertEqual(Mirror(reflecting: decoded).children.count, 60)
+        XCTAssertEqual(Mirror(reflecting: decoded).children.count, 61)
     }
 
-    func testPhase53StoredAndCodingKeyOrderRemainsCurrent60() throws {
+    func testPhase53StoredAndCodingKeyOrderRemainsCurrent61() throws {
         let stored = Mirror(reflecting: BeautyParameters()).children.compactMap(\.label)
         let source = try String(contentsOf: parametersSourceURL(), encoding: .utf8)
         let codingBlock = try XCTUnwrap(source.split(separator: "enum CodingKeys", maxSplits: 1).last)
@@ -1191,7 +1192,7 @@ extension BeautyParametersTests {
             let text = line.trimmingCharacters(in: .whitespaces)
             return text.hasPrefix("case ") ? String(text.dropFirst(5)) : nil
         }
-        XCTAssertEqual(stored.count, 60)
+        XCTAssertEqual(stored.count, 61)
         XCTAssertEqual(coding, stored)
 
         let encoded = try XCTUnwrap(
@@ -1199,7 +1200,7 @@ extension BeautyParametersTests {
                 with: JSONEncoder().encode(BeautyParameters(filterId: "phase53-inventory"))
             ) as? [String: Any]
         )
-        XCTAssertEqual(encoded.count, 60)
+        XCTAssertEqual(encoded.count, 61)
         XCTAssertEqual(Set(encoded.keys), Set(stored))
     }
 
@@ -1217,7 +1218,7 @@ extension BeautyParametersTests {
         XCTAssertEqual(legacySourceCall.noseBridge, 0.1)
         XCTAssertEqual(legacySourceCall.lipColor, 0.4)
         XCTAssertEqual(legacySourceCall.filterId, "soft_clean")
-        XCTAssertEqual(Mirror(reflecting: legacySourceCall).children.count, 60)
+        XCTAssertEqual(Mirror(reflecting: legacySourceCall).children.count, 61)
     }
 
     func testPhase53AdmissionBoundsAreExactAtZeroAndOne() {
@@ -1230,12 +1231,12 @@ extension BeautyParametersTests {
         XCTAssertEqual(admitted(.nan), 0)
     }
 
-    func testPhase53SiblingCandidateInventoryRemainAbsent() throws {
+    func testPhase53RemainingSiblingCandidateInventoryRemainsAbsent() throws {
         let source = try String(contentsOf: parametersSourceURL(), encoding: .utf8)
-        for forbidden in ["scleraRednessReduction", "upperEyelidFullnessReduction"] {
+        for forbidden in ["upperEyelidFullnessReduction"] {
             XCTAssertFalse(source.contains(forbidden), forbidden)
         }
-        XCTAssertEqual(Mirror(reflecting: BeautyParameters()).children.count, 60)
+        XCTAssertEqual(Mirror(reflecting: BeautyParameters()).children.count, 61)
     }
 
     func testPhase59OpenTeethFieldKeepsPublicAndCodableSurfaceExact() throws {
@@ -1252,15 +1253,15 @@ extension BeautyParametersTests {
             JSONSerialization.jsonObject(with: JSONEncoder().encode(defaults)) as? [String: Any]
         )
         let decoded = try JSONDecoder().decode(BeautyParameters.self, from: Data("{}".utf8))
-        XCTAssertEqual(stored.count, 60)
+        XCTAssertEqual(stored.count, 61)
         XCTAssertEqual(coding, stored)
-        XCTAssertEqual(encoded.count, 59)
+        XCTAssertEqual(encoded.count, 60)
         XCTAssertEqual(Set(encoded.keys), Set(stored).subtracting(["filterId"]))
         XCTAssertEqual(decoded, defaults)
-        XCTAssertEqual(Mirror(reflecting: decoded).children.count, 60)
+        XCTAssertEqual(Mirror(reflecting: decoded).children.count, 61)
         XCTAssertEqual(decoded.teethWhitening, 0)
-        XCTAssertTrue(stored.last == "teethWhitening")
-        XCTAssertTrue(coding.last == "teethWhitening")
+        XCTAssertEqual(Array(stored.suffix(2)), ["teethWhitening", "scleraRednessReduction"])
+        XCTAssertEqual(Array(coding.suffix(2)), ["teethWhitening", "scleraRednessReduction"])
         XCTAssertEqual(encoded["teethWhitening"] as? Double, 0)
         XCTAssertTrue(source.contains("teethWhitening"))
 
@@ -1276,7 +1277,7 @@ extension BeautyParametersTests {
         XCTAssertEqual(legacySourceCall.mouthWidth, 0.3)
         XCTAssertEqual(legacySourceCall.lipColor, 0.4)
         XCTAssertEqual(legacySourceCall.filterId, "soft_clean")
-        XCTAssertEqual(Mirror(reflecting: legacySourceCall).children.count, 60)
+        XCTAssertEqual(Mirror(reflecting: legacySourceCall).children.count, 61)
     }
 
     func testPhase57ClosedEyeRetouchGatesKeepPublicAndCodableSurfaceExact() throws {
@@ -1294,7 +1295,7 @@ extension BeautyParametersTests {
         )
         let decoded = try JSONDecoder().decode(BeautyParameters.self, from: Data("{}".utf8))
         let candidateNames = [
-            "scleraRedness", "scleraRednessReduction", "scleraWhitening", "scleraWhite",
+            "scleraRedness", "scleraWhitening", "scleraWhite",
             "scleraBrightness", "whitenSclera", "eyeRedness", "eyeRednessReduction",
             "redEye", "redEyeReduction", "conjunctivaRedness", "conjunctivaRednessReduction",
             "conjunctivalRedness", "conjunctivalRednessReduction", "conjunctivaWhitening", "conjunctivalWhitening",
@@ -1326,16 +1327,23 @@ extension BeautyParametersTests {
             "eyes.fat", "去脂",
         ]
 
-        XCTAssertEqual(stored.count, 60)
+        XCTAssertEqual(stored.count, 61)
         XCTAssertEqual(coding, stored)
-        XCTAssertEqual(encoded.count, 59)
+        XCTAssertEqual(encoded.count, 60)
         XCTAssertEqual(Set(encoded.keys), Set(stored).subtracting(["filterId"]))
         XCTAssertEqual(decoded, defaults)
         for forbidden in candidateNames {
             XCTAssertFalse(stored.contains(forbidden), forbidden)
             XCTAssertFalse(coding.contains(forbidden), forbidden)
             XCTAssertNil(encoded[forbidden], forbidden)
-            XCTAssertFalse(source.contains(forbidden), forbidden)
+            let escaped = NSRegularExpression.escapedPattern(for: forbidden)
+            XCTAssertNil(
+                source.range(
+                    of: "(?<![A-Za-z0-9_])\(escaped)(?![A-Za-z0-9_])",
+                    options: .regularExpression
+                ),
+                forbidden
+            )
         }
 
         let shippedDomains = BeautyParameters(
@@ -1352,7 +1360,7 @@ extension BeautyParametersTests {
         XCTAssertEqual(shippedDomains.upperEyelidLift, 0.4)
         XCTAssertEqual(shippedDomains.eyebrowYPosition, 0.7)
         XCTAssertEqual(shippedDomains.brightness, 0.1)
-        XCTAssertEqual(Mirror(reflecting: shippedDomains).children.count, 60)
+        XCTAssertEqual(Mirror(reflecting: shippedDomains).children.count, 61)
     }
 
     func testPhase53FutureAdmissionChecklistRequiresTrailingAppendOrder() {
@@ -1420,7 +1428,7 @@ extension BeautyParametersTests {
         let defaultObject = try XCTUnwrap(
             JSONSerialization.jsonObject(with: JSONEncoder().encode(defaults)) as? [String: Any]
         )
-        XCTAssertEqual(defaultObject.count, 59)
+        XCTAssertEqual(defaultObject.count, 60)
         XCTAssertEqual(defaultObject["teethWhitening"] as? Double, 0)
         XCTAssertNil(defaultObject["filterId"])
 
@@ -1432,7 +1440,7 @@ extension BeautyParametersTests {
         let encoded = try XCTUnwrap(
             JSONSerialization.jsonObject(with: JSONEncoder().encode(nonNilFilter)) as? [String: Any]
         )
-        XCTAssertEqual(encoded.count, 60)
+        XCTAssertEqual(encoded.count, 61)
         XCTAssertEqual(try XCTUnwrap(encoded["teethWhitening"] as? Double), 0.67, accuracy: 0.000_001)
         XCTAssertEqual(
             try JSONDecoder().decode(BeautyParameters.self, from: JSONEncoder().encode(nonNilFilter)),
@@ -1450,6 +1458,51 @@ extension BeautyParametersTests {
         XCTAssertEqual(legacyDecoded.filterIntensity, 0.31, accuracy: 0.000_001)
     }
 
+    func testPhase62ScleraRednessReductionNormalizesAndRoundTripsIndependently() throws {
+        let cases: [(value: Float, expected: Float)] = [
+            (-1, 0),
+            (-Float.ulpOfOne, 0),
+            (0, 0),
+            (Float.ulpOfOne, Float.ulpOfOne),
+            (0.43, 0.43),
+            (1, 1),
+            (Float(1).nextUp, 1),
+            (.nan, 0),
+            (.infinity, 0),
+            (-.infinity, 0),
+        ]
+
+        for testCase in cases {
+            let parameters = BeautyParameters(scleraRednessReduction: testCase.value)
+            XCTAssertEqual(parameters.scleraRednessReduction, testCase.expected, accuracy: 0.000_001)
+            XCTAssertEqual(
+                parameters.normalized().scleraRednessReduction,
+                testCase.expected,
+                accuracy: 0.000_001
+            )
+        }
+
+        let distinct = BeautyParameters(teethWhitening: 0.21, scleraRednessReduction: 0.79)
+        let roundTrip = try JSONDecoder().decode(
+            BeautyParameters.self,
+            from: JSONEncoder().encode(distinct)
+        )
+        XCTAssertEqual(roundTrip, distinct)
+        XCTAssertEqual(roundTrip.teethWhitening, 0.21, accuracy: 0.000_001)
+        XCTAssertEqual(roundTrip.scleraRednessReduction, 0.79, accuracy: 0.000_001)
+
+        var legacyPayload = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: JSONEncoder().encode(distinct)) as? [String: Any]
+        )
+        legacyPayload.removeValue(forKey: "scleraRednessReduction")
+        let legacy = try JSONDecoder().decode(
+            BeautyParameters.self,
+            from: JSONSerialization.data(withJSONObject: legacyPayload)
+        )
+        XCTAssertEqual(legacy.teethWhitening, 0.21, accuracy: 0.000_001)
+        XCTAssertEqual(legacy.scleraRednessReduction, 0)
+    }
+
     func testPhase58ZeroAdmissionKeepsTrailingTeethFieldNeutralAndEncodedShape() throws {
         let source = try String(contentsOf: parametersSourceURL(), encoding: .utf8)
         let defaults = BeautyParameters()
@@ -1459,14 +1512,19 @@ extension BeautyParametersTests {
         let encoded = try XCTUnwrap(
             JSONSerialization.jsonObject(with: JSONEncoder().encode(defaults)) as? [String: Any]
         )
-        let candidates = ["scleraRednessReduction", "upperEyelidFullnessReduction"]
+        let candidates = ["upperEyelidFullnessReduction"]
 
-        XCTAssertEqual(stored.count, 60)
+        XCTAssertEqual(stored.count, 61)
         XCTAssertEqual(coding, stored)
-        XCTAssertEqual(encoded.count, 59)
+        XCTAssertEqual(encoded.count, 60)
         XCTAssertEqual(Set(encoded.keys), Set(stored).subtracting(["filterId"]))
         XCTAssertEqual(defaults.teethWhitening, 0)
         XCTAssertEqual(encoded["teethWhitening"] as? Double, 0)
+        XCTAssertEqual(defaults.scleraRednessReduction, 0)
+        XCTAssertEqual(encoded["scleraRednessReduction"] as? Double, 0)
+        XCTAssertEqual(Array(stored.suffix(3)), [
+            "filterIntensity", "teethWhitening", "scleraRednessReduction",
+        ])
         for candidate in candidates {
             XCTAssertFalse(stored.contains(candidate), candidate)
             XCTAssertFalse(coding.contains(candidate), candidate)
