@@ -3,7 +3,7 @@ phase: 64
 slug: sclera-output-adversarial-safety-and-independent-closeout
 status: ready
 nyquist_compliant: true
-wave_0_complete: false
+wave_0_complete: true
 created: 2026-08-07
 security_standard: OWASP ASVS Level 1
 block_on: HIGH
@@ -14,8 +14,8 @@ requirements: [SCLERA-14, SCLERA-15, SCLERA-16, SCLERA-17, SCLERA-18, OUT-05]
 
 | Task ID | Plan | Wave | Requirements | Automated evidence | Status |
 | --- | --- | ---: | --- | --- | --- |
-| 64-01-01 | 01 | 1 | SCLERA-16, SCLERA-17, OUT-05 | Exact renderer/helper RED contract and helper mutations | pending |
-| 64-01-02 | 01 | 1 | SCLERA-14, SCLERA-15, SCLERA-18 | Adversarial RED matrix and 8-HIGH checker self-test | pending |
+| 64-01-01 | 01 | 1 | SCLERA-16, SCLERA-17, OUT-05 | Exact renderer/helper RED contract; 14/14 helper mutations | executed |
+| 64-01-02 | 01 | 1 | SCLERA-14, SCLERA-15, SCLERA-18 | 5/5 adversarial contracts; 8/8 HIGH checker mutations and green pre-mode | executed |
 | 64-02-01 | 02 | 2 | SCLERA-17, OUT-05 | Exact 74-case public renderer regression | pending |
 | 64-02-02 | 02 | 2 | SCLERA-16, SCLERA-17, OUT-05 | Required private 6/6 decoded output | pending |
 | 64-03-01 | 03 | 3 | SCLERA-14, SCLERA-15 | Geometry, recolor, peer and recovery matrices | pending |
