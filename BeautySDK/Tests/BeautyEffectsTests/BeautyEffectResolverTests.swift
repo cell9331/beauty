@@ -61,60 +61,125 @@ final class BeautyEffectResolverTests: XCTestCase {
         XCTAssertEqual(plan.metrics["beauty.effects.activeCount"], 0)
     }
 
-    func testPhase59OnlyDirectPositiveTeethIntentAdmitsOneOpaqueDemand() throws {
-        for value in [Float.ulpOfOne, 0.25, 1] {
+    func testPhase62DirectLocalRetouchIntentsHaveExactIndependentCardinality() {
+        let cases: [(name: String, parameters: BeautyParameters, expected: Int)] = [
+            ("none", BeautyParameters(), 0),
+            ("teeth", BeautyParameters(teethWhitening: 0.5), 1),
+            ("sclera", BeautyParameters(scleraRednessReduction: 0.5), 1),
+            (
+                "both",
+                BeautyParameters(teethWhitening: 0.5, scleraRednessReduction: 0.5),
+                2
+            ),
+            (
+                "both overflow",
+                BeautyParameters(teethWhitening: 2, scleraRednessReduction: 2),
+                2
+            ),
+        ]
+
+        for testCase in cases {
             let admission = BeautyEffectResolver.localRetouchAdmission(
-                parameters: BeautyParameters(teethWhitening: value)
+                parameters: testCase.parameters
             )
-            XCTAssertFalse(admission.isEmpty, "positive teeth value (value)")
+            XCTAssertEqual(admission.demandCount, testCase.expected, testCase.name)
+            XCTAssertEqual(admission.isEmpty, testCase.expected == 0, testCase.name)
+        }
+        XCTAssertFalse(
+            BeautyEffectResolver.requiresFaceGeometry(
+                parameters: BeautyParameters(scleraRednessReduction: 1)
+            )
+        )
+
+        for value in [Float.ulpOfOne, 0.25, 1, 2] {
+            XCTAssertEqual(
+                BeautyEffectResolver.localRetouchAdmission(
+                    parameters: BeautyParameters(teethWhitening: value)
+                ).demandCount,
+                1,
+                "positive teeth value \(value)"
+            )
+            XCTAssertEqual(
+                BeautyEffectResolver.localRetouchAdmission(
+                    parameters: BeautyParameters(scleraRednessReduction: value)
+                ).demandCount,
+                1,
+                "positive sclera value \(value)"
+            )
         }
 
         for value in [Float(0), -Float.ulpOfOne, -1, .nan, .infinity, -.infinity] {
-            let admission = BeautyEffectResolver.localRetouchAdmission(
-                parameters: BeautyParameters(teethWhitening: value)
+            XCTAssertEqual(
+                BeautyEffectResolver.localRetouchAdmission(
+                    parameters: BeautyParameters(teethWhitening: value)
+                ).demandCount,
+                0,
+                "normalized-away teeth value \(value)"
             )
-            XCTAssertTrue(admission.isEmpty, "normalized-away teeth value (value)")
+            XCTAssertEqual(
+                BeautyEffectResolver.localRetouchAdmission(
+                    parameters: BeautyParameters(scleraRednessReduction: value)
+                ).demandCount,
+                0,
+                "normalized-away sclera value \(value)"
+            )
         }
     }
 
-    func testPhase59ForbiddenInputsStayNeutralForTeethAdmission() throws {
-        let unrelated = [
-            BeautyParameters(
-                skinWhitening: 1,
-                brightness: 1,
-                contrast: 1,
-                saturation: 1,
-                temperature: 1,
-                tint: 1,
-                exposure: 1,
-                highlight: 1,
-                shadow: 1,
-                faceSlim: 1,
-                eyeHeight: 1,
-                upperEyelidLift: 1,
-                mouthSize: 1,
-                lipColor: 1,
-                filterId: "soft_clean",
-                filterIntensity: 1
-            ),
-            BeautyParameters(eyeSize: 1, noseSlim: 1, lipPlump: 1),
-        ]
-        for parameters in unrelated {
-            XCTAssertTrue(
-                BeautyEffectResolver.localRetouchAdmission(parameters: parameters).isEmpty
-            )
+    func testPhase62ForbiddenInputsAndAliasesCannotActivateOrMultiplyDemand() throws {
+        var unrelatedObject = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: JSONEncoder().encode(BeautyParameters()))
+                as? [String: Any]
+        )
+        for key in unrelatedObject.keys where
+            key != "teethWhitening" && key != "scleraRednessReduction"
+        {
+            unrelatedObject[key] = 1
         }
+        unrelatedObject["filterId"] = "soft_clean"
+        let unrelated = try JSONDecoder().decode(
+            BeautyParameters.self,
+            from: JSONSerialization.data(withJSONObject: unrelatedObject)
+        )
+        XCTAssertEqual(
+            BeautyEffectResolver.localRetouchAdmission(parameters: unrelated).demandCount,
+            0
+        )
 
-        for alias in [
-            "teethWhite", "toothWhitening", "teethBrightness", "teeth_whitening", "lips.teeth", "白牙",
-        ] {
+        let aliases = [
+            "teethWhite", "toothWhitening", "teethBrightness", "teeth_whitening",
+            "scleraRedness", "scleraWhitening", "scleraBrightness", "whitenSclera",
+            "eyeRedness", "eyeRednessReduction", "redEyeReduction",
+            "conjunctivaRednessReduction", "ocularRednessReduction", "bloodshotReduction",
+            "sclera_redness_reduction", "eyes.redness", "lips.teeth", "eyes.fat",
+            "admittedPrivateDemandCount", "opaqueDemandCount", "productionAdmissionCount",
+            "白牙", "祛红血丝", "去脂",
+        ]
+        for alias in aliases {
             let data = try JSONSerialization.data(withJSONObject: [alias: 1])
             let parameters = try JSONDecoder().decode(BeautyParameters.self, from: data)
-            XCTAssertTrue(
-                BeautyEffectResolver.localRetouchAdmission(parameters: parameters).isEmpty,
+            XCTAssertEqual(
+                BeautyEffectResolver.localRetouchAdmission(parameters: parameters).demandCount,
+                0,
                 alias
             )
         }
+
+        var directObject: [String: Any] = [
+            "teethWhitening": 0.5,
+            "scleraRednessReduction": 0.5,
+        ]
+        for alias in aliases {
+            directObject[alias] = 1
+        }
+        let direct = try JSONDecoder().decode(
+            BeautyParameters.self,
+            from: JSONSerialization.data(withJSONObject: directObject)
+        )
+        XCTAssertEqual(
+            BeautyEffectResolver.localRetouchAdmission(parameters: direct).demandCount,
+            2
+        )
     }
 
     func testSkinValuesKeepPublicRangeButResolveToCappedEffectiveStrengths() {

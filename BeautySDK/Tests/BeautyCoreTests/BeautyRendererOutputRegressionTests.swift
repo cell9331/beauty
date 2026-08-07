@@ -970,7 +970,7 @@ private enum RegressionTestError: Error, CustomStringConvertible {
 }
 
 extension BeautyRendererOutputRegressionTests {
-    func testPhase61DeferredEyeRetouchRendererCasesRemainAbsent() throws {
+    func testPhase62ScleraIntentAddsNoRendererCase() throws {
         let source = try rendererSource()
         XCTAssertEqual(rendererCaseIDs(in: source), Self.expectedRendererCaseIDs)
         XCTAssertEqual(Self.expectedRendererCaseIDs.count, 73)

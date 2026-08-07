@@ -1,8 +1,7 @@
 /// Feature-neutral admission for request-local still-image work.
 ///
-/// Phase 53 intentionally owns an empty production inventory. The opaque count
-/// exists only so the package testing seam can prove that one or many future
-/// demands share one canonical request without naming a candidate feature.
+/// The opaque count allows independent local-retouch intents to share one
+/// canonical request without naming features or exposing provider details.
 package struct BeautyLocalRetouchAdmission: Equatable, Sendable {
     package static let none = BeautyLocalRetouchAdmission(opaqueDemandCount: 0)
 
@@ -14,5 +13,9 @@ package struct BeautyLocalRetouchAdmission: Equatable, Sendable {
 
     package var isEmpty: Bool {
         opaqueDemandCount == 0
+    }
+
+    package var demandCount: Int {
+        opaqueDemandCount
     }
 }

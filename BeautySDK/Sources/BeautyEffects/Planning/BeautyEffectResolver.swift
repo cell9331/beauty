@@ -64,16 +64,21 @@ public enum BeautyEffectResolver {
         )
     }
 
-    /// Phase 59 admits one request-local opaque demand for the independently
-    /// qualified teeth intent. The carrier deliberately remains feature-neutral
-    /// until a later provider phase owns masks and output.
+    /// Phase 62 admits one request-local opaque demand for each independently
+    /// qualified teeth or sclera intent. The carrier deliberately remains
+    /// feature-neutral; provider phases own masks and output.
     package static func localRetouchAdmission(
         parameters: BeautyParameters
     ) -> BeautyLocalRetouchAdmission {
         let normalized = parameters.normalized()
-        return normalized.teethWhitening > 0
-            ? BeautyLocalRetouchAdmission(opaqueDemandCount: 1)
-            : .none
+        var opaqueDemandCount = 0
+        if normalized.teethWhitening > 0 {
+            opaqueDemandCount += 1
+        }
+        if normalized.scleraRednessReduction > 0 {
+            opaqueDemandCount += 1
+        }
+        return BeautyLocalRetouchAdmission(opaqueDemandCount: opaqueDemandCount)
     }
 
     package static func resolve(

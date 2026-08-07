@@ -38,6 +38,68 @@ final class BeautyEngineTeethWhiteningIntegrationTests: XCTestCase {
         }
     }
 
+    func testPhase62ScleraIntentUsesOneCanonicalRequestWithoutProviderOrOutput() throws {
+        let image = try yellowMouthImage()
+        let harness = try SDKTestingLocalRetouchFoundationHarness(
+            admittedPrivateDemandCount: 0
+        )
+        let result = try harness.invoke(
+            entry: .processResult,
+            image: image,
+            parameters: BeautyParameters(scleraRednessReduction: 1)
+        )
+
+        XCTAssertEqual(harness.canonicalizeCount, 1)
+        XCTAssertEqual(harness.detectAndMapCount, 1)
+        XCTAssertEqual(harness.requestOwnerCreationCount, 1)
+        XCTAssertEqual(harness.renderCount, 1)
+        XCTAssertEqual(harness.providerObservation.invocationCount, 0)
+        XCTAssertEqual(harness.compositionObservation.compositionInvocationCount, 0)
+        XCTAssertEqual(
+            harness.events,
+            [.canonicalize, .detectAndMap, .makeRequestContext, .render]
+        )
+        XCTAssertEqual(try render(result.output), try render(image))
+        XCTAssertEqual(harness.retainedRequestOwnerCount, 0)
+    }
+
+    func testPhase62BothIntentsShareOneRequestAndPreserveTeethOutput() throws {
+        let image = try yellowMouthImage()
+        let teethHarness = try SDKTestingLocalRetouchFoundationHarness(
+            admittedPrivateDemandCount: 0
+        )
+        let teethResult = try teethHarness.invoke(
+            entry: .processResult,
+            image: image,
+            parameters: BeautyParameters(teethWhitening: 1)
+        )
+        let bothHarness = try SDKTestingLocalRetouchFoundationHarness(
+            admittedPrivateDemandCount: 0
+        )
+        let bothResult = try bothHarness.invoke(
+            entry: .processResult,
+            image: image,
+            parameters: BeautyParameters(
+                teethWhitening: 1,
+                scleraRednessReduction: 1
+            )
+        )
+
+        XCTAssertEqual(try render(bothResult.output), try render(teethResult.output))
+        XCTAssertEqual(bothHarness.canonicalizeCount, 1)
+        XCTAssertEqual(bothHarness.detectAndMapCount, 1)
+        XCTAssertEqual(bothHarness.requestOwnerCreationCount, 1)
+        XCTAssertEqual(bothHarness.providerObservation.invocationCount, 1)
+        XCTAssertEqual(bothHarness.providerObservation.issuedUnitCount, 1)
+        XCTAssertEqual(bothHarness.compositionObservation.compositionInvocationCount, 1)
+        XCTAssertEqual(bothHarness.compositionObservation.acceptedUnitCount, 1)
+        XCTAssertEqual(
+            bothHarness.events,
+            [.canonicalize, .detectAndMap, .makeRequestContext, .compose, .render]
+        )
+        XCTAssertEqual(bothHarness.retainedRequestOwnerCount, 0)
+    }
+
     func testOpaqueTestingDemandCannotActivateProductionTeethProvider() throws {
         let harness = try SDKTestingLocalRetouchFoundationHarness(
             admittedPrivateDemandCount: 1

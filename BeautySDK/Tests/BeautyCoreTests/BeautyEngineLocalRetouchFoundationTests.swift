@@ -307,8 +307,14 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
             .filter { !$0.isEmpty }
             .joined(separator: " ")
         XCTAssertTrue(normalizedResolver.contains("let normalized = parameters.normalized()"))
+        XCTAssertTrue(normalizedResolver.contains("var opaqueDemandCount = 0"))
         XCTAssertTrue(normalizedResolver.contains("normalized.teethWhitening > 0"))
-        XCTAssertTrue(normalizedResolver.contains("BeautyLocalRetouchAdmission(opaqueDemandCount: 1)"))
+        XCTAssertTrue(normalizedResolver.contains("normalized.scleraRednessReduction > 0"))
+        XCTAssertEqual(
+            normalizedResolver.components(separatedBy: "opaqueDemandCount += 1").count - 1,
+            2
+        )
+        XCTAssertTrue(normalizedResolver.contains("BeautyLocalRetouchAdmission(opaqueDemandCount: opaqueDemandCount)"))
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionCount, 0)
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionNames, [])
 
@@ -380,8 +386,14 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
             .filter { !$0.isEmpty }
             .joined(separator: " ")
         XCTAssertTrue(normalizedResolver.contains("let normalized = parameters.normalized()"))
+        XCTAssertTrue(normalizedResolver.contains("var opaqueDemandCount = 0"))
         XCTAssertTrue(normalizedResolver.contains("normalized.teethWhitening > 0"))
-        XCTAssertTrue(normalizedResolver.contains("BeautyLocalRetouchAdmission(opaqueDemandCount: 1)"))
+        XCTAssertTrue(normalizedResolver.contains("normalized.scleraRednessReduction > 0"))
+        XCTAssertEqual(
+            normalizedResolver.components(separatedBy: "opaqueDemandCount += 1").count - 1,
+            2
+        )
+        XCTAssertTrue(normalizedResolver.contains("BeautyLocalRetouchAdmission(opaqueDemandCount: opaqueDemandCount)"))
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionCount, 0)
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionNames, [])
 
@@ -441,8 +453,14 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
             .filter { !$0.isEmpty }
             .joined(separator: " ")
         XCTAssertTrue(normalizedResolver.contains("let normalized = parameters.normalized()"))
+        XCTAssertTrue(normalizedResolver.contains("var opaqueDemandCount = 0"))
         XCTAssertTrue(normalizedResolver.contains("normalized.teethWhitening > 0"))
-        XCTAssertTrue(normalizedResolver.contains("BeautyLocalRetouchAdmission(opaqueDemandCount: 1)"))
+        XCTAssertTrue(normalizedResolver.contains("normalized.scleraRednessReduction > 0"))
+        XCTAssertEqual(
+            normalizedResolver.components(separatedBy: "opaqueDemandCount += 1").count - 1,
+            2
+        )
+        XCTAssertTrue(normalizedResolver.contains("BeautyLocalRetouchAdmission(opaqueDemandCount: opaqueDemandCount)"))
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionCount, 0)
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionNames, [])
 

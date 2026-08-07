@@ -225,7 +225,7 @@ final class BeautyDemoViewStateTests: XCTestCase {
     }
 
     @MainActor
-    func testPhase59OpenTeethIntentPreservesExactlyThreeDisabledLocalRetouchRows() throws {
+    func testPhase62IndependentIntentsPreserveExactlyThreeDisabledLocalRetouchRows() throws {
         let expected: [
             (category: MeituEditorCategoryID, id: String, title: String,
              icon: String, badge: MeituEditorToolBadge?)
