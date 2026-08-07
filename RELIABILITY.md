@@ -775,3 +775,27 @@ Command-level evidence is recorded in the [Phase 59 validation strategy](.planni
   packaging, shipping, launch, or release readiness.
 
 Command-level evidence is recorded in [Phase 60 verification](.planning/phases/60-teeth-provider-and-production-integration/60-VERIFICATION.md).
+
+### v1.15 Phase 61 Teeth Output Reliability Closeout
+
+- The public renderer now has exactly 73 unique cases with one baseline and one
+  direct `teethWhitening_1p00` intent. Strict output uses the same public facade
+  as integrations; its comparison-only watermark suppression does not alter the
+  default renderer route.
+- Fresh positive, negative, and no-face baseline/active outputs decode as six
+  regular PNGs with exact dimensions and alpha. Positive tooth-local change is
+  nonzero and bounded, the already-light negative remains inside frozen no-op
+  limits, no-face is exactly unchanged, reviewed-mask exterior change is zero,
+  and texture remains within the frozen interval.
+- Color-independent/recolored protection, malformed-support abstention,
+  valid-invalid-valid recovery, repeated and parallel isolation, and unrelated
+  color continuation preserve the Phase 60 request-local reliability contract.
+  No required private, visual, regression, or HIGH gate is skipped.
+- Compatibility is exactly 60 public fields, five neutral presets, and 73
+  renderer cases. The unchanged Demo retains three disabled local-retouch rows
+  and 121 tests. These results establish bounded still-image SDK-core output and
+  recovery only, not realtime, device endurance, performance budgets,
+  population coverage, commercial naturalness, packaging, shipping, launch, or
+  release readiness.
+
+Command-level evidence is recorded in [Phase 61 output evidence](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-TEETH-OUTPUT-EVIDENCE.md) and [original-detail review](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-REVIEW.md).

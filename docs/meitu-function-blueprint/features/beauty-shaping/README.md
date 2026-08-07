@@ -21,7 +21,7 @@ Beauty shaping covers face geometry and facial feature adjustments inspired by M
 | `比例` | partial | `BeautyEffects` | `faceSmall` | Forehead, mid-face, philtrum, lower-face, short-face, head-face | Current provider/resolver evidence is partial; facade-visible geometry output is still required. |
 | `脸型` | partial | `BeautyEffects` | Five prior fields plus independent `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, and `chinTaper` | `去双下巴`, `去双下巴 Pro`, `发际线` local semantic-region/segmentation design | Phase 28 covers six prior rows; Phase 45 contract/support, Phase 46 provider, Phase 47 public output, and Phase 48 final safety/privacy/boundaries independently implement `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴`. |
 | `眼睛` | partial | `BeautyEffects` | Four prior fields plus `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, signed `eyeTilt`, `innerCornerOpen`, `outerCornerOpen`, `eyeSymmetry` | `去脂`, `祛红血丝` local retouch/color design | Phases 29-30 cover four prior rows; Phase 41 contract/support, Phase 42 provider, Phase 43 public output, and Phase 44 final safety/boundaries independently implement the ten remaining geometry rows. |
-| `嘴唇` | partial | `BeautyEffects` | Geometry: `mouthSize`, `mouthWidth`, `smile`, `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, `lipPlump`; color-only: `lipColor` | `白牙` teeth-region segmentation/color retouch | Phase 40 promotes exactly 上下, 倾斜, 左右, M唇, and true 丰唇 after Phases 38-40 contract/output/safety evidence; branch remains partial because `白牙` is future. |
+| `嘴唇` | implemented | `BeautyEffects` | Geometry: `mouthSize`, `mouthWidth`, `smile`, `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, `lipPlump`; still-image color: `teethWhitening`; independent color-only: `lipColor` | No remaining child row in the exact mouth taxonomy; broader delivery surfaces require separate evidence. | Phases 33-40 implement all eight geometry rows. Phase 59 opens rights-approved teeth evidence/admission, Phase 60 adds the bounded request-local provider/integration, and Phase 61 closes strict public output, adversarial safety, original-detail review, and exact `白牙` promotion. |
 | `鼻子` | implemented | `BeautyEffects` | `noseSlim`, `noseWingSlim`, signed `noseTipSize`, `noseBridge`, `noseRootNarrowing`, `noseTipLift` | No additional control is implied by the exact six-row taxonomy | Phases 31-32 and 35-37 implement exactly `大小`, `提升`, `鼻翼`, `山根`, `鼻梁`, and `鼻尖`; SDK-core branch complete with UI/device/commercial boundaries preserved. |
 | `眉毛` | implemented | `BeautyEffects` | `eyebrowYPosition`, `eyebrowThickness`, `eyebrowLength`, `eyebrowSpacing`, `eyebrowHeadSpacing`, `eyebrowTilt`, `eyebrowPeakDefinition` | No additional control or resource is implied by the exact seven-row SDK-core taxonomy | Phase 49 contract/support, Phase 50 independent providers/pipeline, Phase 51 public-facade output, and Phase 52 final safety/privacy/boundary evidence implement exactly `上下`, `粗细`, `长短`, `间距`, `眉头间距`, `倾斜`, and `眉峰`. |
 
@@ -54,6 +54,21 @@ Public-facade output for the four subtools is recorded in `29-EYE-RENDERER-EVIDE
 ## Phase 40 Mouth Geometry Evidence
 
 The exact SDK-core mouth geometry set is `mouthSize`, `mouthWidth`, `smile`, `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, and `lipPlump`. Phase 40 closes exact caps, eight-field degradation/transitions, fourteen-removal convergence, redacted diagnostics, and fail-closed source/artifact boundaries after Phase 39's 308-output evidence. `lipColor` remains color-only. The branch stays `partial` because `白牙` remains future.
+
+## Phase 61 Teeth Output and Mouth Completion
+
+Phase 59 admits the rights-approved positive/negative teeth evidence through the
+canonical Phase 54 serializer. Phase 60 implements one bounded, stateless,
+request-local still-image provider and immutable-source composition unit. Phase
+61 adds the exact public renderer case, passes the strict positive/negative/no-
+face six-output matrix, adversarial protected-region tests, tracked/staged
+privacy checks, and original-detail review. `白牙` and therefore the exact
+`嘴唇` branch are `implemented` at SDK-core still-image scope.
+
+The three local-retouch Demo rows remain disabled with nil mappings. This status
+does not imply realtime/pixel-buffer support, population sufficiency, device or
+performance validation, commercial/release readiness, sclera redness output,
+or upper-eyelid fullness reduction.
 
 ## Phase 52 Eyebrow Geometry Evidence
 

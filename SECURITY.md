@@ -668,3 +668,27 @@ Command-level evidence is recorded in the [Phase 59 validation strategy](.planni
   promotion security gate.
 
 Command-level evidence is recorded in [Phase 60 security](.planning/phases/60-teeth-provider-and-production-integration/60-SECURITY.md) and [verification](.planning/phases/60-teeth-provider-and-production-integration/60-VERIFICATION.md).
+
+### v1.15 Phase 61 Teeth Output Security Closeout
+
+- T-61-01 through T-61-08 are eight machine-green HIGH mitigations under OWASP
+  ASVS Level 1. They bind the exact public-only 73-case renderer, bounded PNG
+  decoder and six-output inventory, protected-region adversarial matrices,
+  immutable-source/hard-envelope output, original-detail review, ignored-media
+  privacy, exact promotion delta, and ordered lifecycle owners.
+- The strict private runner resolves authorized inputs only from the ignored
+  local bundle, writes only below its checked ignored output root, rejects
+  symlinked path components before cleanup, and emits fixed aggregate status.
+  Generated inputs, masks, reviews, and outputs remain untracked and unstaged.
+- Tracked evidence retains aggregate categorical results only. It contains no
+  media, local locator, digest, rights detail, identity, mask, geometry, pixel
+  sample, raw metric, scanner match, raw error, or free-form reviewer text.
+- Adversarial final-output checks cover lip, tongue, gum, brace, facial hair,
+  skin, and aperture exterior under both color-independent and recolored
+  conditions, plus exact protected RGBA, valid-invalid-valid recovery, and
+  parallel isolation. Review-fix has zero unresolved HIGH findings.
+- Exact promotion changes only `白牙` and aggregate `嘴唇`. Demo activation,
+  realtime/pixel-buffer local retouch, sclera/upper-eyelid production, external
+  models/dependencies, network paths, and release surfaces remain absent.
+
+Command-level evidence is recorded in [Phase 61 security](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-SECURITY.md) and [review fix](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-REVIEW-FIX.md).

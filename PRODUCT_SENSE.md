@@ -689,3 +689,29 @@ Command-level evidence is recorded in the [Phase 59 validation strategy](.planni
   packaging, shipping, launch, or release-readiness claim follows from Phase 60.
 
 Command-level evidence is recorded in [Phase 60 verification](.planning/phases/60-teeth-provider-and-production-integration/60-VERIFICATION.md).
+
+### v1.15 Phase 61 Teeth Output and Mouth-Branch Acceptance
+
+- An SDK integrator's direct positive `teethWhitening` intent now has strict
+  saved public-facade output. The required matrix independently covers an
+  authorized visibly discolored positive, an authorized already-light negative,
+  and no-face, each at baseline and active intent.
+- Acceptance requires bounded visible de-yellowing on the positive, already-
+  light stability on the negative, exact no-face no-op, zero reviewed-mask
+  exterior change, exact alpha/dimensions, protected-region identity, texture
+  bounds, and original-detail judgments for tooth locality, shading, edges,
+  texture, and natural color. The fixed review decision is pass with no post-
+  review image tuning.
+- Phase 59 evidence/admission, Phase 60 provider/integration, and Phase 61
+  output/safety/review form one non-borrowed chain. `白牙` and therefore the
+  exact aggregate branch `嘴唇` are `implemented` at bounded SDK-core still-
+  image scope; all exact mouth child rows are now implemented.
+- The Demo still displays `白牙`, `祛红血丝`, and `去脂` as disabled rows with
+  nil mappings. `眼睛` remains partial; `祛红血丝` and `去脂` remain future.
+  Teeth evidence cannot promote either sibling.
+- Two authorized fixtures establish the minimum frozen positive/negative gate,
+  not population sufficiency. No realtime/pixel-buffer, target-device quality
+  or performance, commercial approval, packaging, shipping, launch, or release-
+  readiness acceptance follows.
+
+Command-level evidence is recorded in [Phase 61 output evidence](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-TEETH-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-REVIEW.md), and [security disposition](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-SECURITY.md).

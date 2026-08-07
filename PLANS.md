@@ -36,8 +36,8 @@
 | Evidence gate | The mechanics-only candidate remains zero-weight product evidence. The separate genuine teeth pair has passed the Phase 54 ReviewCore and exact serializer gate; sclera still requires its own independent evidence pair and decision. |
 | Order | Teeth evidence and production slice → teeth verification/promotion → sclera evidence and per-eye production slice → sclera verification/promotion → combined regression and milestone audit. |
 | Exclusions | `去脂`; realtime/pixel-buffer; SwiftUI/Demo activation; external model/cloud; tracked portrait media; device/commercial/performance-budget/packaging/shipping/launch claims. |
-| Current | Phase 60 is complete: direct positive teeth intent now reaches one stateless package provider through the existing canonical/Vision request, actual inner/outer lip support, fixed-baseline-plus-connected-growth mask, hard re-clip, immutable-source transform, and one request-local composition. TEETH-09...14, 16/16 decisions, 8/8 tasks, the authorized genuine pair, and all eight HIGH gates pass. |
-| Next | Discuss and plan Phase 61 strict public-facade decoded output, adversarial protected-region safety, original-detail final review, regression, and exact `白牙` promotion. Phase 62 and all production sclera work remain blocked until Phase 61 closes. |
+| Current | Phase 61 implementation, strict 6/6 public-output matrix, adversarial protection, original-detail review, 8/8 HIGH disposition, and exact `白牙` plus aggregate `嘴唇` product-owner promotion are complete. The separate post-promotion regression and canonical lifecycle verification are in progress; no required gate is borrowed or skipped. |
+| Next | Finish independent post-promotion Phase 61 verification and lifecycle synchronization. Only then may Phase 62 begin independent sclera evidence/admission work; production sclera implementation remains blocked. |
 
 ## 3A. Archived Active Ledger
 

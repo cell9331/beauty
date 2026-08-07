@@ -34,18 +34,18 @@ Quality gate:
 
 ## 3. Current Snapshot
 
-Current repository state as of 2026-08-07 after the v1.15 Phase 60 bounded
-teeth-provider, production-integration, genuine-evidence, and privacy gates:
+Current repository state as of 2026-08-07 after the v1.15 Phase 61 strict teeth
+output, safety review, and exact product-owner promotion gates:
 
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
 | Root docs | 4 | All nine root owners exist. The consolidation audit corrected `ARCHITECTURE.md` so current pixel-buffer processing, still-image detection/geometry, and placeholder Render foundations match compiled code. | Keep current facts in root owners; keep milestone narratives in archives. |
 | Historical docs | 3 | `docs/README.md` remains the long-doc entry. `.planning/codebase/*` is explicitly stale background and historical phase/milestone artifacts are not current contracts. | Refresh codebase maps only in an explicitly scoped remap. |
-| GSD planning | 4 | Phase 60 is complete at 4/4 plans, 8/8 task rows, 16/16 decisions, six verified requirements, and eight green HIGH owners. | Plan Phase 61 only; keep sclera blocked until teeth promotion closes. |
-| SDK Package | 4 | The package/facade boundary is intact; direct positive teeth intent now reaches one stateless package provider and request-local composition unit while the 60-field public contract remains unchanged. | Prove strict public output and final promotion in Phase 61; resolve TD-013 separately. |
+| GSD planning | 4 | Phase 61 has 4/4 planned owners and 8/8 task rows; implementation, review, exact promotion, and all eight HIGH owners are green, with independent post-promotion lifecycle verification pending. | Finish canonical Phase 61 verification before starting Phase 62 sclera evidence/admission. |
+| SDK Package | 4 | The package/facade boundary is intact; direct positive teeth intent reaches one stateless request-local provider/composition unit, and one exact public renderer case proves saved output while the 60-field public contract remains unchanged. | Preserve the bounded teeth slice; resolve TD-013 separately and do not start sclera production before its evidence gate. |
 | Demo App | 4 | The unchanged Demo builds and passes 121/121 on iPhone 17e / iOS 26.5; teeth, sclera-redness, and `去脂` rows remain disabled with nil mappings. | Preserve disabled taxonomy until each later output/promotion gate passes. |
-| Tests | 4 | Provider/integration contracts pass, private genuine evidence passes, full SwiftPM executes 581 with 0 failures and 7 expected skips, full Demo passes 121/121, and the checker passes 8 mutations, 99 live assertions, and 8/8 isolated HIGH modes. | Add Phase 61 strict decoded-output and adversarial final-review evidence. |
-| Security | 4 | Complete support, hard re-clipping, immutable-source composition, aggregate-only diagnostics, fixed-output private execution, and tracked/staged privacy all pass with zero open HIGH threats. | Re-run the independent output/promotion security conjunction in Phase 61. |
+| Tests | 4 | Provider/integration, exact 73-case renderer, strict private 6/6 output, protected-region adversarial, original-detail review, full SwiftPM, and full Demo gates pass before promotion; independent post-promotion repetition is pending. | Record exact final counts in canonical Phase 61 verification; no required private/visual gate may be skipped. |
+| Security | 4 | Hard containment, immutable-source composition, bounded decoding, symlink-safe ignored output, aggregate-only diagnostics, tracked/staged privacy, and 8/8 Phase 61 HIGH owners pass with zero open HIGH. | Preserve exact promotion and rerun the same conjunction after promotion. |
 | Reliability | 3 | Backpressure, stale work, reset, detection degradation, and the repaired camera lifecycle are test-backed. Realtime geometry/Metal dispatch, 600-second preview, and device endurance are not current evidence. | Keep claims bounded and run the setup-specific long-run/device gates when authorized. |
 | Product acceptance | 4 | v1.13 closes exactly seven eyebrow rows plus branch `眉毛` at SDK-core scope after 21/21 requirements, 4/4 phases, 12/12 integrations, and 6/6 flows. | Do not infer Demo, device, commercial, packaging, or release readiness. |
 
