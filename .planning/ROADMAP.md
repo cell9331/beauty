@@ -99,7 +99,13 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
   4. A nonzero effective sclera value creates exactly sclera demand; color, whitening, geometry, Testing hooks, teeth intent, `去脂` proxies, missing/zero legacy fields, and aliases cannot activate it.
   5. A closed or malformed sclera evidence decision produces exact sclera absence without rolling back the already completed teeth slice.
 
-**Plans**: TBD
+**Plans**: 0/5 plans executed
+
+- [ ] 62-01-PLAN.md — freeze contract, closed-state checker, validation and HIGH inventory
+- [ ] 62-02-PLAN.md — prepare private adapter/runner and closed privacy proof
+- [ ] 62-03-PLAN.md — intake real pair, guarded review and serializer-open decision
+- [ ] 62-04-PLAN.md — append scalar and independent opaque demand
+- [ ] 62-05-PLAN.md — exact-open regression, owner sync and lifecycle handoff
 
 ### Phase 63: Guarded Per-Eye Sclera Production Integration
 

@@ -2,7 +2,7 @@
 phase: 62
 slug: sclera-evidence-and-admission-contract
 status: draft
-nyquist_compliant: true
+nyquist_compliant: false
 wave_0_complete: false
 created: 2026-08-07
 security_standard: OWASP ASVS Level 1
@@ -97,4 +97,3 @@ Wave 0 is complete only after Plan 62-02 passes. It does not open sclera.
 - [ ] Full SDK and Demo regression is green.
 
 **Approval:** pending licensed sclera pair and completed execution
-
