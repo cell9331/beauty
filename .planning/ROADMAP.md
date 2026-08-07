@@ -29,7 +29,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 
 - [x] **Phase 59: Teeth Evidence and Admission Contract** - Turn a complete genuine teeth bundle into one compatibility-safe teeth-only public intent while keeping sclera and `去脂` absent.
 - [x] **Phase 60: Teeth Provider and Production Integration** - Deliver conservative lip-supported tooth selection and bounded immutable-original whitening through the production still-image path.
-- [ ] **Phase 61: Teeth Output, Safety, and Independent Closeout** - Prove public-facade visibility, protected-tissue safety, naturalness, regression, and exact `白牙` promotion before any sclera production work.
+- [x] **Phase 61: Teeth Output, Safety, and Independent Closeout** - Prove public-facade visibility, protected-tissue safety, naturalness, regression, and exact `白牙` promotion before any sclera production work. (completed 2026-08-07)
 - [ ] **Phase 62: Sclera Evidence and Admission Contract** - Independently qualify genuine redness/normal evidence and add one compatibility-safe sclera-only public intent after teeth closes.
 - [ ] **Phase 63: Guarded Per-Eye Sclera Production Integration** - Deliver independent left/right eye guards, hard sclera ownership, and bounded original-pixel redness reduction.
 - [ ] **Phase 64: Sclera Output, Adversarial Safety, and Independent Closeout** - Prove public-facade per-eye behavior, native and adversarial protected-region safety, naturalness, regression, and exact `祛红血丝` promotion.
@@ -154,7 +154,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 | --- | --- | --- | --- |
 | 59. Teeth Evidence and Admission Contract | 9/9 plans complete / intent admitted / 0 visible promoted | Complete — exact-open evidence, scalar, one demand, privacy, and regression pass | 2026-08-07 |
 | 60. Teeth Provider and Production Integration | 4/4 plans complete / provider verified / 0 visible promoted | Complete — genuine pair, bounded provider, integration, privacy, and regression pass | 2026-08-07 |
-| 61. Teeth Output, Safety, and Independent Closeout | 4/4 | In Progress|  |
+| 61. Teeth Output, Safety, and Independent Closeout | 4/4 | Complete    | 2026-08-07 |
 | 62. Sclera Evidence and Admission Contract | 0/TBD | Not started | - |
 | 63. Guarded Per-Eye Sclera Production Integration | 0/TBD | Not started | - |
 | 64. Sclera Output, Adversarial Safety, and Independent Closeout | 0/TBD | Not started | - |

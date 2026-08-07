@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.15
 milestone_name: Independent Teeth and Sclera Retouch
-current_phase: 61
-current_phase_name: Teeth Output, Safety, and Independent Closeout
-status: verifying
-stopped_at: Completed 61-04-PLAN.md
-last_updated: "2026-08-07T07:38:46.728Z"
+current_phase: 62
+current_phase_name: Sclera Evidence and Admission Contract
+status: planning
+stopped_at: Phase 61 complete; ready to discuss Phase 62
+last_updated: "2026-08-07T07:41:57.629Z"
 last_activity: 2026-08-07
-last_activity_desc: Phase 61 execution started
+last_activity_desc: Phase 61 complete, transitioned to Phase 62
 progress:
   total_phases: 3
   completed_phases: 3
@@ -20,17 +20,17 @@ progress:
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-08-05)
+See: `.planning/PROJECT.md` (updated 2026-08-07)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 61 — Teeth Output, Safety, and Independent Closeout
+**Current focus:** Phase 62 — Sclera Evidence and Admission Contract
 
 ## Current Position
 
-Phase: 61 (Teeth Output, Safety, and Independent Closeout) — EXECUTING
-Plan: 4 of 4
-Status: Phase complete — ready for verification
-Last activity: 2026-08-07 — Phase 61 execution started
+Phase: 62 — Sclera Evidence and Admission Contract
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-08-07 — Phase 61 complete, transitioned to Phase 62
 
 Progress: ███░░░░░░░ [██████████] 100%
 
@@ -38,7 +38,7 @@ Progress: ███░░░░░░░ [██████████] 100%
 
 **Current milestone:**
 
-- Total plans completed: 13
+- Total plans completed: 17
 - Average duration: —
 - Total execution time: —
 
@@ -56,11 +56,10 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 
 ### Decisions
 
-- Complete and independently verify `白牙` before any production `祛红血丝` field, provider, or admission route.
-- The AI-generated mechanics candidate remains an original-only, zero-weight input for both feature experiments; it cannot satisfy either genuine evidence gate.
-- Sharing the candidate original does not share masks, after images, judgments, or admission outcomes between teeth and sclera.
-- Reuse the v1.14 canonical request, one Vision mapping, request-local support, immutable-original composition, hard re-clipping, and collision-to-source boundaries.
-- `去脂` stays entirely future; no geometry, warp, smoothing, eye-bag, or dark-circle substitute is allowed.
+- Phase 61 promotes only `白牙` and aggregate `嘴唇` after a complete pre-promotion conjunction and separate post-promotion verification.
+- The bounded teeth slice is complete at exactly 60 public fields, five neutral presets, 73 renderer cases, and three disabled local-retouch Demo rows.
+- Phase 62 may perform independent sclera evidence/admission only; production implementation remains blocked until its serializer decision opens.
+- Teeth evidence, support, review, and promotion contribute no sclera or `去脂` credit.
 - v1.15 remains SDK-core and still-image only with no Demo activation, realtime/pixel-buffer, model/cloud, tracked portrait media, or release-readiness claim.
 
 ### Pending Todos
@@ -69,7 +68,6 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- Teeth intent and the bounded package provider are independently verified, but Phase 61 has not yet proved strict public-facade decoded output, adversarial final safety, original-detail promotion review, or exact product-ledger promotion.
 - Sclera still lacks a rights-approved genuine redness positive and normal-sclera negative complete bundle; the mechanics-only candidate may exercise per-eye mechanics only.
 - Spike thresholds remain calibration seeds, not product constants.
 - Existing TD-013 generic-result sendability remains outside v1.15.
@@ -85,6 +83,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-07T07:38:46.722Z
-Stopped at: Completed 61-04-PLAN.md
+Last session: 2026-08-07T07:41:57.624Z
+Stopped at: Phase 61 complete; ready to discuss Phase 62
 Resume file: None
