@@ -1,7 +1,7 @@
 ---
 phase: 59
 slug: teeth-evidence-and-admission-contract
-status: in_progress
+status: passed
 nyquist_compliant: true
 wave_0_complete: true
 created: 2026-08-05
@@ -54,8 +54,8 @@ metrics remain corroboration only and cannot alter admission.
 | `59-06-02` | 3 | TEETH-08 | Direct normalized positive input creates one demand | passed |
 | `59-07-01` | 4 | SEQ-01, TEETH-07, TEETH-08 | Five presets, 72 renderer cases, three disabled Demo rows | passed |
 | `59-07-02` | 4 | SEQ-01, EVID-07, TEETH-07, TEETH-08 | Exact-open checker, mutations, isolated HIGH modes | passed |
-| `59-08-01` | 5 | SEQ-01, EVID-07, TEETH-07, TEETH-08 | Five root owner documents only | planned |
-| `59-09-01` | 6 | SEQ-01, EVID-07, TEETH-07, TEETH-08 | Full regression, lifecycle handoff, final decision | planned |
+| `59-08-01` | 5 | SEQ-01, EVID-07, TEETH-07, TEETH-08 | Five root owner documents only | passed |
+| `59-09-01` | 6 | SEQ-01, EVID-07, TEETH-07, TEETH-08 | Full regression, lifecycle handoff, final decision | passed |
 
 Task count equality target: **17 task IDs = 17 validation rows**.
 

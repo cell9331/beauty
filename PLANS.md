@@ -33,22 +33,11 @@
 | Status | `active` |
 | Scope | Start milestone v1.15 to complete still-image SDK-core `白牙` first and independently complete `祛红血丝` second, while keeping `去脂` future and preserving all v1.14 canonical-input, request-local, composition, privacy, compatibility, and fail-closed boundaries. |
 | Research | Four inline GSD research dimensions: stack, features, architecture, and pitfalls. Dedicated GSD subagents are unavailable in this session, so the orchestrator owns the artifacts and records the fallback. |
-| Evidence gate | The AI-generated mechanics candidate remains zero-weight product evidence. A separate genuine teeth positive/negative pair now has complete triples and is being bound to the Phase 54 ReviewCore with opaque in-memory authorization projections and fixed structured judgments. Sclera still requires its own independent evidence pair and decision. |
+| Evidence gate | The mechanics-only candidate remains zero-weight product evidence. The separate genuine teeth pair has passed the Phase 54 ReviewCore and exact serializer gate; sclera still requires its own independent evidence pair and decision. |
 | Order | Teeth evidence and production slice → teeth verification/promotion → sclera evidence and per-eye production slice → sclera verification/promotion → combined regression and milestone audit. |
 | Exclusions | `去脂`; realtime/pixel-buffer; SwiftUI/Demo activation; external model/cloud; tracked portrait media; device/commercial/performance-budget/packaging/shipping/launch claims. |
-| Current | Plans 59-05 through 59-07 completed the private ReviewCore binding, serializer-produced open teeth decision, trailing `teethWhitening`/one-demand seam, exact five-preset and 72-renderer compatibility, disabled Demo taxonomy, tracked/staged privacy scan, 235-mutation checker, and all eight isolated HIGH gates. No provider or output behavior was added. |
-| Next | Execute 59-08 root-owner synchronization and 59-09 final Phase 59 regression/lifecycle handoff. Do not start Phase 60 or any sclera production phase before both plans pass. |
-
-### C-2026-08-05-v1-15-phase-59-closed-evidence-gate
-
-| Field | Value |
-| --- | --- |
-| Status | `blocked` |
-| Scope | Phase 59 teeth evidence/admission contract, exact closed branch, privacy/security boundaries, and compatibility-preserving verification. |
-| Decision | Phase 54's `teeth_whitening` row remains `closed` with `missing_genuine_positive` and `missing_genuine_negative`; counts and naturalness weight are zero. No field, admission demand, provider, output, or Demo route was added. |
-| Verification | Contract tests 5/5; checker 19 mutation cases and 8/8 HIGH modes; focused SDK 135/135; full SwiftPM 553/0/6; Demo build passed; full Demo 121/0/0; JSON and diff checks passed. |
-| Blocker | The genuine positive/negative original/mask/after bundle and frozen blinded original-detail review are external preconditions. This is a valid closed branch, not a `白牙` promotion. |
-| Resume | Reopen Phase 59 from `59-VERIFICATION.md` after the evidence bundle is supplied and independently reviewed. |
+| Current | Phase 59 is complete at 9/9 plans: the serializer-open teeth decision, trailing `teethWhitening`, one opaque demand, 60/5/72 compatibility, disabled Demo taxonomy, owner synchronization, privacy, full SwiftPM 558/0/6, full Demo 121/0/0, 235-mutation checker, 16/16 decisions, and all eight HIGH gates pass. No provider or output behavior was added. |
+| Next | Plan and execute Phase 60 teeth provider integration only. Phase 62 and all production sclera work remain blocked until Phase 61 independently verifies and closes teeth output. |
 
 ## 3A. Archived Active Ledger
 
@@ -101,6 +90,18 @@
 | Phase 54 closeout | Three review-fix passes bind grants to trusted expected-target policy and exact original/mask/after keys plus SHA-256 byte digests, recover every local-read/display-URL failure transactionally, and independently pin T-54-01…T-54-08. Final standard review is clean. Current automation passes 33/33 core, 38/38 reviewer, 119/119 checker, named live `8/8`, 500 SwiftPM tests with six documented skips, explicit iPhone 17e/iOS 26.5 Demo build and 118/118 tests, schema/UI/diff gates. The fresh user-confirmed direct-`file://` smoke and independently parsed 1,640-byte allowlisted export pass. The three-feature ledger remains closed with zero review/product weight and no SDK/Demo/realtime/media/release admission; Phase 54 validation is complete. |
 
 ## 4. Completed
+
+### C-2026-08-07-v1-15-phase-59-open-intent-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-08-07 |
+| Scope | Closed Phase 59 on the exact serializer-open teeth intent branch while preserving provider/output, sclera, `去脂`, Demo, realtime, model, and network absence. |
+| Decision | The canonical teeth row is open at `2/2/2/0/2`; exactly one trailing default-zero normalized scalar and one opaque request-local demand are admitted. Sclera redness and upper-eyelid fullness remain independently closed. |
+| Compatibility | Exact 60 stored/CodingKey/initializer fields, five byte-stable neutral presets, 72 renderer cases, and three disabled Demo rows with nil mappings. |
+| Verification | Phase 54 33/33; private Phase 59 contract 9/9; mechanics self-test 24/24 as corroboration only; focused SDK 147/147; full SwiftPM 558/0/6; Demo build and 121/0/0 tests; checker 235/235; decisions 16/16; eight HIGH threats; tracked/staged privacy and diff hygiene passed. |
+| Requirements | EVID-07 and TEETH-07/08 verified. SEQ-01 remains enforced by routing only to Phase 60 and blocking Phase 62/production sclera until Phase 61 closes teeth. |
+| Boundary | This is intent admission, not visible whitening, provider safety, product promotion, population sufficiency, device/performance readiness, commercial quality, packaging, shipping, launch, or release readiness. |
 
 ### C-2026-08-05-local-retouch-candidate-image
 

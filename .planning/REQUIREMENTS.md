@@ -22,8 +22,8 @@
 
 ### Teeth Whitening (`白牙`)
 
-- [ ] **TEETH-07**: After the teeth evidence decision passes, an SDK integrator receives an independent positive-only finite-normalized default-zero `teethWhitening` field with append-only source, Codable, preset, and legacy-payload compatibility.
-- [ ] **TEETH-08**: Teeth admission derives only from the nonzero effective `teethWhitening` value and cannot be activated by global whitening, brightness, lip color, geometry, Testing hooks, or sclera intent.
+- [x] **TEETH-07**: After the teeth evidence decision passes, an SDK integrator receives an independent positive-only finite-normalized default-zero `teethWhitening` field with append-only source, Codable, preset, and legacy-payload compatibility.
+- [x] **TEETH-08**: Teeth admission derives only from the nonzero effective `teethWhitening` value and cannot be activated by global whitening, brightness, lip color, geometry, Testing hooks, or sclera intent.
 - [ ] **TEETH-09**: The teeth provider consumes actual mapped request-local inner- and outer-lip support from the one canonical Vision request and fails closed when either required support or mouth geometry is missing, malformed, implausible, closed, or occluded.
 - [ ] **TEETH-10**: The provider retains a conservative fixed strong teeth baseline and may add only connected color-qualified candidates grown from accepted seeds inside a narrow hard mouth-local envelope.
 - [ ] **TEETH-11**: Growth, blur, and feathering cannot escape the hard mouth-local envelope, and accepted fixed baseline pixels are never dropped merely to increase adaptive coverage.
@@ -92,17 +92,17 @@ completion.
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| SEQ-01 | Phase 59 | Pending |
+| SEQ-01 | Phase 59 | Enforced; completion remains gated through Phase 61 |
 | SEQ-02 | Phase 65 | Pending |
 | SEQ-03 | Phase 65 | Pending |
 | SEQ-04 | Phase 65 | Pending |
 | EVID-06 | Phase 62 | Pending |
-| EVID-07 | Phase 59 | Validated in closed branch |
+| EVID-07 | Phase 59 | Verified; zero-weight exclusions preserved |
 | EVID-08 | Phase 62 | Pending |
 | EVID-09 | Phase 62 | Pending |
 | EVID-10 | Phase 62 | Pending |
-| TEETH-07 | Phase 59 | Pending |
-| TEETH-08 | Phase 59 | Pending |
+| TEETH-07 | Phase 59 | Verified |
+| TEETH-08 | Phase 59 | Verified |
 | TEETH-09 | Phase 60 | Pending |
 | TEETH-10 | Phase 60 | Pending |
 | TEETH-11 | Phase 60 | Pending |
@@ -142,4 +142,4 @@ completion.
 
 ---
 *Requirements defined: 2026-08-05*
-*Last updated: 2026-08-05 after v1.15 roadmap creation*
+*Last updated: 2026-08-07 after Phase 59 exact-open intent verification*

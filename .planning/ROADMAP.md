@@ -27,7 +27,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 
 **Phase Numbering:** Continuous from v1.14; this milestone starts at Phase 59.
 
-- [ ] **Phase 59: Teeth Evidence and Admission Contract** - Turn a complete genuine teeth bundle into one compatibility-safe teeth-only public intent while keeping sclera and `去脂` absent.
+- [x] **Phase 59: Teeth Evidence and Admission Contract** - Turn a complete genuine teeth bundle into one compatibility-safe teeth-only public intent while keeping sclera and `去脂` absent.
 - [ ] **Phase 60: Teeth Provider and Production Integration** - Deliver conservative lip-supported tooth selection and bounded immutable-original whitening through the production still-image path.
 - [ ] **Phase 61: Teeth Output, Safety, and Independent Closeout** - Prove public-facade visibility, protected-tissue safety, naturalness, regression, and exact `白牙` promotion before any sclera production work.
 - [ ] **Phase 62: Sclera Evidence and Admission Contract** - Independently qualify genuine redness/normal evidence and add one compatibility-safe sclera-only public intent after teeth closes.
@@ -49,7 +49,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
   3. A nonzero effective teeth value creates exactly teeth demand; global color, lip color, geometry, Testing hooks, sclera intent, missing/zero legacy fields, and aliases cannot activate it.
   4. No production `scleraRednessReduction` or `去脂` field, provider, renderer case, preset, admission route, or active Demo mapping exists when this phase closes.
 
-**Plans**: 9 recorded; Plans 59-05 through 59-07 completed, Plans 59-08 and 59-09 pending
+**Plans**: 9/9 completed; exact-open intent verified 2026-08-07
 
 ### Phase 60: Teeth Provider and Production Integration
 
@@ -147,8 +147,8 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 
 | Phase | Plans Complete | Status | Completed |
 | --- | --- | --- | --- |
-| 59. Teeth Evidence and Admission Contract | 7/9 plans complete / 0 promoted | Active — exact-open compatibility/privacy gates pass; owner sync and closeout remain pending | - |
-| 60. Teeth Provider and Production Integration | 0/TBD | Not started | - |
+| 59. Teeth Evidence and Admission Contract | 9/9 plans complete / intent admitted / 0 visible promoted | Complete — exact-open evidence, scalar, one demand, privacy, and regression pass | 2026-08-07 |
+| 60. Teeth Provider and Production Integration | 0/TBD | Next — planning may begin; provider/output still absent | - |
 | 61. Teeth Output, Safety, and Independent Closeout | 0/TBD | Not started | - |
 | 62. Sclera Evidence and Admission Contract | 0/TBD | Not started | - |
 | 63. Guarded Per-Eye Sclera Production Integration | 0/TBD | Not started | - |
