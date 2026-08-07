@@ -19,12 +19,19 @@ final class BeautyTeethWhiteningAdversarialCloseoutTests: XCTestCase {
     }
 
     func testColorIndependentProtectedTruthRemainsExactAcrossSupportPerturbations() throws {
-        let colorIndependentProtectedTruth = Set([
-            pixelIndex(x: 10, y: 18),
-            pixelIndex(x: 52, y: 18),
-            pixelIndex(x: 30, y: 13),
-            pixelIndex(x: 30, y: 27),
-        ])
+        let colorIndependentCoordinates: [ProtectedRegion: (x: Int, y: Int)] = [
+            .lip: (30, 13),
+            .tongue: (30, 27),
+            .gum: (15, 14),
+            .brace: (50, 19),
+            .facialHair: (9, 18),
+            .skin: (55, 20),
+            .apertureExterior: (4, 4),
+        ]
+        XCTAssertEqual(colorIndependentCoordinates.count, ProtectedRegion.allCases.count)
+        let colorIndependentProtectedTruth = Set(
+            colorIndependentCoordinates.values.map { pixelIndex(x: $0.x, y: $0.y) }
+        )
         var sourceBytes = makeMouthBytes()
         for index in colorIndependentProtectedTruth {
             sourceBytes = replacingRGBA(
