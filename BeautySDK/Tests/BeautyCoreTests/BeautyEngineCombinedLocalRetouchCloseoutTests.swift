@@ -47,7 +47,6 @@ final class BeautyEngineCombinedLocalRetouchCloseoutTests: XCTestCase {
             XCTAssertEqual(combined.width, 64)
             XCTAssertEqual(combined.height, 64)
             XCTAssertTrue(Self.hasOpaqueAlpha(combinedBytes))
-            XCTAssertTrue(combinedHarness.usedExplicitSRGBRender)
             XCTAssertEqual(combinedHarness.canonicalizeCount, 1)
             XCTAssertEqual(combinedHarness.detectAndMapCount, 1)
             XCTAssertEqual(combinedHarness.requestOwnerCreationCount, 1)
@@ -83,7 +82,28 @@ final class BeautyEngineCombinedLocalRetouchCloseoutTests: XCTestCase {
     }
 
     func testInjectedTeethFailureRetainsWholeScleraOutput() throws {
-        XCTFail("phase65_missing_paired_eye_no_lip_testing_fixture")
+        let source = try Self.combinedImage()
+        let scleraHarness = try Self.makeHarness(.pairedWithoutLips)
+        let sclera = try scleraHarness.invoke(
+            entry: .processResult,
+            image: source,
+            parameters: BeautyParameters(scleraRednessReduction: 1)
+        )
+        let combinedHarness = try Self.makeHarness(.pairedWithoutLips)
+        let combined = try combinedHarness.invoke(
+            entry: .processResult,
+            image: source,
+            parameters: BeautyParameters(teethWhitening: 1, scleraRednessReduction: 1)
+        )
+
+        XCTAssertEqual(
+            try Self.renderedRGBA8(combined.output),
+            try Self.renderedRGBA8(sclera.output)
+        )
+        XCTAssertEqual(combinedHarness.providerObservation.invocationCount, 1)
+        XCTAssertEqual(combinedHarness.providerObservation.issuedUnitCount, 0)
+        XCTAssertEqual(combinedHarness.scleraProviderObservation.issuedUnitCount, 2)
+        XCTAssertEqual(combinedHarness.compositionObservation.acceptedUnitCount, 2)
     }
 
     func testInjectedWholeScleraFailureRetainsTeethOutput() throws {
@@ -239,6 +259,29 @@ final class BeautyEngineCombinedLocalRetouchCloseoutTests: XCTestCase {
         XCTAssertEqual(harness.compositionObservation, SDKTestingLocalCompositionObservation())
         XCTAssertEqual(harness.retainedRequestOwnerCount, 0)
         XCTAssertEqual(harness.retainedMappedCoordinateCount, 0)
+    }
+
+    func testCombinedWithUnrelatedEffectsUsesExplicitSRGBAndPreservesProviderWork() throws {
+        let harness = try Self.makeHarness(.paired)
+        let result = try harness.invoke(
+            entry: .processResult,
+            image: try Self.combinedImage(),
+            parameters: BeautyParameters(
+                brightness: 0.12,
+                faceSlim: 0.25,
+                teethWhitening: 1,
+                scleraRednessReduction: 1
+            )
+        )
+
+        XCTAssertEqual(result.width, 64)
+        XCTAssertEqual(result.height, 64)
+        XCTAssertTrue(Self.hasOpaqueAlpha(try Self.renderedRGBA8(result.output)))
+        XCTAssertTrue(harness.usedExplicitSRGBRender)
+        XCTAssertEqual(harness.providerObservation.issuedUnitCount, 1)
+        XCTAssertEqual(harness.scleraProviderObservation.issuedUnitCount, 2)
+        XCTAssertEqual(harness.compositionObservation.acceptedUnitCount, 3)
+        XCTAssertEqual(harness.compositionObservation.changedOutsideUnionPixelCount, 0)
     }
 
     func testCombinedObservationsExposeFixedAggregatesOnly() throws {

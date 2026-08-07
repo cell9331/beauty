@@ -762,6 +762,7 @@ package final class SDKTestingCanonicalStillImageHarness: @unchecked Sendable {
 
 @_spi(Testing) public enum SDKTestingScleraEyeSupport: Sendable {
     case paired
+    case pairedWithoutLips
     case leftOnly
     case rightOnly
     case leftValidRightMalformed
@@ -924,6 +925,22 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             currentAggregateSupportValueID = nil
             currentRequestIsMalformed = false
             activeRequestContextCountValue = 0
+        }
+    }
+
+    package func resetLocalRetouchObservations() {
+        withLock {
+            currentCompositionScenario = nil
+            currentCompositionSourceBindingMatched = false
+            lastCompositionObservationValue = SDKTestingLocalCompositionObservation()
+            lastTeethProviderObservationValue = SDKTestingTeethProviderObservation()
+            lastScleraProviderObservationValue = SDKTestingScleraProviderObservation()
+            currentAggregateSupportValueID = nil
+            lastAggregateSupportValueIDValue = nil
+            currentRequestIsMalformed = false
+            activeRequestContextCountValue = 0
+            activeMappedPointCountValue = 0
+            lastMappedPointCountValue = 0
         }
     }
 
@@ -1198,6 +1215,11 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
                 return [Self.observation(
                     observedEyeSupport: [phase63ObservedRightEye, phase63ObservedLeftEye],
                     observedLipSupport: Self.validLipSupport
+                )]
+            case .pairedWithoutLips:
+                return [Self.observation(
+                    observedEyeSupport: [phase63ObservedRightEye, phase63ObservedLeftEye],
+                    observedLipSupport: nil
                 )]
             case .leftOnly:
                 return [Self.observation(
@@ -1521,7 +1543,10 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     }
 
     public func reset() {
-        withInvocationLock { engine.reset() }
+        withInvocationLock {
+            engine.reset()
+            hooks.resetLocalRetouchObservations()
+        }
     }
 
     public static func runIndependent(valueID: Int) async throws -> Int {
