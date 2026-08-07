@@ -236,6 +236,37 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
         }
     }
 
+    func testPerEyeUnitOverlapPreservesImmutableSourceAndAlpha() throws {
+        let fixture = makeEyeFixture()
+        let source = try canonical(fixture.bytes)
+        let owner = BeautyLocalRetouchCompositionOwner(source: source)
+        let first = BeautyScleraRednessProvider.makeResult(
+            source: source,
+            eyeSupport: [leftSupport],
+            eyeOrder: .canonical,
+            strength: 1,
+            owner: owner
+        )
+        let second = BeautyScleraRednessProvider.makeResult(
+            source: source,
+            eyeSupport: [leftSupport],
+            eyeOrder: .canonical,
+            strength: 1,
+            owner: owner
+        )
+        XCTAssertEqual(first.units.count, 1)
+        XCTAssertEqual(second.units.count, 1)
+
+        let composed = try owner.compose(first.units + second.units)
+        let output = Array(composed.canonicalImage.rgba8Data)
+        XCTAssertGreaterThan(composed.summary.collisionPixelCount, 0)
+        XCTAssertEqual(output, fixture.bytes)
+        XCTAssertEqual(
+            stride(from: 3, to: output.count, by: 4).map { output[$0] },
+            Array(repeating: UInt8.max, count: width * height)
+        )
+    }
+
     private var leftSupport: BeautyObservedEyeSupport {
         BeautyObservedEyeSupport(
             side: .left,
