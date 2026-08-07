@@ -13,16 +13,13 @@
     },
     {
       "feature": "sclera_redness",
-      "status": "closed",
-      "reasons": [
-        "missing_genuine_positive",
-        "missing_genuine_negative"
-      ],
-      "eligible_count": 0,
-      "reviewed_count": 0,
-      "accepted_count": 0,
+      "status": "open",
+      "reasons": [],
+      "eligible_count": 2,
+      "reviewed_count": 2,
+      "accepted_count": 2,
       "rejected_count": 0,
-      "naturalness_weight": 0
+      "naturalness_weight": 2
     },
     {
       "feature": "upper_eyelid_fullness",
@@ -63,6 +60,30 @@
       "structure_changed": false,
       "decision": "accept",
       "reason_code": "none"
+    },
+    {
+      "fixture_id": "sr_fixture_001",
+      "feature": "sclera_redness",
+      "polarity": "positive",
+      "target_present": true,
+      "mask_coverage": 4,
+      "protected_leakage": false,
+      "naturalness": 4,
+      "structure_changed": false,
+      "decision": "accept",
+      "reason_code": "none"
+    },
+    {
+      "fixture_id": "sr_fixture_002",
+      "feature": "sclera_redness",
+      "polarity": "negative",
+      "target_present": false,
+      "mask_coverage": 1,
+      "protected_leakage": false,
+      "naturalness": 4,
+      "structure_changed": false,
+      "decision": "accept",
+      "reason_code": "none"
     }
   ],
   "aggregates": [
@@ -76,11 +97,11 @@
     },
     {
       "feature": "sclera_redness",
-      "eligible_count": 0,
-      "reviewed_count": 0,
-      "accepted_count": 0,
+      "eligible_count": 2,
+      "reviewed_count": 2,
+      "accepted_count": 2,
       "rejected_count": 0,
-      "naturalness_weight": 0
+      "naturalness_weight": 2
     },
     {
       "feature": "upper_eyelid_fullness",

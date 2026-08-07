@@ -1,7 +1,7 @@
 ---
 phase: 62
 feature: sclera_redness
-status: closed
+status: open
 review_frozen: true
 security_standard: OWASP ASVS Level 1
 block_on: HIGH
@@ -17,11 +17,13 @@ evidence and admission authority. The current canonical state is:
 | Feature | Status | Reasons | Eligible / reviewed / accepted / rejected | Naturalness |
 | --- | --- | --- | --- | ---: |
 | `teeth_whitening` | open | none | 2 / 2 / 2 / 0 | 2 |
-| `sclera_redness` | closed | missing genuine positive; missing genuine negative | 0 / 0 / 0 / 0 | 0 |
+| `sclera_redness` | open | none | 2 / 2 / 2 / 0 | 2 |
 | `upper_eyelid_fullness` | closed | both missing-genuine reasons; non-warp design unqualified | 0 / 0 / 0 / 0 | 0 |
 
-Zero sclera intake is a hard precondition. It does not authorize a placeholder
-field, inert route, synthetic substitute, teeth reuse or hand-edited decision.
+The earlier zero-intake closed branch remains the fail-closed fallback. The
+current open row comes only from two independently accepted genuine rows and a
+fresh Phase 54 serializer run; it does not yet authorize a provider, output,
+Demo route, synthetic substitute, teeth reuse or hand-edited decision.
 
 ## Exact eligible pair
 
@@ -153,4 +155,3 @@ T-62-01 through T-62-08 are all HIGH. A missing real pair, changed criterion,
 unissued review, sibling mismatch, privacy leak, scanner/tool error, skipped
 private gate, premature runtime surface, compatibility drift or downstream
 implementation keeps Phase 62 incomplete and Phase 63 blocked.
-

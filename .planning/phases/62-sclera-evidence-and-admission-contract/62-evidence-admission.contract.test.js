@@ -35,15 +35,15 @@ const CLOSED_COUNTS = {
 };
 const CURRENT_SCLERA = {
   feature: "sclera_redness",
-  status: "closed",
-  reasons: ["missing_genuine_positive", "missing_genuine_negative"],
-  ...CLOSED_COUNTS,
-};
-const FUTURE_OPEN_SCLERA = {
-  feature: "sclera_redness",
   status: "open",
   reasons: [],
   ...OPEN_COUNTS,
+};
+const CLOSED_SCLERA = {
+  feature: "sclera_redness",
+  status: "closed",
+  reasons: ["missing_genuine_positive", "missing_genuine_negative"],
+  ...CLOSED_COUNTS,
 };
 const CURRENT_TEETH = {
   feature: "teeth_whitening",
@@ -165,20 +165,33 @@ test("current canonical rows are independently exact", () => {
 test("ReviewCore closed sclera snapshot matches the zero-intake contract", () => {
   const snapshot = CORE.createClosedSnapshot("sclera_redness");
   const decision = CORE.evaluateFeature(snapshot, []);
-  assert.deepEqual(decision, CURRENT_SCLERA);
+  assert.deepEqual(decision, CLOSED_SCLERA);
   assert.equal(snapshot.feature, "sclera_redness");
   assert.equal(snapshot.ready, false);
 });
 
-test("future open shape is exact but is not current authority", () => {
-  assert.deepEqual(FUTURE_OPEN_SCLERA, {
+test("current independent open sclera shape is exact authority", () => {
+  assert.deepEqual(CURRENT_SCLERA, {
     feature: "sclera_redness",
     status: "open",
     reasons: [],
     ...OPEN_COUNTS,
   });
-  assert.notDeepEqual(byFeature(ledger().feature_decisions).sclera_redness, FUTURE_OPEN_SCLERA);
+  assert.deepEqual(byFeature(ledger().feature_decisions).sclera_redness, CURRENT_SCLERA);
   assert.deepEqual(byFeature(ledger().feature_decisions).teeth_whitening, CURRENT_TEETH);
+});
+
+test("durable open reviews contain exactly two independent rows per open feature", () => {
+  const reviews = ledger().reviews;
+  assert.equal(reviews.length, 4);
+  assert.deepEqual(reviews.map((row) => row.feature), [
+    "teeth_whitening", "teeth_whitening", "sclera_redness", "sclera_redness",
+  ]);
+  for (const feature of ["teeth_whitening", "sclera_redness"]) {
+    const rows = reviews.filter((row) => row.feature === feature);
+    assert.deepEqual(rows.map((row) => row.polarity).sort(), ["negative", "positive"]);
+    assert.ok(rows.every((row) => row.decision === "accept" && row.reason_code === "none"));
+  }
 });
 
 test("eligible pair requires exact feature, distinct identities, both polarities, and triples", () => {
@@ -275,8 +288,20 @@ test("reordering cannot change identity-selected decisions or aggregates", () =>
   assert.deepEqual(reversedDecisions.sclera_redness, CURRENT_SCLERA);
   assert.deepEqual(reversedAggregates.sclera_redness, {
     feature: "sclera_redness",
-    ...CLOSED_COUNTS,
+    ...OPEN_COUNTS,
   });
+});
+
+test("required private child reproduces the exact canonical ledger bytes", {
+  skip: process.env.PHASE62_REQUIRE_LOCAL_EVIDENCE !== "1",
+}, () => {
+  assert.equal(typeof process.env.PHASE62_SCLERA_BUNDLE, "string");
+  assert.equal(typeof process.env.PHASE59_TEETH_BUNDLE, "string");
+  const durable = ADAPTER.buildExport(
+    process.env.PHASE62_SCLERA_BUNDLE,
+    process.env.PHASE59_TEETH_BUNDLE,
+  );
+  assert.equal(durable, fs.readFileSync(LEDGER_PATH, "utf8"));
 });
 
 test("current durable bytes use exact LF serializer formatting", () => {
