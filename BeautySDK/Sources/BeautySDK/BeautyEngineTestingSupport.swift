@@ -863,6 +863,14 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
                 currentCanonicalViewIdentity == detectorViewIdentity
         }
     }
+    package var hasCurrentCanonicalObservation: Bool {
+        withLock {
+            currentCanonicalBackingIdentity != nil ||
+                currentCanonicalViewIdentity != nil ||
+                detectorViewIdentity != nil ||
+                rendererBackingIdentity != nil
+        }
+    }
     package var usedExplicitSRGBRender: Bool { withLock { rendererUsesExplicitSRGB } }
     package var canonicalizerConstructionCount: Int {
         withLock { canonicalizerConstructionCountValue }
@@ -918,6 +926,29 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         }
     }
 
+    package func prepareForFacadeInvocation() {
+        withLock {
+            currentCompositionScenario = nil
+            currentCompositionSourceBindingMatched = false
+            lastCompositionObservationValue = SDKTestingLocalCompositionObservation()
+            lastTeethProviderObservationValue = SDKTestingTeethProviderObservation()
+            lastScleraProviderObservationValue = SDKTestingScleraProviderObservation()
+            currentAggregateSupportValueID = nil
+            lastAggregateSupportValueIDValue = nil
+            currentRequestIsMalformed = false
+            activeRequestContextCountValue = 0
+            currentCanonicalBackingIdentity = nil
+            currentCanonicalViewIdentity = nil
+            detectorViewIdentity = nil
+            rendererBackingIdentity = nil
+            rendererUsesExplicitSRGB = false
+            activeMappingInvocationCountValue = 0
+            activeMappedPointCountValue = 0
+            lastMappingInvocationCountValue = 0
+            lastMappedPointCountValue = 0
+        }
+    }
+
     package func finishStillRequest() {
         withLock {
             currentCompositionScenario = nil
@@ -939,7 +970,14 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             lastAggregateSupportValueIDValue = nil
             currentRequestIsMalformed = false
             activeRequestContextCountValue = 0
+            currentCanonicalBackingIdentity = nil
+            currentCanonicalViewIdentity = nil
+            detectorViewIdentity = nil
+            rendererBackingIdentity = nil
+            rendererUsesExplicitSRGB = false
+            activeMappingInvocationCountValue = 0
             activeMappedPointCountValue = 0
+            lastMappingInvocationCountValue = 0
             lastMappedPointCountValue = 0
         }
     }
@@ -1360,6 +1398,9 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     }
     public var canonicalConsumerIdentityMatched: Bool {
         withInvocationLock { hooks.canonicalConsumerIdentityMatched }
+    }
+    public var hasCurrentCanonicalObservation: Bool {
+        withInvocationLock { hooks.hasCurrentCanonicalObservation }
     }
     public var usedExplicitSRGBRender: Bool {
         withInvocationLock { hooks.usedExplicitSRGBRender }

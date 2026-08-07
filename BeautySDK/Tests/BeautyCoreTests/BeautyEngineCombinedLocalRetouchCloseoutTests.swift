@@ -183,6 +183,70 @@ final class BeautyEngineCombinedLocalRetouchCloseoutTests: XCTestCase {
         XCTAssertEqual(harness.retainedMappedCoordinateCount, 0)
     }
 
+    func testCombinedNoFaceAbstainsAndReturnsSource() throws {
+        let harness = try Self.makeHarness(.noFace)
+        let source = try Self.combinedImage()
+        let result = try harness.invoke(
+            entry: .processResult,
+            image: source,
+            parameters: BeautyParameters(teethWhitening: 1, scleraRednessReduction: 1)
+        )
+
+        XCTAssertEqual(try Self.renderedRGBA8(result.output), try Self.renderedRGBA8(source))
+        XCTAssertEqual(harness.providerObservation.invocationCount, 1)
+        XCTAssertEqual(harness.providerObservation.issuedUnitCount, 0)
+        XCTAssertEqual(harness.scleraProviderObservation.invocationCount, 1)
+        XCTAssertEqual(harness.scleraProviderObservation.issuedUnitCount, 0)
+        XCTAssertEqual(harness.compositionObservation.compositionInvocationCount, 1)
+        XCTAssertEqual(harness.compositionObservation.acceptedUnitCount, 0)
+        XCTAssertEqual(harness.retainedRequestOwnerCount, 0)
+        XCTAssertEqual(harness.retainedMappedCoordinateCount, 0)
+    }
+
+    func testEarlyInvalidCombinedRequestClearsPriorSummaryAndRecovers() throws {
+        let harness = try Self.makeHarness(.paired)
+        let parameters = BeautyParameters(
+            brightness: 0.12,
+            faceSlim: 0.25,
+            teethWhitening: 1,
+            scleraRednessReduction: 1
+        )
+
+        _ = try harness.invoke(
+            entry: .processResult,
+            image: try Self.combinedImage(),
+            parameters: parameters
+        )
+        XCTAssertEqual(harness.compositionObservation.acceptedUnitCount, 3)
+        XCTAssertTrue(harness.hasCurrentCanonicalObservation)
+        XCTAssertTrue(harness.usedExplicitSRGBRender)
+
+        XCTAssertThrowsError(try harness.invoke(
+            entry: .processResult,
+            image: CIImage.empty(),
+            parameters: parameters
+        ))
+        XCTAssertEqual(harness.providerObservation, SDKTestingTeethProviderObservation())
+        XCTAssertEqual(harness.scleraProviderObservation, SDKTestingScleraProviderObservation())
+        XCTAssertEqual(harness.compositionObservation, SDKTestingLocalCompositionObservation())
+        XCTAssertFalse(harness.canonicalConsumerIdentityMatched)
+        XCTAssertFalse(harness.hasCurrentCanonicalObservation)
+        XCTAssertFalse(harness.usedExplicitSRGBRender)
+        XCTAssertEqual(harness.lastMappingInvocationCount, 0)
+        XCTAssertEqual(harness.lastMappedCoordinateCount, 0)
+        XCTAssertEqual(harness.retainedRequestOwnerCount, 0)
+        XCTAssertEqual(harness.retainedMappedCoordinateCount, 0)
+
+        _ = try harness.invoke(
+            entry: .processResult,
+            image: try Self.combinedImage(),
+            parameters: parameters
+        )
+        XCTAssertEqual(harness.providerObservation.issuedUnitCount, 1)
+        XCTAssertEqual(harness.scleraProviderObservation.issuedUnitCount, 2)
+        XCTAssertEqual(harness.compositionObservation.acceptedUnitCount, 3)
+    }
+
     func testThrownCombinedRequestClearsBothObservationsAndRecovers() throws {
         let harness = try Self.makeHarness(.paired)
         let parameters = BeautyParameters(teethWhitening: 1, scleraRednessReduction: 1)
@@ -259,6 +323,11 @@ final class BeautyEngineCombinedLocalRetouchCloseoutTests: XCTestCase {
         XCTAssertEqual(harness.compositionObservation, SDKTestingLocalCompositionObservation())
         XCTAssertEqual(harness.retainedRequestOwnerCount, 0)
         XCTAssertEqual(harness.retainedMappedCoordinateCount, 0)
+        XCTAssertFalse(harness.canonicalConsumerIdentityMatched)
+        XCTAssertFalse(harness.hasCurrentCanonicalObservation)
+        XCTAssertFalse(harness.usedExplicitSRGBRender)
+        XCTAssertEqual(harness.lastMappingInvocationCount, 0)
+        XCTAssertEqual(harness.lastMappedCoordinateCount, 0)
     }
 
     func testCombinedWithUnrelatedEffectsUsesExplicitSRGBAndPreservesProviderWork() throws {

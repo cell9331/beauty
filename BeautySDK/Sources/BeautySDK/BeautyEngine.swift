@@ -58,8 +58,7 @@ public final class BeautyEngine {
         metadata: BeautyInputMetadata,
         parameters: BeautyParameters
     ) throws -> BeautyResult<CVPixelBuffer> {
-        localRetouchTestingHooks?.clearTeethProviderObservation()
-        localRetouchTestingHooks?.clearScleraProviderObservation()
+        localRetouchTestingHooks?.prepareForFacadeInvocation()
         try Self.validate(
             pixelBuffer: pixelBuffer,
             maximumPixelCount: configuration.maximumInputPixelCount
@@ -99,8 +98,7 @@ public final class BeautyEngine {
         metadata: BeautyInputMetadata,
         parameters: BeautyParameters
     ) throws -> BeautyResult<CIImage> {
-        localRetouchTestingHooks?.clearTeethProviderObservation()
-        localRetouchTestingHooks?.clearScleraProviderObservation()
+        localRetouchTestingHooks?.prepareForFacadeInvocation()
         try Self.validate(
             image: image,
             maximumPixelCount: configuration.maximumInputPixelCount
@@ -256,8 +254,7 @@ public final class BeautyEngine {
     }
 
     public func reset() {
-        localRetouchTestingHooks?.clearTeethProviderObservation()
-        localRetouchTestingHooks?.clearScleraProviderObservation()
+        localRetouchTestingHooks?.resetLocalRetouchObservations()
         resetGeneration &+= 1
         faceDetector.resetTracking()
     }

@@ -264,7 +264,7 @@ def discover_case_ids(source_path: Path) -> list[str]:
         raise OutputError("renderer source unreadable") from None
     ids = re.findall(r'\bid\s*:\s*"([^"]+)"', source)
     duplicates = [item for item, count in Counter(ids).items() if count > 1]
-    if len(ids) != 73 or duplicates or ids.count(BASELINE) != 1 or ids.count(ACTIVE) != 1:
+    if len(ids) != 74 or duplicates or ids.count(BASELINE) != 1 or ids.count(ACTIVE) != 1:
         raise OutputError("renderer case inventory mismatch")
     if "import BeautySDK" not in source:
         raise OutputError("renderer does not import public facade")
@@ -280,7 +280,9 @@ def discover_case_ids(source_path: Path) -> list[str]:
         raise OutputError("renderer active case is not exact public intent")
     if source.count("engine.processResult(") != 1 or "--no-watermark" not in source:
         raise OutputError("renderer facade or presentation-free contract mismatch")
-    for forbidden in ("teethWhite:", "toothWhitening:", "scleraRednessReduction:", "upperEyelidFullnessReduction:"):
+    if "scleraRednessReduction:" in snippet:
+        raise OutputError("renderer active case contains sibling intent")
+    for forbidden in ("teethWhite:", "toothWhitening:", "upperEyelidFullnessReduction:"):
         if forbidden in source:
             raise OutputError("renderer contains forbidden candidate route")
     return ids
@@ -467,16 +469,29 @@ def run_self_test() -> int:
         renderer_source = root / "main.swift"
         renderer_source.write_text(
             "import BeautySDK\n"
-            + "\n".join(f'RenderCase(id: "case_{index}"),' for index in range(71))
+            + "\n".join(f'RenderCase(id: "case_{index}"),' for index in range(72))
             + f'\nRenderCase(id: "{BASELINE}"),'
             + f'\nRenderCase(id: "{ACTIVE}", parameters: BeautyParameters(teethWhitening: 1))\n'
             + 'let presentationFlag = "--no-watermark"\nengine.processResult(\n',
             encoding="utf-8",
         )
-        if len(discover_case_ids(renderer_source)) != 73:
+        if len(discover_case_ids(renderer_source)) != 74:
             raise AssertionError("valid renderer source rejected")
         passed += 1
         valid_renderer = renderer_source.read_text(encoding="utf-8")
+        renderer_source.write_text(
+            valid_renderer.replace(
+                "BeautyParameters(teethWhitening: 1)",
+                "BeautyParameters(teethWhitening: 1, scleraRednessReduction: 1)",
+            ),
+            encoding="utf-8",
+        )
+        try:
+            discover_case_ids(renderer_source)
+        except OutputError:
+            passed += 1
+        else:
+            raise AssertionError("sibling intent accepted in teeth case")
         renderer_source.write_text(valid_renderer.replace("import BeautySDK", "import BeautyCore"), encoding="utf-8")
         try:
             discover_case_ids(renderer_source)
