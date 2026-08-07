@@ -34,18 +34,18 @@ Quality gate:
 
 ## 3. Current Snapshot
 
-Current repository state as of 2026-08-04 after the v1.14 Phase 58 automated
-closeout and adversarial checker review/fix:
+Current repository state as of 2026-08-07 after the v1.15 Phase 59 exact-open
+evidence, scalar/admission, compatibility, and privacy gates:
 
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
 | Root docs | 4 | All nine root owners exist. The consolidation audit corrected `ARCHITECTURE.md` so current pixel-buffer processing, still-image detection/geometry, and placeholder Render foundations match compiled code. | Keep current facts in root owners; keep milestone narratives in archives. |
 | Historical docs | 3 | `docs/README.md` remains the long-doc entry. `.planning/codebase/*` is explicitly stale background and historical phase/milestone artifacts are not current contracts. | Refresh codebase maps only in an explicitly scoped remap. |
-| GSD planning | 4 | v1.14 Phase 58 automated closeout and adversarial review/fix are green with exact zero admission/promotion; the independent verifier and milestone audit remain explicit lifecycle gates. | Complete verifier/audit before archiving; do not infer release readiness. |
-| SDK Package | 4 | The package/facade boundary is intact; `BeautyParameters` is exactly 59 stored fields (58 numeric plus `filterId`), and Phase 58 full SwiftPM executes 553 tests with six expected Vision skips and zero failures. | Resolve the generic `BeautyResult` sendability contract before treating all public result envelopes as concurrency-safe. |
-| Demo App | 4 | Phase 58 full Demo simulator tests pass 120/120 on iPhone 17e / iOS 26.5. Focused consolidation tests cover stale camera starts, late permission completion, and nil/stale photo transfers. | Rerun screenshot, long-run preview, and physical-device protocols before corresponding claims. |
-| Tests | 4 | Phase 58 records full SwiftPM `553/0/6`, opt-in Vision `6/0/0`, full Demo `120/0/0`, and a post-review checker recheck `703/0/0`; no product feature or visual-effect claim is inferred. | Complete independent verifier/audit; preserve explicit hardware and UI-automation gaps. |
-| Security | 4 | Local-first, redaction, raw-geometry, dependency/network, generated-artifact, and production input-bound gates pass. SDK image/pixel-buffer ceilings and Demo pre-decode/pre-render ceilings have exact-boundary, ordering, recovery, and stale-work regressions. | Retain the documented PhotosPicker pre-transfer allocation residual and re-evaluate only if the transfer API changes. |
+| GSD planning | 4 | Phase 59 Plans 59-05 through 59-07 are green for exact open evidence, one intent demand, compatibility, privacy, and eight HIGH owners; final owner/lifecycle closeout remains. | Complete Plans 59-08/59-09 before Phase 60. |
+| SDK Package | 4 | The package/facade boundary is intact; `BeautyParameters` is exactly 60 stored fields (59 `Float` plus optional `filterId`), with trailing default-zero `teethWhitening` and one package-private opaque demand. | Keep provider/output behavior in Phase 60/61 and resolve TD-013 separately. |
+| Demo App | 4 | Phase 59 focused Demo tests pass 30/30 on iPhone 17e / iOS 26.5; the teeth, sclera-redness, and `去脂` taxonomy rows remain disabled with nil mappings. | Preserve disabled taxonomy until each later output/promotion gate passes. |
+| Tests | 4 | Executed Phase 59 evidence contracts pass 9/9, the scalar/admission suites pass 118/118, preset/renderer compatibility passes 44/44, Demo passes 30/30, and the checker rejects 235 mutations with 8/8 isolated HIGH modes. | Run the full SwiftPM/Demo and lifecycle conjunction in Plan 59-09. |
+| Security | 4 | Exact ReviewCore serialization, structured-schema allowlists, closed siblings, fixed-output private resolution, and tracked/staged privacy scanning pass without adding a provider/output surface. | Keep local evidence private and rerun all eight HIGH modes at final closeout. |
 | Reliability | 3 | Backpressure, stale work, reset, detection degradation, and the repaired camera lifecycle are test-backed. Realtime geometry/Metal dispatch, 600-second preview, and device endurance are not current evidence. | Keep claims bounded and run the setup-specific long-run/device gates when authorized. |
 | Product acceptance | 4 | v1.13 closes exactly seven eyebrow rows plus branch `眉毛` at SDK-core scope after 21/21 requirements, 4/4 phases, 12/12 integrations, and 6/6 flows. | Do not infer Demo, device, commercial, packaging, or release readiness. |
 
@@ -615,8 +615,11 @@ SDK 1.0 readiness:
 - Full SwiftPM executes `553` with six expected Vision skips and zero failures; the separate opt-in Vision gate executes `6/0/0`; explicit iPhone 17e/iOS 26.5 Demo build/tests pass `120/120`. Schema/UI/decision/traceability/diff and exact historical drift gates are green.
 - Quality credit is limited to exact zero-admission enforcement, privacy, request-local recovery, compatibility, and regression safety. External review/fix, independent verifier, and milestone audit remain lifecycle work; no feature-effect, naturalness, device, performance, commercial, packaging, shipping, launch, or release credit is added.
 
-### v1.15 Phase 59 Closed Teeth Evidence Score
+### v1.15 Phase 59 Open Teeth Intent Score
 
-- Phase 59 records a valid closed branch, not a feature promotion. The canonical teeth row has two missing-polarity reasons, zero counts/weight, and no open admission. EVID-07 is validated; SEQ-01 remains pending; TEETH-07/08 are `not_applicable_closed_gate`.
-- Measured automation is green: 5/5 contract tests, 19 checker mutation cases, 8/8 HIGH modes, focused SDK 135/135, full SwiftPM 553/0/6, Demo build success, and full Demo 121/0/0. JSON and diff hygiene also pass.
-- Quality credit is limited to evidence exclusion, exact absence, privacy, compatibility, and regression safety. No algorithm, output, effectiveness, naturalness, device, performance, commercial, packaging, shipping, launch, or release credit is added. The genuine evidence bundle remains the blocker.
+- The canonical teeth decision is serializer-open at `2/2/2/0/2` with exactly two fixed structured reviews; sclera redness and upper-eyelid fullness remain closed. EVID-07 and the TEETH-07/08 intent seam are exercised without granting provider/output credit.
+- Executed automation through Plan 59-07 is green: private evidence contracts `9/9`, scalar/admission compatibility `118/118`, preset/renderer compatibility `44/44`, focused Demo `30/30`, checker mutations `235/235`, and isolated HIGH identities `8/8`. Fresh serializer-ledger reproduction, five preset hashes, 72 renderer IDs, three disabled Demo rows, tracked/staged privacy, JSON, Python syntax, and diff hygiene pass.
+- The locked compatibility boundary is exactly 60 stored/CodingKey/initializer fields, five unchanged neutral presets, 72 renderer cases, one opaque demand, and three disabled local-retouch Demo rows. No provider, mask/transform, renderer/output behavior, active Demo mapping, realtime/pixel-buffer route, model/network route, sclera surface, or `去脂` surface exists.
+- Quality credit is limited to exact evidence admission, scalar compatibility, binary request intent, privacy, and downstream absence. The mechanics-only candidate adds no product credit. Phase 60 provider safety and Phase 61 public output remain unrun, and no visible-effect, population, device, performance, commercial, packaging, shipping, launch, or release credit is added.
+
+Command-level evidence is recorded in the [Phase 59 validation strategy](.planning/phases/59-teeth-evidence-and-admission-contract/59-VALIDATION.md) and [exact-open boundary summary](.planning/phases/59-teeth-evidence-and-admission-contract/59-07-SUMMARY.md).

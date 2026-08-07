@@ -657,6 +657,9 @@ Before merging product-facing changes, verify:
 
 ### v1.15 Phase 59 Teeth Evidence Admission Acceptance
 
-- Phase 59 verifies only the closed evidence branch: the current teeth decision lacks both genuine polarities, so `白牙` remains future, the `嘴唇` branch remains partial, and the existing disabled Demo taxonomy remains honest.
-- `portrait_002` is a mechanics-only AI candidate and contributes zero product, naturalness, or admission weight. No visible whitening, field, provider, output, naturalness, commercial, or release claim follows.
-- The next product gate is a rights-approved genuine discolored positive and already-light negative with complete bound assets and frozen blinded original-detail review. Only an independently open decision may start the teeth production slice.
+- The minimum frozen structured review has opened teeth intent admission at exactly two eligible/reviewed/accepted rows, zero rejected rows, and naturalness weight two. An SDK integrator may now construct, encode, decode, default, and normalize the trailing `teethWhitening` value; only its normalized positive value produces one opaque request demand.
+- This is not yet user-visible `白牙`. Compatibility remains 60 stored fields, five unchanged neutral presets, 72 renderer cases, and exactly three disabled local-retouch Demo rows with nil mappings. `白牙` therefore remains disabled in the Demo and unpromoted as a visible product behavior.
+- The mechanics-only candidate contributes zero product, naturalness, and admission weight. Sclera redness and upper-eyelid fullness remain closed; `祛红血丝` and `去脂` remain disabled and cannot borrow the teeth decision.
+- Phase 60 must independently establish tooth-local provider containment, bounded color change, failure behavior, and naturalness. Phase 61 must independently establish public-facade saved output, adversarial safety, regression, and promotion. Phase 59 proves neither provider safety nor visible effectiveness and makes no population, device, performance, commercial, packaging, shipping, launch, or release-readiness claim.
+
+Command-level evidence is recorded in the [Phase 59 validation strategy](.planning/phases/59-teeth-evidence-and-admission-contract/59-VALIDATION.md) and [exact-open boundary summary](.planning/phases/59-teeth-evidence-and-admission-contract/59-07-SUMMARY.md).

@@ -799,6 +799,10 @@ These are known future design areas, not current first-version requirements:
 
 ### v1.15 Phase 59 Teeth Evidence Admission Boundary
 
-- The current Phase 54 teeth decision is `closed` for both missing genuine polarities. The closed result owns exact absence: `BeautyParameters` keeps its current 59-field compatibility inventory, `BeautyEffectResolver` keeps literal `.none`, and no inert `teethWhitening` field or admission demand exists.
-- An open branch remains conditional on a complete rights-approved genuine positive/negative original/mask/after bundle, frozen criteria, and independent original-detail review. If that gate opens later, the public change must remain one append-only positive-only normalized scalar and one teeth-only demand; raw evidence/support stays request-local and package-private.
-- Phase 59 does not define a provider, mask, transform, renderer output, Demo route, realtime path, sclera redness field, or `去脂` proxy.
+- The Phase 54 serializer is the decision authority and its canonical `teeth_whitening` row is open at exactly two eligible, reviewed, and accepted rows, zero rejected rows, and naturalness weight two. Sclera redness and upper-eyelid fullness remain independently closed; the mechanics-only candidate has zero product/admission weight.
+- `BeautyParameters` has exactly 60 stored/CodingKey/initializer fields: 59 `Float` values plus optional `filterId`. The trailing `teethWhitening` scalar defaults to zero, decodes a missing legacy key as zero, normalizes non-finite and negative input to zero, and clamps finite positive input to `0...1`.
+- `BeautyEffectResolver.localRetouchAdmission(parameters:)` is the sole seam. Only direct `normalized.teethWhitening > 0` creates one feature-neutral `opaqueDemandCount: 1`; zero, missing, non-finite, global color, lip, geometry, Testing, alias, sibling, and `去脂` inputs create none.
+- Compatibility remains exactly five byte-stable presets that decode teeth intent to zero, 72 renderer cases with no local-retouch case, and three disabled Demo taxonomy rows with nil control mappings.
+- Phase 59 admits intent only. It defines no provider, mask owner, transform, renderer/output behavior, Demo activation, realtime/pixel-buffer route, model/network path, sclera surface, or `去脂` proxy. Phase 60 owns provider integration and Phase 61 owns public-output/safety closeout.
+
+Command-level evidence is recorded in the [Phase 59 validation strategy](.planning/phases/59-teeth-evidence-and-admission-contract/59-VALIDATION.md) and [exact-open boundary summary](.planning/phases/59-teeth-evidence-and-admission-contract/59-07-SUMMARY.md).

@@ -743,7 +743,11 @@ Before a release-like build:
 - Final execution is green across focused and full SDK, exact opt-in Vision `6/0/0`, and full Demo `120/0/0`; canonical/no-op behavior retains dimensions, alpha/color/orientation contracts, typed payload-free errors, and safe-domain continuation with exact `59/5/72` compatibility.
 - The remaining lifecycle is external code review/fix followed by independent verification and milestone audit. These automated reliability results do not establish visible effect quality, naturalness, device, performance, commercial, packaging, shipping, launch, or release readiness.
 
-### v1.15 Phase 59 Closed Evidence Reliability
+### v1.15 Phase 59 Open Intent Reliability
 
-- Missing or incomplete genuine teeth evidence fails closed as a valid decision: no parameter field, demand, provider, output, or Demo route is created. The current Phase 54 row remains the sole authority.
-- The Phase 59 contract/checker and existing SDK/Demo regressions verify exact zero-admission behavior, sanitized durable state, no sibling borrowing, and stable legacy behavior. A later valid evidence bundle must reopen this phase before any downstream production work.
+- The Phase 54 serializer deterministically reproduces the exact open teeth row and two structured reviews from the privately resolved pair. Missing, malformed, incomplete, ambiguous, substituted, parse-failed, or rejected evidence fails closed; mechanics-only or sibling input cannot alter the decision.
+- Runtime admission is binary and request-local: the trailing default-zero, finite-normalized `teethWhitening` scalar is the 60th stored/CodingKey/initializer field, and only its normalized positive value creates exactly one opaque demand. Missing legacy input, zero, negatives, non-finite values, aliases, global/lip/geometry/Testing inputs, sclera, and `去脂` remain neutral; valid-invalid-valid requests retain no demand state.
+- Compatibility recovery remains exact: five byte-stable presets decode the missing key as zero, the renderer remains 72 cases with no teeth output case, and the three local-retouch Demo rows remain disabled with nil mappings. Scanner/tool errors, unknown HIGH modes, missing owners, unknown output fields, or privacy-runner ambiguity block instead of being classified clean.
+- Phase 59 has no provider, mask/transform, renderer/output behavior, Demo activation, realtime/pixel-buffer route, model/network route, sclera surface, or `去脂` surface. Phase 60 must establish provider recovery/safety and Phase 61 must establish public output and closeout; current evidence makes no population, device, performance, commercial, shipping, or release claim.
+
+Command-level evidence is recorded in the [Phase 59 validation strategy](.planning/phases/59-teeth-evidence-and-admission-contract/59-VALIDATION.md) and [exact-open boundary summary](.planning/phases/59-teeth-evidence-and-admission-contract/59-07-SUMMARY.md).
