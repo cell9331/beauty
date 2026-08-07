@@ -4,16 +4,16 @@ milestone: v1.15
 milestone_name: Independent Teeth and Sclera Retouch
 current_phase: 62
 current_phase_name: Sclera Evidence and Admission Contract
-status: blocked
-stopped_at: Phase 62 Plan 62-02 complete; Plan 62-03 licensed-original checkpoint
-last_updated: "2026-08-07T08:23:33.000Z"
+status: executing
+stopped_at: Phase 62 Plan 62-03 complete; Plan 62-04 ready
+last_updated: "2026-08-07T09:01:19.000Z"
 last_activity: 2026-08-07
-last_activity_desc: Phase 62 closed-state intake and privacy preparation complete
+last_activity_desc: Phase 62 independent sclera evidence opened through ReviewCore
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 22
-  completed_plans: 19
+  completed_plans: 20
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: `.planning/PROJECT.md` (updated 2026-08-07)
 ## Current Position
 
 Phase: 62 — Sclera Evidence and Admission Contract
-Plan: 2 of 5 complete
-Status: Blocked at Plan 62-03 licensed-original checkpoint
-Last activity: 2026-08-07 — Plan 62-02 completed private intake and closed privacy proof
+Plan: 3 of 5 complete
+Status: Executing Plan 62-04
+Last activity: 2026-08-07 — Plan 62-03 opened independent sclera evidence through ReviewCore
 
-Progress: ███░░░░░░░ [████░░░░░░] 40%
+Progress: ███░░░░░░░ [██████░░░░] 60%
 
 ## Performance Metrics
 
@@ -53,6 +53,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 61 P04 | 25m | 2 tasks | 13 files |
 | Phase 62 P01 | — | 2 tasks | 4 files |
 | Phase 62 P02 | — | 2 tasks | 5 files |
+| Phase 62 P03 | — | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -63,6 +64,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 - Phase 62 may perform independent sclera evidence/admission only; production implementation remains blocked until its serializer decision opens.
 - Phase 62 is planned as five serial waves; Plans 62-01/02 are safe closed-state preparation and Plan 62-03 is the licensed-original checkpoint.
 - Phase 62 Wave 0 is green: private intake, fixed-output privacy, 20 contract tests, 16 runner mutations and all eight HIGH owners pass while sclera remains exact closed.
+- The independent authorized sclera pair passed guarded original-detail review; ReviewCore and a fresh serializer run now hold sclera exact open at `2/2/2/0/2` without changing teeth or eyelid state.
 - Teeth evidence, support, review, and promotion contribute no sclera or `去脂` credit.
 - v1.15 remains SDK-core and still-image only with no Demo activation, realtime/pixel-buffer, model/cloud, tracked portrait media, or release-readiness claim.
 
@@ -72,7 +74,7 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- Sclera still lacks a rights-approved genuine redness positive and normal-sclera negative complete bundle; the mechanics-only candidate may exercise per-eye mechanics only.
+- The two-row sclera evidence gate is satisfied, but production implementation remains absent until Phase 62 closes intent admission and Phase 63 implements the guarded provider.
 - Spike thresholds remain calibration seeds, not product constants.
 - Existing TD-013 generic-result sendability remains outside v1.15.
 
@@ -87,6 +89,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-07T08:23:33.000Z
-Stopped at: Phase 62 Plan 62-02 complete; Plan 62-03 licensed-original checkpoint
+Last session: 2026-08-07T09:01:19.000Z
+Stopped at: Phase 62 Plan 62-03 complete; Plan 62-04 ready
 Resume file: None

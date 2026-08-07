@@ -30,14 +30,14 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `blocked` |
+| Status | `active` |
 | Scope | Start milestone v1.15 to complete still-image SDK-core `白牙` first and independently complete `祛红血丝` second, while keeping `去脂` future and preserving all v1.14 canonical-input, request-local, composition, privacy, compatibility, and fail-closed boundaries. |
 | Research | Four inline GSD research dimensions: stack, features, architecture, and pitfalls. Dedicated GSD subagents are unavailable in this session, so the orchestrator owns the artifacts and records the fallback. |
 | Evidence gate | The mechanics-only candidate remains zero-weight product evidence. The separate genuine teeth pair has passed the Phase 54 ReviewCore and exact serializer gate; sclera still requires its own independent evidence pair and decision. |
 | Order | Teeth evidence and production slice → teeth verification/promotion → sclera evidence and per-eye production slice → sclera verification/promotion → combined regression and milestone audit. |
 | Exclusions | `去脂`; realtime/pixel-buffer; SwiftUI/Demo activation; external model/cloud; tracked portrait media; device/commercial/performance-budget/packaging/shipping/launch claims. |
-| Current | Phase 62 Plans 01/02 are complete: the frozen closed contract, private intake adapter, fixed-output tracked/staged privacy scan, 20/20 contract tests, 16/16 runner mutations and all eight HIGH owners pass. The canonical sclera row remains exact closed and production has no sclera scalar or demand. |
-| Next | Plan 62-03 requires one rights-approved genuine clearly red sclera positive and one rights-approved genuine normal/already-low-redness negative. Subjects may differ; the Agent will create guarded masks/afters and perform original-detail comparison. Production remains blocked until the independent serializer decision opens; `去脂` stays future. |
+| Current | Phase 62 Plan 03 is complete: the independent authorized positive/negative pair passed guarded original-detail review, required private tests and tracked/staged privacy. Phase 54 serialization preserves teeth open and eyelid closed while opening sclera exactly at `2/2/2/0/2`; production still has no sclera scalar, demand or provider. |
+| Next | Execute Plan 62-04: append one compatibility-safe default-zero `scleraRednessReduction` scalar and admit exactly one independent opaque demand for direct positive intent. Provider/output, Demo activation and `去脂` remain out of scope. |
 
 ## 3A. Archived Active Ledger
 
