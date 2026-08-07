@@ -3,7 +3,7 @@ phase: 63
 slug: guarded-per-eye-sclera-production-integration
 status: draft
 nyquist_compliant: true
-wave_0_complete: false
+wave_0_complete: true
 created: 2026-08-07
 security_standard: OWASP ASVS Level 1
 block_on: HIGH
@@ -39,8 +39,8 @@ requirements: [SCLERA-09, SCLERA-10, SCLERA-11, SCLERA-12, SCLERA-13]
 
 | Task ID | Plan | Wave | Requirements | Threat Ref | Secure behavior | Test type | Automated owner | Status |
 | --- | --- | ---: | --- | --- | --- | --- | --- | --- |
-| 63-01-01 | 01 | 1 | SCLERA-09/10/11 | T-63-01/02/03/04 | actual support, per-eye guard and reclip frozen before source | RED XCTest | provider filter | pending |
-| 63-01-02 | 01 | 1 | SCLERA-12/13 | T-63-05/06/07/08 | bounded transform, lifecycle/private/security contracts frozen | RED + mutation | integration/private filters + checker self-test | pending |
+| 63-01-01 | 01 | 1 | SCLERA-09/10/11 | T-63-01/02/03/04 | actual support, per-eye guard and reclip frozen before source | RED XCTest | provider filter | expected RED; missing Phase 63 source only |
+| 63-01-02 | 01 | 1 | SCLERA-12/13 | T-63-05/06/07/08 | bounded transform, lifecycle/private/security contracts frozen | RED + mutation | integration/private filters + checker self-test | expected RED; checker 8/8 green |
 | 63-02-01 | 02 | 2 | SCLERA-09/10/11/13 | T-63-02/03/04 | independently validated per-eye hard envelopes and local abstention | XCTest | provider filter | pending |
 | 63-02-02 | 02 | 2 | SCLERA-11/12 | T-63-04/05 | post-feather containment and immutable-source target/Q16 once | XCTest + checker | provider/composition filters | pending |
 | 63-03-01 | 03 | 3 | SCLERA-09/13 | T-63-01/02/06 | one provider request, stable units, teeth/sclera shared composition | XCTest | engine integration filters | pending |
@@ -90,8 +90,7 @@ aggregate checks. Phase 64 owns new final visual review.
 - [x] Sampling continuity has no three consecutive tasks without automation.
 - [x] No watch-mode command is used.
 - [x] `nyquist_compliant: true` is set.
-- [ ] Wave 0 contracts are implemented and green/expected RED as appropriate.
+- [x] Wave 0 contracts are implemented and green/expected RED as appropriate.
 - [ ] All eight HIGH threats and final regressions pass.
 
 **Approval:** pending execution
-
