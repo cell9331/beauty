@@ -41,8 +41,8 @@ requirements: [SCLERA-09, SCLERA-10, SCLERA-11, SCLERA-12, SCLERA-13]
 | --- | --- | ---: | --- | --- | --- | --- | --- | --- |
 | 63-01-01 | 01 | 1 | SCLERA-09/10/11 | T-63-01/02/03/04 | actual support, per-eye guard and reclip frozen before source | RED XCTest | provider filter | expected RED; missing Phase 63 source only |
 | 63-01-02 | 01 | 1 | SCLERA-12/13 | T-63-05/06/07/08 | bounded transform, lifecycle/private/security contracts frozen | RED + mutation | integration/private filters + checker self-test | expected RED; checker 8/8 green |
-| 63-02-01 | 02 | 2 | SCLERA-09/10/11/13 | T-63-02/03/04 | independently validated per-eye hard envelopes and local abstention | XCTest | provider filter | pending |
-| 63-02-02 | 02 | 2 | SCLERA-11/12 | T-63-04/05 | post-feather containment and immutable-source target/Q16 once | XCTest + checker | provider/composition filters | pending |
+| 63-02-01 | 02 | 2 | SCLERA-09/10/11/13 | T-63-02/03/04 | independently validated per-eye hard envelopes and local abstention | XCTest | provider filter | green; 11/11 provider suite |
+| 63-02-02 | 02 | 2 | SCLERA-11/12 | T-63-04/05 | post-feather containment and immutable-source target/Q16 once | XCTest + checker | provider/composition filters | green; 32/32 plus 4/4 provider HIGH |
 | 63-03-01 | 03 | 3 | SCLERA-09/13 | T-63-01/02/06 | one provider request, stable units, teeth/sclera shared composition | XCTest | engine integration filters | pending |
 | 63-03-02 | 03 | 3 | SCLERA-09/13 | T-63-02/06/08 | per-eye failure/recovery and deferred-route absence | XCTest + checker | lifecycle filters + integration mode | pending |
 | 63-04-01 | 04 | 4 | SCLERA-10/11/12/13 | T-63-03/04/05/07 | private actual-Vision positive/negative frozen bounds and privacy | private XCTest + checker | Phase 62 runner + eight threats | pending |
