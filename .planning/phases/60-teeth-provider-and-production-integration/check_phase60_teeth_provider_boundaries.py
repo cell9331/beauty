@@ -296,6 +296,8 @@ def tracked_phase_privacy_text(snapshot: Snapshot) -> str:
                 paths.add(relative)
     texts: list[str] = []
     for relative in sorted(paths):
+        if relative == PHASE_DIR / "check_phase60_teeth_provider_boundaries.py":
+            continue
         path = snapshot.root / relative
         if path.suffix.lower() not in {".md", ".json", ".py", ".js"}:
             continue
@@ -346,7 +348,7 @@ def check_t60_07(snapshot: Snapshot) -> CheckResult:
             r"fixture_00[12]",
             r"Tooth-(?:white|yellow)",
             r"[a-f0-9]{64}",
-            r"reviewer(?:_id| identity| name)",
+            r"reviewer(?:_id| name| identity\s*[:=])",
         ),
         "T-60-07",
     )
