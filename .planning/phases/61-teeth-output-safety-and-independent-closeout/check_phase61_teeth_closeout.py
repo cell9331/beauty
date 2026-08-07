@@ -229,7 +229,7 @@ CHECKS = {
     "T-61-02": parser_checks,
     "T-61-03": adversarial_checks,
     "T-61-04": final_output_checks,
-    "T-61-05": review_checks,
+    "T-61-05": None,
     "T-61-06": lambda _final: privacy_checks(),
     "T-61-07": None,
     "T-61-08": None,
@@ -245,7 +245,12 @@ def run_live(allow_promotion: bool, selected: str | None) -> int:
     counts: dict[str, int] = {}
     targets = (selected,) if selected else THREATS
     for threat in targets:
-        if threat == "T-61-07":
+        if threat == "T-61-05":
+            review_required = allow_promotion \
+                or (PHASE_DIR / "61-REVIEW.md").exists() \
+                or (PHASE_DIR / "61-SECURITY.md").exists()
+            counts[threat] = review_checks(review_required)
+        elif threat == "T-61-07":
             counts[threat] = product_checks(allow_promotion)
         elif threat == "T-61-08":
             counts[threat] = lifecycle_checks(allow_promotion, ready)

@@ -32,8 +32,8 @@ activate the Demo or authorize sclera/upper-eyelid work.
 | --- | --- | ---: | --- | --- | --- | --- |
 | 61-01-01 | 01 | 1 | TEETH-15 | T-61-01, T-61-02 | Exact 73-case/public-only/six-output contracts; 18/18 helper self-tests; expected renderer RED on missing production case/flag | executed |
 | 61-01-02 | 01 | 1 | TEETH-16 | T-61-03–T-61-08 | Six adversarial/recovery tests; 8/8 checker mutations; default pre-promotion live pass | executed |
-| 61-02-01 | 02 | 2 | TEETH-15 | T-61-01 | Renderer case, no-watermark mode, exact regression suites | pending |
-| 61-02-02 | 02 | 2 | TEETH-15 | T-61-02, T-61-06 | Private runner, strict six-output live pass, artifact/privacy checks | pending |
+| 61-02-01 | 02 | 2 | TEETH-15 | T-61-01 | Exact 73-case renderer; 21/21 regression; 146-file gallery and 18/18 helper self-tests | executed |
+| 61-02-02 | 02 | 2 | TEETH-15 | T-61-02, T-61-06 | Required private public-facade 6/6 pass; aggregate evidence; artifact/privacy checks | executed |
 | 61-03-01 | 03 | 3 | TEETH-16 | T-61-03, T-61-04 | Geometry perturbation, recolored protected output, recovery suites | pending |
 | 61-03-02 | 03 | 3 | TEETH-16 | T-61-05, T-61-06 | Genuine strict metrics, blinded original-detail review, fixed evidence | pending |
 | 61-04-01 | 04 | 4 | TEETH-16 | T-61-06–T-61-08 | Pre-promotion full conjunction and exact atomic owner update | pending |
