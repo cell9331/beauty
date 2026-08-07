@@ -30,14 +30,14 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
+| Status | `blocked` |
 | Scope | Start milestone v1.15 to complete still-image SDK-core `白牙` first and independently complete `祛红血丝` second, while keeping `去脂` future and preserving all v1.14 canonical-input, request-local, composition, privacy, compatibility, and fail-closed boundaries. |
 | Research | Four inline GSD research dimensions: stack, features, architecture, and pitfalls. Dedicated GSD subagents are unavailable in this session, so the orchestrator owns the artifacts and records the fallback. |
 | Evidence gate | The mechanics-only candidate remains zero-weight product evidence. The separate genuine teeth pair has passed the Phase 54 ReviewCore and exact serializer gate; sclera still requires its own independent evidence pair and decision. |
 | Order | Teeth evidence and production slice → teeth verification/promotion → sclera evidence and per-eye production slice → sclera verification/promotion → combined regression and milestone audit. |
 | Exclusions | `去脂`; realtime/pixel-buffer; SwiftUI/Demo activation; external model/cloud; tracked portrait media; device/commercial/performance-budget/packaging/shipping/launch claims. |
-| Current | Phase 61 is independently complete: strict 6/6 public output, adversarial protected-region identity, original-detail review, 8/8 HIGH disposition, exact `白牙` plus aggregate `嘴唇` promotion, post-promotion SwiftPM 587/0/7, Demo 121/121, privacy, and canonical verification all pass. |
-| Next | Begin Phase 62 discussion and planning for independent sclera evidence/admission only. Production sclera implementation remains blocked until the Phase 62 serializer decision independently opens; `去脂` stays future. |
+| Current | Phase 62 Plans 01/02 are complete: the frozen closed contract, private intake adapter, fixed-output tracked/staged privacy scan, 20/20 contract tests, 16/16 runner mutations and all eight HIGH owners pass. The canonical sclera row remains exact closed and production has no sclera scalar or demand. |
+| Next | Plan 62-03 requires one rights-approved genuine clearly red sclera positive and one rights-approved genuine normal/already-low-redness negative. Subjects may differ; the Agent will create guarded masks/afters and perform original-detail comparison. Production remains blocked until the independent serializer decision opens; `去脂` stays future. |
 
 ## 3A. Archived Active Ledger
 

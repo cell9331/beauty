@@ -4,16 +4,16 @@ milestone: v1.15
 milestone_name: Independent Teeth and Sclera Retouch
 current_phase: 62
 current_phase_name: Sclera Evidence and Admission Contract
-status: executing
-stopped_at: Phase 62 Plan 62-01 complete; Plan 62-02 ready
-last_updated: "2026-08-07T08:12:51.000Z"
+status: blocked
+stopped_at: Phase 62 Plan 62-02 complete; Plan 62-03 licensed-original checkpoint
+last_updated: "2026-08-07T08:23:33.000Z"
 last_activity: 2026-08-07
-last_activity_desc: Phase 61 complete, transitioned to Phase 62
+last_activity_desc: Phase 62 closed-state intake and privacy preparation complete
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 22
-  completed_plans: 18
+  completed_plans: 19
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: `.planning/PROJECT.md` (updated 2026-08-07)
 ## Current Position
 
 Phase: 62 — Sclera Evidence and Admission Contract
-Plan: 1 of 5 complete
-Status: Executing Plan 62-02
-Last activity: 2026-08-07 — Plan 62-01 froze and verified the closed sclera contract
+Plan: 2 of 5 complete
+Status: Blocked at Plan 62-03 licensed-original checkpoint
+Last activity: 2026-08-07 — Plan 62-02 completed private intake and closed privacy proof
 
-Progress: ███░░░░░░░ [██░░░░░░░░] 20%
+Progress: ███░░░░░░░ [████░░░░░░] 40%
 
 ## Performance Metrics
 
@@ -51,6 +51,8 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 61 P02 | 12m | 2 tasks | 6 files |
 | Phase 61 P03 | 15m | 2 tasks | 5 files |
 | Phase 61 P04 | 25m | 2 tasks | 13 files |
+| Phase 62 P01 | — | 2 tasks | 4 files |
+| Phase 62 P02 | — | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -60,6 +62,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 - The bounded teeth slice is complete at exactly 60 public fields, five neutral presets, 73 renderer cases, and three disabled local-retouch Demo rows.
 - Phase 62 may perform independent sclera evidence/admission only; production implementation remains blocked until its serializer decision opens.
 - Phase 62 is planned as five serial waves; Plans 62-01/02 are safe closed-state preparation and Plan 62-03 is the licensed-original checkpoint.
+- Phase 62 Wave 0 is green: private intake, fixed-output privacy, 20 contract tests, 16 runner mutations and all eight HIGH owners pass while sclera remains exact closed.
 - Teeth evidence, support, review, and promotion contribute no sclera or `去脂` credit.
 - v1.15 remains SDK-core and still-image only with no Demo activation, realtime/pixel-buffer, model/cloud, tracked portrait media, or release-readiness claim.
 
@@ -84,6 +87,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-07T07:46:24.083Z
-Stopped at: Phase 62 Plan 62-01 complete; Plan 62-02 ready
+Last session: 2026-08-07T08:23:33.000Z
+Stopped at: Phase 62 Plan 62-02 complete; Plan 62-03 licensed-original checkpoint
 Resume file: None
