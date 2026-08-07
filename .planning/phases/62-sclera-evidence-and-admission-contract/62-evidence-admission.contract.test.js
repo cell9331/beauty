@@ -5,6 +5,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
+const { spawnSync } = require("node:child_process");
 
 const ROOT = path.resolve(__dirname, "..", "..", "..");
 const CORE = require(path.join(
@@ -388,4 +389,54 @@ test("privacy classifier rejects local locator, reviewer prose, and in-memory di
   assert.equal(RUNNER.containsSensitiveContent(prose, "PLANS.md"), true);
   assert.equal(RUNNER.containsSensitiveContent(`opaque ${digest}`, "PLANS.md", new Set([digest])), true);
   assert.equal(RUNNER.containsSensitiveContent("aggregate-only closed evidence policy", "PLANS.md"), false);
+});
+
+test("NUL inventories and candidate selection fail on malformed or ambiguous input", () => {
+  assert.deepEqual(RUNNER.parseNulInventory(Buffer.from("one/manifest.json\0two/file.png\0")), [
+    "one/manifest.json", "two/file.png",
+  ]);
+  for (const inventory of ["one\0two", "one\0one\0", "../one\0", "one\\two\0"]) {
+    assert.throws(() => RUNNER.parseNulInventory(inventory));
+  }
+  assert.equal(RUNNER.selectSingleCandidate(["one"]), "one");
+  assert.throws(() => RUNNER.selectSingleCandidate([]), /missing/);
+  assert.throws(() => RUNNER.selectSingleCandidate(["one", "two"]), /ambiguous/);
+});
+
+test("child classification rejects execution errors, nonzero status, and private output", () => {
+  assert.doesNotThrow(() => RUNNER.classifyChildResult({ status: 0, stdout: "fixed", stderr: "" }));
+  assert.throws(() => RUNNER.classifyChildResult({ status: 1, stdout: "", stderr: "" }));
+  assert.throws(() => RUNNER.classifyChildResult({ status: 0, stdout: "", stderr: "", error: new Error("spawn") }));
+  assert.throws(() => RUNNER.classifyChildResult(
+    { status: 0, stdout: "private-value", stderr: "" },
+    ["private-value"],
+  ));
+});
+
+test("structured privacy seeds and runner self-test reject all private schema mutations", () => {
+  for (const pieces of [
+    ["source", "_path"], ["asset", "_digest"], ["rights", "_detail"],
+    ["reviewer", "_identity"], ["raw", "_support"], ["raw", "_mask"],
+    ["pixel", "_geometry"], ["raw", "_metric"], ["raw", "_error"],
+  ]) {
+    assert.equal(RUNNER.containsSensitiveContent(`${pieces.join("")}: private`, "active.json"), true);
+  }
+  const result = spawnSync(process.execPath, [
+    path.join(__dirname, "62-private-evidence-runner.js"), "--self-test",
+  ], { cwd: ROOT, encoding: "utf8" });
+  assert.equal(result.status, 0);
+  assert.equal(result.stderr, "");
+  assert.deepEqual(JSON.parse(result.stdout), { status: "pass", mutation_rejections: 16 });
+});
+
+test("closed privacy command returns only fixed aggregate output without a bundle", () => {
+  const result = spawnSync(process.execPath, [
+    path.join(__dirname, "62-private-evidence-runner.js"), "--scan-tracked-staged", "--closed",
+  ], { cwd: ROOT, encoding: "utf8" });
+  assert.equal(result.status, 0);
+  assert.equal(result.stderr, "");
+  const output = JSON.parse(result.stdout);
+  assert.deepEqual(Object.keys(output).sort(), ["status", "tracked_file_count"]);
+  assert.equal(output.status, "pass");
+  assert.ok(Number.isInteger(output.tracked_file_count) && output.tracked_file_count > 0);
 });

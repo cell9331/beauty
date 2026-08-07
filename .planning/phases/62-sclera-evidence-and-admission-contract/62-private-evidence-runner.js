@@ -30,6 +30,17 @@ const REVIEW_FREE_TEXT = new RegExp([
   ["visual", "_feedback"].join("") + "\\s*[:=]",
   ["user", "_said"].join("") + "\\s*[:=]",
 ].join("|"), "i");
+const STRUCTURED_SENSITIVE = new RegExp([
+  ["source", "_path"].join(""),
+  ["asset", "_digest"].join(""),
+  ["rights", "_detail"].join(""),
+  ["reviewer", "_identity"].join(""),
+  ["raw", "_support"].join(""),
+  ["raw", "_mask"].join(""),
+  ["pixel", "_geometry"].join(""),
+  ["raw", "_metric"].join(""),
+  ["raw", "_error"].join(""),
+].map((key) => `(?:[\\\"']${key}[\\\"']|^\\s*${key})\\s*:`).join("|"), "im");
 
 function fixed(status, extra = {}) {
   process.stdout.write(`${JSON.stringify({ status, ...extra })}\n`);
@@ -39,6 +50,18 @@ function sha256(filePath) {
   return crypto.createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
 }
 
+function parseNulInventory(value) {
+  const content = Buffer.isBuffer(value) ? value.toString("utf8") : value;
+  if (typeof content !== "string") throw new Error("inventory_type_invalid");
+  if (content === "") return [];
+  if (!content.endsWith("\0")) throw new Error("inventory_nul_terminator_missing");
+  const files = content.slice(0, -1).split("\0");
+  if (files.some((file) => !safeRelativeKey(file)) || new Set(files).size !== files.length) {
+    throw new Error("inventory_entry_invalid");
+  }
+  return files;
+}
+
 function ignoredFiles() {
   const result = spawnSync(
     "git",
@@ -46,7 +69,7 @@ function ignoredFiles() {
     { cwd: ROOT, encoding: "buffer", timeout: 20_000 },
   );
   if (result.status !== 0 || result.error) throw new Error("ignored_file_scan_failed");
-  return result.stdout.toString("utf8").split("\0").filter(Boolean);
+  return parseNulInventory(result.stdout);
 }
 
 function safeRelativeKey(value) {
@@ -109,12 +132,17 @@ function candidateRoots(files = ignoredFiles()) {
   return [...roots].sort();
 }
 
-function discoverBundle() {
-  const candidates = candidateRoots();
-  if (candidates.length !== 1) {
-    throw new Error(candidates.length === 0 ? "ignored_sclera_bundle_missing" : "ignored_sclera_bundle_ambiguous");
+function selectSingleCandidate(candidates) {
+  if (!Array.isArray(candidates) || candidates.length !== 1) {
+    throw new Error(candidates?.length === 0
+      ? "ignored_sclera_bundle_missing"
+      : "ignored_sclera_bundle_ambiguous");
   }
-  return path.resolve(ROOT, candidates[0]);
+  return candidates[0];
+}
+
+function discoverBundle() {
+  return path.resolve(ROOT, selectSingleCandidate(candidateRoots()));
 }
 
 function assertIgnoredBundle(bundle) {
@@ -148,6 +176,7 @@ function isHistorical(file) {
 function containsSensitiveContent(content, file, localDigests = new Set()) {
   return ACTIVE_SENSITIVE.test(content)
     || (!isHistorical(file) && REVIEW_FREE_TEXT.test(content))
+    || (!isHistorical(file) && STRUCTURED_SENSITIVE.test(content))
     || [...localDigests].some((digest) => content.includes(digest));
 }
 
@@ -181,27 +210,36 @@ function trackedStagedPrivacyScan({ closed = false } = {}) {
     timeout: 20_000,
   });
   if (tracked.status !== 0 || tracked.error) throw new Error("tracked_file_scan_failed");
-  const files = tracked.stdout.toString("utf8").split("\0").filter(Boolean);
+  const files = parseNulInventory(tracked.stdout);
   for (const file of files) {
     const content = fs.readFileSync(path.join(ROOT, file), "utf8");
     if (containsSensitiveContent(content, file, localDigests)) throw new Error("tracked_sensitive_content");
   }
-  const stagedNames = spawnSync("git", ["diff", "--cached", "--name-only", "-z", "--", "."], {
+  const stagedNames = spawnSync("git", ["diff", "--cached", "--diff-filter=ACMR", "--name-only", "-z", "--", "."], {
     cwd: ROOT,
     encoding: "buffer",
     timeout: 20_000,
   });
   if (stagedNames.status !== 0 || stagedNames.error) throw new Error("staged_file_scan_failed");
-  for (const file of stagedNames.stdout.toString("utf8").split("\0").filter(Boolean)) {
+  for (const file of parseNulInventory(stagedNames.stdout)) {
     const staged = spawnSync("git", ["show", `:${file}`], {
       cwd: ROOT,
       encoding: "utf8",
       timeout: 20_000,
     });
-    if (staged.status !== 0 || staged.error) continue;
+    if (staged.status !== 0 || staged.error) throw new Error("staged_file_read_failed");
     if (containsSensitiveContent(staged.stdout, file, localDigests)) throw new Error("staged_sensitive_content");
   }
   return { tracked_file_count: files.length };
+}
+
+function classifyChildResult(child, forbiddenValues = []) {
+  if (!child || child.error) throw new Error("local_evidence_child_failed");
+  const combined = `${child.stdout || ""}\n${child.stderr || ""}`;
+  if (forbiddenValues.some((value) => typeof value === "string" && value && combined.includes(value))) {
+    throw new Error("local_path_leak");
+  }
+  if (child.status !== 0) throw new Error("local_evidence_child_failed");
 }
 
 function runChild(command) {
@@ -219,9 +257,35 @@ function runChild(command) {
     encoding: "utf8",
     timeout: 120_000,
   });
-  const combined = `${child.stdout || ""}\n${child.stderr || ""}`;
-  if (combined.includes(scleraBundle) || combined.includes(teethBundle)) throw new Error("local_path_leak");
-  if (child.status !== 0 || child.error) throw new Error("local_evidence_child_failed");
+  classifyChildResult(child, [scleraBundle, teethBundle]);
+}
+
+function runSelfTests() {
+  let rejected = 0;
+  const expectFailure = (callback) => {
+    try { callback(); } catch (_) { rejected += 1; return; }
+    throw new Error("self_test_mutation_not_rejected");
+  };
+  expectFailure(() => parseNulInventory("one\0two"));
+  expectFailure(() => parseNulInventory("one\0one\0"));
+  expectFailure(() => selectSingleCandidate([]));
+  expectFailure(() => selectSingleCandidate(["one", "two"]));
+  expectFailure(() => classifyChildResult({ status: 1, stdout: "", stderr: "" }));
+  expectFailure(() => classifyChildResult({ status: 0, stdout: "private-value", stderr: "" }, ["private-value"]));
+  expectFailure(() => classifyChildResult({ status: 0, stdout: "", stderr: "", error: new Error("spawn") }));
+  for (const pieces of [
+    ["source", "_path"], ["asset", "_digest"], ["rights", "_detail"],
+    ["reviewer", "_identity"], ["raw", "_support"], ["raw", "_mask"],
+    ["pixel", "_geometry"], ["raw", "_metric"], ["raw", "_error"],
+  ]) {
+    const seed = `${pieces.join("")}: private-value`;
+    if (!containsSensitiveContent(seed, "active-evidence.json")) {
+      throw new Error("self_test_sensitive_seed_missed");
+    }
+    rejected += 1;
+  }
+  if (rejected !== 16) throw new Error("self_test_count_invalid");
+  return rejected;
 }
 
 function main() {
@@ -231,6 +295,8 @@ function main() {
       const closed = argv[1] === "--closed";
       if (argv.length !== (closed ? 2 : 1)) throw new Error("runner_usage");
       fixed("pass", trackedStagedPrivacyScan({ closed }));
+    } else if (argv[0] === "--self-test" && argv.length === 1) {
+      fixed("pass", { mutation_rejections: runSelfTests() });
     } else if (argv[0] === "--verify-bundle" && argv.length === 1) {
       assertIgnoredBundle(discoverBundle());
       fixed("pass");
@@ -254,7 +320,10 @@ module.exports = {
   containsSensitiveContent,
   discoverBundle,
   manifestShape,
+  parseNulInventory,
   readBoundedRegular,
   safeRelativeKey,
+  selectSingleCandidate,
+  classifyChildResult,
   trackedStagedPrivacyScan,
 };

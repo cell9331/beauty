@@ -25,6 +25,7 @@ RESOLVER_RELATIVE = Path("BeautySDK/Sources/BeautyEffects/Planning/BeautyEffectR
 PRESETS_RELATIVE = Path("BeautySDK/Sources/BeautyResources/Resources/Presets")
 RENDERER_RELATIVE = Path("BeautySDK/Sources/BeautyExampleRenderer/main.swift")
 DEMO_RELATIVE = Path("BeautyDemo/BeautyDemo")
+PRIVATE_RUNNER_RELATIVE = PHASE_RELATIVE / "62-private-evidence-runner.js"
 BASELINE_COMMIT = "5793d1b"
 
 ROOT_KEYS = frozenset({"schema_version", "feature_decisions", "reviews", "aggregates"})
@@ -198,6 +199,75 @@ def privacy_schema_errors(document: object) -> list[str]:
                 walk(child)
 
     walk(document)
+    return sorted(set(errors))
+
+
+def private_result_errors(
+    returncode: int,
+    stdout: str,
+    stderr: str,
+    *,
+    expected_keys: frozenset[str],
+) -> list[str]:
+    errors: list[str] = []
+    if returncode != 0:
+        errors.append("privacy.runner_exit")
+    if stderr:
+        errors.append("privacy.runner_stderr")
+    if not stdout.endswith("\n") or stdout.count("\n") != 1:
+        errors.append("privacy.runner_output_lines")
+    try:
+        payload = json.loads(stdout)
+    except json.JSONDecodeError:
+        payload = None
+    if not isinstance(payload, dict) or set(payload) != expected_keys:
+        errors.append("privacy.runner_output_schema")
+    elif payload.get("status") != "pass":
+        errors.append("privacy.runner_status")
+    return sorted(set(errors))
+
+
+def private_scan_errors() -> list[str]:
+    errors: list[str] = []
+    runner = ROOT / PRIVATE_RUNNER_RELATIVE
+    commands = (
+        (["--scan-tracked-staged", "--closed"], frozenset({"status", "tracked_file_count"})),
+        (["--self-test"], frozenset({"status", "mutation_rejections"})),
+    )
+    for arguments, expected_keys in commands:
+        try:
+            result = subprocess.run(
+                ["node", str(runner), *arguments],
+                cwd=ROOT,
+                check=False,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+        except (OSError, subprocess.SubprocessError):
+            errors.append("privacy.runner_execution")
+            continue
+        errors.extend(private_result_errors(
+            result.returncode,
+            result.stdout,
+            result.stderr,
+            expected_keys=expected_keys,
+        ))
+        if arguments[0] == "--scan-tracked-staged" and not errors:
+            try:
+                payload = json.loads(result.stdout)
+            except json.JSONDecodeError:
+                payload = None
+            if not isinstance(payload, dict) or not isinstance(payload.get("tracked_file_count"), int) \
+                    or payload["tracked_file_count"] < 1:
+                errors.append("privacy.runner_tracked_count")
+        if arguments[0] == "--self-test" and not errors:
+            try:
+                payload = json.loads(result.stdout)
+            except json.JSONDecodeError:
+                payload = None
+            if not isinstance(payload, dict) or payload.get("mutation_rejections") != 16:
+                errors.append("privacy.runner_mutation_count")
     return sorted(set(errors))
 
 
@@ -456,7 +526,7 @@ def threat_errors(threat_id: str, inputs: dict[str, object] | None = None) -> li
     if threat_id == "T-62-05":
         return admission_errors(str(values["resolver"]), sclera_open=False) + demo_errors(str(values["demo"]))
     if threat_id == "T-62-06":
-        return privacy_schema_errors(values["ledger"])
+        return privacy_schema_errors(values["ledger"]) + private_scan_errors()
     if threat_id == "T-62-07":
         return production_errors() + renderer_errors(str(values["renderer"]))
     if threat_id == "T-62-08":
@@ -489,6 +559,8 @@ def self_test() -> int:
     ledger = inputs["ledger"]
     if not isinstance(ledger, dict):
         raise AssertionError("baseline_ledger_invalid")
+    if private_scan_errors():
+        raise AssertionError("baseline_private_scan_invalid")
 
     mutated = copy.deepcopy(ledger)
     mutated["feature_decisions"][1]["status"] = "open"
@@ -525,6 +597,19 @@ def self_test() -> int:
     mutated = copy.deepcopy(ledger)
     mutated["reviews"][0]["reviewer_note"] = "opaque"
     assert_rejected("T-62-06", lambda: privacy_schema_errors(mutated))
+    for name, result in (
+        ("runner_nonzero", (1, '{"status":"fail"}\n', "")),
+        ("runner_stderr", (0, '{"status":"pass","tracked_file_count":1}\n', "scanner failure")),
+        ("runner_malformed", (0, "not-json\n", "")),
+        ("runner_extra", (0, '{"status":"pass","tracked_file_count":1,"detail":"private"}\n', "")),
+    ):
+        assert_rejected(
+            f"T-62-06.{name}",
+            lambda value=result: private_result_errors(
+                *value,
+                expected_keys=frozenset({"status", "tracked_file_count"}),
+            ),
+        )
 
     assert_rejected(
         "T-62-07",
@@ -597,9 +682,9 @@ def main() -> int:
             mode = "decision"
             count = 1
         elif args.privacy:
-            errors = privacy_schema_errors(read_json(LEDGER_RELATIVE))
+            errors = privacy_schema_errors(read_json(LEDGER_RELATIVE)) + private_scan_errors()
             mode = "privacy"
-            count = 1
+            count = 3
         else:
             count, errors = all_errors()
             mode = "closed" if args.closed else "live"

@@ -3,7 +3,7 @@ phase: 62
 slug: sclera-evidence-and-admission-contract
 status: draft
 nyquist_compliant: false
-wave_0_complete: false
+wave_0_complete: true
 created: 2026-08-07
 security_standard: OWASP ASVS Level 1
 block_on: HIGH
@@ -43,7 +43,7 @@ requirements: [EVID-06, EVID-08, EVID-09, EVID-10, SCLERA-07, SCLERA-08]
 | 62-01-01 | 01 | 1 | EVID-08, EVID-09, EVID-10 | T-62-01/02/06 | contract | Node contract + JSON validation | green |
 | 62-01-02 | 01 | 1 | EVID-10 | T-62-01/03/08 | mutation | checker closed/live/self-test | green |
 | 62-02-01 | 02 | 2 | EVID-06, EVID-09 | T-62-01/02/06 | unit | adapter/runner negative-path tests | green |
-| 62-02-02 | 02 | 2 | EVID-06, EVID-09, EVID-10 | T-62-02/06/08 | privacy | closed ledger + tracked/staged fixed-output scan | pending |
+| 62-02-02 | 02 | 2 | EVID-06, EVID-09, EVID-10 | T-62-02/06/08 | privacy | closed ledger + tracked/staged fixed-output scan | green |
 | 62-03-01 | 03 | 3 | EVID-06, EVID-08 | T-62-01/02/07 | private/manual | guarded derivatives + original-detail review | blocked: licensed pair required |
 | 62-03-02 | 03 | 3 | EVID-06, EVID-09, EVID-10 | T-62-01/02/06 | private | ReviewCore open export + exact ledger bytes | blocked: task 62-03-01 |
 | 62-04-01 | 04 | 4 | SCLERA-07 | T-62-03/04 | XCTest | model/Codable/preset compatibility filters | blocked: exact open decision |
@@ -91,7 +91,7 @@ Wave 0 is complete only after Plan 62-02 passes. It does not open sclera.
 
 - [x] Every planned task has an automated owner or an explicit private/manual gate.
 - [x] Sampling continuity has no three consecutive manual-only tasks.
-- [ ] Wave 0 contract, runner and mutation checker are green.
+- [x] Wave 0 contract, runner and mutation checker are green.
 - [ ] Licensed positive/negative original-detail review is accepted.
 - [ ] All eight HIGH threats pass in isolation.
 - [ ] Full SDK and Demo regression is green.
