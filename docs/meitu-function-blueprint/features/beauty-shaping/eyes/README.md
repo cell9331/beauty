@@ -13,8 +13,8 @@ Eye tools include size, vertical position, eye height, length, distance, fat rem
 - Primary owner: `BeautyEffects`.
 - Dependencies: `BeautyDetection` eye landmarks and `BeautyRender` unified warp output.
 - Current public `BeautyParameters` geometry coverage is exactly the four prior fields plus `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, signed `eyeTilt`, `innerCornerOpen`, `outerCornerOpen`, and `eyeSymmetry`.
-- Still-image `scleraRednessReduction` independently implements `祛红血丝`; the only future need is local retouch/segmentation design for `去脂`.
-- Evidence status: Phases 29-44 implement all fourteen geometry rows. Phase 62 owns independent sclera evidence/admission, Phase 63 owns guarded actual-support provider integration, and Phase 64 owns strict public output, adversarial protected-anatomy proof, original-detail review and exact `祛红血丝` promotion. Branch status remains `partial` solely because `去脂` is future.
+- Still-image `scleraRednessReduction` infrastructure remains present, but `祛红血丝` is `future` and unproven under canonical `64-VERIFICATION.md: gaps_found`; `去脂` remains future.
+- Evidence status: Phases 29-44 implement all fourteen geometry rows. Phase 62 evidence/admission and Phase 63 guarded actual-support integration remain regression-preserved; the prior Phase 64 promotion is evidentially quarantined until corrected proof earns independent eligibility. Status: `partial` because `祛红血丝` is unproven and `去脂` remains future.
 
 ## Boundary
 
@@ -38,12 +38,12 @@ Do not persist eye landmarks or expose eye geometry in public debug output.
 
 ## Phase 64 Sclera Redness Closeout
 
-- `祛红血丝` is `implemented` through independent Phase 62 evidence/admission,
-  Phase 63 guarded per-eye production integration, and Phase 64 standalone
-  public output, color-independent/recolored-protected safety, original-detail
-  review, privacy and full regression.
-- The provider remains request-local and per-eye: unsafe support abstains only
-  that eye; iris, pupil, highlights, lashes, skin and aperture exterior remain
-  exact; output derives from immutable source pixels.
+- `祛红血丝` is `future` and its Phase 64 promotion is unproven under
+  canonical `64-VERIFICATION.md: gaps_found`; D-17 keeps the evidentiary
+  quarantine until later corrected proof produces an independent eligibility
+  artifact.
+- Phase 62 evidence/admission and Phase 63 request-local per-eye production
+  integration remain regression-preserved; they cannot authorize promotion
+  without the complete D-18 conjunction.
 - Renderer inventory is exactly 74, while the Demo row stays disabled and nil-
   mapped. `去脂` remains future, so branch `眼睛` remains `partial`.
