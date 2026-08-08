@@ -32,7 +32,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 - [x] **Phase 61: Teeth Output, Safety, and Independent Closeout** - Prove public-facade visibility, protected-tissue safety, naturalness, regression, and exact `白牙` promotion before any sclera production work. (completed 2026-08-07)
 - [x] **Phase 62: Sclera Evidence and Admission Contract** - Independently qualify genuine redness/normal evidence and add one compatibility-safe sclera-only public intent after teeth closes. (completed 2026-08-07)
 - [x] **Phase 63: Guarded Per-Eye Sclera Production Integration** - Deliver independent left/right eye guards, hard sclera ownership, and bounded original-pixel redness reduction. (completed 2026-08-07)
-- [ ] **Phase 64: Sclera Output, Adversarial Safety, and Independent Closeout** - Prove public-facade per-eye behavior, native and adversarial protected-region safety, naturalness, regression, and exact `祛红血丝` promotion. (gap closure planned; 4/11 plans complete)
+- [ ] **Phase 64: Sclera Output, Adversarial Safety, and Independent Closeout** - Prove public-facade per-eye behavior, native and adversarial protected-region safety, naturalness, regression, and exact `祛红血丝` promotion. (active remediation; 5/11 plans complete)
 - [ ] **Phase 65: Combined Facade, Privacy, and Milestone Closeout** - Verify both independently admitted features together, preserve all v1.14 boundaries, keep `去脂` absent, and prepare the audited milestone close. (4/4 plans executed; verification/audit stale pending Phase 64)
 
 ## Phase Details
@@ -140,7 +140,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
   4. Genuine redness positives improve within predeclared per-eye bounds, while normal negatives and blink/gaze/glasses/highlight/occlusion challenges remain natural under blinded original-detail review.
   5. Production tests, native/adversarial matrices, compatibility, privacy, full regression, review/fix, independent verification, and owning ledgers promote exactly `祛红血丝`; `眼睛` remains partial because `去脂` remains future.
 
-**Plans**: 4/11 completed; canonical verification is `gaps_found` and Waves 5-11 are ready to execute
+**Plans**: 5/11 completed; canonical verification remains `gaps_found` and active remediation continues with Waves 6-11
 **Wave 1**
 
 - [x] 64-01-PLAN.md — RED public-output/adversarial contracts and eight-HIGH checker
@@ -159,7 +159,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 
 **Wave 5** *(gap closure; blocked on Wave 4 completion)*
 
-- [ ] 64-05-PLAN.md — quarantine the stale sclera promotion before corrected proof
+- [x] 64-05-PLAN.md — quarantine the stale sclera promotion before corrected proof
 
 **Wave 6** *(blocked on Wave 5 completion)*
 
@@ -216,7 +216,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 | 61. Teeth Output, Safety, and Independent Closeout | 4/4 | Complete    | 2026-08-07 |
 | 62. Sclera Evidence and Admission Contract | 5/5 | Complete — independent evidence, 61st scalar, direct demand, privacy and regression pass | 2026-08-07 |
 | 63. Guarded Per-Eye Sclera Production Integration | 4/4 | Complete — guarded provider, actual-Vision evidence, privacy and regression pass; no promotion | 2026-08-07 |
-| 64. Sclera Output, Adversarial Safety, and Independent Closeout | 4/11 | Gap closure planned — SCLERA-14/15 and therefore SCLERA-18 remain unproven | — |
+| 64. Sclera Output, Adversarial Safety, and Independent Closeout | 5/11 | Active remediation — stale promotion quarantined; SCLERA-14/15 and therefore SCLERA-18 remain unproven | — |
 | 65. Combined Facade, Privacy, and Milestone Closeout | 4/4 executed | Blocked — prior verification and milestone audit are stale until Phase 64 re-verifies | — |
 
 Earlier phase details are preserved in their linked milestone archives under `.planning/milestones/`.

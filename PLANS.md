@@ -30,13 +30,14 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `planned` |
+| Status | `active` |
 | Scope | Close the Phase 64 bilateral protected-anatomy oracle gap before retaining the exact `祛红血丝` promotion or treating v1.15 as completion-ready. |
 | Finding | The live adversarial suite protects and recolors only six coordinates near the left synthetic eye, runs three coupled perturbations, and asserts a provider aggregate that is constructed as constant zero. Full bilateral iris/pupil/highlight/lash/skin/exterior truth and independent left/right asymmetric boundary cases are absent. |
 | Affected requirements | SCLERA-14 and SCLERA-15 are unproven; therefore SCLERA-18's pre-promotion conjunction is false. OUT-05, SCLERA-16 and SCLERA-17 remain verified. |
 | Fresh passing evidence | Strict helper 14/14; Phase checker self-test and isolated HIGH 8/8; renderer/adversarial/provider/facade 21/5/11/9; private output 6/6; native Vision pair; SwiftPM 630/0/8; Demo build and 121/0/0; UAT 5/5. These passes do not cover the missing oracle. |
 | Warning | `BeautyExampleRenderer` uses device RGB for saved evidence; explicit sRGB remains a Phase 65 SAFE-06 re-verification item. |
-| Next | Run `$gsd-plan-phase 64 --gaps`, execute the resulting gap plan, rerun fresh output/visual/security/full regression, and independently verify before repeating the milestone audit. |
+| Next | Plan 64-05 quarantines the stale promotion; execute Plans 64-06 through 64-11 in order, rerun fresh output/visual/security/full regression, and independently verify before repeating the milestone audit. |
+| Lifecycle | Canonical `64-VERIFICATION.md: gaps_found` supersedes the earlier Phase 64 audit/promotion result and cannot authorize Phase 65 verification or milestone readiness. Failed, skipped, zero-count, stale or missing mandatory gates retain this active remediation state. |
 | Boundary | Do not archive, tag, clean up, ship, or claim milestone completion while the canonical Phase 64 verification is `gaps_found`. |
 
 The prior v1.15 completion-ready statement is superseded by the fresh Phase 64

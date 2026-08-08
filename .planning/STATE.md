@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.15
 milestone_name: Independent Teeth and Sclera Retouch
 current_phase: 64
-current_phase_name: Sclera Output, Adversarial Safety, and Independent Closeout
-status: ready_to_execute
-stopped_at: Phase 64 gap-closure planning passed; execute Waves 5-11
-last_updated: "2026-08-08T04:18:44.000Z"
+current_phase_name: sclera-output-adversarial-safety-and-independent-closeout
+status: executing
+stopped_at: Phase 64 Plan 05 quarantined stale promotion; corrected proof remains next
+last_updated: "2026-08-08T05:14:27.781Z"
 last_activity: 2026-08-08
-last_activity_desc: Phase 64 gap-closure planning passed with 11 plans and 20 tasks
+last_activity_desc: Phase 64 Plan 05 restored canonical gaps_found pre-promotion state
 progress:
   total_phases: 7
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 41
   completed_plans: 34
 ---
@@ -23,14 +23,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-08-07)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Execute Phase 64 adversarial-proof gap closure before re-verifying Phase 65 or milestone readiness
+**Current focus:** Phase 64 active remediation — corrected bilateral sclera proof after exact product quarantine
 
 ## Current Position
 
-Phase: 64 — Sclera Output, Adversarial Safety, and Independent Closeout
-Plan: 4 of 11 complete
-Status: Gap-closure plans passed independent checking; Waves 5-11 are ready to execute
-Last activity: 2026-08-08 — planned quarantine, bilateral oracle repair, eligibility, promotion and final post-promotion verification
+Phase: 64 (sclera-output-adversarial-safety-and-independent-closeout) — EXECUTING
+Plan: 5 of 11
+Status: Active remediation; canonical verification remains `gaps_found`
+Last activity: 2026-08-08 — Plan 64-05 quarantined stale `祛红血丝` promotion without reopening SCLERA-16, SCLERA-17 or OUT-05
 
 Progress: ███████░░░ 5 of 7 milestone phases currently verified complete
 
