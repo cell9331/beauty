@@ -2,17 +2,17 @@
 gsd_state_version: 1.0
 milestone: v1.15
 milestone_name: Independent Teeth and Sclera Retouch
-current_phase: 65
-current_phase_name: Combined Facade, Privacy, and Milestone Closeout
-status: completion_ready
-stopped_at: v1.15 audit passed; explicit milestone completion command next
-last_updated: "2026-08-07T23:08:24.000Z"
+current_phase: 64
+current_phase_name: Sclera Output, Adversarial Safety, and Independent Closeout
+status: ready_to_execute
+stopped_at: Phase 64 gap-closure planning passed; execute Waves 5-11
+last_updated: "2026-08-08T04:18:44.000Z"
 last_activity: 2026-08-08
-last_activity_desc: v1.15 separate milestone audit passed at 40/40
+last_activity_desc: Phase 64 gap-closure planning passed with 11 plans and 20 tasks
 progress:
   total_phases: 7
-  completed_phases: 7
-  total_plans: 34
+  completed_phases: 5
+  total_plans: 41
   completed_plans: 34
 ---
 
@@ -23,16 +23,16 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-08-07)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** v1.15 completion-ready after separate audit; archive/tag requires an explicit completion command
+**Current focus:** Execute Phase 64 adversarial-proof gap closure before re-verifying Phase 65 or milestone readiness
 
 ## Current Position
 
-Phase: 65 — Combined Facade, Privacy, and Milestone Closeout
-Plan: 4 of 4 complete
-Status: Milestone audit passed; completion-ready, not archived or tagged
-Last activity: 2026-08-08 — v1.15 audit passed all 40 requirements, 12 integration seams and seven end-to-end flows
+Phase: 64 — Sclera Output, Adversarial Safety, and Independent Closeout
+Plan: 4 of 11 complete
+Status: Gap-closure plans passed independent checking; Waves 5-11 are ready to execute
+Last activity: 2026-08-08 — planned quarantine, bilateral oracle repair, eligibility, promotion and final post-promotion verification
 
-Progress: ██████████ 100% of milestone phases complete
+Progress: ███████░░░ 5 of 7 milestone phases currently verified complete
 
 ## Performance Metrics
 
@@ -64,6 +64,13 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 64 P02 | — | 2 tasks | 6 files |
 | Phase 64 P03 | — | 2 tasks | 5 files |
 | Phase 64 P04 | — | 2 tasks | 15 files |
+| Phase 64 P05 | — | 2 tasks | 9 files |
+| Phase 64 P06 | — | 2 tasks | 5 files |
+| Phase 64 P07 | — | 2 tasks | 6 files |
+| Phase 64 P08 | — | 2 tasks | 9 files |
+| Phase 64 P09 | — | 2 tasks | 5 files |
+| Phase 64 P10 | — | 1 task | 1 file |
+| Phase 64 P11 | — | 1 task | 15 files |
 | Phase 65 P01 | — | 2 tasks | 5 files |
 | Phase 65 P02 | — | 2 tasks | 6 files |
 | Phase 65 P03 | — | 2 tasks | 9 files |
@@ -86,9 +93,9 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 - Phase 63 Wave 2 adds a stateless zero-to-two-unit provider with guard-before-score, post-feather reclip and immutable-source red-excess correction.
 - Phase 63 Wave 3 connects exactly one sclera provider to the current still-image request, shares one composition owner with teeth and proves per-eye recovery without deferred-route activation.
 - Phase 63 Wave 4 closes the final native-Vision pair, eight HIGH owners, 612-test SDK and 121-test Demo conjunction; SCLERA-09 through SCLERA-13 are verified without renderer or product promotion.
-- Phase 64 closes the standalone sclera slice at 74 renderer cases through a required 6/6 output matrix, 5/5 adversarial protected-anatomy tests, fresh four-item original-detail review, eight green HIGH owners, full 617-test SDK and 121-test Demo regression.
-- Exactly `祛红血丝` is promoted. Aggregate `眼睛` remains partial solely because `去脂` is future; all local-retouch Demo rows remain disabled.
-- Phase 65 closes all four waves: combined byte/failure/recovery, privacy/compatibility/private/opt-in review, full regression, independent phase verification and the separate 40/40 milestone audit pass.
+- The prior Phase 64 closeout is superseded by canonical `gaps_found`: its oracle sampled six left-side pixels, omitted complete bilateral truth and used a constant protected-proposal aggregate.
+- Phase 64 Waves 5-11 quarantine the stale `祛红血丝` promotion, repair SCLERA-14/15, rerun the full conjunction, and require independent eligibility plus post-promotion verification before SCLERA-18 can close.
+- Phase 65 implementation plans are executed, but their verification and the earlier 40/40 milestone audit are stale until Phase 64 completes and the downstream claims are freshly re-verified.
 - Combined behavior adds no renderer case or product control: exact compatibility remains 61 fields, five presets and 74 renderer cases while the public-facade XCTest owns the joint request.
 - Teeth evidence, support, review, and promotion contribute no sclera or `去脂` credit.
 - v1.15 remains SDK-core and still-image only with no Demo activation, realtime/pixel-buffer, model/cloud, tracked portrait media, or release-readiness claim.
@@ -99,8 +106,8 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- No v1.15 blocker remains. Existing TD-013 generic-result sendability remains outside this milestone.
-- Archive, tag, cleanup, shipping and release claims remain unauthorized until a separate explicit lifecycle command.
+- SCLERA-14 and SCLERA-15 are unproven; SCLERA-18, Phase 65 verification, and v1.15 milestone readiness remain blocked on Phase 64 Waves 5-11.
+- Archive, tag, cleanup, shipping and release claims remain unauthorized. Existing TD-013 generic-result sendability remains outside this milestone.
 
 ## Deferred Items
 
