@@ -33,6 +33,8 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
         XCTAssertEqual(result.summary.leftOutcome, .accepted)
         XCTAssertEqual(result.summary.rightOutcome, .accepted)
         XCTAssertGreaterThan(result.summary.proposalPixelCount, 0)
+        XCTAssertEqual(result.proposalPixelIndices.count, result.summary.proposalPixelCount)
+        XCTAssertTrue(Set(result.proposalPixelIndices).isDisjoint(with: fixture.protectedPixels))
         XCTAssertFalse(changed.isEmpty)
         XCTAssertTrue(changed.isSubset(of: fixture.safeSclera))
         XCTAssertTrue(changed.isDisjoint(with: fixture.protectedPixels))
@@ -165,7 +167,7 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
         for pixel in fixture.protectedPixels {
             XCTAssertEqual(rgb(after, at: pixel), rgb(fixture.bytes, at: pixel))
         }
-        XCTAssertEqual(result.summary.protectedProposalPixelCount, 0)
+        XCTAssertTrue(Set(result.proposalPixelIndices).isDisjoint(with: fixture.protectedPixels))
         XCTAssertGreaterThan(composed.summary.changedPixelCount, 0)
     }
 

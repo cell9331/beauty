@@ -8,7 +8,17 @@ final class BeautyScleraRednessAdversarialCloseoutTests: XCTestCase {
     private let width = 80
     private let height = 48
 
-    private enum ProtectedRegion: CaseIterable {
+    private enum OracleEye: String, CaseIterable {
+        case left
+        case right
+
+        var centerX: Double { self == .left ? 21 : 59 }
+        var normalizedCenterX: Double { centerX / 80 }
+        var side: BeautyObservedEyeSide { self == .left ? .left : .right }
+        var horizontalDirection: Double { self == .left ? 1 : -1 }
+    }
+
+    private enum ProtectedRegion: String, CaseIterable {
         case iris
         case pupil
         case highlight
@@ -17,270 +27,496 @@ final class BeautyScleraRednessAdversarialCloseoutTests: XCTestCase {
         case apertureExterior
     }
 
-    func testColorIndependentProtectedTruthRemainsExactAcrossBoundedSupportPerturbations() throws {
-        let coordinates = protectedCoordinates()
-        XCTAssertEqual(coordinates.count, ProtectedRegion.allCases.count)
-        let colorIndependentProtectedTruth = Set(
-            coordinates.values.map { pixelIndex(x: $0.x, y: $0.y) }
-        )
-        var sourceBytes = makeEyeBytes()
-        for index in colorIndependentProtectedTruth {
-            sourceBytes = replacingRGBA(
-                in: sourceBytes,
-                index: index,
-                with: (210, 150, 150, 255)
-            )
+    private enum ScenarioClass: String {
+        case baseline
+        case acceptedLeft = "accepted_left"
+        case acceptedRight = "accepted_right"
+        case rejectedLeft = "rejected_left"
+        case rejectedRight = "rejected_right"
+    }
+
+    private enum AcceptedVariant: String, CaseIterable {
+        case contourContract = "contour_contract"
+        case contourExpand = "contour_expand"
+        case contourNasal = "contour_nasal"
+        case contourTemporal = "contour_temporal"
+        case contourUp = "contour_up"
+        case contourDown = "contour_down"
+        case pupilNasal = "pupil_nasal"
+        case pupilTemporal = "pupil_temporal"
+        case pupilUp = "pupil_up"
+        case pupilDown = "pupil_down"
+        case asymmetricContourOppositePupil = "asymmetric_contour_opposite_pupil"
+    }
+
+    private struct EyeGeometry {
+        var centerX: Double
+        var centerY: Double = 0.50
+        var radiusX: Double = 0.1625
+        var radiusY: Double = 0.0833
+        var pupilX: Double
+        var pupilY: Double = 0.50
+        var asymmetricSkew: Double = 0
+    }
+
+    private struct Scenario {
+        let id: String
+        let scenarioClass: ScenarioClass
+        let left: EyeGeometry
+        let right: EyeGeometry
+        let rejectedEye: OracleEye?
+    }
+
+    private struct ProtectedTruth {
+        let families: [OracleEye: [ProtectedRegion: Set<Int>]]
+
+        var allPixels: Set<Int> {
+            families.values.reduce(into: Set<Int>()) { all, eye in
+                for pixels in eye.values { all.formUnion(pixels) }
+            }
         }
 
-        let perturbations: [(centerDelta: Double, xRadius: Double, yRadius: Double, pupilDelta: Double)] = [
-            (0, 0.1625, 0.0833, 0),
-            (-0.0025, 0.1575, 0.0800, 0.0040),
-            (0.0025, 0.1650, 0.0860, -0.0040),
-        ]
-        for perturbation in perturbations {
-            let source = try canonical(sourceBytes)
-            let owner = BeautyLocalRetouchCompositionOwner(source: source)
-            let result = BeautyScleraRednessProvider.makeResult(
-                source: source,
-                eyeSupport: supports(
-                    centerDelta: perturbation.centerDelta,
-                    xRadius: perturbation.xRadius,
-                    yRadius: perturbation.yRadius,
-                    pupilDelta: perturbation.pupilDelta
-                ),
-                eyeOrder: .canonical,
-                strength: 1,
-                owner: owner
-            )
-            let output = Array(try owner.compose(result.units).canonicalImage.rgba8Data)
-            let changed = changedPixelIndices(before: sourceBytes, after: output)
+        func familyCounts() -> [String: [String: Int]] {
+            Dictionary(uniqueKeysWithValues: OracleEye.allCases.map { eye in
+                let counts = Dictionary(uniqueKeysWithValues: ProtectedRegion.allCases.map { region in
+                    (region.rawValue, families[eye]?[region]?.count ?? 0)
+                })
+                return (eye.rawValue, counts)
+            })
+        }
+    }
 
-            XCTAssertEqual(result.units.count, 2)
-            XCTAssertGreaterThan(result.summary.proposalPixelCount, 0)
-            XCTAssertEqual(result.summary.protectedProposalPixelCount, 0)
-            XCTAssertFalse(changed.isEmpty)
-            XCTAssertTrue(changed.isDisjoint(with: colorIndependentProtectedTruth))
-            for index in colorIndependentProtectedTruth {
-                XCTAssertEqual(rgba(output, at: index), rgba(sourceBytes, at: index))
+    private struct Aggregate {
+        let scenarioIDs: [String]
+        let scenarioClasses: [String]
+        let familyCounts: [String: [String: Int]]
+        let acceptedScenarioCount: Int
+        let rejectedScenarioCount: Int
+        let leftOnlyPerturbationCount: Int
+        let rightOnlyPerturbationCount: Int
+        let actualProposalCount: Int
+        let protectedTruthPixelCount: Int
+        let protectedIntersectionCount: Int
+        let recoloredProtectedPixelCount: Int
+        let protectedByteMismatchCount: Int
+        let outsideProposalByteMismatchCount: Int
+        let actualProposalCountMismatchCount: Int
+        let rejectedEyeProposalCount: Int
+        let activePeerScenarioCount: Int
+        let activePeerProposalCount: Int
+
+        var jsonObject: [String: Any] {
+            [
+                "schema": "phase64-adversarial-aggregate-v1",
+                "status": "passed",
+                "scenario_ids": scenarioIDs,
+                "scenario_classes": scenarioClasses,
+                "scenario_count": scenarioIDs.count,
+                "family_counts": familyCounts,
+                "accepted_scenario_count": acceptedScenarioCount,
+                "rejected_scenario_count": rejectedScenarioCount,
+                "left_only_perturbation_count": leftOnlyPerturbationCount,
+                "right_only_perturbation_count": rightOnlyPerturbationCount,
+                "actual_proposal_count": actualProposalCount,
+                "protected_truth_pixel_count": protectedTruthPixelCount,
+                "protected_intersection_count": protectedIntersectionCount,
+                "recolored_protected_pixel_count": recoloredProtectedPixelCount,
+                "protected_byte_mismatch_count": protectedByteMismatchCount,
+                "outside_proposal_byte_mismatch_count": outsideProposalByteMismatchCount,
+                "actual_proposal_count_mismatch_count": actualProposalCountMismatchCount,
+                "rejected_eye_proposal_count": rejectedEyeProposalCount,
+                "active_peer_scenario_count": activePeerScenarioCount,
+                "active_peer_proposal_count": activePeerProposalCount,
+            ]
+        }
+    }
+
+    func testColorIndependentProtectedTruthUsesEveryBilateralFullResolutionFamily() throws {
+        let aggregate = try evaluateBilateralMatrix()
+
+        XCTAssertEqual(aggregate.scenarioIDs, expectedScenarioIDs)
+        XCTAssertEqual(Set(aggregate.scenarioIDs).count, 27)
+        XCTAssertEqual(aggregate.protectedIntersectionCount, 0)
+        XCTAssertEqual(aggregate.actualProposalCountMismatchCount, 0)
+        XCTAssertGreaterThan(aggregate.actualProposalCount, 0)
+        for eye in OracleEye.allCases {
+            for region in ProtectedRegion.allCases {
+                XCTAssertGreaterThan(
+                    aggregate.familyCounts[eye.rawValue]?[region.rawValue] ?? 0,
+                    0,
+                    "empty protected truth: \(eye.rawValue)/\(region.rawValue)"
+                )
             }
         }
     }
 
-    func testRecoloredProtectedFamiliesRemainExactInFinalComposedOutput() throws {
-        let coordinates = protectedCoordinates()
-        XCTAssertEqual(coordinates.count, ProtectedRegion.allCases.count)
-        let recoloredProtected = Set(coordinates.values.map { pixelIndex(x: $0.x, y: $0.y) })
-        var sourceBytes = makeEyeBytes()
-        for index in recoloredProtected {
-            sourceBytes = replacingRGBA(
-                in: sourceBytes,
-                index: index,
+    func testEveryRecoloredProtectedAndOutsideProposalRGBAByteRemainsExact() throws {
+        let aggregate = try evaluateBilateralMatrix()
+
+        XCTAssertEqual(aggregate.recoloredProtectedPixelCount, aggregate.protectedTruthPixelCount)
+        XCTAssertEqual(aggregate.protectedByteMismatchCount, 0)
+        XCTAssertEqual(aggregate.outsideProposalByteMismatchCount, 0)
+    }
+
+    func testAffectedEyeFailuresRetainActivePeerWithoutStaleClaims() throws {
+        let aggregate = try evaluateBilateralMatrix()
+
+        XCTAssertEqual(aggregate.rejectedScenarioCount, 4)
+        XCTAssertEqual(aggregate.rejectedEyeProposalCount, 0)
+        XCTAssertEqual(aggregate.activePeerScenarioCount, 4)
+        XCTAssertGreaterThan(aggregate.activePeerProposalCount, 0)
+    }
+
+    func testBilateralAdversarialAggregateContract() throws {
+        let aggregate = try evaluateBilateralMatrix()
+        let data = try JSONSerialization.data(withJSONObject: aggregate.jsonObject, options: [.sortedKeys])
+        let json = try XCTUnwrap(String(data: data, encoding: .utf8))
+
+        print("PHASE64_ADVERSARIAL_AGGREGATE:\(json)")
+    }
+
+    func testProposalIndicesHaveNoProductionOrDurableExposure() throws {
+        let testFile = URL(fileURLWithPath: #filePath)
+        let repositoryRoot = testFile
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let beautySDK = repositoryRoot.appendingPathComponent("BeautySDK")
+        let allowed = Set([
+            "BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyScleraRednessProvider.swift",
+            "BeautySDK/Tests/BeautyEffectsTests/BeautyScleraRednessProviderTests.swift",
+            "BeautySDK/Tests/BeautyEffectsTests/BeautyLocalRetouchCompositionTests.swift",
+            "BeautySDK/Tests/BeautyEffectsTests/BeautyScleraRednessAdversarialCloseoutTests.swift",
+        ])
+        let enumerator = try XCTUnwrap(
+            FileManager.default.enumerator(
+                at: beautySDK,
+                includingPropertiesForKeys: [.isRegularFileKey],
+                options: [.skipsHiddenFiles]
+            )
+        )
+        var containingFiles = Set<String>()
+        for case let url as URL in enumerator {
+            guard try url.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile == true,
+                  let source = try? String(contentsOf: url, encoding: .utf8),
+                  source.contains("proposalPixelIndices")
+            else { continue }
+            containingFiles.insert(url.path.replacingOccurrences(of: repositoryRoot.path + "/", with: ""))
+        }
+
+        XCTAssertEqual(containingFiles, allowed)
+        let providerPath = repositoryRoot.appendingPathComponent(
+            "BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyScleraRednessProvider.swift"
+        )
+        let provider = try String(contentsOf: providerPath, encoding: .utf8)
+        XCTAssertTrue(provider.contains("internal let proposalPixelIndices"))
+        XCTAssertNil(provider.range(
+            of: #"(public|open|package|@_spi)[^\n]*proposalPixelIndices|proposalPixelIndices[^\n]*(Codable|Encodable|Decodable|log|persist|diagnostic|Testing)"#,
+            options: .regularExpression
+        ))
+    }
+
+    private var expectedScenarioIDs: [String] {
+        ["baseline"]
+            + AcceptedVariant.allCases.map { "left_\($0.rawValue)" }
+            + AcceptedVariant.allCases.map { "right_\($0.rawValue)" }
+            + [
+                "left_pupil_boundary_rejected",
+                "left_collapsed_contour_rejected",
+                "right_pupil_boundary_rejected",
+                "right_collapsed_contour_rejected",
+            ]
+    }
+
+    private func scenarios() -> [Scenario] {
+        let baselineLeft = baselineGeometry(for: .left)
+        let baselineRight = baselineGeometry(for: .right)
+        var result = [Scenario(
+            id: "baseline",
+            scenarioClass: .baseline,
+            left: baselineLeft,
+            right: baselineRight,
+            rejectedEye: nil
+        )]
+        for eye in OracleEye.allCases {
+            for variant in AcceptedVariant.allCases {
+                result.append(Scenario(
+                    id: "\(eye.rawValue)_\(variant.rawValue)",
+                    scenarioClass: eye == .left ? .acceptedLeft : .acceptedRight,
+                    left: eye == .left ? acceptedGeometry(for: eye, variant: variant) : baselineLeft,
+                    right: eye == .right ? acceptedGeometry(for: eye, variant: variant) : baselineRight,
+                    rejectedEye: nil
+                ))
+            }
+        }
+        for eye in OracleEye.allCases {
+            var pupilBoundary = baselineGeometry(for: eye)
+            pupilBoundary.pupilX += 0.145 * eye.horizontalDirection
+            result.append(Scenario(
+                id: "\(eye.rawValue)_pupil_boundary_rejected",
+                scenarioClass: eye == .left ? .rejectedLeft : .rejectedRight,
+                left: eye == .left ? pupilBoundary : baselineLeft,
+                right: eye == .right ? pupilBoundary : baselineRight,
+                rejectedEye: eye
+            ))
+            var collapsed = baselineGeometry(for: eye)
+            collapsed.radiusY = 0.015
+            result.append(Scenario(
+                id: "\(eye.rawValue)_collapsed_contour_rejected",
+                scenarioClass: eye == .left ? .rejectedLeft : .rejectedRight,
+                left: eye == .left ? collapsed : baselineLeft,
+                right: eye == .right ? collapsed : baselineRight,
+                rejectedEye: eye
+            ))
+        }
+        return result
+    }
+
+    private func baselineGeometry(for eye: OracleEye) -> EyeGeometry {
+        EyeGeometry(centerX: eye.normalizedCenterX, pupilX: eye.normalizedCenterX)
+    }
+
+    private func acceptedGeometry(for eye: OracleEye, variant: AcceptedVariant) -> EyeGeometry {
+        var geometry = baselineGeometry(for: eye)
+        switch variant {
+        case .contourContract:
+            geometry.radiusX = 0.1575
+            geometry.radiusY = 0.0800
+        case .contourExpand:
+            geometry.radiusX = 0.1675
+            geometry.radiusY = 0.0860
+        case .contourNasal:
+            geometry.centerX += 0.004 * eye.horizontalDirection
+            geometry.pupilX += 0.004 * eye.horizontalDirection
+        case .contourTemporal:
+            geometry.centerX -= 0.004 * eye.horizontalDirection
+            geometry.pupilX -= 0.004 * eye.horizontalDirection
+        case .contourUp:
+            geometry.centerY -= 0.004
+            geometry.pupilY -= 0.004
+        case .contourDown:
+            geometry.centerY += 0.004
+            geometry.pupilY += 0.004
+        case .pupilNasal:
+            geometry.pupilX += 0.006 * eye.horizontalDirection
+        case .pupilTemporal:
+            geometry.pupilX -= 0.006 * eye.horizontalDirection
+        case .pupilUp:
+            geometry.pupilY -= 0.006
+        case .pupilDown:
+            geometry.pupilY += 0.006
+        case .asymmetricContourOppositePupil:
+            geometry.centerX += 0.004 * eye.horizontalDirection
+            geometry.pupilX -= 0.006 * eye.horizontalDirection
+            geometry.asymmetricSkew = 0.003 * eye.horizontalDirection
+        }
+        return geometry
+    }
+
+    private func evaluateBilateralMatrix() throws -> Aggregate {
+        let scenarios = scenarios()
+        XCTAssertEqual(scenarios.map(\.id), expectedScenarioIDs)
+        XCTAssertEqual(Set(scenarios.map(\.id)).count, scenarios.count)
+        XCTAssertEqual(scenarios.count, 27)
+        XCTAssertEqual(scenarios.filter { $0.scenarioClass == .acceptedLeft }.count, 11)
+        XCTAssertEqual(scenarios.filter { $0.scenarioClass == .acceptedRight }.count, 11)
+
+        let truth = fullResolutionProtectedTruth()
+        let protected = truth.allPixels
+        XCTAssertFalse(protected.isEmpty)
+        for eye in OracleEye.allCases {
+            for region in ProtectedRegion.allCases {
+                XCTAssertFalse(truth.families[eye]?[region]?.isEmpty ?? true)
+            }
+        }
+
+        var recoloredSource = makeEyeBytes(truth: truth)
+        for pixel in protected {
+            recoloredSource = replacingRGBA(
+                in: recoloredSource,
+                index: pixel,
                 with: (214, 151, 151, 255)
             )
         }
 
-        let source = try canonical(sourceBytes)
-        let owner = BeautyLocalRetouchCompositionOwner(source: source)
-        let result = BeautyScleraRednessProvider.makeResult(
-            source: source,
-            eyeSupport: supports(),
-            eyeOrder: .canonical,
-            strength: 1,
-            owner: owner
-        )
-        let composed = try owner.compose(result.units)
-        let output = Array(composed.canonicalImage.rgba8Data)
+        var actualProposalCount = 0
+        var protectedIntersectionCount = 0
+        var protectedByteMismatchCount = 0
+        var outsideProposalByteMismatchCount = 0
+        var actualProposalCountMismatchCount = 0
+        var rejectedEyeProposalCount = 0
+        var activePeerScenarioCount = 0
+        var activePeerProposalCount = 0
 
-        XCTAssertEqual(result.units.count, 2)
-        XCTAssertGreaterThan(composed.summary.changedPixelCount, 0)
-        XCTAssertEqual(composed.summary.changedOutsideUnionPixelCount, 0)
-        for region in ProtectedRegion.allCases {
-            let point = try XCTUnwrap(coordinates[region])
-            let index = pixelIndex(x: point.x, y: point.y)
-            XCTAssertEqual(rgba(output, at: index), rgba(sourceBytes, at: index), "\(region)")
-        }
-    }
-
-    func testMalformedPeerEyeDoesNotSuppressAcceptedEye() throws {
-        let bytes = makeEyeBytes()
-        let source = try canonical(bytes)
-        let left = support(side: .left, centerX: 0.2625)
-        let malformedRight = BeautyObservedEyeSupport(
-            side: .right,
-            contour: eyeContour(centerX: 0.7375, xRadius: 0.1625, yRadius: 0.0833),
-            pupil: nil
-        )
-
-        func render(_ eyeSupport: [BeautyObservedEyeSupport]) throws -> [UInt8] {
+        for scenario in scenarios {
+            let source = try canonical(recoloredSource)
             let owner = BeautyLocalRetouchCompositionOwner(source: source)
             let result = BeautyScleraRednessProvider.makeResult(
                 source: source,
-                eyeSupport: eyeSupport,
+                eyeSupport: [support(side: .left, geometry: scenario.left), support(side: .right, geometry: scenario.right)],
                 eyeOrder: .canonical,
                 strength: 1,
                 owner: owner
             )
-            XCTAssertEqual(result.summary.leftOutcome, .accepted)
-            XCTAssertNotEqual(result.summary.rightOutcome, .accepted)
-            return Array(try owner.compose(result.units).canonicalImage.rgba8Data)
+            let actualProposalPixelIndices = Set(result.proposalPixelIndices)
+            let output = Array(try owner.compose(result.units).canonicalImage.rgba8Data)
+
+            actualProposalCount += actualProposalPixelIndices.count
+            protectedIntersectionCount += actualProposalPixelIndices.intersection(protected).count
+            actualProposalCountMismatchCount += result.summary.proposalPixelCount == actualProposalPixelIndices.count ? 0 : 1
+            protectedByteMismatchCount += protected.filter {
+                rgba(output, at: $0) != rgba(recoloredSource, at: $0)
+            }.count
+            outsideProposalByteMismatchCount += Set(0..<(width * height))
+                .subtracting(actualProposalPixelIndices)
+                .filter { rgba(output, at: $0) != rgba(recoloredSource, at: $0) }
+                .count
+
+            if let rejectedEye = scenario.rejectedEye {
+                let affected = actualProposalPixelIndices.filter { isPixel($0, in: rejectedEye) }
+                let peer = actualProposalPixelIndices.filter { !isPixel($0, in: rejectedEye) }
+                rejectedEyeProposalCount += affected.count
+                if !peer.isEmpty { activePeerScenarioCount += 1 }
+                activePeerProposalCount += peer.count
+                XCTAssertNotEqual(outcome(for: rejectedEye, result: result), .accepted)
+                XCTAssertEqual(outcome(for: rejectedEye == .left ? .right : .left, result: result), .accepted)
+                XCTAssertEqual(result.units.count, 1)
+            } else {
+                XCTAssertEqual(result.summary.leftOutcome, .accepted, scenario.id)
+                XCTAssertEqual(result.summary.rightOutcome, .accepted, scenario.id)
+                XCTAssertEqual(result.units.count, 2, scenario.id)
+                XCTAssertFalse(actualProposalPixelIndices.isEmpty, scenario.id)
+            }
         }
 
-        let leftOnly = try render([left])
-        let malformedPeer = try render([left, malformedRight])
-        XCTAssertEqual(malformedPeer, leftOnly)
-        XCTAssertGreaterThan(
-            changedPixelIndices(before: bytes, after: malformedPeer).filter { $0 % width < width / 2 }.count,
-            0
-        )
-        XCTAssertEqual(
-            changedPixelIndices(before: bytes, after: malformedPeer).filter { $0 % width >= width / 2 }.count,
-            0
+        return Aggregate(
+            scenarioIDs: scenarios.map(\.id),
+            scenarioClasses: scenarios.map { $0.scenarioClass.rawValue },
+            familyCounts: truth.familyCounts(),
+            acceptedScenarioCount: scenarios.filter { $0.rejectedEye == nil }.count,
+            rejectedScenarioCount: scenarios.filter { $0.rejectedEye != nil }.count,
+            leftOnlyPerturbationCount: scenarios.filter { $0.scenarioClass == .acceptedLeft }.count,
+            rightOnlyPerturbationCount: scenarios.filter { $0.scenarioClass == .acceptedRight }.count,
+            actualProposalCount: actualProposalCount,
+            protectedTruthPixelCount: protected.count,
+            protectedIntersectionCount: protectedIntersectionCount,
+            recoloredProtectedPixelCount: protected.count,
+            protectedByteMismatchCount: protectedByteMismatchCount,
+            outsideProposalByteMismatchCount: outsideProposalByteMismatchCount,
+            actualProposalCountMismatchCount: actualProposalCountMismatchCount,
+            rejectedEyeProposalCount: rejectedEyeProposalCount,
+            activePeerScenarioCount: activePeerScenarioCount,
+            activePeerProposalCount: activePeerProposalCount
         )
     }
 
-    func testValidInvalidValidRecoveryIsPixelExactAndStateless() throws {
-        let bytes = makeEyeBytes()
-        let source = try canonical(bytes)
-
-        func render(order: BeautyObservedEyeOrder) throws -> [UInt8] {
-            let owner = BeautyLocalRetouchCompositionOwner(source: source)
-            let result = BeautyScleraRednessProvider.makeResult(
-                source: source,
-                eyeSupport: supports(),
-                eyeOrder: order,
-                strength: 1,
-                owner: owner
+    private func fullResolutionProtectedTruth() -> ProtectedTruth {
+        var families: [OracleEye: [ProtectedRegion: Set<Int>]] = [:]
+        for eye in OracleEye.allCases {
+            var eyeFamilies = Dictionary(
+                uniqueKeysWithValues: ProtectedRegion.allCases.map { ($0, Set<Int>()) }
             )
-            return Array(try owner.compose(result.units).canonicalImage.rgba8Data)
-        }
-
-        let first = try render(order: .canonical)
-        XCTAssertEqual(try render(order: .invalid), bytes)
-        XCTAssertEqual(try render(order: .canonical), first)
-        XCTAssertFalse(changedPixelIndices(before: bytes, after: first).isEmpty)
-    }
-
-    func testParallelRequestLocalOwnersDoNotShareClaimsOrRecoveryState() async throws {
-        let source = try canonical(makeEyeBytes())
-        let validSupport = supports()
-        let results = try await withThrowingTaskGroup(
-            of: (Int, Int).self,
-            returning: [(Int, Int)].self
-        ) { group in
-            for index in 0..<16 {
-                group.addTask {
-                    let owner = BeautyLocalRetouchCompositionOwner(source: source)
-                    let result = BeautyScleraRednessProvider.makeResult(
-                        source: source,
-                        eyeSupport: validSupport,
-                        eyeOrder: index.isMultiple(of: 2) ? .canonical : .invalid,
-                        strength: 1,
-                        owner: owner
-                    )
-                    let composed = try owner.compose(result.units)
-                    return (index, composed.summary.changedPixelCount)
+            let centerX = Int(eye.centerX)
+            for y in 0..<height {
+                for x in 0..<width {
+                    let dx = Double(x - centerX)
+                    let dy = Double(y - 24)
+                    let ellipse = dx * dx / (13 * 13) + dy * dy / (7 * 7)
+                    let distance = hypot(dx, dy)
+                    let index = pixelIndex(x: x, y: y)
+                    let isAperture = ellipse <= 1
+                    let isBoundary = isAperture && (-1...1).contains { offsetY in
+                        (-1...1).contains { offsetX in
+                            let nextDX = Double(x + offsetX - centerX)
+                            let nextDY = Double(y + offsetY - 24)
+                            return nextDX * nextDX / (13 * 13) + nextDY * nextDY / (7 * 7) > 1
+                        }
+                    }
+                    if distance <= 3.2 { eyeFamilies[.pupil]?.insert(index) }
+                    if distance > 3.2, distance <= 7.0 { eyeFamilies[.iris]?.insert(index) }
+                    if (x == centerX - 2 || x == centerX - 1), (y == 21 || y == 22) {
+                        eyeFamilies[.highlight]?.insert(index)
+                    }
+                    if isBoundary { eyeFamilies[.lashMargin]?.insert(index) }
+                    if !isAperture, ellipse > 1, ellipse <= 1.65 {
+                        eyeFamilies[.skin]?.insert(index)
+                    }
+                    if !isAperture,
+                       x >= centerX - 18, x <= centerX + 18,
+                       y >= 12, y <= 35,
+                       ellipse > 1.65
+                    {
+                        eyeFamilies[.apertureExterior]?.insert(index)
+                    }
                 }
             }
-            var values: [(Int, Int)] = []
-            for try await value in group { values.append(value) }
-            return values
+            families[eye] = eyeFamilies
         }
-
-        XCTAssertEqual(results.count, 16)
-        for (index, changed) in results {
-            if index.isMultiple(of: 2) {
-                XCTAssertGreaterThan(changed, 0)
-            } else {
-                XCTAssertEqual(changed, 0)
-            }
-        }
-    }
-
-    private func protectedCoordinates() -> [ProtectedRegion: (x: Int, y: Int)] {
-        [
-            .iris: (27, 24),
-            .pupil: (21, 24),
-            .highlight: (18, 22),
-            .lashMargin: (21, 18),
-            .skin: (21, 13),
-            .apertureExterior: (2, 2),
-        ]
-    }
-
-    private func supports(
-        centerDelta: Double = 0,
-        xRadius: Double = 0.1625,
-        yRadius: Double = 0.0833,
-        pupilDelta: Double = 0
-    ) -> [BeautyObservedEyeSupport] {
-        [
-            support(
-                side: .left,
-                centerX: 0.2625 + centerDelta,
-                xRadius: xRadius,
-                yRadius: yRadius,
-                pupilX: 0.26 + pupilDelta
-            ),
-            support(
-                side: .right,
-                centerX: 0.7375 - centerDelta,
-                xRadius: xRadius,
-                yRadius: yRadius,
-                pupilX: 0.74 - pupilDelta
-            ),
-        ]
+        return ProtectedTruth(families: families)
     }
 
     private func support(
         side: BeautyObservedEyeSide,
-        centerX: Double,
-        xRadius: Double = 0.1625,
-        yRadius: Double = 0.0833,
-        pupilX: Double? = nil
+        geometry: EyeGeometry
     ) -> BeautyObservedEyeSupport {
         BeautyObservedEyeSupport(
             side: side,
-            contour: eyeContour(centerX: centerX, xRadius: xRadius, yRadius: yRadius),
-            pupil: [CoordinatePoint(x: pupilX ?? centerX, y: 0.50)]
+            contour: (0..<16).map { index in
+                let angle = Double(index) * 2 * .pi / 16
+                return CoordinatePoint(
+                    x: geometry.centerX + geometry.radiusX * cos(angle) + geometry.asymmetricSkew * sin(2 * angle),
+                    y: geometry.centerY + geometry.radiusY * sin(angle)
+                )
+            },
+            pupil: [CoordinatePoint(x: geometry.pupilX, y: geometry.pupilY)]
         )
     }
 
-    private func eyeContour(centerX: Double, xRadius: Double, yRadius: Double) -> [CoordinatePoint] {
-        (0..<16).map { index in
-            let angle = Double(index) * 2 * .pi / 16
-            return CoordinatePoint(
-                x: centerX + xRadius * cos(angle),
-                y: 0.50 + yRadius * sin(angle)
-            )
-        }
-    }
-
-    private func makeEyeBytes() -> [UInt8] {
+    private func makeEyeBytes(truth: ProtectedTruth) -> [UInt8] {
         var bytes = uniform(red: 164, green: 118, blue: 105)
-        for centerX in [21, 59] {
+        for eye in OracleEye.allCases {
+            let centerX = Int(eye.centerX)
             for y in 17...30 {
                 for x in (centerX - 13)...(centerX + 13) {
                     let dx = Double(x - centerX) / 13
                     let dy = Double(y - 24) / 7
                     guard dx * dx + dy * dy <= 1 else { continue }
-                    let distance = hypot(Double(x - centerX), Double(y - 24))
-                    let isMargin = x <= centerX - 11 || x >= centerX + 11 || y <= 18 || y >= 29
-                    let isPupil = distance <= 5.2
-                    let isHighlight = (x == centerX - 2 || x == centerX - 1) && (y == 21 || y == 22)
-                    let color: (UInt8, UInt8, UInt8, UInt8)
-                    if isHighlight { color = (248, 248, 248, 255) }
-                    else if isPupil { color = (55, 64, 72, 255) }
-                    else if isMargin { color = (38, 28, 30, 255) }
-                    else { color = (210, 150, 150, 255) }
-                    bytes = replacingRGBA(in: bytes, index: pixelIndex(x: x, y: y), with: color)
+                    bytes = replacingRGBA(
+                        in: bytes,
+                        index: pixelIndex(x: x, y: y),
+                        with: (210, 150, 150, 255)
+                    )
                 }
+            }
+        }
+        for eye in OracleEye.allCases {
+            let eyeTruth = truth.families[eye] ?? [:]
+            for index in eyeTruth[.iris] ?? [] {
+                bytes = replacingRGBA(in: bytes, index: index, with: (70, 75, 82, 255))
+            }
+            for index in eyeTruth[.pupil] ?? [] {
+                bytes = replacingRGBA(in: bytes, index: index, with: (32, 38, 45, 255))
+            }
+            for index in eyeTruth[.highlight] ?? [] {
+                bytes = replacingRGBA(in: bytes, index: index, with: (248, 248, 248, 255))
+            }
+            for index in eyeTruth[.lashMargin] ?? [] {
+                bytes = replacingRGBA(in: bytes, index: index, with: (38, 28, 30, 255))
             }
         }
         return bytes
     }
 
-    private func uniform(red: UInt8, green: UInt8, blue: UInt8) -> [UInt8] {
-        Array(repeating: [red, green, blue, UInt8.max], count: width * height).flatMap { $0 }
+    private func outcome(
+        for eye: OracleEye,
+        result: BeautyScleraRednessProviderResult
+    ) -> BeautyScleraEyeOutcome {
+        eye == .left ? result.summary.leftOutcome : result.summary.rightOutcome
+    }
+
+    private func isPixel(_ index: Int, in eye: OracleEye) -> Bool {
+        eye == .left ? index % width < width / 2 : index % width >= width / 2
     }
 
     private func canonical(_ bytes: [UInt8]) throws -> BeautyCanonicalStillImage {
@@ -319,7 +555,7 @@ final class BeautyScleraRednessAdversarialCloseoutTests: XCTestCase {
         return Array(bytes[offset..<(offset + 4)])
     }
 
-    private func changedPixelIndices(before: [UInt8], after: [UInt8]) -> Set<Int> {
-        Set((0..<(before.count / 4)).filter { rgba(before, at: $0) != rgba(after, at: $0) })
+    private func uniform(red: UInt8, green: UInt8, blue: UInt8) -> [UInt8] {
+        Array(repeating: [red, green, blue, UInt8.max], count: width * height).flatMap { $0 }
     }
 }

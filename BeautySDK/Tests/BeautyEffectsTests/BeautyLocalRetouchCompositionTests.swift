@@ -1,8 +1,8 @@
 import BeautyCore
-import BeautyEffects
 import Foundation
 import ImageIO
 import XCTest
+@testable import BeautyEffects
 
 /// Wave 0 specification for the feature-neutral original-pixel composer.
 ///
@@ -637,6 +637,22 @@ final class BeautyLocalRetouchCompositionTests: XCTestCase {
             Mirror(reflecting: BeautyLocalRetouchCompositionSummary()).children.compactMap(\.label)
         )
         XCTAssertEqual(productionLabels, labels)
+    }
+
+    func testScleraProposalIndicesStayRequestLocalAndOutsideCompositionSummary() {
+        let result = BeautyScleraRednessProviderResult(
+            units: [],
+            summary: BeautyScleraRednessProviderSummary(),
+            proposalPixelIndices: [1, 4, 9]
+        )
+
+        XCTAssertEqual(result.proposalPixelIndices, [1, 4, 9])
+        XCTAssertFalse(
+            Mirror(reflecting: BeautyLocalRetouchCompositionSummary())
+                .children
+                .compactMap(\.label)
+                .contains("proposalPixelIndices")
+        )
     }
 }
 
