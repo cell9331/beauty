@@ -15,7 +15,9 @@ from pathlib import Path
 THREATS = tuple(f"T-64-{index:02d}" for index in range(1, 9))
 PHASE_DIR = Path(".planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout")
 EXPECTED_TASKS = tuple(
-    f"64-{plan:02d}-{task:02d}" for plan in range(1, 5) for task in range(1, 3)
+    f"64-{plan:02d}-{task:02d}"
+    for plan in range(1, 12)
+    for task in range(1, 3 if plan <= 9 else 2)
 )
 PRODUCT_FILES = (
     Path("docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md"),
