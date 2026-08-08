@@ -26,8 +26,21 @@
 
 ## 3. Active
 
-No active implementation plan. v1.15 is audited and completion-ready; archive,
-tag and cleanup require an explicit milestone-completion command.
+### A-2026-08-08-v1-15-phase-64-adversarial-proof-gap
+
+| Field | Value |
+| --- | --- |
+| Status | `planned` |
+| Scope | Close the Phase 64 bilateral protected-anatomy oracle gap before retaining the exact `祛红血丝` promotion or treating v1.15 as completion-ready. |
+| Finding | The live adversarial suite protects and recolors only six coordinates near the left synthetic eye, runs three coupled perturbations, and asserts a provider aggregate that is constructed as constant zero. Full bilateral iris/pupil/highlight/lash/skin/exterior truth and independent left/right asymmetric boundary cases are absent. |
+| Affected requirements | SCLERA-14 and SCLERA-15 are unproven; therefore SCLERA-18's pre-promotion conjunction is false. OUT-05, SCLERA-16 and SCLERA-17 remain verified. |
+| Fresh passing evidence | Strict helper 14/14; Phase checker self-test and isolated HIGH 8/8; renderer/adversarial/provider/facade 21/5/11/9; private output 6/6; native Vision pair; SwiftPM 630/0/8; Demo build and 121/0/0; UAT 5/5. These passes do not cover the missing oracle. |
+| Warning | `BeautyExampleRenderer` uses device RGB for saved evidence; explicit sRGB remains a Phase 65 SAFE-06 re-verification item. |
+| Next | Run `$gsd-plan-phase 64 --gaps`, execute the resulting gap plan, rerun fresh output/visual/security/full regression, and independently verify before repeating the milestone audit. |
+| Boundary | Do not archive, tag, clean up, ship, or claim milestone completion while the canonical Phase 64 verification is `gaps_found`. |
+
+The prior v1.15 completion-ready statement is superseded by the fresh Phase 64
+goal-backward verification until this active gap is closed.
 
 ## 3A. Archived Active Ledger
 
@@ -127,6 +140,7 @@ tag and cleanup require an explicit milestone-completion command.
 | Verification | Post-promotion full SwiftPM 617/0/8; explicit iPhone 17e / iOS 26.5 Demo build and 121/0/0 tests; tracked/staged privacy scans 1,424 files; exact 61 fields, five presets and 74 renderer cases; syntax, JSON and diff gates pass. |
 | Requirements | SCLERA-14 through SCLERA-18 and OUT-05 verified. Phase 65 may start combined teeth+sclera closeout but may not borrow either standalone feature's evidence or relax its guards. |
 | Boundary | No population sufficiency, realtime/pixel-buffer, target-device quality/performance, commercial approval, Demo activation, external model/network, packaging, shipping, launch or release readiness is claimed. |
+| Re-verification | Superseded on 2026-08-08: fresh canonical verification is `gaps_found` at 3/6. SCLERA-14/15 and therefore SCLERA-18/product promotion remain open until a complete bilateral adversarial oracle and independent rerun pass. |
 
 ### C-2026-08-07-v1-15-phase-63-sclera-provider-closeout
 
