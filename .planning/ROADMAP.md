@@ -140,7 +140,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
   4. Genuine redness positives improve within predeclared per-eye bounds, while normal negatives and blink/gaze/glasses/highlight/occlusion challenges remain natural under blinded original-detail review.
   5. Production tests, native/adversarial matrices, compatibility, privacy, full regression, review/fix, independent verification, and owning ledgers promote exactly `祛红血丝`; `眼睛` remains partial because `去脂` remains future.
 
-**Plans**: 5/11 completed; canonical verification remains `gaps_found` and active remediation continues with Waves 6-11
+**Plans**: 6/11 completed; corrected bilateral proof and three-state checker are green, while canonical verification remains `gaps_found` pending Waves 7-11
 **Wave 1**
 
 - [x] 64-01-PLAN.md — RED public-output/adversarial contracts and eight-HIGH checker
@@ -163,7 +163,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 
 **Wave 6** *(blocked on Wave 5 completion)*
 
-- [ ] 64-06-PLAN.md — full bilateral truth, actual-proposal oracle and substantive checker
+- [x] 64-06-PLAN.md — full bilateral truth, actual-proposal oracle and substantive checker
 
 **Wave 7** *(blocked on Wave 6 completion)*
 
@@ -216,7 +216,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 | 61. Teeth Output, Safety, and Independent Closeout | 4/4 | Complete    | 2026-08-07 |
 | 62. Sclera Evidence and Admission Contract | 5/5 | Complete — independent evidence, 61st scalar, direct demand, privacy and regression pass | 2026-08-07 |
 | 63. Guarded Per-Eye Sclera Production Integration | 4/4 | Complete — guarded provider, actual-Vision evidence, privacy and regression pass; no promotion | 2026-08-07 |
-| 64. Sclera Output, Adversarial Safety, and Independent Closeout | 5/11 | Active remediation — stale promotion quarantined; SCLERA-14/15 and therefore SCLERA-18 remain unproven | — |
+| 64. Sclera Output, Adversarial Safety, and Independent Closeout | 6/11 | Active remediation — bilateral proof/checker corrected; pre-promotion verification pending | — |
 | 65. Combined Facade, Privacy, and Milestone Closeout | 4/4 executed | Blocked — prior verification and milestone audit are stale until Phase 64 re-verifies | — |
 
 Earlier phase details are preserved in their linked milestone archives under `.planning/milestones/`.

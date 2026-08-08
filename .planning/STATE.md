@@ -5,15 +5,16 @@ milestone_name: Independent Teeth and Sclera Retouch
 current_phase: 64
 current_phase_name: sclera-output-adversarial-safety-and-independent-closeout
 status: executing
-stopped_at: Completed 64-05-PLAN.md; Plan 64-06 bilateral oracle repair next
-last_updated: "2026-08-08T05:24:23.611Z"
+stopped_at: Completed 64-06-PLAN.md; Plan 64-07 pre-promotion conjunction next
+last_updated: "2026-08-08T05:48:41.470Z"
 last_activity: 2026-08-08
-last_activity_desc: Plan 64-05 quarantined stale `祛红血丝` promotion without reopening SCLERA-16, SCLERA-17 or OUT-05
+last_activity_desc: Plan 64-06 replaced the hollow oracle with bilateral actual-proposal proof and a substantive three-state checker
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 41
-  completed_plans: 35
+  completed_plans: 36
+  percent: 88
 ---
 
 # Project State
@@ -28,11 +29,11 @@ See: `.planning/PROJECT.md` (updated 2026-08-07)
 ## Current Position
 
 Phase: 64 (sclera-output-adversarial-safety-and-independent-closeout) — EXECUTING
-Plan: 6 of 11
+Plan: 7 of 11
 Status: Active remediation; canonical verification remains `gaps_found`
-Last activity: 2026-08-08 — Plan 64-05 quarantined stale `祛红血丝` promotion without reopening SCLERA-16, SCLERA-17 or OUT-05
+Last activity: 2026-08-08 — Plan 64-06 replaced the hollow oracle with bilateral actual-proposal proof and a substantive three-state checker
 
-Progress: [█████████░] 85%
+Progress: [█████████░] 88%
 
 ## Performance Metrics
 
@@ -76,6 +77,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 65 P03 | — | 2 tasks | 9 files |
 | Phase 65 P04 | — | 2 tasks | 13 files |
 | Phase 64 P05 | 5 min | 2 tasks | 10 files |
+| Phase 64 P06 | 18 min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -100,6 +102,9 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 - Combined behavior adds no renderer case or product control: exact compatibility remains 61 fields, five presets and 74 renderer cases while the public-facade XCTest owns the joint request.
 - Teeth evidence, support, review, and promotion contribute no sclera or `去脂` credit.
 - v1.15 remains SDK-core and still-image only with no Demo activation, realtime/pixel-buffer, model/cloud, tracked portrait media, or release-readiness claim.
+- [Phase 64]: Actual sclera proposal indices remain immutable internal request-local evidence visible only to authorized @testable BeautyEffects tests.
+- [Phase 64]: Phase 64 closeout derives authority from independent artifacts across explicit pre, pending, and final states; product claims cannot self-authorize.
+- [Phase 64]: SAFE-06 and DeviceRGB/named-sRGB remain Phase 65 scope.
 
 ### Pending Todos
 
@@ -121,6 +126,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-08T05:24:23.606Z
-Stopped at: Completed 64-05-PLAN.md; Plan 64-06 bilateral oracle repair next
+Last session: 2026-08-08T05:48:33.706Z
+Stopped at: Completed 64-06-PLAN.md; Plan 64-07 pre-promotion conjunction next
 Resume file: None
