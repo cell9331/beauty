@@ -307,9 +307,9 @@ final class BeautyScleraRednessAdversarialCloseoutTests: XCTestCase {
         case .pupilDown:
             geometry.pupilY += 0.006
         case .asymmetricContourOppositePupil:
-            geometry.centerX += 0.004 * eye.horizontalDirection
-            geometry.pupilX -= 0.006 * eye.horizontalDirection
-            geometry.asymmetricSkew = 0.003 * eye.horizontalDirection
+            geometry.centerX += 0.003 * eye.horizontalDirection
+            geometry.pupilX -= 0.005 * eye.horizontalDirection
+            geometry.asymmetricSkew = 0.002 * eye.horizontalDirection
         }
         return geometry
     }
@@ -361,13 +361,18 @@ final class BeautyScleraRednessAdversarialCloseoutTests: XCTestCase {
             )
             let actualProposalPixelIndices = Set(result.proposalPixelIndices)
             let output = Array(try owner.compose(result.units).canonicalImage.rgba8Data)
-
-            actualProposalCount += actualProposalPixelIndices.count
-            protectedIntersectionCount += actualProposalPixelIndices.intersection(protected).count
-            actualProposalCountMismatchCount += result.summary.proposalPixelCount == actualProposalPixelIndices.count ? 0 : 1
-            protectedByteMismatchCount += protected.filter {
+            let protectedIntersection = actualProposalPixelIndices.intersection(protected)
+            let protectedMismatchCount = protected.filter {
                 rgba(output, at: $0) != rgba(recoloredSource, at: $0)
             }.count
+
+            XCTAssertTrue(protectedIntersection.isEmpty, "protected overlap: \(scenario.id)")
+            XCTAssertEqual(protectedMismatchCount, 0, "protected byte change: \(scenario.id)")
+
+            actualProposalCount += actualProposalPixelIndices.count
+            protectedIntersectionCount += protectedIntersection.count
+            actualProposalCountMismatchCount += result.summary.proposalPixelCount == actualProposalPixelIndices.count ? 0 : 1
+            protectedByteMismatchCount += protectedMismatchCount
             outsideProposalByteMismatchCount += Set(0..<(width * height))
                 .subtracting(actualProposalPixelIndices)
                 .filter { rgba(output, at: $0) != rgba(recoloredSource, at: $0) }

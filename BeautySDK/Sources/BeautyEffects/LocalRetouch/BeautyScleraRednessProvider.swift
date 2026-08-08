@@ -17,26 +17,24 @@ package struct BeautyScleraRednessProviderSummary: Equatable, Sendable {
     package let rightOutcome: BeautyScleraEyeOutcome
     package let acceptedEyeCount: Int
     package let proposalPixelCount: Int
-    package let protectedProposalPixelCount: Int
 
     package init(
         leftOutcome: BeautyScleraEyeOutcome = .missingSupport,
         rightOutcome: BeautyScleraEyeOutcome = .missingSupport,
         acceptedEyeCount: Int = 0,
-        proposalPixelCount: Int = 0,
-        protectedProposalPixelCount: Int = 0
+        proposalPixelCount: Int = 0
     ) {
         self.leftOutcome = leftOutcome
         self.rightOutcome = rightOutcome
         self.acceptedEyeCount = acceptedEyeCount
         self.proposalPixelCount = proposalPixelCount
-        self.protectedProposalPixelCount = protectedProposalPixelCount
     }
 }
 
 package struct BeautyScleraRednessProviderResult: Sendable {
     package let units: [BeautyLocalRetouchUnit]
     package let summary: BeautyScleraRednessProviderSummary
+    internal let proposalPixelIndices: [Int]
 }
 
 package enum BeautyScleraRednessProvider {
@@ -87,6 +85,7 @@ package enum BeautyScleraRednessProvider {
         var leftOutcome: BeautyScleraEyeOutcome = .missingSupport
         var rightOutcome: BeautyScleraEyeOutcome = .missingSupport
         var proposalPixelCount = 0
+        var proposalPixelIndices: [Int] = []
         for side in sorted {
             let support = switch side {
             case .left: leftSupport
@@ -106,6 +105,7 @@ package enum BeautyScleraRednessProvider {
             case .right: rightOutcome = processed.outcome
             }
             proposalPixelCount += processed.proposalPixelCount
+            proposalPixelIndices.append(contentsOf: processed.proposalPixelIndices)
             if let unit = processed.unit { units.append(unit) }
         }
         return BeautyScleraRednessProviderResult(
@@ -114,9 +114,9 @@ package enum BeautyScleraRednessProvider {
                 leftOutcome: leftOutcome,
                 rightOutcome: rightOutcome,
                 acceptedEyeCount: units.count,
-                proposalPixelCount: proposalPixelCount,
-                protectedProposalPixelCount: 0
-            )
+                proposalPixelCount: proposalPixelCount
+            ),
+            proposalPixelIndices: proposalPixelIndices
         )
     }
 
@@ -231,7 +231,8 @@ package enum BeautyScleraRednessProvider {
         return EyeUnitResult(
             unit: unit,
             outcome: .accepted,
-            proposalPixelCount: proposals.count
+            proposalPixelCount: proposals.count,
+            proposalPixelIndices: proposals.map(\.pixelIndex)
         )
     }
 
@@ -244,7 +245,8 @@ package enum BeautyScleraRednessProvider {
             summary: BeautyScleraRednessProviderSummary(
                 leftOutcome: left,
                 rightOutcome: right
-            )
+            ),
+            proposalPixelIndices: []
         )
     }
 
@@ -365,15 +367,18 @@ private struct EyeUnitResult {
     let unit: BeautyLocalRetouchUnit?
     let outcome: BeautyScleraEyeOutcome
     let proposalPixelCount: Int
+    let proposalPixelIndices: [Int]
 
     init(
         unit: BeautyLocalRetouchUnit? = nil,
         outcome: BeautyScleraEyeOutcome,
-        proposalPixelCount: Int = 0
+        proposalPixelCount: Int = 0,
+        proposalPixelIndices: [Int] = []
     ) {
         self.unit = unit
         self.outcome = outcome
         self.proposalPixelCount = proposalPixelCount
+        self.proposalPixelIndices = proposalPixelIndices
     }
 }
 
