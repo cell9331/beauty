@@ -127,6 +127,20 @@ completed: 2026-08-09
 | Exact transaction scope | passed: exactly 15 modified owner paths before task commit |
 | Diff hygiene | `git diff --check` passed |
 
+## Post-Wave Orchestrator Gates
+
+| Gate | Result |
+| --- | --- |
+| Explicit iPhone 17e / iOS 26.5 Demo build | `BUILD SUCCEEDED` |
+| Explicit Demo tests | 121 passed, 0 failed, 0 skipped; `TEST SUCCEEDED` |
+| Full SwiftPM regression | 636 passed, 0 failed, 8 skipped; exit 0 for regression, while the eight skips remain a Plan 64-12 final-authority blocker |
+| Schema drift | `drift_detected: false`, non-blocking |
+| Codebase drift | warning-only historical set: `PRODUCT_SENSE.md`, `example-images`, `meituxiuxiu`; no Phase 64-13 source delta |
+| Automatic code-review hook | non-blocking path collision: its fixed `64-REVIEW.md` output is candidate-manifest-frozen and cannot be overwritten; existing source-bound `64-CODE-REVIEW.md` and `64-SECURITY.md` remain exact and zero-HIGH under T-64-05 |
+| Phase plan inventory | 13 plans / 13 summaries, no incomplete plan artifacts |
+| Plan 64-13 key links | 3/3 verified |
+| Canonical phase verdict | `gaps_found`; 5/6 requirement implementation facts substantiated, zero product authorization |
+
 ## User Setup Required
 
 None - no external service configuration is required.
