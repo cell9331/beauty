@@ -728,10 +728,14 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
   tracked/staged privacy over 1,424 files, JSON, inventory and diff gates pass.
 - Quality credit is limited to bounded standalone still-image SDK-core sclera
   output, protected-anatomy identity, peer/recovery isolation, exact
-  `祛红血丝` promotion, compatibility and privacy. `眼睛` remains partial due
-  to future `去脂`; no combined-facade, population, realtime, device/
-  performance, commercial, packaging, shipping, launch or release credit is
-  added.
+  `祛红血丝` promotion, compatibility and privacy; the synchronization is
+  promotion-pending and awaits the independent Plan 12 candidate plus Plan 13
+  bounded final transaction, and only evidence-backed Phase 64 scores/counts
+  are credited with zero score/credit for DeviceRGB SAFE-06. `眼睛` remains
+  partial due to future `去脂`; no combined-facade, population, realtime,
+  device/performance, commercial, packaging, shipping, launch or release credit
+  is added, and SCLERA-18 final, 24/24 validation, canonical passed, and
+  Phase 65 current state remain explicitly blocked.
 
 Command-level evidence is recorded in [Phase 64 verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).
 

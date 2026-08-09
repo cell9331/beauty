@@ -941,13 +941,19 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
   oracles cover iris, pupil, highlights, lash margin, skin and aperture
   exterior. Malformed-peer, valid-invalid-valid and parallel tests retain the
   Phase 63 request-local, affected-eye-only abstention contract.
-- Product owners promote exactly `眼睛 | 祛红血丝`. Aggregate branch `眼睛`
-  remains `partial` solely because `去脂` is future; both rows remain disabled
-  and nil-mapped in the Demo.
+- Per-eye provider, transform, and composition, calibrated containment/fail-closed
+  envelope, and inclusive contour validity remain Phase 64 design ownership; the
+  promotion of `眼睛 | 祛红血丝` is promotion-pending and awaits the independent
+  Plan 12 candidate plus Plan 13 bounded final transaction.
+- Product owners are synchronized to exactly `眼睛 | 祛红血丝` implemented.
+  Aggregate branch `眼睛` remains `partial` solely because `去脂` is future;
+  both rows remain disabled and nil-mapped in the Demo.
 - Compatibility is exactly 61 public fields, five byte-stable neutral presets
   and 74 renderer cases. This contract adds no realtime/pixel-buffer route,
   model, network dependency, public anatomy, device/commercial approval,
-  packaging, shipping, launch or release-readiness claim.
+  packaging, shipping, launch or release-readiness claim, and SCLERA-18 final,
+  24/24 validation, canonical passed, and Phase 65 current state remain
+  explicitly blocked.
 
 Command-level evidence is recorded in [Phase 64 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-REVIEW.md), and [verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).
 

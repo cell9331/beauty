@@ -777,15 +777,18 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
   bounded color/luminance and retained detail. Fresh original-detail review
   passes with no post-review tuning.
 - Phases 62, 63 and 64 form one non-borrowed sclera chain. Exactly
-  `祛红血丝` is `implemented`; aggregate branch `眼睛` remains `partial`
-  solely because `去脂` remains future.
+  `祛红血丝` is `implemented` at bounded SDK-core still-image scope; aggregate
+  branch `眼睛` remains `partial` solely because `去脂` remains future. The
+  synchronization is promotion-pending and awaits the independent Plan 12
+  candidate plus Plan 13 bounded final transaction.
 - The Demo still displays `白牙`, `祛红血丝` and `去脂` as disabled rows with
   nil mappings. Compatibility is exactly 61 public fields, five neutral presets
   and 74 renderer cases.
 - Two authorized fixtures establish the minimum frozen positive/negative gate,
   not population sufficiency. No realtime/pixel-buffer, target-device quality
   or performance, commercial approval, packaging, shipping, launch or release-
-  readiness acceptance follows.
+  readiness acceptance follows, and SCLERA-18 final, 24/24 validation,
+  canonical passed, and Phase 65 current state remain explicitly blocked.
 
 Command-level evidence is recorded in [Phase 64 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-REVIEW.md), and [security disposition](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SECURITY.md).
 

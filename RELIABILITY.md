@@ -867,10 +867,16 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
 - Full SwiftPM executes 617 tests with zero failures and eight documented
   non-required opt-in skips. The unchanged Demo builds and passes 121/121 on
   iPhone 17e / iOS 26.5 with no skips.
+- Affected-eye-only abstention, peer continuation, valid-invalid-valid and
+  concurrent recovery, full conjunction invalidation after relevant change, and
+  execution-discovered simulator validation remain Phase 64 reliability
+  ownership; the synchronization is promotion-pending and awaits the
+  independent Plan 12 candidate plus Plan 13 bounded final transaction.
 - These results establish bounded still-image standalone output and recovery,
   not realtime endurance, target-device performance budgets, population
   coverage, commercial approval, packaging, shipping, launch or release
-  readiness.
+  readiness, and SCLERA-18 final, 24/24 validation, canonical passed, and
+  Phase 65 current state remain explicitly blocked.
 
 Command-level evidence is recorded in [Phase 64 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SCLERA-OUTPUT-EVIDENCE.md) and [verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).
 

@@ -761,9 +761,16 @@ Command-level evidence is recorded in [Phase 63 security](.planning/phases/63-gu
 - Review records only fixed categorical judgments. Tracked/staged state
   contains no media, locator, digest, rights detail, reviewer identity, support,
   mask, geometry, pixel data, raw metric or child error.
+- Request-local raw support, proposal, mask privacy, protected-region
+  containment, source-bound review, four-state T-64-06 scanning, and zero
+  accepted HIGH remain Phase 64 security ownership; the synchronization is
+  promotion-pending and awaits the independent Plan 12 candidate plus Plan 13
+  bounded final transaction.
 - Promotion changes exactly `眼睛 | 祛红血丝`; it does not activate Demo,
   realtime/pixel-buffer, external model, network or `去脂` surfaces and does not
-  authorize broader device, commercial or release claims.
+  authorize broader device, commercial or release claims, and SCLERA-18 final,
+  24/24 validation, canonical passed, and Phase 65 current state remain
+  explicitly blocked.
 
 Command-level evidence is recorded in [Phase 64 security](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SECURITY.md), [review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-REVIEW.md), and [verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).
 
