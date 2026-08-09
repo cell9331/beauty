@@ -46,6 +46,9 @@ package enum BeautyScleraRednessProvider {
     fileprivate static let maximumAspect = 1.20
     fileprivate static let maximumNormalizedWidth = 0.50
     fileprivate static let maximumNormalizedHeight = 0.40
+    // The calibrated horizontal support envelope accepts the 0.003/0.005
+    // neighborhood and rejects the historical 0.004/0.006 leak before rasterization.
+    fileprivate static let maximumPupilCenterOffsetFraction = 0.025
     private static let minimumStrongScore: Float = 0.08
 
     package static func makeResult(
@@ -455,7 +458,8 @@ private struct ValidatedEyePolygon {
         let centerY = (bounds.minY + bounds.maxY) * 0.5
         let normalizedX = abs(point.x - centerX) / max(bounds.width, 0.000_001)
         let normalizedY = abs(point.y - centerY) / max(bounds.height, 0.000_001)
-        return normalizedX <= 0.42 && normalizedY <= 0.42
+        return normalizedX <= BeautyScleraRednessProvider.maximumPupilCenterOffsetFraction
+            && normalizedY <= 0.42
     }
 }
 

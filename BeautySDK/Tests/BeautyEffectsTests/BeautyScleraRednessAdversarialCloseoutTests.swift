@@ -190,11 +190,12 @@ final class BeautyScleraRednessAdversarialCloseoutTests: XCTestCase {
         XCTAssertEqual(historical.centerOffset, 0.004)
         XCTAssertEqual(historical.pupilOffset, -0.006)
         XCTAssertEqual(historical.skew, 0.003)
+        XCTAssertEqual(historical.expected, .localRejected)
 
         let accepted = samples.filter { $0.expected == .accepted }
         let rejected = samples.filter { $0.expected == .localRejected }
-        XCTAssertFalse(accepted.isEmpty)
-        XCTAssertFalse(rejected.isEmpty)
+        XCTAssertEqual(accepted.count, 3)
+        XCTAssertEqual(rejected.count, 24)
         for rejectedSample in rejected {
             XCTAssertFalse(accepted.contains { acceptedSample in
                 acceptedSample.centerOffset >= rejectedSample.centerOffset
@@ -244,11 +245,20 @@ final class BeautyScleraRednessAdversarialCloseoutTests: XCTestCase {
             let rightProposals = proposals.filter { isPixel($0, in: .right) }
             let leftProposals = proposals.filter { isPixel($0, in: .left) }
             let output = Array(try owner.compose(result.units).canonicalImage.rgba8Data)
+            let overlappingFamilies = OracleEye.allCases.flatMap { eye in
+                ProtectedRegion.allCases.compactMap { region -> String? in
+                    let count = proposals.intersection(truth.families[eye]?[region] ?? []).count
+                    return count > 0 ? "\(eye.rawValue)/\(region.rawValue)=\(count)" : nil
+                }
+            }
 
             XCTAssertEqual(result.summary.proposalPixelCount, proposals.count, sample.id)
             XCTAssertEqual(result.summary.leftOutcome, .accepted, sample.id)
             XCTAssertFalse(leftProposals.isEmpty, "left peer empty: \(sample.id)")
-            XCTAssertTrue(proposals.intersection(protected).isEmpty, "protected overlap: \(sample.id)")
+            XCTAssertTrue(
+                proposals.intersection(protected).isEmpty,
+                "protected overlap: \(sample.id) [\(overlappingFamilies.joined(separator: ","))]"
+            )
             XCTAssertEqual(
                 protected.filter { rgba(output, at: $0) != rgba(recoloredSource, at: $0) }.count,
                 0,
@@ -343,7 +353,35 @@ final class BeautyScleraRednessAdversarialCloseoutTests: XCTestCase {
     }
 
     private var calibratedRightEyeEnvelopeIDs: [String] {
-        calibratedRightEyeEnvelope.map(\.id)
+        [
+            "right_c003_p005_s002",
+            "right_c003_p005_s003",
+            "right_c003_p005_s004",
+            "right_c003_p006_s002",
+            "right_c003_p006_s003",
+            "right_c003_p006_s004",
+            "right_c003_p007_s002",
+            "right_c003_p007_s003",
+            "right_c003_p007_s004",
+            "right_c004_p005_s002",
+            "right_c004_p005_s003",
+            "right_c004_p005_s004",
+            "right_c004_p006_s002",
+            "historical_right_center_p004_pupil_n006_skew_p003",
+            "right_c004_p006_s004",
+            "right_c004_p007_s002",
+            "right_c004_p007_s003",
+            "right_c004_p007_s004",
+            "right_c005_p005_s002",
+            "right_c005_p005_s003",
+            "right_c005_p005_s004",
+            "right_c005_p006_s002",
+            "right_c005_p006_s003",
+            "right_c005_p006_s004",
+            "right_c005_p007_s002",
+            "right_c005_p007_s003",
+            "right_c005_p007_s004",
+        ]
     }
 
     private var calibratedRightEyeEnvelope: [BoundarySample] {
@@ -351,24 +389,24 @@ final class BeautyScleraRednessAdversarialCloseoutTests: XCTestCase {
             BoundarySample(id: "right_c003_p005_s002", centerOffset: 0.003, pupilOffset: -0.005, skew: 0.002, expected: .accepted),
             BoundarySample(id: "right_c003_p005_s003", centerOffset: 0.003, pupilOffset: -0.005, skew: 0.003, expected: .accepted),
             BoundarySample(id: "right_c003_p005_s004", centerOffset: 0.003, pupilOffset: -0.005, skew: 0.004, expected: .accepted),
-            BoundarySample(id: "right_c003_p006_s002", centerOffset: 0.003, pupilOffset: -0.006, skew: 0.002, expected: .accepted),
-            BoundarySample(id: "right_c003_p006_s003", centerOffset: 0.003, pupilOffset: -0.006, skew: 0.003, expected: .accepted),
-            BoundarySample(id: "right_c003_p006_s004", centerOffset: 0.003, pupilOffset: -0.006, skew: 0.004, expected: .accepted),
-            BoundarySample(id: "right_c003_p007_s002", centerOffset: 0.003, pupilOffset: -0.007, skew: 0.002, expected: .accepted),
-            BoundarySample(id: "right_c003_p007_s003", centerOffset: 0.003, pupilOffset: -0.007, skew: 0.003, expected: .accepted),
-            BoundarySample(id: "right_c003_p007_s004", centerOffset: 0.003, pupilOffset: -0.007, skew: 0.004, expected: .accepted),
-            BoundarySample(id: "right_c004_p005_s002", centerOffset: 0.004, pupilOffset: -0.005, skew: 0.002, expected: .accepted),
-            BoundarySample(id: "right_c004_p005_s003", centerOffset: 0.004, pupilOffset: -0.005, skew: 0.003, expected: .accepted),
-            BoundarySample(id: "right_c004_p005_s004", centerOffset: 0.004, pupilOffset: -0.005, skew: 0.004, expected: .accepted),
-            BoundarySample(id: "right_c004_p006_s002", centerOffset: 0.004, pupilOffset: -0.006, skew: 0.002, expected: .accepted),
-            BoundarySample(id: "historical_right_center_p004_pupil_n006_skew_p003", centerOffset: 0.004, pupilOffset: -0.006, skew: 0.003, expected: .accepted),
-            BoundarySample(id: "right_c004_p006_s004", centerOffset: 0.004, pupilOffset: -0.006, skew: 0.004, expected: .accepted),
+            BoundarySample(id: "right_c003_p006_s002", centerOffset: 0.003, pupilOffset: -0.006, skew: 0.002, expected: .localRejected),
+            BoundarySample(id: "right_c003_p006_s003", centerOffset: 0.003, pupilOffset: -0.006, skew: 0.003, expected: .localRejected),
+            BoundarySample(id: "right_c003_p006_s004", centerOffset: 0.003, pupilOffset: -0.006, skew: 0.004, expected: .localRejected),
+            BoundarySample(id: "right_c003_p007_s002", centerOffset: 0.003, pupilOffset: -0.007, skew: 0.002, expected: .localRejected),
+            BoundarySample(id: "right_c003_p007_s003", centerOffset: 0.003, pupilOffset: -0.007, skew: 0.003, expected: .localRejected),
+            BoundarySample(id: "right_c003_p007_s004", centerOffset: 0.003, pupilOffset: -0.007, skew: 0.004, expected: .localRejected),
+            BoundarySample(id: "right_c004_p005_s002", centerOffset: 0.004, pupilOffset: -0.005, skew: 0.002, expected: .localRejected),
+            BoundarySample(id: "right_c004_p005_s003", centerOffset: 0.004, pupilOffset: -0.005, skew: 0.003, expected: .localRejected),
+            BoundarySample(id: "right_c004_p005_s004", centerOffset: 0.004, pupilOffset: -0.005, skew: 0.004, expected: .localRejected),
+            BoundarySample(id: "right_c004_p006_s002", centerOffset: 0.004, pupilOffset: -0.006, skew: 0.002, expected: .localRejected),
+            BoundarySample(id: "historical_right_center_p004_pupil_n006_skew_p003", centerOffset: 0.004, pupilOffset: -0.006, skew: 0.003, expected: .localRejected),
+            BoundarySample(id: "right_c004_p006_s004", centerOffset: 0.004, pupilOffset: -0.006, skew: 0.004, expected: .localRejected),
             BoundarySample(id: "right_c004_p007_s002", centerOffset: 0.004, pupilOffset: -0.007, skew: 0.002, expected: .localRejected),
             BoundarySample(id: "right_c004_p007_s003", centerOffset: 0.004, pupilOffset: -0.007, skew: 0.003, expected: .localRejected),
             BoundarySample(id: "right_c004_p007_s004", centerOffset: 0.004, pupilOffset: -0.007, skew: 0.004, expected: .localRejected),
-            BoundarySample(id: "right_c005_p005_s002", centerOffset: 0.005, pupilOffset: -0.005, skew: 0.002, expected: .accepted),
-            BoundarySample(id: "right_c005_p005_s003", centerOffset: 0.005, pupilOffset: -0.005, skew: 0.003, expected: .accepted),
-            BoundarySample(id: "right_c005_p005_s004", centerOffset: 0.005, pupilOffset: -0.005, skew: 0.004, expected: .accepted),
+            BoundarySample(id: "right_c005_p005_s002", centerOffset: 0.005, pupilOffset: -0.005, skew: 0.002, expected: .localRejected),
+            BoundarySample(id: "right_c005_p005_s003", centerOffset: 0.005, pupilOffset: -0.005, skew: 0.003, expected: .localRejected),
+            BoundarySample(id: "right_c005_p005_s004", centerOffset: 0.005, pupilOffset: -0.005, skew: 0.004, expected: .localRejected),
             BoundarySample(id: "right_c005_p006_s002", centerOffset: 0.005, pupilOffset: -0.006, skew: 0.002, expected: .localRejected),
             BoundarySample(id: "right_c005_p006_s003", centerOffset: 0.005, pupilOffset: -0.006, skew: 0.003, expected: .localRejected),
             BoundarySample(id: "right_c005_p006_s004", centerOffset: 0.005, pupilOffset: -0.006, skew: 0.004, expected: .localRejected),
