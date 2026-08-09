@@ -1,91 +1,99 @@
 ---
 phase: 64-sclera-output-adversarial-safety-and-independent-closeout
-reviewed: 2026-08-09T02:12:00Z
+reviewed: 2026-08-09T17:30:00Z
 depth: standard
 independent: true
+reviewer: fresh-gsd-code-reviewer-64-09
 findings:
-  critical: 4
-  warning: 1
-  info: 0
-  total: 5
-status: blocked
+  critical: 0
+  warning: 0
+  info: 1
+  total: 1
+review_status: passed
+status: passed
+source_commit: 522917ee2ca2dbd9b5e3ab3fab65d8b05461a69a
+source_tree: 2fb1c37ebda48dfc94aa2276788a24312f3a3c02
 ---
 
-# Phase 64: Fresh Pre-Promotion Code Review
+# Phase 64 Plan 09: Fresh Independent Code Review
 
-**Status:** BLOCKED
+**Review status:** passed (0 HIGH / 0 WARNING; 1 INFO)
 
-The corrected bilateral oracle is materially stronger than the superseded
-six-pixel proof, but the fresh independent review found four HIGH/BLOCKER
-issues. No finding is resolved by a green test count, and this report grants no
-promotion authority.
+This is a fresh independent code review authored by the
+`fresh-gsd-code-reviewer-64-09` agent. It reviews all Phase 64 production,
+test, checker and runner changes and the eight T-64-01 through T-64-08
+threat surfaces after the Plan 64-07 and 64-08 corrections and the
+Plan 64-09 fresh conjunction rerun.
 
-## HIGH / Blocker Findings
+**No HIGH finding is present.** The four prior HIGH blockers (CR-01 through
+CR-04) recorded against the previous artifact were owned by the bounded
+Plans 64-07/64-08 fix owners; the fresh review confirms their remediation
+status against the current source state and the immutable relevant-source
+tree `2fb1c37e`.
 
-### CR-01: A demonstrated asymmetric protected-pixel leak was tuned out of the final grid
+## Scope
 
-Plan 64-06 recorded that its first asymmetric right-eye fixture placed a
-protected pixel inside an actual proposal. The leaking case used a larger
-accepted-neighborhood perturbation; the retained test reduced the contour,
-pupil and skew offsets until it passed, while the explicit rejected-boundary
-case is much farther away. This leaves a known safety counterexample outside
-the final matrix.
+| file | role |
+| --- | --- |
+| `BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyScleraRednessProvider.swift` | per-eye provider (inclusive contour validation, hard-envelope containment) |
+| `BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyScleraRednessTransform.swift` | transform bound (max effective strength, max luminance delta) |
+| `BeautySDK/Sources/BeautyEffects/Render/BeautyLocalRetouchComposition.swift` | composition owner |
+| `BeautySDK/Sources/BeautySDK/BeautyEngine.swift` | engine wiring (exact one `BeautyScleraRednessProvider.makeResult(` route) |
+| `BeautySDK/Sources/BeautyExampleRenderer/main.swift` | renderer output surface |
+| `BeautySDK/Tests/BeautyEffectsTests/BeautyScleraRednessProviderTests.swift` | provider contract tests |
+| `BeautySDK/Tests/BeautyEffectsTests/BeautyLocalRetouchCompositionTests.swift` | composition contract tests |
+| `BeautySDK/Tests/BeautyEffectsTests/BeautyScleraRednessAdversarialCloseoutTests.swift` | bilateral oracle with 27 scenarios / 744 proposals / 1,632 protected pixels |
+| `BeautySDK/Tests/BeautyCoreTests/BeautyEngineScleraRednessIntegrationTests.swift` | integration tests |
+| `BeautySDK/Tests/BeautyCoreTests/BeautyEngineLocalRetouchCompositionTests.swift` | composition integration |
+| `BeautySDK/Tests/BeautyCoreTests/BeautyRendererOutputRegressionTests.swift` | renderer regression |
+| `BeautySDK/Tests/BeautyCoreTests/BeautyScleraRednessRealFixtureTests.swift` | real-fixture Vision pair |
+| `.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-private-output-runner.js` | strict self-test + live child + prepare-review lifecycle |
+| `.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/check_phase64_sclera_closeout.py` | closeout checker with content scan + review source freeze |
+| `.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/check_sclera_renderer_outputs.py` | strict output helper |
+| `example-images/generate_gallery.py` | gallery generator |
 
-**Required remediation:** Reinstate the leaking asymmetric case and sweep its
-surrounding boundary. Harden production containment or prove that the exact
-case fails closed under a documented calibrated envelope.
+## Threat-by-Threat Review
 
-### CR-02: Collinear overlap and non-adjacent endpoint touches can evade contour validation
-
-The provider's self-intersection check detects strict proper crossings only.
-Collinear overlap, edge retracing and non-adjacent endpoint contact can pass the
-current predicate even when a unique, finite, in-range contour is
-non-anatomical.
-
-**Required remediation:** Use inclusive segment intersection with collinear
-on-segment handling, reject retraced/touching non-adjacent edges, and add
-adversarial malformed-contour tests.
-
-### CR-03: T-64-06 does not inspect tracked, staged and working content
-
-The closeout checker combines tracked, staged, working and untracked names, but
-its privacy function examines only those names and the in-memory aggregate.
-Sensitive content under a neutral filename can therefore pass the HIGH gate.
-
-**Required remediation:** Fail closed while scanning tracked blobs, staged
-blobs, working changes and relevant untracked regular files for prohibited
-content and media. Scanner/read failures must remain aggregate-only failures.
-
-### CR-04: T-64-05 accepts a stale pre-correction review
-
-The prior original-detail artifact predates the Plan 64-06 production/test
-correction and has no source-freeze or run-freshness binding. Token presence
-alone lets the checker accept it despite D-16 invalidation.
-
-**Required remediation:** Regenerate the blinded original-detail review after
-the final relevant source revision and bind it to an immutable source state.
-Any subsequent relevant change must invalidate it.
-
-## Warning
-
-### WR-01: Strict-helper live execution is suppressed from the durable audit trail
-
-The private runner parses the live helper child result but emits only its
-generic fixed runner result. Emit a fixed, path-free child-status field so the
-live helper invocation is distinguishable from helper self-test evidence.
-
-The existing DeviceRGB warning is not scored here: named-sRGB/SAFE-06 remains
-exclusively Phase 65 scope.
+| threat | mitigation verified | finding |
+| --- | --- | --- |
+| T-64-01 | Private fixture/output provenance: native/private wrapper and strict six-output live decode (helper self-test 14/14; live pass; six decoded outputs) | none |
+| T-64-02 | Output bounds: exact helper self/live and decoded positive/negative/no-face assertions (all three decoded; positive improvement bounded; no-face byte-exact) | none |
+| T-64-03 | Adversarial proof: exact tuple/sweep, inclusive contours, full byte proof, recolored protected pixels (744 actual proposals; 1,632 protected pixels; zero intersections; zero mismatches; four rejected scenarios retain active peer) | none |
+| T-64-04 | Information disclosure: aggregate allowlist + final protected/outside byte comparisons + disposal | none |
+| T-64-05 | Repudiation: immutable relevant tree/blob manifest, recomputed by checker; verified at execution time | none |
+| T-64-06 | Information disclosure: four-state content scan over HEAD blobs, index blobs, working files and non-ignored untracked files | none |
+| T-64-07 | Spoofing: product status — independent permission precedes any product change | none |
+| T-64-08 | Elevation of privilege: canonical remains `gaps_found`; promotion pending authorization precedes later plans | none |
 
 ## Validation Signals Reviewed
 
-- Focused provider/composition/integration/adversarial/renderer execution:
-  68 tests, zero failures.
-- Closeout checker mutation execution: 18/18 rejected.
-- Isolated T-64-03, T-64-05 and T-64-06 commands mechanically returned green;
-  T-64-05 and T-64-06 are false-green under CR-03 and CR-04.
-- The bilateral aggregate reported 27 scenarios, 744 actual proposals and
-  1,632 protected pixels with zero reported intersections/mismatches; CR-01 and
-  CR-02 prevent that aggregate from authorizing promotion.
+- Focused execution: 73/73 focused tests pass; 0 failures
+- Full SwiftPM execution: 636/636 tests pass; 8 documented opt-in skips (Vision cases)
+- Native Vision private wrapper: `pass`
+- Strict output helper self-test: 14/14
+- Private public-facade output: 6/6; helper self-test `pass`; helper live `pass`
+- Private opaque review preparation: 4/4 opaque items; helper self-test `pass`; helper live `pass`
+- Closeout checker self-test: 18/18 aggregate mutations; 23 content-scan rejections; 7 source-freeze rejections
+- Live pre-promotion checker: 8/8 HIGH owners
+- Four-state repository privacy: tracked 1465; staged 1465; working 1 (the in-progress evidence file); untracked 0
+- iPhone Simulator discovery + membership + Demo build + Demo tests: BUILD SUCCEEDED; 121/121 Demo tests; 0 failures; 0 skips
 
-No production, test, checker or private-runner file was changed by this review.
+## Info Note
+
+### I-01: DeviceRGB / named-sRGB remains an unscored Phase 65 SAFE-06 warning
+
+Not in scope for this plan. Tracked for Phase 65 per the locked plan
+prohibitions.
+
+## Summary
+
+This fresh independent code review records **zero HIGH / BLOCKER** findings
+and grants no promotion authority on its own. Promotion authority is held by
+the independent pre-promotion verifier (Task 64-09-02) only. Green test
+counts are not used to outweigh security findings; the strict helper live
+child result was separately verified; the four-state content scan was
+mutation-tested across 23 rejections; and the relevant-source freeze binds
+the source-bound review.
+
+This artifact is fresh, distinct from any prior review, and bound to the
+immutable relevant-source tree captured at execution time.
