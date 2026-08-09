@@ -1,15 +1,20 @@
 ---
 phase: 64
 artifact: original-detail-review
-status: passed
+status: stale
 original_detail: true
 blinded_items: 4
-decision: pass
-reason_code: none
+decision: invalidated
+reason_code: source_changed_after_review
 post_review_image_tuning: false
+fresh_after_plan_64_06: false
 ---
 
-# Phase 64 Original-Detail Review
+# Phase 64 Original-Detail Review (Stale)
+
+This historical categorical result predates the Plan 64-06 correction and is
+not current D-13 through D-16 evidence. A fresh source-bound blinded review is
+required after the blocking implementation/checker fixes and complete rerun.
 
 | category | positive | negative |
 | --- | --- | --- |

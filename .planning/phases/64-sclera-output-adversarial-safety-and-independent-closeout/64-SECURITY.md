@@ -1,29 +1,36 @@
 ---
 phase: 64
-status: gaps_found
+status: open_threats
 security_standard: OWASP ASVS Level 1
+independent: true
 threats_total: 8
 threats_closed: 6
 threats_open: 2
+promotion_authorized: false
 ---
 
-# Phase 64 Security Disposition
+# Phase 64 Pre-Promotion Security Disposition
 
-| threat | disposition | fixed evidence |
+## OPEN_THREATS
+
+| threat | disposition | aggregate evidence |
 | --- | --- | --- |
-| T-64-01 | mitigated | exact 74-case public-only renderer and one facade call |
-| T-64-02 | mitigated | bounded decoder, exact 6/6 inventory and ignored artifact containment |
-| T-64-03 | unresolved | canonical verification found no complete bilateral protected truth, asymmetric grid, or actual proposal/truth intersection |
-| T-64-04 | unresolved | canonical verification found the protected recolor/final-byte oracle samples only six left-side coordinates |
-| T-64-05 | mitigated | four-item blinded `original_detail` review; decision pass |
-| T-64-06 | mitigated | fixed-output private execution and tracked/staged privacy |
-| T-64-07 | mitigated | exact four-owner evidentiary quarantine restores the unpromoted D-17 state |
-| T-64-08 | mitigated | canonical `gaps_found` blocks Phase 65 verification and milestone readiness until corrected proof passes |
+| T-64-01 | closed | exact public-facade case and six-output private-runner contract |
+| T-64-02 | closed | bounded no-follow decoder, exact inventory and 14 mutation probes |
+| T-64-03 | closed by narrow security oracle; authorization blocked | bilateral aggregate is substantive, but code review found a tuned-away counterexample and malformed-contour gap |
+| T-64-04 | closed | aggregate allowlist and final protected/outside byte comparisons report zero mismatches |
+| T-64-05 | open | current original-detail artifact is stale after the Plan 64-06 correction and lacks freshness binding |
+| T-64-06 | open | checker inventories git-state names but does not inspect tracked, staged and working content |
+| T-64-07 | closed | all four product owners remain quarantined; no promotion transaction occurred |
+| T-64-08 | closed | canonical verification remains `gaps_found` and no intermediate authority was issued |
 
-Regression-preserved evidence remains output 6/6, provider 11/11, facade 9/9,
-review 4/4, SCLERA-16, SCLERA-17 and OUT-05. The prior adversarial 5/5 and
-checker 8/8 counts do not close T-64-03 or T-64-04; failed, skipped, zero-count,
-stale or missing mandatory gates keep this disposition `gaps_found`.
+The security audit closes 6/8 threat identities and leaves T-64-05 and T-64-06
+open. Independently, the code review blocks use of T-64-03 as promotion
+authority until the tuned-away asymmetric counterexample and malformed-contour
+validation are repaired. Consequently the complete pre-promotion conjunction
+is false even though selected commands mechanically returned green.
 
-This disposition contains no media, locator, digest, identity, rights detail,
-support, pupil, mask, geometry, pixel, raw metric, scanner match or free-form review text.
+DeviceRGB/named-sRGB remains Phase 65 SAFE-06 scope and is not a Phase 64
+security blocker. This disposition contains aggregate categories and counts
+only; no private media, locator, digest, identity, rights detail, raw support,
+raw geometry, raw pixel data, raw metric or free-form review prose is retained.
