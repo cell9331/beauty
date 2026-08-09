@@ -4,17 +4,17 @@ milestone: v1.15
 milestone_name: Independent Teeth and Sclera Retouch
 current_phase: 64
 current_phase_name: sclera-output-adversarial-safety-and-independent-closeout
-status: executing
-stopped_at: Completed 64-06-PLAN.md; Plan 64-07 pre-promotion conjunction next
-last_updated: "2026-08-08T05:48:41.470Z"
-last_activity: 2026-08-08
-last_activity_desc: Plan 64-06 replaced the hollow oracle with bilateral actual-proposal proof and a substantive three-state checker
+status: ready_to_execute
+stopped_at: Replanned Phase 64 gap chain; Plan 64-07 production-proof remediation next
+last_updated: "2026-08-09T06:31:27Z"
+last_activity: 2026-08-09
+last_activity_desc: Replanned incomplete Phase 64 work as seven serial Plans 64-07 through 64-13 after four blocking pre-promotion audit findings
 progress:
   total_phases: 7
   completed_phases: 6
-  total_plans: 41
+  total_plans: 43
   completed_plans: 36
-  percent: 88
+  percent: 84
 ---
 
 # Project State
@@ -28,12 +28,12 @@ See: `.planning/PROJECT.md` (updated 2026-08-07)
 
 ## Current Position
 
-Phase: 64 (sclera-output-adversarial-safety-and-independent-closeout) — EXECUTING
-Plan: 7 of 11
+Phase: 64 (sclera-output-adversarial-safety-and-independent-closeout) — READY TO EXECUTE
+Plan: 7 of 13
 Status: Active remediation; canonical verification remains `gaps_found`
-Last activity: 2026-08-08 — Plan 64-06 replaced the hollow oracle with bilateral actual-proposal proof and a substantive three-state checker
+Last activity: 2026-08-09 — Replanned the incomplete chain as Plans 64-07 through 64-13 after four blocking pre-promotion audit findings
 
-Progress: [█████████░] 88%
+Progress: [████████░░] 84%
 
 ## Performance Metrics
 
@@ -67,11 +67,13 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 64 P04 | — | 2 tasks | 15 files |
 | Phase 64 P05 | — | 2 tasks | 9 files |
 | Phase 64 P06 | — | 2 tasks | 5 files |
-| Phase 64 P07 | — | 2 tasks | 6 files |
-| Phase 64 P08 | — | 2 tasks | 9 files |
-| Phase 64 P09 | — | 2 tasks | 5 files |
-| Phase 64 P10 | — | 1 task | 1 file |
-| Phase 64 P11 | — | 1 task | 15 files |
+| Phase 64 P07 | — | 2 tasks | 3 files |
+| Phase 64 P08 | — | 2 tasks | 2 files |
+| Phase 64 P09 | — | 2 tasks | 6 files |
+| Phase 64 P10 | — | 2 tasks | 9 files |
+| Phase 64 P11 | — | 2 tasks | 5 files |
+| Phase 64 P12 | — | 1 task | 1 file |
+| Phase 64 P13 | — | 1 task | 15 files |
 | Phase 65 P01 | — | 2 tasks | 5 files |
 | Phase 65 P02 | — | 2 tasks | 6 files |
 | Phase 65 P03 | — | 2 tasks | 9 files |
@@ -97,7 +99,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 - Phase 63 Wave 3 connects exactly one sclera provider to the current still-image request, shares one composition owner with teeth and proves per-eye recovery without deferred-route activation.
 - Phase 63 Wave 4 closes the final native-Vision pair, eight HIGH owners, 612-test SDK and 121-test Demo conjunction; SCLERA-09 through SCLERA-13 are verified without renderer or product promotion.
 - The prior Phase 64 closeout is superseded by canonical `gaps_found`: its oracle sampled six left-side pixels, omitted complete bilateral truth and used a constant protected-proposal aggregate.
-- Phase 64 Waves 5-11 quarantine the stale `祛红血丝` promotion, repair SCLERA-14/15, rerun the full conjunction, and require independent eligibility plus post-promotion verification before SCLERA-18 can close.
+- Phase 64 Waves 5-13 quarantine the stale `祛红血丝` promotion, repair SCLERA-14/15 plus the newly found review/privacy trust gaps, rerun the full conjunction, and require independent eligibility plus post-promotion verification before SCLERA-18 can close.
 - Phase 65 implementation plans are executed, but their verification and the earlier 40/40 milestone audit are stale until Phase 64 completes and the downstream claims are freshly re-verified.
 - Combined behavior adds no renderer case or product control: exact compatibility remains 61 fields, five presets and 74 renderer cases while the public-facade XCTest owns the joint request.
 - Teeth evidence, support, review, and promotion contribute no sclera or `去脂` credit.
