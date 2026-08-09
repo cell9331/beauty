@@ -10,6 +10,11 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
     private let width = 80
     private let height = 48
 
+    private struct MalformedContourCase {
+        let id: String
+        let contour: [CoordinatePoint]
+    }
+
     func testCanonicalMappedPairProducesStablePerEyeUnitsInsideSafeSclera() throws {
         let fixture = makeEyeFixture()
         let source = try canonical(fixture.bytes)
@@ -267,6 +272,226 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
             stride(from: 3, to: output.count, by: 4).map { output[$0] },
             Array(repeating: UInt8.max, count: width * height)
         )
+    }
+
+    func testInclusiveNonAdjacentContactsRejectLocallyForBothEyes() throws {
+        let source = try canonical(makeEyeFixture().bytes)
+        for challenge in nonAdjacentContactCases {
+            for affectedSide in [BeautyObservedEyeSide.left, .right] {
+                let malformed = support(
+                    side: affectedSide,
+                    contour: affectedSide == .left ? challenge.contour : mirrored(challenge.contour)
+                )
+                let peer = affectedSide == .left ? rightSupport : leftSupport
+                let owner = BeautyLocalRetouchCompositionOwner(source: source)
+                let result = BeautyScleraRednessProvider.makeResult(
+                    source: source,
+                    eyeSupport: affectedSide == .left ? [malformed, peer] : [peer, malformed],
+                    eyeOrder: .canonical,
+                    strength: 1,
+                    owner: owner
+                )
+
+                XCTAssertEqual(result.units.count, 1, "\(challenge.id)/\(affectedSide)")
+                XCTAssertEqual(result.summary.acceptedEyeCount, 1, "\(challenge.id)/\(affectedSide)")
+                XCTAssertNotEqual(outcome(for: affectedSide, result: result), .accepted, challenge.id)
+                XCTAssertEqual(outcome(for: opposite(affectedSide), result: result), .accepted, challenge.id)
+                XCTAssertTrue(
+                    result.proposalPixelIndices.allSatisfy { isPixel($0, in: opposite(affectedSide)) },
+                    "affected proposal escaped: \(challenge.id)/\(affectedSide)"
+                )
+            }
+        }
+    }
+
+    func testDegenerateAndAdjacentOverlapContoursRejectLocallyForBothEyes() throws {
+        let source = try canonical(makeEyeFixture().bytes)
+        for challenge in degenerateAndAdjacentCases {
+            for affectedSide in [BeautyObservedEyeSide.left, .right] {
+                let malformed = support(
+                    side: affectedSide,
+                    contour: affectedSide == .left ? challenge.contour : mirrored(challenge.contour)
+                )
+                let peer = affectedSide == .left ? rightSupport : leftSupport
+                let owner = BeautyLocalRetouchCompositionOwner(source: source)
+                let result = BeautyScleraRednessProvider.makeResult(
+                    source: source,
+                    eyeSupport: affectedSide == .left ? [malformed, peer] : [peer, malformed],
+                    eyeOrder: .canonical,
+                    strength: 1,
+                    owner: owner
+                )
+
+                XCTAssertEqual(result.units.count, 1, "\(challenge.id)/\(affectedSide)")
+                XCTAssertNotEqual(outcome(for: affectedSide, result: result), .accepted, challenge.id)
+                XCTAssertEqual(outcome(for: opposite(affectedSide), result: result), .accepted, challenge.id)
+            }
+        }
+    }
+
+    func testIntendedAdjacentEndpointsAndNearCollinearSeparatedContourRemainValid() throws {
+        let source = try canonical(makeEyeFixture().bytes)
+        for contour in [eyeContour(centerX: 0.2625), nearCollinearSeparatedContour] {
+            let owner = BeautyLocalRetouchCompositionOwner(source: source)
+            let result = BeautyScleraRednessProvider.makeResult(
+                source: source,
+                eyeSupport: [support(side: .left, contour: contour), rightSupport],
+                eyeOrder: .canonical,
+                strength: 1,
+                owner: owner
+            )
+
+            XCTAssertEqual(result.summary.leftOutcome, .accepted)
+            XCTAssertEqual(result.summary.rightOutcome, .accepted)
+            XCTAssertEqual(result.units.count, 2)
+            XCTAssertFalse(result.proposalPixelIndices.isEmpty)
+        }
+    }
+
+    func testMalformedEyeRecoveryIsStatelessSequentiallyAndInParallel() async throws {
+        let source = try canonical(makeEyeFixture().bytes)
+        let malformedLeft = support(side: .left, contour: degenerateAndAdjacentCases[1].contour)
+        let validSupports = [leftSupport, rightSupport]
+        let invalidSupports = [malformedLeft, rightSupport]
+
+        var validProposalIndices: [Int]?
+        for supports in [validSupports, invalidSupports, validSupports] {
+            let owner = BeautyLocalRetouchCompositionOwner(source: source)
+            let result = BeautyScleraRednessProvider.makeResult(
+                source: source,
+                eyeSupport: supports,
+                eyeOrder: .canonical,
+                strength: 1,
+                owner: owner
+            )
+            if supports[0].contour == malformedLeft.contour {
+                XCTAssertNotEqual(result.summary.leftOutcome, .accepted)
+                XCTAssertEqual(result.summary.rightOutcome, .accepted)
+                XCTAssertEqual(result.units.count, 1)
+            } else {
+                XCTAssertEqual(result.summary.leftOutcome, .accepted)
+                XCTAssertEqual(result.summary.rightOutcome, .accepted)
+                XCTAssertEqual(result.units.count, 2)
+                if let validProposalIndices {
+                    XCTAssertEqual(result.proposalPixelIndices, validProposalIndices)
+                } else {
+                    validProposalIndices = result.proposalPixelIndices
+                }
+            }
+        }
+
+        let parallelPass = await withTaskGroup(of: Bool.self, returning: [Bool].self) { group in
+            for index in 0..<24 {
+                group.addTask {
+                    let shouldBeValid = index.isMultiple(of: 2)
+                    let owner = BeautyLocalRetouchCompositionOwner(source: source)
+                    let result = BeautyScleraRednessProvider.makeResult(
+                        source: source,
+                        eyeSupport: shouldBeValid ? validSupports : invalidSupports,
+                        eyeOrder: .canonical,
+                        strength: 1,
+                        owner: owner
+                    )
+                    if shouldBeValid {
+                        return result.units.count == 2
+                            && result.summary.leftOutcome == .accepted
+                            && result.summary.rightOutcome == .accepted
+                            && !result.proposalPixelIndices.isEmpty
+                    }
+                    return result.units.count == 1
+                        && result.summary.leftOutcome != .accepted
+                        && result.summary.rightOutcome == .accepted
+                        && !result.proposalPixelIndices.isEmpty
+                }
+            }
+            var results: [Bool] = []
+            for await result in group { results.append(result) }
+            return results
+        }
+        XCTAssertEqual(parallelPass.count, 24)
+        XCTAssertTrue(parallelPass.allSatisfy { $0 })
+    }
+
+    private var nonAdjacentContactCases: [MalformedContourCase] {
+        [
+            MalformedContourCase(id: "collinear_overlap", contour: [
+                point(0.10, 0.40), point(0.42, 0.40), point(0.42, 0.60), point(0.32, 0.60),
+                point(0.32, 0.40), point(0.22, 0.40), point(0.22, 0.60), point(0.10, 0.60),
+            ]),
+            MalformedContourCase(id: "vertex_on_non_adjacent_segment", contour: [
+                point(0.10, 0.40), point(0.42, 0.40), point(0.42, 0.60), point(0.26, 0.60),
+                point(0.26, 0.40), point(0.10, 0.60),
+            ]),
+            MalformedContourCase(id: "non_adjacent_endpoint_touch", contour: [
+                point(0.10, 0.40), point(0.42, 0.40), point(0.42, 0.60), point(0.26, 0.60),
+                point(0.26, 0.40), point(0.10, 0.50),
+            ]),
+            MalformedContourCase(id: "reversed_overlapping_segment", contour: [
+                point(0.10, 0.40), point(0.42, 0.40), point(0.42, 0.60), point(0.36, 0.60),
+                point(0.32, 0.40), point(0.18, 0.40), point(0.14, 0.60), point(0.10, 0.60),
+            ]),
+        ]
+    }
+
+    private var degenerateAndAdjacentCases: [MalformedContourCase] {
+        [
+            MalformedContourCase(id: "consecutive_duplicate_zero_length", contour: [
+                point(0.10, 0.40), point(0.42, 0.40), point(0.42, 0.40), point(0.42, 0.60),
+                point(0.10, 0.60),
+            ]),
+            MalformedContourCase(id: "adjacent_retrace_overlap", contour: [
+                point(0.10, 0.40), point(0.42, 0.40), point(0.22, 0.40), point(0.42, 0.60),
+                point(0.10, 0.60),
+            ]),
+            MalformedContourCase(id: "first_last_closure_overlap", contour: [
+                point(0.20, 0.40), point(0.42, 0.40), point(0.42, 0.60), point(0.10, 0.60),
+                point(0.10, 0.40), point(0.30, 0.40),
+            ]),
+            MalformedContourCase(id: "non_consecutive_repeated_endpoint", contour: [
+                point(0.10, 0.40), point(0.42, 0.40), point(0.42, 0.60), point(0.10, 0.60),
+                point(0.42, 0.40),
+            ]),
+        ]
+    }
+
+    private var nearCollinearSeparatedContour: [CoordinatePoint] {
+        var contour = eyeContour(centerX: 0.2625)
+        contour[3] = CoordinatePoint(x: contour[3].x, y: contour[2].y + 0.000_002)
+        return contour
+    }
+
+    private func support(
+        side: BeautyObservedEyeSide,
+        contour: [CoordinatePoint]
+    ) -> BeautyObservedEyeSupport {
+        BeautyObservedEyeSupport(
+            side: side,
+            contour: contour,
+            pupil: [CoordinatePoint(x: side == .left ? 0.26 : 0.74, y: 0.50)]
+        )
+    }
+
+    private func mirrored(_ contour: [CoordinatePoint]) -> [CoordinatePoint] {
+        contour.map { CoordinatePoint(x: 1 - $0.x, y: $0.y) }
+    }
+
+    private func opposite(_ side: BeautyObservedEyeSide) -> BeautyObservedEyeSide {
+        side == .left ? .right : .left
+    }
+
+    private func outcome(
+        for side: BeautyObservedEyeSide,
+        result: BeautyScleraRednessProviderResult
+    ) -> BeautyScleraEyeOutcome {
+        side == .left ? result.summary.leftOutcome : result.summary.rightOutcome
+    }
+
+    private func isPixel(_ index: Int, in side: BeautyObservedEyeSide) -> Bool {
+        side == .left ? index % width < width / 2 : index % width >= width / 2
+    }
+
+    private func point(_ x: Double, _ y: Double) -> CoordinatePoint {
+        CoordinatePoint(x: x, y: y)
     }
 
     private var leftSupport: BeautyObservedEyeSupport {
