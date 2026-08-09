@@ -776,37 +776,40 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
   dimensions/alpha, zero reviewed-mask exterior or protected-anatomy change,
   bounded color/luminance and retained detail. Fresh original-detail review
   passes with no post-review tuning.
-- Phases 62, 63 and 64 form one non-borrowed sclera chain. Exactly
-  `祛红血丝` is `implemented` at bounded SDK-core still-image scope; aggregate
-  branch `眼睛` remains `partial` solely because `去脂` remains future. The
-  synchronization is promotion-pending and awaits the independent Plan 12
-  candidate plus Plan 13 bounded final transaction.
+- Phases 62, 63 and 64 retain a non-borrowed implementation chain: SCLERA-16,
+  SCLERA-17, and OUT-05 behavior remains demonstrable. Product acceptance does
+  not follow because the immutable Plan 64-12 candidate is `gaps_found` on a
+  failed checker self-test and eight skipped full-suite tests. `祛红血丝` is
+  therefore unproven/future; aggregate `眼睛` remains `partial` and `去脂`
+  remains future.
 - The Demo still displays `白牙`, `祛红血丝` and `去脂` as disabled rows with
   nil mappings. Compatibility is exactly 61 public fields, five neutral presets
   and 74 renderer cases.
-- Two authorized fixtures establish the minimum frozen positive/negative gate,
-  not population sufficiency. No realtime/pixel-buffer, target-device quality
-  or performance, commercial approval, packaging, shipping, launch or release-
-  readiness acceptance follows, and SCLERA-18 final, 24/24 validation,
-  canonical passed, and Phase 65 current state remain explicitly blocked.
+- Two authorized fixtures remain implementation evidence, not population
+  sufficiency or current product authorization. SCLERA-18 and final validation
+  remain open, Phase 65 is blocked, and DeviceRGB/named-sRGB remains exclusively
+  its SAFE-06 acceptance obligation. No realtime/pixel-buffer, target-device
+  quality/performance, commercial approval, packaging, shipping, launch, or
+  release-readiness acceptance follows.
 
 Command-level evidence is recorded in [Phase 64 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-REVIEW.md), and [security disposition](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SECURITY.md).
 
-### v1.15 Phase 65 Combined Product Acceptance
+### v1.15 Phase 65 Combined Product Evidence — Stale/Blocked
 
-- An SDK integrator may request `白牙`, `祛红血丝`, or both through the public
-  still-image facade. Combined use preserves each independently accepted result
-  and unaffected peer work under local provider failure.
-- Product equality is exact: `嘴唇 | 白牙` and aggregate `嘴唇` are
-  `implemented`; `眼睛 | 祛红血丝` is `implemented`; aggregate `眼睛` is
-  `partial` solely because `去脂` remains `future`.
+- The public still-image facade retains implementation routes for `白牙`,
+  `祛红血丝`, or both, and prior combined evidence records unaffected peer work
+  under local provider failure. This is not current product acceptance.
+- Current product authority keeps `嘴唇 | 白牙` and aggregate `嘴唇`
+  `implemented`; `眼睛 | 祛红血丝` is unproven/future; aggregate `眼睛` is
+  `partial`; and `去脂` remains `future`.
 - Compatibility remains 61 public fields, five neutral presets, 74 renderer
   cases and three disabled nil-mapped Demo rows. Combined acceptance adds no UI
   control, preset, alias, proxy or hidden route.
-- Standalone and combined public output, independent private evidence,
-  protected-region safety, failure isolation, recovery, privacy, full
-  regression and owner equality agree. The separate 40/40 milestone audit also
-  passes, making v1.15 completion-ready without archive, tag or release claim.
+- The prior standalone/combined evidence and 40/40 audit are stale for
+  lifecycle and product authority because Phase 64 is `gaps_found`. Phase 65
+  remains blocked and v1.15 is not completion-ready. A distinct passing Phase
+  64 candidate must precede fresh Phase 65 verification and audit; SAFE-06
+  DeviceRGB/named-sRGB remains open there.
 - Minimum authorized pairs do not establish population sufficiency. No
   realtime/pixel-buffer, target-device quality/performance, commercial
   approval, Demo activation, packaging, shipping, launch or release-readiness

@@ -34,20 +34,20 @@ Quality gate:
 
 ## 3. Current Snapshot
 
-Current repository state as of 2026-08-08 after the v1.15 Phase 64 standalone
-sclera output, adversarial safety, review, and exact-promotion gates:
+Current repository state after the Plan 64-12 `gaps_found` candidate and Plan
+64-13 mandatory full re-quarantine transaction:
 
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
 | Root docs | 4 | All nine root owners exist. The consolidation audit corrected `ARCHITECTURE.md` so current pixel-buffer processing, still-image detection/geometry, and placeholder Render foundations match compiled code. | Keep current facts in root owners; keep milestone narratives in archives. |
 | Historical docs | 3 | `docs/README.md` remains the long-doc entry. `.planning/codebase/*` is explicitly stale background and historical phase/milestone artifacts are not current contracts. | Refresh codebase maps only in an explicitly scoped remap. |
-| GSD planning | 4 | Phase 64 is complete at 4/4 plans, 8/8 task rows, six verified requirements, 21/21 decisions and eight green HIGH owners. | Begin Phase 65 combined-facade and milestone closeout without borrowing standalone evidence. |
+| GSD planning | 3 | Phase 64 remains in progress/gaps: 12 plan summaries exist, the exact 24-row inventory records 64-13-01 failed/requarantined, and Phase 65 is blocked. | Repair the failed checker self-test/full-suite skip conjunction in a new plan, then generate a new independent candidate before any promotion. |
 | SDK Package | 4 | The package/facade boundary is intact; standalone sclera output reaches the public renderer through one request-local guarded provider while the exact inventory is 61 public fields, five neutral presets, and 74 renderer cases. | Preserve standalone semantics while Phase 65 proves combined output and failure isolation. |
 | Demo App | 4 | The unchanged Demo builds and passes 121/121 on iPhone 17e / iOS 26.5; teeth, sclera-redness, and `去脂` rows remain disabled with nil mappings. | Preserve disabled taxonomy through milestone closeout. |
-| Tests | 4 | Required private output passes 6/6; focused renderer/adversarial/provider/facade passes 21/5/11/9, full SwiftPM 617/0/8, and full Demo 121/121. All Phase 64 required gates ran explicitly. | Add combined teeth+sclera facade and injected-failure matrices in Phase 65. |
-| Security | 4 | Bounded decoding, color-independent and recolored-protected oracles, fixed-output private execution, tracked/staged privacy, eight rejected mutations and 8/8 Phase 64 HIGH owners pass with zero open HIGH. | Preserve raw-anatomy privacy and prove cross-feature isolation before milestone closeout. |
+| Tests | 3 | Focused/private/native/Demo implementation evidence remains green, but the immutable candidate records a failed checker self-test and 636/0/8 full SwiftPM; either failed/skipped condition blocks final quality credit. | Repair and rerun every mandatory no-failure/no-skip gate before a new candidate. |
+| Security | 4 | Bounded decoding, bilateral adversarial proof, source-bound review, four-state privacy, and zero open HIGH review/security artifacts remain verified facts; they do not override the failed candidate conjunction. | Keep the evidence quarantined and preserve aggregate-only privacy while Phase 64 remains open. |
 | Reliability | 3 | Backpressure, stale work, reset, detection degradation, and the repaired camera lifecycle are test-backed. Realtime geometry/Metal dispatch, 600-second preview, and device endurance are not current evidence. | Keep claims bounded and run the setup-specific long-run/device gates when authorized. |
-| Product acceptance | 4 | `祛红血丝` is implemented at bounded SDK-core still-image scope after a non-borrowed Phase 62-64 chain; `眼睛` remains partial solely because `去脂` is future, and Demo stays disabled. | Do not infer population, realtime, device, commercial, packaging, or release readiness. |
+| Product acceptance | 3 | The `scleraRednessReduction` implementation remains, but `祛红血丝` product authorization is unproven/future after full re-quarantine; `眼睛` remains partial, `去脂` future, and Demo disabled. | Require a fresh independent passing candidate; SAFE-06 DeviceRGB/named-sRGB remains Phase 65-only. |
 
 ### 3.1 Phase 4 Final Verification
 
@@ -715,35 +715,36 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
 
 ### v1.15 Phase 64 Sclera Output and Promotion Evidence Score
 
-- Exact traceability passes 4/4 plans, 8/8 task rows, SCLERA-14 through
-  SCLERA-18 plus OUT-05 6/6, D-01 through D-21 21/21 and T-64-01 through
-  T-64-08 8/8 machine-green HIGH mitigations with zero open findings.
+- The current exact inventory is 13 plans / 24 task IDs. SCLERA-16,
+  SCLERA-17, and OUT-05 implementation facts remain substantiated; SCLERA-18
+  and product authorization remain open. T-64-01 through T-64-08 and zero-HIGH
+  review/security evidence remain green but are not promotion authority.
 - Post-promotion execution passes renderer 21/21, adversarial 5/5, provider
   11/11 and facade 9/9. The strict helper passes 14/14; the required
   positive/negative/no-face output matrix passes 6/6; native Vision and the
   fresh four-item original-detail review pass without post-review tuning.
-- Full SwiftPM executes 617 tests with eight documented non-required opt-in
-  skips and zero failures. Explicit iPhone 17e / iOS 26.5 Demo build succeeds
-  and tests pass 121/121 with no skips. Checker self/post/eight isolated modes,
-  tracked/staged privacy over 1,424 files, JSON, inventory and diff gates pass.
-- Quality credit is limited to bounded standalone still-image SDK-core sclera
-  output, protected-anatomy identity, peer/recovery isolation, exact
-  `祛红血丝` promotion, compatibility and privacy; the synchronization is
-  promotion-pending and awaits the independent Plan 12 candidate plus Plan 13
-  bounded final transaction, and only evidence-backed Phase 64 scores/counts
-  are credited with zero score/credit for DeviceRGB SAFE-06. `眼睛` remains
-  partial due to future `去脂`; no combined-facade, population, realtime,
-  device/performance, commercial, packaging, shipping, launch or release credit
-  is added, and SCLERA-18 final, 24/24 validation, canonical passed, and
-  Phase 65 current state remain explicitly blocked.
+- The immutable Plan 64-12 candidate records focused 73/73, private/native and
+  Demo 121/121 evidence, but its checker self-test exited nonzero and full
+  SwiftPM reported 636 passed / 0 failed / 8 skipped. Either condition blocks
+  the mandatory conjunction; green aggregates cannot outweigh it.
+- Quality credit is limited to implementation facts for standalone output,
+  protected-anatomy identity, peer/recovery isolation, compatibility, privacy,
+  SCLERA-16, SCLERA-17, and OUT-05. `祛红血丝` is unproven/future, `眼睛`
+  remains partial, and `去脂` remains future. Phase 65 is blocked and
+  DeviceRGB/named-sRGB receives zero Phase 64 credit because it remains
+  exclusively Phase 65 SAFE-06 scope. No combined-facade, population,
+  realtime, device/performance, commercial, packaging, shipping, launch, or
+  release credit is added.
 
 Command-level evidence is recorded in [Phase 64 verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).
 
-### v1.15 Phase 65 Combined Closeout Evidence Score
+### v1.15 Phase 65 Combined Closeout Evidence — Stale/Blocked
 
-- Phase execution reaches 4 plans, 8 task rows, 11 Phase 65 requirements, eight
-  machine-green HIGH owners and zero open findings. The separate audit passes
-  40/40 requirements, 7/7 phases, 12/12 integration seams and 7/7 flows.
+- The prior Phase 65 execution recorded 4 plans, 8 task rows, 11 requirements,
+  eight machine-green HIGH owners and zero open findings. Its separate audit
+  recorded 40/40 requirements, 7/7 phases, 12/12 integration seams and 7/7
+  flows. These are historical implementation/audit results, not current
+  closeout authority.
 - Combined closeout passes 13/13; combined plus feature integration 34/34;
   composition/foundation 73/73; six focused suites 94/94. Checker self, live
   and all eight isolated modes pass, as does the retained teeth helper 19/19.
@@ -754,9 +755,11 @@ Command-level evidence is recorded in [Phase 64 verification](.planning/phases/6
   non-required skips. Explicit iPhone 17e / iOS 26.5 Demo build succeeds and
   tests pass 121/121 with no skips. Exact inventory remains 61/5/74 with three
   disabled Demo rows.
-- Quality credit is limited to bounded still-image SDK-core standalone and
-  combined behavior, privacy, compatibility, recovery and exact product owner
-  state. No population, realtime, device/performance, commercial, packaging,
-  shipping, launch or release credit is added.
+- Current quality credit is limited to retained bounded still-image SDK-core
+  implementation facts. Phase 64 is `gaps_found`, so Phase 65 verification and
+  audit are stale/blocked; `祛红血丝` product authorization is unproven/future,
+  and DeviceRGB/named-sRGB remains open only under Phase 65 SAFE-06. No current
+  combined-closeout, population, realtime, device/performance, commercial,
+  packaging, shipping, launch or release credit is added.
 
 Command-level evidence is recorded in [Phase 65 verification](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).

@@ -17,7 +17,7 @@
 - ✅ **[v1.12 Face Shape Remaining Capabilities](milestones/v1.12-ROADMAP.md)** — Phases 45-48, shipped 2026-07-24.
 - ✅ **[v1.13 Eyebrow Geometry Controls](milestones/v1.13-ROADMAP.md)** — Phases 49-52, shipped 2026-07-28.
 - ✅ **[v1.14 Local Facial Retouch](milestones/v1.14-ROADMAP.md)** — Phases 53-58, shipped 2026-08-05.
-- 🚧 **v1.15 Independent Teeth and Sclera Retouch** — Phase 64 adversarial-proof remediation is planned; the prior Phase 65 verification and milestone audit remain stale until the gap chain passes.
+- 🚧 **v1.15 Independent Teeth and Sclera Retouch** — Phase 64 remains in progress/gaps after the immutable Plan 64-12 candidate failed the mandatory checker/no-skip conjunction and Plan 64-13 fully re-quarantined all fifteen owners. Phase 65 remains blocked.
 
 ## Overview
 
@@ -32,7 +32,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 - [x] **Phase 61: Teeth Output, Safety, and Independent Closeout** - Prove public-facade visibility, protected-tissue safety, naturalness, regression, and exact `白牙` promotion before any sclera production work. (completed 2026-08-07)
 - [x] **Phase 62: Sclera Evidence and Admission Contract** - Independently qualify genuine redness/normal evidence and add one compatibility-safe sclera-only public intent after teeth closes. (completed 2026-08-07)
 - [x] **Phase 63: Guarded Per-Eye Sclera Production Integration** - Deliver independent left/right eye guards, hard sclera ownership, and bounded original-pixel redness reduction. (completed 2026-08-07)
-- [ ] **Phase 64: Sclera Output, Adversarial Safety, and Independent Closeout** - Prove public-facade per-eye behavior, native and adversarial protected-region safety, naturalness, regression, and exact `祛红血丝` promotion. (active remediation; 11/13 plans complete; 13-plan / 24-task serial gap-chain synchronized; awaiting independent Plan 64-12 candidate plus Plan 64-13 bounded final transaction)
+- [ ] **Phase 64: Sclera Output, Adversarial Safety, and Independent Closeout** - Prove public-facade per-eye behavior, native and adversarial protected-region safety, naturalness, regression, and exact `祛红血丝` promotion. (active gaps; 12/13 summaries; 64-12 candidate `gaps_found`; 64-13 failed/requarantined; product authorization unproven)
 - [ ] **Phase 65: Combined Facade, Privacy, and Milestone Closeout** - Verify both independently admitted features together, preserve all v1.14 boundaries, keep `去脂` absent, and prepare the audited milestone close. (4/4 plans executed; verification/audit stale pending Phase 64)
 
 ## Phase Details
@@ -140,7 +140,13 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
   4. Genuine redness positives improve within predeclared per-eye bounds, while normal negatives and blink/gaze/glasses/highlight/occlusion challenges remain natural under blinded original-detail review.
   5. Production tests, native/adversarial matrices, compatibility, privacy, full regression, review/fix, independent verification, and owning ledgers promote exactly `祛红血丝`; `眼睛` remains partial because `去脂` remains future.
 
-**Plans**: 11/13 completed; content trust, source-bound review validity, strict-helper live proof, full conjunction rerun, fresh review/security, independent pre-promotion eligibility, and product/root owner promotion-pending synchronization are green. The full 13-plan / 24-task serial replacement chain is now synchronized across PLANS.md, REQUIREMENTS.md, ROADMAP.md, STATE.md, and 64-VALIDATION.md. Only the independent post-promotion candidate and the bounded final transaction remain.
+**Plans**: 12/13 summaries exist. Content trust, source-bound review validity,
+strict-helper live proof, focused/native/private/Demo evidence, and fresh
+zero-HIGH review/security remain implementation facts. The immutable Plan
+64-12 candidate is `gaps_found` because its checker self-test failed and the
+mandatory full SwiftPM command reported eight skips. Plan 64-13 applied the
+complete fifteen-owner failure set and remains failed/requarantined; a new
+repair plan and distinct independent candidate are required.
 **Wave 1**
 
 - [x] 64-01-PLAN.md — RED public-output/adversarial contracts and eight-HIGH checker
@@ -187,11 +193,11 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 
 **Wave 12** *(gap closure; blocked on Wave 11 completion)*
 
-- [ ] 64-12-PLAN.md — independently generate the post-promotion candidate without owner writes
+- [x] 64-12-PLAN.md — independently generated immutable `gaps_found` candidate without owner writes
 
 **Wave 13** *(bounded final transaction; blocked on Wave 12 completion)*
 
-- [ ] 64-13-PLAN.md — atomically finalize all fifteen owners or fully re-quarantine on any failure
+- [ ] 64-13-PLAN.md — failure branch applied across all fifteen owners; task 64-13-01 failed/requarantined and no summary exists
 
 ### Phase 65: Combined Facade, Privacy, and Milestone Closeout
 
@@ -224,7 +230,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 | 61. Teeth Output, Safety, and Independent Closeout | 4/4 | Complete    | 2026-08-07 |
 | 62. Sclera Evidence and Admission Contract | 5/5 | Complete — independent evidence, 61st scalar, direct demand, privacy and regression pass | 2026-08-07 |
 | 63. Guarded Per-Eye Sclera Production Integration | 4/4 | Complete — guarded provider, actual-Vision evidence, privacy and regression pass; no promotion | 2026-08-07 |
-| 64. Sclera Output, Adversarial Safety, and Independent Closeout | 11/13 | In Progress — fresh evidence, source-bound review, fresh code/security audits, independent `eligible_promotion_pending` issued, product and root owners synchronized, and the full 13-plan / 24-task lifecycle/validation chain synchronized in promotion-pending state | — |
-| 65. Combined Facade, Privacy, and Milestone Closeout | 4/4 executed | Blocked — prior verification and milestone audit are stale until Phase 64 re-verifies | — |
+| 64. Sclera Output, Adversarial Safety, and Independent Closeout | 12/13 summaries | Gaps Found / In Progress — immutable candidate failed mandatory checker/no-skip conjunction; 64-13 failed/requarantined; all fifteen owners are unproven/future or blocked as applicable | — |
+| 65. Combined Facade, Privacy, and Milestone Closeout | 4/4 implementation plans executed | Blocked — prior verification/audit is stale; SAFE-06 DeviceRGB/named-sRGB remains Phase 65-only and open | — |
 
 Earlier phase details are preserved in their linked milestone archives under `.planning/milestones/`.

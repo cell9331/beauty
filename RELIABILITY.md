@@ -868,22 +868,26 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
   non-required opt-in skips. The unchanged Demo builds and passes 121/121 on
   iPhone 17e / iOS 26.5 with no skips.
 - Affected-eye-only abstention, peer continuation, valid-invalid-valid and
-  concurrent recovery, full conjunction invalidation after relevant change, and
-  execution-discovered simulator validation remain Phase 64 reliability
-  ownership; the synchronization is promotion-pending and awaits the
-  independent Plan 12 candidate plus Plan 13 bounded final transaction.
+  concurrent recovery, full-conjunction invalidation after relevant change,
+  and execution-discovered simulator validation remain implementation facts.
+  The immutable Plan 64-12 candidate nevertheless failed its checker self-test
+  and reported eight full-SwiftPM skips; either condition independently makes
+  the closeout reliability conjunction unproven.
 - These results establish bounded still-image standalone output and recovery,
-  not realtime endurance, target-device performance budgets, population
-  coverage, commercial approval, packaging, shipping, launch or release
-  readiness, and SCLERA-18 final, 24/24 validation, canonical passed, and
-  Phase 65 current state remain explicitly blocked.
+  preserving SCLERA-16, SCLERA-17, and OUT-05 implementation facts, but grant no
+  `祛红血丝` product authorization. `祛红血丝` is future, `眼睛` remains
+  `partial`, `去脂` remains future, SCLERA-18/final validation remain open, and
+  Phase 65 is blocked. DeviceRGB/named-sRGB remains Phase 65 SAFE-06-only; no
+  realtime endurance, target-device budget, population, commercial, packaging,
+  shipping, launch, or release-readiness claim follows.
 
 Command-level evidence is recorded in [Phase 64 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SCLERA-OUTPUT-EVIDENCE.md) and [verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).
 
-### v1.15 Phase 65 Combined Facade Reliability Closeout
+### v1.15 Phase 65 Combined Facade Reliability — Stale/Blocked Evidence Record
 
-- Combined teeth+sclera output byte-matches independently merged standalone
-  output for disjoint ownership and preserves canonical source on collision.
+- Prior Phase 65 implementation evidence records that combined teeth+sclera
+  output byte-matches independently merged standalone output for disjoint
+  ownership and preserves canonical source on collision.
   Injected teeth, whole-sclera and individual-eye failure retains every
   unaffected unit.
 - Valid-invalid-valid, thrown-middle, no-face, malformed, repeated, parallel,
@@ -897,9 +901,12 @@ Command-level evidence is recorded in [Phase 64 output evidence](.planning/phase
 - Both standalone private output matrices pass 6/6, two independent private
   native-Vision suites pass, and all six non-private Vision integration methods
   execute in selected suites that pass 95/95.
-- This establishes bounded still-image SDK-core reliability only. It does not
-  establish realtime endurance, target-device performance budgets, population
-  coverage, commercial approval, packaging, shipping, launch or release
-  readiness.
+- These results retain bounded still-image SDK-core implementation facts only.
+  Their reliability-closeout authority is stale while Phase 64 is
+  `gaps_found`; Phase 65 remains blocked and must be freshly re-verified after a
+  distinct passing candidate. DeviceRGB/named-sRGB remains open under Phase 65
+  SAFE-06. The record does not establish realtime endurance, target-device
+  performance budgets, population coverage, commercial approval, packaging,
+  shipping, launch or release readiness.
 
 Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-CLOSEOUT-EVIDENCE.md) and [verification](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).

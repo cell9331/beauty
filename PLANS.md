@@ -31,15 +31,15 @@
 | Field | Value |
 | --- | --- |
 | Status | `active` |
-| Scope | Close the Phase 64 bilateral protected-anatomy oracle gap before retaining the exact `祛红血丝` promotion or treating v1.15 as completion-ready. |
-| Finding | The live adversarial suite protects and recolors only six coordinates near the left synthetic eye, runs three coupled perturbations, and asserts a provider aggregate that is constructed as constant zero. Full bilateral iris/pupil/highlight/lash/skin/exterior truth and independent left/right asymmetric boundary cases are absent. |
-| Affected requirements | SCLERA-14 and SCLERA-15 are unproven; therefore SCLERA-18's pre-promotion conjunction is false. OUT-05, SCLERA-16 and SCLERA-17 remain verified. |
-| Fresh passing evidence | Strict helper 14/14; Phase checker self-test and isolated HIGH 8/8; renderer/adversarial/provider/facade 21/5/11/9; private output 6/6; native Vision pair; SwiftPM 630/0/8; Demo build and 121/0/0; UAT 5/5. These passes do not cover the missing oracle. |
+| Scope | Close the Phase 64 final-authority gaps before retaining any `祛红血丝` product promotion or treating v1.15 as completion-ready. |
+| Finding | The corrected bilateral implementation evidence remains present, but the immutable Plan 64-12 candidate is `gaps_found`: the mandatory checker self-test exited 1 with `phase64_closeout_failed`, and the mandatory full SwiftPM command reported eight skips. Either condition independently prohibits success. |
+| Affected requirements | SCLERA-14/SCLERA-15 evidence and SCLERA-16/SCLERA-17/OUT-05 implementation facts remain recorded, but their product authority is quarantined; SCLERA-18 remains open and Phase 65 remains blocked. |
+| Fresh passing evidence | Focused 73/73; native/private and strict-helper live gates; promotion-pending plus isolated T-64-01 through T-64-08; source-bound review; zero-HIGH review/security; Demo build and 121/0/0 remain green. Green aggregates do not override the failed checker self-test or eight full-suite skips. |
 | Warning | `BeautyExampleRenderer` uses device RGB for saved evidence; explicit sRGB remains a Phase 65 SAFE-06 re-verification item. |
-| Next | The 13-plan / 24-task serial replacement chain is now synchronized across PLANS.md, REQUIREMENTS.md, ROADMAP.md, STATE.md, and `64-VALIDATION.md`. Plan 64-12 (independent post-promotion candidate) and Plan 64-13 (bounded final transaction) remain; Phase 65 unblock is still blocked. |
-| Lifecycle | Canonical `64-VERIFICATION.md: gaps_found` supersedes the earlier Phase 64 audit/promotion result and cannot authorize Phase 65 verification or milestone readiness. Promotion-pending state across the four lifecycle owners and the validation owner awaits the independent Plan 64-12 candidate plus Plan 64-13 bounded final transaction; no owner self-authorizes finality. |
-| Inventory | 13 plans / 24 task IDs in deterministic order: `64-01-01`, `64-01-02`, `64-02-01`, `64-02-02`, `64-03-01`, `64-03-02`, `64-04-01`, `64-04-02`, `64-05-01`, `64-05-02`, `64-06-01`, `64-06-02`, `64-07-01`, `64-07-02`, `64-08-01`, `64-08-02`, `64-09-01`, `64-09-02`, `64-10-01`, `64-10-02`, `64-11-01`, `64-11-02`, `64-12-01`, `64-13-01`. The obsolete 11-plan / 20-task inventory and obsolete 64-07 through 64-11 objectives are replaced; no old dependency remains. |
-| Boundary | Do not archive, tag, clean up, ship, or claim milestone completion while the canonical Phase 64 verification is `gaps_found`. DeviceRGB/named-sRGB is owned only by Phase 65 SAFE-06; `眼睛` remains `partial` because `去脂` is future; Demo/API/realtime/model/network/dependency/eye-fat scope remains out of Phase 64 authority. |
+| Next | Create a new repair plan for the checker self-test and mandatory no-skip full-suite conjunction, then generate a distinct fresh candidate. Do not modify the immutable Plan 64-12 candidate or retry success from it. |
+| Lifecycle | Canonical `64-VERIFICATION.md` is `gaps_found` with `promotion_status: unproven`. Plan 64-13 applied the mandatory complete fifteen-owner failure set; Phase 64 remains in progress/gaps and Phase 65 verification/audit remains blocked. |
+| Inventory | 13 plans / 24 task IDs in deterministic order: `64-01-01`, `64-01-02`, `64-02-01`, `64-02-02`, `64-03-01`, `64-03-02`, `64-04-01`, `64-04-02`, `64-05-01`, `64-05-02`, `64-06-01`, `64-06-02`, `64-07-01`, `64-07-02`, `64-08-01`, `64-08-02`, `64-09-01`, `64-09-02`, `64-10-01`, `64-10-02`, `64-11-01`, `64-11-02`, `64-12-01`, `64-13-01`. Summaries exist exactly through 64-12; 64-12-01 is `gaps_found`, and 64-13-01 is failed/requarantined with no 64-13 summary. |
+| Boundary | Do not archive, tag, clean up, ship, or claim milestone completion while canonical Phase 64 is `gaps_found`. Product-facing `祛红血丝` is future/unproven, `眼睛` remains `partial`, and `去脂` remains `future`. DeviceRGB/named-sRGB is owned only by Phase 65 SAFE-06; Demo/API/realtime/model/network/dependency/eye-fat scope remains out of Phase 64 authority. |
 
 The prior v1.15 completion-ready statement is superseded by the fresh Phase 64
 goal-backward verification until this active gap is closed.
@@ -51,12 +51,12 @@ goal-backward verification until this active gap is closed.
 | Field | Value |
 | --- | --- |
 | Status | `completed` |
-| Scope | Completed independent bounded still-image SDK-core `白牙` then `祛红血丝`, preserving canonical input, request-local ownership, original-pixel composition, privacy, compatibility and fail-closed behavior. |
+| Scope | Historical implementation execution record for bounded still-image SDK-core `白牙` then `祛红血丝`; its Phase 64/65 product and lifecycle conclusions are superseded by the active `gaps_found` plan above. |
 | Evidence | Separate genuine teeth and sclera pairs, standalone 6/6 output matrices, private native-Vision gates, original-detail reviews and exact product promotions pass without borrowed sibling credit. |
 | Combined | Both public facade entries pass independent standalone merge, collision-to-source, four failure units, no-stale recovery and unrelated-work preservation. |
-| Verification | Full SwiftPM 630/0/8; Demo build plus 121/0/0; focused 94/94; checker HIGH 8/8; separate audit 40/40 requirements, 12/12 seams and 7/7 flows. |
-| Product | `白牙` and aggregate `嘴唇` are implemented; `祛红血丝` is implemented; aggregate `眼睛` remains partial solely because `去脂` is future. Exact compatibility is 61 fields, five presets, 74 renderer cases and three disabled Demo rows. |
-| Boundary | Completion-ready only. No Demo activation, realtime/pixel-buffer, population/device/performance/commercial approval, model/network, packaging, shipping, launch, archive, tag or release claim. |
+| Verification | Historical result: full SwiftPM 630/0/8; Demo build plus 121/0/0; focused 94/94; checker HIGH 8/8; separate audit 40/40 requirements, 12/12 seams and 7/7 flows. The result is stale for current authority. |
+| Product | Current authority keeps `白牙` and aggregate `嘴唇` implemented; `祛红血丝` is unproven/future; aggregate `眼睛` remains partial; `去脂` remains future. Exact implementation inventory remains 61 fields, five presets, 74 renderer cases and three disabled Demo rows. |
+| Boundary | Not completion-ready. Phase 65 is blocked and its verification/audit must be rerun only after a distinct passing Phase 64 candidate. No Demo activation, realtime/pixel-buffer, population/device/performance/commercial approval, model/network, packaging, shipping, launch, archive, tag or release claim. |
 
 ### A-2026-07-30-v1-14-local-facial-retouch
 

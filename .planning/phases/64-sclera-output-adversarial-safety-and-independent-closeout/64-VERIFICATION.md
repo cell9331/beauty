@@ -1,157 +1,134 @@
 ---
 phase: 64-sclera-output-adversarial-safety-and-independent-closeout
-verified: 2026-08-08T00:05:01Z
+verification_stage: post_promotion
+independent: true
+verified: 2026-08-09T21:30:32+08:00
 status: gaps_found
-score: 3/6 must-haves verified
-overrides_applied: 0
-gaps:
-  - truth: "The color-independent and recolored-protected oracles prove zero protected entry/change over complete bilateral anatomy and a bounded asymmetric perturbation grid."
-    status: failed
-    reason: "The executable oracle protects only six individual coordinates, all at x <= 27 near the left synthetic eye although the fixture has eyes centered at x=21 and x=59; it uses three coupled symmetric perturbations, and protectedProposalPixelCount is emitted as a constant zero rather than computed against independent truth."
-    artifacts:
-      - path: "BeautySDK/Tests/BeautyEffectsTests/BeautyScleraRednessAdversarialCloseoutTests.swift"
-        issue: "protectedCoordinates() is a six-pixel left-side sample, not full-resolution bilateral iris/pupil/highlight/lash/skin/exterior truth; the recolor test changes the same six pixels only."
-      - path: "BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyScleraRednessProvider.swift"
-        issue: "BeautyScleraRednessProviderSummary.protectedProposalPixelCount is always constructed as 0 and is not an oracle."
-      - path: ".planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/check_phase64_sclera_closeout.py"
-        issue: "T-64-03 validates token presence only, so the hollow oracle passes the eight-HIGH checker."
-    missing:
-      - "Independently authored full-resolution protected masks for both eyes, including iris, pupil, highlights, lash/margin, skin, and aperture exterior."
-      - "Independent left/right inward, outward, horizontal, vertical, and asymmetric contour/pupil boundary perturbations, including local fail-closed cases."
-      - "Direct intersection of actual proposal indices with protected truth, rather than a provider-owned constant aggregate."
-      - "Score-attractive recoloring of every protected pixel followed by byte-level comparison of the complete final composed output."
-  - truth: "All mandatory evidence agrees before exact product promotion, and the product ledgers claim only proven completion."
-    status: failed
-    reason: "SCLERA-14 and SCLERA-15 are not proven, yet both product owners and the prior verification claim that adversarial protected-anatomy safety closed and promote 祛红血丝 to implemented. The conjunction required by SCLERA-18 therefore does not hold."
-    artifacts:
-      - path: "docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md"
-        issue: "The 祛红血丝 row claims completed color-independent/recolored-protected safety unsupported by the executable oracle."
-      - path: "docs/meitu-function-blueprint/FEATURE_MATRIX.md"
-        issue: "The branch evidence column claims Phase 64 closed adversarial safety despite the incomplete gate."
-      - path: ".planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SECURITY.md"
-        issue: "T-64-03 and T-64-04 are recorded mitigated on evidence that does not cover both eyes or the full protected truth."
-    missing:
-      - "Close the bilateral oracle gap, rerun focused/native/private/adversarial/full gates, and repeat independent verification before retaining or reapplying promotion."
-      - "Synchronize the security disposition and product-owner claims with the corrected executable result."
-deferred:
-  - truth: "Saved public-facade evidence is encoded through one explicit sRGB color boundary."
-    addressed_in: "Phase 65"
-    evidence: "Phase 65 success criterion 3 and SAFE-06 own the explicit-sRGB contract. The current Phase 64 renderer still uses CGColorSpaceCreateDeviceRGB(), so this remains a concrete Phase 65 re-verification warning rather than a Phase 64-scored requirement."
+promotion_status: unproven
+requires_requarantine: true
+phase_65_authorized: false
+score: "5/6 requirement implementation facts substantiated; 0 product authorization"
+candidate_artifact: 64-POST-PROMOTION-CANDIDATE-VERIFICATION.md
+candidate_sha256: cbbec3cfbb9f1bc407fb859fb6a8e6f354fc0cd016944e49e60cb0a6a9da9387
+candidate_status: gaps_found
+transaction_result: failed_requarantined
+requirements: [SCLERA-14, SCLERA-15, SCLERA-16, SCLERA-17, SCLERA-18, OUT-05]
 ---
 
-# Phase 64: Sclera Output, Adversarial Safety, and Independent Closeout Verification Report
+# Phase 64 Post-Promotion Verification — Gaps Found / Re-Quarantined
 
-**Phase Goal:** `祛红血丝` is independently complete through public output, per-eye real evidence, and adversarial protected-region proof while `去脂` remains future.
-**Verified:** 2026-08-08T00:05:01Z
-**Status:** gaps_found
-**Re-verification:** No — the prior report contained no structured `gaps:` section, so this was an initial goal-backward verification against live code.
+## Canonical Verdict
 
-## Goal Achievement
+Phase 64 remains `gaps_found` and product promotion is `unproven`. The immutable
+Plan 64-12 candidate has `status: gaps_found` and
+`requires_requarantine: true`; it grants no success authority. Plan 64-13
+therefore executed only its mandatory failure branch and re-quarantined the
+complete fifteen-owner set.
 
-The public-output and genuine-evidence portions are substantive and runnable, but the mandatory adversarial proof is materially hollow. Passing test counts do not cure that coverage defect. Because the incomplete proof was used to authorize product promotion, the phase goal is not achieved.
+No green aggregate overrides a failed, skipped, stale, conditional, zero-count,
+privacy, source-freeze, owner, or HIGH gate. Canonical success, SCLERA-18 final,
+Phase 65 verification, and milestone readiness remain unauthorized.
 
-### Observable Truths
+## Independent Candidate Disqualifiers
 
-| # | Truth | Status | Evidence |
-| --- | --- | --- | --- |
-| 1 | Open-redness perturbations enter no protected bilateral anatomy across the bounded grid. | ✗ FAILED | The test builds a `Set` from six points at lines 21-32 and `protectedCoordinates()` defines only x=2...27 at lines 199-207, while `makeEyeBytes()` builds eyes centered at x=21 and x=59 at lines 258-279. Only three coupled perturbations exist at lines 35-39. |
-| 2 | Recolored protected anatomy remains byte exact through score, feather, hard re-clip, transform, Q16 composition, and final output. | ✗ FAILED | The recolor oracle recolors and checks the same six points only (lines 69-101); it never recolors the complete protected regions or any right-eye protected pixel. |
-| 3 | Isolated public-facade output proves visible behavior, peer isolation, dimensions/no-ops, and containment. | ✓ VERIFIED | `BeautyExampleRenderer` imports only `BeautySDK`, has one exact `scleraRednessReduction_1p00` case, and calls `engine.processResult` once. The strict helper performs decoded positive/negative/no-face bounds; focused renderer/provider/facade tests independently ran 46/46 green. |
-| 4 | Genuine positive/negative evidence and original-detail review demonstrate bounded improvement and naturalness. | ✓ VERIFIED | The live real-fixture test executes the public facade with explicit sRGB decoding and frozen containment/channel/luminance/texture bounds. The durable review records four blinded original-detail items with no post-review tuning, and UAT records 5/5 passed. |
-| 5 | Every mandatory gate agrees before exact `祛红血丝` promotion while `去脂` remains future. | ✗ FAILED | The ledgers correctly keep `去脂` future and `眼睛` partial, but they promote `祛红血丝` while the mandatory SCLERA-14/15 gates are not actually proven. SCLERA-18's conjunction is false. |
-| 6 | The exact public inventory is 74 cases with one active sclera case, one baseline, and six private outputs. | ✓ VERIFIED | Source inspection and the gallery/helper checks confirm one active case, exact 74-case inventory, exact 148-file gallery contract, and a six-file private matrix. |
+| Mandatory gate | Candidate observation | Disposition |
+| --- | --- | --- |
+| Closeout checker self-test | Exit 1 with `phase64_closeout_failed` | disqualifying failure |
+| Full SwiftPM | 636 passed, 0 failed, 8 skipped | disqualifying skipped condition |
+| Candidate authority | `plan_13_authorized: false`; `phase_65_authorized: false` | no success authority |
 
-**Score:** 3/6 must-haves verified
+Either command result independently prohibits success. Their presence requires
+full re-quarantine even though focused, private, native, simulator, review,
+security, source-freeze, privacy, promotion-pending, and isolated threat checks
+otherwise produced green nonzero evidence.
 
-### Required Artifacts
+## Pre-Write Trust Validation
 
-| Artifact | Expected | Status | Details |
-| --- | --- | --- | --- |
-| `BeautySDK/Tests/BeautyEffectsTests/BeautyScleraRednessAdversarialCloseoutTests.swift` | Complete bilateral geometry and final-output safety oracles | ✗ HOLLOW | Exists, runs, and is wired to the real provider/composer, but samples only six left-side pixels and three coupled perturbations. |
-| `BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyScleraRednessProvider.swift` | Real guarded proposals and meaningful aggregate evidence | ⚠️ PARTIAL | Provider logic is substantive and produces real proposals, but `protectedProposalPixelCount` is hard-coded to zero at line 118. |
-| `BeautySDK/Sources/BeautyExampleRenderer/main.swift` | Exact public sclera output through stable canonical encoding | ⚠️ VERIFIED WITH WARNING | Public route and case are real; saved evidence is converted with `CGColorSpaceCreateDeviceRGB()` at lines 448-452 rather than named sRGB. |
-| `check_sclera_renderer_outputs.py` | Strict six-output decoder and numeric acceptance | ✓ VERIFIED | Bounded decoding, exact inventory, dimensions/alpha, mask exterior, positive improvement, negative naturalness, and no-face equality are substantive. It does not validate the encoded color profile. |
-| `64-private-output-runner.js` | Disposable authorized pair/no-face public-facade execution | ✓ VERIFIED | Discovers the ignored bundle, stages bounded regular files, invokes the public renderer, verifies exact output, and keeps artifacts ignored/untracked. |
-| `check_phase64_sclera_closeout.py` | Fail-closed eight-HIGH lifecycle checker | ✗ HOLLOW LINK | The lifecycle and inventory checks are substantive, but T-64-03 accepts mere symbol tokens (lines 103-122 and synthetic token fixture at line 302), so it cannot detect the adversarial coverage failure. |
-| Product ledgers and `64-SECURITY.md` | Exact promotion only after all gates pass | ✗ CONTRADICTED | Files exist and agree textually, but their safety/completion assertion is contradicted by executable coverage. |
+Before mutation, the transaction independently validated:
 
-### Key Link Verification
+- the exact Plan 64-12 schema and immutable `gaps_found` branch selection;
+- exactly 24 ordered task IDs, with 64-12-01 as the candidate result and
+  64-13-01 pending before this transaction;
+- exactly 15 ordered input-owner hashes and the exact ordered nine-owner
+  immutable product/root subset, all matching current bytes;
+- all 13 plans in strictly serial wave/dependency order and summaries through
+  64-12 only;
+- all 16 relevant source blobs against frozen tree
+  `2fb1c37ebda48dfc94aa2276788a24312f3a3c02` and the source-bound review;
+- exact fresh review/code-review/review-fix/security artifact hashes, zero open
+  HIGH findings, and 8/8 closed security threats;
+- a clean repository plus green promotion-pending aggregate and isolated
+  T-64-01 through T-64-08 checks, including four-state content scanning.
 
-| From | To | Via | Status | Details |
-| --- | --- | --- | --- | --- |
-| `BeautyExampleRenderer/main.swift` | public `BeautySDK` facade | `BeautyParameters(scleraRednessReduction: 1)` + one `engine.processResult` call | ✓ WIRED | No internal or Testing import is present in the renderer. |
-| `64-private-output-runner.js` | renderer + strict helper | `swift run BeautyExampleRenderer` then Python decoded verification | ✓ WIRED | Real generated files flow into the strict decoder. |
-| adversarial XCTest | provider + composition owner | `makeResult` then `owner.compose` | ⚠️ PARTIAL | The real path executes, but independently authored truth is only six pixels and omits the right eye. |
-| provider proposals | independent protected truth | `protectedProposalPixelCount` | ✗ NOT WIRED | The value is always zero; no protected mask or proposal intersection is provided. |
-| phase checker T-64-03 | adversarial oracle quality | source token scan | ✗ NOT WIRED | Presence of names is accepted as proof; bilateral mask size, grid breadth, and actual intersections are never checked. |
-| safety result | product promotion | checker/security/verification conjunction | ✗ NOT WIRED | The hollow test passes the checker and is then cited by the ledgers as completed safety. |
+These facts authorize only a bounded failure transaction. They do not repair or
+replace the failed candidate.
 
-### Data-Flow Trace (Level 4)
+## Requirement Disposition
 
-| Artifact | Data Variable | Source | Produces Real Data | Status |
-| --- | --- | --- | --- | --- |
-| Public output | `result.output` | authorized image → `BeautyEngine.processResult` | Yes | ✓ FLOWING, with DeviceRGB evidence-encoding warning |
-| Strict output helper | decoded baseline/active/mask pixels | six generated PNGs + private reviewed masks | Yes | ✓ FLOWING |
-| Geometry oracle | `colorIndependentProtectedTruth` | six hard-coded coordinates | No complete bilateral truth | ✗ HOLLOW |
-| Final-output oracle | `recoloredProtected` | same six hard-coded coordinates | No complete protected recolor | ✗ HOLLOW |
-| Provider summary | `protectedProposalPixelCount` | literal `0` | No | ✗ STATIC |
+| Requirement | Implementation fact retained | Canonical/product disposition |
+| --- | --- | --- |
+| SCLERA-14 | Bilateral protected truth, exact historical tuple, inclusive 27-scenario sweep, and direct proposal intersection remain recorded. | evidence quarantined; no promotion authority |
+| SCLERA-15 | Protected and outside-proposal byte-identity evidence remains recorded. | evidence quarantined; no promotion authority |
+| SCLERA-16 | Genuine positive improvement and negative/unsafe naturalness remain implementation facts. | verified implementation fact; product authorization unproven |
+| SCLERA-17 | Standalone public-facade renderer and strict decoded output remain implementation facts. | complete implementation fact; product authorization unproven |
+| SCLERA-18 | The mandatory conjunction is not green. | open / failed closeout |
+| OUT-05 | Disposable private runner/helper and original-detail public-facade evidence remain implementation facts. | complete implementation fact; product authorization unproven |
 
-### Behavioral Spot-Checks
+The implementation route is not removed or denied by this report. The product
+claim is denied until a new independently passing candidate exists.
 
-| Behavior | Command | Result | Status |
-| --- | --- | --- | --- |
-| Focused renderer/adversarial/provider/facade tests | `swift test --package-path BeautySDK --filter 'BeautyScleraRednessAdversarialCloseoutTests\|BeautyRendererOutputRegressionTests\|BeautyScleraRednessProviderTests\|BeautyEngineScleraRednessIntegrationTests'` | 46 executed, 0 failures | ✓ PASS, but adversarial assertions are under-scoped |
-| Strict helper mutations | `python3 .../check_sclera_renderer_outputs.py --self-test` | 14/14 | ✓ PASS |
-| Phase checker mutations | `python3 .../check_phase64_sclera_closeout.py --self-test` | 8/8 | ✓ PASS, but T-64-03 only mutates token presence |
-| Isolated post-promotion threats | checker `--allow-promotion` plus T-64-01...08 | All reported pass | ✓ PASS, not sufficient for SCLERA-14/15 |
-| Gallery inventory | `python3 example-images/generate_gallery.py --self-test` | Exact 74 cases / 148 files | ✓ PASS |
-| Direct coverage audit | static extraction of protected points/grid/provider aggregate | 6 samples, max x 27, right center x 59, 3 perturbations, constant aggregate | ✗ FAIL |
+## Complete Failure Owner State
 
-The orchestrator additionally reported 630/0/8 full SwiftPM, Demo 121/121, the required private pair, and UAT 5/5. Those are useful regression evidence, but none exercises the missing bilateral protected-truth matrix.
+All fifteen transaction owners are explicitly re-quarantined:
 
-### Probe Execution
+- the canonical owner remains `gaps_found` with `promotion_status: unproven`;
+- validation remains incomplete and records 64-13-01 as
+  failed/requarantined;
+- all four product owners set product-facing `祛红血丝` to future/unproven,
+  aggregate `眼睛` to partial, and `去脂` to future;
+- all five root owners retain implementation facts while explicitly
+  quarantining evidence and product authorization;
+- PLANS, REQUIREMENTS, ROADMAP, and STATE keep Phase 64 in progress/gaps and
+  Phase 65 blocked.
 
-No `probe-*.sh` path is declared by the Phase 64 plans or summaries, and no conventional repository probe was discovered for this phase. Step 7c was not applicable.
+There is no partial promoted/final state.
 
-### Requirements Coverage
+## Security, Privacy, and Review
 
-| Requirement | Source Plan | Description | Status | Evidence |
-| --- | --- | --- | --- | --- |
-| SCLERA-14 | 64-01, 64-03, 64-04 | Color-independent protected truth across perturbations | ✗ BLOCKED | Six left-side samples and three coupled perturbations do not prove the required bilateral anatomy/grid. |
-| SCLERA-15 | 64-01, 64-03, 64-04 | Recolored-protected full final-output identity | ✗ BLOCKED | Only the same six points are recolored/checked; complete iris/pupil/highlight truth is absent. |
-| SCLERA-16 | 64-01, 64-02, 64-03, 64-04 | Genuine positive improvement; negative/unsafe naturalness | ✓ SATISFIED | Real-fixture/public-output bounds, provider challenge tests, review, and UAT align. |
-| SCLERA-17 | 64-01, 64-02, 64-04 | Isolated public-facade output and strict decoding | ✓ SATISFIED | Exact public case, six decoded outputs, peer-eye facade harness, dimensions/no-op/containment evidence. |
-| SCLERA-18 | 64-01, 64-03, 64-04 | Complete conjunction before exact promotion | ✗ BLOCKED | Promotion and owners advanced despite failed SCLERA-14/15 proof. |
-| OUT-05 | 64-01, 64-02, 64-04 | Standalone public facade, decoded comparison, disposable review, original detail | ✓ SATISFIED | Renderer/runner/helper/review chain exists and executes. DeviceRGB is a reproducibility warning; explicit sRGB is owned by Phase 65 SAFE-06. |
+The immutable candidate hashes for the original-detail review, code review,
+review-fix ledger, and ASVS L1 security audit remain exact. Those artifacts
+record zero HIGH/warning blockers and 8/8 closed threat identities. Relevant
+source bytes remain bound to the frozen review tree, and four-state privacy
+checks retain aggregate-only output.
 
-No Phase 64 requirement is orphaned from all plan frontmatter.
+These green audit facts do not outweigh the failed mandatory checker command or
+the skipped full-suite condition. No private fixture, path, digest, raw support,
+mask, geometry, coordinate, pixel, identity, rights detail, or freeform review
+content is added here.
 
-### Anti-Patterns Found
+## Product and Scope Boundary
 
-| File | Line | Pattern | Severity | Impact |
-| --- | --- | --- | --- | --- |
-| `BeautyScleraRednessAdversarialCloseoutTests.swift` | 199 | Six-point protected truth, all left-side | 🛑 Blocker | Bilateral leakage can pass undetected. |
-| `BeautyScleraRednessProvider.swift` | 118 | Constant `protectedProposalPixelCount: 0` | 🛑 Blocker | A tautological aggregate is asserted as oracle evidence. |
-| `check_phase64_sclera_closeout.py` | 103 | Token-presence safety validation | 🛑 Blocker | The lifecycle checker cannot distinguish the hollow test from a full matrix. |
-| `BeautyExampleRenderer/main.swift` | 450 | `CGColorSpaceCreateDeviceRGB()` | ⚠️ Warning | Saved review/output evidence does not use the explicit stable sRGB contract. |
+- Product-facing `祛红血丝`: future / unproven.
+- Aggregate `眼睛`: partial.
+- `去脂`: future; no proxy, provider, renderer, Demo mapping, or public field.
+- Demo local-retouch rows: disabled and nil-mapped.
+- DeviceRGB/named-sRGB: unresolved and owned exclusively by Phase 65 SAFE-06.
+- Phase 65: blocked pending a new independently passing Phase 64 candidate and
+  bounded final transaction.
+- No API, realtime/pixel-buffer, model, network, dependency, population,
+  device/performance, commercial, packaging, shipping, launch, archive, tag, or
+  release-readiness authority is added.
 
-No unreferenced `TBD`, `FIXME`, or `XXX` marker was found in the phase-modified implementation files. The helper's literal `placeholder` occurs only in a negative self-test fixture.
+## Required Gap Closure
 
-### Deferred Items
-
-| # | Item | Addressed In | Evidence |
-| --- | --- | --- | --- |
-| 1 | Encode saved public output through named sRGB, not DeviceRGB | Phase 65 | Phase 65 SC3 and SAFE-06 explicitly own the sRGB contract; current code still violates it and needs Phase 65 re-verification. |
-
-### Human Verification Required
-
-No outstanding human-only check is added by this report. Original-detail visual review and conversational UAT are recorded as completed (4/4 review items and 5/5 UAT). A corrected adversarial implementation would trigger a fresh strict run and fresh visual review under D-16.
-
-### Gaps Summary
-
-The root cause is one incomplete adversarial oracle, not a production crash or a missing renderer. It has three downstream effects: SCLERA-14 is unproven, SCLERA-15 is unproven, and SCLERA-18's promotion conjunction is false. The green 5/5 XCTest and 8/8 HIGH checker counts are misleading because the test samples six left-side pixels and the checker only scans for expected tokens. Full bilateral truth, a genuine asymmetric perturbation grid, actual proposal/truth intersection, and full protected recolor must exist before the product-owner promotion can be considered valid.
+A new repair plan must resolve the checker self-test failure and the mandatory
+full-suite skip policy without changing the immutable Plan 64-12 candidate.
+After all required commands run fresh with no failure or skip, a distinct
+independent candidate may be generated. Only a `candidate_passed` artifact with
+fresh exact manifests may authorize a later bounded final transaction.
 
 ---
 
-_Verified: 2026-08-08T00:05:01Z_
-_Verifier: the agent (gsd-verifier)_
+_Canonical status: gaps_found_
+_Promotion status: unproven_
+_Transaction: complete fifteen-owner re-quarantine_

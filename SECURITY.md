@@ -761,25 +761,27 @@ Command-level evidence is recorded in [Phase 63 security](.planning/phases/63-gu
 - Review records only fixed categorical judgments. Tracked/staged state
   contains no media, locator, digest, rights detail, reviewer identity, support,
   mask, geometry, pixel data, raw metric or child error.
-- Request-local raw support, proposal, mask privacy, protected-region
-  containment, source-bound review, four-state T-64-06 scanning, and zero
-  accepted HIGH remain Phase 64 security ownership; the synchronization is
-  promotion-pending and awaits the independent Plan 12 candidate plus Plan 13
-  bounded final transaction.
-- Promotion changes exactly `眼睛 | 祛红血丝`; it does not activate Demo,
-  realtime/pixel-buffer, external model, network or `去脂` surfaces and does not
-  authorize broader device, commercial or release claims, and SCLERA-18 final,
-  24/24 validation, canonical passed, and Phase 65 current state remain
-  explicitly blocked.
+- Request-local raw support, proposal and mask privacy, protected-region
+  containment, source-bound review, four-state T-64-06 scanning, and zero open
+  HIGH review/security findings remain verified implementation and audit facts.
+  SCLERA-16, SCLERA-17, and OUT-05 remain implementation facts only.
+  They do not override the immutable Plan 64-12 `gaps_found` candidate: its
+  failed checker self-test and skipped full-suite conditions quarantine all
+  Phase 64 product authority.
+- `祛红血丝` is therefore unproven/future, aggregate `眼睛` remains `partial`,
+  and `去脂` remains `future`; Demo, realtime/pixel-buffer, external model and
+  network surfaces stay absent. SCLERA-18 and final validation remain open,
+  Phase 65 is blocked, and DeviceRGB/named-sRGB remains exclusively the Phase
+  65 SAFE-06 security boundary.
 
 Command-level evidence is recorded in [Phase 64 security](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SECURITY.md), [review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-REVIEW.md), and [verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).
 
-### v1.15 Phase 65 Combined Privacy and Security Closeout
+### v1.15 Phase 65 Combined Privacy and Security — Stale/Blocked Evidence Record
 
-- T-65-01 through T-65-08 are machine-green HIGH owners with zero open
-  findings. Authority, byte composition, failure isolation, exact inventory,
-  aggregate privacy, deferred-surface absence, network/resource boundaries and
-  lifecycle owners are checked independently.
+- The prior Phase 65 run recorded T-65-01 through T-65-08 machine-green with
+  zero open HIGH findings. That result is retained as implementation/audit
+  history only; its lifecycle and product authority is stale while Phase 64 is
+  `gaps_found`.
 - Public, SPI and Codable state contain no landmarks, pupils, lip/eye support,
   masks, candidate colors, vessel-like descriptors, image bytes, fixture
   locators or reviewer identity. Diagnostics are fixed allowlisted aggregate
@@ -792,7 +794,10 @@ Command-level evidence is recorded in [Phase 64 security](.planning/phases/64-sc
   independently owned. Tracked/staged privacy, exact shipped-resource and
   production network/model scans pass without persisting local evidence.
 - The complete upper-eyelid/`去脂` production identity family remains absent.
-  No realtime, active Demo, model download, cloud processing, archive, tag,
-  shipping or release authority follows from this security closeout.
+  Phase 65 remains blocked and must freshly re-verify every security/privacy
+  gate after a distinct passing Phase 64 candidate. DeviceRGB/named-sRGB
+  remains open only under Phase 65 SAFE-06. No realtime, active Demo, model
+  download, cloud processing, archive, tag, shipping or release authority
+  follows from this stale record.
 
 Command-level evidence is recorded in [Phase 65 security](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-SECURITY.md), [review](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-REVIEW.md), and [verification](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).

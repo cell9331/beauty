@@ -8,9 +8,9 @@
 ### Milestone Order and Boundary
 
 - [x] **SEQ-01**: The SDK completes and independently verifies the production `白牙` slice before adding a production `祛红血丝` field, provider, or admission route.
-- [x] **SEQ-02**: Teeth and sclera use separate public intent, evidence decisions, providers, failure units, output cases, and promotion records, so either feature can fail or remain absent without changing its qualified sibling.
-- [x] **SEQ-03**: `去脂` remains entirely absent from public parameters, providers, renderers, presets, production admission, and active Demo routing, with no geometry, warp, smoothing, eye-bag, or dark-circle proxy.
-- [x] **SEQ-04**: v1.15 remains SDK-core and still-image only and adds no realtime/pixel-buffer local retouch, SwiftUI/Demo activation, network/cloud processing, external model, or release-readiness claim.
+- [ ] **SEQ-02**: Teeth and sclera use separate public intent, evidence decisions, providers, failure units, output cases, and promotion records, so either feature can fail or remain absent without changing its qualified sibling. Combined implementation evidence exists, but current Phase 65 lifecycle verification is blocked by Phase 64 gaps.
+- [ ] **SEQ-03**: `去脂` remains entirely absent from public parameters, providers, renderers, presets, production admission, and active Demo routing, with no geometry, warp, smoothing, eye-bag, or dark-circle proxy. Implementation evidence exists; current Phase 65 closeout authority is blocked.
+- [ ] **SEQ-04**: v1.15 remains SDK-core and still-image only and adds no realtime/pixel-buffer local retouch, SwiftUI/Demo activation, network/cloud processing, external model, or release-readiness claim. Implementation evidence exists; current Phase 65 closeout authority is blocked.
 
 ### Rights-Approved Feature Evidence
 
@@ -50,15 +50,15 @@
 
 ### Shared Safety, Compatibility, and Closeout
 
-- [x] **SAFE-04**: Raw landmarks, lip/teeth geometry, pupils, sclera/teeth masks, candidate colors, vein-like descriptors, image bytes, fixture paths, and reviewer identity remain package-private/request-local and absent from public/SPI/Codable state, persistence, logs, metrics, network traffic, and tracked artifacts.
-- [x] **SAFE-05**: Repeated, parallel, canceled, reset, no-face, malformed-support, and mixed-feature requests retain no prior pixels, masks, support, proposals, or summaries and recover on a later valid request with only allowlisted aggregate diagnostics.
-- [x] **SAFE-06**: Local-retouch output preserves canonical dimensions, orientation, opaque-alpha policy, explicit-sRGB contract, typed payload-free errors, deterministic no-op behavior, and unrelated eligible face/color output.
-- [x] **SAFE-07**: The exact stored-field, CodingKey, source-construction, preset, renderer, Demo-taxonomy, and admission inventories advance only for independently admitted teeth and sclera surfaces while every legacy zero/missing payload remains neutral.
+- [ ] **SAFE-04**: Raw landmarks, lip/teeth geometry, pupils, sclera/teeth masks, candidate colors, vein-like descriptors, image bytes, fixture paths, and reviewer identity remain package-private/request-local and absent from public/SPI/Codable state, persistence, logs, metrics, network traffic, and tracked artifacts. Implementation/security evidence exists; Phase 65 verification is blocked.
+- [ ] **SAFE-05**: Repeated, parallel, canceled, reset, no-face, malformed-support, and mixed-feature requests retain no prior pixels, masks, support, proposals, or summaries and recover on a later valid request with only allowlisted aggregate diagnostics. Implementation evidence exists; Phase 65 verification is blocked.
+- [ ] **SAFE-06**: Local-retouch output must preserve canonical dimensions, orientation, opaque-alpha policy, explicit-sRGB contract, typed payload-free errors, deterministic no-op behavior, and unrelated eligible face/color output. DeviceRGB/named-sRGB remains unresolved exclusively in Phase 65 and receives no Phase 64 closure credit.
+- [ ] **SAFE-07**: The exact stored-field, CodingKey, source-construction, preset, renderer, Demo-taxonomy, and admission inventories advance only for independently admitted teeth and sclera surfaces while every legacy zero/missing payload remains neutral. Implementation evidence exists; Phase 65 verification is blocked.
 - [x] **OUT-05**: Standalone teeth and standalone sclera requests are each verified only through the public `BeautySDK` facade by isolated output cases, strict decoded comparisons, disposable ignored review artifacts, and original-detail inspection.
-- [x] **OUT-06**: A combined teeth+sclera request byte-matches independently merged standalone oracles for disjoint masks, preserves the canonical source on any cross-provider collision, and keeps unaffected output under injected teeth, whole-sclera, left-eye, and right-eye failure.
-- [x] **OUT-07**: Full SwiftPM, opt-in Apple Vision integration, Demo compatibility, privacy/resource/network scans, adversarial safety, active-source and owner-document checks, code review/fix, and independent verification pass before milestone closeout.
-- [x] **OUT-08**: Product ledgers promote exactly independently passed `白牙` and `祛红血丝`; `嘴唇` may close after qualified `白牙`, while `眼睛` remains partial with `去脂` future, and no broader device, commercial, packaging, shipping, or launch claim is inferred.
-- [x] **OUT-09**: An independent milestone audit verifies 100% requirement traceability, canonical phase verification, cross-feature integration, standalone and combined end-to-end flows, and all deferred nonclaims before v1.15 is archived or tagged.
+- [ ] **OUT-06**: A combined teeth+sclera request byte-matches independently merged standalone oracles for disjoint masks, preserves the canonical source on any cross-provider collision, and keeps unaffected output under injected teeth, whole-sclera, left-eye, and right-eye failure. Implementation tests exist; current Phase 65 verification is stale/blocked.
+- [ ] **OUT-07**: Full SwiftPM, opt-in Apple Vision integration, Demo compatibility, privacy/resource/network scans, adversarial safety, active-source and owner-document checks, code review/fix, and independent verification pass before milestone closeout. The prior result is stale/blocked by Phase 64 `gaps_found`.
+- [ ] **OUT-08**: Product ledgers promote exactly independently passed `白牙` and `祛红血丝`; `嘴唇` may close after qualified `白牙`, while `眼睛` remains partial with `去脂` future, and no broader device, commercial, packaging, shipping, or launch claim is inferred. `祛红血丝` is currently future/unproven, so this requirement is open.
+- [ ] **OUT-09**: An independent milestone audit verifies 100% requirement traceability, canonical phase verification, cross-feature integration, standalone and combined end-to-end flows, and all deferred nonclaims before v1.15 is archived or tagged. The prior audit is stale and Phase 65 is blocked.
 
 ## Future Requirements
 
@@ -93,9 +93,9 @@ completion.
 | Requirement | Phase | Status |
 | --- | --- | --- |
 | SEQ-01 | Phase 59 | Complete; teeth independently closed before sclera production admission |
-| SEQ-02 | Phase 65 | Complete; independent intent, evidence, providers, failures, outputs and promotion retained |
-| SEQ-03 | Phase 65 | Complete; exact production/Demo absence and proxy scan pass |
-| SEQ-04 | Phase 65 | Complete; still-image SDK-core boundary and deferred nonclaims pass |
+| SEQ-02 | Phase 65 | Implementation evidence recorded; current verification/promotion authority stale and blocked by Phase 64 |
+| SEQ-03 | Phase 65 | Implementation absence/proxy evidence recorded; current lifecycle verification blocked by Phase 64 |
+| SEQ-04 | Phase 65 | Implementation boundary evidence recorded; current lifecycle verification blocked by Phase 64 |
 | EVID-06 | Phase 62 | Complete; independent authorized teeth and sclera pairs |
 | EVID-07 | Phase 59 | Verified; zero-weight exclusions preserved |
 | EVID-08 | Phase 62 | Complete; feature-specific criteria frozen before review |
@@ -118,20 +118,20 @@ completion.
 | SCLERA-11 | Phase 63 | Verified; score-inside and post-filter identical-envelope reclip |
 | SCLERA-12 | Phase 63 | Verified; bounded immutable-source transform and retained detail/alpha |
 | SCLERA-13 | Phase 63 | Verified; affected-eye abstention, peer continuation and recovery |
-| SCLERA-14 | Phase 64 | Evidence-ready / promotion-pending — Plan 64-07 freezes the exact leak plus a bilateral 3x3x3 accepted/rejected proposal-intersection boundary; awaits independent Plan 64-12 candidate plus Plan 64-13 bounded final transaction |
-| SCLERA-15 | Phase 64 | Evidence-ready / promotion-pending — Plan 64-07 proves protected and outside-proposal byte identity at the corrected containment boundary; awaits independent Plan 64-12 candidate plus Plan 64-13 bounded final transaction |
+| SCLERA-14 | Phase 64 | Implementation evidence retained; product authority unproven/re-quarantined after Plan 64-12 `gaps_found` |
+| SCLERA-15 | Phase 64 | Implementation evidence retained; product authority unproven/re-quarantined after Plan 64-12 `gaps_found` |
 | SCLERA-16 | Phase 64 | Verified; positive improvement and negative/unsafe naturalness pass |
 | SCLERA-17 | Phase 64 | Complete; standalone public-facade output passes strict decoding |
-| SCLERA-18 | Phase 64 | Open; SCLERA-14/15 evidence-ready/promotion-pending and the stale promotion is quarantined; awaits independent Plan 64-12 candidate plus Plan 64-13 bounded final transaction |
-| SAFE-04 | Phase 65 | Complete; package/request-local sensitive state and aggregate-only diagnostics verified |
-| SAFE-05 | Phase 65 | Complete; lifecycle clearing, isolation and recovery verified |
-| SAFE-06 | Phase 65 | Complete; canonical output and unrelated-work preservation verified |
-| SAFE-07 | Phase 65 | Complete; exact 61/5/74/3 compatibility inventories verified |
-| OUT-05 | Phase 64 | Evidence-ready / promotion-pending — standalone teeth and sclera facade outputs independently verified; awaits independent Plan 64-12 candidate plus Plan 64-13 bounded final transaction |
-| OUT-06 | Phase 65 | Complete; independent merge, collision-to-source and four failure units verified |
-| OUT-07 | Phase 65 | Complete; full regression, private/opt-in, privacy, review and verification pass |
-| OUT-08 | Phase 65 | Complete; exact implemented/deferred product equality and nonclaims verified |
-| OUT-09 | Phase 65 | Complete; separate v1.15 audit passes 40/40 with no blocker or orphan |
+| SCLERA-18 | Phase 64 | Open; immutable candidate failed mandatory checker/no-skip conjunction; all fifteen owners re-quarantined |
+| SAFE-04 | Phase 65 | Implementation evidence recorded; current verification stale/blocked by Phase 64 |
+| SAFE-05 | Phase 65 | Implementation evidence recorded; current verification stale/blocked by Phase 64 |
+| SAFE-06 | Phase 65 | Open/blocked; DeviceRGB/named-sRGB remains exclusively Phase 65 scope |
+| SAFE-07 | Phase 65 | Implementation evidence recorded; current verification stale/blocked by Phase 64 |
+| OUT-05 | Phase 64 | Standalone facade/output implementation fact retained; product authority unproven/re-quarantined |
+| OUT-06 | Phase 65 | Implementation evidence recorded; current verification stale/blocked by Phase 64 |
+| OUT-07 | Phase 65 | Open; prior full closeout evidence is stale/blocked |
+| OUT-08 | Phase 65 | Open; product equality is false while `祛红血丝` is future/unproven |
+| OUT-09 | Phase 65 | Open; prior milestone audit is stale and cannot authorize archive/tag |
 
 **Coverage:**
 
@@ -139,9 +139,9 @@ completion.
 - Mapped to phases: 40
 - Unmapped: 0 ✓
 - Duplicate mappings: 0 ✓
-- Currently satisfied: 37/40
-- Open under canonical Phase 64 `gaps_found`: SCLERA-18 final; SCLERA-14, SCLERA-15, and OUT-05 are evidence-ready/promotion-pending and await the independent Plan 64-12 candidate plus Plan 64-13 bounded final transaction
-- Prior audit-controlled OUT-09 result is stale until Phase 64 and downstream Phase 65 claims are freshly re-verified
+- Currently authorized as satisfied: 28/40
+- Open under canonical Phase 64 `gaps_found`: SCLERA-18 plus all 11 Phase 65 requirements; SCLERA-14, SCLERA-15, SCLERA-16, SCLERA-17, and OUT-05 retain implementation facts without product authorization
+- Prior Phase 65 verification and OUT-09 audit results are stale until a new independent Phase 64 candidate passes and Phase 65 is freshly re-verified
 
 ## Phase 64 Serial Gap-Chain Inventory (13 plans / 24 task IDs)
 
@@ -158,11 +158,12 @@ completion.
 | 64-09-PLAN.md | 9 | 64-09-01, 64-09-02 | 64-08 | completed (gap closure) |
 | 64-10-PLAN.md | 10 | 64-10-01, 64-10-02 | 64-09 | completed (gap closure) |
 | 64-11-PLAN.md | 11 | 64-11-01, 64-11-02 | 64-10 | completed (gap closure) |
-| 64-12-PLAN.md | 12 | 64-12-01 | 64-11 | pending — independent post-promotion candidate |
-| 64-13-PLAN.md | 13 | 64-13-01 | 64-12 | pending — bounded final transaction |
+| 64-12-PLAN.md | 12 | 64-12-01 | 64-11 | completed — immutable candidate `gaps_found`; requires re-quarantine |
+| 64-13-PLAN.md | 13 | 64-13-01 | 64-12 | failed/requarantined — complete fifteen-owner failure set applied; no summary |
 
-`眼睛` remains `partial` solely because `去脂` is future. DeviceRGB/named-sRGB is owned only by Phase 65 SAFE-06.
+`眼睛` remains `partial`; `祛红血丝` is future/unproven and `去脂` is future.
+DeviceRGB/named-sRGB is owned only by blocked Phase 65 SAFE-06.
 
 ---
 *Requirements defined: 2026-08-05*
-*Last updated: 2026-08-09 after Plan 64-11 synchronized the 13-plan / 24-task lifecycle/validation chain to promotion-pending state; SCLERA-14, SCLERA-15, SCLERA-16, SCLERA-17, and OUT-05 are evidence-ready/promotion-pending while SCLERA-18 final and Phase 64 completion await the independent Plan 64-12 candidate and Plan 64-13 bounded final transaction*
+*Last updated: 2026-08-09 after immutable Plan 64-12 `gaps_found` forced the Plan 64-13 complete fifteen-owner re-quarantine; Phase 64 remains in progress/gaps, SCLERA-16/SCLERA-17/OUT-05 implementation facts are retained without product authorization, and Phase 65 is blocked*

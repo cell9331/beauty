@@ -941,26 +941,28 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
   oracles cover iris, pupil, highlights, lash margin, skin and aperture
   exterior. Malformed-peer, valid-invalid-valid and parallel tests retain the
   Phase 63 request-local, affected-eye-only abstention contract.
-- Per-eye provider, transform, and composition, calibrated containment/fail-closed
-  envelope, and inclusive contour validity remain Phase 64 design ownership; the
-  promotion of `眼睛 | 祛红血丝` is promotion-pending and awaits the independent
-  Plan 12 candidate plus Plan 13 bounded final transaction.
-- Product owners are synchronized to exactly `眼睛 | 祛红血丝` implemented.
-  Aggregate branch `眼睛` remains `partial` solely because `去脂` is future;
-  both rows remain disabled and nil-mapped in the Demo.
+- Per-eye provider, transform, composition, calibrated containment/fail-closed
+  envelope, inclusive contour validity, public output, and review remain
+  implementation facts. They do not authorize product status: the immutable
+  Plan 64-12 candidate is `gaps_found`, so Phase 64 product evidence is
+  quarantined and `祛红血丝` is unproven/future.
+- SCLERA-16, SCLERA-17, and OUT-05 remain recorded implementation facts;
+  SCLERA-18 remains open. Aggregate branch `眼睛` remains `partial` and `去脂`
+  remains `future`; both local-retouch eye rows stay disabled and nil-mapped in
+  the Demo.
 - Compatibility is exactly 61 public fields, five byte-stable neutral presets
   and 74 renderer cases. This contract adds no realtime/pixel-buffer route,
   model, network dependency, public anatomy, device/commercial approval,
-  packaging, shipping, launch or release-readiness claim, and SCLERA-18 final,
-  24/24 validation, canonical passed, and Phase 65 current state remain
-  explicitly blocked.
+  packaging, shipping, launch or release-readiness claim. Final validation and
+  canonical promotion are unproven, Phase 65 is blocked, and DeviceRGB/named-
+  sRGB remains exclusively the Phase 65 SAFE-06 design obligation.
 
 Command-level evidence is recorded in [Phase 64 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-REVIEW.md), and [verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).
 
-### v1.15 Phase 65 Combined Facade Closeout Contract
+### v1.15 Phase 65 Combined Facade Closeout — Stale/Blocked Evidence Record
 
-- Direct teeth and sclera intent remain independently admitted and use one
-  canonical still-image request owner. Their combined output equals an
+- Prior Phase 65 implementation evidence records that direct teeth and sclera
+  intent use one canonical still-image request owner. Their combined output equals an
   independent merge of the two standalone outputs wherever ownership is
   disjoint; any contested pixel preserves canonical source.
 - Teeth, whole-sclera, left-eye and right-eye failure are separate units. A
@@ -970,10 +972,14 @@ Command-level evidence is recorded in [Phase 64 output evidence](.planning/phase
 - Every facade invocation clears aggregate observations and current canonical
   carrier state before validation. A later valid request recovers from an
   invalid or throwing request without stale pixels, support or summaries.
-- Public compatibility closes at exactly 61 fields, five neutral presets and
-  74 renderer cases. The Demo retains three disabled nil-mapped local-retouch
-  rows; `白牙` and `祛红血丝` are implemented, while `去脂` remains future and
-  aggregate `眼睛` remains partial solely for that reason.
+- Public compatibility implementation remains exactly 61 fields, five neutral
+  presets and 74 renderer cases. The Demo retains three disabled nil-mapped
+  local-retouch rows. Current product authority keeps `白牙` implemented,
+  `祛红血丝` unproven/future, aggregate `眼睛` partial, and `去脂` future.
+- This record is stale for lifecycle and product authorization because Phase 64
+  is `gaps_found`. Phase 65 is blocked and must be freshly re-verified after a
+  distinct passing Phase 64 candidate; DeviceRGB/named-sRGB remains open only
+  under Phase 65 SAFE-06.
 - No realtime/pixel-buffer local retouch, public anatomy, model, network,
   active Demo route, device/commercial approval, packaging, shipping, launch
   or release-readiness contract is added.

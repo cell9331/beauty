@@ -1,8 +1,8 @@
 ---
 phase: 64
 slug: sclera-output-adversarial-safety-and-independent-closeout
-status: promotion_pending_candidate
-validation_status: promotion_pending_candidate
+status: gaps_found
+validation_status: incomplete
 nyquist_compliant: false
 nyquist_pending: true
 candidate_owner: phase64_plan_12
@@ -10,7 +10,8 @@ final_transaction_owner: phase64_plan_13
 inventory:
   plans: 13
   tasks: 24
-  pending_tasks: ["64-12-01", "64-13-01"]
+  executed_tasks: 23
+  failed_tasks: ["64-13-01"]
 created: 2026-08-07
 updated: 2026-08-09
 security_standard: OWASP ASVS Level 1
@@ -21,14 +22,13 @@ canonical_verification: gaps_found
 
 # Phase 64 - Validation Strategy (13 plans / 24 task IDs)
 
-Phase 64 inventory: **13 plans and 24 ordered task IDs** in deterministic order
+Phase 64 inventory remains **13 plans and 24 ordered task IDs** in deterministic order
 spanning the original four-plan closeout chain (Plans 01-04) and the nine-plan
-gap-closure replacement chain (Plans 05-13). Completed Plans 64-01 through
-64-10 retain their exact execution evidence. Plan 64-11 (this plan) adds two
-lifecycle/validation owner tasks. Plans 64-12 and 64-13 are explicitly pending
-and own the independent post-promotion candidate and the bounded final
-transaction respectively; the twenty-four rows final Nyquist may be written only by Plan
-64-13 after a fresh independent Plan 64-12 candidate.
+gap-closure replacement chain (Plans 05-13). Plans 64-01 through 64-11 retain
+their exact execution evidence. Plan 64-12 produced an immutable `gaps_found`
+candidate. Plan 64-13 selected the mandatory failure branch and re-quarantined
+all fifteen owners; its task row is failed/requarantined, so validation is
+incomplete and no final Nyquist or product authorization exists.
 
 | Task ID | Plan | Wave | Requirements | Focused command / gate | Evidence artifact | Nyquist status |
 | --- | --- | ---: | --- | --- | --- | --- |
@@ -54,18 +54,18 @@ transaction respectively; the twenty-four rows final Nyquist may be written only
 | 64-10-02 | 10 | 10 | SCLERA-14, SCLERA-15, SCLERA-18, OUT-05 | Five exact root contracts: `DESIGN.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `QUALITY_SCORE.md`; promotion-pending only | `64-10-SUMMARY.md` — root contract synchronization | executed (promotion-pending) |
 | 64-11-01 | 11 | 11 | SCLERA-14, SCLERA-15, SCLERA-18, OUT-05 | Four lifecycle owners: `PLANS.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md` agree on 13 plans / 24 task IDs and next edge to Plan 12 candidate + Plan 13 bounded final transaction | `64-11-SUMMARY.md` — lifecycle synchronization | executed (promotion-pending) |
 | 64-11-02 | 11 | 11 | SCLERA-14, SCLERA-15, SCLERA-18, OUT-05 | Validation inventory rebuilt to exactly 24 ordered task IDs with `validation_status: promotion_pending_candidate`; 64-12-01 / 64-13-01 explicitly pending; no twenty-four rows or final status claimed | `64-11-SUMMARY.md` — validation inventory | executed (promotion-pending) |
-| 64-12-01 | 12 | 12 | SCLERA-14, SCLERA-15, SCLERA-18, OUT-05 | Independent post-promotion candidate: fresh verifier, full conjunction rerun, exact 13/24 inventory, 15 final-transaction owners + 9 immutable product/root owners; candidate status `candidate_passed` or `gaps_found` only | `64-POST-PROMOTION-CANDIDATE-VERIFICATION.md` (to be authored) | pending — not-run |
-| 64-13-01 | 13 | 13 | SCLERA-14, SCLERA-15, SCLERA-16, SCLERA-17, SCLERA-18, OUT-05 | Bounded final transaction: atomically finalize all 15 owners or fully re-quarantine; final status only after independent Plan 12 candidate passes | `64-VERIFICATION.md` and 15-owner final state (to be authored) | pending — not-run |
+| 64-12-01 | 12 | 12 | SCLERA-14, SCLERA-15, SCLERA-18, OUT-05 | Independent post-promotion candidate: exact 13/24 inventory, 15 input owners, 9 immutable owners, fresh conjunction | `64-POST-PROMOTION-CANDIDATE-VERIFICATION.md` — checker self-test failed; full SwiftPM had 8 skips | executed — `gaps_found`; requires re-quarantine; no success authority |
+| 64-13-01 | 13 | 13 | SCLERA-14, SCLERA-15, SCLERA-16, SCLERA-17, SCLERA-18, OUT-05 | Bounded final transaction selected mandatory failure branch from immutable candidate | `64-VERIFICATION.md` plus complete 15-owner failure set | **failed / requarantined** — validation remains incomplete |
 
 Task count target: **24 task IDs = 24 validation rows**.
 
-## Required Final Gates (Awaiting Plan 13)
+## Failed Final Gates
 
 - Counterexample/sweep (SCLERA-14): right-eye +0.004/-0.006/+0.003 historical tuple + 3x3x3 neighborhood + inclusive contour 27-scenario sweep
 - Inclusive contour coverage (SCLERA-14): 11 left + 11 right perturbations + 4 rejected-boundary, bilateral full-resolution truth per family
 - Four-state privacy / source freeze (T-64-06): tracked / staged / working / untracked, with `validate_review_source_state` binding
 - Distinct helper live child (T-64-02): strict helper self-test and live output use separate child invocations
-- Complete fresh test/audit/review conjunction (SCLERA-18 / T-64-05 / T-64-07): focused, private, helper, checker, privacy, full SwiftPM, Demo, fresh code/security/review
+- Complete fresh test/audit/review conjunction (SCLERA-18 / T-64-05 / T-64-07): checker self-test failed and the mandatory full SwiftPM command reported 8 skips; either condition blocks finality
 - Owner / lifecycle synchronization (T-64-07 / T-64-08): 9 product/root owners + 4 lifecycle owners + 1 validation owner agree
 
 ## Source-Backed Coverage
@@ -77,18 +77,23 @@ Task count target: **24 task IDs = 24 validation rows**.
 - Visual review: 64-03-02 and 64-08-02 (executed; four-item original-detail and source-bound review authority; no post-review tuning)
 - Full conjunction: 64-04-01, 64-04-02, 64-09-01, 64-09-02 (executed; full pre-promotion and independent post-promotion rerun with 617/0/8 and 636/0/8 SwiftPM and 121/121 Demo)
 - Owner / lifecycle / validation: 64-05-01, 64-05-02, 64-10-01, 64-10-02, 64-11-01, 64-11-02 (executed; four product, five root, four lifecycle, one validation owners agree on promotion-pending state)
-- Candidate and final transaction: 64-12-01 and 64-13-01 (pending — not-run; no Plan 12 candidate or Plan 13 final transaction has been written)
+- Candidate and final transaction: 64-12-01 produced immutable `gaps_found`; 64-13-01 applied the complete failure owner set and remains failed/requarantined
 
 ## Pending Authority
 
-- **No twenty-four rows final Nyquist may be written before the independent Plan 12 candidate is generated and accepted.**
-- **Final validation status is owned only by Plan 64-13 after `candidate_passed` is observed.**
-- **SCLERA-18 final closure, canonical `64-VERIFICATION.md: passed`, and Phase 65 unblock remain blocked until the bounded final transaction runs.**
+- **The immutable Plan 64-12 candidate is not accepted for success; it remains `gaps_found`.**
+- **Final validation requires a future fresh `candidate_passed`; this ledger remains incomplete.**
+- **SCLERA-18, canonical success, product authorization, and Phase 65 remain blocked.**
 - **DeviceRGB/named-sRGB is owned exclusively by Phase 65 SAFE-06; `眼睛` remains `partial` because `去脂` is future.**
 
-## Final Disposition (Promotion-Pending Candidate)
+## Final Disposition (Failure / Re-Quarantine)
 
-- 22/24 task rows executed; 2/24 task rows (64-12-01 and 64-13-01) explicitly pending.
-- The full conjunction, owner synchronization, and independent pre-promotion eligibility are green; promotion-pending state awaits the independent Plan 12 candidate plus Plan 13 bounded final transaction.
-- Canonical `64-VERIFICATION.md` remains `gaps_found`; T-64-08 (`check_phase64_sclera_closeout.py --promotion-pending-verification`) is green; no HIGH or owner/owner/lifecycle disagreement is present.
-- Failed, skipped, zero-count, conditional, stale, or missing mandatory gates retain the pending state and prevent any inference of twenty-four rows, final validation status, SCLERA-18 final, or Phase 65 unblock.
+- 23 of 24 task rows retain execution evidence; 64-13-01 is explicitly
+  failed/requarantined.
+- SCLERA-16, SCLERA-17, and OUT-05 implementation facts remain recorded, while
+  SCLERA-18 and product authorization remain open.
+- Canonical `64-VERIFICATION.md` is `gaps_found` with
+  `promotion_status: unproven`; all fifteen owners are re-quarantined and Phase
+  65 is blocked.
+- Failed, skipped, zero-count, conditional, stale, or missing mandatory gates
+  prevent final validation or promotion inference.
