@@ -344,6 +344,18 @@ def valid_aggregate() -> dict[str, object]:
 
 
 def run_self_test() -> int:
+    # RED gate for Plan 64-08: the closeout authority must expose the complete
+    # replanned serial graph before any scanner/review implementation can pass.
+    require(len(EXPECTED_TASKS) == 24, "RED: thirteen-plan/twenty-four-task inventory missing")
+    require(len(tuple(PHASE_DIR.glob("64-??-PLAN.md"))) == 13, "RED: thirteen-plan inventory missing")
+    try:
+        validate_review(read(PHASE_DIR / "64-REVIEW.md"))
+    except CheckError:
+        pass
+    else:
+        raise CheckError("RED: stale review accepted without immutable source manifest")
+    require("scan_repository_content" in globals(), "RED: four-state content scanner missing")
+
     mutations: tuple[tuple[str, Callable[[dict[str, object]], None]], ...] = (
         ("missing-eye", lambda value: value["family_counts"].pop("right")),
         ("missing-family", lambda value: value["family_counts"]["left"].pop("iris")),
