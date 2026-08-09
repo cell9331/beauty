@@ -23,7 +23,20 @@ const MAX_ASSET_BYTES = 32 * 1024 * 1024;
 const MAX_CHILD_BUFFER = 1024 * 1024;
 
 function fixed(status, extra = {}) {
-  process.stdout.write(`${JSON.stringify({ status, outputs: status === "pass" ? 6 : 0, ...extra })}\n`);
+  process.stdout.write(`${JSON.stringify({
+    status,
+    outputs: status === "pass" ? 6 : 0,
+    strict_helper_self_test: status === "pass" ? "pass" : "fail",
+    strict_helper_live: status === "pass" ? "pass" : "fail",
+    ...extra,
+  })}\n`);
+}
+
+function fixedSelfTest(status) {
+  process.stdout.write(`${JSON.stringify({
+    status,
+    strict_helper_self_test: status === "pass" ? "pass" : "fail",
+  })}\n`);
 }
 
 function run(command, args, options = {}) {
@@ -137,22 +150,71 @@ function render(caseID) {
   if (result.status !== 0 || result.error) throw new Error("renderer_failed");
 }
 
-function verify(bundle) {
-  const result = run("python3", [
+function exactKeys(value, expected) {
+  return value && typeof value === "object" && !Array.isArray(value)
+    && JSON.stringify(Object.keys(value).sort()) === JSON.stringify([...expected].sort());
+}
+
+function classifyStrictHelperChild(child, expectedRole, forbiddenValues = []) {
+  if (!child || child.error || child.status !== 0 || child.signal) {
+    throw new Error("strict_helper_child_failed");
+  }
+  if (typeof child.stdout !== "string" || typeof child.stderr !== "string" || child.stderr !== "") {
+    throw new Error("strict_helper_child_output_invalid");
+  }
+  const combined = `${child.stdout}\n${child.stderr}`;
+  const fixedForbidden = ["/Users/", "example-images/", "source_path", "asset_digest", "raw_mask"];
+  if ([...fixedForbidden, ...forbiddenValues].some(
+    (value) => typeof value === "string" && value && combined.includes(value)
+  )) {
+    throw new Error("strict_helper_child_private_output");
+  }
+  const lines = child.stdout.split(/\r?\n/).filter((line) => line.length > 0);
+  if (lines.length !== 1) throw new Error("strict_helper_child_ambiguous");
+  let value;
+  try {
+    value = JSON.parse(lines[0]);
+  } catch (_) {
+    throw new Error("strict_helper_child_malformed");
+  }
+  if (expectedRole === "self-test") {
+    if (!exactKeys(value, ["status", "self_tests"])
+      || value.status !== "pass" || value.self_tests !== 14) {
+      throw new Error("strict_helper_self_test_incomplete");
+    }
+    return "pass";
+  }
+  if (expectedRole === "live") {
+    const expectedKeys = [
+      "status", "outputs", "positive_roles", "negative_roles",
+      "no_face_roles", "improved_eye_roles",
+    ];
+    if (!exactKeys(value, expectedKeys)
+      || value.status !== "pass" || value.outputs !== 6
+      || value.positive_roles !== 1 || value.negative_roles !== 1
+      || value.no_face_roles !== 1 || value.improved_eye_roles !== 1) {
+      throw new Error("strict_helper_live_incomplete");
+    }
+    return "pass";
+  }
+  throw new Error("strict_helper_role_invalid");
+}
+
+function runStrictHelperChildren(bundle, spawn = run) {
+  const forbidden = [bundle, OUTPUT_ROOT, RENDERER_SOURCE, HELPER];
+  const selfTestChild = spawn("python3", [HELPER, "--self-test"]);
+  const strictHelperSelfTest = classifyStrictHelperChild(selfTestChild, "self-test", forbidden);
+  const liveChild = spawn("python3", [
     HELPER,
     "--output", OUTPUT_ROOT,
     "--bundle", bundle,
     "--renderer-source", RENDERER_SOURCE,
   ]);
-  if (result.status !== 0 || result.error) throw new Error("strict_output_failed");
-  const lines = result.stdout.trim().split("\n");
-  if (lines.length !== 1) throw new Error("strict_output_ambiguous");
-  const value = JSON.parse(lines[0]);
-  if (value?.status !== "pass" || value?.outputs !== 6
-    || value?.positive_roles !== 1 || value?.negative_roles !== 1
-    || value?.no_face_roles !== 1 || value?.improved_eye_roles !== 1) {
-    throw new Error("strict_output_incomplete");
-  }
+  const strictHelperLive = classifyStrictHelperChild(liveChild, "live", forbidden);
+  return {
+    strict_helper_self_test: strictHelperSelfTest,
+    strict_helper_live: strictHelperLive,
+  };
 }
 
 function prepareOpaqueReview() {
@@ -171,20 +233,59 @@ function prepareOpaqueReview() {
 }
 
 function runSelfTests() {
-  if (typeof classifyStrictHelperChild !== "function") {
-    throw new Error("RED: strict helper child classifier missing");
+  const selfTestJSON = `${JSON.stringify({ status: "pass", self_tests: 14 })}\n`;
+  const liveJSON = `${JSON.stringify({
+    status: "pass", outputs: 6, positive_roles: 1, negative_roles: 1,
+    no_face_roles: 1, improved_eye_roles: 1,
+  })}\n`;
+  const valid = (stdout) => ({ status: 0, signal: null, error: undefined, stdout, stderr: "" });
+  if (classifyStrictHelperChild(valid(selfTestJSON), "self-test") !== "pass"
+    || classifyStrictHelperChild(valid(liveJSON), "live") !== "pass") {
+    throw new Error("strict_helper_valid_fixture_rejected");
   }
-  if (typeof runStrictHelperChildren !== "function") {
-    throw new Error("RED: distinct strict helper self-test/live execution missing");
+  let rejected = 0;
+  const expectFailure = (callback) => {
+    try { callback(); } catch (_) { rejected += 1; return; }
+    throw new Error("strict_helper_mutation_accepted");
+  };
+  expectFailure(() => classifyStrictHelperChild({ ...valid(liveJSON), status: 1 }, "live"));
+  expectFailure(() => classifyStrictHelperChild({ ...valid(liveJSON), error: new Error("spawn") }, "live"));
+  expectFailure(() => classifyStrictHelperChild({ ...valid(liveJSON), error: Object.assign(new Error("timeout"), { code: "ETIMEDOUT" }) }, "live"));
+  expectFailure(() => classifyStrictHelperChild(valid(`${liveJSON}${liveJSON}`), "live"));
+  expectFailure(() => classifyStrictHelperChild(valid("not-json\n"), "live"));
+  expectFailure(() => classifyStrictHelperChild(valid(JSON.stringify({ status: "pass", outputs: 5 }) + "\n"), "live"));
+  expectFailure(() => classifyStrictHelperChild(valid(selfTestJSON), "live"));
+  expectFailure(() => classifyStrictHelperChild(valid(liveJSON), "self-test"));
+  expectFailure(() => classifyStrictHelperChild(valid(JSON.stringify({
+    status: "pass", outputs: 6, positive_roles: 1, negative_roles: 1,
+    no_face_roles: 1, improved_eye_roles: 1, strict_helper_live: "pass",
+  }) + "\n"), "live"));
+  expectFailure(() => classifyStrictHelperChild(valid(JSON.stringify({
+    status: "pass", outputs: 6, positive_roles: 1, negative_roles: 1,
+    no_face_roles: 1, improved_eye_roles: 1,
+    [["source", "path"].join("_")]: "/Users/private",
+  }) + "\n"), "live"));
+  expectFailure(() => classifyStrictHelperChild({ ...valid(liveJSON), stderr: "raw child failure" }, "live"));
+  expectFailure(() => classifyStrictHelperChild(undefined, "live"));
+  expectFailure(() => classifyStrictHelperChild(valid(liveJSON), "unknown"));
+
+  let calls = 0;
+  const children = [valid(selfTestJSON), valid(liveJSON)];
+  const result = runStrictHelperChildren("opaque-bundle", () => children[calls++]);
+  if (calls !== 2 || result.strict_helper_self_test !== "pass" || result.strict_helper_live !== "pass") {
+    throw new Error("strict_helper_distinct_execution_invalid");
   }
-  throw new Error("RED: strict helper mutation suite missing");
+  expectFailure(() => runStrictHelperChildren("opaque-bundle", () => valid(selfTestJSON)));
+  if (rejected !== 14) throw new Error("strict_helper_self_test_count_invalid");
+  return rejected;
 }
 
 function main() {
   try {
     const argv = process.argv.slice(2);
     if (argv.length === 1 && argv[0] === "--self-test") {
-      fixed("pass", { mutation_rejections: runSelfTests() });
+      runSelfTests();
+      fixedSelfTest("pass");
       return;
     }
     const prepareReview = argv.length === 1 && argv[0] === "--prepare-review";
@@ -207,14 +308,23 @@ function main() {
     );
     assertGeneratedArtifactsPrivate();
     for (const caseID of CASES) render(caseID);
-    verify(bundle);
+    const strictHelperResults = runStrictHelperChildren(bundle);
     if (prepareReview) prepareOpaqueReview();
     assertGeneratedArtifactsPrivate();
-    fixed("pass", prepareReview ? { review_ready: true, review_items: 4 } : {});
+    fixed("pass", {
+      ...strictHelperResults,
+      ...(prepareReview ? { review_ready: true, review_items: 4 } : {}),
+    });
   } catch (_) {
-    fixed("fail");
+    if (process.argv.length === 3 && process.argv[2] === "--self-test") fixedSelfTest("fail");
+    else fixed("fail");
     process.exitCode = 1;
   }
 }
 
 if (require.main === module) main();
+
+module.exports = {
+  classifyStrictHelperChild,
+  runStrictHelperChildren,
+};
