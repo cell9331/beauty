@@ -5,15 +5,15 @@ milestone_name: Independent Teeth and Sclera Retouch
 current_phase: 64
 current_phase_name: sclera-output-adversarial-safety-and-independent-closeout
 status: executing
-stopped_at: Completed 64-07-PLAN.md
-last_updated: "2026-08-09T07:00:08.806Z"
+stopped_at: Completed 64-08-PLAN.md
+last_updated: "2026-08-09T07:27:43.688Z"
 last_activity: 2026-08-09
-last_activity_desc: Completed Plan 64-07 historical leak containment and inclusive contour validation
+last_activity_desc: Completed Plan 64-08 content trust, review-source binding, and strict-helper live proof
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 43
-  completed_plans: 37
+  completed_plans: 38
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: `.planning/PROJECT.md` (updated 2026-08-07)
 ## Current Position
 
 Phase: 64 (sclera-output-adversarial-safety-and-independent-closeout) — EXECUTING
-Plan: 8 of 13
+Plan: 9 of 13
 Status: Ready to execute
-Last activity: 2026-08-09 — Completed Plan 64-07 historical leak containment and inclusive contour validation
+Last activity: 2026-08-09 — Completed Plan 64-08 content trust, review-source binding, and strict-helper live proof
 
-Progress: [█████████░] 86%
+Progress: [█████████░] 88%
 
 ## Performance Metrics
 
@@ -79,6 +79,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 64 P05 | 5 min | 2 tasks | 10 files |
 | Phase 64 P06 | 18 min | 2 tasks | 5 files |
 | Phase 64 P07 | 15 min | 2 tasks | 3 files |
+| Phase 64 P08 | 20 min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -108,6 +109,9 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 - [Phase 64]: SAFE-06 and DeviceRGB/named-sRGB remain Phase 65 scope.
 - [Phase 64]: The exact right-eye +0.004/-0.006/+0.003 tuple fails closed under the 0.025 normalized pupil-center limit while the smaller +0.003/-0.005 boundary remains accepted.
 - [Phase 64]: Sclera contour admission uses bounded scale-aware inclusive intersection checks and permits adjacent edges to share only their intended endpoint.
+- [Phase 64]: Repository privacy authority scans bytes from each Git/filesystem state independently and never substitutes one state for another. — T-64-06 must bind trust to actual HEAD, index, working, and untracked content rather than filenames.
+- [Phase 64]: Review authority requires an exact relevant-source tree/blob manifest; the current stale review remains quarantine evidence only. — Any relevant implementation or evidence-source change invalidates D-16 review authority while later non-relevant owner synchronization remains possible.
+- [Phase 64]: Strict-helper self-test and live output use separate child invocations and exact role-specific JSON schemas. — A helper self-test cannot forge or substitute the real six-output live result.
 
 ### Pending Todos
 
@@ -129,6 +133,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-09T07:00:08.800Z
-Stopped at: Completed 64-07-PLAN.md
+Last session: 2026-08-09T07:27:00.242Z
+Stopped at: Completed 64-08-PLAN.md
 Resume file: None
