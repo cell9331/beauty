@@ -140,7 +140,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
   4. Genuine redness positives improve within predeclared per-eye bounds, while normal negatives and blink/gaze/glasses/highlight/occlusion challenges remain natural under blinded original-detail review.
   5. Production tests, native/adversarial matrices, compatibility, privacy, full regression, review/fix, independent verification, and owning ledgers promote exactly `祛红血丝`; `眼睛` remains partial because `去脂` remains future.
 
-**Plans**: 6/13 completed; corrected bilateral proof and three-state checker are green, while canonical verification remains `gaps_found` pending replacement Waves 7-13
+**Plans**: 7/13 completed; the exact historical leak and inclusive contour regressions are green, while fresh evidence, review, promotion, and final verification remain in Waves 8-13
 **Wave 1**
 
 - [x] 64-01-PLAN.md — RED public-output/adversarial contracts and eight-HIGH checker
@@ -167,7 +167,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 
 **Wave 7** *(gap closure; blocked on Wave 6 completion)*
 
-- [ ] 64-07-PLAN.md — reinstate the exact leak counterexample, harden containment and reject inclusive malformed contours
+- [x] 64-07-PLAN.md — reinstate the exact leak counterexample, harden containment and reject inclusive malformed contours
 
 **Wave 8** *(blocked on Wave 7 completion)*
 
@@ -224,7 +224,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 | 61. Teeth Output, Safety, and Independent Closeout | 4/4 | Complete    | 2026-08-07 |
 | 62. Sclera Evidence and Admission Contract | 5/5 | Complete — independent evidence, 61st scalar, direct demand, privacy and regression pass | 2026-08-07 |
 | 63. Guarded Per-Eye Sclera Production Integration | 4/4 | Complete — guarded provider, actual-Vision evidence, privacy and regression pass; no promotion | 2026-08-07 |
-| 64. Sclera Output, Adversarial Safety, and Independent Closeout | 6/13 | Ready to execute — replacement Waves 7-13 close four audit blockers before promotion | — |
+| 64. Sclera Output, Adversarial Safety, and Independent Closeout | 7/13 | In Progress — production-proof regressions closed; fresh serial evidence and promotion pending | — |
 | 65. Combined Facade, Privacy, and Milestone Closeout | 4/4 executed | Blocked — prior verification and milestone audit are stale until Phase 64 re-verifies | — |
 
 Earlier phase details are preserved in their linked milestone archives under `.planning/milestones/`.

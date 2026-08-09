@@ -4,17 +4,16 @@ milestone: v1.15
 milestone_name: Independent Teeth and Sclera Retouch
 current_phase: 64
 current_phase_name: sclera-output-adversarial-safety-and-independent-closeout
-status: ready_to_execute
-stopped_at: Replanned Phase 64 gap chain; Plan 64-07 production-proof remediation next
-last_updated: "2026-08-09T06:31:27Z"
+status: executing
+stopped_at: Completed 64-07-PLAN.md
+last_updated: "2026-08-09T07:00:08.806Z"
 last_activity: 2026-08-09
-last_activity_desc: Replanned incomplete Phase 64 work as seven serial Plans 64-07 through 64-13 after four blocking pre-promotion audit findings
+last_activity_desc: Completed Plan 64-07 historical leak containment and inclusive contour validation
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 43
-  completed_plans: 36
-  percent: 84
+  completed_plans: 37
 ---
 
 # Project State
@@ -24,22 +23,22 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-08-07)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 64 active remediation — corrected bilateral sclera proof after exact product quarantine
+**Current focus:** Phase 64 gap closure — regenerate fresh evidence from the corrected leak-containment and contour-validity baseline
 
 ## Current Position
 
-Phase: 64 (sclera-output-adversarial-safety-and-independent-closeout) — READY TO EXECUTE
-Plan: 7 of 13
-Status: Active remediation; canonical verification remains `gaps_found`
-Last activity: 2026-08-09 — Replanned the incomplete chain as Plans 64-07 through 64-13 after four blocking pre-promotion audit findings
+Phase: 64 (sclera-output-adversarial-safety-and-independent-closeout) — EXECUTING
+Plan: 8 of 13
+Status: Ready to execute
+Last activity: 2026-08-09 — Completed Plan 64-07 historical leak containment and inclusive contour validation
 
-Progress: [████████░░] 84%
+Progress: [█████████░] 86%
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Total plans completed: 34
+- Total plans completed: 37
 - Average duration: —
 - Total execution time: —
 
@@ -67,7 +66,6 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 64 P04 | — | 2 tasks | 15 files |
 | Phase 64 P05 | — | 2 tasks | 9 files |
 | Phase 64 P06 | — | 2 tasks | 5 files |
-| Phase 64 P07 | — | 2 tasks | 3 files |
 | Phase 64 P08 | — | 2 tasks | 2 files |
 | Phase 64 P09 | — | 2 tasks | 6 files |
 | Phase 64 P10 | — | 2 tasks | 9 files |
@@ -80,6 +78,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 65 P04 | — | 2 tasks | 13 files |
 | Phase 64 P05 | 5 min | 2 tasks | 10 files |
 | Phase 64 P06 | 18 min | 2 tasks | 5 files |
+| Phase 64 P07 | 15 min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -107,6 +106,8 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 - [Phase 64]: Actual sclera proposal indices remain immutable internal request-local evidence visible only to authorized @testable BeautyEffects tests.
 - [Phase 64]: Phase 64 closeout derives authority from independent artifacts across explicit pre, pending, and final states; product claims cannot self-authorize.
 - [Phase 64]: SAFE-06 and DeviceRGB/named-sRGB remain Phase 65 scope.
+- [Phase 64]: The exact right-eye +0.004/-0.006/+0.003 tuple fails closed under the 0.025 normalized pupil-center limit while the smaller +0.003/-0.005 boundary remains accepted.
+- [Phase 64]: Sclera contour admission uses bounded scale-aware inclusive intersection checks and permits adjacent edges to share only their intended endpoint.
 
 ### Pending Todos
 
@@ -114,7 +115,7 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- SCLERA-14 and SCLERA-15 are unproven; SCLERA-18, Phase 65 verification, and v1.15 milestone readiness remain blocked on Phase 64 Waves 5-11.
+- SCLERA-14 and SCLERA-15 production-proof regressions are remediated; SCLERA-18, Phase 65 verification, and v1.15 milestone readiness remain blocked on fresh Phase 64 Waves 8-11 evidence, review, and promotion.
 - Archive, tag, cleanup, shipping and release claims remain unauthorized. Existing TD-013 generic-result sendability remains outside this milestone.
 
 ## Deferred Items
@@ -128,6 +129,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-08T05:48:33.706Z
-Stopped at: Completed 64-06-PLAN.md; Plan 64-07 pre-promotion conjunction next
+Last session: 2026-08-09T07:00:08.800Z
+Stopped at: Completed 64-07-PLAN.md
 Resume file: None

@@ -42,8 +42,8 @@
 - [x] **SCLERA-11**: Redness is scored only inside the accepted hard envelope; any blur or feather is followed by re-clipping to the same hard envelope before composition.
 - [x] **SCLERA-12**: The bounded transform derives every changed RGB value from the immutable canonical source, reduces only measured red excess, restores natural luminance, and preserves vessel/detail variation and non-porcelain color.
 - [x] **SCLERA-13**: Blink, closure, gaze, glasses/contacts, occlusion, strong highlight, collapsed contour, missing or implausible pupil, malformed support, and one-eye rejection fail only the affected eye without guessing, mirroring, caching, or reusing peer/stale support.
-- [ ] **SCLERA-14**: A color-independent open-redness geometry oracle proves zero candidate overlap with the unperturbed protected iris, pupil, highlight, lash, skin, and outside-aperture truth across bounded contour/pupil perturbations.
-- [ ] **SCLERA-15**: A recolored-protected-iris final-output oracle proves that the real score, feather, hard re-clip, bounded transform, and composition together change zero protected iris/pupil/highlight pixels.
+- [x] **SCLERA-14**: A color-independent open-redness geometry oracle proves zero candidate overlap with the unperturbed protected iris, pupil, highlight, lash, skin, and outside-aperture truth across bounded contour/pupil perturbations.
+- [x] **SCLERA-15**: A recolored-protected-iris final-output oracle proves that the real score, feather, hard re-clip, bounded transform, and composition together change zero protected iris/pupil/highlight pixels.
 - [x] **SCLERA-16**: Genuine redness positives show predeclared bounded per-eye target improvement, while normal negatives and unsafe or unsupported eyes abstain or remain natural at maximum admitted strength.
 - [x] **SCLERA-17**: Isolated public-facade renderer cases and a strict decoded-output helper prove visible per-eye behavior, peer-eye independence, same dimensions, expected no-ops, and zero protected/outside changes.
 - [ ] **SCLERA-18**: Sclera evidence, per-eye provider tests, native/adversarial safety matrices, original-detail review, compatibility, privacy, full regression, exact product ledger, and independent verification all agree before `祛红血丝` is promoted; branch `眼睛` remains partial because `去脂` is future.
@@ -118,8 +118,8 @@ completion.
 | SCLERA-11 | Phase 63 | Verified; score-inside and post-filter identical-envelope reclip |
 | SCLERA-12 | Phase 63 | Verified; bounded immutable-source transform and retained detail/alpha |
 | SCLERA-13 | Phase 63 | Verified; affected-eye abstention, peer continuation and recovery |
-| SCLERA-14 | Phase 64 | Open; canonical `gaps_found` found incomplete bilateral truth, perturbations and proposal intersection |
-| SCLERA-15 | Phase 64 | Open; canonical `gaps_found` found incomplete protected recolor and final-byte comparison |
+| SCLERA-14 | Phase 64 | Complete — Plan 64-07 freezes the exact leak plus a bilateral 3x3x3 accepted/rejected proposal-intersection boundary |
+| SCLERA-15 | Phase 64 | Complete — Plan 64-07 proves protected and outside-proposal byte identity at the corrected containment boundary |
 | SCLERA-16 | Phase 64 | Verified; positive improvement and negative/unsafe naturalness pass |
 | SCLERA-17 | Phase 64 | Complete; standalone public-facade output passes strict decoding |
 | SCLERA-18 | Phase 64 | Open; SCLERA-14/15 block the conjunction and the stale promotion is quarantined |
@@ -140,9 +140,9 @@ completion.
 - Unmapped: 0 ✓
 - Duplicate mappings: 0 ✓
 - Currently satisfied: 37/40
-- Open under canonical Phase 64 `gaps_found`: SCLERA-14, SCLERA-15, SCLERA-18
+- Open under canonical Phase 64 `gaps_found`: SCLERA-18; SCLERA-14 and SCLERA-15 were remediated by Plan 64-07 and await the later serial closeout conjunction
 - Prior audit-controlled OUT-09 result is stale until Phase 64 and downstream Phase 65 claims are freshly re-verified
 
 ---
 *Requirements defined: 2026-08-05*
-*Last updated: 2026-08-08 after canonical Phase 64 gap quarantine reopened SCLERA-14, SCLERA-15 and SCLERA-18*
+*Last updated: 2026-08-09 after Plan 64-07 closed the SCLERA-14/15 production-proof regressions while SCLERA-18 remains open*
