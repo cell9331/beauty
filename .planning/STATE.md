@@ -4,16 +4,16 @@ milestone: v1.15
 milestone_name: Independent Teeth and Sclera Retouch
 current_phase: 64
 current_phase_name: sclera-output-adversarial-safety-and-independent-closeout
-status: executing
-stopped_at: Completed 64-10-PLAN.md
-last_updated: "2026-08-09T17:55:00.000Z"
+status: promotion_pending
+stopped_at: Completed 64-11-PLAN.md
+last_updated: "2026-08-09T18:30:00.000Z"
 last_activity: 2026-08-09
-last_activity_desc: Completed Plan 64-10 product and root owner promotion-pending synchronization (T-64-05/06/07 green; T-64-08 deferred to Plan 64-11)
+last_activity_desc: Completed Plan 64-11 lifecycle/validation owner synchronization (T-64-08 promotion-pending-verification green; 13 plans / 24 task IDs synchronized; canonical gaps_found preserved)
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 43
-  completed_plans: 38
+  completed_plans: 39
 ---
 
 # Project State
@@ -27,12 +27,12 @@ See: `.planning/PROJECT.md` (updated 2026-08-07)
 
 ## Current Position
 
-Phase: 64 (sclera-output-adversarial-safety-and-independent-closeout) — EXECUTING
-Plan: 10 of 13
-Status: Ready to execute next plan (64-11 lifecycle/validation)
-Last activity: 2026-08-09 — Completed Plan 64-10 product and root owner promotion-pending synchronization
+Phase: 64 (sclera-output-adversarial-safety-and-independent-closeout) — PROMOTION_PENDING
+Plan: 11 of 13 (13 plans / 24 task IDs synchronized to promotion-pending chain)
+Status: Ready to execute next plan (64-12 independent post-promotion candidate)
+Last activity: 2026-08-09 — Completed Plan 64-11 lifecycle/validation owner synchronization
 
-Progress: [█████████░] 88%
+Progress: [█████████░] 90%
 
 ## Performance Metrics
 
@@ -138,6 +138,14 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-09T17:35:00.000Z
-Stopped at: Completed 64-10-PLAN.md
+Last session: 2026-08-09T18:15:00.000Z
+Stopped at: Completed 64-11-PLAN.md
 Resume file: None
+
+## Promotion-Pending Serial Chain
+
+- 13 plans / 24 task IDs synchronized across PLANS.md, REQUIREMENTS.md, ROADMAP.md, STATE.md, 64-VALIDATION.md
+- Next: Plan 64-12 (independent post-promotion candidate) → Plan 64-13 (bounded final transaction)
+- Canonical `64-VERIFICATION.md` remains `gaps_found`; SCLERA-18 final and Phase 65 unblock are not authorized
+- DeviceRGB/named-sRGB warning is owned only by Phase 65 SAFE-06; `眼睛` remains partial because `去脂` is future
+- `64-PRE-PROMOTION-VERIFICATION.md` is independently `eligible_promotion_pending`; `64-POST-PROMOTION-CANDIDATE-VERIFICATION.md` is not yet created

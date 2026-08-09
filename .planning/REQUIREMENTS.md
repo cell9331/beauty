@@ -118,16 +118,16 @@ completion.
 | SCLERA-11 | Phase 63 | Verified; score-inside and post-filter identical-envelope reclip |
 | SCLERA-12 | Phase 63 | Verified; bounded immutable-source transform and retained detail/alpha |
 | SCLERA-13 | Phase 63 | Verified; affected-eye abstention, peer continuation and recovery |
-| SCLERA-14 | Phase 64 | Complete — Plan 64-07 freezes the exact leak plus a bilateral 3x3x3 accepted/rejected proposal-intersection boundary |
-| SCLERA-15 | Phase 64 | Complete — Plan 64-07 proves protected and outside-proposal byte identity at the corrected containment boundary |
+| SCLERA-14 | Phase 64 | Evidence-ready / promotion-pending — Plan 64-07 freezes the exact leak plus a bilateral 3x3x3 accepted/rejected proposal-intersection boundary; awaits independent Plan 64-12 candidate plus Plan 64-13 bounded final transaction |
+| SCLERA-15 | Phase 64 | Evidence-ready / promotion-pending — Plan 64-07 proves protected and outside-proposal byte identity at the corrected containment boundary; awaits independent Plan 64-12 candidate plus Plan 64-13 bounded final transaction |
 | SCLERA-16 | Phase 64 | Verified; positive improvement and negative/unsafe naturalness pass |
 | SCLERA-17 | Phase 64 | Complete; standalone public-facade output passes strict decoding |
-| SCLERA-18 | Phase 64 | Open; SCLERA-14/15 block the conjunction and the stale promotion is quarantined |
+| SCLERA-18 | Phase 64 | Open; SCLERA-14/15 evidence-ready/promotion-pending and the stale promotion is quarantined; awaits independent Plan 64-12 candidate plus Plan 64-13 bounded final transaction |
 | SAFE-04 | Phase 65 | Complete; package/request-local sensitive state and aggregate-only diagnostics verified |
 | SAFE-05 | Phase 65 | Complete; lifecycle clearing, isolation and recovery verified |
 | SAFE-06 | Phase 65 | Complete; canonical output and unrelated-work preservation verified |
 | SAFE-07 | Phase 65 | Complete; exact 61/5/74/3 compatibility inventories verified |
-| OUT-05 | Phase 64 | Complete; standalone teeth and sclera facade outputs independently verified |
+| OUT-05 | Phase 64 | Evidence-ready / promotion-pending — standalone teeth and sclera facade outputs independently verified; awaits independent Plan 64-12 candidate plus Plan 64-13 bounded final transaction |
 | OUT-06 | Phase 65 | Complete; independent merge, collision-to-source and four failure units verified |
 | OUT-07 | Phase 65 | Complete; full regression, private/opt-in, privacy, review and verification pass |
 | OUT-08 | Phase 65 | Complete; exact implemented/deferred product equality and nonclaims verified |
@@ -140,9 +140,29 @@ completion.
 - Unmapped: 0 ✓
 - Duplicate mappings: 0 ✓
 - Currently satisfied: 37/40
-- Open under canonical Phase 64 `gaps_found`: SCLERA-18; SCLERA-14 and SCLERA-15 were remediated by Plan 64-07 and await the later serial closeout conjunction
+- Open under canonical Phase 64 `gaps_found`: SCLERA-18 final; SCLERA-14, SCLERA-15, and OUT-05 are evidence-ready/promotion-pending and await the independent Plan 64-12 candidate plus Plan 64-13 bounded final transaction
 - Prior audit-controlled OUT-09 result is stale until Phase 64 and downstream Phase 65 claims are freshly re-verified
+
+## Phase 64 Serial Gap-Chain Inventory (13 plans / 24 task IDs)
+
+| Plan | Wave | Task IDs | Dependency | State |
+| --- | ---: | --- | --- | --- |
+| 64-01-PLAN.md | 1 | 64-01-01, 64-01-02 | — | completed |
+| 64-02-PLAN.md | 2 | 64-02-01, 64-02-02 | 64-01 | completed |
+| 64-03-PLAN.md | 3 | 64-03-01, 64-03-02 | 64-02 | completed |
+| 64-04-PLAN.md | 4 | 64-04-01, 64-04-02 | 64-03 | completed |
+| 64-05-PLAN.md | 5 | 64-05-01, 64-05-02 | 64-04 | completed (gap closure) |
+| 64-06-PLAN.md | 6 | 64-06-01, 64-06-02 | 64-05 | completed (gap closure) |
+| 64-07-PLAN.md | 7 | 64-07-01, 64-07-02 | 64-06 | completed (gap closure) |
+| 64-08-PLAN.md | 8 | 64-08-01, 64-08-02 | 64-07 | completed (gap closure) |
+| 64-09-PLAN.md | 9 | 64-09-01, 64-09-02 | 64-08 | completed (gap closure) |
+| 64-10-PLAN.md | 10 | 64-10-01, 64-10-02 | 64-09 | completed (gap closure) |
+| 64-11-PLAN.md | 11 | 64-11-01, 64-11-02 | 64-10 | completed (gap closure) |
+| 64-12-PLAN.md | 12 | 64-12-01 | 64-11 | pending — independent post-promotion candidate |
+| 64-13-PLAN.md | 13 | 64-13-01 | 64-12 | pending — bounded final transaction |
+
+`眼睛` remains `partial` solely because `去脂` is future. DeviceRGB/named-sRGB is owned only by Phase 65 SAFE-06.
 
 ---
 *Requirements defined: 2026-08-05*
-*Last updated: 2026-08-09 after Plan 64-07 closed the SCLERA-14/15 production-proof regressions while SCLERA-18 remains open*
+*Last updated: 2026-08-09 after Plan 64-11 synchronized the 13-plan / 24-task lifecycle/validation chain to promotion-pending state; SCLERA-14, SCLERA-15, SCLERA-16, SCLERA-17, and OUT-05 are evidence-ready/promotion-pending while SCLERA-18 final and Phase 64 completion await the independent Plan 64-12 candidate and Plan 64-13 bounded final transaction*
