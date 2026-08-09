@@ -6,7 +6,7 @@ current_phase: 64
 current_phase_name: sclera-output-adversarial-safety-and-independent-closeout
 status: gaps_found
 stopped_at: Plan 64-13 failure branch applied; all fifteen owners re-quarantined
-last_updated: "2026-08-09T21:30:32+08:00"
+last_updated: "2026-08-09T21:56:17+08:00"
 last_activity: 2026-08-09
 last_activity_desc: Immutable Plan 64-12 candidate gaps_found forced Plan 64-13 failed/requarantined fifteen-owner transaction; Phase 65 remains blocked
 progress:
@@ -28,7 +28,7 @@ See: `.planning/PROJECT.md` (updated 2026-08-07)
 ## Current Position
 
 Phase: 64 (sclera-output-adversarial-safety-and-independent-closeout) — GAPS_FOUND / IN PROGRESS
-Plan: 13 of 13 attempted (12 summaries; 64-13-01 failed/requarantined)
+Plan: 13 of 13 attempted (13 summaries; 64-13-01 failed/requarantined)
 Status: Complete fifteen-owner failure set verified; new repair plan required before any fresh candidate
 Last activity: 2026-08-09 — Plan 64-13 mandatory failure branch re-quarantined all fifteen owners
 
@@ -141,15 +141,15 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-09T21:30:32+08:00
+Last session: 2026-08-09T21:56:17+08:00
 Stopped at: Plan 64-13 failure branch applied; all fifteen owners re-quarantined
 Resume file: None
 
 ## Phase 64 Failure Quarantine
 
-- Exact inventory remains 13 plans / 24 ordered task IDs; summaries exist through 64-12 only.
+- Exact inventory remains 13 plans / 24 ordered task IDs; all 13 summaries exist.
 - Plan 64-12 candidate: immutable `gaps_found`, requires full re-quarantine, grants no Plan 13 success or Phase 65 authority.
-- Plan 64-13 task: failed/requarantined after applying and validating the complete fifteen-owner failure set; no 64-13 summary exists.
+- Plan 64-13 task: failed/requarantined after applying and validating the complete fifteen-owner failure set; its summary records completion of the mandatory failure branch without converting the task or phase to passed.
 - Canonical `64-VERIFICATION.md` is `gaps_found` with `promotion_status: unproven`; validation is incomplete.
 - Product-facing `祛红血丝` is future/unproven; `眼睛` remains partial and `去脂` future. DeviceRGB/named-sRGB remains Phase 65 SAFE-06-only.
 - Phase 65 remains blocked; prior Phase 65 verification and milestone audit are stale.

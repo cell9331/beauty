@@ -159,7 +159,7 @@ completion.
 | 64-10-PLAN.md | 10 | 64-10-01, 64-10-02 | 64-09 | completed (gap closure) |
 | 64-11-PLAN.md | 11 | 64-11-01, 64-11-02 | 64-10 | completed (gap closure) |
 | 64-12-PLAN.md | 12 | 64-12-01 | 64-11 | completed — immutable candidate `gaps_found`; requires re-quarantine |
-| 64-13-PLAN.md | 13 | 64-13-01 | 64-12 | failed/requarantined — complete fifteen-owner failure set applied; no summary |
+| 64-13-PLAN.md | 13 | 64-13-01 | 64-12 | failed/requarantined — complete fifteen-owner failure set applied; summary records mandatory failure-branch completion |
 
 `眼睛` remains `partial`; `祛红血丝` is future/unproven and `去脂` is future.
 DeviceRGB/named-sRGB is owned only by blocked Phase 65 SAFE-06.
