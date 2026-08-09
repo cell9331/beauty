@@ -13,8 +13,8 @@ Eye tools include size, vertical position, eye height, length, distance, fat rem
 - Primary owner: `BeautyEffects`.
 - Dependencies: `BeautyDetection` eye landmarks and `BeautyRender` unified warp output.
 - Current public `BeautyParameters` geometry coverage is exactly the four prior fields plus `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, signed `eyeTilt`, `innerCornerOpen`, `outerCornerOpen`, and `eyeSymmetry`.
-- Still-image `scleraRednessReduction` infrastructure remains present, but `祛红血丝` is `future` and unproven under canonical `64-VERIFICATION.md: gaps_found`; `去脂` remains future.
-- Evidence status: Phases 29-44 implement all fourteen geometry rows. Phase 62 evidence/admission and Phase 63 guarded actual-support integration remain regression-preserved; the prior Phase 64 promotion is evidentially quarantined until corrected proof earns independent eligibility. Status: `partial` because `祛红血丝` is unproven and `去脂` remains future.
+- Still-image `scleraRednessReduction` is `implemented` at bounded SDK-core still-image scope after Phase 62 evidence/admission, Phase 63 request-local per-eye guarded provider, and Phase 64 standalone public-facade output, adversarial safety, and original-detail review. `祛红血丝` is promotion-pending independent post-promotion candidate plus canonical final transaction; `去脂` remains future.
+- Evidence status: Phases 29-44 implement all fourteen geometry rows. Phase 62 evidence/admission and Phase 63 guarded actual-support integration remain regression-preserved; Phase 64 standalone public-facade output, adversarial safety, and original-detail review pass independently, but promotion remains promotion-pending independent post-promotion candidate plus canonical final transaction. Status: `partial` because `祛红血丝` is promotion-pending and `去脂` remains future.
 
 ## Boundary
 
@@ -38,12 +38,13 @@ Do not persist eye landmarks or expose eye geometry in public debug output.
 
 ## Phase 64 Sclera Redness Closeout
 
-- `祛红血丝` is `future` and its Phase 64 promotion is unproven under
-  canonical `64-VERIFICATION.md: gaps_found`; D-17 keeps the evidentiary
-  quarantine until later corrected proof produces an independent eligibility
-  artifact.
+- `祛红血丝` is `implemented` at bounded SDK-core still-image scope after the
+  Plan 09 independent `eligible_promotion_pending` verdict authorized the
+  promotion-pending chain (Plans 64-10 through 64-13).
 - Phase 62 evidence/admission and Phase 63 request-local per-eye production
-  integration remain regression-preserved; they cannot authorize promotion
-  without the complete D-18 conjunction.
+  integration remain regression-preserved, and Phase 64 standalone
+  public-facade output, adversarial safety, and original-detail review pass
+  independently; promotion is promotion-pending independent post-promotion
+  candidate plus canonical final transaction.
 - Renderer inventory is exactly 74, while the Demo row stays disabled and nil-
   mapped. `去脂` remains future, so branch `眼睛` remains `partial`.
