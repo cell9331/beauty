@@ -67,6 +67,19 @@ final class BeautyScleraRednessAdversarialCloseoutTests: XCTestCase {
         let rejectedEye: OracleEye?
     }
 
+    private enum BoundaryDisposition: String {
+        case accepted
+        case localRejected = "local_rejected"
+    }
+
+    private struct BoundarySample {
+        let id: String
+        let centerOffset: Double
+        let pupilOffset: Double
+        let skew: Double
+        let expected: BoundaryDisposition
+    }
+
     private struct ProtectedTruth {
         let families: [OracleEye: [ProtectedRegion: Set<Int>]]
 
@@ -167,6 +180,102 @@ final class BeautyScleraRednessAdversarialCloseoutTests: XCTestCase {
         XCTAssertGreaterThan(aggregate.activePeerProposalCount, 0)
     }
 
+    func testHistoricalRightEyeLeakAndCalibratedContainmentEnvelope() throws {
+        let samples = calibratedRightEyeEnvelope
+        XCTAssertEqual(samples.count, 27)
+        XCTAssertEqual(Set(samples.map(\.id)).count, samples.count)
+        XCTAssertEqual(samples.map(\.id), calibratedRightEyeEnvelopeIDs)
+
+        let historical = try XCTUnwrap(samples.first { $0.id == historicalRightEyeTupleID })
+        XCTAssertEqual(historical.centerOffset, 0.004)
+        XCTAssertEqual(historical.pupilOffset, -0.006)
+        XCTAssertEqual(historical.skew, 0.003)
+
+        let accepted = samples.filter { $0.expected == .accepted }
+        let rejected = samples.filter { $0.expected == .localRejected }
+        XCTAssertFalse(accepted.isEmpty)
+        XCTAssertFalse(rejected.isEmpty)
+        for rejectedSample in rejected {
+            XCTAssertFalse(accepted.contains { acceptedSample in
+                acceptedSample.centerOffset >= rejectedSample.centerOffset
+                    && abs(acceptedSample.pupilOffset) >= abs(rejectedSample.pupilOffset)
+                    && acceptedSample.skew >= rejectedSample.skew
+            }, "non-monotone calibrated envelope after \(rejectedSample.id)")
+        }
+
+        let truth = fullResolutionProtectedTruth()
+        let protected = truth.allPixels
+        XCTAssertFalse(protected.isEmpty)
+        for eye in OracleEye.allCases {
+            for region in ProtectedRegion.allCases {
+                XCTAssertFalse(truth.families[eye]?[region]?.isEmpty ?? true)
+            }
+        }
+        var recoloredSource = makeEyeBytes(truth: truth)
+        for pixel in protected {
+            recoloredSource = replacingRGBA(
+                in: recoloredSource,
+                index: pixel,
+                with: (214, 151, 151, 255)
+            )
+        }
+
+        let baselineLeft = baselineGeometry(for: .left)
+        let baselineRight = baselineGeometry(for: .right)
+        for sample in samples {
+            var challengedRight = baselineRight
+            challengedRight.centerX += sample.centerOffset * OracleEye.right.horizontalDirection
+            challengedRight.pupilX += sample.pupilOffset * OracleEye.right.horizontalDirection
+            challengedRight.asymmetricSkew = sample.skew * OracleEye.right.horizontalDirection
+
+            let source = try canonical(recoloredSource)
+            let owner = BeautyLocalRetouchCompositionOwner(source: source)
+            let result = BeautyScleraRednessProvider.makeResult(
+                source: source,
+                eyeSupport: [
+                    support(side: .left, geometry: baselineLeft),
+                    support(side: .right, geometry: challengedRight),
+                ],
+                eyeOrder: .canonical,
+                strength: 1,
+                owner: owner
+            )
+            let proposals = Set(result.proposalPixelIndices)
+            let rightProposals = proposals.filter { isPixel($0, in: .right) }
+            let leftProposals = proposals.filter { isPixel($0, in: .left) }
+            let output = Array(try owner.compose(result.units).canonicalImage.rgba8Data)
+
+            XCTAssertEqual(result.summary.proposalPixelCount, proposals.count, sample.id)
+            XCTAssertEqual(result.summary.leftOutcome, .accepted, sample.id)
+            XCTAssertFalse(leftProposals.isEmpty, "left peer empty: \(sample.id)")
+            XCTAssertTrue(proposals.intersection(protected).isEmpty, "protected overlap: \(sample.id)")
+            XCTAssertEqual(
+                protected.filter { rgba(output, at: $0) != rgba(recoloredSource, at: $0) }.count,
+                0,
+                "protected byte mismatch: \(sample.id)"
+            )
+            XCTAssertEqual(
+                Set(0..<(width * height))
+                    .subtracting(proposals)
+                    .filter { rgba(output, at: $0) != rgba(recoloredSource, at: $0) }
+                    .count,
+                0,
+                "outside-proposal byte mismatch: \(sample.id)"
+            )
+
+            switch sample.expected {
+            case .accepted:
+                XCTAssertEqual(result.summary.rightOutcome, .accepted, sample.id)
+                XCTAssertEqual(result.units.count, 2, sample.id)
+                XCTAssertFalse(rightProposals.isEmpty, "accepted right proposal empty: \(sample.id)")
+            case .localRejected:
+                XCTAssertNotEqual(result.summary.rightOutcome, .accepted, sample.id)
+                XCTAssertEqual(result.units.count, 1, sample.id)
+                XCTAssertTrue(rightProposals.isEmpty, "rejected right proposal nonempty: \(sample.id)")
+            }
+        }
+    }
+
     func testBilateralAdversarialAggregateContract() throws {
         let aggregate = try evaluateBilateralMatrix()
         let data = try JSONSerialization.data(withJSONObject: aggregate.jsonObject, options: [.sortedKeys])
@@ -227,6 +336,46 @@ final class BeautyScleraRednessAdversarialCloseoutTests: XCTestCase {
                 "right_pupil_boundary_rejected",
                 "right_collapsed_contour_rejected",
             ]
+    }
+
+    private var historicalRightEyeTupleID: String {
+        "historical_right_center_p004_pupil_n006_skew_p003"
+    }
+
+    private var calibratedRightEyeEnvelopeIDs: [String] {
+        calibratedRightEyeEnvelope.map(\.id)
+    }
+
+    private var calibratedRightEyeEnvelope: [BoundarySample] {
+        [
+            BoundarySample(id: "right_c003_p005_s002", centerOffset: 0.003, pupilOffset: -0.005, skew: 0.002, expected: .accepted),
+            BoundarySample(id: "right_c003_p005_s003", centerOffset: 0.003, pupilOffset: -0.005, skew: 0.003, expected: .accepted),
+            BoundarySample(id: "right_c003_p005_s004", centerOffset: 0.003, pupilOffset: -0.005, skew: 0.004, expected: .accepted),
+            BoundarySample(id: "right_c003_p006_s002", centerOffset: 0.003, pupilOffset: -0.006, skew: 0.002, expected: .accepted),
+            BoundarySample(id: "right_c003_p006_s003", centerOffset: 0.003, pupilOffset: -0.006, skew: 0.003, expected: .accepted),
+            BoundarySample(id: "right_c003_p006_s004", centerOffset: 0.003, pupilOffset: -0.006, skew: 0.004, expected: .accepted),
+            BoundarySample(id: "right_c003_p007_s002", centerOffset: 0.003, pupilOffset: -0.007, skew: 0.002, expected: .accepted),
+            BoundarySample(id: "right_c003_p007_s003", centerOffset: 0.003, pupilOffset: -0.007, skew: 0.003, expected: .accepted),
+            BoundarySample(id: "right_c003_p007_s004", centerOffset: 0.003, pupilOffset: -0.007, skew: 0.004, expected: .accepted),
+            BoundarySample(id: "right_c004_p005_s002", centerOffset: 0.004, pupilOffset: -0.005, skew: 0.002, expected: .accepted),
+            BoundarySample(id: "right_c004_p005_s003", centerOffset: 0.004, pupilOffset: -0.005, skew: 0.003, expected: .accepted),
+            BoundarySample(id: "right_c004_p005_s004", centerOffset: 0.004, pupilOffset: -0.005, skew: 0.004, expected: .accepted),
+            BoundarySample(id: "right_c004_p006_s002", centerOffset: 0.004, pupilOffset: -0.006, skew: 0.002, expected: .accepted),
+            BoundarySample(id: "historical_right_center_p004_pupil_n006_skew_p003", centerOffset: 0.004, pupilOffset: -0.006, skew: 0.003, expected: .accepted),
+            BoundarySample(id: "right_c004_p006_s004", centerOffset: 0.004, pupilOffset: -0.006, skew: 0.004, expected: .accepted),
+            BoundarySample(id: "right_c004_p007_s002", centerOffset: 0.004, pupilOffset: -0.007, skew: 0.002, expected: .localRejected),
+            BoundarySample(id: "right_c004_p007_s003", centerOffset: 0.004, pupilOffset: -0.007, skew: 0.003, expected: .localRejected),
+            BoundarySample(id: "right_c004_p007_s004", centerOffset: 0.004, pupilOffset: -0.007, skew: 0.004, expected: .localRejected),
+            BoundarySample(id: "right_c005_p005_s002", centerOffset: 0.005, pupilOffset: -0.005, skew: 0.002, expected: .accepted),
+            BoundarySample(id: "right_c005_p005_s003", centerOffset: 0.005, pupilOffset: -0.005, skew: 0.003, expected: .accepted),
+            BoundarySample(id: "right_c005_p005_s004", centerOffset: 0.005, pupilOffset: -0.005, skew: 0.004, expected: .accepted),
+            BoundarySample(id: "right_c005_p006_s002", centerOffset: 0.005, pupilOffset: -0.006, skew: 0.002, expected: .localRejected),
+            BoundarySample(id: "right_c005_p006_s003", centerOffset: 0.005, pupilOffset: -0.006, skew: 0.003, expected: .localRejected),
+            BoundarySample(id: "right_c005_p006_s004", centerOffset: 0.005, pupilOffset: -0.006, skew: 0.004, expected: .localRejected),
+            BoundarySample(id: "right_c005_p007_s002", centerOffset: 0.005, pupilOffset: -0.007, skew: 0.002, expected: .localRejected),
+            BoundarySample(id: "right_c005_p007_s003", centerOffset: 0.005, pupilOffset: -0.007, skew: 0.003, expected: .localRejected),
+            BoundarySample(id: "right_c005_p007_s004", centerOffset: 0.005, pupilOffset: -0.007, skew: 0.004, expected: .localRejected),
+        ]
     }
 
     private func scenarios() -> [Scenario] {
