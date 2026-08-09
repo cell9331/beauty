@@ -170,9 +170,23 @@ function prepareOpaqueReview() {
   }
 }
 
+function runSelfTests() {
+  if (typeof classifyStrictHelperChild !== "function") {
+    throw new Error("RED: strict helper child classifier missing");
+  }
+  if (typeof runStrictHelperChildren !== "function") {
+    throw new Error("RED: distinct strict helper self-test/live execution missing");
+  }
+  throw new Error("RED: strict helper mutation suite missing");
+}
+
 function main() {
   try {
     const argv = process.argv.slice(2);
+    if (argv.length === 1 && argv[0] === "--self-test") {
+      fixed("pass", { mutation_rejections: runSelfTests() });
+      return;
+    }
     const prepareReview = argv.length === 1 && argv[0] === "--prepare-review";
     if (process.env.PHASE64_REQUIRE_LOCAL_EVIDENCE !== "1"
       || (argv.length !== 0 && !prepareReview)) {
