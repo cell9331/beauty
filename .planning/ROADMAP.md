@@ -175,7 +175,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 
 **Wave 9** *(blocked on Wave 8 completion)*
 
-- [ ] 64-09-PLAN.md — rerun the frozen full conjunction, fresh review/security and independent pre-promotion eligibility
+- [x] 64-09-PLAN.md — rerun the frozen full conjunction, fresh review/security and independent pre-promotion eligibility
 
 **Wave 10** *(blocked on Wave 9 completion)*
 
@@ -224,7 +224,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 | 61. Teeth Output, Safety, and Independent Closeout | 4/4 | Complete    | 2026-08-07 |
 | 62. Sclera Evidence and Admission Contract | 5/5 | Complete — independent evidence, 61st scalar, direct demand, privacy and regression pass | 2026-08-07 |
 | 63. Guarded Per-Eye Sclera Production Integration | 4/4 | Complete — guarded provider, actual-Vision evidence, privacy and regression pass; no promotion | 2026-08-07 |
-| 64. Sclera Output, Adversarial Safety, and Independent Closeout | 8/13 | In Progress — trust gates repaired; fresh serial evidence and promotion pending | — |
+| 64. Sclera Output, Adversarial Safety, and Independent Closeout | 9/13 | In Progress — fresh evidence, source-bound review, fresh code/security audits and independent `eligible_promotion_pending` issued; promotion-pending chain authorized | — |
 | 65. Combined Facade, Privacy, and Milestone Closeout | 4/4 executed | Blocked — prior verification and milestone audit are stale until Phase 64 re-verifies | — |
 
 Earlier phase details are preserved in their linked milestone archives under `.planning/milestones/`.

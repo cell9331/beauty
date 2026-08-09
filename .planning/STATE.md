@@ -5,10 +5,10 @@ milestone_name: Independent Teeth and Sclera Retouch
 current_phase: 64
 current_phase_name: sclera-output-adversarial-safety-and-independent-closeout
 status: executing
-stopped_at: Completed 64-08-PLAN.md
-last_updated: "2026-08-09T07:27:43.688Z"
+stopped_at: Completed 64-09-PLAN.md
+last_updated: "2026-08-09T17:35:00.000Z"
 last_activity: 2026-08-09
-last_activity_desc: Completed Plan 64-08 content trust, review-source binding, and strict-helper live proof
+last_activity_desc: Completed Plan 64-09 fresh evidence/review/audit conjunction and independent eligible_promotion_pending verdict
 progress:
   total_phases: 7
   completed_phases: 6
@@ -28,9 +28,9 @@ See: `.planning/PROJECT.md` (updated 2026-08-07)
 ## Current Position
 
 Phase: 64 (sclera-output-adversarial-safety-and-independent-closeout) — EXECUTING
-Plan: 9 of 13
+Plan: 10 of 13
 Status: Ready to execute
-Last activity: 2026-08-09 — Completed Plan 64-08 content trust, review-source binding, and strict-helper live proof
+Last activity: 2026-08-09 — Completed Plan 64-09 fresh evidence/review/audit conjunction and independent eligible_promotion_pending verdict authorizing only Plans 10-13
 
 Progress: [█████████░] 88%
 
@@ -67,6 +67,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 64 P05 | — | 2 tasks | 9 files |
 | Phase 64 P06 | — | 2 tasks | 5 files |
 | Phase 64 P08 | — | 2 tasks | 2 files |
+| Phase 64 P09 | 18m | 2 tasks | 6 files |
 | Phase 64 P09 | — | 2 tasks | 6 files |
 | Phase 64 P10 | — | 2 tasks | 9 files |
 | Phase 64 P11 | — | 2 tasks | 5 files |
@@ -112,6 +113,9 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 - [Phase 64]: Repository privacy authority scans bytes from each Git/filesystem state independently and never substitutes one state for another. — T-64-06 must bind trust to actual HEAD, index, working, and untracked content rather than filenames.
 - [Phase 64]: Review authority requires an exact relevant-source tree/blob manifest; the current stale review remains quarantine evidence only. — Any relevant implementation or evidence-source change invalidates D-16 review authority while later non-relevant owner synchronization remains possible.
 - [Phase 64]: Strict-helper self-test and live output use separate child invocations and exact role-specific JSON schemas. — A helper self-test cannot forge or substitute the real six-output live result.
+- [Phase 64 P09]: Source-tree freeze via `git write-tree` (OID `2fb1c37e`) is the immutable review anchor; any post-freeze change to a relevant source blob invalidates the entire conjunction per D-16 and forces a complete rerun of the Plan 64-09 sequence.
+- [Phase 64 P09]: Fresh independent code review records zero HIGH findings; fresh independent ASVS L1 audit closes 8/8 threat identities. — Green test counts are not used to outweigh security findings.
+- [Phase 64 P09]: Independent non-canonical `eligible_promotion_pending` verdict authorizes only Plans 64-10 through 64-13 and never marks canonical `64-VERIFICATION.md` passed, never changes `64-VALIDATION.md`, never promotes product/root/lifecycle owners, never claims SCLERA-18 final, and never unblocks Phase 65.
 
 ### Pending Todos
 
@@ -133,6 +137,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-09T07:27:00.242Z
-Stopped at: Completed 64-08-PLAN.md
+Last session: 2026-08-09T17:35:00.000Z
+Stopped at: Completed 64-09-PLAN.md
 Resume file: None
