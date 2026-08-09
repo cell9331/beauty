@@ -465,12 +465,47 @@ private struct ValidatedEyePolygon {
 
 private enum SelfIntersections {
     static func hasIntersection(_ points: [CoordinatePoint]) -> Bool {
+        let tolerance = tolerance(for: points)
+        for index in points.indices {
+            let next = (index + 1) % points.count
+            if squaredDistance(points[index], points[next]) <= tolerance.linear * tolerance.linear {
+                return true
+            }
+        }
+
         for first in points.indices {
             let firstNext = (first + 1) % points.count
             for second in points.indices where second > first {
                 let secondNext = (second + 1) % points.count
-                if first == second || firstNext == second || secondNext == first { continue }
-                if segmentsIntersect(points[first], points[firstNext], points[second], points[secondNext]) {
+                if firstNext == second {
+                    if adjacentEdgesOverlap(
+                        firstOther: points[first],
+                        shared: points[firstNext],
+                        secondOther: points[secondNext],
+                        tolerance: tolerance
+                    ) {
+                        return true
+                    }
+                    continue
+                }
+                if secondNext == first {
+                    if adjacentEdgesOverlap(
+                        firstOther: points[firstNext],
+                        shared: points[first],
+                        secondOther: points[second],
+                        tolerance: tolerance
+                    ) {
+                        return true
+                    }
+                    continue
+                }
+                if segmentsIntersect(
+                    points[first],
+                    points[firstNext],
+                    points[second],
+                    points[secondNext],
+                    tolerance: tolerance
+                ) {
                     return true
                 }
             }
@@ -478,17 +513,54 @@ private enum SelfIntersections {
         return false
     }
 
+    private struct Tolerance {
+        let linear: Double
+        let orientation: Double
+    }
+
+    private static func tolerance(for points: [CoordinatePoint]) -> Tolerance {
+        let minX = points.map(\.x).min() ?? 0
+        let maxX = points.map(\.x).max() ?? 0
+        let minY = points.map(\.y).min() ?? 0
+        let maxY = points.map(\.y).max() ?? 0
+        let extent = max(maxX - minX, maxY - minY)
+        let linear = min(1e-8, max(64 * Double.ulpOfOne, extent * 1e-10))
+        return Tolerance(
+            linear: linear,
+            orientation: min(1e-8, max(128 * Double.ulpOfOne, extent * linear))
+        )
+    }
+
+    private static func adjacentEdgesOverlap(
+        firstOther: CoordinatePoint,
+        shared: CoordinatePoint,
+        secondOther: CoordinatePoint,
+        tolerance: Tolerance
+    ) -> Bool {
+        onSegment(shared, secondOther, firstOther, tolerance: tolerance)
+            || onSegment(firstOther, shared, secondOther, tolerance: tolerance)
+    }
+
     private static func segmentsIntersect(
         _ a: CoordinatePoint,
         _ b: CoordinatePoint,
         _ c: CoordinatePoint,
-        _ d: CoordinatePoint
+        _ d: CoordinatePoint,
+        tolerance: Tolerance
     ) -> Bool {
         let o1 = orientation(a, b, c)
         let o2 = orientation(a, b, d)
         let o3 = orientation(c, d, a)
         let o4 = orientation(c, d, b)
-        return o1 * o2 < 0 && o3 * o4 < 0
+        let s1 = sign(o1, tolerance: tolerance.orientation)
+        let s2 = sign(o2, tolerance: tolerance.orientation)
+        let s3 = sign(o3, tolerance: tolerance.orientation)
+        let s4 = sign(o4, tolerance: tolerance.orientation)
+        if s1 * s2 < 0, s3 * s4 < 0 { return true }
+        return (s1 == 0 && onSegment(a, b, c, tolerance: tolerance))
+            || (s2 == 0 && onSegment(a, b, d, tolerance: tolerance))
+            || (s3 == 0 && onSegment(c, d, a, tolerance: tolerance))
+            || (s4 == 0 && onSegment(c, d, b, tolerance: tolerance))
     }
 
     private static func orientation(
@@ -497,6 +569,31 @@ private enum SelfIntersections {
         _ c: CoordinatePoint
     ) -> Double {
         (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x)
+    }
+
+    private static func onSegment(
+        _ a: CoordinatePoint,
+        _ b: CoordinatePoint,
+        _ point: CoordinatePoint,
+        tolerance: Tolerance
+    ) -> Bool {
+        guard abs(orientation(a, b, point)) <= tolerance.orientation else { return false }
+        return point.x >= min(a.x, b.x) - tolerance.linear
+            && point.x <= max(a.x, b.x) + tolerance.linear
+            && point.y >= min(a.y, b.y) - tolerance.linear
+            && point.y <= max(a.y, b.y) + tolerance.linear
+    }
+
+    private static func sign(_ value: Double, tolerance: Double) -> Int {
+        if value > tolerance { return 1 }
+        if value < -tolerance { return -1 }
+        return 0
+    }
+
+    private static func squaredDistance(_ lhs: CoordinatePoint, _ rhs: CoordinatePoint) -> Double {
+        let dx = lhs.x - rhs.x
+        let dy = lhs.y - rhs.y
+        return dx * dx + dy * dy
     }
 }
 
