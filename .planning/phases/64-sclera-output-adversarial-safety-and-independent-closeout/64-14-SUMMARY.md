@@ -83,10 +83,12 @@ status: complete
 8. **Independent-review repair: Reject duplicate renderer output stems** - `de70623`
 9. **Second-review repair: Normalize filesystem collision keys** - `6332bea`
 10. **Second-review repair: Make private cleanup descriptor-relative** - `978104f`
+11. **Third-review repair: Bind cleanup root, target, recursion, and mount identities** - `1a658cd`
 
 ## Files Created/Modified
 
 - `.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-no-skip-swiftpm-runner.js` - Exact full-suite opt-in executor and parser.
+- `.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-private-output-runner.js` - Descriptor-relative, identity-bound, no-cross-mount private artifact cleanup.
 - `.planning/phases/59-teeth-evidence-and-admission-contract/59-private-evidence-runner.js` - Exports the existing unchanged `assertIgnoredBundle` validator.
 - `.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/check_phase64_sclera_closeout.py` - Post-repair source, inventory, candidate, and final-state authority.
 - `BeautySDK/Sources/BeautyExampleRenderer/main.swift` - Preflights recursive inputs and rejects duplicate output stems before output creation.
@@ -133,9 +135,17 @@ status: complete
 - **Verification:** Renderer collision regression/build pass; cleanup self-test rejects an external-file symlink and actual private runner cleanup/render passes.
 - **Committed in:** `6332bea`, `978104f`
 
+**5. [Rule 1/Rule 2 - Security] Bound descriptor cleanup to exact filesystem identities**
+- **Found during:** Third independent Plan 64-15 code review
+- **Issue:** Descriptor-relative traversal still accepted cross-device mounts, same-device mounted directories, cleanup-root substitution, and a recursive directory substitution between enumeration and open.
+- **Fix:** Bound the trusted repository root, cleanup floor, initial target, and every recursive directory to exact device/inode identities; required descriptor-derived mount identity equality (`mnt_id` on Linux and `f_mntonname` on Darwin); restricted removal to the one fixed work-root component; and added wrong-device/root-inode/target-inode mutations.
+- **Files modified:** `64-private-output-runner.js`
+- **Verification:** Private runner self-test, real cleanup/render, targeted independent preflight, and `git diff --check` pass with no remaining external-deletion HIGH.
+- **Committed in:** `1a658cd`
+
 ---
 
-**Total deviations:** 4 auto-fixed correctness/security groups. **Impact:** The repair is source-review complete and fail-closed; no product, API, Demo activation, model, network, dependency, DeviceRGB, or `去脂` behavior changed. Renderer behavior changes only for filesystem-equivalent recursive stems, which now fail before output creation.
+**Total deviations:** 5 auto-fixed correctness/security groups. **Impact:** The repair is source-review complete and fail-closed; no product, API, Demo activation, model, network, dependency, DeviceRGB, or `去脂` behavior changed. Renderer behavior changes only for filesystem-equivalent recursive stems, which now fail before output creation.
 
 ## Issues Encountered
 
@@ -152,7 +162,7 @@ Ready for Plan 64-15 to execute the fresh no-skip conjunction and author distinc
 ## Self-Check: PASSED
 
 - Runner self-test: 14/14 fail-closed mutations plus one positive transcript.
-- Checker self-test: 18 aggregate/structure mutations, 23 four-state content-scan rejections, 11 review-source rejections, and 20 candidate rejections.
+- Checker self-test: 18 aggregate/structure mutations, 23 four-state content-scan rejections, 28 review-source rejections, and 20 candidate rejections.
 - Plan structure: Plans 64-14 through 64-19 all valid.
 - Live pre-promotion remains closed because fresh Plan 64-15 authority does not yet exist.
 - `git diff --check`: pass.
