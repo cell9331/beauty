@@ -32,17 +32,25 @@
 | --- | --- |
 | Status | `active` |
 | Scope | Close the Phase 64 final-authority gaps before retaining any `祛红血丝` product promotion or treating v1.15 as completion-ready. |
-| Finding | The corrected bilateral implementation evidence remains present, but the immutable Plan 64-12 candidate is `gaps_found`: the mandatory checker self-test exited 1 with `phase64_closeout_failed`, and the mandatory full SwiftPM command reported eight skips. Either condition independently prohibits success. |
-| Affected requirements | SCLERA-14/SCLERA-15 evidence and SCLERA-16/SCLERA-17/OUT-05 implementation facts remain recorded, but their product authority is quarantined; SCLERA-18 remains open and Phase 65 remains blocked. |
-| Fresh passing evidence | Focused 73/73; native/private and strict-helper live gates; promotion-pending plus isolated T-64-01 through T-64-08; source-bound review; zero-HIGH review/security; Demo build and 121/0/0 remain green. Green aggregates do not override the failed checker self-test or eight full-suite skips. |
+| Finding | The immutable Plan 64-12 `gaps_found` candidate and Plan 64-13 re-quarantine remain historical failed/superseded evidence. Plans 64-14 through 64-16 repaired both mandatory gates, rebuilt exact source-bound 637/0/0/8 authority, issued fresh `eligible_promotion_pending`, and synchronized the nine bounded product/root owners. |
+| Affected requirements | SCLERA-14 through SCLERA-18 and OUT-05 have complete promotion-pending implementation/evidence dispositions, but their canonical status remains pending the distinct Plan 64-18 candidate and Plan 64-19 bounded final transaction. Phase 65 remains blocked. |
+| Fresh passing evidence | Focused 74/74; strict helper 14/14; private output 6/6 plus four opaque review items; checker/no-skip self-tests; exact full SwiftPM 637/0/0/8; Demo build and 121/0/0; exact 19-source review; zero-HIGH code review; ASVS L1 8/8. Green aggregates do not self-authorize canonical success. |
 | Warning | `BeautyExampleRenderer` uses device RGB for saved evidence; explicit sRGB remains a Phase 65 SAFE-06 re-verification item. |
-| Next | Plan 64-14 is complete: the checker self-test now passes against the exact 19-plan/34-task graph and the request-local runner can require one nonzero/0-failed/0-skipped SwiftPM aggregate with all eight opt-ins. Execute Plan 64-15 to rebuild distinct source-bound evidence/review/security authority and obtain at most non-canonical eligibility. Do not modify the immutable Plan 64-12 candidate or retry success from it. |
-| Lifecycle | Canonical `64-VERIFICATION.md` remains `gaps_found` with `promotion_status: unproven`. Plan 64-14 grants no product/canonical authority; Plans 64-15 through 64-19 remain serially pending. Phase 65 verification/audit remains blocked until Plan 64-19 produces canonical success. |
-| Inventory | 19 plans / 34 task IDs remain exact. Fourteen summaries now exist through Plan 64-14; the completed inventory extends through `64-14-02`, while `64-15-01`, `64-15-02`, `64-16-01`, `64-16-02`, `64-17-01`, `64-17-02`, `64-18-01`, and `64-19-01` remain pending. |
-| Boundary | Do not archive, tag, clean up, ship, or claim milestone completion while canonical Phase 64 is `gaps_found`. Product-facing `祛红血丝` is future/unproven, `眼睛` remains `partial`, and `去脂` remains `future`. DeviceRGB/named-sRGB is owned only by Phase 65 SAFE-06; Demo/API/realtime/model/network/dependency/eye-fat scope remains out of Phase 64 authority. |
+| Next | Complete Plan 64-17 lifecycle/validation accounting, then run Plan 64-18's distinct immutable candidate and Plan 64-19's bounded final transaction in order. Do not modify or reinterpret the historical Plan 64-12 candidate. |
+| Lifecycle | Phase 64 is `promotion_pending_independent_candidate_and_final`. Canonical `64-VERIFICATION.md` remains `gaps_found` with `promotion_status: unproven`; Phase 65 verification/audit remains stale and blocked until Plan 64-19 produces canonical success. |
+| Inventory | Exact authority is 19 serial plans / 34 ordered task IDs. Plans 64-01 through 64-17 account for the first 32 IDs; historical `64-13-01` remains failed/superseded evidence. Only `64-18-01` and `64-19-01` are pending. |
+| Boundary | Do not archive, tag, clean up, ship, or claim milestone completion while canonical Phase 64 is `gaps_found`. Product-facing `祛红血丝` is bounded SDK-core implemented in promotion-pending state, `眼睛` remains `partial`, and `去脂` remains `future`. DeviceRGB/named-sRGB is owned only by Phase 65 SAFE-06; Demo/API/realtime/model/network/dependency/eye-fat scope remains out of Phase 64 authority. |
 
 The prior v1.15 completion-ready statement is superseded by the fresh Phase 64
 goal-backward verification until this active gap is closed.
+
+Exact ordered Phase 64 task authority is: `64-01-01`, `64-01-02`,
+`64-02-01`, `64-02-02`, `64-03-01`, `64-03-02`, `64-04-01`, `64-04-02`,
+`64-05-01`, `64-05-02`, `64-06-01`, `64-06-02`, `64-07-01`, `64-07-02`,
+`64-08-01`, `64-08-02`, `64-09-01`, `64-09-02`, `64-10-01`, `64-10-02`,
+`64-11-01`, `64-11-02`, `64-12-01`, `64-13-01`, `64-14-01`, `64-14-02`,
+`64-15-01`, `64-15-02`, `64-16-01`, `64-16-02`, `64-17-01`, `64-17-02`,
+`64-18-01`, `64-19-01`. Waves 1 through 19 are strictly serial.
 
 ## 3A. Archived Active Ledger
 

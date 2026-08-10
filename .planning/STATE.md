@@ -6,9 +6,9 @@ current_phase: 64
 current_phase_name: sclera-output-adversarial-safety-and-independent-closeout
 status: executing
 stopped_at: Completed 64-16-PLAN.md
-last_updated: "2026-08-10T05:51:54.000Z"
+last_updated: "2026-08-10T06:02:00.000Z"
 last_activity: 2026-08-10
-last_activity_desc: Plan 64-16 synchronized the exact promotion-pending product and root owner snapshot
+last_activity_desc: Plan 64-17 is synchronizing the exact 19-plan/34-task promotion-pending lifecycle snapshot
 progress:
   total_phases: 7
   completed_phases: 6
@@ -24,14 +24,14 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-08-07)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Execute Plan 64-17 exact lifecycle and validation owner synchronization
+**Current focus:** Finish Plan 64-17's exact 34-row validation ledger, then run the distinct Plan 64-18 candidate
 
 ## Current Position
 
 Phase: 64 (sclera-output-adversarial-safety-and-independent-closeout) — EXECUTING
-Plan: 16 of 19 executed
-Status: Plan 64-16 complete; nine product/root owners are promotion-pending and await independent candidate/final verification
-Last activity: 2026-08-10 — exact implemented/partial/future product split and five bounded root contracts passed T-64-07
+Plan: 17 of 19 executed/accounted
+Status: `promotion_pending_independent_candidate_and_final`; canonical `64-VERIFICATION.md` remains `gaps_found`
+Last activity: 2026-08-10 — exact 19-plan/34-task lifecycle inventory records only 64-18-01 and 64-19-01 pending
 
 Progress: [█████████░] 94%
 
@@ -123,6 +123,10 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 - [Phase 64 P10]: Exactly four product owners (`SHAPE_FEATURE_LEDGER.md`, `FEATURE_MATRIX.md`, `features/beauty-shaping/README.md`, `features/beauty-shaping/eyes/README.md`) and five root contracts (`DESIGN.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `QUALITY_SCORE.md`) agree that `祛红血丝` is `implemented` at bounded SDK-core still-image scope while `眼睛` remains `partial` and `去脂` remains `future`; the synchronization is promotion-pending and awaits independent Plan 12 candidate plus Plan 13 bounded final transaction.
 - [Phase 64 P12]: The immutable independent candidate is `gaps_found` and `requires_requarantine: true`; its checker self-test failed and its mandatory full SwiftPM run reported eight skips, either independently prohibiting success.
 - [Phase 64 P13]: The mandatory failure branch supersedes the Plan 10 promotion-pending owner state: all fifteen owners are re-quarantined, product-facing `祛红血丝` is future/unproven, `眼睛` remains partial, `去脂` remains future, and Phase 65 is blocked. SCLERA-16, SCLERA-17, and OUT-05 remain implementation facts only.
+- [Phase 64 P14]: The checker now validates the exact 19-plan/34-task graph and the one-child SwiftPM runner rejects failed, skipped, zero, ambiguous, or incomplete opt-in execution.
+- [Phase 64 P15]: Fresh authority is bound to exact relevant-source tree `dfb7944365fdd7943ad3c115b519caa9da444be9`; the full suite is 637/0/0 with all eight opt-ins, code/security review is zero-HIGH, and independent status is `eligible_promotion_pending` only.
+- [Phase 64 P16]: Exactly four product and five root owners record bounded SDK-core `祛红血丝` implemented, aggregate `眼睛` partial, `去脂` future, and promotion pending independent candidate/final verification; SAFE-06 remains Phase 65-only.
+- [Phase 64 P17]: Exact lifecycle authority is 19 serial plans and 34 ordered task IDs; the first 32 are executed/accounted, historical `64-13-01` remains failed/superseded evidence, and only `64-18-01` plus `64-19-01` are pending.
 
 ### Pending Todos
 
@@ -130,7 +134,7 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- SCLERA-14 and SCLERA-15 implementation evidence remains remediated, but product authority is re-quarantined. SCLERA-18, Phase 65 verification/audit, and v1.15 milestone readiness remain blocked on a new checker/full-suite repair plan and a distinct fresh independent candidate.
+- SCLERA-14 through SCLERA-18 and OUT-05 have eligible promotion-pending evidence, but canonical completion still requires the distinct Plan 64-18 candidate and Plan 64-19 bounded final transaction.
 - DeviceRGB/named-sRGB remains unresolved exclusively under blocked Phase 65 SAFE-06; it is not Phase 64 credit.
 - Archive, tag, cleanup, shipping and release claims remain unauthorized. Existing TD-013 generic-result sendability remains outside this milestone.
 
@@ -149,11 +153,11 @@ Last session: 2026-08-10T05:51:54.000Z
 Stopped at: Completed 64-16-PLAN.md
 Resume file: None
 
-## Phase 64 Failure Quarantine
+## Phase 64 Promotion-Pending Repair State
 
-- Exact inventory remains 13 plans / 24 ordered task IDs; all 13 summaries exist.
-- Plan 64-12 candidate: immutable `gaps_found`, requires full re-quarantine, grants no Plan 13 success or Phase 65 authority.
-- Plan 64-13 task: failed/requarantined after applying and validating the complete fifteen-owner failure set; its summary records completion of the mandatory failure branch without converting the task or phase to passed.
-- Canonical `64-VERIFICATION.md` is `gaps_found` with `promotion_status: unproven`; validation is incomplete.
-- Product-facing `祛红血丝` is future/unproven; `眼睛` remains partial and `去脂` future. DeviceRGB/named-sRGB remains Phase 65 SAFE-06-only.
-- Phase 65 remains blocked; prior Phase 65 verification and milestone audit are stale.
+- Exact authority is 19 plans / 34 ordered task IDs across Waves 1-19, ending at `64-19-PLAN.md`.
+- Ordered IDs are `64-01-01`, `64-01-02`, `64-02-01`, `64-02-02`, `64-03-01`, `64-03-02`, `64-04-01`, `64-04-02`, `64-05-01`, `64-05-02`, `64-06-01`, `64-06-02`, `64-07-01`, `64-07-02`, `64-08-01`, `64-08-02`, `64-09-01`, `64-09-02`, `64-10-01`, `64-10-02`, `64-11-01`, `64-11-02`, `64-12-01`, `64-13-01`, `64-14-01`, `64-14-02`, `64-15-01`, `64-15-02`, `64-16-01`, `64-16-02`, `64-17-01`, `64-17-02`, `64-18-01`, `64-19-01`.
+- Plans 64-01 through 64-17 are executed/accounted. Historical `64-13-01` remains failed/superseded evidence; it is not erased or counted as a current unresolved task. Only `64-18-01` and `64-19-01` are pending.
+- Phase 64 is `promotion_pending_independent_candidate_and_final`; canonical `64-VERIFICATION.md` remains `gaps_found` with `promotion_status: unproven`.
+- Product-facing `祛红血丝` is bounded SDK-core implemented in promotion-pending state; `眼睛` remains partial and `去脂` future. DeviceRGB/named-sRGB remains Phase 65 SAFE-06-only.
+- Phase 65 remains blocked; its prior verification and milestone audit are stale until canonical Phase 64 final authority exists.
