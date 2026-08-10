@@ -81,6 +81,8 @@ status: complete
 6. **Independent-review repair: Harden the teeth bundle boundary** - `1cd6849`
 7. **Independent-review repair: Bind fresh authority to strict source schemas** - `c8e7dc0`
 8. **Independent-review repair: Reject duplicate renderer output stems** - `de70623`
+9. **Second-review repair: Normalize filesystem collision keys** - `6332bea`
+10. **Second-review repair: Make private cleanup descriptor-relative** - `978104f`
 
 ## Files Created/Modified
 
@@ -123,9 +125,17 @@ status: complete
 - **Verification:** Phase 59 guard 9/9; no-skip runner 14/14; closeout checker reports 28 review-source rejections; renderer regression and executable build pass.
 - **Committed in:** `1cd6849`, `c8e7dc0`, `de70623`
 
+**4. [Rule 1/Rule 2 - Security] Closed filesystem-equivalence and cleanup-race blockers**
+- **Found during:** Second independent Plan 64-15 code review
+- **Issue:** Raw stem comparison missed case/Unicode-equivalent filesystem destinations, and pathname-recursive private cleanup had a directory-replacement TOCTOU deletion risk.
+- **Fix:** Collision keys now use case folding plus canonical decomposition, with case and Unicode-equivalence fixtures. Private cleanup now opens every component with `O_DIRECTORY|O_NOFOLLOW` and removes entries through descriptor-relative operations; unsafe links fail closed without touching the referenced file.
+- **Files modified:** `BeautyExampleRenderer/main.swift`, `BeautyRendererOutputRegressionTests.swift`, `64-private-output-runner.js`
+- **Verification:** Renderer collision regression/build pass; cleanup self-test rejects an external-file symlink and actual private runner cleanup/render passes.
+- **Committed in:** `6332bea`, `978104f`
+
 ---
 
-**Total deviations:** 3 auto-fixed correctness/security groups. **Impact:** The repair is source-review complete and fail-closed; no product, API, Demo activation, model, network, dependency, DeviceRGB, or `去脂` behavior changed. Renderer behavior changes only for previously ambiguous same-stem recursive inputs, which now fail before output creation.
+**Total deviations:** 4 auto-fixed correctness/security groups. **Impact:** The repair is source-review complete and fail-closed; no product, API, Demo activation, model, network, dependency, DeviceRGB, or `去脂` behavior changed. Renderer behavior changes only for filesystem-equivalent recursive stems, which now fail before output creation.
 
 ## Issues Encountered
 
