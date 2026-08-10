@@ -28,26 +28,126 @@ import stat
 import sys
 
 root, relative = sys.argv[1], sys.argv[2]
+expected_identity = (int(sys.argv[3]), int(sys.argv[4]))
+expected_target_identity = (int(sys.argv[5]), int(sys.argv[6]))
+trusted_root = sys.argv[7]
+expected_trusted_identity = (int(sys.argv[8]), int(sys.argv[9]))
 parts = relative.split(os.sep)
-if not parts or any(part in ("", ".", "..") for part in parts):
+if len(parts) != 1 or any(part in ("", ".", "..") for part in parts):
     raise RuntimeError("unsafe_relative_target")
 flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
 descriptors = []
 current = os.open(root, flags)
 descriptors.append(current)
 try:
-    for component in parts[:-1]:
-        current = os.open(component, flags, dir_fd=current)
-        descriptors.append(current)
+    root_metadata = os.fstat(current)
+    if (
+        not stat.S_ISDIR(root_metadata.st_mode)
+        or (root_metadata.st_dev, root_metadata.st_ino) != expected_identity
+    ):
+        raise RuntimeError("cleanup_root_identity_changed")
 
-    def purge(parent_fd, name):
+    def mount_identity(descriptor):
+        if sys.platform.startswith("linux"):
+            with open(f"/proc/self/fdinfo/{descriptor}", "rb", buffering=0) as stream:
+                value = stream.read(65537)
+            if len(value) > 65536:
+                raise RuntimeError("mount_identity_oversized")
+            rows = [line.split(b":", 1)[1].strip() for line in value.splitlines()
+                    if line.startswith(b"mnt_id:")]
+            if len(rows) != 1 or not rows[0].isdigit():
+                raise RuntimeError("mount_identity_missing")
+            return ("linux", int(rows[0]))
+        if sys.platform == "darwin":
+            import ctypes
+
+            class Fsid(ctypes.Structure):
+                _fields_ = [("value", ctypes.c_int32 * 2)]
+
+            class StatFS(ctypes.Structure):
+                _fields_ = [
+                    ("f_bsize", ctypes.c_uint32), ("f_iosize", ctypes.c_int32),
+                    ("f_blocks", ctypes.c_uint64), ("f_bfree", ctypes.c_uint64),
+                    ("f_bavail", ctypes.c_uint64), ("f_files", ctypes.c_uint64),
+                    ("f_ffree", ctypes.c_uint64), ("f_fsid", Fsid),
+                    ("f_owner", ctypes.c_uint32), ("f_type", ctypes.c_uint32),
+                    ("f_flags", ctypes.c_uint32), ("f_fssubtype", ctypes.c_uint32),
+                    ("f_fstypename", ctypes.c_char * 16),
+                    ("f_mntonname", ctypes.c_char * 1024),
+                    ("f_mntfromname", ctypes.c_char * 1024),
+                    ("f_flags_ext", ctypes.c_uint32),
+                    ("f_reserved", ctypes.c_uint32 * 7),
+                ]
+
+            record = StatFS()
+            libc = ctypes.CDLL(None, use_errno=True)
+            if libc.fstatfs(descriptor, ctypes.byref(record)) != 0:
+                raise OSError(ctypes.get_errno(), "fstatfs")
+            mountpoint = bytes(record.f_mntonname).split(b"\0", 1)[0]
+            if not mountpoint:
+                raise RuntimeError("mount_identity_missing")
+            return ("darwin", mountpoint)
+        raise RuntimeError("unsupported_cleanup_platform")
+
+    root_mount_identity = mount_identity(current)
+    trusted_fd = os.open(trusted_root, flags)
+    try:
+        trusted_metadata = os.fstat(trusted_fd)
+        if (
+            not stat.S_ISDIR(trusted_metadata.st_mode)
+            or (trusted_metadata.st_dev, trusted_metadata.st_ino) != expected_trusted_identity
+            or mount_identity(trusted_fd) != root_mount_identity
+        ):
+            raise RuntimeError("cleanup_root_mount_not_trusted")
+    finally:
+        os.close(trusted_fd)
+
+    def open_verified_directory(parent_fd, name, expected):
+        before = os.stat(name, dir_fd=parent_fd, follow_symlinks=False)
+        if (
+            not stat.S_ISDIR(before.st_mode)
+            or (before.st_dev, before.st_ino) != expected
+            or before.st_dev != root_metadata.st_dev
+        ):
+            raise RuntimeError("unsafe_generated_directory")
         child_fd = os.open(name, flags, dir_fd=parent_fd)
+        after = os.fstat(child_fd)
+        if (
+            not stat.S_ISDIR(after.st_mode)
+            or after.st_dev != root_metadata.st_dev
+            or (after.st_dev, after.st_ino) != (before.st_dev, before.st_ino)
+        ):
+            os.close(child_fd)
+            raise RuntimeError("generated_directory_identity_changed")
+        try:
+            if mount_identity(child_fd) != root_mount_identity:
+                raise RuntimeError("mounted_generated_directory")
+        except Exception:
+            os.close(child_fd)
+            raise
+        return child_fd
+
+    def purge(parent_fd, name, expected):
+        child_fd = open_verified_directory(parent_fd, name, expected)
         try:
             for entry in os.listdir(child_fd):
                 metadata = os.stat(entry, dir_fd=child_fd, follow_symlinks=False)
+                if metadata.st_dev != root_metadata.st_dev:
+                    raise RuntimeError("cross_device_generated_entry")
                 if stat.S_ISDIR(metadata.st_mode):
-                    purge(child_fd, entry)
+                    purge(child_fd, entry, (metadata.st_dev, metadata.st_ino))
                 elif stat.S_ISREG(metadata.st_mode):
+                    regular_fd = os.open(entry, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=child_fd)
+                    try:
+                        verified = os.fstat(regular_fd)
+                        if (
+                            not stat.S_ISREG(verified.st_mode)
+                            or verified.st_dev != root_metadata.st_dev
+                            or (verified.st_dev, verified.st_ino) != (metadata.st_dev, metadata.st_ino)
+                        ):
+                            raise RuntimeError("generated_file_identity_changed")
+                    finally:
+                        os.close(regular_fd)
                     os.unlink(entry, dir_fd=child_fd)
                 else:
                     raise RuntimeError("unsafe_generated_entry")
@@ -55,7 +155,7 @@ try:
             os.close(child_fd)
         os.rmdir(name, dir_fd=parent_fd)
 
-    purge(current, parts[-1])
+    purge(current, parts[-1], expected_target_identity)
 finally:
     for descriptor in reversed(descriptors):
         os.close(descriptor)
@@ -111,10 +211,22 @@ function removeValidatedTree(target, floor = PRIVATE_PARENT) {
   if (!fs.existsSync(target)) return;
   assertContained(floor, target);
   const relative = path.relative(floor, target);
-  if (!relative || relative.split(path.sep).some((component) => !component || component === "." || component === "..")) {
+  if (!relative || relative.split(path.sep).length !== 1
+    || relative.split(path.sep).some((component) => !component || component === "." || component === "..")) {
     throw new Error("unsafe_generated_root");
   }
-  const result = spawnSync("python3", ["-c", DESCRIPTOR_RELATIVE_REMOVE, floor, relative], {
+  const floorMetadata = fs.lstatSync(floor, { bigint: true });
+  if (!floorMetadata.isDirectory()) throw new Error("cleanup_floor_not_directory");
+  const targetMetadata = fs.lstatSync(target, { bigint: true });
+  if (!targetMetadata.isDirectory()) throw new Error("cleanup_target_not_directory");
+  const trustedMetadata = fs.lstatSync(ROOT, { bigint: true });
+  if (!trustedMetadata.isDirectory()) throw new Error("cleanup_trusted_root_not_directory");
+  const result = spawnSync("python3", [
+    "-c", DESCRIPTOR_RELATIVE_REMOVE, floor, relative,
+    floorMetadata.dev.toString(), floorMetadata.ino.toString(),
+    targetMetadata.dev.toString(), targetMetadata.ino.toString(),
+    ROOT, trustedMetadata.dev.toString(), trustedMetadata.ino.toString(),
+  ], {
     cwd: ROOT,
     encoding: "buffer",
     timeout: 20_000,
@@ -323,6 +435,52 @@ function runSelfTests() {
   const outside = path.join(temporary, "outside.bin");
   fs.mkdirSync(path.join(safeRoot, "nested"), { recursive: true });
   fs.writeFileSync(path.join(safeRoot, "nested", "generated.bin"), "generated");
+  const cleanupIdentity = fs.lstatSync(temporary, { bigint: true });
+  const cleanupTargetIdentity = fs.lstatSync(safeRoot, { bigint: true });
+  const wrongDevice = cleanupIdentity.dev + 1n;
+  const wrongDeviceChild = spawnSync("python3", [
+    "-c", DESCRIPTOR_RELATIVE_REMOVE, temporary, "safe-root",
+    wrongDevice.toString(), cleanupIdentity.ino.toString(),
+    cleanupTargetIdentity.dev.toString(), cleanupTargetIdentity.ino.toString(),
+    temporary, cleanupIdentity.dev.toString(), cleanupIdentity.ino.toString(),
+  ], {
+    cwd: ROOT,
+    encoding: "buffer",
+    timeout: 20_000,
+    maxBuffer: 64 * 1024,
+  });
+  if (wrongDeviceChild.status === 0 || !fs.existsSync(path.join(safeRoot, "nested", "generated.bin"))) {
+    throw new Error("cleanup_device_mutation_accepted");
+  }
+  const wrongInodeChild = spawnSync("python3", [
+    "-c", DESCRIPTOR_RELATIVE_REMOVE, temporary, "safe-root",
+    cleanupIdentity.dev.toString(), (cleanupIdentity.ino + 1n).toString(),
+    cleanupTargetIdentity.dev.toString(), cleanupTargetIdentity.ino.toString(),
+    temporary, cleanupIdentity.dev.toString(), cleanupIdentity.ino.toString(),
+  ], {
+    cwd: ROOT,
+    encoding: "buffer",
+    timeout: 20_000,
+    maxBuffer: 64 * 1024,
+  });
+  if (wrongInodeChild.status === 0 || !fs.existsSync(path.join(safeRoot, "nested", "generated.bin"))) {
+    throw new Error("cleanup_inode_mutation_accepted");
+  }
+  const wrongTargetInodeChild = spawnSync("python3", [
+    "-c", DESCRIPTOR_RELATIVE_REMOVE, temporary, "safe-root",
+    cleanupIdentity.dev.toString(), cleanupIdentity.ino.toString(),
+    cleanupTargetIdentity.dev.toString(), (cleanupTargetIdentity.ino + 1n).toString(),
+    temporary, cleanupIdentity.dev.toString(), cleanupIdentity.ino.toString(),
+  ], {
+    cwd: ROOT,
+    encoding: "buffer",
+    timeout: 20_000,
+    maxBuffer: 64 * 1024,
+  });
+  if (wrongTargetInodeChild.status === 0
+    || !fs.existsSync(path.join(safeRoot, "nested", "generated.bin"))) {
+    throw new Error("cleanup_target_inode_mutation_accepted");
+  }
   removeValidatedTree(safeRoot, temporary);
   if (fs.existsSync(safeRoot)) throw new Error("descriptor_cleanup_incomplete");
   fs.mkdirSync(unsafeRoot);
