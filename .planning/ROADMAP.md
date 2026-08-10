@@ -32,7 +32,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 - [x] **Phase 61: Teeth Output, Safety, and Independent Closeout** - Prove public-facade visibility, protected-tissue safety, naturalness, regression, and exact `白牙` promotion before any sclera production work. (completed 2026-08-07)
 - [x] **Phase 62: Sclera Evidence and Admission Contract** - Independently qualify genuine redness/normal evidence and add one compatibility-safe sclera-only public intent after teeth closes. (completed 2026-08-07)
 - [x] **Phase 63: Guarded Per-Eye Sclera Production Integration** - Deliver independent left/right eye guards, hard sclera ownership, and bounded original-pixel redness reduction. (completed 2026-08-07)
-- [ ] **Phase 64: Sclera Output, Adversarial Safety, and Independent Closeout** - Prove public-facade per-eye behavior, native and adversarial protected-region safety, naturalness, regression, and exact `祛红血丝` promotion. (active gaps; 13/13 summaries; 64-12 candidate `gaps_found`; 64-13 failed/requarantined; product authorization unproven)
+- [ ] **Phase 64: Sclera Output, Adversarial Safety, and Independent Closeout** - Prove public-facade per-eye behavior, native and adversarial protected-region safety, naturalness, regression, and exact `祛红血丝` promotion. (active gaps; 19 plans / 34 task IDs; 13 summaries; Plans 64-14 through 64-19 ready to execute; product authorization unproven)
 - [ ] **Phase 65: Combined Facade, Privacy, and Milestone Closeout** - Verify both independently admitted features together, preserve all v1.14 boundaries, keep `去脂` absent, and prepare the audited milestone close. (4/4 plans executed; verification/audit stale pending Phase 64)
 
 ## Phase Details
@@ -140,13 +140,15 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
   4. Genuine redness positives improve within predeclared per-eye bounds, while normal negatives and blink/gaze/glasses/highlight/occlusion challenges remain natural under blinded original-detail review.
   5. Production tests, native/adversarial matrices, compatibility, privacy, full regression, review/fix, independent verification, and owning ledgers promote exactly `祛红血丝`; `眼睛` remains partial because `去脂` remains future.
 
-**Plans**: 13/13 summaries exist. Content trust, source-bound review validity,
+**Plans**: 19 plans / 34 task IDs are defined; 13 historical summaries exist. Content trust, source-bound review validity,
 strict-helper live proof, focused/native/private/Demo evidence, and fresh
 zero-HIGH review/security remain implementation facts. The immutable Plan
 64-12 candidate is `gaps_found` because its checker self-test failed and the
 mandatory full SwiftPM command reported eight skips. Plan 64-13 applied the
-complete fifteen-owner failure set and remains failed/requarantined; a new
-repair plan and distinct independent candidate are required.
+complete fifteen-owner failure set and remains failed/requarantined. The
+independently checked Plans 64-14 through 64-19 now own the repair, fresh
+authority, distinct guarded candidate, and bounded final transaction; none is
+executed yet.
 **Wave 1**
 
 - [x] 64-01-PLAN.md — RED public-output/adversarial contracts and eight-HIGH checker
@@ -198,6 +200,30 @@ repair plan and distinct independent candidate are required.
 **Wave 13** *(bounded final transaction; blocked on Wave 12 completion)*
 
 - [x] 64-13-PLAN.md — mandatory failure branch completed across all fifteen owners; task 64-13-01 remains failed/requarantined and the summary records that outcome
+
+**Wave 14** *(gap repair; blocked on Wave 13 completion)*
+
+- [ ] 64-14-PLAN.md — repair checker self-test and add the privacy-safe zero-skip SwiftPM runner
+
+**Wave 15** *(fresh authority; blocked on Wave 14 completion)*
+
+- [ ] 64-15-PLAN.md — rerun the no-skip conjunction and issue fresh source-bound review/security eligibility
+
+**Wave 16** *(promotion-pending owners; blocked on Wave 15 completion)*
+
+- [ ] 64-16-PLAN.md — synchronize exact product and root owners after independent eligibility
+
+**Wave 17** *(lifecycle synchronization; blocked on Wave 16 completion)*
+
+- [ ] 64-17-PLAN.md — synchronize nineteen-plan/thirty-four-task lifecycle and validation owners
+
+**Wave 18** *(independent candidate; blocked on Wave 17 completion)*
+
+- [ ] 64-18-PLAN.md — generate a distinct immutable post-repair candidate with candidate-only writes
+
+**Wave 19** *(bounded final transaction; blocked on Wave 18 completion)*
+
+- [ ] 64-19-PLAN.md — select canonical success or complete fifteen-owner re-quarantine
 
 ### Phase 65: Combined Facade, Privacy, and Milestone Closeout
 
