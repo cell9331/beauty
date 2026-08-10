@@ -1,7 +1,9 @@
 "use strict";
 
 const fs = require("node:fs");
+const os = require("node:os");
 const path = require("node:path");
+const crypto = require("node:crypto");
 const { spawnSync } = require("node:child_process");
 
 const ROOT = path.resolve(__dirname, "..", "..", "..");
@@ -21,9 +23,13 @@ const REVIEW_FREE_TEXT = new RegExp([
   ["user", "_said"].join("") + "\\s*[:=]",
   ["visual", "_feedback"].join("") + "\\s*[:=]",
 ].join("|"), "i");
+const MAX_MANIFEST_BYTES = 256 * 1024;
+const MAX_ASSET_BYTES = 32 * 1024 * 1024;
+const ASSET_FIELDS = ["original", "mask", "after"];
 
 function sha256(filePath) {
-  return require("node:crypto").createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
+  assertNoSymlinkComponents(filePath);
+  return crypto.createHash("sha256").update(readBoundedRegular(filePath, MAX_ASSET_BYTES)).digest("hex");
 }
 
 function fixed(status, extra = {}) {
@@ -34,39 +40,144 @@ function ignoredFiles() {
   const result = spawnSync("git", ["ls-files", "--others", "--ignored", "--exclude-standard", "-z"], {
     cwd: ROOT,
     encoding: "buffer",
+    timeout: 20_000,
   });
-  if (result.status !== 0) throw new Error("ignored_file_scan_failed");
-  return result.stdout.toString("utf8").split("\0").filter(Boolean);
+  if (result.status !== 0 || result.error) throw new Error("ignored_file_scan_failed");
+  return parseNulInventory(result.stdout);
 }
 
-function manifestLooksLikeTeeth(root) {
+function safeRelativeKey(value) {
+  return typeof value === "string"
+    && value.length > 0
+    && value.length <= 256
+    && !path.posix.isAbsolute(value)
+    && !value.includes("\\")
+    && !value.includes("\0")
+    && !value.includes(":")
+    && value.split("/").every((component) => component && component !== "." && component !== "..");
+}
+
+function parseNulInventory(value) {
+  const content = Buffer.isBuffer(value) ? value.toString("utf8") : value;
+  if (typeof content !== "string") throw new Error("inventory_type_invalid");
+  if (content === "") return [];
+  if (!content.endsWith("\0")) throw new Error("inventory_nul_terminator_missing");
+  const files = content.slice(0, -1).split("\0");
+  const normalized = files.map((file) => file.endsWith("/") ? file.slice(0, -1) : file);
+  if (normalized.some((file) => !safeRelativeKey(file)) || new Set(files).size !== files.length) {
+    throw new Error("inventory_entry_invalid");
+  }
+  return files;
+}
+
+function readBoundedRegular(filePath, maximumBytes) {
+  let descriptor;
   try {
-    const value = JSON.parse(fs.readFileSync(path.join(ROOT, root, "manifest.json"), "utf8"));
-    return value?.schema_version === 1 && Array.isArray(value.fixtures)
-      && value.fixtures.length === 2 && value.fixtures.every((row) => row?.feature === "teeth_whitening")
-      && new Set(value.fixtures.map((row) => row.polarity)).size === 2;
-  } catch (_) {
+    if (!fs.constants.O_NOFOLLOW) throw new Error("nofollow_unavailable");
+    descriptor = fs.openSync(filePath, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW);
+    const metadata = fs.fstatSync(descriptor);
+    if (!metadata.isFile() || metadata.size < 1 || metadata.size > maximumBytes) {
+      throw new Error("bounded_regular_file_required");
+    }
+    return fs.readFileSync(descriptor);
+  } finally {
+    if (descriptor !== undefined) fs.closeSync(descriptor);
+  }
+}
+
+function assertNoSymlinkComponents(target, floor = ROOT) {
+  const relative = path.relative(floor, target);
+  if (!relative || relative === ".." || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative)) {
+    throw new Error("path_containment_failed");
+  }
+  let current = floor;
+  for (const component of relative.split(path.sep).filter(Boolean)) {
+    current = path.join(current, component);
+    const metadata = fs.lstatSync(current);
+    if (metadata.isSymbolicLink()) throw new Error("symlink_component");
+  }
+}
+
+function manifestShape(value) {
+  if (!value || value.schema_version !== 1 || !Array.isArray(value.fixtures) || value.fixtures.length !== 2) {
     return false;
   }
+  const polarities = new Set();
+  const fixtureIDs = new Set();
+  for (const row of value.fixtures) {
+    if (!row || row.feature !== "teeth_whitening"
+      || !["positive", "negative"].includes(row.polarity)
+      || row.rights_status !== "approved_internal_evaluation"
+      || typeof row.fixture_id !== "string" || row.fixture_id.length === 0
+      || fixtureIDs.has(row.fixture_id) || polarities.has(row.polarity)
+      || !row.assets || typeof row.assets !== "object") {
+      return false;
+    }
+    fixtureIDs.add(row.fixture_id);
+    polarities.add(row.polarity);
+    const directory = row.polarity === "positive" ? "fixture_001" : "fixture_002";
+    if (ASSET_FIELDS.some((field) => row.assets[field] !== `${directory}/${field}.png`)) return false;
+  }
+  return polarities.has("positive") && polarities.has("negative");
+}
+
+function readManifest(relativeRoot) {
+  if (!safeRelativeKey(relativeRoot)) return null;
+  try {
+    const target = path.join(ROOT, relativeRoot, "manifest.json");
+    assertNoSymlinkComponents(target);
+    const value = JSON.parse(readBoundedRegular(target, MAX_MANIFEST_BYTES).toString("utf8"));
+    return manifestShape(value) ? value : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+function candidateRoots(files = ignoredFiles()) {
+  const roots = new Set();
+  for (const file of files) {
+    if (!file.endsWith("/manifest.json") || !file.includes(BUNDLE_MARKER) || !safeRelativeKey(file)) continue;
+    const root = path.posix.dirname(file);
+    if (readManifest(root)) roots.add(root);
+  }
+  return [...roots].sort();
+}
+
+function selectSingleCandidate(candidates) {
+  if (!Array.isArray(candidates) || candidates.length !== 1) {
+    throw new Error(candidates?.length === 0
+      ? "ignored_teeth_bundle_missing"
+      : "ignored_teeth_bundle_ambiguous");
+  }
+  return candidates[0];
 }
 
 function discoverBundle() {
-  const candidates = new Set();
-  for (const file of ignoredFiles()) {
-    if (!file.endsWith("/manifest.json") || !file.includes(BUNDLE_MARKER)) continue;
-    const root = path.posix.dirname(file);
-    if (manifestLooksLikeTeeth(root)) candidates.add(root);
-  }
-  if (candidates.size !== 1) throw new Error(candidates.size === 0 ? "ignored_teeth_bundle_missing" : "ignored_teeth_bundle_ambiguous");
-  return path.resolve(ROOT, [...candidates][0]);
+  return path.resolve(ROOT, selectSingleCandidate(candidateRoots()));
 }
 
 function assertIgnoredBundle(bundle) {
-  const relative = path.relative(ROOT, bundle);
-  const files = ignoredFiles();
-  const required = ["manifest.json", "fixture_001/original.png", "fixture_001/mask.png", "fixture_001/after.png", "fixture_002/original.png", "fixture_002/mask.png", "fixture_002/after.png"]
-    .map((file) => path.posix.join(relative.split(path.sep).join("/"), file));
-  if (!required.every((file) => files.includes(file))) throw new Error("teeth_bundle_not_fully_ignored");
+  const relative = path.relative(ROOT, bundle).split(path.sep).join("/");
+  if (!safeRelativeKey(relative)) throw new Error("teeth_bundle_outside_root");
+  assertNoSymlinkComponents(bundle);
+  const manifest = readManifest(relative);
+  if (!manifest) throw new Error("teeth_manifest_invalid");
+  const ignored = new Set(ignoredFiles());
+  const required = [path.posix.join(relative, "manifest.json")];
+  for (const row of manifest.fixtures) {
+    for (const field of ASSET_FIELDS) {
+      const key = row.assets[field];
+      if (!safeRelativeKey(key)) throw new Error("teeth_asset_key_invalid");
+      const absolute = path.join(bundle, key);
+      assertNoSymlinkComponents(absolute);
+      readBoundedRegular(absolute, MAX_ASSET_BYTES);
+      required.push(path.posix.join(relative, key));
+    }
+  }
+  if (required.length !== 7 || !required.every((file) => ignored.has(file))) {
+    throw new Error("teeth_bundle_not_fully_ignored");
+  }
+  return manifest;
 }
 
 function isHistorical(file) {
@@ -130,10 +241,78 @@ function trackedStagedPrivacyScan() {
   fixed("pass", { tracked_file_count: values.length });
 }
 
+function runSelfTests() {
+  let rejected = 0;
+  const expectFailure = (callback) => {
+    try { callback(); } catch (_) { rejected += 1; return; }
+    throw new Error("self_test_mutation_not_rejected");
+  };
+  const validManifest = () => ({
+    schema_version: 1,
+    fixtures: [
+      {
+        fixture_id: "opaque_positive",
+        feature: "teeth_whitening",
+        polarity: "positive",
+        rights_status: "approved_internal_evaluation",
+        assets: Object.fromEntries(ASSET_FIELDS.map((field) => [field, `fixture_001/${field}.png`])),
+      },
+      {
+        fixture_id: "opaque_negative",
+        feature: "teeth_whitening",
+        polarity: "negative",
+        rights_status: "approved_internal_evaluation",
+        assets: Object.fromEntries(ASSET_FIELDS.map((field) => [field, `fixture_002/${field}.png`])),
+      },
+    ],
+  });
+  if (!manifestShape(validManifest())) throw new Error("valid_manifest_rejected");
+  expectFailure(() => parseNulInventory("one\0two"));
+  expectFailure(() => parseNulInventory("one\0one\0"));
+  expectFailure(() => selectSingleCandidate([]));
+  expectFailure(() => selectSingleCandidate(["one", "two"]));
+  expectFailure(() => {
+    if (safeRelativeKey("../escape")) return;
+    throw new Error("unsafe_key_rejected");
+  });
+  const wrongAsset = validManifest();
+  wrongAsset.fixtures[0].assets.original = "fixture_002/original.png";
+  expectFailure(() => {
+    if (manifestShape(wrongAsset)) return;
+    throw new Error("wrong_asset_rejected");
+  });
+  const duplicatePolarity = validManifest();
+  duplicatePolarity.fixtures[1].polarity = "positive";
+  expectFailure(() => {
+    if (manifestShape(duplicatePolarity)) return;
+    throw new Error("duplicate_polarity_rejected");
+  });
+
+  const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "phase59-runner-self-test-"));
+  try {
+    const regular = path.join(temporary, "regular.bin");
+    const link = path.join(temporary, "link.bin");
+    const directory = path.join(temporary, "directory");
+    const directoryLink = path.join(temporary, "directory-link");
+    fs.writeFileSync(regular, "bounded");
+    fs.symlinkSync(regular, link);
+    fs.mkdirSync(directory);
+    fs.writeFileSync(path.join(directory, "asset.bin"), "bounded");
+    fs.symlinkSync(directory, directoryLink);
+    expectFailure(() => readBoundedRegular(link, 1024));
+    expectFailure(() => assertNoSymlinkComponents(path.join(directoryLink, "asset.bin"), temporary));
+  } finally {
+    fs.rmSync(temporary, { recursive: true, force: true });
+  }
+  if (rejected !== 9) throw new Error("self_test_count_invalid");
+  return rejected;
+}
+
 function main() {
   try {
     const argv = process.argv.slice(2);
-    if (argv[0] === "--scan-tracked-staged") trackedStagedPrivacyScan();
+    if (argv[0] === "--self-test" && argv.length === 1) fixed("pass", { mutation_rejections: runSelfTests() });
+    else if (argv[0] === "--scan-tracked-staged") trackedStagedPrivacyScan();
     else if (argv[0] === "--") runChild(argv.slice(1));
     else throw new Error("runner_usage");
   } catch (error) {
@@ -143,4 +322,16 @@ function main() {
 }
 
 if (require.main === module) main();
-module.exports = { assertIgnoredBundle, discoverBundle, trackedStagedPrivacyScan };
+module.exports = {
+  assertIgnoredBundle,
+  assertNoSymlinkComponents,
+  candidateRoots,
+  discoverBundle,
+  manifestShape,
+  parseNulInventory,
+  readBoundedRegular,
+  runSelfTests,
+  safeRelativeKey,
+  selectSingleCandidate,
+  trackedStagedPrivacyScan,
+};

@@ -173,6 +173,7 @@ function positiveTranscript() {
 }
 
 function runSelfTests() {
+  if (TeethRunner.runSelfTests() !== 9) throw new Error("teeth_bundle_guard_self_test_invalid");
   const firstLocator = "/private/first-sentinel-bundle";
   const secondLocator = "/private/second-sentinel-bundle";
   const positive = classifyChildResult({
