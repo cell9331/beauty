@@ -768,15 +768,16 @@ Command-level evidence is recorded in [Phase 63 security](.planning/phases/63-gu
   ambiguous output without exposing raw child text.
 - Request-local raw support, proposal and mask privacy, protected-region
   containment, exact 19-source binding, four-state T-64-06 scanning, fresh
-  zero-HIGH code review, and fresh ASVS L1 closure remain implementation facts.
-  They grant no product authority because Plan 64-19's mandatory canonical
-  owner transition invalidates a candidate-frozen input hash and `--final`
-  fails closed. `祛红血丝` is re-quarantined as future/unproven, aggregate
-  `眼睛` remains `partial`, and `去脂` remains `future`.
-- The complete fifteen-owner state is quarantined. Phase 65 is blocked, and
-  DeviceRGB/named-sRGB remains exclusively its SAFE-06 security boundary.
+  zero-HIGH code review, and fresh ASVS L1 closure of T-64-01 through T-64-08
+  authorize only the bounded SDK-core still-image `祛红血丝` product row.
+  Aggregate `眼睛` remains `partial` and `去脂` remains `future`; Demo,
+  realtime/pixel-buffer, external model and network surfaces stay absent.
+- This state is promotion pending terminal candidate/final verification.
+  Canonical `64-VERIFICATION.md` and final validation remain open, Phase 65 is
+  blocked, and DeviceRGB/named-sRGB remains exclusively the Phase 65 SAFE-06
+  security boundary.
 
-The fresh post-repair artifacts remain preserved, source-bound, aggregate-only evidence, but are non-authoritative after the Plan 64-19 final failure. Canonical disposition is recorded in [Phase 64 verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).
+Fresh promotion-pending authority is recorded in [terminal R2 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW.md), [code review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-CODE-REVIEW.md), [review-fix disposition](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW-FIX.md), [ASVS L1 security audit](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SECURITY.md), and [independent eligibility](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-PRE-PROMOTION-VERIFICATION.md).
 
 ### v1.15 Phase 65 Combined Privacy and Security — Stale/Blocked Evidence Record
 

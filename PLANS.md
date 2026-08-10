@@ -32,14 +32,14 @@
 | --- | --- |
 | Status | `active` |
 | Scope | Close the Phase 64 final-authority gaps before retaining any `祛红血丝` product promotion or treating v1.15 as completion-ready. |
-| Finding | Plan 64-18 produced a guarded `candidate_passed`, but Plan 64-19 proved the success contract internally incompatible: the mandatory canonical-owner transition changes a candidate-frozen input hash, so `--final` fails closed. Changing the checker inside Plan 19 would invalidate the frozen source/review authority. |
-| Affected requirements | SCLERA-14 through SCLERA-18 and OUT-05 retain implementation evidence but remain canonically open after complete fifteen-owner re-quarantine. Phase 65 remains blocked. |
+| Finding | The immutable Plan 64-12/13 and Plan 64-18/19 candidate/failure sequences remain historical evidence. Plan 64-20 repaired the terminal transition contract, rebuilt exact source-bound 637/0/0/8 R2 authority, synchronized the complete fifteen-owner promotion-pending snapshot, and issued a distinct guarded terminal candidate. |
+| Affected requirements | SCLERA-14 through SCLERA-18 and OUT-05 have complete terminal R2 promotion-pending implementation/evidence dispositions, but canonical completion remains pending Plan 64-21's exact success-or-quarantine transaction. Phase 65 remains blocked. |
 | Fresh passing evidence | Focused 74/74; strict helper 14/14; private output 6/6 plus four opaque review items; checker/no-skip self-tests; exact full SwiftPM 637/0/0/8; Demo build and 121/0/0; exact 19-source review; zero-HIGH code review; ASVS L1 8/8. Green aggregates do not self-authorize canonical success. |
 | Warning | `BeautyExampleRenderer` uses device RGB for saved evidence; explicit sRGB remains a Phase 65 SAFE-06 re-verification item. |
-| Next | Add a Phase 64 gap-repair plan that separates immutable candidate inputs from mutable final owners (or validates only pre-transition hashes), rebuild source-bound authority, issue a distinct candidate, and rerun a bounded final transaction. Preserve both existing immutable candidates. |
-| Lifecycle | Phase 64 is `gaps_found`/incomplete with `promotion_status: unproven`; all fifteen owners are re-quarantined. Phase 65 verification/audit remains stale and blocked. |
-| Inventory | Exact authority is 19 serial plans / 34 ordered task IDs, all accounted. Historical `64-13-01` remains failed/superseded evidence; `64-18-01` passed only as a non-canonical candidate; `64-19-01` records failed final success plus complete requarantine. |
-| Boundary | Do not archive, tag, clean up, ship, or claim milestone completion while canonical Phase 64 is `gaps_found`. Product-facing `祛红血丝` is future/unproven, `眼睛` remains `partial`, and `去脂` remains `future`. DeviceRGB/named-sRGB is owned only by Phase 65 SAFE-06; Demo/API/realtime/model/network/dependency/eye-fat scope remains out of Phase 64 authority. |
+| Next | Execute Plan 64-21's terminal transaction: validate the distinct R2 candidate, then apply either the exact-six canonical success transition or the complete terminal quarantine. Do not append another automatic Phase 64 repair plan after terminal failure. |
+| Lifecycle | Phase 64 is `terminal_r2_promotion_pending`. Canonical `64-VERIFICATION.md` remains `gaps_found` with `promotion_status: unproven`; Phase 65 verification/audit remains stale and blocked until Plan 64-21 produces canonical success. |
+| Inventory | Exact authority is 21 serial plans / 38 ordered task IDs. Plans 64-01 through 64-20 account for the first 37 IDs; historical `64-13-01` and `64-19-01` remain failed/superseded evidence. Only `64-21-01` is pending. |
+| Boundary | Do not archive, tag, clean up, ship, or claim milestone completion while canonical Phase 64 is `gaps_found`. Product-facing `祛红血丝` is bounded SDK-core implemented in promotion-pending state, `眼睛` remains `partial`, and `去脂` remains `future`. DeviceRGB/named-sRGB is owned only by Phase 65 SAFE-06; Demo/API/realtime/model/network/dependency/eye-fat scope remains out of Phase 64 authority. |
 
 The prior v1.15 completion-ready statement is superseded by the fresh Phase 64
 goal-backward verification until this active gap is closed.
@@ -50,7 +50,8 @@ Exact ordered Phase 64 task authority is: `64-01-01`, `64-01-02`,
 `64-08-01`, `64-08-02`, `64-09-01`, `64-09-02`, `64-10-01`, `64-10-02`,
 `64-11-01`, `64-11-02`, `64-12-01`, `64-13-01`, `64-14-01`, `64-14-02`,
 `64-15-01`, `64-15-02`, `64-16-01`, `64-16-02`, `64-17-01`, `64-17-02`,
-`64-18-01`, `64-19-01`. Waves 1 through 19 are strictly serial.
+`64-18-01`, `64-19-01`, `64-20-01`, `64-20-02`, `64-20-03`,
+`64-21-01`. Waves 1 through 21 are strictly serial.
 
 ## 3A. Archived Active Ledger
 
@@ -63,7 +64,7 @@ Exact ordered Phase 64 task authority is: `64-01-01`, `64-01-02`,
 | Evidence | Separate genuine teeth and sclera pairs, standalone 6/6 output matrices, private native-Vision gates, original-detail reviews and exact product promotions pass without borrowed sibling credit. |
 | Combined | Both public facade entries pass independent standalone merge, collision-to-source, four failure units, no-stale recovery and unrelated-work preservation. |
 | Verification | Historical result: full SwiftPM 630/0/8; Demo build plus 121/0/0; focused 94/94; checker HIGH 8/8; separate audit 40/40 requirements, 12/12 seams and 7/7 flows. The result is stale for current authority. |
-| Product | Current authority keeps `白牙` and aggregate `嘴唇` implemented; `祛红血丝` is unproven/future; aggregate `眼睛` remains partial; `去脂` remains future. Exact implementation inventory remains 61 fields, five presets, 74 renderer cases and three disabled Demo rows. |
+| Product | Current authority keeps `白牙` and aggregate `嘴唇` implemented; bounded SDK-core `祛红血丝` is implemented in terminal R2 promotion-pending state; aggregate `眼睛` remains partial; `去脂` remains future. Exact implementation inventory remains 61 fields, five presets, 74 renderer cases and three disabled Demo rows. |
 | Boundary | Not completion-ready. Phase 65 is blocked and its verification/audit must be rerun only after a distinct passing Phase 64 candidate. No Demo activation, realtime/pixel-buffer, population/device/performance/commercial approval, model/network, packaging, shipping, launch, archive, tag or release claim. |
 
 ### A-2026-07-30-v1-14-local-facial-retouch

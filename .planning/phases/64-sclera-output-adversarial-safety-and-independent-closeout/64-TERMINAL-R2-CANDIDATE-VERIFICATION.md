@@ -1,0 +1,195 @@
+schema: phase64-terminal-candidate-r2
+verification_stage: terminal_r2_candidate
+independent: true
+status: candidate_passed
+terminal_plan_authorized: 64-21
+phase_65_authorized: false
+promotion_authorized: false
+canonical_final_authorized: false
+guard_nonce: e60584862c64a720aba05eefec08cc50
+pre_repository_delta_digest: ac25ffad91ca52337f2679bcf01ad3b18eb40d944482707bbbacc94787ed8a87
+expected_plan_count: 21
+expected_task_count: 38
+input_owner_count: 15
+immutable_owner_count: 9
+mutable_final_owner_count: 6
+relevant_source_count: 19
+authority_count: 6
+executed_tests: 637
+failed_tests: 0
+skipped_tests: 0
+opt_in_tests_executed: 8
+edge_probe_count: 15
+unresolved_high: 0
+threat_count: 8
+plan_inventory_begin
+64-01
+64-02
+64-03
+64-04
+64-05
+64-06
+64-07
+64-08
+64-09
+64-10
+64-11
+64-12
+64-13
+64-14
+64-15
+64-16
+64-17
+64-18
+64-19
+64-20
+64-21
+plan_inventory_end
+task_inventory_begin
+64-01-01
+64-01-02
+64-02-01
+64-02-02
+64-03-01
+64-03-02
+64-04-01
+64-04-02
+64-05-01
+64-05-02
+64-06-01
+64-06-02
+64-07-01
+64-07-02
+64-08-01
+64-08-02
+64-09-01
+64-09-02
+64-10-01
+64-10-02
+64-11-01
+64-11-02
+64-12-01
+64-13-01
+64-14-01
+64-14-02
+64-15-01
+64-15-02
+64-16-01
+64-16-02
+64-17-01
+64-17-02
+64-18-01
+64-19-01
+64-20-01
+64-20-02
+64-20-03
+64-21-01
+task_inventory_end
+input_owner_manifest_begin
+a74c6a1338856cf2900db56a71fe656c70033d4e28b0394477478d21208ba04e a74c6a1338856cf2900db56a71fe656c70033d4e28b0394477478d21208ba04e  .planning/REQUIREMENTS.md
+46a5bb2a78d9e52adecf43ad9fe40c453b3f9a91c9228a8b82fd05f6f175a06c 46a5bb2a78d9e52adecf43ad9fe40c453b3f9a91c9228a8b82fd05f6f175a06c  .planning/ROADMAP.md
+fd6a621c4672053080749662d1d1bfac25ce50ae0919fb196464123c13def118 fd6a621c4672053080749662d1d1bfac25ce50ae0919fb196464123c13def118  .planning/STATE.md
+d5f8f01095a3314c25c17137bec7f87837f7a4d747af4cf33419a2b07507d0be d5f8f01095a3314c25c17137bec7f87837f7a4d747af4cf33419a2b07507d0be  .planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VALIDATION.md
+129b4ab7ce09cf398bd399bc88cfa941354d22819416933c134cdbd4ef7ff37d 129b4ab7ce09cf398bd399bc88cfa941354d22819416933c134cdbd4ef7ff37d  .planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md
+8557815a41e27dc58639a8c1d2955ade234381da65699cbcee0efd6c302df0e7 8557815a41e27dc58639a8c1d2955ade234381da65699cbcee0efd6c302df0e7  DESIGN.md
+8d6866d5b8fdbfa653987f7bad9a9712e1926e44cf8e4d1e553b503d95950f91 8d6866d5b8fdbfa653987f7bad9a9712e1926e44cf8e4d1e553b503d95950f91  PLANS.md
+7d4a9b622f83c4f43251f5c9cae0e3d69f5ff999cfec8a6f7f15e7d4ce6d360c 7d4a9b622f83c4f43251f5c9cae0e3d69f5ff999cfec8a6f7f15e7d4ce6d360c  PRODUCT_SENSE.md
+068f085edccd1a413a72dfdd05db310d8f119f5a70dfe69c582ff09a2defba44 068f085edccd1a413a72dfdd05db310d8f119f5a70dfe69c582ff09a2defba44  QUALITY_SCORE.md
+2e6831d29cb7fb3694a6f0e4df837a03145b7fd4c0f02c4971fc19b1a8e486e0 2e6831d29cb7fb3694a6f0e4df837a03145b7fd4c0f02c4971fc19b1a8e486e0  RELIABILITY.md
+89be88fe4108d6628a25ed942477187e9a30a920377e7c1715b93139ee1ba6d1 89be88fe4108d6628a25ed942477187e9a30a920377e7c1715b93139ee1ba6d1  SECURITY.md
+c6a95e4c6b32cb44b221be1b1fb37b0504965e78b119daf641850b68eb2b811e c6a95e4c6b32cb44b221be1b1fb37b0504965e78b119daf641850b68eb2b811e  docs/meitu-function-blueprint/FEATURE_MATRIX.md
+3e436d3b2717ec853036dabf85c41671aa720a3b71b4227a42480be22760cd56 3e436d3b2717ec853036dabf85c41671aa720a3b71b4227a42480be22760cd56  docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md
+c153267bba90ec151850f806fc47e23f4f785fa23c2e2e4a3e45cfda35aa6f1c c153267bba90ec151850f806fc47e23f4f785fa23c2e2e4a3e45cfda35aa6f1c  docs/meitu-function-blueprint/features/beauty-shaping/README.md
+597d176d3840620c82e30d38ffc87734599cbeb1c64781968da088e0a6fa88b4 597d176d3840620c82e30d38ffc87734599cbeb1c64781968da088e0a6fa88b4  docs/meitu-function-blueprint/features/beauty-shaping/eyes/README.md
+input_owner_manifest_end
+immutable_owner_manifest_begin
+8557815a41e27dc58639a8c1d2955ade234381da65699cbcee0efd6c302df0e7 8557815a41e27dc58639a8c1d2955ade234381da65699cbcee0efd6c302df0e7  DESIGN.md
+7d4a9b622f83c4f43251f5c9cae0e3d69f5ff999cfec8a6f7f15e7d4ce6d360c 7d4a9b622f83c4f43251f5c9cae0e3d69f5ff999cfec8a6f7f15e7d4ce6d360c  PRODUCT_SENSE.md
+068f085edccd1a413a72dfdd05db310d8f119f5a70dfe69c582ff09a2defba44 068f085edccd1a413a72dfdd05db310d8f119f5a70dfe69c582ff09a2defba44  QUALITY_SCORE.md
+2e6831d29cb7fb3694a6f0e4df837a03145b7fd4c0f02c4971fc19b1a8e486e0 2e6831d29cb7fb3694a6f0e4df837a03145b7fd4c0f02c4971fc19b1a8e486e0  RELIABILITY.md
+89be88fe4108d6628a25ed942477187e9a30a920377e7c1715b93139ee1ba6d1 89be88fe4108d6628a25ed942477187e9a30a920377e7c1715b93139ee1ba6d1  SECURITY.md
+c6a95e4c6b32cb44b221be1b1fb37b0504965e78b119daf641850b68eb2b811e c6a95e4c6b32cb44b221be1b1fb37b0504965e78b119daf641850b68eb2b811e  docs/meitu-function-blueprint/FEATURE_MATRIX.md
+3e436d3b2717ec853036dabf85c41671aa720a3b71b4227a42480be22760cd56 3e436d3b2717ec853036dabf85c41671aa720a3b71b4227a42480be22760cd56  docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md
+c153267bba90ec151850f806fc47e23f4f785fa23c2e2e4a3e45cfda35aa6f1c c153267bba90ec151850f806fc47e23f4f785fa23c2e2e4a3e45cfda35aa6f1c  docs/meitu-function-blueprint/features/beauty-shaping/README.md
+597d176d3840620c82e30d38ffc87734599cbeb1c64781968da088e0a6fa88b4 597d176d3840620c82e30d38ffc87734599cbeb1c64781968da088e0a6fa88b4  docs/meitu-function-blueprint/features/beauty-shaping/eyes/README.md
+immutable_owner_manifest_end
+mutable_final_owner_manifest_begin
+a74c6a1338856cf2900db56a71fe656c70033d4e28b0394477478d21208ba04e a74c6a1338856cf2900db56a71fe656c70033d4e28b0394477478d21208ba04e  .planning/REQUIREMENTS.md
+46a5bb2a78d9e52adecf43ad9fe40c453b3f9a91c9228a8b82fd05f6f175a06c 46a5bb2a78d9e52adecf43ad9fe40c453b3f9a91c9228a8b82fd05f6f175a06c  .planning/ROADMAP.md
+fd6a621c4672053080749662d1d1bfac25ce50ae0919fb196464123c13def118 fd6a621c4672053080749662d1d1bfac25ce50ae0919fb196464123c13def118  .planning/STATE.md
+d5f8f01095a3314c25c17137bec7f87837f7a4d747af4cf33419a2b07507d0be d5f8f01095a3314c25c17137bec7f87837f7a4d747af4cf33419a2b07507d0be  .planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VALIDATION.md
+129b4ab7ce09cf398bd399bc88cfa941354d22819416933c134cdbd4ef7ff37d 129b4ab7ce09cf398bd399bc88cfa941354d22819416933c134cdbd4ef7ff37d  .planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md
+8d6866d5b8fdbfa653987f7bad9a9712e1926e44cf8e4d1e553b503d95950f91 8d6866d5b8fdbfa653987f7bad9a9712e1926e44cf8e4d1e553b503d95950f91  PLANS.md
+mutable_final_owner_manifest_end
+relevant_source_manifest_begin
+aea87ce60c4457a8941f1ee16b1bc5709454bd65d63075b4950b94148269debc  .planning/phases/59-teeth-evidence-and-admission-contract/59-private-evidence-runner.js
+e74b6cf5116924f8fd72ba3b4b3b9ceb0800a9d21e7c1c7c30f1d0701dc354c0  .planning/phases/61-teeth-output-safety-and-independent-closeout/check_teeth_renderer_outputs.py
+67ff12e091e2e056c96be9fdc7db173d14f074a37d53bd86a5daec899e061289  .planning/phases/62-sclera-evidence-and-admission-contract/62-private-evidence-runner.js
+a1ceebf75cb05e3f61835df7a5a5d89512ab6df2bf701f7dec97ee17c679baba  .planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-no-skip-swiftpm-runner.js
+dac9c785e614be68b89ed6c2b64b95ef80f95974826e1aae2f56971b38cb6d98  .planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-private-output-runner.js
+894cce58712d4b337226bbd2c59ed2aad8b905306a472ae9e0b3a987baca545a  .planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/check_phase64_sclera_closeout.py
+b83abeb934545ee854ed0ab14911b30e66322aa43af1cff2b492b537ca674596  .planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/check_sclera_renderer_outputs.py
+25567e7347cc267de467668ee173488fab1a4a3ad91573376e466d97f4b6d73f  BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyScleraRednessProvider.swift
+7824266ed68beb71cfaf145bd8a56ef17ad1daa79c5b39c6e4236e955bd57973  BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyScleraRednessTransform.swift
+32c5a5e4895adb6916ea7ada8e0632151c40db73d9cd89f686a11a6a0d8e6f18  BeautySDK/Sources/BeautyEffects/Render/BeautyLocalRetouchComposition.swift
+2db3b93c9e5b0a8c9aec38e596b3d25218acba77579044f1df9df35bf1be06d3  BeautySDK/Sources/BeautyExampleRenderer/main.swift
+cdcce10d0ddc8157c5f9af9267ae24419abe6999a9f9f3de08a2a32bb8402982  BeautySDK/Sources/BeautySDK/BeautyEngine.swift
+940f6e0ea7f8e788a712312fd66f6e771c9dba7003ec7d74be75ff293686b689  BeautySDK/Tests/BeautyCoreTests/BeautyEngineLocalRetouchCompositionTests.swift
+04069c5e2ca342044c2a2482035de53f01938a0326c2ea8684e4cf7051b628bf  BeautySDK/Tests/BeautyCoreTests/BeautyEngineScleraRednessIntegrationTests.swift
+5e8a604335098fd6bb0b17a076050f44a09efba7154e4715c6386525dd043bb2  BeautySDK/Tests/BeautyCoreTests/BeautyRendererOutputRegressionTests.swift
+a0d48bf321735b2cb24078f4e85e7328abb029d1b5ddf9562b3562cfb321ed79  BeautySDK/Tests/BeautyCoreTests/BeautyScleraRednessRealFixtureTests.swift
+696bba7dcf774529d7242b6b189c3abc29374e3c3692b9ec3945d5190bc568a0  BeautySDK/Tests/BeautyEffectsTests/BeautyLocalRetouchCompositionTests.swift
+513d0c3f6bd8ee92e13f7fab88bef9ec7fdcb09301853b204cf4330a7595df6a  BeautySDK/Tests/BeautyEffectsTests/BeautyScleraRednessAdversarialCloseoutTests.swift
+052f8087614b1bb588bd46dd97f44c1aad970bb3b5a0070d1847c3b3863a9b19  BeautySDK/Tests/BeautyEffectsTests/BeautyScleraRednessProviderTests.swift
+relevant_source_manifest_end
+authority_manifest_begin
+30a37a7311bb2074d6b134de6e944e852e7d46164c34810ebbf77ec757e48a6a  .planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-CODE-REVIEW.md
+03a0aa213c333fe6aa725dc123bdbcc80b42ea5220d15b33b0795b7de1a5cef9  .planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-PRE-PROMOTION-VERIFICATION.md
+a4140807524bd443e90fbc440a59498a295d9fcc4db82162bf73409c20f58c84  .planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW-FIX.md
+be27254a7a364a27ccbe08499688eab5f4452cad3fa493c84468bce2601bbe4d  .planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW.md
+79cece2191daa8766f51b2347e585876d3ede4bc5348a9ac2de434db2559d213  .planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SCLERA-OUTPUT-EVIDENCE.md
+47fa80d1027775b76da49be56038fe6074bdb6d707edf243de1a5ddc1a82d4a5  .planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SECURITY.md
+authority_manifest_end
+opt_in_tests_begin
+VisionFaceDetectorTests.testIntegrationDefaultStillImageProviderReturnsRedactedNoFaceForNoFaceFixture passed
+VisionFaceDetectorTests.testIntegrationDefaultStillImageProviderReportsAggregateObservedFaceAvailabilityWithoutRawPayload passed
+VisionFaceDetectorTests.testIntegrationDefaultStillImageProviderReportsObservedEyebrowAvailabilityWithoutRawPayload passed
+BeautyEngineGeometryFacadeTests.testIntegrationLocalAuthorizedPortraitRoutesAllEyebrowFieldsThroughPublicFacade passed
+BeautyFaceGeometryAdapterTests.testIntegrationLocalAuthorizedPortraitAggregateFitsLockedFaceValidationEnvelope passed
+BeautyFaceGeometryAdapterTests.testIntegrationLocalAuthorizedPortraitFitsLockedEyebrowValidationEnvelope passed
+BeautyTeethWhiteningRealFixtureTests.testAuthorizedPositiveAndNegativeStayWithinFrozenAggregateBounds passed
+BeautyScleraRednessRealFixtureTests.testAuthorizedPositiveAndNegativeStayWithinFrozenAggregateBounds passed
+opt_in_tests_end
+edge_probes_begin
+SCLERA-14 adjacency: pass
+SCLERA-14 empty: pass
+SCLERA-14 ordering: pass
+SCLERA-15 boundary: pass
+SCLERA-15 precision: pass
+SCLERA-16 boundary: pass
+SCLERA-16 precision: pass
+SCLERA-17 unclassified: pass
+SCLERA-18 adjacency: pass
+SCLERA-18 empty: pass
+SCLERA-18 ordering: pass
+OUT-05 adjacency: pass
+OUT-05 empty: pass
+OUT-05 ordering: pass
+OUT-05 concurrency: pass
+edge_probes_end
+threats_begin
+T-64-01: pass
+T-64-02: pass
+T-64-03: pass
+T-64-04: pass
+T-64-05: pass
+T-64-06: pass
+T-64-07: pass
+T-64-08: pass
+threats_end
+
+# Phase 64 Terminal R2 Candidate Verification
+
+This distinct guarded candidate is bound to the exact live promotion-pending bytes above. It authorizes only Plan 64-21 to attempt the bounded terminal transaction. It does not finalize canonical Phase 64 authority, authorize Phase 65, close SAFE-06, broaden product scope, or reinterpret either historical candidate.
+
+The recorded conjunction is the current no-skip 637/0/0/8 authority, all fifteen unchanged edge probes, and zero unresolved HIGH findings across T-64-01 through T-64-08. Durable evidence remains aggregate-only; no private locator, private-content digest, media, mask, geometry, pixel, identity, rights detail, raw child output, or freeform review prose is retained.

@@ -34,20 +34,21 @@ Quality gate:
 
 ## 3. Current Snapshot
 
-Current repository state after the Plan 64-19 failed final transaction and
-complete fifteen-owner re-quarantine:
+Current repository state after Plan 64-20 repaired the terminal transition,
+rebuilt fresh source-bound R2 authority, synchronized the complete
+promotion-pending owner snapshot, and issued the guarded terminal candidate:
 
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
 | Root docs | 4 | All nine root owners exist. The consolidation audit corrected `ARCHITECTURE.md` so current pixel-buffer processing, still-image detection/geometry, and placeholder Render foundations match compiled code. | Keep current facts in root owners; keep milestone narratives in archives. |
 | Historical docs | 3 | `docs/README.md` remains the long-doc entry. `.planning/codebase/*` is explicitly stale background and historical phase/milestone artifacts are not current contracts. | Refresh codebase maps only in an explicitly scoped remap. |
-| GSD planning | 3 | All 19 plans / 34 task IDs are accounted, but Phase 64 remains incomplete/gaps: the candidate passed while the mandatory final owner transition invalidated its own frozen input hash. Phase 65 is blocked. | Add a repair plan that makes the final transaction satisfiable, then regenerate authority. |
+| GSD planning | 3 | Phase 64 remains in progress: 20 plans are executed/accounted in the exact 21-plan/38-task graph, terminal R2 eligibility and the guarded candidate pass, canonical verification remains `gaps_found`, and Phase 65 is blocked. | Execute Plan 64-21's exact-six final success transition or complete terminal quarantine. |
 | SDK Package | 4 | The package/facade boundary is intact; standalone sclera output reaches the public renderer through one request-local guarded provider while the exact inventory is 61 public fields, five neutral presets, and 74 renderer cases. | Preserve standalone semantics while Phase 65 proves combined output and failure isolation. |
 | Demo App | 4 | The unchanged Demo builds and passes 121/121 on iPhone 17e / iOS 26.5; teeth, sclera-redness, and `去脂` rows remain disabled with nil mappings. | Preserve disabled taxonomy through milestone closeout. |
 | Tests | 4 | The fresh exact conjunction passes 74/74 focused, 637/0/0 full SwiftPM with all eight opt-ins, strict helper/private gates, Demo build, and 121/0/0 Demo tests. | Preserve the exact source/owner state through the independent candidate and final transaction. |
 | Security | 4 | Fresh source-bound code review has zero HIGH/warnings; ASVS L1 closes T-64-01 through T-64-08, while bounded decoding, bilateral protected-region proof, and four-state privacy remain green. | Preserve aggregate-only privacy and reject any source or immutable-owner drift before final authority. |
 | Reliability | 3 | Backpressure, stale work, reset, detection degradation, and the repaired camera lifecycle are test-backed. Realtime geometry/Metal dispatch, 600-second preview, and device endurance are not current evidence. | Keep claims bounded and run the setup-specific long-run/device gates when authorized. |
-| Product acceptance | 3 | The `scleraRednessReduction` implementation remains, but `祛红血丝` product authorization is unproven/future after full re-quarantine; `眼睛` remains partial, `去脂` future, and Demo disabled. | Repair the final authority contract; SAFE-06 DeviceRGB/named-sRGB remains Phase 65-only. |
+| Product acceptance | 3 | Bounded SDK-core still-image `scleraRednessReduction` records `祛红血丝` implemented in promotion-pending state; `眼睛` remains partial, `去脂` future, and Demo disabled. | Require the distinct independent candidate/final transaction; SAFE-06 DeviceRGB/named-sRGB remains Phase 65-only. |
 
 ### 3.1 Phase 4 Final Verification
 
@@ -284,7 +285,7 @@ Recorded 2026-07-28:
 | Presets | 4 | 4 | Built-in JSON presets decode, validate, apply deterministically, and sync UI controls. |
 | Skin Beauty | 4 | 4 | Default no-op, visible skin/color fixture output, high-strength safety caps, and no-face combined skip behavior are tested. |
 | Face Shape | 4 | 4 | Nine public face/chin fields have provider, degradation, convergence, facade, and 413/413 strict output evidence; three semantic-region rows remain future and branch `脸型` remains partial. |
-| Eyes | 4 | 4 | Fourteen geometry rows have exact cap/degradation/convergence and 385/385 facade-output evidence; `祛红血丝` is unproven/future after Phase 64 re-quarantine, `去脂` remains future, and branch `眼睛` remains partial. |
+| Eyes | 4 | 4 | Fourteen geometry rows have exact cap/degradation/convergence and 385/385 facade-output evidence; bounded SDK-core still-image `祛红血丝` is implemented in promotion-pending state, `去脂` remains future, and branch `眼睛` remains partial. |
 | Nose | 4 | 4 | Phase 37 passes 228/228 full SwiftPM plus unchanged 252/252 output, independent root/lift comparisons, exact `0.25` caps, all-six degradation/transitions, provider-empty removal, exactly-once convergence, redaction, and `threats_open: 0`. The exact six-row SDK-core `鼻子` branch is implemented; Demo/device/commercial readiness remains separate. |
 | Mouth | 4 | 4 | Eight geometry rows have exact cap/degradation/convergence and 308/308 facade-output evidence; `lipColor` remains color-only, `白牙` remains future, and branch `嘴唇` remains partial. |
 | Eyebrows | 4 | 4 | Seven independent rows have actual request-local support, exact `0.25` caps, 44-field convergence, 72/72 portrait output, thirteen no-face comparisons, and exact branch promotion. |
@@ -715,9 +716,11 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
 
 ### v1.15 Phase 64 Sclera Output and Promotion Evidence Score
 
-- The current exact inventory is 19 plans / 34 task IDs. Fresh evidence covers
-  SCLERA-14 through SCLERA-18 and OUT-05 as implementation facts only.
-- The post-repair conjunction passes focused 74/74, strict helper 14/14,
+- The current exact inventory is 21 plans / 38 task IDs. Plans 64-01 through
+  64-20 account for the first 37 IDs; only `64-21-01` remains pending. Fresh
+  terminal R2 evidence and the guarded candidate cover SCLERA-14 through
+  SCLERA-18 and OUT-05 without substituting for canonical final authority.
+- The terminal R2 conjunction passes focused 74/74, strict helper 14/14,
   positive/negative/no-face output 6/6, four-item original-detail review,
   checker/no-skip self-tests, exact full SwiftPM 637/0/0 with all eight opt-ins,
   Demo build, and Demo tests 121/0/0.
@@ -725,17 +728,18 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
   L1 security closes all eight T-64-01 through T-64-08 HIGH identities. Both
   artifacts are bound to the exact 19-path source tree and cannot be outweighed
   or replaced by aggregate prose.
-- Quality credit includes bounded SDK-core standalone output, bilateral
-  protected-anatomy identity, peer/recovery isolation, compatibility, and
-  privacy. It excludes product promotion because the final owner transition
-  invalidates a candidate-frozen input hash. `祛红血丝` is unproven/future,
-  `眼睛` remains partial, and `去脂` remains future. Phase 65 is blocked and
+- Quality credit now includes bounded SDK-core standalone output, bilateral
+  protected-anatomy identity, peer/recovery isolation, compatibility, privacy,
+  and product-facing `祛红血丝` implemented in promotion-pending state. `眼睛`
+  remains partial and `去脂` remains future. Phase 65 is blocked and
   DeviceRGB/named-sRGB receives zero Phase 64 credit because it remains
   exclusively Phase 65 SAFE-06 scope. No combined-facade, population,
   realtime, device/performance, commercial, packaging, shipping, launch, or
   release credit is added.
 
-Canonical `64-VERIFICATION.md` remains `gaps_found`; the complete owner set is re-quarantined. Fresh artifacts remain non-authoritative implementation evidence.
+This state is promotion pending terminal candidate/final verification;
+canonical `64-VERIFICATION.md` remains `gaps_found`. Fresh authority is recorded
+in [terminal R2 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW.md), [code review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-CODE-REVIEW.md), [review-fix disposition](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW-FIX.md), [ASVS L1 security audit](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SECURITY.md), and [independent eligibility](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-PRE-PROMOTION-VERIFICATION.md).
 
 ### v1.15 Phase 65 Combined Closeout Evidence — Stale/Blocked
 

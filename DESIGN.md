@@ -942,24 +942,27 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
   exterior. Malformed-peer, valid-invalid-valid and parallel tests retain the
   Phase 63 request-local, affected-eye-only abstention contract.
 - Per-eye provider, transform, composition, calibrated containment/fail-closed
-  envelope, inclusive contour validity, public output, and review remain
-  implementation facts. The fresh post-repair candidate passed unchanged-input
-  checks, but Plan 64-19 proved the final success contract unsatisfiable: the
-  mandatory canonical-owner transition changes a candidate-frozen input hash,
-  so `--final` rejects the required state. The evidence is non-authoritative
-  and product-facing `祛红血丝` is unproven/future.
-- SCLERA-14 through SCLERA-18 and OUT-05 remain open under complete
-  re-quarantine. Aggregate branch `眼睛` remains `partial`, `去脂` remains
-  `future`, and both local-retouch eye rows stay disabled and nil-mapped in the
-  Demo.
+  envelope, inclusive contour validity, public output, and review are bound to
+  the exact 19-path source tree
+  `65acf03d82a3a8389d50c037d9bce7ed345870a4` and the fresh post-repair
+  evidence contract. The bounded SDK-core still-image
+  `BeautyParameters.scleraRednessReduction` route through public
+  `BeautyEngine.apply` therefore records product-facing `祛红血丝` as
+  implemented.
+- SCLERA-14 through SCLERA-18 and OUT-05 have fresh promotion-pending evidence;
+  aggregate branch `眼睛` remains `partial` solely because `去脂` remains
+  `future`. Both local-retouch eye rows stay disabled and nil-mapped in the
+  Demo. This is promotion pending terminal candidate/final verification;
+  canonical `64-VERIFICATION.md` remains `gaps_found` until that bounded
+  transaction completes.
 - Compatibility is exactly 61 public fields, five byte-stable neutral presets
   and 74 renderer cases. This contract adds no realtime/pixel-buffer route,
   model, network dependency, public anatomy, device/commercial approval,
   packaging, shipping, launch or release-readiness claim. Final validation and
-  canonical promotion are unproven, Phase 65 is blocked, and DeviceRGB/named-
+  canonical promotion remain pending, Phase 65 is blocked, and DeviceRGB/named-
   sRGB remains exclusively the Phase 65 SAFE-06 design obligation.
 
-Fresh post-repair artifacts remain retained implementation evidence, but Plan 64-19's failed final transaction makes them non-authoritative for product status. The canonical failure is recorded in [Phase 64 verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).
+Fresh promotion-pending authority is recorded in [terminal R2 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW.md), [code review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-CODE-REVIEW.md), [review-fix disposition](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW-FIX.md), [ASVS L1 security audit](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SECURITY.md), and [independent eligibility](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-PRE-PROMOTION-VERIFICATION.md).
 
 ### v1.15 Phase 65 Combined Facade Closeout — Stale/Blocked Evidence Record
 

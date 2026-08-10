@@ -1,123 +1,87 @@
 ---
 phase: 64-sclera-output-adversarial-safety-and-independent-closeout
-verification_stage: post_repair_final
+verification_stage: terminal_r2_promotion_pending
 independent: true
-verified: 2026-08-10T15:00:00+08:00
+verified: 2026-08-10T17:30:00+08:00
 status: gaps_found
 promotion_status: unproven
-requires_requarantine: true
+requires_requarantine: false
 phase_65_authorized: false
-candidate_artifact: 64-POST-REPAIR-CANDIDATE-VERIFICATION.md
-candidate_sha256: 3fdaab4bf64d724e0c697f351a1a07b64894ca7b015c09b71b0cb023206c9e0b
-candidate_status: candidate_passed
-transaction_result: failed_requarantined
-expected_plan_count: 19
-expected_task_count: 34
+candidate_artifact: 64-TERMINAL-R2-CANDIDATE-VERIFICATION.md
+candidate_status: pending
+transaction_result: promotion_pending
+expected_plan_count: 21
+expected_task_count: 38
 owner_count: 15
 immutable_owner_count: 9
+mutable_final_owner_count: 6
 relevant_source_count: 19
 authority_count: 6
 requirements: [SCLERA-14, SCLERA-15, SCLERA-16, SCLERA-17, SCLERA-18, OUT-05]
 ---
 
-# Phase 64 Final Verification — Gaps Found / Re-Quarantined
+# Phase 64 Terminal R2 Verification — Promotion Pending
 
 ## Canonical Verdict
 
-Phase 64 remains `gaps_found`; product promotion is `unproven`, and Phase 65
-is blocked. Plan 64-18 produced an independently guarded `candidate_passed`
-artifact from the unchanged promotion-pending snapshot, but Plan 64-19 could
-not legally produce the required final canonical state.
+Phase 64 remains non-final: `status: gaps_found` and
+`promotion_status: unproven`. Fresh terminal R2 evidence makes the bounded
+SDK-core still-image `祛红血丝` leaf eligible for a guarded candidate, but this
+canonical owner does not mark the phase passed and does not authorize Phase 65.
 
-The complete fifteen-owner failure branch is applied. No product/root/lifecycle
-owner retains candidate-only promotion authority.
+Plans 01–19 and both historical candidates remain immutable history. Plan 20
+repairs the terminal checker, rebuilds the complete fresh authority chain, and
+accounts for `64-20-01`, `64-20-02`, and `64-20-03`. Only `64-21-01` remains
+pending for the terminal success-or-quarantine transaction.
 
-## Exact Final Blocker
+## Fresh Terminal R2 Authority
 
-The current checker imposes two mutually incompatible final predicates:
-
-1. Plan 64-19 must change six candidate input owners, including this canonical
-   file, from promotion-pending to final state.
-2. `--final` calls `validate_post_repair_candidate()`, which requires every one
-   of the same fifteen live input-owner hashes to remain equal to the candidate
-   pre/post hashes.
-
-The candidate froze this file at SHA-256
-`3ca1c2fcdf2e0cbbaf91e119cc148d6dd1eda40031f36debb61fe2df465cd7f3`.
-In the external staging root, the minimal required transition to
-`verification_stage: post_repair_final` and `status: passed` changed that hash
-to `f5130871efbd469ead3791e295a7cd13f645680a4c1d1701014c63773aeed3cf`.
-The staged `--final --threat T-64-07` invocation then exited nonzero with the
-fixed fail-closed result `phase64_closeout_failed`.
-
-This is not evidence drift and cannot be repaired inside Plan 64-19: changing
-the checker would change the frozen relevant-source manifest and invalidate the
-candidate and review authority. A new repair plan and new candidate are needed.
-
-## Preserved Candidate and Fresh Evidence
-
-- Candidate schema/status: `phase64-post-repair-candidate-v1` /
-  `candidate_passed`; guard nonce `5be706778f1419cb06dcc85ca50761d0`.
-- Candidate SHA-256:
-  `3fdaab4bf64d724e0c697f351a1a07b64894ca7b015c09b71b0cb023206c9e0b`.
-- Candidate inventory: 19 plans, 34 task IDs, 15 input owners, nine immutable
-  owners, 19 relevant sources, and six authority artifacts.
-- Fresh conjunction: 637 executed, zero failed, zero skipped, all eight exact
-  opt-ins; focused 74/74, helper 14/14, private 6/6 plus four opaque review
-  items, Demo build and 121/0/0.
-- Fresh code review/security: zero unresolved HIGH; T-64-01 through T-64-08
-  closed against the exact source-bound snapshot.
-
-These facts remain implementation evidence. They cannot override the failed
-mandatory final transaction and grant no current product authority.
-
-## Fifteen-Owner Re-Quarantine
-
-The selected failure transaction covers all exact owners:
-
-- canonical: `64-VERIFICATION.md` and `64-VALIDATION.md`;
-- product: `SHAPE_FEATURE_LEDGER.md`, `FEATURE_MATRIX.md`, shaping README, and
-  eyes README;
-- root contracts: `DESIGN.md`, `SECURITY.md`, `RELIABILITY.md`,
-  `PRODUCT_SENSE.md`, and `QUALITY_SCORE.md`;
-- lifecycle: `PLANS.md`, `.planning/REQUIREMENTS.md`,
-  `.planning/ROADMAP.md`, and `.planning/STATE.md`.
-
-The immutable Plan 64-12 and Plan 64-18 candidates and all fresh post-repair
-evidence/review/audit artifacts remain unchanged.
-
-## Requirement and Product Disposition
-
-| Requirement | Current disposition |
+| gate | aggregate disposition |
 | --- | --- |
-| SCLERA-14 | implementation evidence retained; canonical/product authority open |
-| SCLERA-15 | implementation evidence retained; canonical/product authority open |
-| SCLERA-16 | implementation evidence retained; canonical/product authority open |
-| SCLERA-17 | implementation evidence retained; canonical/product authority open |
-| SCLERA-18 | failed final-authority conjunction; open |
-| OUT-05 | implementation evidence retained; canonical/product authority open |
+| focused provider/composition/integration/adversarial/renderer | 74 passed; 0 failed; 0 skipped |
+| strict renderer helper | 14 passed |
+| private public-facade output | 6/6 decoded outputs and 4 opaque review items |
+| checker/no-skip self-tests | all fixed mutation inventories pass |
+| full SwiftPM | 637 executed; 0 failed; 0 skipped; all 8 opt-ins |
+| Demo | build passed; 121 passed; 0 failed; 0 skipped |
+| independent review/security | zero unresolved HIGH; T-64-01 through T-64-08 closed |
 
-- Product-facing `祛红血丝`: future / unproven.
-- Aggregate `眼睛`: partial.
-- `去脂`: future; no proxy, provider, renderer, Demo mapping, or public field.
-- Demo local-retouch rows: disabled and nil-mapped.
-- Phase 65: blocked; its verification/audit remain stale and SAFE-06 remains
-  open. DeviceRGB/named-sRGB receives no Phase 64 credit.
+Authority is carried only by the six `64-TERMINAL-R2-*` evidence, review,
+code-review, review-fix, security, and pre-promotion verification artifacts.
+They are bound to the exact nineteen-source freeze and grant at most the
+promotion-pending owner snapshot plus the guarded Plan 21 decision.
 
-## Required Next Action
+## Requirement Disposition
 
-Add a gap-repair plan that separates immutable candidate evidence from mutable
-final output owners, or otherwise validates the pre-transition hashes without
-requiring post-transition byte equality. Rebuild the source-bound authority and
-a distinct candidate after that repair, then rerun the bounded final
-transaction. Do not edit either immutable historical candidate.
+| Requirement | Promotion-pending fact | Final authority |
+| --- | --- | --- |
+| SCLERA-14 | all adjacency/empty/ordering probes pass | pending Plan 21 |
+| SCLERA-15 | boundary and RGBA-byte precision probes pass | pending Plan 21 |
+| SCLERA-16 | positive/negative/no-face boundary and precision probes pass | pending Plan 21 |
+| SCLERA-17 | all six output roles classified; unclassified rejection passes | pending Plan 21 |
+| SCLERA-18 | exact serial conjunction is fresh and no-skip | pending Plan 21 |
+| OUT-05 | adjacency/empty/ordering/concurrency probes pass | pending Plan 21 |
 
-No API, Demo activation, realtime/pixel-buffer, model, network, dependency,
-population, device/performance, commercial, packaging, shipping, launch,
-archive, tag, or release-readiness authority is added.
+## Fifteen-Owner Promotion-Pending State
+
+- Nine product/root owners record only bounded SDK-core still-image
+  `祛红血丝` implemented, aggregate `眼睛` partial, and `去脂` future.
+- Six mutable-final owners remain non-final and await the exact Plan 21
+  terminal transition.
+- Demo local-retouch rows remain disabled and nil-mapped.
+- SAFE-06 and DeviceRGB/named-sRGB remain exclusively Phase 65 scope.
+- Phase 65 verification and audit remain stale and blocked.
+
+## Scope Boundary
+
+No product/API expansion, Demo activation, realtime or pixel-buffer route,
+model, network, dependency, DeviceRGB/named-sRGB claim, eye-fat behavior,
+population/device/performance claim, commercial readiness, packaging, shipping,
+archive, tag, or release authority is added. Durable records retain only fixed
+categories and aggregates.
 
 ---
 
 _Canonical status: gaps_found_
 _Promotion status: unproven_
-_Transaction: complete fifteen-owner re-quarantine_
+_Terminal authority: Plan 64-21 only_
