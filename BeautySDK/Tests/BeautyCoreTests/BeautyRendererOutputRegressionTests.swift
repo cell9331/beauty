@@ -122,15 +122,29 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         XCTAssertLessThan(outputDirectoryWrite.lowerBound, engine.lowerBound)
         XCTAssertTrue(source.contains("case duplicateOutputStem"))
         XCTAssertTrue(source.contains("var stems = Set<String>()"))
-        XCTAssertTrue(source.contains("guard stems.insert(stem).inserted else"))
+        XCTAssertTrue(source.contains("guard stems.insert(outputStemCollisionKey(stem)).inserted else"))
+        XCTAssertTrue(source.contains(".folding(options: [.caseInsensitive]"))
+        XCTAssertTrue(source.contains(".decomposedStringWithCanonicalMapping"))
 
-        let sameStemInputs = [
-            URL(fileURLWithPath: "group-a/portrait.png"),
-            URL(fileURLWithPath: "group-b/portrait.jpg"),
+        let collisionGroups = [
+            [
+                URL(fileURLWithPath: "group-a/portrait.png"),
+                URL(fileURLWithPath: "group-b/Portrait.jpg"),
+            ],
+            [
+                URL(fileURLWithPath: "group-a/caf\u{00E9}.png"),
+                URL(fileURLWithPath: "group-b/cafe\u{0301}.jpg"),
+            ],
         ]
-        let stems = sameStemInputs.map { $0.deletingPathExtension().lastPathComponent }
-        XCTAssertEqual(stems.count, 2)
-        XCTAssertEqual(Set(stems).count, 1, "the regression fixture must collide under renderer naming")
+        for inputs in collisionGroups {
+            let keys = inputs.map {
+                $0.deletingPathExtension().lastPathComponent
+                    .folding(options: [.caseInsensitive], locale: Locale(identifier: "en_US_POSIX"))
+                    .decomposedStringWithCanonicalMapping
+            }
+            XCTAssertEqual(keys.count, 2)
+            XCTAssertEqual(Set(keys).count, 1, "the regression fixture must collide under filesystem naming")
+        }
     }
 
     func testPhase51EyebrowCasesUseExactlyOneMatchingPublicParameter() throws {

@@ -531,10 +531,16 @@ func requireUniqueOutputStems(_ imageURLs: [URL]) throws {
     var stems = Set<String>()
     for imageURL in imageURLs {
         let stem = imageURL.deletingPathExtension().lastPathComponent
-        guard stems.insert(stem).inserted else {
+        guard stems.insert(outputStemCollisionKey(stem)).inserted else {
             throw ExampleRendererError.duplicateOutputStem
         }
     }
+}
+
+func outputStemCollisionKey(_ stem: String) -> String {
+    stem
+        .folding(options: [.caseInsensitive], locale: Locale(identifier: "en_US_POSIX"))
+        .decomposedStringWithCanonicalMapping
 }
 
 func relativePath(_ url: URL, from directory: URL) -> String {
