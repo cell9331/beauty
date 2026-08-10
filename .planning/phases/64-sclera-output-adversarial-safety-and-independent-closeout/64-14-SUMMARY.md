@@ -73,6 +73,8 @@ status: complete
 1. **Task 1 RED: Freeze the failing no-skip runner contract** - `cd4e1c1`
 2. **Task 1 GREEN: Implement the request-local no-skip runner** - `d8ac4a9`
 3. **Task 2: Repair review, inventory, candidate, and quarantine authority** - `5685bc9`
+4. **Task 1 RED follow-up: Cover nested XCTest summaries** - `b72f328`
+5. **Task 1 GREEN follow-up: Bind counts to the `All tests` summary** - `dc254ec`
 
 ## Files Created/Modified
 
@@ -97,9 +99,17 @@ status: complete
 - **Verification:** Runner self-test passes exactly 14 rejection cases; unknown mode returns the fixed six-key failure aggregate.
 - **Committed in:** `d8ac4a9`
 
+**2. [Rule 1 - Correctness] Accepted real XCTest output with nested suite summaries**
+- **Found during:** Plan 64-15 fresh no-skip execution
+- **Issue:** The parser counted every nested suite's `Executed ...` row and rejected a valid full run as ambiguous even though the single `All tests` suite was green.
+- **Fix:** Added a nested-suite RED fixture and bound the authoritative count to the one summary immediately following the passed `All tests` line.
+- **Files modified:** `64-no-skip-swiftpm-runner.js`
+- **Verification:** Runner self-test passes all 14 fail-closed mutations while accepting the realistic nested-suite positive transcript.
+- **Committed in:** `dc254ec`
+
 ---
 
-**Total deviations:** 1 auto-fixed correctness issue. **Impact:** The repair is narrower and more privacy-safe than the partial implementation; no product, API, Demo, runtime, model, network, dependency, DeviceRGB, or `去脂` behavior changed.
+**Total deviations:** 2 auto-fixed correctness issues. **Impact:** The repair is narrower and more privacy-safe than the partial implementation; no product, API, Demo, runtime, model, network, dependency, DeviceRGB, or `去脂` behavior changed.
 
 ## Issues Encountered
 
