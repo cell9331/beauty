@@ -143,4 +143,4 @@ function main() {
 }
 
 if (require.main === module) main();
-module.exports = { discoverBundle, trackedStagedPrivacyScan };
+module.exports = { assertIgnoredBundle, discoverBundle, trackedStagedPrivacyScan };
