@@ -14,6 +14,7 @@ enum ExampleRendererError: Error, CustomStringConvertible {
     case missingInputDirectory(String)
     case missingInputImages(String)
     case unknownCase(String, [String])
+    case duplicateOutputStem
     case imageLoadFailed(String)
     case renderFailed(String)
     case pngEncodingFailed(String)
@@ -26,6 +27,8 @@ enum ExampleRendererError: Error, CustomStringConvertible {
             "Input directory contains no PNG or JPEG images: \(label)"
         case .unknownCase(let id, let available):
             "Unknown render case: \(id). Available cases: \(available.joined(separator: ", "))"
+        case .duplicateOutputStem:
+            "Input images must have unique filename stems"
         case .imageLoadFailed(let label):
             "Could not load image: \(label)"
         case .renderFailed(let label):
@@ -433,7 +436,6 @@ do {
     guard fileManager.fileExists(atPath: inputURL.path) else {
         throw ExampleRendererError.missingInputDirectory("input directory")
     }
-    try fileManager.createDirectory(at: outputURL, withIntermediateDirectories: true)
 
     let renderCases = cases.filter { selectedCase == nil || selectedCase == $0.id }
     if let selectedCase, renderCases.isEmpty {
@@ -444,6 +446,8 @@ do {
     guard !imageURLs.isEmpty else {
         throw ExampleRendererError.missingInputImages("input directory")
     }
+    try requireUniqueOutputStems(imageURLs)
+    try fileManager.createDirectory(at: outputURL, withIntermediateDirectories: true)
 
     let engine = try BeautyEngine(configuration: .default)
     let context = CIContext(options: [
@@ -520,6 +524,16 @@ func fixtureImageURLs(in directory: URL, fileManager: FileManager) -> [URL] {
 
     return urls.sorted {
         relativePath($0, from: directory) < relativePath($1, from: directory)
+    }
+}
+
+func requireUniqueOutputStems(_ imageURLs: [URL]) throws {
+    var stems = Set<String>()
+    for imageURL in imageURLs {
+        let stem = imageURL.deletingPathExtension().lastPathComponent
+        guard stems.insert(stem).inserted else {
+            throw ExampleRendererError.duplicateOutputStem
+        }
     }
 }
 

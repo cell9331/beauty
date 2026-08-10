@@ -108,6 +108,31 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         XCTAssertEqual(source.components(separatedBy: "engine.processResult(").count - 1, 1)
     }
 
+    func testRecursiveSameStemInputsAreRejectedBeforeAnyOutputDirectoryWrite() throws {
+        let source = try rendererSource()
+        let discovery = try XCTUnwrap(source.range(of: "let imageURLs = fixtureImageURLs"))
+        let preflight = try XCTUnwrap(source.range(of: "try requireUniqueOutputStems(imageURLs)"))
+        let outputDirectoryWrite = try XCTUnwrap(
+            source.range(of: "try fileManager.createDirectory(at: outputURL, withIntermediateDirectories: true)")
+        )
+        let engine = try XCTUnwrap(source.range(of: "let engine = try BeautyEngine"))
+
+        XCTAssertLessThan(discovery.lowerBound, preflight.lowerBound)
+        XCTAssertLessThan(preflight.lowerBound, outputDirectoryWrite.lowerBound)
+        XCTAssertLessThan(outputDirectoryWrite.lowerBound, engine.lowerBound)
+        XCTAssertTrue(source.contains("case duplicateOutputStem"))
+        XCTAssertTrue(source.contains("var stems = Set<String>()"))
+        XCTAssertTrue(source.contains("guard stems.insert(stem).inserted else"))
+
+        let sameStemInputs = [
+            URL(fileURLWithPath: "group-a/portrait.png"),
+            URL(fileURLWithPath: "group-b/portrait.jpg"),
+        ]
+        let stems = sameStemInputs.map { $0.deletingPathExtension().lastPathComponent }
+        XCTAssertEqual(stems.count, 2)
+        XCTAssertEqual(Set(stems).count, 1, "the regression fixture must collide under renderer naming")
+    }
+
     func testPhase51EyebrowCasesUseExactlyOneMatchingPublicParameter() throws {
         let signed = [
             "eyebrowYPosition", "eyebrowThickness", "eyebrowLength",
