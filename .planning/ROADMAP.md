@@ -140,7 +140,7 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
   4. Genuine redness positives improve within predeclared per-eye bounds, while normal negatives and blink/gaze/glasses/highlight/occlusion challenges remain natural under blinded original-detail review.
   5. Production tests, native/adversarial matrices, compatibility, privacy, full regression, review/fix, independent verification, and owning ledgers promote exactly `祛红血丝`; `眼睛` remains partial because `去脂` remains future.
 
-**Plans**: 19 plans / 34 task IDs are defined; 13 historical summaries exist. Content trust, source-bound review validity,
+**Plans**: 14/19 plans executed
 strict-helper live proof, focused/native/private/Demo evidence, and fresh
 zero-HIGH review/security remain implementation facts. The immutable Plan
 64-12 candidate is `gaps_found` because its checker self-test failed and the
@@ -203,7 +203,7 @@ executed yet.
 
 **Wave 14** *(gap repair; blocked on Wave 13 completion)*
 
-- [ ] 64-14-PLAN.md — repair checker self-test and add the privacy-safe zero-skip SwiftPM runner
+- [x] 64-14-PLAN.md — repair checker self-test and add the privacy-safe zero-skip SwiftPM runner
 
 **Wave 15** *(fresh authority; blocked on Wave 14 completion)*
 
@@ -256,7 +256,7 @@ executed yet.
 | 61. Teeth Output, Safety, and Independent Closeout | 4/4 | Complete    | 2026-08-07 |
 | 62. Sclera Evidence and Admission Contract | 5/5 | Complete — independent evidence, 61st scalar, direct demand, privacy and regression pass | 2026-08-07 |
 | 63. Guarded Per-Eye Sclera Production Integration | 4/4 | Complete — guarded provider, actual-Vision evidence, privacy and regression pass; no promotion | 2026-08-07 |
-| 64. Sclera Output, Adversarial Safety, and Independent Closeout | 13/13 summaries | Gaps Found / In Progress — immutable candidate failed mandatory checker/no-skip conjunction; 64-13 failed/requarantined; all fifteen owners are unproven/future or blocked as applicable | — |
+| 64. Sclera Output, Adversarial Safety, and Independent Closeout | 14/19 | In Progress|  |
 | 65. Combined Facade, Privacy, and Milestone Closeout | 4/4 implementation plans executed | Blocked — prior verification/audit is stale; SAFE-06 DeviceRGB/named-sRGB remains Phase 65-only and open | — |
 
 Earlier phase details are preserved in their linked milestone archives under `.planning/milestones/`.
