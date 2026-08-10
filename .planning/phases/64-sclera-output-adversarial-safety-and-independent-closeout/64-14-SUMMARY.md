@@ -20,10 +20,13 @@ key-files:
   modified:
     - .planning/phases/59-teeth-evidence-and-admission-contract/59-private-evidence-runner.js
     - .planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/check_phase64_sclera_closeout.py
+    - BeautySDK/Sources/BeautyExampleRenderer/main.swift
+    - BeautySDK/Tests/BeautyCoreTests/BeautyRendererOutputRegressionTests.swift
 key-decisions:
   - "The full-suite gate accepts one nonzero XCTest aggregate only when failures and skips are zero and all eight suite-qualified opt-ins pass exactly once."
   - "Plans 64-01 through 64-13 retain bounded historical structure treatment; Plans 64-14 through 64-19 use the current schema while the whole 19/34 graph remains exact."
   - "The failed Plan 64-12 candidate remains immutable history and cannot satisfy post-repair authority."
+  - "Every fresh review/audit/verifier artifact uses a strict unique-scalar schema and the same live 19-row source manifest; explanatory prose cannot spoof authority."
 patterns-established:
   - "Private fixture locators enter one child environment and never appear in arguments, forwarded output, or durable logs."
   - "Candidate authority is bound to a random guard nonce, exact owner/source/authority manifests, and a candidate-only repository delta."
@@ -75,12 +78,17 @@ status: complete
 3. **Task 2: Repair review, inventory, candidate, and quarantine authority** - `5685bc9`
 4. **Task 1 RED follow-up: Cover nested XCTest summaries** - `b72f328`
 5. **Task 1 GREEN follow-up: Bind counts to the `All tests` summary** - `dc254ec`
+6. **Independent-review repair: Harden the teeth bundle boundary** - `1cd6849`
+7. **Independent-review repair: Bind fresh authority to strict source schemas** - `c8e7dc0`
+8. **Independent-review repair: Reject duplicate renderer output stems** - `de70623`
 
 ## Files Created/Modified
 
 - `.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-no-skip-swiftpm-runner.js` - Exact full-suite opt-in executor and parser.
 - `.planning/phases/59-teeth-evidence-and-admission-contract/59-private-evidence-runner.js` - Exports the existing unchanged `assertIgnoredBundle` validator.
 - `.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/check_phase64_sclera_closeout.py` - Post-repair source, inventory, candidate, and final-state authority.
+- `BeautySDK/Sources/BeautyExampleRenderer/main.swift` - Preflights recursive inputs and rejects duplicate output stems before output creation.
+- `BeautySDK/Tests/BeautyCoreTests/BeautyRendererOutputRegressionTests.swift` - Locks duplicate-stem fail-closed ordering.
 
 ## Decisions Made
 
@@ -107,9 +115,17 @@ status: complete
 - **Verification:** Runner self-test passes all 14 fail-closed mutations while accepting the realistic nested-suite positive transcript.
 - **Committed in:** `dc254ec`
 
+**3. [Rule 1/Rule 2 - Security] Closed every independent review blocker and warning**
+- **Found during:** Plan 64-15 fresh code review and ASVS L1 audit
+- **Issue:** The 19-path freeze omitted the Phase 61 decoder helper; fresh authority used substring-only decisions and did not source-bind every artifact; the Phase 59 ignored bundle followed symlinks; recursive renderer inputs could silently overwrite same-stem outputs.
+- **Fix:** Replaced the non-runtime gallery generator in the exact 19-row closure with the live Phase 61 helper, added strict anchored schemas/manifests and 28 source/authority rejection tests, hardened the teeth bundle with bounded no-follow containment plus nine mutations, and added duplicate-stem preflight/regression coverage.
+- **Files modified:** `59-private-evidence-runner.js`, `64-no-skip-swiftpm-runner.js`, `check_phase64_sclera_closeout.py`, `BeautyExampleRenderer/main.swift`, `BeautyRendererOutputRegressionTests.swift`
+- **Verification:** Phase 59 guard 9/9; no-skip runner 14/14; closeout checker reports 28 review-source rejections; renderer regression and executable build pass.
+- **Committed in:** `1cd6849`, `c8e7dc0`, `de70623`
+
 ---
 
-**Total deviations:** 2 auto-fixed correctness issues. **Impact:** The repair is narrower and more privacy-safe than the partial implementation; no product, API, Demo, runtime, model, network, dependency, DeviceRGB, or `去脂` behavior changed.
+**Total deviations:** 3 auto-fixed correctness/security groups. **Impact:** The repair is source-review complete and fail-closed; no product, API, Demo activation, model, network, dependency, DeviceRGB, or `去脂` behavior changed. Renderer behavior changes only for previously ambiguous same-stem recursive inputs, which now fail before output creation.
 
 ## Issues Encountered
 
