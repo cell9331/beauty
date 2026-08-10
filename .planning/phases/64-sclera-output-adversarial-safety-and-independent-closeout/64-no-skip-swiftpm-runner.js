@@ -165,6 +165,8 @@ function positiveTranscript() {
     "Test Suite 'Selected tests' started at 2026-08-10 00:00:00.000.",
     ...ordinaryRows,
     ...rows,
+    "Test Suite 'BeautySDKPackageTests.xctest' passed at 2026-08-10 00:00:00.009.",
+    "\t Executed 644 tests, with 0 failures (0 unexpected) in 0.009 (0.019) seconds",
     "Test Suite 'All tests' passed at 2026-08-10 00:00:00.010.",
     "\t Executed 644 tests, with 0 failures (0 unexpected) in 0.010 (0.020) seconds",
   ].join("\n"), "utf8");
