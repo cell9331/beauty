@@ -8,16 +8,21 @@ import hashlib
 import json
 import os
 import re
+import secrets
 import stat
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
 from typing import Callable, Iterable
 
 
 THREATS = tuple(f"T-64-{index:02d}" for index in range(1, 9))
 PHASE_DIR = Path(".planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout")
+EXPECTED_PLAN_COUNT = 19
+HISTORICAL_EXECUTED_PLAN_IDS = tuple(range(1, 14))
+CURRENT_STRUCTURE_PLAN_IDS = tuple(range(14, 20))
 EXPECTED_TASKS = tuple(
     (
         "64-01-01", "64-01-02", "64-02-01", "64-02-02",
@@ -26,7 +31,20 @@ EXPECTED_TASKS = tuple(
         "64-07-01", "64-07-02", "64-08-01", "64-08-02",
         "64-09-01", "64-09-02", "64-10-01", "64-10-02",
         "64-11-01", "64-11-02", "64-12-01", "64-13-01",
+        "64-14-01", "64-14-02", "64-15-01", "64-15-02",
+        "64-16-01", "64-16-02", "64-17-01", "64-17-02",
+        "64-18-01", "64-19-01",
     )
+)
+OPT_IN_TESTS = (
+    "VisionFaceDetectorTests.testIntegrationDefaultStillImageProviderReturnsRedactedNoFaceForNoFaceFixture",
+    "VisionFaceDetectorTests.testIntegrationDefaultStillImageProviderReportsAggregateObservedFaceAvailabilityWithoutRawPayload",
+    "VisionFaceDetectorTests.testIntegrationDefaultStillImageProviderReportsObservedEyebrowAvailabilityWithoutRawPayload",
+    "BeautyEngineGeometryFacadeTests.testIntegrationLocalAuthorizedPortraitRoutesAllEyebrowFieldsThroughPublicFacade",
+    "BeautyFaceGeometryAdapterTests.testIntegrationLocalAuthorizedPortraitAggregateFitsLockedFaceValidationEnvelope",
+    "BeautyFaceGeometryAdapterTests.testIntegrationLocalAuthorizedPortraitFitsLockedEyebrowValidationEnvelope",
+    "BeautyTeethWhiteningRealFixtureTests.testAuthorizedPositiveAndNegativeStayWithinFrozenAggregateBounds",
+    "BeautyScleraRednessRealFixtureTests.testAuthorizedPositiveAndNegativeStayWithinFrozenAggregateBounds",
 )
 EXPECTED_SCENARIOS = (
     "baseline",
@@ -90,11 +108,54 @@ RELEVANT_SOURCE_PATHS = tuple(sorted((
     "BeautySDK/Tests/BeautyEffectsTests/BeautyLocalRetouchCompositionTests.swift",
     "BeautySDK/Tests/BeautyEffectsTests/BeautyScleraRednessAdversarialCloseoutTests.swift",
     "BeautySDK/Tests/BeautyEffectsTests/BeautyScleraRednessProviderTests.swift",
+    ".planning/phases/59-teeth-evidence-and-admission-contract/59-private-evidence-runner.js",
+    ".planning/phases/62-sclera-evidence-and-admission-contract/62-private-evidence-runner.js",
+    ".planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-no-skip-swiftpm-runner.js",
     ".planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-private-output-runner.js",
     ".planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/check_phase64_sclera_closeout.py",
     ".planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/check_sclera_renderer_outputs.py",
     "example-images/generate_gallery.py",
 )))
+if len(RELEVANT_SOURCE_PATHS) != 19:
+    raise RuntimeError("relevant source inventory mismatch")
+
+POST_REPAIR_EVIDENCE = PHASE_DIR / "64-POST-REPAIR-SCLERA-OUTPUT-EVIDENCE.md"
+POST_REPAIR_REVIEW = PHASE_DIR / "64-POST-REPAIR-REVIEW.md"
+POST_REPAIR_CODE_REVIEW = PHASE_DIR / "64-POST-REPAIR-CODE-REVIEW.md"
+POST_REPAIR_REVIEW_FIX = PHASE_DIR / "64-POST-REPAIR-REVIEW-FIX.md"
+POST_REPAIR_SECURITY = PHASE_DIR / "64-POST-REPAIR-SECURITY.md"
+POST_REPAIR_PRE_PROMOTION = PHASE_DIR / "64-POST-REPAIR-PRE-PROMOTION-VERIFICATION.md"
+POST_REPAIR_CANDIDATE = PHASE_DIR / "64-POST-REPAIR-CANDIDATE-VERIFICATION.md"
+POST_REPAIR_AUTHORITY_PATHS = tuple(sorted(str(path) for path in (
+    POST_REPAIR_EVIDENCE, POST_REPAIR_REVIEW, POST_REPAIR_CODE_REVIEW,
+    POST_REPAIR_REVIEW_FIX, POST_REPAIR_SECURITY, POST_REPAIR_PRE_PROMOTION,
+)))
+
+ROOT_CONTRACT_FILES = (
+    Path("DESIGN.md"), Path("SECURITY.md"), Path("RELIABILITY.md"),
+    Path("PRODUCT_SENSE.md"), Path("QUALITY_SCORE.md"),
+)
+LIFECYCLE_FILES = (
+    Path("PLANS.md"), Path(".planning/REQUIREMENTS.md"),
+    Path(".planning/ROADMAP.md"), Path(".planning/STATE.md"),
+)
+CANDIDATE_INPUT_OWNER_PATHS = tuple(sorted(str(path) for path in (
+    PHASE_DIR / "64-VERIFICATION.md", PHASE_DIR / "64-VALIDATION.md",
+    *PRODUCT_FILES, *ROOT_CONTRACT_FILES, *LIFECYCLE_FILES,
+)))
+CANDIDATE_IMMUTABLE_OWNER_PATHS = tuple(sorted(str(path) for path in (
+    *PRODUCT_FILES, *ROOT_CONTRACT_FILES,
+)))
+if (
+    len(CANDIDATE_INPUT_OWNER_PATHS) != 15
+    or len(CANDIDATE_IMMUTABLE_OWNER_PATHS) != 9
+    or len(POST_REPAIR_AUTHORITY_PATHS) != 6
+):
+    raise RuntimeError("candidate owner/authority inventory mismatch")
+
+CANDIDATE_SCHEMA = "phase64-post-repair-candidate-v1"
+CANDIDATE_GUARD_TIMEOUT_SECONDS = 1800
+CANDIDATE_GUARD_POLL_MILLISECONDS = 250
 
 
 class CheckError(Exception):
@@ -111,6 +172,259 @@ def read(path: Path) -> str:
         return path.read_text(encoding="utf-8")
     except OSError:
         raise CheckError(f"required file unreadable:{path.name}") from None
+
+
+def sha256_bytes(value: bytes) -> str:
+    return hashlib.sha256(value).hexdigest()
+
+
+def sha256_file(path: Path) -> str:
+    return sha256_bytes(read_bounded_regular(path))
+
+
+def parse_scalar(text: str, key: str) -> str:
+    match = re.search(rf"(?m)^{re.escape(key)}:\s*([^\r\n]+)\s*$", text)
+    require(match is not None, f"candidate field missing:{key}")
+    return match.group(1).strip().strip('"\'')
+
+
+def parse_block(text: str, name: str) -> tuple[str, ...]:
+    begin = f"{name}_begin"
+    end = f"{name}_end"
+    require(text.count(begin) == 1 and text.count(end) == 1, f"candidate block marker invalid:{name}")
+    try:
+        body = text.split(begin + "\n", 1)[1].split("\n" + end, 1)[0]
+    except IndexError:
+        raise CheckError(f"candidate block malformed:{name}") from None
+    rows = tuple(line for line in body.splitlines() if line)
+    require(len(rows) == len(set(rows)), f"candidate block duplicate:{name}")
+    return rows
+
+
+def parse_hash_manifest(text: str, name: str, expected_paths: tuple[str, ...]) -> dict[str, str]:
+    parsed: list[tuple[str, str]] = []
+    for line in parse_block(text, name):
+        match = re.fullmatch(r"([0-9a-f]{64})  (.+)", line)
+        require(match is not None and safe_relative_key(match.group(2)), f"candidate manifest row malformed:{name}")
+        parsed.append((match.group(2), match.group(1)))
+    require(tuple(path for path, _ in parsed) == expected_paths, f"candidate manifest scope/order mismatch:{name}")
+    return dict(parsed)
+
+
+def parse_dual_hash_manifest(text: str, name: str, expected_paths: tuple[str, ...]) -> dict[str, tuple[str, str]]:
+    parsed: list[tuple[str, str, str]] = []
+    for line in parse_block(text, name):
+        match = re.fullmatch(r"([0-9a-f]{64}) ([0-9a-f]{64})  (.+)", line)
+        require(match is not None and safe_relative_key(match.group(3)), f"candidate dual manifest malformed:{name}")
+        parsed.append((match.group(3), match.group(1), match.group(2)))
+    require(tuple(path for path, _, _ in parsed) == expected_paths, f"candidate dual manifest scope/order mismatch:{name}")
+    return {path: (before, after) for path, before, after in parsed}
+
+
+def hash_paths(paths: tuple[str, ...], repo: Path = Path(".")) -> dict[str, str]:
+    repo = repo.resolve()
+    result: dict[str, str] = {}
+    for key in paths:
+        require(safe_relative_key(key), "hash path invalid")
+        absolute = repo / key
+        require(absolute.parent.resolve(strict=False).is_relative_to(repo), "hash path escaped root")
+        result[key] = sha256_file(absolute)
+    return result
+
+
+def repository_delta_snapshot(repo: Path = Path("."), *, exclude: frozenset[str] = frozenset()) -> tuple[tuple[str, str], ...]:
+    repo = repo.resolve()
+    changed = parse_nul_inventory(default_git_runner(
+        repo, ("diff", "--name-only", "-z", "HEAD", "--", "."), None,
+    ))
+    untracked = parse_nul_inventory(default_git_runner(
+        repo, ("ls-files", "--others", "--exclude-standard", "-z"), None,
+    ))
+    paths = sorted({decode_path(item) for item in (*changed, *untracked)} - set(exclude))
+    rows: list[tuple[str, str]] = []
+    for key in paths:
+        absolute = repo / key
+        if not absolute.exists():
+            rows.append((key, "deleted"))
+        else:
+            rows.append((key, sha256_file(absolute)))
+    return tuple(rows)
+
+
+def repository_delta_digest(rows: tuple[tuple[str, str], ...]) -> str:
+    return sha256_bytes(json.dumps(rows, ensure_ascii=True, separators=(",", ":")).encode("utf-8"))
+
+
+def expected_plan_task_ids(plan: int) -> tuple[str, ...]:
+    prefix = f"64-{plan:02d}-"
+    return tuple(task for task in EXPECTED_TASKS if task.startswith(prefix))
+
+
+def validate_plan_graph(required_summary_through: int = 13) -> None:
+    plans = sorted(PHASE_DIR.glob("64-??-PLAN.md"))
+    require(len(plans) == EXPECTED_PLAN_COUNT, "plan inventory mismatch")
+    observed_tasks: list[str] = []
+    required_requirements = ("SCLERA-14", "SCLERA-15", "SCLERA-16", "SCLERA-17", "SCLERA-18", "OUT-05")
+    observed_requirements: set[str] = set()
+    for number, path in enumerate(plans, start=1):
+        require(path.name == f"64-{number:02d}-PLAN.md", "plan order mismatch")
+        text = read(path)
+        wave = re.search(r"(?m)^wave:\s*(\d+)\s*$", text)
+        depends = re.search(r"(?m)^depends_on:\s*\[([^\]]*)\]\s*$", text)
+        require(wave is not None and int(wave.group(1)) == number, "plan wave mismatch")
+        expected_dep = "" if number == 1 else f"64-{number - 1:02d}"
+        require(depends is not None and depends.group(1).strip() == expected_dep, "plan dependency mismatch")
+        observed_requirements.update(requirement for requirement in required_requirements if requirement in text)
+        task_tags = re.findall(r"<task(?:\s+[^>]*)?>", text)
+        explicit = re.findall(r'<task[^>]*\sid="([^"]+)"', text)
+        expected = expected_plan_task_ids(number)
+        require(len(task_tags) == len(expected), "plan task cardinality mismatch")
+        if number in CURRENT_STRUCTURE_PLAN_IDS:
+            require(all(requirement in text for requirement in required_requirements), "current plan requirements incomplete")
+            require(tuple(explicit) == expected, "current plan task ids missing/reordered")
+            for token in ("must_haves:", "<threat_model>", "<verify>", "<done>"):
+                require(token in text, "current plan structure incomplete")
+            require(
+                "<artifacts_this_phase_produces>" in text or "## Artifacts this phase produces" in text,
+                "current plan artifacts section incomplete",
+            )
+        else:
+            derived = tuple(f"64-{number:02d}-{ordinal:02d}" for ordinal in range(1, len(task_tags) + 1))
+            require(derived == expected, "historical derived task ids mismatch")
+            require(not explicit or tuple(explicit) == expected, "historical explicit task ids mismatch")
+        observed_tasks.extend(expected)
+        if number <= required_summary_through:
+            require((PHASE_DIR / f"64-{number:02d}-SUMMARY.md").is_file(), "required plan summary missing")
+    require(tuple(observed_tasks) == EXPECTED_TASKS, "task inventory mismatch")
+    require(observed_requirements == set(required_requirements), "phase requirements incomplete")
+
+
+def parse_no_skip_evidence(text: str) -> dict[str, int]:
+    values: dict[str, int] = {}
+    for key in ("executed_tests", "failed_tests", "skipped_tests", "opt_in_tests_executed"):
+        matches = re.findall(rf"(?m)^{key}:\s*(\d+)\s*$", text)
+        require(len(matches) == 1, f"no-skip aggregate field invalid:{key}")
+        values[key] = int(matches[0])
+    require(values["executed_tests"] > 0, "no-skip executed count empty")
+    require(values["failed_tests"] == 0, "no-skip failures present")
+    require(values["skipped_tests"] == 0, "no-skip skips present")
+    require(values["opt_in_tests_executed"] == len(OPT_IN_TESTS), "no-skip opt-in count mismatch")
+    identities = tuple(re.findall(r"(?m)^opt_in_test:\s*([^\s]+)\s+passed\s*$", text))
+    require(identities == OPT_IN_TESTS, "no-skip opt-in identities missing/reordered")
+    return values
+
+
+def validate_post_repair_authority(*, require_eligibility: bool) -> dict[str, int]:
+    evidence = read(POST_REPAIR_EVIDENCE)
+    values = parse_no_skip_evidence(evidence)
+    review = read(POST_REPAIR_REVIEW)
+    validate_review(review)
+    for path, tokens in (
+        (POST_REPAIR_CODE_REVIEW, ("review_status: passed", "unresolved_high: 0")),
+        (POST_REPAIR_REVIEW_FIX, ("unresolved_high: 0", "post_review_image_tuning: false")),
+        (POST_REPAIR_SECURITY, ("threats_open: 0", "threats_closed: 8")),
+    ):
+        text = read(path)
+        require(all(token in text for token in tokens), f"fresh authority incomplete:{path.name}")
+    if require_eligibility:
+        eligibility = read(POST_REPAIR_PRE_PROMOTION)
+        for token in (
+            "verification_stage: post_repair_pre_promotion", "independent: true",
+            "status: eligible_promotion_pending",
+        ):
+            require(token in eligibility, "post-repair eligibility incomplete")
+    return values
+
+
+def parse_post_repair_candidate(text: str) -> dict[str, object]:
+    status = parse_scalar(text, "status")
+    require(status in ("candidate_passed", "gaps_found"), "candidate status invalid")
+    require(parse_scalar(text, "schema") == CANDIDATE_SCHEMA, "candidate schema invalid")
+    require(parse_scalar(text, "verification_stage") == "post_repair_candidate", "candidate stage invalid")
+    require(parse_scalar(text, "independent") == "true", "candidate independence missing")
+    plans = parse_block(text, "plan_inventory")
+    tasks = parse_block(text, "task_inventory")
+    require(plans == tuple(f"64-{number:02d}" for number in range(1, 20)), "candidate plan inventory mismatch")
+    require(tasks == EXPECTED_TASKS, "candidate task inventory mismatch")
+    input_owners = parse_dual_hash_manifest(text, "input_owner_manifest", CANDIDATE_INPUT_OWNER_PATHS)
+    immutable_owners = parse_dual_hash_manifest(text, "immutable_owner_manifest", CANDIDATE_IMMUTABLE_OWNER_PATHS)
+    sources = parse_hash_manifest(text, "relevant_source_manifest", RELEVANT_SOURCE_PATHS)
+    authority = parse_hash_manifest(text, "authority_manifest", POST_REPAIR_AUTHORITY_PATHS)
+    opt_in_rows = parse_block(text, "opt_in_tests")
+    threats = parse_block(text, "threats")
+    return {
+        "status": status,
+        "guard_nonce": parse_scalar(text, "guard_nonce"),
+        "repository_delta_digest": parse_scalar(text, "pre_repository_delta_digest"),
+        "input_owners": input_owners,
+        "immutable_owners": immutable_owners,
+        "sources": sources,
+        "authority": authority,
+        "opt_in_rows": opt_in_rows,
+        "threats": threats,
+        "executed_tests": int(parse_scalar(text, "executed_tests")),
+        "failed_tests": int(parse_scalar(text, "failed_tests")),
+        "skipped_tests": int(parse_scalar(text, "skipped_tests")),
+        "opt_in_tests_executed": int(parse_scalar(text, "opt_in_tests_executed")),
+        "unresolved_high": int(parse_scalar(text, "unresolved_high")),
+    }
+
+
+def capture_candidate_baseline(repo: Path = Path(".")) -> dict[str, object]:
+    require(not (repo / POST_REPAIR_CANDIDATE).exists(), "candidate already exists")
+    return {
+        "delta": repository_delta_snapshot(repo),
+        "input_owners": hash_paths(CANDIDATE_INPUT_OWNER_PATHS, repo),
+        "immutable_owners": hash_paths(CANDIDATE_IMMUTABLE_OWNER_PATHS, repo),
+        "sources": hash_paths(RELEVANT_SOURCE_PATHS, repo),
+        "authority": hash_paths(POST_REPAIR_AUTHORITY_PATHS, repo),
+    }
+
+
+def validate_post_repair_candidate(
+    text: str,
+    *,
+    repo: Path = Path("."),
+    expected_nonce: str | None = None,
+    baseline: dict[str, object] | None = None,
+) -> dict[str, object]:
+    parsed = parse_post_repair_candidate(text)
+    nonce = parsed["guard_nonce"]
+    require(isinstance(nonce, str) and re.fullmatch(r"[0-9a-f]{32}", nonce) is not None, "candidate nonce invalid")
+    if expected_nonce is not None:
+        require(nonce == expected_nonce, "candidate nonce mismatch")
+    live_inputs = hash_paths(CANDIDATE_INPUT_OWNER_PATHS, repo)
+    live_immutable = hash_paths(CANDIDATE_IMMUTABLE_OWNER_PATHS, repo)
+    live_sources = hash_paths(RELEVANT_SOURCE_PATHS, repo)
+    live_authority = hash_paths(POST_REPAIR_AUTHORITY_PATHS, repo)
+    for key, (before, after) in parsed["input_owners"].items():
+        require(before == after == live_inputs[key], "candidate input owner drift")
+    for key, (before, after) in parsed["immutable_owners"].items():
+        require(before == after == live_immutable[key], "candidate immutable owner drift")
+    require(parsed["sources"] == live_sources, "candidate source manifest stale")
+    require(parsed["authority"] == live_authority, "candidate authority manifest stale")
+    current_delta = repository_delta_snapshot(repo, exclude=frozenset((str(POST_REPAIR_CANDIDATE),)))
+    require(parsed["repository_delta_digest"] == repository_delta_digest(current_delta), "candidate repository baseline drift")
+    if baseline is not None:
+        require(baseline["delta"] == current_delta, "candidate extra repository write")
+        require(baseline["input_owners"] == live_inputs, "candidate baseline owner drift")
+        require(baseline["immutable_owners"] == live_immutable, "candidate baseline immutable-owner drift")
+        require(baseline["sources"] == live_sources, "candidate baseline source drift")
+        require(baseline["authority"] == live_authority, "candidate baseline authority drift")
+    require(parsed["unresolved_high"] == 0, "candidate HIGH finding open")
+    require(parsed["threats"] == tuple(f"{threat}: pass" for threat in THREATS), "candidate threat inventory incomplete")
+    if parsed["status"] == "candidate_passed":
+        evidence = validate_post_repair_authority(require_eligibility=True)
+        require(parsed["executed_tests"] == evidence["executed_tests"] > 0, "candidate no-skip count drift")
+        require(parsed["failed_tests"] == 0 and parsed["skipped_tests"] == 0, "candidate suite not clean")
+        require(parsed["opt_in_tests_executed"] == 8, "candidate opt-in count mismatch")
+        require(parsed["opt_in_rows"] == tuple(f"{identity} passed" for identity in OPT_IN_TESTS), "candidate opt-in identities invalid")
+        require(parse_scalar(text, "promotion_authorized") == "true", "candidate promotion authority invalid")
+    else:
+        require(parse_scalar(text, "promotion_authorized") == "false", "failed candidate authorized promotion")
+        require(parse_scalar(text, "required_next_action") == "execute_64_19_full_requarantine", "failed candidate next action invalid")
+        require(bool(parse_block(text, "blocker_categories")), "failed candidate blocker categories empty")
+    return parsed
 
 
 def safe_relative_key(value: str) -> bool:
@@ -558,10 +872,17 @@ def validate_task_inventory(plan_texts: list[str]) -> None:
 
 def task_ids_from_plans() -> tuple[str, ...]:
     plans = sorted(PHASE_DIR.glob("64-??-PLAN.md"))
-    require(len(plans) == 13, "plan inventory mismatch")
-    texts = [read(path) for path in plans]
-    validate_task_inventory(texts)
-    return tuple(re.findall(r'<task id="([^"]+)"', "\n".join(texts)))
+    require(len(plans) == EXPECTED_PLAN_COUNT, "plan inventory mismatch")
+    observed: list[str] = []
+    for number, path in enumerate(plans, start=1):
+        text = read(path)
+        expected = expected_plan_task_ids(number)
+        explicit = tuple(re.findall(r'<task[^>]*\sid="([^"]+)"', text))
+        if explicit:
+            require(explicit == expected, "task inventory mismatch")
+        observed.extend(expected)
+    require(tuple(observed) == EXPECTED_TASKS, "task inventory mismatch")
+    return tuple(observed)
 
 
 def validate_lifecycle_inventory(inventory: dict[str, object]) -> None:
@@ -575,17 +896,17 @@ def validate_lifecycle_inventory(inventory: dict[str, object]) -> None:
 def validate_stage(mode: str) -> None:
     canonical = read(PHASE_DIR / "64-VERIFICATION.md")
     if mode == "final":
-        for token in ("verification_stage: post_promotion", "independent: true", "status: passed"):
+        for token in ("verification_stage: post_repair_final", "independent: true", "status: passed"):
             require(token in canonical, "canonical final verification incomplete")
-        require("candidate" in canonical.lower(), "canonical verification lacks accepted candidate provenance")
-        candidate = read(PHASE_DIR / "64-POST-PROMOTION-CANDIDATE-VERIFICATION.md")
-        for token in ("verification_stage: post_promotion_candidate", "independent: true", "status: candidate_passed"):
-            require(token in candidate, "candidate verification incomplete")
+        candidate = read(POST_REPAIR_CANDIDATE)
+        validate_post_repair_candidate(candidate)
+        require("status: candidate_passed" in candidate, "candidate verification incomplete")
     else:
         require("status: gaps_found" in canonical, "canonical verification passed prematurely")
+        require("promotion_status: unproven" in canonical, "canonical quarantine incomplete")
     if mode == "promotion-pending-verification":
-        eligibility = read(PHASE_DIR / "64-PRE-PROMOTION-VERIFICATION.md")
-        for token in ("verification_stage: pre_promotion", "independent: true", "status: eligible_promotion_pending"):
+        eligibility = read(POST_REPAIR_PRE_PROMOTION)
+        for token in ("verification_stage: post_repair_pre_promotion", "independent: true", "status: eligible_promotion_pending"):
             require(token in eligibility, "pre-promotion authority incomplete")
 
 
@@ -597,21 +918,32 @@ def validate_validation_ledger(mode: str) -> None:
     require(ids == EXPECTED_TASKS, "validation rows missing/duplicated/reordered")
     lowered = text.lower()
     if mode == "promotion-pending-verification":
-        rows = [line.lower() for line in text.splitlines() if re.match(r"^\| 64-(12|13)-01 \|", line)]
+        rows = [line.lower() for line in text.splitlines() if re.match(r"^\| 64-(18|19)-01 \|", line)]
         require(len(rows) == 2 and all("pending" in row or "not-run" in row or "not run" in row for row in rows), "future gates not visibly pending")
-        require("24/24" not in text, "validation finalized before candidate")
-    else:
-        require("24/24" in text, "final validation total missing")
-        require(not any(token in lowered for token in ("skipped", "conditional pass", "not-run", "not run")), "final validation has non-executed evidence")
+        require("34/34" not in text, "validation finalized before candidate")
+    elif mode == "final":
+        require("34/34" in text, "final validation total missing")
+        current_rows = [line.lower() for line in text.splitlines() if re.match(r"^\| 64-(14|15|16|17|18|19)-", line)]
+        require(not any(token in "\n".join(current_rows) for token in ("skipped", "conditional pass", "not-run", "not run", "failed")), "final validation has current non-executed evidence")
+        historical = next((line.lower() for line in text.splitlines() if line.startswith("| 64-13-01 |")), "")
+        require("historical" in historical and "superseded" in historical, "historical Plan 13 disposition missing")
+    elif mode == "quarantine":
+        final_row = next((line.lower() for line in text.splitlines() if line.startswith("| 64-19-01 |")), "")
+        require("failed" in final_row and "requarantine" in final_row.replace("-", ""), "quarantine validation row missing")
+        require("34/34" not in text, "quarantine validation falsely complete")
 
 
 def validate_lifecycle_content(texts: str, mode: str) -> None:
     if mode == "promotion-pending-verification":
         require(re.search(r"promotion.?pending|post.?promotion", texts, re.IGNORECASE) is not None, "lifecycle pending state missing")
-        require(all(f"64-{plan:02d}" in texts for plan in range(9, 14)), "final serial gates missing")
+        require(all(f"64-{plan:02d}" in texts for plan in range(14, 20)), "final serial gates missing")
         require("candidate" in texts.lower() and "bounded final transaction" in texts.lower(), "final gates not explicitly awaited")
     elif mode == "final":
         require(re.search(r"Phase 64.*(?:complete|completed)|64.*100%", texts, re.IGNORECASE | re.DOTALL) is not None, "lifecycle final state missing")
+        require(re.search(r"Phase 65.*(?:unblocked|current|ready)", texts, re.IGNORECASE | re.DOTALL) is not None, "Phase 65 not unblocked by final authority")
+    elif mode == "quarantine":
+        require(re.search(r"Phase 64.*(?:gaps_found|gaps found|incomplete)", texts, re.IGNORECASE | re.DOTALL) is not None, "lifecycle quarantine missing")
+        require(re.search(r"Phase 65.*blocked", texts, re.IGNORECASE | re.DOTALL) is not None, "Phase 65 quarantine missing")
 
 
 def validate_lifecycle_text(mode: str) -> None:
@@ -621,10 +953,11 @@ def validate_lifecycle_text(mode: str) -> None:
     )
 
 
-def run_live(mode: str, selected: str | None) -> int:
-    promoted = mode != "pre-promotion"
+def run_live(mode: str, selected: str | None, *, emit: bool = True) -> int:
+    promoted = mode in ("promotion-pending-verification", "final")
     aggregate_cache: dict[str, object] | None = None
     scan_cache: dict[str, int | str] | None = None
+    authority_cache: dict[str, int] | None = None
 
     def aggregate() -> dict[str, object]:
         nonlocal aggregate_cache
@@ -639,15 +972,25 @@ def run_live(mode: str, selected: str | None) -> int:
             scan_cache = scan_repository_content()
         return scan_cache
 
+    def authority() -> dict[str, int]:
+        nonlocal authority_cache
+        if authority_cache is None:
+            authority_cache = validate_post_repair_authority(
+                require_eligibility=mode != "pre-promotion",
+            )
+        return authority_cache
+
+    summary_through = 14 if mode == "pre-promotion" else 16 if mode == "promotion-pending-verification" else 18
+
     checks: dict[str, Callable[[], int]] = {
         "T-64-01": lambda: (validate_renderer_source(read(Path("BeautySDK/Sources/BeautyExampleRenderer/main.swift")), True), 7)[1],
-        "T-64-02": lambda: (validate_parser_artifacts(read(PHASE_DIR / "check_sclera_renderer_outputs.py"), read(PHASE_DIR / "64-SCLERA-OUTPUT-EVIDENCE.md")), 10)[1],
+        "T-64-02": lambda: (validate_parser_artifacts(read(PHASE_DIR / "check_sclera_renderer_outputs.py"), read(POST_REPAIR_EVIDENCE)), authority(), 10)[2],
         "T-64-03": lambda: (validate_adversarial_source(read(Path("BeautySDK/Tests/BeautyEffectsTests/BeautyScleraRednessAdversarialCloseoutTests.swift"))), validate_proposal_exposure(), aggregate(), 20)[3],
         "T-64-04": lambda: (validate_final_output_sources(read(Path("BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyScleraRednessProvider.swift")), read(Path("BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyScleraRednessTransform.swift")), read(Path("BeautySDK/Sources/BeautySDK/BeautyEngine.swift"))), 8)[1],
-        "T-64-05": lambda: (validate_review_gate(read(PHASE_DIR / "64-REVIEW.md")), 12)[1],
+        "T-64-05": lambda: (validate_review(read(POST_REPAIR_REVIEW)), authority(), 12)[2],
         "T-64-06": lambda: (validate_privacy(scan(), aggregate()), validate_proposal_exposure(), 12)[2],
         "T-64-07": lambda: (validate_product_state(*(read(path) for path in PRODUCT_FILES), promoted), validate_stage(mode), 12)[2],
-        "T-64-08": lambda: (validate_lifecycle_inventory(json.loads(read(PHASE_DIR / "64-THREAT-INVENTORY.json"))), validate_validation_ledger(mode), validate_lifecycle_text(mode), 14)[3],
+        "T-64-08": lambda: (validate_plan_graph(summary_through), validate_lifecycle_inventory(json.loads(read(PHASE_DIR / "64-THREAT-INVENTORY.json"))), validate_validation_ledger(mode), validate_lifecycle_text(mode), authority(), 14)[5],
     }
     counts: dict[str, int] = {}
     for threat in ((selected,) if selected else THREATS):
@@ -657,8 +1000,144 @@ def run_live(mode: str, selected: str | None) -> int:
         output = dict(scan())
     else:
         output = {"status": "pass", "mode": mode, "checks": counts}
-    print(json.dumps(output, separators=(",", ":")))
+    if emit:
+        print(json.dumps(output, separators=(",", ":")))
     return sum(counts.values())
+
+
+def run_candidate_guard(repo: Path = Path(".")) -> int:
+    run_live("promotion-pending-verification", None, emit=False)
+    validate_plan_graph(17)
+    baseline = capture_candidate_baseline(repo)
+    nonce = secrets.token_hex(16)
+    print(json.dumps({
+        "schema": CANDIDATE_SCHEMA,
+        "status": "ready",
+        "guard_nonce": nonce,
+    }, separators=(",", ":")), flush=True)
+    deadline = time.monotonic() + CANDIDATE_GUARD_TIMEOUT_SECONDS
+    previous: bytes | None = None
+    candidate_bytes: bytes | None = None
+    while time.monotonic() < deadline:
+        try:
+            current = read_bounded_regular(repo / POST_REPAIR_CANDIDATE)
+        except CheckError:
+            previous = None
+            time.sleep(CANDIDATE_GUARD_POLL_MILLISECONDS / 1000)
+            continue
+        if previous == current:
+            candidate_bytes = current
+            break
+        previous = current
+        time.sleep(CANDIDATE_GUARD_POLL_MILLISECONDS / 1000)
+    require(candidate_bytes is not None, "candidate guard timeout")
+    try:
+        candidate_text = candidate_bytes.decode("utf-8", errors="strict")
+    except UnicodeDecodeError:
+        raise CheckError("candidate encoding invalid") from None
+    parsed = validate_post_repair_candidate(
+        candidate_text, repo=repo, expected_nonce=nonce, baseline=baseline,
+    )
+    print(json.dumps({
+        "schema": CANDIDATE_SCHEMA,
+        "status": "pass",
+        "branch": parsed["status"],
+        "plan_count": EXPECTED_PLAN_COUNT,
+        "task_count": len(EXPECTED_TASKS),
+        "owner_count": len(CANDIDATE_INPUT_OWNER_PATHS),
+    }, separators=(",", ":")))
+    return 1
+
+
+def run_candidate_validation(repo: Path = Path(".")) -> int:
+    run_live("promotion-pending-verification", None, emit=False)
+    validate_plan_graph(17)
+    parsed = validate_post_repair_candidate(read(repo / POST_REPAIR_CANDIDATE), repo=repo)
+    print(json.dumps({
+        "schema": CANDIDATE_SCHEMA,
+        "status": "pass",
+        "branch": parsed["status"],
+        "plan_count": EXPECTED_PLAN_COUNT,
+        "task_count": len(EXPECTED_TASKS),
+        "owner_count": len(CANDIDATE_INPUT_OWNER_PATHS),
+    }, separators=(",", ":")))
+    return 1
+
+
+def synthetic_candidate_text() -> str:
+    digest = "a" * 64
+    dual = lambda paths: "\n".join(f"{digest} {digest}  {path}" for path in paths)
+    single = lambda paths: "\n".join(f"{digest}  {path}" for path in paths)
+    return "\n".join((
+        f"schema: {CANDIDATE_SCHEMA}",
+        "verification_stage: post_repair_candidate",
+        "independent: true",
+        "status: candidate_passed",
+        "promotion_authorized: true",
+        f"guard_nonce: {'b' * 32}",
+        f"pre_repository_delta_digest: {digest}",
+        "executed_tests: 644", "failed_tests: 0", "skipped_tests: 0",
+        "opt_in_tests_executed: 8", "unresolved_high: 0",
+        "plan_inventory_begin", *(f"64-{number:02d}" for number in range(1, 20)), "plan_inventory_end",
+        "task_inventory_begin", *EXPECTED_TASKS, "task_inventory_end",
+        "input_owner_manifest_begin", dual(CANDIDATE_INPUT_OWNER_PATHS), "input_owner_manifest_end",
+        "immutable_owner_manifest_begin", dual(CANDIDATE_IMMUTABLE_OWNER_PATHS), "immutable_owner_manifest_end",
+        "relevant_source_manifest_begin", single(RELEVANT_SOURCE_PATHS), "relevant_source_manifest_end",
+        "authority_manifest_begin", single(POST_REPAIR_AUTHORITY_PATHS), "authority_manifest_end",
+        "opt_in_tests_begin", *(f"{identity} passed" for identity in OPT_IN_TESTS), "opt_in_tests_end",
+        "threats_begin", *(f"{threat}: pass" for threat in THREATS), "threats_end",
+    )) + "\n"
+
+
+def run_candidate_self_tests() -> int:
+    fixture = synthetic_candidate_text()
+    parsed = parse_post_repair_candidate(fixture)
+    require(parsed["status"] == "candidate_passed", "candidate positive fixture rejected")
+    first_task = EXPECTED_TASKS[0]
+    first_owner = CANDIDATE_INPUT_OWNER_PATHS[0]
+    first_source = RELEVANT_SOURCE_PATHS[0]
+    first_authority = POST_REPAIR_AUTHORITY_PATHS[0]
+    mutations = (
+        fixture.replace(CANDIDATE_SCHEMA, "wrong-schema", 1),
+        fixture.replace("independent: true", "independent: false", 1),
+        fixture.replace("status: candidate_passed", "status: passed", 1),
+        fixture.replace(f"{first_task}\n", "", 1),
+        fixture.replace(f"{first_task}\n{EXPECTED_TASKS[1]}\n", f"{EXPECTED_TASKS[1]}\n{first_task}\n", 1),
+        fixture.replace(f"{first_task}\n", f"{first_task}\n{first_task}\n", 1),
+        fixture.replace(f"{'a' * 64} {'a' * 64}  {first_owner}", f"{'0' * 64} {'a' * 64}  {first_owner}", 1),
+        fixture.replace(f"{'a' * 64} {'a' * 64}  {first_owner}\n", "", 1),
+        fixture.replace(f"{'a' * 64}  {first_source}\n", "", 1),
+        fixture.replace(f"{'a' * 64}  {first_authority}\n", "", 1),
+        fixture.replace("opt_in_tests_executed: 8", "opt_in_tests_executed: 7", 1),
+        fixture.replace(f"{OPT_IN_TESTS[0]} passed\n", "", 1),
+        fixture.replace(f"{OPT_IN_TESTS[0]} passed\n", f"{OPT_IN_TESTS[0]} failed\n", 1),
+        fixture.replace(f"{THREATS[0]}: pass\n", "", 1),
+        fixture.replace("unresolved_high: 0", "unresolved_high: 1", 1),
+        fixture.replace("failed_tests: 0", "failed_tests: 1", 1),
+        fixture.replace("skipped_tests: 0", "skipped_tests: 1", 1),
+        fixture.replace("executed_tests: 644", "executed_tests: 0", 1),
+        fixture.replace("guard_nonce: " + "b" * 32, "guard_nonce: malformed", 1),
+        fixture.replace("authority_manifest_end", f"{'a' * 64}  extra/path\nauthority_manifest_end", 1),
+    )
+    rejected = 0
+    for mutation in mutations:
+        try:
+            value = parse_post_repair_candidate(mutation)
+            require(value["guard_nonce"] == "b" * 32, "candidate nonce invalid")
+            require(value["unresolved_high"] == 0, "candidate HIGH mutation accepted")
+            require(value["executed_tests"] > 0, "candidate zero execution accepted")
+            require(value["failed_tests"] == value["skipped_tests"] == 0, "candidate failure/skip accepted")
+            require(value["opt_in_tests_executed"] == 8, "candidate opt-in count accepted")
+            require(value["opt_in_rows"] == tuple(f"{identity} passed" for identity in OPT_IN_TESTS), "candidate opt-in rows accepted")
+            require(value["threats"] == tuple(f"{threat}: pass" for threat in THREATS), "candidate threat mutation accepted")
+            for before, after in value["input_owners"].values():
+                require(before == after, "candidate owner mutation accepted")
+        except (CheckError, ValueError, TypeError):
+            rejected += 1
+        else:
+            raise CheckError("candidate mutation accepted")
+    require(rejected == len(mutations), "candidate self-test coverage incomplete")
+    return rejected
 
 
 def valid_aggregate() -> dict[str, object]:
@@ -751,7 +1230,18 @@ def run_review_source_self_tests() -> int:
             "relevant_source_manifest_end",
             f"{'0' * 40}  unexpected.txt\nrelevant_source_manifest_end",
         ), root))
-    require(rejected == 7, "review source self-test coverage incomplete")
+        expect_failure(lambda: validate_review(review.replace(
+            "relevant_source_manifest_end",
+            rows.splitlines()[0] + "\nrelevant_source_manifest_end",
+        ), root))
+        expect_failure(lambda: validate_review(review.replace(
+            rows.splitlines()[0], "malformed manifest row", 1,
+        ), root))
+        expect_failure(lambda: validate_review(review.replace("vessel_detail ", "", 1), root))
+        expect_failure(lambda: validate_review(review.replace(
+            "status: current\n", "status: current\nsource_path: /Users/private/fixture\n", 1,
+        ), root))
+    require(rejected == 11, "review source self-test coverage incomplete")
     return rejected
 
 
@@ -880,19 +1370,15 @@ def run_content_scanner_self_tests() -> int:
 
 
 def run_self_test() -> int:
-    # RED gate for Plan 64-08: the closeout authority must expose the complete
-    # replanned serial graph before any scanner/review implementation can pass.
-    require(len(EXPECTED_TASKS) == 24, "RED: thirteen-plan/twenty-four-task inventory missing")
-    require(len(tuple(PHASE_DIR.glob("64-??-PLAN.md"))) == 13, "RED: thirteen-plan inventory missing")
-    try:
-        validate_review(read(PHASE_DIR / "64-REVIEW.md"))
-    except CheckError:
-        pass
-    else:
-        raise CheckError("RED: stale review accepted without immutable source manifest")
-    require("scan_repository_content" in globals(), "RED: four-state content scanner missing")
+    require(EXPECTED_PLAN_COUNT == 19 and len(EXPECTED_TASKS) == 34, "post-repair inventory missing")
+    require(HISTORICAL_EXECUTED_PLAN_IDS == tuple(range(1, 14)), "historical structure boundary drift")
+    require(CURRENT_STRUCTURE_PLAN_IDS == tuple(range(14, 20)), "current structure boundary drift")
+    require(len(RELEVANT_SOURCE_PATHS) == 19, "post-repair source closure mismatch")
+    validate_plan_graph(13)
+    require("scan_repository_content" in globals(), "four-state content scanner missing")
     content_scan_rejections = run_content_scanner_self_tests()
     review_source_rejections = run_review_source_self_tests()
+    candidate_rejections = run_candidate_self_tests()
 
     mutations: tuple[tuple[str, Callable[[dict[str, object]], None]], ...] = (
         ("missing-eye", lambda value: value["family_counts"].pop("right")),
@@ -965,9 +1451,11 @@ def run_self_test() -> int:
         "status": "pass", "self_tests": passed,
         "content_scan_rejections": content_scan_rejections,
         "review_source_rejections": review_source_rejections,
-        "threats": 8, "states": 3,
+        "candidate_rejections": candidate_rejections,
+        "plans": EXPECTED_PLAN_COUNT, "tasks": len(EXPECTED_TASKS),
+        "threats": 8, "states": 7,
     }, separators=(",", ":")))
-    return passed + content_scan_rejections + review_source_rejections
+    return passed + content_scan_rejections + review_source_rejections + candidate_rejections
 
 
 def main() -> int:
@@ -976,18 +1464,36 @@ def main() -> int:
     modes = parser.add_mutually_exclusive_group()
     modes.add_argument("--pre-promotion", action="store_true")
     modes.add_argument("--promotion-pending-verification", action="store_true")
+    modes.add_argument("--candidate-guard", action="store_true")
+    modes.add_argument("--validate-candidate", action="store_true")
     modes.add_argument("--final", action="store_true")
+    modes.add_argument("--quarantine", action="store_true")
     parser.add_argument("--threat", choices=THREATS)
     parser.add_argument("--repo-root", type=Path)
     args = parser.parse_args()
     if args.repo_root:
         os.chdir(args.repo_root)
-    mode = "final" if args.final else "promotion-pending-verification" if args.promotion_pending_verification else "pre-promotion"
     try:
-        run_self_test() if args.self_test else run_live(mode, args.threat)
+        if args.self_test:
+            require(not any((args.candidate_guard, args.validate_candidate, args.final, args.quarantine, args.promotion_pending_verification, args.pre_promotion, args.threat)), "self-test mode conflict")
+            run_self_test()
+        elif args.candidate_guard:
+            require(args.threat is None, "candidate guard threat mode invalid")
+            run_candidate_guard()
+        elif args.validate_candidate:
+            require(args.threat is None, "candidate validator threat mode invalid")
+            run_candidate_validation()
+        else:
+            mode = "final" if args.final else "quarantine" if args.quarantine else "promotion-pending-verification" if args.promotion_pending_verification else "pre-promotion"
+            run_live(mode, args.threat)
         return 0
-    except (CheckError, json.JSONDecodeError, subprocess.SubprocessError, AssertionError, TypeError, KeyError):
-        if args.threat == "T-64-06":
+    except (CheckError, json.JSONDecodeError, subprocess.SubprocessError, AssertionError, TypeError, KeyError, ValueError, OSError):
+        if args.candidate_guard or args.validate_candidate:
+            print(json.dumps({
+                "schema": CANDIDATE_SCHEMA, "status": "fail", "branch": "gaps_found",
+                "plan_count": 0, "task_count": 0, "owner_count": 0,
+            }, separators=(",", ":")))
+        elif args.threat == "T-64-06":
             print(json.dumps({
                 "status": "fail", "tracked_blob_count": 0, "staged_blob_count": 0,
                 "working_file_count": 0, "untracked_file_count": 0,
