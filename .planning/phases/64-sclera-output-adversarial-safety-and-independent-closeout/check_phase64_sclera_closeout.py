@@ -109,12 +109,12 @@ RELEVANT_SOURCE_PATHS = tuple(sorted((
     "BeautySDK/Tests/BeautyEffectsTests/BeautyScleraRednessAdversarialCloseoutTests.swift",
     "BeautySDK/Tests/BeautyEffectsTests/BeautyScleraRednessProviderTests.swift",
     ".planning/phases/59-teeth-evidence-and-admission-contract/59-private-evidence-runner.js",
+    ".planning/phases/61-teeth-output-safety-and-independent-closeout/check_teeth_renderer_outputs.py",
     ".planning/phases/62-sclera-evidence-and-admission-contract/62-private-evidence-runner.js",
     ".planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-no-skip-swiftpm-runner.js",
     ".planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-private-output-runner.js",
     ".planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/check_phase64_sclera_closeout.py",
     ".planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/check_sclera_renderer_outputs.py",
-    "example-images/generate_gallery.py",
 )))
 if len(RELEVANT_SOURCE_PATHS) != 19:
     raise RuntimeError("relevant source inventory mismatch")
@@ -154,6 +154,30 @@ if (
     raise RuntimeError("candidate owner/authority inventory mismatch")
 
 CANDIDATE_SCHEMA = "phase64-post-repair-candidate-v1"
+POST_REPAIR_SCHEMAS = {
+    "review": ("phase64-post-repair-review-v1", "post_repair_original_detail_review"),
+    "code_review": ("phase64-post-repair-code-review-v1", "post_repair_code_review"),
+    "review_fix": ("phase64-post-repair-review-fix-v1", "post_repair_review_fix"),
+    "security": ("phase64-post-repair-security-v1", "post_repair_security"),
+    "eligibility": ("phase64-post-repair-pre-promotion-v1", "post_repair_pre_promotion"),
+}
+REVIEW_CATEGORY_ROWS = (
+    ("obvious_but_natural_positive_improvement", "pass", "not_applicable", "not_applicable"),
+    ("negative_naturalness_no_unnecessary_change", "not_applicable", "pass", "not_applicable"),
+    ("iris_pupil_identity", "pass", "pass", "not_applicable"),
+    ("highlight_identity", "pass", "pass", "not_applicable"),
+    ("lash_identity", "pass", "pass", "not_applicable"),
+    ("lid_skin_identity", "pass", "pass", "not_applicable"),
+    ("aperture_exterior_identity", "pass", "pass", "not_applicable"),
+    ("sclera_locality", "pass", "pass", "not_applicable"),
+    ("vessel_detail", "pass", "pass", "not_applicable"),
+    ("texture_retention", "pass", "pass", "not_applicable"),
+    ("halo_edge_bounded", "pass", "pass", "not_applicable"),
+    ("luminance_bounded", "pass", "pass", "not_applicable"),
+    ("natural_color", "pass", "pass", "not_applicable"),
+    ("negative_stability", "not_applicable", "pass", "not_applicable"),
+    ("no_face_identity", "not_applicable", "not_applicable", "pass"),
+)
 CANDIDATE_GUARD_TIMEOUT_SECONDS = 1800
 CANDIDATE_GUARD_POLL_MILLISECONDS = 250
 
@@ -183,9 +207,9 @@ def sha256_file(path: Path) -> str:
 
 
 def parse_scalar(text: str, key: str) -> str:
-    match = re.search(rf"(?m)^{re.escape(key)}:\s*([^\r\n]+)\s*$", text)
-    require(match is not None, f"candidate field missing:{key}")
-    return match.group(1).strip().strip('"\'')
+    matches = re.findall(rf"(?m)^{re.escape(key)}:\s*([^\r\n]+)\s*$", text)
+    require(len(matches) == 1, f"scalar field missing/duplicated:{key}")
+    return matches[0].strip().strip('"\'')
 
 
 def parse_block(text: str, name: str) -> tuple[str, ...]:
@@ -317,22 +341,12 @@ def parse_no_skip_evidence(text: str) -> dict[str, int]:
 def validate_post_repair_authority(*, require_eligibility: bool) -> dict[str, int]:
     evidence = read(POST_REPAIR_EVIDENCE)
     values = parse_no_skip_evidence(evidence)
-    review = read(POST_REPAIR_REVIEW)
-    validate_review(review)
-    for path, tokens in (
-        (POST_REPAIR_CODE_REVIEW, ("review_status: passed", "unresolved_high: 0")),
-        (POST_REPAIR_REVIEW_FIX, ("unresolved_high: 0", "post_review_image_tuning: false")),
-        (POST_REPAIR_SECURITY, ("threats_open: 0", "threats_closed: 8")),
-    ):
-        text = read(path)
-        require(all(token in text for token in tokens), f"fresh authority incomplete:{path.name}")
+    validate_review(read(POST_REPAIR_REVIEW))
+    validate_code_review(read(POST_REPAIR_CODE_REVIEW))
+    validate_review_fix(read(POST_REPAIR_REVIEW_FIX))
+    validate_security(read(POST_REPAIR_SECURITY))
     if require_eligibility:
-        eligibility = read(POST_REPAIR_PRE_PROMOTION)
-        for token in (
-            "verification_stage: post_repair_pre_promotion", "independent: true",
-            "status: eligible_promotion_pending",
-        ):
-            require(token in eligibility, "post-repair eligibility incomplete")
+        validate_eligibility(read(POST_REPAIR_PRE_PROMOTION))
     return values
 
 
@@ -809,20 +823,115 @@ def validate_review_source_state(review: str, repo: Path = Path(".")) -> None:
         require(git_blob_oid(content) == expected_oid, "review working source changed")
 
 
-def validate_review(review: str, repo: Path = Path(".")) -> None:
-    for token in (
-        "original_detail", "positive", "negative", "sclera_locality", "vessel_detail",
-        "highlight_identity", "iris_pupil_identity", "lid_skin_identity", "natural_color",
-        "negative_stability", "decision: pass",
-    ):
-        require(token in review, "review category incomplete")
-    parse_review_source_manifest(review)
+def validate_source_bound_artifact(
+    text: str,
+    *,
+    schema_key: str,
+    independent: str,
+    expected_scalars: dict[str, str],
+    repo: Path = Path("."),
+) -> None:
+    schema, stage = POST_REPAIR_SCHEMAS[schema_key]
+    required = {
+        "schema": schema,
+        "verification_stage": stage,
+        "independent": independent,
+        **expected_scalars,
+    }
+    for key, expected in required.items():
+        require(parse_scalar(text, key) == expected, f"fresh authority scalar invalid:{schema_key}:{key}")
+    parse_review_source_manifest(text)
+    validate_review_source_state(text, repo)
     non_manifest = re.sub(
         r"relevant_source_manifest_begin\n.*?\nrelevant_source_manifest_end",
-        "", review, flags=re.DOTALL,
+        "", text, flags=re.DOTALL,
     )
-    require("/Users/" not in non_manifest and "example-images/" not in non_manifest, "review contains locator")
-    validate_review_source_state(review, repo)
+    require("/Users/" not in non_manifest and "example-images/" not in non_manifest, "authority contains locator")
+
+
+def validate_review(review: str, repo: Path = Path(".")) -> None:
+    validate_source_bound_artifact(
+        review,
+        schema_key="review",
+        independent="true",
+        expected_scalars={
+            "status": "passed",
+            "decision": "pass",
+            "original_detail": "true",
+            "blinded_items": "4",
+        },
+        repo=repo,
+    )
+    rows = tuple(
+        match.groups()
+        for match in re.finditer(
+            r"(?m)^\|\s*([a-z][a-z0-9_]*)\s*\|\s*(pass|not_applicable)\s*\|\s*(pass|not_applicable)\s*\|\s*(pass|not_applicable)\s*\|\s*$",
+            review,
+        )
+    )
+    require(rows == REVIEW_CATEGORY_ROWS, "review category inventory/disposition invalid")
+
+
+def validate_code_review(text: str, repo: Path = Path(".")) -> None:
+    validate_source_bound_artifact(
+        text,
+        schema_key="code_review",
+        independent="true",
+        expected_scalars={
+            "status": "passed",
+            "review_status": "passed",
+            "unresolved_high": "0",
+            "unresolved_warning": "0",
+            "promotion_authorized": "false",
+        },
+        repo=repo,
+    )
+
+
+def validate_review_fix(text: str, repo: Path = Path(".")) -> None:
+    validate_source_bound_artifact(
+        text,
+        schema_key="review_fix",
+        independent="false",
+        expected_scalars={
+            "status": "passed",
+            "unresolved_high": "0",
+            "unresolved_warning": "0",
+            "post_review_image_tuning": "false",
+            "promotion_authorized": "false",
+        },
+        repo=repo,
+    )
+
+
+def validate_security(text: str, repo: Path = Path(".")) -> None:
+    validate_source_bound_artifact(
+        text,
+        schema_key="security",
+        independent="true",
+        expected_scalars={
+            "status": "passed",
+            "threats_open": "0",
+            "threats_closed": "8",
+            "unresolved_high": "0",
+            "promotion_authorized": "false",
+        },
+        repo=repo,
+    )
+
+
+def validate_eligibility(text: str, repo: Path = Path(".")) -> None:
+    validate_source_bound_artifact(
+        text,
+        schema_key="eligibility",
+        independent="true",
+        expected_scalars={
+            "status": "eligible_promotion_pending",
+            "unresolved_high": "0",
+            "promotion_authorized": "false",
+        },
+        repo=repo,
+    )
 
 
 def validate_review_gate(review: str) -> None:
@@ -905,9 +1014,7 @@ def validate_stage(mode: str) -> None:
         require("status: gaps_found" in canonical, "canonical verification passed prematurely")
         require("promotion_status: unproven" in canonical, "canonical quarantine incomplete")
     if mode == "promotion-pending-verification":
-        eligibility = read(POST_REPAIR_PRE_PROMOTION)
-        for token in ("verification_stage: post_repair_pre_promotion", "independent: true", "status: eligible_promotion_pending"):
-            require(token in eligibility, "pre-promotion authority incomplete")
+        validate_eligibility(read(POST_REPAIR_PRE_PROMOTION))
 
 
 def validate_validation_ledger(mode: str) -> None:
@@ -1186,17 +1293,59 @@ def run_review_source_self_tests() -> int:
             root, ("ls-tree", "-r", "-z", "--full-tree", tree_oid), None,
         )))
         rows = "\n".join(f"{inventory[path]}  {path}" for path in RELEVANT_SOURCE_PATHS)
-        review = (
-            "status: current\n"
+        manifest = (
             f"relevant_source_tree_oid: {tree_oid}\n"
-            "original_detail positive negative sclera_locality vessel_detail "
-            "highlight_identity iris_pupil_identity lid_skin_identity natural_color "
-            "negative_stability decision: pass\n"
             "relevant_source_manifest_begin\n"
             f"{rows}\n"
             "relevant_source_manifest_end\n"
         )
+        category_rows = "\n".join(
+            f"| {category} | {positive} | {negative} | {no_face} |"
+            for category, positive, negative, no_face in REVIEW_CATEGORY_ROWS
+        )
+        review = (
+            f"schema: {POST_REPAIR_SCHEMAS['review'][0]}\n"
+            f"verification_stage: {POST_REPAIR_SCHEMAS['review'][1]}\n"
+            "independent: true\nstatus: passed\ndecision: pass\n"
+            "original_detail: true\nblinded_items: 4\n"
+            "| category | positive | negative | no_face |\n"
+            f"{category_rows}\n"
+            f"{manifest}"
+        )
         validate_review(review, root)
+
+        code_review = (
+            f"schema: {POST_REPAIR_SCHEMAS['code_review'][0]}\n"
+            f"verification_stage: {POST_REPAIR_SCHEMAS['code_review'][1]}\n"
+            "independent: true\nstatus: passed\nreview_status: passed\n"
+            "unresolved_high: 0\nunresolved_warning: 0\npromotion_authorized: false\n"
+            f"{manifest}"
+        )
+        review_fix = (
+            f"schema: {POST_REPAIR_SCHEMAS['review_fix'][0]}\n"
+            f"verification_stage: {POST_REPAIR_SCHEMAS['review_fix'][1]}\n"
+            "independent: false\nstatus: passed\nunresolved_high: 0\nunresolved_warning: 0\n"
+            "post_review_image_tuning: false\npromotion_authorized: false\n"
+            f"{manifest}"
+        )
+        security = (
+            f"schema: {POST_REPAIR_SCHEMAS['security'][0]}\n"
+            f"verification_stage: {POST_REPAIR_SCHEMAS['security'][1]}\n"
+            "independent: true\nstatus: passed\nthreats_open: 0\nthreats_closed: 8\n"
+            "unresolved_high: 0\npromotion_authorized: false\n"
+            f"{manifest}"
+        )
+        eligibility = (
+            f"schema: {POST_REPAIR_SCHEMAS['eligibility'][0]}\n"
+            f"verification_stage: {POST_REPAIR_SCHEMAS['eligibility'][1]}\n"
+            "independent: true\nstatus: eligible_promotion_pending\n"
+            "unresolved_high: 0\npromotion_authorized: false\n"
+            f"{manifest}"
+        )
+        validate_code_review(code_review, root)
+        validate_review_fix(review_fix, root)
+        validate_security(security, root)
+        validate_eligibility(eligibility, root)
 
         (root / "PLANS.md").write_text("later non-relevant synchronization\n", encoding="utf-8")
         validate_review(review, root)
@@ -1212,6 +1361,12 @@ def run_review_source_self_tests() -> int:
         expect_failure(lambda: validate_review(review, root))
         (root / relevant).write_bytes(originals[relevant])
         subprocess.run(["git", "-C", str(root), "add", relevant], check=True)
+        validate_review(review, root)
+
+        decoder = ".planning/phases/61-teeth-output-safety-and-independent-closeout/check_teeth_renderer_outputs.py"
+        (root / decoder).write_bytes(b"post-review decoder drift\n")
+        expect_failure(lambda: validate_review(review, root))
+        (root / decoder).write_bytes(originals[decoder])
         validate_review(review, root)
 
         expect_failure(lambda: validate_review(review.replace(
@@ -1237,11 +1392,34 @@ def run_review_source_self_tests() -> int:
         expect_failure(lambda: validate_review(review.replace(
             rows.splitlines()[0], "malformed manifest row", 1,
         ), root))
-        expect_failure(lambda: validate_review(review.replace("vessel_detail ", "", 1), root))
         expect_failure(lambda: validate_review(review.replace(
-            "status: current\n", "status: current\nsource_path: /Users/private/fixture\n", 1,
+            "| vessel_detail | pass | pass | not_applicable |\n", "", 1,
         ), root))
-    require(rejected == 11, "review source self-test coverage incomplete")
+        expect_failure(lambda: validate_review(review.replace(
+            "status: passed\n", "status: passed\nsource_path: /Users/private/fixture\n", 1,
+        ), root))
+
+        authority_mutations: tuple[tuple[Callable[[str, Path], None], str], ...] = (
+            (validate_review, review.replace("status: passed\n", "status: failed\nstatus: passed\n", 1)),
+            (validate_review, review.replace("decision: pass\n", "decision: fail\ndecision: pass\n", 1)),
+            (validate_review, review.replace(POST_REPAIR_SCHEMAS["review"][0], "historical-review-v0", 1)),
+            (validate_code_review, code_review.replace("status: passed\n", "status: failed\n", 1) + "Narrative review_status: passed\n"),
+            (validate_code_review, code_review.replace("unresolved_high: 0\n", "unresolved_high: 1\nunresolved_high: 0\n", 1)),
+            (validate_code_review, code_review.replace("review_status: passed\n", "Narrative review_status: passed\n", 1)),
+            (validate_code_review, code_review.replace(POST_REPAIR_SCHEMAS["code_review"][0], "historical-code-review-v0", 1)),
+            (validate_review_fix, review_fix.replace("post_review_image_tuning: false\n", "post_review_image_tuning: true\n", 1) + "Narrative post_review_image_tuning: false\n"),
+            (validate_review_fix, review_fix.replace("independent: false\n", "independent: true\n", 1)),
+            (validate_review_fix, review_fix.replace("unresolved_warning: 0\n", "unresolved_warning: 1\nunresolved_warning: 0\n", 1)),
+            (validate_security, security.replace("threats_open: 0\n", "threats_open: 2\n", 1) + "Narrative threats_open: 0\n"),
+            (validate_security, security.replace("threats_closed: 8\n", "threats_closed: 6\nthreats_closed: 8\n", 1)),
+            (validate_security, security.replace(POST_REPAIR_SCHEMAS["security"][1], "historical_security", 1)),
+            (validate_eligibility, eligibility.replace("status: eligible_promotion_pending\n", "status: gaps_found\n", 1) + "Narrative status: eligible_promotion_pending\n"),
+            (validate_eligibility, eligibility.replace("promotion_authorized: false\n", "promotion_authorized: true\npromotion_authorized: false\n", 1)),
+            (validate_eligibility, eligibility.replace(POST_REPAIR_SCHEMAS["eligibility"][0], "historical-eligibility-v0", 1)),
+        )
+        for validator, mutation in authority_mutations:
+            expect_failure(lambda validator=validator, mutation=mutation: validator(mutation, root))
+    require(rejected == 28, "review source self-test coverage incomplete")
     return rejected
 
 
