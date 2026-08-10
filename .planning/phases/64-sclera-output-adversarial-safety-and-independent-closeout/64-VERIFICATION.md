@@ -1,15 +1,15 @@
 ---
 phase: 64-sclera-output-adversarial-safety-and-independent-closeout
-verification_stage: terminal_r2_promotion_pending
+verification_stage: post_terminal_final
 independent: true
-verified: 2026-08-10T17:30:00+08:00
-status: gaps_found
-promotion_status: unproven
+verified: 2026-08-10T18:15:00+08:00
+status: passed
+promotion_status: promoted
 requires_requarantine: false
-phase_65_authorized: false
+phase_65_authorized: true
 candidate_artifact: 64-TERMINAL-R2-CANDIDATE-VERIFICATION.md
-candidate_status: pending
-transaction_result: promotion_pending
+candidate_status: candidate_passed
+transaction_result: exact_six_terminal_success
 expected_plan_count: 21
 expected_task_count: 38
 owner_count: 15
@@ -20,21 +20,22 @@ authority_count: 6
 requirements: [SCLERA-14, SCLERA-15, SCLERA-16, SCLERA-17, SCLERA-18, OUT-05]
 ---
 
-# Phase 64 Terminal R2 Verification — Promotion Pending
+# Phase 64 Terminal R2 Verification — Canonical Final
 
 ## Canonical Verdict
 
-Phase 64 remains non-final: `status: gaps_found` and
-`promotion_status: unproven`. Fresh terminal R2 evidence makes the bounded
-SDK-core still-image `祛红血丝` leaf eligible for a guarded candidate, but this
-canonical owner does not mark the phase passed and does not authorize Phase 65.
+Phase 64 is canonically complete. The distinct terminal R2 candidate passed the
+strict prewrite gate over all fifteen owners, nineteen relevant sources, six
+fresh authority artifacts, the exact 21-plan/38-task lifecycle, all fifteen
+edge probes, and T-64-01 through T-64-08. The terminal transaction then changed
+every one and only the six mutable final owners while retaining the nine
+product/root owners byte-for-byte.
 
-Plans 01–19 and both historical candidates remain immutable history. Plan 20
-repairs the terminal checker, rebuilds the complete fresh authority chain, and
-accounts for `64-20-01`, `64-20-02`, and `64-20-03`. Only `64-21-01` remains
-pending for the terminal success-or-quarantine transaction.
+This independent `post_terminal_final` verdict authorizes Phase 65 to become
+current for fresh verification and audit. It does not reuse the stale Phase 65
+verification or milestone audit, close SAFE-06, or claim DeviceRGB/named-sRGB.
 
-## Fresh Terminal R2 Authority
+## Final Authority
 
 | gate | aggregate disposition |
 | --- | --- |
@@ -45,36 +46,39 @@ pending for the terminal success-or-quarantine transaction.
 | full SwiftPM | 637 executed; 0 failed; 0 skipped; all 8 opt-ins |
 | Demo | build passed; 121 passed; 0 failed; 0 skipped |
 | independent review/security | zero unresolved HIGH; T-64-01 through T-64-08 closed |
+| terminal transition | exactly six mutable owners changed; nine immutable owners retained |
 
-Authority is carried only by the six `64-TERMINAL-R2-*` evidence, review,
-code-review, review-fix, security, and pre-promotion verification artifacts.
-They are bound to the exact nineteen-source freeze and grant at most the
-promotion-pending owner snapshot plus the guarded Plan 21 decision.
+Authority remains source-bound to the six immutable `64-TERMINAL-R2-*`
+evidence, review, code-review, review-fix, security, and pre-promotion artifacts
+plus the distinct guarded candidate. Neither historical candidate is reused or
+reinterpreted.
 
 ## Requirement Disposition
 
-| Requirement | Promotion-pending fact | Final authority |
-| --- | --- | --- |
-| SCLERA-14 | all adjacency/empty/ordering probes pass | pending Plan 21 |
-| SCLERA-15 | boundary and RGBA-byte precision probes pass | pending Plan 21 |
-| SCLERA-16 | positive/negative/no-face boundary and precision probes pass | pending Plan 21 |
-| SCLERA-17 | all six output roles classified; unclassified rejection passes | pending Plan 21 |
-| SCLERA-18 | exact serial conjunction is fresh and no-skip | pending Plan 21 |
-| OUT-05 | adjacency/empty/ordering/concurrency probes pass | pending Plan 21 |
+| Requirement | Final disposition |
+| --- | --- |
+| SCLERA-14 | verified: adjacency, empty, ordering, bilateral geometry, and protected-entry predicates pass |
+| SCLERA-15 | verified: boundary and RGBA-byte precision predicates pass |
+| SCLERA-16 | verified: positive, negative, and no-face bounds pass |
+| SCLERA-17 | verified: all six output roles are classified and strict public-facade output passes |
+| SCLERA-18 | verified: the complete source-bound no-skip conjunction and exact product promotion agree |
+| OUT-05 | verified: standalone public/private adjacency, empty, ordering, and concurrency predicates pass |
 
-## Fifteen-Owner Promotion-Pending State
+## Product and Lifecycle Boundary
 
-- Nine product/root owners record only bounded SDK-core still-image
-  `祛红血丝` implemented, aggregate `眼睛` partial, and `去脂` future.
-- Six mutable-final owners remain non-final and await the exact Plan 21
-  terminal transition.
+- Product/root owners retain only bounded SDK-core still-image `祛红血丝`
+  implemented, aggregate `眼睛` partial, and `去脂` future.
 - Demo local-retouch rows remain disabled and nil-mapped.
-- SAFE-06 and DeviceRGB/named-sRGB remain exclusively Phase 65 scope.
-- Phase 65 verification and audit remain stale and blocked.
+- Exact compatibility remains 61 public fields, five neutral presets, and 74
+  renderer cases.
+- Phase 65 is unblocked/current only for a fresh verification and milestone
+  audit; its prior verification/audit is stale.
+- SAFE-06 remains open and DeviceRGB/named-sRGB remains exclusively Phase 65
+  scope.
 
 ## Scope Boundary
 
-No product/API expansion, Demo activation, realtime or pixel-buffer route,
+No public API expansion, Demo activation, realtime or pixel-buffer route,
 model, network, dependency, DeviceRGB/named-sRGB claim, eye-fat behavior,
 population/device/performance claim, commercial readiness, packaging, shipping,
 archive, tag, or release authority is added. Durable records retain only fixed
@@ -82,6 +86,6 @@ categories and aggregates.
 
 ---
 
-_Canonical status: gaps_found_
-_Promotion status: unproven_
-_Terminal authority: Plan 64-21 only_
+_Canonical status: passed_
+_Terminal outcome: exact-six success_
+_Next authority: fresh Phase 65 verification and audit only_

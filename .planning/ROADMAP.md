@@ -17,7 +17,7 @@
 - ✅ **[v1.12 Face Shape Remaining Capabilities](milestones/v1.12-ROADMAP.md)** — Phases 45-48, shipped 2026-07-24.
 - ✅ **[v1.13 Eyebrow Geometry Controls](milestones/v1.13-ROADMAP.md)** — Phases 49-52, shipped 2026-07-28.
 - ✅ **[v1.14 Local Facial Retouch](milestones/v1.14-ROADMAP.md)** — Phases 53-58, shipped 2026-08-05.
-- 🚧 **v1.15 Independent Teeth and Sclera Retouch** — Phase 64 is `terminal_r2_promotion_pending` on an exact 21-plan/38-task graph. Canonical verification remains `gaps_found`; only Plan 64-21 remains pending and Phase 65 stays blocked.
+- 🚧 **v1.15 Independent Teeth and Sclera Retouch** — Phase 64 is canonically passed on the exact 21-plan/38-task graph. Phase 65 is unblocked/current for fresh verification and audit; its prior verification/audit remains stale and SAFE-06 remains open.
 
 ## Overview
 
@@ -32,8 +32,8 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
 - [x] **Phase 61: Teeth Output, Safety, and Independent Closeout** - Prove public-facade visibility, protected-tissue safety, naturalness, regression, and exact `白牙` promotion before any sclera production work. (completed 2026-08-07)
 - [x] **Phase 62: Sclera Evidence and Admission Contract** - Independently qualify genuine redness/normal evidence and add one compatibility-safe sclera-only public intent after teeth closes. (completed 2026-08-07)
 - [x] **Phase 63: Guarded Per-Eye Sclera Production Integration** - Deliver independent left/right eye guards, hard sclera ownership, and bounded original-pixel redness reduction. (completed 2026-08-07)
-- [ ] **Phase 64: Sclera Output, Adversarial Safety, and Independent Closeout** - Prove public-facade per-eye behavior, native and adversarial protected-region safety, naturalness, regression, and exact `祛红血丝` promotion. (terminal R2 promotion-pending; 21 plans / 38 task IDs; Plans 64-01 through 64-20 accounted; 64-21 pending; canonical `gaps_found`)
-- [ ] **Phase 65: Combined Facade, Privacy, and Milestone Closeout** - Verify both independently admitted features together, preserve all v1.14 boundaries, keep `去脂` absent, and prepare the audited milestone close. (4/4 plans executed; verification/audit stale pending Phase 64)
+- [x] **Phase 64: Sclera Output, Adversarial Safety, and Independent Closeout** - Prove public-facade per-eye behavior, native and adversarial protected-region safety, naturalness, regression, and exact `祛红血丝` promotion. (completed 2026-08-10; canonical terminal R2 passed; 21 plans / 38 task IDs)
+- [ ] **Phase 65: Combined Facade, Privacy, and Milestone Closeout** - Verify both independently admitted features together, preserve all v1.14 boundaries, keep `去脂` absent, and prepare the audited milestone close. (current/unblocked; 4/4 implementation plans executed; verification/audit stale and must be rerun; SAFE-06 open)
 
 ## Phase Details
 
@@ -140,16 +140,18 @@ v1.15 converts the v1.14 exact-empty still-image local-retouch foundation into t
   4. Genuine redness positives improve within predeclared per-eye bounds, while normal negatives and blink/gaze/glasses/highlight/occlusion challenges remain natural under blinded original-detail review.
   5. Production tests, native/adversarial matrices, compatibility, privacy, full regression, review/fix, independent verification, and owning ledgers promote exactly `祛红血丝`; `眼睛` remains partial because `去脂` remains future.
 
-**Plans**: 20/21 plans executed/accounted; exact terminal R2 promotion-pending lifecycle
+**Plans**: 21/21 plans executed/accounted; exact terminal R2 canonical lifecycle
 
 The Plan 64-12/13 candidate and re-quarantine and the Plan 64-18/19 candidate
 and failed final transaction remain historical evidence. Plan 64-20 repairs the
 terminal transition contract, rebuilds exact source-bound 637/0/0/8 R2
 authority, synchronizes the complete fifteen-owner snapshot, and creates the
-guarded R2 candidate. Phase 64 remains promotion pending;
-`64-VERIFICATION.md` remains `gaps_found`. Only Plan 64-21 owns the terminal
-success-or-quarantine transaction. Phase 65 remains blocked with its
-verification/audit stale and SAFE-06 DeviceRGB/named-sRGB open.
+guarded R2 candidate. Plan 64-21 authenticated the strict all-fifteen prewrite
+snapshot, changed every one and only the six mutable final owners, retained all
+nine product/root owners byte-identically, and made `64-VERIFICATION.md`
+canonically `passed`. Phase 65 is unblocked/current only for fresh verification
+and audit; its prior authority remains stale and SAFE-06 DeviceRGB/named-sRGB
+remains open.
 
 **Ordered task IDs (38):** `64-01-01`, `64-01-02`, `64-02-01`, `64-02-02`,
 `64-03-01`, `64-03-02`, `64-04-01`, `64-04-02`, `64-05-01`, `64-05-02`,
@@ -240,7 +242,15 @@ verification/audit stale and SAFE-06 DeviceRGB/named-sRGB open.
 
 **Wave 21** *(terminal transaction; blocked on Wave 20 completion)*
 
-- [ ] 64-21-PLAN.md — validate the R2 candidate and select exact-six final transition or complete terminal quarantine
+- [x] 64-21-PLAN.md — validated the R2 candidate and completed the exact-six terminal final transition
+
+<!-- PHASE64_TERMINAL_LIFECYCLE_BEGIN -->
+Phase 64 terminal lifecycle: canonical final passed; 21/21 plans and 38/38
+ordered task IDs are accounted. Historical Plan 13 and Plan 19 non-success
+transactions remain superseded evidence. Phase 65 is unblocked/current only for
+fresh verification and audit; its prior verification/audit is stale, SAFE-06
+remains open, and DeviceRGB/named-sRGB remains Phase 65-only.
+<!-- PHASE64_TERMINAL_LIFECYCLE_END -->
 
 ### Phase 65: Combined Facade, Privacy, and Milestone Closeout
 
@@ -273,7 +283,7 @@ verification/audit stale and SAFE-06 DeviceRGB/named-sRGB open.
 | 61. Teeth Output, Safety, and Independent Closeout | 4/4 | Complete    | 2026-08-07 |
 | 62. Sclera Evidence and Admission Contract | 5/5 | Complete — independent evidence, 61st scalar, direct demand, privacy and regression pass | 2026-08-07 |
 | 63. Guarded Per-Eye Sclera Production Integration | 4/4 | Complete — guarded provider, actual-Vision evidence, privacy and regression pass; no promotion | 2026-08-07 |
-| 64. Sclera Output, Adversarial Safety, and Independent Closeout | 17/19 | Promotion Pending — independent candidate and bounded final transaction remain |  |
-| 65. Combined Facade, Privacy, and Milestone Closeout | 4/4 implementation plans executed | Blocked — prior verification/audit is stale; SAFE-06 DeviceRGB/named-sRGB remains Phase 65-only and open | — |
+| 64. Sclera Output, Adversarial Safety, and Independent Closeout | 21/21 | Complete — canonical terminal R2 exact-six transition passed | 2026-08-10 |
+| 65. Combined Facade, Privacy, and Milestone Closeout | 4/4 implementation plans executed | Current/unblocked — prior verification/audit is stale and must be rerun; SAFE-06 DeviceRGB/named-sRGB remains Phase 65-only and open | — |
 
 Earlier phase details are preserved in their linked milestone archives under `.planning/milestones/`.

@@ -30,19 +30,27 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
-| Scope | Close the Phase 64 final-authority gaps before retaining any `祛红血丝` product promotion or treating v1.15 as completion-ready. |
-| Finding | The immutable Plan 64-12/13 and Plan 64-18/19 candidate/failure sequences remain historical evidence. Plan 64-20 repaired the terminal transition contract, rebuilt exact source-bound 637/0/0/8 R2 authority, synchronized the complete fifteen-owner promotion-pending snapshot, and issued a distinct guarded terminal candidate. |
-| Affected requirements | SCLERA-14 through SCLERA-18 and OUT-05 have complete terminal R2 promotion-pending implementation/evidence dispositions, but canonical completion remains pending Plan 64-21's exact success-or-quarantine transaction. Phase 65 remains blocked. |
+| Status | `completed` |
+| Scope | Canonically close Phase 64 through the exact-six terminal transition while preserving the bounded SDK-core sclera scope. |
+| Finding | The immutable Plan 64-12/13 and Plan 64-18/19 candidate/failure sequences remain historical evidence. Plan 64-20 repaired the terminal contract and issued the distinct source-bound R2 candidate; Plan 64-21 authenticated all fifteen owners, nineteen sources, six authority artifacts, fifteen probes, and eight threats before changing every one and only the six mutable final owners. |
+| Affected requirements | SCLERA-14 through SCLERA-18 and OUT-05 are canonically verified. Product/root owners remain byte-identical to the candidate; Phase 65 is unblocked/current only for fresh verification and audit. |
 | Fresh passing evidence | Focused 74/74; strict helper 14/14; private output 6/6 plus four opaque review items; checker/no-skip self-tests; exact full SwiftPM 637/0/0/8; Demo build and 121/0/0; exact 19-source review; zero-HIGH code review; ASVS L1 8/8. Green aggregates do not self-authorize canonical success. |
 | Warning | `BeautyExampleRenderer` uses device RGB for saved evidence; explicit sRGB remains a Phase 65 SAFE-06 re-verification item. |
-| Next | Execute Plan 64-21's terminal transaction: validate the distinct R2 candidate, then apply either the exact-six canonical success transition or the complete terminal quarantine. Do not append another automatic Phase 64 repair plan after terminal failure. |
-| Lifecycle | Phase 64 is `terminal_r2_promotion_pending`. Canonical `64-VERIFICATION.md` remains `gaps_found` with `promotion_status: unproven`; Phase 65 verification/audit remains stale and blocked until Plan 64-21 produces canonical success. |
-| Inventory | Exact authority is 21 serial plans / 38 ordered task IDs. Plans 64-01 through 64-20 account for the first 37 IDs; historical `64-13-01` and `64-19-01` remain failed/superseded evidence. Only `64-21-01` is pending. |
-| Boundary | Do not archive, tag, clean up, ship, or claim milestone completion while canonical Phase 64 is `gaps_found`. Product-facing `祛红血丝` is bounded SDK-core implemented in promotion-pending state, `眼睛` remains `partial`, and `去脂` remains `future`. DeviceRGB/named-sRGB is owned only by Phase 65 SAFE-06; Demo/API/realtime/model/network/dependency/eye-fat scope remains out of Phase 64 authority. |
+| Next | Freshly re-verify Phase 65 and its milestone audit; do not reuse their stale pre-Phase-64-closeout conclusions. |
+| Lifecycle | Phase 64 is canonically `passed` and complete. Phase 65 is unblocked/current for fresh verification and audit; its earlier verification/audit remains stale. |
+| Inventory | Exact authority is 21 serial plans / 38 ordered and accounted task IDs. Historical `64-13-01` and `64-19-01` remain failed/superseded evidence rather than current failures; `64-21-01` is final passed. |
+| Boundary | No archive, tag, cleanup, shipping, or milestone-completion claim is authorized by this transaction. Product-facing `祛红血丝` is bounded SDK-core implemented, `眼睛` remains `partial`, and `去脂` remains `future`. DeviceRGB/named-sRGB is owned only by open Phase 65 SAFE-06; Demo/API/realtime/model/network/dependency/eye-fat scope remains out of Phase 64 authority. |
 
-The prior v1.15 completion-ready statement is superseded by the fresh Phase 64
-goal-backward verification until this active gap is closed.
+<!-- PHASE64_TERMINAL_LIFECYCLE_BEGIN -->
+Phase 64 terminal lifecycle: canonical final passed through the exact-six
+mutable-owner transition; 21 plans and 38 ordered task IDs are accounted.
+Phase 65 is unblocked/current only for fresh verification and audit. Its prior
+verification/audit is stale, SAFE-06 remains open, and DeviceRGB/named-sRGB
+remains Phase 65-only.
+<!-- PHASE64_TERMINAL_LIFECYCLE_END -->
+
+The earlier v1.15 completion-ready statement remains superseded until Phase 65
+is freshly re-verified and independently audited.
 
 Exact ordered Phase 64 task authority is: `64-01-01`, `64-01-02`,
 `64-02-01`, `64-02-02`, `64-03-01`, `64-03-02`, `64-04-01`, `64-04-02`,

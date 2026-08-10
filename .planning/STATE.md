@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.15
 milestone_name: Independent Teeth and Sclera Retouch
-current_phase: 64
-current_phase_name: sclera-output-adversarial-safety-and-independent-closeout
-status: executing
-stopped_at: Completed 64-20-PLAN.md; Plan 64-21 terminal transaction pending
-last_updated: "2026-08-10T09:30:00.000Z"
+current_phase: 65
+current_phase_name: combined-facade-privacy-and-milestone-closeout
+status: verifying
+stopped_at: Completed 64-21-PLAN.md; fresh Phase 65 verification and audit pending
+last_updated: "2026-08-10T10:15:00.000Z"
 last_activity: 2026-08-10
-last_activity_desc: Plan 64-20 completed the exact 21-plan/38-task terminal R2 promotion-pending candidate snapshot
+last_activity_desc: Plan 64-21 canonically passed Phase 64 through the exact-six terminal R2 transition
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 51
-  completed_plans: 50
-  percent: 98
+  completed_plans: 51
+  percent: 100
 ---
 
 # Project State
@@ -24,16 +24,16 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-08-07)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Execute Plan 64-21's terminal success-or-quarantine transaction
+**Current focus:** Freshly re-verify Phase 65 and rerun its independent milestone audit without reusing stale authority
 
 ## Current Position
 
-Phase: 64 (sclera-output-adversarial-safety-and-independent-closeout) — EXECUTING
-Plan: 20 of 21 executed/accounted
-Status: `terminal_r2_promotion_pending`; canonical `64-VERIFICATION.md` remains `gaps_found`
-Last activity: 2026-08-10 — exact 21-plan/38-task lifecycle records only 64-21-01 pending
+Phase: 65 (combined-facade-privacy-and-milestone-closeout) — VERIFYING
+Plan: 4 of 4 implementation plans executed; fresh verification/audit pending
+Status: `phase64_canonical_passed_phase65_reverification_required`
+Last activity: 2026-08-10 — Phase 64 exact 21-plan/38-task lifecycle canonically passed through the exact-six terminal transition
 
-Progress: [██████████] 98%
+Progress: [██████████] 100% plan execution; phase/milestone verification remains open
 
 ## Performance Metrics
 
@@ -89,6 +89,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 | Phase 64 P18 | — | 1 task | 1 file |
 | Phase 64 P19 | — | 1 task | 15 files |
 | Phase 64 P20 | — | 3 tasks | 16 files |
+| Phase 64 P21 | 30 min | 1 task | 6 files |
 
 ## Accumulated Context
 
@@ -135,6 +136,8 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 - [Phase 64 P20]: The terminal checker separates strict all-fifteen prewrite validation from exact-six mutable/nine immutable postwrite validation and validates the exact 21-plan/38-task graph.
 - [Phase 64 P20]: Fresh terminal R2 authority is source-bound to 637/0/0/8, Demo 121/0/0, four opaque fixed-category review items, zero unresolved HIGH, and all fifteen edge probes.
 - [Phase 64 P20]: The guarded R2 candidate authorizes Plan 64-21 only; Phase 65 remains blocked and SAFE-06 receives no Phase 64 credit.
+- [Phase 64 P21]: Strict all-fifteen prewrite validation passed, every one and only the six mutable final owners changed, all nine product/root owners remained byte-identical, and canonical Phase 64 passed at 21 plans / 38 task IDs.
+- [Phase 64 P21]: Phase 65 is unblocked/current only for fresh verification and audit; its prior verification/audit remains stale, SAFE-06 stays open, and DeviceRGB/named-sRGB receives no Phase 64 credit.
 
 ### Pending Todos
 
@@ -142,8 +145,9 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- SCLERA-14 through SCLERA-18 and OUT-05 have eligible terminal R2 promotion-pending evidence, but canonical completion still requires Plan 64-21's terminal transaction.
-- DeviceRGB/named-sRGB remains unresolved exclusively under blocked Phase 65 SAFE-06; it is not Phase 64 credit.
+- Phase 64 is canonically passed; SCLERA-14 through SCLERA-18 and OUT-05 are complete.
+- Phase 65's prior verification and milestone audit are stale and must be rerun before milestone completion.
+- DeviceRGB/named-sRGB remains unresolved exclusively under open Phase 65 SAFE-06; it is not Phase 64 credit.
 - Archive, tag, cleanup, shipping and release claims remain unauthorized. Existing TD-013 generic-result sendability remains outside this milestone.
 
 ## Deferred Items
@@ -157,15 +161,22 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-10T09:30:00.000Z
-Stopped at: Completed 64-20-PLAN.md; Plan 64-21 terminal transaction pending
+Last session: 2026-08-10T10:15:00.000Z
+Stopped at: Completed 64-21-PLAN.md; fresh Phase 65 verification and audit pending
 Resume file: None
 
-## Phase 64 Terminal R2 Promotion-Pending State
+## Phase 64 Terminal R2 Canonical Final State
 
 - Exact authority is 21 plans / 38 ordered task IDs across Waves 1-21, ending at `64-21-PLAN.md`.
 - Ordered IDs are `64-01-01`, `64-01-02`, `64-02-01`, `64-02-02`, `64-03-01`, `64-03-02`, `64-04-01`, `64-04-02`, `64-05-01`, `64-05-02`, `64-06-01`, `64-06-02`, `64-07-01`, `64-07-02`, `64-08-01`, `64-08-02`, `64-09-01`, `64-09-02`, `64-10-01`, `64-10-02`, `64-11-01`, `64-11-02`, `64-12-01`, `64-13-01`, `64-14-01`, `64-14-02`, `64-15-01`, `64-15-02`, `64-16-01`, `64-16-02`, `64-17-01`, `64-17-02`, `64-18-01`, `64-19-01`, `64-20-01`, `64-20-02`, `64-20-03`, `64-21-01`.
-- Plans 64-01 through 64-20 are executed/accounted. Historical `64-13-01` and `64-19-01` remain failed/superseded evidence and are not erased. Only `64-21-01` is pending.
-- Phase 64 is `terminal_r2_promotion_pending`; canonical `64-VERIFICATION.md` remains `gaps_found` with `promotion_status: unproven`.
-- Product-facing `祛红血丝` is bounded SDK-core implemented in promotion-pending state; `眼睛` remains partial and `去脂` future. DeviceRGB/named-sRGB remains Phase 65 SAFE-06-only.
-- Phase 65 remains blocked; its prior verification and milestone audit are stale until Plan 64-21 produces canonical Phase 64 final authority.
+- Plans 64-01 through 64-21 are executed/accounted. Historical `64-13-01` and `64-19-01` remain failed/superseded evidence and are not erased; `64-21-01` is final passed.
+- Phase 64 canonical `64-VERIFICATION.md` is `passed`; every six mutable owner changed and all nine product/root owners stayed byte-identical to the R2 candidate.
+- Product-facing `祛红血丝` is bounded SDK-core implemented; `眼睛` remains partial and `去脂` future. DeviceRGB/named-sRGB remains Phase 65 SAFE-06-only.
+- Phase 65 is unblocked/current for fresh verification and audit. Its prior verification and milestone audit remain stale.
+
+<!-- PHASE64_TERMINAL_LIFECYCLE_BEGIN -->
+Phase 64 terminal lifecycle is canonical final passed with 21/21 plans and
+38/38 ordered task IDs accounted. Phase 65 is unblocked/current only for fresh
+verification and audit; prior Phase 65 authority is stale, SAFE-06 remains
+open, and DeviceRGB/named-sRGB remains Phase 65-only.
+<!-- PHASE64_TERMINAL_LIFECYCLE_END -->

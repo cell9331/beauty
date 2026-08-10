@@ -42,11 +42,11 @@
 - [x] **SCLERA-11**: Redness is scored only inside the accepted hard envelope; any blur or feather is followed by re-clipping to the same hard envelope before composition.
 - [x] **SCLERA-12**: The bounded transform derives every changed RGB value from the immutable canonical source, reduces only measured red excess, restores natural luminance, and preserves vessel/detail variation and non-porcelain color.
 - [x] **SCLERA-13**: Blink, closure, gaze, glasses/contacts, occlusion, strong highlight, collapsed contour, missing or implausible pupil, malformed support, and one-eye rejection fail only the affected eye without guessing, mirroring, caching, or reusing peer/stale support.
-- [ ] **SCLERA-14**: A color-independent open-redness geometry oracle proves zero candidate overlap with the unperturbed protected iris, pupil, highlight, lash, skin, and outside-aperture truth across bounded contour/pupil perturbations. Fresh evidence is eligible; canonical completion remains pending final Phase 64 verification.
-- [ ] **SCLERA-15**: A recolored-protected-iris final-output oracle proves that the real score, feather, hard re-clip, bounded transform, and composition together change zero protected iris/pupil/highlight pixels. Fresh evidence is eligible; canonical completion remains pending final Phase 64 verification.
-- [ ] **SCLERA-16**: Genuine redness positives show predeclared bounded per-eye target improvement, while normal negatives and unsafe or unsupported eyes abstain or remain natural at maximum admitted strength. Fresh evidence is eligible; canonical completion remains pending final Phase 64 verification.
-- [ ] **SCLERA-17**: Isolated public-facade renderer cases and a strict decoded-output helper prove visible per-eye behavior, peer-eye independence, same dimensions, expected no-ops, and zero protected/outside changes. Fresh evidence is eligible; canonical completion remains pending final Phase 64 verification.
-- [ ] **SCLERA-18**: Sclera evidence, per-eye provider tests, native/adversarial safety matrices, original-detail review, compatibility, privacy, full regression, exact product ledger, and independent verification all agree before `祛红血丝` is promoted; branch `眼睛` remains partial because `去脂` is future. Fresh evidence is eligible; canonical completion remains pending final Phase 64 verification.
+- [x] **SCLERA-14**: A color-independent open-redness geometry oracle proves zero candidate overlap with the unperturbed protected iris, pupil, highlight, lash, skin, and outside-aperture truth across bounded contour/pupil perturbations. Canonical Phase 64 terminal verification passed.
+- [x] **SCLERA-15**: A recolored-protected-iris final-output oracle proves that the real score, feather, hard re-clip, bounded transform, and composition together change zero protected iris/pupil/highlight pixels. Canonical Phase 64 terminal verification passed.
+- [x] **SCLERA-16**: Genuine redness positives show predeclared bounded per-eye target improvement, while normal negatives and unsafe or unsupported eyes abstain or remain natural at maximum admitted strength. Canonical Phase 64 terminal verification passed.
+- [x] **SCLERA-17**: Isolated public-facade renderer cases and a strict decoded-output helper prove visible per-eye behavior, peer-eye independence, same dimensions, expected no-ops, and zero protected/outside changes. Canonical Phase 64 terminal verification passed.
+- [x] **SCLERA-18**: Sclera evidence, per-eye provider tests, native/adversarial safety matrices, original-detail review, compatibility, privacy, full regression, exact product ledger, and independent verification all agree before `祛红血丝` is promoted; branch `眼睛` remains partial because `去脂` is future. Canonical Phase 64 terminal verification passed.
 
 ### Shared Safety, Compatibility, and Closeout
 
@@ -54,13 +54,20 @@
 - [ ] **SAFE-05**: Repeated, parallel, canceled, reset, no-face, malformed-support, and mixed-feature requests retain no prior pixels, masks, support, proposals, or summaries and recover on a later valid request with only allowlisted aggregate diagnostics. Implementation evidence exists; Phase 65 verification is blocked.
 - [ ] **SAFE-06**: Local-retouch output must preserve canonical dimensions, orientation, opaque-alpha policy, explicit-sRGB contract, typed payload-free errors, deterministic no-op behavior, and unrelated eligible face/color output. DeviceRGB/named-sRGB remains unresolved exclusively in Phase 65 and receives no Phase 64 closure credit.
 - [ ] **SAFE-07**: The exact stored-field, CodingKey, source-construction, preset, renderer, Demo-taxonomy, and admission inventories advance only for independently admitted teeth and sclera surfaces while every legacy zero/missing payload remains neutral. Implementation evidence exists; Phase 65 verification is blocked.
-- [ ] **OUT-05**: Standalone teeth and standalone sclera requests are each verified only through the public `BeautySDK` facade by isolated output cases, strict decoded comparisons, disposable ignored review artifacts, and original-detail inspection. Fresh evidence is eligible; canonical completion remains pending final Phase 64 verification.
+- [x] **OUT-05**: Standalone teeth and standalone sclera requests are each verified only through the public `BeautySDK` facade by isolated output cases, strict decoded comparisons, disposable ignored review artifacts, and original-detail inspection. Canonical Phase 64 terminal verification passed.
 - [ ] **OUT-06**: A combined teeth+sclera request byte-matches independently merged standalone oracles for disjoint masks, preserves the canonical source on any cross-provider collision, and keeps unaffected output under injected teeth, whole-sclera, left-eye, and right-eye failure. Implementation tests exist; current Phase 65 verification is stale/blocked.
 - [ ] **OUT-07**: Full SwiftPM, opt-in Apple Vision integration, Demo compatibility, privacy/resource/network scans, adversarial safety, active-source and owner-document checks, code review/fix, and independent verification pass before milestone closeout. The prior result is stale/blocked by Phase 64 `gaps_found`.
 - [ ] **OUT-08**: Product ledgers promote exactly independently passed `白牙` and `祛红血丝`; `嘴唇` may close after qualified `白牙`, while `眼睛` remains partial with `去脂` future, and no broader device, commercial, packaging, shipping, or launch claim is inferred. `祛红血丝` is currently future/unproven, so this requirement is open.
 - [ ] **OUT-09**: An independent milestone audit verifies 100% requirement traceability, canonical phase verification, cross-feature integration, standalone and combined end-to-end flows, and all deferred nonclaims before v1.15 is archived or tagged. The prior audit is stale and Phase 65 is blocked.
 
 ## Future Requirements
+
+<!-- PHASE64_TERMINAL_LIFECYCLE_BEGIN -->
+Phase 64 is canonically passed at exactly 21 plans and 38 ordered task IDs.
+SCLERA-14 through SCLERA-18 and OUT-05 are complete. Phase 65 is
+unblocked/current only for fresh verification and audit; its prior authority is
+stale, SAFE-06 remains open, and DeviceRGB/named-sRGB remains Phase 65-only.
+<!-- PHASE64_TERMINAL_LIFECYCLE_END -->
 
 ### Deferred Local Retouch
 
