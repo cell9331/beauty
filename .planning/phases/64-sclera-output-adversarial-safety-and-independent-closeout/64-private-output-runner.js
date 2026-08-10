@@ -1,6 +1,7 @@
 "use strict";
 
 const fs = require("node:fs");
+const os = require("node:os");
 const path = require("node:path");
 const crypto = require("node:crypto");
 const { spawnSync } = require("node:child_process");
@@ -21,6 +22,44 @@ const NO_FACE = path.join(ROOT, "example-images", "input", "negatives", "no-face
 const CASES = ["geometryBaseline_noop", "scleraRednessReduction_1p00"];
 const MAX_ASSET_BYTES = 32 * 1024 * 1024;
 const MAX_CHILD_BUFFER = 1024 * 1024;
+const DESCRIPTOR_RELATIVE_REMOVE = String.raw`
+import os
+import stat
+import sys
+
+root, relative = sys.argv[1], sys.argv[2]
+parts = relative.split(os.sep)
+if not parts or any(part in ("", ".", "..") for part in parts):
+    raise RuntimeError("unsafe_relative_target")
+flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+descriptors = []
+current = os.open(root, flags)
+descriptors.append(current)
+try:
+    for component in parts[:-1]:
+        current = os.open(component, flags, dir_fd=current)
+        descriptors.append(current)
+
+    def purge(parent_fd, name):
+        child_fd = os.open(name, flags, dir_fd=parent_fd)
+        try:
+            for entry in os.listdir(child_fd):
+                metadata = os.stat(entry, dir_fd=child_fd, follow_symlinks=False)
+                if stat.S_ISDIR(metadata.st_mode):
+                    purge(child_fd, entry)
+                elif stat.S_ISREG(metadata.st_mode):
+                    os.unlink(entry, dir_fd=child_fd)
+                else:
+                    raise RuntimeError("unsafe_generated_entry")
+        finally:
+            os.close(child_fd)
+        os.rmdir(name, dir_fd=parent_fd)
+
+    purge(current, parts[-1])
+finally:
+    for descriptor in reversed(descriptors):
+        os.close(descriptor)
+`;
 
 function fixed(status, extra = {}) {
   process.stdout.write(`${JSON.stringify({
@@ -68,22 +107,23 @@ function assertNoSymlinkComponents(target, floor = ROOT) {
   }
 }
 
-function removeValidatedTree(target) {
+function removeValidatedTree(target, floor = PRIVATE_PARENT) {
   if (!fs.existsSync(target)) return;
-  assertContained(PRIVATE_PARENT, target);
-  assertNoSymlinkComponents(target, PRIVATE_PARENT);
-  const metadata = fs.lstatSync(target);
-  if (!metadata.isDirectory() || metadata.isSymbolicLink()) throw new Error("unsafe_generated_root");
-  for (const name of fs.readdirSync(target)) {
-    const child = path.join(target, name);
-    assertContained(target, child);
-    const childMetadata = fs.lstatSync(child);
-    if (childMetadata.isSymbolicLink()) throw new Error("unsafe_generated_symlink");
-    if (childMetadata.isDirectory()) removeValidatedTree(child);
-    else if (childMetadata.isFile()) fs.unlinkSync(child);
-    else throw new Error("unsafe_generated_entry");
+  assertContained(floor, target);
+  const relative = path.relative(floor, target);
+  if (!relative || relative.split(path.sep).some((component) => !component || component === "." || component === "..")) {
+    throw new Error("unsafe_generated_root");
   }
-  fs.rmdirSync(target);
+  const result = spawnSync("python3", ["-c", DESCRIPTOR_RELATIVE_REMOVE, floor, relative], {
+    cwd: ROOT,
+    encoding: "buffer",
+    timeout: 20_000,
+    maxBuffer: 64 * 1024,
+  });
+  if (result.status !== 0 || result.error || result.signal
+    || result.stdout.length !== 0 || result.stderr.length !== 0) {
+    throw new Error("descriptor_relative_cleanup_failed");
+  }
 }
 
 function writeExclusiveRegular(destination, bytes) {
@@ -276,7 +316,27 @@ function runSelfTests() {
     throw new Error("strict_helper_distinct_execution_invalid");
   }
   expectFailure(() => runStrictHelperChildren("opaque-bundle", () => valid(selfTestJSON)));
-  if (rejected !== 14) throw new Error("strict_helper_self_test_count_invalid");
+
+  const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "phase64-cleanup-self-test-"));
+  const safeRoot = path.join(temporary, "safe-root");
+  const unsafeRoot = path.join(temporary, "unsafe-root");
+  const outside = path.join(temporary, "outside.bin");
+  fs.mkdirSync(path.join(safeRoot, "nested"), { recursive: true });
+  fs.writeFileSync(path.join(safeRoot, "nested", "generated.bin"), "generated");
+  removeValidatedTree(safeRoot, temporary);
+  if (fs.existsSync(safeRoot)) throw new Error("descriptor_cleanup_incomplete");
+  fs.mkdirSync(unsafeRoot);
+  fs.writeFileSync(outside, "outside");
+  const unsafeLink = path.join(unsafeRoot, "outside-link");
+  fs.symlinkSync(outside, unsafeLink);
+  expectFailure(() => removeValidatedTree(unsafeRoot, temporary));
+  if (fs.readFileSync(outside, "utf8") !== "outside") throw new Error("descriptor_cleanup_escaped");
+  fs.unlinkSync(unsafeLink);
+  removeValidatedTree(unsafeRoot, temporary);
+  fs.unlinkSync(outside);
+  fs.rmdirSync(temporary);
+
+  if (rejected !== 15) throw new Error("strict_helper_self_test_count_invalid");
   return rejected;
 }
 
@@ -326,5 +386,6 @@ if (require.main === module) main();
 
 module.exports = {
   classifyStrictHelperChild,
+  removeValidatedTree,
   runStrictHelperChildren,
 };
