@@ -20,9 +20,9 @@ from typing import Callable, Iterable
 
 THREATS = tuple(f"T-64-{index:02d}" for index in range(1, 9))
 PHASE_DIR = Path(".planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout")
-EXPECTED_PLAN_COUNT = 19
+EXPECTED_PLAN_COUNT = 21
 HISTORICAL_EXECUTED_PLAN_IDS = tuple(range(1, 14))
-CURRENT_STRUCTURE_PLAN_IDS = tuple(range(14, 20))
+CURRENT_STRUCTURE_PLAN_IDS = tuple(range(14, 22))
 EXPECTED_TASKS = tuple(
     (
         "64-01-01", "64-01-02", "64-02-01", "64-02-02",
@@ -33,7 +33,8 @@ EXPECTED_TASKS = tuple(
         "64-11-01", "64-11-02", "64-12-01", "64-13-01",
         "64-14-01", "64-14-02", "64-15-01", "64-15-02",
         "64-16-01", "64-16-02", "64-17-01", "64-17-02",
-        "64-18-01", "64-19-01",
+        "64-18-01", "64-19-01", "64-20-01", "64-20-02",
+        "64-20-03", "64-21-01",
     )
 )
 OPT_IN_TESTS = (
@@ -131,6 +132,19 @@ POST_REPAIR_AUTHORITY_PATHS = tuple(sorted(str(path) for path in (
     POST_REPAIR_REVIEW_FIX, POST_REPAIR_SECURITY, POST_REPAIR_PRE_PROMOTION,
 )))
 
+TERMINAL_R2_EVIDENCE = PHASE_DIR / "64-TERMINAL-R2-SCLERA-OUTPUT-EVIDENCE.md"
+TERMINAL_R2_REVIEW = PHASE_DIR / "64-TERMINAL-R2-REVIEW.md"
+TERMINAL_R2_CODE_REVIEW = PHASE_DIR / "64-TERMINAL-R2-CODE-REVIEW.md"
+TERMINAL_R2_REVIEW_FIX = PHASE_DIR / "64-TERMINAL-R2-REVIEW-FIX.md"
+TERMINAL_R2_SECURITY = PHASE_DIR / "64-TERMINAL-R2-SECURITY.md"
+TERMINAL_R2_PRE_PROMOTION = PHASE_DIR / "64-TERMINAL-R2-PRE-PROMOTION-VERIFICATION.md"
+TERMINAL_R2_CANDIDATE = PHASE_DIR / "64-TERMINAL-R2-CANDIDATE-VERIFICATION.md"
+TERMINAL_R2_DIAGNOSTIC = PHASE_DIR / "64-TERMINAL-R2-DIAGNOSTIC.md"
+TERMINAL_R2_AUTHORITY_PATHS = tuple(sorted(str(path) for path in (
+    TERMINAL_R2_EVIDENCE, TERMINAL_R2_REVIEW, TERMINAL_R2_CODE_REVIEW,
+    TERMINAL_R2_REVIEW_FIX, TERMINAL_R2_SECURITY, TERMINAL_R2_PRE_PROMOTION,
+)))
+
 ROOT_CONTRACT_FILES = (
     Path("DESIGN.md"), Path("SECURITY.md"), Path("RELIABILITY.md"),
     Path("PRODUCT_SENSE.md"), Path("QUALITY_SCORE.md"),
@@ -146,21 +160,31 @@ CANDIDATE_INPUT_OWNER_PATHS = tuple(sorted(str(path) for path in (
 CANDIDATE_IMMUTABLE_OWNER_PATHS = tuple(sorted(str(path) for path in (
     *PRODUCT_FILES, *ROOT_CONTRACT_FILES,
 )))
+CANDIDATE_MUTABLE_FINAL_OWNER_PATHS = tuple(sorted(str(path) for path in (
+    PHASE_DIR / "64-VERIFICATION.md", PHASE_DIR / "64-VALIDATION.md",
+    *LIFECYCLE_FILES,
+)))
 if (
     len(CANDIDATE_INPUT_OWNER_PATHS) != 15
     or len(CANDIDATE_IMMUTABLE_OWNER_PATHS) != 9
+    or len(CANDIDATE_MUTABLE_FINAL_OWNER_PATHS) != 6
     or len(POST_REPAIR_AUTHORITY_PATHS) != 6
+    or len(TERMINAL_R2_AUTHORITY_PATHS) != 6
+    or set(CANDIDATE_INPUT_OWNER_PATHS) != set(CANDIDATE_IMMUTABLE_OWNER_PATHS) | set(CANDIDATE_MUTABLE_FINAL_OWNER_PATHS)
+    or set(CANDIDATE_IMMUTABLE_OWNER_PATHS) & set(CANDIDATE_MUTABLE_FINAL_OWNER_PATHS)
 ):
     raise RuntimeError("candidate owner/authority inventory mismatch")
 
-CANDIDATE_SCHEMA = "phase64-post-repair-candidate-v1"
-POST_REPAIR_SCHEMAS = {
-    "review": ("phase64-post-repair-review-v1", "post_repair_original_detail_review"),
-    "code_review": ("phase64-post-repair-code-review-v1", "post_repair_code_review"),
-    "review_fix": ("phase64-post-repair-review-fix-v1", "post_repair_review_fix"),
-    "security": ("phase64-post-repair-security-v1", "post_repair_security"),
-    "eligibility": ("phase64-post-repair-pre-promotion-v1", "post_repair_pre_promotion"),
+CANDIDATE_SCHEMA = "phase64-terminal-candidate-r2"
+TERMINAL_R2_SCHEMAS = {
+    "review": ("phase64-terminal-review-r2", "terminal_r2_original_detail_review"),
+    "code_review": ("phase64-terminal-code-review-r2", "terminal_r2_code_review"),
+    "review_fix": ("phase64-terminal-review-fix-r2", "terminal_r2_review_fix"),
+    "security": ("phase64-terminal-security-r2", "terminal_r2_security"),
+    "eligibility": ("phase64-terminal-pre-promotion-r2", "terminal_r2_pre_promotion"),
 }
+TERMINAL_LIFECYCLE_BEGIN = "<!-- PHASE64_TERMINAL_LIFECYCLE_BEGIN -->"
+TERMINAL_LIFECYCLE_END = "<!-- PHASE64_TERMINAL_LIFECYCLE_END -->"
 REVIEW_CATEGORY_ROWS = (
     ("obvious_but_natural_positive_improvement", "pass", "not_applicable", "not_applicable"),
     ("negative_naturalness_no_unnecessary_change", "not_applicable", "pass", "not_applicable"),
@@ -279,6 +303,17 @@ def repository_delta_digest(rows: tuple[tuple[str, str], ...]) -> str:
     return sha256_bytes(json.dumps(rows, ensure_ascii=True, separators=(",", ":")).encode("utf-8"))
 
 
+def candidate_snapshot_digest(parsed: dict[str, object]) -> str:
+    rows = {
+        "input_owners": parsed["input_owners"],
+        "immutable_owners": parsed["immutable_owners"],
+        "mutable_owners": parsed["mutable_owners"],
+        "sources": parsed["sources"],
+        "authority": parsed["authority"],
+    }
+    return sha256_bytes(json.dumps(rows, sort_keys=True, separators=(",", ":")).encode("utf-8"))
+
+
 def expected_plan_task_ids(plan: int) -> tuple[str, ...]:
     prefix = f"64-{plan:02d}-"
     return tuple(task for task in EXPECTED_TASKS if task.startswith(prefix))
@@ -338,32 +373,33 @@ def parse_no_skip_evidence(text: str) -> dict[str, int]:
     return values
 
 
-def validate_post_repair_authority(*, require_eligibility: bool) -> dict[str, int]:
-    evidence = read(POST_REPAIR_EVIDENCE)
+def validate_terminal_r2_authority(*, require_eligibility: bool) -> dict[str, int]:
+    evidence = read(TERMINAL_R2_EVIDENCE)
     values = parse_no_skip_evidence(evidence)
-    validate_review(read(POST_REPAIR_REVIEW))
-    validate_code_review(read(POST_REPAIR_CODE_REVIEW))
-    validate_review_fix(read(POST_REPAIR_REVIEW_FIX))
-    validate_security(read(POST_REPAIR_SECURITY))
+    validate_review(read(TERMINAL_R2_REVIEW))
+    validate_code_review(read(TERMINAL_R2_CODE_REVIEW))
+    validate_review_fix(read(TERMINAL_R2_REVIEW_FIX))
+    validate_security(read(TERMINAL_R2_SECURITY))
     if require_eligibility:
-        validate_eligibility(read(POST_REPAIR_PRE_PROMOTION))
+        validate_eligibility(read(TERMINAL_R2_PRE_PROMOTION))
     return values
 
 
-def parse_post_repair_candidate(text: str) -> dict[str, object]:
+def parse_terminal_candidate(text: str) -> dict[str, object]:
     status = parse_scalar(text, "status")
     require(status in ("candidate_passed", "gaps_found"), "candidate status invalid")
     require(parse_scalar(text, "schema") == CANDIDATE_SCHEMA, "candidate schema invalid")
-    require(parse_scalar(text, "verification_stage") == "post_repair_candidate", "candidate stage invalid")
+    require(parse_scalar(text, "verification_stage") == "terminal_r2_candidate", "candidate stage invalid")
     require(parse_scalar(text, "independent") == "true", "candidate independence missing")
     plans = parse_block(text, "plan_inventory")
     tasks = parse_block(text, "task_inventory")
-    require(plans == tuple(f"64-{number:02d}" for number in range(1, 20)), "candidate plan inventory mismatch")
+    require(plans == tuple(f"64-{number:02d}" for number in range(1, 22)), "candidate plan inventory mismatch")
     require(tasks == EXPECTED_TASKS, "candidate task inventory mismatch")
     input_owners = parse_dual_hash_manifest(text, "input_owner_manifest", CANDIDATE_INPUT_OWNER_PATHS)
     immutable_owners = parse_dual_hash_manifest(text, "immutable_owner_manifest", CANDIDATE_IMMUTABLE_OWNER_PATHS)
+    mutable_owners = parse_dual_hash_manifest(text, "mutable_final_owner_manifest", CANDIDATE_MUTABLE_FINAL_OWNER_PATHS)
     sources = parse_hash_manifest(text, "relevant_source_manifest", RELEVANT_SOURCE_PATHS)
-    authority = parse_hash_manifest(text, "authority_manifest", POST_REPAIR_AUTHORITY_PATHS)
+    authority = parse_hash_manifest(text, "authority_manifest", TERMINAL_R2_AUTHORITY_PATHS)
     opt_in_rows = parse_block(text, "opt_in_tests")
     threats = parse_block(text, "threats")
     return {
@@ -372,6 +408,7 @@ def parse_post_repair_candidate(text: str) -> dict[str, object]:
         "repository_delta_digest": parse_scalar(text, "pre_repository_delta_digest"),
         "input_owners": input_owners,
         "immutable_owners": immutable_owners,
+        "mutable_owners": mutable_owners,
         "sources": sources,
         "authority": authority,
         "opt_in_rows": opt_in_rows,
@@ -385,24 +422,24 @@ def parse_post_repair_candidate(text: str) -> dict[str, object]:
 
 
 def capture_candidate_baseline(repo: Path = Path(".")) -> dict[str, object]:
-    require(not (repo / POST_REPAIR_CANDIDATE).exists(), "candidate already exists")
+    require(not (repo / TERMINAL_R2_CANDIDATE).exists(), "candidate already exists")
     return {
         "delta": repository_delta_snapshot(repo),
         "input_owners": hash_paths(CANDIDATE_INPUT_OWNER_PATHS, repo),
         "immutable_owners": hash_paths(CANDIDATE_IMMUTABLE_OWNER_PATHS, repo),
         "sources": hash_paths(RELEVANT_SOURCE_PATHS, repo),
-        "authority": hash_paths(POST_REPAIR_AUTHORITY_PATHS, repo),
+        "authority": hash_paths(TERMINAL_R2_AUTHORITY_PATHS, repo),
     }
 
 
-def validate_post_repair_candidate(
+def validate_terminal_candidate(
     text: str,
     *,
     repo: Path = Path("."),
     expected_nonce: str | None = None,
     baseline: dict[str, object] | None = None,
 ) -> dict[str, object]:
-    parsed = parse_post_repair_candidate(text)
+    parsed = parse_terminal_candidate(text)
     nonce = parsed["guard_nonce"]
     require(isinstance(nonce, str) and re.fullmatch(r"[0-9a-f]{32}", nonce) is not None, "candidate nonce invalid")
     if expected_nonce is not None:
@@ -410,15 +447,17 @@ def validate_post_repair_candidate(
     live_inputs = hash_paths(CANDIDATE_INPUT_OWNER_PATHS, repo)
     live_immutable = hash_paths(CANDIDATE_IMMUTABLE_OWNER_PATHS, repo)
     live_sources = hash_paths(RELEVANT_SOURCE_PATHS, repo)
-    live_authority = hash_paths(POST_REPAIR_AUTHORITY_PATHS, repo)
+    live_authority = hash_paths(TERMINAL_R2_AUTHORITY_PATHS, repo)
     for key, (before, after) in parsed["input_owners"].items():
         require(before == after == live_inputs[key], "candidate input owner drift")
     for key, (before, after) in parsed["immutable_owners"].items():
         require(before == after == live_immutable[key], "candidate immutable owner drift")
+    for key, (before, after) in parsed["mutable_owners"].items():
+        require(before == after == live_inputs[key], "candidate mutable owner drift")
     require(parsed["sources"] == live_sources, "candidate source manifest stale")
     require(parsed["authority"] == live_authority, "candidate authority manifest stale")
-    current_delta = repository_delta_snapshot(repo, exclude=frozenset((str(POST_REPAIR_CANDIDATE),)))
-    require(parsed["repository_delta_digest"] == repository_delta_digest(current_delta), "candidate repository baseline drift")
+    current_delta = repository_delta_snapshot(repo, exclude=frozenset((str(TERMINAL_R2_CANDIDATE),)))
+    require(parsed["repository_delta_digest"] == candidate_snapshot_digest(parsed), "candidate snapshot digest stale")
     if baseline is not None:
         require(baseline["delta"] == current_delta, "candidate extra repository write")
         require(baseline["input_owners"] == live_inputs, "candidate baseline owner drift")
@@ -428,17 +467,89 @@ def validate_post_repair_candidate(
     require(parsed["unresolved_high"] == 0, "candidate HIGH finding open")
     require(parsed["threats"] == tuple(f"{threat}: pass" for threat in THREATS), "candidate threat inventory incomplete")
     if parsed["status"] == "candidate_passed":
-        evidence = validate_post_repair_authority(require_eligibility=True)
+        evidence = validate_terminal_r2_authority(require_eligibility=True)
         require(parsed["executed_tests"] == evidence["executed_tests"] > 0, "candidate no-skip count drift")
         require(parsed["failed_tests"] == 0 and parsed["skipped_tests"] == 0, "candidate suite not clean")
         require(parsed["opt_in_tests_executed"] == 8, "candidate opt-in count mismatch")
         require(parsed["opt_in_rows"] == tuple(f"{identity} passed" for identity in OPT_IN_TESTS), "candidate opt-in identities invalid")
-        require(parse_scalar(text, "promotion_authorized") == "true", "candidate promotion authority invalid")
+        require(parse_scalar(text, "terminal_plan_authorized") == "64-21", "candidate terminal authority invalid")
+        require(parse_scalar(text, "phase_65_authorized") == "false", "candidate authorized Phase 65")
     else:
-        require(parse_scalar(text, "promotion_authorized") == "false", "failed candidate authorized promotion")
-        require(parse_scalar(text, "required_next_action") == "execute_64_19_full_requarantine", "failed candidate next action invalid")
+        require(parse_scalar(text, "terminal_plan_authorized") == "64-21-quarantine-only", "failed candidate terminal authority invalid")
+        require(parse_scalar(text, "phase_65_authorized") == "false", "failed candidate authorized Phase 65")
         require(bool(parse_block(text, "blocker_categories")), "failed candidate blocker categories empty")
     return parsed
+
+
+def validate_terminal_candidate_authority(
+    text: str,
+    *,
+    repo: Path = Path("."),
+) -> dict[str, object]:
+    """Authenticate immutable candidate/source/authority without prewrite owner equality."""
+    parsed = parse_terminal_candidate(text)
+    nonce = parsed["guard_nonce"]
+    require(isinstance(nonce, str) and re.fullmatch(r"[0-9a-f]{32}", nonce) is not None, "candidate nonce invalid")
+    require(parsed["repository_delta_digest"] == candidate_snapshot_digest(parsed), "candidate snapshot digest stale")
+    require(parsed["sources"] == hash_paths(RELEVANT_SOURCE_PATHS, repo), "candidate source manifest stale")
+    require(parsed["authority"] == hash_paths(TERMINAL_R2_AUTHORITY_PATHS, repo), "candidate authority manifest stale")
+    require(parsed["unresolved_high"] == 0, "candidate HIGH finding open")
+    require(parsed["threats"] == tuple(f"{threat}: pass" for threat in THREATS), "candidate threat inventory incomplete")
+    evidence = validate_terminal_r2_authority(require_eligibility=True)
+    require(parsed["status"] == "candidate_passed", "candidate did not pass")
+    require(parsed["executed_tests"] == evidence["executed_tests"] > 0, "candidate no-skip count drift")
+    require(parsed["failed_tests"] == parsed["skipped_tests"] == 0, "candidate suite not clean")
+    require(parsed["opt_in_tests_executed"] == 8, "candidate opt-in count mismatch")
+    require(parsed["opt_in_rows"] == tuple(f"{identity} passed" for identity in OPT_IN_TESTS), "candidate opt-in identities invalid")
+    return parsed
+
+
+def validate_terminal_transition(
+    parsed: dict[str, object],
+    live_owner_hashes: dict[str, str],
+    changed_paths: tuple[str, ...],
+) -> None:
+    require(tuple(sorted(changed_paths)) == CANDIDATE_MUTABLE_FINAL_OWNER_PATHS, "terminal final path delta mismatch")
+    input_owners = parsed["input_owners"]
+    immutable_owners = parsed["immutable_owners"]
+    mutable_owners = parsed["mutable_owners"]
+    require(isinstance(input_owners, dict) and isinstance(immutable_owners, dict) and isinstance(mutable_owners, dict), "candidate owner partitions invalid")
+    require(set(live_owner_hashes) == set(CANDIDATE_INPUT_OWNER_PATHS), "terminal live owner scope mismatch")
+    for key in CANDIDATE_IMMUTABLE_OWNER_PATHS:
+        before, after = immutable_owners[key]
+        require(before == after == input_owners[key][0] == input_owners[key][1] == live_owner_hashes[key], "terminal immutable owner drift")
+    for key in CANDIDATE_MUTABLE_FINAL_OWNER_PATHS:
+        before, after = mutable_owners[key]
+        require(before == after == input_owners[key][0] == input_owners[key][1], "terminal mutable candidate drift")
+        require(live_owner_hashes[key] != before, "terminal mutable owner unchanged")
+
+
+def terminal_lifecycle_block(text: str) -> str:
+    require(text.count(TERMINAL_LIFECYCLE_BEGIN) == 1, "terminal lifecycle begin marker invalid")
+    require(text.count(TERMINAL_LIFECYCLE_END) == 1, "terminal lifecycle end marker invalid")
+    begin = text.find(TERMINAL_LIFECYCLE_BEGIN)
+    end = text.find(TERMINAL_LIFECYCLE_END)
+    require(begin >= 0 and end > begin + len(TERMINAL_LIFECYCLE_BEGIN), "terminal lifecycle marker order invalid")
+    body = text[begin + len(TERMINAL_LIFECYCLE_BEGIN):end]
+    require(TERMINAL_LIFECYCLE_BEGIN not in body and TERMINAL_LIFECYCLE_END not in body, "terminal lifecycle markers nested")
+    return body
+
+
+def validate_terminal_continuation_scope(diagnostic: str, lifecycle_texts: Iterable[str]) -> None:
+    require(parse_scalar(diagnostic, "schema") == "phase64-terminal-diagnostic-r2", "terminal diagnostic schema invalid")
+    require(parse_scalar(diagnostic, "lifecycle_state") == "manual_decision_required", "terminal diagnostic lifecycle invalid")
+    require(parse_scalar(diagnostic, "automatic_phase64_plan_allowed") == "false", "terminal diagnostic automatic repair enabled")
+    require(parse_scalar(diagnostic, "next_action") == "manual_developer_decision", "terminal diagnostic next action invalid")
+    require(parse_scalar(diagnostic, "phase_65_authorized") == "false", "terminal diagnostic authorized Phase 65")
+    scoped = "\n".join((diagnostic, *(terminal_lifecycle_block(text) for text in lifecycle_texts)))
+    forbidden = (
+        r"\b64-22\b",
+        r"\b(?:automatic|automatically)\s+(?:retry|continue|continuation|repair|replan)",
+        r"\b(?:retry|continue|continuation)\s+(?:automatically|phase\s*64)",
+        r"(?:\$|/)gsd-plan-phase\b|\bplan-phase\b",
+        r"\b(?:add|append|create|generate|queue|run|invoke)\b[^\n]{0,80}\bphase\s*64\b[^\n]{0,40}\b(?:repair\s+)?plan\b",
+    )
+    require(not any(re.search(pattern, scoped, re.IGNORECASE) for pattern in forbidden), "terminal continuation directive forbidden")
 
 
 def safe_relative_key(value: str) -> bool:
@@ -831,7 +942,7 @@ def validate_source_bound_artifact(
     expected_scalars: dict[str, str],
     repo: Path = Path("."),
 ) -> None:
-    schema, stage = POST_REPAIR_SCHEMAS[schema_key]
+    schema, stage = TERMINAL_R2_SCHEMAS[schema_key]
     required = {
         "schema": schema,
         "verification_stage": stage,
@@ -1004,53 +1115,56 @@ def validate_lifecycle_inventory(inventory: dict[str, object]) -> None:
 
 def validate_stage(mode: str) -> None:
     canonical = read(PHASE_DIR / "64-VERIFICATION.md")
-    if mode == "final":
-        for token in ("verification_stage: post_repair_final", "independent: true", "status: passed"):
+    if mode == "terminal-final":
+        for token in ("verification_stage: post_terminal_final", "independent: true", "status: passed"):
             require(token in canonical, "canonical final verification incomplete")
-        candidate = read(POST_REPAIR_CANDIDATE)
-        validate_post_repair_candidate(candidate)
+        candidate = read(TERMINAL_R2_CANDIDATE)
+        validate_terminal_candidate_authority(candidate)
         require("status: candidate_passed" in candidate, "candidate verification incomplete")
     else:
         require("status: gaps_found" in canonical, "canonical verification passed prematurely")
         require("promotion_status: unproven" in canonical, "canonical quarantine incomplete")
-    if mode == "promotion-pending-verification":
-        validate_eligibility(read(POST_REPAIR_PRE_PROMOTION))
+    if mode == "terminal-promotion-pending":
+        validate_eligibility(read(TERMINAL_R2_PRE_PROMOTION))
 
 
 def validate_validation_ledger(mode: str) -> None:
-    if mode == "pre-promotion":
+    if mode == "terminal-pre-promotion":
         return
     text = read(PHASE_DIR / "64-VALIDATION.md")
     ids = tuple(re.findall(r"^\| (64-\d\d-\d\d) \|", text, re.MULTILINE))
     require(ids == EXPECTED_TASKS, "validation rows missing/duplicated/reordered")
     lowered = text.lower()
-    if mode == "promotion-pending-verification":
-        rows = [line.lower() for line in text.splitlines() if re.match(r"^\| 64-(18|19)-01 \|", line)]
-        require(len(rows) == 2 and all("pending" in row or "not-run" in row or "not run" in row for row in rows), "future gates not visibly pending")
-        require("34/34" not in text, "validation finalized before candidate")
-    elif mode == "final":
-        require("34/34" in text, "final validation total missing")
-        current_rows = [line.lower() for line in text.splitlines() if re.match(r"^\| 64-(14|15|16|17|18|19)-", line)]
+    if mode == "terminal-promotion-pending":
+        final_row = next((line.lower() for line in text.splitlines() if line.startswith("| 64-21-01 |")), "")
+        require("pending" in final_row or "not-run" in final_row or "not run" in final_row, "terminal gate not visibly pending")
+        require("38/38" not in text, "validation finalized before terminal plan")
+    elif mode == "terminal-final":
+        require("38/38" in text, "final validation total missing")
+        current_rows = [line.lower() for line in text.splitlines() if re.match(r"^\| 64-(14|15|16|17|18|19|20|21)-", line)]
         require(not any(token in "\n".join(current_rows) for token in ("skipped", "conditional pass", "not-run", "not run", "failed")), "final validation has current non-executed evidence")
         historical = next((line.lower() for line in text.splitlines() if line.startswith("| 64-13-01 |")), "")
         require("historical" in historical and "superseded" in historical, "historical Plan 13 disposition missing")
-    elif mode == "quarantine":
-        final_row = next((line.lower() for line in text.splitlines() if line.startswith("| 64-19-01 |")), "")
+    elif mode == "terminal-quarantine":
+        final_row = next((line.lower() for line in text.splitlines() if line.startswith("| 64-21-01 |")), "")
         require("failed" in final_row and "requarantine" in final_row.replace("-", ""), "quarantine validation row missing")
-        require("34/34" not in text, "quarantine validation falsely complete")
+        require("38/38" not in text, "quarantine validation falsely complete")
 
 
 def validate_lifecycle_content(texts: str, mode: str) -> None:
-    if mode == "promotion-pending-verification":
+    if mode == "terminal-promotion-pending":
         require(re.search(r"promotion.?pending|post.?promotion", texts, re.IGNORECASE) is not None, "lifecycle pending state missing")
-        require(all(f"64-{plan:02d}" in texts for plan in range(14, 20)), "final serial gates missing")
-        require("candidate" in texts.lower() and "bounded final transaction" in texts.lower(), "final gates not explicitly awaited")
-    elif mode == "final":
+        require(all(f"64-{plan:02d}" in texts for plan in range(14, 22)), "terminal serial gates missing")
+        require("candidate" in texts.lower() and ("terminal" in texts.lower() or "bounded final transaction" in texts.lower()), "terminal gates not explicitly awaited")
+    elif mode == "terminal-final":
         require(re.search(r"Phase 64.*(?:complete|completed)|64.*100%", texts, re.IGNORECASE | re.DOTALL) is not None, "lifecycle final state missing")
         require(re.search(r"Phase 65.*(?:unblocked|current|ready)", texts, re.IGNORECASE | re.DOTALL) is not None, "Phase 65 not unblocked by final authority")
-    elif mode == "quarantine":
+    elif mode in ("terminal-pre-promotion", "terminal-quarantine"):
         require(re.search(r"Phase 64.*(?:gaps_found|gaps found|incomplete)", texts, re.IGNORECASE | re.DOTALL) is not None, "lifecycle quarantine missing")
         require(re.search(r"Phase 65.*blocked", texts, re.IGNORECASE | re.DOTALL) is not None, "Phase 65 quarantine missing")
+    if mode == "terminal-quarantine":
+        diagnostic = read(TERMINAL_R2_DIAGNOSTIC)
+        validate_terminal_continuation_scope(diagnostic, (read(path) for path in LIFECYCLE_FILES))
 
 
 def validate_lifecycle_text(mode: str) -> None:
@@ -1061,7 +1175,7 @@ def validate_lifecycle_text(mode: str) -> None:
 
 
 def run_live(mode: str, selected: str | None, *, emit: bool = True) -> int:
-    promoted = mode in ("promotion-pending-verification", "final")
+    promoted = mode in ("terminal-promotion-pending", "terminal-final")
     aggregate_cache: dict[str, object] | None = None
     scan_cache: dict[str, int | str] | None = None
     authority_cache: dict[str, int] | None = None
@@ -1082,19 +1196,30 @@ def run_live(mode: str, selected: str | None, *, emit: bool = True) -> int:
     def authority() -> dict[str, int]:
         nonlocal authority_cache
         if authority_cache is None:
-            authority_cache = validate_post_repair_authority(
-                require_eligibility=mode != "pre-promotion",
+            authority_cache = validate_terminal_r2_authority(
+                require_eligibility=mode != "terminal-pre-promotion",
             )
         return authority_cache
 
-    summary_through = 14 if mode == "pre-promotion" else 16 if mode == "promotion-pending-verification" else 18
+    if mode == "terminal-final":
+        parsed = validate_terminal_candidate_authority(read(TERMINAL_R2_CANDIDATE))
+        live_hashes = hash_paths(CANDIDATE_INPUT_OWNER_PATHS)
+        changed_paths = tuple(path for path, _ in repository_delta_snapshot() if path in CANDIDATE_INPUT_OWNER_PATHS)
+        require(set(path for path, _ in repository_delta_snapshot()) == set(CANDIDATE_MUTABLE_FINAL_OWNER_PATHS), "terminal final repository delta mismatch")
+        validate_terminal_transition(parsed, live_hashes, changed_paths)
+    elif mode == "terminal-quarantine":
+        delta_paths = {path for path, _ in repository_delta_snapshot()}
+        expected = set(CANDIDATE_INPUT_OWNER_PATHS) | {str(TERMINAL_R2_DIAGNOSTIC)}
+        require(delta_paths == expected, "terminal quarantine repository delta mismatch")
+
+    summary_through = 19 if mode in ("terminal-pre-promotion", "terminal-promotion-pending") else 20
 
     checks: dict[str, Callable[[], int]] = {
         "T-64-01": lambda: (validate_renderer_source(read(Path("BeautySDK/Sources/BeautyExampleRenderer/main.swift")), True), 7)[1],
-        "T-64-02": lambda: (validate_parser_artifacts(read(PHASE_DIR / "check_sclera_renderer_outputs.py"), read(POST_REPAIR_EVIDENCE)), authority(), 10)[2],
+        "T-64-02": lambda: (validate_parser_artifacts(read(PHASE_DIR / "check_sclera_renderer_outputs.py"), read(TERMINAL_R2_EVIDENCE)), authority(), 10)[2],
         "T-64-03": lambda: (validate_adversarial_source(read(Path("BeautySDK/Tests/BeautyEffectsTests/BeautyScleraRednessAdversarialCloseoutTests.swift"))), validate_proposal_exposure(), aggregate(), 20)[3],
         "T-64-04": lambda: (validate_final_output_sources(read(Path("BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyScleraRednessProvider.swift")), read(Path("BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyScleraRednessTransform.swift")), read(Path("BeautySDK/Sources/BeautySDK/BeautyEngine.swift"))), 8)[1],
-        "T-64-05": lambda: (validate_review(read(POST_REPAIR_REVIEW)), authority(), 12)[2],
+        "T-64-05": lambda: (validate_review(read(TERMINAL_R2_REVIEW)), authority(), 12)[2],
         "T-64-06": lambda: (validate_privacy(scan(), aggregate()), validate_proposal_exposure(), 12)[2],
         "T-64-07": lambda: (validate_product_state(*(read(path) for path in PRODUCT_FILES), promoted), validate_stage(mode), 12)[2],
         "T-64-08": lambda: (validate_plan_graph(summary_through), validate_lifecycle_inventory(json.loads(read(PHASE_DIR / "64-THREAT-INVENTORY.json"))), validate_validation_ledger(mode), validate_lifecycle_text(mode), authority(), 14)[5],
@@ -1113,8 +1238,8 @@ def run_live(mode: str, selected: str | None, *, emit: bool = True) -> int:
 
 
 def run_candidate_guard(repo: Path = Path(".")) -> int:
-    run_live("promotion-pending-verification", None, emit=False)
-    validate_plan_graph(17)
+    run_live("terminal-promotion-pending", None, emit=False)
+    validate_plan_graph(19)
     baseline = capture_candidate_baseline(repo)
     nonce = secrets.token_hex(16)
     print(json.dumps({
@@ -1127,7 +1252,7 @@ def run_candidate_guard(repo: Path = Path(".")) -> int:
     candidate_bytes: bytes | None = None
     while time.monotonic() < deadline:
         try:
-            current = read_bounded_regular(repo / POST_REPAIR_CANDIDATE)
+            current = read_bounded_regular(repo / TERMINAL_R2_CANDIDATE)
         except CheckError:
             previous = None
             time.sleep(CANDIDATE_GUARD_POLL_MILLISECONDS / 1000)
@@ -1142,7 +1267,7 @@ def run_candidate_guard(repo: Path = Path(".")) -> int:
         candidate_text = candidate_bytes.decode("utf-8", errors="strict")
     except UnicodeDecodeError:
         raise CheckError("candidate encoding invalid") from None
-    parsed = validate_post_repair_candidate(
+    parsed = validate_terminal_candidate(
         candidate_text, repo=repo, expected_nonce=nonce, baseline=baseline,
     )
     print(json.dumps({
@@ -1157,9 +1282,9 @@ def run_candidate_guard(repo: Path = Path(".")) -> int:
 
 
 def run_candidate_validation(repo: Path = Path(".")) -> int:
-    run_live("promotion-pending-verification", None, emit=False)
-    validate_plan_graph(17)
-    parsed = validate_post_repair_candidate(read(repo / POST_REPAIR_CANDIDATE), repo=repo)
+    run_live("terminal-promotion-pending", None, emit=False)
+    validate_plan_graph(19)
+    parsed = validate_terminal_candidate(read(repo / TERMINAL_R2_CANDIDATE), repo=repo)
     print(json.dumps({
         "schema": CANDIDATE_SCHEMA,
         "status": "pass",
@@ -1175,35 +1300,39 @@ def synthetic_candidate_text() -> str:
     digest = "a" * 64
     dual = lambda paths: "\n".join(f"{digest} {digest}  {path}" for path in paths)
     single = lambda paths: "\n".join(f"{digest}  {path}" for path in paths)
-    return "\n".join((
+    base = "\n".join((
         f"schema: {CANDIDATE_SCHEMA}",
-        "verification_stage: post_repair_candidate",
+        "verification_stage: terminal_r2_candidate",
         "independent: true",
         "status: candidate_passed",
-        "promotion_authorized: true",
+        "terminal_plan_authorized: 64-21",
+        "phase_65_authorized: false",
         f"guard_nonce: {'b' * 32}",
-        f"pre_repository_delta_digest: {digest}",
+        "pre_repository_delta_digest: SNAPSHOT_DIGEST",
         "executed_tests: 644", "failed_tests: 0", "skipped_tests: 0",
         "opt_in_tests_executed: 8", "unresolved_high: 0",
-        "plan_inventory_begin", *(f"64-{number:02d}" for number in range(1, 20)), "plan_inventory_end",
+        "plan_inventory_begin", *(f"64-{number:02d}" for number in range(1, 22)), "plan_inventory_end",
         "task_inventory_begin", *EXPECTED_TASKS, "task_inventory_end",
         "input_owner_manifest_begin", dual(CANDIDATE_INPUT_OWNER_PATHS), "input_owner_manifest_end",
         "immutable_owner_manifest_begin", dual(CANDIDATE_IMMUTABLE_OWNER_PATHS), "immutable_owner_manifest_end",
+        "mutable_final_owner_manifest_begin", dual(CANDIDATE_MUTABLE_FINAL_OWNER_PATHS), "mutable_final_owner_manifest_end",
         "relevant_source_manifest_begin", single(RELEVANT_SOURCE_PATHS), "relevant_source_manifest_end",
-        "authority_manifest_begin", single(POST_REPAIR_AUTHORITY_PATHS), "authority_manifest_end",
+        "authority_manifest_begin", single(TERMINAL_R2_AUTHORITY_PATHS), "authority_manifest_end",
         "opt_in_tests_begin", *(f"{identity} passed" for identity in OPT_IN_TESTS), "opt_in_tests_end",
         "threats_begin", *(f"{threat}: pass" for threat in THREATS), "threats_end",
     )) + "\n"
+    parsed = parse_terminal_candidate(base.replace("SNAPSHOT_DIGEST", digest))
+    return base.replace("SNAPSHOT_DIGEST", candidate_snapshot_digest(parsed))
 
 
 def run_candidate_self_tests() -> int:
     fixture = synthetic_candidate_text()
-    parsed = parse_post_repair_candidate(fixture)
+    parsed = parse_terminal_candidate(fixture)
     require(parsed["status"] == "candidate_passed", "candidate positive fixture rejected")
     first_task = EXPECTED_TASKS[0]
     first_owner = CANDIDATE_INPUT_OWNER_PATHS[0]
     first_source = RELEVANT_SOURCE_PATHS[0]
-    first_authority = POST_REPAIR_AUTHORITY_PATHS[0]
+    first_authority = TERMINAL_R2_AUTHORITY_PATHS[0]
     mutations = (
         fixture.replace(CANDIDATE_SCHEMA, "wrong-schema", 1),
         fixture.replace("independent: true", "independent: false", 1),
@@ -1229,7 +1358,7 @@ def run_candidate_self_tests() -> int:
     rejected = 0
     for mutation in mutations:
         try:
-            value = parse_post_repair_candidate(mutation)
+            value = parse_terminal_candidate(mutation)
             require(value["guard_nonce"] == "b" * 32, "candidate nonce invalid")
             require(value["unresolved_high"] == 0, "candidate HIGH mutation accepted")
             require(value["executed_tests"] > 0, "candidate zero execution accepted")
@@ -1237,6 +1366,7 @@ def run_candidate_self_tests() -> int:
             require(value["opt_in_tests_executed"] == 8, "candidate opt-in count accepted")
             require(value["opt_in_rows"] == tuple(f"{identity} passed" for identity in OPT_IN_TESTS), "candidate opt-in rows accepted")
             require(value["threats"] == tuple(f"{threat}: pass" for threat in THREATS), "candidate threat mutation accepted")
+            require(value["repository_delta_digest"] == candidate_snapshot_digest(value), "candidate snapshot digest mutation accepted")
             for before, after in value["input_owners"].values():
                 require(before == after, "candidate owner mutation accepted")
         except (CheckError, ValueError, TypeError):
@@ -1245,6 +1375,111 @@ def run_candidate_self_tests() -> int:
             raise CheckError("candidate mutation accepted")
     require(rejected == len(mutations), "candidate self-test coverage incomplete")
     return rejected
+
+
+def run_terminal_transition_self_tests() -> tuple[int, int, int]:
+    fixture = synthetic_candidate_text()
+    parsed = parse_terminal_candidate(fixture)
+    candidate_hash = "a" * 64
+    final_hash = "c" * 64
+    expected_sources = dict(parsed["sources"])
+    expected_authority = dict(parsed["authority"])
+
+    def validate_final_fixture(
+        value: dict[str, object],
+        live: dict[str, str],
+        paths: tuple[str, ...],
+        sources: dict[str, str],
+        authority: dict[str, str],
+        product_state: str = "promotion_pending_immutable",
+        lifecycle_state: str = "final",
+    ) -> None:
+        require(value["repository_delta_digest"] == candidate_snapshot_digest(value), "terminal candidate digest drift")
+        require(sources == value["sources"], "terminal source drift")
+        require(authority == value["authority"], "terminal authority drift")
+        require(product_state == "promotion_pending_immutable", "terminal product state mixed")
+        require(lifecycle_state == "final", "terminal lifecycle state mixed")
+        validate_terminal_transition(value, live, paths)
+
+    live = {
+        path: candidate_hash if path in CANDIDATE_IMMUTABLE_OWNER_PATHS else final_hash
+        for path in CANDIDATE_INPUT_OWNER_PATHS
+    }
+    validate_final_fixture(
+        parsed, live, CANDIDATE_MUTABLE_FINAL_OWNER_PATHS,
+        expected_sources, expected_authority,
+    )
+
+    diagnostic = "\n".join((
+        "schema: phase64-terminal-diagnostic-r2",
+        "lifecycle_state: manual_decision_required",
+        "automatic_phase64_plan_allowed: false",
+        "next_action: manual_developer_decision",
+        "phase_65_authorized: false",
+    )) + "\n"
+    terminal_block = "\n".join((
+        TERMINAL_LIFECYCLE_BEGIN,
+        "Phase 64 terminal_manual_decision; Phase 65 blocked.",
+        "No automatic Phase 64 plan is authorized.",
+        TERMINAL_LIFECYCLE_END,
+    ))
+    historical_prefix = "Historical note: $gsd-plan-phase 64 and repair-plan prose belonged to superseded evidence.\n"
+    scoped_positive = tuple(historical_prefix + terminal_block for _ in LIFECYCLE_FILES)
+    validate_terminal_continuation_scope(diagnostic, scoped_positive)
+    quarantine_states = {path: "quarantined" for path in CANDIDATE_INPUT_OWNER_PATHS}
+    require(set(quarantine_states) == set(CANDIDATE_INPUT_OWNER_PATHS), "terminal quarantine owner scope mismatch")
+    require(all(state == "quarantined" for state in quarantine_states.values()), "terminal quarantine state mixed")
+
+    mutations: list[Callable[[], None]] = []
+    partial_live = dict(live)
+    partial_live[CANDIDATE_MUTABLE_FINAL_OWNER_PATHS[0]] = candidate_hash
+    mutations.append(lambda: validate_final_fixture(parsed, partial_live, CANDIDATE_MUTABLE_FINAL_OWNER_PATHS, expected_sources, expected_authority))
+    mutations.append(lambda: validate_final_fixture(parsed, live, CANDIDATE_MUTABLE_FINAL_OWNER_PATHS[:-1], expected_sources, expected_authority))
+    mutations.append(lambda: validate_final_fixture(parsed, live, tuple(sorted((*CANDIDATE_MUTABLE_FINAL_OWNER_PATHS, CANDIDATE_IMMUTABLE_OWNER_PATHS[0]))), expected_sources, expected_authority))
+    immutable_live = dict(live)
+    immutable_live[CANDIDATE_IMMUTABLE_OWNER_PATHS[0]] = final_hash
+    mutations.append(lambda: validate_final_fixture(parsed, immutable_live, CANDIDATE_MUTABLE_FINAL_OWNER_PATHS, expected_sources, expected_authority))
+    drifted_sources = dict(expected_sources)
+    drifted_sources[RELEVANT_SOURCE_PATHS[0]] = "d" * 64
+    mutations.append(lambda: validate_final_fixture(parsed, live, CANDIDATE_MUTABLE_FINAL_OWNER_PATHS, drifted_sources, expected_authority))
+    drifted_authority = dict(expected_authority)
+    drifted_authority[TERMINAL_R2_AUTHORITY_PATHS[0]] = "d" * 64
+    mutations.append(lambda: validate_final_fixture(parsed, live, CANDIDATE_MUTABLE_FINAL_OWNER_PATHS, expected_sources, drifted_authority))
+    mutations.append(lambda: parse_terminal_candidate(fixture.replace(CANDIDATE_SCHEMA, "phase64-post-repair-candidate-v1", 1)))
+    stale_digest = dict(parsed)
+    stale_digest["repository_delta_digest"] = "d" * 64
+    mutations.append(lambda: validate_final_fixture(stale_digest, live, CANDIDATE_MUTABLE_FINAL_OWNER_PATHS, expected_sources, expected_authority))
+    mutations.append(lambda: validate_final_fixture(parsed, live, CANDIDATE_MUTABLE_FINAL_OWNER_PATHS, expected_sources, expected_authority, product_state="mixed"))
+    mutations.append(lambda: validate_final_fixture(parsed, live, CANDIDATE_MUTABLE_FINAL_OWNER_PATHS, expected_sources, expected_authority, lifecycle_state="promotion_pending"))
+
+    incomplete_states = dict(quarantine_states)
+    incomplete_states[CANDIDATE_INPUT_OWNER_PATHS[0]] = "promotion_pending"
+    mutations.append(lambda: require(all(state == "quarantined" for state in incomplete_states.values()), "terminal incomplete quarantine accepted"))
+    mutations.append(lambda: validate_terminal_continuation_scope(diagnostic.replace("automatic_phase64_plan_allowed: false", "automatic_phase64_plan_allowed: true"), scoped_positive))
+
+    scoped_mutations = (
+        terminal_block.replace("Phase 64 terminal_manual_decision;", "Phase 64 terminal_manual_decision; create 64-22;"),
+        terminal_block.replace("No automatic Phase 64 plan is authorized.", "Automatically retry Phase 64."),
+        terminal_block.replace("No automatic Phase 64 plan is authorized.", "Invoke $gsd-plan-phase 64."),
+    )
+    for mutation in scoped_mutations:
+        mutations.append(lambda mutation=mutation: validate_terminal_continuation_scope(diagnostic, (mutation, *scoped_positive[1:])))
+    mutations.append(lambda: validate_terminal_continuation_scope(diagnostic, (terminal_block.replace(TERMINAL_LIFECYCLE_END, ""), *scoped_positive[1:])))
+
+    rejected = 0
+    scoped_rejected = 0
+    for index, mutation in enumerate(mutations):
+        try:
+            mutation()
+        except (CheckError, ValueError, TypeError, KeyError):
+            rejected += 1
+            if 12 <= index <= 14:
+                scoped_rejected += 1
+        else:
+            raise CheckError(f"terminal transition mutation accepted:{index}")
+    require(rejected == 16, "terminal transition self-test coverage incomplete")
+    require(scoped_rejected == 3, "terminal scoped continuation coverage incomplete")
+    return rejected, scoped_rejected, 1
 
 
 def valid_aggregate() -> dict[str, object]:
@@ -1304,8 +1539,8 @@ def run_review_source_self_tests() -> int:
             for category, positive, negative, no_face in REVIEW_CATEGORY_ROWS
         )
         review = (
-            f"schema: {POST_REPAIR_SCHEMAS['review'][0]}\n"
-            f"verification_stage: {POST_REPAIR_SCHEMAS['review'][1]}\n"
+            f"schema: {TERMINAL_R2_SCHEMAS['review'][0]}\n"
+            f"verification_stage: {TERMINAL_R2_SCHEMAS['review'][1]}\n"
             "independent: true\nstatus: passed\ndecision: pass\n"
             "original_detail: true\nblinded_items: 4\n"
             "| category | positive | negative | no_face |\n"
@@ -1315,29 +1550,29 @@ def run_review_source_self_tests() -> int:
         validate_review(review, root)
 
         code_review = (
-            f"schema: {POST_REPAIR_SCHEMAS['code_review'][0]}\n"
-            f"verification_stage: {POST_REPAIR_SCHEMAS['code_review'][1]}\n"
+            f"schema: {TERMINAL_R2_SCHEMAS['code_review'][0]}\n"
+            f"verification_stage: {TERMINAL_R2_SCHEMAS['code_review'][1]}\n"
             "independent: true\nstatus: passed\nreview_status: passed\n"
             "unresolved_high: 0\nunresolved_warning: 0\npromotion_authorized: false\n"
             f"{manifest}"
         )
         review_fix = (
-            f"schema: {POST_REPAIR_SCHEMAS['review_fix'][0]}\n"
-            f"verification_stage: {POST_REPAIR_SCHEMAS['review_fix'][1]}\n"
+            f"schema: {TERMINAL_R2_SCHEMAS['review_fix'][0]}\n"
+            f"verification_stage: {TERMINAL_R2_SCHEMAS['review_fix'][1]}\n"
             "independent: false\nstatus: passed\nunresolved_high: 0\nunresolved_warning: 0\n"
             "post_review_image_tuning: false\npromotion_authorized: false\n"
             f"{manifest}"
         )
         security = (
-            f"schema: {POST_REPAIR_SCHEMAS['security'][0]}\n"
-            f"verification_stage: {POST_REPAIR_SCHEMAS['security'][1]}\n"
+            f"schema: {TERMINAL_R2_SCHEMAS['security'][0]}\n"
+            f"verification_stage: {TERMINAL_R2_SCHEMAS['security'][1]}\n"
             "independent: true\nstatus: passed\nthreats_open: 0\nthreats_closed: 8\n"
             "unresolved_high: 0\npromotion_authorized: false\n"
             f"{manifest}"
         )
         eligibility = (
-            f"schema: {POST_REPAIR_SCHEMAS['eligibility'][0]}\n"
-            f"verification_stage: {POST_REPAIR_SCHEMAS['eligibility'][1]}\n"
+            f"schema: {TERMINAL_R2_SCHEMAS['eligibility'][0]}\n"
+            f"verification_stage: {TERMINAL_R2_SCHEMAS['eligibility'][1]}\n"
             "independent: true\nstatus: eligible_promotion_pending\n"
             "unresolved_high: 0\npromotion_authorized: false\n"
             f"{manifest}"
@@ -1402,20 +1637,20 @@ def run_review_source_self_tests() -> int:
         authority_mutations: tuple[tuple[Callable[[str, Path], None], str], ...] = (
             (validate_review, review.replace("status: passed\n", "status: failed\nstatus: passed\n", 1)),
             (validate_review, review.replace("decision: pass\n", "decision: fail\ndecision: pass\n", 1)),
-            (validate_review, review.replace(POST_REPAIR_SCHEMAS["review"][0], "historical-review-v0", 1)),
+            (validate_review, review.replace(TERMINAL_R2_SCHEMAS["review"][0], "historical-review-v0", 1)),
             (validate_code_review, code_review.replace("status: passed\n", "status: failed\n", 1) + "Narrative review_status: passed\n"),
             (validate_code_review, code_review.replace("unresolved_high: 0\n", "unresolved_high: 1\nunresolved_high: 0\n", 1)),
             (validate_code_review, code_review.replace("review_status: passed\n", "Narrative review_status: passed\n", 1)),
-            (validate_code_review, code_review.replace(POST_REPAIR_SCHEMAS["code_review"][0], "historical-code-review-v0", 1)),
+            (validate_code_review, code_review.replace(TERMINAL_R2_SCHEMAS["code_review"][0], "historical-code-review-v0", 1)),
             (validate_review_fix, review_fix.replace("post_review_image_tuning: false\n", "post_review_image_tuning: true\n", 1) + "Narrative post_review_image_tuning: false\n"),
             (validate_review_fix, review_fix.replace("independent: false\n", "independent: true\n", 1)),
             (validate_review_fix, review_fix.replace("unresolved_warning: 0\n", "unresolved_warning: 1\nunresolved_warning: 0\n", 1)),
             (validate_security, security.replace("threats_open: 0\n", "threats_open: 2\n", 1) + "Narrative threats_open: 0\n"),
             (validate_security, security.replace("threats_closed: 8\n", "threats_closed: 6\nthreats_closed: 8\n", 1)),
-            (validate_security, security.replace(POST_REPAIR_SCHEMAS["security"][1], "historical_security", 1)),
+            (validate_security, security.replace(TERMINAL_R2_SCHEMAS["security"][1], "historical_security", 1)),
             (validate_eligibility, eligibility.replace("status: eligible_promotion_pending\n", "status: gaps_found\n", 1) + "Narrative status: eligible_promotion_pending\n"),
             (validate_eligibility, eligibility.replace("promotion_authorized: false\n", "promotion_authorized: true\npromotion_authorized: false\n", 1)),
-            (validate_eligibility, eligibility.replace(POST_REPAIR_SCHEMAS["eligibility"][0], "historical-eligibility-v0", 1)),
+            (validate_eligibility, eligibility.replace(TERMINAL_R2_SCHEMAS["eligibility"][0], "historical-eligibility-v0", 1)),
         )
         for validator, mutation in authority_mutations:
             expect_failure(lambda validator=validator, mutation=mutation: validator(mutation, root))
@@ -1548,15 +1783,16 @@ def run_content_scanner_self_tests() -> int:
 
 
 def run_self_test() -> int:
-    require(EXPECTED_PLAN_COUNT == 19 and len(EXPECTED_TASKS) == 34, "post-repair inventory missing")
+    require(EXPECTED_PLAN_COUNT == 21 and len(EXPECTED_TASKS) == 38, "terminal inventory missing")
     require(HISTORICAL_EXECUTED_PLAN_IDS == tuple(range(1, 14)), "historical structure boundary drift")
-    require(CURRENT_STRUCTURE_PLAN_IDS == tuple(range(14, 20)), "current structure boundary drift")
-    require(len(RELEVANT_SOURCE_PATHS) == 19, "post-repair source closure mismatch")
-    validate_plan_graph(13)
+    require(CURRENT_STRUCTURE_PLAN_IDS == tuple(range(14, 22)), "current structure boundary drift")
+    require(len(RELEVANT_SOURCE_PATHS) == 19, "terminal source closure mismatch")
+    validate_plan_graph(19)
     require("scan_repository_content" in globals(), "four-state content scanner missing")
     content_scan_rejections = run_content_scanner_self_tests()
     review_source_rejections = run_review_source_self_tests()
     candidate_rejections = run_candidate_self_tests()
+    terminal_rejections, scoped_rejections, scope_positive = run_terminal_transition_self_tests()
 
     mutations: tuple[tuple[str, Callable[[dict[str, object]], None]], ...] = (
         ("missing-eye", lambda value: value["family_counts"].pop("right")),
@@ -1615,7 +1851,7 @@ def run_self_test() -> int:
         ),
         (
             "wrong-lifecycle-state",
-            lambda: validate_lifecycle_content("Phase 64 promotion pending; 64-09 64-10 64-11; candidate absent", "promotion-pending-verification"),
+            lambda: validate_lifecycle_content("Phase 64 promotion pending; 64-09 64-10 64-11; candidate absent", "terminal-promotion-pending"),
         ),
     )
     for name, mutation in synthetic_cases:
@@ -1630,6 +1866,9 @@ def run_self_test() -> int:
         "content_scan_rejections": content_scan_rejections,
         "review_source_rejections": review_source_rejections,
         "candidate_rejections": candidate_rejections,
+        "terminal_transition_rejections": terminal_rejections,
+        "terminal_scoped_continuation_rejections": scoped_rejections,
+        "terminal_scope_positive_fixtures": scope_positive,
         "plans": EXPECTED_PLAN_COUNT, "tasks": len(EXPECTED_TASKS),
         "threats": 8, "states": 7,
     }, separators=(",", ":")))
@@ -1640,12 +1879,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--self-test", action="store_true")
     modes = parser.add_mutually_exclusive_group()
-    modes.add_argument("--pre-promotion", action="store_true")
-    modes.add_argument("--promotion-pending-verification", action="store_true")
-    modes.add_argument("--candidate-guard", action="store_true")
-    modes.add_argument("--validate-candidate", action="store_true")
-    modes.add_argument("--final", action="store_true")
-    modes.add_argument("--quarantine", action="store_true")
+    modes.add_argument("--terminal-pre-promotion", action="store_true")
+    modes.add_argument("--terminal-promotion-pending", action="store_true")
+    modes.add_argument("--terminal-candidate-guard", action="store_true")
+    modes.add_argument("--validate-terminal-candidate", action="store_true")
+    modes.add_argument("--terminal-final", action="store_true")
+    modes.add_argument("--terminal-quarantine", action="store_true")
     parser.add_argument("--threat", choices=THREATS)
     parser.add_argument("--repo-root", type=Path)
     args = parser.parse_args()
@@ -1653,20 +1892,20 @@ def main() -> int:
         os.chdir(args.repo_root)
     try:
         if args.self_test:
-            require(not any((args.candidate_guard, args.validate_candidate, args.final, args.quarantine, args.promotion_pending_verification, args.pre_promotion, args.threat)), "self-test mode conflict")
+            require(not any((args.terminal_candidate_guard, args.validate_terminal_candidate, args.terminal_final, args.terminal_quarantine, args.terminal_promotion_pending, args.terminal_pre_promotion, args.threat)), "self-test mode conflict")
             run_self_test()
-        elif args.candidate_guard:
+        elif args.terminal_candidate_guard:
             require(args.threat is None, "candidate guard threat mode invalid")
             run_candidate_guard()
-        elif args.validate_candidate:
+        elif args.validate_terminal_candidate:
             require(args.threat is None, "candidate validator threat mode invalid")
             run_candidate_validation()
         else:
-            mode = "final" if args.final else "quarantine" if args.quarantine else "promotion-pending-verification" if args.promotion_pending_verification else "pre-promotion"
+            mode = "terminal-final" if args.terminal_final else "terminal-quarantine" if args.terminal_quarantine else "terminal-promotion-pending" if args.terminal_promotion_pending else "terminal-pre-promotion"
             run_live(mode, args.threat)
         return 0
     except (CheckError, json.JSONDecodeError, subprocess.SubprocessError, AssertionError, TypeError, KeyError, ValueError, OSError):
-        if args.candidate_guard or args.validate_candidate:
+        if args.terminal_candidate_guard or args.validate_terminal_candidate:
             print(json.dumps({
                 "schema": CANDIDATE_SCHEMA, "status": "fail", "branch": "gaps_found",
                 "plan_count": 0, "task_count": 0, "owner_count": 0,
