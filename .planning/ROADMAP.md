@@ -207,7 +207,7 @@ executed yet.
 
 **Wave 15** *(fresh authority; blocked on Wave 14 completion)*
 
-- [ ] 64-15-PLAN.md — rerun the no-skip conjunction and issue fresh source-bound review/security eligibility
+- [x] 64-15-PLAN.md — rerun the no-skip conjunction and issue fresh source-bound review/security eligibility
 
 **Wave 16** *(promotion-pending owners; blocked on Wave 15 completion)*
 
@@ -256,7 +256,7 @@ executed yet.
 | 61. Teeth Output, Safety, and Independent Closeout | 4/4 | Complete    | 2026-08-07 |
 | 62. Sclera Evidence and Admission Contract | 5/5 | Complete — independent evidence, 61st scalar, direct demand, privacy and regression pass | 2026-08-07 |
 | 63. Guarded Per-Eye Sclera Production Integration | 4/4 | Complete — guarded provider, actual-Vision evidence, privacy and regression pass; no promotion | 2026-08-07 |
-| 64. Sclera Output, Adversarial Safety, and Independent Closeout | 14/19 | In Progress|  |
+| 64. Sclera Output, Adversarial Safety, and Independent Closeout | 15/19 | In Progress|  |
 | 65. Combined Facade, Privacy, and Milestone Closeout | 4/4 implementation plans executed | Blocked — prior verification/audit is stale; SAFE-06 DeviceRGB/named-sRGB remains Phase 65-only and open | — |
 
 Earlier phase details are preserved in their linked milestone archives under `.planning/milestones/`.
