@@ -70,7 +70,7 @@ function parseXCTestSummary(transcript) {
   }
 
   const summaries = [...transcript.matchAll(
-    /^\s*Executed\s+(\d+)\s+tests?,\s+with\s+(\d+)\s+failures?\s+\((\d+)\s+unexpected\)(?:,\s+(\d+)\s+tests?\s+skipped)?\s+in\s+[^\n]+$/gm,
+    /^Test Suite 'All tests' passed at [^\r\n]+\r?\n\s*Executed\s+(\d+)\s+tests?,\s+with\s+(\d+)\s+failures?\s+\((\d+)\s+unexpected\)(?:,\s+(\d+)\s+tests?\s+skipped)?\s+in\s+[^\r\n]+$/gm,
   )];
   if (summaries.length !== 1) throw new Error("xctest_executed_summary_invalid");
   const executed = Number(summaries[0][1]);
@@ -216,6 +216,7 @@ function runSelfTests() {
   const firstOptInMethod = OPT_IN_TESTS[0].slice(firstIdentitySeparator + 1);
   const firstOptInRow = `Test Case '-[FixtureModule.${firstOptInSuite} ${firstOptInMethod}]' passed (0.001 seconds).\n`;
   const failedFirstOptInRow = firstOptInRow.replace(" passed ", " failed ");
+  const finalSummary = "Executed 644 tests, with 0 failures (0 unexpected) in 0.010 (0.020) seconds";
 
   reject(() => classifyChildResult(child(undefined, { status: 1 }), [firstLocator]));
   reject(() => classifyChildResult(child(undefined, { error: new Error("spawn") }), [firstLocator]));
@@ -223,10 +224,10 @@ function runSelfTests() {
   reject(() => classifyChildResult(child(undefined, { error: Object.assign(new Error("maxBuffer"), { code: "ENOBUFS" }) }), [firstLocator]));
   reject(() => classifyChildResult(child(replace(/Test Suite 'All tests'[\s\S]*$/, "")), [firstLocator]));
   reject(() => classifyChildResult(child(Buffer.concat([positiveTranscript(), Buffer.from("\n"), positiveTranscript()])), [firstLocator]));
-  reject(() => classifyChildResult(child(replace("Executed 644 tests", "Executed banana tests")), [firstLocator]));
-  reject(() => classifyChildResult(child(replace("Executed 644 tests", "Executed 0 tests")), [firstLocator]));
-  reject(() => classifyChildResult(child(replace("with 0 failures", "with 1 failure")), [firstLocator]));
-  reject(() => classifyChildResult(child(replace("with 0 failures (0 unexpected)", "with 0 failures (0 unexpected), 1 test skipped")), [firstLocator]));
+  reject(() => classifyChildResult(child(replace(finalSummary, finalSummary.replace("Executed 644 tests", "Executed banana tests"))), [firstLocator]));
+  reject(() => classifyChildResult(child(replace(finalSummary, finalSummary.replace("Executed 644 tests", "Executed 0 tests"))), [firstLocator]));
+  reject(() => classifyChildResult(child(replace(finalSummary, finalSummary.replace("with 0 failures", "with 1 failure"))), [firstLocator]));
+  reject(() => classifyChildResult(child(replace(finalSummary, finalSummary.replace("with 0 failures (0 unexpected)", "with 0 failures (0 unexpected), 1 test skipped"))), [firstLocator]));
   reject(() => classifyChildResult(child(replace(firstOptInRow, "")), [firstLocator]));
   reject(() => classifyChildResult(child(replace(firstOptInRow, "$&$&")), [firstLocator]));
   reject(() => classifyChildResult(child(replace(firstOptInRow, failedFirstOptInRow)), [firstLocator]));
