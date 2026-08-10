@@ -755,26 +755,29 @@ Command-level evidence is recorded in [Phase 63 security](.planning/phases/63-gu
   facade outputs and emits fixed aggregate status. Bounded decoding rejects
   unexpected names, dimensions, sizes, alpha, malformed PNGs and symlinks.
 - Geometry truth is independent of candidate color. Final-output tests prove
-  zero changed pixels in iris, pupil, highlights, lash margin, skin and
-  aperture exterior after score, feather, hard re-clip, transform and
-  composition.
+  zero changed pixels in iris, pupil, highlights, lash margin, lid/skin, hair,
+  background and the complete aperture exterior after score, feather, hard
+  re-clip, transform and composition.
 - Review records only fixed categorical judgments. Tracked/staged state
   contains no media, locator, digest, rights detail, reviewer identity, support,
   mask, geometry, pixel data, raw metric or child error.
+- Private bundle locators enter only the request-local child environment and
+  never appear in arguments, forwarded child output, durable commands, logs or
+  tracked artifacts. `64-no-skip-swiftpm-runner.js` likewise reduces its one
+  child to a fixed aggregate and rejects malformed, failed, skipped, zero or
+  ambiguous output without exposing raw child text.
 - Request-local raw support, proposal and mask privacy, protected-region
-  containment, source-bound review, four-state T-64-06 scanning, and zero open
-  HIGH review/security findings remain verified implementation and audit facts.
-  SCLERA-16, SCLERA-17, and OUT-05 remain implementation facts only.
-  They do not override the immutable Plan 64-12 `gaps_found` candidate: its
-  failed checker self-test and skipped full-suite conditions quarantine all
-  Phase 64 product authority.
-- `祛红血丝` is therefore unproven/future, aggregate `眼睛` remains `partial`,
-  and `去脂` remains `future`; Demo, realtime/pixel-buffer, external model and
-  network surfaces stay absent. SCLERA-18 and final validation remain open,
-  Phase 65 is blocked, and DeviceRGB/named-sRGB remains exclusively the Phase
-  65 SAFE-06 security boundary.
+  containment, exact 19-source binding, four-state T-64-06 scanning, fresh
+  zero-HIGH code review, and fresh ASVS L1 closure of T-64-01 through T-64-08
+  authorize only the bounded SDK-core still-image `祛红血丝` product row.
+  Aggregate `眼睛` remains `partial` and `去脂` remains `future`; Demo,
+  realtime/pixel-buffer, external model and network surfaces stay absent.
+- This state is promotion pending independent candidate/final verification.
+  Canonical `64-VERIFICATION.md` and final validation remain open, Phase 65 is
+  blocked, and DeviceRGB/named-sRGB remains exclusively the Phase 65 SAFE-06
+  security boundary.
 
-Command-level evidence is recorded in [Phase 64 security](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SECURITY.md), [review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-REVIEW.md), and [verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).
+Fresh promotion-pending authority is recorded in [post-repair output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-REVIEW.md), [code review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-CODE-REVIEW.md), [review-fix disposition](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-REVIEW-FIX.md), [ASVS L1 security audit](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-SECURITY.md), and [independent eligibility](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-PRE-PROMOTION-VERIFICATION.md).
 
 ### v1.15 Phase 65 Combined Privacy and Security — Stale/Blocked Evidence Record
 

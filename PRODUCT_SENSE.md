@@ -776,23 +776,25 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
   dimensions/alpha, zero reviewed-mask exterior or protected-anatomy change,
   bounded color/luminance and retained detail. Fresh original-detail review
   passes with no post-review tuning.
-- Phases 62, 63 and 64 retain a non-borrowed implementation chain: SCLERA-16,
-  SCLERA-17, and OUT-05 behavior remains demonstrable. Product acceptance does
-  not follow because the immutable Plan 64-12 candidate is `gaps_found` on a
-  failed checker self-test and eight skipped full-suite tests. `祛红血丝` is
-  therefore unproven/future; aggregate `眼睛` remains `partial` and `去脂`
-  remains future.
+- Phases 62, 63 and 64 retain a non-borrowed implementation chain. Fresh
+  bilateral adversarial proof, strict saved output, original-detail review,
+  zero-HIGH code/security review, and the exact 637/0/0/8 no-skip conjunction
+  establish product-facing `祛红血丝` as implemented for the bounded SDK-core
+  still-image `BeautyParameters.scleraRednessReduction` route through public
+  `BeautyEngine.apply`. Aggregate `眼睛` remains `partial` and `去脂` remains
+  `future`.
 - The Demo still displays `白牙`, `祛红血丝` and `去脂` as disabled rows with
   nil mappings. Compatibility is exactly 61 public fields, five neutral presets
   and 74 renderer cases.
-- Two authorized fixtures remain implementation evidence, not population
-  sufficiency or current product authorization. SCLERA-18 and final validation
-  remain open, Phase 65 is blocked, and DeviceRGB/named-sRGB remains exclusively
-  its SAFE-06 acceptance obligation. No realtime/pixel-buffer, target-device
+- Two authorized fixtures support only this bounded product row, not population
+  sufficiency. This is promotion pending independent candidate/final verification;
+  canonical `64-VERIFICATION.md` and final validation remain
+  open, Phase 65 is blocked, and DeviceRGB/named-sRGB remains exclusively its
+  SAFE-06 acceptance obligation. No realtime/pixel-buffer, target-device
   quality/performance, commercial approval, packaging, shipping, launch, or
   release-readiness acceptance follows.
 
-Command-level evidence is recorded in [Phase 64 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-REVIEW.md), and [security disposition](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SECURITY.md).
+Fresh promotion-pending authority is recorded in [post-repair output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-REVIEW.md), [code review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-CODE-REVIEW.md), [review-fix disposition](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-REVIEW-FIX.md), [ASVS L1 security audit](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-SECURITY.md), and [independent eligibility](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-PRE-PROMOTION-VERIFICATION.md).
 
 ### v1.15 Phase 65 Combined Product Evidence — Stale/Blocked
 

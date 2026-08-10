@@ -864,24 +864,37 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
   valid-invalid-valid recovery and parallel request isolation. Provider 11/11
   and facade integration 9/9 preserve affected-eye-only failure and unrelated
   work continuation.
-- Full SwiftPM executes 617 tests with zero failures and eight documented
-  non-required opt-in skips. The unchanged Demo builds and passes 121/121 on
-  iPhone 17e / iOS 26.5 with no skips.
+- The repaired one-child no-skip SwiftPM gate executes exactly 637 tests with
+  zero failures, zero skips, and all eight opt-ins exactly once. The exact
+  identities are
+  `VisionFaceDetectorTests.testIntegrationDefaultStillImageProviderReturnsRedactedNoFaceForNoFaceFixture`,
+  `VisionFaceDetectorTests.testIntegrationDefaultStillImageProviderReportsAggregateObservedFaceAvailabilityWithoutRawPayload`,
+  `VisionFaceDetectorTests.testIntegrationDefaultStillImageProviderReportsObservedEyebrowAvailabilityWithoutRawPayload`,
+  `BeautyEngineGeometryFacadeTests.testIntegrationLocalAuthorizedPortraitRoutesAllEyebrowFieldsThroughPublicFacade`,
+  `BeautyFaceGeometryAdapterTests.testIntegrationLocalAuthorizedPortraitAggregateFitsLockedFaceValidationEnvelope`,
+  `BeautyFaceGeometryAdapterTests.testIntegrationLocalAuthorizedPortraitFitsLockedEyebrowValidationEnvelope`,
+  `BeautyTeethWhiteningRealFixtureTests.testAuthorizedPositiveAndNegativeStayWithinFrozenAggregateBounds`,
+  and `BeautyScleraRednessRealFixtureTests.testAuthorizedPositiveAndNegativeStayWithinFrozenAggregateBounds`.
+  The unchanged Demo builds and passes 121/121 on iPhone 17e / iOS 26.5 with
+  zero failures and zero skips.
+- `64-no-skip-swiftpm-runner.js` rejects malformed/duplicate XCTest identity,
+  missing or ambiguous all-tests summaries, nonzero failure, any skip, zero
+  execution, missing/duplicate/failed opt-ins, nonzero child exit and oversized
+  output. Every such condition yields only the fixed fail-closed aggregate;
+  raw child output is never durable authority.
 - Affected-eye-only abstention, peer continuation, valid-invalid-valid and
   concurrent recovery, full-conjunction invalidation after relevant change,
-  and execution-discovered simulator validation remain implementation facts.
-  The immutable Plan 64-12 candidate nevertheless failed its checker self-test
-  and reported eight full-SwiftPM skips; either condition independently makes
-  the closeout reliability conjunction unproven.
-- These results establish bounded still-image standalone output and recovery,
-  preserving SCLERA-16, SCLERA-17, and OUT-05 implementation facts, but grant no
-  `祛红血丝` product authorization. `祛红血丝` is future, `眼睛` remains
-  `partial`, `去脂` remains future, SCLERA-18/final validation remain open, and
-  Phase 65 is blocked. DeviceRGB/named-sRGB remains Phase 65 SAFE-06-only; no
+  and execution-discovered simulator validation now form one fresh exact
+  post-repair conjunction. It authorizes the bounded SDK-core still-image
+  `祛红血丝` row in promotion-pending state; `眼睛` remains `partial`, `去脂`
+  remains `future`, final validation remains open, and Phase 65 is blocked.
+  DeviceRGB/named-sRGB remains Phase 65 SAFE-06-only; no
   realtime endurance, target-device budget, population, commercial, packaging,
   shipping, launch, or release-readiness claim follows.
 
-Command-level evidence is recorded in [Phase 64 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-SCLERA-OUTPUT-EVIDENCE.md) and [verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).
+This state is promotion pending independent candidate/final verification;
+canonical `64-VERIFICATION.md` remains `gaps_found`. Fresh authority is recorded
+in [post-repair output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-REVIEW.md), [code review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-CODE-REVIEW.md), [review-fix disposition](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-REVIEW-FIX.md), [ASVS L1 security audit](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-SECURITY.md), and [independent eligibility](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-PRE-PROMOTION-VERIFICATION.md).
 
 ### v1.15 Phase 65 Combined Facade Reliability — Stale/Blocked Evidence Record
 
