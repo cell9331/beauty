@@ -13,8 +13,8 @@ Eye tools include size, vertical position, eye height, length, distance, fat rem
 - Primary owner: `BeautyEffects`.
 - Dependencies: `BeautyDetection` eye landmarks and `BeautyRender` unified warp output.
 - Current public `BeautyParameters` geometry coverage is exactly the four prior fields plus `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, signed `eyeTilt`, `innerCornerOpen`, `outerCornerOpen`, and `eyeSymmetry`.
-- Bounded SDK-core still-image `BeautyParameters.scleraRednessReduction` through public `BeautyEngine.apply` is implemented as product-facing `祛红血丝`; `去脂` remains future.
-- Evidence status: Phases 29-44 implement all fourteen geometry rows. Phase 62 independent evidence/admission, Phase 63 guarded per-eye production, and Phase 64 public output, bilateral protected-region adversarial proof, original-detail review, and fresh 637/0/0/8 no-skip authority are recorded by `64-POST-REPAIR-SCLERA-OUTPUT-EVIDENCE.md`, `64-POST-REPAIR-REVIEW.md`, `64-POST-REPAIR-CODE-REVIEW.md`, `64-POST-REPAIR-REVIEW-FIX.md`, `64-POST-REPAIR-SECURITY.md`, and `64-POST-REPAIR-PRE-PROMOTION-VERIFICATION.md`. Promotion pending independent candidate/final verification. Status: `partial` because `去脂` remains future. SAFE-06 DeviceRGB/named-sRGB remains Phase 65-only.
+- Still-image `scleraRednessReduction` implementation remains present, but product-facing `祛红血丝` is `future` and unproven because Plan 64-19 final authority failed closed; `去脂` remains future.
+- Evidence status: Phases 29-44 implement all fourteen geometry rows. Phase 62 evidence/admission, Phase 63 guarded actual-support integration, and fresh Phase 64 output/safety/review results remain non-authoritative implementation facts after complete re-quarantine. Status: `partial` because `祛红血丝` and `去脂` are future. SAFE-06 DeviceRGB/named-sRGB remains Phase 65-only.
 
 ## Boundary
 
@@ -38,18 +38,12 @@ Do not persist eye landmarks or expose eye geometry in public debug output.
 
 ## Phase 64 Sclera Redness Closeout
 
-- `祛红血丝` is implemented for the bounded SDK-core still-image
-  `BeautyParameters.scleraRednessReduction` route through public
-  `BeautyEngine.apply`.
-- Phase 62 independent evidence/admission and Phase 63 request-local per-eye
-  production integration are regression-preserved. Phase 64 standalone public-
-  facade output, bilateral protected-region adversarial proof, original-detail
-  review, zero-HIGH review/security, and fresh 637/0/0/8 no-skip authority are
-  carried by `64-POST-REPAIR-SCLERA-OUTPUT-EVIDENCE.md`,
-  `64-POST-REPAIR-REVIEW.md`, `64-POST-REPAIR-CODE-REVIEW.md`,
-  `64-POST-REPAIR-REVIEW-FIX.md`, `64-POST-REPAIR-SECURITY.md`, and
-  `64-POST-REPAIR-PRE-PROMOTION-VERIFICATION.md`. Promotion pending independent
-  candidate/final verification; canonical Phase 64 remains `gaps_found`.
+- `祛红血丝` is `future` and unproven after Plan 64-19 could not satisfy both
+  the mandatory canonical-owner transition and candidate-frozen owner hashes.
+- Phase 62 evidence/admission, Phase 63 request-local per-eye production, and
+  fresh Phase 64 output/safety/review artifacts remain regression-preserved
+  implementation facts, but grant no current product authority. The complete
+  fifteen-owner set is re-quarantined.
 - Renderer inventory is exactly 74, while the Demo row stays disabled and nil-
   mapped. `去脂` remains future, so branch `眼睛` remains `partial`; SAFE-06
   DeviceRGB/named-sRGB remains exclusively Phase 65 scope.

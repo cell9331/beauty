@@ -1,131 +1,120 @@
 ---
 phase: 64-sclera-output-adversarial-safety-and-independent-closeout
-verification_stage: post_promotion
+verification_stage: post_repair_final
 independent: true
-verified: 2026-08-09T21:30:32+08:00
+verified: 2026-08-10T15:00:00+08:00
 status: gaps_found
 promotion_status: unproven
 requires_requarantine: true
 phase_65_authorized: false
-score: "5/6 requirement implementation facts substantiated; 0 product authorization"
-candidate_artifact: 64-POST-PROMOTION-CANDIDATE-VERIFICATION.md
-candidate_sha256: cbbec3cfbb9f1bc407fb859fb6a8e6f354fc0cd016944e49e60cb0a6a9da9387
-candidate_status: gaps_found
+candidate_artifact: 64-POST-REPAIR-CANDIDATE-VERIFICATION.md
+candidate_sha256: 3fdaab4bf64d724e0c697f351a1a07b64894ca7b015c09b71b0cb023206c9e0b
+candidate_status: candidate_passed
 transaction_result: failed_requarantined
+expected_plan_count: 19
+expected_task_count: 34
+owner_count: 15
+immutable_owner_count: 9
+relevant_source_count: 19
+authority_count: 6
 requirements: [SCLERA-14, SCLERA-15, SCLERA-16, SCLERA-17, SCLERA-18, OUT-05]
 ---
 
-# Phase 64 Post-Promotion Verification — Gaps Found / Re-Quarantined
+# Phase 64 Final Verification — Gaps Found / Re-Quarantined
 
 ## Canonical Verdict
 
-Phase 64 remains `gaps_found` and product promotion is `unproven`. The immutable
-Plan 64-12 candidate has `status: gaps_found` and
-`requires_requarantine: true`; it grants no success authority. Plan 64-13
-therefore executed only its mandatory failure branch and re-quarantined the
-complete fifteen-owner set.
+Phase 64 remains `gaps_found`; product promotion is `unproven`, and Phase 65
+is blocked. Plan 64-18 produced an independently guarded `candidate_passed`
+artifact from the unchanged promotion-pending snapshot, but Plan 64-19 could
+not legally produce the required final canonical state.
 
-No green aggregate overrides a failed, skipped, stale, conditional, zero-count,
-privacy, source-freeze, owner, or HIGH gate. Canonical success, SCLERA-18 final,
-Phase 65 verification, and milestone readiness remain unauthorized.
+The complete fifteen-owner failure branch is applied. No product/root/lifecycle
+owner retains candidate-only promotion authority.
 
-## Independent Candidate Disqualifiers
+## Exact Final Blocker
 
-| Mandatory gate | Candidate observation | Disposition |
-| --- | --- | --- |
-| Closeout checker self-test | Exit 1 with `phase64_closeout_failed` | disqualifying failure |
-| Full SwiftPM | 636 passed, 0 failed, 8 skipped | disqualifying skipped condition |
-| Candidate authority | `plan_13_authorized: false`; `phase_65_authorized: false` | no success authority |
+The current checker imposes two mutually incompatible final predicates:
 
-Either command result independently prohibits success. Their presence requires
-full re-quarantine even though focused, private, native, simulator, review,
-security, source-freeze, privacy, promotion-pending, and isolated threat checks
-otherwise produced green nonzero evidence.
+1. Plan 64-19 must change six candidate input owners, including this canonical
+   file, from promotion-pending to final state.
+2. `--final` calls `validate_post_repair_candidate()`, which requires every one
+   of the same fifteen live input-owner hashes to remain equal to the candidate
+   pre/post hashes.
 
-## Pre-Write Trust Validation
+The candidate froze this file at SHA-256
+`3ca1c2fcdf2e0cbbaf91e119cc148d6dd1eda40031f36debb61fe2df465cd7f3`.
+In the external staging root, the minimal required transition to
+`verification_stage: post_repair_final` and `status: passed` changed that hash
+to `f5130871efbd469ead3791e295a7cd13f645680a4c1d1701014c63773aeed3cf`.
+The staged `--final --threat T-64-07` invocation then exited nonzero with the
+fixed fail-closed result `phase64_closeout_failed`.
 
-Before mutation, the transaction independently validated:
+This is not evidence drift and cannot be repaired inside Plan 64-19: changing
+the checker would change the frozen relevant-source manifest and invalidate the
+candidate and review authority. A new repair plan and new candidate are needed.
 
-- the exact Plan 64-12 schema and immutable `gaps_found` branch selection;
-- exactly 24 ordered task IDs, with 64-12-01 as the candidate result and
-  64-13-01 pending before this transaction;
-- exactly 15 ordered input-owner hashes and the exact ordered nine-owner
-  immutable product/root subset, all matching current bytes;
-- all 13 plans in strictly serial wave/dependency order and summaries through
-  64-12 only;
-- all 16 relevant source blobs against frozen tree
-  `2fb1c37ebda48dfc94aa2276788a24312f3a3c02` and the source-bound review;
-- exact fresh review/code-review/review-fix/security artifact hashes, zero open
-  HIGH findings, and 8/8 closed security threats;
-- a clean repository plus green promotion-pending aggregate and isolated
-  T-64-01 through T-64-08 checks, including four-state content scanning.
+## Preserved Candidate and Fresh Evidence
 
-These facts authorize only a bounded failure transaction. They do not repair or
-replace the failed candidate.
+- Candidate schema/status: `phase64-post-repair-candidate-v1` /
+  `candidate_passed`; guard nonce `5be706778f1419cb06dcc85ca50761d0`.
+- Candidate SHA-256:
+  `3fdaab4bf64d724e0c697f351a1a07b64894ca7b015c09b71b0cb023206c9e0b`.
+- Candidate inventory: 19 plans, 34 task IDs, 15 input owners, nine immutable
+  owners, 19 relevant sources, and six authority artifacts.
+- Fresh conjunction: 637 executed, zero failed, zero skipped, all eight exact
+  opt-ins; focused 74/74, helper 14/14, private 6/6 plus four opaque review
+  items, Demo build and 121/0/0.
+- Fresh code review/security: zero unresolved HIGH; T-64-01 through T-64-08
+  closed against the exact source-bound snapshot.
 
-## Requirement Disposition
+These facts remain implementation evidence. They cannot override the failed
+mandatory final transaction and grant no current product authority.
 
-| Requirement | Implementation fact retained | Canonical/product disposition |
-| --- | --- | --- |
-| SCLERA-14 | Bilateral protected truth, exact historical tuple, inclusive 27-scenario sweep, and direct proposal intersection remain recorded. | evidence quarantined; no promotion authority |
-| SCLERA-15 | Protected and outside-proposal byte-identity evidence remains recorded. | evidence quarantined; no promotion authority |
-| SCLERA-16 | Genuine positive improvement and negative/unsafe naturalness remain implementation facts. | verified implementation fact; product authorization unproven |
-| SCLERA-17 | Standalone public-facade renderer and strict decoded output remain implementation facts. | complete implementation fact; product authorization unproven |
-| SCLERA-18 | The mandatory conjunction is not green. | open / failed closeout |
-| OUT-05 | Disposable private runner/helper and original-detail public-facade evidence remain implementation facts. | complete implementation fact; product authorization unproven |
+## Fifteen-Owner Re-Quarantine
 
-The implementation route is not removed or denied by this report. The product
-claim is denied until a new independently passing candidate exists.
+The selected failure transaction covers all exact owners:
 
-## Complete Failure Owner State
+- canonical: `64-VERIFICATION.md` and `64-VALIDATION.md`;
+- product: `SHAPE_FEATURE_LEDGER.md`, `FEATURE_MATRIX.md`, shaping README, and
+  eyes README;
+- root contracts: `DESIGN.md`, `SECURITY.md`, `RELIABILITY.md`,
+  `PRODUCT_SENSE.md`, and `QUALITY_SCORE.md`;
+- lifecycle: `PLANS.md`, `.planning/REQUIREMENTS.md`,
+  `.planning/ROADMAP.md`, and `.planning/STATE.md`.
 
-All fifteen transaction owners are explicitly re-quarantined:
+The immutable Plan 64-12 and Plan 64-18 candidates and all fresh post-repair
+evidence/review/audit artifacts remain unchanged.
 
-- the canonical owner remains `gaps_found` with `promotion_status: unproven`;
-- validation remains incomplete and records 64-13-01 as
-  failed/requarantined;
-- all four product owners set product-facing `祛红血丝` to future/unproven,
-  aggregate `眼睛` to partial, and `去脂` to future;
-- all five root owners retain implementation facts while explicitly
-  quarantining evidence and product authorization;
-- PLANS, REQUIREMENTS, ROADMAP, and STATE keep Phase 64 in progress/gaps and
-  Phase 65 blocked.
+## Requirement and Product Disposition
 
-There is no partial promoted/final state.
-
-## Security, Privacy, and Review
-
-The immutable candidate hashes for the original-detail review, code review,
-review-fix ledger, and ASVS L1 security audit remain exact. Those artifacts
-record zero HIGH/warning blockers and 8/8 closed threat identities. Relevant
-source bytes remain bound to the frozen review tree, and four-state privacy
-checks retain aggregate-only output.
-
-These green audit facts do not outweigh the failed mandatory checker command or
-the skipped full-suite condition. No private fixture, path, digest, raw support,
-mask, geometry, coordinate, pixel, identity, rights detail, or freeform review
-content is added here.
-
-## Product and Scope Boundary
+| Requirement | Current disposition |
+| --- | --- |
+| SCLERA-14 | implementation evidence retained; canonical/product authority open |
+| SCLERA-15 | implementation evidence retained; canonical/product authority open |
+| SCLERA-16 | implementation evidence retained; canonical/product authority open |
+| SCLERA-17 | implementation evidence retained; canonical/product authority open |
+| SCLERA-18 | failed final-authority conjunction; open |
+| OUT-05 | implementation evidence retained; canonical/product authority open |
 
 - Product-facing `祛红血丝`: future / unproven.
 - Aggregate `眼睛`: partial.
 - `去脂`: future; no proxy, provider, renderer, Demo mapping, or public field.
 - Demo local-retouch rows: disabled and nil-mapped.
-- DeviceRGB/named-sRGB: unresolved and owned exclusively by Phase 65 SAFE-06.
-- Phase 65: blocked pending a new independently passing Phase 64 candidate and
-  bounded final transaction.
-- No API, realtime/pixel-buffer, model, network, dependency, population,
-  device/performance, commercial, packaging, shipping, launch, archive, tag, or
-  release-readiness authority is added.
+- Phase 65: blocked; its verification/audit remain stale and SAFE-06 remains
+  open. DeviceRGB/named-sRGB receives no Phase 64 credit.
 
-## Required Gap Closure
+## Required Next Action
 
-A new repair plan must resolve the checker self-test failure and the mandatory
-full-suite skip policy without changing the immutable Plan 64-12 candidate.
-After all required commands run fresh with no failure or skip, a distinct
-independent candidate may be generated. Only a `candidate_passed` artifact with
-fresh exact manifests may authorize a later bounded final transaction.
+Add a gap-repair plan that separates immutable candidate evidence from mutable
+final output owners, or otherwise validates the pre-transition hashes without
+requiring post-transition byte equality. Rebuild the source-bound authority and
+a distinct candidate after that repair, then rerun the bounded final
+transaction. Do not edit either immutable historical candidate.
+
+No API, Demo activation, realtime/pixel-buffer, model, network, dependency,
+population, device/performance, commercial, packaging, shipping, launch,
+archive, tag, or release-readiness authority is added.
 
 ---
 

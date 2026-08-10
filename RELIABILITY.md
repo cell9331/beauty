@@ -885,16 +885,16 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
 - Affected-eye-only abstention, peer continuation, valid-invalid-valid and
   concurrent recovery, full-conjunction invalidation after relevant change,
   and execution-discovered simulator validation now form one fresh exact
-  post-repair conjunction. It authorizes the bounded SDK-core still-image
-  `祛红血丝` row in promotion-pending state; `眼睛` remains `partial`, `去脂`
-  remains `future`, final validation remains open, and Phase 65 is blocked.
+  post-repair conjunction. These are retained implementation facts, but Plan
+  64-19's required canonical-owner transition invalidates a candidate-frozen
+  input hash and makes `--final` fail closed. Product-facing `祛红血丝` is
+  therefore future/unproven; `眼睛` remains `partial`, `去脂` remains `future`,
+  final validation is incomplete, and Phase 65 is blocked.
   DeviceRGB/named-sRGB remains Phase 65 SAFE-06-only; no
   realtime endurance, target-device budget, population, commercial, packaging,
   shipping, launch, or release-readiness claim follows.
 
-This state is promotion pending independent candidate/final verification;
-canonical `64-VERIFICATION.md` remains `gaps_found`. Fresh authority is recorded
-in [post-repair output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-REVIEW.md), [code review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-CODE-REVIEW.md), [review-fix disposition](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-REVIEW-FIX.md), [ASVS L1 security audit](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-SECURITY.md), and [independent eligibility](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-REPAIR-PRE-PROMOTION-VERIFICATION.md).
+The complete fifteen-owner set is re-quarantined. Fresh post-repair artifacts remain non-authoritative implementation evidence; canonical disposition is recorded in [Phase 64 verification](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md).
 
 ### v1.15 Phase 65 Combined Facade Reliability — Stale/Blocked Evidence Record
 

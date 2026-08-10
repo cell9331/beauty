@@ -32,14 +32,14 @@
 | --- | --- |
 | Status | `active` |
 | Scope | Close the Phase 64 final-authority gaps before retaining any `祛红血丝` product promotion or treating v1.15 as completion-ready. |
-| Finding | The immutable Plan 64-12 `gaps_found` candidate and Plan 64-13 re-quarantine remain historical failed/superseded evidence. Plans 64-14 through 64-16 repaired both mandatory gates, rebuilt exact source-bound 637/0/0/8 authority, issued fresh `eligible_promotion_pending`, and synchronized the nine bounded product/root owners. |
-| Affected requirements | SCLERA-14 through SCLERA-18 and OUT-05 have complete promotion-pending implementation/evidence dispositions, but their canonical status remains pending the distinct Plan 64-18 candidate and Plan 64-19 bounded final transaction. Phase 65 remains blocked. |
+| Finding | Plan 64-18 produced a guarded `candidate_passed`, but Plan 64-19 proved the success contract internally incompatible: the mandatory canonical-owner transition changes a candidate-frozen input hash, so `--final` fails closed. Changing the checker inside Plan 19 would invalidate the frozen source/review authority. |
+| Affected requirements | SCLERA-14 through SCLERA-18 and OUT-05 retain implementation evidence but remain canonically open after complete fifteen-owner re-quarantine. Phase 65 remains blocked. |
 | Fresh passing evidence | Focused 74/74; strict helper 14/14; private output 6/6 plus four opaque review items; checker/no-skip self-tests; exact full SwiftPM 637/0/0/8; Demo build and 121/0/0; exact 19-source review; zero-HIGH code review; ASVS L1 8/8. Green aggregates do not self-authorize canonical success. |
 | Warning | `BeautyExampleRenderer` uses device RGB for saved evidence; explicit sRGB remains a Phase 65 SAFE-06 re-verification item. |
-| Next | Complete Plan 64-17 lifecycle/validation accounting, then run Plan 64-18's distinct immutable candidate and Plan 64-19's bounded final transaction in order. Do not modify or reinterpret the historical Plan 64-12 candidate. |
-| Lifecycle | Phase 64 is `promotion_pending_independent_candidate_and_final`. Canonical `64-VERIFICATION.md` remains `gaps_found` with `promotion_status: unproven`; Phase 65 verification/audit remains stale and blocked until Plan 64-19 produces canonical success. |
-| Inventory | Exact authority is 19 serial plans / 34 ordered task IDs. Plans 64-01 through 64-17 account for the first 32 IDs; historical `64-13-01` remains failed/superseded evidence. Only `64-18-01` and `64-19-01` are pending. |
-| Boundary | Do not archive, tag, clean up, ship, or claim milestone completion while canonical Phase 64 is `gaps_found`. Product-facing `祛红血丝` is bounded SDK-core implemented in promotion-pending state, `眼睛` remains `partial`, and `去脂` remains `future`. DeviceRGB/named-sRGB is owned only by Phase 65 SAFE-06; Demo/API/realtime/model/network/dependency/eye-fat scope remains out of Phase 64 authority. |
+| Next | Add a Phase 64 gap-repair plan that separates immutable candidate inputs from mutable final owners (or validates only pre-transition hashes), rebuild source-bound authority, issue a distinct candidate, and rerun a bounded final transaction. Preserve both existing immutable candidates. |
+| Lifecycle | Phase 64 is `gaps_found`/incomplete with `promotion_status: unproven`; all fifteen owners are re-quarantined. Phase 65 verification/audit remains stale and blocked. |
+| Inventory | Exact authority is 19 serial plans / 34 ordered task IDs, all accounted. Historical `64-13-01` remains failed/superseded evidence; `64-18-01` passed only as a non-canonical candidate; `64-19-01` records failed final success plus complete requarantine. |
+| Boundary | Do not archive, tag, clean up, ship, or claim milestone completion while canonical Phase 64 is `gaps_found`. Product-facing `祛红血丝` is future/unproven, `眼睛` remains `partial`, and `去脂` remains `future`. DeviceRGB/named-sRGB is owned only by Phase 65 SAFE-06; Demo/API/realtime/model/network/dependency/eye-fat scope remains out of Phase 64 authority. |
 
 The prior v1.15 completion-ready statement is superseded by the fresh Phase 64
 goal-backward verification until this active gap is closed.

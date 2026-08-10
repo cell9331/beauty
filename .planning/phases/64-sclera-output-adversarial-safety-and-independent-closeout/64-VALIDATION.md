@@ -1,29 +1,33 @@
 ---
 phase: 64
 slug: sclera-output-adversarial-safety-and-independent-closeout
-status: promotion_pending_candidate
-validation_status: promotion_pending_candidate
+status: gaps_found
+validation_status: gaps_found_requarantined
 nyquist_compliant: false
 nyquist_pending: true
-candidate_owner: phase64_plan_18
-final_transaction_owner: phase64_plan_19
+candidate_owner: phase64_plan_18_candidate_passed
+final_transaction_owner: phase64_plan_19_failed_requarantined
 expected_plan_count: 19
 expected_task_count: 34
-executed_tasks: 32
-pending_tasks: [64-18-01, 64-19-01]
+accounted_tasks: 34
+successful_tasks: 32
+pending_tasks: []
 historical_failed_tasks: [64-13-01]
+current_failed_tasks: [64-19-01]
 inventory:
   plans: 19
   tasks: 34
-  executed_tasks: 32
-  pending_tasks: [64-18-01, 64-19-01]
+  accounted_tasks: 34
+  successful_tasks: 32
+  pending_tasks: []
   historical_failed_tasks: [64-13-01]
+  current_failed_tasks: [64-19-01]
 created: 2026-08-07
 updated: 2026-08-10
 security_standard: OWASP ASVS Level 1
 block_on: HIGH
 requirements: [SCLERA-14, SCLERA-15, SCLERA-16, SCLERA-17, SCLERA-18, OUT-05]
-canonical_verification: gaps_found
+canonical_verification: gaps_found_requarantined
 ---
 
 # Phase 64 - Validation Strategy (19 plans / 34 task IDs)
@@ -34,8 +38,11 @@ dependencies, task IDs, summaries, requirements, and evidence are still
 required. Plan 12's immutable `gaps_found` candidate and Plan 13's full
 re-quarantine remain historical failed/superseded evidence. Plans 14-17 account
 for the repair, fresh authority, nine-owner synchronization, and lifecycle
-snapshot. The first 32 task IDs are executed/accounted; only `64-18-01` and
-`64-19-01` are pending. This ledger grants no canonical success.
+snapshot. Plan 18's distinct candidate passed. Plan 19 executed the mandatory
+failure branch: final success failed because the required canonical-owner
+transition changes a candidate-frozen input hash, and the complete fifteen-owner
+set was re-quarantined. All 34 IDs are accounted, but this is not a successful
+all-task closeout and grants no canonical success.
 
 | Task ID | Plan | Wave | Requirements | Focused command / gate | Evidence artifact | Nyquist status |
 | --- | --- | ---: | --- | --- | --- | --- |
@@ -71,11 +78,11 @@ snapshot. The first 32 task IDs are executed/accounted; only `64-18-01` and
 | 64-16-02 | 16 | 16 | SCLERA-14, SCLERA-15, SCLERA-18, OUT-05 | Six-artifact/root-boundary scans plus `--promotion-pending-verification --threat T-64-07` pass | `64-16-SUMMARY.md` — five bounded root contracts | executed — promotion-pending |
 | 64-17-01 | 17 | 17 | SCLERA-14, SCLERA-15, SCLERA-18, OUT-05 | Exact lifecycle scan and independent table parse → 19 plans / 34 unique ordered IDs / two pending; canonical remains gaps | `64-17-SUMMARY.md` — four lifecycle owners | executed/accounted — promotion-pending |
 | 64-17-02 | 17 | 17 | SCLERA-14, SCLERA-15, SCLERA-16, SCLERA-17, SCLERA-18, OUT-05 | Complete `--promotion-pending-verification` and isolated T-64-01...T-64-08 pass against this exact ledger | `64-VALIDATION.md` and `64-17-SUMMARY.md` | executed/accounted — promotion-pending candidate snapshot |
-| 64-18-01 | 18 | 18 | SCLERA-14, SCLERA-15, SCLERA-16, SCLERA-17, SCLERA-18, OUT-05 | Future persistent `--candidate-guard`, distinct verifier conjunction, then `--validate-candidate` and isolated threats | `64-POST-REPAIR-CANDIDATE-VERIFICATION.md` | pending — not run |
-| 64-19-01 | 19 | 19 | SCLERA-14, SCLERA-15, SCLERA-16, SCLERA-17, SCLERA-18, OUT-05 | Future candidate validation and staged/repository `--final` or `--quarantine` plus all isolated threats | canonical verification, this ledger, and fifteen-owner transaction | pending — not run |
+| 64-18-01 | 18 | 18 | SCLERA-14, SCLERA-15, SCLERA-16, SCLERA-17, SCLERA-18, OUT-05 | Guarded distinct verifier conjunction, `--validate-candidate`, and isolated threats | `64-POST-REPAIR-CANDIDATE-VERIFICATION.md` | executed/accounted — `candidate_passed`; non-canonical |
+| 64-19-01 | 19 | 19 | SCLERA-14, SCLERA-15, SCLERA-16, SCLERA-17, SCLERA-18, OUT-05 | Staged final owner transition rejected by frozen candidate input hash; complete quarantine and all isolated threats required | canonical verification, this ledger, and fifteen-owner transaction | failed / requarantine — final success not achieved |
 
-Task count target: **34 task IDs = 34 validation rows**. Complete all-task
-accountability becomes legal only inside Plan 64-19's bounded final transaction.
+Task count target: **34 task IDs = 34 validation rows**. Every ID is accounted,
+but Plan 64-19's final-success outcome failed and the phase remains incomplete.
 
 ## Historical Failed/Superseded Evidence
 
@@ -111,23 +118,24 @@ accountability becomes legal only inside Plan 64-19's bounded final transaction.
 - T-64-01 through T-64-08 are zero-HIGH under the exact 19-source freeze and
   fifteen-owner promotion-pending state.
 
-## Pending Authority
+## Failed Final Authority
 
-- `64-18-01` alone owns the distinct immutable candidate and remains not run.
-- `64-19-01` alone owns canonical success or full re-quarantine and remains not
-  run. Complete all-task accountability is prohibited before that transaction.
+- `64-18-01` produced the distinct immutable `candidate_passed` artifact; it is
+  non-canonical and remains unchanged.
+- `64-19-01` selected the mandatory failure/requarantine branch after the
+  staged final owner transition invalidated a candidate-frozen input hash.
 - Canonical `64-VERIFICATION.md` remains `gaps_found` with
   `promotion_status: unproven`; this document is not `passed`.
 - Phase 65 remains blocked with its verification/audit stale. DeviceRGB/named-
   sRGB remains exclusively Phase 65 SAFE-06 scope.
 
-## Promotion-Pending Disposition
+## Re-Quarantine Disposition
 
-- Exactly 32 of 34 ordered task IDs are executed/accounted and two are pending.
+- Exactly 34 ordered task IDs are accounted; Plan 19's final-success outcome is
+  failed/requarantined and the phase remains incomplete.
 - Historical `64-13-01` remains explicit failed/superseded evidence but is not a
   current unresolved task.
-- Product/root owners record only bounded SDK-core `祛红血丝` implemented,
-  aggregate `眼睛` partial, and `去脂` future; their state is promotion pending
-  independent candidate/final verification.
+- Product/root owners record `祛红血丝` future/unproven, aggregate `眼睛`
+  partial, and `去脂` future under the complete fifteen-owner quarantine.
 - Failed, skipped, zero-count, conditional, stale, malformed, or missing
   mandatory gates still prevent candidate or final authority.
