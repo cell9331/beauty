@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed Phase 64 scope, safety, privacy, and three-state closeout checker."""
+"""Fail-closed Phase 64 scope, safety, privacy, closeout, and downstream checker."""
 
 from __future__ import annotations
 
@@ -14,12 +14,26 @@ import subprocess
 import sys
 import tempfile
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Iterable
 
 
 THREATS = tuple(f"T-64-{index:02d}" for index in range(1, 9))
 PHASE_DIR = Path(".planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout")
+PHASE65_DIR = Path(".planning/phases/65-combined-facade-privacy-and-milestone-closeout")
+PHASE65_VERIFICATION = PHASE65_DIR / "65-VERIFICATION.md"
+PHASE65_CHECKER = PHASE65_DIR / "check_phase65_combined_closeout.py"
+EXPECTED_PHASE65_FINAL_CHECKS = {
+    "T-65-01": 8,
+    "T-65-02": 16,
+    "T-65-03": 10,
+    "T-65-04": 10,
+    "T-65-05": 8,
+    "T-65-06": 9,
+    "T-65-07": 8,
+    "T-65-08": 11,
+}
 EXPECTED_PLAN_COUNT = 21
 HISTORICAL_EXECUTED_PLAN_IDS = tuple(range(1, 14))
 CURRENT_STRUCTURE_PLAN_IDS = tuple(range(14, 22))
@@ -502,6 +516,74 @@ def validate_terminal_candidate_authority(
     require(parsed["opt_in_tests_executed"] == 8, "candidate opt-in count mismatch")
     require(parsed["opt_in_rows"] == tuple(f"{identity} passed" for identity in OPT_IN_TESTS), "candidate opt-in identities invalid")
     return parsed
+
+
+def parse_authority_timestamp(value: str) -> datetime:
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError as error:
+        raise CheckError("downstream authority timestamp malformed") from error
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def validate_post_downstream_binding(phase64: str, phase65: str) -> None:
+    expected_phase64 = {
+        "phase": "64-sclera-output-adversarial-safety-and-independent-closeout",
+        "verification_stage": "post_terminal_final",
+        "independent": "true",
+        "status": "passed",
+        "promotion_status": "promoted",
+        "requires_requarantine": "false",
+        "phase_65_authorized": "true",
+    }
+    for key, expected in expected_phase64.items():
+        require(parse_scalar(phase64, key) == expected, f"canonical Phase 64 authority invalid:{key}")
+    expected_phase65 = {"phase": "65", "status": "passed"}
+    for key, expected in expected_phase65.items():
+        require(parse_scalar(phase65, key) == expected, f"downstream Phase 65 authority invalid:{key}")
+    require(
+        parse_scalar(phase65, "phase_64_verification_sha256")
+        == sha256_bytes(phase64.encode("utf-8")),
+        "downstream Phase 64 SHA-256 binding mismatch",
+    )
+    require(
+        parse_authority_timestamp(parse_scalar(phase65, "verified"))
+        > parse_authority_timestamp(parse_scalar(phase64, "verified")),
+        "downstream Phase 65 authority is not chronological",
+    )
+
+
+def validate_phase65_final_payload(returncode: int, stdout: str, stderr: str) -> None:
+    require(returncode == 0, "downstream Phase 65 final gate failed")
+    require(not stderr.strip(), "downstream Phase 65 final stderr not empty")
+    lines = tuple(line for line in stdout.splitlines() if line.strip())
+    require(len(lines) == 1, "downstream Phase 65 final output malformed")
+    payload = json.loads(lines[0])
+    require(
+        payload == {
+            "status": "pass",
+            "mode": "final",
+            "checks": EXPECTED_PHASE65_FINAL_CHECKS,
+        },
+        "downstream Phase 65 final authority incomplete",
+    )
+
+
+def validate_post_downstream_authority() -> int:
+    phase64 = read(PHASE_DIR / "64-VERIFICATION.md")
+    phase65 = read(PHASE65_VERIFICATION)
+    validate_post_downstream_binding(phase64, phase65)
+    result = subprocess.run(
+        [sys.executable, str(PHASE65_CHECKER), "--final"],
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=900,
+    )
+    validate_phase65_final_payload(result.returncode, result.stdout, result.stderr)
+    return 1
 
 
 def validate_terminal_transition(
@@ -1115,12 +1197,15 @@ def validate_lifecycle_inventory(inventory: dict[str, object]) -> None:
 
 def validate_stage(mode: str) -> None:
     canonical = read(PHASE_DIR / "64-VERIFICATION.md")
-    if mode == "terminal-final":
+    if mode in ("terminal-final", "post-downstream"):
         for token in ("verification_stage: post_terminal_final", "independent: true", "status: passed"):
             require(token in canonical, "canonical final verification incomplete")
-        candidate = read(TERMINAL_R2_CANDIDATE)
-        validate_terminal_candidate_authority(candidate)
-        require("status: candidate_passed" in candidate, "candidate verification incomplete")
+        if mode == "terminal-final":
+            candidate = read(TERMINAL_R2_CANDIDATE)
+            validate_terminal_candidate_authority(candidate)
+            require("status: candidate_passed" in candidate, "candidate verification incomplete")
+        else:
+            validate_post_downstream_binding(canonical, read(PHASE65_VERIFICATION))
     else:
         require("status: gaps_found" in canonical, "canonical verification passed prematurely")
         require("promotion_status: unproven" in canonical, "canonical quarantine incomplete")
@@ -1139,7 +1224,7 @@ def validate_validation_ledger(mode: str) -> None:
         final_row = next((line.lower() for line in text.splitlines() if line.startswith("| 64-21-01 |")), "")
         require("pending" in final_row or "not-run" in final_row or "not run" in final_row, "terminal gate not visibly pending")
         require("38/38" not in text, "validation finalized before terminal plan")
-    elif mode == "terminal-final":
+    elif mode in ("terminal-final", "post-downstream"):
         require("38/38" in text, "final validation total missing")
         current_rows = [line.lower() for line in text.splitlines() if re.match(r"^\| 64-(14|15|16|17|18|19|20|21)-", line)]
         require(not any(token in "\n".join(current_rows) for token in ("skipped", "conditional pass", "not-run", "not run", "failed")), "final validation has current non-executed evidence")
@@ -1156,7 +1241,7 @@ def validate_lifecycle_content(texts: str, mode: str) -> None:
         require(re.search(r"promotion.?pending|post.?promotion", texts, re.IGNORECASE) is not None, "lifecycle pending state missing")
         require(all(f"64-{plan:02d}" in texts for plan in range(14, 22)), "terminal serial gates missing")
         require("candidate" in texts.lower() and ("terminal" in texts.lower() or "bounded final transaction" in texts.lower()), "terminal gates not explicitly awaited")
-    elif mode == "terminal-final":
+    elif mode in ("terminal-final", "post-downstream"):
         require(re.search(r"Phase 64.*(?:complete|completed)|64.*100%", texts, re.IGNORECASE | re.DOTALL) is not None, "lifecycle final state missing")
         require(re.search(r"Phase 65.*(?:unblocked|current|ready)", texts, re.IGNORECASE | re.DOTALL) is not None, "Phase 65 not unblocked by final authority")
     elif mode in ("terminal-pre-promotion", "terminal-quarantine"):
@@ -1175,10 +1260,11 @@ def validate_lifecycle_text(mode: str) -> None:
 
 
 def run_live(mode: str, selected: str | None, *, emit: bool = True) -> int:
-    promoted = mode in ("terminal-promotion-pending", "terminal-final")
+    promoted = mode in ("terminal-promotion-pending", "terminal-final", "post-downstream")
     aggregate_cache: dict[str, object] | None = None
     scan_cache: dict[str, int | str] | None = None
     authority_cache: dict[str, int] | None = None
+    downstream_cache: int | None = None
 
     def aggregate() -> dict[str, object]:
         nonlocal aggregate_cache
@@ -1201,6 +1287,12 @@ def run_live(mode: str, selected: str | None, *, emit: bool = True) -> int:
             )
         return authority_cache
 
+    def downstream() -> int:
+        nonlocal downstream_cache
+        if downstream_cache is None:
+            downstream_cache = validate_post_downstream_authority()
+        return downstream_cache
+
     if mode == "terminal-final":
         parsed = validate_terminal_candidate_authority(read(TERMINAL_R2_CANDIDATE))
         live_hashes = hash_paths(CANDIDATE_INPUT_OWNER_PATHS)
@@ -1213,16 +1305,17 @@ def run_live(mode: str, selected: str | None, *, emit: bool = True) -> int:
         require(delta_paths == expected, "terminal quarantine repository delta mismatch")
 
     summary_through = 19 if mode in ("terminal-pre-promotion", "terminal-promotion-pending") else 20
+    current_authority = downstream if mode == "post-downstream" else authority
 
     checks: dict[str, Callable[[], int]] = {
         "T-64-01": lambda: (validate_renderer_source(read(Path("BeautySDK/Sources/BeautyExampleRenderer/main.swift")), True), 7)[1],
-        "T-64-02": lambda: (validate_parser_artifacts(read(PHASE_DIR / "check_sclera_renderer_outputs.py"), read(TERMINAL_R2_EVIDENCE)), authority(), 10)[2],
+        "T-64-02": lambda: (validate_parser_artifacts(read(PHASE_DIR / "check_sclera_renderer_outputs.py"), None if mode == "post-downstream" else read(TERMINAL_R2_EVIDENCE)), current_authority(), 10)[2],
         "T-64-03": lambda: (validate_adversarial_source(read(Path("BeautySDK/Tests/BeautyEffectsTests/BeautyScleraRednessAdversarialCloseoutTests.swift"))), validate_proposal_exposure(), aggregate(), 20)[3],
         "T-64-04": lambda: (validate_final_output_sources(read(Path("BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyScleraRednessProvider.swift")), read(Path("BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyScleraRednessTransform.swift")), read(Path("BeautySDK/Sources/BeautySDK/BeautyEngine.swift"))), 8)[1],
-        "T-64-05": lambda: (validate_review(read(TERMINAL_R2_REVIEW)), authority(), 12)[2],
+        "T-64-05": lambda: (current_authority(), 12)[1] if mode == "post-downstream" else (validate_review(read(TERMINAL_R2_REVIEW)), authority(), 12)[2],
         "T-64-06": lambda: (validate_privacy(scan(), aggregate()), validate_proposal_exposure(), 12)[2],
         "T-64-07": lambda: (validate_product_state(*(read(path) for path in PRODUCT_FILES), promoted), validate_stage(mode), 12)[2],
-        "T-64-08": lambda: (validate_plan_graph(summary_through), validate_lifecycle_inventory(json.loads(read(PHASE_DIR / "64-THREAT-INVENTORY.json"))), validate_validation_ledger(mode), validate_lifecycle_text(mode), authority(), 14)[5],
+        "T-64-08": lambda: (validate_plan_graph(summary_through), validate_lifecycle_inventory(json.loads(read(PHASE_DIR / "64-THREAT-INVENTORY.json"))), validate_validation_ledger(mode), validate_lifecycle_text(mode), current_authority(), 14)[5],
     }
     counts: dict[str, int] = {}
     for threat in ((selected,) if selected else THREATS):
@@ -1374,6 +1467,76 @@ def run_candidate_self_tests() -> int:
         else:
             raise CheckError("candidate mutation accepted")
     require(rejected == len(mutations), "candidate self-test coverage incomplete")
+    return rejected
+
+
+def run_post_downstream_binding_self_tests() -> int:
+    phase64 = "\n".join((
+        "phase: 64-sclera-output-adversarial-safety-and-independent-closeout",
+        "verification_stage: post_terminal_final",
+        "independent: true",
+        "verified: 2026-08-10T18:15:00+08:00",
+        "status: passed",
+        "promotion_status: promoted",
+        "requires_requarantine: false",
+        "phase_65_authorized: true",
+    )) + "\n"
+    digest = sha256_bytes(phase64.encode("utf-8"))
+    phase65 = "\n".join((
+        "phase: 65",
+        "status: passed",
+        "verified: 2026-08-11T09:30:00+08:00",
+        f"phase_64_verification_sha256: {digest}",
+    )) + "\n"
+    validate_post_downstream_binding(phase64, phase65)
+    mutations = (
+        (phase64.replace("status: passed", "status: gaps_found", 1), phase65),
+        (phase64.replace("phase_65_authorized: true", "phase_65_authorized: false", 1), phase65),
+        (phase64, phase65.replace("status: passed", "status: gaps_found", 1)),
+        (phase64, phase65.replace(digest, "0" * 64, 1)),
+        (phase64, phase65.replace("2026-08-11T09:30:00+08:00", "2026-08-10T18:14:59+08:00", 1)),
+        (phase64, phase65 + f"phase_64_verification_sha256: {digest}\n"),
+    )
+    rejected = 0
+    for mutated_phase64, mutated_phase65 in mutations:
+        try:
+            validate_post_downstream_binding(mutated_phase64, mutated_phase65)
+        except CheckError:
+            rejected += 1
+        else:
+            raise CheckError("post-downstream binding mutation accepted")
+    require(rejected == len(mutations), "post-downstream binding self-test coverage incomplete")
+    return rejected
+
+
+def run_phase65_final_payload_self_tests() -> int:
+    payload = json.dumps({
+        "status": "pass",
+        "mode": "final",
+        "checks": EXPECTED_PHASE65_FINAL_CHECKS,
+    }, separators=(",", ":")) + "\n"
+    validate_phase65_final_payload(0, payload, "")
+    mutated_checks = dict(EXPECTED_PHASE65_FINAL_CHECKS)
+    mutated_checks["T-65-08"] = 0
+    mutations = (
+        (1, payload, ""),
+        (0, payload, "unexpected stderr\n"),
+        (0, payload + payload, ""),
+        (0, payload.replace('"status":"pass"', '"status":"fail"', 1), ""),
+        (0, payload.replace('"mode":"final"', '"mode":"live"', 1), ""),
+        (0, json.dumps({"status": "pass", "mode": "final", "checks": mutated_checks}), ""),
+        (0, json.dumps({"status": "pass", "mode": "final", "checks": dict(tuple(EXPECTED_PHASE65_FINAL_CHECKS.items())[:-1])}), ""),
+        (0, json.dumps({"status": "pass", "mode": "final", "checks": EXPECTED_PHASE65_FINAL_CHECKS, "extra": True}), ""),
+    )
+    rejected = 0
+    for returncode, stdout, stderr in mutations:
+        try:
+            validate_phase65_final_payload(returncode, stdout, stderr)
+        except (CheckError, json.JSONDecodeError):
+            rejected += 1
+        else:
+            raise CheckError("Phase 65 final payload mutation accepted")
+    require(rejected == len(mutations), "Phase 65 final payload self-test coverage incomplete")
     return rejected
 
 
@@ -1792,6 +1955,8 @@ def run_self_test() -> int:
     content_scan_rejections = run_content_scanner_self_tests()
     review_source_rejections = run_review_source_self_tests()
     candidate_rejections = run_candidate_self_tests()
+    downstream_binding_rejections = run_post_downstream_binding_self_tests()
+    downstream_payload_rejections = run_phase65_final_payload_self_tests()
     terminal_rejections, scoped_rejections, scope_positive = run_terminal_transition_self_tests()
 
     mutations: tuple[tuple[str, Callable[[dict[str, object]], None]], ...] = (
@@ -1866,13 +2031,15 @@ def run_self_test() -> int:
         "content_scan_rejections": content_scan_rejections,
         "review_source_rejections": review_source_rejections,
         "candidate_rejections": candidate_rejections,
+        "post_downstream_binding_rejections": downstream_binding_rejections,
+        "post_downstream_payload_rejections": downstream_payload_rejections,
         "terminal_transition_rejections": terminal_rejections,
         "terminal_scoped_continuation_rejections": scoped_rejections,
         "terminal_scope_positive_fixtures": scope_positive,
         "plans": EXPECTED_PLAN_COUNT, "tasks": len(EXPECTED_TASKS),
         "threats": 8, "states": 7,
     }, separators=(",", ":")))
-    return passed + content_scan_rejections + review_source_rejections + candidate_rejections
+    return passed + content_scan_rejections + review_source_rejections + candidate_rejections + downstream_binding_rejections + downstream_payload_rejections
 
 
 def main() -> int:
@@ -1884,6 +2051,7 @@ def main() -> int:
     modes.add_argument("--terminal-candidate-guard", action="store_true")
     modes.add_argument("--validate-terminal-candidate", action="store_true")
     modes.add_argument("--terminal-final", action="store_true")
+    modes.add_argument("--post-downstream", action="store_true")
     modes.add_argument("--terminal-quarantine", action="store_true")
     parser.add_argument("--threat", choices=THREATS)
     parser.add_argument("--repo-root", type=Path)
@@ -1892,7 +2060,7 @@ def main() -> int:
         os.chdir(args.repo_root)
     try:
         if args.self_test:
-            require(not any((args.terminal_candidate_guard, args.validate_terminal_candidate, args.terminal_final, args.terminal_quarantine, args.terminal_promotion_pending, args.terminal_pre_promotion, args.threat)), "self-test mode conflict")
+            require(not any((args.terminal_candidate_guard, args.validate_terminal_candidate, args.terminal_final, args.post_downstream, args.terminal_quarantine, args.terminal_promotion_pending, args.terminal_pre_promotion, args.threat)), "self-test mode conflict")
             run_self_test()
         elif args.terminal_candidate_guard:
             require(args.threat is None, "candidate guard threat mode invalid")
@@ -1901,7 +2069,7 @@ def main() -> int:
             require(args.threat is None, "candidate validator threat mode invalid")
             run_candidate_validation()
         else:
-            mode = "terminal-final" if args.terminal_final else "terminal-quarantine" if args.terminal_quarantine else "terminal-promotion-pending" if args.terminal_promotion_pending else "terminal-pre-promotion"
+            mode = "terminal-final" if args.terminal_final else "post-downstream" if args.post_downstream else "terminal-quarantine" if args.terminal_quarantine else "terminal-promotion-pending" if args.terminal_promotion_pending else "terminal-pre-promotion"
             run_live(mode, args.threat)
         return 0
     except (CheckError, json.JSONDecodeError, subprocess.SubprocessError, AssertionError, TypeError, KeyError, ValueError, OSError):

@@ -44,7 +44,15 @@ lifecycle: completion-ready
 release: non-release
 <!-- PHASE65_FINAL_OWNER_END -->
 
-### A-2026-08-08-v1-15-phase-64-adversarial-proof-gap
+No executable implementation plan remains active for v1.15. The milestone is
+completion-ready and is awaiting the explicit audit/remediation/archive
+lifecycle; this section retains only the current Phase 65 owner disposition.
+
+## 3A. Historical Lifecycle Ledger
+
+> 以下记录均为已完成或已被后续权威取代的执行历史，不是 Active plan。
+
+### H-2026-08-08-v1-15-phase-64-terminal-r2-closeout
 
 | Field | Value |
 | --- | --- |
@@ -79,19 +87,17 @@ Exact ordered Phase 64 task authority is: `64-01-01`, `64-01-02`,
 `64-18-01`, `64-19-01`, `64-20-01`, `64-20-02`, `64-20-03`,
 `64-21-01`. Waves 1 through 21 are strictly serial.
 
-## 3A. Archived Active Ledger
-
-### A-2026-08-05-v1-15-independent-teeth-sclera-retouch
+### H-2026-08-05-v1-15-independent-teeth-sclera-retouch
 
 | Field | Value |
 | --- | --- |
 | Status | `completed` |
-| Scope | Historical implementation execution record for bounded still-image SDK-core `白牙` then `祛红血丝`; its Phase 64/65 product and lifecycle conclusions are superseded by the active `gaps_found` plan above. |
+| Scope | Historical implementation execution record for bounded still-image SDK-core `白牙` then `祛红血丝`; its Phase 64/65 product and lifecycle conclusions are superseded by the later terminal R2 closeout and fresh Phase 65 authority above. |
 | Evidence | Separate genuine teeth and sclera pairs, standalone 6/6 output matrices, private native-Vision gates, original-detail reviews and exact product promotions pass without borrowed sibling credit. |
 | Combined | Both public facade entries pass independent standalone merge, collision-to-source, four failure units, no-stale recovery and unrelated-work preservation. |
 | Verification | Historical result: full SwiftPM 630/0/8; Demo build plus 121/0/0; focused 94/94; checker HIGH 8/8; separate audit 40/40 requirements, 12/12 seams and 7/7 flows. The result is stale for current authority. |
-| Product | Current authority keeps `白牙` and aggregate `嘴唇` implemented; bounded SDK-core `祛红血丝` is implemented in terminal R2 promotion-pending state; aggregate `眼睛` remains partial; `去脂` remains future. Exact implementation inventory remains 61 fields, five presets, 74 renderer cases and three disabled Demo rows. |
-| Boundary | Not completion-ready. Phase 65 is blocked and its verification/audit must be rerun only after a distinct passing Phase 64 candidate. No Demo activation, realtime/pixel-buffer, population/device/performance/commercial approval, model/network, packaging, shipping, launch, archive, tag or release claim. |
+| Product | Historical snapshot only: `白牙` and aggregate `嘴唇` were implemented while `祛红血丝` still awaited terminal proof. Current product authority is the Phase 65 owner block, not this row. |
+| Boundary | Historical blocked state only. The later terminal R2 and Phase 65 records resolved it; no Demo activation, realtime/pixel-buffer, population/device/performance/commercial approval, model/network, packaging, shipping, launch, archive, tag or release claim came from this record. |
 
 ### A-2026-07-30-v1-14-local-facial-retouch
 
@@ -142,6 +148,17 @@ Exact ordered Phase 64 task authority is: `64-01-01`, `64-01-02`,
 | Phase 54 closeout | Three review-fix passes bind grants to trusted expected-target policy and exact original/mask/after keys plus SHA-256 byte digests, recover every local-read/display-URL failure transactionally, and independently pin T-54-01…T-54-08. Final standard review is clean. Current automation passes 33/33 core, 38/38 reviewer, 119/119 checker, named live `8/8`, 500 SwiftPM tests with six documented skips, explicit iPhone 17e/iOS 26.5 Demo build and 118/118 tests, schema/UI/diff gates. The fresh user-confirmed direct-`file://` smoke and independently parsed 1,640-byte allowlisted export pass. The three-feature ledger remains closed with zero review/product weight and no SDK/Demo/realtime/media/release admission; Phase 54 validation is complete. |
 
 ## 4. Completed
+
+### C-2026-08-11-v1-15-audit-tech-debt-remediation
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-08-11 |
+| Scope | Closed both nonblocking findings from the formal v1.15 milestone audit without changing product behavior or requirement scope. |
+| Phase 64 checker | Added `--post-downstream`: exact canonical Phase 64 fields, SHA-256-bound chronological Phase 65 verification, and the current Phase 65 final gate replace the inapplicable candidate-era source/owner equality for downstream revalidation. The immutable terminal candidate contract remains unchanged. |
+| Lifecycle ledger | Active now contains only the current Phase 65 owner disposition. Completed and superseded Phase 64 records are explicitly labeled under Historical Lifecycle Ledger with `H-*` identifiers and no stale current-authority wording. |
+| Verification | Python compile; Phase 64 self-test including 6/6 downstream-binding and 8/8 strict child-payload mutations; aggregate `--post-downstream`; isolated T-64-01 through T-64-08; Phase 65 final; diff hygiene. |
+| Boundary | Documentation/checker lifecycle maintenance only. No SDK/Demo behavior, public API, product promotion, archive, tag, cleanup, shipping, launch or release-readiness action/claim. |
 
 ### C-2026-08-11-v1-15-fully-automated-phase65-closeout
 
