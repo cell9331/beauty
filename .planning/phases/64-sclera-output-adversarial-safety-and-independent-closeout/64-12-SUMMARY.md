@@ -17,7 +17,7 @@ tech-stack:
   patterns: [single-artifact-independent-verification, exact-owner-hash-manifest, fail-closed-candidate-authority]
 key-files:
   created:
-    - .planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-PROMOTION-CANDIDATE-VERIFICATION.md
+    - .planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/historical/64-POST-PROMOTION-CANDIDATE-VERIFICATION.md
     - .planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-12-SUMMARY.md
   modified: []
 key-decisions:
@@ -61,7 +61,7 @@ completed: 2026-08-09
 
 ## Files Created/Modified
 
-- `.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-POST-PROMOTION-CANDIDATE-VERIFICATION.md` - Non-canonical `gaps_found` verdict, actual command totals, decisions, and exact task/owner manifests.
+- `.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/historical/64-POST-PROMOTION-CANDIDATE-VERIFICATION.md` - Non-canonical `gaps_found` verdict, actual command totals, decisions, and exact task/owner manifests.
 - `.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-12-SUMMARY.md` - Execution record and mandatory Plan 64-13 failure-branch handoff.
 
 ## Decisions Made

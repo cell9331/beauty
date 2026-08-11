@@ -450,9 +450,12 @@ do {
     try fileManager.createDirectory(at: outputURL, withIntermediateDirectories: true)
 
     let engine = try BeautyEngine(configuration: .default)
+    guard let outputColorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
+        throw ExampleRendererError.renderFailed("named sRGB")
+    }
     let context = CIContext(options: [
-        .workingColorSpace: CGColorSpaceCreateDeviceRGB(),
-        .outputColorSpace: CGColorSpaceCreateDeviceRGB()
+        .workingColorSpace: outputColorSpace,
+        .outputColorSpace: outputColorSpace
     ])
 
     for imageURL in imageURLs {
@@ -560,31 +563,13 @@ func watermarkText(for renderCase: RenderCase, result: BeautyResult<CIImage>) ->
 
 func drawWatermark(_ text: String, on cgImage: CGImage) throws -> NSBitmapImageRep {
     let width = cgImage.width
-    let height = cgImage.height
-    guard let bitmap = NSBitmapImageRep(
-        bitmapDataPlanes: nil,
-        pixelsWide: width,
-        pixelsHigh: height,
-        bitsPerSample: 8,
-        samplesPerPixel: 4,
-        hasAlpha: true,
-        isPlanar: false,
-        colorSpaceName: .deviceRGB,
-        bitmapFormat: [],
-        bytesPerRow: 0,
-        bitsPerPixel: 0
-    ),
-        let graphics = NSGraphicsContext(bitmapImageRep: bitmap)
-    else {
+    let bitmap = NSBitmapImageRep(cgImage: cgImage)
+    guard let graphics = NSGraphicsContext(bitmapImageRep: bitmap) else {
         throw ExampleRendererError.renderFailed("watermark")
     }
 
     NSGraphicsContext.saveGraphicsState()
     NSGraphicsContext.current = graphics
-    graphics.cgContext.draw(
-        cgImage,
-        in: CGRect(x: 0, y: 0, width: CGFloat(width), height: CGFloat(height))
-    )
 
     let fontSize = CGFloat(max(34, min(72, width / 30)))
     let padding = CGFloat(max(24, width / 70))

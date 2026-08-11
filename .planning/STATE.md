@@ -5,13 +5,13 @@ milestone_name: Independent Teeth and Sclera Retouch
 current_phase: 65
 current_phase_name: combined-facade-privacy-and-milestone-closeout
 status: verifying
-stopped_at: Completed 64-21-PLAN.md; fresh Phase 65 verification and audit pending
-last_updated: "2026-08-10T10:15:00.000Z"
-last_activity: 2026-08-10
-last_activity_desc: Plan 64-21 canonically passed Phase 64 through the exact-six terminal R2 transition
+stopped_at: Fresh Phase 65 verification and bound milestone audit passed; no completion/archive/tag action run
+last_updated: "2026-08-11T01:32:00.000Z"
+last_activity: 2026-08-11
+last_activity_desc: Bound v1.15 audit passed 40/40 requirements, 7/7 phases, 12/12 seams and 7/7 flows
 progress:
   total_phases: 7
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 51
   completed_plans: 51
   percent: 100
@@ -24,16 +24,16 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-08-07)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Freshly re-verify Phase 65 and rerun its independent milestone audit without reusing stale authority
+**Current focus:** v1.15 is completion-ready; wait for an explicit milestone completion/archive/tag request
 
 ## Current Position
 
-Phase: 65 (combined-facade-privacy-and-milestone-closeout) — VERIFYING
-Plan: 4 of 4 implementation plans executed; fresh verification/audit pending
-Status: `phase64_canonical_passed_phase65_reverification_required`
-Last activity: 2026-08-10 — Phase 64 exact 21-plan/38-task lifecycle canonically passed through the exact-six terminal transition
+Phase: 65 (combined-facade-privacy-and-milestone-closeout) — VERIFIED AND AUDITED
+Plan: 4 of 4 plans complete; bound milestone audit passed
+Status: `v1_15_completion_ready_not_archived_or_tagged`
+Last activity: 2026-08-11 — fresh Phase 65 verification and bound 40/40 milestone audit passed
 
-Progress: [██████████] 100% plan execution; phase/milestone verification remains open
+Progress: [██████████] 100% plan, phase verification and milestone audit
 
 ## Performance Metrics
 
@@ -110,13 +110,13 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 - Phase 63 Wave 4 closes the final native-Vision pair, eight HIGH owners, 612-test SDK and 121-test Demo conjunction; SCLERA-09 through SCLERA-13 are verified without renderer or product promotion.
 - The prior Phase 64 closeout is superseded by canonical `gaps_found`: its oracle sampled six left-side pixels, omitted complete bilateral truth and used a constant protected-proposal aggregate.
 - Phase 64 Waves 5-13 quarantine the stale `祛红血丝` promotion, repair SCLERA-14/15 plus the newly found review/privacy trust gaps, rerun the full conjunction, and require independent eligibility plus post-promotion verification before SCLERA-18 can close.
-- Phase 65 implementation plans are executed, but their verification and the earlier 40/40 milestone audit are stale until Phase 64 completes and the downstream claims are freshly re-verified.
+- Phase 65 implementation and fresh verification pass after canonical Phase 64; the earlier milestone audit has no current authority until a new audit binds to this verification.
 - Combined behavior adds no renderer case or product control: exact compatibility remains 61 fields, five presets and 74 renderer cases while the public-facade XCTest owns the joint request.
 - Teeth evidence, support, review, and promotion contribute no sclera or `去脂` credit.
 - v1.15 remains SDK-core and still-image only with no Demo activation, realtime/pixel-buffer, model/cloud, tracked portrait media, or release-readiness claim.
 - [Phase 64]: Actual sclera proposal indices remain immutable internal request-local evidence visible only to authorized @testable BeautyEffects tests.
 - [Phase 64]: Phase 64 closeout derives authority from independent artifacts across explicit pre, pending, and final states; product claims cannot self-authorize.
-- [Phase 64]: SAFE-06 and DeviceRGB/named-sRGB remain Phase 65 scope.
+- [Phase 65]: SAFE-06 is closed by named-sRGB facade carriers, actual saved PNG metadata and strict decoder mutations.
 - [Phase 64]: The exact right-eye +0.004/-0.006/+0.003 tuple fails closed under the 0.025 normalized pupil-center limit while the smaller +0.003/-0.005 boundary remains accepted.
 - [Phase 64]: Sclera contour admission uses bounded scale-aware inclusive intersection checks and permits adjacent edges to share only their intended endpoint.
 - [Phase 64]: Repository privacy authority scans bytes from each Git/filesystem state independently and never substitutes one state for another. — T-64-06 must bind trust to actual HEAD, index, working, and untracked content rather than filenames.
@@ -146,8 +146,8 @@ None found under `.planning/todos/pending/`.
 ### Blockers/Concerns
 
 - Phase 64 is canonically passed; SCLERA-14 through SCLERA-18 and OUT-05 are complete.
-- Phase 65's prior verification and milestone audit are stale and must be rerun before milestone completion.
-- DeviceRGB/named-sRGB remains unresolved exclusively under open Phase 65 SAFE-06; it is not Phase 64 credit.
+- Fresh Phase 65 verification and the separately bound milestone audit pass; no completion/archive/tag action was performed.
+- DeviceRGB was removed from the renderer evidence path; named-sRGB saved output closes SAFE-06 without borrowing Phase 64 credit.
 - Archive, tag, cleanup, shipping and release claims remain unauthorized. Existing TD-013 generic-result sendability remains outside this milestone.
 
 ## Deferred Items
@@ -162,7 +162,7 @@ None found under `.planning/todos/pending/`.
 ## Session Continuity
 
 Last session: 2026-08-10T10:15:00.000Z
-Stopped at: Completed 64-21-PLAN.md; fresh Phase 65 verification and audit pending
+Stopped at: Fresh Phase 65 verification and bound milestone audit passed; no completion/archive/tag action run
 Resume file: None
 
 ## Phase 64 Terminal R2 Canonical Final State
@@ -171,12 +171,13 @@ Resume file: None
 - Ordered IDs are `64-01-01`, `64-01-02`, `64-02-01`, `64-02-02`, `64-03-01`, `64-03-02`, `64-04-01`, `64-04-02`, `64-05-01`, `64-05-02`, `64-06-01`, `64-06-02`, `64-07-01`, `64-07-02`, `64-08-01`, `64-08-02`, `64-09-01`, `64-09-02`, `64-10-01`, `64-10-02`, `64-11-01`, `64-11-02`, `64-12-01`, `64-13-01`, `64-14-01`, `64-14-02`, `64-15-01`, `64-15-02`, `64-16-01`, `64-16-02`, `64-17-01`, `64-17-02`, `64-18-01`, `64-19-01`, `64-20-01`, `64-20-02`, `64-20-03`, `64-21-01`.
 - Plans 64-01 through 64-21 are executed/accounted. Historical `64-13-01` and `64-19-01` remain failed/superseded evidence and are not erased; `64-21-01` is final passed.
 - Phase 64 canonical `64-VERIFICATION.md` is `passed`; every six mutable owner changed and all nine product/root owners stayed byte-identical to the R2 candidate.
-- Product-facing `祛红血丝` is bounded SDK-core implemented; `眼睛` remains partial and `去脂` future. DeviceRGB/named-sRGB remains Phase 65 SAFE-06-only.
-- Phase 65 is unblocked/current for fresh verification and audit. Its prior verification and milestone audit remain stale.
+- Product-facing `白牙` and `祛红血丝` are bounded SDK-core opaque still-image implementations; `眼睛` remains partial and `去脂` future.
+- Phase 65 fresh verification passes with named-sRGB saved output; the separate bound milestone audit closes OUT-09 at 40/40.
 
 <!-- PHASE64_TERMINAL_LIFECYCLE_BEGIN -->
 Phase 64 terminal lifecycle is canonical final passed with 21/21 plans and
-38/38 ordered task IDs accounted. Phase 65 is unblocked/current only for fresh
-verification and audit; prior Phase 65 authority is stale, SAFE-06 remains
-open, and DeviceRGB/named-sRGB remains Phase 65-only.
+38/38 ordered task IDs accounted. Fresh Phase 65 verification follows that
+authority and closes SAFE-06 through named-sRGB facade and saved-PNG evidence.
+The separate bound milestone audit closes OUT-09; v1.15 remains unarchived and
+untagged until an explicit completion action.
 <!-- PHASE64_TERMINAL_LIFECYCLE_END -->

@@ -779,28 +779,44 @@ Command-level evidence is recorded in [Phase 63 security](.planning/phases/63-gu
 
 Fresh promotion-pending authority is recorded in [terminal R2 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW.md), [code review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-CODE-REVIEW.md), [review-fix disposition](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW-FIX.md), [ASVS L1 security audit](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SECURITY.md), and [independent eligibility](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-PRE-PROMOTION-VERIFICATION.md).
 
-### v1.15 Phase 65 Combined Privacy and Security — Stale/Blocked Evidence Record
+### v1.15 Phase 65 Current Closeout
 
-- The prior Phase 65 run recorded T-65-01 through T-65-08 machine-green with
-  zero open HIGH findings. That result is retained as implementation/audit
-  history only; its lifecycle and product authority is stale while Phase 64 is
-  `gaps_found`.
-- Public, SPI and Codable state contain no landmarks, pupils, lip/eye support,
-  masks, candidate colors, vessel-like descriptors, image bytes, fixture
-  locators or reviewer identity. Diagnostics are fixed allowlisted aggregate
-  counters and booleans only.
+<!-- PHASE65_FINAL_OWNER_BEGIN -->
+owner: SECURITY
+phase: 65
+milestone: v1.15
+public_fields: 61
+neutral_presets: 5
+renderer_cases: 74
+disabled_demo_rows: 3
+teeth: implemented
+mouth: implemented
+sclera_redness: implemented
+eyes: partial
+eye_fat: future
+safe_06: closed
+lifecycle: completion-ready
+release: non-release
+<!-- PHASE65_FINAL_OWNER_END -->
+
+- T-65-01 through T-65-08 pass with production-source privacy classification
+  and fail-closed mutations for public/SPI declarations, Codable/reflection
+  carriers, diagnostic interpolation, persistence sinks and unreadable input.
+- Public output, SPI, Codable state, persistence, logs, metrics, network,
+  tracing and tracked artifacts contain no raw landmarks, pupils, lip/eye
+  support, masks, geometry, candidate pixels/colors, vein-like descriptors,
+  fixture locators, reviewer identity or prior-request observations. Only the
+  documented fixed aggregate counters and booleans are exposed.
 - Request preparation clears composition, provider and canonical-carrier
-  observations before any input validation. Reset, no-face, malformed,
-  throwing, repeated and parallel requests cannot reuse earlier support,
-  proposals, pixels or summaries.
-- Required private teeth and sclera output and native-Vision gates remain
-  independently owned. Tracked/staged privacy, exact shipped-resource and
-  production network/model scans pass without persisting local evidence.
-- The complete upper-eyelid/`去脂` production identity family remains absent.
-  Phase 65 remains blocked and must freshly re-verify every security/privacy
-  gate after a distinct passing Phase 64 candidate. DeviceRGB/named-sRGB
-  remains open only under Phase 65 SAFE-06. No realtime, active Demo, model
-  download, cloud processing, archive, tag, shipping or release authority
-  follows from this stale record.
+  observations before validation. Reset, no-face, malformed, throwing,
+  repeated and independent-engine parallel requests cannot reuse earlier
+  support, proposals, pixels or summaries.
+- The independently owned teeth and sclera private output/native-Vision gates,
+  tracked/staged privacy, exact resource inventory and network/model scans all
+  pass without persisting local evidence. The complete upper-eyelid/`去脂`
+  production identity family remains absent.
+- No realtime, active Demo, model download, cloud processing, device or
+  commercial approval, packaging, archive, tag, shipping, launch or release
+  authority follows from this security closeout.
 
 Command-level evidence is recorded in [Phase 65 security](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-SECURITY.md), [review](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-REVIEW.md), and [verification](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).

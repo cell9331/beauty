@@ -964,29 +964,44 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
 
 Fresh promotion-pending authority is recorded in [terminal R2 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW.md), [code review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-CODE-REVIEW.md), [review-fix disposition](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW-FIX.md), [ASVS L1 security audit](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SECURITY.md), and [independent eligibility](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-PRE-PROMOTION-VERIFICATION.md).
 
-### v1.15 Phase 65 Combined Facade Closeout — Stale/Blocked Evidence Record
+### v1.15 Phase 65 Current Closeout
 
-- Prior Phase 65 implementation evidence records that direct teeth and sclera
-  intent use one canonical still-image request owner. Their combined output equals an
-  independent merge of the two standalone outputs wherever ownership is
-  disjoint; any contested pixel preserves canonical source.
-- Teeth, whole-sclera, left-eye and right-eye failure are separate units. A
-  failing unit cannot suppress a qualified sibling or peer eye, and no-face,
-  malformed, repeated, parallel, reset, cancellation and early-invalid calls
-  can reuse prior request state.
-- Every facade invocation clears aggregate observations and current canonical
-  carrier state before validation. A later valid request recovers from an
-  invalid or throwing request without stale pixels, support or summaries.
-- Public compatibility implementation remains exactly 61 fields, five neutral
-  presets and 74 renderer cases. The Demo retains three disabled nil-mapped
-  local-retouch rows. Current product authority keeps `白牙` implemented,
-  `祛红血丝` unproven/future, aggregate `眼睛` partial, and `去脂` future.
-- This record is stale for lifecycle and product authorization because Phase 64
-  is `gaps_found`. Phase 65 is blocked and must be freshly re-verified after a
-  distinct passing Phase 64 candidate; DeviceRGB/named-sRGB remains open only
-  under Phase 65 SAFE-06.
-- No realtime/pixel-buffer local retouch, public anatomy, model, network,
-  active Demo route, device/commercial approval, packaging, shipping, launch
-  or release-readiness contract is added.
+<!-- PHASE65_FINAL_OWNER_BEGIN -->
+owner: DESIGN
+phase: 65
+milestone: v1.15
+public_fields: 61
+neutral_presets: 5
+renderer_cases: 74
+disabled_demo_rows: 3
+teeth: implemented
+mouth: implemented
+sclera_redness: implemented
+eyes: partial
+eye_fat: future
+safe_06: closed
+lifecycle: completion-ready
+release: non-release
+<!-- PHASE65_FINAL_OWNER_END -->
+
+- Both public still-image entries use one canonical opaque, up-oriented named-
+  sRGB RGBA8 request image and one feature-neutral composition owner. Combined
+  teeth+sclera bytes equal an independently merged standalone oracle wherever
+  ownership is disjoint; contested pixels preserve canonical source.
+- Teeth, whole-sclera, left-eye and right-eye failure are separate units.
+  No-face, malformed, repeated, independent-engine parallel, reset,
+  publication-discard cancellation and early-invalid sequences recover without
+  prior pixels, support, proposals, carriers or aggregate observations.
+- `BeautyExampleRenderer` now renders and encodes through named sRGB only. The
+  strict teeth and sclera PNG decoders reject saved output without an explicit
+  PNG `sRGB` declaration while preserving dimensions, up orientation and the
+  opaque-alpha policy.
+- Compatibility is exactly 61 public fields, five neutral presets, 74 renderer
+  cases and three disabled nil-mapped Demo rows. `白牙` and `祛红血丝` are
+  bounded SDK-core still-image implementations; aggregate `眼睛` remains
+  `partial` solely because `去脂` remains `future`.
+- No realtime/pixel-buffer local retouch, public anatomy, model/network,
+  active Demo route, device/performance/commercial approval, packaging,
+  shipping, launch or release-readiness contract is added.
 
 Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-CLOSEOUT-EVIDENCE.md) and [verification](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).

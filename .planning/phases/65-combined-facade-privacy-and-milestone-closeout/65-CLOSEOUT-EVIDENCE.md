@@ -1,6 +1,6 @@
 ---
 phase: 65
-status: completion-ready
+status: audited-completion-ready
 evidence_scope: aggregate-only
 combined_facade_tests: 13
 combined_integration_tests: 34
@@ -13,9 +13,9 @@ renderer_cases: 74
 public_fields: 61
 neutral_presets: 5
 disabled_local_retouch_demo_rows: 3
-full_swiftpm_tests: 630
+full_swiftpm_tests: 638
 full_swiftpm_failures: 0
-full_swiftpm_expected_skips: 8
+full_swiftpm_expected_skips: 0
 demo_tests: 121
 demo_failures: 0
 demo_skips: 0
@@ -35,6 +35,9 @@ demo_skips: 0
   one request-context creation, one teeth provider call, one sclera provider
   call and one composition. Dimensions, opaque alpha and explicit sRGB remain
   exact; unrelated eligible color/geometry work continues.
+- Actual presentation-free and watermarked renderer PNGs report
+  `sRGB IEC61966-2.1`, no EXIF orientation, unchanged dimensions and opaque
+  output. Teeth and sclera strict decoders reject a missing PNG `sRGB` chunk.
 
 ## Failure and Recovery
 
@@ -54,8 +57,8 @@ demo_skips: 0
   their own ignored fixed-output runner.
 - Teeth and sclera private actual-Vision suites pass independently through
   their own authorized bundle runner; no sibling supplies evidence.
-- All six environment-gated Vision integration methods execute without a skip;
-  the three selected suites pass 95/95 in total.
+- All eight environment-gated Vision/private identities execute exactly once
+  without a skip in the full 638-test SwiftPM run.
 - Tracked/staged privacy passes across 1,440 tracked files. No private media,
   locator or fixture payload enters this artifact.
 
@@ -82,19 +85,19 @@ demo_skips: 0
 | Standalone private output | teeth 6/6; sclera 6/6 |
 | Private actual Vision | two independent suites passed |
 | Non-private opt-in Vision | six opt-in methods; selected suites 95/95 |
-| HIGH gates | self-test 8/8; live and isolated 8/8 |
+| HIGH gates | checker self-test 42/42; live, close, final and isolated owners pass |
 | Exact inventories | 61 fields / 5 presets / 74 renderer cases / 3 disabled Demo rows |
 
 ## Full Regression
 
-- Full SwiftPM passes 630 executed tests with zero failures and eight
-  documented non-required skips.
+- Full SwiftPM passes 638 executed tests with zero failures and zero skips;
+  all eight opt-in identities execute exactly once.
 - Explicit iPhone 17e / iOS 26.5 Demo tests pass 121/121 with no skips and the
   corresponding build succeeds.
-- Independent Phase 65 verification passes after owner synchronization. The
-  separate milestone audit passes 40/40 requirements, 12/12 integration seams
-  and 7/7 end-to-end flows with no blocker or orphan.
+- Fresh Phase 65 verification passes after canonical Phase 64 final. The bound
+  milestone audit passes 40/40 requirements, 7/7 phases, 12/12 integration
+  seams and 7/7 end-to-end flows with no blocker or orphan.
 
-This is aggregate-only completion-ready evidence. It does not archive, tag,
+This is aggregate-only audited completion-ready evidence. It does not archive, tag,
 ship or establish release readiness. Deterministic synthetic bytes carry no
 effectiveness, naturalness, admission or product-promotion weight.

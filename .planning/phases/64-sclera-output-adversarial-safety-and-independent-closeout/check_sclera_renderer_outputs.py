@@ -204,11 +204,19 @@ def verify_live(output_dir: Path, bundle: Path, renderer_source: Path) -> dict[s
     masks = load_masks(bundle)
     metrics: dict[str, Metrics] = {}
     for role in ("positive", "negative"):
-        baseline = decode_png(files[f"{role}__{BASELINE}.png"], f"{role} baseline")
-        active = decode_png(files[f"{role}__{ACTIVE}.png"], f"{role} active")
+        baseline = decode_png(
+            files[f"{role}__{BASELINE}.png"], f"{role} baseline", require_explicit_srgb=True
+        )
+        active = decode_png(
+            files[f"{role}__{ACTIVE}.png"], f"{role} active", require_explicit_srgb=True
+        )
         metrics[role] = measure(baseline, active, masks[role])
-    no_face_before = decode_png(files[f"no_face__{BASELINE}.png"], "no-face baseline")
-    no_face_after = decode_png(files[f"no_face__{ACTIVE}.png"], "no-face active")
+    no_face_before = decode_png(
+        files[f"no_face__{BASELINE}.png"], "no-face baseline", require_explicit_srgb=True
+    )
+    no_face_after = decode_png(
+        files[f"no_face__{ACTIVE}.png"], "no-face active", require_explicit_srgb=True
+    )
     if (no_face_before.width, no_face_before.height, no_face_before.rgba) != (
         no_face_after.width,
         no_face_after.height,
@@ -313,6 +321,12 @@ def run_self_test() -> int:
             + Shared.chunk(b"IEND", b"")
         )
         passed += must_fail(lambda: decode_png(oversized, "oversized"), "oversized")
+        missing_srgb = root / "missing-srgb.png"
+        missing_srgb.write_bytes(encode_png(width, height, bytes(source), explicit_srgb=False))
+        passed += must_fail(
+            lambda: decode_png(missing_srgb, "missing sRGB", require_explicit_srgb=True),
+            "missing sRGB",
+        )
         output_dir = root / "outputs"
         output_dir.mkdir()
         for name in EXPECTED_NAMES:

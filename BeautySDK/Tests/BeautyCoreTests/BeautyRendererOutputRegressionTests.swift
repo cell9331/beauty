@@ -108,6 +108,17 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         XCTAssertEqual(source.components(separatedBy: "engine.processResult(").count - 1, 1)
     }
 
+    func testRendererSavedPNGPathUsesNamedSRGBWithoutDeviceRGBFallback() throws {
+        let source = try rendererSource()
+
+        XCTAssertTrue(source.contains("CGColorSpace(name: CGColorSpace.sRGB)"))
+        XCTAssertTrue(source.contains(".workingColorSpace: outputColorSpace"))
+        XCTAssertTrue(source.contains(".outputColorSpace: outputColorSpace"))
+        XCTAssertTrue(source.contains("NSBitmapImageRep(cgImage: cgImage)"))
+        XCTAssertFalse(source.contains("CGColorSpaceCreateDeviceRGB()"))
+        XCTAssertFalse(source.contains("colorSpaceName: .deviceRGB"))
+    }
+
     func testRecursiveSameStemInputsAreRejectedBeforeAnyOutputDirectoryWrite() throws {
         let source = try rendererSource()
         let discovery = try XCTUnwrap(source.range(of: "let imageURLs = fixtureImageURLs"))

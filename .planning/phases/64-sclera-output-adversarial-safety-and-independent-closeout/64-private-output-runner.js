@@ -331,7 +331,7 @@ function classifyStrictHelperChild(child, expectedRole, forbiddenValues = []) {
   }
   if (expectedRole === "self-test") {
     if (!exactKeys(value, ["status", "self_tests"])
-      || value.status !== "pass" || value.self_tests !== 14) {
+      || value.status !== "pass" || value.self_tests !== 15) {
       throw new Error("strict_helper_self_test_incomplete");
     }
     return "pass";
@@ -385,7 +385,7 @@ function prepareOpaqueReview() {
 }
 
 function runSelfTests() {
-  const selfTestJSON = `${JSON.stringify({ status: "pass", self_tests: 14 })}\n`;
+  const selfTestJSON = `${JSON.stringify({ status: "pass", self_tests: 15 })}\n`;
   const liveJSON = `${JSON.stringify({
     status: "pass", outputs: 6, positive_roles: 1, negative_roles: 1,
     no_face_roles: 1, improved_eye_roles: 1,

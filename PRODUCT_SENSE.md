@@ -796,25 +796,39 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
 
 Fresh promotion-pending authority is recorded in [terminal R2 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW.md), [code review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-CODE-REVIEW.md), [review-fix disposition](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW-FIX.md), [ASVS L1 security audit](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SECURITY.md), and [independent eligibility](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-PRE-PROMOTION-VERIFICATION.md).
 
-### v1.15 Phase 65 Combined Product Evidence — Stale/Blocked
+### v1.15 Phase 65 Current Closeout
 
-- The public still-image facade retains implementation routes for `白牙`,
-  `祛红血丝`, or both, and prior combined evidence records unaffected peer work
-  under local provider failure. This is not current product acceptance.
-- Current product authority keeps `嘴唇 | 白牙` and aggregate `嘴唇`
-  `implemented`; `眼睛 | 祛红血丝` is unproven/future; aggregate `眼睛` is
-  `partial`; and `去脂` remains `future`.
-- Compatibility remains 61 public fields, five neutral presets, 74 renderer
-  cases and three disabled nil-mapped Demo rows. Combined acceptance adds no UI
-  control, preset, alias, proxy or hidden route.
-- The prior standalone/combined evidence and 40/40 audit are stale for
-  lifecycle and product authority because Phase 64 is `gaps_found`. Phase 65
-  remains blocked and v1.15 is not completion-ready. A distinct passing Phase
-  64 candidate must precede fresh Phase 65 verification and audit; SAFE-06
-  DeviceRGB/named-sRGB remains open there.
-- Minimum authorized pairs do not establish population sufficiency. No
-  realtime/pixel-buffer, target-device quality/performance, commercial
-  approval, Demo activation, packaging, shipping, launch or release-readiness
-  acceptance follows.
+<!-- PHASE65_FINAL_OWNER_BEGIN -->
+owner: PRODUCT_SENSE
+phase: 65
+milestone: v1.15
+public_fields: 61
+neutral_presets: 5
+renderer_cases: 74
+disabled_demo_rows: 3
+teeth: implemented
+mouth: implemented
+sclera_redness: implemented
+eyes: partial
+eye_fat: future
+safe_06: closed
+lifecycle: completion-ready
+release: non-release
+<!-- PHASE65_FINAL_OWNER_END -->
+
+- The public SDK still-image facade implements independently qualified `白牙`
+  and `祛红血丝`, alone or together, with byte-exact standalone-merge and local
+  failure-isolation evidence. Aggregate `嘴唇` is `implemented`; aggregate
+  `眼睛` remains `partial` solely because `去脂` is `future`.
+- Compatibility is exactly 61 public fields, five neutral presets, 74 renderer
+  cases and three disabled nil-mapped local-retouch Demo rows. This closeout
+  adds no Demo activation, UI control, preset, alias, proxy or hidden route.
+- Automated acceptance covers named-sRGB saved output, 638/638 no-skip SwiftPM
+  tests including all eight opt-ins, two independent 6/6 saved-output matrices,
+  privacy/scope mutations and Demo compatibility at 121/121.
+- These minimum authorized fixture pairs establish only the bounded SDK-core
+  still-image product rows. They do not establish population sufficiency,
+  realtime/pixel-buffer support, target-device quality/performance,
+  commercial approval, packaging, shipping, launch or release readiness.
 
 Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-CLOSEOUT-EVIDENCE.md) and [verification](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).

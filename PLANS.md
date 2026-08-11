@@ -26,6 +26,24 @@
 
 ## 3. Active
 
+<!-- PHASE65_FINAL_OWNER_BEGIN -->
+owner: PLANS_ACTIVE
+phase: 65
+milestone: v1.15
+public_fields: 61
+neutral_presets: 5
+renderer_cases: 74
+disabled_demo_rows: 3
+teeth: implemented
+mouth: implemented
+sclera_redness: implemented
+eyes: partial
+eye_fat: future
+safe_06: closed
+lifecycle: completion-ready
+release: non-release
+<!-- PHASE65_FINAL_OWNER_END -->
+
 ### A-2026-08-08-v1-15-phase-64-adversarial-proof-gap
 
 | Field | Value |
@@ -35,22 +53,22 @@
 | Finding | The immutable Plan 64-12/13 and Plan 64-18/19 candidate/failure sequences remain historical evidence. Plan 64-20 repaired the terminal contract and issued the distinct source-bound R2 candidate; Plan 64-21 authenticated all fifteen owners, nineteen sources, six authority artifacts, fifteen probes, and eight threats before changing every one and only the six mutable final owners. |
 | Affected requirements | SCLERA-14 through SCLERA-18 and OUT-05 are canonically verified. Product/root owners remain byte-identical to the candidate; Phase 65 is unblocked/current only for fresh verification and audit. |
 | Fresh passing evidence | Focused 74/74; strict helper 14/14; private output 6/6 plus four opaque review items; checker/no-skip self-tests; exact full SwiftPM 637/0/0/8; Demo build and 121/0/0; exact 19-source review; zero-HIGH code review; ASVS L1 8/8. Green aggregates do not self-authorize canonical success. |
-| Warning | `BeautyExampleRenderer` uses device RGB for saved evidence; explicit sRGB remains a Phase 65 SAFE-06 re-verification item. |
-| Next | Freshly re-verify Phase 65 and its milestone audit; do not reuse their stale pre-Phase-64-closeout conclusions. |
-| Lifecycle | Phase 64 is canonically `passed` and complete. Phase 65 is unblocked/current for fresh verification and audit; its earlier verification/audit remains stale. |
+| Warning | The earlier renderer DeviceRGB evidence gap was not Phase 64 credit; Phase 65 now replaces that path with named-sRGB saved output and strict PNG metadata rejection. |
+| Next | Phase 65 fresh verification and the bound 40/40 milestone audit pass. v1.15 is completion-ready only; no archive, tag, cleanup or shipping action was performed. |
+| Lifecycle | Phase 64 is canonically `passed` and complete. Phase 65 and OUT-09 are freshly verified through the bound audit. |
 | Inventory | Exact authority is 21 serial plans / 38 ordered and accounted task IDs. Historical `64-13-01` and `64-19-01` remain failed/superseded evidence rather than current failures; `64-21-01` is final passed. |
-| Boundary | No archive, tag, cleanup, shipping, or milestone-completion claim is authorized by this transaction. Product-facing `祛红血丝` is bounded SDK-core implemented, `眼睛` remains `partial`, and `去脂` remains `future`. DeviceRGB/named-sRGB is owned only by open Phase 65 SAFE-06; Demo/API/realtime/model/network/dependency/eye-fat scope remains out of Phase 64 authority. |
+| Boundary | No archive, tag, cleanup, shipping, or milestone-completion claim is authorized by the Phase 64 transaction. Product-facing `祛红血丝` is bounded SDK-core implemented, `眼睛` remains `partial`, and `去脂` remains `future`. Phase 65 independently closes named-sRGB; Demo activation/realtime/model/network/device/performance/commercial/packaging/shipping/launch/release scope remains excluded. |
 
 <!-- PHASE64_TERMINAL_LIFECYCLE_BEGIN -->
 Phase 64 terminal lifecycle: canonical final passed through the exact-six
 mutable-owner transition; 21 plans and 38 ordered task IDs are accounted.
-Phase 65 is unblocked/current only for fresh verification and audit. Its prior
-verification/audit is stale, SAFE-06 remains open, and DeviceRGB/named-sRGB
-remains Phase 65-only.
+Fresh Phase 65 verification follows this authority and independently closes
+SAFE-06 with named-sRGB facade and saved-PNG evidence. The separate bound
+milestone audit closes OUT-09 at 40/40.
 <!-- PHASE64_TERMINAL_LIFECYCLE_END -->
 
-The earlier v1.15 completion-ready statement remains superseded until Phase 65
-is freshly re-verified and independently audited.
+Phase 65 is freshly re-verified and independently audited. v1.15 is
+completion-ready only; no milestone completion/archive/tag action was run.
 
 Exact ordered Phase 64 task authority is: `64-01-01`, `64-01-02`,
 `64-02-01`, `64-02-02`, `64-03-01`, `64-03-02`, `64-04-01`, `64-04-02`,
@@ -124,6 +142,19 @@ Exact ordered Phase 64 task authority is: `64-01-01`, `64-01-02`,
 | Phase 54 closeout | Three review-fix passes bind grants to trusted expected-target policy and exact original/mask/after keys plus SHA-256 byte digests, recover every local-read/display-URL failure transactionally, and independently pin T-54-01…T-54-08. Final standard review is clean. Current automation passes 33/33 core, 38/38 reviewer, 119/119 checker, named live `8/8`, 500 SwiftPM tests with six documented skips, explicit iPhone 17e/iOS 26.5 Demo build and 118/118 tests, schema/UI/diff gates. The fresh user-confirmed direct-`file://` smoke and independently parsed 1,640-byte allowlisted export pass. The three-feature ledger remains closed with zero review/product weight and no SDK/Demo/realtime/media/release admission; Phase 54 validation is complete. |
 
 ## 4. Completed
+
+### C-2026-08-11-v1-15-fully-automated-phase65-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-08-11 |
+| Scope | Closed the five user-specified contracts with deterministic code/image gates and a fresh authority chain. |
+| Implementation | `BeautyExampleRenderer` now renders and encodes named sRGB instead of DeviceRGB; presentation-free and watermarked paths preserve the CGImage color space. Teeth and sclera strict PNG decoders reject output without an explicit `sRGB` declaration. |
+| Automated evidence | Renderer 23/23; actual PNG profile `sRGB IEC61966-2.1`, no EXIF orientation, unchanged dimensions and opaque output; teeth helper 20/20 plus 6/6; sclera helper 15/15 plus 6/6; Phase 65 checker 34/34 and final mode; SwiftPM 638/0/0 with all eight opt-ins; Demo 121/0/0. |
+| Contracts | Combined bytes/collision/four failure units, request recovery, production privacy, 61/5/74/3 compatibility and product boundaries pass. The bound milestone audit passes 40/40 requirements, 7/7 phases, 12/12 seams and 7/7 flows. |
+| Product | Bounded SDK-core opaque still-image `白牙` and `祛红血丝` are implemented; `嘴唇` is implemented; `眼睛` remains partial solely because `去脂` remains future; all three Demo rows remain disabled and nil-mapped. |
+| Boundary | Completion-ready only. No Demo activation, realtime/pixel-buffer, model/network, population/device/performance/commercial, packaging, shipping, launch, archive, tag or release-readiness claim/action. |
+| Preserve | The pre-existing uncommitted Phase 65 review and review-fix reports were preserved and not overwritten. |
 
 ### C-2026-08-08-v1-15-phase-63-verification-refresh
 

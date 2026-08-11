@@ -88,14 +88,15 @@ def paeth(left: int, up: int, upper_left: int) -> int:
     return candidates[min(range(3), key=lambda index: abs(estimate - candidates[index]))]
 
 
-def decode_png(path: Path, label: str) -> Image:
+def decode_png(path: Path, label: str, require_explicit_srgb: bool = False) -> Image:
     data = bounded_regular_bytes(path, label)
     if data[:8] != b"\x89PNG\r\n\x1a\n":
         raise OutputError(f"{label}: not PNG")
     offset = 8
     width = height = bit_depth = color_type = interlace = None
     idat: list[bytes] = []
-    seen_ihdr = seen_iend = False
+    seen_ihdr = seen_iend = seen_srgb = seen_iccp = False
+    chunk_index = 0
     while offset + 12 <= len(data):
         length = struct.unpack(">I", data[offset : offset + 4])[0]
         kind = data[offset + 4 : offset + 8]
@@ -109,6 +110,11 @@ def decode_png(path: Path, label: str) -> Image:
         if binascii.crc32(kind + payload) & 0xFFFFFFFF != expected_crc:
             raise OutputError(f"{label}: invalid CRC")
         offset = crc_end
+        if chunk_index == 0 and kind != b"IHDR":
+            raise OutputError(f"{label}: IHDR must be first")
+        if not seen_ihdr and kind != b"IHDR":
+            raise OutputError(f"{label}: chunk before IHDR")
+        chunk_index += 1
         if kind == b"IHDR":
             if seen_ihdr or length != 13:
                 raise OutputError(f"{label}: invalid IHDR")
@@ -117,6 +123,14 @@ def decode_png(path: Path, label: str) -> Image:
             bit_depth, color_type, compression, filtering, interlace = payload[8:13]
             if compression != 0 or filtering != 0:
                 raise OutputError(f"{label}: unsupported PNG methods")
+        elif kind == b"sRGB":
+            if seen_srgb or seen_iccp or length != 1 or payload[0] > 3 or idat:
+                raise OutputError(f"{label}: invalid sRGB declaration")
+            seen_srgb = True
+        elif kind == b"iCCP":
+            if seen_iccp or idat or seen_srgb:
+                raise OutputError(f"{label}: conflicting ICC declaration")
+            seen_iccp = True
         elif kind == b"IDAT":
             idat.append(payload)
         elif kind == b"IEND":
@@ -124,8 +138,14 @@ def decode_png(path: Path, label: str) -> Image:
                 raise OutputError(f"{label}: invalid IEND")
             seen_iend = True
             break
+        elif kind not in (b"PLTE",) and kind and kind[0] & 0x20 == 0:
+            raise OutputError(f"{label}: unknown critical chunk")
     if not seen_ihdr or not seen_iend or offset != len(data) or not idat:
         raise OutputError(f"{label}: incomplete PNG")
+    if require_explicit_srgb and not seen_srgb:
+        raise OutputError(f"{label}: explicit sRGB declaration missing")
+    if require_explicit_srgb and seen_iccp:
+        raise OutputError(f"{label}: ambiguous sRGB authority")
     if not isinstance(width, int) or not isinstance(height, int) or width <= 0 or height <= 0:
         raise OutputError(f"{label}: invalid dimensions")
     if width > MAX_DIMENSION or height > MAX_DIMENSION:
@@ -338,11 +358,19 @@ def verify_live(output_dir: Path, bundle: Path, renderer_source: Path) -> dict[s
     masks = load_masks(bundle)
     metrics: dict[str, Metrics] = {}
     for role in ("positive", "negative"):
-        baseline = decode_png(files[f"{role}__{BASELINE}.png"], f"{role} baseline")
-        active = decode_png(files[f"{role}__{ACTIVE}.png"], f"{role} active")
+        baseline = decode_png(
+            files[f"{role}__{BASELINE}.png"], f"{role} baseline", require_explicit_srgb=True
+        )
+        active = decode_png(
+            files[f"{role}__{ACTIVE}.png"], f"{role} active", require_explicit_srgb=True
+        )
         metrics[role] = measure(baseline, active, masks[role])
-    no_face_before = decode_png(files[f"no_face__{BASELINE}.png"], "no-face baseline")
-    no_face_after = decode_png(files[f"no_face__{ACTIVE}.png"], "no-face active")
+    no_face_before = decode_png(
+        files[f"no_face__{BASELINE}.png"], "no-face baseline", require_explicit_srgb=True
+    )
+    no_face_after = decode_png(
+        files[f"no_face__{ACTIVE}.png"], "no-face active", require_explicit_srgb=True
+    )
     if (no_face_before.width, no_face_before.height, no_face_before.rgba) != (
         no_face_after.width,
         no_face_after.height,
@@ -370,9 +398,16 @@ def chunk(kind: bytes, payload: bytes) -> bytes:
     return struct.pack(">I", len(payload)) + kind + payload + struct.pack(">I", binascii.crc32(kind + payload) & 0xFFFFFFFF)
 
 
-def encode_png(width: int, height: int, rgba: bytes) -> bytes:
+def encode_png(width: int, height: int, rgba: bytes, explicit_srgb: bool = True) -> bytes:
     rows = b"".join(b"\x00" + rgba[y * width * 4 : (y + 1) * width * 4] for y in range(height))
-    return b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 6, 0, 0, 0)) + chunk(b"IDAT", zlib.compress(rows)) + chunk(b"IEND", b"")
+    color = chunk(b"sRGB", b"\x00") if explicit_srgb else b""
+    return (
+        b"\x89PNG\r\n\x1a\n"
+        + chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 6, 0, 0, 0))
+        + color
+        + chunk(b"IDAT", zlib.compress(rows))
+        + chunk(b"IEND", b"")
+    )
 
 
 def run_self_test() -> int:
@@ -449,6 +484,43 @@ def run_self_test() -> int:
             passed += 1
         else:
             raise AssertionError("oversized PNG accepted")
+
+        missing_srgb = root / "missing-srgb.png"
+        missing_srgb.write_bytes(encode_png(width, height, bytes(source), explicit_srgb=False))
+        try:
+            decode_png(missing_srgb, "missing sRGB", require_explicit_srgb=True)
+        except OutputError:
+            passed += 1
+        else:
+            raise AssertionError("PNG without explicit sRGB accepted")
+
+        wrong_order = root / "wrong-order.png"
+        wrong_order.write_bytes(
+            b"\x89PNG\r\n\x1a\n"
+            + chunk(b"sRGB", b"\x00")
+            + source_path.read_bytes()[8:]
+        )
+        try:
+            decode_png(wrong_order, "wrong order", require_explicit_srgb=True)
+        except OutputError:
+            passed += 1
+        else:
+            raise AssertionError("PNG with pre-IHDR sRGB accepted")
+
+        conflicting_profile = root / "conflicting-profile.png"
+        encoded = encode_png(width, height, bytes(source))
+        idat_offset = encoded.index(b"IDAT") - 4
+        conflicting_profile.write_bytes(
+            encoded[:idat_offset]
+            + chunk(b"iCCP", b"profile\x00\x00compressed")
+            + encoded[idat_offset:]
+        )
+        try:
+            decode_png(conflicting_profile, "conflicting profile", require_explicit_srgb=True)
+        except OutputError:
+            passed += 1
+        else:
+            raise AssertionError("PNG with conflicting iCCP and sRGB accepted")
 
         output_dir = root / "outputs"
         output_dir.mkdir()
