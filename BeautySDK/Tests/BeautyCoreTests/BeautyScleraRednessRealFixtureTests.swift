@@ -6,7 +6,7 @@ import XCTest
 @testable import BeautySDK
 
 final class BeautyScleraRednessRealFixtureTests: XCTestCase {
-    func testAuthorizedPositiveAndNegativeStayWithinFrozenAggregateBounds() throws {
+    func testAuthorizedPairSupportsFullScleraExpansionFromFrozenFocalAnchor() throws {
         let environment = ProcessInfo.processInfo.environment
         guard environment["PHASE63_REQUIRE_LOCAL_EVIDENCE"] == "1" else {
             throw XCTSkip("phase63_private_evidence_opt_in")
@@ -68,16 +68,6 @@ final class BeautyScleraRednessRealFixtureTests: XCTestCase {
                 XCTFail("private_alpha_bound_failed")
                 return
             }
-            guard measurement.changedOutsideReviewedMask == 0 else {
-                XCTFail(containmentFailureCode(
-                    before: Array(canonical.rgba8Data),
-                    after: Array(output),
-                    reviewedMask: Array(mask),
-                    width: canonical.width,
-                    height: canonical.height
-                ))
-                return
-            }
             guard (0.82...1.18).contains(measurement.textureEnergyRatio) else {
                 XCTFail("private_texture_bound_failed")
                 return
@@ -94,6 +84,11 @@ final class BeautyScleraRednessRealFixtureTests: XCTestCase {
                 guard measurement.changedInsideReviewedMask >= minimumVisibleCount,
                       measurement.changedInsideLeftHalf >= 20,
                       measurement.changedInsideRightHalf >= 20,
+                      measurement.changedOutsideReviewedMask >= 500,
+                      measurement.totalChangedPixelCount <= max(
+                        12_000,
+                        Int(Double(canonical.width * canonical.height) * 0.01)
+                      ),
                       measurement.maximumChannelDelta >= 20,
                       measurement.meanRedExcessAfter
                         <= measurement.meanRedExcessBefore * 0.80,
@@ -104,6 +99,7 @@ final class BeautyScleraRednessRealFixtureTests: XCTestCase {
                 }
             } else {
                 guard measurement.changedInsideReviewedMask == 0,
+                      measurement.changedOutsideReviewedMask == 0,
                       measurement.meanAbsoluteRGBDelta == 0,
                       abs(measurement.meanLuminanceDelta) <= 0.006
                 else {
@@ -128,6 +124,7 @@ final class BeautyScleraRednessRealFixtureTests: XCTestCase {
         let changedInsideLeftHalf: Int
         let changedInsideRightHalf: Int
         let changedOutsideReviewedMask: Int
+        let totalChangedPixelCount: Int
         let alphaChangedPixelCount: Int
         let maximumChannelDelta: Int
         let meanAbsoluteRGBDelta: Double
@@ -211,10 +208,12 @@ final class BeautyScleraRednessRealFixtureTests: XCTestCase {
                     changedOutside += 1
                 }
             }
+            let deltas = (0..<3).map {
+                abs(Int(after[offset + $0]) - Int(before[offset + $0]))
+            }
+            maxChannel = max(maxChannel, deltas.max() ?? 0)
             guard inside else { continue }
             maskCount += 1
-            let deltas = (0..<3).map { abs(Int(after[offset + $0]) - Int(before[offset + $0])) }
-            maxChannel = max(maxChannel, deltas.max() ?? 0)
             rgbTotal += Double(deltas.reduce(0, +)) / (3 * 255)
             lumaTotal += luminance(after, offset) - luminance(before, offset)
             if changed {
@@ -233,6 +232,7 @@ final class BeautyScleraRednessRealFixtureTests: XCTestCase {
             changedInsideLeftHalf: changedInsideLeft,
             changedInsideRightHalf: changedInsideRight,
             changedOutsideReviewedMask: changedOutside,
+            totalChangedPixelCount: changedInside + changedOutside,
             alphaChangedPixelCount: alphaChanged,
             maximumChannelDelta: maxChannel,
             meanAbsoluteRGBDelta: rgbTotal / maskDivisor,
@@ -254,45 +254,6 @@ final class BeautyScleraRednessRealFixtureTests: XCTestCase {
         let green = Double(bytes[offset + 1]) / 255
         let blue = Double(bytes[offset + 2]) / 255
         return max(0, red - 0.83 * green - 0.17 * blue)
-    }
-
-    private func containmentFailureCode(
-        before: [UInt8],
-        after: [UInt8],
-        reviewedMask: [UInt8],
-        width: Int,
-        height: Int
-    ) -> String {
-        let inside: (Int) -> Bool = { index in
-            let offset = index * 4
-            return max(reviewedMask[offset], max(reviewedMask[offset + 1], reviewedMask[offset + 2])) > 2
-        }
-        let changedOutside = (0..<(width * height)).filter { index in
-            let offset = index * 4
-            return !inside(index) && before[offset..<(offset + 3)] != after[offset..<(offset + 3)]
-        }
-        for radius in [1, 2, 4] {
-            let allNearReviewedMask = changedOutside.allSatisfy { index in
-                let x = index % width
-                let y = index / width
-                for deltaY in -radius...radius {
-                    for deltaX in -radius...radius {
-                        let peerX = x + deltaX
-                        let peerY = y + deltaY
-                        if peerX >= 0, peerY >= 0, peerX < width, peerY < height,
-                           inside(peerY * width + peerX)
-                        {
-                            return true
-                        }
-                    }
-                }
-                return false
-            }
-            if allNearReviewedMask {
-                return "private_containment_edge_\(radius)_failed"
-            }
-        }
-        return "private_containment_broad_failed"
     }
 
     private func textureEnergy(_ bytes: [UInt8], _ mask: [UInt8], _ width: Int, _ height: Int) -> Double {

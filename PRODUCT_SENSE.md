@@ -863,3 +863,21 @@ Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/mil
   whitening. It must not whiten the full eye aperture, recolor conjunctival
   tissue outside the accepted mask, or trade iris/pupil/lash safety for wider
   coverage.
+
+### Post-v1.15 Full Sclera Acceptance
+
+- A strong bilateral positive must no longer produce isolated dots or wedges.
+  Once material redness is established independently for an eye, the visible
+  result covers its geometry-qualified sclera on both sides of the iris, with
+  the lower visible crescent included where the detected aperture exposes it.
+- The medial tear duct/caruncle, iris, pupil, highlight, lash/lid boundary,
+  exterior skin, and alpha remain source-exact. The caruncle alone cannot admit
+  broad whitening, and a normal negative remains an exact no-op.
+- The retained Focal mask is useful only as an anchor proving that the new
+  strategy still corrects the old red target. Full Sclera is expected to extend
+  beyond that anchor; the positive gate bounds total edits to at most 1% of the
+  image while geometry/adversarial tests own protected-anatomy containment.
+- On the current authorized positive, the public no-watermark render changes
+  4,599 visible pixels (2,387/2,212 by image half), reaches a maximum channel
+  delta of 36/255, and reduces mean weighted red excess on changed pixels by
+  76.46%. This is a fixture result, not a population or commercial claim.

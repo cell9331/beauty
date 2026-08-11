@@ -252,8 +252,11 @@ final class BeautyEngineScleraRednessIntegrationTests: XCTestCase {
             bytes[offset + 3] = .max
         }
         if includeYellowMouth {
+            // Cover the valid left eye's temporal sclera as well as its medial
+            // side. Full Sclera intentionally ignores a caruncle-only red cue,
+            // so the combined fixture must contain a genuine scleral target.
             for y in 16...29 {
-                for x in 20...43 {
+                for x in 4...43 {
                     let offset = (y * width + x) * 4
                     bytes[offset] = 209
                     bytes[offset + 1] = 150

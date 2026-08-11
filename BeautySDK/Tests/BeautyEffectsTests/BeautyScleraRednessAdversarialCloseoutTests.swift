@@ -22,6 +22,7 @@ final class BeautyScleraRednessAdversarialCloseoutTests: XCTestCase {
         case iris
         case pupil
         case highlight
+        case caruncle
         case lashMargin
         case skin
         case apertureExterior
@@ -205,7 +206,14 @@ final class BeautyScleraRednessAdversarialCloseoutTests: XCTestCase {
         }
 
         let truth = fullResolutionProtectedTruth()
-        let protected = truth.allPixels
+        // This frozen envelope belongs to the retained Focal baseline, which
+        // predates the Full Sclera caruncle contract. The generic/full matrix
+        // above owns caruncle protection; keep this historical calibration on
+        // its original iris/pupil/highlight/lid/exterior families.
+        let focalCaruncle = OracleEye.allCases.reduce(into: Set<Int>()) { pixels, eye in
+            pixels.formUnion(truth.families[eye]?[.caruncle] ?? [])
+        }
+        let protected = truth.allPixels.subtracting(focalCaruncle)
         XCTAssertFalse(protected.isEmpty)
         for eye in OracleEye.allCases {
             for region in ProtectedRegion.allCases {
@@ -231,7 +239,7 @@ final class BeautyScleraRednessAdversarialCloseoutTests: XCTestCase {
 
             let source = try canonical(recoloredSource)
             let owner = BeautyLocalRetouchCompositionOwner(source: source)
-            let result = BeautyScleraRednessProvider.makeResult(
+            let result = BeautyFocalScleraRednessProvider.makeResult(
                 source: source,
                 eyeSupport: [
                     support(side: .left, geometry: baselineLeft),
@@ -304,7 +312,9 @@ final class BeautyScleraRednessAdversarialCloseoutTests: XCTestCase {
         let beautySDK = repositoryRoot.appendingPathComponent("BeautySDK")
         let allowed = Set([
             "BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyFocalScleraRednessProvider.swift",
+            "BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyFullScleraRednessProvider.swift",
             "BeautySDK/Tests/BeautyEffectsTests/BeautyFocalScleraRednessProviderTests.swift",
+            "BeautySDK/Tests/BeautyEffectsTests/BeautyFullScleraRednessProviderTests.swift",
             "BeautySDK/Tests/BeautyEffectsTests/BeautyLocalRetouchCompositionTests.swift",
             "BeautySDK/Tests/BeautyEffectsTests/BeautyScleraRednessAdversarialCloseoutTests.swift",
         ])
@@ -630,6 +640,12 @@ final class BeautyScleraRednessAdversarialCloseoutTests: XCTestCase {
                     if (x == centerX - 2 || x == centerX - 1), (y == 21 || y == 22) {
                         eyeFamilies[.highlight]?.insert(index)
                     }
+                    let isMedialCaruncle = eye == .left
+                        ? x >= centerX + 10
+                        : x <= centerX - 10
+                    if isAperture, isMedialCaruncle, y >= 22, y <= 26 {
+                        eyeFamilies[.caruncle]?.insert(index)
+                    }
                     if isBoundary { eyeFamilies[.lashMargin]?.insert(index) }
                     if !isAperture, ellipse > 1, ellipse <= 1.65 {
                         eyeFamilies[.skin]?.insert(index)
@@ -692,6 +708,9 @@ final class BeautyScleraRednessAdversarialCloseoutTests: XCTestCase {
             }
             for index in eyeTruth[.highlight] ?? [] {
                 bytes = replacingRGBA(in: bytes, index: index, with: (248, 248, 248, 255))
+            }
+            for index in eyeTruth[.caruncle] ?? [] {
+                bytes = replacingRGBA(in: bytes, index: index, with: (218, 135, 145, 255))
             }
             for index in eyeTruth[.lashMargin] ?? [] {
                 bytes = replacingRGBA(in: bytes, index: index, with: (38, 28, 30, 255))

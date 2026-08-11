@@ -26,24 +26,26 @@
 
 ## 3. Active
 
-### A-2026-08-11-full-sclera-redness
-
-| Field | Value |
-| --- | --- |
-| Status | `active` |
-| Trigger | User review found that the focal redness mask changed only small islands and did not cover the full visible U-shaped sclera. |
-| Scope | Preserve the current implementation as the private `FocalScleraRedness` strategy, add a separate `FullScleraRedness` strategy, and route the existing still-image public effect through the full-sclera strategy without changing its public parameter. |
-| Hard boundary | The editable region is the validated eye aperture minus iris/pupil, lid/lash margin, highlight, exterior skin, and a conservative medial-canthal caruncle guard. The caruncle remains source-exact. |
-| Effect | Apply mild broad chroma neutralization across eligible visible sclera and stronger correction where weighted red excess is material; retain original luminance structure and texture rather than painting flat white. |
-| Acceptance | Keep Focal behavior independently executable and tested; Full Sclera must operate bilaterally, materially increase reviewed-mask coverage, keep zero protected-region and reviewed-mask escape, exclude the caruncle, preserve alpha, and retain exact negative/fail-closed behavior. |
-| Boundary | Still-image SDK core only. No Demo/realtime/pixel-buffer/model/network, archived-v1.15 mutation, population/device/commercial, packaging, shipping, launch, or release-readiness claim. |
-
-The archived `v1.15` tag remains independently audited and immutable; this is
-post-archive work on `codex/full-sclera-redness`.
+_None._
 
 ## 3A. Historical Lifecycle Ledger
 
 > 以下记录均为已完成或已被后续权威取代的执行历史，不是 Active plan。
+
+### C-2026-08-11-full-sclera-redness
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
+| Trigger | User review found that the focal redness mask changed only small islands and did not cover the full visible U-shaped sclera; the medial tear duct/caruncle must remain excluded. |
+| Strategy split | Commit `4271ddc` preserves the prior behavior as `BeautyFocalScleraRednessProvider` / `Transform` and its 15-test suite. The stable facade now routes to the separate `BeautyFullScleraRednessProvider` / `Transform`; the public parameter is unchanged. |
+| Implementation | Full Sclera validates per eye, builds the eye aperture, subtracts pupil/iris, native dark iris, highlights, a boundary-only lash band, exterior/lid margin, and a medial caruncle guard, then uses material redness only for admission. An accepted eye receives a `0.56` broad geometry mask plus redness boost, hard re-clipping, bounded `0.76 / 0.08 / 0.13` correction, and `0.028` maximum luminance lift. |
+| Admission and negative | At least two geometry-safe pixels must score `>= 0.50` on the weighted-red smoothstep. The authorized normal negative and caruncle-only synthetic input remain exact no-ops. The former reviewed mask is retained as a Focal anchor; intentional Full Sclera expansion beyond it is bounded to at most 1% of image pixels and protected by the full anatomy oracle. |
+| Output evidence | Fresh public no-watermark output changes 4,599 visible pixels versus the prior Focal evidence's 203, split 2,387/2,212 across image halves. Maximum channel delta is 36/255 and mean weighted red excess on changed pixels falls 76.46%. Ignored input/output/mask/overlay artifacts live under `example-images/local-retouch-review/full-sclera-remediation-20260811/`. |
+| Safety evidence | The bilateral recolored oracle adds caruncle to iris, pupil, highlight, lash, skin, and aperture-exterior families. Across 1,648 protected pixels it records zero proposal intersection and zero RGBA mismatch; caruncle alone cannot admit the eye. |
+| Research rationale | Ocular-redness literature treats visible ocular-surface segmentation and iris segmentation as separate ROI owners, then measures redness globally or regionally inside the remaining conjunctival ROI. This supports aperture-minus-iris geometry for extent and redness for admission/strength rather than using red islands as the whole mask. |
+| Verification | Focal/Full/provider/integration/adversarial/private tests pass 35/35; combined teeth+sclera closeout passes 13/13; opted-in authorized positive/negative passes 1/1; full SwiftPM passes 645 tests with eight documented opt-in skips and zero failures. `git diff --check` and privacy/debug scans pass. |
+| Boundary | Post-archive work on `codex/full-sclera-redness`; archived `v1.15` remains immutable. Still-image SDK core only, with no Demo/realtime/pixel-buffer/model/network, population/device/commercial, packaging, shipping, launch, or release-readiness claim. |
 
 ### H-2026-08-11-sclera-visible-effect-remediation
 

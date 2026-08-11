@@ -511,8 +511,11 @@ private extension BeautyEngineCombinedLocalRetouchCloseoutTests {
             bytes[offset + 2] = 30
             bytes[offset + 3] = .max
         }
+        // The original center-only strip overlapped only the two medial
+        // caruncle sides. Full Sclera correctly excludes those cues, so extend
+        // the fixture through both temporal sclera regions.
         for y in 16...29 {
-            for x in 20...43 {
+            for x in 4...59 {
                 let offset = (y * width + x) * 4
                 bytes[offset] = 209
                 bytes[offset + 1] = 150

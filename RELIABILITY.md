@@ -967,3 +967,21 @@ Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/mil
   teeth/sclera integration, renderer, and real-fixture-host tests pass `59/59`
   with only the two expected private opt-in skips; full SwiftPM passes `641/641`
   with eight documented opt-in skips and zero failures.
+
+### Post-v1.15 Full Sclera Reliability
+
+- The retained Focal strategy and its 15-test suite provide a stable regression
+  baseline. The stable facade routes exactly to Full Sclera, whose provider and
+  transform have separate broad-coverage, lower-crescent, caruncle, negative,
+  transform-bound, and facade-equivalence tests.
+- Admission requires two genuinely material weighted-red samples at score
+  `>= 0.50`. This separates the authorized strong positive from the normal
+  negative while still allowing localized high-redness vessels; a caruncle-
+  only input is rejected before broad whitening.
+- Eye failures remain independent, teeth and sclera still share one immutable-
+  source composition owner, and malformed-eye plus eligible-teeth continuation
+  uses a fixture with a real temporal sclera cue rather than caruncle-only red.
+- The private positive now treats the old reviewed mask as a frozen Focal
+  anchor and requires bounded expansion beyond it; the negative requires zero
+  changes both inside and outside the anchor. Protected-anatomy recoloring owns
+  zero-leak containment for the new full region.

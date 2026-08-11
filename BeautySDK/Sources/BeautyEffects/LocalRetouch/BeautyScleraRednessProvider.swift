@@ -14,7 +14,7 @@ package enum BeautyScleraRednessProvider {
         strength: Float,
         owner: BeautyLocalRetouchCompositionOwner
     ) -> BeautyScleraRednessProviderResult {
-        BeautyFocalScleraRednessProvider.makeResult(
+        BeautyFullScleraRednessProvider.makeResult(
             source: source,
             eyeSupport: eyeSupport,
             eyeOrder: eyeOrder,

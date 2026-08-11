@@ -808,3 +808,19 @@ Command-level evidence is recorded in [Phase 65 verification](.planning/mileston
   gate, bounded mask gain, and a small `0.018` luminance ceiling. Pupil/iris and
   lid protection remain independently adversarially verified; zero protected
   intersection and zero reviewed-mask escape are mandatory.
+
+### Post-v1.15 Full Sclera Quality Delta
+
+- The prior implementation is retained as named `Focal` source, transform, and
+  15-test baseline. New `Full` source/transform tests prove bilateral broad
+  coverage, neutral and lower-crescent participation, exact facade routing,
+  caruncle-only rejection, bounded channel movement, and stronger red removal.
+- The full-resolution protected oracle adds the caruncle family and retains
+  zero intersection and zero output mismatch across 1,648 recolored protected
+  pixels. The opted-in positive/negative test treats the previous mask as a
+  Focal anchor, requires intentional but bounded positive expansion, and keeps
+  the natural negative byte-exact.
+- Current public no-watermark evidence changes 4,599 visible pixels versus 203
+  in the retained Focal remediation evidence, is bilateral at 2,387/2,212,
+  reaches 36/255 maximum channel movement, and reduces weighted red excess by
+  76.46% on changed pixels.

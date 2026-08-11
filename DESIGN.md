@@ -1047,3 +1047,23 @@ Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/mil
   reviewed-mask changes, at least 20 changes in each image half, channel delta
   `20...44`, at least 20% weighted-red reduction, and zero mask escape; the
   authorized negative must remain exact.
+
+### Post-v1.15 Full Visible-Sclera Strategy
+
+- `BeautyScleraRednessProvider` is the stable package facade and now delegates
+  to `BeautyFullScleraRednessProvider`. The prior behavior remains independently
+  executable as `BeautyFocalScleraRednessProvider`; the public parameter and
+  still-image composition route are unchanged.
+- Full Sclera validates and fails closed per eye, rasterizes the eye aperture,
+  applies a narrow lid erosion, then subtracts pupil/iris geometry, native dark
+  iris pixels, highlights, a boundary-gated lash band, and a medial caruncle
+  guard. Caruncle removal happens before target admission, blur, or transform.
+- Color is used to decide whether an eye contains a material target, not to
+  shrink the final edit to red islands. At least two geometry-safe pixels must
+  reach `0.50` on the existing weighted-red smoothstep; an admitted eye then
+  receives a `0.56` broad geometry mask plus a bounded per-pixel redness boost.
+  Blur is hard-clipped back to the protected envelope.
+- The full transform retains source texture, applies the bounded
+  `0.76 / 0.08 / 0.13` chroma correction, and caps broad luminance lift at
+  `0.028`. The authorized normal negative remains exact. The former reviewed
+  mask is a frozen Focal anchor, not a Full Sclera containment boundary.
