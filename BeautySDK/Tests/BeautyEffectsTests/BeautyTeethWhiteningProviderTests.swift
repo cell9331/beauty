@@ -91,6 +91,21 @@ final class BeautyTeethWhiteningProviderTests: XCTestCase {
                 outer: rectangle(minX: 0.2, minY: 0.2, maxX: 0.8, maxY: 0.8),
                 inner: rectangle(minX: 0.05, minY: 0.4, maxX: 0.35, maxY: 0.6)
             ),
+            BeautyObservedLipSupport(
+                outer: [
+                    CoordinatePoint(x: 0.18, y: 0.25),
+                    CoordinatePoint(x: 0.82, y: 0.25),
+                    CoordinatePoint(x: 0.82, y: 0.75),
+                    CoordinatePoint(x: 0.60, y: 0.75),
+                    CoordinatePoint(x: 0.60, y: 0.45),
+                    CoordinatePoint(x: 0.40, y: 0.45),
+                    CoordinatePoint(x: 0.40, y: 0.75),
+                    CoordinatePoint(x: 0.18, y: 0.75),
+                ],
+                // Every vertex is inside the concave outer polygon, but the
+                // upper edge crosses its central notch.
+                inner: rectangle(minX: 0.30, minY: 0.35, maxX: 0.70, maxY: 0.60)
+            ),
         ]
 
         for support in malformed {
@@ -132,7 +147,7 @@ final class BeautyTeethWhiteningProviderTests: XCTestCase {
         }
     }
 
-    func testAdaptiveGrowthIsSeedConnectedAndNeverDropsFixedStrongPixels() throws {
+    func testConservativeInnerBaselineRejectsDisconnectedAndOuterLipLookalikes() throws {
         let fixture = makeMouthFixture(includeDisconnectedLookalike: true)
         let source = try canonical(fixture.bytes)
         let owner = BeautyLocalRetouchCompositionOwner(source: source)
@@ -145,7 +160,8 @@ final class BeautyTeethWhiteningProviderTests: XCTestCase {
         let result = try owner.compose([provider.unit])
         let changed = changedPixelIndices(before: fixture.bytes, after: Array(result.canonicalImage.rgba8Data))
 
-        XCTAssertGreaterThan(provider.summary.adaptiveStrongPixelCount, provider.summary.fixedStrongPixelCount)
+        XCTAssertEqual(provider.summary.adaptiveStrongPixelCount, 0)
+        XCTAssertEqual(provider.summary.finalStrongPixelCount, provider.summary.fixedStrongPixelCount)
         XCTAssertEqual(provider.summary.droppedFixedStrongPixelCount, 0)
         XCTAssertTrue(changed.isDisjoint(with: fixture.disconnectedLookalike))
         XCTAssertTrue(changed.isSubset(of: fixture.allowedEnamel))
@@ -167,7 +183,7 @@ final class BeautyTeethWhiteningProviderTests: XCTestCase {
         }
     }
 
-    func testPostFilterHardReclipPreservesUpperLipAndEveryOutsideEnvelopePixel() throws {
+    func testInnerApertureHardReclipPreservesUpperLipAndEveryOutsideEnvelopePixel() throws {
         var fixture = makeMouthFixture()
         let upperLip = pixelIndex(x: 30, y: 10)
         let justAboveAperture = pixelIndex(x: 30, y: 14)
@@ -213,6 +229,8 @@ final class BeautyTeethWhiteningProviderTests: XCTestCase {
         for pixel: (UInt8, UInt8, UInt8) in [
             (220, 220, 220),
             (238, 238, 238),
+            (250, 240, 200),
+            (245, 235, 195),
             (230, 225, 210),
             (160, 158, 150),
         ] {
@@ -223,6 +241,21 @@ final class BeautyTeethWhiteningProviderTests: XCTestCase {
                 strength: 1
             ))
         }
+    }
+
+    func testTransformAlreadyLightBoundarySeparatesMaterialYellowPixels() {
+        XCTAssertNotNil(BeautyTeethWhiteningTransform.target(
+            red: 240,
+            green: 230,
+            blue: 180,
+            strength: 1
+        ))
+        XCTAssertNil(BeautyTeethWhiteningTransform.target(
+            red: 242,
+            green: 232,
+            blue: 180,
+            strength: 1
+        ))
     }
 
     func testTransformReducesMaterialYellowWithinLockedChannelAndLuminanceBounds() throws {

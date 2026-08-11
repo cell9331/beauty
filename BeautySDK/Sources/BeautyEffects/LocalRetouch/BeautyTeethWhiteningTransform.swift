@@ -11,6 +11,7 @@ package enum BeautyTeethWhiteningTransform {
     package static let yellowNeutralizationFactor: Float = 1.45
     private static let maximumRedGreenImbalance: Float = 0.12
     private static let maximumSaturation: Float = 0.55
+    private static let maximumAdjustableLuminance: Float = 0.90
 
     /// Derives one bounded target from the immutable source triplet.
     ///
@@ -41,6 +42,9 @@ package enum BeautyTeethWhiteningTransform {
             return nil
         }
         let sourceLuminance = luminance(sourceRed, sourceGreen, sourceBlue)
+        guard sourceLuminance < maximumAdjustableLuminance else {
+            return nil
+        }
         let yellowExcess = max(0, (sourceRed + sourceGreen) * 0.5 - sourceBlue)
         let yellowCorrection = smoothstep(0.08, 0.14, yellowExcess)
         let localStrength = min(strength, 1) * maximumEffectiveStrength * yellowCorrection

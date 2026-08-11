@@ -90,6 +90,15 @@ explicit lightly warm no-op threshold and are not production constants.
     tongue, gum, braces, occlusion, facial hair, closed mouth, pose, blur,
     compression, skin tone, and lighting using rights-approved fixtures.
 
+Production safety correction: `outerLips` plus color connectivity is not tooth-
+specific anatomy. Without an independently approved tooth-level support source,
+production ownership must stop at the conservative fixed `innerLips` baseline;
+the adaptive outer-lip path remains a mechanics comparator only. In particular,
+do not claim color-independent protection for an enamel-colored gum, tongue, or
+brace inside a coarse aperture. Such a claim requires tooth-specific support or
+must fail closed, while reviewed fixture masks continue to validate containment
+only for their exact authorized inputs.
+
 The adaptive mechanics run increased strong coverage from 4,711 to 7,396 pixels
 on e6 (+57.0%) and from 462 to 805 on e2 (+74.2%), dropped zero fixed pixels,
 changed zero pixels outside its mask, and stayed empty on e3/no-face. These are

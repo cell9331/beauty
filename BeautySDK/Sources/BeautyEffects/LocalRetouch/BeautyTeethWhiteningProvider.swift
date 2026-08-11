@@ -57,13 +57,7 @@ package enum BeautyTeethWhiteningProvider {
               let inner = ValidatedPolygon(points: innerPoints),
               validatesRelationship(inner: inner, outer: outer, source: source),
               let grid = MaskGrid(outer: outer, source: source),
-              let outerMask = grid.rasterize(outer),
-              let innerMask = grid.rasterize(inner),
-              let adaptiveRegion = adaptiveMouthRegion(
-                  outerMask: outerMask,
-                  inner: inner,
-                  grid: grid
-              )
+              let innerMask = grid.rasterize(inner)
         else {
             return nil
         }
@@ -82,23 +76,17 @@ package enum BeautyTeethWhiteningProvider {
             hardEnvelope: innerMask
         )
         let fixedStrongPixelCount = strongCount(fixedMask)
-        guard fixedStrongPixelCount > 0,
-              let adaptiveMask = adaptiveSelection(
-                  sourceBytes: sourceBytes,
-                  fixedMask: fixedMask,
-                  adaptiveRegion: adaptiveRegion,
-                  inner: inner,
-                  grid: grid,
-                  sourceWidth: source.width
-              )
-        else {
+        guard fixedStrongPixelCount > 0 else {
             return nil
         }
 
-        let hardEnvelope = zip(innerMask, adaptiveRegion).map { max($0, $1) }
-        let combined = zip(adaptiveMask, fixedMask).map { clamp(max($0, $1)) }
-        let finalMask = constrainToHardEnvelope(combined, hardEnvelope: hardEnvelope)
-        let adaptiveStrongPixelCount = strongCount(adaptiveMask)
+        // Coarse Vision lips do not provide tooth-level semantics. Keep the
+        // production owner on the conservative inner-aperture baseline; color-
+        // qualified growth into the outer-lip region cannot distinguish an
+        // enamel-colored gum, tongue, or brace and therefore fails closed.
+        let hardEnvelope = innerMask
+        let finalMask = fixedMask
+        let adaptiveStrongPixelCount = 0
         let finalStrongPixelCount = strongCount(finalMask)
         let droppedFixedStrongPixelCount = zip(fixedMask, finalMask).reduce(into: 0) {
             if $1.0 > strongThreshold && $1.1 <= strongThreshold {
@@ -177,7 +165,7 @@ package enum BeautyTeethWhiteningProvider {
               innerPixelWidth >= minimumInnerPixelWidth,
               innerPixelHeight >= minimumInnerPixelHeight,
               innerPixelHeight / innerPixelWidth >= minimumApertureAspect,
-              inner.points.allSatisfy({ outer.contains($0) }),
+              outer.strictlyContains(inner),
               outerBounds.minX <= innerBounds.minX,
               outerBounds.maxX >= innerBounds.maxX,
               outerBounds.minY <= innerBounds.minY,
@@ -214,165 +202,6 @@ package enum BeautyTeethWhiteningProvider {
             return nil
         }
         return fixed
-    }
-
-    private static func adaptiveMouthRegion(
-        outerMask: [Float],
-        inner: ValidatedPolygon,
-        grid: MaskGrid
-    ) -> [Float]? {
-        let apertureHeight = inner.bounds.height * Double(grid.sourceHeight)
-        guard apertureHeight >= minimumInnerPixelHeight else { return nil }
-        let upperInset = max(1, apertureHeight * 0.05)
-        let lowerExtension = max(1, apertureHeight * 0.10)
-        let minimumY = inner.bounds.minY * Double(grid.sourceHeight) + upperInset
-        let maximumY = inner.bounds.maxY * Double(grid.sourceHeight) + lowerExtension
-        var region = outerMask
-        for localIndex in region.indices where region[localIndex] > 0 {
-            let centerY = grid.pixelCenterY(localIndex)
-            if centerY < minimumY || centerY > maximumY {
-                region[localIndex] = 0
-            }
-        }
-        return region.lazy.filter { $0 > 0.5 }.count >= 12 ? region : nil
-    }
-
-    private static func adaptiveSelection(
-        sourceBytes: Data,
-        fixedMask: [Float],
-        adaptiveRegion: [Float],
-        inner: ValidatedPolygon,
-        grid: MaskGrid,
-        sourceWidth: Int
-    ) -> [Float]? {
-        let regionIndices = adaptiveRegion.indices.filter { adaptiveRegion[$0] > 0.5 }
-        let seedIndices = fixedMask.indices.filter {
-            fixedMask[$0] > strongThreshold && adaptiveRegion[$0] > 0.5
-        }
-        guard regionIndices.count >= 12,
-              seedIndices.count >= 2,
-              inner.bounds.width * Double(grid.sourceWidth) >= minimumInnerPixelWidth,
-              inner.bounds.height / inner.bounds.width >= minimumApertureAspect
-        else {
-            return nil
-        }
-
-        let regionFeatures = regionIndices.map {
-            PixelFeatures(
-                sourceBytes: sourceBytes,
-                pixelIndex: grid.globalPixelIndex($0, sourceWidth: sourceWidth)
-            )
-        }
-        let seedFeatures = seedIndices.map {
-            PixelFeatures(
-                sourceBytes: sourceBytes,
-                pixelIndex: grid.globalPixelIndex($0, sourceWidth: sourceWidth)
-            )
-        }
-        let split = otsuThreshold(regionFeatures.map(\.luminance))
-        let seedLow = percentile(seedFeatures.map(\.luminance), fraction: 0.10)
-        let seedQuarter = percentile(seedFeatures.map(\.luminance), fraction: 0.25)
-        let seedSaturationHigh = percentile(seedFeatures.map(\.saturation), fraction: 0.90)
-        let candidateLuminance = max(0.18, min(split, seedLow) - 0.14)
-        let candidateSaturation = min(0.62, max(0.32, seedSaturationHigh + 0.16))
-
-        var candidate = [Bool](repeating: false, count: grid.pixelCount)
-        var score = [Float](repeating: 0, count: grid.pixelCount)
-        for localIndex in regionIndices {
-            let features = PixelFeatures(
-                sourceBytes: sourceBytes,
-                pixelIndex: grid.globalPixelIndex(localIndex, sourceWidth: sourceWidth)
-            )
-            let redGreen = features.red - features.green
-            let redBlue = features.red - features.blue
-            guard features.luminance >= candidateLuminance,
-                  features.saturation <= candidateSaturation + 0.18,
-                  redGreen <= 0.24,
-                  redBlue <= 0.46
-            else {
-                continue
-            }
-            let brightness = smoothstep(
-                candidateLuminance,
-                max(candidateLuminance + 0.08, seedQuarter),
-                features.luminance
-            )
-            let neutrality = 1 - smoothstep(
-                candidateSaturation,
-                min(0.90, candidateSaturation + 0.22),
-                features.saturation
-            )
-            let redBalance = 1 - smoothstep(0.16, 0.34, redGreen)
-            let blueBalance = 1 - smoothstep(0.24, 0.46, redBlue)
-            let localScore = clamp(brightness * neutrality * redBalance * blueBalance)
-            score[localIndex] = localScore
-            candidate[localIndex] = localScore > 0.035
-        }
-        for localIndex in seedIndices {
-            candidate[localIndex] = true
-            score[localIndex] = max(score[localIndex], fixedMask[localIndex])
-        }
-
-        let connectedCandidates = connectedCandidates(
-            candidate: candidate,
-            seeds: seedIndices,
-            width: grid.width,
-            height: grid.height
-        )
-        var adaptive = [Float](repeating: 0, count: grid.pixelCount)
-        for localIndex in regionIndices where connectedCandidates[localIndex] {
-            adaptive[localIndex] = max(fixedMask[localIndex], score[localIndex] * 0.90)
-        }
-        let clipped = constrainToHardEnvelope(
-            boxBlur(adaptive, width: grid.width, height: grid.height),
-            hardEnvelope: adaptiveRegion
-        )
-        let adaptiveStrongPixelCount = strongCount(clipped)
-        let areaRatio = Double(adaptiveStrongPixelCount) / Double(regionIndices.count)
-        guard adaptiveStrongPixelCount >= strongCount(fixedMask),
-              areaRatio >= minimumStrongAreaRatio,
-              areaRatio <= maximumStrongAreaRatio
-        else {
-            return nil
-        }
-        return clipped
-    }
-
-    private static func connectedCandidates(
-        candidate: [Bool],
-        seeds: [Int],
-        width: Int,
-        height: Int
-    ) -> [Bool] {
-        var connected = [Bool](repeating: false, count: candidate.count)
-        var queue = seeds
-        for index in seeds { connected[index] = true }
-        var cursor = 0
-        while cursor < queue.count {
-            let index = queue[cursor]
-            cursor += 1
-            let x = index % width
-            let y = index / width
-            for deltaY in -1...1 {
-                for deltaX in -1...1 where deltaX != 0 || deltaY != 0 {
-                    let nextX = x + deltaX
-                    let nextY = y + deltaY
-                    guard nextX >= 0,
-                          nextX < width,
-                          nextY >= 0,
-                          nextY < height
-                    else {
-                        continue
-                    }
-                    let next = nextY * width + nextX
-                    if candidate[next], !connected[next] {
-                        connected[next] = true
-                        queue.append(next)
-                    }
-                }
-            }
-        }
-        return connected
     }
 
     private static func boxBlur(_ values: [Float], width: Int, height: Int) -> [Float] {
@@ -416,56 +245,6 @@ package enum BeautyTeethWhiteningProvider {
         min(1, max(0, value))
     }
 
-    private static func percentile(_ values: [Float], fraction: Double) -> Float {
-        guard !values.isEmpty else { return 0 }
-        let sorted = values.sorted()
-        let index = min(
-            sorted.count - 1,
-            max(0, Int((Double(sorted.count - 1) * fraction).rounded(.down)))
-        )
-        return sorted[index]
-    }
-
-    private static func otsuThreshold(_ values: [Float]) -> Float {
-        guard let minimum = values.min(),
-              let maximum = values.max(),
-              maximum > minimum
-        else {
-            return values.first ?? 0
-        }
-        let binCount = 64
-        var histogram = [Int](repeating: 0, count: binCount)
-        for value in values {
-            let normalized = Double((value - minimum) / (maximum - minimum))
-            let index = min(binCount - 1, max(0, Int(normalized * Double(binCount - 1))))
-            histogram[index] += 1
-        }
-        let total = histogram.reduce(0, +)
-        let weightedTotal = histogram.enumerated().reduce(0.0) {
-            $0 + Double($1.offset * $1.element)
-        }
-        var backgroundWeight = 0
-        var backgroundWeighted = 0.0
-        var bestVariance = -Double.infinity
-        var bestBin = 0
-        for index in 0..<(binCount - 1) {
-            backgroundWeight += histogram[index]
-            guard backgroundWeight > 0 else { continue }
-            let foregroundWeight = total - backgroundWeight
-            guard foregroundWeight > 0 else { break }
-            backgroundWeighted += Double(index * histogram[index])
-            let backgroundMean = backgroundWeighted / Double(backgroundWeight)
-            let foregroundMean = (weightedTotal - backgroundWeighted) / Double(foregroundWeight)
-            let variance = Double(backgroundWeight * foregroundWeight)
-                * pow(backgroundMean - foregroundMean, 2)
-            if variance > bestVariance {
-                bestVariance = variance
-                bestBin = index
-            }
-        }
-        let fraction = Float(bestBin) / Float(binCount - 1)
-        return minimum + (maximum - minimum) * fraction
-    }
 }
 
 private struct PixelFeatures {
@@ -543,9 +322,6 @@ private struct MaskGrid {
         return (originY + localY) * sourceWidth + originX + localX
     }
 
-    func pixelCenterY(_ localIndex: Int) -> Double {
-        Double(originY + localIndex / width) + 0.5
-    }
 }
 
 private struct PolygonBounds {
@@ -608,6 +384,27 @@ private struct ValidatedPolygon {
             previous = current
         }
         return inside
+    }
+
+    func strictlyContains(_ polygon: ValidatedPolygon) -> Bool {
+        guard polygon.points.allSatisfy({ contains($0) }) else {
+            return false
+        }
+        for innerIndex in polygon.points.indices {
+            let innerNext = (innerIndex + 1) % polygon.points.count
+            for outerIndex in points.indices {
+                let outerNext = (outerIndex + 1) % points.count
+                if Self.segmentsIntersect(
+                    polygon.points[innerIndex],
+                    polygon.points[innerNext],
+                    points[outerIndex],
+                    points[outerNext]
+                ) {
+                    return false
+                }
+            }
+        }
+        return true
     }
 
     private static func signedArea(_ points: [CoordinatePoint]) -> Double {

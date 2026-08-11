@@ -20,13 +20,16 @@ final class BeautyTeethWhiteningAdversarialCloseoutTests: XCTestCase {
 
     func testColorIndependentProtectedTruthRemainsExactAcrossSupportPerturbations() throws {
         let colorIndependentCoordinates: [ProtectedRegion: (x: Int, y: Int)] = [
-            .lip: (30, 13),
-            .tongue: (30, 27),
-            .gum: (15, 14),
-            .brace: (50, 19),
-            .facialHair: (9, 18),
-            .skin: (55, 20),
-            .apertureExterior: (4, 4),
+            // Every sentinel is inside the former outer-lip adaptive search
+            // region and eight-connected to enamel, but outside the current
+            // high-confidence inner-aperture ownership boundary.
+            .lip: (17, 18),
+            .tongue: (30, 25),
+            .gum: (17, 20),
+            .brace: (46, 19),
+            .facialHair: (46, 21),
+            .skin: (17, 22),
+            .apertureExterior: (46, 23),
         ]
         XCTAssertEqual(colorIndependentCoordinates.count, ProtectedRegion.allCases.count)
         let colorIndependentProtectedTruth = Set(
@@ -60,6 +63,7 @@ final class BeautyTeethWhiteningAdversarialCloseoutTests: XCTestCase {
             let changed = changedPixelIndices(before: sourceBytes, after: output)
 
             XCTAssertFalse(changed.isEmpty)
+            XCTAssertEqual(provider.summary.adaptiveStrongPixelCount, 0)
             XCTAssertTrue(changed.isDisjoint(with: colorIndependentProtectedTruth))
             for index in colorIndependentProtectedTruth {
                 XCTAssertEqual(rgba(output, at: index), rgba(sourceBytes, at: index))
@@ -70,13 +74,13 @@ final class BeautyTeethWhiteningAdversarialCloseoutTests: XCTestCase {
 
     func testRecoloredProtectedFamiliesRemainExactInFinalComposedOutput() throws {
         let coordinates: [ProtectedRegion: (x: Int, y: Int)] = [
-            .lip: (30, 12),
-            .tongue: (30, 28),
-            .gum: (15, 14),
-            .brace: (50, 19),
-            .facialHair: (9, 18),
-            .skin: (55, 20),
-            .apertureExterior: (4, 4),
+            .lip: (17, 17),
+            .tongue: (31, 25),
+            .gum: (17, 19),
+            .brace: (46, 18),
+            .facialHair: (46, 20),
+            .skin: (17, 21),
+            .apertureExterior: (46, 22),
         ]
         XCTAssertEqual(coordinates.count, ProtectedRegion.allCases.count)
 
@@ -102,6 +106,7 @@ final class BeautyTeethWhiteningAdversarialCloseoutTests: XCTestCase {
         let output = Array(composed.canonicalImage.rgba8Data)
 
         XCTAssertGreaterThan(composed.summary.changedPixelCount, 0)
+        XCTAssertEqual(provider.summary.adaptiveStrongPixelCount, 0)
         for region in ProtectedRegion.allCases {
             let point = try XCTUnwrap(coordinates[region])
             let index = pixelIndex(x: point.x, y: point.y)
