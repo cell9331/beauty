@@ -1005,3 +1005,28 @@ release: non-release
   shipping, launch or release-readiness contract is added.
 
 Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-CLOSEOUT-EVIDENCE.md) and [verification](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).
+
+### Post-v1.15 Review Remediation Contract
+
+- The archived `v1.15` tag and Phase 65 owner above remain historical. Current
+  untagged code maps each eye support independently: a malformed side is
+  omitted before canonical eye-order derivation, while a valid peer and mapped
+  lip support survive. Invalid shared face bounds remain observation-wide.
+- Teeth ownership no longer grows from color-connected seeds into the coarse
+  `outerLips` region. The only production hard envelope is the color-qualified,
+  post-blur-reclipped fixed `innerLips` baseline; the compatibility summary
+  reports zero adaptive strong pixels. This preserves source for enamel-colored
+  lookalikes in the former outer-lip envelope.
+- `innerLips` is conservative aperture support, not tooth-level semantics. No
+  color-independent claim is made for gum, tongue, or braces that are visually
+  indistinguishable from enamel inside that aperture; broader ownership
+  requires independently approved tooth-specific support and otherwise fails
+  closed.
+- Source luminance at or above `0.90` is an exact transform no-op even when
+  yellow excess is material. Inner/outer lip nesting requires every inner edge
+  to remain inside without touching or crossing the outer boundary, including
+  concave outer polygons.
+- Authorized reviewed masks are admitted to aggregate tests only with finite
+  zero-origin extents, exact canonical dimensions, and missing-or-EXIF-1
+  orientation. Rendering cannot crop, pad, translate, or rotate a mismatched
+  mask into apparent evidence.

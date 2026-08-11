@@ -34,20 +34,20 @@ Quality gate:
 
 ## 3. Current Snapshot
 
-Current repository state after canonical Phase 64 final and fresh Phase 65
-combined, privacy, compatibility and named-sRGB output verification:
+Current repository state after the post-archive v1.15 review remediation; the
+Phase 64/65 statements below remain historical evidence for the `v1.15` tag:
 
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
 | Root docs | 4 | All nine root owners exist. The consolidation audit corrected `ARCHITECTURE.md` so current pixel-buffer processing, still-image detection/geometry, and placeholder Render foundations match compiled code. | Keep current facts in root owners; keep milestone narratives in archives. |
 | Historical docs | 3 | `docs/README.md` remains the long-doc entry. `.planning/codebase/*` is explicitly stale background and historical phase/milestone artifacts are not current contracts. | Refresh codebase maps only in an explicitly scoped remap. |
-| GSD planning | 4 | Phase 64 is canonical final at 21 plans/38 task IDs; its post-downstream gate revalidates the SHA-256-bound Phase 65 final without candidate-era byte equality. Phase 65 and the independent 40/40 audit pass, and v1.15 artifacts are archived. | Start the next milestone with fresh requirements while preserving the archived authority chain. |
-| SDK Package | 4 | The package/facade boundary is intact; independently qualified teeth and per-eye sclera output compose through one canonical request owner. Exact inventory is 61 public fields, five neutral presets, and 74 renderer cases. | Preserve independent provider authority, original-pixel composition and named-sRGB output. |
+| GSD planning | 4 | Phase 64/65 and the independent 40/40 audit remain archived. The current post-archive remediation records five fresh review findings without changing the tag. | Complete the remediation record, then start the next milestone with fresh requirements. |
+| SDK Package | 4 | The package/facade boundary is intact; per-eye mapping is local, teeth ownership is fixed-inner-aperture only, and teeth/sclera compose through one canonical request owner. Exact inventory remains 61 public fields, five neutral presets, and 74 renderer cases. | Preserve original-pixel composition, fixed-only teeth ownership, and named-sRGB output. |
 | Demo App | 4 | The unchanged Demo builds and passes 121/121 on iPhone 17e / iOS 26.5; teeth, sclera-redness, and `去脂` rows remain disabled with nil mappings. | Preserve disabled taxonomy through milestone closeout. |
-| Tests | 4 | The fresh exact conjunction passes 638/0/0 full SwiftPM with all eight opt-ins, both strict 6/6 feature-output matrices, checker mutations, Demo build, and 121/0/0 Demo tests. | Preserve no-skip, explicit-sRGB, exact inventory and failure-isolation gates. |
-| Security | 4 | Production-source scans and mutations cover public/SPI/Codable, diagnostics, persistence and read failures; T-65-01 through T-65-08 and aggregate-only observations pass. | Preserve request-local sensitive state and the aggregate diagnostic allowlist. |
+| Tests | 4 | Fresh focused remediation passes 45/45 and broader local-retouch/renderer coverage passes 59/59 with two expected private skips. Full current SwiftPM passes 641 tests with eight documented opt-in skips; the archived tag retains its separate 638/0/0 no-skip evidence. | Re-run the private no-skip conjunction when its authorized bundle/host is available. |
+| Security | 4 | Outer-lip adaptive teeth growth is removed, malformed eye mapping is per-side, reviewed masks reject misregistration, and sensitive state remains request-local and aggregate-only. | Require approved tooth-specific support before any broader teeth ownership claim. |
 | Reliability | 3 | Backpressure, stale work, reset, detection degradation, and the repaired camera lifecycle are test-backed. Realtime geometry/Metal dispatch, 600-second preview, and device endurance are not current evidence. | Keep claims bounded and run the setup-specific long-run/device gates when authorized. |
-| Product acceptance | 4 | Bounded SDK-core opaque still-image `白牙` and `祛红血丝` are implemented; `嘴唇` is implemented, `眼睛` remains partial solely because `去脂` is future, and all three Demo rows remain disabled. | Keep realtime/pixel-buffer, model/network, device/performance, commercial, packaging, shipping, launch and release readiness excluded. |
+| Product acceptance | 4 | Bounded SDK-core opaque still-image `白牙` now uses fixed inner-aperture coverage only; `祛红血丝` remains implemented, `眼睛` remains partial solely because `去脂` is future, and all three Demo rows remain disabled. No universal semantic claim is made for color-indistinguishable tissue inside coarse lip support. | Add approved tooth-specific support before broader coverage; keep all release-readiness exclusions. |
 
 ### 3.1 Phase 4 Final Verification
 
@@ -780,3 +780,22 @@ release: non-release
   shipping, launch or release-readiness credit is added.
 
 Command-level evidence is recorded in [Phase 65 verification](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).
+
+### Post-v1.15 Review Remediation Score
+
+- Fresh review remediation closes five findings: per-eye mapping locality,
+  coarse-lip teeth ownership, already-light exact no-op, concave nesting, and
+  reviewed-mask geometry/orientation validation.
+- New deterministic coverage includes malformed-eye peer/lip continuation,
+  seven connected enamel-colored lookalikes inside the former adaptive region,
+  material-yellow bright no-op samples, a concave outer polygon whose inner
+  vertices pass while an edge crosses the notch, and exact mask
+  size/origin/finite/orientation rejection.
+- Focused suites pass `45/45`; combined/integration/renderer/private-host suites
+  pass `59/59` with two expected opt-in skips; full SwiftPM passes `641/641`
+  with eight documented opt-in skips and zero failures.
+- The archived Phase 60 checker still encodes the tag's adaptive outer-growth
+  contract and therefore is historical rather than current authority after this
+  safety correction. Current credit comes from the fixed-only source invariant,
+  focused adversarial tests, full SwiftPM, and fresh post-fix review. The `v1.15`
+  tag and archive artifacts remain unchanged.

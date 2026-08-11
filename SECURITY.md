@@ -820,3 +820,23 @@ release: non-release
   authority follows from this security closeout.
 
 Command-level evidence is recorded in [Phase 65 security](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-SECURITY.md), [review](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-REVIEW.md), and [verification](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).
+
+### Post-v1.15 Review Remediation Security Boundary
+
+- Eye landmark mapping is fail-closed per side. A malformed contour or pupil is
+  discarded without exposing its value and cannot erase a valid peer or mapped
+  lips; invalid shared face bounds still reject the observation.
+- Coarse `outerLips` plus pixel color is not accepted as tooth anatomy. The
+  production teeth owner issues proposals only from the fixed `innerLips`
+  baseline after hard re-clipping, and the former connected outer-region growth
+  path is absent. Enamel-colored lookalikes outside that boundary retain source.
+- Color cannot prove semantic identity for indistinguishable tissue inside the
+  aperture. Security evidence therefore must not claim universal recolored gum,
+  tongue, or brace protection there; a wider claim requires approved tooth-
+  specific support and new adversarial and licensed-fixture gates.
+- Real-fixture masks fail before rendering unless their decoded extent is
+  finite, zero-origin, exactly dimension-matched, and up-oriented by missing or
+  EXIF-1 metadata. This prevents crop/pad/translation/orientation normalization
+  from laundering a misregistered mask into containment evidence.
+- All support and mask data remains package-private, request-local, non-Codable,
+  and absent from diagnostics, persistence, network, and tracked artifacts.

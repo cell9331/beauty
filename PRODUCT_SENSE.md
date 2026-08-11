@@ -832,3 +832,23 @@ release: non-release
   commercial approval, packaging, shipping, launch or release readiness.
 
 Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-CLOSEOUT-EVIDENCE.md) and [verification](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).
+
+### Post-v1.15 Review Remediation Acceptance
+
+- The archived Phase 65 product disposition remains a record of the `v1.15`
+  tag. Current untagged behavior keeps the same public fields, renderer cases,
+  disabled Demo rows, and bounded still-image route while narrowing teeth
+  coverage to the conservative fixed inner-aperture baseline.
+- Malformed support for one eye is now a local abstention at the mapping
+  boundary; a valid peer eye and unrelated eligible teeth/color work continue.
+  Bright teeth at or above the fixed `0.90` source-luminance boundary remain
+  byte exact at every public strength.
+- Protected-tissue acceptance is exact outside the inner-aperture hard envelope
+  and fixture-specific inside rights-approved reviewed masks. The product does
+  not promise semantic separation of enamel-colored gum, tongue, or braces
+  inside coarse Vision lip support; broader coverage needs tooth-specific
+  anatomy and separate evidence.
+- Concave or crossing lip support and misregistered reviewed masks fail before
+  ownership or measurement. These repairs add no Demo activation, realtime,
+  device/performance, population, commercial, packaging, shipping, launch, or
+  release-readiness claim.

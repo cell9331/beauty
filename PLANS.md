@@ -26,8 +26,9 @@
 
 ## 3. Active
 
-No executable plan or milestone is active. v1.15 is independently audited and
-archived; the next planning record begins with `$gsd-new-milestone`.
+No executable plan is currently active. v1.15 remains independently audited
+and archived; post-archive remediation did not reopen, move, or reinterpret the
+tag.
 
 ## 3A. Historical Lifecycle Ledger
 
@@ -151,6 +152,18 @@ Exact ordered Phase 64 task authority is: `64-01-01`, `64-01-02`,
 | Phase 54 closeout | Three review-fix passes bind grants to trusted expected-target policy and exact original/mask/after keys plus SHA-256 byte digests, recover every local-read/display-URL failure transactionally, and independently pin T-54-01…T-54-08. Final standard review is clean. Current automation passes 33/33 core, 38/38 reviewer, 119/119 checker, named live `8/8`, 500 SwiftPM tests with six documented skips, explicit iPhone 17e/iOS 26.5 Demo build and 118/118 tests, schema/UI/diff gates. The fresh user-confirmed direct-`file://` smoke and independently parsed 1,640-byte allowlisted export pass. The three-feature ledger remains closed with zero review/product weight and no SDK/Demo/realtime/media/release admission; Phase 54 validation is complete. |
 
 ## 4. Completed
+
+### C-2026-08-11-v1-15-review-remediation
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-08-11 |
+| Scope | Remediated all five findings from the fresh `v1.14..v1.15` review without moving or reinterpreting the archived `v1.15` tag. |
+| Production | Malformed observed-eye support now fails per eye while valid peers and lips continue. Teeth ownership is fixed-inner-aperture only, adaptive outer-lip growth is removed, source luminance `>= 0.90` is an exact no-op, and concave/boundary-crossing polygon relationships fail closed. |
+| Fixture evidence | Shared reviewed-mask validation rejects non-finite, translated, wrong-size, and non-up-orientation masks before output rendering or measurement in both private real-fixture suites. |
+| Verification | Focused mapping/provider/adversarial/mask tests pass 45/45; broader combined/integration/renderer/private-host tests pass 59/59 with two expected private opt-in skips; full SwiftPM passes 641/641 with eight documented opt-in skips and zero failures; `git diff --check` and fresh post-fix review pass. |
+| Contracts | `DESIGN.md`, `PRODUCT_SENSE.md`, `SECURITY.md`, `RELIABILITY.md`, `QUALITY_SCORE.md`, and the teeth-whitening spike reference record the narrowed fixed-only claim and new fail-closed boundaries. |
+| Historical boundary | The archived Phase 60 adaptive-growth checker is historical after this safety correction. The `v1.15` tag and milestone archive remain unchanged; no Demo, realtime, release, shipping, or commercial scope is added. |
 
 ### C-2026-08-11-v1-15-milestone-archive
 

@@ -936,3 +936,23 @@ release: non-release
   commercial approval, packaging, shipping, launch or release readiness.
 
 Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-CLOSEOUT-EVIDENCE.md) and [verification](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).
+
+### Post-v1.15 Review Remediation Reliability
+
+- Per-eye mapping converts each support independently and derives order only
+  from survivors. Malformed-left/valid-right and valid-left/malformed-right
+  requests retain the peer and mapped lips without stale state or raw-value
+  diagnostics.
+- Teeth output uses the fixed inner-aperture baseline only. Adaptive strong
+  count is deterministically zero, final strong count equals fixed strong count,
+  and post-blur clipping cannot claim former outer-lip lookalikes. Bright
+  material-yellow inputs at source luminance `>= 0.90` are exact no-ops.
+- Polygon relationship validation includes edge/boundary intersections, so a
+  concave outer polygon cannot admit an inner edge that exits and re-enters it.
+- Both private real-fixture suites validate mask extent, origin, dimensions,
+  and orientation before allocation-backed rendering or aggregate measurement;
+  wrong-size, translated, non-finite, and rotated metadata cases reject.
+- Focused mapping/provider/adversarial/mask tests pass `45/45`; combined,
+  teeth/sclera integration, renderer, and real-fixture-host tests pass `59/59`
+  with only the two expected private opt-in skips; full SwiftPM passes `641/641`
+  with eight documented opt-in skips and zero failures.
