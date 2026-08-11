@@ -14,6 +14,7 @@ final class BeautyEngineCombinedLocalRetouchCloseoutTests: XCTestCase {
                 image: source,
                 parameters: BeautyParameters(teethWhitening: 1)
             )
+            XCTAssertTrue(Self.hasNamedSRGBColorSpace(teeth.output))
             let teethBytes = try Self.renderedRGBA8(teeth.output)
 
             let scleraHarness = try Self.makeHarness(.paired)
@@ -22,6 +23,7 @@ final class BeautyEngineCombinedLocalRetouchCloseoutTests: XCTestCase {
                 image: source,
                 parameters: BeautyParameters(scleraRednessReduction: 1)
             )
+            XCTAssertTrue(Self.hasNamedSRGBColorSpace(sclera.output))
             let scleraBytes = try Self.renderedRGBA8(sclera.output)
 
             let combinedHarness = try Self.makeHarness(.paired)
@@ -33,6 +35,7 @@ final class BeautyEngineCombinedLocalRetouchCloseoutTests: XCTestCase {
                     scleraRednessReduction: 1
                 )
             )
+            XCTAssertTrue(Self.hasNamedSRGBColorSpace(combined.output))
             let combinedBytes = try Self.renderedRGBA8(combined.output)
             let oracle = Self.independentMerge(
                 source: sourceBytes,
@@ -464,6 +467,10 @@ private extension BeautyEngineCombinedLocalRetouchCloseoutTests {
 
     static func hasOpaqueAlpha(_ bytes: [UInt8]) -> Bool {
         stride(from: 3, to: bytes.count, by: 4).allSatisfy { bytes[$0] == .max }
+    }
+
+    static func hasNamedSRGBColorSpace(_ image: CIImage) -> Bool {
+        image.colorSpace?.name == CGColorSpace.sRGB
     }
 
     static func renderedRGBA8(_ image: CIImage) throws -> [UInt8] {

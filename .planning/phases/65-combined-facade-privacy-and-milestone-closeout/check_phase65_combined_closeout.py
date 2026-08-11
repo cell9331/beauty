@@ -398,9 +398,21 @@ def validate_combined_test(text: str, final_ready: bool) -> None:
         "collisionPixelCount",
         "combinedBytes, oracle.bytes",
         "compositionInvocationCount, 1",
-        "usedExplicitSRGBRender",
     ):
         require(token in text, "combined byte oracle incomplete")
+    combined_test = re.search(
+        r"\bfunc testCombinedFacadeMatchesIndependentStandaloneMergeThroughBothEntries\([^)]*\)\s+throws\s*\{"
+        r"(.*?)(?=\n    func |\n\})",
+        text,
+        re.DOTALL,
+    )
+    require(combined_test is not None, "combined facade test owner missing")
+    for assertion in (
+        "hasNamedSRGBColorSpace(teeth.output)",
+        "hasNamedSRGBColorSpace(sclera.output)",
+        "hasNamedSRGBColorSpace(combined.output)",
+    ):
+        require(assertion in combined_test.group(1), "both-entry named-sRGB proof incomplete")
     if final_ready:
         require("phase65_missing_" not in text and "XCTFail(" not in text, "combined RED sentinel remains")
 
@@ -657,12 +669,26 @@ def run_self_test() -> int:
     ))
     probe(lambda: validate_independent_authority(engine), lambda: validate_independent_authority(engine.replace("hasDirectScleraIntent", "missing")))
 
-    combined = " ".join((
+    combined_body = " ".join((
         "process, .processResult BeautyParameters(teethWhitening: 1)",
         "BeautyParameters(scleraRednessReduction: 1) teethWhitening: 1, scleraRednessReduction: 1",
-        "independentMerge collisionPixelCount combinedBytes, oracle.bytes compositionInvocationCount, 1 usedExplicitSRGBRender",
+        "independentMerge collisionPixelCount combinedBytes, oracle.bytes compositionInvocationCount, 1",
+        "hasNamedSRGBColorSpace(teeth.output) hasNamedSRGBColorSpace(sclera.output)",
+        "hasNamedSRGBColorSpace(combined.output)",
     ))
+    combined = (
+        "func testCombinedFacadeMatchesIndependentStandaloneMergeThroughBothEntries() throws {\n"
+        f"{combined_body}\n"
+        "}\n\n    func nextTest() {}"
+    )
     probe(lambda: validate_combined_test(combined, False), lambda: validate_combined_test(combined.replace("independentMerge", "missing"), False))
+    probe(
+        lambda: validate_combined_test(combined, False),
+        lambda: validate_combined_test(
+            combined.replace("hasNamedSRGBColorSpace(combined.output)", "missingSRGBProof"),
+            False,
+        ),
+    )
 
     failures = "InjectedTeethFailure InjectedWholeScleraFailure InjectedLeftAndRightEyeFailures ValidInvalidValid ThrownCombinedRequest ParallelCombinedRequests ResetAndPixelBuffer CombinedNoFaceAbstains EarlyInvalidCombinedRequest retainedRequestOwnerCount retainedMappedCoordinateCount"
     probe(lambda: validate_failure_matrix(failures), lambda: validate_failure_matrix(failures.replace("ThrownCombinedRequest", "missing")))
@@ -827,9 +853,9 @@ phase_65_verification_sha256: {text_sha256(phase65)}
         lambda: validate_lifecycle_inventory(bad_inventory),
     )
 
-    require(len(probes) == 19 and all(probes), "self-test denominator mismatch")
-    print(json.dumps({"status": "pass", "self_tests": 19, "threats": 8}, separators=(",", ":")))
-    return 19
+    require(len(probes) == 20 and all(probes), "self-test denominator mismatch")
+    print(json.dumps({"status": "pass", "self_tests": 20, "threats": 8}, separators=(",", ":")))
+    return 20
 
 
 def run_live(mode: str, selected: str | None) -> int:
