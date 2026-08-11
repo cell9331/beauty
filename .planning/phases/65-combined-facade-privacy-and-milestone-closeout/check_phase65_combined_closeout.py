@@ -4,16 +4,32 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 
 PHASE_DIR = Path(".planning/phases/65-combined-facade-privacy-and-milestone-closeout")
 THREATS = tuple(f"T-65-{index:02d}" for index in range(1, 9))
 MILESTONE_AUDIT = Path(".planning/milestones/v1.15-MILESTONE-AUDIT.md")
+PHASE64_VERIFICATION = Path(
+    ".planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md"
+)
+PHASE65_REQUIREMENTS = (
+    "SEQ-02", "SEQ-03", "SEQ-04", "SAFE-04", "SAFE-05", "SAFE-06",
+    "SAFE-07", "OUT-06", "OUT-07", "OUT-08", "OUT-09",
+)
+ROOT_CONTRACT_PATHS = (
+    Path("DESIGN.md"),
+    Path("SECURITY.md"),
+    Path("RELIABILITY.md"),
+    Path("PRODUCT_SENSE.md"),
+    Path("QUALITY_SCORE.md"),
+)
 TEXT_SUFFIXES = {".swift", ".metal", ".json", ".plist"}
 EXPECTED_SHIPPED_RESOURCES = {
     "BeautySDK/Sources/BeautyRender/Shaders/Warp.metal",
@@ -67,6 +83,121 @@ def read(path: Path) -> str:
         return path.read_text(encoding="utf-8")
     except (OSError, UnicodeError) as error:
         raise CheckError("required owner unavailable") from error
+
+
+def parse_frontmatter(text: str) -> dict[str, str]:
+    lines = text.splitlines()
+    require(bool(lines) and lines[0].strip() == "---", "frontmatter missing")
+    try:
+        end = next(index for index, line in enumerate(lines[1:], 1) if line.strip() == "---")
+    except StopIteration as error:
+        raise CheckError("frontmatter malformed") from error
+    fields: dict[str, str] = {}
+    for line in lines[1:end]:
+        if not line or line[0].isspace() or ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        key = key.strip()
+        require(bool(key) and key not in fields, "frontmatter field ambiguous")
+        fields[key] = value.strip().strip('"\'')
+    return fields
+
+
+def parse_timestamp(value: str) -> datetime:
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError as error:
+        raise CheckError("authority timestamp malformed") from error
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def text_sha256(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def validate_phase64_authority(text: str) -> datetime:
+    fields = parse_frontmatter(text)
+    expected = {
+        "verification_stage": "post_terminal_final",
+        "status": "passed",
+        "promotion_status": "promoted",
+        "requires_requarantine": "false",
+        "phase_65_authorized": "true",
+    }
+    for key, value in expected.items():
+        require(fields.get(key) == value, "canonical predecessor authority mismatch")
+    return parse_timestamp(fields.get("verified", ""))
+
+
+def phase65_owner_section(text: str) -> str:
+    match = re.search(
+        r"^### v1\.15 Phase 65[^\n]*\n(.*?)(?=^### |\Z)",
+        text,
+        re.MULTILINE | re.DOTALL,
+    )
+    require(match is not None, "Phase 65 root owner section missing")
+    return match.group(0)
+
+
+def validate_root_owner_convergence(root_owners: dict[str, str], plans: str) -> None:
+    require(set(root_owners) == {path.as_posix() for path in ROOT_CONTRACT_PATHS}, "root owner inventory mismatch")
+    sections = [phase65_owner_section(text) for text in root_owners.values()]
+    active = re.search(r"^## 3\. Active\n(.*?)(?=^## 3A\.|^## 4\.|\Z)", plans, re.MULTILINE | re.DOTALL)
+    require(active is not None, "active lifecycle owner missing")
+    sections.append(active.group(0))
+    forbidden = (
+        "stale/blocked",
+        "phase 65 is blocked",
+        "safe-06 remains open",
+        "devicergb/named-srgb remains open",
+        "must be freshly re-verified",
+        "not completion-ready",
+    )
+    for section in sections:
+        normalized = section.lower()
+        require(all(token not in normalized for token in forbidden), "root owner remains stale or blocked")
+
+
+def validate_requirement_disposition(requirements: str, include_audit: bool) -> None:
+    required = PHASE65_REQUIREMENTS if include_audit else PHASE65_REQUIREMENTS[:-1]
+    for requirement in required:
+        require(
+            re.search(rf"^- \[x\] \*\*{re.escape(requirement)}\*\*:", requirements, re.MULTILINE) is not None,
+            "Phase 65 requirement remains incomplete",
+        )
+
+
+def validate_fresh_phase65_authority(
+    phase64: str,
+    verification: str,
+    requirements: str,
+    root_owners: dict[str, str],
+    plans: str,
+    audit: str | None = None,
+) -> None:
+    phase64_timestamp = validate_phase64_authority(phase64)
+    verification_fields = parse_frontmatter(verification)
+    require(verification_fields.get("status") == "passed", "phase verification not passed")
+    verification_timestamp = parse_timestamp(verification_fields.get("verified", ""))
+    require(verification_timestamp > phase64_timestamp, "phase verification predates predecessor authority")
+    require(
+        verification_fields.get("phase_64_verification_sha256") == text_sha256(phase64),
+        "phase verification predecessor binding mismatch",
+    )
+    validate_requirement_disposition(requirements, include_audit=audit is not None)
+    validate_root_owner_convergence(root_owners, plans)
+    if audit is None:
+        return
+    audit_fields = parse_frontmatter(audit)
+    require(audit_fields.get("status") == "passed", "milestone audit not passed")
+    audit_timestamp = parse_timestamp(audit_fields.get("audited", ""))
+    require(audit_timestamp > verification_timestamp, "milestone audit predates phase verification")
+    require(
+        audit_fields.get("phase_65_verification_sha256") == text_sha256(verification),
+        "milestone audit source binding mismatch",
+    )
 
 
 def git_names(*args: str) -> list[str]:
@@ -127,11 +258,13 @@ def validate_independent_authority(text: str) -> None:
 
 def authority_checks() -> int:
     validate_independent_authority(read(Path("BeautySDK/Sources/BeautySDK/BeautyEngine.swift")))
-    for path in (
-        Path(".planning/phases/61-teeth-output-safety-and-independent-closeout/61-VERIFICATION.md"),
-        Path(".planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md"),
-    ):
-        require("status: passed" in read(path), "standalone verification unavailable")
+    require(
+        parse_frontmatter(
+            read(Path(".planning/phases/61-teeth-output-safety-and-independent-closeout/61-VERIFICATION.md"))
+        ).get("status") == "passed",
+        "teeth standalone verification unavailable",
+    )
+    validate_phase64_authority(read(PHASE64_VERIFICATION))
     return 8
 
 
@@ -369,13 +502,18 @@ def lifecycle_checks(mode: str) -> int:
     inventory = json.loads(read(PHASE_DIR / "65-THREAT-INVENTORY.json"))
     validate_lifecycle_inventory(inventory)
     if mode in ("close", "final"):
+        phase64 = read(PHASE64_VERIFICATION)
         verification = read(PHASE_DIR / "65-VERIFICATION.md")
-        require("status: passed" in verification and "40/40" in verification, "phase verification not canonical")
         security = read(PHASE_DIR / "65-SECURITY.md")
         require("threats_open: 0" in security, "security not closed")
-    if mode == "final":
-        audit = read(MILESTONE_AUDIT)
-        require("status: passed" in audit and "40/40" in audit, "milestone audit not passed")
+        validate_fresh_phase65_authority(
+            phase64,
+            verification,
+            read(Path(".planning/REQUIREMENTS.md")),
+            {path.as_posix(): read(path) for path in ROOT_CONTRACT_PATHS},
+            read(Path("PLANS.md")),
+            read(MILESTONE_AUDIT) if mode == "final" else None,
+        )
     return 8 + int(mode in ("close", "final")) * 2 + int(mode == "final")
 
 
@@ -458,6 +596,70 @@ def run_self_test() -> int:
     requirements = "\n".join(f"| SEQ-{index + 1:02d} | Phase 65 | Pending |" for index in range(40))
     probe(lambda: validate_owner_state(ledger, matrix, requirements), lambda: validate_owner_state(ledger.replace("白牙 | implemented", "白牙 | future"), matrix, requirements))
 
+    phase64 = """---
+verification_stage: post_terminal_final
+status: passed
+verified: 2026-08-10T18:15:00+08:00
+promotion_status: promoted
+requires_requarantine: false
+phase_65_authorized: true
+---
+canonical predecessor
+"""
+    phase65 = f"""---
+status: passed
+verified: 2026-08-11T09:00:00+08:00
+phase_64_verification_sha256: {text_sha256(phase64)}
+---
+fresh named-sRGB proof
+"""
+    final_requirements = "\n".join(
+        f"- [x] **{requirement}**: complete" for requirement in PHASE65_REQUIREMENTS
+    )
+    root_owners = {
+        path.as_posix(): "### v1.15 Phase 65 Current Closeout\nFreshly verified named-sRGB contract.\n"
+        for path in ROOT_CONTRACT_PATHS
+    }
+    plans_owner = "## 3. Active\nPhase 65 freshly verified.\n\n## 3A. Archived Active Ledger\n"
+    audit = f"""---
+status: passed
+audited: 2026-08-11T10:00:00+08:00
+phase_65_verification_sha256: {text_sha256(phase65)}
+---
+40/40
+"""
+
+    def final_authority(
+        predecessor: str = phase64,
+        verification: str = phase65,
+        requirement_owner: str = final_requirements,
+        owners: dict[str, str] = root_owners,
+        audit_owner: str = audit,
+    ) -> None:
+        validate_fresh_phase65_authority(
+            predecessor,
+            verification,
+            requirement_owner,
+            owners,
+            plans_owner,
+            audit_owner,
+        )
+
+    probe(final_authority, lambda: final_authority(predecessor=phase64.replace("post_terminal_final", "post_promotion")))
+    probe(final_authority, lambda: final_authority(verification=phase65.replace("2026-08-11T09:00:00+08:00", "2026-08-08T09:00:00+08:00")))
+    probe(final_authority, lambda: final_authority(requirement_owner=final_requirements.replace("[x] **SAFE-06**", "[ ] **SAFE-06**")))
+    probe(
+        final_authority,
+        lambda: final_authority(
+            owners={
+                **root_owners,
+                "DESIGN.md": "### v1.15 Phase 65 Current Closeout\nStale/Blocked evidence.\n",
+            }
+        ),
+    )
+    probe(final_authority, lambda: final_authority(audit_owner=audit.replace("2026-08-11T10:00:00+08:00", "2026-08-11T08:00:00+08:00")))
+    probe(final_authority, lambda: final_authority(audit_owner=audit.replace(text_sha256(phase65), "0" * 64)))
+
     good_inventory = {"threats": [{"id": item, "severity": "HIGH"} for item in THREATS]}
     bad_inventory = {"threats": good_inventory["threats"][:-1]}
     probe(
@@ -465,9 +667,9 @@ def run_self_test() -> int:
         lambda: validate_lifecycle_inventory(bad_inventory),
     )
 
-    require(len(probes) == 8 and all(probes), "self-test denominator mismatch")
-    print(json.dumps({"status": "pass", "self_tests": 8, "threats": 8}, separators=(",", ":")))
-    return 8
+    require(len(probes) == 14 and all(probes), "self-test denominator mismatch")
+    print(json.dumps({"status": "pass", "self_tests": 14, "threats": 8}, separators=(",", ":")))
+    return 14
 
 
 def run_live(mode: str, selected: str | None) -> int:
