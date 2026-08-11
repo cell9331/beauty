@@ -363,24 +363,36 @@ package struct VisionFaceDetector: Sendable {
                 throw CoordinateMapper.MappingError.invalidCoordinate
             }
 
-            observedEyeSupport = try supports.map { support in
-                BeautyObservedEyeSupport(
-                    side: support.side,
-                    contour: try mapPoints(
-                        support.contour,
-                        in: visionBounds,
-                        with: mapper
-                    ),
-                    pupil: try support.pupil.map {
-                        try mapPoints($0, in: visionBounds, with: mapper)
-                    }
-                )
+            let hasUnambiguousDeclaredSides = (1...2).contains(supports.count)
+                && Set(supports.map(\.side)).count == supports.count
+            observedEyeSupport = supports.compactMap { support in
+                do {
+                    return BeautyObservedEyeSupport(
+                        side: support.side,
+                        contour: try mapPoints(
+                            support.contour,
+                            in: visionBounds,
+                            with: mapper
+                        ),
+                        pupil: try support.pupil.map {
+                            try mapPoints($0, in: visionBounds, with: mapper)
+                        }
+                    )
+                } catch is CoordinateMapper.MappingError {
+                    // Eye support is region-local. A malformed side must not
+                    // discard a valid peer eye or unrelated mapped lip work.
+                    return nil
+                } catch {
+                    return nil
+                }
             }
-            observedEyeOrder = deriveEyeOrder(
-                observedEyeSupport ?? [],
-                visionBounds: visionBounds,
-                mapper: mapper
-            )
+            observedEyeOrder = hasUnambiguousDeclaredSides
+                ? deriveEyeOrder(
+                    observedEyeSupport ?? [],
+                    visionBounds: visionBounds,
+                    mapper: mapper
+                )
+                : .invalid
         } else {
             observedEyeSupport = nil
             observedEyeOrder = nil

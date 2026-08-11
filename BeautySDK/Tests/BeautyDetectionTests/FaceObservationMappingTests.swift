@@ -228,8 +228,17 @@ final class FaceObservationMappingTests: XCTestCase {
             side: .left,
             contour: [CoordinatePoint(x: 0.20, y: 0.35), CoordinatePoint(x: 0.26, y: 0.35)]
         )
+        let malformedDuplicate = BeautyObservedEyeSupport(
+            side: .left,
+            contour: [CoordinatePoint(x: 1.25, y: 0.35)]
+        )
 
-        for supports in [[leftAtRight, rightAtLeft], [leftAtRight, duplicate], [leftAtRight]] {
+        for supports in [
+            [leftAtRight, rightAtLeft],
+            [leftAtRight, duplicate],
+            [duplicate, malformedDuplicate],
+            [leftAtRight],
+        ] {
             var detector = VisionFaceDetector { _ in
                 [VisionDetectionObservation(visionBounds: bounds, observedEyeSupport: supports)]
             }
@@ -239,26 +248,73 @@ final class FaceObservationMappingTests: XCTestCase {
         }
     }
 
-    func testEYE05OutOfUnitObservedPointFailsClosedWithRedactedSummary() {
-        let malformed = BeautyObservedEyeSupport(
+    func testEYE05OutOfUnitObservedPointFailsOnlyThatEyeAndPreservesPeerAndLips() {
+        let malformedLeft = BeautyObservedEyeSupport(
             side: .left,
             contour: [CoordinatePoint(x: 1.25, y: 0.50)]
         )
-        var detector = VisionFaceDetector { _ in
-            [VisionDetectionObservation(
-                visionBounds: CoordinateRect(x: 0.20, y: 0.20, width: 0.60, height: 0.60),
-                observedEyeSupport: [malformed]
-            )]
-        }
+        let malformedRight = BeautyObservedEyeSupport(
+            side: .right,
+            contour: [CoordinatePoint(x: -0.25, y: 0.50)]
+        )
+        let validLeft = BeautyObservedEyeSupport(
+            side: .left,
+            contour: [
+                CoordinatePoint(x: 0.24, y: 0.48),
+                CoordinatePoint(x: 0.34, y: 0.48),
+                CoordinatePoint(x: 0.34, y: 0.56),
+                CoordinatePoint(x: 0.24, y: 0.56),
+            ]
+        )
+        let validRight = BeautyObservedEyeSupport(
+            side: .right,
+            contour: [
+                CoordinatePoint(x: 0.66, y: 0.48),
+                CoordinatePoint(x: 0.76, y: 0.48),
+                CoordinatePoint(x: 0.76, y: 0.56),
+                CoordinatePoint(x: 0.66, y: 0.56),
+            ]
+        )
+        let lips = BeautyObservedLipSupport(
+            outer: [
+                CoordinatePoint(x: 0.25, y: 0.20),
+                CoordinatePoint(x: 0.75, y: 0.20),
+                CoordinatePoint(x: 0.75, y: 0.35),
+                CoordinatePoint(x: 0.25, y: 0.35),
+            ],
+            inner: [
+                CoordinatePoint(x: 0.35, y: 0.23),
+                CoordinatePoint(x: 0.65, y: 0.23),
+                CoordinatePoint(x: 0.65, y: 0.31),
+                CoordinatePoint(x: 0.35, y: 0.31),
+            ]
+        )
+        let cases: [([BeautyObservedEyeSupport], BeautyObservedEyeSide)] = [
+            ([malformedLeft, validRight], .right),
+            ([validLeft, malformedRight], .left),
+        ]
+        for (supports, survivingSide) in cases {
+            var detector = VisionFaceDetector { _ in
+                [VisionDetectionObservation(
+                    visionBounds: CoordinateRect(x: 0.20, y: 0.20, width: 0.60, height: 0.60),
+                    observedEyeSupport: supports,
+                    observedLipSupport: lips
+                )]
+            }
 
-        let result = detector.detect(metadata: metadata(orientation: .up))
-        XCTAssertEqual(result.observations, [])
-        XCTAssertEqual(result.summary.availability, .partial)
-        XCTAssertEqual(result.summary.reasons, [.mappingFailed])
-        XCTAssertEqual(result.summary.faceCount, 1)
-        XCTAssertEqual(result.summary.usedFaceCount, 0)
-        XCTAssertFalse(String(describing: result.summary).contains("1.25"))
-        XCTAssertFalse(String(describing: result.summary).contains("left"))
+            let result = detector.detect(metadata: metadata(orientation: .up))
+            XCTAssertEqual(result.observations.count, 1)
+            XCTAssertEqual(result.observations[0].observedEyeSupport?.map(\.side), [survivingSide])
+            XCTAssertEqual(result.observations[0].observedEyeOrder, .canonical)
+            XCTAssertEqual(result.observations[0].observedLipSupport?.outer?.count, 4)
+            XCTAssertEqual(result.observations[0].observedLipSupport?.inner?.count, 4)
+            XCTAssertEqual(result.summary.faceCount, 1)
+            XCTAssertEqual(result.summary.usedFaceCount, 1)
+            XCTAssertFalse(String(describing: result.summary).contains("1.25"))
+            XCTAssertFalse(String(describing: result.summary).contains("-0.25"))
+            XCTAssertFalse(String(describing: result.summary).contains("left"))
+            XCTAssertFalse(String(describing: result.summary).contains("right"))
+        }
     }
 
     func testSUPP02FacePathsCanonicalizeAcrossWindingOrientationAndInputMirror() throws {
