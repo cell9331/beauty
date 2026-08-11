@@ -30,6 +30,20 @@ ROOT_CONTRACT_PATHS = (
     Path("PRODUCT_SENSE.md"),
     Path("QUALITY_SCORE.md"),
 )
+PUBLIC_SENSITIVE_ALLOWLIST = {
+    ("BeautySDK/Sources/BeautySDK/BeautyEngineTestingSupport.swift", name)
+    for name in (
+        "SDKTestingFaceDetectionFixture",
+        "SDKTestingStillImageFacadeEntry",
+        "SDKTestingScleraEyeSupport",
+        "SDKTestingLocalSupportFixture",
+        "SDKTestingLocalSupportSequence",
+        "aggregateSupportValueID",
+        "canonicalConsumerIdentityMatched",
+        "lastMappedCoordinateCount",
+        "retainedMappedCoordinateCount",
+    )
+}
 TEXT_SUFFIXES = {".swift", ".metal", ".json", ".plist"}
 EXPECTED_SHIPPED_RESOURCES = {
     "BeautySDK/Sources/BeautyRender/Shaders/Warp.metal",
@@ -242,6 +256,111 @@ def production_inventory() -> tuple[str, set[str]]:
     return "\n".join(text_parts), resource_names
 
 
+def non_ignored_production_swift_paths() -> list[Path]:
+    paths = [Path("BeautySDK/Package.swift")]
+    try:
+        for root in (Path("BeautySDK/Sources"), Path("BeautyDemo/BeautyDemo")):
+            paths.extend(
+                path for path in root.rglob("*.swift")
+                if path.is_file() and not any(part.startswith(".") for part in path.parts)
+            )
+    except OSError as error:
+        raise CheckError("production privacy inventory unavailable") from error
+    unique = sorted(set(paths))
+    require(bool(unique), "production privacy inventory empty")
+    require(all("\n" not in path.as_posix() for path in unique), "production source path malformed")
+    result = subprocess.run(
+        ["git", "check-ignore", "--stdin"],
+        input="\n".join(path.as_posix() for path in unique) + "\n",
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=20,
+    )
+    require(result.returncode in (0, 1), "production ignore classification failed")
+    ignored = set(result.stdout.splitlines())
+    return [path for path in unique if path.as_posix() not in ignored]
+
+
+def collect_production_sources(
+    paths: list[Path],
+    reader=read,
+) -> dict[str, str]:
+    require(bool(paths), "production privacy inventory empty")
+    sources: dict[str, str] = {}
+    for path in paths:
+        try:
+            value = reader(path)
+        except CheckError:
+            raise
+        except (OSError, UnicodeError) as error:
+            raise CheckError("production privacy source unreadable") from error
+        require(isinstance(value, str), "production privacy source unclassified")
+        sources[path.as_posix()] = value
+    require(len(sources) == len(set(paths)), "production privacy inventory ambiguous")
+    return sources
+
+
+def sensitive_support_identifier(name: str) -> bool:
+    compact = name.replace("_", "").lower()
+    patterns = (
+        r"raw(?:mask|support|landmark|pupil|coordinate|geometry|pixel)",
+        r"(?:pupil|landmark)(?:coordinate|point|position|support|geometry)",
+        r"(?:teeth|sclera|lip|eye)(?:mask|support|geometry|candidate|vein)",
+        r"candidatecolou?r",
+        r"vein(?:descriptor|pattern|geometry)",
+        r"(?:fixturepath|revieweridentity|imagebytes)",
+        r"^(?:mask|coordinates?)$",
+    )
+    return any(re.search(pattern, compact) is not None for pattern in patterns)
+
+
+def validate_production_privacy(sources: dict[str, str]) -> None:
+    require(bool(sources), "production privacy inventory empty")
+    public_declaration = re.compile(
+        r"(?:@_spi\([^)]*\)\s*)?(?:public|open)\s+"
+        r"(?:let|var|func|struct|class|enum|protocol|typealias)\s+([A-Za-z][A-Za-z0-9_]*)"
+    )
+    serialized_type = re.compile(
+        r"(?:struct|class|enum)\s+([A-Za-z][A-Za-z0-9_]*)\s*:\s*([^\{\n]+)"
+    )
+    identifier = re.compile(r"\b[A-Za-z][A-Za-z0-9_]*\b")
+    for path, text in sources.items():
+        require(path.endswith(".swift"), "production privacy source unclassified")
+        for line in text.splitlines():
+            public_match = public_declaration.search(line)
+            if public_match and sensitive_support_identifier(public_match.group(1)):
+                require(
+                    (path, public_match.group(1)) in PUBLIC_SENSITIVE_ALLOWLIST,
+                    "sensitive public or SPI declaration added",
+                )
+            serialized_match = serialized_type.search(line)
+            if serialized_match and any(
+                protocol in serialized_match.group(2)
+                for protocol in ("Codable", "Encodable", "Decodable", "CustomStringConvertible", "CustomReflectable")
+            ):
+                require(
+                    not sensitive_support_identifier(serialized_match.group(1)),
+                    "sensitive serialization or reflection carrier added",
+                )
+            sensitive_line = any(
+                sensitive_support_identifier(name) for name in identifier.findall(line)
+            )
+            if not sensitive_line:
+                continue
+            require(
+                re.search(r"\b(?:print|debugPrint|os_log)\s*\(|\b(?:logger|log)\.\w+\s*\(", line) is None,
+                "sensitive diagnostic interpolation added",
+            )
+            require(
+                re.search(
+                    r"\b(?:UserDefaults|FileHandle|JSONEncoder|PropertyListEncoder|NSKeyedArchiver)\b|\.write\s*\(",
+                    line,
+                ) is None,
+                "sensitive persistence sink added",
+            )
+
+
 def validate_independent_authority(text: str) -> None:
     for token in (
         "teethWhitening",
@@ -372,6 +491,7 @@ def validate_privacy(
     phase_text: str,
     combined_test: str,
     testing_support: str,
+    production_sources: dict[str, str],
 ) -> None:
     for name in names:
         require("local-retouch-review/" not in name, "private/generated media tracked or staged")
@@ -411,6 +531,7 @@ def validate_privacy(
         require(declaration is not None, "diagnostic declaration missing")
         for forbidden_protocol in ("Codable", "Encodable", "Decodable", "CustomStringConvertible"):
             require(forbidden_protocol not in declaration.group(1), "diagnostic serialization surface added")
+    validate_production_privacy(production_sources)
 
 
 def privacy_checks() -> int:
@@ -420,6 +541,7 @@ def privacy_checks() -> int:
         phase_text,
         read(Path("BeautySDK/Tests/BeautyCoreTests/BeautyEngineCombinedLocalRetouchCloseoutTests.swift")),
         read(Path("BeautySDK/Sources/BeautySDK/BeautyEngineTestingSupport.swift")),
+        collect_production_sources(non_ignored_production_swift_paths()),
     )
     return 8
 
@@ -573,8 +695,46 @@ def run_self_test() -> int:
         "}",
     ))
     probe(
-        lambda: validate_privacy([], "clean", private_test, testing_support),
-        lambda: validate_privacy([], "/Users/private", private_test, testing_support),
+        lambda: validate_privacy(
+            [], "clean", private_test, testing_support,
+            {"Neutral.swift": "package struct RequestLocalCarrier {}"},
+        ),
+        lambda: validate_privacy(
+            [], "/Users/private", private_test, testing_support,
+            {"Neutral.swift": "package struct RequestLocalCarrier {}"},
+        ),
+    )
+    clean_production = {"Neutral.swift": "package struct RequestLocalCarrier {}"}
+    probe(
+        lambda: validate_production_privacy(clean_production),
+        lambda: validate_production_privacy(
+            {"Neutral.swift": "public struct Carrier {\n    public let rawMask: [Float]\n}"}
+        ),
+    )
+    probe(
+        lambda: validate_production_privacy(clean_production),
+        lambda: validate_production_privacy(
+            {"Neutral.swift": "struct PupilSupport: Codable { let value: Int }"}
+        ),
+    )
+    probe(
+        lambda: validate_production_privacy(clean_production),
+        lambda: validate_production_privacy(
+            {"Neutral.swift": 'logger.info("pupil \\(pupilCoordinates)")'}
+        ),
+    )
+    probe(
+        lambda: validate_production_privacy(clean_production),
+        lambda: validate_production_privacy(
+            {"Neutral.swift": "try rawMask.write(to: destination)"}
+        ),
+    )
+    probe(
+        lambda: collect_production_sources([Path("Neutral.swift")], reader=lambda _: "clean"),
+        lambda: collect_production_sources(
+            [Path("Neutral.swift")],
+            reader=lambda _: (_ for _ in ()).throw(CheckError("read failed")),
+        ),
     )
 
     proxy_text = "eyeHeight upperEyelidLift"
@@ -667,9 +827,9 @@ phase_65_verification_sha256: {text_sha256(phase65)}
         lambda: validate_lifecycle_inventory(bad_inventory),
     )
 
-    require(len(probes) == 14 and all(probes), "self-test denominator mismatch")
-    print(json.dumps({"status": "pass", "self_tests": 14, "threats": 8}, separators=(",", ":")))
-    return 14
+    require(len(probes) == 19 and all(probes), "self-test denominator mismatch")
+    print(json.dumps({"status": "pass", "self_tests": 19, "threats": 8}, separators=(",", ":")))
+    return 19
 
 
 def run_live(mode: str, selected: str | None) -> int:
