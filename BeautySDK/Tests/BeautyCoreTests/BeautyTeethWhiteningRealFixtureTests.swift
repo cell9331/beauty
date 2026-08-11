@@ -46,6 +46,11 @@ final class BeautyTeethWhiteningRealFixtureTests: XCTestCase {
                 metadata: metadata,
                 maximumPixelCount: BeautyConfiguration.default.maximumInputPixelCount
             )
+            try BeautyReviewedMaskValidation.validate(
+                maskImage,
+                width: canonical.width,
+                height: canonical.height
+            )
             let result = try BeautyEngine().processResult(
                 image: originalImage,
                 metadata: metadata,

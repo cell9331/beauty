@@ -45,6 +45,11 @@ final class BeautyScleraRednessRealFixtureTests: XCTestCase {
                 metadata: metadata,
                 maximumPixelCount: BeautyConfiguration.default.maximumInputPixelCount
             )
+            try BeautyReviewedMaskValidation.validate(
+                maskImage,
+                width: canonical.width,
+                height: canonical.height
+            )
             let outputImage = try BeautyEngine().processResult(
                 image: originalImage,
                 metadata: metadata,
