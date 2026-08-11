@@ -852,3 +852,14 @@ Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/mil
   ownership or measurement. These repairs add no Demo activation, realtime,
   device/performance, population, commercial, packaging, shipping, launch, or
   release-readiness claim.
+- `祛红血丝` at `1.0` must no longer pass on a one-pixel-style technicality.
+  On the authorized bilateral positive it must visibly affect both image
+  halves within the reviewed sclera mask: at least `max(100, 8%)` mask pixels,
+  at least 20 per half, maximum channel movement between 20 and 44, and at
+  least 20% reduction of the weighted redness index. Outside-mask RGB and all
+  alpha remain exact, while the authorized natural negative is a byte no-op.
+- The intended appearance is localized neutralization plus a small bounded
+  sclera lift, similar in visibility principle but materially weaker than teeth
+  whitening. It must not whiten the full eye aperture, recolor conjunctival
+  tissue outside the accepted mask, or trade iris/pupil/lash safety for wider
+  coverage.

@@ -799,3 +799,12 @@ Command-level evidence is recorded in [Phase 65 verification](.planning/mileston
   safety correction. Current credit comes from the fixed-only source invariant,
   focused adversarial tests, full SwiftPM, and fresh post-fix review. The `v1.15`
   tag and archive artifacts remain unchanged.
+- A fresh exact-tag comparison found the archived sclera result changed only 33
+  pixels on one image half with maximum channel delta 2/255. Current authority
+  therefore adds visible-effect floors rather than crediting nonzero output:
+  bilateral minimum counts, `max(100, 8%)` reviewed-mask coverage, minimum
+  channel delta 20, at least 20% weighted-red reduction, and an exact negative.
+- The sclera transform now uses weighted conjunctival redness, one material
+  gate, bounded mask gain, and a small `0.018` luminance ceiling. Pupil/iris and
+  lid protection remain independently adversarially verified; zero protected
+  intersection and zero reviewed-mask escape are mandatory.

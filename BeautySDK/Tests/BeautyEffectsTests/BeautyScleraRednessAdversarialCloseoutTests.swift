@@ -303,8 +303,8 @@ final class BeautyScleraRednessAdversarialCloseoutTests: XCTestCase {
             .deletingLastPathComponent()
         let beautySDK = repositoryRoot.appendingPathComponent("BeautySDK")
         let allowed = Set([
-            "BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyScleraRednessProvider.swift",
-            "BeautySDK/Tests/BeautyEffectsTests/BeautyScleraRednessProviderTests.swift",
+            "BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyFocalScleraRednessProvider.swift",
+            "BeautySDK/Tests/BeautyEffectsTests/BeautyFocalScleraRednessProviderTests.swift",
             "BeautySDK/Tests/BeautyEffectsTests/BeautyLocalRetouchCompositionTests.swift",
             "BeautySDK/Tests/BeautyEffectsTests/BeautyScleraRednessAdversarialCloseoutTests.swift",
         ])
@@ -326,7 +326,7 @@ final class BeautyScleraRednessAdversarialCloseoutTests: XCTestCase {
 
         XCTAssertEqual(containingFiles, allowed)
         let providerPath = repositoryRoot.appendingPathComponent(
-            "BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyScleraRednessProvider.swift"
+            "BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyFocalScleraRednessProvider.swift"
         )
         let provider = try String(contentsOf: providerPath, encoding: .utf8)
         XCTAssertTrue(provider.contains("internal let proposalPixelIndices"))

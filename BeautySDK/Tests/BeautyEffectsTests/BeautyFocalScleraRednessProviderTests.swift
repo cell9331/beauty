@@ -6,7 +6,7 @@ import XCTest
 @testable import BeautyDetection
 @testable import BeautyEffects
 
-final class BeautyScleraRednessProviderTests: XCTestCase {
+final class BeautyFocalScleraRednessProviderTests: XCTestCase {
     private let width = 80
     private let height = 48
 
@@ -20,7 +20,7 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
         let source = try canonical(fixture.bytes)
         let owner = BeautyLocalRetouchCompositionOwner(source: source)
 
-        let result = BeautyScleraRednessProvider.makeResult(
+        let result = BeautyFocalScleraRednessProvider.makeResult(
             source: source,
             eyeSupport: [rightSupport, leftSupport],
             eyeOrder: .canonical,
@@ -56,7 +56,7 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
 
         for support in [[leftSupport], [leftSupport, malformedRight]] {
             let owner = BeautyLocalRetouchCompositionOwner(source: source)
-            let result = BeautyScleraRednessProvider.makeResult(
+            let result = BeautyFocalScleraRednessProvider.makeResult(
                 source: source,
                 eyeSupport: support,
                 eyeOrder: .canonical,
@@ -76,7 +76,7 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
             ([leftSupport, leftSupport], BeautyObservedEyeOrder.canonical),
         ] {
             let owner = BeautyLocalRetouchCompositionOwner(source: source)
-            let result = BeautyScleraRednessProvider.makeResult(
+            let result = BeautyFocalScleraRednessProvider.makeResult(
                 source: source,
                 eyeSupport: support,
                 eyeOrder: order,
@@ -104,7 +104,7 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
                 pupil: pupil
             )
             let owner = BeautyLocalRetouchCompositionOwner(source: source)
-            let result = BeautyScleraRednessProvider.makeResult(
+            let result = BeautyFocalScleraRednessProvider.makeResult(
                 source: source,
                 eyeSupport: [support, rightSupport],
                 eyeOrder: .canonical,
@@ -143,7 +143,7 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
                 pupil: [CoordinatePoint(x: 0.26, y: 0.5)]
             )
             let owner = BeautyLocalRetouchCompositionOwner(source: source)
-            let result = BeautyScleraRednessProvider.makeResult(
+            let result = BeautyFocalScleraRednessProvider.makeResult(
                 source: source,
                 eyeSupport: [malformed, rightSupport],
                 eyeOrder: .canonical,
@@ -159,7 +159,7 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
         let fixture = makeEyeFixture()
         let source = try canonical(fixture.bytes)
         let owner = BeautyLocalRetouchCompositionOwner(source: source)
-        let result = BeautyScleraRednessProvider.makeResult(
+        let result = BeautyFocalScleraRednessProvider.makeResult(
             source: source,
             eyeSupport: [leftSupport, rightSupport],
             eyeOrder: .canonical,
@@ -180,7 +180,7 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
         for fixture in [makeEyeFixture(redness: false), makeEyeFixture(allProtected: true)] {
             let source = try canonical(fixture.bytes)
             let owner = BeautyLocalRetouchCompositionOwner(source: source)
-            let result = BeautyScleraRednessProvider.makeResult(
+            let result = BeautyFocalScleraRednessProvider.makeResult(
                 source: source,
                 eyeSupport: [leftSupport, rightSupport],
                 eyeOrder: .canonical,
@@ -194,7 +194,7 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
 
     func testTransformReducesOnlyMeasuredRedExcessWithinChannelAndLuminanceBounds() throws {
         let source = (red: UInt8(210), green: UInt8(150), blue: UInt8(150))
-        let target = try XCTUnwrap(BeautyScleraRednessTransform.target(
+        let target = try XCTUnwrap(BeautyFocalScleraRednessTransform.target(
             red: source.red,
             green: source.green,
             blue: source.blue,
@@ -202,28 +202,41 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
         ))
 
         XCTAssertLessThan(redExcess(target.red, target.green, target.blue), redExcess(source.red, source.green, source.blue))
+        let maximumChannelDelta = max(
+            abs(Int(target.red) - Int(source.red)),
+            max(
+                abs(Int(target.green) - Int(source.green)),
+                abs(Int(target.blue) - Int(source.blue))
+            )
+        )
+        XCTAssertGreaterThanOrEqual(maximumChannelDelta, 24)
         XCTAssertLessThanOrEqual(abs(Int(target.red) - Int(source.red)), 40)
         XCTAssertLessThanOrEqual(abs(Int(target.green) - Int(source.green)), 40)
         XCTAssertLessThanOrEqual(abs(Int(target.blue) - Int(source.blue)), 40)
         XCTAssertLessThanOrEqual(abs(luminance(target.red, target.green, target.blue) - luminance(source.red, source.green, source.blue)), 0.02)
+        XCTAssertGreaterThan(
+            luminance(target.red, target.green, target.blue),
+            luminance(source.red, source.green, source.blue)
+        )
     }
 
     func testTransformIsDeterministicMonotonicSourceOnlyAndNeutralNoOp() throws {
         for pixel: (UInt8, UInt8, UInt8) in [
             (220, 220, 220),
             (190, 188, 191),
+            (198, 188, 188),
             (120, 130, 140),
         ] {
-            XCTAssertNil(BeautyScleraRednessTransform.target(
+            XCTAssertNil(BeautyFocalScleraRednessTransform.target(
                 red: pixel.0,
                 green: pixel.1,
                 blue: pixel.2,
                 strength: 1
             ))
         }
-        let low = try XCTUnwrap(BeautyScleraRednessTransform.target(red: 210, green: 150, blue: 150, strength: 0.35))
-        let high = try XCTUnwrap(BeautyScleraRednessTransform.target(red: 210, green: 150, blue: 150, strength: 1))
-        let repeated = try XCTUnwrap(BeautyScleraRednessTransform.target(red: 210, green: 150, blue: 150, strength: 1))
+        let low = try XCTUnwrap(BeautyFocalScleraRednessTransform.target(red: 210, green: 150, blue: 150, strength: 0.35))
+        let high = try XCTUnwrap(BeautyFocalScleraRednessTransform.target(red: 210, green: 150, blue: 150, strength: 1))
+        let repeated = try XCTUnwrap(BeautyFocalScleraRednessTransform.target(red: 210, green: 150, blue: 150, strength: 1))
         XCTAssertEqual(high, repeated)
         XCTAssertGreaterThanOrEqual(redExcess(low.red, low.green, low.blue), redExcess(high.red, high.green, high.blue))
     }
@@ -232,7 +245,7 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
         let source = try canonical(makeEyeFixture().bytes)
         for strength in [Float.zero, -1, .nan, .infinity] {
             let owner = BeautyLocalRetouchCompositionOwner(source: source)
-            let result = BeautyScleraRednessProvider.makeResult(
+            let result = BeautyFocalScleraRednessProvider.makeResult(
                 source: source,
                 eyeSupport: [leftSupport, rightSupport],
                 eyeOrder: .canonical,
@@ -247,14 +260,14 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
         let fixture = makeEyeFixture()
         let source = try canonical(fixture.bytes)
         let owner = BeautyLocalRetouchCompositionOwner(source: source)
-        let first = BeautyScleraRednessProvider.makeResult(
+        let first = BeautyFocalScleraRednessProvider.makeResult(
             source: source,
             eyeSupport: [leftSupport],
             eyeOrder: .canonical,
             strength: 1,
             owner: owner
         )
-        let second = BeautyScleraRednessProvider.makeResult(
+        let second = BeautyFocalScleraRednessProvider.makeResult(
             source: source,
             eyeSupport: [leftSupport],
             eyeOrder: .canonical,
@@ -284,7 +297,7 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
                 )
                 let peer = affectedSide == .left ? rightSupport : leftSupport
                 let owner = BeautyLocalRetouchCompositionOwner(source: source)
-                let result = BeautyScleraRednessProvider.makeResult(
+                let result = BeautyFocalScleraRednessProvider.makeResult(
                     source: source,
                     eyeSupport: affectedSide == .left ? [malformed, peer] : [peer, malformed],
                     eyeOrder: .canonical,
@@ -314,7 +327,7 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
                 )
                 let peer = affectedSide == .left ? rightSupport : leftSupport
                 let owner = BeautyLocalRetouchCompositionOwner(source: source)
-                let result = BeautyScleraRednessProvider.makeResult(
+                let result = BeautyFocalScleraRednessProvider.makeResult(
                     source: source,
                     eyeSupport: affectedSide == .left ? [malformed, peer] : [peer, malformed],
                     eyeOrder: .canonical,
@@ -333,7 +346,7 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
         let source = try canonical(makeEyeFixture().bytes)
         for contour in [eyeContour(centerX: 0.2625), nearCollinearSeparatedContour] {
             let owner = BeautyLocalRetouchCompositionOwner(source: source)
-            let result = BeautyScleraRednessProvider.makeResult(
+            let result = BeautyFocalScleraRednessProvider.makeResult(
                 source: source,
                 eyeSupport: [support(side: .left, contour: contour), rightSupport],
                 eyeOrder: .canonical,
@@ -357,7 +370,7 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
         var validProposalIndices: [Int]?
         for supports in [validSupports, invalidSupports, validSupports] {
             let owner = BeautyLocalRetouchCompositionOwner(source: source)
-            let result = BeautyScleraRednessProvider.makeResult(
+            let result = BeautyFocalScleraRednessProvider.makeResult(
                 source: source,
                 eyeSupport: supports,
                 eyeOrder: .canonical,
@@ -385,7 +398,7 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
                 group.addTask {
                     let shouldBeValid = index.isMultiple(of: 2)
                     let owner = BeautyLocalRetouchCompositionOwner(source: source)
-                    let result = BeautyScleraRednessProvider.makeResult(
+                    let result = BeautyFocalScleraRednessProvider.makeResult(
                         source: source,
                         eyeSupport: shouldBeValid ? validSupports : invalidSupports,
                         eyeOrder: .canonical,
@@ -611,7 +624,10 @@ final class BeautyScleraRednessProviderTests: XCTestCase {
     }
 
     private func redExcess(_ red: UInt8, _ green: UInt8, _ blue: UInt8) -> Double {
-        max(0, Double(red) / 255 - max(Double(green), Double(blue)) / 255)
+        let normalizedRed = Double(red) / 255
+        let normalizedGreen = Double(green) / 255
+        let normalizedBlue = Double(blue) / 255
+        return max(0, normalizedRed - 0.83 * normalizedGreen - 0.17 * normalizedBlue)
     }
 
     private func luminance(_ red: UInt8, _ green: UInt8, _ blue: UInt8) -> Double {

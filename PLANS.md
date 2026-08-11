@@ -26,13 +26,36 @@
 
 ## 3. Active
 
-No executable plan is currently active. v1.15 remains independently audited
-and archived; post-archive remediation did not reopen, move, or reinterpret the
-tag.
+### A-2026-08-11-full-sclera-redness
+
+| Field | Value |
+| --- | --- |
+| Status | `active` |
+| Trigger | User review found that the focal redness mask changed only small islands and did not cover the full visible U-shaped sclera. |
+| Scope | Preserve the current implementation as the private `FocalScleraRedness` strategy, add a separate `FullScleraRedness` strategy, and route the existing still-image public effect through the full-sclera strategy without changing its public parameter. |
+| Hard boundary | The editable region is the validated eye aperture minus iris/pupil, lid/lash margin, highlight, exterior skin, and a conservative medial-canthal caruncle guard. The caruncle remains source-exact. |
+| Effect | Apply mild broad chroma neutralization across eligible visible sclera and stronger correction where weighted red excess is material; retain original luminance structure and texture rather than painting flat white. |
+| Acceptance | Keep Focal behavior independently executable and tested; Full Sclera must operate bilaterally, materially increase reviewed-mask coverage, keep zero protected-region and reviewed-mask escape, exclude the caruncle, preserve alpha, and retain exact negative/fail-closed behavior. |
+| Boundary | Still-image SDK core only. No Demo/realtime/pixel-buffer/model/network, archived-v1.15 mutation, population/device/commercial, packaging, shipping, launch, or release-readiness claim. |
+
+The archived `v1.15` tag remains independently audited and immutable; this is
+post-archive work on `codex/full-sclera-redness`.
 
 ## 3A. Historical Lifecycle Ledger
 
 > 以下记录均为已完成或已被后续权威取代的执行历史，不是 Active plan。
+
+### H-2026-08-11-sclera-visible-effect-remediation
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
+| Trigger | A fresh exact-`v1.15` rerender and user screenshot proved the archived positive changed only 33 pixels on one image half with maximum channel delta 2/255, so the prior nonzero gate did not establish a visible result. |
+| Implementation | Current `main` uses weighted conjunctival redness `R - 0.83G - 0.17B`, one provider-owned material gate, bounded soft-mask gain, `0.76 / 0.08 / 0.13` channel correction, and a local luminance lift capped at `0.018`. The native-Vision pupil support fraction is `0.035`; newly admitted offsets receive one extra pixel of lid erosion while the calibrated iris/pupil exclusion remains unchanged. The natural negative calibrates the edit floor to `0.045` and is exact. |
+| Output evidence | Fresh public-facade positive output changes 203/1506 reviewed-mask pixels (`13.479%`), split 136/67 across image halves, with zero outside-mask changes, maximum channel delta 34/255, mean changed-pixel absolute RGB delta 8.494 bytes, weighted redness reduced `38.46%`, and reviewed-mask mean luminance delta `0.001069`. The authorized negative has zero proposals/output changes. Ignored local input/output/mask/change overlays live under `example-images/local-retouch-review/sclera-visible-remediation-20260811/`. |
+| Regression contract | The private positive now requires at least `max(100, 8%)` reviewed-mask changes, at least 20 per image half, maximum channel delta `20...44`, at least 20% weighted-red reduction, bounded luminance/texture/alpha, and zero RGB mask escape. The private negative requires exact output. The transform unit test has a minimum material-red movement so byte-noise cannot satisfy the gate. |
+| Verification | `BeautyScleraRednessProviderTests` passed 15/15, `BeautyEngineScleraRednessIntegrationTests` 9/9, `BeautyScleraRednessAdversarialCloseoutTests` 6/6 with zero protected intersection/mismatch, the opted-in private real-fixture gate 1/1, and full SwiftPM 641 tests with zero failures and eight documented opt-in skips. The renderer rebuilt/reran the public `scleraRednessReduction_1p00` case; `git diff --check` and ignored-artifact checks passed. |
+| Boundary | This is post-archive remediation on current `main`; the `v1.15` tag/archive is unchanged. No Demo/realtime/pixel-buffer/model/network expansion or population/device/commercial/release-readiness claim is added. |
 
 <!-- PHASE65_FINAL_OWNER_BEGIN -->
 owner: PLANS_ARCHIVED

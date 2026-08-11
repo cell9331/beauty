@@ -840,3 +840,13 @@ Command-level evidence is recorded in [Phase 65 security](.planning/milestones/v
   from laundering a misregistered mask into containment evidence.
 - All support and mask data remains package-private, request-local, non-Codable,
   and absent from diagnostics, persistence, network, and tracked artifacts.
+- The current native-Vision bilateral repair widens only the support-validity
+  fraction from `0.025` to `0.035`; every newly admitted offset receives extra
+  color-independent lid erosion. The calibrated pupil/iris exclusion is not
+  reduced. A trial reduction of that exclusion failed both the recolored-iris
+  oracle and the private reviewed-mask containment gate and is not present.
+- Visibility is raised only by a bounded transform and soft-mask gain after all
+  iris, pupil, highlight and lash exclusions, followed by the same hard
+  re-clip. The adversarial full-resolution protected truth must retain zero
+  proposal intersection and zero RGBA mismatch, and the real positive must
+  retain zero reviewed-mask escape.

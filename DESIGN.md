@@ -1030,3 +1030,20 @@ Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/mil
   zero-origin extents, exact canonical dimensions, and missing-or-EXIF-1
   orientation. Rendering cannot crop, pad, translate, or rotate a mismatched
   mask into apparent evidence.
+- Current sclera scoring uses the conjunctival-redness index
+  `max(0, R - 0.83G - 0.17B)` inside the existing luminance/saturation and
+  anatomical guards. The provider owns the only material-redness smoothstep;
+  the transform does not square that gate a second time. The editing floor is
+  calibrated at `0.045` so the authorized normal negative is an exact no-op.
+- A plausible native-Vision pupil may be horizontally offset by at most `0.035`
+  of eye width. Support above the former `0.025` envelope receives one extra
+  pixel of color-independent lid erosion. The pupil/iris radius, highlight,
+  lash, post-feather hard clip, and immutable-source composition remain in
+  force; widening the iris edit region is not part of this remediation.
+- Full strength amplifies only the already-safe soft mask, reduces weighted red
+  excess with the bounded `0.76 / 0.08 / 0.13` channel transform, and borrows
+  teeth whitening's visibility cue only as a local luminance lift capped at
+  `0.018`. The private positive gate now requires at least `max(100, 8%)`
+  reviewed-mask changes, at least 20 changes in each image half, channel delta
+  `20...44`, at least 20% weighted-red reduction, and zero mask escape; the
+  authorized negative must remain exact.

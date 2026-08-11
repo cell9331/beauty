@@ -87,15 +87,24 @@ final class BeautyScleraRednessRealFixtureTests: XCTestCase {
                 return
             }
             if fixture.polarity == "positive" {
-                guard measurement.changedInsideReviewedMask > 0,
-                      measurement.meanRedExcessAfter < measurement.meanRedExcessBefore,
+                let minimumVisibleCount = max(
+                    100,
+                    Int(Double(measurement.reviewedMaskPixelCount) * 0.08)
+                )
+                guard measurement.changedInsideReviewedMask >= minimumVisibleCount,
+                      measurement.changedInsideLeftHalf >= 20,
+                      measurement.changedInsideRightHalf >= 20,
+                      measurement.maximumChannelDelta >= 20,
+                      measurement.meanRedExcessAfter
+                        <= measurement.meanRedExcessBefore * 0.80,
                       abs(measurement.meanLuminanceDelta) <= 0.018
                 else {
                     XCTFail("private_positive_bounds_failed")
                     return
                 }
             } else {
-                guard measurement.meanAbsoluteRGBDelta <= 0.010,
+                guard measurement.changedInsideReviewedMask == 0,
+                      measurement.meanAbsoluteRGBDelta == 0,
                       abs(measurement.meanLuminanceDelta) <= 0.006
                 else {
                     XCTFail("private_negative_bounds_failed")
@@ -114,7 +123,10 @@ final class BeautyScleraRednessRealFixtureTests: XCTestCase {
         let assets: [String: String]
     }
     private struct Measurement {
+        let reviewedMaskPixelCount: Int
         let changedInsideReviewedMask: Int
+        let changedInsideLeftHalf: Int
+        let changedInsideRightHalf: Int
         let changedOutsideReviewedMask: Int
         let alphaChangedPixelCount: Int
         let maximumChannelDelta: Int
@@ -171,6 +183,8 @@ final class BeautyScleraRednessRealFixtureTests: XCTestCase {
 
     private func measure(before: [UInt8], after: [UInt8], reviewedMask: [UInt8], width: Int, height: Int) -> Measurement {
         var changedInside = 0
+        var changedInsideLeft = 0
+        var changedInsideRight = 0
         var changedOutside = 0
         var alphaChanged = 0
         var maxChannel = 0
@@ -186,7 +200,16 @@ final class BeautyScleraRednessRealFixtureTests: XCTestCase {
             let changed = before[offset..<(offset + 3)] != after[offset..<(offset + 3)]
             if before[offset + 3] != after[offset + 3] { alphaChanged += 1 }
             if changed {
-                if inside { changedInside += 1 } else { changedOutside += 1 }
+                if inside {
+                    changedInside += 1
+                    if index % width < width / 2 {
+                        changedInsideLeft += 1
+                    } else {
+                        changedInsideRight += 1
+                    }
+                } else {
+                    changedOutside += 1
+                }
             }
             guard inside else { continue }
             maskCount += 1
@@ -205,7 +228,10 @@ final class BeautyScleraRednessRealFixtureTests: XCTestCase {
         let beforeTexture = textureEnergy(before, reviewedMask, width, height)
         let afterTexture = textureEnergy(after, reviewedMask, width, height)
         return Measurement(
+            reviewedMaskPixelCount: maskCount,
             changedInsideReviewedMask: changedInside,
+            changedInsideLeftHalf: changedInsideLeft,
+            changedInsideRightHalf: changedInsideRight,
             changedOutsideReviewedMask: changedOutside,
             alphaChangedPixelCount: alphaChanged,
             maximumChannelDelta: maxChannel,
@@ -224,7 +250,10 @@ final class BeautyScleraRednessRealFixtureTests: XCTestCase {
     }
 
     private func redExcess(_ bytes: [UInt8], _ offset: Int) -> Double {
-        max(0, Double(bytes[offset]) / 255 - max(Double(bytes[offset + 1]), Double(bytes[offset + 2])) / 255)
+        let red = Double(bytes[offset]) / 255
+        let green = Double(bytes[offset + 1]) / 255
+        let blue = Double(bytes[offset + 2]) / 255
+        return max(0, red - 0.83 * green - 0.17 * blue)
     }
 
     private func containmentFailureCode(

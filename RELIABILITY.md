@@ -952,6 +952,17 @@ Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/mil
 - Both private real-fixture suites validate mask extent, origin, dimensions,
   and orientation before allocation-backed rendering or aggregate measurement;
   wrong-size, translated, non-finite, and rotated metadata cases reject.
+- Sclera admission now distinguishes the authorized strong positive from the
+  normal negative using the weighted-red editing floor: the positive produces
+  accepted bilateral units, while the negative produces zero proposals and an
+  exact output. The private gate also owns bilateral minimum-change, minimum
+  effect, weighted-red reduction, maximum-channel, luminance, alpha, texture,
+  and RGB-only reviewed-mask containment bounds.
+- The visibility regression is protected at both levels: the source-only unit
+  transform has a deterministic minimum channel movement on a material-red
+  sample, and the native-Vision fixture must meet the bilateral aggregate
+  floor. This prevents a return to a technically nonzero but visually inert
+  output.
 - Focused mapping/provider/adversarial/mask tests pass `45/45`; combined,
   teeth/sclera integration, renderer, and real-fixture-host tests pass `59/59`
   with only the two expected private opt-in skips; full SwiftPM passes `641/641`
