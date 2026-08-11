@@ -142,18 +142,48 @@ final class BeautyEngineCombinedLocalRetouchCloseoutTests: XCTestCase {
             (.rightValidLeftMalformed, 0, 1),
         ]
         for (support, acceptedLeft, acceptedRight) in cases {
-            let harness = try Self.makeHarness(support)
-            _ = try harness.invoke(
+            let source = try Self.combinedImage()
+            let sourceBytes = try Self.renderedRGBA8(source)
+
+            let teethHarness = try Self.makeHarness(support)
+            let teeth = try teethHarness.invoke(
                 entry: .processResult,
-                image: try Self.combinedImage(),
+                image: source,
+                parameters: BeautyParameters(teethWhitening: 1)
+            )
+            let teethBytes = try Self.renderedRGBA8(teeth.output)
+
+            let scleraHarness = try Self.makeHarness(support)
+            let sclera = try scleraHarness.invoke(
+                entry: .processResult,
+                image: source,
+                parameters: BeautyParameters(scleraRednessReduction: 1)
+            )
+            let scleraBytes = try Self.renderedRGBA8(sclera.output)
+
+            let combinedHarness = try Self.makeHarness(support)
+            let combined = try combinedHarness.invoke(
+                entry: .processResult,
+                image: source,
                 parameters: BeautyParameters(teethWhitening: 1, scleraRednessReduction: 1)
             )
-            XCTAssertEqual(harness.providerObservation.issuedUnitCount, 1)
-            XCTAssertEqual(harness.scleraProviderObservation.issuedUnitCount, 1)
-            XCTAssertEqual(harness.scleraProviderObservation.acceptedLeftEyeCount, acceptedLeft)
-            XCTAssertEqual(harness.scleraProviderObservation.acceptedRightEyeCount, acceptedRight)
-            XCTAssertEqual(harness.compositionObservation.acceptedUnitCount, 2)
-            XCTAssertEqual(harness.compositionObservation.compositionInvocationCount, 1)
+            let combinedBytes = try Self.renderedRGBA8(combined.output)
+            let oracle = Self.independentMerge(
+                source: sourceBytes,
+                first: teethBytes,
+                second: scleraBytes
+            )
+
+            XCTAssertGreaterThan(Self.changedPixelCount(sourceBytes, teethBytes), 0)
+            XCTAssertGreaterThan(Self.changedPixelCount(sourceBytes, scleraBytes), 0)
+            XCTAssertEqual(oracle.collisionPixelCount, 0)
+            XCTAssertEqual(combinedBytes, oracle.bytes)
+            XCTAssertEqual(combinedHarness.providerObservation.issuedUnitCount, 1)
+            XCTAssertEqual(combinedHarness.scleraProviderObservation.issuedUnitCount, 1)
+            XCTAssertEqual(combinedHarness.scleraProviderObservation.acceptedLeftEyeCount, acceptedLeft)
+            XCTAssertEqual(combinedHarness.scleraProviderObservation.acceptedRightEyeCount, acceptedRight)
+            XCTAssertEqual(combinedHarness.compositionObservation.acceptedUnitCount, 2)
+            XCTAssertEqual(combinedHarness.compositionObservation.compositionInvocationCount, 1)
         }
     }
 
