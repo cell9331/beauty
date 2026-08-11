@@ -805,7 +805,7 @@ These are known future design areas, not current first-version requirements:
 - Compatibility remains exactly five byte-stable presets that decode teeth intent to zero, 72 renderer cases with no local-retouch case, and three disabled Demo taxonomy rows with nil control mappings.
 - Phase 59 admits intent only. It defines no provider, mask owner, transform, renderer/output behavior, Demo activation, realtime/pixel-buffer route, model/network path, sclera surface, or `去脂` proxy. Phase 60 owns provider integration and Phase 61 owns public-output/safety closeout.
 
-Command-level evidence is recorded in the [Phase 59 validation strategy](.planning/phases/59-teeth-evidence-and-admission-contract/59-VALIDATION.md) and [exact-open boundary summary](.planning/phases/59-teeth-evidence-and-admission-contract/59-07-SUMMARY.md).
+Command-level evidence is recorded in the [Phase 59 validation strategy](.planning/milestones/v1.15-phases/59-teeth-evidence-and-admission-contract/59-VALIDATION.md) and [exact-open boundary summary](.planning/milestones/v1.15-phases/59-teeth-evidence-and-admission-contract/59-07-SUMMARY.md).
 
 ### v1.15 Phase 60 Teeth Provider Contract
 
@@ -838,7 +838,7 @@ Command-level evidence is recorded in the [Phase 59 validation strategy](.planni
   local-retouch rows. Phase 61 still owns strict public-output proof and product
   promotion.
 
-Command-level evidence is recorded in [Phase 60 verification](.planning/phases/60-teeth-provider-and-production-integration/60-VERIFICATION.md).
+Command-level evidence is recorded in [Phase 60 verification](.planning/milestones/v1.15-phases/60-teeth-provider-and-production-integration/60-VERIFICATION.md).
 
 ### v1.15 Phase 61 Teeth Output and Exact Promotion Contract
 
@@ -865,7 +865,7 @@ Command-level evidence is recorded in [Phase 60 verification](.planning/phases/6
   device/performance, commercial, packaging, shipping, launch, or release-
   readiness claim.
 
-Command-level evidence is recorded in [Phase 61 output evidence](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-TEETH-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-REVIEW.md), and [security disposition](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-SECURITY.md).
+Command-level evidence is recorded in [Phase 61 output evidence](.planning/milestones/v1.15-phases/61-teeth-output-safety-and-independent-closeout/61-TEETH-OUTPUT-EVIDENCE.md), [original-detail review](.planning/milestones/v1.15-phases/61-teeth-output-safety-and-independent-closeout/61-REVIEW.md), and [security disposition](.planning/milestones/v1.15-phases/61-teeth-output-safety-and-independent-closeout/61-SECURITY.md).
 
 ### v1.15 Phase 62 Sclera Evidence and Intent Admission Contract
 
@@ -888,7 +888,7 @@ Command-level evidence is recorded in [Phase 61 output evidence](.planning/phase
   with no sclera case, and three disabled nil-mapped Demo rows. Phase 63 alone
   may add guarded per-eye provider work.
 
-Command-level evidence is recorded in [Phase 62 verification](.planning/phases/62-sclera-evidence-and-admission-contract/62-VERIFICATION.md).
+Command-level evidence is recorded in [Phase 62 verification](.planning/milestones/v1.15-phases/62-sclera-evidence-and-admission-contract/62-VERIFICATION.md).
 
 ### v1.15 Phase 63 Guarded Per-Eye Sclera Provider Contract
 
@@ -924,7 +924,7 @@ Command-level evidence is recorded in [Phase 62 verification](.planning/phases/6
   product promotion. Compatibility remains 61 fields, five neutral presets,
   73 renderer cases and three disabled local-retouch Demo rows.
 
-Command-level evidence is recorded in [Phase 63 verification](.planning/phases/63-guarded-per-eye-sclera-production-integration/63-VERIFICATION.md).
+Command-level evidence is recorded in [Phase 63 verification](.planning/milestones/v1.15-phases/63-guarded-per-eye-sclera-production-integration/63-VERIFICATION.md).
 
 ### v1.15 Phase 64 Standalone Sclera Output and Promotion Contract
 
@@ -962,9 +962,9 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
   canonical promotion remain pending, Phase 65 is blocked, and DeviceRGB/named-
   sRGB remains exclusively the Phase 65 SAFE-06 design obligation.
 
-Fresh promotion-pending authority is recorded in [terminal R2 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW.md), [code review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-CODE-REVIEW.md), [review-fix disposition](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW-FIX.md), [ASVS L1 security audit](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SECURITY.md), and [independent eligibility](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-PRE-PROMOTION-VERIFICATION.md).
+Fresh promotion-pending authority is recorded in [terminal R2 output evidence](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW.md), [code review](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-CODE-REVIEW.md), [review-fix disposition](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW-FIX.md), [ASVS L1 security audit](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SECURITY.md), and [independent eligibility](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-PRE-PROMOTION-VERIFICATION.md).
 
-### v1.15 Phase 65 Current Closeout
+### v1.15 Phase 65 Archived Closeout
 
 <!-- PHASE65_FINAL_OWNER_BEGIN -->
 owner: DESIGN
@@ -980,7 +980,7 @@ sclera_redness: implemented
 eyes: partial
 eye_fat: future
 safe_06: closed
-lifecycle: completion-ready
+lifecycle: archived
 release: non-release
 <!-- PHASE65_FINAL_OWNER_END -->
 
@@ -1004,4 +1004,4 @@ release: non-release
   active Demo route, device/performance/commercial approval, packaging,
   shipping, launch or release-readiness contract is added.
 
-Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-CLOSEOUT-EVIDENCE.md) and [verification](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).
+Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-CLOSEOUT-EVIDENCE.md) and [verification](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).

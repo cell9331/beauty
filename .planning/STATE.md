@@ -2,44 +2,41 @@
 gsd_state_version: 1.0
 milestone: v1.15
 milestone_name: Independent Teeth and Sclera Retouch
-current_phase: 65
-current_phase_name: combined-facade-privacy-and-milestone-closeout
-status: verifying
-stopped_at: Fresh Phase 65 verification and bound milestone audit passed; no completion/archive/tag action run
-last_updated: "2026-08-11T01:32:00.000Z"
+status: Awaiting next milestone
+stopped_at: Milestone v1.15 completed and archived; planning next milestone
+last_updated: "2026-08-11T02:22:42.083Z"
 last_activity: 2026-08-11
-last_activity_desc: Bound v1.15 audit passed 40/40 requirements, 7/7 phases, 12/12 seams and 7/7 flows
+last_activity_desc: Milestone v1.15 completed and archived
 progress:
   total_phases: 7
   completed_phases: 7
   total_plans: 51
   completed_plans: 51
-  percent: 100
+current_phase: null
+current_phase_name: null
 ---
 
 # Project State
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-08-07)
+See: `.planning/PROJECT.md` (updated 2026-08-11)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** v1.15 is completion-ready; wait for an explicit milestone completion/archive/tag request
+**Current focus:** Planning the next milestone after audited v1.15 archive
 
 ## Current Position
 
-Phase: 65 (combined-facade-privacy-and-milestone-closeout) — VERIFIED AND AUDITED
-Plan: 4 of 4 plans complete; bound milestone audit passed
-Status: `v1_15_completion_ready_not_archived_or_tagged`
-Last activity: 2026-08-11 — fresh Phase 65 verification and bound 40/40 milestone audit passed
-
-Progress: [██████████] 100% plan, phase verification and milestone audit
+Phase: Milestone v1.15 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-08-11 — Milestone v1.15 completed and archived
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Total plans completed: 50
+- Total plans completed: 51
 - Average duration: —
 - Total execution time: —
 
@@ -145,10 +142,9 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- Phase 64 is canonically passed; SCLERA-14 through SCLERA-18 and OUT-05 are complete.
-- Fresh Phase 65 verification and the separately bound milestone audit pass; no completion/archive/tag action was performed.
-- DeviceRGB was removed from the renderer evidence path; named-sRGB saved output closes SAFE-06 without borrowing Phase 64 credit.
-- Archive, tag, cleanup, shipping and release claims remain unauthorized. Existing TD-013 generic-result sendability remains outside this milestone.
+- No blocker remains for v1.15; all 40 requirements and both audit-debt remediations are closed.
+- v1.15 is archived as an internal SDK milestone. Distribution, shipping, launch, commercial approval and release readiness remain unauthorized future scopes.
+- Existing TD-013 generic-result sendability and a formal stale codebase-map refresh remain deferred beyond this milestone.
 
 ## Deferred Items
 
@@ -161,8 +157,8 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-10T10:15:00.000Z
-Stopped at: Fresh Phase 65 verification and bound milestone audit passed; no completion/archive/tag action run
+Last session: 2026-08-11T10:30:00+08:00
+Stopped at: Milestone v1.15 completed and archived; planning next milestone
 Resume file: None
 
 ## Phase 64 Terminal R2 Canonical Final State
@@ -178,6 +174,10 @@ Resume file: None
 Phase 64 terminal lifecycle is canonical final passed with 21/21 plans and
 38/38 ordered task IDs accounted. Fresh Phase 65 verification follows that
 authority and closes SAFE-06 through named-sRGB facade and saved-PNG evidence.
-The separate bound milestone audit closes OUT-09; v1.15 remains unarchived and
-untagged until an explicit completion action.
+The formal milestone audit closes OUT-09; v1.15 is archived for lifecycle
+history without claiming distribution, shipping, launch or release readiness.
 <!-- PHASE64_TERMINAL_LIFECYCLE_END -->
+
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone

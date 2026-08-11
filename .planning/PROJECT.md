@@ -12,21 +12,23 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ## Current State
 
-**Shipped version:** v1.14 Local Facial Retouch on 2026-08-05 (SDK-core still-image safety and exact-absence closeout; no visible feature promotion).
+**Latest completed milestone:** v1.15 Independent Teeth and Sclera Retouch on 2026-08-11 (audited SDK-core still-image completion; product distribution/shipping is not claimed).
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
-**Current milestone:** v1.15 Independent Teeth and Sclera Retouch — all seven phases and the separately bound 40/40 milestone audit pass; completion-ready only, with no completion/archive/tag action performed.
+**Current milestone:** none; planning the next milestone after the archived v1.15 authority chain.
 
 **Implementation state:** v1.15 independently implements bounded opaque still-image `teethWhitening` and per-eye `scleraRednessReduction` through the public SDK facade. The exact inventory is 61 public fields, five neutral presets, 74 renderer cases and three disabled nil-mapped local-retouch Demo rows. `白牙`, `嘴唇` and `祛红血丝` are implemented at SDK-core scope; aggregate `眼睛` remains partial solely because `去脂` remains future.
 
 **Verification state:** Combined public output byte-matches independently merged standalone outputs; collisions preserve source and four injected failure units retain unaffected bytes. Named-sRGB facade carriers and saved PNGs, request-local privacy, 61/5/74/3 compatibility, both private 6/6 output matrices, full SwiftPM `638/0/0` with all eight opt-ins, and explicit Demo `121/0/0` pass. Device/performance/commercial/packaging/shipping/launch/release-readiness remain separate scopes.
 
-**Next milestone goals:** Await an explicit milestone-completion/archive/tag request. `去脂`, Demo activation, realtime/pixel-buffer local retouch, model/network, population/device/performance, commercial, packaging, shipping, launch and release-readiness work remain future or separately scoped.
+**Next milestone goals:** Select a fresh bounded scope. `去脂`, Demo activation, realtime/pixel-buffer local retouch, model/network, population/device/performance, commercial, packaging, shipping, launch and release-readiness work remain future or separately scoped.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. Stale `.planning/codebase/*` maps are background only until a formal remap is scoped.
 
-**Code size:** the annotated v1.13 close contains 36,649 tracked Swift source/test lines across `BeautySDK` and `BeautyDemo`, excluding `.build`; the consolidation audit raises the current working total to 36,722 after three focused Demo lifecycle/input fixes.
+**Code size:** the completed v1.15 tree contains 49,596 tracked Swift source/test lines across `BeautySDK` and `BeautyDemo`, excluding `.build`.
 
-## Current Milestone: v1.15 Independent Teeth and Sclera Retouch
+## Last Completed Milestone: v1.15 Independent Teeth and Sclera Retouch
+
+**Status:** Completed, independently audited, and archived on 2026-08-11. This lifecycle completion is not a distribution, shipping, launch, commercial-quality, or release-readiness claim.
 
 **Goal:** Deliver production still-image `白牙` and `祛红血丝` as two independently qualified local-retouch features, completing teeth first and sclera second without borrowing evidence, support, failure state, or promotion authority between them.
 
@@ -229,7 +231,7 @@ For any future semantic-masking milestone, a bundled Core ML resource must be lo
 
 ## Requirements
 
-### Active (v1.15)
+### Validated in v1.15
 
 - [x] Independently qualify and implement still-image `白牙` before beginning production `祛红血丝` implementation.
 - [x] Require a complete rights-approved genuine discoloration-positive and already-light/negative teeth bundle with original, mask, after, polarity, and structured original-detail review evidence.
@@ -358,7 +360,6 @@ The verified SDK-only slice implements exactly `大小`, `宽度`, and `微笑`.
 
 Current and future milestone sequence:
 
-- **v1.15 Independent Teeth and Sclera Retouch:** complete `白牙`, then independently complete `祛红血丝`; defer `去脂`.
 - **Future Hairline and Semantic Masking:** approved local semantic-region foundation plus `发际线`.
 - **Future Double-Chin and Facial-Feature Closeout:** `去双下巴`, `去双下巴 Pro`, and a later narrow taxonomy audit.
 - **Other shaping groups:** `比例` and `3D塑颜` remain outside this narrow facial-feature sequence.
@@ -401,6 +402,11 @@ Historical milestone detail is archived in:
 - `.planning/milestones/v1.8-REQUIREMENTS.md`
 - `.planning/milestones/v1.8-MILESTONE-AUDIT.md`
 - `.planning/milestones/v1.8-phases/`
+- `.planning/milestones/v1.15-ROADMAP.md`
+- `.planning/milestones/v1.15-REQUIREMENTS.md`
+- `.planning/milestones/v1.15-MILESTONE-AUDIT.md`
+- `.planning/milestones/v1.15-PHASE65-BOUND-AUDIT.md`
+- `.planning/milestones/v1.15-phases/`
 
 Current visual reference contracts:
 
@@ -441,7 +447,7 @@ Current visual reference contracts:
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| v1.15 completes `白牙` before independently completing `祛红血丝`, while deferring `去脂`. | The user wants two finished visible effects one at a time; their evidence, anatomy, safety oracles, and failure units differ, and upper-eyelid fullness still lacks a credible approved non-warp path. | `白牙` independently completed in Phase 61; Phase 62 may begin sclera evidence/admission only |
+| v1.15 completes `白牙` before independently completing `祛红血丝`, while deferring `去脂`. | The user wants two finished visible effects one at a time; their evidence, anatomy, safety oracles, and failure units differ, and upper-eyelid fullness still lacks a credible approved non-warp path. | Verified: `白牙` completed in Phase 61, `祛红血丝` completed after independent Phases 62-64, and Phase 65 closed combined behavior without admitting `去脂`. |
 | A local candidate authorization does not open a v1.15 feature gate. | `portrait_002` is C2PA-declared AI-generated and remains mechanics-only even if feature-specific derivatives are completed; candidate status cannot replace either feature's rights-approved genuine positive/negative bundle. | Verified for teeth and retained for sclera; the passed teeth chain uses a separate genuine pair |
 | v1.14 uses a staged local-retouch milestone: teeth and sclera may ship independently, while upper-eyelid fullness remains gated. | Teeth and guarded sclera mechanics have distinct bounded paths; the tested eyelid warp is invalid and no real positive bundle yet supports promotion. | Verified through Phase 54 — all three gates are independently closed and later phases must preserve exact absence unless independently qualified |
 | v1.14 rejects transparent still inputs until an explicit composite policy is approved. | Preserving alpha bytes does not stabilize Vision landmarks when canvas/background changes; fail-closed rejection is the safest bounded default. | Verified in Phase 53 — rejection occurs before Vision/local-mask work and remains outside Phase 54 evidence admission |
@@ -468,7 +474,7 @@ Current visual reference contracts:
 | v1.10 completes the remaining mouth geometry controls without absorbing teeth whitening. | The five unresolved geometry rows share the existing mouth warp/facade evidence path, while `白牙` needs a different teeth-region segmentation and retouch contract. | Completed in Phase 40; milestone audit passed |
 | v1.11 completes the remaining eye geometry controls without absorbing eye-fat or redness retouch. | Ten unresolved geometry rows can build on the eye warp/facade path, but pupil/gaze/symmetry require private observed support and field-local fail-closed behavior; `去脂` and `祛红血丝` need different retouch/color ownership. | Completed and archived in v1.11 |
 | v1.12 completes four contour-driven unresolved `脸型` rows and defers semantic-region rows rather than faking support. | The existing five face parameters cannot prove smooth-contour, temple, cheekbone, or pointed-chin behavior, while no approved semantic model/fixtures exist for double chin or hairline; the user selected reduced scope on 2026-07-21. | Completed in Phase 48; milestone audit passed and archived |
-| Complete the remaining narrow facial-feature taxonomy across v1.13-v1.16, beginning with eyebrows. | Eyebrow controls reuse Apple Vision landmark and unified-warp infrastructure; local retouch follows next, while hairline/double-chin work remains gated on an approved local semantic-region resource. | v1.15 teeth is complete; sclera remains in progress and v1.16 remains unstarted |
+| Complete the remaining narrow facial-feature taxonomy across v1.13-v1.16, beginning with eyebrows. | Eyebrow controls reuse Apple Vision landmark and unified-warp infrastructure; local retouch follows next, while hairline/double-chin work remains gated on an approved local semantic-region resource. | v1.15 teeth and sclera are complete; `去脂`, hairline, double-chin, and any later taxonomy closeout remain fresh-milestone decisions. |
 | v1.5 starts with geometry output foundation plus `脸型`, not all `美型 / 五官` groups. | The user chose the smallest first-principles slice: prove facade-visible geometry output first, then mark only the existing face-shape tools complete when evidence exists. | Completed and archived in v1.5 |
 
 ## Evolution
@@ -476,4 +482,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-08-07 after Phase 61 independent teeth-output completion*
+*Last updated: 2026-08-11 after v1.15 milestone completion and audit-debt remediation*

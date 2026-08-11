@@ -41,7 +41,7 @@ combined, privacy, compatibility and named-sRGB output verification:
 | --- | --- | --- | --- |
 | Root docs | 4 | All nine root owners exist. The consolidation audit corrected `ARCHITECTURE.md` so current pixel-buffer processing, still-image detection/geometry, and placeholder Render foundations match compiled code. | Keep current facts in root owners; keep milestone narratives in archives. |
 | Historical docs | 3 | `docs/README.md` remains the long-doc entry. `.planning/codebase/*` is explicitly stale background and historical phase/milestone artifacts are not current contracts. | Refresh codebase maps only in an explicitly scoped remap. |
-| GSD planning | 4 | Phase 64 is canonical final at 21 plans/38 task IDs; its post-downstream gate revalidates the SHA-256-bound Phase 65 final without candidate-era byte equality. Phase 65 and the independent 40/40 milestone audit pass. | Preserve the authority chain during completion/archive/tag. |
+| GSD planning | 4 | Phase 64 is canonical final at 21 plans/38 task IDs; its post-downstream gate revalidates the SHA-256-bound Phase 65 final without candidate-era byte equality. Phase 65 and the independent 40/40 audit pass, and v1.15 artifacts are archived. | Start the next milestone with fresh requirements while preserving the archived authority chain. |
 | SDK Package | 4 | The package/facade boundary is intact; independently qualified teeth and per-eye sclera output compose through one canonical request owner. Exact inventory is 61 public fields, five neutral presets, and 74 renderer cases. | Preserve independent provider authority, original-pixel composition and named-sRGB output. |
 | Demo App | 4 | The unchanged Demo builds and passes 121/121 on iPhone 17e / iOS 26.5; teeth, sclera-redness, and `去脂` rows remain disabled with nil mappings. | Preserve disabled taxonomy through milestone closeout. |
 | Tests | 4 | The fresh exact conjunction passes 638/0/0 full SwiftPM with all eight opt-ins, both strict 6/6 feature-output matrices, checker mutations, Demo build, and 121/0/0 Demo tests. | Preserve no-skip, explicit-sRGB, exact inventory and failure-isolation gates. |
@@ -622,7 +622,7 @@ SDK 1.0 readiness:
 - The locked compatibility boundary is exactly 60 stored/CodingKey/initializer fields, five unchanged neutral presets, 72 renderer cases, one opaque demand, and three disabled local-retouch Demo rows. No provider, mask/transform, renderer/output behavior, active Demo mapping, realtime/pixel-buffer route, model/network route, sclera surface, or `去脂` surface exists.
 - Quality credit is limited to exact evidence admission, scalar compatibility, binary request intent, privacy, and downstream absence. The mechanics-only candidate adds no product credit. Phase 60 provider safety and Phase 61 public output remain unrun, and no visible-effect, population, device, performance, commercial, packaging, shipping, launch, or release credit is added.
 
-Command-level evidence is recorded in the [Phase 59 validation strategy](.planning/phases/59-teeth-evidence-and-admission-contract/59-VALIDATION.md) and [exact-open boundary summary](.planning/phases/59-teeth-evidence-and-admission-contract/59-07-SUMMARY.md).
+Command-level evidence is recorded in the [Phase 59 validation strategy](.planning/milestones/v1.15-phases/59-teeth-evidence-and-admission-contract/59-VALIDATION.md) and [exact-open boundary summary](.planning/milestones/v1.15-phases/59-teeth-evidence-and-admission-contract/59-07-SUMMARY.md).
 
 ### v1.15 Phase 60 Teeth Provider Evidence Score
 
@@ -647,7 +647,7 @@ Command-level evidence is recorded in the [Phase 59 validation strategy](.planni
   exact promotion remain unrun; no population, realtime, device/performance,
   commercial, packaging, shipping, launch, or release credit is added.
 
-Command-level evidence is recorded in [Phase 60 verification](.planning/phases/60-teeth-provider-and-production-integration/60-VERIFICATION.md).
+Command-level evidence is recorded in [Phase 60 verification](.planning/milestones/v1.15-phases/60-teeth-provider-and-production-integration/60-VERIFICATION.md).
 
 ### v1.15 Phase 61 Teeth Output and Promotion Evidence Score
 
@@ -669,7 +669,7 @@ Command-level evidence is recorded in [Phase 60 verification](.planning/phases/6
   performance, commercial, packaging, shipping, launch, release, sclera, or
   upper-eyelid credit is added.
 
-Command-level evidence is recorded in [Phase 61 verification](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-VERIFICATION.md).
+Command-level evidence is recorded in [Phase 61 verification](.planning/milestones/v1.15-phases/61-teeth-output-safety-and-independent-closeout/61-VERIFICATION.md).
 
 ### v1.15 Phase 62 Sclera Evidence and Intent Score
 
@@ -690,7 +690,7 @@ Command-level evidence is recorded in [Phase 61 verification](.planning/phases/6
   population, realtime, device/performance, commercial, packaging, shipping,
   launch or release credit is added.
 
-Command-level evidence is recorded in [Phase 62 verification](.planning/phases/62-sclera-evidence-and-admission-contract/62-VERIFICATION.md).
+Command-level evidence is recorded in [Phase 62 verification](.planning/milestones/v1.15-phases/62-sclera-evidence-and-admission-contract/62-VERIFICATION.md).
 
 ### v1.15 Phase 63 Guarded Sclera Provider Score
 
@@ -711,7 +711,7 @@ Command-level evidence is recorded in [Phase 62 verification](.planning/phases/6
   visual review, product promotion, population, realtime, device/performance,
   commercial, packaging, shipping, launch or release credit is added.
 
-Command-level evidence is recorded in [Phase 63 verification](.planning/phases/63-guarded-per-eye-sclera-production-integration/63-VERIFICATION.md).
+Command-level evidence is recorded in [Phase 63 verification](.planning/milestones/v1.15-phases/63-guarded-per-eye-sclera-production-integration/63-VERIFICATION.md).
 
 ### v1.15 Phase 64 Sclera Output and Promotion Evidence Score
 
@@ -738,9 +738,9 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/phases/6
 
 This state is promotion pending terminal candidate/final verification;
 canonical `64-VERIFICATION.md` remains `gaps_found`. Fresh authority is recorded
-in [terminal R2 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW.md), [code review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-CODE-REVIEW.md), [review-fix disposition](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW-FIX.md), [ASVS L1 security audit](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SECURITY.md), and [independent eligibility](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-PRE-PROMOTION-VERIFICATION.md).
+in [terminal R2 output evidence](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW.md), [code review](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-CODE-REVIEW.md), [review-fix disposition](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW-FIX.md), [ASVS L1 security audit](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SECURITY.md), and [independent eligibility](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-PRE-PROMOTION-VERIFICATION.md).
 
-### v1.15 Phase 65 Current Closeout
+### v1.15 Phase 65 Archived Closeout
 
 <!-- PHASE65_FINAL_OWNER_BEGIN -->
 owner: QUALITY_SCORE
@@ -756,7 +756,7 @@ sclera_redness: implemented
 eyes: partial
 eye_fat: future
 safe_06: closed
-lifecycle: completion-ready
+lifecycle: archived
 release: non-release
 <!-- PHASE65_FINAL_OWNER_END -->
 
@@ -779,4 +779,4 @@ release: non-release
   realtime/pixel-buffer, target-device performance, commercial, packaging,
   shipping, launch or release-readiness credit is added.
 
-Command-level evidence is recorded in [Phase 65 verification](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).
+Command-level evidence is recorded in [Phase 65 verification](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).

@@ -1,5 +1,30 @@
 # Milestones
 
+## v1.15 Independent Teeth and Sclera Retouch (Completed: 2026-08-11)
+
+**Delivered:** Two independently qualified opaque still-image SDK-core local-retouch features—`白牙` first, then guarded per-eye `祛红血丝`—plus exact combined-facade, privacy, compatibility and named-sRGB closeout. This milestone record does not claim distribution, shipping, launch, commercial approval, or release readiness.
+
+**Phases completed:** 59-65 (7 phases, 51 plans, 97 tasks)
+
+**Key accomplishments:**
+
+- Qualified separate rights-approved positive/negative evidence and compatibility-safe public intent for teeth and sclera without borrowing sibling authority.
+- Implemented conservative request-local teeth whitening and independently guarded per-eye sclera redness reduction from immutable canonical source pixels.
+- Proved strict public output, protected-region byte identity, naturalness, recovery, privacy and exact `白牙` / `祛红血丝` product-owner promotion.
+- Proved combined output equals a literal merge of standalone outputs, collision-to-source behavior and four independent failure units through both public facade entries.
+- Preserved exact 61-field / 5-preset / 74-renderer-case / 3-disabled-Demo-row compatibility while `去脂` remains future.
+- Closed the formal audit at 40/40 requirements, 7/7 phases, 12/12 integration seams and 7/7 flows after repairing both lifecycle debts.
+
+**Verification:** Full SwiftPM `638/0/0` with all eight opt-ins, Demo `121/0/0`, both strict public output matrices `6/6`, Phase 65 final, Phase 64 post-downstream T-64-01…08, and zero open audit findings.
+
+**Stats:** 258 milestone files changed, 39,331 insertions, 526 deletions; 49,596 tracked Swift source/test lines; 201 commits from `f18636f` through `469e269`; 2026-08-05 through 2026-08-11.
+
+**Archives:** [roadmap](milestones/v1.15-ROADMAP.md), [requirements](milestones/v1.15-REQUIREMENTS.md), [formal audit](milestones/v1.15-MILESTONE-AUDIT.md), [Phase 65 bound audit](milestones/v1.15-PHASE65-BOUND-AUDIT.md), and [phase artifacts](milestones/v1.15-phases/).
+
+**What's next:** Define a fresh milestone; `去脂`, realtime/pixel-buffer local retouch, Demo activation, model/network, device/performance/commercial, packaging, distribution, shipping and launch remain future or separately scoped.
+
+---
+
 ## v1.14 Local Facial Retouch (Shipped: 2026-08-05)
 
 **Phases completed:** 6 phases, 27 plans, 46 tasks

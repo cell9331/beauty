@@ -26,8 +26,15 @@
 
 ## 3. Active
 
+No executable plan or milestone is active. v1.15 is independently audited and
+archived; the next planning record begins with `$gsd-new-milestone`.
+
+## 3A. Historical Lifecycle Ledger
+
+> 以下记录均为已完成或已被后续权威取代的执行历史，不是 Active plan。
+
 <!-- PHASE65_FINAL_OWNER_BEGIN -->
-owner: PLANS_ACTIVE
+owner: PLANS_ARCHIVED
 phase: 65
 milestone: v1.15
 public_fields: 61
@@ -40,17 +47,13 @@ sclera_redness: implemented
 eyes: partial
 eye_fat: future
 safe_06: closed
-lifecycle: completion-ready
+lifecycle: archived
 release: non-release
 <!-- PHASE65_FINAL_OWNER_END -->
 
-No executable implementation plan remains active for v1.15. The milestone is
-completion-ready and is awaiting the explicit audit/remediation/archive
-lifecycle; this section retains only the current Phase 65 owner disposition.
-
-## 3A. Historical Lifecycle Ledger
-
-> 以下记录均为已完成或已被后续权威取代的执行历史，不是 Active plan。
+This is the final historical Phase 65 disposition. Archive/tag lifecycle does
+not imply distribution, shipping, launch, commercial approval, or release
+readiness.
 
 ### H-2026-08-08-v1-15-phase-64-terminal-r2-closeout
 
@@ -62,7 +65,7 @@ lifecycle; this section retains only the current Phase 65 owner disposition.
 | Affected requirements | SCLERA-14 through SCLERA-18 and OUT-05 are canonically verified. Product/root owners remain byte-identical to the candidate; Phase 65 is unblocked/current only for fresh verification and audit. |
 | Fresh passing evidence | Focused 74/74; strict helper 14/14; private output 6/6 plus four opaque review items; checker/no-skip self-tests; exact full SwiftPM 637/0/0/8; Demo build and 121/0/0; exact 19-source review; zero-HIGH code review; ASVS L1 8/8. Green aggregates do not self-authorize canonical success. |
 | Warning | The earlier renderer DeviceRGB evidence gap was not Phase 64 credit; Phase 65 now replaces that path with named-sRGB saved output and strict PNG metadata rejection. |
-| Next | Phase 65 fresh verification and the bound 40/40 milestone audit pass. v1.15 is completion-ready only; no archive, tag, cleanup or shipping action was performed. |
+| Next | Phase 65 fresh verification and the formal 40/40 milestone audit passed; v1.15 was later archived after both audit debts closed. |
 | Lifecycle | Phase 64 is canonically `passed` and complete. Phase 65 and OUT-09 are freshly verified through the bound audit. |
 | Inventory | Exact authority is 21 serial plans / 38 ordered and accounted task IDs. Historical `64-13-01` and `64-19-01` remain failed/superseded evidence rather than current failures; `64-21-01` is final passed. |
 | Boundary | No archive, tag, cleanup, shipping, or milestone-completion claim is authorized by the Phase 64 transaction. Product-facing `祛红血丝` is bounded SDK-core implemented, `眼睛` remains `partial`, and `去脂` remains `future`. Phase 65 independently closes named-sRGB; Demo activation/realtime/model/network/device/performance/commercial/packaging/shipping/launch/release scope remains excluded. |
@@ -75,8 +78,8 @@ SAFE-06 with named-sRGB facade and saved-PNG evidence. The separate bound
 milestone audit closes OUT-09 at 40/40.
 <!-- PHASE64_TERMINAL_LIFECYCLE_END -->
 
-Phase 65 is freshly re-verified and independently audited. v1.15 is
-completion-ready only; no milestone completion/archive/tag action was run.
+Phase 65 is freshly re-verified and independently audited. v1.15 is archived;
+distribution, shipping, launch and release-readiness remain separate scopes.
 
 Exact ordered Phase 64 task authority is: `64-01-01`, `64-01-02`,
 `64-02-01`, `64-02-02`, `64-03-01`, `64-03-02`, `64-04-01`, `64-04-02`,
@@ -99,7 +102,7 @@ Exact ordered Phase 64 task authority is: `64-01-01`, `64-01-02`,
 | Product | Historical snapshot only: `白牙` and aggregate `嘴唇` were implemented while `祛红血丝` still awaited terminal proof. Current product authority is the Phase 65 owner block, not this row. |
 | Boundary | Historical blocked state only. The later terminal R2 and Phase 65 records resolved it; no Demo activation, realtime/pixel-buffer, population/device/performance/commercial approval, model/network, packaging, shipping, launch, archive, tag or release claim came from this record. |
 
-### A-2026-07-30-v1-14-local-facial-retouch
+### H-2026-07-30-v1-14-local-facial-retouch
 
 | Field | Value |
 | --- | --- |
@@ -148,6 +151,16 @@ Exact ordered Phase 64 task authority is: `64-01-01`, `64-01-02`,
 | Phase 54 closeout | Three review-fix passes bind grants to trusted expected-target policy and exact original/mask/after keys plus SHA-256 byte digests, recover every local-read/display-URL failure transactionally, and independently pin T-54-01…T-54-08. Final standard review is clean. Current automation passes 33/33 core, 38/38 reviewer, 119/119 checker, named live `8/8`, 500 SwiftPM tests with six documented skips, explicit iPhone 17e/iOS 26.5 Demo build and 118/118 tests, schema/UI/diff gates. The fresh user-confirmed direct-`file://` smoke and independently parsed 1,640-byte allowlisted export pass. The three-feature ledger remains closed with zero review/product weight and no SDK/Demo/realtime/media/release admission; Phase 54 validation is complete. |
 
 ## 4. Completed
+
+### C-2026-08-11-v1-15-milestone-archive
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-08-11 |
+| Scope | Archived the passed v1.15 roadmap, 40/40 requirements, formal audit and all Phase 59-65 execution artifacts after closing both audit debts. |
+| Inventory | 7 phases, 51 plans and 97 task IDs; 40/40 requirements, 12/12 integration seams and 7/7 flows. |
+| Records | `.planning/milestones/v1.15-ROADMAP.md`, `v1.15-REQUIREMENTS.md`, `v1.15-MILESTONE-AUDIT.md`, `v1.15-PHASE65-BOUND-AUDIT.md`, and `v1.15-phases/`. |
+| Boundary | Internal SDK milestone lifecycle only. Archive/tag state does not claim product distribution, shipping, launch, commercial approval or release readiness. |
 
 ### C-2026-08-11-v1-15-audit-tech-debt-remediation
 

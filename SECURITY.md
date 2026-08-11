@@ -641,7 +641,7 @@ Before merging any change touching these areas, update `SECURITY.md` if needed:
 - T-59-01 through T-59-08 are eight blocking HIGH mitigations under OWASP ASVS Level 1 with `block_on: HIGH`. They enforce the exact open decision/reviews/aggregate, frozen criteria and serializer provenance, trailing scalar/one demand, append-only compatibility, alias and sibling rejection, schema/privacy and disabled Demo boundaries, downstream absence, and synchronized lifecycle owners.
 - The production boundary is exactly 60 stored/CodingKey/initializer fields, five byte-stable neutral presets, 72 renderer cases, and three disabled Demo rows with nil mappings. No provider, mask/transform, renderer/output behavior, active Demo mapping, realtime/pixel-buffer route, model/network path, sclera surface, or `去脂` surface exists. Phase 60 and Phase 61 remain separately gated.
 
-Command-level evidence is recorded in the [Phase 59 validation strategy](.planning/phases/59-teeth-evidence-and-admission-contract/59-VALIDATION.md) and [exact-open boundary summary](.planning/phases/59-teeth-evidence-and-admission-contract/59-07-SUMMARY.md).
+Command-level evidence is recorded in the [Phase 59 validation strategy](.planning/milestones/v1.15-phases/59-teeth-evidence-and-admission-contract/59-VALIDATION.md) and [exact-open boundary summary](.planning/milestones/v1.15-phases/59-teeth-evidence-and-admission-contract/59-07-SUMMARY.md).
 
 ### v1.15 Phase 60 Teeth Provider Security Boundary
 
@@ -667,7 +667,7 @@ Command-level evidence is recorded in the [Phase 59 validation strategy](.planni
   or third-party dependency. Phase 61 remains the independent public-output and
   promotion security gate.
 
-Command-level evidence is recorded in [Phase 60 security](.planning/phases/60-teeth-provider-and-production-integration/60-SECURITY.md) and [verification](.planning/phases/60-teeth-provider-and-production-integration/60-VERIFICATION.md).
+Command-level evidence is recorded in [Phase 60 security](.planning/milestones/v1.15-phases/60-teeth-provider-and-production-integration/60-SECURITY.md) and [verification](.planning/milestones/v1.15-phases/60-teeth-provider-and-production-integration/60-VERIFICATION.md).
 
 ### v1.15 Phase 61 Teeth Output Security Closeout
 
@@ -691,7 +691,7 @@ Command-level evidence is recorded in [Phase 60 security](.planning/phases/60-te
   realtime/pixel-buffer local retouch, sclera/upper-eyelid production, external
   models/dependencies, network paths, and release surfaces remain absent.
 
-Command-level evidence is recorded in [Phase 61 security](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-SECURITY.md) and [review fix](.planning/phases/61-teeth-output-safety-and-independent-closeout/61-REVIEW-FIX.md).
+Command-level evidence is recorded in [Phase 61 security](.planning/milestones/v1.15-phases/61-teeth-output-safety-and-independent-closeout/61-SECURITY.md) and [review fix](.planning/milestones/v1.15-phases/61-teeth-output-safety-and-independent-closeout/61-REVIEW-FIX.md).
 
 ### v1.15 Phase 62 Sclera Intent Security Closeout
 
@@ -715,7 +715,7 @@ Command-level evidence is recorded in [Phase 61 security](.planning/phases/61-te
   realtime path, external model, network route or product promotion is
   authorized by this closeout.
 
-Command-level evidence is recorded in [Phase 62 security](.planning/phases/62-sclera-evidence-and-admission-contract/62-SECURITY.md) and [verification](.planning/phases/62-sclera-evidence-and-admission-contract/62-VERIFICATION.md).
+Command-level evidence is recorded in [Phase 62 security](.planning/milestones/v1.15-phases/62-sclera-evidence-and-admission-contract/62-SECURITY.md) and [verification](.planning/milestones/v1.15-phases/62-sclera-evidence-and-admission-contract/62-VERIFICATION.md).
 
 ### v1.15 Phase 63 Sclera Provider Security Closeout
 
@@ -742,7 +742,7 @@ Command-level evidence is recorded in [Phase 62 security](.planning/phases/62-sc
   surfaces remain unchanged. Phase 64 alone owns color-independent and
   recolored-protected-anatomy output proof plus exact `祛红血丝` promotion.
 
-Command-level evidence is recorded in [Phase 63 security](.planning/phases/63-guarded-per-eye-sclera-production-integration/63-SECURITY.md) and [verification](.planning/phases/63-guarded-per-eye-sclera-production-integration/63-VERIFICATION.md).
+Command-level evidence is recorded in [Phase 63 security](.planning/milestones/v1.15-phases/63-guarded-per-eye-sclera-production-integration/63-SECURITY.md) and [verification](.planning/milestones/v1.15-phases/63-guarded-per-eye-sclera-production-integration/63-VERIFICATION.md).
 
 ### v1.15 Phase 64 Sclera Output Security Closeout
 
@@ -777,9 +777,9 @@ Command-level evidence is recorded in [Phase 63 security](.planning/phases/63-gu
   blocked, and DeviceRGB/named-sRGB remains exclusively the Phase 65 SAFE-06
   security boundary.
 
-Fresh promotion-pending authority is recorded in [terminal R2 output evidence](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW.md), [code review](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-CODE-REVIEW.md), [review-fix disposition](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW-FIX.md), [ASVS L1 security audit](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SECURITY.md), and [independent eligibility](.planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-PRE-PROMOTION-VERIFICATION.md).
+Fresh promotion-pending authority is recorded in [terminal R2 output evidence](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW.md), [code review](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-CODE-REVIEW.md), [review-fix disposition](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW-FIX.md), [ASVS L1 security audit](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SECURITY.md), and [independent eligibility](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-PRE-PROMOTION-VERIFICATION.md).
 
-### v1.15 Phase 65 Current Closeout
+### v1.15 Phase 65 Archived Closeout
 
 <!-- PHASE65_FINAL_OWNER_BEGIN -->
 owner: SECURITY
@@ -795,7 +795,7 @@ sclera_redness: implemented
 eyes: partial
 eye_fat: future
 safe_06: closed
-lifecycle: completion-ready
+lifecycle: archived
 release: non-release
 <!-- PHASE65_FINAL_OWNER_END -->
 
@@ -819,4 +819,4 @@ release: non-release
   commercial approval, packaging, archive, tag, shipping, launch or release
   authority follows from this security closeout.
 
-Command-level evidence is recorded in [Phase 65 security](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-SECURITY.md), [review](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-REVIEW.md), and [verification](.planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).
+Command-level evidence is recorded in [Phase 65 security](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-SECURITY.md), [review](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-REVIEW.md), and [verification](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).
