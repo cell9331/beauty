@@ -17,7 +17,7 @@ from pathlib import Path
 
 PHASE_DIR = Path(".planning/phases/65-combined-facade-privacy-and-milestone-closeout")
 THREATS = tuple(f"T-65-{index:02d}" for index in range(1, 9))
-MILESTONE_AUDIT = Path(".planning/milestones/v1.15-MILESTONE-AUDIT.md")
+MILESTONE_AUDIT = Path(".planning/milestones/v1.15-PHASE65-BOUND-AUDIT.md")
 PHASE64_VERIFICATION = Path(
     ".planning/phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-VERIFICATION.md"
 )

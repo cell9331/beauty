@@ -18,7 +18,7 @@ files_reviewed_list:
   - .planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-SECURITY.md
   - .planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md
   - .planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-REVIEW-FIX.md
-  - .planning/milestones/v1.15-MILESTONE-AUDIT.md
+  - .planning/milestones/v1.15-PHASE65-BOUND-AUDIT.md
   - .planning/PROJECT.md
   - .planning/REQUIREMENTS.md
   - .planning/ROADMAP.md

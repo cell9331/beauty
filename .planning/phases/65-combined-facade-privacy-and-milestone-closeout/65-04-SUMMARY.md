@@ -15,7 +15,7 @@ affects: [v1.15-completion]
 key-files:
   created:
     - .planning/phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md
-    - .planning/milestones/v1.15-MILESTONE-AUDIT.md
+    - .planning/milestones/v1.15-PHASE65-BOUND-AUDIT.md
   modified:
     - DESIGN.md
     - SECURITY.md
