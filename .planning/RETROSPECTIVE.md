@@ -600,6 +600,78 @@
 
 ---
 
+## Milestone: v1.15 — Independent Teeth and Sclera Retouch
+
+**Completed:** 2026-08-11
+**Phases:** 7 | **Plans:** 51 | **Recorded tasks:** 97
+
+### What Was Built
+
+- Independently qualified and implemented bounded opaque still-image `白牙`,
+  then independently qualified and implemented guarded per-eye `祛红血丝`.
+- Added immutable-source teeth and sclera providers, strict public output,
+  protected-region byte oracles, request-local recovery and exact product-owner
+  promotion while keeping `去脂` future.
+- Closed combined facade behavior with literal standalone merge equality,
+  collision-to-source, four independent failure units, aggregate-only privacy,
+  named-sRGB output and exact 61/5/74/3 compatibility.
+- Passed the formal 40/40 requirement, 7/7 phase, 12/12 seam and 7/7 flow
+  audit, then repaired and independently revalidated both lifecycle debts.
+
+### What Worked
+
+- Independent evidence, provider, output and promotion chains prevented teeth
+  success from lending authority to sclera or `去脂`.
+- Full-resolution protected truth and literal RGBA-byte comparisons caught
+  errors that aggregate improvement counts and sparse probes could not.
+- Candidate/prewrite/final owner manifests kept repeated Phase 64 failure and
+  re-quarantine transitions explicit instead of silently promoting stale work.
+- Phase 65 final validation and the new Phase 64 post-downstream mode preserve
+  a chronological SHA-256 authority chain after legitimate downstream edits.
+
+### What Was Inefficient
+
+- Phase 64 needed several candidate/re-quarantine cycles before its immutable
+  prewrite contract was separated from the exact-six mutable final transition.
+- Re-review repeatedly found checker gaps in lifecycle content, multiline Swift
+  privacy classification and saved-output metadata ordering.
+- Milestone summary extraction undercounted tasks (40 instead of 97), emitted
+  an overlong intermediate-state accomplishment list and collided with the
+  separate Phase 65 bound audit name; closeout required explicit correction.
+
+### Patterns Established
+
+- Terminal candidate authentication and post-downstream revalidation are
+  separate modes: immutable candidate bytes remain historical, while current
+  authority is proven by canonical hash binding, chronology and the downstream
+  final gate.
+- Lifecycle ledgers keep only current work under Active; completed and
+  superseded transitions use explicitly historical identifiers and wording.
+- When a phase-owned audit and formal milestone audit share a default filename,
+  preserve the phase artifact under a distinct bound-audit name before archive.
+
+### Key Lessons
+
+1. Freeze final-transition mutability before generating a candidate; otherwise
+   a valid immutable snapshot can make the success branch structurally
+   unreachable.
+2. Privacy scanners must parse multiline Swift structure and broad sink
+   families, not rely on line-oriented tokens or a short logger allowlist.
+3. Verify archive dry-runs for filename collisions, task counts and claim
+   vocabulary before accepting generated milestone records.
+4. Internal milestone completion must remain distinct from distribution,
+   shipping, launch, commercial approval and release readiness.
+
+### Cost Observations
+
+- Model mix: quality-profile autonomous implementation, review, verification,
+  integration audit and lifecycle closeout.
+- Sessions: one multi-day milestone with repeated Phase 64 repair/review loops.
+- Notable: authority/checker convergence consumed more effort than the final
+  combined runtime path once both providers were stable.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -619,6 +691,7 @@
 | v1.12 | autonomous | 4 | Added private observed face support, four independent contour/chin providers, strict 413-output evidence, exact four-row promotion, and an 18/18 audit. |
 | v1.13 | autonomous | 4 | Added actual observed eyebrow support, seven distinct providers, strict 72-portrait evidence, exact eyebrow-branch promotion, and a 21/21 audit. |
 | v1.14 | autonomous | 6 | Added exact-empty still-image retouch safety boundaries, original-pixel mechanics, independent closed feature gates, and a 41/41 audit. |
+| v1.15 | autonomous | 7 | Added independently qualified teeth and per-eye sclera output, exact combined failure isolation, named-sRGB/privacy closeout, post-downstream authority and a 40/40 audit. |
 
 ### Cumulative Quality
 
@@ -637,6 +710,7 @@
 | v1.12 | 375 SDK tests, 413-output strict helper, 70-case boundary self-test, and milestone audit | Requirement traceability 18/18 | No new third-party runtime dependency recorded for remaining-face closeout. |
 | v1.13 | 450 SDK tests, 72-portrait/13-no-face strict helper, 130-case boundary self-test, and milestone audit | Requirement traceability 21/21 | No new third-party runtime dependency recorded for eyebrow closeout. |
 | v1.14 | 553 SwiftPM tests (six expected Vision skips), 6 opt-in Vision tests, 120 Demo tests, and 703-case post-review checker | Requirement traceability 41/41 | No new third-party runtime dependency; production feature admission remains exact-empty. |
+| v1.15 | 638 SwiftPM tests with all 8 opt-ins, 121 Demo tests, two strict 6/6 output matrices, Phase 65 final and Phase 64 post-downstream gates | Requirement traceability 40/40 | No new third-party runtime dependency; `去脂`, model/network and Demo activation remain absent. |
 
 ### Top Lessons (Verified Across Milestones)
 
@@ -647,3 +721,5 @@
 5. Geometry-heavy status promotion should be staged: routing, saved-output foundation, then per-tool ledger promotion.
 6. Documentation closeout should scan all current owners and parent/child contracts in one pass before milestone audit.
 7. Semantic-resource feasibility must be established before roadmap lock; absent approved resources should produce an explicit reduced scope, not proxy evidence.
+8. Candidate-era byte authority and post-downstream current authority need separate fail-closed checker modes.
+9. Archive dry-runs must be checked for filename collisions, generated claim vocabulary and task-count accuracy.
