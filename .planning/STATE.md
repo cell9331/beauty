@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v1.15
 milestone_name: Independent Teeth and Sclera Retouch
 status: Awaiting next milestone
-stopped_at: Milestone v1.15 completed and archived; planning next milestone
-last_updated: "2026-08-11T02:22:42.083Z"
-last_activity: 2026-08-11
-last_activity_desc: Milestone v1.15 completed and archived
+stopped_at: Documentation/state drift repaired; planning next milestone
+last_updated: "2026-08-13T09:16:37.125Z"
+last_activity: 2026-08-13
+last_activity_desc: Documentation and planning-state drift repair
 progress:
   total_phases: 7
   completed_phases: 7
@@ -20,7 +20,7 @@ current_phase_name: null
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-08-11)
+See: `.planning/PROJECT.md` (updated 2026-08-13)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
 **Current focus:** Planning the next milestone after audited v1.15 archive
@@ -30,7 +30,7 @@ See: `.planning/PROJECT.md` (updated 2026-08-11)
 Phase: Milestone v1.15 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-08-11 — Milestone v1.15 completed and archived
+Last activity: 2026-08-13 — refreshed codebase maps and reconciled current documentation/state summaries
 
 ## Performance Metrics
 
@@ -144,7 +144,8 @@ None found under `.planning/todos/pending/`.
 
 - No blocker remains for v1.15; all 40 requirements and both audit-debt remediations are closed.
 - v1.15 is archived as an internal SDK milestone. Distribution, shipping, launch, commercial approval and release readiness remain unauthorized future scopes.
-- Existing TD-013 generic-result sendability and a formal stale codebase-map refresh remain deferred beyond this milestone.
+- Existing TD-013 generic-result sendability remains deferred beyond this milestone.
+- All seven `.planning/codebase/*` maps were refreshed from current source/tests on 2026-08-13; they are current planning references again.
 
 ## Deferred Items
 
@@ -153,12 +154,12 @@ None found under `.planning/todos/pending/`.
 | Local retouch | `去脂` with genuine evidence and a credible non-warp design | Future | v1.15 scope |
 | Runtime/input | Realtime, pixel-buffer, transparent, HDR/gain-map, multi-face | Future | v1.15 scope |
 | Product/release | Demo activation, device/commercial/performance-budget/packaging/shipping/launch | Future | v1.15 scope |
-| Repository debt | TD-013 concurrency/sendability and formal stale codebase-map refresh | Deferred | Earlier milestones |
+| Repository debt | TD-013 concurrency/sendability | Deferred | Earlier milestones |
 
 ## Session Continuity
 
-Last session: 2026-08-11T10:30:00+08:00
-Stopped at: Milestone v1.15 completed and archived; planning next milestone
+Last session: 2026-08-13T17:16:37+08:00
+Stopped at: Documentation/state drift repaired; planning next milestone
 Resume file: None
 
 ## Phase 64 Terminal R2 Canonical Final State
