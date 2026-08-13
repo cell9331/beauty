@@ -15,6 +15,7 @@ package enum BeautyFullScleraRednessTransform {
     package static let maximumEffectiveStrength: Float = 1
     package static let maximumLuminanceDelta: Float = 0.028
     package static let maximumChannelDelta: Float = 0.17
+    package static let maximumEligibleSaturation: Float = 0.48
 
     package static func target(
         red: UInt8,
@@ -29,6 +30,10 @@ package enum BeautyFullScleraRednessTransform {
         let sourceBlue = Float(blue) / 255
         let sourceLuminance = luminance(sourceRed, sourceGreen, sourceBlue)
         guard sourceLuminance > 0.18, sourceLuminance < 0.95 else { return nil }
+        let maximum = max(sourceRed, max(sourceGreen, sourceBlue))
+        let minimum = min(sourceRed, min(sourceGreen, sourceBlue))
+        let saturation = maximum > 0.001 ? (maximum - minimum) / maximum : 0
+        guard saturation <= maximumEligibleSaturation else { return nil }
 
         let localStrength = min(strength, 1) * maximumEffectiveStrength
         let redExcess = max(0, sourceRed - 0.83 * sourceGreen - 0.17 * sourceBlue)

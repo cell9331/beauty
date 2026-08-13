@@ -6,7 +6,7 @@ import Foundation
 ///
 /// Unlike `BeautyFocalScleraRednessProvider`, this provider uses material red
 /// pixels only to admit an eye. Once admitted, it builds a low-strength mask
-/// over the complete geometry-qualified sclera and raises the mask around
+/// over the color-and-geometry-qualified sclera and raises the mask around
 /// stronger redness. The medial caruncle is removed from the hard envelope
 /// before any color score or feathering.
 package enum BeautyFullScleraRednessProvider {
@@ -21,6 +21,9 @@ package enum BeautyFullScleraRednessProvider {
     fileprivate static let maximumPupilCenterOffsetFraction = 0.035
 
     private static let minimumMaterialRednessScore: Float = 0.50
+    private static let minimumScleraLikelihood: Float = 0.20
+    private static let minimumMaterialPixelFraction = 0.005
+    private static let minimumMaterialComponentSize = 3
     private static let minimumBroadMaskWeight: Float = 0.08
     private static let broadScleraWeight: Float = 0.56
     private static let medialCoreFraction = 0.07
@@ -117,6 +120,13 @@ package enum BeautyFullScleraRednessProvider {
             return FullScleraEyeUnitResult(outcome: .invalidSupport)
         }
 
+        // The grid bounds every per-eye workspace and every possible proposal.
+        // Reject it before raster/mask arrays are allocated if the composition
+        // owner could never accept a unit of this size.
+        guard owner.canIssueUnit(maximumClaimCount: grid.pixelCount) else {
+            return FullScleraEyeUnitResult(outcome: .unitRejected)
+        }
+
         let aperture = grid.rasterize(polygon)
         // Full-sclera coverage needs a narrow lid guard rather than the focal
         // strategy's large erosion. Dark lashes remain protected separately.
@@ -191,37 +201,57 @@ package enum BeautyFullScleraRednessProvider {
             )
             let light = smoothstep(0.20, 0.62, features.luminance)
             let lowSaturation = 1 - smoothstep(0.58, 0.88, features.saturation)
-            scleraLikelihood[index] = clamp(light * lowSaturation)
+            if features.saturation <= BeautyFullScleraRednessTransform.maximumEligibleSaturation {
+                scleraLikelihood[index] = clamp(light * lowSaturation)
+            }
             rednessScore[index] = smoothstep(0.035, 0.14, features.redExcess)
         }
 
+        let qualifiedEnvelope = scleraLikelihood.indices.map {
+            hardEnvelope[$0] && scleraLikelihood[$0] >= minimumScleraLikelihood
+        }
+        let qualifiedCount = qualifiedEnvelope.lazy.filter { $0 }.count
+        guard qualifiedCount > 0 else {
+            return FullScleraEyeUnitResult(outcome: .emptyEnvelope)
+        }
+
         // Redness admits the eye; it no longer defines the entire edit extent.
-        // This prevents a natural negative from becoming broadly whiter while
-        // allowing the accepted eye's full visible sclera to participate.
-        let materialCount = rednessScore.indices.lazy.filter {
-            hardEnvelope[$0]
-                && scleraLikelihood[$0] >= 0.20
-                && rednessScore[$0] >= minimumMaterialRednessScore
-        }.count
-        guard materialCount >= 2 else {
+        // Admission nevertheless needs spatially coherent evidence, not a pair
+        // of attacker-controlled pixels that can amplify into a broad edit.
+        let materialMask = rednessScore.indices.map {
+            qualifiedEnvelope[$0] && rednessScore[$0] >= minimumMaterialRednessScore
+        }
+        let materialCount = materialMask.lazy.filter { $0 }.count
+        let proportionalFloor = Int(
+            ceil(Double(qualifiedCount) * minimumMaterialPixelFraction)
+        )
+        guard materialCount >= max(minimumMaterialComponentSize, proportionalFloor),
+              largestConnectedComponentCount(
+                  materialMask,
+                  width: grid.width,
+                  height: grid.height
+              ) >= minimumMaterialComponentSize
+        else {
             return FullScleraEyeUnitResult(outcome: .noMaterialRedness)
         }
 
         var layeredMask = [Float](repeating: 0, count: grid.pixelCount)
-        for index in layeredMask.indices where hardEnvelope[index] {
+        for index in layeredMask.indices where qualifiedEnvelope[index] {
             let vesselBoost = (1 - broadScleraWeight) * rednessScore[index]
-            layeredMask[index] = clamp(broadScleraWeight + vesselBoost)
+            layeredMask[index] = clamp(
+                (broadScleraWeight + vesselBoost) * scleraLikelihood[index]
+            )
         }
         let finalMask = constrainToHardEnvelope(
             boxBlur(layeredMask, width: grid.width, height: grid.height),
-            hardEnvelope: hardEnvelope
+            hardEnvelope: qualifiedEnvelope
         )
 
         var proposals: [BeautyLocalPixelProposal] = []
-        proposals.reserveCapacity(hardEnvelope.lazy.filter { $0 }.count)
+        proposals.reserveCapacity(qualifiedCount)
         for index in finalMask.indices {
             let softWeight = finalMask[index]
-            guard hardEnvelope[index], softWeight >= minimumBroadMaskWeight else { continue }
+            guard qualifiedEnvelope[index], softWeight >= minimumBroadMaskWeight else { continue }
             let globalIndex = grid.globalPixelIndex(index, sourceWidth: source.width)
             let offset = globalIndex * 4
             guard let target = BeautyFullScleraRednessTransform.target(
@@ -541,6 +571,41 @@ package enum BeautyFullScleraRednessProvider {
         hardEnvelope: [Bool]
     ) -> [Float] {
         zip(values, hardEnvelope).map { $0.1 ? clamp($0.0) : 0 }
+    }
+
+    private static func largestConnectedComponentCount(
+        _ mask: [Bool],
+        width: Int,
+        height: Int
+    ) -> Int {
+        guard mask.count == width * height else { return 0 }
+        var visited = [Bool](repeating: false, count: mask.count)
+        var largest = 0
+        for seed in mask.indices where mask[seed] && !visited[seed] {
+            visited[seed] = true
+            var stack = [seed]
+            var count = 0
+            while let index = stack.popLast() {
+                count += 1
+                let x = index % width
+                let y = index / width
+                for dy in -1...1 {
+                    for dx in -1...1 where dx != 0 || dy != 0 {
+                        let nextX = x + dx
+                        let nextY = y + dy
+                        guard nextX >= 0, nextY >= 0, nextX < width, nextY < height else {
+                            continue
+                        }
+                        let next = nextY * width + nextX
+                        guard mask[next], !visited[next] else { continue }
+                        visited[next] = true
+                        stack.append(next)
+                    }
+                }
+            }
+            largest = max(largest, count)
+        }
+        return largest
     }
 
     private static func smoothstep(_ lower: Float, _ upper: Float, _ value: Float) -> Float {

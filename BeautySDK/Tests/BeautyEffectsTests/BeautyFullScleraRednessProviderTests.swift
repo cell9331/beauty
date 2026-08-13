@@ -98,6 +98,101 @@ final class BeautyFullScleraRednessProviderTests: XCTestCase {
         XCTAssertEqual(try owner.compose(result.units).canonicalImage.rgba8Data, source.rgba8Data)
     }
 
+    func testTwoRedPixelsCannotAmplifyAcrossColoredApertureInterior() throws {
+        let fixture = makeFixture(includeVessels: false)
+        var bytes = fixture.bytes
+        for index in fixture.neutralSclera {
+            replaceRGB(&bytes, index: index, color: (50, 180, 50))
+        }
+        for center in [leftCenter, rightCenter] {
+            replaceRGB(
+                &bytes,
+                index: pixelIndex(x: center.x - 36, y: center.y),
+                color: (210, 150, 150)
+            )
+            replaceRGB(
+                &bytes,
+                index: pixelIndex(x: center.x - 35, y: center.y),
+                color: (210, 150, 150)
+            )
+        }
+        let source = try canonical(bytes)
+        let owner = BeautyLocalRetouchCompositionOwner(source: source)
+        let result = BeautyFullScleraRednessProvider.makeResult(
+            source: source,
+            eyeSupport: [leftSupport, rightSupport],
+            eyeOrder: .canonical,
+            strength: 1,
+            owner: owner
+        )
+
+        XCTAssertTrue(result.units.isEmpty)
+        XCTAssertEqual(result.summary.leftOutcome, .noMaterialRedness)
+        XCTAssertEqual(result.summary.rightOutcome, .noMaterialRedness)
+        XCTAssertTrue(result.proposalPixelIndices.isEmpty)
+        XCTAssertEqual(try owner.compose(result.units).canonicalImage.rgba8Data, source.rgba8Data)
+    }
+
+    func testAcceptedEyeLeavesColoredApertureInteriorUnowned() throws {
+        let fixture = makeFixture(includeVessels: true)
+        var bytes = fixture.bytes
+        var coloredInterior = Set<Int>()
+        for center in [leftCenter, rightCenter] {
+            for y in (center.y - 5)...(center.y + 5) {
+                for x in (center.x - 50)...(center.x - 41) {
+                    let index = pixelIndex(x: x, y: y)
+                    guard fixture.neutralSclera.contains(index) else { continue }
+                    replaceRGB(&bytes, index: index, color: (50, 180, 50))
+                    coloredInterior.insert(index)
+                }
+            }
+        }
+        XCTAssertFalse(coloredInterior.isEmpty)
+        let source = try canonical(bytes)
+        let owner = BeautyLocalRetouchCompositionOwner(source: source)
+        let result = BeautyFullScleraRednessProvider.makeResult(
+            source: source,
+            eyeSupport: [leftSupport, rightSupport],
+            eyeOrder: .canonical,
+            strength: 1,
+            owner: owner
+        )
+        let output = Array(try owner.compose(result.units).canonicalImage.rgba8Data)
+
+        XCTAssertEqual(result.summary.leftOutcome, .accepted)
+        XCTAssertEqual(result.summary.rightOutcome, .accepted)
+        XCTAssertTrue(Set(result.proposalPixelIndices).isDisjoint(with: coloredInterior))
+        XCTAssertTrue(changedPixelIndices(before: bytes, after: output).isDisjoint(with: coloredInterior))
+    }
+
+    func testOversizedValidEyeWorkspaceIsRejectedBeforeMaskConstruction() throws {
+        let fixture = makeFixture(includeVessels: true)
+        let source = try canonical(fixture.bytes)
+        let owner = BeautyLocalRetouchCompositionOwner(source: source)
+        let oversized = BeautyObservedEyeSupport(
+            side: .left,
+            contour: [
+                CoordinatePoint(x: 0.255, y: 0.305),
+                CoordinatePoint(x: 0.745, y: 0.305),
+                CoordinatePoint(x: 0.745, y: 0.695),
+                CoordinatePoint(x: 0.255, y: 0.695),
+            ],
+            pupil: [CoordinatePoint(x: 0.5, y: 0.5)]
+        )
+        let result = BeautyFullScleraRednessProvider.makeResult(
+            source: source,
+            eyeSupport: [oversized],
+            eyeOrder: .canonical,
+            strength: 1,
+            owner: owner
+        )
+
+        XCTAssertTrue(result.units.isEmpty)
+        XCTAssertEqual(result.summary.leftOutcome, .unitRejected)
+        XCTAssertEqual(result.summary.rightOutcome, .missingSupport)
+        XCTAssertTrue(result.proposalPixelIndices.isEmpty)
+    }
+
     func testFullTransformUsesBroadCueAndStrongerMeasuredRedCorrection() throws {
         let neutral = try XCTUnwrap(BeautyFullScleraRednessTransform.target(
             red: 210,
@@ -115,6 +210,12 @@ final class BeautyFullScleraRednessProviderTests: XCTestCase {
         XCTAssertGreaterThan(luminance(neutral), luminance((210, 206, 207)))
         XCTAssertLessThan(redExcess(red), redExcess((210, 150, 150)))
         XCTAssertLessThanOrEqual(maximumChannelDelta(red, (210, 150, 150)), 44)
+        XCTAssertNil(BeautyFullScleraRednessTransform.target(
+            red: 50,
+            green: 180,
+            blue: 50,
+            strength: 1
+        ))
         XCTAssertNil(BeautyFullScleraRednessTransform.target(
             red: 210,
             green: 150,
