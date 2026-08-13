@@ -1030,23 +1030,25 @@ Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/mil
   zero-origin extents, exact canonical dimensions, and missing-or-EXIF-1
   orientation. Rendering cannot crop, pad, translate, or rotate a mismatched
   mask into apparent evidence.
-- Current sclera scoring uses the conjunctival-redness index
+- The retained Focal strategy uses the conjunctival-redness index
   `max(0, R - 0.83G - 0.17B)` inside the existing luminance/saturation and
   anatomical guards. The provider owns the only material-redness smoothstep;
   the transform does not square that gate a second time. The editing floor is
   calibrated at `0.045` so the authorized normal negative is an exact no-op.
-- A plausible native-Vision pupil may be horizontally offset by at most `0.035`
+- In the retained Focal strategy, a plausible native-Vision pupil may be
+  horizontally offset by at most `0.035`
   of eye width. Support above the former `0.025` envelope receives one extra
   pixel of color-independent lid erosion. The pupil/iris radius, highlight,
   lash, post-feather hard clip, and immutable-source composition remain in
   force; widening the iris edit region is not part of this remediation.
-- Full strength amplifies only the already-safe soft mask, reduces weighted red
+- Focal full strength amplifies only the already-safe soft mask, reduces weighted red
   excess with the bounded `0.76 / 0.08 / 0.13` channel transform, and borrows
   teeth whitening's visibility cue only as a local luminance lift capped at
-  `0.018`. The private positive gate now requires at least `max(100, 8%)`
+  `0.018`. Its historical private positive gate requires at least `max(100, 8%)`
   reviewed-mask changes, at least 20 changes in each image half, channel delta
-  `20...44`, at least 20% weighted-red reduction, and zero mask escape; the
-  authorized negative must remain exact.
+  `20...44`, at least 20% weighted-red reduction, and zero mask escape. These
+  Focal containment clauses do not define the current Full Sclera boundary;
+  the authorized negative remains exact for both strategies.
 
 ### Post-v1.15 Full Visible-Sclera Strategy
 
@@ -1058,12 +1060,22 @@ Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/mil
   applies a narrow lid erosion, then subtracts pupil/iris geometry, native dark
   iris pixels, highlights, a boundary-gated lash band, and a medial caruncle
   guard. Caruncle removal happens before target admission, blur, or transform.
-- Color is used to decide whether an eye contains a material target, not to
-  shrink the final edit to red islands. At least two geometry-safe pixels must
-  reach `0.50` on the existing weighted-red smoothstep; an admitted eye then
-  receives a `0.56` broad geometry mask plus a bounded per-pixel redness boost.
-  Blur is hard-clipped back to the protected envelope.
+- Before allocating raster or mask workspaces, the provider requires the eye
+  bounding grid to fit the composition owner's per-unit claim budget. Oversized
+  otherwise-valid support rejects that eye with no partial unit.
+- Color does not shrink the edit to red islands, but it remains a hard pixel
+  qualification: saturation must be at most `0.48`, light/low-saturation sclera
+  likelihood must be at least `0.20`, and the final weight is proportional to
+  that likelihood. Blur is clipped back to this color-and-geometry-qualified
+  envelope, so aperture-interior colored objects cannot inherit a broad weight.
+- Material admission requires at least
+  `max(3, ceil(0.5% * qualifiedPixelCount))` samples at weighted-red score
+  `>= 0.50`, including an 8-connected component of at least three pixels. An
+  admitted eye receives a `0.56` broad qualified-sclera layer plus a bounded
+  per-pixel redness boost; two isolated red pixels cannot authorize expansion.
 - The full transform retains source texture, applies the bounded
   `0.76 / 0.08 / 0.13` chroma correction, and caps broad luminance lift at
   `0.028`. The authorized normal negative remains exact. The former reviewed
-  mask is a frozen Focal anchor, not a Full Sclera containment boundary.
+  mask is a frozen Focal anchor, not a Full Sclera containment boundary. The
+  real positive's total edit ceiling is the stricter of 12,000 pixels and 1% of
+  the canonical image.

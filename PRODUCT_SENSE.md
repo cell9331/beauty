@@ -833,7 +833,7 @@ release: non-release
 
 Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-CLOSEOUT-EVIDENCE.md) and [verification](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).
 
-### Post-v1.15 Review Remediation Acceptance
+### Post-v1.15 Focal Review Remediation Acceptance
 
 - The archived Phase 65 product disposition remains a record of the `v1.15`
   tag. Current untagged behavior keeps the same public fields, renderer cases,
@@ -858,6 +858,8 @@ Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/mil
   at least 20 per half, maximum channel movement between 20 and 44, and at
   least 20% reduction of the weighted redness index. Outside-mask RGB and all
   alpha remain exact, while the authorized natural negative is a byte no-op.
+  This reviewed-mask containment is retained Focal acceptance, not the current
+  Full Sclera containment boundary.
 - The intended appearance is localized neutralization plus a small bounded
   sclera lift, similar in visibility principle but materially weaker than teeth
   whitening. It must not whiten the full eye aperture, recolor conjunctival
@@ -873,11 +875,15 @@ Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/mil
 - The medial tear duct/caruncle, iris, pupil, highlight, lash/lid boundary,
   exterior skin, and alpha remain source-exact. The caruncle alone cannot admit
   broad whitening, and a normal negative remains an exact no-op.
+- A pair of red pixels cannot trigger a broad result. Admission must have a
+  proportional, connected material-red region, and every edited pixel must
+  remain sufficiently light and low-saturation; colored objects inside an eye
+  aperture remain source-exact even when the surrounding eye is accepted.
 - The retained Focal mask is useful only as an anchor proving that the new
   strategy still corrects the old red target. Full Sclera is expected to extend
-  beyond that anchor; the positive gate bounds total edits to at most 1% of the
-  image while geometry/adversarial tests own protected-anatomy containment.
-- On the current authorized positive, the public no-watermark render changes
-  4,599 visible pixels (2,387/2,212 by image half), reaches a maximum channel
-  delta of 36/255, and reduces mean weighted red excess on changed pixels by
-  76.46%. This is a fixture result, not a population or commercial claim.
+  beyond that anchor; the positive gate bounds total edits to the stricter of
+  12,000 pixels and 1% of the image while geometry/adversarial tests own
+  protected-anatomy containment.
+- The authorized positive and negative must pass these bounds after every mask
+  qualification change. Fixture success is regression evidence, not a
+  population or commercial claim.

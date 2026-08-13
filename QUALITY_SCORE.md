@@ -34,18 +34,18 @@ Quality gate:
 
 ## 3. Current Snapshot
 
-Current repository state after the post-archive v1.15 review remediation; the
+Current repository state after the post-archive v1.15 adversarial remediation; the
 Phase 64/65 statements below remain historical evidence for the `v1.15` tag:
 
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
 | Root docs | 4 | All nine root owners exist. The consolidation audit corrected `ARCHITECTURE.md` so current pixel-buffer processing, still-image detection/geometry, and placeholder Render foundations match compiled code. | Keep current facts in root owners; keep milestone narratives in archives. |
 | Historical docs | 3 | `docs/README.md` remains the long-doc entry. `.planning/codebase/*` is explicitly stale background and historical phase/milestone artifacts are not current contracts. | Refresh codebase maps only in an explicitly scoped remap. |
-| GSD planning | 4 | Phase 64/65 and the independent 40/40 audit remain archived. The current post-archive remediation records five fresh review findings without changing the tag. | Complete the remediation record, then start the next milestone with fresh requirements. |
+| GSD planning | 4 | Phase 64/65 and the independent 40/40 audit remain archived. Post-archive review and adversarial Full Sclera remediation are completed without changing the tag. | Start the next milestone with fresh requirements. |
 | SDK Package | 4 | The package/facade boundary is intact; per-eye mapping is local, teeth ownership is fixed-inner-aperture only, and teeth/sclera compose through one canonical request owner. Exact inventory remains 61 public fields, five neutral presets, and 74 renderer cases. | Preserve original-pixel composition, fixed-only teeth ownership, and named-sRGB output. |
 | Demo App | 4 | The unchanged Demo builds and passes 121/121 on iPhone 17e / iOS 26.5; teeth, sclera-redness, and `去脂` rows remain disabled with nil mappings. | Preserve disabled taxonomy through milestone closeout. |
-| Tests | 4 | Fresh focused remediation passes 45/45 and broader local-retouch/renderer coverage passes 59/59 with two expected private skips. Full current SwiftPM passes 641 tests with eight documented opt-in skips; the archived tag retains its separate 638/0/0 no-skip evidence. | Re-run the private no-skip conjunction when its authorized bundle/host is available. |
-| Security | 4 | Outer-lip adaptive teeth growth is removed, malformed eye mapping is per-side, reviewed masks reject misregistration, and sensitive state remains request-local and aggregate-only. | Require approved tooth-specific support before any broader teeth ownership claim. |
+| Tests | 4 | Focused Full/composition/adversarial/integration/Focal suites pass 60/60; the authorized Full Sclera pair passes 2/2. Full current SwiftPM passes 650 tests with eight documented opt-in skips; the archived tag retains its separate 638/0/0 no-skip evidence. | Keep colored-interior, sparse-trigger, pre-allocation budget, and strict area-ceiling regressions mandatory. |
+| Security | 4 | Outer-lip adaptive teeth growth is removed; malformed eye mapping is per-side; Full Sclera requires connected proportional evidence and per-pixel color qualification; sensitive state remains request-local and aggregate-only. | Require approved tooth-specific support before broader teeth ownership and preserve the Full Sclera fail-closed gates. |
 | Reliability | 3 | Backpressure, stale work, reset, detection degradation, and the repaired camera lifecycle are test-backed. Realtime geometry/Metal dispatch, 600-second preview, and device endurance are not current evidence. | Keep claims bounded and run the setup-specific long-run/device gates when authorized. |
 | Product acceptance | 4 | Bounded SDK-core opaque still-image `白牙` now uses fixed inner-aperture coverage only; `祛红血丝` remains implemented, `眼睛` remains partial solely because `去脂` is future, and all three Demo rows remain disabled. No universal semantic claim is made for color-indistinguishable tissue inside coarse lip support. | Add approved tooth-specific support before broader coverage; keep all release-readiness exclusions. |
 
@@ -781,7 +781,7 @@ release: non-release
 
 Command-level evidence is recorded in [Phase 65 verification](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).
 
-### Post-v1.15 Review Remediation Score
+### Post-v1.15 Focal Review Remediation Score
 
 - Fresh review remediation closes five findings: per-eye mapping locality,
   coarse-lip teeth ownership, already-light exact no-op, concave nesting, and
@@ -820,7 +820,8 @@ Command-level evidence is recorded in [Phase 65 verification](.planning/mileston
   pixels. The opted-in positive/negative test treats the previous mask as a
   Focal anchor, requires intentional but bounded positive expansion, and keeps
   the natural negative byte-exact.
-- Current public no-watermark evidence changes 4,599 visible pixels versus 203
-  in the retained Focal remediation evidence, is bilateral at 2,387/2,212,
-  reaches 36/255 maximum channel movement, and reduces weighted red excess by
-  76.46% on changed pixels.
+- Adversarial hardening adds accepted-eye colored-interior and two-pixel
+  amplification regressions. Final proposals now require light/low-saturation
+  qualification, admission requires proportional connected redness, oversized
+  grids fail before mask allocation, and the real-fixture edit ceiling uses
+  `min(12_000, 1% of canonical pixels)`.

@@ -937,7 +937,7 @@ release: non-release
 
 Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-CLOSEOUT-EVIDENCE.md) and [verification](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).
 
-### Post-v1.15 Review Remediation Reliability
+### Post-v1.15 Focal Review Remediation Reliability
 
 - Per-eye mapping converts each support independently and derives order only
   from survivors. Malformed-left/valid-right and valid-left/malformed-right
@@ -952,12 +952,13 @@ Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/mil
 - Both private real-fixture suites validate mask extent, origin, dimensions,
   and orientation before allocation-backed rendering or aggregate measurement;
   wrong-size, translated, non-finite, and rotated metadata cases reject.
-- Sclera admission now distinguishes the authorized strong positive from the
+- Retained Focal admission distinguishes the authorized strong positive from the
   normal negative using the weighted-red editing floor: the positive produces
   accepted bilateral units, while the negative produces zero proposals and an
   exact output. The private gate also owns bilateral minimum-change, minimum
   effect, weighted-red reduction, maximum-channel, luminance, alpha, texture,
-  and RGB-only reviewed-mask containment bounds.
+  and RGB-only reviewed-mask containment bounds. Reviewed-mask containment in
+  this paragraph is a Focal regression contract, not the Full Sclera boundary.
 - The visibility regression is protected at both levels: the source-only unit
   transform has a deterministic minimum channel movement on a material-red
   sample, and the native-Vision fixture must meet the bilateral aggregate
@@ -974,14 +975,21 @@ Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/mil
   baseline. The stable facade routes exactly to Full Sclera, whose provider and
   transform have separate broad-coverage, lower-crescent, caruncle, negative,
   transform-bound, and facade-equivalence tests.
-- Admission requires two genuinely material weighted-red samples at score
-  `>= 0.50`. This separates the authorized strong positive from the normal
-  negative while still allowing localized high-redness vessels; a caruncle-
-  only input is rejected before broad whitening.
+- Admission requires at least
+  `max(3, ceil(0.5% * qualifiedPixelCount))` genuinely material weighted-red
+  samples at score `>= 0.50`, with an 8-connected component of at least three.
+  This rejects two-pixel amplification while preserving localized vessels; a
+  caruncle-only input is rejected before broad whitening.
+- Every final proposal remains inside a light, low-saturation qualified envelope
+  (`saturation <= 0.48`, likelihood `>= 0.20`), and the transform repeats the
+  saturation check. An admitted eye therefore cannot broaden into colored
+  aperture-interior objects. Oversized eye grids fail the owner budget before
+  raster and mask arrays are built.
 - Eye failures remain independent, teeth and sclera still share one immutable-
   source composition owner, and malformed-eye plus eligible-teeth continuation
   uses a fixture with a real temporal sclera cue rather than caruncle-only red.
 - The private positive now treats the old reviewed mask as a frozen Focal
   anchor and requires bounded expansion beyond it; the negative requires zero
   changes both inside and outside the anchor. Protected-anatomy recoloring owns
-  zero-leak containment for the new full region.
+  zero-leak containment for the new full region. The total positive edit limit
+  uses the stricter `min(12_000, 1% of canonical pixels)` ceiling.

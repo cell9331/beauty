@@ -845,11 +845,13 @@ Command-level evidence is recorded in [Phase 65 security](.planning/milestones/v
   color-independent lid erosion. The calibrated pupil/iris exclusion is not
   reduced. A trial reduction of that exclusion failed both the recolored-iris
   oracle and the private reviewed-mask containment gate and is not present.
-- Visibility is raised only by a bounded transform and soft-mask gain after all
+- For the retained Focal strategy, visibility is raised only by a bounded
+  transform and soft-mask gain after all
   iris, pupil, highlight and lash exclusions, followed by the same hard
   re-clip. The adversarial full-resolution protected truth must retain zero
-  proposal intersection and zero RGBA mismatch, and the real positive must
-  retain zero reviewed-mask escape.
+  proposal intersection and zero RGBA mismatch, and the Focal real positive
+  must retain zero reviewed-mask escape. The latter is not a containment rule
+  for the current Full Sclera route.
 
 ### Post-v1.15 Full Sclera Security Boundary
 
@@ -861,6 +863,15 @@ Command-level evidence is recorded in [Phase 65 security](.planning/milestones/v
 - The medial caruncle has a color-independent core plus a location-gated pink
   guard, dilated before ownership. It is excluded before redness admission, so
   a red tear duct cannot trigger or receive whole-sclera work.
+- Geometry admission alone cannot authorize pixels inside the aperture. Full
+  Sclera also requires saturation `<= 0.48` and sclera likelihood `>= 0.20` at
+  every proposed pixel, re-clips blur to that qualified envelope, and repeats
+  the saturation ceiling in the transform. A positive eye therefore leaves
+  high-saturation aperture-interior lookalikes unowned.
+- Eye admission needs both proportional and spatially coherent evidence:
+  `max(3, ceil(0.5% * qualifiedPixelCount))` material-red samples and an
+  8-connected component of at least three. The provider also rejects a bounding
+  grid that exceeds the composition owner's unit budget before mask allocation.
 - Recolored full-resolution adversarial truth now includes bilateral caruncle
   pixels in addition to iris, pupil, highlight, lash margin, skin, and aperture
   exterior. All 1,648 protected pixels retain zero proposal intersection and
@@ -869,3 +880,4 @@ Command-level evidence is recorded in [Phase 65 security](.planning/milestones/v
   reject intentional Full Sclera expansion. It remains an effect anchor; the
   full protected-anatomy oracle, local edit-area bound, alpha checks, exact
   negative, and request-local non-persistence are the current safety owners.
+  The local edit-area bound is `min(12_000, 1% of canonical pixels)`.
