@@ -38,7 +38,7 @@ Demo may describe Meitu-like functions, but SDK APIs should stay product-neutral
 | Editor shell | Commit flow | `BeautyDemo/State` | `BeautyParameterStore` | Cancel/confirm and parameter snapshot rollback/apply stay app-side. |
 | Beauty shaping | `3D塑颜`, `比例`, `脸型`, `眼睛`, `嘴唇`, `鼻子`, `眉毛` | `BeautyEffects` | `BeautyDetection` landmarks/pose and `BeautyRender` unified warp | Meitu branch labels stay in blueprint/Demo taxonomy; SDK domains stay product-neutral (`faceShape`, `eyes`, `nose`, `mouth`). |
 | Skin retouch | Basic skin | `BeautyEffects` | `BeautyRender` color/skin path and public `BeautySDK` facade | Current skin parameters are visible through facade output and local renderer cases. |
-| Skin retouch | Skin repair, Teeth/hairline | `BeautyEffects` if promoted | Future local algorithm, landmarks, segmentation, or resources as explicitly designed | No cloud repair, remote AI transfer, or active resource ownership by default. |
+| Skin retouch | Skin repair, hairline | `BeautyEffects` if promoted | Future local algorithm, segmentation, or resources as explicitly designed | No cloud repair, remote AI transfer, or active resource ownership by default. Bounded still-image teeth whitening is already owned by the implemented `Beauty shaping / 嘴唇` row and must not be downgraded here. |
 
 ## Planning Rule
 

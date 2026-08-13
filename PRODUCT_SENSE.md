@@ -2,6 +2,9 @@
 
 > `beauty` 的产品体验契约。本文把用户旅程、体验原则和验收标准写成 Agent 可验证的清单。
 > 技术边界看 `ARCHITECTURE.md`，参数和状态机看 `DESIGN.md`。
+>
+> 带 Phase / milestone 标题的验收与 decision-log 段落是按时间冻结的历史证据；
+> 早期段落中的 “future” 或 “partial” 不覆盖本文最后的 post-v1.15 当前结论。
 
 ## 1. Product Position
 

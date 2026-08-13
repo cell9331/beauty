@@ -11,7 +11,7 @@
 
 - 已存在 `BeautyDemo/` Xcode Demo App。
 - 已存在 `BeautySDK/` Swift Package，包含 `BeautyCore`、`BeautyDetection`、`BeautyRender`、`BeautyEffects`、`BeautyResources` 和 public `BeautySDK` facade。
-- v1.13 当前 public 参数模型是精确 59 stored fields；`BeautyEffects` 拥有颜色/皮肤处理、44-field provider-eligible 几何解析、统一冲突弱化和内部几何输出，Demo 仍只通过 public `BeautySDK` facade 集成。
+- 当前 public 参数模型是精确 61 stored fields（60 numeric + `filterId`）；`BeautyEffects` 拥有颜色/皮肤处理、44-field provider-eligible 几何解析、统一冲突弱化、内部几何输出，以及 still-image `teethWhitening` / `scleraRednessReduction` 的 request-local composition，Demo 仍只通过 public `BeautySDK` facade 集成。
 - public still-image facade 仅在参数需要几何时运行 `VisionFaceDetector`，把一个 package-only selected observation 路由到 `BeautyEffects`；public API 只暴露 redacted `BeautyDetectionSummary`、warnings 和 aggregate metrics。
 - public pixel-buffer facade 当前不运行人脸检测或几何 provider。它校验 BGRA 输入、解析无需人脸的有效效果并通过 `BeautyColorEffectPipeline` 产生新的 `CVPixelBuffer`；实时几何、检测降频和 Metal warp 仍是未实现边界，不得由架构图暗示为现状。
 - still-image 几何通过内部 `BeautyGeometryEffectPipeline` 的局部 CIImage warp 合并输出；`BeautyRender.RenderGraph`、`CopyRenderPass`、`PixelBufferFactory` 和 placeholder `Warp.metal` 是已编译基础件，但当前 `BeautyEngine` 处理入口尚未调度 `RenderGraph` 或真实 Metal warp。

@@ -14,7 +14,7 @@ Eye tools include size, vertical position, eye height, length, distance, fat rem
 - Dependencies: `BeautyDetection` eye landmarks and `BeautyRender` unified warp output.
 - Current public `BeautyParameters` geometry coverage is exactly the four prior fields plus `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, signed `eyeTilt`, `innerCornerOpen`, `outerCornerOpen`, and `eyeSymmetry`.
 - Bounded SDK-core still-image `BeautyParameters.scleraRednessReduction` through public `BeautyEngine.apply` is implemented as product-facing `祛红血丝`; `去脂` remains future.
-- Evidence status: Phases 29-44 implement all fourteen geometry rows. Phase 62 independent evidence/admission, Phase 63 guarded per-eye production, and Phase 64 public output, bilateral protected-region adversarial proof, original-detail review, and fresh 637/0/0/8 no-skip authority are recorded by `64-TERMINAL-R2-SCLERA-OUTPUT-EVIDENCE.md`, `64-TERMINAL-R2-REVIEW.md`, `64-TERMINAL-R2-CODE-REVIEW.md`, `64-TERMINAL-R2-REVIEW-FIX.md`, `64-TERMINAL-R2-SECURITY.md`, and `64-TERMINAL-R2-PRE-PROMOTION-VERIFICATION.md`. Promotion pending independent candidate/final verification. Status: `partial` because `去脂` remains future. SAFE-06 DeviceRGB/named-sRGB remains Phase 65-only.
+- Evidence status: Phases 29-44 implement all fourteen geometry rows. Phases 62-64 establish independent sclera evidence/admission, guarded per-eye production, strict public output, bilateral protected-region adversarial proof, original-detail review, and canonical promotion. Phase 65 closes combined failure/privacy behavior and SAFE-06 named-sRGB facade/saved-PNG evidence. The current post-archive no-skip gate passes 650/650 with all eight opt-ins. Status remains `partial` solely because `去脂` is future.
 
 ## Boundary
 
@@ -48,8 +48,9 @@ Do not persist eye landmarks or expose eye geometry in public debug output.
   carried by `64-TERMINAL-R2-SCLERA-OUTPUT-EVIDENCE.md`,
   `64-TERMINAL-R2-REVIEW.md`, `64-TERMINAL-R2-CODE-REVIEW.md`,
   `64-TERMINAL-R2-REVIEW-FIX.md`, `64-TERMINAL-R2-SECURITY.md`, and
-  `64-TERMINAL-R2-PRE-PROMOTION-VERIFICATION.md`. Promotion pending independent
-  candidate/final verification; canonical Phase 64 remains `gaps_found`.
+  `64-TERMINAL-R2-PRE-PROMOTION-VERIFICATION.md`. The later terminal R2
+  candidate and exact-six final transaction passed; canonical Phase 64 is
+  `passed`.
 - Renderer inventory is exactly 74, while the Demo row stays disabled and nil-
-  mapped. `去脂` remains future, so branch `眼睛` remains `partial`; SAFE-06
-  DeviceRGB/named-sRGB remains exclusively Phase 65 scope.
+  mapped. `去脂` remains future, so branch `眼睛` remains `partial`; Phase 65
+  closes SAFE-06 with named-sRGB facade and saved-PNG evidence.

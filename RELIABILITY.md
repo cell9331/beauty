@@ -2,6 +2,9 @@
 
 > `beauty` 的可靠性、错误处理、可观测性、性能预算和恢复策略。
 > 安全与隐私看 `SECURITY.md`，核心状态机看 `DESIGN.md`。
+>
+> 带 Phase / milestone 标题的测试数量和未完成项是按时间冻结的历史证据；
+> 当前验证数量以 `QUALITY_SCORE.md` 的 Current Snapshot 和最新命令结果为准。
 
 ## 1. Reliability Posture
 
