@@ -41,7 +41,7 @@ _None._
 | Implementation | 最终提案同时受几何和颜色资格约束：饱和度 `<= 0.48`、巩膜 likelihood `>= 0.20`，权重乘以 likelihood，blur 后重新硬裁剪；material gate 改为 `max(3, ceil(0.5% * qualifiedPixelCount))` 且至少有一个 3 像素 8-连通片。Transform 重复饱和度门禁。 |
 | Resource bound | Composition owner 提供无分配 capacity preflight；Full Sclera 在 raster/mask 数组创建前用整个眼部 grid 作为 proposal 上界，超预算的有效支持按眼拒绝。 |
 | Evidence repair | 新增两点放大、已准入眼内彩色物、超大有效工作区、绝对/相对面积上限四个回归；真实正例总编辑门禁使用 `min(12_000, 1%)`。Focal 的 zero-mask-escape 与 Full 的 anchor-expansion 契约已在 Design/Security/Reliability/Product/Quality owner 中分开。 |
-| Verification | Full provider 7/7、composition 23/23、Full adversarial 6/6、Engine sclera integration 9/9、retained Focal 15/15；授权正/负素材 2/2；完整 SwiftPM 650 tests、8 个文档化 opt-in skips、0 failures。`git diff --check` 与最终隐私/调试扫描通过。 |
+| Verification | Full provider 7/7、composition 23/23、Full adversarial 6/6、Engine sclera integration 9/9、retained Focal 15/15；授权正/负素材 2/2；默认完整 SwiftPM 650 tests、8 个文档化 opt-in skips、0 failures；`scripts/run-no-skip-swiftpm.sh` 在 pinned Apple Vision host 执行同一 650 tests、8/8 opt-in、0 skips、0 failures。`git diff --check` 与最终隐私/调试扫描通过。 |
 | Supersedes | 本记录取代 `C-2026-08-11-full-sclera-redness` 中“两像素准入”和仅写作“最多 1%”的当前权威；旧行保留为实现当日的历史证据。 |
 | Boundary | 仅修复 still-image SDK core 的既有 Full Sclera 行为；不扩展 Demo、实时、pixel buffer、模型、网络或发布范围。 |
 
