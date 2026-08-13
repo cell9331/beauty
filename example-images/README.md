@@ -96,13 +96,13 @@ The gallery groups current cases under:
 Run the relevant helper against the same output directory, for example:
 
 ```bash
-python3 .planning/phases/28-face-shape-slice-completion-and-documentation-closeout/check_face_shape_renderer_outputs.py --input example-images/input --output example-images/output
+python3 .planning/milestones/v1.5-phases/28-face-shape-slice-completion-and-documentation-closeout/check_face_shape_renderer_outputs.py --input example-images/input --output example-images/output
 ```
 
 Phase 29 eye output evidence uses:
 
 ```bash
-python3 .planning/phases/29-eye-renderer-output-evidence/check_eye_renderer_outputs.py --input example-images/input --output example-images/output
+python3 .planning/milestones/v1.6-phases/29-eye-renderer-output-evidence/check_eye_renderer_outputs.py --input example-images/input --output example-images/output
 ```
 
 Phase 31 nose output evidence uses:
@@ -116,7 +116,7 @@ The Phase 31 helper requires 196/196 decoded same-dimension outputs, 30/30 portr
 Phase 33 mouth/lip output evidence uses:
 
 ```bash
-python3 .planning/phases/33-mouth-renderer-output-evidence/check_mouth_renderer_outputs.py --input example-images/input --output example-images/output
+python3 .planning/milestones/v1.8-phases/33-mouth-renderer-output-evidence/check_mouth_renderer_outputs.py --input example-images/input --output example-images/output
 ```
 
 The Phase 33 helper requires 238/238 decoded same-dimension outputs, 30/30 mouth-geometry ROI comparisons, 12/12 signed-pair comparisons, 6/6 separate lip-color containment checks, and representative no-face extent.
@@ -124,7 +124,7 @@ The Phase 33 helper requires 238/238 decoded same-dimension outputs, 30/30 mouth
 Phase 43 remaining-eye output evidence uses:
 
 ```bash
-python3 .planning/phases/43-public-facade-eye-geometry-output-evidence/check_eye_geometry_renderer_outputs.py \
+python3 .planning/milestones/v1.11-phases/43-public-facade-eye-geometry-output-evidence/check_eye_geometry_renderer_outputs.py \
   --input example-images/input \
   --output example-images/output \
   --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
@@ -135,7 +135,7 @@ The helper discovers the live inventory before freezing exactly 55 cases × seve
 Phase 47 remaining-face output evidence uses:
 
 ```bash
-python3 .planning/phases/47-public-facade-face-output-evidence/check_face_geometry_renderer_outputs.py \
+python3 .planning/milestones/v1.12-phases/47-public-facade-face-output-evidence/check_face_geometry_renderer_outputs.py \
   --input example-images/input \
   --output example-images/output \
   --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
@@ -161,7 +161,7 @@ Gallery publication places all thirteen cases under `gallery/eyebrows/{caseId}/`
 Phase 36 remaining-nose output evidence uses:
 
 ```bash
-python3 .planning/phases/36-public-facade-output-evidence/check_nose_remaining_renderer_outputs.py \
+python3 .planning/milestones/v1.9-phases/36-public-facade-output-evidence/check_nose_remaining_renderer_outputs.py \
   --input example-images/input \
   --output example-images/output \
   --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
@@ -174,7 +174,7 @@ The values `0.25` in `noseRootNarrowing_0p25` and `noseTipLift_0p25` are the Pha
 Phase 39 remaining-mouth output evidence uses:
 
 ```bash
-python3 .planning/phases/39-public-facade-mouth-geometry-output-evidence/check_mouth_remaining_renderer_outputs.py \
+python3 .planning/milestones/v1.10-phases/39-public-facade-mouth-geometry-output-evidence/check_mouth_remaining_renderer_outputs.py \
   --input example-images/input \
   --output example-images/output \
   --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
@@ -197,7 +197,7 @@ Output, gallery, staging, and quarantine artifacts remain ignored and untracked.
 - Eligibility is fixed at 5/6 portraits for contour/temple and 4/6 for cheekbone/chin. Accepted signal is entirely inside the fixed watermark-safe face regions; excluded pairs are exact no-ops.
 - All 18 visibility/locality, 49 fixed-neighbor, six ineligible-portrait, and four no-face checks pass.
 - One descriptor-safe publication produced exactly 413 ignored, untracked gallery PNGs with an exact renderer/gallery bijection.
-- The full aggregate record is `.planning/phases/47-public-facade-face-output-evidence/47-FACE-OUTPUT-EVIDENCE.md`. Final caps, exhaustive safety, promotion, root owners, branch `脸型`, and release-quality claims remain Phase 48 or future work.
+- The full aggregate record is `.planning/milestones/v1.12-phases/47-public-facade-face-output-evidence/47-FACE-OUTPUT-EVIDENCE.md`. Final caps, exhaustive safety, promotion, root owners, branch `脸型`, and release-quality claims remain Phase 48 or future work.
 
 ## Phase 48 Final Face Evidence
 

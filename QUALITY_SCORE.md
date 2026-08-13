@@ -37,10 +37,14 @@ Quality gate:
 Current repository state after the post-archive v1.15 adversarial remediation; the
 Phase 64/65 statements below remain historical evidence for the `v1.15` tag:
 
+Sections 3.1 onward and the decision log retain time-bounded phase evidence. Counts
+or promotion states inside those historical subsections do not override this Current
+Snapshot or the current scorecards.
+
 | Area | Score | Evidence | Next Move |
 | --- | --- | --- | --- |
 | Root docs | 4 | All nine root owners exist. The consolidation audit corrected `ARCHITECTURE.md` so current pixel-buffer processing, still-image detection/geometry, and placeholder Render foundations match compiled code. | Keep current facts in root owners; keep milestone narratives in archives. |
-| Historical docs | 3 | `docs/README.md` remains the long-doc entry. `.planning/codebase/*` is explicitly stale background and historical phase/milestone artifacts are not current contracts. | Refresh codebase maps only in an explicitly scoped remap. |
+| Historical docs | 3 | `docs/README.md` remains the long-doc entry. All seven `.planning/codebase/*` maps were refreshed from live source/tests on 2026-08-13; historical phase/milestone artifacts remain time-bounded evidence rather than current contracts. | Refresh maps after material architecture/test changes and keep historical narratives explicitly scoped. |
 | GSD planning | 4 | Phase 64/65 and the independent 40/40 audit remain archived. Post-archive review and adversarial Full Sclera remediation are completed without changing the tag. | Start the next milestone with fresh requirements. |
 | SDK Package | 4 | The package/facade boundary is intact; per-eye mapping is local, teeth ownership is fixed-inner-aperture only, and teeth/sclera compose through one canonical request owner. Exact inventory remains 61 public fields, five neutral presets, and 74 renderer cases. | Preserve original-pixel composition, fixed-only teeth ownership, and named-sRGB output. |
 | Demo App | 4 | The unchanged Demo builds and passes 121/121 on iPhone 17e / iOS 26.5; teeth, sclera-redness, and `去脂` rows remain disabled with nil mappings. | Preserve disabled taxonomy through milestone closeout. |
@@ -105,7 +109,7 @@ Recorded 2026-06-24:
 
 ### 3.6 Phase 21 v1.4 Baseline Audit
 
-Recorded 2026-06-30 in `.planning/phases/21-baseline-audit-and-quality-ledger-refresh/21-BASELINE-AUDIT.md`:
+Recorded 2026-06-30 in `.planning/milestones/v1.4-phases/21-baseline-audit-and-quality-ledger-refresh/21-BASELINE-AUDIT.md`:
 
 - `swift --version`, `xcodebuild -version`, `swift test --package-path BeautySDK --list-tests`, `xcodebuild -list -project BeautyDemo/BeautyDemo.xcodeproj`, and `xcrun simctl list devices available` established the current command inventory. No CoreSimulator version mismatch appeared in this run.
 - `swift test --package-path BeautySDK` passed with 141 XCTest cases.
@@ -116,11 +120,11 @@ Recorded 2026-06-30 in `.planning/phases/21-baseline-audit-and-quality-ledger-re
 - Current import, SDK UI-dependency, active Demo local-first, sensitive raw/geometry, public `BeautyParameters`, renderer geometry-case, privacy manifest, and root placeholder scans passed or were classified with exact limitations.
 - No `PrivacyInfo.xcprivacy` exists, so TD-005 remains routed to Phase 25.
 - TD-008 splits to Phase 22/Phase 23 with physical iPhone checks blocked until hardware evidence exists; TD-009 routes to Phase 22; TD-010 splits across Phases 22, 23, 24, and 25.
-- `.planning/codebase/*` maps are stale for current v1.4 source truth and remain deferred background material, not current authority.
+- At the Phase 21 snapshot, `.planning/codebase/*` maps were stale for v1.4 source truth and were deferred as background material. That debt was closed by the 2026-08-13 refresh; the current maps are authoritative planning references again.
 
 ### 3.7 Phase 22 Automated Demo QA Evidence
 
-Recorded 2026-07-01 in `.planning/evidence/v1.4/VISUAL-EVIDENCE.md` and `.planning/phases/22-automated-demo-qa-and-screenshot-evidence/22-VERIFICATION.md`:
+Recorded 2026-07-01 in `.planning/evidence/v1.4/VISUAL-EVIDENCE.md` and `.planning/milestones/v1.4-phases/22-automated-demo-qa-and-screenshot-evidence/22-VERIFICATION.md`:
 
 - Exact iPhone 17 / iOS 26.5 Demo build and focused `BeautyDemoViewStateTests` commands both exit 65 while compiling `BeautySDK/Sources/BeautyRender/Shaders/Warp.metal` because the local Metal Toolchain is missing.
 - No current v1.4 screenshot PNGs exist or are claimed under `.planning/evidence/v1.4/`.
@@ -131,7 +135,7 @@ Recorded 2026-07-01 in `.planning/evidence/v1.4/VISUAL-EVIDENCE.md` and `.planni
 
 ### 3.8 Phase 23 Performance and Reliability Evidence
 
-Recorded 2026-07-02 in `.planning/phases/23-performance-and-reliability-gates/23-PERFORMANCE-EVIDENCE.md` and `23-VALIDATION.md`:
+Recorded 2026-07-02 in `.planning/milestones/v1.4-phases/23-performance-and-reliability-gates/23-PERFORMANCE-EVIDENCE.md` and `23-VALIDATION.md`:
 
 - `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyPerformanceEvidenceTests` passed with 3 tests and 0 failures.
 - `swift test --package-path BeautySDK` passed with 148 tests and 0 failures.
@@ -144,19 +148,19 @@ Recorded 2026-07-02 in `.planning/phases/23-performance-and-reliability-gates/23
 
 ### 3.9 Phase 24 Renderer Output Regression Evidence
 
-Recorded 2026-07-02 in `.planning/phases/24-renderer-output-regression-hardening/24-RENDERER-EVIDENCE.md`, `24-VERIFICATION.md`, and `24-VALIDATION.md`:
+Recorded 2026-07-02 in `.planning/milestones/v1.4-phases/24-renderer-output-regression-hardening/24-RENDERER-EVIDENCE.md`, `24-VERIFICATION.md`, and `24-VALIDATION.md`:
 
 - `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyRendererOutputRegressionTests` passed with 2 tests and 0 failures.
 - `swift test --package-path BeautySDK` passed with 150 tests and 0 failures.
 - `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed.
 - `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/output` regenerated 45 ignored local PNG outputs for 5 fixtures times 9 current renderer cases.
-- `python3 .planning/phases/24-renderer-output-regression-hardening/check_renderer_outputs.py --input example-images/input --output example-images/output` passed for all expected outputs, checking existence, non-empty files, same dimensions, and input/output byte difference.
+- `python3 .planning/milestones/v1.4-phases/24-renderer-output-regression-hardening/check_renderer_outputs.py --input example-images/input --output example-images/output` passed for all expected outputs, checking existence, non-empty files, same dimensions, and input/output byte difference.
 - Public facade import, renderer geometry-case exclusion, geometry status, no-overclaim, decision-coverage, and scoped diff checks passed.
 - Geometry saved-output, reference-app parity, broad device evidence, and market visual-quality evidence remain outside Phase 24.
 
 ### 3.10 Phase 25 Security and Distribution Closeout Evidence
 
-Recorded 2026-07-03 in `.planning/phases/25-security-distribution-review-and-closeout/25-SECURITY-CLOSEOUT.md`, `25-RESOURCE-TRUST-EVIDENCE.md`, and `25-VALIDATION.md`:
+Recorded 2026-07-03 in `.planning/milestones/v1.4-phases/25-security-distribution-review-and-closeout/25-SECURITY-CLOSEOUT.md`, `25-RESOURCE-TRUST-EVIDENCE.md`, and `25-VALIDATION.md`:
 
 - `find BeautySDK BeautyDemo -name PrivacyInfo.xcprivacy -print` found no existing manifest; Phase 25 explicitly defers adding `PrivacyInfo.xcprivacy` for current SDK/Demo behavior and records rerun triggers.
 - Required-reason seed scans found no active SDK facade or Demo app use of `UserDefaults`, file timestamp, disk-space, system boot-time, active keyboard, or POSIX stat APIs; the only `FileManager.default` seed hit is classified as local example-renderer fixture enumeration.
@@ -167,7 +171,7 @@ Recorded 2026-07-03 in `.planning/phases/25-security-distribution-review-and-clo
 
 ### 3.11 Phase 26 Geometry Facade and Landmark Routing Evidence
 
-Recorded 2026-07-06 in `.planning/phases/26-geometry-facade-and-landmark-routing-foundation/26-VERIFICATION.md` and `26-VALIDATION.md`:
+Recorded 2026-07-06 in `.planning/milestones/v1.5-phases/26-geometry-facade-and-landmark-routing-foundation/26-VERIFICATION.md` and `26-VALIDATION.md`:
 
 - `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyEngineGeometryFacadeTests` passed with 4 tests and 0 failures.
 - `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyEngineMetadataCompatibilityTests` passed with 4 tests and 0 failures.
@@ -181,7 +185,7 @@ Recorded 2026-07-06 in `.planning/phases/26-geometry-facade-and-landmark-routing
 
 ### 3.12 Phase 27 Geometry Render Output Evidence
 
-Recorded 2026-07-07 in `.planning/phases/27-geometry-render-output-and-verification-harness/27-VERIFICATION.md`, `27-GEOMETRY-RENDERER-EVIDENCE.md`, and `27-VALIDATION.md`:
+Recorded 2026-07-07 in `.planning/milestones/v1.5-phases/27-geometry-render-output-and-verification-harness/27-VERIFICATION.md`, `27-GEOMETRY-RENDERER-EVIDENCE.md`, and `27-VALIDATION.md`:
 
 - `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyEngineGeometryFacadeTests` passed with 8 tests and 0 failures.
 - `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyRendererOutputRegressionTests` passed with 4 tests and 0 failures.
@@ -189,13 +193,13 @@ Recorded 2026-07-07 in `.planning/phases/27-geometry-render-output-and-verificat
 - `swift test --package-path BeautySDK` passed with 167 tests and 0 failures.
 - `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed.
 - `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/output` wrote 77 ignored PNG outputs across 7 fixtures and 11 cases after `e6.jpg` was added.
-- `python3 .planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py --input example-images/input --output example-images/output` passed with 77/77 outputs, same-dimension buckets, 6/6 portrait geometry-vs-baseline top-region comparisons, and no-face output presence.
+- `python3 .planning/milestones/v1.5-phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py --input example-images/input --output example-images/output` passed with 77/77 outputs, same-dimension buckets, 6/6 portrait geometry-vs-baseline top-region comparisons, and no-face output presence.
 - Public/SPI raw geometry export scans, active-source redaction scans, renderer public-import scans, renderer scope scans, Demo internal-import scans, overclaim scans, evidence raw-leak scans, and `SHAPE_FEATURE_LEDGER.md` implemented-status guard scans passed.
 - Phase 27 does not claim Demo UI behavior, broad geometry-domain saved-output completion, generated PNG baselines, public raw geometry APIs, or face-shape implementation status.
 
 ### 3.13 Phase 28 Face-Shape Slice Evidence
 
-Recorded 2026-07-08 in `.planning/phases/28-face-shape-slice-completion-and-documentation-closeout/28-VERIFICATION.md`, `28-FACE-SHAPE-RENDERER-EVIDENCE.md`, and `28-VALIDATION.md`:
+Recorded 2026-07-08 in `.planning/milestones/v1.5-phases/28-face-shape-slice-completion-and-documentation-closeout/28-VERIFICATION.md`, `28-FACE-SHAPE-RENDERER-EVIDENCE.md`, and `28-VALIDATION.md`:
 
 - `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyRendererOutputRegressionTests` passed with 6 tests and 0 failures.
 - `swift test --package-path BeautySDK --filter BeautyEffectsTests.FaceShapeWarpProviderTests` passed with 8 tests and 0 failures.
@@ -205,7 +209,7 @@ Recorded 2026-07-08 in `.planning/phases/28-face-shape-slice-completion-and-docu
 - `swift test --package-path BeautySDK` passed with 172 tests and 0 failures after the spatial-warp regression was added.
 - `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed.
 - `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/output` wrote 119 ignored PNG outputs across 7 fixtures and 17 cases after `e6.jpg` was added.
-- `python3 .planning/phases/28-face-shape-slice-completion-and-documentation-closeout/check_face_shape_renderer_outputs.py --input example-images/input --output example-images/output` passed with 119/119 outputs, same-dimension buckets, 36/36 portrait face-shape-vs-baseline top-region comparisons, and no-face face-shape output presence.
+- `python3 .planning/milestones/v1.5-phases/28-face-shape-slice-completion-and-documentation-closeout/check_face_shape_renderer_outputs.py --input example-images/input --output example-images/output` passed with 119/119 outputs, same-dimension buckets, 36/36 portrait face-shape-vs-baseline top-region comparisons, and no-face face-shape output presence.
 - `example-images/input/` source fixtures are now committed under `portraits/` and `negatives/`; `BeautyExampleRenderer` recursively reads nested input fixtures while keeping generated output filenames flat under ignored `example-images/output/`.
 - `example-images/input/` source fixtures were compressed or accepted on 2026-07-09: PNG portrait fixtures now use a 900 px maximum edge, `e6.jpg` is a 1728x2304 JPEG source fixture at 591,802 bytes, the no-face negative fixture is 64 px, and every committed source fixture is below 1,000,000 bytes.
 - Current fixture cutover (2026-07-30): future live tests discover only the local, Git-ignored, rights-approved `p1.jpg` smiling portrait plus `no-face-gradient.png`. The replacement 2628×1778 active JPEG is 1,587,765 bytes, remains below the 16 MiB acquisition ceiling, and carries no GPS, capture-time, device, author, copyright, orientation, or screenshot-comment metadata. `e1`–`e6` and their prior generated outputs are parked outside active paths. Historical phase counts above remain evidence for their original fixtures and are not silently transferred to `p1`.
@@ -216,14 +220,14 @@ Recorded 2026-07-08 in `.planning/phases/28-face-shape-slice-completion-and-docu
 
 ### 3.14 Phase 29 Eye Renderer Output Evidence
 
-Recorded 2026-07-09 in `.planning/phases/29-eye-renderer-output-evidence/29-VERIFICATION.md`, `29-EYE-RENDERER-EVIDENCE.md`, and `29-VALIDATION.md`:
+Recorded 2026-07-09 in `.planning/milestones/v1.6-phases/29-eye-renderer-output-evidence/29-VERIFICATION.md`, `29-EYE-RENDERER-EVIDENCE.md`, and `29-VALIDATION.md`:
 
 - `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyRendererOutputRegressionTests` passed with 7 tests.
 - `swift test --package-path BeautySDK --filter BeautyEffectsTests.EyeWarpProviderTests` passed with 6 tests.
 - `swift test --package-path BeautySDK` passed with 173 tests.
 - `swift build --package-path BeautySDK --product BeautyExampleRenderer` passed.
 - `swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/output` wrote 161 ignored PNG outputs across 7 fixtures and 23 cases.
-- `python3 .planning/phases/29-eye-renderer-output-evidence/check_eye_renderer_outputs.py --input example-images/input --output example-images/output` passed with 161/161 outputs, same-dimension buckets, 36/36 portrait eye-vs-baseline top-region comparisons, and representative no-face output `no-face-gradient__eyeSize_0p35.png` presence.
+- `python3 .planning/milestones/v1.6-phases/29-eye-renderer-output-evidence/check_eye_renderer_outputs.py --input example-images/input --output example-images/output` passed with 161/161 outputs, same-dimension buckets, 36/36 portrait eye-vs-baseline top-region comparisons, and representative no-face output `no-face-gradient__eyeSize_0p35.png` presence.
 - `python3 example-images/generate_gallery.py --input example-images/input --output example-images/output --gallery example-images/gallery` wrote 161 ignored gallery PNGs, including the `example-images/gallery/eyes/` group.
 - Representative `git check-ignore` checks passed for generated eye output and gallery paths; `git ls-files example-images/output example-images/gallery` returned zero tracked generated files.
 - Public-boundary, Demo/renderer internal-import, raw-leak, no-overclaim, and GSD decision-coverage checks passed.
@@ -231,7 +235,7 @@ Recorded 2026-07-09 in `.planning/phases/29-eye-renderer-output-evidence/29-VERI
 
 ### 3.15 Phase 30 Eye Safety, Ledger, and Closeout Evidence
 
-Recorded 2026-07-11 in `.planning/phases/30-eye-safety-ledger-and-closeout/30-EYE-SAFETY-EVIDENCE.md`:
+Recorded 2026-07-11 in `.planning/milestones/v1.6-phases/30-eye-safety-ledger-and-closeout/30-EYE-SAFETY-EVIDENCE.md`:
 
 full_suite_tests: 178
 
@@ -284,9 +288,9 @@ Recorded 2026-07-28:
 | Presets | 4 | 4 | Built-in JSON presets decode, validate, apply deterministically, and sync UI controls. |
 | Skin Beauty | 4 | 4 | Default no-op, visible skin/color fixture output, high-strength safety caps, and no-face combined skip behavior are tested. |
 | Face Shape | 4 | 4 | Nine public face/chin fields have provider, degradation, convergence, facade, and 413/413 strict output evidence; three semantic-region rows remain future and branch `脸型` remains partial. |
-| Eyes | 4 | 4 | Fourteen geometry rows have exact cap/degradation/convergence and 385/385 facade-output evidence; bounded SDK-core still-image `祛红血丝` is implemented in promotion-pending state, `去脂` remains future, and branch `眼睛` remains partial. |
+| Eyes | 4 | 4 | Fourteen geometry rows have exact cap/degradation/convergence and facade-output evidence; bounded SDK-core opaque still-image `祛红血丝` is implemented, `去脂` remains future, and branch `眼睛` remains partial solely for that missing row. The Demo local-retouch rows remain disabled. |
 | Nose | 4 | 4 | Phase 37 passes 228/228 full SwiftPM plus unchanged 252/252 output, independent root/lift comparisons, exact `0.25` caps, all-six degradation/transitions, provider-empty removal, exactly-once convergence, redaction, and `threats_open: 0`. The exact six-row SDK-core `鼻子` branch is implemented; Demo/device/commercial readiness remains separate. |
-| Mouth | 4 | 4 | Eight geometry rows have exact cap/degradation/convergence and 308/308 facade-output evidence; `lipColor` remains color-only, `白牙` remains future, and branch `嘴唇` remains partial. |
+| Mouth | 4 | 4 | Eight geometry rows have exact cap/degradation/convergence and facade-output evidence; `lipColor` remains color-only and bounded SDK-core opaque still-image `白牙` is implemented. The exact mouth taxonomy is implemented at SDK-core scope while the Demo row remains disabled. |
 | Eyebrows | 4 | 4 | Seven independent rows have actual request-local support, exact `0.25` caps, 44-field convergence, 72/72 portrait output, thirteen no-face comparisons, and exact branch promotion. |
 | Filters | 4 | 4 | `filterId nil`, missing filter, intensity 0/1, metadata filter IDs, and Demo filter selection are covered; real LUT decode remains Phase 6+ render scope. |
 | Makeup | 3 | 0 | Resource manifest, missing-resource behavior, landmark attachment tests. |
@@ -310,7 +314,7 @@ Recorded 2026-07-28:
 
 | Test Area | Target Score | Current | Minimum Coverage |
 | --- | --- | --- | --- |
-| Parameter tests | 5 | 4 | Exact 59-field inventory, legacy 31/33/38/48/52 payload neutrality, independent storage, ranges, non-finite reset, `Sendable`, presets, and Codable round trips are covered. |
+| Parameter tests | 5 | 4 | Exact 61-field inventory (60 numeric + `filterId`), legacy 31/33/38/48/53 payload neutrality, missing trailing teeth/sclera keys, independent storage, ranges, non-finite reset, `Sendable`, presets, and Codable round trips are covered. |
 | Preset tests | 4 | 4 | Decode, unknown fields, invalid ID, schema version, built-in registry, and missing filter resource typed errors. |
 | Coordinate tests | 5 | 4 | Front/back, portrait/landscape, EXIF orientation, input mirroring, preview mirroring, VisionNormalized, ImageNormalized, pixel, texture, and preview mapping tests exist. |
 | Detection tests | 4 | 4 | No face, low confidence, missing landmarks, mapping failure, face limit, selection stability, detector unavailable, timeout, reset, public still-image geometry gating, and selected-face routing coverage exists. |
@@ -515,7 +519,6 @@ SDK 1.0 readiness:
 | 2 | Run dedicated 600-second preview and physical iPhone checks when setup is available. | Short simulator and fixture evidence cannot establish camera/Vision parity, memory, thermal, or endurance behavior. |
 | 3 | Rerun current Demo screenshot/UI evidence. | Model and simulator tests pass, but current layout screenshots and UI automation were not produced in this audit. |
 | 4 | Design external resource package trust before enabling dynamic packages. | Current bundled metadata/presets do not prove download, cache, checksum/signature, model, LUT, or package-integrity behavior. |
-| 5 | Defer formal `.planning/codebase/*` remap until explicitly scoped. | Current source, root contracts, and live planning owners remain authoritative over stale maps. |
 
 ## 15. Quality Decision Log
 

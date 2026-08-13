@@ -6,7 +6,9 @@ This is the local visual-output gate for current public-facade renderer evidence
 
 Use real portrait fixtures from `example-images/input/`, run them through the `BeautySDK` public facade with `BeautyExampleRenderer`, and save visible outputs under `example-images/output/`.
 
-This validates the current skin, color, filter, Phase 27 geometry-output foundation, Phase 28 scoped face-shape renderer path, Phase 29 existing-eye-parameter path, Phase 43 remaining-eye path, Phase 47 remaining-face path, and Phase 51 eyebrow public-facade output path without adding SwiftUI screens, product routes, or broader branch completion scope.
+This validates the current skin, color, filter, geometry, face-shape, eye, face, eyebrow, teeth-whitening, and sclera-redness-reduction public-facade output paths without adding SwiftUI screens or product routes.
+
+Phase-numbered evidence summaries below are time-bounded historical records. The live renderer source and the `Current Built-In Cases` table own the present case inventory and current status statements.
 
 ## Command
 
@@ -32,7 +34,7 @@ swift run --package-path BeautySDK BeautyExampleRenderer \
 Run the Phase 27 geometry-output helper after the all-case renderer command:
 
 ```bash
-python3 .planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py \
+python3 .planning/milestones/v1.5-phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py \
   --input example-images/input \
   --output example-images/output
 ```
@@ -40,7 +42,7 @@ python3 .planning/phases/27-geometry-render-output-and-verification-harness/chec
 Run the Phase 28 face-shape helper after the all-case renderer command when validating scoped `脸型` rows:
 
 ```bash
-python3 .planning/phases/28-face-shape-slice-completion-and-documentation-closeout/check_face_shape_renderer_outputs.py \
+python3 .planning/milestones/v1.5-phases/28-face-shape-slice-completion-and-documentation-closeout/check_face_shape_renderer_outputs.py \
   --input example-images/input \
   --output example-images/output
 ```
@@ -48,7 +50,7 @@ python3 .planning/phases/28-face-shape-slice-completion-and-documentation-closeo
 Run the Phase 29 eye helper after the all-case renderer command when validating existing public `眼睛` parameters:
 
 ```bash
-python3 .planning/phases/29-eye-renderer-output-evidence/check_eye_renderer_outputs.py \
+python3 .planning/milestones/v1.6-phases/29-eye-renderer-output-evidence/check_eye_renderer_outputs.py \
   --input example-images/input \
   --output example-images/output
 ```
@@ -56,7 +58,7 @@ python3 .planning/phases/29-eye-renderer-output-evidence/check_eye_renderer_outp
 Run the Phase 36 remaining-nose helper after the all-case renderer command:
 
 ```bash
-python3 .planning/phases/36-public-facade-output-evidence/check_nose_remaining_renderer_outputs.py \
+python3 .planning/milestones/v1.9-phases/36-public-facade-output-evidence/check_nose_remaining_renderer_outputs.py \
   --input example-images/input \
   --output example-images/output \
   --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
@@ -65,7 +67,7 @@ python3 .planning/phases/36-public-facade-output-evidence/check_nose_remaining_r
 Run the Phase 39 remaining-mouth helper after the all-case renderer command:
 
 ```bash
-python3 .planning/phases/39-public-facade-mouth-geometry-output-evidence/check_mouth_remaining_renderer_outputs.py \
+python3 .planning/milestones/v1.10-phases/39-public-facade-mouth-geometry-output-evidence/check_mouth_remaining_renderer_outputs.py \
   --input example-images/input \
   --output example-images/output \
   --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
@@ -74,7 +76,7 @@ python3 .planning/phases/39-public-facade-mouth-geometry-output-evidence/check_m
 Run the Phase 43 remaining-eye helper after the all-case renderer command:
 
 ```bash
-python3 .planning/phases/43-public-facade-eye-geometry-output-evidence/check_eye_geometry_renderer_outputs.py \
+python3 .planning/milestones/v1.11-phases/43-public-facade-eye-geometry-output-evidence/check_eye_geometry_renderer_outputs.py \
   --input example-images/input \
   --output example-images/output \
   --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
@@ -83,7 +85,7 @@ python3 .planning/phases/43-public-facade-eye-geometry-output-evidence/check_eye
 Run the Phase 47 remaining-face helper after the all-case renderer command:
 
 ```bash
-python3 .planning/phases/47-public-facade-face-output-evidence/check_face_geometry_renderer_outputs.py \
+python3 .planning/milestones/v1.12-phases/47-public-facade-face-output-evidence/check_face_geometry_renderer_outputs.py \
   --input example-images/input \
   --output example-images/output \
   --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
@@ -108,21 +110,21 @@ python3 .planning/milestones/v1.13-phases/51-public-facade-eyebrow-output-eviden
 - A large bottom watermark is drawn on each image with the parameter and strength.
 - The watermark is placed at the bottom to avoid covering the face.
 - The output image keeps the same pixel dimensions as the input image.
-- Phase 24 command results live in `.planning/phases/24-renderer-output-regression-hardening/24-RENDERER-EVIDENCE.md`.
+- Phase 24 command results live in `.planning/milestones/v1.4-phases/24-renderer-output-regression-hardening/24-RENDERER-EVIDENCE.md`.
 - The Phase 24 helper verifies 45 current outputs for existence, non-empty files, same pixel dimensions, and input/output byte difference.
-- Phase 27 command results live in `.planning/phases/27-geometry-render-output-and-verification-harness/27-GEOMETRY-RENDERER-EVIDENCE.md` and `.planning/phases/27-geometry-render-output-and-verification-harness/27-VERIFICATION.md`.
+- Phase 27 command results live in `.planning/milestones/v1.5-phases/27-geometry-render-output-and-verification-harness/27-GEOMETRY-RENDERER-EVIDENCE.md` and `.planning/milestones/v1.5-phases/27-geometry-render-output-and-verification-harness/27-VERIFICATION.md`.
 - The Phase 27 helper verifies 66 current outputs for existence, non-empty files, same pixel dimensions, portrait geometry-vs-baseline top-region differences above the watermark band, and no-face geometry output presence.
-- Phase 28 command results live in `.planning/phases/28-face-shape-slice-completion-and-documentation-closeout/28-FACE-SHAPE-RENDERER-EVIDENCE.md` and `.planning/phases/28-face-shape-slice-completion-and-documentation-closeout/28-VERIFICATION.md`.
+- Phase 28 command results live in `.planning/milestones/v1.5-phases/28-face-shape-slice-completion-and-documentation-closeout/28-FACE-SHAPE-RENDERER-EVIDENCE.md` and `.planning/milestones/v1.5-phases/28-face-shape-slice-completion-and-documentation-closeout/28-VERIFICATION.md`.
 - The Phase 28 helper verifies 102 current outputs for existence, non-empty files, same pixel dimensions, 30/30 portrait face-shape-vs-baseline top-region differences above the watermark band, and no-face face-shape output presence.
-- Phase 29 command results are recorded in `.planning/phases/29-eye-renderer-output-evidence/29-EYE-RENDERER-EVIDENCE.md` and `.planning/phases/29-eye-renderer-output-evidence/29-VERIFICATION.md`.
+- Phase 29 command results are recorded in `.planning/milestones/v1.6-phases/29-eye-renderer-output-evidence/29-EYE-RENDERER-EVIDENCE.md` and `.planning/milestones/v1.6-phases/29-eye-renderer-output-evidence/29-VERIFICATION.md`.
 - The Phase 29 helper verifies 161 current outputs for existence, non-empty files, same pixel dimensions, 36/36 portrait eye-vs-baseline top-region differences above the watermark band, and representative no-face eye output `no-face-gradient__eyeSize_0p35.png` presence.
-- Phase 31 command results are recorded in `.planning/phases/31-nose-renderer-output-evidence/31-NOSE-RENDERER-EVIDENCE.md` and `31-VERIFICATION.md`.
+- Phase 31 command results are recorded in `.planning/milestones/v1.7-phases/31-nose-renderer-output-evidence/31-NOSE-RENDERER-EVIDENCE.md` and `31-VERIFICATION.md`.
 - The Phase 31 helper verifies 196 current outputs, 30/30 portrait nose-vs-baseline central-face differences above the watermark band, 6/6 positive-vs-negative `noseTipSize` differences, and representative no-face nose output `no-face-gradient__noseSlim_0p35.png` presence.
-- Phase 39 command results are recorded in `.planning/phases/39-public-facade-mouth-geometry-output-evidence/39-MOUTH-OUTPUT-EVIDENCE.md`.
+- Phase 39 command results are recorded in `.planning/milestones/v1.10-phases/39-public-facade-mouth-geometry-output-evidence/39-MOUTH-OUTPUT-EVIDENCE.md`.
 - The Phase 39 helper verifies the discovered 44 × 7 = 308 matrix, 48/48 visibility, 18/18 signed-direction, 12/12 peak-independence, 18/18 plump-independence comparisons, and eight 64 × 64 no-face no-ops.
-- Phase 43 command results are recorded in `.planning/phases/43-public-facade-eye-geometry-output-evidence/43-EYE-OUTPUT-EVIDENCE.md`.
+- Phase 43 command results are recorded in `.planning/milestones/v1.11-phases/43-public-facade-eye-geometry-output-evidence/43-EYE-OUTPUT-EVIDENCE.md`.
 - The Phase 43 helper verifies the discovered 55 × 7 = 385 matrix, 66/66 new-case visibility, 6/6 signed-tilt direct comparisons, 60/60 fixed semantic distinctions, complete aggregate eligibility inventory, and eleven 64 × 64 no-face no-ops. Gaze reduction is owned by the package-internal aggregate pupil-to-own-center evidence test; the helper's dark-core centroid experiment is adversarially self-tested but not accepted as fixture proof.
-- Phase 47 command results are recorded in `.planning/phases/47-public-facade-face-output-evidence/47-FACE-OUTPUT-EVIDENCE.md`.
+- Phase 47 command results are recorded in `.planning/milestones/v1.12-phases/47-public-facade-face-output-evidence/47-FACE-OUTPUT-EVIDENCE.md`.
 - The Phase 47 helper verifies the exact 59 × 7 = 413 matrix, 18/18 eligible visibility/locality comparisons, 49/49 fixed-neighbor distinctions, 6/6 ineligible portrait no-ops, and four 64 × 64 no-face no-ops. The exact 413-file gallery remains ignored and untracked.
 - Phase 51 command results and the fourteen-file original-detail review are recorded in `.planning/milestones/v1.13-phases/51-public-facade-eyebrow-output-evidence/51-EYEBROW-OUTPUT-EVIDENCE.md`.
 - The Phase 51 helper verifies exactly 72 e6 portrait outputs, thirteen separate no-face comparisons, 13/13 visibility/locality, 6/6 signed direction, 21/21 family distinction, and 40/40 portrait direct comparisons. The complete output and gallery inventories are each exactly 144 ignored, untracked, unstaged, disposable PNGs.
@@ -207,6 +209,8 @@ These cases are limited to effects that currently produce visible image output t
 | `mouthXPosition_minus0p25` | Phase 39 negative horizontal-position output at the Phase 40-finalized exact cap |
 | `lipPeakDefinition_0p25` | Phase 39 M-lip peak output at the Phase 40-finalized exact cap |
 | `lipPlump_0p25` | Phase 39 true plump-geometry output at the Phase 40-finalized exact cap |
+| `teethWhitening_1p00` | Current bounded teeth-whitening public-facade output evidence |
+| `scleraRednessReduction_1p00` | Current bounded sclera-redness-reduction public-facade output evidence |
 
 ## Phase 36 Remaining-Nose Output Evidence Summary
 
@@ -232,7 +236,7 @@ These cases are limited to effects that currently produce visible image output t
 - All sixteen families use the fixed top-origin mouth ROI x = 10%-90%, y = 40%-82%, wholly above the watermark boundary, with frozen global floors of 1,000 changed pixels and 10,000 absolute RGB delta.
 - All eight new no-face outputs preserve 64 × 64 and are exact baseline no-ops across the helper's fixed 2,048-pixel right-half fallback.
 - `generate_gallery.py` enforces a duplicate-free exact renderer bijection and one safe publication produced 308 ignored, untracked regular review PNGs.
-- The `0.25` mouth strengths are the Phase 40-finalized exact caps. Phase 40 adds exhaustive eight-field degradation/conflict behavior and promotes exactly `上下`, `倾斜`, `左右`, `M唇`, and true `丰唇`; branch-level `嘴唇` remains partial because `白牙` is future.
+- The `0.25` mouth strengths are the Phase 40-finalized exact caps. At that snapshot, Phase 40 promoted exactly `上下`, `倾斜`, `左右`, `M唇`, and true `丰唇`, while branch-level `嘴唇` remained partial because `白牙` was future. Phase 61 later implemented bounded `白牙` and completed the current SDK-core mouth branch.
 
 ## Phase 43 Remaining-Eye Output Evidence Summary
 
@@ -271,7 +275,7 @@ Phase 19 strengthens provider, resolver, cap, degradation, and redaction XCTest 
 Current status boundaries:
 
 - `3D塑颜` remains `blocked-by-geometry-output`.
-- `比例`, `脸型`, `眼睛`, and `嘴唇` remain `partial`; exact six-row SDK-core `鼻子` is `implemented`.
+- `比例`, `脸型`, and `眼睛` remain `partial`; the current eye gap is `去脂`, while bounded sclera redness reduction is implemented. Exact SDK-core `嘴唇` and six-row SDK-core `鼻子` are `implemented`.
 - Exact seven-row SDK-core `眉毛` is `implemented`; all other unpromoted branches remain `future`. The v1.13 audit subsequently passed and archive/cleanup completed. This scoped branch status still implies no SwiftUI/Demo UI, physical-device, commercial-naturalness, optimized-performance, packaging, shipping, launch, or release-readiness evidence.
 - Phase 27 proves only the shared geometry output foundation with `faceShapeCombo_0p35`.
 - Phase 28 completes only the scoped `脸型` rows `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线`; branch-level `脸型` stays `partial`.
@@ -300,19 +304,19 @@ swift run --package-path BeautySDK BeautyExampleRenderer \
   --input example-images/input \
   --output example-images/output
 
-python3 .planning/phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py \
+python3 .planning/milestones/v1.5-phases/27-geometry-render-output-and-verification-harness/check_geometry_renderer_outputs.py \
   --input example-images/input \
   --output example-images/output
 
-python3 .planning/phases/28-face-shape-slice-completion-and-documentation-closeout/check_face_shape_renderer_outputs.py \
+python3 .planning/milestones/v1.5-phases/28-face-shape-slice-completion-and-documentation-closeout/check_face_shape_renderer_outputs.py \
   --input example-images/input \
   --output example-images/output
 
-python3 .planning/phases/29-eye-renderer-output-evidence/check_eye_renderer_outputs.py \
+python3 .planning/milestones/v1.6-phases/29-eye-renderer-output-evidence/check_eye_renderer_outputs.py \
   --input example-images/input \
   --output example-images/output
 
-python3 .planning/phases/39-public-facade-mouth-geometry-output-evidence/check_mouth_remaining_renderer_outputs.py \
+python3 .planning/milestones/v1.10-phases/39-public-facade-mouth-geometry-output-evidence/check_mouth_remaining_renderer_outputs.py \
   --input example-images/input \
   --output example-images/output \
   --renderer-source BeautySDK/Sources/BeautyExampleRenderer/main.swift
@@ -331,7 +335,7 @@ git check-ignore \
 
 ## Phase 24 Evidence Summary
 
-Phase 24 recorded command-backed evidence in `.planning/phases/24-renderer-output-regression-hardening/24-RENDERER-EVIDENCE.md`:
+Phase 24 recorded command-backed evidence in `.planning/milestones/v1.4-phases/24-renderer-output-regression-hardening/24-RENDERER-EVIDENCE.md`:
 
 - `BeautyRendererOutputRegressionTests` verifies the exact current 9-case renderer matrix and the public-facade import boundary.
 - Default `BeautyParameters` preserve `e1.png` through `e5.png` rendered pixels before watermarking with exact equality.
@@ -341,7 +345,7 @@ Phase 24 recorded command-backed evidence in `.planning/phases/24-renderer-outpu
 
 ## Phase 27 Evidence Summary
 
-Phase 27 recorded command-backed evidence in `.planning/phases/27-geometry-render-output-and-verification-harness/27-VERIFICATION.md` and `.planning/phases/27-geometry-render-output-and-verification-harness/27-GEOMETRY-RENDERER-EVIDENCE.md`:
+Phase 27 recorded command-backed evidence in `.planning/milestones/v1.5-phases/27-geometry-render-output-and-verification-harness/27-VERIFICATION.md` and `.planning/milestones/v1.5-phases/27-geometry-render-output-and-verification-harness/27-GEOMETRY-RENDERER-EVIDENCE.md`:
 
 - `BeautyRendererOutputRegressionTests` verifies the current 11-case renderer matrix, 6 input fixtures, public-facade import boundary, Phase 27 face-shape-only case scope, and no-face summary redaction.
 - The all-case renderer command produced 66 ignored PNG outputs.
@@ -352,7 +356,7 @@ Phase 27 recorded command-backed evidence in `.planning/phases/27-geometry-rende
 
 ## Phase 28 Evidence Summary
 
-Phase 28 recorded command-backed evidence in `.planning/phases/28-face-shape-slice-completion-and-documentation-closeout/28-VERIFICATION.md` and `.planning/phases/28-face-shape-slice-completion-and-documentation-closeout/28-FACE-SHAPE-RENDERER-EVIDENCE.md`:
+Phase 28 recorded command-backed evidence in `.planning/milestones/v1.5-phases/28-face-shape-slice-completion-and-documentation-closeout/28-VERIFICATION.md` and `.planning/milestones/v1.5-phases/28-face-shape-slice-completion-and-documentation-closeout/28-FACE-SHAPE-RENDERER-EVIDENCE.md`:
 
 - `BeautyRendererOutputRegressionTests` verifies the current 17-case renderer matrix, 6 input fixtures, public-facade import boundary, scoped Phase 28 case IDs, and `jawSlim_0p35` alias sharing.
 - The all-case renderer command produced 102 ignored PNG outputs.
@@ -364,7 +368,7 @@ Phase 28 recorded command-backed evidence in `.planning/phases/28-face-shape-sli
 
 ## Phase 29 Evidence Summary
 
-Phase 29 records command-backed renderer evidence for existing public eye parameters in `.planning/phases/29-eye-renderer-output-evidence/29-EYE-RENDERER-EVIDENCE.md` and `.planning/phases/29-eye-renderer-output-evidence/29-VERIFICATION.md`:
+Phase 29 records command-backed renderer evidence for existing public eye parameters in `.planning/milestones/v1.6-phases/29-eye-renderer-output-evidence/29-EYE-RENDERER-EVIDENCE.md` and `.planning/milestones/v1.6-phases/29-eye-renderer-output-evidence/29-VERIFICATION.md`:
 
 - `BeautyRendererOutputRegressionTests` verifies the current 23-case renderer matrix, public-facade import boundary, six Phase 29 eye case IDs, and one-existing-public-eye-field-per-case rule.
 - The all-case renderer command produces 161 ignored PNG outputs across seven committed input fixtures and 23 renderer cases.
@@ -375,7 +379,7 @@ Phase 29 records command-backed renderer evidence for existing public eye parame
 
 ## Phase 30 Evidence Summary
 
-Phase 30 closes the safety and status gates for the existing-public-parameter eye slice in `.planning/phases/30-eye-safety-ledger-and-closeout/30-EYE-SAFETY-EVIDENCE.md` and `.planning/phases/30-eye-safety-ledger-and-closeout/30-VERIFICATION.md`:
+Phase 30 closes the safety and status gates for the existing-public-parameter eye slice in `.planning/milestones/v1.6-phases/30-eye-safety-ledger-and-closeout/30-EYE-SAFETY-EVIDENCE.md` and `.planning/milestones/v1.6-phases/30-eye-safety-ledger-and-closeout/30-VERIFICATION.md`:
 
 - The full SDK suite passed with 178 tests; focused coverage proves positive-only size/tail semantics, signed distance/Y semantics, exact conservative caps, and abnormal-input no-ops.
 - Missing either eye, reused eye geometry, and stale eye geometry skip and zero the eye domain while safe unrelated domains continue; warnings and metrics remain category-only and aggregate.
