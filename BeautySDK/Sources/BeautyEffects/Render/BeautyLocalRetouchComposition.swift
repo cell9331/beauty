@@ -113,10 +113,8 @@ package final class BeautyLocalRetouchCompositionOwner {
         proposals: [BeautyLocalPixelProposal]
     ) -> BeautyLocalRetouchUnit? {
         guard let pixelCount,
-              proposals.count <= maximumClaimsPerUnit,
-              preflightedClaims(proposals, token: 0, pixelCount: pixelCount) != nil,
-              issuedTokens.count < effectiveUnitLimit,
-              nextToken < UInt64.max
+              canIssueUnit(maximumClaimCount: proposals.count),
+              preflightedClaims(proposals, token: 0, pixelCount: pixelCount) != nil
         else {
             return nil
         }
@@ -129,6 +127,17 @@ package final class BeautyLocalRetouchCompositionOwner {
             token: nextToken,
             proposals: proposals
         )
+    }
+
+    /// Cheap capacity preflight for providers whose workspace is an upper bound
+    /// on the proposals they may emit. Calling this before workspace allocation
+    /// keeps oversized, otherwise-valid geometry on the fail-closed path.
+    package func canIssueUnit(maximumClaimCount: Int) -> Bool {
+        pixelCount != nil
+            && maximumClaimCount > 0
+            && maximumClaimCount <= maximumClaimsPerUnit
+            && issuedTokens.count < effectiveUnitLimit
+            && nextToken < UInt64.max
     }
 
     package func compose(

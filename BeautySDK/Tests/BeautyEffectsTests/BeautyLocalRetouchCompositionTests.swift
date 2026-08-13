@@ -178,6 +178,24 @@ final class BeautyLocalRetouchCompositionTests: XCTestCase {
         )
     }
 
+    func testProductionCapacityPreflightIsExactAndDoesNotConsumeIssuance() throws {
+        let source = try productionCanonical(
+            bytes: productionSixteenPixelSource(),
+            width: 16,
+            height: 1
+        )
+        let owner = BeautyLocalRetouchCompositionOwner(source: source)
+
+        XCTAssertFalse(owner.canIssueUnit(maximumClaimCount: 0))
+        XCTAssertTrue(owner.canIssueUnit(maximumClaimCount: 2))
+        XCTAssertTrue(owner.canIssueUnit(maximumClaimCount: 2))
+        XCTAssertFalse(owner.canIssueUnit(maximumClaimCount: 3))
+        XCTAssertNotNil(owner.makeUnit(proposals: [
+            productionProposal(0),
+            productionProposal(1),
+        ]))
+    }
+
     func testQ16LiteralBlendAndAlpha() throws {
         let source = try productionCanonical(bytes: Self.source, width: 3, height: 2)
         let owner = BeautyLocalRetouchCompositionOwner(source: source)
