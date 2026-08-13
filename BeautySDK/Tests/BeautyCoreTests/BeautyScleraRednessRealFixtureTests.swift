@@ -6,6 +6,11 @@ import XCTest
 @testable import BeautySDK
 
 final class BeautyScleraRednessRealFixtureTests: XCTestCase {
+    func testFullScleraEditAreaUsesTheStricterAbsoluteAndRelativeCeiling() {
+        XCTAssertEqual(maximumAllowedChangedPixelCount(width: 500, height: 360), 1_800)
+        XCTAssertEqual(maximumAllowedChangedPixelCount(width: 1_380, height: 1_736), 12_000)
+    }
+
     func testAuthorizedPairSupportsFullScleraExpansionFromFrozenFocalAnchor() throws {
         let environment = ProcessInfo.processInfo.environment
         guard environment["PHASE63_REQUIRE_LOCAL_EVIDENCE"] == "1" else {
@@ -85,9 +90,9 @@ final class BeautyScleraRednessRealFixtureTests: XCTestCase {
                       measurement.changedInsideLeftHalf >= 20,
                       measurement.changedInsideRightHalf >= 20,
                       measurement.changedOutsideReviewedMask >= 500,
-                      measurement.totalChangedPixelCount <= max(
-                        12_000,
-                        Int(Double(canonical.width * canonical.height) * 0.01)
+                      measurement.totalChangedPixelCount <= maximumAllowedChangedPixelCount(
+                          width: canonical.width,
+                          height: canonical.height
                       ),
                       measurement.maximumChannelDelta >= 20,
                       measurement.meanRedExcessAfter
@@ -108,6 +113,12 @@ final class BeautyScleraRednessRealFixtureTests: XCTestCase {
                 }
             }
         }
+    }
+
+    private func maximumAllowedChangedPixelCount(width: Int, height: Int) -> Int {
+        let (pixelCount, overflow) = width.multipliedReportingOverflow(by: height)
+        guard !overflow, pixelCount > 0 else { return 0 }
+        return min(12_000, Int(Double(pixelCount) * 0.01))
     }
 
     private struct Manifest: Decodable { let schema_version: Int; let fixtures: [Fixture] }
