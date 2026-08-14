@@ -7,9 +7,9 @@
 
 XCTest through Swift Package Manager is the only active test framework. Six test
 targets live under `BeautySDK/Tests/`; the current inventory is 51 Swift files and
-27,993 test lines, excluding `.build`.
+28,093 test lines, excluding `.build`.
 
-The measured mandatory full child executes 656 tests with eight documented
+The measured mandatory full child executes 658 tests with eight documented
 environment-gated opt-ins enabled. It accepts only one complete SwiftPM child
 transcript with:
 
@@ -23,8 +23,9 @@ local-path package that imports only public `BeautySDK`, generates a neutral
 RGBA input, and checks real output bytes/dimensions. The renderer regression
 suite covers the exact 74-case inventory, and
 `BeautyExampleRendererProcessTests` invokes the compiled binary through
-Foundation `Process` for reproducible success, invalid matrix, collision, and
-independent render/encode failure behavior. Their temporary build/fixture roots
+Foundation `Process` for reproducible success, invalid matrix, collision,
+artifact replacement, control-character escaping, and independent render/encode
+failure behavior. Their temporary build/fixture roots
 and captured child output are not evidence artifacts.
 
 ## Commands

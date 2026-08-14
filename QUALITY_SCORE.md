@@ -20,7 +20,7 @@
 | --- | ---: | --- | --- |
 | Root owners | 4 | Current contracts consistently name SDK-only SwiftPM ownership and archive-only UI history. | Keep owners synchronized with code/tests. |
 | SDK package | 4 | One public library, one SDK-owned renderer, six internal/library targets, no remote dependency. | Preserve facade and dependency direction. |
-| Tests | 4 | 51 SwiftPM test files; measured mandatory child executes 656 tests with eight documented opt-ins; focused renderer regression and compiled Process coverage; bounded exact XCTest/Swift Testing accounting rejects both runners' skips and ambiguity. | Keep full conjunction mandatory. |
+| Tests | 4 | 51 SwiftPM test files; measured mandatory child executes 658 tests with eight documented opt-ins; focused renderer regression and compiled Process coverage; bounded exact XCTest/Swift Testing accounting rejects both runners' skips and ambiguity. | Keep full conjunction mandatory. |
 | External consumer / CLI | 4 | Public-only local-path consumer observes generated RGBA bytes/dimensions; compiled renderer covers 74-case discovery, reconciled reports, typed failures, and render/encode seams. | Preserve archive → boundary → consumer → no-skip ordering. |
 | Archive integrity | 4 | Code-owned ZIP/manifest anchors, exact 45/26 inventories, bounded streamed extraction, frozen-retirement rollback, and safe restore self-tests pass. | Verify before every full closeout. |
 | SDK-only boundary | 4 | Retired roots are absent; scanner rejects symlinks, restored application/UI sources, stale current owners/maps, tracked media, application artifacts, retained-shader drift, and backend/API drift. | Keep scanner fail-closed. |
@@ -38,8 +38,8 @@ shipping, launch, or release readiness.
 | --- | ---: |
 | Swift source files | 66 |
 | SwiftPM test files | 51 |
-| Swift source lines | 14,830 |
-| SwiftPM test lines | 27,993 |
+| Swift source lines | 14,950 |
+| SwiftPM test lines | 28,093 |
 | Public `BeautyParameters` stored fields | 61 |
 | Built-in neutral presets | 5 |
 | Renderer cases | 74 |

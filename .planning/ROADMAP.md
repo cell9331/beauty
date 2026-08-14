@@ -27,7 +27,7 @@ backend work remain queued for v1.17 and are not executable v1.16 scope.
 - ✅ **[v1.13 Eyebrow Geometry Controls](milestones/v1.13-ROADMAP.md)** — Phases 49-52, completed 2026-07-28.
 - ✅ **[v1.14 Local Facial Retouch](milestones/v1.14-ROADMAP.md)** — Phases 53-58, completed 2026-08-05.
 - ✅ **[v1.15 Independent Teeth and Sclera Retouch](milestones/v1.15-ROADMAP.md)** — Phases 59-65, completed and audited 2026-08-11.
-- 🚧 **v1.16 SDK-Only Foundation and CPU Reference** — Phases 66-69, ready to plan.
+- 🚧 **v1.16 SDK-Only Foundation and CPU Reference** — Phases 66-69, Phases 66-67 complete; Phase 68 active.
 - 📋 **v1.17 Dual CPU/GPU Metal Rendering** — queued future milestone; not part of the executable v1.16 phase list.
 
 ## 🚧 v1.16 SDK-Only Foundation and CPU Reference
@@ -59,7 +59,7 @@ generic sendability without adding Metal or GPU behavior.
   3. A clean checkout contains no active original Demo executable, SwiftUI source, Xcode application project, or selected legacy UI-reference tree after archive verification succeeds.
   4. Every active build, test, documentation, and planning command resolves to SwiftPM products, targets, tests, or SDK-owned command-line validation; repository scans find no remaining Xcode, simulator, device, or deleted-tree dependency.
 
-**Plans**: 3/3 complete; independent phase verification pending
+**Plans**: 3/3 complete; independently verified 6/6 must-haves on 2026-08-14
 
 ### Phase 67: SwiftPM Consumer and CLI Validation Contract
 
@@ -74,7 +74,7 @@ generic sendability without adding Metal or GPU behavior.
   4. Each CLI run produces a machine-readable aggregate report that identifies requested, succeeded, failed, skipped, input, output, and case identities without exposing private landmark or mask data.
   5. Invalid inputs, unknown cases, decode/write failures, and missing requested outputs produce typed diagnostics and a non-zero exit, while successful generated outputs stay in an ignored/reproducible location.
 
-**Plans**: 4/4 complete; independent phase verification pending
+**Plans**: 4/4 complete; independently verified 5/5 must-haves on 2026-08-14
 
 ### Phase 68: CPU Algorithm Reference Oracles
 
@@ -134,7 +134,7 @@ remain shared, and no v1.17 Metal source or API is authorized by v1.16.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 66. Legacy UI/Demo Archive and SDK-Only Boundary | v1.16 | 3/3 | Verification pending | - |
-| 67. SwiftPM Consumer and CLI Validation Contract | v1.16 | 4/4 | Verification pending | - |
-| 68. CPU Algorithm Reference Oracles | v1.16 | 0/TBD | Not started | - |
+| 66. Legacy UI/Demo Archive and SDK-Only Boundary | v1.16 | 3/3 | Completed | 2026-08-14 |
+| 67. SwiftPM Consumer and CLI Validation Contract | v1.16 | 4/4 | Completed | 2026-08-14 |
+| 68. CPU Algorithm Reference Oracles | v1.16 | 0/TBD | Ready to plan | - |
 | 69. Public Concurrency Repair and SDK-Only Closeout | v1.16 | 0/TBD | Not started | - |

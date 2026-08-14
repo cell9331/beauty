@@ -33,7 +33,7 @@ beauty/
 ```
 
 The active tree contains 66 Swift source files and 51 SwiftPM test files.
-Production/test Swift lines are 14,830/27,993, excluding `.build`. The package
+Production/test Swift lines are 14,950/28,093, excluding `.build`. The package
 declares one public library, one SDK-owned executable, six internal/library
 targets, and six test targets.
 

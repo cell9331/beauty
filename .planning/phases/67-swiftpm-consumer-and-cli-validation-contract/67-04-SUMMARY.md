@@ -65,7 +65,7 @@ completed: 2026-08-14
 ## Accomplishments
 
 - Synchronized ARCHITECTURE, SECURITY, RELIABILITY, PRODUCT_SENSE, and QUALITY_SCORE with the public-only local-path consumer, exact 74-case CPU CLI, versioned privacy-safe report, typed failures, persisted PNG validation, and executable-internal render/encode seams.
-- Recalculated the active inventory at 66 Swift source files / 14,830 source lines and 51 SwiftPM test files / 27,993 test lines; recorded the measured 656-test full child with all eight opt-ins, zero failures, and zero skips.
+- Recalculated the active inventory at 66 Swift source files / 14,950 source lines and 51 SwiftPM test files / 28,093 test lines; recorded the measured 658-test full child with all eight opt-ins, zero failures, and zero skips.
 - Updated PROJECT, STRUCTURE, TESTING, INTEGRATIONS, and PLANS with SPM-01/SPM-02/CLI-01/CLI-02/CLI-03 evidence, focused commands, mandatory ordering, and explicit CPU-only/non-release boundaries.
 
 ## Task Commits
@@ -111,8 +111,8 @@ None - no external service configuration required.
 - `bash scripts/check-sdk-only-boundary.sh --post-archive` - passed before focused checks and after documentation updates.
 - `bash scripts/check-swiftpm-consumer.sh` - passed clean public-product consumer smoke.
 - `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyRendererOutputRegressionTests` - passed 24/24.
-- `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyExampleRendererProcessTests` - passed 5/5.
-- `bash scripts/run-no-skip-swiftpm.sh` - passed archive → boundary → consumer → one-child order, 656 executed, 0 failures, 0 skips, all 8 opt-ins.
+- `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyExampleRendererProcessTests` - passed 7/7.
+- `bash scripts/run-no-skip-swiftpm.sh` - passed archive → boundary → consumer → one-child order, 658 executed, 0 failures, 0 skips, all 8 opt-ins.
 - `git diff --check` - passed.
 
 ## Self-Check: PASSED

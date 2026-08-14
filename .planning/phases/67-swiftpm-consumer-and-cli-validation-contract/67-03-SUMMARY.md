@@ -105,7 +105,7 @@ Each task was committed atomically:
 - **Issue:** Cached executable/build-root state was rejected as unsynchronized mutable global state, and tuple equality was unavailable under the active Swift compiler mode.
 - **Fix:** Isolated the test class to the main actor with lock-protected nonisolated cache state and asserted each report count independently.
 - **Files modified:** `BeautySDK/Tests/BeautyCoreTests/BeautyExampleRendererProcessTests.swift`
-- **Verification:** `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyExampleRendererProcessTests` passed 5/5.
+- **Verification:** `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyExampleRendererProcessTests` passed 7/7.
 - **Committed in:** `3f93e45`
 
 ---
@@ -129,7 +129,7 @@ None - no external service configuration required.
 
 ## Verification
 
-- `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyExampleRendererProcessTests` - passed 5/5 with 0 failures and 0 skips.
+- `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyExampleRendererProcessTests` - passed 7/7 with 0 failures and 0 skips.
 - Real child `swift build --package-path BeautySDK --product BeautyExampleRenderer` and `--show-bin-path` - passed inside the test's temporary scratch root.
 - `git diff --check` - passed.
 - Generated input/output/report/build trees were temporary and removed by test defer/class teardown; no tracked media or persistent transcript was created.
