@@ -263,7 +263,24 @@ for relative in current_text_files:
     if match:
         raise SystemExit(f"stale app/Xcode/UI dependency in {relative}: {match.group(0)}")
 
-ignored_prefixes = (".git/", "BeautySDK/.build/", ".planning/milestones/", ".planning/phases/")
+ignored_prefixes = (".git/", ".planning/milestones/", ".planning/phases/")
+
+def is_ignored_build_tree(path, relative):
+    """Prune only real, gitignored directories whose exact name is .build."""
+    if path.name != ".build":
+        return False
+    result = subprocess.run(
+        ["git", "-C", str(root), "check-ignore", "-q", "--no-index", "--", relative + "/"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.PIPE,
+    )
+    if result.returncode not in (0, 1):
+        raise SystemExit(
+            f"git check-ignore failed for generated build tree {relative}: "
+            f"{result.stderr.decode('utf-8', errors='replace').strip()}"
+        )
+    return result.returncode == 0
+
 for directory, directory_names, file_names in os.walk(root, topdown=True, followlinks=False):
     relative_directory = Path(directory).relative_to(root).as_posix()
     prefix = "" if relative_directory == "." else relative_directory + "/"
@@ -279,6 +296,8 @@ for directory, directory_names, file_names in os.walk(root, topdown=True, follow
             raise SystemExit(f"symlink is forbidden in active repository roots: {relative}")
         child_prefix = relative + "/"
         if any(child_prefix.startswith(ignored) for ignored in ignored_prefixes):
+            continue
+        if stat.S_ISDIR(mode) and is_ignored_build_tree(path, relative):
             continue
         if path.suffix in {".xcodeproj", ".xcworkspace"}:
             raise SystemExit(f"active Xcode artifact remains: {relative}")
@@ -417,12 +436,21 @@ PY
         "$fixture/BeautySDK/Sources/BeautyRender/Shaders/Warp.metal"
     printf '%s\n' 'historical: xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj' > "$fixture/.planning/milestones/old/history.md"
     printf '%s\n' 'historical BeautyDemo restoration only' > "$fixture/archives/legacy-ui/README.md"
+    printf '%s\n' '**/.build/' > "$fixture/.gitignore"
     git -C "$fixture" init -q
     git -C "$fixture" config user.email boundary@test.invalid
     git -C "$fixture" config user.name 'Boundary Self Test'
     git -C "$fixture" add .
     git -C "$fixture" commit -qm fixture
     validate_post_archive "$fixture" >/dev/null
+    local ignored_build_external
+    ignored_build_external="$(mktemp -d "${TMPDIR:-/tmp}/sdk-boundary-ignored-build.XXXXXX")"
+    mkdir -p "$ignored_build_external/release" "$ignored_build_external/debug" \
+        "$fixture/.codex/skills/example/.build" "$fixture/.planning/spikes/example/.build"
+    ln -s "$ignored_build_external/release" "$fixture/.codex/skills/example/.build/release"
+    ln -s "$ignored_build_external/debug" "$fixture/.planning/spikes/example/.build/debug"
+    validate_post_archive "$fixture" >/dev/null
+    rm -rf "$ignored_build_external"
     mkdir "$fixture/BeautyDemo"
     expect_failure validate_post_archive "$fixture"
     rmdir "$fixture/BeautyDemo"
