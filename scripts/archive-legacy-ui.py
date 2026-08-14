@@ -822,6 +822,7 @@ def retire_sources(
     approvals: Mapping[str, str],
     confirmation: bool,
     before_quarantine: Optional[Callable[[], None]] = None,
+    after_quarantine: Optional[Callable[[], None]] = None,
     enforce_canonical: bool = True,
 ) -> None:
     if not confirmation:
@@ -857,6 +858,9 @@ def retire_sources(
             os.replace(original, staged)
             moved.append((original, staged))
 
+        if after_quarantine is not None:
+            after_quarantine()
+
         # The rename freezes the exact bytes. Validate that frozen snapshot before
         # any irreversible removal so a late untracked addition is restored.
         for source in SOURCE_ROOTS:
@@ -886,11 +890,52 @@ def retire_sources(
             )
         if sentinel_fingerprints(repo_root) != sentinels_before:
             raise ArchiveError("SDK/docs/planning/private-fixture sentinels changed during retirement")
-    except BaseException:
-        for original, staged in reversed(moved):
-            if staged.exists() and not original.exists():
+        replacements = [
+            original for original, _ in moved
+            if original.exists() or original.is_symlink()
+        ]
+        if replacements:
+            raise ArchiveError(
+                "retirement source path was recreated while originals were quarantined: "
+                f"{[str(path) for path in replacements]}"
+            )
+    except BaseException as error:
+        # Inspect every destination before restoring any root. If another process
+        # recreated even one source path, preserve the complete staged snapshot
+        # so the replacement is never mistaken for (or allowed to overwrite) an
+        # original and the two-root rollback remains recoverable as one unit.
+        collisions = [
+            original for original, _ in moved
+            if original.exists() or original.is_symlink()
+        ]
+        missing_staged = [
+            staged for _, staged in moved
+            if not staged.exists() and not staged.is_symlink()
+        ]
+        if collisions or missing_staged:
+            raise ArchiveError(
+                "retirement rollback requires manual recovery; "
+                f"staged originals preserved at {quarantine}; "
+                f"replacement collisions={list(map(str, collisions))}; "
+                f"missing staged roots={list(map(str, missing_staged))}"
+            ) from error
+
+        try:
+            for original, staged in reversed(moved):
                 os.replace(staged, original)
-        shutil.rmtree(quarantine, ignore_errors=True)
+        except BaseException as rollback_error:
+            raise ArchiveError(
+                "retirement rollback was incomplete; remaining staged originals "
+                f"are preserved at {quarantine}"
+            ) from rollback_error
+
+        # Every staged root has been restored successfully. Only the now-empty
+        # quarantine container may be removed.
+        if any(staged.exists() or staged.is_symlink() for _, staged in moved):
+            raise ArchiveError(
+                f"retirement rollback left staged originals at {quarantine}"
+            ) from error
+        quarantine.rmdir()
         raise
 
     # Irreversible deletion happens only after both exact roots passed every gate.
@@ -1139,6 +1184,49 @@ def self_test() -> None:
         if not late_path.is_file():
             raise ArchiveError("late mutation was not restored after retirement rollback")
         late_path.unlink()
+
+        replacement_marker = root / "BeautyDemo" / "replacement-only.txt"
+        collision_status = 0
+        collision_error: Optional[ArchiveError] = None
+
+        def recreate_source_after_quarantine() -> None:
+            replacement_marker.parent.mkdir()
+            replacement_marker.write_text("concurrent replacement\n", encoding="utf-8")
+
+        try:
+            retire_sources(
+                root,
+                output,
+                created,
+                confirmation=True,
+                after_quarantine=recreate_source_after_quarantine,
+                enforce_canonical=False,
+            )
+        except ArchiveError as error:
+            collision_status = 1
+            collision_error = error
+        if collision_status == 0 or collision_error is None:
+            raise ArchiveError("concurrent source recreation did not return a failure")
+        if not replacement_marker.is_file():
+            raise ArchiveError("concurrent replacement was lost during collision rollback")
+        marker = "staged originals preserved at "
+        message = str(collision_error)
+        if marker not in message:
+            raise ArchiveError("collision failure omitted the manual recovery path")
+        recovery = Path(message.split(marker, 1)[1].split(";", 1)[0])
+        for source in SOURCE_ROOTS:
+            staged = recovery / source
+            if not staged.is_dir():
+                raise ArchiveError(f"collision rollback lost staged original: {source}")
+            if inventory_signature(inventory_directory(staged, source)) != sources_before[source]:
+                raise ArchiveError(f"collision rollback changed staged original: {source}")
+
+        # Restore the fixture explicitly after proving the replacement and the
+        # complete two-root original snapshot coexist without data loss.
+        shutil.rmtree(replacement_marker.parent)
+        for source in SOURCE_ROOTS:
+            os.replace(recovery / source, root / source)
+        recovery.rmdir()
 
         test_policies = {}
         for source in SOURCE_ROOTS:
