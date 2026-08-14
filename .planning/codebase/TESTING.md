@@ -6,8 +6,15 @@
 ## Runner and Inventory
 
 XCTest through Swift Package Manager is the only active test framework. Six test
-targets live under `BeautySDK/Tests/`; the current inventory is 60 Swift files and
-29,933 test lines, excluding `.build`.
+targets live under `BeautySDK/Tests/`; the current inventory is 61 Swift files and
+29,995 test lines, excluding `.build`.
+
+`BeautyResultConcurrencyTests` is the public concurrency contract suite. It
+executes 3 tests with zero failures, compiling a `Sendable` result through a
+generic constraint, preserving its public fields over an async task hop, and
+retaining ordinary non-sendable result construction as source-compatible. The
+SDK-only boundary self-test owns the negative rejection of an unconditional
+generic `BeautyResult` sendability declaration.
 
 The generated CPU reference preflight executes 15 fixture, 10 geometry/color, and
 16 local-retouch/determinism tests with zero generated skips. The measured
@@ -48,10 +55,16 @@ bash scripts/run-no-skip-swiftpm.sh
 ```
 
 The mandatory wrapper orders archive verification → post-archive SDK-only
-boundary → external consumer → generated CPU reference preflight → private
-opt-ins → one SwiftPM child. Archive
+boundary self-test/live scan → external consumer → generated CPU reference
+preflight → private opt-ins → one SwiftPM child. Archive
 corruption, restored source roots, stale application dependencies, retained
 shader drift, an unexpected skip/failure, or a zero-test run must fail non-zero.
+
+The latest completed mandatory wrapper executes 699 tests with zero failures and
+zero skips. Its aggregate markers are evidence for the SDK-only SwiftPM gate
+only; they do not establish Metal/GPU execution, UI/Demo behavior,
+simulator/device quality, performance, commercial approval, packaging,
+shipping, launch, or release readiness.
 
 ## Organization and Style
 
@@ -72,7 +85,7 @@ shader drift, an unexpected skip/failure, or a zero-test run must fail non-zero.
 - Rights-approved real positive/negative media remains ignored under
   `example-images/local-retouch-review/` and is consumed only by validated
   opt-in paths.
-- Raw media, masks, landmarks, pixels, local locators, and child transcripts do
+- Raw media, mask/landmark/pixel data, local locations, and child output do
   not enter tracked evidence.
 - Generated renderer output remains ignored, disposable, bounded, and unstaged.
 

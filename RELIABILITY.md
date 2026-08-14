@@ -31,6 +31,7 @@
 | R11 | Renderer success requires exact requested/succeeded/failed/skipped reconciliation and every requested persisted output to be non-empty, decodable, and dimension-preserving. |
 | R12 | Compiled CLI process coverage is bounded and exercises independent render/encode failures, typed non-zero diagnostics, and clean temporary recovery. |
 | R13 | Generated CPU oracle preflight executes nonzero focused suites with zero generated skips before optional fixtures or the full SwiftPM child. |
+| R14 | `BeautyResult` crosses a concurrency boundary only for `Output: Sendable`; the public test proves field-preserving transfer and the boundary guard rejects an unconditional generic declaration. |
 
 ## 3. Error and Degradation Policy
 
@@ -133,6 +134,12 @@ fixture, geometry/color, and local-retouch/determinism counts. It does not open
 portrait media or persist pixels, masks, support, coordinates, child output, or
 locators; private/native-Vision skips remain environment-gated and non-mandatory.
 
+The public `BeautyResultConcurrencyTests` suite currently passes 3/0/0. The
+latest completed mandatory wrapper passes 699 tests with zero failures and zero
+skips. These are aggregate SwiftPM checks; child output and generated
+outputs remain temporary, and the conditional result contract does not make
+framework-backed or otherwise non-sendable payloads transferable.
+
 The compiled `BeautyExampleRenderer` Process matrix uses fresh temporary
 SwiftPM/build and fixture roots, concurrent bounded stdout/stderr capture, and
 finite execution limits. It independently injects render and encode failures
@@ -146,9 +153,9 @@ evidence.
 Allowed: fixed subsystem/category/event/error codes; request-local counts, bounded
 timings, caps/scales, active/skipped domain counts, and output dimension buckets.
 
-Forbidden: image/mask bytes, paths, fixture locators, support points, bounding
+Forbidden: image/mask bytes, paths, fixture locations, support points, bounding
 boxes, pupils, tooth/eye geometry, candidate colors, rights/reviewer detail, raw
-JSON, raw framework errors, and raw child transcripts.
+JSON, raw framework errors, and raw child output.
 
 Logs are disabled or error-level by default and never required for correctness.
 Per-request arrays/caches must be bounded and released at request completion.

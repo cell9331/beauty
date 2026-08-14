@@ -6,7 +6,7 @@
 
 - Process images, frames, parameters, detection support, and effects locally.
 - Do not upload or persist raw image/frame bytes, landmarks, masks, pupils,
-  teeth/eye geometry, or private fixture locators.
+  teeth/eye geometry, or private fixture locations.
 - Keep raw/derived support request-local, package-only, non-Codable, and absent
   from public diagnostics, logs, metrics, files, and network payloads.
 - Validate every caller/resource/archive input before expensive work or mutation.
@@ -28,6 +28,7 @@ distribution behavior requires a new security review.
 | CLI input/output/report → executable boundary | existing regular directories, supported image decode, duplicate-stem rejection, atomic writes, reopen/dimension validation, bounded public identities only |
 | Child test process → gate | bounded one-child transcript reduced to fixed aggregate pass/fail; raw output is not durable authority |
 | Generated CPU oracle → gate | regular in-tree Swift sources, in-memory fixtures, no media/path/raw diagnostics, CPU-only tokens, bounded focused execution |
+| Public generic result → concurrency boundary | `BeautyResult` is `Sendable` only when `Output: Sendable`; public field-preserving transfer is tested, while unconditional generic sendability is rejected by the boundary mutation self-test |
 
 ## 3. Archive Entry and Extraction Safety
 
@@ -139,6 +140,14 @@ Metal/GPU/backend scope drift. Rights-approved portrait and native-Vision
 tests retain their existing environment guards and remain optional evidence;
 their skips cannot satisfy or be counted as generated-oracle success.
 
+The public `BeautyResultConcurrencyTests` result is aggregate-only evidence:
+3 tests pass with zero failures, including a complete async transfer of a
+sendable payload and all public result fields. Non-sendable payloads remain
+outside the positive contract; the boundary self-test mutates a temporary
+fixture to the historical unconditional declaration and requires rejection.
+No payload, support, pixel, mask, landmark, fixture location, or child output
+is persisted.
+
 ## 8. Logging and Evidence
 
 Allowed durable data: fixed error/reason codes, feature/category names, counts,
@@ -148,8 +157,8 @@ report is allowlisted to schema/version, CPU token, case/input/output identities
 unit status/failure code, and reconciled counts.
 
 Forbidden durable data: raw image or mask bytes, absolute paths/locators,
-coordinates, landmark arrays, pupil/teeth/vein geometry, rights/reviewer identity,
-raw framework errors, child transcripts, generated media, and any raw geometry,
+coordinates, landmark collections, pupil/teeth/vein geometry, rights/reviewer identity,
+raw framework errors, child output, generated media, and any raw geometry,
 pixels, private fixture metadata, or environment value. CLI paths and child
 output are untrusted and remain temporary; relative public identities are the
 only path-like values permitted in the durable report. The executable-local
