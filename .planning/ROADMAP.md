@@ -41,7 +41,7 @@ generic sendability without adding Metal or GPU behavior.
 **Phase numbering:** v1.16 continues the historical sequence at Phase 66.
 
 - [x] **Phase 66: Legacy UI/Demo Archive and SDK-Only Boundary** — Preserve the legacy application material as verified archives, then leave only SDK-owned active build and validation surfaces. (completed 2026-08-14)
-- [ ] **Phase 67: SwiftPM Consumer and CLI Validation Contract** — Prove public-product consumption and make the SDK renderer a deterministic input/output validation interface.
+- [x] **Phase 67: SwiftPM Consumer and CLI Validation Contract** — Prove public-product consumption and make the SDK renderer a deterministic input/output validation interface. (completed 2026-08-14)
 - [ ] **Phase 68: CPU Algorithm Reference Oracles** — Freeze current CPU behavior with generated fixtures and exact, feature-specific safety oracles.
 - [ ] **Phase 69: Public Concurrency Repair and SDK-Only Closeout** — Correct generic sendability and close the milestone through one hardened SwiftPM-only gate.
 
@@ -74,7 +74,7 @@ generic sendability without adding Metal or GPU behavior.
   4. Each CLI run produces a machine-readable aggregate report that identifies requested, succeeded, failed, skipped, input, output, and case identities without exposing private landmark or mask data.
   5. Invalid inputs, unknown cases, decode/write failures, and missing requested outputs produce typed diagnostics and a non-zero exit, while successful generated outputs stay in an ignored/reproducible location.
 
-**Plans**: TBD
+**Plans**: 4/4 complete; independent phase verification pending
 
 ### Phase 68: CPU Algorithm Reference Oracles
 
@@ -135,6 +135,6 @@ remain shared, and no v1.17 Metal source or API is authorized by v1.16.
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
 | 66. Legacy UI/Demo Archive and SDK-Only Boundary | v1.16 | 3/3 | Verification pending | - |
-| 67. SwiftPM Consumer and CLI Validation Contract | v1.16 | 2/4 | In Progress | - |
+| 67. SwiftPM Consumer and CLI Validation Contract | v1.16 | 4/4 | Verification pending | - |
 | 68. CPU Algorithm Reference Oracles | v1.16 | 0/TBD | Not started | - |
 | 69. Public Concurrency Repair and SDK-Only Closeout | v1.16 | 0/TBD | Not started | - |
