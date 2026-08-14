@@ -99,7 +99,7 @@ final class CPUReferenceGeometryOracleTests: XCTestCase {
         let output = BeautyGeometryEffectPipeline.applyMVPProxy(to: image, plan: plan, face: face)
         let before = renderedRGBABytes(from: image, width: fixture.width, height: fixture.height, colorSpace: colorSpace)
         let after = renderedRGBABytes(from: output, width: fixture.width, height: fixture.height, colorSpace: colorSpace)
-        let changed = CPUReferenceMetrics.changedIndices(before: before, after: after)
+        let changed = try CPUReferenceMetrics.changedIndices(before: before, after: after)
 
         XCTAssertFalse(changed.isEmpty)
         XCTAssertTrue(CPUReferenceMetrics.alphaPreserved(before: before, after: after))
@@ -125,24 +125,40 @@ final class CPUReferenceGeometryOracleTests: XCTestCase {
         XCTAssertTrue(Set(deltas).count > 1, "Geometry output must not be a global RGB bias")
     }
 
-    func testNeutralGeometryPlanIsByteIdenticalAndProtectedFixtureLabelsAreDisjoint() {
+    func testNeutralGeometryPlanIsByteIdenticalAndProtectedFixtureLabelsAreDisjoint() throws {
         let fixture = CPUReferenceFixtureFactory.protectedOutsidePattern()
         let neutral = BeautyEffectResolver.resolve(parameters: BeautyParameters(), faceGeometry: completeGeometryFace())
         XCTAssertTrue(BeautyGeometryEffectPipeline.controlPoints(for: neutral, face: completeGeometryFace()).isEmpty)
-        XCTAssertTrue(CPUReferenceMetrics.changedIndices(before: fixture.rgba8, after: fixture.rgba8).isEmpty)
+        XCTAssertTrue(try CPUReferenceMetrics.changedIndices(before: fixture.rgba8, after: fixture.rgba8).isEmpty)
         XCTAssertTrue(CPUReferenceMetrics.regionIntersection(fixture.indices(in: .protected), fixture.indices(in: .outside)).isEmpty)
         XCTAssertTrue(CPUReferenceMetrics.alphaValues(in: fixture.rgba8).allSatisfy { $0 == 255 })
     }
 
-    func testMalformedSupportAbstainsOnlyDependentGeometryRows() {
+    func testMalformedSupportAbstainsOnlyDependentGeometryRows() throws {
         let complete = FaceGeometry.phase46AsymmetricComplete
         let malformed = CPUReferenceFixtureFactory.support(.malformed)
+        let fixture = CPUReferenceFixtureFactory.geometryPattern(width: 32, height: 24)
+        let colorSpace = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
+        let image = CIImage(
+            bitmapData: Data(fixture.rgba8),
+            bytesPerRow: fixture.rowBytes,
+            size: CGSize(width: fixture.width, height: fixture.height),
+            format: .RGBA8,
+            colorSpace: colorSpace
+        )
+        let source = renderedRGBABytes(from: image, width: fixture.width, height: fixture.height, colorSpace: colorSpace)
         let rows = geometryRows()
-        let faceOnly = rows.filter { $0.name.hasPrefix("face") || $0.name == "chinLength" || $0.name == "chinTaper" }
-        for row in faceOnly {
+        let supportDependent = rows.filter { $0.name == "faceContourSmooth" || $0.name == "chinTaper" }
+        for row in supportDependent {
             let plan = BeautyEffectResolver.resolve(parameters: parameters(for: row, value: 0.6), faceGeometry: malformed)
             let points = row.emit(malformed, plan.effectiveStrengths)
-            XCTAssertTrue(points.isEmpty || points.allSatisfy(isFiniteNormalized), row.name)
+            XCTAssertTrue(points.isEmpty, "Malformed face support must abstain for \(row.name)")
+            let output = BeautyGeometryEffectPipeline.applyMVPProxy(to: image, plan: plan, face: malformed)
+            XCTAssertEqual(
+                renderedRGBABytes(from: output, width: fixture.width, height: fixture.height, colorSpace: colorSpace),
+                source,
+                "Malformed face support must preserve source bytes for \(row.name)"
+            )
         }
         let eligible = BeautyEffectResolver.resolve(parameters: BeautyParameters(brightness: 0.2), faceGeometry: complete)
         XCTAssertTrue(eligible.activeDomains.contains(.color))
