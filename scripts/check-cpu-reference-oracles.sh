@@ -74,10 +74,16 @@ def regular_source(relative):
 
 forbidden = re.compile(
     r"(?:example-images|local-retouch-review|archives/|\.(?:png|jpe?g|heic)\b|"
-    r"Data\s*\(\s*contentsOf|contentsOfFile|CGImageSourceCreateWithURL|"
+    r"Data\s*\(\s*contentsOf|String\s*\(\s*contentsOfFile|contentsOfFile|"
+    r"CIImage\s*\(\s*contentsOf|CGImageSourceCreateWithURL|"
+    r"(?:URL|FilePath)\s*\(|FileManager|ImageIO|"
     r"(?:write|createFile)\s*\(|FileHandle|CGImageDestination|OutputStream|"
-    r"Bundle\.|ProcessInfo|PHASE(?:59|60|62|63)_[A-Z0-9_]+|/Users/|/private/|file://|"
-    r"\b(?:print|debugPrint|dump)\s*\(|\b(?:Metal|GPU|MTL|backend)\b|"
+    r"Bundle\.|ProcessInfo|PHASE(?:59|60|62|63)_[A-Z0-9_]+|file://|"
+    r"(?<![A-Za-z0-9_])/(?:tmp|var|Users|private)(?:/|\b)|"
+    r"\b(?:print|debugPrint|dump)\s*\(|"
+    r"\b(?:Metal|MetalKit|MTL[A-Za-z0-9_]*|GPUImage|GPU[A-Za-z0-9_]*|"
+    r"UIKit|SwiftUI|UIView[A-Za-z0-9_]*|UIImage|UIApplication|NSApplication|"
+    r"AppDelegate|Demo[A-Za-z0-9_]*|application[A-Za-z0-9_]*)\b|"
     r"XCTSkip\s*\()",
     re.IGNORECASE,
 )
@@ -148,7 +154,7 @@ PY
 }
 
 self_test() {
-  local self_test_root mutation_path relative destination
+  local self_test_root mutation_path relative destination mutation
   self_test_root="$(mktemp -d "${TMPDIR:-/tmp}/beauty-cpu-oracles-self-test.XXXXXX")"
   cleanup_root="${self_test_root}"
   for relative in "${generated_sources[@]}" "${native_fixture_sources[@]}"; do
@@ -163,6 +169,20 @@ self_test() {
     echo "cpu_reference_oracles_self_test_failed" >&2
     return 1
   fi
+  for mutation in \
+      'CIImage(contentsOf: URL(fileURLWithPath: "/private/portrait.png"))' \
+      'let absoluteFixture = "/tmp/generated-fixture.png"' \
+      'let device: MTLDevice? = nil' \
+      'import MetalKit' \
+      'import UIKit' \
+      'let demoApplication = Application.shared'; do
+    cp -- "${repository_root}/${generated_sources[0]}" "${mutation_path}"
+    printf '\n%s\n' "${mutation}" >>"${mutation_path}"
+    if validate_static_boundary "${self_test_root}"; then
+      echo "cpu_reference_oracles_scope_mutation_self_test_failed" >&2
+      return 1
+    fi
+  done
   cp -- "${repository_root}/${generated_sources[0]}" "${mutation_path}"
   mutation_path="${self_test_root}/${native_fixture_sources[0]}"
   python3 - "${mutation_path}" <<'PY'
@@ -194,7 +214,7 @@ path.write_text(text.replace(old, new, 1), encoding="utf-8")
 PY
   suite_package_root="${self_test_root}/BeautySDK"
   if run_generated_suite "mutation" \
-      "BeautyEffectsTests.CPUReferenceFixtureTests|BeautyCoreTests.CPUReferenceFacadeFixtureTests" 10 \
+      "BeautyEffectsTests.CPUReferenceFixtureTests|BeautyCoreTests.CPUReferenceFacadeFixtureTests" 15 \
       "CPUReferenceFixtureTests|CPUReferenceFacadeFixtureTests"; then
     echo "cpu_reference_oracles_count_self_test_failed" >&2
     return 1
@@ -224,7 +244,7 @@ echo "cpu_reference_oracles_static_boundary_verified"
 
 cleanup_root="$(mktemp -d "${TMPDIR:-/tmp}/beauty-cpu-oracles.XXXXXX")"
 run_generated_suite "fixtures" \
-  "BeautyEffectsTests.CPUReferenceFixtureTests|BeautyCoreTests.CPUReferenceFacadeFixtureTests" 10 \
+  "BeautyEffectsTests.CPUReferenceFixtureTests|BeautyCoreTests.CPUReferenceFacadeFixtureTests" 15 \
   "CPUReferenceFixtureTests|CPUReferenceFacadeFixtureTests" || {
   echo "cpu_reference_oracles_fixture_tests_failed"
   exit 1
@@ -236,7 +256,7 @@ run_generated_suite "geometry-color" \
   exit 1
 }
 run_generated_suite "local-determinism" \
-  "BeautyEffectsTests.CPUReferenceLocalRetouchOracleTests|BeautyCoreTests.CPUReferenceDeterminismTests" 15 \
+  "BeautyEffectsTests.CPUReferenceLocalRetouchOracleTests|BeautyCoreTests.CPUReferenceDeterminismTests" 16 \
   "CPUReferenceLocalRetouchOracleTests|CPUReferenceDeterminismTests" || {
   echo "cpu_reference_oracles_local_determinism_tests_failed"
   exit 1
