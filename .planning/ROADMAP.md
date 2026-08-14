@@ -27,7 +27,7 @@ backend work remain queued for v1.17 and are not executable v1.16 scope.
 - ✅ **[v1.13 Eyebrow Geometry Controls](milestones/v1.13-ROADMAP.md)** — Phases 49-52, completed 2026-07-28.
 - ✅ **[v1.14 Local Facial Retouch](milestones/v1.14-ROADMAP.md)** — Phases 53-58, completed 2026-08-05.
 - ✅ **[v1.15 Independent Teeth and Sclera Retouch](milestones/v1.15-ROADMAP.md)** — Phases 59-65, completed and audited 2026-08-11.
-- 🚧 **v1.16 SDK-Only Foundation and CPU Reference** — Phases 66-69, Phases 66-68 complete pending independent verification; Phase 69 next.
+- 🚧 **v1.16 SDK-Only Foundation and CPU Reference** — Phases 66-69, Phases 66-68 independently complete; Phase 69 next.
 - 📋 **v1.17 Dual CPU/GPU Metal Rendering** — queued future milestone; not part of the executable v1.16 phase list.
 
 ## 🚧 v1.16 SDK-Only Foundation and CPU Reference
@@ -42,7 +42,7 @@ generic sendability without adding Metal or GPU behavior.
 
 - [x] **Phase 66: Legacy UI/Demo Archive and SDK-Only Boundary** — Preserve the legacy application material as verified archives, then leave only SDK-owned active build and validation surfaces. (completed 2026-08-14)
 - [x] **Phase 67: SwiftPM Consumer and CLI Validation Contract** — Prove public-product consumption and make the SDK renderer a deterministic input/output validation interface. (completed 2026-08-14)
-- [ ] **Phase 68: CPU Algorithm Reference Oracles** — Freeze current CPU behavior with generated fixtures and exact, feature-specific safety oracles.
+- [x] **Phase 68: CPU Algorithm Reference Oracles** — Freeze current CPU behavior with generated fixtures and exact, feature-specific safety oracles. (completed 2026-08-14)
 - [ ] **Phase 69: Public Concurrency Repair and SDK-Only Closeout** — Correct generic sendability and close the milestone through one hardened SwiftPM-only gate.
 
 ## Phase Details
@@ -89,9 +89,10 @@ generic sendability without adding Metal or GPU behavior.
   4. Repeating identical CPU requests yields deterministic, finite, bounded results independent of earlier requests, and a failed face-dependent unit does not suppress eligible siblings or face-agnostic work.
   5. The mandatory clean-clone suite passes entirely from generated Swift fixtures with zero skips; rights-approved portrait and native-Vision fixtures remain optional, private, and explicitly gated.
 
-**Plans**: 4/4 implementation plans complete; ready for independent verification
+**Plans**: 4/4 implementation plans complete; independently verified 5/5 must-haves on 2026-08-14
 
 Plans:
+
 - [x] 68-01-PLAN.md — Add generated in-memory CPU fixture and metric foundations.
 - [x] 68-02-PLAN.md — Freeze geometry and color feature-family semantics with explicit metrics.
 - [x] 68-03-PLAN.md — Freeze local-retouch safety, composition, determinism, and failure isolation.
@@ -142,5 +143,5 @@ remain shared, and no v1.17 Metal source or API is authorized by v1.16.
 | --- | --- | --- | --- | --- |
 | 66. Legacy UI/Demo Archive and SDK-Only Boundary | v1.16 | 3/3 | Completed | 2026-08-14 |
 | 67. SwiftPM Consumer and CLI Validation Contract | v1.16 | 4/4 | Completed | 2026-08-14 |
-| 68. CPU Algorithm Reference Oracles | v1.16 | 4/4 | Ready for verification | 2026-08-14 implementation closeout |
+| 68. CPU Algorithm Reference Oracles | v1.16 | 4/4 | Complete | 2026-08-14 independent verification |
 | 69. Public Concurrency Repair and SDK-Only Closeout | v1.16 | 0/TBD | Not started | - |

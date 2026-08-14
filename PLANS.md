@@ -30,7 +30,7 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `verifying` |
+| Status | `completed` |
 | Scope | Preserve two verified legacy archives, retire exact originals, synchronize current owners to SDK-only SwiftPM, and bind archive/static checks into the mandatory no-skip gate. |
 | Current Step | All Phase 66 review findings are remediated and the mandatory integrated gate is green; independent phase verification is next. |
 | Verification Policy | Archive/self-test, artifact-only reproduction, post-archive scanner/self-test, bounded transcript self-test, diff hygiene, then one all-opt-ins SwiftPM child with exact XCTest/Swift Testing accounting. |
@@ -212,8 +212,8 @@ Exact ordered Phase 64 task authority is: `64-01-01`, `64-01-02`,
 
 | Field | Value |
 | --- | --- |
-| Status | `verifying` |
-| Completed | 2026-08-14 implementation closeout; independent verification pending |
+| Status | `completed` |
+| Completed | 2026-08-14 |
 | Scope | Freeze the current CPU/Core Image behavior through generated in-memory Swift RGBA8/sRGB fixtures, semantic geometry/color metrics, local-retouch safety/composition oracles, deterministic recovery, and a generated-only preflight. |
 | Plans | 68-01 fixture/metric foundations; 68-02 geometry/color semantics; 68-03 local-retouch safety and determinism; 68-04 preflight/owner closeout. |
 | CPU requirements | CPU-01..CPU-05 are covered by generated fixture contracts, exact neutral/alpha/extent checks, feature-family metrics, collision/source ownership, sibling isolation, recovery, and optional-fixture separation. |

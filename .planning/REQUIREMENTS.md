@@ -23,11 +23,11 @@
 
 ### CPU Reference Oracles
 
-- [ ] **CPU-01**: Small generated RGBA fixtures cover opaque color fields, alpha boundaries, transparent rejection where already required, geometric patterns, protected/outside regions, and deterministic landmark/support stubs without requiring tracked portrait media.
-- [ ] **CPU-02**: Reference tests lock exact neutral/no-op bytes, dimensions, color-space metadata, alpha behavior, outside-region preservation, local-retouch containment, collision-to-source behavior, and per-unit failure isolation for the current CPU implementation.
-- [ ] **CPU-03**: Feature-family oracles use explicit geometry displacement/direction/locality metrics and color/luminance/chroma/red-excess metrics rather than broad "output changed" assertions, while preserving each feature's existing public semantics and safety caps.
-- [ ] **CPU-04**: Repeated identical CPU requests are deterministic, finite, bounded, and independent of prior requests; the suite detects state leakage and verifies face-agnostic siblings continue when face-dependent support fails closed.
-- [ ] **CPU-05**: Rights-approved portrait and native-Vision fixtures remain optional, private, and explicitly gated; the mandatory clean-clone suite passes solely with generated Swift fixtures and never borrows success from skipped optional tests.
+- [x] **CPU-01**: Small generated RGBA fixtures cover opaque color fields, alpha boundaries, transparent rejection where already required, geometric patterns, protected/outside regions, and deterministic landmark/support stubs without requiring tracked portrait media.
+- [x] **CPU-02**: Reference tests lock exact neutral/no-op bytes, dimensions, color-space metadata, alpha behavior, outside-region preservation, local-retouch containment, collision-to-source behavior, and per-unit failure isolation for the current CPU implementation.
+- [x] **CPU-03**: Feature-family oracles use explicit geometry displacement/direction/locality metrics and color/luminance/chroma/red-excess metrics rather than broad "output changed" assertions, while preserving each feature's existing public semantics and safety caps.
+- [x] **CPU-04**: Repeated identical CPU requests are deterministic, finite, bounded, and independent of prior requests; the suite detects state leakage and verifies face-agnostic siblings continue when face-dependent support fails closed.
+- [x] **CPU-05**: Rights-approved portrait and native-Vision fixtures remain optional, private, and explicitly gated; the mandatory clean-clone suite passes solely with generated Swift fixtures and never borrows success from skipped optional tests.
 
 ### Concurrency and Closeout
 
@@ -70,11 +70,11 @@
 | CLI-01 | Phase 67 | Complete |
 | CLI-02 | Phase 67 | Complete |
 | CLI-03 | Phase 67 | Complete |
-| CPU-01 | Phase 68 | Pending |
-| CPU-02 | Phase 68 | Pending |
-| CPU-03 | Phase 68 | Pending |
-| CPU-04 | Phase 68 | Pending |
-| CPU-05 | Phase 68 | Pending |
+| CPU-01 | Phase 68 | Complete |
+| CPU-02 | Phase 68 | Complete |
+| CPU-03 | Phase 68 | Complete |
+| CPU-04 | Phase 68 | Complete |
+| CPU-05 | Phase 68 | Complete |
 | CONC-01 | Phase 69 | Pending |
 | CONC-02 | Phase 69 | Pending |
 | CLOSE-01 | Phase 69 | Pending |

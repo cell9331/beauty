@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.16
 milestone_name: SDK-Only Foundation and CPU Reference
-current_phase: 68
-current_phase_name: CPU Algorithm Reference Oracles
-status: verifying
-stopped_at: Completed 68-04-PLAN.md
-last_updated: "2026-08-14T15:50:00Z"
+current_phase: 69
+current_phase_name: Public Concurrency Repair and SDK-Only Closeout
+status: planning
+stopped_at: Completed 67-04-PLAN.md
+last_updated: "2026-08-14T08:52:29.212Z"
 last_activity: 2026-08-14
-last_activity_desc: Phase 68 implementation plans complete; independent verification pending
+last_activity_desc: Phase 68 complete, transitioned to Phase 69
 progress:
   total_phases: 4
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 11
   completed_plans: 11
-  percent: 50
+  percent: 75
 ---
 
 # Project State
@@ -24,16 +24,16 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-08-14)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 68 — CPU Algorithm Reference Oracles
+**Current focus:** Phase 69 — Public Concurrency Repair and SDK-Only Closeout
 
 ## Current Position
 
-Phase: 68 — CPU Algorithm Reference Oracles
-Plan: 68-04 of 4
-Status: Ready for independent verification
-Last activity: 2026-08-14 — Phase 68 implementation closeout passed; independent verification pending
+Phase: 69 — Public Concurrency Repair and SDK-Only Closeout
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-08-14 — Phase 68 complete, transitioned to Phase 69
 
-Progress: [█████-----] 50%
+Progress: [███████---] 75%
 
 ## Performance Metrics
 
@@ -79,7 +79,7 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- Phase 66 and Phase 67 independently passed their goal-backward verification; Phase 68 implementation is complete and independent verification is next.
+- Phase 66, Phase 67, and Phase 68 independently passed their goal-backward verification; Phase 69 is ready to plan.
 - Metal source, GPU API, backend parity implementation, and any UI/Demo development are outside v1.16 even when adjacent code or historical documents mention them.
 
 ## Deferred Items
@@ -99,4 +99,4 @@ None found under `.planning/todos/pending/`.
 Last session: 2026-08-14T06:04:52.790Z
 Stopped at: Completed 67-04-PLAN.md
 Resume file: None
-Next action: Independently verify Phase 68 CPU-01..CPU-05, then advance to Phase 69; do not add UI, Demo, Metal/GPU, or release scope.
+Next action: Plan Phase 69 public concurrency repair and SDK-only closeout; do not add UI, Demo, Metal/GPU, or release scope.
