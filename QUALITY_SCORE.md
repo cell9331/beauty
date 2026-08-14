@@ -20,7 +20,7 @@
 | --- | ---: | --- | --- |
 | Root owners | 4 | Current contracts consistently name SDK-only SwiftPM ownership and archive-only UI history. | Keep owners synchronized with code/tests. |
 | SDK package | 4 | One public library, one SDK-owned renderer, six internal/library targets, no remote dependency. | Preserve facade and dependency direction. |
-| Tests | 4 | 51 SwiftPM test files; measured mandatory child executes 658 tests with eight documented opt-ins; focused renderer regression and compiled Process coverage; bounded exact XCTest/Swift Testing accounting rejects both runners' skips and ambiguity. | Keep full conjunction mandatory. |
+| Tests | 4 | 60 SwiftPM test files; generated CPU reference preflight executes 9 + 9 + 15 tests with zero skips, and the measured mandatory child executes 691 tests with eight documented opt-ins; focused renderer regression and compiled Process coverage; bounded exact XCTest/Swift Testing accounting rejects both runners' skips and ambiguity. | Keep full conjunction mandatory. |
 | External consumer / CLI | 4 | Public-only local-path consumer observes generated RGBA bytes/dimensions; compiled renderer covers 74-case discovery, reconciled reports, typed failures, and render/encode seams. | Preserve archive → boundary → consumer → no-skip ordering. |
 | Archive integrity | 4 | Code-owned ZIP/manifest anchors, exact 45/26 inventories, bounded streamed extraction, frozen-retirement rollback, and safe restore self-tests pass. | Verify before every full closeout. |
 | SDK-only boundary | 4 | Retired roots are absent; scanner rejects symlinks, restored application/UI sources, stale current owners/maps, tracked media, application artifacts, retained-shader drift, and backend/API drift. | Keep scanner fail-closed. |
@@ -28,8 +28,8 @@
 | Reliability | 3 | Typed errors, deterministic degradation/recovery, input bounds, no-skip handling, and archive recovery are specified/tested; device/performance evidence is outside scope. | Add only when a later authorized milestone requires it. |
 | Product acceptance | 4 | Bounded still-image teeth/sclera behavior and exact taxonomy remain SDK-core only. | Preserve nonclaims and `去脂` future status. |
 
-No score of 5 is claimed. Package/fixture automation does not establish target-
-device performance, population sufficiency, commercial quality, packaging,
+No score of 5 is claimed. Package/fixture automation does not establish device
+performance, population sufficiency, commercial quality, packaging,
 shipping, launch, or release readiness.
 
 ## 3. Active Inventory
@@ -37,9 +37,9 @@ shipping, launch, or release readiness.
 | Inventory | Value |
 | --- | ---: |
 | Swift source files | 66 |
-| SwiftPM test files | 51 |
+| SwiftPM test files | 60 |
 | Swift source lines | 14,950 |
-| SwiftPM test lines | 28,093 |
+| SwiftPM test lines | 29,738 |
 | Public `BeautyParameters` stored fields | 61 |
 | Built-in neutral presets | 5 |
 | Renderer cases | 74 |
@@ -58,11 +58,13 @@ python3 scripts/archive-legacy-ui.py verify --output archives/legacy-ui
 bash scripts/check-sdk-only-boundary.sh --post-archive
 git diff --check
 bash scripts/check-swiftpm-consumer.sh
+bash scripts/check-cpu-reference-oracles.sh
 bash scripts/run-no-skip-swiftpm.sh
 ```
 
 `scripts/run-no-skip-swiftpm.sh` is the complete gate. It must run archive
-verification, the SDK-only scanner, and the external consumer before its
+verification, the SDK-only scanner, the external consumer, and the generated
+CPU reference preflight before its
 existing one-child SwiftPM
 transcript parser. Streaming capture is limited to 16 MiB and 200,000 lines. The
 parser accepts only all eight opt-ins exactly once, one nonzero zero-failure

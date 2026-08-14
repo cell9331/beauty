@@ -6,10 +6,12 @@
 ## Runner and Inventory
 
 XCTest through Swift Package Manager is the only active test framework. Six test
-targets live under `BeautySDK/Tests/`; the current inventory is 51 Swift files and
-28,093 test lines, excluding `.build`.
+targets live under `BeautySDK/Tests/`; the current inventory is 60 Swift files and
+29,738 test lines, excluding `.build`.
 
-The measured mandatory full child executes 658 tests with eight documented
+The generated CPU reference preflight executes 9 fixture, 9 geometry/color, and
+15 local-retouch/determinism tests with zero generated skips. The measured
+mandatory full child executes 691 tests with eight documented
 environment-gated opt-ins enabled. It accepts only one complete SwiftPM child
 transcript with:
 
@@ -28,17 +30,26 @@ artifact replacement, control-character escaping, and independent render/encode
 failure behavior. Their temporary build/fixture roots
 and captured child output are not evidence artifacts.
 
+`scripts/check-cpu-reference-oracles.sh` runs after the public consumer and
+before private bundles or the one-child gate. It statically requires the nine
+generated-oracle sources to stay regular files under the test tree, rejects
+media/path/raw-output/GPU drift, and runs only generated in-memory filters.
+Private/native-Vision suites retain explicit environment guards and remain
+optional; they cannot lend success to CPU-01..CPU-05.
+
 ## Commands
 
 ```bash
 swift test --package-path BeautySDK
 swift test --package-path BeautySDK --filter BeautyEffectsTests.BeautyFullScleraRednessProviderTests
 swift test --package-path BeautySDK --enable-code-coverage
+bash scripts/check-cpu-reference-oracles.sh
 bash scripts/run-no-skip-swiftpm.sh
 ```
 
 The mandatory wrapper orders archive verification → post-archive SDK-only
-boundary → external consumer → private opt-ins → one SwiftPM child. Archive
+boundary → external consumer → generated CPU reference preflight → private
+opt-ins → one SwiftPM child. Archive
 corruption, restored source roots, stale application dependencies, retained
 shader drift, an unexpected skip/failure, or a zero-test run must fail non-zero.
 

@@ -18,9 +18,9 @@ Current source/test inventory, excluding `.build`:
 | Inventory | Count |
 | --- | ---: |
 | Swift source files | 66 |
-| SwiftPM test files | 51 |
+| SwiftPM test files | 60 |
 | Swift source lines | 14,950 |
-| SwiftPM test lines | 28,093 |
+| SwiftPM test lines | 29,738 |
 
 ## 2. Top-Level Invariants
 
@@ -125,6 +125,15 @@ existing foundation types or resource filenames.
 - Generated output remains ignored and disposable; committed evidence is
   aggregate and privacy-safe.
 
+The mandatory CPU reference layer is generated in-memory Swift RGBA8/sRGB
+fixtures and target-local XCTest oracles. It covers exact neutral bytes,
+alpha/extent metadata, geometry displacement/direction/locality, color
+luminance/chroma/red/yellow-excess direction, local-retouch containment,
+collision-to-source ownership, and request recovery. The generated preflight
+(`scripts/check-cpu-reference-oracles.sh`) runs before private/native-Vision
+opt-ins and the single full SwiftPM child; it records only aggregate pass
+counts. The current CPU/Core Image implementation remains the sole reference.
+
 ## 6. Archive Boundary
 
 The only retained legacy ownership is:
@@ -155,10 +164,14 @@ swift test --package-path BeautySDK
 python3 scripts/archive-legacy-ui.py verify --output archives/legacy-ui
 bash scripts/check-sdk-only-boundary.sh --post-archive
 bash scripts/check-swiftpm-consumer.sh
+bash scripts/check-cpu-reference-oracles.sh
 bash scripts/run-no-skip-swiftpm.sh
 ```
 
-The final wrapper must preserve one SwiftPM child transcript, execute all eight
+The generated CPU preflight must pass with nonzero focused execution and zero
+generated skips without reading tracked portrait media. Private/native-Vision
+fixtures remain ignored, explicit opt-ins and cannot lend success to the
+generated suite. The final wrapper must preserve one SwiftPM child transcript, execute all eight
 documented opt-ins, and reject failure, skip, or zero execution. These gates do
 not establish device, performance-budget, commercial, packaging, shipping,
 launch, or release readiness.

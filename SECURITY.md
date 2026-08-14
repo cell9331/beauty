@@ -27,6 +27,7 @@ distribution behavior requires a new security review.
 | Archive artifact → historical extraction | exact artifact/digest, safe entry path, manifest/content equality, new temporary destination |
 | CLI input/output/report → executable boundary | existing regular directories, supported image decode, duplicate-stem rejection, atomic writes, reopen/dimension validation, bounded public identities only |
 | Child test process → gate | bounded one-child transcript reduced to fixed aggregate pass/fail; raw output is not durable authority |
+| Generated CPU oracle → gate | regular in-tree Swift sources, in-memory fixtures, no media/path/raw diagnostics, CPU-only tokens, bounded focused execution |
 
 ## 3. Archive Entry and Extraction Safety
 
@@ -131,6 +132,13 @@ artifact.
 - Real-fixture masks must match finite zero-origin dimensions/orientation before
   measurement; synthetic/AI fixtures cannot establish product feasibility.
 
+The mandatory CPU reference oracle is generated entirely in Swift memory from
+small RGBA8/sRGB fixtures. Its static preflight rejects media reads, tracked
+output writes, absolute/private locators, raw diagnostic printing, and
+Metal/GPU/backend scope drift. Rights-approved portrait and native-Vision
+tests retain their existing environment guards and remain optional evidence;
+their skips cannot satisfy or be counted as generated-oracle success.
+
 ## 8. Logging and Evidence
 
 Allowed durable data: fixed error/reason codes, feature/category names, counts,
@@ -158,6 +166,7 @@ third-party dependencies, collection, or distribution scope.
 python3 scripts/archive-legacy-ui.py verify --output archives/legacy-ui
 bash scripts/check-sdk-only-boundary.sh --post-archive
 bash scripts/check-swiftpm-consumer.sh
+bash scripts/check-cpu-reference-oracles.sh
 bash scripts/run-no-skip-swiftpm.sh
 ```
 

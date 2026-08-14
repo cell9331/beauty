@@ -30,6 +30,7 @@
 | R10 | The no-skip parser accepts one child only and rejects failure, skip, ambiguity, oversize, or zero execution. |
 | R11 | Renderer success requires exact requested/succeeded/failed/skipped reconciliation and every requested persisted output to be non-empty, decodable, and dimension-preserving. |
 | R12 | Compiled CLI process coverage is bounded and exercises independent render/encode failures, typed non-zero diagnostics, and clean temporary recovery. |
+| R13 | Generated CPU oracle preflight executes nonzero focused suites with zero generated skips before optional fixtures or the full SwiftPM child. |
 
 ## 3. Error and Degradation Policy
 
@@ -108,9 +109,11 @@ state recovers from archives and does not rerun retirement.
 
 1. archive verification;
 2. post-archive SDK-only boundary scanner;
-3. the existing one-child hardened SwiftPM run with all eight opt-in environment
-   variables; and
-4. transcript reduction that proves each expected identity exactly once, zero
+3. the public SwiftPM consumer;
+4. generated CPU reference preflight;
+5. private opt-in validation and the existing one-child hardened SwiftPM run
+   with all eight opt-in environment variables; and
+6. transcript reduction that proves each expected identity exactly once, zero
    failures, zero skips, and nonzero all-tests execution.
 
 Archive and scanner output is short aggregate status. The private test child may
@@ -124,6 +127,11 @@ aggregate. XCTest and Swift Testing skip/disabled events both fail.
 Any preflight failure returns non-zero and prevents test execution. Any malformed,
 missing, ambiguous, failed, skipped, oversized, or zero-test transcript returns
 non-zero even if the child process exit status is otherwise zero.
+
+The generated CPU preflight keeps its bounded logs temporary and emits only
+fixture, geometry/color, and local-retouch/determinism counts. It does not open
+portrait media or persist pixels, masks, support, coordinates, child output, or
+locators; private/native-Vision skips remain environment-gated and non-mandatory.
 
 The compiled `BeautyExampleRenderer` Process matrix uses fresh temporary
 SwiftPM/build and fixture roots, concurrent bounded stdout/stderr capture, and
@@ -161,6 +169,7 @@ Per-request arrays/caches must be bounded and released at request completion.
 swift test --package-path BeautySDK
 python3 scripts/archive-legacy-ui.py verify --output archives/legacy-ui
 bash scripts/check-sdk-only-boundary.sh --post-archive
+bash scripts/check-cpu-reference-oracles.sh
 git diff --check
 bash scripts/run-no-skip-swiftpm.sh
 ```
