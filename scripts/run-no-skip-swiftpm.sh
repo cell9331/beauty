@@ -16,12 +16,26 @@ readonly expected_opt_in_tests=(
   "testAuthorizedPairSupportsFullScleraExpansionFromFrozenFocalAnchor"
 )
 
-for command_name in swift rg git; do
+for command_name in python3 swift rg git; do
   command -v "${command_name}" >/dev/null || {
     echo "no_skip_preflight_failed"
     exit 1
   }
 done
+
+if ! python3 "${repository_root}/scripts/archive-legacy-ui.py" verify \
+  --output "${repository_root}/archives/legacy-ui" >/dev/null 2>&1; then
+  echo "no_skip_archive_verification_failed"
+  exit 1
+fi
+echo "no_skip_archive_verified"
+
+if ! bash "${repository_root}/scripts/check-sdk-only-boundary.sh" \
+  --post-archive >/dev/null 2>&1; then
+  echo "no_skip_sdk_boundary_failed"
+  exit 1
+fi
+echo "no_skip_sdk_boundary_verified"
 
 for bundle in "${teeth_bundle}" "${sclera_bundle}"; do
   [[ -f "${bundle}/manifest.json" ]] || {
@@ -69,6 +83,11 @@ done
 
 rg -q "Test Suite 'All tests' passed" "${transcript}" || {
   echo "no_skip_aggregate_missing"
+  exit 1
+}
+
+rg -q "Executed [1-9][0-9]* tests?, with 0 failures" "${transcript}" || {
+  echo "no_skip_zero_test_or_failure_detected"
   exit 1
 }
 
