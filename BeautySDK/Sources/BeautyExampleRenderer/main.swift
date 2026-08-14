@@ -1,7 +1,4 @@
-import AppKit
-import CoreImage
 import Foundation
-import ImageIO
 import BeautySDK
 
 struct RenderCase {
@@ -9,41 +6,6 @@ struct RenderCase {
     let displayName: String
     let parameters: BeautyParameters
 }
-
-enum ExampleRendererError: Error, CustomStringConvertible {
-    case missingInputDirectory(String)
-    case missingInputImages(String)
-    case unknownCase(String, [String])
-    case duplicateOutputStem
-    case imageLoadFailed(String)
-    case renderFailed(String)
-    case pngEncodingFailed(String)
-
-    var description: String {
-        switch self {
-        case .missingInputDirectory(let label):
-            "Input directory does not exist: \(label)"
-        case .missingInputImages(let label):
-            "Input directory contains no PNG or JPEG images: \(label)"
-        case .unknownCase(let id, let available):
-            "Unknown render case: \(id). Available cases: \(available.joined(separator: ", "))"
-        case .duplicateOutputStem:
-            "Input images must have unique filename stems"
-        case .imageLoadFailed(let label):
-            "Could not load image: \(label)"
-        case .renderFailed(let label):
-            "Could not render image: \(label)"
-        case .pngEncodingFailed(let label):
-            "Could not encode PNG: \(label)"
-        }
-    }
-}
-
-let arguments = CommandLine.arguments
-let inputDirectory = value(after: "--input", in: arguments) ?? "example-images/input"
-let outputDirectory = value(after: "--output", in: arguments) ?? "example-images/output"
-let selectedCase = value(after: "--case", in: arguments)
-let suppressWatermark = arguments.contains("--no-watermark")
 
 let cases = [
     RenderCase(
@@ -429,175 +391,11 @@ let cases = [
     )
 ]
 
-do {
-    let inputURL = URL(fileURLWithPath: inputDirectory, isDirectory: true)
-    let outputURL = URL(fileURLWithPath: outputDirectory, isDirectory: true)
-    let fileManager = FileManager.default
-    guard fileManager.fileExists(atPath: inputURL.path) else {
-        throw ExampleRendererError.missingInputDirectory("input directory")
-    }
-
-    let renderCases = cases.filter { selectedCase == nil || selectedCase == $0.id }
-    if let selectedCase, renderCases.isEmpty {
-        throw ExampleRendererError.unknownCase(selectedCase, cases.map(\.id))
-    }
-
-    let imageURLs = fixtureImageURLs(in: inputURL, fileManager: fileManager)
-    guard !imageURLs.isEmpty else {
-        throw ExampleRendererError.missingInputImages("input directory")
-    }
-    try requireUniqueOutputStems(imageURLs)
-    try fileManager.createDirectory(at: outputURL, withIntermediateDirectories: true)
-
-    let engine = try BeautyEngine(configuration: .default)
-    guard let outputColorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
-        throw ExampleRendererError.renderFailed("named sRGB")
-    }
-    let context = CIContext(options: [
-        .workingColorSpace: outputColorSpace,
-        .outputColorSpace: outputColorSpace
-    ])
-
-    for imageURL in imageURLs {
-        guard let inputImage = CIImage(contentsOf: imageURL, options: [.applyOrientationProperty: true]) else {
-            throw ExampleRendererError.imageLoadFailed(relativePath(imageURL, from: inputURL))
-        }
-
-        for renderCase in renderCases {
-            let result = try engine.processResult(
-                image: inputImage,
-                metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
-                parameters: renderCase.parameters
-            )
-            guard let cgImage = context.createCGImage(result.output, from: result.output.extent) else {
-                throw ExampleRendererError.renderFailed(relativePath(imageURL, from: inputURL))
-            }
-
-            let rendered: NSBitmapImageRep
-            if suppressWatermark {
-                rendered = NSBitmapImageRep(cgImage: cgImage)
-            } else {
-                let watermark = watermarkText(for: renderCase, result: result)
-                rendered = try drawWatermark(watermark, on: cgImage)
-            }
-            let baseName = imageURL.deletingPathExtension().lastPathComponent
-            let outputName = "\(baseName)__\(renderCase.id).png"
-            let destination = outputURL.appendingPathComponent(outputName)
-            guard let png = rendered.pngData() else {
-                throw ExampleRendererError.pngEncodingFailed(outputName)
-            }
-            try png.write(to: destination, options: .atomic)
-            print("wrote \(outputName)")
-        }
-    }
-} catch {
-    fputs("\(error)\n", stderr)
+let rendererOutcome = RendererCLI.run(arguments: Array(CommandLine.arguments.dropFirst()), cases: cases)
+if !rendererOutcome.stdout.isEmpty {
+    FileHandle.standardOutput.write(Data(rendererOutcome.stdout.utf8))
+}
+if let diagnostic = rendererOutcome.diagnostic {
+    FileHandle.standardError.write(diagnostic.encodedLine)
     exit(1)
-}
-
-func value(after flag: String, in arguments: [String]) -> String? {
-    guard let index = arguments.firstIndex(of: flag),
-          arguments.indices.contains(index + 1)
-    else {
-        return nil
-    }
-    return arguments[index + 1]
-}
-
-func fixtureImageURLs(in directory: URL, fileManager: FileManager) -> [URL] {
-    guard let enumerator = fileManager.enumerator(
-        at: directory,
-        includingPropertiesForKeys: [.isRegularFileKey],
-        options: [.skipsHiddenFiles]
-    ) else {
-        return []
-    }
-
-    var urls: [URL] = []
-    for case let url as URL in enumerator {
-        guard ["png", "jpg", "jpeg"].contains(url.pathExtension.lowercased()) else {
-            continue
-        }
-        let values = try? url.resourceValues(forKeys: [.isRegularFileKey])
-        guard values?.isRegularFile == true else {
-            continue
-        }
-        urls.append(url)
-    }
-
-    return urls.sorted {
-        relativePath($0, from: directory) < relativePath($1, from: directory)
-    }
-}
-
-func requireUniqueOutputStems(_ imageURLs: [URL]) throws {
-    var stems = Set<String>()
-    for imageURL in imageURLs {
-        let stem = imageURL.deletingPathExtension().lastPathComponent
-        guard stems.insert(outputStemCollisionKey(stem)).inserted else {
-            throw ExampleRendererError.duplicateOutputStem
-        }
-    }
-}
-
-func outputStemCollisionKey(_ stem: String) -> String {
-    stem
-        .folding(options: [.caseInsensitive], locale: Locale(identifier: "en_US_POSIX"))
-        .decomposedStringWithCanonicalMapping
-}
-
-func relativePath(_ url: URL, from directory: URL) -> String {
-    let directoryPath = directory.standardizedFileURL.path
-    let filePath = url.standardizedFileURL.path
-    let prefix = directoryPath.hasSuffix("/") ? directoryPath : directoryPath + "/"
-    guard filePath.hasPrefix(prefix) else {
-        return url.lastPathComponent
-    }
-    return String(filePath.dropFirst(prefix.count))
-}
-
-func watermarkText(for renderCase: RenderCase, result: BeautyResult<CIImage>) -> String {
-    _ = result
-    return renderCase.displayName
-}
-
-func drawWatermark(_ text: String, on cgImage: CGImage) throws -> NSBitmapImageRep {
-    let width = cgImage.width
-    let bitmap = NSBitmapImageRep(cgImage: cgImage)
-    guard let graphics = NSGraphicsContext(bitmapImageRep: bitmap) else {
-        throw ExampleRendererError.renderFailed("watermark")
-    }
-
-    NSGraphicsContext.saveGraphicsState()
-    NSGraphicsContext.current = graphics
-
-    let fontSize = CGFloat(max(34, min(72, width / 30)))
-    let padding = CGFloat(max(24, width / 70))
-    let bandHeight = fontSize * 1.75
-    let bandRect = NSRect(
-        x: padding,
-        y: padding,
-        width: CGFloat(width) - padding * 2,
-        height: bandHeight
-    )
-    NSColor.black.withAlphaComponent(0.62).setFill()
-    NSBezierPath(roundedRect: bandRect, xRadius: 18, yRadius: 18).fill()
-
-    let horizontalInset = padding * 0.6
-    let verticalInset = (bandHeight - fontSize * 1.15) / 2
-    let textRect = bandRect.insetBy(dx: horizontalInset, dy: verticalInset)
-    let attributes: [NSAttributedString.Key: Any] = [
-        .font: NSFont.monospacedSystemFont(ofSize: fontSize, weight: .semibold),
-        .foregroundColor: NSColor.white
-    ]
-    (text as NSString).draw(with: textRect, options: [.usesLineFragmentOrigin, .truncatesLastVisibleLine], attributes: attributes)
-    NSGraphicsContext.restoreGraphicsState()
-
-    return bitmap
-}
-
-extension NSBitmapImageRep {
-    func pngData() -> Data? {
-        representation(using: .png, properties: [:])
-    }
 }
