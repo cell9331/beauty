@@ -102,8 +102,12 @@ state recovers from archives and does not rerun retirement.
    failures, zero skips, and nonzero all-tests execution.
 
 Archive and scanner output is short aggregate status. The private test child may
-write its bounded transcript only to a temporary file that is removed on exit;
-the gate emits no private locator or raw child transcript as durable evidence.
+write its transcript only through a streaming limiter capped at 16 MiB and
+200,000 lines; overflow terminates the child. The temporary file is removed on
+exit, and the gate emits no private locator or raw child transcript as durable
+evidence. Exact parsing requires one nonzero zero-failure XCTest `All tests`
+aggregate, and—when Swift Testing starts—exactly one passed Swift Testing
+aggregate. XCTest and Swift Testing skip/disabled events both fail.
 
 Any preflight failure returns non-zero and prevents test execution. Any malformed,
 missing, ambiguous, failed, skipped, oversized, or zero-test transcript returns
