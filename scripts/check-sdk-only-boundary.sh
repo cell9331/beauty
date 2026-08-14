@@ -320,6 +320,18 @@ for directory, directory_names, file_names in os.walk(root, topdown=True, follow
             ui_test = re.search(r"\b(?:XCUIApplication|XCUIDevice|XCUIScreen)\b", text)
             if ui_test:
                 raise SystemExit(f"active UI-test dependency remains in {relative}: {ui_test.group(0)}")
+            # BeautyResult may only promise Sendable conditionally.  In
+            # particular, never allow the historical arbitrary-payload
+            # @unchecked conformance to return through a source mutation.
+            for declaration in re.finditer(
+                r"\b(?:public\s+)?(?:struct|class|enum|extension)\s+BeautyResult(?:\s*<[^>{}\n]+>)?[^\{]*@unchecked\s+Sendable",
+                text,
+                re.MULTILINE,
+            ):
+                if re.search(r"\bwhere\s+Output\s*:\s*Sendable\b", declaration.group(0)) is None:
+                    raise SystemExit(
+                        f"unconditional generic BeautyResult Sendable conformance remains: {relative}"
+                    )
 
 tracked = subprocess.run(
     ["git", "-C", str(root), "ls-files", "-z"], check=True, stdout=subprocess.PIPE
@@ -387,6 +399,10 @@ self_test() {
     cp "$PROJECT_ROOT/docs/SDK_EFFECT_TAXONOMY.md" "$fixture/docs/SDK_EFFECT_TAXONOMY.md"
     cp "$PROJECT_ROOT/BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift" \
         "$fixture/BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift"
+    printf '%s\n' \
+        'public struct BeautyResult<Output> {}' \
+        'extension BeautyResult: Sendable where Output: Sendable {}' \
+        > "$fixture/BeautySDK/Sources/BeautyCore/Models/BeautyResult.swift"
     mkdir -p "$fixture/BeautyDemo" "$fixture/meituxiuxiu/home" "$fixture/meituxiuxiu/html"
     printf '%s\n' 'import Foundation' > "$fixture/BeautyDemo/Demo.swift"
     local number padded
@@ -443,6 +459,13 @@ PY
     git -C "$fixture" add .
     git -C "$fixture" commit -qm fixture
     validate_post_archive "$fixture" >/dev/null
+    printf '%s\n' 'public struct BeautyResult<Output>: @unchecked Sendable {}' \
+        > "$fixture/BeautySDK/Sources/BeautyCore/Models/BeautyResult.swift"
+    expect_failure validate_post_archive "$fixture"
+    printf '%s\n' \
+        'public struct BeautyResult<Output> {}' \
+        'extension BeautyResult: Sendable where Output: Sendable {}' \
+        > "$fixture/BeautySDK/Sources/BeautyCore/Models/BeautyResult.swift"
     local ignored_build_external
     ignored_build_external="$(mktemp -d "${TMPDIR:-/tmp}/sdk-boundary-ignored-build.XXXXXX")"
     mkdir -p "$ignored_build_external/release" "$ignored_build_external/debug" \
