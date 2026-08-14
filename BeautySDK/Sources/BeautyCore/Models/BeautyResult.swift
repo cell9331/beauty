@@ -1,4 +1,4 @@
-public struct BeautyResult<Output>: @unchecked Sendable {
+public struct BeautyResult<Output> {
     public let output: Output
     public let warnings: [BeautyValidationWarning]
     public let metrics: [String: Double]
@@ -16,3 +16,5 @@ public struct BeautyResult<Output>: @unchecked Sendable {
         self.detectionSummary = detectionSummary
     }
 }
+
+extension BeautyResult: Sendable where Output: Sendable {}
