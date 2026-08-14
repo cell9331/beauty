@@ -40,7 +40,7 @@ generic sendability without adding Metal or GPU behavior.
 
 **Phase numbering:** v1.16 continues the historical sequence at Phase 66.
 
-- [ ] **Phase 66: Legacy UI/Demo Archive and SDK-Only Boundary** — Preserve the legacy application material as verified archives, then leave only SDK-owned active build and validation surfaces.
+- [x] **Phase 66: Legacy UI/Demo Archive and SDK-Only Boundary** — Preserve the legacy application material as verified archives, then leave only SDK-owned active build and validation surfaces. (completed 2026-08-14)
 - [ ] **Phase 67: SwiftPM Consumer and CLI Validation Contract** — Prove public-product consumption and make the SDK renderer a deterministic input/output validation interface.
 - [ ] **Phase 68: CPU Algorithm Reference Oracles** — Freeze current CPU behavior with generated fixtures and exact, feature-specific safety oracles.
 - [ ] **Phase 69: Public Concurrency Repair and SDK-Only Closeout** — Correct generic sendability and close the milestone through one hardened SwiftPM-only gate.
@@ -53,10 +53,12 @@ generic sendability without adding Metal or GPU behavior.
 **Depends on**: Phase 65 (v1.15 complete)
 **Requirements**: BOUNDARY-01, BOUNDARY-02, ARCHIVE-01, ARCHIVE-02, ARCHIVE-03
 **Success Criteria** (what must be TRUE):
+
   1. A maintainer can inspect each retained ZIP's explicit scope, deterministic listing manifest, and SHA-256 record, then independently extract it and reproduce listing/content-hash agreement.
   2. SDK integrators can find the supported effect taxonomy and algorithm-relevant legacy knowledge in an SDK-owned text authority without depending on visual layout or application behavior.
   3. A clean checkout contains no active original Demo executable, SwiftUI source, Xcode application project, or selected legacy UI-reference tree after archive verification succeeds.
   4. Every active build, test, documentation, and planning command resolves to SwiftPM products, targets, tests, or SDK-owned command-line validation; repository scans find no remaining Xcode, simulator, device, or deleted-tree dependency.
+
 **Plans**: 3/3 complete; independent phase verification pending
 
 ### Phase 67: SwiftPM Consumer and CLI Validation Contract
@@ -65,11 +67,13 @@ generic sendability without adding Metal or GPU behavior.
 **Depends on**: Phase 66
 **Requirements**: SPM-01, SPM-02, CLI-01, CLI-02, CLI-03
 **Success Criteria** (what must be TRUE):
+
   1. A clean external Swift package can depend on the local `BeautySDK` package, import only the public product, and build without `@testable`, Demo, Xcode-project, or internal-target access.
   2. The clean consumer can generate a synthetic image, submit a neutral request through the public facade, and verify successful dimension-preserving output.
   3. A maintainer can list the exact renderer cases and run an explicit input/case/supported-CPU-backend selection into an explicit output directory with reproducible results.
   4. Each CLI run produces a machine-readable aggregate report that identifies requested, succeeded, failed, skipped, input, output, and case identities without exposing private landmark or mask data.
   5. Invalid inputs, unknown cases, decode/write failures, and missing requested outputs produce typed diagnostics and a non-zero exit, while successful generated outputs stay in an ignored/reproducible location.
+
 **Plans**: TBD
 
 ### Phase 68: CPU Algorithm Reference Oracles
@@ -78,11 +82,13 @@ generic sendability without adding Metal or GPU behavior.
 **Depends on**: Phase 67
 **Requirements**: CPU-01, CPU-02, CPU-03, CPU-04, CPU-05
 **Success Criteria** (what must be TRUE):
+
   1. The mandatory suite creates small Swift RGBA fixtures for opaque colors, alpha boundaries, required transparent rejection, geometry patterns, protected/outside regions, and deterministic landmark/support stubs.
   2. CPU reference tests verify exact neutral bytes, dimensions, color metadata, alpha behavior, outside-region preservation, local-retouch containment, collision-to-source behavior, and per-unit failure isolation.
   3. Each feature family is judged by explicit direction/displacement/locality or color/luminance/chroma/red-excess metrics that retain its public semantics and safety caps, rather than by a generic “output changed” assertion.
   4. Repeating identical CPU requests yields deterministic, finite, bounded results independent of earlier requests, and a failed face-dependent unit does not suppress eligible siblings or face-agnostic work.
   5. The mandatory clean-clone suite passes entirely from generated Swift fixtures with zero skips; rights-approved portrait and native-Vision fixtures remain optional, private, and explicitly gated.
+
 **Plans**: TBD
 
 ### Phase 69: Public Concurrency Repair and SDK-Only Closeout
@@ -91,10 +97,12 @@ generic sendability without adding Metal or GPU behavior.
 **Depends on**: Phase 68
 **Requirements**: CONC-01, CONC-02, CLOSE-01, CLOSE-02
 **Success Criteria** (what must be TRUE):
+
   1. An integrator can move `BeautyResult` across a concurrency boundary when its output is `Sendable`, while compile-time coverage proves a non-sendable payload does not gain false `Sendable` conformance.
   2. Existing source use of `BeautyResult` continues to compile, and runtime concurrency coverage confirms sendable outputs preserve their result data safely.
   3. Active architecture, design, reliability, security, product, quality, plans, project, requirements, roadmap, and state owners consistently describe an SDK-only v1.16 with no Metal/GPU, UI, simulator/device, commercial, packaging, shipping, or release-readiness claim.
   4. A maintainer can run the hardened SwiftPM gate with all mandatory tests executed, zero failures, and zero skips; static checks reject restored Demo/UI source, generated binaries, stale Xcode commands, unconditional generic sendability, and Metal scope drift.
+
 **Plans**: TBD
 
 ## Coverage
