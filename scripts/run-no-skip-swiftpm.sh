@@ -52,6 +52,12 @@ if ! bash "${repository_root}/scripts/check-swiftpm-consumer.sh" >/dev/null 2>&1
 fi
 echo "no_skip_swiftpm_consumer_verified"
 
+if ! bash "${repository_root}/scripts/check-cpu-reference-oracles.sh" >/dev/null 2>&1; then
+  echo "no_skip_cpu_reference_oracles_failed"
+  exit 1
+fi
+echo "no_skip_cpu_reference_oracles_verified"
+
 for bundle in "${teeth_bundle}" "${sclera_bundle}"; do
   [[ -f "${bundle}/manifest.json" ]] || {
     echo "no_skip_private_bundle_unavailable"
