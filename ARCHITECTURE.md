@@ -18,9 +18,9 @@ Current source/test inventory, excluding `.build`:
 | Inventory | Count |
 | --- | ---: |
 | Swift source files | 66 |
-| SwiftPM test files | 60 |
-| Swift source lines | 14,950 |
-| SwiftPM test lines | 29,933 |
+| SwiftPM test files | 61 |
+| Swift source lines | 14,952 |
+| SwiftPM test lines | 29,995 |
 
 ## 2. Top-Level Invariants
 
@@ -37,6 +37,7 @@ Current source/test inventory, excluding `.build`:
 | A9 | SwiftPM plus SDK-owned CLI/script validation is the sole current evidence boundary. |
 | A10 | v1.16 retains the current CPU/Core Image behavior and pinned shader bytes without adding a Metal runtime, GPU API, backend switch, or algorithm. |
 | A11 | The external consumer and CLI observe only public-product results, bounded identities, and typed aggregate outcomes; executable-internal failure seams are test machinery, not public API. |
+| A12 | `BeautyResult<Output>` is `Sendable` only when `Output: Sendable`; public concurrency tests cover compile-time acceptance and a complete async task hop without making arbitrary payloads transferable. |
 
 ## 3. Products and Targets
 
@@ -175,3 +176,12 @@ generated suite. The final wrapper must preserve one SwiftPM child transcript, e
 documented opt-ins, and reject failure, skip, or zero execution. These gates do
 not establish device, performance-budget, commercial, packaging, shipping,
 launch, or release readiness.
+
+The current public concurrency evidence is the three-test
+`BeautyResultConcurrencyTests` suite (3/0/0): a `Sendable` payload result
+survives an async task hop with its public fields intact, ordinary string
+construction remains source-compatible, and a non-`Sendable` payload is kept
+outside the positive contract. The latest completed mandatory wrapper evidence
+executes 699 tests with zero failures and zero skips. The active boundary
+self-test rejects a mutation back to unconditional generic sendability before
+archive, consumer, generated-CPU, opt-in, or child execution.

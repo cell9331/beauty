@@ -271,6 +271,13 @@ Rules:
 - Public compatibility APIs may expose only the processed output, but metadata-aware APIs must preserve `BeautyInputMetadata` and `BeautyDetectionSummary`.
 - Warnings must not be logged as fatal errors.
 - Metrics and summaries must not include biometric or personally identifying image data, bounding boxes, landmark coordinates, raw Vision objects, raw framework errors, or local file paths.
+- `BeautyResult<Output>` has conditional `Sendable` conformance only when
+  `Output: Sendable`. This preserves ordinary `BeautyResult(output:)`
+  construction for framework-backed non-sendable outputs without promising that
+  arbitrary caller payloads can cross concurrency domains.
+- Public `BeautyResultConcurrencyTests` compile a concrete sendable result,
+  transfer it through an async task boundary, and assert all public fields;
+  the boundary self-test owns the negative unconditional-declaration guard.
 
 ### 4.6 BeautyInputMetadata
 
@@ -694,7 +701,7 @@ Rules:
 
 - Public value models should be `Sendable`.
 - Do not use `@unchecked Sendable` for mutable reference types without a written isolation rule.
-- Generic result envelopes may claim `Sendable` only when their output contract makes cross-domain transfer safe. The current unconditional `BeautyResult<Output>: @unchecked Sendable` conformance is tracked as TD-013 and must not be used as proof that an arbitrary caller-supplied `Output` is thread-safe.
+- Generic result envelopes may claim `Sendable` only when their output contract makes cross-domain transfer safe. `BeautyResult<Output>` therefore uses the public conditional declaration `extension BeautyResult: Sendable where Output: Sendable {}`; an unconditional generic or arbitrary-payload unchecked conformance is rejected by the SDK-only boundary self-test.
 - Main actor is only for UI state.
 - Detection may run on a detection queue or task.
 - Metal encoding runs on the render queue chosen by `BeautyRender`.

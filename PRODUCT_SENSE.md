@@ -74,6 +74,7 @@ Acceptance:
 | CLI matrix | Every requested input×case completes with a non-empty, decodable, same-size output and reconciled report counts; partial work exits non-zero. |
 | CLI scope | `--backend cpu` is the only accepted backend token in v1.16; `gpu` and unknown values fail until v1.17, without a public SDK backend API. |
 | CLI privacy | Reports persist only versioned aggregate counts and relative public identities; raw pixels, geometry, private metadata, absolute paths, and child output stay transient. |
+| Result concurrency | `BeautyResult<Output>` is transferable only when `Output: Sendable`; the public suite proves a complete async task hop and preserves all public fields, while ordinary non-sendable result construction remains valid. |
 
 ## 4. Effect Acceptance
 
@@ -104,6 +105,15 @@ bash scripts/run-no-skip-swiftpm.sh
 The mandatory no-skip gate must execute all eight opt-ins with zero failures,
 zero skips, and a nonzero denominator. Archive integrity and the SDK-only static
 boundary are part of the same acceptance conjunction.
+
+The current focused public concurrency suite executes 3 tests with zero
+failures. The latest completed mandatory wrapper executes 699 tests with zero
+failures and zero skips; its boundary self-test rejects unconditional generic
+`BeautyResult` sendability before the archive, consumer, generated CPU, opt-in,
+and one-child stages. This evidence is SwiftPM/SDK-owned only and does not
+establish UI/Demo behavior, Metal/GPU execution, simulator/device quality,
+performance, commercial approval, packaging, shipping, launch, or release
+readiness.
 
 ## 6. Historical UI Material
 
