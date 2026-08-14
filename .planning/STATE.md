@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.16
 milestone_name: SDK-Only Foundation and CPU Reference
 status: executing
-stopped_at: Completed 66-01-PLAN.md
-last_updated: "2026-08-14T02:12:52.727Z"
-last_activity: 2026-08-14 — Completed Phase 66 Plan 01 archive and SDK-only boundary tooling
+stopped_at: Completed 66-02-PLAN.md
+last_updated: "2026-08-14T02:21:14.499Z"
+last_activity: 2026-08-14 — Completed Phase 66 Plan 02 verified archive materialization and guarded legacy-source retirement
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 3
-  completed_plans: 1
-  percent: 33
+  completed_plans: 2
+  percent: 67
 ---
 
 # Project State
@@ -26,19 +26,19 @@ See: `.planning/PROJECT.md` (updated 2026-08-14)
 ## Current Position
 
 Phase: 66 (Legacy UI/Demo Archive and SDK-Only Boundary) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
-Last activity: 2026-08-14 — Completed Phase 66 Plan 01 archive and SDK-only boundary tooling
+Last activity: 2026-08-14 — Completed Phase 66 Plan 02 verified archive materialization and guarded legacy-source retirement
 
-Progress: [███░░░░░░░] 33%
+Progress: [███████░░░] 67%
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Total plans completed: 1
-- Average duration: 18 min
-- Total execution time: 18 min
+- Total plans completed: 2
+- Average duration: 10 min
+- Total execution time: 20 min
 
 Historical milestone metrics remain in `.planning/MILESTONES.md` and archived roadmaps.
 
@@ -53,6 +53,8 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 - [v1.17 queued]: Preserve CPU permanently; expose `.cpu`/`.gpu` only through `BeautyConfiguration` after Metal coverage, default to CPU, and fail explicit unavailable GPU without fallback.
 - [Phase 66]: The current SDK taxonomy owns exact legacy algorithm/control meanings and public mappings without inheriting visual layout or application behavior.
 - [Phase 66]: The v1.16 boundary pins the retained Warp.metal bytes and rejects Xcode, SwiftUI, UI-test, generated-media, and GPU/backend drift.
+- [Phase 66]: Retained archives contain 45 intentional BeautyDemo files and 26 meituxiuxiu files, including all 19 ignored PNG references. — Independent live, manifest, ZIP, extraction, and reproduction equality passed.
+- [Phase 66]: Original UI/Demo roots were retired only through the fresh digest-bound guarded transaction. — Exact targets, both approved digests, 53 tracked deletions, and sentinel survival were verified.
 
 ### Pending Todos
 
@@ -60,7 +62,7 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- Phase 66 deletion is gated on successful, reproducible archive verification; archive failure must leave originals intact.
+- Phase 66 Plan 03 must rewrite active owners and bind the archive/boundary checks into the no-skip SwiftPM gate before the phase can complete.
 - Metal source, GPU API, backend parity implementation, and any UI/Demo development are outside v1.16 even when adjacent code or historical documents mention them.
 
 ## Deferred Items
@@ -73,7 +75,7 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-14T02:12:52.724Z
-Stopped at: Completed 66-01-PLAN.md
+Last session: 2026-08-14T02:21:14.496Z
+Stopped at: Completed 66-02-PLAN.md
 Resume file: None
-Next action: Execute `66-02-PLAN.md` through `$gsd-execute-phase 66 --auto`.
+Next action: Execute `66-03-PLAN.md` through `$gsd-execute-phase 66 --auto`.
