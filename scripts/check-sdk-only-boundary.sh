@@ -324,8 +324,24 @@ def swift_tokens(text):
             end = None
             cursor = search_from
             while cursor < length:
+                # In an extended (raw) string, only a hash-qualified escape
+                # consumes the following quote.  An ordinary backslash is
+                # literal text and must not hide a real quote/hash terminator
+                # (for example: #"abc\"#).  Ordinary strings retain their
+                # usual one-character escape behavior.
                 if text[cursor] == "\\":
-                    cursor += 2
+                    if raw_hashes == 0:
+                        cursor += 2
+                    else:
+                        escaped = cursor + 1 + raw_hashes
+                        if (
+                            escaped < length
+                            and text[cursor + 1:escaped] == ("#" * raw_hashes)
+                            and text[escaped] in {'"', "\\", "("}
+                        ):
+                            cursor = escaped + 1
+                        else:
+                            cursor += 1
                 elif text.startswith(closing, cursor):
                     end = cursor
                     break
@@ -573,6 +589,12 @@ PY
         > "$fixture/BeautySDK/Sources/BeautyCore/Models/BeautyResult.swift"
     expect_failure validate_post_archive "$fixture"
     printf '%s\n' 'extension BeautyResult /* where Output: Sendable */: @unchecked Sendable {}' \
+        > "$fixture/BeautySDK/Sources/BeautyCore/Models/BeautyResult.swift"
+    expect_failure validate_post_archive "$fixture"
+    printf '%s\n' \
+        'let first = #"abc\"#' \
+        'public struct BeautyResult<Output>: @unchecked Sendable {}' \
+        'let second = #"ok"#' \
         > "$fixture/BeautySDK/Sources/BeautyCore/Models/BeautyResult.swift"
     expect_failure validate_post_archive "$fixture"
     printf '%s\n' \
