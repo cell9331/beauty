@@ -70,6 +70,7 @@ Each task was committed atomically:
 
 1. **Task 1: Build the independent public-product consumer smoke** - `da1178a` (feat)
 2. **Task 2: Make the consumer smoke a fail-closed mandatory preflight** - `2e9ae63` (chore)
+3. **Task 2 cleanup hardening: retain temporary-directory cleanup on process exit** - `baef409` (fix)
 
 **Plan metadata:** `bf19368` (docs: complete plan)
 
@@ -108,9 +109,18 @@ Each task was committed atomically:
 - **Verification:** source-import, product-selection, and remote-dependency mutations are rejected; valid fixture passes.
 - **Committed in:** `2e9ae63` (part of task commit)
 
+**3. [Rule 2 - Missing Critical] Keep temporary scratch cleanup active through process exit**
+
+- **Found during:** Task 2 post-commit hardening
+- **Issue:** Function-return cleanup did not cover abnormal process exits, leaving the checker scratch directory without a process-level cleanup guarantee.
+- **Fix:** Use value-captured `EXIT` traps for the clean build/runtime and static self-test temporary roots.
+- **Files modified:** `scripts/check-swiftpm-consumer.sh`
+- **Verification:** syntax, static self-test, live clean-scratch consumer check, and no-skip transcript self-test passed.
+- **Committed in:** `baef409` (follow-up fix for Task 2)
+
 ---
 
-**Total deviations:** 2 auto-fixed (Rule 1: 2 bugs)
+**Total deviations:** 3 auto-fixed (Rule 1: 2 bugs; Rule 2: 1 missing critical cleanup guarantee)
 **Impact on plan:** Both fixes make the required fail-closed checker deterministic and do not expand scope.
 
 ## Issues Encountered
