@@ -116,7 +116,7 @@ final class CPUReferenceLocalRetouchOracleTests: XCTestCase {
         XCTAssertEqual(result.summary.leftOutcome, .accepted)
         XCTAssertEqual(result.summary.rightOutcome, .invalidSupport)
         XCTAssertEqual(result.units.count, 1)
-        XCTAssertFalse(result.proposalPixelIndices.isEmpty)
+        XCTAssertGreaterThan(result.summary.acceptedEyeCount, 0)
     }
 
     func testCompositionUsesOriginalSourceForQ16BlendAndKeepsAlpha() throws {
