@@ -119,9 +119,17 @@ final class BeautyExampleRendererProcessTests: XCTestCase {
         let executable = try rendererExecutable()
         let missingInput = try makeFixtureTree(extension: "png")
         defer { removeTree(missingInput.root) }
+        try Data("stale-output".utf8).write(
+            to: missingInput.output.appendingPathComponent("portrait__geometryBaseline_noop.png")
+        )
+        try Data("stale-report".utf8).write(
+            to: missingInput.output.appendingPathComponent(Self.reportName)
+        )
         removeTree(missingInput.input)
         var result = try run(executable, arguments: renderArguments(input: missingInput.input, output: missingInput.output))
         assertDiagnostic(result, code: "input_directory_missing")
+        XCTAssertFalse(hasPNG(in: missingInput.output))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: missingInput.output.appendingPathComponent(Self.reportName).path))
 
         let empty = try makeFixtureTree(extension: "png", createInput: true, createImage: false)
         defer { removeTree(empty.root) }

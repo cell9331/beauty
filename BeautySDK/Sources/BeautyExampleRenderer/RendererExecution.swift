@@ -42,6 +42,7 @@ enum RendererExecution {
     static func run(command: RendererCommand, cases: [RenderCase]) -> RendererExecutionResult {
         do {
             let outputURL = try requireOutputDirectory(command.outputDirectory)
+            try invalidatePreviousArtifacts(in: outputURL, cases: cases)
             let inputURL = try requireInputDirectory(command.inputDirectory)
             let renderCases = cases.filter { command.selectedCase == nil || command.selectedCase == $0.id }
             let imageURLs = fixtureImageURLs(in: inputURL, fileManager: .default)
@@ -51,15 +52,24 @@ enum RendererExecution {
             try requireUniqueOutputStems(imageURLs)
 
             let injection = try RendererFailureInjection.load()
-            return executeMatrix(
+            let blockedOutputNames = existingOutputCollisions(
+                in: outputURL,
+                imageURLs: imageURLs,
+                renderCases: renderCases
+            )
+            let stagingURL = try makeStagingDirectory()
+            defer { try? FileManager.default.removeItem(at: stagingURL) }
+            let result = executeMatrix(
                 inputURL: inputURL,
-                outputURL: outputURL,
+                outputURL: stagingURL,
                 imageURLs: imageURLs,
                 renderCases: renderCases,
                 suppressWatermark: command.suppressWatermark,
                 backend: command.backend,
-                injection: injection
+                injection: injection,
+                blockedOutputNames: blockedOutputNames
             )
+            return publishStagedArtifacts(from: stagingURL, to: outputURL, result: result)
         } catch let error as RendererExecutionError {
             return RendererExecutionResult(
                 stdout: "",
@@ -71,6 +81,87 @@ enum RendererExecution {
                 diagnostic: RendererDiagnostic(code: .invalidArguments)
             )
         }
+    }
+
+    private static func makeStagingDirectory() throws -> URL {
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("beauty-example-renderer-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: url, withIntermediateDirectories: false)
+        return url
+    }
+
+    private static func invalidatePreviousArtifacts(in outputURL: URL, cases: [RenderCase]) throws {
+        let fileManager = FileManager.default
+        let outputSuffixes = cases.map { "__\($0.id).png" }
+        let entries = try fileManager.contentsOfDirectory(
+            at: outputURL,
+            includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey],
+            options: [.skipsHiddenFiles]
+        )
+        for entry in entries {
+            let name = entry.lastPathComponent
+            let isGeneratedOutput = outputSuffixes.contains { name.hasSuffix($0) }
+            guard name == reportFileName || isGeneratedOutput else { continue }
+            let values = try? entry.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey])
+            guard values?.isRegularFile == true, values?.isSymbolicLink != true else { continue }
+            try fileManager.removeItem(at: entry)
+        }
+    }
+
+    private static func publishStagedArtifacts(
+        from stagingURL: URL,
+        to outputURL: URL,
+        result: RendererExecutionResult
+    ) -> RendererExecutionResult {
+        let fileManager = FileManager.default
+        let entries = (try? fileManager.contentsOfDirectory(
+            at: stagingURL,
+            includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey],
+            options: [.skipsHiddenFiles]
+        )) ?? []
+        var publicationDiagnostic: RendererDiagnostic?
+        for entry in entries.sorted(by: { $0.lastPathComponent < $1.lastPathComponent }) {
+            let values = try? entry.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey])
+            guard values?.isRegularFile == true, values?.isSymbolicLink != true else {
+                publicationDiagnostic = publicationDiagnostic ?? RendererDiagnostic(code: .outputWriteFailed)
+                continue
+            }
+            let destination = outputURL.appendingPathComponent(entry.lastPathComponent)
+            do {
+                try fileManager.copyItem(at: entry, to: destination)
+            } catch {
+                let code: RendererDiagnosticCode = entry.lastPathComponent == reportFileName
+                    ? .reportWriteFailed
+                    : .outputWriteFailed
+                publicationDiagnostic = publicationDiagnostic ?? RendererDiagnostic(code: code)
+            }
+        }
+        if let publicationDiagnostic {
+            return RendererExecutionResult(stdout: result.stdout, diagnostic: publicationDiagnostic)
+        }
+        return result
+    }
+
+    private static func existingOutputCollisions(
+        in outputURL: URL,
+        imageURLs: [URL],
+        renderCases: [RenderCase]
+    ) -> Set<String> {
+        var collisions = Set<String>()
+        for imageURL in imageURLs {
+            for renderCase in renderCases {
+                let name = outputFileName(for: imageURL, renderCase: renderCase)
+                let destination = outputURL.appendingPathComponent(name)
+                let values = try? destination.resourceValues(
+                    forKeys: [.isRegularFileKey, .isDirectoryKey, .isSymbolicLinkKey]
+                )
+                if values?.isDirectory == true || values?.isSymbolicLink == true ||
+                    (values?.isRegularFile != true && FileManager.default.fileExists(atPath: destination.path)) {
+                    collisions.insert(name)
+                }
+            }
+        }
+        return collisions
     }
 
     private static func requireOutputDirectory(_ path: String?) throws -> URL {
@@ -110,7 +201,8 @@ enum RendererExecution {
         renderCases: [RenderCase],
         suppressWatermark: Bool,
         backend: String,
-        injection: RendererFailureInjection
+        injection: RendererFailureInjection,
+        blockedOutputNames: Set<String>
     ) -> RendererExecutionResult {
         let inputIDs = imageURLs.map { relativePath($0, from: inputURL) }
         let caseIDs = renderCases.map(\.id)
@@ -223,6 +315,21 @@ enum RendererExecution {
             for (caseIndex, renderCase) in renderCases.enumerated() {
                 let destination = unitURLs[caseIndex]
                 let outputID = destination.lastPathComponent
+                if blockedOutputNames.contains(outputID) {
+                    appendUnit(
+                        inputID: inputID,
+                        caseID: renderCase.id,
+                        outputID: outputID,
+                        status: "failed",
+                        failureCode: .outputWriteFailed
+                    )
+                    recordFailure(
+                        RendererDiagnostic(code: .outputWriteFailed),
+                        inputID: inputID,
+                        caseID: renderCase.id
+                    )
+                    continue
+                }
                 do {
                     let result: BeautyResult<CIImage>
                     do {
