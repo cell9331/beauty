@@ -3,8 +3,14 @@ import simd
 
 /// Transient, aggregate-only measurements shared by CPU reference tests.
 struct CPUReferenceMetrics {
-    static func changedIndices(before: [UInt8], after: [UInt8]) -> Set<Int> {
-        guard before.count == after.count else { return [] }
+    enum Error: Swift.Error, Equatable {
+        case mismatchedByteCount
+        case malformedRGBA8ByteCount
+    }
+
+    static func changedIndices(before: [UInt8], after: [UInt8]) throws -> Set<Int> {
+        guard before.count == after.count else { throw Error.mismatchedByteCount }
+        guard before.count.isMultiple(of: 4) else { throw Error.malformedRGBA8ByteCount }
         return stride(from: 0, to: before.count, by: 4).compactMap { offset in
             let changed = (0..<4).contains { before[offset + $0] != after[offset + $0] }
             return changed ? offset / 4 : nil

@@ -51,15 +51,24 @@ final class CPUReferenceFixtureTests: XCTestCase {
         XCTAssertTrue(CPUReferenceFixtureFactory.support(.noFace).faceContour.isEmpty)
     }
 
-    func testRepeatedConstructionHasIdenticalBytesAndMetrics() {
+    func testRepeatedConstructionHasIdenticalBytesAndMetrics() throws {
         let first = CPUReferenceFixtureFactory.opaqueColorRamp()
         let second = CPUReferenceFixtureFactory.opaqueColorRamp()
         XCTAssertEqual(first, second)
-        XCTAssertTrue(CPUReferenceMetrics.changedIndices(before: first.rgba8, after: second.rgba8).isEmpty)
+        XCTAssertTrue(try CPUReferenceMetrics.changedIndices(before: first.rgba8, after: second.rgba8).isEmpty)
         XCTAssertEqual(
             CPUReferenceMetrics.meanLuminance(of: first.rgba8),
             CPUReferenceMetrics.meanLuminance(of: second.rgba8),
             accuracy: 0.000_001
         )
+    }
+
+    func testMetricsRejectMalformedRGBA8CarriersWithoutIndexingPastInput() {
+        XCTAssertThrowsError(try CPUReferenceMetrics.changedIndices(before: [1, 2, 3], after: [1, 2, 4])) { error in
+            XCTAssertEqual(error as? CPUReferenceMetrics.Error, .malformedRGBA8ByteCount)
+        }
+        XCTAssertThrowsError(try CPUReferenceMetrics.changedIndices(before: [1], after: [1, 2])) { error in
+            XCTAssertEqual(error as? CPUReferenceMetrics.Error, .mismatchedByteCount)
+        }
     }
 }
