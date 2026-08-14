@@ -58,7 +58,6 @@ generic sendability without adding Metal or GPU behavior.
   3. A clean checkout contains no active original Demo executable, SwiftUI source, Xcode application project, or selected legacy UI-reference tree after archive verification succeeds.
   4. Every active build, test, documentation, and planning command resolves to SwiftPM products, targets, tests, or SDK-owned command-line validation; repository scans find no remaining Xcode, simulator, device, or deleted-tree dependency.
 **Plans**: TBD
-**UI hint**: yes
 
 ### Phase 67: SwiftPM Consumer and CLI Validation Contract
 
@@ -97,7 +96,6 @@ generic sendability without adding Metal or GPU behavior.
   3. Active architecture, design, reliability, security, product, quality, plans, project, requirements, roadmap, and state owners consistently describe an SDK-only v1.16 with no Metal/GPU, UI, simulator/device, commercial, packaging, shipping, or release-readiness claim.
   4. A maintainer can run the hardened SwiftPM gate with all mandatory tests executed, zero failures, and zero skips; static checks reject restored Demo/UI source, generated binaries, stale Xcode commands, unconditional generic sendability, and Metal scope drift.
 **Plans**: TBD
-**UI hint**: yes
 
 ## Coverage
 
