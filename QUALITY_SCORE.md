@@ -20,9 +20,9 @@
 | --- | ---: | --- | --- |
 | Root owners | 4 | Current contracts consistently name SDK-only SwiftPM ownership and archive-only UI history. | Keep owners synchronized with code/tests. |
 | SDK package | 4 | One public library, one SDK-owned renderer, six internal/library targets, no remote dependency. | Preserve facade and dependency direction. |
-| Tests | 4 | 50 SwiftPM test files; default 650-test baseline with eight documented opt-ins; mandatory no-skip gate executes all eight with zero skip/failure. | Keep full conjunction mandatory. |
-| Archive integrity | 4 | Two independently verified ZIPs, sorted manifests, SHA-256 records, safe extraction, and digest-bound retirement evidence. | Verify before every full closeout. |
-| SDK-only boundary | 4 | Retired roots are absent; scanner rejects restored application/UI sources, tracked media, application artifacts, retained-shader drift, and backend/API drift. | Keep scanner fail-closed. |
+| Tests | 4 | 50 SwiftPM test files; default 650-test baseline with eight documented opt-ins; bounded exact XCTest/Swift Testing accounting rejects both runners' skips and ambiguity. | Keep full conjunction mandatory. |
+| Archive integrity | 4 | Code-owned ZIP/manifest anchors, exact 45/26 inventories, bounded streamed extraction, frozen-retirement rollback, and safe restore self-tests pass. | Verify before every full closeout. |
+| SDK-only boundary | 4 | Retired roots are absent; scanner rejects symlinks, restored application/UI sources, stale current owners/maps, tracked media, application artifacts, retained-shader drift, and backend/API drift. | Keep scanner fail-closed. |
 | Security | 4 | Local-first input/resource/privacy and request-local local-retouch ownership are test-backed. | Reopen for any new trust boundary. |
 | Reliability | 3 | Typed errors, deterministic degradation/recovery, input bounds, no-skip handling, and archive recovery are specified/tested; device/performance evidence is outside scope. | Add only when a later authorized milestone requires it. |
 | Product acceptance | 4 | Bounded still-image teeth/sclera behavior and exact taxonomy remain SDK-core only. | Preserve nonclaims and `去脂` future status. |
@@ -61,18 +61,23 @@ bash scripts/run-no-skip-swiftpm.sh
 
 `scripts/run-no-skip-swiftpm.sh` is the complete gate. It must run archive
 verification and the SDK-only scanner before its existing one-child SwiftPM
-transcript parser. The parser accepts only all eight opt-ins exactly once, zero
-failures, zero skips, and nonzero executed tests.
+transcript parser. Streaming capture is limited to 16 MiB and 200,000 lines. The
+parser accepts only all eight opt-ins exactly once, one nonzero zero-failure
+XCTest aggregate, one passed Swift Testing aggregate when that runner starts,
+and zero skip/disabled events from either format.
 
 ## 5. Archive Quality Gate
 
 The repository-owned archive verifier must prove:
 
-- exact artifact filenames and recorded ZIP SHA-256 values;
+- exact artifact filenames plus independent code-owned ZIP/manifest SHA-256,
+  compressed-size, 45/26 count, path-inventory, per-entry, total-uncompressed,
+  and compression-ratio anchors;
 - CRC/integrity, sorted unique safe entries, normalized metadata, and file-only
   inventory;
 - exact ZIP/manifest path, size, and content-hash equality;
-- extraction into a new temporary directory with no symlink/path escape;
+- streamed hashing/extraction into a nonexistent child of a fresh private
+  temporary directory with no symlink/path escape;
 - no restoration of retired roots into the active repository.
 
 The archive README is the only historical access contract. Raw archive contents

@@ -32,8 +32,8 @@
 | --- | --- |
 | Status | `verifying` |
 | Scope | Preserve two verified legacy archives, retire exact originals, synchronize current owners to SDK-only SwiftPM, and bind archive/static checks into the mandatory no-skip gate. |
-| Current Step | Phase 66 Plan 03 owner synchronization is complete; mandatory integrated no-skip closeout is next. |
-| Verification Policy | Archive verifier, post-archive scanner, diff hygiene, then the one-child all-opt-ins SwiftPM gate with zero failure/skip and nonzero execution. |
+| Current Step | All Phase 66 review findings are remediated and the mandatory integrated gate is green; independent phase verification is next. |
+| Verification Policy | Archive/self-test, artifact-only reproduction, post-archive scanner/self-test, bounded transcript self-test, diff hygiene, then one all-opt-ins SwiftPM child with exact XCTest/Swift Testing accounting. |
 
 Checklist:
 
@@ -41,8 +41,9 @@ Checklist:
 | --- | --- | --- |
 | Preserve taxonomy and archive tooling | `completed` | Phase 66 Plan 01 summary and commits. |
 | Materialize archives and retire exact originals | `completed` | Phase 66 Plan 02 summary and commits. |
-| Synchronize current SDK-only owners/maps | `completed` | Phase 66 Plan 03 Task 1; post-archive scanner and diff hygiene required before commit. |
-| Bind and run full closeout | `verifying` | Phase 66 Plan 03 Task 2. |
+| Synchronize current SDK-only owners/maps | `completed` | Root/current maps plus `docs/README.md` are SDK-only; scanner covers all current owner/map classes and rejects file/directory symlinks. |
+| Bind and run full closeout | `completed` | Archive/boundary/transcript self-tests pass; the bounded all-opt-ins child executes 650 tests with zero failures/skips. |
+| Remediate Phase 66 code review | `completed` | CR-01..CR-07 and WR-01..WR-03 closed with independent anchors, frozen retirement, safe restore, bounded ZIP/transcript handling, exact runner accounting, symlink rejection, current-map coverage, and mutation tests. |
 
 ## 3A. Historical Lifecycle Ledger
 

@@ -1,12 +1,13 @@
 ---
 phase: 66-legacy-ui-demo-archive-and-sdk-only-boundary
-reviewed: 2026-08-14T02:52:16Z
+reviewed: 2026-08-14T03:20:33Z
 depth: standard
-files_reviewed: 28
+files_reviewed: 29
 files_reviewed_list:
   - scripts/archive-legacy-ui.py
   - scripts/check-sdk-only-boundary.sh
   - scripts/run-no-skip-swiftpm.sh
+  - scripts/check-no-skip-transcript.py
   - archives/legacy-ui/README.md
   - archives/legacy-ui/BeautyDemo-v1.16.manifest.tsv
   - archives/legacy-ui/BeautyDemo-v1.16.zip
@@ -33,21 +34,30 @@ files_reviewed_list:
   - .planning/codebase/CONVENTIONS.md
   - .planning/codebase/CONCERNS.md
 findings:
-  critical: 7
-  warning: 3
+  critical: 0
+  warning: 0
   info: 0
-  total: 10
-status: issues_found
+  total: 0
+  resolved: 10
+status: clean
 ---
 
 # Phase 66: Code Review Report
 
-**Reviewed:** 2026-08-14T02:52:16Z
+**Reviewed:** 2026-08-14T03:20:33Z
 **Depth:** standard
 **Files Reviewed:** 28
-**Status:** issues_found
+**Status:** clean
 
-## Summary
+## Resolution Summary
+
+All seven Critical and three Warning findings are closed by commits `5ddd6cb`,
+`46b6ab8`, and `c26d7c4`. The archive, boundary, and transcript mutation
+self-tests pass, canonical artifact verification and artifact-only reproduction
+pass with both live roots absent, and the mandatory bounded SwiftPM gate executes
+650 tests with all eight opt-ins, zero failures, and zero skips.
+
+## Original Summary
 
 The committed archives currently match their manifests and recorded digests, the
 archive and boundary self-tests pass, and the current source/test inventory counts
@@ -66,6 +76,10 @@ that are already stale.
 ### CR-01: Artifact-only verification accepts complete historical data loss
 
 **Classification:** BLOCKER
+
+**Status:** Fixed (`5ddd6cb`). Independent code-owned ZIP/manifest digests,
+exact 45/26 counts and path inventories, and an empty-bundle mutation now fail
+before parsing or extraction.
 
 **File:** `/Users/yakangwang/codes/beauty/scripts/archive-legacy-ui.py:191-218`
 
@@ -90,6 +104,10 @@ requires failure.
 
 **Classification:** BLOCKER
 
+**Status:** Fixed (`5ddd6cb`). Both exact roots are renamed into quarantine
+before file-descriptor inventory/reproduction; a late untracked mutation test
+proves rollback preserves the added bytes.
+
 **File:** `/Users/yakangwang/codes/beauty/scripts/archive-legacy-ui.py:481-516`
 
 **Issue:** The expensive fresh reproduction completes before either source root is
@@ -112,6 +130,9 @@ deleted.
 
 **Classification:** BLOCKER
 
+**Status:** Fixed (`5ddd6cb`). Descriptor-relative traversal uses `O_NOFOLLOW`,
+`fstat`, stable device/inode/size/mtime checks, and an adversarial swap test.
+
 **File:** `/Users/yakangwang/codes/beauty/scripts/archive-legacy-ui.py:142-159`
 
 **Issue:** Each entry is `stat`ed with `follow_symlinks=False`, but the later
@@ -129,6 +150,10 @@ reopen validated entries by pathname. Add an adversarial swap test.
 ### CR-04: Recovery instructions extract unverified bytes into a predictable existing directory
 
 **Classification:** BLOCKER
+
+**Status:** Fixed (`5ddd6cb`). `restore --destination` verifies one pinned
+snapshot before creating a nonexistent destination under a fresh private temp
+parent; README recovery no longer invokes a general extractor.
 
 **File:** `/Users/yakangwang/codes/beauty/archives/legacy-ui/README.md:85-94`
 
@@ -148,6 +173,10 @@ tool's safe writer. Document that command only; never direct users to `unzip` fi
 ### CR-05: ZIP verification has no size or expansion bounds
 
 **Classification:** BLOCKER
+
+**Status:** Fixed (`5ddd6cb`). Pinned compressed size, entry count, per-entry and
+total-uncompressed bounds, a 20:1 ratio ceiling, and streamed hashing/extraction
+are covered by oversize/overflow/high-expansion mutations.
 
 **File:** `/Users/yakangwang/codes/beauty/scripts/archive-legacy-ui.py:330-373`
 
@@ -169,6 +198,9 @@ sum-overflow, and high-expansion self-tests.
 
 **Classification:** BLOCKER
 
+**Status:** Fixed (`46b6ab8`). The parser rejects XCTest and Swift Testing
+skip/disabled events and its fixtures cover both runners' pass/fail/skip forms.
+
 **File:** `/Users/yakangwang/codes/beauty/scripts/run-no-skip-swiftpm.sh:72-75`
 
 **Issue:** The skip regex recognizes XCTest's `Test Case '…' skipped` and summary
@@ -188,6 +220,10 @@ exact runner accounting result before success.
 
 **Classification:** BLOCKER
 
+**Status:** Fixed (`c26d7c4`). The scanner classifies active entries with
+`lstat`, rejects every active symlink, and tests external directory and forbidden
+file symlinks.
+
 **File:** `/Users/yakangwang/codes/beauty/scripts/check-sdk-only-boundary.sh:252-267`
 
 **Issue:** `Path.rglob` does not recurse through directory symlinks, and the loop
@@ -206,6 +242,10 @@ SwiftUI/Xcode tree and a file symlink to a forbidden artifact.
 ### WR-01: The scanner omits current documents that are already stale
 
 **Classification:** WARNING
+
+**Status:** Fixed (`c26d7c4`). `docs/README.md` and the four drifting codebase
+maps are SDK-only; one canonical current-owner/map inventory is scanned with
+mutations for root, docs, planning, map, and script classes.
 
 **File:** `/Users/yakangwang/codes/beauty/scripts/check-sdk-only-boundary.sh:196-250`
 
@@ -228,6 +268,10 @@ mutation in every included document class.
 
 **Classification:** WARNING
 
+**Status:** Fixed (`5ddd6cb`). Retirement rejects any pre-existing tracked
+deletion, compares the absolute post-move set, and self-tests an unrelated dirty
+deletion plus required sentinels.
+
 **File:** `/Users/yakangwang/codes/beauty/scripts/archive-legacy-ui.py:474-505`
 
 **Issue:** The transaction snapshots `deleted_before` and validates only
@@ -245,6 +289,10 @@ worktree with an unrelated deletion in self-test.
 
 **Classification:** WARNING
 
+**Status:** Fixed (`46b6ab8`). Streaming capture terminates at 16 MiB or 200,000
+lines; exact runner aggregates reject missing, duplicate, contradictory, failed,
+skipped, disabled, oversized, or zero-test transcripts.
+
 **File:** `/Users/yakangwang/codes/beauty/scripts/run-no-skip-swiftpm.sh:51-90`
 
 **Issue:** `RELIABILITY.md:30` and `RELIABILITY.md:105-107` say oversized or
@@ -259,6 +307,6 @@ contract only if those guarantees are intentionally removed.
 
 ---
 
-_Reviewed: 2026-08-14T02:52:16Z_
+_Reviewed: 2026-08-14T03:20:33Z_
 _Reviewer: the agent (gsd-code-reviewer)_
 _Depth: standard_
