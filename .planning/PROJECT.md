@@ -18,13 +18,13 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Implementation state:** v1.15 independently implements bounded opaque still-image `teethWhitening` and per-eye `scleraRednessReduction` through the public SDK facade. The active SDK inventory is 61 public fields, five neutral presets and 74 renderer cases. `白牙`, `嘴唇` and `祛红血丝` are implemented at SDK-core scope; aggregate `眼睛` remains partial solely because `去脂` remains future. Historical application taxonomy remains archive-only.
 
-**Verification state:** Combined public output byte-matches independently merged standalone outputs; collisions preserve source and injected failure units retain unaffected bytes. Named-sRGB facade carriers and saved PNGs, request-local privacy, 61/5/74 compatibility, and both private 6/6 output matrices remain the bounded SDK-core baseline. The Phase 67 public-only consumer, 24-case renderer regression, 7-case compiled Process matrix, and generated CPU reference preflight pass before the mandatory archive → boundary → consumer → generated CPU oracle → one-child SwiftPM conjunction. The measured full child executes 699 tests with zero failures and zero skips, including all eight opt-ins. Device/performance/commercial/packaging/shipping/launch/release-readiness remain separate scopes.
+**Verification state:** Combined public output byte-matches independently merged standalone outputs; collisions preserve source and injected failure units retain unaffected bytes. Named-sRGB facade carriers and saved PNGs, request-local privacy, 61/5/74 compatibility, and both private 6/6 output matrices remain the bounded SDK-core baseline. Phase 69 also proves conditional public `BeautyResult` sendability through compile/runtime coverage and rejects the historical unconditional generic declaration. The public-only consumer, 24-case renderer regression, 7-case compiled Process matrix, and generated CPU reference preflight pass before the mandatory archive → boundary self-test/live scan → consumer → generated CPU oracle → optional fixtures → one-child SwiftPM conjunction. The measured full child executes 702 tests with zero failures and zero skips, including all eight opt-ins. Device/performance/commercial/packaging/shipping/launch/release-readiness remain separate scopes.
 
 **Current milestone goals:** v1.16 has archived and removed active application/UI sources and now closes the SwiftPM plus `BeautyExampleRenderer` validation boundary before freezing CPU output oracles and repairing generic-result sendability without touching retained shader bytes or adding backend behavior. v1.17 remains queued for a separately selectable alternate backend with no silent fallback and shared algorithm/support semantics. `去脂`, new semantic-mask features, model/network, population/device/commercial, packaging, shipping, launch and release-readiness work remain future or separately scoped.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Broader historical application/device/release evidence remains time-bounded and cannot satisfy current SDK requirements. The codebase maps were refreshed again from the post-archive active source/tests on 2026-08-14.
 
-**Code size:** the immutable `v1.15` tag contains 49,018 tracked Swift source/test lines. The active post-archive SDK-only tree contains 66 Swift source files / 14,950 source lines and 60 SwiftPM test files / 29,933 test lines, excluding `.build` and archive contents.
+**Code size:** the immutable `v1.15` tag contains 49,018 tracked Swift source/test lines. The active post-archive SDK-only tree contains 66 Swift source files / 14,952 source lines and 61 SwiftPM test files / 29,995 test lines, excluding `.build` and archive contents.
 
 ## Planned SDK-First Milestone Sequence
 
@@ -59,10 +59,20 @@ launch, or release-readiness claim follows from these gates.
 Phase 68's current contract is the CPU/Core Image implementation frozen by
 generated in-memory RGBA8/sRGB fixture, geometry/color semantic, local-retouch
 safety, and determinism oracles. The generated preflight executes 15 + 10 + 16
-tests with zero skips, and the final no-skip child executes 699 tests with all
-eight private opt-ins. Private/native-Vision evidence remains explicit and
-non-authoritative for generated success; no tracked media, raw pixels, masks,
-support, paths, Metal/GPU/backend, UI/Demo, device, or release claim follows.
+tests with zero skips, and the final Phase 69 no-skip child executes 702 tests
+with all eight private opt-ins and zero failures/skips. Private/native-Vision
+evidence remains explicit and non-authoritative for generated success; no
+tracked media, raw pixels, masks, support, paths, Metal/GPU/backend, UI/Demo,
+device, or release claim follows.
+
+Phase 69's closeout contract is conditional `BeautyResult<Output>` sendability,
+public compile/runtime task-hop coverage, a mutation-tested boundary guard, and
+one archive-first SDK-only gate. The aggregate gate passes archive verification,
+boundary self-test/live scan, public consumer, generated CPU oracle, all eight
+optional fixtures, and one full SwiftPM child with 702 tests, zero failures, and
+zero skips. The next Metal/GPU milestone remains queued; no UI/Demo,
+simulator/device, performance, commercial, packaging, shipping, launch, or
+release-readiness claim follows.
 
 ## Last Completed Milestone: v1.15 Independent Teeth and Sclera Retouch
 

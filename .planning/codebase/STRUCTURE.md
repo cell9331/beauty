@@ -32,8 +32,8 @@ beauty/
 └── .planning/
 ```
 
-The active tree contains 66 Swift source files and 60 SwiftPM test files.
-Production/test Swift lines are 14,950/29,933, excluding `.build`. The package
+The active tree contains 66 Swift source files and 61 SwiftPM test files.
+Production/test Swift lines are 14,952/29,995, excluding `.build`. The package
 declares one public library, one SDK-owned executable, six internal/library
 targets, and six test targets.
 
@@ -58,7 +58,17 @@ targets, and six test targets.
 - `BeautySDK/Tests/BeautyCoreTests/BeautyExampleRendererProcessTests.swift`:
   compiled Foundation `Process` matrix with temporary fixtures and bounded
   stream capture.
+- `BeautySDK/Tests/BeautySDKTests/BeautyResultConcurrencyTests.swift`:
+  public conditional-sendability compile/runtime coverage with complete result
+  field preservation across an async task hop.
+- `BeautySDK/Tests/BeautyCoreTests/CPUReferenceDeterminismTests.swift` and the
+  generated `CPUReference*OracleTests.swift` suites: current CPU/Core Image
+  reference semantics, safety, determinism, and failure-isolation coverage.
 - `scripts`: archive integrity, SDK boundary, consumer, and no-skip SwiftPM gates.
+- `scripts/check-cpu-reference-oracles.sh`: generated-only CPU reference
+  preflight that stays separate from optional private/native-Vision fixtures.
+- `scripts/check-sdk-only-boundary.sh`: active-tree scanner and mutation-tested
+  rejection of unconditional generic `BeautyResult` sendability.
 - `archives/legacy-ui`: verified historical ZIPs, manifests, digest records,
   and restoration contract; never an active build input.
 
@@ -102,4 +112,4 @@ in a new temporary directory and must never be used as an active source owner.
   or commit as source.
 
 ---
-*Structure analysis: 2026-08-14 after Phase 66 archive retirement*
+*Structure analysis: 2026-08-14 after Phase 69 aggregate SDK-only closeout*

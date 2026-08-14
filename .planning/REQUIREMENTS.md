@@ -31,10 +31,10 @@
 
 ### Concurrency and Closeout
 
-- [ ] **CONC-01**: `BeautyResult<Output>` is `Sendable` only when `Output: Sendable`; the public API no longer relies on unconditional `@unchecked Sendable` for an arbitrary generic payload.
-- [ ] **CONC-02**: Compile-time and runtime tests prove sendable outputs cross concurrency boundaries safely while non-sendable payloads do not gain a false conformance, without breaking existing source use of `BeautyResult`.
-- [ ] **CLOSE-01**: Active architecture, design, reliability, security, product, quality, plans, project, requirements, roadmap, and state owners agree that the repository is SDK-only and that v1.16 makes no Metal, GPU, UI, simulator/device, commercial, packaging, shipping, or release-readiness claim.
-- [ ] **CLOSE-02**: The hardened no-skip SwiftPM gate runs all mandatory tests with zero failures and zero skips, and static repository checks reject restored Demo/UI sources, generated binary output, stale Xcode commands, unconditional generic sendability, or Metal scope drift.
+- [x] **CONC-01**: `BeautyResult<Output>` is `Sendable` only when `Output: Sendable`; the public API no longer relies on unconditional `@unchecked Sendable` for an arbitrary generic payload.
+- [x] **CONC-02**: Compile-time and runtime tests prove sendable outputs cross concurrency boundaries safely while non-sendable payloads do not gain a false conformance, without breaking existing source use of `BeautyResult`.
+- [x] **CLOSE-01**: Active architecture, design, reliability, security, product, quality, plans, project, requirements, roadmap, and state owners agree that the repository is SDK-only and that v1.16 makes no Metal, GPU, UI, simulator/device, commercial, packaging, shipping, or release-readiness claim.
+- [x] **CLOSE-02**: The hardened no-skip SwiftPM gate runs all mandatory tests with zero failures and zero skips, and static repository checks reject restored Demo/UI sources, generated binary output, stale Xcode commands, unconditional generic sendability, or Metal scope drift.
 
 ## Future Requirements
 
@@ -75,10 +75,10 @@
 | CPU-03 | Phase 68 | Complete |
 | CPU-04 | Phase 68 | Complete |
 | CPU-05 | Phase 68 | Complete |
-| CONC-01 | Phase 69 | Pending |
-| CONC-02 | Phase 69 | Pending |
-| CLOSE-01 | Phase 69 | Pending |
-| CLOSE-02 | Phase 69 | Pending |
+| CONC-01 | Phase 69 | Complete |
+| CONC-02 | Phase 69 | Complete |
+| CLOSE-01 | Phase 69 | Complete |
+| CLOSE-02 | Phase 69 | Complete |
 
 **Coverage:**
 
@@ -90,4 +90,4 @@
 
 ---
 *Requirements defined: 2026-08-14*
-*Last updated: 2026-08-14 after roadmap creation and exact traceability validation*
+*Last updated: 2026-08-14 after Phase 69 aggregate verification and exact traceability validation*

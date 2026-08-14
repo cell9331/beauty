@@ -4,16 +4,16 @@ milestone: v1.16
 milestone_name: SDK-Only Foundation and CPU Reference
 current_phase: 69
 current_phase_name: Public Concurrency Repair and SDK-Only Closeout
-status: planning
-stopped_at: Completed 67-04-PLAN.md
-last_updated: "2026-08-14T08:52:29.212Z"
+status: verifying
+stopped_at: Completed 69-04-PLAN.md; awaiting independent Phase 69 verification
+last_updated: "2026-08-14T17:24:00+08:00"
 last_activity: 2026-08-14
-last_activity_desc: Phase 68 complete, transitioned to Phase 69
+last_activity_desc: Phase 69 implementation and aggregate SDK-only closeout complete; independent verification pending
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 11
-  completed_plans: 11
+  total_plans: 15
+  completed_plans: 15
   percent: 75
 ---
 
@@ -29,9 +29,9 @@ See: `.planning/PROJECT.md` (updated 2026-08-14)
 ## Current Position
 
 Phase: 69 — Public Concurrency Repair and SDK-Only Closeout
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-08-14 — Phase 68 complete, transitioned to Phase 69
+Plan: 69-04 complete
+Status: Verifying
+Last activity: 2026-08-14 — Phase 69 aggregate closeout recorded; independent verification pending
 
 Progress: [███████---] 75%
 
@@ -39,7 +39,7 @@ Progress: [███████---] 75%
 
 **Current milestone:**
 
-- Total plans completed: 11
+- Total plans completed: 15
 - Average duration: 14 min
 - Total execution time: 54 min
 
@@ -71,7 +71,8 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 - [Phase 67]: CLI reports persist only versioned aggregate counts and relative public identities; child output, paths, pixels, masks, geometry, fixture metadata, and failure-seam values remain non-durable.
 - [Phase 68]: Mandatory CPU reference evidence is generated in-memory RGBA8/sRGB only; fixture/facade, geometry/color, and local-retouch/determinism preflights pass 15/15, 10/10, and 16/16 with zero generated skips.
 - [Phase 68]: The generated CPU preflight runs after the public consumer and before private/native-Vision opt-ins and the one-child SwiftPM gate; optional skips cannot lend success to CPU requirements.
-- [Phase 68]: The final no-skip gate executes 699 tests with zero failures and zero skips; raw pixels, masks, support, paths, transcripts, and fixture metadata remain non-durable.
+- [Phase 68]: The final no-skip gate executes 702 tests with zero failures and zero skips; raw pixels, masks, support, paths, transcripts, and fixture metadata remain non-durable.
+- [Phase 69]: The final archive-first gate passes boundary self-test/live scan, public consumer, generated CPU oracle, all eight optional fixtures, and one 702-test SwiftPM child with zero failures and zero skips; the four Phase 69 requirements are traced while lifecycle completion remains with independent verification.
 
 ### Pending Todos
 
@@ -79,7 +80,7 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- Phase 66, Phase 67, and Phase 68 independently passed their goal-backward verification; Phase 69 is ready to plan.
+- Phase 66, Phase 67, and Phase 68 independently passed their goal-backward verification; Phase 69 implementation and aggregate gates are complete and await independent verification/lifecycle completion.
 - Metal source, GPU API, backend parity implementation, and any UI/Demo development are outside v1.16 even when adjacent code or historical documents mention them.
 
 ## Deferred Items
@@ -96,7 +97,7 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-14T06:04:52.790Z
-Stopped at: Completed 67-04-PLAN.md
+Last session: 2026-08-14T17:24:00+08:00
+Stopped at: Completed 69-04-PLAN.md; awaiting independent Phase 69 verification
 Resume file: None
-Next action: Plan Phase 69 public concurrency repair and SDK-only closeout; do not add UI, Demo, Metal/GPU, or release scope.
+Next action: Independently verify Phase 69 and run the lifecycle completion command; preserve queued v1.17 Metal/GPU and do not add UI, Demo, device, or release scope.
