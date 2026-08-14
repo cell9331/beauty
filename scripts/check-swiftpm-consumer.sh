@@ -118,7 +118,7 @@ run_consumer() {
     local scratch build_log runtime_log bin_path build_status runtime_status
     scratch="$(mktemp -d "${TMPDIR:-/tmp}/beauty-consumer-check.XXXXXX")"
     scratch="$(cd "$scratch" && pwd -P)"
-    trap 'rm -rf "${scratch}"' RETURN
+    trap "rm -rf -- '${scratch}'" EXIT
     mkdir -p "${scratch}/build"
     build_log="${scratch}/build.log"
     runtime_log="${scratch}/runtime.log"
@@ -150,7 +150,7 @@ run_consumer() {
 self_test() {
     local self_test_root mutation_root
     self_test_root="$(mktemp -d "${TMPDIR:-/tmp}/beauty-consumer-self-test.XXXXXX")"
-    trap 'rm -rf "${self_test_root}"' RETURN
+    trap "rm -rf -- '${self_test_root}'" EXIT
     mutation_root="${self_test_root}/fixture"
     mkdir -p "${mutation_root}/Sources/BeautySDKConsumer"
     mkdir -p "${self_test_root}/BeautySDK"
