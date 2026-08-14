@@ -71,7 +71,7 @@ Each task was committed atomically:
 1. **Task 1: Build the independent public-product consumer smoke** - `da1178a` (feat)
 2. **Task 2: Make the consumer smoke a fail-closed mandatory preflight** - `2e9ae63` (chore)
 
-**Plan metadata:** pending state/roadmap metadata commit after self-check.
+**Plan metadata:** `bf19368` (docs: complete plan)
 
 ## Files Created/Modified
 
