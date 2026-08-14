@@ -11,7 +11,7 @@ requires:
 provides:
   - Fail-closed generated-only CPU oracle preflight and mandatory gate ordering.
   - Synchronized SDK-only privacy, reliability, architecture, quality, testing, project, roadmap, state, and plan ledgers.
-  - Aggregate Phase 68 evidence: 9 fixture/facade, 9 geometry/color, 15 local-retouch/determinism, and 691 full no-skip tests.
+  - Aggregate Phase 68 evidence: 10 fixture/facade, 10 geometry/color, and 15 local-retouch/determinism tests after review hardening; the full no-skip count remains a main-worktree closeout gate because this isolated fixer worktree has no ignored private bundles.
 affects: [phase-69, v1.17-metal-planning, cpu-reference-oracles]
 
 # Tech tracking
@@ -67,7 +67,7 @@ completed: 2026-08-14
 
 - Added `check-cpu-reference-oracles.sh` with static generated-source/privacy/CPU-only checks, explicit native fixture guard checks, bounded focused execution, a mutation self-test, and aggregate-only markers.
 - Wired the preflight into `run-no-skip-swiftpm.sh` after archive/boundary/consumer checks and before private opt-ins and the one-child SwiftPM run.
-- Updated current owners and ledgers to measured inventory: 60 test files, 29,738 test lines, generated focused totals 9/9/15, and final no-skip 691/0/0 with all eight opt-ins.
+- Review remediation measured the generated focused totals at 10/10/15. The prior implementation closeout recorded 691/0/0; the full 693-test post-fix count must be rerun from the main worktree where ignored private bundles are available.
 
 ## Task Commits
 
@@ -106,9 +106,16 @@ Additional rule-driven fix: `40ae082` (fix) keeps the generated sibling-isolatio
 - **Verification:** Focused adversarial/local-retouch run passed 13/13; final `scripts/run-no-skip-swiftpm.sh` passed 691/691 with zero failures/skips.
 - **Committed in:** `40ae082`
 
+**2. [Review remediation] Closed fail-open CPU oracle coverage and rendering guards**
+- **Found during:** Phase 68 deep code review
+- **Issue:** The preflight accepted partial focused suites, cross-file native fixture guards, and implicit Core Image rendering; malformed geometry, signed colors, malformed RGBA carriers, and output color-space metadata also lacked strict assertions.
+- **Fix:** Require exact parsed aggregate counts and suite identities with mutation self-tests, validate each native fixture independently, force software Core Image contexts, require malformed support to abstain with unchanged bytes, test both signed directions, throw on malformed metric carriers, and inspect output color-space metadata.
+- **Verification:** CPU fixture/facade 10/10, geometry/color 10/10, local/determinism 15/15, preflight self-test and normal mode pass.
+- **Committed in:** `2e326e9`, `9d24a1f`, `41444a1`, `106d385`, `ef3d14d`, `bf3e4c1`
+
 ---
 
-**Total deviations:** 1 auto-fixed (Rule 1 bug)
+**Total deviations:** 2 auto-fixed (one plan bug, one review remediation)
 **Impact on plan:** Necessary compatibility correction directly caused by the generated test; no production behavior or scope expansion.
 
 ## Issues Encountered
@@ -132,5 +139,5 @@ Phase 68 implementation is ready for independent verification against CPU-01..CP
 
 - Summary file exists at the planned path.
 - Task commits `466add4`, `d046df7`, and `c5ee3db` plus deviation fix `40ae082` are present in git history.
-- `bash scripts/check-cpu-reference-oracles.sh --self-test` and normal focused preflight pass.
-- Archive, boundary, consumer, final no-skip (`691` tests, zero failures/skips), and `git diff --check` pass.
+- `bash scripts/check-cpu-reference-oracles.sh --self-test` and normal focused preflight pass with exact `10/10/15` counts.
+- Focused CPU reference suites pass `24/24`; archive, boundary, consumer, full no-skip (`693` expected after the two added tests), and `git diff --check` are the remaining closeout gates.
