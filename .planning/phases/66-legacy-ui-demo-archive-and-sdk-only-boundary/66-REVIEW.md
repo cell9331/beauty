@@ -1,7 +1,8 @@
 ---
 phase: 66-legacy-ui-demo-archive-and-sdk-only-boundary
-reviewed: 2026-08-14T03:20:33Z
+reviewed: 2026-08-14T03:36:54Z
 depth: standard
+iteration: 2
 files_reviewed: 29
 files_reviewed_list:
   - scripts/archive-legacy-ui.py
@@ -38,24 +39,45 @@ findings:
   warning: 0
   info: 0
   total: 0
-  resolved: 10
+  resolved: 12
 status: clean
 ---
 
 # Phase 66: Code Review Report
 
-**Reviewed:** 2026-08-14T03:20:33Z
+**Reviewed:** 2026-08-14T03:36:54Z
 **Depth:** standard
 **Files Reviewed:** 29
 **Status:** clean
 
 ## Resolution Summary
 
-All seven Critical and three Warning findings are closed by commits `5ddd6cb`,
-`46b6ab8`, and `c26d7c4`. The archive, boundary, and transcript mutation
-self-tests pass, canonical artifact verification and artifact-only reproduction
-pass with both live roots absent, and the mandatory bounded SwiftPM gate executes
-650 tests with all eight opt-ins, zero failures, and zero skips.
+All seven Critical, three Warning, and two iteration-2 follow-up findings are
+closed by commits `5ddd6cb`, `46b6ab8`, `c26d7c4`, `76ba3f3`, and `8d4fe9b`.
+The archive, boundary, and transcript mutation self-tests pass, canonical artifact
+verification and artifact-only reproduction pass with both live roots absent,
+and the mandatory bounded SwiftPM gate executes 650 tests with all eight opt-ins,
+zero failures, and zero skips.
+
+## Iteration 2 Follow-up Findings
+
+### F2-01: Rollback collision could delete quarantined originals
+
+**Status:** Fixed (`76ba3f3`). Rollback now preflights every destination before
+restoring any root. A recreated source path preserves the complete two-root
+quarantine and reports its manual recovery path; a partial restore failure also
+leaves every not-yet-restored original in quarantine. The deterministic
+post-quarantine recreation self-test proves the replacement and both staged
+originals coexist unchanged, requires a failure result, then performs explicit
+fixture recovery.
+
+### F2-02: Post-archive symlink scan rejected ignored SwiftPM build links
+
+**Status:** Fixed (`8d4fe9b`). The scanner prunes only real directories named
+exactly `.build` when `git check-ignore --no-index` confirms the tree is ignored.
+Its self-test accepts ignored `.codex` skill-source and `.planning` spike build
+symlinks while the existing active source-tree and file symlink mutations still
+fail closed.
 
 ## Original Summary
 

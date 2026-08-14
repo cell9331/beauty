@@ -1,90 +1,59 @@
 ---
 phase: 66-legacy-ui-demo-archive-and-sdk-only-boundary
-fixed_at: 2026-08-14T03:20:33Z
+fixed_at: 2026-08-14T03:36:54Z
 review_path: .planning/phases/66-legacy-ui-demo-archive-and-sdk-only-boundary/66-REVIEW.md
-iteration: 1
-findings_in_scope: 10
-fixed: 10
+iteration: 2
+findings_in_scope: 2
+fixed: 2
 skipped: 0
 status: all_fixed
 ---
 
 # Phase 66: Code Review Fix Report
 
-**Fixed at:** 2026-08-14T03:20:33Z
+**Fixed at:** 2026-08-14T03:36:54Z
 **Source review:** `.planning/phases/66-legacy-ui-demo-archive-and-sdk-only-boundary/66-REVIEW.md`
-**Iteration:** 1
+**Iteration:** 2
 
 **Summary:**
 
-- Findings in scope: 10
-- Fixed: 10
+- Findings in scope: 2
+- Fixed: 2
 - Skipped: 0
 
 ## Fixed Issues
 
-### CR-01: Artifact-only verification accepts complete historical data loss
-
-**Files modified:** `scripts/archive-legacy-ui.py`, `archives/legacy-ui/README.md`, `SECURITY.md`, `RELIABILITY.md`
-**Commit:** `5ddd6cb`
-**Applied fix:** Pinned independent ZIP/manifest digests, exact counts and full path inventories; rejected empty manifests and self-consistent empty replacements.
-
-### CR-02: Retirement can delete content added or changed after reproduction
-
-**Files modified:** `scripts/archive-legacy-ui.py`, `archives/legacy-ui/README.md`, `SECURITY.md`, `RELIABILITY.md`
-**Commit:** `5ddd6cb`
-**Applied fix:** Renamed exact roots to quarantine first, verified the frozen descriptor inventory and deterministic digest, and restored late mutations on mismatch.
-
-### CR-03: Source enumeration can follow a raced symlink outside the source root
+### F2-01: Rollback collision could delete quarantined originals
 
 **Files modified:** `scripts/archive-legacy-ui.py`
-**Commit:** `5ddd6cb`
-**Applied fix:** Replaced pathname reopening with descriptor-relative `O_NOFOLLOW` traversal and stable `fstat` checks; added adversarial swap coverage.
+**Commit:** `76ba3f3`
+**Applied fix:** Preflighted every rollback destination before restoring any root,
+preserved the complete quarantine with a reported recovery path on collision,
+and retained any not-yet-restored root if restoration itself fails. Added a
+deterministic post-quarantine recreation test that requires failure and proves
+the replacement plus both original trees remain unchanged and recoverable.
 
-### CR-04: Recovery instructions extract unverified bytes into a predictable existing directory
-
-**Files modified:** `scripts/archive-legacy-ui.py`, `archives/legacy-ui/README.md`, `SECURITY.md`, `RELIABILITY.md`
-**Commit:** `5ddd6cb`
-**Applied fix:** Added verified-snapshot `restore --destination` with fresh private temp-parent and nonexistent outside-repository destination requirements.
-
-### CR-05: ZIP verification has no size or expansion bounds
-
-**Files modified:** `scripts/archive-legacy-ui.py`, `archives/legacy-ui/README.md`, `SECURITY.md`, `RELIABILITY.md`
-**Commit:** `5ddd6cb`
-**Applied fix:** Enforced compressed, per-entry, total, count, and ratio bounds before decompression and streamed every entry through hashing/bounded extraction.
-
-### CR-06: The no-skip gate misses Swift Testing skips
-
-**Files modified:** `scripts/check-no-skip-transcript.py`, `scripts/run-no-skip-swiftpm.sh`, `RELIABILITY.md`
-**Commit:** `46b6ab8`
-**Applied fix:** Added exact XCTest/Swift Testing accounting and pass/fail/skip/disabled transcript fixtures.
-
-### CR-07: A symlinked application tree is invisible to the SDK-only scanner
+### F2-02: Post-archive symlink scan rejected ignored SwiftPM build links
 
 **Files modified:** `scripts/check-sdk-only-boundary.sh`
-**Commit:** `c26d7c4`
-**Applied fix:** Used `lstat` classification and rejected all active file/directory symlinks, including external restored-tree mutations.
+**Commit:** `8d4fe9b`
+**Applied fix:** Pruned only real directories named exactly `.build` after a
+successful `git check-ignore --no-index` decision. Added passing ignored-build
+symlink fixtures under `.codex` and `.planning`, while retaining failing active
+source directory and file symlink fixtures.
 
-### WR-01: The scanner omits current documents that are already stale
+## Verification
 
-**Files modified:** `scripts/check-sdk-only-boundary.sh`, `docs/README.md`, `.planning/codebase/ARCHITECTURE.md`, `.planning/codebase/INTEGRATIONS.md`, `.planning/codebase/CONVENTIONS.md`, `.planning/codebase/CONCERNS.md`
-**Commit:** `c26d7c4`
-**Applied fix:** Canonicalized the complete current owner/map inventory, added per-document-class mutations, and rewrote all five stale documents to the SDK-only boundary.
-
-### WR-02: Pre-existing unrelated tracked deletions do not block retirement
-
-**Files modified:** `scripts/archive-legacy-ui.py`, `archives/legacy-ui/README.md`, `SECURITY.md`
-**Commit:** `5ddd6cb`
-**Applied fix:** Rejected any pre-existing tracked deletion and compared the absolute post-move set with the exact allowlist; added dirty-deletion coverage.
-
-### WR-03: The claimed transcript-size and ambiguity policy is not implemented
-
-**Files modified:** `scripts/check-no-skip-transcript.py`, `scripts/run-no-skip-swiftpm.sh`, `RELIABILITY.md`
-**Commit:** `46b6ab8`
-**Applied fix:** Added 16 MiB/200,000-line streaming limits with child termination and exact duplicate/contradictory aggregate rejection.
+- Python compilation and shell syntax checks passed.
+- Archive self-test, canonical verify, and artifact-only reproduce passed.
+- Boundary self-test and post-archive scan passed.
+- No-skip transcript self-test passed.
+- Full no-skip SwiftPM gate passed: 650 tests, zero failures, zero skips,
+  all eight required opt-ins observed.
+- `git diff --check` passed.
 
 ---
 
-_Fixed: 2026-08-14T03:20:33Z_
+_Fixed: 2026-08-14T03:36:54Z_
 _Fixer: the agent (gsd-code-fixer)_
-_Iteration: 1_
+_Iteration: 2_
