@@ -135,6 +135,6 @@ remain shared, and no v1.17 Metal source or API is authorized by v1.16.
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
 | 66. Legacy UI/Demo Archive and SDK-Only Boundary | v1.16 | 3/3 | Verification pending | - |
-| 67. SwiftPM Consumer and CLI Validation Contract | v1.16 | 1/4 | In Progress | - |
+| 67. SwiftPM Consumer and CLI Validation Contract | v1.16 | 2/4 | In Progress | - |
 | 68. CPU Algorithm Reference Oracles | v1.16 | 0/TBD | Not started | - |
 | 69. Public Concurrency Repair and SDK-Only Closeout | v1.16 | 0/TBD | Not started | - |
