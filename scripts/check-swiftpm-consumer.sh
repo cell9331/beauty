@@ -11,6 +11,14 @@ readonly maximum_build_output_bytes=$((16 * 1024 * 1024))
 readonly maximum_runtime_output_bytes=$((1 * 1024 * 1024))
 readonly maximum_runtime_output_lines=200000
 
+cleanup_root=""
+
+cleanup_root_on_exit() {
+    if [[ -n "$cleanup_root" ]]; then
+        rm -rf -- "$cleanup_root"
+    fi
+}
+
 fail() {
     echo "swiftpm_consumer_check_failed" >&2
     return 1
@@ -118,7 +126,8 @@ run_consumer() {
     local scratch build_log runtime_log bin_path build_status runtime_status
     scratch="$(mktemp -d "${TMPDIR:-/tmp}/beauty-consumer-check.XXXXXX")"
     scratch="$(cd "$scratch" && pwd -P)"
-    trap "rm -rf -- '${scratch}'" EXIT
+    cleanup_root="$scratch"
+    trap 'cleanup_root_on_exit' EXIT
     mkdir -p "${scratch}/build"
     build_log="${scratch}/build.log"
     runtime_log="${scratch}/runtime.log"
@@ -148,9 +157,10 @@ run_consumer() {
 }
 
 self_test() {
-    local self_test_root mutation_root
+    local self_test_root mutation_root malicious_tmpdir marker script_path
     self_test_root="$(mktemp -d "${TMPDIR:-/tmp}/beauty-consumer-self-test.XXXXXX")"
-    trap "rm -rf -- '${self_test_root}'" EXIT
+    cleanup_root="$self_test_root"
+    trap 'cleanup_root_on_exit' EXIT
     mutation_root="${self_test_root}/fixture"
     mkdir -p "${mutation_root}/Sources/BeautySDKConsumer"
     mkdir -p "${self_test_root}/BeautySDK"
@@ -188,13 +198,34 @@ self_test() {
         return 1
     fi
 
+    malicious_tmpdir="${self_test_root}/tmp'; touch ${self_test_root}/trap-marker; #"
+    marker="${self_test_root}/trap-marker"
+    mkdir -p "$malicious_tmpdir"
+    script_path="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/$(basename -- "${BASH_SOURCE[0]}")"
+    TMPDIR="$malicious_tmpdir" "$script_path" --self-test-trap
+    if [[ -e "$marker" ]]; then
+        echo "swiftpm_consumer_check_failed" >&2
+        return 1
+    fi
+
     echo "swiftpm_consumer_static_self_test_passed"
+}
+
+self_test_trap() {
+    local scratch
+    scratch="$(mktemp -d "${TMPDIR:-/tmp}/beauty-consumer-trap-test.XXXXXX")"
+    cleanup_root="$scratch"
+    trap 'cleanup_root_on_exit' EXIT
 }
 
 case "${1:-}" in
     --self-test)
         [[ "$#" -eq 1 ]] || exit 2
         self_test
+        ;;
+    --self-test-trap)
+        [[ "$#" -eq 1 ]] || exit 2
+        self_test_trap
         ;;
     "")
         validate_static_boundary "$fixture_root"
