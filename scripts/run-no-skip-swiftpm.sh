@@ -46,6 +46,12 @@ if ! bash "${repository_root}/scripts/check-sdk-only-boundary.sh" \
 fi
 echo "no_skip_sdk_boundary_verified"
 
+if ! bash "${repository_root}/scripts/check-swiftpm-consumer.sh" >/dev/null 2>&1; then
+  echo "no_skip_swiftpm_consumer_failed"
+  exit 1
+fi
+echo "no_skip_swiftpm_consumer_verified"
+
 for bundle in "${teeth_bundle}" "${sclera_bundle}"; do
   [[ -f "${bundle}/manifest.json" ]] || {
     echo "no_skip_private_bundle_unavailable"
