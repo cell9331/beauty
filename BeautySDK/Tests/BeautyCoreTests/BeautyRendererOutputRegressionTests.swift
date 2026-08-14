@@ -6,6 +6,7 @@ import BeautySDK
 // Requirement evidence: RENDER-01, RENDER-02.
 final class BeautyRendererOutputRegressionTests: XCTestCase {
     private static let rendererSourceRelativePath = "BeautySDK/Sources/BeautyExampleRenderer/main.swift"
+    private static let rendererSourceDirectoryRelativePath = "BeautySDK/Sources/BeautyExampleRenderer"
 
     private static let expectedRendererCaseIDs = [
         "skinSmoothing_0p50",
@@ -119,18 +120,37 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         XCTAssertFalse(source.contains("colorSpaceName: .deviceRGB"))
     }
 
+    func testRendererFailureSeamIsExecutableInternalAndUndocumented() throws {
+        let source = try rendererSource()
+        XCTAssertTrue(source.contains("enum RendererFailureInjection"))
+        XCTAssertTrue(source.contains("BEAUTY_EXAMPLE_RENDERER_FAILURE"))
+        XCTAssertFalse(source.contains("--failure"))
+        XCTAssertFalse(source.contains("failureInjection"))
+
+        let publicDirectory = try repositoryRootURL().appendingPathComponent("BeautySDK/Sources/BeautySDK")
+        let publicFiles = try FileManager.default.contentsOfDirectory(
+            at: publicDirectory,
+            includingPropertiesForKeys: [.isRegularFileKey],
+            options: [.skipsHiddenFiles]
+        ).filter { $0.pathExtension == "swift" }
+        for file in publicFiles {
+            let publicSource = try String(contentsOf: file, encoding: .utf8)
+            XCTAssertFalse(publicSource.contains("RendererFailureInjection"), file.lastPathComponent)
+            XCTAssertFalse(publicSource.contains("BEAUTY_EXAMPLE_RENDERER_FAILURE"), file.lastPathComponent)
+        }
+    }
+
     func testRecursiveSameStemInputsAreRejectedBeforeAnyOutputDirectoryWrite() throws {
         let source = try rendererSource()
         let discovery = try XCTUnwrap(source.range(of: "let imageURLs = fixtureImageURLs"))
         let preflight = try XCTUnwrap(source.range(of: "try requireUniqueOutputStems(imageURLs)"))
-        let outputDirectoryWrite = try XCTUnwrap(
-            source.range(of: "try fileManager.createDirectory(at: outputURL, withIntermediateDirectories: true)")
-        )
-        let engine = try XCTUnwrap(source.range(of: "let engine = try BeautyEngine"))
+        let outputDirectoryValidation = try XCTUnwrap(source.range(of: "let outputURL = try requireOutputDirectory"))
+        let engine = try XCTUnwrap(source.range(of: "guard let engine = try? BeautyEngine"))
 
+        XCTAssertLessThan(outputDirectoryValidation.lowerBound, discovery.lowerBound)
         XCTAssertLessThan(discovery.lowerBound, preflight.lowerBound)
-        XCTAssertLessThan(preflight.lowerBound, outputDirectoryWrite.lowerBound)
-        XCTAssertLessThan(outputDirectoryWrite.lowerBound, engine.lowerBound)
+        XCTAssertLessThan(preflight.lowerBound, engine.lowerBound)
+        XCTAssertFalse(source.contains("createDirectory(at: outputURL"))
         XCTAssertTrue(source.contains("case duplicateOutputStem"))
         XCTAssertTrue(source.contains("var stems = Set<String>()"))
         XCTAssertTrue(source.contains("guard stems.insert(outputStemCollisionKey(stem)).inserted else"))
@@ -763,12 +783,23 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
     }
 
     private func rendererSource() throws -> String {
-        let url = try repositoryRootURL().appendingPathComponent(Self.rendererSourceRelativePath)
-        do {
-            return try String(contentsOf: url, encoding: .utf8)
-        } catch {
-            throw RegressionTestError.unreadable(Self.rendererSourceRelativePath)
+        let directory = try repositoryRootURL().appendingPathComponent(Self.rendererSourceDirectoryRelativePath)
+        let files = try FileManager.default.contentsOfDirectory(
+            at: directory,
+            includingPropertiesForKeys: [.isRegularFileKey],
+            options: [.skipsHiddenFiles]
+        )
+        .filter { $0.pathExtension == "swift" }
+        .sorted { $0.lastPathComponent < $1.lastPathComponent }
+        guard !files.isEmpty else {
+            throw RegressionTestError.unreadable(Self.rendererSourceDirectoryRelativePath)
         }
+        return try files.map { file in
+            guard let contents = try? String(contentsOf: file, encoding: .utf8) else {
+                throw RegressionTestError.unreadable(file.path)
+            }
+            return "// FILE: \(file.lastPathComponent)\n\(contents)"
+        }.joined(separator: "\n")
     }
 
     private func rendererCaseIDs(in source: String) -> [String] {
