@@ -208,6 +208,20 @@ Exact ordered Phase 64 task authority is: `64-01-01`, `64-01-02`,
 
 ## 4. Completed
 
+### C-2026-08-14-phase-68-cpu-algorithm-reference-oracles
+
+| Field | Value |
+| --- | --- |
+| Status | `verifying` |
+| Completed | 2026-08-14 implementation closeout; independent verification pending |
+| Scope | Freeze the current CPU/Core Image behavior through generated in-memory Swift RGBA8/sRGB fixtures, semantic geometry/color metrics, local-retouch safety/composition oracles, deterministic recovery, and a generated-only preflight. |
+| Plans | 68-01 fixture/metric foundations; 68-02 geometry/color semantics; 68-03 local-retouch safety and determinism; 68-04 preflight/owner closeout. |
+| CPU requirements | CPU-01..CPU-05 are covered by generated fixture contracts, exact neutral/alpha/extent checks, feature-family metrics, collision/source ownership, sibling isolation, recovery, and optional-fixture separation. |
+| Focused aggregate | Generated preflight passes fixture/facade `9`, geometry/color `9`, and local-retouch/determinism `15` tests with zero generated skips. |
+| Final aggregate | `bash scripts/run-no-skip-swiftpm.sh` passes archive verification, SDK-only boundary, public consumer, generated CPU preflight, all eight opt-ins, and one SwiftPM child with `691` executed tests, zero failures, zero skips, and a nonzero denominator. |
+| Documentation | ARCHITECTURE, SECURITY, RELIABILITY, QUALITY_SCORE, `.planning/codebase/TESTING.md`, `.planning/PROJECT.md`, `.planning/ROADMAP.md`, and `.planning/STATE.md` synchronize the generated-only CPU reference boundary and measured inventory. |
+| Nonclaims | No production algorithm, public backend, Metal/GPU, UI/Demo, device, performance, tracked portrait media, raw fixture evidence, packaging, shipping, launch, or release-readiness claim is made. |
+
 ### C-2026-08-14-phase-67-swiftpm-consumer-and-cli-validation-contract
 
 | Field | Value |
