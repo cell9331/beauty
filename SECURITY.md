@@ -36,11 +36,16 @@ Required invariants:
 
 - only `BeautyDemo-v1.16` and `meituxiuxiu-v1.16` bundles are accepted;
 - archive records use lowercase 64-hex SHA-256 bound to the exact ZIP filename;
+- independent code-owned anchors pin both ZIP and manifest digests, exact
+  inventories/counts, compressed and uncompressed totals, per-entry maxima, and
+  compression-ratio ceilings; adjacent mutable records cannot re-authorize drift;
 - entry names use forward-slash relative paths rooted under the exact source
   name, contain no absolute path, `.`/`..`, empty component, backslash, or NUL;
 - entries are sorted, unique, file-only, normalized, and equal to their manifest;
 - every extracted byte count and SHA-256 equals the manifest;
-- extraction uses a newly created temporary directory and creates no symlink;
+- decompression starts only after all archive-wide metadata/resource bounds pass,
+  and each entry streams through bounded hashing into a newly created temporary
+  directory without creating a symlink;
 - review restoration never targets the repository or an existing directory.
 
 Do not trust a general archive extractor before these checks. The Python verifier
@@ -53,9 +58,11 @@ The original-source retirement contract permits only the two exact top-level
 non-symlink directories and only after fresh verification/reproduction.
 
 - approval binds both exact source names to their current verified ZIP digests;
-- tracked deletions are precomputed as an exact allowlist;
+- any pre-existing tracked deletion fails before mutation; tracked deletions are
+  then precomputed and compared as an absolute exact allowlist;
 - SDK/docs/planning/private-fixture sentinels are fingerprinted before mutation;
-- both roots move together to an outside-repository quarantine;
+- both roots move to an outside-repository quarantine before the frozen bytes are
+  re-inventoried and reproduced against the pinned manifests/ZIP digests;
 - deletion-set and sentinel postconditions are checked before quarantine removal;
 - any pre-final failure restores both roots in reverse order;
 - no glob, unresolved environment variable, broad recursive target, or partial
@@ -67,10 +74,14 @@ destructive transaction.
 
 ## 5. Recovery and Historical Access
 
-Before recovery, run:
+Before recovery, run the verifier, create a fresh private parent, and let the
+same tool restore the already validated snapshots:
 
 ```bash
 python3 scripts/archive-legacy-ui.py verify --output archives/legacy-ui
+restore_parent="$(mktemp -d "${TMPDIR:-/tmp}/beauty-legacy-ui-restore.XXXXXX")"
+python3 scripts/archive-legacy-ui.py restore --output archives/legacy-ui \
+  --destination "${restore_parent}/legacy-ui"
 ```
 
 Restore only into a new temporary directory outside the repository. After review,

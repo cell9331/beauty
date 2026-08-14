@@ -70,8 +70,9 @@ not add a public backend switch, silent fallback, or parity claim.
 ## 5. Archive Verification and Recovery
 
 The active repository relies on two committed historical archives. Verification
-must check both ZIP digests, integrity, normalized safe entries, manifest equality,
-fresh temporary extraction, and extracted content hashes before any historical use.
+must check code-owned ZIP/manifest digests, exact inventories/counts, compressed,
+per-entry, total-uncompressed and ratio bounds, normalized safe entries, streamed
+content hashes, and fresh temporary extraction before any historical use.
 
 Recovery policy:
 
@@ -80,7 +81,9 @@ Recovery policy:
 2. Recover the exact committed artifact from trusted Git history; never repair by
    editing its manifest/digest or substituting another bundle.
 3. Rerun verification for both archives.
-4. Restore only into a new outside-repository temporary directory.
+4. Use `archive-legacy-ui.py restore` only with a nonexistent destination under a
+   fresh private outside-repository temporary directory; never extract first with
+   a general archive tool.
 5. Rerun the post-archive scanner; restored repository roots are failure.
 
 The historical retirement transaction was digest-bound and exact-target. A failure
