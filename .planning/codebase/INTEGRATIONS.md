@@ -32,8 +32,14 @@ inside the verified historical archives and is not current integration guidance.
   byte-pinned inactive shader resource.
 - `BeautyResourceCatalog` resolves logical IDs through `Bundle.module`; there is
   no arbitrary-path or runtime-download API.
-- `BeautyExampleRenderer` reads local authorized fixtures and writes ignored,
-  disposable PNG evidence. This is not SDK persistence.
+- `BeautyExampleRenderer` reads local image inputs, accepts only the executable
+  `cpu` token, writes ignored disposable PNGs, reopens/checks dimensions, and
+  persists only a versioned aggregate report of relative public identities and
+  reconciled counts. This is not SDK persistence or a public backend contract.
+- `IntegrationTests/BeautySDKConsumer` is an external one-target SwiftPM
+  fixture with one local `BeautySDK` path dependency; it generates its own
+  neutral input and observes real public-facade output. It has no internal
+  target, UI/Demo, Xcode, simulator, device, or tracked-media dependency.
 - Real-image fixtures remain ignored under `example-images/`; tracked
   authorization metadata contains no private locator or image bytes.
 - Historical archives under `archives/legacy-ui/` are tracked recovery artifacts,
@@ -56,11 +62,13 @@ SwiftPM is the only active package/build/test system:
 swift build --package-path BeautySDK
 swift test --package-path BeautySDK
 swift run --package-path BeautySDK BeautyExampleRenderer --help
+bash scripts/check-swiftpm-consumer.sh
 bash scripts/run-no-skip-swiftpm.sh
 ```
 
-The mandatory wrapper first verifies both archives and the SDK-only scanner,
-then runs one bounded child with all required local opt-ins. No CI/CD,
+The mandatory wrapper first verifies both archives, the SDK-only scanner, and
+the external consumer, then runs one bounded child with all required local
+opt-ins. No CI/CD,
 distribution, registry publication, or release pipeline is claimed.
 
 ---

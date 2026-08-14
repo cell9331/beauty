@@ -18,13 +18,13 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Implementation state:** v1.15 independently implements bounded opaque still-image `teethWhitening` and per-eye `scleraRednessReduction` through the public SDK facade. The active SDK inventory is 61 public fields, five neutral presets and 74 renderer cases. `白牙`, `嘴唇` and `祛红血丝` are implemented at SDK-core scope; aggregate `眼睛` remains partial solely because `去脂` remains future. Historical application taxonomy remains archive-only.
 
-**Verification state:** Combined public output byte-matches independently merged standalone outputs; collisions preserve source and injected failure units retain unaffected bytes. Named-sRGB facade carriers and saved PNGs, request-local privacy, 61/5/74 compatibility, and both private 6/6 output matrices remain the bounded SDK-core baseline. The archived v1.15 closeout ran SwiftPM `638/0/0`; the latest pre-closeout SwiftPM baseline is 650 tests with eight documented opt-ins. Phase 66 binds verified archive integrity and the SDK-only scanner into the same no-skip gate before that current total is credited. Device/performance/commercial/packaging/shipping/launch/release-readiness remain separate scopes.
+**Verification state:** Combined public output byte-matches independently merged standalone outputs; collisions preserve source and injected failure units retain unaffected bytes. Named-sRGB facade carriers and saved PNGs, request-local privacy, 61/5/74 compatibility, and both private 6/6 output matrices remain the bounded SDK-core baseline. The Phase 67 public-only consumer, 24-case renderer regression, and 5-case compiled Process matrix pass before the mandatory archive → boundary → consumer → one-child SwiftPM conjunction. The measured full child executes 656 tests with zero failures and zero skips, including all eight opt-ins. Device/performance/commercial/packaging/shipping/launch/release-readiness remain separate scopes.
 
 **Current milestone goals:** v1.16 has archived and removed active application/UI sources and now closes the SwiftPM plus `BeautyExampleRenderer` validation boundary before freezing CPU output oracles and repairing generic-result sendability without touching retained shader bytes or adding backend behavior. v1.17 remains queued for a separately selectable alternate backend with no silent fallback and shared algorithm/support semantics. `去脂`, new semantic-mask features, model/network, population/device/commercial, packaging, shipping, launch and release-readiness work remain future or separately scoped.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Broader historical application/device/release evidence remains time-bounded and cannot satisfy current SDK requirements. The codebase maps were refreshed again from the post-archive active source/tests on 2026-08-14.
 
-**Code size:** the immutable `v1.15` tag contains 49,018 tracked Swift source/test lines. The active post-archive SDK-only tree contains 64 Swift source files / 14,294 source lines and 50 SwiftPM test files / 27,494 test lines, excluding `.build` and archive contents.
+**Code size:** the immutable `v1.15` tag contains 49,018 tracked Swift source/test lines. The active post-archive SDK-only tree contains 66 Swift source files / 14,830 source lines and 51 SwiftPM test files / 27,993 test lines, excluding `.build` and archive contents.
 
 ## Planned SDK-First Milestone Sequence
 
@@ -45,6 +45,16 @@ The backend choice is configuration/execution policy and must not change the pub
 - Replace unconditional generic `@unchecked Sendable` with a source-compatible conditional contract and close all SDK-only documentation and no-skip test gates.
 
 **Non-negotiable boundary:** v1.16 contains no new render implementation, public backend option, application/UI development, simulator/device verification, commercial visual approval, packaging, shipping, or new beauty algorithm.
+
+Phase 67's current contract is a public-only local-path SwiftPM consumer and
+SDK-owned CPU CLI. The consumer generates a neutral RGBA fixture and asserts
+real public-facade bytes/dimensions. The CLI preserves 74 cases, accepts only
+the executable-local `cpu` token, requires an existing output directory, and
+writes versioned privacy-safe aggregate JSON after PNG reopen/dimension checks.
+Typed invalid-input, render, encode, write, validation, and report failures are
+non-zero; render/encode injection is executable-internal test machinery. No
+public backend/Metal selector, UI/Demo, device, commercial, packaging, shipping,
+launch, or release-readiness claim follows from these gates.
 
 ## Last Completed Milestone: v1.15 Independent Teeth and Sclera Retouch
 

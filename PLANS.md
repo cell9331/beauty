@@ -208,6 +208,20 @@ Exact ordered Phase 64 task authority is: `64-01-01`, `64-01-02`,
 
 ## 4. Completed
 
+### C-2026-08-14-phase-67-swiftpm-consumer-and-cli-validation-contract
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
+| Completed | 2026-08-14 |
+| Scope | Synchronized current owners/maps and closed the public-only SwiftPM consumer plus deterministic CPU CLI validation contract. |
+| Contract | The external local-path consumer imports only public `BeautySDK`, generates a neutral RGBA input, and asserts real public-facade bytes/dimensions. `BeautyExampleRenderer` preserves 61 public fields, five neutral presets, the retained shader digest, CPU/Core Image behavior, and the exact 74-case catalog; it requires an existing output directory, accepts only `--backend cpu`, and writes versioned privacy-safe JSON after persisted PNG reopen/dimension validation. |
+| Evidence | SPM-01/SPM-02: clean consumer checker and generated neutral output pass. CLI-01/CLI-02: 24/24 renderer regression and deterministic report/output/failure behavior pass. CLI-03: compiled Foundation `Process` matrix passes 5/5, including invalid matrix, collision, and independent render/encode failures. |
+| Focused commands | `python3 scripts/archive-legacy-ui.py verify --output archives/legacy-ui`; `bash scripts/check-sdk-only-boundary.sh --post-archive`; `bash scripts/check-swiftpm-consumer.sh`; `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyRendererOutputRegressionTests`; `swift test --package-path BeautySDK --filter BeautyCoreTests.BeautyExampleRendererProcessTests`. |
+| Final aggregate | `bash scripts/run-no-skip-swiftpm.sh` passed archive verification, post-archive boundary, consumer preflight, all eight opt-ins, one SwiftPM child with 656 executed tests, zero failures, zero skips, and a nonzero denominator. |
+| Documentation | ARCHITECTURE, SECURITY, RELIABILITY, PRODUCT_SENSE, QUALITY_SCORE, `.planning/PROJECT.md`, and current codebase maps now describe public-only consumer ownership, typed failures, bounded temporary outputs, and archive → boundary → consumer → no-skip ordering. |
+| Nonclaims | No public backend selector, GPU/Metal execution, UI/Demo, simulator/device, private-fixture product evidence, performance approval, commercial approval, packaging, shipping, launch, or release-readiness claim is made. Raw child output, paths, environment values, pixels, masks, and fixture metadata remain non-durable. |
+
 ### C-2026-08-13-sdk-first-two-milestone-plan
 
 | Field | Value |

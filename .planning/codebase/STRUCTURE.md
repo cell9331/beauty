@@ -28,11 +28,12 @@ beauty/
 ├── archives/legacy-ui/
 ├── docs/
 ├── example-images/
+├── IntegrationTests/BeautySDKConsumer/
 └── .planning/
 ```
 
-The active tree contains 64 Swift source files and 50 SwiftPM test files.
-Production/test Swift lines are 14,294/27,494, excluding `.build`. The package
+The active tree contains 66 Swift source files and 51 SwiftPM test files.
+Production/test Swift lines are 14,830/27,993, excluding `.build`. The package
 declares one public library, one SDK-owned executable, six internal/library
 targets, and six test targets.
 
@@ -48,10 +49,16 @@ targets, and six test targets.
   byte-pinned placeholder shader resource. Its presence is not a GPU claim.
 - `BeautyResources`: bundled manifest and preset validation.
 - `BeautySDK`: sole host-facing facade and request orchestration.
-- `BeautyExampleRenderer`: executable consumer that imports the public product
-  and writes disposable ignored output.
+- `BeautyExampleRenderer`: executable consumer that imports the public product,
+  preserves the exact 74-case catalog, validates persisted PNGs, and writes a
+  versioned aggregate report plus disposable ignored output.
+- `IntegrationTests/BeautySDKConsumer`: separate local-path SwiftPM executable
+  fixture importing only the public `BeautySDK` product; it is not an SDK target.
 - `BeautySDK/Tests`: all active automated tests.
-- `scripts`: archive integrity, SDK boundary, and no-skip SwiftPM gates.
+- `BeautySDK/Tests/BeautyCoreTests/BeautyExampleRendererProcessTests.swift`:
+  compiled Foundation `Process` matrix with temporary fixtures and bounded
+  stream capture.
+- `scripts`: archive integrity, SDK boundary, consumer, and no-skip SwiftPM gates.
 - `archives/legacy-ui`: verified historical ZIPs, manifests, digest records,
   and restoration contract; never an active build input.
 
@@ -60,6 +67,11 @@ targets, and six test targets.
 - `BeautySDK/Package.swift`: only active build graph.
 - `BeautySDK/Sources/BeautySDK/BeautyEngine.swift`: public processing facade.
 - `BeautySDK/Sources/BeautyExampleRenderer/main.swift`: command-line consumer.
+- `BeautySDK/Sources/BeautyExampleRenderer/RendererCLIContract.swift` and
+  `RendererExecution.swift`: strict CPU-only parser, typed diagnostics,
+  versioned report, matrix execution, and output validation.
+- `scripts/check-swiftpm-consumer.sh`: clean external public-product consumer
+  preflight.
 - `scripts/run-no-skip-swiftpm.sh`: mandatory complete regression gate.
 - `archives/legacy-ui/README.md`: safe historical access and recovery.
 - `docs/SDK_EFFECT_TAXONOMY.md`: current effect/control taxonomy.

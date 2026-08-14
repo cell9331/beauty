@@ -6,17 +6,26 @@
 ## Runner and Inventory
 
 XCTest through Swift Package Manager is the only active test framework. Six test
-targets live under `BeautySDK/Tests/`; the current inventory is 50 Swift files and
-27,494 test lines, excluding `.build`.
+targets live under `BeautySDK/Tests/`; the current inventory is 51 Swift files and
+27,993 test lines, excluding `.build`.
 
-The default full suite currently executes 650 tests with eight documented
-environment-gated opt-ins skipped. The mandatory no-skip run enables the same
-eight identities and accepts only one complete SwiftPM child transcript with:
+The measured mandatory full child executes 656 tests with eight documented
+environment-gated opt-ins enabled. It accepts only one complete SwiftPM child
+transcript with:
 
 - all eight opt-ins executed exactly once;
 - zero failures;
 - zero skips; and
 - a nonzero all-tests denominator.
+
+The external consumer preflight runs before the child and builds a separate
+local-path package that imports only public `BeautySDK`, generates a neutral
+RGBA input, and checks real output bytes/dimensions. The renderer regression
+suite covers the exact 74-case inventory, and
+`BeautyExampleRendererProcessTests` invokes the compiled binary through
+Foundation `Process` for reproducible success, invalid matrix, collision, and
+independent render/encode failure behavior. Their temporary build/fixture roots
+and captured child output are not evidence artifacts.
 
 ## Commands
 
@@ -27,10 +36,10 @@ swift test --package-path BeautySDK --enable-code-coverage
 bash scripts/run-no-skip-swiftpm.sh
 ```
 
-The mandatory wrapper first verifies both retained legacy archives and the
-post-archive SDK-only boundary. Archive corruption, restored source roots, stale
-application dependencies, retained shader drift, an unexpected skip/failure, or
-a zero-test run must fail non-zero.
+The mandatory wrapper orders archive verification → post-archive SDK-only
+boundary → external consumer → private opt-ins → one SwiftPM child. Archive
+corruption, restored source roots, stale application dependencies, retained
+shader drift, an unexpected skip/failure, or a zero-test run must fail non-zero.
 
 ## Organization and Style
 
