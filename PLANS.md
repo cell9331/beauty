@@ -26,7 +26,23 @@
 
 ## 3. Active
 
-_None._
+### P-2026-08-14-phase-66-sdk-only-boundary
+
+| Field | Value |
+| --- | --- |
+| Status | `verifying` |
+| Scope | Preserve two verified legacy archives, retire exact originals, synchronize current owners to SDK-only SwiftPM, and bind archive/static checks into the mandatory no-skip gate. |
+| Current Step | Phase 66 Plan 03 owner synchronization is complete; mandatory integrated no-skip closeout is next. |
+| Verification Policy | Archive verifier, post-archive scanner, diff hygiene, then the one-child all-opt-ins SwiftPM gate with zero failure/skip and nonzero execution. |
+
+Checklist:
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| Preserve taxonomy and archive tooling | `completed` | Phase 66 Plan 01 summary and commits. |
+| Materialize archives and retire exact originals | `completed` | Phase 66 Plan 02 summary and commits. |
+| Synchronize current SDK-only owners/maps | `completed` | Phase 66 Plan 03 Task 1; post-archive scanner and diff hygiene required before commit. |
+| Bind and run full closeout | `verifying` | Phase 66 Plan 03 Task 2. |
 
 ## 3A. Historical Lifecycle Ledger
 
@@ -3538,17 +3554,17 @@ Outcome:
 | TD-001 | Project Structure | 根目录不是 Git 仓库，`.git` 位于 `BeautyDemo/` 下。 | 根级文档变更不一定被当前 Git 仓库追踪。 | 已将 `/Users/yakangwang/codes/beauty` 初始化为仓库根；原 `BeautyDemo` Git 历史已备份到 `.codex-backups/BeautyDemo_git_before_root_init_20260525_190709/`。 | `completed` |
 | TD-002 | SDK Package | `BeautySDK` Swift Package 尚未创建。 | 根级架构文档已定义目标结构，但代码仍只有 Demo 模板。 | Phase 1 已创建 SPM 与 facade / internal targets；后续按 roadmap 扩展真实检测、资源、效果和 Demo 集成。 | `completed` |
 | TD-003 | Demo UI | Historical initialization debt: `BeautyDemo` began as the default SwiftUI template. | None for the shipped shell; current Demo contains Home/editor, camera/photo, panels, compare, debug, and JSON flows. | Preserve facade-only integration and keep unsupported features visibly unavailable. | `completed` |
-| TD-004 | Tests | The current 650-test no-skip SwiftPM gate is the active baseline. Historical Demo coverage exists, but the project is moving to SDK-only consumer, algorithm-oracle, renderer-output, and dual-backend parity verification. | CPU algorithm correctness is strong; clean-consumer and backend-comparison coverage are not yet a single supported contract. | v1.16 adds the SwiftPM consumer/CLI/CPU oracle boundary; v1.17 adds the same-case CPU/GPU parity matrix. | `partial/planned-v1.16-v1.17` |
+| TD-004 | Tests | The current 650-test baseline has eight documented opt-ins; archive integrity and the SDK-only scanner must be part of the same mandatory no-skip conjunction. | CPU algorithm correctness is strong; clean-consumer, structured CLI, and later alternate-backend comparison coverage remain separate. | Phase 66 binds archive/scanner preflights; Phases 67-68 add consumer/CLI/CPU-oracle coverage; v1.17 owns later backend parity. | `partial/active-v1.16` |
 | TD-005 | Privacy Manifest | Phase 25 `find BeautySDK BeautyDemo -name PrivacyInfo.xcprivacy -print` found no privacy manifest, and `25-SECURITY-CLOSEOUT.md` explicitly defers adding one for current SDK/Demo behavior. | Future collection, required-reason API usage, third-party SDKs, network/cloud/analytics behavior, packaged example executables, or packaging/submission work can reopen compliance risk. | Reopen the manifest review when behavior or distribution scope changes; run the recorded rerun protocol and `plutil` checks if a manifest is added. | `closed/current-evidence` |
 | TD-006 | Historical Docs | `docs/` 下历史长文档与根级文档存在重叠。 | Agent 可能读取到旧结论。 | 已将 `docs/README.md` 设为长文档入口，并在 `QUALITY_SCORE.md` 中加入旧文件名、source import JSON、关键术语一致性扫描规则。 | `completed` |
 | TD-007 | GSD Traceability | Historical v2 `ADV-01` through `ADV-10` remain in archived `.planning/milestones/v1.0-REQUIREMENTS.md`, not in an active root requirements file. | No current audit warning or active traceability ambiguity remains after milestone archival. | Keep them historical/backlog-only unless a future milestone explicitly promotes one. | `completed` |
 | TD-008 | Manual Device QA | Simulator, physical-iPhone, live-camera endurance, and 600-second preview evidence are not part of the current SDK algorithm/pipeline objective. | No impact on the planned SwiftPM CPU/GPU correctness claims; these checks would matter only for a future realtime/device or shipping milestone. | Keep explicitly out of scope and reopen only if realtime device behavior, performance budgets, or release claims are authorized. | `out-of-scope/sdk-first` |
-| TD-009 | Manual Visual QA | SwiftUI layout, screenshot capture, and UI automation belong to the legacy Demo that v1.16 will archive and remove. | No impact on SDK algorithm or renderer-output acceptance. | Preserve the legacy UI in a verified ZIP; do not carry UI visual QA into active SDK milestones. | `out-of-scope/planned-archive` |
+| TD-009 | Historical UI QA | Application layout, screenshots, and UI automation belong to the retired legacy material. | No impact on SDK algorithm or renderer-output acceptance. | Review only through `archives/legacy-ui/README.md` in a temporary directory; do not reactivate UI validation. | `out-of-scope/archived` |
 | TD-010 | Algorithm Output and Hardware QA | Existing CPU renderer/output gates are extensive, but they are not yet a compact SDK-only reference contract for a second render backend. Production Metal parity is unproved. Demo screenshots, physical-device testing, commercial review, packaging, and shipping are separate scopes. | A future GPU backend could diverge from CPU semantics or protected-region behavior without explicit same-input comparison gates. | v1.16 freezes CPU input/output oracles; v1.17 adds CPU/GPU parity, Metal resource/lifecycle, shader-output, containment, and typed-unavailability gates. | `partial/planned-v1.16-v1.17` |
-| TD-011 | Codebase Maps | The seven `.planning/codebase/*` maps were refreshed from live source/tests on 2026-08-13 and no longer describe the pre-SDK tree. | No current stale-map impact remains; future material architecture/test changes can make the maps drift again. | Refresh the maps after material source-layout, dependency, architecture, testing, or risk-boundary changes. | `completed` |
+| TD-011 | Codebase Maps | Current structure/stack/testing maps were refreshed from the post-archive SDK-only tree on 2026-08-14. | No current stale application/test surface remains in those maps. | Refresh maps after material package, dependency, source-layout, or test changes. | `completed` |
 | TD-012 | Input Bounds | Public 32 MiB encoded and 50,000,000-pixel ceilings are source-/legacy-Codable-compatible and enforced at SDK plus current Demo boundaries. | PhotosPicker still materializes `Data` before the Demo can observe its size; downstream decode/render amplification is bounded. | Revisit only if a future transfer API exposes a pre-materialization size boundary. | `completed` |
 | TD-013 | Public Concurrency | `BeautyResult<Output>` unconditionally declares `@unchecked Sendable`, even when a caller instantiates it with an arbitrary non-sendable `Output`. | The public type promises cross-domain safety that its generic payload cannot guarantee. | Choose a source-compatible migration (conditional conformance, non-sendable media wrapper, or versioned API) and add compile-time concurrency coverage. | `open/api-decision` |
-| TD-014 | Active Demo/UI Tree | `BeautyDemo/` and legacy UI reference artifacts remain in the active repository even though the project direction is SDK-only. | Agents and verification workflows can continue spending effort on Xcode, SwiftUI, simulator, and UI state that no longer define success. | v1.16 Phase 66 creates verified ZIP archive(s), manifests, and SHA-256 records, preserves required algorithm taxonomy, then removes original executable/UI files and active references. | `planned-v1.16` |
+| TD-014 | Legacy Application/UI Tree | The two original legacy roots were preserved in verified ZIP/manifests/digest records and removed by the exact digest-bound transaction. | No active application/UI source remains; accidental restoration would violate the SDK-only boundary. | Keep archive verification and post-archive scanning in the mandatory no-skip gate. | `completed-phase-66` |
 | TD-015 | Render Backend | `BeautyGeometryEffectPipeline` is CPU/Core Image-backed, `BeautyRender.RenderGraph` is not dispatched by the public engine, and `Warp.metal` is a copy placeholder. | The SDK has no selectable GPU implementation or backend parity contract; replacing CPU directly would also discard its strongest reference oracle. | v1.16 freezes the CPU reference; v1.17 adds internal Metal passes and exposes a default-CPU `.cpu`/`.gpu` configuration switch only after complete parity evidence. | `planned-v1.17` |
 
 ## 6. Plan Template
@@ -3619,8 +3635,8 @@ Acceptable examples:
 | Claim | Required Evidence |
 | --- | --- |
 | Markdown file generated | `wc -l`, heading scan, placeholder scan. |
-| Swift code compiles | Exact `xcodebuild` or `swift test` command with exit status. |
-| UI flow works | Simulator or UI test evidence. |
+| Swift code compiles | Exact `swift build` or `swift test` command with exit status. |
+| Historical UI material is readable | Archive verification plus temporary-directory restoration evidence. |
 | Performance target met | Device/simulator, resolution, duration, metric result. |
 | Security constraint met | Specific validation/logging/resource test. |
 

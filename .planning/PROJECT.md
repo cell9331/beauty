@@ -2,9 +2,9 @@
 
 ## What This Is
 
-`beauty` is a modular local-first iOS beauty SDK. The SDK owns image/frame processing, parameters, detection, rendering, effects, resources, diagnostics, and the host-facing `BeautySDK` facade. SwiftPM tests and an SDK-owned command-line renderer are the active validation surface; SwiftUI application development is no longer part of the project direction.
+`beauty` is a modular local-first iOS beauty SDK. The SDK owns image/frame processing, parameters, detection, rendering, effects, resources, diagnostics, and the host-facing `BeautySDK` facade. SwiftPM tests, `BeautyExampleRenderer`, and SDK-owned scripts are the only active build/test/validation surfaces.
 
-The existing SwiftUI Demo and legacy UI-reference material remain historical inputs until the planned v1.16 archive phase packages them as verified ZIP artifacts and removes their original active files. They do not define current SDK completion.
+The former application and legacy UI-reference trees are absent from the active repository. Their exact historical contents are retained as independently verified ZIP artifacts under `archives/legacy-ui/`; they do not define current SDK completion and may be restored only to a new temporary directory under the archive contract.
 
 ## Core Value
 
@@ -13,18 +13,18 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 ## Current State
 
 **Latest completed milestone:** v1.15 Independent Teeth and Sclera Retouch on 2026-08-11 (audited SDK-core still-image completion; product distribution/shipping is not claimed).
-**Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
+**Latest historical UI milestone:** v1.1 Meitu UI on 2026-06-24, retained only as archived evidence.
 **Current milestone:** v1.16 SDK-Only Foundation and CPU Reference; v1.17 remains queued behind it as the Metal milestone.
 
-**Implementation state:** v1.15 independently implements bounded opaque still-image `teethWhitening` and per-eye `scleraRednessReduction` through the public SDK facade. The exact inventory is 61 public fields, five neutral presets, 74 renderer cases and three disabled nil-mapped local-retouch Demo rows. `白牙`, `嘴唇` and `祛红血丝` are implemented at SDK-core scope; aggregate `眼睛` remains partial solely because `去脂` remains future.
+**Implementation state:** v1.15 independently implements bounded opaque still-image `teethWhitening` and per-eye `scleraRednessReduction` through the public SDK facade. The active SDK inventory is 61 public fields, five neutral presets and 74 renderer cases. `白牙`, `嘴唇` and `祛红血丝` are implemented at SDK-core scope; aggregate `眼睛` remains partial solely because `去脂` remains future. Historical application taxonomy remains archive-only.
 
-**Verification state:** Combined public output byte-matches independently merged standalone outputs; collisions preserve source and four injected failure units retain unaffected bytes. Named-sRGB facade carriers and saved PNGs, request-local privacy, 61/5/74/3 compatibility, both private 6/6 output matrices, and explicit Demo `121/0/0` pass. The archived v1.15 closeout ran SwiftPM `638/0/0`; the current post-archive no-skip gate runs `650/0/0` with all eight opt-ins. Device/performance/commercial/packaging/shipping/launch/release-readiness remain separate scopes.
+**Verification state:** Combined public output byte-matches independently merged standalone outputs; collisions preserve source and injected failure units retain unaffected bytes. Named-sRGB facade carriers and saved PNGs, request-local privacy, 61/5/74 compatibility, and both private 6/6 output matrices remain the bounded SDK-core baseline. The archived v1.15 closeout ran SwiftPM `638/0/0`; the latest pre-closeout SwiftPM baseline is 650 tests with eight documented opt-ins. Phase 66 binds verified archive integrity and the SDK-only scanner into the same no-skip gate before that current total is credited. Device/performance/commercial/packaging/shipping/launch/release-readiness remain separate scopes.
 
-**Current milestone goals:** v1.16 archives/removes active Demo/UI sources, makes SwiftPM plus `BeautyExampleRenderer` the sole validation boundary, freezes current CPU output oracles, and repairs generic-result sendability without touching Metal. v1.17 retains that CPU path and adds a separately selectable Metal GPU backend through `BeautyConfiguration`, with no silent fallback and shared algorithm/support semantics. `去脂`, new semantic-mask features, model/network, population/device/commercial, packaging, shipping, launch and release-readiness work remain future or separately scoped.
+**Current milestone goals:** v1.16 has archived and removed active application/UI sources and now closes the SwiftPM plus `BeautyExampleRenderer` validation boundary before freezing CPU output oracles and repairing generic-result sendability without touching retained shader bytes or adding backend behavior. v1.17 remains queued for a separately selectable alternate backend with no silent fallback and shared algorithm/support semantics. `去脂`, new semantic-mask features, model/network, population/device/commercial, packaging, shipping, launch and release-readiness work remain future or separately scoped.
 
-**Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. The seven `.planning/codebase/*` maps were formally refreshed from current source/tests on 2026-08-13.
+**Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Broader historical application/device/release evidence remains time-bounded and cannot satisfy current SDK requirements. The codebase maps were refreshed again from the post-archive active source/tests on 2026-08-14.
 
-**Code size:** the immutable `v1.15` tag contains 49,018 tracked Swift source/test lines; the current post-archive tree contains 50,500 across `BeautySDK` and `BeautyDemo`, excluding `.build`. v1.16 will recalculate the active SDK-only baseline after archiving/removing the Demo.
+**Code size:** the immutable `v1.15` tag contains 49,018 tracked Swift source/test lines. The active post-archive SDK-only tree contains 64 Swift source files / 14,294 source lines and 50 SwiftPM test files / 27,494 test lines, excluding `.build` and archive contents.
 
 ## Planned SDK-First Milestone Sequence
 
@@ -39,12 +39,12 @@ The backend choice is configuration/execution policy and must not change the pub
 
 **Target features:**
 
-- Package `BeautyDemo/` and legacy UI-reference material into verified, reproducible ZIP archives with manifests and SHA-256 records, then remove the original active UI/Xcode sources.
+- Preserve the completed dual-root verified ZIP archive/retirement boundary and reject restored application/UI sources.
 - Prove clean SwiftPM consumption and make `BeautyExampleRenderer` the structured command-line input/output validation harness.
 - Freeze deterministic CPU algorithm oracles with synthetic fixtures and optional rights-approved portrait gates.
 - Replace unconditional generic `@unchecked Sendable` with a source-compatible conditional contract and close all SDK-only documentation and no-skip test gates.
 
-**Non-negotiable boundary:** v1.16 contains no Metal implementation, GPU public option, SwiftUI/Demo development, simulator/device verification, commercial visual approval, packaging, shipping, or new beauty algorithm.
+**Non-negotiable boundary:** v1.16 contains no new render implementation, public backend option, application/UI development, simulator/device verification, commercial visual approval, packaging, shipping, or new beauty algorithm.
 
 ## Last Completed Milestone: v1.15 Independent Teeth and Sclera Retouch
 

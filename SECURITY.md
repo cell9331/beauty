@@ -1,887 +1,145 @@
 # SECURITY.md
 
-> `beauty` 的安全与隐私约束。本文定义信任边界、输入校验、资源校验、日志脱敏和分发安全。
-> 错误恢复与性能指标看 `RELIABILITY.md`，数据模型看 `DESIGN.md`。
->
-> 带 Phase / milestone 标题的 inventory、gate 和 promotion 状态是当时的冻结证据；
-> 历史数字与中间状态不得当作当前工作树结论，当前边界由最新 post-v1.15
-> 段落、`PLANS.md` 和 live code/tests 共同约束。
+> Current SDK-only privacy, input/resource trust, and archive safety contract.
 
-## 1. Security Posture
+## 1. Default Posture
 
-`beauty` 是处理人像、相机帧、照片和面部关键点的 iOS 美颜 SDK。默认安全姿态：
+- Process images, frames, parameters, detection support, and effects locally.
+- Do not upload or persist raw image/frame bytes, landmarks, masks, pupils,
+  teeth/eye geometry, or private fixture locators.
+- Keep raw/derived support request-local, package-only, non-Codable, and absent
+  from public diagnostics, logs, metrics, files, and network payloads.
+- Validate every caller/resource/archive input before expensive work or mutation.
+- Expose only typed redacted errors, fixed warning reasons, and aggregate metrics.
 
-- 默认只在设备本地处理图像与人脸数据。
-- 默认不上传图片、视频、面部关键点或参数。
-- 默认不持久化原始相机帧、原始照片、人脸关键点或 debug 中间纹理。
-- 默认不把用户文件路径、照片路径、面部数据写入日志。
-- 所有外部输入必须先校验，再进入检测、渲染或资源加载链路。
+Any network, cloud, telemetry, external model/resource, account, license, or
+distribution behavior requires a new security review.
 
-任何网络能力、云端处理、遥测上报、授权校验或动态资源下载，都必须先更新本文。
+## 2. Active Trust Boundaries
 
-## 2. Data Classification
-
-| Data | Classification | Storage | Logging | Notes |
-| --- | --- | --- | --- | --- |
-| Camera frame / photo pixels | Sensitive user content | Default no persistence | Forbidden | Only keep in memory for processing. |
-| Face landmarks / bounding boxes | Biometric-adjacent derived data | Default no persistence | Forbidden | Treat as sensitive even if not identity-grade. |
-| Beauty parameters | User preference data | Allowed if user or App requests | Allowed only aggregate / non-identifying | Can be Codable preset data. |
-| Preset JSON | Product configuration | Allowed | Allowed with ID/version | Must validate schema and ranges. |
-| LUT / makeup / model resources | Executable-adjacent product asset | Allowed | Allowed with ID/version/checksum | External packages need integrity checks. |
-| Performance metrics | Operational data | Allowed if anonymized | Allowed if sampled | No image, path, face geometry, or device identifiers. |
-| Crash / error diagnostics | Operational data | Allowed if redacted | Allowed if redacted | No raw frames, paths, tokens, or facial data. |
-
-### 2.1 Detection Summary and Debug Privacy
-
-`BeautyDetectionSummary` and Demo `DetectionDebugSummary` are allowed to expose only:
-
-- Detection availability enum values.
-- Redacted degradation reason codes.
-- Face counts and used-face counts.
-- Detection and coordinate-mapping durations.
-
-They must never expose:
-
-- Bounding boxes, points, rectangles, or landmark coordinates.
-- Raw `VNFaceObservation`, Vision request objects, Core Image/Metal internals, or raw framework errors.
-- Raw `NSError` / `AVError` strings.
-- Local image paths such as `/private/var/...`.
-- Image bytes, thumbnails, or persisted debug textures.
-
-`InputPipelinePrivacyTests` owns the current automated guard for these public summary and Demo debug boundaries.
-
-Phase 26 facade-geometry privacy evidence recorded 2026-07-06:
-
-- `BeautyEngineGeometryFacadeTests` and resolver/degradation tests prove public still-image geometry activation through summaries, warnings, and aggregate metrics only.
-- Public/SPI raw geometry export scans passed with zero matches for public or SPI exposure of `VisionDetectionObservation`, `BeautyFaceObservation`, `FaceGeometry`, raw landmarks, bounding boxes, or control points.
-- Active-source scans over `BeautySDK` public/Core surfaces and active Demo source passed for raw Vision observation names, raw framework errors, absolute local paths, raw JSON, image bytes, and raw landmark strings.
-- Phase 26 did not add Demo UI behavior, renderer geometry cases, saved-output PNG claims, network behavior, or `SHAPE_FEATURE_LEDGER.md` implementation-status promotion.
-
-Phase 27 geometry-output privacy evidence recorded 2026-07-07:
-
-- `BeautyExampleRenderer` remains public-facade-only and writes generated geometry PNGs only under ignored `example-images/output/`; generated human-review copies stay under ignored `example-images/gallery/`.
-- `27-VERIFICATION.md` records public/SPI raw geometry export scans, active-source redaction scans, renderer public-import scans, Demo internal-import scans, and evidence-doc raw-leak scans as passed.
-- The generated-output helper records only relative fixture names, case IDs, counts, dimensions, geometry-vs-baseline comparison counts, and no-face output presence.
-- Phase 27 did not add Demo UI behavior, public raw geometry APIs, network behavior, raw geometry evidence fields, generated PNG baselines, or `SHAPE_FEATURE_LEDGER.md` implementation-status promotion.
-
-Phase 28 face-shape privacy evidence recorded 2026-07-08:
-
-- `BeautyExampleRenderer` remains public-facade-only while adding scoped face-shape cases for existing parameters.
-- `28-VERIFICATION.md` records public/import boundary scans, hidden public-surface scans, redaction scans, ignored-output checks, and wording guards as passed.
-- The Phase 28 helper records only relative fixture names, case IDs, counts, dimensions, top-region comparison counts, and no-face output presence.
-- Generated PNGs remain ignored local artifacts; docs record commands and counts rather than generated image baselines or hashes.
-- Phase 28 did not add Demo UI behavior, public raw geometry APIs, network behavior, raw geometry evidence fields, a distinct `下颌线` parameter, or broader branch status claims.
-
-### Phase 30 Eye Safety Boundary Evidence
-
-- EYE-07 validation proves positive-only size/tail behavior, signed distance/position behavior, finite range and cap enforcement, and non-finite normalization before eye geometry is produced. Missing, reused, or stale eye inputs emit only fixed category messages/codes and aggregate metrics.
-- The asserted active roots cover the public SDK surface, `BeautyCore`, `BeautyRender`, renderer source, and active Demo source. A multiline public/SPI scan found no exposure of `FaceGeometry`, `WarpControlPoint`, `CGPoint`, or `CGRect`; renderer and Demo checks found no forbidden internal import.
-- Network/cloud API scans and StoreKit/entitlement scans returned no active execution paths. The only `vipChip` candidates are the two classified static allowlist occurrences `VIP-COMMERCIAL-ALLOW-01` and `VIP-COMMERCIAL-ALLOW-02`; `unclassified_matches: 0`.
-- The inventory observed by the historical Phase 30/38 contract contained exactly 38 public stored fields (37 numeric plus `filterId`). Generated renderer outputs and gallery copies remained ignored, untracked local artifacts rather than committed evidence.
-- Command-backed details are in `30-EYE-SAFETY-EVIDENCE.md`; threat classifications and sign-off are in `30-SECURITY.md`.
-
-### Phase 32 Nose Safety Boundary Evidence
-
-- Public and effective parameter tests lock three legacy positive-only fields, signed `noseTipSize`, exact caps, and non-finite normalization for the historical 31-field public inventory.
-- Missing/stale nose geometry fails closed with zero strengths and category-level warnings; reused geometry exposes only the aggregate `0.5` scale.
-
-### Phase 35 Independent Nose Security Boundary
-
-- The current public inventory is 33 stored fields = 32 numeric plus `filterId`; `noseRootNarrowing` and `noseTipLift` are scalar parameters only and do not expose geometry.
-- `FaceGeometry.noseRoot` and `.noseTip` are package-internal, default-empty explicit supports. No public/SPI raw geometry, `WarpControlPoint`, landmark, bounds, SIMD support array, or provider type crosses the facade.
-- Non-finite public values become zero. Private supports are checked for finiteness, normalized/face bounds, distinctness, sufficient cardinality, and field-specific root/tip structure before any target clamp.
-- New helpers never fall back to the legacy `FaceGeometry.nose` proxy. Malformed support zeros only the matching new field and emits redacted category/aggregate diagnostics without points, coordinates, paths, or framework details.
-- Phase 35 ASVS L1 evidence in `35-SECURITY.md` and `35-VERIFICATION.md` found no dependency, network/cloud, commercial, renderer/Demo, generated-artifact, archive-tampering, or public raw-geometry drift. Phase 36/37 remain required before product promotion.
-- Renderer and Demo remain facade-only; scans find no public/SPI raw geometry, network/cloud execution, StoreKit/entitlement/payment path, or new dependency.
-- All 196 output/gallery PNGs remain ignored local artifacts; `git ls-files example-images/output example-images/gallery` returns zero files.
-- Command-backed details are in `32-NOSE-SAFETY-EVIDENCE.md`; threat sign-off is in `32-SECURITY.md` with `threats_open: 0`.
-
-### Phase 36 Generated-Gallery Publication Boundary
-
-- Gallery population and publication stay anchored to no-follow repository descriptors. Staging directories and destination files are created descriptor-relatively and exclusively; renderer outputs are opened once as regular files and copied through those descriptors.
-- Repository, `example-images`, input/output, staging, and created-entry device/inode identities are revalidated before one atomic descriptor-relative staging-to-gallery rename. No destination pathname write occurs after validation.
-- A preexisting gallery is never enumerated, recursively deleted, or cleaned. It is moved intact to the single ignored `.gallery-quarantine/previous/` slot, preventing traversal of symlinks, mount points, or bind-mount-like nested directories.
-- Existing quarantine or staging state blocks another run. The generator does not claim cleanup; explicit operator handling is required before retry, and all gallery/quarantine/staging artifacts must remain ignored and untracked.
-- The Phase 36 PNG helper opens each PNG once with `O_NOFOLLOW`, bounds both `fstat` size and retained reads to 16 MiB plus one detection byte, and rejects same-file growth or excess without a pathname stat/read split.
-- Gallery source acquisition has the same 16 MiB compressed-file ceiling before destination creation. Copying stays descriptor-relative and bounded, and publication rejects identity, size, nanosecond modification-time, or change-time drift so a same-inode in-place source mutation cannot publish a torn file.
-
-### Phase 37 Final Nose Security Boundary
-
-- Phase 37 retains the exact public inventory at 33 stored fields = 32 numeric plus `filterId`; the six nose fields remain scalars, while root/tip supports, `FaceGeometry`, landmarks, bounds, provider types, and control points remain package-internal.
-- ASVS L1 active-source and public/SPI scans passed with no forbidden Demo/renderer internal import, dependency drift, network/cloud path, commercial execution path, raw diagnostic geometry, compatibility drift, or tracked/staged generated artifact. `37-SECURITY.md` records `threats_open: 0`.
-- The unchanged renderer/helper result is 252/252 local outputs; output, gallery, staging, and quarantine artifacts remain ignored, untracked, unstaged, disposable evidence. No raw pixels or geometry enter committed evidence.
-- The exact two-row and SDK-core branch promotion is authorized only by the co-located Phase 37 safety/boundary evidence. Physical-device parity, subjective/commercial naturalness, packaging, shipping, launch readiness, and the independent milestone audit remain outside this security result.
-
-### Phase 38 Remaining Mouth Geometry Security Boundary
-
-- The five new public values are scalars only. Vision `innerLips` crosses detection as coarse availability, while default-empty upper/lower/inner support arrays, `FaceGeometry`, bounds, SIMD values, provider types, and control points remain package-internal.
-- Provider input validation rejects non-finite or out-of-bounds support, insufficient cardinality, duplicate points, degenerate spans, invalid strength, and non-renderable displacement before final clamp/output construction. Failure removes only the dependent field.
-- Facade results expose only stable category warnings and numeric aggregate metrics. Focused facade and source scans reject raw support names, coordinates, landmarks, bounds, framework objects, paths, or provider internals.
-- Phase 38 ASVS L1 evidence found no public/SPI geometry leak, new dependency, network/cloud path, commercial path, Demo/renderer drift, generated artifact, or premature product promotion. Output evidence, final caps, exhaustive safety, and promotion remain Phase 39/40 gates.
-
-### Phase 41 Observed Eye-Support Security Boundary
-
-- The current public surface adds only ten scalars: positive-only `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `innerCornerOpen`, `outerCornerOpen`, and `eyeSymmetry`, plus signed `eyeTilt`. Default/missing/non-finite values are zero and the exact current inventory is 48 stored fields: 47 numeric plus `filterId`.
-- Left/right contour and optional pupil payloads are package-only, `Sendable`, request-scoped, non-Codable evidence. They cross `CoordinateMapper` once, remain finite and closed-unit bounded, are not retained beyond the observation/request path, and never enter public/SPI APIs, persistence, logs, metrics, warnings, errors, descriptions, snapshots, or Demo imports.
-- An explicit observed payload is accepted only when production mapping derives exactly one finite `.left` and one finite `.right` contour whose mapped centers have positive separation above `0.000001` on the face-local horizontal axis transformed by the same `CoordinateMapper`. Missing, duplicate, coincident, side-inverted, or non-finite order fails closed before semantic support or a provider can consume it; orientation and input mirroring do not relabel valid anatomical sides.
-- Derived contour span and signed inner-to-outer tilt remain package-private, non-Codable, ephemeral values subject to the same raw-geometry redaction and persistence prohibitions as contour and pupil points.
-- Contours fail closed outside 6...16 points, 4 unique points, relative width `0.04...0.50`, height `0.01...0.30`, or area above `0.0004`. Pupils independently require 10% expanded containment, normalized ellipse offset at most `0.70`, and paired contour width/height ratios `0.50...2.00`. These reject biometric-adjacent malformed evidence and are not visual caps.
-- Pupil failure removes only `pupilSize`/`gazeCorrection` eligibility. Explicit missing/invalid contour sides remain empty with no proxy fallback and reach the resolver's complete-eye skip. A nil observed payload preserves only the established shipped zero-default compatibility path.
-- `check_eye_support_boundaries.py` fails closed on `rg` errors/unclassified matches, public/SPI support, Codable/persistence, raw diagnostic geometry, network/cloud or commercial paths, drift from manifest/Demo baseline `f1c28fa`, and tracked/staged/non-ignored-untracked output/gallery/staging/quarantine artifacts. Phase 41 adds no provider/output/final-cap/promotion, Demo, device, commercial, packaging, shipping, or launch-readiness claim.
-
-### Phase 45 Observed Face-Support Security Boundary
-
-- The public expansion is scalar-only: `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, and `chinTaper`. Raw and derived contour/centerline support, bounds, semantic indices, and eligibility values remain package-only, non-Codable, request-scoped, and absent from public/SPI APIs.
-- Vision contour and median inputs are untrusted biometric-adjacent data. Each optional region is rejected before provider access when empty, above its 32/16-point ceiling, non-finite, outside closed unit bounds, duplicate, undersized, direction-degenerate, self-intersecting, side-inconsistent, or cross-support-inconsistent. A malformed region cannot authorize another region or erase safe shipped siblings.
-- The shipped seven-point synthetic face-box `faceContour` is compatibility geometry only. Presenting it as observed Vision evidence, substituting it for `observedFaceSupport`, or using it to claim support for the four new fields is prohibited.
-- Face landmarks are not an identity, recognition, authentication, or biometric-profiling capability. Raw coordinates must not be logged, serialized, persisted, cached, described, exposed to Demo code, or included in warnings, errors, metrics, snapshots, files, or network payloads. Only fixed redacted reasons and aggregate counts may appear in descriptions, structural reflection, or dumps; interruption or request completion leaves no support state to clean up.
-- Phase 45 adds no dependency, target, public support/result type, semantic model, model asset, resource manifest, runtime download, network/cloud path, provider, resolver route, facade route, render path, or Demo source. `去双下巴`, `去双下巴 Pro`, and `发际线` remain future; no synthetic proxy, person matte, or unapproved model may be used as evidence for them.
-- `check_face_support_boundaries.py` fails closed on missing paths, repository escape, tool errors, unclassified matches, public/Codable/persistence/diagnostic exposure, manifest or Demo drift from `9aedd6b40a7c033ac86cea2c75e06bac138cf9ef`, preset-byte drift, semantic model/resource/network additions, facade-only import violations, and generated-artifact escape. Phase 45 closeout passes all 36 adversarial self-tests and all 13 live checks.
-
-### Phase 49 Observed Eyebrow-Support Security Boundary
-
-- Apple Vision eyebrow regions are untrusted biometric-adjacent input, not identity, recognition, authentication, or profiling data. `leftEyebrow` and `rightEyebrow` are classified independently before copy/map; accepted support must satisfy the bounded open-path count, finite closed-unit coordinates, exact uniqueness, chord, span, non-adjacent-intersection, anatomical-side, and endpoint-order checks owned by `DESIGN.md`.
-- Eye contours, historical eye geometry, generated traces, synthetic points, and the seven-point face proxy cannot spoof eyebrow provenance. A malformed or missing side cannot authorize its sibling or erase an independently valid sibling. The only permitted reordering is the request-local stable projection ordering of the already accepted, exactly-once mapped Vision sample multiset on the mapper-derived face-right axis; screen-axis sorting, closure, retry, cache, and substitution remain prohibited.
-- Raw and derived eyebrow carriers are immutable, package/internal, request-scoped, non-Codable, non-persistent, non-networked, and absent from public/SPI API. Coordinates, arrays, endpoints, centers, apex indices, bounds, framework objects, hashes, or stable geometry signatures must not appear in descriptions, reflection, dumps, logs, warnings, errors, metrics, snapshots, files, or network payloads; only fixed availability labels, booleans, and aggregate point counts are permitted transitively through parent diagnostics.
-- Phase 49 adds no dependency, target, model, resource, manifest, runtime download, network/cloud path, cache, Demo/UI import, provider, resolver/conflict/facade route, renderer/gallery path, generated tracked artifact, or product promotion. The current live fixture boundary fails closed on an unreadable/empty/non-regular sole active portrait `example-images/input/portraits/p1.jpg`; historical Phase 49/51/52 artifacts retain their original `e1`/`e6` evidence records without reactivating those inputs.
-
-### Phase 50 Eyebrow Geometry Security Boundary
-
-- Provider authorization derives only from the immutable, request-local observed eyebrow support accepted by Phase 49. Eye contours, historical eye geometry, the synthetic face proxy, generated traces, midpoint/extremum guesses, sorting, closure, remapping, retry, or cross-side repair cannot substitute for missing side, pair, chord, or apex eligibility.
-- Untrusted support and every derived source, target, vector, radius, and strength are checked for finite bounded values before control-point creation. A failure empties only its named emission; it cannot authorize sibling work, re-enter the 44-name retained mask, or weaken unrelated safe domains.
-- The provider, semantic support, and named emissions remain package-internal, immutable, non-Codable, non-persistent, non-networked, and request-scoped. Public facade diagnostics expose only the fixed `eyebrow_inputs_missing` reason and aggregate counts; no side, coordinate, axis, endpoint, center, apex, provider array, hash, signature, or raw geometry enters public/SPI API, logs, reflection, snapshots, or files.
-- Fresh fixture, adversarial/live checker, focused, 243-test BeautyEffects, 433-test full SwiftPM, public/SPI, persistence/reflection, network, Demo, dependency/resource, artifact, product-ledger, and diff gates pass. Phase 50 changes no privacy-manifest disposition and adds no dependency, target, model, resource, network/cloud path, public geometry, Demo/UI behavior, renderer/gallery case, or promotion.
-- The source scans do not verify ethical descriptors. The prohibitions against makeup/texture synthesis, synthetic/eye-derived substitution, and naturalness overclaim remain `unverified` breadcrumbs for `$gsd-secure-phase`. Phase 51 owns decoded output/gallery evidence; Phase 52 owns final caps, exhaustive safety, and promotion; v1.14-v1.16 plus UI/device/commercial/performance/packaging/shipping/release claims remain excluded.
-
-### Phase 51 Eyebrow Output-Evidence Security Boundary
-
-- The sole trusted portrait fixture name is `p1.jpg`, but its decoded image content and detected geometry remain untrusted inputs. Preflight requires one regular, nonempty, non-symlink active portrait and rejects retired `e1`–`e6` names; descriptor parsing and PNG/JPEG decoding enforce exact inventories, bounded dimensions/bytes, safe path components, and no repository escape. The local binary is Git-ignored and stripped of GPS, capture-time, device, author, copyright, and orientation metadata before storage; `example-images/FIXTURE_AUTHORIZATION.md` records only an opaque fixture/right ID and permitted-use boundary.
-- Committed evidence contains only aggregate counts, fixed thresholds, generated filenames, and qualitative per-file observations. Raw support points, provider payloads, decoded pixels, source-image copies, stable geometry signatures, and generated image bytes must not enter documentation, diagnostics, or version control; original-detail review opens only the expected local output files.
-- Phase 51 output, gallery, staging, and bounded quarantine handling remains under ignored generated roots. Publication verifies exact source/destination containment, rejects symlinks and unexpected names, leaves no staging tree, and permits neither tracked, staged, nor non-ignored generated artifacts.
-- Passing output review does not authorize identity inference, naturalness/ethical claims, final caps, product promotion, runtime download, model/resource additions, network/cloud behavior, Demo exposure, or commercial/release readiness. Those boundaries remain Phase 52 or later.
-
-### Phase 53 Canonical Still-Image Input Security Boundary
-
-- D-06/D-07 preflights finite positive integral decoded extents and the configured pixel ceiling before integer conversion or allocation, validates EXIF raw values only in `1...8`, then accepts only known output-capable RGB spaces that are not extended-range. Oriented dimensions are checked again, and row/total RGBA8 byte counts use overflow-reporting multiplication before allocation.
-- One reused Core Image context names sRGB as both working and output color space and performs the only render into request-owned `.RGBA8` bytes. Orientation and input mirroring are consumed once, output origin is zero, and any rendered alpha byte other than `255` rejects the request; there is no compositing, background inference, or force-opaque path.
-- D-18 uses only payload-free `BeautyError.invalidInput` for extent/orientation/limit/overflow/alpha failures and `.unsupportedPixelFormat` for unknown, non-RGB, non-output-capable, or extended-range color semantics. Errors and the package-only carrier expose no metadata, path, dimensions, pixels, or support through public/SPI surfaces. Wave 3 adds only an opaque demand/count/order/output-digest Testing SPI; it exposes no candidate name, canonical bytes, mapped points, stable IDs, file/source details, masks, or framework payloads.
-- This decoded-`CIImage` boundary does not claim encoded-byte/container validation, gain-map discovery, HDR or transparent support, Vision invocation, masks, feature admission, realtime/pixel-buffer behavior, or same-engine concurrency. `BeautyCanonicalStillImageTests` passes 6/6, checker self-test passes 6/6 with exact `16 = 13 automated + 3 flagged`, and `git diff --check` passes.
-- T-53-04 keeps actual outer/inner lip coordinates inside immutable package-only non-Codable request values. Every diagnostic and reflection boundary is explicitly redacted to aggregate counts; stable IDs, bounds, coordinates, pixels, masks, paths, and framework payloads are absent. There is no exported/SPI support geometry or testing carrier.
-- T-53-05 independently rejects empty, oversized, non-finite, and out-of-unit lip regions before mapping. Rejection cannot erase a valid sibling region or selected face, and valid-invalid-valid, no-face, reset-owned facade coverage, and independent detector-value tests prohibit stale or crossed support. Same-engine concurrency and cooperative cancellation remain the flagged `PATH04-CONCURRENCY` assumption under TD-013 rather than a security claim.
-- The support boundary retains the existing one `VNDetectFaceLandmarksRequest` and one mapper, adds no dependency, target, cache, persistence, network/model path, synthetic lip proxy, provider, renderer route, candidate field, or realtime/pixel-buffer activation.
-- T-53-01/T-53-02/T-53-03 require admitted work to pass the canonical preflight before the existing detector receives the same normalized image with `.up`/not-mirrored metadata. Invalid canonical input performs zero Vision/context/render work. T-53-06 is structural: pixel-buffer and `reset()` source paths contain no admission, canonicalizer, request-context, local-support, or provider call.
-- T-53-04/T-53-05 keep the selected observation inside one stack-local non-Codable context and reduce diagnostics to aggregate counts. Request cleanup runs on both success and throw; no-face/missing support continues safe shipped color work, malformed fixtures fail closed, and a later valid request receives only its own aggregate synthetic identity. Same-engine concurrency and cooperative cancellation remain explicitly unverified under TD-013.
-- Final ASVS Level 1 review verifies every HIGH row T-53-01 through T-53-06: checker self/live modes pass, the 83-test named foundation/compatibility gate passes, the 18-test inactive renderer regression passes, and full SwiftPM passes 495 tests with six documented opt-in skips and zero failures. The skips are unrelated Vision integrations and do not skip any HIGH mitigation; raw portrait support remains package/request-local and aggregate-only.
-
-### Phase 54 Local Evidence Review Security Boundary
-
-- EVID-01/EVID-02 treat every selected local manifest, media file, asset key, declared role, expected-target assertion, and review value as untrusted. A separately tracked, immutable authorization registry is the authority: every genuine manifest assertion must resolve to one grant bound to rights-record ID, fixture ID, feature, polarity, trusted expected-target policy, `internal_product_evaluation` use, genuine evidence classification, and exact original/mask/after asset keys plus SHA-256 digests. Asset keys are lookup hints only: the reviewer hashes the selected bytes before snapshot selection, and a missing/rekeyed/substituted/swapped triple cannot enter `selected_rows` or product counts. The tracked registry remains empty until a complete real triple has independently pinned values. Invented IDs, mismatched/reused grants, self-promoted classifications, basename repair, traversal, aliases, active formats, and undeclared polarity fail closed. Before any `Image` or object URL exists, bounded PNG/JPEG header parsing rejects malformed headers, either dimension above 4096, or a checked pixel count above 16,000,000; browser decode must then match the accepted header dimensions.
-- EVID-03/LID-01 keep review state session-local and ephemeral. The reviewer uses local File/object URLs only, revokes them on replacement/reset, renders fixed text through safe DOM APIs, exposes redacted fixed reason codes, and permits no network, external resource, form submission, clipboard, worker, cookie, local/session storage, IndexedDB, cache, service worker, or tracked media path.
-- Local review media remains ignored and untracked. D-15/D-16 durable output is constructed by positive allowlist from feature decisions, aggregate counts, and (only for a ready bundle) per-fixture opaque ID/feature/polarity plus the fixed structured review judgments. It excludes media, filenames/paths, rights records, reviewer identity, timestamps, session/event metadata, notes/freeform text, raw errors, and geometry; the serializer remains explicitly review-capable.
-- The canonical `.planning/milestones/v1.14-phases/54-rights-approved-evidence-and-eligibility-decisions/54-THREAT-INVENTORY.json` is the single Phase 54 HIGH inventory: exactly active T-54-01 through T-54-08, including T-54-07 evidence repudiation and T-54-08 local-review disclosure. The checker independently pins that exact ordered set and one named mitigation gate per ID; it rejects coordinated missing, extra, or replacement edits even when both inventory arrays drift together. Only the complete live gate may print `8/8`; partial core/UI/ledger modes do not claim the full denominator. Phase 54 adds no SDK or Demo import of the review core, no provider/renderer/preset/admission route, no cloud/model/dependency, and no change to Phase 53 exact-empty production admission.
-
-## 3. Trust Boundaries
-
-```text
-Host App UI
-→ public BeautySDK API
-→ parameter and input validation
-→ detection / resources / render
-→ output image buffer
-```
-
-Boundary rules:
-
-| Boundary | Trust Level | Required Check |
-| --- | --- | --- |
-| Host App → SDK | Untrusted caller | Validate parameters, pixel formats, dimensions, orientation. |
-| User JSON → Preset loader | Untrusted data | Validate schema version, field names, ranges, resource IDs. |
-| External resource URL → Resource manager | Untrusted file | Validate location, size, type, manifest, checksum, version. |
-| Camera / PhotoKit → Demo pipeline | User-protected resource | Confirm authorization and Info.plist usage descriptions. |
-| SDK internals → logs / metrics | Sensitive internal state | Redact and aggregate before emitting. |
-| Debug tools → UI | Developer-only diagnostics | Gate behind debug setting and avoid sensitive payloads. |
-
-## 4. Platform Privacy Requirements
-
-iOS protected resources require user-visible purpose strings and runtime authorization. Current official references:
-
-- [NSCameraUsageDescription](https://developer.apple.com/documentation/bundleresources/information-property-list/nscamerausagedescription)
-- [NSPhotoLibraryUsageDescription](https://developer.apple.com/documentation/BundleResources/Information-Property-List/NSPhotoLibraryUsageDescription)
-- [AVCaptureDevice.requestAccess](https://developer.apple.com/documentation/avfoundation/avcapturedevice/1624584-requestaccess)
-- [Privacy manifest files](https://developer.apple.com/documentation/bundleresources/privacy-manifest-files)
-- [Adding a privacy manifest to your app or third-party SDK](https://developer.apple.com/documentation/bundleresources/adding-a-privacy-manifest-to-your-app-or-third-party-sdk)
-- [App Privacy Details](https://developer.apple.com/app-store/app-privacy-details/)
-
-Rules:
-
-- `BeautyDemo` must include a clear `NSCameraUsageDescription` before accessing camera APIs.
-- If `BeautyDemo` reads from the photo library, it must include `NSPhotoLibraryUsageDescription`.
-- If `BeautyDemo` only saves to the photo library, prefer add-only photo usage where the product flow allows it.
-- Camera permission must be requested before capture session use and reflected in UI state.
-- A distributed `BeautySDK` target must include `PrivacyInfo.xcprivacy` when it collects data or uses Apple required-reason APIs that must be declared.
-- The SDK privacy manifest must describe SDK behavior only; the host App remains responsible for its own App Store privacy answers.
-- If data is processed only on device and not collected, do not describe it as uploaded or retained in product docs.
-
-Phase 3 protected-resource evidence recorded 2026-06-12:
-
-- `BeautyDemo` generated Info.plist settings contain the exact Camera purpose string `Use the camera to preview beauty processing on this device.` in Debug and Release.
-- `BeautyDemo` generated Info.plist settings contain the exact Photo purpose string `Select photos to preview beauty processing on this device.` in Debug and Release.
-- `InputPipelinePrivacyTests` verifies the purpose strings and scans Camera, Editor, and Support input paths for network/upload calls, raw `/private/var` paths, and raw framework error copy.
-- Static scan `rg -n "URLSession|http://|https://|upload|/private/var|NSError|AVError" BeautyDemo/BeautyDemo/Camera BeautyDemo/BeautyDemo/Editor BeautyDemo/BeautyDemo/Support` returned no matches.
-
-Phase 25 privacy-manifest evidence recorded 2026-07-03:
-
-- `find BeautySDK BeautyDemo -name PrivacyInfo.xcprivacy -print` found no existing privacy manifest.
-- Phase 25 explicitly defers adding `PrivacyInfo.xcprivacy` because current SDK facade and Demo app evidence shows no default data collection, upload, raw frame or landmark persistence, analytics, remote config, payment, entitlement, or hidden third-party SDK behavior.
-- Required-reason seed scans found no active SDK facade or Demo app use of `UserDefaults`, file timestamp, disk-space, system boot-time, active keyboard, or POSIX stat APIs. The only `FileManager.default` seed hit is in the `BeautyExampleRenderer` local example executable and is classified separately as local input/output fixture enumeration.
-- Re-evaluate the manifest before SDK behavior collects data, uses required-reason APIs, adds third-party SDKs, adds network/cloud/analytics behavior, packages the example executable into an app distribution, or enters App Store/commercial packaging review.
-
-## 5. Permission Model
-
-Demo App permission states:
-
-```text
-notDetermined
-requesting
-authorized
-denied
-restricted
-unavailable
-```
-
-Rules:
-
-- Permission prompts are initiated by `BeautyDemo`, not SDK internals.
-- SDK APIs must not trigger protected-resource prompts on their own.
-- Denied camera permission must not crash the Demo; show an editor-only or explanation path.
-- UI updates after permission callbacks must return to the main actor.
-- Permission copy must explain the feature being enabled, not use vague text.
-
-## 6. Input Validation
-
-All public API input validation happens before expensive work.
-
-### 6.1 Pixel Buffer Validation
-
-Required checks:
-
-| Check | Rule |
+| Boundary | Required checks |
 | --- | --- |
-| Format | Accept only documented pixel formats. Reject or convert unsupported formats. |
-| Dimensions | Reject zero, negative, or above configured maximum size. |
-| Plane layout | Validate expected planes before texture creation. |
-| Orientation | Require explicit orientation; do not infer from UI state. |
-| Lifetime | Do not retain realtime buffers beyond the processing window. |
-| Mutability | Do not mutate caller-owned input buffers unless API explicitly documents in-place processing. |
+| Host → public SDK | parameter finiteness/ranges, explicit metadata, supported format/color, finite dimensions, byte/pixel ceilings |
+| Preset/resource ID → catalog | schema/version, conservative identifier, bundle membership, typed redacted failure |
+| Vision → effects | bounded finite topology, request-local ownership, per-region fail-closed behavior |
+| Local retouch → output | canonical opaque sRGB input, original-pixel composition, hard ownership, collision-to-source, checked budgets |
+| Private fixture → opt-in test | ignored local bundle, rights/manifest validation, fixed aggregate result, no durable locator/media |
+| Archive artifact → historical extraction | exact artifact/digest, safe entry path, manifest/content equality, new temporary destination |
+| Child test process → gate | bounded one-child transcript reduced to fixed aggregate pass/fail; raw output is not durable authority |
 
-### 6.2 Image Validation
+## 3. Archive Entry and Extraction Safety
 
-Required checks:
+The exact retained artifacts live under `archives/legacy-ui/`. Verification must
+fail closed when any ZIP, manifest, digest record, entry, or extraction differs.
 
-- Validate image extent is finite and within configured maximum pixels.
-- Normalize EXIF orientation before detection/render coordinate agreement.
-- Reject images whose color space or pixel format cannot be rendered safely.
-- Avoid loading full-resolution images on the main thread.
+Required invariants:
 
-Current production boundary (2026-07-28 TD-012 closeout):
+- only `BeautyDemo-v1.16` and `meituxiuxiu-v1.16` bundles are accepted;
+- archive records use lowercase 64-hex SHA-256 bound to the exact ZIP filename;
+- entry names use forward-slash relative paths rooted under the exact source
+  name, contain no absolute path, `.`/`..`, empty component, backslash, or NUL;
+- entries are sorted, unique, file-only, normalized, and equal to their manifest;
+- every extracted byte count and SHA-256 equals the manifest;
+- extraction uses a newly created temporary directory and creates no symlink;
+- review restoration never targets the repository or an existing directory.
 
-- `BeautyConfiguration.maximumInputByteCount` defaults to 32 MiB and the Demo rejects PhotosPicker `Data` above it before `CIImage` decode or processing-queue work.
-- `BeautyConfiguration.maximumInputPixelCount` defaults to 50,000,000 and the Demo rejects decoded extents above it before SDK processing or display rendering.
-- Both public `BeautyEngine.processResult` families validate positive, finite dimensions with division-based comparisons before resource validation, detection, effect planning, output-buffer copying, or rendering; exact-limit inputs remain accepted.
-- Rejection exposes only `BeautyError.invalidInput` at the SDK boundary and the existing friendly photo-failure copy in the Demo; bytes, dimensions, paths, framework errors, and image contents are not disclosed.
+Do not trust a general archive extractor before these checks. The Python verifier
+performs entry validation before writing each extracted file and then independently
+walks the extraction for exact equality.
 
-Residual accepted risk: `PhotosPickerItem.loadTransferable(type: Data.self)` materializes the selected `Data` before the Demo can observe `Data.count`. The current boundary therefore prevents post-transfer decode/render amplification but does not claim pre-transfer allocation control.
+## 4. Digest-Bound Deletion
 
-### 6.3 Parameter Validation
+The original-source retirement contract permits only the two exact top-level
+non-symlink directories and only after fresh verification/reproduction.
 
-Required checks:
+- approval binds both exact source names to their current verified ZIP digests;
+- tracked deletions are precomputed as an exact allowlist;
+- SDK/docs/planning/private-fixture sentinels are fingerprinted before mutation;
+- both roots move together to an outside-repository quarantine;
+- deletion-set and sentinel postconditions are checked before quarantine removal;
+- any pre-final failure restores both roots in reverse order;
+- no glob, unresolved environment variable, broad recursive target, or partial
+  single-root approval may authorize deletion.
 
-- Clamp enhancement parameters to `0.0...1.0`.
-- Clamp bidirectional parameters to `-1.0...1.0`.
-- Apply algorithm-level safety caps before generating geometry or color uniforms.
-- Treat unknown resource IDs as missing resources, not as file paths.
-- Reset NaN, infinity, and non-finite numeric values to documented no-op defaults before rendering.
-- Preserve default zero-effect behavior.
+The completed deletion transaction is historical. Running retirement again when
+the roots are absent must fail; recovery uses the retained archives, not a second
+destructive transaction.
 
-Algorithm-level caps are visual-safety controls and must be kept separate from public API ranges.
+## 5. Recovery and Historical Access
 
-Phase 6 current behavior:
+Before recovery, run:
 
-- Public slider range remains unchanged, but effective skin/color/geometry/lip/filter strengths are capped or weakened inside `BeautyEffects`.
-- Combined face, eye, nose, and mouth geometry weakening is reported only as redacted warnings and numeric metrics.
-- No-face routing skips face-dependent skin, geometry, eye, nose, mouth, and lip-color domains while allowing face-agnostic color/filter domains to continue.
-- Missing eye, nose, and mouth landmark groups skip only their dependent domains; raw landmark points, bounding boxes, and provider internals remain private.
-- Mouth warnings and metrics expose only stable reason codes and aggregate counts. No-face or missing outer lips zero skipped mouth/lip strengths; stale geometry zeros only mouth geometry while safe color/filter work and eligible `lipColor` continuation remain local and redacted.
-
-## 7. JSON and Preset Validation
-
-Preset JSON is untrusted unless bundled and versioned by the SDK.
-
-Required fields:
-
-```text
-schemaVersion
-id
-version
-parameters
+```bash
+python3 scripts/archive-legacy-ui.py verify --output archives/legacy-ui
 ```
 
-Validation rules:
+Restore only into a new temporary directory outside the repository. After review,
+delete that temporary copy through an explicitly scoped local operation. Never
+copy either root back into the repository; the post-archive scanner treats any
+restoration as a boundary violation.
 
-- Bundled preset `schemaVersion` must be compatible with the SDK; unsupported versions fail with a redacted typed error.
-- `id` must match a conservative ID pattern such as `^[A-Za-z0-9._-]+$`.
-- `version` must be parseable and compatible with the SDK.
-- Unknown fields may be ignored only if forward-compatible.
-- Missing parameters resolve to documented defaults.
-- Invalid numeric values are clamped or rejected before rendering.
-- Resource IDs referenced by presets must exist in the resolved resource registry.
-- JSON size must have a documented maximum.
-- Preset parsing errors return typed errors; they do not crash.
-- Preset decoding failures must map to `BeautyError.presetDecodeFailed` with a redacted reason.
+If an archive is corrupt, missing, symlinked, or digest-mismatched:
 
-Forbidden:
+1. stop without extraction or mutation;
+2. preserve the active SDK tree unchanged;
+3. recover the exact committed archive artifact from trusted Git history;
+4. rerun full verification; and
+5. proceed only after both bundles pass.
 
-- Executing scripts or expressions from JSON.
-- Resolving JSON resource IDs as arbitrary filesystem paths.
-- Loading remote preset URLs without an explicit network and integrity design.
+Do not recreate a historical archive from memory or substitute a similarly named
+artifact.
 
-Phase 7 Demo parameter JSON evidence recorded 2026-06-23:
+## 6. SDK Input and Resource Validation
 
-- Demo parameter JSON is copy/paste-only and limited to 65,536 UTF-8 bytes before decoding.
-- The accepted envelope is `schemaVersion: 1` plus `parameters`; unsupported schemas, malformed JSON, oversized payloads, and unknown `filterId` values map to stable friendly errors.
-- Import preview validates through the public `BeautySDKResources.validate(parameters:)` facade before Apply; failed imports do not mutate current parameters, selected filter, selected preset, sliders, compare state, or debug state.
-- Export emits only deterministic `schemaVersion` and `parameters`; it does not include timestamps, source labels, detection summaries, debug metrics, local paths, or build metadata.
-- Raw pasted JSON is confined to the explicit sheet text editor and is not echoed in status, error, debug, or log copy.
-- The broad raw-token scan over all Demo source/tests reports expected XCTest guard literals and existing non-debug image geometry helpers; the scoped active JSON/debug surface scan returned no matches.
+- Public dimensions must be positive, finite, integral where required, and at or
+  below configured ceilings before allocation/detection/render work.
+- Unknown/non-output-capable/extended-range color and transparent local-retouch
+  input fail through existing payload-free typed errors.
+- Public numeric parameters normalize deterministically; non-finite values become
+  documented no-op values before safety caps.
+- Resource IDs are logical identifiers, never arbitrary paths.
+- External packages/downloads remain disabled until type/size/path/integrity/
+  cache/licensing/privacy behavior is explicitly designed.
+- The retained shader file is byte-pinned; v1.16 rejects modification, additional
+  shader sources, or public/backend drift.
 
-## 8. Resource Security
+## 7. Local-Retouch Privacy and Safety
 
-Resource types:
+- Canonical input, Vision support, provider masks/proposals, and composition owner
+  remain within one request.
+- Missing/malformed/closed/occluded/low-confidence support fails per smallest
+  region without stale, mirrored, cached, or proxy recovery.
+- Accepted edits derive from original canonical pixels and hard-reclipped masks;
+  unexpected overlap preserves source.
+- Teeth coverage remains fixed to its qualified inner aperture. Sclera work
+  preserves iris, pupil, highlight, lash/lid, skin, caruncle, exterior, alpha,
+  and colored-interior protections.
+- `去脂` remains future upper-eyelid-fullness work and cannot alias existing eye,
+  brow, smoothing, eye-bag, or dark-circle behavior.
+- Real-fixture masks must match finite zero-origin dimensions/orientation before
+  measurement; synthetic/AI fixtures cannot establish product feasibility.
 
-```text
-LUT
-Preset JSON
-Makeup Package
-Sticker Texture
-Background Texture
-Model File
-Metal shader resource
+## 8. Logging and Evidence
+
+Allowed durable data: fixed error/reason codes, feature/category names, counts,
+timings, bounded numeric aggregates, relative opaque fixture/case IDs where the
+owning evidence contract permits them.
+
+Forbidden durable data: raw image or mask bytes, paths/locators, coordinates,
+landmark arrays, pupil/teeth/vein geometry, rights/reviewer identity, raw JSON,
+framework errors, child transcripts, or generated media.
+
+The release default remains redacted and local; no data collection or upload is
+claimed. Reassess privacy-manifest needs before adding required-reason APIs,
+third-party dependencies, collection, or distribution scope.
+
+## 9. Required Gates
+
+```bash
+python3 scripts/archive-legacy-ui.py verify --output archives/legacy-ui
+bash scripts/check-sdk-only-boundary.sh --post-archive
+bash scripts/run-no-skip-swiftpm.sh
 ```
 
-Bundled resources:
-
-- Use `Bundle.module` for Swift Package resources.
-- Do not hardcode absolute file paths.
-- Manifest and preset references must pass conservative identifier validation before bundle lookup.
-- Phase 5 bundled filter resources are metadata-only IDs; `.cube`, thumbnails, swatches, and arbitrary relative paths are out of scope until an explicit render/resource security design exists.
-- Record resource `id`, `name`, `version`, `minimumSDKVersion`, and `items`.
-- Fail with a typed error when required bundled resources are missing.
-
-External resources:
-
-| Resource | Required Validation |
-| --- | --- |
-| LUT | File extension, dimensions, color data length, maximum file size, checksum if packaged. |
-| Makeup package | Manifest schema, item paths, image dimensions, blend modes, SDK compatibility. |
-| Model file | Version, expected model type, size limit, checksum/signature before load. |
-| Background / sticker texture | File type, dimensions, color space, decompression safety, size limit. |
-
-Rules:
-
-- External resources are disabled until a `BeautyResourceManager` design is implemented.
-- When enabled, external resources must be registered through a single resource manager.
-- Resource packages must not contain executable code.
-- Relative paths inside packages must not escape the package root.
-- Caches must have size limits and eviction rules.
-- Missing optional resources degrade gracefully; missing required resources return typed errors.
-
-Phase 25 resource-trust evidence recorded 2026-07-03:
-
-- Current `BeautyResources` evidence covers bundled SwiftPM resources only: manifest schema version, metadata filters, five bundled presets, logical resource identifiers, traversal-like ID rejection, unknown preset/filter behavior, and typed redacted missing-resource errors.
-- `swift test --package-path BeautySDK --filter BeautyResourcesTests.BeautyResourceCatalogTests` passed with 6 tests and `swift test --package-path BeautySDK --filter BeautySDKTests.BeautySDKFacadeTests` passed with 5 tests.
-- Resource scans confirmed `Bundle.module`, conservative identifier validation, `resourceNotFound`, `presetDecodeFailed`, and no active resource target network, download, remote config, cloud, payment, entitlement, or listed third-party SDK behavior.
-- This does not complete external LUT, makeup, model, sticker, dynamic download, cache, checksum/signature, or package-integrity capability. Those remain disabled until a future resource-manager design defines type, size, path confinement, integrity, cache, privacy, and failure policy.
-
-## 9. Logging and Metrics
-
-Log levels:
-
-```text
-none
-error
-warning
-info
-debug
-```
-
-Security rules:
-
-- Release default log level is `error`.
-- Debug logs can be `warning` or `info`, but must still be redacted.
-- Logs must not include image bytes, file paths, face landmarks, bounding boxes, user identifiers, tokens, or raw JSON payloads.
-- Per-frame logs are disabled by default.
-- Performance logs are sampled or aggregated.
-- Debug result APIs must be gated by configuration and must not persist sensitive buffers.
-- File logging is disabled by default. If enabled by the host App, logs stay in the App sandbox, rotate by date or size, default to 7-day retention and 5 MB per file, and must be redacted before export or sharing.
-
-Allowed examples:
-
-```text
-resource_not_found id=clean_01
-render_failed code=texture_creation_failed
-frame_dropped reason=backpressure
-```
-
-Forbidden examples:
-
-```text
-/private/var/mobile/Containers/Data/.../IMG_1234.JPG
-landmarks=[(0.421,0.215), ...]
-rawPresetJson={...}
-```
-
-Phase 6 warning and metric payloads may include stable domain names, counts, capped-domain totals, geometry point counts, and effective-strength values. They must not include raw face coordinates, bounding boxes, local paths, raw framework errors, or image bytes.
-
-## 10. Network Policy
-
-Current SDK policy:
-
-- SDK has no network dependency.
-- Demo App should not upload frames, photos, landmarks, presets, metrics, or crash diagnostics by default.
-- Dynamic downloads are out of scope until explicitly designed.
-
-Before adding network behavior:
-
-1. Update this file with endpoint, payload, retention, authentication, and failure behavior.
-2. Update `PRODUCT_SENSE.md` with user-facing disclosure and acceptance criteria.
-3. Update `RELIABILITY.md` with retry, timeout, and offline behavior.
-4. Add privacy manifest and App Store privacy details review items where applicable.
-
-## 11. SDK Distribution Security
-
-If the SDK becomes commercially distributed:
-
-- Ship source SPM or signed XCFramework with documented checksum.
-- Include `PrivacyInfo.xcprivacy` when required by SDK behavior.
-- Document required host App Info.plist keys.
-- Document whether the SDK collects data. Default answer should remain no collection.
-- Keep license validation separate from image processing correctness.
-- License failure must not corrupt output or expose user data.
-- Feature gating must not silently enable hidden network calls.
-
-Commercial hooks that require security design before implementation:
-
-- License server validation.
-- Remote config.
-- Dynamic resource package download.
-- Watermark strategy.
-- Per-module entitlement.
-- Trial period enforcement.
-
-## 12. Dependency Policy
-
-Default dependency policy:
-
-- Prefer Apple frameworks and local Swift/Metal code.
-- Avoid third-party image-processing SDKs in the core pipeline.
-- Do not introduce dependencies that collect analytics, advertising identifiers, or cross-app tracking.
-- New dependencies must document license, privacy behavior, network behavior, binary distribution, and update path.
-- Dependencies that include required-reason APIs or data collection must be reflected in privacy manifests and App privacy review.
-
-## 13. Secure Failure Behavior
-
-| Failure | Secure Behavior |
-| --- | --- |
-| Camera permission denied | No capture; show UI fallback. |
-| Invalid parameter | Clamp or reject before render. |
-| Invalid preset JSON | Return typed parse error; keep current parameters. |
-| Missing optional LUT | Disable filter and continue. |
-| Missing required shader | Return render error; do not crash in release. |
-| Unsupported pixel format | Reject or route through documented conversion. |
-| Resource checksum mismatch | Reject resource and clear related cache entry. |
-| Debug data requested in release | Return unavailable or empty debug payload. |
-
-## 14. Security Test Checklist
-
-Security-sensitive changes must add or update checks for:
-
-- Parameter NaN, infinity, below-range, and above-range values.
-- Preset JSON missing fields, unknown fields, wrong types, oversized payloads.
-- Unknown `filterId`, `makeupId`, and resource IDs.
-- LUT parsing with invalid dimensions and invalid data length.
-- Package paths that attempt `../` traversal.
-- Camera permission denied and restricted states.
-- Photo library unavailable or denied states.
-- Logging output with debug mode on and off.
-- Realtime frame processing without persistence.
-- Privacy manifest presence when SDK behavior requires it.
-
-Phase 6 effect/privacy evidence recorded 2026-06-22:
-
-- `CombinedEffectSafetyTests` and `MissingLandmarkDegradationTests` cover combined caps, no-face routing, partial landmark skips, stale/reused degradation, and redacted warning/metric behavior.
-- Demo import-boundary tests keep `BeautyDemo` on the public `BeautySDK` facade.
-- Static scans cover stale pending UI copy, `VNFaceObservation`, bounding boxes, raw framework errors, local paths, raw preset JSON, and image-byte dump tokens on active SDK/Demo surfaces.
-
-Phase 7 debug/privacy evidence recorded 2026-06-23:
-
-- The preview debug overlay shows only frame status, detection availability/reason/count/timing summaries, warning counts, redacted error codes, and friendly status copy.
-- No face boxes, landmarks, control points, geometry overlay, raw Vision objects, raw `NSError`, local paths, stack traces, image bytes, network calls, document pickers, file importers, or file exporters were added to active JSON/debug surfaces.
-- `rg -n "import Beauty(Core|Detection|Effects|Render|Resources)" BeautyDemo/BeautyDemo BeautyDemo/BeautyDemoTests` returned no matches.
-
-Phase 25 active-source security evidence recorded 2026-07-03:
-
-- Active SDK/Demo/package/project scans found no default `URLSession`, HTTP(S), upload, cloud, analytics, telemetry, tracking, remote config, StoreKit, payment, entitlement, or hidden third-party SDK behavior after the narrow Demo product-copy fix.
-- Scoped raw path/error/geometry/diagnostic scans over active SDK core/facade and Demo camera/editor surfaces found no raw framework errors, absolute local paths, face geometry payloads, raw JSON, or image-byte exposure.
-- Focused `InputPipelinePrivacyTests` and `BeautyDemoImportBoundaryTests` passed on `platform=iOS Simulator,name=iPhone 17,OS=26.5`, including the new SEC-04 active-source product-scope regression guard.
-
-Phase 26 geometry facade security evidence recorded 2026-07-06:
-
-- Focused `BeautyEngineGeometryFacadeTests`, `BeautyDetectionTests.VisionFaceDetectorTests`, `BeautyEffectResolverTests`, and `MissingLandmarkDegradationTests` passed, and full `swift test --package-path BeautySDK` passed with 159 tests.
-- Public/SPI raw geometry export scan, active-source raw-leak scan, Demo internal-import scan, renderer geometry-case exclusion scan, and `SHAPE_FEATURE_LEDGER.md` implemented-status guard are recorded in `26-VERIFICATION.md`.
-- Public evidence remains limited to `BeautyDetectionSummary`, warnings, and numeric aggregate metrics; no raw landmarks, bounds, control points, framework errors, local paths, raw JSON, or image bytes are allowed across the public facade.
-
-If automated tests are not yet available, record manual checks in `PLANS.md`.
-
-## 15. Review Gates
-
-Before merging any change touching these areas, update `SECURITY.md` if needed:
-
-| Area | Required Review |
-| --- | --- |
-| Public API input | Validation behavior and failure mode. |
-| Parameters | Range, clamp, safety cap, serialization compatibility. |
-| Resource loading | Trust boundary, schema, path, size, checksum. |
-| Logging / metrics | Redaction and default log level. |
-| Debug APIs | Access gating and sensitive data handling. |
-| Network | Payload, retention, consent, privacy manifest impact. |
-| SDK distribution | Privacy manifest, signature/checksum, host integration docs. |
-| New dependency | License, privacy, network, required-reason API impact. |
-
-## 16. Security Decision Log
-
-### v1.10 Phase 40 Mouth Geometry Closeout
-
-- `40-SECURITY.md` records ASVS L1 review with `threats_open: 0` for `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, and `lipPlump`.
-- Active-source checks fail closed for raw geometry/support exposure, internal Demo/renderer imports, compatibility drift, unclassified matches, network/cloud behavior, commercial paths, dependencies, and generated artifacts.
-- Diagnostics remain aggregate-only and redact paths, identifiers, coordinates, and support points. The existing privacy-manifest disposition is unchanged because Phase 40 adds no collected-data category, system API, remote transfer, account behavior, or tracking behavior.
-
-### v1.11 Phase 41 Eye Support Boundary
-
-- ASVS L1 boundary checks pass only when all active SDK source matches are explicitly classified, `rg` status is 0/1-aware and fail-closed otherwise, the `f1c28fa` manifest/Demo baseline is unchanged, and all four generated-artifact roots remain ignored and untracked/unstaged.
-- Production-derived side order fails closed on missing, duplicate, coincident, side-inverted, or non-finite observed pairs before package-private span/tilt derivation or provider consumption. The orientation/mirror-aware axis uses the same coordinate metadata as the observed contours rather than a separate orientation switch.
-- The privacy-manifest disposition remains unchanged: the package-only observed eye evidence is local, ephemeral, non-persistent, non-networked, and absent from diagnostic/public surfaces.
-
-| Date | Decision | Reason |
-| --- | --- | --- |
-| 2026-05-25 | SDK default is on-device processing with no data upload. | Image frames and facial landmarks are sensitive; local processing reduces privacy risk. |
-| 2026-05-25 | External resources are disabled until a resource manager with validation exists. | LUT, makeup, model, and texture packages cross a trust boundary. |
-| 2026-05-25 | Logs must never include image paths, image bytes, landmarks, or raw JSON. | Debuggability must not leak user content or biometric-adjacent data. |
-| 2026-05-25 | Distributed SDK builds must revisit `PrivacyInfo.xcprivacy`. | Apple requires privacy manifests for apps and third-party SDKs according to SDK behavior. |
-| 2026-07-03 | Phase 25 defers `PrivacyInfo.xcprivacy` for current source behavior and keeps external resources disabled. | Current command evidence supports local-first SDK/Demo behavior and bundled-resource trust only; future collection, required-reason APIs, third-party SDKs, network behavior, or external packages must reopen the review. |
-| 2026-07-06 | Phase 26 keeps geometry detection and landmark routing package-internal and redacted at the public facade. | Still-image geometry intent can be proven without exposing raw biometric-adjacent payloads, sensitive diagnostics, Demo internals, or saved-output implementation claims. |
-
-### v1.11 Phase 44 Eye Geometry Security Closeout
-
-- Observed contours/pupils remain request-scoped, package-only, non-Codable, non-persistent, and absent from public or diagnostic raw geometry payloads.
-- The active-source gate classifies the exact 48-field public inventory and eight source owners; command errors, unclassified matches, dependency/import drift, persistence, network/cloud, commercial paths, and artifact escapes fail closed.
-- Generated output/gallery/staging/quarantine remains ignored, untracked, and unstaged. ASVS L1 HIGH findings block promotion; `threats_open: 0` after the 57/57 self-test and 13/13 live boundary pass.
-
-### Phase 46 Contour Geometry Security Boundary
-
-- The four new providers authorize work only from Phase 45 validated observed support. The synthetic seven-point compatibility contour may continue to drive the five shipped fields but cannot authorize smoothing, temple, cheekbone, or taper output.
-- Every observed or derived coordinate, axis, progress value, displacement, target, radius, strength, and falloff must be finite before bounded construction. Invalid, incomplete, non-improving, or non-renderable work fails the owning field closed; it is never repaired from NaN/∞ by a clamp or borrowed from a sibling.
-- Observed contour and median evidence remains immutable, package-only, non-Codable, request-scoped, non-persistent, and non-networked. The deterministic `.usableFace` payload is testing SPI input that traverses the production mapper and validator; it creates no public support/result inventory.
-- Public diagnostics remain limited to generic warnings and aggregate numeric counts/scales. Raw or derived contour, median, apex, index, source/target, displacement, coordinate, bounds, provider, framework object, file path, and image-byte details are prohibited.
-- The privacy-manifest disposition is unchanged because Phase 46 adds no collected-data category, required-reason API, remote transfer, account behavior, tracking behavior, dependency, model, resource, target, public API, Demo import, renderer case, or generated evidence.
-- `check_face_geometry_boundaries.py` passes 24/24 adversarial self-tests and 14/14 live checks, including the pinned manifest and Phase 45 checker hashes, exact 7+2 ownership, exact 37-pass convergence, artifact containment, redaction, and future-row non-promotion.
-- Concrete source manifestations pass, and the independent ASVS L1 audit in `46-SECURITY.md` resolves the three repository-scoped governance statements about biometric profiling, synthetic-proxy representation, and silent deferred-feature activation with `threats_open: 0`. Phase 47 owns decoded output; Phase 48 owns final safety and promotion.
-
-### Phase 48 Face Safety Security Closeout
-
-- Phase 48 keeps observed contour/median/apex support package-only, request-scoped, immutable, non-Codable, non-persistent, non-networked, and absent from public/SPI API.
-- Public results contain only generic warnings and aggregate metrics. Any raw geometry, derived coordinate, provider object, framework object, image byte, or file path in diagnostics is prohibited.
-- The self-tested active-source boundary classifies all eight owners and fails closed on command errors, unclassified matches, persistence/cache/static state, internal Demo/renderer imports, dependency/model/resource/network/commercial drift, deferred semantic activation, and generated-artifact escape.
-- ASVS L1 closes 16/16 registered threats and 3/3 repository governance inputs at the HIGH blocking threshold; `threats_open: 0`.
-
-### Phase 52 Eyebrow Safety Security Closeout
-
-- Actual eyebrow evidence remains immutable, request-scoped, package-only, non-Codable, and absent from public/SPI results. Phase 52 safety fixtures enter through `BeautyFaceGeometryAdapter` and assert canonical inner-to-outer ordering plus the production chord/span bounds; fabricating support from eye geometry, mirroring a sibling, or substituting a synthetic face proxy remains prohibited.
-- Separate nil-default internal signals prove real resolver entry and entry inside `EyebrowWarpProvider.fieldEmissions` before an interrupted caller is cancelled. Because the SDK resolver is synchronous, that already-entered call completes one intact request-local value; asynchronous generation/publication remains host-owned. Twenty-eight parallel and seven subsequent identities retain isolated results and aggregate diagnostics without shared support state.
-- Any raw or derived support, coordinates, points, stable signatures, image bytes, provider detail, and filesystem paths must not cross reflection, description, diagnostics, persistence, cache, files, or network boundaries. Public failure evidence and the retained-mask observation seam contain only fixed names and aggregate scalar/count state.
-- Provider-empty convergence is observed inside the real bounded `0..<44` resolver loop from a strictly nonzero scaled value through one monotone removal, no re-entry, final aggregate exclusion, and an identical repeated fixed point for all seven rows.
-- Active-source and dependency classifiers fail closed on unclassified results, new targets/packages/models/resources, internal Demo/renderer imports, network/cloud/account/entitlement/commercial paths, or altered manifest ownership. The current privacy-manifest disposition is unchanged.
-- Output and gallery acquisition remains bounded, no-follow, descriptor-safe, and confined to the declared disposable artifact roots; tracked, staged, non-ignored, symlinked, escaped, partial, or residual publication state is rejected.
-- Command/source evidence is owned by `52-EYEBROW-SAFETY-EVIDENCE.md`; ASVS L1 threat closure is owned by `52-SECURITY.md`; the post-fix 25-file `52-REVIEW.md` is independently authored and clean 0/0/0/0. Independent Phase 52 re-verification passes 16/16 with all prior gaps closed. This security result supports verified SDK-core phase completion but does not claim the separate milestone audit, device, UI/Demo, commercial, performance, packaging, shipping, release, archive, tag, or cleanup completion. `threats_open: 0` remains the HIGH-severity blocking result.
-
-### Phase 55 Composition Security Closeout
-
-- Canonical binding and unit authorization strongly retain opaque canonical-storage and request-owner identities and compare them with `===` plus checked layout; bare allocator addresses never authorize stale work. Contribution values and ownership reduction remain package-private, non-Codable, request-local, non-persistent, non-networked, and absent from logs and public results. The engine retains none of them across success, throw, reset, or later requests.
-- The Testing boundary is digest-free and mechanics-free: it exposes only the existing public CIImage output, dimensions, one source-match Boolean, one invocation count, and exactly six aggregate counts. It carries no support payload, source identity, claim detail, raw error, or generated media.
-- The fail-closed checker passes a 27-case self-test, including 14 executable mutations of temporary copies of the live Swift fixtures/classifier, and names T-55-01 through T-55-07 as seven machine-green HIGH mitigations. Exact-empty admission plus 59/5/72 compatibility and focused/full regressions block candidate, provider, renderer, preset, Demo, realtime, model, network, resource, target, or dependency drift.
-- The privacy-manifest disposition is unchanged. Phase 55 introduces no collected-data category, required-reason API, remote transfer, account behavior, tracking behavior, dependency, or production feature activation.
-
-### Phase 56 Closed Teeth Security Boundary
-
-- The exact Phase 54 teeth row is the sole admission authority. Identity, ordered reasons, strict zero counts/weight, and row shape fail closed under mutation; sibling or mechanics evidence cannot reopen it.
-- T-56-01 through T-56-07 are seven machine-green HIGH mitigations. The post-verification 111-case live-fixture matrix structurally rejects evidence lifecycle downgrade, missing/duplicate/malformed frontmatter, pending or affirmative promotion/readiness contradictions, `enamel`/`dentition` aliases across every `BeautySDK/Sources/**/*.swift` file (including neutrally named new providers), public/SPI/Codable activation, inert routes, admission/provider/renderer/preset/resource/dependency/model changes, active Demo mapping, privacy disclosure, ledger promotion, missing fixtures, parse errors, and unclassified scanner outcomes. Non-production Demo, test, and document occurrences retain context-aware allowlists.
-- Durable results expose only fixed IDs, allowlisted status/reasons, zero aggregates, and compatibility/test totals. They contain no media location or identity, support geometry, output identity, grant/reviewer payload, raw source match, or raw scanner error; the privacy-manifest disposition remains unchanged.
-
-### Phase 57 Closed Eye-Retouch Security Boundary
-
-- The exact Phase 54 `sclera_redness` and `upper_eyelid_fullness` rows are the sole independent authorities. Identity, ordered reasons, strict zero counts/weight, malformed input, competing rows, sibling borrowing, and evidence lifecycle all fail closed; Phase 57 cannot regenerate eligibility.
-- T-57-01 through T-57-08 are eight machine-green HIGH mitigations. The 519-case live-fixture matrix recursively scans every production Swift file plus package/resource/Demo owners, rejects the complete 44-sclera/74-upper-eyelid camelCase, snake_case, dotted Demo-ID, and owned Chinese identity sets, neutral-file and inert routes, every candidate-to-proxy relation, contradictory or sensitive evidence, scanner failures, and stale/duplicate root owners, while clean proxy-only shipped domains and the two exact disabled taxonomy rows remain required controls.
-- Durable output is fixed-ID and aggregate-only: no eye/pupil/iris/landmark/mask/vein, media/reviewer/path, output identity, raw source match, or raw scanner error is retained. Production admission remains literal `.none`, the privacy-manifest disposition is unchanged, and no feature implementation or positive product/readiness claim is authorized.
-
-### Phase 58 Combined Zero-Admission Security Boundary
-
-- T-58-01 through T-58-08 are machine-green under OWASP ASVS Level 1 with fixed-ID aggregate output: Phase 58 checker `276 / 0 / 0`, per-HIGH `80 / 33 / 37 / 34 / 28 / 31 / 25 / 8`, and frozen Phase 57 pre-transition `519 / 0 / 0` through the strict adapter.
-- Privacy remains request-local and aggregate-only. Full SwiftPM executes `553` tests with six expected opt-in Vision skips; the separate Vision gate executes exactly `6 / 0 / 0`; Demo build/tests pass `120 / 0 / 0`. No support, landmark, pupil, mask, pixel, path, digest, reviewer, raw error, or scanner payload is durable.
-- Production admission remains literal `.none`, exact compatibility remains `59 / 5 / 72`, both still facades remain present, and all three visible rows stay disabled/future with zero promotion. External review/fix and independent verification are not yet run and are required before lifecycle transition; no release or milestone-audit claim is made.
-
-### v1.15 Phase 59 Teeth Evidence Admission Boundary
-
-- Phase 54 trusted binding and its serializer are the sole authority. The exact `teeth_whitening` row is open at `2/2/2/0/2`. The positive structured judgment is target-present, mask coverage four, no protected leakage, naturalness four, no structure change, accepted with fixed reason `none`; the negative differs only by target-absent and mask coverage one. Sclera redness and upper-eyelid fullness remain exact closed zero-weight siblings, and the mechanics-only candidate remains zero-weight.
-- Durable Phase 59 state is a positive allowlist of opaque identities, feature/polarity, fixed judgments/reasons, decisions, and aggregate counts. It excludes media, local locators, hashes/digests, rights details, raw masks, geometry, pixels, coordinates, reviewer identity, review prose, scanner matches, and raw errors. The tracked/staged scan consumes only the private runner's fixed aggregate result.
-- T-59-01 through T-59-08 are eight blocking HIGH mitigations under OWASP ASVS Level 1 with `block_on: HIGH`. They enforce the exact open decision/reviews/aggregate, frozen criteria and serializer provenance, trailing scalar/one demand, append-only compatibility, alias and sibling rejection, schema/privacy and disabled Demo boundaries, downstream absence, and synchronized lifecycle owners.
-- The production boundary is exactly 60 stored/CodingKey/initializer fields, five byte-stable neutral presets, 72 renderer cases, and three disabled Demo rows with nil mappings. No provider, mask/transform, renderer/output behavior, active Demo mapping, realtime/pixel-buffer route, model/network path, sclera surface, or `去脂` surface exists. Phase 60 and Phase 61 remain separately gated.
-
-Command-level evidence is recorded in the [Phase 59 validation strategy](.planning/milestones/v1.15-phases/59-teeth-evidence-and-admission-contract/59-VALIDATION.md) and [exact-open boundary summary](.planning/milestones/v1.15-phases/59-teeth-evidence-and-admission-contract/59-07-SUMMARY.md).
-
-### v1.15 Phase 60 Teeth Provider Security Boundary
-
-- Mapped lip polygons, masks, candidate colors, proposals, source bindings, and
-  outputs remain package-private, non-Codable, request-local, non-persistent,
-  non-networked, and absent from public results and diagnostics. The Testing
-  seam exposes exactly six aggregate counters and no geometry, pixels, colors,
-  fixture detail, or identity.
-- Polygon, area, connectivity, hard-envelope, source-binding, checked-arithmetic,
-  protected-color, and immutable-source validation fail at the smallest local
-  unit. Missing or malformed support never triggers synthetic geometry, a
-  second Vision request, a cache, or a request failure for unrelated effects.
-- Authorized genuine cases execute only through the fixed-output private runner.
-  Tracked and staged records contain no local locator, media name, digest,
-  rights detail, review identity, raw metric, image, geometry, or pixel data.
-- T-60-01 through T-60-08 are eight machine-green HIGH mitigations. The checker
-  passes 8/8 mutation cases, 99 live assertions, and every isolated threat mode;
-  `threats_open: 0`. It also enforces continued absence of Demo activation,
-  realtime/pixel-buffer local retouch, sibling production fields, external
-  models/dependencies, network paths, and release surfaces.
-- The privacy-manifest disposition is unchanged because this phase adds no data
-  collection, tracking, remote transfer, account behavior, required-reason API,
-  or third-party dependency. Phase 61 remains the independent public-output and
-  promotion security gate.
-
-Command-level evidence is recorded in [Phase 60 security](.planning/milestones/v1.15-phases/60-teeth-provider-and-production-integration/60-SECURITY.md) and [verification](.planning/milestones/v1.15-phases/60-teeth-provider-and-production-integration/60-VERIFICATION.md).
-
-### v1.15 Phase 61 Teeth Output Security Closeout
-
-- T-61-01 through T-61-08 are eight machine-green HIGH mitigations under OWASP
-  ASVS Level 1. They bind the exact public-only 73-case renderer, bounded PNG
-  decoder and six-output inventory, protected-region adversarial matrices,
-  immutable-source/hard-envelope output, original-detail review, ignored-media
-  privacy, exact promotion delta, and ordered lifecycle owners.
-- The strict private runner resolves authorized inputs only from the ignored
-  local bundle, writes only below its checked ignored output root, rejects
-  symlinked path components before cleanup, and emits fixed aggregate status.
-  Generated inputs, masks, reviews, and outputs remain untracked and unstaged.
-- Tracked evidence retains aggregate categorical results only. It contains no
-  media, local locator, digest, rights detail, identity, mask, geometry, pixel
-  sample, raw metric, scanner match, raw error, or free-form reviewer text.
-- Adversarial final-output checks cover lip, tongue, gum, brace, facial hair,
-  skin, and aperture exterior under both color-independent and recolored
-  conditions, plus exact protected RGBA, valid-invalid-valid recovery, and
-  parallel isolation. Review-fix has zero unresolved HIGH findings.
-- Exact promotion changes only `白牙` and aggregate `嘴唇`. Demo activation,
-  realtime/pixel-buffer local retouch, sclera/upper-eyelid production, external
-  models/dependencies, network paths, and release surfaces remain absent.
-
-Command-level evidence is recorded in [Phase 61 security](.planning/milestones/v1.15-phases/61-teeth-output-safety-and-independent-closeout/61-SECURITY.md) and [review fix](.planning/milestones/v1.15-phases/61-teeth-output-safety-and-independent-closeout/61-REVIEW-FIX.md).
-
-### v1.15 Phase 62 Sclera Intent Security Closeout
-
-- T-62-01 through T-62-08 are eight machine-green HIGH mitigations with zero
-  open findings. Exact-open decision, fixed-review, aggregate, sibling,
-  compatibility, admission, downstream-absence, privacy and lifecycle owners
-  are checked independently.
-- The self-test rejects 144 one-field decision/review/aggregate, model,
-  admission, alias/proxy, sibling, privacy, downstream and lifecycle mutations.
-  Decision, privacy, live and all eight isolated modes emit fixed path-free
-  results and fail closed on child/scanner errors.
-- Required private execution discovers one fully ignored authorized sclera
-  bundle and reproduces canonical serializer bytes without exposing its
-  locator or asset values. Durable records retain only opaque IDs, fixed
-  judgments/reasons, decisions and aggregates.
-- Public/Codable state exposes only the bounded scalar. Support, masks,
-  anatomy, colors, image data, rights detail, reviewer identity and raw review
-  or mechanics data remain absent from tracked, staged, diagnostic,
-  persistence and network surfaces.
-- No sclera provider, support, mask, transform, renderer output, Demo mapping,
-  realtime path, external model, network route or product promotion is
-  authorized by this closeout.
-
-Command-level evidence is recorded in [Phase 62 security](.planning/milestones/v1.15-phases/62-sclera-evidence-and-admission-contract/62-SECURITY.md) and [verification](.planning/milestones/v1.15-phases/62-sclera-evidence-and-admission-contract/62-VERIFICATION.md).
-
-### v1.15 Phase 63 Sclera Provider Security Closeout
-
-- Current mapped contour and actual-pupil values remain package-only,
-  non-Codable, request-local, non-persistent and non-networked. Public/SPI
-  diagnostics expose only fixed aggregate outcomes and counts, never support,
-  masks, colors, pixels, paths or framework objects.
-- Geometry owns protection before color: contour-band, pupil/iris, highlights,
-  lash/margin, skin and exterior are excluded before score; radius-one
-  softening is clipped back to the identical hard envelope. A dark native iris
-  or an empty color score cannot substitute for geometric containment.
-- Side ambiguity, malformed support, duplicate ownership and stale/cross-eye
-  repair fail closed. A valid peer may continue only from its own current
-  support, and Testing names, aliases, Demo labels, global effects and `去脂`
-  cannot activate production sclera work.
-- T-63-01 through T-63-08 are eight machine-green HIGH mitigations with zero
-  open findings. Checker self-test rejects eight isolated mutations; live
-  discovery and every individual threat mode pass.
-- The final authorized positive/negative native-Vision gate passes through the
-  fixed-output private runner with zero reviewed-mask escape. Tracked and staged
-  state contains no media, locator, digest, rights detail, identity, review
-  prose, support, mask, geometry, pixel data, raw metric or raw child error.
-- Renderer, Demo, realtime/pixel-buffer, external model, network and promotion
-  surfaces remain unchanged. Phase 64 alone owns color-independent and
-  recolored-protected-anatomy output proof plus exact `祛红血丝` promotion.
-
-Command-level evidence is recorded in [Phase 63 security](.planning/milestones/v1.15-phases/63-guarded-per-eye-sclera-production-integration/63-SECURITY.md) and [verification](.planning/milestones/v1.15-phases/63-guarded-per-eye-sclera-production-integration/63-VERIFICATION.md).
-
-### v1.15 Phase 64 Sclera Output Security Closeout
-
-- T-64-01 through T-64-08 are eight machine-green HIGH mitigations with zero
-  open findings. Exact renderer inventory, bounded PNG decoding, adversarial
-  protection, final output, review, privacy, product owners and lifecycle are
-  independently checked.
-- Required output execution discovers only the ignored authorized bundle,
-  stages disposable originals under an ignored directory, renders six exact
-  facade outputs and emits fixed aggregate status. Bounded decoding rejects
-  unexpected names, dimensions, sizes, alpha, malformed PNGs and symlinks.
-- Geometry truth is independent of candidate color. Final-output tests prove
-  zero changed pixels in iris, pupil, highlights, lash margin, lid/skin, hair,
-  background and the complete aperture exterior after score, feather, hard
-  re-clip, transform and composition.
-- Review records only fixed categorical judgments. Tracked/staged state
-  contains no media, locator, digest, rights detail, reviewer identity, support,
-  mask, geometry, pixel data, raw metric or child error.
-- Private bundle locators enter only the request-local child environment and
-  never appear in arguments, forwarded child output, durable commands, logs or
-  tracked artifacts. `64-no-skip-swiftpm-runner.js` likewise reduces its one
-  child to a fixed aggregate and rejects malformed, failed, skipped, zero or
-  ambiguous output without exposing raw child text.
-- Request-local raw support, proposal and mask privacy, protected-region
-  containment, exact 19-source binding, four-state T-64-06 scanning, fresh
-  zero-HIGH code review, and fresh ASVS L1 closure of T-64-01 through T-64-08
-  authorize only the bounded SDK-core still-image `祛红血丝` product row.
-  Aggregate `眼睛` remains `partial` and `去脂` remains `future`; Demo,
-  realtime/pixel-buffer, external model and network surfaces stay absent.
-- This state is promotion pending terminal candidate/final verification.
-  Canonical `64-VERIFICATION.md` and final validation remain open, Phase 65 is
-  blocked, and DeviceRGB/named-sRGB remains exclusively the Phase 65 SAFE-06
-  security boundary.
-
-Fresh promotion-pending authority is recorded in [terminal R2 output evidence](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SCLERA-OUTPUT-EVIDENCE.md), [original-detail review](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW.md), [code review](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-CODE-REVIEW.md), [review-fix disposition](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-REVIEW-FIX.md), [ASVS L1 security audit](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-SECURITY.md), and [independent eligibility](.planning/milestones/v1.15-phases/64-sclera-output-adversarial-safety-and-independent-closeout/64-TERMINAL-R2-PRE-PROMOTION-VERIFICATION.md).
-
-### v1.15 Phase 65 Archived Closeout
-
-<!-- PHASE65_FINAL_OWNER_BEGIN -->
-owner: SECURITY
-phase: 65
-milestone: v1.15
-public_fields: 61
-neutral_presets: 5
-renderer_cases: 74
-disabled_demo_rows: 3
-teeth: implemented
-mouth: implemented
-sclera_redness: implemented
-eyes: partial
-eye_fat: future
-safe_06: closed
-lifecycle: archived
-release: non-release
-<!-- PHASE65_FINAL_OWNER_END -->
-
-- T-65-01 through T-65-08 pass with production-source privacy classification
-  and fail-closed mutations for public/SPI declarations, Codable/reflection
-  carriers, diagnostic interpolation, persistence sinks and unreadable input.
-- Public output, SPI, Codable state, persistence, logs, metrics, network,
-  tracing and tracked artifacts contain no raw landmarks, pupils, lip/eye
-  support, masks, geometry, candidate pixels/colors, vein-like descriptors,
-  fixture locators, reviewer identity or prior-request observations. Only the
-  documented fixed aggregate counters and booleans are exposed.
-- Request preparation clears composition, provider and canonical-carrier
-  observations before validation. Reset, no-face, malformed, throwing,
-  repeated and independent-engine parallel requests cannot reuse earlier
-  support, proposals, pixels or summaries.
-- The independently owned teeth and sclera private output/native-Vision gates,
-  tracked/staged privacy, exact resource inventory and network/model scans all
-  pass without persisting local evidence. The complete upper-eyelid/`去脂`
-  production identity family remains absent.
-- No realtime, active Demo, model download, cloud processing, device or
-  commercial approval, packaging, archive, tag, shipping, launch or release
-  authority follows from this security closeout.
-
-Command-level evidence is recorded in [Phase 65 security](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-SECURITY.md), [review](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-REVIEW.md), and [verification](.planning/milestones/v1.15-phases/65-combined-facade-privacy-and-milestone-closeout/65-VERIFICATION.md).
-
-### Post-v1.15 Review Remediation Security Boundary
-
-- Eye landmark mapping is fail-closed per side. A malformed contour or pupil is
-  discarded without exposing its value and cannot erase a valid peer or mapped
-  lips; invalid shared face bounds still reject the observation.
-- Coarse `outerLips` plus pixel color is not accepted as tooth anatomy. The
-  production teeth owner issues proposals only from the fixed `innerLips`
-  baseline after hard re-clipping, and the former connected outer-region growth
-  path is absent. Enamel-colored lookalikes outside that boundary retain source.
-- Color cannot prove semantic identity for indistinguishable tissue inside the
-  aperture. Security evidence therefore must not claim universal recolored gum,
-  tongue, or brace protection there; a wider claim requires approved tooth-
-  specific support and new adversarial and licensed-fixture gates.
-- Real-fixture masks fail before rendering unless their decoded extent is
-  finite, zero-origin, exactly dimension-matched, and up-oriented by missing or
-  EXIF-1 metadata. This prevents crop/pad/translation/orientation normalization
-  from laundering a misregistered mask into containment evidence.
-- All support and mask data remains package-private, request-local, non-Codable,
-  and absent from diagnostics, persistence, network, and tracked artifacts.
-- The current native-Vision bilateral repair widens only the support-validity
-  fraction from `0.025` to `0.035`; every newly admitted offset receives extra
-  color-independent lid erosion. The calibrated pupil/iris exclusion is not
-  reduced. A trial reduction of that exclusion failed both the recolored-iris
-  oracle and the private reviewed-mask containment gate and is not present.
-- For the retained Focal strategy, visibility is raised only by a bounded
-  transform and soft-mask gain after all
-  iris, pupil, highlight and lash exclusions, followed by the same hard
-  re-clip. The adversarial full-resolution protected truth must retain zero
-  proposal intersection and zero RGBA mismatch, and the Focal real positive
-  must retain zero reviewed-mask escape. The latter is not a containment rule
-  for the current Full Sclera route.
-
-### Post-v1.15 Full Sclera Security Boundary
-
-- Full Sclera expands only inside a validated eye aperture. Iris/pupil,
-  highlights, native dark iris pixels, exterior skin, and the lid/lash boundary
-  are hard exclusions, not low color weights. The lash detector is restricted
-  to an aperture boundary band so dark red conjunctiva cannot erase the whole
-  target region.
-- The medial caruncle has a color-independent core plus a location-gated pink
-  guard, dilated before ownership. It is excluded before redness admission, so
-  a red tear duct cannot trigger or receive whole-sclera work.
-- Geometry admission alone cannot authorize pixels inside the aperture. Full
-  Sclera also requires saturation `<= 0.48` and sclera likelihood `>= 0.20` at
-  every proposed pixel, re-clips blur to that qualified envelope, and repeats
-  the saturation ceiling in the transform. A positive eye therefore leaves
-  high-saturation aperture-interior lookalikes unowned.
-- Eye admission needs both proportional and spatially coherent evidence:
-  `max(3, ceil(0.5% * qualifiedPixelCount))` material-red samples and an
-  8-connected component of at least three. The provider also rejects a bounding
-  grid that exceeds the composition owner's unit budget before mask allocation.
-- Recolored full-resolution adversarial truth now includes bilateral caruncle
-  pixels in addition to iris, pupil, highlight, lash margin, skin, and aperture
-  exterior. All 1,648 protected pixels retain zero proposal intersection and
-  zero RGBA mismatch across the perturbation matrix.
-- The earlier reviewed mask describes Focal behavior and cannot be used to
-  reject intentional Full Sclera expansion. It remains an effect anchor; the
-  full protected-anatomy oracle, local edit-area bound, alpha checks, exact
-  negative, and request-local non-persistence are the current safety owners.
-  The local edit-area bound is `min(12_000, 1% of canonical pixels)`.
+These gates authorize SDK-core repository correctness only. They do not authorize
+device, commercial, packaging, shipping, launch, or release claims.
