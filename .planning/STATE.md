@@ -1,19 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.15
-milestone_name: Independent Teeth and Sclera Retouch
-status: Awaiting next milestone
-stopped_at: Two-milestone SDK-first sequence defined; ready to initialize v1.16
-last_updated: "2026-08-13T10:14:56.000Z"
-last_activity: 2026-08-13
-last_activity_desc: Planned v1.16 SDK-only CPU foundation and v1.17 dual CPU/GPU Metal rendering
+milestone: v1.16
+milestone_name: SDK-Only Foundation and CPU Reference
+status: planning
+last_updated: "2026-08-14T01:04:43.485Z"
+last_activity: 2026-08-14
 progress:
-  total_phases: 7
-  completed_phases: 7
-  total_plans: 51
-  completed_plans: 51
-current_phase: null
-current_phase_name: null
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -27,10 +24,10 @@ See: `.planning/PROJECT.md` (updated 2026-08-13)
 
 ## Current Position
 
-Phase: Milestone v1.15 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-08-13 — split remaining SDK work into non-Metal v1.16 and dual CPU/GPU Metal v1.17
+Status: Defining requirements
+Last activity: 2026-08-14 — Milestone v1.16 started
 
 ## Performance Metrics
 

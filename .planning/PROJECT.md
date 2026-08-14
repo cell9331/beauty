@@ -14,13 +14,13 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 **Latest completed milestone:** v1.15 Independent Teeth and Sclera Retouch on 2026-08-11 (audited SDK-core still-image completion; product distribution/shipping is not claimed).
 **Latest completed UI milestone:** v1.1 Meitu UI on 2026-06-24.
-**Current milestone:** none; v1.16 and v1.17 are queued as the next SDK-only sequence after the archived v1.15 authority chain.
+**Current milestone:** v1.16 SDK-Only Foundation and CPU Reference; v1.17 remains queued behind it as the Metal milestone.
 
 **Implementation state:** v1.15 independently implements bounded opaque still-image `teethWhitening` and per-eye `scleraRednessReduction` through the public SDK facade. The exact inventory is 61 public fields, five neutral presets, 74 renderer cases and three disabled nil-mapped local-retouch Demo rows. `白牙`, `嘴唇` and `祛红血丝` are implemented at SDK-core scope; aggregate `眼睛` remains partial solely because `去脂` remains future.
 
 **Verification state:** Combined public output byte-matches independently merged standalone outputs; collisions preserve source and four injected failure units retain unaffected bytes. Named-sRGB facade carriers and saved PNGs, request-local privacy, 61/5/74/3 compatibility, both private 6/6 output matrices, and explicit Demo `121/0/0` pass. The archived v1.15 closeout ran SwiftPM `638/0/0`; the current post-archive no-skip gate runs `650/0/0` with all eight opt-ins. Device/performance/commercial/packaging/shipping/launch/release-readiness remain separate scopes.
 
-**Next milestone goals:** v1.16 archives/removes active Demo/UI sources, makes SwiftPM plus `BeautyExampleRenderer` the sole validation boundary, freezes current CPU output oracles, and repairs generic-result sendability without touching Metal. v1.17 retains that CPU path and adds a separately selectable Metal GPU backend through `BeautyConfiguration`, with no silent fallback and shared algorithm/support semantics. `去脂`, new semantic-mask features, model/network, population/device/commercial, packaging, shipping, launch and release-readiness work remain future or separately scoped.
+**Current milestone goals:** v1.16 archives/removes active Demo/UI sources, makes SwiftPM plus `BeautyExampleRenderer` the sole validation boundary, freezes current CPU output oracles, and repairs generic-result sendability without touching Metal. v1.17 retains that CPU path and adds a separately selectable Metal GPU backend through `BeautyConfiguration`, with no silent fallback and shared algorithm/support semantics. `去脂`, new semantic-mask features, model/network, population/device/commercial, packaging, shipping, launch and release-readiness work remain future or separately scoped.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Remaining broader `美型 / 五官` slices, screenshot reruns, physical iPhone checks, 600-second preview, optimized profiling, packaging review, commercial visual review, and launch readiness stay future or setup-specific work, not v1.5 blockers. The seven `.planning/codebase/*` maps were formally refreshed from current source/tests on 2026-08-13.
 
@@ -32,6 +32,19 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 2. **v1.17 Dual CPU/GPU Metal Rendering** — preserve the CPU reference backend; add Metal runtime, color/skin, geometry, and local-retouch passes; then expose `BeautyConfiguration.renderBackend` with `.cpu` and `.gpu`, defaulting old and missing-key configurations to `.cpu` and failing explicitly when requested Metal is unavailable.
 
 The backend choice is configuration/execution policy and must not change the public beauty-parameter or preset schema. Detection/support semantics remain shared. No backend may borrow success from the other: CPU and GPU each run the same SDK-owned input/output contract, and comparison evidence separately verifies their parity.
+
+## Current Milestone: v1.16 SDK-Only Foundation and CPU Reference
+
+**Goal:** Remove active application/UI ownership from the repository, establish SwiftPM and the SDK command-line renderer as the only validation boundary, preserve deterministic CPU behavior as a future cross-backend oracle, and repair the remaining public sendability debt without adding Metal behavior.
+
+**Target features:**
+
+- Package `BeautyDemo/` and legacy UI-reference material into verified, reproducible ZIP archives with manifests and SHA-256 records, then remove the original active UI/Xcode sources.
+- Prove clean SwiftPM consumption and make `BeautyExampleRenderer` the structured command-line input/output validation harness.
+- Freeze deterministic CPU algorithm oracles with synthetic fixtures and optional rights-approved portrait gates.
+- Replace unconditional generic `@unchecked Sendable` with a source-compatible conditional contract and close all SDK-only documentation and no-skip test gates.
+
+**Non-negotiable boundary:** v1.16 contains no Metal implementation, GPU public option, SwiftUI/Demo development, simulator/device verification, commercial visual approval, packaging, shipping, or new beauty algorithm.
 
 ## Last Completed Milestone: v1.15 Independent Teeth and Sclera Retouch
 
@@ -492,4 +505,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-08-13 after defining the v1.16 SDK-only and v1.17 dual CPU/GPU milestone sequence*
+*Last updated: 2026-08-14 after starting v1.16 SDK-Only Foundation and CPU Reference*
