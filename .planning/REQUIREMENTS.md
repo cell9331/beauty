@@ -19,7 +19,7 @@
 - [x] **SPM-02**: The clean consumer executes a minimal neutral request through the public facade and verifies a successful, dimension-preserving result using generated synthetic input.
 - [x] **CLI-01**: `BeautyExampleRenderer` exposes a deterministic SDK-owned command-line validation contract for selecting inputs/cases/backends, choosing an explicit output directory, and discovering the exact cases that ran.
 - [x] **CLI-02**: The command-line harness emits a machine-readable aggregate report containing requested, succeeded, failed, skipped, input, output, and case identity information without leaking private landmark/mask data.
-- [ ] **CLI-03**: Missing or invalid inputs, unknown cases, write/decode failures, and incomplete requested output produce typed diagnostics plus a non-zero process exit; successful runs produce reproducible outputs under an ignored/generated location.
+- [x] **CLI-03**: Missing or invalid inputs, unknown cases, write/decode failures, and incomplete requested output produce typed diagnostics plus a non-zero process exit; successful runs produce reproducible outputs under an ignored/generated location.
 
 ### CPU Reference Oracles
 
@@ -69,7 +69,7 @@
 | SPM-02 | Phase 67 | Complete |
 | CLI-01 | Phase 67 | Complete |
 | CLI-02 | Phase 67 | Complete |
-| CLI-03 | Phase 67 | Pending |
+| CLI-03 | Phase 67 | Complete |
 | CPU-01 | Phase 68 | Pending |
 | CPU-02 | Phase 68 | Pending |
 | CPU-03 | Phase 68 | Pending |
