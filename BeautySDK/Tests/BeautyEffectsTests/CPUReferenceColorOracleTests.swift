@@ -43,6 +43,33 @@ final class CPUReferenceColorOracleTests: XCTestCase {
         }
     }
 
+    func testSignedColorRowsMoveInOppositeDirectionsWithBoundedDeltas() throws {
+        let fixture = CPUReferenceFixtureFactory.opaqueColorRamp(width: 32, height: 24)
+        let baseline = try render(fixture: fixture, parameters: BeautyParameters())
+        let baselineSummary = summary(of: rgba(fromBGRA: baseline))
+        let rows: [(String, (Float) -> BeautyParameters, (ColorSummary) -> Double)] = [
+            ("brightness", { BeautyParameters(brightness: $0) }, { $0.luminance }),
+            ("contrast", { BeautyParameters(contrast: $0) }, { $0.channelSpread }),
+            ("saturation", { BeautyParameters(saturation: $0) }, { $0.chroma }),
+            ("temperature", { BeautyParameters(temperature: $0) }, { $0.redBlue }),
+            ("tint", { BeautyParameters(tint: $0) }, { $0.greenRed }),
+            ("exposure", { BeautyParameters(exposure: $0) }, { $0.luminance }),
+            ("highlight", { BeautyParameters(highlight: $0) }, { $0.luminance }),
+            ("shadow", { BeautyParameters(shadow: $0) }, { $0.luminance }),
+        ]
+
+        for (name, makeParameters, metric) in rows {
+            let positive = try render(fixture: fixture, parameters: makeParameters(0.8))
+            let negative = try render(fixture: fixture, parameters: makeParameters(-0.8))
+            let positiveDelta = metric(summary(of: rgba(fromBGRA: positive))) - metric(baselineSummary)
+            let negativeDelta = metric(summary(of: rgba(fromBGRA: negative))) - metric(baselineSummary)
+            XCTAssertGreaterThan(positiveDelta, 0, name)
+            XCTAssertLessThan(negativeDelta, 0, name)
+            XCTAssertLessThan(abs(positiveDelta), 128, name)
+            XCTAssertLessThan(abs(negativeDelta), 128, name)
+        }
+    }
+
     func testNeutralColorPlanIsByteIdenticalAndNoFaceLipSupportAbstains() throws {
         let fixture = CPUReferenceFixtureFactory.opaqueColorRamp()
         let neutral = try render(fixture: fixture, parameters: BeautyParameters())
@@ -64,7 +91,7 @@ final class CPUReferenceColorOracleTests: XCTestCase {
         let output = try render(fixture: fixture, parameters: parameters, face: face)
         let after = rgba(fromBGRA: output)
         let beforeRGBA = fixture.rgba8
-        let changed = CPUReferenceMetrics.changedIndices(before: beforeRGBA, after: after)
+        let changed = try CPUReferenceMetrics.changedIndices(before: beforeRGBA, after: after)
         XCTAssertFalse(changed.isEmpty)
         XCTAssertTrue(CPUReferenceMetrics.alphaPreserved(before: beforeRGBA, after: after))
 
@@ -93,7 +120,10 @@ final class CPUReferenceColorOracleTests: XCTestCase {
         let plan = BeautyEffectResolver.resolve(parameters: BeautyParameters(brightness: 0.4))
         let output = BeautyColorEffectPipeline.apply(to: image, plan: plan)
         XCTAssertEqual(output.extent, image.extent)
-        XCTAssertEqual(colorSpace.name, CGColorSpace.sRGB)
+        // CIColorControls may drop the CIImage metadata.  When it remains,
+        // it must still be named sRGB; the render below is always explicitly
+        // software-backed and sRGB, which is the byte-path contract.
+        XCTAssertTrue(output.colorSpace?.name == nil || output.colorSpace?.name == CGColorSpace.sRGB)
         let rendered = renderedRGBABytes(from: output, width: fixture.width, height: fixture.height, colorSpace: colorSpace)
         XCTAssertEqual(rendered.count, fixture.rgba8.count)
         XCTAssertTrue(rendered.allSatisfy { $0 <= 255 })
