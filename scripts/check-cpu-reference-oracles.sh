@@ -21,6 +21,7 @@ readonly native_fixture_sources=(
   "BeautySDK/Tests/BeautyCoreTests/BeautyTeethWhiteningRealFixtureTests.swift"
   "BeautySDK/Tests/BeautyCoreTests/BeautyScleraRednessRealFixtureTests.swift"
 )
+suite_package_root="${package_root}"
 
 cleanup_root=""
 
@@ -88,20 +89,24 @@ for relative in generated:
     if "CPUReference" not in text:
         raise SystemExit(1)
 
-native_text = []
-for relative in native:
-    native_text.append(regular_source(relative).read_text(encoding="utf-8"))
-joined_native = "\n".join(native_text)
-required_guards = (
-    "PHASE60_REQUIRE_LOCAL_EVIDENCE",
-    "PHASE59_TEETH_BUNDLE",
-    "PHASE63_REQUIRE_LOCAL_EVIDENCE",
-    "PHASE62_SCLERA_BUNDLE",
-)
-if any(token not in joined_native for token in required_guards):
+native_requirements = {
+    "BeautySDK/Tests/BeautyCoreTests/BeautyTeethWhiteningRealFixtureTests.swift": (
+        "PHASE60_REQUIRE_LOCAL_EVIDENCE",
+        "PHASE59_TEETH_BUNDLE",
+    ),
+    "BeautySDK/Tests/BeautyCoreTests/BeautyScleraRednessRealFixtureTests.swift": (
+        "PHASE63_REQUIRE_LOCAL_EVIDENCE",
+        "PHASE62_SCLERA_BUNDLE",
+    ),
+}
+if set(native) != set(native_requirements):
     raise SystemExit(1)
-if joined_native.count("XCTSkip") < 2:
-    raise SystemExit(1)
+for relative, required_guards in native_requirements.items():
+    text = regular_source(relative).read_text(encoding="utf-8")
+    if any(text.count(token) != 1 for token in required_guards):
+        raise SystemExit(1)
+    if text.count("XCTSkip") != 1:
+        raise SystemExit(1)
 if any(Path(relative).name in {Path(item).name for item in native} for relative in generated):
     raise SystemExit(1)
 PY
@@ -110,25 +115,32 @@ PY
 run_generated_suite() {
   local label="$1"
   local filter="$2"
+  local expected_count="$3"
+  local expected_suites="$4"
   local log_path="${cleanup_root}/${label}.log"
   local status=0
 
   run_bounded "${maximum_output_bytes}" "${log_path}" \
-    swift test --package-path "${package_root}" --filter "${filter}" || status=$?
+    swift test --package-path "${suite_package_root}" --filter "${filter}" || status=$?
   if [[ "${status}" -ne 0 ]]; then
     return 1
   fi
-  if ! python3 - "${log_path}" <<'PY'
+  if ! python3 - "${log_path}" "${expected_count}" "${expected_suites}" <<'PY'
 from pathlib import Path
 import re
 import sys
 
 text = Path(sys.argv[1]).read_text(encoding="utf-8")
+expected = int(sys.argv[2])
+expected_suites = sys.argv[3].split("|")
 executions = [int(value) for value in re.findall(r"Executed (\d+) tests?, with 0 failures", text)]
-if not executions or sum(executions) <= 0:
+if not executions or max(executions) != expected or executions[-1] != expected:
+    raise SystemExit(1)
+if any(suite not in text for suite in expected_suites):
     raise SystemExit(1)
 if re.search(r"(?:failed|skipped|disabled|unexpected failure)", text, re.IGNORECASE):
     raise SystemExit(1)
+Path(sys.argv[1] + ".count").write_text(str(executions[-1]), encoding="utf-8")
 PY
   then
     return 1
@@ -149,6 +161,42 @@ self_test() {
   printf '\nprint("forbidden")\n' >>"${mutation_path}"
   if validate_static_boundary "${self_test_root}"; then
     echo "cpu_reference_oracles_self_test_failed" >&2
+    return 1
+  fi
+  cp -- "${repository_root}/${generated_sources[0]}" "${mutation_path}"
+  mutation_path="${self_test_root}/${native_fixture_sources[0]}"
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+text = path.read_text(encoding="utf-8")
+text = text.replace("PHASE60_REQUIRE_LOCAL_EVIDENCE", "PHASE60_REMOVED", 1)
+path.write_text(text, encoding="utf-8")
+PY
+  if validate_static_boundary "${self_test_root}"; then
+    echo "cpu_reference_oracles_native_guard_self_test_failed" >&2
+    return 1
+  fi
+  cp -R -- "${package_root}" "${self_test_root}/BeautySDK"
+  mutation_path="${self_test_root}/BeautySDK/Tests/BeautyEffectsTests/CPUReferenceFixtureTests.swift"
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+text = path.read_text(encoding="utf-8")
+old = "testRepeatedConstructionHasIdenticalBytesAndMetrics"
+new = "renamedRepeatedConstructionHasIdenticalBytesAndMetrics"
+if old not in text:
+    raise SystemExit(1)
+path.write_text(text.replace(old, new, 1), encoding="utf-8")
+PY
+  suite_package_root="${self_test_root}/BeautySDK"
+  if run_generated_suite "mutation" \
+      "BeautyEffectsTests.CPUReferenceFixtureTests|BeautyCoreTests.CPUReferenceFacadeFixtureTests" 10 \
+      "CPUReferenceFixtureTests|CPUReferenceFacadeFixtureTests"; then
+    echo "cpu_reference_oracles_count_self_test_failed" >&2
     return 1
   fi
   echo "cpu_reference_oracles_self_test_passed"
@@ -176,19 +224,25 @@ echo "cpu_reference_oracles_static_boundary_verified"
 
 cleanup_root="$(mktemp -d "${TMPDIR:-/tmp}/beauty-cpu-oracles.XXXXXX")"
 run_generated_suite "fixtures" \
-  "BeautyEffectsTests.CPUReferenceFixtureTests|BeautyCoreTests.CPUReferenceFacadeFixtureTests" || {
+  "BeautyEffectsTests.CPUReferenceFixtureTests|BeautyCoreTests.CPUReferenceFacadeFixtureTests" 10 \
+  "CPUReferenceFixtureTests|CPUReferenceFacadeFixtureTests" || {
   echo "cpu_reference_oracles_fixture_tests_failed"
   exit 1
 }
 run_generated_suite "geometry-color" \
-  "BeautyEffectsTests.CPUReferenceGeometryOracleTests|BeautyEffectsTests.CPUReferenceColorOracleTests" || {
+  "BeautyEffectsTests.CPUReferenceGeometryOracleTests|BeautyEffectsTests.CPUReferenceColorOracleTests" 10 \
+  "CPUReferenceGeometryOracleTests|CPUReferenceColorOracleTests" || {
   echo "cpu_reference_oracles_geometry_color_tests_failed"
   exit 1
 }
 run_generated_suite "local-determinism" \
-  "BeautyEffectsTests.CPUReferenceLocalRetouchOracleTests|BeautyCoreTests.CPUReferenceDeterminismTests" || {
+  "BeautyEffectsTests.CPUReferenceLocalRetouchOracleTests|BeautyCoreTests.CPUReferenceDeterminismTests" 15 \
+  "CPUReferenceLocalRetouchOracleTests|CPUReferenceDeterminismTests" || {
   echo "cpu_reference_oracles_local_determinism_tests_failed"
   exit 1
 }
 
-echo "cpu_reference_oracles_passed fixture_tests=9 geometry_color_tests=9 local_determinism_tests=15"
+fixture_count="$(<"${cleanup_root}/fixtures.log.count")"
+geometry_color_count="$(<"${cleanup_root}/geometry-color.log.count")"
+local_determinism_count="$(<"${cleanup_root}/local-determinism.log.count")"
+echo "cpu_reference_oracles_passed fixture_tests=${fixture_count} geometry_color_tests=${geometry_color_count} local_determinism_tests=${local_determinism_count}"
