@@ -184,7 +184,9 @@ validate_post_archive() {
     python3 - "$root" <<'PY'
 from pathlib import Path
 import hashlib
+import os
 import re
+import stat
 import subprocess
 import sys
 
@@ -193,14 +195,32 @@ for name in ("BeautyDemo", "meituxiuxiu"):
     if (root / name).exists() or (root / name).is_symlink():
         raise SystemExit(f"retired legacy source was restored: {name}/")
 
-required_current = (
-    "AGENTS.md", "ARCHITECTURE.md", "FRONTEND.md", "PRODUCT_SENSE.md",
-    "QUALITY_SCORE.md", ".planning/PROJECT.md",
+current_text_files = (
+    "AGENTS.md", "ARCHITECTURE.md", "DESIGN.md", "FRONTEND.md",
+    "PRODUCT_SENSE.md", "QUALITY_SCORE.md", "SECURITY.md", "RELIABILITY.md",
+    "PLANS.md", "docs/README.md", "docs/SDK_EFFECT_TAXONOMY.md",
+    ".planning/PROJECT.md", ".planning/REQUIREMENTS.md", ".planning/ROADMAP.md",
+    ".planning/STATE.md", ".planning/codebase/ARCHITECTURE.md",
+    ".planning/codebase/CONCERNS.md", ".planning/codebase/CONVENTIONS.md",
+    ".planning/codebase/INTEGRATIONS.md", ".planning/codebase/STACK.md",
+    ".planning/codebase/STRUCTURE.md", ".planning/codebase/TESTING.md",
+    "scripts/run-no-skip-swiftpm.sh",
 )
-for relative in required_current:
+for relative in current_text_files:
     path = root / relative
     if not path.is_file() or path.is_symlink():
-        raise SystemExit(f"current owner missing or symlinked: {relative}")
+        raise SystemExit(f"current text owner missing or symlinked: {relative}")
+
+required_boundary_markers = (
+    "AGENTS.md", "ARCHITECTURE.md", "FRONTEND.md", "PRODUCT_SENSE.md",
+    "QUALITY_SCORE.md", ".planning/PROJECT.md", "docs/README.md",
+    ".planning/codebase/ARCHITECTURE.md", ".planning/codebase/CONCERNS.md",
+    ".planning/codebase/CONVENTIONS.md", ".planning/codebase/INTEGRATIONS.md",
+    ".planning/codebase/STACK.md", ".planning/codebase/STRUCTURE.md",
+    ".planning/codebase/TESTING.md",
+)
+for relative in required_boundary_markers:
+    path = root / relative
     text = path.read_text(encoding="utf-8")
     if re.search(r"SDK[- ]only", text, re.IGNORECASE) is None or "SwiftPM" not in text:
         raise SystemExit(f"current owner lacks SDK-only/SwiftPM boundary: {relative}")
@@ -230,18 +250,12 @@ def current_fragment(relative):
         return text.split("## Last Completed Milestone", 1)[0]
     return text
 
-active_owners = (
-    "AGENTS.md", "ARCHITECTURE.md", "FRONTEND.md", "SECURITY.md", "RELIABILITY.md",
-    "PRODUCT_SENSE.md", "QUALITY_SCORE.md", "PLANS.md", ".planning/PROJECT.md",
-    ".planning/REQUIREMENTS.md", ".planning/ROADMAP.md", ".planning/STATE.md",
-    "scripts/run-no-skip-swiftpm.sh",
-)
 forbidden = re.compile(
     r"xcodebuild|xcrun\s+simctl|platform\s*=\s*iOS Simulator|\.xcodeproj\b|"
     r"\.xcworkspace\b|\.xcscheme\b|\.xctestplan\b|-scheme\s+BeautyDemo|"
     r"BeautyDemoTests|XCUIApplication|XCUIDevice|XCUIScreen|import\s+SwiftUI"
 )
-for relative in active_owners:
+for relative in current_text_files:
     path = root / relative
     if not path.is_file():
         raise SystemExit(f"active owner is missing: {relative}")
@@ -249,22 +263,44 @@ for relative in active_owners:
     if match:
         raise SystemExit(f"stale app/Xcode/UI dependency in {relative}: {match.group(0)}")
 
-ignored_prefixes = ("archives/", ".planning/milestones/", ".planning/phases/")
-for path in root.rglob("*"):
-    relative = path.relative_to(root).as_posix()
-    if relative.startswith(ignored_prefixes) or "/.build/" in f"/{relative}/" or relative.startswith(".git/"):
+ignored_prefixes = (".git/", "BeautySDK/.build/", ".planning/milestones/", ".planning/phases/")
+for directory, directory_names, file_names in os.walk(root, topdown=True, followlinks=False):
+    relative_directory = Path(directory).relative_to(root).as_posix()
+    prefix = "" if relative_directory == "." else relative_directory + "/"
+    if any(prefix.startswith(ignored) for ignored in ignored_prefixes):
+        directory_names[:] = []
         continue
-    if path.is_dir() and path.suffix in {".xcodeproj", ".xcworkspace"}:
-        raise SystemExit(f"active Xcode artifact remains: {relative}")
-    if path.is_file() and (path.name == "project.pbxproj" or path.suffix in {".xcscheme", ".xctestplan"}):
-        raise SystemExit(f"active Xcode/UI-test artifact remains: {relative}")
-    if path.is_file() and path.suffix == ".swift":
-        text = path.read_text(encoding="utf-8", errors="replace")
-        if re.search(r"^\s*import\s+SwiftUI\b", text, re.MULTILINE):
-            raise SystemExit(f"active SwiftUI source remains: {relative}")
-        ui_test = re.search(r"\b(?:XCUIApplication|XCUIDevice|XCUIScreen)\b", text)
-        if ui_test:
-            raise SystemExit(f"active UI-test dependency remains in {relative}: {ui_test.group(0)}")
+    kept_directories = []
+    for name in directory_names:
+        path = Path(directory) / name
+        relative = path.relative_to(root).as_posix()
+        mode = path.lstat().st_mode
+        if stat.S_ISLNK(mode):
+            raise SystemExit(f"symlink is forbidden in active repository roots: {relative}")
+        child_prefix = relative + "/"
+        if any(child_prefix.startswith(ignored) for ignored in ignored_prefixes):
+            continue
+        if path.suffix in {".xcodeproj", ".xcworkspace"}:
+            raise SystemExit(f"active Xcode artifact remains: {relative}")
+        kept_directories.append(name)
+    directory_names[:] = kept_directories
+    for name in file_names:
+        path = Path(directory) / name
+        relative = path.relative_to(root).as_posix()
+        mode = path.lstat().st_mode
+        if stat.S_ISLNK(mode):
+            raise SystemExit(f"symlink is forbidden in active repository roots: {relative}")
+        if not stat.S_ISREG(mode):
+            raise SystemExit(f"non-regular entry is forbidden in active repository roots: {relative}")
+        if path.name == "project.pbxproj" or path.suffix in {".xcscheme", ".xctestplan"}:
+            raise SystemExit(f"active Xcode/UI-test artifact remains: {relative}")
+        if path.suffix == ".swift":
+            text = path.read_text(encoding="utf-8", errors="replace")
+            if re.search(r"^\s*import\s+SwiftUI\b", text, re.MULTILINE):
+                raise SystemExit(f"active SwiftUI source remains: {relative}")
+            ui_test = re.search(r"\b(?:XCUIApplication|XCUIDevice|XCUIScreen)\b", text)
+            if ui_test:
+                raise SystemExit(f"active UI-test dependency remains in {relative}: {ui_test.group(0)}")
 
 tracked = subprocess.run(
     ["git", "-C", str(root), "ls-files", "-z"], check=True, stdout=subprocess.PIPE
@@ -368,8 +404,11 @@ PY
 
     rm -rf "$fixture/BeautyDemo" "$fixture/meituxiuxiu"
     local owner
-    for owner in AGENTS.md ARCHITECTURE.md FRONTEND.md SECURITY.md RELIABILITY.md PRODUCT_SENSE.md QUALITY_SCORE.md PLANS.md \
-        .planning/PROJECT.md .planning/REQUIREMENTS.md .planning/ROADMAP.md .planning/STATE.md scripts/run-no-skip-swiftpm.sh; do
+    for owner in AGENTS.md ARCHITECTURE.md DESIGN.md FRONTEND.md SECURITY.md RELIABILITY.md PRODUCT_SENSE.md QUALITY_SCORE.md PLANS.md \
+        docs/README.md .planning/PROJECT.md .planning/REQUIREMENTS.md .planning/ROADMAP.md .planning/STATE.md \
+        .planning/codebase/ARCHITECTURE.md .planning/codebase/CONCERNS.md .planning/codebase/CONVENTIONS.md \
+        .planning/codebase/INTEGRATIONS.md .planning/codebase/STACK.md .planning/codebase/STRUCTURE.md \
+        .planning/codebase/TESTING.md scripts/run-no-skip-swiftpm.sh; do
         write_post_owner "$fixture/$owner"
     done
     mkdir -p "$fixture/BeautySDK/Sources/BeautyRender/Shaders" "$fixture/BeautySDK/Tests" \
@@ -402,6 +441,23 @@ PY
     printf '%s\n' 'xcodebuild -project Legacy.xcodeproj' >> "$fixture/ARCHITECTURE.md"
     expect_failure validate_post_archive "$fixture"
     write_post_owner "$fixture/ARCHITECTURE.md"
+    for path in docs/README.md .planning/PROJECT.md .planning/codebase/INTEGRATIONS.md scripts/run-no-skip-swiftpm.sh; do
+        cp "$fixture/$path" "$fixture/$path.saved"
+        printf '%s\n' 'xcodebuild -project Legacy.xcodeproj' >> "$fixture/$path"
+        expect_failure validate_post_archive "$fixture"
+        mv "$fixture/$path.saved" "$fixture/$path"
+    done
+    local external_tree
+    external_tree="$(mktemp -d "${TMPDIR:-/tmp}/sdk-boundary-external.XXXXXX")"
+    printf '%s\n' 'import SwiftUI' > "$external_tree/RestoredView.swift"
+    ln -s "$external_tree" "$fixture/BeautySDK/Sources/LinkedTree"
+    expect_failure validate_post_archive "$fixture"
+    rm "$fixture/BeautySDK/Sources/LinkedTree"
+    printf '%s\n' 'forbidden test plan' > "$external_tree/Restored.xctestplan"
+    ln -s "$external_tree/Restored.xctestplan" "$fixture/BeautySDK/Sources/LinkedPlan"
+    expect_failure validate_post_archive "$fixture"
+    rm "$fixture/BeautySDK/Sources/LinkedPlan"
+    rm -rf "$external_tree"
     printf 'PNG' > "$fixture/generated.png"
     git -C "$fixture" add generated.png
     expect_failure validate_post_archive "$fixture"

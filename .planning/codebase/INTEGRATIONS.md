@@ -1,91 +1,67 @@
 # External Integrations
 
-**Analysis Date:** 2026-08-13
+**Analysis Date:** 2026-08-14
+**Boundary:** SDK-only SwiftPM repository
 
-## APIs & External Services
+## Apple Frameworks
 
-**Apple On-Device Vision:**
-- Vision face landmark detection - Used locally to derive internal face observations and request-local support for geometry and local retouch.
-  - SDK/Client: Apple `Vision` framework, imported by `BeautySDK/Sources/BeautyDetection/VisionFaceDetector.swift`.
-  - Auth: None; `VNDetectFaceLandmarksRequest` executes on-device and does not require an API key.
-  - Boundary: Keep raw Vision observations, landmarks, pupils, and masks inside `BeautyDetection` and request-local SDK internals as required by `ARCHITECTURE.md` and `SECURITY.md`.
+- Vision runs on-device behind `BeautyDetection` to produce package-only,
+  request-local face support. It requires no account, API key, or network call.
+- Core Image, Core Graphics, ImageIO, Core Video/Core Media, and Foundation back
+  validation, canonicalization, rendering, and public value types.
+- AppKit is used only by the macOS `BeautyExampleRenderer` executable.
+- CryptoKit is used by a resource integrity test.
 
-**Apple Camera:**
-- AVFoundation capture - Provides Demo camera permission, capture session, BGRA video frames, and preview.
-  - SDK/Client: Apple `AVFoundation`, `CoreMedia`, and `CoreVideo` in `BeautyDemo/BeautyDemo/Camera/CameraPermissionClient.swift`, `BeautyDemo/BeautyDemo/Camera/CameraSessionController.swift`, and `BeautyDemo/BeautyDemo/Camera/CameraPreviewLayerView.swift`.
-  - Auth: iOS camera permission requested through `AVCaptureDevice.requestAccess(for: .video)` in `BeautyDemo/BeautyDemo/Camera/CameraPermissionClient.swift`.
-  - Configuration: `NSCameraUsageDescription` is generated from `BeautyDemo/BeautyDemo.xcodeproj/project.pbxproj`.
+No application UI framework, camera/photo permission path, capture session, or
+application lifecycle integration is active. Any such implementation exists only
+inside the verified historical archives and is not current integration guidance.
 
-**Apple Photo Library:**
-- PhotosUI picker - Lets the Demo select local images without implementing a remote file service.
-  - SDK/Client: Apple `PhotosUI` through `PhotosPicker` in `BeautyDemo/BeautyDemo/Editor/EditorShellView.swift`.
-  - Auth: System-managed picker access; `NSPhotoLibraryUsageDescription` is generated from `BeautyDemo/BeautyDemo.xcodeproj/project.pbxproj` for the app’s declared photo flow.
+## Network, Identity, and Services
 
-**Network / Cloud Services:**
-- Not detected. Active SDK and Demo sources under `BeautySDK/Sources/` and `BeautyDemo/BeautyDemo/` contain no `URLSession`, HTTP endpoint, upload, remote configuration, analytics, account, payment, entitlement, or cloud SDK integration.
-- Preserve the local-first boundary enforced by `BeautyDemo/BeautyDemoTests/InputPipelinePrivacyTests.swift` and documented in `SECURITY.md`; adding a service requires explicit privacy, integrity, dependency, failure, and licensing design.
+- No URL endpoint, upload, analytics, remote configuration, account, login,
+  payment, entitlement, webhook, hosted backend, or third-party SDK is active.
+- No credential, token, certificate, service-account file, `.env` contract, or
+  runtime secret is required.
+- Adding network/cloud/model delivery requires a new security, privacy,
+  integrity, licensing, failure, cache, and observability design.
 
-## Data Storage
+## Storage and Resources
 
-**Databases:**
-- Not detected. There is no database client, schema, ORM, or connection configuration in `BeautySDK/Package.swift`, `BeautySDK/Sources/`, or `BeautyDemo/BeautyDemo/`.
+- Production resources are bundled through SwiftPM under
+  `BeautySDK/Sources/BeautyResources/Resources/` plus the single retained,
+  byte-pinned inactive shader resource.
+- `BeautyResourceCatalog` resolves logical IDs through `Bundle.module`; there is
+  no arbitrary-path or runtime-download API.
+- `BeautyExampleRenderer` reads local authorized fixtures and writes ignored,
+  disposable PNG evidence. This is not SDK persistence.
+- Real-image fixtures remain ignored under `example-images/`; tracked
+  authorization metadata contains no private locator or image bytes.
+- Historical archives under `archives/legacy-ui/` are tracked recovery artifacts,
+  never runtime resources. Their tool pins ZIP/manifest digests, inventory, and
+  resource bounds before any temporary extraction.
 
-**File Storage:**
-- Bundled SwiftPM resources only for production SDK data: `BeautySDK/Sources/BeautyResources/Resources/manifest.json`, `BeautySDK/Sources/BeautyResources/Resources/Presets/*.json`, and `BeautySDK/Sources/BeautyRender/Shaders/Warp.metal`.
-- `BeautyResourceCatalog` resolves immutable resources with `Bundle.module` in `BeautySDK/Sources/BeautyResources/BeautyResourceCatalog.swift`; no remote resource or runtime download path exists.
-- `BeautyExampleRenderer` reads local fixture directories and writes local PNG evidence using `FileManager` in `BeautySDK/Sources/BeautyExampleRenderer/main.swift`. This is an executable/evidence workflow, not SDK persistence.
-- Local real-image fixtures and generated review outputs are Git-ignored under `example-images/`; authorization metadata is tracked separately in `example-images/FIXTURE_AUTHORIZATION.md`.
-- Demo photo selection is in-memory through `PhotosPickerItem` processing in `BeautyDemo/BeautyDemo/Editor/EditorShellView.swift` and `BeautyDemo/BeautyDemo/Editor/ImageEditorPipeline.swift`; active source contains no raw photo/frame persistence path.
+## Diagnostics
 
-**Caching:**
-- No external or disk cache is detected. `BeautyStillImageCanonicalizer` reuses an in-process `CIContext` in `BeautySDK/Sources/BeautySDK/BeautyStillImageCanonicalizer.swift`, while image buffers, observations, masks, and local-retouch ownership remain request-local.
-- Do not introduce persistence for raw images, landmarks, masks, pupil positions, teeth geometry, or vein patterns; the request-local invariant is defined in `.codex/skills/spike-findings-beauty/SKILL.md` and `SECURITY.md`.
+There is no hosted error tracker or telemetry client. Public observability is
+limited to typed errors, fixed warnings, redacted detection summaries, and
+bounded aggregate metrics. Raw images, framework objects, geometry, masks,
+paths, child transcripts, and biometric-adjacent support are forbidden durable
+diagnostics.
 
-## Authentication & Identity
+## Build and Validation
 
-**Auth Provider:**
-- None. The SDK and Demo have no login, account, OAuth, token, session, Keychain, or identity-provider integration in `BeautySDK/Sources/` or `BeautyDemo/BeautyDemo/`.
-- Camera access is device permission, not user authentication; its state mapping and request path live in `BeautyDemo/BeautyDemo/Camera/CameraPermissionClient.swift`.
+SwiftPM is the only active package/build/test system:
 
-## Monitoring & Observability
+```bash
+swift build --package-path BeautySDK
+swift test --package-path BeautySDK
+swift run --package-path BeautySDK BeautyExampleRenderer --help
+bash scripts/run-no-skip-swiftpm.sh
+```
 
-**Error Tracking:**
-- None. No Sentry, Firebase Crashlytics, hosted crash reporter, or telemetry client is declared in `BeautySDK/Package.swift` or imported by `BeautySDK/Sources/` and `BeautyDemo/BeautyDemo/`.
-
-**Logs:**
-- Production-facing diagnostics are local typed results: `BeautyError`, `BeautyValidationWarning`, `BeautyDetectionSummary`, and aggregate metrics under `BeautySDK/Sources/BeautyCore/Models/` and `BeautySDK/Sources/BeautyCore/Diagnostics/`.
-- The example renderer prints only local output filenames in `BeautySDK/Sources/BeautyExampleRenderer/main.swift`; select test/evidence suites print aggregate reports under `BeautySDK/Tests/`.
-- Do not log raw images, Vision objects, geometry, masks, paths, errors, or stable biometric signatures. Redacted diagnostics and privacy tests are owned by `SECURITY.md`, `RELIABILITY.md`, and `BeautyDemo/BeautyDemoTests/InputPipelinePrivacyTests.swift`.
-
-## CI/CD & Deployment
-
-**Hosting:**
-- Not applicable. This repository builds an iOS Demo, a Swift package library, and a local macOS evidence renderer from `BeautyDemo/BeautyDemo.xcodeproj/project.pbxproj` and `BeautySDK/Package.swift`.
-- No App Store deployment, hosted backend, package registry publication, or production distribution configuration is present.
-
-**CI Pipeline:**
-- Not detected. No `.github/workflows/`, GitLab CI, Jenkins, Bitrise, or Fastlane pipeline is present in the inspected repository.
-- Local verification entry points are `swift test --package-path BeautySDK`, `scripts/run-no-skip-swiftpm.sh`, and explicit-simulator `xcodebuild` commands documented in `AGENTS.md`.
-
-## Environment Configuration
-
-**Required env vars:**
-- None for normal SDK, Demo, renderer build, or the default SwiftPM test run; no `.env` files are present.
-- Private real-fixture Vision tests under `BeautySDK/Tests/BeautyCoreTests/BeautyTeethWhiteningRealFixtureTests.swift` and `BeautySDK/Tests/BeautyCoreTests/BeautyScleraRednessRealFixtureTests.swift` use opt-in test-process environment configuration and local ignored assets. Treat their exact variable contracts as test-only, not application configuration.
-
-**Secrets location:**
-- Not applicable. No credential, key, certificate, package-auth, or service-account file is part of the detected runtime integration surface.
-- User-authorized fixture rights are recorded without service secrets in `example-images/FIXTURE_AUTHORIZATION.md`; binary portrait data remains local and ignored under `example-images/`.
-
-## Webhooks & Callbacks
-
-**Incoming:**
-- No network webhooks or URL callbacks are implemented.
-- Local asynchronous framework callbacks exist for camera permission and capture frames in `BeautyDemo/BeautyDemo/Camera/CameraPermissionClient.swift` and `BeautyDemo/BeautyDemo/Camera/CameraSessionController.swift`; these are in-process Apple framework callbacks, not externally reachable endpoints.
-
-**Outgoing:**
-- None. SDK and Demo processing does not emit HTTP requests, webhook deliveries, analytics events, uploads, or remote crash reports from `BeautySDK/Sources/` or `BeautyDemo/BeautyDemo/`.
+The mandatory wrapper first verifies both archives and the SDK-only scanner,
+then runs one bounded child with all required local opt-ins. No CI/CD,
+distribution, registry publication, or release pipeline is claimed.
 
 ---
-
-*Integration audit: 2026-08-13*
+*Integration audit: 2026-08-14 after Phase 66 review remediation*

@@ -17,16 +17,19 @@ If a long-form doc conflicts with a root-level contract, follow the root-level c
 
 ## Current Repository State
 
-Last audited: 2026-06-10.
+Last audited: 2026-08-14 after Phase 66.
 
-- `BeautyDemo/` exists and contains one iOS Xcode project with target / scheme `BeautyDemo`.
-- `BeautyDemo/BeautyDemo/ContentView.swift` is still the default SwiftUI `Hello, world!` template.
-- The main worktree has no `BeautySDK/Package.swift`.
-- `.planning/PROJECT.md` exists and defines v1 as the SDK API + minimal Demo integration foundation.
-- `.planning/STATE.md` and `.planning/ROADMAP.md` do not exist yet; GSD workflow preferences, requirements, and roadmap are still pending.
-- `xcodebuild -list -project BeautyDemo/BeautyDemo.xcodeproj` succeeds with the currently selected full Xcode.
-- `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' build` was verified on 2026-06-10 and succeeded.
-- The generic `xcodebuild -project BeautyDemo/BeautyDemo.xcodeproj -scheme BeautyDemo build` command may fail locally if Xcode selects an incompatible `My Mac` destination; pass an explicit simulator destination.
+- The active repository is SDK-only. `BeautySDK/Package.swift` is the sole build
+  graph and SwiftPM is the sole current build/test runner.
+- `BeautySDK` is the public library; `BeautyExampleRenderer` is the SDK-owned
+  command-line consumer. No application/UI lifecycle is active.
+- The two retired UI/Demo histories exist only as independently pinned artifacts
+  under `archives/legacy-ui/`; verify and restore them only through that
+  directory's README into a fresh outside-repository temporary directory.
+- `.planning/PROJECT.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, and the
+  seven `.planning/codebase/` maps describe the current SDK-only boundary.
+- The mandatory closeout is `bash scripts/run-no-skip-swiftpm.sh`; it verifies
+  archives and the boundary scanner before its bounded one-child SwiftPM run.
 
 ## Long-Form Docs
 
