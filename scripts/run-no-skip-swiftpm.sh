@@ -32,6 +32,13 @@ for command_name in python3 swift git; do
   }
 done
 
+if ! bash "${repository_root}/scripts/check-sdk-only-boundary.sh" \
+  --self-test >/dev/null 2>&1; then
+  echo "no_skip_sdk_boundary_self_test_failed"
+  exit 1
+fi
+echo "no_skip_sdk_boundary_self_tested"
+
 if ! python3 "${repository_root}/scripts/archive-legacy-ui.py" verify \
   --output "${repository_root}/archives/legacy-ui" >/dev/null 2>&1; then
   echo "no_skip_archive_verification_failed"
