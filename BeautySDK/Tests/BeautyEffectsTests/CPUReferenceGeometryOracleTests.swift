@@ -287,7 +287,7 @@ final class CPUReferenceGeometryOracleTests: XCTestCase {
     }
 
     private func renderedRGBABytes(from image: CIImage, width: Int, height: Int, colorSpace: CGColorSpace) -> [UInt8] {
-        let context = CIContext(options: [.workingColorSpace: colorSpace, .outputColorSpace: colorSpace])
+        let context = CPUReferenceFixtureFactory.softwareContext(colorSpace: colorSpace)
         var bytes = [UInt8](repeating: 0, count: width * height * 4)
         context.render(image, toBitmap: &bytes, rowBytes: width * 4, bounds: CGRect(x: 0, y: 0, width: width, height: height), format: .RGBA8, colorSpace: colorSpace)
         return bytes

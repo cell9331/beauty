@@ -43,6 +43,14 @@ enum CPUReferenceFixtureFactory {
     static let width = 16
     static let height = 12
 
+    static func softwareContext(colorSpace: CGColorSpace) -> CIContext {
+        CIContext(options: [
+            .useSoftwareRenderer: true,
+            .workingColorSpace: colorSpace,
+            .outputColorSpace: colorSpace,
+        ])
+    }
+
     static func opaqueColorRamp(width: Int = Self.width, height: Int = Self.height) -> CPUReferenceRGBA8Fixture {
         make(width: width, height: height) { x, y in
             return (

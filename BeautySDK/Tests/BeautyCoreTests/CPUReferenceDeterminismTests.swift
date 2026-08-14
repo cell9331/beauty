@@ -254,10 +254,7 @@ final class CPUReferenceDeterminismTests: XCTestCase {
         let width = Int(bounds.width)
         let height = Int(bounds.height)
         var bytes = [UInt8](repeating: 0, count: width * height * 4)
-        CIContext(options: [
-            .workingColorSpace: colorSpace,
-            .outputColorSpace: colorSpace,
-        ]).render(
+        softwareContext(colorSpace: colorSpace).render(
             image,
             toBitmap: &bytes,
             rowBytes: width * 4,
@@ -270,5 +267,13 @@ final class CPUReferenceDeterminismTests: XCTestCase {
 
     private func hasOpaqueAlpha(_ bytes: [UInt8]) -> Bool {
         stride(from: 3, to: bytes.count, by: 4).allSatisfy { bytes[$0] == 255 }
+    }
+
+    private func softwareContext(colorSpace: CGColorSpace) -> CIContext {
+        CIContext(options: [
+            .useSoftwareRenderer: true,
+            .workingColorSpace: colorSpace,
+            .outputColorSpace: colorSpace,
+        ])
     }
 }
