@@ -89,7 +89,13 @@ generic sendability without adding Metal or GPU behavior.
   4. Repeating identical CPU requests yields deterministic, finite, bounded results independent of earlier requests, and a failed face-dependent unit does not suppress eligible siblings or face-agnostic work.
   5. The mandatory clean-clone suite passes entirely from generated Swift fixtures with zero skips; rights-approved portrait and native-Vision fixtures remain optional, private, and explicitly gated.
 
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 68-01-PLAN.md — Add generated in-memory CPU fixture and metric foundations.
+- [ ] 68-02-PLAN.md — Freeze geometry and color feature-family semantics with explicit metrics.
+- [ ] 68-03-PLAN.md — Freeze local-retouch safety, composition, determinism, and failure isolation.
+- [ ] 68-04-PLAN.md — Wire generated-only preflight, optional-fixture separation, and owner closeout.
 
 ### Phase 69: Public Concurrency Repair and SDK-Only Closeout
 
@@ -136,5 +142,5 @@ remain shared, and no v1.17 Metal source or API is authorized by v1.16.
 | --- | --- | --- | --- | --- |
 | 66. Legacy UI/Demo Archive and SDK-Only Boundary | v1.16 | 3/3 | Completed | 2026-08-14 |
 | 67. SwiftPM Consumer and CLI Validation Contract | v1.16 | 4/4 | Completed | 2026-08-14 |
-| 68. CPU Algorithm Reference Oracles | v1.16 | 0/TBD | Ready to plan | - |
+| 68. CPU Algorithm Reference Oracles | v1.16 | 0/4 | Planned | - |
 | 69. Public Concurrency Repair and SDK-Only Closeout | v1.16 | 0/TBD | Not started | - |
