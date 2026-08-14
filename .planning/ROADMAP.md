@@ -57,7 +57,7 @@ generic sendability without adding Metal or GPU behavior.
   2. SDK integrators can find the supported effect taxonomy and algorithm-relevant legacy knowledge in an SDK-owned text authority without depending on visual layout or application behavior.
   3. A clean checkout contains no active original Demo executable, SwiftUI source, Xcode application project, or selected legacy UI-reference tree after archive verification succeeds.
   4. Every active build, test, documentation, and planning command resolves to SwiftPM products, targets, tests, or SDK-owned command-line validation; repository scans find no remaining Xcode, simulator, device, or deleted-tree dependency.
-**Plans**: 2/3 complete
+**Plans**: 3/3 complete; independent phase verification pending
 
 ### Phase 67: SwiftPM Consumer and CLI Validation Contract
 
@@ -126,7 +126,7 @@ remain shared, and no v1.17 Metal source or API is authorized by v1.16.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 66. Legacy UI/Demo Archive and SDK-Only Boundary | v1.16 | 0/TBD | Not started | - |
+| 66. Legacy UI/Demo Archive and SDK-Only Boundary | v1.16 | 3/3 | Verification pending | - |
 | 67. SwiftPM Consumer and CLI Validation Contract | v1.16 | 0/TBD | Not started | - |
 | 68. CPU Algorithm Reference Oracles | v1.16 | 0/TBD | Not started | - |
 | 69. Public Concurrency Repair and SDK-Only Closeout | v1.16 | 0/TBD | Not started | - |
