@@ -1,4 +1,5 @@
 import CoreGraphics
+import CoreImage
 import Foundation
 import BeautyCore
 import BeautyDetection
