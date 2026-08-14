@@ -2,15 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.16
 milestone_name: SDK-Only Foundation and CPU Reference
-status: planning
-last_updated: "2026-08-14T09:10:53+08:00"
-last_activity: 2026-08-14
+status: executing
+stopped_at: Completed 66-01-PLAN.md
+last_updated: "2026-08-14T02:12:52.727Z"
+last_activity: 2026-08-14 — Completed Phase 66 Plan 01 archive and SDK-only boundary tooling
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_plans: 3
+  completed_plans: 1
+  percent: 33
 ---
 
 # Project State
@@ -24,20 +25,20 @@ See: `.planning/PROJECT.md` (updated 2026-08-14)
 
 ## Current Position
 
-Phase: 66 of 69 (Legacy UI/Demo Archive and SDK-Only Boundary)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-08-14 — Created the four-phase v1.16 roadmap with 19/19 requirements mapped; milestone research intentionally skipped by user direction.
+Phase: 66 (Legacy UI/Demo Archive and SDK-Only Boundary) — EXECUTING
+Plan: 2 of 3
+Status: Ready to execute
+Last activity: 2026-08-14 — Completed Phase 66 Plan 01 archive and SDK-only boundary tooling
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [███░░░░░░░] 33%
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: —
+- Total plans completed: 1
+- Average duration: 18 min
+- Total execution time: 18 min
 
 Historical milestone metrics remain in `.planning/MILESTONES.md` and archived roadmaps.
 
@@ -50,6 +51,8 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 - [Phases 67-68]: Mandatory validation uses Swift code that imports the public `BeautySDK` SPM product and checks generated input/output; private real fixtures are optional gates and cannot lend success through skips.
 - [Phase 69]: `BeautyResult<Output>` gains conditional `Sendable` conformance only when `Output: Sendable`, preserving ordinary source use without an unchecked generic promise.
 - [v1.17 queued]: Preserve CPU permanently; expose `.cpu`/`.gpu` only through `BeautyConfiguration` after Metal coverage, default to CPU, and fail explicit unavailable GPU without fallback.
+- [Phase 66]: The current SDK taxonomy owns exact legacy algorithm/control meanings and public mappings without inheriting visual layout or application behavior.
+- [Phase 66]: The v1.16 boundary pins the retained Warp.metal bytes and rejects Xcode, SwiftUI, UI-test, generated-media, and GPU/backend drift.
 
 ### Pending Todos
 
@@ -70,7 +73,7 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-14
-Stopped at: v1.16 roadmap created; Phase 66 is ready for planning.
+Last session: 2026-08-14T02:12:52.724Z
+Stopped at: Completed 66-01-PLAN.md
 Resume file: None
-Next action: `$gsd-plan-phase 66 --auto`
+Next action: Execute `66-02-PLAN.md` through `$gsd-execute-phase 66 --auto`.

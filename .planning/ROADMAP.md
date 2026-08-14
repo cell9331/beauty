@@ -57,7 +57,7 @@ generic sendability without adding Metal or GPU behavior.
   2. SDK integrators can find the supported effect taxonomy and algorithm-relevant legacy knowledge in an SDK-owned text authority without depending on visual layout or application behavior.
   3. A clean checkout contains no active original Demo executable, SwiftUI source, Xcode application project, or selected legacy UI-reference tree after archive verification succeeds.
   4. Every active build, test, documentation, and planning command resolves to SwiftPM products, targets, tests, or SDK-owned command-line validation; repository scans find no remaining Xcode, simulator, device, or deleted-tree dependency.
-**Plans**: TBD
+**Plans**: 1/3 complete
 
 ### Phase 67: SwiftPM Consumer and CLI Validation Contract
 

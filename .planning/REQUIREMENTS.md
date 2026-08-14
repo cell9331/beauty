@@ -8,9 +8,9 @@
 ### SDK-Only Repository Boundary
 
 - [ ] **BOUNDARY-01**: The active repository contract names SwiftPM products, targets, tests, and SDK-owned command-line validation as the only supported build/test surface; no active requirement depends on SwiftUI, an Xcode application target, simulator automation, or physical-device execution.
-- [ ] **BOUNDARY-02**: Before removal, the supported effect taxonomy and any algorithm-relevant knowledge that exists only in legacy UI/Demo material is preserved in an SDK-owned text authority without treating visual layout or application behavior as an SDK requirement.
-- [ ] **ARCHIVE-01**: `BeautyDemo/` and the selected legacy UI-reference tree are preserved as ZIP artifacts whose scope is explicit and whose manifests exclude transient files such as build products, caches, `.DS_Store`, and per-user Xcode state.
-- [ ] **ARCHIVE-02**: Each retained archive has a deterministic listing manifest and SHA-256 record, and an automated verification step proves listing agreement, successful extraction, and content-hash agreement before original files are removed.
+- [x] **BOUNDARY-02**: Before removal, the supported effect taxonomy and any algorithm-relevant knowledge that exists only in legacy UI/Demo material is preserved in an SDK-owned text authority without treating visual layout or application behavior as an SDK requirement.
+- [x] **ARCHIVE-01**: `BeautyDemo/` and the selected legacy UI-reference tree are preserved as ZIP artifacts whose scope is explicit and whose manifests exclude transient files such as build products, caches, `.DS_Store`, and per-user Xcode state.
+- [x] **ARCHIVE-02**: Each retained archive has a deterministic listing manifest and SHA-256 record, and an automated verification step proves listing agreement, successful extraction, and content-hash agreement before original files are removed.
 - [ ] **ARCHIVE-03**: After verified archive creation, the original Demo/UI executable and reference files are absent from the active tree, and repository scans find no build, test, documentation, or planning dependency that still requires them.
 
 ### SwiftPM Consumer and Command-Line Validation
@@ -61,9 +61,9 @@
 | Requirement | Phase | Status |
 | --- | --- | --- |
 | BOUNDARY-01 | Phase 66 | Pending |
-| BOUNDARY-02 | Phase 66 | Pending |
-| ARCHIVE-01 | Phase 66 | Pending |
-| ARCHIVE-02 | Phase 66 | Pending |
+| BOUNDARY-02 | Phase 66 | Complete |
+| ARCHIVE-01 | Phase 66 | Complete |
+| ARCHIVE-02 | Phase 66 | Complete |
 | ARCHIVE-03 | Phase 66 | Pending |
 | SPM-01 | Phase 67 | Pending |
 | SPM-02 | Phase 67 | Pending |
