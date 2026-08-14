@@ -281,6 +281,118 @@ def is_ignored_build_tree(path, relative):
         )
     return result.returncode == 0
 
+def swift_tokens(text):
+    """Tokenize enough Swift syntax to inspect declarations without trivia."""
+    tokens = []
+    index = 0
+    length = len(text)
+    while index < length:
+        character = text[index]
+        if character.isspace():
+            index += 1
+            continue
+        if text.startswith("//", index):
+            newline = text.find("\n", index + 2)
+            index = length if newline == -1 else newline + 1
+            continue
+        if text.startswith("/*", index):
+            index += 2
+            depth = 1
+            while index < length and depth:
+                if text.startswith("/*", index):
+                    depth += 1
+                    index += 2
+                elif text.startswith("*/", index):
+                    depth -= 1
+                    index += 2
+                else:
+                    index += 1
+            if depth:
+                raise SystemExit("unterminated Swift block comment")
+            continue
+        # Skip ordinary, multiline, and raw Swift string literals.  A source
+        # string is trivia for this guard: declarations inside it are not code.
+        raw_hashes = 0
+        while index + raw_hashes < length and text[index + raw_hashes] == "#":
+            raw_hashes += 1
+        quote = index + raw_hashes
+        if quote < length and text[quote] == '"':
+            multiline = text.startswith('"""', quote)
+            opening_length = 3 if multiline else 1
+            closing = ('"""' if multiline else '"') + ('#' * raw_hashes)
+            search_from = quote + opening_length
+            end = None
+            cursor = search_from
+            while cursor < length:
+                if text[cursor] == "\\":
+                    cursor += 2
+                elif text.startswith(closing, cursor):
+                    end = cursor
+                    break
+                else:
+                    cursor += 1
+            if end is None:
+                raise SystemExit("unterminated Swift string literal")
+            index = end + len(closing)
+            continue
+        if character == "`":
+            end = text.find("`", index + 1)
+            if end == -1:
+                raise SystemExit("unterminated Swift escaped identifier")
+            tokens.append(text[index + 1:end])
+            index = end + 1
+            continue
+        if character.isalpha() or character == "_":
+            end = index + 1
+            while end < length and (text[end].isalnum() or text[end] == "_"):
+                end += 1
+            tokens.append(text[index:end])
+            index = end
+            continue
+        if character.isdigit():
+            end = index + 1
+            while end < length and (text[end].isalnum() or text[end] in "._"):
+                end += 1
+            tokens.append(text[index:end])
+            index = end
+            continue
+        if character in "@<>{}:,()[]?!.=":
+            tokens.append(character)
+            index += 1
+            continue
+        # Operators and other punctuation cannot make a valid declaration
+        # look like it has an Output: Sendable clause, but retaining them keeps
+        # the token stream structurally faithful for the header scan.
+        tokens.append(character)
+        index += 1
+    return tokens
+
+
+def find_unconditional_beauty_result_sendability(text):
+    tokens = swift_tokens(text)
+    declaration_kinds = {"struct", "class", "enum", "extension"}
+    for index, token in enumerate(tokens):
+        if token != "BeautyResult" or index == 0 or tokens[index - 1] not in declaration_kinds:
+            continue
+        header_end = index + 1
+        while header_end < len(tokens) and tokens[header_end] != "{":
+            header_end += 1
+        header = tokens[index + 1:header_end]
+        unchecked = any(
+            header[position:position + 3] == ["@", "unchecked", "Sendable"]
+            for position in range(max(0, len(header) - 2))
+        )
+        if not unchecked:
+            continue
+        conditional = any(
+            header[position:position + 4] == ["where", "Output", ":", "Sendable"]
+            for position in range(max(0, len(header) - 3))
+        )
+        if not conditional:
+            return True
+    return False
+
+
 for directory, directory_names, file_names in os.walk(root, topdown=True, followlinks=False):
     relative_directory = Path(directory).relative_to(root).as_posix()
     prefix = "" if relative_directory == "." else relative_directory + "/"
@@ -320,18 +432,13 @@ for directory, directory_names, file_names in os.walk(root, topdown=True, follow
             ui_test = re.search(r"\b(?:XCUIApplication|XCUIDevice|XCUIScreen)\b", text)
             if ui_test:
                 raise SystemExit(f"active UI-test dependency remains in {relative}: {ui_test.group(0)}")
-            # BeautyResult may only promise Sendable conditionally.  In
-            # particular, never allow the historical arbitrary-payload
-            # @unchecked conformance to return through a source mutation.
-            for declaration in re.finditer(
-                r"\b(?:public\s+)?(?:struct|class|enum|extension)\s+BeautyResult(?:\s*<[^>{}\n]+>)?[^\{]*@unchecked\s+Sendable",
-                text,
-                re.MULTILINE,
-            ):
-                if re.search(r"\bwhere\s+Output\s*:\s*Sendable\b", declaration.group(0)) is None:
-                    raise SystemExit(
-                        f"unconditional generic BeautyResult Sendable conformance remains: {relative}"
-                    )
+            # BeautyResult may only promise Sendable conditionally.  Parse
+            # Swift tokens so comments and strings cannot manufacture a where
+            # clause or hide the trivia between @unchecked and Sendable.
+            if find_unconditional_beauty_result_sendability(text):
+                raise SystemExit(
+                    f"unconditional generic BeautyResult Sendable conformance remains: {relative}"
+                )
 
 tracked = subprocess.run(
     ["git", "-C", str(root), "ls-files", "-z"], check=True, stdout=subprocess.PIPE
@@ -462,10 +569,22 @@ PY
     printf '%s\n' 'public struct BeautyResult<Output>: @unchecked Sendable {}' \
         > "$fixture/BeautySDK/Sources/BeautyCore/Models/BeautyResult.swift"
     expect_failure validate_post_archive "$fixture"
+    printf '%s\n' 'public struct BeautyResult<Output>: @unchecked /* trivia gap */ Sendable {}' \
+        > "$fixture/BeautySDK/Sources/BeautyCore/Models/BeautyResult.swift"
+    expect_failure validate_post_archive "$fixture"
+    printf '%s\n' 'extension BeautyResult /* where Output: Sendable */: @unchecked Sendable {}' \
+        > "$fixture/BeautySDK/Sources/BeautyCore/Models/BeautyResult.swift"
+    expect_failure validate_post_archive "$fixture"
     printf '%s\n' \
         'public struct BeautyResult<Output> {}' \
         'extension BeautyResult: Sendable where Output: Sendable {}' \
         > "$fixture/BeautySDK/Sources/BeautyCore/Models/BeautyResult.swift"
+    validate_post_archive "$fixture" >/dev/null
+    printf '%s\n' \
+        'public struct BeautyResult<Output> {}' \
+        'extension BeautyResult: @unchecked Sendable where Output: Sendable {}' \
+        > "$fixture/BeautySDK/Sources/BeautyCore/Models/BeautyResult.swift"
+    validate_post_archive "$fixture" >/dev/null
     local ignored_build_external
     ignored_build_external="$(mktemp -d "${TMPDIR:-/tmp}/sdk-boundary-ignored-build.XXXXXX")"
     mkdir -p "$ignored_build_external/release" "$ignored_build_external/debug" \

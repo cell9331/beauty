@@ -18,7 +18,7 @@ generic `BeautyResult` sendability declaration.
 
 The generated CPU reference preflight executes 15 fixture, 10 geometry/color, and
 16 local-retouch/determinism tests with zero generated skips. The measured
-mandatory full child executes 699 tests with eight documented
+mandatory full child executes 702 tests with eight documented
 environment-gated opt-ins enabled. It accepts only one complete SwiftPM child
 transcript with:
 
@@ -60,7 +60,7 @@ preflight → private opt-ins → one SwiftPM child. Archive
 corruption, restored source roots, stale application dependencies, retained
 shader drift, an unexpected skip/failure, or a zero-test run must fail non-zero.
 
-The latest completed mandatory wrapper executes 699 tests with zero failures and
+The latest completed mandatory wrapper executes 702 tests with zero failures and
 zero skips. Its aggregate markers are evidence for the SDK-only SwiftPM gate
 only; they do not establish Metal/GPU execution, UI/Demo behavior,
 simulator/device quality, performance, commercial approval, packaging,

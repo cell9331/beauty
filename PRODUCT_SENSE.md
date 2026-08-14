@@ -107,7 +107,7 @@ zero skips, and a nonzero denominator. Archive integrity and the SDK-only static
 boundary are part of the same acceptance conjunction.
 
 The current focused public concurrency suite executes 3 tests with zero
-failures. The latest completed mandatory wrapper executes 699 tests with zero
+failures. The latest completed mandatory wrapper executes 702 tests with zero
 failures and zero skips; its boundary self-test rejects unconditional generic
 `BeautyResult` sendability before the archive, consumer, generated CPU, opt-in,
 and one-child stages. This evidence is SwiftPM/SDK-owned only and does not

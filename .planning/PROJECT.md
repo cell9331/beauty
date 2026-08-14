@@ -59,11 +59,14 @@ launch, or release-readiness claim follows from these gates.
 Phase 68's current contract is the CPU/Core Image implementation frozen by
 generated in-memory RGBA8/sRGB fixture, geometry/color semantic, local-retouch
 safety, and determinism oracles. The generated preflight executes 15 + 10 + 16
-tests with zero skips, and the final Phase 69 no-skip child executes 702 tests
+tests with zero skips, and the Phase 68 final no-skip child executed 699 tests
 with all eight private opt-ins and zero failures/skips. Private/native-Vision
 evidence remains explicit and non-authoritative for generated success; no
 tracked media, raw pixels, masks, support, paths, Metal/GPU/backend, UI/Demo,
 device, or release claim follows.
+Phase-qualified evidence keeps the Phase 68 closeout at 699/0/0; the later
+Phase 69 current gate is separately recorded at 702/0/0 and must not rewrite
+the Phase 68 historical result.
 
 Phase 69's closeout contract is conditional `BeautyResult<Output>` sendability,
 public compile/runtime task-hop coverage, a mutation-tested boundary guard, and

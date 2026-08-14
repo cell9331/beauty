@@ -71,8 +71,9 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 - [Phase 67]: CLI reports persist only versioned aggregate counts and relative public identities; child output, paths, pixels, masks, geometry, fixture metadata, and failure-seam values remain non-durable.
 - [Phase 68]: Mandatory CPU reference evidence is generated in-memory RGBA8/sRGB only; fixture/facade, geometry/color, and local-retouch/determinism preflights pass 15/15, 10/10, and 16/16 with zero generated skips.
 - [Phase 68]: The generated CPU preflight runs after the public consumer and before private/native-Vision opt-ins and the one-child SwiftPM gate; optional skips cannot lend success to CPU requirements.
-- [Phase 68]: The final no-skip gate executes 702 tests with zero failures and zero skips; raw pixels, masks, support, paths, transcripts, and fixture metadata remain non-durable.
+- [Phase 68]: The Phase 68 final no-skip gate executed 699 tests with zero failures and zero skips; raw pixels, masks, support, paths, transcripts, and fixture metadata remain non-durable.
 - [Phase 69]: The final archive-first gate passes boundary self-test/live scan, public consumer, generated CPU oracle, all eight optional fixtures, and one 702-test SwiftPM child with zero failures and zero skips; the four Phase 69 requirements are traced while lifecycle completion remains with independent verification.
+- Phase-qualified count check: 699/0/0 is immutable Phase 68 closeout evidence; 702/0/0 is the separate Phase 69 current-gate result.
 
 ### Pending Todos
 
