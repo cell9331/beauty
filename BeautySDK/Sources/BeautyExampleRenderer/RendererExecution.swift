@@ -367,7 +367,7 @@ enum RendererExecution {
                         status: "succeeded",
                         failureCode: nil
                     )
-                    stdout += "wrote \(outputID)\n"
+                    stdout += "wrote \(escapedLogIdentity(outputID))\n"
                 } catch let error as RendererExecutionError {
                     appendUnit(
                         inputID: inputID,
@@ -502,6 +502,19 @@ enum RendererExecution {
             return url.lastPathComponent
         }
         return String(filePath.dropFirst(prefix.count)).replacingOccurrences(of: "\\", with: "/")
+    }
+
+    private static func escapedLogIdentity(_ value: String) -> String {
+        value.unicodeScalars.map { scalar in
+            switch scalar.value {
+            case 0...31, 127...159:
+                return String(format: "\\u%04X", scalar.value)
+            case 92:
+                return "\\\\"
+            default:
+                return String(scalar)
+            }
+        }.joined()
     }
 
     private static func pixelDimensions(of image: CIImage) -> (width: Int, height: Int)? {

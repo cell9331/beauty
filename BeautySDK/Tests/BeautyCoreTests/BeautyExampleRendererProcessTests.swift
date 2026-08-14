@@ -1,4 +1,5 @@
 import CoreGraphics
+import Darwin
 import Foundation
 import ImageIO
 import XCTest
@@ -209,6 +210,61 @@ final class BeautyExampleRendererProcessTests: XCTestCase {
         XCTAssertFalse(collisionResult.status == 0)
     }
 
+    func testCompiledRendererEscapesControlCharactersInProgressOutput() throws {
+        let executable = try rendererExecutable()
+        let tree = try makeFixtureTree(extension: "png")
+        defer { removeTree(tree.root) }
+        let controlNamedInput = tree.input.appendingPathComponent("portrait\ninput.png")
+        try FileManager.default.moveItem(
+            at: tree.input.appendingPathComponent("portrait.png"),
+            to: controlNamedInput
+        )
+
+        let result = try run(executable, arguments: renderArguments(input: tree.input, output: tree.output))
+        XCTAssertEqual(result.status, 0)
+        let stdout = String(decoding: result.stdout, as: UTF8.self)
+        XCTAssertTrue(stdout.contains("wrote portrait\\u000Ainput__geometryBaseline_noop.png"))
+        XCTAssertFalse(stdout.contains("wrote portrait\ninput__geometryBaseline_noop.png"))
+        assertPrivacySafe(result.stdout + result.stderr, temporaryRoot: tree.root)
+    }
+
+    func testCompiledRendererReplacesGeneratedArtifactsWhenOutputIsReused() throws {
+        let executable = try rendererExecutable()
+        let tree = try makeFixtureTree(extension: "png")
+        defer { removeTree(tree.root) }
+
+        var result = try run(
+            executable,
+            arguments: ["--input", tree.input.path, "--output", tree.output.path,
+                        "--case", "geometryBaseline_noop", "--backend", "cpu", "--no-watermark"]
+        )
+        XCTAssertEqual(result.status, 0)
+        let oldOutput = tree.output.appendingPathComponent("portrait__geometryBaseline_noop.png")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: oldOutput.path))
+
+        result = try run(
+            executable,
+            arguments: ["--input", tree.input.path, "--output", tree.output.path,
+                        "--case", "skinSmoothing_0p50", "--backend", "cpu", "--no-watermark"]
+        )
+        XCTAssertEqual(result.status, 0)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: oldOutput.path))
+        let currentOutput = tree.output.appendingPathComponent("portrait__skinSmoothing_0p50.png")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: currentOutput.path))
+        let report = try decodeReport(try Data(contentsOf: tree.output.appendingPathComponent(Self.reportName)))
+        XCTAssertEqual(report.caseIDs, ["skinSmoothing_0p50"])
+
+        removeTree(tree.input)
+        result = try run(
+            executable,
+            arguments: ["--input", tree.input.path, "--output", tree.output.path,
+                        "--case", "skinSmoothing_0p50", "--backend", "cpu", "--no-watermark"]
+        )
+        assertDiagnostic(result, code: "input_directory_missing")
+        XCTAssertFalse(FileManager.default.fileExists(atPath: Self.reportNameURL(in: tree.output).path))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: currentOutput.path))
+    }
+
     func testCompiledRendererReachesInternalRenderAndEncodeFailureSeams() throws {
         let executable = try rendererExecutable()
         for seam in ["render", "encode"] {
@@ -282,12 +338,12 @@ final class BeautyExampleRendererProcessTests: XCTestCase {
         let readers = DispatchGroup()
         readers.enter()
         DispatchQueue.global().async {
-            outBox.replace(stdout.fileHandleForReading.readDataToEndOfFile())
+            Self.capture(stdout.fileHandleForReading, into: outBox)
             readers.leave()
         }
         readers.enter()
         DispatchQueue.global().async {
-            errBox.replace(stderr.fileHandleForReading.readDataToEndOfFile())
+            Self.capture(stderr.fileHandleForReading, into: errBox)
             readers.leave()
         }
         let termination = DispatchSemaphore(value: 0)
@@ -297,15 +353,37 @@ final class BeautyExampleRendererProcessTests: XCTestCase {
         if termination.wait(timeout: .now() + timeout) == .timedOut {
             timedOut = true
             if process.isRunning { process.terminate() }
-            _ = termination.wait(timeout: .now() + 5)
+            if termination.wait(timeout: .now() + 5) == .timedOut {
+                if process.isRunning { kill(process.processIdentifier, SIGKILL) }
+                _ = termination.wait(timeout: .now() + 1)
+            }
         }
-        readers.wait()
+        if timedOut {
+            stdout.fileHandleForReading.closeFile()
+            stderr.fileHandleForReading.closeFile()
+        }
+        let readersTimedOut = readers.wait(timeout: .now() + 5) == .timedOut
+        if readersTimedOut {
+            stdout.fileHandleForReading.closeFile()
+            stderr.fileHandleForReading.closeFile()
+        }
         let out = outBox.value
         let err = errBox.value
         XCTAssertLessThanOrEqual(out.count, 1 * 1024 * 1024)
         XCTAssertLessThanOrEqual(err.count, 1 * 1024 * 1024)
-        if timedOut { throw ProcessTestError.timedOut(executable) }
+        if timedOut || readersTimedOut { throw ProcessTestError.timedOut(executable) }
         return CapturedProcess(status: process.terminationStatus, stdout: out, stderr: err)
+    }
+
+    private nonisolated static func capture(_ handle: FileHandle, into box: ProcessDataBox) {
+        while true {
+            let chunk = handle.readData(ofLength: 64 * 1024)
+            guard !chunk.isEmpty else { return }
+            if !box.append(chunk, limit: 1 * 1024 * 1024) {
+                handle.closeFile()
+                return
+            }
+        }
     }
 
     private func resolveExecutable(_ executable: String, environment: [String: String]) throws -> URL {
@@ -388,6 +466,10 @@ final class BeautyExampleRendererProcessTests: XCTestCase {
         (try? FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil))?.contains { $0.pathExtension.lowercased() == "png" } == true
     }
 
+    private static func reportNameURL(in output: URL) -> URL {
+        output.appendingPathComponent(reportName)
+    }
+
     private func removeTree(_ url: URL) { try? FileManager.default.removeItem(at: url) }
 
     private func repositoryRootURL() throws -> URL {
@@ -426,6 +508,16 @@ private final class ProcessDataBox: @unchecked Sendable {
         lock.lock()
         data = value
         lock.unlock()
+    }
+
+    func append(_ value: Data, limit: Int) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        let remaining = max(0, limit - data.count)
+        if remaining > 0 {
+            data.append(value.prefix(remaining))
+        }
+        return value.count <= remaining
     }
 }
 
