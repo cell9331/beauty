@@ -20,7 +20,8 @@
 | --- | ---: | --- | --- |
 | Root owners | 4 | Current contracts consistently name SDK-only SwiftPM ownership and archive-only UI history. | Keep owners synchronized with code/tests. |
 | SDK package | 4 | One public library, one SDK-owned renderer, six internal/library targets, no remote dependency. | Preserve facade and dependency direction. |
-| Tests | 4 | 50 SwiftPM test files; default 650-test baseline with eight documented opt-ins; bounded exact XCTest/Swift Testing accounting rejects both runners' skips and ambiguity. | Keep full conjunction mandatory. |
+| Tests | 4 | 51 SwiftPM test files; default 650-test baseline with eight documented opt-ins; focused renderer regression and compiled Process coverage; bounded exact XCTest/Swift Testing accounting rejects both runners' skips and ambiguity. | Keep full conjunction mandatory. |
+| External consumer / CLI | 4 | Public-only local-path consumer observes generated RGBA bytes/dimensions; compiled renderer covers 74-case discovery, reconciled reports, typed failures, and render/encode seams. | Preserve archive → boundary → consumer → no-skip ordering. |
 | Archive integrity | 4 | Code-owned ZIP/manifest anchors, exact 45/26 inventories, bounded streamed extraction, frozen-retirement rollback, and safe restore self-tests pass. | Verify before every full closeout. |
 | SDK-only boundary | 4 | Retired roots are absent; scanner rejects symlinks, restored application/UI sources, stale current owners/maps, tracked media, application artifacts, retained-shader drift, and backend/API drift. | Keep scanner fail-closed. |
 | Security | 4 | Local-first input/resource/privacy and request-local local-retouch ownership are test-backed. | Reopen for any new trust boundary. |
@@ -35,10 +36,10 @@ shipping, launch, or release readiness.
 
 | Inventory | Value |
 | --- | ---: |
-| Swift source files | 64 |
-| SwiftPM test files | 50 |
-| Swift source lines | 14,294 |
-| SwiftPM test lines | 27,494 |
+| Swift source files | 66 |
+| SwiftPM test files | 51 |
+| Swift source lines | 14,830 |
+| SwiftPM test lines | 27,993 |
 | Public `BeautyParameters` stored fields | 61 |
 | Built-in neutral presets | 5 |
 | Renderer cases | 74 |
@@ -56,11 +57,13 @@ swift test --package-path BeautySDK
 python3 scripts/archive-legacy-ui.py verify --output archives/legacy-ui
 bash scripts/check-sdk-only-boundary.sh --post-archive
 git diff --check
+bash scripts/check-swiftpm-consumer.sh
 bash scripts/run-no-skip-swiftpm.sh
 ```
 
 `scripts/run-no-skip-swiftpm.sh` is the complete gate. It must run archive
-verification and the SDK-only scanner before its existing one-child SwiftPM
+verification, the SDK-only scanner, and the external consumer before its
+existing one-child SwiftPM
 transcript parser. Streaming capture is limited to 16 MiB and 200,000 lines. The
 parser accepts only all eight opt-ins exactly once, one nonzero zero-failure
 XCTest aggregate, one passed Swift Testing aggregate when that runner starts,

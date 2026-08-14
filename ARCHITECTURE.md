@@ -17,10 +17,10 @@ Current source/test inventory, excluding `.build`:
 
 | Inventory | Count |
 | --- | ---: |
-| Swift source files | 64 |
-| SwiftPM test files | 50 |
-| Swift source lines | 14,294 |
-| SwiftPM test lines | 27,494 |
+| Swift source files | 66 |
+| SwiftPM test files | 51 |
+| Swift source lines | 14,830 |
+| SwiftPM test lines | 27,993 |
 
 ## 2. Top-Level Invariants
 
@@ -36,6 +36,7 @@ Current source/test inventory, excluding `.build`:
 | A8 | Resource lookup is centralized and validates logical identifiers rather than interpreting caller paths. |
 | A9 | SwiftPM plus SDK-owned CLI/script validation is the sole current evidence boundary. |
 | A10 | v1.16 retains the current CPU/Core Image behavior and pinned shader bytes without adding a Metal runtime, GPU API, backend switch, or algorithm. |
+| A11 | The external consumer and CLI observe only public-product results, bounded identities, and typed aggregate outcomes; executable-internal failure seams are test machinery, not public API. |
 
 ## 3. Products and Targets
 
@@ -61,10 +62,29 @@ BeautyExampleRenderer public-product command-line consumer
 | `BeautyResources` | bundled manifest/presets and identifier validation | arbitrary external path loading |
 | `BeautyEffects` | resolver, safety caps, geometry/color pipelines, local-retouch providers/transforms/composition | public facade, application controls |
 | `BeautySDK` | stable host facade and request orchestration | raw support/mask export, application lifecycle |
-| `BeautyExampleRenderer` | public-facade fixture input/output validation | internal-target imports, product claims from generated media |
+| `BeautyExampleRenderer` | public-facade fixture input/output validation, deterministic 74-case discovery, and typed report aggregation | internal-target imports, public backend selection, product claims from generated media |
 
 The package declares no remote dependency. New dependencies, models, resource
 downloads, or network behavior require explicit security/licensing review.
+
+The repository-owned external consumer under `IntegrationTests/` is a separate
+SwiftPM executable with one local path dependency and only the public
+`BeautySDK` product. It generates its own neutral input and observes real output
+bytes/dimensions; it is an integration fixture, not an SDK target or public API.
+`BeautyExampleRenderer` accepts the compatible `--input`, `--output`, `--case`,
+and `--no-watermark` flags, requires a pre-existing output directory, preserves
+the exact 74-case catalog, and accepts only the executable-local `--backend cpu`
+token. `gpu` and unknown backend tokens are rejected until v1.17; no public
+backend selector is implied.
+
+The renderer writes a versioned privacy-safe JSON report only after each output
+is non-empty, decodable, and dimension-preserving. Reports contain bounded
+relative public input/case/output identities and reconciled requested,
+succeeded, failed, and skipped counts. Unknown arguments/cases, duplicate
+arguments/stems, missing or invalid paths, decode/render/encode/write/
+validation/report failures, and incomplete output return typed non-zero
+diagnostics. The render/encode failure injection is an executable-internal
+test seam and is absent from SDK products, help, diagnostics, and reports.
 
 ## 4. Processing Paths
 
@@ -134,6 +154,7 @@ swift build --package-path BeautySDK
 swift test --package-path BeautySDK
 python3 scripts/archive-legacy-ui.py verify --output archives/legacy-ui
 bash scripts/check-sdk-only-boundary.sh --post-archive
+bash scripts/check-swiftpm-consumer.sh
 bash scripts/run-no-skip-swiftpm.sh
 ```
 

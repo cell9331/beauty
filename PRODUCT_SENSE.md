@@ -19,6 +19,20 @@ Core promise:
 - effect behavior stays natural, bounded, deterministic, and independently
   testable.
 
+The maintainer/host validation journey is also public-product-only:
+
+```text
+maintainer creates a clean local-path SwiftPM consumer
+→ imports only BeautySDK and generates a neutral RGBA input
+→ observes real public-facade bytes and dimensions
+→ runs BeautyExampleRenderer against explicit input/output directories
+→ discovers the exact 74-case catalog and reads the versioned aggregate report
+→ receives typed non-zero diagnostics for invalid or incomplete work
+```
+
+This validates integration and CLI behavior; it is not an application, UI, or
+device journey and does not promote generated media as product evidence.
+
 ## 2. Current Product Boundary
 
 - SwiftPM and SDK-owned CLI/scripts are the only active evidence surfaces.
@@ -57,6 +71,9 @@ Acceptance:
 | Degradation | Missing/no-face/malformed support fails only dependent work while safe siblings continue. |
 | Privacy | No raw support, mask, pixels, path, or private fixture locator crosses public/durable boundaries. |
 | Reset/recovery | Invalid or failed requests do not contaminate a later valid request. |
+| CLI matrix | Every requested input×case completes with a non-empty, decodable, same-size output and reconciled report counts; partial work exits non-zero. |
+| CLI scope | `--backend cpu` is the only accepted backend token in v1.16; `gpu` and unknown values fail until v1.17, without a public SDK backend API. |
+| CLI privacy | Reports persist only versioned aggregate counts and relative public identities; raw pixels, geometry, private metadata, absolute paths, and child output stay transient. |
 
 ## 4. Effect Acceptance
 
@@ -80,6 +97,7 @@ swift test --package-path BeautySDK
 swift run --package-path BeautySDK BeautyExampleRenderer --help
 python3 scripts/archive-legacy-ui.py verify --output archives/legacy-ui
 bash scripts/check-sdk-only-boundary.sh --post-archive
+bash scripts/check-swiftpm-consumer.sh
 bash scripts/run-no-skip-swiftpm.sh
 ```
 
@@ -110,5 +128,7 @@ current acceptance gate.
 - Protected/out-of-mask pixels and alpha remain exact where required.
 - Generated media remains ignored, untracked, bounded, and disposable.
 - Archive verification and post-archive scanning pass before the full suite.
+- The external consumer, focused renderer regression, and compiled Process matrix
+  pass before the one-child no-skip run.
 - Contract changes update `ARCHITECTURE.md`, `DESIGN.md`, `SECURITY.md`,
   `RELIABILITY.md`, taxonomy, and `PLANS.md` as applicable.

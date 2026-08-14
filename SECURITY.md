@@ -25,6 +25,7 @@ distribution behavior requires a new security review.
 | Local retouch → output | canonical opaque sRGB input, original-pixel composition, hard ownership, collision-to-source, checked budgets |
 | Private fixture → opt-in test | ignored local bundle, rights/manifest validation, fixed aggregate result, no durable locator/media |
 | Archive artifact → historical extraction | exact artifact/digest, safe entry path, manifest/content equality, new temporary destination |
+| CLI input/output/report → executable boundary | existing regular directories, supported image decode, duplicate-stem rejection, atomic writes, reopen/dimension validation, bounded public identities only |
 | Child test process → gate | bounded one-child transcript reduced to fixed aggregate pass/fail; raw output is not durable authority |
 
 ## 3. Archive Entry and Extraction Safety
@@ -133,12 +134,19 @@ artifact.
 ## 8. Logging and Evidence
 
 Allowed durable data: fixed error/reason codes, feature/category names, counts,
-timings, bounded numeric aggregates, relative opaque fixture/case IDs where the
-owning evidence contract permits them.
+timings, bounded numeric aggregates, and relative public input/case/output IDs
+where the owning CLI/evidence contract permits them. The versioned renderer
+report is allowlisted to schema/version, CPU token, case/input/output identities,
+unit status/failure code, and reconciled counts.
 
-Forbidden durable data: raw image or mask bytes, paths/locators, coordinates,
-landmark arrays, pupil/teeth/vein geometry, rights/reviewer identity, raw JSON,
-framework errors, child transcripts, or generated media.
+Forbidden durable data: raw image or mask bytes, absolute paths/locators,
+coordinates, landmark arrays, pupil/teeth/vein geometry, rights/reviewer identity,
+raw framework errors, child transcripts, generated media, and any raw geometry,
+pixels, private fixture metadata, or environment value. CLI paths and child
+output are untrusted and remain temporary; relative public identities are the
+only path-like values permitted in the durable report. The executable-local
+render/encode failure seam is test-only machinery and must not become a flag,
+public SDK API, help text, diagnostic payload, or report field.
 
 The release default remains redacted and local; no data collection or upload is
 claimed. Reassess privacy-manifest needs before adding required-reason APIs,
@@ -149,6 +157,7 @@ third-party dependencies, collection, or distribution scope.
 ```bash
 python3 scripts/archive-legacy-ui.py verify --output archives/legacy-ui
 bash scripts/check-sdk-only-boundary.sh --post-archive
+bash scripts/check-swiftpm-consumer.sh
 bash scripts/run-no-skip-swiftpm.sh
 ```
 

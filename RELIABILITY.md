@@ -28,6 +28,8 @@
 | R8 | Generated output is disposable, ignored, bounded, and never required as a tracked baseline. |
 | R9 | Archive corruption/restoration/static-boundary failure stops the mandatory suite before SwiftPM execution. |
 | R10 | The no-skip parser accepts one child only and rejects failure, skip, ambiguity, oversize, or zero execution. |
+| R11 | Renderer success requires exact requested/succeeded/failed/skipped reconciliation and every requested persisted output to be non-empty, decodable, and dimension-preserving. |
+| R12 | Compiled CLI process coverage is bounded and exercises independent render/encode failures, typed non-zero diagnostics, and clean temporary recovery. |
 
 ## 3. Error and Degradation Policy
 
@@ -45,6 +47,16 @@
 
 Internal framework details, paths, pixels, masks, or coordinates never enter public
 error associated values.
+
+The SDK-owned renderer treats its CLI boundary as untrusted input. It rejects
+unknown flags/cases/backends, missing values, duplicate scalar arguments,
+missing/invalid input or output directories, empty or undecodable images, and
+case-insensitive duplicate output stems before crediting work. It preserves the
+compatible 74-case inventory and accepts only the CPU token in v1.16; explicit
+GPU is rejected until v1.17. A requested matrix unit is credited only after an
+atomic PNG write, non-empty regular-file check, ImageIO reopen, and exact input
+dimension check. Missing, partial, failed, skipped, or report-write output can
+never return zero.
 
 ## 4. Current Processing Reliability
 
@@ -112,6 +124,14 @@ aggregate. XCTest and Swift Testing skip/disabled events both fail.
 Any preflight failure returns non-zero and prevents test execution. Any malformed,
 missing, ambiguous, failed, skipped, oversized, or zero-test transcript returns
 non-zero even if the child process exit status is otherwise zero.
+
+The compiled `BeautyExampleRenderer` Process matrix uses fresh temporary
+SwiftPM/build and fixture roots, concurrent bounded stdout/stderr capture, and
+finite execution limits. It independently injects render and encode failures
+through an executable-internal seam, asserting typed non-zero results, no
+credited PNG, and reconciled `1/0/1/0` reports. Temporary roots are removed on
+success and failure; no child transcript or path is retained as product
+evidence.
 
 ## 7. Observability
 
