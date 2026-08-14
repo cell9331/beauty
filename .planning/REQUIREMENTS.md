@@ -15,8 +15,8 @@
 
 ### SwiftPM Consumer and Command-Line Validation
 
-- [ ] **SPM-01**: A clean external Swift package fixture imports and links only the public `BeautySDK` product through a local SwiftPM dependency, with no `@testable` import, Demo source, Xcode project, or internal target dependency.
-- [ ] **SPM-02**: The clean consumer executes a minimal neutral request through the public facade and verifies a successful, dimension-preserving result using generated synthetic input.
+- [x] **SPM-01**: A clean external Swift package fixture imports and links only the public `BeautySDK` product through a local SwiftPM dependency, with no `@testable` import, Demo source, Xcode project, or internal target dependency.
+- [x] **SPM-02**: The clean consumer executes a minimal neutral request through the public facade and verifies a successful, dimension-preserving result using generated synthetic input.
 - [ ] **CLI-01**: `BeautyExampleRenderer` exposes a deterministic SDK-owned command-line validation contract for selecting inputs/cases/backends, choosing an explicit output directory, and discovering the exact cases that ran.
 - [ ] **CLI-02**: The command-line harness emits a machine-readable aggregate report containing requested, succeeded, failed, skipped, input, output, and case identity information without leaking private landmark/mask data.
 - [ ] **CLI-03**: Missing or invalid inputs, unknown cases, write/decode failures, and incomplete requested output produce typed diagnostics plus a non-zero process exit; successful runs produce reproducible outputs under an ignored/generated location.
@@ -65,8 +65,8 @@
 | ARCHIVE-01 | Phase 66 | Complete |
 | ARCHIVE-02 | Phase 66 | Complete |
 | ARCHIVE-03 | Phase 66 | Complete |
-| SPM-01 | Phase 67 | Pending |
-| SPM-02 | Phase 67 | Pending |
+| SPM-01 | Phase 67 | Complete |
+| SPM-02 | Phase 67 | Complete |
 | CLI-01 | Phase 67 | Pending |
 | CLI-02 | Phase 67 | Pending |
 | CLI-03 | Phase 67 | Pending |
