@@ -19,6 +19,16 @@ cleanup_root_on_exit() {
     fi
 }
 
+run_bounded() {
+    local maximum_bytes="$1"
+    shift
+    local maximum_blocks=$(( (maximum_bytes + 511) / 512 ))
+    (
+        ulimit -f "$maximum_blocks"
+        "$@"
+    )
+}
+
 fail() {
     echo "swiftpm_consumer_check_failed" >&2
     return 1
@@ -133,7 +143,7 @@ run_consumer() {
     runtime_log="${scratch}/runtime.log"
 
     build_status=0
-    swift build \
+    run_bounded "$maximum_build_output_bytes" swift build \
         --package-path "$fixture_root" \
         --scratch-path "${scratch}/build" \
         >"$build_log" 2>&1 || build_status=$?
@@ -148,7 +158,8 @@ run_consumer() {
     if ! [[ -x "${bin_path}/BeautySDKConsumer" && ! -L "${bin_path}/BeautySDKConsumer" ]]; then return 1; fi
 
     runtime_status=0
-    "${bin_path}/BeautySDKConsumer" >"$runtime_log" 2>&1 || runtime_status=$?
+    run_bounded "$maximum_runtime_output_bytes" "${bin_path}/BeautySDKConsumer" \
+        >"$runtime_log" 2>&1 || runtime_status=$?
     if ! [[ "$runtime_status" -eq 0 ]]; then return 1; fi
     if ! [[ "$(wc -c <"$runtime_log")" -le "$maximum_runtime_output_bytes" ]]; then return 1; fi
     if ! [[ "$(wc -l <"$runtime_log")" -le "$maximum_runtime_output_lines" ]]; then return 1; fi
