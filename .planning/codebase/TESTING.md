@@ -7,11 +7,11 @@
 
 XCTest through Swift Package Manager is the only active test framework. Six test
 targets live under `BeautySDK/Tests/`; the current inventory is 60 Swift files and
-29,738 test lines, excluding `.build`.
+29,933 test lines, excluding `.build`.
 
-The generated CPU reference preflight executes 9 fixture, 9 geometry/color, and
-15 local-retouch/determinism tests with zero generated skips. The measured
-mandatory full child executes 691 tests with eight documented
+The generated CPU reference preflight executes 15 fixture, 10 geometry/color, and
+16 local-retouch/determinism tests with zero generated skips. The measured
+mandatory full child executes 699 tests with eight documented
 environment-gated opt-ins enabled. It accepts only one complete SwiftPM child
 transcript with:
 

@@ -20,7 +20,7 @@ Current source/test inventory, excluding `.build`:
 | Swift source files | 66 |
 | SwiftPM test files | 60 |
 | Swift source lines | 14,950 |
-| SwiftPM test lines | 29,738 |
+| SwiftPM test lines | 29,933 |
 
 ## 2. Top-Level Invariants
 
