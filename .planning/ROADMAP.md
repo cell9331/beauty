@@ -110,7 +110,14 @@ Plans:
   3. Active architecture, design, reliability, security, product, quality, plans, project, requirements, roadmap, and state owners consistently describe an SDK-only v1.16 with no Metal/GPU, UI, simulator/device, commercial, packaging, shipping, or release-readiness claim.
   4. A maintainer can run the hardened SwiftPM gate with all mandatory tests executed, zero failures, and zero skips; static checks reject restored Demo/UI source, generated binaries, stale Xcode commands, unconditional generic sendability, and Metal scope drift.
 
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+
+- [ ] 69-01-PLAN.md — Replace unconditional generic result sendability and add public concurrency coverage.
+- [ ] 69-02-PLAN.md — Harden SDK-only static checks and bind the boundary self-test into no-skip.
+- [ ] 69-03-PLAN.md — Synchronize current technical, product, security, reliability, and testing owners.
+- [ ] 69-04-PLAN.md — Record measured Phase 69 requirement, roadmap, state, and inventory closeout.
 
 ## Coverage
 
@@ -144,4 +151,4 @@ remain shared, and no v1.17 Metal source or API is authorized by v1.16.
 | 66. Legacy UI/Demo Archive and SDK-Only Boundary | v1.16 | 3/3 | Completed | 2026-08-14 |
 | 67. SwiftPM Consumer and CLI Validation Contract | v1.16 | 4/4 | Completed | 2026-08-14 |
 | 68. CPU Algorithm Reference Oracles | v1.16 | 4/4 | Complete | 2026-08-14 independent verification |
-| 69. Public Concurrency Repair and SDK-Only Closeout | v1.16 | 0/TBD | Not started | - |
+| 69. Public Concurrency Repair and SDK-Only Closeout | v1.16 | 0/4 | Planned | - |
