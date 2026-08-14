@@ -71,4 +71,48 @@ final class CPUReferenceFixtureTests: XCTestCase {
             XCTAssertEqual(error as? CPUReferenceMetrics.Error, .mismatchedByteCount)
         }
     }
+
+    func testGeneratedPatternsExposeStableMetricAndRegionContracts() {
+        let ramp = CPUReferenceFixtureFactory.opaqueColorRamp(width: 8, height: 8)
+        let checker = CPUReferenceFixtureFactory.checker(width: 8, height: 8)
+        XCTAssertNotEqual(
+            CPUReferenceMetrics.meanLuminance(of: ramp.rgba8),
+            CPUReferenceMetrics.meanLuminance(of: checker.rgba8)
+        )
+        XCTAssertTrue(CPUReferenceMetrics.alphaValues(in: ramp.rgba8).allSatisfy { $0 == 255 })
+        XCTAssertTrue(CPUReferenceMetrics.alphaValues(in: checker.rgba8).allSatisfy { $0 == 255 })
+        XCTAssertEqual(ramp.width * ramp.height, checker.width * checker.height)
+        XCTAssertEqual(ramp.extent, CGRect(x: 0, y: 0, width: 8, height: 8))
+        XCTAssertEqual(checker.extent, ramp.extent)
+        XCTAssertEqual(ramp.byteCount, ramp.rowBytes * ramp.height)
+        XCTAssertEqual(checker.byteCount, checker.rowBytes * checker.height)
+    }
+
+    func testProtectedOutsideFixtureHasCompleteDisjointRegionPartition() {
+        let fixture = CPUReferenceFixtureFactory.protectedOutsidePattern(width: 10, height: 8)
+        let allPixels = Set(0..<(fixture.width * fixture.height))
+        let protected = fixture.indices(in: .protected)
+        let outside = fixture.indices(in: .outside)
+        let safe = fixture.indices(in: .safe)
+
+        XCTAssertEqual(protected.union(outside).union(safe), allPixels)
+        XCTAssertTrue(protected.isDisjoint(with: outside))
+        XCTAssertTrue(protected.isDisjoint(with: safe))
+        XCTAssertTrue(outside.isDisjoint(with: safe))
+        XCTAssertEqual(fixture.colorSpaceName, CGColorSpace.sRGB)
+        XCTAssertTrue(fixture.isOpaque)
+    }
+
+    func testSupportFixturesCoverCompleteMalformedAndNoFaceBoundaries() {
+        let complete = CPUReferenceFixtureFactory.support(.complete)
+        let malformed = CPUReferenceFixtureFactory.support(.malformed)
+        let noFace = CPUReferenceFixtureFactory.support(.noFace)
+
+        XCTAssertFalse(complete.faceContour.isEmpty)
+        XCTAssertNotNil(complete.observedFaceSupport)
+        XCTAssertFalse(malformed.faceContour.isEmpty)
+        XCTAssertNotNil(malformed.observedFaceSupport)
+        XCTAssertTrue(noFace.faceContour.isEmpty)
+        XCTAssertNil(noFace.observedFaceSupport)
+    }
 }

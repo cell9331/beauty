@@ -49,4 +49,36 @@ final class CPUReferenceFacadeFixtureTests: XCTestCase {
             XCTAssertEqual(error as? BeautyError, .invalidInput)
         }
     }
+
+    func testFacadeFixtureMetadataIsStableAndDoesNotExposeFixtureStorage() throws {
+        let fixture = try CPUReferenceFacadeFixture.opaqueNeutral()
+        XCTAssertEqual(fixture.metadata.source, .testFixture)
+        XCTAssertEqual(fixture.metadata.orientation, .up)
+        XCTAssertTrue(fixture.rgba8.allSatisfy { $0 <= 255 })
+        XCTAssertEqual(fixture.byteCount, fixture.rgba8.count)
+        XCTAssertEqual(fixture.rowBytes, fixture.width * 4)
+        XCTAssertEqual(fixture.byteCount, fixture.rowBytes * fixture.height)
+        XCTAssertEqual(fixture.image.extent.origin, .zero)
+        XCTAssertEqual(fixture.image.colorSpace?.name, CGColorSpace.sRGB)
+    }
+
+    func testFacadeGradientHasDistinctFiniteChannelsAndStablePublicShape() throws {
+        let fixture = try CPUReferenceFacadeFixture.geometryGradient(width: 6, height: 4)
+        let first = Array(fixture.rgba8.prefix(4))
+        let last = Array(fixture.rgba8.suffix(4))
+
+        XCTAssertEqual(first.count, 4)
+        XCTAssertEqual(last.count, 4)
+        XCTAssertNotEqual(first, last)
+        XCTAssertEqual(first[3], 255)
+        XCTAssertEqual(last[3], 255)
+        XCTAssertEqual(fixture.image.extent, CGRect(x: 0, y: 0, width: 6, height: 4))
+        XCTAssertEqual(fixture.image.colorSpace?.name, CGColorSpace.sRGB)
+        XCTAssertEqual(fixture.metadata, BeautyInputMetadata(
+            orientation: .up,
+            isInputMirrored: false,
+            isPreviewMirrored: false,
+            source: .testFixture
+        ))
+    }
 }

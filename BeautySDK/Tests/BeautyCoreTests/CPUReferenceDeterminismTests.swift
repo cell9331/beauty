@@ -22,8 +22,12 @@ final class CPUReferenceDeterminismTests: XCTestCase {
             eyeSupportSequence: [.paired, .paired]
         )
         let first = try repeatedHarness.invoke(entry: .processResult, image: image, parameters: parameters)
-        let second = try repeatedHarness.invoke(entry: .processResult, image: image, parameters: parameters)
         let firstBytes = try renderedRGBA8(first.output)
+        let firstProviderObservation = repeatedHarness.providerObservation
+        let firstScleraObservation = repeatedHarness.scleraProviderObservation
+        let firstCompositionObservation = repeatedHarness.compositionObservation
+
+        let second = try repeatedHarness.invoke(entry: .processResult, image: image, parameters: parameters)
         let secondBytes = try renderedRGBA8(second.output)
 
         let freshHarness = try SDKTestingLocalRetouchFoundationHarness(
@@ -32,9 +36,21 @@ final class CPUReferenceDeterminismTests: XCTestCase {
         )
         let fresh = try freshHarness.invoke(entry: .processResult, image: image, parameters: parameters)
         let freshBytes = try renderedRGBA8(fresh.output)
+        let secondProviderObservation = repeatedHarness.providerObservation
+        let secondScleraObservation = repeatedHarness.scleraProviderObservation
+        let secondCompositionObservation = repeatedHarness.compositionObservation
+        let freshProviderObservation = freshHarness.providerObservation
+        let freshScleraObservation = freshHarness.scleraProviderObservation
+        let freshCompositionObservation = freshHarness.compositionObservation
 
         XCTAssertEqual(firstBytes, secondBytes)
         XCTAssertEqual(firstBytes, freshBytes)
+        XCTAssertEqual(firstProviderObservation, secondProviderObservation)
+        XCTAssertEqual(firstProviderObservation, freshProviderObservation)
+        XCTAssertEqual(firstScleraObservation, secondScleraObservation)
+        XCTAssertEqual(firstScleraObservation, freshScleraObservation)
+        XCTAssertEqual(firstCompositionObservation, secondCompositionObservation)
+        XCTAssertEqual(firstCompositionObservation, freshCompositionObservation)
         XCTAssertEqual(first.width, 64)
         XCTAssertEqual(first.height, 64)
         XCTAssertTrue(hasOpaqueAlpha(firstBytes))

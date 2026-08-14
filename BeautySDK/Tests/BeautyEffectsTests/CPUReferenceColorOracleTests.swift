@@ -120,10 +120,11 @@ final class CPUReferenceColorOracleTests: XCTestCase {
         let plan = BeautyEffectResolver.resolve(parameters: BeautyParameters(brightness: 0.4))
         let output = BeautyColorEffectPipeline.apply(to: image, plan: plan)
         XCTAssertEqual(output.extent, image.extent)
-        // CIColorControls may drop the CIImage metadata.  When it remains,
-        // it must still be named sRGB; the render below is always explicitly
-        // software-backed and sRGB, which is the byte-path contract.
-        XCTAssertTrue(output.colorSpace?.name == nil || output.colorSpace?.name == CGColorSpace.sRGB)
+        // CIColorControls currently returns an untagged intermediate.  The
+        // canonical CPU/render carrier owns the named-sRGB contract, so this
+        // test makes the intermediate behavior explicit rather than treating
+        // missing metadata as an optional success.
+        XCTAssertNil(output.colorSpace?.name)
         let rendered = renderedRGBABytes(from: output, width: fixture.width, height: fixture.height, colorSpace: colorSpace)
         XCTAssertEqual(rendered.count, fixture.rgba8.count)
         XCTAssertTrue(rendered.allSatisfy { $0 <= 255 })

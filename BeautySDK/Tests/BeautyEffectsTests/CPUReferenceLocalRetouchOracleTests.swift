@@ -26,7 +26,7 @@ final class CPUReferenceLocalRetouchOracleTests: XCTestCase {
             owner: owner
         ))
         let output = Array(try owner.compose([result.unit]).canonicalImage.rgba8Data)
-        let changed = changedIndices(before: fixture.bytes, after: output)
+        let changed = try CPUReferenceMetrics.changedIndices(before: fixture.bytes, after: output)
 
         XCTAssertFalse(changed.isEmpty)
         XCTAssertTrue(changed.isSubset(of: fixture.enamel))
@@ -78,12 +78,16 @@ final class CPUReferenceLocalRetouchOracleTests: XCTestCase {
             owner: owner
         )
         let output = Array(try owner.compose(result.units).canonicalImage.rgba8Data)
-        let changed = changedIndices(before: fixture.bytes, after: output)
+        let changed = try CPUReferenceMetrics.changedIndices(before: fixture.bytes, after: output)
 
         XCTAssertEqual(result.summary.acceptedEyeCount, 2)
         XCTAssertFalse(changed.isEmpty)
+        XCTAssertTrue(changed.isSubset(of: fixture.hardEnvelope))
         XCTAssertTrue(changed.isDisjoint(with: fixture.protected))
         XCTAssertTrue(changed.isDisjoint(with: fixture.caruncle))
+        XCTAssertTrue(fixture.outside.allSatisfy { index in
+            pixelBytes(fixture.bytes, index: index) == pixelBytes(output, index: index)
+        })
         XCTAssertEqual(alphaBytes(output), alphaBytes(fixture.bytes))
         XCTAssertLessThan(
             meanRedExcess(output, indices: changed),
@@ -174,6 +178,21 @@ final class CPUReferenceLocalRetouchOracleTests: XCTestCase {
         XCTAssertEqual(result.summary.collisionPixelCount, 0)
     }
 
+    func testChangedPixelMetricRejectsShortAndNonRGBA8CompositionCarriers() {
+        XCTAssertThrowsError(try CPUReferenceMetrics.changedIndices(
+            before: [10, 20, 30, 255],
+            after: [10, 20, 30]
+        )) { error in
+            XCTAssertEqual(error as? CPUReferenceMetrics.Error, .mismatchedByteCount)
+        }
+        XCTAssertThrowsError(try CPUReferenceMetrics.changedIndices(
+            before: [10, 20, 30, 255, 1],
+            after: [10, 20, 30, 255, 2]
+        )) { error in
+            XCTAssertEqual(error as? CPUReferenceMetrics.Error, .malformedRGBA8ByteCount)
+        }
+    }
+
     private var validLipSupport: BeautyObservedLipSupport {
         BeautyObservedLipSupport(
             outer: rectangle(minX: 0.18, minY: 0.25, maxX: 0.82, maxY: 0.75),
@@ -242,12 +261,15 @@ final class CPUReferenceLocalRetouchOracleTests: XCTestCase {
         let bytes: [UInt8]
         let protected: Set<Int>
         let caruncle: Set<Int>
+        let hardEnvelope: Set<Int>
+        let outside: Set<Int>
     }
 
     private func makeEyeFixture(includeVessels: Bool) -> EyeFixture {
         var bytes = uniformBytes(red: 164, green: 118, blue: 105, width: eyeWidth, height: eyeHeight)
         var protected = Set<Int>()
         var caruncle = Set<Int>()
+        var hardEnvelope = Set<Int>()
         let centers = [(side: BeautyObservedEyeSide.left, x: 90), (side: .right, x: 230)]
         for (side, centerX) in centers {
             let centerY = 100
@@ -257,6 +279,7 @@ final class CPUReferenceLocalRetouchOracleTests: XCTestCase {
                     let dy = Double(y - centerY)
                     guard dx * dx / (55 * 55) + dy * dy / (27 * 27) <= 1 else { continue }
                     let index = y * eyeWidth + x
+                    hardEnvelope.insert(index)
                     let distance = hypot(dx, dy)
                     let boundary = dx * dx / (53 * 53) + dy * dy / (25 * 25) > 1
                     let iris = distance <= 23.5
@@ -286,7 +309,14 @@ final class CPUReferenceLocalRetouchOracleTests: XCTestCase {
                 }
             }
         }
-        return EyeFixture(bytes: bytes, protected: protected, caruncle: caruncle)
+        let outside = Set(0..<(eyeWidth * eyeHeight)).subtracting(hardEnvelope)
+        return EyeFixture(
+            bytes: bytes,
+            protected: protected,
+            caruncle: caruncle,
+            hardEnvelope: hardEnvelope,
+            outside: outside
+        )
     }
 
     private func eyeSupport(side: BeautyObservedEyeSide, center: (x: Int, y: Int)) -> BeautyObservedEyeSupport {
@@ -339,13 +369,6 @@ final class CPUReferenceLocalRetouchOracleTests: XCTestCase {
 
     private func pixelIndex(x: Int, y: Int) -> Int { y * mouthWidth + x }
 
-    private func changedIndices(before: [UInt8], after: [UInt8]) -> Set<Int> {
-        Set((0..<(before.count / 4)).filter { index in
-            let offset = index * 4
-            return before[offset..<(offset + 3)] != after[offset..<(offset + 3)]
-        })
-    }
-
     private func alphaBytes(_ bytes: [UInt8]) -> [UInt8] {
         stride(from: 3, to: bytes.count, by: 4).map { bytes[$0] }
     }
@@ -387,5 +410,10 @@ final class CPUReferenceLocalRetouchOracleTests: XCTestCase {
     private func rgb(_ bytes: [UInt8], index: Int) -> (UInt8, UInt8, UInt8) {
         let offset = index * 4
         return (bytes[offset], bytes[offset + 1], bytes[offset + 2])
+    }
+
+    private func pixelBytes(_ bytes: [UInt8], index: Int) -> [UInt8] {
+        let offset = index * 4
+        return Array(bytes[offset..<(offset + 4)])
     }
 }
