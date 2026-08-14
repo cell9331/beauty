@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v1.15
 milestone_name: Independent Teeth and Sclera Retouch
 status: Awaiting next milestone
-stopped_at: Documentation/state drift repaired; planning next milestone
-last_updated: "2026-08-13T09:16:37.125Z"
+stopped_at: Two-milestone SDK-first sequence defined; ready to initialize v1.16
+last_updated: "2026-08-13T10:14:56.000Z"
 last_activity: 2026-08-13
-last_activity_desc: Documentation and planning-state drift repair
+last_activity_desc: Planned v1.16 SDK-only CPU foundation and v1.17 dual CPU/GPU Metal rendering
 progress:
   total_phases: 7
   completed_phases: 7
@@ -23,14 +23,14 @@ current_phase_name: null
 See: `.planning/PROJECT.md` (updated 2026-08-13)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Planning the next milestone after audited v1.15 archive
+**Current focus:** Initialize v1.16 SDK-Only Foundation and CPU Reference; v1.17 Metal work remains queued behind it
 
 ## Current Position
 
 Phase: Milestone v1.15 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-08-13 — refreshed codebase maps and reconciled current documentation/state summaries
+Last activity: 2026-08-13 — split remaining SDK work into non-Metal v1.16 and dual CPU/GPU Metal v1.17
 
 ## Performance Metrics
 
@@ -159,7 +159,7 @@ None found under `.planning/todos/pending/`.
 ## Session Continuity
 
 Last session: 2026-08-13T17:16:37+08:00
-Stopped at: Documentation/state drift repaired; planning next milestone
+Stopped at: Two-milestone SDK-first sequence defined; ready to initialize v1.16
 Resume file: None
 
 ## Phase 64 Terminal R2 Canonical Final State
