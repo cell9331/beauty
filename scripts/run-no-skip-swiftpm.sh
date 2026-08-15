@@ -53,6 +53,12 @@ if ! bash "${repository_root}/scripts/check-sdk-only-boundary.sh" \
 fi
 echo "no_skip_sdk_boundary_verified"
 
+if ! bash "${repository_root}/scripts/check-backend-neutral-contract.sh" >/dev/null 2>&1; then
+  echo "no_skip_backend_neutral_contract_failed"
+  exit 1
+fi
+echo "no_skip_backend_neutral_contract_verified"
+
 if ! bash "${repository_root}/scripts/check-swiftpm-consumer.sh" >/dev/null 2>&1; then
   echo "no_skip_swiftpm_consumer_failed"
   exit 1
