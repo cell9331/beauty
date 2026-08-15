@@ -317,36 +317,46 @@ def swift_tokens(text):
             raw_hashes += 1
         quote = index + raw_hashes
         if quote < length and text[quote] == '"':
-            multiline = text.startswith('"""', quote)
+            def find_closing(search_from, closing):
+                cursor = search_from
+                while cursor < length:
+                    # In an extended (raw) string, only a hash-qualified
+                    # escape consumes the following quote.  An ordinary
+                    # backslash is literal text and must not hide a real
+                    # quote/hash terminator (for example: #"abc\"#).
+                    # Ordinary strings retain their usual one-character
+                    # escape behavior.
+                    if text[cursor] == "\\":
+                        if raw_hashes == 0:
+                            cursor += 2
+                        else:
+                            escaped = cursor + 1 + raw_hashes
+                            if (
+                                escaped < length
+                                and text[cursor + 1:escaped] == ("#" * raw_hashes)
+                                and text[escaped] in {'"', "\\", "("}
+                            ):
+                                cursor = escaped + 1
+                            else:
+                                cursor += 1
+                    elif text.startswith(closing, cursor):
+                        return cursor
+                    else:
+                        cursor += 1
+                return None
+
+            # Swift only treats a triple-quote prefix as a multiline literal
+            # when its content begins on the following line.  Otherwise the
+            # same bytes are a valid single-line raw literal: #"""# contains
+            # one quote and #"""ok"""# contains two quotes around "ok".
+            # First look for a real multiline terminator, then fall back to
+            # the single-line delimiter.  If neither exists, fail closed.
+            multiline = text.startswith('"""', quote) and quote + 3 < length and text[quote + 3] in "\r\n"
             opening_length = 3 if multiline else 1
             closing = ('"""' if multiline else '"') + ('#' * raw_hashes)
-            search_from = quote + opening_length
-            end = None
-            cursor = search_from
-            while cursor < length:
-                # In an extended (raw) string, only a hash-qualified escape
-                # consumes the following quote.  An ordinary backslash is
-                # literal text and must not hide a real quote/hash terminator
-                # (for example: #"abc\"#).  Ordinary strings retain their
-                # usual one-character escape behavior.
-                if text[cursor] == "\\":
-                    if raw_hashes == 0:
-                        cursor += 2
-                    else:
-                        escaped = cursor + 1 + raw_hashes
-                        if (
-                            escaped < length
-                            and text[cursor + 1:escaped] == ("#" * raw_hashes)
-                            and text[escaped] in {'"', "\\", "("}
-                        ):
-                            cursor = escaped + 1
-                        else:
-                            cursor += 1
-                elif text.startswith(closing, cursor):
-                    end = cursor
-                    break
-                else:
-                    cursor += 1
+            end = find_closing(quote + opening_length, closing)
+            if end is None and multiline:
+                end = find_closing(quote + 1, '"' + ('#' * raw_hashes))
             if end is None:
                 raise SystemExit("unterminated Swift string literal")
             index = end + len(closing)
@@ -595,6 +605,12 @@ PY
         'let first = #"abc\"#' \
         'public struct BeautyResult<Output>: @unchecked Sendable {}' \
         'let second = #"ok"#' \
+        > "$fixture/BeautySDK/Sources/BeautyCore/Models/BeautyResult.swift"
+    expect_failure validate_post_archive "$fixture"
+    printf '%s\n' \
+        'let first = #"""#' \
+        'public struct BeautyResult<Output>: @unchecked Sendable {}' \
+        'let second = #"""ok"""#' \
         > "$fixture/BeautySDK/Sources/BeautyCore/Models/BeautyResult.swift"
     expect_failure validate_post_archive "$fixture"
     printf '%s\n' \
