@@ -64,18 +64,25 @@ reference for the shipped feature set.
 **Depends on**: Phase 69 (v1.16 complete)
 **Requirements**: BACKEND-01, BACKEND-02
 **Success Criteria** (what must be TRUE):
+
   1. A request entering either backend uses the same canonical input
      normalization, support discovery, privacy, alpha, extent, containment,
      collision-to-source, and per-unit failure-isolation contract.
+
   2. An integrator can select CPU execution and receive the existing reference
      behavior, including exact neutral/protected bytes and current output
      dimensions and metadata.
+
   3. Backend choice changes execution policy only: `BeautyParameters`, preset
      values, and the beauty algorithm inventory remain unchanged and backend
      independent.
+
   4. Request-local support and intermediate data remain transient, with only
      aggregate-safe result/diagnostic values crossing the backend boundary.
-**Plans**: TBD
+**Plans**: 1/2 plans executed
+
+- [x] 70-01-PLAN.md
+- [ ] 70-02-PLAN.md
 
 ### Phase 71: SDK-Owned Metal Runtime
 
@@ -84,12 +91,15 @@ on an application lifecycle or leaking state across requests.
 **Depends on**: Phase 70
 **Requirements**: METAL-01
 **Success Criteria** (what must be TRUE):
+
   1. An available GPU request creates and uses SDK-owned device, command queue,
      textures, synchronization, and resources, then returns through the shared
      request/result boundary.
+
   2. Successful, failed, repeated, and mixed CPU/GPU requests deterministically
      release command and texture resources and leave no prior-request state in
      a later request.
+
   3. Metal execution remains bounded and finite under malformed or unsupported
      work, with cleanup completed independently of any external host lifecycle.
 **Plans**: TBD
@@ -101,14 +111,18 @@ preserving the CPU semantics and existing safety boundaries.
 **Depends on**: Phase 71
 **Requirements**: METAL-02, METAL-03, METAL-04
 **Success Criteria** (what must be TRUE):
+
   1. Metal color/skin requests preserve CPU feature direction and bounds,
      named color/alpha metadata, finite math, and untouched ineligible pixels.
+
   2. Metal geometry requests preserve CPU direction, caps, extent,
      protected-region bytes, collision-to-source ownership, and no-face
      degradation for the shipped geometry families.
+
   3. Metal local-retouch requests preserve request-local mask ownership,
      immutable-original composition, protected bytes, alpha behavior, and
      smallest-unit failure isolation for the shipped still-image families.
+
   4. GPU coverage adds no new beauty parameter, preset, semantic-mask feature,
      or unrelated algorithm and does not move support discovery out of the
      shared request boundary.
@@ -122,12 +136,15 @@ execute.
 **Depends on**: Phase 72
 **Requirements**: CONFIG-01, CONFIG-02
 **Success Criteria** (what must be TRUE):
+
   1. Public `BeautyConfiguration.renderBackend` exposes exactly `.cpu` and
      `.gpu`, while existing source/Codable use and the beauty-parameter/preset
      schema remain compatible.
+
   2. New configurations and configurations decoded from missing legacy backend
      keys select `.cpu` deterministically; an explicit `.cpu` remains a
      complete reference path.
+
   3. An explicitly requested unavailable GPU returns typed
      `.metalUnavailable`, produces no successful GPU result, and never silently
      executes or reports a CPU fallback.
@@ -141,19 +158,24 @@ oracle or expanding the active product boundary.
 **Depends on**: Phase 73
 **Requirements**: PARITY-01, PARITY-02, PARITY-03, CLOSE-01, CLOSE-02
 **Success Criteria** (what must be TRUE):
+
   1. Generated SwiftPM fixtures compare CPU and GPU through explicit structural
      checks and bounded floating-point tolerances, with exact neutral bytes and
      dimensions wherever the shared contract requires them.
+
   2. Parity checks cover alpha, color metadata, extent, outside-region
      preservation, containment, collision-to-source behavior, no-face and
      degraded requests, and failure-unit isolation without durable raw masks,
      landmarks, or pixels.
+
   3. Repeated identical requests are finite and deterministic for each
      available backend, backend selection is request-local and concurrency-safe,
      and prior requests cannot alter later outputs.
+
   4. A failed GPU unit does not suppress an eligible CPU or face-agnostic
      sibling, and unavailable-host coverage is explicit rather than borrowing
      success from GPU parity.
+
   5. The mandatory SwiftPM/SDK-owned gate runs CPU reference, configuration,
      available/unavailable Metal, parity, and static scope checks with zero
      failures and zero unexpected skips; current owners agree on retained CPU
@@ -179,7 +201,7 @@ duplicate mappings.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 70. Backend-Neutral Contract and CPU Reference | v1.17 | 0/TBD | Not started | - |
+| 70. Backend-Neutral Contract and CPU Reference | v1.17 | 1/2 | In Progress|  |
 | 71. SDK-Owned Metal Runtime | v1.17 | 0/TBD | Not started | - |
 | 72. Metal Feature Passes | v1.17 | 0/TBD | Not started | - |
 | 73. Public Backend Configuration and Fail-Closed Availability | v1.17 | 0/TBD | Not started | - |

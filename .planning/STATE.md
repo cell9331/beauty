@@ -2,15 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.17
 milestone_name: Dual CPU/GPU Metal Rendering
-status: planning
-last_updated: "2026-08-15T04:03:12Z"
+current_phase: 70
+current_phase_name: Backend-Neutral Contract and CPU Reference
+status: executing
+stopped_at: Completed 70-01-PLAN.md
+last_updated: "2026-08-15T06:27:10.816Z"
 last_activity: 2026-08-15
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 2
+  completed_plans: 1
   percent: 0
+last_activity_desc: Phase 70 execution started
 ---
 
 # Project State
@@ -26,12 +30,12 @@ modular facade.
 
 ## Current Position
 
-Phase: 70 of 5 — Backend-Neutral Contract and CPU Reference
-Plan: —
-Status: Ready to plan
-Last activity: 2026-08-15 — v1.17 roadmap created with 13/13 requirements mapped
+Phase: 70 (Backend-Neutral Contract and CPU Reference) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
+Last activity: 2026-08-15
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
@@ -43,6 +47,11 @@ Progress: [░░░░░░░░░░] 0%
 
 Historical v1.16 metrics remain in `.planning/MILESTONES.md` and archived
 roadmaps.
+**Per-Plan Metrics:**
+
+| Plan | Duration | Tasks | Files |
+|------|----------|-------|-------|
+| Phase 70 P01 | 20min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -50,14 +59,21 @@ roadmaps.
 
 - v1.16 established SDK/algorithm-only ownership, SwiftPM/SDK-owned gates,
   generated CPU reference oracles, and conditional `BeautyResult` sendability.
+
 - v1.17 preserves CPU permanently; backend selection is execution policy outside
   `BeautyParameters` and presets, with `.cpu` as default and legacy fallback.
+
 - Phase 70 owns the shared backend-neutral contract and CPU reference; Phase 71
   owns Metal resources; Phase 72 owns the three shipped Metal pass families.
+
 - Phase 73 owns public `.cpu`/`.gpu` configuration and typed
   `.metalUnavailable`; Phase 74 owns generated parity and closeout evidence.
+
 - No new algorithms, UI/Demo behavior, device evidence, commercial approval,
   packaging, shipping, or release-readiness claim is in this milestone.
+
+- [Phase 70]: Phase 70 Plan 01 freezes a package-only backend-neutral request/result boundary with .cpu as the sole policy; public backend selection remains deferred.
+- [Phase 70]: Backend requests reuse canonical input, normalized effect plans, transient support, and bounded aggregate diagnostics; typed executor errors have no retry or fallback.
 
 ### Pending Todos
 
@@ -78,8 +94,8 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-15T12:03:12+08:00
-Stopped at: Created v1.17 roadmap and exact requirements traceability
+Last session: 2026-08-15T06:27:10.805Z
+Stopped at: Completed 70-01-PLAN.md
 Resume file: None
 Next action: Plan Phase 70; preserve the CPU reference and the v1.17
 SDK/Metal-only boundary.

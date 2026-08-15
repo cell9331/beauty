@@ -7,7 +7,7 @@
 
 ### Backend Contract and Configuration
 
-- [ ] **BACKEND-01**: SDK execution uses one backend-neutral request/result contract so CPU and Metal share canonical input normalization, support discovery, privacy, alpha, extent, containment, collision-to-source, and failure-isolation semantics.
+- [x] **BACKEND-01**: SDK execution uses one backend-neutral request/result contract so CPU and Metal share canonical input normalization, support discovery, privacy, alpha, extent, containment, collision-to-source, and failure-isolation semantics.
 - [ ] **BACKEND-02**: The existing CPU implementation remains a complete selectable reference backend and backend choice is execution policy, not a `BeautyParameters` field, preset value, or new beauty algorithm.
 - [ ] **CONFIG-01**: Public `BeautyConfiguration.renderBackend` exposes exactly `.cpu` and `.gpu`, preserves source/Codable compatibility, and decodes defaults or missing legacy keys as `.cpu`.
 - [ ] **CONFIG-02**: An explicitly requested GPU fails with typed `.metalUnavailable` when Metal cannot execute, and no unavailable GPU request silently falls back to CPU or reports success.
@@ -51,7 +51,7 @@
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| BACKEND-01 | Phase 70 | Pending |
+| BACKEND-01 | Phase 70 | Complete |
 | BACKEND-02 | Phase 70 | Pending |
 | CONFIG-01 | Phase 73 | Pending |
 | CONFIG-02 | Phase 73 | Pending |
