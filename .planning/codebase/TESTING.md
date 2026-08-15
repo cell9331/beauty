@@ -103,5 +103,16 @@ Historical application/UI tests are recoverable only from the archive. They are
 not active coverage, may not satisfy current requirements, and must not be restored
 to the repository.
 
+## Phase 70 Backend Contract Coverage
+
+The package-only `BeautyBackendContractTests` suite owns the shared backend
+boundary. It exercises valid still-image and pixel-buffer requests, canonical
+metadata/extent consistency, malformed dimensions and normalized strength
+rejection, output-kind pairing, deterministic bounded diagnostics, and a
+terminal executor failure with exactly one dispatch and no fallback. The request
+keeps selected support and canonical/composition state transient; only aggregate
+dimensions, alpha/extent flags, and bounded unit/failure/collision/change counts
+are observable.
+
 ---
 *Testing analysis: 2026-08-14 after Phase 66 archive retirement*

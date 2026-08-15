@@ -26,7 +26,7 @@ distribution behavior requires a new security review.
 | Private fixture → opt-in test | ignored local bundle, rights/manifest validation, fixed aggregate result, no durable locator/media |
 | Archive artifact → historical extraction | exact artifact/digest, safe entry path, manifest/content equality, new temporary destination |
 | CLI input/output/report → executable boundary | existing regular directories, supported image decode, duplicate-stem rejection, atomic writes, reopen/dimension validation, bounded public identities only |
-| Child test process → gate | bounded one-child transcript reduced to fixed aggregate pass/fail; raw output is not durable authority |
+| Child test process → gate | bounded one-child output reduced to fixed aggregate pass/fail; raw output is not durable authority |
 | Generated CPU oracle → gate | regular in-tree Swift sources, in-memory fixtures, no media/path/raw diagnostics, CPU-only tokens, bounded focused execution |
 | Public generic result → concurrency boundary | `BeautyResult` is `Sendable` only when `Output: Sendable`; public field-preserving transfer is tested, while unconditional generic sendability is rejected by the boundary mutation self-test |
 
@@ -181,3 +181,20 @@ bash scripts/run-no-skip-swiftpm.sh
 
 These gates authorize SDK-core repository correctness only. They do not authorize
 device, commercial, packaging, shipping, launch, or release claims.
+
+## 10. Phase 70 Backend Privacy Contract
+
+`BeautyBackendRequest` is an internal, non-Codable trust boundary. Selected
+support, canonical still-image storage, and composition state are request-local
+and released with the synchronous execution. `BeautyBackendResult` admits only
+the matching pixel-buffer or `CIImage` output plus `BeautyBackendDiagnostics`;
+diagnostics are limited to dimensions, alpha/extent flags, and bounded
+unit/failure/collision/change counts. They contain no support payload, geometry,
+landmark values, raster bytes, path-like data, or framework error detail.
+
+The contract keeps `.cpu` as the only Phase-70 policy and does not add a public
+backend selector, parameter/preset key, Metal import, or new algorithm. CPU is
+the current reference. Metal resources/passes and public `.cpu`/`.gpu`
+configuration are later-phase scope. Existing 61-field parameters, five neutral
+presets, generated CPU oracles, 74-case renderer, and archive-only UI/Demo
+boundary remain unchanged.

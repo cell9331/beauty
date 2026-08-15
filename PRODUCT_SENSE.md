@@ -69,11 +69,11 @@ Acceptance:
 | Output | Successful generated input/output validation uses actual public-facade bytes/dimensions, not a stub or label. |
 | Errors | Callers receive stable typed, payload-free errors rather than framework detail. |
 | Degradation | Missing/no-face/malformed support fails only dependent work while safe siblings continue. |
-| Privacy | No raw support, mask, pixels, path, or private fixture locator crosses public/durable boundaries. |
+| Privacy | No unredacted support, masks, raster data, paths, or private fixture location crosses public/durable boundaries. |
 | Reset/recovery | Invalid or failed requests do not contaminate a later valid request. |
 | CLI matrix | Every requested input×case completes with a non-empty, decodable, same-size output and reconciled report counts; partial work exits non-zero. |
 | CLI scope | `--backend cpu` is the only accepted backend token in v1.16; `gpu` and unknown values fail until v1.17, without a public SDK backend API. |
-| CLI privacy | Reports persist only versioned aggregate counts and relative public identities; raw pixels, geometry, private metadata, absolute paths, and child output stay transient. |
+| CLI privacy | Reports persist only versioned aggregate counts and relative public identities; raster data, geometry, private metadata, absolute paths, and child output stay transient. |
 | Result concurrency | `BeautyResult<Output>` is transferable only when `Output: Sendable`; the public suite proves a complete async task hop and preserves all public fields, while ordinary non-sendable result construction remains valid. |
 
 ## 4. Effect Acceptance
@@ -130,6 +130,22 @@ current acceptance gate.
 - no proxy implementation for unsupported taxonomy rows;
 - no new Metal/GPU API, render behavior, or algorithm in v1.16;
 - no release-like claims from package tests or the historical archive alone.
+
+## Phase 70 Backend-Neutral Acceptance
+
+The current v1.17 SDK acceptance boundary is one package-only
+`BeautyBackendRequest`/`BeautyBackendResult` contract for still images and pixel
+buffers. It shares validated metadata, normalized effect intent, request-local
+support, canonical still-image ownership, alpha/extent/containment,
+collision-to-source, and smallest-unit failure semantics. Results expose only
+bounded aggregate diagnostics, and typed backend failures are terminal without
+fallback. CPU remains the deterministic reference; Metal resources/passes and
+public `.cpu`/`.gpu` configuration are later-phase work.
+
+This contract does not expand the 61-field `BeautyParameters`, five neutral
+presets, or 74-case renderer, and it adds no UI/Demo route, new algorithm,
+device/performance evidence, commercial approval, packaging, shipping, launch,
+or release-readiness claim.
 
 ## 8. Regression Checklist
 

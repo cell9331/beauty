@@ -185,7 +185,7 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
 
 - D-05/D-17 uses exactly one package-only `BeautyCanonicalStillImage` value in `BeautyCore`; no target or reversed dependency is added. The immutable carrier owns one RGBA8 `Data` backing plus exact positive `width`, `height`, and `rowBytes`, and checked multiplication requires `rowBytes == width * 4` and `data.count == rowBytes * height` before a view exists.
 - The carrier accepts only normalized `.up`, not-input-mirrored metadata and opaque bytes. Its zero-origin `CIImage` view is created directly over the same owned data using `.RGBA8` and an explicit sRGB color space. It is non-Codable, has no exported/SPI byte or diagnostic representation, and keeps canonical pixels request-owned.
-- `CLANG_MODULE_CACHE_PATH=/private/tmp/beauty-clang-module-cache swift test --package-path BeautySDK --filter BeautyCanonicalStillImageTests` passes 6/6 after the carrier landed; the production validate/orient/color-manage boundary remains owned by Plan 53-02 Task 2.
+- A temporary clang module cache allows the carrier-focused SwiftPM test to pass 6/6; the production validate/orient/color-manage boundary remains owned by Plan 53-02 Task 2.
 - D-09 through D-12/D-17 extend the existing Detection carriers in place with package-only immutable non-Codable `BeautyObservedLipSupport`. Actual `outerLips` and `innerLips` values are copied from the existing single `VNDetectFaceLandmarksRequest`, independently preflighted at `1...32` finite face-local normalized points, and mapped once through the existing request-local `CoordinateMapper`; neither region is synthesized from `FaceGeometry` or a face box.
 - Outer and inner absence or rejection is region-local. A malformed, oversized, empty, non-finite, or out-of-unit region maps zero points without erasing its valid lip sibling, the selected face, or other eye/brow/face support. Provider and selection order stay stable, with no sorting, retry, cache, second request, or stored engine support.
 - `VisionDetectionObservation`, `BeautyFaceObservation`, and `BeautyObservedLipSupport` descriptions, debug descriptions, dumps, and mirrors expose only outer/inner aggregate counts. The support remains package-only and request-local; no public/SPI raw geometry, provider, renderer route, parameter field, or realtime/pixel-buffer behavior is added.
@@ -1090,3 +1090,31 @@ Command-level evidence is recorded in [Phase 65 closeout evidence](.planning/mil
   mask is a frozen Focal anchor, not a Full Sclera containment boundary. The
   real positive's total edit ceiling is the stricter of 12,000 pixels and 1% of
   the canonical image.
+
+## Phase 70 Backend-Neutral Execution Contract
+
+The package-only `BeautyBackendRequest` is the one execution boundary shared by
+still-image and pixel-buffer paths. It carries explicit metadata, the existing
+normalized `BeautyEffectPlan`, request-local selected support, and an optional
+canonical carrier/composition aggregate for admitted still-image work. Request
+construction validates finite positive dimensions, normalized strengths,
+canonical metadata/extent consistency, and bounded composition counters before
+an executor runs.
+
+`BeautyBackendResult` pairs the matching `CIImage` or pixel-buffer output with
+`BeautyBackendDiagnostics`. Diagnostics expose only dimensions, alpha/extent
+flags, and bounded unit/failure/collision/change counts. The executor protocol
+is synchronous and propagates typed terminal errors; it never retries or
+silently falls back. CPU remains the reference policy for this phase. Metal
+resources/passes and public `.cpu`/`.gpu` configuration belong to later phases;
+the public 61-field parameter model, five neutral presets, and existing effect
+inventory remain untouched.
+
+### Phase 70 Error, Lifetime, and Test Contracts
+
+Malformed admission fails before executor work; output-kind and dimension
+mismatches fail before result publication. Support, canonical storage, and
+composition state are request-local and are not promoted to engine-global state.
+`BeautyBackendContractTests` covers both input kinds, canonical invariants,
+normalized-plan rejection, deterministic bounded diagnostics, and a terminal
+executor failure with exactly one dispatch and no fallback.

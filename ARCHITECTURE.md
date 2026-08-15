@@ -122,7 +122,7 @@ existing foundation types or resource filenames.
 - `teethWhitening` and `scleraRednessReduction` are bounded opaque still-image
   controls. `去脂` remains future and cannot proxy through eye/brow/smoothing work.
 - Raw masks, landmarks, pupil positions, tooth/eye geometry, candidate pixels,
-  and fixture locators are request-local implementation details.
+  and private fixture locations are request-local implementation details.
 - Generated output remains ignored and disposable; committed evidence is
   aggregate and privacy-safe.
 
@@ -172,7 +172,7 @@ bash scripts/run-no-skip-swiftpm.sh
 The generated CPU preflight must pass with nonzero focused execution and zero
 generated skips without reading tracked portrait media. Private/native-Vision
 fixtures remain ignored, explicit opt-ins and cannot lend success to the
-generated suite. The final wrapper must preserve one SwiftPM child transcript, execute all eight
+generated suite. The final wrapper must preserve one bounded SwiftPM child output, execute all eight
 documented opt-ins, and reject failure, skip, or zero execution. These gates do
 not establish device, performance-budget, commercial, packaging, shipping,
 launch, or release readiness.
@@ -185,3 +185,25 @@ outside the positive contract. The latest completed mandatory wrapper evidence
 executes 702 tests with zero failures and zero skips. The active boundary
 self-test rejects a mutation back to unconditional generic sendability before
 archive, consumer, generated-CPU, opt-in, or child execution.
+
+## 9. Phase 70 Backend-Neutral Contract
+
+`BeautyEffects/Backend/BeautyBackendContract.swift` is the single package-only
+execution boundary for still-image and pixel-buffer backends. It admits a
+validated input, explicit `BeautyInputMetadata`, the existing normalized
+`BeautyEffectPlan`, request-local selected support, and—only for an admitted
+still-image request—the canonical carrier and composition aggregate. The
+boundary owns shared validation for dimensions, metadata, canonical extent and
+alpha assumptions, containment, collision-to-source, and bounded failure
+counts; it does not recreate detection, normalization, or composition policy.
+
+`BeautyBackendDiagnostics` is aggregate-only: dimensions, alpha/extent flags,
+and bounded unit, failure, collision, and changed-count values. It is
+request-local and non-Codable. Typed terminal errors cross the boundary without
+retry or fallback. `.cpu` is the only policy in this phase and the retained CPU
+implementation remains the reference; Metal resources/passes and public
+`.cpu`/`.gpu` configuration are later-phase work. The existing 61-field
+`BeautyParameters`, five neutral presets, 74 renderer cases, target dependency
+direction, generated CPU oracle, and archive-only UI/Demo boundary are
+unchanged. This contract adds no public selector, new algorithm, or device,
+performance, commercial, packaging, shipping, launch, or release claim.

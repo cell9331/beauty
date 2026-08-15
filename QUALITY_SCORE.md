@@ -128,3 +128,13 @@ or large extraction transcripts are not durable quality evidence.
 | 4 | Add a separately selectable GPU backend only after v1.16 closes, while preserving CPU as the oracle. | queued v1.17 |
 
 Historical UI/device/commercial work is not an active repair item.
+
+## Phase 70 Contract Quality
+
+Phase 70 adds a package-only backend-neutral contract without changing the
+public inventory. The CPU policy remains the reference; Metal resources/passes
+and public backend selection remain later-phase work. Contract tests cover both
+input kinds, fail-closed admission, matching output kinds, deterministic bounded
+diagnostics, and terminal executor errors without fallback. Aggregate status is
+the only durable evidence; support, raster, geometry, path, and private fixture
+data remain transient.

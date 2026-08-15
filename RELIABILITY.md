@@ -81,6 +81,17 @@ The current geometry implementation is CPU/Core Image-backed. The retained shade
 resource and render foundations do not establish current GPU execution. v1.16 must
 not add a public backend switch, silent fallback, or parity claim.
 
+Phase 70 freezes the shared package-only backend contract before CPU routing
+changes. Admission validates finite positive dimensions, supported format,
+normalized strengths, explicit metadata, canonical carrier/extent consistency,
+and bounded composition aggregates before executor work. The request retains
+selected support only for the synchronous call. Result publication validates
+matching dimensions and `CIImage`/pixel-buffer kind; diagnostics carry only
+alpha/extent flags and bounded unit, failure, collision, and changed counts.
+CPU remains the current reference. Metal resources/passes and public
+`.cpu`/`.gpu` selection belong to later phases, and typed executor failures do
+not trigger retry or silent fallback.
+
 ## 5. Archive Verification and Recovery
 
 The active repository relies on two committed historical archives. Verification
@@ -118,9 +129,9 @@ state recovers from archives and does not rerun retirement.
    failures, zero skips, and nonzero all-tests execution.
 
 Archive and scanner output is short aggregate status. The private test child may
-write its transcript only through a streaming limiter capped at 16 MiB and
+write its bounded output only through a streaming limiter capped at 16 MiB and
 200,000 lines; overflow terminates the child. The temporary file is removed on
-exit, and the gate emits no private locator or raw child transcript as durable
+exit, and the gate emits no private location or raw child output as durable
 evidence. Exact parsing requires one nonzero zero-failure XCTest `All tests`
 aggregate, and—when Swift Testing starts—exactly one passed Swift Testing
 aggregate. XCTest and Swift Testing skip/disabled events both fail.
@@ -145,7 +156,7 @@ SwiftPM/build and fixture roots, concurrent bounded stdout/stderr capture, and
 finite execution limits. It independently injects render and encode failures
 through an executable-internal seam, asserting typed non-zero results, no
 credited PNG, and reconciled `1/0/1/0` reports. Temporary roots are removed on
-success and failure; no child transcript or path is retained as product
+success and failure; no child output or path is retained as product
 evidence.
 
 ## 7. Observability
