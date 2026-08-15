@@ -1,20 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.16
-milestone_name: SDK-Only Foundation and CPU Reference
-current_phase: 69
-current_phase_name: Public Concurrency Repair and SDK-Only Closeout
-status: completed
-stopped_at: Completed Phase 69 independent verification and lifecycle completion
-last_updated: "2026-08-15T03:55:49Z"
+milestone: v1.17
+milestone_name: Dual CPU/GPU Metal Rendering
+status: planning
+last_updated: "2026-08-15T04:03:12Z"
 last_activity: 2026-08-15
-last_activity_desc: Phase 69 complete
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 15
-  completed_plans: 15
-  percent: 100
+  total_phases: 5
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -23,57 +19,45 @@ progress:
 
 See: `.planning/PROJECT.md` (updated 2026-08-15)
 
-**Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
-**Current focus:** Phase 69 — Public Concurrency Repair and SDK-Only Closeout
+**Core value:** An iOS app can integrate `BeautySDK` and get natural,
+controllable, real-time and still-image beauty processing through a stable
+modular facade.
+**Current focus:** Phase 70 — Backend-Neutral Contract and CPU Reference
 
 ## Current Position
 
-Phase: 69 — Public Concurrency Repair and SDK-Only Closeout
-Plan: 69-04 complete
-Status: All phases complete
-Last activity: 2026-08-15 — Phase 69 complete
+Phase: 70 of 5 — Backend-Neutral Contract and CPU Reference
+Plan: —
+Status: Ready to plan
+Last activity: 2026-08-15 — v1.17 roadmap created with 13/13 requirements mapped
 
-Progress: [██████████] 100%
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Total plans completed: 15
-- Average duration: 14 min
-- Total execution time: 54 min
+- Total plans completed: 0
+- Average duration: —
+- Total execution time: 0 min
 
-Historical milestone metrics remain in `.planning/MILESTONES.md` and archived roadmaps.
+Historical v1.16 metrics remain in `.planning/MILESTONES.md` and archived
+roadmaps.
 
 ## Accumulated Context
 
 ### Decisions
 
-- [v1.16]: The active project is SDK/algorithm-only; SwiftPM tests and SDK-owned CLI validation replace Demo/Xcode/simulator/device gates.
-- [Phase 66]: Legacy Demo/UI originals may be removed only after ZIP scope, deterministic listing, extraction, and SHA-256/content agreement are verified.
-- [Phases 67-68]: Mandatory validation uses Swift code that imports the public `BeautySDK` SPM product and checks generated input/output; private real fixtures are optional gates and cannot lend success through skips.
-- [Phase 69]: `BeautyResult<Output>` gains conditional `Sendable` conformance only when `Output: Sendable`, preserving ordinary source use without an unchecked generic promise.
-- [v1.17 queued]: Preserve CPU permanently; expose `.cpu`/`.gpu` only through `BeautyConfiguration` after Metal coverage, default to CPU, and fail explicit unavailable GPU without fallback.
-- [Phase 66]: The current SDK taxonomy owns exact legacy algorithm/control meanings and public mappings without inheriting visual layout or application behavior.
-- [Phase 66]: The v1.16 boundary pins the retained Warp.metal bytes and rejects Xcode, SwiftUI, UI-test, generated-media, and GPU/backend drift.
-- [Phase 66]: Retained archives contain 45 intentional BeautyDemo files and 26 meituxiuxiu files, including all 19 ignored PNG references. — Independent live, manifest, ZIP, extraction, and reproduction equality passed.
-- [Phase 66]: Original UI/Demo roots were retired only through the fresh digest-bound guarded transaction. — Exact targets, both approved digests, 53 tracked deletions, and sentinel survival were verified.
-- [Phase 66]: Current owners and codebase maps describe only SDK/SwiftPM surfaces; historical UI access is verified temporary extraction outside active repository roots.
-- [Phase 66]: The mandatory no-skip gate orders archive verification, post-archive boundary scanning, and one complete SwiftPM child with positive-test, zero-failure, and zero-skip enforcement.
-- [Phase 67]: Phase 67 Plan 01 uses an independent local-path SwiftPM consumer with only the public BeautySDK product and generated RGBA neutral-output assertions.
-- [Phase 67]: Phase 67 Plan 01 gates the external consumer after archive/boundary checks and before private fixtures and the sole no-skip SwiftPM child.
-- [Phase 67]: Plan 02 keeps BeautyExampleRenderer CPU-only and preserves the exact 74-case catalog without adding a public backend or Metal API.
-- [Phase 67]: Plan 02 uses sorted versioned privacy-safe JSON contracts and post-write PNG reopen/dimension validation with reconciled unit counts.
-- [Phase 67]: Phase 67 Plan 03 validates the compiled BeautyExampleRenderer through Foundation Process only, with independent report/diagnostic mirrors and no parser import.
-- [Phase 67]: Process tests use an isolated temporary SwiftPM scratch root and concurrent bounded stream capture to avoid nested build-lock and pipe deadlocks.
-- [Phase 67]: Phase 67 closes through a public-only local-path SwiftPM consumer and SDK-owned CPU CLI; the consumer imports only BeautySDK and observes generated bytes/dimensions.
-- [Phase 67]: The v1.16 renderer accepts only the executable-local cpu token and rejects gpu/unknown backends; no public backend selector or Metal execution is introduced.
-- [Phase 67]: CLI reports persist only versioned aggregate counts and relative public identities; child output, paths, pixels, masks, geometry, fixture metadata, and failure-seam values remain non-durable.
-- [Phase 68]: Mandatory CPU reference evidence is generated in-memory RGBA8/sRGB only; fixture/facade, geometry/color, and local-retouch/determinism preflights pass 15/15, 10/10, and 16/16 with zero generated skips.
-- [Phase 68]: The generated CPU preflight runs after the public consumer and before private/native-Vision opt-ins and the one-child SwiftPM gate; optional skips cannot lend success to CPU requirements.
-- [Phase 68]: The Phase 68 final no-skip gate executed 699 tests with zero failures and zero skips; raw pixels, masks, support, paths, transcripts, and fixture metadata remain non-durable.
-- [Phase 69]: The final archive-first gate passes boundary self-test/live scan, public consumer, generated CPU oracle, all eight optional fixtures, and one 702-test SwiftPM child with zero failures and zero skips; the four Phase 69 requirements are traced and lifecycle completion is recorded.
-- Phase-qualified count check: 699/0/0 is immutable Phase 68 closeout evidence; 702/0/0 is the separate Phase 69 current-gate result.
+- v1.16 established SDK/algorithm-only ownership, SwiftPM/SDK-owned gates,
+  generated CPU reference oracles, and conditional `BeautyResult` sendability.
+- v1.17 preserves CPU permanently; backend selection is execution policy outside
+  `BeautyParameters` and presets, with `.cpu` as default and legacy fallback.
+- Phase 70 owns the shared backend-neutral contract and CPU reference; Phase 71
+  owns Metal resources; Phase 72 owns the three shipped Metal pass families.
+- Phase 73 owns public `.cpu`/`.gpu` configuration and typed
+  `.metalUnavailable`; Phase 74 owns generated parity and closeout evidence.
+- No new algorithms, UI/Demo behavior, device evidence, commercial approval,
+  packaging, shipping, or release-readiness claim is in this milestone.
 
 ### Pending Todos
 
@@ -81,24 +65,21 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- Phase 66, Phase 67, Phase 68, and Phase 69 independently passed their goal-backward verification; v1.16 is complete and v1.17 remains queued.
-- Metal source, GPU API, backend parity implementation, and any UI/Demo development are outside v1.16 even when adjacent code or historical documents mention them.
+- v1.17 phase work is planned but not implemented; Metal availability,
+  resource behavior, parity tolerances, and public configuration remain
+  unverified until their owning phases execute.
 
 ## Deferred Items
 
 | Category | Item | Status | Deferred At |
 | --- | --- | --- | --- |
-| Render backend | CPU/GPU backend-neutral contract, Metal passes, and public `BeautyConfiguration.renderBackend` | Queued for v1.17 | v1.16 roadmap |
 | Algorithm breadth | `去脂`, hairline/semantic masking, double-chin, and new beauty features | Future | v1.16 scope |
 | Product/release | Device/commercial validation, performance budgets, packaging, distribution, shipping, launch, and release readiness | Future | v1.16 scope |
-| Phase 67 P01 | 6min | 2 tasks | 5 files |
-| Phase 67 P02 | 12min | 2 tasks | 4 files |
-| Phase 67 P03 | 12min | 1 tasks | 1 files |
-| Phase 67 P04 | 32min | 2 tasks | 10 files |
 
 ## Session Continuity
 
-Last session: 2026-08-14T17:24:00+08:00
-Stopped at: Completed Phase 69 independent verification and lifecycle completion
+Last session: 2026-08-15T12:03:12+08:00
+Stopped at: Created v1.17 roadmap and exact requirements traceability
 Resume file: None
-Next action: v1.16 is complete; preserve queued v1.17 Metal/GPU and do not add UI, Demo, device, or release scope without a new milestone plan.
+Next action: Plan Phase 70; preserve the CPU reference and the v1.17
+SDK/Metal-only boundary.

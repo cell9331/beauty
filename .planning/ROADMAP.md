@@ -2,12 +2,19 @@
 
 ## Overview
 
-v1.16 turns the repository into an SDK/algorithm-only project: legacy Demo and
-UI material is preserved in verified archives and removed from the active tree,
-SwiftPM plus the SDK-owned command-line renderer becomes the sole supported
-validation boundary, current CPU behavior is frozen as a deterministic
-reference, and the public generic sendability debt is repaired. Metal and GPU
-backend work remain queued for v1.17 and are not executable v1.16 scope.
+v1.17 keeps the verified CPU renderer as a permanent reference while adding
+one backend-neutral SDK execution boundary and a bounded, SDK-owned Metal
+renderer for the shipped color/skin, geometry, and still-image local-retouch
+families. Public backend policy arrives only after GPU coverage is complete:
+`BeautyConfiguration.renderBackend` exposes `.cpu` and `.gpu`, defaults and
+legacy/missing-key decoding stay on `.cpu`, and an explicitly unavailable GPU
+fails as typed `.metalUnavailable` without silently falling back. Generated
+SwiftPM parity, safety, determinism, and no-skip gates close the milestone.
+
+This milestone is SDK/algorithm and Metal-pipeline work only. It does not add
+application or Demo behavior, Xcode targets, simulator or physical-device
+validation, new beauty algorithms or parameters, model/network behavior,
+commercial approval, packaging, shipping, launch, or release-readiness claims.
 
 ## Milestones
 
@@ -27,128 +34,153 @@ backend work remain queued for v1.17 and are not executable v1.16 scope.
 - ✅ **[v1.13 Eyebrow Geometry Controls](milestones/v1.13-ROADMAP.md)** — Phases 49-52, completed 2026-07-28.
 - ✅ **[v1.14 Local Facial Retouch](milestones/v1.14-ROADMAP.md)** — Phases 53-58, completed 2026-08-05.
 - ✅ **[v1.15 Independent Teeth and Sclera Retouch](milestones/v1.15-ROADMAP.md)** — Phases 59-65, completed and audited 2026-08-11.
-- ✅ **v1.16 SDK-Only Foundation and CPU Reference** — Phases 66-69 independently complete on 2026-08-15; v1.17 remains queued.
-- 📋 **v1.17 Dual CPU/GPU Metal Rendering** — queued future milestone; not part of the executable v1.16 phase list.
+- ✅ **[v1.16 SDK-Only Foundation and CPU Reference](milestones/v1.16-ROADMAP.md)** — Phases 66-69, independently complete 2026-08-15.
+- 🚧 **v1.17 Dual CPU/GPU Metal Rendering** — Phases 70-74, current milestone.
 
-## 🚧 v1.16 SDK-Only Foundation and CPU Reference
+## Current Milestone: v1.17 Dual CPU/GPU Metal Rendering
 
-**Milestone Goal:** Establish an SDK-only repository and validation boundary,
-freeze the CPU implementation as a trustworthy reference, and repair public
-generic sendability without adding Metal or GPU behavior.
+**Milestone Goal:** Integrators can select a stable CPU or Metal execution
+policy for the existing SDK feature set while both backends preserve one
+canonical request/result contract and parity is demonstrated through generated
+SDK-owned evidence.
+
+**Phase numbering:** v1.17 continues the historical sequence at Phase 70.
 
 ## Phases
 
-**Phase numbering:** v1.16 continues the historical sequence at Phase 66.
-
-- [x] **Phase 66: Legacy UI/Demo Archive and SDK-Only Boundary** — Preserve the legacy application material as verified archives, then leave only SDK-owned active build and validation surfaces. (completed 2026-08-14)
-- [x] **Phase 67: SwiftPM Consumer and CLI Validation Contract** — Prove public-product consumption and make the SDK renderer a deterministic input/output validation interface. (completed 2026-08-14)
-- [x] **Phase 68: CPU Algorithm Reference Oracles** — Freeze current CPU behavior with generated fixtures and exact, feature-specific safety oracles. (completed 2026-08-14)
-- [x] **Phase 69: Public Concurrency Repair and SDK-Only Closeout** — Correct generic sendability and close the milestone through one hardened SwiftPM-only gate. (4/4 plans complete; independently verified 4/4) (completed 2026-08-15)
+- [ ] **Phase 70: Backend-Neutral Contract and CPU Reference** — Establish one shared request/result boundary and keep CPU selectable as the permanent reference.
+- [ ] **Phase 71: SDK-Owned Metal Runtime** — Add bounded Metal device, queue, texture, synchronization, and resource-lifetime ownership.
+- [ ] **Phase 72: Metal Feature Passes** — Implement color/skin, geometry-warp, and local-retouch passes with the existing CPU semantics and safety rules.
+- [ ] **Phase 73: Public Backend Configuration and Fail-Closed Availability** — Expose `.cpu`/`.gpu` policy with CPU-compatible defaults and typed unavailable-GPU failure.
+- [ ] **Phase 74: CPU/GPU Parity and SDK-Only Closeout** — Prove structural parity, safety, determinism, failure isolation, and the mandatory no-skip scope gate.
 
 ## Phase Details
 
-### Phase 66: Legacy UI/Demo Archive and SDK-Only Boundary
+### Phase 70: Backend-Neutral Contract and CPU Reference
 
-**Goal**: Maintainers have a verified historical copy of the legacy UI/Demo while the active repository exposes only SDK-owned build, test, documentation, and command-line validation surfaces.
-**Depends on**: Phase 65 (v1.15 complete)
-**Requirements**: BOUNDARY-01, BOUNDARY-02, ARCHIVE-01, ARCHIVE-02, ARCHIVE-03
+**Goal**: SDK execution has one backend-neutral request/result boundary, while
+the existing CPU implementation remains a complete, selectable, deterministic
+reference for the shipped feature set.
+**Depends on**: Phase 69 (v1.16 complete)
+**Requirements**: BACKEND-01, BACKEND-02
 **Success Criteria** (what must be TRUE):
+  1. A request entering either backend uses the same canonical input
+     normalization, support discovery, privacy, alpha, extent, containment,
+     collision-to-source, and per-unit failure-isolation contract.
+  2. An integrator can select CPU execution and receive the existing reference
+     behavior, including exact neutral/protected bytes and current output
+     dimensions and metadata.
+  3. Backend choice changes execution policy only: `BeautyParameters`, preset
+     values, and the beauty algorithm inventory remain unchanged and backend
+     independent.
+  4. Request-local support and intermediate data remain transient, with only
+     aggregate-safe result/diagnostic values crossing the backend boundary.
+**Plans**: TBD
 
-  1. A maintainer can inspect each retained ZIP's explicit scope, deterministic listing manifest, and SHA-256 record, then independently extract it and reproduce listing/content-hash agreement.
-  2. SDK integrators can find the supported effect taxonomy and algorithm-relevant legacy knowledge in an SDK-owned text authority without depending on visual layout or application behavior.
-  3. A clean checkout contains no active original Demo executable, SwiftUI source, Xcode application project, or selected legacy UI-reference tree after archive verification succeeds.
-  4. Every active build, test, documentation, and planning command resolves to SwiftPM products, targets, tests, or SDK-owned command-line validation; repository scans find no remaining Xcode, simulator, device, or deleted-tree dependency.
+### Phase 71: SDK-Owned Metal Runtime
 
-**Plans**: 3/3 complete; independently verified 6/6 must-haves on 2026-08-14
-
-### Phase 67: SwiftPM Consumer and CLI Validation Contract
-
-**Goal**: SDK integrators can validate public `BeautySDK` consumption and deterministic processing entirely through SwiftPM and the SDK-owned command line.
-**Depends on**: Phase 66
-**Requirements**: SPM-01, SPM-02, CLI-01, CLI-02, CLI-03
+**Goal**: The SDK can own and safely execute bounded Metal work without relying
+on an application lifecycle or leaking state across requests.
+**Depends on**: Phase 70
+**Requirements**: METAL-01
 **Success Criteria** (what must be TRUE):
+  1. An available GPU request creates and uses SDK-owned device, command queue,
+     textures, synchronization, and resources, then returns through the shared
+     request/result boundary.
+  2. Successful, failed, repeated, and mixed CPU/GPU requests deterministically
+     release command and texture resources and leave no prior-request state in
+     a later request.
+  3. Metal execution remains bounded and finite under malformed or unsupported
+     work, with cleanup completed independently of any external host lifecycle.
+**Plans**: TBD
 
-  1. A clean external Swift package can depend on the local `BeautySDK` package, import only the public product, and build without `@testable`, Demo, Xcode-project, or internal-target access.
-  2. The clean consumer can generate a synthetic image, submit a neutral request through the public facade, and verify successful dimension-preserving output.
-  3. A maintainer can list the exact renderer cases and run an explicit input/case/supported-CPU-backend selection into an explicit output directory with reproducible results.
-  4. Each CLI run produces a machine-readable aggregate report that identifies requested, succeeded, failed, skipped, input, output, and case identities without exposing private landmark or mask data.
-  5. Invalid inputs, unknown cases, decode/write failures, and missing requested outputs produce typed diagnostics and a non-zero exit, while successful generated outputs stay in an ignored/reproducible location.
+### Phase 72: Metal Feature Passes
 
-**Plans**: 4/4 complete; independently verified 5/5 must-haves on 2026-08-14
-
-### Phase 68: CPU Algorithm Reference Oracles
-
-**Goal**: Maintainers can detect any semantic or safety regression in the current CPU implementation without tracked portrait media or a GPU implementation.
-**Depends on**: Phase 67
-**Requirements**: CPU-01, CPU-02, CPU-03, CPU-04, CPU-05
+**Goal**: The Metal backend renders every shipped feature family in scope while
+preserving the CPU semantics and existing safety boundaries.
+**Depends on**: Phase 71
+**Requirements**: METAL-02, METAL-03, METAL-04
 **Success Criteria** (what must be TRUE):
+  1. Metal color/skin requests preserve CPU feature direction and bounds,
+     named color/alpha metadata, finite math, and untouched ineligible pixels.
+  2. Metal geometry requests preserve CPU direction, caps, extent,
+     protected-region bytes, collision-to-source ownership, and no-face
+     degradation for the shipped geometry families.
+  3. Metal local-retouch requests preserve request-local mask ownership,
+     immutable-original composition, protected bytes, alpha behavior, and
+     smallest-unit failure isolation for the shipped still-image families.
+  4. GPU coverage adds no new beauty parameter, preset, semantic-mask feature,
+     or unrelated algorithm and does not move support discovery out of the
+     shared request boundary.
+**Plans**: TBD
 
-  1. The mandatory suite creates small Swift RGBA fixtures for opaque colors, alpha boundaries, required transparent rejection, geometry patterns, protected/outside regions, and deterministic landmark/support stubs.
-  2. CPU reference tests verify exact neutral bytes, dimensions, color metadata, alpha behavior, outside-region preservation, local-retouch containment, collision-to-source behavior, and per-unit failure isolation.
-  3. Each feature family is judged by explicit direction/displacement/locality or color/luminance/chroma/red-excess metrics that retain its public semantics and safety caps, rather than by a generic “output changed” assertion.
-  4. Repeating identical CPU requests yields deterministic, finite, bounded results independent of earlier requests, and a failed face-dependent unit does not suppress eligible siblings or face-agnostic work.
-  5. The mandatory clean-clone suite passes entirely from generated Swift fixtures with zero skips; rights-approved portrait and native-Vision fixtures remain optional, private, and explicitly gated.
+### Phase 73: Public Backend Configuration and Fail-Closed Availability
 
-**Plans**: 4/4 implementation plans complete; independently verified 5/5 must-haves on 2026-08-14
-
-Plans:
-
-- [x] 68-01-PLAN.md — Add generated in-memory CPU fixture and metric foundations.
-- [x] 68-02-PLAN.md — Freeze geometry and color feature-family semantics with explicit metrics.
-- [x] 68-03-PLAN.md — Freeze local-retouch safety, composition, determinism, and failure isolation.
-- [x] 68-04-PLAN.md — Wire generated-only preflight, optional-fixture separation, and owner closeout.
-
-### Phase 69: Public Concurrency Repair and SDK-Only Closeout
-
-**Goal**: SDK integrators receive an honest generic concurrency contract, and maintainers can close v1.16 with one no-skip SDK-only verification boundary.
-**Depends on**: Phase 68
-**Requirements**: CONC-01, CONC-02, CLOSE-01, CLOSE-02
+**Goal**: Integrators can explicitly choose CPU or GPU execution with
+compatibility-safe defaults and an honest failure when the requested GPU cannot
+execute.
+**Depends on**: Phase 72
+**Requirements**: CONFIG-01, CONFIG-02
 **Success Criteria** (what must be TRUE):
+  1. Public `BeautyConfiguration.renderBackend` exposes exactly `.cpu` and
+     `.gpu`, while existing source/Codable use and the beauty-parameter/preset
+     schema remain compatible.
+  2. New configurations and configurations decoded from missing legacy backend
+     keys select `.cpu` deterministically; an explicit `.cpu` remains a
+     complete reference path.
+  3. An explicitly requested unavailable GPU returns typed
+     `.metalUnavailable`, produces no successful GPU result, and never silently
+     executes or reports a CPU fallback.
+**Plans**: TBD
 
-  1. An integrator can move `BeautyResult` across a concurrency boundary when its output is `Sendable`, while compile-time coverage proves a non-sendable payload does not gain false `Sendable` conformance.
-  2. Existing source use of `BeautyResult` continues to compile, and runtime concurrency coverage confirms sendable outputs preserve their result data safely.
-  3. Active architecture, design, reliability, security, product, quality, plans, project, requirements, roadmap, and state owners consistently describe an SDK-only v1.16 with no Metal/GPU, UI, simulator/device, commercial, packaging, shipping, or release-readiness claim.
-  4. A maintainer can run the hardened SwiftPM gate with all mandatory tests executed, zero failures, and zero skips; static checks reject restored Demo/UI source, generated binaries, stale Xcode commands, unconditional generic sendability, and Metal scope drift.
+### Phase 74: CPU/GPU Parity and SDK-Only Closeout
 
-**Plans**: 4/4 complete; aggregate gate green and independently verified 4/4 on 2026-08-15
-
-Plans:
-
-- [x] 69-01-PLAN.md — Replace unconditional generic result sendability and add public concurrency coverage.
-- [x] 69-02-PLAN.md — Harden SDK-only static checks and bind the boundary self-test into no-skip.
-- [x] 69-03-PLAN.md — Synchronize current technical, product, security, reliability, and testing owners.
-- [x] 69-04-PLAN.md — Record measured Phase 69 requirement, roadmap, state, and inventory closeout.
+**Goal**: Generated SDK-owned evidence demonstrates safe, deterministic parity
+between available backends and closes the milestone without weakening the CPU
+oracle or expanding the active product boundary.
+**Depends on**: Phase 73
+**Requirements**: PARITY-01, PARITY-02, PARITY-03, CLOSE-01, CLOSE-02
+**Success Criteria** (what must be TRUE):
+  1. Generated SwiftPM fixtures compare CPU and GPU through explicit structural
+     checks and bounded floating-point tolerances, with exact neutral bytes and
+     dimensions wherever the shared contract requires them.
+  2. Parity checks cover alpha, color metadata, extent, outside-region
+     preservation, containment, collision-to-source behavior, no-face and
+     degraded requests, and failure-unit isolation without durable raw masks,
+     landmarks, or pixels.
+  3. Repeated identical requests are finite and deterministic for each
+     available backend, backend selection is request-local and concurrency-safe,
+     and prior requests cannot alter later outputs.
+  4. A failed GPU unit does not suppress an eligible CPU or face-agnostic
+     sibling, and unavailable-host coverage is explicit rather than borrowing
+     success from GPU parity.
+  5. The mandatory SwiftPM/SDK-owned gate runs CPU reference, configuration,
+     available/unavailable Metal, parity, and static scope checks with zero
+     failures and zero unexpected skips; current owners agree on retained CPU
+     plus selectable GPU semantics and all excluded product/release claims.
+**Plans**: TBD
 
 ## Coverage
 
 | Phase | Requirement Count | Requirement IDs |
 | --- | ---: | --- |
-| 66 | 5 | BOUNDARY-01, BOUNDARY-02, ARCHIVE-01, ARCHIVE-02, ARCHIVE-03 |
-| 67 | 5 | SPM-01, SPM-02, CLI-01, CLI-02, CLI-03 |
-| 68 | 5 | CPU-01, CPU-02, CPU-03, CPU-04, CPU-05 |
-| 69 | 4 | CONC-01, CONC-02, CLOSE-01, CLOSE-02 |
+| 70 | 2 | BACKEND-01, BACKEND-02 |
+| 71 | 1 | METAL-01 |
+| 72 | 3 | METAL-02, METAL-03, METAL-04 |
+| 73 | 2 | CONFIG-01, CONFIG-02 |
+| 74 | 5 | PARITY-01, PARITY-02, PARITY-03, CLOSE-01, CLOSE-02 |
 
-**Coverage:** 19/19 v1.16 requirements mapped exactly once; no orphaned or duplicate mappings.
-
-## Queued Future Direction: v1.17 (Not Executable in This Roadmap)
-
-v1.17 preserves the v1.16 CPU implementation as a permanent reference backend
-and adds a backend-neutral request/result boundary plus production Metal render
-execution. Only after complete GPU coverage may the public API add
-`BeautyConfiguration.renderBackend: BeautyRenderBackend` with `.cpu` and `.gpu`.
-Default construction and legacy/missing-key decoding remain `.cpu`; an explicitly
-requested unavailable `.gpu` fails as `.metalUnavailable` and never silently
-falls back. Backend choice remains execution policy, not a `BeautyParameters`
-field or preset value. Vision/support discovery and request-local ownership rules
-remain shared, and no v1.17 Metal source or API is authorized by v1.16.
+**Coverage:** 13/13 v1.17 requirements mapped exactly once; no orphaned or
+duplicate mappings.
 
 ## Progress
 
-**Execution Order:** Phase 66 → Phase 67 → Phase 68 → Phase 69
+**Execution Order:** Phase 70 → Phase 71 → Phase 72 → Phase 73 → Phase 74
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 66. Legacy UI/Demo Archive and SDK-Only Boundary | v1.16 | 3/3 | Completed | 2026-08-14 |
-| 67. SwiftPM Consumer and CLI Validation Contract | v1.16 | 4/4 | Completed | 2026-08-14 |
-| 68. CPU Algorithm Reference Oracles | v1.16 | 4/4 | Complete | 2026-08-14 independent verification |
-| 69. Public Concurrency Repair and SDK-Only Closeout | v1.16 | 4/4 | Completed | 2026-08-15 |
+| 70. Backend-Neutral Contract and CPU Reference | v1.17 | 0/TBD | Not started | - |
+| 71. SDK-Owned Metal Runtime | v1.17 | 0/TBD | Not started | - |
+| 72. Metal Feature Passes | v1.17 | 0/TBD | Not started | - |
+| 73. Public Backend Configuration and Fail-Closed Availability | v1.17 | 0/TBD | Not started | - |
+| 74. CPU/GPU Parity and SDK-Only Closeout | v1.17 | 0/TBD | Not started | - |

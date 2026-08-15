@@ -1,5 +1,17 @@
 # Milestones
 
+## v1.16 SDK-Only Foundation and CPU Reference (Completed: 2026-08-15)
+
+**Delivered:** Removed active legacy UI/Demo ownership after independently verified ZIP archives, established SwiftPM and SDK-owned CLI validation, froze generated CPU reference oracles, and repaired conditional public `BeautyResult` sendability. This milestone does not claim Metal/GPU implementation, device parity, distribution, shipping, launch, commercial approval, or release readiness.
+
+**Phases completed:** 66-69 (15 plans)
+
+**Verification:** Archive/boundary and recovery gates passed; the final SDK-only SwiftPM conjunction executed 702 tests with zero failures and zero skips, including all eight opt-ins. Phase 69 independent verification passed 4/4 requirements; active inventory at close was 66 Swift source files / 14,952 lines and 61 test files / 29,995 lines.
+
+**Archives:** [roadmap](v1.16-ROADMAP.md), [requirements](v1.16-REQUIREMENTS.md), and [phase artifacts](v1.16-phases/).
+
+**What's next:** v1.17 Dual CPU/GPU Metal Rendering preserves the CPU backend and adds an explicit Metal execution path without UI/Demo or device scope.
+
 ## v1.15 Independent Teeth and Sclera Retouch (Completed: 2026-08-11)
 
 **Delivered:** Two independently qualified opaque still-image SDK-core local-retouch features—`白牙` first, then guarded per-eye `祛红血丝`—plus exact combined-facade, privacy, compatibility and named-sRGB closeout. This milestone record does not claim distribution, shipping, launch, commercial approval, or release readiness.

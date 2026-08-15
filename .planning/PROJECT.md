@@ -12,15 +12,15 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ## Current State
 
-**Latest completed milestone:** v1.15 Independent Teeth and Sclera Retouch on 2026-08-11 (audited SDK-core still-image completion; product distribution/shipping is not claimed).
+**Latest completed milestone:** v1.16 SDK-Only Foundation and CPU Reference on 2026-08-15 (independently verified SDK-core closeout; product distribution/shipping is not claimed).
 **Latest historical UI milestone:** v1.1 Meitu UI on 2026-06-24, retained only as archived evidence.
-**Current milestone:** v1.16 SDK-Only Foundation and CPU Reference; v1.17 remains queued behind it as the Metal milestone.
+**Current milestone:** v1.17 Dual CPU/GPU Metal Rendering.
 
-**Implementation state:** v1.15 independently implements bounded opaque still-image `teethWhitening` and per-eye `scleraRednessReduction` through the public SDK facade. The active SDK inventory is 61 public fields, five neutral presets and 74 renderer cases. `白牙`, `嘴唇` and `祛红血丝` are implemented at SDK-core scope; aggregate `眼睛` remains partial solely because `去脂` remains future. Historical application taxonomy remains archive-only.
+**Implementation state:** v1.16 froze the current CPU renderer as the reference backend, added generated CPU oracles, a public-only SwiftPM consumer, the SDK-owned renderer CLI, and conditional `BeautyResult` sendability. v1.17 now adds a backend-neutral execution boundary and a Metal backend while retaining the CPU path and its 61-field/five-preset/74-case compatibility surface. Historical application taxonomy remains archive-only.
 
-**Verification state:** Combined public output byte-matches independently merged standalone outputs; collisions preserve source and injected failure units retain unaffected bytes. Named-sRGB facade carriers and saved PNGs, request-local privacy, 61/5/74 compatibility, and both private 6/6 output matrices remain the bounded SDK-core baseline. Phase 69 also proves conditional public `BeautyResult` sendability through compile/runtime coverage and rejects the historical unconditional generic declaration. The public-only consumer, 24-case renderer regression, 7-case compiled Process matrix, and generated CPU reference preflight pass before the mandatory archive → boundary self-test/live scan → consumer → generated CPU oracle → optional fixtures → one-child SwiftPM conjunction. The measured full child executes 702 tests with zero failures and zero skips, including all eight opt-ins. Device/performance/commercial/packaging/shipping/launch/release-readiness remain separate scopes.
+**Verification state:** v1.16 passed the archive-first SDK-only gate and a 702-test SwiftPM child with zero failures and zero skips. v1.17 must add backend-selection, Metal capability/error, shader/pass, CPU/GPU parity, and compatibility evidence without weakening the existing CPU oracle or silently falling back. Device/performance/commercial/packaging/shipping/launch/release-readiness remain separate scopes.
 
-**Current milestone goals:** v1.16 has archived and removed active application/UI sources and now closes the SwiftPM plus `BeautyExampleRenderer` validation boundary before freezing CPU output oracles and repairing generic-result sendability without touching retained shader bytes or adding backend behavior. v1.17 remains queued for a separately selectable alternate backend with no silent fallback and shared algorithm/support semantics. `去脂`, new semantic-mask features, model/network, population/device/commercial, packaging, shipping, launch and release-readiness work remain future or separately scoped.
+**Current milestone goals:** v1.17 preserves CPU as the deterministic reference, adds production-owned Metal color/skin, geometry, and local-retouch execution, exposes an explicit `.cpu`/`.gpu` selector on `BeautyConfiguration`, and proves parity plus fail-closed availability/error behavior through SwiftPM and SDK-owned scripts. `去脂`, new semantic-mask features, model/network, UI/Demo, simulator/device, population/device/commercial, packaging, shipping, launch and release-readiness work remain future or separately scoped.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Broader historical application/device/release evidence remains time-bounded and cannot satisfy current SDK requirements. The codebase maps were refreshed again from the post-archive active source/tests on 2026-08-14.
 
@@ -28,12 +28,25 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ## Planned SDK-First Milestone Sequence
 
-1. **v1.16 SDK-Only Foundation and CPU Reference** — verified legacy UI/Demo ZIP archive and source removal; SwiftPM-only consumer/build/test surface; structured input/output CLI validation; deterministic CPU reference oracles; conditional `BeautyResult` sendability; no Metal or GPU API work.
+1. **v1.16 SDK-Only Foundation and CPU Reference** — completed 2026-08-15 with verified legacy archive/source removal, SwiftPM-only validation, CPU oracles, and conditional sendability.
 2. **v1.17 Dual CPU/GPU Metal Rendering** — preserve the CPU reference backend; add Metal runtime, color/skin, geometry, and local-retouch passes; then expose `BeautyConfiguration.renderBackend` with `.cpu` and `.gpu`, defaulting old and missing-key configurations to `.cpu` and failing explicitly when requested Metal is unavailable.
 
 The backend choice is configuration/execution policy and must not change the public beauty-parameter or preset schema. Detection/support semantics remain shared. No backend may borrow success from the other: CPU and GPU each run the same SDK-owned input/output contract, and comparison evidence separately verifies their parity.
 
-## Current Milestone: v1.16 SDK-Only Foundation and CPU Reference
+## Current Milestone: v1.17 Dual CPU/GPU Metal Rendering
+
+**Goal:** Keep the verified CPU implementation as a permanent reference while adding a selectable, backend-neutral Metal renderer for the existing SDK algorithms, with explicit parity and fail-closed availability evidence.
+
+**Target features:**
+
+- Add a backend-neutral render request/result boundary that shares canonical input, support discovery, privacy, alpha, extent, containment, collision-to-source, and failure-isolation contracts.
+- Implement bounded Metal color/skin, geometry-warp, and local-retouch passes without adding UI, Demo, new beauty parameters, or network/model behavior.
+- Expose `BeautyConfiguration.renderBackend` with `.cpu` and `.gpu`; preserve `.cpu` for defaults and missing legacy keys, and return a typed `.metalUnavailable` error for an explicitly unavailable GPU request with no silent fallback.
+- Compare CPU and GPU on generated SwiftPM fixtures using structural, safety, determinism, and bounded numeric-tolerance gates; keep CPU as the compatibility and reference oracle.
+
+**Non-negotiable boundary:** v1.17 is SDK/algorithm and Metal-pipeline work only. It does not add SwiftUI/Demo behavior, Xcode application targets, simulator or physical-device validation, new beauty algorithms/parameters, cloud/model assets, commercial visual approval, packaging, shipping, launch, or release-readiness claims.
+
+## Last Completed Milestone: v1.16 SDK-Only Foundation and CPU Reference
 
 **Goal:** Remove active application/UI ownership from the repository, establish SwiftPM and the SDK command-line renderer as the only validation boundary, preserve deterministic CPU behavior as a future cross-backend oracle, and repair the remaining public sendability debt without adding Metal behavior.
 
@@ -536,4 +549,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-08-15 after completing v1.16 SDK-Only Foundation and CPU Reference*
+*Last updated: 2026-08-15 after starting v1.17 Dual CPU/GPU Metal Rendering*
