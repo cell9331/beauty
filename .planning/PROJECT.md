@@ -536,4 +536,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-08-14 after starting v1.16 SDK-Only Foundation and CPU Reference*
+*Last updated: 2026-08-15 after completing v1.16 SDK-Only Foundation and CPU Reference*

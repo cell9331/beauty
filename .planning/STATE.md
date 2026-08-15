@@ -4,24 +4,24 @@ milestone: v1.16
 milestone_name: SDK-Only Foundation and CPU Reference
 current_phase: 69
 current_phase_name: Public Concurrency Repair and SDK-Only Closeout
-status: verifying
-stopped_at: Completed 69-04-PLAN.md; awaiting independent Phase 69 verification
-last_updated: "2026-08-14T17:24:00+08:00"
-last_activity: 2026-08-14
-last_activity_desc: Phase 69 implementation and aggregate SDK-only closeout complete; independent verification pending
+status: completed
+stopped_at: Completed Phase 69 independent verification and lifecycle completion
+last_updated: "2026-08-15T03:55:49Z"
+last_activity: 2026-08-15
+last_activity_desc: Phase 69 complete
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 15
   completed_plans: 15
-  percent: 75
+  percent: 100
 ---
 
 # Project State
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-08-14)
+See: `.planning/PROJECT.md` (updated 2026-08-15)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
 **Current focus:** Phase 69 — Public Concurrency Repair and SDK-Only Closeout
@@ -30,10 +30,10 @@ See: `.planning/PROJECT.md` (updated 2026-08-14)
 
 Phase: 69 — Public Concurrency Repair and SDK-Only Closeout
 Plan: 69-04 complete
-Status: Verifying
-Last activity: 2026-08-14 — Phase 69 aggregate closeout recorded; independent verification pending
+Status: All phases complete
+Last activity: 2026-08-15 — Phase 69 complete
 
-Progress: [███████---] 75%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -72,7 +72,7 @@ Historical milestone metrics remain in `.planning/MILESTONES.md` and archived ro
 - [Phase 68]: Mandatory CPU reference evidence is generated in-memory RGBA8/sRGB only; fixture/facade, geometry/color, and local-retouch/determinism preflights pass 15/15, 10/10, and 16/16 with zero generated skips.
 - [Phase 68]: The generated CPU preflight runs after the public consumer and before private/native-Vision opt-ins and the one-child SwiftPM gate; optional skips cannot lend success to CPU requirements.
 - [Phase 68]: The Phase 68 final no-skip gate executed 699 tests with zero failures and zero skips; raw pixels, masks, support, paths, transcripts, and fixture metadata remain non-durable.
-- [Phase 69]: The final archive-first gate passes boundary self-test/live scan, public consumer, generated CPU oracle, all eight optional fixtures, and one 702-test SwiftPM child with zero failures and zero skips; the four Phase 69 requirements are traced while lifecycle completion remains with independent verification.
+- [Phase 69]: The final archive-first gate passes boundary self-test/live scan, public consumer, generated CPU oracle, all eight optional fixtures, and one 702-test SwiftPM child with zero failures and zero skips; the four Phase 69 requirements are traced and lifecycle completion is recorded.
 - Phase-qualified count check: 699/0/0 is immutable Phase 68 closeout evidence; 702/0/0 is the separate Phase 69 current-gate result.
 
 ### Pending Todos
@@ -81,7 +81,7 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- Phase 66, Phase 67, and Phase 68 independently passed their goal-backward verification; Phase 69 implementation and aggregate gates are complete and await independent verification/lifecycle completion.
+- Phase 66, Phase 67, Phase 68, and Phase 69 independently passed their goal-backward verification; v1.16 is complete and v1.17 remains queued.
 - Metal source, GPU API, backend parity implementation, and any UI/Demo development are outside v1.16 even when adjacent code or historical documents mention them.
 
 ## Deferred Items
@@ -99,6 +99,6 @@ None found under `.planning/todos/pending/`.
 ## Session Continuity
 
 Last session: 2026-08-14T17:24:00+08:00
-Stopped at: Completed 69-04-PLAN.md; awaiting independent Phase 69 verification
+Stopped at: Completed Phase 69 independent verification and lifecycle completion
 Resume file: None
-Next action: Independently verify Phase 69 and run the lifecycle completion command; preserve queued v1.17 Metal/GPU and do not add UI, Demo, device, or release scope.
+Next action: v1.16 is complete; preserve queued v1.17 Metal/GPU and do not add UI, Demo, device, or release scope without a new milestone plan.
