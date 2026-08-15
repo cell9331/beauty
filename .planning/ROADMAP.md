@@ -79,10 +79,10 @@ reference for the shipped feature set.
 
   4. Request-local support and intermediate data remain transient, with only
      aggregate-safe result/diagnostic values crossing the backend boundary.
-**Plans**: 1/2 plans executed
+**Plans**: 2/2 plans executed
 
 - [x] 70-01-PLAN.md
-- [ ] 70-02-PLAN.md
+- [x] 70-02-PLAN.md
 
 ### Phase 71: SDK-Owned Metal Runtime
 
@@ -201,7 +201,7 @@ duplicate mappings.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 70. Backend-Neutral Contract and CPU Reference | v1.17 | 1/2 | In Progress|  |
+| 70. Backend-Neutral Contract and CPU Reference | v1.17 | 2/2 | Complete | 2026-08-15 |
 | 71. SDK-Owned Metal Runtime | v1.17 | 0/TBD | Not started | - |
 | 72. Metal Feature Passes | v1.17 | 0/TBD | Not started | - |
 | 73. Public Backend Configuration and Fail-Closed Availability | v1.17 | 0/TBD | Not started | - |

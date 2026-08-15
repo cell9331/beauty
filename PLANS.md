@@ -49,6 +49,18 @@ Checklist:
 
 > 以下记录均为已完成或已被后续权威取代的执行历史，不是 Active plan。
 
+### C-2026-08-15-phase-70-backend-neutral-contract-and-cpu-reference
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
+| Completed | 2026-08-15 |
+| Scope | Route the retained CPU implementation through one package-only backend-neutral request/result boundary; preserve public schemas, presets, algorithms, and SDK-only ownership. |
+| Plans | 70-01 defined the validated contract and synchronized owners; 70-02 added the stateless CPU executor, one-dispatch facade routing, focused regression coverage, and the mutation-tested archive-first gate. |
+| Verification | Backend preflight self-test/live scan pass; focused contract/CPU/routing coverage is 11/0/0; generated CPU preflight is 41/0/0; the archive-first no-skip wrapper completes with 8 opt-ins, 0 skips, and 0 failures. |
+| Compatibility | The gate confirms 61 parameter fields, five preset IDs, 74 renderer cases, unchanged public configuration, and retained deterministic CPU semantics. |
+| Nonclaims | No public GPU selection, Metal execution, UI/Demo, device, performance, commercial, packaging, shipping, launch, or release-readiness claim follows from Phase 70. |
+
 ### C-2026-08-13-adversarial-sclera-review-remediation
 
 | Field | Value |

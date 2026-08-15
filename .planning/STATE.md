@@ -5,16 +5,16 @@ milestone_name: Dual CPU/GPU Metal Rendering
 current_phase: 70
 current_phase_name: Backend-Neutral Contract and CPU Reference
 status: executing
-stopped_at: Completed 70-01-PLAN.md
-last_updated: "2026-08-15T06:27:10.816Z"
+stopped_at: Completed 70-02-PLAN.md
+last_updated: "2026-08-15T06:43:08Z"
 last_activity: 2026-08-15
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
-  percent: 0
-last_activity_desc: Phase 70 execution started
+  completed_plans: 2
+  percent: 20
+last_activity_desc: Phase 70 complete; backend-neutral CPU reference gate is green
 ---
 
 # Project State
@@ -26,16 +26,16 @@ See: `.planning/PROJECT.md` (updated 2026-08-15)
 **Core value:** An iOS app can integrate `BeautySDK` and get natural,
 controllable, real-time and still-image beauty processing through a stable
 modular facade.
-**Current focus:** Phase 70 — Backend-Neutral Contract and CPU Reference
+**Current focus:** Phase 70 complete; ready for Phase 71 — SDK-Owned Metal Runtime
 
 ## Current Position
 
-Phase: 70 (Backend-Neutral Contract and CPU Reference) — EXECUTING
+Phase: 70 (Backend-Neutral Contract and CPU Reference) — COMPLETE
 Plan: 2 of 2
-Status: Ready to execute
+Status: Complete
 Last activity: 2026-08-15
 
-Progress: [█████░░░░░] 50%
+Progress: [██████████] 100% (phase 70)
 
 ## Performance Metrics
 
@@ -52,6 +52,7 @@ roadmaps.
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | Phase 70 P01 | 20min | 2 tasks | 9 files |
+| Phase 70 P02 | ~40min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,8 @@ roadmaps.
 
 - [Phase 70]: Phase 70 Plan 01 freezes a package-only backend-neutral request/result boundary with .cpu as the sole policy; public backend selection remains deferred.
 - [Phase 70]: Backend requests reuse canonical input, normalized effect plans, transient support, and bounded aggregate diagnostics; typed executor errors have no retry or fallback.
+- [Phase 70]: The retained CPU implementation is the sole package executor, and both facade process families dispatch exactly once without changing public schema or algorithm inventory.
+- [Phase 70]: Backend-neutral static/mutation gates run before consumer and CPU-oracle stages; only aggregate pass/fail counts are retained in the ledger.
 
 ### Pending Todos
 
@@ -81,9 +84,9 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- v1.17 phase work is planned but not implemented; Metal availability,
-  resource behavior, parity tolerances, and public configuration remain
-  unverified until their owning phases execute.
+- Phase 70 is complete. Metal availability, resource behavior, parity
+  tolerances, and public configuration remain unverified until their owning
+  phases execute.
 
 ## Deferred Items
 
@@ -94,8 +97,8 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-15T06:27:10.805Z
-Stopped at: Completed 70-01-PLAN.md
+Last session: 2026-08-15T06:43:08Z
+Stopped at: Completed 70-02-PLAN.md
 Resume file: None
-Next action: Plan Phase 70; preserve the CPU reference and the v1.17
+Next action: Plan Phase 71; preserve the CPU reference and the v1.17
 SDK/Metal-only boundary.
