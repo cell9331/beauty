@@ -11,6 +11,7 @@ public final class BeautyEngine {
     public let configuration: BeautyConfiguration
     var faceDetector: VisionFaceDetector
     private let localRetouchTestingHooks: BeautyLocalRetouchTestingHooks?
+    private let backendExecutor: BeautyBackendExecutor
     private lazy var stillImageCanonicalizer: BeautyStillImageCanonicalizer = {
         let canonicalizer = BeautyStillImageCanonicalizer()
         localRetouchTestingHooks?.recordCanonicalizerConstruction()
@@ -22,16 +23,30 @@ public final class BeautyEngine {
         self.configuration = configuration
         self.faceDetector = VisionFaceDetector()
         self.localRetouchTestingHooks = nil
+        self.backendExecutor = BeautyCPUBackend()
     }
 
     package init(
         configuration: BeautyConfiguration = .default,
         faceDetector: VisionFaceDetector,
-        localRetouchTestingHooks: BeautyLocalRetouchTestingHooks? = nil
+        localRetouchTestingHooks: BeautyLocalRetouchTestingHooks? = nil,
+        backendExecutor: BeautyBackendExecutor = BeautyCPUBackend()
     ) throws {
         self.configuration = configuration
         self.faceDetector = faceDetector
         self.localRetouchTestingHooks = localRetouchTestingHooks
+        self.backendExecutor = backendExecutor
+    }
+
+    package convenience init(
+        configuration: BeautyConfiguration = .default,
+        backendExecutor: BeautyBackendExecutor
+    ) throws {
+        try self.init(
+            configuration: configuration,
+            faceDetector: VisionFaceDetector(),
+            backendExecutor: backendExecutor
+        )
     }
 
     /// Returns an SDK-created output pixel buffer that is readable for the current processing result lifecycle.
@@ -63,11 +78,16 @@ public final class BeautyEngine {
             pixelBuffer: pixelBuffer,
             maximumPixelCount: configuration.maximumInputPixelCount
         )
-        _ = metadata
         let validated = try BeautySDKResources.validate(parameters: parameters)
         let plan = BeautyEffectResolver.resolve(parameters: validated)
+        let request = try BeautyBackendRequest(
+            input: .pixelBuffer(pixelBuffer),
+            metadata: metadata,
+            plan: plan
+        )
+        let backendResult = try backendExecutor.execute(request)
         return BeautyResult(
-            output: try BeautyColorEffectPipeline.apply(to: pixelBuffer, plan: plan),
+            output: try Self.pixelBufferOutput(from: backendResult),
             warnings: plan.warnings,
             metrics: plan.metrics,
             detectionSummary: initialDetectionSummary
@@ -115,7 +135,7 @@ public final class BeautyEngine {
             : productionAdmission
 
         guard admission.isEmpty == false else {
-            return legacyStillImageResult(
+            return try legacyStillImageResult(
                 image: image,
                 metadata: metadata,
                 parameters: validated
@@ -158,6 +178,7 @@ public final class BeautyEngine {
         let hasOpaqueCompositionScenario =
             localRetouchTestingHooks?.hasOpaqueCompositionScenario == true
         let renderCarrier: BeautyCanonicalStillImage
+        var compositionSummary: BeautyLocalRetouchCompositionSummary?
         if hasDirectTeethIntent || hasDirectScleraIntent || hasOpaqueCompositionScenario {
             let compositionOwner = BeautyLocalRetouchCompositionOwner(
                 source: requestContext.canonicalImage
@@ -205,24 +226,30 @@ public final class BeautyEngine {
             let compositionResult = try compositionOwner.compose(units)
             localRetouchTestingHooks?.recordComposition(compositionResult)
             renderCarrier = compositionResult.canonicalImage
+            compositionSummary = compositionResult.summary
         } else {
             renderCarrier = requestContext.canonicalImage
+            compositionSummary = nil
         }
 
         localRetouchTestingHooks?.record(.render)
-        let output = BeautyColorEffectPipeline.apply(
-            to: renderCarrier,
+        let request = try BeautyBackendRequest(
+            input: .stillImage(renderCarrier.ciImage),
+            metadata: renderCarrier.metadata,
             plan: route.plan,
-            selectedFaceObservation: requestContext.selectedFaceObservation,
-            onCanonicalRasterize: { [localRetouchTestingHooks] carrier, colorSpace in
-                localRetouchTestingHooks?.recordCanonicalRasterize(
-                    carrier: carrier,
-                    colorSpace: colorSpace
-                )
-            }
+            selectedFaceSupport: requestContext.selectedFaceObservation,
+            canonicalImage: renderCarrier,
+            compositionSummary: compositionSummary
         )
+        let backendResult = try backendExecutor.execute(request)
+        if let sRGB = CGColorSpace(name: CGColorSpace.sRGB) {
+            localRetouchTestingHooks?.recordCanonicalRasterize(
+                carrier: renderCarrier,
+                colorSpace: sRGB
+            )
+        }
         return BeautyResult(
-            output: output,
+            output: try Self.stillImageOutput(from: backendResult),
             warnings: route.plan.warnings,
             metrics: route.plan.metrics,
             detectionSummary: route.detectionSummary
@@ -233,7 +260,7 @@ public final class BeautyEngine {
         image: CIImage,
         metadata: BeautyInputMetadata,
         parameters: BeautyParameters
-    ) -> BeautyResult<CIImage> {
+    ) throws -> BeautyResult<CIImage> {
         let route = resolveStillImageGeometry(
             image: image,
             metadata: metadata,
@@ -241,16 +268,37 @@ public final class BeautyEngine {
             parameters: parameters
         )
         localRetouchTestingHooks?.record(.render)
+        let request = try BeautyBackendRequest(
+            input: .stillImage(image),
+            metadata: metadata,
+            plan: route.plan,
+            selectedFaceSupport: route.selectedFaceObservation
+        )
+        let backendResult = try backendExecutor.execute(request)
         return BeautyResult(
-            output: BeautyColorEffectPipeline.apply(
-                to: image,
-                plan: route.plan,
-                selectedFaceObservation: route.selectedFaceObservation
-            ),
+            output: try Self.stillImageOutput(from: backendResult),
             warnings: route.plan.warnings,
             metrics: route.plan.metrics,
             detectionSummary: route.detectionSummary
         )
+    }
+
+    private static func pixelBufferOutput(
+        from result: BeautyBackendResult
+    ) throws -> CVPixelBuffer {
+        guard case .pixelBuffer(let output) = result.output else {
+            throw BeautyError.invalidInput
+        }
+        return output
+    }
+
+    private static func stillImageOutput(
+        from result: BeautyBackendResult
+    ) throws -> CIImage {
+        guard case .stillImage(let output) = result.output else {
+            throw BeautyError.invalidInput
+        }
+        return output
     }
 
     public func reset() {
