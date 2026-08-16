@@ -139,7 +139,7 @@ diagnostics, and terminal executor errors without fallback. Aggregate status is
 the only durable evidence; support, raster, geometry, path, and private fixture
 data remain transient.
 
-## Phase 71 Metal Runtime Quality Evidence
+## Phase 71 Metal runtime Quality Evidence
 
 The `check-metal-runtime.sh` preflight is the quality owner for the
 package-internal runtime mechanics. It verifies regular-file ownership under

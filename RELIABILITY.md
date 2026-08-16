@@ -95,7 +95,8 @@ not trigger retry or silent fallback.
 ## Phase 71 Metal Runtime Reliability Contract
 
 `BeautyRender.BeautyMetalRuntime` owns the package-internal device, command
-queue, pipeline, and request-local texture/buffer/command lifetime. The
+queue, pipeline, and request-local texture/buffer/command lifetime. The command queue
+is created and retained only by this runtime instance.
 package-only `BeautyEffects.BeautyMetalBackend` validates dimensions and bytes,
 creates bounded resources, encodes the retained identity transaction, waits
 for command completion, inspects terminal status, materializes the matching
