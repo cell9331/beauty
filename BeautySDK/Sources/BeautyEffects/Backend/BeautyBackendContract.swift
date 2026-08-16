@@ -10,6 +10,7 @@ import CoreVideo
 /// package-only boundary after their own availability and parity contracts land.
 package enum BeautyBackendExecutionPolicy: Equatable, Sendable {
     case cpu
+    case metal
 }
 
 package enum BeautyBackendInputKind: Equatable, Sendable {
@@ -106,7 +107,7 @@ package struct BeautyBackendRequest: @unchecked Sendable {
         canonicalImage: BeautyCanonicalStillImage? = nil,
         compositionSummary: BeautyLocalRetouchCompositionSummary? = nil
     ) throws {
-        guard policy == .cpu else {
+        guard policy == .cpu || policy == .metal else {
             throw BeautyError.invalidInput
         }
 
@@ -275,7 +276,7 @@ package struct BeautyBackendRequest: @unchecked Sendable {
             && signedStrengths.allSatisfy { $0.isFinite && abs($0) <= 1 }
     }
 
-    fileprivate static func checkedDimensions(for extent: CGRect) -> (width: Int, height: Int)? {
+    package static func checkedDimensions(for extent: CGRect) -> (width: Int, height: Int)? {
         guard extent.origin.x.isFinite,
               extent.origin.y.isFinite,
               extent.width.isFinite,
