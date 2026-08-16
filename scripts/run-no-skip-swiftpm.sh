@@ -59,6 +59,12 @@ if ! bash "${repository_root}/scripts/check-backend-neutral-contract.sh" >/dev/n
 fi
 echo "no_skip_backend_neutral_contract_verified"
 
+if ! bash "${repository_root}/scripts/check-metal-runtime.sh" >/dev/null 2>&1; then
+  echo "no_skip_metal_runtime_failed"
+  exit 1
+fi
+echo "no_skip_metal_runtime_verified"
+
 if ! bash "${repository_root}/scripts/check-swiftpm-consumer.sh" >/dev/null 2>&1; then
   echo "no_skip_swiftpm_consumer_failed"
   exit 1
