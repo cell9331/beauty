@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.17
 milestone_name: Dual CPU/GPU Metal Rendering
 status: executing
-stopped_at: Completed 71-02-PLAN.md
-last_updated: "2026-08-16T07:51:09.998Z"
+stopped_at: Completed 71-03-PLAN.md
+last_updated: "2026-08-16T08:31:28.085Z"
 last_activity: 2026-08-16 -- Phase 71 execution started
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 6
-  completed_plans: 4
+  completed_plans: 5
   percent: 20
 ---
 
@@ -28,7 +28,7 @@ modular facade.
 ## Current Position
 
 Phase: 71 (SDK-Owned Metal Runtime) — EXECUTING
-Plan: 3 of 4
+Plan: 4 of 4
 Status: Ready to execute
 Last activity: 2026-08-16 -- Phase 71 execution started
 
@@ -52,6 +52,7 @@ roadmaps.
 | Phase 70 P02 | ~40min | 2 tasks | 9 files |
 | Phase 71 P01 | ~35min | 2 tasks | 2 files |
 | Phase 71 P02 | ~2h25m | 2 tasks | 3 files |
+| Phase 71 P03 | 40min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -80,6 +81,9 @@ roadmaps.
 - [Phase 71]: Private RGBA8 textures use request-local shared staging/readback buffers, and every tracked request resource is released on success and failure.
 - [Phase 71]: Phase 71 Plan 02 keeps .metal package-only and routes one bounded identity transaction through the shared backend contract.
 - [Phase 71]: BeautyMetalBackend uses named ExecutionHooks for exactly-one invocation and terminal error accounting without a CPU execution path.
+- [Phase 71]: Plan 03 keeps Metal validation package-owned and aggregate-only; host availability is explicit and never GPU success.
+- [Phase 71]: The archive-first wrapper runs the Metal preflight once after Phase-70 authorization and before consumer, CPU-oracle, opt-in, and full-child stages.
+- [Phase 71]: CPU remains the reference; public backend selection and generated parity stay owned by Phases 73 and 74.
 
 ### Pending Todos
 
@@ -100,8 +104,8 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-16T07:51:09.865Z
-Stopped at: Completed 71-02-PLAN.md
+Last session: 2026-08-16T08:31:28.078Z
+Stopped at: Completed 71-03-PLAN.md
 Resume file: None
 Next action: Plan Phase 71; preserve the CPU reference and the v1.17
 SDK/Metal-only boundary.
