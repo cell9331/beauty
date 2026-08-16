@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.17
 milestone_name: Dual CPU/GPU Metal Rendering
-status: executing
+status: completed
 stopped_at: Completed 72-01-PLAN.md
-last_updated: "2026-08-16T09:35:03.618Z"
+last_updated: "2026-08-16T09:35:48.850Z"
 last_activity: 2026-08-16 -- Phase 72 execution started
 progress:
   total_phases: 5
@@ -29,10 +29,10 @@ modular facade.
 
 Phase: 72 (metal-feature-passes) — EXECUTING
 Plan: 2 of 3
-Status: Ready to execute
+Status: Plan 72-01 complete; Plan 72-02 ready
 Last activity: 2026-08-16 -- Phase 72 execution started
 
-Progress: [████░░░░░░] 40%
+Progress: [████████░░] 78%
 
 ## Performance Metrics
 
@@ -112,7 +112,7 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-16T09:35:03.612Z
+Last session: 2026-08-16T09:35:30.443Z
 Stopped at: Completed 72-01-PLAN.md
 Resume file: None
 Next action: Plan Phase 72; preserve the CPU reference and the v1.17
