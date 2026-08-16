@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.17
 milestone_name: Dual CPU/GPU Metal Rendering
-status: executing
+status: completed
 stopped_at: Completed 71-04-PLAN.md
-last_updated: "2026-08-16T16:38:00.000Z"
+last_updated: "2026-08-16T08:46:15.930Z"
 last_activity: 2026-08-16 -- Phase 71 METAL-01 closeout completed
 progress:
   total_phases: 5
@@ -32,7 +32,7 @@ Plan: 0 of TBD
 Status: Phase 71 complete; Phase 72 is next
 Last activity: 2026-08-16 -- Phase 71 METAL-01 closeout completed
 
-Progress: [██████████] 100% (phase 70)
+Progress: [████░░░░░░] 40%
 
 ## Performance Metrics
 
@@ -53,7 +53,7 @@ roadmaps.
 | Phase 71 P01 | ~35min | 2 tasks | 2 files |
 | Phase 71 P02 | ~2h25m | 2 tasks | 3 files |
 | Phase 71 P03 | 40min | 2 tasks | 11 files |
-| Phase 71 P04 | ~2h | 2 tasks | 5 files |
+| Phase 71 P04 | ~15min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -87,6 +87,8 @@ roadmaps.
 - [Phase 71]: CPU remains the reference; public backend selection and generated parity stay owned by Phases 73 and 74.
 - [Phase 71]: METAL-01 closes only after archive-first runtime/preflight and full no-skip evidence: focused 26/0/0, full 728/0/0, eight opt-ins exactly once, and separate metal_available=1 / metal_unavailable=0 accounting.
 - [Phase 71]: The runtime closeout is package-only aggregate evidence; Phase 72 owns feature passes, Phase 73 owns public .cpu/.gpu configuration, and Phase 74 owns parity/SDK-only closeout.
+- [Phase 71]: METAL-01 closes only after archive-first runtime/preflight and full no-skip evidence with focused 26/0/0, full 728/0/0, eight opt-ins exactly once, and separate Metal availability classifications.
+- [Phase 71]: Phase 71 remains package-only aggregate runtime evidence; CPU stays the reference while Phase 72 owns feature passes, Phase 73 owns public .cpu/.gpu configuration, and Phase 74 owns parity and SDK-only closeout.
 
 ### Pending Todos
 
@@ -107,7 +109,7 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-16T16:38:00.000Z
+Last session: 2026-08-16T08:41:48.302Z
 Stopped at: Completed 71-04-PLAN.md
 Resume file: None
 Next action: Plan Phase 72; preserve the CPU reference and the v1.17
