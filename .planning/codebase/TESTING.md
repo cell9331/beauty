@@ -17,9 +17,10 @@ SDK-only boundary self-test owns the negative rejection of an unconditional
 generic `BeautyResult` sendability declaration.
 
 The generated CPU reference preflight executes 15 fixture, 10 geometry/color, and
-16 local-retouch/determinism tests with zero generated skips. The measured
-mandatory full child executes 702 tests with eight documented
-environment-gated opt-ins enabled. It accepts only one complete SwiftPM child
+16 local-retouch/determinism tests with zero generated skips. The v1.16
+historical mandatory full child executed 702 tests with eight documented
+environment-gated opt-ins enabled; the current Phase-71 full child executes 728
+tests with the same eight opt-ins. It accepts only one complete SwiftPM child
 transcript with:
 
 - all eight opt-ins executed exactly once;
@@ -61,8 +62,9 @@ private opt-ins → one SwiftPM child. Archive
 corruption, restored source roots, stale application dependencies, retained
 shader drift, an unexpected skip/failure, or a zero-test run must fail non-zero.
 
-The latest completed mandatory wrapper executes 702 tests with zero failures and
-zero skips. Its aggregate markers are evidence for the SDK-only SwiftPM gate
+The v1.16 historical mandatory wrapper executed 702 tests with zero failures and
+zero skips. The current Phase-71 archive-first wrapper executes 728 tests with
+zero failures and zero skips. Its aggregate markers are evidence for the SDK-only SwiftPM gate
 only; they do not establish Metal/GPU execution, UI/Demo behavior,
 simulator/device quality, performance, commercial approval, packaging,
 shipping, launch, or release readiness.

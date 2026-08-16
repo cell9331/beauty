@@ -181,8 +181,9 @@ The current public concurrency evidence is the three-test
 `BeautyResultConcurrencyTests` suite (3/0/0): a `Sendable` payload result
 survives an async task hop with its public fields intact, ordinary string
 construction remains source-compatible, and a non-`Sendable` payload is kept
-outside the positive contract. The latest completed mandatory wrapper evidence
-executes 702 tests with zero failures and zero skips. The active boundary
+outside the positive contract. The v1.16 historical mandatory wrapper evidence
+executes 702 tests with zero failures and zero skips. The current Phase-71
+archive-first wrapper executes 728 tests with zero failures and zero skips. The active boundary
 self-test rejects a mutation back to unconditional generic sendability before
 archive, consumer, generated-CPU, opt-in, or child execution.
 

@@ -172,8 +172,9 @@ portrait media or persist pixels, masks, support, coordinates, child output, or
 locators; private/native-Vision skips remain environment-gated and non-mandatory.
 
 The public `BeautyResultConcurrencyTests` suite currently passes 3/0/0. The
-latest completed mandatory wrapper passes 702 tests with zero failures and zero
-skips. These are aggregate SwiftPM checks; child output and generated
+the v1.16 historical mandatory wrapper passed 702 tests with zero failures and zero
+skips. The current Phase-71 archive-first wrapper passes 728 tests with zero
+failures and zero skips. These are aggregate SwiftPM checks; child output and generated
 outputs remain temporary, and the conditional result contract does not make
 framework-backed or otherwise non-sendable payloads transferable.
 
