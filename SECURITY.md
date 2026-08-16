@@ -198,3 +198,30 @@ the current reference. Metal resources/passes and public `.cpu`/`.gpu`
 configuration are later-phase scope. Existing 61-field parameters, five neutral
 presets, generated CPU oracles, 74-case renderer, and archive-only UI/Demo
 boundary remain unchanged.
+
+## Phase 71 Metal Runtime Trust and Privacy Contract
+
+The package-internal `BeautyMetalRuntime` is owned by `BeautyRender`, while
+`BeautyEffects` owns the package-only `BeautyMetalBackend` executor. The
+runtime validates dimensions and RGBA8 byte counts before allocation, creates
+bounded device/queue/pipeline/texture/buffer/command resources, encodes the
+retained identity transaction, synchronizes and inspects terminal status,
+materializes the matching output, and releases every request resource on both
+success and error. No host Metal device is an explicit `.metalUnavailable`
+terminal outcome; it cannot be credited as GPU success, CPU fallback, or retry.
+
+Only aggregate status and bounded diagnostics are allowed across this trust
+boundary. Support, raster, texture, framework, geometry, and path details stay
+request-local and are never persisted. The runtime has no application, UI, or
+capture lifecycle dependency, and `BeautySDK` exposes no public backend
+selector in Phase 71. The existing dependency direction, 61-field parameter
+model, five presets, 74 renderer cases, archive boundary, and local-retouch
+privacy rules remain authoritative.
+
+The static/runtime preflight is itself bounded and emits fixed aggregate
+markers, including separate `metal_available` and `metal_unavailable` values,
+zero failure/skip accounting, and no child output or framework error detail.
+Phase 72 owns feature passes, Phase 73 owns public `.cpu`/`.gpu` configuration
+and typed availability policy, and Phase 74 owns generated parity/no-skip
+closeout. This evidence makes no simulator/physical-device, performance,
+commercial, packaging, shipping, launch, or release-readiness claim.

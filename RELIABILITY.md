@@ -92,6 +92,31 @@ CPU remains the current reference. Metal resources/passes and public
 `.cpu`/`.gpu` selection belong to later phases, and typed executor failures do
 not trigger retry or silent fallback.
 
+## Phase 71 Metal Runtime Reliability Contract
+
+`BeautyRender.BeautyMetalRuntime` owns the package-internal device, command
+queue, pipeline, and request-local texture/buffer/command lifetime. The
+package-only `BeautyEffects.BeautyMetalBackend` validates dimensions and bytes,
+creates bounded resources, encodes the retained identity transaction, waits
+for command completion, inspects terminal status, materializes the matching
+output, and releases all request resources on success and every error path.
+
+No host device is an explicit `.metalUnavailable` terminal error. It is not a
+GPU success and never causes CPU fallback or retry. Queue, encoder, texture,
+buffer, and command cleanup is deterministic and aggregate counters must end
+with no active request resources. Diagnostics remain fixed aggregate status;
+support, raster, texture, framework, geometry, and path details are never
+retained. The runtime has no application, UI, or capture lifecycle dependency.
+
+The preflight runs focused `BeautyMetalRuntimeTests` and
+`BeautyMetalBackendTests` with the existing backend contract/CPU tests,
+requires nonzero execution with zero failures/skips, and reports separate
+`metal_available`/`metal_unavailable` status. Phase 72 owns feature passes,
+Phase 73 owns public `.cpu`/`.gpu` configuration, and Phase 74 owns generated
+parity/no-skip closeout. CPU remains the reference; the Phase-71 gate claims
+no simulator/physical-device behavior, performance budget, commercial,
+packaging, shipping, launch, or release readiness.
+
 ## 5. Archive Verification and Recovery
 
 The active repository relies on two committed historical archives. Verification

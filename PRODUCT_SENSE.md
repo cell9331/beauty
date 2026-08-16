@@ -147,6 +147,31 @@ presets, or 74-case renderer, and it adds no UI/Demo route, new algorithm,
 device/performance evidence, commercial approval, packaging, shipping, launch,
 or release-readiness claim.
 
+## Phase 71 SDK-Only Metal Runtime Acceptance
+
+Phase 71 accepts only package-internal runtime mechanics. `BeautyRender` owns
+`BeautyMetalRuntime` device/command queue/pipeline setup and request-local
+texture, buffer, and command resources; `BeautyEffects` owns the package-only
+`BeautyMetalBackend` executor. `BeautySDK` remains publicly unrouted, with no
+`.gpu` selector in configuration, parameters, presets, or the command-line
+consumer.
+
+The bounded journey is validate dimensions and bytes, create resources, encode
+the existing identity transaction, synchronize and inspect status, materialize
+the matching output, then release all request resources on success and error.
+No host device yields typed `.metalUnavailable`; it is not GPU success and does
+not trigger CPU fallback or retry. Aggregate status is the only durable
+evidence, with no support, pixel, texture, framework, geometry, or path detail
+and no application/UI/capture lifecycle dependency.
+
+Phase 72 owns feature-pass work, Phase 73 owns public `.cpu`/`.gpu`
+configuration and typed unavailable behavior, and Phase 74 owns generated
+parity/no-skip closeout. CPU remains the reference and all existing 61-field,
+five-preset, 74-case, dependency, archive, and privacy contracts remain in
+force. This acceptance does not claim simulator/physical-device behavior,
+performance, commercial approval, packaging, shipping, launch, or release
+readiness.
+
 ## 8. Regression Checklist
 
 - Public/source/Codable compatibility is explicit and tested.

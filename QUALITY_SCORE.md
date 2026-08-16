@@ -138,3 +138,25 @@ input kinds, fail-closed admission, matching output kinds, deterministic bounded
 diagnostics, and terminal executor errors without fallback. Aggregate status is
 the only durable evidence; support, raster, geometry, path, and private fixture
 data remain transient.
+
+## Phase 71 Metal Runtime Quality Evidence
+
+The `check-metal-runtime.sh` preflight is the quality owner for the
+package-internal runtime mechanics. It verifies regular-file ownership under
+`BeautyRender`/`BeautyEffects`, the authorized shader inventory, bounded
+dimensions/bytes and resource cleanup, synchronization/status handling, no
+public selector or host lifecycle dependency, and aggregate-only diagnostics.
+It mutation-tests cleanup removal, public schema drift, alternate execution,
+private diagnostic fields, and target placement. Focused
+`BeautyMetalRuntimeTests` and `BeautyMetalBackendTests`, plus the existing
+backend contract/CPU suites, execute 26 tests with zero failures/skips on a
+Metal-available host; an unavailable host is reported separately as
+`metal_unavailable` and is never GPU success.
+
+The archive-first wrapper runs this preflight after archive/boundary and
+Phase-70 backend authorization and before consumer, generated CPU, opt-in, and
+full-child stages. CPU remains the reference. Phase 72 owns feature passes,
+Phase 73 owns public `.cpu`/`.gpu` configuration, and Phase 74 owns generated
+parity/no-skip closeout. These are SDK-only aggregate/static claims, not
+simulator/physical-device, performance, commercial, packaging, shipping,
+launch, or release-readiness evidence.

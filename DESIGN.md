@@ -69,7 +69,7 @@
 
 - 初始化后不可变。
 - 必须满足 `Sendable`。
-- 不能包含 SwiftUI、UIKit 或宿主 App 状态。
+- 不能包含宿主 UI 框架或宿主 App 状态。
 - 图像方向、输入镜像、预览镜像是逐帧输入状态，不放入全局 configuration。
 - 两个输入上限都是尾部默认参数；非正自定义值回落到各自默认值，旧 JSON 缺少两个 key 时通过显式 `decodeIfPresent` 得到相同默认值。
 - 上限是拒绝边界而非处理策略：精确命中上限继续当前行为，超过上限返回 `BeautyError.invalidInput`；SDK 不借此缩放、降采样或重解释 `preferredProcessingSize`。
@@ -405,7 +405,7 @@ Coordinate spaces that must remain explicit:
 | `ImagePixel` | `BeautyCore` / `BeautyRender` | Pixel dimensions after orientation handling. |
 | `ImageNormalized` | `BeautyCore` | Canonical SDK model. |
 | `TextureUV` | `BeautyRender` | GPU texture sampling coordinate. |
-| `Preview` | `BeautyDemo` | SwiftUI or UIKit display coordinate. |
+| `Preview` | historical host material | display coordinate owned by a host, not by the SDK package. |
 | `MirroredPreview` | `BeautyDemo` | Front camera display coordinate. |
 
 Rules:
@@ -1105,9 +1105,10 @@ an executor runs.
 `BeautyBackendDiagnostics`. Diagnostics expose only dimensions, alpha/extent
 flags, and bounded unit/failure/collision/change counts. The executor protocol
 is synchronous and propagates typed terminal errors; it never retries or
-silently falls back. CPU remains the reference policy for this phase. Metal
-resources/passes and public `.cpu`/`.gpu` configuration belong to later phases;
-the public 61-field parameter model, five neutral presets, and existing effect
+silently falls back. CPU remains the reference policy for Phase 70. Phase 71
+now owns only package-internal Metal runtime mechanics; feature passes belong
+to Phase 72 and public `.cpu`/`.gpu` configuration belongs to Phase 73. The
+public 61-field parameter model, five neutral presets, and existing effect
 inventory remain untouched.
 
 ### Phase 70 Error, Lifetime, and Test Contracts
@@ -1118,3 +1119,27 @@ composition state are request-local and are not promoted to engine-global state.
 `BeautyBackendContractTests` covers both input kinds, canonical invariants,
 normalized-plan rejection, deterministic bounded diagnostics, and a terminal
 executor failure with exactly one dispatch and no fallback.
+
+### Phase 71 Internal Metal Runtime Contract
+
+`BeautyRender` owns `BeautyMetalRuntime` device, command queue, pipeline, and
+request-local texture/buffer/command resources. `BeautyEffects` owns the
+package-only `BeautyMetalBackend` executor; `BeautySDK` has no public backend
+selector yet. The runtime validates dimensions and byte counts, creates bounded
+resources, encodes the retained identity transaction, synchronizes and checks
+terminal status, materializes the matching output, and releases every request
+resource on success and error.
+
+No host Metal device is an explicit `.metalUnavailable` terminal outcome. It
+does not invoke CPU fallback or retry, and it cannot be counted as GPU success.
+Only aggregate status/diagnostic counts are retained; support, pixel, texture,
+framework, geometry, and path details remain request-local. The runtime has no
+application, UI, or capture lifecycle dependency.
+
+This identity transaction is runtime mechanics, not a feature pass. Phase 72
+owns the existing feature-pass families, Phase 73 owns public `.cpu`/`.gpu`
+configuration, and Phase 74 owns generated parity/no-skip closeout. CPU remains
+the reference, and all Phase-70 validation, dependency, archive, and privacy
+contracts remain in force. The evidence does not claim simulator/physical-
+device behavior, performance budgets, commercial approval, packaging,
+shipping, launch, or release readiness.

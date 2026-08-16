@@ -55,8 +55,9 @@ bash scripts/run-no-skip-swiftpm.sh
 ```
 
 The mandatory wrapper orders archive verification → post-archive SDK-only
-boundary self-test/live scan → external consumer → generated CPU reference
-preflight → private opt-ins → one SwiftPM child. Archive
+boundary self-test/live scan → Phase-70 backend contract → Phase-71 Metal
+runtime preflight → external consumer → generated CPU reference preflight →
+private opt-ins → one SwiftPM child. Archive
 corruption, restored source roots, stale application dependencies, retained
 shader drift, an unexpected skip/failure, or a zero-test run must fail non-zero.
 
@@ -113,6 +114,29 @@ terminal executor failure with exactly one dispatch and no fallback. The request
 keeps selected support and canonical/composition state transient; only aggregate
 dimensions, alpha/extent flags, and bounded unit/failure/collision/change counts
 are observable.
+
+## Phase 71 Metal Runtime Coverage
+
+`BeautyMetalRuntimeTests` owns unavailable-host, malformed-input, resource
+creation, command/encoder status, identity output, repeated-request, and
+failed-then-valid cleanup behavior. `BeautyMetalBackendTests` owns the shared
+package boundary for pixel buffers and still images, output-kind/extent and
+aggregate diagnostics, exactly-one runtime invocation, terminal errors, and
+CPU/Metal isolation. The focused Metal preflight runs these suites with the
+existing backend contract/CPU routing tests for 26 tests, requiring nonzero
+execution and zero failures/skips. It reports `metal_available` separately
+from `metal_unavailable`; unavailable hosts are explicit evidence, never GPU
+success.
+
+Static mutations cover missing cleanup, public selector/schema drift, alternate
+execution paths, private diagnostic fields, and movement outside the owning
+targets. The runtime lifecycle is validate dimensions/bytes → create bounded
+resources → encode retained identity → synchronize/check status → materialize
+matching output → release all request resources on success/error. Phase 72
+owns feature passes, Phase 73 owns public `.cpu`/`.gpu` configuration, and
+Phase 74 owns generated parity/no-skip closeout. CPU remains the reference;
+these tests do not establish simulator/physical-device behavior, performance,
+commercial approval, packaging, shipping, launch, or release readiness.
 
 ---
 *Testing analysis: 2026-08-14 after Phase 66 archive retirement*

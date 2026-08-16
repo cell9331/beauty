@@ -22,10 +22,12 @@ Core Video/Core Media, Vision, AppKit for the macOS renderer, and CryptoKit in a
 resource test. No application UI framework or capture/session framework is an
 active repository dependency.
 
-The current still-image geometry path is CPU/Core Image-backed. The retained
-`BeautySDK/Sources/BeautyRender/Shaders/Warp.metal` bytes are pinned historical
-foundation and do not establish a Metal runtime, GPU backend, public backend API,
-or parity claim.
+The CPU/Core Image path remains the reference. Phase 71 additionally validates
+the package-internal `BeautyMetalRuntime` in `BeautyRender` and the
+package-only Metal executor in `BeautyEffects` through the retained
+`BeautySDK/Sources/BeautyRender/Shaders/Warp.metal` resource. This is a bounded
+identity runtime transaction, not a public backend API, feature-pass parity, or
+device claim; public `.cpu`/`.gpu` configuration belongs to Phase 73.
 
 ## Products and Targets
 
@@ -62,6 +64,21 @@ the wrapper must execute all eight opt-ins with zero failure and zero skip.
   shipping, launch, and release readiness are not current claims.
 - Any future network, external model/resource, privacy-manifest, or render-backend
   change must reopen the owning security and reliability contracts.
+
+## Phase 71 Metal Runtime Stack Boundary
+
+Metal is an internal Apple framework dependency of the SwiftPM `BeautyRender`
+runtime. The runtime owns device/command queue/pipeline setup plus request-local
+texture, buffer, and command resources; `BeautyEffects` owns the package-only
+executor. It validates dimensions and bytes, encodes the existing identity
+transaction, synchronizes and inspects status, materializes matching output,
+and releases resources on success/error. A missing host device is explicit
+`.metalUnavailable`, never CPU fallback/retry or GPU success. Aggregate status
+only is retained, with no application/UI/capture lifecycle dependency. Phase 72
+owns feature passes and Phase 74 owns generated parity/no-skip closeout; CPU,
+dependency, archive, privacy, 61-field, five-preset, and 74-case contracts stay
+unchanged. No simulator/physical-device, performance, commercial, packaging,
+shipping, launch, or release-readiness evidence is implied.
 
 ---
 *Stack analysis: 2026-08-14 after Phase 66 archive retirement*

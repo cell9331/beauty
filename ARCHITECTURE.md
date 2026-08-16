@@ -35,7 +35,7 @@ Current source/test inventory, excluding `.build`:
 | A7 | Public parameters and presets remain backend-independent normalized values. |
 | A8 | Resource lookup is centralized and validates logical identifiers rather than interpreting caller paths. |
 | A9 | SwiftPM plus SDK-owned CLI/script validation is the sole current evidence boundary. |
-| A10 | v1.16 retains the current CPU/Core Image behavior and pinned shader bytes without adding a Metal runtime, GPU API, backend switch, or algorithm. |
+| A10 | The v1.16 contract historically retained CPU/Core Image behavior and pinned shader bytes without a public Metal API, backend switch, or algorithm; the current v1.17 Phase-71 runtime is package-internal only. |
 | A11 | The external consumer and CLI observe only public-product results, bounded identities, and typed aggregate outcomes; executable-internal failure seams are test machinery, not public API. |
 | A12 | `BeautyResult<Output>` is `Sendable` only when `Output: Sendable`; public concurrency tests cover compile-time acceptance and a complete async task hop without making arbitrary payloads transferable. |
 
@@ -59,7 +59,7 @@ BeautyExampleRenderer public-product command-line consumer
 | --- | --- | --- |
 | `BeautyCore` | public/shared value models, errors, configuration, canonical carrier, redacted diagnostics | Vision implementation, application state |
 | `BeautyDetection` | Vision detection, mapping, selection, package-only observed support | rendering, public raw geometry |
-| `BeautyRender` | pass/pixel-buffer foundations and retained bundled shader resource | effect policy, application code, a claimed current GPU backend |
+| `BeautyRender` | pass/pixel-buffer foundations, the retained bundled shader resource, and the package-internal `BeautyMetalRuntime` resource/synchronization owner | effect policy, application code, a public backend selector, or a claimed device backend |
 | `BeautyResources` | bundled manifest/presets and identifier validation | arbitrary external path loading |
 | `BeautyEffects` | resolver, safety caps, geometry/color pipelines, local-retouch providers/transforms/composition | public facade, application controls |
 | `BeautySDK` | stable host facade and request orchestration | raw support/mask export, application lifecycle |
@@ -207,3 +207,31 @@ implementation remains the reference; Metal resources/passes and public
 direction, generated CPU oracle, and archive-only UI/Demo boundary are
 unchanged. This contract adds no public selector, new algorithm, or device,
 performance, commercial, packaging, shipping, launch, or release claim.
+
+## 10. Phase 71 SDK-Owned Metal Runtime
+
+Phase 71 adds only an internal runtime mechanics boundary. `BeautyRender` owns
+one package-internal `BeautyMetalRuntime` instance with its device, command
+queue, pipeline, and request-local textures/buffers/command objects.
+`BeautyEffects` owns the package-only `BeautyMetalBackend` executor that admits
+the shared backend request and invokes exactly one bounded identity transaction.
+`BeautySDK` remains unrouted publicly: no public `.gpu` or render-backend
+selector is added to `BeautyConfiguration`, `BeautyParameters`, presets, or the
+command-line consumer.
+
+The exact request lifecycle is: validate dimensions and RGBA8 byte counts;
+create bounded resources; encode the existing identity transaction; synchronize
+and inspect terminal command status; materialize a matching output; then release
+every request resource on both success and error. A host without a Metal device
+returns typed `.metalUnavailable`; it never becomes a GPU success, CPU
+fallback/retry, or parity claim. Diagnostics remain aggregate-only and omit
+support, raster, texture, framework, geometry, and path details. The runtime
+has no application, UI, or capture lifecycle dependency.
+
+Phase 72 owns feature-pass implementation, Phase 73 owns public `.cpu`/`.gpu`
+configuration and typed availability policy, and Phase 74 owns generated
+CPU/Metal parity and no-skip closeout. CPU remains the reference. Phase-71
+SwiftPM/static evidence preserves the 61-field parameter model, five presets,
+74 renderer cases, dependency direction, archive boundary, and privacy
+contracts; it establishes no simulator/physical-device, performance,
+commercial, packaging, shipping, launch, or release-readiness claim.
