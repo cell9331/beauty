@@ -14,7 +14,7 @@
 
 ### Metal Rendering Pipeline
 
-- [ ] **METAL-01**: The SDK owns bounded Metal device, command-queue, texture, synchronization, and resource-lifetime handling with deterministic cleanup and no host/UI lifecycle dependency.
+- [x] **METAL-01**: The SDK owns bounded Metal device, command-queue, texture, synchronization, and resource-lifetime handling with deterministic cleanup and no host/UI lifecycle dependency.
 - [ ] **METAL-02**: Metal color/skin rendering preserves the CPU feature semantics, named color/alpha metadata, finite bounded math, and untouched pixels outside eligible regions.
 - [ ] **METAL-03**: Metal geometry-warp rendering preserves existing CPU direction, cap, extent, protected-region, collision, and no-face degradation semantics for the shipped geometry families.
 - [ ] **METAL-04**: Metal local-retouch composition preserves request-local mask ownership, immutable-original composition, protected-region bytes, alpha behavior, and per-unit failure isolation for the shipped still-image retouch families.
@@ -55,7 +55,7 @@
 | BACKEND-02 | Phase 70 | Complete |
 | CONFIG-01 | Phase 73 | Pending |
 | CONFIG-02 | Phase 73 | Pending |
-| METAL-01 | Phase 71 | Pending |
+| METAL-01 | Phase 71 | Complete |
 | METAL-02 | Phase 72 | Pending |
 | METAL-03 | Phase 72 | Pending |
 | METAL-04 | Phase 72 | Pending |

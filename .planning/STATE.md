@@ -2,18 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.17
 milestone_name: Dual CPU/GPU Metal Rendering
-current_phase: 71
-current_phase_name: SDK-Owned Metal Runtime
-status: planning
-stopped_at: Completed 70-02-PLAN.md
-last_updated: "2026-08-16T03:38:13.686Z"
-last_activity: 2026-08-16
-last_activity_desc: Phase 70 complete, transitioned to Phase 71
+status: executing
+stopped_at: Completed 71-01-PLAN.md
+last_updated: "2026-08-16T04:07:11.126Z"
+last_activity: 2026-08-16 -- Phase 71 execution started
 progress:
   total_phases: 5
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_plans: 6
+  completed_plans: 3
   percent: 20
 ---
 
@@ -26,14 +23,14 @@ See: `.planning/PROJECT.md` (updated 2026-08-15)
 **Core value:** An iOS app can integrate `BeautySDK` and get natural,
 controllable, real-time and still-image beauty processing through a stable
 modular facade.
-**Current focus:** Phase 70 complete; ready for Phase 71 — SDK-Owned Metal Runtime
+**Current focus:** Phase 71 — SDK-Owned Metal Runtime
 
 ## Current Position
 
-Phase: 71 — SDK-Owned Metal Runtime
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-08-16 — Phase 70 complete, transitioned to Phase 71
+Phase: 71 (SDK-Owned Metal Runtime) — EXECUTING
+Plan: 2 of 4
+Status: Ready to execute
+Last activity: 2026-08-16 -- Phase 71 execution started
 
 Progress: [██████████] 100% (phase 70)
 
@@ -53,6 +50,7 @@ roadmaps.
 |------|----------|-------|-------|
 | Phase 70 P01 | 20min | 2 tasks | 9 files |
 | Phase 70 P02 | ~40min | 2 tasks | 9 files |
+| Phase 71 P01 | ~35min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -77,6 +75,8 @@ roadmaps.
 - [Phase 70]: Backend requests reuse canonical input, normalized effect plans, transient support, and bounded aggregate diagnostics; typed executor errors have no retry or fallback.
 - [Phase 70]: The retained CPU implementation is the sole package executor, and both facade process families dispatch exactly once without changing public schema or algorithm inventory.
 - [Phase 70]: Backend-neutral static/mutation gates run before consumer and CPU-oracle stages; only aggregate pass/fail counts are retained in the ledger.
+- [Phase 71]: Plan 01 keeps one package-only Metal runtime instance responsible for device, queue, and pipeline ownership without a global cache or host lifecycle dependency.
+- [Phase 71]: Private RGBA8 textures use request-local shared staging/readback buffers, and every tracked request resource is released on success and failure.
 
 ### Pending Todos
 
@@ -97,8 +97,8 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-15T06:43:08Z
-Stopped at: Completed 70-02-PLAN.md
+Last session: 2026-08-16T04:07:10.995Z
+Stopped at: Completed 71-01-PLAN.md
 Resume file: None
 Next action: Plan Phase 71; preserve the CPU reference and the v1.17
 SDK/Metal-only boundary.
