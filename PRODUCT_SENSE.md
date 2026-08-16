@@ -184,3 +184,15 @@ readiness.
   pass before the one-child no-skip run.
 - Contract changes update `ARCHITECTURE.md`, `DESIGN.md`, `SECURITY.md`,
   `RELIABILITY.md`, taxonomy, and `PLANS.md` as applicable.
+
+## Phase 72 Metal Feature-Pass Acceptance
+
+At SDK-core still-image scope, existing teeth and sclera edits retain the same
+request-local composition semantics on Metal: original-pixel blending,
+protected-region and alpha preservation, hard containment, collision-to-source
+behavior, and smallest-unit degradation. The composed carrier is the first
+pass; color and geometry remain bounded siblings. This phase adds no public
+backend setting, new beauty control, UI/Demo behavior, device validation,
+performance, commercial, packaging, shipping, launch, or release-readiness
+claim. Public configuration belongs to Phase 73 and generated parity belongs
+to Phase 74.

@@ -140,5 +140,17 @@ Phase 74 owns generated parity/no-skip closeout. CPU remains the reference;
 these tests do not establish simulator/physical-device behavior, performance,
 commercial approval, packaging, shipping, launch, or release readiness.
 
+## Phase 72 Feature-Pass Coverage
+
+`BeautyMetalLocalRetouchPassTests` executes generated carrier/original-pixel,
+protected-byte, alpha, extent, collision, malformed/foreign/duplicate,
+smallest-unit isolation, mixed-order, and terminal-cleanup checks alongside
+the color, geometry, backend, and runtime suites. The archive-first order is
+archive → boundary → backend → runtime → feature passes → consumer → CPU
+oracle → opt-ins → full child. `check-metal-feature-passes.sh` is invoked once,
+uses bounded logs, mutation-tests source binding/privacy/cleanup/scope, and
+records available/unavailable Metal separately. No raw private payloads enter
+tracked evidence; CPU remains the reference until Phase 74 parity closeout.
+
 ---
 *Testing analysis: 2026-08-14 after Phase 66 archive retirement*

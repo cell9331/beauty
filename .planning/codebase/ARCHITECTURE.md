@@ -95,5 +95,15 @@ owns generated parity/no-skip closeout; CPU remains the reference and all
 existing dependency, archive, 61-field, five-preset, 74-case, and privacy
 contracts remain in force.
 
+### Phase 72 Feature-Pass Boundary
+
+`BeautySDK` composes local-retouch units before backend publication. The
+package-only Metal adapter receives the canonical carrier plus six aggregate
+counters, dispatches composed-retouch before color and geometry, and exposes
+no provider or support payload. Generated local-retouch tests and the feature
+preflight preserve source binding, protected bytes, alpha, containment,
+collision-to-source, and unit-local recovery. Public selection remains Phase
+73 and parity/no-skip closeout remains Phase 74.
+
 ---
 *Architecture analysis: 2026-08-14 after Phase 66 review remediation*

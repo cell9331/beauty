@@ -80,5 +80,15 @@ dependency, archive, privacy, 61-field, five-preset, and 74-case contracts stay
 unchanged. No simulator/physical-device, performance, commercial, packaging,
 shipping, launch, or release-readiness evidence is implied.
 
+## Phase 72 Feature-Pass Stack Boundary
+
+The existing `BeautyEffects` composition owner produces the canonical RGBA8
+carrier before `BeautyMetalBackend` invokes the `BeautyRender` pass graph.
+Metal dispatch is ordered composed-retouch, color, geometry; the local pass
+preserves the carrier and never creates a second support or proposal path.
+Generated tests remain in-memory and aggregate-only. This is package-only
+feature behavior, not public configuration, device evidence, or parity
+closeout; those belong to Phases 73 and 74.
+
 ---
 *Stack analysis: 2026-08-14 after Phase 66 archive retirement*

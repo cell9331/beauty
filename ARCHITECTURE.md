@@ -62,7 +62,7 @@ BeautyExampleRenderer public-product command-line consumer
 | `BeautyRender` | pass/pixel-buffer foundations, the retained bundled shader resource, and the package-internal `BeautyMetalRuntime` resource/synchronization owner | effect policy, application code, a public backend selector, or a claimed device backend |
 | `BeautyResources` | bundled manifest/presets and identifier validation | arbitrary external path loading |
 | `BeautyEffects` | resolver, safety caps, geometry/color pipelines, local-retouch providers/transforms/composition | public facade, application controls |
-| `BeautySDK` | stable host facade and request orchestration | raw support/mask export, application lifecycle |
+| `BeautySDK` | stable host facade and request orchestration | support-region export, application lifecycle |
 | `BeautyExampleRenderer` | public-facade fixture input/output validation, deterministic 74-case discovery, and typed report aggregation | internal-target imports, public backend selection, product claims from generated media |
 
 The package declares no remote dependency. New dependencies, models, resource
@@ -236,3 +236,16 @@ SwiftPM/static evidence preserves the 61-field parameter model, five presets,
 74 renderer cases, dependency direction, archive boundary, and privacy
 contracts; it establishes no simulator/physical-device, performance,
 commercial, packaging, shipping, launch, or release-readiness claim.
+
+## Phase 72 Metal Feature-Pass Ownership
+
+The still-image facade remains the sole owner of local-retouch admission,
+request-local support, and `BeautyLocalRetouchCompositionOwner`. It publishes
+only the immutable composed `BeautyCanonicalStillImage` and six bounded
+aggregate counters on `BeautyBackendRequest`. `BeautyMetalBackend` consumes
+that carrier through an explicit composed-retouch pass, then applies mapped
+color and geometry in CPU order; it does not receive providers, proposals,
+support, masks, or source locators. Local-retouch-only output is therefore the
+owner-produced carrier byte-for-byte, while mixed work starts from those same
+immutable bytes. Public backend configuration remains Phase 73 and generated
+CPU/Metal parity remains Phase 74.

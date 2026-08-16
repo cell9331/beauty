@@ -480,7 +480,7 @@ for item in tracked:
 allowed_metal = {"BeautySDK/Sources/BeautyRender/Shaders/Warp.metal"}
 expected_metal_sha256 = {
     "BeautySDK/Sources/BeautyRender/Shaders/Warp.metal":
-        "74f4591890a7cbb159b2d8a23d193be795cba1d0aab2df133c5e324c9b4a086c",
+        "c95ff274a6d5eb70bffac981b876441fc7981d175be21d1d16e05e4fc81035a6",
 }
 actual_metal = {
     path.relative_to(root).as_posix()

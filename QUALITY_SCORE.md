@@ -103,7 +103,7 @@ or large extraction transcripts are not durable quality evidence.
   protected/out-of-mask preservation.
 - Synthetic fixtures prove mechanics only; rights-approved local fixtures remain
   separate opt-in product gates.
-- Raw fixtures, pixel/mask/landmark data, local paths, and child output stay
+- Fixture media, region/landmark data, local locations, and child output stay
   out of tracked evidence.
 - Tool failure, unknown output, missing test summary, unexpected skip, or zero
   execution is failure, never a warning.
@@ -161,3 +161,16 @@ Phase 73 owns public `.cpu`/`.gpu` configuration, and Phase 74 owns generated
 parity/no-skip closeout. These are SDK-only aggregate/static claims, not
 simulator/physical-device, performance, commercial, packaging, shipping,
 launch, or release-readiness evidence.
+
+## Phase 72 Feature-Pass Quality Evidence
+
+`BeautyMetalLocalRetouchPassTests` adds generated in-memory coverage for
+canonical Q16 composition, protected bytes, alpha, extent, named sRGB,
+collision-to-source, malformed/foreign/duplicate isolation, mixed pass order,
+and terminal resource cleanup. `check-metal-feature-passes.sh` requires the
+color, geometry, local-retouch, and runtime suites, mutation-tests cleanup,
+source binding, raw-payload privacy, alternate execution, public schema, and
+target ownership, and reports Metal availability separately. The archive-first
+wrapper invokes this gate exactly once before consumer, CPU-oracle, opt-in, and
+full-child stages. CPU remains the reference; Phase 73 owns public selection
+and Phase 74 owns parity/no-skip closeout.

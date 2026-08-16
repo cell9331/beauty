@@ -188,7 +188,7 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
 - A temporary clang module cache allows the carrier-focused SwiftPM test to pass 6/6; the production validate/orient/color-manage boundary remains owned by Plan 53-02 Task 2.
 - D-09 through D-12/D-17 extend the existing Detection carriers in place with package-only immutable non-Codable `BeautyObservedLipSupport`. Actual `outerLips` and `innerLips` values are copied from the existing single `VNDetectFaceLandmarksRequest`, independently preflighted at `1...32` finite face-local normalized points, and mapped once through the existing request-local `CoordinateMapper`; neither region is synthesized from `FaceGeometry` or a face box.
 - Outer and inner absence or rejection is region-local. A malformed, oversized, empty, non-finite, or out-of-unit region maps zero points without erasing its valid lip sibling, the selected face, or other eye/brow/face support. Provider and selection order stay stable, with no sorting, retry, cache, second request, or stored engine support.
-- `VisionDetectionObservation`, `BeautyFaceObservation`, and `BeautyObservedLipSupport` descriptions, debug descriptions, dumps, and mirrors expose only outer/inner aggregate counts. The support remains package-only and request-local; no public/SPI raw geometry, provider, renderer route, parameter field, or realtime/pixel-buffer behavior is added.
+- `VisionDetectionObservation`, `BeautyFaceObservation`, and `BeautyObservedLipSupport` descriptions, debug descriptions, dumps, and mirrors expose only outer/inner aggregate counts. The support remains package-only and request-local; no public/SPI unexported geometry, provider, renderer route, parameter field, or realtime/pixel-buffer behavior is added.
 - `BeautyLocalRetouchAdmission` is the sole Phase 53 admission value and its production inventory is exact-empty. The testing seam supplies only a nonnegative opaque demand count: zero follows the unchanged legacy route, while any positive count collapses to one request rather than multiplying canonicalization, Vision, mapping, context, or render work.
 - `BeautyStillImageRequestContext` is immutable, package-only, non-Codable, and stack-local. It owns the one canonical carrier and current selected mapped observation, exposes only selected-face and lip-point counts through its redacted description, and is destroyed before the facade returns or throws. Valid-invalid-valid, no-face, missing-support, reset, and independent-engine tests prohibit support reuse without claiming same-engine parallel safety.
 - The admitted order is exact: cheap input/resource validation → canonicalize → existing detect/map → create request context → render. Missing face/support removes only local evidence and preserves unrelated shipped color work; canonical or injected malformed-request failure stops before context/render. Phase 55 retains original-pixel mask composition and overlap ownership.
@@ -237,7 +237,7 @@ Required meaning:
 
 | Field | Meaning |
 | --- | --- |
-| `pixelBuffer` or image backing | Source image data without `UIImage` in realtime paths. |
+| `pixelBuffer` or image backing | Source image data without UIKit image objects in realtime paths. |
 | `orientation` | Original capture or asset orientation. |
 | `isInputMirrored` | Whether capture data has already been mirrored when SDK interprets coordinates. |
 | `isPreviewMirrored` | Whether preview display mirrors the final image; used for overlay and future API extension. |
@@ -1143,3 +1143,17 @@ the reference, and all Phase-70 validation, dependency, archive, and privacy
 contracts remain in force. The evidence does not claim simulator/physical-
 device behavior, performance budgets, commercial approval, packaging,
 shipping, launch, or release readiness.
+
+### Phase 72 Composed Local-Retouch Pass Contract
+
+The canonical still-image composition is complete before any Metal executor
+call. Teeth and sclera units are validated, collision-owned, and blended from
+the immutable source by `BeautyLocalRetouchCompositionOwner`; only the
+resulting RGBA8 carrier and six aggregate counters cross into Metal. The pass
+order is composed-retouch, color, then geometry. A local-retouch-only request
+therefore preserves Q16 bytes, hard containment, collision-to-source behavior,
+protected bytes, alpha, dimensions, extent, and named sRGB metadata exactly.
+Malformed, foreign, duplicate, colliding, and empty units remain local owner
+outcomes, so one rejected unit cannot suppress an eligible sibling. No public
+backend selector or new effect is introduced here; Phase 73 owns configuration
+and Phase 74 owns cross-backend parity evidence.

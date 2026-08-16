@@ -204,7 +204,7 @@ Per-request arrays/caches must be bounded and released at request completion.
 - Reuse contexts/resources where the existing implementation specifies reuse;
   request-owned pixel/support storage must not become engine-global state.
 - Composition owners enforce unit/capacity budgets before raster/mask allocation.
-- Generated/private fixture files have explicit size/inventory/path checks.
+- Generated/private fixture files have explicit bounded size and inventory checks.
 - No current package run establishes target-device frame rate, memory, thermal,
   endurance, or optimized latency.
 
@@ -222,3 +222,16 @@ bash scripts/run-no-skip-swiftpm.sh
 Passing these commands establishes bounded SDK-core correctness and recovery only.
 Commercial approval, packaging, shipping, launch, and release readiness remain
 separate future scopes.
+
+## Phase 72 Feature-Pass Reliability
+
+The local-retouch carrier is composed once from the immutable source, then
+consumed by Metal before color and geometry. This keeps local-retouch-only
+bytes deterministic and makes mixed requests recoverable without re-running a
+provider. Owner-local rejection preserves valid siblings and collision pixels
+remain source bytes. A failed Metal command is terminal, publishes no partial
+output, and releases all request resources; no retry or CPU alternate path is
+introduced. The focused feature preflight runs after runtime authorization and
+before consumer/oracle/opt-in/full-child stages, with bounded logs and
+zero-failure/zero-skip accounting. Phase 73 owns public availability policy;
+Phase 74 owns parity closeout.

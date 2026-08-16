@@ -65,6 +65,12 @@ if ! bash "${repository_root}/scripts/check-metal-runtime.sh" >/dev/null 2>&1; t
 fi
 echo "no_skip_metal_runtime_verified"
 
+if ! bash "${repository_root}/scripts/check-metal-feature-passes.sh" >/dev/null 2>&1; then
+  echo "no_skip_metal_feature_passes_failed"
+  exit 1
+fi
+echo "no_skip_metal_feature_passes_verified"
+
 if ! bash "${repository_root}/scripts/check-swiftpm-consumer.sh" >/dev/null 2>&1; then
   echo "no_skip_swiftpm_consumer_failed"
   exit 1

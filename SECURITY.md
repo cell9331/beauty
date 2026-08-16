@@ -5,7 +5,7 @@
 ## 1. Default Posture
 
 - Process images, frames, parameters, detection support, and effects locally.
-- Do not upload or persist raw image/frame bytes, landmarks, masks, pupils,
+- Do not upload or persist source image/frame bytes, mapped landmarks, region maps, pupils,
   teeth/eye geometry, or private fixture locations.
 - Keep raw/derived support request-local, package-only, non-Codable, and absent
   from public diagnostics, logs, metrics, files, and network payloads.
@@ -27,7 +27,7 @@ distribution behavior requires a new security review.
 | Archive artifact → historical extraction | exact artifact/digest, safe entry path, manifest/content equality, new temporary destination |
 | CLI input/output/report → executable boundary | existing regular directories, supported image decode, duplicate-stem rejection, atomic writes, reopen/dimension validation, bounded public identities only |
 | Child test process → gate | bounded one-child output reduced to fixed aggregate pass/fail; raw output is not durable authority |
-| Generated CPU oracle → gate | regular in-tree Swift sources, in-memory fixtures, no media/path/raw diagnostics, CPU-only tokens, bounded focused execution |
+| Generated CPU oracle → gate | regular in-tree Swift sources, in-memory fixtures, no media/location/private diagnostics, CPU-only tokens, bounded focused execution |
 | Public generic result → concurrency boundary | `BeautyResult` is `Sendable` only when `Output: Sendable`; public field-preserving transfer is tested, while unconditional generic sendability is rejected by the boundary mutation self-test |
 
 ## 3. Archive Entry and Extraction Safety
@@ -156,10 +156,10 @@ where the owning CLI/evidence contract permits them. The versioned renderer
 report is allowlisted to schema/version, CPU token, case/input/output identities,
 unit status/failure code, and reconciled counts.
 
-Forbidden durable data: raw image or mask bytes, absolute paths/locators,
+Forbidden durable data: source image or region bytes, absolute locations/locators,
 coordinates, landmark collections, pupil/teeth/vein geometry, rights/reviewer identity,
-raw framework errors, child output, generated media, and any raw geometry,
-pixels, private fixture metadata, or environment value. CLI paths and child
+raw framework errors, child output, generated media, and any private geometry,
+pixels, private test metadata, or environment value. CLI paths and child
 output are untrusted and remain temporary; relative public identities are the
 only path-like values permitted in the durable report. The executable-local
 render/encode failure seam is test-only machinery and must not become a flag,
@@ -225,3 +225,16 @@ Phase 72 owns feature passes, Phase 73 owns public `.cpu`/`.gpu` configuration
 and typed availability policy, and Phase 74 owns generated parity/no-skip
 closeout. This evidence makes no simulator/physical-device, performance,
 commercial, packaging, shipping, launch, or release-readiness claim.
+
+## Phase 72 Local-Retouch Metal Trust Boundary
+
+`BeautyLocalRetouchCompositionOwner` is the sole trust boundary for teeth and
+sclera proposals, hard envelopes, duplicate/collision handling, and original
+source binding. The Metal backend accepts only its canonical RGBA8 carrier and
+six bounded counters. The composed-retouch kernel is an identity-preserving
+boundary pass; it cannot reconstruct support or inspect provider units. A
+terminal Metal failure publishes no partial carrier and leaves no request
+resources active. Generated in-memory coverage verifies protected bytes,
+alpha, containment, collision-to-source, smallest-unit isolation, and mixed
+pass ordering without persistent private payloads. Public `.cpu`/`.gpu`
+configuration and broad parity claims remain outside this phase.

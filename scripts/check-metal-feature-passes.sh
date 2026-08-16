@@ -5,8 +5,8 @@ set -euo pipefail
 readonly repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
 readonly package_root="${repository_root}/BeautySDK"
 readonly maximum_output_bytes=$((16 * 1024 * 1024))
-readonly focused_filter='BeautyEffectsTests.BeautyMetalColorPassTests|BeautyEffectsTests.BeautyMetalGeometryPassTests|BeautyEffectsTests.BeautyMetalBackendTests|BeautyRenderTests.BeautyMetalRuntimeTests'
-readonly expected_focused_tests=26
+readonly focused_filter='BeautyEffectsTests.BeautyMetalColorPassTests|BeautyEffectsTests.BeautyMetalGeometryPassTests|BeautyEffectsTests.BeautyMetalBackendTests|BeautyEffectsTests.BeautyMetalLocalRetouchPassTests|BeautyRenderTests.BeautyMetalRuntimeTests'
+readonly expected_focused_tests=31
 readonly pass_source="BeautySDK/Sources/BeautyRender/BeautyMetalPass.swift"
 readonly runtime_source="BeautySDK/Sources/BeautyRender/BeautyMetalRuntime.swift"
 readonly shader_source="BeautySDK/Sources/BeautyRender/Shaders/Warp.metal"
@@ -16,6 +16,7 @@ readonly color_test_source="BeautySDK/Tests/BeautyEffectsTests/BeautyMetalColorP
 readonly runtime_test_source="BeautySDK/Tests/BeautyRenderTests/BeautyMetalRuntimeTests.swift"
 readonly backend_test_source="BeautySDK/Tests/BeautyEffectsTests/BeautyMetalBackendTests.swift"
 readonly geometry_test_source="BeautySDK/Tests/BeautyEffectsTests/BeautyMetalGeometryPassTests.swift"
+readonly local_retouch_test_source="BeautySDK/Tests/BeautyEffectsTests/BeautyMetalLocalRetouchPassTests.swift"
 readonly parameters_source="BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift"
 readonly configuration_source="BeautySDK/Sources/BeautyCore/Models/BeautyConfiguration.swift"
 readonly manifest_source="BeautySDK/Sources/BeautyResources/Resources/manifest.json"
@@ -61,6 +62,7 @@ paths = {
     "runtime_tests": "BeautySDK/Tests/BeautyRenderTests/BeautyMetalRuntimeTests.swift",
     "backend_tests": "BeautySDK/Tests/BeautyEffectsTests/BeautyMetalBackendTests.swift",
     "geometry_tests": "BeautySDK/Tests/BeautyEffectsTests/BeautyMetalGeometryPassTests.swift",
+    "local_retouch_tests": "BeautySDK/Tests/BeautyEffectsTests/BeautyMetalLocalRetouchPassTests.swift",
     "parameters": "BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift",
     "configuration": "BeautySDK/Sources/BeautyCore/Models/BeautyConfiguration.swift",
     "manifest": "BeautySDK/Sources/BeautyResources/Resources/manifest.json",
@@ -153,6 +155,8 @@ for term in (
         raise SystemExit(f"private/UI/test artifact entered color suite: {term}")
     if term in text["geometry_tests"]:
         raise SystemExit(f"private/UI/test artifact entered geometry suite: {term}")
+    if term in text["local_retouch_tests"]:
+        raise SystemExit(f"private/UI/test artifact entered local-retouch suite: {term}")
 
 parameters = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", text["parameters"], re.MULTILINE)
 configuration = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", text["configuration"], re.MULTILINE)
@@ -179,6 +183,16 @@ if "BeautyMetalColorPassTests" not in text["color_tests"]:
     raise SystemExit("generated color suite is missing")
 if "BeautyMetalGeometryPassTests" not in text["geometry_tests"]:
     raise SystemExit("generated geometry suite is missing")
+if "BeautyMetalLocalRetouchPassTests" not in text["local_retouch_tests"]:
+    raise SystemExit("generated local-retouch suite is missing")
+for marker in (
+    "compositionSummary", "hasCanonicalCarrier", "composedRetouch",
+    "BeautyLocalRetouchCompositionOwner", "BeautyLocalRetouchCompositionSummary",
+):
+    if marker not in backend_code and marker not in text["local_retouch_tests"]:
+        raise SystemExit(f"composition ownership marker missing: {marker}")
+if "BeautyLocalRetouchCompositionOwner" not in text["local_retouch_tests"]:
+    raise SystemExit("composition owner coverage is missing")
 sys.stdout.write("metal_feature_passes_static_boundary_passed\n")
 PY
 }
@@ -196,7 +210,7 @@ if not executions or executions[-1][0] != expected or max(value for value, _ in 
     raise SystemExit(1)
 if any(failures != 0 for _, failures in executions):
     raise SystemExit(1)
-for suite in ("BeautyMetalColorPassTests", "BeautyMetalGeometryPassTests", "BeautyMetalBackendTests", "BeautyMetalRuntimeTests"):
+for suite in ("BeautyMetalColorPassTests", "BeautyMetalGeometryPassTests", "BeautyMetalBackendTests", "BeautyMetalLocalRetouchPassTests", "BeautyMetalRuntimeTests"):
     if suite not in text: raise SystemExit(1)
 if re.search(r"\b(?:skipped|disabled|unexpected failure)\b", text, re.IGNORECASE): raise SystemExit(1)
 PY
@@ -228,6 +242,17 @@ PY
   mutation_path="${temporary_root}/${backend_source}"
   printf '\nlet alternate = "fall%s"\n' 'back' >>"${mutation_path}"
   if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then echo "alternate_mutation_failed" >&2; return 1; fi
+
+  cp -- "${package_root}/Sources/BeautyEffects/Backend/BeautyMetalBackend.swift" "${mutation_path}"
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+needle = "passes.append(.composedRetouch(try BeautyMetalComposedRetouchParameters()))"
+if needle not in value: raise SystemExit(1)
+path.write_text(value.replace(needle, "", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then echo "source_binding_mutation_failed" >&2; return 1; fi
 
   cp -- "${package_root}/Sources/BeautyEffects/Backend/BeautyMetalBackend.swift" "${mutation_path}"
   mutation_path="${temporary_root}/${contract_source}"
