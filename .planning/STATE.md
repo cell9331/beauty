@@ -4,7 +4,7 @@ milestone: v1.17
 milestone_name: Dual CPU/GPU Metal Rendering
 status: completed
 stopped_at: Completed 71-04-PLAN.md
-last_updated: "2026-08-16T08:46:15.930Z"
+last_updated: "2026-08-16T08:46:37.069Z"
 last_activity: 2026-08-16 -- Phase 71 METAL-01 closeout completed
 progress:
   total_phases: 5
@@ -109,7 +109,7 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-16T08:41:48.302Z
+Last session: 2026-08-16T08:46:37.061Z
 Stopped at: Completed 71-04-PLAN.md
 Resume file: None
 Next action: Plan Phase 72; preserve the CPU reference and the v1.17
