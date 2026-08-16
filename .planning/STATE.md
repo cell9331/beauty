@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.17
 milestone_name: Dual CPU/GPU Metal Rendering
-status: completed
-stopped_at: Completed 71-04-PLAN.md
-last_updated: "2026-08-16T08:46:37.069Z"
-last_activity: 2026-08-16 -- Phase 71 METAL-01 closeout completed
+status: executing
+stopped_at: Completed 72-01-PLAN.md
+last_updated: "2026-08-16T09:35:03.618Z"
+last_activity: 2026-08-16 -- Phase 72 execution started
 progress:
   total_phases: 5
   completed_phases: 2
-  total_plans: 6
-  completed_plans: 6
+  total_plans: 9
+  completed_plans: 7
   percent: 40
 ---
 
@@ -23,14 +23,14 @@ See: `.planning/PROJECT.md` (updated 2026-08-15)
 **Core value:** An iOS app can integrate `BeautySDK` and get natural,
 controllable, real-time and still-image beauty processing through a stable
 modular facade.
-**Current focus:** Phase 72 — Metal Feature Passes
+**Current focus:** Phase 72 — metal-feature-passes
 
 ## Current Position
 
-Phase: 72 (Metal Feature Passes) — READY
-Plan: 0 of TBD
-Status: Phase 71 complete; Phase 72 is next
-Last activity: 2026-08-16 -- Phase 71 METAL-01 closeout completed
+Phase: 72 (metal-feature-passes) — EXECUTING
+Plan: 2 of 3
+Status: Ready to execute
+Last activity: 2026-08-16 -- Phase 72 execution started
 
 Progress: [████░░░░░░] 40%
 
@@ -54,6 +54,7 @@ roadmaps.
 | Phase 71 P02 | ~2h25m | 2 tasks | 3 files |
 | Phase 71 P03 | 40min | 2 tasks | 11 files |
 | Phase 71 P04 | ~15min | 2 tasks | 6 files |
+| Phase 72 P01 | 25min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -89,6 +90,8 @@ roadmaps.
 - [Phase 71]: The runtime closeout is package-only aggregate evidence; Phase 72 owns feature passes, Phase 73 owns public .cpu/.gpu configuration, and Phase 74 owns parity/SDK-only closeout.
 - [Phase 71]: METAL-01 closes only after archive-first runtime/preflight and full no-skip evidence with focused 26/0/0, full 728/0/0, eight opt-ins exactly once, and separate Metal availability classifications.
 - [Phase 71]: Phase 71 remains package-only aggregate runtime evidence; CPU stays the reference while Phase 72 owns feature passes, Phase 73 owns public .cpu/.gpu configuration, and Phase 74 owns parity and SDK-only closeout.
+- [Phase 72]: Phase 72 Plan 01 uses finite package-only Metal pass carriers and an ordered private-texture ping-pong graph; color/skin uniforms mirror retained CPU coefficients.
+- [Phase 72]: Metal color bridges BGRA pixel buffers through request-local RGBA bytes, preserves alpha, and materializes still-image output with named sRGB metadata; geometry/local-retouch semantics remain with their owning plans.
 
 ### Pending Todos
 
@@ -109,8 +112,8 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-16T08:46:37.061Z
-Stopped at: Completed 71-04-PLAN.md
+Last session: 2026-08-16T09:35:03.612Z
+Stopped at: Completed 72-01-PLAN.md
 Resume file: None
 Next action: Plan Phase 72; preserve the CPU reference and the v1.17
 SDK/Metal-only boundary.

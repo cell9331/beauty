@@ -49,6 +49,22 @@ Checklist:
 
 > 以下记录均为已完成或已被后续权威取代的执行历史，不是 Active plan。
 
+### C-2026-08-16-phase-72-plan-01-metal-color-passes
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
+| Completed | 2026-08-16 |
+| Scope | Add the package-only bounded Metal pass graph and implement the shipped color/skin family using retained CPU semantics. |
+| Requirements | `METAL-02` completed; geometry and local-retouch semantics remain with Plans 72-02 and 72-03. |
+| Implementation | `BeautyMetalPass` carries finite primitive color/warp/composed-retouch data; `BeautyMetalRuntime` encodes ordered private-texture ping-pong; `BeautyMetalBackend` maps CPU coefficients and bridges BGRA/RGBA. |
+| Verification | Color/CPU/backend/runtime focused coverage passes `27/0/0`; feature-pass preflight passes `22/0/0`; full SwiftPM passes `735/0/8`; Metal available/unavailable is classified separately. |
+| Nonclaims | No public backend selector, new parameter/preset/algorithm, UI/Demo behavior, device/performance, commercial, packaging, shipping, launch, or release-readiness claim. |
+
+Outcome:
+
+- METAL-02 is implemented and independently gated. Plans 72-02 and 72-03 can consume the bounded geometry and composed-retouch contracts without changing public schemas or runtime ownership.
+
 ### C-2026-08-16-phase-71-sdk-owned-metal-runtime
 
 | Field | Value |
