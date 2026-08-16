@@ -50,7 +50,7 @@ SDK-owned evidence.
 
 - [x] **Phase 70: Backend-Neutral Contract and CPU Reference** — Establish one shared request/result boundary and keep CPU selectable as the permanent reference. (completed 2026-08-16)
 - [x] **Phase 71: SDK-Owned Metal Runtime** — Add bounded Metal device, queue, texture, synchronization, and resource-lifetime ownership. (completed 2026-08-16)
-- [ ] **Phase 72: Metal Feature Passes** — Implement color/skin, geometry-warp, and local-retouch passes with the existing CPU semantics and safety rules.
+- [x] **Phase 72: Metal Feature Passes** — Implement color/skin, geometry-warp, and local-retouch passes with the existing CPU semantics and safety rules. (completed 2026-08-16)
 - [ ] **Phase 73: Public Backend Configuration and Fail-Closed Availability** — Expose `.cpu`/`.gpu` policy with CPU-compatible defaults and typed unavailable-GPU failure.
 - [ ] **Phase 74: CPU/GPU Parity and SDK-Only Closeout** — Prove structural parity, safety, determinism, failure isolation, and the mandatory no-skip scope gate.
 
@@ -148,7 +148,7 @@ Plans:
 
 - [x] 72-01-PLAN.md — Establish the bounded Metal pass graph and implement color/skin rendering.
 - [x] 72-02-PLAN.md — Wire existing unified geometry control points into the Metal warp pass.
-- [ ] 72-03-PLAN.md — Preserve local-retouch composition ownership and close the feature-pass gate.
+- [x] 72-03-PLAN.md — Preserve local-retouch composition ownership and close the feature-pass gate.
 
 ### Phase 73: Public Backend Configuration and Fail-Closed Availability
 

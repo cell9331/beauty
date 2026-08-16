@@ -17,7 +17,7 @@
 - [x] **METAL-01**: The SDK owns bounded Metal device, command-queue, texture, synchronization, and resource-lifetime handling with deterministic cleanup and no host/UI lifecycle dependency.
 - [x] **METAL-02**: Metal color/skin rendering preserves the CPU feature semantics, named color/alpha metadata, finite bounded math, and untouched pixels outside eligible regions.
 - [x] **METAL-03**: Metal geometry-warp rendering preserves existing CPU direction, cap, extent, protected-region, collision, and no-face degradation semantics for the shipped geometry families.
-- [ ] **METAL-04**: Metal local-retouch composition preserves request-local mask ownership, immutable-original composition, protected-region bytes, alpha behavior, and per-unit failure isolation for the shipped still-image retouch families.
+- [x] **METAL-04**: Metal local-retouch composition preserves request-local mask ownership, immutable-original composition, protected-region bytes, alpha behavior, and per-unit failure isolation for the shipped still-image retouch families.
 
 ### CPU/GPU Parity and Validation
 
@@ -58,7 +58,7 @@
 | METAL-01 | Phase 71 | Complete |
 | METAL-02 | Phase 72 | Complete |
 | METAL-03 | Phase 72 | Complete |
-| METAL-04 | Phase 72 | Pending |
+| METAL-04 | Phase 72 | Complete |
 | PARITY-01 | Phase 74 | Pending |
 | PARITY-02 | Phase 74 | Pending |
 | PARITY-03 | Phase 74 | Pending |

@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.17
 milestone_name: Dual CPU/GPU Metal Rendering
-status: executing
-stopped_at: Completed 72-02-PLAN.md
-last_updated: "2026-08-16T09:54:34.527Z"
+status: verifying
+stopped_at: Completed 72-03-PLAN.md
+last_updated: "2026-08-16T10:14:37.695Z"
 last_activity: 2026-08-16 -- Phase 72 execution started
 progress:
   total_phases: 5
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 9
-  completed_plans: 8
-  percent: 89
+  completed_plans: 9
+  percent: 60
 ---
 
 # Project State
@@ -29,7 +29,7 @@ modular facade.
 
 Phase: 72 (metal-feature-passes) — EXECUTING
 Plan: 3 of 3
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-08-16 -- Phase 72 execution started
 
 Progress: [█████████░] 89%
@@ -56,6 +56,7 @@ roadmaps.
 | Phase 71 P04 | ~15min | 2 tasks | 6 files |
 | Phase 72 P01 | 25min | 2 tasks | 8 files |
 | Phase 72 P02 | 15 | 2 tasks | 6 files |
+| Phase 72 P03 | ~25min | 2 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -95,6 +96,9 @@ roadmaps.
 - [Phase 72]: Metal color bridges BGRA pixel buffers through request-local RGBA bytes, preserves alpha, and materializes still-image output with named sRGB metadata; geometry/local-retouch semantics remain with their owning plans.
 - [Phase 72]: Plan 72-02 keeps BeautyGeometryEffectPipeline.controlPoints as the sole package-internal Metal geometry source and preserves composition collision ownership.
 - [Phase 72]: Plan 72-02 uses finite bounded point/count payloads with CPU-compatible inverse displacement, clamped bilinear sampling, alpha, extent, locality, and no-face degradation.
+- [Phase 72]: Plan 03 keeps BeautyLocalRetouchCompositionOwner as the sole proposal/source-binding/collision owner; Metal receives only the canonical RGBA8 carrier and six aggregate counters.
+- [Phase 72]: Plan 03 dispatches composed-retouch before color and geometry so local-retouch-only bytes remain owner-produced and mixed work starts from immutable composition.
+- [Phase 72]: The archive-first wrapper invokes check-metal-feature-passes.sh exactly once after runtime authorization and before consumer, CPU-oracle, opt-in, and full-child stages.
 
 ### Pending Todos
 
@@ -115,8 +119,8 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-16T09:54:13.724Z
-Stopped at: Completed 72-02-PLAN.md
+Last session: 2026-08-16T10:14:27.193Z
+Stopped at: Completed 72-03-PLAN.md
 Resume file: None
 Next action: Execute Phase 72 Plan 03; preserve the CPU reference and the
 v1.17 SDK/Metal-only boundary.
