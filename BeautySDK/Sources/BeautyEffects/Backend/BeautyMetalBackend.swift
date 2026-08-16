@@ -1,4 +1,5 @@
 import BeautyCore
+import BeautyDetection
 import BeautyRender
 import CoreGraphics
 import CoreImage
@@ -56,9 +57,18 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
             let output: BeautyBackendOutput
             switch request.input {
             case .pixelBuffer(let pixelBuffer):
-                output = .pixelBuffer(try execute(pixelBuffer: pixelBuffer))
+                output = .pixelBuffer(try execute(
+                    pixelBuffer: pixelBuffer,
+                    plan: request.plan,
+                    selectedFaceSupport: request.selectedFaceSupport
+                ))
             case .stillImage(let image):
-                output = .stillImage(try execute(stillImage: image, canonicalImage: request.canonicalImage))
+                output = .stillImage(try execute(
+                    stillImage: image,
+                    canonicalImage: request.canonicalImage,
+                    plan: request.plan,
+                    selectedFaceSupport: request.selectedFaceSupport
+                ))
             }
 
             let dimensions = dimensions(of: output)
@@ -92,7 +102,11 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         }
     }
 
-    private func execute(pixelBuffer: CVPixelBuffer) throws -> CVPixelBuffer {
+    private func execute(
+        pixelBuffer: CVPixelBuffer,
+        plan: BeautyEffectPlan,
+        selectedFaceSupport: BeautyFaceObservation?
+    ) throws -> CVPixelBuffer {
         guard CVPixelBufferGetPixelFormatType(pixelBuffer) == kCVPixelFormatType_32BGRA else {
             throw BeautyError.unsupportedPixelFormat
         }
@@ -100,7 +114,14 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         let height = CVPixelBufferGetHeight(pixelBuffer)
         let rowBytes = try packedRowBytes(width: width)
         let sourceBytes = try read(pixelBuffer: pixelBuffer, width: width, height: height, rowBytes: rowBytes)
-        let renderedBytes = try invokeRuntime(width: width, height: height, bytes: sourceBytes)
+        let rgbaBytes = bgraToRgba(sourceBytes)
+        let renderedRGBA = try invokeRuntime(
+            width: width,
+            height: height,
+            bytes: rgbaBytes,
+            passes: try makePasses(plan: plan, selectedFaceSupport: selectedFaceSupport)
+        )
+        let renderedBytes = rgbaToBgra(renderedRGBA)
         let output = try pixelBufferFactory.makePixelBuffer(width: width, height: height)
         try write(renderedBytes, to: output, width: width, height: height, rowBytes: rowBytes)
         return output
@@ -108,7 +129,9 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
 
     private func execute(
         stillImage image: CIImage,
-        canonicalImage: BeautyCanonicalStillImage?
+        canonicalImage: BeautyCanonicalStillImage?,
+        plan: BeautyEffectPlan,
+        selectedFaceSupport: BeautyFaceObservation?
     ) throws -> CIImage {
         let extent = image.extent
         guard let dimensions = BeautyBackendRequest.checkedDimensions(for: extent) else {
@@ -130,7 +153,8 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         let renderedBytes = try invokeRuntime(
             width: dimensions.width,
             height: dimensions.height,
-            bytes: bytes
+            bytes: bytes,
+            passes: try makePasses(plan: plan, selectedFaceSupport: selectedFaceSupport)
         )
         guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
             throw BeautyError.unsupportedPixelFormat
@@ -194,9 +218,98 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         return bytes
     }
 
-    private func invokeRuntime(width: Int, height: Int, bytes: [UInt8]) throws -> [UInt8] {
+    private func invokeRuntime(
+        width: Int,
+        height: Int,
+        bytes: [UInt8],
+        passes: [BeautyMetalPass]
+    ) throws -> [UInt8] {
         hooks.onRuntimeInvocation()
-        return try runtime.render(width: width, height: height, rgba8Bytes: bytes)
+        return try runtime.render(width: width, height: height, rgba8Bytes: bytes, passes: passes)
+    }
+
+    private func makePasses(
+        plan: BeautyEffectPlan,
+        selectedFaceSupport: BeautyFaceObservation?
+    ) throws -> [BeautyMetalPass] {
+        let face = selectedFaceSupport.map(BeautyFaceGeometryAdapter.makeGeometry(from:))
+        let strengths = plan.effectiveStrengths
+        let globalColor = !plan.activeDomains.isDisjoint(with: [.skin, .color, .filter])
+        let lipRequested = plan.activeDomains.contains(.lipColor) && strengths.lipColor > 0
+        let lipEnvelope = lipRequested ? face.flatMap(lipEnvelope) : nil
+        guard globalColor || lipEnvelope != nil else { return [] }
+
+        let filter = filterContribution(for: plan)
+        let parameters = try BeautyMetalColorParameters(
+            saturationDelta: strengths.saturation * 0.28 + filter.saturation,
+            contrastScale: 1 + strengths.contrast * 0.22 + strengths.skinSharpen * 0.18,
+            lightLift: strengths.brightness * 0.16 + strengths.exposure * 0.10 + strengths.skinWhitening * 0.18 + filter.brightness,
+            redBias: strengths.skinRosy * 0.08 + strengths.temperature * 0.04 + strengths.tint * 0.02 + filter.redBias,
+            greenBias: strengths.skinWhitening * 0.02 + strengths.tint * 0.03 + filter.greenBias,
+            blueBias: -strengths.temperature * 0.04 + filter.blueBias,
+            highlightLift: strengths.highlight * 0.08,
+            shadowLift: strengths.shadow * 0.08,
+            smoothing: strengths.skinSmoothing * 0.16,
+            lipCenterX: lipEnvelope?.centerX ?? 0,
+            lipCenterY: lipEnvelope?.centerY ?? 0,
+            lipRadiusX: lipEnvelope?.radiusX ?? 0,
+            lipRadiusY: lipEnvelope?.radiusY ?? 0,
+            lipStrength: min(strengths.lipColor, BeautySafetyCaps.lipColor),
+            lipEnabled: lipEnvelope != nil
+        )
+        let uniform = parameters.uniform
+        let isNeutral = uniform.saturationDelta == 0
+            && uniform.contrastScale == 1
+            && uniform.lightLift == 0
+            && uniform.redBias == 0
+            && uniform.greenBias == 0
+            && uniform.blueBias == 0
+            && uniform.highlightLift == 0
+            && uniform.shadowLift == 0
+            && uniform.smoothing == 0
+            && uniform.lipEnabled == 0
+        if isNeutral { return [] }
+        return [.color(parameters)]
+    }
+
+    private func lipEnvelope(of face: FaceGeometry) -> (centerX: Float, centerY: Float, radiusX: Float, radiusY: Float)? {
+        guard let center = LandmarkGeometryHelper.center(of: face.outerLips),
+              !face.outerLips.isEmpty
+        else { return nil }
+        let radiusX = max(face.outerLips.map { abs($0.x - center.x) }.max() ?? 0, 0.03)
+        let radiusY = max(face.outerLips.map { abs($0.y - center.y) }.max() ?? 0, 0.02)
+        guard center.x.isFinite, center.y.isFinite,
+              radiusX.isFinite, radiusY.isFinite,
+              (0...1).contains(center.x), (0...1).contains(center.y),
+              radiusX <= 1, radiusY <= 1
+        else { return nil }
+        return (center.x, center.y, radiusX, radiusY)
+    }
+
+    private func filterContribution(for plan: BeautyEffectPlan) -> (brightness: Float, saturation: Float, redBias: Float, greenBias: Float, blueBias: Float) {
+        guard plan.activeDomains.contains(.filter), plan.effectiveStrengths.filterIntensity > 0 else {
+            return (0, 0, 0, 0, 0)
+        }
+        let intensity = plan.effectiveStrengths.filterIntensity
+        if plan.metrics["beauty.effects.filter.softClean"] == 1 {
+            return (intensity * 0.05, -intensity * 0.04, intensity * 0.015, intensity * 0.018, intensity * 0.012)
+        }
+        if plan.metrics["beauty.effects.filter.warmLight"] == 1 {
+            return (intensity * 0.035, intensity * 0.025, intensity * 0.055, intensity * 0.020, -intensity * 0.025)
+        }
+        return (0, 0, 0, 0, 0)
+    }
+
+    private func bgraToRgba(_ bytes: [UInt8]) -> [UInt8] {
+        var output = bytes
+        for offset in stride(from: 0, to: output.count, by: 4) {
+            output.swapAt(offset, offset + 2)
+        }
+        return output
+    }
+
+    private func rgbaToBgra(_ bytes: [UInt8]) -> [UInt8] {
+        bgraToRgba(bytes)
     }
 
     private func dimensions(of output: BeautyBackendOutput) -> (width: Int, height: Int) {

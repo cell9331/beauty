@@ -144,6 +144,80 @@ final class BeautyMetalRuntimeTests: XCTestCase {
         XCTAssertEqual(recovered.created, recovered.released)
     }
 
+    func testOrderedPassGraphExecutesAndCleansEveryRequestResource() throws {
+        guard let runtime = makeRuntime() else { return }
+        let color = try BeautyMetalColorParameters(
+            saturationDelta: 0.08,
+            contrastScale: 1.04,
+            lightLift: 0.02,
+            redBias: 0.01,
+            greenBias: 0,
+            blueBias: -0.01,
+            highlightLift: 0.01,
+            shadowLift: 0.02,
+            smoothing: 0.04
+        )
+        let point = try BeautyMetalWarpPoint(
+            sourceX: 0.5,
+            sourceY: 0.5,
+            targetX: 0.51,
+            targetY: 0.5,
+            radius: 0.2,
+            strength: 0.1,
+            falloff: 0.8
+        )
+        let graph: [BeautyMetalPass] = [
+            .color(color),
+            .geometry(try BeautyMetalGeometryParameters(points: [point])),
+            .composedRetouch(try BeautyMetalComposedRetouchParameters()),
+        ]
+        let bytes = [UInt8](0..<16)
+        let output = try runtime.render(width: 2, height: 2, rgba8Bytes: bytes, passes: graph)
+        XCTAssertEqual(output.count, bytes.count)
+        XCTAssertEqual(output.enumerated().filter { $0.offset % 4 == 3 }.map(\.element), [3, 7, 11, 15])
+        let counters = runtime.resourceCountersForTesting
+        XCTAssertEqual(counters.active, 0)
+        XCTAssertEqual(counters.created, counters.released)
+    }
+
+    func testPassSpecificSetupFailureIsTypedBeforeRequestAllocation() throws {
+        guard let device = MTLCreateSystemDefaultDevice() else {
+            XCTAssertTrue(true, "metalUnavailable")
+            return
+        }
+        var dependencies = BeautyMetalRuntime.Dependencies.live
+        dependencies.deviceProvider = { device }
+        dependencies.functionProvider = { library, name in
+            name == "beauty_color_pass" ? nil : library.makeFunction(name: name)
+        }
+        XCTAssertThrowsError(try BeautyMetalRuntime(dependencies: dependencies)) { error in
+            XCTAssertEqual(error as? BeautyError, .renderFailed("shader_function_missing"))
+        }
+    }
+
+    func testRepeatedPassGraphExecutionHasNoActiveResources() throws {
+        guard let runtime = makeRuntime() else { return }
+        let color = try BeautyMetalColorParameters(
+            saturationDelta: 0,
+            contrastScale: 1,
+            lightLift: 0,
+            redBias: 0,
+            greenBias: 0,
+            blueBias: 0,
+            highlightLift: 0,
+            shadowLift: 0,
+            smoothing: 0
+        )
+        let graph: [BeautyMetalPass] = [.color(color)]
+        let bytes = [UInt8](repeating: 9, count: 16)
+        for _ in 0..<3 {
+            XCTAssertEqual(try runtime.render(width: 2, height: 2, rgba8Bytes: bytes, passes: graph).count, bytes.count)
+            let counters = runtime.resourceCountersForTesting
+            XCTAssertEqual(counters.active, 0)
+            XCTAssertEqual(counters.created, counters.released)
+        }
+    }
+
     private func makeRuntime() -> BeautyMetalRuntime? {
         do {
             return try BeautyMetalRuntime()

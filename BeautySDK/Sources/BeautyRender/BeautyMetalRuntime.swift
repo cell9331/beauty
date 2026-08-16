@@ -112,7 +112,7 @@ package final class BeautyMetalRuntime: @unchecked Sendable {
     private let dependencies: Dependencies
     private let device: MTLDevice
     private let commandQueue: MTLCommandQueue
-    private let pipeline: MTLComputePipelineState
+    private let pipelines: [String: MTLComputePipelineState]
     private let counters = CounterStore()
     private let maximumPixelCount: Int
 
@@ -139,28 +139,54 @@ package final class BeautyMetalRuntime: @unchecked Sendable {
         guard let library = dependencies.libraryProvider(device) else {
             throw BeautyError.renderFailed("library_creation_failed")
         }
-        let functionName = "beauty_warp_placeholder"
-        guard let function = dependencies.functionProvider(library, functionName) else {
-            throw BeautyError.shaderFunctionNotFound(functionName)
-        }
-        guard let pipeline = dependencies.pipelineProvider(device, function) else {
-            throw BeautyError.renderFailed("pipeline_creation_failed")
+        let functionNames = [
+            "beauty_warp_placeholder",
+            "beauty_color_pass",
+            "beauty_geometry_pass",
+            "beauty_local_retouch_pass",
+        ]
+        var pipelines: [String: MTLComputePipelineState] = [:]
+        for functionName in functionNames {
+            guard let function = dependencies.functionProvider(library, functionName) else {
+                if functionName == "beauty_warp_placeholder" {
+                    throw BeautyError.shaderFunctionNotFound(functionName)
+                }
+                throw BeautyError.renderFailed("shader_function_missing")
+            }
+            guard let pipeline = dependencies.pipelineProvider(device, function) else {
+                throw BeautyError.renderFailed("pipeline_creation_failed")
+            }
+            pipelines[functionName] = pipeline
         }
 
         self.dependencies = dependencies
         self.device = device
         self.commandQueue = commandQueue
-        self.pipeline = pipeline
+        self.pipelines = pipelines
         self.maximumPixelCount = maximumPixelCount
     }
 
     /// Executes one identity copy through the bundled shader.
-    ///
-    /// The input and output textures are private. Request-local shared buffers
-    /// are used only as bounded upload/readback staging because private Metal
-    /// textures cannot be directly mapped by the CPU.
     package func render(width: Int, height: Int, rgba8Bytes: [UInt8]) throws -> [UInt8] {
+        try render(width: width, height: height, rgba8Bytes: rgba8Bytes, passes: [])
+    }
+
+    /// Executes one ordered, request-local pass graph. The input and output
+    /// textures are private; shared buffers are bounded upload/readback staging.
+    package func render(
+        width: Int,
+        height: Int,
+        rgba8Bytes: [UInt8],
+        passes: [BeautyMetalPass]
+    ) throws -> [UInt8] {
         let dimensions = try validate(width: width, height: height, inputByteCount: rgba8Bytes.count)
+        guard passes.count <= 64 else { throw BeautyError.invalidInput }
+        let kernelNames = passes.isEmpty
+            ? ["beauty_warp_placeholder"]
+            : passes.map(\.kernelName)
+        guard kernelNames.allSatisfy({ pipelines[$0] != nil }) else {
+            throw BeautyError.shaderFunctionNotFound("beauty_pass")
+        }
         let rowBytes = dimensions.rowBytes
         let paddedRowBytes = try alignedRowBytes(rowBytes)
         let paddedByteCount = try checkedMultiply(paddedRowBytes, height)
@@ -266,33 +292,84 @@ package final class BeautyMetalRuntime: @unchecked Sendable {
         uploadEncoderValue.endEncoding()
         uploadEncoder = nil
 
-        var computeEncoder = tracked(dependencies.computeEncoderProvider(commandBuffer))
-        guard computeEncoder != nil else {
-            throw BeautyError.renderFailed("compute_encoder_creation_failed")
-        }
-        defer {
-            counters.releasedResource()
-            computeEncoder?.endEncoding()
-            computeEncoder = nil
-        }
-
         let threadGrid = MTLSize(width: width, height: height, depth: 1)
-        let threadgroupWidth = min(max(1, pipeline.threadExecutionWidth), width)
-        guard threadgroupWidth > 0,
-              pipeline.maxTotalThreadsPerThreadgroup >= threadgroupWidth
-        else {
-            throw BeautyError.renderFailed("thread_grid_invalid")
+        var currentTexture = inputTexture
+        var nextTexture = outputTexture
+        for (index, pass) in passes.enumerated() {
+            guard let pipeline = pipelines[pass.kernelName] else {
+                throw BeautyError.shaderFunctionNotFound(pass.kernelName)
+            }
+            var computeEncoder = tracked(dependencies.computeEncoderProvider(commandBuffer))
+            guard computeEncoder != nil else {
+                throw BeautyError.renderFailed("compute_encoder_creation_failed")
+            }
+            defer {
+                counters.releasedResource()
+                computeEncoder?.endEncoding()
+                computeEncoder = nil
+            }
+
+            let threadgroupWidth = min(max(1, pipeline.threadExecutionWidth), width)
+            guard threadgroupWidth > 0,
+                  pipeline.maxTotalThreadsPerThreadgroup >= threadgroupWidth
+            else {
+                throw BeautyError.renderFailed("thread_grid_invalid")
+            }
+            guard let computeEncoderValue = computeEncoder else {
+                throw BeautyError.renderFailed("request_resource_unavailable")
+            }
+            computeEncoderValue.setComputePipelineState(pipeline)
+            computeEncoderValue.setTexture(currentTexture, index: 0)
+            computeEncoderValue.setTexture(nextTexture, index: 1)
+            switch pass {
+            case .color(let parameters):
+                var uniform = parameters.uniform
+                withUnsafeBytes(of: &uniform) { bytes in
+                    computeEncoderValue.setBytes(
+                        bytes.baseAddress!,
+                        length: MemoryLayout<BeautyMetalColorUniform>.stride,
+                        index: 0
+                    )
+                }
+            case .geometry, .composedRetouch:
+                break
+            }
+            computeEncoderValue.dispatchThreads(threadGrid, threadsPerThreadgroup: MTLSize(width: threadgroupWidth, height: 1, depth: 1))
+            computeEncoderValue.endEncoding()
+            computeEncoder = nil
+            swap(&currentTexture, &nextTexture)
+            if index + 1 == passes.count {
+                break
+            }
         }
-        let threadgroup = MTLSize(width: threadgroupWidth, height: 1, depth: 1)
-        guard let computeEncoderValue = computeEncoder else {
-            throw BeautyError.renderFailed("request_resource_unavailable")
+        if passes.isEmpty {
+            guard let pipeline = pipelines["beauty_warp_placeholder"] else {
+                throw BeautyError.shaderFunctionNotFound("beauty_warp_placeholder")
+            }
+            var computeEncoder = tracked(dependencies.computeEncoderProvider(commandBuffer))
+            guard computeEncoder != nil else {
+                throw BeautyError.renderFailed("compute_encoder_creation_failed")
+            }
+            defer {
+                counters.releasedResource()
+                computeEncoder?.endEncoding()
+                computeEncoder = nil
+            }
+            let threadgroupWidth = min(max(1, pipeline.threadExecutionWidth), width)
+            guard pipeline.maxTotalThreadsPerThreadgroup >= threadgroupWidth else {
+                throw BeautyError.renderFailed("thread_grid_invalid")
+            }
+            guard let encoder = computeEncoder else {
+                throw BeautyError.renderFailed("request_resource_unavailable")
+            }
+            encoder.setComputePipelineState(pipeline)
+            encoder.setTexture(currentTexture, index: 0)
+            encoder.setTexture(nextTexture, index: 1)
+            encoder.dispatchThreads(threadGrid, threadsPerThreadgroup: MTLSize(width: threadgroupWidth, height: 1, depth: 1))
+            encoder.endEncoding()
+            computeEncoder = nil
+            swap(&currentTexture, &nextTexture)
         }
-        computeEncoderValue.setComputePipelineState(pipeline)
-        computeEncoderValue.setTexture(inputTexture, index: 0)
-        computeEncoderValue.setTexture(outputTexture, index: 1)
-        computeEncoderValue.dispatchThreads(threadGrid, threadsPerThreadgroup: threadgroup)
-        computeEncoderValue.endEncoding()
-        computeEncoder = nil
 
         var outputBuffer = tracked(makeBuffer(bytes: outputStaging, length: paddedByteCount))
         guard outputBuffer != nil else {
@@ -319,7 +396,7 @@ package final class BeautyMetalRuntime: @unchecked Sendable {
             throw BeautyError.renderFailed("request_resource_unavailable")
         }
         downloadEncoderValue.copy(
-            from: outputTexture,
+            from: currentTexture,
             sourceSlice: 0,
             sourceLevel: 0,
             sourceOrigin: MTLOrigin(x: 0, y: 0, z: 0),
