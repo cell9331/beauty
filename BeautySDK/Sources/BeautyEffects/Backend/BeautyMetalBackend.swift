@@ -60,14 +60,17 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
                 output = .pixelBuffer(try execute(
                     pixelBuffer: pixelBuffer,
                     plan: request.plan,
-                    selectedFaceSupport: request.selectedFaceSupport
+                    selectedFaceSupport: request.selectedFaceSupport,
+                    compositionSummary: request.compositionSummary,
+                    canonicalImage: request.canonicalImage
                 ))
             case .stillImage(let image):
                 output = .stillImage(try execute(
                     stillImage: image,
                     canonicalImage: request.canonicalImage,
                     plan: request.plan,
-                    selectedFaceSupport: request.selectedFaceSupport
+                    selectedFaceSupport: request.selectedFaceSupport,
+                    compositionSummary: request.compositionSummary
                 ))
             }
 
@@ -105,8 +108,16 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
     private func execute(
         pixelBuffer: CVPixelBuffer,
         plan: BeautyEffectPlan,
-        selectedFaceSupport: BeautyFaceObservation?
+        selectedFaceSupport: BeautyFaceObservation?,
+        compositionSummary: BeautyLocalRetouchCompositionSummary?,
+        canonicalImage: BeautyCanonicalStillImage?
     ) throws -> CVPixelBuffer {
+        guard compositionSummary == nil, canonicalImage == nil else {
+            // Local-retouch composition is still-image-only. A pixel-buffer
+            // request must never smuggle a carrier or aggregate across that
+            // boundary.
+            throw BeautyError.invalidInput
+        }
         guard CVPixelBufferGetPixelFormatType(pixelBuffer) == kCVPixelFormatType_32BGRA else {
             throw BeautyError.unsupportedPixelFormat
         }
@@ -119,7 +130,12 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
             width: width,
             height: height,
             bytes: rgbaBytes,
-            passes: try makePasses(plan: plan, selectedFaceSupport: selectedFaceSupport)
+            passes: try makePasses(
+                plan: plan,
+                selectedFaceSupport: selectedFaceSupport,
+                compositionSummary: compositionSummary,
+                hasCanonicalCarrier: canonicalImage != nil
+            )
         )
         let renderedBytes = rgbaToBgra(renderedRGBA)
         let output = try pixelBufferFactory.makePixelBuffer(width: width, height: height)
@@ -131,7 +147,8 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         stillImage image: CIImage,
         canonicalImage: BeautyCanonicalStillImage?,
         plan: BeautyEffectPlan,
-        selectedFaceSupport: BeautyFaceObservation?
+        selectedFaceSupport: BeautyFaceObservation?,
+        compositionSummary: BeautyLocalRetouchCompositionSummary?
     ) throws -> CIImage {
         let extent = image.extent
         guard let dimensions = BeautyBackendRequest.checkedDimensions(for: extent) else {
@@ -154,7 +171,12 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
             width: dimensions.width,
             height: dimensions.height,
             bytes: bytes,
-            passes: try makePasses(plan: plan, selectedFaceSupport: selectedFaceSupport)
+            passes: try makePasses(
+                plan: plan,
+                selectedFaceSupport: selectedFaceSupport,
+                compositionSummary: compositionSummary,
+                hasCanonicalCarrier: canonicalImage != nil
+            )
         )
         guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
             throw BeautyError.unsupportedPixelFormat
@@ -230,8 +252,22 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
 
     private func makePasses(
         plan: BeautyEffectPlan,
-        selectedFaceSupport: BeautyFaceObservation?
+        selectedFaceSupport: BeautyFaceObservation?,
+        compositionSummary: BeautyLocalRetouchCompositionSummary?,
+        hasCanonicalCarrier: Bool
     ) throws -> [BeautyMetalPass] {
+        var passes: [BeautyMetalPass] = []
+        if compositionSummary != nil {
+            guard hasCanonicalCarrier else {
+                throw BeautyError.invalidInput
+            }
+            // BeautyEngine has already run the sole local-retouch owner. The
+            // carrier bytes are therefore the immutable original-pixel/Q16
+            // composition result; Metal only establishes the ordered pass
+            // boundary and never receives proposals, masks, or support.
+            passes.append(.composedRetouch(try BeautyMetalComposedRetouchParameters()))
+        }
+
         let face = selectedFaceSupport.map(BeautyFaceGeometryAdapter.makeGeometry(from:))
         let strengths = plan.effectiveStrengths
         let globalColor = !plan.activeDomains.isDisjoint(with: [.skin, .color, .filter])
@@ -241,9 +277,9 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
             BeautyGeometryEffectPipeline.controlPoints(for: plan, face: $0)
         } ?? []
         let geometry = try makeGeometryPass(points: geometryPoints)
-        guard globalColor || lipEnvelope != nil || geometry != nil else { return [] }
-
-        var passes: [BeautyMetalPass] = []
+        guard globalColor || lipEnvelope != nil || geometry != nil || !passes.isEmpty else {
+            return []
+        }
 
         let filter = filterContribution(for: plan)
         let parameters = try BeautyMetalColorParameters(
