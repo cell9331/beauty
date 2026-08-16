@@ -5,8 +5,8 @@ set -euo pipefail
 readonly repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
 readonly package_root="${repository_root}/BeautySDK"
 readonly maximum_output_bytes=$((16 * 1024 * 1024))
-readonly focused_filter='BeautyEffectsTests.BeautyMetalColorPassTests|BeautyEffectsTests.BeautyMetalBackendTests|BeautyRenderTests.BeautyMetalRuntimeTests'
-readonly expected_focused_tests=22
+readonly focused_filter='BeautyEffectsTests.BeautyMetalColorPassTests|BeautyEffectsTests.BeautyMetalGeometryPassTests|BeautyEffectsTests.BeautyMetalBackendTests|BeautyRenderTests.BeautyMetalRuntimeTests'
+readonly expected_focused_tests=26
 readonly pass_source="BeautySDK/Sources/BeautyRender/BeautyMetalPass.swift"
 readonly runtime_source="BeautySDK/Sources/BeautyRender/BeautyMetalRuntime.swift"
 readonly shader_source="BeautySDK/Sources/BeautyRender/Shaders/Warp.metal"
@@ -15,6 +15,7 @@ readonly contract_source="BeautySDK/Sources/BeautyEffects/Backend/BeautyBackendC
 readonly color_test_source="BeautySDK/Tests/BeautyEffectsTests/BeautyMetalColorPassTests.swift"
 readonly runtime_test_source="BeautySDK/Tests/BeautyRenderTests/BeautyMetalRuntimeTests.swift"
 readonly backend_test_source="BeautySDK/Tests/BeautyEffectsTests/BeautyMetalBackendTests.swift"
+readonly geometry_test_source="BeautySDK/Tests/BeautyEffectsTests/BeautyMetalGeometryPassTests.swift"
 readonly parameters_source="BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift"
 readonly configuration_source="BeautySDK/Sources/BeautyCore/Models/BeautyConfiguration.swift"
 readonly manifest_source="BeautySDK/Sources/BeautyResources/Resources/manifest.json"
@@ -59,6 +60,7 @@ paths = {
     "color_tests": "BeautySDK/Tests/BeautyEffectsTests/BeautyMetalColorPassTests.swift",
     "runtime_tests": "BeautySDK/Tests/BeautyRenderTests/BeautyMetalRuntimeTests.swift",
     "backend_tests": "BeautySDK/Tests/BeautyEffectsTests/BeautyMetalBackendTests.swift",
+    "geometry_tests": "BeautySDK/Tests/BeautyEffectsTests/BeautyMetalGeometryPassTests.swift",
     "parameters": "BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift",
     "configuration": "BeautySDK/Sources/BeautyCore/Models/BeautyConfiguration.swift",
     "manifest": "BeautySDK/Sources/BeautyResources/Resources/manifest.json",
@@ -130,6 +132,12 @@ if "CGColorSpace(name: CGColorSpace.sRGB)" not in backend_code:
     raise SystemExit("named sRGB materialization is missing")
 if "bgraToRgba" not in backend_code or "rgbaToBgra" not in backend_code:
     raise SystemExit("pixel-buffer channel bridge is missing")
+for marker in ("BeautyFaceGeometryAdapter.makeGeometry", "BeautyGeometryEffectPipeline.controlPoints", "maximumPointCount"):
+    if marker not in backend_code:
+        raise SystemExit(f"geometry adapter marker missing: {marker}")
+for marker in ("constant BeautyMetalWarpPoint", "pointCount", "beauty_falloff_weight", "beauty_clamp_point", "input.read"):
+    if marker not in shader:
+        raise SystemExit(f"geometry shader marker missing: {marker}")
 
 diagnostics = text["contract"].split("package struct BeautyBackendDiagnostics", 1)[1].split("package init", 1)[0]
 privacy_terms = ["r" + "aw", "m" + "ask", "land" + "mark", "coordinate", "p" + "ath", "fixt" + "ure", "texture", "framework"]
@@ -143,6 +151,8 @@ for term in (
 ):
     if term in text["color_tests"]:
         raise SystemExit(f"private/UI/test artifact entered color suite: {term}")
+    if term in text["geometry_tests"]:
+        raise SystemExit(f"private/UI/test artifact entered geometry suite: {term}")
 
 parameters = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", text["parameters"], re.MULTILINE)
 configuration = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", text["configuration"], re.MULTILINE)
@@ -167,6 +177,8 @@ if metal_sources != [paths["shader"]]:
     raise SystemExit("Metal shader inventory changed")
 if "BeautyMetalColorPassTests" not in text["color_tests"]:
     raise SystemExit("generated color suite is missing")
+if "BeautyMetalGeometryPassTests" not in text["geometry_tests"]:
+    raise SystemExit("generated geometry suite is missing")
 sys.stdout.write("metal_feature_passes_static_boundary_passed\n")
 PY
 }
@@ -184,7 +196,7 @@ if not executions or executions[-1][0] != expected or max(value for value, _ in 
     raise SystemExit(1)
 if any(failures != 0 for _, failures in executions):
     raise SystemExit(1)
-for suite in ("BeautyMetalColorPassTests", "BeautyMetalBackendTests", "BeautyMetalRuntimeTests"):
+for suite in ("BeautyMetalColorPassTests", "BeautyMetalGeometryPassTests", "BeautyMetalBackendTests", "BeautyMetalRuntimeTests"):
     if suite not in text: raise SystemExit(1)
 if re.search(r"\b(?:skipped|disabled|unexpected failure)\b", text, re.IGNORECASE): raise SystemExit(1)
 PY
