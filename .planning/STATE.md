@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.17
 milestone_name: Dual CPU/GPU Metal Rendering
 status: executing
-stopped_at: Completed 71-03-PLAN.md
-last_updated: "2026-08-16T08:31:28.085Z"
-last_activity: 2026-08-16 -- Phase 71 execution started
+stopped_at: Completed 71-04-PLAN.md
+last_updated: "2026-08-16T16:38:00.000Z"
+last_activity: 2026-08-16 -- Phase 71 METAL-01 closeout completed
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 6
-  completed_plans: 5
-  percent: 20
+  completed_plans: 6
+  percent: 40
 ---
 
 # Project State
@@ -23,14 +23,14 @@ See: `.planning/PROJECT.md` (updated 2026-08-15)
 **Core value:** An iOS app can integrate `BeautySDK` and get natural,
 controllable, real-time and still-image beauty processing through a stable
 modular facade.
-**Current focus:** Phase 71 — SDK-Owned Metal Runtime
+**Current focus:** Phase 72 — Metal Feature Passes
 
 ## Current Position
 
-Phase: 71 (SDK-Owned Metal Runtime) — EXECUTING
-Plan: 4 of 4
-Status: Ready to execute
-Last activity: 2026-08-16 -- Phase 71 execution started
+Phase: 72 (Metal Feature Passes) — READY
+Plan: 0 of TBD
+Status: Phase 71 complete; Phase 72 is next
+Last activity: 2026-08-16 -- Phase 71 METAL-01 closeout completed
 
 Progress: [██████████] 100% (phase 70)
 
@@ -53,6 +53,7 @@ roadmaps.
 | Phase 71 P01 | ~35min | 2 tasks | 2 files |
 | Phase 71 P02 | ~2h25m | 2 tasks | 3 files |
 | Phase 71 P03 | 40min | 2 tasks | 11 files |
+| Phase 71 P04 | ~2h | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -84,6 +85,8 @@ roadmaps.
 - [Phase 71]: Plan 03 keeps Metal validation package-owned and aggregate-only; host availability is explicit and never GPU success.
 - [Phase 71]: The archive-first wrapper runs the Metal preflight once after Phase-70 authorization and before consumer, CPU-oracle, opt-in, and full-child stages.
 - [Phase 71]: CPU remains the reference; public backend selection and generated parity stay owned by Phases 73 and 74.
+- [Phase 71]: METAL-01 closes only after archive-first runtime/preflight and full no-skip evidence: focused 26/0/0, full 728/0/0, eight opt-ins exactly once, and separate metal_available=1 / metal_unavailable=0 accounting.
+- [Phase 71]: The runtime closeout is package-only aggregate evidence; Phase 72 owns feature passes, Phase 73 owns public .cpu/.gpu configuration, and Phase 74 owns parity/SDK-only closeout.
 
 ### Pending Todos
 
@@ -91,9 +94,9 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- Phase 70 is complete. Metal availability, resource behavior, parity
-  tolerances, and public configuration remain unverified until their owning
-  phases execute.
+- Phase 71 is complete for package-owned runtime mechanics. Feature-pass
+  semantics, public configuration, parity tolerances, and release/device
+  evidence remain unverified until Phases 72–74 execute.
 
 ## Deferred Items
 
@@ -104,8 +107,8 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-16T08:31:28.078Z
-Stopped at: Completed 71-03-PLAN.md
+Last session: 2026-08-16T16:38:00.000Z
+Stopped at: Completed 71-04-PLAN.md
 Resume file: None
-Next action: Plan Phase 71; preserve the CPU reference and the v1.17
+Next action: Plan Phase 72; preserve the CPU reference and the v1.17
 SDK/Metal-only boundary.

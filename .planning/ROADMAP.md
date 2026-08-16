@@ -49,7 +49,7 @@ SDK-owned evidence.
 ## Phases
 
 - [x] **Phase 70: Backend-Neutral Contract and CPU Reference** — Establish one shared request/result boundary and keep CPU selectable as the permanent reference. (completed 2026-08-16)
-- [ ] **Phase 71: SDK-Owned Metal Runtime** — Add bounded Metal device, queue, texture, synchronization, and resource-lifetime ownership.
+- [x] **Phase 71: SDK-Owned Metal Runtime** — Add bounded Metal device, queue, texture, synchronization, and resource-lifetime ownership. (completed 2026-08-16)
 - [ ] **Phase 72: Metal Feature Passes** — Implement color/skin, geometry-warp, and local-retouch passes with the existing CPU semantics and safety rules.
 - [ ] **Phase 73: Public Backend Configuration and Fail-Closed Availability** — Expose `.cpu`/`.gpu` policy with CPU-compatible defaults and typed unavailable-GPU failure.
 - [ ] **Phase 74: CPU/GPU Parity and SDK-Only Closeout** — Prove structural parity, safety, determinism, failure isolation, and the mandatory no-skip scope gate.
@@ -107,7 +107,18 @@ on an application lifecycle or leaking state across requests.
 - [x] 71-01-PLAN.md — Build and test the SDK-owned bounded Metal runtime.
 - [x] 71-02-PLAN.md — Connect internal Metal execution to the shared backend boundary.
 - [x] 71-03-PLAN.md — Add the mutation-tested Metal preflight and synchronize owners.
-- [ ] 71-04-PLAN.md — Close METAL-01 with measured gates and planning ledgers.
+- [x] 71-04-PLAN.md — Close METAL-01 with measured gates and planning ledgers.
+
+**Phase 71 completion evidence:** The archive-first runtime gate passes its
+mutation self-test and live preflight with focused `26/0/0` execution and
+separate `metal_available=1` / `metal_unavailable=0` accounting. The
+post-archive SDK-only boundary and no-skip wrapper self-test pass, and the
+full `run-no-skip-swiftpm.sh` wrapper executes `728` tests with zero failures,
+zero skips, and all eight documented opt-ins exactly once. The evidence is
+aggregate-only and establishes package-owned runtime mechanics; it does not
+claim public `.gpu` configuration, feature-pass parity, new algorithms,
+simulator/physical-device validation, performance, commercial, packaging,
+shipping, launch, or release readiness. Phase 72 is next.
 
 ### Phase 72: Metal Feature Passes
 
@@ -207,7 +218,7 @@ duplicate mappings.
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
 | 70. Backend-Neutral Contract and CPU Reference | v1.17 | 2/2 | Complete    | 2026-08-15 |
-| 71. SDK-Owned Metal Runtime | v1.17 | 0/TBD | Not started | - |
+| 71. SDK-Owned Metal Runtime | v1.17 | 4/4 | Complete | 2026-08-16 |
 | 72. Metal Feature Passes | v1.17 | 0/TBD | Not started | - |
 | 73. Public Backend Configuration and Fail-Closed Availability | v1.17 | 0/TBD | Not started | - |
 | 74. CPU/GPU Parity and SDK-Only Closeout | v1.17 | 0/TBD | Not started | - |

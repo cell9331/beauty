@@ -65,6 +65,26 @@
 | CLOSE-01 | Phase 74 | Pending |
 | CLOSE-02 | Phase 74 | Pending |
 
+### Phase 71 Completion Evidence
+
+`METAL-01` is complete through the exact Phase-71 plan chain `71-01-PLAN.md`,
+`71-02-PLAN.md`, `71-03-PLAN.md`, and `71-04-PLAN.md`. The final aggregate
+evidence is archive-first: `check-metal-runtime.sh --self-test` and live
+preflight pass with focused `26` tests, `0` failures, `0` skips,
+`metal_available=1`, and `metal_unavailable=0`; the post-archive SDK-only
+boundary and no-skip wrapper self-test pass; and
+`run-no-skip-swiftpm.sh` completes `728` tests with `0` failures, `0` skips,
+and all eight documented opt-ins executed exactly once. Runtime cleanup and
+terminal-error behavior are represented only by bounded aggregate status in
+the package-owned checks.
+
+This completion records package-only runtime mechanics and does not claim a
+public `.gpu` selector, feature-pass parity, a new algorithm, UI/Demo
+lifecycle, simulator or physical-device validation, performance, commercial
+approval, packaging, shipping, launch, or release readiness. Phase 72 owns
+Metal feature passes; Phase 73 owns public `.cpu`/`.gpu` configuration and
+typed availability policy; Phase 74 owns parity and SDK-only closeout.
+
 **Coverage:**
 
 - v1.17 requirements: 13 total
@@ -75,4 +95,4 @@
 
 ---
 *Requirements defined: 2026-08-15*
-*Last updated: 2026-08-15 after Phase 70 backend-neutral CPU reference closeout and exact requirement traceability*
+*Last updated: 2026-08-16 after Phase 71 METAL-01 runtime closeout and exact requirement traceability*
