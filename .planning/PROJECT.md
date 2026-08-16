@@ -46,6 +46,29 @@ The backend choice is configuration/execution policy and must not change the pub
 
 **Non-negotiable boundary:** v1.17 is SDK/algorithm and Metal-pipeline work only. It does not add SwiftUI/Demo behavior, Xcode application targets, simulator or physical-device validation, new beauty algorithms/parameters, cloud/model assets, commercial visual approval, packaging, shipping, launch, or release-readiness claims.
 
+### Phase 71 Current Runtime Position
+
+Phase 71 is complete for `METAL-01` and Phase 72 is next. The delivered
+runtime is package-only: `BeautyRender` owns device, command queue, compiled
+pipeline, request-local RGBA8 textures/buffers, command synchronization,
+terminal status, and deterministic cleanup; `BeautyEffects` owns one internal
+`.metal` boundary invocation. A host without Metal is an explicit
+`metal_unavailable`/typed fail-closed outcome, never CPU success or parity
+evidence; an available host is recorded separately as `metal_available`.
+Resource cleanup and terminal errors are retained only as bounded aggregate
+status. The CPU implementation remains the reference, and no public `.gpu`
+selector or feature-pass parity claim exists yet.
+
+The final archive-first evidence is `check-metal-runtime.sh --self-test` plus
+live preflight (`26/0/0`, `metal_available=1`, `metal_unavailable=0`), the
+post-archive SDK-only boundary, the no-skip wrapper self-test, and
+`run-no-skip-swiftpm.sh` (`728/0/0`, eight opt-ins exactly once). Phase 72 owns
+feature passes, Phase 73 owns public `.cpu`/`.gpu` configuration and typed
+availability policy, and Phase 74 owns generated parity and SDK-only closeout.
+This does not claim a new algorithm, UI/Demo lifecycle, simulator or
+physical-device validation, performance, commercial approval, packaging,
+shipping, launch, or release readiness.
+
 ## Last Completed Milestone: v1.16 SDK-Only Foundation and CPU Reference
 
 **Goal:** Remove active application/UI ownership from the repository, establish SwiftPM and the SDK command-line renderer as the only validation boundary, preserve deterministic CPU behavior as a future cross-backend oracle, and repair the remaining public sendability debt without adding Metal behavior.
@@ -549,4 +572,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-08-15 after starting v1.17 Dual CPU/GPU Metal Rendering*
+*Last updated: 2026-08-16 after Phase 71 METAL-01 runtime closeout*

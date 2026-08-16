@@ -49,6 +49,27 @@ Checklist:
 
 > 以下记录均为已完成或已被后续权威取代的执行历史，不是 Active plan。
 
+### C-2026-08-16-phase-71-sdk-owned-metal-runtime
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
+| Completed | 2026-08-16 |
+| Scope | Close METAL-01 for package-owned bounded Metal runtime mechanics while preserving the CPU reference and deferring feature passes, public configuration, and parity. |
+| Plans | `71-01-PLAN.md` owns the runtime transaction; `71-02-PLAN.md` owns the internal executor boundary; `71-03-PLAN.md` owns the mutation-tested preflight and synchronized owners; `71-04-PLAN.md` owns measured closeout and ledgers. |
+| Requirement | METAL-01, owned exactly by the four Phase-71 plans above. |
+| Runtime ownership | `BeautyRender` owns package-only device, command queue, pipeline, request-local RGBA8 textures/buffers, command synchronization, terminal status, and deterministic cleanup. `BeautyEffects` owns one internal `.metal` boundary invocation with no CPU alternate path. |
+| Availability | Final preflight records `metal_available=1` and `metal_unavailable=0` as separate aggregate classifications; unavailable execution remains an explicit fail-closed outcome and is not success or parity evidence. |
+| Verification | `check-metal-runtime.sh --self-test` and live preflight pass with focused `26/0/0`; post-archive SDK-only boundary and no-skip self-test pass; `run-no-skip-swiftpm.sh` executes `728/0/0`, with eight opt-ins exactly once and no skips. Runtime cleanup and terminal-error paths are represented by bounded aggregate counters/status only. |
+| Source audit | GOAL is covered by Plans 71-01..04; REQ `METAL-01` is covered by all four plan frontmatters and this completion ledger; RESEARCH is excluded because research is disabled by configuration and no research artifact exists; CONTEXT is excluded because no phase context artifact exists and there are no locked decisions or deferred ideas to implement. |
+| Handoff | Phase 72 owns Metal feature passes; Phase 73 owns public `.cpu`/`.gpu` configuration and typed availability policy; Phase 74 owns generated parity and SDK-only closeout. |
+| Nonclaims | This record adds no public `.gpu` selector, feature-pass parity, new algorithm, UI/Demo lifecycle, simulator or physical-device validation, performance, commercial approval, packaging, shipping, launch, or release-readiness claim. |
+
+Outcome:
+
+- The archive-first evidence closes the package-only runtime ownership requirement and transitions the active milestone to Phase 72.
+- CPU remains the reference. Device/performance/release evidence and all later-phase behavior remain explicitly outside this closeout.
+
 ### C-2026-08-15-phase-70-backend-neutral-contract-and-cpu-reference
 
 | Field | Value |
