@@ -102,7 +102,12 @@ on an application lifecycle or leaking state across requests.
 
   3. Metal execution remains bounded and finite under malformed or unsupported
      work, with cleanup completed independently of any external host lifecycle.
-**Plans**: TBD
+**Plans**: 4 plans
+
+- [ ] 71-01-PLAN.md — Build and test the SDK-owned bounded Metal runtime.
+- [ ] 71-02-PLAN.md — Connect internal Metal execution to the shared backend boundary.
+- [ ] 71-03-PLAN.md — Add the mutation-tested Metal preflight and synchronize owners.
+- [ ] 71-04-PLAN.md — Close METAL-01 with measured gates and planning ledgers.
 
 ### Phase 72: Metal Feature Passes
 
