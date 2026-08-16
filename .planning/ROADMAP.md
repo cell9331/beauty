@@ -48,7 +48,7 @@ SDK-owned evidence.
 
 ## Phases
 
-- [ ] **Phase 70: Backend-Neutral Contract and CPU Reference** — Establish one shared request/result boundary and keep CPU selectable as the permanent reference.
+- [x] **Phase 70: Backend-Neutral Contract and CPU Reference** — Establish one shared request/result boundary and keep CPU selectable as the permanent reference. (completed 2026-08-16)
 - [ ] **Phase 71: SDK-Owned Metal Runtime** — Add bounded Metal device, queue, texture, synchronization, and resource-lifetime ownership.
 - [ ] **Phase 72: Metal Feature Passes** — Implement color/skin, geometry-warp, and local-retouch passes with the existing CPU semantics and safety rules.
 - [ ] **Phase 73: Public Backend Configuration and Fail-Closed Availability** — Expose `.cpu`/`.gpu` policy with CPU-compatible defaults and typed unavailable-GPU failure.
@@ -201,7 +201,7 @@ duplicate mappings.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 70. Backend-Neutral Contract and CPU Reference | v1.17 | 2/2 | Complete | 2026-08-15 |
+| 70. Backend-Neutral Contract and CPU Reference | v1.17 | 2/2 | Complete    | 2026-08-15 |
 | 71. SDK-Owned Metal Runtime | v1.17 | 0/TBD | Not started | - |
 | 72. Metal Feature Passes | v1.17 | 0/TBD | Not started | - |
 | 73. Public Backend Configuration and Fail-Closed Availability | v1.17 | 0/TBD | Not started | - |

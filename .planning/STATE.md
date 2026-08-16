@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.17
 milestone_name: Dual CPU/GPU Metal Rendering
-current_phase: 70
-current_phase_name: Backend-Neutral Contract and CPU Reference
-status: executing
+current_phase: 71
+current_phase_name: SDK-Owned Metal Runtime
+status: planning
 stopped_at: Completed 70-02-PLAN.md
-last_updated: "2026-08-15T06:43:08Z"
-last_activity: 2026-08-15
+last_updated: "2026-08-16T03:38:13.686Z"
+last_activity: 2026-08-16
+last_activity_desc: Phase 70 complete, transitioned to Phase 71
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 2
   completed_plans: 2
   percent: 20
-last_activity_desc: Phase 70 complete; backend-neutral CPU reference gate is green
 ---
 
 # Project State
@@ -30,10 +30,10 @@ modular facade.
 
 ## Current Position
 
-Phase: 70 (Backend-Neutral Contract and CPU Reference) — COMPLETE
-Plan: 2 of 2
-Status: Complete
-Last activity: 2026-08-15
+Phase: 71 — SDK-Owned Metal Runtime
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-08-16 — Phase 70 complete, transitioned to Phase 71
 
 Progress: [██████████] 100% (phase 70)
 
