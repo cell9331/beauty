@@ -147,7 +147,7 @@ preserving the CPU semantics and existing safety boundaries.
 Plans:
 
 - [x] 72-01-PLAN.md — Establish the bounded Metal pass graph and implement color/skin rendering.
-- [ ] 72-02-PLAN.md — Wire existing unified geometry control points into the Metal warp pass.
+- [x] 72-02-PLAN.md — Wire existing unified geometry control points into the Metal warp pass.
 - [ ] 72-03-PLAN.md — Preserve local-retouch composition ownership and close the feature-pass gate.
 
 ### Phase 73: Public Backend Configuration and Fail-Closed Availability
