@@ -237,7 +237,13 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         let globalColor = !plan.activeDomains.isDisjoint(with: [.skin, .color, .filter])
         let lipRequested = plan.activeDomains.contains(.lipColor) && strengths.lipColor > 0
         let lipEnvelope = lipRequested ? face.flatMap(lipEnvelope) : nil
-        guard globalColor || lipEnvelope != nil else { return [] }
+        let geometryPoints = face.map {
+            BeautyGeometryEffectPipeline.controlPoints(for: plan, face: $0)
+        } ?? []
+        let geometry = try makeGeometryPass(points: geometryPoints)
+        guard globalColor || lipEnvelope != nil || geometry != nil else { return [] }
+
+        var passes: [BeautyMetalPass] = []
 
         let filter = filterContribution(for: plan)
         let parameters = try BeautyMetalColorParameters(
@@ -268,8 +274,56 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
             && uniform.shadowLift == 0
             && uniform.smoothing == 0
             && uniform.lipEnabled == 0
-        if isNeutral { return [] }
-        return [.color(parameters)]
+        if !isNeutral {
+            passes.append(.color(parameters))
+        }
+        if let geometry {
+            // CPU applies color before the unified geometry pipeline. Keep the
+            // same order in the bounded Metal graph and never synthesize a
+            // second provider, support, or collision owner here.
+            passes.append(geometry)
+        }
+        return passes
+    }
+
+    private func makeGeometryPass(points: [WarpControlPoint]) throws -> BeautyMetalPass? {
+        guard !points.isEmpty,
+              points.count <= BeautyMetalGeometryParameters.maximumPointCount
+        else {
+            return nil
+        }
+
+        let payload = points.compactMap { point -> BeautyMetalWarpPoint? in
+            guard point.source.x.isFinite, point.source.y.isFinite,
+                  point.target.x.isFinite, point.target.y.isFinite,
+                  point.radius.isFinite, point.strength.isFinite,
+                  point.falloff.isFinite,
+                  (0...1).contains(point.source.x),
+                  (0...1).contains(point.source.y),
+                  (0...1).contains(point.target.x),
+                  (0...1).contains(point.target.y),
+                  point.radius > 0, point.radius <= 1,
+                  abs(point.strength) <= 1,
+                  point.falloff >= 1, point.falloff <= 3
+            else {
+                return nil
+            }
+            return try? BeautyMetalWarpPoint(
+                sourceX: point.source.x,
+                sourceY: point.source.y,
+                targetX: point.target.x,
+                targetY: point.target.y,
+                radius: point.radius,
+                strength: point.strength,
+                falloff: point.falloff
+            )
+        }
+        guard payload.count == points.count, !payload.isEmpty else {
+            // Malformed support/geometry abstains locally. Face-agnostic
+            // siblings remain eligible because this only omits this pass.
+            return nil
+        }
+        return .geometry(try BeautyMetalGeometryParameters(points: payload))
     }
 
     private func lipEnvelope(of face: FaceGeometry) -> (centerX: Float, centerY: Float, radiusX: Float, radiusY: Float)? {

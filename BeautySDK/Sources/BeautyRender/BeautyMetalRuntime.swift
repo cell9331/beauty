@@ -331,7 +331,23 @@ package final class BeautyMetalRuntime: @unchecked Sendable {
                         index: 0
                     )
                 }
-            case .geometry, .composedRetouch:
+            case .geometry(let parameters):
+                var pointCount = UInt32(parameters.points.count)
+                parameters.points.withUnsafeBytes { bytes in
+                    computeEncoderValue.setBytes(
+                        bytes.baseAddress!,
+                        length: bytes.count,
+                        index: 0
+                    )
+                }
+                withUnsafeBytes(of: &pointCount) { bytes in
+                    computeEncoderValue.setBytes(
+                        bytes.baseAddress!,
+                        length: MemoryLayout<UInt32>.stride,
+                        index: 1
+                    )
+                }
+            case .composedRetouch:
                 break
             }
             computeEncoderValue.dispatchThreads(threadGrid, threadsPerThreadgroup: MTLSize(width: threadgroupWidth, height: 1, depth: 1))

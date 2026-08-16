@@ -139,7 +139,8 @@ package struct BeautyMetalWarpPoint: Equatable, Sendable {
               (0...1).contains(targetY),
               (0...1).contains(radius),
               abs(strength) <= 1,
-              (0...1).contains(falloff)
+              falloff >= 0,
+              falloff <= 3
         else {
             throw BeautyError.invalidInput
         }
