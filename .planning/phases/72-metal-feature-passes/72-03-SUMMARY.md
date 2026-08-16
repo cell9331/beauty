@@ -95,7 +95,7 @@ Each implementation task was committed atomically:
 1. **Task 1: Preserve the composed local-retouch carrier through Metal** — `015a3f1` (feat)
 2. **Task 2: Prove local-retouch isolation and close the feature gate** — `f5ef739` (test)
 
-**Plan metadata:** pending final metadata commit.
+**Plan metadata:** `333f4df` (docs/state/roadmap/requirements metadata commit).
 
 ## Files Created/Modified
 
