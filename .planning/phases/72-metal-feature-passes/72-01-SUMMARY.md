@@ -86,7 +86,7 @@ Each implementation task was committed atomically:
 1. **Task 1: Define the bounded Metal pass graph and color execution path** — `958853f` (feat)
 2. **Task 2: Prove Metal color direction, bounds, locality, and metadata** — `2e162c1` (test)
 
-**Plan metadata:** pending final planning commit.
+**Plan metadata:** `0037081` and `7eb57f7` (docs/state ledger commits).
 
 ## Files Created/Modified
 
