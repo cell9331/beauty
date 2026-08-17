@@ -100,7 +100,8 @@ forbidden_host = "|".join(re.escape(value) for value in (
 ))
 if re.search(r"\bpublic\s+(?:(?:final|indirect)\s+)?(?:class|struct|enum|protocol)\s+", implementation):
     raise SystemExit("feature-pass implementation leaked a public declaration")
-if render_backend in "\n".join(text.values()) or render_field in text["parameters"] or render_field in text["configuration"]:
+feature_pass_text = "\n".join(text[name] for name in ("pass", "runtime", "backend", "contract"))
+if render_backend in feature_pass_text or render_field in text["parameters"]:
     raise SystemExit("public backend selector drifted into the feature-pass scope")
 if re.search(r"\b(?:" + forbidden_host + r")\b", implementation, re.IGNORECASE):
     raise SystemExit("host, UI, capture, or network dependency entered feature passes")
@@ -162,7 +163,7 @@ parameters = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", text["paramet
 configuration = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", text["configuration"], re.MULTILINE)
 if len(parameters) != 61 or len(set(parameters)) != 61:
     raise SystemExit("BeautyParameters inventory changed")
-if len(configuration) != 10 or len(set(configuration)) != 10:
+if len(configuration) != 11 or len(set(configuration)) != 11:
     raise SystemExit("BeautyConfiguration inventory changed")
 if re.search(r"\.package\s*\(|https?://", text["package"]):
     raise SystemExit("package dependency drifted")

@@ -6,7 +6,7 @@ readonly repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd 
 readonly package_root="${repository_root}/BeautySDK"
 readonly maximum_output_bytes=$((16 * 1024 * 1024))
 readonly focused_filter='BeautyRenderTests.BeautyMetalRuntimeTests|BeautyEffectsTests.BeautyMetalBackendTests|BeautyEffectsTests.BeautyBackendContractTests|BeautyEffectsTests.BeautyCPUBackendTests|BeautyCoreTests.BeautyEngineBackendRoutingTests'
-readonly expected_focused_tests=29
+readonly expected_focused_tests=34
 readonly runtime_source="BeautySDK/Sources/BeautyRender/BeautyMetalRuntime.swift"
 readonly backend_source="BeautySDK/Sources/BeautyEffects/Backend/BeautyMetalBackend.swift"
 readonly contract_source="BeautySDK/Sources/BeautyEffects/Backend/BeautyBackendContract.swift"
@@ -109,7 +109,10 @@ render_backend_field = "render" + "Backend"
 
 if re.search(r"\bpublic\s+(?:(?:final|indirect)\s+)?(?:class|struct|enum|protocol)\s+", runtime_code + "\n" + backend_code):
     raise SystemExit("runtime/backend leaked a public declaration")
-if render_backend_name in "\n".join(text.values()) or render_backend_field in text[parameters_source] or render_backend_field in text[configuration_source]:
+package_runtime_text = "\n".join(text[source] for source in (
+    runtime_source, backend_source, contract_source, cpu_source, engine_source,
+))
+if render_backend_name in package_runtime_text or render_backend_field in text[parameters_source]:
     raise SystemExit("public backend selector drifted into the package")
 
 host_imports = "|".join(re.escape(term) for term in (
@@ -182,7 +185,7 @@ parameter_fields = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", text[pa
 if len(parameter_fields) != 61 or len(set(parameter_fields)) != 61:
     raise SystemExit("BeautyParameters inventory changed")
 configuration_fields = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", text[configuration_source], re.MULTILINE)
-if len(configuration_fields) != 10 or len(set(configuration_fields)) != 10:
+if len(configuration_fields) != 11 or len(set(configuration_fields)) != 11:
     raise SystemExit("BeautyConfiguration inventory changed")
 package_text = text[package_manifest]
 if re.search(r"\.package\s*\(|https?://", package_text):

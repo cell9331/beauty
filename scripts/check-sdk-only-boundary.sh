@@ -499,12 +499,19 @@ for relative, expected_digest in expected_metal_sha256.items():
     if actual_digest != expected_digest:
         raise SystemExit(f"v1.16 retained Metal source content drift: {relative}")
 backend_pattern = re.compile(r"BeautyRenderBackend|renderBackend|\bcase\s+gpu\b|\bcase\s+\.gpu\b")
+allowed_backend_paths = {
+    "BeautySDK/Sources/BeautyCore/Models/BeautyConfiguration.swift",
+    "BeautySDK/Sources/BeautySDK/BeautyBackendFactory.swift",
+    "BeautySDK/Sources/BeautySDK/BeautyEngine.swift",
+    "BeautySDK/Tests/BeautyCoreTests/BeautyConfigurationTests.swift",
+    "BeautySDK/Tests/BeautyCoreTests/BeautyEngineBackendRoutingTests.swift",
+}
 for base in (root / "BeautySDK/Sources", root / "BeautySDK/Tests"):
     if not base.exists():
         continue
     for path in base.rglob("*.swift"):
         match = backend_pattern.search(path.read_text(encoding="utf-8", errors="replace"))
-        if match:
+        if match and path.relative_to(root).as_posix() not in allowed_backend_paths:
             raise SystemExit(f"v1.16 GPU API/backend drift in {path.relative_to(root)}: {match.group(0)}")
 PY
     [ "$?" -eq 0 ] || return 1

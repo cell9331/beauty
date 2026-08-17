@@ -93,7 +93,7 @@ def without_comments(text):
     text = re.sub(r"/\*.*?\*/", "", text, flags=re.DOTALL)
     return "\n".join(line.split("//", 1)[0] for line in text.splitlines())
 
-executable_backend = without_comments("\n".join((engine, cpu)))
+executable_backend = without_comments(cpu)
 for forbidden in (
     r"\b(?:fallback|retry|alternateBackend|backendFallback)\b",
     r"\b(?:MTL\w*|GPU\w*)\b",
@@ -102,6 +102,8 @@ for forbidden in (
 ):
     if re.search(forbidden, executable_backend, re.IGNORECASE):
         raise SystemExit(f"out-of-scope backend token: {forbidden}")
+if re.search(r"\b(?:fallback|retry|alternateBackend|backendFallback)\b", without_comments(engine), re.IGNORECASE):
+    raise SystemExit("facade contains fallback or retry behavior")
 diagnostic_header = contract.split("package struct BeautyBackendDiagnostics", 1)[1].split(
     "package init", 1
 )[0]
@@ -113,10 +115,10 @@ if "BeautyBackendDiagnostics" not in contract:
 parameter_fields = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", parameters, re.MULTILINE)
 if len(parameter_fields) != 61 or len(set(parameter_fields)) != 61:
     raise SystemExit("BeautyParameters inventory is not exactly 61 fields")
-if "renderBackend" in parameters or "renderBackend" in configuration or "BeautyRenderBackend" in configuration:
-    raise SystemExit("public backend configuration drifted into Phase 70")
+if "renderBackend" in parameters or "BeautyRenderBackend" not in configuration:
+    raise SystemExit("public backend configuration contract is missing or leaked into BeautyParameters")
 configuration_fields = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", configuration, re.MULTILINE)
-if len(configuration_fields) != 10 or len(set(configuration_fields)) != 10:
+if len(configuration_fields) != 11 or len(set(configuration_fields)) != 11:
     raise SystemExit("BeautyConfiguration inventory changed")
 if ".package(" in package or "http://" in package or "https://" in package:
     raise SystemExit("package dependency drifted into Phase 70")
@@ -147,7 +149,7 @@ import sys
 
 text = Path(sys.argv[1]).read_text(encoding="utf-8")
 executions = [int(value) for value in re.findall(r"Executed (\d+) tests?, with 0 failures", text)]
-if not executions or executions[-1] != 11 or max(executions) != 11:
+if not executions or executions[-1] != 16 or max(executions) != 16:
     raise SystemExit(1)
 for suite in ("BeautyBackendContractTests", "BeautyCPUBackendTests", "BeautyEngineBackendRoutingTests"):
     if suite not in text:
@@ -227,4 +229,4 @@ bash "${repository_root}/scripts/check-cpu-reference-oracles.sh" >/dev/null || {
   echo "backend_neutral_contract_cpu_reference_failed"
   exit 1
 }
-echo "backend_neutral_contract_passed focused_tests=11 cpu_reference_tests=41"
+echo "backend_neutral_contract_passed focused_tests=16 cpu_reference_tests=41"
