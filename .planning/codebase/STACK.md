@@ -1,7 +1,17 @@
 # Technology Stack
 
-**Analysis Date:** 2026-08-14
+**Analysis Date:** 2026-08-17
 **Boundary:** SDK-only SwiftPM repository
+
+## Post-Archive Audit Qualification
+
+The Phase-74 focused `12/0/0` and full `765/0/0` records are historical
+Metal-available evidence. Current remediation has fixed raw metadata routing,
+unavailable-host parity credit, and geometry point binding through a request-
+local shared `MTLBuffer`; an unavailable branch reports `parity_executed=0`.
+Local retouch remains CPU-composed before an identity Metal pass, and the other
+documented transparency/color, math, result-invariant, envelope-provenance, and
+shared-runtime concurrency gaps remain open.
 
 ## Languages and Runtime
 
@@ -22,11 +32,13 @@ Core Video/Core Media, Vision, AppKit for the macOS renderer, and CryptoKit in a
 resource test. No application UI framework or capture/session framework is an
 active repository dependency.
 
-The CPU/Core Image path remains the permanent reference. Phase 71 additionally validates
+The CPU/Core Image path remains the permanent reference. Phase 71 historically established
 the package-internal `BeautyMetalRuntime` in `BeautyRender` and the
 package-only Metal executor in `BeautyEffects` through the retained
 `BeautySDK/Sources/BeautyRender/Shaders/Warp.metal` resource. This is a bounded
-identity runtime transaction, not a device claim. Phase 73 now exposes the
+runtime ownership; current color/geometry passes execute Metal work, while the
+local-retouch pass transports already CPU-composed bytes through an identity
+dispatch. Phase 73 exposes the
 public two-case `.cpu`/`.gpu` policy through the 11-field `BeautyConfiguration`
 and keeps unavailable GPU terminal; Phase 74 owns generated parity.
 
@@ -93,16 +105,18 @@ public `.cpu`/`.gpu` configuration policy and typed unavailable behavior; Phase
 UI/Demo, performance, commercial, packaging, shipping, launch, or release
 readiness.
 
-## Phase 74 Parity Stack Boundary
+## Phase 74 Historical Parity Stack Boundary
 
 SwiftPM test targets use generated request-local RGBA8 data only. The CPU
 executor is the reference; the package Metal executor consumes the same plan,
-carrier, dimensions, and metadata. The mutation-tested parity script runs once
-in archive-first order, records focused `12/0/0`, and the full wrapper records
+carrier, dimensions, and metadata. The archived mutation-tested parity script ran once
+in archive-first order, recorded focused `12/0/0`, and the full wrapper recorded
 `765/0/0` with eight opt-ins exactly once and distinct Metal availability
-markers. No raw raster, masks, landmarks, paths, UI/Demo, device, performance,
+markers. Current unavailable coverage instead reports `parity_executed=0`, and
+the open audit gaps prevent broad equivalence. No raw raster, masks, landmarks,
+paths, UI/Demo, device, performance,
 commercial, packaging, shipping, launch, or release-readiness artifact enters
 the stack.
 
 ---
-*Stack analysis: 2026-08-14 after Phase 66 archive retirement*
+*Stack analysis: 2026-08-17 during v1.17 post-archive audit remediation*

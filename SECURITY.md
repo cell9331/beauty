@@ -2,6 +2,25 @@
 
 > Current SDK-only privacy, input/resource trust, and archive safety contract.
 
+## Current Post-Archive Audit Status
+
+The v1.17 archive at `afb04b4` preserves historical Metal-available evidence
+(focused `12/0/0`, full `765/0/0`). Post-archive remediation has restored public
+non-up/mirrored raw metadata compatibility (`53e8da1`), separated unavailable-
+host typed coverage from GPU parity credit (`d29b90a`), and moved geometry point
+payloads into request-local shared `MTLBuffer` storage (`556499a`). The buffer
+does not persist points and is released deterministically; only the bounded
+scalar count remains inline.
+
+The remaining audit findings do not expose durable raw payloads, but they limit
+what the evidence can authorize. Local retouch is CPU-composed before an
+identity GPU dispatch; GPU transparency/color handling and still-image math
+differ from CPU; result alpha/extent enforcement is pending; geometry safety
+uses a separately generated envelope observation; and shared-engine/runtime
+concurrency is unproven. An unavailable host reports `parity_executed=0` and
+never GPU parity success. The historical counts are not a fresh current-tree
+closeout or a device/commercial/release trust decision.
+
 ## 1. Default Posture
 
 - Process images, frames, parameters, detection support, and effects locally.
@@ -231,7 +250,8 @@ commercial, packaging, shipping, launch, or release-readiness claim.
 `BeautyLocalRetouchCompositionOwner` is the sole trust boundary for teeth and
 sclera proposals, hard envelopes, duplicate/collision handling, and original
 source binding. The Metal backend accepts only its canonical RGBA8 carrier and
-six bounded counters. The composed-retouch kernel is an identity-preserving
+six bounded counters. Those carrier bytes are already composed on CPU; the
+composed-retouch kernel is an identity-preserving
 boundary pass; it cannot reconstruct support or inspect provider units. A
 terminal Metal failure publishes no partial carrier and leaves no request
 resources active. Generated in-memory coverage verifies protected bytes,
@@ -251,7 +271,7 @@ Metal backend. A missing Metal capability returns terminal
 allowed. Package-only injection is test-only and cannot become a host escape
 hatch.
 
-Durable Phase 73 evidence is restricted to aggregate focused/full counts and
+Historical durable Phase 73 evidence is restricted to aggregate focused/full counts and
 availability classifications: configuration `16/0/0`, runtime `34/0/0`, full
 `753/0/0`, eight opt-ins exactly once, `metal_available=1`, and
 `metal_unavailable=0`. No pixels, masks, landmarks, framework objects, paths,
@@ -259,7 +279,7 @@ or private fixture locators are persisted. Phase 74 parity remains separate;
 UI/Demo, simulator/device, performance, commercial, packaging, shipping,
 launch, and release-readiness claims remain excluded.
 
-## Phase 74 Generated Parity Trust Boundary
+## Phase 74 Historical Generated Parity Trust Boundary
 
 Generated in-memory RGBA8 inputs cross into CPU and Metal only through the
 validated backend request. The parity suites retain aggregate kind, dimensions,
@@ -268,9 +288,12 @@ raw pixels, masks, landmarks, support, paths, and fixture locators remain
 request-local. Mutation checks reject removal of CPU comparison, weakened
 tolerances, omitted safety suites, raw file output, and availability merging.
 
-The archive-first gate records focused `12/0/0`, full `765/0/0`, eight opt-ins
+The archived gate records focused `12/0/0`, full `765/0/0`, eight opt-ins
 exactly once, and separate `metal_available=1` / `metal_unavailable=0`.
 `.metalUnavailable` is terminal and never GPU parity success or CPU fallback.
-The result authorizes only SDK/algorithm/Metal-pipeline correctness; UI/Demo,
+The repaired current gate reports `focused_tests=12` / `parity_executed=1`
+only when Metal is available; unavailable-host typed coverage reports
+`parity_executed=0`. The unresolved audit gaps above prevent the archived result
+from authorizing broad current CPU/GPU equivalence. UI/Demo,
 simulator/device, performance, commercial, packaging, shipping, launch, and
 release-readiness claims remain outside the trust boundary.

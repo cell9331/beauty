@@ -1,14 +1,14 @@
 # External Integrations
 
-**Analysis Date:** 2026-08-14
+**Analysis Date:** 2026-08-17
 **Boundary:** SDK-only SwiftPM repository
 
 ## Apple Frameworks
 
 - Vision runs on-device behind `BeautyDetection` to produce package-only,
   request-local face support. It requires no account, API key, or network call.
-- Core Image, Core Graphics, ImageIO, Core Video/Core Media, and Foundation back
-  validation, canonicalization, rendering, and public value types.
+- Core Image, Core Graphics, ImageIO, Core Video/Core Media, Metal, and Foundation
+  back validation, canonicalization, CPU/Metal rendering, and public value types.
 - AppKit is used only by the macOS `BeautyExampleRenderer` executable.
 - CryptoKit is used by a resource integrity test.
 
@@ -28,8 +28,8 @@ inside the verified historical archives and is not current integration guidance.
 ## Storage and Resources
 
 - Production resources are bundled through SwiftPM under
-  `BeautySDK/Sources/BeautyResources/Resources/` plus the single retained,
-  byte-pinned inactive shader resource.
+  `BeautySDK/Sources/BeautyResources/Resources/` plus the retained, byte-pinned
+  Metal shader resource used by the package-internal runtime.
 - `BeautyResourceCatalog` resolves logical IDs through `Bundle.module`; there is
   no arbitrary-path or runtime-download API.
 - `BeautyExampleRenderer` reads local image inputs, accepts only the executable
@@ -72,4 +72,4 @@ opt-ins. No CI/CD,
 distribution, registry publication, or release pipeline is claimed.
 
 ---
-*Integration audit: 2026-08-14 after Phase 66 review remediation*
+*Integration audit: 2026-08-17 during v1.17 post-archive audit remediation*

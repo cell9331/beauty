@@ -3,6 +3,24 @@
 > Current SDK-only quality scorecard and repeatable verification contract.
 > Time-bounded application/UI evidence remains historical in archived milestones.
 
+## Current Post-Archive Audit Status
+
+v1.17 was historically archived at `afb04b4` with Metal-available focused
+`12/0/0` and full `765/0/0` evidence. The current tree has repaired public raw
+metadata compatibility (`53e8da1`), unavailable-host parity accounting
+(`d29b90a`), and Metal geometry point binding beyond the 4 KiB inline limit
+(`556499a`). Available parity now requires `focused_tests=12` and
+`parity_executed=1`; unavailable-host typed coverage reports
+`parity_executed=0` and cannot borrow GPU parity success.
+
+The historical counts are not current full-gate evidence. Open findings remain
+for CPU-composed/identity-GPU local retouch, GPU transparency/sRGB policy, CPU/
+Metal coefficient and lip-math equivalence, backend-result alpha/extent
+enforcement, geometry safety envelope provenance, and same-engine/same-runtime
+concurrency. Scores and acceptance below therefore remain bounded and make no
+broad equivalence, device, commercial, packaging, shipping, launch, or release-
+readiness claim.
+
 ## 1. Score Scale
 
 | Score | Meaning |
@@ -20,13 +38,13 @@
 | --- | ---: | --- | --- |
 | Root owners | 4 | Current contracts consistently name SDK-only SwiftPM ownership and archive-only UI history. | Keep owners synchronized with code/tests. |
 | SDK package | 4 | One public library, one SDK-owned renderer, six internal/library targets, no remote dependency. | Preserve facade and dependency direction. |
-| Tests | 4 | 61 SwiftPM test files; public `BeautyResultConcurrencyTests` executes 3/0/0; generated CPU reference preflight executes 15 + 10 + 16 tests with zero skips; the v1.16 historical child executed 702 tests, Phase 71 executed 728, and current Phase 73 executes 753 with eight documented opt-ins; focused configuration/runtime coverage, renderer regression, and compiled Process coverage; bounded exact XCTest/Swift Testing accounting rejects both runners' skips and ambiguity. | Keep full conjunction mandatory. |
+| Tests | 3 | 74 SwiftPM test files; public `BeautyResultConcurrencyTests` executes 3/0/0; generated CPU reference preflight remains bounded; v1.16/Phase-71/Phase-73 and Phase-74 counts are historical. Focused remediation evidence exists, but the current full gate and remaining semantic gaps are not closed. | Complete F-08 and rerun the full conjunction; separately plan the manual gaps. |
 | External consumer / CLI | 4 | Public-only local-path consumer observes generated RGBA bytes/dimensions; compiled renderer covers 74-case discovery, reconciled reports, typed failures, and render/encode seams. | Preserve archive → boundary → consumer → no-skip ordering. |
 | Archive integrity | 4 | Code-owned ZIP/manifest anchors, exact 45/26 inventories, bounded streamed extraction, frozen-retirement rollback, and safe restore self-tests pass. | Verify before every full closeout. |
 | SDK-only boundary | 4 | Retired roots are absent; scanner rejects symlinks, restored application/UI sources, stale current owners/maps, tracked media, application artifacts, retained-shader drift, and backend/API drift. | Keep scanner fail-closed. |
 | Security | 4 | Local-first input/resource/privacy and request-local local-retouch ownership are test-backed. | Reopen for any new trust boundary. |
 | Reliability | 3 | Typed errors, deterministic degradation/recovery, input bounds, no-skip handling, and archive recovery are specified/tested; device/performance evidence is outside scope. | Add only when a later authorized milestone requires it. |
-| Product acceptance | 4 | Bounded still-image teeth/sclera behavior and exact taxonomy remain SDK-core only. | Preserve nonclaims and `去脂` future status. |
+| Product acceptance | 3 | Bounded still-image teeth/sclera behavior and exact taxonomy remain SDK-core only; broad CPU/GPU equivalence is not currently accepted. | Preserve nonclaims, close the audit, and keep `去脂` future. |
 
 No score of 5 is claimed. Package/fixture automation does not establish device
 performance, population sufficiency, commercial quality, packaging,
@@ -74,13 +92,14 @@ and zero skip/disabled events from either format.
 
 The v1.16 historical wrapper evidence is 702 executed tests, zero failures, and
 zero skips. The Phase-71 wrapper evidence is historically 728 executed tests,
-zero failures, and zero skips. The current Phase-73 wrapper executes 753 tests
+zero failures, and zero skips. The historical Phase-73 wrapper executed 753 tests
 with zero failures and zero skips, all eight opt-ins exactly once, and separate
 Metal availability classifications. Its archive → boundary self-test/live scan → consumer → generated
 CPU → opt-in → one-child order is mandatory; the boundary self-test rejects an
 unconditional generic `BeautyResult` sendability declaration. The public
-concurrency focus is 3/0/0 and the current active inventory is 66 Swift source
-files, 61 SwiftPM test files, 14,952 source lines, and 29,995 test lines.
+concurrency focus is 3/0/0 and the current active inventory is 72 Swift source
+files, 74 SwiftPM test files, 16,699 source lines, and 33,179 test lines. A fresh
+full remediation count is pending.
 
 ## 5. Archive Quality Gate
 
@@ -126,10 +145,10 @@ or large extraction transcripts are not durable quality evidence.
 
 | Priority | Item | Status |
 | --- | --- | --- |
-| 1 | Replace unconditional generic `BeautyResult<Output>` sendability with a source-compatible conditional contract. | planned Phase 69 |
-| 2 | Strengthen clean SwiftPM consumer and structured CLI input/output validation. | planned Phase 67 |
-| 3 | Freeze compact deterministic CPU reference oracles without new algorithms. | planned Phase 68 |
-| 4 | Complete selectable CPU/GPU backend policy and generated parity while preserving CPU as the oracle. | Phase 74 parity and SDK-only closeout complete |
+| 1 | Enforce backend-result alpha/extent publication invariants (F-08). | active post-archive remediation |
+| 2 | Decide whether local retouch becomes genuine GPU computation or the backend contract is narrowed (F-02). | manual architecture decision required |
+| 3 | Align GPU transparency/color and still-image coefficient/lip math with the CPU contract (F-04/F-05). | manual contract/migration work required |
+| 4 | Repair geometry-envelope provenance and define shared engine/runtime concurrency (F-09/F-10). | separately scoped evidence required |
 
 Historical UI/device/commercial work is not an active repair item.
 
@@ -180,27 +199,29 @@ and Phase 74 owns parity/no-skip closeout.
 
 ## Phase 73 Public Configuration Quality Evidence
 
-`check-backend-configuration.sh` passes its self-test and focused configuration
-suite with `16/0/0`; the runtime suite passes `34/0/0`. The public selector is
+Historical Phase-73 evidence records the configuration self-test/focused suite
+at `16/0/0` and the runtime suite at `34/0/0`. The public selector is
 exactly `.cpu`/`.gpu`, defaults and missing legacy keys resolve to `.cpu`, and
 explicit unavailable GPU is terminal `.metalUnavailable` without CPU fallback.
-The archive-first wrapper then executes `753/0/0`, all eight opt-ins exactly
+The archived wrapper executed `753/0/0`, all eight opt-ins exactly
 once, and separate `metal_available=1` / `metal_unavailable=0` classifications.
 This closes configuration policy only; Phase 74 owns generated parity and
 SDK-only closeout. No UI/Demo, device, performance, commercial, packaging,
 shipping, launch, or release-readiness evidence is claimed.
 
-## Phase 74 Generated Parity and Mandatory Gate Evidence
+## Phase 74 Historical Generated Parity and Mandatory Gate Evidence
 
 `check-backend-parity.sh` mutation-tests CPU-vs-GPU comparisons, exact neutral
 bytes, pinned active tolerances, safety/containment/failure suites, raw-output
 privacy, and available/unavailable accounting. It executes focused parity
 coverage `12/0/0` with `metal_available=1` and `metal_unavailable=0` on the
-current host. The archive-first `run-no-skip-swiftpm.sh` invokes parity exactly
-once and completes the full child at `765/0/0`, with eight opt-ins exactly once,
+archived host. The archived `run-no-skip-swiftpm.sh` run invoked parity exactly
+once and completed the full child at `765/0/0`, with eight opt-ins exactly once,
 zero skips, and zero failures.
 
-CPU remains the permanent oracle. Evidence is aggregate-only and establishes
-SDK/algorithm/Metal-pipeline correctness for the generated matrix, not UI/Demo,
+CPU remains the permanent oracle. The current repaired gate grants GPU parity
+credit only when `parity_executed=1`; unavailable coverage reports `0`. The
+open audit findings prevent this historical generated matrix from establishing
+broad current CPU/GPU equivalence, UI/Demo,
 simulator/device, performance, commercial, packaging, shipping, launch, or
 release-readiness quality.

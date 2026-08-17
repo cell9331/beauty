@@ -1,13 +1,23 @@
 # Testing Patterns
 
-**Analysis Date:** 2026-08-14
+**Analysis Date:** 2026-08-17
 **Boundary:** SDK-only SwiftPM repository
+
+## Post-Archive Audit Qualification
+
+The v1.17 archive recorded Metal-available focused `12/0/0` and full
+`765/0/0` evidence. Current F-03 remediation probes availability first: only the
+available branch runs the 12-test suite and reports `parity_executed=1`; the
+unavailable branch runs two typed selection tests, reports
+`parity_executed=0`, and emits no parity-success marker. The archived counts are
+not a fresh remediation full-gate result. F-08 and the manual semantic,
+envelope-provenance, and same-runtime concurrency gaps remain open.
 
 ## Runner and Inventory
 
 XCTest through Swift Package Manager is the only active test framework. Six test
-targets live under `BeautySDK/Tests/`; the current inventory is 61 Swift files and
-29,995 test lines, excluding `.build`.
+targets live under `BeautySDK/Tests/`; the current inventory is 74 Swift files and
+33,179 test lines, excluding `.build`.
 
 `BeautyResultConcurrencyTests` is the public concurrency contract suite. It
 executes 3 tests with zero failures, compiling a `Sendable` result through a
@@ -20,7 +30,7 @@ The generated CPU reference preflight executes 15 fixture, 10 geometry/color, an
 16 local-retouch/determinism tests with zero generated skips. The v1.16
 historical mandatory full child executed 702 tests with eight documented
 environment-gated opt-ins enabled; the Phase-71 full child historically executed
-728 tests, and the current Phase-73 full child executes 753 tests with the same
+728 tests, and the historical Phase-73 full child executed 753 tests with the same
 eight opt-ins. It accepts only one complete SwiftPM child
 transcript with:
 
@@ -57,16 +67,16 @@ bash scripts/run-no-skip-swiftpm.sh
 ```
 
 The mandatory wrapper orders archive verification → post-archive SDK-only
-boundary self-test/live scan → Phase-70 backend contract → Phase-71 Metal
-runtime preflight → external consumer → generated CPU reference preflight →
-private opt-ins → one SwiftPM child. Archive
+boundary self-test/live scan → backend contract/configuration → Metal
+runtime/feature/parity preflights → external consumer → generated CPU reference
+preflight → private opt-ins → one SwiftPM child. Archive
 corruption, restored source roots, stale application dependencies, retained
 shader drift, an unexpected skip/failure, or a zero-test run must fail non-zero.
 
 The v1.16 historical mandatory wrapper executed 702 tests with zero failures and
 zero skips. The Phase-71 archive-first wrapper historically executed 728 tests
-with zero failures and zero skips. The current Phase-73 archive-first wrapper
-executes 753 tests with zero failures and zero skips, all eight opt-ins exactly
+with zero failures and zero skips. The historical Phase-73 archive-first wrapper
+executed 753 tests with zero failures and zero skips, all eight opt-ins exactly
 once, and separate Metal availability classifications. Its aggregate markers
 are evidence for the SDK-only SwiftPM gate only; they do not establish UI/Demo behavior,
 simulator/device quality, performance, commercial approval, packaging,
@@ -157,17 +167,17 @@ tracked evidence; CPU remains the reference until Phase 74 parity closeout.
 
 ## Phase 73 Configuration Coverage
 
-The focused public configuration suite executes `16/0/0`, and the focused Metal
-runtime suite executes `34/0/0`, each with separate
+Historical Phase-73 focused coverage recorded public configuration `16/0/0`
+and Metal runtime `34/0/0`, each with separate
 `metal_available=1` / `metal_unavailable=0` classifications. Tests cover the
 exact `.cpu`/`.gpu` selector, `.cpu` defaults and missing legacy Codable keys,
 request-local factory policy, and terminal `.metalUnavailable` without a CPU
-fallback. The full archive-first wrapper executes `753/0/0` with all eight
+fallback. The archived full wrapper executed `753/0/0` with all eight
 opt-ins exactly once. Phase 74 owns generated parity and closeout; no
 UI/Demo, simulator/device, performance, commercial, packaging, shipping,
 launch, or release-readiness claim is carried by these tests.
 
-## Phase 74 Generated Parity Coverage
+## Phase 74 Historical Generated Parity Coverage
 
 `BeautyBackendParityTests`, `BeautyBackendSafetyParityTests`,
 `BeautyBackendDeterminismParityTests`, and
@@ -179,12 +189,14 @@ aggregate counts/deltas and use no skips, sleeps, files, media, or durable
 payloads.
 
 `check-backend-parity.sh` mutation-tests omitted or weakened assertions and
-availability merging. The archive-first wrapper invokes it once and the fresh
-full gate executes `765/0/0` with eight opt-ins exactly once and separate
-`metal_available=1` / `metal_unavailable=0`; unavailable hosts are explicit
-non-success evidence. This remains SDK-only and does not establish UI/Demo,
+availability merging. The archived wrapper invoked it once and the historical
+full gate executed `765/0/0` with eight opt-ins exactly once and separate
+`metal_available=1` / `metal_unavailable=0`. The repaired unavailable branch
+reports `parity_executed=0` and no parity-success marker; a fresh full
+remediation run is pending. This remains SDK-only and does not establish broad
+CPU/GPU equivalence, UI/Demo,
 simulator/device, performance, commercial, packaging, shipping, launch, or
 release-readiness behavior.
 
 ---
-*Testing analysis: 2026-08-14 after Phase 66 archive retirement*
+*Testing analysis: 2026-08-17 during v1.17 post-archive audit remediation*

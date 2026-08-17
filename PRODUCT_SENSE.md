@@ -3,6 +3,25 @@
 > Current SDK product and acceptance contract. Historical application journeys
 > remain in archived milestone evidence and the verified legacy ZIPs.
 
+## Current Post-Archive Acceptance Status
+
+v1.17 was historically archived at `afb04b4` after a Metal-available package
+host reported focused parity `12/0/0` and full `765/0/0`. The post-archive audit
+has repaired public non-up/mirrored raw metadata compatibility (`53e8da1`), made
+unavailable-host typed coverage explicitly non-crediting
+(`parity_executed=0`, `d29b90a`), and moved oversized geometry point payloads to
+a request-local shared `MTLBuffer` (`556499a`). Only an available branch reports
+`focused_tests=12` / `parity_executed=1`.
+
+The archived milestone checkboxes remain historical lifecycle records, not a
+current broad-equivalence or release acceptance. Local retouch is still composed
+on CPU before an identity GPU pass; GPU transparency/color policy and still-
+image math differ from CPU; result alpha/extent enforcement is pending; the
+geometry safety envelope comes from a separate generated observation; and no
+same-engine/same-runtime concurrency promise is proven. A fresh full remediation
+gate is pending, and device, commercial, packaging, shipping, launch, and
+release readiness remain outside acceptance.
+
 ## 1. Product Position
 
 `beauty` is a modular local-first iOS SDK for host applications. It is not a
@@ -43,8 +62,9 @@ device journey and does not promote generated media as product evidence.
 - Bounded opaque still-image `teethWhitening` and
   `scleraRednessReduction` remain independently implemented.
 - `去脂`, semantic-mask features, new algorithms, and realtime local retouch
-  remain outside current acceptance. Generated cross-backend parity is now
-  accepted only for the shipped SDK feature set under the Phase-74 gates.
+  remain outside current acceptance. Phase-74 generated parity is historical;
+  current acceptance is limited to the repaired contracts and awaits the full
+  remediation rerun, without a broad CPU/GPU equivalence claim.
 - Device quality, population sufficiency, commercial approval, packaging,
   shipping, launch, and release readiness require separate authorization and
   evidence.
@@ -110,8 +130,8 @@ boundary are part of the same acceptance conjunction.
 The current focused public concurrency suite executes 3 tests with zero
 failures. The v1.16 historical mandatory wrapper executed 702 tests with zero
 failures and zero skips. The Phase-71 mandatory wrapper historically executed
-728 tests with zero failures and zero skips. The current Phase-73 wrapper
-executes 753 tests with zero failures and zero skips, with all eight opt-ins
+728 tests with zero failures and zero skips. The historical Phase-73 wrapper
+executed 753 tests with zero failures and zero skips, with all eight opt-ins
 exactly once and separate Metal availability classifications; its boundary self-test rejects unconditional generic
 `BeautyResult` sendability before the archive, consumer, generated CPU, opt-in,
 and one-child stages. This evidence is SwiftPM/SDK-owned only and does not
@@ -208,23 +228,27 @@ beauty fields, five presets, and 74 renderer cases. Missing and legacy Codable
 backend keys resolve to `.cpu`. CPU remains the permanent reference. Explicit
 GPU construction uses the package Metal runtime and either succeeds there or
 returns terminal `.metalUnavailable`; it never silently executes CPU fallback.
-The focused configuration/runtime gates pass `16/0/0` and `34/0/0`, while the
-full archive-first wrapper passes `753/0/0` with eight opt-ins exactly once and
+The historical focused configuration/runtime gates recorded `16/0/0` and
+`34/0/0`, while the archived full wrapper recorded `753/0/0` with eight opt-ins exactly once and
 `metal_available=1` / `metal_unavailable=0`. Phase 74 owns generated parity and
 SDK-only closeout; UI/Demo, simulator/device, performance, commercial,
 packaging, shipping, launch, and release-readiness remain excluded.
 
-## Phase 74 SDK-Only Parity Acceptance
+## Phase 74 Historical SDK-Only Parity Acceptance
 
-The v1.17 acceptance boundary is generated SDK-core parity: the permanent CPU
+The archived v1.17 acceptance boundary was generated SDK-core parity: the permanent CPU
 reference and available Metal consume identical normalized requests, with exact
 neutral bytes and explicit bounded active tolerances. Acceptance includes
 alpha/extent/named-sRGB preservation, containment and protected-region safety,
 collision and degraded/no-face isolation, deterministic bounded concurrency,
 and typed unavailable-GPU separation.
 
-The mandatory archive-first evidence is parity focused `12/0/0`, full SwiftPM
+The historical mandatory archive-first evidence is parity focused `12/0/0`, full SwiftPM
 `765/0/0`, eight opt-ins exactly once, zero skips/failures, and separate
-`metal_available=1` / `metal_unavailable=0`. This does not promote UI/Demo,
+`metal_available=1` / `metal_unavailable=0`. Current unavailable-host coverage
+reports `parity_executed=0`; only an available branch can report
+`parity_executed=1`. Because the remaining audit gaps above are unresolved, this
+historical matrix does not establish broad current CPU/GPU equivalence. It does
+not promote UI/Demo,
 simulator/device, performance, commercial, packaging, shipping, launch, or
 release readiness.

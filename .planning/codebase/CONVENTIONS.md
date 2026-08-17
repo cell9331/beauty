@@ -1,6 +1,6 @@
 # Coding Conventions
 
-**Analysis Date:** 2026-08-14
+**Analysis Date:** 2026-08-17
 **Boundary:** SDK-only SwiftPM repository
 
 ## Swift Structure and Naming
@@ -57,10 +57,12 @@ new code.
 ## Scope Rules
 
 - Do not restore active UI/Demo sources, application lifecycle, or UI automation.
-- Do not add/modify Metal or GPU backend behavior in v1.16.
+- Treat v1.16's no-Metal rule as historical. Current Metal/backend changes must
+  stay inside the authorized SDK targets, preserve CPU reference semantics, and
+  add owning tests plus SDK-owned gate coverage.
 - Generated/private image evidence remains ignored and disposable.
 - Historical recovery uses only `archive-legacy-ui.py restore` into a fresh
   outside-repository temporary directory after pinned verification.
 
 ---
-*Convention analysis: 2026-08-14 after Phase 66 review remediation*
+*Convention analysis: 2026-08-17 during v1.17 post-archive audit remediation*

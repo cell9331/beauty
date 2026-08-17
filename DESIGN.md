@@ -7,6 +7,25 @@
 > “future” 和数量只对该历史节点有效。无 Phase 限定的模型摘要与本文最后的
 > post-v1.15 contract 才描述当前工作树。
 
+## Current Post-Archive Audit Status
+
+The v1.17 archive at `afb04b4` retains its historical Phase-74 focused
+`12/0/0` and full `765/0/0` package-host evidence. The current tree has since
+repaired raw non-up/mirrored public metadata compatibility (`53e8da1`), made
+unavailable-host parity explicitly non-crediting (`d29b90a`), and moved Metal
+geometry point arrays to a request-local shared `MTLBuffer` beyond the 4 KiB
+inline limit (`556499a`). The current full remediation gate has not yet been
+rerun, so the archived counts are not current-worktree counts.
+
+Design nonclaims remain explicit: local retouch is CPU composition followed by
+an identity GPU pass; GPU still-image transparency/color handling differs from
+CPU; CPU and Metal coefficient/lip math is not fully identical; backend-result
+alpha/extent enforcement is still being repaired; geometry safety parity uses a
+separate generated observation for its envelope; and same-engine/same-runtime
+concurrency is not specified or proven. Only a Metal-available parity branch can
+report `focused_tests=12` / `parity_executed=1`; unavailable-host typed coverage
+reports `parity_executed=0` and is not GPU parity success.
+
 ## 1. 设计目标
 
 `beauty` SDK 的核心体验是：宿主 App 传入图像帧与参数，SDK 以稳定、可预测、可实时运行的方式输出处理后的图像。
@@ -1113,6 +1132,13 @@ to Phase 72 and public `.cpu`/`.gpu` configuration belongs to Phase 73. The
 public 61-field parameter model, five neutral presets, and existing effect
 inventory remain untouched.
 
+Raw pixel-buffer and ordinary still-image requests retain their explicit public
+orientation/mirroring metadata. Only a canonical still-image carrier is required
+to be `.up` and non-mirrored, because its metadata describes already normalized
+owned pixels. Result alpha/extent flags are part of the intended publication
+contract, but their enforcement is still an active post-archive remediation and
+must not be inferred from the historical Phase-74 checkbox.
+
 ### Phase 70 Error, Lifetime, and Test Contracts
 
 Malformed admission fails before executor work; output-kind and dimension
@@ -1151,14 +1177,21 @@ shipping, launch, or release readiness.
 The canonical still-image composition is complete before any Metal executor
 call. Teeth and sclera units are validated, collision-owned, and blended from
 the immutable source by `BeautyLocalRetouchCompositionOwner`; only the
-resulting RGBA8 carrier and six aggregate counters cross into Metal. The pass
+resulting RGBA8 carrier and six aggregate counters cross into Metal. The
+composed-retouch Metal pass is identity-preserving over those CPU-composed bytes,
+not end-to-end GPU retouch computation. The pass
 order is composed-retouch, color, then geometry. A local-retouch-only request
 therefore preserves Q16 bytes, hard containment, collision-to-source behavior,
 protected bytes, alpha, dimensions, extent, and named sRGB metadata exactly.
 Malformed, foreign, duplicate, colliding, and empty units remain local owner
 outcomes, so one rejected unit cannot suppress an eligible sibling. No public
 backend selector or new effect is introduced here; Phase 73 owns configuration
-and Phase 74 owns cross-backend parity evidence.
+and Phase 74 owns the historical cross-backend parity evidence.
+
+Geometry point arrays use one request-local shared `MTLBuffer`; the scalar
+`pointCount` remains bounded inline. This keeps the 146-, 147-, and 256-point
+payloads within the same deterministic allocation/cleanup contract without
+depending on Metal's 4 KiB `setBytes` ceiling.
 
 ## Phase 73 Public Backend Configuration Contract
 
@@ -1173,7 +1206,7 @@ GPU construction uses the package Metal runtime. An unavailable explicit GPU
 throws terminal `.metalUnavailable` and never invokes a CPU fallback. The
 injection seam is package-only test machinery.
 
-Phase 73 gate evidence is focused configuration `16/0/0`, focused runtime
+Historical Phase 73 gate evidence is focused configuration `16/0/0`, focused runtime
 `34/0/0`, and full archive-first no-skip `753/0/0`, with eight opt-ins exactly
 once and separate `metal_available=1` / `metal_unavailable=0` classifications.
 This establishes configuration and availability policy only; Phase 74 owns
@@ -1181,7 +1214,7 @@ generated CPU/GPU parity and closeout, and no UI/Demo, simulator/device,
 performance, commercial, packaging, shipping, launch, or release-readiness
 claim is implied.
 
-## Phase 74 CPU/GPU Parity Contract
+## Phase 74 Historical CPU/GPU Parity Contract
 
 The CPU/Core Image path remains the semantic and byte-level reference. Generated
 in-memory RGBA8 requests are rendered through both available backends using the
@@ -1194,7 +1227,11 @@ CPU-owned contracts compared without persisting raw payloads.
 
 Metal availability is a separate terminal classification. An unavailable host
 returns `.metalUnavailable`, is excluded from the GPU parity denominator, and
-cannot become CPU success or fallback. Fresh archive-first evidence is focused
+cannot become CPU success or fallback. Historical archive-first evidence is focused
 parity `12/0/0` and full SwiftPM `765/0/0`, with eight opt-ins exactly once and
-separate availability markers. No UI/Demo, device, performance, commercial,
+separate availability markers. The current repaired gate requires
+`parity_executed=1` only on an available host and reports
+`parity_executed=0` for explicit unavailable-host coverage. The open audit gaps
+listed above prevent a broad current equivalence claim. No UI/Demo, device,
+performance, commercial,
 packaging, shipping, launch, or release-readiness behavior is added.

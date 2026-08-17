@@ -3,6 +3,25 @@
 > Current SDK-only error, degradation, observability, performance-risk, archive,
 > and recovery contract.
 
+## Current Post-Archive Audit Status
+
+The v1.17 archive at `afb04b4` is immutable historical evidence: its
+Metal-available host ran focused parity `12/0/0` and the full gate `765/0/0`.
+The current tree has repaired raw non-up/mirrored metadata routing (`53e8da1`),
+unavailable-host parity accounting (`d29b90a`), and geometry point binding past
+the 4 KiB inline limit (`556499a`). Geometry arrays now use a request-local
+shared `MTLBuffer`, the scalar count remains bounded inline, and cleanup stays
+deterministic.
+
+The current gate distinguishes an available parity branch
+(`focused_tests=12`, `parity_executed=1`) from an unavailable typed-coverage
+branch (`parity_executed=0`); the latter may pass the mandatory host gate but is
+never GPU parity success. The full remediation gate is still pending. Broad
+equivalence is also blocked by CPU-owned local-retouch composition followed by
+identity GPU dispatch, different GPU transparency/sRGB policy, coefficient/lip-
+math drift, pending result alpha/extent enforcement, a geometry safety envelope
+from a separate observation, and no same-engine/same-runtime concurrency proof.
+
 ## 1. Posture
 
 - Recoverable/environmental failures return typed errors or documented local
@@ -180,7 +199,7 @@ failures and zero skips. These are aggregate SwiftPM checks; child output and ge
 outputs remain temporary, and the conditional result contract does not make
 framework-backed or otherwise non-sendable payloads transferable.
 
-The current Phase-73 archive-first wrapper passes 753 tests with zero failures
+The historical Phase-73 archive-first wrapper passed 753 tests with zero failures
 and zero skips, executes all eight opt-ins exactly once, and records separate
 `metal_available=1` / `metal_unavailable=0` classifications.
 
@@ -255,7 +274,7 @@ parity, determinism, and cross-backend safety remain Phase 74 work; this phase
 does not claim UI/Demo, simulator/device, performance, commercial, packaging,
 shipping, launch, or release readiness.
 
-## Phase 74 Parity and Closeout Reliability
+## Phase 74 Historical Parity and Closeout Reliability
 
 Repeated identical generated requests are byte-deterministic and finite for CPU
 and available Metal. Bounded interleaved requests compare by request identity,
@@ -266,8 +285,11 @@ erasing eligible siblings.
 
 `check-backend-parity.sh` fails closed under mutations and the archive-first
 wrapper invokes it exactly once after configuration and before all child stages.
-Fresh evidence is focused `12/0/0`, full `765/0/0`, eight opt-ins once, zero
+Archived evidence is focused `12/0/0`, full `765/0/0`, eight opt-ins once, zero
 skips/failures, and separate `metal_available=1` / `metal_unavailable=0`.
-Unavailable Metal is terminal `.metalUnavailable`; no retry, CPU fallback,
-device, performance, commercial, packaging, shipping, launch, or
+The repaired gate credits parity only on the available branch with
+`parity_executed=1`; unavailable Metal is terminal `.metalUnavailable`, reports
+`parity_executed=0`, and provides no retry, CPU fallback, or GPU parity credit.
+The unresolved gaps above also mean no broad CPU/GPU equivalence, device,
+performance, commercial, packaging, shipping, launch, or
 release-readiness claim follows.

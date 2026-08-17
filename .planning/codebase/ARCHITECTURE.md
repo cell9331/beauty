@@ -1,7 +1,20 @@
 # Architecture
 
-**Analysis Date:** 2026-08-14
+**Analysis Date:** 2026-08-17
 **Boundary:** SDK-only SwiftPM repository
+
+## Post-Archive Audit Qualification
+
+The archived v1.17/Phase-74 `12/0/0` focused and `765/0/0` full counts are
+historical Metal-available evidence. The current tree has repaired raw metadata
+compatibility, unavailable-host parity accounting, and Metal geometry binding;
+geometry point arrays now use a request-local shared `MTLBuffer`. Local retouch
+remains CPU composition followed by an identity GPU pass, GPU still-image
+transparency/color and math still differ from CPU, result alpha/extent
+enforcement is pending, geometry safety envelope provenance is not yet shared,
+and same-engine/same-runtime concurrency is unproven. Only an available branch
+with `parity_executed=1` receives GPU parity credit; unavailable coverage reports
+`parity_executed=0`.
 
 ## System Overview
 
@@ -115,13 +128,13 @@ two-case `BeautyRenderBackend`. New and missing/legacy-key configurations use
 `.cpu`; `BeautySDK.BeautyBackendFactory` propagates an immutable selected policy
 request-locally. Explicit GPU uses the package Metal runtime and fails closed as
 `.metalUnavailable` when unavailable, with no CPU fallback. Package-only
-injection is test-only. Phase-73 aggregate evidence is configuration `16/0/0`,
+injection is test-only. Historical Phase-73 aggregate evidence is configuration `16/0/0`,
 runtime `34/0/0`, full `753/0/0`, eight opt-ins exactly once, and separate
 `metal_available=1` / `metal_unavailable=0` classifications. Phase 74 owns
 generated parity; UI/Demo, device, performance, commercial, packaging,
 shipping, launch, and release-readiness remain excluded.
 
-### Phase 74 Generated Backend Parity
+### Phase 74 Historical Generated Backend Parity
 
 The current architecture retains CPU/Core Image as the permanent semantic
 reference while public configuration selects one immutable CPU or Metal policy
@@ -129,11 +142,13 @@ per request. Generated in-memory parity fixtures exercise the same normalized
 plan and carrier through both backends. Exact neutral bytes and structural
 kind/dimension/alpha/extent/named-sRGB invariants are combined with pinned
 active deltas; containment, protected/outside bytes, collision, degradation,
-sibling isolation, and bounded concurrency remain aggregate-only. The parity
-gate reports focused `12/0/0`, full `765/0/0`, and separate
+sibling isolation, and bounded concurrency remain aggregate-only. The archived
+parity gate reported focused `12/0/0`, full `765/0/0`, and separate
 `metal_available=1` / `metal_unavailable=0`. Unavailable Metal is typed terminal
-failure, never fallback or parity success. UI/Demo, device, performance,
+failure, never fallback or parity success. The repaired gate makes this explicit
+with `parity_executed=0` on unavailable hosts, and the audit gaps above prevent
+broad current equivalence. UI/Demo, device, performance,
 commercial, packaging, shipping, launch, and release claims remain excluded.
 
 ---
-*Architecture analysis: 2026-08-14 after Phase 66 review remediation*
+*Architecture analysis: 2026-08-17 during v1.17 post-archive audit remediation*

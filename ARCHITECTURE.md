@@ -3,6 +3,32 @@
 > `beauty` 的当前 SDK-only 系统蓝图。参数与状态机见 `DESIGN.md`；effect/control
 > status 见 `docs/SDK_EFFECT_TAXONOMY.md`。
 
+## Current Post-Archive Audit Status
+
+v1.17 was historically completed and archived at `afb04b4`; its frozen
+Phase-74 record reports focused `12/0/0` and full `765/0/0` execution on a
+Metal-available package host. Those numbers describe the archived run, not a
+freshly rerun current-worktree closeout.
+
+The post-archive audit has repaired public non-up/mirrored raw-input metadata
+compatibility (`53e8da1`), unavailable-host parity accounting (`d29b90a`), and
+the Metal geometry inline-binding overflow (`556499a`). Geometry point arrays
+are now request-local shared `MTLBuffer` resources; only the bounded scalar
+point count remains inline. On an available host the parity branch reports
+`focused_tests=12` and `parity_executed=1`; an unavailable host may pass its
+typed availability gate only with `parity_executed=0` and never receives GPU
+parity credit.
+
+Current broad CPU/GPU equivalence remains unclaimed. Local-retouch bytes are
+still composed on CPU before an identity Metal dispatch; the GPU still-image
+path rejects transparency and normalizes to named sRGB differently from CPU;
+CPU and Metal still-image coefficients/lip math are not fully identical; result
+alpha/extent invariant enforcement is still under remediation; geometry safety
+parity derives its envelope from a separate generated observation; and there is
+no same-engine/same-runtime concurrent-execution contract or evidence. These
+gaps also preclude device, commercial, packaging, shipping, launch, and release-
+readiness claims.
+
 ## 1. Current Repository Contract
 
 The repository contains one Swift Package rooted at `BeautySDK/`. SwiftPM library
@@ -19,8 +45,8 @@ Current source/test inventory, excluding `.build`:
 | --- | ---: |
 | Swift source files | 72 |
 | SwiftPM test files | 74 |
-| Swift source lines | 16,684 |
-| SwiftPM test lines | 32,909 |
+| Swift source lines | 16,699 |
+| SwiftPM test lines | 33,179 |
 | `BeautyConfiguration` stored fields | 11 |
 
 ## 2. Top-Level Invariants
@@ -36,7 +62,7 @@ Current source/test inventory, excluding `.build`:
 | A7 | Public parameters and presets remain backend-independent normalized values. |
 | A8 | Resource lookup is centralized and validates logical identifiers rather than interpreting caller paths. |
 | A9 | SwiftPM plus SDK-owned CLI/script validation is the sole current evidence boundary. |
-| A10 | The v1.16 contract historically retained CPU/Core Image behavior and pinned shader bytes without a public Metal API, backend switch, or algorithm; the current v1.17 Phase-71 runtime is package-internal only. |
+| A10 | v1.16 historically retained CPU/Core Image behavior and pinned shader bytes without a public Metal API; the current package exposes `.cpu`/`.gpu` policy while keeping the Metal runtime package-internal and CPU as the reference. |
 | A11 | The external consumer and CLI observe only public-product results, bounded identities, and typed aggregate outcomes; executable-internal failure seams are test machinery, not public API. |
 | A12 | `BeautyResult<Output>` is `Sendable` only when `Output: Sendable`; public concurrency tests cover compile-time acceptance and a complete async task hop without making arbitrary payloads transferable. |
 
@@ -179,14 +205,14 @@ documented opt-ins, and reject failure, skip, or zero execution. These gates do
 not establish device, performance-budget, commercial, packaging, shipping,
 launch, or release readiness.
 
-The current public concurrency evidence is the three-test
+The current public-result concurrency evidence is the three-test
 `BeautyResultConcurrencyTests` suite (3/0/0): a `Sendable` payload result
 survives an async task hop with its public fields intact, ordinary string
 construction remains source-compatible, and a non-`Sendable` payload is kept
 outside the positive contract. The v1.16 historical mandatory wrapper evidence
-executes 702 tests with zero failures and zero skips. The current Phase-71
-archive-first wrapper historically executed 728 tests with zero failures and
-zero skips. Phase 73's current archive-first wrapper executes 753 tests with
+executes 702 tests with zero failures and zero skips. The Phase-71 historical
+archive-first wrapper executed 728 tests with zero failures and zero skips.
+Phase 73's historical archive-first wrapper executed 753 tests with
 zero failures and zero skips, with all eight opt-ins exactly once and separate
 `metal_available=1` / `metal_unavailable=0` classifications. The active
 boundary self-test rejects a mutation back to unconditional generic sendability
@@ -248,12 +274,16 @@ The still-image facade remains the sole owner of local-retouch admission,
 request-local support, and `BeautyLocalRetouchCompositionOwner`. It publishes
 only the immutable composed `BeautyCanonicalStillImage` and six bounded
 aggregate counters on `BeautyBackendRequest`. `BeautyMetalBackend` consumes
-that carrier through an explicit composed-retouch pass, then applies mapped
+that CPU-composed carrier through an identity composed-retouch Metal pass, then applies mapped
 color and geometry in CPU order; it does not receive providers, proposals,
 support, masks, or source locators. Local-retouch-only output is therefore the
 owner-produced carrier byte-for-byte, while mixed work starts from those same
-immutable bytes. Public backend configuration is covered by Phase 73 and
-generated CPU/Metal parity remains Phase 74.
+immutable bytes. This is a GPU transport/ordering boundary, not end-to-end GPU
+local-retouch computation. Geometry arrays are bound through a request-local
+shared `MTLBuffer`, including payloads beyond Metal's 4 KiB inline limit; the
+bounded scalar point count remains inline and cleanup is deterministic. Public
+backend configuration is covered by Phase 73; Phase-74 parity evidence remains
+historical pending the remediation closeout rerun.
 
 ## Phase 73 Public Backend Configuration
 
@@ -268,18 +298,18 @@ runtime. If Metal is unavailable, the request terminates with typed
 `.metalUnavailable`; it never reports GPU success or silently falls back to
 CPU. Package-only injection seams are test-only.
 
-Phase 73 evidence is aggregate-only: configuration focused `16/0/0`, runtime
+Historical Phase 73 evidence is aggregate-only: configuration focused `16/0/0`, runtime
 focused `34/0/0`, and the full archive-first no-skip wrapper `753/0/0`, with
 eight opt-ins exactly once and `metal_available=1` / `metal_unavailable=0`.
 Phase 74 owns generated CPU/GPU parity and SDK-only closeout. No UI/Demo,
 simulator or physical-device, performance, commercial, packaging, shipping,
 launch, or release-readiness claim follows from this configuration evidence.
 
-## Phase 74 CPU/GPU Parity and SDK-Only Closeout
+## Phase 74 Historical CPU/GPU Parity and SDK-Only Closeout
 
 The current package retains CPU/Core Image as the permanent semantic reference
 and routes the same normalized plans and request-local carriers through Metal.
-Generated SwiftPM fixtures compare input kind, dimensions, alpha, extent, named
+The archived Phase-74 generated SwiftPM fixtures compared input kind, dimensions, alpha, extent, named
 sRGB metadata, exact neutral bytes, and explicit active tolerances (maximum
 channel delta `8`, mean RGB `< 5.0`). Safety coverage checks CPU-owned
 containment, protected/outside bytes, collision summaries, no-face/degraded
@@ -288,9 +318,12 @@ proves request-local determinism.
 
 The mutation-tested parity gate runs once in archive-first order after
 configuration and before consumer, CPU-oracle, opt-in, and full-child stages.
-Fresh evidence is focused `12/0/0`, full SwiftPM `765/0/0`, eight opt-ins
+Historical archive evidence is focused `12/0/0`, full SwiftPM `765/0/0`, eight opt-ins
 exactly once, and separate `metal_available=1` / `metal_unavailable=0`.
-Unavailable Metal remains typed `.metalUnavailable` and cannot lend success to
-CPU or GPU parity. This is SDK/algorithm/Metal-pipeline evidence only; UI/Demo,
+The repaired current gate gives only its available branch GPU parity credit
+(`focused_tests=12`, `parity_executed=1`); unavailable Metal remains typed
+`.metalUnavailable`, reports `parity_executed=0`, and cannot lend success to
+CPU or GPU parity. The unresolved audit gaps listed above prevent this historical
+matrix from being read as broad current CPU/GPU equivalence. UI/Demo,
 simulator/device, performance, commercial, packaging, shipping, launch, and
 release-readiness remain excluded.

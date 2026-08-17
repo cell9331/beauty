@@ -1,16 +1,19 @@
 # Codebase Concerns
 
-**Analysis Date:** 2026-08-14
+**Analysis Date:** 2026-08-17
 **Boundary:** SDK-only SwiftPM repository
 
 ## Current Technical Debt
 
-### Generic `Sendable` promise
+### Post-archive CPU/GPU contract gaps
 
-`BeautyResult<Output>` still declares unconditional `@unchecked Sendable`.
-Arbitrary non-Sendable payloads can therefore cross concurrency domains without
-compiler proof. A versioned conditional conformance or sendable media carrier
-plus compile-time Swift 6 fixtures remains the safe remediation.
+The v1.17 archive is historical rather than current broad-parity authority.
+Local retouch is CPU-composed before identity GPU dispatch; GPU still-image
+transparency/color policy and coefficient/lip math differ from CPU; result
+alpha/extent enforcement is pending; geometry safety uses a separately
+generated envelope observation; and same-engine/same-runtime concurrency is
+not specified or proven. Unavailable hosts report `parity_executed=0` and never
+receive GPU parity credit.
 
 ### Large implementation units
 
@@ -73,7 +76,9 @@ skip/disabled events. Transcript text is temporary, not durable evidence.
 
 - Physical-device performance, thermal/endurance behavior, and population
   coverage are not established.
-- Realtime landmark/local-retouch routing and GPU execution are absent.
+- Realtime landmark/local-retouch routing remains absent. Selectable GPU
+  execution exists for the bounded SDK path, but local-retouch computation is
+  not end-to-end GPU-owned and shared-instance concurrency is unproven.
 - `去脂` lacks an approved production method and licensed real positive/negative
   evidence; it remains future without proxying existing controls.
 - Commercial approval, packaging, distribution, shipping, launch, and release
@@ -84,4 +89,4 @@ fresh outside-repository temporary directory. It is not current test coverage,
 integration guidance, or a missing active feature.
 
 ---
-*Concerns audit: 2026-08-14 after Phase 66 review remediation*
+*Concerns audit: 2026-08-17 during v1.17 post-archive audit remediation*

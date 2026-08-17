@@ -11,6 +11,16 @@ legacy/missing-key decoding stay on `.cpu`, and an explicitly unavailable GPU
 fails as typed `.metalUnavailable` without silently falling back. Generated
 SwiftPM parity, safety, determinism, and no-skip gates close the milestone.
 
+The milestone was historically archived at `afb04b4` after a Metal-available
+focused `12/0/0` and full `765/0/0` run. A post-archive audit is now active:
+F-01 metadata compatibility, F-03 unavailable-host accounting, and F-06 Metal
+geometry binding are repaired, while F-08 is still being fixed and
+F-02/F-04/F-05/F-09/F-10 remain manual or separately scoped gaps. Only an
+available branch reports `focused_tests=12` / `parity_executed=1`; unavailable
+typed coverage reports `parity_executed=0` and never counts as GPU parity.
+The checkboxes below preserve historical plan completion and do not override
+this current audit qualification or authorize broad equivalence/release claims.
+
 This milestone is SDK/algorithm and Metal-pipeline work only. It does not add
 application or Demo behavior, Xcode targets, simulator or physical-device
 validation, new beauty algorithms or parameters, model/network behavior,
@@ -35,14 +45,14 @@ commercial approval, packaging, shipping, launch, or release-readiness claims.
 - ✅ **[v1.14 Local Facial Retouch](milestones/v1.14-ROADMAP.md)** — Phases 53-58, completed 2026-08-05.
 - ✅ **[v1.15 Independent Teeth and Sclera Retouch](milestones/v1.15-ROADMAP.md)** — Phases 59-65, completed and audited 2026-08-11.
 - ✅ **[v1.16 SDK-Only Foundation and CPU Reference](milestones/v1.16-ROADMAP.md)** — Phases 66-69, independently complete 2026-08-15.
-- ✅ **v1.17 Dual CPU/GPU Metal Rendering** — Phases 70-74, completed 2026-08-17.
+- ✅ **v1.17 Dual CPU/GPU Metal Rendering** — Phases 70-74, historically completed and archived 2026-08-17; post-archive audit remediation active.
 
-## Current Milestone: v1.17 Dual CPU/GPU Metal Rendering
+## Historical Milestone Record: v1.17 Dual CPU/GPU Metal Rendering
 
-**Milestone Goal:** Integrators can select a stable CPU or Metal execution
-policy for the existing SDK feature set while both backends preserve one
-canonical request/result contract and parity is demonstrated through generated
-SDK-owned evidence.
+**Historical Milestone Goal:** Integrators could select a stable CPU or Metal
+execution policy for the existing SDK feature set while both backends were
+compared through generated SDK-owned evidence. Current audit qualifications are
+listed above.
 
 **Phase numbering:** v1.17 continues the historical sequence at Phase 70.
 
@@ -179,7 +189,7 @@ execute.
 - [x] 73-03-PLAN.md — Add the archive-first configuration gate and full no-skip integration.
 - [x] 73-04-PLAN.md — Synchronize current SDK owners and Phase 73 planning ledgers.
 
-### Phase 74: CPU/GPU Parity and SDK-Only Closeout
+### Phase 74: Historical CPU/GPU Parity and SDK-Only Closeout
 
 **Goal**: Generated SDK-owned evidence demonstrates safe, deterministic parity
 between available backends and closes the milestone without weakening the CPU
@@ -229,8 +239,9 @@ Plans:
 | 73 | 2 | CONFIG-01, CONFIG-02 |
 | 74 | 5 | PARITY-01, PARITY-02, PARITY-03, CLOSE-01, CLOSE-02 |
 
-**Coverage:** 13/13 v1.17 requirements mapped exactly once; no orphaned or
-duplicate mappings.
+**Coverage:** 13/13 v1.17 requirements were historically mapped exactly once;
+no orphaned or duplicate mappings. Current audit status is governed by the
+qualification at the top of this roadmap.
 
 ## Progress
 

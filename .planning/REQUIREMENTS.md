@@ -3,6 +3,23 @@
 **Defined:** 2026-08-15
 **Core Value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
 
+## Post-Archive Audit Qualification
+
+The checked requirements and traceability table below record the historical
+v1.17 lifecycle completed at `afb04b4`. Its Metal-available Phase-74 evidence
+was focused `12/0/0` and full `765/0/0`; these counts are not current-worktree
+closeout evidence until the remediation full gate is rerun.
+
+Post-archive fixes have restored public non-up/mirrored raw metadata
+compatibility (`53e8da1`), separated unavailable-host coverage from GPU parity
+credit (`d29b90a`), and moved oversized Metal geometry point payloads to a
+request-local shared `MTLBuffer` (`556499a`). Only an available branch reports
+`focused_tests=12` / `parity_executed=1`; unavailable coverage reports
+`parity_executed=0`. F-08 result alpha/extent enforcement remains active, while
+F-02/F-04/F-05/F-09/F-10 require separately scoped architecture, contract, or
+evidence work. Accordingly, `[x]` means historically completed plan
+traceability, not current broad CPU/GPU equivalence or release readiness.
+
 ## v1.17 Requirements
 
 ### Backend Contract and Configuration
@@ -47,7 +64,7 @@
 | Tracked portrait media, raw masks/landmarks/pixels, or durable private fixture locators | Mandatory validation uses generated Swift fixtures and aggregate-only diagnostics. |
 | Device/commercial/performance-budget, packaging, distribution, shipping, launch, or release-readiness claims | These require separate product and hardware evidence and are not implied by SDK-host Metal tests. |
 
-## Traceability
+## Historical v1.17 Traceability
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
@@ -95,4 +112,4 @@ typed availability policy; Phase 74 owns parity and SDK-only closeout.
 
 ---
 *Requirements defined: 2026-08-15*
-*Last updated: 2026-08-17 after Phase 74 parity and SDK-only closeout with exact requirement traceability*
+*Last updated: 2026-08-17 during post-archive v1.17 audit remediation; historical Phase-74 traceability retained with current-gap qualification*

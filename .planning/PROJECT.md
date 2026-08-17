@@ -12,19 +12,19 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ## Current State
 
-**Latest completed milestone:** v1.17 Dual CPU/GPU Metal Rendering on 2026-08-17 (independently verified SDK-core parity closeout; product distribution/shipping is not claimed).
+**Latest historical milestone:** v1.17 Dual CPU/GPU Metal Rendering, archived at `afb04b4` on 2026-08-17; its package-host closeout is immutable history rather than current audited truth.
 **Latest historical UI milestone:** v1.1 Meitu UI on 2026-06-24, retained only as archived evidence.
-**Current milestone:** v1.17 Dual CPU/GPU Metal Rendering.
+**Current work:** bounded post-archive v1.17 audit remediation tracked by `P-2026-08-17-v1-17-audit-remediation` in `PLANS.md`.
 
 **Implementation state:** v1.16 froze the current CPU renderer as the reference backend, added generated CPU oracles, a public-only SwiftPM consumer, the SDK-owned renderer CLI, and conditional `BeautyResult` sendability. v1.17 now includes the package-only backend-neutral boundary, bounded Metal runtime and feature passes, public `.cpu`/`.gpu` configuration with typed unavailable-GPU failure, and generated CPU/GPU parity gates, while preserving the 61-field/five-preset/74-case compatibility surface. Historical application taxonomy remains archive-only.
 
-**Verification state:** Phase 74 closes the v1.17 parity and SDK-only gate: focused generated parity is 12/0/0 with `metal_available=1` and `metal_unavailable=0`; the archive-first no-skip wrapper executes 765/0/0, all 8 opt-ins exactly once, with zero skips and zero failures. CPU remains the reference and unavailable GPU coverage is separately classified without fallback. Device/performance/commercial/packaging/shipping/launch/release-readiness remain separate scopes.
+**Verification state:** The archived Phase-74 Metal-available run recorded focused `12/0/0` and full `765/0/0`; those are historical numbers until the remediation full gate is rerun. The current tree has repaired public non-up/mirrored raw metadata compatibility (`53e8da1`), unavailable-host parity accounting (`d29b90a`), and the Metal geometry 4 KiB inline-binding overflow (`556499a`). Only an available branch reports `focused_tests=12` / `parity_executed=1`; unavailable-host typed coverage reports `parity_executed=0` and cannot lend GPU parity success.
 
-**Current milestone goals:** v1.17 preserves CPU as the deterministic reference, adds production-owned Metal color/skin, geometry, and local-retouch execution, exposes an explicit `.cpu`/`.gpu` selector on `BeautyConfiguration`, and proves parity plus fail-closed availability/error behavior through SwiftPM and SDK-owned scripts. `去脂`, new semantic-mask features, model/network, UI/Demo, simulator/device, population/device/commercial, packaging, shipping, launch and release-readiness work remain future or separately scoped.
+**Current audit boundary:** CPU remains the reference and `.cpu`/`.gpu` selection remains public, but broad equivalence is not claimed. Open findings cover CPU-composed/identity-GPU local retouch, different GPU transparency/sRGB policy, coefficient/lip-math drift, pending result alpha/extent enforcement, geometry safety envelope provenance, and absent same-engine/same-runtime concurrency evidence. `去脂`, new semantic-mask features, model/network, UI/Demo, simulator/device, population/device/commercial, packaging, shipping, launch and release-readiness work remain future or separately scoped.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Broader historical application/device/release evidence remains time-bounded and cannot satisfy current SDK requirements. The codebase maps were refreshed again from the post-archive active source/tests on 2026-08-14.
 
-**Code size:** the immutable `v1.15` tag contains 49,018 tracked Swift source/test lines. The active post-archive SDK-only tree contains 66 Swift source files / 14,952 source lines and 61 SwiftPM test files / 29,995 test lines, excluding `.build` and archive contents.
+**Code size:** the immutable `v1.15` tag contains 49,018 tracked Swift source/test lines. The active post-archive SDK-only tree contains 72 Swift source files / 16,699 source lines and 74 SwiftPM test files / 33,179 test lines, excluding `.build` and archive contents.
 
 ## Planned SDK-First Milestone Sequence
 
@@ -33,7 +33,7 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 The backend choice is configuration/execution policy and must not change the public beauty-parameter or preset schema. Detection/support semantics remain shared. No backend may borrow success from the other: CPU and GPU each run the same SDK-owned input/output contract, and comparison evidence separately verifies their parity.
 
-## Current Milestone: v1.17 Dual CPU/GPU Metal Rendering
+## Historical Milestone Record: v1.17 Dual CPU/GPU Metal Rendering
 
 **Goal:** Keep the verified CPU implementation as a permanent reference while adding a selectable, backend-neutral Metal renderer for the existing SDK algorithms, with explicit parity and fail-closed availability evidence.
 
@@ -46,9 +46,9 @@ The backend choice is configuration/execution policy and must not change the pub
 
 **Non-negotiable boundary:** v1.17 is SDK/algorithm and Metal-pipeline work only. It does not add SwiftUI/Demo behavior, Xcode application targets, simulator or physical-device validation, new beauty algorithms/parameters, cloud/model assets, commercial visual approval, packaging, shipping, launch, or release-readiness claims.
 
-### Phase 71 Current Runtime Position
+### Current Post-Archive Runtime Position
 
-Phase 74 is complete for all v1.17 parity and SDK-only closeout requirements. The delivered runtime is
+Phase 74 is historically complete in the archived milestone ledger. The delivered runtime is
 package-only: `BeautyRender` owns device, command queue, compiled pipeline,
 request-local RGBA8 textures/buffers, command synchronization, terminal
 status, and deterministic cleanup; `BeautyEffects` owns one internal `.metal`
@@ -60,17 +60,18 @@ as `metal_available`. Resource cleanup and terminal errors are retained only as
 bounded aggregate status. CPU remains the permanent reference; Phase 74 owns
 generated parity and SDK-only closeout.
 
-The final archive-first evidence is the configuration gate and
+The historical archive-first evidence is the configuration gate and
 `check-metal-runtime.sh --self-test` plus live preflight (configuration
 `16/0/0`, runtime `34/0/0`, `metal_available=1`, `metal_unavailable=0`), the
 post-archive SDK-only boundary, the no-skip wrapper self-test, and
 `run-no-skip-swiftpm.sh` (`753/0/0`, eight opt-ins exactly once). Phase 72 owns
 feature passes, Phase 73 owns public `.cpu`/`.gpu` configuration and typed
-availability policy, and the generated parity/SDK-only closeout is now complete.
+availability policy, and the generated parity/SDK-only closeout was historically complete.
 This does not claim a new algorithm, UI/Demo lifecycle, simulator or
 physical-device validation, performance, commercial approval, packaging,
-shipping, launch, or release readiness. The v1.17 milestone is complete within
-the SDK-only boundary; those excluded claims remain separate scopes.
+shipping, launch, or release readiness. The post-archive gaps in the current
+audit boundary above prevent that lifecycle record from being read as broad
+current CPU/GPU equivalence; those excluded claims remain separate scopes.
 
 ## Last Completed Milestone: v1.16 SDK-Only Foundation and CPU Reference
 

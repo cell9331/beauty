@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.17
 milestone_name: Dual CPU/GPU Metal Rendering
-status: Awaiting next milestone
-stopped_at: Completed 74-05-PLAN.md
-last_updated: "2026-08-17T03:20:45.198Z"
+status: Post-archive audit remediation
+stopped_at: Fixing F-07 current owner drift
+last_updated: "2026-08-17T12:00:00.000Z"
 last_activity: 2026-08-17
-last_activity_desc: Milestone v1.17 completed and archived
+last_activity_desc: v1.17 post-archive audit remediation active
 progress:
   total_phases: 5
   completed_phases: 5
@@ -14,30 +14,48 @@ progress:
   completed_plans: 19
   percent: 100
 current_phase: 74
-current_phase_name: CPU/GPU Parity and SDK-Only Closeout
+current_phase_name: Historical CPU/GPU Parity and SDK-Only Closeout
 ---
 
 # Project State
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-08-15)
+See: `.planning/PROJECT.md` (updated 2026-08-17)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural,
 controllable, real-time and still-image beauty processing through a stable
 modular facade.
-**Current focus:** Phase 74 — CPU/GPU parity and SDK-only closeout
+**Current focus:** v1.17 post-archive audit remediation; Phase 74 remains a
+historical lifecycle record.
 
 ## Current Position
 
-Phase: Milestone v1.17 complete
-Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-08-17 — Milestone v1.17 completed and archived
+Phase: Post-archive audit of historically archived v1.17
+Plan: `P-2026-08-17-v1-17-audit-remediation`
+Status: Active — F-01/F-03/F-06 repaired, F-07 in progress, F-08 pending
+Last activity: 2026-08-17 — synchronized current owners with audited state
+
+## Current Audit Qualification
+
+v1.17 was historically archived at `afb04b4` with a Metal-available focused
+`12/0/0` and full `765/0/0` run. Those numbers and the 5/5 phase, 19/19 plan
+progress above are historical lifecycle metrics, not a fresh current-worktree
+closeout. Public raw metadata compatibility (`53e8da1`), unavailable-host
+parity accounting (`d29b90a`), and Metal geometry binding (`556499a`) are
+repaired. Only an available branch reports `focused_tests=12` /
+`parity_executed=1`; unavailable typed coverage reports `parity_executed=0`.
+
+Open audit work: F-08 result alpha/extent enforcement is pending. F-02 local-
+retouch GPU ownership, F-04 transparency/color policy, F-05 coefficient/lip-
+math equivalence, F-09 geometry-envelope provenance, and F-10 same-engine/same-
+runtime concurrency require manual decisions or separately scoped evidence.
+No broad equivalence, device, commercial, packaging, shipping, launch, or
+release-readiness conclusion is current.
 
 ## Performance Metrics
 
-**Current milestone:**
+**Historical v1.17 milestone:**
 
 - Total plans completed: 19
 - Average duration: ~30min
@@ -122,10 +140,11 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- Phase 70–73 runtime, feature, and public configuration work is complete. Phase
-  74 generated parity and SDK-only closeout are complete; device/performance,
-  commercial, packaging, shipping, launch, and release-readiness evidence remain
-  outside this milestone.
+- F-08 result alpha/extent enforcement remains active remediation.
+- F-02/F-04/F-05/F-09/F-10 require manual decisions or separately scoped
+  evidence before any broad CPU/GPU equivalence claim.
+- Device/performance, commercial, packaging, shipping, launch, and release-
+  readiness evidence remain outside this milestone.
 
 ## Deferred Items
 
@@ -137,11 +156,12 @@ None found under `.planning/todos/pending/`.
 ## Session Continuity
 
 Last session: 2026-08-17T12:00:00.000Z
-Stopped at: Completed 74-05-PLAN.md
-Resume file: None
-Next action: v1.17 SDK-only closeout is complete; run a milestone audit before
-starting any separately scoped work.
+Stopped at: Fixing F-07 current owner drift
+Resume file: `PLANS.md`
+Next action: complete F-07, fix F-08, then rerun focused and full remediation
+gates; separately plan the manual findings.
 
 ## Operator Next Steps
 
-- Start the next milestone with /gsd-new-milestone
+- Finish the active audit remediation in `PLANS.md`; do not start a new
+  milestone from the historical Phase-74 completion state.
