@@ -171,7 +171,11 @@ execute.
   3. An explicitly requested unavailable GPU returns typed
      `.metalUnavailable`, produces no successful GPU result, and never silently
      executes or reports a CPU fallback.
-**Plans**: TBD
+**Plans**: 3 plans
+
+- [ ] 73-01-PLAN.md — Add the public CPU/GPU configuration contract and legacy Codable compatibility tests.
+- [ ] 73-02-PLAN.md — Route engine requests through the selected backend and prove typed unavailable-GPU failure.
+- [ ] 73-03-PLAN.md — Add the archive-first configuration gate and synchronize SDK owners/ledgers.
 
 ### Phase 74: CPU/GPU Parity and SDK-Only Closeout
 
