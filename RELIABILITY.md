@@ -77,9 +77,10 @@ Affected-eye/feature failure remains local. Teeth and sclera share the request
 owner but not evidence, support, admission, or promotion authority. Pixel-buffer
 processing and `reset()` create no local-retouch request work.
 
-The current geometry implementation is CPU/Core Image-backed. The retained shader
-resource and render foundations do not establish current GPU execution. v1.16 must
-not add a public backend switch, silent fallback, or parity claim.
+The v1.16 historical geometry implementation was CPU/Core Image-backed and did
+not establish GPU execution. The current v1.17 route keeps CPU as the permanent
+reference and selects GPU only through the public configuration contract below;
+it never uses a silent fallback or treats configuration coverage as parity.
 
 Phase 70 freezes the shared package-only backend contract before CPU routing
 changes. Admission validates finite positive dimensions, supported format,
@@ -172,11 +173,15 @@ portrait media or persist pixels, masks, support, coordinates, child output, or
 locators; private/native-Vision skips remain environment-gated and non-mandatory.
 
 The public `BeautyResultConcurrencyTests` suite currently passes 3/0/0. The
-the v1.16 historical mandatory wrapper passed 702 tests with zero failures and zero
-skips. The current Phase-71 archive-first wrapper passes 728 tests with zero
+The v1.16 historical mandatory wrapper passed 702 tests with zero failures and zero
+skips. The Phase-71 archive-first wrapper historically passed 728 tests with zero
 failures and zero skips. These are aggregate SwiftPM checks; child output and generated
 outputs remain temporary, and the conditional result contract does not make
 framework-backed or otherwise non-sendable payloads transferable.
+
+The current Phase-73 archive-first wrapper passes 753 tests with zero failures
+and zero skips, executes all eight opt-ins exactly once, and records separate
+`metal_available=1` / `metal_unavailable=0` classifications.
 
 The compiled `BeautyExampleRenderer` Process matrix uses fresh temporary
 SwiftPM/build and fixture roots, concurrent bounded stdout/stderr capture, and
@@ -235,3 +240,16 @@ introduced. The focused feature preflight runs after runtime authorization and
 before consumer/oracle/opt-in/full-child stages, with bounded logs and
 zero-failure/zero-skip accounting. Phase 73 owns public availability policy;
 Phase 74 owns parity closeout.
+
+## Phase 73 Backend Selection Reliability
+
+`BeautyConfiguration` is immutable and defaults to `.cpu`, including when a
+legacy Codable payload omits `renderBackend`. `BeautyBackendFactory` selects
+the package executor once and propagates that policy request-locally: explicit
+CPU requests use the permanent reference, while explicit GPU requests either
+complete through the Metal runtime or terminate with typed
+`.metalUnavailable`. The unavailable path publishes no output, does not retry,
+and never invokes CPU fallback. Package-only injection is test-only. Generated
+parity, determinism, and cross-backend safety remain Phase 74 work; this phase
+does not claim UI/Demo, simulator/device, performance, commercial, packaging,
+shipping, launch, or release readiness.

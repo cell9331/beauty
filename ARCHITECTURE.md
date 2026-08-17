@@ -21,6 +21,7 @@ Current source/test inventory, excluding `.build`:
 | SwiftPM test files | 61 |
 | Swift source lines | 14,952 |
 | SwiftPM test lines | 29,995 |
+| `BeautyConfiguration` stored fields | 11 |
 
 ## 2. Top-Level Invariants
 
@@ -57,12 +58,12 @@ BeautyExampleRenderer public-product command-line consumer
 
 | Target | Owns | Must not own |
 | --- | --- | --- |
-| `BeautyCore` | public/shared value models, errors, configuration, canonical carrier, redacted diagnostics | Vision implementation, application state |
+| `BeautyCore` | public/shared value models, errors, the 11-field configuration including `BeautyRenderBackend`, canonical carrier, redacted diagnostics | Vision implementation, application state |
 | `BeautyDetection` | Vision detection, mapping, selection, package-only observed support | rendering, public raw geometry |
 | `BeautyRender` | pass/pixel-buffer foundations, the retained bundled shader resource, and the package-internal `BeautyMetalRuntime` resource/synchronization owner | effect policy, application code, a public backend selector, or a claimed device backend |
 | `BeautyResources` | bundled manifest/presets and identifier validation | arbitrary external path loading |
 | `BeautyEffects` | resolver, safety caps, geometry/color pipelines, local-retouch providers/transforms/composition | public facade, application controls |
-| `BeautySDK` | stable host facade and request orchestration | support-region export, application lifecycle |
+| `BeautySDK` | stable host facade, immutable `BeautyBackendFactory` selection, and request-local policy propagation | support-region export, application lifecycle |
 | `BeautyExampleRenderer` | public-facade fixture input/output validation, deterministic 74-case discovery, and typed report aggregation | internal-target imports, public backend selection, product claims from generated media |
 
 The package declares no remote dependency. New dependencies, models, resource
@@ -73,10 +74,10 @@ SwiftPM executable with one local path dependency and only the public
 `BeautySDK` product. It generates its own neutral input and observes real output
 bytes/dimensions; it is an integration fixture, not an SDK target or public API.
 `BeautyExampleRenderer` accepts the compatible `--input`, `--output`, `--case`,
-and `--no-watermark` flags, requires a pre-existing output directory, preserves
-the exact 74-case catalog, and accepts only the executable-local `--backend cpu`
-token. `gpu` and unknown backend tokens are rejected until v1.17; no public
-backend selector is implied.
+and `--no-watermark` flags, requires a pre-existing output directory, and
+preserves the exact 74-case catalog. Public backend selection is owned by
+`BeautyConfiguration`; the CLI remains a public-product consumer and does not
+create a second backend-policy surface.
 
 The renderer writes a versioned privacy-safe JSON report only after each output
 is non-empty, decodable, and dimension-preserving. Reports contain bounded
@@ -97,7 +98,8 @@ public BeautyEngine input
 → canonical opaque sRGB request carrier when local retouch is admitted
 → one optional Vision detection/mapping request when parameters require support
 → resolve normalized/capped effects
-→ CPU/Core Image color + unified geometry + request-local local-retouch composition
+→ select immutable CPU or GPU policy through `BeautyBackendFactory`
+→ CPU/Core Image or package Metal color + unified geometry + request-local local-retouch composition
 → public output, typed error, redacted warning/aggregate metrics
 ```
 
@@ -133,7 +135,7 @@ luminance/chroma/red/yellow-excess direction, local-retouch containment,
 collision-to-source ownership, and request recovery. The generated preflight
 (`scripts/check-cpu-reference-oracles.sh`) runs before private/native-Vision
 opt-ins and the single full SwiftPM child; it records only aggregate pass
-counts. The current CPU/Core Image implementation remains the sole reference.
+counts. The current CPU/Core Image implementation remains the permanent reference.
 
 ## 6. Archive Boundary
 
@@ -183,9 +185,12 @@ survives an async task hop with its public fields intact, ordinary string
 construction remains source-compatible, and a non-`Sendable` payload is kept
 outside the positive contract. The v1.16 historical mandatory wrapper evidence
 executes 702 tests with zero failures and zero skips. The current Phase-71
-archive-first wrapper executes 728 tests with zero failures and zero skips. The active boundary
-self-test rejects a mutation back to unconditional generic sendability before
-archive, consumer, generated-CPU, opt-in, or child execution.
+archive-first wrapper historically executed 728 tests with zero failures and
+zero skips. Phase 73's current archive-first wrapper executes 753 tests with
+zero failures and zero skips, with all eight opt-ins exactly once and separate
+`metal_available=1` / `metal_unavailable=0` classifications. The active
+boundary self-test rejects a mutation back to unconditional generic sendability
+before archive, consumer, generated-CPU, opt-in, or child execution.
 
 ## 9. Phase 70 Backend-Neutral Contract
 
@@ -247,5 +252,25 @@ that carrier through an explicit composed-retouch pass, then applies mapped
 color and geometry in CPU order; it does not receive providers, proposals,
 support, masks, or source locators. Local-retouch-only output is therefore the
 owner-produced carrier byte-for-byte, while mixed work starts from those same
-immutable bytes. Public backend configuration remains Phase 73 and generated
-CPU/Metal parity remains Phase 74.
+immutable bytes. Public backend configuration is covered by Phase 73 and
+generated CPU/Metal parity remains Phase 74.
+
+## Phase 73 Public Backend Configuration
+
+`BeautyCore.BeautyConfiguration` owns the public `renderBackend` field, whose
+exact two cases are `.cpu` and `.gpu`; it is execution policy and does not alter
+the 61-field `BeautyParameters`, five neutral presets, or 74 renderer cases.
+Missing and legacy configuration keys decode to `.cpu`, and a new
+configuration defaults to `.cpu`. `BeautySDK.BeautyBackendFactory` performs
+immutable construction and request-local policy propagation: explicit `.cpu`
+uses the permanent CPU reference, while explicit `.gpu` uses the package Metal
+runtime. If Metal is unavailable, the request terminates with typed
+`.metalUnavailable`; it never reports GPU success or silently falls back to
+CPU. Package-only injection seams are test-only.
+
+Phase 73 evidence is aggregate-only: configuration focused `16/0/0`, runtime
+focused `34/0/0`, and the full archive-first no-skip wrapper `753/0/0`, with
+eight opt-ins exactly once and `metal_available=1` / `metal_unavailable=0`.
+Phase 74 owns generated CPU/GPU parity and SDK-only closeout. No UI/Demo,
+simulator or physical-device, performance, commercial, packaging, shipping,
+launch, or release-readiness claim follows from this configuration evidence.

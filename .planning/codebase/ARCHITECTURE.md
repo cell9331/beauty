@@ -28,12 +28,12 @@ capture-session, simulator, or UI-test layer is active.
 
 | Component | Current responsibility |
 | --- | --- |
-| `BeautyCore` | Public/shared values, configuration, typed errors, canonical carriers, and privacy-safe diagnostics. |
+| `BeautyCore` | Public/shared values, the 11-field configuration including `.cpu`/`.gpu`, typed errors, canonical carriers, and privacy-safe diagnostics. |
 | `BeautyDetection` | Vision detection, coordinate mapping, face selection, and package-only request support. |
 | `BeautyEffects` | Parameter resolution, geometry/color pipelines, local-retouch providers, and original-pixel composition. |
 | `BeautyRender` | Render-pass/pixel-buffer foundations, the byte-pinned shader resource, and package-internal `BeautyMetalRuntime` device/queue/pipeline/resource ownership. |
 | `BeautyResources` | Bundled manifest/preset validation and logical resource lookup. |
-| `BeautySDK` | Sole host-facing facade, request validation, orchestration, and redaction. |
+| `BeautySDK` | Sole host-facing facade, request validation, immutable `BeautyBackendFactory` selection, policy propagation, orchestration, and redaction. |
 | `BeautyExampleRenderer` | Command-line public-facade consumer that writes disposable ignored evidence. |
 
 ## Current Still-Image Flow
@@ -90,10 +90,11 @@ retained identity transaction, synchronizes and inspects status, materializes
 matching output, and releases all request resources on success and error.
 Unavailable hosts return `.metalUnavailable` without CPU fallback/retry or GPU
 credit. Diagnostics are aggregate-only and the runtime has no application, UI,
-or capture lifecycle dependency. Phase 72 owns feature passes and Phase 74
-owns generated parity/no-skip closeout; CPU remains the reference and all
-existing dependency, archive, 61-field, five-preset, 74-case, and privacy
-contracts remain in force.
+or capture lifecycle dependency. Phase 72 owns feature passes, Phase 73 owns
+the public `BeautyConfiguration.renderBackend` selector and fail-closed factory
+policy, and Phase 74 owns generated parity/no-skip closeout; CPU remains the
+reference and all existing dependency, archive, 61-field, five-preset, 74-case,
+and privacy contracts remain in force.
 
 ### Phase 72 Feature-Pass Boundary
 
@@ -102,8 +103,22 @@ package-only Metal adapter receives the canonical carrier plus six aggregate
 counters, dispatches composed-retouch before color and geometry, and exposes
 no provider or support payload. Generated local-retouch tests and the feature
 preflight preserve source binding, protected bytes, alpha, containment,
-collision-to-source, and unit-local recovery. Public selection remains Phase
-73 and parity/no-skip closeout remains Phase 74.
+collision-to-source, and unit-local recovery. Public selection is now the
+Phase-73 `.cpu`/`.gpu` configuration contract and parity/no-skip closeout
+remains Phase 74.
+
+### Phase 73 Public Backend Configuration
+
+`BeautyCore.BeautyConfiguration` has exactly 11 stored fields, including the
+two-case `BeautyRenderBackend`. New and missing/legacy-key configurations use
+`.cpu`; `BeautySDK.BeautyBackendFactory` propagates an immutable selected policy
+request-locally. Explicit GPU uses the package Metal runtime and fails closed as
+`.metalUnavailable` when unavailable, with no CPU fallback. Package-only
+injection is test-only. Phase-73 aggregate evidence is configuration `16/0/0`,
+runtime `34/0/0`, full `753/0/0`, eight opt-ins exactly once, and separate
+`metal_available=1` / `metal_unavailable=0` classifications. Phase 74 owns
+generated parity; UI/Demo, device, performance, commercial, packaging,
+shipping, launch, and release-readiness remain excluded.
 
 ---
 *Architecture analysis: 2026-08-14 after Phase 66 review remediation*

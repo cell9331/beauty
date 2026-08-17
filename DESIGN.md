@@ -64,6 +64,7 @@
 | `logLevel` | `BeautyLogLevel` | SDK 日志等级；默认 release 使用 `error`。 |
 | `maximumInputByteCount` | `Int` | 编码图像输入上限；默认 `33_554_432`（32 MiB）。 |
 | `maximumInputPixelCount` | `Int` | 解码图像与像素缓冲区的像素数上限；默认 `50_000_000`。 |
+| `renderBackend` | `BeautyRenderBackend` | 执行策略；精确为 `.cpu` 或 `.gpu`，默认 `.cpu`。 |
 
 规则：
 
@@ -73,6 +74,7 @@
 - 图像方向、输入镜像、预览镜像是逐帧输入状态，不放入全局 configuration。
 - 两个输入上限都是尾部默认参数；非正自定义值回落到各自默认值，旧 JSON 缺少两个 key 时通过显式 `decodeIfPresent` 得到相同默认值。
 - 上限是拒绝边界而非处理策略：精确命中上限继续当前行为，超过上限返回 `BeautyError.invalidInput`；SDK 不借此缩放、降采样或重解释 `preferredProcessingSize`。
+- `renderBackend` 是执行策略而非逐帧美颜参数；新建配置和缺少该 key 的旧 Codable payload 都确定性解码为 `.cpu`。显式 `.gpu` 只经 `BeautyBackendFactory` 构造 package Metal backend；不可用时终止为 `.metalUnavailable`，不回退 CPU。配置初始化后不可变，package-only injection 仅用于测试。
 
 ### 4.2 BeautyParameters
 
@@ -1157,3 +1159,24 @@ Malformed, foreign, duplicate, colliding, and empty units remain local owner
 outcomes, so one rejected unit cannot suppress an eligible sibling. No public
 backend selector or new effect is introduced here; Phase 73 owns configuration
 and Phase 74 owns cross-backend parity evidence.
+
+## Phase 73 Public Backend Configuration Contract
+
+`BeautyRenderBackend` is the exact two-case public execution-policy enum
+`.cpu`/`.gpu`, carried by the 11-field `BeautyConfiguration`. It remains
+separate from the 61-field `BeautyParameters`, five neutral presets, and 74
+renderer cases. `BeautyConfiguration` defaults to `.cpu`; `decodeIfPresent`
+keeps missing and legacy backend keys on `.cpu` while valid explicit `.gpu`
+round-trips. `BeautyBackendFactory` owns immutable selection and propagates the
+policy into the request-local engine route. CPU is the permanent reference;
+GPU construction uses the package Metal runtime. An unavailable explicit GPU
+throws terminal `.metalUnavailable` and never invokes a CPU fallback. The
+injection seam is package-only test machinery.
+
+Phase 73 gate evidence is focused configuration `16/0/0`, focused runtime
+`34/0/0`, and full archive-first no-skip `753/0/0`, with eight opt-ins exactly
+once and separate `metal_available=1` / `metal_unavailable=0` classifications.
+This establishes configuration and availability policy only; Phase 74 owns
+generated CPU/GPU parity and closeout, and no UI/Demo, simulator/device,
+performance, commercial, packaging, shipping, launch, or release-readiness
+claim is implied.

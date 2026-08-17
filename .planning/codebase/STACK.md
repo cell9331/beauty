@@ -22,12 +22,13 @@ Core Video/Core Media, Vision, AppKit for the macOS renderer, and CryptoKit in a
 resource test. No application UI framework or capture/session framework is an
 active repository dependency.
 
-The CPU/Core Image path remains the reference. Phase 71 additionally validates
+The CPU/Core Image path remains the permanent reference. Phase 71 additionally validates
 the package-internal `BeautyMetalRuntime` in `BeautyRender` and the
 package-only Metal executor in `BeautyEffects` through the retained
 `BeautySDK/Sources/BeautyRender/Shaders/Warp.metal` resource. This is a bounded
-identity runtime transaction, not a public backend API, feature-pass parity, or
-device claim; public `.cpu`/`.gpu` configuration belongs to Phase 73.
+identity runtime transaction, not a device claim. Phase 73 now exposes the
+public two-case `.cpu`/`.gpu` policy through the 11-field `BeautyConfiguration`
+and keeps unavailable GPU terminal; Phase 74 owns generated parity.
 
 ## Products and Targets
 
@@ -86,9 +87,11 @@ The existing `BeautyEffects` composition owner produces the canonical RGBA8
 carrier before `BeautyMetalBackend` invokes the `BeautyRender` pass graph.
 Metal dispatch is ordered composed-retouch, color, geometry; the local pass
 preserves the carrier and never creates a second support or proposal path.
-Generated tests remain in-memory and aggregate-only. This is package-only
-feature behavior, not public configuration, device evidence, or parity
-closeout; those belong to Phases 73 and 74.
+Generated tests remain in-memory and aggregate-only. Phase 73 adds only the
+public `.cpu`/`.gpu` configuration policy and typed unavailable behavior; Phase
+74 owns parity closeout. This remains package-only and does not imply device,
+UI/Demo, performance, commercial, packaging, shipping, launch, or release
+readiness.
 
 ---
 *Stack analysis: 2026-08-14 after Phase 66 archive retirement*

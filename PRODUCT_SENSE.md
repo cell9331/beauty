@@ -42,8 +42,9 @@ device journey and does not promote generated media as product evidence.
   do not establish SDK support or current acceptance.
 - Bounded opaque still-image `teethWhitening` and
   `scleraRednessReduction` remain independently implemented.
-- `去脂`, semantic-mask features, new algorithms, realtime local retouch, and a
-  new render backend remain outside current acceptance.
+- `去脂`, semantic-mask features, new algorithms, realtime local retouch, and
+  generated cross-backend parity remain outside current acceptance until their
+  separate gates close.
 - Device quality, population sufficiency, commercial approval, packaging,
   shipping, launch, and release readiness require separate authorization and
   evidence.
@@ -72,7 +73,7 @@ Acceptance:
 | Privacy | No unredacted support, masks, raster data, paths, or private fixture location crosses public/durable boundaries. |
 | Reset/recovery | Invalid or failed requests do not contaminate a later valid request. |
 | CLI matrix | Every requested input×case completes with a non-empty, decodable, same-size output and reconciled report counts; partial work exits non-zero. |
-| CLI scope | `--backend cpu` is the only accepted backend token in v1.16; `gpu` and unknown values fail until v1.17, without a public SDK backend API. |
+| Backend policy | `BeautyConfiguration.renderBackend` exposes exactly `.cpu` and `.gpu`; new and legacy/missing-key configurations default to `.cpu`, and explicit unavailable `.gpu` fails as typed `.metalUnavailable` without CPU fallback. |
 | CLI privacy | Reports persist only versioned aggregate counts and relative public identities; raster data, geometry, private metadata, absolute paths, and child output stay transient. |
 | Result concurrency | `BeautyResult<Output>` is transferable only when `Output: Sendable`; the public suite proves a complete async task hop and preserves all public fields, while ordinary non-sendable result construction remains valid. |
 
@@ -108,11 +109,13 @@ boundary are part of the same acceptance conjunction.
 
 The current focused public concurrency suite executes 3 tests with zero
 failures. The v1.16 historical mandatory wrapper executed 702 tests with zero
-failures and zero skips. The current Phase-71 mandatory wrapper executes 728
-tests with zero failures and zero skips; its boundary self-test rejects unconditional generic
+failures and zero skips. The Phase-71 mandatory wrapper historically executed
+728 tests with zero failures and zero skips. The current Phase-73 wrapper
+executes 753 tests with zero failures and zero skips, with all eight opt-ins
+exactly once and separate Metal availability classifications; its boundary self-test rejects unconditional generic
 `BeautyResult` sendability before the archive, consumer, generated CPU, opt-in,
 and one-child stages. This evidence is SwiftPM/SDK-owned only and does not
-establish UI/Demo behavior, Metal/GPU execution, simulator/device quality,
+establish UI/Demo behavior, simulator/device quality,
 performance, commercial approval, packaging, shipping, launch, or release
 readiness.
 
@@ -196,3 +199,17 @@ backend setting, new beauty control, UI/Demo behavior, device validation,
 performance, commercial, packaging, shipping, launch, or release-readiness
 claim. Public configuration belongs to Phase 73 and generated parity belongs
 to Phase 74.
+
+## Phase 73 Public Backend Configuration Acceptance
+
+An SDK integrator can construct `BeautyConfiguration(renderBackend: .cpu)` or
+`.gpu`; the configuration remains immutable and separate from the 61 public
+beauty fields, five presets, and 74 renderer cases. Missing and legacy Codable
+backend keys resolve to `.cpu`. CPU remains the permanent reference. Explicit
+GPU construction uses the package Metal runtime and either succeeds there or
+returns terminal `.metalUnavailable`; it never silently executes CPU fallback.
+The focused configuration/runtime gates pass `16/0/0` and `34/0/0`, while the
+full archive-first wrapper passes `753/0/0` with eight opt-ins exactly once and
+`metal_available=1` / `metal_unavailable=0`. Phase 74 owns generated parity and
+SDK-only closeout; UI/Demo, simulator/device, performance, commercial,
+packaging, shipping, launch, and release-readiness remain excluded.

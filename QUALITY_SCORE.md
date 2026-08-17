@@ -20,7 +20,7 @@
 | --- | ---: | --- | --- |
 | Root owners | 4 | Current contracts consistently name SDK-only SwiftPM ownership and archive-only UI history. | Keep owners synchronized with code/tests. |
 | SDK package | 4 | One public library, one SDK-owned renderer, six internal/library targets, no remote dependency. | Preserve facade and dependency direction. |
-| Tests | 4 | 61 SwiftPM test files; public `BeautyResultConcurrencyTests` executes 3/0/0; generated CPU reference preflight executes 15 + 10 + 16 tests with zero skips; the v1.16 historical child executed 702 tests and the current Phase-71 child executes 728 tests with eight documented opt-ins; focused renderer regression and compiled Process coverage; bounded exact XCTest/Swift Testing accounting rejects both runners' skips and ambiguity. | Keep full conjunction mandatory. |
+| Tests | 4 | 61 SwiftPM test files; public `BeautyResultConcurrencyTests` executes 3/0/0; generated CPU reference preflight executes 15 + 10 + 16 tests with zero skips; the v1.16 historical child executed 702 tests, Phase 71 executed 728, and current Phase 73 executes 753 with eight documented opt-ins; focused configuration/runtime coverage, renderer regression, and compiled Process coverage; bounded exact XCTest/Swift Testing accounting rejects both runners' skips and ambiguity. | Keep full conjunction mandatory. |
 | External consumer / CLI | 4 | Public-only local-path consumer observes generated RGBA bytes/dimensions; compiled renderer covers 74-case discovery, reconciled reports, typed failures, and render/encode seams. | Preserve archive → boundary → consumer → no-skip ordering. |
 | Archive integrity | 4 | Code-owned ZIP/manifest anchors, exact 45/26 inventories, bounded streamed extraction, frozen-retirement rollback, and safe restore self-tests pass. | Verify before every full closeout. |
 | SDK-only boundary | 4 | Retired roots are absent; scanner rejects symlinks, restored application/UI sources, stale current owners/maps, tracked media, application artifacts, retained-shader drift, and backend/API drift. | Keep scanner fail-closed. |
@@ -41,6 +41,7 @@ shipping, launch, or release readiness.
 | Swift source lines | 14,952 |
 | SwiftPM test lines | 29,995 |
 | Public `BeautyParameters` stored fields | 61 |
+| `BeautyConfiguration` stored fields | 11 |
 | Built-in neutral presets | 5 |
 | Renderer cases | 74 |
 | Documented mandatory opt-ins | 8 |
@@ -72,8 +73,10 @@ XCTest aggregate, one passed Swift Testing aggregate when that runner starts,
 and zero skip/disabled events from either format.
 
 The v1.16 historical wrapper evidence is 702 executed tests, zero failures, and
-zero skips. The current Phase-71 wrapper evidence is 728 executed tests, zero
-failures, and zero skips. Its archive → boundary self-test/live scan → consumer → generated
+zero skips. The Phase-71 wrapper evidence is historically 728 executed tests,
+zero failures, and zero skips. The current Phase-73 wrapper executes 753 tests
+with zero failures and zero skips, all eight opt-ins exactly once, and separate
+Metal availability classifications. Its archive → boundary self-test/live scan → consumer → generated
 CPU → opt-in → one-child order is mandatory; the boundary self-test rejects an
 unconditional generic `BeautyResult` sendability declaration. The public
 concurrency focus is 3/0/0 and the current active inventory is 66 Swift source
@@ -126,7 +129,7 @@ or large extraction transcripts are not durable quality evidence.
 | 1 | Replace unconditional generic `BeautyResult<Output>` sendability with a source-compatible conditional contract. | planned Phase 69 |
 | 2 | Strengthen clean SwiftPM consumer and structured CLI input/output validation. | planned Phase 67 |
 | 3 | Freeze compact deterministic CPU reference oracles without new algorithms. | planned Phase 68 |
-| 4 | Add a separately selectable GPU backend only after v1.16 closes, while preserving CPU as the oracle. | queued v1.17 |
+| 4 | Complete selectable CPU/GPU backend policy while preserving CPU as the oracle; generated parity remains. | Phase 73 configuration complete; Phase 74 parity queued |
 
 Historical UI/device/commercial work is not an active repair item.
 
@@ -174,3 +177,15 @@ target ownership, and reports Metal availability separately. The archive-first
 wrapper invokes this gate exactly once before consumer, CPU-oracle, opt-in, and
 full-child stages. CPU remains the reference; Phase 73 owns public selection
 and Phase 74 owns parity/no-skip closeout.
+
+## Phase 73 Public Configuration Quality Evidence
+
+`check-backend-configuration.sh` passes its self-test and focused configuration
+suite with `16/0/0`; the runtime suite passes `34/0/0`. The public selector is
+exactly `.cpu`/`.gpu`, defaults and missing legacy keys resolve to `.cpu`, and
+explicit unavailable GPU is terminal `.metalUnavailable` without CPU fallback.
+The archive-first wrapper then executes `753/0/0`, all eight opt-ins exactly
+once, and separate `metal_available=1` / `metal_unavailable=0` classifications.
+This closes configuration policy only; Phase 74 owns generated parity and
+SDK-only closeout. No UI/Demo, device, performance, commercial, packaging,
+shipping, launch, or release-readiness evidence is claimed.

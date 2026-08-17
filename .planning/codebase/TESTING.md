@@ -19,8 +19,9 @@ generic `BeautyResult` sendability declaration.
 The generated CPU reference preflight executes 15 fixture, 10 geometry/color, and
 16 local-retouch/determinism tests with zero generated skips. The v1.16
 historical mandatory full child executed 702 tests with eight documented
-environment-gated opt-ins enabled; the current Phase-71 full child executes 728
-tests with the same eight opt-ins. It accepts only one complete SwiftPM child
+environment-gated opt-ins enabled; the Phase-71 full child historically executed
+728 tests, and the current Phase-73 full child executes 753 tests with the same
+eight opt-ins. It accepts only one complete SwiftPM child
 transcript with:
 
 - all eight opt-ins executed exactly once;
@@ -63,9 +64,11 @@ corruption, restored source roots, stale application dependencies, retained
 shader drift, an unexpected skip/failure, or a zero-test run must fail non-zero.
 
 The v1.16 historical mandatory wrapper executed 702 tests with zero failures and
-zero skips. The current Phase-71 archive-first wrapper executes 728 tests with
-zero failures and zero skips. Its aggregate markers are evidence for the SDK-only SwiftPM gate
-only; they do not establish Metal/GPU execution, UI/Demo behavior,
+zero skips. The Phase-71 archive-first wrapper historically executed 728 tests
+with zero failures and zero skips. The current Phase-73 archive-first wrapper
+executes 753 tests with zero failures and zero skips, all eight opt-ins exactly
+once, and separate Metal availability classifications. Its aggregate markers
+are evidence for the SDK-only SwiftPM gate only; they do not establish UI/Demo behavior,
 simulator/device quality, performance, commercial approval, packaging,
 shipping, launch, or release readiness.
 
@@ -135,8 +138,8 @@ execution paths, private diagnostic fields, and movement outside the owning
 targets. The runtime lifecycle is validate dimensions/bytes → create bounded
 resources → encode retained identity → synchronize/check status → materialize
 matching output → release all request resources on success/error. Phase 72
-owns feature passes, Phase 73 owns public `.cpu`/`.gpu` configuration, and
-Phase 74 owns generated parity/no-skip closeout. CPU remains the reference;
+owns feature passes, Phase 73 owns public `.cpu`/`.gpu` configuration and typed
+unavailable behavior, and Phase 74 owns generated parity/no-skip closeout. CPU remains the reference;
 these tests do not establish simulator/physical-device behavior, performance,
 commercial approval, packaging, shipping, launch, or release readiness.
 
@@ -151,6 +154,18 @@ oracle → opt-ins → full child. `check-metal-feature-passes.sh` is invoked on
 uses bounded logs, mutation-tests source binding/privacy/cleanup/scope, and
 records available/unavailable Metal separately. No raw private payloads enter
 tracked evidence; CPU remains the reference until Phase 74 parity closeout.
+
+## Phase 73 Configuration Coverage
+
+The focused public configuration suite executes `16/0/0`, and the focused Metal
+runtime suite executes `34/0/0`, each with separate
+`metal_available=1` / `metal_unavailable=0` classifications. Tests cover the
+exact `.cpu`/`.gpu` selector, `.cpu` defaults and missing legacy Codable keys,
+request-local factory policy, and terminal `.metalUnavailable` without a CPU
+fallback. The full archive-first wrapper executes `753/0/0` with all eight
+opt-ins exactly once. Phase 74 owns generated parity and closeout; no
+UI/Demo, simulator/device, performance, commercial, packaging, shipping,
+launch, or release-readiness claim is carried by these tests.
 
 ---
 *Testing analysis: 2026-08-14 after Phase 66 archive retirement*

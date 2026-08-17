@@ -238,3 +238,23 @@ resources active. Generated in-memory coverage verifies protected bytes,
 alpha, containment, collision-to-source, smallest-unit isolation, and mixed
 pass ordering without persistent private payloads. Public `.cpu`/`.gpu`
 configuration and broad parity claims remain outside this phase.
+
+## Phase 73 Backend Configuration Trust Boundary
+
+`BeautyConfiguration.renderBackend` is the sole public backend-policy input and
+contains exactly `.cpu` or `.gpu`; it is not part of `BeautyParameters` or
+preset data. New and legacy/missing-key configurations default to `.cpu`.
+`BeautySDK.BeautyBackendFactory` is the package-owned immutable selection point:
+`.cpu` preserves the permanent reference, while `.gpu` constructs the package
+Metal backend. A missing Metal capability returns terminal
+`.metalUnavailable`; no CPU fallback, retry, or success classification is
+allowed. Package-only injection is test-only and cannot become a host escape
+hatch.
+
+Durable Phase 73 evidence is restricted to aggregate focused/full counts and
+availability classifications: configuration `16/0/0`, runtime `34/0/0`, full
+`753/0/0`, eight opt-ins exactly once, `metal_available=1`, and
+`metal_unavailable=0`. No pixels, masks, landmarks, framework objects, paths,
+or private fixture locators are persisted. Phase 74 parity remains separate;
+UI/Demo, simulator/device, performance, commercial, packaging, shipping,
+launch, and release-readiness claims remain excluded.
