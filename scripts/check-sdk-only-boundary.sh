@@ -505,6 +505,7 @@ allowed_backend_paths = {
     "BeautySDK/Sources/BeautySDK/BeautyEngine.swift",
     "BeautySDK/Tests/BeautyCoreTests/BeautyConfigurationTests.swift",
     "BeautySDK/Tests/BeautyCoreTests/BeautyEngineBackendRoutingTests.swift",
+    "BeautySDK/Tests/BeautyCoreTests/BeautyBackendSelectionConcurrencyTests.swift",
 }
 for base in (root / "BeautySDK/Sources", root / "BeautySDK/Tests"):
     if not base.exists():
