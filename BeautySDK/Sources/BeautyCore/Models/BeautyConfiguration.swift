@@ -1,5 +1,10 @@
 import CoreGraphics
 
+public enum BeautyRenderBackend: String, Codable, Equatable, Sendable {
+    case cpu
+    case gpu
+}
+
 public struct BeautyConfiguration: Codable, Equatable, Sendable {
     public static let defaultMaximumInputByteCount = 33_554_432
     public static let defaultMaximumInputPixelCount = 50_000_000
@@ -14,6 +19,7 @@ public struct BeautyConfiguration: Codable, Equatable, Sendable {
     public var logLevel: BeautyLogLevel
     public var maximumInputByteCount: Int
     public var maximumInputPixelCount: Int
+    public var renderBackend: BeautyRenderBackend
 
     public static let `default` = BeautyConfiguration()
 
@@ -27,7 +33,8 @@ public struct BeautyConfiguration: Codable, Equatable, Sendable {
         enableDebugMode: Bool = false,
         logLevel: BeautyLogLevel = .error,
         maximumInputByteCount: Int = Self.defaultMaximumInputByteCount,
-        maximumInputPixelCount: Int = Self.defaultMaximumInputPixelCount
+        maximumInputPixelCount: Int = Self.defaultMaximumInputPixelCount,
+        renderBackend: BeautyRenderBackend = .cpu
     ) {
         self.preferredProcessingSize = Self.validProcessingSize(preferredProcessingSize)
         self.maximumFaceCount = max(1, maximumFaceCount)
@@ -43,6 +50,7 @@ public struct BeautyConfiguration: Codable, Equatable, Sendable {
         self.maximumInputPixelCount = maximumInputPixelCount > 0
             ? maximumInputPixelCount
             : Self.defaultMaximumInputPixelCount
+        self.renderBackend = renderBackend
     }
 
     public init(from decoder: Decoder) throws {
@@ -63,7 +71,11 @@ public struct BeautyConfiguration: Codable, Equatable, Sendable {
             maximumInputPixelCount: try container.decodeIfPresent(
                 Int.self,
                 forKey: .maximumInputPixelCount
-            ) ?? Self.defaultMaximumInputPixelCount
+            ) ?? Self.defaultMaximumInputPixelCount,
+            renderBackend: try container.decodeIfPresent(
+                BeautyRenderBackend.self,
+                forKey: .renderBackend
+            ) ?? .cpu
         )
     }
 
