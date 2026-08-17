@@ -1,5 +1,28 @@
 # Milestones
 
+## v1.17 Dual CPU/GPU Metal Rendering (Shipped: 2026-08-17)
+
+**Phases completed:** 5 phases, 19 plans, 26 tasks
+
+**Key accomplishments:**
+
+- Package-only backend-neutral CPU contract with fail-closed validation, bounded diagnostics, and synchronized SDK ownership rules
+- Retained CPU rendering now executes through the package-only backend contract with one-dispatch routing and an archive-first mutation-tested validation gate.
+- Bounded package-only Metal identity transactions with typed fail-closed seams, private textures, synchronized completion, and zero retained request resources.
+- Package-only Metal execution now crosses the Phase-70 request/result boundary through one bounded identity transaction with explicit-sRGB conversion, typed terminal failures, and no CPU path.
+- Mutation-tested SDK-owned Metal runtime preflight with explicit unavailable-host accounting, archive-first no-skip ordering, and synchronized Phase 71 ownership contracts.
+- METAL-01 is closed from archive-first runtime evidence, with explicit availability accounting and a clean handoff to Phase 72 feature passes.
+- Bounded Metal pass graph and CPU-semantic color/skin rendering with exact alpha, locality, BGRA bridging, and named-sRGB output.
+- Existing unified geometry control points now execute through a bounded Metal warp with CPU-compatible direction, locality, alpha, extent, degradation, and request-isolation coverage.
+- Metal now consumes the CPU-owned canonical teeth/sclera composition carrier with immutable-source ordering, unit-local failure isolation, and an archive-first three-family feature gate.
+- Restored the retained CPU saturation coefficient for combined saturation and skin smoothing, added a generated CPU-vs-Metal regression, and closed the Phase 72 roadmap gap.
+- Closed public CPU/GPU backend selection with CPU-compatible Codable defaults and unchanged parameter schema.
+- Public engine construction now selects CPU or Metal explicitly and propagates unavailable GPU construction without CPU fallback.
+- 1. [Rule 2 - Blocking boundary] Allowed the new request-level backend selection test in the SDK-only boundary scanner.
+- Current SDK owners and v1.17 ledgers now agree on generated CPU/GPU parity, explicit Metal availability separation, and the measured archive-first no-skip closeout.
+
+---
+
 ## v1.16 SDK-Only Foundation and CPU Reference (Completed: 2026-08-15)
 
 **Delivered:** Removed active legacy UI/Demo ownership after independently verified ZIP archives, established SwiftPM and SDK-owned CLI validation, froze generated CPU reference oracles, and repaired conditional public `BeautyResult` sendability. This milestone does not claim Metal/GPU implementation, device parity, distribution, shipping, launch, commercial approval, or release readiness.

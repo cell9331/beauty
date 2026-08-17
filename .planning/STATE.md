@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.17
 milestone_name: Dual CPU/GPU Metal Rendering
-current_phase: 74
-current_phase_name: CPU/GPU Parity and SDK-Only Closeout
-status: completed
+status: Awaiting next milestone
 stopped_at: Completed 74-05-PLAN.md
-last_updated: "2026-08-17T02:31:08.691Z"
+last_updated: "2026-08-17T03:20:45.198Z"
 last_activity: 2026-08-17
-last_activity_desc: Phase 74 complete; v1.17 parity and SDK-only closeout verified
+last_activity_desc: Milestone v1.17 completed and archived
 progress:
   total_phases: 5
   completed_phases: 5
   total_plans: 19
   completed_plans: 19
   percent: 100
+current_phase: 74
+current_phase_name: CPU/GPU Parity and SDK-Only Closeout
 ---
 
 # Project State
@@ -30,12 +30,10 @@ modular facade.
 
 ## Current Position
 
-Phase: 74 — CPU/GPU Parity and SDK-Only Closeout
-Plan: 05 — Synchronize SDK-only owners and close the v1.17 milestone ledgers
-Status: Complete
-Last activity: 2026-08-17 — Phase 74 parity and SDK-only closeout verified
-
-Progress: [██████████████████] 100%
+Phase: Milestone v1.17 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-08-17 — Milestone v1.17 completed and archived
 
 ## Performance Metrics
 
@@ -143,3 +141,7 @@ Stopped at: Completed 74-05-PLAN.md
 Resume file: None
 Next action: v1.17 SDK-only closeout is complete; run a milestone audit before
 starting any separately scoped work.
+
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone
