@@ -2,15 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.17
 milestone_name: Dual CPU/GPU Metal Rendering
-status: verifying
+current_phase: 73
+current_phase_name: Public Backend Configuration and Fail-Closed Availability
+status: planning
 stopped_at: Completed 72-03-PLAN.md
-last_updated: "2026-08-16T10:14:37.695Z"
-last_activity: 2026-08-16 -- Phase 72 execution started
+last_updated: "2026-08-17T01:23:25.779Z"
+last_activity: 2026-08-17
+last_activity_desc: Phase 72 complete, transitioned to Phase 73
 progress:
   total_phases: 5
   completed_phases: 3
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 10
+  completed_plans: 10
   percent: 60
 ---
 
@@ -27,10 +30,10 @@ modular facade.
 
 ## Current Position
 
-Phase: 72 (metal-feature-passes) — EXECUTING
-Plan: 3 of 3
-Status: Phase complete — ready for verification
-Last activity: 2026-08-16 -- Phase 72 execution started
+Phase: 73 — Public Backend Configuration and Fail-Closed Availability
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-08-17 — Phase 72 complete, transitioned to Phase 73
 
 Progress: [█████████░] 89%
 
