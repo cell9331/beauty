@@ -134,16 +134,14 @@ final class BeautyMetalBackendTests: XCTestCase {
 
     func testMalformedInputIsRejectedBeforeMetalBackendWork() throws {
         let input = try Self.makePixelBuffer(width: 1, height: 1, bytes: [1, 2, 3, 255])
-        let invalidMetadata = BeautyInputMetadata(
-            orientation: .right,
-            source: .testFixture
-        )
+        var invalidStrengths = BeautyEffectiveStrengths()
+        invalidStrengths.brightness = .nan
 
         XCTAssertThrowsError(try BeautyBackendRequest(
             policy: .metal,
             input: .pixelBuffer(input),
-            metadata: invalidMetadata,
-            plan: BeautyEffectPlan()
+            metadata: Self.metadata(source: .testFixture),
+            plan: BeautyEffectPlan(effectiveStrengths: invalidStrengths)
         )) { error in
             XCTAssertEqual(error as? BeautyError, .invalidInput)
         }

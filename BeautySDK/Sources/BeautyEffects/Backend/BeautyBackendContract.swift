@@ -139,10 +139,7 @@ package struct BeautyBackendRequest: @unchecked Sendable {
         canonicalImage: BeautyCanonicalStillImage?,
         compositionSummary: BeautyLocalRetouchCompositionSummary?
     ) throws {
-        guard metadata.orientation == .up,
-              metadata.isInputMirrored == false,
-              normalized(plan)
-        else {
+        guard normalized(plan) else {
             throw BeautyError.invalidInput
         }
 

@@ -58,6 +58,35 @@ final class BeautyBackendContractTests: XCTestCase {
         XCTAssertNotNil(request.selectedFaceSupport)
     }
 
+    func testRawRequestsAcceptPublicOrientationAndMirrorMetadata() throws {
+        let pixelBuffer = try PixelBufferFactory().makePixelBuffer(width: 2, height: 2)
+        let nonUpMetadata = BeautyInputMetadata(
+            orientation: .right,
+            source: .camera
+        )
+        let mirroredMetadata = BeautyInputMetadata(
+            orientation: .down,
+            isInputMirrored: true,
+            source: .photo
+        )
+
+        let pixelBufferRequest = try BeautyBackendRequest(
+            input: .pixelBuffer(pixelBuffer),
+            metadata: nonUpMetadata,
+            plan: BeautyEffectPlan()
+        )
+        let stillImageRequest = try BeautyBackendRequest(
+            input: .stillImage(Self.image(width: 2, height: 2)),
+            metadata: mirroredMetadata,
+            plan: BeautyEffectPlan()
+        )
+
+        XCTAssertEqual(pixelBufferRequest.metadata, nonUpMetadata)
+        XCTAssertEqual(stillImageRequest.metadata, mirroredMetadata)
+        XCTAssertNil(pixelBufferRequest.canonicalImage)
+        XCTAssertNil(stillImageRequest.canonicalImage)
+    }
+
     func testCanonicalMetadataAndCarrierConsistencyRejectsMalformedRequests() throws {
         let metadata = Self.metadata()
         let canonical = try Self.canonical(width: 2, height: 1, metadata: metadata)
@@ -67,6 +96,31 @@ final class BeautyBackendContractTests: XCTestCase {
             metadata: BeautyInputMetadata(
                 orientation: .up,
                 isPreviewMirrored: true,
+                source: .testFixture
+            ),
+            plan: BeautyEffectPlan(),
+            canonicalImage: canonical
+        )) { error in
+            XCTAssertEqual(error as? BeautyError, .invalidInput)
+        }
+
+        XCTAssertThrowsError(try BeautyBackendRequest(
+            input: .stillImage(canonical.ciImage),
+            metadata: BeautyInputMetadata(
+                orientation: .right,
+                source: .testFixture
+            ),
+            plan: BeautyEffectPlan(),
+            canonicalImage: canonical
+        )) { error in
+            XCTAssertEqual(error as? BeautyError, .invalidInput)
+        }
+
+        XCTAssertThrowsError(try BeautyBackendRequest(
+            input: .stillImage(canonical.ciImage),
+            metadata: BeautyInputMetadata(
+                orientation: .up,
+                isInputMirrored: true,
                 source: .testFixture
             ),
             plan: BeautyEffectPlan(),

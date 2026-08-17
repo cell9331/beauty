@@ -119,6 +119,41 @@ final class BeautyEngineBackendRoutingTests: XCTestCase {
         XCTAssertEqual(result.output.extent, image.extent)
     }
 
+    func testPublicRawRoutesPreserveNonUpAndMirroredMetadata() throws {
+        let executor = RecordingExecutor()
+        let engine = try BeautyEngine(
+            configuration: .default,
+            backendExecutor: executor
+        )
+        let pixelBufferMetadata = BeautyInputMetadata(
+            orientation: .right,
+            source: .camera
+        )
+        let stillImageMetadata = BeautyInputMetadata(
+            orientation: .down,
+            isInputMirrored: true,
+            source: .photo
+        )
+
+        _ = try engine.processResult(
+            pixelBuffer: makePixelBuffer(),
+            metadata: pixelBufferMetadata,
+            parameters: BeautyParameters()
+        )
+        XCTAssertEqual(executor.lastMetadata, pixelBufferMetadata)
+
+        let image = CIImage(color: .white).cropped(
+            to: CGRect(x: 0, y: 0, width: 1, height: 1)
+        )
+        _ = try engine.processResult(
+            image: image,
+            metadata: stillImageMetadata,
+            parameters: BeautyParameters()
+        )
+        XCTAssertEqual(executor.lastMetadata, stillImageMetadata)
+        XCTAssertEqual(executor.callCount, 2)
+    }
+
     func testInjectedTerminalFailureEscapesWithoutFallback() throws {
         let executor = RecordingExecutor(error: .renderFailed("terminal"))
         let engine = try BeautyEngine(
@@ -159,6 +194,7 @@ final class BeautyEngineBackendRoutingTests: XCTestCase {
 private final class RecordingExecutor: BeautyBackendExecutor {
     private(set) var callCount = 0
     private(set) var lastInputKind: BeautyBackendInputKind?
+    private(set) var lastMetadata: BeautyInputMetadata?
     private(set) var lastPolicy: BeautyBackendExecutionPolicy?
     private let error: BeautyError?
 
@@ -169,6 +205,7 @@ private final class RecordingExecutor: BeautyBackendExecutor {
     func execute(_ request: BeautyBackendRequest) throws -> BeautyBackendResult {
         callCount += 1
         lastInputKind = request.inputKind
+        lastMetadata = request.metadata
         lastPolicy = request.policy
         if let error {
             throw error
