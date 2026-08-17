@@ -12,6 +12,7 @@ public final class BeautyEngine {
     var faceDetector: VisionFaceDetector
     private let localRetouchTestingHooks: BeautyLocalRetouchTestingHooks?
     private let backendExecutor: BeautyBackendExecutor
+    private let backendPolicy: BeautyBackendExecutionPolicy
     private lazy var stillImageCanonicalizer: BeautyStillImageCanonicalizer = {
         let canonicalizer = BeautyStillImageCanonicalizer()
         localRetouchTestingHooks?.recordCanonicalizerConstruction()
@@ -20,10 +21,12 @@ public final class BeautyEngine {
     private var resetGeneration: UInt64 = 0
 
     public init(configuration: BeautyConfiguration = .default) throws {
+        let selection = try BeautyBackendFactory.select(configuration: configuration)
         self.configuration = configuration
         self.faceDetector = VisionFaceDetector()
         self.localRetouchTestingHooks = nil
-        self.backendExecutor = BeautyCPUBackend()
+        self.backendExecutor = selection.executor
+        self.backendPolicy = selection.policy
     }
 
     package init(
@@ -36,6 +39,7 @@ public final class BeautyEngine {
         self.faceDetector = faceDetector
         self.localRetouchTestingHooks = localRetouchTestingHooks
         self.backendExecutor = backendExecutor
+        self.backendPolicy = configuration.renderBackend == .gpu ? .metal : .cpu
     }
 
     package convenience init(
@@ -81,6 +85,7 @@ public final class BeautyEngine {
         let validated = try BeautySDKResources.validate(parameters: parameters)
         let plan = BeautyEffectResolver.resolve(parameters: validated)
         let request = try BeautyBackendRequest(
+            policy: backendPolicy,
             input: .pixelBuffer(pixelBuffer),
             metadata: metadata,
             plan: plan
@@ -234,6 +239,7 @@ public final class BeautyEngine {
 
         localRetouchTestingHooks?.record(.render)
         let request = try BeautyBackendRequest(
+            policy: backendPolicy,
             input: .stillImage(renderCarrier.ciImage),
             metadata: renderCarrier.metadata,
             plan: route.plan,
@@ -269,6 +275,7 @@ public final class BeautyEngine {
         )
         localRetouchTestingHooks?.record(.render)
         let request = try BeautyBackendRequest(
+            policy: backendPolicy,
             input: .stillImage(image),
             metadata: metadata,
             plan: route.plan,
