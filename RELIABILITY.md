@@ -89,9 +89,10 @@ and bounded composition aggregates before executor work. The request retains
 selected support only for the synchronous call. Result publication validates
 matching dimensions and `CIImage`/pixel-buffer kind; diagnostics carry only
 alpha/extent flags and bounded unit, failure, collision, and changed counts.
-CPU remains the current reference. Metal resources/passes and public
-`.cpu`/`.gpu` selection belong to later phases, and typed executor failures do
-not trigger retry or silent fallback.
+CPU remains the permanent reference. Phase 71–72 own the package Metal
+resources/passes, and Phase 73 owns the public `.cpu`/`.gpu` selection; typed
+executor failures do not trigger retry or silent fallback. Phase 74 remains
+the parity/closeout owner.
 
 ## Phase 71 Metal Runtime Reliability Contract
 

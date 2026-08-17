@@ -2,8 +2,8 @@
 gsd_state_version: 1.0
 milestone: v1.17
 milestone_name: Dual CPU/GPU Metal Rendering
-current_phase: 73
-current_phase_name: Public Backend Configuration and Fail-Closed Availability
+current_phase: 74
+current_phase_name: CPU/GPU Parity and SDK-Only Closeout
 status: planning
 stopped_at: Completed 73-04-PLAN.md
 last_updated: "2026-08-17T10:00:00.000Z"

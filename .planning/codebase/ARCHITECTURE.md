@@ -50,9 +50,10 @@ capture-session, simulator, or UI-test layer is active.
    typed errors, fixed warnings, and aggregate metrics.
 
 The pixel-buffer path remains face-independent/color-only for geometry purposes.
-Realtime landmark tracking, local teeth/sclera work, and public GPU routing are
-absent; Phase 71's internal identity runtime is not a feature-pass or host
-application route.
+Realtime landmark tracking remains outside this package path; local
+teeth/sclera work stays request-local, and public GPU routing is owned by the
+Phase-73 `BeautyConfiguration`/`BeautyBackendFactory` contract. Phase 71's
+internal identity runtime is not a feature-pass or host application route.
 
 ## Boundaries
 
