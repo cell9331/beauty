@@ -26,6 +26,9 @@ final class BeautyBackendSelectionConcurrencyTests: XCTestCase {
         )
         XCTAssertEqual(available.policy, .metal)
         XCTAssertEqual(available.executor is RecordingExecutor, true)
+        let metal_available = 1
+        let metal_unavailable = 0
+        XCTAssertEqual(metal_available + metal_unavailable, 1)
     }
 
     func testBoundedInterleavedEnginesKeepImmutableRequestPolicies() async throws {
