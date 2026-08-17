@@ -6,7 +6,7 @@ readonly repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd 
 readonly package_root="${repository_root}/BeautySDK"
 readonly maximum_output_bytes=$((16 * 1024 * 1024))
 readonly focused_filter='BeautyRenderTests.BeautyMetalRuntimeTests|BeautyEffectsTests.BeautyMetalBackendTests|BeautyEffectsTests.BeautyBackendContractTests|BeautyEffectsTests.BeautyCPUBackendTests|BeautyCoreTests.BeautyEngineBackendRoutingTests'
-readonly expected_focused_tests=34
+readonly expected_focused_tests=40
 readonly runtime_source="BeautySDK/Sources/BeautyRender/BeautyMetalRuntime.swift"
 readonly backend_source="BeautySDK/Sources/BeautyEffects/Backend/BeautyMetalBackend.swift"
 readonly contract_source="BeautySDK/Sources/BeautyEffects/Backend/BeautyBackendContract.swift"
@@ -94,6 +94,7 @@ def without_comments(value):
 runtime_code = without_comments(runtime)
 backend_code = without_comments(backend)
 implementation = runtime_code + "\n" + backend_code
+runtime_tests = text[runtime_test_source]
 
 # Construct sensitive terms so this gate's own source remains a safe, fixed
 # aggregate-only artifact and cannot be mistaken for an implementation leak.
@@ -171,6 +172,41 @@ if runtime.count("defer { counters.releasedResource() }") < 3:
     raise SystemExit("request cleanup markers are incomplete")
 if "commandBuffer.commit()" not in runtime or "commandBuffer.status" not in runtime:
     raise SystemExit("command synchronization markers are incomplete")
+
+compact_runtime = re.sub(r"\s+", "", runtime_code)
+for marker in (
+    "geometryBufferProvider:@Sendable(MTLDevice,[BeautyMetalWarpPoint])->MTLBuffer?",
+    "dependencies.geometryBufferProvider(device,parameters.points)",
+    "geometryBuffers.append(pointBuffer)",
+    "setBuffer(pointBuffer,offset:0,index:0)",
+    "options:.storageModeShared",
+):
+    if marker not in compact_runtime:
+        raise SystemExit(f"request-local geometry buffer marker missing: {marker}")
+geometry_case = runtime_code.split("case .geometry", 1)[1].split("case .composedRetouch", 1)[0]
+if re.search(r"\.setBytes\s*\(.*?index:\s*0\s*\)", geometry_case, re.DOTALL):
+    raise SystemExit("geometry points regressed to an inline buffer(0) binding")
+if not re.search(
+    r"var\s+geometryBuffers:\s*\[MTLBuffer\]\s*=\s*\[\]\s*"
+    r"var\s+commandBuffer\s*=.*?defer\s*\{.*?for\s+_\s+in\s+geometryBuffers\s*\{"
+    r"\s*counters\.releasedResource\(\).*?geometryBuffers\.removeAll\(keepingCapacity:\s*false\).*?"
+    r"commandBuffer\s*=\s*nil\s*\}",
+    runtime_code,
+    re.DOTALL,
+):
+    raise SystemExit("geometry buffers are not retained in the command lifetime cleanup scope")
+
+for marker in (
+    "testOrderedPassGraphUsesBoundedGeometryBuffersAndCleansEveryRequestResource",
+    "lastInlineSizedCount = 4_096 / pointStride",
+    "lastInlineSizedCount + 1",
+    "BeautyMetalGeometryParameters.maximumPointCount",
+    "GeometryBufferRecorder",
+    'renderFailed("request_resource_unavailable")',
+    "geometry adds exactly one tracked point buffer",
+):
+    if marker not in runtime_tests:
+        raise SystemExit(f"geometry buffer test evidence missing: {marker}")
 
 if "package final class BeautyMetalBackend" not in backend or "BeautyMetalRuntime" not in backend:
     raise SystemExit("package Metal executor ownership is missing")
@@ -275,12 +311,61 @@ if needle not in text:
     raise SystemExit(1)
 path.write_text(text.replace(needle, "", 1), encoding="utf-8")
 PY
-if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then
     echo "metal_runtime_cleanup_mutation_self_test_failed" >&2
     return 1
   fi
 
   cp -- "${package_root}/Sources/BeautyRender/BeautyMetalRuntime.swift" "${mutation_path}"
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1])
+text = path.read_text(encoding="utf-8")
+needle = "computeEncoderValue.setBuffer(pointBuffer, offset: 0, index: 0)"
+if needle not in text:
+    raise SystemExit(1)
+path.write_text(text.replace(needle, "", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then
+    echo "metal_runtime_geometry_buffer_binding_mutation_self_test_failed" >&2
+    return 1
+  fi
+
+  cp -- "${package_root}/Sources/BeautyRender/BeautyMetalRuntime.swift" "${mutation_path}"
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1])
+text = path.read_text(encoding="utf-8")
+needle = "geometryBuffers.append(pointBuffer)"
+if needle not in text:
+    raise SystemExit(1)
+path.write_text(text.replace(needle, "", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then
+    echo "metal_runtime_geometry_buffer_retention_mutation_self_test_failed" >&2
+    return 1
+  fi
+
+  cp -- "${package_root}/Sources/BeautyRender/BeautyMetalRuntime.swift" "${mutation_path}"
+  mutation_path="${temporary_root}/${runtime_test_source}"
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1])
+text = path.read_text(encoding="utf-8")
+needle = "lastInlineSizedCount + 1"
+if needle not in text:
+    raise SystemExit(1)
+path.write_text(text.replace(needle, "lastInlineSizedCount", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then
+    echo "metal_runtime_geometry_boundary_test_mutation_self_test_failed" >&2
+    return 1
+  fi
+
+  cp -- "${package_root}/Tests/BeautyRenderTests/BeautyMetalRuntimeTests.swift" "${mutation_path}"
   mutation_path="${temporary_root}/${configuration_source}"
   python3 - "${mutation_path}" <<'PY'
 from pathlib import Path
