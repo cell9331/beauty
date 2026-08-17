@@ -7,33 +7,33 @@ import BeautyCore
 
 final class BeautyEngineBackendRoutingTests: XCTestCase {
     func testFactorySelectsCPUWithoutEvaluatingMetalFactory() throws {
-        var metalFactoryCalls = 0
+        let metalFactoryCalls = CallCounter()
         let selection = try BeautyBackendFactory.select(
             configuration: BeautyConfiguration(renderBackend: .cpu),
             metalFactory: { _ in
-                metalFactoryCalls += 1
+                metalFactoryCalls.increment()
                 throw BeautyError.metalUnavailable
             }
         )
 
         XCTAssertEqual(selection.policy, .cpu)
-        XCTAssertEqual(metalFactoryCalls, 0)
+        XCTAssertEqual(metalFactoryCalls.value, 0)
     }
 
     func testFactorySelectsGPUAndPropagatesUnavailableMetalWithoutCPUFallback() {
-        var metalFactoryCalls = 0
+        let metalFactoryCalls = CallCounter()
         XCTAssertThrowsError(
             try BeautyBackendFactory.select(
                 configuration: BeautyConfiguration(renderBackend: .gpu),
                 metalFactory: { _ in
-                    metalFactoryCalls += 1
+                    metalFactoryCalls.increment()
                     throw BeautyError.metalUnavailable
                 }
             )
         ) { error in
             XCTAssertEqual(error as? BeautyError, .metalUnavailable)
         }
-        XCTAssertEqual(metalFactoryCalls, 1)
+        XCTAssertEqual(metalFactoryCalls.value, 1)
     }
 
     func testInjectedGPUEngineCarriesMetalPolicyForStillImageAndPixelBuffer() throws {
@@ -197,5 +197,22 @@ private final class RecordingExecutor: BeautyBackendExecutor {
             return image.extent
         }
         return .zero
+    }
+}
+
+private final class CallCounter: @unchecked Sendable {
+    private let lock = NSLock()
+    private var storage = 0
+
+    var value: Int {
+        lock.lock()
+        defer { lock.unlock() }
+        return storage
+    }
+
+    func increment() {
+        lock.lock()
+        storage += 1
+        lock.unlock()
     }
 }
