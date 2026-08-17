@@ -1,10 +1,105 @@
 import CoreImage
+import CoreVideo
 import XCTest
 import BeautyCore
 @testable import BeautySDK
 @testable import BeautyEffects
 
 final class BeautyEngineBackendRoutingTests: XCTestCase {
+    func testFactorySelectsCPUWithoutEvaluatingMetalFactory() throws {
+        var metalFactoryCalls = 0
+        let selection = try BeautyBackendFactory.select(
+            configuration: BeautyConfiguration(renderBackend: .cpu),
+            metalFactory: { _ in
+                metalFactoryCalls += 1
+                throw BeautyError.metalUnavailable
+            }
+        )
+
+        XCTAssertEqual(selection.policy, .cpu)
+        XCTAssertEqual(metalFactoryCalls, 0)
+    }
+
+    func testFactorySelectsGPUAndPropagatesUnavailableMetalWithoutCPUFallback() {
+        var metalFactoryCalls = 0
+        XCTAssertThrowsError(
+            try BeautyBackendFactory.select(
+                configuration: BeautyConfiguration(renderBackend: .gpu),
+                metalFactory: { _ in
+                    metalFactoryCalls += 1
+                    throw BeautyError.metalUnavailable
+                }
+            )
+        ) { error in
+            XCTAssertEqual(error as? BeautyError, .metalUnavailable)
+        }
+        XCTAssertEqual(metalFactoryCalls, 1)
+    }
+
+    func testInjectedGPUEngineCarriesMetalPolicyForStillImageAndPixelBuffer() throws {
+        let executor = RecordingExecutor()
+        let engine = try BeautyEngine(
+            configuration: BeautyConfiguration(renderBackend: .gpu),
+            backendExecutor: executor
+        )
+        let image = CIImage(color: .white).cropped(to: CGRect(x: 0, y: 0, width: 1, height: 1))
+
+        _ = try engine.processResult(
+            image: image,
+            metadata: BeautyInputMetadata(orientation: .up, source: .photo),
+            parameters: BeautyParameters()
+        )
+        XCTAssertEqual(executor.lastPolicy, .metal)
+
+        let pixelBuffer = try makePixelBuffer()
+        _ = try engine.processResult(
+            pixelBuffer: pixelBuffer,
+            metadata: BeautyInputMetadata(orientation: .up, source: .camera),
+            parameters: BeautyParameters()
+        )
+        XCTAssertEqual(executor.callCount, 2)
+        XCTAssertEqual(executor.lastPolicy, .metal)
+    }
+
+    func testPublicGPUConstructionIsExplicitlyAvailableOrTypedUnavailable() throws {
+        do {
+            let engine = try BeautyEngine(configuration: BeautyConfiguration(renderBackend: .gpu))
+            let image = CIImage(color: .white).cropped(to: CGRect(x: 0, y: 0, width: 1, height: 1))
+            let result = try engine.processResult(
+                image: image,
+                metadata: BeautyInputMetadata(orientation: .up, source: .photo),
+                parameters: BeautyParameters()
+            )
+            XCTAssertEqual(result.output.extent, image.extent)
+        } catch {
+            XCTAssertEqual(error as? BeautyError, .metalUnavailable)
+        }
+    }
+
+    func testCPUAndGPUInjectedEnginesKeepRequestLocalPolicies() throws {
+        let cpuExecutor = RecordingExecutor()
+        let gpuExecutor = RecordingExecutor()
+        let cpuEngine = try BeautyEngine(
+            configuration: BeautyConfiguration(renderBackend: .cpu),
+            backendExecutor: cpuExecutor
+        )
+        let gpuEngine = try BeautyEngine(
+            configuration: BeautyConfiguration(renderBackend: .gpu),
+            backendExecutor: gpuExecutor
+        )
+        let image = CIImage(color: .white).cropped(to: CGRect(x: 0, y: 0, width: 1, height: 1))
+        let metadata = BeautyInputMetadata(orientation: .up, source: .photo)
+
+        _ = try cpuEngine.processResult(image: image, metadata: metadata, parameters: BeautyParameters())
+        _ = try gpuEngine.processResult(image: image, metadata: metadata, parameters: BeautyParameters())
+        _ = try cpuEngine.processResult(image: image, metadata: metadata, parameters: BeautyParameters())
+
+        XCTAssertEqual(cpuExecutor.callCount, 2)
+        XCTAssertEqual(cpuExecutor.lastPolicy, .cpu)
+        XCTAssertEqual(gpuExecutor.callCount, 1)
+        XCTAssertEqual(gpuExecutor.lastPolicy, .metal)
+    }
+
     func testStillImageDispatchesExactlyOnceThroughInjectedExecutor() throws {
         let executor = RecordingExecutor()
         let engine = try BeautyEngine(
@@ -43,11 +138,28 @@ final class BeautyEngineBackendRoutingTests: XCTestCase {
         }
         XCTAssertEqual(executor.callCount, 1)
     }
+
+    private func makePixelBuffer() throws -> CVPixelBuffer {
+        var pixelBuffer: CVPixelBuffer?
+        let status = CVPixelBufferCreate(
+            kCFAllocatorDefault,
+            1,
+            1,
+            kCVPixelFormatType_32BGRA,
+            nil,
+            &pixelBuffer
+        )
+        guard status == kCVReturnSuccess, let pixelBuffer else {
+            throw BeautyError.pixelBufferCreationFailed
+        }
+        return pixelBuffer
+    }
 }
 
 private final class RecordingExecutor: BeautyBackendExecutor {
     private(set) var callCount = 0
     private(set) var lastInputKind: BeautyBackendInputKind?
+    private(set) var lastPolicy: BeautyBackendExecutionPolicy?
     private let error: BeautyError?
 
     init(error: BeautyError? = nil) {
@@ -57,6 +169,7 @@ private final class RecordingExecutor: BeautyBackendExecutor {
     func execute(_ request: BeautyBackendRequest) throws -> BeautyBackendResult {
         callCount += 1
         lastInputKind = request.inputKind
+        lastPolicy = request.policy
         if let error {
             throw error
         }
