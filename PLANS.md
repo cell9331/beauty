@@ -35,7 +35,7 @@
 | Started | 2026-08-17 |
 | Scope | Remediate the bounded auto-fixable findings from the post-archive v1.17 code/document audit without modifying archived milestone evidence or expanding algorithm/product scope. |
 | Source Request | User requested review of the latest milestone, then asked to continue after the audit reported gaps. |
-| Current Step | Fix F-06 Metal geometry binding so the maximum supported point payload never exceeds the `setBytes` inline limit. |
+| Current Step | Fix F-07 current owner drift so post-archive documentation reports the audited implementation and remaining gaps truthfully. |
 | Verification Policy | Run finding-focused SwiftPM tests after each fix; then backend preflights, `git diff --check`, and the complete `bash scripts/run-no-skip-swiftpm.sh` closeout gate. |
 
 Checklist:
@@ -45,8 +45,8 @@ Checklist:
 | Classify findings | `completed` | F-01/F-03/F-06/F-07/F-08 are auto-fixable; F-02/F-04/F-05/F-10 require design decisions; F-09 is beyond the default five-finding cap. |
 | Fix F-01 public metadata compatibility | `completed` | Raw pixel-buffer and ordinary still-image requests again accept public orientation/mirror metadata; canonical carriers remain strictly `.up` and non-mirrored; focused contract/backend/facade coverage passes 25/0/0. |
 | Fix F-03 unavailable-host parity accounting | `completed` | The gate probes Metal first; available hosts require 10 named Metal case sentinels within the 12-test suite, while unavailable hosts run only 2 typed selection tests and emit no parity-success marker. Self-test, record-mutation checks, live available execution `12/0/0`, and no-skip transcript self-test pass. |
-| Fix F-06 Metal geometry binding bound | `active` | Replace oversized inline point payload binding with a request-local `MTLBuffer` and add maximum-boundary coverage. |
-| Fix F-07 current owner drift | `planned` | Pending truthful post-audit owner synchronization; archived evidence remains read-only. |
+| Fix F-06 Metal geometry binding bound | `completed` | Geometry points use one request-local shared `MTLBuffer`; 146-point/4088-byte, 147-point/4116-byte, and 256-point/7168-byte cases plus allocation failure are resource-clean. Runtime/geometry tests pass `13/0/0`; feature-pass self-test and live `32/0/0` preflight pass. |
+| Fix F-07 current owner drift | `active` | Synchronize current owners to the post-audit state and remaining manual findings; archived evidence remains read-only. |
 | Fix F-08 backend result invariants | `planned` | Pending semantic result validation and regression coverage. |
 | Complete closeout verification | `planned` | Pending focused gates and full archive-first no-skip wrapper. |
 

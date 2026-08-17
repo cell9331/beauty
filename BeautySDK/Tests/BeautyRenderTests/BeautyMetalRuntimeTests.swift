@@ -1,3 +1,4 @@
+import Foundation
 import Metal
 import XCTest
 @testable import BeautyRender
@@ -96,6 +97,44 @@ final class BeautyMetalRuntimeTests: XCTestCase {
         statusFailure.commandStatusProvider = { _ in .error }
         let statusRuntime = try BeautyMetalRuntime(dependencies: statusFailure)
         assertRenderFailure(statusRuntime, bytes: bytes, expected: .renderFailed("command_failed"))
+
+        let recorder = GeometryBufferRecorder()
+        var geometryBufferFailure = BeautyMetalRuntime.Dependencies.live
+        geometryBufferFailure.deviceProvider = { device }
+        geometryBufferFailure.geometryBufferProvider = { _, points in
+            recorder.record(
+                pointCount: points.count,
+                byteCount: points.count * MemoryLayout<BeautyMetalWarpPoint>.stride
+            )
+            return nil
+        }
+        let geometryRuntime = try BeautyMetalRuntime(dependencies: geometryBufferFailure)
+        let maximum = BeautyMetalGeometryParameters.maximumPointCount
+        let geometryPass = BeautyMetalPass.geometry(
+            try BeautyMetalGeometryParameters(points: makePoints(count: maximum))
+        )
+        XCTAssertThrowsError(
+            try geometryRuntime.render(
+                width: 2,
+                height: 2,
+                rgba8Bytes: bytes,
+                passes: [geometryPass]
+            )
+        ) { error in
+            XCTAssertEqual(error as? BeautyError, .renderFailed("request_resource_unavailable"))
+        }
+        XCTAssertEqual(
+            recorder.snapshot,
+            [GeometryBufferRecord(
+                pointCount: maximum,
+                byteCount: maximum * MemoryLayout<BeautyMetalWarpPoint>.stride
+            )]
+        )
+        XCTAssertEqual(geometryRuntime.resourceCountersForTesting.active, 0)
+        XCTAssertEqual(
+            geometryRuntime.resourceCountersForTesting.created,
+            geometryRuntime.resourceCountersForTesting.released
+        )
     }
 
     func testAvailableHostCopiesBytesAndRecoversAfterFailure() throws {
@@ -144,8 +183,26 @@ final class BeautyMetalRuntimeTests: XCTestCase {
         XCTAssertEqual(recovered.created, recovered.released)
     }
 
-    func testOrderedPassGraphExecutesAndCleansEveryRequestResource() throws {
-        guard let runtime = makeRuntime() else { return }
+    func testOrderedPassGraphUsesBoundedGeometryBuffersAndCleansEveryRequestResource() throws {
+        guard let device = MTLCreateSystemDefaultDevice() else {
+            XCTAssertTrue(true, "metalUnavailable")
+            return
+        }
+        let recorder = GeometryBufferRecorder()
+        var dependencies = BeautyMetalRuntime.Dependencies.live
+        dependencies.deviceProvider = { device }
+        dependencies.geometryBufferProvider = { device, points in
+            points.withUnsafeBytes { bytes -> MTLBuffer? in
+                recorder.record(pointCount: points.count, byteCount: bytes.count)
+                guard let baseAddress = bytes.baseAddress, !bytes.isEmpty else { return nil }
+                return device.makeBuffer(
+                    bytes: baseAddress,
+                    length: bytes.count,
+                    options: .storageModeShared
+                )
+            }
+        }
+        let runtime = try BeautyMetalRuntime(dependencies: dependencies)
         let color = try BeautyMetalColorParameters(
             saturationDelta: 0.08,
             contrastScale: 1.04,
@@ -178,6 +235,87 @@ final class BeautyMetalRuntimeTests: XCTestCase {
         let counters = runtime.resourceCountersForTesting
         XCTAssertEqual(counters.active, 0)
         XCTAssertEqual(counters.created, counters.released)
+        XCTAssertEqual(
+            recorder.snapshot,
+            [GeometryBufferRecord(
+                pointCount: 1,
+                byteCount: MemoryLayout<BeautyMetalWarpPoint>.stride
+            )]
+        )
+
+        let stableBytes: [UInt8] = [
+            0, 1, 2, 255,
+            3, 4, 5, 255,
+            6, 7, 8, 255,
+            9, 10, 11, 255,
+        ]
+        let pointStride = MemoryLayout<BeautyMetalWarpPoint>.stride
+        XCTAssertEqual(pointStride, 28, "Swift point layout must keep the retained shader ABI")
+        let lastInlineSizedCount = 4_096 / pointStride
+        let counts = [
+            lastInlineSizedCount,
+            lastInlineSizedCount + 1,
+            BeautyMetalGeometryParameters.maximumPointCount,
+        ]
+        let beforeIdentity = runtime.resourceCountersForTesting
+        XCTAssertEqual(
+            try runtime.render(width: 2, height: 2, rgba8Bytes: stableBytes),
+            stableBytes
+        )
+        let afterIdentity = runtime.resourceCountersForTesting
+        let identityCreated = afterIdentity.created - beforeIdentity.created
+        XCTAssertGreaterThan(identityCreated, 0)
+        XCTAssertEqual(afterIdentity.active, 0)
+        XCTAssertEqual(afterIdentity.created, afterIdentity.released)
+        var maximumOutput: [UInt8]?
+
+        for count in counts {
+            let before = runtime.resourceCountersForTesting
+            let boundaryOutput = try runtime.render(
+                width: 2,
+                height: 2,
+                rgba8Bytes: stableBytes,
+                passes: [.geometry(try BeautyMetalGeometryParameters(points: makePoints(count: count)))]
+            )
+            XCTAssertEqual(boundaryOutput.count, stableBytes.count)
+            XCTAssertEqual(
+                stride(from: 3, to: boundaryOutput.count, by: 4).map { boundaryOutput[$0] },
+                [255, 255, 255, 255]
+            )
+            if count == BeautyMetalGeometryParameters.maximumPointCount {
+                maximumOutput = boundaryOutput
+            }
+            let after = runtime.resourceCountersForTesting
+            XCTAssertEqual(after.active, 0)
+            XCTAssertEqual(after.created, after.released)
+            let created = after.created - before.created
+            XCTAssertEqual(created, identityCreated + 1, "geometry adds exactly one tracked point buffer")
+        }
+
+        let records = recorder.snapshot
+        XCTAssertEqual(
+            Array(records.dropFirst()),
+            counts.map { GeometryBufferRecord(pointCount: $0, byteCount: $0 * pointStride) }
+        )
+        guard records.count == 4 else { return XCTFail("expected one graph binding and three boundary bindings") }
+        XCTAssertLessThanOrEqual(records[1].byteCount, 4_096)
+        XCTAssertGreaterThan(records[2].byteCount, 4_096)
+        XCTAssertEqual(records[3].pointCount, BeautyMetalGeometryParameters.maximumPointCount)
+
+        let repeated = try runtime.render(
+            width: 2,
+            height: 2,
+            rgba8Bytes: stableBytes,
+            passes: [.geometry(try BeautyMetalGeometryParameters(
+                points: makePoints(count: BeautyMetalGeometryParameters.maximumPointCount)
+            ))]
+        )
+        XCTAssertEqual(repeated, maximumOutput)
+        XCTAssertEqual(runtime.resourceCountersForTesting.active, 0)
+        XCTAssertEqual(
+            runtime.resourceCountersForTesting.created,
+            runtime.resourceCountersForTesting.released
+        )
     }
 
     func testPassSpecificSetupFailureIsTypedBeforeRequestAllocation() throws {
@@ -230,6 +368,21 @@ final class BeautyMetalRuntimeTests: XCTestCase {
         }
     }
 
+    private func makePoints(count: Int) throws -> [BeautyMetalWarpPoint] {
+        try (0..<count).map { index in
+            let coordinate = 0.25 + Float(index % 8) * 0.05
+            return try BeautyMetalWarpPoint(
+                sourceX: coordinate,
+                sourceY: coordinate,
+                targetX: coordinate,
+                targetY: coordinate,
+                radius: 0.2,
+                strength: 0.1,
+                falloff: 1
+            )
+        }
+    }
+
     private func assertInitFailure(
         _ dependencies: BeautyMetalRuntime.Dependencies,
         expected: BeautyError,
@@ -258,5 +411,27 @@ final class BeautyMetalRuntimeTests: XCTestCase {
 
     private final class FailureSwitch: @unchecked Sendable {
         var shouldFail = true
+    }
+
+    private struct GeometryBufferRecord: Equatable, Sendable {
+        let pointCount: Int
+        let byteCount: Int
+    }
+
+    private final class GeometryBufferRecorder: @unchecked Sendable {
+        private let lock = NSLock()
+        private var records: [GeometryBufferRecord] = []
+
+        func record(pointCount: Int, byteCount: Int) {
+            lock.lock()
+            records.append(GeometryBufferRecord(pointCount: pointCount, byteCount: byteCount))
+            lock.unlock()
+        }
+
+        var snapshot: [GeometryBufferRecord] {
+            lock.lock()
+            defer { lock.unlock() }
+            return records
+        }
     }
 }

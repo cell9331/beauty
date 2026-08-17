@@ -17,6 +17,7 @@ package final class BeautyMetalRuntime: @unchecked Sendable {
         package var commandBufferProvider: @Sendable (MTLCommandQueue) -> MTLCommandBuffer?
         package var computeEncoderProvider: @Sendable (MTLCommandBuffer) -> MTLComputeCommandEncoder?
         package var textureProvider: @Sendable (MTLDevice, MTLTextureDescriptor) -> MTLTexture?
+        package var geometryBufferProvider: @Sendable (MTLDevice, [BeautyMetalWarpPoint]) -> MTLBuffer?
         package var waitForCompletion: @Sendable (MTLCommandBuffer) -> Void
         package var commandStatusProvider: @Sendable (MTLCommandBuffer) -> MTLCommandBufferStatus
 
@@ -29,6 +30,7 @@ package final class BeautyMetalRuntime: @unchecked Sendable {
             commandBufferProvider: @escaping @Sendable (MTLCommandQueue) -> MTLCommandBuffer?,
             computeEncoderProvider: @escaping @Sendable (MTLCommandBuffer) -> MTLComputeCommandEncoder?,
             textureProvider: @escaping @Sendable (MTLDevice, MTLTextureDescriptor) -> MTLTexture?,
+            geometryBufferProvider: @escaping @Sendable (MTLDevice, [BeautyMetalWarpPoint]) -> MTLBuffer?,
             waitForCompletion: @escaping @Sendable (MTLCommandBuffer) -> Void,
             commandStatusProvider: @escaping @Sendable (MTLCommandBuffer) -> MTLCommandBufferStatus
         ) {
@@ -40,6 +42,7 @@ package final class BeautyMetalRuntime: @unchecked Sendable {
             self.commandBufferProvider = commandBufferProvider
             self.computeEncoderProvider = computeEncoderProvider
             self.textureProvider = textureProvider
+            self.geometryBufferProvider = geometryBufferProvider
             self.waitForCompletion = waitForCompletion
             self.commandStatusProvider = commandStatusProvider
         }
@@ -65,6 +68,16 @@ package final class BeautyMetalRuntime: @unchecked Sendable {
             commandBufferProvider: { queue in queue.makeCommandBuffer() },
             computeEncoderProvider: { commandBuffer in commandBuffer.makeComputeCommandEncoder() },
             textureProvider: { device, descriptor in device.makeTexture(descriptor: descriptor) },
+            geometryBufferProvider: { device, points in
+                points.withUnsafeBytes { bytes -> MTLBuffer? in
+                    guard let baseAddress = bytes.baseAddress, !bytes.isEmpty else { return nil }
+                    return device.makeBuffer(
+                        bytes: baseAddress,
+                        length: bytes.count,
+                        options: .storageModeShared
+                    )
+                }
+            },
             waitForCompletion: { commandBuffer in commandBuffer.waitUntilCompleted() },
             commandStatusProvider: { commandBuffer in commandBuffer.status }
         )
@@ -241,11 +254,16 @@ package final class BeautyMetalRuntime: @unchecked Sendable {
             outputTexture = nil
         }
 
+        var geometryBuffers: [MTLBuffer] = []
         var commandBuffer = tracked(dependencies.commandBufferProvider(commandQueue))
         guard commandBuffer != nil else {
             throw BeautyError.renderFailed("command_buffer_creation_failed")
         }
         defer {
+            for _ in geometryBuffers {
+                counters.releasedResource()
+            }
+            geometryBuffers.removeAll(keepingCapacity: false)
             counters.releasedResource()
             commandBuffer = nil
         }
@@ -333,13 +351,13 @@ package final class BeautyMetalRuntime: @unchecked Sendable {
                 }
             case .geometry(let parameters):
                 var pointCount = UInt32(parameters.points.count)
-                parameters.points.withUnsafeBytes { bytes in
-                    computeEncoderValue.setBytes(
-                        bytes.baseAddress!,
-                        length: bytes.count,
-                        index: 0
-                    )
+                guard let pointBuffer = tracked(
+                    dependencies.geometryBufferProvider(device, parameters.points)
+                ) else {
+                    throw BeautyError.renderFailed("request_resource_unavailable")
                 }
+                geometryBuffers.append(pointBuffer)
+                computeEncoderValue.setBuffer(pointBuffer, offset: 0, index: 0)
                 withUnsafeBytes(of: &pointCount) { bytes in
                     computeEncoderValue.setBytes(
                         bytes.baseAddress!,
