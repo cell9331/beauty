@@ -118,7 +118,8 @@ zero skips, and all eight documented opt-ins exactly once. The evidence is
 aggregate-only and establishes package-owned runtime mechanics; it does not
 claim public `.gpu` configuration, feature-pass parity, new algorithms,
 simulator/physical-device validation, performance, commercial, packaging,
-shipping, launch, or release readiness. Phase 72 is next.
+shipping, launch, or release readiness. Phase 73 configuration is complete;
+Phase 74 is next for generated CPU/GPU parity and SDK-only closeout.
 
 ### Phase 72: Metal Feature Passes
 
@@ -173,10 +174,10 @@ execute.
      executes or reports a CPU fallback.
 **Plans**: 4 plans
 
-- [ ] 73-01-PLAN.md — Add the public CPU/GPU configuration contract and legacy Codable compatibility tests.
-- [ ] 73-02-PLAN.md — Route engine requests through the selected backend and prove typed unavailable-GPU failure.
-- [ ] 73-03-PLAN.md — Add the archive-first configuration gate and full no-skip integration.
-- [ ] 73-04-PLAN.md — Synchronize current SDK owners and Phase 73 planning ledgers.
+- [x] 73-01-PLAN.md — Add the public CPU/GPU configuration contract and legacy Codable compatibility tests.
+- [x] 73-02-PLAN.md — Route engine requests through the selected backend and prove typed unavailable-GPU failure.
+- [x] 73-03-PLAN.md — Add the archive-first configuration gate and full no-skip integration.
+- [x] 73-04-PLAN.md — Synchronize current SDK owners and Phase 73 planning ledgers.
 
 ### Phase 74: CPU/GPU Parity and SDK-Only Closeout
 
@@ -232,5 +233,5 @@ duplicate mappings.
 | 70. Backend-Neutral Contract and CPU Reference | v1.17 | 2/2 | Complete    | 2026-08-15 |
 | 71. SDK-Owned Metal Runtime | v1.17 | 4/4 | Complete | 2026-08-16 |
 | 72. Metal Feature Passes | v1.17 | 4/4 | Complete    | 2026-08-17 |
-| 73. Public Backend Configuration and Fail-Closed Availability | v1.17 | 0/TBD | Not started | - |
+| 73. Public Backend Configuration and Fail-Closed Availability | v1.17 | 4/4 | Complete | 2026-08-17 |
 | 74. CPU/GPU Parity and SDK-Only Closeout | v1.17 | 0/TBD | Not started | - |

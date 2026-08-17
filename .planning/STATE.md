@@ -5,16 +5,16 @@ milestone_name: Dual CPU/GPU Metal Rendering
 current_phase: 73
 current_phase_name: Public Backend Configuration and Fail-Closed Availability
 status: planning
-stopped_at: Completed 72-03-PLAN.md
-last_updated: "2026-08-17T01:23:25.779Z"
+stopped_at: Completed 73-04-PLAN.md
+last_updated: "2026-08-17T10:00:00.000Z"
 last_activity: 2026-08-17
-last_activity_desc: Phase 72 complete, transitioned to Phase 73
+last_activity_desc: Phase 73 complete, transitioned to Phase 74
 progress:
   total_phases: 5
   completed_phases: 3
-  total_plans: 10
-  completed_plans: 10
-  percent: 60
+  total_plans: 14
+  completed_plans: 14
+  percent: 80
 ---
 
 # Project State
@@ -26,16 +26,16 @@ See: `.planning/PROJECT.md` (updated 2026-08-15)
 **Core value:** An iOS app can integrate `BeautySDK` and get natural,
 controllable, real-time and still-image beauty processing through a stable
 modular facade.
-**Current focus:** Phase 72 — metal-feature-passes
+**Current focus:** Phase 74 — CPU/GPU parity and SDK-only closeout
 
 ## Current Position
 
-Phase: 73 — Public Backend Configuration and Fail-Closed Availability
+Phase: 74 — CPU/GPU Parity and SDK-Only Closeout
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-08-17 — Phase 72 complete, transitioned to Phase 73
+Last activity: 2026-08-17 — Phase 73 complete, transitioned to Phase 74
 
-Progress: [█████████░] 89%
+Progress: [██████████████░░░░] 80%
 
 ## Performance Metrics
 
@@ -60,6 +60,11 @@ roadmaps.
 | Phase 72 P01 | 25min | 2 tasks | 8 files |
 | Phase 72 P02 | 15 | 2 tasks | 6 files |
 | Phase 72 P03 | ~25min | 2 tasks | 13 files |
+| Phase 72 P04 | ~20min | 2 tasks | 4 files |
+| Phase 73 P01 | ~20min | 2 tasks | 4 files |
+| Phase 73 P02 | ~25min | 2 tasks | 5 files |
+| Phase 73 P03 | ~15min | 2 tasks | 6 files |
+| Phase 73 P04 | ~30min | 2 tasks | 14 files |
 
 ## Accumulated Context
 
@@ -109,9 +114,10 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- Phase 71 is complete for package-owned runtime mechanics. Feature-pass
-  semantics, public configuration, parity tolerances, and release/device
-  evidence remain unverified until Phases 72–74 execute.
+- Phase 71 is complete for package-owned runtime mechanics. Phase 72 feature
+  semantics and Phase 73 public configuration/fail-closed policy are complete;
+  generated parity tolerances, milestone closeout, and release/device evidence
+  remain unverified until Phase 74 executes.
 
 ## Deferred Items
 
@@ -122,8 +128,8 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-16T10:14:27.193Z
-Stopped at: Completed 72-03-PLAN.md
+Last session: 2026-08-17T10:00:00.000Z
+Stopped at: Completed 73-04-PLAN.md
 Resume file: None
-Next action: Execute Phase 72 Plan 03; preserve the CPU reference and the
-v1.17 SDK/Metal-only boundary.
+Next action: Plan Phase 74 generated CPU/GPU parity and SDK-only closeout;
+preserve the CPU reference and the v1.17 SDK/Metal-only boundary.

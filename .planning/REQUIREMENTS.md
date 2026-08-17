@@ -9,8 +9,8 @@
 
 - [x] **BACKEND-01**: SDK execution uses one backend-neutral request/result contract so CPU and Metal share canonical input normalization, support discovery, privacy, alpha, extent, containment, collision-to-source, and failure-isolation semantics.
 - [x] **BACKEND-02**: The existing CPU implementation remains a complete selectable reference backend and backend choice is execution policy, not a `BeautyParameters` field, preset value, or new beauty algorithm.
-- [ ] **CONFIG-01**: Public `BeautyConfiguration.renderBackend` exposes exactly `.cpu` and `.gpu`, preserves source/Codable compatibility, and decodes defaults or missing legacy keys as `.cpu`.
-- [ ] **CONFIG-02**: An explicitly requested GPU fails with typed `.metalUnavailable` when Metal cannot execute, and no unavailable GPU request silently falls back to CPU or reports success.
+- [x] **CONFIG-01**: Public `BeautyConfiguration.renderBackend` exposes exactly `.cpu` and `.gpu`, preserves source/Codable compatibility, and decodes defaults or missing legacy keys as `.cpu`.
+- [x] **CONFIG-02**: An explicitly requested GPU fails with typed `.metalUnavailable` when Metal cannot execute, and no unavailable GPU request silently falls back to CPU or reports success.
 
 ### Metal Rendering Pipeline
 
@@ -53,8 +53,8 @@
 | --- | --- | --- |
 | BACKEND-01 | Phase 70 | Complete |
 | BACKEND-02 | Phase 70 | Complete |
-| CONFIG-01 | Phase 73 | Pending |
-| CONFIG-02 | Phase 73 | Pending |
+| CONFIG-01 | Phase 73 | Complete |
+| CONFIG-02 | Phase 73 | Complete |
 | METAL-01 | Phase 71 | Complete |
 | METAL-02 | Phase 72 | Complete |
 | METAL-03 | Phase 72 | Complete |
@@ -95,4 +95,4 @@ typed availability policy; Phase 74 owns parity and SDK-only closeout.
 
 ---
 *Requirements defined: 2026-08-15*
-*Last updated: 2026-08-16 after Phase 71 METAL-01 runtime closeout and exact requirement traceability*
+*Last updated: 2026-08-17 after Phase 73 CONFIG-01/CONFIG-02 closeout and exact requirement traceability*

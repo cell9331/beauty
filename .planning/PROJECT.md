@@ -48,21 +48,23 @@ The backend choice is configuration/execution policy and must not change the pub
 
 ### Phase 71 Current Runtime Position
 
-Phase 71 is complete for `METAL-01` and Phase 72 is next. The delivered
-runtime is package-only: `BeautyRender` owns device, command queue, compiled
-pipeline, request-local RGBA8 textures/buffers, command synchronization,
-terminal status, and deterministic cleanup; `BeautyEffects` owns one internal
-`.metal` boundary invocation. A host without Metal is an explicit
-`metal_unavailable`/typed fail-closed outcome, never CPU success or parity
-evidence; an available host is recorded separately as `metal_available`.
-Resource cleanup and terminal errors are retained only as bounded aggregate
-status. The CPU implementation remains the reference, and no public `.gpu`
-selector or feature-pass parity claim exists yet.
+Phase 73 is complete for `CONFIG-01` and `CONFIG-02`. The delivered runtime is
+package-only: `BeautyRender` owns device, command queue, compiled pipeline,
+request-local RGBA8 textures/buffers, command synchronization, terminal
+status, and deterministic cleanup; `BeautyEffects` owns one internal `.metal`
+boundary invocation; and `BeautySDK.BeautyBackendFactory` owns immutable
+`.cpu`/`.gpu` selection and request-local policy propagation. A host without
+Metal is an explicit `metal_unavailable`/typed `.metalUnavailable` outcome,
+never CPU success or parity evidence; an available host is recorded separately
+as `metal_available`. Resource cleanup and terminal errors are retained only as
+bounded aggregate status. CPU remains the permanent reference; Phase 74 owns
+generated parity and SDK-only closeout.
 
-The final archive-first evidence is `check-metal-runtime.sh --self-test` plus
-live preflight (`26/0/0`, `metal_available=1`, `metal_unavailable=0`), the
+The final archive-first evidence is the configuration gate and
+`check-metal-runtime.sh --self-test` plus live preflight (configuration
+`16/0/0`, runtime `34/0/0`, `metal_available=1`, `metal_unavailable=0`), the
 post-archive SDK-only boundary, the no-skip wrapper self-test, and
-`run-no-skip-swiftpm.sh` (`728/0/0`, eight opt-ins exactly once). Phase 72 owns
+`run-no-skip-swiftpm.sh` (`753/0/0`, eight opt-ins exactly once). Phase 72 owns
 feature passes, Phase 73 owns public `.cpu`/`.gpu` configuration and typed
 availability policy, and Phase 74 owns generated parity and SDK-only closeout.
 This does not claim a new algorithm, UI/Demo lifecycle, simulator or

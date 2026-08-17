@@ -49,6 +49,27 @@ Checklist:
 
 > 以下记录均为已完成或已被后续权威取代的执行历史，不是 Active plan。
 
+### C-2026-08-17-phase-73-public-backend-configuration-and-fail-closed-availability
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
+| Completed | 2026-08-17 |
+| Scope | Expose the public `.cpu`/`.gpu` execution policy, preserve CPU and legacy Codable defaults, route requests through an immutable package factory, and fail closed with typed `.metalUnavailable` without CPU fallback. |
+| Plans | `73-01-PLAN.md` owns the 11-field configuration contract; `73-02-PLAN.md` owns public engine routing and unavailable-GPU integration; `73-03-PLAN.md` owns mutation/static configuration gates and archive-first no-skip integration; `73-04-PLAN.md` owns current owner and ledger synchronization. |
+| Requirements | CONFIG-01 and CONFIG-02 are complete against the public configuration/routing tests and the full SDK-owned gate. |
+| Contract | `BeautyConfiguration.renderBackend` has exactly `.cpu` and `.gpu`; new and missing legacy keys decode to `.cpu`; `BeautyBackendFactory` selects one immutable policy per request; explicit unavailable GPU returns terminal `.metalUnavailable` and never silently executes CPU. |
+| Verification | Configuration focused gate passes `16/0/0`; Metal runtime focused gate passes `34/0/0`; static/self-tests and SDK-only boundary pass; full `bash scripts/run-no-skip-swiftpm.sh` executes `753/0/0`, all eight opt-ins exactly once, with `metal_available=1` and `metal_unavailable=0`. |
+| Handoff | Phase 74 owns generated CPU/GPU parity, deterministic/tolerance evidence, and final SDK-only closeout; no parity or release claim follows from configuration evidence alone. |
+| Nonclaims | No new algorithm, UI/Demo behavior, simulator or physical-device validation, performance, commercial approval, packaging, shipping, launch, or release-readiness claim. |
+
+Outcome:
+
+- CONFIG-01/02 are closed and all current owners describe the retained CPU
+  reference plus selectable GPU and typed fail-closed availability policy.
+- Phase 74 remains the only active work needed for generated CPU/GPU parity and
+  milestone closeout.
+
 ### C-2026-08-16-phase-72-plan-01-metal-color-passes
 
 | Field | Value |
