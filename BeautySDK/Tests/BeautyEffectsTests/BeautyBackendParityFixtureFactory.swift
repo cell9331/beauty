@@ -28,6 +28,9 @@ enum BeautyBackendParityFixtureFactory {
     static let metadata = BeautyInputMetadata(orientation: .up, source: .testFixture)
     static let activeMaxChannelDelta = 8
     static let activeMeanRGBDelta = 5.0
+    private static let requiresMetalExecution = ProcessInfo.processInfo.environment[
+        "BEAUTYSDK_REQUIRE_METAL_PARITY_EXECUTION"
+    ] == "1"
 
     static func fixtures() -> [CPUReferenceRGBA8Fixture] {
         [
@@ -133,6 +136,9 @@ enum BeautyBackendParityFixtureFactory {
         do {
             return try BeautyMetalBackend()
         } catch BeautyError.metalUnavailable {
+            if requiresMetalExecution {
+                XCTFail("Metal parity execution was required after the availability probe")
+            }
             return nil
         } catch {
             XCTFail("unexpected Metal construction error")

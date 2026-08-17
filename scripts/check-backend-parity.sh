@@ -6,7 +6,9 @@ readonly repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd 
 readonly package_root="${repository_root}/BeautySDK"
 readonly maximum_output_bytes=$((16 * 1024 * 1024))
 readonly focused_filter='BeautyEffectsTests.BeautyBackendParityTests|BeautyEffectsTests.BeautyBackendSafetyParityTests|BeautyEffectsTests.BeautyBackendDeterminismParityTests|BeautyCoreTests.BeautyBackendSelectionConcurrencyTests'
+readonly unavailable_filter='BeautyCoreTests.BeautyBackendSelectionConcurrencyTests'
 readonly expected_focused_tests=12
+readonly expected_unavailable_tests=2
 temporary_root=""
 
 cleanup() {
@@ -95,6 +97,14 @@ if "metal_available" not in text["fixture"] + text["selection"]:
     raise SystemExit("available classification marker missing")
 if "metal_unavailable" not in text["fixture"] + text["selection"]:
     raise SystemExit("unavailable classification marker missing")
+required_execution = re.compile(
+    r"catch\s+BeautyError\.metalUnavailable\s*\{\s*"
+    r"if\s+requiresMetalExecution\s*\{\s*"
+    r"XCTFail\(\"Metal parity execution was required after the availability probe\"\)",
+    re.DOTALL,
+)
+if "BEAUTYSDK_REQUIRE_METAL_PARITY_EXECUTION" not in text["fixture"] or not required_execution.search(text["fixture"]):
+    raise SystemExit("required Metal execution failure sentinel missing")
 
 for forbidden in ("XCTSkip", "FileManager", "URLSession", "UIKit", "SwiftUI", "AVCapture", "UIApplication", "NSApplication", "Network", "sleep(", "Thread.sleep"):
     if forbidden in implementation:
@@ -134,8 +144,72 @@ if any(failures != 0 for _, failures in executions):
     raise SystemExit("focused failure")
 for suite in ("BeautyBackendParityTests", "BeautyBackendSafetyParityTests", "BeautyBackendDeterminismParityTests", "BeautyBackendSelectionConcurrencyTests"):
     if suite not in text: raise SystemExit(f"suite missing: {suite}")
+required_metal_cases = (
+    "BeautyBackendDeterminismParityTests testBoundedConcurrentCPUAndMetalRequestsRemainRequestLocal",
+    "BeautyBackendDeterminismParityTests testRepeatedGeneratedRequestsAreByteIdenticalAndResourceClean",
+    "BeautyBackendParityTests testGeneratedActivePixelBufferMatrixMatchesCPUWithinPinnedTolerance",
+    "BeautyBackendParityTests testGeneratedNeutralPixelBufferIsStructurallyAndByteIdentical",
+    "BeautyBackendParityTests testGeneratedNoFacePlanIsExactNeutralBytes",
+    "BeautyBackendParityTests testGeneratedStillImagePreservesTranslatedExtentAndMetadata",
+    "BeautyBackendSafetyParityTests testCompositionCollisionAndRejectedUnitRemainAggregateAndSourceBound",
+    "BeautyBackendSafetyParityTests testGeometryContainmentPreservesOutsideProtectedAndAlphaBytes",
+    "BeautyBackendSafetyParityTests testNoFaceMalformedAndRejectedLocalUnitsDoNotEraseColorSibling",
+    "BeautyBackendSafetyParityTests testTranslatedStillImagePreservesContainmentExtentAndFiniteBoundedDeltas",
+)
+for case in required_metal_cases:
+    pattern = rf"Test Case '-\[[^.]+\.{re.escape(case)}\]' passed"
+    if not re.search(pattern, text):
+        raise SystemExit(f"Metal execution evidence missing: {case}")
 if re.search(r"\b(?:skipped|disabled|unexpected failure)\b", text, re.IGNORECASE):
     raise SystemExit("focused skip or unexpected failure")
+PY
+}
+
+validate_unavailable_log() {
+  local log_path="$1"
+  python3 - "$log_path" "$expected_unavailable_tests" <<'PY'
+from pathlib import Path
+import re
+import sys
+text = Path(sys.argv[1]).read_text(encoding="utf-8")
+expected = int(sys.argv[2])
+executions = [(int(value), int(failures)) for value, failures in re.findall(r"Executed (\d+) tests?, with (\d+) failures?", text)]
+if not executions or executions[-1][0] != expected or max(value for value, _ in executions) != expected:
+    raise SystemExit("unavailable count mismatch")
+if any(failures != 0 for _, failures in executions):
+    raise SystemExit("unavailable coverage failure")
+required_cases = (
+    "testFactorySeparatesAvailableAndUnavailableMetal",
+    "testBoundedInterleavedEnginesKeepImmutableRequestPolicies",
+)
+for case in required_cases:
+    pattern = rf"Test Case '-\[BeautyCoreTests\.BeautyBackendSelectionConcurrencyTests {case}\]' passed"
+    if not re.search(pattern, text):
+        raise SystemExit(f"typed unavailable evidence missing: {case}")
+for forbidden_suite in (
+    "BeautyBackendParityTests",
+    "BeautyBackendSafetyParityTests",
+    "BeautyBackendDeterminismParityTests",
+):
+    if forbidden_suite in text:
+        raise SystemExit(f"GPU parity suite ran while Metal was unavailable: {forbidden_suite}")
+if re.search(r"\b(?:skipped|disabled|unexpected failure)\b", text, re.IGNORECASE):
+    raise SystemExit("unavailable coverage skip or unexpected failure")
+PY
+}
+
+validate_result_record() {
+  local record_path="$1"
+  python3 - "$record_path" "$expected_focused_tests" "$expected_unavailable_tests" <<'PY'
+from pathlib import Path
+import sys
+
+lines = [line.strip() for line in Path(sys.argv[1]).read_text(encoding="utf-8").splitlines() if line.strip()]
+available = f"backend_parity_preflight_passed metal_available=1 metal_unavailable=0 parity_executed=1 focused_tests={sys.argv[2]} unavailable_tests=0"
+unavailable = f"backend_parity_unavailable_verified metal_available=0 metal_unavailable=1 parity_executed=0 focused_tests=0 unavailable_tests={sys.argv[3]}"
+if len(lines) != 1 or lines[0] not in (available, unavailable):
+    raise SystemExit("invalid or mixed backend parity result record")
+print(lines[0])
 PY
 }
 
@@ -146,7 +220,7 @@ probe_availability() {
     value="$(tr -d '[:space:]' <"$log_path")"
     [[ "$value" == "metal_available" || "$value" == "metal_unavailable" ]] && { printf '%s' "$value"; return; }
   fi
-  printf '%s' "metal_unavailable"
+  return 1
 }
 
 self_test() {
@@ -181,8 +255,29 @@ PY
   if validate_static_boundary "$temporary_root" >/dev/null 2>&1; then echo "safety_mutation_failed" >&2; return 1; fi
   cp -- "$package_root/Tests/BeautyEffectsTests/BeautyBackendSafetyParityTests.swift" "$mutation_path"
   mutation_path="$temporary_root/BeautySDK/Tests/BeautyEffectsTests/BeautyBackendParityFixtureFactory.swift"
+  python3 - "$mutation_path" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+path.write_text(value.replace("if requiresMetalExecution {", "if false {", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "$temporary_root" >/dev/null 2>&1; then echo "required_execution_mutation_failed" >&2; return 1; fi
+  cp -- "$package_root/Tests/BeautyEffectsTests/BeautyBackendParityFixtureFactory.swift" "$mutation_path"
   printf '\nlet rawOutput = FileManager.default\n' >>"$mutation_path"
   if validate_static_boundary "$temporary_root" >/dev/null 2>&1; then echo "raw_output_mutation_failed" >&2; return 1; fi
+  local record_path="$temporary_root/result.record"
+  printf '%s\n' "backend_parity_preflight_passed metal_available=1 metal_unavailable=0 parity_executed=1 focused_tests=${expected_focused_tests} unavailable_tests=0" >"$record_path"
+  validate_result_record "$record_path" >/dev/null
+  printf '%s\n' "backend_parity_unavailable_verified metal_available=0 metal_unavailable=1 parity_executed=0 focused_tests=0 unavailable_tests=${expected_unavailable_tests}" >"$record_path"
+  validate_result_record "$record_path" >/dev/null
+  printf '%s\n' "backend_parity_preflight_passed metal_available=0 metal_unavailable=1 parity_executed=0 focused_tests=${expected_focused_tests} unavailable_tests=0" >"$record_path"
+  if validate_result_record "$record_path" >/dev/null 2>&1; then echo "unavailable_as_parity_mutation_failed" >&2; return 1; fi
+  printf '%s\n%s\n' \
+    "backend_parity_preflight_passed metal_available=1 metal_unavailable=0 parity_executed=1 focused_tests=${expected_focused_tests} unavailable_tests=0" \
+    "backend_parity_unavailable_verified metal_available=0 metal_unavailable=1 parity_executed=0 focused_tests=0 unavailable_tests=${expected_unavailable_tests}" >"$record_path"
+  if validate_result_record "$record_path" >/dev/null 2>&1; then echo "mixed_result_record_mutation_failed" >&2; return 1; fi
+  run_bounded "$temporary_root/unavailable.log" swift test --package-path "$package_root" --filter "$unavailable_filter" || { echo "unavailable_coverage_self_test_failed" >&2; return 1; }
+  validate_unavailable_log "$temporary_root/unavailable.log" || { echo "unavailable_accounting_self_test_failed" >&2; return 1; }
   echo "backend_parity_self_test_passed"
 }
 
@@ -191,15 +286,22 @@ if [[ "${1:-}" == "--self-test" ]]; then
   self_test
   exit $?
 fi
+if [[ "${1:-}" == "--validate-record" ]]; then
+  [[ "$#" -eq 2 ]] || exit 2
+  validate_result_record "$2"
+  exit $?
+fi
 [[ "$#" -eq 0 ]] || exit 2
 for command_name in python3 swift; do command -v "$command_name" >/dev/null || exit 1; done
 validate_static_boundary "$repository_root" >/dev/null || { echo "backend_parity_static_boundary_failed"; exit 1; }
 temporary_root="$(mktemp -d "${TMPDIR:-/tmp}/beauty-backend-parity.XXXXXX")"
-run_bounded "$temporary_root/focused.log" swift test --package-path "$package_root" --filter "$focused_filter" || { echo "backend_parity_focused_tests_failed"; exit 1; }
-validate_focused_log "$temporary_root/focused.log" || { echo "backend_parity_focused_accounting_failed"; exit 1; }
-availability="$(probe_availability "$temporary_root/availability.log")"
-if [[ "$availability" == "metal_available" ]]; then metal_available=1; metal_unavailable=0; else metal_available=0; metal_unavailable=1; fi
-echo "backend_parity_preflight_passed"
-echo "focused_tests=${expected_focused_tests}"
-echo "metal_available=${metal_available}"
-echo "metal_unavailable=${metal_unavailable}"
+availability="$(probe_availability "$temporary_root/availability.log")" || { echo "backend_parity_availability_probe_failed"; exit 1; }
+if [[ "$availability" == "metal_available" ]]; then
+  run_bounded "$temporary_root/focused.log" env BEAUTYSDK_REQUIRE_METAL_PARITY_EXECUTION=1 swift test --package-path "$package_root" --filter "$focused_filter" || { echo "backend_parity_focused_tests_failed"; exit 1; }
+  validate_focused_log "$temporary_root/focused.log" || { echo "backend_parity_focused_accounting_failed"; exit 1; }
+  echo "backend_parity_preflight_passed metal_available=1 metal_unavailable=0 parity_executed=1 focused_tests=${expected_focused_tests} unavailable_tests=0"
+else
+  run_bounded "$temporary_root/unavailable.log" swift test --package-path "$package_root" --filter "$unavailable_filter" || { echo "backend_parity_unavailable_tests_failed"; exit 1; }
+  validate_unavailable_log "$temporary_root/unavailable.log" || { echo "backend_parity_unavailable_accounting_failed"; exit 1; }
+  echo "backend_parity_unavailable_verified metal_available=0 metal_unavailable=1 parity_executed=0 focused_tests=0 unavailable_tests=${expected_unavailable_tests}"
+fi

@@ -77,11 +77,21 @@ if ! bash "${repository_root}/scripts/check-backend-configuration.sh" >/dev/null
 fi
 echo "no_skip_backend_configuration_verified"
 
-if ! bash "${repository_root}/scripts/check-backend-parity.sh" >/dev/null 2>&1; then
+parity_record="$(mktemp "${TMPDIR:-/tmp}/beauty-backend-parity-record.XXXXXX")"
+if ! bash "${repository_root}/scripts/check-backend-parity.sh" >"${parity_record}" 2>/dev/null; then
+  rm -f -- "${parity_record}"
   echo "no_skip_backend_parity_failed"
   exit 1
 fi
-echo "no_skip_backend_parity_verified"
+if ! parity_result="$(bash "${repository_root}/scripts/check-backend-parity.sh" --validate-record "${parity_record}" 2>/dev/null)"; then
+  rm -f -- "${parity_record}"
+  echo "no_skip_backend_parity_accounting_failed"
+  exit 1
+fi
+rm -f -- "${parity_record}"
+parity_branch="${parity_result%% *}"
+parity_counters="${parity_result#* }"
+echo "no_skip_backend_parity_verified branch=${parity_branch} ${parity_counters}"
 
 if ! bash "${repository_root}/scripts/check-swiftpm-consumer.sh" >/dev/null 2>&1; then
   echo "no_skip_swiftpm_consumer_failed"
