@@ -4,6 +4,49 @@ import XCTest
 import BeautySDK
 
 final class BeautyConfigurationTests: XCTestCase {
+    func testPhase73RenderBackendContractUsesOnlyCPUAndGPU() throws {
+        XCTAssertEqual(BeautyRenderBackend.cpu.rawValue, "cpu")
+        XCTAssertEqual(BeautyRenderBackend.gpu.rawValue, "gpu")
+        XCTAssertEqual(Set([BeautyRenderBackend.cpu, .gpu]).count, 2)
+        XCTAssertEqual(BeautyConfiguration().renderBackend, .cpu)
+        XCTAssertEqual(BeautyConfiguration.default.renderBackend, .cpu)
+
+        let gpu = BeautyConfiguration(renderBackend: .gpu)
+        XCTAssertEqual(gpu.renderBackend, .gpu)
+        assertSendable(gpu.renderBackend)
+    }
+
+    func testPhase73RenderBackendCodableDefaultsLegacyAndRejectsUnknown() throws {
+        let gpu = BeautyConfiguration(renderBackend: .gpu)
+        let encoded = try JSONEncoder().encode(gpu)
+        let decoded = try JSONDecoder().decode(BeautyConfiguration.self, from: encoded)
+        XCTAssertEqual(decoded.renderBackend, .gpu)
+
+        var legacyObject = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: JSONEncoder().encode(BeautyConfiguration.default))
+                as? [String: Any]
+        )
+        legacyObject.removeValue(forKey: "renderBackend")
+        let legacyData = try JSONSerialization.data(withJSONObject: legacyObject)
+        let legacy = try JSONDecoder().decode(BeautyConfiguration.self, from: legacyData)
+        XCTAssertEqual(legacy.renderBackend, .cpu)
+
+        var invalidObject = legacyObject
+        invalidObject["renderBackend"] = "metal"
+        let invalidData = try JSONSerialization.data(withJSONObject: invalidObject)
+        XCTAssertThrowsError(try JSONDecoder().decode(BeautyConfiguration.self, from: invalidData))
+    }
+
+    func testPhase73BackendSelectionIsNotPersistedInBeautyParameters() throws {
+        let object = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: JSONEncoder().encode(BeautyParameters()))
+                as? [String: Any]
+        )
+        XCTAssertNil(object["renderBackend"])
+        XCTAssertNil(object["backend"])
+        XCTAssertEqual(object.count, 61)
+    }
+
     func testSDK02DefaultConfigurationIsSafeForRelease() {
         let configuration = BeautyConfiguration.default
 
