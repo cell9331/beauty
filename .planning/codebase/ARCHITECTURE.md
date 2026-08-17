@@ -121,5 +121,19 @@ runtime `34/0/0`, full `753/0/0`, eight opt-ins exactly once, and separate
 generated parity; UI/Demo, device, performance, commercial, packaging,
 shipping, launch, and release-readiness remain excluded.
 
+### Phase 74 Generated Backend Parity
+
+The current architecture retains CPU/Core Image as the permanent semantic
+reference while public configuration selects one immutable CPU or Metal policy
+per request. Generated in-memory parity fixtures exercise the same normalized
+plan and carrier through both backends. Exact neutral bytes and structural
+kind/dimension/alpha/extent/named-sRGB invariants are combined with pinned
+active deltas; containment, protected/outside bytes, collision, degradation,
+sibling isolation, and bounded concurrency remain aggregate-only. The parity
+gate reports focused `12/0/0`, full `765/0/0`, and separate
+`metal_available=1` / `metal_unavailable=0`. Unavailable Metal is typed terminal
+failure, never fallback or parity success. UI/Demo, device, performance,
+commercial, packaging, shipping, launch, and release claims remain excluded.
+
 ---
 *Architecture analysis: 2026-08-14 after Phase 66 review remediation*

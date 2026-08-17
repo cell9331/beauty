@@ -189,3 +189,18 @@ once, and separate `metal_available=1` / `metal_unavailable=0` classifications.
 This closes configuration policy only; Phase 74 owns generated parity and
 SDK-only closeout. No UI/Demo, device, performance, commercial, packaging,
 shipping, launch, or release-readiness evidence is claimed.
+
+## Phase 74 Generated Parity and Mandatory Gate Evidence
+
+`check-backend-parity.sh` mutation-tests CPU-vs-GPU comparisons, exact neutral
+bytes, pinned active tolerances, safety/containment/failure suites, raw-output
+privacy, and available/unavailable accounting. It executes focused parity
+coverage `12/0/0` with `metal_available=1` and `metal_unavailable=0` on the
+current host. The archive-first `run-no-skip-swiftpm.sh` invokes parity exactly
+once and completes the full child at `765/0/0`, with eight opt-ins exactly once,
+zero skips, and zero failures.
+
+CPU remains the permanent oracle. Evidence is aggregate-only and establishes
+SDK/algorithm/Metal-pipeline correctness for the generated matrix, not UI/Demo,
+simulator/device, performance, commercial, packaging, shipping, launch, or
+release-readiness quality.

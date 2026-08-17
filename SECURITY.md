@@ -258,3 +258,19 @@ availability classifications: configuration `16/0/0`, runtime `34/0/0`, full
 or private fixture locators are persisted. Phase 74 parity remains separate;
 UI/Demo, simulator/device, performance, commercial, packaging, shipping,
 launch, and release-readiness claims remain excluded.
+
+## Phase 74 Generated Parity Trust Boundary
+
+Generated in-memory RGBA8 inputs cross into CPU and Metal only through the
+validated backend request. The parity suites retain aggregate kind, dimensions,
+alpha/extent flags, named color metadata, changed counts, and bounded deltas;
+raw pixels, masks, landmarks, support, paths, and fixture locators remain
+request-local. Mutation checks reject removal of CPU comparison, weakened
+tolerances, omitted safety suites, raw file output, and availability merging.
+
+The archive-first gate records focused `12/0/0`, full `765/0/0`, eight opt-ins
+exactly once, and separate `metal_available=1` / `metal_unavailable=0`.
+`.metalUnavailable` is terminal and never GPU parity success or CPU fallback.
+The result authorizes only SDK/algorithm/Metal-pipeline correctness; UI/Demo,
+simulator/device, performance, commercial, packaging, shipping, launch, and
+release-readiness claims remain outside the trust boundary.

@@ -254,3 +254,20 @@ and never invokes CPU fallback. Package-only injection is test-only. Generated
 parity, determinism, and cross-backend safety remain Phase 74 work; this phase
 does not claim UI/Demo, simulator/device, performance, commercial, packaging,
 shipping, launch, or release readiness.
+
+## Phase 74 Parity and Closeout Reliability
+
+Repeated identical generated requests are byte-deterministic and finite for CPU
+and available Metal. Bounded interleaved requests compare by request identity,
+retain immutable backend policy, and leave runtime resources at zero. Safety
+cases require exact alpha/protected/outside bytes, CPU-owned containment,
+collision summaries, no-face/degraded no-ops, and local rejection without
+erasing eligible siblings.
+
+`check-backend-parity.sh` fails closed under mutations and the archive-first
+wrapper invokes it exactly once after configuration and before all child stages.
+Fresh evidence is focused `12/0/0`, full `765/0/0`, eight opt-ins once, zero
+skips/failures, and separate `metal_available=1` / `metal_unavailable=0`.
+Unavailable Metal is terminal `.metalUnavailable`; no retry, CPU fallback,
+device, performance, commercial, packaging, shipping, launch, or
+release-readiness claim follows.

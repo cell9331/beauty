@@ -213,3 +213,18 @@ full archive-first wrapper passes `753/0/0` with eight opt-ins exactly once and
 `metal_available=1` / `metal_unavailable=0`. Phase 74 owns generated parity and
 SDK-only closeout; UI/Demo, simulator/device, performance, commercial,
 packaging, shipping, launch, and release-readiness remain excluded.
+
+## Phase 74 SDK-Only Parity Acceptance
+
+The v1.17 acceptance boundary is generated SDK-core parity: the permanent CPU
+reference and available Metal consume identical normalized requests, with exact
+neutral bytes and explicit bounded active tolerances. Acceptance includes
+alpha/extent/named-sRGB preservation, containment and protected-region safety,
+collision and degraded/no-face isolation, deterministic bounded concurrency,
+and typed unavailable-GPU separation.
+
+The mandatory archive-first evidence is parity focused `12/0/0`, full SwiftPM
+`765/0/0`, eight opt-ins exactly once, zero skips/failures, and separate
+`metal_available=1` / `metal_unavailable=0`. This does not promote UI/Demo,
+simulator/device, performance, commercial, packaging, shipping, launch, or
+release readiness.

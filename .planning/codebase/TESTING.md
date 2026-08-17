@@ -167,5 +167,24 @@ opt-ins exactly once. Phase 74 owns generated parity and closeout; no
 UI/Demo, simulator/device, performance, commercial, packaging, shipping,
 launch, or release-readiness claim is carried by these tests.
 
+## Phase 74 Generated Parity Coverage
+
+`BeautyBackendParityTests`, `BeautyBackendSafetyParityTests`,
+`BeautyBackendDeterminismParityTests`, and
+`BeautyBackendSelectionConcurrencyTests` execute generated CPU/Metal
+structural, numeric, safety, degradation, failure-isolation, determinism, and
+request-local policy cases. Neutral/no-face bytes are exact; active tolerances
+are pinned at maximum channel `8` and mean RGB `< 5.0`. The suites retain only
+aggregate counts/deltas and use no skips, sleeps, files, media, or durable
+payloads.
+
+`check-backend-parity.sh` mutation-tests omitted or weakened assertions and
+availability merging. The archive-first wrapper invokes it once and the fresh
+full gate executes `765/0/0` with eight opt-ins exactly once and separate
+`metal_available=1` / `metal_unavailable=0`; unavailable hosts are explicit
+non-success evidence. This remains SDK-only and does not establish UI/Demo,
+simulator/device, performance, commercial, packaging, shipping, launch, or
+release-readiness behavior.
+
 ---
 *Testing analysis: 2026-08-14 after Phase 66 archive retirement*

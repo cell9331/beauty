@@ -93,5 +93,16 @@ public `.cpu`/`.gpu` configuration policy and typed unavailable behavior; Phase
 UI/Demo, performance, commercial, packaging, shipping, launch, or release
 readiness.
 
+## Phase 74 Parity Stack Boundary
+
+SwiftPM test targets use generated request-local RGBA8 data only. The CPU
+executor is the reference; the package Metal executor consumes the same plan,
+carrier, dimensions, and metadata. The mutation-tested parity script runs once
+in archive-first order, records focused `12/0/0`, and the full wrapper records
+`765/0/0` with eight opt-ins exactly once and distinct Metal availability
+markers. No raw raster, masks, landmarks, paths, UI/Demo, device, performance,
+commercial, packaging, shipping, launch, or release-readiness artifact enters
+the stack.
+
 ---
 *Stack analysis: 2026-08-14 after Phase 66 archive retirement*

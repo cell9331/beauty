@@ -1180,3 +1180,21 @@ This establishes configuration and availability policy only; Phase 74 owns
 generated CPU/GPU parity and closeout, and no UI/Demo, simulator/device,
 performance, commercial, packaging, shipping, launch, or release-readiness
 claim is implied.
+
+## Phase 74 CPU/GPU Parity Contract
+
+The CPU/Core Image path remains the semantic and byte-level reference. Generated
+in-memory RGBA8 requests are rendered through both available backends using the
+same normalized plan, input kind, dimensions, alpha, extent, and named sRGB
+metadata. Neutral/no-face output is exact; active output uses the pinned
+bounded tolerance of maximum channel delta `8` and mean RGB delta `< 5.0`.
+Containment, protected/outside bytes, collision-to-source summaries,
+no-face/degraded support, rejected-unit isolation, and bounded concurrency are
+CPU-owned contracts compared without persisting raw payloads.
+
+Metal availability is a separate terminal classification. An unavailable host
+returns `.metalUnavailable`, is excluded from the GPU parity denominator, and
+cannot become CPU success or fallback. Fresh archive-first evidence is focused
+parity `12/0/0` and full SwiftPM `765/0/0`, with eight opt-ins exactly once and
+separate availability markers. No UI/Demo, device, performance, commercial,
+packaging, shipping, launch, or release-readiness behavior is added.

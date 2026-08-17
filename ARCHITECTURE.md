@@ -17,10 +17,10 @@ Current source/test inventory, excluding `.build`:
 
 | Inventory | Count |
 | --- | ---: |
-| Swift source files | 66 |
-| SwiftPM test files | 61 |
-| Swift source lines | 14,952 |
-| SwiftPM test lines | 29,995 |
+| Swift source files | 72 |
+| SwiftPM test files | 74 |
+| Swift source lines | 16,684 |
+| SwiftPM test lines | 32,909 |
 | `BeautyConfiguration` stored fields | 11 |
 
 ## 2. Top-Level Invariants
@@ -274,3 +274,23 @@ eight opt-ins exactly once and `metal_available=1` / `metal_unavailable=0`.
 Phase 74 owns generated CPU/GPU parity and SDK-only closeout. No UI/Demo,
 simulator or physical-device, performance, commercial, packaging, shipping,
 launch, or release-readiness claim follows from this configuration evidence.
+
+## Phase 74 CPU/GPU Parity and SDK-Only Closeout
+
+The current package retains CPU/Core Image as the permanent semantic reference
+and routes the same normalized plans and request-local carriers through Metal.
+Generated SwiftPM fixtures compare input kind, dimensions, alpha, extent, named
+sRGB metadata, exact neutral bytes, and explicit active tolerances (maximum
+channel delta `8`, mean RGB `< 5.0`). Safety coverage checks CPU-owned
+containment, protected/outside bytes, collision summaries, no-face/degraded
+support, and smallest-unit failure isolation; bounded repetition/concurrency
+proves request-local determinism.
+
+The mutation-tested parity gate runs once in archive-first order after
+configuration and before consumer, CPU-oracle, opt-in, and full-child stages.
+Fresh evidence is focused `12/0/0`, full SwiftPM `765/0/0`, eight opt-ins
+exactly once, and separate `metal_available=1` / `metal_unavailable=0`.
+Unavailable Metal remains typed `.metalUnavailable` and cannot lend success to
+CPU or GPU parity. This is SDK/algorithm/Metal-pipeline evidence only; UI/Demo,
+simulator/device, performance, commercial, packaging, shipping, launch, and
+release-readiness remain excluded.
