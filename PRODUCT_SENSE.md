@@ -42,9 +42,9 @@ device journey and does not promote generated media as product evidence.
   do not establish SDK support or current acceptance.
 - Bounded opaque still-image `teethWhitening` and
   `scleraRednessReduction` remain independently implemented.
-- `去脂`, semantic-mask features, new algorithms, realtime local retouch, and
-  generated cross-backend parity remain outside current acceptance until their
-  separate gates close.
+- `去脂`, semantic-mask features, new algorithms, and realtime local retouch
+  remain outside current acceptance. Generated cross-backend parity is now
+  accepted only for the shipped SDK feature set under the Phase-74 gates.
 - Device quality, population sufficiency, commercial approval, packaging,
   shipping, launch, and release readiness require separate authorization and
   evidence.

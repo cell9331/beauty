@@ -129,7 +129,7 @@ or large extraction transcripts are not durable quality evidence.
 | 1 | Replace unconditional generic `BeautyResult<Output>` sendability with a source-compatible conditional contract. | planned Phase 69 |
 | 2 | Strengthen clean SwiftPM consumer and structured CLI input/output validation. | planned Phase 67 |
 | 3 | Freeze compact deterministic CPU reference oracles without new algorithms. | planned Phase 68 |
-| 4 | Complete selectable CPU/GPU backend policy while preserving CPU as the oracle; generated parity remains. | Phase 73 configuration complete; Phase 74 parity queued |
+| 4 | Complete selectable CPU/GPU backend policy and generated parity while preserving CPU as the oracle. | Phase 74 parity and SDK-only closeout complete |
 
 Historical UI/device/commercial work is not an active repair item.
 
