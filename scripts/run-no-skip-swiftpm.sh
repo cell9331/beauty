@@ -77,6 +77,12 @@ if ! bash "${repository_root}/scripts/check-backend-configuration.sh" >/dev/null
 fi
 echo "no_skip_backend_configuration_verified"
 
+if ! bash "${repository_root}/scripts/check-backend-parity.sh" >/dev/null 2>&1; then
+  echo "no_skip_backend_parity_failed"
+  exit 1
+fi
+echo "no_skip_backend_parity_verified"
+
 if ! bash "${repository_root}/scripts/check-swiftpm-consumer.sh" >/dev/null 2>&1; then
   echo "no_skip_swiftpm_consumer_failed"
   exit 1
