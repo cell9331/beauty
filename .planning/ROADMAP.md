@@ -233,5 +233,5 @@ duplicate mappings.
 | 70. Backend-Neutral Contract and CPU Reference | v1.17 | 2/2 | Complete    | 2026-08-15 |
 | 71. SDK-Owned Metal Runtime | v1.17 | 4/4 | Complete | 2026-08-16 |
 | 72. Metal Feature Passes | v1.17 | 4/4 | Complete    | 2026-08-17 |
-| 73. Public Backend Configuration and Fail-Closed Availability | v1.17 | 4/4 | Complete | 2026-08-17 |
+| 73. Public Backend Configuration and Fail-Closed Availability | v1.17 | 4/4 | Complete    | 2026-08-17 |
 | 74. CPU/GPU Parity and SDK-Only Closeout | v1.17 | 0/TBD | Not started | - |
