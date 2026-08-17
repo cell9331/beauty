@@ -111,6 +111,15 @@ if re.search(r"\b(?:public\s+)?(?:var|let)\s+\w*(?:raw|mask|landmark|coordinate|
     raise SystemExit("raw/private diagnostic field drifted into the contract")
 if "BeautyBackendDiagnostics" not in contract:
     raise SystemExit("bounded diagnostics are missing")
+result_validation = contract.split("private static func valid(", 1)[1].split(
+    "/// Synchronous backend seam", 1
+)[0]
+if not re.search(r"\bdiagnostics\.preservesAlpha\b", result_validation):
+    raise SystemExit("backend results do not fail closed on alpha preservation")
+if not re.search(r"\bdiagnostics\.preservesExtent\b", result_validation):
+    raise SystemExit("backend results do not fail closed on extent preservation")
+if not re.search(r"\boutputImage\.extent\s*==\s*image\.extent\b", result_validation):
+    raise SystemExit("still-image results do not preserve the exact input extent")
 
 parameter_fields = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", parameters, re.MULTILINE)
 if len(parameter_fields) != 61 or len(set(parameter_fields)) != 61:
@@ -149,7 +158,7 @@ import sys
 
 text = Path(sys.argv[1]).read_text(encoding="utf-8")
 executions = [int(value) for value in re.findall(r"Executed (\d+) tests?, with 0 failures", text)]
-if not executions or executions[-1] != 16 or max(executions) != 16:
+if not executions or executions[-1] != 22 or max(executions) != 22:
     raise SystemExit(1)
 for suite in ("BeautyBackendContractTests", "BeautyCPUBackendTests", "BeautyEngineBackendRoutingTests"):
     if suite not in text:
@@ -194,6 +203,57 @@ PY
   fi
   cp -- "${package_root}/Sources/BeautyEffects/Backend/BeautyBackendContract.swift" "${mutation_path}"
 
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1])
+text = path.read_text(encoding="utf-8")
+needle = "              diagnostics.preservesAlpha,\n"
+if needle not in text:
+    raise SystemExit("alpha preservation mutation target is missing")
+path.write_text(text.replace(needle, "", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then
+    echo "backend_neutral_alpha_preservation_mutation_self_test_failed" >&2
+    return 1
+  fi
+  cp -- "${package_root}/Sources/BeautyEffects/Backend/BeautyBackendContract.swift" "${mutation_path}"
+
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1])
+text = path.read_text(encoding="utf-8")
+needle = "              diagnostics.preservesExtent,\n"
+if needle not in text:
+    raise SystemExit("extent preservation mutation target is missing")
+path.write_text(text.replace(needle, "", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then
+    echo "backend_neutral_extent_preservation_mutation_self_test_failed" >&2
+    return 1
+  fi
+  cp -- "${package_root}/Sources/BeautyEffects/Backend/BeautyBackendContract.swift" "${mutation_path}"
+
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1])
+text = path.read_text(encoding="utf-8")
+needle = "outputImage.extent == image.extent"
+if needle not in text:
+    raise SystemExit("exact still-image extent mutation target is missing")
+path.write_text(
+    text.replace(needle, "outputImage.extent.size == image.extent.size", 1),
+    encoding="utf-8",
+)
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then
+    echo "backend_neutral_exact_extent_mutation_self_test_failed" >&2
+    return 1
+  fi
+  cp -- "${package_root}/Sources/BeautyEffects/Backend/BeautyBackendContract.swift" "${mutation_path}"
+
   mutation_path="${temporary_root}/BeautySDK/Sources/BeautySDK/BeautyEngine.swift"
   printf '\nlet direct = BeautyColorEffectPipeline.apply\n' >>"${mutation_path}"
   if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then
@@ -229,4 +289,4 @@ bash "${repository_root}/scripts/check-cpu-reference-oracles.sh" >/dev/null || {
   echo "backend_neutral_contract_cpu_reference_failed"
   exit 1
 }
-echo "backend_neutral_contract_passed focused_tests=16 cpu_reference_tests=41"
+echo "backend_neutral_contract_passed focused_tests=22 cpu_reference_tests=41"

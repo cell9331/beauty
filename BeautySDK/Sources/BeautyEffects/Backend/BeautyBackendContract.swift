@@ -325,6 +325,8 @@ package struct BeautyBackendResult: @unchecked Sendable {
     ) -> Bool {
         guard diagnostics.width > 0,
               diagnostics.height > 0,
+              diagnostics.preservesAlpha,
+              diagnostics.preservesExtent,
               diagnostics.width <= BeautyConfiguration.defaultMaximumInputPixelCount,
               diagnostics.height <= BeautyConfiguration.defaultMaximumInputPixelCount,
               diagnostics.unitCount >= 0,
@@ -370,6 +372,12 @@ package struct BeautyBackendResult: @unchecked Sendable {
                 return false
             }
             inputDimensions = dimensions
+
+            guard case .stillImage(let outputImage) = output,
+                  outputImage.extent == image.extent
+            else {
+                return false
+            }
         }
         return inputDimensions.width == diagnostics.width
             && inputDimensions.height == diagnostics.height

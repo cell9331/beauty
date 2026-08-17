@@ -16,8 +16,8 @@ a request-local shared `MTLBuffer` (`556499a`). Only an available branch reports
 The archived milestone checkboxes remain historical lifecycle records, not a
 current broad-equivalence or release acceptance. Local retouch is still composed
 on CPU before an identity GPU pass; GPU transparency/color policy and still-
-image math differ from CPU; result alpha/extent enforcement is pending; the
-geometry safety envelope comes from a separate generated observation; and no
+image math differ from CPU; the geometry safety envelope comes from a separate
+generated observation; and no
 same-engine/same-runtime concurrency promise is proven. A fresh full remediation
 gate is pending, and device, commercial, packaging, shipping, launch, and
 release readiness remain outside acceptance.

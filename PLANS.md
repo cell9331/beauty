@@ -30,12 +30,12 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
+| Status | `verifying` |
 | Owner | Codex |
 | Started | 2026-08-17 |
 | Scope | Remediate the bounded auto-fixable findings from the post-archive v1.17 code/document audit without modifying archived milestone evidence or expanding algorithm/product scope. |
 | Source Request | User requested review of the latest milestone, then asked to continue after the audit reported gaps. |
-| Current Step | Fix F-08 backend result invariants so alpha/extent preservation claims are enforced before publication. |
+| Current Step | Run the archive-first closeout gate over all five remediated findings and record the current test count. |
 | Verification Policy | Run finding-focused SwiftPM tests after each fix; then backend preflights, `git diff --check`, and the complete `bash scripts/run-no-skip-swiftpm.sh` closeout gate. |
 
 Checklist:
@@ -47,8 +47,8 @@ Checklist:
 | Fix F-03 unavailable-host parity accounting | `completed` | The gate probes Metal first; available hosts require 10 named Metal case sentinels within the 12-test suite, while unavailable hosts run only 2 typed selection tests and emit no parity-success marker. Self-test, record-mutation checks, live available execution `12/0/0`, and no-skip transcript self-test pass. |
 | Fix F-06 Metal geometry binding bound | `completed` | Geometry points use one request-local shared `MTLBuffer`; 146-point/4088-byte, 147-point/4116-byte, and 256-point/7168-byte cases plus allocation failure are resource-clean. Runtime/geometry tests pass `13/0/0`; feature-pass self-test and live `32/0/0` preflight pass. |
 | Fix F-07 current owner drift | `completed` | Seventeen current owner/map files distinguish historical `afb04b4`/`12/0/0`/`765/0/0` evidence from the active audit, record F-01/F-03/F-06 and all remaining gaps, and keep archived milestone evidence immutable. SDK boundary self-test and post-archive scan pass. |
-| Fix F-08 backend result invariants | `active` | Enforce semantic alpha/extent preservation on every backend result and add focused regression coverage. |
-| Complete closeout verification | `planned` | Pending focused gates and full archive-first no-skip wrapper. |
+| Fix F-08 backend result invariants | `completed` | Result publication now rejects false alpha/extent flags and same-size still-image origin drift while accepting unchanged translated extents; contract/CPU/Metal/routing coverage passes `31/0/0`. |
+| Complete closeout verification | `active` | Focused remediation gates are green; full archive-first no-skip wrapper is running next. |
 
 Open Questions:
 

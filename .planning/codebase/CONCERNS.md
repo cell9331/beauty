@@ -9,8 +9,8 @@
 
 The v1.17 archive is historical rather than current broad-parity authority.
 Local retouch is CPU-composed before identity GPU dispatch; GPU still-image
-transparency/color policy and coefficient/lip math differ from CPU; result
-alpha/extent enforcement is pending; geometry safety uses a separately
+transparency/color policy and coefficient/lip math differ from CPU; backend-
+result alpha/extent publication now fails closed; geometry safety uses a separately
 generated envelope observation; and same-engine/same-runtime concurrency is
 not specified or proven. Unavailable hosts report `parity_executed=0` and never
 receive GPU parity credit.

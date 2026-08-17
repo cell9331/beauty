@@ -10,8 +10,8 @@ historical Metal-available evidence. The current tree has repaired raw metadata
 compatibility, unavailable-host parity accounting, and Metal geometry binding;
 geometry point arrays now use a request-local shared `MTLBuffer`. Local retouch
 remains CPU composition followed by an identity GPU pass, GPU still-image
-transparency/color and math still differ from CPU, result alpha/extent
-enforcement is pending, geometry safety envelope provenance is not yet shared,
+transparency/color and math still differ from CPU, backend-result alpha/extent
+publication now fails closed, geometry safety envelope provenance is not yet shared,
 and same-engine/same-runtime concurrency is unproven. Only an available branch
 with `parity_executed=1` receives GPU parity credit; unavailable coverage reports
 `parity_executed=0`.

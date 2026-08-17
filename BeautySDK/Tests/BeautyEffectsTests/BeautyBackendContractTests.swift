@@ -192,7 +192,7 @@ final class BeautyBackendContractTests: XCTestCase {
         let diagnostics = BeautyBackendDiagnostics(
             width: 2,
             height: 2,
-            preservesAlpha: false,
+            preservesAlpha: true,
             preservesExtent: true,
             unitCount: 2,
             failureCount: 1,
@@ -216,6 +216,103 @@ final class BeautyBackendContractTests: XCTestCase {
         XCTAssertEqual(first.diagnostics.collisionCount, 1)
         XCTAssertEqual(first.diagnostics.changedPixelCount, 2)
         XCTAssertEqual(Mirror(reflecting: first.diagnostics).children.count, 8)
+    }
+
+    func testResultRejectsDiagnosticsThatDoNotPreserveAlpha() throws {
+        let image = Self.image(width: 2, height: 2)
+        let request = try BeautyBackendRequest(
+            input: .stillImage(image),
+            metadata: Self.metadata(),
+            plan: BeautyEffectPlan()
+        )
+        let diagnostics = BeautyBackendDiagnostics(
+            width: 2,
+            height: 2,
+            preservesAlpha: false,
+            preservesExtent: true
+        )
+
+        XCTAssertThrowsError(try BeautyBackendResult(
+            output: .stillImage(image),
+            diagnostics: diagnostics,
+            for: request
+        )) { error in
+            XCTAssertEqual(error as? BeautyError, .invalidInput)
+        }
+    }
+
+    func testResultRejectsDiagnosticsThatDoNotPreserveExtent() throws {
+        let image = Self.image(width: 2, height: 2)
+        let request = try BeautyBackendRequest(
+            input: .stillImage(image),
+            metadata: Self.metadata(),
+            plan: BeautyEffectPlan()
+        )
+        let diagnostics = BeautyBackendDiagnostics(
+            width: 2,
+            height: 2,
+            preservesAlpha: true,
+            preservesExtent: false
+        )
+
+        XCTAssertThrowsError(try BeautyBackendResult(
+            output: .stillImage(image),
+            diagnostics: diagnostics,
+            for: request
+        )) { error in
+            XCTAssertEqual(error as? BeautyError, .invalidInput)
+        }
+    }
+
+    func testResultRejectsSameSizeShiftedStillImageExtent() throws {
+        let input = Self.image(width: 2, height: 2)
+        let output = input.transformed(by: CGAffineTransform(translationX: 3, y: -4))
+        let request = try BeautyBackendRequest(
+            input: .stillImage(input),
+            metadata: Self.metadata(),
+            plan: BeautyEffectPlan()
+        )
+        let diagnostics = BeautyBackendDiagnostics(
+            width: 2,
+            height: 2,
+            preservesAlpha: true,
+            preservesExtent: true
+        )
+
+        XCTAssertThrowsError(try BeautyBackendResult(
+            output: .stillImage(output),
+            diagnostics: diagnostics,
+            for: request
+        )) { error in
+            XCTAssertEqual(error as? BeautyError, .invalidInput)
+        }
+    }
+
+    func testResultAcceptsUnchangedTranslatedStillImageExtent() throws {
+        let translatedImage = Self.image(width: 2, height: 2)
+            .transformed(by: CGAffineTransform(translationX: 3, y: -4))
+        let request = try BeautyBackendRequest(
+            input: .stillImage(translatedImage),
+            metadata: Self.metadata(),
+            plan: BeautyEffectPlan()
+        )
+        let diagnostics = BeautyBackendDiagnostics(
+            width: 2,
+            height: 2,
+            preservesAlpha: true,
+            preservesExtent: true
+        )
+
+        let result = try BeautyBackendResult(
+            output: .stillImage(translatedImage),
+            diagnostics: diagnostics,
+            for: request
+        )
+
+        guard case .stillImage(let output) = result.output else {
+            return XCTFail("Expected still-image output")
+        }
+        XCTAssertEqual(output.extent, translatedImage.extent)
     }
 
     func testExecutorErrorIsTerminalAndNeverRetriedOrSilentlySwitched() throws {

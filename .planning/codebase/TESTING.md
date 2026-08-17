@@ -10,14 +10,15 @@ The v1.17 archive recorded Metal-available focused `12/0/0` and full
 available branch runs the 12-test suite and reports `parity_executed=1`; the
 unavailable branch runs two typed selection tests, reports
 `parity_executed=0`, and emits no parity-success marker. The archived counts are
-not a fresh remediation full-gate result. F-08 and the manual semantic,
-envelope-provenance, and same-runtime concurrency gaps remain open.
+not a fresh remediation full-gate result. F-08 result alpha/extent enforcement
+is remediated; the manual semantic, envelope-provenance, and same-runtime
+concurrency gaps remain open.
 
 ## Runner and Inventory
 
 XCTest through Swift Package Manager is the only active test framework. Six test
 targets live under `BeautySDK/Tests/`; the current inventory is 74 Swift files and
-33,179 test lines, excluding `.build`.
+33,276 test lines, excluding `.build`.
 
 `BeautyResultConcurrencyTests` is the public concurrency contract suite. It
 executes 3 tests with zero failures, compiling a `Sendable` result through a
@@ -124,8 +125,9 @@ to the repository.
 The package-only `BeautyBackendContractTests` suite owns the shared backend
 boundary. It exercises valid still-image and pixel-buffer requests, canonical
 metadata/extent consistency, malformed dimensions and normalized strength
-rejection, output-kind pairing, deterministic bounded diagnostics, and a
-terminal executor failure with exactly one dispatch and no fallback. The request
+rejection, output-kind pairing, false alpha/extent declarations, shifted and
+unchanged translated still-image extents, deterministic bounded diagnostics,
+and a terminal executor failure with exactly one dispatch and no fallback. The request
 keeps selected support and canonical/composition state transient; only aggregate
 dimensions, alpha/extent flags, and bounded unit/failure/collision/change counts
 are observable.

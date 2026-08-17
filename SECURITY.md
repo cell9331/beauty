@@ -13,10 +13,11 @@ does not persist points and is released deterministically; only the bounded
 scalar count remains inline.
 
 The remaining audit findings do not expose durable raw payloads, but they limit
-what the evidence can authorize. Local retouch is CPU-composed before an
-identity GPU dispatch; GPU transparency/color handling and still-image math
-differ from CPU; result alpha/extent enforcement is pending; geometry safety
-uses a separately generated envelope observation; and shared-engine/runtime
+what the evidence can authorize. Backend-result alpha/extent publication now
+fails closed without inspecting or retaining pixels. Local retouch is CPU-
+composed before an identity GPU dispatch; GPU transparency/color handling and
+still-image math differ from CPU; geometry safety uses a separately generated
+envelope observation; and shared-engine/runtime
 concurrency is unproven. An unavailable host reports `parity_executed=0` and
 never GPU parity success. The historical counts are not a fresh current-tree
 closeout or a device/commercial/release trust decision.

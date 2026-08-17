@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.17
 milestone_name: Dual CPU/GPU Metal Rendering
-status: Post-archive audit remediation
-stopped_at: Fixing F-07 current owner drift
-last_updated: "2026-08-17T12:00:00.000Z"
-last_activity: 2026-08-17
-last_activity_desc: v1.17 post-archive audit remediation active
+status: Post-archive audit verification
+stopped_at: Running remediation closeout gate
+last_updated: "2026-08-17T19:49:14Z"
+last_activity: 2026-08-18
+last_activity_desc: Five bounded audit fixes complete; closeout verification active
 progress:
   total_phases: 5
   completed_phases: 5
@@ -33,8 +33,8 @@ historical lifecycle record.
 
 Phase: Post-archive audit of historically archived v1.17
 Plan: `P-2026-08-17-v1-17-audit-remediation`
-Status: Active — F-01/F-03/F-06 repaired, F-07 in progress, F-08 pending
-Last activity: 2026-08-17 — synchronized current owners with audited state
+Status: Verifying — F-01/F-03/F-06/F-07/F-08 repaired
+Last activity: 2026-08-18 — focused remediation evidence is green; full gate pending
 
 ## Current Audit Qualification
 
@@ -46,8 +46,7 @@ parity accounting (`d29b90a`), and Metal geometry binding (`556499a`) are
 repaired. Only an available branch reports `focused_tests=12` /
 `parity_executed=1`; unavailable typed coverage reports `parity_executed=0`.
 
-Open audit work: F-08 result alpha/extent enforcement is pending. F-02 local-
-retouch GPU ownership, F-04 transparency/color policy, F-05 coefficient/lip-
+Open audit work: F-02 local-retouch GPU ownership, F-04 transparency/color policy, F-05 coefficient/lip-
 math equivalence, F-09 geometry-envelope provenance, and F-10 same-engine/same-
 runtime concurrency require manual decisions or separately scoped evidence.
 No broad equivalence, device, commercial, packaging, shipping, launch, or
@@ -140,7 +139,7 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- F-08 result alpha/extent enforcement remains active remediation.
+- F-08 result alpha/extent enforcement is remediated with fail-closed contract tests.
 - F-02/F-04/F-05/F-09/F-10 require manual decisions or separately scoped
   evidence before any broad CPU/GPU equivalence claim.
 - Device/performance, commercial, packaging, shipping, launch, and release-
@@ -155,11 +154,11 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-17T12:00:00.000Z
-Stopped at: Fixing F-07 current owner drift
+Last session: 2026-08-17T19:49:14Z
+Stopped at: Running remediation closeout gate
 Resume file: `PLANS.md`
-Next action: complete F-07, fix F-08, then rerun focused and full remediation
-gates; separately plan the manual findings.
+Next action: run the full remediation gate and record its exact current count;
+separately plan the manual findings.
 
 ## Operator Next Steps
 

@@ -19,8 +19,9 @@ branch (`parity_executed=0`); the latter may pass the mandatory host gate but is
 never GPU parity success. The full remediation gate is still pending. Broad
 equivalence is also blocked by CPU-owned local-retouch composition followed by
 identity GPU dispatch, different GPU transparency/sRGB policy, coefficient/lip-
-math drift, pending result alpha/extent enforcement, a geometry safety envelope
-from a separate observation, and no same-engine/same-runtime concurrency proof.
+math drift, a geometry safety envelope from a separate observation, and no
+same-engine/same-runtime concurrency proof. Backend results now fail closed on
+false alpha/extent flags and still-image extent-origin drift.
 
 ## 1. Posture
 

@@ -11,8 +11,9 @@ Metal-available package host. Those numbers describe the archived run, not a
 freshly rerun current-worktree closeout.
 
 The post-archive audit has repaired public non-up/mirrored raw-input metadata
-compatibility (`53e8da1`), unavailable-host parity accounting (`d29b90a`), and
-the Metal geometry inline-binding overflow (`556499a`). Geometry point arrays
+compatibility (`53e8da1`), unavailable-host parity accounting (`d29b90a`), the
+Metal geometry inline-binding overflow (`556499a`), and backend-result alpha/
+extent enforcement. Geometry point arrays
 are now request-local shared `MTLBuffer` resources; only the bounded scalar
 point count remains inline. On an available host the parity branch reports
 `focused_tests=12` and `parity_executed=1`; an unavailable host may pass its
@@ -22,9 +23,9 @@ parity credit.
 Current broad CPU/GPU equivalence remains unclaimed. Local-retouch bytes are
 still composed on CPU before an identity Metal dispatch; the GPU still-image
 path rejects transparency and normalizes to named sRGB differently from CPU;
-CPU and Metal still-image coefficients/lip math are not fully identical; result
-alpha/extent invariant enforcement is still under remediation; geometry safety
-parity derives its envelope from a separate generated observation; and there is
+CPU and Metal still-image coefficients/lip math are not fully identical;
+geometry safety parity derives its envelope from a separate generated
+observation; and there is
 no same-engine/same-runtime concurrent-execution contract or evidence. These
 gaps also preclude device, commercial, packaging, shipping, launch, and release-
 readiness claims.
@@ -45,8 +46,8 @@ Current source/test inventory, excluding `.build`:
 | --- | ---: |
 | Swift source files | 72 |
 | SwiftPM test files | 74 |
-| Swift source lines | 16,699 |
-| SwiftPM test lines | 33,179 |
+| Swift source lines | 16,707 |
+| SwiftPM test lines | 33,276 |
 | `BeautyConfiguration` stored fields | 11 |
 
 ## 2. Top-Level Invariants

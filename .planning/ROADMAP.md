@@ -13,8 +13,8 @@ SwiftPM parity, safety, determinism, and no-skip gates close the milestone.
 
 The milestone was historically archived at `afb04b4` after a Metal-available
 focused `12/0/0` and full `765/0/0` run. A post-archive audit is now active:
-F-01 metadata compatibility, F-03 unavailable-host accounting, and F-06 Metal
-geometry binding are repaired, while F-08 is still being fixed and
+F-01 metadata compatibility, F-03 unavailable-host accounting, F-06 Metal
+geometry binding, and F-08 result alpha/extent enforcement are repaired, while
 F-02/F-04/F-05/F-09/F-10 remain manual or separately scoped gaps. Only an
 available branch reports `focused_tests=12` / `parity_executed=1`; unavailable
 typed coverage reports `parity_executed=0` and never counts as GPU parity.

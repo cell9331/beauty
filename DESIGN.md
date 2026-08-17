@@ -19,9 +19,8 @@ rerun, so the archived counts are not current-worktree counts.
 
 Design nonclaims remain explicit: local retouch is CPU composition followed by
 an identity GPU pass; GPU still-image transparency/color handling differs from
-CPU; CPU and Metal coefficient/lip math is not fully identical; backend-result
-alpha/extent enforcement is still being repaired; geometry safety parity uses a
-separate generated observation for its envelope; and same-engine/same-runtime
+CPU; CPU and Metal coefficient/lip math is not fully identical; geometry safety
+parity uses a separate generated observation for its envelope; and same-engine/same-runtime
 concurrency is not specified or proven. Only a Metal-available parity branch can
 report `focused_tests=12` / `parity_executed=1`; unavailable-host typed coverage
 reports `parity_executed=0` and is not GPU parity success.
@@ -1135,9 +1134,10 @@ inventory remain untouched.
 Raw pixel-buffer and ordinary still-image requests retain their explicit public
 orientation/mirroring metadata. Only a canonical still-image carrier is required
 to be `.up` and non-mirrored, because its metadata describes already normalized
-owned pixels. Result alpha/extent flags are part of the intended publication
-contract, but their enforcement is still an active post-archive remediation and
-must not be inferred from the historical Phase-74 checkbox.
+owned pixels. Result publication now fails closed unless both alpha and extent
+preservation flags are true. Pixel-buffer results retain exact BGRA dimensions;
+still-image results must preserve the exact input extent, including a translated
+origin as well as size.
 
 ### Phase 70 Error, Lifetime, and Test Contracts
 
@@ -1145,8 +1145,9 @@ Malformed admission fails before executor work; output-kind and dimension
 mismatches fail before result publication. Support, canonical storage, and
 composition state are request-local and are not promoted to engine-global state.
 `BeautyBackendContractTests` covers both input kinds, canonical invariants,
-normalized-plan rejection, deterministic bounded diagnostics, and a terminal
-executor failure with exactly one dispatch and no fallback.
+normalized-plan rejection, false alpha/extent declarations, shifted and retained
+translated extents, deterministic bounded diagnostics, and a terminal executor
+failure with exactly one dispatch and no fallback.
 
 ### Phase 71 Internal Metal Runtime Contract
 

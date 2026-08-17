@@ -15,7 +15,7 @@ compatibility (`53e8da1`), separated unavailable-host coverage from GPU parity
 credit (`d29b90a`), and moved oversized Metal geometry point payloads to a
 request-local shared `MTLBuffer` (`556499a`). Only an available branch reports
 `focused_tests=12` / `parity_executed=1`; unavailable coverage reports
-`parity_executed=0`. F-08 result alpha/extent enforcement remains active, while
+`parity_executed=0`. F-08 result alpha/extent enforcement is remediated, while
 F-02/F-04/F-05/F-09/F-10 require separately scoped architecture, contract, or
 evidence work. Accordingly, `[x]` means historically completed plan
 traceability, not current broad CPU/GPU equivalence or release readiness.

@@ -13,10 +13,10 @@ metadata compatibility (`53e8da1`), unavailable-host parity accounting
 `parity_executed=1`; unavailable-host typed coverage reports
 `parity_executed=0` and cannot borrow GPU parity success.
 
-The historical counts are not current full-gate evidence. Open findings remain
-for CPU-composed/identity-GPU local retouch, GPU transparency/sRGB policy, CPU/
-Metal coefficient and lip-math equivalence, backend-result alpha/extent
-enforcement, geometry safety envelope provenance, and same-engine/same-runtime
+The historical counts are not current full-gate evidence. Backend-result alpha/
+extent publication now fails closed. Open findings remain for CPU-composed/
+identity-GPU local retouch, GPU transparency/sRGB policy, CPU/Metal coefficient
+and lip-math equivalence, geometry safety envelope provenance, and same-engine/same-runtime
 concurrency. Scores and acceptance below therefore remain bounded and make no
 broad equivalence, device, commercial, packaging, shipping, launch, or release-
 readiness claim.
@@ -38,7 +38,7 @@ readiness claim.
 | --- | ---: | --- | --- |
 | Root owners | 4 | Current contracts consistently name SDK-only SwiftPM ownership and archive-only UI history. | Keep owners synchronized with code/tests. |
 | SDK package | 4 | One public library, one SDK-owned renderer, six internal/library targets, no remote dependency. | Preserve facade and dependency direction. |
-| Tests | 3 | 74 SwiftPM test files; public `BeautyResultConcurrencyTests` executes 3/0/0; generated CPU reference preflight remains bounded; v1.16/Phase-71/Phase-73 and Phase-74 counts are historical. Focused remediation evidence exists, but the current full gate and remaining semantic gaps are not closed. | Complete F-08 and rerun the full conjunction; separately plan the manual gaps. |
+| Tests | 3 | 74 SwiftPM test files; public `BeautyResultConcurrencyTests` executes 3/0/0; generated CPU reference preflight remains bounded; v1.16/Phase-71/Phase-73 and Phase-74 counts are historical. Focused remediation evidence exists, but the current full gate and remaining semantic gaps are not closed. | Rerun the full conjunction; separately plan the manual gaps. |
 | External consumer / CLI | 4 | Public-only local-path consumer observes generated RGBA bytes/dimensions; compiled renderer covers 74-case discovery, reconciled reports, typed failures, and render/encode seams. | Preserve archive → boundary → consumer → no-skip ordering. |
 | Archive integrity | 4 | Code-owned ZIP/manifest anchors, exact 45/26 inventories, bounded streamed extraction, frozen-retirement rollback, and safe restore self-tests pass. | Verify before every full closeout. |
 | SDK-only boundary | 4 | Retired roots are absent; scanner rejects symlinks, restored application/UI sources, stale current owners/maps, tracked media, application artifacts, retained-shader drift, and backend/API drift. | Keep scanner fail-closed. |
@@ -98,7 +98,7 @@ Metal availability classifications. Its archive → boundary self-test/live scan
 CPU → opt-in → one-child order is mandatory; the boundary self-test rejects an
 unconditional generic `BeautyResult` sendability declaration. The public
 concurrency focus is 3/0/0 and the current active inventory is 72 Swift source
-files, 74 SwiftPM test files, 16,699 source lines, and 33,179 test lines. A fresh
+files, 74 SwiftPM test files, 16,707 source lines, and 33,276 test lines. A fresh
 full remediation count is pending.
 
 ## 5. Archive Quality Gate
@@ -145,7 +145,7 @@ or large extraction transcripts are not durable quality evidence.
 
 | Priority | Item | Status |
 | --- | --- | --- |
-| 1 | Enforce backend-result alpha/extent publication invariants (F-08). | active post-archive remediation |
+| 1 | Enforce backend-result alpha/extent publication invariants (F-08). | remediated; focused regression coverage added |
 | 2 | Decide whether local retouch becomes genuine GPU computation or the backend contract is narrowed (F-02). | manual architecture decision required |
 | 3 | Align GPU transparency/color and still-image coefficient/lip math with the CPU contract (F-04/F-05). | manual contract/migration work required |
 | 4 | Repair geometry-envelope provenance and define shared engine/runtime concurrency (F-09/F-10). | separately scoped evidence required |
