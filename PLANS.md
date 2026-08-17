@@ -26,6 +26,38 @@
 
 ## 3. Active
 
+### P-2026-08-17-v1-17-audit-remediation
+
+| Field | Value |
+| --- | --- |
+| Status | `active` |
+| Owner | Codex |
+| Started | 2026-08-17 |
+| Scope | Remediate the bounded auto-fixable findings from the post-archive v1.17 code/document audit without modifying archived milestone evidence or expanding algorithm/product scope. |
+| Source Request | User requested review of the latest milestone, then asked to continue after the audit reported gaps. |
+| Current Step | Fix F-01 public non-up/mirrored input compatibility and add regression coverage. |
+| Verification Policy | Run finding-focused SwiftPM tests after each fix; then backend preflights, `git diff --check`, and the complete `bash scripts/run-no-skip-swiftpm.sh` closeout gate. |
+
+Checklist:
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| Classify findings | `completed` | F-01/F-03/F-06/F-07/F-08 are auto-fixable; F-02/F-04/F-05/F-10 require design decisions; F-09 is beyond the default five-finding cap. |
+| Fix F-01 public metadata compatibility | `active` | Pending implementation and focused regression test. |
+| Fix F-03 unavailable-host parity accounting | `planned` | Pending explicit executed/unavailable classification and mutation coverage. |
+| Fix F-06 Metal geometry binding bound | `planned` | Pending `MTLBuffer` binding and 4 KiB boundary coverage. |
+| Fix F-07 current owner drift | `planned` | Pending truthful post-audit owner synchronization; archived evidence remains read-only. |
+| Fix F-08 backend result invariants | `planned` | Pending semantic result validation and regression coverage. |
+| Complete closeout verification | `planned` | Pending focused gates and full archive-first no-skip wrapper. |
+
+Open Questions:
+
+| Question | Current Decision |
+| --- | --- |
+| F-02 local-retouch GPU ownership | Manual-only: requires a separately planned architecture decision between actual GPU composition and an honestly narrowed backend contract. |
+| F-04/F-05 still-image compatibility | Manual-only: alpha/color-profile policy and CPU/Metal algorithm migration require explicit contract decisions and broader fixtures. |
+| F-10 shared-instance concurrency | Manual-only: define supported shared-engine/runtime concurrency semantics before adding a test that would silently establish new public behavior. |
+
 ### P-2026-08-14-phase-66-sdk-only-boundary
 
 | Field | Value |
