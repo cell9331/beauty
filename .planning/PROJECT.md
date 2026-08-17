@@ -12,13 +12,13 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 ## Current State
 
-**Latest completed milestone:** v1.16 SDK-Only Foundation and CPU Reference on 2026-08-15 (independently verified SDK-core closeout; product distribution/shipping is not claimed).
+**Latest completed milestone:** v1.17 Dual CPU/GPU Metal Rendering on 2026-08-17 (independently verified SDK-core parity closeout; product distribution/shipping is not claimed).
 **Latest historical UI milestone:** v1.1 Meitu UI on 2026-06-24, retained only as archived evidence.
 **Current milestone:** v1.17 Dual CPU/GPU Metal Rendering.
 
-**Implementation state:** v1.16 froze the current CPU renderer as the reference backend, added generated CPU oracles, a public-only SwiftPM consumer, the SDK-owned renderer CLI, and conditional `BeautyResult` sendability. v1.17 now includes the package-only backend-neutral boundary, bounded Metal runtime and feature passes, and the public `.cpu`/`.gpu` configuration with typed unavailable-GPU failure, while preserving the 61-field/five-preset/74-case compatibility surface. Phase 74 owns generated parity/closeout; historical application taxonomy remains archive-only.
+**Implementation state:** v1.16 froze the current CPU renderer as the reference backend, added generated CPU oracles, a public-only SwiftPM consumer, the SDK-owned renderer CLI, and conditional `BeautyResult` sendability. v1.17 now includes the package-only backend-neutral boundary, bounded Metal runtime and feature passes, public `.cpu`/`.gpu` configuration with typed unavailable-GPU failure, and generated CPU/GPU parity gates, while preserving the 61-field/five-preset/74-case compatibility surface. Historical application taxonomy remains archive-only.
 
-**Verification state:** Phases 70–73 pass their backend/runtime/feature/configuration mutation preflights, public routing and typed unavailable-GPU coverage, generated CPU gates, and the archive-first no-skip wrapper with 753 tests, 8 opt-ins, zero skips, and zero failures. Phase 74 remains responsible for generated CPU/GPU parity and final compatibility evidence without weakening the existing CPU oracle or silently falling back. Device/performance/commercial/packaging/shipping/launch/release-readiness remain separate scopes.
+**Verification state:** Phase 74 closes the v1.17 parity and SDK-only gate: focused generated parity is 12/0/0 with `metal_available=1` and `metal_unavailable=0`; the archive-first no-skip wrapper executes 765/0/0, all 8 opt-ins exactly once, with zero skips and zero failures. CPU remains the reference and unavailable GPU coverage is separately classified without fallback. Device/performance/commercial/packaging/shipping/launch/release-readiness remain separate scopes.
 
 **Current milestone goals:** v1.17 preserves CPU as the deterministic reference, adds production-owned Metal color/skin, geometry, and local-retouch execution, exposes an explicit `.cpu`/`.gpu` selector on `BeautyConfiguration`, and proves parity plus fail-closed availability/error behavior through SwiftPM and SDK-owned scripts. `去脂`, new semantic-mask features, model/network, UI/Demo, simulator/device, population/device/commercial, packaging, shipping, launch and release-readiness work remain future or separately scoped.
 
@@ -48,7 +48,7 @@ The backend choice is configuration/execution policy and must not change the pub
 
 ### Phase 71 Current Runtime Position
 
-Phase 73 is complete for `CONFIG-01` and `CONFIG-02`. The delivered runtime is
+Phase 74 is complete for all v1.17 parity and SDK-only closeout requirements. The delivered runtime is
 package-only: `BeautyRender` owns device, command queue, compiled pipeline,
 request-local RGBA8 textures/buffers, command synchronization, terminal
 status, and deterministic cleanup; `BeautyEffects` owns one internal `.metal`
@@ -66,10 +66,11 @@ The final archive-first evidence is the configuration gate and
 post-archive SDK-only boundary, the no-skip wrapper self-test, and
 `run-no-skip-swiftpm.sh` (`753/0/0`, eight opt-ins exactly once). Phase 72 owns
 feature passes, Phase 73 owns public `.cpu`/`.gpu` configuration and typed
-availability policy, and Phase 74 owns generated parity and SDK-only closeout.
+availability policy, and the generated parity/SDK-only closeout is now complete.
 This does not claim a new algorithm, UI/Demo lifecycle, simulator or
 physical-device validation, performance, commercial approval, packaging,
-shipping, launch, or release readiness.
+shipping, launch, or release readiness. The v1.17 milestone is complete within
+the SDK-only boundary; those excluded claims remain separate scopes.
 
 ## Last Completed Milestone: v1.16 SDK-Only Foundation and CPU Reference
 

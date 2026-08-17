@@ -21,14 +21,14 @@
 
 ### CPU/GPU Parity and Validation
 
-- [ ] **PARITY-01**: Generated SwiftPM fixtures compare CPU and GPU outputs through explicit structural checks and bounded floating-point tolerances, with exact neutral bytes and dimensions where the contract requires them.
-- [ ] **PARITY-02**: CPU/GPU parity checks cover alpha, color metadata, extent, outside-region preservation, containment, collision-to-source behavior, no-face/degraded requests, and failure-unit isolation without exposing raw masks, landmarks, or pixels in durable reports.
-- [ ] **PARITY-03**: Repeated identical requests are deterministic and finite for each available backend, backend selection is request-local and concurrency-safe, and a failed GPU unit does not suppress eligible CPU or face-agnostic siblings.
+- [x] **PARITY-01**: Generated SwiftPM fixtures compare CPU and GPU outputs through explicit structural checks and bounded floating-point tolerances, with exact neutral bytes and dimensions where the contract requires them.
+- [x] **PARITY-02**: CPU/GPU parity checks cover alpha, color metadata, extent, outside-region preservation, containment, collision-to-source behavior, no-face/degraded requests, and failure-unit isolation without exposing raw masks, landmarks, or pixels in durable reports.
+- [x] **PARITY-03**: Repeated identical requests are deterministic and finite for each available backend, backend selection is request-local and concurrency-safe, and a failed GPU unit does not suppress eligible CPU or face-agnostic siblings.
 
 ### SDK-Only Closeout
 
-- [ ] **CLOSE-01**: The mandatory SwiftPM/SDK-owned gate executes CPU reference tests, backend/configuration compatibility tests, Metal available/unavailable paths, parity probes, and static scope checks with zero failures and zero unexpected skips; unavailable-host coverage is explicit and cannot lend success to GPU parity.
-- [ ] **CLOSE-02**: Architecture, design, security, reliability, product, quality, plans, project, requirements, roadmap, and state owners consistently describe retained CPU plus selectable GPU semantics while excluding UI/Demo, simulator/device, commercial, packaging, shipping, and release-readiness claims.
+- [x] **CLOSE-01**: The mandatory SwiftPM/SDK-owned gate executes CPU reference tests, backend/configuration compatibility tests, Metal available/unavailable paths, parity probes, and static scope checks with zero failures and zero unexpected skips; unavailable-host coverage is explicit and cannot lend success to GPU parity.
+- [x] **CLOSE-02**: Architecture, design, security, reliability, product, quality, plans, project, requirements, roadmap, and state owners consistently describe retained CPU plus selectable GPU semantics while excluding UI/Demo, simulator/device, commercial, packaging, shipping, and release-readiness claims.
 
 ## Future Requirements
 
@@ -59,11 +59,11 @@
 | METAL-02 | Phase 72 | Complete |
 | METAL-03 | Phase 72 | Complete |
 | METAL-04 | Phase 72 | Complete |
-| PARITY-01 | Phase 74 | Pending |
-| PARITY-02 | Phase 74 | Pending |
-| PARITY-03 | Phase 74 | Pending |
-| CLOSE-01 | Phase 74 | Pending |
-| CLOSE-02 | Phase 74 | Pending |
+| PARITY-01 | Phase 74 | Complete |
+| PARITY-02 | Phase 74 | Complete |
+| PARITY-03 | Phase 74 | Complete |
+| CLOSE-01 | Phase 74 | Complete |
+| CLOSE-02 | Phase 74 | Complete |
 
 ### Phase 71 Completion Evidence
 
@@ -95,4 +95,4 @@ typed availability policy; Phase 74 owns parity and SDK-only closeout.
 
 ---
 *Requirements defined: 2026-08-15*
-*Last updated: 2026-08-17 after Phase 73 CONFIG-01/CONFIG-02 closeout and exact requirement traceability*
+*Last updated: 2026-08-17 after Phase 74 parity and SDK-only closeout with exact requirement traceability*

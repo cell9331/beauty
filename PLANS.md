@@ -49,6 +49,27 @@ Checklist:
 
 > 以下记录均为已完成或已被后续权威取代的执行历史，不是 Active plan。
 
+### C-2026-08-17-phase-74-cpu-gpu-parity-and-sdk-only-closeout
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
+| Completed | 2026-08-17 |
+| Scope | Close generated CPU/GPU parity, safety, determinism, request-local selection, explicit Metal availability classification, and the SDK-only archive-first no-skip milestone gate while retaining CPU as the reference. |
+| Plans | `74-01-PLAN.md` owns generated structural/numeric parity; `74-02-PLAN.md` owns safety and failure isolation; `74-03-PLAN.md` owns determinism, concurrency, and unavailable-host separation; `74-04-PLAN.md` owns the mutation-tested parity gate and no-skip integration; `74-05-PLAN.md` owns current owners and milestone ledgers. |
+| Requirements | PARITY-01, PARITY-02, PARITY-03, CLOSE-01, and CLOSE-02 are complete. |
+| Contract | Generated fixtures enforce exact neutral bytes/dimensions, bounded active tolerances, alpha/metadata/extent, outside-region and containment safety, collision/no-face/degraded/failure isolation, repeated determinism, request-local CPU/GPU policy, and typed `.metalUnavailable` separation. |
+| Verification | Focused parity passes `12/0/0` with `metal_available=1` and `metal_unavailable=0`; archive-first `run-no-skip-swiftpm.sh` passes `765/0/0`, executes all eight opt-ins exactly once, and reports zero skips/failures; archive, SDK-only boundary, mutation self-tests, and diff hygiene pass. |
+| Handoff | v1.17 SDK-only parity closeout is complete. Future work remains separately scoped for new algorithms, UI/Demo, simulator/device, performance, commercial, packaging, shipping, launch, and release readiness. |
+| Nonclaims | No device, physical-host, performance-budget, commercial visual approval, packaging, distribution, shipping, launch, or release-readiness claim follows from these package-host tests. |
+
+Outcome:
+
+- All five Phase-74 requirements are closed against generated SwiftPM evidence and
+  current-owner documentation.
+- The retained CPU implementation remains the compatibility oracle; GPU
+  availability is explicit and never borrows CPU success.
+
 ### C-2026-08-17-phase-73-public-backend-configuration-and-fail-closed-availability
 
 | Field | Value |
@@ -67,8 +88,8 @@ Outcome:
 
 - CONFIG-01/02 are closed and all current owners describe the retained CPU
   reference plus selectable GPU and typed fail-closed availability policy.
-- Phase 74 remains the only active work needed for generated CPU/GPU parity and
-  milestone closeout.
+- Phase 74 subsequently closed generated CPU/GPU parity and milestone closeout;
+  this historical record does not carry a current active-work claim.
 
 ### C-2026-08-16-phase-72-plan-01-metal-color-passes
 

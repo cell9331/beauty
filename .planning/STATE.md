@@ -4,17 +4,17 @@ milestone: v1.17
 milestone_name: Dual CPU/GPU Metal Rendering
 current_phase: 74
 current_phase_name: CPU/GPU Parity and SDK-Only Closeout
-status: planning
-stopped_at: Completed 73-04-PLAN.md
+status: completed
+stopped_at: Completed 74-05-PLAN.md
 last_updated: "2026-08-17T02:31:08.691Z"
 last_activity: 2026-08-17
-last_activity_desc: Phase 73 complete, transitioned to Phase 74
+last_activity_desc: Phase 74 complete; v1.17 parity and SDK-only closeout verified
 progress:
   total_phases: 5
-  completed_phases: 4
-  total_plans: 14
-  completed_plans: 14
-  percent: 80
+  completed_phases: 5
+  total_plans: 19
+  completed_plans: 19
+  percent: 100
 ---
 
 # Project State
@@ -31,19 +31,19 @@ modular facade.
 ## Current Position
 
 Phase: 74 — CPU/GPU Parity and SDK-Only Closeout
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-08-17 — Phase 73 complete, transitioned to Phase 74
+Plan: 05 — Synchronize SDK-only owners and close the v1.17 milestone ledgers
+Status: Complete
+Last activity: 2026-08-17 — Phase 74 parity and SDK-only closeout verified
 
-Progress: [██████████████░░░░] 80%
+Progress: [██████████████████] 100%
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: 0 min
+- Total plans completed: 19
+- Average duration: ~30min
+- Total execution time: ~9h
 
 Historical v1.16 metrics remain in `.planning/MILESTONES.md` and archived
 roadmaps.
@@ -65,6 +65,11 @@ roadmaps.
 | Phase 73 P02 | ~25min | 2 tasks | 5 files |
 | Phase 73 P03 | ~15min | 2 tasks | 6 files |
 | Phase 73 P04 | ~30min | 2 tasks | 14 files |
+| Phase 74 P01 | ~20min | 2 tasks | 3 files |
+| Phase 74 P02 | ~20min | 2 tasks | 2 files |
+| Phase 74 P03 | ~20min | 2 tasks | 2 files |
+| Phase 74 P04 | ~25min | 2 tasks | 4 files |
+| Phase 74 P05 | ~15min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -84,6 +89,11 @@ roadmaps.
 
 - No new algorithms, UI/Demo behavior, device evidence, commercial approval,
   packaging, shipping, or release-readiness claim is in this milestone.
+
+- Phase 74 closes PARITY-01/02/03 and CLOSE-01/02 only on generated SDK-owned
+  evidence: focused parity `12/0/0`, separate `metal_available=1` and
+  `metal_unavailable=0`, and full no-skip `765/0/0` with eight opt-ins exactly
+  once and zero skips/failures.
 
 - [Phase 70]: Phase 70 Plan 01 freezes a package-only backend-neutral request/result boundary with .cpu as the sole policy; public backend selection remains deferred.
 - [Phase 70]: Backend requests reuse canonical input, normalized effect plans, transient support, and bounded aggregate diagnostics; typed executor errors have no retry or fallback.
@@ -114,10 +124,10 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- Phase 71 is complete for package-owned runtime mechanics. Phase 72 feature
-  semantics and Phase 73 public configuration/fail-closed policy are complete;
-  generated parity tolerances, milestone closeout, and release/device evidence
-  remain unverified until Phase 74 executes.
+- Phase 70–73 runtime, feature, and public configuration work is complete. Phase
+  74 generated parity and SDK-only closeout are complete; device/performance,
+  commercial, packaging, shipping, launch, and release-readiness evidence remain
+  outside this milestone.
 
 ## Deferred Items
 
@@ -128,8 +138,8 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-17T10:00:00.000Z
-Stopped at: Completed 73-04-PLAN.md
+Last session: 2026-08-17T12:00:00.000Z
+Stopped at: Completed 74-05-PLAN.md
 Resume file: None
-Next action: Plan Phase 74 generated CPU/GPU parity and SDK-only closeout;
-preserve the CPU reference and the v1.17 SDK/Metal-only boundary.
+Next action: v1.17 SDK-only closeout is complete; run a milestone audit before
+starting any separately scoped work.

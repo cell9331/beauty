@@ -35,7 +35,7 @@ commercial approval, packaging, shipping, launch, or release-readiness claims.
 - ✅ **[v1.14 Local Facial Retouch](milestones/v1.14-ROADMAP.md)** — Phases 53-58, completed 2026-08-05.
 - ✅ **[v1.15 Independent Teeth and Sclera Retouch](milestones/v1.15-ROADMAP.md)** — Phases 59-65, completed and audited 2026-08-11.
 - ✅ **[v1.16 SDK-Only Foundation and CPU Reference](milestones/v1.16-ROADMAP.md)** — Phases 66-69, independently complete 2026-08-15.
-- 🚧 **v1.17 Dual CPU/GPU Metal Rendering** — Phases 70-74, current milestone.
+- ✅ **v1.17 Dual CPU/GPU Metal Rendering** — Phases 70-74, completed 2026-08-17.
 
 ## Current Milestone: v1.17 Dual CPU/GPU Metal Rendering
 
@@ -52,7 +52,7 @@ SDK-owned evidence.
 - [x] **Phase 71: SDK-Owned Metal Runtime** — Add bounded Metal device, queue, texture, synchronization, and resource-lifetime ownership. (completed 2026-08-16)
 - [x] **Phase 72: Metal Feature Passes** — Implement color/skin, geometry-warp, and local-retouch passes with the existing CPU semantics and safety rules. (completed 2026-08-17)
 - [x] **Phase 73: Public Backend Configuration and Fail-Closed Availability** — Expose `.cpu`/`.gpu` policy with CPU-compatible defaults and typed unavailable-GPU failure. (completed 2026-08-17)
-- [ ] **Phase 74: CPU/GPU Parity and SDK-Only Closeout** — Prove structural parity, safety, determinism, failure isolation, and the mandatory no-skip scope gate.
+- [x] **Phase 74: CPU/GPU Parity and SDK-Only Closeout** — Prove structural parity, safety, determinism, failure isolation, and the mandatory no-skip scope gate. (completed 2026-08-17)
 
 ## Phase Details
 
@@ -118,8 +118,8 @@ zero skips, and all eight documented opt-ins exactly once. The evidence is
 aggregate-only and establishes package-owned runtime mechanics; it does not
 claim public `.gpu` configuration, feature-pass parity, new algorithms,
 simulator/physical-device validation, performance, commercial, packaging,
-shipping, launch, or release readiness. Phase 73 configuration is complete;
-Phase 74 is next for generated CPU/GPU parity and SDK-only closeout.
+shipping, launch, or release readiness. Phase 73 configuration and Phase 74
+parity closeout are complete; the excluded claims remain separate scopes.
 
 ### Phase 72: Metal Feature Passes
 
@@ -213,11 +213,11 @@ oracle or expanding the active product boundary.
 
 Plans:
 
-- [ ] 74-01-PLAN.md — Build generated structural and numeric CPU/GPU parity coverage.
-- [ ] 74-02-PLAN.md — Prove containment, protected bytes, degradation, collision, and failure isolation parity.
-- [ ] 74-03-PLAN.md — Prove deterministic concurrent requests and explicit unavailable-host separation.
-- [ ] 74-04-PLAN.md — Integrate mutation-tested parity into the archive-first no-skip gate.
-- [ ] 74-05-PLAN.md — Synchronize SDK-only owners and close the v1.17 milestone ledgers.
+- [x] 74-01-PLAN.md — Build generated structural and numeric CPU/GPU parity coverage.
+- [x] 74-02-PLAN.md — Prove containment, protected bytes, degradation, collision, and failure isolation parity.
+- [x] 74-03-PLAN.md — Prove deterministic concurrent requests and explicit unavailable-host separation.
+- [x] 74-04-PLAN.md — Integrate mutation-tested parity into the archive-first no-skip gate.
+- [x] 74-05-PLAN.md — Synchronize SDK-only owners and close the v1.17 milestone ledgers.
 
 ## Coverage
 
@@ -242,4 +242,4 @@ duplicate mappings.
 | 71. SDK-Owned Metal Runtime | v1.17 | 4/4 | Complete | 2026-08-16 |
 | 72. Metal Feature Passes | v1.17 | 4/4 | Complete    | 2026-08-17 |
 | 73. Public Backend Configuration and Fail-Closed Availability | v1.17 | 4/4 | Complete    | 2026-08-17 |
-| 74. CPU/GPU Parity and SDK-Only Closeout | v1.17 | 0/TBD | Not started | - |
+| 74. CPU/GPU Parity and SDK-Only Closeout | v1.17 | 5/5 | Complete | 2026-08-17 |
