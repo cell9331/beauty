@@ -6,7 +6,7 @@ readonly repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd 
 readonly package_root="${repository_root}/BeautySDK"
 readonly maximum_output_bytes=$((16 * 1024 * 1024))
 readonly focused_filter='BeautyEffectsTests.BeautyMetalColorPassTests|BeautyEffectsTests.BeautyMetalGeometryPassTests|BeautyEffectsTests.BeautyMetalBackendTests|BeautyEffectsTests.BeautyMetalLocalRetouchPassTests|BeautyRenderTests.BeautyMetalRuntimeTests'
-readonly expected_focused_tests=31
+readonly expected_focused_tests=32
 readonly pass_source="BeautySDK/Sources/BeautyRender/BeautyMetalPass.swift"
 readonly runtime_source="BeautySDK/Sources/BeautyRender/BeautyMetalRuntime.swift"
 readonly shader_source="BeautySDK/Sources/BeautyRender/Shaders/Warp.metal"
@@ -181,6 +181,8 @@ if metal_sources != [paths["shader"]]:
     raise SystemExit("Metal shader inventory changed")
 if "BeautyMetalColorPassTests" not in text["color_tests"]:
     raise SystemExit("generated color suite is missing")
+if "testGeneratedCombinedSaturationAndSkinSmoothingMatchesCPU" not in text["color_tests"]:
+    raise SystemExit("combined saturation and skin-smoothing regression is missing")
 if "BeautyMetalGeometryPassTests" not in text["geometry_tests"]:
     raise SystemExit("generated geometry suite is missing")
 if "BeautyMetalLocalRetouchPassTests" not in text["local_retouch_tests"]:

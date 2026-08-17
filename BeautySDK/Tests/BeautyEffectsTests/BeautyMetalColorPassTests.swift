@@ -46,6 +46,32 @@ final class BeautyMetalColorPassTests: XCTestCase {
         }
     }
 
+    func testGeneratedCombinedSaturationAndSkinSmoothingMatchesCPU() throws {
+        guard let runtime = makeRuntime() else { return }
+        let fixture = CPUReferenceFixtureFactory.opaqueColorRamp(width: 16, height: 12)
+        let parameterMatrix: [(saturation: Float, skinSmoothing: Float)] = [
+            (0.8, 0.8),
+            (0.55, 0.35),
+            (0.25, 0.7),
+        ]
+
+        for values in parameterMatrix {
+            let plan = BeautyEffectResolver.resolve(
+                parameters: BeautyParameters(
+                    skinSmoothing: values.skinSmoothing,
+                    saturation: values.saturation
+                )
+            )
+            let metalBytes = try renderMetal(fixture: fixture, plan: plan, runtime: runtime)
+            let cpuBytes = try renderCPU(fixture: fixture, plan: plan)
+            XCTAssertEqual(metalBytes.count, cpuBytes.count)
+            XCTAssertEqual(alphaValues(metalBytes), fixture.alphaValues)
+            XCTAssertEqual(alphaValues(cpuBytes), fixture.alphaValues)
+            XCTAssertLessThanOrEqual(maxRGBDelta(metalBytes, cpuBytes), 8)
+            XCTAssertLessThan(meanRGBDelta(metalBytes, cpuBytes), 5.0)
+        }
+    }
+
     func testNeutralAndUnsupportedLocalPlansAreByteIdentical() throws {
         guard let runtime = makeRuntime() else { return }
         let fixture = CPUReferenceFixtureFactory.opaqueColorRamp()
@@ -196,6 +222,12 @@ final class BeautyMetalColorPassTests: XCTestCase {
             (0..<3).map { abs(Int(lhs[offset + $0]) - Int(rhs[offset + $0])) }
         }
         return Double(values.reduce(0, +)) / Double(max(1, values.count))
+    }
+
+    private func maxRGBDelta(_ lhs: [UInt8], _ rhs: [UInt8]) -> Int {
+        stride(from: 0, to: min(lhs.count, rhs.count), by: 4).flatMap { offset in
+            (0..<3).map { abs(Int(lhs[offset + $0]) - Int(rhs[offset + $0])) }
+        }.max() ?? 0
     }
 
     private func alphaValues(_ bytes: [UInt8]) -> [UInt8] {

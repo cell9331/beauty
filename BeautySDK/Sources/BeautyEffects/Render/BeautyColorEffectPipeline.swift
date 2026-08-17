@@ -210,7 +210,7 @@ public enum BeautyColorEffectPipeline {
         var b = Float(blue) / 255
         let luminance = 0.299 * r + 0.587 * g + 0.114 * b
 
-        let saturationScale = max(0, 1 + strengths.saturation * 0.28 + filter.saturation)
+        let saturationScale = max(0, 1 + strengths.saturation * 0.28 - strengths.skinSmoothing * 0.18 + filter.saturation)
         r = luminance + (r - luminance) * saturationScale
         g = luminance + (g - luminance) * saturationScale
         b = luminance + (b - luminance) * saturationScale

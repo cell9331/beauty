@@ -226,7 +226,7 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         }
         var bytes = [UInt8](repeating: 0, count: packedRowBytes * height)
         for row in 0..<height {
-            bytes.withUnsafeMutableBytes { destination in
+            _ = bytes.withUnsafeMutableBytes { destination in
                 memcpy(
                     destination.baseAddress!.advanced(by: row * packedRowBytes),
                     source.advanced(by: row * sourceRowBytes),
@@ -283,7 +283,7 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
 
         let filter = filterContribution(for: plan)
         let parameters = try BeautyMetalColorParameters(
-            saturationDelta: strengths.saturation * 0.28 + filter.saturation,
+            saturationDelta: strengths.saturation * 0.28 - strengths.skinSmoothing * 0.18 + filter.saturation,
             contrastScale: 1 + strengths.contrast * 0.22 + strengths.skinSharpen * 0.18,
             lightLift: strengths.brightness * 0.16 + strengths.exposure * 0.10 + strengths.skinWhitening * 0.18 + filter.brightness,
             redBias: strengths.skinRosy * 0.08 + strengths.temperature * 0.04 + strengths.tint * 0.02 + filter.redBias,
