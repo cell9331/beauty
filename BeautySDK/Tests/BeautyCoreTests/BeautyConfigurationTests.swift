@@ -39,7 +39,9 @@ final class BeautyConfigurationTests: XCTestCase {
 
     func testPhase73BackendSelectionIsNotPersistedInBeautyParameters() throws {
         let object = try XCTUnwrap(
-            JSONSerialization.jsonObject(with: JSONEncoder().encode(BeautyParameters()))
+            JSONSerialization.jsonObject(
+                with: JSONEncoder().encode(BeautyParameters(filterId: "phase73-schema"))
+            )
                 as? [String: Any]
         )
         XCTAssertNil(object["renderBackend"])
