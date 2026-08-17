@@ -209,7 +209,15 @@ oracle or expanding the active product boundary.
      available/unavailable Metal, parity, and static scope checks with zero
      failures and zero unexpected skips; current owners agree on retained CPU
      plus selectable GPU semantics and all excluded product/release claims.
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+
+- [ ] 74-01-PLAN.md — Build generated structural and numeric CPU/GPU parity coverage.
+- [ ] 74-02-PLAN.md — Prove containment, protected bytes, degradation, collision, and failure isolation parity.
+- [ ] 74-03-PLAN.md — Prove deterministic concurrent requests and explicit unavailable-host separation.
+- [ ] 74-04-PLAN.md — Integrate mutation-tested parity into the archive-first no-skip gate.
+- [ ] 74-05-PLAN.md — Synchronize SDK-only owners and close the v1.17 milestone ledgers.
 
 ## Coverage
 
