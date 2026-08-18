@@ -134,7 +134,7 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
                 plan: plan,
                 selectedFaceSupport: selectedFaceSupport,
                 compositionSummary: compositionSummary,
-                hasCanonicalCarrier: canonicalImage != nil
+                hasCPUComposedCarrier: canonicalImage != nil
             )
         )
         let renderedBytes = rgbaToBgra(renderedRGBA)
@@ -175,7 +175,7 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
                 plan: plan,
                 selectedFaceSupport: selectedFaceSupport,
                 compositionSummary: compositionSummary,
-                hasCanonicalCarrier: canonicalImage != nil
+                hasCPUComposedCarrier: canonicalImage != nil
             )
         )
         guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
@@ -254,17 +254,18 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         plan: BeautyEffectPlan,
         selectedFaceSupport: BeautyFaceObservation?,
         compositionSummary: BeautyLocalRetouchCompositionSummary?,
-        hasCanonicalCarrier: Bool
+        hasCPUComposedCarrier: Bool
     ) throws -> [BeautyMetalPass] {
         var passes: [BeautyMetalPass] = []
         if compositionSummary != nil {
-            guard hasCanonicalCarrier else {
+            guard hasCPUComposedCarrier else {
                 throw BeautyError.invalidInput
             }
             // BeautyEngine has already run the sole local-retouch owner. The
             // carrier bytes are therefore the immutable original-pixel/Q16
-            // composition result; Metal only establishes the ordered pass
-            // boundary and never receives proposals, masks, or support.
+            // composition result; Metal performs only identity transport in
+            // the ordered graph and never receives proposals, masks, support,
+            // or a second composition path.
             passes.append(.composedRetouch(try BeautyMetalComposedRetouchParameters()))
         }
 

@@ -42,8 +42,8 @@ Checklist:
 
 | Step | Status | Evidence |
 | --- | --- | --- |
-| Resolve F-02 local-retouch ownership claim | `active` | Pending: declare CPU-owned original-pixel composition plus Metal transport, with no genuine GPU-composition claim. |
-| Resolve F-04 opaque/sRGB GPU still-image policy | `planned` | Pending: retain pre-Vision fail-closed transparency rejection and explicit named-sRGB canonical output. |
+| Resolve F-02 local-retouch ownership claim | `completed` | CPU owns immutable-original/Q16 composition and collision-to-source; the Metal pass is identity transport with a single ownership marker and cannot carry proposals, masks, support, or a second composition path. Focused `6/0/0`; feature preflight `33/0/0`; two ownership mutations fail closed. |
+| Resolve F-04 opaque/sRGB GPU still-image policy | `active` | Pending: retain pre-Vision fail-closed transparency rejection and explicit named-sRGB canonical output. |
 | Resolve F-05 Metal still-image math | `planned` | Pending: align Metal still-image coefficients and lip behavior to the retained CPU oracle with focused parity evidence. |
 | Resolve F-10 shared-instance concurrency contract | `planned` | Pending: declare `BeautyEngine` non-Sendable and require callers to serialize all calls per instance; independent instances remain concurrency-tested. |
 | Synchronize owners and closeout | `planned` | Pending current owner/map refresh, inventory refresh, archive/boundary/self-test/live preflights, and full no-skip SwiftPM execution. |

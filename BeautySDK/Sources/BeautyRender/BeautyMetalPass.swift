@@ -166,16 +166,17 @@ package struct BeautyMetalGeometryParameters: Equatable, Sendable {
     }
 }
 
-/// A deliberately small placeholder for the composed local-retouch operation.
-/// Later composition owners supply the already-composed request-local result;
-/// the Metal runtime only performs a bounded copy pass.
+/// The identity-transport marker for a CPU-composed local-retouch carrier.
+///
+/// The CPU composition owner has already derived accepted edits from the
+/// immutable original pixels and resolved collisions back to source before
+/// this marker is created. Metal receives no proposals, masks, support, or
+/// pixels through this payload and does not perform local-retouch composition.
 package struct BeautyMetalComposedRetouchParameters: Equatable, Sendable {
-    package let preservesOriginalBytes: Bool
+    package let requiresCPUComposedCarrier: Bool
 
-    package init(preservesOriginalBytes: Bool = true) throws {
-        guard preservesOriginalBytes else { throw BeautyError.invalidInput }
-        self.preservesOriginalBytes = preservesOriginalBytes
+    package init(requiresCPUComposedCarrier: Bool = true) throws {
+        guard requiresCPUComposedCarrier else { throw BeautyError.invalidInput }
+        self.requiresCPUComposedCarrier = requiresCPUComposedCarrier
     }
 }
-
-package typealias BeautyMetalLocalRetouchParameters = BeautyMetalComposedRetouchParameters

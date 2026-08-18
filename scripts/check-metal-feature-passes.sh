@@ -6,7 +6,7 @@ readonly repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd 
 readonly package_root="${repository_root}/BeautySDK"
 readonly maximum_output_bytes=$((16 * 1024 * 1024))
 readonly focused_filter='BeautyEffectsTests.BeautyMetalColorPassTests|BeautyEffectsTests.BeautyMetalGeometryPassTests|BeautyEffectsTests.BeautyMetalBackendTests|BeautyEffectsTests.BeautyMetalLocalRetouchPassTests|BeautyRenderTests.BeautyMetalRuntimeTests'
-readonly expected_focused_tests=32
+readonly expected_focused_tests=33
 readonly pass_source="BeautySDK/Sources/BeautyRender/BeautyMetalPass.swift"
 readonly runtime_source="BeautySDK/Sources/BeautyRender/BeautyMetalRuntime.swift"
 readonly shader_source="BeautySDK/Sources/BeautyRender/Shaders/Warp.metal"
@@ -117,6 +117,14 @@ for marker in (
 ):
     if marker not in pass_code:
         raise SystemExit(f"pass payload marker missing: {marker}")
+retouch_payload = pass_code.split("package struct BeautyMetalComposedRetouchParameters", 1)[1]
+retouch_fields = re.findall(r"package let ([A-Za-z][A-Za-z0-9]*):", retouch_payload)
+if retouch_fields != ["requiresCPUComposedCarrier"]:
+    raise SystemExit("composed-retouch payload no longer proves CPU carrier ownership")
+if "guard requiresCPUComposedCarrier else" not in retouch_payload:
+    raise SystemExit("composed-retouch payload no longer fails closed on non-CPU ownership")
+if "BeautyMetalLocalRetouchParameters" in pass_code:
+    raise SystemExit("Metal local-retouch composition payload was reintroduced")
 for marker in (
     "dispatchThreads", "MTLTextureDescriptor", "storageMode = .private",
     "usage = [.shaderRead, .shaderWrite]", "defer", "tracked(",
@@ -138,6 +146,9 @@ if "bgraToRgba" not in backend_code or "rgbaToBgra" not in backend_code:
 for marker in ("BeautyFaceGeometryAdapter.makeGeometry", "BeautyGeometryEffectPipeline.controlPoints", "maximumPointCount"):
     if marker not in backend_code:
         raise SystemExit(f"geometry adapter marker missing: {marker}")
+for marker in ("guard hasCPUComposedCarrier else", "BeautyMetalComposedRetouchParameters"):
+    if marker not in backend_code:
+        raise SystemExit(f"CPU-owned local-retouch transport marker missing: {marker}")
 for marker in ("constant BeautyMetalWarpPoint", "pointCount", "beauty_falloff_weight", "beauty_clamp_point", "input.read"):
     if marker not in shader:
         raise SystemExit(f"geometry shader marker missing: {marker}")
@@ -189,7 +200,14 @@ if "BeautyMetalGeometryPassTests" not in text["geometry_tests"]:
 if "BeautyMetalLocalRetouchPassTests" not in text["local_retouch_tests"]:
     raise SystemExit("generated local-retouch suite is missing")
 for marker in (
-    "compositionSummary", "hasCanonicalCarrier", "composedRetouch",
+    "testCPUComposedCarrierIsTransportedByIdentityMetalPass",
+    "testMetalLocalRetouchRequiresCPUComposedCarrierBeforeRuntime",
+    "requiresCPUComposedCarrier: false",
+):
+    if marker not in text["local_retouch_tests"]:
+        raise SystemExit(f"CPU-owned local-retouch evidence missing: {marker}")
+for marker in (
+    "compositionSummary", "hasCPUComposedCarrier", "composedRetouch",
     "BeautyLocalRetouchCompositionOwner", "BeautyLocalRetouchCompositionSummary",
 ):
     if marker not in backend_code and marker not in text["local_retouch_tests"]:
@@ -258,6 +276,17 @@ PY
   if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then echo "source_binding_mutation_failed" >&2; return 1; fi
 
   cp -- "${package_root}/Sources/BeautyEffects/Backend/BeautyMetalBackend.swift" "${mutation_path}"
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+needle = "guard hasCPUComposedCarrier else"
+if needle not in value: raise SystemExit(1)
+path.write_text(value.replace(needle, "if hasCPUComposedCarrier", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then echo "cpu_carrier_guard_mutation_failed" >&2; return 1; fi
+
+  cp -- "${package_root}/Sources/BeautyEffects/Backend/BeautyMetalBackend.swift" "${mutation_path}"
   mutation_path="${temporary_root}/${contract_source}"
   python3 - "${mutation_path}" <<'PY'
 from pathlib import Path
@@ -271,6 +300,17 @@ PY
 
   cp -- "${package_root}/Sources/BeautyEffects/Backend/BeautyBackendContract.swift" "${mutation_path}"
   mutation_path="${temporary_root}/${pass_source}"
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+needle = "requiresCPUComposedCarrier"
+if needle not in value: raise SystemExit(1)
+path.write_text(value.replace(needle, "permitsGPUComposition", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then echo "cpu_ownership_payload_mutation_failed" >&2; return 1; fi
+
+  cp -- "${package_root}/Sources/BeautyRender/BeautyMetalPass.swift" "${mutation_path}"
   mkdir -p "${temporary_root}/BeautySDK/Sources/BeautyEffects/Unexpected"
   cp -- "${mutation_path}" "${temporary_root}/BeautySDK/Sources/BeautyEffects/Unexpected/BeautyMetalPass.swift"
   rm -- "${mutation_path}"

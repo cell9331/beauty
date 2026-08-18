@@ -10,7 +10,7 @@ import BeautyRender
 /// Generated in-memory proof that Metal consumes the composition owner's
 /// canonical carrier rather than a second local-retouch implementation.
 final class BeautyMetalLocalRetouchPassTests: XCTestCase {
-    func testComposedCarrierPreservesQ16ProtectedBytesAlphaExtentAndSummary() throws {
+    func testCPUComposedCarrierIsTransportedByIdentityMetalPass() throws {
         guard let runtime = makeRuntime() else { return }
         let sourceBytes = sourceBytes(count: 8)
         let metadata = BeautyInputMetadata(orientation: .up, source: .testFixture)
@@ -42,6 +42,29 @@ final class BeautyMetalLocalRetouchPassTests: XCTestCase {
         XCTAssertEqual(result.diagnostics.unitCount, composition.summary.acceptedUnitCount)
         XCTAssertEqual(result.diagnostics.failureCount, composition.summary.rejectedUnitCount)
         XCTAssertEqual(result.diagnostics.changedPixelCount, composition.summary.changedPixelCount)
+    }
+
+    func testMetalLocalRetouchRequiresCPUComposedCarrierBeforeRuntime() throws {
+        let metadata = BeautyInputMetadata(orientation: .up, source: .testFixture)
+        let source = try canonical(sourceBytes(count: 4), width: 4, height: 1, metadata: metadata)
+        let owner = BeautyLocalRetouchCompositionOwner(source: source)
+        let unit = try XCTUnwrap(owner.makeUnit(proposals: [proposal(1)]))
+        let composition = try owner.compose([unit])
+
+        XCTAssertThrowsError(try BeautyBackendRequest(
+            policy: .metal,
+            input: .stillImage(composition.canonicalImage.ciImage),
+            metadata: metadata,
+            plan: BeautyEffectPlan(),
+            compositionSummary: composition.summary
+        )) { error in
+            XCTAssertEqual(error as? BeautyError, .invalidInput)
+        }
+        XCTAssertThrowsError(try BeautyMetalComposedRetouchParameters(
+            requiresCPUComposedCarrier: false
+        )) { error in
+            XCTAssertEqual(error as? BeautyError, .invalidInput)
+        }
     }
 
     func testOwnerIsolationKeepsValidInvalidValidAndCollisionToSource() throws {
