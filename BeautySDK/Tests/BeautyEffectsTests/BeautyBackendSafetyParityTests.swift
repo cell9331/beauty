@@ -10,11 +10,11 @@ final class BeautyBackendSafetyParityTests: XCTestCase {
     func testGeometryContainmentPreservesOutsideProtectedAndAlphaBytes() throws {
         guard let metal = BeautyBackendParityFixtureFactory.makeMetalBackend() else { return }
         let fixture = CPUReferenceFixtureFactory.protectedOutsidePattern(width: 24, height: 20)
-        let observation = BeautyFaceObservation(
+        let sharedFaceObservation = BeautyFaceObservation(
             imageBounds: CoordinateRect(x: 0.25, y: 0.15, width: 0.50, height: 0.70),
             landmarks: .complete
         )
-        let face = BeautyFaceGeometryAdapter.makeGeometry(from: observation)
+        let face = BeautyFaceGeometryAdapter.makeGeometry(from: sharedFaceObservation)
         let plan = BeautyEffectResolver.resolve(
             parameters: BeautyParameters(faceSlim: 0.8),
             faceGeometry: face
@@ -22,12 +22,14 @@ final class BeautyBackendSafetyParityTests: XCTestCase {
         let points = BeautyGeometryEffectPipeline.controlPoints(for: plan, face: face)
         XCTAssertFalse(points.isEmpty)
         let envelope = localityEnvelope(points, width: fixture.width, height: fixture.height)
-        let request = try BeautyBackendParityFixtureFactory.makeRequest(
+        let request = try BeautyBackendRequest(
             policy: .metal,
-            fixture: fixture,
+            input: .stillImage(BeautyBackendParityFixtureFactory.makeStillImage(fixture)),
+            metadata: BeautyBackendParityFixtureFactory.metadata,
             plan: plan,
-            stillImage: true
+            selectedFaceSupport: sharedFaceObservation
         )
+        XCTAssertEqual(request.selectedFaceSupport, sharedFaceObservation)
         let result = try metal.execute(request)
         let output = try BeautyBackendParityFixtureFactory.rgbaBytes(from: result.output)
         let changed = try CPUReferenceMetrics.changedIndices(before: fixture.rgba8, after: output)

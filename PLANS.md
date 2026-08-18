@@ -30,12 +30,12 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
+| Status | `verifying` |
 | Owner | Codex |
 | Started | 2026-08-18 |
 | Scope | Repair the remaining auto-fixable F-09 parity-oracle provenance defect, preserve the completed bounded closeout, and surface manual architectural findings without silently choosing product semantics. |
 | Source Request | User asked to continue after the bounded v1.17 post-archive remediation review. |
-| Current Step | Make the geometry safety envelope and rendered backend request consume the same immutable face observation. |
+| Current Step | Run the archive-first closeout after the focused F-09 parity and mutation gates passed. |
 | Verification Policy | Run focused safety/parity tests, mutation-tested parity preflight, `git diff --check`, and the archive-first no-skip wrapper if the parity gate changes. |
 
 Checklist:
@@ -43,8 +43,8 @@ Checklist:
 | Step | Status | Evidence |
 | --- | --- | --- |
 | Classify remaining findings | `completed` | F-09 is auto-fixable and test-local; F-02/F-04/F-05/F-10 remain manual-only because they establish architecture, compatibility, or public concurrency semantics. |
-| Fix F-09 parity observation provenance | `active` | Pending one-observation request/envelope construction and a fail-closed mutation gate. |
-| Verify and record | `planned` | Pending focused parity and archive-first closeout evidence. |
+| Fix F-09 parity observation provenance | `completed` | One immutable `sharedFaceObservation` now derives geometry, plan, control points, locality envelope, and `selectedFaceSupport`; request equality plus two mutation checks fail closed. Safety parity passes `4/0/0`; live parity passes `12/0/0`. |
+| Verify and record | `active` | Focused tests and parity self/live gates are green; archive-first closeout pending. |
 | Present manual decisions | `planned` | Pending recommended choices and tradeoffs for F-02/F-04/F-05/F-10. |
 
 Manual-only queue:

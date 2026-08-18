@@ -82,6 +82,21 @@ for marker in (
 ):
     if marker.lower() not in tests_lower:
         raise SystemExit(f"safety marker missing: {marker}")
+geometry_case_start = text["safety"].find(
+    "func testGeometryContainmentPreservesOutsideProtectedAndAlphaBytes() throws"
+)
+geometry_case_end = text["safety"].find("\n    func ", geometry_case_start + 1)
+if geometry_case_start < 0 or geometry_case_end < 0:
+    raise SystemExit("geometry safety provenance case missing")
+geometry_case = text["safety"][geometry_case_start:geometry_case_end]
+for marker in (
+    "let sharedFaceObservation = BeautyFaceObservation(",
+    "BeautyFaceGeometryAdapter.makeGeometry(from: sharedFaceObservation)",
+    "selectedFaceSupport: sharedFaceObservation",
+    "XCTAssertEqual(request.selectedFaceSupport, sharedFaceObservation)",
+):
+    if geometry_case.count(marker) != 1:
+        raise SystemExit(f"geometry safety observation provenance missing: {marker}")
 for marker in ("withThrowingTaskGroup", "request-local", "metalUnavailable", "callCount", "resourceCountersForTesting"):
     if marker.lower() not in tests_lower:
         raise SystemExit(f"determinism/availability marker missing: {marker}")
@@ -253,6 +268,30 @@ path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
 path.write_text(value.replace("changed.isSubset(of: envelope)", "true", 1), encoding="utf-8")
 PY
   if validate_static_boundary "$temporary_root" >/dev/null 2>&1; then echo "safety_mutation_failed" >&2; return 1; fi
+  cp -- "$package_root/Tests/BeautyEffectsTests/BeautyBackendSafetyParityTests.swift" "$mutation_path"
+  python3 - "$mutation_path" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+path.write_text(value.replace(
+    "selectedFaceSupport: sharedFaceObservation",
+    "selectedFaceSupport: BeautyFaceObservation()",
+    1,
+), encoding="utf-8")
+PY
+  if validate_static_boundary "$temporary_root" >/dev/null 2>&1; then echo "observation_handoff_mutation_failed" >&2; return 1; fi
+  cp -- "$package_root/Tests/BeautyEffectsTests/BeautyBackendSafetyParityTests.swift" "$mutation_path"
+  python3 - "$mutation_path" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+path.write_text(value.replace(
+    "XCTAssertEqual(request.selectedFaceSupport, sharedFaceObservation)",
+    "XCTAssertNotNil(request.selectedFaceSupport)",
+    1,
+), encoding="utf-8")
+PY
+  if validate_static_boundary "$temporary_root" >/dev/null 2>&1; then echo "observation_proof_mutation_failed" >&2; return 1; fi
   cp -- "$package_root/Tests/BeautyEffectsTests/BeautyBackendSafetyParityTests.swift" "$mutation_path"
   mutation_path="$temporary_root/BeautySDK/Tests/BeautyEffectsTests/BeautyBackendParityFixtureFactory.swift"
   python3 - "$mutation_path" <<'PY'
