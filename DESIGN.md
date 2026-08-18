@@ -14,8 +14,10 @@ The v1.17 archive at `afb04b4` retains its historical Phase-74 focused
 repaired raw non-up/mirrored public metadata compatibility (`53e8da1`), made
 unavailable-host parity explicitly non-crediting (`d29b90a`), and moved Metal
 geometry point arrays to a request-local shared `MTLBuffer` beyond the 4 KiB
-inline limit (`556499a`). The current full remediation gate has not yet been
-rerun, so the archived counts are not current-worktree counts.
+inline limit (`556499a`). Backend-result alpha/extent publication also now
+fails closed. The current archive-first closeout passed on 2026-08-18 with
+XCTest `771/0/0`, all eight opt-ins exactly once, and `skipped_tests=0`; the
+archived `765/0/0` remains historical.
 
 Design nonclaims remain explicit: local retouch is CPU composition followed by
 an identity GPU pass; GPU still-image transparency/color handling differs from
@@ -24,6 +26,10 @@ parity uses a separate generated observation for its envelope; and same-engine/s
 concurrency is not specified or proven. Only a Metal-available parity branch can
 report `focused_tests=12` / `parity_executed=1`; unavailable-host typed coverage
 reports `parity_executed=0` and is not GPU parity success.
+Today's available branch recorded `metal_available=1`, `metal_unavailable=0`,
+`parity_executed=1`, `focused_tests=12`, and `unavailable_tests=0`. Focused
+preflights passed backend-neutral `22/0/0`, Metal runtime `40/0/0`, Metal
+feature `32/0/0`, configuration `17/0/0`, and CPU reference `41/0/0`.
 
 ## 1. 设计目标
 

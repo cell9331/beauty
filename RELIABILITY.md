@@ -16,7 +16,11 @@ deterministic.
 The current gate distinguishes an available parity branch
 (`focused_tests=12`, `parity_executed=1`) from an unavailable typed-coverage
 branch (`parity_executed=0`); the latter may pass the mandatory host gate but is
-never GPU parity success. The full remediation gate is still pending. Broad
+never GPU parity success. The 2026-08-18 Metal-available branch recorded
+`metal_available=1`, `metal_unavailable=0`, `parity_executed=1`,
+`focused_tests=12`, and `unavailable_tests=0`. The archive-first closeout passed
+at XCTest `771/0/0`, all eight opt-ins exactly once, and `skipped_tests=0`.
+Broad
 equivalence is also blocked by CPU-owned local-retouch composition followed by
 identity GPU dispatch, different GPU transparency/sRGB policy, coefficient/lip-
 math drift, a geometry safety envelope from a separate observation, and no
@@ -294,3 +298,8 @@ The repaired gate credits parity only on the available branch with
 The unresolved gaps above also mean no broad CPU/GPU equivalence, device,
 performance, commercial, packaging, shipping, launch, or
 release-readiness claim follows.
+
+The current bounded closeout evidence is backend-neutral `22/0/0`, Metal
+runtime `40/0/0`, Metal feature `32/0/0`, configuration `17/0/0`, CPU reference
+`41/0/0`, parity `12/0/0`, and full XCTest `771/0/0`. These results close the
+five automatic audit fixes, not the manual gaps or excluded product claims.

@@ -1,6 +1,6 @@
 # Architecture
 
-**Analysis Date:** 2026-08-17
+**Analysis Date:** 2026-08-18
 **Boundary:** SDK-only SwiftPM repository
 
 ## Post-Archive Audit Qualification
@@ -14,7 +14,9 @@ transparency/color and math still differ from CPU, backend-result alpha/extent
 publication now fails closed, geometry safety envelope provenance is not yet shared,
 and same-engine/same-runtime concurrency is unproven. Only an available branch
 with `parity_executed=1` receives GPU parity credit; unavailable coverage reports
-`parity_executed=0`.
+`parity_executed=0`. The current Metal-available archive-first closeout passes
+XCTest `771/0/0`, all eight opt-ins exactly once, and zero skips; this closes the
+five bounded automatic fixes, not the remaining manual gaps.
 
 ## System Overview
 
@@ -151,4 +153,4 @@ broad current equivalence. UI/Demo, device, performance,
 commercial, packaging, shipping, launch, and release claims remain excluded.
 
 ---
-*Architecture analysis: 2026-08-17 during v1.17 post-archive audit remediation*
+*Architecture analysis: 2026-08-18 after bounded v1.17 post-archive remediation closeout*

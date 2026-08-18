@@ -7,15 +7,21 @@
 
 The checked requirements and traceability table below record the historical
 v1.17 lifecycle completed at `afb04b4`. Its Metal-available Phase-74 evidence
-was focused `12/0/0` and full `765/0/0`; these counts are not current-worktree
-closeout evidence until the remediation full gate is rerun.
+was focused `12/0/0` and full `765/0/0`; these counts remain historical. The
+current archive-first closeout passed on 2026-08-18 with XCTest `771/0/0`, all
+eight opt-ins exactly once, and `skipped_tests=0`.
 
 Post-archive fixes have restored public non-up/mirrored raw metadata
 compatibility (`53e8da1`), separated unavailable-host coverage from GPU parity
 credit (`d29b90a`), and moved oversized Metal geometry point payloads to a
 request-local shared `MTLBuffer` (`556499a`). Only an available branch reports
 `focused_tests=12` / `parity_executed=1`; unavailable coverage reports
-`parity_executed=0`. F-08 result alpha/extent enforcement is remediated, while
+`parity_executed=0`. Today's available branch recorded `metal_available=1`,
+`metal_unavailable=0`, `parity_executed=1`, `focused_tests=12`, and
+`unavailable_tests=0`; focused preflights passed `22/0/0`, `40/0/0`, `32/0/0`,
+`17/0/0`, and `41/0/0` for backend-neutral, Metal runtime, Metal feature,
+configuration, and CPU reference respectively. F-08 result alpha/extent
+enforcement is remediated, while
 F-02/F-04/F-05/F-09/F-10 require separately scoped architecture, contract, or
 evidence work. Accordingly, `[x]` means historically completed plan
 traceability, not current broad CPU/GPU equivalence or release readiness.

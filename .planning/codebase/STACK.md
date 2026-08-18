@@ -1,6 +1,6 @@
 # Technology Stack
 
-**Analysis Date:** 2026-08-17
+**Analysis Date:** 2026-08-18
 **Boundary:** SDK-only SwiftPM repository
 
 ## Post-Archive Audit Qualification
@@ -12,6 +12,9 @@ local shared `MTLBuffer`; an unavailable branch reports `parity_executed=0`.
 Local retouch remains CPU-composed before an identity Metal pass, and the other
 documented transparency/color, math, result-invariant, envelope-provenance, and
 shared-runtime concurrency gaps remain open.
+The current Metal-available archive-first closeout passes XCTest `771/0/0`, all
+eight opt-ins exactly once, and zero skips. This package-host result does not
+promote the open semantic gaps into broad equivalence or release evidence.
 
 ## Languages and Runtime
 
@@ -119,4 +122,4 @@ commercial, packaging, shipping, launch, or release-readiness artifact enters
 the stack.
 
 ---
-*Stack analysis: 2026-08-17 during v1.17 post-archive audit remediation*
+*Stack analysis: 2026-08-18 after bounded v1.17 post-archive remediation closeout*

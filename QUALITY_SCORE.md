@@ -13,7 +13,15 @@ metadata compatibility (`53e8da1`), unavailable-host parity accounting
 `parity_executed=1`; unavailable-host typed coverage reports
 `parity_executed=0` and cannot borrow GPU parity success.
 
-The historical counts are not current full-gate evidence. Backend-result alpha/
+The 2026-08-18 Metal-available branch recorded `metal_available=1`,
+`metal_unavailable=0`, `parity_executed=1`, `focused_tests=12`, and
+`unavailable_tests=0`. Focused preflights passed backend-neutral `22/0/0`,
+Metal runtime `40/0/0`, Metal feature `32/0/0`, configuration `17/0/0`, and CPU
+reference `41/0/0`. The archive-first closeout passed XCTest `771/0/0`, all
+eight opt-ins exactly once, and `skipped_tests=0`.
+
+The historical counts are not current full-gate evidence; the current count is
+the verified `771/0/0` closeout above. Backend-result alpha/
 extent publication now fails closed. Open findings remain for CPU-composed/
 identity-GPU local retouch, GPU transparency/sRGB policy, CPU/Metal coefficient
 and lip-math equivalence, geometry safety envelope provenance, and same-engine/same-runtime
@@ -38,13 +46,13 @@ readiness claim.
 | --- | ---: | --- | --- |
 | Root owners | 4 | Current contracts consistently name SDK-only SwiftPM ownership and archive-only UI history. | Keep owners synchronized with code/tests. |
 | SDK package | 4 | One public library, one SDK-owned renderer, six internal/library targets, no remote dependency. | Preserve facade and dependency direction. |
-| Tests | 3 | 74 SwiftPM test files; public `BeautyResultConcurrencyTests` executes 3/0/0; generated CPU reference preflight remains bounded; v1.16/Phase-71/Phase-73 and Phase-74 counts are historical. Focused remediation evidence exists, but the current full gate and remaining semantic gaps are not closed. | Rerun the full conjunction; separately plan the manual gaps. |
+| Tests | 3 | 74 SwiftPM test files; current focused remediation preflights and the archive-first XCTest `771/0/0` closeout pass with eight opt-ins and zero skips. Historical v1.16/Phase-71/Phase-73/Phase-74 counts remain labeled historical; the manual semantic gaps remain open. | Separately plan the manual gaps without widening this bounded closeout. |
 | External consumer / CLI | 4 | Public-only local-path consumer observes generated RGBA bytes/dimensions; compiled renderer covers 74-case discovery, reconciled reports, typed failures, and render/encode seams. | Preserve archive → boundary → consumer → no-skip ordering. |
 | Archive integrity | 4 | Code-owned ZIP/manifest anchors, exact 45/26 inventories, bounded streamed extraction, frozen-retirement rollback, and safe restore self-tests pass. | Verify before every full closeout. |
 | SDK-only boundary | 4 | Retired roots are absent; scanner rejects symlinks, restored application/UI sources, stale current owners/maps, tracked media, application artifacts, retained-shader drift, and backend/API drift. | Keep scanner fail-closed. |
 | Security | 4 | Local-first input/resource/privacy and request-local local-retouch ownership are test-backed. | Reopen for any new trust boundary. |
 | Reliability | 3 | Typed errors, deterministic degradation/recovery, input bounds, no-skip handling, and archive recovery are specified/tested; device/performance evidence is outside scope. | Add only when a later authorized milestone requires it. |
-| Product acceptance | 3 | Bounded still-image teeth/sclera behavior and exact taxonomy remain SDK-core only; broad CPU/GPU equivalence is not currently accepted. | Preserve nonclaims, close the audit, and keep `去脂` future. |
+| Product acceptance | 3 | Bounded still-image teeth/sclera behavior and exact taxonomy remain SDK-core only; broad CPU/GPU equivalence is not currently accepted. | Preserve nonclaims, separately plan manual gaps, and keep `去脂` future. |
 
 No score of 5 is claimed. Package/fixture automation does not establish device
 performance, population sufficiency, commercial quality, packaging,
@@ -54,10 +62,10 @@ shipping, launch, or release readiness.
 
 | Inventory | Value |
 | --- | ---: |
-| Swift source files | 66 |
-| SwiftPM test files | 61 |
-| Swift source lines | 14,952 |
-| SwiftPM test lines | 29,995 |
+| Swift source files | 72 |
+| SwiftPM test files | 74 |
+| Swift source lines | 16,707 |
+| SwiftPM test lines | 33,276 |
 | Public `BeautyParameters` stored fields | 61 |
 | `BeautyConfiguration` stored fields | 11 |
 | Built-in neutral presets | 5 |
@@ -98,8 +106,9 @@ Metal availability classifications. Its archive → boundary self-test/live scan
 CPU → opt-in → one-child order is mandatory; the boundary self-test rejects an
 unconditional generic `BeautyResult` sendability declaration. The public
 concurrency focus is 3/0/0 and the current active inventory is 72 Swift source
-files, 74 SwiftPM test files, 16,707 source lines, and 33,276 test lines. A fresh
-full remediation count is pending.
+files, 74 SwiftPM test files, 16,707 source lines, and 33,276 test lines. The
+current remediation closeout is XCTest `771/0/0`, all eight opt-ins exactly
+once, and `skipped_tests=0`.
 
 ## 5. Archive Quality Gate
 

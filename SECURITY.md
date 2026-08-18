@@ -19,8 +19,12 @@ composed before an identity GPU dispatch; GPU transparency/color handling and
 still-image math differ from CPU; geometry safety uses a separately generated
 envelope observation; and shared-engine/runtime
 concurrency is unproven. An unavailable host reports `parity_executed=0` and
-never GPU parity success. The historical counts are not a fresh current-tree
-closeout or a device/commercial/release trust decision.
+never GPU parity success. The current Metal-available branch recorded
+`metal_available=1`, `metal_unavailable=0`, `parity_executed=1`,
+`focused_tests=12`, and `unavailable_tests=0`. The archive-first closeout passed
+on 2026-08-18 at XCTest `771/0/0`, with all eight opt-ins exactly once and
+`skipped_tests=0`. This bounded package-host result is not a device, commercial,
+or release trust decision; the archived `765/0/0` remains historical.
 
 ## 1. Default Posture
 

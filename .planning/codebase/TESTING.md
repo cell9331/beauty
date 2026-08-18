@@ -1,6 +1,6 @@
 # Testing Patterns
 
-**Analysis Date:** 2026-08-17
+**Analysis Date:** 2026-08-18
 **Boundary:** SDK-only SwiftPM repository
 
 ## Post-Archive Audit Qualification
@@ -10,9 +10,12 @@ The v1.17 archive recorded Metal-available focused `12/0/0` and full
 available branch runs the 12-test suite and reports `parity_executed=1`; the
 unavailable branch runs two typed selection tests, reports
 `parity_executed=0`, and emits no parity-success marker. The archived counts are
-not a fresh remediation full-gate result. F-08 result alpha/extent enforcement
-is remediated; the manual semantic, envelope-provenance, and same-runtime
-concurrency gaps remain open.
+historical. On 2026-08-18 the available branch recorded `metal_available=1`,
+`metal_unavailable=0`, `parity_executed=1`, `focused_tests=12`, and
+`unavailable_tests=0`; the archive-first wrapper passed XCTest `771/0/0`, all
+eight opt-ins exactly once, and `skipped_tests=0`. F-08 result alpha/extent
+enforcement is remediated; the manual semantic, envelope-provenance, and same-
+runtime concurrency gaps remain open.
 
 ## Runner and Inventory
 
@@ -194,11 +197,13 @@ payloads.
 availability merging. The archived wrapper invoked it once and the historical
 full gate executed `765/0/0` with eight opt-ins exactly once and separate
 `metal_available=1` / `metal_unavailable=0`. The repaired unavailable branch
-reports `parity_executed=0` and no parity-success marker; a fresh full
-remediation run is pending. This remains SDK-only and does not establish broad
-CPU/GPU equivalence, UI/Demo,
+reports `parity_executed=0` and no parity-success marker. Current focused
+preflights pass backend-neutral `22/0/0`, Metal runtime `40/0/0`, Metal feature
+`32/0/0`, configuration `17/0/0`, CPU reference `41/0/0`, and available parity
+`12/0/0`; the full wrapper passes `771/0/0`. This remains SDK-only and does not
+establish broad CPU/GPU equivalence, UI/Demo,
 simulator/device, performance, commercial, packaging, shipping, launch, or
 release-readiness behavior.
 
 ---
-*Testing analysis: 2026-08-17 during v1.17 post-archive audit remediation*
+*Testing analysis: 2026-08-18 after bounded v1.17 post-archive remediation closeout*

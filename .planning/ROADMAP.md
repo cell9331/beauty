@@ -12,13 +12,17 @@ fails as typed `.metalUnavailable` without silently falling back. Generated
 SwiftPM parity, safety, determinism, and no-skip gates close the milestone.
 
 The milestone was historically archived at `afb04b4` after a Metal-available
-focused `12/0/0` and full `765/0/0` run. A post-archive audit is now active:
+focused `12/0/0` and full `765/0/0` run. Bounded post-archive remediation and
+verification completed on 2026-08-18:
 F-01 metadata compatibility, F-03 unavailable-host accounting, F-06 Metal
 geometry binding, and F-08 result alpha/extent enforcement are repaired, while
 F-02/F-04/F-05/F-09/F-10 remain manual or separately scoped gaps. Only an
 available branch reports `focused_tests=12` / `parity_executed=1`; unavailable
 typed coverage reports `parity_executed=0` and never counts as GPU parity.
-The checkboxes below preserve historical plan completion and do not override
+The current available branch recorded `metal_available=1`, `metal_unavailable=0`,
+`parity_executed=1`, `focused_tests=12`, and `unavailable_tests=0`; the full
+archive-first gate passed XCTest `771/0/0`, all eight opt-ins exactly once, and
+`skipped_tests=0`. The checkboxes below preserve historical plan completion and do not override
 this current audit qualification or authorize broad equivalence/release claims.
 
 This milestone is SDK/algorithm and Metal-pipeline work only. It does not add
@@ -45,7 +49,7 @@ commercial approval, packaging, shipping, launch, or release-readiness claims.
 - ✅ **[v1.14 Local Facial Retouch](milestones/v1.14-ROADMAP.md)** — Phases 53-58, completed 2026-08-05.
 - ✅ **[v1.15 Independent Teeth and Sclera Retouch](milestones/v1.15-ROADMAP.md)** — Phases 59-65, completed and audited 2026-08-11.
 - ✅ **[v1.16 SDK-Only Foundation and CPU Reference](milestones/v1.16-ROADMAP.md)** — Phases 66-69, independently complete 2026-08-15.
-- ✅ **v1.17 Dual CPU/GPU Metal Rendering** — Phases 70-74, historically completed and archived 2026-08-17; post-archive audit remediation active.
+- ✅ **v1.17 Dual CPU/GPU Metal Rendering** — Phases 70-74, historically archived 2026-08-17; bounded post-archive remediation verified complete 2026-08-18, with manual gaps separately scoped.
 
 ## Historical Milestone Record: v1.17 Dual CPU/GPU Metal Rendering
 

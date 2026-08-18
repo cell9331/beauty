@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.17
 milestone_name: Dual CPU/GPU Metal Rendering
-status: Post-archive audit verification
-stopped_at: Running remediation closeout gate
-last_updated: "2026-08-17T19:49:14Z"
+status: Post-archive audit remediation complete
+stopped_at: Bounded remediation closeout verified
+last_updated: "2026-08-18T01:02:56Z"
 last_activity: 2026-08-18
-last_activity_desc: Five bounded audit fixes complete; closeout verification active
+last_activity_desc: Five bounded audit fixes and archive-first closeout verified
 progress:
   total_phases: 5
   completed_phases: 5
@@ -21,30 +21,35 @@ current_phase_name: Historical CPU/GPU Parity and SDK-Only Closeout
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-08-17)
+See: `.planning/PROJECT.md` (updated 2026-08-18)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural,
 controllable, real-time and still-image beauty processing through a stable
 modular facade.
-**Current focus:** v1.17 post-archive audit remediation; Phase 74 remains a
-historical lifecycle record.
+**Current focus:** bounded v1.17 post-archive remediation is complete; manual
+gaps remain separately scoped and Phase 74 remains a historical lifecycle record.
 
 ## Current Position
 
 Phase: Post-archive audit of historically archived v1.17
 Plan: `P-2026-08-17-v1-17-audit-remediation`
-Status: Verifying — F-01/F-03/F-06/F-07/F-08 repaired
-Last activity: 2026-08-18 — focused remediation evidence is green; full gate pending
+Status: Complete — F-01/F-03/F-06/F-07/F-08 repaired and verified
+Last activity: 2026-08-18 — archive-first closeout passed XCTest `771/0/0`
 
 ## Current Audit Qualification
 
 v1.17 was historically archived at `afb04b4` with a Metal-available focused
 `12/0/0` and full `765/0/0` run. Those numbers and the 5/5 phase, 19/19 plan
-progress above are historical lifecycle metrics, not a fresh current-worktree
-closeout. Public raw metadata compatibility (`53e8da1`), unavailable-host
+progress above are historical lifecycle metrics. The current archive-first
+closeout passed XCTest `771/0/0`, all eight opt-ins exactly once, and
+`skipped_tests=0`. Public raw metadata compatibility (`53e8da1`), unavailable-host
 parity accounting (`d29b90a`), and Metal geometry binding (`556499a`) are
 repaired. Only an available branch reports `focused_tests=12` /
 `parity_executed=1`; unavailable typed coverage reports `parity_executed=0`.
+Today's available branch recorded `metal_available=1`, `metal_unavailable=0`,
+`parity_executed=1`, `focused_tests=12`, and `unavailable_tests=0`. Focused
+preflights passed backend-neutral `22/0/0`, Metal runtime `40/0/0`, Metal
+feature `32/0/0`, configuration `17/0/0`, and CPU reference `41/0/0`.
 
 Open audit work: F-02 local-retouch GPU ownership, F-04 transparency/color policy, F-05 coefficient/lip-
 math equivalence, F-09 geometry-envelope provenance, and F-10 same-engine/same-
@@ -154,13 +159,13 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-17T19:49:14Z
-Stopped at: Running remediation closeout gate
+Last session: 2026-08-18T01:02:56Z
+Stopped at: Bounded remediation closeout verified
 Resume file: `PLANS.md`
-Next action: run the full remediation gate and record its exact current count;
-separately plan the manual findings.
+Next action: separately plan F-02/F-04/F-05/F-09/F-10 without treating the
+bounded closeout as broad CPU/GPU equivalence.
 
 ## Operator Next Steps
 
-- Finish the active audit remediation in `PLANS.md`; do not start a new
-  milestone from the historical Phase-74 completion state.
+- Plan the manual gaps separately; do not start from a false broad-equivalence
+  conclusion or the historical Phase-74 completion state alone.

@@ -7,8 +7,9 @@
 
 v1.17 was historically completed and archived at `afb04b4`; its frozen
 Phase-74 record reports focused `12/0/0` and full `765/0/0` execution on a
-Metal-available package host. Those numbers describe the archived run, not a
-freshly rerun current-worktree closeout.
+Metal-available package host. Those numbers remain historical. The current
+archive-first closeout passed on 2026-08-18 with XCTest `771/0/0`, all eight
+opt-ins exactly once, and `skipped_tests=0`.
 
 The post-archive audit has repaired public non-up/mirrored raw-input metadata
 compatibility (`53e8da1`), unavailable-host parity accounting (`d29b90a`), the
@@ -18,7 +19,11 @@ are now request-local shared `MTLBuffer` resources; only the bounded scalar
 point count remains inline. On an available host the parity branch reports
 `focused_tests=12` and `parity_executed=1`; an unavailable host may pass its
 typed availability gate only with `parity_executed=0` and never receives GPU
-parity credit.
+parity credit. Today's Metal-available branch recorded `metal_available=1`,
+`metal_unavailable=0`, `parity_executed=1`, `focused_tests=12`, and
+`unavailable_tests=0`. Current focused preflights passed backend-neutral
+`22/0/0`, Metal runtime `40/0/0`, Metal feature `32/0/0`, configuration
+`17/0/0`, and CPU reference `41/0/0`.
 
 Current broad CPU/GPU equivalence remains unclaimed. Local-retouch bytes are
 still composed on CPU before an identity Metal dispatch; the GPU still-image
@@ -284,7 +289,8 @@ local-retouch computation. Geometry arrays are bound through a request-local
 shared `MTLBuffer`, including payloads beyond Metal's 4 KiB inline limit; the
 bounded scalar point count remains inline and cleanup is deterministic. Public
 backend configuration is covered by Phase 73; Phase-74 parity evidence remains
-historical pending the remediation closeout rerun.
+historical, while the bounded post-archive remediation closeout is current and
+green at `771/0/0`.
 
 ## Phase 73 Public Backend Configuration
 

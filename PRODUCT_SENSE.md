@@ -13,13 +13,19 @@ unavailable-host typed coverage explicitly non-crediting
 a request-local shared `MTLBuffer` (`556499a`). Only an available branch reports
 `focused_tests=12` / `parity_executed=1`.
 
+The current Metal-available branch recorded `metal_available=1`,
+`metal_unavailable=0`, `parity_executed=1`, `focused_tests=12`, and
+`unavailable_tests=0`. The archive-first closeout passed on 2026-08-18 at
+XCTest `771/0/0`, with all eight opt-ins exactly once and `skipped_tests=0`.
+
 The archived milestone checkboxes remain historical lifecycle records, not a
 current broad-equivalence or release acceptance. Local retouch is still composed
 on CPU before an identity GPU pass; GPU transparency/color policy and still-
 image math differ from CPU; the geometry safety envelope comes from a separate
 generated observation; and no
-same-engine/same-runtime concurrency promise is proven. A fresh full remediation
-gate is pending, and device, commercial, packaging, shipping, launch, and
+same-engine/same-runtime concurrency promise is proven. The five bounded
+automatic fixes are verified complete, while device, commercial, packaging,
+shipping, launch, and
 release readiness remain outside acceptance.
 
 ## 1. Product Position
@@ -63,8 +69,8 @@ device journey and does not promote generated media as product evidence.
   `scleraRednessReduction` remain independently implemented.
 - `去脂`, semantic-mask features, new algorithms, and realtime local retouch
   remain outside current acceptance. Phase-74 generated parity is historical;
-  current acceptance is limited to the repaired contracts and awaits the full
-  remediation rerun, without a broad CPU/GPU equivalence claim.
+  current acceptance is limited to the verified bounded repairs, without a
+  broad CPU/GPU equivalence claim.
 - Device quality, population sufficiency, commercial approval, packaging,
   shipping, launch, and release readiness require separate authorization and
   evidence.
