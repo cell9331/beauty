@@ -44,8 +44,8 @@ Checklist:
 | --- | --- | --- |
 | Resolve F-02 local-retouch ownership claim | `completed` | CPU owns immutable-original/Q16 composition and collision-to-source; the Metal pass is identity transport with a single ownership marker and cannot carry proposals, masks, support, or a second composition path. Focused `6/0/0`; feature preflight `33/0/0`; two ownership mutations fail closed. |
 | Resolve F-04 opaque/sRGB GPU still-image policy | `completed` | `.gpu` preflights exact opacity and bounded non-extended RGB before resolver/admission/Vision/backend work; transparent input is `.invalidInput`, unsupported color spaces are `.unsupportedPixelFormat`, Display-P3 raw metadata/extent are forwarded, and Metal output is named sRGB. Focused `21/0/0`; configuration `19/0/0`; feature `33/0/0`; parity `12/0/0`; mutations fail closed. |
-| Resolve F-05 Metal still-image math | `active` | Pending: align Metal still-image coefficients and lip behavior to the retained CPU oracle with focused parity evidence. |
-| Resolve F-10 shared-instance concurrency contract | `planned` | Pending: declare `BeautyEngine` non-Sendable and require callers to serialize all calls per instance; independent instances remain concurrency-tested. |
+| Resolve F-05 Metal still-image math | `completed` | Metal keeps pixel-buffer math unchanged and uses an explicit still-image mode matching the CPU/Core Image coefficients, Rec.709 saturation, no-extra highlight/shadow/smoothing behavior, and lip rectangle/Y/inset/coverage/color-matrix semantics. Generated parity is max channel delta `<=2`, mean RGB delta `<0.75`; focused `20/0/0`, parity `13/0/0`, feature `34/0/0`, shader-pin and mutation gates pass. |
+| Resolve F-10 shared-instance concurrency contract | `active` | Pending: declare `BeautyEngine` non-Sendable and require callers to serialize all calls per instance; independent instances remain concurrency-tested. |
 | Synchronize owners and closeout | `planned` | Pending current owner/map refresh, inventory refresh, archive/boundary/self-test/live preflights, and full no-skip SwiftPM execution. |
 
 Decision boundaries:

@@ -28,6 +28,8 @@ enum BeautyBackendParityFixtureFactory {
     static let metadata = BeautyInputMetadata(orientation: .up, source: .testFixture)
     static let activeMaxChannelDelta = 8
     static let activeMeanRGBDelta = 5.0
+    static let stillImageMaxChannelDelta = 2
+    static let stillImageMeanRGBDelta = 0.75
     private static let requiresMetalExecution = ProcessInfo.processInfo.environment[
         "BEAUTYSDK_REQUIRE_METAL_PARITY_EXECUTION"
     ] == "1"
@@ -58,6 +60,36 @@ enum BeautyBackendParityFixtureFactory {
             )),
             ("composed-carrier", BeautyEffectResolver.resolve(
                 parameters: BeautyParameters(brightness: 0.2, saturation: 0.25)
+            )),
+        ]
+    }
+
+    static func stillImageColorPlanMatrix() -> [(String, BeautyEffectPlan)] {
+        [
+            ("still-global-coefficients", BeautyEffectResolver.resolve(
+                parameters: BeautyParameters(
+                    skinSmoothing: 0.55,
+                    skinWhitening: 0.65,
+                    skinRosy: 0.35,
+                    skinSharpen: 0.45,
+                    brightness: 0.75,
+                    contrast: 0.70,
+                    saturation: 0.40,
+                    temperature: 0.25,
+                    tint: 0.30,
+                    exposure: 0.60,
+                    highlight: 0.80,
+                    shadow: 0.70,
+                    filterId: "warm_light",
+                    filterIntensity: 0.50
+                )
+            )),
+            ("still-highlight-shadow-no-extra-pass", BeautyEffectResolver.resolve(
+                parameters: BeautyParameters(highlight: 0.8, shadow: 0.7)
+            )),
+            ("still-lip-hard-rectangle", BeautyEffectResolver.resolve(
+                parameters: BeautyParameters(lipColor: 0.8),
+                faceGeometry: FaceGeometry.fixture
             )),
         ]
     }
@@ -126,7 +158,7 @@ enum BeautyBackendParityFixtureFactory {
             input: input,
             metadata: metadata,
             plan: plan,
-            selectedFaceSupport: plan.activeDomains.intersection([.faceShape, .eyes, .eyebrows, .nose, .mouth]).isEmpty
+            selectedFaceSupport: plan.activeDomains.intersection([.faceShape, .eyes, .eyebrows, .nose, .mouth, .lipColor]).isEmpty
                 ? nil
                 : BeautyFaceObservation()
         )

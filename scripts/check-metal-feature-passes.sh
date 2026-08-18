@@ -6,13 +6,14 @@ readonly repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd 
 readonly package_root="${repository_root}/BeautySDK"
 readonly maximum_output_bytes=$((16 * 1024 * 1024))
 readonly focused_filter='BeautyEffectsTests.BeautyMetalColorPassTests|BeautyEffectsTests.BeautyMetalGeometryPassTests|BeautyEffectsTests.BeautyMetalBackendTests|BeautyEffectsTests.BeautyMetalLocalRetouchPassTests|BeautyRenderTests.BeautyMetalRuntimeTests'
-readonly expected_focused_tests=33
+readonly expected_focused_tests=34
 readonly pass_source="BeautySDK/Sources/BeautyRender/BeautyMetalPass.swift"
 readonly runtime_source="BeautySDK/Sources/BeautyRender/BeautyMetalRuntime.swift"
 readonly shader_source="BeautySDK/Sources/BeautyRender/Shaders/Warp.metal"
 readonly backend_source="BeautySDK/Sources/BeautyEffects/Backend/BeautyMetalBackend.swift"
 readonly contract_source="BeautySDK/Sources/BeautyEffects/Backend/BeautyBackendContract.swift"
 readonly color_test_source="BeautySDK/Tests/BeautyEffectsTests/BeautyMetalColorPassTests.swift"
+readonly parity_fixture_source="BeautySDK/Tests/BeautyEffectsTests/BeautyBackendParityFixtureFactory.swift"
 readonly runtime_test_source="BeautySDK/Tests/BeautyRenderTests/BeautyMetalRuntimeTests.swift"
 readonly backend_test_source="BeautySDK/Tests/BeautyEffectsTests/BeautyMetalBackendTests.swift"
 readonly geometry_test_source="BeautySDK/Tests/BeautyEffectsTests/BeautyMetalGeometryPassTests.swift"
@@ -59,6 +60,7 @@ paths = {
     "backend": "BeautySDK/Sources/BeautyEffects/Backend/BeautyMetalBackend.swift",
     "contract": "BeautySDK/Sources/BeautyEffects/Backend/BeautyBackendContract.swift",
     "color_tests": "BeautySDK/Tests/BeautyEffectsTests/BeautyMetalColorPassTests.swift",
+    "parity_fixture": "BeautySDK/Tests/BeautyEffectsTests/BeautyBackendParityFixtureFactory.swift",
     "runtime_tests": "BeautySDK/Tests/BeautyRenderTests/BeautyMetalRuntimeTests.swift",
     "backend_tests": "BeautySDK/Tests/BeautyEffectsTests/BeautyMetalBackendTests.swift",
     "geometry_tests": "BeautySDK/Tests/BeautyEffectsTests/BeautyMetalGeometryPassTests.swift",
@@ -112,6 +114,7 @@ if "BeautyCPUBackend" in backend_code or re.search(r"\.cpu\b", backend_code):
 
 for marker in (
     "package enum BeautyMetalPass", "BeautyMetalColorParameters",
+    "BeautyMetalColorInputKind", "case pixelBuffer = 0", "case stillImage = 1",
     "BeautyMetalGeometryParameters", "BeautyMetalComposedRetouchParameters",
     "maximumPointCount", "isFinite", "BeautyError.invalidInput",
 ):
@@ -146,12 +149,27 @@ if "bgraToRgba" not in backend_code or "rgbaToBgra" not in backend_code:
 for marker in ("BeautyFaceGeometryAdapter.makeGeometry", "BeautyGeometryEffectPipeline.controlPoints", "maximumPointCount"):
     if marker not in backend_code:
         raise SystemExit(f"geometry adapter marker missing: {marker}")
+for marker in (
+    "inputKind: .pixelBuffer", "inputKind: .stillImage", "isStillImage ? 0.20 : 0.22",
+    "isStillImage ? 0.14 : 0.16", "isStillImage ? 0.16 : 0.18",
+    "highlightLift: isStillImage ? 0", "shadowLift: isStillImage ? 0",
+    "smoothing: isStillImage ? 0",
+):
+    if marker not in backend_code:
+        raise SystemExit(f"still-image color adapter marker missing: {marker}")
 for marker in ("guard hasCPUComposedCarrier else", "BeautyMetalComposedRetouchParameters"):
     if marker not in backend_code:
         raise SystemExit(f"CPU-owned local-retouch transport marker missing: {marker}")
 for marker in ("constant BeautyMetalWarpPoint", "pointCount", "beauty_falloff_weight", "beauty_clamp_point", "input.read"):
     if marker not in shader:
         raise SystemExit(f"geometry shader marker missing: {marker}")
+for marker in (
+    "parameters.inputKind == 1", "float3(0.2126, 0.7152, 0.0722)",
+    "parameters.lipCenterY * dimensions.y", "cropCoverage = overlap.x * overlap.y",
+    "rgb.r + min(parameters.lipStrength, 0.5f) * 0.18f",
+):
+    if marker not in shader:
+        raise SystemExit(f"still-image color kernel marker missing: {marker}")
 
 diagnostics = text["contract"].split("package struct BeautyBackendDiagnostics", 1)[1].split("package init", 1)[0]
 privacy_terms = ["r" + "aw", "m" + "ask", "land" + "mark", "coordinate", "p" + "ath", "fixt" + "ure", "texture", "framework"]
@@ -195,6 +213,27 @@ if "BeautyMetalColorPassTests" not in text["color_tests"]:
     raise SystemExit("generated color suite is missing")
 if "testGeneratedCombinedSaturationAndSkinSmoothingMatchesCPU" not in text["color_tests"]:
     raise SystemExit("combined saturation and skin-smoothing regression is missing")
+still_case_name = "func testGeneratedOpaqueSRGBStillImageUsesRetainedCPUColorAndLipMath() throws"
+still_case_start = text["color_tests"].find(still_case_name)
+still_case_end = text["color_tests"].find("\n    private func ", still_case_start + len(still_case_name))
+if still_case_start < 0 or still_case_end < 0:
+    raise SystemExit("still-image retained CPU color/lip regression is missing")
+still_case = text["color_tests"][still_case_start:still_case_end]
+for marker in (
+    "stillImageColorPlanMatrix()", "inputKind: .stillImage",
+    "gpuImage.colorSpace?.name, CGColorSpace.sRGB",
+    "stillImageMaxChannelDelta", "stillImageMeanRGBDelta",
+):
+    if marker not in still_case:
+        raise SystemExit(f"still-image color regression marker missing: {marker}")
+if not re.search(r"stillImageMaxChannelDelta\s*=\s*2(?!\d)", text["parity_fixture"]) or not re.search(r"stillImageMeanRGBDelta\s*=\s*0\.75(?!\d)", text["parity_fixture"]):
+    raise SystemExit("tight still-image color tolerance weakened or removed")
+for marker in (
+    '"still-global-coefficients"', '"still-highlight-shadow-no-extra-pass"',
+    '"still-lip-hard-rectangle"',
+):
+    if marker not in text["parity_fixture"]:
+        raise SystemExit(f"still-image color row missing: {marker}")
 if "BeautyMetalGeometryPassTests" not in text["geometry_tests"]:
     raise SystemExit("generated geometry suite is missing")
 if "BeautyMetalLocalRetouchPassTests" not in text["local_retouch_tests"]:
@@ -336,6 +375,36 @@ PY
   if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then echo "named_srgb_output_test_mutation_failed" >&2; return 1; fi
 
   cp -- "${package_root}/Tests/BeautyEffectsTests/BeautyMetalBackendTests.swift" "${mutation_path}"
+  mutation_path="${temporary_root}/${backend_source}"
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+path.write_text(value.replace("isStillImage ? 0.14 : 0.16", "isStillImage ? 0.16 : 0.16", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then echo "still_image_color_coefficient_mutation_failed" >&2; return 1; fi
+
+  cp -- "${package_root}/Sources/BeautyEffects/Backend/BeautyMetalBackend.swift" "${mutation_path}"
+  mutation_path="${temporary_root}/${shader_source}"
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+path.write_text(value.replace("cropCoverage = overlap.x * overlap.y", "cropCoverage = 1.0f", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then echo "still_image_lip_crop_mutation_failed" >&2; return 1; fi
+
+  cp -- "${package_root}/Sources/BeautyRender/Shaders/Warp.metal" "${mutation_path}"
+  mutation_path="${temporary_root}/${parity_fixture_source}"
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+path.write_text(value.replace("stillImageMaxChannelDelta = 2", "stillImageMaxChannelDelta = 20", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then echo "still_image_tolerance_mutation_failed" >&2; return 1; fi
+
+  cp -- "${package_root}/Tests/BeautyEffectsTests/BeautyBackendParityFixtureFactory.swift" "${mutation_path}"
   mutation_path="${temporary_root}/${pass_source}"
   mkdir -p "${temporary_root}/BeautySDK/Sources/BeautyEffects/Unexpected"
   cp -- "${mutation_path}" "${temporary_root}/BeautySDK/Sources/BeautyEffects/Unexpected/BeautyMetalPass.swift"

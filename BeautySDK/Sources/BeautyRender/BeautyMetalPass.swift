@@ -22,6 +22,11 @@ package enum BeautyMetalPass: Equatable, Sendable {
     }
 }
 
+package enum BeautyMetalColorInputKind: UInt32, Equatable, Sendable {
+    case pixelBuffer = 0
+    case stillImage = 1
+}
+
 package struct BeautyMetalColorUniform: Equatable, Sendable {
     package var saturationDelta: Float
     package var contrastScale: Float
@@ -38,7 +43,7 @@ package struct BeautyMetalColorUniform: Equatable, Sendable {
     package var lipRadiusY: Float
     package var lipStrength: Float
     package var lipEnabled: UInt32
-    package var reserved: UInt32 = 0
+    package var inputKind: UInt32
 }
 
 package struct BeautyMetalColorParameters: Equatable, Sendable {
@@ -59,7 +64,8 @@ package struct BeautyMetalColorParameters: Equatable, Sendable {
         lipRadiusX: Float = 0,
         lipRadiusY: Float = 0,
         lipStrength: Float = 0,
-        lipEnabled: Bool = false
+        lipEnabled: Bool = false,
+        inputKind: BeautyMetalColorInputKind = .pixelBuffer
     ) throws {
         let values = [
             saturationDelta, contrastScale, lightLift, redBias, greenBias,
@@ -108,7 +114,8 @@ package struct BeautyMetalColorParameters: Equatable, Sendable {
             lipRadiusX: lipRadiusX,
             lipRadiusY: lipRadiusY,
             lipStrength: lipStrength,
-            lipEnabled: lipEnabled ? 1 : 0
+            lipEnabled: lipEnabled ? 1 : 0,
+            inputKind: inputKind.rawValue
         )
     }
 }

@@ -84,6 +84,66 @@ final class BeautyBackendParityTests: XCTestCase {
         XCTAssertLessThan(observation.meanRGBDelta, BeautyBackendParityFixtureFactory.activeMeanRGBDelta)
     }
 
+    func testGeneratedOpaqueSRGBStillImageColorAndLipRowsMatchCPUWithinTightTolerance() throws {
+        guard let metal = BeautyBackendParityFixtureFactory.makeMetalBackend() else { return }
+        let fixture = CPUReferenceFixtureFactory.opaqueColorRamp(width: 32, height: 24)
+
+        for (name, plan) in BeautyBackendParityFixtureFactory.stillImageColorPlanMatrix() {
+            let cpuRequest = try BeautyBackendParityFixtureFactory.makeRequest(
+                policy: .cpu,
+                fixture: fixture,
+                plan: plan,
+                stillImage: true,
+                translated: true
+            )
+            let gpuRequest = try BeautyBackendParityFixtureFactory.makeRequest(
+                policy: .metal,
+                fixture: fixture,
+                plan: plan,
+                stillImage: true,
+                translated: true
+            )
+            let cpu = try BeautyCPUBackend().execute(cpuRequest)
+            let gpu = try metal.execute(gpuRequest)
+            guard case .stillImage(let cpuImage) = cpu.output,
+                  case .stillImage(let gpuImage) = gpu.output
+            else { return XCTFail("backend changed still-image output kind: \(name)") }
+
+            let cpuBytes = try BeautyBackendParityFixtureFactory.rgbaBytes(from: cpu.output)
+            let gpuBytes = try BeautyBackendParityFixtureFactory.rgbaBytes(from: gpu.output)
+            let observation = try BeautyBackendParityFixtureFactory.observation(
+                inputKind: .stillImage,
+                fixture: fixture,
+                before: cpuBytes,
+                after: gpuBytes,
+                diagnostics: gpu.diagnostics,
+                extentPreserved: gpuImage.extent == cpuImage.extent
+            )
+            XCTAssertEqual(gpuImage.extent, cpuImage.extent, name)
+            XCTAssertEqual(gpuImage.colorSpace?.name, CGColorSpace.sRGB, name)
+            XCTAssertEqual(alphaValues(gpuBytes), alphaValues(cpuBytes), name)
+            XCTAssertTrue(observation.preservesExtent, name)
+            XCTAssertTrue(observation.namedSRGB, name)
+            if name == "still-highlight-shadow-no-extra-pass" {
+                XCTAssertEqual(cpuBytes, fixture.rgba8, name)
+                XCTAssertEqual(gpuBytes, fixture.rgba8, name)
+            } else {
+                XCTAssertNotEqual(cpuBytes, fixture.rgba8, name)
+                XCTAssertNotEqual(gpuBytes, fixture.rgba8, name)
+            }
+            XCTAssertLessThanOrEqual(
+                observation.maxChannelDelta,
+                BeautyBackendParityFixtureFactory.stillImageMaxChannelDelta,
+                name
+            )
+            XCTAssertLessThan(
+                observation.meanRGBDelta,
+                BeautyBackendParityFixtureFactory.stillImageMeanRGBDelta,
+                name
+            )
+        }
+    }
+
     func testGeneratedNoFacePlanIsExactNeutralBytes() throws {
         guard let metal = BeautyBackendParityFixtureFactory.makeMetalBackend() else { return }
         let fixture = CPUReferenceFixtureFactory.opaqueColorRamp()
@@ -98,5 +158,9 @@ final class BeautyBackendParityTests: XCTestCase {
         XCTAssertEqual(try BeautyBackendParityFixtureFactory.rgbaBytes(from: result.output), fixture.rgba8)
         XCTAssertTrue(result.diagnostics.preservesAlpha)
         XCTAssertTrue(result.diagnostics.preservesExtent)
+    }
+
+    private func alphaValues(_ bytes: [UInt8]) -> [UInt8] {
+        stride(from: 3, to: bytes.count, by: 4).map { bytes[$0] }
     }
 }

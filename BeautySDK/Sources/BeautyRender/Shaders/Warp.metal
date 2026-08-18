@@ -17,7 +17,7 @@ struct BeautyMetalColorUniform {
     float lipRadiusY;
     float lipStrength;
     uint lipEnabled;
-    uint reserved;
+    uint inputKind;
 };
 
 kernel void beauty_warp_placeholder(
@@ -42,7 +42,11 @@ kernel void beauty_color_pass(
     }
     float4 source = input.read(gid);
     float3 rgb = source.rgb;
-    float luminance = dot(rgb, float3(0.299, 0.587, 0.114));
+    bool isStillImage = parameters.inputKind == 1;
+    float3 luminanceWeights = isStillImage
+        ? float3(0.2126, 0.7152, 0.0722)
+        : float3(0.299, 0.587, 0.114);
+    float luminance = dot(rgb, luminanceWeights);
     float saturationScale = max(0.0f, 1.0f + parameters.saturationDelta);
     rgb = luminance + (rgb - luminance) * saturationScale;
     rgb = (rgb - 0.5f) * parameters.contrastScale + 0.5f;
@@ -59,18 +63,49 @@ kernel void beauty_color_pass(
     }
 
     if (parameters.lipEnabled != 0 && parameters.lipRadiusX > 0.0f && parameters.lipRadiusY > 0.0f) {
-        float2 point = (float2(gid) + 0.5f) / float2(output.get_width(), output.get_height());
-        float2 delta = (point - float2(parameters.lipCenterX, parameters.lipCenterY)) /
-            float2(parameters.lipRadiusX, parameters.lipRadiusY);
-        float mask = max(0.0f, 1.0f - dot(delta, delta));
-        float blend = min(parameters.lipStrength, 0.5f) * mask;
-        float lipLuminance = dot(rgb, float3(0.299, 0.587, 0.114));
-        float3 enhanced = float3(
-            min(1.0f, lipLuminance * 0.45f + rgb.r * 0.55f + 0.20f),
-            max(0.0f, rgb.g * 0.94f),
-            max(0.0f, rgb.b * 0.90f)
-        );
-        rgb = mix(rgb, enhanced, blend);
+        if (isStillImage) {
+            float2 dimensions = float2(output.get_width(), output.get_height());
+            float2 pixelCenter = float2(gid) + 0.5f;
+            float2 lipCenter = float2(
+                parameters.lipCenterX * dimensions.x,
+                parameters.lipCenterY * dimensions.y
+            );
+            float2 lipHalfSize = float2(
+                parameters.lipRadiusX * dimensions.x + 1.0f,
+                parameters.lipRadiusY * dimensions.y + 1.0f
+            );
+            float2 pixelMinimum = pixelCenter - 0.5f;
+            float2 pixelMaximum = pixelCenter + 0.5f;
+            float2 lipMinimum = lipCenter - lipHalfSize;
+            float2 lipMaximum = lipCenter + lipHalfSize;
+            float2 overlap = clamp(
+                min(pixelMaximum, lipMaximum) - max(pixelMinimum, lipMinimum),
+                float2(0.0f),
+                float2(1.0f)
+            );
+            float cropCoverage = overlap.x * overlap.y;
+            if (cropCoverage > 0.0f) {
+                float3 tinted = float3(
+                    rgb.r + min(parameters.lipStrength, 0.5f) * 0.18f,
+                    rgb.g * 0.94f,
+                    rgb.b * 0.90f
+                );
+                rgb = mix(rgb, tinted, cropCoverage);
+            }
+        } else {
+            float2 point = (float2(gid) + 0.5f) / float2(output.get_width(), output.get_height());
+            float2 delta = (point - float2(parameters.lipCenterX, parameters.lipCenterY)) /
+                float2(parameters.lipRadiusX, parameters.lipRadiusY);
+            float mask = max(0.0f, 1.0f - dot(delta, delta));
+            float blend = min(parameters.lipStrength, 0.5f) * mask;
+            float lipLuminance = dot(rgb, float3(0.299, 0.587, 0.114));
+            float3 enhanced = float3(
+                min(1.0f, lipLuminance * 0.45f + rgb.r * 0.55f + 0.20f),
+                max(0.0f, rgb.g * 0.94f),
+                max(0.0f, rgb.b * 0.90f)
+            );
+            rgb = mix(rgb, enhanced, blend);
+        }
     }
     output.write(float4(clamp(rgb, 0.0f, 1.0f), source.a), gid);
 }

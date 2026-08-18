@@ -134,7 +134,8 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
                 plan: plan,
                 selectedFaceSupport: selectedFaceSupport,
                 compositionSummary: compositionSummary,
-                hasCPUComposedCarrier: canonicalImage != nil
+                hasCPUComposedCarrier: canonicalImage != nil,
+                inputKind: .pixelBuffer
             )
         )
         let renderedBytes = rgbaToBgra(renderedRGBA)
@@ -175,7 +176,8 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
                 plan: plan,
                 selectedFaceSupport: selectedFaceSupport,
                 compositionSummary: compositionSummary,
-                hasCPUComposedCarrier: canonicalImage != nil
+                hasCPUComposedCarrier: canonicalImage != nil,
+                inputKind: .stillImage
             )
         )
         guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
@@ -254,7 +256,8 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         plan: BeautyEffectPlan,
         selectedFaceSupport: BeautyFaceObservation?,
         compositionSummary: BeautyLocalRetouchCompositionSummary?,
-        hasCPUComposedCarrier: Bool
+        hasCPUComposedCarrier: Bool,
+        inputKind: BeautyMetalColorInputKind
     ) throws -> [BeautyMetalPass] {
         var passes: [BeautyMetalPass] = []
         if compositionSummary != nil {
@@ -283,22 +286,27 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         }
 
         let filter = filterContribution(for: plan)
+        let isStillImage = inputKind == .stillImage
         let parameters = try BeautyMetalColorParameters(
             saturationDelta: strengths.saturation * 0.28 - strengths.skinSmoothing * 0.18 + filter.saturation,
-            contrastScale: 1 + strengths.contrast * 0.22 + strengths.skinSharpen * 0.18,
-            lightLift: strengths.brightness * 0.16 + strengths.exposure * 0.10 + strengths.skinWhitening * 0.18 + filter.brightness,
+            contrastScale: 1 + strengths.contrast * (isStillImage ? 0.20 : 0.22) + strengths.skinSharpen * 0.18,
+            lightLift: strengths.brightness * (isStillImage ? 0.14 : 0.16)
+                + strengths.exposure * 0.10
+                + strengths.skinWhitening * (isStillImage ? 0.16 : 0.18)
+                + filter.brightness,
             redBias: strengths.skinRosy * 0.08 + strengths.temperature * 0.04 + strengths.tint * 0.02 + filter.redBias,
             greenBias: strengths.skinWhitening * 0.02 + strengths.tint * 0.03 + filter.greenBias,
             blueBias: -strengths.temperature * 0.04 + filter.blueBias,
-            highlightLift: strengths.highlight * 0.08,
-            shadowLift: strengths.shadow * 0.08,
-            smoothing: strengths.skinSmoothing * 0.16,
+            highlightLift: isStillImage ? 0 : strengths.highlight * 0.08,
+            shadowLift: isStillImage ? 0 : strengths.shadow * 0.08,
+            smoothing: isStillImage ? 0 : strengths.skinSmoothing * 0.16,
             lipCenterX: lipEnvelope?.centerX ?? 0,
             lipCenterY: lipEnvelope?.centerY ?? 0,
             lipRadiusX: lipEnvelope?.radiusX ?? 0,
             lipRadiusY: lipEnvelope?.radiusY ?? 0,
             lipStrength: min(strengths.lipColor, BeautySafetyCaps.lipColor),
-            lipEnabled: lipEnvelope != nil
+            lipEnabled: lipEnvelope != nil,
+            inputKind: inputKind
         )
         let uniform = parameters.uniform
         let isNeutral = uniform.saturationDelta == 0

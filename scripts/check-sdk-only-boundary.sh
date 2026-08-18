@@ -480,7 +480,7 @@ for item in tracked:
 allowed_metal = {"BeautySDK/Sources/BeautyRender/Shaders/Warp.metal"}
 expected_metal_sha256 = {
     "BeautySDK/Sources/BeautyRender/Shaders/Warp.metal":
-        "c95ff274a6d5eb70bffac981b876441fc7981d175be21d1d16e05e4fc81035a6",
+        "f61703372fdad885abbdb45644b5770c417b264431b02c59eaca8d813865fd88",
 }
 actual_metal = {
     path.relative_to(root).as_posix()
@@ -488,16 +488,16 @@ actual_metal = {
 }
 if actual_metal != allowed_metal:
     raise SystemExit(
-        f"v1.16 Metal source inventory drift: missing={sorted(allowed_metal-actual_metal)}, "
+        f"retained Metal source inventory drift: missing={sorted(allowed_metal-actual_metal)}, "
         f"extra={sorted(actual_metal-allowed_metal)}"
     )
 for relative, expected_digest in expected_metal_sha256.items():
     path = root / relative
     if not path.is_file() or path.is_symlink():
-        raise SystemExit(f"v1.16 retained Metal source is missing or symlinked: {relative}")
+        raise SystemExit(f"retained Metal source is missing or symlinked: {relative}")
     actual_digest = hashlib.sha256(path.read_bytes()).hexdigest()
     if actual_digest != expected_digest:
-        raise SystemExit(f"v1.16 retained Metal source content drift: {relative}")
+        raise SystemExit(f"retained Metal source content drift: {relative}")
 backend_pattern = re.compile(r"BeautyRenderBackend|renderBackend|\bcase\s+gpu\b|\bcase\s+\.gpu\b")
 allowed_backend_paths = {
     "BeautySDK/Sources/BeautyCore/Models/BeautyConfiguration.swift",

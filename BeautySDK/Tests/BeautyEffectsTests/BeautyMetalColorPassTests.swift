@@ -151,6 +151,65 @@ final class BeautyMetalColorPassTests: XCTestCase {
         XCTAssertEqual(renderedBytes(firstImage, width: fixture.width, height: fixture.height), renderedBytes(secondImage, width: fixture.width, height: fixture.height))
     }
 
+    func testGeneratedOpaqueSRGBStillImageUsesRetainedCPUColorAndLipMath() throws {
+        guard let metal = BeautyBackendParityFixtureFactory.makeMetalBackend() else { return }
+        let fixture = CPUReferenceFixtureFactory.opaqueColorRamp(width: 32, height: 24)
+
+        for (name, plan) in BeautyBackendParityFixtureFactory.stillImageColorPlanMatrix() {
+            let cpuRequest = try BeautyBackendParityFixtureFactory.makeRequest(
+                policy: .cpu,
+                fixture: fixture,
+                plan: plan,
+                stillImage: true
+            )
+            let metalRequest = try BeautyBackendParityFixtureFactory.makeRequest(
+                policy: .metal,
+                fixture: fixture,
+                plan: plan,
+                stillImage: true
+            )
+            let cpu = try BeautyCPUBackend().execute(cpuRequest)
+            let gpu = try metal.execute(metalRequest)
+            guard case .stillImage(let gpuImage) = gpu.output else {
+                return XCTFail("Metal changed still-image output kind: \(name)")
+            }
+            let cpuBytes = try BeautyBackendParityFixtureFactory.rgbaBytes(from: cpu.output)
+            let gpuBytes = try BeautyBackendParityFixtureFactory.rgbaBytes(from: gpu.output)
+            let observation = try BeautyBackendParityFixtureFactory.observation(
+                inputKind: .stillImage,
+                fixture: fixture,
+                before: cpuBytes,
+                after: gpuBytes,
+                diagnostics: gpu.diagnostics,
+                extentPreserved: gpuImage.extent == CGRect(
+                    x: 0,
+                    y: 0,
+                    width: fixture.width,
+                    height: fixture.height
+                )
+            )
+            XCTAssertEqual(gpuImage.colorSpace?.name, CGColorSpace.sRGB, name)
+            XCTAssertEqual(alphaValues(gpuBytes), alphaValues(cpuBytes), name)
+            if name == "still-highlight-shadow-no-extra-pass" {
+                XCTAssertEqual(cpuBytes, fixture.rgba8, name)
+                XCTAssertEqual(gpuBytes, fixture.rgba8, name)
+            } else {
+                XCTAssertNotEqual(cpuBytes, fixture.rgba8, name)
+                XCTAssertNotEqual(gpuBytes, fixture.rgba8, name)
+            }
+            XCTAssertLessThanOrEqual(
+                observation.maxChannelDelta,
+                BeautyBackendParityFixtureFactory.stillImageMaxChannelDelta,
+                name
+            )
+            XCTAssertLessThan(
+                observation.meanRGBDelta,
+                BeautyBackendParityFixtureFactory.stillImageMeanRGBDelta,
+                name
+            )
+        }
+    }
+
     private func makeRuntime() -> BeautyMetalRuntime? {
         do { return try BeautyMetalRuntime() }
         catch BeautyError.metalUnavailable { XCTAssertTrue(true, "metalUnavailable"); return nil }

@@ -7,7 +7,7 @@ readonly package_root="${repository_root}/BeautySDK"
 readonly maximum_output_bytes=$((16 * 1024 * 1024))
 readonly focused_filter='BeautyEffectsTests.BeautyBackendParityTests|BeautyEffectsTests.BeautyBackendSafetyParityTests|BeautyEffectsTests.BeautyBackendDeterminismParityTests|BeautyCoreTests.BeautyBackendSelectionConcurrencyTests'
 readonly unavailable_filter='BeautyCoreTests.BeautyBackendSelectionConcurrencyTests'
-readonly expected_focused_tests=12
+readonly expected_focused_tests=13
 readonly expected_unavailable_tests=2
 temporary_root=""
 
@@ -44,6 +44,9 @@ paths = {
     "safety": "BeautySDK/Tests/BeautyEffectsTests/BeautyBackendSafetyParityTests.swift",
     "determinism": "BeautySDK/Tests/BeautyEffectsTests/BeautyBackendDeterminismParityTests.swift",
     "selection": "BeautySDK/Tests/BeautyCoreTests/BeautyBackendSelectionConcurrencyTests.swift",
+    "metal_pass": "BeautySDK/Sources/BeautyRender/BeautyMetalPass.swift",
+    "metal_backend": "BeautySDK/Sources/BeautyEffects/Backend/BeautyMetalBackend.swift",
+    "shader": "BeautySDK/Sources/BeautyRender/Shaders/Warp.metal",
     "config": "BeautySDK/Sources/BeautyCore/Models/BeautyConfiguration.swift",
     "parameters": "BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift",
     "manifest": "BeautySDK/Sources/BeautyResources/Resources/manifest.json",
@@ -106,6 +109,47 @@ if "BeautyBackendExecutionPolicy" not in text["selection"]:
     raise SystemExit("request policy marker missing")
 if not re.search(r"activeMaxChannelDelta\s*=\s*8(?!\d)", text["fixture"]) or not re.search(r"activeMeanRGBDelta\s*=\s*5\.0(?!\d)", text["fixture"]):
     raise SystemExit("pinned tolerance weakened or removed")
+if not re.search(r"stillImageMaxChannelDelta\s*=\s*2(?!\d)", text["fixture"]) or not re.search(r"stillImageMeanRGBDelta\s*=\s*0\.75(?!\d)", text["fixture"]):
+    raise SystemExit("tight still-image tolerance weakened or removed")
+still_case_name = "func testGeneratedOpaqueSRGBStillImageColorAndLipRowsMatchCPUWithinTightTolerance() throws"
+still_case_start = text["parity"].find(still_case_name)
+still_case_end = text["parity"].find("\n    func ", still_case_start + len(still_case_name))
+if still_case_start < 0 or still_case_end < 0:
+    raise SystemExit("still-image CPU/Metal parity case missing")
+still_case = text["parity"][still_case_start:still_case_end]
+for marker in (
+    "stillImageColorPlanMatrix()", "inputKind: .stillImage",
+    "gpuImage.colorSpace?.name, CGColorSpace.sRGB",
+    "stillImageMaxChannelDelta", "stillImageMeanRGBDelta",
+):
+    if marker not in still_case:
+        raise SystemExit(f"still-image parity marker missing: {marker}")
+for marker in (
+    '"still-global-coefficients"', '"still-highlight-shadow-no-extra-pass"',
+    '"still-lip-hard-rectangle"',
+):
+    if marker not in text["fixture"]:
+        raise SystemExit(f"still-image parity row missing: {marker}")
+for marker in (
+    "package enum BeautyMetalColorInputKind", "case stillImage = 1", "inputKind.rawValue",
+):
+    if marker not in text["metal_pass"]:
+        raise SystemExit(f"Metal color input-kind marker missing: {marker}")
+for marker in (
+    "inputKind: .pixelBuffer", "inputKind: .stillImage", "isStillImage ? 0.20 : 0.22",
+    "isStillImage ? 0.14 : 0.16", "isStillImage ? 0.16 : 0.18",
+    "highlightLift: isStillImage ? 0", "shadowLift: isStillImage ? 0",
+    "smoothing: isStillImage ? 0",
+):
+    if marker not in text["metal_backend"]:
+        raise SystemExit(f"still-image Metal adapter marker missing: {marker}")
+for marker in (
+    "parameters.inputKind == 1", "float3(0.2126, 0.7152, 0.0722)",
+    "parameters.lipCenterY * dimensions.y", "cropCoverage = overlap.x * overlap.y",
+    "rgb.r + min(parameters.lipStrength, 0.5f) * 0.18f",
+):
+    if marker not in text["shader"]:
+        raise SystemExit(f"still-image Metal kernel marker missing: {marker}")
 if "metal_available" not in text["fixture"] + text["selection"]:
     # Keep the accounting vocabulary in the source contract, even though the
     # live script is the aggregate emitter.
@@ -165,6 +209,7 @@ required_metal_cases = (
     "BeautyBackendParityTests testGeneratedActivePixelBufferMatrixMatchesCPUWithinPinnedTolerance",
     "BeautyBackendParityTests testGeneratedNeutralPixelBufferIsStructurallyAndByteIdentical",
     "BeautyBackendParityTests testGeneratedNoFacePlanIsExactNeutralBytes",
+    "BeautyBackendParityTests testGeneratedOpaqueSRGBStillImageColorAndLipRowsMatchCPUWithinTightTolerance",
     "BeautyBackendParityTests testGeneratedStillImagePreservesTranslatedExtentAndMetadata",
     "BeautyBackendSafetyParityTests testCompositionCollisionAndRejectedUnitRemainAggregateAndSourceBound",
     "BeautyBackendSafetyParityTests testGeometryContainmentPreservesOutsideProtectedAndAlphaBytes",
@@ -206,7 +251,7 @@ for forbidden_suite in (
     "BeautyBackendSafetyParityTests",
     "BeautyBackendDeterminismParityTests",
 ):
-    if forbidden_suite in text:
+    if re.search(rf"Test (?:Suite|Case) '[^']*{re.escape(forbidden_suite)}", text):
         raise SystemExit(f"GPU parity suite ran while Metal was unavailable: {forbidden_suite}")
 if re.search(r"\b(?:skipped|disabled|unexpected failure)\b", text, re.IGNORECASE):
     raise SystemExit("unavailable coverage skip or unexpected failure")
@@ -260,6 +305,32 @@ path.write_text(value.replace("activeMaxChannelDelta = 8", "activeMaxChannelDelt
 PY
   if validate_static_boundary "$temporary_root" >/dev/null 2>&1; then echo "tolerance_mutation_failed" >&2; return 1; fi
   cp -- "$package_root/Tests/BeautyEffectsTests/BeautyBackendParityFixtureFactory.swift" "$mutation_path"
+  python3 - "$mutation_path" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+path.write_text(value.replace("stillImageMaxChannelDelta = 2", "stillImageMaxChannelDelta = 20", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "$temporary_root" >/dev/null 2>&1; then echo "still_image_tolerance_mutation_failed" >&2; return 1; fi
+  cp -- "$package_root/Tests/BeautyEffectsTests/BeautyBackendParityFixtureFactory.swift" "$mutation_path"
+  mutation_path="$temporary_root/BeautySDK/Sources/BeautyEffects/Backend/BeautyMetalBackend.swift"
+  python3 - "$mutation_path" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+path.write_text(value.replace("isStillImage ? 0.14 : 0.16", "isStillImage ? 0.16 : 0.16", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "$temporary_root" >/dev/null 2>&1; then echo "still_image_coefficient_mutation_failed" >&2; return 1; fi
+  cp -- "$package_root/Sources/BeautyEffects/Backend/BeautyMetalBackend.swift" "$mutation_path"
+  mutation_path="$temporary_root/BeautySDK/Sources/BeautyRender/Shaders/Warp.metal"
+  python3 - "$mutation_path" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+path.write_text(value.replace("cropCoverage = overlap.x * overlap.y", "cropCoverage = 1.0f", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "$temporary_root" >/dev/null 2>&1; then echo "still_image_lip_crop_mutation_failed" >&2; return 1; fi
+  cp -- "$package_root/Sources/BeautyRender/Shaders/Warp.metal" "$mutation_path"
   mutation_path="$temporary_root/BeautySDK/Tests/BeautyEffectsTests/BeautyBackendSafetyParityTests.swift"
   python3 - "$mutation_path" <<'PY'
 from pathlib import Path
