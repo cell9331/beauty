@@ -26,6 +26,35 @@
 
 ## 3. Active
 
+### P-2026-08-18-v1-17-manual-contract-resolution
+
+| Field | Value |
+| --- | --- |
+| Status | `active` |
+| Owner | Codex |
+| Started | 2026-08-18 |
+| Scope | Execute the user-approved resolutions for F-02/F-04/F-05/F-10 without adding genuine GPU local-retouch composition, transparent-input support, new public API, UI/Demo, device, or release scope. |
+| Source Request | User approved the recommended audit decisions: narrow local-retouch ownership, retain fail-closed transparency, align Metal still-image math to CPU, and require caller serialization for one engine/runtime instance. |
+| Current Step | Bind the four selected contracts to focused regression and mutation gates, processing one finding at a time. |
+| Verification Policy | Finding-focused SwiftPM tests and mutation self-tests after each change, atomic finding-ID commits, then archive/boundary/preflight/full no-skip closeout. |
+
+Checklist:
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| Resolve F-02 local-retouch ownership claim | `active` | Pending: declare CPU-owned original-pixel composition plus Metal transport, with no genuine GPU-composition claim. |
+| Resolve F-04 opaque/sRGB GPU still-image policy | `planned` | Pending: retain pre-Vision fail-closed transparency rejection and explicit named-sRGB canonical output. |
+| Resolve F-05 Metal still-image math | `planned` | Pending: align Metal still-image coefficients and lip behavior to the retained CPU oracle with focused parity evidence. |
+| Resolve F-10 shared-instance concurrency contract | `planned` | Pending: declare `BeautyEngine` non-Sendable and require callers to serialize all calls per instance; independent instances remain concurrency-tested. |
+| Synchronize owners and closeout | `planned` | Pending current owner/map refresh, inventory refresh, archive/boundary/self-test/live preflights, and full no-skip SwiftPM execution. |
+
+Decision boundaries:
+
+- F-02 does not add proposals, masks, landmarks, or support to Metal and does not modify the retained shader.
+- F-04 does not add background compositing or alpha restoration; non-opaque still images remain unsupported before Vision/local-retouch work.
+- F-05 preserves CPU as the compatibility oracle and must not redefine CPU output to match Metal.
+- F-10 does not add `Sendable` conformance or silently claim shared-instance parallel safety.
+
 ### P-2026-08-14-phase-66-sdk-only-boundary
 
 | Field | Value |
