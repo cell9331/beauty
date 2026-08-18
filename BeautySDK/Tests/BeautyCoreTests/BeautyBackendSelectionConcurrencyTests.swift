@@ -31,7 +31,7 @@ final class BeautyBackendSelectionConcurrencyTests: XCTestCase {
         XCTAssertEqual(metal_available + metal_unavailable, 1)
     }
 
-    func testBoundedInterleavedEnginesKeepImmutableRequestPolicies() async throws {
+    func testBoundedIndependentEngineInstancesMayExecuteConcurrently() async throws {
         let results = try await withThrowingTaskGroup(of: (BeautyBackendExecutionPolicy, Int).self, returning: [(BeautyBackendExecutionPolicy, Int)].self) { group in
             for index in 0..<6 {
                 group.addTask {

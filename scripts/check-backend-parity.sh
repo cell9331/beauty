@@ -44,6 +44,8 @@ paths = {
     "safety": "BeautySDK/Tests/BeautyEffectsTests/BeautyBackendSafetyParityTests.swift",
     "determinism": "BeautySDK/Tests/BeautyEffectsTests/BeautyBackendDeterminismParityTests.swift",
     "selection": "BeautySDK/Tests/BeautyCoreTests/BeautyBackendSelectionConcurrencyTests.swift",
+    "local_foundation": "BeautySDK/Tests/BeautyCoreTests/BeautyEngineLocalRetouchFoundationTests.swift",
+    "engine": "BeautySDK/Sources/BeautySDK/BeautyEngine.swift",
     "metal_pass": "BeautySDK/Sources/BeautyRender/BeautyMetalPass.swift",
     "metal_backend": "BeautySDK/Sources/BeautyEffects/Backend/BeautyMetalBackend.swift",
     "shader": "BeautySDK/Sources/BeautyRender/Shaders/Warp.metal",
@@ -66,6 +68,136 @@ text = {name: path.read_text(encoding="utf-8") for name, path in files.items()}
 tests = "\n".join(text[name] for name in ("fixture", "parity", "safety", "determinism", "selection"))
 implementation = text["fixture"] + text["parity"] + text["safety"] + text["determinism"] + text["selection"]
 tests_lower = tests.lower()
+
+def swift_declaration_tokens(source):
+    """Return declaration-significant Swift tokens, excluding comments and strings."""
+    tokens = []
+    index = 0
+    while index < len(source):
+        if source[index].isspace():
+            index += 1
+            continue
+        if source.startswith("//", index):
+            newline = source.find("\n", index + 2)
+            index = len(source) if newline < 0 else newline + 1
+            continue
+        if source.startswith("/*", index):
+            index += 2
+            depth = 1
+            while index < len(source) and depth:
+                if source.startswith("/*", index):
+                    depth += 1
+                    index += 2
+                elif source.startswith("*/", index):
+                    depth -= 1
+                    index += 2
+                else:
+                    index += 1
+            if depth:
+                raise SystemExit("unterminated Swift block comment")
+            continue
+        raw_hashes = 0
+        while index + raw_hashes < len(source) and source[index + raw_hashes] == "#":
+            raw_hashes += 1
+        quote = index + raw_hashes
+        if quote < len(source) and source[quote] == '"':
+            multiline = source.startswith('"""', quote) and quote + 3 < len(source) and source[quote + 3] in "\r\n"
+            opening_length = 3 if multiline else 1
+            closing = ('"""' if multiline else '"') + ("#" * raw_hashes)
+            cursor = quote + opening_length
+            while cursor < len(source):
+                if source[cursor] == "\\":
+                    if raw_hashes == 0:
+                        cursor += 2
+                        continue
+                    escaped = cursor + 1 + raw_hashes
+                    if source[cursor + 1:escaped] == ("#" * raw_hashes) and escaped < len(source) and source[escaped] in {'"', "\\", "("}:
+                        cursor = escaped + 1
+                        continue
+                if source.startswith(closing, cursor):
+                    index = cursor + len(closing)
+                    break
+                cursor += 1
+            else:
+                raise SystemExit("unterminated Swift string literal")
+            continue
+        if source[index].isalpha() or source[index] == "_":
+            end = index + 1
+            while end < len(source) and (source[end].isalnum() or source[end] == "_"):
+                end += 1
+            tokens.append(source[index:end])
+            index = end
+            continue
+        if source[index] in "@<>{}:,()[]?!.=":
+            tokens.append(source[index])
+        index += 1
+    return tokens
+
+def has_named_sendable_conformance(source, type_name):
+    tokens = swift_declaration_tokens(source)
+    for index, token in enumerate(tokens):
+        if token != type_name or index == 0 or tokens[index - 1] not in {"class", "extension"}:
+            continue
+        end = index + 1
+        while end < len(tokens) and tokens[end] != "{":
+            end += 1
+        header = tokens[index + 1:end]
+        if ":" in header:
+            inheritance = header[header.index(":") + 1:]
+            if "where" in inheritance:
+                inheritance = inheritance[:inheritance.index("where")]
+            if "Sendable" in inheritance:
+                return True
+    return False
+
+engine_contract = """/// A stateful, intentionally non-`Sendable` processing engine.
+///
+/// Callers must serialize all `process`, `processResult`, and `reset` access to the same instance.
+/// Independent `BeautyEngine` instances may execute concurrently.
+public final class BeautyEngine"""
+if text["engine"].count(engine_contract) != 1:
+    raise SystemExit("exact BeautyEngine class-level caller-serialization contract missing")
+source_root = root / "BeautySDK/Sources"
+for candidate in source_root.rglob("*.swift"):
+    if candidate.is_symlink() or not candidate.is_file() or root not in candidate.resolve().parents:
+        raise SystemExit(f"non-regular Swift source in parity boundary: {candidate.relative_to(root)}")
+    if has_named_sendable_conformance(candidate.read_text(encoding="utf-8"), "BeautyEngine"):
+        raise SystemExit(f"BeautyEngine Sendable conformance remains: {candidate.relative_to(root)}")
+
+selection_case_name = "func testBoundedIndependentEngineInstancesMayExecuteConcurrently() async throws"
+selection_case_start = text["selection"].find(selection_case_name)
+selection_case_end = text["selection"].find("\n    func ", selection_case_start + len(selection_case_name))
+if selection_case_start < 0:
+    raise SystemExit("bounded independent-engine concurrency case missing")
+if selection_case_end < 0:
+    selection_case_end = len(text["selection"])
+selection_case = text["selection"][selection_case_start:selection_case_end]
+for marker in ("withThrowingTaskGroup", "for index in 0..<6", "let engine = try BeautyEngine", "recorder.callCount"):
+    if selection_case.count(marker) != 1:
+        raise SystemExit(f"bounded independent-engine concurrency evidence missing: {marker}")
+if text["selection"].count("withThrowingTaskGroup") != 1:
+    raise SystemExit("unexpected additional BeautyEngine concurrency evidence")
+
+serialized_case_name = "func testConcurrentCallersUseSerializingHarnessBeforeAccessingOneEngine() async throws"
+serialized_case_start = text["local_foundation"].find(serialized_case_name)
+serialized_case_end = text["local_foundation"].find("\n    func ", serialized_case_start + len(serialized_case_name))
+if serialized_case_start < 0 or serialized_case_end < 0:
+    raise SystemExit("caller-side serialized shared-engine case missing")
+serialized_case = text["local_foundation"][serialized_case_start:serialized_case_end]
+for marker in ("caller-side serialization boundary", "withThrowingTaskGroup", "harness.invoke"):
+    if marker not in serialized_case:
+        raise SystemExit(f"caller-side serialization evidence missing: {marker}")
+if "let engine" in serialized_case:
+    raise SystemExit("serialized caller-wrapper case directly accesses BeautyEngine")
+
+nonclaim_case_name = "func testConcurrencyContractRequiresCallerSerializationForOneEngineInstance()"
+nonclaim_case_start = text["local_foundation"].find(nonclaim_case_name)
+nonclaim_case_end = text["local_foundation"].find("\n    func ", nonclaim_case_start + len(nonclaim_case_name))
+if nonclaim_case_start < 0 or nonclaim_case_end < 0:
+    raise SystemExit("same-engine concurrency nonclaim case missing")
+nonclaim_case = text["local_foundation"][nonclaim_case_start:nonclaim_case_end]
+if 'XCTAssertFalse(flags.contains("same-engine-parallel-safe"))' not in nonclaim_case:
+    raise SystemExit("same-engine parallel-safety claim is not rejected")
 
 for marker in (
     "CPUReferenceFixtureFactory", "BeautyCPUBackend", "BeautyMetalBackend",
@@ -240,7 +372,7 @@ if any(failures != 0 for _, failures in executions):
     raise SystemExit("unavailable coverage failure")
 required_cases = (
     "testFactorySeparatesAvailableAndUnavailableMetal",
-    "testBoundedInterleavedEnginesKeepImmutableRequestPolicies",
+    "testBoundedIndependentEngineInstancesMayExecuteConcurrently",
 )
 for case in required_cases:
     pattern = rf"Test Case '-\[BeautyCoreTests\.BeautyBackendSelectionConcurrencyTests {case}\]' passed"
@@ -364,6 +496,64 @@ path.write_text(value.replace(
 PY
   if validate_static_boundary "$temporary_root" >/dev/null 2>&1; then echo "observation_proof_mutation_failed" >&2; return 1; fi
   cp -- "$package_root/Tests/BeautyEffectsTests/BeautyBackendSafetyParityTests.swift" "$mutation_path"
+  mutation_path="$temporary_root/BeautySDK/Sources/BeautySDK/BeautyEngine.swift"
+  python3 - "$mutation_path" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+path.write_text(value.replace(
+    "Callers must serialize all `process`, `processResult`, and `reset` access to the same instance.",
+    "Callers may overlap access to the same instance.",
+    1,
+), encoding="utf-8")
+PY
+  if validate_static_boundary "$temporary_root" >/dev/null 2>&1; then echo "engine_serialization_contract_mutation_failed" >&2; return 1; fi
+  cp -- "$package_root/Sources/BeautySDK/BeautyEngine.swift" "$mutation_path"
+  python3 - "$mutation_path" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+path.write_text(value.replace("public final class BeautyEngine {", "public final class BeautyEngine: @unchecked Sendable {", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "$temporary_root" >/dev/null 2>&1; then echo "engine_sendable_mutation_failed" >&2; return 1; fi
+  cp -- "$package_root/Sources/BeautySDK/BeautyEngine.swift" "$mutation_path"
+  mutation_path="$temporary_root/BeautySDK/Sources/BeautySDK/BeautyEngine+Sendable.swift"
+  printf 'extension BeautyEngine: Sendable {}\n' >"$mutation_path"
+  if validate_static_boundary "$temporary_root" >/dev/null 2>&1; then echo "engine_extension_sendable_mutation_failed" >&2; return 1; fi
+  rm -- "$mutation_path"
+  mutation_path="$temporary_root/BeautySDK/Sources/BeautySDK/BeautyEngineTrivia.swift"
+  printf '%s\n' \
+    '// extension BeautyEngine: Sendable {}' \
+    'let fakeEngineConformance = "extension BeautyEngine: @unchecked Sendable {}"' \
+    >"$mutation_path"
+  validate_static_boundary "$temporary_root" >/dev/null || { echo "engine_sendable_trivia_false_positive" >&2; return 1; }
+  rm -- "$mutation_path"
+  mutation_path="$temporary_root/BeautySDK/Tests/BeautyCoreTests/BeautyBackendSelectionConcurrencyTests.swift"
+  python3 - "$mutation_path" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+path.write_text(value.replace(
+    "testBoundedIndependentEngineInstancesMayExecuteConcurrently",
+    "testSharedEngineMayExecuteConcurrently",
+    1,
+), encoding="utf-8")
+PY
+  if validate_static_boundary "$temporary_root" >/dev/null 2>&1; then echo "independent_engine_evidence_mutation_failed" >&2; return 1; fi
+  cp -- "$package_root/Tests/BeautyCoreTests/BeautyBackendSelectionConcurrencyTests.swift" "$mutation_path"
+  mutation_path="$temporary_root/BeautySDK/Tests/BeautyCoreTests/BeautyEngineLocalRetouchFoundationTests.swift"
+  python3 - "$mutation_path" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+path.write_text(value.replace(
+    'XCTAssertFalse(flags.contains("same-engine-parallel-safe"))',
+    'XCTAssertTrue(flags.contains("same-engine-parallel-safe"))',
+    1,
+), encoding="utf-8")
+PY
+  if validate_static_boundary "$temporary_root" >/dev/null 2>&1; then echo "same_engine_parallel_claim_mutation_failed" >&2; return 1; fi
+  cp -- "$package_root/Tests/BeautyCoreTests/BeautyEngineLocalRetouchFoundationTests.swift" "$mutation_path"
   mutation_path="$temporary_root/BeautySDK/Tests/BeautyEffectsTests/BeautyBackendParityFixtureFactory.swift"
   python3 - "$mutation_path" <<'PY'
 from pathlib import Path

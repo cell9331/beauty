@@ -236,7 +236,9 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         XCTAssertEqual(Set([firstValue, secondValue]), Set([11, 22]))
     }
 
-    func testSameHarnessParallelInvocationsSerializeCompleteRequestTransactions() async throws {
+    func testConcurrentCallersUseSerializingHarnessBeforeAccessingOneEngine() async throws {
+        // This harness is the caller-side serialization boundary. The test does
+        // not exercise simultaneous access inside one BeautyEngine instance.
         let expectedValueIDs = Set(1...32)
         let harness = try SDKTestingLocalRetouchFoundationHarness(
             admittedPrivateDemandCount: 1,
@@ -627,7 +629,7 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         }
     }
 
-    func testConcurrencyNonclaimsRemainFlaggedNotPassedClaims() {
+    func testConcurrencyContractRequiresCallerSerializationForOneEngineInstance() {
         let flags = Set([
             "PATH01-CONCURRENCY",
             "PATH04-CONCURRENCY",
@@ -635,8 +637,8 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         ])
         XCTAssertEqual(flags.count, 3)
         XCTAssertFalse(flags.contains("same-engine-parallel-safe"))
-        // TD-013 and mutable selected-face policy intentionally keep same-engine
-        // concurrency and cooperative cancellation outside Phase 53's claim.
+        // BeautyEngine is intentionally non-Sendable. Callers serialize every
+        // process, processResult, and reset access made to the same instance.
     }
 
     private static func floatingPointImage(

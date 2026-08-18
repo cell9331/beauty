@@ -419,6 +419,81 @@ def find_unconditional_beauty_result_sendability(text):
     return False
 
 
+def find_named_sendable_conformance(text, type_name):
+    """Detect direct/extension Sendable conformance without comment/string false positives."""
+    tokens = swift_tokens(text)
+    for index, token in enumerate(tokens):
+        if token != type_name or index == 0 or tokens[index - 1] not in {"class", "extension"}:
+            continue
+        header_end = index + 1
+        while header_end < len(tokens) and tokens[header_end] != "{":
+            header_end += 1
+        header = tokens[index + 1:header_end]
+        if ":" not in header:
+            continue
+        inheritance = header[header.index(":") + 1:]
+        if "where" in inheritance:
+            inheritance = inheritance[:inheritance.index("where")]
+        if "Sendable" in inheritance:
+            return True
+    return False
+
+
+engine_path = root / "BeautySDK/Sources/BeautySDK/BeautyEngine.swift"
+selection_path = root / "BeautySDK/Tests/BeautyCoreTests/BeautyBackendSelectionConcurrencyTests.swift"
+foundation_path = root / "BeautySDK/Tests/BeautyCoreTests/BeautyEngineLocalRetouchFoundationTests.swift"
+for contract_path in (engine_path, selection_path, foundation_path):
+    if not contract_path.is_file() or contract_path.is_symlink():
+        raise SystemExit(f"BeautyEngine concurrency contract source missing: {contract_path.relative_to(root)}")
+engine_text = engine_path.read_text(encoding="utf-8")
+engine_contract = """/// A stateful, intentionally non-`Sendable` processing engine.
+///
+/// Callers must serialize all `process`, `processResult`, and `reset` access to the same instance.
+/// Independent `BeautyEngine` instances may execute concurrently.
+public final class BeautyEngine"""
+if engine_text.count(engine_contract) != 1:
+    raise SystemExit("exact BeautyEngine class-level caller-serialization contract missing")
+if find_named_sendable_conformance(engine_text, "BeautyEngine"):
+    raise SystemExit("BeautyEngine must not declare direct or extension Sendable conformance")
+
+selection_text = selection_path.read_text(encoding="utf-8")
+selection_case_name = "func testBoundedIndependentEngineInstancesMayExecuteConcurrently() async throws"
+selection_case_start = selection_text.find(selection_case_name)
+selection_case_end = selection_text.find("\n    func ", selection_case_start + len(selection_case_name))
+if selection_case_start < 0:
+    raise SystemExit("bounded independent-engine concurrency case missing")
+if selection_case_end < 0:
+    selection_case_end = len(selection_text)
+selection_case = selection_text[selection_case_start:selection_case_end]
+for marker in ("withThrowingTaskGroup", "for index in 0..<6", "let engine = try BeautyEngine", "recorder.callCount"):
+    if selection_case.count(marker) != 1:
+        raise SystemExit(f"bounded independent-engine concurrency evidence missing: {marker}")
+if selection_text.count("withThrowingTaskGroup") != 1:
+    raise SystemExit("unexpected additional BeautyEngine concurrency evidence")
+
+foundation_text = foundation_path.read_text(encoding="utf-8")
+serialized_case_name = "func testConcurrentCallersUseSerializingHarnessBeforeAccessingOneEngine() async throws"
+serialized_case_start = foundation_text.find(serialized_case_name)
+serialized_case_end = foundation_text.find("\n    func ", serialized_case_start + len(serialized_case_name))
+if serialized_case_start < 0 or serialized_case_end < 0:
+    raise SystemExit("caller-side serialized shared-engine case missing")
+serialized_case = foundation_text[serialized_case_start:serialized_case_end]
+for marker in ("caller-side serialization boundary", "withThrowingTaskGroup", "harness.invoke"):
+    if marker not in serialized_case:
+        raise SystemExit(f"caller-side serialization evidence missing: {marker}")
+if "let engine" in serialized_case:
+    raise SystemExit("serialized caller-wrapper case directly accesses BeautyEngine")
+
+nonclaim_case_name = "func testConcurrencyContractRequiresCallerSerializationForOneEngineInstance()"
+nonclaim_case_start = foundation_text.find(nonclaim_case_name)
+nonclaim_case_end = foundation_text.find("\n    func ", nonclaim_case_start + len(nonclaim_case_name))
+if nonclaim_case_start < 0 or nonclaim_case_end < 0:
+    raise SystemExit("same-engine concurrency nonclaim case missing")
+nonclaim_case = foundation_text[nonclaim_case_start:nonclaim_case_end]
+if 'XCTAssertFalse(flags.contains("same-engine-parallel-safe"))' not in nonclaim_case:
+    raise SystemExit("same-engine parallel-safety claim is not rejected")
+
+
 for directory, directory_names, file_names in os.walk(root, topdown=True, followlinks=False):
     relative_directory = Path(directory).relative_to(root).as_posix()
     prefix = "" if relative_directory == "." else relative_directory + "/"
@@ -458,13 +533,14 @@ for directory, directory_names, file_names in os.walk(root, topdown=True, follow
             ui_test = re.search(r"\b(?:XCUIApplication|XCUIDevice|XCUIScreen)\b", text)
             if ui_test:
                 raise SystemExit(f"active UI-test dependency remains in {relative}: {ui_test.group(0)}")
-            # BeautyResult may only promise Sendable conditionally.  Parse
-            # Swift tokens so comments and strings cannot manufacture a where
-            # clause or hide the trivia between @unchecked and Sendable.
+            # Parse Swift tokens so comments and strings cannot manufacture
+            # concurrency conformances or hide conformance trivia.
             if find_unconditional_beauty_result_sendability(text):
                 raise SystemExit(
                     f"unconditional generic BeautyResult Sendable conformance remains: {relative}"
                 )
+            if find_named_sendable_conformance(text, "BeautyEngine"):
+                raise SystemExit(f"BeautyEngine Sendable conformance remains: {relative}")
 
 tracked = subprocess.run(
     ["git", "-C", str(root), "ls-files", "-z"], check=True, stdout=subprocess.PIPE
@@ -536,10 +612,17 @@ self_test() {
     fixture="$(mktemp -d "${TMPDIR:-/tmp}/sdk-boundary-self-test.XXXXXX")"
     fixture="$(cd "$fixture" && pwd -P)"
     trap 'rm -rf "$fixture"' EXIT
-    mkdir -p "$fixture/scripts" "$fixture/docs" "$fixture/BeautySDK/Sources/BeautyCore/Models"
+    mkdir -p "$fixture/scripts" "$fixture/docs" "$fixture/BeautySDK/Sources/BeautyCore/Models" \
+        "$fixture/BeautySDK/Sources/BeautySDK" "$fixture/BeautySDK/Tests/BeautyCoreTests"
     cp "$PROJECT_ROOT/docs/SDK_EFFECT_TAXONOMY.md" "$fixture/docs/SDK_EFFECT_TAXONOMY.md"
     cp "$PROJECT_ROOT/BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift" \
         "$fixture/BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift"
+    cp "$PROJECT_ROOT/BeautySDK/Sources/BeautySDK/BeautyEngine.swift" \
+        "$fixture/BeautySDK/Sources/BeautySDK/BeautyEngine.swift"
+    cp "$PROJECT_ROOT/BeautySDK/Tests/BeautyCoreTests/BeautyBackendSelectionConcurrencyTests.swift" \
+        "$fixture/BeautySDK/Tests/BeautyCoreTests/BeautyBackendSelectionConcurrencyTests.swift"
+    cp "$PROJECT_ROOT/BeautySDK/Tests/BeautyCoreTests/BeautyEngineLocalRetouchFoundationTests.swift" \
+        "$fixture/BeautySDK/Tests/BeautyCoreTests/BeautyEngineLocalRetouchFoundationTests.swift"
     printf '%s\n' \
         'public struct BeautyResult<Output> {}' \
         'extension BeautyResult: Sendable where Output: Sendable {}' \
@@ -631,6 +714,64 @@ PY
         'extension BeautyResult: @unchecked Sendable where Output: Sendable {}' \
         > "$fixture/BeautySDK/Sources/BeautyCore/Models/BeautyResult.swift"
     validate_post_archive "$fixture" >/dev/null
+    python3 - "$fixture/BeautySDK/Sources/BeautySDK/BeautyEngine.swift" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+path.write_text(value.replace(
+    "Callers must serialize all `process`, `processResult`, and `reset` access to the same instance.",
+    "Callers may overlap access to the same instance.",
+    1,
+), encoding="utf-8")
+PY
+    expect_failure validate_post_archive "$fixture"
+    cp "$PROJECT_ROOT/BeautySDK/Sources/BeautySDK/BeautyEngine.swift" \
+        "$fixture/BeautySDK/Sources/BeautySDK/BeautyEngine.swift"
+    python3 - "$fixture/BeautySDK/Sources/BeautySDK/BeautyEngine.swift" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+path.write_text(value.replace("public final class BeautyEngine {", "public final class BeautyEngine: @unchecked Sendable {", 1), encoding="utf-8")
+PY
+    expect_failure validate_post_archive "$fixture"
+    cp "$PROJECT_ROOT/BeautySDK/Sources/BeautySDK/BeautyEngine.swift" \
+        "$fixture/BeautySDK/Sources/BeautySDK/BeautyEngine.swift"
+    printf 'extension BeautyEngine: Sendable {}\n' \
+        > "$fixture/BeautySDK/Sources/BeautySDK/BeautyEngine+Sendable.swift"
+    expect_failure validate_post_archive "$fixture"
+    rm "$fixture/BeautySDK/Sources/BeautySDK/BeautyEngine+Sendable.swift"
+    printf '%s\n' \
+        '// extension BeautyEngine: Sendable {}' \
+        'let fakeEngineConformance = "extension BeautyEngine: @unchecked Sendable {}"' \
+        > "$fixture/BeautySDK/Sources/BeautySDK/BeautyEngineTrivia.swift"
+    validate_post_archive "$fixture" >/dev/null
+    rm "$fixture/BeautySDK/Sources/BeautySDK/BeautyEngineTrivia.swift"
+    python3 - "$fixture/BeautySDK/Tests/BeautyCoreTests/BeautyBackendSelectionConcurrencyTests.swift" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+path.write_text(value.replace(
+    "testBoundedIndependentEngineInstancesMayExecuteConcurrently",
+    "testSharedEngineMayExecuteConcurrently",
+    1,
+), encoding="utf-8")
+PY
+    expect_failure validate_post_archive "$fixture"
+    cp "$PROJECT_ROOT/BeautySDK/Tests/BeautyCoreTests/BeautyBackendSelectionConcurrencyTests.swift" \
+        "$fixture/BeautySDK/Tests/BeautyCoreTests/BeautyBackendSelectionConcurrencyTests.swift"
+    python3 - "$fixture/BeautySDK/Tests/BeautyCoreTests/BeautyEngineLocalRetouchFoundationTests.swift" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+path.write_text(value.replace(
+    'XCTAssertFalse(flags.contains("same-engine-parallel-safe"))',
+    'XCTAssertTrue(flags.contains("same-engine-parallel-safe"))',
+    1,
+), encoding="utf-8")
+PY
+    expect_failure validate_post_archive "$fixture"
+    cp "$PROJECT_ROOT/BeautySDK/Tests/BeautyCoreTests/BeautyEngineLocalRetouchFoundationTests.swift" \
+        "$fixture/BeautySDK/Tests/BeautyCoreTests/BeautyEngineLocalRetouchFoundationTests.swift"
     local ignored_build_external
     ignored_build_external="$(mktemp -d "${TMPDIR:-/tmp}/sdk-boundary-ignored-build.XXXXXX")"
     mkdir -p "$ignored_build_external/release" "$ignored_build_external/debug" \

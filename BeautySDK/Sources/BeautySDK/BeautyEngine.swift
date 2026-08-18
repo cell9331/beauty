@@ -7,6 +7,10 @@ import BeautyCore
 import BeautyDetection
 import BeautyEffects
 
+/// A stateful, intentionally non-`Sendable` processing engine.
+///
+/// Callers must serialize all `process`, `processResult`, and `reset` access to the same instance.
+/// Independent `BeautyEngine` instances may execute concurrently.
 public final class BeautyEngine {
     public let configuration: BeautyConfiguration
     var faceDetector: VisionFaceDetector
