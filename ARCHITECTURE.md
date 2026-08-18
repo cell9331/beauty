@@ -23,15 +23,17 @@ parity credit. Today's Metal-available branch recorded `metal_available=1`,
 `metal_unavailable=0`, `parity_executed=1`, `focused_tests=12`, and
 `unavailable_tests=0`. Current focused preflights passed backend-neutral
 `22/0/0`, Metal runtime `40/0/0`, Metal feature `32/0/0`, configuration
-`17/0/0`, and CPU reference `41/0/0`.
+`17/0/0`, and CPU reference `41/0/0`. Geometry safety parity now derives its
+plan, control points, locality envelope, and rendered request from one immutable
+face observation (`a577dd1`), with request equality and mutation-tested static
+provenance checks.
 
 Current broad CPU/GPU equivalence remains unclaimed. Local-retouch bytes are
 still composed on CPU before an identity Metal dispatch; the GPU still-image
 path rejects transparency and normalizes to named sRGB differently from CPU;
 CPU and Metal still-image coefficients/lip math are not fully identical;
-geometry safety parity derives its envelope from a separate generated
-observation; and there is
-no same-engine/same-runtime concurrent-execution contract or evidence. These
+and there is no same-engine/same-runtime concurrent-execution contract or
+evidence. These
 gaps also preclude device, commercial, packaging, shipping, launch, and release-
 readiness claims.
 
@@ -52,7 +54,7 @@ Current source/test inventory, excluding `.build`:
 | Swift source files | 72 |
 | SwiftPM test files | 74 |
 | Swift source lines | 16,707 |
-| SwiftPM test lines | 33,276 |
+| SwiftPM test lines | 33,278 |
 | `BeautyConfiguration` stored fields | 11 |
 
 ## 2. Top-Level Invariants

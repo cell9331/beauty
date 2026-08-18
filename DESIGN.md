@@ -19,10 +19,13 @@ fails closed. The current archive-first closeout passed on 2026-08-18 with
 XCTest `771/0/0`, all eight opt-ins exactly once, and `skipped_tests=0`; the
 archived `765/0/0` remains historical.
 
+Geometry safety parity now uses one immutable face observation to derive its
+plan, control points, locality envelope, and rendered request (`a577dd1`); the
+gate mutation-tests both the support handoff and request-level equality proof.
+
 Design nonclaims remain explicit: local retouch is CPU composition followed by
 an identity GPU pass; GPU still-image transparency/color handling differs from
-CPU; CPU and Metal coefficient/lip math is not fully identical; geometry safety
-parity uses a separate generated observation for its envelope; and same-engine/same-runtime
+CPU; CPU and Metal coefficient/lip math is not fully identical; and same-engine/same-runtime
 concurrency is not specified or proven. Only a Metal-available parity branch can
 report `focused_tests=12` / `parity_executed=1`; unavailable-host typed coverage
 reports `parity_executed=0` and is not GPU parity success.

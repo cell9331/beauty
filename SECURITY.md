@@ -16,9 +16,10 @@ The remaining audit findings do not expose durable raw payloads, but they limit
 what the evidence can authorize. Backend-result alpha/extent publication now
 fails closed without inspecting or retaining pixels. Local retouch is CPU-
 composed before an identity GPU dispatch; GPU transparency/color handling and
-still-image math differ from CPU; geometry safety uses a separately generated
-envelope observation; and shared-engine/runtime
-concurrency is unproven. An unavailable host reports `parity_executed=0` and
+still-image math differ from CPU; and shared-engine/runtime concurrency is
+unproven. Geometry safety now derives its envelope and request support from one
+immutable observation with mutation-tested ownership (`a577dd1`). An unavailable
+host reports `parity_executed=0` and
 never GPU parity success. The current Metal-available branch recorded
 `metal_available=1`, `metal_unavailable=0`, `parity_executed=1`,
 `focused_tests=12`, and `unavailable_tests=0`. The archive-first closeout passed

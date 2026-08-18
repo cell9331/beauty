@@ -26,36 +26,6 @@
 
 ## 3. Active
 
-### P-2026-08-18-v1-17-audit-followup
-
-| Field | Value |
-| --- | --- |
-| Status | `verifying` |
-| Owner | Codex |
-| Started | 2026-08-18 |
-| Scope | Repair the remaining auto-fixable F-09 parity-oracle provenance defect, preserve the completed bounded closeout, and surface manual architectural findings without silently choosing product semantics. |
-| Source Request | User asked to continue after the bounded v1.17 post-archive remediation review. |
-| Current Step | Run the archive-first closeout after the focused F-09 parity and mutation gates passed. |
-| Verification Policy | Run focused safety/parity tests, mutation-tested parity preflight, `git diff --check`, and the archive-first no-skip wrapper if the parity gate changes. |
-
-Checklist:
-
-| Step | Status | Evidence |
-| --- | --- | --- |
-| Classify remaining findings | `completed` | F-09 is auto-fixable and test-local; F-02/F-04/F-05/F-10 remain manual-only because they establish architecture, compatibility, or public concurrency semantics. |
-| Fix F-09 parity observation provenance | `completed` | One immutable `sharedFaceObservation` now derives geometry, plan, control points, locality envelope, and `selectedFaceSupport`; request equality plus two mutation checks fail closed. Safety parity passes `4/0/0`; live parity passes `12/0/0`. |
-| Verify and record | `active` | Focused tests and parity self/live gates are green; archive-first closeout pending. |
-| Present manual decisions | `planned` | Pending recommended choices and tradeoffs for F-02/F-04/F-05/F-10. |
-
-Manual-only queue:
-
-| Finding | Reason |
-| --- | --- |
-| F-02 local-retouch GPU ownership | Genuine GPU composition versus an honestly narrowed CPU-owned composition contract is an architecture/product decision. |
-| F-04 transparent/color-profile input | Supporting transparency requires a declared background/alpha-restoration policy; rejecting it preserves the current fail-closed contract. |
-| F-05 CPU/Metal still-image math | Coefficient and lip-math migration changes rendered output and requires compatibility fixtures plus product approval. |
-| F-10 shared-instance concurrency | A same-engine/runtime test would establish supported public concurrency semantics that are currently unspecified. |
-
 ### P-2026-08-14-phase-66-sdk-only-boundary
 
 | Field | Value |
@@ -329,6 +299,37 @@ Exact ordered Phase 64 task authority is: `64-01-01`, `64-01-02`,
 
 ## 4. Completed
 
+### P-2026-08-18-v1-17-audit-followup
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
+| Owner | Codex |
+| Started | 2026-08-18 |
+| Completed | 2026-08-18 |
+| Scope | Repair the remaining auto-fixable F-09 parity-oracle provenance defect, preserve the completed bounded closeout, and surface manual architectural findings without silently choosing product semantics. |
+| Source Request | User asked to continue after the bounded v1.17 post-archive remediation review. |
+| Current Step | F-09 and its mutation-tested gate are complete; F-02/F-04/F-05/F-10 remain explicit manual decisions. |
+| Verification Policy | Focused safety/parity tests, mutation-tested parity preflight, `git diff --check`, and the archive-first no-skip wrapper. |
+
+Checklist:
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| Classify remaining findings | `completed` | F-09 was auto-fixable and test-local; F-02/F-04/F-05/F-10 remain manual-only because they establish architecture, compatibility, or public concurrency semantics. |
+| Fix F-09 parity observation provenance | `completed` | One immutable `sharedFaceObservation` now derives geometry, plan, control points, locality envelope, and `selectedFaceSupport`; request equality plus two mutation checks fail closed. Safety parity passes `4/0/0`; live parity passes `12/0/0`. |
+| Verify and record | `completed` | Parity self/live gates pass and the archive-first wrapper executes XCTest `771/0/0`, all eight opt-ins exactly once, with `skipped_tests=0`. |
+| Present manual decisions | `completed` | The handoff recommends an honestly narrowed CPU-owned local-retouch contract, continued fail-closed transparent-input rejection, CPU-oracle math alignment, and explicit shared-instance serialization semantics; implementation awaits product authorization. |
+
+Manual-only queue:
+
+| Finding | Reason |
+| --- | --- |
+| F-02 local-retouch GPU ownership | Genuine GPU composition versus an honestly narrowed CPU-owned composition contract is an architecture/product decision. |
+| F-04 transparent/color-profile input | Supporting transparency requires a declared background/alpha-restoration policy; rejecting it preserves the current fail-closed contract. |
+| F-05 CPU/Metal still-image math | Coefficient and lip-math migration changes rendered output and requires compatibility fixtures plus product approval. |
+| F-10 shared-instance concurrency | A same-engine/runtime test would establish supported public concurrency semantics that are currently unspecified. |
+
 ### P-2026-08-17-v1-17-audit-remediation
 
 | Field | Value |
@@ -346,7 +347,7 @@ Checklist:
 
 | Step | Status | Evidence |
 | --- | --- | --- |
-| Classify findings | `completed` | F-01/F-03/F-06/F-07/F-08 were auto-fixable; F-02/F-04/F-05/F-10 require design decisions; F-09 was beyond the default five-finding cap and remains separately scoped. |
+| Classify findings | `completed` | F-01/F-03/F-06/F-07/F-08 were auto-fixable; F-02/F-04/F-05/F-10 require design decisions; F-09 was beyond this plan's default five-finding cap and was subsequently repaired by `P-2026-08-18-v1-17-audit-followup`. |
 | Fix F-01 public metadata compatibility | `completed` | Raw pixel-buffer and ordinary still-image requests accept public orientation/mirror metadata; canonical carriers remain strictly `.up` and non-mirrored. Focused coverage passes `25/0/0`; the mutation-tested configuration preflight passes `17/0/0`. |
 | Fix F-03 unavailable-host parity accounting | `completed` | Metal is probed first. Available hosts require 10 named Metal case sentinels within `12/0/0`; unavailable hosts run only 2 typed selection tests, report `parity_executed=0`, and emit no parity-success marker. |
 | Fix F-06 Metal geometry binding bound | `completed` | Geometry points use one request-local shared `MTLBuffer`; 146-point/4088-byte, 147-point/4116-byte, and 256-point/7168-byte cases plus allocation failure are resource-clean. Feature-pass `32/0/0` and mutation-tested runtime `40/0/0` preflights pass. |
@@ -360,7 +361,7 @@ Open Questions:
 | --- | --- |
 | F-02 local-retouch GPU ownership | Manual-only: separately decide between actual GPU composition and an honestly narrowed backend contract. |
 | F-04/F-05 still-image compatibility | Manual-only: alpha/color-profile policy and CPU/Metal algorithm migration require explicit contract decisions and broader fixtures. |
-| F-09 geometry safety provenance | Separately repair the parity oracle so the locality envelope and rendered request derive from the same face observation. |
+| F-09 geometry safety provenance | Resolved in follow-up commit `a577dd1`: the locality envelope and rendered request now derive from one immutable observation, with mutation-tested provenance checks. |
 | F-10 shared-instance concurrency | Manual-only: define supported shared-engine/runtime concurrency semantics before adding a test that would establish new public behavior. |
 
 ### C-2026-08-14-phase-69-public-concurrency-repair-and-sdk-only-closeout
@@ -3760,7 +3761,7 @@ Outcome:
 | TD-007 | GSD Traceability | Historical v2 `ADV-01` through `ADV-10` remain in archived `.planning/milestones/v1.0-REQUIREMENTS.md`, not in an active root requirements file. | No current audit warning or active traceability ambiguity remains after milestone archival. | Keep them historical/backlog-only unless a future milestone explicitly promotes one. | `completed` |
 | TD-008 | Manual Device QA | Simulator, physical-iPhone, live-camera endurance, and 600-second preview evidence are not part of the current SDK algorithm/pipeline objective. | No impact on the planned SwiftPM CPU/GPU correctness claims; these checks would matter only for a future realtime/device or shipping milestone. | Keep explicitly out of scope and reopen only if realtime device behavior, performance budgets, or release claims are authorized. | `out-of-scope/sdk-first` |
 | TD-009 | Historical UI QA | Application layout, screenshots, and UI automation belong to the retired legacy material. | No impact on SDK algorithm or renderer-output acceptance. | Review only through `archives/legacy-ui/README.md` in a temporary directory; do not reactivate UI validation. | `out-of-scope/archived` |
-| TD-010 | Algorithm Output and Hardware QA | Generated CPU/Metal package-host comparison now exists, but F-02/F-04/F-05/F-09/F-10 prevent a broad semantic or shared-runtime equivalence claim. Demo screenshots, physical-device testing, commercial review, packaging, and shipping remain separate scopes. | A green generated matrix can still miss end-to-end GPU ownership, color/alpha policy, oracle provenance, or shared-instance behavior. | Preserve the current CPU oracle and bounded parity gate; address TD-016 through TD-019 before making broader claims. | `partial/post-v1.17-audit` |
+| TD-010 | Algorithm Output and Hardware QA | Generated CPU/Metal package-host comparison now exists, but F-02/F-04/F-05/F-10 prevent a broad semantic or shared-runtime equivalence claim. F-09 oracle provenance is repaired. Demo screenshots, physical-device testing, commercial review, packaging, and shipping remain separate scopes. | A green generated matrix can still miss end-to-end GPU ownership, color/alpha policy, math compatibility, or shared-instance behavior. | Preserve the current CPU oracle and bounded parity gate; address TD-016, TD-017, and TD-019 before making broader claims. | `partial/post-v1.17-audit` |
 | TD-011 | Codebase Maps | Current structure/stack/testing maps were refreshed from the post-archive SDK-only tree on 2026-08-18. | No current stale application/test inventory remains; manual audit gaps are explicitly mapped. | Refresh maps after material package, dependency, source-layout, test, or audit-status changes. | `completed` |
 | TD-012 | Input Bounds | Public 32 MiB encoded and 50,000,000-pixel ceilings are source-/legacy-Codable-compatible and enforced at SDK plus current Demo boundaries. | PhotosPicker still materializes `Data` before the Demo can observe its size; downstream decode/render amplification is bounded. | Revisit only if a future transfer API exposes a pre-materialization size boundary. | `completed` |
 | TD-013 | Public Concurrency | The unconditional arbitrary-payload `@unchecked Sendable` declaration was a public trust-boundary defect. | Resolved by the conditional `Output: Sendable` conformance, public compile/runtime transfer coverage, and boundary mutation rejection. | Preserve the conditional contract; reopen only if a future public result payload or backend boundary changes the concurrency model. | `completed-phase-69` |
@@ -3768,7 +3769,7 @@ Outcome:
 | TD-015 | Render Backend | v1.17 delivered selectable `.cpu`/`.gpu` policy, package Metal runtime/passes, and bounded generated parity while retaining CPU as the oracle. | Infrastructure is complete, but the post-archive audit found semantic and evidence gaps that prevent broad equivalence. | Preserve the selectable backend contract and route remaining work through TD-016 through TD-019. | `completed-infrastructure` |
 | TD-016 | Metal Local Retouch | F-02: local-retouch bytes are composed on CPU before an identity Metal dispatch. | The current `.gpu` path does not establish end-to-end GPU ownership for teeth/sclera retouch. | Make an explicit architecture decision: implement genuine GPU composition or narrow the backend/product claim to CPU-owned composition transport. | `open/manual-decision` |
 | TD-017 | Still-Image Compatibility | F-04/F-05: GPU still-image transparency/color-space policy and coefficient/lip-math semantics differ from the CPU reference. | Inputs or active effects can reject or render differently despite passing the bounded generated matrix. | Define alpha/color-profile compatibility, align coefficients and lip math, then add licensed/real and generated cross-backend fixtures. | `open/manual-contract` |
-| TD-018 | Parity Oracle Provenance | F-09: geometry safety parity derives its locality envelope from a separately generated face observation rather than the observation used by the rendered request. | A test can pass while validating containment against the wrong geometry owner. | Build request and locality envelope from one immutable observation and mutation-test that provenance. | `open/separate-fix` |
+| TD-018 | Parity Oracle Provenance | F-09 found that geometry safety parity derived its locality envelope from a separately generated face observation rather than the observation used by the rendered request. | Resolved: one immutable observation now owns geometry, plan, points, envelope, and request support, and the parity self-test rejects broken provenance. | Preserve the request equality proof and mutation-tested static gate. | `completed-followup` |
 | TD-019 | Shared Runtime Concurrency | F-10: no same-engine/same-runtime concurrent execution contract or evidence exists. | Request-local tests across independent instances do not prove one shared runtime is safe or supported. | Decide supported shared-instance semantics, then add race/resource/failure-isolation coverage without silently widening public guarantees. | `open/manual-contract` |
 
 ## 6. Plan Template

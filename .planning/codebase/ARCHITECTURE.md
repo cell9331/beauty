@@ -11,12 +11,14 @@ compatibility, unavailable-host parity accounting, and Metal geometry binding;
 geometry point arrays now use a request-local shared `MTLBuffer`. Local retouch
 remains CPU composition followed by an identity GPU pass, GPU still-image
 transparency/color and math still differ from CPU, backend-result alpha/extent
-publication now fails closed, geometry safety envelope provenance is not yet shared,
-and same-engine/same-runtime concurrency is unproven. Only an available branch
+publication now fails closed, geometry safety envelope provenance now uses one
+immutable observation with mutation-tested request ownership, and
+same-engine/same-runtime concurrency is unproven. Only an available branch
 with `parity_executed=1` receives GPU parity credit; unavailable coverage reports
 `parity_executed=0`. The current Metal-available archive-first closeout passes
 XCTest `771/0/0`, all eight opt-ins exactly once, and zero skips; this closes the
-five bounded automatic fixes, not the remaining manual gaps.
+five bounded automatic fixes plus the F-09 provenance follow-up, not the
+remaining manual gaps.
 
 ## System Overview
 

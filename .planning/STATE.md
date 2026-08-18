@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.17
 milestone_name: Dual CPU/GPU Metal Rendering
-status: Post-archive audit remediation complete
-stopped_at: Bounded remediation closeout verified
-last_updated: "2026-08-18T01:02:56Z"
+status: Post-archive audit follow-up complete
+stopped_at: F-09 provenance follow-up verified; manual decisions queued
+last_updated: "2026-08-18T01:15:00Z"
 last_activity: 2026-08-18
-last_activity_desc: Five bounded audit fixes and archive-first closeout verified
+last_activity_desc: F-09 parity provenance repaired and archive-first closeout verified
 progress:
   total_phases: 5
   completed_phases: 5
@@ -26,14 +26,15 @@ See: `.planning/PROJECT.md` (updated 2026-08-18)
 **Core value:** An iOS app can integrate `BeautySDK` and get natural,
 controllable, real-time and still-image beauty processing through a stable
 modular facade.
-**Current focus:** bounded v1.17 post-archive remediation is complete; manual
-gaps remain separately scoped and Phase 74 remains a historical lifecycle record.
+**Current focus:** bounded v1.17 post-archive remediation plus the F-09
+provenance follow-up are complete; manual gaps remain separately scoped and
+Phase 74 remains a historical lifecycle record.
 
 ## Current Position
 
 Phase: Post-archive audit of historically archived v1.17
-Plan: `P-2026-08-17-v1-17-audit-remediation`
-Status: Complete — F-01/F-03/F-06/F-07/F-08 repaired and verified
+Plan: `P-2026-08-18-v1-17-audit-followup`
+Status: Complete — F-09 provenance repaired and verified; manual decisions remain
 Last activity: 2026-08-18 — archive-first closeout passed XCTest `771/0/0`
 
 ## Current Audit Qualification
@@ -51,8 +52,12 @@ Today's available branch recorded `metal_available=1`, `metal_unavailable=0`,
 preflights passed backend-neutral `22/0/0`, Metal runtime `40/0/0`, Metal
 feature `32/0/0`, configuration `17/0/0`, and CPU reference `41/0/0`.
 
-Open audit work: F-02 local-retouch GPU ownership, F-04 transparency/color policy, F-05 coefficient/lip-
-math equivalence, F-09 geometry-envelope provenance, and F-10 same-engine/same-
+F-09 is repaired: one immutable `sharedFaceObservation` derives geometry, plan,
+control points, locality envelope, and `selectedFaceSupport`; request equality
+and two parity-gate mutations fail closed (`a577dd1`).
+
+Open audit work: F-02 local-retouch GPU ownership, F-04 transparency/color policy,
+F-05 coefficient/lip-math equivalence, and F-10 same-engine/same-
 runtime concurrency require manual decisions or separately scoped evidence.
 No broad equivalence, device, commercial, packaging, shipping, launch, or
 release-readiness conclusion is current.
@@ -145,8 +150,10 @@ None found under `.planning/todos/pending/`.
 ### Blockers/Concerns
 
 - F-08 result alpha/extent enforcement is remediated with fail-closed contract tests.
-- F-02/F-04/F-05/F-09/F-10 require manual decisions or separately scoped
+- F-02/F-04/F-05/F-10 require manual decisions or separately scoped
   evidence before any broad CPU/GPU equivalence claim.
+- F-09 geometry-envelope provenance is repaired and mutation-tested from one
+  immutable observation.
 - Device/performance, commercial, packaging, shipping, launch, and release-
   readiness evidence remain outside this milestone.
 
@@ -159,10 +166,10 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-18T01:02:56Z
-Stopped at: Bounded remediation closeout verified
+Last session: 2026-08-18T01:15:00Z
+Stopped at: F-09 provenance follow-up verified; manual decisions queued
 Resume file: `PLANS.md`
-Next action: separately plan F-02/F-04/F-05/F-09/F-10 without treating the
+Next action: obtain product direction, then separately plan F-02/F-04/F-05/F-10 without treating the
 bounded closeout as broad CPU/GPU equivalence.
 
 ## Operator Next Steps

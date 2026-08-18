@@ -9,9 +9,10 @@ The Phase-74 focused `12/0/0` and full `765/0/0` records are historical
 Metal-available evidence. Current remediation has fixed raw metadata routing,
 unavailable-host parity credit, and geometry point binding through a request-
 local shared `MTLBuffer`; an unavailable branch reports `parity_executed=0`.
-Local retouch remains CPU-composed before an identity Metal pass, and the other
-documented transparency/color, math, result-invariant, envelope-provenance, and
-shared-runtime concurrency gaps remain open.
+Local retouch remains CPU-composed before an identity Metal pass. The remaining
+gaps are transparency/color, math, and shared-runtime concurrency; result
+invariants are fail-closed, and F-09 envelope provenance now derives from one
+immutable observation and is mutation-tested.
 The current Metal-available archive-first closeout passes XCTest `771/0/0`, all
 eight opt-ins exactly once, and zero skips. This package-host result does not
 promote the open semantic gaps into broad equivalence or release evidence.

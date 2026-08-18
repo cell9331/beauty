@@ -23,8 +23,9 @@ at XCTest `771/0/0`, all eight opt-ins exactly once, and `skipped_tests=0`.
 Broad
 equivalence is also blocked by CPU-owned local-retouch composition followed by
 identity GPU dispatch, different GPU transparency/sRGB policy, coefficient/lip-
-math drift, a geometry safety envelope from a separate observation, and no
-same-engine/same-runtime concurrency proof. Backend results now fail closed on
+math drift, and no same-engine/same-runtime concurrency proof. Geometry safety
+parity now derives the envelope and rendered request from one immutable
+observation (`a577dd1`) and mutation-tests that provenance. Backend results now fail closed on
 false alpha/extent flags and still-image extent-origin drift.
 
 ## 1. Posture
@@ -302,4 +303,5 @@ release-readiness claim follows.
 The current bounded closeout evidence is backend-neutral `22/0/0`, Metal
 runtime `40/0/0`, Metal feature `32/0/0`, configuration `17/0/0`, CPU reference
 `41/0/0`, parity `12/0/0`, and full XCTest `771/0/0`. These results close the
-five automatic audit fixes, not the manual gaps or excluded product claims.
+five automatic audit fixes plus the F-09 provenance follow-up, not the manual
+gaps or excluded product claims.

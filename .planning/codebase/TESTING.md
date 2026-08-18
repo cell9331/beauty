@@ -14,14 +14,15 @@ historical. On 2026-08-18 the available branch recorded `metal_available=1`,
 `metal_unavailable=0`, `parity_executed=1`, `focused_tests=12`, and
 `unavailable_tests=0`; the archive-first wrapper passed XCTest `771/0/0`, all
 eight opt-ins exactly once, and `skipped_tests=0`. F-08 result alpha/extent
-enforcement is remediated; the manual semantic, envelope-provenance, and same-
-runtime concurrency gaps remain open.
+enforcement is remediated. F-09 geometry-envelope provenance now uses one
+immutable observation and two fail-closed mutations; the manual semantic and
+same-runtime concurrency gaps remain open.
 
 ## Runner and Inventory
 
 XCTest through Swift Package Manager is the only active test framework. Six test
 targets live under `BeautySDK/Tests/`; the current inventory is 74 Swift files and
-33,276 test lines, excluding `.build`.
+33,278 test lines, excluding `.build`.
 
 `BeautyResultConcurrencyTests` is the public concurrency contract suite. It
 executes 3 tests with zero failures, compiling a `Sendable` result through a

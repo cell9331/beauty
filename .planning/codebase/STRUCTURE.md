@@ -1,6 +1,6 @@
 # Codebase Structure
 
-**Analysis Date:** 2026-08-17
+**Analysis Date:** 2026-08-18
 **Boundary:** SDK-only SwiftPM repository
 
 ## Directory Layout
@@ -33,7 +33,7 @@ beauty/
 ```
 
 The active tree contains 72 Swift source files and 74 SwiftPM test files.
-Production/test Swift lines are 16,707/33,276, excluding `.build`. The package
+Production/test Swift lines are 16,707/33,278, excluding `.build`. The package
 declares one public library, one SDK-owned executable, six internal/library
 targets, and six test targets.
 

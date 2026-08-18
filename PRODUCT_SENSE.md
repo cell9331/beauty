@@ -21,12 +21,16 @@ XCTest `771/0/0`, with all eight opt-ins exactly once and `skipped_tests=0`.
 The archived milestone checkboxes remain historical lifecycle records, not a
 current broad-equivalence or release acceptance. Local retouch is still composed
 on CPU before an identity GPU pass; GPU transparency/color policy and still-
-image math differ from CPU; the geometry safety envelope comes from a separate
-generated observation; and no
+image math differ from CPU; and no
 same-engine/same-runtime concurrency promise is proven. The five bounded
-automatic fixes are verified complete, while device, commercial, packaging,
+automatic fixes plus the F-09 parity-provenance follow-up are verified complete,
+while device, commercial, packaging,
 shipping, launch, and
 release readiness remain outside acceptance.
+
+The F-09 follow-up derives geometry, plan, control points, locality envelope,
+and request support from one immutable observation and mutation-tests that
+ownership chain (`a577dd1`).
 
 ## 1. Product Position
 

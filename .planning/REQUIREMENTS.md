@@ -21,9 +21,10 @@ request-local shared `MTLBuffer` (`556499a`). Only an available branch reports
 `unavailable_tests=0`; focused preflights passed `22/0/0`, `40/0/0`, `32/0/0`,
 `17/0/0`, and `41/0/0` for backend-neutral, Metal runtime, Metal feature,
 configuration, and CPU reference respectively. F-08 result alpha/extent
-enforcement is remediated, while
-F-02/F-04/F-05/F-09/F-10 require separately scoped architecture, contract, or
-evidence work. Accordingly, `[x]` means historically completed plan
+enforcement is remediated. F-09 geometry-envelope provenance now derives from
+one immutable observation with mutation-tested request ownership (`a577dd1`).
+F-02/F-04/F-05/F-10 require separately scoped architecture or contract work.
+Accordingly, `[x]` means historically completed plan
 traceability, not current broad CPU/GPU equivalence or release readiness.
 
 ## v1.17 Requirements

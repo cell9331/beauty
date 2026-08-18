@@ -24,7 +24,7 @@ The historical counts are not current full-gate evidence; the current count is
 the verified `771/0/0` closeout above. Backend-result alpha/
 extent publication now fails closed. Open findings remain for CPU-composed/
 identity-GPU local retouch, GPU transparency/sRGB policy, CPU/Metal coefficient
-and lip-math equivalence, geometry safety envelope provenance, and same-engine/same-runtime
+and lip-math equivalence, and same-engine/same-runtime
 concurrency. Scores and acceptance below therefore remain bounded and make no
 broad equivalence, device, commercial, packaging, shipping, launch, or release-
 readiness claim.
@@ -65,7 +65,7 @@ shipping, launch, or release readiness.
 | Swift source files | 72 |
 | SwiftPM test files | 74 |
 | Swift source lines | 16,707 |
-| SwiftPM test lines | 33,276 |
+| SwiftPM test lines | 33,278 |
 | Public `BeautyParameters` stored fields | 61 |
 | `BeautyConfiguration` stored fields | 11 |
 | Built-in neutral presets | 5 |
@@ -106,7 +106,7 @@ Metal availability classifications. Its archive → boundary self-test/live scan
 CPU → opt-in → one-child order is mandatory; the boundary self-test rejects an
 unconditional generic `BeautyResult` sendability declaration. The public
 concurrency focus is 3/0/0 and the current active inventory is 72 Swift source
-files, 74 SwiftPM test files, 16,707 source lines, and 33,276 test lines. The
+files, 74 SwiftPM test files, 16,707 source lines, and 33,278 test lines. The
 current remediation closeout is XCTest `771/0/0`, all eight opt-ins exactly
 once, and `skipped_tests=0`.
 
@@ -157,7 +157,7 @@ or large extraction transcripts are not durable quality evidence.
 | 1 | Enforce backend-result alpha/extent publication invariants (F-08). | remediated; focused regression coverage added |
 | 2 | Decide whether local retouch becomes genuine GPU computation or the backend contract is narrowed (F-02). | manual architecture decision required |
 | 3 | Align GPU transparency/color and still-image coefficient/lip math with the CPU contract (F-04/F-05). | manual contract/migration work required |
-| 4 | Repair geometry-envelope provenance and define shared engine/runtime concurrency (F-09/F-10). | separately scoped evidence required |
+| 4 | Preserve the repaired F-09 single-observation provenance gate and define shared engine/runtime concurrency (F-10). | F-09 remediated; F-10 manual contract required |
 
 Historical UI/device/commercial work is not an active repair item.
 

@@ -16,7 +16,9 @@ focused `12/0/0` and full `765/0/0` run. Bounded post-archive remediation and
 verification completed on 2026-08-18:
 F-01 metadata compatibility, F-03 unavailable-host accounting, F-06 Metal
 geometry binding, and F-08 result alpha/extent enforcement are repaired, while
-F-02/F-04/F-05/F-09/F-10 remain manual or separately scoped gaps. Only an
+F-09 geometry-envelope provenance was subsequently repaired from one immutable
+observation with mutation-tested ownership (`a577dd1`). F-02/F-04/F-05/F-10
+remain manual gaps. Only an
 available branch reports `focused_tests=12` / `parity_executed=1`; unavailable
 typed coverage reports `parity_executed=0` and never counts as GPU parity.
 The current available branch recorded `metal_available=1`, `metal_unavailable=0`,
