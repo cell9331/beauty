@@ -9,16 +9,18 @@ The archived v1.17/Phase-74 `12/0/0` focused and `765/0/0` full counts are
 historical Metal-available evidence. The current tree has repaired raw metadata
 compatibility, unavailable-host parity accounting, and Metal geometry binding;
 geometry point arrays now use a request-local shared `MTLBuffer`. Local retouch
-remains CPU composition followed by an identity GPU pass, GPU still-image
-transparency/color and math still differ from CPU, backend-result alpha/extent
-publication now fails closed, geometry safety envelope provenance now uses one
-immutable observation with mutation-tested request ownership, and
-same-engine/same-runtime concurrency is unproven. Only an available branch
+is explicitly CPU-owned original-pixel/Q16 composition transported through an
+identity Metal pass; `.gpu` still images require exact-opaque bounded non-
+extended RGB and emit named sRGB; Metal still-image coefficients/lip math follow
+the CPU oracle within the pinned generated tolerance; backend-result alpha/
+extent publication fails closed; geometry safety envelope provenance uses one
+immutable observation with mutation-tested request ownership; and each
+intentionally non-`Sendable` engine requires caller serialization. Only an available branch
 with `parity_executed=1` receives GPU parity credit; unavailable coverage reports
 `parity_executed=0`. The current Metal-available archive-first closeout passes
-XCTest `771/0/0`, all eight opt-ins exactly once, and zero skips; this closes the
-five bounded automatic fixes plus the F-09 provenance follow-up, not the
-remaining manual gaps.
+XCTest `776/0/0`, all eight opt-ins exactly once, and zero skips; this gives all
+F-01 through F-10 explicit bounded dispositions without claiming transparent
+input, end-to-end GPU local-retouch composition, or shared-instance parallel safety.
 
 ## System Overview
 

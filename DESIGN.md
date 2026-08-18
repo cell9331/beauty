@@ -16,23 +16,25 @@ unavailable-host parity explicitly non-crediting (`d29b90a`), and moved Metal
 geometry point arrays to a request-local shared `MTLBuffer` beyond the 4 KiB
 inline limit (`556499a`). Backend-result alpha/extent publication also now
 fails closed. The current archive-first closeout passed on 2026-08-18 with
-XCTest `771/0/0`, all eight opt-ins exactly once, and `skipped_tests=0`; the
+XCTest `776/0/0`, all eight opt-ins exactly once, and `skipped_tests=0`; the
 archived `765/0/0` remains historical.
 
 Geometry safety parity now uses one immutable face observation to derive its
 plan, control points, locality envelope, and rendered request (`a577dd1`); the
 gate mutation-tests both the support handoff and request-level equality proof.
 
-Design nonclaims remain explicit: local retouch is CPU composition followed by
-an identity GPU pass; GPU still-image transparency/color handling differs from
-CPU; CPU and Metal coefficient/lip math is not fully identical; and same-engine/same-runtime
-concurrency is not specified or proven. Only a Metal-available parity branch can
-report `focused_tests=12` / `parity_executed=1`; unavailable-host typed coverage
+The approved bounded design is now explicit: local retouch is CPU original-
+pixel/Q16 composition followed by identity Metal transport; `.gpu` accepts only
+exact-opaque bounded non-extended RGB still images and emits named sRGB; Metal
+still-image coefficients and lip rectangle math follow the CPU oracle; and one
+`BeautyEngine` instance requires caller serialization because it is intentionally
+non-`Sendable`. Independent instances may execute concurrently. Only a Metal-
+available parity branch can report `focused_tests=13` / `parity_executed=1`; unavailable-host typed coverage
 reports `parity_executed=0` and is not GPU parity success.
 Today's available branch recorded `metal_available=1`, `metal_unavailable=0`,
-`parity_executed=1`, `focused_tests=12`, and `unavailable_tests=0`. Focused
-preflights passed backend-neutral `22/0/0`, Metal runtime `40/0/0`, Metal
-feature `32/0/0`, configuration `17/0/0`, and CPU reference `41/0/0`.
+`parity_executed=1`, `focused_tests=13`, and `unavailable_tests=0`. Focused
+preflights passed backend-neutral `24/0/0`, Metal runtime `42/0/0`, Metal
+feature `34/0/0`, configuration `19/0/0`, and CPU reference `41/0/0`.
 
 ## 1. 设计目标
 
@@ -1241,7 +1243,8 @@ cannot become CPU success or fallback. Historical archive-first evidence is focu
 parity `12/0/0` and full SwiftPM `765/0/0`, with eight opt-ins exactly once and
 separate availability markers. The current repaired gate requires
 `parity_executed=1` only on an available host and reports
-`parity_executed=0` for explicit unavailable-host coverage. The open audit gaps
-listed above prevent a broad current equivalence claim. No UI/Demo, device,
+`parity_executed=0` for explicit unavailable-host coverage. The resolved bounded
+contract still excludes transparent input, end-to-end GPU local retouch, and
+shared-instance parallel safety. No UI/Demo, device,
 performance, commercial,
 packaging, shipping, launch, or release-readiness behavior is added.

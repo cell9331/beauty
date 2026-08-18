@@ -9,13 +9,15 @@ The Phase-74 focused `12/0/0` and full `765/0/0` records are historical
 Metal-available evidence. Current remediation has fixed raw metadata routing,
 unavailable-host parity credit, and geometry point binding through a request-
 local shared `MTLBuffer`; an unavailable branch reports `parity_executed=0`.
-Local retouch remains CPU-composed before an identity Metal pass. The remaining
-gaps are transparency/color, math, and shared-runtime concurrency; result
-invariants are fail-closed, and F-09 envelope provenance now derives from one
-immutable observation and is mutation-tested.
-The current Metal-available archive-first closeout passes XCTest `771/0/0`, all
-eight opt-ins exactly once, and zero skips. This package-host result does not
-promote the open semantic gaps into broad equivalence or release evidence.
+Local retouch is CPU-owned composition transported through an identity Metal
+pass; exact-opaque bounded non-extended RGB is the `.gpu` still-image policy;
+Metal still-image math follows the CPU oracle; and each intentionally non-
+`Sendable` engine requires caller serialization. Result invariants are fail-
+closed, and F-09 envelope provenance derives from one immutable observation and
+is mutation-tested. The current Metal-available archive-first closeout passes
+XCTest `776/0/0`, all eight opt-ins exactly once, and zero skips. This package-
+host result does not establish transparent input, end-to-end GPU local retouch,
+shared-instance parallel safety, or release evidence.
 
 ## Languages and Runtime
 
@@ -116,8 +118,9 @@ executor is the reference; the package Metal executor consumes the same plan,
 carrier, dimensions, and metadata. The archived mutation-tested parity script ran once
 in archive-first order, recorded focused `12/0/0`, and the full wrapper recorded
 `765/0/0` with eight opt-ins exactly once and distinct Metal availability
-markers. Current unavailable coverage instead reports `parity_executed=0`, and
-the open audit gaps prevent broad equivalence. No raw raster, masks, landmarks,
+markers. Current unavailable coverage instead reports `parity_executed=0`; the
+bounded audit dispositions still exclude transparent input, end-to-end GPU
+local retouch, and shared-instance parallel safety. No raw raster, masks, landmarks,
 paths, UI/Demo, device, performance,
 commercial, packaging, shipping, launch, or release-readiness artifact enters
 the stack.

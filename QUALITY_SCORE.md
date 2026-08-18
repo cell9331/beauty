@@ -9,25 +9,25 @@ v1.17 was historically archived at `afb04b4` with Metal-available focused
 `12/0/0` and full `765/0/0` evidence. The current tree has repaired public raw
 metadata compatibility (`53e8da1`), unavailable-host parity accounting
 (`d29b90a`), and Metal geometry point binding beyond the 4 KiB inline limit
-(`556499a`). Available parity now requires `focused_tests=12` and
+(`556499a`). Available parity now requires `focused_tests=13` and
 `parity_executed=1`; unavailable-host typed coverage reports
 `parity_executed=0` and cannot borrow GPU parity success.
 
 The 2026-08-18 Metal-available branch recorded `metal_available=1`,
-`metal_unavailable=0`, `parity_executed=1`, `focused_tests=12`, and
-`unavailable_tests=0`. Focused preflights passed backend-neutral `22/0/0`,
-Metal runtime `40/0/0`, Metal feature `32/0/0`, configuration `17/0/0`, and CPU
-reference `41/0/0`. The archive-first closeout passed XCTest `771/0/0`, all
+`metal_unavailable=0`, `parity_executed=1`, `focused_tests=13`, and
+`unavailable_tests=0`. Focused preflights passed backend-neutral `24/0/0`,
+Metal runtime `42/0/0`, Metal feature `34/0/0`, configuration `19/0/0`, and CPU
+reference `41/0/0`. The archive-first closeout passed XCTest `776/0/0`, all
 eight opt-ins exactly once, and `skipped_tests=0`.
 
 The historical counts are not current full-gate evidence; the current count is
-the verified `771/0/0` closeout above. Backend-result alpha/
-extent publication now fails closed. Open findings remain for CPU-composed/
-identity-GPU local retouch, GPU transparency/sRGB policy, CPU/Metal coefficient
-and lip-math equivalence, and same-engine/same-runtime
-concurrency. Scores and acceptance below therefore remain bounded and make no
-broad equivalence, device, commercial, packaging, shipping, launch, or release-
-readiness claim.
+the verified `776/0/0` closeout above. F-01 through F-10 are dispositioned with
+bounded contracts: CPU-owned local-retouch composition, exact-opaque GPU RGB
+input and named-sRGB output, tight generated still-image math parity, and
+caller serialization for a non-`Sendable` engine instance. Scores and acceptance
+remain bounded and make no transparent-input, end-to-end GPU local-retouch,
+shared-instance parallel, device, commercial, packaging, shipping, launch, or
+release-readiness claim.
 
 ## 1. Score Scale
 
@@ -46,13 +46,13 @@ readiness claim.
 | --- | ---: | --- | --- |
 | Root owners | 4 | Current contracts consistently name SDK-only SwiftPM ownership and archive-only UI history. | Keep owners synchronized with code/tests. |
 | SDK package | 4 | One public library, one SDK-owned renderer, six internal/library targets, no remote dependency. | Preserve facade and dependency direction. |
-| Tests | 3 | 74 SwiftPM test files; current focused remediation preflights and the archive-first XCTest `771/0/0` closeout pass with eight opt-ins and zero skips. Historical v1.16/Phase-71/Phase-73/Phase-74 counts remain labeled historical; the manual semantic gaps remain open. | Separately plan the manual gaps without widening this bounded closeout. |
+| Tests | 4 | 74 SwiftPM test files; current mutation-tested preflights and archive-first XCTest `776/0/0` pass with eight opt-ins and zero skips. Historical counts remain labeled historical; all ten audit findings are dispositioned. | Preserve the bounded contracts and add only separately authorized device/product evidence. |
 | External consumer / CLI | 4 | Public-only local-path consumer observes generated RGBA bytes/dimensions; compiled renderer covers 74-case discovery, reconciled reports, typed failures, and render/encode seams. | Preserve archive → boundary → consumer → no-skip ordering. |
 | Archive integrity | 4 | Code-owned ZIP/manifest anchors, exact 45/26 inventories, bounded streamed extraction, frozen-retirement rollback, and safe restore self-tests pass. | Verify before every full closeout. |
 | SDK-only boundary | 4 | Retired roots are absent; scanner rejects symlinks, restored application/UI sources, stale current owners/maps, tracked media, application artifacts, retained-shader drift, and backend/API drift. | Keep scanner fail-closed. |
 | Security | 4 | Local-first input/resource/privacy and request-local local-retouch ownership are test-backed. | Reopen for any new trust boundary. |
 | Reliability | 3 | Typed errors, deterministic degradation/recovery, input bounds, no-skip handling, and archive recovery are specified/tested; device/performance evidence is outside scope. | Add only when a later authorized milestone requires it. |
-| Product acceptance | 3 | Bounded still-image teeth/sclera behavior and exact taxonomy remain SDK-core only; broad CPU/GPU equivalence is not currently accepted. | Preserve nonclaims, separately plan manual gaps, and keep `去脂` future. |
+| Product acceptance | 3 | Bounded still-image teeth/sclera behavior and exact taxonomy remain SDK-core only; supported package-host parity is current but transparent/end-to-end-GPU/device claims remain excluded. | Preserve nonclaims and keep `去脂` future. |
 
 No score of 5 is claimed. Package/fixture automation does not establish device
 performance, population sufficiency, commercial quality, packaging,
@@ -64,8 +64,8 @@ shipping, launch, or release readiness.
 | --- | ---: |
 | Swift source files | 72 |
 | SwiftPM test files | 74 |
-| Swift source lines | 16,707 |
-| SwiftPM test lines | 33,278 |
+| Swift source lines | 16,824 |
+| SwiftPM test lines | 33,569 |
 | Public `BeautyParameters` stored fields | 61 |
 | `BeautyConfiguration` stored fields | 11 |
 | Built-in neutral presets | 5 |
@@ -106,8 +106,8 @@ Metal availability classifications. Its archive → boundary self-test/live scan
 CPU → opt-in → one-child order is mandatory; the boundary self-test rejects an
 unconditional generic `BeautyResult` sendability declaration. The public
 concurrency focus is 3/0/0 and the current active inventory is 72 Swift source
-files, 74 SwiftPM test files, 16,707 source lines, and 33,278 test lines. The
-current remediation closeout is XCTest `771/0/0`, all eight opt-ins exactly
+files, 74 SwiftPM test files, 16,824 source lines, and 33,569 test lines. The
+current remediation closeout is XCTest `776/0/0`, all eight opt-ins exactly
 once, and `skipped_tests=0`.
 
 ## 5. Archive Quality Gate
@@ -155,9 +155,9 @@ or large extraction transcripts are not durable quality evidence.
 | Priority | Item | Status |
 | --- | --- | --- |
 | 1 | Enforce backend-result alpha/extent publication invariants (F-08). | remediated; focused regression coverage added |
-| 2 | Decide whether local retouch becomes genuine GPU computation or the backend contract is narrowed (F-02). | manual architecture decision required |
-| 3 | Align GPU transparency/color and still-image coefficient/lip math with the CPU contract (F-04/F-05). | manual contract/migration work required |
-| 4 | Preserve the repaired F-09 single-observation provenance gate and define shared engine/runtime concurrency (F-10). | F-09 remediated; F-10 manual contract required |
+| 2 | Preserve CPU-owned local-retouch composition and identity Metal transport (F-02). | resolved; no end-to-end GPU claim |
+| 3 | Preserve opaque/named-sRGB GPU input policy and tight CPU-oracle still-image math (F-04/F-05). | resolved; transparent input remains unsupported |
+| 4 | Preserve single-observation provenance and caller-serialized non-Sendable engine semantics (F-09/F-10). | resolved; no shared-instance parallel claim |
 
 Historical UI/device/commercial work is not an active repair item.
 
@@ -229,8 +229,8 @@ once and completed the full child at `765/0/0`, with eight opt-ins exactly once,
 zero skips, and zero failures.
 
 CPU remains the permanent oracle. The current repaired gate grants GPU parity
-credit only when `parity_executed=1`; unavailable coverage reports `0`. The
-open audit findings prevent this historical generated matrix from establishing
-broad current CPU/GPU equivalence, UI/Demo,
+credit only when `parity_executed=1`; unavailable coverage reports `0`. Current
+bounded evidence is parity `13/0/0` and full `776/0/0`; it does not establish
+transparent input, end-to-end GPU local retouch, shared-instance parallel safety, UI/Demo,
 simulator/device, performance, commercial, packaging, shipping, launch, or
 release-readiness quality.

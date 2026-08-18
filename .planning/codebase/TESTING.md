@@ -7,22 +7,23 @@
 
 The v1.17 archive recorded Metal-available focused `12/0/0` and full
 `765/0/0` evidence. Current F-03 remediation probes availability first: only the
-available branch runs the 12-test suite and reports `parity_executed=1`; the
+available branch runs the 13-test suite and reports `parity_executed=1`; the
 unavailable branch runs two typed selection tests, reports
 `parity_executed=0`, and emits no parity-success marker. The archived counts are
 historical. On 2026-08-18 the available branch recorded `metal_available=1`,
-`metal_unavailable=0`, `parity_executed=1`, `focused_tests=12`, and
-`unavailable_tests=0`; the archive-first wrapper passed XCTest `771/0/0`, all
+`metal_unavailable=0`, `parity_executed=1`, `focused_tests=13`, and
+`unavailable_tests=0`; the archive-first wrapper passed XCTest `776/0/0`, all
 eight opt-ins exactly once, and `skipped_tests=0`. F-08 result alpha/extent
 enforcement is remediated. F-09 geometry-envelope provenance now uses one
-immutable observation and two fail-closed mutations; the manual semantic and
-same-runtime concurrency gaps remain open.
+immutable observation and two fail-closed mutations. F-02/F-04/F-05/F-10 are
+mutation-gated under bounded CPU-owned local-retouch, opaque/named-sRGB GPU
+input/output, CPU-oracle still-image math, and caller-serialized engine contracts.
 
 ## Runner and Inventory
 
 XCTest through Swift Package Manager is the only active test framework. Six test
 targets live under `BeautySDK/Tests/`; the current inventory is 74 Swift files and
-33,278 test lines, excluding `.build`.
+33,569 test lines, excluding `.build`.
 
 `BeautyResultConcurrencyTests` is the public concurrency contract suite. It
 executes 3 tests with zero failures, compiling a `Sendable` result through a
@@ -189,8 +190,10 @@ launch, or release-readiness claim is carried by these tests.
 `BeautyBackendDeterminismParityTests`, and
 `BeautyBackendSelectionConcurrencyTests` execute generated CPU/Metal
 structural, numeric, safety, degradation, failure-isolation, determinism, and
-request-local policy cases. Neutral/no-face bytes are exact; active tolerances
-are pinned at maximum channel `8` and mean RGB `< 5.0`. The suites retain only
+request-local policy cases. Neutral/no-face bytes are exact; general active
+tolerances remain maximum channel `8` and mean RGB `< 5.0`, while the generated
+still-image color/lip oracle is pinned to maximum channel `2` and mean RGB
+`< 0.75`. The suites retain only
 aggregate counts/deltas and use no skips, sleeps, files, media, or durable
 payloads.
 
@@ -199,10 +202,11 @@ availability merging. The archived wrapper invoked it once and the historical
 full gate executed `765/0/0` with eight opt-ins exactly once and separate
 `metal_available=1` / `metal_unavailable=0`. The repaired unavailable branch
 reports `parity_executed=0` and no parity-success marker. Current focused
-preflights pass backend-neutral `22/0/0`, Metal runtime `40/0/0`, Metal feature
-`32/0/0`, configuration `17/0/0`, CPU reference `41/0/0`, and available parity
-`12/0/0`; the full wrapper passes `771/0/0`. This remains SDK-only and does not
-establish broad CPU/GPU equivalence, UI/Demo,
+preflights pass backend-neutral `24/0/0`, Metal runtime `42/0/0`, Metal feature
+`34/0/0`, configuration `19/0/0`, CPU reference `41/0/0`, and available parity
+`13/0/0`; the full wrapper passes `776/0/0`. This remains SDK-only and does not
+establish transparent-input support, end-to-end GPU local-retouch composition,
+shared-instance parallel safety, UI/Demo,
 simulator/device, performance, commercial, packaging, shipping, launch, or
 release-readiness behavior.
 

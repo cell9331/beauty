@@ -158,7 +158,7 @@ import sys
 
 text = Path(sys.argv[1]).read_text(encoding="utf-8")
 executions = [int(value) for value in re.findall(r"Executed (\d+) tests?, with 0 failures", text)]
-if not executions or executions[-1] != 22 or max(executions) != 22:
+if not executions or executions[-1] != 24 or max(executions) != 24:
     raise SystemExit(1)
 for suite in ("BeautyBackendContractTests", "BeautyCPUBackendTests", "BeautyEngineBackendRoutingTests"):
     if suite not in text:
@@ -289,4 +289,4 @@ bash "${repository_root}/scripts/check-cpu-reference-oracles.sh" >/dev/null || {
   echo "backend_neutral_contract_cpu_reference_failed"
   exit 1
 }
-echo "backend_neutral_contract_passed focused_tests=22 cpu_reference_tests=41"
+echo "backend_neutral_contract_passed focused_tests=24 cpu_reference_tests=41"

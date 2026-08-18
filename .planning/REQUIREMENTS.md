@@ -8,22 +8,27 @@
 The checked requirements and traceability table below record the historical
 v1.17 lifecycle completed at `afb04b4`. Its Metal-available Phase-74 evidence
 was focused `12/0/0` and full `765/0/0`; these counts remain historical. The
-current archive-first closeout passed on 2026-08-18 with XCTest `771/0/0`, all
+current archive-first closeout passed on 2026-08-18 with XCTest `776/0/0`, all
 eight opt-ins exactly once, and `skipped_tests=0`.
 
 Post-archive fixes have restored public non-up/mirrored raw metadata
 compatibility (`53e8da1`), separated unavailable-host coverage from GPU parity
 credit (`d29b90a`), and moved oversized Metal geometry point payloads to a
 request-local shared `MTLBuffer` (`556499a`). Only an available branch reports
-`focused_tests=12` / `parity_executed=1`; unavailable coverage reports
+`focused_tests=13` / `parity_executed=1`; unavailable coverage reports
 `parity_executed=0`. Today's available branch recorded `metal_available=1`,
-`metal_unavailable=0`, `parity_executed=1`, `focused_tests=12`, and
-`unavailable_tests=0`; focused preflights passed `22/0/0`, `40/0/0`, `32/0/0`,
-`17/0/0`, and `41/0/0` for backend-neutral, Metal runtime, Metal feature,
+`metal_unavailable=0`, `parity_executed=1`, `focused_tests=13`, and
+`unavailable_tests=0`; focused preflights passed `24/0/0`, `42/0/0`, `34/0/0`,
+`19/0/0`, and `41/0/0` for backend-neutral, Metal runtime, Metal feature,
 configuration, and CPU reference respectively. F-08 result alpha/extent
 enforcement is remediated. F-09 geometry-envelope provenance now derives from
 one immutable observation with mutation-tested request ownership (`a577dd1`).
-F-02/F-04/F-05/F-10 require separately scoped architecture or contract work.
+F-02/F-04/F-05/F-10 now have approved bounded dispositions: CPU-owned local-
+retouch composition with identity Metal transport, exact-opaque bounded RGB GPU
+input with named-sRGB output, CPU-oracle still-image math within the pinned
+generated tolerance, and caller-serialized access to each intentionally non-
+`Sendable` engine. These do not add transparent-input support, end-to-end GPU
+local-retouch ownership, or shared-instance parallel safety.
 Accordingly, `[x]` means historically completed plan
 traceability, not current broad CPU/GPU equivalence or release readiness.
 

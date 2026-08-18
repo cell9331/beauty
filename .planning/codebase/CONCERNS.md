@@ -5,16 +5,18 @@
 
 ## Current Technical Debt
 
-### Post-archive CPU/GPU contract gaps
+### Post-archive CPU/GPU contract boundaries
 
 The v1.17 archive is historical rather than current broad-parity authority.
-Local retouch is CPU-composed before identity GPU dispatch; GPU still-image
-transparency/color policy and coefficient/lip math differ from CPU; backend-
-result alpha/extent publication now fails closed; geometry safety provenance now
+Current contracts intentionally keep local-retouch composition on CPU before
+identity Metal transport, reject non-opaque/unsupported RGB `.gpu` still images,
+materialize named-sRGB output, align Metal still-image coefficients/lip math to
+the CPU oracle, and require callers to serialize each non-`Sendable` engine.
+Backend-result alpha/extent publication fails closed; geometry safety provenance
 derives the envelope and request from one immutable observation with mutation-
-tested ownership; and same-engine/same-runtime concurrency is not specified or
-proven. Unavailable hosts report `parity_executed=0` and never receive GPU parity
-credit.
+tested ownership. Unavailable hosts report `parity_executed=0` and never receive
+GPU parity credit. Transparent input, end-to-end GPU local-retouch ownership,
+and shared-instance parallel safety remain explicit nonclaims, not open defects.
 
 ### Large implementation units
 
@@ -62,9 +64,10 @@ the smallest region, and never borrow proxy geometry.
 
 ### Concurrency and cancellation
 
-The SDK does not yet promise same-engine parallel calls or cooperative
-cancellation. Keep mutable request state local, audit unchecked conformances, and
-add explicit race/cancellation evidence before widening the contract.
+The SDK explicitly requires caller serialization for same-engine calls and does
+not promise cooperative cancellation. Keep mutable request state local, reject
+`BeautyEngine` sendability drift, and require separately authorized evidence
+before widening the contract.
 
 ### No-skip transcript accounting
 
@@ -79,7 +82,7 @@ skip/disabled events. Transcript text is temporary, not durable evidence.
   coverage are not established.
 - Realtime landmark/local-retouch routing remains absent. Selectable GPU
   execution exists for the bounded SDK path, but local-retouch computation is
-  not end-to-end GPU-owned and shared-instance concurrency is unproven.
+  not end-to-end GPU-owned and shared-instance parallel use is unsupported.
 - `去脂` lacks an approved production method and licensed real positive/negative
   evidence; it remains future without proxying existing controls.
 - Commercial approval, packaging, distribution, shipping, launch, and release

@@ -8,7 +8,7 @@
 v1.17 was historically completed and archived at `afb04b4`; its frozen
 Phase-74 record reports focused `12/0/0` and full `765/0/0` execution on a
 Metal-available package host. Those numbers remain historical. The current
-archive-first closeout passed on 2026-08-18 with XCTest `771/0/0`, all eight
+archive-first closeout passed on 2026-08-18 with XCTest `776/0/0`, all eight
 opt-ins exactly once, and `skipped_tests=0`.
 
 The post-archive audit has repaired public non-up/mirrored raw-input metadata
@@ -17,25 +17,28 @@ Metal geometry inline-binding overflow (`556499a`), and backend-result alpha/
 extent enforcement. Geometry point arrays
 are now request-local shared `MTLBuffer` resources; only the bounded scalar
 point count remains inline. On an available host the parity branch reports
-`focused_tests=12` and `parity_executed=1`; an unavailable host may pass its
+`focused_tests=13` and `parity_executed=1`; an unavailable host may pass its
 typed availability gate only with `parity_executed=0` and never receives GPU
 parity credit. Today's Metal-available branch recorded `metal_available=1`,
-`metal_unavailable=0`, `parity_executed=1`, `focused_tests=12`, and
+`metal_unavailable=0`, `parity_executed=1`, `focused_tests=13`, and
 `unavailable_tests=0`. Current focused preflights passed backend-neutral
-`22/0/0`, Metal runtime `40/0/0`, Metal feature `32/0/0`, configuration
-`17/0/0`, and CPU reference `41/0/0`. Geometry safety parity now derives its
+`24/0/0`, Metal runtime `42/0/0`, Metal feature `34/0/0`, configuration
+`19/0/0`, and CPU reference `41/0/0`. Geometry safety parity now derives its
 plan, control points, locality envelope, and rendered request from one immutable
 face observation (`a577dd1`), with request equality and mutation-tested static
 provenance checks.
 
-Current broad CPU/GPU equivalence remains unclaimed. Local-retouch bytes are
-still composed on CPU before an identity Metal dispatch; the GPU still-image
-path rejects transparency and normalizes to named sRGB differently from CPU;
-CPU and Metal still-image coefficients/lip math are not fully identical;
-and there is no same-engine/same-runtime concurrent-execution contract or
-evidence. These
-gaps also preclude device, commercial, packaging, shipping, launch, and release-
-readiness claims.
+All ten post-archive findings now have explicit dispositions. Local-retouch
+bytes remain CPU-owned original-pixel/Q16 composition transported through an
+identity Metal pass; Metal receives no masks or proposals. `.gpu` still images
+require exact-opaque bounded non-extended RGB before detection and materialize
+named-sRGB output. Metal still-image coefficients and lip math match the CPU
+oracle within the pinned generated tolerance (`max <= 2`, mean `< 0.75`). A
+`BeautyEngine` instance is intentionally non-`Sendable`; callers serialize all
+access to one instance, while independent engines may run concurrently. These
+bounded contracts do not claim transparent-input support, end-to-end GPU local-
+retouch composition, shared-instance parallel safety, device performance,
+commercial approval, packaging, shipping, launch, or release readiness.
 
 ## 1. Current Repository Contract
 
@@ -53,8 +56,8 @@ Current source/test inventory, excluding `.build`:
 | --- | ---: |
 | Swift source files | 72 |
 | SwiftPM test files | 74 |
-| Swift source lines | 16,707 |
-| SwiftPM test lines | 33,278 |
+| Swift source lines | 16,824 |
+| SwiftPM test lines | 33,569 |
 | `BeautyConfiguration` stored fields | 11 |
 
 ## 2. Top-Level Invariants
@@ -292,7 +295,7 @@ shared `MTLBuffer`, including payloads beyond Metal's 4 KiB inline limit; the
 bounded scalar point count remains inline and cleanup is deterministic. Public
 backend configuration is covered by Phase 73; Phase-74 parity evidence remains
 historical, while the bounded post-archive remediation closeout is current and
-green at `771/0/0`.
+green at `776/0/0`.
 
 ## Phase 73 Public Backend Configuration
 
@@ -330,9 +333,10 @@ configuration and before consumer, CPU-oracle, opt-in, and full-child stages.
 Historical archive evidence is focused `12/0/0`, full SwiftPM `765/0/0`, eight opt-ins
 exactly once, and separate `metal_available=1` / `metal_unavailable=0`.
 The repaired current gate gives only its available branch GPU parity credit
-(`focused_tests=12`, `parity_executed=1`); unavailable Metal remains typed
+(`focused_tests=13`, `parity_executed=1`); unavailable Metal remains typed
 `.metalUnavailable`, reports `parity_executed=0`, and cannot lend success to
-CPU or GPU parity. The unresolved audit gaps listed above prevent this historical
-matrix from being read as broad current CPU/GPU equivalence. UI/Demo,
+CPU or GPU parity. The current bounded contract resolves the audit findings but
+does not turn the historical matrix into transparent-input, end-to-end GPU
+local-retouch, shared-instance parallel, or release evidence. UI/Demo,
 simulator/device, performance, commercial, packaging, shipping, launch, and
 release-readiness remain excluded.

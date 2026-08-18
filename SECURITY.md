@@ -12,18 +12,18 @@ payloads into request-local shared `MTLBuffer` storage (`556499a`). The buffer
 does not persist points and is released deterministically; only the bounded
 scalar count remains inline.
 
-The remaining audit findings do not expose durable raw payloads, but they limit
-what the evidence can authorize. Backend-result alpha/extent publication now
-fails closed without inspecting or retaining pixels. Local retouch is CPU-
-composed before an identity GPU dispatch; GPU transparency/color handling and
-still-image math differ from CPU; and shared-engine/runtime concurrency is
-unproven. Geometry safety now derives its envelope and request support from one
+All audit findings now have bounded, mutation-tested dispositions. Backend-
+result alpha/extent publication fails closed without retaining pixels. Local
+retouch is CPU-owned original-pixel/Q16 composition followed by identity Metal
+transport; Metal receives no masks, proposals, support, or source locators.
+`.gpu` rejects non-opaque or unsupported RGB before detection and materializes
+named-sRGB output. Geometry safety derives its envelope and request support from one
 immutable observation with mutation-tested ownership (`a577dd1`). An unavailable
 host reports `parity_executed=0` and
 never GPU parity success. The current Metal-available branch recorded
 `metal_available=1`, `metal_unavailable=0`, `parity_executed=1`,
-`focused_tests=12`, and `unavailable_tests=0`. The archive-first closeout passed
-on 2026-08-18 at XCTest `771/0/0`, with all eight opt-ins exactly once and
+`focused_tests=13`, and `unavailable_tests=0`. The archive-first closeout passed
+on 2026-08-18 at XCTest `776/0/0`, with all eight opt-ins exactly once and
 `skipped_tests=0`. This bounded package-host result is not a device, commercial,
 or release trust decision; the archived `765/0/0` remains historical.
 
@@ -297,9 +297,10 @@ tolerances, omitted safety suites, raw file output, and availability merging.
 The archived gate records focused `12/0/0`, full `765/0/0`, eight opt-ins
 exactly once, and separate `metal_available=1` / `metal_unavailable=0`.
 `.metalUnavailable` is terminal and never GPU parity success or CPU fallback.
-The repaired current gate reports `focused_tests=12` / `parity_executed=1`
+The repaired current gate reports `focused_tests=13` / `parity_executed=1`
 only when Metal is available; unavailable-host typed coverage reports
-`parity_executed=0`. The unresolved audit gaps above prevent the archived result
-from authorizing broad current CPU/GPU equivalence. UI/Demo,
+`parity_executed=0`. The bounded current result does not authorize transparent
+input, end-to-end GPU local retouch, shared-instance parallel safety, or broad
+release equivalence. UI/Demo,
 simulator/device, performance, commercial, packaging, shipping, launch, and
 release-readiness claims remain outside the trust boundary.

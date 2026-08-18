@@ -14,16 +14,17 @@ shared `MTLBuffer`, the scalar count remains bounded inline, and cleanup stays
 deterministic.
 
 The current gate distinguishes an available parity branch
-(`focused_tests=12`, `parity_executed=1`) from an unavailable typed-coverage
+(`focused_tests=13`, `parity_executed=1`) from an unavailable typed-coverage
 branch (`parity_executed=0`); the latter may pass the mandatory host gate but is
 never GPU parity success. The 2026-08-18 Metal-available branch recorded
 `metal_available=1`, `metal_unavailable=0`, `parity_executed=1`,
-`focused_tests=12`, and `unavailable_tests=0`. The archive-first closeout passed
-at XCTest `771/0/0`, all eight opt-ins exactly once, and `skipped_tests=0`.
-Broad
-equivalence is also blocked by CPU-owned local-retouch composition followed by
-identity GPU dispatch, different GPU transparency/sRGB policy, coefficient/lip-
-math drift, and no same-engine/same-runtime concurrency proof. Geometry safety
+`focused_tests=13`, and `unavailable_tests=0`. The archive-first closeout passed
+at XCTest `776/0/0`, all eight opt-ins exactly once, and `skipped_tests=0`.
+The bounded runtime contract is explicit: CPU owns local-retouch composition,
+Metal transports that carrier; `.gpu` rejects non-opaque/unsupported RGB before
+detection and emits named sRGB; still-image math matches the CPU oracle within
+`max <= 2` / mean `< 0.75`; and one non-`Sendable` engine requires caller
+serialization. Geometry safety
 parity now derives the envelope and rendered request from one immutable
 observation (`a577dd1`) and mutation-tests that provenance. Backend results now fail closed on
 false alpha/extent flags and still-image extent-origin drift.
@@ -296,12 +297,11 @@ skips/failures, and separate `metal_available=1` / `metal_unavailable=0`.
 The repaired gate credits parity only on the available branch with
 `parity_executed=1`; unavailable Metal is terminal `.metalUnavailable`, reports
 `parity_executed=0`, and provides no retry, CPU fallback, or GPU parity credit.
-The unresolved gaps above also mean no broad CPU/GPU equivalence, device,
-performance, commercial, packaging, shipping, launch, or
-release-readiness claim follows.
+The bounded contract above also means no transparent-input, end-to-end GPU
+local-retouch, shared-instance parallel, device, performance, commercial,
+packaging, shipping, launch, or release-readiness claim follows.
 
-The current bounded closeout evidence is backend-neutral `22/0/0`, Metal
-runtime `40/0/0`, Metal feature `32/0/0`, configuration `17/0/0`, CPU reference
-`41/0/0`, parity `12/0/0`, and full XCTest `771/0/0`. These results close the
-five automatic audit fixes plus the F-09 provenance follow-up, not the manual
-gaps or excluded product claims.
+The current bounded closeout evidence is backend-neutral `24/0/0`, Metal
+runtime `42/0/0`, Metal feature `34/0/0`, configuration `19/0/0`, CPU reference
+`41/0/0`, parity `13/0/0`, and full XCTest `776/0/0`. These results close F-01
+through F-10 while retaining the excluded product claims.

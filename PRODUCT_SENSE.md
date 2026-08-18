@@ -11,19 +11,20 @@ has repaired public non-up/mirrored raw metadata compatibility (`53e8da1`), made
 unavailable-host typed coverage explicitly non-crediting
 (`parity_executed=0`, `d29b90a`), and moved oversized geometry point payloads to
 a request-local shared `MTLBuffer` (`556499a`). Only an available branch reports
-`focused_tests=12` / `parity_executed=1`.
+`focused_tests=13` / `parity_executed=1`.
 
 The current Metal-available branch recorded `metal_available=1`,
-`metal_unavailable=0`, `parity_executed=1`, `focused_tests=12`, and
+`metal_unavailable=0`, `parity_executed=1`, `focused_tests=13`, and
 `unavailable_tests=0`. The archive-first closeout passed on 2026-08-18 at
-XCTest `771/0/0`, with all eight opt-ins exactly once and `skipped_tests=0`.
+XCTest `776/0/0`, with all eight opt-ins exactly once and `skipped_tests=0`.
 
 The archived milestone checkboxes remain historical lifecycle records, not a
-current broad-equivalence or release acceptance. Local retouch is still composed
-on CPU before an identity GPU pass; GPU transparency/color policy and still-
-image math differ from CPU; and no
-same-engine/same-runtime concurrency promise is proven. The five bounded
-automatic fixes plus the F-09 parity-provenance follow-up are verified complete,
+current end-to-end GPU or release acceptance. Local retouch is CPU-composed and
+identity-transported by Metal; `.gpu` still images are exact-opaque bounded RGB
+with named-sRGB output; generated still-image coefficients/lip math match the
+CPU oracle within `max <= 2` / mean `< 0.75`; and callers serialize one
+non-`Sendable` engine instance. Independent instances may run concurrently. All
+F-01 through F-10 audit findings are dispositioned,
 while device, commercial, packaging,
 shipping, launch, and
 release readiness remain outside acceptance.

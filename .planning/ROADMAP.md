@@ -18,12 +18,14 @@ F-01 metadata compatibility, F-03 unavailable-host accounting, F-06 Metal
 geometry binding, and F-08 result alpha/extent enforcement are repaired, while
 F-09 geometry-envelope provenance was subsequently repaired from one immutable
 observation with mutation-tested ownership (`a577dd1`). F-02/F-04/F-05/F-10
-remain manual gaps. Only an
-available branch reports `focused_tests=12` / `parity_executed=1`; unavailable
+now have approved bounded dispositions covering CPU-owned local-retouch
+composition, exact-opaque/named-sRGB GPU still-image policy, CPU-oracle math,
+and caller-serialized non-`Sendable` engine access. Only an
+available branch reports `focused_tests=13` / `parity_executed=1`; unavailable
 typed coverage reports `parity_executed=0` and never counts as GPU parity.
 The current available branch recorded `metal_available=1`, `metal_unavailable=0`,
-`parity_executed=1`, `focused_tests=12`, and `unavailable_tests=0`; the full
-archive-first gate passed XCTest `771/0/0`, all eight opt-ins exactly once, and
+`parity_executed=1`, `focused_tests=13`, and `unavailable_tests=0`; the full
+archive-first gate passed XCTest `776/0/0`, all eight opt-ins exactly once, and
 `skipped_tests=0`. The checkboxes below preserve historical plan completion and do not override
 this current audit qualification or authorize broad equivalence/release claims.
 
@@ -51,7 +53,7 @@ commercial approval, packaging, shipping, launch, or release-readiness claims.
 - ✅ **[v1.14 Local Facial Retouch](milestones/v1.14-ROADMAP.md)** — Phases 53-58, completed 2026-08-05.
 - ✅ **[v1.15 Independent Teeth and Sclera Retouch](milestones/v1.15-ROADMAP.md)** — Phases 59-65, completed and audited 2026-08-11.
 - ✅ **[v1.16 SDK-Only Foundation and CPU Reference](milestones/v1.16-ROADMAP.md)** — Phases 66-69, independently complete 2026-08-15.
-- ✅ **v1.17 Dual CPU/GPU Metal Rendering** — Phases 70-74, historically archived 2026-08-17; bounded post-archive remediation verified complete 2026-08-18, with manual gaps separately scoped.
+- ✅ **v1.17 Dual CPU/GPU Metal Rendering** — Phases 70-74, historically archived 2026-08-17; all ten post-archive findings received bounded verified dispositions on 2026-08-18.
 
 ## Historical Milestone Record: v1.17 Dual CPU/GPU Metal Rendering
 

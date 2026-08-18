@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.17
 milestone_name: Dual CPU/GPU Metal Rendering
-status: Post-archive audit follow-up complete
-stopped_at: F-09 provenance follow-up verified; manual decisions queued
-last_updated: "2026-08-18T01:15:00Z"
+status: Post-archive audit contract resolution complete
+stopped_at: F-01 through F-10 dispositioned; bounded closeout verified
+last_updated: "2026-08-18T10:02:00+08:00"
 last_activity: 2026-08-18
-last_activity_desc: F-09 parity provenance repaired and archive-first closeout verified
+last_activity_desc: approved F-02/F-04/F-05/F-10 contracts implemented and archive-first closeout verified
 progress:
   total_phases: 5
   completed_phases: 5
@@ -26,41 +26,42 @@ See: `.planning/PROJECT.md` (updated 2026-08-18)
 **Core value:** An iOS app can integrate `BeautySDK` and get natural,
 controllable, real-time and still-image beauty processing through a stable
 modular facade.
-**Current focus:** bounded v1.17 post-archive remediation plus the F-09
-provenance follow-up are complete; manual gaps remain separately scoped and
-Phase 74 remains a historical lifecycle record.
+**Current focus:** all F-01 through F-10 post-archive findings are dispositioned
+under bounded contracts; Phase 74 remains a historical lifecycle record.
 
 ## Current Position
 
 Phase: Post-archive audit of historically archived v1.17
-Plan: `P-2026-08-18-v1-17-audit-followup`
-Status: Complete — F-09 provenance repaired and verified; manual decisions remain
-Last activity: 2026-08-18 — archive-first closeout passed XCTest `771/0/0`
+Plan: `P-2026-08-18-v1-17-manual-contract-resolution`
+Status: Complete — approved bounded contracts implemented and verified
+Last activity: 2026-08-18 — archive-first closeout passed XCTest `776/0/0`
 
 ## Current Audit Qualification
 
 v1.17 was historically archived at `afb04b4` with a Metal-available focused
 `12/0/0` and full `765/0/0` run. Those numbers and the 5/5 phase, 19/19 plan
 progress above are historical lifecycle metrics. The current archive-first
-closeout passed XCTest `771/0/0`, all eight opt-ins exactly once, and
+closeout passed XCTest `776/0/0`, all eight opt-ins exactly once, and
 `skipped_tests=0`. Public raw metadata compatibility (`53e8da1`), unavailable-host
 parity accounting (`d29b90a`), and Metal geometry binding (`556499a`) are
-repaired. Only an available branch reports `focused_tests=12` /
+repaired. Only an available branch reports `focused_tests=13` /
 `parity_executed=1`; unavailable typed coverage reports `parity_executed=0`.
 Today's available branch recorded `metal_available=1`, `metal_unavailable=0`,
-`parity_executed=1`, `focused_tests=12`, and `unavailable_tests=0`. Focused
-preflights passed backend-neutral `22/0/0`, Metal runtime `40/0/0`, Metal
-feature `32/0/0`, configuration `17/0/0`, and CPU reference `41/0/0`.
+`parity_executed=1`, `focused_tests=13`, and `unavailable_tests=0`. Focused
+preflights passed backend-neutral `24/0/0`, Metal runtime `42/0/0`, Metal
+feature `34/0/0`, configuration `19/0/0`, and CPU reference `41/0/0`.
 
 F-09 is repaired: one immutable `sharedFaceObservation` derives geometry, plan,
 control points, locality envelope, and `selectedFaceSupport`; request equality
 and two parity-gate mutations fail closed (`a577dd1`).
 
-Open audit work: F-02 local-retouch GPU ownership, F-04 transparency/color policy,
-F-05 coefficient/lip-math equivalence, and F-10 same-engine/same-
-runtime concurrency require manual decisions or separately scoped evidence.
-No broad equivalence, device, commercial, packaging, shipping, launch, or
-release-readiness conclusion is current.
+F-02/F-04/F-05/F-10 are resolved through deliberately narrow contracts: CPU-
+owned local-retouch composition and identity Metal transport; exact-opaque
+bounded non-extended RGB GPU inputs with named-sRGB output; CPU-oracle Metal
+still-image coefficients/lip math; and caller-serialized access to one
+intentionally non-`Sendable` engine. Transparent input, end-to-end GPU local-
+retouch composition, shared-instance parallel safety, broad device/commercial
+equivalence, packaging, shipping, launch, and release readiness remain unclaimed.
 
 ## Performance Metrics
 
@@ -150,8 +151,9 @@ None found under `.planning/todos/pending/`.
 ### Blockers/Concerns
 
 - F-08 result alpha/extent enforcement is remediated with fail-closed contract tests.
-- F-02/F-04/F-05/F-10 require manual decisions or separately scoped
-  evidence before any broad CPU/GPU equivalence claim.
+- F-02/F-04/F-05/F-10 have approved, mutation-tested bounded dispositions; they
+  do not establish transparent input, end-to-end GPU local retouch, or shared-
+  instance parallel safety.
 - F-09 geometry-envelope provenance is repaired and mutation-tested from one
   immutable observation.
 - Device/performance, commercial, packaging, shipping, launch, and release-
@@ -166,13 +168,12 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-18T01:15:00Z
-Stopped at: F-09 provenance follow-up verified; manual decisions queued
+Last session: 2026-08-18T10:02:00+08:00
+Stopped at: F-01 through F-10 dispositioned; bounded closeout verified
 Resume file: `PLANS.md`
-Next action: obtain product direction, then separately plan F-02/F-04/F-05/F-10 without treating the
-bounded closeout as broad CPU/GPU equivalence.
+Next action: preserve the bounded contracts; start a new milestone only for separately authorized device/product scope.
 
 ## Operator Next Steps
 
-- Plan the manual gaps separately; do not start from a false broad-equivalence
-  conclusion or the historical Phase-74 completion state alone.
+- Do not treat package-host parity or historical Phase-74 completion as device,
+  transparent-input, end-to-end GPU local-retouch, or release evidence.
