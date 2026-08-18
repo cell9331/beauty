@@ -26,6 +26,36 @@
 
 ## 3. Active
 
+### P-2026-08-18-v1-17-audit-followup
+
+| Field | Value |
+| --- | --- |
+| Status | `active` |
+| Owner | Codex |
+| Started | 2026-08-18 |
+| Scope | Repair the remaining auto-fixable F-09 parity-oracle provenance defect, preserve the completed bounded closeout, and surface manual architectural findings without silently choosing product semantics. |
+| Source Request | User asked to continue after the bounded v1.17 post-archive remediation review. |
+| Current Step | Make the geometry safety envelope and rendered backend request consume the same immutable face observation. |
+| Verification Policy | Run focused safety/parity tests, mutation-tested parity preflight, `git diff --check`, and the archive-first no-skip wrapper if the parity gate changes. |
+
+Checklist:
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| Classify remaining findings | `completed` | F-09 is auto-fixable and test-local; F-02/F-04/F-05/F-10 remain manual-only because they establish architecture, compatibility, or public concurrency semantics. |
+| Fix F-09 parity observation provenance | `active` | Pending one-observation request/envelope construction and a fail-closed mutation gate. |
+| Verify and record | `planned` | Pending focused parity and archive-first closeout evidence. |
+| Present manual decisions | `planned` | Pending recommended choices and tradeoffs for F-02/F-04/F-05/F-10. |
+
+Manual-only queue:
+
+| Finding | Reason |
+| --- | --- |
+| F-02 local-retouch GPU ownership | Genuine GPU composition versus an honestly narrowed CPU-owned composition contract is an architecture/product decision. |
+| F-04 transparent/color-profile input | Supporting transparency requires a declared background/alpha-restoration policy; rejecting it preserves the current fail-closed contract. |
+| F-05 CPU/Metal still-image math | Coefficient and lip-math migration changes rendered output and requires compatibility fixtures plus product approval. |
+| F-10 shared-instance concurrency | A same-engine/runtime test would establish supported public concurrency semantics that are currently unspecified. |
+
 ### P-2026-08-14-phase-66-sdk-only-boundary
 
 | Field | Value |
