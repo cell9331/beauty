@@ -96,9 +96,14 @@ final class BeautyMetalBackendTests: XCTestCase {
         XCTAssertEqual(counters.terminalErrors, 0)
     }
 
-    func testStillImageWithoutCanonicalCarrierRestoresOriginalExtent() throws {
+    func testOpaqueDisplayP3StillImageWithoutCanonicalCarrierRestoresExtentAsNamedSRGB() throws {
         guard let runtime = makeRuntime() else { return }
-        let image = Self.image(width: 2, height: 1, origin: CGPoint(x: 3, y: -2))
+        let image = Self.image(
+            width: 2,
+            height: 1,
+            origin: CGPoint(x: 3, y: -2),
+            colorSpaceName: CGColorSpace.displayP3
+        )
         let request = try BeautyBackendRequest(
             policy: .metal,
             input: .stillImage(image),
@@ -114,6 +119,7 @@ final class BeautyMetalBackendTests: XCTestCase {
             return XCTFail("Metal changed the output kind")
         }
         XCTAssertEqual(output.extent, image.extent)
+        XCTAssertEqual(output.colorSpace?.name, CGColorSpace.sRGB)
         XCTAssertEqual(result.diagnostics.width, 2)
         XCTAssertEqual(result.diagnostics.height, 1)
         XCTAssertEqual(counters.runtimeInvocations, 1)
@@ -297,8 +303,13 @@ final class BeautyMetalBackendTests: XCTestCase {
         )
     }
 
-    private static func image(width: Int, height: Int, origin: CGPoint) -> CIImage {
-        let colorSpace = CGColorSpace(name: CGColorSpace.sRGB)!
+    private static func image(
+        width: Int,
+        height: Int,
+        origin: CGPoint,
+        colorSpaceName: CFString = CGColorSpace.sRGB
+    ) -> CIImage {
+        let colorSpace = CGColorSpace(name: colorSpaceName)!
         let bytes = Data([10, 20, 30, 255, 40, 50, 60, 255])
         return CIImage(
             bitmapData: bytes,

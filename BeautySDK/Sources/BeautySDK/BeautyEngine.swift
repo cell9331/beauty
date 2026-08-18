@@ -124,6 +124,12 @@ public final class BeautyEngine {
         parameters: BeautyParameters
     ) throws -> BeautyResult<CIImage> {
         localRetouchTestingHooks?.prepareForFacadeInvocation()
+        if backendPolicy == .metal {
+            try stillImageCanonicalizer.preflightOpaqueBoundedRGBForMetalStillImage(
+                image: image,
+                maximumPixelCount: configuration.maximumInputPixelCount
+            )
+        }
         try Self.validate(
             image: image,
             maximumPixelCount: configuration.maximumInputPixelCount

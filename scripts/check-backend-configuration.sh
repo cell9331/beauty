@@ -5,7 +5,7 @@ set -euo pipefail
 readonly repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
 readonly package_root="${repository_root}/BeautySDK"
 readonly maximum_output_bytes=$((16 * 1024 * 1024))
-readonly expected_focused_tests=17
+readonly expected_focused_tests=19
 
 temporary_root=""
 cleanup() {
@@ -42,6 +42,7 @@ paths = {
     "configuration": "BeautySDK/Sources/BeautyCore/Models/BeautyConfiguration.swift",
     "factory": "BeautySDK/Sources/BeautySDK/BeautyBackendFactory.swift",
     "engine": "BeautySDK/Sources/BeautySDK/BeautyEngine.swift",
+    "canonicalizer": "BeautySDK/Sources/BeautySDK/BeautyStillImageCanonicalizer.swift",
     "configuration_tests": "BeautySDK/Tests/BeautyCoreTests/BeautyConfigurationTests.swift",
     "routing_tests": "BeautySDK/Tests/BeautyCoreTests/BeautyEngineBackendRoutingTests.swift",
     "parameters": "BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift",
@@ -67,6 +68,7 @@ def code(value):
 configuration = code(text["configuration"])
 factory = code(text["factory"])
 engine = code(text["engine"])
+canonicalizer = code(text["canonicalizer"])
 implementation = factory + "\n" + engine
 
 if re.search(r"\bpublic\s+(?:(?:final|indirect)\s+)?(?:class|struct|enum|protocol)\s+BeautyBackend", factory):
@@ -77,6 +79,13 @@ if len(re.findall(r"^\s*case\s+(?:cpu|gpu)\b", configuration, re.MULTILINE)) != 
     raise SystemExit("backend enum must expose exactly cpu and gpu cases")
 if not re.search(r"case\s+cpu\b", configuration) or not re.search(r"case\s+gpu\b", configuration):
     raise SystemExit("backend enum cases are incomplete")
+for marker in (
+    "Still-image input must be exact-opaque, finite,",
+    "bounded RGB; unsupported alpha fails before detection",
+    "still-image output is materialized in the named sRGB color space",
+):
+    if marker not in text["configuration"]:
+        raise SystemExit(f"public GPU still-image policy marker missing: {marker}")
 for marker in (
     "public var renderBackend: BeautyRenderBackend",
     "renderBackend: BeautyRenderBackend = .cpu",
@@ -114,6 +123,45 @@ if "package init(" not in engine or "backendExecutor" not in engine:
 if "public init(" not in engine:
     raise SystemExit("public engine initializer is missing")
 
+metal_preflight = "preflightOpaqueBoundedRGBForMetalStillImage"
+for marker in (
+    f"package func {metal_preflight}",
+    "inputColorSpace.model == .rgb",
+    "inputColorSpace.supportsOutput",
+    "CGColorSpaceUsesExtendedRange(inputColorSpace) == false",
+    'filterName: "CIAreaMinimum"',
+    'filterName: "CIAreaMaximum"',
+    "minimum.allSatisfy(\\.isFinite)",
+    "maximum.allSatisfy(\\.isFinite)",
+    "minimum[3] == 1",
+    "maximum[3] == 1",
+):
+    if marker not in canonicalizer:
+        raise SystemExit(f"Metal opaque/RGB preflight marker missing: {marker}")
+still_signature = "public func processResult(\n        image: CIImage,"
+still_start = engine.find(still_signature)
+still_end = engine.find("\n    private func legacyStillImageResult", still_start)
+if still_start < 0 or still_end < 0:
+    raise SystemExit("still-image facade boundary is missing")
+still_facade = engine[still_start:still_end]
+metal_guard = "if backendPolicy == .metal {"
+guard_index = still_facade.find(metal_guard)
+preflight_index = still_facade.find(metal_preflight)
+ordered_markers = (
+    "BeautySDKResources.validate",
+    "BeautyEffectResolver.localRetouchAdmission",
+    "legacyStillImageResult",
+    "resolveStillImageGeometry",
+)
+if guard_index < 0 or preflight_index < guard_index:
+    raise SystemExit("Metal still-image preflight is not guarded by the selected policy")
+last_index = preflight_index
+for marker in ordered_markers:
+    index = still_facade.find(marker)
+    if index <= last_index:
+        raise SystemExit(f"Metal still-image preflight ordering drifted before: {marker}")
+    last_index = index
+
 if "renderBackend" in text["parameters"]:
     raise SystemExit("backend policy leaked into BeautyParameters")
 parameters = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", text["parameters"], re.MULTILINE)
@@ -133,6 +181,36 @@ for marker in (
 ):
     if marker not in text["routing_tests"]:
         raise SystemExit(f"routing regression marker missing: {marker}")
+transparent_name = "func testGPUStillImageRejectsTransparencyBeforeBackendExecution() throws"
+transparent_start = text["routing_tests"].find(transparent_name)
+transparent_end = text["routing_tests"].find("\n    func ", transparent_start + len(transparent_name))
+if transparent_start < 0 or transparent_end < 0:
+    raise SystemExit("transparent GPU fail-closed regression is missing")
+transparent_regression = text["routing_tests"][transparent_start:transparent_end]
+for marker in (
+    "[51, 102, 153, 254]",
+    "BeautyParameters(faceSlim: 0.4)",
+    "XCTAssertEqual(error as? BeautyError, .invalidInput)",
+    "XCTAssertEqual(executor.callCount, 0)",
+):
+    if marker not in transparent_regression:
+        raise SystemExit(f"transparent GPU fail-closed assertion missing: {marker}")
+p3_name = "func testOpaqueDisplayP3GPUStillImagePreservesRawCarrierAndMetadata() throws"
+p3_start = text["routing_tests"].find(p3_name)
+p3_end = text["routing_tests"].find("\n    func ", p3_start + len(p3_name))
+if p3_start < 0 or p3_end < 0:
+    raise SystemExit("opaque Display-P3 GPU regression is missing")
+p3_regression = text["routing_tests"][p3_start:p3_end]
+for marker in (
+    "CGColorSpace.displayP3",
+    "orientation: .left",
+    "isInputMirrored: true",
+    "XCTAssertEqual(executor.lastMetadata, metadata)",
+    "XCTAssertEqual(executor.lastStillImageExtent, rawExtent)",
+    "XCTAssertEqual(executor.lastStillImageColorSpaceName, CGColorSpace.displayP3)",
+):
+    if marker not in p3_regression:
+        raise SystemExit(f"opaque Display-P3 GPU assertion missing: {marker}")
 regression_name = "func testPublicRawRoutesPreserveNonUpAndMirroredMetadata() throws"
 regression_start = text["routing_tests"].find(regression_name)
 if regression_start < 0:
@@ -322,6 +400,79 @@ path.write_text(value, encoding="utf-8")
 PY
   if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then
     echo "backend_configuration_raw_mirror_assertion_mutation_failed" >&2
+    return 1
+  fi
+  cp -- "${package_root}/Tests/BeautyCoreTests/BeautyEngineBackendRoutingTests.swift" \
+    "${temporary_root}/BeautySDK/Tests/BeautyCoreTests/BeautyEngineBackendRoutingTests.swift"
+
+  mutation_path="${temporary_root}/BeautySDK/Sources/BeautyCore/Models/BeautyConfiguration.swift"
+  cp -- "${package_root}/Sources/BeautyCore/Models/BeautyConfiguration.swift" "${mutation_path}"
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1])
+value = path.read_text(encoding="utf-8")
+needle = "Still-image input must be exact-opaque, finite,"
+if needle not in value:
+    raise SystemExit(1)
+path.write_text(value.replace(needle, "Still-image input must be opaque, finite,", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then
+    echo "backend_configuration_gpu_policy_doc_mutation_failed" >&2
+    return 1
+  fi
+  cp -- "${package_root}/Sources/BeautyCore/Models/BeautyConfiguration.swift" "${mutation_path}"
+
+  mutation_path="${temporary_root}/BeautySDK/Sources/BeautySDK/BeautyEngine.swift"
+  cp -- "${package_root}/Sources/BeautySDK/BeautyEngine.swift" "${mutation_path}"
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1])
+value = path.read_text(encoding="utf-8")
+needle = ".preflightOpaqueBoundedRGBForMetalStillImage("
+if needle not in value:
+    raise SystemExit(1)
+path.write_text(value.replace(needle, ".removedMetalStillImagePreflight(", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then
+    echo "backend_configuration_metal_preflight_order_mutation_failed" >&2
+    return 1
+  fi
+  cp -- "${package_root}/Sources/BeautySDK/BeautyEngine.swift" "${mutation_path}"
+
+  mutation_path="${temporary_root}/BeautySDK/Sources/BeautySDK/BeautyStillImageCanonicalizer.swift"
+  cp -- "${package_root}/Sources/BeautySDK/BeautyStillImageCanonicalizer.swift" "${mutation_path}"
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1])
+value = path.read_text(encoding="utf-8")
+needle = "minimum[3] == 1,"
+if needle not in value:
+    raise SystemExit(1)
+path.write_text(value.replace(needle, "minimum[3] >= 0,", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then
+    echo "backend_configuration_exact_opacity_mutation_failed" >&2
+    return 1
+  fi
+  cp -- "${package_root}/Sources/BeautySDK/BeautyStillImageCanonicalizer.swift" "${mutation_path}"
+
+  mutation_path="${temporary_root}/BeautySDK/Tests/BeautyCoreTests/BeautyEngineBackendRoutingTests.swift"
+  cp -- "${package_root}/Tests/BeautyCoreTests/BeautyEngineBackendRoutingTests.swift" "${mutation_path}"
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1])
+value = path.read_text(encoding="utf-8")
+needle = "        XCTAssertEqual(executor.callCount, 0)\n"
+if needle not in value:
+    raise SystemExit(1)
+path.write_text(value.replace(needle, "", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then
+    echo "backend_configuration_prebackend_rejection_mutation_failed" >&2
     return 1
   fi
   echo "backend_configuration_self_test_passed"

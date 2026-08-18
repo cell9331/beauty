@@ -199,6 +199,19 @@ if "BeautyMetalGeometryPassTests" not in text["geometry_tests"]:
     raise SystemExit("generated geometry suite is missing")
 if "BeautyMetalLocalRetouchPassTests" not in text["local_retouch_tests"]:
     raise SystemExit("generated local-retouch suite is missing")
+p3_name = "func testOpaqueDisplayP3StillImageWithoutCanonicalCarrierRestoresExtentAsNamedSRGB() throws"
+p3_start = text["backend_tests"].find(p3_name)
+p3_end = text["backend_tests"].find("\n    func ", p3_start + len(p3_name))
+if p3_start < 0 or p3_end < 0:
+    raise SystemExit("Display-P3 to named-sRGB Metal regression is missing")
+p3_regression = text["backend_tests"][p3_start:p3_end]
+for marker in (
+    "CGColorSpace.displayP3",
+    "XCTAssertEqual(output.extent, image.extent)",
+    "XCTAssertEqual(output.colorSpace?.name, CGColorSpace.sRGB)",
+):
+    if marker not in p3_regression:
+        raise SystemExit(f"Display-P3 to named-sRGB assertion missing: {marker}")
 for marker in (
     "testCPUComposedCarrierIsTransportedByIdentityMetalPass",
     "testMetalLocalRetouchRequiresCPUComposedCarrierBeforeRuntime",
@@ -311,6 +324,19 @@ PY
   if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then echo "cpu_ownership_payload_mutation_failed" >&2; return 1; fi
 
   cp -- "${package_root}/Sources/BeautyRender/BeautyMetalPass.swift" "${mutation_path}"
+  mutation_path="${temporary_root}/${backend_test_source}"
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
+needle = "        XCTAssertEqual(output.colorSpace?.name, CGColorSpace.sRGB)\n"
+if needle not in value: raise SystemExit(1)
+path.write_text(value.replace(needle, "", 1), encoding="utf-8")
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then echo "named_srgb_output_test_mutation_failed" >&2; return 1; fi
+
+  cp -- "${package_root}/Tests/BeautyEffectsTests/BeautyMetalBackendTests.swift" "${mutation_path}"
+  mutation_path="${temporary_root}/${pass_source}"
   mkdir -p "${temporary_root}/BeautySDK/Sources/BeautyEffects/Unexpected"
   cp -- "${mutation_path}" "${temporary_root}/BeautySDK/Sources/BeautyEffects/Unexpected/BeautyMetalPass.swift"
   rm -- "${mutation_path}"

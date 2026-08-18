@@ -39,7 +39,7 @@ final class BeautyBackendSelectionConcurrencyTests: XCTestCase {
                     let configuration = BeautyConfiguration(renderBackend: policy == .metal ? .gpu : .cpu)
                     let recorder = RecordingExecutor()
                     let engine = try BeautyEngine(configuration: configuration, backendExecutor: recorder)
-                    let image = CIImage(color: .white).cropped(to: CGRect(x: 0, y: 0, width: 1, height: 1))
+                    let image = try Self.makeOpaqueNamedSRGBImage()
                     _ = try engine.processResult(
                         image: image,
                         metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
@@ -56,6 +56,19 @@ final class BeautyBackendSelectionConcurrencyTests: XCTestCase {
         XCTAssertTrue(results.allSatisfy { $0.1 == 1 })
         XCTAssertEqual(results.filter { $0.0 == .cpu }.count, 3)
         XCTAssertEqual(results.filter { $0.0 == .metal }.count, 3)
+    }
+
+    private static func makeOpaqueNamedSRGBImage() throws -> CIImage {
+        guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
+            throw BeautyError.unsupportedPixelFormat
+        }
+        return CIImage(
+            bitmapData: Data([255, 255, 255, 255]),
+            bytesPerRow: 4,
+            size: CGSize(width: 1, height: 1),
+            format: .RGBA8,
+            colorSpace: colorSpace
+        )
     }
 }
 

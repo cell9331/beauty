@@ -42,7 +42,7 @@ final class BeautyEngineBackendRoutingTests: XCTestCase {
             configuration: BeautyConfiguration(renderBackend: .gpu),
             backendExecutor: executor
         )
-        let image = CIImage(color: .white).cropped(to: CGRect(x: 0, y: 0, width: 1, height: 1))
+        let image = try makeOpaqueStillImage(colorSpaceName: CGColorSpace.sRGB)
 
         _ = try engine.processResult(
             image: image,
@@ -64,7 +64,7 @@ final class BeautyEngineBackendRoutingTests: XCTestCase {
     func testPublicGPUConstructionIsExplicitlyAvailableOrTypedUnavailable() throws {
         do {
             let engine = try BeautyEngine(configuration: BeautyConfiguration(renderBackend: .gpu))
-            let image = CIImage(color: .white).cropped(to: CGRect(x: 0, y: 0, width: 1, height: 1))
+            let image = try makeOpaqueStillImage(colorSpaceName: CGColorSpace.sRGB)
             let result = try engine.processResult(
                 image: image,
                 metadata: BeautyInputMetadata(orientation: .up, source: .photo),
@@ -87,7 +87,7 @@ final class BeautyEngineBackendRoutingTests: XCTestCase {
             configuration: BeautyConfiguration(renderBackend: .gpu),
             backendExecutor: gpuExecutor
         )
-        let image = CIImage(color: .white).cropped(to: CGRect(x: 0, y: 0, width: 1, height: 1))
+        let image = try makeOpaqueStillImage(colorSpaceName: CGColorSpace.sRGB)
         let metadata = BeautyInputMetadata(orientation: .up, source: .photo)
 
         _ = try cpuEngine.processResult(image: image, metadata: metadata, parameters: BeautyParameters())
@@ -98,6 +98,61 @@ final class BeautyEngineBackendRoutingTests: XCTestCase {
         XCTAssertEqual(cpuExecutor.lastPolicy, .cpu)
         XCTAssertEqual(gpuExecutor.callCount, 1)
         XCTAssertEqual(gpuExecutor.lastPolicy, .metal)
+    }
+
+    func testGPUStillImageRejectsTransparencyBeforeBackendExecution() throws {
+        let executor = RecordingExecutor()
+        let engine = try BeautyEngine(
+            configuration: BeautyConfiguration(renderBackend: .gpu),
+            backendExecutor: executor
+        )
+        let image = try makeStillImage(
+            bytes: [51, 102, 153, 254],
+            colorSpaceName: CGColorSpace.sRGB
+        )
+
+        XCTAssertThrowsError(
+            try engine.processResult(
+                image: image,
+                metadata: BeautyInputMetadata(orientation: .up, source: .photo),
+                parameters: BeautyParameters(faceSlim: 0.4)
+            )
+        ) { error in
+            XCTAssertEqual(error as? BeautyError, .invalidInput)
+        }
+        XCTAssertEqual(executor.callCount, 0)
+    }
+
+    func testOpaqueDisplayP3GPUStillImagePreservesRawCarrierAndMetadata() throws {
+        let executor = RecordingExecutor()
+        let engine = try BeautyEngine(
+            configuration: BeautyConfiguration(renderBackend: .gpu),
+            backendExecutor: executor
+        )
+        let rawExtent = CGRect(x: 3, y: -2, width: 1, height: 1)
+        let image = try makeOpaqueStillImage(
+            colorSpaceName: CGColorSpace.displayP3,
+            origin: rawExtent.origin
+        )
+        let metadata = BeautyInputMetadata(
+            orientation: .left,
+            isInputMirrored: true,
+            isPreviewMirrored: true,
+            source: .photo,
+            timestamp: 42
+        )
+
+        _ = try engine.processResult(
+            image: image,
+            metadata: metadata,
+            parameters: BeautyParameters(brightness: 0.2)
+        )
+
+        XCTAssertEqual(executor.callCount, 1)
+        XCTAssertEqual(executor.lastPolicy, .metal)
+        XCTAssertEqual(executor.lastMetadata, metadata)
+        XCTAssertEqual(executor.lastStillImageExtent, rawExtent)
+        XCTAssertEqual(executor.lastStillImageColorSpaceName, CGColorSpace.displayP3)
     }
 
     func testStillImageDispatchesExactlyOnceThroughInjectedExecutor() throws {
@@ -189,6 +244,34 @@ final class BeautyEngineBackendRoutingTests: XCTestCase {
         }
         return pixelBuffer
     }
+
+    private func makeOpaqueStillImage(
+        colorSpaceName: CFString,
+        origin: CGPoint = .zero
+    ) throws -> CIImage {
+        try makeStillImage(
+            bytes: [51, 102, 153, 255],
+            colorSpaceName: colorSpaceName
+        ).transformed(by: CGAffineTransform(translationX: origin.x, y: origin.y))
+    }
+
+    private func makeStillImage(
+        bytes: [UInt8],
+        colorSpaceName: CFString
+    ) throws -> CIImage {
+        guard bytes.count == 4,
+              let colorSpace = CGColorSpace(name: colorSpaceName)
+        else {
+            throw BeautyError.unsupportedPixelFormat
+        }
+        return CIImage(
+            bitmapData: Data(bytes),
+            bytesPerRow: 4,
+            size: CGSize(width: 1, height: 1),
+            format: .RGBA8,
+            colorSpace: colorSpace
+        )
+    }
 }
 
 private final class RecordingExecutor: BeautyBackendExecutor {
@@ -196,6 +279,8 @@ private final class RecordingExecutor: BeautyBackendExecutor {
     private(set) var lastInputKind: BeautyBackendInputKind?
     private(set) var lastMetadata: BeautyInputMetadata?
     private(set) var lastPolicy: BeautyBackendExecutionPolicy?
+    private(set) var lastStillImageExtent: CGRect?
+    private(set) var lastStillImageColorSpaceName: CFString?
     private let error: BeautyError?
 
     init(error: BeautyError? = nil) {
@@ -215,6 +300,8 @@ private final class RecordingExecutor: BeautyBackendExecutor {
         case .pixelBuffer(let pixelBuffer):
             output = .pixelBuffer(pixelBuffer)
         case .stillImage(let image):
+            lastStillImageExtent = image.extent
+            lastStillImageColorSpaceName = image.colorSpace?.name
             output = .stillImage(image)
         }
         return try BeautyBackendResult(

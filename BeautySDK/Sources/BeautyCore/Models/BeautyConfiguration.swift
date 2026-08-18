@@ -2,6 +2,10 @@ import CoreGraphics
 
 public enum BeautyRenderBackend: String, Codable, Equatable, Sendable {
     case cpu
+
+    /// Uses the Metal backend. Still-image input must be exact-opaque, finite,
+    /// bounded RGB; unsupported alpha fails before detection, and successful
+    /// still-image output is materialized in the named sRGB color space.
     case gpu
 }
 

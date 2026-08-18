@@ -30,6 +30,57 @@ package final class BeautyStillImageCanonicalizer: @unchecked Sendable {
         }
     }
 
+    /// Validates the public Metal still-image input policy without changing the
+    /// image carrier, extent, orientation, or metadata forwarded downstream.
+    package func preflightOpaqueBoundedRGBForMetalStillImage(
+        image: CIImage,
+        maximumPixelCount: Int
+    ) throws {
+        guard let context,
+              let sRGB
+        else {
+            throw BeautyError.unsupportedPixelFormat
+        }
+        let inputExtent = image.extent
+        try validateDecodedExtent(inputExtent, maximumPixelCount: maximumPixelCount)
+        guard let inputColorSpace = image.colorSpace,
+              inputColorSpace.model == .rgb,
+              inputColorSpace.supportsOutput,
+              CGColorSpaceUsesExtendedRange(inputColorSpace) == false
+        else {
+            throw BeautyError.unsupportedPixelFormat
+        }
+
+        let zeroOriginImage = image.transformed(by: CGAffineTransform(
+            translationX: -inputExtent.minX,
+            y: -inputExtent.minY
+        ))
+        let zeroOriginBounds = CGRect(origin: .zero, size: inputExtent.size)
+        let minimum = try areaComponents(
+            filterName: "CIAreaMinimum",
+            image: zeroOriginImage,
+            bounds: zeroOriginBounds,
+            context: context,
+            colorSpace: sRGB
+        )
+        let maximum = try areaComponents(
+            filterName: "CIAreaMaximum",
+            image: zeroOriginImage,
+            bounds: zeroOriginBounds,
+            context: context,
+            colorSpace: sRGB
+        )
+        guard minimum.allSatisfy(\.isFinite),
+              maximum.allSatisfy(\.isFinite),
+              minimum[0...2].allSatisfy({ $0 >= 0 }),
+              maximum[0...2].allSatisfy({ $0 <= 1 }),
+              minimum[3] == 1,
+              maximum[3] == 1
+        else {
+            throw BeautyError.invalidInput
+        }
+    }
+
     package func canonicalize(
         image: CIImage,
         metadata: BeautyInputMetadata,
@@ -190,6 +241,41 @@ package final class BeautyStillImageCanonicalizer: @unchecked Sendable {
         guard minimumAlphaPixel[3] == 1 else {
             throw BeautyError.invalidInput
         }
+    }
+
+    private func areaComponents(
+        filterName: String,
+        image: CIImage,
+        bounds: CGRect,
+        context: CIContext,
+        colorSpace: CGColorSpace
+    ) throws -> [Float] {
+        let reduction = image.applyingFilter(
+            filterName,
+            parameters: [kCIInputExtentKey: CIVector(cgRect: bounds)]
+        )
+        let reductionBounds = reduction.extent.integral
+        guard reductionBounds.width == 1,
+              reductionBounds.height == 1
+        else {
+            throw BeautyError.invalidInput
+        }
+
+        var components = [Float](repeating: 0, count: 4)
+        components.withUnsafeMutableBytes { storage in
+            guard let baseAddress = storage.baseAddress else {
+                return
+            }
+            context.render(
+                reduction,
+                toBitmap: baseAddress,
+                rowBytes: MemoryLayout<Float>.stride * 4,
+                bounds: reductionBounds,
+                format: .RGBAf,
+                colorSpace: colorSpace
+            )
+        }
+        return components
     }
 
     private func validateDecodedExtent(_ extent: CGRect, maximumPixelCount: Int) throws {
