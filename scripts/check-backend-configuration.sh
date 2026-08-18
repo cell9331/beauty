@@ -5,7 +5,7 @@ set -euo pipefail
 readonly repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
 readonly package_root="${repository_root}/BeautySDK"
 readonly maximum_output_bytes=$((16 * 1024 * 1024))
-readonly expected_focused_tests=16
+readonly expected_focused_tests=17
 
 temporary_root=""
 cleanup() {
@@ -133,6 +133,22 @@ for marker in (
 ):
     if marker not in text["routing_tests"]:
         raise SystemExit(f"routing regression marker missing: {marker}")
+regression_name = "func testPublicRawRoutesPreserveNonUpAndMirroredMetadata() throws"
+regression_start = text["routing_tests"].find(regression_name)
+if regression_start < 0:
+    raise SystemExit("raw metadata routing regression is missing")
+regression_end = text["routing_tests"].find("\n    func ", regression_start + len(regression_name))
+if regression_end < 0:
+    regression_end = len(text["routing_tests"])
+regression = text["routing_tests"][regression_start:regression_end]
+for marker in (
+    "orientation: .right",
+    "isInputMirrored: true",
+    "XCTAssertEqual(executor.lastMetadata, pixelBufferMetadata)",
+    "XCTAssertEqual(executor.lastMetadata, stillImageMetadata)",
+):
+    if marker not in regression:
+        raise SystemExit(f"raw metadata routing assertion missing: {marker}")
 if re.search(r"\b(?:XCTSkip|UI(Image|Kit)|NS(Image|Application)|URLSession|FileManager)\b", text["configuration_tests"] + text["routing_tests"], re.IGNORECASE):
     raise SystemExit("configuration tests contain UI, path, or skip behavior")
 
@@ -246,6 +262,66 @@ PY
   printf '\nlet fallback = true\n' >>"${mutation_path}"
   if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then
     echo "backend_configuration_fallback_mutation_failed" >&2
+    return 1
+  fi
+  cp -- "${package_root}/Sources/BeautySDK/BeautyEngine.swift" "${mutation_path}"
+
+  mutation_path="${temporary_root}/BeautySDK/Tests/BeautyCoreTests/BeautyEngineBackendRoutingTests.swift"
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1])
+value = path.read_text(encoding="utf-8")
+start_marker = "    func testPublicRawRoutesPreserveNonUpAndMirroredMetadata() throws {"
+end_marker = "\n    func testInjectedTerminalFailureEscapesWithoutFallback()"
+start = value.index(start_marker)
+end = value.index(end_marker, start)
+path.write_text(value[:start] + value[end + 1:], encoding="utf-8")
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then
+    echo "backend_configuration_raw_metadata_test_mutation_failed" >&2
+    return 1
+  fi
+  cp -- "${package_root}/Tests/BeautyCoreTests/BeautyEngineBackendRoutingTests.swift" "${mutation_path}"
+
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1])
+value = path.read_text(encoding="utf-8")
+value = value.replace("            orientation: .right,\n", "", 1)
+path.write_text(value, encoding="utf-8")
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then
+    echo "backend_configuration_raw_orientation_mutation_failed" >&2
+    return 1
+  fi
+  cp -- "${package_root}/Tests/BeautyCoreTests/BeautyEngineBackendRoutingTests.swift" "${mutation_path}"
+
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1])
+value = path.read_text(encoding="utf-8")
+value = value.replace("            isInputMirrored: true,\n", "", 1)
+path.write_text(value, encoding="utf-8")
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then
+    echo "backend_configuration_raw_mirror_mutation_failed" >&2
+    return 1
+  fi
+  cp -- "${package_root}/Tests/BeautyCoreTests/BeautyEngineBackendRoutingTests.swift" "${mutation_path}"
+
+  python3 - "${mutation_path}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1])
+value = path.read_text(encoding="utf-8")
+value = value.replace("        XCTAssertEqual(executor.lastMetadata, stillImageMetadata)\n", "", 1)
+path.write_text(value, encoding="utf-8")
+PY
+  if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then
+    echo "backend_configuration_raw_mirror_assertion_mutation_failed" >&2
     return 1
   fi
   echo "backend_configuration_self_test_passed"
