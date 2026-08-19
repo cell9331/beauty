@@ -33,6 +33,30 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 The backend choice is configuration/execution policy and must not change the public beauty-parameter or preset schema. Detection/support semantics remain shared. No backend may borrow success from the other: CPU and GPU each run the same SDK-owned input/output contract, and comparison evidence separately verifies their parity.
 
+## Standing Project Validation Policy
+
+Every SDK milestone closes on deterministic, repeatable SwiftPM tests and
+SDK-owned scripts. Image-producing work must be judged from actual input/output
+pixels and metadata with contract-appropriate assertions for dimensions and
+extent, orientation/mirroring, color space, alpha, neutral identity, intended
+movement, protected-region preservation, numeric tolerance, determinism, and
+typed failure. A successful process exit without output validation is not
+completion evidence.
+
+Physical iPhone testing is optional user evaluation after the SDK work is
+complete. It is not a default requirement, dependency, checkpoint, or blocker
+for planning, implementation, verification, milestone completion, or subsequent
+work. It becomes mandatory only if the user explicitly scopes a later milestone
+around device behavior. User device feedback is supplemental: record actionable
+findings in `PLANS.md` and reproduce them in automated tests where possible.
+
+This policy does not turn package-host evidence into device or release evidence.
+Without separately authorized hardware evaluation, the project makes no claim
+about on-device performance, thermals, battery, endurance, commercial visual
+approval, packaging, shipping, launch, or release readiness. Algorithm owners
+may still require rights-approved local image bundles; those execute through
+automated opt-in scripts and are distinct from physical-device testing.
+
 ## Historical Milestone Record: v1.17 Dual CPU/GPU Metal Rendering
 
 **Goal:** Keep the verified CPU implementation as a permanent reference while adding a selectable, backend-neutral Metal renderer for the existing SDK algorithms, with explicit parity and fail-closed availability evidence.

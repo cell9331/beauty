@@ -57,7 +57,28 @@ docs/                            background and historical long-form material
 - v1.16 不修改 retained `Warp.metal`、不新增 Metal/GPU API/backend 或新算法。
 - device、commercial、packaging、shipping、launch 与 release readiness 均不属于当前结论。
 
-## 6. 工作流
+## 6. 项目级自动化验证政策
+
+- 真实 iPhone 测试是 SDK 完成后由用户执行的可选验收与反馈，不是当前或未来
+  里程碑的默认硬门禁、依赖或计划推进 blocker；只有用户在后续里程碑中明确
+  提升为强制要求时，才可成为完成条件。
+- SDK 里程碑以可重复的 SwiftPM 测试和 SDK-owned 脚本为主要证据。涉及图片
+  效果时，测试必须通过实际输入/输出像素与元数据断言判断结果，覆盖适用的
+  尺寸/extent、方向/镜像、色彩空间、alpha、neutral identity、目标区域变化、
+  保护区域不变、容差、确定性与 typed failure；不能用“脚本运行成功”代替结果
+  正确性。
+- 强制图片夹具优先使用代码生成、内存内、确定性的输入；某个算法的 owner
+  若要求 rights-approved 本地正/负样本，仍通过自动化脚本执行并可作为该算法
+  的独立门禁，但这不等于真实设备测试。raw pixels、masks、landmarks、私有
+  路径和生成图片不得进入持久证据。
+- SDK 完成后的真实设备反馈作为补充发现记录到 `PLANS.md`，必要时进入后续
+  修复计划；它不追溯否定当时已通过的自动化里程碑，除非暴露出可复现的契约
+  缺陷。
+- 没有真实设备证据时，仍不得宣称设备性能、温升、耗电、长稳、商业视觉质量、
+  packaging、shipping、launch 或 release readiness；这是声明边界，不是计划
+  blocker。
+
+## 7. 工作流
 
 1. **Orient**：读取计划、owner、相关 source/test。
 2. **Scope**：确认最小改动与 SwiftPM/SDK-owned 验证。
@@ -67,7 +88,7 @@ docs/                            background and historical long-form material
 
 不要依赖聊天记忆；长期决定必须沉淀到仓库文本。
 
-## 7. 操作约束
+## 8. 操作约束
 
 - 不扩大任务边界；额外问题写入 `PLANS.md`。
 - 不覆盖用户未要求修改的本地变更。
@@ -75,7 +96,7 @@ docs/                            background and historical long-form material
 - 新风险补 `SECURITY.md`；新错误、日志或性能行为补 `RELIABILITY.md`。
 - 历史归档与 archived milestone evidence 保持只读。
 
-## 8. 基础命令
+## 9. 基础命令
 
 ```bash
 rg --files

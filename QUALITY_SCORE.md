@@ -37,8 +37,8 @@ release-readiness claim.
 | 1 | historical idea only |
 | 2 | current contract without implementation evidence |
 | 3 | implementation and basic tests with known gaps |
-| 4 | main/failure paths plus synchronized automated evidence |
-| 5 | release-like regression and required manual/runtime evidence |
+| 4 | milestone-grade main/failure paths plus synchronized automated image/output evidence |
+| 5 | separately authorized release-like device/product evidence in addition to automation |
 
 ## 2. Current Snapshot
 
@@ -46,7 +46,7 @@ release-readiness claim.
 | --- | ---: | --- | --- |
 | Root owners | 4 | Current contracts consistently name SDK-only SwiftPM ownership and archive-only UI history. | Keep owners synchronized with code/tests. |
 | SDK package | 4 | One public library, one SDK-owned renderer, six internal/library targets, no remote dependency. | Preserve facade and dependency direction. |
-| Tests | 4 | 74 SwiftPM test files; current mutation-tested preflights and archive-first XCTest `776/0/0` pass with eight opt-ins and zero skips. Historical counts remain labeled historical; all ten audit findings are dispositioned. | Preserve the bounded contracts and add only separately authorized device/product evidence. |
+| Tests | 4 | 74 SwiftPM test files; current mutation-tested preflights and archive-first XCTest `776/0/0` pass with eight opt-ins and zero skips. Historical counts remain labeled historical; all ten audit findings are dispositioned. | Preserve deterministic pixel/metadata oracles; physical-iPhone feedback is optional and non-blocking. |
 | External consumer / CLI | 4 | Public-only local-path consumer observes generated RGBA bytes/dimensions; compiled renderer covers 74-case discovery, reconciled reports, typed failures, and render/encode seams. | Preserve archive → boundary → consumer → no-skip ordering. |
 | Archive integrity | 4 | Code-owned ZIP/manifest anchors, exact 45/26 inventories, bounded streamed extraction, frozen-retirement rollback, and safe restore self-tests pass. | Verify before every full closeout. |
 | SDK-only boundary | 4 | Retired roots are absent; scanner rejects symlinks, restored application/UI sources, stale current owners/maps, tracked media, application artifacts, retained-shader drift, and backend/API drift. | Keep scanner fail-closed. |
@@ -56,7 +56,9 @@ release-readiness claim.
 
 No score of 5 is claimed. Package/fixture automation does not establish device
 performance, population sufficiency, commercial quality, packaging,
-shipping, launch, or release readiness.
+shipping, launch, or release readiness. Score 4 is sufficient for an SDK
+milestone when its automated contract is complete; the absence of score-5
+device/product evidence cannot block planning or milestone progression.
 
 ## 3. Active Inventory
 
@@ -98,6 +100,13 @@ parser accepts only all eight opt-ins exactly once, one nonzero zero-failure
 XCTest aggregate, one passed Swift Testing aggregate when that runner starts,
 and zero skip/disabled events from either format.
 
+Physical-iPhone access, a manual device checkpoint, or pending user feedback is
+never an implicit prerequisite for this gate. Image-producing tests must assert
+the owning pixel and metadata contract—applicable extent/dimensions,
+orientation/mirroring, color/alpha, neutral identity, intended movement,
+protected-region preservation, tolerance, determinism, and failure behavior—so
+a zero exit status without validated output cannot earn completion credit.
+
 The v1.16 historical wrapper evidence is 702 executed tests, zero failures, and
 zero skips. The Phase-71 wrapper evidence is historically 728 executed tests,
 zero failures, and zero skips. The historical Phase-73 wrapper executed 753 tests
@@ -134,6 +143,14 @@ or large extraction transcripts are not durable quality evidence.
   protected/out-of-mask preservation.
 - Synthetic fixtures prove mechanics only; rights-approved local fixtures remain
   separate opt-in product gates.
+- Every required image fixture gate is code/script-driven and judges actual
+  input/output content; rights-approved opt-ins are not physical-device tests.
+- Physical-iPhone testing is optional post-SDK user evaluation. Its absence or
+  delay cannot fail a milestone, create an unexpected skip, or stop the next
+  plan unless the user explicitly authorizes a later device milestone.
+- Reproducible device feedback should become an automated regression. Until
+  separate device/product evidence exists, keep device performance, thermals,
+  battery, endurance, commercial visual quality, and release claims unmade.
 - Fixture media, region/landmark data, local locations, and child output stay
   out of tracked evidence.
 - Tool failure, unknown output, missing test summary, unexpected skip, or zero

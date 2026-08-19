@@ -34,6 +34,22 @@ application or Demo behavior, Xcode targets, simulator or physical-device
 validation, new beauty algorithms or parameters, model/network behavior,
 commercial approval, packaging, shipping, launch, or release-readiness claims.
 
+## Standing Validation Policy for Future Roadmaps
+
+Future SDK phases inherit an automation-first completion contract: SwiftPM and
+SDK-owned scripts judge actual image input/output pixels and metadata using
+deterministic, bounded, fail-closed assertions. Physical iPhone testing is
+optional user evaluation after SDK completion and must not be placed on a phase
+critical path, used as a default hard gate, or block advancement to later work.
+Only an explicit later user decision may create a device-focused milestone.
+
+Device feedback remains useful supplemental evidence and should create a
+reproducible automated regression when possible. Until separate hardware/product
+work is authorized, roadmap completion carries no device performance, thermal,
+battery, endurance, commercial visual-quality, packaging, shipping, launch, or
+release-readiness claim. Rights-approved local image gates required by an
+algorithm owner remain script-driven and are not physical-device tests.
+
 ## Milestones
 
 - ✅ **v1.0 MVP** — Phases 1-7, completed 2026-06-23.

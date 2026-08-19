@@ -39,6 +39,9 @@ false alpha/extent flags and still-image extent-origin drift.
 - SwiftPM and SDK-owned scripts are the only active verification surfaces.
 - Performance targets are engineering budgets, not claims; current v1.16 closeout
   adds no device/performance evidence.
+- Physical-iPhone testing is optional post-SDK user evaluation and is never an
+  implicit milestone gate, dependency, timeout, or blocker. Device feedback is
+  supplemental and enters a follow-up only when actionable.
 
 ## 2. Core Invariants
 
@@ -58,6 +61,16 @@ false alpha/extent flags and still-image extent-origin drift.
 | R12 | Compiled CLI process coverage is bounded and exercises independent render/encode failures, typed non-zero diagnostics, and clean temporary recovery. |
 | R13 | Generated CPU oracle preflight executes nonzero focused suites with zero generated skips before optional fixtures or the full SwiftPM child. |
 | R14 | `BeautyResult` crosses a concurrency boundary only for `Output: Sendable`; the public test proves field-preserving transfer and the boundary guard rejects an unconditional generic declaration. |
+| R15 | Image-producing milestone evidence validates actual output pixels and metadata against deterministic exact/bounded oracles; process completion without output checks is failure. |
+| R16 | Physical-device access or user feedback is not required for SDK milestone progress; a reproducible post-SDK finding gains an automated regression where possible, while device/product claims remain withheld without separate evidence. |
+
+The automated image oracle applies contract-specific checks rather than one
+global visual heuristic: dimensions/extent, orientation/mirroring, color space,
+alpha, neutral identity, intended-region change, protected-region stability,
+bounded error, repeated determinism, and typed failure are asserted where
+relevant. Generated in-memory fixtures provide the default uniform path;
+rights-approved local fixture gates may add algorithm-specific evidence through
+the same scripts. Neither path requires a physical iPhone.
 
 ## 3. Error and Degradation Policy
 
@@ -198,6 +211,15 @@ The generated CPU preflight keeps its bounded logs temporary and emits only
 fixture, geometry/color, and local-retouch/determinism counts. It does not open
 portrait media or persist pixels, masks, support, coordinates, child output, or
 locators; private/native-Vision skips remain environment-gated and non-mandatory.
+
+Physical-iPhone evaluation is deliberately outside this mandatory chain. A
+missing device, a slow manual run, or pending user feedback must not be encoded
+as a failed prerequisite or prevent the next plan. If later feedback exposes a
+repeatable defect, record it in `PLANS.md`, reproduce it with the smallest
+deterministic SwiftPM/script fixture, and then apply the normal fix/verification
+workflow. Without separately authorized device work, do not infer performance,
+thermal, battery, endurance, commercial-quality, packaging, shipping, launch,
+or release-readiness evidence from the automated gate.
 
 The public `BeautyResultConcurrencyTests` suite currently passes 3/0/0. The
 The v1.16 historical mandatory wrapper passed 702 tests with zero failures and zero

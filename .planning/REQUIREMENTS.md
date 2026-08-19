@@ -3,6 +3,22 @@
 **Defined:** 2026-08-15
 **Core Value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
 
+## Standing Project Validation Requirements
+
+These requirements apply to all current and future SDK milestones. They are
+project policy, not additional historical v1.17 checklist rows, so the 13-item
+v1.17 traceability count below remains unchanged.
+
+| ID | Requirement |
+| --- | --- |
+| PROJECT-VALIDATION-01 | Physical iPhone testing is optional post-SDK user evaluation and must not be a default milestone requirement, dependency, checkpoint, completion gate, or blocker. It becomes mandatory only through an explicit later user decision. |
+| PROJECT-VALIDATION-02 | Milestone authority is deterministic SwiftPM coverage plus SDK-owned scripts with nonzero execution, zero failures, zero unexpected skips, and fail-closed handling of malformed or incomplete evidence. |
+| PROJECT-VALIDATION-03 | Image-producing behavior is accepted only when automation evaluates real input/output pixels and metadata against the owning contract, including applicable dimensions/extent, orientation/mirroring, color space, alpha, neutral identity, intended-region movement, protected-region preservation, bounded tolerance, determinism, and typed failure. Process success alone is insufficient. |
+| PROJECT-VALIDATION-04 | Generated in-memory fixtures are the default repeatable mechanism. An algorithm owner may separately require rights-approved local positive/negative fixtures, but those remain script-driven, private, and distinct from physical-device validation. |
+| PROJECT-VALIDATION-05 | User device feedback received after SDK completion is supplemental evidence: actionable findings enter `PLANS.md` and should gain an automated regression where reproducible; absence of that feedback does not stop the current plan or later milestone work. |
+| PROJECT-VALIDATION-06 | Without separately authorized hardware/product evidence, automated SDK completion makes no device performance, thermal, battery, endurance, commercial visual-quality, packaging, shipping, launch, or release-readiness claim. This is a nonclaim boundary, not a blocker. |
+| PROJECT-VALIDATION-07 | Durable evidence remains aggregate and privacy-safe: do not persist raw inputs/outputs, masks, landmarks, private fixture locators, device photos, or unredacted feedback payloads. |
+
 ## Post-Archive Audit Qualification
 
 The checked requirements and traceability table below record the historical
@@ -124,4 +140,4 @@ typed availability policy; Phase 74 owns parity and SDK-only closeout.
 
 ---
 *Requirements defined: 2026-08-15*
-*Last updated: 2026-08-17 during post-archive v1.17 audit remediation; historical Phase-74 traceability retained with current-gap qualification*
+*Last updated: 2026-08-19 with standing project validation requirements; historical Phase-74 traceability retained with current-gap qualification*

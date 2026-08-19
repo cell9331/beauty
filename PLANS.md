@@ -49,6 +49,25 @@ Checklist:
 
 > 以下记录均为已完成或已被后续权威取代的执行历史，不是 Active plan。
 
+### C-2026-08-19-project-automated-validation-policy
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
+| Completed | 2026-08-19 |
+| Scope | Established deterministic SDK-owned script/code image input-output validation as the standing milestone authority and made physical-iPhone testing optional post-SDK user feedback that cannot block plan progression. |
+| Requirements | `PROJECT-VALIDATION-01` through `PROJECT-VALIDATION-07` now govern current and future SDK milestones without changing historical v1.17 traceability. |
+| Contract | Image-producing work validates applicable pixels, dimensions/extent, orientation/mirroring, color/alpha metadata, neutral identity, intended/protected regions, bounded tolerances, determinism, and typed failures. Rights-approved private fixtures remain script-driven when an algorithm owner requires them. |
+| Device policy | Missing or delayed physical-iPhone access/user feedback is not a failure, skip, gate, dependency, or blocker. Reproducible post-SDK feedback becomes a follow-up automated regression where possible. |
+| Nonclaims | Without separately authorized hardware/product evidence, completion does not claim device performance, thermals, battery, endurance, commercial visual quality, packaging, shipping, launch, or release readiness. |
+| Verification | SDK-only boundary self-test and post-archive scan passed; archive-first `run-no-skip-swiftpm.sh` passed `776/0/0`, all eight opt-ins exactly once, with `skipped_tests=0`; policy consistency and diff-hygiene scans passed. |
+
+Outcome:
+
+- Project instructions, requirements, product, quality, reliability, security,
+  roadmap/state, and testing guidance now carry one automation-first contract.
+- No production code, scripts, fixtures, or archived milestone evidence changed.
+
 ### C-2026-08-17-phase-74-cpu-gpu-parity-and-sdk-only-closeout
 
 | Field | Value |

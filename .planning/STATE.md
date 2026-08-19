@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.17
 milestone_name: Dual CPU/GPU Metal Rendering
-status: Post-archive audit contract resolution complete
-stopped_at: F-01 through F-10 dispositioned; bounded closeout verified
-last_updated: "2026-08-18T10:02:00+08:00"
-last_activity: 2026-08-18
-last_activity_desc: approved F-02/F-04/F-05/F-10 contracts implemented and archive-first closeout verified
+status: Project-wide automated validation policy synchronized
+stopped_at: physical-iPhone evaluation made optional and non-blocking; automated image/output validation remains milestone authority
+last_updated: "2026-08-19T13:14:00+08:00"
+last_activity: 2026-08-19
+last_activity_desc: standing automation-first milestone and optional post-SDK device-feedback policy documented and verified
 progress:
   total_phases: 5
   completed_phases: 5
@@ -21,7 +21,7 @@ current_phase_name: Historical CPU/GPU Parity and SDK-Only Closeout
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-08-18)
+See: `.planning/PROJECT.md` (updated 2026-08-19)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural,
 controllable, real-time and still-image beauty processing through a stable
@@ -31,10 +31,10 @@ under bounded contracts; Phase 74 remains a historical lifecycle record.
 
 ## Current Position
 
-Phase: Post-archive audit of historically archived v1.17
-Plan: `P-2026-08-18-v1-17-manual-contract-resolution`
-Status: Complete — approved bounded contracts implemented and verified
-Last activity: 2026-08-18 — archive-first closeout passed XCTest `776/0/0`
+Phase: Project-wide standing validation policy after historically archived v1.17
+Plan: `C-2026-08-19-project-automated-validation-policy`
+Status: Complete — automation-first SDK acceptance and optional device feedback synchronized
+Last activity: 2026-08-19 — archive-first closeout passed XCTest `776/0/0`
 
 ## Current Audit Qualification
 
@@ -121,6 +121,18 @@ roadmaps.
   `metal_unavailable=0`, and full no-skip `765/0/0` with eight opt-ins exactly
   once and zero skips/failures.
 
+- All SDK milestones use deterministic SwiftPM and SDK-owned image input/output
+  oracles as completion authority; a successful command without applicable
+  pixel/metadata assertions is insufficient.
+
+- Physical-iPhone testing is optional user evaluation after SDK completion. It
+  is not a default gate, dependency, checkpoint, or blocker; reproducible user
+  feedback becomes a follow-up regression where possible.
+
+- The lack of physical-device evidence limits device performance, thermal,
+  battery, endurance, commercial-quality, packaging, shipping, launch, and
+  release claims, but never blocks SDK planning or milestone progression.
+
 - [Phase 70]: Phase 70 Plan 01 freezes a package-only backend-neutral request/result boundary with .cpu as the sole policy; public backend selection remains deferred.
 - [Phase 70]: Backend requests reuse canonical input, normalized effect plans, transient support, and bounded aggregate diagnostics; typed executor errors have no retry or fallback.
 - [Phase 70]: The retained CPU implementation is the sole package executor, and both facade process families dispatch exactly once without changing public schema or algorithm inventory.
@@ -156,24 +168,27 @@ None found under `.planning/todos/pending/`.
   instance parallel safety.
 - F-09 geometry-envelope provenance is repaired and mutation-tested from one
   immutable observation.
-- Device/performance, commercial, packaging, shipping, launch, and release-
-  readiness evidence remain outside this milestone.
+- Physical-iPhone feedback is optional and non-blocking. Device/performance,
+  commercial, packaging, shipping, launch, and release-readiness claims remain
+  outside this milestone unless explicitly authorized later.
 
 ## Deferred Items
 
 | Category | Item | Status | Deferred At |
 | --- | --- | --- | --- |
 | Algorithm breadth | `去脂`, hairline/semantic masking, double-chin, and new beauty features | Future | v1.16 scope |
-| Product/release | Device/commercial validation, performance budgets, packaging, distribution, shipping, launch, and release readiness | Future | v1.16 scope |
+| Product/release | Optional user device feedback plus any separately authorized device/commercial validation, performance budgets, packaging, distribution, shipping, launch, and release readiness | Future/non-blocking | project policy 2026-08-19 |
 
 ## Session Continuity
 
-Last session: 2026-08-18T10:02:00+08:00
-Stopped at: F-01 through F-10 dispositioned; bounded closeout verified
+Last session: 2026-08-19T13:14:00+08:00
+Stopped at: project-wide automated validation policy synchronized and verified
 Resume file: `PLANS.md`
-Next action: preserve the bounded contracts; start a new milestone only for separately authorized device/product scope.
+Next action: continue SDK work through automated image/output gates; accept physical-iPhone feedback later without blocking progress.
 
 ## Operator Next Steps
 
 - Do not treat package-host parity or historical Phase-74 completion as device,
   transparent-input, end-to-end GPU local-retouch, or release evidence.
+- Do not add a physical-iPhone checkpoint to an SDK milestone critical path
+  unless the user explicitly creates a later device-focused scope.

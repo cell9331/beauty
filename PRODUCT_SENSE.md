@@ -76,9 +76,10 @@ device journey and does not promote generated media as product evidence.
   remain outside current acceptance. Phase-74 generated parity is historical;
   current acceptance is limited to the verified bounded repairs, without a
   broad CPU/GPU equivalence claim.
-- Device quality, population sufficiency, commercial approval, packaging,
-  shipping, launch, and release readiness require separate authorization and
-  evidence.
+- Physical iPhone testing is optional user evaluation after SDK completion; its
+  absence cannot block milestone completion or subsequent SDK work. Device
+  quality, population sufficiency, commercial approval, packaging, shipping,
+  launch, and release readiness remain separate, explicitly authorized claims.
 
 ## 3. Primary User Journey
 
@@ -99,6 +100,7 @@ Acceptance:
 | Defaults | Default parameters preserve input within the documented copy/render tolerance. |
 | Input | Invalid extent, orientation, color, format, or configured limit fails before expensive work. |
 | Output | Successful generated input/output validation uses actual public-facade bytes/dimensions, not a stub or label. |
+| Image oracle | Automation inspects applicable output pixels, extent/dimensions, orientation/mirroring, named color/alpha metadata, neutral identity, intended/protected regions, bounded numeric tolerance, and determinism; process exit alone is not acceptance. |
 | Errors | Callers receive stable typed, payload-free errors rather than framework detail. |
 | Degradation | Missing/no-face/malformed support fails only dependent work while safe siblings continue. |
 | Privacy | No unredacted support, masks, raster data, paths, or private fixture location crosses public/durable boundaries. |
@@ -107,6 +109,7 @@ Acceptance:
 | Backend policy | `BeautyConfiguration.renderBackend` exposes exactly `.cpu` and `.gpu`; new and legacy/missing-key configurations default to `.cpu`, and explicit unavailable `.gpu` fails as typed `.metalUnavailable` without CPU fallback. |
 | CLI privacy | Reports persist only versioned aggregate counts and relative public identities; raster data, geometry, private metadata, absolute paths, and child output stay transient. |
 | Result concurrency | `BeautyResult<Output>` is transferable only when `Output: Sendable`; the public suite proves a complete async task hop and preserves all public fields, while ordinary non-sendable result construction remains valid. |
+| Device feedback | Physical-iPhone testing happens only as optional user evaluation after SDK completion. Missing feedback is non-blocking; reproducible findings become follow-up plans and automated regressions where possible. |
 
 ## 4. Effect Acceptance
 
@@ -118,9 +121,10 @@ Acceptance:
   warp pipeline; missing support cannot be guessed or borrowed.
 - Local retouch uses canonical opaque sRGB input, original-pixel composition,
   hard ownership containment, collision-to-source behavior, and local failure.
-- Synthetic/AI-generated fixtures can prove mechanics only. Product evidence for
-  local retouch requires its rights-approved positive/negative bundle and frozen
-  original-detail review.
+- Generated fixtures are the mandatory repeatable mechanics oracle. When a
+  local-retouch owner requires rights-approved positive/negative evidence, that
+  evidence also runs through automated private opt-in scripts and frozen output
+  assertions; it is separate from physical-device testing.
 - Teeth and sclera evidence cannot promote one another or `去脂`.
 
 ## 5. Current Verification Contract
@@ -137,6 +141,15 @@ bash scripts/run-no-skip-swiftpm.sh
 The mandatory no-skip gate must execute all eight opt-ins with zero failures,
 zero skips, and a nonzero denominator. Archive integrity and the SDK-only static
 boundary are part of the same acceptance conjunction.
+
+This automated contract is the milestone authority. No current or future SDK
+plan may wait for physical-iPhone access or user feedback unless the user later
+creates an explicit device milestone. Post-SDK device observations are recorded
+as supplemental findings and converted to deterministic regressions when
+reproducible. In the absence of device evidence, the same completed milestone
+must retain explicit nonclaims for on-device performance, thermals, battery,
+endurance, subjective commercial quality, packaging, shipping, launch, and
+release readiness.
 
 The current focused public concurrency suite executes 3 tests with zero
 failures. The v1.16 historical mandatory wrapper executed 702 tests with zero

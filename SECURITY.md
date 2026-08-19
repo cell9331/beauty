@@ -53,6 +53,7 @@ distribution behavior requires a new security review.
 | CLI input/output/report → executable boundary | existing regular directories, supported image decode, duplicate-stem rejection, atomic writes, reopen/dimension validation, bounded public identities only |
 | Child test process → gate | bounded one-child output reduced to fixed aggregate pass/fail; raw output is not durable authority |
 | Generated CPU oracle → gate | regular in-tree Swift sources, in-memory fixtures, no media/location/private diagnostics, CPU-only tokens, bounded focused execution |
+| Automated image input/output oracle → milestone | generated in-memory or rights-approved ignored-local input, actual pixel/metadata assertions, temporary output, aggregate-only durable result; no physical-device dependency |
 | Public generic result → concurrency boundary | `BeautyResult` is `Sendable` only when `Output: Sendable`; public field-preserving transfer is tested, while unconditional generic sendability is rejected by the boundary mutation self-test |
 
 ## 3. Archive Entry and Extraction Safety
@@ -173,6 +174,14 @@ fixture to the historical unconditional declaration and requires rejection.
 No payload, support, pixel, mask, landmark, fixture location, or child output
 is persisted.
 
+Physical-iPhone testing is optional post-SDK user evaluation, not a mandatory
+trust boundary or milestone gate. Any later user feedback must be reduced to a
+sanitized issue description before durable recording; do not persist submitted
+device photos, raw outputs, masks, landmarks, EXIF/location data, private paths,
+or unredacted diagnostic payloads. Prefer a generated minimal reproduction; if
+an authorized real fixture is necessary, keep it ignored and local under the
+existing manifest/opt-in contract.
+
 ## 8. Logging and Evidence
 
 Allowed durable data: fixed error/reason codes, feature/category names, counts,
@@ -205,7 +214,10 @@ bash scripts/run-no-skip-swiftpm.sh
 ```
 
 These gates authorize SDK-core repository correctness only. They do not authorize
-device, commercial, packaging, shipping, launch, or release claims.
+device, commercial, packaging, shipping, launch, or release claims. Their
+completion also does not wait for physical-iPhone access or post-SDK user
+feedback; that evidence is supplemental unless a later user decision explicitly
+creates a device-focused scope.
 
 ## 10. Phase 70 Backend Privacy Contract
 

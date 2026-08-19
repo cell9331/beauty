@@ -19,6 +19,23 @@ immutable observation and two fail-closed mutations. F-02/F-04/F-05/F-10 are
 mutation-gated under bounded CPU-owned local-retouch, opaque/named-sRGB GPU
 input/output, CPU-oracle still-image math, and caller-serialized engine contracts.
 
+## Standing Automated Acceptance Policy
+
+SwiftPM and SDK-owned scripts are the project-wide milestone authority. Tests
+for image-producing behavior inspect actual input/output pixels and metadata,
+using the owning contract's exact or bounded assertions for dimensions/extent,
+orientation/mirroring, color space, alpha, neutral identity, intended movement,
+protected regions, determinism, and typed failure. A command that merely exits
+successfully cannot prove image correctness.
+
+Physical-iPhone testing is optional user evaluation after SDK completion. It is
+not a default requirement, hard gate, dependency, expected test identity, or
+blocker for this or any later SDK milestone. Only an explicit later user
+decision can add a device-focused gate. Actionable feedback should be recorded
+in `PLANS.md` and converted into a deterministic regression where possible;
+without separate device/product evidence, no on-device performance, thermal,
+battery, endurance, commercial quality, or release claim is made.
+
 ## Runner and Inventory
 
 XCTest through Swift Package Manager is the only active test framework. Six test
@@ -107,6 +124,8 @@ shipping, launch, or release readiness.
 - Rights-approved real positive/negative media remains ignored under
   `example-images/local-retouch-review/` and is consumed only by validated
   opt-in paths.
+- Both generated and rights-approved fixture paths are automated input/output
+  oracles; neither requires a physical iPhone or a manual checkpoint.
 - Raw media, mask/landmark/pixel data, local locations, and child output do
   not enter tracked evidence.
 - Generated renderer output remains ignored, disposable, bounded, and unstaged.
