@@ -82,7 +82,14 @@ natural, identity-preserving, and safe on authorized genuine evidence.
    reviewer identity, or freeform text; the public surface remains exactly
    61/5/74 until that decision passes.
 
-**Plans**: TBD
+**Plans**: 1/6 plans executed
+
+- [x] 80-01-PLAN.md
+- [ ] 80-02-PLAN.md
+- [ ] 80-03-PLAN.md
+- [ ] 80-04-PLAN.md
+- [ ] 80-05-PLAN.md
+- [ ] 80-06-PLAN.md
 
 ### Phase 81: Safe Public Still-Image Activation
 
@@ -208,7 +215,7 @@ orphaned or duplicate mappings.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 80. Genuine Evidence and Qualification Gate | v1.19 | 0/TBD | Not started | - |
+| 80. Genuine Evidence and Qualification Gate | v1.19 | 1/6 | In Progress | - |
 | 81. Safe Public Still-Image Activation | v1.19 | 0/TBD | Not started | - |
 | 82. Public Output and Backend Qualification | v1.19 | 0/TBD | Not started | - |
 | 83. Taxonomy and Owner Promotion | v1.19 | 0/TBD | Not started | - |
