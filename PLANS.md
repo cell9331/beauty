@@ -45,7 +45,7 @@ Checklist:
 | Classify F-01..F-05 | `completed` | F-01 is manual-only; F-02..F-05 are bounded auto-fixable findings. |
 | F-02 machine decision binding | `completed` | `scripts/check-v1-18-decision-binding.py` directly executes the archived Phase-78 decision module, independently binds its strict privacy-safe JSON to the frozen Phase-75 contract hash, selects the no-bundle `mechanics-only-not-promotion` public-absence branch, proves exact 61/5/74 plus no public/SPI route, and rejects 7/7 focused mutations. |
 | F-03 package-only integration harness | `completed` | Test-only detector → returned per-eye resolution → deterministic editor → immutable-source composition coverage proves one provider/owner call, independent peer no-op, bounded edit, source-exact protection/collision, metadata/alpha, determinism, aggregate diagnostics, and per-eye fail-closed cases; focused integration 3/3 and broader upper-eyelid 25/25 pass. |
-| F-04 baseline evidence binding | `planned` | Pending implementation and mutation coverage. |
+| F-04 baseline evidence binding | `completed` | The Phase-78 decision gate pins `deterministic-editor` to a bounded four-source/three-test package-only allowlist with separate aggregate source/evidence digests, executes the exact editor/safety/detector-to-composer suites at 10/0/0, binds that attestation plus the frozen contract and `mechanics-only-not-promotion` decision into one hash, and rejects 15/15 decision/baseline mutations without persisting child output or private image/support data. |
 | F-05 archive-aware closeout gate | `planned` | Pending implementation and no-skip integration. |
 | Full verification and re-audit | `planned` | Pending focused/full gates and updated disposition. |
 

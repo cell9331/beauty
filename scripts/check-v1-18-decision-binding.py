@@ -21,6 +21,8 @@ from typing import Any, Callable
 PHASE = 78
 BRANCH = "public-absence"
 MECHANICS_DECISION = "mechanics-only-not-promotion"
+BASELINE_ID = "deterministic-editor"
+BASELINE_DISPOSITION = "mechanics-only"
 PROMOTION_DECISIONS = {"promotion-ready-baseline", "promotion-ready-comparator"}
 DECISIONS = {MECHANICS_DECISION, *PROMOTION_DECISIONS}
 HASH_RE = re.compile(r"^[0-9a-f]{64}$")
@@ -45,6 +47,39 @@ RENDERER = Path("BeautySDK/Sources/BeautyExampleRenderer/main.swift")
 RESOURCE_MANIFEST = Path("BeautySDK/Sources/BeautyResources/Resources/manifest.json")
 PACKAGE = Path("BeautySDK/Package.swift")
 SDK_FACADE = Path("BeautySDK/Sources/BeautySDK")
+
+BASELINE_SOURCE_OWNERS = (
+    Path("BeautySDK/Sources/BeautyDetection/BeautyUpperEyelidSemanticSupport.swift"),
+    Path("BeautySDK/Sources/BeautyDetection/VisionFaceDetector.swift"),
+    Path("BeautySDK/Sources/BeautyEffects/LocalRetouch/BeautyUpperEyelidFullnessEditor.swift"),
+    Path("BeautySDK/Sources/BeautyEffects/Render/BeautyLocalRetouchComposition.swift"),
+)
+BASELINE_EVIDENCE_OWNERS = (
+    Path("BeautySDK/Tests/BeautyEffectsTests/BeautyUpperEyelidEditorSafetyTests.swift"),
+    Path("BeautySDK/Tests/BeautyEffectsTests/BeautyUpperEyelidFullnessEditorTests.swift"),
+    Path("BeautySDK/Tests/BeautyEffectsTests/BeautyUpperEyelidPackageIntegrationTests.swift"),
+)
+EXPECTED_BASELINE_SOURCE_DIGEST = "8b928769e5921975880d714d01db39ceb0853f3313dce2e51da6909826a390d2"
+EXPECTED_BASELINE_EVIDENCE_DIGEST = "f25d9dedffdbcc9d4a313e4e2ecf76d7c76878bc9f90e769572ec4986ec2eb57"
+FOCUSED_SUITE_IDS = (
+    "BeautyUpperEyelidEditorSafetyTests",
+    "BeautyUpperEyelidFullnessEditorTests",
+    "BeautyUpperEyelidPackageIntegrationTests",
+)
+FOCUSED_TEST_IDS = (
+    "BeautyUpperEyelidEditorSafetyTests.testCompositionChangesOnlyApprovedEyeAndPreservesProtectedExteriorAndMetadata",
+    "BeautyUpperEyelidEditorSafetyTests.testOverlappingEyeUnitsReturnImmutableSourceAndCountOneCollision",
+    "BeautyUpperEyelidEditorSafetyTests.testRepeatedEditorCompositionIsByteDeterministicAndRejectedEyeHasNoUnit",
+    "BeautyUpperEyelidFullnessEditorTests.testApprovedPixelUsesLowFrequencyCorrectionAndCarriesOriginalDetail",
+    "BeautyUpperEyelidFullnessEditorTests.testInvalidStrengthAndRepeatedRequestsFailClosedDeterministically",
+    "BeautyUpperEyelidFullnessEditorTests.testInvalidSupportIsRejectedWithoutSuppressingValidPeer",
+    "BeautyUpperEyelidFullnessEditorTests.testNeutralStrengthIsExactNoOpAndDiagnosticsAreAggregateOnly",
+    "BeautyUpperEyelidPackageIntegrationTests.testMissingMalformedAndLowConfidencePeerSupportFailClosedPerEye",
+    "BeautyUpperEyelidPackageIntegrationTests.testOneObservationFlowsThroughIndependentEyeResolutionEditorAndComposition",
+    "BeautyUpperEyelidPackageIntegrationTests.testOverlappingAcceptedEyesReturnCollisionPixelToImmutableSource",
+)
+FOCUSED_FILTER = "BeautyUpperEyelid(FullnessEditor|EditorSafety|PackageIntegration)Tests"
+MAX_FOCUSED_OUTPUT_BYTES = 1_048_576
 
 TOP_LEVEL_KEYS = {
     "status",
@@ -111,6 +146,170 @@ def read_regular(root: Path, relative: Path) -> str:
         return candidate.read_text(encoding="utf-8")
     except (OSError, UnicodeError):
         fail("decision.input-unreadable")
+
+
+def aggregate_owner_digest(
+    root: Path,
+    owners: tuple[Path, ...],
+    *,
+    overrides: dict[Path, bytes | None] | None = None,
+) -> str:
+    """Hash an exact sorted owner allowlist without exposing owner locations."""
+    if not owners or tuple(sorted(owners, key=lambda value: value.as_posix())) != owners:
+        fail("baseline.owner-allowlist")
+    overrides = overrides or {}
+    digest = hashlib.sha256()
+    for owner in owners:
+        candidate = root / owner
+        if owner in overrides:
+            contents = overrides[owner]
+            if contents is None:
+                fail("baseline.owner-missing")
+        else:
+            try:
+                if candidate.is_symlink() or not candidate.is_file():
+                    fail("baseline.owner-missing")
+                contents = candidate.read_bytes()
+            except OSError:
+                fail("baseline.owner-unreadable")
+        encoded_owner = owner.as_posix().encode("utf-8")
+        digest.update(len(encoded_owner).to_bytes(4, "big"))
+        digest.update(encoded_owner)
+        digest.update(len(contents).to_bytes(8, "big"))
+        digest.update(contents)
+    return digest.hexdigest()
+
+
+def baseline_digests(
+    root: Path,
+    *,
+    source_overrides: dict[Path, bytes | None] | None = None,
+    evidence_overrides: dict[Path, bytes | None] | None = None,
+) -> tuple[str, str]:
+    source_digest = aggregate_owner_digest(
+        root,
+        BASELINE_SOURCE_OWNERS,
+        overrides=source_overrides,
+    )
+    evidence_digest = aggregate_owner_digest(
+        root,
+        BASELINE_EVIDENCE_OWNERS,
+        overrides=evidence_overrides,
+    )
+    if source_digest != EXPECTED_BASELINE_SOURCE_DIGEST:
+        fail("baseline.source-digest")
+    if evidence_digest != EXPECTED_BASELINE_EVIDENCE_DIGEST:
+        fail("baseline.evidence-digest")
+    return source_digest, evidence_digest
+
+
+def parse_focused_test_output(raw: str, returncode: int) -> dict[str, Any]:
+    if returncode != 0:
+        fail("baseline.focused-tests-failed")
+    if not raw or len(raw.encode("utf-8")) > MAX_FOCUSED_OUTPUT_BYTES:
+        fail("baseline.focused-tests-output")
+    lowered = raw.lower()
+    if re.search(r"\b(?:skipped|disabled|failed)\b", lowered):
+        fail("baseline.focused-tests-status")
+
+    started = re.findall(
+        r"Test Case '-\[BeautyEffectsTests\.([A-Za-z0-9_]+) ([A-Za-z0-9_]+)\]' started\.",
+        raw,
+    )
+    passed = re.findall(
+        r"Test Case '-\[BeautyEffectsTests\.([A-Za-z0-9_]+) ([A-Za-z0-9_]+)\]' passed ",
+        raw,
+    )
+    started_ids = sorted(f"{suite}.{test}" for suite, test in started)
+    passed_ids = sorted(f"{suite}.{test}" for suite, test in passed)
+    expected_ids = sorted(FOCUSED_TEST_IDS)
+    if len(started_ids) == 0:
+        fail("baseline.focused-tests-zero")
+    if started_ids != expected_ids or passed_ids != expected_ids:
+        fail("baseline.focused-tests-identity")
+
+    suite_counts: dict[str, int] = {}
+    for suite in FOCUSED_SUITE_IDS:
+        match = re.search(
+            rf"Test Suite '{re.escape(suite)}' passed[\s\S]*?Executed (\d+) tests?, with 0 failures",
+            raw,
+        )
+        if match is None:
+            fail("baseline.focused-tests-suite")
+        suite_counts[suite] = int(match.group(1))
+    expected_suite_counts = {
+        suite: sum(test_id.startswith(f"{suite}.") for test_id in FOCUSED_TEST_IDS)
+        for suite in FOCUSED_SUITE_IDS
+    }
+    if suite_counts != expected_suite_counts or sum(suite_counts.values()) != len(FOCUSED_TEST_IDS):
+        fail("baseline.focused-tests-count")
+    return {
+        "focused_suite_count": len(FOCUSED_SUITE_IDS),
+        "focused_test_count": len(passed_ids),
+        "focused_test_status": "pass",
+    }
+
+
+def run_focused_tests(root: Path) -> tuple[str, int]:
+    try:
+        child = subprocess.run(
+            [
+                "swift", "test", "--package-path", "BeautySDK",
+                "--filter", FOCUSED_FILTER,
+            ],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+    except (OSError, UnicodeError, subprocess.SubprocessError):
+        fail("baseline.focused-tests-failure")
+    return child.stdout + child.stderr, child.returncode
+
+
+def execute_focused_tests(root: Path) -> dict[str, Any]:
+    raw, returncode = run_focused_tests(root)
+    return parse_focused_test_output(raw, returncode)
+
+
+def baseline_binding_hash(
+    report: dict[str, Any],
+    contract_hash: str,
+    source_digest: str,
+    evidence_digest: str,
+    attestation: dict[str, Any],
+) -> str:
+    metrics = report.get("aggregate_metrics")
+    if (
+        not isinstance(metrics, dict)
+        or metrics.get("baseline") != BASELINE_ID
+        or metrics.get("baseline_disposition") != BASELINE_DISPOSITION
+    ):
+        fail("baseline.identifier-binding")
+    if report.get("contract_hash") != contract_hash or report.get("decision") != MECHANICS_DECISION:
+        fail("baseline.decision-contract-binding")
+    if source_digest != EXPECTED_BASELINE_SOURCE_DIGEST:
+        fail("baseline.source-digest")
+    if evidence_digest != EXPECTED_BASELINE_EVIDENCE_DIGEST:
+        fail("baseline.evidence-digest")
+    if attestation != {
+        "focused_suite_count": len(FOCUSED_SUITE_IDS),
+        "focused_test_count": len(FOCUSED_TEST_IDS),
+        "focused_test_status": "pass",
+    }:
+        fail("baseline.focused-tests-attestation")
+    record = {
+        "baseline_disposition": BASELINE_DISPOSITION,
+        "baseline_id": BASELINE_ID,
+        "contract_hash": contract_hash,
+        "decision": report["decision"],
+        "evidence_digest": evidence_digest,
+        **attestation,
+        "source_digest": source_digest,
+    }
+    canonical = json.dumps(record, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
 def node_json_normalized(value: Any) -> Any:
@@ -345,14 +544,28 @@ def live_result(root: Path) -> dict[str, Any]:
     contract_hash = expected_contract_hash(root)
     report = parse_decision_output(execute_phase78(root), contract_hash)
     branch = select_current_branch(report)
+    source_digest, evidence_digest = baseline_digests(root)
+    attestation = execute_focused_tests(root)
+    binding_hash = baseline_binding_hash(
+        report,
+        contract_hash,
+        source_digest,
+        evidence_digest,
+        attestation,
+    )
     errors = public_absence_errors(root)
     if errors:
         fail(errors[0])
     return {
+        "baseline_binding_hash": binding_hash,
+        "baseline_evidence_digest": evidence_digest,
+        "baseline_id": BASELINE_ID,
+        "baseline_source_digest": source_digest,
         "branch": branch,
         "contract_hash": contract_hash,
         "decision": report["decision"],
         "fields": 61,
+        **attestation,
         "mode": "live",
         "phase": PHASE,
         "presets": 5,
@@ -376,6 +589,16 @@ def self_test(root: Path) -> dict[str, Any]:
     report = parse_decision_output(raw, contract_hash)
     if select_current_branch(report) != BRANCH or public_absence_errors(root):
         fail("decision.self-test-baseline")
+    source_digest, evidence_digest = baseline_digests(root)
+    focused_raw, focused_returncode = run_focused_tests(root)
+    attestation = parse_focused_test_output(focused_raw, focused_returncode)
+    binding_hash = baseline_binding_hash(
+        report,
+        contract_hash,
+        source_digest,
+        evidence_digest,
+        attestation,
+    )
 
     replacement = copy.deepcopy(report)
     replacement["decision"] = "promotion-ready-baseline"
@@ -388,7 +611,7 @@ def self_test(root: Path) -> dict[str, Any]:
     sensitive = copy.deepcopy(report)
     sensitive["private_locator"] = "forbidden"
 
-    mutations: list[Callable[[], Any]] = [
+    decision_mutations: list[Callable[[], Any]] = [
         lambda: parse_decision_output(json.dumps(replacement), contract_hash),
         lambda: parse_decision_output('{"status":', contract_hash),
         lambda: parse_decision_output("", contract_hash),
@@ -397,13 +620,68 @@ def self_test(root: Path) -> dict[str, Any]:
         lambda: select_current_branch(parse_decision_output(json.dumps(missing_reason), contract_hash)),
         lambda: parse_decision_output(json.dumps(sensitive), contract_hash),
     ]
+
+    baseline_replacement = copy.deepcopy(report)
+    baseline_replacement["aggregate_metrics"]["baseline"] = "nominal-editor"
+    source_owner = BASELINE_SOURCE_OWNERS[0]
+    evidence_owner = BASELINE_EVIDENCE_OWNERS[0]
+    try:
+        source_bytes = (root / source_owner).read_bytes()
+        evidence_bytes = (root / evidence_owner).read_bytes()
+    except OSError:
+        fail("baseline.owner-unreadable")
+    skipped_output = focused_raw.replace("]' passed ", "]' skipped ", 1)
+    zero_output = (
+        "Test Suite 'Selected tests' passed.\n"
+        "\t Executed 0 tests, with 0 failures (0 unexpected).\n"
+    )
+    baseline_mutations: list[Callable[[], Any]] = [
+        lambda: baseline_binding_hash(
+            baseline_replacement,
+            contract_hash,
+            source_digest,
+            evidence_digest,
+            attestation,
+        ),
+        lambda: baseline_digests(
+            root,
+            source_overrides={source_owner: source_bytes + b"\n"},
+        ),
+        lambda: baseline_digests(
+            root,
+            evidence_overrides={evidence_owner: evidence_bytes + b"\n"},
+        ),
+        lambda: baseline_digests(
+            root,
+            source_overrides={source_owner: None},
+        ),
+        lambda: baseline_digests(
+            root,
+            evidence_overrides={evidence_owner: None},
+        ),
+        lambda: parse_focused_test_output(skipped_output, 0),
+        lambda: parse_focused_test_output(zero_output, 0),
+        lambda: baseline_binding_hash(
+            report,
+            "0" * 64,
+            source_digest,
+            evidence_digest,
+            attestation,
+        ),
+    ]
+    mutations = decision_mutations + baseline_mutations
     rejected = sum(expect_rejected(mutation) for mutation in mutations)
     if rejected != len(mutations):
         fail("decision.self-test-mutation")
     return {
+        "baseline_binding_hash": binding_hash,
+        "baseline_evidence_digest": evidence_digest,
+        "baseline_id": BASELINE_ID,
+        "baseline_source_digest": source_digest,
         "branch": BRANCH,
-        "checks": 7,
+        "checks": len(mutations),
         "decision": MECHANICS_DECISION,
+        **attestation,
         "mode": "self-test",
         "mutation_rejections": rejected,
         "phase": PHASE,
