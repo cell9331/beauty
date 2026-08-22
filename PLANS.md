@@ -44,7 +44,7 @@ Checklist:
 | --- | --- | --- |
 | Classify F-01..F-05 | `completed` | F-01 is manual-only; F-02..F-05 are bounded auto-fixable findings. |
 | F-02 machine decision binding | `completed` | `scripts/check-v1-18-decision-binding.py` directly executes the archived Phase-78 decision module, independently binds its strict privacy-safe JSON to the frozen Phase-75 contract hash, selects the no-bundle `mechanics-only-not-promotion` public-absence branch, proves exact 61/5/74 plus no public/SPI route, and rejects 7/7 focused mutations. |
-| F-03 package-only integration harness | `planned` | Pending implementation and focused SwiftPM coverage. |
+| F-03 package-only integration harness | `completed` | Test-only detector → returned per-eye resolution → deterministic editor → immutable-source composition coverage proves one provider/owner call, independent peer no-op, bounded edit, source-exact protection/collision, metadata/alpha, determinism, aggregate diagnostics, and per-eye fail-closed cases; focused integration 3/3 and broader upper-eyelid 25/25 pass. |
 | F-04 baseline evidence binding | `planned` | Pending implementation and mutation coverage. |
 | F-05 archive-aware closeout gate | `planned` | Pending implementation and no-skip integration. |
 | Full verification and re-audit | `planned` | Pending focused/full gates and updated disposition. |
