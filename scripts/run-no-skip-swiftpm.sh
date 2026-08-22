@@ -6,6 +6,8 @@ readonly repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 readonly teeth_bundle="${repository_root}/example-images/local-retouch-review/teeth-evidence-20260805"
 readonly sclera_bundle="${repository_root}/example-images/local-retouch-review/evidence-pair-current"
 readonly transcript_checker="${repository_root}/scripts/check-no-skip-transcript.py"
+readonly wrapper_checker="${repository_root}/scripts/check-no-skip-wrapper.py"
+readonly decision_checker="${repository_root}/scripts/check-v1-18-decision-binding.py"
 readonly transcript_maximum_bytes=$((16 * 1024 * 1024))
 readonly transcript_maximum_lines=200000
 readonly expected_opt_in_tests=(
@@ -21,23 +23,20 @@ readonly expected_opt_in_tests=(
 
 if [[ "${1:-}" == "--self-test" ]]; then
   [[ "$#" -eq 1 ]] || exit 2
-  exec python3 "${transcript_checker}" self-test
+  if ! python3 "${transcript_checker}" self-test >/dev/null 2>&1; then
+    echo "no_skip_transcript_self_test_failed"
+    exit 1
+  fi
+  exec python3 "${wrapper_checker}" --self-test --wrapper "${BASH_SOURCE[0]}"
 fi
 [[ "$#" -eq 0 ]] || exit 2
 
-for command_name in python3 swift git; do
+for command_name in python3 node swift git; do
   command -v "${command_name}" >/dev/null || {
     echo "no_skip_preflight_failed"
     exit 1
   }
 done
-
-if ! bash "${repository_root}/scripts/check-sdk-only-boundary.sh" \
-  --self-test >/dev/null 2>&1; then
-  echo "no_skip_sdk_boundary_self_test_failed"
-  exit 1
-fi
-echo "no_skip_sdk_boundary_self_tested"
 
 if ! python3 "${repository_root}/scripts/archive-legacy-ui.py" verify \
   --output "${repository_root}/archives/legacy-ui" >/dev/null 2>&1; then
@@ -47,11 +46,32 @@ fi
 echo "no_skip_archive_verified"
 
 if ! bash "${repository_root}/scripts/check-sdk-only-boundary.sh" \
+  --self-test >/dev/null 2>&1; then
+  echo "no_skip_sdk_boundary_self_test_failed"
+  exit 1
+fi
+echo "no_skip_sdk_boundary_self_tested"
+
+if ! bash "${repository_root}/scripts/check-sdk-only-boundary.sh" \
   --post-archive >/dev/null 2>&1; then
   echo "no_skip_sdk_boundary_failed"
   exit 1
 fi
 echo "no_skip_sdk_boundary_verified"
+
+if ! python3 "${decision_checker}" --self-test --repo-root "${repository_root}" \
+  >/dev/null 2>&1; then
+  echo "no_skip_v1_18_decision_self_test_failed"
+  exit 1
+fi
+echo "no_skip_v1_18_decision_self_tested"
+
+if ! python3 "${decision_checker}" --live --repo-root "${repository_root}" \
+  >/dev/null 2>&1; then
+  echo "no_skip_v1_18_decision_failed"
+  exit 1
+fi
+echo "no_skip_v1_18_decision_verified"
 
 if ! bash "${repository_root}/scripts/check-backend-neutral-contract.sh" >/dev/null 2>&1; then
   echo "no_skip_backend_neutral_contract_failed"

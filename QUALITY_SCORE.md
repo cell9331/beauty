@@ -92,13 +92,24 @@ bash scripts/run-no-skip-swiftpm.sh
 ```
 
 `scripts/run-no-skip-swiftpm.sh` is the complete gate. It must run archive
-verification, the SDK-only scanner, the external consumer, and the generated
-CPU reference preflight before its
-existing one-child SwiftPM
+verification first, the SDK-only scanner, the archive-aware v1.18
+decision/baseline self-test and live gate, the external consumer, and the
+generated CPU reference preflight before its existing one-child SwiftPM
 transcript parser. Streaming capture is limited to 16 MiB and 200,000 lines. The
 parser accepts only all eight opt-ins exactly once, one nonzero zero-failure
 XCTest aggregate, one passed Swift Testing aggregate when that runner starts,
 and zero skip/disabled events from either format.
+
+`scripts/check-v1-18-decision-binding.py --repo-root <root>` is the current
+successor to the immutable historical Phase-79 checker. It resolves each Phase
+75/78/79 input from exactly one active or archived v1.18 location, rejects
+missing, ambiguous, non-file, and symlink artifacts, and remains independent of
+the caller's current directory. Its decision/baseline self-test and live run
+execute their focused SwiftPM children sequentially before the complete child;
+no nested or concurrent SwiftPM process is allowed. Durable output contains
+only fixed aggregate counts, normalized reasons, and contract/source/evidence/
+binding hashes—never child transcripts, private locators, pixels, masks,
+landmarks, support, or review prose.
 
 Physical-iPhone access, a manual device checkpoint, or pending user feedback is
 never an implicit prerequisite for this gate. Image-producing tests must assert
@@ -307,3 +318,14 @@ index record the same branch and preserve all device/commercial/release
 nonclaims. The checker passes live mode and rejects 8/8 isolated mutations;
 archive-first `run-no-skip-swiftpm.sh` passes 797 tests with zero failures and
 zero skips, with all eight opt-ins exactly once.
+
+The current post-archive successor independently replays the machine decision,
+hash-bound deterministic-editor baseline, ten focused package tests, exact
+public absence, and five immutable Phase-79 contract artifacts through explicit
+`--repo-root` resolution. Its self-test adds seven active/archive/outside-cwd
+artifact checks and fails closed on ambiguity, absence, or symlink substitution.
+The mandatory wrapper's own 10/10 mutation test pins archive-first order,
+decision self/live exact-once execution, all eight opt-ins, one complete SwiftPM
+child, and normalized aggregate output. This reproducibility evidence does not
+satisfy EVID-01/02 or QUAL-01/02 and makes no genuine efficacy, naturalness,
+device, commercial, packaging, shipping, launch, or release-readiness claim.

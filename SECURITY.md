@@ -186,6 +186,13 @@ artifact.
   internal support/editor symbols cannot be reached through public fields,
   renderer cases, resources, package dependencies, or Testing SPI. The exact
   61/5/74 absence is checked before closeout.
+- The current post-archive successor accepts only an explicit repository root
+  and resolves each Phase 75/78/79 artifact from exactly one active or archived
+  v1.18 location. Missing, duplicate, non-file, unreadable, and symlink inputs
+  fail closed with normalized reason identifiers; caller cwd cannot redirect
+  artifact ownership. Self/mutation diagnostics persist no child transcript,
+  repository/private locator, raw pixel, mask, landmark, support, or review
+  prose.
 
 The mandatory CPU reference oracle is generated entirely in Swift memory from
 small RGBA8/sRGB fixtures. Its static preflight rejects media reads, tracked

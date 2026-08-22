@@ -188,11 +188,13 @@ state recovers from archives and does not rerun retirement.
 
 1. archive verification;
 2. post-archive SDK-only boundary scanner;
-3. the public SwiftPM consumer;
-4. generated CPU reference preflight;
-5. private opt-in validation and the existing one-child hardened SwiftPM run
+3. archive-aware v1.18 decision/baseline self-test followed by live gate;
+4. backend/runtime/parity preflights, each completing before the next begins;
+5. the public SwiftPM consumer;
+6. generated CPU reference preflight;
+7. private opt-in validation and the existing one-child hardened SwiftPM run
    with all eight opt-in environment variables; and
-6. transcript reduction that proves each expected identity exactly once, zero
+8. transcript reduction that proves each expected identity exactly once, zero
    failures, zero skips, and nonzero all-tests execution.
 
 Archive and scanner output is short aggregate status. The private test child may
@@ -206,6 +208,14 @@ aggregate. XCTest and Swift Testing skip/disabled events both fail.
 Any preflight failure returns non-zero and prevents test execution. Any malformed,
 missing, ambiguous, failed, skipped, oversized, or zero-test transcript returns
 non-zero even if the child process exit status is otherwise zero.
+
+The v1.18 successor resolves Phase 75/78/79 inputs from explicit `--repo-root`
+active-or-archived candidates. Missing, duplicate, non-file, unreadable, or
+symlink artifacts return one normalized failure reason, including when invoked
+outside the repository cwd. Its self-test and live baseline suites run
+sequentially and finish before backend preflights and the complete SwiftPM
+child; the wrapper mutation test rejects reordering, duplication, removal, or
+background execution. Child output stays bounded and ephemeral.
 
 The generated CPU preflight keeps its bounded logs temporary and emits only
 fixture, geometry/color, and local-retouch/determinism counts. It does not open
@@ -391,3 +401,12 @@ naturalness, device, commercial, packaging, shipping, launch, or
 release-readiness evidence. The Phase-79 checker passes live mode and rejects
 8/8 isolated mutations; the final archive-first gate passes 797/0/0 with all
 eight opt-ins exactly once and zero skips.
+
+After archival, `scripts/check-v1-18-decision-binding.py` replaces—not mutates—
+that historical checker. It consumes the Phase-78 machine program and Phase-75
+canonical contract, validates five resolved Phase-79 contract artifacts, binds
+the deterministic-editor source/evidence digests and ten-test attestation, and
+rechecks exact 61/5/74 absence. Seven artifact-resolution checks cover active,
+archived, ambiguous, missing, direct/parent symlink, and outside-cwd cases. Failures expose
+only normalized reason identifiers; neither successful nor failed runs persist
+child transcripts or private paths.

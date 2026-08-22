@@ -12,8 +12,10 @@ import copy
 import hashlib
 import json
 import math
+import os
 import re
 import subprocess
+import tempfile
 from pathlib import Path
 from typing import Any, Callable
 
@@ -34,14 +36,29 @@ SENSITIVE_KEY_RE = re.compile(
     re.IGNORECASE,
 )
 
-PHASE78_MODULE = Path(
-    ".planning/milestones/v1.18-phases/"
-    "78-genuine-evaluation-and-candidate-decision/78-candidate-decision.js"
-)
-PHASE75_CONTRACT = Path(
-    ".planning/milestones/v1.18-phases/"
-    "75-semantics-and-genuine-evidence-contract/75-EVIDENCE-CONTRACT.md"
-)
+ACTIVE_PHASES = Path(".planning/phases")
+ARCHIVED_V1_18_PHASES = Path(".planning/milestones/v1.18-phases")
+PHASE75_SLUG = "75-semantics-and-genuine-evidence-contract"
+PHASE78_SLUG = "78-genuine-evaluation-and-candidate-decision"
+PHASE79_SLUG = "79-conditional-productization-and-sdk-only-closeout"
+PHASE78_MODULE_NAME = "78-candidate-decision.js"
+PHASE75_CONTRACT_NAME = "75-EVIDENCE-CONTRACT.md"
+PHASE79_ARTIFACT_TOKENS = {
+    "79-CONTEXT.md": (
+        "mechanics-only-not-promotion", "exactly 61", "future", "SDK-only",
+    ),
+    "79-01-PLAN.md": (
+        "79-01-01", "SAFE-03", "COMPAT-01", "COMPAT-02", "BACKEND-01", "PROMOTE-01",
+    ),
+    "79-02-PLAN.md": (
+        "79-02-01", "79-02-02", "DOCS-01", "run-no-skip-swiftpm.sh",
+    ),
+    "79-REVIEW.md": ("PASSED", "failing branch"),
+    "79-VALIDATION.md": (
+        "79-01-01", "79-02-01", "79-02-02", "797/0/0", "61/5/74",
+        "mechanics-only-not-promotion",
+    ),
+}
 PARAMETERS = Path("BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift")
 RENDERER = Path("BeautySDK/Sources/BeautyExampleRenderer/main.swift")
 RESOURCE_MANIFEST = Path("BeautySDK/Sources/BeautyResources/Resources/manifest.json")
@@ -136,6 +153,49 @@ class GateError(Exception):
 
 def fail(reason: str) -> None:
     raise GateError(reason)
+
+
+def resolve_phase_artifact(root: Path, phase_slug: str, artifact_name: str) -> Path:
+    """Resolve one current-or-v1.18-archived artifact without cwd dependence."""
+    candidates = (
+        root / ACTIVE_PHASES / phase_slug / artifact_name,
+        root / ARCHIVED_V1_18_PHASES / phase_slug / artifact_name,
+    )
+    existing: list[Path] = []
+    for candidate in candidates:
+        try:
+            relative = candidate.relative_to(root)
+            cursor = root
+            for component in relative.parts:
+                cursor = cursor / component
+                if cursor.is_symlink():
+                    fail("archive.artifact-invalid")
+            if candidate.is_file():
+                existing.append(candidate)
+            elif candidate.exists():
+                fail("archive.artifact-invalid")
+        except OSError:
+            fail("archive.artifact-unreadable")
+    if not existing:
+        fail("archive.artifact-missing")
+    if len(existing) != 1:
+        fail("archive.artifact-ambiguous")
+    return existing[0]
+
+
+def read_phase_artifact(root: Path, phase_slug: str, artifact_name: str) -> str:
+    candidate = resolve_phase_artifact(root, phase_slug, artifact_name)
+    try:
+        return candidate.read_text(encoding="utf-8")
+    except (OSError, UnicodeError):
+        fail("archive.artifact-unreadable")
+
+
+def validate_phase79_artifacts(root: Path) -> None:
+    for artifact_name, tokens in PHASE79_ARTIFACT_TOKENS.items():
+        text = read_phase_artifact(root, PHASE79_SLUG, artifact_name)
+        if any(token not in text for token in tokens):
+            fail("archive.artifact-contract")
 
 
 def read_regular(root: Path, relative: Path) -> str:
@@ -323,7 +383,7 @@ def node_json_normalized(value: Any) -> Any:
 
 
 def expected_contract_hash(root: Path) -> str:
-    contract = read_regular(root, PHASE75_CONTRACT)
+    contract = read_phase_artifact(root, PHASE75_SLUG, PHASE75_CONTRACT_NAME)
     match = re.search(
         r"<!-- CANONICAL_EVIDENCE_RECORDS_BEGIN -->\n```json\n([\s\S]*?)\n```\n"
         r"<!-- CANONICAL_EVIDENCE_RECORDS_END -->",
@@ -340,9 +400,7 @@ def expected_contract_hash(root: Path) -> str:
 
 
 def execute_phase78(root: Path) -> str:
-    module = root / PHASE78_MODULE
-    if module.is_symlink() or not module.is_file():
-        fail("decision.program-missing")
+    module = resolve_phase_artifact(root, PHASE78_SLUG, PHASE78_MODULE_NAME)
     # Use the archived module's exported decision function so nested machine JSON
     # is serialized without the historical CLI's nested-key replacer bug.
     expression = (
@@ -541,6 +599,7 @@ def public_absence_errors(root: Path) -> list[str]:
 
 
 def live_result(root: Path) -> dict[str, Any]:
+    validate_phase79_artifacts(root)
     contract_hash = expected_contract_hash(root)
     report = parse_decision_output(execute_phase78(root), contract_hash)
     branch = select_current_branch(report)
@@ -557,6 +616,7 @@ def live_result(root: Path) -> dict[str, Any]:
     if errors:
         fail(errors[0])
     return {
+        "archive_artifacts": len(PHASE79_ARTIFACT_TOKENS),
         "baseline_binding_hash": binding_hash,
         "baseline_evidence_digest": evidence_digest,
         "baseline_id": BASELINE_ID,
@@ -583,7 +643,86 @@ def expect_rejected(action: Callable[[], Any]) -> bool:
     return False
 
 
+def artifact_resolution_self_test(root: Path) -> int:
+    """Exercise active/archive/outside-cwd resolution without durable locators."""
+    phase_slug = "78-test-phase"
+    artifact_name = "record.json"
+    checks = 0
+    with tempfile.TemporaryDirectory(prefix="v1-18-artifact-resolution-") as directory:
+        fixture_root = Path(directory)
+        active = fixture_root / ACTIVE_PHASES / phase_slug / artifact_name
+        archived = fixture_root / ARCHIVED_V1_18_PHASES / phase_slug / artifact_name
+        active.parent.mkdir(parents=True)
+        active.write_text("active", encoding="utf-8")
+        outside = fixture_root / "outside"
+        outside.mkdir()
+        original_cwd = Path.cwd()
+        try:
+            os.chdir(outside)
+            if resolve_phase_artifact(fixture_root, phase_slug, artifact_name) != active:
+                fail("archive.self-test-active")
+        finally:
+            os.chdir(original_cwd)
+        checks += 1
+
+        active.unlink()
+        archived.parent.mkdir(parents=True)
+        archived.write_text("archived", encoding="utf-8")
+        if resolve_phase_artifact(fixture_root, phase_slug, artifact_name) != archived:
+            fail("archive.self-test-archived")
+        checks += 1
+
+        active.write_text("active", encoding="utf-8")
+        if not expect_rejected(
+            lambda: resolve_phase_artifact(fixture_root, phase_slug, artifact_name)
+        ):
+            fail("archive.self-test-ambiguous")
+        checks += 1
+
+        active.unlink()
+        archived.unlink()
+        if not expect_rejected(
+            lambda: resolve_phase_artifact(fixture_root, phase_slug, artifact_name)
+        ):
+            fail("archive.self-test-missing")
+        checks += 1
+
+        archived.symlink_to(fixture_root / "missing-target")
+        if not expect_rejected(
+            lambda: resolve_phase_artifact(fixture_root, phase_slug, artifact_name)
+        ):
+            fail("archive.self-test-symlink")
+        checks += 1
+
+        archived.unlink()
+        active.parent.rmdir()
+        symlink_target = fixture_root / "symlink-target"
+        symlink_target.mkdir()
+        (symlink_target / artifact_name).write_text("redirected", encoding="utf-8")
+        active.parent.symlink_to(symlink_target, target_is_directory=True)
+        if not expect_rejected(
+            lambda: resolve_phase_artifact(fixture_root, phase_slug, artifact_name)
+        ):
+            fail("archive.self-test-parent-symlink")
+        checks += 1
+
+    # The real archived Phase-79 contract must resolve while the process cwd is
+    # outside the repository. Only the aggregate check count reaches stdout.
+    with tempfile.TemporaryDirectory(prefix="v1-18-outside-cwd-") as directory:
+        original_cwd = Path.cwd()
+        try:
+            os.chdir(directory)
+            validate_phase79_artifacts(root)
+            expected_contract_hash(root)
+            resolve_phase_artifact(root, PHASE78_SLUG, PHASE78_MODULE_NAME)
+        finally:
+            os.chdir(original_cwd)
+    return checks + 1
+
+
 def self_test(root: Path) -> dict[str, Any]:
+    validate_phase79_artifacts(root)
+    artifact_checks = artifact_resolution_self_test(root)
     contract_hash = expected_contract_hash(root)
     raw = execute_phase78(root)
     report = parse_decision_output(raw, contract_hash)
@@ -674,6 +813,8 @@ def self_test(root: Path) -> dict[str, Any]:
     if rejected != len(mutations):
         fail("decision.self-test-mutation")
     return {
+        "archive_artifact_checks": artifact_checks,
+        "archive_artifacts": len(PHASE79_ARTIFACT_TOKENS),
         "baseline_binding_hash": binding_hash,
         "baseline_evidence_digest": evidence_digest,
         "baseline_id": BASELINE_ID,
@@ -694,7 +835,7 @@ def main() -> int:
     modes = parser.add_mutually_exclusive_group(required=True)
     modes.add_argument("--live", action="store_true")
     modes.add_argument("--self-test", action="store_true")
-    parser.add_argument("--repo-root", default=".")
+    parser.add_argument("--repo-root", required=True)
     args = parser.parse_args()
     root = Path(args.repo_root).resolve()
     try:
