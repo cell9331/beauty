@@ -26,6 +26,35 @@
 
 ## 3. Active
 
+### P-2026-08-22-v1-18-reaudit-remediation
+
+| Field | Value |
+| --- | --- |
+| Status | `active` |
+| Owner | Codex audit-fix pipeline |
+| Started | 2026-08-22 |
+| Scope | Close every actionable v1.18 post-archive re-audit finding while preserving immutable archives, exact public absence, fail-closed genuine-evidence gates, and SDK-only ownership. |
+| Source Request | User requested “fix all” after `.planning/v1.18-MILESTONE-REAUDIT.md` reported requirement, decision-binding, integration, baseline-binding, and archive-reproducibility gaps. |
+| Current Step | Process F-02 through F-05 sequentially with focused tests and finding-ID commits; F-01 remains manual-only until an authorized genuine bundle and blinded review exist. |
+| Verification Policy | Finding-focused mutation/integration tests after each change, `git diff --check`, then `bash scripts/run-no-skip-swiftpm.sh` and an independent milestone re-audit. |
+
+Checklist:
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| Classify F-01..F-05 | `completed` | F-01 is manual-only; F-02..F-05 are bounded auto-fixable findings. |
+| F-02 machine decision binding | `active` | Pending implementation and focused gate. |
+| F-03 package-only integration harness | `planned` | Pending implementation and focused SwiftPM coverage. |
+| F-04 baseline evidence binding | `planned` | Pending implementation and mutation coverage. |
+| F-05 archive-aware closeout gate | `planned` | Pending implementation and no-skip integration. |
+| Full verification and re-audit | `planned` | Pending focused/full gates and updated disposition. |
+
+Open Questions:
+
+| Question | Current Decision |
+| --- | --- |
+| Can F-01 genuine evidence be synthesized? | No. AI/generated fixtures remain mechanics-only. Preserve exact public absence until the user supplies a complete rights-approved private bundle and blinded review under a new authorized scope. |
+
 ### P-2026-08-14-phase-66-sdk-only-boundary
 
 | Field | Value |
@@ -3878,6 +3907,9 @@ Outcome:
 | TD-017 | Still-Image Compatibility | F-04/F-05 are resolved as exact-opaque bounded non-extended RGB GPU input, named-sRGB output, and CPU-oracle Metal coefficient/lip math within max `<=2` / mean `<0.75`. | Transparent input remains unsupported; licensed/real-fixture and device evidence remain outside this generated package-host contract. | Preserve pre-detection rejection, named-sRGB output, shader pin, and tight generated oracle gate. | `completed-bounded-contract` |
 | TD-018 | Parity Oracle Provenance | F-09 found that geometry safety parity derived its locality envelope from a separately generated face observation rather than the observation used by the rendered request. | Resolved: one immutable observation now owns geometry, plan, points, envelope, and request support, and the parity self-test rejects broken provenance. | Preserve the request equality proof and mutation-tested static gate. | `completed-followup` |
 | TD-019 | Shared Runtime Concurrency | F-10 is resolved by documenting `BeautyEngine` as intentionally non-`Sendable`: callers serialize every `process`/`processResult`/`reset` access per instance, while independent instances may execute concurrently. | Same-instance parallel execution remains unsupported rather than unproven. | Preserve the exact public doc, negative sendability gate, serialized harness evidence, and independent-instance test. | `completed-bounded-contract` |
+| TD-020 | v1.18 Decision Binding | The post-archive re-audit found that Phase 79 reads mutable Phase-78 verification prose instead of consuming a machine-produced decision report and contract hash. | The current public-absence branch is safe, but PROMOTE-01/COMPAT-02 branch selection is not reproducibly bound to the actual evaluator result. | In a separately authorized follow-up, emit a privacy-safe hash-bound decision artifact and make the closeout gate consume it directly; keep archived evidence read-only. | `open-post-v1.18-reaudit` |
+| TD-021 | v1.18 Support/Editor Integration | Phase-76 support and Phase-77 editor mechanics have compatible types and focused tests, but no caller or integration test connects one observation through support resolution, editor proposals, and immutable-source composition. | The archived 3/3 flow claim is overstated; individual package mechanics remain non-public and fail closed. | Add a package-only integration harness without adding a public route, then rerun the independent milestone audit. | `open-post-v1.18-reaudit` |
+| TD-022 | v1.18 Audit Reproducibility | The archived Phase-79 live checker hard-codes `.planning/phases/...`, fails after archival with 24 missing-artifact reasons, and Phase 78 names rather than version-binds the Phase-77 baseline. | Post-archive evidence cannot reproduce the original closeout end to end, and a future passing branch would not be bound to the evaluated mechanics. | Make phase-artifact resolution archive-aware and bind the evaluated candidate to a mechanics/output version or hash in a new authorized scope. | `open-post-v1.18-reaudit` |
 
 ## 6. Plan Template
 
