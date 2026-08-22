@@ -25,6 +25,27 @@ function readCanonicalRecords() {
   return JSON.parse(match[1]);
 }
 
+function semanticErrors(records) {
+  const errors = [];
+  if (!records || records.version !== 1) errors.push("contract.version");
+  if (records.effect?.id !== "upper-eyelid-fullness-reduction") {
+    errors.push("contract.effect");
+  }
+  if (records.landmark_role !== "envelope-and-pose-guard-only") {
+    errors.push("contract.landmark_role");
+  }
+  for (const proxy of records.prohibited_proxies ?? []) {
+    if (proxy.negative?.accepts !== false) errors.push(`proxy.${proxy.id}`);
+  }
+  if (!records.predicates?.authorization_inputs?.includes("approved-semantic-evidence")) {
+    errors.push("predicate.semantic-evidence");
+  }
+  if (records.predicates?.ambiguous_outcome !== "exact-no-op") {
+    errors.push("predicate.ambiguous-no-op");
+  }
+  return errors;
+}
+
 test("semantic contract is a cosmetic still-image definition with explicit nonclaims", () => {
   const records = readCanonicalRecords();
   assert.equal(records.version, 1);
@@ -33,8 +54,9 @@ test("semantic contract is a cosmetic still-image definition with explicit noncl
     "landmark_role",
     "nonclaims",
     "predicates",
-    "protected_structures",
     "prohibited_proxies",
+    "protected_structures",
+    "version",
   ]);
   assert.deepEqual(records.effect, {
     id: "upper-eyelid-fullness-reduction",
@@ -54,14 +76,15 @@ test("each prohibited proxy has an independently mutation-testable reason", () =
   const records = readCanonicalRecords();
   assert.deepEqual(records.prohibited_proxies.map((proxy) => proxy.id), PROXY_IDS);
   for (const proxy of records.prohibited_proxies) {
-    assert.deepEqual(Object.keys(proxy).sort(), ["id", "negative", "reason"]);
+    assert.deepEqual(Object.keys(proxy).sort(), ["id", "negative"]);
     assert.equal(proxy.negative.accepts, false);
     assert.equal(typeof proxy.negative.reason, "string");
     const mutated = structuredClone(records);
     const target = mutated.prohibited_proxies.find((candidate) => candidate.id === proxy.id);
     target.negative.accepts = true;
     assert.notDeepEqual(mutated, records, `${proxy.id} mutation must be observable`);
-    assert.equal(proxy.reason.startsWith("proxy."), true);
+    assert.deepEqual(semanticErrors(mutated), [`proxy.${proxy.id}`]);
+    assert.equal(proxy.negative.reason.startsWith("proxy."), true);
   }
 });
 
@@ -95,4 +118,3 @@ test("protected structures are preservation obligations without raw values", () 
   assert.equal(JSON.stringify(records).includes("raw"), false);
   assert.equal(JSON.stringify(records).includes("landmark_points"), false);
 });
-
