@@ -1,7 +1,7 @@
 ---
 phase: 75
 slug: semantics-and-genuine-evidence-contract
-status: in-progress
+status: passed
 nyquist_compliant: true
 security_standard: OWASP ASVS Level 1
 block_on: HIGH
@@ -30,9 +30,9 @@ references, and 74 renderer cases.
 | --- | ---: | ---: | --- | --- | --- | --- |
 | 75-01-01 | 01 | 1 | SEM-01, SEM-02 | T-75-01, T-75-02, T-75-04 | `node --test 75-semantics.contract.test.js` | green |
 | 75-01-02 | 01 | 1 | SEM-01, SEM-02 | T-75-03, T-75-05, T-75-06, T-75-07, T-75-08, T-75-SC | `python3 check_phase75_semantics_evidence_boundaries.py --self-test --repo-root .` plus `--contract --absence` | green |
-| 75-02-01 | 02 | 2 | EVID-01, EVID-02 | T-75-01, T-75-02, T-75-03, T-75-04 | `node --test 75-semantics.contract.test.js 75-rights-evidence.contract.test.js` | pending until Plan 02 |
-| 75-02-02 | 02 | 2 | EVID-01, EVID-02 | T-75-03, T-75-05, T-75-08 | `node 75-private-evidence-evaluator.js --self-test` | pending until Plan 02 |
-| 75-02-03 | 02 | 2 | EVID-01, EVID-02 | T-75-05, T-75-06, T-75-07 | explicit validate/aggregate/export, exact absence, and isolated T-75 modes | pending until Plan 02 |
+| 75-02-01 | 02 | 2 | EVID-01, EVID-02 | T-75-01, T-75-02, T-75-03, T-75-04 | `node --test 75-semantics.contract.test.js 75-rights-evidence.contract.test.js` | green |
+| 75-02-02 | 02 | 2 | EVID-01, EVID-02 | T-75-03, T-75-05, T-75-08 | `node 75-private-evidence-evaluator.js --self-test` | green |
+| 75-02-03 | 02 | 2 | EVID-01, EVID-02 | T-75-05, T-75-06, T-75-07 | explicit validate/aggregate/export, exact absence, and isolated T-75 modes | green |
 
 ## Isolated HIGH ownership
 
@@ -53,6 +53,11 @@ references, and 74 renderer cases.
 ```text
 node --check .planning/phases/75-semantics-and-genuine-evidence-contract/75-semantics.contract.test.js
 node --test .planning/phases/75-semantics-and-genuine-evidence-contract/75-semantics.contract.test.js
+node --test .planning/phases/75-semantics-and-genuine-evidence-contract/75-rights-evidence.contract.test.js
+node .planning/phases/75-semantics-and-genuine-evidence-contract/75-private-evidence-evaluator.js --self-test --emit-manifest /private/tmp/beauty-phase75-metadata-only-manifest.json
+node .planning/phases/75-semantics-and-genuine-evidence-contract/75-private-evidence-evaluator.js --validate --manifest /private/tmp/beauty-phase75-metadata-only-manifest.json
+node .planning/phases/75-semantics-and-genuine-evidence-contract/75-private-evidence-evaluator.js --aggregate --manifest /private/tmp/beauty-phase75-metadata-only-manifest.json
+node .planning/phases/75-semantics-and-genuine-evidence-contract/75-private-evidence-evaluator.js --export --manifest /private/tmp/beauty-phase75-metadata-only-manifest.json
 python3 -m json.tool .planning/phases/75-semantics-and-genuine-evidence-contract/75-THREAT-INVENTORY.json
 PYTHONPYCACHEPREFIX=/private/tmp/beauty-phase75-pycache python3 -m py_compile .planning/phases/75-semantics-and-genuine-evidence-contract/check_phase75_semantics_evidence_boundaries.py
 python3 .planning/phases/75-semantics-and-genuine-evidence-contract/check_phase75_semantics_evidence_boundaries.py --self-test --repo-root .
@@ -66,6 +71,9 @@ git diff --check
 No rights-approved genuine positive/negative bundle is present in this
 workspace. Therefore EVID-01 and EVID-02 remain evidence-gate pending until a
 caller supplies a complete private local bundle and blinded review. Metadata-
-only self-tests validate evaluator mechanics only; they cannot produce a
 genuine efficacy, naturalness, coverage, or productization claim.
 
+The contract and evaluator requirements are nevertheless verified as
+fail-closed infrastructure: incomplete or missing genuine evidence returns a
+typed failure, while metadata-only self-tests return
+`mechanics-only-not-promotion` and never authorize a public route.
