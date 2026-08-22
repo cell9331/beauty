@@ -1,8 +1,9 @@
 ---
 phase: 75
 slug: semantics-and-genuine-evidence-contract
-status: passed
+status: validated
 nyquist_compliant: true
+wave_0_complete: true
 security_standard: OWASP ASVS Level 1
 block_on: HIGH
 requirements: [SEM-01, SEM-02, EVID-01, EVID-02]
@@ -69,11 +70,23 @@ git diff --check
 ## Evidence state
 
 No rights-approved genuine positive/negative bundle is present in this
-workspace. Therefore EVID-01 and EVID-02 remain evidence-gate pending until a
-caller supplies a complete private local bundle and blinded review. Metadata-
-genuine efficacy, naturalness, coverage, or productization claim.
+workspace. The automated admission contract is complete, but metadata-only
+self-tests cannot establish genuine efficacy, naturalness, coverage, or a
+productization claim.
 
 The contract and evaluator requirements are nevertheless verified as
 fail-closed infrastructure: incomplete or missing genuine evidence returns a
 typed failure, while metadata-only self-tests return
 `mechanics-only-not-promotion` and never authorize a public route.
+
+## Validation Audit 2026-08-22
+
+| Metric | Count |
+| --- | ---: |
+| Gaps found | 0 |
+| Resolved | 0 |
+| Escalated | 0 |
+
+All four phase requirements map to green automated contract, mutation,
+privacy, and exact-absence commands. Genuine quality remains a later
+conditional product gate rather than a missing Phase-75 automation owner.

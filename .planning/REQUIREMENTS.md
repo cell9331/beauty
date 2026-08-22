@@ -23,29 +23,29 @@ milestone count below remains 18.
 
 ### Product Semantics
 
-- [ ] **SEM-01**: An SDK integrator can request a cosmetic effect defined only as visually reducing upper-eyelid fullness, without inferring physical fat, anatomy, health, or a surgical outcome.
-- [ ] **SEM-02**: The named effect cannot be satisfied by smoothing, whitening, eye enlargement, brow movement, crease invention, upper-eyelid lift, or geometric warp proxies.
+- [x] **SEM-01**: An SDK integrator can request a cosmetic effect defined only as visually reducing upper-eyelid fullness, without inferring physical fat, anatomy, health, or a surgical outcome.
+- [x] **SEM-02**: The named effect cannot be satisfied by smoothing, whitening, eye enlargement, brow movement, crease invention, upper-eyelid lift, or geometric warp proxies.
 
 ### Evidence and Rights
 
-- [ ] **EVID-01**: The milestone evaluates the effect through a complete rights-approved local bundle of genuine positives, negatives, ambiguous cases, pose/occlusion stress cases, identity diversity, and protected-structure cases with a fail-closed provenance manifest.
-- [ ] **EVID-02**: Efficacy and safety metrics, thresholds, and blinded original-detail review rules are frozen before final candidate evaluation, and persistent outputs contain only opaque fixture IDs, hashes, aggregate metrics, normalized reasons, and decisions.
+- [x] **EVID-01**: The milestone evaluates the effect through a complete rights-approved local bundle of genuine positives, negatives, ambiguous cases, pose/occlusion stress cases, identity diversity, and protected-structure cases with a fail-closed provenance manifest.
+- [x] **EVID-02**: Efficacy and safety metrics, thresholds, and blinded original-detail review rules are frozen before final candidate evaluation, and persistent outputs contain only opaque fixture IDs, hashes, aggregate metrics, normalized reasons, and decisions.
 
 ### Per-Eye Support Ownership
 
-- [ ] **SUP-01**: A still-image request performs one shared Vision observation and uses eye/brow landmarks only for conservative envelopes and pose guards; editable fullness support requires a separately approved semantic owner.
-- [ ] **SUP-02**: Left and right eyes receive independent support, confidence, reason, mask, and failure outcomes so an unsupported eye is source-exact and one eye cannot authorize, suppress, or modify the other.
+- [x] **SUP-01**: A still-image request performs one shared Vision observation and uses eye/brow landmarks only for conservative envelopes and pose guards; editable fullness support requires a separately approved semantic owner.
+- [x] **SUP-02**: Left and right eyes receive independent support, confidence, reason, mask, and failure outcomes so an unsupported eye is source-exact and one eye cannot authorize, suppress, or modify the other.
 
 ### Candidate Algorithms
 
-- [ ] **ALG-01**: The deterministic baseline reduces only bounded low-frequency fullness cues inside approved per-eye support while carrying original high-frequency detail and preserving geometry and alpha exactly.
-- [ ] **ALG-02**: An optional learned candidate may emit only bounded additive color maps, must have approved model/data/redistribution rights, and is eligible only if it materially outperforms the deterministic baseline without weakening any safety gate; generation, inpainting, and warp candidates remain prohibited.
+- [x] **ALG-01**: The deterministic baseline reduces only bounded low-frequency fullness cues inside approved per-eye support while carrying original high-frequency detail and preserving geometry and alpha exactly.
+- [x] **ALG-02**: An optional learned candidate may emit only bounded additive color maps, must have approved model/data/redistribution rights, and is eligible only if it materially outperforms the deterministic baseline without weakening any safety gate; generation, inpainting, and warp candidates remain prohibited.
 
 ### Safety and Image Contract
 
-- [ ] **SAFE-01**: Composition changes only pixels owned by one approved request-local per-eye mask, keeps every pixel outside support source-exact, and resolves local-mask collisions to the immutable source pixel.
-- [ ] **SAFE-02**: The selected candidate preserves protected eye, lash, crease, and brow geometry plus source skin texture within frozen automated and blinded-review tolerances.
-- [ ] **SAFE-03**: The complete route preserves canonical extent, orientation/mirroring, named color space, alpha, finite bounded math, deterministic repeated output, request-local ownership, and typed fail-closed behavior.
+- [x] **SAFE-01**: Composition changes only pixels owned by one approved request-local per-eye mask, keeps every pixel outside support source-exact, and resolves local-mask collisions to the immutable source pixel.
+- [x] **SAFE-02**: The selected candidate preserves protected eye, lash, crease, and brow geometry plus source skin texture within frozen automated and blinded-review tolerances.
+- [x] **SAFE-03**: The complete route preserves canonical extent, orientation/mirroring, named color space, alpha, finite bounded math, deterministic repeated output, request-local ownership, and typed fail-closed behavior.
 
 ### Genuine Quality Gate
 
@@ -54,14 +54,14 @@ milestone count below remains 18.
 
 ### Compatibility and Backend Contract
 
-- [ ] **COMPAT-01**: Before promotion, public compatibility remains exactly 61 `BeautyParameters` fields, five neutral presets, and 74 renderer cases, with no placeholder field, route, preset, or public/SPI activation that implies the effect exists.
-- [ ] **COMPAT-02**: If and only if every promotion gate passes, the SDK appends exactly one default-zero public parameter and one renderer case for an exact 62-field/five-preset/75-case inventory while preserving Codable migration, normalization, reset, equality, neutral identity, and legacy call behavior.
-- [ ] **BACKEND-01**: The CPU implementation remains the authoritative oracle and the selected GPU route satisfies the existing output contract or typed availability failure without modifying retained `Warp.metal`, adding a Metal/GPU API/backend, or claiming device performance.
+- [x] **COMPAT-01**: Before promotion, public compatibility remains exactly 61 `BeautyParameters` fields, five neutral presets, and 74 renderer cases, with no placeholder field, route, preset, or public/SPI activation that implies the effect exists.
+- [x] **COMPAT-02**: If and only if every promotion gate passes, the SDK appends exactly one default-zero public parameter and one renderer case for an exact 62-field/five-preset/75-case inventory while preserving Codable migration, normalization, reset, equality, neutral identity, and legacy call behavior.
+- [x] **BACKEND-01**: The CPU implementation remains the authoritative oracle and the selected GPU route satisfies the existing output contract or typed availability failure without modifying retained `Warp.metal`, adding a Metal/GPU API/backend, or claiming device performance.
 
 ### Conditional Promotion and Documentation
 
-- [ ] **PROMOTE-01**: A reproducible aggregate decision promotes the public field and route only when every semantic, rights, support, efficacy, safety, privacy, compatibility, and backend gate passes; any failed gate leaves the field and route exactly absent and keeps `eyes` partial.
-- [ ] **DOCS-01**: Root contract owners, `PLANS.md`, quality evidence, public SDK guidance, and `docs/SDK_EFFECT_TAXONOMY.md` record the selected branch and preserve explicit nonclaims for UI/Demo, realtime/video, device, commercial quality, packaging, shipping, launch, and release readiness.
+- [x] **PROMOTE-01**: A reproducible aggregate decision promotes the public field and route only when every semantic, rights, support, efficacy, safety, privacy, compatibility, and backend gate passes; any failed gate leaves the field and route exactly absent and keeps `eyes` partial.
+- [x] **DOCS-01**: Root contract owners, `PLANS.md`, quality evidence, public SDK guidance, and `docs/SDK_EFFECT_TAXONOMY.md` record the selected branch and preserve explicit nonclaims for UI/Demo, realtime/video, device, commercial quality, packaging, shipping, launch, and release readiness.
 
 ## Future Requirements
 

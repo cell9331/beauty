@@ -2,7 +2,7 @@
 phase: 79-conditional-productization-and-sdk-only-closeout
 plan: "02"
 status: complete
-requirements: [SAFE-03, COMPAT-01, COMPAT-02, BACKEND-01, PROMOTE-01, DOCS-01]
+requirements-completed: [SAFE-03, COMPAT-01, COMPAT-02, BACKEND-01, PROMOTE-01, DOCS-01]
 ---
 
 # Phase 79 Plan 02 Summary

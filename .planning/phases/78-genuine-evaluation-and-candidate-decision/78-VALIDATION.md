@@ -1,6 +1,8 @@
 ---
 phase: 78-genuine-evaluation-and-candidate-decision
-status: executed
+status: validated
+nyquist_compliant: false
+wave_0_complete: true
 requirements: [ALG-02, QUAL-01, QUAL-02]
 ---
 
@@ -48,3 +50,22 @@ pending genuine evidence; generated mechanics do not receive efficacy weight.
 
 No raw pixels, masks, landmarks, private locators, reviewer prose, or private
 fixture files were added to the repository.
+
+## Manual-Only Verifications
+
+| Behavior | Requirement | Why Manual | Test Instructions |
+| --- | --- | --- | --- |
+| Genuine positive efficacy and blinded original-detail review | QUAL-01 | Requires a complete rights-approved private genuine bundle and independent blinded reviewers; no such bundle was supplied. | Supply the private bundle outside the repository and run the frozen Phase-75 evaluator/review protocol. |
+| Genuine negative/no-op quality over ambiguity, pose, occlusion, and eye-state cases | QUAL-02 | Generated fixtures prove mechanics only and cannot substitute for the required private genuine cases. | Run the same frozen evaluator against the complete negative/stress categories and retain aggregate-only output. |
+
+## Validation Audit 2026-08-22
+
+| Metric | Count |
+| --- | ---: |
+| Gaps found | 2 |
+| Resolved | 0 |
+| Escalated | 2 |
+
+ALG-02 is automated and green. QUAL-01/02 remain intentionally unsatisfied
+manual evidence gates and select `mechanics-only-not-promotion`; no test or
+fixture was fabricated to turn them green.

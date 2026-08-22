@@ -2,7 +2,8 @@
 phase: 78-genuine-evaluation-and-candidate-decision
 plan: "01"
 status: complete
-requirements: [ALG-02, QUAL-01, QUAL-02]
+requirements-completed: [ALG-02]
+requirements-not-satisfied: [QUAL-01, QUAL-02]
 ---
 
 # Phase 78 Plan 01 Summary
