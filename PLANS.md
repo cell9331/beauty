@@ -3980,3 +3980,19 @@ Outcome:
 - The Phase 75 evaluator remains authoritative; metadata-only evidence is mechanics-only.
 - The deterministic editor is the baseline and the optional additive comparator is `not-admitted` without complete rights/safety/superiority proof.
 - The single recommendation is `mechanics-only-not-promotion`; no genuine efficacy, naturalness, or public activation claim is made. Phase 79 owns exact failing-branch closeout.
+
+### C-2026-08-22-phase-79-conditional-productization-and-sdk-only-closeout
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-08-22 |
+| Scope | Consume the Phase-78 decision, materialize the failing public-absence branch, synchronize contract owners, and close v1.18 SDK-only validation. |
+| Files | `.planning/phases/79-conditional-productization-and-sdk-only-closeout/`, `.planning/ROADMAP.md`, `.planning/REQUIREMENTS.md`, `.planning/STATE.md`, `DESIGN.md`, `PRODUCT_SENSE.md`, `SECURITY.md`, `RELIABILITY.md`, `QUALITY_SCORE.md`, `docs/README.md`, `docs/SDK_EFFECT_TAXONOMY.md`, `PLANS.md` |
+| Verification | Phase-79 checker self-test rejected 8/8 mutations and live mode passed; exact public 61/5/74; full no-skip 797/0/0; all eight opt-ins exactly once; `git diff --check` passed. |
+| Build | `bash scripts/run-no-skip-swiftpm.sh` passed with zero failures and zero skips; available-host parity executed 13/0/0 with no fallback. |
+
+Outcome:
+
+- `mechanics-only-not-promotion` selects verified exact public absence: no field, renderer case, route, resource, package dependency, or public/SPI activation was added.
+- `去脂` remains future and `眼睛` remains partial. QUAL-01/02 are explicitly not satisfied because the required genuine bundle and blinded review were not supplied.
+- CPU authority, selected GPU behavior, terminal `.metalUnavailable`, canonical image metadata, privacy, and all device/commercial/release nonclaims remain intact.

@@ -182,6 +182,10 @@ artifact.
   redistribution rights plus bounded output and identical safety gates. No raw
   candidate output, review prose, private locator, or face-derived artifact is
   persisted, and the current comparator disposition is `not-admitted`.
+- Phase 79 consumes the failed decision as a hard authorization boundary:
+  internal support/editor symbols cannot be reached through public fields,
+  renderer cases, resources, package dependencies, or Testing SPI. The exact
+  61/5/74 absence is checked before closeout.
 
 The mandatory CPU reference oracle is generated entirely in Swift memory from
 small RGBA8/sRGB fixtures. Its static preflight rejects media reads, tracked

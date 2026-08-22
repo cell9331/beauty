@@ -52,6 +52,12 @@ local-retouch controls. Neither implies realtime/pixel-buffer support.
 dark-circle removal, or global smoothing. Request-local masks and face geometry
 are implementation details, not taxonomy entries or public diagnostics.
 
+The v1.18 Phase-78 decision is `mechanics-only-not-promotion`, so Phase 79
+closes the failing branch: package-only semantic support and deterministic
+editor mechanics do not create a public control, and `去脂` remains `future`.
+The `眼睛` group remains `partial` until a separately supplied rights-approved
+genuine bundle and blinded review satisfy the frozen quality gate.
+
 ## Legacy shaping and facial-feature mapping
 
 The rows below are the de-duplicated algorithm/control taxonomy. Reference image
@@ -147,4 +153,5 @@ Update this file in the same change that adds, removes, renames, or promotes a
 public effect. A row becomes `implemented` only with SDK behavior, safety and
 degradation coverage, and public-facade output evidence where applicable. Do not
 promote from archived UI presence, a disabled control, provider-only mechanics,
-or a future plan.
+or a future plan. The Phase-79 failing branch records exact 61-field, five-
+preset, 74-case absence and does not promote the mechanics candidate.

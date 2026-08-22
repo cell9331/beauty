@@ -103,14 +103,14 @@ milestone count below remains 18.
 | SAFE-01 | Phase 77 | Complete — approved per-eye proposals use the existing source-owned composer and overlap-to-source rule |
 | SAFE-02 | Phase 77 | Complete — generated protected/exterior/alpha/metadata/determinism oracles pass |
 | ALG-02 | Phase 78 | Complete — optional comparator is fail-closed on model/data/redistribution rights, bounded additive output, all safety gates, and superiority; none admitted |
-| QUAL-01 | Phase 78 | Pending — no rights-approved genuine positives or blinded review supplied |
-| QUAL-02 | Phase 78 | Pending — generated mechanics pass; genuine negative/no-op evidence remains absent |
-| SAFE-03 | Phase 79 | Pending |
-| COMPAT-01 | Phase 79 | Pending |
-| COMPAT-02 | Phase 79 | Pending |
-| BACKEND-01 | Phase 79 | Pending |
-| PROMOTE-01 | Phase 79 | Pending |
-| DOCS-01 | Phase 79 | Pending |
+| QUAL-01 | Phase 78 | Not satisfied — no rights-approved genuine positives or blinded review were supplied; this failed gate selects exact public absence |
+| QUAL-02 | Phase 78 | Not satisfied — generated mechanics pass, but genuine negative/no-op evidence is absent; this failed gate selects exact public absence |
+| SAFE-03 | Phase 79 | Complete — existing canonical extent/orientation, named-sRGB, alpha, finite/deterministic, request-local, and typed-failure gates remain authoritative |
+| COMPAT-01 | Phase 79 | Complete — exact 61-field/five-preset/74-renderer-case absence is mutation-tested |
+| COMPAT-02 | Phase 79 | Complete on the conditional failing branch — no 62/5/75 promotion was authorized or materialized |
+| BACKEND-01 | Phase 79 | Complete — CPU remains the oracle; selected GPU output or terminal `.metalUnavailable` remains unchanged with no fallback/new backend |
+| PROMOTE-01 | Phase 79 | Complete — `mechanics-only-not-promotion` deterministically leaves the field, route, resource, and public/SPI activation absent |
+| DOCS-01 | Phase 79 | Complete — root owners, PLANS, quality evidence, public guidance, taxonomy, and docs index record the same branch and nonclaims |
 
 **Coverage:**
 
@@ -122,4 +122,4 @@ milestone count below remains 18.
 
 ---
 *Requirements defined: 2026-08-22*
-*Last updated: 2026-08-22 after Phase 78 candidate decision verification*
+*Last updated: 2026-08-22 after Phase 79 failing-branch closeout*

@@ -17,7 +17,7 @@ If a long-form doc conflicts with a root-level contract, follow the root-level c
 
 ## Current Repository State
 
-Last audited: 2026-08-14 after Phase 66.
+Last audited: 2026-08-22 after Phase 79 SDK-only failing-branch closeout.
 
 - The active repository is SDK-only. `BeautySDK/Package.swift` is the sole build
   graph and SwiftPM is the sole current build/test runner.

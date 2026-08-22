@@ -276,3 +276,20 @@ historical matrix does not establish broad current CPU/GPU equivalence. It does
 not promote UI/Demo,
 simulator/device, performance, commercial, packaging, shipping, launch, or
 release readiness.
+
+## v1.18 Phase 79 Failing-Branch Acceptance
+
+The Phase-78 aggregate recommendation is `mechanics-only-not-promotion`.
+Therefore an SDK integrator sees the unchanged public contract: 61
+`BeautyParameters` fields, five neutral presets, and 74 renderer cases. The
+package-only per-eye support and deterministic fullness editor are reusable
+mechanics evidence, not a public `去脂` control, route, Testing SPI, preset key,
+or efficacy claim. The taxonomy remains `眼睛: partial` and `去脂: future`.
+
+This branch is accepted only on SDK-owned evidence: exact public absence,
+canonical extent/orientation/mirror and named-sRGB metadata preservation,
+alpha and request-local failure isolation, CPU-reference authority, explicit
+GPU selection or typed `.metalUnavailable`, and the archive-first no-skip gate.
+It does not establish genuine efficacy, naturalness, device performance,
+thermal/battery behavior, commercial visual approval, packaging, shipping,
+launch, or release readiness.

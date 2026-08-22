@@ -375,3 +375,19 @@ and 8 mutation rejections, and the Phase 78 boundary checker rejects 8/8
 mutations. The archive-first full gate is 797/0/0 with zero skips. No genuine
 efficacy or naturalness, device, commercial, packaging, shipping, launch, or
 release-readiness claim follows without a supplied rights-approved bundle.
+
+## Phase 79 Failing-Branch Reliability
+
+The closeout consumes the single Phase 78 decision and fails closed before any
+public activation. Exact inventories, package/resource/SPI absence, taxonomy
+status, source-diff protection, canonical metadata, alpha, CPU authority,
+explicit GPU selection, and terminal `.metalUnavailable` behavior are checked
+with isolated mutations. Existing request-local deterministic recovery remains
+the authority for output and failure behavior.
+
+The final archive-first gate is the only milestone closeout authority. A green
+SDK run does not convert the mechanics candidate into genuine efficacy,
+naturalness, device, commercial, packaging, shipping, launch, or
+release-readiness evidence. The Phase-79 checker passes live mode and rejects
+8/8 isolated mutations; the final archive-first gate passes 797/0/0 with all
+eight opt-ins exactly once and zero skips.

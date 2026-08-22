@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.18
 milestone_name: Upper-Eyelid Fullness Reduction
-status: planning
-last_updated: "2026-08-22T11:37:05+08:00"
+status: complete
+last_updated: "2026-08-22T21:50:57+08:00"
 last_activity: 2026-08-22
 progress:
   total_phases: 5
-  completed_phases: 4
-  total_plans: 8
-  completed_plans: 8
-  percent: 80
+  completed_phases: 5
+  total_plans: 10
+  completed_plans: 10
+  percent: 100
 ---
 
 # Project State
@@ -29,9 +29,9 @@ per-eye fail-closed support, and original-pixel local composition.
 ## Current Position
 
 Phase: 79 of 79 (Conditional Productization and SDK-Only Closeout)
-Plan: —
-Status: Phase 78 passed with fail-closed mechanics-only recommendation; ready to discuss and plan Phase 79
-Last activity: 2026-08-22 — Phase 78 candidate decision, comparator rejection, privacy, exact absence, and full no-skip gates passed
+Plan: 02 of 02 complete
+Status: v1.18 complete on the verified failing public-absence branch
+Last activity: 2026-08-22 — Phase 79 exact absence, owner synchronization, backend compatibility, and full no-skip gates passed
 
 ## v1.18 Roadmap Context
 
@@ -288,21 +288,33 @@ None found under `.planning/todos/pending/`.
   single recommendation is `mechanics-only-not-promotion`; Phase 79 owns the
   failing public-absence branch.
 
+## Phase 79 Closeout
+
+- SAFE-03, COMPAT-01/02, BACKEND-01, PROMOTE-01, and DOCS-01 are complete on
+  the conditional failing branch. QUAL-01/02 remain explicitly not satisfied
+  because no rights-approved genuine bundle or blinded review was supplied.
+- The closeout checker rejected all 8 isolated mutations and passed live mode.
+  Exact public absence remains 61 fields, five presets, and 74 renderer cases;
+  `去脂` remains future and `眼睛` remains partial.
+- The archive-first full gate passed 797/0/0 with all eight opt-ins exactly
+  once and zero skips. Available-host parity executed 13/0/0 with no fallback.
+- No production source, package graph, public/SPI activation, resource, retained
+  `Warp.metal`, or backend/API changed. No genuine efficacy, naturalness,
+  device, commercial, packaging, shipping, launch, or release-readiness claim
+  follows.
+
 ## Session Continuity
 
-Last session: 2026-08-22T11:37:05+08:00
-Stopped at: Phase 78 candidate decision verification
+Last session: 2026-08-22T21:50:57+08:00
+Stopped at: Phase 79 failing-branch verification complete
 Resume file: `.planning/ROADMAP.md`
-Next action: discuss and plan Phase 79.
+Next action: audit and archive v1.18, or begin a separately authorized milestone.
 
 ## Operator Next Steps
 
-- Start Phase 79 from the single Phase-78 recommendation. Because it is
-  `mechanics-only-not-promotion`, prove the failing public-absence branch and
-  close v1.18 without inventing genuine quality evidence.
-
-- Preserve the exact 61/5/74 public surface until the Phase-78 aggregate
-  decision authorizes the passing branch in Phase 79.
+- Preserve the exact 61/5/74 public surface. A later promotion attempt requires
+  a new complete rights-approved genuine bundle and blinded review under an
+  explicitly authorized scope.
 
 - Do not treat package-host parity or historical Phase-74 completion as device,
   transparent-input, end-to-end GPU local-retouch, or release evidence.

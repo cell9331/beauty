@@ -247,6 +247,18 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
   recommendation is `mechanics-only-not-promotion`; public activation remains
   owned by Phase 79.
 
+### v1.18 Phase 79 Failing Product Branch
+
+- Phase 79 consumes `mechanics-only-not-promotion` and intentionally materializes
+  no public field, renderer case, preset, facade route, resource, package
+  dependency, or Testing SPI. The existing 61/5/74 surface is the complete
+  public contract, while the package-only mechanics remain non-authorizing.
+- The failing branch retains the CPU oracle, selected GPU route and terminal
+  `.metalUnavailable` behavior, canonical extent/orientation/mirror and named
+  sRGB metadata, exact alpha, deterministic request-local isolation, and the
+  unchanged `Warp.metal`. Genuine evidence and device/product claims remain
+  outside this SDK-only closeout.
+
 ### Phase 50 Independent Eyebrow Geometry Contract
 
 - The seven same-named effective strengths use provisional cap `0.25` once: signed `eyebrowYPosition`, `eyebrowThickness`, `eyebrowLength`, `eyebrowSpacing`, `eyebrowHeadSpacing`, and `eyebrowTilt`, plus positive-only `eyebrowPeakDefinition`. The provisional eyebrow subtotal is `1.75`; Phase 52, not this contract, owns final calibration.

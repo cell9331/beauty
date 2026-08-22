@@ -41,7 +41,7 @@ post-SDK feedback and is not a phase dependency or completion gate.
 - ✅ **v1.0–v1.15** — Historical application and SDK milestones archived in `.planning/milestones/`.
 - ✅ **v1.16 SDK-Only Foundation and CPU Reference** — Phases 66–69, completed 2026-08-15.
 - ✅ **v1.17 Dual CPU/GPU Metal Rendering** — Phases 70–74, archived 2026-08-17 with bounded post-archive dispositions completed 2026-08-18.
-- ◆ **v1.18 Upper-Eyelid Fullness Reduction** — Phases 75–79, planned 2026-08-22.
+- ✅ **v1.18 Upper-Eyelid Fullness Reduction** — Phases 75–79, completed 2026-08-22 on the verified failing public-absence branch.
 
 ## Phase Sequence
 
@@ -49,7 +49,7 @@ post-SDK feedback and is not a phase dependency or completion gate.
 - [x] **Phase 76: Per-Eye Semantic Support Ownership** — Produce conservative independent support or typed fail-closed absence for each eye from one request-local observation. Completed 2026-08-22 with one-observation/one-owner routing, source-exact composition, and mutation/privacy gates.
 - [x] **Phase 77: Deterministic Fullness Editor** — Implement bounded tone/frequency correction with original detail, exact geometry, and source-owned composition. Completed 2026-08-22 with 797/0/0 no-skip evidence and exact public absence preserved.
 - [x] **Phase 78: Genuine Evaluation and Candidate Decision** — Evaluate positives, negatives, safety, and optional additive maps under the frozen rubric and produce a reproducible promotion decision. Completed 2026-08-22 with fail-closed `mechanics-only-not-promotion`; no genuine bundle or comparator was admitted.
-- [ ] **Phase 79: Conditional Productization and SDK-Only Closeout** — Execute the passing or failing public-surface branch, prove compatibility/backend behavior, synchronize owners, and close the no-skip gate.
+- [x] **Phase 79: Conditional Productization and SDK-Only Closeout** — Execute the passing or failing public-surface branch, prove compatibility/backend behavior, synchronize owners, and close the no-skip gate. Completed 2026-08-22 with `mechanics-only-not-promotion`, exact 61/5/74 public absence, and 797/0/0 no-skip evidence.
 
 ## Phase Details
 
@@ -205,8 +205,8 @@ orphaned or duplicate mappings.
 | 76. Per-Eye Semantic Support Ownership | v1.18 | 2/2 | Complete | 2026-08-22 |
 | 77. Deterministic Fullness Editor | v1.18 | 2/2 | Complete | 2026-08-22 |
 | 78. Genuine Evaluation and Candidate Decision | v1.18 | 2/2 | Complete | 2026-08-22 |
-| 79. Conditional Productization and SDK-Only Closeout | v1.18 | 0/TBD | Not started | — |
+| 79. Conditional Productization and SDK-Only Closeout | v1.18 | 2/2 | Complete | 2026-08-22 |
 
 ---
 *Roadmap created: 2026-08-22*
-*Last updated: 2026-08-22 after Phase 78 candidate decision verification*
+*Last updated: 2026-08-22 after Phase 79 failing-branch closeout*

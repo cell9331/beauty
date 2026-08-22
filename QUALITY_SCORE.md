@@ -294,3 +294,16 @@ composition bypass, and peer coupling. Archive-first
 This is deterministic package mechanics evidence only and does not promote the
 effect or establish genuine efficacy, naturalness, device, commercial,
 packaging, shipping, launch, or release-readiness quality.
+
+## Phase 79 Conditional Productization Quality Evidence
+
+The failing branch consumes `mechanics-only-not-promotion` and proves exact
+61-field/five-preset/74-case public absence. `去脂` remains future and `眼睛`
+remains partial; package-only support/editor mechanics do not receive public or
+genuine-quality weight. The closeout checker mutation-tests decision bypass,
+surface drift, taxonomy promotion, backend fallback, metadata drift, and source
+changes. Root contracts, public SDK guidance, taxonomy, PLANS, and the docs
+index record the same branch and preserve all device/commercial/release
+nonclaims. The checker passes live mode and rejects 8/8 isolated mutations;
+archive-first `run-no-skip-swiftpm.sh` passes 797 tests with zero failures and
+zero skips, with all eight opt-ins exactly once.
