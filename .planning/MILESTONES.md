@@ -1,5 +1,54 @@
 # Milestones
 
+## v1.18 Upper-Eyelid Fullness Reduction (Completed: 2026-08-22)
+
+**Delivered:** A fail-closed SDK-only qualification decision for upper-eyelid
+fullness reduction: reusable package-only support/editor mechanics, frozen
+private-evidence and candidate gates, and verified exact public absence. This
+milestone does not claim feature shipping, genuine efficacy, device behavior,
+commercial approval, packaging, launch, or release readiness.
+
+**Phases completed:** 75–79 (5 phases, 10 plans, 20 tasks)
+
+**Key accomplishments:**
+
+- Froze cosmetic-only semantics, seven prohibited proxies, a rights/category-
+  complete private evidence contract, and aggregate-only durable output.
+- Added one-observation, request-local, independent per-eye semantic support
+  with source-exact rejection and overlap-to-source composition.
+- Added a bounded deterministic low-frequency editor that carries original
+  high-frequency detail and preserves exterior/protected/alpha/metadata bytes.
+- Produced a reproducible `mechanics-only-not-promotion` recommendation and
+  rejected every unapproved optional additive comparator.
+- Closed the failing branch at exact 61 fields / five presets / 74 renderer
+  cases with no field, route, resource, dependency, public/SPI activation, new
+  backend/API, or retained `Warp.metal` change.
+
+**Verification:** Phase-79 checker self-test rejected 8/8 mutations and live
+mode passed; archive-first SwiftPM executed 797 tests with zero failures and
+zero skips, all eight opt-ins exactly once; security closed 41/41 threats.
+
+**Known gaps accepted for archive:** QUAL-01 and QUAL-02 are unsatisfied because
+no complete rights-approved genuine positive/negative bundle or blinded review
+was supplied. The audit is 16/18 requirements, 5/5 phases, 6/6 integrations,
+and 3/3 flows. These gaps authorize exact absence only and cannot be cited as
+promotion or release evidence.
+
+**Stats:** 78 files changed, 8,269 insertions, 67 deletions; 52,358 active Swift
+source/test lines at close; 2026-08-22; git range `0ebcc31` → `24d1cf5` before
+archive lifecycle commits.
+
+**Archives:** [roadmap](milestones/v1.18-ROADMAP.md),
+[requirements](milestones/v1.18-REQUIREMENTS.md),
+[audit](milestones/v1.18-MILESTONE-AUDIT.md), and
+[phase artifacts](milestones/v1.18-phases/).
+
+**What's next:** Select a fresh milestone. Any future `去脂` promotion attempt
+requires a new authorized scope plus the missing genuine bundle and blinded
+review; otherwise preserve exact public absence.
+
+---
+
 ## v1.17 Dual CPU/GPU Metal Rendering (Shipped: 2026-08-17)
 
 **Phases completed:** 5 phases, 19 plans, 26 tasks

@@ -2,9 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.18
 milestone_name: Upper-Eyelid Fullness Reduction
-status: complete
-last_updated: "2026-08-22T21:50:57+08:00"
+status: Awaiting next milestone
+stopped_at: Milestone v1.18 archived on the failing public-absence branch
+last_updated: "2026-08-22T22:03:17+08:00"
 last_activity: 2026-08-22
+last_activity_desc: Milestone v1.18 completed and archived
 progress:
   total_phases: 5
   completed_phases: 5
@@ -22,16 +24,16 @@ See: `.planning/PROJECT.md` (updated 2026-08-22)
 **Core value:** An iOS app can integrate `BeautySDK` and get natural,
 controllable, real-time and still-image beauty processing through a stable
 modular facade.
-**Current focus:** v1.18 conditionally evaluates and productizes still-image
-upper-eyelid fullness reduction through rights-approved genuine evidence,
-per-eye fail-closed support, and original-pixel local composition.
+**Current focus:** Planning the next milestone. Upper-eyelid fullness reduction
+remains package-only mechanics and exact public absence unless a future
+authorized scope supplies complete genuine evidence and blinded review.
 
 ## Current Position
 
-Phase: 79 of 79 (Conditional Productization and SDK-Only Closeout)
-Plan: 02 of 02 complete
-Status: v1.18 complete on the verified failing public-absence branch
-Last activity: 2026-08-22 — Phase 79 exact absence, owner synchronization, backend compatibility, and full no-skip gates passed
+Phase: Milestone v1.18 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-08-22 — Milestone v1.18 completed and archived
 
 ## v1.18 Roadmap Context
 
@@ -49,7 +51,21 @@ model/data/redistribution rights and measurable superiority. No phase may use
 warp, smoothing, whitening, eye enlargement, brow movement, crease invention,
 or upper-eyelid lift as a proxy.
 
-## Current Audit Qualification
+## v1.18 Final Qualification
+
+v1.18 closes as `mechanics-only-not-promotion` with exact 61-field,
+five-preset, 74-renderer-case public absence. The final archive-first gate
+passed 797/0/0, all eight opt-ins exactly once, and available-host parity
+13/0/0. Phase-level verification is 5/5; integration is 6/6; flows are 3/3;
+security is 41/41 threats closed.
+
+The formal audit is `gaps_found` at 16/18 requirements because QUAL-01/02 lack
+the required rights-approved genuine bundle and blinded review. Those expected
+gaps select the failed productization branch and remain future work; they do
+not invalidate SDK mechanics/compatibility closeout and cannot support genuine
+efficacy, device, commercial, packaging, shipping, launch, or release claims.
+
+## Historical v1.17 Audit Qualification
 
 v1.17 was historically archived at `afb04b4` with a Metal-available focused
 `12/0/0` and full `765/0/0` run. Those numbers and the 5/5 phase, 19/19 plan
@@ -237,10 +253,12 @@ None found under `.planning/todos/pending/`.
 - SEM-01/02 and EVID-01/02 are complete as fail-closed contract requirements.
 - Semantic/evidence Node coverage is 8/8; evaluator self-test is 10 checks with
   7 mutation rejections; exact absence and all nine threat modes pass.
+
 - No rights-approved genuine bundle is present in the workspace. The evaluator
   returns `evidence.missing-bundle` for absent input and metadata-only checks
   return `mechanics-only-not-promotion`; no genuine efficacy or product claim
   follows.
+
 - No production Swift, public field, route, renderer case, preset, resource,
   package dependency, or Testing SPI changed.
 
@@ -249,11 +267,14 @@ None found under `.planning/todos/pending/`.
 - SUP-01/02 are complete as package-only fail-closed support requirements.
 - The semantic support suite passed 10/10; the focused route/composition suite
   passed 52/0 with 3 existing Apple Vision opt-in tests gated by environment.
+
 - The Phase-76 checker rejected all 8 isolated mutations and passed its live
   exact-compatibility/privacy inventory. The archive-first full gate passed
   790/0/0 with zero unexpected skips.
+
 - One shared mapped observation now feeds one semantic-owner call; each eye is
   independently supported or source-exact no-op, and overlap returns source.
+
 - No public field, route, renderer case, preset, resource, package dependency,
   provider, or Testing SPI changed. No genuine efficacy, naturalness, device,
   commercial, packaging, shipping, launch, or release-readiness claim follows.
@@ -262,12 +283,15 @@ None found under `.planning/todos/pending/`.
 
 - ALG-01, SAFE-01, and SAFE-02 are complete for generated deterministic
   mechanics and source-owned safety only.
+
 - The editor/safety focused suite passed 7/0; the Phase-77 checker rejected all
   8 isolated mutations and passed its live compatibility/privacy inventory.
+
 - The archive-first full gate passed 797/0/0 with zero unexpected skips.
 - The editor preserves original high-frequency residuals, bounds source-derived
   low-frequency deltas, composes only approved per-eye proposals, and returns
   overlap to immutable source bytes.
+
 - No public field, route, renderer case, preset, resource, package dependency,
   provider, Metal/API/backend, or Testing SPI changed. No genuine efficacy,
   naturalness, device, commercial, packaging, shipping, launch, or release-
@@ -278,12 +302,15 @@ None found under `.planning/todos/pending/`.
 - ALG-02 comparator admission mechanics are complete and fail closed on rights,
   bounded additive-map, all-safety, and superiority requirements; no learned
   candidate is admitted.
+
 - QUAL-01 and QUAL-02 remain pending genuine quality evidence because no
   rights-approved private bundle or blinded review was supplied. Generated
   positive/negative mechanics remain separate and receive no efficacy weight.
+
 - Candidate Node coverage passed 6/0/0; evaluator self-test recorded 12 checks
   and 8 mutation rejections; the Phase-78 checker rejected 8/8 mutations and
   passed live mode. Exact public absence remains 61/5/74.
+
 - The archive-first full gate passed 797/0/0 with zero unexpected skips. The
   single recommendation is `mechanics-only-not-promotion`; Phase 79 owns the
   failing public-absence branch.
@@ -293,31 +320,36 @@ None found under `.planning/todos/pending/`.
 - SAFE-03, COMPAT-01/02, BACKEND-01, PROMOTE-01, and DOCS-01 are complete on
   the conditional failing branch. QUAL-01/02 remain explicitly not satisfied
   because no rights-approved genuine bundle or blinded review was supplied.
+
 - The closeout checker rejected all 8 isolated mutations and passed live mode.
   Exact public absence remains 61 fields, five presets, and 74 renderer cases;
   `去脂` remains future and `眼睛` remains partial.
+
 - The archive-first full gate passed 797/0/0 with all eight opt-ins exactly
   once and zero skips. Available-host parity executed 13/0/0 with no fallback.
+
 - No production source, package graph, public/SPI activation, resource, retained
   `Warp.metal`, or backend/API changed. No genuine efficacy, naturalness,
   device, commercial, packaging, shipping, launch, or release-readiness claim
   follows.
 
+## Milestone Closeout Override
+
+- Closeout type: `override_closeout`.
+- The `--auto` lifecycle proceeded with the two audit gaps only because the
+  milestone explicitly defines exact public absence as the valid failed-gate
+  outcome.
+- Known verification overrides: 2 (`QUAL-01`, `QUAL-02`). Neither is marked
+  satisfied, promoted, shipped, or release-ready; both require a new authorized
+  genuine-evidence scope.
+
 ## Session Continuity
 
-Last session: 2026-08-22T21:50:57+08:00
-Stopped at: Phase 79 failing-branch verification complete
+Last session: 2026-08-22T22:03:17+08:00
+Stopped at: Milestone v1.18 archived on the failing public-absence branch
 Resume file: `.planning/ROADMAP.md`
-Next action: audit and archive v1.18, or begin a separately authorized milestone.
+Next action: begin a separately authorized milestone with `/gsd-new-milestone`.
 
 ## Operator Next Steps
 
-- Preserve the exact 61/5/74 public surface. A later promotion attempt requires
-  a new complete rights-approved genuine bundle and blinded review under an
-  explicitly authorized scope.
-
-- Do not treat package-host parity or historical Phase-74 completion as device,
-  transparent-input, end-to-end GPU local-retouch, or release evidence.
-
-- Do not add a physical-iPhone checkpoint to an SDK milestone critical path
-  unless the user explicitly creates a later device-focused scope.
+- Start the next milestone with /gsd-new-milestone

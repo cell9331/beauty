@@ -672,6 +672,74 @@
 
 ---
 
+## Milestone: v1.18 — Upper-Eyelid Fullness Reduction
+
+**Completed:** 2026-08-22
+**Phases:** 5 | **Plans:** 10 | **Recorded tasks:** 20
+
+### What Was Built
+
+- Frozen cosmetic semantics, prohibited-proxy rules, rights/category admission,
+  blinded-review schema, and aggregate-only private evidence tooling.
+- One-observation request-local per-eye semantic support plus a bounded
+  deterministic low-frequency editor with original-detail carry and source-
+  owned collision/exterior protection.
+- A Phase-75-integrated candidate decision that rejects missing evidence and
+  unapproved additive comparators without converting mechanics into efficacy.
+- Exact failing-branch closeout: 61/5/74 public absence, synchronized taxonomy
+  and root owners, 797/0/0 no-skip evidence, and 41/41 threats closed.
+
+### What Worked
+
+- Conditional productization turned missing genuine evidence into a precise,
+  machine-verifiable absence outcome instead of a placeholder field or proxy.
+- Independent left/right ownership and immutable-source composition made local
+  safety properties testable with actual RGBA8 bytes and metadata.
+- Mutation checkers at each boundary kept decision, privacy, public surface,
+  backend, and documentation drift independently visible.
+
+### What Was Inefficient
+
+- Phase-78/79 summary frontmatter and validation status initially used
+  noncanonical fields, making lifecycle verification stale during closeout.
+- The milestone completion helper undercounted tasks and emitted “Shipped”
+  vocabulary that conflicted with the repository's explicit nonclaim boundary;
+  archive records required manual correction.
+- Downstream internal mechanics intentionally make the Phase-75 historical
+  production-diff absence mode stale, so current closeout needs the Phase-79
+  baseline-aware checker rather than blindly rerunning every historical live
+  assertion.
+
+### Patterns Established
+
+- A failed genuine-quality gate can complete a conditional milestone only when
+  the selected result is exact public absence and the unsatisfied requirements
+  remain explicit.
+- Summary frontmatter must distinguish `requirements-completed` from
+  `requirements-not-satisfied`; phase completion does not imply every product
+  promotion requirement passed.
+- Post-hook Nyquist/security artifacts must be written before final verification
+  freshness and milestone audit.
+
+### Key Lessons
+
+1. Freeze closeout vocabulary around “completed/archived” when automation does
+   not establish shipping or release readiness.
+2. Never manufacture genuine fixtures or human-review outcomes to make a
+   conditional quality gate green.
+3. Use the latest phase's baseline-aware checker for final current-state
+   authority while preserving earlier checker results as time-scoped evidence.
+
+### Cost Observations
+
+- Model mix: quality-profile autonomous implementation, inline review,
+  verification, Nyquist/security reconciliation, audit, and lifecycle closeout.
+- Sessions: one same-day autonomous milestone.
+- Notable: lifecycle artifact normalization and honest conditional-gap handling
+  consumed more closeout work than the stable package-only mechanics.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -692,6 +760,7 @@
 | v1.13 | autonomous | 4 | Added actual observed eyebrow support, seven distinct providers, strict 72-portrait evidence, exact eyebrow-branch promotion, and a 21/21 audit. |
 | v1.14 | autonomous | 6 | Added exact-empty still-image retouch safety boundaries, original-pixel mechanics, independent closed feature gates, and a 41/41 audit. |
 | v1.15 | autonomous | 7 | Added independently qualified teeth and per-eye sclera output, exact combined failure isolation, named-sRGB/privacy closeout, post-downstream authority and a 40/40 audit. |
+| v1.18 | autonomous | 5 | Added fail-closed genuine-evidence qualification, per-eye package mechanics, exact no-promotion closeout, and an honest 16/18 conditional audit. |
 
 ### Cumulative Quality
 
@@ -711,6 +780,7 @@
 | v1.13 | 450 SDK tests, 72-portrait/13-no-face strict helper, 130-case boundary self-test, and milestone audit | Requirement traceability 21/21 | No new third-party runtime dependency recorded for eyebrow closeout. |
 | v1.14 | 553 SwiftPM tests (six expected Vision skips), 6 opt-in Vision tests, 120 Demo tests, and 703-case post-review checker | Requirement traceability 41/41 | No new third-party runtime dependency; production feature admission remains exact-empty. |
 | v1.15 | 638 SwiftPM tests with all 8 opt-ins, 121 Demo tests, two strict 6/6 output matrices, Phase 65 final and Phase 64 post-downstream gates | Requirement traceability 40/40 | No new third-party runtime dependency; `去脂`, model/network and Demo activation remain absent. |
+| v1.18 | 797 SwiftPM tests with all 8 opt-ins, Phase-78/79 mutation/live gates, and ASVS-L1 phase audits | Requirement traceability 16/18; QUAL-01/02 intentionally unsatisfied | No new third-party runtime dependency; public `去脂` activation remains exactly absent. |
 
 ### Top Lessons (Verified Across Milestones)
 
@@ -723,3 +793,5 @@
 7. Semantic-resource feasibility must be established before roadmap lock; absent approved resources should produce an explicit reduced scope, not proxy evidence.
 8. Candidate-era byte authority and post-downstream current authority need separate fail-closed checker modes.
 9. Archive dry-runs must be checked for filename collisions, generated claim vocabulary and task-count accuracy.
+10. Conditional milestones must keep unsatisfied product gates visible while
+    allowing exact public absence to complete as a bounded engineering result.
