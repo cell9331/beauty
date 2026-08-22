@@ -10,6 +10,39 @@ The former application and legacy UI-reference trees are absent from the active 
 
 An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
 
+## Current Milestone: v1.19 Genuine Upper-Eyelid Fullness Promotion
+
+**Goal:** Deliver a directly callable, positive-only opaque still-image
+upper-eyelid-fullness-reduction SDK control only after genuine authorized
+positive/negative/stress evidence and blinded original-detail human review
+prove the non-proxy effect effective, natural, and safe.
+
+**Target features:**
+
+- Admit a complete rights-approved private upper-eyelid-fullness bundle with
+  genuine positives, negatives, stress cases, complete local assets, and a
+  frozen privacy-safe evidence contract.
+- Run predeclared blinded original-detail human review and bind its sanitized
+  aggregate decision to the already versioned deterministic editor baseline.
+- Preserve one-observation, independent per-eye support, geometry identity,
+  crease/texture detail, immutable-original composition, collision-to-source,
+  local failure, and aggregate-only diagnostics.
+- If and only if every genuine effectiveness, naturalness, safety, privacy,
+  compatibility, and output gate passes, add one positive-only
+  `upperEyelidFullnessReduction` field and opaque still-image public route.
+- Add exact public-facade pixels/metadata, Codable/default, renderer,
+  CPU-reference/GPU-transport, mutation, no-skip, taxonomy, and documentation
+  evidence for the promoted feature.
+
+**Non-negotiable boundary:** The implementation must not alias `eyeHeight`,
+`upperEyelidLift`, brow movement, eye opening, eye-bag/dark-circle removal,
+warp, or global smoothing. Generated fixtures remain mechanics-only. No public
+field or inert route may appear before genuine evidence and human review pass.
+Realtime/pixel-buffer behavior, transparent/HDR input, external restricted
+weights, UI/Demo restoration, medical claims, tracked portrait media, device/
+commercial approval, packaging, shipping, launch, and release readiness remain
+excluded.
+
 ## Last Completed Milestone: v1.18 Upper-Eyelid Fullness Reduction
 
 **Outcome:** v1.18 completed the conditional qualification decision on the
@@ -56,9 +89,9 @@ and `眼睛 = partial`.
 completed 2026-08-22 as an SDK-only failed-productization decision with exact
 public absence. It is not a shipping, launch, or release-readiness claim.
 **Latest historical UI milestone:** v1.1 Meitu UI on 2026-06-24, retained only as archived evidence.
-**Current work:** Planning the next milestone. Upper-eyelid fullness reduction
-remains package-only mechanics; a future promotion attempt requires a new
-authorized scope, complete private genuine evidence, and blinded review.
+**Current work:** v1.19 retries upper-eyelid-fullness promotion under a newly
+authorized scope. The first gate remains the complete private genuine bundle
+and blinded review; public implementation is forbidden until it passes.
 
 **Implementation state:** v1.16 froze the current CPU renderer as the reference backend, added generated CPU oracles, a public-only SwiftPM consumer, the SDK-owned renderer CLI, and conditional `BeautyResult` sendability. v1.17 added the package-only backend-neutral boundary, bounded Metal runtime and feature passes, public `.cpu`/`.gpu` configuration with typed unavailable-GPU failure, and generated CPU/GPU parity gates. v1.18 added package-only per-eye semantic support, bounded tone/frequency editor mechanics, frozen private-evidence tooling, and fail-closed decision/absence gates while preserving the 61-field/five-preset/74-case public surface. Historical application taxonomy remains archive-only.
 
@@ -402,6 +435,22 @@ For any future semantic-masking milestone, a bundled Core ML resource must be lo
 
 ## Requirements
 
+### Active in v1.19
+
+- [ ] Admit a complete rights-approved genuine upper-eyelid-fullness positive,
+  negative, and stress bundle without persisting private locators or media.
+- [ ] Complete predeclared blinded original-detail human review and emit only a
+  sanitized aggregate decision bound to the frozen contract and editor hash.
+- [ ] Prove the deterministic editor achieves the intended cosmetic semantic
+  without geometry movement, proxy behavior, crease erasure, protected-region
+  changes, or cross-eye failure contamination.
+- [ ] Add exactly one default-zero positive-only public
+  `upperEyelidFullnessReduction` field and opaque still-image route only after
+  the genuine evidence decision passes.
+- [ ] Prove public bytes/metadata, Codable/default compatibility, renderer
+  output, CPU-reference/GPU-transport behavior, privacy, mutation resistance,
+  exact no-skip closure, and exact `去脂`/`眼睛` taxonomy promotion.
+
 ### Completed in v1.18
 
 - [x] Freeze `去脂` as upper-eyelid fullness reduction only, with explicit
@@ -650,11 +699,17 @@ Current visual reference contracts:
   realtime/pixel-buffer, UI/Demo, restricted external weights, tracked portrait
   media, medical claims, mandatory physical-device gates, commercial approval,
   packaging, shipping, launch, and release readiness remain excluded.
+- **v1.19 scope boundary:** v1.19 may add one public positive-only opaque
+  still-image `upperEyelidFullnessReduction` control only after a complete
+  rights-approved genuine bundle and blinded original-detail human review pass
+  their frozen gates. Generated fixtures, landmarks, `upperEyelidLift`, warp,
+  smoothing, or borrowed sibling evidence cannot authorize promotion.
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
+| Reopen upper-eyelid-fullness promotion as v1.19, evidence first. | The user explicitly authorized a new automatic milestone, while the v1.18 re-audit proved all code/actionable seams are ready and isolated the remaining blocker to genuine evidence and human review. | Pending: public implementation remains closed until the Phase-80 evidence decision passes. |
 | Make v1.18 a conditional-productization milestone for still-image upper-eyelid fullness reduction. | Research found no production-ready public `去脂` model; the deterministic tone/frequency spike preserved texture and containment but lacked a genuine positive, while the tested warp lost texture without clearer semantic benefit. | Verified 2026-08-22 on the failing branch: `mechanics-only-not-promotion`, exact 61/5/74 absence, `去脂 = future`, and `眼睛 = partial`. |
 | Split the next work into non-Metal v1.16 and Metal v1.17. | Repository/API/test cleanup and CPU reference capture should stabilize the SDK boundary before a new GPU implementation changes render execution. | Queued: v1.16 Phases 66-69, then v1.17 Phases 70-74. |
 | Preserve both CPU and GPU render backends; select them through `BeautyConfiguration`, not `BeautyParameters`. | CPU is the current verified implementation and strongest parity oracle. Backend choice is execution policy, while beauty strengths/presets must remain backend-independent and compatibility-stable. | Planned: public `BeautyRenderBackend.cpu/gpu` arrives only after complete GPU coverage; default and legacy decode are `.cpu`, explicit unavailable `.gpu` fails without silent fallback. |
@@ -694,4 +749,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-08-22 after completing milestone v1.18 on the failing public-absence branch*
+*Last updated: 2026-08-22 after starting v1.19 genuine upper-eyelid-fullness promotion*

@@ -1,18 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.18
-milestone_name: Upper-Eyelid Fullness Reduction
-status: Awaiting next milestone
-stopped_at: Milestone v1.18 archived on the failing public-absence branch
-last_updated: "2026-08-22T23:02:24+08:00"
+milestone: v1.19
+milestone_name: Genuine Upper-Eyelid Fullness Promotion
+status: planning
+last_updated: "2026-08-22T15:18:36.346Z"
 last_activity: 2026-08-22
-last_activity_desc: v1.18 actionable re-audit findings remediated; genuine-evidence gaps remain
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 10
-  completed_plans: 10
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -30,10 +28,10 @@ authorized scope supplies complete genuine evidence and blinded review.
 
 ## Current Position
 
-Phase: Milestone v1.18 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-08-22 — v1.18 post-archive re-audit remediation completed
+Status: Defining requirements
+Last activity: 2026-08-22 — Milestone v1.19 started
 
 ## v1.18 Roadmap Context
 
@@ -258,6 +256,7 @@ None found under `.planning/todos/pending/`.
 - SEM-01/02 are complete. The immutable phase record treated EVID-01/02
   contract mechanics as complete, but the current strict disposition follows
   the owning plan's no-bundle rule and keeps both requirements partial.
+
 - Semantic/evidence Node coverage is 8/8; evaluator self-test is 10 checks with
   7 mutation rejections; exact absence and all nine threat modes pass.
 
@@ -346,6 +345,7 @@ None found under `.planning/todos/pending/`.
 - The `--auto` lifecycle proceeded with the two audit gaps only because the
   milestone explicitly defines exact public absence as the valid failed-gate
   outcome.
+
 - Known verification overrides: 2 (`QUAL-01`, `QUAL-02`). Neither is marked
   satisfied, promoted, shipped, or release-ready; both require a new authorized
   genuine-evidence scope.
