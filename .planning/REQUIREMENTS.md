@@ -93,27 +93,27 @@ Roadmap creation will map every requirement to exactly one phase.
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| EVID-03 | TBD | Pending |
-| EVID-04 | TBD | Pending |
-| EVID-05 | TBD | Pending |
-| QUAL-03 | TBD | Pending |
-| QUAL-04 | TBD | Pending |
-| QUAL-05 | TBD | Pending |
-| SAFE-04 | TBD | Pending |
-| API-01 | TBD | Pending |
-| API-02 | TBD | Pending |
-| COMPAT-03 | TBD | Pending |
-| OUT-01 | TBD | Pending |
-| BACKEND-02 | TBD | Pending |
-| DOCS-02 | TBD | Pending |
-| CLOSE-01 | TBD | Pending |
+| EVID-03 | Phase 80 | Pending |
+| EVID-04 | Phase 80 | Pending |
+| EVID-05 | Phase 80 | Pending |
+| QUAL-03 | Phase 80 | Pending |
+| QUAL-04 | Phase 80 | Pending |
+| QUAL-05 | Phase 80 | Pending |
+| SAFE-04 | Phase 81 | Pending |
+| API-01 | Phase 81 | Pending |
+| API-02 | Phase 81 | Pending |
+| COMPAT-03 | Phase 81 | Pending |
+| OUT-01 | Phase 82 | Pending |
+| BACKEND-02 | Phase 82 | Pending |
+| DOCS-02 | Phase 83 | Pending |
+| CLOSE-01 | Phase 84 | Pending |
 
 **Coverage:**
 
 - v1.19 requirements: 14 total
-- Mapped to phases: 0
-- Unmapped: 14
+- Mapped to phases: 14
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-08-22*
-*Last updated: 2026-08-22 after automatic v1.19 scope definition*
+*Last updated: 2026-08-22 after v1.19 roadmap creation*

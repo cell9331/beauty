@@ -1,35 +1,219 @@
-# Roadmap: Beauty
+# Roadmap: Beauty v1.19 Genuine Upper-Eyelid Fullness Promotion
+
+## Overview
+
+v1.19 promotes one directly callable, positive-only opaque still-image
+upper-eyelid-fullness-reduction control only if a complete rights-approved
+private genuine bundle and blinded 100%-detail human review produce a passing,
+sanitized decision. Phase 80 is the hard fail-closed boundary: a missing,
+incomplete, mechanics-only, generated, or failed evidence result preserves the
+exact 61-field/five-preset/74-renderer-case public absence and stops all public
+activation work.
+
+The milestone reuses the v1.18 machine-bound one-observation/per-eye support,
+deterministic tone/frequency editor, immutable-original composer, and versioned
+baseline evidence. It does not repeat those resolved mechanics or substitute
+`upperEyelidLift`, `eyeHeight`, brow movement, eye opening, warp, smoothing,
+eye-bag removal, or dark-circle removal. A passing Phase-80 decision unlocks
+one complete public vertical slice, followed by public output/backend proof,
+taxonomy promotion, and independent archive-first closeout.
+
+All work remains SDK-only and local-first. Private media, pixels, masks,
+landmarks, fixture locators, rights records, reviewer identity, and freeform
+review text remain outside durable evidence. Historical archives stay
+immutable. Realtime/pixel-buffer behavior, transparent/HDR input, UI/Demo,
+medical claims, restricted external weights, physical-device gates,
+commercial approval, packaging, shipping, launch, and release readiness remain
+out of scope.
 
 ## Milestones
 
 - ✅ **v1.0–v1.15** — Historical application and SDK milestones archived in `.planning/milestones/`.
 - ✅ **v1.16 SDK-Only Foundation and CPU Reference** — Phases 66–69, completed 2026-08-15.
 - ✅ **v1.17 Dual CPU/GPU Metal Rendering** — Phases 70–74, archived 2026-08-17 with bounded post-archive dispositions completed 2026-08-18.
-- ✅ **[v1.18 Upper-Eyelid Fullness Reduction](milestones/v1.18-ROADMAP.md)** — Phases 75–79, completed 2026-08-22 on the verified failing public-absence branch.
+- ✅ **v1.18 Upper-Eyelid Fullness Reduction** — Phases 75–79, completed 2026-08-22 on the verified failing public-absence branch.
+- 📋 **v1.19 Genuine Upper-Eyelid Fullness Promotion** — Phases 80–84, planned.
 
-## Current Planning State
+## Phases
 
-No milestone is active. v1.18 completed with
-`mechanics-only-not-promotion`: public compatibility remains exactly 61
-`BeautyParameters` fields, five presets, and 74 renderer cases; `去脂` remains
-future and `眼睛` remains partial.
+- [ ] **Phase 80: Genuine Evidence and Qualification Gate** - Admit the complete private bundle, conduct the frozen blinded review, and issue the sanitized pass/fail decision before any public activation.
+- [ ] **Phase 81: Safe Public Still-Image Activation** - On a passing Phase-80 decision only, expose one compatible positive-only control and complete opaque per-eye still-image route.
+- [ ] **Phase 82: Public Output and Backend Qualification** - Prove the promoted facade pixels, metadata, determinism, combined behavior, CPU oracle, and bounded GPU transport.
+- [ ] **Phase 83: Taxonomy and Owner Promotion** - Promote exactly `去脂` and close aggregate `眼睛` only after all evidence, API, safety, compatibility, and output gates pass.
+- [ ] **Phase 84: SDK-Only Closeout and Independent Audit** - Reproduce the archive-first zero-skip gate and independently verify the exact promoted surface and claim boundaries.
 
-The immutable [historical v1.18 audit](milestones/v1.18-MILESTONE-AUDIT.md)
-recorded 16/18 requirements. The current
-[post-archive re-audit](v1.18-MILESTONE-REAUDIT.md) applies the
-owning Plan-75 no-bundle pending rule and therefore records a strict 14/18:
-`EVID-01`, `EVID-02`, `QUAL-01`, and `QUAL-02` remain partial or unsatisfied.
-All four actionable wiring/reproducibility findings are repaired; integration
-is 6/6, flows are 3/3, and the current full gate passes 800/0/0 with all eight
-opt-ins exactly once. These gaps permit the failed productization decision
-only; they do not authorize public activation or genuine/device/commercial/
-release claims.
+## Gate Rule
 
-## Next
+Phase 81 may begin only when Phase 80 emits the frozen passing decision from
+the complete rights-approved genuine bundle and blinded 100%-detail review. A
+non-pass is terminal for promotion in this milestone: no public field, inert
+route, renderer case, taxonomy promotion, or substitute proxy may be added.
 
-Start a fresh milestone with `$gsd-new-milestone`. Any future upper-eyelid
-fullness promotion attempt requires a new authorized scope and the missing
-genuine-evidence/review inputs; otherwise preserve exact public absence.
+## Phase Details
+
+### Phase 80: Genuine Evidence and Qualification Gate
+
+**Goal**: The SDK owner has one privacy-safe, reproducible qualification
+decision proving whether the existing deterministic editor is effective,
+natural, identity-preserving, and safe on authorized genuine evidence.
+
+**Depends on**: Phase 79 and the repaired v1.18 machine-bound support/editor/baseline evidence
+
+**Requirements**: EVID-03, EVID-04, EVID-05, QUAL-03, QUAL-04, QUAL-05
+
+**Success Criteria** (what must be TRUE):
+
+1. The SDK owner can admit only a complete rights-approved private bundle with
+   genuine positives, negatives, every predeclared stress category, and every
+   required local asset; incomplete, generated, or mechanics-only bundles fail
+   closed and receive no product-evidence weight.
+2. A human reviewer can inspect blinded original/mask/after triples at 100%
+   detail and complete only the structured rubric frozen before any outcomes
+   were visible.
+3. Genuine positives meet the frozen material fullness-reduction bounds, while
+   every negative and stress category remains natural, source-exact when
+   rejected, or within the frozen structure, protected-region, texture, color,
+   alpha, extent, and determinism bounds.
+4. Blinded judgments meet every frozen naturalness, identity/detail,
+   structure-change, category-completeness, and acceptance threshold.
+5. One sanitized aggregate decision binds rights admission, blinded judgments,
+   evaluator version, semantic contract, and the versioned v1.18 editor
+   baseline without retaining media, paths, pixels, geometry, rights records,
+   reviewer identity, or freeform text; the public surface remains exactly
+   61/5/74 until that decision passes.
+
+**Plans**: TBD
+
+### Phase 81: Safe Public Still-Image Activation
+
+**Goal**: SDK integrators can use one honest, compatibility-safe upper-eyelid
+fullness reduction control through both opaque still-image facade entries.
+
+**Depends on**: Phase 80 passing decision (hard gate)
+
+**Requirements**: SAFE-04, API-01, API-02, COMPAT-03
+
+**Success Criteria** (what must be TRUE):
+
+1. An SDK integrator can set one default-zero positive-only
+   `upperEyelidFullnessReduction` value in `0...1`; non-finite and out-of-range
+   inputs clamp under the existing parameter contract and missing legacy keys
+   decode to zero.
+2. Both public `CIImage` still-image facade entries apply the qualified effect
+   for accepted support, while zero strength, missing support, and rejected
+   support remain source-exact local no-ops with no realtime/pixel-buffer
+   activation.
+3. Each eye independently consumes one current request observation and
+   qualified semantic support, so one rejected eye cannot suppress or
+   authorize its peer.
+4. Accepted edits use immutable-original composition and collision-to-source
+   behavior, preserve geometry, and cannot route through eye height,
+   upper-eyelid lift, brow movement, eye opening, warp, smoothing, eye-bag, or
+   dark-circle proxies.
+5. The promoted surface is exactly 62 parameter fields, five neutral preset
+   identities, and 75 renderer cases; legacy decoding and all pre-existing
+   behavior remain compatible.
+
+**Plans**: TBD
+
+### Phase 82: Public Output and Backend Qualification
+
+**Goal**: Integrators receive deterministic, metadata-correct promoted output
+whose CPU and explicit GPU behavior preserve the qualified safety contract.
+
+**Depends on**: Phase 81
+
+**Requirements**: OUT-01, BACKEND-02
+
+**Success Criteria** (what must be TRUE):
+
+1. Public-facade positive, negative, stress, no-face, partial-eye, repeated,
+   combined-local-retouch, orientation/mirror, color, alpha, extent, and
+   metadata cases satisfy the frozen pixel-level assertions.
+2. Repeated and combined requests preserve intended target change,
+   source-exact protected regions, independent local failure, deterministic
+   bytes within the frozen tolerance, and named output metadata.
+3. CPU remains the effect oracle; an explicit GPU request transports the same
+   CPU-owned immutable-original local-retouch carrier or returns typed
+   `.metalUnavailable`, with no CPU fallback and no masks, proposals, or
+   semantic support crossing into Metal.
+
+**Plans**: TBD
+
+### Phase 83: Taxonomy and Owner Promotion
+
+**Goal**: Current product and SDK owners describe exactly the evidence-backed
+upper-eyelid capability and no broader product claim.
+
+**Depends on**: Phase 82
+
+**Requirements**: DOCS-02
+
+**Success Criteria** (what must be TRUE):
+
+1. The current effect taxonomy promotes exactly `去脂` to implemented and
+   closes aggregate `眼睛` only after the Phase-80 through Phase-82 evidence is
+   passing and bound to the promoted public surface.
+2. SDK usage, architecture, design, privacy, reliability, quality, product,
+   validation, and planning owners agree on the exact 62/5/75 opaque
+   still-image contract and its positive-only semantics.
+3. Current documentation keeps historical archives immutable and explicitly
+   excludes proxy effects, generated-fixture efficacy, realtime/UI, device,
+   commercial, packaging, shipping, launch, and release-readiness claims.
+
+**Plans**: TBD
+
+### Phase 84: SDK-Only Closeout and Independent Audit
+
+**Goal**: The promoted capability is independently reproducible from the
+public SDK surface with complete traceability and no privacy or scope drift.
+
+**Depends on**: Phase 83
+
+**Requirements**: CLOSE-01
+
+**Success Criteria** (what must be TRUE):
+
+1. The archive-first closeout reproduces mutation, privacy, public-consumer,
+   renderer, focused image/output, all-opt-in, and full SwiftPM gates with
+   nonzero tests, zero failures, zero skips, and exact-once opt-in execution.
+2. An independent milestone audit maps all 14 v1.19 requirements exactly once,
+   verifies every phase and end-to-end public still-image flow, and confirms
+   exact 62-field/five-preset/75-case promotion.
+3. Fail-closed mutations cannot bypass the Phase-80 decision, activate a
+   proxy/inert/realtime route, leak private evidence, borrow CPU success for an
+   unavailable GPU, or rewrite archived milestone evidence.
+4. An SDK consumer can compile, set, encode/decode, and render the promoted
+   control through both public still-image entries while all device,
+   commercial, packaging, shipping, launch, and release claims remain absent.
+
+**Plans**: TBD
+
+## Requirement Coverage
+
+| Phase | Requirement Count | Requirement IDs |
+| --- | ---: | --- |
+| 80 | 6 | EVID-03, EVID-04, EVID-05, QUAL-03, QUAL-04, QUAL-05 |
+| 81 | 4 | SAFE-04, API-01, API-02, COMPAT-03 |
+| 82 | 2 | OUT-01, BACKEND-02 |
+| 83 | 1 | DOCS-02 |
+| 84 | 1 | CLOSE-01 |
+
+**Coverage**: 14/14 v1.19 requirements are mapped exactly once; there are no
+orphaned or duplicate mappings.
+
+## Progress
+
+**Execution Order**: Phase 80 → Phase 81 → Phase 82 → Phase 83 → Phase 84
+
+| Phase | Milestone | Plans Complete | Status | Completed |
+| --- | --- | --- | --- | --- |
+| 80. Genuine Evidence and Qualification Gate | v1.19 | 0/TBD | Not started | - |
+| 81. Safe Public Still-Image Activation | v1.19 | 0/TBD | Not started | - |
+| 82. Public Output and Backend Qualification | v1.19 | 0/TBD | Not started | - |
+| 83. Taxonomy and Owner Promotion | v1.19 | 0/TBD | Not started | - |
+| 84. SDK-Only Closeout and Independent Audit | v1.19 | 0/TBD | Not started | - |
 
 ---
-*Last updated: 2026-08-22 after v1.18 post-archive re-audit remediation*
+*Roadmap created: 2026-08-22*
+*Last updated: 2026-08-22 after v1.19 roadmap creation*
