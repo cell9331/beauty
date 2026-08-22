@@ -1,0 +1,78 @@
+{
+  "phase": 75,
+  "block_on": "HIGH",
+  "threats": [
+    {
+      "id": "T-75-01",
+      "severity": "HIGH",
+      "category": "Tampering",
+      "component": "75-SEMANTICS-CONTRACT.md",
+      "disposition": "mitigate",
+      "owner": "canonical-record mutation tests"
+    },
+    {
+      "id": "T-75-02",
+      "severity": "HIGH",
+      "category": "Repudiation",
+      "component": "75-semantics.contract.test.js",
+      "disposition": "mitigate",
+      "owner": "positive-negative-protected nonclaim predicates"
+    },
+    {
+      "id": "T-75-03",
+      "severity": "HIGH",
+      "category": "Information Disclosure",
+      "component": "Phase-75 contract/checker output",
+      "disposition": "mitigate",
+      "owner": "fixed identifiers and counts only"
+    },
+    {
+      "id": "T-75-04",
+      "severity": "HIGH",
+      "category": "Elevation of Privilege",
+      "component": "semantic authority boundary",
+      "disposition": "mitigate",
+      "owner": "nonclaim and landmark-role records"
+    },
+    {
+      "id": "T-75-05",
+      "severity": "HIGH",
+      "category": "Denial of Service",
+      "component": "exact-absence checker",
+      "disposition": "mitigate",
+      "owner": "bounded temporary-copy and classified failures"
+    },
+    {
+      "id": "T-75-06",
+      "severity": "HIGH",
+      "category": "Tampering",
+      "component": "BeautySDK public/package inventory",
+      "disposition": "mitigate",
+      "owner": "61/5/74 and package graph equality"
+    },
+    {
+      "id": "T-75-07",
+      "severity": "HIGH",
+      "category": "Repudiation",
+      "component": "75-VALIDATION.md",
+      "disposition": "mitigate",
+      "owner": "task and isolated-threat command map"
+    },
+    {
+      "id": "T-75-08",
+      "severity": "HIGH",
+      "category": "Information Disclosure",
+      "component": "child-process diagnostics",
+      "disposition": "mitigate",
+      "owner": "path-free normalized output"
+    },
+    {
+      "id": "T-75-SC",
+      "severity": "STANDARD",
+      "category": "Tampering",
+      "component": "npm/pip/cargo installs",
+      "disposition": "accept",
+      "owner": "no package-manager install or dependency change"
+    }
+  ]
+}
