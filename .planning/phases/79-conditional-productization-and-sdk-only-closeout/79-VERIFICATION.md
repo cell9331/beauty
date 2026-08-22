@@ -1,6 +1,6 @@
 ---
 phase: 79-conditional-productization-and-sdk-only-closeout
-verified: 2026-08-22T21:50:57+08:00
+verified: 2026-08-22T22:00:50+08:00
 status: passed
 score: 5/5 must-haves verified
 decision: mechanics-only-not-promotion
@@ -43,3 +43,10 @@ performance, thermal/battery, commercial visual approval, packaging, shipping,
 launch, or release-readiness claim is made. No UI/Demo, realtime/video,
 transparent-input, HDR/gain-map, new Metal/GPU API, or retained `Warp.metal`
 behavior was added.
+
+## Post-Hook Refresh
+
+After canonical summary, Nyquist, and ASVS-L1 security records were written,
+the Phase-79 checker again rejected 8/8 mutations and passed live mode.
+Production source was unchanged; the final archive-first 797/0/0 result
+remains the full SDK authority.

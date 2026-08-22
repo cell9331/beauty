@@ -1,6 +1,6 @@
 ---
 phase: 78-genuine-evaluation-and-candidate-decision
-verified: 2026-08-22T11:37:05+08:00
+verified: 2026-08-22T22:00:50+08:00
 status: passed
 score: 5/5 must-haves verified
 decision: mechanics-only-not-promotion
@@ -34,3 +34,10 @@ decision: mechanics-only-not-promotion
 This phase does not establish genuine efficacy, naturalness, population
 coverage, device behavior, commercial visual approval, packaging, shipping,
 launch, or release readiness. It authorizes no public field or renderer case.
+
+## Post-Hook Refresh
+
+After canonical summary, Nyquist, and ASVS-L1 security records were written,
+the candidate boundary checker again rejected 8/8 mutations and passed live
+mode. Production source was unchanged; the previously fresh archive-first
+797/0/0 result remains the full SDK authority.
