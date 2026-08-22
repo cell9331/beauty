@@ -760,7 +760,7 @@
 | v1.13 | autonomous | 4 | Added actual observed eyebrow support, seven distinct providers, strict 72-portrait evidence, exact eyebrow-branch promotion, and a 21/21 audit. |
 | v1.14 | autonomous | 6 | Added exact-empty still-image retouch safety boundaries, original-pixel mechanics, independent closed feature gates, and a 41/41 audit. |
 | v1.15 | autonomous | 7 | Added independently qualified teeth and per-eye sclera output, exact combined failure isolation, named-sRGB/privacy closeout, post-downstream authority and a 40/40 audit. |
-| v1.18 | autonomous | 5 | Added fail-closed genuine-evidence qualification, per-eye package mechanics, exact no-promotion closeout, and an honest 16/18 conditional audit. |
+| v1.18 | autonomous | 5 | Added fail-closed genuine-evidence qualification, per-eye package mechanics, and exact no-promotion closeout. The immutable audit recorded 16/18; the strict post-archive re-audit records 14/18 under Plan 75's no-bundle rule. |
 
 ### Cumulative Quality
 
@@ -780,7 +780,7 @@
 | v1.13 | 450 SDK tests, 72-portrait/13-no-face strict helper, 130-case boundary self-test, and milestone audit | Requirement traceability 21/21 | No new third-party runtime dependency recorded for eyebrow closeout. |
 | v1.14 | 553 SwiftPM tests (six expected Vision skips), 6 opt-in Vision tests, 120 Demo tests, and 703-case post-review checker | Requirement traceability 41/41 | No new third-party runtime dependency; production feature admission remains exact-empty. |
 | v1.15 | 638 SwiftPM tests with all 8 opt-ins, 121 Demo tests, two strict 6/6 output matrices, Phase 65 final and Phase 64 post-downstream gates | Requirement traceability 40/40 | No new third-party runtime dependency; `去脂`, model/network and Demo activation remain absent. |
-| v1.18 | 797 SwiftPM tests with all 8 opt-ins, Phase-78/79 mutation/live gates, and ASVS-L1 phase audits | Requirement traceability 16/18; QUAL-01/02 intentionally unsatisfied | No new third-party runtime dependency; public `去脂` activation remains exactly absent. |
+| v1.18 | Historical 797-test closeout; current post-archive gate 800/0/0 with all 8 opt-ins, machine/baseline binding, package integration, and archive-aware mutation gates | Historical traceability 16/18; strict current traceability 14/18 with EVID-01/02 partial and QUAL-01/02 unsatisfied | No new third-party runtime dependency; public `去脂` activation remains exactly absent. |
 
 ### Top Lessons (Verified Across Milestones)
 

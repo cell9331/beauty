@@ -23,8 +23,12 @@ this sentinel with a newly scoped requirement set before new phase planning.
 
 ## Active Requirements
 
-None. See the archived [v1.18 requirements](milestones/v1.18-REQUIREMENTS.md)
-and [audit](milestones/v1.18-MILESTONE-AUDIT.md) for the last milestone record.
+None. See the archived [v1.18 requirements](milestones/v1.18-REQUIREMENTS.md),
+immutable [historical audit](milestones/v1.18-MILESTONE-AUDIT.md), and current
+[post-archive re-audit](v1.18-MILESTONE-REAUDIT.md) for the last milestone
+record and disposition.
 
-`QUAL-01` and `QUAL-02` remain unsatisfied historical v1.18 promotion gates;
-they do not become active work without a new authorized milestone.
+`EVID-01` and `EVID-02` remain partial under the owning Plan-75 no-bundle
+pending rule; `QUAL-01` and `QUAL-02` remain unsatisfied. None becomes active
+work without a new authorized milestone and a complete rights-approved genuine
+bundle plus blinded review.

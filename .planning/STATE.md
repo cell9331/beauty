@@ -4,9 +4,9 @@ milestone: v1.18
 milestone_name: Upper-Eyelid Fullness Reduction
 status: Awaiting next milestone
 stopped_at: Milestone v1.18 archived on the failing public-absence branch
-last_updated: "2026-08-22T22:03:17+08:00"
+last_updated: "2026-08-22T23:02:24+08:00"
 last_activity: 2026-08-22
-last_activity_desc: Milestone v1.18 completed and archived
+last_activity_desc: v1.18 actionable re-audit findings remediated; genuine-evidence gaps remain
 progress:
   total_phases: 5
   completed_phases: 5
@@ -33,7 +33,7 @@ authorized scope supplies complete genuine evidence and blinded review.
 Phase: Milestone v1.18 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-08-22 — Milestone v1.18 completed and archived
+Last activity: 2026-08-22 — v1.18 post-archive re-audit remediation completed
 
 ## v1.18 Roadmap Context
 
@@ -54,16 +54,21 @@ or upper-eyelid lift as a proxy.
 ## v1.18 Final Qualification
 
 v1.18 closes as `mechanics-only-not-promotion` with exact 61-field,
-five-preset, 74-renderer-case public absence. The final archive-first gate
-passed 797/0/0, all eight opt-ins exactly once, and available-host parity
-13/0/0. Phase-level verification is 5/5; integration is 6/6; flows are 3/3;
-security is 41/41 threats closed.
+five-preset, 74-renderer-case public absence. The immutable historical gate
+passed 797/0/0. After the post-archive re-audit, the current archive-aware gate
+binds the machine decision and deterministic-editor evidence, the package-only
+detector-to-composer flow is covered, and the full wrapper passes 800/0/0 with
+all eight opt-ins exactly once and available-host parity 13/0/0. Phase-level
+verification is 5/5; repaired integration is 6/6; repaired flows are 3/3;
+security remains 41/41 threats closed.
 
-The formal audit is `gaps_found` at 16/18 requirements because QUAL-01/02 lack
-the required rights-approved genuine bundle and blinded review. Those expected
-gaps select the failed productization branch and remain future work; they do
-not invalidate SDK mechanics/compatibility closeout and cannot support genuine
-efficacy, device, commercial, packaging, shipping, launch, or release claims.
+The historical formal audit recorded `gaps_found` at 16/18. The current strict
+re-audit is `gaps_found` at 14/18 because the owning Phase-75 plan required
+`EVID-01/02` to remain pending without a complete rights-approved bundle, and
+`QUAL-01/02` still lack that bundle and blinded review. Those four rows remain
+future evidence work; they do not invalidate SDK mechanics/compatibility
+closeout and cannot support genuine efficacy, device, commercial, packaging,
+shipping, launch, or release claims.
 
 ## Historical v1.17 Audit Qualification
 
@@ -250,7 +255,9 @@ None found under `.planning/todos/pending/`.
 
 ## Phase 75 Closeout
 
-- SEM-01/02 and EVID-01/02 are complete as fail-closed contract requirements.
+- SEM-01/02 are complete. The immutable phase record treated EVID-01/02
+  contract mechanics as complete, but the current strict disposition follows
+  the owning plan's no-bundle rule and keeps both requirements partial.
 - Semantic/evidence Node coverage is 8/8; evaluator self-test is 10 checks with
   7 mutation rejections; exact absence and all nine threat modes pass.
 

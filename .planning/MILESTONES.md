@@ -34,6 +34,14 @@ was supplied. The audit is 16/18 requirements, 5/5 phases, 6/6 integrations,
 and 3/3 flows. These gaps authorize exact absence only and cannot be cited as
 promotion or release evidence.
 
+**Post-archive re-audit:** The immutable archive above remains the historical
+record. A strict current re-audit applies Plan 75's explicit no-bundle pending
+rule and records 14/18: EVID-01/02 and QUAL-01/02 remain partial or unsatisfied.
+The four actionable wiring/reproducibility findings were repaired in current
+code and SDK-owned gates; integration is 6/6, flows are 3/3, and the current
+archive-first wrapper passes 800/0/0 with all eight opt-ins exactly once. No
+genuine-efficacy or promotion claim follows.
+
 **Stats:** 78 files changed, 8,269 insertions, 67 deletions; 52,358 active Swift
 source/test lines at close; 2026-08-22; git range `0ebcc31` → `24d1cf5` before
 archive lifecycle commits.
@@ -42,6 +50,8 @@ archive lifecycle commits.
 [requirements](milestones/v1.18-REQUIREMENTS.md),
 [audit](milestones/v1.18-MILESTONE-AUDIT.md), and
 [phase artifacts](milestones/v1.18-phases/).
+
+**Current disposition:** [post-archive re-audit](v1.18-MILESTONE-REAUDIT.md).
 
 **What's next:** Select a fresh milestone. Any future `去脂` promotion attempt
 requires a new authorized scope plus the missing genuine bundle and blinded

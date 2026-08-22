@@ -26,35 +26,6 @@
 
 ## 3. Active
 
-### P-2026-08-22-v1-18-reaudit-remediation
-
-| Field | Value |
-| --- | --- |
-| Status | `active` |
-| Owner | Codex audit-fix pipeline |
-| Started | 2026-08-22 |
-| Scope | Close every actionable v1.18 post-archive re-audit finding while preserving immutable archives, exact public absence, fail-closed genuine-evidence gates, and SDK-only ownership. |
-| Source Request | User requested “fix all” after `.planning/v1.18-MILESTONE-REAUDIT.md` reported requirement, decision-binding, integration, baseline-binding, and archive-reproducibility gaps. |
-| Current Step | Process F-02 through F-05 sequentially with focused tests and finding-ID commits; F-01 remains manual-only until an authorized genuine bundle and blinded review exist. |
-| Verification Policy | Finding-focused mutation/integration tests after each change, `git diff --check`, then `bash scripts/run-no-skip-swiftpm.sh` and an independent milestone re-audit. |
-
-Checklist:
-
-| Step | Status | Evidence |
-| --- | --- | --- |
-| Classify F-01..F-05 | `completed` | F-01 is manual-only; F-02..F-05 are bounded auto-fixable findings. |
-| F-02 machine decision binding | `completed` | `scripts/check-v1-18-decision-binding.py` directly executes the archived Phase-78 decision module, independently binds its strict privacy-safe JSON to the frozen Phase-75 contract hash, selects the no-bundle `mechanics-only-not-promotion` public-absence branch, proves exact 61/5/74 plus no public/SPI route, and rejects 7/7 focused mutations. |
-| F-03 package-only integration harness | `completed` | Test-only detector → returned per-eye resolution → deterministic editor → immutable-source composition coverage proves one provider/owner call, independent peer no-op, bounded edit, source-exact protection/collision, metadata/alpha, determinism, aggregate diagnostics, and per-eye fail-closed cases; focused integration 3/3 and broader upper-eyelid 25/25 pass. |
-| F-04 baseline evidence binding | `completed` | The Phase-78 decision gate pins `deterministic-editor` to a bounded four-source/three-test package-only allowlist with separate aggregate source/evidence digests, executes the exact editor/safety/detector-to-composer suites at 10/0/0, binds that attestation plus the frozen contract and `mechanics-only-not-promotion` decision into one hash, and rejects 15/15 decision/baseline mutations without persisting child output or private image/support data. |
-| F-05 archive-aware closeout gate | `completed` | Current successor resolves Phase 75/78/79 artifacts from one active-or-archived location via explicit `--repo-root`, passes outside-cwd self/live runs with seven artifact checks plus 15/15 decision/baseline mutations, and is archive-first/exact-once integrated before the full SwiftPM child; wrapper order/count/concurrency mutations reject 10/10. Full no-skip remains part of final aggregate verification. |
-| Full verification and re-audit | `planned` | Pending focused/full gates and updated disposition. |
-
-Open Questions:
-
-| Question | Current Decision |
-| --- | --- |
-| Can F-01 genuine evidence be synthesized? | No. AI/generated fixtures remain mechanics-only. Preserve exact public absence until the user supplies a complete rights-approved private bundle and blinded review under a new authorized scope. |
-
 ### P-2026-08-14-phase-66-sdk-only-boundary
 
 | Field | Value |
@@ -77,6 +48,25 @@ Checklist:
 ## 3A. Historical Lifecycle Ledger
 
 > 以下记录均为已完成或已被后续权威取代的执行历史，不是 Active plan。
+
+### C-2026-08-22-v1-18-reaudit-remediation
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
+| Completed | 2026-08-22 |
+| Scope | Closed every actionable v1.18 post-archive re-audit finding while preserving immutable archives, exact public absence, fail-closed genuine-evidence gates, and SDK-only ownership. |
+| Findings | F-02 machine decision binding `b45fe59`; F-03 detector-to-composer package integration `2d0f83b`; F-04 source/evidence/test baseline binding `876499a`; F-05 archive-aware exact-once closeout integration `a89e475`. |
+| Requirement disposition | F-01 cannot be synthesized: EVID-01/02 remain partial and QUAL-01/02 remain unsatisfied until a complete rights-approved private bundle and blinded review exist under a new authorized scope. Generated fixtures remain mechanics-only. |
+| Verification | Decision/baseline gate rejects 15/15 mutations plus seven artifact faults; package integration passes 3/3 and all upper-eyelid tests pass 25/25; wrapper rejects 10/10 order/count/concurrency mutations; parity passes 13/0/0; full archive-first gate passes 800/0/0 with all eight opt-ins exactly once and zero skips. |
+| Re-audit | Current score is 14/18 requirements, 5/5 phase artifacts, 6/6 integration, 3/3 flows, and 41/41 threats closed. The safe result remains `mechanics-only-not-promotion` with exact 61/5/74 public absence. |
+
+Outcome:
+
+- All code- and gate-actionable findings are repaired and independently bound.
+- The current ledger no longer treats absent genuine evidence as completed.
+- No archived milestone artifact, production public API, package dependency,
+  backend, resource, or retained `Warp.metal` implementation changed.
 
 ### C-2026-08-19-project-automated-validation-policy
 
@@ -105,7 +95,7 @@ Outcome:
 | Completed | 2026-08-22 |
 | Scope | Freeze the cosmetic upper-eyelid fullness semantics, independent prohibited-proxy rejection, rights/category manifest admission, frozen metric/review rubric, privacy-safe aggregate evaluator, and exact public absence before support/editor work. |
 | Plans | `75-01-PLAN.md` owns semantic records plus the exact-absence/threat checker; `75-02-PLAN.md` owns the rights/evidence contract, metadata-only evaluator, and evidence tests. |
-| Requirements | SEM-01, SEM-02, EVID-01, and EVID-02 are complete as fail-closed contract requirements. |
+| Requirements | SEM-01 and SEM-02 are complete. The historical phase record marked EVID-01/02 complete as contract mechanics, but the current post-archive re-audit follows Plan 75's explicit no-bundle pending rule and classifies both partial until a complete rights-approved bundle exists. |
 | Verification | Semantic/evidence Node suites pass `8/8`; evaluator self-test passes `10` checks with `7` mutation rejections; evaluator validate/aggregate/export pass on a temporary metadata-only manifest; missing bundle returns typed `evidence.missing-bundle`; exact absence and T-75-01..08/T-75-SC all pass; `git diff --check` passes. |
 | Boundary | No production Swift, public field, renderer case, preset, resource, package dependency, route, provider, or Testing SPI changed. No genuine efficacy/naturalness/device/commercial/release claim is made. |
 
@@ -3907,9 +3897,9 @@ Outcome:
 | TD-017 | Still-Image Compatibility | F-04/F-05 are resolved as exact-opaque bounded non-extended RGB GPU input, named-sRGB output, and CPU-oracle Metal coefficient/lip math within max `<=2` / mean `<0.75`. | Transparent input remains unsupported; licensed/real-fixture and device evidence remain outside this generated package-host contract. | Preserve pre-detection rejection, named-sRGB output, shader pin, and tight generated oracle gate. | `completed-bounded-contract` |
 | TD-018 | Parity Oracle Provenance | F-09 found that geometry safety parity derived its locality envelope from a separately generated face observation rather than the observation used by the rendered request. | Resolved: one immutable observation now owns geometry, plan, points, envelope, and request support, and the parity self-test rejects broken provenance. | Preserve the request equality proof and mutation-tested static gate. | `completed-followup` |
 | TD-019 | Shared Runtime Concurrency | F-10 is resolved by documenting `BeautyEngine` as intentionally non-`Sendable`: callers serialize every `process`/`processResult`/`reset` access per instance, while independent instances may execute concurrently. | Same-instance parallel execution remains unsupported rather than unproven. | Preserve the exact public doc, negative sendability gate, serialized harness evidence, and independent-instance test. | `completed-bounded-contract` |
-| TD-020 | v1.18 Decision Binding | The post-archive re-audit found that Phase 79 reads mutable Phase-78 verification prose instead of consuming a machine-produced decision report and contract hash. | The current public-absence branch is safe, but PROMOTE-01/COMPAT-02 branch selection is not reproducibly bound to the actual evaluator result. | In a separately authorized follow-up, emit a privacy-safe hash-bound decision artifact and make the closeout gate consume it directly; keep archived evidence read-only. | `open-post-v1.18-reaudit` |
-| TD-021 | v1.18 Support/Editor Integration | Phase-76 support and Phase-77 editor mechanics have compatible types and focused tests, but no caller or integration test connects one observation through support resolution, editor proposals, and immutable-source composition. | The archived 3/3 flow claim is overstated; individual package mechanics remain non-public and fail closed. | Add a package-only integration harness without adding a public route, then rerun the independent milestone audit. | `open-post-v1.18-reaudit` |
-| TD-022 | v1.18 Audit Reproducibility | The archived Phase-79 live checker hard-codes `.planning/phases/...`, fails after archival with 24 missing-artifact reasons, and Phase 78 names rather than version-binds the Phase-77 baseline. | Post-archive evidence cannot reproduce the original closeout end to end, and a future passing branch would not be bound to the evaluated mechanics. | Make phase-artifact resolution archive-aware and bind the evaluated candidate to a mechanics/output version or hash in a new authorized scope. | `open-post-v1.18-reaudit` |
+| TD-020 | v1.18 Decision Binding | The post-archive re-audit found that Phase 79 read mutable Phase-78 verification prose instead of consuming a machine-produced decision report and contract hash. | Resolved by `scripts/check-v1-18-decision-binding.py`: direct machine decision, strict schema/contract hash, exact no-bundle branch, and seven decision mutations. | Preserve commit `b45fe59` and the current exact-absence gate. | `completed-post-v1.18-reaudit` |
+| TD-021 | v1.18 Support/Editor Integration | Phase-76 support and Phase-77 editor mechanics lacked a caller/test connecting one observation through support resolution, editor proposals, and immutable-source composition. | Resolved by the test-only package integration suite: 3/3 integration and 25/25 UpperEyelid tests pass with no public route. | Preserve commit `2d0f83b` and the package-only boundary. | `completed-post-v1.18-reaudit` |
+| TD-022 | v1.18 Audit Reproducibility | The archived Phase-79 checker was cwd/path dependent and Phase 78 named rather than version-bound the Phase-77 baseline. | Resolved by pinned source/evidence digests, ten-test binding, seven archive-resolution checks, a 10/10 wrapper mutation gate, and current 800/0/0 closeout. | Preserve commits `876499a` and `a89e475`; keep immutable archives read-only. | `completed-post-v1.18-reaudit` |
 
 ## 6. Plan Template
 

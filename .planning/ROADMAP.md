@@ -14,11 +14,16 @@ No milestone is active. v1.18 completed with
 `BeautyParameters` fields, five presets, and 74 renderer cases; `去脂` remains
 future and `眼睛` remains partial.
 
-The [v1.18 audit](milestones/v1.18-MILESTONE-AUDIT.md) records 16/18
-requirements satisfied. `QUAL-01` and `QUAL-02` remain unsatisfied because no
-complete rights-approved genuine bundle or blinded review was supplied. Those
-gaps permit archival of the failed productization decision only; they do not
-authorize public activation or genuine/device/commercial/release claims.
+The immutable [historical v1.18 audit](milestones/v1.18-MILESTONE-AUDIT.md)
+recorded 16/18 requirements. The current
+[post-archive re-audit](v1.18-MILESTONE-REAUDIT.md) applies the
+owning Plan-75 no-bundle pending rule and therefore records a strict 14/18:
+`EVID-01`, `EVID-02`, `QUAL-01`, and `QUAL-02` remain partial or unsatisfied.
+All four actionable wiring/reproducibility findings are repaired; integration
+is 6/6, flows are 3/3, and the current full gate passes 800/0/0 with all eight
+opt-ins exactly once. These gaps permit the failed productization decision
+only; they do not authorize public activation or genuine/device/commercial/
+release claims.
 
 ## Next
 
@@ -27,4 +32,4 @@ fullness promotion attempt requires a new authorized scope and the missing
 genuine-evidence/review inputs; otherwise preserve exact public absence.
 
 ---
-*Last updated: 2026-08-22 after v1.18 conditional closeout and archive*
+*Last updated: 2026-08-22 after v1.18 post-archive re-audit remediation*

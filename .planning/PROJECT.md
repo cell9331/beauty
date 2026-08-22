@@ -40,10 +40,13 @@ fat estimation or diagnosis, third-party restricted weights, tracked portrait
 media, device/commercial approval, packaging, shipping, launch, and release
 readiness remain excluded.
 
-**Closeout:** All five phases and ten plans are complete. The audit records
-16/18 requirements satisfied, 6/6 integration links, 3/3 end-to-end flows,
-41/41 security threats closed, and a final archive-first 797/0/0 gate. The two
-unsatisfied genuine-quality requirements are the explicit reason for
+**Closeout:** All five phases and ten plans are complete. The immutable
+historical audit recorded 16/18 requirements and a 797/0/0 gate. A stricter
+post-archive re-audit applies Plan 75's no-bundle pending rule and records
+14/18: EVID-01/02 remain partial and QUAL-01/02 remain unsatisfied. All four
+actionable wiring/reproducibility findings are repaired; current integration
+is 6/6, flows are 3/3, security is 41/41 threats closed, and the current full
+gate passes 800/0/0. The missing genuine evidence is the explicit reason for
 `mechanics-only-not-promotion`, exact 61/5/74 public absence, `去脂 = future`,
 and `眼睛 = partial`.
 
@@ -59,9 +62,10 @@ authorized scope, complete private genuine evidence, and blinded review.
 
 **Implementation state:** v1.16 froze the current CPU renderer as the reference backend, added generated CPU oracles, a public-only SwiftPM consumer, the SDK-owned renderer CLI, and conditional `BeautyResult` sendability. v1.17 added the package-only backend-neutral boundary, bounded Metal runtime and feature passes, public `.cpu`/`.gpu` configuration with typed unavailable-GPU failure, and generated CPU/GPU parity gates. v1.18 added package-only per-eye semantic support, bounded tone/frequency editor mechanics, frozen private-evidence tooling, and fail-closed decision/absence gates while preserving the 61-field/five-preset/74-case public surface. Historical application taxonomy remains archive-only.
 
-**Verification state:** The final v1.18 archive-first gate passed XCTest
-`797/0/0`, all eight opt-ins exactly once, and `skipped_tests=0`. Available-host
-parity executed 13/0/0 with `metal_available=1`,
+**Verification state:** The immutable v1.18 archive-first gate passed XCTest
+`797/0/0`. The post-archive remediation gate passes `800/0/0`, all eight
+opt-ins exactly once, and `skipped_tests=0`. Available-host parity executed
+13/0/0 with `metal_available=1`,
 `metal_unavailable=0`, and `parity_executed=1`; unavailable Metal remains a
 terminal typed outcome with no CPU fallback or parity credit. Phase-79 live
 closeout passes and rejects 8/8 decision/surface/backend/metadata mutations.
@@ -70,7 +74,10 @@ closeout passes and rejects 8/8 decision/surface/backend/metadata mutations.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Broader historical application/device/release evidence remains time-bounded and cannot satisfy current SDK requirements. The codebase maps were refreshed again from the post-archive active source/tests on 2026-08-14.
 
-**Code size:** the immutable `v1.15` tag contains 49,018 tracked Swift source/test lines. The active post-archive SDK-only tree contains 72 Swift source files / 16,824 source lines and 74 SwiftPM test files / 33,569 test lines, excluding `.build` and archive contents.
+**Code size:** the immutable `v1.15` tag contains 49,018 tracked Swift
+source/test lines. The active post-remediation SDK-only tree contains 74 Swift
+source files / 17,784 source lines and 79 SwiftPM test files / 34,997 test
+lines, excluding `.build` and archive contents.
 
 ## Planned SDK-First Milestone Sequence
 
