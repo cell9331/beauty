@@ -57,7 +57,7 @@ route, renderer case, taxonomy promotion, or substitute proxy may be added.
 decision proving whether the existing deterministic editor is effective,
 natural, identity-preserving, and safe on authorized genuine evidence.
 
-**Depends on**: Phase 79 and the repaired v1.18 machine-bound support/editor/baseline evidence
+**Depends on**: Nothing (first phase)
 
 **Requirements**: EVID-03, EVID-04, EVID-05, QUAL-03, QUAL-04, QUAL-05
 
