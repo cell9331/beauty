@@ -7,10 +7,10 @@ last_updated: "2026-08-22T09:40:14+08:00"
 last_activity: 2026-08-22
 progress:
   total_phases: 5
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  completed_phases: 1
+  total_plans: 2
+  completed_plans: 2
+  percent: 20
 ---
 
 # Project State
@@ -28,10 +28,10 @@ per-eye fail-closed support, and original-pixel local composition.
 
 ## Current Position
 
-Phase: 75 of 79 (Semantics and Genuine Evidence Contract)
+Phase: 76 of 79 (Per-Eye Semantic Support Ownership)
 Plan: —
-Status: Roadmap approved; ready to discuss and plan Phase 75
-Last activity: 2026-08-22 — v1.18 roadmap approved with 18/18 requirements mapped
+Status: Phase 75 passed; ready to discuss and plan Phase 76
+Last activity: 2026-08-22 — Phase 75 contract/evidence gates passed with exact public absence preserved
 
 ## v1.18 Roadmap Context
 
@@ -220,12 +220,24 @@ None found under `.planning/todos/pending/`.
 | Input/runtime breadth | Transparent input, HDR/gain maps, realtime/pixel-buffer, and video | Future | v1.18 scope |
 | Product/release | Optional user device feedback plus any separately authorized device/commercial validation, performance budgets, packaging, distribution, shipping, launch, and release readiness | Future/non-blocking | project policy 2026-08-19 |
 
+## Phase 75 Closeout
+
+- SEM-01/02 and EVID-01/02 are complete as fail-closed contract requirements.
+- Semantic/evidence Node coverage is 8/8; evaluator self-test is 10 checks with
+  7 mutation rejections; exact absence and all nine threat modes pass.
+- No rights-approved genuine bundle is present in the workspace. The evaluator
+  returns `evidence.missing-bundle` for absent input and metadata-only checks
+  return `mechanics-only-not-promotion`; no genuine efficacy or product claim
+  follows.
+- No production Swift, public field, route, renderer case, preset, resource,
+  package dependency, or Testing SPI changed.
+
 ## Session Continuity
 
 Last session: 2026-08-22T09:10:17+08:00
-Stopped at: v1.18 roadmap drafted with 18/18 requirements mapped
+Stopped at: Phase 75 contract/evidence verification
 Resume file: `.planning/ROADMAP.md`
-Next action: approve the roadmap, then discuss and plan Phase 75.
+Next action: discuss and plan Phase 76.
 
 ## Operator Next Steps
 

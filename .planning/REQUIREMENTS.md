@@ -93,10 +93,10 @@ milestone count below remains 18.
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| SEM-01 | Phase 75 | Pending |
-| SEM-02 | Phase 75 | Pending |
-| EVID-01 | Phase 75 | Pending |
-| EVID-02 | Phase 75 | Pending |
+| SEM-01 | Phase 75 | Complete — frozen cosmetic-only semantic contract and independent proxy mutations |
+| SEM-02 | Phase 75 | Complete — seven prohibited proxies independently fail closed |
+| EVID-01 | Phase 75 | Complete — rights/category-complete manifest admission is fail closed; no private bundle persisted |
+| EVID-02 | Phase 75 | Complete — frozen rubric/blinded-review schema and aggregate-only evaluator output |
 | SUP-01 | Phase 76 | Pending |
 | SUP-02 | Phase 76 | Pending |
 | ALG-01 | Phase 77 | Pending |
@@ -122,4 +122,4 @@ milestone count below remains 18.
 
 ---
 *Requirements defined: 2026-08-22*
-*Last updated: 2026-08-22 after v1.18 roadmap traceability mapping*
+*Last updated: 2026-08-22 after Phase 75 contract/evidence verification*

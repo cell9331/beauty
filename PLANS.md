@@ -68,6 +68,25 @@ Outcome:
   roadmap/state, and testing guidance now carry one automation-first contract.
 - No production code, scripts, fixtures, or archived milestone evidence changed.
 
+### C-2026-08-22-phase-75-semantics-and-genuine-evidence-contract
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
+| Completed | 2026-08-22 |
+| Scope | Freeze the cosmetic upper-eyelid fullness semantics, independent prohibited-proxy rejection, rights/category manifest admission, frozen metric/review rubric, privacy-safe aggregate evaluator, and exact public absence before support/editor work. |
+| Plans | `75-01-PLAN.md` owns semantic records plus the exact-absence/threat checker; `75-02-PLAN.md` owns the rights/evidence contract, metadata-only evaluator, and evidence tests. |
+| Requirements | SEM-01, SEM-02, EVID-01, and EVID-02 are complete as fail-closed contract requirements. |
+| Verification | Semantic/evidence Node suites pass `8/8`; evaluator self-test passes `10` checks with `7` mutation rejections; evaluator validate/aggregate/export pass on a temporary metadata-only manifest; missing bundle returns typed `evidence.missing-bundle`; exact absence and T-75-01..08/T-75-SC all pass; `git diff --check` passes. |
+| Boundary | No production Swift, public field, renderer case, preset, resource, package dependency, route, provider, or Testing SPI changed. No genuine efficacy/naturalness/device/commercial/release claim is made. |
+
+Outcome:
+
+- Phase 75 establishes the auditable semantic and evidence authority for later
+  support/editor/evaluation phases while preserving exact 61/5/74 absence.
+- No rights-approved genuine bundle is present in the workspace; metadata-only
+  checks prove mechanics only and cannot authorize promotion or tuning.
+
 ### C-2026-08-17-phase-74-cpu-gpu-parity-and-sdk-only-closeout
 
 | Field | Value |
