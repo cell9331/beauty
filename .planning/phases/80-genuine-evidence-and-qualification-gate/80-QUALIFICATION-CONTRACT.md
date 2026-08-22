@@ -34,7 +34,7 @@ invalid.
   "phase75_bindings": {
     "semantic_contract_hash": "dd961264f201025c6abf332a97cd8976dcc6e4c42104bf578759b5b47ef99346",
     "evidence_contract_hash": "ddf91d4e76650ae3d601ce24edf7df9ac2044cfb29b0bba99006b6a4ec18eb05",
-    "review_rubric_hash": "84b74e4e223100ad06abc6ae36a065d580238379324343f245abef6b371e6842"
+    "review_rubric_hash": "be9530e8971d3bb632b9e8d4dcf7a143ebdc6f920843de0fb1a5fe5d4cd4de00"
   },
   "baseline_binding": {
     "baseline_id": "deterministic-editor",
@@ -229,7 +229,18 @@ invalid.
       "review-failure"
     ],
     "pass_reason": null,
-    "pass_requires_all_boolean_fields_true": true,
+    "positive_pass_predicate": {
+      "target_fullness_reduced": true,
+      "prohibited_proxy_absent": true,
+      "protected_structures_preserved": true,
+      "original_detail_natural": true
+    },
+    "negative_and_stress_pass_predicate": {
+      "target_fullness_reduced": false,
+      "prohibited_proxy_absent": true,
+      "protected_structures_preserved": true,
+      "original_detail_natural": true
+    },
     "failure_requires_one_fixed_reason": true,
     "freeform_text": false
   },
