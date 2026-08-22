@@ -91,17 +91,35 @@ milestone count below remains 18.
 
 ## Traceability
 
-Roadmap phase mappings are populated after roadmap approval.
-
 | Requirement | Phase | Status |
 | --- | --- | --- |
+| SEM-01 | Phase 75 | Pending |
+| SEM-02 | Phase 75 | Pending |
+| EVID-01 | Phase 75 | Pending |
+| EVID-02 | Phase 75 | Pending |
+| SUP-01 | Phase 76 | Pending |
+| SUP-02 | Phase 76 | Pending |
+| ALG-01 | Phase 77 | Pending |
+| SAFE-01 | Phase 77 | Pending |
+| SAFE-02 | Phase 77 | Pending |
+| ALG-02 | Phase 78 | Pending |
+| QUAL-01 | Phase 78 | Pending |
+| QUAL-02 | Phase 78 | Pending |
+| SAFE-03 | Phase 79 | Pending |
+| COMPAT-01 | Phase 79 | Pending |
+| COMPAT-02 | Phase 79 | Pending |
+| BACKEND-01 | Phase 79 | Pending |
+| PROMOTE-01 | Phase 79 | Pending |
+| DOCS-01 | Phase 79 | Pending |
 
 **Coverage:**
 
 - v1.18 requirements: 18 total
-- Mapped to phases: 0
-- Unmapped: 18
+- Mapped to phases: 18
+- Unmapped: 0
+- Duplicate mappings: 0
+- Coverage: 100%
 
 ---
 *Requirements defined: 2026-08-22*
-*Last updated: 2026-08-22 after user approval of the v1.18 conditional-productization scope*
+*Last updated: 2026-08-22 after v1.18 roadmap traceability mapping*

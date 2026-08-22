@@ -1,280 +1,212 @@
-# Roadmap: Beauty
+# Roadmap: Beauty v1.18 Upper-Eyelid Fullness Reduction
 
 ## Overview
 
-v1.17 keeps the verified CPU renderer as a permanent reference while adding
-one backend-neutral SDK execution boundary and a bounded, SDK-owned Metal
-renderer for the shipped color/skin, geometry, and still-image local-retouch
-families. Public backend policy arrives only after GPU coverage is complete:
-`BeautyConfiguration.renderBackend` exposes `.cpu` and `.gpu`, defaults and
-legacy/missing-key decoding stay on `.cpu`, and an explicitly unavailable GPU
-fails as typed `.metalUnavailable` without silently falling back. Generated
-SwiftPM parity, safety, determinism, and no-skip gates close the milestone.
+v1.18 determines whether `BeautySDK` can honestly expose one still-image
+upper-eyelid fullness reduction (`去脂`) control. It begins with exact cosmetic
+semantics and a rights-approved genuine evidence bundle, builds conservative
+per-eye semantic support, evaluates a deterministic tone/frequency editor, and
+ends in one of two equally valid states: promotion of exactly one public field
+and renderer case, or verified exact public absence.
 
-The milestone was historically archived at `afb04b4` after a Metal-available
-focused `12/0/0` and full `765/0/0` run. Bounded post-archive remediation and
-verification completed on 2026-08-18:
-F-01 metadata compatibility, F-03 unavailable-host accounting, F-06 Metal
-geometry binding, and F-08 result alpha/extent enforcement are repaired, while
-F-09 geometry-envelope provenance was subsequently repaired from one immutable
-observation with mutation-tested ownership (`a577dd1`). F-02/F-04/F-05/F-10
-now have approved bounded dispositions covering CPU-owned local-retouch
-composition, exact-opaque/named-sRGB GPU still-image policy, CPU-oracle math,
-and caller-serialized non-`Sendable` engine access. Only an
-available branch reports `focused_tests=13` / `parity_executed=1`; unavailable
-typed coverage reports `parity_executed=0` and never counts as GPU parity.
-The current available branch recorded `metal_available=1`, `metal_unavailable=0`,
-`parity_executed=1`, `focused_tests=13`, and `unavailable_tests=0`; the full
-archive-first gate passed XCTest `776/0/0`, all eight opt-ins exactly once, and
-`skipped_tests=0`. The checkboxes below preserve historical plan completion and do not override
-this current audit qualification or authorize broad equivalence/release claims.
+The milestone extends the validated local-retouch architecture: canonical
+opaque sRGB RGBA8 input, one Vision observation per request, request-local mask
+ownership, original-pixel collision-safe composition, CPU oracle behavior, and
+selected GPU transport. Vision eye/brow landmarks remain geometry envelopes,
+not fullness detectors. A learned additive-map candidate is optional, requires
+approved model/data rights, and cannot weaken the deterministic or safety
+gates.
 
-This milestone is SDK/algorithm and Metal-pipeline work only. It does not add
-application or Demo behavior, Xcode targets, simulator or physical-device
-validation, new beauty algorithms or parameters, model/network behavior,
-commercial approval, packaging, shipping, launch, or release-readiness claims.
+This roadmap adds no application/UI work, realtime/video route, transparent
+input, HDR/gain-map behavior, network/cloud inference, new Metal/GPU API or
+backend, retained `Warp.metal` change, device gate, performance claim,
+commercial approval, packaging, shipping, launch, or release-readiness claim.
 
-## Standing Validation Policy for Future Roadmaps
+## Standing Validation Policy
 
-Future SDK phases inherit an automation-first completion contract: SwiftPM and
-SDK-owned scripts judge actual image input/output pixels and metadata using
-deterministic, bounded, fail-closed assertions. Physical iPhone testing is
-optional user evaluation after SDK completion and must not be placed on a phase
-critical path, used as a default hard gate, or block advancement to later work.
-Only an explicit later user decision may create a device-focused milestone.
+SwiftPM and SDK-owned scripts remain completion authority. Image-producing work
+must be judged from actual input/output pixels and metadata, including extent,
+orientation/mirroring, color space, alpha, neutral identity, intended-region
+change, protected-region preservation, bounded tolerance, determinism, and
+typed failure. Process success alone is insufficient.
 
-Device feedback remains useful supplemental evidence and should create a
-reproducible automated regression when possible. Until separate hardware/product
-work is authorized, roadmap completion carries no device performance, thermal,
-battery, endurance, commercial visual-quality, packaging, shipping, launch, or
-release-readiness claim. Rights-approved local image gates required by an
-algorithm owner remain script-driven and are not physical-device tests.
+Generated in-memory fixtures prove deterministic mechanics. The algorithm
+owner additionally requires a rights-approved private genuine positive/negative
+bundle and blinded original-detail review. That bundle stays local and exports
+only privacy-safe aggregates. Physical iPhone testing remains optional
+post-SDK feedback and is not a phase dependency or completion gate.
 
 ## Milestones
 
-- ✅ **v1.0 MVP** — Phases 1-7, completed 2026-06-23.
-- ✅ **v1.1 Meitu UI** — Phases 8-10, completed 2026-06-24.
-- ✅ **v1.2 HTML Reference Fidelity** — Phase 11 completed and Phases 12-15 canceled, 2026-06-26.
-- ✅ **v1.3 Meitu Core Beauty Module Design and Implementation** — Phases 16-20, completed 2026-06-30.
-- ✅ **v1.4 Stability, QA, and Debt Cleanup** — Phases 21-25, completed 2026-07-03.
-- ✅ **v1.5 SDK Geometry Output Foundation and Face Shape Slice** — Phases 26-28, completed 2026-07-08.
-- ✅ **[v1.6 Broader `美型 / 五官` SDK Slice - Eyes](milestones/v1.6-ROADMAP.md)** — Phases 29-30, completed 2026-07-13.
-- ✅ **[v1.7 Broader `美型 / 五官` SDK Slice - Nose](milestones/v1.7-ROADMAP.md)** — Phases 31-32, completed 2026-07-13.
-- ✅ **[v1.8 Broader `美型 / 五官` SDK Slice - Mouth](milestones/v1.8-ROADMAP.md)** — Phases 33-34, completed 2026-07-13.
-- ✅ **[v1.9 Nose Remaining Tools and Branch Closeout](milestones/v1.9-ROADMAP.md)** — Phases 35-37, completed 2026-07-14.
-- ✅ **[v1.10 Mouth Remaining Geometry Controls](milestones/v1.10-ROADMAP.md)** — Phases 38-40, completed 2026-07-14.
-- ✅ **[v1.11 Eye Remaining Geometry Controls](milestones/v1.11-ROADMAP.md)** — Phases 41-44, completed 2026-07-19.
-- ✅ **[v1.12 Face Shape Remaining Capabilities](milestones/v1.12-ROADMAP.md)** — Phases 45-48, completed 2026-07-24.
-- ✅ **[v1.13 Eyebrow Geometry Controls](milestones/v1.13-ROADMAP.md)** — Phases 49-52, completed 2026-07-28.
-- ✅ **[v1.14 Local Facial Retouch](milestones/v1.14-ROADMAP.md)** — Phases 53-58, completed 2026-08-05.
-- ✅ **[v1.15 Independent Teeth and Sclera Retouch](milestones/v1.15-ROADMAP.md)** — Phases 59-65, completed and audited 2026-08-11.
-- ✅ **[v1.16 SDK-Only Foundation and CPU Reference](milestones/v1.16-ROADMAP.md)** — Phases 66-69, independently complete 2026-08-15.
-- ✅ **v1.17 Dual CPU/GPU Metal Rendering** — Phases 70-74, historically archived 2026-08-17; all ten post-archive findings received bounded verified dispositions on 2026-08-18.
+- ✅ **v1.0–v1.15** — Historical application and SDK milestones archived in `.planning/milestones/`.
+- ✅ **v1.16 SDK-Only Foundation and CPU Reference** — Phases 66–69, completed 2026-08-15.
+- ✅ **v1.17 Dual CPU/GPU Metal Rendering** — Phases 70–74, archived 2026-08-17 with bounded post-archive dispositions completed 2026-08-18.
+- ◆ **v1.18 Upper-Eyelid Fullness Reduction** — Phases 75–79, planned 2026-08-22.
 
-## Historical Milestone Record: v1.17 Dual CPU/GPU Metal Rendering
+## Phase Sequence
 
-**Historical Milestone Goal:** Integrators could select a stable CPU or Metal
-execution policy for the existing SDK feature set while both backends were
-compared through generated SDK-owned evidence. Current audit qualifications are
-listed above.
-
-**Phase numbering:** v1.17 continues the historical sequence at Phase 70.
-
-## Phases
-
-- [x] **Phase 70: Backend-Neutral Contract and CPU Reference** — Establish one shared request/result boundary and keep CPU selectable as the permanent reference. (completed 2026-08-16)
-- [x] **Phase 71: SDK-Owned Metal Runtime** — Add bounded Metal device, queue, texture, synchronization, and resource-lifetime ownership. (completed 2026-08-16)
-- [x] **Phase 72: Metal Feature Passes** — Implement color/skin, geometry-warp, and local-retouch passes with the existing CPU semantics and safety rules. (completed 2026-08-17)
-- [x] **Phase 73: Public Backend Configuration and Fail-Closed Availability** — Expose `.cpu`/`.gpu` policy with CPU-compatible defaults and typed unavailable-GPU failure. (completed 2026-08-17)
-- [x] **Phase 74: CPU/GPU Parity and SDK-Only Closeout** — Prove structural parity, safety, determinism, failure isolation, and the mandatory no-skip scope gate. (completed 2026-08-17)
+- [ ] **Phase 75: Semantics and Genuine Evidence Contract** — Freeze the named effect, prohibited aliases, real-bundle rights, metrics, and review protocol before algorithm selection.
+- [ ] **Phase 76: Per-Eye Semantic Support Ownership** — Produce conservative independent support or typed fail-closed absence for each eye from one request-local observation.
+- [ ] **Phase 77: Deterministic Fullness Editor** — Implement bounded tone/frequency correction with original detail, exact geometry, and source-owned composition.
+- [ ] **Phase 78: Genuine Evaluation and Candidate Decision** — Evaluate positives, negatives, safety, and optional additive maps under the frozen rubric and produce a reproducible promotion decision.
+- [ ] **Phase 79: Conditional Productization and SDK-Only Closeout** — Execute the passing or failing public-surface branch, prove compatibility/backend behavior, synchronize owners, and close the no-skip gate.
 
 ## Phase Details
 
-### Phase 70: Backend-Neutral Contract and CPU Reference
+### Phase 75: Semantics and Genuine Evidence Contract
 
-**Goal**: SDK execution has one backend-neutral request/result boundary, while
-the existing CPU implementation remains a complete, selectable, deterministic
-reference for the shipped feature set.
-**Depends on**: Phase 69 (v1.16 complete)
-**Requirements**: BACKEND-01, BACKEND-02
-**Success Criteria** (what must be TRUE):
+**Goal:** Freeze an auditable definition of upper-eyelid fullness reduction and
+open a complete rights-approved genuine evaluation path before any public or
+algorithm commitment.
 
-  1. A request entering either backend uses the same canonical input
-     normalization, support discovery, privacy, alpha, extent, containment,
-     collision-to-source, and per-unit failure-isolation contract.
+**Depends on:** Phase 74 and completed v1.18 project research
 
-  2. An integrator can select CPU execution and receive the existing reference
-     behavior, including exact neutral/protected bytes and current output
-     dimensions and metadata.
+**Requirements:** SEM-01, SEM-02, EVID-01, EVID-02
 
-  3. Backend choice changes execution policy only: `BeautyParameters`, preset
-     values, and the beauty algorithm inventory remain unchanged and backend
-     independent.
+**Success Criteria:**
 
-  4. Request-local support and intermediate data remain transient, with only
-     aggregate-safe result/diagnostic values crossing the backend boundary.
-**Plans**: 2/2 plans executed
+1. The product/evaluation contract defines visible fullness reduction, rejects
+   medical or surgical inference, and mutation-tests every prohibited proxy:
+   smoothing, whitening, eye enlargement, brow movement, crease invention,
+   upper-eyelid lift, and warp.
+2. A fail-closed manifest accepts only a complete rights-approved local bundle
+   with genuine positives, negatives, ambiguity, pose/occlusion stress,
+   identity diversity, and protected-structure coverage.
+3. Automated efficacy, containment, texture, geometry, metadata, and no-op
+   tolerances plus blinded original-detail review rules are versioned and
+   frozen before final candidate results are visible.
+4. The local evaluator rejects incomplete rights/evidence and persists only
+   opaque fixture IDs, hashes, aggregate metrics, normalized reason counts, and
+   decisions—never raw images, outputs, masks, landmarks, or private locators.
+5. Phase completion changes no production source, public field, renderer case,
+   preset, resource dependency, or public/SPI activation.
 
-- [x] 70-01-PLAN.md
-- [x] 70-02-PLAN.md
+### Phase 76: Per-Eye Semantic Support Ownership
 
-### Phase 71: SDK-Owned Metal Runtime
+**Goal:** Each eye independently obtains a conservative editable fullness
+support or a typed source-exact no-op from one request-local face observation.
 
-**Goal**: The SDK can own and safely execute bounded Metal work without relying
-on an application lifecycle or leaking state across requests.
-**Depends on**: Phase 70
-**Requirements**: METAL-01
-**Success Criteria** (what must be TRUE):
+**Depends on:** Phase 75
 
-  1. An available GPU request creates and uses SDK-owned device, command queue,
-     textures, synchronization, and resources, then returns through the shared
-     request/result boundary.
+**Requirements:** SUP-01, SUP-02
 
-  2. Successful, failed, repeated, and mixed CPU/GPU requests deterministically
-     release command and texture resources and leave no prior-request state in
-     a later request.
+**Success Criteria:**
 
-  3. Metal execution remains bounded and finite under malformed or unsupported
-     work, with cleanup completed independently of any external host lifecycle.
-**Plans**: 4 plans
+1. A still-image request performs one shared Vision observation; eye/brow
+   landmarks form bounded envelopes and pose guards but never assert fullness.
+2. An approved semantic owner returns independent left/right support, confidence,
+   reason, and mask outcomes and fails closed when semantics or resources are
+   absent, malformed, ambiguous, low-confidence, closed, blinking, or occluded.
+3. Generated adversarial tests prove that an unsupported eye is source-exact,
+   one eye cannot authorize or suppress the other, and overlapping ownership
+   resolves to the immutable source.
+4. Support data is request-local, finite, hard-contained, orientation/mirror
+   correct, and absent from public or persistent diagnostics.
 
-- [x] 71-01-PLAN.md — Build and test the SDK-owned bounded Metal runtime.
-- [x] 71-02-PLAN.md — Connect internal Metal execution to the shared backend boundary.
-- [x] 71-03-PLAN.md — Add the mutation-tested Metal preflight and synchronize owners.
-- [x] 71-04-PLAN.md — Close METAL-01 with measured gates and planning ledgers.
+### Phase 77: Deterministic Fullness Editor
 
-**Phase 71 completion evidence:** The archive-first runtime gate passes its
-mutation self-test and live preflight with focused `26/0/0` execution and
-separate `metal_available=1` / `metal_unavailable=0` accounting. The
-post-archive SDK-only boundary and no-skip wrapper self-test pass, and the
-full `run-no-skip-swiftpm.sh` wrapper executes `728` tests with zero failures,
-zero skips, and all eight documented opt-ins exactly once. The evidence is
-aggregate-only and establishes package-owned runtime mechanics; it does not
-claim public `.gpu` configuration, feature-pass parity, new algorithms,
-simulator/physical-device validation, performance, commercial, packaging,
-shipping, launch, or release readiness. Phase 73 configuration and Phase 74
-parity closeout are complete; the excluded claims remain separate scopes.
+**Goal:** Produce a bounded local tone/frequency correction that reduces the
+candidate fullness cue while preserving original texture, geometry, alpha, and
+all pixels outside owned support.
 
-### Phase 72: Metal Feature Passes
+**Depends on:** Phase 76
 
-**Goal**: The Metal backend renders every shipped feature family in scope while
-preserving the CPU semantics and existing safety boundaries.
-**Depends on**: Phase 71
-**Requirements**: METAL-02, METAL-03, METAL-04
-**Success Criteria** (what must be TRUE):
+**Requirements:** ALG-01, SAFE-01, SAFE-02
 
-  1. Metal color/skin requests preserve CPU feature direction and bounds,
-     named color/alpha metadata, finite math, and untouched ineligible pixels.
+**Success Criteria:**
 
-  2. Metal geometry requests preserve CPU direction, caps, extent,
-     protected-region bytes, collision-to-source ownership, and no-face
-     degradation for the shipped geometry families.
+1. The deterministic editor modifies only the approved low-frequency local tone
+   component, carries original high-frequency detail, and emits bounded deltas
+   rather than replacement pixels.
+2. Original-pixel composition changes only one owned per-eye mask, keeps every
+   exterior pixel source-exact, and returns mask collisions to source.
+3. Generated texture, edge, crease, brow, eye-content, geometry, alpha, and
+   containment oracles pass their Phase-75 frozen tolerances and fail under
+   mutation.
+4. Neutral, repeated, malformed, and mixed-eye requests remain finite,
+   deterministic, independently fail closed, and leave the public 61/5/74
+   compatibility surface unchanged.
 
-  3. Metal local-retouch requests preserve request-local mask ownership,
-     immutable-original composition, protected bytes, alpha behavior, and
-     smallest-unit failure isolation for the shipped still-image families.
+### Phase 78: Genuine Evaluation and Candidate Decision
 
-  4. GPU coverage adds no new beauty parameter, preset, semantic-mask feature,
-     or unrelated algorithm and does not move support discovery out of the
-     shared request boundary.
-**Plans**: 4 plans
+**Goal:** Use the frozen private bundle and blinded review to determine whether
+the deterministic editor—or an optional approved additive comparator—earns
+promotion without weakening negative or protected-region behavior.
 
-Plans:
+**Depends on:** Phase 77
 
-- [x] 72-01-PLAN.md — Establish the bounded Metal pass graph and implement color/skin rendering.
-- [x] 72-02-PLAN.md — Wire existing unified geometry control points into the Metal warp pass.
-- [x] 72-03-PLAN.md — Preserve local-retouch composition ownership and close the feature-pass gate.
-- [x] 72-04-GAP-01-PLAN.md — Restore combined saturation/skin-smoothing CPU semantics and close the verified gap.
+**Requirements:** ALG-02, QUAL-01, QUAL-02
 
-### Phase 73: Public Backend Configuration and Fail-Closed Availability
+**Success Criteria:**
 
-**Goal**: Integrators can explicitly choose CPU or GPU execution with
-compatibility-safe defaults and an honest failure when the requested GPU cannot
-execute.
-**Depends on**: Phase 72
-**Requirements**: CONFIG-01, CONFIG-02
-**Success Criteria** (what must be TRUE):
+1. Genuine positives demonstrate reduced upper-eyelid fullness under the frozen
+   automated rubric and blinded original-detail review without a prohibited
+   proxy or protected-structure regression.
+2. Genuine negatives, ambiguity, unsupported semantics, occlusion, blinking,
+   closed eyes, and extreme pose remain source-exact or within the frozen no-op
+   tolerance; generated fixtures separately prove mechanics and metadata.
+3. Any additive-map comparator enters evaluation only with approved model/data/
+   redistribution provenance, bounded delta output, and identical safety gates;
+   it is rejected unless it materially outperforms the deterministic baseline.
+4. A reproducible privacy-safe aggregate report records baseline/comparator
+   disposition and a single pass/fail recommendation for Phase 79 without
+   persisting face-derived artifacts.
 
-  1. Public `BeautyConfiguration.renderBackend` exposes exactly `.cpu` and
-     `.gpu`, while existing source/Codable use and the beauty-parameter/preset
-     schema remain compatible.
+### Phase 79: Conditional Productization and SDK-Only Closeout
 
-  2. New configurations and configurations decoded from missing legacy backend
-     keys select `.cpu` deterministically; an explicit `.cpu` remains a
-     complete reference path.
+**Goal:** Materialize exactly the evidence-selected product branch and close
+v1.18 with honest compatibility, backend, documentation, and no-skip evidence.
 
-  3. An explicitly requested unavailable GPU returns typed
-     `.metalUnavailable`, produces no successful GPU result, and never silently
-     executes or reports a CPU fallback.
-**Plans**: 4 plans
+**Depends on:** Phase 78
 
-- [x] 73-01-PLAN.md — Add the public CPU/GPU configuration contract and legacy Codable compatibility tests.
-- [x] 73-02-PLAN.md — Route engine requests through the selected backend and prove typed unavailable-GPU failure.
-- [x] 73-03-PLAN.md — Add the archive-first configuration gate and full no-skip integration.
-- [x] 73-04-PLAN.md — Synchronize current SDK owners and Phase 73 planning ledgers.
+**Requirements:** SAFE-03, COMPAT-01, COMPAT-02, BACKEND-01, PROMOTE-01, DOCS-01
 
-### Phase 74: Historical CPU/GPU Parity and SDK-Only Closeout
+**Success Criteria:**
 
-**Goal**: Generated SDK-owned evidence demonstrates safe, deterministic parity
-between available backends and closes the milestone without weakening the CPU
-oracle or expanding the active product boundary.
-**Depends on**: Phase 73
-**Requirements**: PARITY-01, PARITY-02, PARITY-03, CLOSE-01, CLOSE-02
-**Success Criteria** (what must be TRUE):
+1. Before promotion the SDK proves exact 61-field/five-preset/74-case
+   compatibility with no placeholder route; the Phase-78 decision cannot be
+   bypassed by production, Testing SPI, resource, or documentation drift.
+2. A passing decision appends exactly one default-zero field and one renderer
+   case for 62/5/75, preserves Codable migration, normalization, reset,
+   equality, neutral identity, and legacy behavior, and wires only the selected
+   validated editor through the normal facade.
+3. A failing decision instead proves the field, case, route, resource, and
+   public/SPI activation are exactly absent while reusable generic evidence
+   infrastructure remains non-authorizing and `eyes` remains partial.
+4. The selected branch preserves canonical metadata, alpha, finite deterministic
+   behavior, request-local failure isolation, CPU-oracle output, and existing
+   GPU selected-output/typed-unavailable semantics without changing retained
+   `Warp.metal` or adding a backend/API.
+5. Archive/boundary checks and the full SDK-owned no-skip SwiftPM gate pass with
+   nonzero tests, zero failures, zero unexpected skips, all required opt-ins,
+   synchronized root owners/taxonomy/quality/PLANS ledgers, privacy-safe
+   evidence, and all device/commercial/release nonclaims intact.
 
-  1. Generated SwiftPM fixtures compare CPU and GPU through explicit structural
-     checks and bounded floating-point tolerances, with exact neutral bytes and
-     dimensions wherever the shared contract requires them.
-
-  2. Parity checks cover alpha, color metadata, extent, outside-region
-     preservation, containment, collision-to-source behavior, no-face and
-     degraded requests, and failure-unit isolation without durable raw masks,
-     landmarks, or pixels.
-
-  3. Repeated identical requests are finite and deterministic for each
-     available backend, backend selection is request-local and concurrency-safe,
-     and prior requests cannot alter later outputs.
-
-  4. A failed GPU unit does not suppress an eligible CPU or face-agnostic
-     sibling, and unavailable-host coverage is explicit rather than borrowing
-     success from GPU parity.
-
-  5. The mandatory SwiftPM/SDK-owned gate runs CPU reference, configuration,
-     available/unavailable Metal, parity, and static scope checks with zero
-     failures and zero unexpected skips; current owners agree on retained CPU
-     plus selectable GPU semantics and all excluded product/release claims.
-**Plans**: 5 plans
-
-Plans:
-
-- [x] 74-01-PLAN.md — Build generated structural and numeric CPU/GPU parity coverage.
-- [x] 74-02-PLAN.md — Prove containment, protected bytes, degradation, collision, and failure isolation parity.
-- [x] 74-03-PLAN.md — Prove deterministic concurrent requests and explicit unavailable-host separation.
-- [x] 74-04-PLAN.md — Integrate mutation-tested parity into the archive-first no-skip gate.
-- [x] 74-05-PLAN.md — Synchronize SDK-only owners and close the v1.17 milestone ledgers.
-
-## Coverage
+## Requirement Coverage
 
 | Phase | Requirement Count | Requirement IDs |
 | --- | ---: | --- |
-| 70 | 2 | BACKEND-01, BACKEND-02 |
-| 71 | 1 | METAL-01 |
-| 72 | 3 | METAL-02, METAL-03, METAL-04 |
-| 73 | 2 | CONFIG-01, CONFIG-02 |
-| 74 | 5 | PARITY-01, PARITY-02, PARITY-03, CLOSE-01, CLOSE-02 |
+| 75 | 4 | SEM-01, SEM-02, EVID-01, EVID-02 |
+| 76 | 2 | SUP-01, SUP-02 |
+| 77 | 3 | ALG-01, SAFE-01, SAFE-02 |
+| 78 | 3 | ALG-02, QUAL-01, QUAL-02 |
+| 79 | 6 | SAFE-03, COMPAT-01, COMPAT-02, BACKEND-01, PROMOTE-01, DOCS-01 |
 
-**Coverage:** 13/13 v1.17 requirements were historically mapped exactly once;
-no orphaned or duplicate mappings. Current audit status is governed by the
-qualification at the top of this roadmap.
+**Coverage:** 18/18 v1.18 requirements are mapped exactly once; there are no
+orphaned or duplicate mappings.
 
 ## Progress
 
-**Execution Order:** Phase 70 → Phase 71 → Phase 72 → Phase 73 → Phase 74
+**Execution Order:** Phase 75 → Phase 76 → Phase 77 → Phase 78 → Phase 79
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 70. Backend-Neutral Contract and CPU Reference | v1.17 | 2/2 | Complete    | 2026-08-15 |
-| 71. SDK-Owned Metal Runtime | v1.17 | 4/4 | Complete | 2026-08-16 |
-| 72. Metal Feature Passes | v1.17 | 4/4 | Complete    | 2026-08-17 |
-| 73. Public Backend Configuration and Fail-Closed Availability | v1.17 | 4/4 | Complete    | 2026-08-17 |
-| 74. CPU/GPU Parity and SDK-Only Closeout | v1.17 | 5/5 | Complete | 2026-08-17 |
+| 75. Semantics and Genuine Evidence Contract | v1.18 | 0/TBD | Not started | — |
+| 76. Per-Eye Semantic Support Ownership | v1.18 | 0/TBD | Not started | — |
+| 77. Deterministic Fullness Editor | v1.18 | 0/TBD | Not started | — |
+| 78. Genuine Evaluation and Candidate Decision | v1.18 | 0/TBD | Not started | — |
+| 79. Conditional Productization and SDK-Only Closeout | v1.18 | 0/TBD | Not started | — |
+
+---
+*Roadmap created: 2026-08-22*
+*Last updated: 2026-08-22 after v1.18 requirements approval*

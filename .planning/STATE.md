@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v1.18
 milestone_name: Upper-Eyelid Fullness Reduction
 status: planning
-last_updated: "2026-08-22T00:42:55.870Z"
+last_updated: "2026-08-22T09:40:14+08:00"
 last_activity: 2026-08-22
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,20 +17,37 @@ progress:
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-08-19)
+See: `.planning/PROJECT.md` (updated 2026-08-22)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural,
 controllable, real-time and still-image beauty processing through a stable
 modular facade.
-**Current focus:** all F-01 through F-10 post-archive findings are dispositioned
-under bounded contracts; Phase 74 remains a historical lifecycle record.
+**Current focus:** v1.18 conditionally evaluates and productizes still-image
+upper-eyelid fullness reduction through rights-approved genuine evidence,
+per-eye fail-closed support, and original-pixel local composition.
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 75 of 79 (Semantics and Genuine Evidence Contract)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-08-22 — Milestone v1.18 started
+Status: Roadmap approved; ready to discuss and plan Phase 75
+Last activity: 2026-08-22 — v1.18 roadmap approved with 18/18 requirements mapped
+
+## v1.18 Roadmap Context
+
+v1.18 is a conditional-productization milestone. It first freezes the cosmetic
+semantics and a rights-approved private genuine bundle, then builds independent
+per-eye semantic support and a deterministic tone/frequency editor. Phase 78
+produces a reproducible pass/fail recommendation under the frozen rubric.
+Phase 79 either appends exactly one default-zero field and one renderer case or
+proves that the entire public route remains exactly absent.
+
+The starting public compatibility surface is 61 fields, five neutral presets,
+and 74 renderer cases. Vision landmarks are geometry envelopes rather than
+fullness semantics; optional additive-map work requires independently approved
+model/data/redistribution rights and measurable superiority. No phase may use
+warp, smoothing, whitening, eye enlargement, brow movement, crease invention,
+or upper-eyelid lift as a proxy.
 
 ## Current Audit Qualification
 
@@ -97,6 +114,22 @@ roadmaps.
 
 ### Decisions
 
+- v1.18 uses conditional productization: all gates passing may produce exactly
+  one public field and route; any failure produces verified exact absence and
+  keeps the eye taxonomy partial.
+
+- Genuine rights-approved positive/negative evidence and blinded original-
+  detail review are mandatory product-feasibility gates. Generated fixtures
+  prove deterministic mechanics only.
+
+- The default candidate is deterministic low-frequency tone correction with
+  original high-frequency detail carry and original-pixel composition. The
+  tested warp remains invalidated; a licensed additive-map model is optional.
+
+- Left and right eyes own support and failure independently from one shared
+  Vision observation. Landmarks constrain envelopes but cannot classify
+  fullness.
+
 - v1.16 established SDK/algorithm-only ownership, SwiftPM/SDK-owned gates,
   generated CPU reference oracles, and conditional `BeautyResult` sendability.
 
@@ -158,6 +191,15 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
+- Promotion cannot occur unless Phase 75 admits a complete rights-approved
+  genuine positive/negative bundle. Missing or incomplete evidence is a
+  feature-gate failure leading to exact public absence, not permission to tune
+  on generated fixtures or substitute a proxy.
+
+- Public research supplies useful periorbital labels and local tone methods but
+  no exact production-ready fullness model with a verified product-compatible
+  data/weight license; the deterministic path therefore remains primary.
+
 - F-08 result alpha/extent enforcement is remediated with fail-closed contract tests.
 - F-02/F-04/F-05/F-10 have approved, mutation-tested bounded dispositions; they
   do not establish transparent input, end-to-end GPU local retouch, or shared-
@@ -174,17 +216,24 @@ None found under `.planning/todos/pending/`.
 
 | Category | Item | Status | Deferred At |
 | --- | --- | --- | --- |
-| Algorithm breadth | `去脂`, hairline/semantic masking, double-chin, and new beauty features | Future | v1.16 scope |
+| Algorithm breadth | Hairline/semantic masking, double-chin, and unrelated new beauty features | Future | v1.18 scope |
+| Input/runtime breadth | Transparent input, HDR/gain maps, realtime/pixel-buffer, and video | Future | v1.18 scope |
 | Product/release | Optional user device feedback plus any separately authorized device/commercial validation, performance budgets, packaging, distribution, shipping, launch, and release readiness | Future/non-blocking | project policy 2026-08-19 |
 
 ## Session Continuity
 
-Last session: 2026-08-19T13:14:00+08:00
-Stopped at: project-wide automated validation policy synchronized and verified
-Resume file: `PLANS.md`
-Next action: continue SDK work through automated image/output gates; accept physical-iPhone feedback later without blocking progress.
+Last session: 2026-08-22T09:10:17+08:00
+Stopped at: v1.18 roadmap drafted with 18/18 requirements mapped
+Resume file: `.planning/ROADMAP.md`
+Next action: approve the roadmap, then discuss and plan Phase 75.
 
 ## Operator Next Steps
+
+- Start with Phase 75 semantics, rights manifest, frozen metrics, and sanitized
+  review protocol; do not implement or expose a production control first.
+
+- Preserve the exact 61/5/74 public surface until the Phase-78 aggregate
+  decision authorizes the passing branch in Phase 79.
 
 - Do not treat package-host parity or historical Phase-74 completion as device,
   transparent-input, end-to-end GPU local-retouch, or release evidence.
