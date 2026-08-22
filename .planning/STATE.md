@@ -1,20 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.17
-milestone_name: Dual CPU/GPU Metal Rendering
-status: Project-wide automated validation policy synchronized
-stopped_at: physical-iPhone evaluation made optional and non-blocking; automated image/output validation remains milestone authority
-last_updated: "2026-08-19T13:14:00+08:00"
-last_activity: 2026-08-19
-last_activity_desc: standing automation-first milestone and optional post-SDK device-feedback policy documented and verified
+milestone: v1.18
+milestone_name: Upper-Eyelid Fullness Reduction
+status: planning
+last_updated: "2026-08-22T00:42:55.870Z"
+last_activity: 2026-08-22
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 19
-  completed_plans: 19
-  percent: 100
-current_phase: 74
-current_phase_name: Historical CPU/GPU Parity and SDK-Only Closeout
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -31,10 +27,10 @@ under bounded contracts; Phase 74 remains a historical lifecycle record.
 
 ## Current Position
 
-Phase: Project-wide standing validation policy after historically archived v1.17
-Plan: `C-2026-08-19-project-automated-validation-policy`
-Status: Complete — automation-first SDK acceptance and optional device feedback synchronized
-Last activity: 2026-08-19 — archive-first closeout passed XCTest `776/0/0`
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-08-22 — Milestone v1.18 started
 
 ## Current Audit Qualification
 
@@ -166,8 +162,10 @@ None found under `.planning/todos/pending/`.
 - F-02/F-04/F-05/F-10 have approved, mutation-tested bounded dispositions; they
   do not establish transparent input, end-to-end GPU local retouch, or shared-
   instance parallel safety.
+
 - F-09 geometry-envelope provenance is repaired and mutation-tested from one
   immutable observation.
+
 - Physical-iPhone feedback is optional and non-blocking. Device/performance,
   commercial, packaging, shipping, launch, and release-readiness claims remain
   outside this milestone unless explicitly authorized later.
@@ -190,5 +188,6 @@ Next action: continue SDK work through automated image/output gates; accept phys
 
 - Do not treat package-host parity or historical Phase-74 completion as device,
   transparent-input, end-to-end GPU local-retouch, or release evidence.
+
 - Do not add a physical-iPhone checkpoint to an SDK milestone critical path
   unless the user explicitly creates a later device-focused scope.

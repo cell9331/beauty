@@ -10,11 +10,41 @@ The former application and legacy UI-reference trees are absent from the active 
 
 An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
 
+## Current Milestone: v1.18 Upper-Eyelid Fullness Reduction
+
+**Goal:** Deliver an evidence-qualified still-image `去脂` effect that reduces
+upper-eyelid fullness through bounded tone/frequency editing while preserving
+eye, brow, crease, texture, identity, and original-pixel ownership contracts.
+
+**Target features:**
+
+- Establish a rights-approved genuine upper-eyelid-fullness positive/negative
+  bundle, fixed semantic definitions, and blinded original-detail review.
+- Qualify per-eye fail-closed target support without treating Vision eye/brow
+  landmarks as a fullness detector or diagnostic signal.
+- Compare the deterministic tone/frequency baseline with an optional owned or
+  explicitly licensed additive-map candidate; reject geometry warp,
+  eye-opening, brow movement, global smoothing, and generative reconstruction.
+- Preserve canonical still-image input, request-local masks, immutable-original
+  composition, privacy, CPU-reference behavior, and bounded CPU/GPU evidence.
+- Add a positive-only public control and exact taxonomy promotion only if all
+  genuine-data, effectiveness, naturalness, safety, compatibility, and output
+  gates pass; otherwise close the milestone with no field, provider, route, or
+  inert behavior and keep `去脂` future.
+
+**Non-negotiable boundary:** v1.18 is SDK-owned opaque still-image algorithm and
+validation work. Realtime/pixel-buffer behavior, UI/Demo restoration, medical
+fat estimation or diagnosis, third-party restricted weights, tracked portrait
+media, device/commercial approval, packaging, shipping, launch, and release
+readiness remain excluded.
+
 ## Current State
 
 **Latest historical milestone:** v1.17 Dual CPU/GPU Metal Rendering, archived at `afb04b4` on 2026-08-17; its package-host closeout is immutable history rather than current audited truth.
 **Latest historical UI milestone:** v1.1 Meitu UI on 2026-06-24, retained only as archived evidence.
-**Current work:** all F-01 through F-10 post-archive findings have explicit, verified dispositions. The final contract is intentionally bounded rather than a broad GPU/release claim.
+**Current work:** v1.18 planning has started for conditional-productization of
+upper-eyelid fullness reduction. The public feature remains absent until its
+independent real-data and product-effectiveness gates pass.
 
 **Implementation state:** v1.16 froze the current CPU renderer as the reference backend, added generated CPU oracles, a public-only SwiftPM consumer, the SDK-owned renderer CLI, and conditional `BeautyResult` sendability. v1.17 now includes the package-only backend-neutral boundary, bounded Metal runtime and feature passes, public `.cpu`/`.gpu` configuration with typed unavailable-GPU failure, and generated CPU/GPU parity gates, while preserving the 61-field/five-preset/74-case compatibility surface. Historical application taxonomy remains archive-only.
 
@@ -30,6 +60,10 @@ An iOS app can integrate `BeautySDK` and get natural, controllable, real-time an
 
 1. **v1.16 SDK-Only Foundation and CPU Reference** — completed 2026-08-15 with verified legacy archive/source removal, SwiftPM-only validation, CPU oracles, and conditional sendability.
 2. **v1.17 Dual CPU/GPU Metal Rendering** — preserve the CPU reference backend; add Metal runtime, color/skin, geometry, and local-retouch passes; then expose `BeautyConfiguration.renderBackend` with `.cpu` and `.gpu`, defaulting old and missing-key configurations to `.cpu` and failing explicitly when requested Metal is unavailable.
+3. **v1.18 Upper-Eyelid Fullness Reduction** — conditionally qualify and
+   productize still-image `去脂` through genuine rights-approved evidence,
+   per-eye fail-closed support, non-warp tone/frequency editing, original-pixel
+   composition, and automated plus blinded-human acceptance.
 
 The backend choice is configuration/execution policy and must not change the public beauty-parameter or preset schema. Detection/support semantics remain shared. No backend may borrow success from the other: CPU and GPU each run the same SDK-owned input/output contract, and comparison evidence separately verifies their parity.
 
@@ -346,6 +380,25 @@ For any future semantic-masking milestone, a bundled Core ML resource must be lo
 
 ## Requirements
 
+### Active in v1.18
+
+- [ ] Freeze `去脂` as upper-eyelid fullness reduction only, with explicit
+  positive, negative, ambiguous, protected-structure, and fail-closed semantics.
+- [ ] Admit product evidence only from a complete rights-approved genuine
+  positive/negative fixture bundle reviewed locally at original detail.
+- [ ] Qualify deterministic per-eye support and tone/frequency editing that
+  preserves geometry, creases, texture, alpha, extent, orientation, color, and
+  all pixels outside the accepted target mask.
+- [ ] Compare any learned additive-map candidate independently and admit it only
+  when its data, checkpoint, conversion, redistribution, quality, privacy, and
+  resource contracts are owned or explicitly approved.
+- [ ] Prove compatibility, smallest-unit failure isolation, privacy-safe
+  diagnostics, deterministic output, CPU-reference behavior, and bounded GPU
+  behavior through SwiftPM and SDK-owned image/output gates.
+- [ ] Conditionally add and promote one positive-only public `去脂` control only
+  after every effectiveness and safety gate passes; otherwise preserve exact
+  production absence and branch-level `眼睛 = partial`.
+
 ### Validated in v1.15
 
 - [x] Independently qualify and implement still-image `白牙` before beginning production `祛红血丝` implementation.
@@ -468,6 +521,12 @@ The verified SDK-only slice implements exactly `大小`, `宽度`, and `微笑`.
 - Treating `eyeHeight`, `upperEyelidLift`, brow motion, global smoothing, or any eye warp as `去脂` - these are semantically different effects and remain forbidden proxies.
 - Shipping `去脂` without rights-approved upper-eyelid-fullness positives and a non-warp independent implementation - the field and branch must remain future/partial when the gate is not met.
 - Any `去脂` field, provider, renderer case, inert route, geometry alias, or smoothing proxy in v1.15 - the user explicitly deferred this harder feature to a future milestone.
+- Mandatory public `去脂` activation in v1.18 - productization is conditional;
+  a failed or incomplete real-data/effectiveness gate must close with exact
+  production absence rather than a proxy or inert parameter.
+- Treating single-image appearance as medical fat volume, diagnosis, or anatomy
+  measurement - v1.18 implements only a bounded visual fullness-reduction
+  effect.
 - Persisting or exposing teeth masks, sclera masks, vein-like descriptors, pupil positions, or raw face geometry - all local support remains private and request-scoped.
 - Transparent-input local retouch, HDR/gain-map support, new silent multi-face selection, third-party/Core ML weights, and tracked portrait/output media - each needs separately approved ownership, policy, licensing, and evidence.
 
@@ -475,6 +534,9 @@ The verified SDK-only slice implements exactly `大小`, `宽度`, and `微笑`.
 
 Current and future milestone sequence:
 
+- **v1.18 Upper-Eyelid Fullness Reduction:** conditional still-image `去脂`
+  productization through real evidence, non-warp editing, and fail-closed
+  automated/human gates.
 - **Future Hairline and Semantic Masking:** approved local semantic-region foundation plus `发际线`.
 - **Future Double-Chin and Facial-Feature Closeout:** `去双下巴`, `去双下巴 Pro`, and a later narrow taxonomy audit.
 - **Other shaping groups:** `比例` and `3D塑颜` remain outside this narrow facial-feature sequence.
@@ -557,11 +619,19 @@ Current visual reference contracts:
 - **v1.13 scope boundary:** v1.13 adds only seven product-neutral eyebrow controls plus private request-scoped observed eyebrow support inside `BeautySDK`; no SwiftUI/Demo UI, remote processing, commercial path, or semantic-region model is included.
 - **v1.14 scope boundary:** v1.14 adds only a still-image local-retouch foundation plus evidence-qualified `白牙`, `祛红血丝`, and conditionally `去脂`; canonical input is shared by Vision and rendering, local masks never escape the request, transparent input fails closed, and no realtime/Demo/cloud/model/commercial/release scope is implied.
 - **v1.15 scope boundary:** v1.15 completes `白牙` first and `祛红血丝` second as independent still-image SDK-core slices. Each requires its own genuine rights-approved positive/negative bundle, public field, provider, renderer/output evidence, protected-region safety, original-detail review, regression, and promotion decision. `去脂`, realtime/pixel-buffer, Demo activation, model/cloud, tracked portrait media, device/commercial/performance-budget/packaging/shipping/launch work remain excluded.
+- **v1.18 scope boundary:** v1.18 conditionally productizes still-image `去脂`
+  only through genuine rights-approved positive/negative evidence and a
+  non-warp, geometry-preserving implementation. Missing evidence or failed
+  effectiveness/naturalness/safety keeps the production surface exactly absent;
+  realtime/pixel-buffer, UI/Demo, restricted external weights, tracked portrait
+  media, medical claims, mandatory physical-device gates, commercial approval,
+  packaging, shipping, launch, and release readiness remain excluded.
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
+| Make v1.18 a conditional-productization milestone for still-image upper-eyelid fullness reduction. | Research found no production-ready public `去脂` model; the deterministic tone/frequency spike preserved texture and containment but lacked a genuine positive, while the tested warp lost texture without clearer semantic benefit. | Approved by the user on 2026-08-22: qualify real evidence and the non-warp method first; add a public control only if every gate passes, otherwise preserve exact absence. |
 | Split the next work into non-Metal v1.16 and Metal v1.17. | Repository/API/test cleanup and CPU reference capture should stabilize the SDK boundary before a new GPU implementation changes render execution. | Queued: v1.16 Phases 66-69, then v1.17 Phases 70-74. |
 | Preserve both CPU and GPU render backends; select them through `BeautyConfiguration`, not `BeautyParameters`. | CPU is the current verified implementation and strongest parity oracle. Backend choice is execution policy, while beauty strengths/presets must remain backend-independent and compatibility-stable. | Planned: public `BeautyRenderBackend.cpu/gpu` arrives only after complete GPU coverage; default and legacy decode are `.cpu`, explicit unavailable `.gpu` fails without silent fallback. |
 | Retire executable SwiftUI Demo/UI work from the active project after a verified archive. | The project now optimizes for SDK algorithms, SwiftPM validation, and render pipelines; Xcode/simulator/UI work consumes effort without defining SDK correctness. | Planned for v1.16 Phase 66: ZIP + manifest/hash verification, then original UI/Demo removal and SDK-only owner cleanup. |
@@ -600,4 +670,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-08-16 after Phase 71 METAL-01 runtime closeout*
+*Last updated: 2026-08-22 after starting milestone v1.18 Upper-Eyelid Fullness Reduction*
