@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.18
 milestone_name: Upper-Eyelid Fullness Reduction
 status: planning
-last_updated: "2026-08-22T09:40:14+08:00"
+last_updated: "2026-08-22T11:10:12+08:00"
 last_activity: 2026-08-22
 progress:
   total_phases: 5
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
-  percent: 20
+  completed_phases: 2
+  total_plans: 4
+  completed_plans: 4
+  percent: 40
 ---
 
 # Project State
@@ -28,10 +28,10 @@ per-eye fail-closed support, and original-pixel local composition.
 
 ## Current Position
 
-Phase: 76 of 79 (Per-Eye Semantic Support Ownership)
+Phase: 77 of 79 (Deterministic Fullness Editor)
 Plan: —
-Status: Phase 75 passed; ready to discuss and plan Phase 76
-Last activity: 2026-08-22 — Phase 75 contract/evidence gates passed with exact public absence preserved
+Status: Phase 76 passed; ready to discuss and plan Phase 77
+Last activity: 2026-08-22 — Phase 76 support ownership, composition, privacy, and full no-skip gates passed with exact public absence preserved
 
 ## v1.18 Roadmap Context
 
@@ -232,17 +232,31 @@ None found under `.planning/todos/pending/`.
 - No production Swift, public field, route, renderer case, preset, resource,
   package dependency, or Testing SPI changed.
 
+## Phase 76 Closeout
+
+- SUP-01/02 are complete as package-only fail-closed support requirements.
+- The semantic support suite passed 10/10; the focused route/composition suite
+  passed 52/0 with 3 existing Apple Vision opt-in tests gated by environment.
+- The Phase-76 checker rejected all 8 isolated mutations and passed its live
+  exact-compatibility/privacy inventory. The archive-first full gate passed
+  790/0/0 with zero unexpected skips.
+- One shared mapped observation now feeds one semantic-owner call; each eye is
+  independently supported or source-exact no-op, and overlap returns source.
+- No public field, route, renderer case, preset, resource, package dependency,
+  provider, or Testing SPI changed. No genuine efficacy, naturalness, device,
+  commercial, packaging, shipping, launch, or release-readiness claim follows.
+
 ## Session Continuity
 
-Last session: 2026-08-22T09:10:17+08:00
-Stopped at: Phase 75 contract/evidence verification
+Last session: 2026-08-22T11:10:12+08:00
+Stopped at: Phase 76 support ownership verification
 Resume file: `.planning/ROADMAP.md`
-Next action: discuss and plan Phase 76.
+Next action: discuss and plan Phase 77.
 
 ## Operator Next Steps
 
-- Start with Phase 75 semantics, rights manifest, frozen metrics, and sanitized
-  review protocol; do not implement or expose a production control first.
+- Start Phase 77 from the frozen semantics/evidence contract and the package-
+  only per-eye support seam; keep the editor non-public until later gates.
 
 - Preserve the exact 61/5/74 public surface until the Phase-78 aggregate
   decision authorizes the passing branch in Phase 79.

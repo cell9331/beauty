@@ -97,8 +97,8 @@ milestone count below remains 18.
 | SEM-02 | Phase 75 | Complete — seven prohibited proxies independently fail closed |
 | EVID-01 | Phase 75 | Complete — rights/category-complete manifest admission is fail closed; no private bundle persisted |
 | EVID-02 | Phase 75 | Complete — frozen rubric/blinded-review schema and aggregate-only evaluator output |
-| SUP-01 | Phase 76 | Pending |
-| SUP-02 | Phase 76 | Pending |
+| SUP-01 | Phase 76 | Complete — one shared mapped observation, package-only semantic approval, and CoordinateMapper-only conversion |
+| SUP-02 | Phase 76 | Complete — independent typed per-eye outcomes, source-exact rejection, and overlap-to-source composition |
 | ALG-01 | Phase 77 | Pending |
 | SAFE-01 | Phase 77 | Pending |
 | SAFE-02 | Phase 77 | Pending |
@@ -122,4 +122,4 @@ milestone count below remains 18.
 
 ---
 *Requirements defined: 2026-08-22*
-*Last updated: 2026-08-22 after Phase 75 contract/evidence verification*
+*Last updated: 2026-08-22 after Phase 76 support ownership verification*
