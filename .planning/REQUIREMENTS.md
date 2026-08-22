@@ -1,13 +1,13 @@
-# Requirements: Beauty v1.17
+# Requirements: Beauty v1.18
 
-**Defined:** 2026-08-15
+**Defined:** 2026-08-22
 **Core Value:** An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
 
 ## Standing Project Validation Requirements
 
 These requirements apply to all current and future SDK milestones. They are
-project policy, not additional historical v1.17 checklist rows, so the 13-item
-v1.17 traceability count below remains unchanged.
+project policy rather than additional v1.18 traceability rows, so the active
+milestone count below remains 18.
 
 | ID | Requirement |
 | --- | --- |
@@ -19,125 +19,89 @@ v1.17 traceability count below remains unchanged.
 | PROJECT-VALIDATION-06 | Without separately authorized hardware/product evidence, automated SDK completion makes no device performance, thermal, battery, endurance, commercial visual-quality, packaging, shipping, launch, or release-readiness claim. This is a nonclaim boundary, not a blocker. |
 | PROJECT-VALIDATION-07 | Durable evidence remains aggregate and privacy-safe: do not persist raw inputs/outputs, masks, landmarks, private fixture locators, device photos, or unredacted feedback payloads. |
 
-## Post-Archive Audit Qualification
+## v1.18 Requirements
 
-The checked requirements and traceability table below record the historical
-v1.17 lifecycle completed at `afb04b4`. Its Metal-available Phase-74 evidence
-was focused `12/0/0` and full `765/0/0`; these counts remain historical. The
-current archive-first closeout passed on 2026-08-18 with XCTest `776/0/0`, all
-eight opt-ins exactly once, and `skipped_tests=0`.
+### Product Semantics
 
-Post-archive fixes have restored public non-up/mirrored raw metadata
-compatibility (`53e8da1`), separated unavailable-host coverage from GPU parity
-credit (`d29b90a`), and moved oversized Metal geometry point payloads to a
-request-local shared `MTLBuffer` (`556499a`). Only an available branch reports
-`focused_tests=13` / `parity_executed=1`; unavailable coverage reports
-`parity_executed=0`. Today's available branch recorded `metal_available=1`,
-`metal_unavailable=0`, `parity_executed=1`, `focused_tests=13`, and
-`unavailable_tests=0`; focused preflights passed `24/0/0`, `42/0/0`, `34/0/0`,
-`19/0/0`, and `41/0/0` for backend-neutral, Metal runtime, Metal feature,
-configuration, and CPU reference respectively. F-08 result alpha/extent
-enforcement is remediated. F-09 geometry-envelope provenance now derives from
-one immutable observation with mutation-tested request ownership (`a577dd1`).
-F-02/F-04/F-05/F-10 now have approved bounded dispositions: CPU-owned local-
-retouch composition with identity Metal transport, exact-opaque bounded RGB GPU
-input with named-sRGB output, CPU-oracle still-image math within the pinned
-generated tolerance, and caller-serialized access to each intentionally non-
-`Sendable` engine. These do not add transparent-input support, end-to-end GPU
-local-retouch ownership, or shared-instance parallel safety.
-Accordingly, `[x]` means historically completed plan
-traceability, not current broad CPU/GPU equivalence or release readiness.
+- [ ] **SEM-01**: An SDK integrator can request a cosmetic effect defined only as visually reducing upper-eyelid fullness, without inferring physical fat, anatomy, health, or a surgical outcome.
+- [ ] **SEM-02**: The named effect cannot be satisfied by smoothing, whitening, eye enlargement, brow movement, crease invention, upper-eyelid lift, or geometric warp proxies.
 
-## v1.17 Requirements
+### Evidence and Rights
 
-### Backend Contract and Configuration
+- [ ] **EVID-01**: The milestone evaluates the effect through a complete rights-approved local bundle of genuine positives, negatives, ambiguous cases, pose/occlusion stress cases, identity diversity, and protected-structure cases with a fail-closed provenance manifest.
+- [ ] **EVID-02**: Efficacy and safety metrics, thresholds, and blinded original-detail review rules are frozen before final candidate evaluation, and persistent outputs contain only opaque fixture IDs, hashes, aggregate metrics, normalized reasons, and decisions.
 
-- [x] **BACKEND-01**: SDK execution uses one backend-neutral request/result contract so CPU and Metal share canonical input normalization, support discovery, privacy, alpha, extent, containment, collision-to-source, and failure-isolation semantics.
-- [x] **BACKEND-02**: The existing CPU implementation remains a complete selectable reference backend and backend choice is execution policy, not a `BeautyParameters` field, preset value, or new beauty algorithm.
-- [x] **CONFIG-01**: Public `BeautyConfiguration.renderBackend` exposes exactly `.cpu` and `.gpu`, preserves source/Codable compatibility, and decodes defaults or missing legacy keys as `.cpu`.
-- [x] **CONFIG-02**: An explicitly requested GPU fails with typed `.metalUnavailable` when Metal cannot execute, and no unavailable GPU request silently falls back to CPU or reports success.
+### Per-Eye Support Ownership
 
-### Metal Rendering Pipeline
+- [ ] **SUP-01**: A still-image request performs one shared Vision observation and uses eye/brow landmarks only for conservative envelopes and pose guards; editable fullness support requires a separately approved semantic owner.
+- [ ] **SUP-02**: Left and right eyes receive independent support, confidence, reason, mask, and failure outcomes so an unsupported eye is source-exact and one eye cannot authorize, suppress, or modify the other.
 
-- [x] **METAL-01**: The SDK owns bounded Metal device, command-queue, texture, synchronization, and resource-lifetime handling with deterministic cleanup and no host/UI lifecycle dependency.
-- [x] **METAL-02**: Metal color/skin rendering preserves the CPU feature semantics, named color/alpha metadata, finite bounded math, and untouched pixels outside eligible regions.
-- [x] **METAL-03**: Metal geometry-warp rendering preserves existing CPU direction, cap, extent, protected-region, collision, and no-face degradation semantics for the shipped geometry families.
-- [x] **METAL-04**: Metal local-retouch composition preserves request-local mask ownership, immutable-original composition, protected-region bytes, alpha behavior, and per-unit failure isolation for the shipped still-image retouch families.
+### Candidate Algorithms
 
-### CPU/GPU Parity and Validation
+- [ ] **ALG-01**: The deterministic baseline reduces only bounded low-frequency fullness cues inside approved per-eye support while carrying original high-frequency detail and preserving geometry and alpha exactly.
+- [ ] **ALG-02**: An optional learned candidate may emit only bounded additive color maps, must have approved model/data/redistribution rights, and is eligible only if it materially outperforms the deterministic baseline without weakening any safety gate; generation, inpainting, and warp candidates remain prohibited.
 
-- [x] **PARITY-01**: Generated SwiftPM fixtures compare CPU and GPU outputs through explicit structural checks and bounded floating-point tolerances, with exact neutral bytes and dimensions where the contract requires them.
-- [x] **PARITY-02**: CPU/GPU parity checks cover alpha, color metadata, extent, outside-region preservation, containment, collision-to-source behavior, no-face/degraded requests, and failure-unit isolation without exposing raw masks, landmarks, or pixels in durable reports.
-- [x] **PARITY-03**: Repeated identical requests are deterministic and finite for each available backend, backend selection is request-local and concurrency-safe, and a failed GPU unit does not suppress eligible CPU or face-agnostic siblings.
+### Safety and Image Contract
 
-### SDK-Only Closeout
+- [ ] **SAFE-01**: Composition changes only pixels owned by one approved request-local per-eye mask, keeps every pixel outside support source-exact, and resolves local-mask collisions to the immutable source pixel.
+- [ ] **SAFE-02**: The selected candidate preserves protected eye, lash, crease, and brow geometry plus source skin texture within frozen automated and blinded-review tolerances.
+- [ ] **SAFE-03**: The complete route preserves canonical extent, orientation/mirroring, named color space, alpha, finite bounded math, deterministic repeated output, request-local ownership, and typed fail-closed behavior.
 
-- [x] **CLOSE-01**: The mandatory SwiftPM/SDK-owned gate executes CPU reference tests, backend/configuration compatibility tests, Metal available/unavailable paths, parity probes, and static scope checks with zero failures and zero unexpected skips; unavailable-host coverage is explicit and cannot lend success to GPU parity.
-- [x] **CLOSE-02**: Architecture, design, security, reliability, product, quality, plans, project, requirements, roadmap, and state owners consistently describe retained CPU plus selectable GPU semantics while excluding UI/Demo, simulator/device, commercial, packaging, shipping, and release-readiness claims.
+### Genuine Quality Gate
+
+- [ ] **QUAL-01**: Genuine positive cases pass the frozen automated criteria and blinded original-detail review by demonstrating reduced upper-eyelid fullness without a prohibited proxy or protected-structure regression.
+- [ ] **QUAL-02**: Genuine negative, ambiguous, unsupported, occluded, closed/blinking, and extreme-pose cases are source-exact or remain within a predeclared no-op tolerance, and generated adversarial fixtures prove containment and metadata mechanics independently.
+
+### Compatibility and Backend Contract
+
+- [ ] **COMPAT-01**: Before promotion, public compatibility remains exactly 61 `BeautyParameters` fields, five neutral presets, and 74 renderer cases, with no placeholder field, route, preset, or public/SPI activation that implies the effect exists.
+- [ ] **COMPAT-02**: If and only if every promotion gate passes, the SDK appends exactly one default-zero public parameter and one renderer case for an exact 62-field/five-preset/75-case inventory while preserving Codable migration, normalization, reset, equality, neutral identity, and legacy call behavior.
+- [ ] **BACKEND-01**: The CPU implementation remains the authoritative oracle and the selected GPU route satisfies the existing output contract or typed availability failure without modifying retained `Warp.metal`, adding a Metal/GPU API/backend, or claiming device performance.
+
+### Conditional Promotion and Documentation
+
+- [ ] **PROMOTE-01**: A reproducible aggregate decision promotes the public field and route only when every semantic, rights, support, efficacy, safety, privacy, compatibility, and backend gate passes; any failed gate leaves the field and route exactly absent and keeps `eyes` partial.
+- [ ] **DOCS-01**: Root contract owners, `PLANS.md`, quality evidence, public SDK guidance, and `docs/SDK_EFFECT_TAXONOMY.md` record the selected branch and preserve explicit nonclaims for UI/Demo, realtime/video, device, commercial quality, packaging, shipping, launch, and release readiness.
 
 ## Future Requirements
 
-### Later GPU Expansion
+### Later Input and Runtime Expansion
 
-- **GPU-FUTURE-01**: Additional Metal feature families or new beauty parameters are added only through a separately scoped milestone with independent CPU reference and parity evidence.
-- **GPU-FUTURE-02**: Device-specific performance budgets, thermal/long-run evidence, binary packaging, distribution, commercial visual approval, and release readiness are evaluated in a dedicated product/release milestone.
+- **INPUT-FUTURE-01**: Transparent-input support is designed and validated through a separately scoped canonical-input milestone.
+- **INPUT-FUTURE-02**: HDR, wide-gamut preservation beyond the current named-sRGB contract, and gain-map behavior receive independent image-contract evidence.
+- **RUNTIME-FUTURE-01**: Realtime/pixel-buffer and video support receive independent latency, temporal stability, memory, failure, and privacy requirements.
+
+### Later Product and Device Evidence
+
+- **PRODUCT-FUTURE-01**: UI/Demo controls and interaction behavior are considered only if the SDK-only product boundary is explicitly changed.
+- **PRODUCT-FUTURE-02**: Device performance, thermal, battery, long-run stability, commercial visual approval, packaging, distribution, shipping, launch, and release readiness require separately authorized product/hardware evidence.
 
 ## Out of Scope
 
 | Feature | Reason |
 | --- | --- |
-| SwiftUI screens, Demo behavior, Xcode app targets, simulator automation, or physical-device testing | The active product is the SDK/algorithm package; legacy UI/Demo remains archive-only. |
-| New beauty parameters, presets, semantic-mask features, `去脂`, hairline, double-chin, or unrelated algorithm breadth | v1.17 changes render backends for the shipped feature set; new algorithm scope needs separate evidence and requirements. |
-| Network/cloud processing, third-party beauty SDKs, remote models, or unapproved assets | Violates the local-first and resource-trust boundaries. |
-| Tracked portrait media, raw masks/landmarks/pixels, or durable private fixture locators | Mandatory validation uses generated Swift fixtures and aggregate-only diagnostics. |
-| Device/commercial/performance-budget, packaging, distribution, shipping, launch, or release-readiness claims | These require separate product and hardware evidence and are not implied by SDK-host Metal tests. |
+| Medical fat estimation, anatomy diagnosis, surgical simulation, or clinical claims | v1.18 owns a bounded cosmetic visual effect only. |
+| Eye enlargement, upper-eyelid lift, crease invention, brow movement, whitening, smoothing, or warp aliases | They change different visual variables and cannot satisfy the named effect. |
+| Full-pixel generation, inpainting, cloud inference, network models, or remote assets | They violate original-pixel ownership, local-first privacy, and deterministic distribution boundaries. |
+| Public activation before the genuine gate passes | The user selected conditional productization; exact absence is the required failed-gate result. |
+| New Metal/GPU API or backend, retained `Warp.metal` changes, or a new unrelated algorithm | v1.18 extends the existing still-image local-retouch path only. |
+| SwiftUI screens, Demo behavior, application lifecycle, or UI automation | The repository remains an SDK-only Swift package and legacy UI stays archive-only. |
+| Realtime/video, transparent input, HDR/gain maps, device validation, performance budgets, commercial approval, packaging, shipping, launch, or release readiness | Each requires independent contracts and evidence and is not implied by SDK automation. |
+| Tracked fixture media, raw inputs/outputs, masks, landmarks, private paths, or biometric-like descriptors | Private local evidence must remain request-local or outside persistent repository artifacts. |
 
-## Historical v1.17 Traceability
+## Traceability
+
+Roadmap phase mappings are populated after roadmap approval.
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| BACKEND-01 | Phase 70 | Complete |
-| BACKEND-02 | Phase 70 | Complete |
-| CONFIG-01 | Phase 73 | Complete |
-| CONFIG-02 | Phase 73 | Complete |
-| METAL-01 | Phase 71 | Complete |
-| METAL-02 | Phase 72 | Complete |
-| METAL-03 | Phase 72 | Complete |
-| METAL-04 | Phase 72 | Complete |
-| PARITY-01 | Phase 74 | Complete |
-| PARITY-02 | Phase 74 | Complete |
-| PARITY-03 | Phase 74 | Complete |
-| CLOSE-01 | Phase 74 | Complete |
-| CLOSE-02 | Phase 74 | Complete |
-
-### Phase 71 Completion Evidence
-
-`METAL-01` is complete through the exact Phase-71 plan chain `71-01-PLAN.md`,
-`71-02-PLAN.md`, `71-03-PLAN.md`, and `71-04-PLAN.md`. The final aggregate
-evidence is archive-first: `check-metal-runtime.sh --self-test` and live
-preflight pass with focused `26` tests, `0` failures, `0` skips,
-`metal_available=1`, and `metal_unavailable=0`; the post-archive SDK-only
-boundary and no-skip wrapper self-test pass; and
-`run-no-skip-swiftpm.sh` completes `728` tests with `0` failures, `0` skips,
-and all eight documented opt-ins executed exactly once. Runtime cleanup and
-terminal-error behavior are represented only by bounded aggregate status in
-the package-owned checks.
-
-This completion records package-only runtime mechanics and does not claim a
-public `.gpu` selector, feature-pass parity, a new algorithm, UI/Demo
-lifecycle, simulator or physical-device validation, performance, commercial
-approval, packaging, shipping, launch, or release readiness. Phase 72 owns
-Metal feature passes; Phase 73 owns public `.cpu`/`.gpu` configuration and
-typed availability policy; Phase 74 owns parity and SDK-only closeout.
 
 **Coverage:**
 
-- v1.17 requirements: 13 total
-- Mapped to phases: 13
-- Unmapped: 0
-- Duplicate mappings: 0
-- Coverage: 100%
+- v1.18 requirements: 18 total
+- Mapped to phases: 0
+- Unmapped: 18
 
 ---
-*Requirements defined: 2026-08-15*
-*Last updated: 2026-08-19 with standing project validation requirements; historical Phase-74 traceability retained with current-gap qualification*
+*Requirements defined: 2026-08-22*
+*Last updated: 2026-08-22 after user approval of the v1.18 conditional-productization scope*
