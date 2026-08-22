@@ -327,3 +327,19 @@ The current bounded closeout evidence is backend-neutral `24/0/0`, Metal
 runtime `42/0/0`, Metal feature `34/0/0`, configuration `19/0/0`, CPU reference
 `41/0/0`, parity `13/0/0`, and full XCTest `776/0/0`. These results close F-01
 through F-10 while retaining the excluded product claims.
+
+## Phase 76 Per-Eye Support Reliability
+
+The package-only upper-eyelid support seam reuses one mapped Vision observation
+and performs one semantic-owner call per request. Missing or malformed support
+is isolated to the smallest eye region; the peer remains independently
+eligible, while an unsupported eye returns source-exact bytes. Confidence,
+finite dimensions, hard-envelope containment, unique pixel ownership, and
+typed pose/occlusion reasons are checked before downstream composition.
+
+The existing `CoordinateMapper` remains the only orientation/mirror conversion
+boundary. The composition handoff uses the immutable canonical source and
+returns overlap claims to that source with an aggregate collision count. This
+phase proves package-host mechanics and privacy only; no genuine efficacy,
+device, performance, commercial, packaging, shipping, launch, or
+release-readiness claim follows.

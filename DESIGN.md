@@ -196,6 +196,24 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
 - `BeautyFaceGeometryAdapter` validates each canonical side independently as an exact-bit-unique finite closed-unit open path with **4...16** points, face-relative endpoint chord **0.08...0.50**, vertical span at most **0.25**, no non-adjacent segment intersection, and projection epsilon **0.000001**. A semantic trace preserves exact canonical points, inner/outer endpoints, arithmetic center, and only a unique interior apex above epsilon; apex is optional and not Phase 49 provider eligibility. `BeautyEyebrowSemanticSupport.left/right` remain independent optionals and `pairEligible` is true only when both distinct sides survive.
 - Raw `BeautyObservedEyebrowSupport` and derived `BeautyEyebrowSemanticSupport` are immutable, package/internal, non-Codable, request-scoped values attached as `observedEyebrowSupport` on the observation and `FaceGeometry`. Phase 49 keeps every new scalar inert: no face-geometry trigger, effective strength, provider, resolver/conflict case, facade route, render/output/gallery case, Demo/UI behavior, or row promotion exists. Phase 50 owns provider and routing behavior; Phases 51-52 own output and safety/promotion.
 
+### v1.18 Phase 76 Per-Eye Semantic Support Boundary
+
+- `BeautyUpperEyelidSemanticRequest` consumes one already-selected immutable
+  `BeautyFaceObservation` and an already-mapped image-normalized eye envelope.
+  The semantic owner never performs coordinate conversion and never treats
+  landmarks, brow geometry, aperture, crease, texture, or color as fullness
+  authority.
+- A package-only injected semantic owner must explicitly approve each eye. The
+  owner validates finite dimensions/confidence, hard containment, unique
+  in-bounds pixel ownership, and pose/occlusion rejection before returning
+  independent `.supported` or `.sourceExactNoOp` outcomes. Left and right
+  state cannot authorize, suppress, or retain the peer.
+- `VisionFaceDetector.detectWithUpperEyelidSupport` calls the existing detector
+  once, selects the first mapped observation, and calls the semantic owner once.
+  The existing `CoordinateMapper` remains the sole orientation/mirror boundary;
+  no public field, route, renderer case, preset, resource, or persistent raw
+  support surface is created. Phase 77 owns any downstream editor decision.
+
 ### Phase 50 Independent Eyebrow Geometry Contract
 
 - The seven same-named effective strengths use provisional cap `0.25` once: signed `eyebrowYPosition`, `eyebrowThickness`, `eyebrowLength`, `eyebrowSpacing`, `eyebrowHeadSpacing`, and `eyebrowTilt`, plus positive-only `eyebrowPeakDefinition`. The provisional eyebrow subtotal is `1.75`; Phase 52, not this contract, owns final calibration.

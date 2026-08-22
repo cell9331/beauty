@@ -100,6 +100,52 @@ package struct VisionFaceDetectionResult: Equatable, Sendable {
     package let summary: BeautyDetectionSummary
 }
 
+package struct VisionFaceDetectionWithUpperEyelidSupportResult: Equatable, Sendable {
+    package let detectionSummary: BeautyDetectionSummary
+    package let selectedObservationID: String?
+    package let supportResolution: BeautyUpperEyelidSupportResolution
+
+    package init(
+        detectionSummary: BeautyDetectionSummary,
+        selectedObservationID: String?,
+        supportResolution: BeautyUpperEyelidSupportResolution
+    ) {
+        self.detectionSummary = detectionSummary
+        self.selectedObservationID = selectedObservationID
+        self.supportResolution = supportResolution
+    }
+
+    package var summary: BeautyDetectionSummary { detectionSummary }
+    package var resolution: BeautyUpperEyelidSupportResolution { supportResolution }
+}
+
+extension VisionFaceDetectionWithUpperEyelidSupportResult: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+    package var description: String {
+        "VisionFaceDetectionWithUpperEyelidSupportResult("
+            + "availability: \(detectionSummary.availability.rawValue), "
+            + "faceCount: \(detectionSummary.faceCount), "
+            + "usedFaceCount: \(detectionSummary.usedFaceCount), "
+            + "selectedObservationAvailable: \(selectedObservationID != nil), "
+            + "supportedEyeCount: \(supportResolution.supportedEyeCount))"
+    }
+
+    package var debugDescription: String { description }
+
+    package var customMirror: Mirror {
+        Mirror(
+            self,
+            children: [
+                "availability": detectionSummary.availability.rawValue,
+                "faceCount": detectionSummary.faceCount,
+                "usedFaceCount": detectionSummary.usedFaceCount,
+                "selectedObservationAvailable": selectedObservationID != nil,
+                "supportedEyeCount": supportResolution.supportedEyeCount,
+            ],
+            displayStyle: .struct
+        )
+    }
+}
+
 package struct VisionFaceDetectionInput: @unchecked Sendable {
     package let metadata: BeautyInputMetadata
     package let imageExtent: CGSize
@@ -219,6 +265,48 @@ package struct VisionFaceDetector: Sendable {
                 )
             )
         }
+    }
+
+    package mutating func detectWithUpperEyelidSupport(
+        image: CIImage?,
+        metadata: BeautyInputMetadata,
+        imageExtent: CGSize = CGSize(width: 1, height: 1),
+        previewExtent: CGSize? = nil,
+        configuration: BeautyConfiguration = .default,
+        semanticOwner: BeautyUpperEyelidSemanticSupportOwner.SemanticOwner? = nil
+    ) -> VisionFaceDetectionWithUpperEyelidSupportResult {
+        let detection = detect(
+            image: image,
+            metadata: metadata,
+            imageExtent: imageExtent,
+            previewExtent: previewExtent,
+            configuration: configuration,
+            purpose: .localSupport
+        )
+        guard let observation = detection.observations.first,
+              let dimensions = imageDimensions(imageExtent)
+        else {
+            return VisionFaceDetectionWithUpperEyelidSupportResult(
+                detectionSummary: detection.summary,
+                selectedObservationID: nil,
+                supportResolution: BeautyUpperEyelidSupportResolution(
+                    left: .sourceExactNoOp(side: .left, confidence: 0, reason: .missingEyeEnvelope),
+                    right: .sourceExactNoOp(side: .right, confidence: 0, reason: .missingEyeEnvelope)
+                )
+            )
+        }
+
+        let supportResolution = BeautyUpperEyelidSemanticSupportOwner.resolve(
+            observation: observation,
+            imageWidth: dimensions.width,
+            imageHeight: dimensions.height,
+            semanticOwner: semanticOwner
+        )
+        return VisionFaceDetectionWithUpperEyelidSupportResult(
+            detectionSummary: detection.summary,
+            selectedObservationID: observation.stableID,
+            supportResolution: supportResolution
+        )
     }
 
     package mutating func resetTracking() {
@@ -813,6 +901,26 @@ package struct VisionFaceDetector: Sendable {
             throw CoordinateMapper.MappingError.invalidCoordinate
         }
         return axis / length
+    }
+
+    private func imageDimensions(_ extent: CGSize) -> (width: Int, height: Int)? {
+        guard extent.width.isFinite,
+              extent.height.isFinite,
+              extent.width >= 1,
+              extent.height >= 1,
+              extent.width <= Double(Int.max),
+              extent.height <= Double(Int.max)
+        else {
+            return nil
+        }
+        let width = Int(extent.width)
+        let height = Int(extent.height)
+        guard Double(width) == extent.width,
+              Double(height) == extent.height
+        else {
+            return nil
+        }
+        return (width, height)
     }
 
     private static func makeSupport(

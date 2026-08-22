@@ -186,6 +186,84 @@ final class VisionFaceDetectorTests: XCTestCase {
         XCTAssertFalse(String(describing: result.summary).contains("CoordinateRect"))
     }
 
+    func testSUP01UpperEyelidSupportUsesOneObservationAndOneOwnerCall() {
+        let provider = UpperEyelidSupportObservationProvider()
+        var detector = VisionFaceDetector(observationProvider: provider.call)
+        let probe = UpperEyelidSupportOwnerProbe()
+
+        let result = detector.detectWithUpperEyelidSupport(
+            image: nil,
+            metadata: metadata(),
+            imageExtent: CGSize(width: 20, height: 20),
+            semanticOwner: { requests in
+                probe.record(requests)
+                return requests.map { request in
+                    return BeautyUpperEyelidSemanticApproval(
+                        side: request.side,
+                        approved: true,
+                        confidence: 0.9,
+                        reason: .approved,
+                        pixelIndices: [upperEyelidPixelIndex(in: request.eyeEnvelope, width: 20, height: 20)],
+                        hardEnvelope: request.eyeEnvelope
+                    )
+                }
+            }
+        )
+
+        XCTAssertEqual(provider.invocationCount, 1)
+        XCTAssertEqual(probe.callCount, 1)
+        XCTAssertEqual(result.selectedObservationID, "selected-face")
+        XCTAssertEqual(probe.requestedIDs, ["selected-face", "selected-face"])
+        XCTAssertEqual(result.supportResolution.supportedEyeCount, 2)
+        XCTAssertEqual(result.summary.faceCount, 1)
+    }
+
+    func testSUP02MalformedMappedEyeSupportLeavesValidPeerAsIndependentNoOp() {
+        let provider = UpperEyelidSupportObservationProvider(
+            support: [
+                BeautyObservedEyeSupport(
+                    side: .left,
+                    contour: [
+                        CoordinatePoint(x: 0.20, y: 0.20),
+                        CoordinatePoint(x: 0.40, y: 0.20),
+                        CoordinatePoint(x: 0.40, y: 0.40),
+                        CoordinatePoint(x: 0.20, y: 0.40),
+                    ]
+                ),
+                BeautyObservedEyeSupport(
+                    side: .right,
+                    contour: [CoordinatePoint(x: .nan, y: 0.2)]
+                ),
+            ]
+        )
+        var detector = VisionFaceDetector(observationProvider: provider.call)
+
+        let result = detector.detectWithUpperEyelidSupport(
+            image: nil,
+            metadata: metadata(),
+            imageExtent: CGSize(width: 20, height: 20),
+            semanticOwner: { requests in
+                requests.map { request in
+                    BeautyUpperEyelidSemanticApproval(
+                        side: request.side,
+                        approved: true,
+                        confidence: 0.9,
+                        reason: .approved,
+                        pixelIndices: [upperEyelidPixelIndex(in: request.eyeEnvelope, width: 20, height: 20)],
+                        hardEnvelope: request.eyeEnvelope
+                    )
+                }
+            }
+        )
+
+        XCTAssertEqual(result.supportResolution.supportedEyeCount, 1)
+        guard case .supported(.left, _, _, _, _) = result.supportResolution.left,
+              case .sourceExactNoOp(.right, _, .missingEyeEnvelope) = result.supportResolution.right
+        else {
+            return XCTFail("expected one mapped eye and one typed no-op")
+        }
+    }
+
     func testSUPP01InjectedContourAndMedianMapExactlyOnceIntoImageCoordinates() throws {
         let support = BeautyObservedFaceSupport(
             contour: [
@@ -1028,4 +1106,80 @@ private enum FixtureError: Error, CustomStringConvertible {
             "Could not read required fixture: \(name)"
         }
     }
+}
+
+private final class UpperEyelidSupportObservationProvider: @unchecked Sendable {
+    private let lock = NSLock()
+    private let support: [BeautyObservedEyeSupport]
+    private var invocations = 0
+
+    init(support: [BeautyObservedEyeSupport]? = nil) {
+        self.support = support ?? [
+            BeautyObservedEyeSupport(
+                side: .left,
+                contour: [
+                    CoordinatePoint(x: 0.20, y: 0.20),
+                    CoordinatePoint(x: 0.40, y: 0.20),
+                    CoordinatePoint(x: 0.40, y: 0.40),
+                    CoordinatePoint(x: 0.20, y: 0.40),
+                ]
+            ),
+            BeautyObservedEyeSupport(
+                side: .right,
+                contour: [
+                    CoordinatePoint(x: 0.60, y: 0.20),
+                    CoordinatePoint(x: 0.80, y: 0.20),
+                    CoordinatePoint(x: 0.80, y: 0.40),
+                    CoordinatePoint(x: 0.60, y: 0.40),
+                ]
+            ),
+        ]
+    }
+
+    var invocationCount: Int {
+        lock.withLock { invocations }
+    }
+
+    func call(_ input: VisionFaceDetectionInput) throws -> [VisionDetectionObservation] {
+        lock.withLock { invocations += 1 }
+        return [VisionDetectionObservation(
+            stableID: "selected-face",
+            visionBounds: CoordinateRect(x: 0, y: 0, width: 1, height: 1),
+            observedEyeSupport: support
+        )]
+    }
+}
+
+private final class UpperEyelidSupportOwnerProbe: @unchecked Sendable {
+    private let lock = NSLock()
+    private var calls = 0
+    private var ids: [String?] = []
+
+    func record(_ requests: [BeautyUpperEyelidSemanticRequest]) {
+        lock.withLock {
+            calls += 1
+            ids = requests.map(\.observation.stableID)
+        }
+    }
+
+    var callCount: Int { lock.withLock { calls } }
+    var requestedIDs: [String?] { lock.withLock { ids } }
+}
+
+private func upperEyelidPixelIndex(in envelope: CoordinateRect, width: Int, height: Int) -> Int {
+    for pixelIndex in 0..<(width * height) {
+        let column = pixelIndex % width
+        let row = pixelIndex / width
+        let point = CoordinatePoint(
+            x: (Double(column) + 0.5) / Double(width),
+            y: (Double(row) + 0.5) / Double(height)
+        )
+        if point.x >= envelope.minX,
+           point.x <= envelope.maxX,
+           point.y >= envelope.minY,
+           point.y <= envelope.maxY {
+            return pixelIndex
+        }
+    }
+    return 0
 }

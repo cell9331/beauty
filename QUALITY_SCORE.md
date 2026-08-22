@@ -251,3 +251,17 @@ bounded evidence is parity `13/0/0` and full `776/0/0`; it does not establish
 transparent input, end-to-end GPU local retouch, shared-instance parallel safety, UI/Demo,
 simulator/device, performance, commercial, packaging, shipping, launch, or
 release-readiness quality.
+
+## Phase 76 Per-Eye Support Quality Evidence
+
+Phase 76 adds 10 adversarial semantic-owner tests, one-request/one-owner route
+tests, and two original-pixel composition handoff tests. The focused closeout
+executes 52 tests with zero failures; three existing Apple Vision integration
+tests remain environment-gated opt-ins. The standard-library boundary checker
+rejects eight isolated mutations covering shared-observation reuse, side
+coupling, semantic approval bypass, typed no-op fallback, finite/containment
+bypass, orientation/mirror duplication, overlap-to-source behavior, and
+privacy leakage. The archive-first full gate passes 790 tests with zero
+failures and zero skips. These are SDK mechanics and compatibility results;
+they do not establish genuine efficacy, naturalness, device, commercial,
+packaging, shipping, launch, or release-readiness quality.

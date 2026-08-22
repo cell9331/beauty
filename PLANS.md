@@ -87,6 +87,25 @@ Outcome:
 - No rights-approved genuine bundle is present in the workspace; metadata-only
   checks prove mechanics only and cannot authorize promotion or tuning.
 
+### C-2026-08-22-phase-76-per-eye-semantic-support-ownership
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
+| Completed | 2026-08-22 |
+| Scope | Add package-only independent per-eye semantic support ownership from one shared mapped observation, source-exact composition handoff tests, and mutation/privacy/compatibility closeout gates. |
+| Plans | `76-01-PLAN.md` owns typed support outcomes and adversarial isolation; `76-02-PLAN.md` owns single-observation routing, composition handoff, and Phase-76 checker. |
+| Requirements | SUP-01 and SUP-02 are complete for the internal fail-closed support contract. |
+| Verification | Focused suite `52/0` with 3 existing opt-in skips; semantic suite `10/0`; checker self-test `8/8` mutation rejections; live checker passed; full archive-first no-skip gate `790/0/0`; `git diff --check` passed. |
+| Boundary | No public field, route, renderer case, preset, resource, package dependency, provider, or Testing SPI was added. No genuine efficacy/naturalness/device/commercial/release claim is made. |
+
+Outcome:
+
+- Each eye now has independent typed support or source-exact no-op from one
+  request-local observation, and overlap is returned to immutable source bytes.
+- The exact 61-field/5-preset/74-renderer public surface remains absent until
+  the Phase-78 evidence decision and Phase-79 branch.
+
 ### C-2026-08-17-phase-74-cpu-gpu-parity-and-sdk-only-closeout
 
 | Field | Value |

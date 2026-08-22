@@ -156,6 +156,15 @@ artifact.
   and colored-interior protections.
 - `去脂` remains future upper-eyelid-fullness work and cannot alias existing eye,
   brow, smoothing, eye-bag, or dark-circle behavior.
+- Phase 76 support remains package-only and request-local. A mapped eye envelope
+  can constrain ownership but cannot authorize fullness; an injected semantic
+  owner must approve each eye independently. Missing, malformed, ambiguous,
+  closed, blinking, occluded, non-finite, duplicate, out-of-bounds, or
+  outside-envelope support returns a typed source-exact no-op.
+- The single-observation support handoff calls Vision once and releases support
+  after the request. Descriptions and mirrors contain only aggregate status,
+  confidence, counts, and reason codes; raw support arrays, coordinates,
+  landmarks, masks, pixels, and private locators never enter durable evidence.
 - Real-fixture masks must match finite zero-origin dimensions/orientation before
   measurement; synthetic/AI fixtures cannot establish product feasibility.
 
