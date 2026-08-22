@@ -343,3 +343,19 @@ returns overlap claims to that source with an aggregate collision count. This
 phase proves package-host mechanics and privacy only; no genuine efficacy,
 device, performance, commercial, packaging, shipping, launch, or
 release-readiness claim follows.
+
+## Phase 77 Deterministic Editor Reliability
+
+The package-only editor validates finite strength, source layout, per-eye
+support, unique/in-bounds ownership, and bounded channel deltas before it emits
+proposals. A neutral request and every invalid or unsupported outcome publish
+no edits; the valid eye remains independent from a rejected peer. Repeated
+requests over the same canonical source are deterministic and preserve the
+exact source residual, alpha, extent, and metadata.
+
+`BeautyLocalRetouchCompositionOwner` remains the terminal source of truth for
+containment, protected/exterior bytes, and overlap-to-source collisions. The
+Phase 77 focused suite is 7/0/0, its boundary checker rejects 8/8 mutations,
+and the archive-first full gate is 797/0/0 with zero skips. These are SDK
+mechanics only; genuine efficacy, device, performance, commercial, packaging,
+shipping, launch, and release-readiness claims remain outside the result.

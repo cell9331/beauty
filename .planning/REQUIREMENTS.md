@@ -99,9 +99,9 @@ milestone count below remains 18.
 | EVID-02 | Phase 75 | Complete — frozen rubric/blinded-review schema and aggregate-only evaluator output |
 | SUP-01 | Phase 76 | Complete — one shared mapped observation, package-only semantic approval, and CoordinateMapper-only conversion |
 | SUP-02 | Phase 76 | Complete — independent typed per-eye outcomes, source-exact rejection, and overlap-to-source composition |
-| ALG-01 | Phase 77 | Pending |
-| SAFE-01 | Phase 77 | Pending |
-| SAFE-02 | Phase 77 | Pending |
+| ALG-01 | Phase 77 | Complete — bounded source-derived low-frequency correction carries original high-frequency residual |
+| SAFE-01 | Phase 77 | Complete — approved per-eye proposals use the existing source-owned composer and overlap-to-source rule |
+| SAFE-02 | Phase 77 | Complete — generated protected/exterior/alpha/metadata/determinism oracles pass |
 | ALG-02 | Phase 78 | Pending |
 | QUAL-01 | Phase 78 | Pending |
 | QUAL-02 | Phase 78 | Pending |
@@ -122,4 +122,4 @@ milestone count below remains 18.
 
 ---
 *Requirements defined: 2026-08-22*
-*Last updated: 2026-08-22 after Phase 76 support ownership verification*
+*Last updated: 2026-08-22 after Phase 77 deterministic editor verification*

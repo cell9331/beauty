@@ -214,6 +214,23 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
   no public field, route, renderer case, preset, resource, or persistent raw
   support surface is created. Phase 77 owns any downstream editor decision.
 
+### v1.18 Phase 77 Deterministic Fullness Editor Boundary
+
+- `BeautyUpperEyelidFullnessEditor` is package-only and consumes the Phase 76
+  per-eye support resolution plus a canonical RGBA8 source. It computes a
+  deterministic 3x3 low-frequency box average, applies a bounded additive RGB
+  correction, and carries the exact source-minus-low-frequency residual into
+  the corrected result; alpha, extent, orientation, mirror, and color metadata
+  remain source-owned.
+- The editor emits only request-local aggregate summaries and Q16 proposals.
+  Neutral strength, invalid source/support, and unsupported eyes are typed
+  outcomes. `BeautyLocalRetouchCompositionOwner` remains the sole owner of
+  source binding, hard containment, protected/exterior pixels, overlap-to-
+  source collision handling, and final output units.
+- Phase 77 adds no public parameter, preset, renderer case, facade route,
+  model, resource, or genuine efficacy claim. It proves deterministic SDK
+  mechanics only; Phase 78 owns rights-approved evaluation and promotion.
+
 ### Phase 50 Independent Eyebrow Geometry Contract
 
 - The seven same-named effective strengths use provisional cap `0.25` once: signed `eyebrowYPosition`, `eyebrowThickness`, `eyebrowLength`, `eyebrowSpacing`, `eyebrowHeadSpacing`, and `eyebrowTilt`, plus positive-only `eyebrowPeakDefinition`. The provisional eyebrow subtotal is `1.75`; Phase 52, not this contract, owns final calibration.

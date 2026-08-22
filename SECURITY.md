@@ -165,6 +165,14 @@ artifact.
   after the request. Descriptions and mirrors contain only aggregate status,
   confidence, counts, and reason codes; raw support arrays, coordinates,
   landmarks, masks, pixels, and private locators never enter durable evidence.
+- Phase 77’s editor accepts only independently approved per-eye support and
+  clamps every source-safe channel delta before proposal emission. It never
+  writes raw pixels or masks to diagnostics, and rejected eyes remain
+  source-exact without affecting an eligible peer.
+- Final composition is still owned by the existing composition owner: exterior
+  and protected bytes, alpha, metadata, and overlap-to-source collision policy
+  are enforced there. The editor cannot bypass that owner or authorize a
+  public route.
 - Real-fixture masks must match finite zero-origin dimensions/orientation before
   measurement; synthetic/AI fixtures cannot establish product feasibility.
 

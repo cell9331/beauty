@@ -106,6 +106,26 @@ Outcome:
 - The exact 61-field/5-preset/74-renderer public surface remains absent until
   the Phase-78 evidence decision and Phase-79 branch.
 
+### C-2026-08-22-phase-77-deterministic-fullness-editor
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
+| Completed | 2026-08-22 |
+| Scope | Add a package-only bounded source-derived low-frequency editor with original high-frequency residual carry, then prove source-owned composition and protected-region safety. |
+| Plans | `77-01-PLAN.md` owns the deterministic editor and pixel equation; `77-02-PLAN.md` owns composition safety, mutation/privacy checks, and no-skip closeout. |
+| Requirements | ALG-01, SAFE-01, and SAFE-02 are complete for generated mechanics and source-owned safety only. |
+| Verification | Editor/safety focused suite `7/0`; checker self-test `8/8` mutation rejections; live checker passed; full archive-first no-skip gate `797/0/0`; `git diff --check` passed. |
+| Boundary | No public field, route, renderer case, preset, resource, Metal/API/backend, provider, or Testing SPI was added. No genuine efficacy/naturalness/device/commercial/release claim is made. |
+
+Outcome:
+
+- The deterministic candidate produces bounded proposals only for approved
+  per-eye support; rejected/exterior/protected/overlap pixels remain owned by
+  immutable source composition.
+- Phase 78 remains the genuine-evidence and candidate-decision gate; absence of
+  a rights-approved bundle cannot be replaced by generated mechanics evidence.
+
 ### C-2026-08-17-phase-74-cpu-gpu-parity-and-sdk-only-closeout
 
 | Field | Value |

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.18
 milestone_name: Upper-Eyelid Fullness Reduction
 status: planning
-last_updated: "2026-08-22T11:10:12+08:00"
+last_updated: "2026-08-22T11:24:21+08:00"
 last_activity: 2026-08-22
 progress:
   total_phases: 5
-  completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
-  percent: 40
+  completed_phases: 3
+  total_plans: 6
+  completed_plans: 6
+  percent: 60
 ---
 
 # Project State
@@ -28,10 +28,10 @@ per-eye fail-closed support, and original-pixel local composition.
 
 ## Current Position
 
-Phase: 77 of 79 (Deterministic Fullness Editor)
+Phase: 78 of 79 (Genuine Evaluation and Candidate Decision)
 Plan: —
-Status: Phase 76 passed; ready to discuss and plan Phase 77
-Last activity: 2026-08-22 — Phase 76 support ownership, composition, privacy, and full no-skip gates passed with exact public absence preserved
+Status: Phase 77 passed; ready to discuss and plan Phase 78
+Last activity: 2026-08-22 — Phase 77 deterministic editor, source-owned safety, privacy, and full no-skip gates passed with exact public absence preserved
 
 ## v1.18 Roadmap Context
 
@@ -246,17 +246,33 @@ None found under `.planning/todos/pending/`.
   provider, or Testing SPI changed. No genuine efficacy, naturalness, device,
   commercial, packaging, shipping, launch, or release-readiness claim follows.
 
+## Phase 77 Closeout
+
+- ALG-01, SAFE-01, and SAFE-02 are complete for generated deterministic
+  mechanics and source-owned safety only.
+- The editor/safety focused suite passed 7/0; the Phase-77 checker rejected all
+  8 isolated mutations and passed its live compatibility/privacy inventory.
+- The archive-first full gate passed 797/0/0 with zero unexpected skips.
+- The editor preserves original high-frequency residuals, bounds source-derived
+  low-frequency deltas, composes only approved per-eye proposals, and returns
+  overlap to immutable source bytes.
+- No public field, route, renderer case, preset, resource, package dependency,
+  provider, Metal/API/backend, or Testing SPI changed. No genuine efficacy,
+  naturalness, device, commercial, packaging, shipping, launch, or release-
+  readiness claim follows.
+
 ## Session Continuity
 
-Last session: 2026-08-22T11:10:12+08:00
-Stopped at: Phase 76 support ownership verification
+Last session: 2026-08-22T11:24:21+08:00
+Stopped at: Phase 77 deterministic editor verification
 Resume file: `.planning/ROADMAP.md`
-Next action: discuss and plan Phase 77.
+Next action: discuss and plan Phase 78.
 
 ## Operator Next Steps
 
-- Start Phase 77 from the frozen semantics/evidence contract and the package-
-  only per-eye support seam; keep the editor non-public until later gates.
+- Start Phase 78 from the frozen Phase-75 evidence contract and evaluate the
+  Phase-77 candidate only through genuine rights-approved local evidence; keep
+  generated mechanics separate from efficacy/naturalness claims.
 
 - Preserve the exact 61/5/74 public surface until the Phase-78 aggregate
   decision authorizes the passing branch in Phase 79.

@@ -265,3 +265,16 @@ privacy leakage. The archive-first full gate passes 790 tests with zero
 failures and zero skips. These are SDK mechanics and compatibility results;
 they do not establish genuine efficacy, naturalness, device, commercial,
 packaging, shipping, launch, or release-readiness quality.
+
+## Phase 77 Deterministic Editor Quality Evidence
+
+Phase 77 adds seven focused editor/safety tests covering neutral identity,
+low-frequency/detail reconstruction, bounded deltas, invalid-input isolation,
+actual RGBA8 exterior/protected/alpha/metadata preservation, and
+overlap-to-source collision behavior. The boundary checker rejects 8/8
+mutations covering public-surface drift, privacy leakage, unbounded edits,
+composition bypass, and peer coupling. Archive-first
+`run-no-skip-swiftpm.sh` passes 797 tests with zero failures and zero skips.
+This is deterministic package mechanics evidence only and does not promote the
+effect or establish genuine efficacy, naturalness, device, commercial,
+packaging, shipping, launch, or release-readiness quality.
