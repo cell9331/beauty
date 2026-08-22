@@ -1,100 +1,85 @@
-# Stack Research
+# Stack Research: v1.18 Upper-Eyelid Fullness Reduction
 
-**Domain:** Local-first iOS still-image teeth whitening and sclera redness reduction
-**Researched:** 2026-08-05
-**Confidence:** HIGH
-**Execution note:** Completed inline because this Codex session exposed no GSD subagent dispatch tool; sources and conclusions remain milestone-scoped.
+**Milestone:** v1.18
+**Researched:** 2026-08-22
+**Decision mode:** Conditional productization
+
+## Execution Note
+
+Research was completed inline because this task did not authorize child agents. The survey covered papers, technical articles, public datasets, GitHub implementations, Apple platform documentation, and the repository's completed local-retouch spikes.
 
 ## Recommended Stack
 
-### Core Technologies
+| Layer | Choice | Role | Decision |
+|---|---|---|---|
+| Package/runtime | Existing Swift 6 SwiftPM package | Keep SDK-only delivery and current target boundaries | Retain |
+| Input normalization | Existing canonical opaque sRGB RGBA8 path | Normalize orientation, mirror state, extent, alpha, and color before semantics | Retain |
+| Coarse localization | Apple Vision face landmarks | Supply eye/brow envelopes and pose context only | Retain, but never treat as fullness semantics |
+| Semantic support | Owned or rights-approved local evidence/model | Identify a conservative editable upper-eyelid region per eye | Required evidence; no public dependency selected |
+| Baseline editor | Deterministic tone/frequency decomposition | Compress low-frequency fullness cues while carrying original high-frequency detail | Primary candidate |
+| Learned comparator | Small additive blend-map model, only if owned/licensed | Predict bounded local color deltas rather than reconstructed pixels | Optional; must beat the baseline |
+| Composition | Existing original-pixel local-retouch composer | Hard containment, collision-to-source, request-local masks, per-eye fail-closed behavior | Retain |
+| CPU/GPU | CPU reference plus existing Metal identity transport | Make the CPU result authoritative and prove selected-output parity | Retain; no new backend/API |
+| Tests | XCTest, SDK renderer, SDK-owned scripts | Pixel and metadata assertions, deterministic fixtures, sanitized review evidence | Extend |
 
-| Technology | Version | Purpose | Why Recommended |
-| --- | --- | --- | --- |
-| Swift / SwiftPM | Repository baseline: Swift tools 6.0; current local toolchain remains authoritative | Public parameters, request-local providers, deterministic transforms, package tests | Already owns all SDK contracts and avoids a dependency or ABI expansion. |
-| Apple Vision | Existing `VNDetectFaceLandmarksRequest` production path; preserve the repository-pinned behavior | One selected-face request providing actual inner/outer lip, eye-contour, and pupil support | Apple exposes the exact coarse regions needed as support. They remain support, not semantic tooth/sclera labels. |
-| Core Image / Core Graphics color management | Existing canonical explicit-sRGB RGBA8 path | Normalize once and deliver the same pixels to Vision, providers, composition, and output | Core Image color-matches input, working, and destination spaces; v1.14 already established one reused context and explicit sRGB output. |
-| Existing pure-Swift local-retouch composer | v1.14 production baseline | Immutable-original Q16 blending, hard containment, collision-to-source, per-unit abstention | This is already verified and should become the sole composition owner for the two new providers. |
+## Runtime Recommendation
 
-### Supporting Components
+### Deterministic baseline
 
-| Component | Version | Purpose | When to Use |
-| --- | --- | --- | --- |
-| `BeautyObservedLipSupport` | Repository baseline | Actual request-local outer/inner lip support | Teeth provider only; never treat either polygon as the tooth mask. |
-| Existing observed eye/pupil support | Repository baseline | Independent left/right eye support | Sclera provider only; each eye validates and fails independently. |
-| Phase 54 local review core | Repository baseline | Rights, polarity, original/mask/after, structured blind review, sanitized export | Before either feature is admitted or promoted. |
-| `BeautyExampleRenderer` and strict decoder | Repository baseline | Public-facade saved-output evidence | After each feature has an admitted production route. |
-| XCTest plus existing Node/Python boundary checkers | Repository baseline | Contract, mutation, privacy, compatibility, and lifecycle verification | Throughout every phase; no new test framework is needed. |
+The first implementation candidate should be a bounded, per-eye tone/frequency operator:
 
-### Development Tools
+1. derive a candidate envelope from Vision eye and eyebrow geometry;
+2. intersect it with a semantic support mask that is owned by the request;
+3. split local luminance into low- and high-frequency components;
+4. reduce only the low-frequency bulge/shadow pattern within the support;
+5. retain original high-frequency texture and original alpha;
+6. compose from original pixels outside the selected local color delta.
 
-| Tool | Purpose | Notes |
-| --- | --- | --- |
-| `swift test --package-path BeautySDK` | Focused and full package verification | Opt-in Apple Vision integration remains a separate explicit gate. |
-| `xcodebuild` with explicit simulator destination | Demo compatibility regression | v1.15 does not activate Demo rows, but must prove they remain honest and compatible. |
-| Local ignored evidence reviewer | Original-detail mask/output inspection | Media, masks, paths, reviewer identity, and raw support remain untracked and non-diagnostic. |
+This approach matches the completed spike evidence: the tone/frequency candidate retained texture energy at approximately `0.9996` and `0.9866` on the synthetic probes with zero measured leakage. That evidence is architectural, not product proof, because it lacks a genuine positive eyelid-fullness bundle.
 
-## Installation
+### Optional learned comparator
 
-No package, model, target, binary, or network service should be added for the deterministic v1.15 path.
+If a model is evaluated, prefer a compact additive blend-map network over inpainting or full-image generation. A three-channel additive map can stay within the repository's original-pixel composition contract and can be clamped to the request-local support. Core ML is technically viable for local semantic segmentation or additive-map inference, but it should be introduced only after model ownership, data rights, failure behavior, and measurable superiority are established.
 
-```bash
-swift package resolve --package-path BeautySDK
-swift test --package-path BeautySDK
-```
+No external model dependency is recommended for the milestone baseline.
 
-## Alternatives Considered
+## Rejected Stack Choices
 
-| Recommended | Alternative | When to Use Alternative |
-| --- | --- | --- |
-| Deterministic Vision-support + color-qualified provider | Learned teeth or eye segmentation model | Only after dataset, checkpoint, conversion, redistribution, checksum, size, cold/warm performance, and measured-superiority gates pass in a separately approved scope. |
-| Existing classic Vision request path | New beta Vision revision with denser landmark constellation | Consider only in a future compatibility phase after final OS availability and cross-version output calibration; do not change revision behavior during v1.15 feature qualification. |
-| CPU/reference deterministic implementation first | New Metal kernel | Add only after correctness and device profiling identify a real bottleneck and preserve the exact byte/safety oracle. |
+| Candidate | Why it is not selected |
+|---|---|
+| Generic face-parsing weights trained on CelebAMask-HQ or LaPa | Their labels do not encode upper-eyelid fullness; common data terms are noncommercial or restrict redistribution |
+| RetouchFormer-style soft inpainting | Reconstructs local pixels, weakens identity/texture guarantees, and has no verified license path suitable for this SDK |
+| AniEyelid or 3D/video eyelid reconstruction | Solves dynamic geometry reconstruction, not conservative still-image fullness reduction; data/code terms are not a product path |
+| Vertical warp | The repository spike already invalidated it: texture retention fell to about `0.9305` and `0.9188` without clearer fullness benefit |
+| Global smoothing or generic eye enlargement | Changes the wrong visual variables and cannot satisfy protected-region or semantic claims |
+| Network/cloud inference | Conflicts with the local, privacy-preserving SDK boundary |
 
-## What NOT to Use
+## Evidence and Tooling
 
-| Avoid | Why | Use Instead |
-| --- | --- | --- |
-| Unlicensed EasyPortrait/Core ML artifact | Dataset/checkpoint/conversion/redistribution chain is not approved; prior cold-load and memory evidence is unfavorable | Existing deterministic providers and a separately gated comparator only. |
-| Whole inner-lip/outer-lip whitening | Includes lips, tongue, gums, and non-tooth aperture pixels | Seeded color-qualified connected candidates inside a hard mouth-local envelope. |
-| Whole-eye or pupil-circle redness transform | Eye landmarks are coarse; blink can make pupil support inaccurate; native dark iris can hide geometric leakage | Per-eye validation, hard iris/highlight exclusions, color scoring, feathering, then hard re-clipping. |
-| Global desaturation/brightness/red suppression | Aliases shipped effects and changes skin, lips, iris, and unrelated pixels | Bounded feature-local transforms derived from immutable original pixels. |
-| Shared mutable mask/provider cache | Risks cross-request portrait leakage and stale support | Stack/request-local immutable context and ephemeral masks only. |
+- Deterministic generated fixtures remain suitable for geometry, containment, orientation, alpha, color-space, parity, and failure tests.
+- A rights-approved local bundle containing genuine positives, negatives, ambiguous cases, and pose/identity stress cases is mandatory for semantic efficacy.
+- Review tooling must export only aggregate metrics, fixture IDs, configuration hashes, and decisions. Raw pixels, masks, landmarks, private locators, and generated images stay out of persistent evidence.
+- Real iPhone testing remains optional feedback after SDK completion and is not a milestone gate unless the user explicitly changes project policy.
 
-## Stack Patterns by Variant
+## Dependency and License Position
 
-**If teeth evidence is incomplete or rejected:**
+- Keep the Swift package dependency graph unchanged for the deterministic baseline.
+- Treat code license and training-data license as separate gates.
+- Do not import public face-parser weights merely because their inference code is MIT licensed.
+- Any Core ML artifact must have an owner, provenance record, permitted commercial use, redistribution rights, version/hash, and a fail-closed absence path before it can enter the package.
 
-- Keep `teethWhitening` absent, production admission unchanged for teeth, and do not begin teeth renderer/promotion work.
-- Continue evidence acquisition without borrowing sclera evidence or candidate status.
+## Primary Sources
 
-**If teeth completes but sclera evidence is incomplete:**
-
-- Preserve the independently shipped teeth slice.
-- Keep `scleraRednessReduction` absent and begin no sclera production route.
-
-**If one sclera eye is unsafe:**
-
-- Abstain only that eye.
-- Never reuse, mirror, infer, or copy support from the accepted peer eye.
-
-## Version Compatibility
-
-| Component | Compatible With | Notes |
-| --- | --- | --- |
-| `BeautyParameters` append-only v1.15 fields | Existing source construction, Codable payloads, five presets, zero defaults | Add each field only in its own independently approved slice and update exact inventory contracts. |
-| Existing `VNDetectFaceLandmarksRequest` | iOS 17 / macOS 14 package floor | Preserve one request and repository-selected face/revision semantics; no second detector request. |
-| Canonical explicit-sRGB RGBA8 carrier | Vision `.up` metadata and local-retouch composer | Both providers and rendering must consume the same carrier. |
-
-## Sources
-
-- [Apple: VNDetectFaceLandmarksRequest](https://developer.apple.com/documentation/vision/vndetectfacelandmarksrequest) — request behavior, input observations, and revisions.
-- [Apple: VNFaceLandmarks2D.innerLips](https://developer.apple.com/documentation/vision/vnfacelandmarks2d/innerlips) — inner lips outline the space between lips; eye, pupil, and outer-lip regions are separate optional support.
-- [Apple: Analyzing a selfie and visualizing its content](https://developer.apple.com/documentation/vision/analyzing-a-selfie-and-visualizing-its-content) — official landmark-region and coordinate-conversion example.
-- [Apple: CIContext](https://developer.apple.com/documentation/coreimage/cicontext) — working/destination color matching, immutable context use, and context reuse guidance.
-- [Apple: CIContext outputColorSpace](https://developer.apple.com/documentation/coreimage/cicontextoption/outputcolorspace) — explicit destination-space behavior.
-- Repository `spike-findings-beauty` references and v1.14 audit — exact local implementation constraints and measured mechanics.
+- [Periorbital semantic segmentation dataset and definitions](https://pmc.ncbi.nlm.nih.gov/articles/PMC12417369/)
+- [Periorbital dataset code repository](https://github.com/aiolab/periorbital-dataset)
+- [CelebAMask-HQ repository and terms](https://github.com/switchablenorms/CelebAMask-HQ)
+- [LaPa dataset repository and terms](https://github.com/jd-opensource/lapa-dataset)
+- [Generic face-parsing implementation](https://github.com/yakhyo/face-parsing)
+- [Local Laplacian filters](https://people.csail.mit.edu/sparis/publi/2011/siggraph/)
+- [Reference Local Laplacian implementation](https://github.com/psalvaggio/local_laplacian_filters)
+- [Band-sifting filters](https://www.cs.cornell.edu/projects/band_sifting_filters/)
+- [Lightweight Additive Blend Maps, AAAI 2026](https://ojs.aaai.org/index.php/AAAI/article/view/41481)
+- [Apple Core ML semantic segmentation guidance](https://developer.apple.com/documentation/coreml/using-core-ml-for-semantic-image-segmentation)
 
 ---
-*Stack research for: v1.15 independent teeth and sclera retouch*
-*Researched: 2026-08-05*
+*Research for v1.18 — upper-eyelid fullness reduction*

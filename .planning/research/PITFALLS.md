@@ -1,180 +1,109 @@
-# Pitfalls Research
+# Pitfall Research: v1.18 Upper-Eyelid Fullness Reduction
 
-**Domain:** Adding teeth whitening and sclera redness reduction to an existing local-first iOS beauty SDK
-**Researched:** 2026-08-05
-**Confidence:** HIGH for known mechanics/integration failures; MEDIUM for real-population calibration
-**Execution note:** Completed inline because this Codex session exposed no GSD subagent dispatch tool.
+**Milestone:** v1.18
+**Researched:** 2026-08-22
 
 ## Critical Pitfalls
 
-### Pitfall 1: Candidate Media Is Mistaken for an Open Product Gate
+### 1. Calling generic eyelid segmentation “fullness detection”
 
-**What goes wrong:** A visible smile or red eye is treated as sufficient evidence, so production fields/providers are added before complete positive/negative review.
+Public periorbital datasets define anatomical regions such as lid, iris, sclera, caruncle, and brow. They do not label cosmetic upper-eyelid fullness. A lid mask can constrain where an edit may occur but cannot establish that the requested condition exists.
 
-**Why it happens:** Authorization, target visibility, polarity, mask containment, and naturalness are collapsed into one informal judgment.
+**Prevention:** Freeze a separate fullness rubric and require genuine positive/negative evidence. Landmarks and lid segmentation are envelopes only.
+**Phase:** semantics/evidence, then support ownership.
 
-**How to avoid:** Require exact feature-specific grants, genuine positive and negative polarity, original/mask/after assets, frozen structured criteria, original-detail review, and a tracked sanitized decision before any route exists.
+### 2. Shipping a semantic alias
 
-**Warning signs:** A ledger row references only `portrait_002`; missing negative; no mask/after digest; review criteria created after looking at output; candidate counts treated as accepted counts.
+Eye enlargement, crease deepening, brow lifting, whitening, smoothing, and local warping can make the eye area look different while failing the named effect. Such proxies create a misleading API even when screenshots look superficially favorable.
 
-**Phase to address:** Suggested Phase 59 for teeth and Phase 62 for sclera.
+**Prevention:** Include alias-specific negatives and reviewer questions. The effect must reduce fullness without changing eye aperture, crease topology, brow geometry, or global skin texture.
+**Phase:** semantics and blinded review.
 
----
+### 3. Treating Vision landmarks as a classifier
 
-### Pitfall 2: Vision Support Is Treated as a Semantic Mask
+Eye and eyebrow points vary with expression, makeup, occlusion, head tilt, and landmark quality. They cannot identify tissue fullness or a safe edit region by themselves.
 
-**What goes wrong:** The whole lip aperture becomes teeth or the whole eye aperture becomes sclera, editing gums, tongue, iris, lashes, or skin.
+**Prevention:** Use them only for envelopes, pose guards, and ownership association; require approved semantics and fail closed otherwise.
+**Phase:** support owner.
 
-**Why it happens:** Landmark polygons are easy to rasterize and appear plausible on one fixture.
+### 4. Tuning on generated or non-genuine positives
 
-**How to avoid:** Use lips/eyes only as hard support envelopes; require target-specific color-qualified candidates, connected seeds for teeth, guarded pupil/iris/highlight exclusions for sclera, and post-filter hard re-clipping.
+Generated fixtures are excellent for containment and metadata but can accidentally encode the expected algorithm. They cannot prove that real upper-eyelid fullness is visibly reduced while identity and detail remain natural.
 
-**Warning signs:** Mask equals polygon fill; no seed plausibility; no protected-tissue counts; no adversarial iris recolor test; feathering occurs after the last hard clip.
+**Prevention:** Make a rights-approved genuine bundle mandatory and keep generated fixtures as safety oracles. Freeze thresholds before final evaluation.
+**Phase:** evidence foundation.
 
-**Phase to address:** Suggested Phases 60 and 63.
+### 5. Ignoring data and weight licenses
 
----
+MIT inference code does not grant rights to its training data or published weights. CelebAMask-HQ, LaPa, CFD, FFHQR, and related datasets carry noncommercial, attribution, share-alike, or redistribution constraints that may be incompatible with a distributable SDK.
 
-### Pitfall 3: Native Color Hides Unsafe Sclera Geometry
+**Prevention:** Gate code, data, weights, derived artifacts, redistribution, and commercial use separately. Default to no model dependency.
+**Phase:** evidence/model gate.
 
-**What goes wrong:** An unsafe mask overlaps the iris but tests pass because the dark native iris receives a low redness score.
+### 6. Mistaking pose or identity cues for fullness
 
-**Why it happens:** Only final changed pixels on ordinary fixtures are measured.
+Head tilt, eyelid crease anatomy, epicanthal folds, eye closure, expression, lashes, makeup, shadows, and demographic variation can dominate local appearance. A detector may learn identity or capture conditions instead of the target cue.
 
-**How to avoid:** Run both a color-independent open-gate geometry oracle and a final-output oracle that recolors protected iris pixels to sclera-like red before recomputing the real mask and transform.
+**Prevention:** Stratify positive/negative evidence, include paired or repeated-identity cases where rights allow, and require pose/occlusion negatives. Do not persist biometric descriptors.
+**Phase:** bundle design and semantic evaluation.
 
-**Warning signs:** Zero iris changes without an independent overlap count; no pupil/contour perturbation grid; no post-feather re-clip assertion.
+### 7. Using warp or blur because it is easy to see
 
-**Phase to address:** Suggested Phases 63–64.
+Strong geometry and smoothing produce obvious demos but damage texture and structure. The repository's vertical-warp spike already showed lower texture retention (`0.9305` and `0.9188`) without clearer target benefit.
 
----
+**Prevention:** Keep geometry exact; edit bounded low-frequency tone and carry source high-frequency detail. Reject global smoothing.
+**Phase:** editor implementation.
 
-### Pitfall 4: Whitening Strength Replaces Mask Quality
+### 8. Reconstructing pixels with inpainting/generation
 
-**What goes wrong:** Weak global color shifts hide leakage in tests, while stronger user values visibly alter lips/skin or flatten enamel and eye texture.
+Soft inpainting and image-to-image retouch models can invent crease, lash, highlight, and identity details. Their output conflicts with exact outside-region and original-pixel ownership guarantees.
 
-**Why it happens:** Teams tune the transform before proving the selection boundary.
+**Prevention:** Permit only source-derived tone/frequency deltas or a bounded additive map. Compose against the original source and route collisions to source.
+**Phase:** editor and composer verification.
 
-**How to avoid:** Freeze mask/protected-region acceptance independently from color transform; test maximum admitted strength; require zero outside-owned changes and natural texture/detail review.
+### 9. Selecting thresholds after seeing results
 
-**Warning signs:** Safety passes only at low strength; changed-pixel thresholds substitute for named protected regions; luminance clips near white; vessel/texture metrics vanish.
+Post-hoc thresholds turn the final bundle into a tuning set and make the promotion decision impossible to audit.
 
-**Phase to address:** Suggested Phases 60–61 and 63–64.
+**Prevention:** Version the rubric, tolerances, bundle taxonomy, and review protocol before candidate evaluation. Any later threshold change invalidates and reruns the decision.
+**Phase:** evidence foundation.
 
----
+### 10. Letting one eye authorize the other
 
-### Pitfall 5: Independent Features Become Coupled
+Shared masks or whole-face confidence can edit an unsupported eye when only one eye is visible or semantically valid.
 
-**What goes wrong:** Teeth and sclera share one field, gate, provider state, failure status, renderer row, or promotion decision; one failure disables the other or one success authorizes the other.
+**Prevention:** Allocate support, confidence, reason codes, masks, and composition ownership independently per eye.
+**Phase:** support/composition.
 
-**Why it happens:** Both are local color edits and reuse one composition core.
+### 11. Claiming GPU or device readiness from simulator/CPU evidence
 
-**How to avoid:** Separate IDs, fields, admission flags, provider units, evidence rows, tests, output cases, and promotion records. Combine only after standalone completion.
+CPU correctness does not prove selected Metal output, device performance, thermal behavior, or production readiness.
 
-**Warning signs:** Generic `localWhitening` name; one aggregate “eligible” Boolean; shared mask buffer; sclera code appears before teeth standalone closeout; combined tests are the only effect proof.
+**Prevention:** Keep CPU as oracle, verify selected-output parity through current SDK gates, and preserve explicit nonclaims. Do not add a backend or modify retained `Warp.metal`.
+**Phase:** integration/closeout.
 
-**Phase to address:** All phases; especially suggested Phases 59, 62, and 65.
+### 12. Persisting face-derived review material
 
----
+Debug crops, masks, landmarks, fixture paths, and detailed per-image descriptors can leak private or biometric-like information into logs and milestone artifacts.
 
-### Pitfall 6: Feature Output Exists but Public Completion Is Unproven
+**Prevention:** Keep the bundle local; export only aggregate metrics, opaque fixture IDs, hashes, reason counts, and reviewer decisions.
+**Phase:** all phases, audited at closeout.
 
-**What goes wrong:** Unit tests show a private transform, but the public facade remains unrouted, defaults break compatibility, or renderer output is invisible/incorrect.
+## Failure Signals That Must Stop Promotion
 
-**Why it happens:** Internal algorithm completion is confused with SDK feature completion.
+- No rights-approved genuine positive bundle is available.
+- Reviewers cannot reliably distinguish the effect from smoothing, whitening, crease editing, or eye enlargement.
+- Any protected eye/brow/crease geometry changes outside tolerance.
+- Texture preservation falls below the frozen threshold.
+- Negative or ambiguous cases edit instead of failing closed.
+- One eye's result affects the other eye's ownership or pixels.
+- A required model lacks commercial/redistribution provenance.
+- The candidate needs a public API, Metal change, or generative fallback before evidence passes.
+- Sanitized evidence cannot reproduce the aggregate promotion result.
 
-**How to avoid:** Require exact public field/normalization/Codable tests, production admission, isolated facade renderer case, strict decoded output, original-detail review, full regression, and owner-ledger equality before promotion.
+## Recovery Strategy
 
-**Warning signs:** Testing-only hook drives output; production admission remains `.none`; no exact inventory update; no public facade test; Demo row is enabled before SDK evidence.
-
-**Phase to address:** Suggested Phases 61 and 64.
-
-## Technical Debt Patterns
-
-| Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
-| --- | --- | --- | --- |
-| Hardcode spike thresholds as product constants | Fast implementation | Unknown demographic, pose, lighting, and capture behavior | Only as explicit calibration seeds behind a closed evidence gate. |
-| Keep exact-empty checker unchanged after activation | Avoid checker rewrite | New legitimate routes are either blocked or broadly allowlisted, weakening absence guarantees | Never; transition it to exact admitted-set validation. |
-| Use one positive portrait and synthetic negatives | Easy evidence | Cannot prove abstention or naturalness on real already-normal input | Mechanics tests only; zero product weight. |
-| Optimize fused full-frame CPU loop first | Appears efficient | Prior spike measured it slower than sparse sequential loops; obscures correctness | Never before profiling a verified implementation. |
-| Track masks/output portraits | Reproducible review | Privacy, rights, and repository-history exposure | Never for portrait-derived evidence under current contract. |
-
-## Integration Gotchas
-
-| Integration | Common Mistake | Correct Approach |
-| --- | --- | --- |
-| Vision | Run separate requests or use different orientation/color inputs per feature | One existing request over the same canonical `.up` image used by rendering. |
-| Public parameters | Add both fields at once because both are planned | Add teeth only after teeth evidence; add sclera only after teeth closure and sclera evidence. |
-| Composer | Sequentially apply teeth then sclera | Submit source-bound proposals; disjoint output matches standalone oracles; overlap retains source. |
-| Demo taxonomy | Enable rows when fields compile | Keep rows disabled unless a separate Demo activation scope is approved. |
-| Evidence export | Persist paths, digests of portraits, notes, or reviewer identity | Export only opaque IDs, fixed judgments/reasons, decisions, and aggregates. |
-
-## Performance Traps
-
-| Trap | Symptoms | Prevention | When It Breaks |
-| --- | --- | --- | --- |
-| Per-request `CIContext` or model load | Cold latency and memory spikes | Reuse existing context; add no model in v1.15 | Large photos and repeated calls. |
-| Full-frame mask growth/blur | CPU scales with entire image despite tiny ROIs | Establish reference semantics first, then profile bounded ROIs with byte-equivalence | Multi-megapixel portraits. |
-| Duplicate Vision requests | Increased latency and detector drift | Share one request context | Every combined request. |
-| Dense intermediate mask copies | Peak memory rises with image size and feature count | Bound allocations, use request-local lifetimes, and measure high-resolution cases | Large canonical RGBA8 inputs. |
-
-## Security and Privacy Mistakes
-
-| Mistake | Risk | Prevention |
-| --- | --- | --- |
-| Persist sclera vessel-like detail | Conjunctival vasculature has been studied as a biometric | Keep masks/detail request-local and diagnostics aggregate-only. |
-| Log paths, raw errors, coordinates, or candidate pixels | Leaks portrait identity/context and implementation support | Typed payload-free errors and fixed allowlisted reason codes. |
-| Cache masks or support across requests | Cross-user image leakage and stale edits | Strong request identity, no engine retention, repeated/parallel/reset tests. |
-| Package unapproved learned weights | License and supply-chain exposure | Separate rights/checksum/resource audit before any model scope. |
-
-## UX Pitfalls
-
-| Pitfall | User Impact | Better Approach |
-| --- | --- | --- |
-| Already-white teeth get brighter | Artificial clipping and lost enamel detail | Yellow-excess-aware bounded change or no-op. |
-| Eye whites become flat/blue | Porcelain appearance and identity/detail loss | Reduce only measured red excess and restore luminance/detail. |
-| One eye changes while unsafe peer is guessed | Asymmetry or iris damage | Independent per-eye abstention and honest partial result. |
-| Unsupported cases silently distort | Users cannot trust the SDK | Deterministic no-op/fail-closed behavior with privacy-safe aggregate outcome. |
-
-## “Looks Done But Isn’t” Checklist
-
-- [ ] **Teeth evidence:** A candidate exists but a genuine positive, negative, complete assets, and frozen review may still be missing.
-- [ ] **Teeth algorithm:** A mask changes teeth but protected lips/gums/tongue/braces/skin and already-light negatives may be unverified.
-- [ ] **Teeth product:** A provider exists but public field, production admission, facade output, compatibility, and ledger may still be absent.
-- [ ] **Sclera evidence:** Visible redness exists but per-eye polarity, normal negatives, mask/after, and review may still be missing.
-- [ ] **Sclera safety:** Native outputs look clean but color-independent and recolored-iris adversarial oracles may be absent.
-- [ ] **Sclera product:** Both eyes work on one portrait but blink/gaze/glasses/highlights, independent failure, public output, and promotion may be unverified.
-- [ ] **Combined closeout:** Standalone features pass but overlap, parallel/repeated/reset, full regression, privacy, and owner equality may still be open.
-
-## Recovery Strategies
-
-| Pitfall | Recovery Cost | Recovery Steps |
-| --- | --- | --- |
-| Premature field/provider before evidence | MEDIUM | Revert the unadmitted surface, restore exact absence, complete the bundle, then replan. |
-| Protected-region leakage | HIGH | Close admission, isolate provider/feather boundary, add adversarial oracle, recalibrate only on approved data. |
-| Cross-request retention | HIGH | Disable feature route, remove shared state, add identity/lifecycle stress tests, rerun privacy review. |
-| Overprocessed naturalness | MEDIUM | Reduce caps/transform, retain mask contract, repeat blinded positive/negative original-detail review. |
-
-## Pitfall-to-Phase Mapping
-
-| Pitfall | Prevention Phase | Verification |
-| --- | --- | --- |
-| Candidate mistaken for evidence | 59 / 62 | Exact grant/media/polarity/review/decision schema and zero borrowing. |
-| Support treated as mask | 60 / 63 | Protected-region masks and hard post-filter containment. |
-| Native color hides iris leak | 63 / 64 | Geometry-open and recolored-iris final-output grids. |
-| Strength hides leakage | 60–61 / 63–64 | Maximum-strength outside/protected byte checks plus original-detail review. |
-| Coupled features | 59–65 | Separate fields, units, evidence, output, promotion, and injected failure tests. |
-| Internal-only completion | 61 / 64 | Public-facade output, exact inventory, full regression, ledger equality. |
-
-## Sources
-
-- [Apple: rightPupil](https://developer.apple.com/documentation/vision/vnfacelandmarks2d/rightpupil) — pupil support may be inaccurate during blink.
-- [Shape Constrained Network for Eye Segmentation in the Wild](https://openaccess.thecvf.com/content_WACV_2020/papers/Luo_Shape_Constrained_Network_for_Eye_Segmentation_in_the_Wild_WACV_2020_paper.pdf) — explicit eye-region segmentation remains shape-sensitive in unconstrained images.
-- [A New Scale for the Assessment of Conjunctival Bulbar Redness](https://pmc.ncbi.nlm.nih.gov/articles/PMC6574084/) — region segmentation, calibrated imagery, and structured grading matter for redness assessment.
-- [On the use of multispectral conjunctival vasculature as a soft biometric](https://www.cse.msu.edu/~rossarun/pubs/CrihalmeanuRossMSConjunctiva_WACV2011.pdf) — conjunctival vasculature has identifying potential.
-- [Application of digital imaging in tooth whitening randomized controlled trials](https://pubmed.ncbi.nlm.nih.gov/19681252/) — controlled digital color measurement and reproducibility.
-- Repository v1.14 audit, Spikes 002–013, and `spike-findings-beauty` references — observed leakage, performance, licensing, privacy, and evidence failures.
+The safe recovery from any failed gate is exact absence: retain the public state and effect counts, keep the control undocumented and unreachable, record the failed requirement, and preserve only generic evidence/safety infrastructure that does not imply the feature exists.
 
 ---
-*Pitfalls research for: v1.15 independent teeth and sclera retouch*
-*Researched: 2026-08-05*
+*Research for v1.18 — upper-eyelid fullness reduction*
