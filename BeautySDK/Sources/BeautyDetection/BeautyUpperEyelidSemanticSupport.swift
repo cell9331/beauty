@@ -207,7 +207,7 @@ package struct BeautyUpperEyelidSupportResolution: Equatable, Sendable {
 
 extension BeautyUpperEyelidSupportResolution: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
     package var description: String {
-        "BeautyUpperEyelidSupportResolution(left: \(left.description), right: \(right.description))"
+        "BeautyUpperEyelidSupportResolution(left: \(left.description), right: \(right.description), supportedEyeCount: \(supportedEyeCount))"
     }
 
     package var debugDescription: String { description }
@@ -255,8 +255,10 @@ package enum BeautyUpperEyelidSemanticSupportOwner {
 
         var requests: [BeautyUpperEyelidSemanticRequest] = []
         for side in sides {
+            let requiredLandmark: BeautyLandmarkGroup = side == .left ? .leftEye : .rightEye
             guard !hasDuplicateSide,
                   !hasExplicitAmbiguousOrder,
+                  observation.landmarks.availableGroups.contains(requiredLandmark),
                   let support = sideCounts[side]?.first,
                   let envelope = validEnvelope(for: support.contour)
             else {
