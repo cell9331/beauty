@@ -67,25 +67,29 @@ natural, identity-preserving, and safe on authorized genuine evidence.
    genuine positives, negatives, every predeclared stress category, and every
    required local asset; incomplete, generated, or mechanics-only bundles fail
    closed and receive no product-evidence weight.
+
 2. A human reviewer can inspect blinded original/mask/after triples at 100%
    detail and complete only the structured rubric frozen before any outcomes
    were visible.
+
 3. Genuine positives meet the frozen material fullness-reduction bounds, while
    every negative and stress category remains natural, source-exact when
    rejected, or within the frozen structure, protected-region, texture, color,
    alpha, extent, and determinism bounds.
+
 4. Blinded judgments meet every frozen naturalness, identity/detail,
    structure-change, category-completeness, and acceptance threshold.
+
 5. One sanitized aggregate decision binds rights admission, blinded judgments,
    evaluator version, semantic contract, and the versioned v1.18 editor
    baseline without retaining media, paths, pixels, geometry, rights records,
    reviewer identity, or freeform text; the public surface remains exactly
    61/5/74 until that decision passes.
 
-**Plans**: 1/6 plans executed
+**Plans**: 2/6 plans executed
 
 - [x] 80-01-PLAN.md
-- [ ] 80-02-PLAN.md
+- [x] 80-02-PLAN.md
 - [ ] 80-03-PLAN.md
 - [ ] 80-04-PLAN.md
 - [ ] 80-05-PLAN.md
@@ -106,17 +110,21 @@ fullness reduction control through both opaque still-image facade entries.
    `upperEyelidFullnessReduction` value in `0...1`; non-finite and out-of-range
    inputs clamp under the existing parameter contract and missing legacy keys
    decode to zero.
+
 2. Both public `CIImage` still-image facade entries apply the qualified effect
    for accepted support, while zero strength, missing support, and rejected
    support remain source-exact local no-ops with no realtime/pixel-buffer
    activation.
+
 3. Each eye independently consumes one current request observation and
    qualified semantic support, so one rejected eye cannot suppress or
    authorize its peer.
+
 4. Accepted edits use immutable-original composition and collision-to-source
    behavior, preserve geometry, and cannot route through eye height,
    upper-eyelid lift, brow movement, eye opening, warp, smoothing, eye-bag, or
    dark-circle proxies.
+
 5. The promoted surface is exactly 62 parameter fields, five neutral preset
    identities, and 75 renderer cases; legacy decoding and all pre-existing
    behavior remain compatible.
@@ -137,9 +145,11 @@ whose CPU and explicit GPU behavior preserve the qualified safety contract.
 1. Public-facade positive, negative, stress, no-face, partial-eye, repeated,
    combined-local-retouch, orientation/mirror, color, alpha, extent, and
    metadata cases satisfy the frozen pixel-level assertions.
+
 2. Repeated and combined requests preserve intended target change,
    source-exact protected regions, independent local failure, deterministic
    bytes within the frozen tolerance, and named output metadata.
+
 3. CPU remains the effect oracle; an explicit GPU request transports the same
    CPU-owned immutable-original local-retouch carrier or returns typed
    `.metalUnavailable`, with no CPU fallback and no masks, proposals, or
@@ -161,9 +171,11 @@ upper-eyelid capability and no broader product claim.
 1. The current effect taxonomy promotes exactly `去脂` to implemented and
    closes aggregate `眼睛` only after the Phase-80 through Phase-82 evidence is
    passing and bound to the promoted public surface.
+
 2. SDK usage, architecture, design, privacy, reliability, quality, product,
    validation, and planning owners agree on the exact 62/5/75 opaque
    still-image contract and its positive-only semantics.
+
 3. Current documentation keeps historical archives immutable and explicitly
    excludes proxy effects, generated-fixture efficacy, realtime/UI, device,
    commercial, packaging, shipping, launch, and release-readiness claims.
@@ -184,12 +196,15 @@ public SDK surface with complete traceability and no privacy or scope drift.
 1. The archive-first closeout reproduces mutation, privacy, public-consumer,
    renderer, focused image/output, all-opt-in, and full SwiftPM gates with
    nonzero tests, zero failures, zero skips, and exact-once opt-in execution.
+
 2. An independent milestone audit maps all 14 v1.19 requirements exactly once,
    verifies every phase and end-to-end public still-image flow, and confirms
    exact 62-field/five-preset/75-case promotion.
+
 3. Fail-closed mutations cannot bypass the Phase-80 decision, activate a
    proxy/inert/realtime route, leak private evidence, borrow CPU success for an
    unavailable GPU, or rewrite archived milestone evidence.
+
 4. An SDK consumer can compile, set, encode/decode, and render the promoted
    control through both public still-image entries while all device,
    commercial, packaging, shipping, launch, and release claims remain absent.
@@ -215,7 +230,7 @@ orphaned or duplicate mappings.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 80. Genuine Evidence and Qualification Gate | v1.19 | 1/6 | In Progress | - |
+| 80. Genuine Evidence and Qualification Gate | v1.19 | 2/6 | In Progress | - |
 | 81. Safe Public Still-Image Activation | v1.19 | 0/TBD | Not started | - |
 | 82. Public Output and Backend Qualification | v1.19 | 0/TBD | Not started | - |
 | 83. Taxonomy and Owner Promotion | v1.19 | 0/TBD | Not started | - |
