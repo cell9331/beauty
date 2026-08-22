@@ -48,7 +48,7 @@ post-SDK feedback and is not a phase dependency or completion gate.
 - [x] **Phase 75: Semantics and Genuine Evidence Contract** — Freeze the named effect, prohibited aliases, real-bundle rights, metrics, and review protocol before algorithm selection. Completed 2026-08-22 with fail-closed exact-absence and aggregate-only evidence gates.
 - [x] **Phase 76: Per-Eye Semantic Support Ownership** — Produce conservative independent support or typed fail-closed absence for each eye from one request-local observation. Completed 2026-08-22 with one-observation/one-owner routing, source-exact composition, and mutation/privacy gates.
 - [x] **Phase 77: Deterministic Fullness Editor** — Implement bounded tone/frequency correction with original detail, exact geometry, and source-owned composition. Completed 2026-08-22 with 797/0/0 no-skip evidence and exact public absence preserved.
-- [ ] **Phase 78: Genuine Evaluation and Candidate Decision** — Evaluate positives, negatives, safety, and optional additive maps under the frozen rubric and produce a reproducible promotion decision.
+- [x] **Phase 78: Genuine Evaluation and Candidate Decision** — Evaluate positives, negatives, safety, and optional additive maps under the frozen rubric and produce a reproducible promotion decision. Completed 2026-08-22 with fail-closed `mechanics-only-not-promotion`; no genuine bundle or comparator was admitted.
 - [ ] **Phase 79: Conditional Productization and SDK-Only Closeout** — Execute the passing or failing public-surface branch, prove compatibility/backend behavior, synchronize owners, and close the no-skip gate.
 
 ## Phase Details
@@ -204,9 +204,9 @@ orphaned or duplicate mappings.
 | 75. Semantics and Genuine Evidence Contract | v1.18 | 2/2 | Complete | 2026-08-22 |
 | 76. Per-Eye Semantic Support Ownership | v1.18 | 2/2 | Complete | 2026-08-22 |
 | 77. Deterministic Fullness Editor | v1.18 | 2/2 | Complete | 2026-08-22 |
-| 78. Genuine Evaluation and Candidate Decision | v1.18 | 0/TBD | Not started | — |
+| 78. Genuine Evaluation and Candidate Decision | v1.18 | 2/2 | Complete | 2026-08-22 |
 | 79. Conditional Productization and SDK-Only Closeout | v1.18 | 0/TBD | Not started | — |
 
 ---
 *Roadmap created: 2026-08-22*
-*Last updated: 2026-08-22 after Phase 77 deterministic editor verification*
+*Last updated: 2026-08-22 after Phase 78 candidate decision verification*

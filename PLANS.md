@@ -3965,3 +3965,18 @@ full_suite_tests: 190
 - Review clean; `threats_open: 0`; `unclassified_matches: 0`; no internal Demo/renderer imports, network/cloud, commercial/VIP/entitlement, new dependencies/public fields, or tracked generated files.
 - Exactly `大小`, `宽度`, and `微笑` are promoted. `嘴唇` remains partial; `lipColor` is not true `丰唇`.
 - No Demo build was required because Demo source was unchanged. Device/commercial visual, packaging, and launch-readiness claims remain out of scope.
+### C-2026-08-22-phase-78-genuine-evaluation-and-candidate-decision
+
+| Field | Value |
+| --- | --- |
+| Completed | 2026-08-22 |
+| Scope | Integrate the frozen genuine-evidence evaluator, reject unapproved comparators, and produce the Phase 79 recommendation. |
+| Files | `.planning/phases/78-genuine-evaluation-and-candidate-decision/`, `DESIGN.md`, `SECURITY.md`, `RELIABILITY.md`, `QUALITY_SCORE.md`, `.planning/ROADMAP.md`, `.planning/REQUIREMENTS.md`, `.planning/STATE.md` |
+| Verification | Candidate Node suite 6/0/0; evaluator self-test 12 checks/8 mutation rejections; boundary checker 8/8 and live pass; full no-skip 797/0/0; exact public 61/5/74; `git diff --check` passed. |
+| Build | `bash scripts/run-no-skip-swiftpm.sh` passed with all opt-ins once and zero skips. |
+
+Outcome:
+
+- The Phase 75 evaluator remains authoritative; metadata-only evidence is mechanics-only.
+- The deterministic editor is the baseline and the optional additive comparator is `not-admitted` without complete rights/safety/superiority proof.
+- The single recommendation is `mechanics-only-not-promotion`; no genuine efficacy, naturalness, or public activation claim is made. Phase 79 owns exact failing-branch closeout.

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.18
 milestone_name: Upper-Eyelid Fullness Reduction
 status: planning
-last_updated: "2026-08-22T11:24:21+08:00"
+last_updated: "2026-08-22T11:37:05+08:00"
 last_activity: 2026-08-22
 progress:
   total_phases: 5
-  completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
-  percent: 60
+  completed_phases: 4
+  total_plans: 8
+  completed_plans: 8
+  percent: 80
 ---
 
 # Project State
@@ -28,10 +28,10 @@ per-eye fail-closed support, and original-pixel local composition.
 
 ## Current Position
 
-Phase: 78 of 79 (Genuine Evaluation and Candidate Decision)
+Phase: 79 of 79 (Conditional Productization and SDK-Only Closeout)
 Plan: —
-Status: Phase 77 passed; ready to discuss and plan Phase 78
-Last activity: 2026-08-22 — Phase 77 deterministic editor, source-owned safety, privacy, and full no-skip gates passed with exact public absence preserved
+Status: Phase 78 passed with fail-closed mechanics-only recommendation; ready to discuss and plan Phase 79
+Last activity: 2026-08-22 — Phase 78 candidate decision, comparator rejection, privacy, exact absence, and full no-skip gates passed
 
 ## v1.18 Roadmap Context
 
@@ -144,6 +144,18 @@ roadmaps.
 
 - No new algorithms, UI/Demo behavior, device evidence, commercial approval,
   packaging, shipping, or release-readiness claim is in this milestone.
+
+- Phase 78 keeps the frozen Phase-75 evaluator authoritative; missing or
+  metadata-only evidence resolves to `mechanics-only-not-promotion` and cannot
+  authorize tuning or promotion.
+
+- Phase 78 records the Phase-77 deterministic editor as the baseline. An
+  optional additive comparator requires exact model/data/redistribution rights,
+  bounded output, all safety gates, and material superiority; none is admitted.
+
+- Phase 78 durable output contains only hashes, opaque fixture IDs, aggregate
+  metrics, normalized reason counts, candidate dispositions, and one decision.
+  Genuine positive/negative quality remains pending without the private bundle.
 
 - Phase 74 closes PARITY-01/02/03 and CLOSE-01/02 only on generated SDK-owned
   evidence: focused parity `12/0/0`, separate `metal_available=1` and
@@ -261,18 +273,33 @@ None found under `.planning/todos/pending/`.
   naturalness, device, commercial, packaging, shipping, launch, or release-
   readiness claim follows.
 
+## Phase 78 Closeout
+
+- ALG-02 comparator admission mechanics are complete and fail closed on rights,
+  bounded additive-map, all-safety, and superiority requirements; no learned
+  candidate is admitted.
+- QUAL-01 and QUAL-02 remain pending genuine quality evidence because no
+  rights-approved private bundle or blinded review was supplied. Generated
+  positive/negative mechanics remain separate and receive no efficacy weight.
+- Candidate Node coverage passed 6/0/0; evaluator self-test recorded 12 checks
+  and 8 mutation rejections; the Phase-78 checker rejected 8/8 mutations and
+  passed live mode. Exact public absence remains 61/5/74.
+- The archive-first full gate passed 797/0/0 with zero unexpected skips. The
+  single recommendation is `mechanics-only-not-promotion`; Phase 79 owns the
+  failing public-absence branch.
+
 ## Session Continuity
 
-Last session: 2026-08-22T11:24:21+08:00
-Stopped at: Phase 77 deterministic editor verification
+Last session: 2026-08-22T11:37:05+08:00
+Stopped at: Phase 78 candidate decision verification
 Resume file: `.planning/ROADMAP.md`
-Next action: discuss and plan Phase 78.
+Next action: discuss and plan Phase 79.
 
 ## Operator Next Steps
 
-- Start Phase 78 from the frozen Phase-75 evidence contract and evaluate the
-  Phase-77 candidate only through genuine rights-approved local evidence; keep
-  generated mechanics separate from efficacy/naturalness claims.
+- Start Phase 79 from the single Phase-78 recommendation. Because it is
+  `mechanics-only-not-promotion`, prove the failing public-absence branch and
+  close v1.18 without inventing genuine quality evidence.
 
 - Preserve the exact 61/5/74 public surface until the Phase-78 aggregate
   decision authorizes the passing branch in Phase 79.

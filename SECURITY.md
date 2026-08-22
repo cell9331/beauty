@@ -175,6 +175,13 @@ artifact.
   public route.
 - Real-fixture masks must match finite zero-origin dimensions/orientation before
   measurement; synthetic/AI fixtures cannot establish product feasibility.
+- Phase 78 reuses the Phase 75 child-process evaluator and exports only fixed
+  aggregate hashes, opaque IDs, counts, normalized reasons, and a decision.
+  Missing or metadata-only evidence cannot authorize tuning or promotion.
+- Optional additive-map candidates require separate approved model, data, and
+  redistribution rights plus bounded output and identical safety gates. No raw
+  candidate output, review prose, private locator, or face-derived artifact is
+  persisted, and the current comparator disposition is `not-admitted`.
 
 The mandatory CPU reference oracle is generated entirely in Swift memory from
 small RGBA8/sRGB fixtures. Its static preflight rejects media reads, tracked

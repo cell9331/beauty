@@ -266,6 +266,22 @@ failures and zero skips. These are SDK mechanics and compatibility results;
 they do not establish genuine efficacy, naturalness, device, commercial,
 packaging, shipping, launch, or release-readiness quality.
 
+## Phase 78 Genuine Evaluation and Candidate Decision Quality Evidence
+
+The Phase 78 candidate suite executes 6 tests with zero failures or skips. The
+integrated evaluator self-test records 12 checks and 8 mutation rejections;
+the standard-library boundary checker independently rejects 8/8 mutations for
+missing-bundle bypass, metadata-only promotion, comparator rights/boundedness/
+safety weakening, privacy leakage, and decision drift. Exact public absence is
+61 fields, five presets, and 74 renderer cases. Archive-first
+`run-no-skip-swiftpm.sh` passes 797 tests with zero failures and zero skips.
+
+No rights-approved genuine bundle was supplied, so the recorded recommendation
+is `mechanics-only-not-promotion`; ALG-02 comparator admission and generated
+mechanics are documented, while genuine positive/negative quality remains
+pending. This evidence does not establish efficacy, naturalness, device,
+commercial, packaging, shipping, launch, or release-readiness quality.
+
 ## Phase 77 Deterministic Editor Quality Evidence
 
 Phase 77 adds seven focused editor/safety tests covering neutral identity,

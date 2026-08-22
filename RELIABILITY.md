@@ -359,3 +359,19 @@ Phase 77 focused suite is 7/0/0, its boundary checker rejects 8/8 mutations,
 and the archive-first full gate is 797/0/0 with zero skips. These are SDK
 mechanics only; genuine efficacy, device, performance, commercial, packaging,
 shipping, launch, and release-readiness claims remain outside the result.
+
+## Phase 78 Candidate Decision Reliability
+
+The candidate gate delegates evidence admission to the frozen Phase 75
+evaluator and preserves typed missing, incomplete, rights, review, and privacy
+failures. Metadata-only manifests are deterministic mechanics evidence and
+always resolve to `mechanics-only-not-promotion`. The Phase 77 deterministic
+editor remains the baseline; an optional additive comparator is terminally
+rejected unless exact rights, bounded-map, all-safety, and superiority checks
+pass.
+
+The focused decision suite is 6/0/0, the evaluator self-test records 12 checks
+and 8 mutation rejections, and the Phase 78 boundary checker rejects 8/8
+mutations. The archive-first full gate is 797/0/0 with zero skips. No genuine
+efficacy or naturalness, device, commercial, packaging, shipping, launch, or
+release-readiness claim follows without a supplied rights-approved bundle.

@@ -102,9 +102,9 @@ milestone count below remains 18.
 | ALG-01 | Phase 77 | Complete — bounded source-derived low-frequency correction carries original high-frequency residual |
 | SAFE-01 | Phase 77 | Complete — approved per-eye proposals use the existing source-owned composer and overlap-to-source rule |
 | SAFE-02 | Phase 77 | Complete — generated protected/exterior/alpha/metadata/determinism oracles pass |
-| ALG-02 | Phase 78 | Pending |
-| QUAL-01 | Phase 78 | Pending |
-| QUAL-02 | Phase 78 | Pending |
+| ALG-02 | Phase 78 | Complete — optional comparator is fail-closed on model/data/redistribution rights, bounded additive output, all safety gates, and superiority; none admitted |
+| QUAL-01 | Phase 78 | Pending — no rights-approved genuine positives or blinded review supplied |
+| QUAL-02 | Phase 78 | Pending — generated mechanics pass; genuine negative/no-op evidence remains absent |
 | SAFE-03 | Phase 79 | Pending |
 | COMPAT-01 | Phase 79 | Pending |
 | COMPAT-02 | Phase 79 | Pending |
@@ -122,4 +122,4 @@ milestone count below remains 18.
 
 ---
 *Requirements defined: 2026-08-22*
-*Last updated: 2026-08-22 after Phase 77 deterministic editor verification*
+*Last updated: 2026-08-22 after Phase 78 candidate decision verification*

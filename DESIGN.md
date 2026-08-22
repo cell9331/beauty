@@ -231,6 +231,22 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
   model, resource, or genuine efficacy claim. It proves deterministic SDK
   mechanics only; Phase 78 owns rights-approved evaluation and promotion.
 
+### v1.18 Phase 78 Candidate Decision Boundary
+
+- Phase 78 invokes the frozen Phase 75 evaluator as a child-process authority;
+  it does not duplicate or weaken manifest, rights, category, hash, metric, or
+  review admission. Missing, incomplete, malformed, rights-invalid, and
+  metadata-only evidence remain fail-closed outcomes.
+- The deterministic Phase 77 editor is the baseline mechanics candidate. An
+  optional additive-map comparator requires exact model/data/redistribution
+  approval, bounded additive output, all safety gates, and material superiority
+  before it can be admitted. No comparator is admitted in the current state.
+- The only durable decision is an aggregate report containing hashes, opaque
+  fixture IDs, counts/metrics, normalized reasons, candidate dispositions, and
+  one recommendation. With no rights-approved private bundle present, the
+  recommendation is `mechanics-only-not-promotion`; public activation remains
+  owned by Phase 79.
+
 ### Phase 50 Independent Eyebrow Geometry Contract
 
 - The seven same-named effective strengths use provisional cap `0.25` once: signed `eyebrowYPosition`, `eyebrowThickness`, `eyebrowLength`, `eyebrowSpacing`, `eyebrowHeadSpacing`, and `eyebrowTilt`, plus positive-only `eyebrowPeakDefinition`. The provisional eyebrow subtotal is `1.75`; Phase 52, not this contract, owns final calibration.
