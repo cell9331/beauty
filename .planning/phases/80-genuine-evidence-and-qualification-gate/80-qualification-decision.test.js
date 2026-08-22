@@ -379,12 +379,13 @@ test("output allowlist rejects sensitive keys, path-like values, timestamps, pro
 });
 
 test("missing external inputs produce deterministic sanitized non-promotion and nonzero CLI status", () => {
-  const args = [modulePath, "--decision", "--repo-root", path.resolve(__dirname, "../../..")];
+  const repoRoot = path.resolve(__dirname, "../../..");
+  const args = [modulePath, "--decision", "--repo-root", "."];
   const env = { ...process.env };
   delete env.BEAUTY_PHASE80_BUNDLE_MANIFEST;
   delete env.BEAUTY_PHASE80_REVIEW_RECORD;
-  const first = childProcess.spawnSync(process.execPath, args, { encoding: "utf8", env });
-  const second = childProcess.spawnSync(process.execPath, args, { encoding: "utf8", env });
+  const first = childProcess.spawnSync(process.execPath, args, { encoding: "utf8", env, cwd: repoRoot });
+  const second = childProcess.spawnSync(process.execPath, args, { encoding: "utf8", env, cwd: repoRoot });
   assert.notEqual(first.status, 0);
   assert.equal(first.stdout, second.stdout);
   const report = JSON.parse(first.stdout);
@@ -405,14 +406,38 @@ test("CLI accepts only fixed flags and never accepts a private locator argument"
   }
 });
 
+test("malformed review environment input normalizes to review.malformed without locator disclosure", () => {
+  const repoRoot = path.resolve(__dirname, "../../..");
+  const root = temporaryRoot();
+  try {
+    const malformed = writePrivate(root, "private-review.json", Buffer.from('{"broken":'));
+    const child = childProcess.spawnSync(
+      process.execPath,
+      [modulePath, "--decision", "--repo-root", "."],
+      {
+        cwd: repoRoot,
+        encoding: "utf8",
+        env: { ...process.env, BEAUTY_PHASE80_REVIEW_RECORD: malformed },
+      },
+    );
+    assert.notEqual(child.status, 0);
+    const report = JSON.parse(child.stdout);
+    assert.deepEqual(report.reason_counts, { "review.malformed": 1 });
+    assert.doesNotMatch(child.stdout + child.stderr, /private-review|beauty-phase80-mechanics/);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("invalid external input cannot replace an existing decision artifact", () => {
   const repoRoot = path.resolve(__dirname, "../../..");
   const decisionPath = path.join(__dirname, "80-QUALIFICATION-DECISION.json");
   const sentinel = Buffer.from('{"sentinel":true}\n');
   fs.writeFileSync(decisionPath, sentinel, { mode: 0o600 });
   try {
-    const child = childProcess.spawnSync(process.execPath, [modulePath, "--write-decision", "--repo-root", repoRoot], {
+    const child = childProcess.spawnSync(process.execPath, [modulePath, "--write-decision", "--repo-root", "."], {
       encoding: "utf8",
+      cwd: repoRoot,
       env: { ...process.env, BEAUTY_PHASE80_BUNDLE_MANIFEST: "", BEAUTY_PHASE80_REVIEW_RECORD: "" },
     });
     assert.notEqual(child.status, 0);
@@ -441,10 +466,11 @@ test("decision bindings fail closed under semantic, evidence, rubric, baseline, 
 });
 
 test("self-test reports only aggregate non-promotion mechanics", () => {
+  const repoRoot = path.resolve(__dirname, "../../..");
   const child = childProcess.spawnSync(
     process.execPath,
-    [modulePath, "--self-test", "--repo-root", path.resolve(__dirname, "../../..")],
-    { encoding: "utf8" },
+    [modulePath, "--self-test", "--repo-root", "."],
+    { encoding: "utf8", cwd: repoRoot },
   );
   assert.equal(child.status, 0);
   const report = JSON.parse(child.stdout);
@@ -453,4 +479,3 @@ test("self-test reports only aggregate non-promotion mechanics", () => {
   assert.equal(report.promotion_fixture_count, 0);
   assert.equal(gate.outputIsSafe(report), true);
 });
-

@@ -33,8 +33,8 @@ invalid.
   "evaluator_version": "phase80-qualification-evaluator-v1",
   "phase75_bindings": {
     "semantic_contract_hash": "dd961264f201025c6abf332a97cd8976dcc6e4c42104bf578759b5b47ef99346",
-    "evidence_contract_hash": "ddf91d4e76650ae3d601ce24edf7df9ac2044cfb29b0bba99006b6a4ec18eb05",
-    "review_rubric_hash": "be9530e8971d3bb632b9e8d4dcf7a143ebdc6f920843de0fb1a5fe5d4cd4de00"
+    "evidence_contract_hash": "a5c1f92d4e9b95c5ef2f100755d7af0f61f0a025b65a867dacb08e640bfdd4e2",
+    "review_rubric_hash": "c2008a5ca3112659eaf82d0e65689817d5381febf90c3cb794742433313da1ac"
   },
   "baseline_binding": {
     "baseline_id": "deterministic-editor",
@@ -325,7 +325,9 @@ invalid.
     "qualification.color.protected-bound",
     "qualification.binding",
     "qualification.public-absence",
-    "qualification.privacy"
+    "qualification.privacy",
+    "qualification.input",
+    "qualification.write"
   ],
   "decision_schema": {
     "top_level_allowlist": [
