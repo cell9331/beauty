@@ -1312,11 +1312,13 @@ shared-instance parallel safety. No UI/Demo, device,
 performance, commercial,
 packaging, shipping, launch, or release-readiness behavior is added.
 
-## v1.19 Phase 80 Candidate-v2 Remediation Contract
+## v1.19 Phase 80 Candidate-v3 Remediation Contract
 
 Candidate v1 is frozen as a failed qualification attempt. Candidate v2 changes
-only package-level upper-eyelid support/editor mechanics while exact 61/5/74
-public absence remains in force.
+the support geometry successfully but is also frozen after its real-image
+automated run exposed sign-flipping adjacent corrections and insufficient
+texture retention. Candidate v3 changes only the package-level editor while
+exact 61/5/74 public absence remains in force.
 
 `BeautyUpperEyelidSemanticSupportOwner` now requires a valid mapped eye and the
 same-side mapped eyebrow before it creates a semantic request. The permitted
@@ -1327,17 +1329,24 @@ overlap, malformed dimensions, or ambiguous side order fails closed per eye.
 Landmarks still constrain only; the independently injected semantic owner must
 approve or reject each eye.
 
-An approved support is a unique list of request-local pixel indices paired with
+The candidate-v2 support redesign is retained. An approved support is a unique list of request-local pixel indices paired with
 Q16 soft ownership. Every weight is bounded by an elliptical smoothstep ceiling
 computed from the approved hard envelope, so ownership approaches zero at all
-boundaries and cannot reproduce candidate v1's full-weight rectangle. The
-editor computes a weighted regional low-frequency luminance reference, moves
-each supported low-frequency sample toward that reference with gain `1.5`,
-applies one scalar RGB correction capped to `±16`, and adds the exact original
-high-frequency residual. Equal RGB deltas preserve source chroma; clipping,
-alpha, extent, metadata, immutable-original composition, and collision-to-source
-rules remain unchanged.
+boundaries and cannot reproduce candidate v1's full-weight rectangle.
+
+Candidate v3 replaces candidate v2's independently signed per-pixel
+low-frequency corrections with one request-local negative contour correction
+per approved eye. At strength `1`, the contour center is bounded to `-10`
+sRGB8 values and remains inside the existing absolute `16` safety cap; the
+minimum source channel across the entire accepted support provides one shared
+clipping bound, so every pixel receives the same pre-feather RGB delta. The
+existing Q16 ellipse alone controls spatial falloff. This preserves source
+spatial detail and channel differences before composition, prevents adjacent
+positive/negative correction flips, and reaches immutable source smoothly at
+every curved boundary. Alpha, extent, metadata, immutable-original composition,
+and collision-to-source rules remain unchanged.
 
 This is a new mechanics baseline, not genuine qualification or public
-activation. Phase-80 candidate-v2 qualification must freeze its source/test
-binding before inspecting new private outcomes.
+activation. Phase-80 candidate-v3 qualification must freeze its source/test
+binding and conditional negative/no-request metric applicability before
+inspecting new private outcomes.

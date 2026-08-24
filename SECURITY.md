@@ -352,9 +352,9 @@ release equivalence. UI/Demo,
 simulator/device, performance, commercial, packaging, shipping, launch, and
 release-readiness claims remain outside the trust boundary.
 
-## v1.19 Phase 80 Candidate-v2 Support Trust Boundary
+## v1.19 Phase 80 Candidate-v3 Support Trust Boundary
 
-Candidate v2 narrows upper-eyelid ownership from an eye-aligned rectangle to a
+Candidate v2 narrowed upper-eyelid ownership from an eye-aligned rectangle to a
 same-side brow-to-lid permitted band. The resolver rejects missing/malformed
 brows, implausible or crossed gaps, insufficient horizontal overlap, malformed
 dimensions, duplicate pixels, invalid Q16 weights, and pixels or hard envelopes
@@ -368,7 +368,13 @@ request. Diagnostics expose only side/status/confidence/reason and aggregate
 pixel counts. The immutable-source composer still owns exterior/protected
 bytes, alpha, foreign/duplicate units, and collision-to-source behavior.
 
-The rejected v1 private bundle and review remain external. Durable remediation
+Candidate v3 retains that ownership boundary and changes only the editor's
+request-local correction: one shared, non-positive, clipping-safe scalar is
+used for the accepted eye before Q16 feathering. This removes the v2 path where
+neighboring source-derived corrections could flip sign while preserving the
+same fail-closed ownership and immutable-source composer.
+
+The rejected v1 private bundle/review and the automated-failed v2 bundle remain external. Durable remediation
 evidence contains only fixed test counts, normalized dispositions, and public
 inventory facts; it does not retain private paths, media, geometry, metric rows,
 rights details, reviewer identity, or freeform text.

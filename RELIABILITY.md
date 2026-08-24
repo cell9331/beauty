@@ -411,7 +411,7 @@ archived, ambiguous, missing, direct/parent symlink, and outside-cwd cases. Fail
 only normalized reason identifiers; neither successful nor failed runs persist
 child transcripts or private paths.
 
-## v1.19 Phase 80 Candidate-v2 Remediation Reliability
+## v1.19 Phase 80 Candidate-v3 Remediation Reliability
 
 The per-eye resolver now separates `missingEyeEnvelope`,
 `missingEyebrowEnvelope`, `implausibleBrowEyeGap`, ambiguous order, invalid
@@ -420,15 +420,23 @@ suppress a valid peer, and an absent semantic owner still returns two typed
 source-exact no-ops. Feathered pixel enumeration and validation are bounded to
 the permitted envelope rather than scanning or retaining arbitrary payloads.
 
-The editor validates source layout, finite strength, unique in-bounds weighted
-pixels, regional-reference arithmetic, clipping bounds, and maximum channel
-delta before emitting proposals. It uses deterministic integer luminance/Q16
-composition; repeated requests produce identical proposals, summaries, and
-bytes. Generated pixel tests require target change, source-exact exterior and
-protected rows, exact alpha/extent/metadata, adjacent correction continuity,
-texture retention at or above `0.98`, and `±16` channel bounds.
+Candidate v2's generated tests passed but its first genuine automated run
+stopped at 14/19 rows: real-image neighboring corrections reached an aggregate
+maximum jump of 30 against 5, and texture retention fell below the frozen
+bound. No v2 image entered human review.
 
-The remediation verification is focused `24/0/0`, full SwiftPM `803/0/8`
+The candidate-v3 editor validates source layout, finite strength, unique
+in-bounds weighted pixels, one whole-eye clipping bound, and maximum channel
+delta before emitting proposals. The pre-feather contour is one non-positive
+equal-RGB scalar for every accepted pixel; deterministic Q16 ownership supplies
+the only spatial falloff. Repeated requests produce identical proposals,
+summaries, and bytes. Generated pixel tests require target change, a single
+correction sign, exact source channel and spatial-detail differences before
+feathering, source-exact exterior/protected rows, exact alpha/extent/metadata,
+adjacent correction continuity, texture retention at or above `0.98`, and the
+existing `±16` safety cap.
+
+The candidate-v2 remediation verification was focused `24/0/0`, full SwiftPM `803/0/8`
 (the eight established opt-ins remain disabled in a plain run), SDK-only
 post-archive boundary pass, and diff-hygiene pass. This does not make a genuine
 efficacy, public API, device, commercial, packaging, shipping, launch, or

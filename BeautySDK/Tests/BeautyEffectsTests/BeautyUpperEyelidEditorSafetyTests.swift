@@ -165,6 +165,12 @@ final class BeautyUpperEyelidEditorSafetyTests: XCTestCase {
         for pixelIndex in 0..<(width * height) {
             let offset = pixelIndex * 4
             XCTAssertEqual(outputBytes[offset + 3], sourceBytes[offset + 3])
+            let redCorrection = Int(outputBytes[offset]) - Int(sourceBytes[offset])
+            let greenCorrection = Int(outputBytes[offset + 1]) - Int(sourceBytes[offset + 1])
+            let blueCorrection = Int(outputBytes[offset + 2]) - Int(sourceBytes[offset + 2])
+            XCTAssertLessThanOrEqual(redCorrection, 0)
+            XCTAssertEqual(greenCorrection, redCorrection)
+            XCTAssertEqual(blueCorrection, redCorrection)
             if !supported.contains(pixelIndex) {
                 XCTAssertEqual(
                     Array(outputBytes[offset..<(offset + 4)]),
@@ -174,7 +180,7 @@ final class BeautyUpperEyelidEditorSafetyTests: XCTestCase {
             }
             if pixelIndex % width < width - 1 {
                 let nextOffset = offset + 4
-                let correction = Int(outputBytes[offset]) - Int(sourceBytes[offset])
+                let correction = redCorrection
                 let nextCorrection = Int(outputBytes[nextOffset]) - Int(sourceBytes[nextOffset])
                 maximumAdjacentCorrectionJump = max(
                     maximumAdjacentCorrectionJump,

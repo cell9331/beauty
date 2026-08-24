@@ -26,7 +26,7 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
         }
     }
 
-    func testApprovedBandUsesRegionalLuminanceCorrectionAndCarriesOriginalDetail() throws {
+    func testApprovedBandUsesOneSmoothContourCorrectionAndCarriesOriginalDetail() throws {
         let width = 7
         let height = 7
         let sourceBytes = gradientBytes(width: width, height: height)
@@ -38,33 +38,32 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
             strength: 0.5
         )
 
-        let proposal = try XCTUnwrap(result.proposalsByEye.first?.first)
-        let sourcePixel = rgb(sourceBytes, pixelIndex: proposal.pixelIndex)
-        let lowSamples = supportIndices.map {
-            lowFrequency(sourceBytes, pixelIndex: $0, width: width, height: height)
+        let proposals = try XCTUnwrap(result.proposalsByEye.first)
+        XCTAssertEqual(proposals.count, supportIndices.count)
+        for proposal in proposals {
+            let sourcePixel = rgb(sourceBytes, pixelIndex: proposal.pixelIndex)
+            XCTAssertEqual(Int(proposal.targetRed) - sourcePixel.red, -5)
+            XCTAssertEqual(Int(proposal.targetGreen) - sourcePixel.green, -5)
+            XCTAssertEqual(Int(proposal.targetBlue) - sourcePixel.blue, -5)
+            XCTAssertEqual(Int(proposal.targetRed) - Int(proposal.targetGreen), sourcePixel.red - sourcePixel.green)
+            XCTAssertEqual(Int(proposal.targetGreen) - Int(proposal.targetBlue), sourcePixel.green - sourcePixel.blue)
         }
-        let regionalReference = Int((Double(lowSamples.map(luminance).reduce(0, +)) / Double(lowSamples.count)).rounded())
-        let low = lowFrequency(sourceBytes, pixelIndex: proposal.pixelIndex, width: width, height: height)
-        let rawCorrection = Int((Double(regionalReference - luminance(low)) * 0.5 * 1.5).rounded(.toNearestOrAwayFromZero))
-        let correction = min(max(rawCorrection, -16), 16)
-
-        XCTAssertEqual(proposal.targetRed, UInt8(sourcePixel.red + correction))
-        XCTAssertEqual(proposal.targetGreen, UInt8(sourcePixel.green + correction))
-        XCTAssertEqual(proposal.targetBlue, UInt8(sourcePixel.blue + correction))
-        XCTAssertEqual(
-            Int(proposal.targetRed),
-            low.red + correction + (sourcePixel.red - low.red)
-        )
-        XCTAssertEqual(
-            Int(proposal.targetGreen),
-            low.green + correction + (sourcePixel.green - low.green)
-        )
-        XCTAssertEqual(
-            Int(proposal.targetBlue),
-            low.blue + correction + (sourcePixel.blue - low.blue)
-        )
-        XCTAssertEqual(Int(proposal.targetRed) - Int(proposal.targetGreen), sourcePixel.red - sourcePixel.green)
-        XCTAssertEqual(Int(proposal.targetGreen) - Int(proposal.targetBlue), sourcePixel.green - sourcePixel.blue)
+        for pair in zip(proposals, proposals.dropFirst()) {
+            let firstSource = rgb(sourceBytes, pixelIndex: pair.0.pixelIndex)
+            let secondSource = rgb(sourceBytes, pixelIndex: pair.1.pixelIndex)
+            XCTAssertEqual(
+                Int(pair.1.targetRed) - Int(pair.0.targetRed),
+                secondSource.red - firstSource.red
+            )
+            XCTAssertEqual(
+                Int(pair.1.targetGreen) - Int(pair.0.targetGreen),
+                secondSource.green - firstSource.green
+            )
+            XCTAssertEqual(
+                Int(pair.1.targetBlue) - Int(pair.0.targetBlue),
+                secondSource.blue - firstSource.blue
+            )
+        }
         XCTAssertEqual(result.summary.acceptedEyeCount, 1)
         XCTAssertEqual(result.summary.rejectedEyeCount, 1)
         XCTAssertEqual(result.summary.proposalPixelCount, supportIndices.count)
@@ -193,35 +192,4 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
         return (Int(bytes[offset]), Int(bytes[offset + 1]), Int(bytes[offset + 2]))
     }
 
-    private func lowFrequency(
-        _ bytes: [UInt8],
-        pixelIndex: Int,
-        width: Int,
-        height: Int
-    ) -> (red: Int, green: Int, blue: Int) {
-        let x = pixelIndex % width
-        let y = pixelIndex / width
-        var red = 0
-        var green = 0
-        var blue = 0
-        var count = 0
-        for sampleY in max(0, y - 2)...min(height - 1, y + 2) {
-            for sampleX in max(0, x - 2)...min(width - 1, x + 2) {
-                let sample = rgb(bytes, pixelIndex: sampleY * width + sampleX)
-                red += sample.red
-                green += sample.green
-                blue += sample.blue
-                count += 1
-            }
-        }
-        return (
-            (red + count / 2) / count,
-            (green + count / 2) / count,
-            (blue + count / 2) / count
-        )
-    }
-
-    private func luminance(_ rgb: (red: Int, green: Int, blue: Int)) -> Int {
-        (54 * rgb.red + 183 * rgb.green + 19 * rgb.blue + 128) >> 8
-    }
 }

@@ -313,8 +313,8 @@ commercial, packaging, shipping, launch, or release-readiness quality.
 
 ## Phase 77 Deterministic Editor Quality Evidence
 
-Phase 77 adds seven focused editor/safety tests covering neutral identity,
-low-frequency/detail reconstruction, bounded deltas, invalid-input isolation,
+Phase 77 added seven focused editor/safety tests covering neutral identity,
+the then-current low-frequency/detail reconstruction, bounded deltas, invalid-input isolation,
 actual RGBA8 exterior/protected/alpha/metadata preservation, and
 overlap-to-source collision behavior. The boundary checker rejects 8/8
 mutations covering public-surface drift, privacy leakage, unbounded edits,
@@ -323,6 +323,18 @@ composition bypass, and peer coupling. Archive-first
 This is deterministic package mechanics evidence only and does not promote the
 effect or establish genuine efficacy, naturalness, device, commercial,
 packaging, shipping, launch, or release-readiness quality.
+
+## Phase 80 Candidate-v3 Mechanics Quality Evidence
+
+Candidate v2 is terminal after its real-image automated matrix passed only
+14/19 rows; no human review occurred. Candidate v3 retains the generated
+brow-to-lid elliptical support tests and replaces independently signed
+per-pixel corrections with one clipping-safe, non-positive equal-RGB contour
+per eye. The focused 25-test group now proves single-sign output, exact
+pre-feather channel/spatial-detail preservation, curved feathering, adjacent
+jump `<=5`, texture retention `>=0.98`, immutable exterior/protected pixels,
+alpha, extent, metadata, collision-to-source, and determinism. This remains
+mechanics-only until a separately frozen v3 genuine gate passes.
 
 ## Phase 79 Conditional Productization Quality Evidence
 
