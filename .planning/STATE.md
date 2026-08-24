@@ -5,10 +5,10 @@ milestone_name: Genuine Upper-Eyelid Fullness Promotion
 current_phase: 80
 current_phase_name: Genuine Evidence and Qualification Gate
 status: executing
-stopped_at: Phase 80 Plan 13 candidate-v3 private automation
-last_updated: "2026-08-24T08:51:00Z"
+stopped_at: Phase 80 Plan 13 blocking 100%-detail human review
+last_updated: "2026-08-24T07:45:44Z"
 last_activity: 2026-08-24
-last_activity_desc: Candidate-v3 qualification frozen before private outcomes
+last_activity_desc: Candidate-v3 automation passed twice; anonymous 100%-detail review opened
 progress:
   total_phases: 5
   completed_phases: 0
@@ -32,8 +32,8 @@ modular facade.
 
 Phase: 80 (Genuine Evidence and Qualification Gate) — EXECUTING
 Plan: 13 of 14
-Status: Generating and automatically evaluating private candidate-v3 outputs
-Last activity: 2026-08-24 — candidate-v3 contract/evaluator frozen before private outcomes
+Status: Candidate-v3 automation passed; awaiting fixed-field 100%-detail human review
+Last activity: 2026-08-24 — two identical v3 evaluations passed all 19 automated rows; qualified anonymous review opened
 
 Progress: [██████░░░░] 64%
 
@@ -97,9 +97,12 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- Public promotion remains blocked until a newly frozen candidate automation
-  and the complete blinded review return a passing bound decision. Mechanics
-  remediation itself is not blocked and cannot alter exact 61/5/74 absence.
+- Candidate-v3 private automation passed twice with identical sanitized
+  outcomes: 8 fixtures, 24 assets, 19/19 automated rows, adjacent boundary
+  jump max 4, target delta max 10, protected delta 0, and positive texture
+  retention min 1.0. Public promotion remains blocked only on the complete
+  fixed-field blinded review and its bound decision; exact 61/5/74 absence is
+  still preserved.
 
 - The candidate-v1 external bundle was structurally complete and repeatably
   admitted at 8 fixtures, 24 assets, and 19 metric rows. Its automated texture
@@ -126,7 +129,7 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-24T06:58:00Z
-Stopped at: Phase 80 Plan 13 candidate-v3 private automation
+Last session: 2026-08-24T07:45:44Z
+Stopped at: Phase 80 Plan 13 blocking 100%-detail human review
 Resume file: None
-Next action: generate a fresh private candidate-v3 bundle, run all applicable metrics and admission twice, and open 100%-detail review only if both passes agree.
+Next action: collect the complete fixed-field anonymous review, emit and independently verify the candidate-v3 decision, then continue to public SDK promotion only if it passes.

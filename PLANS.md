@@ -32,8 +32,8 @@
 | --- | --- |
 | Status | `active` |
 | Scope | Remediate the rejected candidate, freeze a new versioned baseline, rerun genuine qualification, then continue the milestone only from a verified pass. |
-| Current Step | Plan 80-12 froze the candidate-v3 identity, conditional metric applicability, and boundary rubric before private outcomes; Plan 80-13 now generates a fresh private v3 bundle and runs automation twice. |
-| Blocker | None for remediation. Human review remains deferred until every newly frozen v3 automated row passes. |
+| Current Step | Plan 80-13 private automation passed twice with identical sanitized outcomes; the qualified v3 candidates are now at the blocking blinded 100%-detail human-review checkpoint. |
+| Blocker | The fixed-field human visual judgment cannot be inferred from pixel metrics or supplied by the implementing agent. It must be completed against the prepared anonymous review page before a canonical decision is emitted. |
 | Privacy | Only aggregate counts and normalized reasons may enter repository evidence; media, masks, locators, rights details, and per-fixture rows remain external. |
 
 Checklist:
@@ -48,7 +48,7 @@ Checklist:
 | Run candidate v2 automation and preserve the decision stop | `completed` | 8 fixtures/24 assets/19 rows; 14 rows passed, adjacent jump and texture failed, review was not opened, deterministic decision remained non-promotion with exact 61/5/74 absence. |
 | Implement candidate v3 mechanics | `completed` | Commit `94400c0`; one clipping-safe non-positive contour per eye, existing curved Q16 feather, focused 25/0/0. |
 | Freeze candidate v3 qualification | `completed` | 15 Node tests and 15 independent probes bind source/tests/helpers, polarity-correct applicability, the fixed boundary rubric, and exact 61/5/74 absence. |
-| Rebuild private v3 bundle and complete blinded review | `active` | Plan 80-13 exposes images only after two complete automated passes. |
+| Rebuild private v3 bundle and complete blinded review | `active` | Fresh external run: 8 fixtures/24 assets/19 rows; two byte-identical evaluations passed 19/19, with boundary jump max 4, target delta max 10, protected delta 0, and positive texture retention min 1.0. The anonymous three-column/1:1 review is open; fixed-field human judgment remains pending. |
 | Emit and independently verify the v3 decision | `planned` | Plan 80-14 unlocks Phase 81 only for an exact complete pass. |
 
 ### P-2026-08-14-phase-66-sdk-only-boundary
