@@ -32,8 +32,8 @@
 | --- | --- |
 | Status | `blocked` |
 | Scope | Complete the Phase-80 genuine private-bundle admission, frozen 100%-detail human review, and sanitized qualification decision without exposing portrait-derived data. |
-| Current Step | A private eight-fixture candidate bundle is structurally admitted with 24 assets and 19 complete metric rows; the external reviewer must now inspect the blinded triples and return the fixed rubric judgments. |
-| Blocker | Human review is mandatory and cannot be supplied by the executor. Automated evaluation is complete but currently records one frozen texture-retention minimum-bound failure; this must remain an honest non-pass unless a later remediation milestone changes and requalifies the editor. |
+| Current Step | The first positive visual review found insufficient visible difference plus a rectangular darkening artifact aligned to the hard support envelope. The current candidate is non-promotable and requires a freshly versioned support/editor remediation before requalification. |
+| Blocker | The frozen automated evaluation already records one texture-retention minimum-bound failure, and external review now also records an early `detail-unnatural` failure. These outcomes cannot be tuned away inside the current frozen run; a later remediation/requalification cycle must address both. |
 | Privacy | Only aggregate counts and normalized reasons may enter repository evidence; media, masks, locators, rights details, and per-fixture rows remain external. |
 
 Checklist:
@@ -42,7 +42,7 @@ Checklist:
 | --- | --- | --- |
 | Confirm genuine origin and internal-evaluation authorization | `completed` | Data owner supplied the authorization fact out of band; no rights record or subject data was persisted. |
 | Prepare and structurally admit the private bundle | `completed` | Two deterministic admissions: 8 fixtures, 24 assets, 19 metric rows, zero structural/rights/category failures. |
-| Complete frozen blinded review | `blocked` | Private local 100%-detail review facility is ready; a real external reviewer must inspect Q1–Q8. |
+| Complete frozen blinded review | `blocked` | The first positive row received an external `detail-unnatural` failure because the effect is weak and a rectangular dark block is visible; remaining rows are not yet complete. |
 | Emit and independently verify the bound decision | `planned` | Proceeds after a complete structured review; current automated disposition includes one minimum-bound failure. |
 
 ### P-2026-08-14-phase-66-sdk-only-boundary

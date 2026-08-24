@@ -6,9 +6,9 @@ current_phase: 80
 current_phase_name: Genuine Evidence and Qualification Gate
 status: executing
 stopped_at: Phase 80 Plan 03/05 external blinded review checkpoint
-last_updated: "2026-08-24T06:20:00Z"
+last_updated: "2026-08-24T06:28:00Z"
 last_activity: 2026-08-24
-last_activity_desc: Genuine candidate bundle structurally admitted; external 100%-detail review pending
+last_activity_desc: First positive review found weak efficacy and a rectangular dark-envelope artifact
 progress:
   total_phases: 5
   completed_phases: 0
@@ -32,8 +32,8 @@ modular facade.
 
 Phase: 80 (Genuine Evidence and Qualification Gate) — EXECUTING
 Plan: 3 of 6
-Status: Blocked on mandatory external review
-Last activity: 2026-08-24 — private genuine candidate bundle admitted with one honest automated non-pass metric; review facility prepared
+Status: Blocked on failed candidate and incomplete external review
+Last activity: 2026-08-24 — first positive visual review failed for weak target difference and rectangular darkening; automated texture gate was already non-pass
 
 Progress: [███░░░░░░░] 33%
 
@@ -94,6 +94,13 @@ None found under `.planning/todos/pending/`.
   has one frozen texture-retention minimum-bound failure; a real reviewer must
   still inspect all blinded triples before the canonical non-pass/pass decision
   can be emitted. The executor cannot provide or infer those judgments.
+
+- The first external positive review additionally found that the target change
+  is not convincingly visible and that the hard rectangular support envelope
+  creates an unnatural dark block. This is a product failure, not reviewer
+  uncertainty. The frozen run cannot be relabeled or tuned into a pass; later
+  remediation must replace the hard rectangle with a semantic feathered region
+  and requalify a freshly bound editor version.
 
 - Private media, locators, geometry, pixels, rights records, reviewer identity,
   and freeform text must never enter durable evidence.
