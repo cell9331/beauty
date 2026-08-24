@@ -5,10 +5,10 @@ milestone_name: Genuine Upper-Eyelid Fullness Promotion
 current_phase: 80
 current_phase_name: Genuine Evidence and Qualification Gate
 status: executing
-stopped_at: Completed 80-02-PLAN.md
-last_updated: "2026-08-22T17:00:48.590Z"
-last_activity: 2026-08-23
-last_activity_desc: Plan 80-02 independent qualification boundary and automated readiness completed
+stopped_at: Phase 80 Plan 03/05 external blinded review checkpoint
+last_updated: "2026-08-24T06:20:00Z"
+last_activity: 2026-08-24
+last_activity_desc: Genuine candidate bundle structurally admitted; external 100%-detail review pending
 progress:
   total_phases: 5
   completed_phases: 0
@@ -32,8 +32,8 @@ modular facade.
 
 Phase: 80 (Genuine Evidence and Qualification Gate) — EXECUTING
 Plan: 3 of 6
-Status: Ready to execute
-Last activity: 2026-08-23 — Plan 80-02 independent qualification boundary and automated readiness completed
+Status: Blocked on mandatory external review
+Last activity: 2026-08-24 — private genuine candidate bundle admitted with one honest automated non-pass metric; review facility prepared
 
 Progress: [███░░░░░░░] 33%
 
@@ -89,6 +89,12 @@ None found under `.planning/todos/pending/`.
   and category-complete and the frozen blinded review returns a passing bound
   decision. Any non-pass preserves exact 61/5/74 public absence.
 
+- The current external candidate bundle is structurally complete and repeatably
+  admitted at 8 fixtures, 24 assets, and 19 metric rows. Automated evaluation
+  has one frozen texture-retention minimum-bound failure; a real reviewer must
+  still inspect all blinded triples before the canonical non-pass/pass decision
+  can be emitted. The executor cannot provide or infer those judgments.
+
 - Private media, locators, geometry, pixels, rights records, reviewer identity,
   and freeform text must never enter durable evidence.
 
@@ -103,6 +109,6 @@ None found under `.planning/todos/pending/`.
 ## Session Continuity
 
 Last session: 2026-08-22T17:00:48.584Z
-Stopped at: Completed 80-02-PLAN.md
+Stopped at: Phase 80 Plan 03/05 external blinded review checkpoint
 Resume file: None
-Next action: `/gsd-execute-phase 80 --auto`
+Next action: external reviewer inspects Q1–Q8 at 100% and supplies the fixed rubric result, then `/gsd-execute-phase 80 --auto`
