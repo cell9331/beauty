@@ -5,15 +5,15 @@ milestone_name: Genuine Upper-Eyelid Fullness Promotion
 current_phase: 80
 current_phase_name: Genuine Evidence and Qualification Gate
 status: executing
-stopped_at: Phase 80 Plan 09 private candidate-v2 automation
-last_updated: "2026-08-24T08:10:00Z"
+stopped_at: Phase 80 Plan 11 candidate-v3 correction remediation
+last_updated: "2026-08-24T08:24:00Z"
 last_activity: 2026-08-24
-last_activity_desc: Candidate-v2 qualification boundary frozen before private outcomes
+last_activity_desc: Candidate-v2 automated gate stopped before human review
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 10
-  completed_plans: 5
+  total_plans: 14
+  completed_plans: 7
   percent: 50
 ---
 
@@ -31,9 +31,9 @@ modular facade.
 ## Current Position
 
 Phase: 80 (Genuine Evidence and Qualification Gate) — EXECUTING
-Plan: 9 of 10
-Status: Generating and evaluating fresh private candidate-v2 outputs
-Last activity: 2026-08-24 — candidate-v2 source/test baseline, metric matrix, boundary rubric, evaluator, and independent checker frozen before private outcomes
+Plan: 11 of 14
+Status: Replacing candidate-v2 correction with a smooth candidate-v3 contour field
+Last activity: 2026-08-24 — candidate-v2 automated gate stopped at 14/19 passing rows before human review
 
 Progress: [█████░░░░░] 50%
 
@@ -55,6 +55,8 @@ roadmaps.
 | Phase 80 P02 | 23 min | 2 tasks | 2 files |
 | Phase 80 P07 | 16 min | 3 tasks | 12 files |
 | Phase 80 P08 | 18 min | 2 tasks | 8 files |
+| Phase 80 P09 | 12 min | 2 tasks | 0 durable private files |
+| Phase 80 P10 | 4 min | 2 tasks | 3 aggregate-only records |
 
 ## Accumulated Context
 
@@ -84,6 +86,8 @@ roadmaps.
 - [Phase 80]: Candidate v2 must derive its permitted support strictly between the same-side brow and eye, feather to zero at every boundary, and use a hue-preserving smooth low-frequency correction with original detail carry. — This directly addresses both observed v1 defects without using a prohibited proxy.
 - [Phase 80]: Candidate-v2 source and tests are frozen before any v2 private outcome is inspected. — v1 private outcomes cannot tune v2 thresholds or lend qualification credit.
 - [Phase 80]: Candidate-v2 additionally requires adjacent correction jump `<=5`, exact feather-to-zero, and a separate 100%-detail boundary-artifact human attestation. — Square blocks, dark patches, halos, and visible mask edges are first-class failures rather than being hidden inside a generic naturalness judgment.
+- [Phase 80]: Candidate v2 is terminal after only 14/19 automated rows passed; human review never began. — A high real-image correction jump and low texture retention require a new source-bound version, not threshold relaxation.
+- [Phase 80]: A negative/stress image with no eligible brow-to-lid request must prove exact source no-op and cannot invent a target region merely to satisfy a metric schema. — Candidate v3 qualification will freeze applicability explicitly before outcomes.
 
 ### Pending Todos
 
@@ -91,8 +95,8 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- Public promotion remains blocked until candidate-v2 automation and the
-  complete frozen blinded review return a passing bound decision. Mechanics
+- Public promotion remains blocked until a newly frozen candidate automation
+  and the complete blinded review return a passing bound decision. Mechanics
   remediation itself is not blocked and cannot alter exact 61/5/74 absence.
 
 - The candidate-v1 external bundle was structurally complete and repeatably
@@ -121,6 +125,6 @@ None found under `.planning/todos/pending/`.
 ## Session Continuity
 
 Last session: 2026-08-24T06:58:00Z
-Stopped at: Phase 80 Plan 09 private candidate-v2 automation
+Stopped at: Phase 80 Plan 11 candidate-v3 correction remediation
 Resume file: None
-Next action: generate a fresh private candidate-v2 bundle with the frozen editor, run every frozen automated metric twice, and expose only automated-passing candidates for 100%-detail fixed-rubric review.
+Next action: implement and generated-test a smooth single-sign candidate-v3 correction field, then freeze its source/test identity and polarity-correct metric applicability before any v3 private output.

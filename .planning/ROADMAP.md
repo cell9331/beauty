@@ -48,7 +48,7 @@ out of scope.
 
 ## Gate Rule
 
-Phase 81 may begin only when Phase 80 emits the frozen candidate-v2 passing
+Phase 81 may begin only when Phase 80 emits a frozen version-bound passing
 decision from the complete rights-approved genuine bundle and blinded
 100%-detail review. Candidate v1 is terminally non-promotable and cannot be
 retuned or relabeled. Any v2 non-pass preserves the same hard stop: no public
@@ -87,12 +87,12 @@ natural, identity-preserving, and safe on authorized genuine evidence.
    structure-change, category-completeness, and acceptance threshold.
 
 5. One sanitized aggregate decision binds rights admission, blinded judgments,
-   evaluator version, semantic contract, and the versioned candidate-v2 editor
+   evaluator version, semantic contract, and the versioned passing editor
    baseline without retaining media, paths, pixels, geometry, rights records,
    reviewer identity, or freeform text; the public surface remains exactly
    61/5/74 until that decision passes.
 
-**Plans**: 3 completed, one terminated attempt, four remediation/requalification plans pending
+**Plans**: 7 completed or terminally closed, one terminated v1 attempt, four candidate-v3 remediation/requalification plans pending
 
 - [x] 80-01-PLAN.md
 - [x] 80-02-PLAN.md
@@ -102,8 +102,12 @@ natural, identity-preserving, and safe on authorized genuine evidence.
 - [ ] 80-06-PLAN.md — candidate-v1 decision not emitted
 - [x] 80-07-PLAN.md — candidate-v2 support/editor remediation
 - [x] 80-08-PLAN.md — candidate-v2 qualification freeze
-- [ ] 80-09-PLAN.md — candidate-v2 private automation and review
-- [ ] 80-10-PLAN.md — candidate-v2 decision and Phase-80 verification
+- [x] 80-09-PLAN.md — candidate-v2 automation stopped before review
+- [x] 80-10-PLAN.md — candidate-v2 hard stop preserved
+- [ ] 80-11-PLAN.md — candidate-v3 smooth correction remediation
+- [ ] 80-12-PLAN.md — candidate-v3 qualification freeze
+- [ ] 80-13-PLAN.md — candidate-v3 private automation and review
+- [ ] 80-14-PLAN.md — candidate-v3 decision and Phase-80 verification
 
 ### Phase 81: Safe Public Still-Image Activation
 
@@ -240,7 +244,7 @@ orphaned or duplicate mappings.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 80. Genuine Evidence and Qualification Gate | v1.19 | 4/10 | Freezing candidate-v2 qualification | - |
+| 80. Genuine Evidence and Qualification Gate | v1.19 | 7/14 | Remediating candidate v3 after v2 automated stop | - |
 | 81. Safe Public Still-Image Activation | v1.19 | 0/TBD | Not started | - |
 | 82. Public Output and Backend Qualification | v1.19 | 0/TBD | Not started | - |
 | 83. Taxonomy and Owner Promotion | v1.19 | 0/TBD | Not started | - |
