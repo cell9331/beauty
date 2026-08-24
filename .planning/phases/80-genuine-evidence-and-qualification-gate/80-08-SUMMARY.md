@@ -12,6 +12,8 @@ Candidate v2 is now frozen independently from the terminal v1 run.
 
 - The exact four source owners and six evidence owners are content-bound to
   the post-remediation implementation commit.
+- The private qualification run is fixed at editor strength `1.0`; it cannot
+  be changed after real-image outcomes are visible.
 - The v1 evaluator is reused only for content-addressed JSON/file safety
   primitives; the v2 schema, thresholds, rubric, bindings, and decision are
   separately versioned, and v1 bindings are explicitly rejected.

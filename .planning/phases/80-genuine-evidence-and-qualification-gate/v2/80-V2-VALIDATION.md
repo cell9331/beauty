@@ -16,7 +16,7 @@ Sanitized preflight:
 - baseline: `brow-to-lid-feathered-editor-v2`;
 - evaluator: `phase80-qualification-evaluator-v2`;
 - canonical contract hash:
-  `5f44d44f35a241b2baf204360063d0158b774e2e294e826dc07bd3bba0242b74`;
+  `81686faf3598a65bb1743feb24315ec75006920d62e4ae71ae4c3e0b38b47d84`;
 - Node evaluator tests: 15 passed, 0 failed;
 - independent checker: 13 checks passed;
 - v1 contract/evaluator/test hashes remain exact and immutable;

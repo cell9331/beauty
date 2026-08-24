@@ -81,6 +81,7 @@ test("frozen contract binds v2 source, tests, helper, rubric, and public absence
   assert.equal(result.valid, true);
   assert.equal(result.values.evaluator_version, "phase80-qualification-evaluator-v2");
   assert.equal(gate.contractRecord().baseline_binding.baseline_id, gate.BASELINE_ID);
+  assert.equal(gate.contractRecord().baseline_binding.qualification_strength, 1);
 });
 
 test("semantic, evidence, source, test, helper, rubric, and public drift fail closed", () => {

@@ -188,6 +188,7 @@ function expectedBindings(repoRoot, mutation) {
     && tests === contract.baseline_binding.baseline_evidence_digest
     && helper === contract.baseline_binding.v1_helper_digest
     && contract.baseline_binding.baseline_id === BASELINE_ID
+    && contract.baseline_binding.qualification_strength === 1
     && contract.baseline_binding.implementation_commit === "4cf736c860c1b3baddc84310cbcdb58d0a535d0d"
     && contract.baseline_binding.focused_suite_count === 5
     && contract.baseline_binding.focused_test_count === 25

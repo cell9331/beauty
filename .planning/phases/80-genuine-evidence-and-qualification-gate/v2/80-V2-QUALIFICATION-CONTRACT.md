@@ -35,6 +35,7 @@ candidate-v2 output from private images was generated or viewed.
   "review_rubric_hash": "0c9b80f45647c26b3e3707a4987ba9acc9c763343852dc6bb434199bf405f534",
   "baseline_binding": {
     "baseline_id": "brow-to-lid-feathered-editor-v2",
+    "qualification_strength": 1,
     "implementation_commit": "4cf736c860c1b3baddc84310cbcdb58d0a535d0d",
     "baseline_source_digest": "10d279d28b30a3ef5cbd6d1e34597b74e5e12aaf83fb4b65889a1a920187efb3",
     "baseline_evidence_digest": "c00ec162b7e9ca2f6d0cdf4b4ed07a5ae9986e4b336655c549aca251e6fd84cf",
