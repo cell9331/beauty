@@ -140,7 +140,8 @@ extension BeautyUpperEyelidFullnessEditResult: CustomStringConvertible, CustomDe
 
 package enum BeautyUpperEyelidFullnessEditor {
     package static let maximumAbsoluteChannelDelta = 16
-    package static let neighborhoodRadius = 1
+    package static let neighborhoodRadius = 2
+    package static let lowFrequencyFlatteningGain = 1.5
 
     package static func edit(
         source: BeautyCanonicalStillImage,
@@ -181,18 +182,31 @@ package enum BeautyUpperEyelidFullnessEditor {
                 rejectedEyeCount += 1
                 continue
             }
-            guard let pixels = validatedPixels(outcome.pixelIndices, sourceLayout: sourceLayout) else {
+            guard let pixels = validatedPixels(outcome.pixels, sourceLayout: sourceLayout) else {
+                rejectedEyeCount += 1
+                continue
+            }
+
+            let lowFrequencySamples = pixels.compactMap { pixel in
+                sourceLayout.lowFrequency(at: pixel.pixelIndex)
+            }
+            guard lowFrequencySamples.count == pixels.count,
+                  let regionalReferenceLuminance = weightedReferenceLuminance(
+                    pixels: pixels,
+                    lowFrequencySamples: lowFrequencySamples
+                  )
+            else {
                 rejectedEyeCount += 1
                 continue
             }
 
             var proposals: [BeautyLocalPixelProposal] = []
             proposals.reserveCapacity(pixels.count)
-            for pixelIndex in pixels {
+            for (pixel, lowFrequency) in zip(pixels, lowFrequencySamples) {
+                let pixelIndex = pixel.pixelIndex
                 guard let sample = sourceLayout.sample(pixelIndex: pixelIndex) else {
                     continue
                 }
-                let lowFrequency = sourceLayout.lowFrequency(at: pixelIndex)
                 let residual = (
                     red: Int(sample.red) - lowFrequency.red,
                     green: Int(sample.green) - lowFrequency.green,
@@ -200,19 +214,21 @@ package enum BeautyUpperEyelidFullnessEditor {
                 )
                 let correction = lowFrequencyCorrection(
                     lowFrequency: lowFrequency,
+                    regionalReferenceLuminance: regionalReferenceLuminance,
+                    source: sample,
                     strength: request.strength
                 )
                 let target = (
-                    red: safeTarget(source: sample.red, correction: correction.red),
-                    green: safeTarget(source: sample.green, correction: correction.green),
-                    blue: safeTarget(source: sample.blue, correction: correction.blue)
+                    red: safeTarget(source: sample.red, correction: correction),
+                    green: safeTarget(source: sample.green, correction: correction),
+                    blue: safeTarget(source: sample.blue, correction: correction)
                 )
 
                 // Keep this equation explicit: output = corrected low frequency
                 // component + the exact source high-frequency residual.
-                let reconstructedRed = lowFrequency.red + correction.red + residual.red
-                let reconstructedGreen = lowFrequency.green + correction.green + residual.green
-                let reconstructedBlue = lowFrequency.blue + correction.blue + residual.blue
+                let reconstructedRed = lowFrequency.red + correction + residual.red
+                let reconstructedGreen = lowFrequency.green + correction + residual.green
+                let reconstructedBlue = lowFrequency.blue + correction + residual.blue
                 guard Int(target.red) == reconstructedRed,
                       Int(target.green) == reconstructedGreen,
                       Int(target.blue) == reconstructedBlue
@@ -231,7 +247,7 @@ package enum BeautyUpperEyelidFullnessEditor {
                 proposals.append(BeautyLocalPixelProposal(
                     pixelIndex: pixelIndex,
                     isInsideHardEnvelope: true,
-                    softWeightQ16: UInt32.max,
+                    softWeightQ16: pixel.softWeightQ16,
                     targetRed: target.red,
                     targetGreen: target.green,
                     targetBlue: target.blue
@@ -273,30 +289,59 @@ package enum BeautyUpperEyelidFullnessEditor {
     }
 
     private static func validatedPixels(
-        _ pixels: [Int],
+        _ pixels: [BeautyUpperEyelidSupportPixel],
         sourceLayout: SourceLayout
-    ) -> [Int]? {
+    ) -> [BeautyUpperEyelidSupportPixel]? {
         guard !pixels.isEmpty,
-              Set(pixels).count == pixels.count,
-              pixels.allSatisfy({ (0..<sourceLayout.pixelCount).contains($0) })
+              Set(pixels.map(\.pixelIndex)).count == pixels.count,
+              pixels.allSatisfy({
+                  (0..<sourceLayout.pixelCount).contains($0.pixelIndex)
+                      && $0.softWeightQ16 > 0
+                      && $0.softWeightQ16 <= 65_536
+              })
         else {
             return nil
         }
         return pixels
     }
 
+    private static func weightedReferenceLuminance(
+        pixels: [BeautyUpperEyelidSupportPixel],
+        lowFrequencySamples: [RGB]
+    ) -> Int? {
+        guard pixels.count == lowFrequencySamples.count, !pixels.isEmpty else { return nil }
+        var weightedLuminance: UInt64 = 0
+        var totalWeight: UInt64 = 0
+        for (pixel, sample) in zip(pixels, lowFrequencySamples) {
+            let weight = UInt64(pixel.softWeightQ16)
+            let luminance = UInt64(sample.luminance)
+            let (term, termOverflow) = luminance.multipliedReportingOverflow(by: weight)
+            let (nextLuminance, sumOverflow) = weightedLuminance.addingReportingOverflow(term)
+            let (nextWeight, weightOverflow) = totalWeight.addingReportingOverflow(weight)
+            guard !termOverflow, !sumOverflow, !weightOverflow else { return nil }
+            weightedLuminance = nextLuminance
+            totalWeight = nextWeight
+        }
+        guard totalWeight > 0 else { return nil }
+        return Int((weightedLuminance + totalWeight / 2) / totalWeight)
+    }
+
     private static func lowFrequencyCorrection(
         lowFrequency: RGB,
+        regionalReferenceLuminance: Int,
+        source: (red: UInt8, green: UInt8, blue: UInt8, alpha: UInt8),
         strength: Double
-    ) -> RGBInt {
-        func correction(_ channel: Int) -> Int {
-            let raw = Int((Double(128 - channel) * strength * 0.125).rounded(.toNearestOrAwayFromZero))
-            return min(max(raw, -maximumAbsoluteChannelDelta), maximumAbsoluteChannelDelta)
-        }
-        return RGBInt(
-            red: correction(lowFrequency.red),
-            green: correction(lowFrequency.green),
-            blue: correction(lowFrequency.blue)
+    ) -> Int {
+        let raw = Int((
+            Double(regionalReferenceLuminance - lowFrequency.luminance)
+                * strength
+                * lowFrequencyFlatteningGain
+        ).rounded(.toNearestOrAwayFromZero))
+        let lowerClippingBound = -min(Int(source.red), min(Int(source.green), Int(source.blue)))
+        let upperClippingBound = 255 - max(Int(source.red), max(Int(source.green), Int(source.blue)))
+        return min(
+            max(raw, max(-maximumAbsoluteChannelDelta, lowerClippingBound)),
+            min(maximumAbsoluteChannelDelta, upperClippingBound)
         )
     }
 
@@ -311,12 +356,12 @@ private struct RGB: Sendable {
     let red: Int
     let green: Int
     let blue: Int
-}
 
-private struct RGBInt: Sendable {
-    let red: Int
-    let green: Int
-    let blue: Int
+    var luminance: Int {
+        // Integer Rec. 709 approximation. One scalar correction is then
+        // applied to every RGB channel so source chroma remains unchanged.
+        (54 * red + 183 * green + 19 * blue + 128) >> 8
+    }
 }
 
 private struct SourceLayout: Sendable {

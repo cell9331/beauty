@@ -4,44 +4,20 @@ import XCTest
 
 final class UpperEyelidSemanticSupportTests: XCTestCase {
     func testApprovedEyeIsIndependentFromPeerNoOp() {
-        let observation = BeautyFaceObservation(
-            stableID: "face-1",
-            imageBounds: CoordinateRect(x: 0, y: 0, width: 1, height: 1),
-            observedEyeSupport: [
-                BeautyObservedEyeSupport(
-                    side: .left,
-                    contour: [
-                        CoordinatePoint(x: 0.20, y: 0.20),
-                        CoordinatePoint(x: 0.40, y: 0.20),
-                        CoordinatePoint(x: 0.40, y: 0.40),
-                        CoordinatePoint(x: 0.20, y: 0.40),
-                    ]
-                ),
-                BeautyObservedEyeSupport(
-                    side: .right,
-                    contour: [
-                        CoordinatePoint(x: 0.60, y: 0.20),
-                        CoordinatePoint(x: 0.80, y: 0.20),
-                        CoordinatePoint(x: 0.80, y: 0.40),
-                        CoordinatePoint(x: 0.60, y: 0.40),
-                    ]
-                ),
-            ],
-            observedEyeOrder: .canonical
-        )
+        let observation = observation()
 
         let resolution = BeautyUpperEyelidSemanticSupportOwner.resolve(
             observation: observation,
-            imageWidth: 10,
-            imageHeight: 10
+            imageWidth: 100,
+            imageHeight: 100
         ) { requests in
             [BeautyUpperEyelidSemanticApproval(
                 side: requests[0].side,
                 approved: true,
                 confidence: 0.9,
                 reason: .approved,
-                pixelIndices: [22],
-                hardEnvelope: requests[0].eyeEnvelope
+                pixels: Array(requests[0].maximumFeatheredPixels().prefix(1)),
+                hardEnvelope: requests[0].permittedEnvelope
             )]
         }
 
@@ -52,14 +28,15 @@ final class UpperEyelidSemanticSupportTests: XCTestCase {
         }
         XCTAssertEqual(side, .left)
         XCTAssertEqual(confidence, 0.9)
-        XCTAssertEqual(pixels, [22])
+        XCTAssertEqual(pixels.count, 1)
+        XCTAssertGreaterThan(pixels[0].softWeightQ16, 0)
     }
 
     func testMissingSemanticOwnerReturnsBothSourceExactNoOps() {
         let resolution = BeautyUpperEyelidSemanticSupportOwner.resolve(
             observation: observation(),
-            imageWidth: 10,
-            imageHeight: 10
+            imageWidth: 100,
+            imageHeight: 100
         )
 
         assertNoOp(resolution.left, side: .left, reason: .semanticOwnerUnavailable)
@@ -79,8 +56,8 @@ final class UpperEyelidSemanticSupportTests: XCTestCase {
                 try! XCTUnwrap(observation().observedEyeSupport?.first),
                 malformedRight,
             ]),
-            imageWidth: 10,
-            imageHeight: 10,
+            imageWidth: 100,
+            imageHeight: 100,
             semanticOwner: approveFirstPixel
         )
         guard case .supported = leftOnly.left else {
@@ -94,14 +71,86 @@ final class UpperEyelidSemanticSupportTests: XCTestCase {
         )
         let missing = BeautyUpperEyelidSemanticSupportOwner.resolve(
             observation: missingRightLandmark,
-            imageWidth: 10,
-            imageHeight: 10,
+            imageWidth: 100,
+            imageHeight: 100,
             semanticOwner: approveFirstPixel
         )
         guard case .supported = missing.left else {
             return XCTFail("present left landmark must remain independently usable")
         }
         assertNoOp(missing.right, side: .right, reason: .missingEyeEnvelope)
+    }
+
+    func testMissingEyebrowAndCrossedBrowEyeGapFailClosedPerEye() {
+        let missing = BeautyUpperEyelidSemanticSupportOwner.resolve(
+            observation: observation(includeEyebrows: false),
+            imageWidth: 100,
+            imageHeight: 100,
+            semanticOwner: approveFirstPixel
+        )
+        assertNoOp(missing.left, side: .left, reason: .missingEyebrowEnvelope)
+        assertNoOp(missing.right, side: .right, reason: .missingEyebrowEnvelope)
+
+        let base = observation()
+        let crossed = BeautyFaceObservation(
+            stableID: base.stableID,
+            imageBounds: base.imageBounds,
+            landmarks: base.landmarks,
+            observedEyeSupport: base.observedEyeSupport,
+            observedEyeOrder: base.observedEyeOrder,
+            observedEyebrowSupport: BeautyObservedEyebrowSupport(
+                left: [
+                    CoordinatePoint(x: 0.18, y: 0.29),
+                    CoordinatePoint(x: 0.30, y: 0.32),
+                    CoordinatePoint(x: 0.42, y: 0.29),
+                ],
+                right: base.observedEyebrowSupport?.right
+            )
+        )
+        let crossedResolution = BeautyUpperEyelidSemanticSupportOwner.resolve(
+            observation: crossed,
+            imageWidth: 100,
+            imageHeight: 100,
+            semanticOwner: { requests in requests.map { Self.approval(for: $0) } }
+        )
+        assertNoOp(crossedResolution.left, side: .left, reason: .implausibleBrowEyeGap)
+        guard case .supported = crossedResolution.right else {
+            return XCTFail("a crossed left brow/eye gap must not suppress the valid right eye")
+        }
+    }
+
+    func testPermittedBandStaysBetweenBrowAndEyeAndUsesEllipticalFeathering() throws {
+        let capture = RequestCapture()
+        _ = BeautyUpperEyelidSemanticSupportOwner.resolve(
+            observation: observation(),
+            imageWidth: 100,
+            imageHeight: 100,
+            semanticOwner: { requests in
+                capture.store(requests)
+                return []
+            }
+        )
+
+        let request = try XCTUnwrap(capture.requests.first(where: { $0.side == .left }))
+        XCTAssertGreaterThan(request.permittedEnvelope.minY, 0.20)
+        XCTAssertLessThan(request.permittedEnvelope.maxY, 0.30)
+        XCTAssertGreaterThan(request.permittedEnvelope.width, request.eyeEnvelope.width)
+
+        let pixels = request.maximumFeatheredPixels()
+        XCTAssertGreaterThan(pixels.count, 10)
+        let weights = pixels.map(\.softWeightQ16)
+        let minimumWeight = try XCTUnwrap(weights.min())
+        let maximumWeight = try XCTUnwrap(weights.max())
+        XCTAssertGreaterThan(minimumWeight, 0)
+        XCTAssertLessThan(minimumWeight, maximumWeight)
+        XCTAssertLessThanOrEqual(maximumWeight, 65_536)
+
+        for pixel in pixels {
+            let row = pixel.pixelIndex / request.imageWidth
+            let y = (Double(row) + 0.5) / Double(request.imageHeight)
+            XCTAssertGreaterThan(y, 0.20, "brow must remain protected")
+            XCTAssertLessThan(y, 0.30, "eye and lash line must remain protected")
+        }
     }
 
     func testRejectedReasonsAlwaysProduceTypedSourceExactNoOp() {
@@ -115,8 +164,8 @@ final class UpperEyelidSemanticSupportTests: XCTestCase {
         ] {
             let resolution = BeautyUpperEyelidSemanticSupportOwner.resolve(
                 observation: observation(),
-                imageWidth: 10,
-                imageHeight: 10,
+                imageWidth: 100,
+                imageHeight: 100,
                 semanticOwner: { requests in
                     [Self.approval(for: requests[0], approved: false, confidence: 0.9, reason: reason)]
                 }
@@ -127,62 +176,62 @@ final class UpperEyelidSemanticSupportTests: XCTestCase {
     }
 
     func testNonFiniteConfidenceAndMaskDataFailClosed() {
-        let cases: [(BeautyUpperEyelidSemanticReason, BeautyUpperEyelidSemanticApproval)] = [
-            (
-                .lowConfidence,
-                BeautyUpperEyelidSemanticApproval(
-                    side: .left,
-                    approved: true,
-                    confidence: .nan,
-                    reason: .approved,
-                    pixelIndices: [22],
-                    hardEnvelope: CoordinateRect(x: 0.2, y: 0.2, width: 0.2, height: 0.2)
-                )
-            ),
-            (
-                .nonFiniteMask,
-                BeautyUpperEyelidSemanticApproval(
-                    side: .left,
-                    approved: true,
-                    confidence: 0.9,
-                    reason: .approved,
-                    pixelIndices: [22],
-                    hardEnvelope: CoordinateRect(x: .infinity, y: 0.2, width: 0.2, height: 0.2)
-                )
-            ),
-        ]
-
-        for (reason, expectedApproval) in cases {
+        for reason in [BeautyUpperEyelidSemanticReason.lowConfidence, .nonFiniteMask] {
             let resolution = BeautyUpperEyelidSemanticSupportOwner.resolve(
                 observation: observation(),
-                imageWidth: 10,
-                imageHeight: 10,
-                semanticOwner: { _ in [expectedApproval] }
+                imageWidth: 100,
+                imageHeight: 100,
+                semanticOwner: { requests in
+                    guard let request = requests.first else { return [] }
+                    return [BeautyUpperEyelidSemanticApproval(
+                        side: .left,
+                        approved: true,
+                        confidence: reason == .lowConfidence ? .nan : 0.9,
+                        reason: .approved,
+                        pixels: Array(request.maximumFeatheredPixels().prefix(1)),
+                        hardEnvelope: reason == .nonFiniteMask
+                            ? CoordinateRect(x: .infinity, y: 0.2, width: 0.2, height: 0.2)
+                            : request.permittedEnvelope
+                    )]
+                }
             )
             assertNoOp(resolution.left, side: .left, reason: reason)
         }
     }
 
     func testDuplicateOutOfBoundsAndOutOfEnvelopePixelsFailClosed() {
-        let cases: [(BeautyUpperEyelidSemanticReason, [Int], CoordinateRect)] = [
-            (.duplicatePixel, [22, 22], CoordinateRect(x: 0.2, y: 0.2, width: 0.2, height: 0.2)),
-            (.outOfBoundsMask, [100], CoordinateRect(x: 0.2, y: 0.2, width: 0.2, height: 0.2)),
-            (.outsideHardEnvelope, [11], CoordinateRect(x: 0.2, y: 0.2, width: 0.2, height: 0.2)),
-        ]
-
-        for (reason, pixels, envelope) in cases {
+        for reason in [
+            BeautyUpperEyelidSemanticReason.duplicatePixel,
+            .outOfBoundsMask,
+            .outsideHardEnvelope,
+            .invalidSoftWeight,
+        ] {
             let resolution = BeautyUpperEyelidSemanticSupportOwner.resolve(
                 observation: observation(),
-                imageWidth: 10,
-                imageHeight: 10,
+                imageWidth: 100,
+                imageHeight: 100,
                 semanticOwner: { requests in
-                    [BeautyUpperEyelidSemanticApproval(
+                    guard let request = requests.first,
+                          let validPixel = request.maximumFeatheredPixels().first
+                    else { return [] }
+                    let pixels: [BeautyUpperEyelidSupportPixel]
+                    switch reason {
+                    case .duplicatePixel:
+                        pixels = [validPixel, validPixel]
+                    case .outOfBoundsMask:
+                        pixels = [BeautyUpperEyelidSupportPixel(pixelIndex: 10_000, softWeightQ16: 1)]
+                    case .invalidSoftWeight:
+                        pixels = [BeautyUpperEyelidSupportPixel(pixelIndex: validPixel.pixelIndex, softWeightQ16: 65_537)]
+                    default:
+                        pixels = [BeautyUpperEyelidSupportPixel(pixelIndex: 0, softWeightQ16: 1)]
+                    }
+                    return [BeautyUpperEyelidSemanticApproval(
                         side: .left,
                         approved: true,
                         confidence: 0.9,
                         reason: .approved,
-                        pixelIndices: pixels,
-                        hardEnvelope: envelope
+                        pixels: pixels,
+                        hardEnvelope: request.permittedEnvelope
                     )]
                 }
             )
@@ -193,16 +242,23 @@ final class UpperEyelidSemanticSupportTests: XCTestCase {
     func testHardEnvelopeOutsideRequestedEyeIsRejected() {
         let resolution = BeautyUpperEyelidSemanticSupportOwner.resolve(
             observation: observation(),
-            imageWidth: 10,
-            imageHeight: 10,
+            imageWidth: 100,
+            imageHeight: 100,
             semanticOwner: { requests in
-                [BeautyUpperEyelidSemanticApproval(
+                let request = requests[0]
+                let outside = CoordinateRect(
+                    x: max(0, request.permittedEnvelope.minX - 0.02),
+                    y: request.permittedEnvelope.minY,
+                    width: request.permittedEnvelope.width,
+                    height: request.permittedEnvelope.height
+                )
+                return [BeautyUpperEyelidSemanticApproval(
                     side: .left,
                     approved: true,
                     confidence: 0.9,
                     reason: .approved,
-                    pixelIndices: [22],
-                    hardEnvelope: CoordinateRect(x: 0.1, y: 0.2, width: 0.2, height: 0.2)
+                    pixels: request.maximumFeatheredPixels(),
+                    hardEnvelope: outside
                 )]
             }
         )
@@ -212,8 +268,8 @@ final class UpperEyelidSemanticSupportTests: XCTestCase {
     func testDuplicateApprovalsAndWrongSideApprovalCannotAuthorizeAnEye() {
         let duplicate = BeautyUpperEyelidSemanticSupportOwner.resolve(
             observation: observation(),
-            imageWidth: 10,
-            imageHeight: 10,
+            imageWidth: 100,
+            imageHeight: 100,
             semanticOwner: { requests in
                 [
                     Self.approval(for: requests[0]),
@@ -225,8 +281,8 @@ final class UpperEyelidSemanticSupportTests: XCTestCase {
 
         let wrongSide = BeautyUpperEyelidSemanticSupportOwner.resolve(
             observation: observation(),
-            imageWidth: 10,
-            imageHeight: 10,
+            imageWidth: 100,
+            imageHeight: 100,
             semanticOwner: { requests in
                 [Self.approval(for: requests[1])]
             }
@@ -245,10 +301,10 @@ final class UpperEyelidSemanticSupportTests: XCTestCase {
         }
 
         let first = BeautyUpperEyelidSemanticSupportOwner.resolve(
-            observation: observation(), imageWidth: 10, imageHeight: 10, semanticOwner: owner
+            observation: observation(), imageWidth: 100, imageHeight: 100, semanticOwner: owner
         )
         let second = BeautyUpperEyelidSemanticSupportOwner.resolve(
-            observation: observation(), imageWidth: 10, imageHeight: 10, semanticOwner: owner
+            observation: observation(), imageWidth: 100, imageHeight: 100, semanticOwner: owner
         )
 
         XCTAssertEqual(first, second)
@@ -261,8 +317,8 @@ final class UpperEyelidSemanticSupportTests: XCTestCase {
     func testResolutionDiagnosticsExposeAggregatesOnly() {
         let resolution = BeautyUpperEyelidSemanticSupportOwner.resolve(
             observation: observation(),
-            imageWidth: 10,
-            imageHeight: 10,
+            imageWidth: 100,
+            imageHeight: 100,
             semanticOwner: approveFirstPixel
         )
         let rendered = [
@@ -286,7 +342,8 @@ final class UpperEyelidSemanticSupportTests: XCTestCase {
 
     private func observation(
         landmarks: BeautyFaceLandmarks = .complete,
-        supports: [BeautyObservedEyeSupport]? = nil
+        supports: [BeautyObservedEyeSupport]? = nil,
+        includeEyebrows: Bool = true
     ) -> BeautyFaceObservation {
         BeautyFaceObservation(
             stableID: "face-1",
@@ -296,8 +353,8 @@ final class UpperEyelidSemanticSupportTests: XCTestCase {
                 BeautyObservedEyeSupport(
                     side: .left,
                     contour: [
-                        CoordinatePoint(x: 0.20, y: 0.20),
-                        CoordinatePoint(x: 0.40, y: 0.20),
+                        CoordinatePoint(x: 0.20, y: 0.30),
+                        CoordinatePoint(x: 0.40, y: 0.30),
                         CoordinatePoint(x: 0.40, y: 0.40),
                         CoordinatePoint(x: 0.20, y: 0.40),
                     ]
@@ -305,14 +362,26 @@ final class UpperEyelidSemanticSupportTests: XCTestCase {
                 BeautyObservedEyeSupport(
                     side: .right,
                     contour: [
-                        CoordinatePoint(x: 0.60, y: 0.20),
-                        CoordinatePoint(x: 0.80, y: 0.20),
+                        CoordinatePoint(x: 0.60, y: 0.30),
+                        CoordinatePoint(x: 0.80, y: 0.30),
                         CoordinatePoint(x: 0.80, y: 0.40),
                         CoordinatePoint(x: 0.60, y: 0.40),
                     ]
                 ),
             ],
-            observedEyeOrder: .canonical
+            observedEyeOrder: .canonical,
+            observedEyebrowSupport: includeEyebrows ? BeautyObservedEyebrowSupport(
+                left: [
+                    CoordinatePoint(x: 0.18, y: 0.16),
+                    CoordinatePoint(x: 0.30, y: 0.20),
+                    CoordinatePoint(x: 0.42, y: 0.16),
+                ],
+                right: [
+                    CoordinatePoint(x: 0.58, y: 0.16),
+                    CoordinatePoint(x: 0.70, y: 0.20),
+                    CoordinatePoint(x: 0.82, y: 0.16),
+                ]
+            ) : nil
         )
     }
 
@@ -342,8 +411,8 @@ final class UpperEyelidSemanticSupportTests: XCTestCase {
             approved: approved,
             confidence: confidence,
             reason: reason,
-            pixelIndices: request.side == .left ? [22] : [27],
-            hardEnvelope: request.eyeEnvelope
+            pixels: Array(request.maximumFeatheredPixels().prefix(1)),
+            hardEnvelope: request.permittedEnvelope
         )
     }
 }
@@ -362,5 +431,18 @@ private final class ObservationCapture: @unchecked Sendable {
         lock.lock()
         defer { lock.unlock() }
         return storedValues
+    }
+}
+
+private final class RequestCapture: @unchecked Sendable {
+    private let lock = NSLock()
+    private var stored: [BeautyUpperEyelidSemanticRequest] = []
+
+    func store(_ requests: [BeautyUpperEyelidSemanticRequest]) {
+        lock.withLock { stored = requests }
+    }
+
+    var requests: [BeautyUpperEyelidSemanticRequest] {
+        lock.withLock { stored }
     }
 }

@@ -194,7 +194,7 @@ final class VisionFaceDetectorTests: XCTestCase {
         let result = detector.detectWithUpperEyelidSupport(
             image: nil,
             metadata: metadata(),
-            imageExtent: CGSize(width: 20, height: 20),
+            imageExtent: CGSize(width: 40, height: 40),
             semanticOwner: { requests in
                 probe.record(requests)
                 return requests.map { request in
@@ -203,8 +203,8 @@ final class VisionFaceDetectorTests: XCTestCase {
                         approved: true,
                         confidence: 0.9,
                         reason: .approved,
-                        pixelIndices: [upperEyelidPixelIndex(in: request.eyeEnvelope, width: 20, height: 20)],
-                        hardEnvelope: request.eyeEnvelope
+                        pixels: Array(request.maximumFeatheredPixels().prefix(1)),
+                        hardEnvelope: request.permittedEnvelope
                     )
                 }
             }
@@ -241,7 +241,7 @@ final class VisionFaceDetectorTests: XCTestCase {
         let result = detector.detectWithUpperEyelidSupport(
             image: nil,
             metadata: metadata(),
-            imageExtent: CGSize(width: 20, height: 20),
+            imageExtent: CGSize(width: 40, height: 40),
             semanticOwner: { requests in
                 requests.map { request in
                     BeautyUpperEyelidSemanticApproval(
@@ -249,8 +249,8 @@ final class VisionFaceDetectorTests: XCTestCase {
                         approved: true,
                         confidence: 0.9,
                         reason: .approved,
-                        pixelIndices: [upperEyelidPixelIndex(in: request.eyeEnvelope, width: 20, height: 20)],
-                        hardEnvelope: request.eyeEnvelope
+                        pixels: Array(request.maximumFeatheredPixels().prefix(1)),
+                        hardEnvelope: request.permittedEnvelope
                     )
                 }
             }
@@ -1145,7 +1145,19 @@ private final class UpperEyelidSupportObservationProvider: @unchecked Sendable {
         return [VisionDetectionObservation(
             stableID: "selected-face",
             visionBounds: CoordinateRect(x: 0, y: 0, width: 1, height: 1),
-            observedEyeSupport: support
+            observedEyeSupport: support,
+            observedEyebrowSupport: BeautyObservedEyebrowSupport(
+                left: [
+                    CoordinatePoint(x: 0.18, y: 0.60),
+                    CoordinatePoint(x: 0.30, y: 0.68),
+                    CoordinatePoint(x: 0.42, y: 0.60),
+                ],
+                right: [
+                    CoordinatePoint(x: 0.58, y: 0.60),
+                    CoordinatePoint(x: 0.70, y: 0.68),
+                    CoordinatePoint(x: 0.82, y: 0.60),
+                ]
+            )
         )]
     }
 }

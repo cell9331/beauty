@@ -18,7 +18,7 @@ final class BeautyUpperEyelidSupportCompositionTests: XCTestCase {
                 side: .left,
                 confidence: 0.9,
                 reason: .approved,
-                pixelIndices: [0],
+                pixels: weightedPixels([0]),
                 hardEnvelope: fullEnvelope
             ),
             right: .sourceExactNoOp(
@@ -49,14 +49,14 @@ final class BeautyUpperEyelidSupportCompositionTests: XCTestCase {
                 side: .left,
                 confidence: 0.9,
                 reason: .approved,
-                pixelIndices: [2],
+                pixels: weightedPixels([2]),
                 hardEnvelope: fullEnvelope
             ),
             right: .supported(
                 side: .right,
                 confidence: 0.9,
                 reason: .approved,
-                pixelIndices: [2],
+                pixels: weightedPixels([2]),
                 hardEnvelope: fullEnvelope
             )
         )
@@ -76,6 +76,10 @@ final class BeautyUpperEyelidSupportCompositionTests: XCTestCase {
         CoordinateRect(x: 0, y: 0, width: 1, height: 1)
     }
 
+    private func weightedPixels(_ indices: [Int]) -> [BeautyUpperEyelidSupportPixel] {
+        indices.map { BeautyUpperEyelidSupportPixel(pixelIndex: $0, softWeightQ16: 65_536) }
+    }
+
     private func proposals(
         from resolution: BeautyUpperEyelidSupportResolution,
         target: (UInt8, UInt8, UInt8) = (200, 201, 202),
@@ -84,11 +88,11 @@ final class BeautyUpperEyelidSupportCompositionTests: XCTestCase {
         resolution.outcomes
             .filter { side == nil || $0.side == side }
             .flatMap { outcome in
-                outcome.pixelIndices.map { pixelIndex in
+                outcome.pixels.map { pixel in
                     BeautyLocalPixelProposal(
-                        pixelIndex: pixelIndex,
+                        pixelIndex: pixel.pixelIndex,
                         isInsideHardEnvelope: outcome.isSupported,
-                        softWeightQ16: UInt32.max,
+                        softWeightQ16: pixel.softWeightQ16,
                         targetRed: target.0,
                         targetGreen: target.1,
                         targetBlue: target.2

@@ -26,42 +26,48 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
         }
     }
 
-    func testApprovedPixelUsesLowFrequencyCorrectionAndCarriesOriginalDetail() throws {
-        let sourceBytes = gradientBytes(width: 5, height: 5)
-        let source = try canonical(bytes: sourceBytes, width: 5, height: 5)
+    func testApprovedBandUsesRegionalLuminanceCorrectionAndCarriesOriginalDetail() throws {
+        let width = 7
+        let height = 7
+        let sourceBytes = gradientBytes(width: width, height: height)
+        let source = try canonical(bytes: sourceBytes, width: width, height: height)
+        let supportIndices = [16, 17, 18, 23, 24, 25, 30, 31, 32]
         let result = BeautyUpperEyelidFullnessEditor.edit(
             source: source,
-            support: support(leftPixels: [12]),
+            support: support(leftPixels: supportIndices),
             strength: 0.5
         )
 
         let proposal = try XCTUnwrap(result.proposalsByEye.first?.first)
-        let sourcePixel = rgb(sourceBytes, pixelIndex: 12)
-        let low = lowFrequency(sourceBytes, pixelIndex: 12, width: 5, height: 5)
-        let correction = (
-            red: Int((Double(128 - low.red) * 0.5 * 0.125).rounded(.toNearestOrAwayFromZero)),
-            green: Int((Double(128 - low.green) * 0.5 * 0.125).rounded(.toNearestOrAwayFromZero)),
-            blue: Int((Double(128 - low.blue) * 0.5 * 0.125).rounded(.toNearestOrAwayFromZero))
-        )
+        let sourcePixel = rgb(sourceBytes, pixelIndex: proposal.pixelIndex)
+        let lowSamples = supportIndices.map {
+            lowFrequency(sourceBytes, pixelIndex: $0, width: width, height: height)
+        }
+        let regionalReference = Int((Double(lowSamples.map(luminance).reduce(0, +)) / Double(lowSamples.count)).rounded())
+        let low = lowFrequency(sourceBytes, pixelIndex: proposal.pixelIndex, width: width, height: height)
+        let rawCorrection = Int((Double(regionalReference - luminance(low)) * 0.5 * 1.5).rounded(.toNearestOrAwayFromZero))
+        let correction = min(max(rawCorrection, -16), 16)
 
-        XCTAssertEqual(proposal.targetRed, UInt8(sourcePixel.red + correction.red))
-        XCTAssertEqual(proposal.targetGreen, UInt8(sourcePixel.green + correction.green))
-        XCTAssertEqual(proposal.targetBlue, UInt8(sourcePixel.blue + correction.blue))
+        XCTAssertEqual(proposal.targetRed, UInt8(sourcePixel.red + correction))
+        XCTAssertEqual(proposal.targetGreen, UInt8(sourcePixel.green + correction))
+        XCTAssertEqual(proposal.targetBlue, UInt8(sourcePixel.blue + correction))
         XCTAssertEqual(
             Int(proposal.targetRed),
-            low.red + correction.red + (sourcePixel.red - low.red)
+            low.red + correction + (sourcePixel.red - low.red)
         )
         XCTAssertEqual(
             Int(proposal.targetGreen),
-            low.green + correction.green + (sourcePixel.green - low.green)
+            low.green + correction + (sourcePixel.green - low.green)
         )
         XCTAssertEqual(
             Int(proposal.targetBlue),
-            low.blue + correction.blue + (sourcePixel.blue - low.blue)
+            low.blue + correction + (sourcePixel.blue - low.blue)
         )
+        XCTAssertEqual(Int(proposal.targetRed) - Int(proposal.targetGreen), sourcePixel.red - sourcePixel.green)
+        XCTAssertEqual(Int(proposal.targetGreen) - Int(proposal.targetBlue), sourcePixel.green - sourcePixel.blue)
         XCTAssertEqual(result.summary.acceptedEyeCount, 1)
         XCTAssertEqual(result.summary.rejectedEyeCount, 1)
-        XCTAssertEqual(result.summary.proposalPixelCount, 1)
+        XCTAssertEqual(result.summary.proposalPixelCount, supportIndices.count)
         XCTAssertGreaterThan(result.summary.changedPixelCount, 0)
         XCTAssertLessThanOrEqual(result.summary.maximumAbsoluteChannelDelta, 16)
     }
@@ -73,14 +79,14 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
                 side: .left,
                 confidence: 0.9,
                 reason: .approved,
-                pixelIndices: [12, 12],
+                pixels: weightedPixels([12, 12]),
                 hardEnvelope: fullEnvelope
             ),
             right: .supported(
                 side: .right,
                 confidence: 0.9,
                 reason: .approved,
-                pixelIndices: [13],
+                pixels: weightedPixels([13]),
                 hardEnvelope: fullEnvelope
             )
         )
@@ -134,7 +140,7 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
                 side: .left,
                 confidence: 0.9,
                 reason: .approved,
-                pixelIndices: leftPixels,
+                pixels: weightedPixels(leftPixels),
                 hardEnvelope: fullEnvelope
             ),
             right: .sourceExactNoOp(
@@ -143,6 +149,10 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
                 reason: .semanticApprovalRejected
             )
         )
+    }
+
+    private func weightedPixels(_ indices: [Int]) -> [BeautyUpperEyelidSupportPixel] {
+        indices.map { BeautyUpperEyelidSupportPixel(pixelIndex: $0, softWeightQ16: 65_536) }
     }
 
     private func canonical(
@@ -195,8 +205,8 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
         var green = 0
         var blue = 0
         var count = 0
-        for sampleY in max(0, y - 1)...min(height - 1, y + 1) {
-            for sampleX in max(0, x - 1)...min(width - 1, x + 1) {
+        for sampleY in max(0, y - 2)...min(height - 1, y + 2) {
+            for sampleX in max(0, x - 2)...min(width - 1, x + 2) {
                 let sample = rgb(bytes, pixelIndex: sampleY * width + sampleX)
                 red += sample.red
                 green += sample.green
@@ -209,5 +219,9 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
             (green + count / 2) / count,
             (blue + count / 2) / count
         )
+    }
+
+    private func luminance(_ rgb: (red: Int, green: Int, blue: Int)) -> Int {
+        (54 * rgb.red + 183 * rgb.green + 19 * rgb.blue + 128) >> 8
     }
 }

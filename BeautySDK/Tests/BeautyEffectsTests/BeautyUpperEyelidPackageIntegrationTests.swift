@@ -27,11 +27,12 @@ final class BeautyUpperEyelidPackageIntegrationTests: XCTestCase {
         XCTAssertEqual(semanticOwner.observationIDs, ["integration-face", "integration-face"])
         XCTAssertEqual(detected.summary.faceCount, 1)
         XCTAssertEqual(detected.supportResolution.supportedEyeCount, 1)
-        guard case .supported(.left, _, .approved, let acceptedPixels, _) = detected.supportResolution.left,
+        guard case .supported(.left, _, .approved, let acceptedSupportPixels, _) = detected.supportResolution.left,
               case .sourceExactNoOp(.right, _, .semanticApprovalRejected) = detected.supportResolution.right
         else {
             return XCTFail("expected one accepted eye and one typed source-exact peer no-op")
         }
+        let acceptedPixels = acceptedSupportPixels.map(\.pixelIndex)
 
         // F-03 provenance: consume the detector-returned resolution directly.
         let edit = BeautyUpperEyelidFullnessEditor.edit(
@@ -43,11 +44,12 @@ final class BeautyUpperEyelidPackageIntegrationTests: XCTestCase {
         let units = edit.makeUnits(using: owner)
         let composed = try owner.compose(units)
 
-        XCTAssertEqual(acceptedPixels, [try XCTUnwrap(semanticOwner.leftCandidatePixel)])
+        XCTAssertTrue(acceptedPixels.contains(try XCTUnwrap(semanticOwner.leftCandidatePixel)))
+        XCTAssertGreaterThan(acceptedPixels.count, 1)
         XCTAssertEqual(units.count, 1)
         XCTAssertEqual(edit.summary.acceptedEyeCount, 1)
         XCTAssertEqual(edit.summary.rejectedEyeCount, 1)
-        XCTAssertEqual(edit.summary.changedPixelCount, 1)
+        XCTAssertGreaterThan(edit.summary.changedPixelCount, 0)
         XCTAssertGreaterThan(edit.summary.maximumAbsoluteChannelDelta, 0)
         XCTAssertLessThanOrEqual(
             edit.summary.maximumAbsoluteChannelDelta,
@@ -55,8 +57,8 @@ final class BeautyUpperEyelidPackageIntegrationTests: XCTestCase {
         )
         XCTAssertEqual(composed.summary.acceptedUnitCount, 1)
         XCTAssertEqual(composed.summary.rejectedUnitCount, 0)
-        XCTAssertEqual(composed.summary.ownedPixelCount, 1)
-        XCTAssertEqual(composed.summary.changedPixelCount, 1)
+        XCTAssertEqual(composed.summary.ownedPixelCount, acceptedPixels.count)
+        XCTAssertGreaterThan(composed.summary.changedPixelCount, 0)
         XCTAssertEqual(composed.summary.changedOutsideUnionPixelCount, 0)
         XCTAssertEqual(composed.summary.collisionPixelCount, 0)
 
@@ -196,12 +198,13 @@ final class BeautyUpperEyelidPackageIntegrationTests: XCTestCase {
 
             XCTAssertEqual(provider.callCount, 1, name)
             XCTAssertEqual(semanticOwner.callCount, 1, name)
-            guard case .supported(.left, _, .approved, let leftPixels, _) = detected.supportResolution.left,
+            guard case .supported(.left, _, .approved, let leftSupportPixels, _) = detected.supportResolution.left,
                   case .sourceExactNoOp(.right, _, let actualReason) = detected.supportResolution.right
             else {
                 XCTFail("\(name): expected accepted left eye and typed peer no-op")
                 continue
             }
+            let leftPixels = leftSupportPixels.map(\.pixelIndex)
             XCTAssertEqual(actualReason, expectedReason, name)
 
             let edit = BeautyUpperEyelidFullnessEditor.edit(
@@ -235,8 +238,8 @@ final class BeautyUpperEyelidPackageIntegrationTests: XCTestCase {
     }
 
     private func canonical() throws -> BeautyCanonicalStillImage {
-        let width = 8
-        let height = 8
+        let width = 32
+        let height = 32
         let bytes = (0..<(width * height)).flatMap { pixelIndex in
             let x = pixelIndex % width
             let y = pixelIndex / width
@@ -315,8 +318,30 @@ private final class UpperEyelidIntegrationObservationProvider: @unchecked Sendab
         return [VisionDetectionObservation(
             stableID: "integration-face",
             visionBounds: CoordinateRect(x: 0, y: 0, width: 1, height: 1),
-            observedEyeSupport: support
+            observedEyeSupport: support,
+            observedEyebrowSupport: BeautyObservedEyebrowSupport(
+                left: eyebrow(for: .left),
+                right: eyebrow(for: .right)
+            )
         )]
+    }
+
+    private func eyebrow(for side: BeautyObservedEyeSide) -> [CoordinatePoint]? {
+        guard let eye = support.first(where: { $0.side == side }),
+              !eye.contour.isEmpty,
+              eye.contour.allSatisfy({ $0.isFinite })
+        else {
+            return nil
+        }
+        let minimumX = eye.contour.map(\.x).min()!
+        let maximumX = eye.contour.map(\.x).max()!
+        let eyeTop = eye.contour.map(\.y).max()!
+        let gap = 0.10
+        return [
+            CoordinatePoint(x: minimumX, y: min(1, eyeTop + gap)),
+            CoordinatePoint(x: (minimumX + maximumX) * 0.5, y: min(1, eyeTop + gap + 0.03)),
+            CoordinatePoint(x: maximumX, y: min(1, eyeTop + gap)),
+        ]
     }
 }
 
@@ -351,12 +376,19 @@ private final class UpperEyelidIntegrationSemanticOwner: @unchecked Sendable {
             ids = requests.map(\ .observation.stableID)
             var approvals: [BeautyUpperEyelidSemanticApproval] = []
             for request in requests {
-                let candidate = mode == .acceptBothAtSamePixel
-                    ? sharedPixel
-                    : firstPixel(in: request)
-                guard let candidate else { continue }
-                if request.side == .left { leftPixel = candidate }
-                if request.side == .right { rightPixel = candidate }
+                let maximumPixels = request.maximumFeatheredPixels()
+                let candidatePixels: [BeautyUpperEyelidSupportPixel]
+                if mode == .acceptBothAtSamePixel {
+                    guard let sharedPixel,
+                          let shared = maximumPixels.first(where: { $0.pixelIndex == sharedPixel })
+                    else { continue }
+                    candidatePixels = [shared]
+                } else {
+                    candidatePixels = maximumPixels
+                }
+                guard let firstCandidate = candidatePixels.first else { continue }
+                if request.side == .left { leftPixel = firstCandidate.pixelIndex }
+                if request.side == .right { rightPixel = firstCandidate.pixelIndex }
 
                 let approved: Bool
                 let confidence: Double
@@ -376,8 +408,8 @@ private final class UpperEyelidIntegrationSemanticOwner: @unchecked Sendable {
                     approved: approved,
                     confidence: confidence,
                     reason: approved ? .approved : .semanticApprovalRejected,
-                    pixelIndices: approved ? [candidate] : [],
-                    hardEnvelope: request.eyeEnvelope
+                    pixels: approved ? candidatePixels : [],
+                    hardEnvelope: request.permittedEnvelope
                 ))
             }
             return approvals
@@ -385,17 +417,7 @@ private final class UpperEyelidIntegrationSemanticOwner: @unchecked Sendable {
     }
 
     private func firstPixel(in request: BeautyUpperEyelidSemanticRequest) -> Int? {
-        for pixelIndex in 0..<(request.imageWidth * request.imageHeight) {
-            let x = (Double(pixelIndex % request.imageWidth) + 0.5) / Double(request.imageWidth)
-            let y = (Double(pixelIndex / request.imageWidth) + 0.5) / Double(request.imageHeight)
-            if x >= request.eyeEnvelope.minX,
-               x <= request.eyeEnvelope.maxX,
-               y >= request.eyeEnvelope.minY,
-               y <= request.eyeEnvelope.maxY {
-                return pixelIndex
-            }
-        }
-        return nil
+        request.maximumFeatheredPixels().first?.pixelIndex
     }
 
     private func firstSharedPixel(in requests: [BeautyUpperEyelidSemanticRequest]) -> Int? {
@@ -406,18 +428,10 @@ private final class UpperEyelidIntegrationSemanticOwner: @unchecked Sendable {
         else {
             return nil
         }
-        for pixelIndex in 0..<(first.imageWidth * first.imageHeight) {
-            let x = (Double(pixelIndex % first.imageWidth) + 0.5) / Double(first.imageWidth)
-            let y = (Double(pixelIndex / first.imageWidth) + 0.5) / Double(first.imageHeight)
-            if requests.allSatisfy({ request in
-                x >= request.eyeEnvelope.minX
-                    && x <= request.eyeEnvelope.maxX
-                    && y >= request.eyeEnvelope.minY
-                    && y <= request.eyeEnvelope.maxY
-            }) {
-                return pixelIndex
-            }
-        }
-        return nil
+        let shared = requests
+            .map { Set($0.maximumFeatheredPixels().map(\.pixelIndex)) }
+            .dropFirst()
+            .reduce(Set(first.maximumFeatheredPixels().map(\.pixelIndex))) { $0.intersection($1) }
+        return shared.min()
     }
 }
