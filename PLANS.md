@@ -32,8 +32,8 @@
 | --- | --- |
 | Status | `active` |
 | Scope | Remediate the rejected candidate, freeze a new versioned baseline, rerun genuine qualification, then continue the milestone only from a verified pass. |
-| Current Step | Plan 80-13 private automation passed twice with identical sanitized outcomes; the qualified v3 candidates are now at the blocking blinded 100%-detail human-review checkpoint. |
-| Blocker | The fixed-field human visual judgment cannot be inferred from pixel metrics or supplied by the implementing agent. It must be completed against the prepared anonymous review page before a canonical decision is emitted. |
+| Current Step | Candidate v3 passed 19/19 automated rows but failed the first positive visual checkpoint because its uniform tone shift did not visibly reduce upper-eyelid fullness. Plan 80-15 now replaces that invalidated semantic with boundary-anchored low-frequency relief flattening. |
+| Blocker | None for candidate-v4 mechanics. Human review remains mandatory only after the newly implemented and independently frozen v4 passes every automated row twice. |
 | Privacy | Only aggregate counts and normalized reasons may enter repository evidence; media, masks, locators, rights details, and per-fixture rows remain external. |
 
 Checklist:
@@ -48,8 +48,10 @@ Checklist:
 | Run candidate v2 automation and preserve the decision stop | `completed` | 8 fixtures/24 assets/19 rows; 14 rows passed, adjacent jump and texture failed, review was not opened, deterministic decision remained non-promotion with exact 61/5/74 absence. |
 | Implement candidate v3 mechanics | `completed` | Commit `94400c0`; one clipping-safe non-positive contour per eye, existing curved Q16 feather, focused 25/0/0. |
 | Freeze candidate v3 qualification | `completed` | 15 Node tests and 15 independent probes bind source/tests/helpers, polarity-correct applicability, the fixed boundary rubric, and exact 61/5/74 absence. |
-| Rebuild private v3 bundle and complete blinded review | `active` | Fresh external run: 8 fixtures/24 assets/19 rows; two byte-identical evaluations passed 19/19, with boundary jump max 4, target delta max 10, protected delta 0, and positive texture retention min 1.0. The anonymous three-column/1:1 review is open; fixed-field human judgment remains pending. |
-| Emit and independently verify the v3 decision | `planned` | Plan 80-14 unlocks Phase 81 only for an exact complete pass. |
+| Rebuild private v3 bundle and complete blinded review | `completed` | Fresh external run passed 19/19 automated rows twice, but the first positive human checkpoint found no clearly perceptible target reduction. Review stopped and v3 is terminal. |
+| Preserve the v3 decision stop | `completed` | No canonical promotion artifact was written; Phase 81 remains ineligible with exact 61/5/74 absence. |
+| Implement candidate v4 relief-flattening semantics | `active` | Plan 80-15 replaces uniform darkening with a smooth boundary-anchored low-frequency convexity correction while preserving source geometry, chroma, and detail. |
+| Freeze and requalify candidate v4 | `planned` | Plans 80-16 through 80-18 bind the new source before private output, run automation twice, require blinded review, and unlock Phase 81 only from an exact pass. |
 
 ### P-2026-08-14-phase-66-sdk-only-boundary
 

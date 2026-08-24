@@ -5,16 +5,16 @@ milestone_name: Genuine Upper-Eyelid Fullness Promotion
 current_phase: 80
 current_phase_name: Genuine Evidence and Qualification Gate
 status: executing
-stopped_at: Phase 80 Plan 13 blocking 100%-detail human review
-last_updated: "2026-08-24T07:45:44Z"
+stopped_at: Phase 80 Plan 15 candidate-v4 relief-flattening implementation
+last_updated: "2026-08-24T08:35:24Z"
 last_activity: 2026-08-24
-last_activity_desc: Candidate-v3 automation passed twice; anonymous 100%-detail review opened
+last_activity_desc: Candidate-v3 human weak-effect failure recorded; candidate-v4 mechanics started
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 14
-  completed_plans: 9
-  percent: 64
+  total_plans: 18
+  completed_plans: 11
+  percent: 61
 ---
 
 # Project State
@@ -31,11 +31,11 @@ modular facade.
 ## Current Position
 
 Phase: 80 (Genuine Evidence and Qualification Gate) — EXECUTING
-Plan: 13 of 14
-Status: Candidate-v3 automation passed; awaiting fixed-field 100%-detail human review
-Last activity: 2026-08-24 — two identical v3 evaluations passed all 19 automated rows; qualified anonymous review opened
+Plan: 15 of 18
+Status: Implementing candidate-v4 boundary-anchored relief flattening
+Last activity: 2026-08-24 — candidate v3 rejected after the first positive review found no perceptible fullness reduction
 
-Progress: [██████░░░░] 64%
+Progress: [██████░░░░] 61%
 
 ## Performance Metrics
 
@@ -59,6 +59,8 @@ roadmaps.
 | Phase 80 P10 | 4 min | 2 tasks | 3 aggregate-only records |
 | Phase 80 P11 | 14 min | 2 tasks | 7 files |
 | Phase 80 P12 | 17 min | 2 tasks | 6 files |
+| Phase 80 P13 | 39 min | 2 tasks | 2 aggregate-only records |
+| Phase 80 P14 | 2 min | 1 task | 1 aggregate-only record |
 
 ## Accumulated Context
 
@@ -90,6 +92,8 @@ roadmaps.
 - [Phase 80]: Candidate-v2 additionally requires adjacent correction jump `<=5`, exact feather-to-zero, and a separate 100%-detail boundary-artifact human attestation. — Square blocks, dark patches, halos, and visible mask edges are first-class failures rather than being hidden inside a generic naturalness judgment.
 - [Phase 80]: Candidate v2 is terminal after only 14/19 automated rows passed; human review never began. — A high real-image correction jump and low texture retention require a new source-bound version, not threshold relaxation.
 - [Phase 80]: A negative/stress image with no eligible brow-to-lid request must prove exact source no-op and cannot invent a target region merely to satisfy a metric schema. — Candidate v3 qualification will freeze applicability explicitly before outcomes.
+- [Phase 80]: Candidate v3 is terminal despite passing all automated rows because its first positive visual checkpoint found no clearly perceptible fullness reduction. — Uniform regional darkening is a tone change, not evidence that convex upper-lid relief has been reduced.
+- [Phase 80]: Candidate v4 must flatten a boundary-anchored low-frequency convexity residual while retaining exact geometry, chroma, and high-frequency source detail. — This targets the visible thick/puffy contour without eye opening, crease invention, brow motion, smoothing, or warp proxies.
 
 ### Pending Todos
 
@@ -98,11 +102,11 @@ None found under `.planning/todos/pending/`.
 ### Blockers/Concerns
 
 - Candidate-v3 private automation passed twice with identical sanitized
-  outcomes: 8 fixtures, 24 assets, 19/19 automated rows, adjacent boundary
-  jump max 4, target delta max 10, protected delta 0, and positive texture
-  retention min 1.0. Public promotion remains blocked only on the complete
-  fixed-field blinded review and its bound decision; exact 61/5/74 absence is
-  still preserved.
+  outcomes, but the first positive 100%-detail checkpoint found no clearly
+  perceptible target reduction. The attempt is terminal, no canonical decision
+  exists, and exact 61/5/74 public absence remains preserved. Candidate-v4
+  mechanics can proceed without private output until a new source baseline and
+  qualification contract are frozen.
 
 - The candidate-v1 external bundle was structurally complete and repeatably
   admitted at 8 fixtures, 24 assets, and 19 metric rows. Its automated texture
@@ -129,7 +133,7 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-24T07:45:44Z
-Stopped at: Phase 80 Plan 13 blocking 100%-detail human review
+Last session: 2026-08-24T08:35:24Z
+Stopped at: Phase 80 Plan 15 candidate-v4 relief-flattening implementation
 Resume file: None
-Next action: collect the complete fixed-field anonymous review, emit and independently verify the candidate-v3 decision, then continue to public SDK promotion only if it passes.
+Next action: implement and generated-fixture-test the candidate-v4 boundary-anchored relief-flattening editor without viewing any v4 private outcome.
