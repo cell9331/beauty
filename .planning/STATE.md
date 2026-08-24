@@ -5,16 +5,16 @@ milestone_name: Genuine Upper-Eyelid Fullness Promotion
 current_phase: 80
 current_phase_name: Genuine Evidence and Qualification Gate
 status: executing
-stopped_at: Phase 80 Plan 12 candidate-v3 qualification freeze
-last_updated: "2026-08-24T08:38:00Z"
+stopped_at: Phase 80 Plan 13 candidate-v3 private automation
+last_updated: "2026-08-24T08:51:00Z"
 last_activity: 2026-08-24
-last_activity_desc: Candidate-v3 single-sign contour passed focused mechanics
+last_activity_desc: Candidate-v3 qualification frozen before private outcomes
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 14
-  completed_plans: 8
-  percent: 57
+  completed_plans: 9
+  percent: 64
 ---
 
 # Project State
@@ -31,11 +31,11 @@ modular facade.
 ## Current Position
 
 Phase: 80 (Genuine Evidence and Qualification Gate) — EXECUTING
-Plan: 12 of 14
-Status: Freezing candidate-v3 qualification before private outcomes
-Last activity: 2026-08-24 — candidate-v3 single-sign contour passed 25 focused tests
+Plan: 13 of 14
+Status: Generating and automatically evaluating private candidate-v3 outputs
+Last activity: 2026-08-24 — candidate-v3 contract/evaluator frozen before private outcomes
 
-Progress: [██████░░░░] 57%
+Progress: [██████░░░░] 64%
 
 ## Performance Metrics
 
@@ -58,6 +58,7 @@ roadmaps.
 | Phase 80 P09 | 12 min | 2 tasks | 0 durable private files |
 | Phase 80 P10 | 4 min | 2 tasks | 3 aggregate-only records |
 | Phase 80 P11 | 14 min | 2 tasks | 7 files |
+| Phase 80 P12 | 17 min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -126,6 +127,6 @@ None found under `.planning/todos/pending/`.
 ## Session Continuity
 
 Last session: 2026-08-24T06:58:00Z
-Stopped at: Phase 80 Plan 12 candidate-v3 qualification freeze
+Stopped at: Phase 80 Plan 13 candidate-v3 private automation
 Resume file: None
-Next action: bind candidate-v3 source/test identity and freeze polarity-correct metric applicability, evaluator, and review rubric before any v3 private output.
+Next action: generate a fresh private candidate-v3 bundle, run all applicable metrics and admission twice, and open 100%-detail review only if both passes agree.

@@ -105,7 +105,7 @@ natural, identity-preserving, and safe on authorized genuine evidence.
 - [x] 80-09-PLAN.md — candidate-v2 automation stopped before review
 - [x] 80-10-PLAN.md — candidate-v2 hard stop preserved
 - [x] 80-11-PLAN.md — candidate-v3 smooth correction remediation
-- [ ] 80-12-PLAN.md — candidate-v3 qualification freeze
+- [x] 80-12-PLAN.md — candidate-v3 qualification freeze
 - [ ] 80-13-PLAN.md — candidate-v3 private automation and review
 - [ ] 80-14-PLAN.md — candidate-v3 decision and Phase-80 verification
 
@@ -244,7 +244,7 @@ orphaned or duplicate mappings.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 80. Genuine Evidence and Qualification Gate | v1.19 | 8/14 | Freezing candidate-v3 qualification | - |
+| 80. Genuine Evidence and Qualification Gate | v1.19 | 9/14 | Running candidate-v3 private automation | - |
 | 81. Safe Public Still-Image Activation | v1.19 | 0/TBD | Not started | - |
 | 82. Public Output and Backend Qualification | v1.19 | 0/TBD | Not started | - |
 | 83. Taxonomy and Owner Promotion | v1.19 | 0/TBD | Not started | - |
