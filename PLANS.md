@@ -32,7 +32,7 @@
 | --- | --- |
 | Status | `active` |
 | Scope | Remediate the rejected candidate, freeze a new versioned baseline, rerun genuine qualification, then continue the milestone only from a verified pass. |
-| Current Step | Plan 80-07 remediation is verified; Plan 80-08 now freezes the candidate-v2 source/test baseline and qualification boundary before any new private output is inspected. |
+| Current Step | Plan 80-08 froze the candidate-v2 source/test baseline and qualification boundary before private outcomes; Plan 80-09 now generates and evaluates a fresh private v2 bundle. |
 | Blocker | None for remediation. Human review remains a later Plan-09 checkpoint after every v2 automated row passes. |
 | Privacy | Only aggregate counts and normalized reasons may enter repository evidence; media, masks, locators, rights details, and per-fixture rows remain external. |
 
@@ -44,8 +44,8 @@ Checklist:
 | Prepare and structurally admit the private bundle | `completed` | Two deterministic admissions: 8 fixtures, 24 assets, 19 metric rows, zero structural/rights/category failures. |
 | Terminate candidate v1 without retuning | `completed` | Aggregate automated texture failure plus the first 100%-detail positive review's weak-effect/block-artifact failure make v1 non-promotable; remaining v1 review was intentionally stopped. |
 | Implement and verify candidate v2 mechanics | `completed` | Commit `4cf736c`; focused 24/0/0, full SwiftPM 803/0/8, texture `>=0.98`, post-archive boundary and diff hygiene pass. |
-| Freeze candidate v2 qualification contract | `active` | Plan 80-08 binds the new source/test baseline before any v2 private outcomes are inspected. |
-| Rebuild private bundle and complete blinded review | `planned` | Plan 80-09 runs all frozen automation first, then asks for complete 100%-detail fixed-rubric review. |
+| Freeze candidate v2 qualification contract | `completed` | Plan 80-08 binds the new source/test baseline, 15 Node tests, 13 independent checker probes, boundary-jump `<=5`, feather-to-zero, and a fixed boundary-artifact review field before any v2 private output. |
+| Rebuild private bundle and complete blinded review | `active` | Plan 80-09 runs all frozen automation first, then asks for complete 100%-detail fixed-rubric review. |
 | Emit and independently verify the v2 decision | `planned` | Plan 80-10 unlocks Phase 81 only for an exact complete pass. |
 
 ### P-2026-08-14-phase-66-sdk-only-boundary

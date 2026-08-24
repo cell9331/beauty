@@ -5,16 +5,16 @@ milestone_name: Genuine Upper-Eyelid Fullness Promotion
 current_phase: 80
 current_phase_name: Genuine Evidence and Qualification Gate
 status: executing
-stopped_at: Phase 80 Plan 08 candidate-v2 qualification freeze
-last_updated: "2026-08-24T06:58:00Z"
+stopped_at: Phase 80 Plan 09 private candidate-v2 automation
+last_updated: "2026-08-24T08:10:00Z"
 last_activity: 2026-08-24
-last_activity_desc: First positive review found weak efficacy and a rectangular dark-envelope artifact
+last_activity_desc: Candidate-v2 qualification boundary frozen before private outcomes
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 10
-  completed_plans: 4
-  percent: 40
+  completed_plans: 5
+  percent: 50
 ---
 
 # Project State
@@ -31,11 +31,11 @@ modular facade.
 ## Current Position
 
 Phase: 80 (Genuine Evidence and Qualification Gate) — EXECUTING
-Plan: 8 of 10
-Status: Freezing candidate-v2 qualification contract and baseline
-Last activity: 2026-08-24 — candidate-v2 brow-to-lid soft support and texture-preserving editor verified
+Plan: 9 of 10
+Status: Generating and evaluating fresh private candidate-v2 outputs
+Last activity: 2026-08-24 — candidate-v2 source/test baseline, metric matrix, boundary rubric, evaluator, and independent checker frozen before private outcomes
 
-Progress: [████░░░░░░] 40%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
@@ -54,6 +54,7 @@ roadmaps.
 | Phase 80 P01 | 16 min | 2 tasks | 4 files |
 | Phase 80 P02 | 23 min | 2 tasks | 2 files |
 | Phase 80 P07 | 16 min | 3 tasks | 12 files |
+| Phase 80 P08 | 18 min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -82,6 +83,7 @@ roadmaps.
 - [Phase 80]: Candidate v1 is terminated and immutable after an automated texture failure plus early human weak-effect/rectangular-artifact failure. — A failed frozen run cannot be tuned or relabeled into a pass.
 - [Phase 80]: Candidate v2 must derive its permitted support strictly between the same-side brow and eye, feather to zero at every boundary, and use a hue-preserving smooth low-frequency correction with original detail carry. — This directly addresses both observed v1 defects without using a prohibited proxy.
 - [Phase 80]: Candidate-v2 source and tests are frozen before any v2 private outcome is inspected. — v1 private outcomes cannot tune v2 thresholds or lend qualification credit.
+- [Phase 80]: Candidate-v2 additionally requires adjacent correction jump `<=5`, exact feather-to-zero, and a separate 100%-detail boundary-artifact human attestation. — Square blocks, dark patches, halos, and visible mask edges are first-class failures rather than being hidden inside a generic naturalness judgment.
 
 ### Pending Todos
 
@@ -119,6 +121,6 @@ None found under `.planning/todos/pending/`.
 ## Session Continuity
 
 Last session: 2026-08-24T06:58:00Z
-Stopped at: Phase 80 Plan 08 candidate-v2 qualification freeze
+Stopped at: Phase 80 Plan 09 private candidate-v2 automation
 Resume file: None
-Next action: bind candidate-v2 source/test identity and freeze the v2 metric/review evaluator before rebuilding any private outputs.
+Next action: generate a fresh private candidate-v2 bundle with the frozen editor, run every frozen automated metric twice, and expose only automated-passing candidates for 100%-detail fixed-rubric review.

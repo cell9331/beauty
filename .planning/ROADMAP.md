@@ -101,7 +101,7 @@ natural, identity-preserving, and safe on authorized genuine evidence.
 - [ ] 80-05-PLAN.md — candidate-v1 complete review not executed
 - [ ] 80-06-PLAN.md — candidate-v1 decision not emitted
 - [x] 80-07-PLAN.md — candidate-v2 support/editor remediation
-- [ ] 80-08-PLAN.md — candidate-v2 qualification freeze
+- [x] 80-08-PLAN.md — candidate-v2 qualification freeze
 - [ ] 80-09-PLAN.md — candidate-v2 private automation and review
 - [ ] 80-10-PLAN.md — candidate-v2 decision and Phase-80 verification
 
