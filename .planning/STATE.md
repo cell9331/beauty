@@ -5,16 +5,16 @@ milestone_name: Genuine Upper-Eyelid Fullness Promotion
 current_phase: 80
 current_phase_name: Genuine Evidence and Qualification Gate
 status: executing
-stopped_at: Phase 80 Plan 16 candidate-v4 qualification freeze
-last_updated: "2026-08-24T08:55:33Z"
+stopped_at: Phase 80 Plan 17 candidate-v4 private automation
+last_updated: "2026-08-24T09:06:45Z"
 last_activity: 2026-08-24
-last_activity_desc: Candidate-v4 relief-flattening mechanics passed generated gates; qualification freeze started
+last_activity_desc: Candidate-v4 qualification frozen before private output; private automation started
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 18
-  completed_plans: 12
-  percent: 67
+  completed_plans: 13
+  percent: 72
 ---
 
 # Project State
@@ -31,11 +31,11 @@ modular facade.
 ## Current Position
 
 Phase: 80 (Genuine Evidence and Qualification Gate) — EXECUTING
-Plan: 16 of 18
-Status: Freezing candidate-v4 qualification before private output
-Last activity: 2026-08-24 — candidate-v4 generated mechanics passed focused 30/0/0 and full plain SwiftPM 805/0/8
+Plan: 17 of 18
+Status: Generating and evaluating fresh private candidate-v4 output
+Last activity: 2026-08-24 — v4 gate frozen with 20 evaluator tests, 18 independent checks, and no private outcome exposure
 
-Progress: [██████▋░░░] 67%
+Progress: [███████▏░░] 72%
 
 ## Performance Metrics
 
@@ -62,6 +62,7 @@ roadmaps.
 | Phase 80 P13 | 39 min | 2 tasks | 2 aggregate-only records |
 | Phase 80 P14 | 2 min | 1 task | 1 aggregate-only record |
 | Phase 80 P15 | 20 min | 2 tasks | 12 files |
+| Phase 80 P16 | 11 min | 1 task | 6 files |
 
 ## Accumulated Context
 
@@ -134,7 +135,7 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-24T08:55:33Z
-Stopped at: Phase 80 Plan 16 candidate-v4 qualification freeze
+Last session: 2026-08-24T09:06:45Z
+Stopped at: Phase 80 Plan 17 candidate-v4 private automation
 Resume file: None
-Next action: independently freeze the candidate-v4 source/test baseline and contrast-shape qualification rubric before generating any v4 private output.
+Next action: generate fresh private candidate-v4 output, run the frozen automated matrix twice, and open human review only after exact repeatable pass.

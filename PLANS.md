@@ -32,8 +32,8 @@
 | --- | --- |
 | Status | `active` |
 | Scope | Remediate the rejected candidate, freeze a new versioned baseline, rerun genuine qualification, then continue the milestone only from a verified pass. |
-| Current Step | Candidate-v4 boundary-anchored relief mechanics passed 30/0/0 focused tests and 805/0/8 plain full SwiftPM. Plan 80-16 is freezing its source/test bindings and contrast-shape rubric before any private v4 output exists. |
-| Blocker | None for candidate-v4 qualification freeze. Human review remains mandatory only after the independently frozen v4 passes every automated row twice. |
+| Current Step | Candidate-v4 qualification is frozen before private output: 20 evaluator tests and 18 independent checks bind relief reduction, non-uniformity, visibility, protection, review semantics, and exact 61/5/74 absence. Plan 80-17 may now generate fresh private output and run automation twice. |
+| Blocker | None for private candidate-v4 automation. Human review remains mandatory only if the frozen automated matrix passes twice. |
 | Privacy | Only aggregate counts and normalized reasons may enter repository evidence; media, masks, locators, rights details, and per-fixture rows remain external. |
 
 Checklist:
@@ -51,7 +51,8 @@ Checklist:
 | Rebuild private v3 bundle and complete blinded review | `completed` | Fresh external run passed 19/19 automated rows twice, but the first positive human checkpoint found no clearly perceptible target reduction. Review stopped and v3 is terminal. |
 | Preserve the v3 decision stop | `completed` | No canonical promotion artifact was written; Phase 81 remains ineligible with exact 61/5/74 absence. |
 | Implement candidate v4 relief-flattening semantics | `completed` | Plan 80-15 replaces uniform darkening with a smooth boundary-anchored low-frequency convexity correction; focused 30/0/0, full plain SwiftPM 805/0/8, build/boundary/diff gates pass. |
-| Freeze and requalify candidate v4 | `active` | Plans 80-16 through 80-18 bind the new source before private output, run automation twice, require blinded review, and unlock Phase 81 only from an exact pass. |
+| Freeze candidate v4 qualification | `completed` | Plan 80-16 binds the v4 source/evidence commit, rejects v1-v3 borrowing, freezes contrast-shape and visibility metrics, passes 20 evaluator tests and 18 independent checks, and preserves exact 61/5/74 absence. |
+| Requalify candidate v4 | `active` | Plans 80-17 and 80-18 generate new private output, run automation twice, require blinded review, and unlock Phase 81 only from an exact pass. |
 
 ### P-2026-08-14-phase-66-sdk-only-boundary
 
