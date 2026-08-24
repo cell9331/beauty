@@ -30,10 +30,10 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `blocked` |
-| Scope | Complete the Phase-80 genuine private-bundle admission, frozen 100%-detail human review, and sanitized qualification decision without exposing portrait-derived data. |
-| Current Step | The first positive visual review found insufficient visible difference plus a rectangular darkening artifact aligned to the hard support envelope. The current candidate is non-promotable and requires a freshly versioned support/editor remediation before requalification. |
-| Blocker | The frozen automated evaluation already records one texture-retention minimum-bound failure, and external review now also records an early `detail-unnatural` failure. These outcomes cannot be tuned away inside the current frozen run; a later remediation/requalification cycle must address both. |
+| Status | `active` |
+| Scope | Remediate the rejected candidate, freeze a new versioned baseline, rerun genuine qualification, then continue the milestone only from a verified pass. |
+| Current Step | Plan 80-07 replaces the eye-aligned hard rectangle and gray-128 correction with a same-side brow-to-lid soft band and hue/texture-preserving low-frequency editor. |
+| Blocker | None for remediation. Human review remains a later Plan-09 checkpoint after every v2 automated row passes. |
 | Privacy | Only aggregate counts and normalized reasons may enter repository evidence; media, masks, locators, rights details, and per-fixture rows remain external. |
 
 Checklist:
@@ -42,8 +42,11 @@ Checklist:
 | --- | --- | --- |
 | Confirm genuine origin and internal-evaluation authorization | `completed` | Data owner supplied the authorization fact out of band; no rights record or subject data was persisted. |
 | Prepare and structurally admit the private bundle | `completed` | Two deterministic admissions: 8 fixtures, 24 assets, 19 metric rows, zero structural/rights/category failures. |
-| Complete frozen blinded review | `blocked` | The first positive row received an external `detail-unnatural` failure because the effect is weak and a rectangular dark block is visible; remaining rows are not yet complete. |
-| Emit and independently verify the bound decision | `planned` | Proceeds after a complete structured review; current automated disposition includes one minimum-bound failure. |
+| Terminate candidate v1 without retuning | `completed` | Aggregate automated texture failure plus the first 100%-detail positive review's weak-effect/block-artifact failure make v1 non-promotable; remaining v1 review was intentionally stopped. |
+| Implement and verify candidate v2 mechanics | `active` | Plan 80-07 owns brow-to-lid geometry, feathered weights, the replacement editor equation, pixel tests, and owner synchronization. |
+| Freeze candidate v2 qualification contract | `planned` | Plan 80-08 binds the new source/test baseline before any v2 private outcomes are inspected. |
+| Rebuild private bundle and complete blinded review | `planned` | Plan 80-09 runs all frozen automation first, then asks for complete 100%-detail fixed-rubric review. |
+| Emit and independently verify the v2 decision | `planned` | Plan 80-10 unlocks Phase 81 only for an exact complete pass. |
 
 ### P-2026-08-14-phase-66-sdk-only-boundary
 

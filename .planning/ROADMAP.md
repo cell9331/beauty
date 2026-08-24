@@ -10,9 +10,13 @@ incomplete, mechanics-only, generated, or failed evidence result preserves the
 exact 61-field/five-preset/74-renderer-case public absence and stops all public
 activation work.
 
-The milestone reuses the v1.18 machine-bound one-observation/per-eye support,
-deterministic tone/frequency editor, immutable-original composer, and versioned
-baseline evidence. It does not repeat those resolved mechanics or substitute
+The milestone began by reusing the v1.18 machine-bound one-observation/per-eye
+support, deterministic tone/frequency editor, immutable-original composer, and
+versioned baseline evidence. Candidate v1 was terminated after an automated
+texture failure and an early positive review found weak efficacy plus a hard
+rectangular darkening artifact. Phase 80 now owns a separately versioned
+support/editor remediation and fresh qualification cycle; the v1 outcome is
+immutable and contributes no passing credit. The milestone does not substitute
 `upperEyelidLift`, `eyeHeight`, brow movement, eye opening, warp, smoothing,
 eye-bag removal, or dark-circle removal. A passing Phase-80 decision unlocks
 one complete public vertical slice, followed by public output/backend proof,
@@ -44,17 +48,19 @@ out of scope.
 
 ## Gate Rule
 
-Phase 81 may begin only when Phase 80 emits the frozen passing decision from
-the complete rights-approved genuine bundle and blinded 100%-detail review. A
-non-pass is terminal for promotion in this milestone: no public field, inert
-route, renderer case, taxonomy promotion, or substitute proxy may be added.
+Phase 81 may begin only when Phase 80 emits the frozen candidate-v2 passing
+decision from the complete rights-approved genuine bundle and blinded
+100%-detail review. Candidate v1 is terminally non-promotable and cannot be
+retuned or relabeled. Any v2 non-pass preserves the same hard stop: no public
+field, inert route, renderer case, taxonomy promotion, or substitute proxy may
+be added.
 
 ## Phase Details
 
 ### Phase 80: Genuine Evidence and Qualification Gate
 
 **Goal**: The SDK owner has one privacy-safe, reproducible qualification
-decision proving whether the existing deterministic editor is effective,
+decision proving whether the version-bound candidate editor is effective,
 natural, identity-preserving, and safe on authorized genuine evidence.
 
 **Depends on**: Nothing (first phase)
@@ -81,19 +87,23 @@ natural, identity-preserving, and safe on authorized genuine evidence.
    structure-change, category-completeness, and acceptance threshold.
 
 5. One sanitized aggregate decision binds rights admission, blinded judgments,
-   evaluator version, semantic contract, and the versioned v1.18 editor
+   evaluator version, semantic contract, and the versioned candidate-v2 editor
    baseline without retaining media, paths, pixels, geometry, rights records,
    reviewer identity, or freeform text; the public surface remains exactly
    61/5/74 until that decision passes.
 
-**Plans**: 2/6 plans executed
+**Plans**: 3 completed, one terminated attempt, four remediation/requalification plans pending
 
 - [x] 80-01-PLAN.md
 - [x] 80-02-PLAN.md
-- [ ] 80-03-PLAN.md
-- [ ] 80-04-PLAN.md
-- [ ] 80-05-PLAN.md
-- [ ] 80-06-PLAN.md
+- [x] 80-03-PLAN.md — private bundle admitted; no qualification credit
+- [ ] 80-04-PLAN.md — candidate-v1 review terminated early after failure
+- [ ] 80-05-PLAN.md — candidate-v1 complete review not executed
+- [ ] 80-06-PLAN.md — candidate-v1 decision not emitted
+- [ ] 80-07-PLAN.md — candidate-v2 support/editor remediation
+- [ ] 80-08-PLAN.md — candidate-v2 qualification freeze
+- [ ] 80-09-PLAN.md — candidate-v2 private automation and review
+- [ ] 80-10-PLAN.md — candidate-v2 decision and Phase-80 verification
 
 ### Phase 81: Safe Public Still-Image Activation
 
@@ -230,7 +240,7 @@ orphaned or duplicate mappings.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 80. Genuine Evidence and Qualification Gate | v1.19 | 2/6 | In Progress | - |
+| 80. Genuine Evidence and Qualification Gate | v1.19 | 3/10 | Remediating candidate v2 | - |
 | 81. Safe Public Still-Image Activation | v1.19 | 0/TBD | Not started | - |
 | 82. Public Output and Backend Qualification | v1.19 | 0/TBD | Not started | - |
 | 83. Taxonomy and Owner Promotion | v1.19 | 0/TBD | Not started | - |
