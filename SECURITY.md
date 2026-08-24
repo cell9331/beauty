@@ -378,3 +378,24 @@ The rejected v1 private bundle/review and the automated-failed v2 bundle remain 
 evidence contains only fixed test counts, normalized dispositions, and public
 inventory facts; it does not retain private paths, media, geometry, metric rows,
 rights details, reviewer identity, or freeform text.
+
+## v1.19 Phase 80 Candidate-v4 Relief Trust Boundary
+
+Candidate v4 reads source RGB only for the already admitted request-local
+brow-to-lid support. Its derived luminance samples, integral arrays, fitted
+plane, convexity score, corrections, and pixel proposals are non-Codable,
+package-only values released with the request. They are not logged, cached,
+exported, embedded in decisions, or sent to a model or network service.
+
+Source-derived relief may authorize applicability only inside the independent
+eye/brow envelope and existing pose/occlusion guards. It cannot expand support,
+move geometry, authorize a peer eye, or create a public `去脂` route. Malformed
+dimensions, duplicate/out-of-bounds pixels, invalid weights, unsolved planes,
+and sub-threshold or negative relief fail closed. Immutable-source composition
+continues to own exterior, protected, alpha, foreign, duplicate, and collision
+pixels.
+
+Public web examples are concept references only. They are not downloaded into
+the repository, used as fixtures or training data, or credited as qualification
+evidence. Only the previously authorized private originals may enter the later
+external v4 gate, whose durable record remains aggregate-only.

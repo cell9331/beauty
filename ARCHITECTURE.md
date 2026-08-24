@@ -54,10 +54,10 @@ Current source/test inventory, excluding `.build`:
 
 | Inventory | Count |
 | --- | ---: |
-| Swift source files | 72 |
-| SwiftPM test files | 74 |
-| Swift source lines | 16,824 |
-| SwiftPM test lines | 33,569 |
+| Swift source files | 75 |
+| SwiftPM test files | 79 |
+| Swift source lines | 18,305 |
+| SwiftPM test lines | 35,347 |
 | `BeautyConfiguration` stored fields | 11 |
 
 ## 2. Top-Level Invariants
@@ -159,7 +159,9 @@ existing foundation types or resource filenames.
 - `BeautyParameters` is the public contract; archived labels/layout never create
   a field, alias, provider, or product claim.
 - `teethWhitening` and `scleraRednessReduction` are bounded opaque still-image
-  controls. `去脂` remains future and cannot proxy through eye/brow/smoothing work.
+  controls. `去脂` remains future at the public surface. Its candidate-v4
+  package mechanics use request-local CPU relief analysis and cannot proxy
+  through eye/brow movement, smoothing, warp, or a Metal route.
 - Raw masks, landmarks, pupil positions, tooth/eye geometry, candidate pixels,
   and private fixture locations are request-local implementation details.
 - Generated output remains ignored and disposable; committed evidence is
@@ -173,6 +175,14 @@ collision-to-source ownership, and request recovery. The generated preflight
 (`scripts/check-cpu-reference-oracles.sh`) runs before private/native-Vision
 opt-ins and the single full SwiftPM child; it records only aggregate pass
 counts. The current CPU/Core Image implementation remains the permanent reference.
+
+Candidate-v4 upper-eyelid mechanics add one package-only `BeautyEffects`
+analysis stage between semantic support and original-pixel composition. The
+stage box-filters only the admitted brow-to-lid patch, fits an affine
+illumination plane from its feather boundary, and reports the low-frequency
+central convexity residual. The same request-local result both gates semantic
+applicability and drives bounded equal-RGB proposals; it creates no model,
+resource, cache, network path, public field, renderer case, or GPU behavior.
 
 ## 6. Archive Boundary
 

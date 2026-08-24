@@ -441,3 +441,26 @@ The candidate-v2 remediation verification was focused `24/0/0`, full SwiftPM `80
 post-archive boundary pass, and diff-hygiene pass. This does not make a genuine
 efficacy, public API, device, commercial, packaging, shipping, launch, or
 release-readiness claim.
+
+## v1.19 Phase 80 Candidate-v4 Relief Analysis Reliability
+
+Candidate v4 replaces the invalidated uniform contour with deterministic
+request-local relief analysis. It validates canonical RGBA8 layout, finite
+strength, unique in-bounds support, bounded Q16 weights, a nondegenerate patch,
+at least six boundary anchors, a solvable affine plane, and a nonempty central
+region. Any failed precondition rejects only that eye and emits no proposal.
+
+The box-filter radius is derived from the admitted patch and capped at `24`.
+Two patch-local integral arrays make every sample lookup constant-time; no
+whole-image cache, prior-request state, external model, network, or retry path
+exists. Correction magnitudes are finite by construction, clipped to `±16` and
+RGB headroom, and composed once against immutable source. Repeated generated
+requests produce byte-identical proposals and output.
+
+The candidate-v4 focused group passes `30/0/0`. It covers convex relief
+compression, rejection of planar lighting and crease-only detail, production
+semantic admission, peer isolation, overlap-to-source, protected/exterior
+bytes, color/alpha/extent/metadata preservation, smooth feathering, and
+determinism. The plain full SwiftPM run passes `805/0/8`; the eight skips are the
+established opt-in suites and are not milestone closeout evidence. Genuine
+efficacy and naturalness remain pending the separately frozen private gate.

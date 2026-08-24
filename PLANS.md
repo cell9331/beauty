@@ -32,8 +32,8 @@
 | --- | --- |
 | Status | `active` |
 | Scope | Remediate the rejected candidate, freeze a new versioned baseline, rerun genuine qualification, then continue the milestone only from a verified pass. |
-| Current Step | Candidate v3 passed 19/19 automated rows but failed the first positive visual checkpoint because its uniform tone shift did not visibly reduce upper-eyelid fullness. Plan 80-15 now replaces that invalidated semantic with boundary-anchored low-frequency relief flattening. |
-| Blocker | None for candidate-v4 mechanics. Human review remains mandatory only after the newly implemented and independently frozen v4 passes every automated row twice. |
+| Current Step | Candidate-v4 boundary-anchored relief mechanics passed 30/0/0 focused tests and 805/0/8 plain full SwiftPM. Plan 80-16 is freezing its source/test bindings and contrast-shape rubric before any private v4 output exists. |
+| Blocker | None for candidate-v4 qualification freeze. Human review remains mandatory only after the independently frozen v4 passes every automated row twice. |
 | Privacy | Only aggregate counts and normalized reasons may enter repository evidence; media, masks, locators, rights details, and per-fixture rows remain external. |
 
 Checklist:
@@ -50,8 +50,8 @@ Checklist:
 | Freeze candidate v3 qualification | `completed` | 15 Node tests and 15 independent probes bind source/tests/helpers, polarity-correct applicability, the fixed boundary rubric, and exact 61/5/74 absence. |
 | Rebuild private v3 bundle and complete blinded review | `completed` | Fresh external run passed 19/19 automated rows twice, but the first positive human checkpoint found no clearly perceptible target reduction. Review stopped and v3 is terminal. |
 | Preserve the v3 decision stop | `completed` | No canonical promotion artifact was written; Phase 81 remains ineligible with exact 61/5/74 absence. |
-| Implement candidate v4 relief-flattening semantics | `active` | Plan 80-15 replaces uniform darkening with a smooth boundary-anchored low-frequency convexity correction while preserving source geometry, chroma, and detail. |
-| Freeze and requalify candidate v4 | `planned` | Plans 80-16 through 80-18 bind the new source before private output, run automation twice, require blinded review, and unlock Phase 81 only from an exact pass. |
+| Implement candidate v4 relief-flattening semantics | `completed` | Plan 80-15 replaces uniform darkening with a smooth boundary-anchored low-frequency convexity correction; focused 30/0/0, full plain SwiftPM 805/0/8, build/boundary/diff gates pass. |
+| Freeze and requalify candidate v4 | `active` | Plans 80-16 through 80-18 bind the new source before private output, run automation twice, require blinded review, and unlock Phase 81 only from an exact pass. |
 
 ### P-2026-08-14-phase-66-sdk-only-boundary
 

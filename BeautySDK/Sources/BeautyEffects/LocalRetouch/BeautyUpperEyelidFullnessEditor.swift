@@ -140,7 +140,7 @@ extension BeautyUpperEyelidFullnessEditResult: CustomStringConvertible, CustomDe
 
 package enum BeautyUpperEyelidFullnessEditor {
     package static let maximumAbsoluteChannelDelta = 16
-    package static let maximumCenterContourDelta = 10
+    package static let reliefCompressionGain = 1.5
 
     package static func edit(
         source: BeautyCanonicalStillImage,
@@ -162,7 +162,7 @@ package enum BeautyUpperEyelidFullnessEditor {
         else {
             return result(reason: .invalidStrength)
         }
-        guard let sourceLayout = SourceLayout(request.source) else {
+        guard let sourceLayout = BeautyUpperEyelidReliefSourceLayout(request.source) else {
             return result(reason: .invalidSource)
         }
         guard request.strength > 0 else {
@@ -186,14 +186,11 @@ package enum BeautyUpperEyelidFullnessEditor {
                 continue
             }
 
-            let samples = pixels.compactMap { pixel in
-                sourceLayout.sample(pixelIndex: pixel.pixelIndex)
-            }
-            guard samples.count == pixels.count,
-                  let contourCorrection = contourCorrection(
-                    samples: samples,
-                    strength: request.strength
-                  )
+            guard let reliefModel = BeautyUpperEyelidReliefModel.analyze(
+                source: request.source,
+                pixels: pixels
+            ), reliefModel.isFullnessSupported,
+               reliefModel.samples.count == pixels.count
             else {
                 rejectedEyeCount += 1
                 continue
@@ -201,21 +198,31 @@ package enum BeautyUpperEyelidFullnessEditor {
 
             var proposals: [BeautyLocalPixelProposal] = []
             proposals.reserveCapacity(pixels.count)
-            for (pixel, sample) in zip(pixels, samples) {
+            for (pixel, reliefSample) in zip(pixels, reliefModel.samples) {
                 let pixelIndex = pixel.pixelIndex
+                guard reliefSample.pixelIndex == pixelIndex,
+                      let sample = sourceLayout.sample(pixelIndex: pixelIndex)
+                else {
+                    continue
+                }
+                let correction = reliefCorrection(
+                    convexityResidual: reliefSample.convexityResidual,
+                    source: sample,
+                    strength: request.strength
+                )
                 let target = (
-                    red: safeTarget(source: sample.red, correction: contourCorrection),
-                    green: safeTarget(source: sample.green, correction: contourCorrection),
-                    blue: safeTarget(source: sample.blue, correction: contourCorrection)
+                    red: safeTarget(source: sample.red, correction: correction),
+                    green: safeTarget(source: sample.green, correction: correction),
+                    blue: safeTarget(source: sample.blue, correction: correction)
                 )
 
-                // One request-local scalar is applied to every source RGB
-                // sample. Spatial detail and channel differences therefore
-                // remain exact before the existing Q16 feather blends the
-                // contour smoothly back to immutable source pixels.
-                guard Int(target.red) - Int(sample.red) == contourCorrection,
-                      Int(target.green) - Int(sample.green) == contourCorrection,
-                      Int(target.blue) - Int(sample.blue) == contourCorrection
+                // The correction varies only with the smooth low-frequency
+                // relief residual. One scalar is applied to all RGB channels,
+                // so source chroma and high-frequency detail remain exact
+                // before Q16 feathering back to immutable source pixels.
+                guard Int(target.red) - Int(sample.red) == correction,
+                      Int(target.green) - Int(sample.green) == correction,
+                      Int(target.blue) - Int(sample.blue) == correction
                 else {
                     continue
                 }
@@ -274,7 +281,7 @@ package enum BeautyUpperEyelidFullnessEditor {
 
     private static func validatedPixels(
         _ pixels: [BeautyUpperEyelidSupportPixel],
-        sourceLayout: SourceLayout
+        sourceLayout: BeautyUpperEyelidReliefSourceLayout
     ) -> [BeautyUpperEyelidSupportPixel]? {
         guard !pixels.isEmpty,
               Set(pixels.map(\.pixelIndex)).count == pixels.count,
@@ -289,60 +296,26 @@ package enum BeautyUpperEyelidFullnessEditor {
         return pixels
     }
 
-    private static func contourCorrection(
-        samples: [(red: UInt8, green: UInt8, blue: UInt8, alpha: UInt8)],
+    private static func reliefCorrection(
+        convexityResidual: Double,
+        source: (red: UInt8, green: UInt8, blue: UInt8, alpha: UInt8),
         strength: Double
-    ) -> Int? {
-        guard !samples.isEmpty else { return nil }
-        let requestedMagnitude = Int(
-            (Double(maximumCenterContourDelta) * strength).rounded(.toNearestOrAwayFromZero)
+    ) -> Int {
+        guard convexityResidual.isFinite else { return 0 }
+        let raw = Int((
+            -convexityResidual * reliefCompressionGain * strength
+        ).rounded(.toNearestOrAwayFromZero))
+        let lowerClippingBound = -min(Int(source.red), min(Int(source.green), Int(source.blue)))
+        let upperClippingBound = 255 - max(Int(source.red), max(Int(source.green), Int(source.blue)))
+        return min(
+            max(raw, max(-maximumAbsoluteChannelDelta, lowerClippingBound)),
+            min(maximumAbsoluteChannelDelta, upperClippingBound)
         )
-        let clippingMagnitude = samples.reduce(maximumAbsoluteChannelDelta) { bound, sample in
-            min(bound, min(Int(sample.red), min(Int(sample.green), Int(sample.blue))))
-        }
-        return -min(requestedMagnitude, min(maximumAbsoluteChannelDelta, clippingMagnitude))
     }
 
     private static func safeTarget(source: UInt8, correction: Int) -> UInt8 {
         let sourceValue = Int(source)
         let bounded = min(max(correction, -sourceValue), 255 - sourceValue)
         return UInt8(sourceValue + bounded)
-    }
-}
-
-private struct SourceLayout: Sendable {
-    let bytes: Data
-    let width: Int
-    let height: Int
-    let rowBytes: Int
-    let pixelCount: Int
-
-    init?(_ source: BeautyCanonicalStillImage) {
-        let (expectedRowBytes, rowOverflow) = source.width.multipliedReportingOverflow(by: 4)
-        let (expectedByteCount, byteOverflow) = source.rowBytes.multipliedReportingOverflow(by: source.height)
-        guard source.width > 0,
-              source.height > 0,
-              !rowOverflow,
-              !byteOverflow,
-              source.rowBytes == expectedRowBytes,
-              source.byteCount == expectedByteCount,
-              source.rgba8Data.count == source.byteCount
-        else {
-            return nil
-        }
-        let (pixelCount, overflow) = source.width.multipliedReportingOverflow(by: source.height)
-        guard !overflow, pixelCount > 0 else { return nil }
-        self.bytes = source.rgba8Data
-        self.width = source.width
-        self.height = source.height
-        self.rowBytes = source.rowBytes
-        self.pixelCount = pixelCount
-    }
-
-    func sample(pixelIndex: Int) -> (red: UInt8, green: UInt8, blue: UInt8, alpha: UInt8)? {
-        guard (0..<pixelCount).contains(pixelIndex) else { return nil }
-        let offset = pixelIndex * 4
-        guard offset >= 0, offset + 3 < bytes.count else { return nil }
-        return (bytes[offset], bytes[offset + 1], bytes[offset + 2], bytes[offset + 3])
     }
 }

@@ -1350,3 +1350,34 @@ This is a new mechanics baseline, not genuine qualification or public
 activation. Phase-80 candidate-v3 qualification must freeze its source/test
 binding and conditional negative/no-request metric applicability before
 inspecting new private outcomes.
+
+## v1.19 Phase 80 Candidate-v4 Relief-Flattening Contract
+
+Candidate v3 is terminal: its uniform negative contour passed automated safety
+rows but the first genuine positive review found no perceptible fullness
+reduction. Candidate v4 therefore treats `去脂` as low-frequency upper-eyelid
+relief flattening, not regional darkening. It does not move the brow, eye
+contour, aperture, lash line, or crease and does not invoke smoothing, eye-bag,
+dark-circle, geometry, warp, Metal, or public-effect routes.
+
+For each independently approved brow-to-lid support, the editor computes a
+support-local box-filtered luminance field. Low-weight feather-boundary samples
+fit an affine illumination plane, which removes global horizontal/vertical
+lighting gradients from the semantic decision. A request is applicable only
+when the high-weight center has a positive mean convexity residual of at least
+`3.5` sRGB8 luminance values. Planar lighting, fine crease detail, malformed
+support, and an unsupported peer remain typed source-exact no-ops.
+
+At active strength the editor applies `-1.5 * residual * strength`, rounded
+deterministically and clipped to `±16` and all-channel sRGB8 headroom. The same
+scalar is applied to R, G, and B, preserving channel differences and source
+high-frequency detail before the existing Q16 elliptical feather returns the
+result to immutable source pixels. Corrections vary spatially with relief;
+generated tests reject the v3 single-value contour, require central convexity
+to fall below `55%` of its source score, and retain existing metadata, alpha,
+containment, collision-to-source, determinism, and protected-region contracts.
+
+This generated baseline proves mechanics only. Candidate-v4 source and tests
+must be independently frozen before any private v4 output is generated; genuine
+automation and human 100%-detail review still decide whether the method is
+visibly correct enough for public promotion.

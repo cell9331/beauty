@@ -6,14 +6,15 @@ import XCTest
 
 final class BeautyUpperEyelidEditorSafetyTests: XCTestCase {
     func testCompositionChangesOnlyApprovedEyeAndPreservesProtectedExteriorAndMetadata() throws {
-        let source = try canonical()
+        let source = try texturedCanonical(width: fixtureWidth, height: fixtureHeight)
+        let pixels = fixturePixels
         let resolution = resolution(
             left: .supported(
                 side: .left,
                 confidence: 0.9,
                 reason: .approved,
-                pixels: weightedPixels([12]),
-                hardEnvelope: fullEnvelope
+                pixels: pixels,
+                hardEnvelope: fixtureEnvelope
             ),
             right: .sourceExactNoOp(
                 side: .right,
@@ -41,7 +42,7 @@ final class BeautyUpperEyelidEditorSafetyTests: XCTestCase {
         for pixelIndex in 0..<(source.width * source.height) {
             let offset = pixelIndex * 4
             XCTAssertEqual(outputBytes[offset + 3], sourceBytes[offset + 3], "alpha pixel \(pixelIndex)")
-            if pixelIndex != 12 {
+            if !Set(pixels.map(\.pixelIndex)).contains(pixelIndex) {
                 XCTAssertEqual(
                     Array(outputBytes[offset..<(offset + 4)]),
                     Array(sourceBytes[offset..<(offset + 4)]),
@@ -49,7 +50,8 @@ final class BeautyUpperEyelidEditorSafetyTests: XCTestCase {
                 )
             }
         }
-        for protectedPixel in [6, 7, 8, 11, 13, 16, 17, 18] {
+        XCTAssertGreaterThan(output.summary.changedPixelCount, 0)
+        for protectedPixel in [0, fixtureWidth - 1, fixtureWidth * 9, fixtureWidth * 22] {
             let offset = protectedPixel * 4
             XCTAssertEqual(
                 Array(outputBytes[offset..<(offset + 4)]),
@@ -60,7 +62,8 @@ final class BeautyUpperEyelidEditorSafetyTests: XCTestCase {
     }
 
     func testOverlappingEyeUnitsReturnImmutableSourceAndCountOneCollision() throws {
-        let source = try canonical()
+        let source = try texturedCanonical(width: fixtureWidth, height: fixtureHeight)
+        let pixels = fixturePixels
         let edit = BeautyUpperEyelidFullnessEditor.edit(
             source: source,
             support: resolution(
@@ -68,15 +71,15 @@ final class BeautyUpperEyelidEditorSafetyTests: XCTestCase {
                     side: .left,
                     confidence: 0.9,
                     reason: .approved,
-                    pixels: weightedPixels([12]),
-                    hardEnvelope: fullEnvelope
+                    pixels: pixels,
+                    hardEnvelope: fixtureEnvelope
                 ),
                 right: .supported(
                     side: .right,
                     confidence: 0.9,
                     reason: .approved,
-                    pixels: weightedPixels([12]),
-                    hardEnvelope: fullEnvelope
+                    pixels: pixels,
+                    hardEnvelope: fixtureEnvelope
                 )
             ),
             strength: 1
@@ -85,20 +88,20 @@ final class BeautyUpperEyelidEditorSafetyTests: XCTestCase {
         let output = try owner.compose(edit.makeUnits(using: owner))
 
         XCTAssertEqual(Array(output.canonicalImage.rgba8Data), Array(source.rgba8Data))
-        XCTAssertEqual(output.summary.collisionPixelCount, 1)
+        XCTAssertEqual(output.summary.collisionPixelCount, pixels.count)
         XCTAssertEqual(output.summary.changedPixelCount, 0)
         XCTAssertEqual(output.canonicalImage.metadata, source.metadata)
     }
 
     func testRepeatedEditorCompositionIsByteDeterministicAndRejectedEyeHasNoUnit() throws {
-        let source = try canonical()
+        let source = try texturedCanonical(width: fixtureWidth, height: fixtureHeight)
         let support = resolution(
             left: .supported(
                 side: .left,
                 confidence: 0.9,
                 reason: .approved,
-                pixels: weightedPixels([12, 13]),
-                hardEnvelope: fullEnvelope
+                pixels: fixturePixels,
+                hardEnvelope: fixtureEnvelope
             ),
             right: .sourceExactNoOp(
                 side: .right,
@@ -215,12 +218,19 @@ final class BeautyUpperEyelidEditorSafetyTests: XCTestCase {
         }
     }
 
-    private var fullEnvelope: CoordinateRect {
-        CoordinateRect(x: 0, y: 0, width: 1, height: 1)
+    private let fixtureWidth = 64
+    private let fixtureHeight = 40
+
+    private var fixtureEnvelope: CoordinateRect {
+        CoordinateRect(x: 0.225, y: 0.27, width: 0.55, height: 0.26)
     }
 
-    private func weightedPixels(_ indices: [Int]) -> [BeautyUpperEyelidSupportPixel] {
-        indices.map { BeautyUpperEyelidSupportPixel(pixelIndex: $0, softWeightQ16: 65_536) }
+    private var fixturePixels: [BeautyUpperEyelidSupportPixel] {
+        BeautyUpperEyelidSemanticSupportOwner.maximumFeatheredPixels(
+            inside: fixtureEnvelope,
+            imageWidth: fixtureWidth,
+            imageHeight: fixtureHeight
+        )
     }
 
     private func resolution(
@@ -228,31 +238,6 @@ final class BeautyUpperEyelidEditorSafetyTests: XCTestCase {
         right: BeautyUpperEyelidEyeOutcome
     ) -> BeautyUpperEyelidSupportResolution {
         BeautyUpperEyelidSupportResolution(left: left, right: right)
-    }
-
-    private func canonical() throws -> BeautyCanonicalStillImage {
-        let bytes = (0..<25).flatMap { index in
-            let x = index % 5
-            let y = index / 5
-            return [
-                UInt8(40 + x * 3 + y),
-                UInt8(70 + x * 2 + y * 2),
-                UInt8(95 + x + y * 3),
-                255,
-            ]
-        }
-        return try BeautyCanonicalStillImage(
-            rgba8Data: Data(bytes),
-            width: 5,
-            height: 5,
-            rowBytes: 20,
-            metadata: BeautyInputMetadata(
-                orientation: .up,
-                isInputMirrored: false,
-                isPreviewMirrored: false,
-                source: .testFixture
-            )
-        )
     }
 
     private func texturedCanonical(width: Int, height: Int) throws -> BeautyCanonicalStillImage {

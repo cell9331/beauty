@@ -359,3 +359,25 @@ decision self/live exact-once execution, all eight opt-ins, one complete SwiftPM
 child, and normalized aggregate output. This reproducibility evidence does not
 satisfy EVID-01/02 or QUAL-01/02 and makes no genuine efficacy, naturalness,
 device, commercial, packaging, shipping, launch, or release-readiness claim.
+
+## Phase 80 Candidate-v4 Mechanics Quality Evidence
+
+Candidate v3 is terminal because a uniform regional tone shift did not produce
+a visible upper-eyelid fullness reduction. Candidate v4 now has 30 focused
+upper-eyelid tests passing with zero failures. The generated positive oracle
+requires spatially non-uniform relief correction, center delta below `-8`,
+more than five correction values, and post-composition convexity below `55%`
+of source. Negative planar-lighting and crease-only fixtures must remain
+inapplicable.
+
+Safety coverage retains exact equal-RGB/chroma carry before feathering,
+high-frequency texture ratio `>=0.98`, adjacent composed correction jump
+`<=5`, `±16` channel cap, protected/exterior source identity, alpha, extent,
+metadata, deterministic repetition, peer isolation, and overlap-to-source.
+The full plain SwiftPM result is `805/0/8`; it is a development check, not the
+archive-first zero-skip closeout.
+
+These generated checks establish mechanics only. Candidate v4 cannot receive
+genuine efficacy, naturalness, or public-product weight until a new
+source-bound contract is frozen, the authorized private matrix passes twice,
+and every required 100%-detail human judgment passes.
