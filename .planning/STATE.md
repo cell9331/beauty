@@ -5,16 +5,16 @@ milestone_name: Genuine Upper-Eyelid Fullness Promotion
 current_phase: 80
 current_phase_name: Genuine Evidence and Qualification Gate
 status: executing
-stopped_at: Phase 80 Plan 17 candidate-v4 private automation
-last_updated: "2026-08-24T09:06:45Z"
+stopped_at: Phase 80 Plan 19 candidate-v5 mechanics
+last_updated: "2026-08-24T10:30:00Z"
 last_activity: 2026-08-24
 last_activity_desc: Candidate-v4 qualification frozen before private output; private automation started
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 18
-  completed_plans: 13
-  percent: 72
+  total_plans: 22
+  completed_plans: 15
+  percent: 68
 ---
 
 # Project State
@@ -31,11 +31,11 @@ modular facade.
 ## Current Position
 
 Phase: 80 (Genuine Evidence and Qualification Gate) — EXECUTING
-Plan: 17 of 18
-Status: Generating and evaluating fresh private candidate-v4 output
-Last activity: 2026-08-24 — v4 gate frozen with 20 evaluator tests, 18 independent checks, and no private outcome exposure
+Plan: 19 of 22
+Status: Implementing candidate-v5 generated mechanics after candidate-v4 terminal automated non-pass
+Last activity: 2026-08-24 — v4 stopped before review; v5 remediation plan opened
 
-Progress: [███████▏░░] 72%
+Progress: [██████▊░░░] 68%
 
 ## Performance Metrics
 
@@ -63,6 +63,8 @@ roadmaps.
 | Phase 80 P14 | 2 min | 1 task | 1 aggregate-only record |
 | Phase 80 P15 | 20 min | 2 tasks | 12 files |
 | Phase 80 P16 | 11 min | 1 task | 6 files |
+| Phase 80 P17 | 14 min | 1 completed task, 1 stopped checkpoint | 0 durable private files |
+| Phase 80 P18 | 2 min | 1 terminal stop | 3 aggregate-only records |
 
 ## Accumulated Context
 
@@ -96,6 +98,8 @@ roadmaps.
 - [Phase 80]: A negative/stress image with no eligible brow-to-lid request must prove exact source no-op and cannot invent a target region merely to satisfy a metric schema. — Candidate v3 qualification will freeze applicability explicitly before outcomes.
 - [Phase 80]: Candidate v3 is terminal despite passing all automated rows because its first positive visual checkpoint found no clearly perceptible fullness reduction. — Uniform regional darkening is a tone change, not evidence that convex upper-lid relief has been reduced.
 - [Phase 80]: Candidate v4 must flatten a boundary-anchored low-frequency convexity residual while retaining exact geometry, chroma, and high-frequency source detail. — This targets the visible thick/puffy contour without eye opening, crease invention, brow motion, smoothing, or warp proxies.
+- [Phase 80]: Candidate v4 is terminal after repeatable automated applicability, boundary-continuity, and minimum-relief failures; human review never opened. — Signed correction could brighten negative residual, overshoot flat relief, and mis-authorize non-fullness surfaces.
+- [Phase 80]: Candidate v5 may compress only coherent positive relief toward the boundary reference and must reject unsupported surface cues before editing. — One-sign non-overshoot and source-exact negatives address v4 without threshold relaxation.
 
 ### Pending Todos
 
@@ -103,12 +107,11 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- Candidate-v3 private automation passed twice with identical sanitized
-  outcomes, but the first positive 100%-detail checkpoint found no clearly
-  perceptible target reduction. The attempt is terminal, no canonical decision
-  exists, and exact 61/5/74 public absence remains preserved. Candidate-v4
-  mechanics can proceed without private output until a new source baseline and
-  qualification contract are frozen.
+- Candidate-v4 private automation failed twice with identical normalized
+  applicability, boundary-continuity, and minimum-relief reasons. The attempt
+  is terminal, review never opened, no canonical decision exists, and exact
+  61/5/74 public absence remains preserved. Candidate-v5 mechanics now own the
+  next source-bound remediation.
 
 - The candidate-v1 external bundle was structurally complete and repeatably
   admitted at 8 fixtures, 24 assets, and 19 metric rows. Its automated texture
@@ -135,7 +138,7 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-24T09:06:45Z
-Stopped at: Phase 80 Plan 17 candidate-v4 private automation
+Last session: 2026-08-24T10:30:00Z
+Stopped at: Phase 80 Plan 19 candidate-v5 mechanics
 Resume file: None
-Next action: generate fresh private candidate-v4 output, run the frozen automated matrix twice, and open human review only after exact repeatable pass.
+Next action: implement and verify candidate-v5 positive-relief-only mechanics without generating private v5 output.

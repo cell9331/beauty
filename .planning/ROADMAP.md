@@ -92,7 +92,7 @@ natural, identity-preserving, and safe on authorized genuine evidence.
    reviewer identity, or freeform text; the public surface remains exactly
    61/5/74 until that decision passes.
 
-**Plans**: 13 completed or terminally closed, one terminated v1 attempt, two candidate-v4 execution/decision plans pending
+**Plans**: 15 completed or terminally closed; four candidate-v5 remediation, freeze, execution, and decision plans remain
 
 - [x] 80-01-PLAN.md
 - [x] 80-02-PLAN.md
@@ -110,8 +110,12 @@ natural, identity-preserving, and safe on authorized genuine evidence.
 - [x] 80-14-PLAN.md — candidate-v3 hard stop preserved with no promotion artifact
 - [x] 80-15-PLAN.md — candidate-v4 boundary-anchored relief-flattening editor
 - [x] 80-16-PLAN.md — candidate-v4 qualification freeze
-- [ ] 80-17-PLAN.md — candidate-v4 private automation and blinded review
-- [ ] 80-18-PLAN.md — candidate-v4 decision and Phase-80 verification
+- [x] 80-17-PLAN.md — candidate-v4 private automation failed before review
+- [x] 80-18-PLAN.md — candidate-v4 hard stop preserved with no promotion artifact
+- [ ] 80-19-PLAN.md — candidate-v5 positive-relief-only editor and semantic remediation
+- [ ] 80-20-PLAN.md — candidate-v5 qualification freeze
+- [ ] 80-21-PLAN.md — candidate-v5 private automation and blinded review
+- [ ] 80-22-PLAN.md — candidate-v5 decision and Phase-80 verification
 
 ### Phase 81: Safe Public Still-Image Activation
 
