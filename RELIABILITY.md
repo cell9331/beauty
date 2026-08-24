@@ -410,3 +410,26 @@ rechecks exact 61/5/74 absence. Seven artifact-resolution checks cover active,
 archived, ambiguous, missing, direct/parent symlink, and outside-cwd cases. Failures expose
 only normalized reason identifiers; neither successful nor failed runs persist
 child transcripts or private paths.
+
+## v1.19 Phase 80 Candidate-v2 Remediation Reliability
+
+The per-eye resolver now separates `missingEyeEnvelope`,
+`missingEyebrowEnvelope`, `implausibleBrowEyeGap`, ambiguous order, invalid
+weight, and existing semantic/pose/occlusion failures. One rejected side cannot
+suppress a valid peer, and an absent semantic owner still returns two typed
+source-exact no-ops. Feathered pixel enumeration and validation are bounded to
+the permitted envelope rather than scanning or retaining arbitrary payloads.
+
+The editor validates source layout, finite strength, unique in-bounds weighted
+pixels, regional-reference arithmetic, clipping bounds, and maximum channel
+delta before emitting proposals. It uses deterministic integer luminance/Q16
+composition; repeated requests produce identical proposals, summaries, and
+bytes. Generated pixel tests require target change, source-exact exterior and
+protected rows, exact alpha/extent/metadata, adjacent correction continuity,
+texture retention at or above `0.98`, and `±16` channel bounds.
+
+The remediation verification is focused `24/0/0`, full SwiftPM `803/0/8`
+(the eight established opt-ins remain disabled in a plain run), SDK-only
+post-archive boundary pass, and diff-hygiene pass. This does not make a genuine
+efficacy, public API, device, commercial, packaging, shipping, launch, or
+release-readiness claim.

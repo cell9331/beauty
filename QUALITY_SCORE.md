@@ -29,6 +29,24 @@ remain bounded and make no transparent-input, end-to-end GPU local-retouch,
 shared-instance parallel, device, commercial, packaging, shipping, launch, or
 release-readiness claim.
 
+## Phase 80 Candidate-v2 Remediation Quality Evidence
+
+Candidate v1 remains non-promotable after its frozen texture failure and early
+100%-detail weak-effect/rectangular-artifact finding. Candidate v2 mechanics add
+twelve semantic-support tests plus editor, safety, composition, detector, and
+package integration coverage. The focused remediation run is `24/0/0`; the
+full plain SwiftPM run is `803/0/8`, with all skips belonging to the established
+explicit opt-ins rather than the new mechanics. The post-archive SDK-only
+boundary and diff hygiene also pass.
+
+New pixel oracles cover strict brow/eye exclusion, typed missing/crossed support,
+elliptical feather continuity, Q16 ceiling enforcement, hue preservation,
+original high-frequency residual carry, texture retention `>= 0.98`, target
+change, exact protected/exterior/alpha/extent/metadata behavior, peer isolation,
+collision-to-source, and determinism. These generated tests qualify mechanics
+only. Genuine efficacy/naturalness and any public promotion remain pending the
+fresh candidate-v2 contract and private review.
+
 ## 1. Score Scale
 
 | Score | Meaning |

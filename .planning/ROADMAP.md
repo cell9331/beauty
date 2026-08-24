@@ -100,7 +100,7 @@ natural, identity-preserving, and safe on authorized genuine evidence.
 - [ ] 80-04-PLAN.md — candidate-v1 review terminated early after failure
 - [ ] 80-05-PLAN.md — candidate-v1 complete review not executed
 - [ ] 80-06-PLAN.md — candidate-v1 decision not emitted
-- [ ] 80-07-PLAN.md — candidate-v2 support/editor remediation
+- [x] 80-07-PLAN.md — candidate-v2 support/editor remediation
 - [ ] 80-08-PLAN.md — candidate-v2 qualification freeze
 - [ ] 80-09-PLAN.md — candidate-v2 private automation and review
 - [ ] 80-10-PLAN.md — candidate-v2 decision and Phase-80 verification
@@ -240,7 +240,7 @@ orphaned or duplicate mappings.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 80. Genuine Evidence and Qualification Gate | v1.19 | 3/10 | Remediating candidate v2 | - |
+| 80. Genuine Evidence and Qualification Gate | v1.19 | 4/10 | Freezing candidate-v2 qualification | - |
 | 81. Safe Public Still-Image Activation | v1.19 | 0/TBD | Not started | - |
 | 82. Public Output and Backend Qualification | v1.19 | 0/TBD | Not started | - |
 | 83. Taxonomy and Owner Promotion | v1.19 | 0/TBD | Not started | - |

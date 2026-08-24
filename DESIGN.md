@@ -1311,3 +1311,33 @@ contract still excludes transparent input, end-to-end GPU local retouch, and
 shared-instance parallel safety. No UI/Demo, device,
 performance, commercial,
 packaging, shipping, launch, or release-readiness behavior is added.
+
+## v1.19 Phase 80 Candidate-v2 Remediation Contract
+
+Candidate v1 is frozen as a failed qualification attempt. Candidate v2 changes
+only package-level upper-eyelid support/editor mechanics while exact 61/5/74
+public absence remains in force.
+
+`BeautyUpperEyelidSemanticSupportOwner` now requires a valid mapped eye and the
+same-side mapped eyebrow before it creates a semantic request. The permitted
+envelope is strictly inside the plausible brow-to-eye gap: it excludes the brow,
+eye aperture, lash line, and pixels outside a horizontally expanded per-eye
+band. Missing eyebrow support, a crossed/too-small/too-large gap, insufficient
+overlap, malformed dimensions, or ambiguous side order fails closed per eye.
+Landmarks still constrain only; the independently injected semantic owner must
+approve or reject each eye.
+
+An approved support is a unique list of request-local pixel indices paired with
+Q16 soft ownership. Every weight is bounded by an elliptical smoothstep ceiling
+computed from the approved hard envelope, so ownership approaches zero at all
+boundaries and cannot reproduce candidate v1's full-weight rectangle. The
+editor computes a weighted regional low-frequency luminance reference, moves
+each supported low-frequency sample toward that reference with gain `1.5`,
+applies one scalar RGB correction capped to `±16`, and adds the exact original
+high-frequency residual. Equal RGB deltas preserve source chroma; clipping,
+alpha, extent, metadata, immutable-original composition, and collision-to-source
+rules remain unchanged.
+
+This is a new mechanics baseline, not genuine qualification or public
+activation. Phase-80 candidate-v2 qualification must freeze its source/test
+binding before inspecting new private outcomes.
