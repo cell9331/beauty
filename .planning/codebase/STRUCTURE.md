@@ -2,6 +2,11 @@
 
 **Analysis Date:** 2026-08-18
 **Boundary:** SDK-only SwiftPM repository
+**Policy Sync:** 2026-08-25
+
+**Distribution:** The tree supports the owner's local hosts and validation
+tools only. Its Swift `public` surface is not a third-party distribution or
+customer-delivery boundary.
 
 ## Directory Layout
 

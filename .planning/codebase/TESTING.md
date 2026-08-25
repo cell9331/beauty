@@ -2,6 +2,11 @@
 
 **Analysis Date:** 2026-08-18
 **Boundary:** SDK-only SwiftPM repository
+**Policy Sync:** 2026-08-25
+
+**Distribution:** Test evidence qualifies owner-local behavior only. It never
+authorizes package/binary/model/weight distribution, customers, commercial use,
+App Store delivery, launch, or release readiness.
 
 ## Post-Archive Audit Qualification
 
@@ -62,7 +67,7 @@ transcript with:
 - zero skips; and
 - a nonzero all-tests denominator.
 
-The external consumer preflight runs before the child and builds a separate
+The repository-owned public-surface consumer preflight runs before the child and builds a separate
 local-path package that imports only public `BeautySDK`, generates a neutral
 RGBA input, and checks real output bytes/dimensions. The renderer regression
 suite covers the exact 74-case inventory, and
@@ -91,7 +96,7 @@ bash scripts/run-no-skip-swiftpm.sh
 
 The mandatory wrapper orders archive verification → post-archive SDK-only
 boundary self-test/live scan → backend contract/configuration → Metal
-runtime/feature/parity preflights → external consumer → generated CPU reference
+runtime/feature/parity preflights → repository consumer fixture → generated CPU reference
 preflight → private opt-ins → one SwiftPM child. Archive
 corruption, restored source roots, stale application dependencies, retained
 shader drift, an unexpected skip/failure, or a zero-test run must fail non-zero.

@@ -56,7 +56,7 @@ fresh candidate-v2 contract and private review.
 | 2 | current contract without implementation evidence |
 | 3 | implementation and basic tests with known gaps |
 | 4 | milestone-grade main/failure paths plus synchronized automated image/output evidence |
-| 5 | separately authorized release-like device/product evidence in addition to automation |
+| 5 | separately authorized owner-local device/product evidence in addition to automation |
 
 ## 2. Current Snapshot
 
@@ -65,7 +65,7 @@ fresh candidate-v2 contract and private review.
 | Root owners | 4 | Current contracts consistently name SDK-only SwiftPM ownership and archive-only UI history. | Keep owners synchronized with code/tests. |
 | SDK package | 4 | One public library, one SDK-owned renderer, six internal/library targets, no remote dependency. | Preserve facade and dependency direction. |
 | Tests | 4 | 74 SwiftPM test files; current mutation-tested preflights and archive-first XCTest `776/0/0` pass with eight opt-ins and zero skips. Historical counts remain labeled historical; all ten audit findings are dispositioned. | Preserve deterministic pixel/metadata oracles; physical-iPhone feedback is optional and non-blocking. |
-| External consumer / CLI | 4 | Public-only local-path consumer observes generated RGBA bytes/dimensions; compiled renderer covers 74-case discovery, reconciled reports, typed failures, and render/encode seams. | Preserve archive → boundary → consumer → no-skip ordering. |
+| Repository consumer / CLI | 4 | Public-surface-only local-path fixture observes generated RGBA bytes/dimensions; compiled renderer covers 74-case discovery, reconciled reports, typed failures, and render/encode seams. | Preserve archive → boundary → consumer → no-skip ordering. |
 | Archive integrity | 4 | Code-owned ZIP/manifest anchors, exact 45/26 inventories, bounded streamed extraction, frozen-retirement rollback, and safe restore self-tests pass. | Verify before every full closeout. |
 | SDK-only boundary | 4 | Retired roots are absent; scanner rejects symlinks, restored application/UI sources, stale current owners/maps, tracked media, application artifacts, retained-shader drift, and backend/API drift. | Keep scanner fail-closed. |
 | Security | 4 | Local-first input/resource/privacy and request-local local-retouch ownership are test-backed. | Reopen for any new trust boundary. |
@@ -73,10 +73,12 @@ fresh candidate-v2 contract and private review.
 | Product acceptance | 3 | Bounded still-image teeth/sclera behavior and exact taxonomy remain SDK-core only; supported package-host parity is current but transparent/end-to-end-GPU/device claims remain excluded. | Preserve nonclaims and keep `去脂` future. |
 
 No score of 5 is claimed. Package/fixture automation does not establish device
-performance, population sufficiency, commercial quality, packaging,
-shipping, launch, or release readiness. Score 4 is sufficient for an SDK
-milestone when its automated contract is complete; the absence of score-5
-device/product evidence cannot block planning or milestone progression.
+performance, population sufficiency, or owner-local product visual approval.
+Score 4 is sufficient for an internal SDK milestone when its automated contract
+is complete; the absence of score-5 device/product evidence cannot block
+planning or milestone progression. Packaging, shipping, external launch,
+SDK commercialization, and release readiness are not higher-score goals: they
+are excluded by the owner-only distribution contract.
 
 ## 3. Active Inventory
 
@@ -397,8 +399,10 @@ contracts before source remediation. It adds no quality credit: no model,
 training data, public field, resource, route, renderer case, or new output
 exists, and exact 61/5/74 public absence remains the current quality result.
 Plan 80-20 proves only the unavailable/invalid-prediction boundary. Learned
-efficacy remains blocked until commercially authorized paired data, model
-parity, fresh genuine automation, and blinded review all pass.
+efficacy remains blocked until actual-use-authorized identity-disjoint paired
+data with exact fullness targets, model parity, fresh genuine automation, and
+blinded review all pass. Research-only inputs and their derived models remain
+local and receive no commercial or distribution claim.
 
 Plan 80-20 adds no efficacy score. Its quality result is boundary-only:
 `8/0/0` learned prediction tests, `23/0/0` all upper-eyelid tests, and plain full

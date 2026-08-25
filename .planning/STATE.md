@@ -4,11 +4,11 @@ milestone: v1.19
 milestone_name: Genuine Upper-Eyelid Fullness Promotion
 current_phase: 80
 current_phase_name: Genuine Evidence and Qualification Gate
-status: blocked
-stopped_at: Phase 80 Plan 21 paired-data and model checkpoint
-last_updated: "2026-08-25T01:00:00Z"
+status: active
+stopped_at: Phase 80 Plan 21 research-data admission and exact target authoring
+last_updated: "2026-08-25T03:40:34Z"
 last_activity: 2026-08-25
-last_activity_desc: Failed heuristic quarantined and fail-closed learned prediction seam verified
+last_activity_desc: Owner-only non-distribution contract adopted; research-only data path reopened
 progress:
   total_phases: 5
   completed_phases: 0
@@ -23,17 +23,17 @@ progress:
 
 See: `.planning/PROJECT.md` (updated 2026-08-25)
 
-**Core value:** An iOS app can integrate `BeautySDK` and get natural,
-controllable, real-time and still-image beauty processing through a stable
-modular facade.
+**Core value:** The project owner's local iOS host can integrate `BeautySDK`
+and get natural, controllable, real-time and still-image beauty processing
+without distributing the SDK, model, or weights.
 **Current focus:** Phase 80 — Genuine Evidence and Qualification Gate
 
 ## Current Position
 
-Phase: 80 (Genuine Evidence and Qualification Gate) — BLOCKED
+Phase: 80 (Genuine Evidence and Qualification Gate) — ACTIVE
 Plan: 21 of 22
-Status: Blocked on commercially authorized paired training data and compiled-weight redistribution rights
-Last activity: 2026-08-25 — learned boundary repair passed focused/full package and SDK-only checks
+Status: Research-only corpus admission and exact upper-eyelid target authoring are next; redistribution is prohibited, not a gate
+Last activity: 2026-08-25 — current owners synchronized to owner-only local use
 
 Progress: [███████▋░░] 77%
 
@@ -86,6 +86,15 @@ roadmaps.
 - The milestone remains SDK-only, opaque still-image, local-first, aggregate-
   only, archive-immutable, and outside device/commercial/release claims.
 
+- [Project]: Swift `public` is an owner-local access and compatibility surface;
+  no SDK package, binary, model, compiled weight, private fixture, or derived
+  data is offered to third parties or leaves the owner-controlled environment.
+- [Project]: Actual-use license admission replaces commercial-training and
+  weight-redistribution admission. Non-commercial research data may feed only
+  an isolated local research candidate, and any later SDK commercialization or
+  distribution requires a new full audit. Owner-internal commercial use is
+  allowed only when the admitted license explicitly covers it.
+
 - [Phase 80]: Negative and stress review passes require target absence plus natural and protected source preservation; genuine positives alone require visible target reduction. — This makes the frozen rubric polarity-correct without lending positive efficacy credit to safe no-op rows.
 - [Phase 80]: Phase 80 freezes opaque named-sRGB RGBA8 color deltas at target 16 and protected 0 with zero tolerance. — The target bound is version-owned by the editor and the protected bound by immutable-original composition.
 - [Phase 80]: Generated and mechanics-only inputs retain evidence weight zero and cannot create a promotion decision. — Rights and human review remain external facts that automation validates but never fabricates.
@@ -103,7 +112,7 @@ roadmaps.
 - [Phase 80]: Candidate v4 is terminal after repeatable automated applicability, boundary-continuity, and minimum-relief failures; human review never opened. — Signed correction could brighten negative residual, overshoot flat relief, and mis-authorize non-fullness surfaces.
 - [Phase 80]: Candidate-v5 threshold tuning is canceled; v1-v4 establish that handcrafted tone/frequency analysis cannot reliably identify or visibly reduce genuine upper-lid fullness. — Retuning would overfit the private fixtures instead of repairing the semantic mismatch.
 - [Phase 80]: A visibly obvious `去脂` may advance only as an owned-data, on-device learned hybrid that predicts per-eye applicability, support alpha, bounded upper-lid soft-tissue flow, and low-frequency tone. — Generic/landmark warp and all eye/brow proxy controls remain prohibited; an absolute no-geometry route may only be named relief softening.
-- [Phase 80]: Model training is gated on commercial training/derivative/compiled-weight redistribution rights and identity-disjoint paired data. — The current eight-fixture private bundle remains holdout evaluation evidence and cannot train or calibrate the model.
+- [Phase 80]: Model training is gated on actual-use-authorized identity-disjoint paired data, exact fullness targets, and local derived-model rights. — The current eight-fixture private bundle remains holdout evaluation evidence and cannot train or calibrate the model; redistribution is prohibited rather than required.
 - [Phase 80]: Rejected v1-v4 code is reachable only through explicit `BeautyExperimentalUpperEyelid*` names; the current learned boundary has no registered model and emits no proposals. — Plan 80-20 validates every request/result per eye and fails closed on absence, inference failure, uncertainty, malformed flow/tone, protected overlap, discontinuity, or fold-over risk.
 
 ### Pending Todos
@@ -118,10 +127,11 @@ None found under `.planning/todos/pending/`.
   61/5/74 public absence remains preserved. Further heuristic candidates are
   canceled; Plan 80-20 owns only code-boundary repair.
 
-- Plan 80-21 cannot train or select the learned candidate until the data owner
-  supplies commercially authorized paired data, target-author ownership,
-  identity-disjoint splits, and compiled Core ML weight redistribution rights.
-  FFHQR/PPR10K are research references only and receive no production weight.
+- Plan 80-21 has no ready-made exact upper-eyelid-fullness dataset. Official
+  PPR10K/FFHQR may be admitted only for license-compatible non-commercial local
+  research/pretraining and require separately owner-authored fullness targets;
+  MirrorPPR47M remains rejected without a usable license grant. The current
+  eight-fixture bundle remains holdout-only.
 
 - The candidate-v1 external bundle was structurally complete and repeatably
   admitted at 8 fixtures, 24 assets, and 19 metric rows. Its automated texture
@@ -143,12 +153,13 @@ None found under `.planning/todos/pending/`.
 | Category | Item | Status | Deferred At |
 | --- | --- | --- | --- |
 | Runtime/input breadth | Realtime/pixel-buffer, transparent, HDR/gain-map, extended-range, and video behavior | Future | v1.19 scope |
-| Product/release | Device performance, broader population sufficiency, commercial approval, packaging, shipping, launch, and release readiness | Future | v1.19 scope |
+| Owner-local product | Device performance, broader population sufficiency, and owner-local visual approval | Future | v1.19 scope |
+| External/commercial distribution | SDK commercialization, customers, package registry, binary/model/weight transfer, App Store, packaging, shipping, launch, and release readiness | Prohibited until explicitly reopened | owner-only project contract |
 | Algorithm breadth | Restricted external models/weights and unrelated beauty features | Future | v1.19 scope |
 
 ## Session Continuity
 
-Last session: 2026-08-25T01:00:00Z
-Stopped at: Phase 80 Plan 21 paired-data and model checkpoint
+Last session: 2026-08-25T03:40:34Z
+Stopped at: Phase 80 Plan 21 research-data admission and exact target authoring
 Resume file: None
-Next action: admit commercially authorized identity-disjoint paired data and compiled-weight redistribution rights, then author targets and train/ablate/convert the learned candidate; do not resume heuristic tuning.
+Next action: admit one official-source, actual-use-compatible local research corpus, freeze identity-disjoint splits and owner-authored exact targets, then train/ablate/convert the local learned candidate; do not resume heuristic tuning or distribute any data/model artifact.

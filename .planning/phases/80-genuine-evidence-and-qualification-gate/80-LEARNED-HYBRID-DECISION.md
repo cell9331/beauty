@@ -4,7 +4,7 @@ decision: learned-bounded-hybrid-upper-eyelid-editor
 status: adopted-for-implementation
 date: 2026-08-25
 public_surface: unchanged-61-5-74
-implementation_gate: rights-approved-paired-training-data
+implementation_gate: actual-use-approved-owner-local-paired-training-data
 ---
 
 # Upper-Eyelid Fullness Reduction: Implementable Technical Decision
@@ -34,8 +34,10 @@ lighting, makeup, crease shape, skin texture, and camera processing. More
 threshold tuning would overfit the current private fixtures and is rejected.
 
 The adopted implementation direction is a **small, on-device, per-eye learned
-hybrid editor trained only from owned or explicitly commercially licensed
-paired data**. Apple Vision may locate and normalize the eye/brow crop, but it
+hybrid editor trained only from owned data or data explicitly licensed for the
+actual owner-only use**. Research-only inputs and their derived model stay in a
+separated non-commercial local research lane. Apple Vision
+may locate and normalize the eye/brow crop, but it
 does not decide whether upper-lid fullness exists. The model predicts:
 
 1. applicability confidence plus uncertainty;
@@ -63,8 +65,9 @@ The existing v1-v4 code is experimental mechanics only. It must not receive a
 candidate-v5 threshold retune, public route, or efficacy claim. The first code
 remediation after this document is frozen is to quarantine the failed
 heuristic as non-production and establish the learned-model boundary. Actual
-model training remains blocked until the paired-data and license gate below is
-satisfied.
+model training starts only after the paired-data, exact-target, and actual-use
+license gate below is satisfied. The SDK, model, and compiled weights never
+leave the owner-controlled environment.
 
 ## 1. Why this is the correct semantic target
 
@@ -124,15 +127,17 @@ global RGB synthesis or a handcrafted warp. See
 | Vision landmarks as fullness detector | Reject | Landmarks provide geometry only and cannot distinguish volume from lighting, crease, or makeup. |
 | `eyeHeight`, `upperEyelidLift`, brow movement, or eye opening | Reject | These are different user-visible controls and prohibited proxies. |
 | Hand-authored local warp | Reject | The earlier spike degraded texture energy without a clearer benefit and has no semantic authority. |
-| Generic beauty SDK or unknown pretrained weights | Reject | Dataset, checkpoint, model behavior, privacy, conversion, redistribution, and long-term ownership are not established. |
-| FFHQR or PPR10K production training | Reject | Their public data terms are non-commercial/research-limited; they may inform research but cannot silently become shippable weights. |
+| Generic beauty SDK or unknown pretrained weights | Reject | Dataset, checkpoint, model behavior, privacy, conversion, actual-use authorization, and long-term ownership are not established. |
+| FFHQR or PPR10K as exact target data | Reject | Their global retouches do not isolate upper-eyelid fullness. Under their upstream terms they may be considered only for an isolated non-commercial local research/pretraining path, never commercial use or distribution. |
 | Full RGB GAN/diffusion patch generation | Reject | Unnecessary identity drift, hallucination, latency, memory, licensing, and determinism risk for a narrow local effect. |
 | Cloud inference | Reject | Violates the local-first privacy and offline SDK boundary. |
 
 The FFHQR repository says the retouched dataset is CC BY-NC-SA 4.0 and the
 underlying originals have mixed licenses; the PPR10K repository limits its
-dataset to non-commercial research. These are license blockers, not
-attribution tasks:
+dataset to non-commercial research. Those restrictions are compatible only
+with the matching owner-local non-commercial research lane; they remain hard
+blockers for any later commercial or distributed use and are not solved by
+attribution alone:
 
 - [FFHQR dataset and license](https://github.com/skylab-tech/ffhqr-dataset)
 - [PPR10K dataset terms](https://github.com/csjliang/PPR10K)
@@ -239,9 +244,9 @@ algorithm failures. It is far too small to train, calibrate, or select a learned
 model, and must not be repeatedly used as a tuning loop.
 
 Those images remain holdout evaluation fixtures. They do not move into training
-unless the data owner separately grants commercial training, derivative-model,
-and redistribution rights and the evaluation split is replaced with unseen
-identities.
+unless the data owner separately grants ML-training, retouched-derivative, and
+local derived-model rights for the actual owner-only use and the evaluation
+split is replaced with unseen identities.
 
 ### 5.2 Required rights
 
@@ -249,12 +254,19 @@ Before any portrait enters training or retouch-target authoring, a data owner
 must establish all of the following outside repository evidence:
 
 - subject/image rights cover ML training and creation of retouched derivatives;
-- commercial SDK use and redistribution of compiled Core ML weights are
-  permitted;
+- the license permits the actual owner-only research/evaluation or operational
+  use, target-authoring, training, and local compiled Core ML use;
 - retention, deletion, access, and review responsibilities are assigned;
 - retoucher output and any annotation tooling have compatible ownership;
 - no dataset license requires disclosure of private weights or unrelated data;
 - identity-disjoint split membership is fixed before model selection.
+
+The SDK, training outputs, checkpoint, Core ML resource, private fixtures, and
+derived data stay inside the owner-controlled environment. Redistribution
+permission is not required because redistribution is prohibited. A research-
+only input creates a research-only model: it cannot be monetized, delivered to
+a customer, published, transferred, or reused in a later commercial scope.
+Any such scope change invalidates current admission and requires a new audit.
 
 The repository stores only aggregate admission counts, normalized dispositions,
 model hashes, tool versions, and license-approval status. It never stores raw
@@ -270,7 +282,7 @@ prevent another eight-image overfit; they are not scientific guarantees:
 | Gate | Proposed minimum | Purpose |
 | --- | --- | --- |
 | Feasibility pilot | 300 unique identities, at least two target authors, at least 600 paired edits, identity-disjoint validation/test | Determine whether the hybrid representation can beat source/no-op and tone-only baselines. |
-| Production candidate | 2,000 unique identities and 5,000 paired edits, with a separately frozen holdout | Train/calibrate a compact model and measure subgroup failure. |
+| Owner-local qualification candidate | 2,000 unique identities and 5,000 paired edits, with a separately frozen holdout | Train/calibrate a compact model and measure subgroup failure. |
 | Final private qualification | The existing frozen genuine bundle plus a new unseen, category-complete holdout | Prevent training/selection data from receiving product evidence credit. |
 
 Collection strata must deliberately cover eyelid anatomy, skin tones, age
@@ -372,7 +384,7 @@ The exact Swift names are implementation details, but the ownership is fixed:
 - `BeautyResources` validates the bundled model identifier and digest;
 - `BeautyEffects` owns model input, prediction validation, proposal creation,
   and immutable-source composition;
-- `BeautySDK` owns engine-scoped model availability and typed public failure or
+- `BeautySDK` owns engine-scoped model availability and typed owner-local public failure or
   source-exact local no-op behavior;
 - no public diagnostics expose support, confidence values, crop geometry,
   model tensors, masks, or pixels.
@@ -383,14 +395,14 @@ occlusion, or malformed mapping fails closed. A peer-eye failure does not
 authorize work or suppress a valid independent eye.
 
 Only after every Phase-80 evidence gate passes may Phase 81 add the default-zero
-positive-only `upperEyelidFullnessReduction` public field and still-image route.
+positive-only `upperEyelidFullnessReduction` owner-local public field and still-image route.
 No realtime/pixel-buffer route follows automatically.
 
 ## 8. Qualification gates
 
 ### 8.1 Automated pixel/model gates
 
-Every production candidate must pass, with zero skipped required rows:
+Every owner-local qualification candidate must pass, with zero skipped required rows:
 
 - model license/provenance/resource/digest admission;
 - source-to-Core-ML numerical and decision parity;
@@ -443,16 +455,17 @@ thermal, commercial, packaging, shipping, launch, or release-readiness claim.
 | --- | --- | --- | --- |
 | R0 | This decision, owner-doc synchronization, v1-v4 terminal record | v4 terminal | Documentation consistency and no source edits. |
 | R1 | Quarantine failed heuristic; add internal prediction/resource seam and generated safety oracles | R0 committed | Build/tests pass; public 61/5/74 unchanged; no fake model. |
-| R2 | Rights/data admission, target-authoring tool/protocol, frozen splits | Approved commercial training and model-redistribution rights | Pilot minimum and category completeness pass. |
+| R2 | Rights/data admission, target-authoring tool/protocol, frozen splits | Actual-use-approved local research/training, derivative, and local-model rights | Pilot minimum and category completeness pass. |
 | R3 | Offline PyTorch baselines and hybrid model | R2 | Hybrid beats source, v4, tone-only, and flow-only under frozen validation. |
 | R4 | Core ML conversion, package resource, source/Core-ML parity | R3 | Conversion, model, pixel, privacy, and resource gates pass. |
 | R5 | Fresh private automation and blinded review | R4 frozen | All automated rows pass twice and every required human row passes. |
-| R6 | Public still-image activation and closeout | R5 canonical pass | API/output/compatibility/taxonomy/no-skip gates pass. |
+| R6 | Owner-local still-image activation and closeout | R5 canonical pass | API/output/compatibility/taxonomy/no-skip gates pass. |
 
 Hard stop rules:
 
-- Without commercially authorized paired training data, stop after R1. Do not
-  resume heuristic tuning and do not create an inert public field.
+- Without actual-use-authorized paired training data and exact fullness targets,
+  stop after R1. Do not resume heuristic tuning and do not create an inert
+  owner-local public field.
 - If the pilot does not produce a clearly visible improvement over source/no-op
   and tone-only baselines, keep `去脂` future.
 - If negatives cannot fail closed, protected pixels drift, the flow folds, or
@@ -472,8 +485,8 @@ Once this document is committed, code work may begin in this order only:
    explicit unavailable/no-model fail-closed outcome;
 4. add generated tests for resource absence, malformed outputs, protected-flow
    zeroing, immutable-source ownership, and exact public absence;
-5. stop before shipping a model or claiming visible efficacy until R2 data and
-   rights exist.
+5. stop before enabling a model or claiming visible efficacy until R2 data,
+   exact targets, and actual-use rights exist; never distribute the result.
 
 This is the smallest honest repair. It removes the false premise from the old
 code while preserving reusable canonicalization, one-observation mapping,

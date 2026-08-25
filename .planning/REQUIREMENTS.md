@@ -1,8 +1,15 @@
 # Requirements: v1.19 Genuine Upper-Eyelid Fullness Promotion
 
 **Defined:** 2026-08-22
-**Core Value:** An iOS app can integrate `BeautySDK` and get natural,
-controllable beauty processing through a stable modular facade.
+**Core Value:** The project owner's local iOS host can integrate `BeautySDK`
+and get natural, controllable beauty processing through a stable modular facade
+without distributing the SDK, model, or weights.
+
+**Distribution Boundary:** Swift `public` means the owner-local callable
+surface. Third-party users, package publication, binaries, customer delivery,
+commercialization, App Store release, and model/weight distribution are not
+requirements and are prohibited unless a future milestone explicitly reopens
+license, security, privacy, compatibility, and product review.
 
 ## v1.19 Requirements
 
@@ -10,8 +17,11 @@ controllable beauty processing through a stable modular facade.
 
 - [ ] **EVID-03**: The SDK owner can admit a complete rights-approved private
   upper-eyelid-fullness evaluation bundle plus identity-disjoint paired
-  training data whose rights cover target authoring, commercial model training,
-  derivatives, and redistribution of compiled Core ML weights.
+  training data whose rights cover the actual owner-only use, subject/image ML
+  training, target authoring, retouched derivatives, retention, and local
+  derived-model/Core ML use. Research-only
+  data and weights are limited to a separated non-commercial research lane and
+  never leave the owner-controlled environment.
 - [ ] **EVID-04**: A human reviewer can complete a blinded 100%-detail
   original/mask/after review under a rubric frozen before outcomes are seen.
 - [ ] **EVID-05**: The milestone can bind rights admission, blinded judgments,
@@ -31,16 +41,16 @@ controllable beauty processing through a stable modular facade.
   naturalness, identity/detail preservation, structure-change, and acceptance
   thresholds for every required category.
 
-### Public SDK
+### Owner-Local SDK Surface
 
 - [ ] **SAFE-04**: Each eye independently uses one current request observation,
   a qualified learned semantic prediction, bounded upper-lid soft-tissue flow,
   immutable-original composition, and collision-to-source behavior without eye-
   contour/brow movement, generic warp, or proxy effects.
-- [ ] **API-01**: An SDK integrator can set one positive-only default-zero
+- [ ] **API-01**: The owner's local host can set one positive-only default-zero
   `BeautyParameters.upperEyelidFullnessReduction` value in `0...1`, with
   finite clamping and backward-compatible Codable defaults.
-- [ ] **API-02**: An SDK integrator can obtain the qualified effect through
+- [ ] **API-02**: The owner's local host can obtain the qualified effect through
   both public `CIImage` still-image facade entries; missing or rejected support
   produces a local source-exact no-op and never activates realtime/pixel-buffer
   behavior.
@@ -75,8 +85,13 @@ controllable beauty processing through a stable modular facade.
 - **FUTURE-02**: Transparent, HDR, gain-map, extended-range, and video inputs
   receive separately approved color/background and output semantics.
 - **FUTURE-03**: Device performance, population sufficiency beyond the admitted
-  evaluation bundle, commercial approval, packaging, shipping, launch, and
-  release-readiness evidence are authorized and evaluated separately.
+  evaluation bundle, and owner-local product visual approval are authorized and
+  evaluated separately.
+- **FUTURE-04**: Any SDK commercialization, third-party, package-registry, App
+  Store, customer, SDK/model/weight distribution, shipping, launch, or release
+  scope requires an explicit new milestone and a complete re-audit; it cannot
+  inherit current research-only data/model admission. Any owner-internal
+  commercial use separately requires licenses that expressly cover it.
 
 ## Out of Scope
 
@@ -85,7 +100,8 @@ controllable beauty processing through a stable modular facade.
 | `upperEyelidLift`, `eyeHeight`, eye opening, brow motion, eye-bag/dark-circle removal, generic/landmark-driven warp, or smoothing as `去脂` | These are forbidden proxy semantics and cannot establish upper-eyelid-fullness reduction. A separately qualified learned bounded upper-lid soft-tissue field is the sole geometry exception. |
 | Public field or inert route before genuine evidence passes | A compilable no-op or generated-fixture result would misrepresent product capability. |
 | Generated or AI portraits as product-feasibility evidence | They can prove mechanics only and receive zero genuine-efficacy weight. |
-| Unapproved Core ML or third-party weights; FFHQR/PPR10K production training | Dataset, checkpoint, conversion, redistribution, privacy, and resource ownership are not established; the cited public datasets are non-commercial/research-limited. |
+| Unknown/unlicensed Core ML or third-party weights | Dataset, checkpoint, conversion, privacy, and resource ownership are not established. |
+| FFHQR/PPR10K beyond isolated non-commercial local research | Their terms do not authorize commercial use or distribution, and their global retouches do not supply exact upper-eyelid-fullness targets. |
 | Public or durable masks, landmarks, pixels, private fixture locators, reviewer identity, rights records, or freeform review text | These violate the local-retouch privacy boundary. |
 | UI/Demo restoration or application lifecycle | The repository remains SDK-only SwiftPM. |
 | Medical fat measurement or diagnosis | The intended behavior is a bounded cosmetic appearance effect only. |
@@ -119,4 +135,4 @@ Roadmap creation will map every requirement to exactly one phase.
 
 ---
 *Requirements defined: 2026-08-22*
-*Last updated: 2026-08-22 after v1.19 roadmap creation*
+*Last updated: 2026-08-25 after owner-only/non-distributed contract adoption*

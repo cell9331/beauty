@@ -4,15 +4,23 @@
 
 `beauty` is a modular local-first iOS beauty SDK. The SDK owns image/frame processing, parameters, detection, rendering, effects, resources, diagnostics, and the host-facing `BeautySDK` facade. SwiftPM tests, `BeautyExampleRenderer`, and SDK-owned scripts are the only active build/test/validation surfaces.
 
+The SDK is for the project owner's private use in locally controlled Apps and
+tools. It will not be offered to third parties or published, sold, packaged, or
+distributed as source, binary, package-registry artifact, model, or compiled
+weight. Swift `public` means the owner-local callable facade and compatibility
+surface only.
+
 The former application and legacy UI-reference trees are absent from the active repository. Their exact historical contents are retained as independently verified ZIP artifacts under `archives/legacy-ui/`; they do not define current SDK completion and may be restored only to a new temporary directory under the archive contract.
 
 ## Core Value
 
-An iOS app can integrate `BeautySDK` and get natural, controllable, real-time and still-image beauty processing through a stable modular facade.
+The project owner's local iOS host can integrate `BeautySDK` and get natural,
+controllable, real-time and still-image beauty processing through a stable
+modular facade without distributing the SDK or its model resources.
 
 ## Current Milestone: v1.19 Genuine Upper-Eyelid Fullness Promotion
 
-**Goal:** Deliver a directly callable, positive-only opaque still-image
+**Goal:** Deliver a directly callable owner-local, positive-only opaque still-image
 upper-eyelid-fullness-reduction SDK control only after genuine authorized
 positive/negative/stress evidence and blinded original-detail human review
 prove the non-proxy effect effective, natural, and safe.
@@ -29,7 +37,7 @@ prove the non-proxy effect effective, natural, and safe.
   collision-to-source, local failure, and aggregate-only diagnostics.
 - If and only if every genuine effectiveness, naturalness, safety, privacy,
   compatibility, and output gate passes, add one positive-only
-  `upperEyelidFullnessReduction` field and opaque still-image public route.
+  `upperEyelidFullnessReduction` field and opaque still-image owner-local route.
 - Add exact public-facade pixels/metadata, Codable/default, renderer,
   CPU-reference/GPU-transport, mutation, no-skip, taxonomy, and documentation
   evidence for the promoted feature.
@@ -40,14 +48,17 @@ generic/landmark-driven warp, or global smoothing. Candidate v1-v4 prove that
 tone/frequency threshold tuning is not a credible visible `去脂` solution. The
 only admitted geometry exception is a learned, bounded, per-eye upper-lid
 soft-tissue displacement field paired with a low-frequency tone residual,
-trained from owned or explicitly commercially licensed paired data. It must
+trained from owned data or data explicitly licensed for the actual owner-only
+use. Research-only inputs and derived weights remain in a separated non-
+commercial local research lane. It must
 leave eye contour/aperture, brow, lashes, iris/sclera, protected crease detail,
 and exterior pixels source-owned. Generated fixtures remain mechanics-only. No
 public field or inert route may appear before genuine evidence and human review
 pass. Realtime/pixel-buffer behavior, transparent/HDR input, external
 restricted weights, UI/Demo restoration, medical claims, tracked portrait
-media, device/commercial approval, packaging, shipping, launch, and release
-readiness remain excluded.
+media, device/commercial approval, packaging, shipping, launch, external
+distribution, and release readiness remain excluded. Research-only data and
+derived weights remain local and cannot be repurposed for commercial use.
 
 ## Last Completed Milestone: v1.18 Upper-Eyelid Fullness Reduction
 
@@ -98,10 +109,13 @@ public absence. It is not a shipping, launch, or release-readiness claim.
 **Current work:** v1.19 has terminated four hand-authored candidates, adopted
 the learned hybrid decision, quarantined the failed implementation under
 explicit experimental names, and verified a strict package-only prediction
-boundary whose no-model state emits no proposal. Training and promotion remain
-blocked on commercially authorized paired data, compiled-weight redistribution
-rights, a fresh frozen private qualification, and blinded review; public
-implementation is forbidden until those gates pass.
+boundary whose no-model state emits no proposal. The owner-only policy removes
+compiled-weight redistribution as a gate and allows license-compatible
+non-commercial research corpora to enter an isolated local pretraining path.
+Training still requires exact upper-eyelid-fullness targets, identity-disjoint
+splits, actual-use authorization, a fresh frozen private qualification, and
+blinded review; owner-local public implementation is forbidden until those
+quality gates pass.
 
 **Implementation state:** v1.16 froze the current CPU renderer as the reference backend, added generated CPU oracles, a public-only SwiftPM consumer, the SDK-owned renderer CLI, and conditional `BeautyResult` sendability. v1.17 added the package-only backend-neutral boundary, bounded Metal runtime and feature passes, public `.cpu`/`.gpu` configuration with typed unavailable-GPU failure, and generated CPU/GPU parity gates. v1.18 added package-only per-eye semantic support, bounded tone/frequency editor mechanics, frozen private-evidence tooling, and fail-closed decision/absence gates while preserving the 61-field/five-preset/74-case public surface. Historical application taxonomy remains archive-only.
 
@@ -151,9 +165,10 @@ findings in `PLANS.md` and reproduce them in automated tests where possible.
 
 This policy does not turn package-host evidence into device or release evidence.
 Without separately authorized hardware evaluation, the project makes no claim
-about on-device performance, thermals, battery, endurance, commercial visual
-approval, packaging, shipping, launch, or release readiness. Algorithm owners
-may still require rights-approved local image bundles; those execute through
+about on-device performance, thermals, battery, endurance, or owner-local
+visual approval. Packaging, shipping, external launch, commercialization, and
+release readiness are excluded goals under the non-distribution contract.
+Algorithm owners may still require rights-approved local image bundles; those execute through
 automated opt-in scripts and are distinct from physical-device testing.
 
 ## Historical Milestone Record: v1.17 Dual CPU/GPU Metal Rendering
@@ -447,9 +462,11 @@ For any future semantic-masking milestone, a bundled Core ML resource must be lo
 
 ### Active in v1.19
 
-- [ ] Admit commercially authorized identity-disjoint paired training data and
-  a separate complete rights-approved genuine upper-eyelid-fullness positive,
-  negative, and stress holdout without persisting private locators or media.
+- [ ] Admit actual-use-authorized identity-disjoint paired training data for
+  owner-only use plus a separate complete rights-
+  approved genuine upper-eyelid-fullness positive, negative, and stress
+  holdout without persisting private locators or media. Any research-only source
+  and its derived model remain in a separated non-commercial local lane.
 - [ ] Complete predeclared blinded original-detail human review and emit only a
   sanitized aggregate decision bound to the frozen contract, source commit,
   dataset/split digest, converted model digest, and review rubric.
@@ -457,7 +474,7 @@ For any future semantic-masking milestone, a bundled Core ML resource must be lo
   only bounded upper-lid soft-tissue flow and low-frequency tone, without eye-
   contour/brow movement, generic warp, proxy behavior, crease erasure,
   protected-region changes, or cross-eye failure contamination.
-- [ ] Add exactly one default-zero positive-only public
+- [ ] Add exactly one default-zero positive-only owner-local public
   `upperEyelidFullnessReduction` field and opaque still-image route only after
   the genuine evidence decision passes.
 - [ ] Prove public bytes/metadata, Codable/default compatibility, renderer
@@ -722,6 +739,7 @@ Current visual reference contracts:
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
+| Keep `BeautySDK` owner-only and non-distributed. | The owner explicitly does not provide the SDK to others or publish it. Swift `public` remains necessary for the owner's local host and compatibility tests, but external package/binary/model/weight/customer/App Store release is not a product goal. | Active from 2026-08-25: actual-use licensing replaces redistribution rights as the current model gate; research-only sources remain in a non-commercial lane, and any future distribution change requires a new full audit. |
 | Reopen upper-eyelid-fullness promotion as v1.19, evidence first. | The user explicitly authorized a new automatic milestone, while the v1.18 re-audit proved all code/actionable seams are ready and isolated the remaining blocker to genuine evidence and human review. | Pending: public implementation remains closed until the Phase-80 evidence decision passes. |
 | Make v1.18 a conditional-productization milestone for still-image upper-eyelid fullness reduction. | Research found no production-ready public `去脂` model; the deterministic tone/frequency spike preserved texture and containment but lacked a genuine positive, while the tested warp lost texture without clearer semantic benefit. | Verified 2026-08-22 on the failing branch: `mechanics-only-not-promotion`, exact 61/5/74 absence, `去脂 = future`, and `眼睛 = partial`. |
 | Split the next work into non-Metal v1.16 and Metal v1.17. | Repository/API/test cleanup and CPU reference capture should stabilize the SDK boundary before a new GPU implementation changes render execution. | Queued: v1.16 Phases 66-69, then v1.17 Phases 70-74. |
@@ -762,4 +780,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-08-22 after starting v1.19 genuine upper-eyelid-fullness promotion*
+*Last updated: 2026-08-25 after adopting the owner-only/non-distributed SDK contract*

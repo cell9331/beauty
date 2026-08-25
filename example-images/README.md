@@ -3,6 +3,9 @@
 `example-images` stores local renderer fixtures, flat machine outputs, and a
 generated review gallery. Binary portraits remain Git-ignored; text policy and
 authorization records carry the durable contract without publishing the media.
+All inputs, targets, outputs, galleries, checkpoints, and derived model material
+are owner-local and non-distributed. Their presence never authorizes external,
+commercial, customer, package, App Store, or model/weight use.
 
 ## Directories
 

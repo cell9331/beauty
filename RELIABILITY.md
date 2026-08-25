@@ -31,6 +31,10 @@ false alpha/extent flags and still-image extent-origin drift.
 
 ## 1. Posture
 
+- Runtime, model resources, fixtures, and generated weights are installed and
+  operated only inside the owner's controlled local environment. There is no
+  update service, customer distribution channel, remote model replacement, or
+  third-party availability promise to recover or support.
 - Recoverable/environmental failures return typed errors or documented local
   degradation; production code does not crash for caller input or missing optional work.
 - Every request recomputes support, effects, ownership, warnings, and metrics;
@@ -490,6 +494,13 @@ zero identity, orientation/mirror/color/alpha/extent, determinism, cancellation,
 recovery, and public absence. Genuine efficacy still requires a frozen unseen
 private matrix to pass twice and blinded original-detail review; generated tests
 cannot supply that result.
+
+The reliability lifecycle ends at an owner-local, checksum-pinned model. A
+research-only dataset may feed only a non-commercial local candidate under its
+actual terms. Distribution, monetization, customer upgrade, remote delivery,
+and externally supported rollback are prohibited rather than unimplemented
+reliability promises; any future change requires a new model/license/resource
+reliability contract.
 
 Plan 80-20 passes `8/0/0` learned-prediction tests and `23/0/0` across all
 upper-eyelid suites. It covers no-model, invalid request before inference,

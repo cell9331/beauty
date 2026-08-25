@@ -29,6 +29,9 @@ or release trust decision; the archived `765/0/0` remains historical.
 
 ## 1. Default Posture
 
+- Treat the SDK as owner-only: source packages, binaries, model resources,
+  compiled weights, private fixtures, and derived data do not leave the
+  owner-controlled environment.
 - Process images, frames, parameters, detection support, and effects locally.
 - Do not upload or persist source image/frame bytes, mapped landmarks, region maps, pupils,
   teeth/eye geometry, or private fixture locations.
@@ -38,7 +41,10 @@ or release trust decision; the archived `765/0/0` remains historical.
 - Expose only typed redacted errors, fixed warning reasons, and aggregate metrics.
 
 Any network, cloud, telemetry, external model/resource, account, license, or
-distribution behavior requires a new security review.
+distribution behavior is outside the current contract and requires an
+explicitly authorized new security and license review before use. Any internal
+commercial use must be explicitly covered by the admitted actual-use license;
+research-only data and derived models cannot supply that permission.
 
 ## 2. Active Trust Boundaries
 
@@ -403,13 +409,17 @@ external v4 gate; its terminal durable record remains aggregate-only.
 ## v1.19 Learned Upper-Eyelid Model Trust Boundary
 
 Candidates v1-v4 are terminal and their source-derived scores cannot authorize
-a production edit. Plan 80-19 admits a learned model only after data rights
-explicitly cover commercial training, retouched derivatives, target-author
-ownership, and redistribution of compiled Core ML weights. FFHQR, PPR10K, or
-any other non-commercial/research-limited portrait data cannot enter production
-training or contribute a shippable checkpoint.
+an owner-local edit. Plan 80-19 admits a learned model only after data rights
+explicitly cover the actual owner-only use: ML research/training, retouched
+derivatives, target-author ownership, retention, and local derived-model use.
+Compiled-weight redistribution rights are not a current gate because model
+distribution is prohibited. FFHQR, PPR10K, or another non-commercial/research-
+limited corpus may enter only an isolated non-commercial local research path
+under its upstream terms; it cannot authorize commercial use, external transfer,
+or a future distributed checkpoint and still does not supply the exact
+upper-eyelid-fullness targets required for qualification.
 
-The future model resource is local-only, versioned, checksum-pinned, size-
+The future model resource is owner-local only, versioned, checksum-pinned, size-
 reviewed, and centrally resolved; caller paths, remote downloads, dynamic model
 replacement, and unknown third-party weights are rejected. The model receives
 only request-local canonical per-eye RGB plus permitted/protected priors. Crops,
@@ -417,6 +427,11 @@ tensors, landmarks, masks, flow, tone, confidence, uncertainty, and pixels are
 released with the request and never enter Codable/public diagnostics or durable
 evidence. Durable records allow only aggregate counts, normalized dispositions,
 tool/model digests, and license-approval status.
+
+Any later proposal to monetize, publish, deliver to a customer, register a
+package, ship an App, or transfer a model/weight invalidates the current license
+admission and requires a new audit of every portrait, target, annotation,
+checkpoint, derivative, and resource.
 
 Prediction validation fails closed on resource absence or mismatch, unsupported
 platform, compilation failure, malformed shape, NaN/Inf, low confidence, high

@@ -7,7 +7,12 @@ authorization identifiers, or detailed rights terms.
 ## Policy
 
 - Local fixtures may be used only for the explicitly authorized internal
-  evaluation scope and must remain Git-ignored.
+  evaluation scope and must remain Git-ignored, owner-controlled, and
+  non-distributed.
+- The SDK is owner-only. No fixture, derivative, target, output, checkpoint, or
+  compiled model may be published, sold, delivered to a customer, or transferred
+  outside the owner-controlled environment. Any future scope change requires a
+  fresh authorization and license audit; current permission does not carry over.
 - Authorization permits use but does not assign feature polarity or product
   weight. A feature requires its own opaque positive/negative manifest rows,
   complete original/mask/after assets, predeclared target policy, and the

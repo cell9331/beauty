@@ -7,8 +7,10 @@
 
 The repository has no active frontend, application target, UI source, UI tests,
 application navigation, camera permission flow, or visual acceptance surface.
-Host applications own their UI and protected-resource lifecycle; SDK targets must
-remain free of application pages and interaction state.
+Only applications/tools controlled by the project owner may host the SDK; they
+own their UI and protected-resource lifecycle. SDK targets must remain free of
+application pages and interaction state. No third-party Demo, customer UI,
+App Store delivery, or distribution surface is planned.
 
 Current algorithm/control meanings are owned by
 `docs/SDK_EFFECT_TAXONOMY.md`. Visual placement, labels, navigation, sliders,

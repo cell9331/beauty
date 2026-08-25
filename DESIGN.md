@@ -38,7 +38,9 @@ feature `34/0/0`, configuration `19/0/0`, and CPU reference `41/0/0`.
 
 ## 1. 设计目标
 
-`beauty` SDK 的核心体验是：宿主 App 传入图像帧与参数，SDK 以稳定、可预测、可实时运行的方式输出处理后的图像。
+`beauty` SDK 的核心体验是：项目所有者控制的宿主 App 或工具传入图像帧与参数，
+SDK 以稳定、可预测的方式输出处理后的图像。SDK、模型和权重不面向第三方发布
+或分发。
 
 设计优先级：
 
@@ -46,7 +48,7 @@ feature `34/0/0`, configuration `19/0/0`, and CPU reference `41/0/0`.
 2. 数据模型可序列化、可测试、可跨并发域传递。
 3. 参数组合可控，不因叠加效果产生明显失真。
 4. 渲染、检测、效果、资源彼此解耦。
-5. 对外 API 简洁，内部实现可替换。
+5. 所有者本地可调用 API 简洁，内部实现可替换；Swift `public` 仅表示访问级别。
 
 ## 2. 设计原则
 
@@ -1404,15 +1406,19 @@ protected crease, exterior, overlap, and feather-boundary pixels. Its mapped
 magnitude, gradients, and positive local Jacobian are versioned safety gates.
 Generic warp, landmark-driven warp, eye opening, brow movement, smoothing, and
 full-RGB generation remain prohibited. The model is unavailable by default and
-no proposal exists unless one commercially authorized, checksum-pinned Core ML
+no proposal exists unless one actual-use-authorized, checksum-pinned Core ML
 candidate passes source/conversion parity plus private automated and blinded
 review gates.
 
 The current eight-fixture private bundle is a holdout only. Training requires
-separate identity-disjoint paired data with commercial training, derivative,
-target-author, and compiled-weight redistribution rights. Without that data,
-implementation stops after the package-only fail-closed prediction seam and
-`去脂` remains future with exact 61/5/74 public absence. The complete design is
+separate identity-disjoint paired data whose subject/image, ML-training,
+retouched-derivative, target-author, retention, and local derived-model rights
+cover the actual owner-only use. Compiled-weight redistribution permission is
+not required because redistribution is prohibited; research-only data and its
+derived model must remain in a separated non-commercial research lane.
+Without suitable data and exact fullness targets, implementation stops after
+the package-only fail-closed prediction seam and `去脂` remains future with
+exact 61/5/74 public absence. The complete design is
 [`80-LEARNED-HYBRID-DECISION.md`](.planning/phases/80-genuine-evidence-and-qualification-gate/80-LEARNED-HYBRID-DECISION.md).
 
 Plan 80-20 implements that stop boundary. `BeautyUpperEyelidFullnessPredicting`

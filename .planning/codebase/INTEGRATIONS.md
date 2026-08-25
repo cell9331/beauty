@@ -2,6 +2,11 @@
 
 **Analysis Date:** 2026-08-17
 **Boundary:** SDK-only SwiftPM repository
+**Policy Sync:** 2026-08-25
+
+**Distribution:** All integrations are owner-controlled and local. No
+third-party SDK consumer, package registry, binary/model delivery, customer,
+App Store, or release integration is active or planned.
 
 ## Apple Frameworks
 
@@ -67,9 +72,9 @@ bash scripts/run-no-skip-swiftpm.sh
 ```
 
 The mandatory wrapper first verifies both archives, the SDK-only scanner, and
-the external consumer, then runs one bounded child with all required local
+the repository-owned public-surface consumer fixture, then runs one bounded child with all required local
 opt-ins. No CI/CD,
-distribution, registry publication, or release pipeline is claimed.
+distribution, registry publication, or release pipeline is permitted.
 
 ---
 *Integration audit: 2026-08-17 during v1.17 post-archive audit remediation*

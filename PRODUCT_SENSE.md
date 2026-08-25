@@ -35,13 +35,16 @@ ownership chain (`a577dd1`).
 
 ## 1. Product Position
 
-`beauty` is a modular local-first iOS SDK for host applications. It is not a
-standalone consumer application. The active repository exposes a public
-`BeautySDK` SwiftPM product plus an SDK-owned command-line validation consumer.
+`beauty` is a modular local-first iOS SDK for applications and tools controlled
+by the project owner. It is not a standalone consumer application and is not a
+third-party SDK product. The active repository exposes a Swift-public
+`BeautySDK` SwiftPM product plus an SDK-owned command-line validation consumer;
+`public` is an access-level and local integration contract, not a publication,
+sales, customer-delivery, App Store, or redistribution promise.
 
 Core promise:
 
-- a host imports one public product and submits explicit image/frame metadata and
+- an owner-controlled host imports one public product and submits explicit image/frame metadata and
   normalized parameters;
 - defaults are no-op, failures are typed, and degradation is visible through
   redacted warnings/aggregate metrics;
@@ -49,7 +52,7 @@ Core promise:
 - effect behavior stays natural, bounded, deterministic, and independently
   testable.
 
-The maintainer/host validation journey is also public-product-only:
+The maintainer/owner-host validation journey is also public-surface-only:
 
 ```text
 maintainer creates a clean local-path SwiftPM consumer
@@ -66,6 +69,10 @@ device journey and does not promote generated media as product evidence.
 ## 2. Current Product Boundary
 
 - SwiftPM and SDK-owned CLI/scripts are the only active evidence surfaces.
+- The SDK, source package, binaries, model resources, compiled weights, private
+  fixtures, and derived data remain inside the owner-controlled environment.
+  External users, customer integrations, public package registries, sales,
+  monetization, and distribution are outside the product contract.
 - `docs/SDK_EFFECT_TAXONOMY.md` owns exact implemented/partial/future status and
   the 61-field mapping.
 - Historical UI layout, navigation, controls, badges, screenshots, and lifecycle
@@ -84,7 +91,7 @@ device journey and does not promote generated media as product evidence.
 ## 3. Primary User Journey
 
 ```text
-host adds the BeautySDK Swift package
+owner-controlled host adds the local BeautySDK Swift package
 → imports BeautySDK
 → constructs BeautyEngine, BeautyConfiguration, and BeautyParameters
 → passes image or supported pixel buffer with explicit metadata
@@ -280,7 +287,7 @@ release readiness.
 ## v1.18 Phase 79 Failing-Branch Acceptance
 
 The Phase-78 aggregate recommendation is `mechanics-only-not-promotion`.
-Therefore an SDK integrator sees the unchanged public contract: 61
+Therefore the owner's local host sees the unchanged public contract: 61
 `BeautyParameters` fields, five neutral presets, and 74 renderer cases. The
 package-only per-eye support and deterministic fullness editor are reusable
 mechanics evidence, not a public `去脂` control, route, Testing SPI, preset key,
@@ -293,14 +300,17 @@ boundary, and minimum-relief automation on genuine inputs. These outcomes end
 the hand-authored tone/frequency route rather than inviting another threshold
 retune.
 
-The product may use the name `去脂` only for a learned, bounded local result that
+The owner-local product may use the name `去脂` only for a learned, bounded local result that
 is clearly flatter and less bulky while preserving eye opening, brow position,
 lashes, iris/sclera, protected crease detail, identity, and skin texture. The
 adopted route combines a small upper-lid soft-tissue flow with a low-frequency
 tone residual and fails closed per eye. If the project keeps absolute geometry
-identity or cannot supply commercially authorized paired training data, the
-honest effect is only subtle `upperEyelidReliefSoftening`; `去脂` remains future
-and no public field or inert route is permitted.
+identity or cannot supply paired training data authorized for the actual
+owner-only use, the honest effect is only subtle
+`upperEyelidReliefSoftening`; `去脂` remains future and no owner-local public
+field or inert route is permitted. Research-only data and derived weights stay
+in a separated non-commercial local research lane and may not be repurposed for
+commercial use or distribution.
 
 Plan 80-20 deliberately adds no visible output. It renames the rejected editor
 and semantic analyzer as experimental and makes the new model owner unavailable

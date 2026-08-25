@@ -17,12 +17,19 @@ If a long-form doc conflicts with a root-level contract, follow the root-level c
 
 ## Current Repository State
 
-Last audited: 2026-08-22 after Phase 79 SDK-only failing-branch closeout.
+Last audited: 2026-08-25 after the owner-only/non-distributed SDK contract was adopted.
 
 - The active repository is SDK-only. `BeautySDK/Package.swift` is the sole build
   graph and SwiftPM is the sole current build/test runner.
-- `BeautySDK` is the public library; `BeautyExampleRenderer` is the SDK-owned
-  command-line consumer. No application/UI lifecycle is active.
+- `BeautySDK` is a Swift-public library for the project owner's locally
+  controlled App/tools; `BeautyExampleRenderer` is the SDK-owned command-line
+  consumer. It is not offered to third parties, and no SDK binary, model,
+  weight, private fixture, or derived data is published or distributed.
+- `public` throughout current documents means Swift access level and the
+  owner-local integration surface. Any customer, package-registry, App Store,
+  model-transfer, or external-release scope requires a new explicit license/
+  security/product review. Internal commercial use is allowed only when every
+  admitted data/model license covers it; research-only inputs do not.
 - The two retired UI/Demo histories exist only as independently pinned artifacts
   under `archives/legacy-ui/`; verify and restore them only through that
   directory's README into a fresh outside-repository temporary directory.

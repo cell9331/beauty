@@ -12,7 +12,7 @@ complete rights-approved private bundle containing genuine positive, negative,
 and predeclared stress evidence; collect a frozen blinded 100%-detail human
 review; and emit only one privacy-safe, baseline-bound aggregate promotion
 decision. A closed or mechanics-only result is a valid fail-closed outcome for
-this phase but cannot unlock later productization. This phase changes no public
+this phase but cannot unlock later owner-local activation. This phase changes no public
 field, preset, renderer route, provider, resource, SPI, pixel-buffer path, or
 production image behavior, and it cannot substitute generated media, facial
 geometry, eye-opening, brow movement, eye-bag work, dark-circle work, global
@@ -33,6 +33,14 @@ privacy owners, and `spike-findings-beauty` as the binding constraints. Never
 fabricate rights approval, genuine evidence, human judgments, or a passing
 promotion decision; missing external inputs must fail closed with the public
 surface remaining exactly 61/5/74.
+
+The active project contract is owner-only and non-distributed. `public` in this
+phase means the Swift access surface for the owner's local host, not third-party
+release. Training data must be licensed for the actual owner-only use;
+research-only data and derived weights stay in a separated non-commercial local
+research lane. Compiled-weight redistribution is prohibited and is therefore
+not an admission requirement. Any later commercial or distribution scope must
+be covered by its own rights and cannot inherit a research-only admission.
 
 </decisions>
 
@@ -65,10 +73,11 @@ state.
 <deferred>
 ## Deferred Ideas
 
-Public SDK activation, promoted output/backend qualification, taxonomy updates,
+Owner-local SDK activation, promoted output/backend qualification, taxonomy updates,
 and milestone closeout belong to Phases 81-84 and remain conditional on this
 phase passing. Device, commercial, packaging, shipping, launch, and release-
-readiness claims remain outside this milestone.
+readiness claims, as well as every external SDK/model distribution path, remain
+outside this milestone.
 
 </deferred>
 

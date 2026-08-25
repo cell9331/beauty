@@ -46,6 +46,14 @@ The repository contains one Swift Package rooted at `BeautySDK/`. SwiftPM librar
 and executable products, SwiftPM tests, and SDK-owned scripts are the only active
 build/test/validation surfaces.
 
+`BeautySDK` is an owner-only local component. Its Swift `public` declarations
+exist so applications and tools controlled by the project owner can import the
+facade and so the repository can test that boundary. They do not define a
+third-party SDK offering or authorize package-registry publication, binary SDK
+delivery, customer integration, App Store distribution, or model/weight
+redistribution. Any future expansion beyond this owner-controlled environment
+requires a new license, security, privacy, compatibility, and product review.
+
 The retired application/UI trees are historical artifacts under
 `archives/legacy-ui/`. They are not dependencies, source examples, current
 requirements, or completion evidence. `FRONTEND.md` owns this redirect.
@@ -65,7 +73,7 @@ Current source/test inventory, excluding `.build`:
 | ID | Invariant |
 | --- | --- |
 | A1 | SDK targets contain no application pages, UI state, navigation, or protected-resource prompts. |
-| A2 | Host code imports only the public `BeautySDK` product. |
+| A2 | Owner-controlled host code imports only the Swift-public `BeautySDK` product. |
 | A3 | Dependency direction is acyclic and flows inward toward `BeautyCore`. |
 | A4 | Detection/support values remain package-only, request-local, and absent from public diagnostics. |
 | A5 | Geometry controls enter the existing single `BeautyGeometryEffectPipeline`; no per-feature warp path exists. |
@@ -74,7 +82,7 @@ Current source/test inventory, excluding `.build`:
 | A8 | Resource lookup is centralized and validates logical identifiers rather than interpreting caller paths. |
 | A9 | SwiftPM plus SDK-owned CLI/script validation is the sole current evidence boundary. |
 | A10 | v1.16 historically retained CPU/Core Image behavior and pinned shader bytes without a public Metal API; the current package exposes `.cpu`/`.gpu` policy while keeping the Metal runtime package-internal and CPU as the reference. |
-| A11 | The external consumer and CLI observe only public-product results, bounded identities, and typed aggregate outcomes; executable-internal failure seams are test machinery, not public API. |
+| A11 | The repository-owned consumer fixture and CLI observe only owner-local public-surface results, bounded identities, and typed aggregate outcomes; executable-internal failure seams are test machinery, not public API. |
 | A12 | `BeautyResult<Output>` is `Sendable` only when `Output: Sendable`; public concurrency tests cover compile-time acceptance and a complete async task hop without making arbitrary payloads transferable. |
 
 ## 3. Products and Targets
@@ -106,10 +114,11 @@ BeautyExampleRenderer public-product command-line consumer
 The package declares no remote dependency. New dependencies, models, resource
 downloads, or network behavior require explicit security/licensing review.
 
-The repository-owned external consumer under `IntegrationTests/` is a separate
+The repository-owned consumer fixture under `IntegrationTests/` is a separate
 SwiftPM executable with one local path dependency and only the public
 `BeautySDK` product. It generates its own neutral input and observes real output
-bytes/dimensions; it is an integration fixture, not an SDK target or public API.
+bytes/dimensions; it is an integration fixture, not a third-party consumer, SDK
+target, distribution artifact, or public release promise.
 `BeautyExampleRenderer` accepts the compatible `--input`, `--output`, `--case`,
 and `--no-watermark` flags, requires a pre-existing output directory, and
 preserves the exact 74-case catalog. Public backend selection is owned by
@@ -185,7 +194,8 @@ gates, so it is historical mechanics rather than a current product path.
 
 Plan 80-19 adopts an on-device learned hybrid as the only implementation route
 that may later qualify as visibly obvious `去脂`. The model is trained only from
-owned or explicitly commercially licensed paired data and predicts independent
+owned data or data explicitly licensed for the project's actual owner-local,
+non-distributed research/training use and predicts independent
 per-eye applicability/uncertainty, soft support, bounded upper-lid soft-tissue
 flow, and a low-frequency log-luminance residual. Apple Vision locates and
 normalizes each crop but does not own the fullness semantic.
@@ -199,6 +209,14 @@ admission, and `BeautyEffects` now owns request-local prediction request/result
 types plus independent validation. Missing or invalid models and predictions
 fail closed before any proposal. No public field, route, renderer case, preset,
 Core ML import, or model resource exists after the Plan-80-20 boundary repair.
+
+Any admitted model and compiled resource remain inside the owner-controlled
+environment. A dataset restricted to non-commercial research may contribute
+only to a correspondingly non-commercial local research candidate; it cannot
+authorize commercial use or later distribution. Redistribution rights are not
+a current entry gate because redistribution is prohibited by the project
+contract, but any future scope change must re-audit every input and derived
+weight before use.
 
 The full data/model/runtime/qualification authority is
 [`80-LEARNED-HYBRID-DECISION.md`](.planning/phases/80-genuine-evidence-and-qualification-gate/80-LEARNED-HYBRID-DECISION.md).

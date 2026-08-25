@@ -2,6 +2,11 @@
 
 **Analysis Date:** 2026-08-18
 **Boundary:** SDK-only SwiftPM repository
+**Policy Sync:** 2026-08-25
+
+**Distribution:** Owner-only and non-distributed. Swift `public` is the local
+host access surface, not a third-party SDK, package, customer, App Store, or
+model/weight release contract.
 
 ## Post-Archive Audit Qualification
 

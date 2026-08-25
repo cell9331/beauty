@@ -4,6 +4,9 @@ Spend time on thinking; you do not need to use the commentary channel to report 
 
 > `beauty` 仓库的唯一入口。当前仓库是 SDK-only Swift Package；历史 UI/Demo
 > 只能从已验证归档中恢复到仓库外的临时目录。
+>
+> 当前 `BeautySDK` 只供项目所有者在自己控制的本地 App、工具和验证程序中
+> 使用，不面向第三方用户，也不计划发布、售卖或分发 SDK、模型或权重。
 
 ## 1. 核心原则
 
@@ -51,11 +54,20 @@ docs/                            background and historical long-form material
 
 ## 5. 当前边界
 
+- **所有者自用**：仓库内的 `public` 仅表示 Swift 访问级别和所有者本地宿主的
+  可调用面，不表示第三方产品、公共包、二进制 SDK、模型权重、App Store、
+  客户交付或任何发布承诺。
+- 不向仓库或所有者控制环境以外分发源码包、二进制、Core ML 资源、训练权重、
+  私有夹具或派生数据。若未来要改变这一边界，必须先新建明确授权的里程碑，
+  重新审核许可证、安全、隐私、API 兼容和产品声明。
 - 不新增或恢复应用源、UI 行为、application lifecycle 或 UI automation。
 - 不把归档内容解压回仓库；恢复只进入新建临时目录，并先运行归档验证。
 - 不把 raw masks、landmarks、pixels、private fixture locators 或 child transcripts 写入持久证据。
 - v1.16 不修改 retained `Warp.metal`、不新增 Metal/GPU API/backend 或新算法。
-- device、commercial、packaging、shipping、launch 与 release readiness 均不属于当前结论。
+- 数据、模型和权重的许可证必须覆盖实际的所有者内部用途；“自用、不分发”
+  不自动等于“允许商业使用”。research-only 数据及派生模型只能进入隔离的
+  非商业研究/评估路径。device、SDK 商业化、monetization、packaging、shipping、
+  launch、外部分发与 release readiness 均不属于当前目标。
 
 ## 6. 项目级自动化验证政策
 
@@ -92,7 +104,7 @@ docs/                            background and historical long-form material
 
 - 不扩大任务边界；额外问题写入 `PLANS.md`。
 - 不覆盖用户未要求修改的本地变更。
-- 新公开行为补 `PRODUCT_SENSE.md`；新架构补 `ARCHITECTURE.md`。
+- 新增 owner-local Swift `public` 行为补 `PRODUCT_SENSE.md`；新架构补 `ARCHITECTURE.md`。
 - 新风险补 `SECURITY.md`；新错误、日志或性能行为补 `RELIABILITY.md`。
 - 历史归档与 archived milestone evidence 保持只读。
 
@@ -108,5 +120,6 @@ bash scripts/check-sdk-only-boundary.sh --post-archive
 bash scripts/run-no-skip-swiftpm.sh
 ```
 
-完整 closeout 使用最后一个命令；它必须先验证历史归档和 SDK-only boundary，
-再执行 all-opt-ins、zero-failure、zero-skip、nonzero-test 的 SwiftPM gate。
+完整 owner-local 里程碑 closeout 使用最后一个命令；它必须先验证历史归档和
+SDK-only boundary，再执行 all-opt-ins、zero-failure、zero-skip、nonzero-test
+的 SwiftPM gate。该结果不构成任何外部发布或分发批准。

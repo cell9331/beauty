@@ -2,6 +2,11 @@
 
 **Analysis Date:** 2026-08-18
 **Boundary:** SDK-only SwiftPM repository
+**Policy Sync:** 2026-08-25
+
+**Distribution:** Owner-only and non-distributed. Source packages, binaries,
+Core ML resources, checkpoints, weights, private fixtures, and derived data
+remain inside the owner-controlled environment.
 
 ## Post-Archive Audit Qualification
 
@@ -80,7 +85,8 @@ the wrapper must execute all eight opt-ins with zero failure and zero skip.
 - Bundled resource IDs resolve through `BeautyResourceCatalog`, never arbitrary
   filesystem paths.
 - Distribution, binary packaging, App Store submission, commercial approval,
-  shipping, launch, and release readiness are not current claims.
+  shipping, launch, and release readiness are prohibited by the current
+  owner-only contract, not pending stack deliverables.
 - Any future network, external model/resource, privacy-manifest, or render-backend
   change must reopen the owning security and reliability contracts.
 

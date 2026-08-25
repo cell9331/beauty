@@ -2,6 +2,11 @@
 
 **Analysis Date:** 2026-08-18
 **Boundary:** SDK-only SwiftPM repository
+**Policy Sync:** 2026-08-25
+
+**Distribution:** Owner-only and non-distributed. Any commercialization,
+third-party use, package publication, or model/weight transfer would be a new
+project risk requiring a full license/security/privacy/product audit.
 
 ## Current Technical Debt
 
@@ -83,10 +88,10 @@ skip/disabled events. Transcript text is temporary, not durable evidence.
 - Realtime landmark/local-retouch routing remains absent. Selectable GPU
   execution exists for the bounded SDK path, but local-retouch computation is
   not end-to-end GPU-owned and shared-instance parallel use is unsupported.
-- `去脂` lacks an approved production method and licensed real positive/negative
+- `去脂` lacks an approved owner-local method, exact-target training data, and licensed real positive/negative
   evidence; it remains future without proxying existing controls.
 - Commercial approval, packaging, distribution, shipping, launch, and release
-  readiness remain future scopes.
+  readiness are prohibited by the owner-only contract unless explicitly reopened.
 
 Historical UI/Demo behavior can be reviewed only after verified restore into a
 fresh outside-repository temporary directory. It is not current test coverage,

@@ -30,11 +30,12 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `blocked` |
-| Scope | Replace the failed hand-authored route with a rights-owned learned hybrid, qualify it on unseen genuine evidence, then continue the milestone only from a verified pass. |
-| Current Step | Plans 80-19 and 80-20 are complete: the learned hybrid decision is frozen, rejected heuristics are explicitly experimental, and the no-model/invalid-prediction path fails closed. Plan 80-21 is the paired-data and model checkpoint. |
-| Blocker | Plan 80-21 model training cannot start until commercially authorized paired data, target-author rights, identity-disjoint splits, and compiled Core ML weight redistribution rights are supplied. The current eight-fixture bundle remains holdout evaluation evidence only. The 2026-08-25 Hugging Face audit found no dataset satisfying the required semantics plus commercial training/weight-redistribution grant. |
+| Status | `active` |
+| Scope | Replace the failed hand-authored route with an actual-use-authorized owner-local learned hybrid, qualify it on unseen genuine evidence, then continue the internal milestone only from a verified pass. SDK and learned resources remain non-distributed. |
+| Current Step | Plans 80-19 and 80-20 are complete. Plan 80-21 resumes with official-source license admission for an isolated non-commercial research corpus, identity-disjoint splits, and exact upper-eyelid target authoring before local training. |
+| Constraint | The 2026-08-25 Hugging Face audit found no ready-made exact upper-eyelid-fullness pair set. PPR10K and FFHQR may be considered only for license-compatible non-commercial local research/pretraining; neither supplies the target labels. MirrorPPR47M remains inadmissible because no usable license grant was found. |
 | Privacy | Only aggregate counts and normalized reasons may enter repository evidence; media, masks, locators, rights details, and per-fixture rows remain external. |
+| Distribution | Swift `public` is owner-local access only. No SDK package, binary, model, compiled weight, private fixture, or derived data leaves the owner-controlled environment; a future scope change requires a new full license/security/product audit. |
 
 Checklist:
 
@@ -55,8 +56,8 @@ Checklist:
 | Terminate candidate v4 at automation | `completed` | Two identical private evaluator runs failed applicability, boundary continuity, and minimum-relief checks; two negatives changed, a positive over-corrected, review never opened, and no promotion artifact exists. |
 | Select an implementable learned path before code | `completed` | Plan 80-19 and `80-LEARNED-HYBRID-DECISION.md` reject v5 threshold tuning and freeze the owned-data per-eye applicability/support/flow/tone design, Core ML route, data/license contract, qualification gates, and stop rules. No algorithm source changed. |
 | Repair the old code boundary | `completed` | Plan 80-20 quarantines v1-v4 under `BeautyExperimentalUpperEyelid*`, adds the strict package-only prediction validator, passes 8/0/0 learned, 23/0/0 upper-eyelid, plain 813/0/8, archive/boundary/diff checks, and preserves exact 61/5/74 absence. |
-| Audit Hugging Face training-data candidates | `completed` | `80-HUGGINGFACE-DATASET-AUDIT.md` rejects MirrorPPR47M, PPR10K mirrors, FFHQR, FFHQ-Makeup, and smaller eye/retouch sets for missing target semantics, upstream non-commercial terms, absent portrait provenance, or absent compiled-weight redistribution rights. No third-party portraits were downloaded. |
-| Train and qualify the learned path | `blocked` | Plans 80-21 and 80-22 require commercially authorized paired training data and compiled-weight redistribution rights before training, Core ML conversion, frozen private automation, and blinded review. |
+| Audit Hugging Face training-data candidates | `completed` | `80-HUGGINGFACE-DATASET-AUDIT.md` finds no ready-made exact target set; it preserves MirrorPPR47M/unknown-license rejection and identifies official PPR10K/FFHQR as research-only pretraining candidates under upstream terms. No third-party portraits were downloaded. |
+| Train and qualify the learned path | `active` | Plans 80-21 and 80-22 now require actual-use license admission, identity-disjoint data, owner-authored exact targets, local-only Core ML conversion, frozen private automation, and blinded review. Redistribution is prohibited rather than a gate. |
 
 ### P-2026-08-14-phase-66-sdk-only-boundary
 
@@ -80,6 +81,26 @@ Checklist:
 ## 3A. Historical Lifecycle Ledger
 
 > 以下记录均为已完成或已被后续权威取代的执行历史，不是 Active plan。
+
+### C-2026-08-25-owner-only-non-distributed-sdk-contract
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
+| Completed | 2026-08-25 |
+| Scope | Synchronize every current owner, codebase map, active v1.19 contract, Phase-80 learned/data plan, and local-fixture policy to the user's owner-only, non-distributed SDK decision without rewriting historical attempts, summaries, or archives. |
+| Public meaning | Swift `public` remains the callable/compatibility surface for Apps and tools controlled by the owner; it is not a third-party SDK, package registry, binary/customer/App Store, model, or weight release contract. |
+| License effect | Actual-use licensing replaces compiled-weight redistribution as the current admission rule. Research-only datasets and their derived models may enter only a separated owner-local non-commercial research lane; internal commercial use still requires an explicit compatible grant. |
+| Phase-80 effect | The Hugging Face audit now admits official PPR10K/FFHQR only as research candidates under upstream terms, keeps MirrorPPR47M rejected without a usable grant, and records that no candidate supplies exact upper-eyelid-fullness targets. Plan 80-21 is active for official-source admission, isolated local storage, target authoring, training, ablation, and local Core ML conversion. |
+| Verification | Archive verification passed for both pinned UI ZIPs; `check-sdk-only-boundary.sh --post-archive` passed; `git diff --check` passed; current-owner terminology, stale commercial/redistribution blocker, binary/model diff, and common-secret-pattern scans passed. No Swift source, test, media, model, or historical evidence changed. |
+
+Outcome:
+
+- The project is explicitly private-use and non-distributed while retaining its
+  tested Swift access surface for the owner's local host.
+- The stricter effect-quality, privacy, exact-target, model-parity, genuine-
+  evidence, and blinded-review gates remain intact; only the irrelevant model-
+  redistribution gate was removed.
 
 ### C-2026-08-22-v1-18-reaudit-remediation
 

@@ -2,6 +2,11 @@
 
 **Analysis Date:** 2026-08-17
 **Boundary:** SDK-only SwiftPM repository
+**Policy Sync:** 2026-08-25
+
+**Distribution:** Owner-only and non-distributed. `public` names follow Swift
+access-level conventions for the owner's local host; they do not imply an
+external SDK offering or release commitment.
 
 ## Swift Structure and Naming
 

@@ -10,6 +10,11 @@ incomplete, mechanics-only, generated, or failed evidence result preserves the
 exact 61-field/five-preset/74-renderer-case public absence and stops all public
 activation work.
 
+“Promotion” and “public” in this roadmap are owner-local engineering terms:
+the promoted Swift surface is callable only by Apps/tools controlled by the
+project owner. The SDK, binaries, models, compiled weights, private fixtures,
+and derived data are not published, sold, or distributed to third parties.
+
 The milestone began by reusing the v1.18 machine-bound one-observation/per-eye
 support, deterministic tone/frequency editor, immutable-original composer, and
 versioned baseline evidence. Four separately frozen hand-authored candidates
@@ -23,13 +28,13 @@ circle removal remain prohibited proxies. A passing learned Phase-80 decision
 unlocks one complete public vertical slice, followed by public output/backend
 proof, taxonomy promotion, and independent archive-first closeout.
 
-All work remains SDK-only and local-first. Private media, pixels, masks,
+All work remains SDK-only, owner-only, non-distributed, and local-first. Private media, pixels, masks,
 landmarks, fixture locators, rights records, reviewer identity, and freeform
 review text remain outside durable evidence. Historical archives stay
 immutable. Realtime/pixel-buffer behavior, transparent/HDR input, UI/Demo,
 medical claims, restricted external weights, physical-device gates,
-commercial approval, packaging, shipping, launch, and release readiness remain
-out of scope.
+commercial approval, monetization, packaging, shipping, external launch,
+distribution, and release readiness remain out of scope.
 
 ## Milestones
 
@@ -42,15 +47,16 @@ out of scope.
 ## Phases
 
 - [ ] **Phase 80: Genuine Evidence and Qualification Gate** - Admit the complete private bundle, conduct the frozen blinded review, and issue the sanitized pass/fail decision before any public activation.
-- [ ] **Phase 81: Safe Public Still-Image Activation** - On a passing Phase-80 decision only, expose one compatible positive-only control and complete opaque per-eye still-image route.
-- [ ] **Phase 82: Public Output and Backend Qualification** - Prove the promoted facade pixels, metadata, determinism, combined behavior, CPU oracle, and bounded GPU transport.
+- [ ] **Phase 81: Safe Owner-Local Still-Image Activation** - On a passing Phase-80 decision only, expose one compatible positive-only control to the owner's local host and complete the opaque per-eye still-image route.
+- [ ] **Phase 82: Owner-Local Output and Backend Qualification** - Prove the promoted facade pixels, metadata, determinism, combined behavior, CPU oracle, and bounded GPU transport.
 - [ ] **Phase 83: Taxonomy and Owner Promotion** - Promote exactly `去脂` and close aggregate `眼睛` only after all evidence, API, safety, compatibility, and output gates pass.
 - [ ] **Phase 84: SDK-Only Closeout and Independent Audit** - Reproduce the archive-first zero-skip gate and independently verify the exact promoted surface and claim boundaries.
 
 ## Gate Rule
 
 Phase 81 may begin only when Phase 80 emits a frozen source/model/data-split-
-bound passing decision from commercially authorized paired training data, a
+bound passing decision from paired training data licensed for the actual
+owner-only use, a
 complete rights-approved unseen genuine bundle, and blinded 100%-detail review.
 Candidates v1-v4 are terminally non-promotable and cannot be retuned, relabeled,
 or used as learned-efficacy credit. Any learned-candidate non-pass preserves the
@@ -71,12 +77,13 @@ natural, identity-preserving, and safe on authorized genuine evidence.
 
 **Success Criteria** (what must be TRUE):
 
-1. The SDK owner can admit only commercially authorized identity-disjoint
-   paired training data plus a separate complete rights-approved private
+1. The SDK owner can admit only identity-disjoint paired training data
+   authorized for the actual owner-only research/training and local derived-
+   model use, plus a separate complete rights-approved private
    evaluation bundle with genuine positives, negatives, every predeclared
-   stress category, and every required local asset; incomplete, generated,
-   research-only, or mechanics-only data fails closed and receives no product-
-   evidence or shippable-model weight.
+   stress category, and every required local asset. Research-only data may feed
+   only the isolated non-commercial local research path; incomplete, generated,
+   or mechanics-only data receives no genuine-effectiveness evidence weight.
 
 2. A human reviewer can inspect blinded original/mask/after triples at 100%
    detail and complete only the structured rubric frozen before any outcomes
@@ -121,10 +128,10 @@ natural, identity-preserving, and safe on authorized genuine evidence.
 - [ ] 80-21-PLAN.md — admit paired-data rights, train, ablate, convert, and select the learned model
 - [ ] 80-22-PLAN.md — freeze learned qualification, run private automation/review, and verify Phase 80
 
-### Phase 81: Safe Public Still-Image Activation
+### Phase 81: Safe Owner-Local Still-Image Activation
 
-**Goal**: SDK integrators can use one honest, compatibility-safe upper-eyelid
-fullness reduction control through both opaque still-image facade entries.
+**Goal**: The owner's local host can use one honest, compatibility-safe upper-
+eyelid fullness reduction control through both opaque still-image facade entries.
 
 **Depends on**: Phase 80 passing decision (hard gate)
 
@@ -132,7 +139,7 @@ fullness reduction control through both opaque still-image facade entries.
 
 **Success Criteria** (what must be TRUE):
 
-1. An SDK integrator can set one default-zero positive-only
+1. The owner's local host can set one default-zero positive-only
    `upperEyelidFullnessReduction` value in `0...1`; non-finite and out-of-range
    inputs clamp under the existing parameter contract and missing legacy keys
    decode to zero.
@@ -159,9 +166,9 @@ fullness reduction control through both opaque still-image facade entries.
 
 **Plans**: TBD
 
-### Phase 82: Public Output and Backend Qualification
+### Phase 82: Owner-Local Output and Backend Qualification
 
-**Goal**: Integrators receive deterministic, metadata-correct promoted output
+**Goal**: The owner's local host receives deterministic, metadata-correct promoted output
 whose CPU and explicit GPU behavior preserve the qualified safety contract.
 
 **Depends on**: Phase 81
@@ -206,7 +213,8 @@ upper-eyelid capability and no broader product claim.
 
 3. Current documentation keeps historical archives immutable and explicitly
    excludes proxy effects, generated-fixture efficacy, realtime/UI, device,
-   commercial, packaging, shipping, launch, and release-readiness claims.
+   commercial use, monetization, packaging, shipping, external distribution,
+   launch, and release-readiness claims.
 
 **Plans**: TBD
 
@@ -233,9 +241,10 @@ public SDK surface with complete traceability and no privacy or scope drift.
    proxy/inert/realtime route, leak private evidence, borrow CPU success for an
    unavailable GPU, or rewrite archived milestone evidence.
 
-4. An SDK consumer can compile, set, encode/decode, and render the promoted
-   control through both public still-image entries while all device,
-   commercial, packaging, shipping, launch, and release claims remain absent.
+4. The repository-owned consumer fixture can compile, set, encode/decode, and
+   render the promoted control through both owner-local public still-image
+   entries while all device, commercial, packaging, shipping, external
+   distribution, launch, and release claims remain absent.
 
 **Plans**: TBD
 
@@ -258,12 +267,12 @@ orphaned or duplicate mappings.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 80. Genuine Evidence and Qualification Gate | v1.19 | 9/14 | Running candidate-v3 private automation | - |
-| 81. Safe Public Still-Image Activation | v1.19 | 0/TBD | Not started | - |
-| 82. Public Output and Backend Qualification | v1.19 | 0/TBD | Not started | - |
+| 80. Genuine Evidence and Qualification Gate | v1.19 | 17/22 | Active: research-data admission and exact target authoring | - |
+| 81. Safe Owner-Local Still-Image Activation | v1.19 | 0/TBD | Not started | - |
+| 82. Owner-Local Output and Backend Qualification | v1.19 | 0/TBD | Not started | - |
 | 83. Taxonomy and Owner Promotion | v1.19 | 0/TBD | Not started | - |
 | 84. SDK-Only Closeout and Independent Audit | v1.19 | 0/TBD | Not started | - |
 
 ---
 *Roadmap created: 2026-08-22*
-*Last updated: 2026-08-22 after v1.19 roadmap creation*
+*Last updated: 2026-08-25 after owner-only/non-distributed contract adoption*

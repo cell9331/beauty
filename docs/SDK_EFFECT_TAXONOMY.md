@@ -13,6 +13,11 @@ or entitlement behavior, or any other application lifecycle. Historical visual
 material is recoverable through `archives/legacy-ui/README.md`; it is not an
 active SDK requirement.
 
+The SDK is owner-only and non-distributed. In this document, `public` means the
+Swift access surface callable by the owner's local host and exercised by
+repository tests; it does not mean a third-party SDK, public package, customer
+contract, model/weight distribution, commercial launch, or release approval.
+
 Status has exactly these meanings:
 
 - `implemented`: SDK behavior exists, relevant safety/degradation tests pass,
@@ -20,7 +25,7 @@ Status has exactly these meanings:
 - `partial`: some SDK capability maps to the concept, but the exact branch or
   reference control is not independently complete.
 - `future`: no current SDK implementation claim; promotion requires a separately
-  scoped product-neutral contract, implementation, and evidence.
+  scoped owner-local contract, implementation, and evidence.
 
 Appearance in this document never creates a public API. The public contract is
 `BeautyParameters` in `BeautyCore`; this file maps product taxonomy onto that
@@ -54,8 +59,8 @@ are implementation details, not taxonomy entries or public diagnostics.
 
 Candidate v1-v4 also prove that regional darkening or fixed relief thresholds
 are not sufficient. The only adopted route that may later promote `去脂` is an
-independently qualified, owned-data learned local editor with bounded upper-lid
-soft-tissue flow plus low-frequency tone; generic/landmark-driven warp remains
+independently qualified, actual-use-licensed learned local editor with bounded
+upper-lid soft-tissue flow plus low-frequency tone; generic/landmark-driven warp remains
 a prohibited proxy. If that model/data path cannot pass, `去脂` stays `future`.
 
 The v1.18 Phase-78 decision is `mechanics-only-not-promotion`, so Phase 79
@@ -91,7 +96,7 @@ names and visual organization are intentionally omitted from the active contract
 | 脸型 | 颧骨 | implemented | `cheekboneSlim` | Mid-lateral contour geometry. |
 | 脸型 | 下巴长短 | implemented | `chinLength` | Signed chin-length geometry. |
 | 脸型 | 去双下巴 | future | — | Requires approved local semantic-region support. |
-| 脸型 | 去双下巴 Pro | future | — | Semantic support and commercial entitlement are both outside current scope. |
+| 脸型 | 去双下巴 Pro | future | — | Semantic support and compatible actual-use authorization are outside current scope. |
 | 脸型 | 尖下巴 | implemented | `chinTaper` | Centerline-gated chin taper. |
 | 脸型 | V脸 | implemented | `faceVShape` | Bounded V-shape geometry. |
 | 脸型 | 下颌角 | implemented | `jawSlim` | Bounded jaw narrowing. |
@@ -161,3 +166,5 @@ degradation coverage, and public-facade output evidence where applicable. Do not
 promote from archived UI presence, a disabled control, provider-only mechanics,
 or a future plan. The Phase-79 failing branch records exact 61-field, five-
 preset, 74-case absence and does not promote the mechanics candidate.
+`implemented` is an owner-local engineering status only and never authorizes
+external distribution or commercial release.
