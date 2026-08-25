@@ -1,5 +1,57 @@
 # Milestones
 
+## v1.20 Owner-Local Still-Image Retouch Acceptance (Completed: 2026-08-25)
+
+**Delivered:** Closed the owner-local usage loop for the two existing opaque
+still-image retouches: `白牙` (`teethWhitening`) and `祛红血丝`
+(`scleraRednessReduction`). Added the direct public Swift integration contract,
+ran both renderer cases over 11 authorized local portraits in temporary output
+space, and retained only aggregate results. No production Swift source,
+parameter, model, resource, UI, or route changed.
+
+**Phases completed:** 85–87 (3 plans, 6 requirements)
+
+**Verification:** Focused public-facade integration passed 34/34; parameter and
+renderer-output contract tests passed 74/74; both local batch reports were
+11/11 succeeded with 0 failed and 0 skipped; archive/boundary/decision-binding
+checks passed; the final no-skip wrapper passed SwiftPM 813/0/0 with eight
+opt-ins exactly once and zero skips. This is SDK/package-host evidence only and
+does not claim device, population, commercial, packaging, shipping, launch, or
+release readiness.
+
+**Current boundary:** Public inventory remains exactly 61 fields / five
+presets / 74 renderer cases. `去脂` remains `future` with no public field,
+route, model, or renderer case. It was not trained, downloaded, modified, or
+activated in v1.20.
+
+**Archives:** [roadmap](v1.20-ROADMAP.md),
+[requirements](v1.20-REQUIREMENTS.md), and
+[phase artifacts](v1.20-phases/).
+
+## v1.19 Genuine Upper-Eyelid Fullness Promotion (Canceled: 2026-08-25)
+
+**Outcome:** The owner stopped the remaining dataset/model/qualification work
+before any public activation. Four hand-authored candidates and the
+package-only fail-closed prediction seam remain quarantined experimental
+material; no `upperEyelidFullnessReduction` field, route, model, resource, or
+renderer case was added. `去脂` remains `future`, `眼睛` remains `partial`, and
+the public inventory remains exactly 61 fields / five presets / 74 cases.
+
+**Phases:** Phase 80 terminated with 17 completed/terminal plans; Plans 80-21
+and 80-22 plus Phases 81-84 were canceled unexecuted.
+
+**Archives:** [roadmap](v1.19-ROADMAP.md),
+[requirements](v1.19-REQUIREMENTS.md), and
+[phase artifacts](v1.19-phases/).
+
+**Verification:** Current post-cancellation binding, focused image/output,
+no-skip, and full SwiftPM evidence remain green. This record does not claim
+genuine efficacy, device behavior, commercial approval, shipping, launch, or
+release readiness.
+
+**What's next:** v1.20 validates direct owner-local use of the already
+implemented `白牙` and `祛红血丝` still-image controls only.
+
 ## v1.18 Upper-Eyelid Fullness Reduction (Completed: 2026-08-22)
 
 **Delivered:** A fail-closed SDK-only qualification decision for upper-eyelid

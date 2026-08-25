@@ -18,6 +18,39 @@ The project owner's local iOS host can integrate `BeautySDK` and get natural,
 controllable, real-time and still-image beauty processing through a stable
 modular facade without distributing the SDK or its model resources.
 
+## Current Milestone: v1.20 Owner-Local Still-Image Retouch Acceptance
+
+**Goal:** Close the direct owner-local usage loop for the two already
+implemented opaque still-image retouches, `白牙` and `祛红血丝`, using the
+public Swift facade and temporary authorized-portrait validation.
+
+**Target features:**
+
+- Document the exact `BeautyEngine` / `BeautyParameters` call path, defaults,
+  input/output limits, and fail-closed behavior for both retouches.
+- Batch-render both controls against the owner's authorized local portrait
+  folder in temporary output space and retain only aggregate validation.
+- Re-run the SDK-only, no-skip, and full SwiftPM gates while preserving exact
+  61-field / five-preset / 74-case public inventory and `去脂 = future`.
+
+**Non-negotiable boundary:** No algorithm change, training, model/data
+download, UI/Demo restoration, realtime expansion, device/commercial testing,
+packaging, shipping, launch, external distribution, or release-readiness claim
+is part of v1.20.
+
+## Latest Completed Milestone: v1.20 Owner-Local Still-Image Retouch Acceptance
+
+**Outcome:** The owner-local `CIImage` call path for `白牙` and `祛红血丝` is
+documented and batch-validated against 11 authorized local portraits per
+effect in temporary output space. Focused integration passed 34/34,
+parameter/renderer contract tests passed 74/74, and the final SDK-only no-skip
+gate passed 813/0/0 with eight opt-ins exactly once and zero skips. No
+production Swift source changed and no `去脂` surface was added.
+
+**Boundary:** This is package-host evidence for owner-controlled local use. It
+does not claim device, population, commercial, packaging, shipping, launch, or
+release readiness. `去脂` remains future with exact 61/5/74 public absence.
+
 ## Deferred Milestone: v1.19 Genuine Upper-Eyelid Fullness Promotion
 
 **Status:** Canceled by the project owner on 2026-08-25 before data/model
@@ -109,18 +142,22 @@ and `眼睛 = partial`.
 
 ## Current State
 
-**Latest completed milestone:** v1.18 Upper-Eyelid Fullness Reduction,
-completed 2026-08-22 as an SDK-only failed-productization decision with exact
-public absence. It is not a shipping, launch, or release-readiness claim.
+**Latest completed milestone:** v1.20 Owner-Local Still-Image Retouch
+Acceptance, completed 2026-08-25 as an SDK-only owner-local integration and
+batch-validation closeout. It is not a shipping, launch, or release-readiness
+claim. v1.18 remains the latest algorithm-qualification milestone and v1.19
+remains canceled.
 **Latest historical UI milestone:** v1.1 Meitu UI on 2026-06-24, retained only as archived evidence.
-**Current work:** No `去脂` work is active. v1.19 terminated four hand-authored
-candidates, retained them under explicit experimental names, and verified a
-strict package-only prediction boundary whose no-model state emits no proposal.
-The owner then canceled dataset admission, exact-target authoring, training,
-Core ML conversion, qualification, and public activation. A future explicit
-milestone must reauthorize the work and revalidate all evidence gates.
+**Current work:** v1.20 completed direct owner-local still-image validation of
+the already implemented `白牙` and `祛红血丝` controls against the authorized
+local portrait folder in temporary output space. No `去脂` work is active: v1.19
+terminated four hand-authored candidates, retained them under explicit
+experimental names, and verified a strict package-only prediction boundary
+whose no-model state emits no proposal. Dataset admission, exact-target
+authoring, training, Core ML conversion, qualification, and public activation
+remain canceled until a future milestone explicitly reauthorizes them.
 
-**Implementation state:** v1.16 froze the current CPU renderer as the reference backend, added generated CPU oracles, a public-only SwiftPM consumer, the SDK-owned renderer CLI, and conditional `BeautyResult` sendability. v1.17 added the package-only backend-neutral boundary, bounded Metal runtime and feature passes, public `.cpu`/`.gpu` configuration with typed unavailable-GPU failure, and generated CPU/GPU parity gates. v1.18 added package-only per-eye semantic support, bounded tone/frequency editor mechanics, frozen private-evidence tooling, and fail-closed decision/absence gates while preserving the 61-field/five-preset/74-case public surface. Historical application taxonomy remains archive-only.
+**Implementation state:** v1.16 froze the current CPU renderer as the reference backend, added generated CPU oracles, a public-only SwiftPM consumer, the SDK-owned renderer CLI, and conditional `BeautyResult` sendability. v1.17 added the package-only backend-neutral boundary, bounded Metal runtime and feature passes, public `.cpu`/`.gpu` configuration with typed unavailable-GPU failure, and generated CPU/GPU parity gates. v1.18 added package-only per-eye semantic support, bounded tone/frequency editor mechanics, frozen private-evidence tooling, and fail-closed decision/absence gates while preserving the 61-field/five-preset/74-case public surface. v1.20 adds no renderer or algorithm code; it documents and exercises the existing teeth/sclera still-image surface. Historical application taxonomy remains archive-only.
 
 **Verification state:** The immutable v1.18 archive-first gate passed XCTest
 `797/0/0`. The post-archive remediation gate passes `800/0/0`, all eight
@@ -146,6 +183,8 @@ lines, excluding `.build` and archive contents.
 3. **v1.18 Upper-Eyelid Fullness Reduction** — completed 2026-08-22 on the
    failing public-absence branch after package-only mechanics passed but the
    genuine evidence and blinded-review gates remained unsatisfied.
+4. **v1.20 Owner-Local Still-Image Retouch Acceptance** — completed 2026-08-25;
+   validates direct `白牙` and `祛红血丝` calls and preserves `去脂 = future`.
 
 The backend choice is configuration/execution policy and must not change the public beauty-parameter or preset schema. Detection/support semantics remain shared. No backend may borrow success from the other: CPU and GPU each run the same SDK-owned input/output contract, and comparison evidence separately verifies their parity.
 
@@ -463,7 +502,7 @@ For any future semantic-masking milestone, a bundled Core ML resource must be lo
 
 ## Requirements
 
-### Active in v1.19
+### Deferred from v1.19 (not active)
 
 - [ ] Admit actual-use-authorized identity-disjoint paired training data for
   owner-only use plus a separate complete rights-
@@ -483,6 +522,18 @@ For any future semantic-masking milestone, a bundled Core ML resource must be lo
 - [ ] Prove public bytes/metadata, Codable/default compatibility, renderer
   output, CPU-reference/GPU-transport behavior, privacy, mutation resistance,
   exact no-skip closure, and exact `去脂`/`眼睛` taxonomy promotion.
+
+### Completed in v1.20
+
+- [x] Document the owner-local public still-image call path for
+  `teethWhitening` and `scleraRednessReduction`, including positive-only
+  strength, default-zero/clamping, opaque `.photo` input, and typed failures.
+- [x] Batch-render both implemented controls over the authorized local
+  portrait folder in temporary output space with reconciled zero-failure,
+  zero-skip reports and no durable raw image evidence.
+- [x] Reconcile current taxonomy and SDK-only documentation, then close the
+  no-skip/full SwiftPM gates without changing the 61/5/74 inventory or opening
+  `去脂`.
 
 ### Completed in v1.18
 
@@ -736,11 +787,17 @@ Current visual reference contracts:
   `upperEyelidFullnessReduction` control. Plans 80-21/22 and Phases 81-84 are
   unexecuted; exact 61/5/74 absence and `去脂 = future` are final for this
   milestone. Retained experimental code authorizes no effect or efficacy claim.
+- **v1.20 scope boundary:** v1.20 only documents and batch-validates the
+  existing opaque still-image `白牙` and `祛红血丝` controls through the
+  owner-local facade. It adds no algorithm, model, data, UI, realtime/device,
+  commercial, packaging, shipping, launch, external-distribution, or release
+  behavior; `去脂` remains future and exactly absent from the public surface.
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
+| Start v1.20 with owner-local acceptance of `白牙` and `祛红血丝` only. | The owner canceled `去脂`; the two retained retouches already have public still-image routes and deterministic evidence, so the next useful step is direct-use documentation and authorized local validation rather than new algorithm work. | Completed 2026-08-25: Phases 85–87 closed API contract, temporary portrait batch validation, and SDK-only closeout. |
 | Cancel v1.19 and defer `去脂`, retaining current experimental code. | The owner chose not to continue the data/target/training burden for this effect. Retaining the quarantined mechanics preserves research value without presenting a failed heuristic or absent model as a usable SDK capability. | Effective 2026-08-25: Plans 80-21/22 and Phases 81-84 are canceled unexecuted; no public field/resource/route exists; `去脂` stays future and existing teeth/sclera controls are unchanged. |
 | Keep `BeautySDK` owner-only and non-distributed. | The owner explicitly does not provide the SDK to others or publish it. Swift `public` remains necessary for the owner's local host and compatibility tests, but external package/binary/model/weight/customer/App Store release is not a product goal. | Active from 2026-08-25: actual-use licensing replaces redistribution rights as the current model gate; research-only sources remain in a non-commercial lane, and any future distribution change requires a new full audit. |
 | Reopen upper-eyelid-fullness promotion as v1.19, evidence first. | The user explicitly authorized a new automatic milestone, while the v1.18 re-audit proved all code/actionable seams are ready and isolated the remaining blocker to genuine evidence and human review. | Historical and superseded on 2026-08-25 by the cancellation decision above. |
@@ -783,4 +840,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-08-25 after adopting the owner-only/non-distributed SDK contract*
+*Last updated: 2026-08-25 after v1.20 SDK-only closeout*

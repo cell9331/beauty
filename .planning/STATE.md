@@ -1,20 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.19
-milestone_name: Genuine Upper-Eyelid Fullness Promotion
-current_phase: 80
-current_phase_name: Genuine Evidence and Qualification Gate
-status: canceled
-stopped_at: v1.19 canceled by owner; upper-eyelid fullness deferred
-last_updated: "2026-08-25T04:06:47Z"
+milestone: v1.20
+milestone_name: Owner-Local Still-Image Retouch Acceptance
+status: complete
+last_updated: "2026-08-25T06:07:21.854Z"
 last_activity: 2026-08-25
-last_activity_desc: Owner canceled v1.19; experimental code retained and public absence preserved
 progress:
-  total_phases: 5
+  total_phases: 3
   completed_phases: 0
-  total_plans: 22
-  completed_plans: 17
-  percent: 77
+  total_plans: 3
+  completed_plans: 3
+  percent: 100
 ---
 
 # Project State
@@ -26,22 +22,21 @@ See: `.planning/PROJECT.md` (updated 2026-08-25)
 **Core value:** The project owner's local iOS host can integrate `BeautySDK`
 and get natural, controllable, real-time and still-image beauty processing
 without distributing the SDK, model, or weights.
-**Current focus:** No active `去脂` milestone; upper-eyelid fullness is future work
+**Current focus:** v1.20 owner-local still-image acceptance for `白牙` and
+`祛红血丝` is complete; `去脂` remains future work
 
 ## Current Position
 
-Phase: 80 (Genuine Evidence and Qualification Gate) — CANCELED
-Plan: 17 completed/terminal plans; Plans 80-21 and 80-22 canceled unexecuted
-Status: The owner stopped `去脂`; no data, model, qualification, or activation work is active
-Last activity: 2026-08-25 — v1.19 canceled with code retained and exact public absence preserved
-
-Progress: [███████▋░░] 77%
+Phase: 87 — Boundary and SDK-Only Closeout (complete)
+Plan: 87-01
+Status: Complete
+Last activity: 2026-08-25 — v1.20 SDK-only closeout passed
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Total plans completed: 17
+- Total plans completed: 3
 - Average duration: —
 - Total execution time: 0h
 
@@ -95,6 +90,7 @@ roadmaps.
 - [Project]: Swift `public` is an owner-local access and compatibility surface;
   no SDK package, binary, model, compiled weight, private fixture, or derived
   data is offered to third parties or leaves the owner-controlled environment.
+
 - [Project]: Actual-use license admission replaces commercial-training and
   weight-redistribution admission. Non-commercial research data may feed only
   an isolated local research candidate, and any later SDK commercialization or
@@ -169,7 +165,7 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-25T04:06:47Z
-Stopped at: v1.19 canceled by owner; `去脂` deferred with experimental code retained
+Last session: 2026-08-25T14:30:00Z
+Stopped at: v1.20 owner-local acceptance complete; `白牙` and `祛红血丝` batch validated
 Resume file: None
-Next action: None for `去脂`. Keep exact 61/5/74 public absence; a future explicit owner decision and a new milestone are required before data, model, or activation work resumes.
+Next action: Use the documented owner-local still-image call. Keep exact 61/5/74 public absence; a future explicit owner decision and a new milestone are required before `去脂` data, model, or activation work resumes.

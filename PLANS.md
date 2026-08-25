@@ -26,6 +26,31 @@
 
 ## 3. Active
 
+The latest v1.20 entry below is completed and retained at the top for session
+continuity; there are no remaining active plans for this milestone.
+
+### C-2026-08-25-v1-20-owner-local-retouch-acceptance
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
+| Scope | Start v1.20 to document and validate direct owner-local still-image use of `白牙` and `祛红血丝`; do not reopen or modify `去脂`. |
+| Completed | 2026-08-25 |
+| Verification Policy | Focused public-facade tests; `BeautyExampleRenderer` one-case-per-effect batch; aggregate report reconciliation; archive/boundary/binding/no-skip/full SwiftPM gates. |
+| Privacy | Authorized portraits and rendered outputs stay in temporary owner-controlled directories; only aggregate counts and command shape enter durable evidence. |
+| Distribution | Swift `public` remains owner-local access only; no package, binary, model, weight, private fixture, or derived data is distributed. |
+
+Checklist:
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| Define v1.20 scope and requirements | `completed` | `.planning/REQUIREMENTS.md` maps API-01/API-02/VAL-01/VAL-02/BOUND-01/CLOSE-01 to Phases 85–87. |
+| Create roadmap and archive canceled v1.19 | `completed` | `.planning/ROADMAP.md`; immutable v1.19 roadmap/requirements and phase artifacts under `.planning/milestones/v1.19-*`. |
+| Document direct owner-local Swift usage | `completed` | `PRODUCT_SENSE.md` section 2.1 names both public calls, fields, metadata, defaults, opaque-input and fail-closed boundaries. |
+| Batch `teethWhitening_1p00` on authorized local portraits | `completed` | Temporary `BeautyExampleRenderer` run: 11 requested, 11 succeeded, 0 failed, 0 skipped. No raw output retained in repo. |
+| Batch `scleraRednessReduction_1p00` on authorized local portraits | `completed` | Temporary `BeautyExampleRenderer` run: 11 requested, 11 succeeded, 0 failed, 0 skipped. No raw output retained in repo. |
+| Run focused and full SDK-only closeout gates | `completed` | Focused 34/34 and 74/74; archive/boundary/binding checks pass; full no-skip SwiftPM 813/0/0 with eight opt-ins exactly once and zero skips; no production Swift source changed. |
+
 ### P-2026-08-24-phase-80-genuine-qualification
 
 | Field | Value |

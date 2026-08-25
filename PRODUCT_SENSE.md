@@ -88,6 +88,47 @@ device journey and does not promote generated media as product evidence.
   quality, population sufficiency, commercial approval, packaging, shipping,
   launch, and release readiness remain separate, explicitly authorized claims.
 
+## 2.1 Owner-Local Still-Image Retouch Call
+
+The two implemented local-retouch controls are directly callable from the
+owner-controlled host. A minimal photo path is:
+
+```swift
+import CoreGraphics
+import CoreImage
+import BeautySDK
+
+let engine = try BeautyEngine()
+let metadata = BeautyInputMetadata(
+    orientation: .up,
+    source: .photo
+)
+let parameters = BeautyParameters(
+    teethWhitening: 0.65,
+    scleraRednessReduction: 0.55
+)
+let result = try engine.processResult(
+    image: inputCIImage,
+    metadata: metadata,
+    parameters: parameters
+)
+let outputCIImage = result.output
+```
+
+`BeautyEngine.process(image:orientation:parameters:)` is the shorter equivalent
+when the host only needs the output image. Both controls are positive-only,
+default to zero, and clamp finite strengths to `0...1`. Zero strength is a
+source-preserving no-op. The supported local-retouch path is an opaque bounded
+still `CIImage` with `BeautyInputSource.photo`; transparent input is rejected,
+realtime/pixel-buffer local retouch is not activated, and the SDK validates
+extent, alpha, named-sRGB output, local support, and typed failure/degradation
+before returning a result. Callers serialize access to one `BeautyEngine`
+instance; independent instances may run concurrently.
+
+This is an owner-local integration contract, not a third-party distribution or
+release claim. `去脂` has no public field or route and must not be substituted by
+`eyeHeight`, `upperEyelidLift`, a generic warp, smoothing, or a dark patch.
+
 ## 3. Primary User Journey
 
 ```text
