@@ -30,10 +30,10 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
+| Status | `blocked` |
 | Scope | Replace the failed hand-authored route with a rights-owned learned hybrid, qualify it on unseen genuine evidence, then continue the milestone only from a verified pass. |
-| Current Step | Plan 80-19 completed and froze the learned bounded-flow plus low-frequency-tone implementation decision before any algorithm source changed. Plan 80-20 now owns quarantine of the rejected heuristic and a fail-closed internal prediction seam. |
-| Blocker | None for Plan 80-20 code-boundary repair. Plan 80-21 model training is blocked until commercially authorized paired data, target-author rights, identity-disjoint splits, and compiled Core ML weight redistribution rights are supplied. |
+| Current Step | Plans 80-19 and 80-20 are complete: the learned hybrid decision is frozen, rejected heuristics are explicitly experimental, and the no-model/invalid-prediction path fails closed. Plan 80-21 is the paired-data and model checkpoint. |
+| Blocker | Plan 80-21 model training cannot start until commercially authorized paired data, target-author rights, identity-disjoint splits, and compiled Core ML weight redistribution rights are supplied. The current eight-fixture bundle remains holdout evaluation evidence only. |
 | Privacy | Only aggregate counts and normalized reasons may enter repository evidence; media, masks, locators, rights details, and per-fixture rows remain external. |
 
 Checklist:
@@ -54,7 +54,7 @@ Checklist:
 | Freeze candidate v4 qualification | `completed` | Plan 80-16 binds the v4 source/evidence commit, rejects v1-v3 borrowing, freezes contrast-shape and visibility metrics, passes 20 evaluator tests and 18 independent checks, and preserves exact 61/5/74 absence. |
 | Terminate candidate v4 at automation | `completed` | Two identical private evaluator runs failed applicability, boundary continuity, and minimum-relief checks; two negatives changed, a positive over-corrected, review never opened, and no promotion artifact exists. |
 | Select an implementable learned path before code | `completed` | Plan 80-19 and `80-LEARNED-HYBRID-DECISION.md` reject v5 threshold tuning and freeze the owned-data per-eye applicability/support/flow/tone design, Core ML route, data/license contract, qualification gates, and stop rules. No algorithm source changed. |
-| Repair the old code boundary | `active` | Plan 80-20 quarantines v1-v4 heuristic semantics and adds only a strict package-only prediction/result seam whose no-model state fails closed; exact 61/5/74 public absence remains mandatory. |
+| Repair the old code boundary | `completed` | Plan 80-20 quarantines v1-v4 under `BeautyExperimentalUpperEyelid*`, adds the strict package-only prediction validator, passes 8/0/0 learned, 23/0/0 upper-eyelid, plain 813/0/8, archive/boundary/diff checks, and preserves exact 61/5/74 absence. |
 | Train and qualify the learned path | `blocked` | Plans 80-21 and 80-22 require commercially authorized paired training data and compiled-weight redistribution rights before training, Core ML conversion, frozen private automation, and blinded review. |
 
 ### P-2026-08-14-phase-66-sdk-only-boundary

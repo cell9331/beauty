@@ -96,7 +96,7 @@ natural, identity-preserving, and safe on authorized genuine evidence.
    reviewer identity, or freeform text; the public surface remains exactly
    61/5/74 until that decision passes.
 
-**Plans**: 16 completed or terminally closed; three learned-path repair, data/model, and qualification plans remain
+**Plans**: 17 completed or terminally closed; two learned-path data/model and qualification plans remain
 
 - [x] 80-01-PLAN.md
 - [x] 80-02-PLAN.md
@@ -117,7 +117,7 @@ natural, identity-preserving, and safe on authorized genuine evidence.
 - [x] 80-17-PLAN.md — candidate-v4 private automation failed before review
 - [x] 80-18-PLAN.md — candidate-v4 hard stop preserved with no promotion artifact
 - [x] 80-19-PLAN.md — research and adopt the owned-data learned hybrid decision before code
-- [ ] 80-20-PLAN.md — quarantine rejected heuristics and add a fail-closed internal prediction seam
+- [x] 80-20-PLAN.md — quarantine rejected heuristics and add a fail-closed internal prediction seam
 - [ ] 80-21-PLAN.md — admit paired-data rights, train, ablate, convert, and select the learned model
 - [ ] 80-22-PLAN.md — freeze learned qualification, run private automation/review, and verify Phase 80
 

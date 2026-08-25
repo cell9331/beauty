@@ -8,7 +8,7 @@ import XCTest
 final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
     func testNeutralStrengthIsExactNoOpAndDiagnosticsAreAggregateOnly() throws {
         let fixture = try reliefFixture()
-        let result = BeautyUpperEyelidFullnessEditor.edit(
+        let result = BeautyExperimentalUpperEyelidReliefEditor.edit(
             source: fixture.source,
             support: support(leftPixels: fixture.pixels),
             strength: 0
@@ -29,14 +29,14 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
 
     func testBoundaryAnchoredReliefCompressionFlattensConvexBulgeAndCarriesOriginalDetail() throws {
         let fixture = try reliefFixture(bulgeMagnitude: 24)
-        let before = try XCTUnwrap(BeautyUpperEyelidReliefModel.analyze(
+        let before = try XCTUnwrap(BeautyExperimentalUpperEyelidReliefModel.analyze(
             source: fixture.source,
             pixels: fixture.pixels
         ))
         XCTAssertTrue(before.isFullnessSupported)
         XCTAssertGreaterThan(before.centralConvexityScore, 8)
 
-        let result = BeautyUpperEyelidFullnessEditor.edit(
+        let result = BeautyExperimentalUpperEyelidReliefEditor.edit(
             source: fixture.source,
             support: support(leftPixels: fixture.pixels),
             strength: 1
@@ -48,7 +48,7 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
         XCTAssertGreaterThan(result.summary.changedPixelCount, 0)
         XCTAssertLessThanOrEqual(
             result.summary.maximumAbsoluteChannelDelta,
-            BeautyUpperEyelidFullnessEditor.maximumAbsoluteChannelDelta
+            BeautyExperimentalUpperEyelidReliefEditor.maximumAbsoluteChannelDelta
         )
 
         var corrections = Set<Int>()
@@ -73,7 +73,7 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
 
         let owner = BeautyLocalRetouchCompositionOwner(source: fixture.source)
         let composed = try owner.compose(result.makeUnits(using: owner)).canonicalImage
-        let after = try XCTUnwrap(BeautyUpperEyelidReliefModel.analyze(
+        let after = try XCTUnwrap(BeautyExperimentalUpperEyelidReliefModel.analyze(
             source: composed,
             pixels: fixture.pixels
         ))
@@ -87,17 +87,17 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
 
     func testPlanarLightingAndFineCreaseDetailDoNotCreateFullnessApproval() throws {
         let fixture = try reliefFixture(bulgeMagnitude: 0, includeCreaseDetail: true)
-        let model = try XCTUnwrap(BeautyUpperEyelidReliefModel.analyze(
+        let model = try XCTUnwrap(BeautyExperimentalUpperEyelidReliefModel.analyze(
             source: fixture.source,
             pixels: fixture.pixels
         ))
         XCTAssertFalse(model.isFullnessSupported)
         XCTAssertLessThan(
             model.centralConvexityScore,
-            BeautyUpperEyelidReliefModel.minimumConvexityScore
+            BeautyExperimentalUpperEyelidReliefModel.minimumConvexityScore
         )
 
-        let result = BeautyUpperEyelidFullnessEditor.edit(
+        let result = BeautyExperimentalUpperEyelidReliefEditor.edit(
             source: fixture.source,
             support: support(leftPixels: fixture.pixels),
             strength: 1
@@ -106,7 +106,7 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
         XCTAssertTrue(result.proposalsByEye.isEmpty)
     }
 
-    func testProductionSemanticOwnerApprovesConvexReliefAndRejectsPlanarPeer() throws {
+    func testRejectedExperimentalSemanticOwnerApprovesGeneratedReliefAndRejectsPlanarPeer() throws {
         let positive = try reliefFixture(bulgeMagnitude: 24)
         let negative = try reliefFixture(bulgeMagnitude: 0)
         let request = semanticRequest(
@@ -116,7 +116,7 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
         )
 
         let positiveApproval = try XCTUnwrap(
-            BeautyUpperEyelidFullnessSemanticAnalyzer.makeOwner(source: positive.source)([request]).first
+            BeautyExperimentalUpperEyelidFullnessSemanticAnalyzer.makeOwner(source: positive.source)([request]).first
         )
         XCTAssertTrue(positiveApproval.approved)
         XCTAssertEqual(positiveApproval.reason, .approved)
@@ -127,7 +127,7 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
         XCTAssertFalse(positiveApproval.pixels.isEmpty)
 
         let negativeApproval = try XCTUnwrap(
-            BeautyUpperEyelidFullnessSemanticAnalyzer.makeOwner(source: negative.source)([request]).first
+            BeautyExperimentalUpperEyelidFullnessSemanticAnalyzer.makeOwner(source: negative.source)([request]).first
         )
         XCTAssertFalse(negativeApproval.approved)
         XCTAssertEqual(negativeApproval.reason, .semanticApprovalRejected)
@@ -154,7 +154,7 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
             )
         )
 
-        let result = BeautyUpperEyelidFullnessEditor.edit(
+        let result = BeautyExperimentalUpperEyelidReliefEditor.edit(
             source: fixture.source,
             support: resolution,
             strength: 1
@@ -169,7 +169,7 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
     func testInvalidStrengthAndRepeatedRequestsFailClosedDeterministically() throws {
         let fixture = try reliefFixture(bulgeMagnitude: 24)
         for value in [Double.nan, .infinity, -0.01, 1.01] {
-            let result = BeautyUpperEyelidFullnessEditor.edit(
+            let result = BeautyExperimentalUpperEyelidReliefEditor.edit(
                 source: fixture.source,
                 support: support(leftPixels: fixture.pixels),
                 strength: value
@@ -178,12 +178,12 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
             XCTAssertTrue(result.proposalsByEye.isEmpty)
         }
 
-        let first = BeautyUpperEyelidFullnessEditor.edit(
+        let first = BeautyExperimentalUpperEyelidReliefEditor.edit(
             source: fixture.source,
             support: support(leftPixels: fixture.pixels),
             strength: 0.75
         )
-        let second = BeautyUpperEyelidFullnessEditor.edit(
+        let second = BeautyExperimentalUpperEyelidReliefEditor.edit(
             source: fixture.source,
             support: support(leftPixels: fixture.pixels),
             strength: 0.75

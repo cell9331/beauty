@@ -4,10 +4,10 @@ import Foundation
 import XCTest
 @testable import BeautyEffects
 
-/// Package-only integration coverage for the still-image candidate. This suite
-/// deliberately starts at the detector route and never constructs a support
-/// resolution in the test: the detector-owned result is handed directly to the
-/// editor, then to the immutable-source composition owner.
+/// Historical package-only integration coverage for the rejected v4 mechanics.
+/// This suite deliberately starts at the detector route and never constructs a
+/// support resolution in the test: the detector-owned result is handed to the
+/// explicitly experimental editor, then to immutable-source composition.
 final class BeautyUpperEyelidPackageIntegrationTests: XCTestCase {
     func testOneObservationFlowsThroughIndependentEyeResolutionEditorAndComposition() throws {
         let source = try canonical()
@@ -35,7 +35,7 @@ final class BeautyUpperEyelidPackageIntegrationTests: XCTestCase {
         let acceptedPixels = acceptedSupportPixels.map(\.pixelIndex)
 
         // F-03 provenance: consume the detector-returned resolution directly.
-        let edit = BeautyUpperEyelidFullnessEditor.edit(
+        let edit = BeautyExperimentalUpperEyelidReliefEditor.edit(
             source: source,
             support: detected.supportResolution,
             strength: 0.75
@@ -53,7 +53,7 @@ final class BeautyUpperEyelidPackageIntegrationTests: XCTestCase {
         XCTAssertGreaterThan(edit.summary.maximumAbsoluteChannelDelta, 0)
         XCTAssertLessThanOrEqual(
             edit.summary.maximumAbsoluteChannelDelta,
-            BeautyUpperEyelidFullnessEditor.maximumAbsoluteChannelDelta
+            BeautyExperimentalUpperEyelidReliefEditor.maximumAbsoluteChannelDelta
         )
         XCTAssertEqual(composed.summary.acceptedUnitCount, 1)
         XCTAssertEqual(composed.summary.rejectedUnitCount, 0)
@@ -91,7 +91,7 @@ final class BeautyUpperEyelidPackageIntegrationTests: XCTestCase {
             imageExtent: CGSize(width: source.width, height: source.height),
             semanticOwner: repeatedSemanticOwner.call
         )
-        let repeatedEdit = BeautyUpperEyelidFullnessEditor.edit(
+        let repeatedEdit = BeautyExperimentalUpperEyelidReliefEditor.edit(
             source: source,
             support: repeatedDetection.supportResolution,
             strength: 0.75
@@ -139,7 +139,7 @@ final class BeautyUpperEyelidPackageIntegrationTests: XCTestCase {
             imageExtent: CGSize(width: source.width, height: source.height),
             semanticOwner: semanticOwner.call
         )
-        let edit = BeautyUpperEyelidFullnessEditor.edit(
+        let edit = BeautyExperimentalUpperEyelidReliefEditor.edit(
             source: source,
             support: detected.supportResolution,
             strength: 1
@@ -207,7 +207,7 @@ final class BeautyUpperEyelidPackageIntegrationTests: XCTestCase {
             let leftPixels = leftSupportPixels.map(\.pixelIndex)
             XCTAssertEqual(actualReason, expectedReason, name)
 
-            let edit = BeautyUpperEyelidFullnessEditor.edit(
+            let edit = BeautyExperimentalUpperEyelidReliefEditor.edit(
                 source: source,
                 support: detected.supportResolution,
                 strength: 0.75

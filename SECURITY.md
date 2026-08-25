@@ -425,3 +425,13 @@ excess displacement, or fold-over risk. Eye aperture, lash, iris/pupil, sclera,
 brow, protected crease, exterior, overlap, and alpha remain immutable-source
 owned. The learned field never enters the public geometry pipeline or retained
 `Warp.metal`.
+
+Plan 80-20 implements the no-model portion of this boundary without importing
+Core ML or adding a resource. Requests independently validate canonical bytes,
+dimensions, containment, unique support, and protected/support disjointness
+before any predictor call. Predictions validate side, finite scores, exact
+sample ownership, alpha ceiling, feather-boundary zero, bounded/smooth flow,
+positive local Jacobian, and bounded/smooth tone. Diagnostics expose only side,
+normalized reason, and accepted sample count; validated tensors remain request-
+local. The rejected heuristic is available only under explicit
+`BeautyExperimentalUpperEyelid*` package names and has no public/facade route.

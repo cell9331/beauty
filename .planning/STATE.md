@@ -4,17 +4,17 @@ milestone: v1.19
 milestone_name: Genuine Upper-Eyelid Fullness Promotion
 current_phase: 80
 current_phase_name: Genuine Evidence and Qualification Gate
-status: executing
-stopped_at: Phase 80 Plan 20 learned-path code-boundary repair
-last_updated: "2026-08-25T00:00:00Z"
+status: blocked
+stopped_at: Phase 80 Plan 21 paired-data and model checkpoint
+last_updated: "2026-08-25T01:00:00Z"
 last_activity: 2026-08-25
-last_activity_desc: Learned hybrid decision frozen before further algorithm code changes
+last_activity_desc: Failed heuristic quarantined and fail-closed learned prediction seam verified
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 22
-  completed_plans: 16
-  percent: 73
+  completed_plans: 17
+  percent: 77
 ---
 
 # Project State
@@ -30,18 +30,18 @@ modular facade.
 
 ## Current Position
 
-Phase: 80 (Genuine Evidence and Qualification Gate) — EXECUTING
-Plan: 20 of 22
-Status: Quarantining the rejected heuristic and adding a fail-closed learned prediction seam
-Last activity: 2026-08-25 — owned-data learned hybrid decision completed before source remediation
+Phase: 80 (Genuine Evidence and Qualification Gate) — BLOCKED
+Plan: 21 of 22
+Status: Blocked on commercially authorized paired training data and compiled-weight redistribution rights
+Last activity: 2026-08-25 — learned boundary repair passed focused/full package and SDK-only checks
 
-Progress: [███████▎░░] 73%
+Progress: [███████▋░░] 77%
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Total plans completed: 0
+- Total plans completed: 17
 - Average duration: —
 - Total execution time: 0h
 
@@ -66,6 +66,7 @@ roadmaps.
 | Phase 80 P17 | 14 min | 1 completed task, 1 stopped checkpoint | 0 durable private files |
 | Phase 80 P18 | 2 min | 1 terminal stop | 3 aggregate-only records |
 | Phase 80 P19 | — | 2 tasks | documentation-only decision and owner synchronization |
+| Phase 80 P20 | — | 3 tasks | 7 Swift files plus owner/ledger synchronization |
 
 ## Accumulated Context
 
@@ -103,6 +104,7 @@ roadmaps.
 - [Phase 80]: Candidate-v5 threshold tuning is canceled; v1-v4 establish that handcrafted tone/frequency analysis cannot reliably identify or visibly reduce genuine upper-lid fullness. — Retuning would overfit the private fixtures instead of repairing the semantic mismatch.
 - [Phase 80]: A visibly obvious `去脂` may advance only as an owned-data, on-device learned hybrid that predicts per-eye applicability, support alpha, bounded upper-lid soft-tissue flow, and low-frequency tone. — Generic/landmark warp and all eye/brow proxy controls remain prohibited; an absolute no-geometry route may only be named relief softening.
 - [Phase 80]: Model training is gated on commercial training/derivative/compiled-weight redistribution rights and identity-disjoint paired data. — The current eight-fixture private bundle remains holdout evaluation evidence and cannot train or calibrate the model.
+- [Phase 80]: Rejected v1-v4 code is reachable only through explicit `BeautyExperimentalUpperEyelid*` names; the current learned boundary has no registered model and emits no proposals. — Plan 80-20 validates every request/result per eye and fails closed on absence, inference failure, uncertainty, malformed flow/tone, protected overlap, discontinuity, or fold-over risk.
 
 ### Pending Todos
 
@@ -146,7 +148,7 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-25T00:00:00Z
-Stopped at: Phase 80 Plan 20 learned-path code-boundary repair
+Last session: 2026-08-25T01:00:00Z
+Stopped at: Phase 80 Plan 21 paired-data and model checkpoint
 Resume file: None
-Next action: quarantine rejected heuristic semantics and add the package-only fail-closed learned prediction boundary; do not fabricate or ship a model.
+Next action: admit commercially authorized identity-disjoint paired data and compiled-weight redistribution rights, then author targets and train/ablate/convert the learned candidate; do not resume heuristic tuning.

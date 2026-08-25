@@ -195,10 +195,10 @@ generic geometry pipeline: it cannot move eye contour/aperture, brow, lashes,
 iris/sclera, or protected crease detail, and it does not modify retained
 `Warp.metal`. `BeautyDetection` owns one mapped observation, `BeautyResources`
 will own a checksum-pinned bundled Core ML resource only after license/model
-admission, and `BeautyEffects` owns request-local prediction validation plus
-CPU-reference immutable-source composition. Missing or invalid models and
-predictions fail closed. No public field, route, renderer case, preset, or model
-resource exists during the Plan-80-20 boundary repair.
+admission, and `BeautyEffects` now owns request-local prediction request/result
+types plus independent validation. Missing or invalid models and predictions
+fail closed before any proposal. No public field, route, renderer case, preset,
+Core ML import, or model resource exists after the Plan-80-20 boundary repair.
 
 The full data/model/runtime/qualification authority is
 [`80-LEARNED-HYBRID-DECISION.md`](.planning/phases/80-genuine-evidence-and-qualification-gate/80-LEARNED-HYBRID-DECISION.md).

@@ -2,10 +2,11 @@ import BeautyCore
 import BeautyDetection
 import Foundation
 
-/// Request-local, source-derived relief analysis shared by semantic admission
-/// and the bounded editor. It models the surrounding illumination as a plane,
-/// so a global gradient is not mistaken for upper-eyelid convexity.
-package struct BeautyUpperEyelidReliefModel: Sendable {
+/// Rejected v4 source-derived relief experiment retained only for generated
+/// regression evidence. Genuine automation invalidated its semantic admission,
+/// boundary, and minimum-relief assumptions; production code must use the
+/// fail-closed learned-prediction boundary instead.
+package struct BeautyExperimentalUpperEyelidReliefModel: Sendable {
     package struct Sample: Equatable, Sendable {
         package let pixelIndex: Int
         package let lowFrequencyLuminance: Double
@@ -32,7 +33,7 @@ package struct BeautyUpperEyelidReliefModel: Sendable {
     package static func analyze(
         source: BeautyCanonicalStillImage,
         pixels: [BeautyUpperEyelidSupportPixel]
-    ) -> BeautyUpperEyelidReliefModel? {
+    ) -> BeautyExperimentalUpperEyelidReliefModel? {
         guard let layout = ReliefSourceLayout(source),
               !pixels.isEmpty,
               Set(pixels.map(\.pixelIndex)).count == pixels.count,
@@ -89,7 +90,7 @@ package struct BeautyUpperEyelidReliefModel: Sendable {
             }
         }
         guard centralWeight > 0 else { return nil }
-        return BeautyUpperEyelidReliefModel(
+        return BeautyExperimentalUpperEyelidReliefModel(
             samples: samples,
             centralConvexityScore: centralWeightedResidual / centralWeight
         )
@@ -180,7 +181,7 @@ private struct ReliefPlane: Sendable {
     }
 }
 
-package struct BeautyUpperEyelidReliefSourceLayout: Sendable {
+package struct BeautyExperimentalUpperEyelidReliefSourceLayout: Sendable {
     package let bytes: Data
     package let width: Int
     package let height: Int
@@ -224,7 +225,7 @@ package struct BeautyUpperEyelidReliefSourceLayout: Sendable {
     }
 }
 
-private typealias ReliefSourceLayout = BeautyUpperEyelidReliefSourceLayout
+private typealias ReliefSourceLayout = BeautyExperimentalUpperEyelidReliefSourceLayout
 
 private struct ReliefPatch: Sendable {
     let minimumX: Int
@@ -337,7 +338,9 @@ private struct ReliefPatch: Sendable {
     }
 }
 
-package enum BeautyUpperEyelidFullnessSemanticAnalyzer {
+/// Historical semantic adapter for the rejected v4 experiment. It is not a
+/// production fullness owner and must never back a public route.
+package enum BeautyExperimentalUpperEyelidFullnessSemanticAnalyzer {
     package static func makeOwner(
         source: BeautyCanonicalStillImage
     ) -> BeautyUpperEyelidSemanticSupportOwner.SemanticOwner {
@@ -346,7 +349,7 @@ package enum BeautyUpperEyelidFullnessSemanticAnalyzer {
                 let pixels = request.maximumFeatheredPixels()
                 guard source.width == request.imageWidth,
                       source.height == request.imageHeight,
-                      let model = BeautyUpperEyelidReliefModel.analyze(
+                      let model = BeautyExperimentalUpperEyelidReliefModel.analyze(
                         source: source,
                         pixels: pixels
                       ),
@@ -366,7 +369,7 @@ package enum BeautyUpperEyelidFullnessSemanticAnalyzer {
                     max(
                         BeautyUpperEyelidSemanticSupportOwner.minimumConfidence,
                         model.centralConvexityScore
-                            / (BeautyUpperEyelidReliefModel.minimumConvexityScore * 2)
+                            / (BeautyExperimentalUpperEyelidReliefModel.minimumConvexityScore * 2)
                     )
                 )
                 return BeautyUpperEyelidSemanticApproval(

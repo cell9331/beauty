@@ -490,3 +490,11 @@ zero identity, orientation/mirror/color/alpha/extent, determinism, cancellation,
 recovery, and public absence. Genuine efficacy still requires a frozen unseen
 private matrix to pass twice and blinded original-detail review; generated tests
 cannot supply that result.
+
+Plan 80-20 passes `8/0/0` learned-prediction tests and `23/0/0` across all
+upper-eyelid suites. It covers no-model, invalid request before inference,
+protected overlap, envelope escape, abstention, confidence, uncertainty, side
+mismatch, missing/malformed samples, non-zero boundary flow, excessive flow or
+tone, discontinuity, local fold-over, inference failure, and independent-peer
+recovery. The plain full package passes `813/0/8`; the eight existing opt-ins
+remain disabled in a plain development run and this is not final closeout.

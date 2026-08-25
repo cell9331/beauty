@@ -216,7 +216,8 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
 
 ### v1.18 Phase 77 Deterministic Fullness Editor Boundary
 
-- `BeautyUpperEyelidFullnessEditor` is package-only and consumes the Phase 76
+- The retained historical implementation is now named
+  `BeautyExperimentalUpperEyelidReliefEditor`. At Phase 77 it consumed the Phase 76
   per-eye support resolution plus a canonical RGBA8 source. It computes a
   deterministic 3x3 low-frequency box average, applies a bounded additive RGB
   correction, and carries the exact source-minus-low-frequency residual into
@@ -1413,3 +1414,13 @@ target-author, and compiled-weight redistribution rights. Without that data,
 implementation stops after the package-only fail-closed prediction seam and
 `去脂` remains future with exact 61/5/74 public absence. The complete design is
 [`80-LEARNED-HYBRID-DECISION.md`](.planning/phases/80-genuine-evidence-and-qualification-gate/80-LEARNED-HYBRID-DECISION.md).
+
+Plan 80-20 implements that stop boundary. `BeautyUpperEyelidFullnessPredicting`
+has no registered implementation. Its package-only request/result validator
+requires canonical source layout, finite in-bounds containment, unique support,
+protected/support separation, exact side/sample ownership, applicability
+confidence `>= 0.80`, uncertainty `<= 0.20`, feather weights `<= 4096` to carry
+exact zero alpha/flow/tone, displacement magnitude `<= 2%` of the smaller image
+dimension, adjacent flow delta `<= 0.75` source pixel, tone magnitude `<= 0.08`,
+adjacent tone delta `<= 0.04`, and local Jacobian determinant `>= 0.25`. Invalid
+or absent inference produces an aggregate per-eye rejection and no proposal.

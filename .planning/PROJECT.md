@@ -95,12 +95,13 @@ and `眼睛 = partial`.
 completed 2026-08-22 as an SDK-only failed-productization decision with exact
 public absence. It is not a shipping, launch, or release-readiness claim.
 **Latest historical UI milestone:** v1.1 Meitu UI on 2026-06-24, retained only as archived evidence.
-**Current work:** v1.19 has terminated four hand-authored candidates and adopted
-the learned hybrid decision in Plan 80-19. Plan 80-20 may quarantine the failed
-heuristic and add only a fail-closed internal prediction seam. Training and
-promotion remain blocked on commercially authorized paired data, compiled-
-weight redistribution rights, a fresh frozen private qualification, and blinded
-review; public implementation is forbidden until those gates pass.
+**Current work:** v1.19 has terminated four hand-authored candidates, adopted
+the learned hybrid decision, quarantined the failed implementation under
+explicit experimental names, and verified a strict package-only prediction
+boundary whose no-model state emits no proposal. Training and promotion remain
+blocked on commercially authorized paired data, compiled-weight redistribution
+rights, a fresh frozen private qualification, and blinded review; public
+implementation is forbidden until those gates pass.
 
 **Implementation state:** v1.16 froze the current CPU renderer as the reference backend, added generated CPU oracles, a public-only SwiftPM consumer, the SDK-owned renderer CLI, and conditional `BeautyResult` sendability. v1.17 added the package-only backend-neutral boundary, bounded Metal runtime and feature passes, public `.cpu`/`.gpu` configuration with typed unavailable-GPU failure, and generated CPU/GPU parity gates. v1.18 added package-only per-eye semantic support, bounded tone/frequency editor mechanics, frozen private-evidence tooling, and fail-closed decision/absence gates while preserving the 61-field/five-preset/74-case public surface. Historical application taxonomy remains archive-only.
 

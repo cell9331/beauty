@@ -22,7 +22,7 @@ final class BeautyUpperEyelidEditorSafetyTests: XCTestCase {
                 reason: .semanticApprovalRejected
             )
         )
-        let edit = BeautyUpperEyelidFullnessEditor.edit(
+        let edit = BeautyExperimentalUpperEyelidReliefEditor.edit(
             source: source,
             support: resolution,
             strength: 0.75
@@ -64,7 +64,7 @@ final class BeautyUpperEyelidEditorSafetyTests: XCTestCase {
     func testOverlappingEyeUnitsReturnImmutableSourceAndCountOneCollision() throws {
         let source = try texturedCanonical(width: fixtureWidth, height: fixtureHeight)
         let pixels = fixturePixels
-        let edit = BeautyUpperEyelidFullnessEditor.edit(
+        let edit = BeautyExperimentalUpperEyelidReliefEditor.edit(
             source: source,
             support: resolution(
                 left: .supported(
@@ -109,8 +109,8 @@ final class BeautyUpperEyelidEditorSafetyTests: XCTestCase {
                 reason: .closed
             )
         )
-        let first = BeautyUpperEyelidFullnessEditor.edit(source: source, support: support, strength: 0.5)
-        let second = BeautyUpperEyelidFullnessEditor.edit(source: source, support: support, strength: 0.5)
+        let first = BeautyExperimentalUpperEyelidReliefEditor.edit(source: source, support: support, strength: 0.5)
+        let second = BeautyExperimentalUpperEyelidReliefEditor.edit(source: source, support: support, strength: 0.5)
         XCTAssertEqual(first.proposalsByEye, second.proposalsByEye)
 
         let firstOwner = BeautyLocalRetouchCompositionOwner(source: source)
@@ -151,7 +151,7 @@ final class BeautyUpperEyelidEditorSafetyTests: XCTestCase {
                 reason: .semanticApprovalRejected
             )
         )
-        let edit = BeautyUpperEyelidFullnessEditor.edit(
+        let edit = BeautyExperimentalUpperEyelidReliefEditor.edit(
             source: source,
             support: support,
             strength: 1

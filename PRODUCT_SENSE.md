@@ -302,6 +302,11 @@ identity or cannot supply commercially authorized paired training data, the
 honest effect is only subtle `upperEyelidReliefSoftening`; `去脂` remains future
 and no public field or inert route is permitted.
 
+Plan 80-20 deliberately adds no visible output. It renames the rejected editor
+and semantic analyzer as experimental and makes the new model owner unavailable
+by default. This is a product correction: a safe no-op is preferable to showing
+another dark patch while the rights-approved learned model does not yet exist.
+
 This branch is accepted only on SDK-owned evidence: exact public absence,
 canonical extent/orientation/mirror and named-sRGB metadata preservation,
 alpha and request-local failure isolation, CPU-reference authority, explicit

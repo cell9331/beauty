@@ -396,6 +396,13 @@ pixel composition, fail-closed, automated, human-review, privacy, and stop
 contracts before source remediation. It adds no quality credit: no model,
 training data, public field, resource, route, renderer case, or new output
 exists, and exact 61/5/74 public absence remains the current quality result.
-Plan 80-20 may prove only the unavailable/invalid-prediction boundary. Learned
+Plan 80-20 proves only the unavailable/invalid-prediction boundary. Learned
 efficacy remains blocked until commercially authorized paired data, model
 parity, fresh genuine automation, and blinded review all pass.
+
+Plan 80-20 adds no efficacy score. Its quality result is boundary-only:
+`8/0/0` learned prediction tests, `23/0/0` all upper-eyelid tests, and plain full
+SwiftPM `813/0/8`, plus archive, SDK-only boundary, exact 61/5/74 absence, and
+diff-hygiene passes. Rejected mechanics are explicit experiments; the learned
+owner has no model and produces no proposals. Final zero-skip closeout remains
+ineligible until Plans 80-21/22 supply and qualify a licensed model.

@@ -2,7 +2,11 @@ import BeautyCore
 import BeautyDetection
 import Foundation
 
-package enum BeautyUpperEyelidFullnessEditReason: String, Equatable, Sendable {
+// Rejected v1-v4 mechanics retained only for generated regression evidence.
+// Production learned-path code must not use these types as semantic authority
+// or emit their proposals. See Phase 80 Plan 80-19.
+
+package enum BeautyExperimentalUpperEyelidReliefEditReason: String, Equatable, Sendable {
     case edited
     case neutral
     case noApprovedSupport
@@ -11,13 +15,13 @@ package enum BeautyUpperEyelidFullnessEditReason: String, Equatable, Sendable {
     case invalidSupport
 }
 
-package struct BeautyUpperEyelidFullnessEditSummary: Equatable, Sendable {
+package struct BeautyExperimentalUpperEyelidReliefEditSummary: Equatable, Sendable {
     package let acceptedEyeCount: Int
     package let rejectedEyeCount: Int
     package let proposalPixelCount: Int
     package let changedPixelCount: Int
     package let maximumAbsoluteChannelDelta: Int
-    package let reason: BeautyUpperEyelidFullnessEditReason
+    package let reason: BeautyExperimentalUpperEyelidReliefEditReason
 
     package init(
         acceptedEyeCount: Int = 0,
@@ -25,7 +29,7 @@ package struct BeautyUpperEyelidFullnessEditSummary: Equatable, Sendable {
         proposalPixelCount: Int = 0,
         changedPixelCount: Int = 0,
         maximumAbsoluteChannelDelta: Int = 0,
-        reason: BeautyUpperEyelidFullnessEditReason = .noApprovedSupport
+        reason: BeautyExperimentalUpperEyelidReliefEditReason = .noApprovedSupport
     ) {
         self.acceptedEyeCount = acceptedEyeCount
         self.rejectedEyeCount = rejectedEyeCount
@@ -36,9 +40,9 @@ package struct BeautyUpperEyelidFullnessEditSummary: Equatable, Sendable {
     }
 }
 
-extension BeautyUpperEyelidFullnessEditSummary: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+extension BeautyExperimentalUpperEyelidReliefEditSummary: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
     package var description: String {
-        "BeautyUpperEyelidFullnessEditSummary(acceptedEyeCount: \(acceptedEyeCount), rejectedEyeCount: \(rejectedEyeCount), proposalPixelCount: \(proposalPixelCount), changedPixelCount: \(changedPixelCount), maximumAbsoluteChannelDelta: \(maximumAbsoluteChannelDelta), reason: \(reason.rawValue))"
+        "BeautyExperimentalUpperEyelidReliefEditSummary(acceptedEyeCount: \(acceptedEyeCount), rejectedEyeCount: \(rejectedEyeCount), proposalPixelCount: \(proposalPixelCount), changedPixelCount: \(changedPixelCount), maximumAbsoluteChannelDelta: \(maximumAbsoluteChannelDelta), reason: \(reason.rawValue))"
     }
 
     package var debugDescription: String { description }
@@ -59,7 +63,7 @@ extension BeautyUpperEyelidFullnessEditSummary: CustomStringConvertible, CustomD
     }
 }
 
-package struct BeautyUpperEyelidFullnessEditRequest: Sendable {
+package struct BeautyExperimentalUpperEyelidReliefEditRequest: Sendable {
     package let source: BeautyCanonicalStillImage
     package let support: BeautyUpperEyelidSupportResolution
     package let strength: Double
@@ -75,9 +79,9 @@ package struct BeautyUpperEyelidFullnessEditRequest: Sendable {
     }
 }
 
-extension BeautyUpperEyelidFullnessEditRequest: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+extension BeautyExperimentalUpperEyelidReliefEditRequest: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
     package var description: String {
-        "BeautyUpperEyelidFullnessEditRequest(strength: \(strength), supportedEyeCount: \(support.supportedEyeCount))"
+        "BeautyExperimentalUpperEyelidReliefEditRequest(strength: \(strength), supportedEyeCount: \(support.supportedEyeCount))"
     }
 
     package var debugDescription: String { description }
@@ -94,12 +98,12 @@ extension BeautyUpperEyelidFullnessEditRequest: CustomStringConvertible, CustomD
     }
 }
 
-package struct BeautyUpperEyelidFullnessEditResult: Sendable {
-    package let summary: BeautyUpperEyelidFullnessEditSummary
+package struct BeautyExperimentalUpperEyelidReliefEditResult: Sendable {
+    package let summary: BeautyExperimentalUpperEyelidReliefEditSummary
     package let proposalsByEye: [[BeautyLocalPixelProposal]]
 
     package init(
-        summary: BeautyUpperEyelidFullnessEditSummary,
+        summary: BeautyExperimentalUpperEyelidReliefEditSummary,
         proposalsByEye: [[BeautyLocalPixelProposal]] = []
     ) {
         self.summary = summary
@@ -118,9 +122,9 @@ package struct BeautyUpperEyelidFullnessEditResult: Sendable {
     }
 }
 
-extension BeautyUpperEyelidFullnessEditResult: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+extension BeautyExperimentalUpperEyelidReliefEditResult: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
     package var description: String {
-        "BeautyUpperEyelidFullnessEditResult(proposalPixelCount: \(proposalPixelCount), changedPixelCount: \(summary.changedPixelCount), reason: \(summary.reason.rawValue))"
+        "BeautyExperimentalUpperEyelidReliefEditResult(proposalPixelCount: \(proposalPixelCount), changedPixelCount: \(summary.changedPixelCount), reason: \(summary.reason.rawValue))"
     }
 
     package var debugDescription: String { description }
@@ -138,7 +142,7 @@ extension BeautyUpperEyelidFullnessEditResult: CustomStringConvertible, CustomDe
     }
 }
 
-package enum BeautyUpperEyelidFullnessEditor {
+package enum BeautyExperimentalUpperEyelidReliefEditor {
     package static let maximumAbsoluteChannelDelta = 16
     package static let reliefCompressionGain = 1.5
 
@@ -146,8 +150,8 @@ package enum BeautyUpperEyelidFullnessEditor {
         source: BeautyCanonicalStillImage,
         support: BeautyUpperEyelidSupportResolution,
         strength: Double
-    ) -> BeautyUpperEyelidFullnessEditResult {
-        edit(BeautyUpperEyelidFullnessEditRequest(
+    ) -> BeautyExperimentalUpperEyelidReliefEditResult {
+        edit(BeautyExperimentalUpperEyelidReliefEditRequest(
             source: source,
             support: support,
             strength: strength
@@ -155,14 +159,14 @@ package enum BeautyUpperEyelidFullnessEditor {
     }
 
     package static func edit(
-        _ request: BeautyUpperEyelidFullnessEditRequest
-    ) -> BeautyUpperEyelidFullnessEditResult {
+        _ request: BeautyExperimentalUpperEyelidReliefEditRequest
+    ) -> BeautyExperimentalUpperEyelidReliefEditResult {
         guard request.strength.isFinite,
               (0...1).contains(request.strength)
         else {
             return result(reason: .invalidStrength)
         }
-        guard let sourceLayout = BeautyUpperEyelidReliefSourceLayout(request.source) else {
+        guard let sourceLayout = BeautyExperimentalUpperEyelidReliefSourceLayout(request.source) else {
             return result(reason: .invalidSource)
         }
         guard request.strength > 0 else {
@@ -186,7 +190,7 @@ package enum BeautyUpperEyelidFullnessEditor {
                 continue
             }
 
-            guard let reliefModel = BeautyUpperEyelidReliefModel.analyze(
+            guard let reliefModel = BeautyExperimentalUpperEyelidReliefModel.analyze(
                 source: request.source,
                 pixels: pixels
             ), reliefModel.isFullnessSupported,
@@ -250,16 +254,16 @@ package enum BeautyUpperEyelidFullnessEditor {
 
         let proposalPixelCount = proposalsByEye.reduce(0) { $0 + $1.count }
         guard proposalPixelCount > 0 else {
-            return BeautyUpperEyelidFullnessEditResult(
-                summary: BeautyUpperEyelidFullnessEditSummary(
+            return BeautyExperimentalUpperEyelidReliefEditResult(
+                summary: BeautyExperimentalUpperEyelidReliefEditSummary(
                     acceptedEyeCount: acceptedEyeCount,
                     rejectedEyeCount: rejectedEyeCount,
                     reason: .noApprovedSupport
                 )
             )
         }
-        return BeautyUpperEyelidFullnessEditResult(
-            summary: BeautyUpperEyelidFullnessEditSummary(
+        return BeautyExperimentalUpperEyelidReliefEditResult(
+            summary: BeautyExperimentalUpperEyelidReliefEditSummary(
                 acceptedEyeCount: acceptedEyeCount,
                 rejectedEyeCount: rejectedEyeCount,
                 proposalPixelCount: proposalPixelCount,
@@ -272,16 +276,16 @@ package enum BeautyUpperEyelidFullnessEditor {
     }
 
     private static func result(
-        reason: BeautyUpperEyelidFullnessEditReason
-    ) -> BeautyUpperEyelidFullnessEditResult {
-        BeautyUpperEyelidFullnessEditResult(
-            summary: BeautyUpperEyelidFullnessEditSummary(reason: reason)
+        reason: BeautyExperimentalUpperEyelidReliefEditReason
+    ) -> BeautyExperimentalUpperEyelidReliefEditResult {
+        BeautyExperimentalUpperEyelidReliefEditResult(
+            summary: BeautyExperimentalUpperEyelidReliefEditSummary(reason: reason)
         )
     }
 
     private static func validatedPixels(
         _ pixels: [BeautyUpperEyelidSupportPixel],
-        sourceLayout: BeautyUpperEyelidReliefSourceLayout
+        sourceLayout: BeautyExperimentalUpperEyelidReliefSourceLayout
     ) -> [BeautyUpperEyelidSupportPixel]? {
         guard !pixels.isEmpty,
               Set(pixels.map(\.pixelIndex)).count == pixels.count,
